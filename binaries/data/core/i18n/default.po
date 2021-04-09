@@ -1,0 +1,7 @@
+# Copyright (C) 2021 Conquer Space
+#
+msgid ""
+msgstr ""
+
+msgid "Hello world"
+msgstr "Bonjour Le monde"

@@ -1,0 +1,8 @@
+/binaries/bin
+/build
+/lib/win64
+
+# Doxygen
+/docs/latex
+/docs/html
+/.vscode

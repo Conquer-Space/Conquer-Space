@@ -1,0 +1,14 @@
+// This is the default universe generation.
+{
+    // All helper functions if you need these
+    utilities: [
+        universegenutilities
+    ]
+    // This script generates all the civilizations
+    civ-gen: civgenscript
+    // This script generates all the star systems, planets, and other space bodies
+    universe-gen: universegenscript
+    // This script initializes all the planets and star systems where the star systems live, 
+    // And also the various things
+    civ-system: civsysteminit
+}

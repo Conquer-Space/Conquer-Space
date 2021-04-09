@@ -1,0 +1,126 @@
+/*
+ * Copyright 2021 Conquer Space
+ */
+#include "engine/renderer/shader.h"
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+#include <vector>
+
+unsigned int conquerspace::asset::LoadShader(std::string& shaderCode, int type) {
+    unsigned int shader;
+
+    shader = glCreateShader(type);
+    const char* shaderC = shaderCode.c_str();
+    glShaderSource(shader, 1, &shaderC, NULL);
+    glCompileShader(shader);
+
+    // Check compile suceess
+    GLint isCompiled = 0;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
+    if (isCompiled == GL_FALSE) {
+        std::string error = GetErrorLog(shader);
+        // Throw exception or something
+        // Output
+        throw(std::runtime_error(error));
+        glDeleteShader(shader);
+    }
+    return shader;
+}
+
+unsigned int conquerspace::asset::MakeShaderProgram(int vertex, int fragment) {
+    unsigned int ID = glCreateProgram();
+    glAttachShader(ID, vertex);
+    glAttachShader(ID, fragment);
+    glLinkProgram(ID);
+    return ID;
+}
+
+std::string conquerspace::asset::GetErrorLog(unsigned int shader) {
+    GLint error_max_len = 1024;
+    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &error_max_len);
+
+    // The maxLength includes the NULL character
+    std::vector<GLchar> errorLog(error_max_len);
+    glGetShaderInfoLog(shader, error_max_len, &error_max_len, &errorLog[0]);
+
+    std::string s(errorLog.begin(), errorLog.end());
+    return s;
+}
+
+void conquerspace::asset::ShaderProgram::setBool(const std::string& name,
+                                   bool value) {
+    glUniform1i(glGetUniformLocation(program, name.c_str()), static_cast<int>(value));
+}
+
+void conquerspace::asset::ShaderProgram::setInt(const std::string& name,
+                                  int value) {
+    glUniform1i(glGetUniformLocation(program, name.c_str()), value);
+}
+
+void conquerspace::asset::ShaderProgram::setFloat(const std::string& name,
+                                    int value) {
+    glUniform1f(glGetUniformLocation(program, name.c_str()), static_cast<GLfloat>(value));
+}
+
+void conquerspace::asset::ShaderProgram::setVec2(const std::string& name,
+                                   const glm::vec2& value) {
+    glUniform2fv(glGetUniformLocation(program, name.c_str()), 1, &value[0]);
+}
+
+void conquerspace::asset::ShaderProgram::setVec2(const std::string& name,
+                                   float x, float y) {
+    glUniform2f(glGetUniformLocation(program, name.c_str()), x, y);
+}
+
+void conquerspace::asset::ShaderProgram::setVec3(const std::string& name,
+                                   const glm::vec3& value) {
+    glUniform3fv(glGetUniformLocation(program, name.c_str()), 1, &value[0]);
+}
+
+void conquerspace::asset::ShaderProgram::setVec3(const std::string& name,
+                                   float x, float y, float z) {
+    glUniform3f(glGetUniformLocation(program, name.c_str()), x, y, z);
+}
+
+void conquerspace::asset::ShaderProgram::setVec4(const std::string& name,
+                                   const glm::vec4& value) {
+    glUniform4fv(glGetUniformLocation(program, name.c_str()), 1, &value[0]);
+}
+
+void conquerspace::asset::ShaderProgram::setVec4(const std::string& name,
+                                   float x, float y, float z, float w) {
+    glUniform4f(glGetUniformLocation(program, name.c_str()), x, y, z, w);
+}
+
+void conquerspace::asset::ShaderProgram::setMat2(const std::string& name,
+                                   const glm::mat2& mat) {
+    glUniformMatrix2fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE,
+                       &mat[0][0]);
+}
+
+void conquerspace::asset::ShaderProgram::setMat3(const std::string& name,
+                                   const glm::mat3& mat) {
+    glUniformMatrix3fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE,
+                       &mat[0][0]);
+}
+
+void conquerspace::asset::ShaderProgram::setMat4(const std::string& name,
+                                   const glm::mat4& mat) {
+    glUniformMatrix4fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE,
+                       &mat[0][0]);
+}
+
+void conquerspace::asset::ShaderProgram::UseProgram() {
+    glUseProgram(program);
+}
+
+conquerspace::asset::ShaderProgram::ShaderProgram() { program = -1; }
+
+conquerspace::asset::ShaderProgram::ShaderProgram(Shader& vert, Shader& frag) {
+    program = glCreateProgram();
+    glAttachShader(program, vert.id);
+    glAttachShader(program, frag.id);
+    glLinkProgram(program);
+}

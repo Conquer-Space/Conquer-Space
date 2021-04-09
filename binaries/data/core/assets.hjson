@@ -1,0 +1,73 @@
+{
+    cqspbanner: {
+        path: gfx/img/cqspbanner1.png
+        type: texture
+
+        # Loading hints
+        hints: {}
+    }
+    earthrise:{
+        path: gfx/img/earthrise.png
+        type: texture
+        hints: {
+            magfilter: false
+        }
+    }
+    title: {
+        path: gfx/img/mainbanner2.png
+        type: texture
+        hints: {
+            magfilter: true
+        }
+    }
+    credits: {
+        path: credits.md
+        type: text
+        hints: {
+        }
+    }
+    shader.texturedpane.frag: {
+        path: gfx/shaders/textured_pane.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
+    shader.pane.vert: {
+        path: gfx/shaders/pane.vert
+        type: shader
+        hints: {
+            type: vert
+        }
+    }
+    universegenutilities: {
+        path: scripts/universegen/utilities.lua
+        type: text
+        hints: {
+        }
+    }
+    defaultuniversegen: {
+        path: scripts/universegen/defaultuniversegen.hjson
+        type: hjson
+        hints: {
+        }
+    }
+    civgenscript: {
+        path: scripts/universegen/civilizations.lua
+        type: text
+        hints: {
+        }
+    }
+    universegenscript: {
+        path: scripts/universegen/default.lua
+        type: text
+        hints: {
+        }
+    }
+    civsysteminit: {
+        path: scripts/universegen/civsysteminitializer.lua
+        type: text
+        hints: {
+        }
+    }
+}

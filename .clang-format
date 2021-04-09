@@ -1,0 +1,5 @@
+# Copyright 2021 Conquer Space
+
+BasedOnStyle: Google
+
+IndentWidth: 4
