@@ -119,27 +119,35 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
             // aww
             sol::error err = res;
             std::string what = err.what();
-            spdlog::info("* [lua]: {}", what);
+            spdlog::info("*[lua]: {}", what);
         }
+    }
+
+    for (int i = 0; i < 10; i++) {
+        auto civ = universe.registry.create();
+        universe.registry.emplace<conquerspace::components::Organization>(civ);
     }
 
     cqspa::TextAsset* civgenscript
             = app.GetAssetManager().GetAsset<cqspa::TextAsset>(val->data["civ-gen"]);
     sol::load_result civGenResult = lua.load(civgenscript->data);
 
-    sol::protected_function_result res = civGenResult();
-    if (res.valid()) {
-        // yay!
-    } else {
-        // aww
-        sol::error err = res;
-        std::string what = err.what();
-        spdlog::info("* [lua]: {}", what);
-    }
-
     // Loop through each civilization
     auto civilizationView =
         universe.registry.view<conquerspace::components::Organization>();
+
+    for (auto a : civilizationView) {
+        lua.set("civ", a);
+        sol::protected_function_result res = civGenResult();
+        if (res.valid()) {
+            // yay!
+        } else {
+            // aww
+            sol::error err = res;
+            std::string what = err.what();
+            spdlog::info("*[lua]: {}", what);
+        }
+    }
 
     lua.set("civilizations", sol::as_table(civilizationView));
 
@@ -154,7 +162,7 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
         // aww
         sol::error err = result;
         std::string what = err.what();
-        spdlog::info("* [lua]: {}", what);
+        spdlog::info("*[lua]: {}", what);
     }
 
     // Now add civilization
@@ -172,7 +180,7 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
             // aww
             sol::error err = result;
             std::string what = err.what();
-            spdlog::info("* [lua]: {}", what);
+            spdlog::info("*[lua]: {}", what);
         }
     }
 }

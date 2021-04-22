@@ -3,6 +3,4 @@
 print("Initializing civ ".. civilization_id)
 -- Set planet information and stuff
 
-print(get_civilization_planet(civilization_id))
-
-print("done with civ ".. civilization_id)
+local planet = get_civilization_planet(civilization_id)
