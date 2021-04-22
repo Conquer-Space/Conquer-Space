@@ -6,6 +6,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <spdlog/spdlog.h>
+
 #include <imgui.h>
 #include <imgui_markdown.h>
 
@@ -143,6 +145,8 @@ class Application {
 
     std::string locale;
     std::unique_ptr<spirit_po::default_catalog> catalog;
+
+    std::shared_ptr<spdlog::logger> logger;
 
     conquerspace::asset::AssetManager manager;
 

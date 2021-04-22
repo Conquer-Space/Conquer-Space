@@ -34,10 +34,10 @@ void conquerspace::asset::AssetLoader::LoadAssets(std::istream& stream) {
     stream >> Hjson::StreamDecoder(assets, decOpt);
 
     int size = static_cast<int>(assets.size());
-    spdlog::info("Assets list: {}", size);
+    spdlog::info("Loading {} asset(s)", size);
 
     for (auto [key, val] : assets) {
-        spdlog::info("Loading {}", key);
+        spdlog::trace("Loading {}", key);
 
         // Load from asset
         std::string asset_key = key;

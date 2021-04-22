@@ -4,6 +4,8 @@
 #include "engine/application.h"
 
 #include <spdlog/spdlog.h>
+#include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include <hjson.h>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -14,6 +16,15 @@
 #include <string>
 
 int conquerspace::engine::Application::init() {
+    // Initialize logger
+#ifdef NDEBUG
+    spdlog::flush_every(std::chrono::seconds(3));
+    logger = spdlog::basic_logger_mt("application", "log.txt", true);
+#else
+    logger = spdlog::stdout_color_mt("application");
+#endif
+    spdlog::set_default_logger(logger);
+    
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -65,6 +76,8 @@ int conquerspace::engine::Application::destroy() {
 
     glfwDestroyWindow(m_window);
     glfwTerminate();
+
+    spdlog::shutdown();
     return 0;
 }
 
@@ -268,9 +281,9 @@ void conquerspace::engine::SceneManager::SetScene(
 
 void conquerspace::engine::SceneManager::SwitchScene() {
     m_scene = std::move(m_next_scene);
-    spdlog::info("Initializing scene");
+    spdlog::trace("Initializing scene");
     m_scene->Init();
-    spdlog::info("Done Initializing scene");
+    spdlog::trace("Done Initializing scene");
     m_switch = false;
 }
 

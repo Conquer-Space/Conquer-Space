@@ -93,7 +93,6 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
 
     lua.set_function("add_civilization", [&] () {
         entt::entity civ = universe.registry.create();
-        spdlog::info("{}", civ);
         universe.registry.emplace<conquerspace::components::Organization>(civ);
         return civ;
     });
