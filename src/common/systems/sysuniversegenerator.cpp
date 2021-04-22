@@ -17,6 +17,7 @@
 #include "common/components/bodies.h"
 #include "common/components/orbit.h"
 #include "common/components/organizations.h"
+#include "common/components/player.h"
 
 void conquerspace::systems::universegenerator::SysGenerateUniverse(
     conquerspace::engine::Application& app) {
@@ -105,6 +106,10 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
         return universe.registry.get<conquerspace::components::Civilization>(civ).starting_planet;
     });
 
+    lua.set_function("is_player", [&] (entt::entity civ) {
+        return (bool) universe.registry.all_of<conquerspace::components::Player>(civ);
+    });
+
     // Load and run utility scripts
     for (int i = 0; i < val->data["utility"].size(); i++) {
         std::string utility_script = val->data[i];
@@ -123,7 +128,12 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
         }
     }
 
-    for (int i = 0; i < 10; i++) {
+    // Create player
+    auto player = universe.registry.create();
+    universe.registry.emplace<conquerspace::components::Organization>(player);
+    universe.registry.emplace<conquerspace::components::Player>(player);
+
+    for (int i = 0; i < 9; i++) {
         auto civ = universe.registry.create();
         universe.registry.emplace<conquerspace::components::Organization>(civ);
     }

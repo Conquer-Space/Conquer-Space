@@ -53,7 +53,7 @@
         }
     }
     civgenscript: {
-        path: scripts/universegen/civilizations.lua
+        path: scripts/universegen/civilization_init.lua
         type: text
         hints: {
         }
@@ -65,7 +65,7 @@
         }
     }
     civsysteminit: {
-        path: scripts/universegen/civsysteminitializer.lua
+        path: scripts/universegen/planet_initializer.lua
         type: text
         hints: {
         }
