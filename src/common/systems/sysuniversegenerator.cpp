@@ -107,7 +107,7 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
     });
 
     lua.set_function("is_player", [&] (entt::entity civ) {
-        return (bool) universe.registry.all_of<conquerspace::components::Player>(civ);
+        return static_cast<bool>(universe.registry.all_of<conquerspace::components::Player>(civ));
     });
 
     // Load and run utility scripts

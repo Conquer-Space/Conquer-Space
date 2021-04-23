@@ -22,6 +22,7 @@
 #include "engine/assetmanager.h"
 #include "engine/engine.h"
 #include "engine/scene.h"
+#include "common/universe.h"
 
 namespace conquerspace {
 namespace engine {
@@ -153,7 +154,16 @@ class Application {
     double m_mouse_x;
     double m_mouse_y;
 
-    char m_keys_pressed[GLFW_KEY_LAST];
+    bool m_mouse_keys_held[GLFW_MOUSE_BUTTON_LAST] = {false};
+    bool m_mouse_keys_released[GLFW_MOUSE_BUTTON_LAST] = {false};
+    bool m_mouse_keys_pressed[GLFW_MOUSE_BUTTON_LAST] = {false};
+
+    bool m_keys_held[GLFW_KEY_LAST] = {false};
+    bool m_keys_released[GLFW_KEY_LAST] = {false};
+    bool m_keys_pressed[GLFW_KEY_LAST] = {false};
+
+    double m_scroll_amount;
+
     int m_mods;
 };
 }  // namespace engine

@@ -130,14 +130,17 @@ void conquerspace::engine::Application::run() {
         // Render
         glClearColor(0.f, 0.f, 0.f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+
         m_scene_manager.GetScene()->Render(deltaTime);
 
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(m_window);
 
         // Before polling events, clear the buttons
-        std::memset(m_keys_pressed, -1, sizeof(m_keys_pressed));
+        std::memset(m_keys_pressed, false, sizeof(m_keys_pressed));
+        std::memset(m_keys_released, false, sizeof(m_keys_released));
+        std::memset(m_mouse_keys_pressed, false, sizeof(m_mouse_keys_pressed));
+        std::memset(m_mouse_keys_released, false, sizeof(m_mouse_keys_released));
 
         glfwPollEvents();
     }
@@ -236,6 +239,13 @@ void conquerspace::engine::Application::InitFonts() {
 void conquerspace::engine::Application::KeyboardCallback(GLFWwindow* _w,
                                                          int key, int scancode,
                                                          int action, int mods) {
+    if (action == GLFW_PRESS) {
+        m_keys_held[key] = true;
+        m_keys_pressed[key] = true;
+    } else if (action == GLFW_RELEASE) {
+        m_keys_held[key] = false;
+        m_keys_released[key] = true;
+    }
 }
 
 void conquerspace::engine::Application::MousePositionCallback(GLFWwindow* _w,
@@ -251,11 +261,21 @@ void conquerspace::engine::Application::MouseEnterCallback(GLFWwindow* _w,
 void conquerspace::engine::Application::MouseButtonCallback(GLFWwindow* _w,
                                                             int button,
                                                             int action,
-                                                            int mods) {}
+                                                            int mods) {
+    if (action == GLFW_PRESS) {
+        m_mouse_keys_held[button] = true;
+        m_mouse_keys_pressed[button] = true;
+    } else if (action == GLFW_RELEASE) {
+        m_mouse_keys_held[button] = false;
+        m_mouse_keys_released[button] = true;
+    }
+}
 
 void conquerspace::engine::Application::ScrollCallback(GLFWwindow* _w,
                                                        double xoffset,
-                                                       double yoffset) {}
+                                                       double yoffset) {
+    m_scroll_amount = yoffset;
+}
 
 void conquerspace::engine::Application::DropCallback(GLFWwindow* _w, int count,
                                                      const char** paths) {}

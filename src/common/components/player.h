@@ -6,5 +6,5 @@
 namespace conquerspace {
 namespace components {
 class Player {};
-}
-}
+}  // namespace components
+}  // namespace conquerspace
