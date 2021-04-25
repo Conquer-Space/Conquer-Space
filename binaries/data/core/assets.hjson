@@ -6,8 +6,29 @@
         # Loading hints
         hints: {}
     }
-    earthrise:{
+    earthrise: {
         path: gfx/img/earthrise.png
+        type: texture
+        hints: {
+            magfilter: false
+        }
+    }
+    earth: {
+        path: gfx/img/earth2k.jpg
+        type: texture
+        hints: {
+            magfilter: false
+        }
+    }
+    earthnormal: {
+        path: gfx/img/earthnormal2k.jpg
+        type: texture
+        hints: {
+            magfilter: false
+        }
+    }
+    earthroughness: {
+        path: gfx/img/earthspecular2k.jpg
         type: texture
         hints: {
             magfilter: false
@@ -68,6 +89,34 @@
         path: scripts/universegen/planet_initializer.lua
         type: text
         hints: {
+        }
+    }
+    objectvert: {
+        path: gfx/shaders/object.vert
+        type: shader
+        hints: {
+            type: vert
+        }
+    }
+    defaultfrag: {
+        path: gfx/shaders/white.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
+    skyboxfrag: {
+        path: gfx/shaders/textured_sphere.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
+    sky: {
+        path: gfx/img/sky.jpg
+        type: texture
+        hints: {
+            magfilter: false
         }
     }
 }

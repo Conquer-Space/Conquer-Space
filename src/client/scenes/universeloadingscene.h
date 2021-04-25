@@ -27,6 +27,8 @@ class UniverseLoadingScene : public conquerspace::engine::Scene {
     std::unique_ptr<boost::thread> thread;
 
     void LoadUniverse();
+
+    bool m_completed_loading;
 };
 }  // namespace scene
 }  // namespace conquerspace

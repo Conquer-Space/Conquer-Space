@@ -12,6 +12,7 @@
 
 #include <sol/sol.hpp>
 
+#include "client/scenes/universescene.h"
 #include "common/universe.h"
 #include "common/components/bodies.h"
 #include "common/components/orbit.h"
@@ -25,11 +26,17 @@ void conquerspace::scene::UniverseLoadingScene::Init() {
         LoadUniverse();
     };
 
+    m_completed_loading = false;
     thread = std::make_unique<boost::thread>(loading);
     thread->detach();
 }
 
-void conquerspace::scene::UniverseLoadingScene::Update(float deltaTime) {}
+void conquerspace::scene::UniverseLoadingScene::Update(float deltaTime) {
+    if (m_completed_loading) {
+        // Switch scene
+        GetApplication().SetScene<conquerspace::scene::UniverseScene>();
+    }
+}
 
 void conquerspace::scene::UniverseLoadingScene::Ui(float deltaTime) {
     ImGui::SetNextWindowPos(
@@ -48,4 +55,5 @@ void conquerspace::scene::UniverseLoadingScene::Render(float deltaTime) {}
 
 void conquerspace::scene::UniverseLoadingScene::LoadUniverse() {
     conquerspace::systems::universegenerator::SysGenerateUniverse(GetApplication());
+    m_completed_loading = true;
 }

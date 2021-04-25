@@ -109,6 +109,17 @@ class Application {
 
     ImGui::MarkdownConfig markdownConfig;
 
+    conquerspace::components::Universe& GetUniverse() { return m_universe; }
+
+    bool ButtonIsHeld(int btn) { return m_keys_held[btn]; }
+
+    double GetScrollAmount() { return m_scroll_amount; }
+
+    double GetMouseX() { return m_mouse_x; }
+    double GetMouseY() { return m_mouse_y; }
+
+    bool MouseButtonIsHeld(int btn) { return m_mouse_keys_held[btn]; }
+
  private:
     void AddCallbacks();
 
@@ -150,6 +161,8 @@ class Application {
     std::shared_ptr<spdlog::logger> logger;
 
     conquerspace::asset::AssetManager manager;
+
+    conquerspace::components::Universe m_universe;
 
     double m_mouse_x;
     double m_mouse_y;

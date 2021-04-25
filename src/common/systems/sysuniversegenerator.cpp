@@ -13,7 +13,6 @@
 
 #include <sol/sol.hpp>
 
-#include "common/universe.h"
 #include "common/components/bodies.h"
 #include "common/components/orbit.h"
 #include "common/components/organizations.h"
@@ -24,14 +23,15 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
 
     namespace cqspb = conquerspace::components::bodies;
     namespace cqspa = conquerspace::asset;
+
+    conquerspace::components::Universe& universe = app.GetUniverse();
+
     cqspa::HjsonAsset* val
         = app.GetAssetManager().GetAsset<cqspa::HjsonAsset>("defaultuniversegen");
 
     // Initialize lua environment
     sol::state lua;
     lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::table);
-
-    components::Universe universe;
 
     // Init civilization script
     lua.set_function("create_star_system", [&] () {

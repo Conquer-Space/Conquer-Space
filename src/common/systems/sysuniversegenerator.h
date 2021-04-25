@@ -4,6 +4,7 @@
 #pragma once
 
 #include "engine/application.h"
+#include "common/universe.h"
 
 namespace conquerspace {
 namespace systems {

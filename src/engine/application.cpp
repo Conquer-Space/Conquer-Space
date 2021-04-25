@@ -44,6 +44,8 @@ int conquerspace::engine::Application::init() {
 
     glfwMakeContextCurrent(m_window);
 
+    glfwSwapInterval(1);
+
     // Add callbacks
     AddCallbacks();
 
@@ -141,6 +143,7 @@ void conquerspace::engine::Application::run() {
         std::memset(m_keys_released, false, sizeof(m_keys_released));
         std::memset(m_mouse_keys_pressed, false, sizeof(m_mouse_keys_pressed));
         std::memset(m_mouse_keys_released, false, sizeof(m_mouse_keys_released));
+        m_scroll_amount = 0;
 
         glfwPollEvents();
     }
