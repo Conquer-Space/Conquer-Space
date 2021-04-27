@@ -21,7 +21,8 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 include_directories(${Boost_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/lib/stb)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
-
+include_directories(${CMAKE_SOURCE_DIR}/lib/freetype/include)
+include_directories(${CMAKE_SOURCE_DIR}/lib/fmt/include)
 # Lua
 include_directories(${CMAKE_SOURCE_DIR}/lib/lua/)
 include_directories(${CMAKE_SOURCE_DIR}/lib/sol2/include)
@@ -42,6 +43,8 @@ target_link_libraries(cqsp-tests
     spdlog
     glm
     liblua-static
-    spdlog)
+    spdlog
+    freetype
+    fmt)
 
 add_test(NAME main-test COMMAND cqsp-tests)

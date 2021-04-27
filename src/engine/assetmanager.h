@@ -4,7 +4,10 @@
 #pragma once
 
 #include <hjson.h>
-#include <imgui.h>
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_STROKER_H
 
 #include <map>
 #include <string>
@@ -15,12 +18,13 @@
 
 #include "engine/renderer/texture.h"
 #include "engine/asset.h"
+#include "engine/gui.h"
 
 namespace conquerspace {
 namespace asset {
 
-enum class AssetType { NONE, TEXTURE, SHADER, HJSON, TEXT, MODEL };
-enum PrototypeType { NONE = 0, TEXTURE, SHADER };
+enum class AssetType { NONE, TEXTURE, SHADER, HJSON, TEXT, MODEL, FONT };
+enum PrototypeType { NONE = 0, TEXTURE, SHADER, FONT };
 
 class Prototype {
  public:
@@ -51,6 +55,17 @@ class ShaderPrototype : public Prototype {
     }
 };
 
+class FontPrototype : public Prototype {
+ public:
+    unsigned char* fontBuffer;
+    int size;
+    std::string key;
+
+    int GetPrototypeType() {
+        return PrototypeType::FONT;
+    }
+};
+
 /*
 * Holds a prototype in the queue.
 */
@@ -77,7 +92,8 @@ class AssetManager {
     template <class T>
     T* GetAsset(std::string& key) {
 #ifndef NDEBUG
-        assert(assets.count(key) && "Invalid key!\n");
+        if (!assets.count(key))
+            spdlog::error("Invalid key {}", key);
 #endif  // !NDEBUG
         return dynamic_cast<T*>(assets[key].get());
     }
@@ -85,7 +101,8 @@ class AssetManager {
     template <class T>
     T* GetAsset(const char* key) {
 #ifndef NDEBUG
-        assert(assets.count(key) && "Invalid key!\n");
+        if (!assets.count(key))
+            spdlog::error("Invalid key {}", key);
 #endif  // !NDEBUG
         return dynamic_cast<T*>(assets[key].get());
     }
@@ -93,7 +110,8 @@ class AssetManager {
     template <class T>
     T* GetAsset(char* key) {
 #ifndef NDEBUG
-        assert(assets.count(key) && "Invalid key!\n");
+        if (!assets.count(key))
+            spdlog::error("Invalid key {}", key);
 #endif  // !NDEBUG
         return dynamic_cast<T*>(assets[key].get());
     }
@@ -131,6 +149,7 @@ class AssetLoader {
      void LoadImage(std::string& key, std::string& filePath, Hjson::Value hints);
 
      void LoadShader(std::string& key, std::istream &asset_stream, Hjson::Value hints);
+     void LoadFont(std::string& key, std::istream &asset_stream, Hjson::Value hints);
 
     std::map<std::string, AssetType> asset_type_map;
 

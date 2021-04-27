@@ -17,11 +17,14 @@ file (GLOB_RECURSE LIB_FILES ${CMAKE_SOURCE_DIR}/lib/src/*.c)
 ###
 # Add imgui
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui)
+include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
 file (GLOB IMGUI ${CMAKE_SOURCE_DIR}/lib/imgui/*.cpp)
 set(IMGUI ${IMGUI} ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_glfw.h 
     ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_glfw.cpp 
     ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_opengl3.h 
-    ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_opengl3.cpp)
+    ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_opengl3.cpp
+    ${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype/imgui_freetype.cpp
+    ${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype/imgui_freetype.h)
 
 add_library(ImGui ${IMGUI})
 
@@ -36,7 +39,8 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 include_directories(${Boost_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/lib/stb)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
-
+include_directories(${CMAKE_SOURCE_DIR}/lib/freetype/include)
+include_directories(${CMAKE_SOURCE_DIR}/lib/fmt/include)
 # Lua
 include_directories(${CMAKE_SOURCE_DIR}/lib/lua/)
 include_directories(${CMAKE_SOURCE_DIR}/lib/sol2/include)
@@ -56,7 +60,10 @@ set(CQSP_LIBRARIES glfw3_mt
     hjson
     spdlog
     glm
-    liblua-static)
+    liblua-static
+    freetype
+    fmt
+    )
 
 target_link_libraries(cqsp-core PUBLIC 
     ${CQSP_LIBRARIES}

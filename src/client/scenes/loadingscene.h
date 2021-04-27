@@ -26,6 +26,7 @@ class LoadingScene : public conquerspace::engine::Scene {
     * Function to load in a thread.
     */
     void LoadResources();
+
  private:
     float windowWidth, windowHeight;
 
@@ -36,6 +37,8 @@ class LoadingScene : public conquerspace::engine::Scene {
     boost::atomic<float> percentage;
 
     conquerspace::asset::AssetLoader assetLoader;
+
+    void LoadFont();
 };
 }  // namespace scene
 }  // namespace conquerspace

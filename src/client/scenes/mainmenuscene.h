@@ -3,11 +3,11 @@
 */
 #pragma once
 
-#include <imgui.h>
-
 #include "engine/scene.h"
 #include "engine/renderer/renderable.h"
 #include "engine/renderer/primitives/pane.h"
+#include "engine/gui.h"
+#include "engine/renderer/text.h"
 
 namespace conquerspace {
 namespace scene {
@@ -23,7 +23,7 @@ class MainMenuScene : public conquerspace::engine::Scene{
 
  private:
     conquerspace::asset::Texture* m_texture;
-    conquerspace::asset::TextAsset * m_credits;
+    conquerspace::asset::TextAsset* m_credits;
     bool m_credits_window = false;
     bool m_save_game_window = false;
     bool m_new_game_window = false;

@@ -13,6 +13,7 @@
 #include <algorithm>
 
 #include "engine/renderer/shader.h"
+#include "engine/renderer/text.h"
 
 conquerspace::asset::AssetManager::AssetManager() {}
 
@@ -23,6 +24,7 @@ conquerspace::asset::AssetLoader::AssetLoader() : m_asset_queue(16) {
     asset_type_map["hjson"] = AssetType::HJSON;
     asset_type_map["text"] = AssetType::TEXT;
     asset_type_map["model"] = AssetType::MODEL;
+    asset_type_map["font"] = AssetType::FONT;
 }
 
 namespace cqspa = conquerspace::asset;
@@ -80,6 +82,13 @@ void conquerspace::asset::AssetLoader::LoadAssets(std::istream& stream) {
             break;
             }
             case AssetType::MODEL:
+            case AssetType::FONT:
+            {
+            std::ifstream asset_stream(path, std::ios::binary);
+            LoadFont(asset_key, asset_stream, val["hints"]);
+            break;
+            }
+            break;
             default:
                 break;
         }
@@ -124,6 +133,14 @@ void conquerspace::asset::AssetLoader::BuildNextAsset() {
         }
         break;
         }
+        case PrototypeType::FONT:
+        {
+            FontPrototype* prototype = dynamic_cast<FontPrototype*>(temp.prototype);
+            std::unique_ptr<Font> fontAsset = std::make_unique<Font>();
+            asset::LoadFont(*fontAsset.get(), prototype->fontBuffer, prototype->size);
+            manager->assets[prototype->key] = std::move(fontAsset);
+        }
+        break;
     }
 
     // Free memory
@@ -219,6 +236,28 @@ void cqspa::AssetLoader::LoadShader(std::string& key,
 
     if (!m_asset_queue.push(holder)) {
         spdlog::info("Failed to push image");
+        delete(prototype);
+    }
+}
+
+void conquerspace::asset::AssetLoader::LoadFont(std::string& key,
+                                                std::istream& asset_stream,
+                                                Hjson::Value hints) {
+    asset_stream.seekg(0, std::ios::end);
+    std::fstream::pos_type fontFileSize = asset_stream.tellg();
+    asset_stream.seekg(0);
+    unsigned char *fontBuffer = new unsigned char[fontFileSize];
+    asset_stream.read(reinterpret_cast<char*>(fontBuffer), fontFileSize);
+
+    FontPrototype* prototype = new FontPrototype();
+    prototype->fontBuffer = fontBuffer;
+    prototype->size = fontFileSize;
+    prototype->key = key;
+
+    QueueHolder holder(prototype);
+
+    if (!m_asset_queue.push(holder)) {
+        spdlog::info("Failed to push font");
         delete(prototype);
     }
 }

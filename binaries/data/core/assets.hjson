@@ -119,4 +119,24 @@
             magfilter: false
         }
     }
+    defaultfont: {
+        path: gfx/fonts/OpenSans-Regular.ttf
+        type: font
+        hints: {
+        }
+    }
+    fontvertexshader: {
+        path: gfx/shaders/font_shader.vert
+        type: shader
+        hints: {
+            type: vert
+        }
+    }
+    fontfragshader: {
+        path: gfx/shaders/font_shader.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
 }

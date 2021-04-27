@@ -7,13 +7,18 @@
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <hjson.h>
-#include <imgui.h>
+
+#include <fmt/core.h>
+
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
 #include <iostream>
 #include <fstream>
 #include <string>
+
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 int conquerspace::engine::Application::init() {
     // Initialize logger
@@ -39,11 +44,13 @@ int conquerspace::engine::Application::init() {
                                 NULL, NULL);
     if (m_window == NULL) {
         glfwTerminate();
+        spdlog::error("Cannot load glfw");
         return -1;
     }
 
     glfwMakeContextCurrent(m_window);
 
+    // Enable vsync
     glfwSwapInterval(1);
 
     // Add callbacks
@@ -51,6 +58,8 @@ int conquerspace::engine::Application::init() {
 
     // Init glad
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        glfwTerminate();
+        spdlog::error("Cannot load glad");
         return -2;
     }
 
@@ -101,8 +110,10 @@ conquerspace::engine::Application::Application() {
 void conquerspace::engine::Application::run() {
     // Main loop
     int code = init();
+    fps = 0;
     if (code != 0) {
         // Fail
+        return;
     }
 
     while (ShouldExit()) {
@@ -110,6 +121,7 @@ void conquerspace::engine::Application::run() {
         double currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+        fps = 1 / deltaTime;
 
         // Switch scene
         if (m_scene_manager.ToSwitchScene()) {
@@ -136,6 +148,9 @@ void conquerspace::engine::Application::run() {
         m_scene_manager.GetScene()->Render(deltaTime);
 
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        DrawText(fmt::format("FPS: {:.0f}", fps), GetWindowWidth() - 80, GetWindowHeight() - 24);
+
         glfwSwapBuffers(m_window);
 
         // Before polling events, clear the buttons
@@ -153,6 +168,18 @@ void conquerspace::engine::Application::run() {
 
 void conquerspace::engine::Application::ExitApplication() {
     glfwSetWindowShouldClose(m_window, true);
+}
+
+void conquerspace::engine::Application::DrawText(const std::string& text, float x,
+                                                 float y) {
+    if (fontShader != nullptr && m_font != nullptr) {
+    glm::mat4 projection =
+        glm::ortho(0.0f, static_cast<float>(GetWindowWidth()), 0.0f,
+                   static_cast<float>(GetWindowHeight()));
+    fontShader->UseProgram();
+    fontShader->setMat4("projection", projection);
+    conquerspace::asset::RenderText(*fontShader, *m_font, text, x, y, 16, glm::vec3(1.f, 1.f, 1.f));
+    }
 }
 
 void conquerspace::engine::Application::AddCallbacks() {

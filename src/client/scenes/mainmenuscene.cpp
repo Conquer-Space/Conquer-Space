@@ -3,16 +3,18 @@
 */
 #include "client/scenes/mainmenuscene.h"
 
-#include <imgui.h>
 #include <spdlog/spdlog.h>
 #include <imgui_markdown.h>
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "engine/renderer/shader.h"
 #include "engine/renderer/renderer.h"
 #include "client/scenes/universeloadingscene.h"
 #include "engine/asset.h"
+#include "engine/gui.h"
+#include "engine/renderer/text.h"
 
 conquerspace::scene::MainMenuScene::MainMenuScene(
     conquerspace::engine::Application& app)

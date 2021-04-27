@@ -3,8 +3,6 @@
 */
 #include "client/scenes/universescene.h"
 
-#include <imgui.h>
-
 #include <cmath>
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -12,7 +10,7 @@
 
 #include "engine/renderer/primitives/uvsphere.h"
 #include "engine/renderer/renderer.h"
-
+#include "engine/gui.h"
 
 conquerspace::scene::UniverseScene::UniverseScene(
     conquerspace::engine::Application& app) : Scene(app) {}
@@ -70,6 +68,13 @@ void conquerspace::scene::UniverseScene::Init() {
 
     previous_mouseX = GetApplication().GetMouseX();
     previous_mouseY = GetApplication().GetMouseY();
+
+    fontShader = new asset::ShaderProgram(*GetApplication()
+        .GetAssetManager()
+        .GetAsset<conquerspace::asset::Shader>("fontvertexshader"),
+        *GetApplication()
+        .GetAssetManager()
+        .GetAsset<conquerspace::asset::Shader>("fontfragshader"));
 }
 
 void conquerspace::scene::UniverseScene::Update(float deltaTime) {

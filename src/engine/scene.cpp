@@ -3,7 +3,7 @@
  */
 #include "engine/scene.h"
 
-#include <imgui.h>
+#include "engine/gui.h"
 
 conquerspace::engine::Scene::Scene(Application& app)
     : m_application(app) {}

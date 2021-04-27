@@ -14,3 +14,7 @@ add_subdirectory(googletest)
 add_subdirectory(LuaJIT-cmake)
 
 add_subdirectory(sol2)
+
+add_subdirectory(freetype)
+
+add_subdirectory(fmt)

@@ -32,6 +32,8 @@ class UniverseScene : public conquerspace::engine::Scene {
 
     double viewAngleX = 0;
     double viewAngleY = 0;
+
+    asset::ShaderProgram* fontShader;
 };
 }  // namespace scene
 }  // namespace conquerspace

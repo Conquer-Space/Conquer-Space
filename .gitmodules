@@ -31,3 +31,9 @@
 [submodule "lib/implot"]
 	path = lib/implot
 	url = https://github.com/epezent/implot
+[submodule "lib/freetype"]
+	path = lib/freetype
+	url = https://github.com/freetype/freetype
+[submodule "lib/fmt"]
+	path = lib/fmt
+	url = https://github.com/fmtlib/fmt

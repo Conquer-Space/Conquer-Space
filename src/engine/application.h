@@ -8,8 +8,6 @@
 
 #include <spdlog/spdlog.h>
 
-#include <imgui.h>
-#include <imgui_markdown.h>
 
 #include <memory>
 #include <utility>
@@ -23,6 +21,8 @@
 #include "engine/engine.h"
 #include "engine/scene.h"
 #include "common/universe.h"
+#include "engine/gui.h"
+#include "engine/renderer/text.h"
 
 namespace conquerspace {
 namespace engine {
@@ -120,6 +120,14 @@ class Application {
 
     bool MouseButtonIsHeld(int btn) { return m_mouse_keys_held[btn]; }
 
+    conquerspace::asset::Font*& GetFont() { return m_font; }
+    void DrawText(const std::string& text, float x, float y);
+
+    void SetFont(conquerspace::asset::Font* font) { m_font = font; }
+    void SetFontShader(conquerspace::asset::ShaderProgram* shader) {
+        fontShader = shader;
+    }
+
  private:
     void AddCallbacks();
 
@@ -178,6 +186,9 @@ class Application {
     double m_scroll_amount;
 
     int m_mods;
+
+    conquerspace::asset::Font* m_font = nullptr;
+    conquerspace::asset::ShaderProgram* fontShader = nullptr;
 };
 }  // namespace engine
 }  // namespace conquerspace
