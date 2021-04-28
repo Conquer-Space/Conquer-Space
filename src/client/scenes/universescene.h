@@ -6,6 +6,7 @@
 #include "engine/scene.h"
 #include "engine/application.h"
 #include "engine/renderer/renderable.h"
+#include "engine/renderer/renderer.h"
 
 namespace conquerspace {
 namespace scene {
@@ -33,7 +34,7 @@ class UniverseScene : public conquerspace::engine::Scene {
     double viewAngleX = 0;
     double viewAngleY = 0;
 
-    asset::ShaderProgram* fontShader;
+    conquerspace::engine::BasicRenderer basic_renderer;
 };
 }  // namespace scene
 }  // namespace conquerspace

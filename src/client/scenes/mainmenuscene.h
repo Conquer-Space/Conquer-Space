@@ -5,6 +5,7 @@
 
 #include "engine/scene.h"
 #include "engine/renderer/renderable.h"
+#include "engine/renderer/renderer.h"
 #include "engine/renderer/primitives/pane.h"
 #include "engine/gui.h"
 #include "engine/renderer/text.h"
@@ -30,11 +31,10 @@ class MainMenuScene : public conquerspace::engine::Scene{
 
     ImFont* H1 = nullptr;
 
-    conquerspace::engine::Renderable splashscreen;
-    conquerspace::engine::Renderable titleBanner;
-
     float ratio, ratio2;
     float width, height;
+
+    conquerspace::engine::BasicRenderer renderer;
 };
 }  // namespace scene
 }  // namespace conquerspace

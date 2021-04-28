@@ -17,6 +17,11 @@
 
 conquerspace::asset::AssetManager::AssetManager() {}
 
+conquerspace::asset::ShaderProgram* conquerspace::asset::AssetManager::CreateShaderProgram(
+    const std::string& vert, const std::string& frag) {
+    return new ShaderProgram(*GetAsset<conquerspace::asset::Shader>(vert.c_str()), *GetAsset<conquerspace::asset::Shader>(frag.c_str()));
+}
+
 conquerspace::asset::AssetLoader::AssetLoader() : m_asset_queue(16) {
     asset_type_map["none"] = AssetType::NONE;
     asset_type_map["texture"] = AssetType::TEXTURE;

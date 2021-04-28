@@ -29,15 +29,13 @@ void conquerspace::scene::MainMenuScene::Init() {
                     .GetAssetManager()
                     .GetAsset<conquerspace::asset::TextAsset>("credits");
 
-    conquerspace::primitive::MakeTexturedPaneMesh(splashscreen);
-    conquerspace::primitive::MakeTexturedPaneMesh(titleBanner);
+    conquerspace::engine::BasicRendererObject splashscreen =
+        conquerspace::engine::MakeRenderable();
+    conquerspace::engine::BasicRendererObject titleBanner =
+        conquerspace::engine::MakeRenderable();
 
-    /*rend.shaderProgram = conquerspace::engine::MakeShaderProgram(GetApplication()
-        .GetAssetManager()
-        .GetAsset<conquerspace::asset::ShaderAsset>("shader.pane.vert")->id,
-        GetApplication()
-        .GetAssetManager()
-        .GetAsset<conquerspace::asset::ShaderAsset>("shader.texturedpane.frag")->id);*/
+    conquerspace::primitive::MakeTexturedPaneMesh(*splashscreen);
+    conquerspace::primitive::MakeTexturedPaneMesh(*titleBanner);
 
     conquerspace::asset::Texture* earthrise_texture =
         GetApplication()
@@ -49,34 +47,34 @@ void conquerspace::scene::MainMenuScene::Init() {
         .GetAssetManager()
         .GetAsset<conquerspace::asset::Texture>("title");
 
-    int textureid = earthrise_texture->id;
-    ratio =
-        static_cast<float>(GetApplication().GetWindowWidth())
-            /static_cast<float>(GetApplication().GetWindowHeight());
-    // Set texture
-
-    ratio2 = static_cast<float>(asset2->height)
-                        /static_cast<float>(asset2->width);
-
     // Create new shader program
-    asset::ShaderProgram* program = new asset::ShaderProgram(*GetApplication()
-        .GetAssetManager()
-        .GetAsset<conquerspace::asset::Shader>("shader.pane.vert"),
-        *GetApplication()
-        .GetAssetManager()
-        .GetAsset<conquerspace::asset::Shader>("shader.texturedpane.frag"));
+    asset::ShaderProgram* program =
+        GetApplication().GetAssetManager().CreateShaderProgram("shader.pane.vert", "shader.texturedpane.frag");
 
-    splashscreen.shaderProgram = program;
-    splashscreen.textures.push_back(earthrise_texture);
-
-    titleBanner.shaderProgram = program;
-    titleBanner.textures.push_back(asset2);
+    splashscreen->shaderProgram = program;
+    titleBanner->shaderProgram = program;
 
     // Make shaders
-    splashscreen.shaderProgram->UseProgram();
-    splashscreen.shaderProgram->setInt("texture1", 0);
-    titleBanner.shaderProgram->UseProgram();
-    splashscreen.shaderProgram->setInt("texture1", 0);
+    splashscreen->SetTexture("texture1", 0, earthrise_texture);
+    titleBanner->SetTexture("texture1", 0, asset2);
+
+    glm::mat4 mat = glm::mat4(1.f);
+    glm::translate(mat, glm::vec3(0.05, 0.05, 1));
+    splashscreen->model = mat;
+    renderer.renderables.push_back(std::move(splashscreen));
+
+    mat = glm::mat4(1.f);
+    mat = glm::translate(mat, glm::vec3(-0.6, 0.45, 1));
+    // Resize for rectangle
+    mat = glm::scale(mat, glm::vec3(1, static_cast<float>(asset2->height)/static_cast<float>(asset2->width), 1));
+    mat = glm::scale(mat, glm::vec3(0.35, 0.35, 1));
+    titleBanner->model = mat;
+    renderer.renderables.push_back(std::move(titleBanner));
+
+    mat = glm::mat4(1.f);
+    mat = glm::scale(mat, glm::vec3(1, static_cast<float>(GetApplication().GetWindowWidth())
+                                            /static_cast<float>(GetApplication().GetWindowHeight()), 1));
+    renderer.projection = mat;
 }
 
 void conquerspace::scene::MainMenuScene::Update(float deltaTime) {}
@@ -170,18 +168,5 @@ void conquerspace::scene::MainMenuScene::Render(float deltaTime) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    splashscreen.shaderProgram->UseProgram();
-    glm::mat4 mat = glm::mat4(1.f);
-    mat = glm::scale(mat, glm::vec3(1, ratio, 1));
-    glm::translate(mat, glm::vec3(0.05, 0.05, 1));
-    splashscreen.shaderProgram->setMat4("transform", mat);
-    conquerspace::engine::Draw(splashscreen);
-
-    mat = glm::mat4(1.f);
-    mat = glm::translate(mat, glm::vec3(-0.6, 0.75, 1));
-    mat = glm::scale(mat, glm::vec3(1, ratio, 1));
-    mat = glm::scale(mat, glm::vec3(1, ratio2, 1));
-    mat = glm::scale(mat, glm::vec3(0.35, 0.35, 1));
-    titleBanner.shaderProgram->setMat4("transform", mat);
-    conquerspace::engine::Draw(titleBanner);
+    renderer.Draw();
 }

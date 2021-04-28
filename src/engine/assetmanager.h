@@ -17,6 +17,7 @@
 #include <boost/lockfree/queue.hpp>
 
 #include "engine/renderer/texture.h"
+#include "engine/renderer/shader.h"
 #include "engine/asset.h"
 #include "engine/gui.h"
 
@@ -88,6 +89,8 @@ class AssetManager {
     std::unique_ptr<Asset>& operator[](const char* key) { return assets[key]; }
 
     std::unique_ptr<Asset>& operator[](char* val) { return assets[std::string(val)]; }
+
+    conquerspace::asset::ShaderProgram* CreateShaderProgram(const std::string &vert, const std::string &frag);
 
     template <class T>
     T* GetAsset(std::string& key) {

@@ -17,14 +17,12 @@ conquerspace::scene::UniverseScene::UniverseScene(
 
 void conquerspace::scene::UniverseScene::Init() {
     sphere.mesh = new conquerspace::engine::Mesh();
-    conquerspace::primitive::ConstructSphereMesh(256, 256, *sphere.mesh);
+    conquerspace::primitive::ConstructSphereMesh(64, 64, *sphere.mesh);
 
-    asset::ShaderProgram* program = new asset::ShaderProgram(*GetApplication()
-        .GetAssetManager()
-        .GetAsset<conquerspace::asset::Shader>("objectvert"),
-        *GetApplication()
-        .GetAssetManager()
-        .GetAsset<conquerspace::asset::Shader>("defaultfrag"));
+    
+    asset::ShaderProgram* program =
+        GetApplication().GetAssetManager().CreateShaderProgram("objectvert",
+                                                               "defaultfrag");
 
     asset::Texture* texture = GetApplication().GetAssetManager()
         .GetAsset<conquerspace::asset::Texture>("earth");
@@ -36,31 +34,19 @@ void conquerspace::scene::UniverseScene::Init() {
         .GetAsset<conquerspace::asset::Texture>("earthroughness");
 
     sphere.shaderProgram = program;
-    program->UseProgram();
-    program->setInt("texture0", 0);
-    program->setInt("normalMap", 1);
-    program->setInt("roughnessMap", 2);
+    sphere.SetTexture("texture0", 0, texture);
+    sphere.SetTexture("normalMap", 1, earthNormalTexture);
+    sphere.SetTexture("roughnessMap", 2, earthRoughnessTexture);
 
-    sphere.textures.push_back(texture);
-    sphere.textures.push_back(earthNormalTexture);
-    sphere.textures.push_back(earthRoughnessTexture);
-
-    asset::ShaderProgram* skyboxProgram = new asset::ShaderProgram(*GetApplication()
-        .GetAssetManager()
-        .GetAsset<conquerspace::asset::Shader>("objectvert"),
-        *GetApplication()
-        .GetAssetManager()
-        .GetAsset<conquerspace::asset::Shader>("skyboxfrag"));
-
-    skyboxProgram->UseProgram();
-    skyboxProgram->setInt("texture0", 0);
+    asset::ShaderProgram* skyboxProgram = GetApplication().GetAssetManager().CreateShaderProgram("objectvert",
+                                                               "skyboxfrag");
 
     asset::Texture* skyTexture = GetApplication().GetAssetManager()
         .GetAsset<conquerspace::asset::Texture>("sky");
 
-    sky.textures.push_back(skyTexture);
-
     sky.shaderProgram = skyboxProgram;
+    sky.SetTexture("texture0", 0, skyTexture);
+
     sky.mesh = sphere.mesh;
 
     x = 0;
@@ -68,13 +54,6 @@ void conquerspace::scene::UniverseScene::Init() {
 
     previous_mouseX = GetApplication().GetMouseX();
     previous_mouseY = GetApplication().GetMouseY();
-
-    fontShader = new asset::ShaderProgram(*GetApplication()
-        .GetAssetManager()
-        .GetAsset<conquerspace::asset::Shader>("fontvertexshader"),
-        *GetApplication()
-        .GetAssetManager()
-        .GetAsset<conquerspace::asset::Shader>("fontfragshader"));
 }
 
 void conquerspace::scene::UniverseScene::Update(float deltaTime) {
@@ -91,19 +70,31 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
         y -= (deltaTime * 10);
     }
 
-    if (scroll + GetApplication().GetScrollAmount() > 1.5) {
+    if (scroll + GetApplication().GetScrollAmount() > 1.5 && scroll + GetApplication().GetScrollAmount() < 95) {
         scroll += GetApplication().GetScrollAmount();
     }
 
     // Now do things with it
     double deltaX = previous_mouseX - GetApplication().GetMouseX();
     double deltaY = previous_mouseY - GetApplication().GetMouseY();
+    if(deltaY > 3.1415/2) {
+        deltaY = 3.1415/2;
+    }
+    if(deltaY < -3.1415/2) {
+        deltaY = -3.1415/2;
+    }
 
     x += deltaX;
     y += deltaY;
     if (GetApplication().MouseButtonIsHeld(GLFW_MOUSE_BUTTON_LEFT)) {
         viewAngleX += deltaX/GetApplication().GetWindowWidth()*3.1415*4;
         viewAngleY -= deltaY/GetApplication().GetWindowHeight()*3.1415*4;
+        if(glm::degrees(viewAngleY) > 89.f) {
+            viewAngleY = glm::radians(89.f);
+        }
+        if(glm::degrees(viewAngleY) < -89.f) {
+            viewAngleY = glm::radians(-89.f);
+        }
     }
 
     previous_mouseX = GetApplication().GetMouseX();
@@ -153,25 +144,26 @@ void conquerspace::scene::UniverseScene::Render(float deltaTime) {
 
     float thingy = fmod(viewAngleY, 3.1415926535);
     glm::vec3 camUp = glm::vec3(0.0f, 1.0f, 0.0f);
-    if (thingy >= 3.1415/2 || thingy <= -3.1415/2) {
-        camUp = glm::vec3(0.0f, -1.f, 0.0f);
-    }
 
     camPos = camPos + modelPosition;
     sphere.shaderProgram->setVec3("viewPos", camPos);
 
     // For some reason, glm gets a but funky with a 0
-    glm::vec3 dir = glm::vec3(model[3]);
-    sphere.shaderProgram->setMat4("view", glm::lookAt(camPos, dir, camUp));
+    sphere.shaderProgram->setMat4("view", glm::lookAt(camPos, modelPosition, camUp));
     engine::Draw(sphere);
 
     sky.shaderProgram->UseProgram();
-    sky.shaderProgram->setMat4("view", glm::lookAt(camPos, dir, camUp));
+    // Follow camera, do nothing else lmao
+    sky.shaderProgram->setMat4("view", glm::lookAt(camPos, modelPosition, camUp));
     sky.shaderProgram->setMat4("projection", projection);
 
     model = glm::mat4(1.f);
-    model = glm::scale(model, glm::vec3(50, 50, 50));
+    model = glm::translate(model, glm::vec3(0, 0, -distance));
+    model = glm::scale(model, glm::vec3(10, 10, 10));
 
     sky.shaderProgram->setMat4("model", model);
+    glDepthFunc(GL_LEQUAL);
     engine::Draw(sky);
+    glDepthFunc(GL_LEQUAL);
+    glDepthFunc(GL_LESS);
 }
