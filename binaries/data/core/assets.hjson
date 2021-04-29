@@ -139,4 +139,31 @@
             type: frag
         }
     }
+    skycubemap: {
+        path: gfx/img/skybox/skybox.hjson
+        type: cubemap
+        hints: {
+        }
+    }
+    skycubefrag: {
+        path: gfx/shaders/skybox.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
+    skycubevert: {
+        path: gfx/shaders/skybox.vert
+        type: shader
+        hints: {
+            type: vert
+        }
+    }
+    sunshader: {
+        path: gfx/shaders/sunshader.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
 }

@@ -6,6 +6,8 @@
 #include <spdlog/spdlog.h>
 #include <imgui_markdown.h>
 
+#include <utility>
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -49,7 +51,8 @@ void conquerspace::scene::MainMenuScene::Init() {
 
     // Create new shader program
     asset::ShaderProgram* program =
-        GetApplication().GetAssetManager().CreateShaderProgram("shader.pane.vert", "shader.texturedpane.frag");
+        GetApplication().GetAssetManager().
+        CreateShaderProgram("shader.pane.vert", "shader.texturedpane.frag");
 
     splashscreen->shaderProgram = program;
     titleBanner->shaderProgram = program;
@@ -66,14 +69,17 @@ void conquerspace::scene::MainMenuScene::Init() {
     mat = glm::mat4(1.f);
     mat = glm::translate(mat, glm::vec3(-0.6, 0.45, 1));
     // Resize for rectangle
-    mat = glm::scale(mat, glm::vec3(1, static_cast<float>(asset2->height)/static_cast<float>(asset2->width), 1));
+    mat = glm::scale(mat,
+                    glm::vec3(1, static_cast<float>(asset2->height)/
+                            static_cast<float>(asset2->width), 1));
     mat = glm::scale(mat, glm::vec3(0.35, 0.35, 1));
     titleBanner->model = mat;
     renderer.renderables.push_back(std::move(titleBanner));
 
     mat = glm::mat4(1.f);
-    mat = glm::scale(mat, glm::vec3(1, static_cast<float>(GetApplication().GetWindowWidth())
-                                            /static_cast<float>(GetApplication().GetWindowHeight()), 1));
+    mat = glm::scale(mat,
+            glm::vec3(1, static_cast<float>(GetApplication().GetWindowWidth())
+                                /static_cast<float>(GetApplication().GetWindowHeight()), 1));
     renderer.projection = mat;
 }
 

@@ -3,6 +3,8 @@
 */
 #pragma once
 
+#include <vector>
+
 #include "engine/asset.h"
 
 namespace conquerspace {
@@ -18,7 +20,10 @@ struct TextureLoadingOptions {
 class Texture : public Asset {
  public:
     int width, height;
-    int id;
+    unsigned int id;
+    int texture_type;
+
+    Texture();
 };
 
 unsigned int LoadTexture(unsigned char*& data,
@@ -28,6 +33,12 @@ unsigned int LoadTexture(unsigned char*& data,
                     TextureLoadingOptions& options);
 
 void LoadTexture(Texture &texture, unsigned char*& data,
+                    int components,
+                    int width,
+                    int height,
+                    TextureLoadingOptions& options);
+
+void LoadCubemap(Texture &texture, std::vector<unsigned char*>& data,
                     int components,
                     int width,
                     int height,

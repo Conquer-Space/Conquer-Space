@@ -1,3 +1,6 @@
+/*
+* Copyright 2021 Conquer Space
+*/
 #include "engine/renderer/renderable.h"
 
 void conquerspace::engine::Renderable::SetTexture(const std::string& name,

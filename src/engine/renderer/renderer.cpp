@@ -7,16 +7,25 @@
 #include <glfw/glfw3.h>
 
 #include <algorithm>
+#include <vector>
 
 void conquerspace::engine::Draw(Renderable &renderable) {
     renderable.shaderProgram->UseProgram();
-    for (unsigned int i = 0; i < renderable.textures.size(); i++) {
+    int i = 0;
+    for (std::vector<conquerspace::asset::Texture*>::iterator it = renderable.textures.begin();
+                                                        it != renderable.textures.end(); ++it) {
         glActiveTexture(GL_TEXTURE0 + i);
-        glBindTexture(GL_TEXTURE_2D, renderable.textures.at(i)->id);
+        glBindTexture((*it)->texture_type, (*it)->id);
+        i++;
     }
 
     glBindVertexArray(renderable.mesh->VAO);
-    glDrawElements(renderable.mesh->RenderType, renderable.mesh->indicies, GL_UNSIGNED_INT, 0);
+    if (renderable.mesh->buffer_type == 1) {
+        glDrawElements(renderable.mesh->RenderType, renderable.mesh->indicies, GL_UNSIGNED_INT, 0);
+    } else {
+        glDrawArrays(GL_TRIANGLES, 0, renderable.mesh->indicies);
+    }
+
     glBindVertexArray(0);
 
     // Reset active texture
@@ -28,20 +37,23 @@ conquerspace::engine::BasicRendererObject conquerspace::engine::MakeRenderable()
 }
 
 void conquerspace::engine::BasicRenderer::Draw() {
-    //std::sort(renderables.begin(), renderables.end(), [](Renderable* i, Renderable* j) { return (i->z < j->z); });
-    //Then iterate through them and render
+    // Then iterate through them and render
     for (auto renderable : renderables) {
         renderable->shaderProgram->UseProgram();
         renderable->shaderProgram->setMat4("model", renderable->model);
         renderable->shaderProgram->setMat4("view", view);
         renderable->shaderProgram->setMat4("projection", projection);
-        for (unsigned int i = 0; i < renderable->textures.size(); i++) {
+        int i = 0;
+        for (std::vector<conquerspace::asset::Texture*>::iterator it = renderable->textures.begin();
+                                                    it != renderable->textures.end(); ++it) {
             glActiveTexture(GL_TEXTURE0 + i);
-            glBindTexture(GL_TEXTURE_2D, renderable->textures.at(i)->id);
+            glBindTexture((*it)->texture_type, (*it)->id);
+            i++;
         }
 
         glBindVertexArray(renderable->mesh->VAO);
-        glDrawElements(renderable->mesh->RenderType, renderable->mesh->indicies, GL_UNSIGNED_INT, 0);
+        glDrawElements(renderable->mesh->RenderType,
+                        renderable->mesh->indicies, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
         // Reset active texture

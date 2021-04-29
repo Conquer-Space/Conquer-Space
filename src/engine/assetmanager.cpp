@@ -12,6 +12,8 @@
 #include <utility>
 #include <algorithm>
 
+#include <filesystem>
+
 #include "engine/renderer/shader.h"
 #include "engine/renderer/text.h"
 
@@ -19,7 +21,8 @@ conquerspace::asset::AssetManager::AssetManager() {}
 
 conquerspace::asset::ShaderProgram* conquerspace::asset::AssetManager::CreateShaderProgram(
     const std::string& vert, const std::string& frag) {
-    return new ShaderProgram(*GetAsset<conquerspace::asset::Shader>(vert.c_str()), *GetAsset<conquerspace::asset::Shader>(frag.c_str()));
+    return new ShaderProgram(*GetAsset<conquerspace::asset::Shader>(vert.c_str()),
+                                    *GetAsset<conquerspace::asset::Shader>(frag.c_str()));
 }
 
 conquerspace::asset::AssetLoader::AssetLoader() : m_asset_queue(16) {
@@ -30,6 +33,7 @@ conquerspace::asset::AssetLoader::AssetLoader() : m_asset_queue(16) {
     asset_type_map["text"] = AssetType::TEXT;
     asset_type_map["model"] = AssetType::MODEL;
     asset_type_map["font"] = AssetType::FONT;
+    asset_type_map["cubemap"] = AssetType::CUBEMAP;
 }
 
 namespace cqspa = conquerspace::asset;
@@ -47,56 +51,64 @@ void conquerspace::asset::AssetLoader::LoadAssets(std::istream& stream) {
         spdlog::trace("Loading {}", key);
 
         // Load from asset
-        std::string asset_key = key;
         std::string type = val["type"];
         std::string path = "../data/core/" + val["path"];
 
-        switch (asset_type_map[type]) {
-            case AssetType::NONE:
-            // Nothing to load
-            break;
-            case AssetType::TEXTURE:
-            {
-            LoadImage(asset_key, path, val["hints"]);
-            break;
-            }
-            case AssetType::SHADER:
-            {
-            std::ifstream asset_stream(path);
-            LoadShader(asset_key, asset_stream, val["hints"]);
-            break;
-            }
-            case AssetType::HJSON:
-            {
-            std::ifstream asset_stream(path);
-            if (asset_stream.good()) {
-                manager->assets[key] = LoadHjson(asset_stream, val["hints"]);
-            } else {
-                spdlog::warn("Cannot find asset {}", key);
-            }
-            break;
-            }
-            case AssetType::TEXT:
-            {
-            std::ifstream asset_stream(path);
-            if (asset_stream.good()) {
-                manager->assets[key] = LoadText(asset_stream, val["hints"]);
-            } else {
-                spdlog::warn("Cannot find asset {}", key);
-            }
-            break;
-            }
-            case AssetType::MODEL:
-            case AssetType::FONT:
-            {
-            std::ifstream asset_stream(path, std::ios::binary);
-            LoadFont(asset_key, asset_stream, val["hints"]);
-            break;
-            }
-            break;
-            default:
-                break;
+        if (!std::filesystem::exists(path)) {
+            spdlog::warn("Cannot find asset {}", key);
+            continue;
         }
+        LoadAsset(type, path, static_cast<std::string>(key), val["hints"]);
+    }
+}
+
+void conquerspace::asset::AssetLoader::LoadAsset(std::string& type,
+                                                    std::string& path,
+                                                    std::string& key,
+                                                    Hjson::Value &hints) {
+switch (asset_type_map[type]) {
+        case AssetType::NONE:
+        // Nothing to load
+        break;
+        case AssetType::TEXTURE:
+        {
+        LoadImage(key, path, hints);
+        break;
+        }
+        case AssetType::SHADER:
+        {
+        std::ifstream asset_stream(path);
+        LoadShader(key, asset_stream, hints);
+        break;
+        }
+        case AssetType::HJSON:
+        {
+        std::ifstream asset_stream(path);
+        manager->assets[key] = LoadHjson(asset_stream, hints);
+        break;
+        }
+        case AssetType::TEXT:
+        {
+        std::ifstream asset_stream(path);
+        manager->assets[key] = LoadText(asset_stream, hints);
+        break;
+        }
+        case AssetType::MODEL:
+        break;
+        case AssetType::CUBEMAP:
+        {
+        std::ifstream asset_stream(path);
+        LoadCubemap(key, path, asset_stream, hints);
+        break;
+        }
+        case AssetType::FONT:
+        {
+        std::ifstream asset_stream(path, std::ios::binary);
+        LoadFont(key, asset_stream, hints);
+        break;
+        }
+        default:
+        break;
     }
 }
 
@@ -146,6 +158,20 @@ void conquerspace::asset::AssetLoader::BuildNextAsset() {
             manager->assets[prototype->key] = std::move(fontAsset);
         }
         break;
+        case PrototypeType::CUBEMAP:
+        {
+            CubemapPrototype* prototype = dynamic_cast<CubemapPrototype*>(temp.prototype);
+            std::unique_ptr<Texture> textureAsset = std::make_unique<Texture>();
+
+            asset::LoadCubemap(*textureAsset, prototype->data,
+                prototype->components,
+                prototype->width,
+                prototype->height,
+                prototype->options);
+
+            manager->assets[prototype->key] = std::move(textureAsset);
+        }
+        break;
     }
 
     // Free memory
@@ -153,7 +179,7 @@ void conquerspace::asset::AssetLoader::BuildNextAsset() {
 }
 
 std::unique_ptr<cqspa::TextAsset> conquerspace::asset::AssetLoader::LoadText(
-    std::istream& asset_stream, Hjson::Value hints) {
+    std::istream& asset_stream, Hjson::Value& hints) {
     std::unique_ptr<cqspa::TextAsset> asset =
         std::make_unique<cqspa::TextAsset>();
 
@@ -166,7 +192,7 @@ std::unique_ptr<cqspa::TextAsset> conquerspace::asset::AssetLoader::LoadText(
 }
 
 std::unique_ptr<cqspa::HjsonAsset> cqspa::AssetLoader::LoadHjson(std::istream &asset_stream,
-                                      Hjson::Value hints) {
+                                      Hjson::Value& hints) {
     std::unique_ptr<cqspa::HjsonAsset> asset =
         std::make_unique<cqspa::HjsonAsset>();
 
@@ -178,7 +204,7 @@ std::unique_ptr<cqspa::HjsonAsset> cqspa::AssetLoader::LoadHjson(std::istream &a
 
 void cqspa::AssetLoader::LoadImage(std::string& key,
                                                  std::string& filePath,
-                                                 Hjson::Value hints) {
+                                                 Hjson::Value& hints) {
     ImagePrototype* prototype = new ImagePrototype();
 
     // Load image
@@ -216,7 +242,7 @@ void cqspa::AssetLoader::LoadImage(std::string& key,
 
 void cqspa::AssetLoader::LoadShader(std::string& key,
                                                   std::istream &asset_stream,
-                                                  Hjson::Value hints) {
+                                                  Hjson::Value& hints) {
     // Get shader type
     std::string type = hints["type"];
     int shader_type = -1;
@@ -247,7 +273,7 @@ void cqspa::AssetLoader::LoadShader(std::string& key,
 
 void conquerspace::asset::AssetLoader::LoadFont(std::string& key,
                                                 std::istream& asset_stream,
-                                                Hjson::Value hints) {
+                                                Hjson::Value& hints) {
     asset_stream.seekg(0, std::ios::end);
     std::fstream::pos_type fontFileSize = asset_stream.tellg();
     asset_stream.seekg(0);
@@ -263,6 +289,46 @@ void conquerspace::asset::AssetLoader::LoadFont(std::string& key,
 
     if (!m_asset_queue.push(holder)) {
         spdlog::info("Failed to push font");
+        delete(prototype);
+    }
+}
+
+void conquerspace::asset::AssetLoader::LoadCubemap(std::string& key,
+                                                    std::string &path,
+                                                    std::istream &asset_stream,
+                                                    Hjson::Value& hints) {
+    // Read file, which will be hjson, and load those files too
+    Hjson::Value images;
+    Hjson::DecoderOptions decOpt;
+    decOpt.comments = false;
+    asset_stream >> Hjson::StreamDecoder(images, decOpt);
+
+    CubemapPrototype* prototype = new CubemapPrototype();
+
+    prototype->key = new char[key.size() + 1];
+    std::copy(key.begin(), key.end(), prototype->key);
+    prototype->key[key.size()] = '\0';
+
+    std::filesystem::path p(path);
+    std::filesystem::path dir = p.parent_path();
+
+    for (int i = 0; i < images.size(); i++) {
+        std::string filePath = dir.string() + "/" + images[i];
+
+        unsigned char* data =
+            stbi_load(filePath.c_str(),
+                &prototype->width,
+                &prototype->height,
+                &prototype->components, 0);
+
+        prototype->data.push_back(data);
+        spdlog::info("Loaded image {}" + filePath);
+    }
+
+    QueueHolder holder(prototype);
+
+    if (!m_asset_queue.push(holder)) {
+        spdlog::info("Failed to push cubemap");
         delete(prototype);
     }
 }

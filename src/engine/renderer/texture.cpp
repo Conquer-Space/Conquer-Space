@@ -51,3 +51,41 @@ void conquerspace::asset::LoadTexture(Texture& texture, unsigned char*& data,
     texture.width = width;
     texture.height = height;
 }
+
+void conquerspace::asset::LoadCubemap(Texture &texture, std::vector<unsigned char*>& faces,
+                    int components,
+                    int width,
+                    int height,
+                    TextureLoadingOptions& options) {
+    glGenTextures(1, &texture.id);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, texture.id);
+
+    GLenum format;
+    if (components == 1)
+        format = GL_RED;
+    else if (components == 3)
+        format = GL_RGB;
+    else if (components == 4)
+        format = GL_RGBA;
+
+    for (unsigned int i = 0; i < faces.size(); i++) {
+        if (faces[i]) {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                         0, format, width, height, 0, format, GL_UNSIGNED_BYTE, faces[i]);
+            stbi_image_free(faces[i]);
+        } else {
+            stbi_image_free(faces[i]);
+        }
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    texture.width = width;
+    texture.height = height;
+    texture.texture_type = GL_TEXTURE_CUBE_MAP;
+}
+
+conquerspace::asset::Texture::Texture() { texture_type = GL_TEXTURE_2D; }

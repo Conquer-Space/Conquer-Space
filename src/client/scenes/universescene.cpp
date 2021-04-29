@@ -10,6 +10,7 @@
 
 #include "engine/renderer/primitives/uvsphere.h"
 #include "engine/renderer/renderer.h"
+#include "engine/renderer/primitives/cube.h"
 #include "engine/gui.h"
 
 conquerspace::scene::UniverseScene::UniverseScene(
@@ -19,7 +20,6 @@ void conquerspace::scene::UniverseScene::Init() {
     sphere.mesh = new conquerspace::engine::Mesh();
     conquerspace::primitive::ConstructSphereMesh(64, 64, *sphere.mesh);
 
-    
     asset::ShaderProgram* program =
         GetApplication().GetAssetManager().CreateShaderProgram("objectvert",
                                                                "defaultfrag");
@@ -38,16 +38,23 @@ void conquerspace::scene::UniverseScene::Init() {
     sphere.SetTexture("normalMap", 1, earthNormalTexture);
     sphere.SetTexture("roughnessMap", 2, earthRoughnessTexture);
 
-    asset::ShaderProgram* skyboxProgram = GetApplication().GetAssetManager().CreateShaderProgram("objectvert",
-                                                               "skyboxfrag");
+    asset::ShaderProgram* skyboxProgram =
+                            GetApplication().GetAssetManager().CreateShaderProgram("skycubevert",
+                                                               "skycubefrag");
 
     asset::Texture* skyTexture = GetApplication().GetAssetManager()
-        .GetAsset<conquerspace::asset::Texture>("sky");
+        .GetAsset<conquerspace::asset::Texture>("skycubemap");
 
+    sky.mesh = new conquerspace::engine::Mesh();
+    primitive::MakeCube(*sky.mesh);
     sky.shaderProgram = skyboxProgram;
     sky.SetTexture("texture0", 0, skyTexture);
 
-    sky.mesh = sphere.mesh;
+    asset::ShaderProgram* sunshader =
+                            GetApplication().GetAssetManager().CreateShaderProgram("objectvert",
+                                                                                    "sunshader");
+    sun.shaderProgram = sunshader;
+    sun.mesh = sphere.mesh;
 
     x = 0;
     y = -distance;
@@ -70,17 +77,18 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
         y -= (deltaTime * 10);
     }
 
-    if (scroll + GetApplication().GetScrollAmount() > 1.5 && scroll + GetApplication().GetScrollAmount() < 95) {
+    if (scroll + GetApplication().GetScrollAmount() > 1.5
+                && scroll + GetApplication().GetScrollAmount() < 95) {
         scroll += GetApplication().GetScrollAmount();
     }
 
     // Now do things with it
     double deltaX = previous_mouseX - GetApplication().GetMouseX();
     double deltaY = previous_mouseY - GetApplication().GetMouseY();
-    if(deltaY > 3.1415/2) {
+    if (deltaY > 3.1415/2) {
         deltaY = 3.1415/2;
     }
-    if(deltaY < -3.1415/2) {
+    if (deltaY < -3.1415/2) {
         deltaY = -3.1415/2;
     }
 
@@ -89,10 +97,10 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
     if (GetApplication().MouseButtonIsHeld(GLFW_MOUSE_BUTTON_LEFT)) {
         viewAngleX += deltaX/GetApplication().GetWindowWidth()*3.1415*4;
         viewAngleY -= deltaY/GetApplication().GetWindowHeight()*3.1415*4;
-        if(glm::degrees(viewAngleY) > 89.f) {
+        if (glm::degrees(viewAngleY) > 89.f) {
             viewAngleY = glm::radians(89.f);
         }
-        if(glm::degrees(viewAngleY) < -89.f) {
+        if (glm::degrees(viewAngleY) < -89.f) {
             viewAngleY = glm::radians(-89.f);
         }
     }
@@ -152,18 +160,22 @@ void conquerspace::scene::UniverseScene::Render(float deltaTime) {
     sphere.shaderProgram->setMat4("view", glm::lookAt(camPos, modelPosition, camUp));
     engine::Draw(sphere);
 
+    sun.shaderProgram->UseProgram();
+    glm::mat4 thi = glm::mat4(1.f);
+    thi = glm::translate(thi, glm::vec3(0, 0, distance*10));
+    sun.shaderProgram->setMat4("model", thi);
+    sun.shaderProgram->setMat4("projection", projection);
+    sun.shaderProgram->setMat4("view", glm::lookAt(camPos, modelPosition, camUp));
+    engine::Draw(sun);
+
     sky.shaderProgram->UseProgram();
     // Follow camera, do nothing else lmao
-    sky.shaderProgram->setMat4("view", glm::lookAt(camPos, modelPosition, camUp));
+    sky.shaderProgram->setMat4("view",
+                        glm::mat4(glm::mat3(glm::lookAt(camPos, modelPosition, camUp))));
     sky.shaderProgram->setMat4("projection", projection);
 
-    model = glm::mat4(1.f);
-    model = glm::translate(model, glm::vec3(0, 0, -distance));
-    model = glm::scale(model, glm::vec3(10, 10, 10));
-
-    sky.shaderProgram->setMat4("model", model);
     glDepthFunc(GL_LEQUAL);
+    // skybox cube
     engine::Draw(sky);
-    glDepthFunc(GL_LEQUAL);
     glDepthFunc(GL_LESS);
 }

@@ -13,6 +13,7 @@
 #include <string>
 #include <memory>
 #include <istream>
+#include <vector>
 
 #include <boost/lockfree/queue.hpp>
 
@@ -24,8 +25,8 @@
 namespace conquerspace {
 namespace asset {
 
-enum class AssetType { NONE, TEXTURE, SHADER, HJSON, TEXT, MODEL, FONT };
-enum PrototypeType { NONE = 0, TEXTURE, SHADER, FONT };
+enum class AssetType { NONE, TEXTURE, SHADER, HJSON, TEXT, MODEL, FONT, CUBEMAP };
+enum PrototypeType { NONE = 0, TEXTURE, SHADER, FONT, CUBEMAP };
 
 class Prototype {
  public:
@@ -43,6 +44,19 @@ class ImagePrototype : public Prototype{
     asset::TextureLoadingOptions options;
 
     int GetPrototypeType() { return PrototypeType::TEXTURE; }
+};
+
+class CubemapPrototype : public Prototype{
+ public:
+    char* key;
+    std::vector<unsigned char*> data;
+    int width;
+    int height;
+    int components;
+
+    asset::TextureLoadingOptions options;
+
+    int GetPrototypeType() { return PrototypeType::CUBEMAP; }
 };
 
 class ShaderPrototype : public Prototype {
@@ -90,32 +104,27 @@ class AssetManager {
 
     std::unique_ptr<Asset>& operator[](char* val) { return assets[std::string(val)]; }
 
-    conquerspace::asset::ShaderProgram* CreateShaderProgram(const std::string &vert, const std::string &frag);
+    conquerspace::asset::ShaderProgram* CreateShaderProgram(const std::string &vert,
+                                                            const std::string &frag);
 
     template <class T>
     T* GetAsset(std::string& key) {
-#ifndef NDEBUG
         if (!assets.count(key))
             spdlog::error("Invalid key {}", key);
-#endif  // !NDEBUG
         return dynamic_cast<T*>(assets[key].get());
     }
 
     template <class T>
     T* GetAsset(const char* key) {
-#ifndef NDEBUG
         if (!assets.count(key))
             spdlog::error("Invalid key {}", key);
-#endif  // !NDEBUG
         return dynamic_cast<T*>(assets[key].get());
     }
 
     template <class T>
     T* GetAsset(char* key) {
-#ifndef NDEBUG
         if (!assets.count(key))
             spdlog::error("Invalid key {}", key);
-#endif  // !NDEBUG
         return dynamic_cast<T*>(assets[key].get());
     }
 
@@ -144,15 +153,18 @@ class AssetLoader {
     bool QueueHasItems() { return !m_asset_queue.empty(); }
 
  private:
-     std::unique_ptr<TextAsset> LoadText(std::istream &asset_stream,
-                                      Hjson::Value hints);
+    std::unique_ptr<TextAsset> LoadText(std::istream &asset_stream,
+                                      Hjson::Value& hints);
     std::unique_ptr<HjsonAsset> LoadHjson(std::istream &asset_stream,
-                                      Hjson::Value hints);
+                                      Hjson::Value& hints);
+    // Load singular asset
+    void LoadAsset(std::string&, std::string&, std::string&, Hjson::Value&);
+    void LoadImage(std::string& key, std::string& filePath, Hjson::Value& hints);
 
-     void LoadImage(std::string& key, std::string& filePath, Hjson::Value hints);
-
-     void LoadShader(std::string& key, std::istream &asset_stream, Hjson::Value hints);
-     void LoadFont(std::string& key, std::istream &asset_stream, Hjson::Value hints);
+    void LoadShader(std::string& key, std::istream &asset_stream, Hjson::Value& hints);
+    void LoadFont(std::string& key, std::istream &asset_stream, Hjson::Value& hints);
+    void LoadCubemap(std::string& key, std::string &path,
+                        std::istream &asset_stream, Hjson::Value& hints);
 
     std::map<std::string, AssetType> asset_type_map;
 
