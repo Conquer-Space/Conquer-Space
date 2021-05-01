@@ -3,7 +3,10 @@
 */
 #include "client/scenes/universescene.h"
 
+#include <fmt/format.h>
+
 #include <cmath>
+#include <string>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/polar_coordinates.hpp>
@@ -12,6 +15,11 @@
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/primitives/cube.h"
 #include "engine/gui.h"
+
+#include "common/components/bodies.h"
+#include "common/components/organizations.h"
+#include "common/components/player.h"
+#include "common/components/orbit.h"
 
 conquerspace::scene::UniverseScene::UniverseScene(
     conquerspace::engine::Application& app) : Scene(app) {}
@@ -61,117 +69,176 @@ void conquerspace::scene::UniverseScene::Init() {
 
     previous_mouseX = GetApplication().GetMouseX();
     previous_mouseY = GetApplication().GetMouseY();
+
+    // Get star system, display stuff
+    auto civilizationView =
+        GetApplication().GetUniverse().registry.
+                view<conquerspace::components::Civilization, conquerspace::components::Player>();
+    for (auto [entity, civ] : civilizationView.each()) {
+        player = entity;
+    }
 }
 
 void conquerspace::scene::UniverseScene::Update(float deltaTime) {
-    if (GetApplication().ButtonIsHeld(GLFW_KEY_LEFT)) {
-        x += (deltaTime * 10);
-    }
-    if (GetApplication().ButtonIsHeld(GLFW_KEY_RIGHT)) {
-        x -= (deltaTime * 10);
-    }
-    if (GetApplication().ButtonIsHeld(GLFW_KEY_UP)) {
-        y += (deltaTime * 10);
-    }
-    if (GetApplication().ButtonIsHeld(GLFW_KEY_DOWN)) {
-        y -= (deltaTime * 10);
-    }
-
-    if (scroll + GetApplication().GetScrollAmount() > 1.5
-                && scroll + GetApplication().GetScrollAmount() < 95) {
-        scroll += GetApplication().GetScrollAmount();
+    if (!ImGui::GetIO().WantCaptureKeyboard) {
+        if (GetApplication().ButtonIsHeld(GLFW_KEY_A)) {
+            x += (deltaTime * 10);
+        }
+        if (GetApplication().ButtonIsHeld(GLFW_KEY_D)) {
+            x -= (deltaTime * 10);
+        }
+        if (GetApplication().ButtonIsHeld(GLFW_KEY_W)) {
+            y += (deltaTime * 10);
+        }
+        if (GetApplication().ButtonIsHeld(GLFW_KEY_S)) {
+            y -= (deltaTime * 10);
+        }
     }
 
-    // Now do things with it
     double deltaX = previous_mouseX - GetApplication().GetMouseX();
     double deltaY = previous_mouseY - GetApplication().GetMouseY();
-    if (deltaY > 3.1415/2) {
-        deltaY = 3.1415/2;
-    }
-    if (deltaY < -3.1415/2) {
-        deltaY = -3.1415/2;
-    }
-
-    x += deltaX;
-    y += deltaY;
-    if (GetApplication().MouseButtonIsHeld(GLFW_MOUSE_BUTTON_LEFT)) {
-        viewAngleX += deltaX/GetApplication().GetWindowWidth()*3.1415*4;
-        viewAngleY -= deltaY/GetApplication().GetWindowHeight()*3.1415*4;
-        if (glm::degrees(viewAngleY) > 89.f) {
-            viewAngleY = glm::radians(89.f);
+    if (!ImGui::GetIO().WantCaptureMouse) {
+        if (scroll + GetApplication().GetScrollAmount() > 1.5
+                    /*&& scroll + GetApplication().GetScrollAmount() < 95*/) {
+            scroll += GetApplication().GetScrollAmount() * 3;
         }
-        if (glm::degrees(viewAngleY) < -89.f) {
-            viewAngleY = glm::radians(-89.f);
-        }
-    }
 
-    previous_mouseX = GetApplication().GetMouseX();
-    previous_mouseY = GetApplication().GetMouseY();
+        // Now do things with it
+        if (deltaY > 3.1415/2) {
+            deltaY = 3.1415/2;
+        }
+        if (deltaY < -3.1415/2) {
+            deltaY = -3.1415/2;
+        }
+
+        x += deltaX;
+        y += deltaY;
+        if (GetApplication().MouseButtonIsHeld(GLFW_MOUSE_BUTTON_LEFT)) {
+            viewAngleX += deltaX/GetApplication().GetWindowWidth()*3.1415*4;
+            viewAngleY -= deltaY/GetApplication().GetWindowHeight()*3.1415*4;
+            if (glm::degrees(viewAngleY) > 89.f) {
+                viewAngleY = glm::radians(89.f);
+            }
+            if (glm::degrees(viewAngleY) < -89.f) {
+                viewAngleY = glm::radians(-89.f);
+            }
+        }
+
+        previous_mouseX = GetApplication().GetMouseX();
+        previous_mouseY = GetApplication().GetMouseY();
+    }
 }
 
 void conquerspace::scene::UniverseScene::Ui(float deltaTime) {
     ImGui::Begin("Window");
-    ImGui::SliderFloat("Distance", &distance, 0, 1000);
-    ImGui::SliderFloat("theta", &theta, 0, 3.14159*2);
-    ImGui::Text("%f, %f", x, y);
-    ImGui::Text("%f, %f", viewAngleX, viewAngleY);
-    float vay = viewAngleY;
-    ImGui::SliderFloat("viewAngleY", &vay, 0.f, 3.14159*2);
-    viewAngleY = vay;
+
+    auto civ = GetApplication().GetUniverse().
+                                    registry.get<conquerspace::components::Civilization>(player);
+    ImGui::Text("%d", civ.starting_planet);
+    conquerspace::components::bodies::Body body = GetApplication().GetUniverse().
+                        registry.get<conquerspace::components::bodies::Body>(civ.starting_planet);
+    conquerspace::components::bodies::StarSystem system = GetApplication().GetUniverse().
+                    registry.get<conquerspace::components::bodies::StarSystem>(body.star_system);
+    ImGui::Text("%d", system.bodies.size());
+    // Iterate through the objects, and print out the orbits
+    for (auto bod : system.bodies) {
+        conquerspace::components::bodies::Orbit orbit = GetApplication().GetUniverse().
+                                        registry.get<conquerspace::components::bodies::Orbit>(bod);
+        conquerspace::components::bodies::Vec2 vec = \
+                                                conquerspace::components::bodies::toVec2(orbit);
+        ImGui::Text(fmt::format("{}, {}", vec.x, vec.y).c_str());
+        ImGui::Text(fmt::format("{}, {}, {}, {}", orbit.argument,
+                                                    orbit.eccentricity,
+                                                    orbit.theta,
+                                                    orbit.semiMajorAxis).c_str());
+    }
     ImGui::End();
 }
 
 void conquerspace::scene::UniverseScene::Render(float deltaTime) {
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    sphere.shaderProgram->UseProgram();
-    glm::mat4 model = glm::mat4(1.f);
-    model = glm::translate(model, glm::vec3(0, 0, -distance));
-    model = glm::scale(model, glm::vec3(-1, 1, 1));
+    auto& civ = GetApplication().GetUniverse().
+                                    registry.get<conquerspace::components::Civilization>(player);
+    conquerspace::components::bodies::Orbit& focusPosition = GetApplication().GetUniverse().
+                        registry.get<conquerspace::components::bodies::Orbit>(civ.starting_planet);
+    conquerspace::components::bodies::Vec2& focusPoint =
+                                        conquerspace::components::bodies::toVec2(focusPosition);
 
-    sphere.shaderProgram->setVec3("lightDir",
-                            glm::normalize(glm::vec3(-1.f, 0, -1.f) - glm::vec3(0, 0, -distance)));
-    sphere.shaderProgram->setVec3("lightPos", glm::vec3(-1.f, 0, -1.f));
-    sphere.shaderProgram->setVec3("lightColor", glm::vec3(50.f));
-    sphere.shaderProgram->setVec3("objectColor", glm::vec3(1.f, 0, 0));
-    sphere.shaderProgram->setMat4("model", model);
+    // Set view
     glm::mat4 projection =
               glm::infinitePerspective(glm::radians(45.f),
                                 static_cast<float>(GetApplication().GetWindowWidth()) /
                                 static_cast<float>(GetApplication().GetWindowHeight()), 0.1f);
 
-    sphere.shaderProgram->setMat4("projection", projection);
-    glm::vec3 modelPosition = glm::vec3(model[3]);
-    float camX = x;
-    float camY = y;
-
+    float divider = 100000.f;
     glm::vec3 camPos = glm::vec3(
                 cos(viewAngleY) * sin(viewAngleX) * scroll,
                 sin(viewAngleY) * scroll,
                 cos(viewAngleY) * cos(viewAngleX) * scroll);
 
-    float thingy = fmod(viewAngleY, 3.1415926535);
     glm::vec3 camUp = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 focusVec = glm::vec3(focusPoint.x / divider, 0, focusPoint.y / divider);
+    camPos = camPos + focusVec;
 
-    camPos = camPos + modelPosition;
-    sphere.shaderProgram->setVec3("viewPos", camPos);
-
-    // For some reason, glm gets a but funky with a 0
-    sphere.shaderProgram->setMat4("view", glm::lookAt(camPos, modelPosition, camUp));
-    engine::Draw(sphere);
+    glm::mat4 cameraMatrix = glm::lookAt(camPos, focusVec, camUp);
 
     sun.shaderProgram->UseProgram();
-    glm::mat4 thi = glm::mat4(1.f);
-    thi = glm::translate(thi, glm::vec3(0, 0, distance*10));
-    sun.shaderProgram->setMat4("model", thi);
     sun.shaderProgram->setMat4("projection", projection);
-    sun.shaderProgram->setMat4("view", glm::lookAt(camPos, modelPosition, camUp));
-    engine::Draw(sun);
+    sun.shaderProgram->setMat4("view", cameraMatrix);
+
+
+    // Iterate through the objects, and print out the orbits
+    // Get star
+    conquerspace::components::bodies::Body body = GetApplication().GetUniverse().
+                        registry.get<conquerspace::components::bodies::Body>(civ.starting_planet);
+    conquerspace::components::bodies::StarSystem system = GetApplication().GetUniverse().
+                    registry.get<conquerspace::components::bodies::StarSystem>(body.star_system);
+
+    glm::vec4 viewport = glm::vec4(0.f, 0.f,
+                            GetApplication().GetWindowWidth(), GetApplication().GetWindowHeight());
+    for (auto bod : system.bodies) {
+        conquerspace::components::bodies::Orbit& orbit = GetApplication().GetUniverse().
+                                        registry.get<conquerspace::components::bodies::Orbit>(bod);
+        conquerspace::components::bodies::Vec2& vec =
+                                                conquerspace::components::bodies::toVec2(orbit);
+
+        glm::vec3 objectPos = glm::vec3(vec.x / divider, 0, vec.y / divider);
+        glm::mat4 position = glm::mat4(1.f);
+        position = glm::translate(position, objectPos);
+
+        glm::mat4 transform = glm::mat4(1.f);
+
+        glm::vec3 pos = glm::project(objectPos,
+            transform * cameraMatrix,
+            projection,
+            viewport);
+
+        std::string isplayet = "planet";
+        if (GetApplication().GetUniverse().
+                                registry.all_of<conquerspace::components::bodies::Star>(bod)) {
+            isplayet = "star";
+        }
+
+        GetApplication().DrawText(fmt::format("{} {} {} {} {}",
+                                                isplayet, bod, pos.x, pos.y, pos.z), pos.x, pos.y);
+
+        sun.shaderProgram->UseProgram();
+
+        position = position * transform;
+        sun.shaderProgram->setMat4("model", position);
+
+        engine::Draw(sun);
+    }
 
     sky.shaderProgram->UseProgram();
-    // Follow camera, do nothing else lmao
+
+    // Remove position matrix
     sky.shaderProgram->setMat4("view",
-                        glm::mat4(glm::mat3(glm::lookAt(camPos, modelPosition, camUp))));
+                        glm::mat4(glm::mat3(cameraMatrix)));
     sky.shaderProgram->setMat4("projection", projection);
 
     glDepthFunc(GL_LEQUAL);

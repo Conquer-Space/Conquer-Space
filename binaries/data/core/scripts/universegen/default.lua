@@ -9,7 +9,7 @@ end
 
 function set_planet_orbit(planet, index)
     local b = random(-1000, -200)/1000
-    distance = math.floor(10^(b*index-1) * 149597871)
+    distance = math.floor(10^(b*index) * 149597871)
 
     -- Then add some variance to the value
     variance = random_normal_int(-15, 15)

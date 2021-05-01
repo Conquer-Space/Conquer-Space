@@ -4,7 +4,7 @@
 #pragma once
 
 #include <boost/math/constants/constants.hpp>
-#include <entt/entity/entity.hpp>
+#include <entt/entt.hpp>
 
 #include "common/components/units.h"
 
@@ -16,7 +16,7 @@ namespace bodies {
 * Orbit of a body
 */
 struct Orbit {
-    types::degree trueAnomaly;
+    types::degree theta;
     types::kilometer semiMajorAxis;
     double eccentricity;
     types::degree argument;
@@ -29,7 +29,7 @@ struct Orbit {
                 types::kilometer _semiMajorAxis,
                 double _eccentricity,
                 types::degree _argument) :
-        trueAnomaly(_trueAnomaly),
+                theta(_trueAnomaly),
                 semiMajorAxis(_semiMajorAxis),
                 eccentricity(_eccentricity),
                 argument(_argument) {}
@@ -59,21 +59,21 @@ inline types::degree toDegree(types::radian theta) {
     return theta * (180 / boost::math::constants::pi<double>());
 }
 
-inline Vec2 toVec2(PolarCoordinate coordinate) {
+inline Vec2 toVec2(const PolarCoordinate& coordinate) {
     return Vec2{ static_cast<types::kilometer>(
-                    static_cast<double>(coordinate.r) * toRadian(cos(coordinate.theta))),
+                    static_cast<double>(coordinate.r) * cos(toRadian(coordinate.theta))),
         static_cast<types::kilometer>(
                     static_cast<double>(coordinate.r) * sin(toRadian(coordinate.theta))) };
 }
 
-inline PolarCoordinate toPolarCoordinate(Orbit orb) {
+inline PolarCoordinate toPolarCoordinate(const Orbit& orb) {
     double r = orb.semiMajorAxis
             * (1 - orb.eccentricity * orb.eccentricity)
-            / (1 - orb.eccentricity * cos(toRadian(orb.trueAnomaly + orb.argument)));
-    return PolarCoordinate{ (types::kilometer)r, orb.trueAnomaly };
+            / (1 - orb.eccentricity * cos(toRadian(fmod(orb.theta, 360) + orb.argument)));
+    return PolarCoordinate{ (types::kilometer)r, fmod(orb.theta, 360) };
 }
 
-inline Vec2 toVec2(Orbit orb) {
+inline Vec2 toVec2(const Orbit& orb) {
     return toVec2(toPolarCoordinate(orb));
 }
 

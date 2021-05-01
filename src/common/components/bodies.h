@@ -16,6 +16,8 @@ struct Body {
     * Radius of the body
     */
     types::kilometer radius;
+
+    entt::entity star_system;
 };
 
 struct Terrain {
@@ -24,6 +26,7 @@ struct Terrain {
 
 struct Star { };
 
+struct Planet { };
 /*
 * A collection of stuff
 */

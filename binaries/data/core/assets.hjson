@@ -17,7 +17,7 @@
         path: gfx/img/earth2k.jpg
         type: texture
         hints: {
-            magfilter: false
+            magfilter: true
         }
     }
     earthnormal: {

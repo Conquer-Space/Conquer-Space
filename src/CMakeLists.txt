@@ -18,6 +18,7 @@ file (GLOB_RECURSE LIB_FILES ${CMAKE_SOURCE_DIR}/lib/src/*.c)
 # Add imgui
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
+include_directories(${GLFW3_INCLUDE_PATH})
 file (GLOB IMGUI ${CMAKE_SOURCE_DIR}/lib/imgui/*.cpp)
 set(IMGUI ${IMGUI} ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_glfw.h 
     ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_glfw.cpp 
@@ -27,6 +28,7 @@ set(IMGUI ${IMGUI} ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_glfw.h
     ${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype/imgui_freetype.h)
 
 add_library(ImGui ${IMGUI})
+target_link_libraries(ImGui PUBLIC glfw3_mt)
 
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/backends)
 # Imgui

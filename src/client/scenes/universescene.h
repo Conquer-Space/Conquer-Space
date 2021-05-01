@@ -30,12 +30,15 @@ class UniverseScene : public conquerspace::engine::Scene {
     float x = 0, y = 0, scroll = 10;
 
     double previous_mouseX;
+
     double previous_mouseY;
 
     double viewAngleX = 0;
     double viewAngleY = 0;
 
     conquerspace::engine::BasicRenderer basic_renderer;
+
+    entt::entity player;
 };
 }  // namespace scene
 }  // namespace conquerspace

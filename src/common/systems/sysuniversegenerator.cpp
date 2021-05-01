@@ -67,29 +67,38 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
     });
 
     lua.set_function("add_planet", [&] (entt::entity system) {
-        entt::entity planet =  universe.registry.create();
-        universe.registry.emplace<cqspb::Body>(planet);
+        entt::entity planet = universe.registry.create();
+        auto& body = universe.registry.emplace<cqspb::Body>(planet);
+        body.star_system = system;
+        universe.registry.emplace<cqspb::Planet>(planet);
         universe.registry.get<cqspb::StarSystem>(system).bodies.push_back(planet);
         return planet;
     });
 
     lua.set_function("add_star", [&] (entt::entity system) {
-        entt::entity star =  universe.registry.create();
+        entt::entity star = universe.registry.create();
         universe.registry.emplace<cqspb::Star>(star);
+        auto& body = universe.registry.emplace<cqspb::Body>(star);
+        body.star_system = system;
         universe.registry.get<cqspb::StarSystem>(system).bodies.push_back(star);
         return star;
     });
 
     lua.set_function("set_orbit", [&] (entt::entity body,
                                             double distance,
-                                            double anomaly,
+                                            double theta,
                                             double eccentricity,
                                             double argument) {
-        universe.registry.emplace<cqspb::Orbit>(body, anomaly, distance, eccentricity, argument);
+        cqspb::Orbit orb = universe.registry.emplace<cqspb::Orbit>(body,
+                                                                    theta,
+                                                                    distance,
+                                                                    eccentricity,
+                                                                    argument);
     });
 
     lua.set_function("set_radius", [&] (entt::entity body, int radius) {
-        universe.registry.emplace_or_replace<cqspb::Body>(body, radius);
+        cqspb::Body &bod = universe.registry.get<cqspb::Body>(body);
+        bod.radius = radius;
     });
 
     lua.set_function("add_civilization", [&] () {

@@ -322,7 +322,6 @@ void conquerspace::asset::AssetLoader::LoadCubemap(std::string& key,
                 &prototype->components, 0);
 
         prototype->data.push_back(data);
-        spdlog::info("Loaded image {}" + filePath);
     }
 
     QueueHolder holder(prototype);
