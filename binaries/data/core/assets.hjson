@@ -166,4 +166,11 @@
             type: frag
         }
     }
+    coloredcirclefrag: {
+        path: gfx/shaders/colored_circle.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
 }

@@ -14,6 +14,7 @@
 #include "engine/renderer/primitives/uvsphere.h"
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/primitives/cube.h"
+#include "engine/renderer/primitives/circle.h"
 #include "engine/gui.h"
 
 #include "common/components/bodies.h"
@@ -26,7 +27,7 @@ conquerspace::scene::UniverseScene::UniverseScene(
 
 void conquerspace::scene::UniverseScene::Init() {
     sphere.mesh = new conquerspace::engine::Mesh();
-    conquerspace::primitive::ConstructSphereMesh(64, 64, *sphere.mesh);
+    conquerspace::primitive::ConstructSphereMesh(32, 32, *sphere.mesh);
 
     asset::ShaderProgram* program =
         GetApplication().GetAssetManager().CreateShaderProgram("objectvert",
@@ -63,6 +64,16 @@ void conquerspace::scene::UniverseScene::Init() {
                                                                                     "sunshader");
     sun.shaderProgram = sunshader;
     sun.mesh = sphere.mesh;
+
+    asset::ShaderProgram* circleShader =
+                            GetApplication().GetAssetManager().
+                            CreateShaderProgram("shader.pane.vert",
+                                                "coloredcirclefrag");
+    circleShader->UseProgram();
+    circleShader->setVec4("color", 1, 0, 1, 1);
+    planetDisp.mesh = new conquerspace::engine::Mesh();
+    conquerspace::primitive::CreateFilledCircle(*planetDisp.mesh);
+    planetDisp.shaderProgram = circleShader;
 
     x = 0;
     y = -distance;
@@ -207,31 +218,61 @@ void conquerspace::scene::UniverseScene::Render(float deltaTime) {
                                                 conquerspace::components::bodies::toVec2(orbit);
 
         glm::vec3 objectPos = glm::vec3(vec.x / divider, 0, vec.y / divider);
-        glm::mat4 position = glm::mat4(1.f);
-        position = glm::translate(position, objectPos);
+        if (glm::distance(camPos, objectPos) < 200) {
+            glm::mat4 position = glm::mat4(1.f);
+            position = glm::translate(position, objectPos);
 
-        glm::mat4 transform = glm::mat4(1.f);
+            glm::mat4 transform = glm::mat4(1.f);
+            sun.shaderProgram->UseProgram();
 
-        glm::vec3 pos = glm::project(objectPos,
-            transform * cameraMatrix,
-            projection,
-            viewport);
+            position = position * transform;
+            sun.shaderProgram->setMat4("model", position);
 
-        std::string isplayet = "planet";
-        if (GetApplication().GetUniverse().
-                                registry.all_of<conquerspace::components::bodies::Star>(bod)) {
-            isplayet = "star";
+            engine::Draw(sun);
+        } else {
+            glm::vec3 pos = glm::project(objectPos, cameraMatrix,
+                                         projection, viewport);
+            glm::mat4 planetDispMat = glm::mat4(1.0f);
+
+            planetDispMat = glm::translate(
+                planetDispMat,
+                glm::vec3(
+                    (pos.x / GetApplication().GetWindowWidth() - 0.5) * 2,
+                    (pos.y / GetApplication().GetWindowHeight() - 0.5) * 2, 0));
+            planetDispMat =
+                glm::scale(planetDispMat, glm::vec3(0.01, 0.01, 0.01));
+            planetDispMat = glm::scale(
+                planetDispMat,
+                glm::vec3(
+                    1,
+                    static_cast<float>(GetApplication().GetWindowWidth()) /
+                        static_cast<float>(GetApplication().GetWindowHeight()),
+                    1));
+            glm::mat4 twodimproj = glm::scale(
+                glm::mat4(1.0f),
+                glm::vec3(
+                    1,
+                    static_cast<float>(GetApplication().GetWindowWidth()) /
+                        static_cast<float>(GetApplication().GetWindowHeight()),
+                    1));
+
+            twodimproj = glm::mat4(1.0f);
+            planetDisp.shaderProgram->UseProgram();
+            planetDisp.shaderProgram->setMat4("model", planetDispMat);
+            planetDisp.shaderProgram->setMat4("projection", twodimproj);
+
+            engine::Draw(planetDisp);
+
+            std::string isplayet = "planet";
+            if (GetApplication()
+                    .GetUniverse()
+                    .registry.all_of<conquerspace::components::bodies::Star>(
+                        bod)) {
+                isplayet = "star";
+            }
+            GetApplication().DrawText(fmt::format("{}",
+                                        isplayet), pos.x+20, pos.y);
         }
-
-        GetApplication().DrawText(fmt::format("{} {} {} {} {}",
-                                                isplayet, bod, pos.x, pos.y, pos.z), pos.x, pos.y);
-
-        sun.shaderProgram->UseProgram();
-
-        position = position * transform;
-        sun.shaderProgram->setMat4("model", position);
-
-        engine::Draw(sun);
     }
 
     sky.shaderProgram->UseProgram();

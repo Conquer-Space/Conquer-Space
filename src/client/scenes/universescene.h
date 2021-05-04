@@ -23,6 +23,7 @@ class UniverseScene : public conquerspace::engine::Scene {
  private:
     conquerspace::engine::Renderable sphere;
     conquerspace::engine::Renderable sky;
+    conquerspace::engine::Renderable planetDisp;
     conquerspace::engine::Renderable sun;
     float distance = 5;
     float theta = 0;
