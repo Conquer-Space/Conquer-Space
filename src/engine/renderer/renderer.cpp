@@ -23,7 +23,7 @@ void conquerspace::engine::Draw(Renderable &renderable) {
     if (renderable.mesh->buffer_type == 1) {
         glDrawElements(renderable.mesh->RenderType, renderable.mesh->indicies, GL_UNSIGNED_INT, 0);
     } else {
-        glDrawArrays(GL_TRIANGLES, 0, renderable.mesh->indicies);
+        glDrawArrays(renderable.mesh->RenderType, 0, renderable.mesh->indicies);
     }
 
     glBindVertexArray(0);
@@ -52,8 +52,12 @@ void conquerspace::engine::BasicRenderer::Draw() {
         }
 
         glBindVertexArray(renderable->mesh->VAO);
-        glDrawElements(renderable->mesh->RenderType,
-                        renderable->mesh->indicies, GL_UNSIGNED_INT, 0);
+        if (renderable->mesh->buffer_type == 1) {
+            glDrawElements(renderable->mesh->RenderType, renderable->mesh->indicies,
+                                                                        GL_UNSIGNED_INT, 0);
+        } else {
+            glDrawArrays(renderable->mesh->RenderType, 0, renderable->mesh->indicies);
+        }
         glBindVertexArray(0);
 
         // Reset active texture
