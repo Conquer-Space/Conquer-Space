@@ -41,5 +41,9 @@ class UniverseScene : public conquerspace::engine::Scene {
 
     entt::entity player;
 };
+
+// A tag to tell to render
+struct ToRender {};
+
 }  // namespace scene
 }  // namespace conquerspace

@@ -173,4 +173,11 @@
             type: frag
         }
     }
+    spherefrag: {
+        path: gfx/shaders/sphere_shader.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
 }

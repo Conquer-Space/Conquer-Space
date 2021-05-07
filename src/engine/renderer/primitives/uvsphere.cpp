@@ -26,8 +26,8 @@ void conquerspace::primitive::ConstructSphereMesh(
     const float PI = 3.14159265359;
     for (unsigned int y = 0; y <= y_segments; ++y) {
         for (unsigned int x = 0; x <= y_segments; ++x) {
-            float xSegment = static_cast<float>(x) / static_cast<float>(x_segments);
-            float ySegment = static_cast<float>(y) / static_cast<float>(y_segments);
+            float xSegment = static_cast<float>(x) / x_segments;
+            float ySegment = static_cast<float>(y) / y_segments;
             float xPos = std::cos(xSegment * PI * 2) * std::sin(ySegment * PI);
             float yPos = std::cos(ySegment * PI);
             float zPos = std::sin(xSegment * PI * 2) * std::sin(ySegment * PI);

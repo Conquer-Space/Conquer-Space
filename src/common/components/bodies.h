@@ -27,6 +27,8 @@ struct Terrain {
 struct Star { };
 
 struct Planet { };
+
+struct LightEmitter { };
 /*
 * A collection of stuff
 */

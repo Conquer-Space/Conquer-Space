@@ -80,6 +80,9 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
         universe.registry.emplace<cqspb::Star>(star);
         auto& body = universe.registry.emplace<cqspb::Body>(star);
         body.star_system = system;
+
+        universe.registry.emplace<cqspb::LightEmitter>(star);
+
         universe.registry.get<cqspb::StarSystem>(system).bodies.push_back(star);
         return star;
     });

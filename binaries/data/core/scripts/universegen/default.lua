@@ -9,7 +9,7 @@ end
 
 function set_planet_orbit(planet, index)
     local b = random(-1000, -200)/1000
-    distance = math.floor(10^(b*index) * 149597871)
+    distance = math.floor(10^(b+index) * 149597871)
 
     -- Then add some variance to the value
     variance = random_normal_int(-15, 15)
@@ -84,7 +84,8 @@ for _, civ in pairs(civilizations) do
         -- Esh, we'll deal with that later
         -- As you go further from the center, make it more likely that it is a gas planet
 
-        if planet_id == 2 then
+        if planet_id == 0 then
+
             -- Set as civ home planet
             set_civilization_planet(civ, planet_entity)
         end
