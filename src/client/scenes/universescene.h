@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "client/systems/sysstarsystemrenderer.h"
 #include "engine/scene.h"
 #include "engine/application.h"
 #include "engine/renderer/renderable.h"
@@ -13,7 +14,9 @@ namespace scene {
 class UniverseScene : public conquerspace::engine::Scene {
  public:
     explicit UniverseScene(conquerspace::engine::Application& app);
-    ~UniverseScene() {}
+    ~UniverseScene() {
+        delete system_renderer;
+    }
 
     void Init();
     void Update(float deltaTime);
@@ -25,25 +28,15 @@ class UniverseScene : public conquerspace::engine::Scene {
     conquerspace::engine::Renderable sky;
     conquerspace::engine::Renderable planetDisp;
     conquerspace::engine::Renderable sun;
-    float distance = 5;
-    float theta = 0;
 
-    float x = 0, y = 0, scroll = 10;
+    float x = 0, y = 0;
 
     double previous_mouseX;
-
     double previous_mouseY;
 
-    double viewAngleX = 0;
-    double viewAngleY = 0;
-
-    conquerspace::engine::BasicRenderer basic_renderer;
-
     entt::entity player;
+
+    conquerspace::client::SysStarSystemRenderer* system_renderer;
 };
-
-// A tag to tell to render
-struct ToRender {};
-
 }  // namespace scene
 }  // namespace conquerspace
