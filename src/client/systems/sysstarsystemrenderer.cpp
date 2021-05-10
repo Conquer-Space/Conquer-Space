@@ -70,59 +70,40 @@ void conquerspace::client::SysStarSystemRenderer::Initialize() {
 
 void conquerspace::client::SysStarSystemRenderer::Render() {
     namespace cqspb = conquerspace::components::bodies;
-
-    glm::vec3 cam_pos = glm::vec3(
-                cos(view_y) * sin(view_x) * scroll,
-                sin(view_y) * scroll,
-                cos(view_y) * cos(view_x) * scroll);
-    glm::vec3 camUp = glm::vec3(0.0f, 1.0f, 0.0f);
-    glm::vec3 focusVec = glm::vec3(view_center.x, view_center.y, view_center.z);
-    cam_pos = cam_pos + focusVec;
-    glm::mat4 cameraMatrix = glm::lookAt(cam_pos, focusVec, camUp);
-
-    // Set projection
-    glm::mat4 projection =
-              glm::infinitePerspective(glm::radians(45.f),
-                                static_cast<float>(m_app.GetWindowWidth()) /
-                                static_cast<float>(m_app.GetWindowHeight()), 0.1f);
-    glm::vec4 viewport = glm::vec4(0.f, 0.f,
-                            m_app.GetWindowWidth(), m_app.GetWindowHeight());
+    CalculateCamera();
 
     // Draw stars
     auto stars = m_app.GetUniverse().registry.
-        view<ToRender, conquerspace::components::bodies::Body,
-                                                conquerspace::components::bodies::LightEmitter>();
+        view<ToRender, cqspb::Body, cqspb::LightEmitter>();
     for (auto [ent_id, body] : stars.each()) {
         // Draw the planet circle
-        conquerspace::components::bodies::Orbit& orbit = m_app.GetUniverse().
-                                    registry.get<conquerspace::components::bodies::Orbit>(ent_id);
-        conquerspace::components::bodies::Vec2& vec =
-                                                conquerspace::components::bodies::toVec2(orbit);
+        cqspb::Orbit& orbit = m_app.GetUniverse().
+                                    registry.get<cqspb::Orbit>(ent_id);
+        cqspb::Vec2& vec = cqspb::toVec2(orbit);
         glm::vec3 object_pos = glm::vec3(vec.x / divider, 0, vec.y / divider);
 
-        DrawStar(object_pos, cameraMatrix, projection, cam_pos);
+        DrawStar(object_pos, camera_matrix, projection, cam_pos);
     }
 
     // Draw other bodies
     auto bodies = m_app.GetUniverse().registry.
-        view<ToRender, conquerspace::components::bodies::Body>(
-                entt::exclude<conquerspace::components::bodies::LightEmitter>);
+        view<ToRender, cqspb::Body>(
+                entt::exclude<cqspb::LightEmitter>);
     for (auto [ent_id, body] : bodies.each()) {
         // Draw the planet circle
-        conquerspace::components::bodies::Orbit& orbit = m_app.GetUniverse().
-                                    registry.get<conquerspace::components::bodies::Orbit>(ent_id);
-        conquerspace::components::bodies::Vec2& vec =
-                                                conquerspace::components::bodies::toVec2(orbit);
+        cqspb::Orbit& orbit = m_app.GetUniverse().
+                                    registry.get<cqspb::Orbit>(ent_id);
+        cqspb::Vec2& vec = cqspb::toVec2(orbit);
         glm::vec3 object_pos = glm::vec3(vec.x / divider, 0, vec.y / divider);
 
         planet_circle.shaderProgram->UseProgram();
         planet_circle.shaderProgram->setVec4("color", 1, 0, 1, 1);
-        if(glm::distance(object_pos, cam_pos) > 200) {
+        if (glm::distance(object_pos, cam_pos) > 200) {
             // Check if it's obscured by a planet, but eh, we can deal with it later
-            DrawPlanetIcon(object_pos, cameraMatrix, projection, viewport);
+            DrawPlanetIcon(object_pos, camera_matrix, projection, viewport);
             continue;
         }
-        DrawPlanet(object_pos, cameraMatrix, projection, cam_pos);
+        DrawPlanet(object_pos, camera_matrix, projection, cam_pos);
     }
 
     glEnable(GL_DEPTH_TEST);
@@ -132,7 +113,7 @@ void conquerspace::client::SysStarSystemRenderer::Render() {
     // Draw sky
     sky.shaderProgram->UseProgram();
     sky.shaderProgram->setMat4("view",
-                        glm::mat4(glm::mat3(cameraMatrix)));
+                        glm::mat4(glm::mat3(camera_matrix)));
     sky.shaderProgram->setMat4("projection", projection);
 
     glDepthFunc(GL_LEQUAL);
@@ -174,8 +155,9 @@ void conquerspace::client::SysStarSystemRenderer::DrawPlanetIcon(
         glm::vec3(
             (pos.x / m_app.GetWindowWidth() - 0.5) * 2,
             (pos.y / m_app.GetWindowHeight() - 0.5) * 2, 0));
+
     planetDispMat =
-        glm::scale(planetDispMat, glm::vec3(0.01, 0.01, 0.01));
+        glm::scale(planetDispMat, glm::vec3(circle_size, circle_size, circle_size));
     planetDispMat = glm::scale(
         planetDispMat,
         glm::vec3(
@@ -248,4 +230,75 @@ void conquerspace::client::SysStarSystemRenderer::DrawStar(
     sun.shaderProgram->setMat4("view", cameraMatrix);
     sun.shaderProgram->setMat4("projection", projection);
     engine::Draw(sun);
+}
+
+void conquerspace::client::SysStarSystemRenderer::CalculateCamera() {
+    cam_pos = glm::vec3(
+                cos(view_y) * sin(view_x) * scroll,
+                sin(view_y) * scroll,
+                cos(view_y) * cos(view_x) * scroll);
+    cam_up = glm::vec3(0.0f, 1.0f, 0.0f);
+    focus_vec = glm::vec3(view_center.x, view_center.y, view_center.z);
+    cam_pos = cam_pos + focus_vec;
+    camera_matrix = glm::lookAt(cam_pos, focus_vec, cam_up);
+    projection =
+              glm::infinitePerspective(glm::radians(45.f),
+                                static_cast<float>(m_app.GetWindowWidth()) /
+                                static_cast<float>(m_app.GetWindowHeight()), 0.1f);
+    viewport = glm::vec4(0.f, 0.f,
+                            m_app.GetWindowWidth(), m_app.GetWindowHeight());
+}
+
+entt::entity conquerspace::client::SysStarSystemRenderer::GetMouseOnObject(
+    int mouse_x, int mouse_y) {
+    namespace cqspb = conquerspace::components::bodies;
+
+    // Loop through objects
+    auto bodies = m_app.GetUniverse().registry.
+        view<ToRender, conquerspace::components::bodies::Body>();
+    for (auto [ent_id, body] : bodies.each()) {
+        cqspb::Orbit& orbit = m_app.GetUniverse().registry.get<cqspb::Orbit>(ent_id);
+        cqspb::Vec2& vec = cqspb::toVec2(orbit);
+        glm::vec3 object_pos = glm::vec3(vec.x / divider, 0, vec.y / divider);
+
+        // Check if the sphere is rendered or not
+        if (glm::distance(object_pos, cam_pos) > 200) {
+            // Calculate circle
+            glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
+
+            // Add stuff
+            float dim = circle_size * m_app.GetWindowHeight();
+            if (glm::distance(glm::vec2(pos.x, m_app.GetWindowHeight() - pos.y),
+                    glm::vec2(mouse_x, mouse_y)) <= dim) {
+                return ent_id;
+            }
+        } else {
+            // Normalize 3d device coordinates
+            float x = (2.0f * mouse_x) / m_app.GetWindowWidth() - 1.0f;
+            float y = 1.0f - (2.0f * mouse_y) / m_app.GetWindowHeight();
+            float z = 1.0f;
+
+            glm::vec3 ray_nds = glm::vec3(x, y, z);
+            glm::vec4 ray_clip = glm::vec4(ray_nds.x, ray_nds.y, -1.0, 1.0);
+            glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
+            ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0, 0.0);
+            glm::vec4 inv = (glm::inverse(camera_matrix) * ray_eye);
+            glm::vec3 ray_wor = glm::vec3(inv.x, inv.y, inv.z);
+            // don't forget to normalise the vector at some point
+            ray_wor = glm::normalize(ray_wor);
+
+            float radius = 1;
+            if (m_app.GetUniverse().registry.all_of<cqspb::LightEmitter>(ent_id)) {
+                radius = 10;
+            }
+            // Check for intersection for sphere
+            glm::vec3 sub = cam_pos - object_pos;
+            float b = glm::dot(ray_wor, sub);
+            float c = glm::dot(sub, sub) - radius * radius;
+            if ((b * b - c) >= 0) {
+                return ent_id;
+            }
+        }
+    }
+    return entt::null;
 }

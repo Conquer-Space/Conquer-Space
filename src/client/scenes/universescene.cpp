@@ -93,7 +93,28 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
 
 void conquerspace::scene::UniverseScene::Ui(float deltaTime) {
     ImGui::Begin("Window");
+    entt::entity ent = entt::null;
+    if (GetApplication().MouseButtonIsHeld(GLFW_MOUSE_BUTTON_LEFT) &&
+                    (ent = system_renderer->GetMouseOnObject(GetApplication().GetMouseX(),
+                    GetApplication().GetMouseY())) != entt::null) {
+        ImGui::Text(fmt::format("{}", ent).c_str());
+    } else {
+        ImGui::Text(fmt::format("Not over anything").c_str());
+    }
     ImGui::End();
+
+    // Hitbox drawing
+    /* int size = 15;
+    auto draw = ImGui::GetForegroundDrawList();
+    for (int x = 0; x < GetApplication().GetWindowWidth(); x+=size) {
+        for (int y = 0; y < GetApplication().GetWindowHeight(); y+=size) {
+            ImVec2 vec(x, y);
+            if (system_renderer->GetMouseOnObject(x, y) != entt::null) {
+                draw->AddRectFilled(vec, ImVec2(x + 1, y + 1),
+                                    IM_COL32(255, 0, 0, 255));
+            }
+        }
+    } */
 }
 
 void conquerspace::scene::UniverseScene::Render(float deltaTime) {

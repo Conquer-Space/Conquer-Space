@@ -40,6 +40,8 @@ class SysStarSystemRenderer{
 
     float GetDivider() { return divider; }
 
+    entt::entity GetMouseOnObject(int mouse_x, int mouse_y);
+
  private:
     entt::entity m_star_system = entt::null;
     conquerspace::components::Universe &m_universe;
@@ -50,12 +52,24 @@ class SysStarSystemRenderer{
     conquerspace::engine::Renderable planet_circle;
     conquerspace::engine::Renderable sun;
 
+    glm::vec3 cam_pos;
+    glm::vec3 cam_up = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 focus_vec;
+    glm::mat4 camera_matrix;
+    glm::mat4 projection;
+    glm::vec4 viewport;
+
+    float circle_size = 0.01f;
+
     void DrawPlanetIcon(glm::vec3 &object_pos, glm::mat4 &cameraMatrix,
                         glm::mat4 &projection, glm::vec4 &viewport);
     void DrawPlanet(glm::vec3 &object_pos, glm::mat4 &cameraMatrix,
                     glm::mat4 &projection, glm::vec3 &cam_pos);
     void DrawStar(glm::vec3 &object_pos, glm::mat4 &cameraMatrix,
                   glm::mat4 &projection, glm::vec3 &cam_pos);
+
+    void CalculateCamera();
+
     // How much to scale the the star system.
     const float divider = 100000.f;
 };
