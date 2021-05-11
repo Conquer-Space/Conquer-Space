@@ -26,6 +26,8 @@ conquerspace::scene::UniverseScene::UniverseScene(
     conquerspace::engine::Application& app) : Scene(app) {}
 
 void conquerspace::scene::UniverseScene::Init() {
+    namespace cqspb = conquerspace::components::bodies;
+
     system_renderer = new conquerspace::client::SysStarSystemRenderer(
         GetApplication().GetUniverse(), GetApplication());
     system_renderer->Initialize();
@@ -33,20 +35,20 @@ void conquerspace::scene::UniverseScene::Init() {
     auto civilizationView =
         GetApplication().GetUniverse().registry.
                 view<conquerspace::components::Civilization, conquerspace::components::Player>();
-    conquerspace::components::Civilization c;
     for (auto [entity, civ] : civilizationView.each()) {
         player = entity;
-        c = civ;
+        player_civ = &civ;
     }
-    conquerspace::components::bodies::Body body = GetApplication().GetUniverse().
-                        registry.get<conquerspace::components::bodies::Body>(c.starting_planet);
+    cqspb::Body body = GetApplication().GetUniverse().
+                        registry.get<cqspb::Body>(player_civ->starting_planet);
     system_renderer->SeeStarSystem(body.star_system);
+    star_system = &GetApplication().GetUniverse().
+                        registry.get<cqspb::StarSystem>(body.star_system);
 
     // Set view center
-    conquerspace::components::bodies::Orbit& orbit = GetApplication().GetUniverse().registry.
-                                get<conquerspace::components::bodies::Orbit>(c.starting_planet);
-    conquerspace::components::bodies::Vec2& vec =
-                                            conquerspace::components::bodies::toVec2(orbit);
+    cqspb::Orbit& orbit = GetApplication().GetUniverse().registry.
+                                get<cqspb::Orbit>(player_civ->starting_planet);
+    cqspb::Vec2& vec = cqspb::toVec2(orbit);
     system_renderer->view_center = glm::vec3(vec.x / system_renderer->GetDivider(),
                                                         0, vec.y / system_renderer->GetDivider());
 }
@@ -88,6 +90,22 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
 
         previous_mouseX = GetApplication().GetMouseX();
         previous_mouseY = GetApplication().GetMouseY();
+
+        // If clicked on a planet, go to the planet
+        entt::entity ent = entt::null;
+
+        if (GetApplication().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) &&
+                    (ent = system_renderer->GetMouseOnObject(GetApplication().GetMouseX(),
+                    GetApplication().GetMouseY())) != entt::null) {
+            // Go to the place
+            conquerspace::components::bodies::Orbit& orbit =
+                                GetApplication().GetUniverse().registry.
+                                get<conquerspace::components::bodies::Orbit>(ent);
+            conquerspace::components::bodies::Vec2& vec =
+                                                    conquerspace::components::bodies::toVec2(orbit);
+            system_renderer->view_center = glm::vec3(vec.x / system_renderer->GetDivider(),
+                                                        0, vec.y / system_renderer->GetDivider());
+        }
     }
 }
 
@@ -101,10 +119,18 @@ void conquerspace::scene::UniverseScene::Ui(float deltaTime) {
     } else {
         ImGui::Text(fmt::format("Not over anything").c_str());
     }
+
+    conquerspace::components::bodies::Body body = GetApplication().GetUniverse().
+                        registry.get<conquerspace::components::bodies::Body>
+                                                                    (player_civ->starting_planet);
+
+    ImGui::Text(fmt::format("{}", star_system->bodies.size()).c_str());
+    for (auto a : star_system->bodies) {
+        ImGui::Text(fmt::format("{}", a).c_str());
+    }
     ImGui::End();
 
-    // Hitbox drawing
-    /* int size = 15;
+    /*int size = 20;
     auto draw = ImGui::GetForegroundDrawList();
     for (int x = 0; x < GetApplication().GetWindowWidth(); x+=size) {
         for (int y = 0; y < GetApplication().GetWindowHeight(); y+=size) {
@@ -114,7 +140,7 @@ void conquerspace::scene::UniverseScene::Ui(float deltaTime) {
                                     IM_COL32(255, 0, 0, 255));
             }
         }
-    } */
+    }*/
 }
 
 void conquerspace::scene::UniverseScene::Render(float deltaTime) {

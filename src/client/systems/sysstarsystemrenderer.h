@@ -38,7 +38,7 @@ class SysStarSystemRenderer{
 
     glm::vec3 view_center;
 
-    float GetDivider() { return divider; }
+    double GetDivider() { return divider; }
 
     entt::entity GetMouseOnObject(int mouse_x, int mouse_y);
 
@@ -68,10 +68,13 @@ class SysStarSystemRenderer{
     void DrawStar(glm::vec3 &object_pos, glm::mat4 &cameraMatrix,
                   glm::mat4 &projection, glm::vec3 &cam_pos);
 
+    glm::vec3 CalculateObjectPos(entt::entity &);
     void CalculateCamera();
 
     // How much to scale the the star system.
-    const float divider = 100000.f;
+    const double divider = 0.01;
+
+    glm::vec3 sun_position;
 };
 }  // namespace client
 }  // namespace conquerspace

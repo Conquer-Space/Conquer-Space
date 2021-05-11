@@ -4,6 +4,8 @@
 #pragma once
 
 #include "client/systems/sysstarsystemrenderer.h"
+#include "common/components/bodies.h"
+#include "common/components/organizations.h"
 #include "engine/scene.h"
 #include "engine/application.h"
 #include "engine/renderer/renderable.h"
@@ -35,6 +37,9 @@ class UniverseScene : public conquerspace::engine::Scene {
     double previous_mouseY;
 
     entt::entity player;
+
+    conquerspace::components::Civilization* player_civ;
+    conquerspace::components::bodies::StarSystem* star_system;
 
     conquerspace::client::SysStarSystemRenderer* system_renderer;
 };

@@ -77,10 +77,16 @@ void conquerspace::client::SysStarSystemRenderer::Render() {
         view<ToRender, cqspb::Body, cqspb::LightEmitter>();
     for (auto [ent_id, body] : stars.each()) {
         // Draw the planet circle
-        cqspb::Orbit& orbit = m_app.GetUniverse().
-                                    registry.get<cqspb::Orbit>(ent_id);
-        cqspb::Vec2& vec = cqspb::toVec2(orbit);
-        glm::vec3 object_pos = glm::vec3(vec.x / divider, 0, vec.y / divider);
+        glm::vec3 object_pos = CalculateObjectPos(ent_id);
+        sun_position = object_pos;
+        if (glm::distance(object_pos, cam_pos) > 900) {
+            // Check if it's obscured by a planet, but eh, we can deal with it later
+
+            planet_circle.shaderProgram->UseProgram();
+            planet_circle.shaderProgram->setVec4("color", 1, 1, 0, 1);
+            DrawPlanetIcon(object_pos, camera_matrix, projection, viewport);
+            continue;
+        }
 
         DrawStar(object_pos, camera_matrix, projection, cam_pos);
     }
@@ -91,15 +97,13 @@ void conquerspace::client::SysStarSystemRenderer::Render() {
                 entt::exclude<cqspb::LightEmitter>);
     for (auto [ent_id, body] : bodies.each()) {
         // Draw the planet circle
-        cqspb::Orbit& orbit = m_app.GetUniverse().
-                                    registry.get<cqspb::Orbit>(ent_id);
-        cqspb::Vec2& vec = cqspb::toVec2(orbit);
-        glm::vec3 object_pos = glm::vec3(vec.x / divider, 0, vec.y / divider);
+        glm::vec3 object_pos = CalculateObjectPos(ent_id);
 
-        planet_circle.shaderProgram->UseProgram();
-        planet_circle.shaderProgram->setVec4("color", 1, 0, 1, 1);
         if (glm::distance(object_pos, cam_pos) > 200) {
             // Check if it's obscured by a planet, but eh, we can deal with it later
+            // Set planet circle color
+            planet_circle.shaderProgram->UseProgram();
+            planet_circle.shaderProgram->setVec4("color", 1, 0, 1, 1);
             DrawPlanetIcon(object_pos, camera_matrix, projection, viewport);
             continue;
         }
@@ -149,6 +153,9 @@ void conquerspace::client::SysStarSystemRenderer::DrawPlanetIcon(
     glm::vec3 pos = glm::project(object_pos, cameraMatrix,
                                         projection, viewport);
     glm::mat4 planetDispMat = glm::mat4(1.0f);
+    if (pos.z >= 1 || pos.z <= -1) {
+        return;
+    }
 
     planetDispMat = glm::translate(
         planetDispMat,
@@ -199,8 +206,8 @@ void conquerspace::client::SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_p
     planet.shaderProgram->setMat4("view", cameraMatrix);
     planet.shaderProgram->setMat4("projection", projection);
 
-    planet.shaderProgram->setVec3("lightDir", glm::normalize(glm::vec3(0, 0, 0) - object_pos));
-    planet.shaderProgram->setVec3("lightPosition", glm::vec3(0, 0, 0));
+    planet.shaderProgram->setVec3("lightDir", glm::normalize(sun_position - object_pos));
+    planet.shaderProgram->setVec3("lightPosition", sun_position);
 
     planet.shaderProgram->setVec3("lightColor", 1, 1, 1);
     planet.shaderProgram->setVec3("albedo", 1, 0, 1);
@@ -219,9 +226,9 @@ void conquerspace::client::SysStarSystemRenderer::DrawStar(
     position = glm::translate(position, object_pos);
 
     glm::mat4 transform = glm::mat4(1.f);
-    // For some reason, the sphere we make needs to be inverted
+
     transform = glm::scale(transform, glm::vec3(1, -1, 1));
-    transform = glm::scale(transform, glm::vec3(10, 10, 10));
+    transform = glm::scale(transform, glm::vec3(5, 5, 5));
 
     position = position * transform;
 
@@ -232,6 +239,14 @@ void conquerspace::client::SysStarSystemRenderer::DrawStar(
     engine::Draw(sun);
 }
 
+glm::vec3 conquerspace::client::SysStarSystemRenderer::CalculateObjectPos(
+    entt::entity &ent) {
+    namespace cqspb = conquerspace::components::bodies;
+    cqspb::Orbit& orbit = m_app.GetUniverse().registry.get<cqspb::Orbit>(ent);
+    cqspb::Vec2& vec = cqspb::toVec2(orbit);
+    return (glm::vec3(vec.x / divider, 0, vec.y / divider) - focus_vec);
+}
+
 void conquerspace::client::SysStarSystemRenderer::CalculateCamera() {
     cam_pos = glm::vec3(
                 cos(view_y) * sin(view_x) * scroll,
@@ -239,8 +254,8 @@ void conquerspace::client::SysStarSystemRenderer::CalculateCamera() {
                 cos(view_y) * cos(view_x) * scroll);
     cam_up = glm::vec3(0.0f, 1.0f, 0.0f);
     focus_vec = glm::vec3(view_center.x, view_center.y, view_center.z);
-    cam_pos = cam_pos + focus_vec;
-    camera_matrix = glm::lookAt(cam_pos, focus_vec, cam_up);
+    cam_pos = cam_pos;
+    camera_matrix = glm::lookAt(cam_pos, glm::vec3(0.f, 0.f, 0.f), cam_up);
     projection =
               glm::infinitePerspective(glm::radians(45.f),
                                 static_cast<float>(m_app.GetWindowWidth()) /
@@ -257,16 +272,17 @@ entt::entity conquerspace::client::SysStarSystemRenderer::GetMouseOnObject(
     auto bodies = m_app.GetUniverse().registry.
         view<ToRender, conquerspace::components::bodies::Body>();
     for (auto [ent_id, body] : bodies.each()) {
-        cqspb::Orbit& orbit = m_app.GetUniverse().registry.get<cqspb::Orbit>(ent_id);
-        cqspb::Vec2& vec = cqspb::toVec2(orbit);
-        glm::vec3 object_pos = glm::vec3(vec.x / divider, 0, vec.y / divider);
+        glm::vec3 object_pos = CalculateObjectPos(ent_id);
 
         // Check if the sphere is rendered or not
-        if (glm::distance(object_pos, cam_pos) > 200) {
+        if (glm::distance(object_pos, cam_pos) > 100) {
             // Calculate circle
             glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
+            if (pos.z >= 1) {
+                continue;
+            }
 
-            // Add stuff
+            // Check if it's intersecting
             float dim = circle_size * m_app.GetWindowHeight();
             if (glm::distance(glm::vec2(pos.x, m_app.GetWindowHeight() - pos.y),
                     glm::vec2(mouse_x, mouse_y)) <= dim) {

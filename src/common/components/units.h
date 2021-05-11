@@ -6,7 +6,7 @@
 namespace conquerspace {
 namespace components {
 namespace types {
-    typedef int64_t kilometer;
+    typedef double astronomical_unit;
     typedef double degree;
     typedef double radian;
 }

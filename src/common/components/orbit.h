@@ -17,7 +17,7 @@ namespace bodies {
 */
 struct Orbit {
     types::degree theta;
-    types::kilometer semiMajorAxis;
+    types::astronomical_unit semiMajorAxis;
     double eccentricity;
     types::degree argument;
 
@@ -26,7 +26,7 @@ struct Orbit {
 
     Orbit() = default;
     Orbit(types::degree _trueAnomaly,
-                types::kilometer _semiMajorAxis,
+                types::astronomical_unit _semiMajorAxis,
                 double _eccentricity,
                 types::degree _argument) :
                 theta(_trueAnomaly),
@@ -36,19 +36,19 @@ struct Orbit {
 };
 
 struct Vec2 {
-    types::kilometer x;
-    types::kilometer y;
+    types::astronomical_unit x;
+    types::astronomical_unit y;
 
     Vec2() = default;
-    Vec2(types::kilometer _x, types::kilometer _y) : x(_x), y(_y) {}
+    Vec2(types::astronomical_unit _x, types::astronomical_unit _y) : x(_x), y(_y) {}
 };
 
 struct PolarCoordinate {
-    types::kilometer r;
+    types::astronomical_unit r;
     types::degree theta;
 
     PolarCoordinate() = default;
-    PolarCoordinate(types::kilometer _r, types::degree _theta) : r(_r), theta(_theta) {}
+    PolarCoordinate(types::astronomical_unit _r, types::degree _theta) : r(_r), theta(_theta) {}
 };
 
 inline types::radian toRadian(types::degree theta) {
@@ -60,9 +60,9 @@ inline types::degree toDegree(types::radian theta) {
 }
 
 inline Vec2 toVec2(const PolarCoordinate& coordinate) {
-    return Vec2{ static_cast<types::kilometer>(
+    return Vec2{ static_cast<types::astronomical_unit>(
                     static_cast<double>(coordinate.r) * cos(toRadian(coordinate.theta))),
-        static_cast<types::kilometer>(
+        static_cast<types::astronomical_unit>(
                     static_cast<double>(coordinate.r) * sin(toRadian(coordinate.theta))) };
 }
 
@@ -70,7 +70,7 @@ inline PolarCoordinate toPolarCoordinate(const Orbit& orb) {
     double r = orb.semiMajorAxis
             * (1 - orb.eccentricity * orb.eccentricity)
             / (1 - orb.eccentricity * cos(toRadian(fmod(orb.theta, 360) + orb.argument)));
-    return PolarCoordinate{ (types::kilometer)r, fmod(orb.theta, 360) };
+    return PolarCoordinate{ (types::astronomical_unit)r, fmod(orb.theta, 360) };
 }
 
 inline Vec2 toVec2(const Orbit& orb) {

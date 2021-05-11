@@ -119,6 +119,8 @@ class Application {
     double GetMouseY() { return m_mouse_y; }
 
     bool MouseButtonIsHeld(int btn) { return m_mouse_keys_held[btn]; }
+    bool MouseButtonIsReleased(int btn) { return m_mouse_keys_released[btn]; }
+    bool MouseButtonIsPressed(int btn) { return m_mouse_keys_pressed[btn]; }
 
     conquerspace::asset::Font*& GetFont() { return m_font; }
     void DrawText(const std::string& text, float x, float y);
