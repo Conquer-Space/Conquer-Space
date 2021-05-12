@@ -10,6 +10,7 @@
 #include "engine/application.h"
 #include "engine/renderer/renderable.h"
 #include "engine/renderer/renderer.h"
+#include "common/simulation.h"
 
 namespace conquerspace {
 namespace scene {
@@ -18,6 +19,7 @@ class UniverseScene : public conquerspace::engine::Scene {
     explicit UniverseScene(conquerspace::engine::Application& app);
     ~UniverseScene() {
         delete system_renderer;
+        delete simulation;
     }
 
     void Init();
@@ -42,6 +44,8 @@ class UniverseScene : public conquerspace::engine::Scene {
     conquerspace::components::bodies::StarSystem* star_system;
 
     conquerspace::client::SysStarSystemRenderer* system_renderer;
+
+    conquerspace::systems::simulation::Simulation* simulation;
 };
 }  // namespace scene
 }  // namespace conquerspace

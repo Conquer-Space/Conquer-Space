@@ -27,6 +27,7 @@ conquerspace::scene::UniverseScene::UniverseScene(
 
 void conquerspace::scene::UniverseScene::Init() {
     namespace cqspb = conquerspace::components::bodies;
+    simulation = new conquerspace::systems::simulation::Simulation(GetApplication().GetUniverse());
 
     system_renderer = new conquerspace::client::SysStarSystemRenderer(
         GetApplication().GetUniverse(), GetApplication());
@@ -107,6 +108,8 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
                                                         0, vec.y / system_renderer->GetDivider());
         }
     }
+
+    simulation->tick();
 }
 
 void conquerspace::scene::UniverseScene::Ui(float deltaTime) {
@@ -128,6 +131,8 @@ void conquerspace::scene::UniverseScene::Ui(float deltaTime) {
     for (auto a : star_system->bodies) {
         ImGui::Text(fmt::format("{}", a).c_str());
     }
+
+    ImGui::Text(fmt::format("{}", GetApplication().GetUniverse().date.GetDate()).c_str());
     ImGui::End();
 
     /*int size = 20;

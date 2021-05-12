@@ -6,6 +6,7 @@
 namespace conquerspace {
 namespace components {
 class StarDate {
+ public:
     void IncrementDate() {
         date++;
     }
