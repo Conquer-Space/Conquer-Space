@@ -1,4 +1,3 @@
-
 function get_planet_count()
     local planet_count = random_normal_int(6, 5)
     if planet_count < 0 then
@@ -77,7 +76,7 @@ for _, civ in pairs(civilizations) do
         -- Set orbits
         -- Distance can be modeled after a log graph, then convert to km because our regression was based off AU
         set_planet_orbit(planet_entity, planet_id, distance, first)
-
+        set_name(planet_entity, ""..planet_entity)
         local radius = random(1000, 30000)
         set_radius(planet_entity, radius)
         -- Set planet type
@@ -86,9 +85,9 @@ for _, civ in pairs(civilizations) do
         -- As you go further from the center, make it more likely that it is a gas planet
 
         if planet_id == 2 then
-
             -- Set as civ home planet
             set_civilization_planet(civ, planet_entity)
+            set_name(planet_entity, "Earting")
         end
     end
 end

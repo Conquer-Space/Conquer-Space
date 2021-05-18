@@ -39,6 +39,7 @@ class UniverseScene : public conquerspace::engine::Scene {
     double previous_mouseY;
 
     entt::entity player;
+    entt::entity selected_planet = entt::null;
 
     conquerspace::components::Civilization* player_civ;
     conquerspace::components::bodies::StarSystem* star_system;
@@ -46,6 +47,10 @@ class UniverseScene : public conquerspace::engine::Scene {
     conquerspace::client::SysStarSystemRenderer* system_renderer;
 
     conquerspace::systems::simulation::Simulation* simulation;
+
+    bool to_show_planet_window = false;
+
+    int selected_city = 0;
 };
 }  // namespace scene
 }  // namespace conquerspace

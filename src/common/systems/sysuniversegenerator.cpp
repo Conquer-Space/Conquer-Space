@@ -17,6 +17,10 @@
 #include "common/components/orbit.h"
 #include "common/components/organizations.h"
 #include "common/components/player.h"
+#include "common/components/surface.h"
+#include "common/components/name.h"
+#include "common/components/population.h"
+
 
 void conquerspace::systems::universegenerator::SysGenerateUniverse(
     conquerspace::engine::Application& app) {
@@ -122,6 +126,34 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
         return static_cast<bool>(universe.registry.all_of<conquerspace::components::Player>(civ));
     });
 
+    lua.set_function("add_planet_habitation", [&] (entt::entity planet) {
+        universe.registry.emplace<conquerspace::components::Habitation>(planet);
+    });
+
+    lua.set_function("add_planet_settlement", [&] (entt::entity planet) {
+        entt::entity settlement = universe.registry.create();
+        universe.registry.emplace<conquerspace::components::Settlement>(settlement);
+        // Add to planet list
+        universe.registry.get<conquerspace::components::Habitation>(planet).
+                                                    settlements.push_back(settlement);
+        return settlement;
+    });
+
+    lua.set_function("add_population_segment", [&] (entt::entity settlement, uint64_t popsize) {
+        entt::entity population = universe.registry.create();
+        universe.registry.emplace<conquerspace::components::PopulationSegment>(population, popsize);
+        // Add to planet list
+        universe.registry.get<conquerspace::components::Settlement>(settlement).
+                                                        population.push_back(population);
+
+        return population;
+    });
+
+    // Configure the population
+    lua.set_function("set_name", [&] (entt::entity entity, std::string name) {
+        universe.registry.emplace_or_replace<conquerspace::components::Name>(entity, name);
+    });
+
     // Load and run utility scripts
     for (int i = 0; i < val->data["utility"].size(); i++) {
         std::string utility_script = val->data[i];
@@ -130,10 +162,7 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
         sol::load_result utility_result = lua.load(civgenscriptasset->data);
 
         sol::protected_function_result res = utility_result();
-        if (res.valid()) {
-            // yay!
-        } else {
-            // aww
+        if (!res.valid()) {
             sol::error err = res;
             std::string what = err.what();
             spdlog::info("*[lua]: {}", what);
@@ -161,10 +190,7 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
     for (auto a : civilizationView) {
         lua.set("civ", a);
         sol::protected_function_result res = civGenResult();
-        if (res.valid()) {
-            // yay!
-        } else {
-            // aww
+        if (!res.valid()) {
             sol::error err = res;
             std::string what = err.what();
             spdlog::info("*[lua]: {}", what);
@@ -178,10 +204,7 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
     sol::load_result script = lua.load(as->data);
 
     sol::protected_function_result result = script();
-    if (result.valid()) {
-        // yay!
-    } else {
-        // aww
+    if (!result.valid()) {
         sol::error err = result;
         std::string what = err.what();
         spdlog::info("*[lua]: {}", what);
@@ -196,9 +219,7 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
         lua.set("civilization_id", ent);
         // Initialize, etc
         sol::protected_function_result result = civGenScript();
-        if (result.valid()) {
-            // yay!
-        } else {
+        if (!result.valid()) {
             // aww
             sol::error err = result;
             std::string what = err.what();

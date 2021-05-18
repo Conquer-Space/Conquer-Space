@@ -8,3 +8,17 @@ local planet = get_civilization_planet(civilization_id)
 if is_player(civilization_id) then
     print("Is player, do something")
 end
+
+-- Add cities
+add_planet_habitation(planet)
+
+-- Add city
+local city_count = random(30, 50)
+for index = 0, city_count, 1 do
+    local settlement = add_planet_settlement(planet)
+    set_name(settlement, "City ".. index)
+    local pop_unit = add_population_segment(settlement, 100000000) -- 1 million
+    add_population_segment(settlement, 100000000) -- 1 million
+    add_population_segment(settlement, 100000000) -- 1 million
+    add_population_segment(settlement, 100000000) -- 1 million
+end

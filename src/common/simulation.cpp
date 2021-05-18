@@ -4,7 +4,6 @@
 #include "common/simulation.h"
 
 void conquerspace::systems::simulation::Simulation::tick() {
-
     // Tick date
     m_universe.date.IncrementDate();
 }
