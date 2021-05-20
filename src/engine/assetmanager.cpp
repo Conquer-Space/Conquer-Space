@@ -83,8 +83,28 @@ switch (asset_type_map[type]) {
         }
         case AssetType::HJSON:
         {
-        std::ifstream asset_stream(path);
-        manager->assets[key] = LoadHjson(asset_stream, hints);
+            // Load a directory if it's a directory
+            if (std::filesystem::is_directory(path)) {
+                // Load and append to assets.
+                Hjson::Value data;
+                for (const auto& dirEntry : std::filesystem::recursive_directory_iterator(path)) {
+                    // Loop through each hjson
+                    std::ifstream asset_stream(dirEntry.path().c_str());
+
+                    if (!asset_stream.good()) {
+                        continue;
+                    }
+                    LoadHjson(asset_stream, data, hints);
+                }
+                // Make asset
+                std::unique_ptr<cqspa::HjsonAsset> asset =
+                    std::make_unique<cqspa::HjsonAsset>();
+                asset->data = data;
+                manager->assets[key] = std::move(asset);
+            } else {
+                std::ifstream asset_stream(path);
+                manager->assets[key] = LoadHjson(asset_stream, hints);
+            }
         break;
         }
         case AssetType::TEXT:
@@ -200,6 +220,18 @@ std::unique_ptr<cqspa::HjsonAsset> cqspa::AssetLoader::LoadHjson(std::istream &a
     decOpt.comments = false;
     asset_stream >> Hjson::StreamDecoder(asset->data, decOpt);
     return asset;
+}
+
+void cqspa::AssetLoader::LoadHjson(std::istream &asset_stream, Hjson::Value& value,
+                                      Hjson::Value& hints) {
+    Hjson::DecoderOptions decOpt;
+    decOpt.comments = false;
+    Hjson::Value data;
+    asset_stream >> Hjson::StreamDecoder(data, decOpt);
+    // Append the values, because it's in a vector
+    for (int i = 0; i < data.size(); i++) {
+        value.push_back(data[i]);
+    }
 }
 
 void cqspa::AssetLoader::LoadImage(std::string& key,

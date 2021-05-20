@@ -15,6 +15,8 @@
 #include "client/scenes/universescene.h"
 #include "common/universe.h"
 #include "common/components/bodies.h"
+#include "common/components/resource.h"
+#include "common/components/name.h"
 #include "common/components/orbit.h"
 #include "common/systems/sysuniversegenerator.h"
 
@@ -54,6 +56,33 @@ void conquerspace::scene::UniverseLoadingScene::Ui(float deltaTime) {
 void conquerspace::scene::UniverseLoadingScene::Render(float deltaTime) {}
 
 void conquerspace::scene::UniverseLoadingScene::LoadUniverse() {
+    // Load goods
+    conquerspace::asset::HjsonAsset* good_assets = GetApplication()
+                .GetAssetManager().GetAsset<conquerspace::asset::HjsonAsset>("goods");
+    int assets_loaded = 0;
+    for (int i = 0; i < good_assets->data.size(); i++) {
+        Hjson::Value& val = good_assets->data[i];
+        // Create good
+        entt::entity good = GetApplication().GetUniverse().registry.create();
+        auto& good_object = GetApplication()
+            .GetUniverse()
+            .registry.emplace<conquerspace::components::Good>(good);
+        good_object.mass = val["mass"];
+        good_object.volume = val["volume"];
+        auto &name_object =
+            GetApplication()
+                .GetUniverse()
+                .registry.emplace<conquerspace::components::Name>(good);
+        name_object.name = val["name"].to_string();
+        auto &id_object =
+            GetApplication()
+                .GetUniverse()
+                .registry.emplace<conquerspace::components::Identifier>(good);
+        id_object.identifier = val["identifier"].to_string();
+        assets_loaded++;
+    }
+    spdlog::info("Loaded {} goods", assets_loaded);
+
     conquerspace::systems::universegenerator::SysGenerateUniverse(GetApplication());
     m_completed_loading = true;
 }

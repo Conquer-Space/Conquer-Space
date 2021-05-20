@@ -180,4 +180,10 @@
             type: frag
         }
     }
+    goods: {
+        path: data/goods
+        type: hjson
+        hints: {
+        }
+    }
 }

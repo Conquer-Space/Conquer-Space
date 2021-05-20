@@ -1,0 +1,37 @@
+/*
+* This file is part of Conquer Space
+*/
+[
+    {
+        name: Iron
+        identifier: iron
+        volume: 1
+        mass: 7.874
+        tags: [
+        ]
+    }
+    {
+        name: Consumer Good
+        identifier: consumer_good
+        volume: 1
+        mass: 6.5
+        tags: [
+        ]
+    }
+    {
+        name: Water
+        identifier: water
+        volume: 1
+        mass: 1
+        tags: [
+        ]
+    }
+    {
+        name: Steel
+        identifier: water
+        volume: 1
+        mass: 1
+        tags: [
+        ]
+    }
+]

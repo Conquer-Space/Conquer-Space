@@ -9,6 +9,8 @@ namespace types {
     typedef double astronomical_unit;
     typedef double degree;
     typedef double radian;
-}
-}
-}
+    typedef double meter_cube;
+    typedef double kilogram;
+}  // namespace types
+}  // namespace components
+}  // namespace conquerspace
