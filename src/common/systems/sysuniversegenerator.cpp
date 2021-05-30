@@ -20,7 +20,8 @@
 #include "common/components/surface.h"
 #include "common/components/name.h"
 #include "common/components/population.h"
-
+#include "common/components/area.h"
+#include "common/components/resource.h"
 
 void conquerspace::systems::universegenerator::SysGenerateUniverse(
     conquerspace::engine::Application& app) {
@@ -153,6 +154,34 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
     lua.set_function("set_name", [&] (entt::entity entity, std::string name) {
         universe.registry.emplace_or_replace<conquerspace::components::Name>(entity, name);
     });
+
+    lua.set_function("create_industries", [&] (entt::entity city) {
+        universe.registry.emplace<conquerspace::components::Industry>(city);
+    });
+
+    lua.set_function("create_factory", [&](entt::entity city, entt::entity recipe) {
+        entt::entity factory = universe.registry.create();
+        auto& gen = universe.registry.emplace<conquerspace::components::ResourceConverter>(factory);
+        gen.recipe = recipe;
+        universe.registry.get<conquerspace::components::Industry>(city)
+                                                            .industries.push_back(factory);
+
+        universe.registry.emplace<conquerspace::components::ResourceStockpile>(factory);
+        return factory;
+     });
+
+    lua.set_function("create_mine", [&](entt::entity city, entt::entity resource, int amount) {
+        entt::entity mine = universe.registry.create();
+        auto& gen = universe.registry.emplace<conquerspace::components::ResourceGenerator>(mine);
+        gen.output.emplace(resource, amount);
+        universe.registry.get<conquerspace::components::Industry>(city).industries.push_back(mine);
+
+        universe.registry.emplace<conquerspace::components::ResourceStockpile>(mine);
+        return mine;
+    });
+
+    lua["goods"] = universe.goods;
+    lua["recipes"] = universe.recipes;
 
     // Load and run utility scripts
     for (int i = 0; i < val->data["utility"].size(); i++) {

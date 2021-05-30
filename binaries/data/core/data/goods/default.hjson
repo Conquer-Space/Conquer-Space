@@ -1,6 +1,5 @@
-/*
-* This file is part of Conquer Space
-*/
+# This file is part of Conquer Space
+#
 [
     {
         name: Iron
@@ -28,7 +27,7 @@
     }
     {
         name: Steel
-        identifier: water
+        identifier: steel
         volume: 1
         mass: 1
         tags: [

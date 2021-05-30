@@ -2,8 +2,10 @@
  * Copyright 2021 Conquer Space
  */
 #pragma once
+
 #include <string>
 #include <vector>
+#include <map>
 #include <entt/entt.hpp>
 
 #include "common/components/units.h"
@@ -15,13 +17,22 @@ struct Good {
     conquerspace::components::types::kilogram mass;
 };
 
+struct Recipe {
+    std::map<entt::entity, int> input;
+    std::map<entt::entity, int> output;
+};
+
 struct ResourceGenerator {
-    std::vector<entt::entity> output;
+    std::map<entt::entity, int> output;
 };
 
 struct ResourceConverter {
-    std::vector<entt::entity> input;
-    std::vector<entt::entity> output;
+    entt::entity recipe;
+    int productivity = 1;
+};
+
+struct ResourceStockpile {
+    std::map<entt::entity, int> stored;
 };
 }  // namespace components
 }  // namespace conquerspace

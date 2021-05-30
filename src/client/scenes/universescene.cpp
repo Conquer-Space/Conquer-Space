@@ -22,8 +22,10 @@
 #include "common/components/player.h"
 #include "common/components/orbit.h"
 #include "common/components/population.h"
+#include "common/components/area.h"
 #include "common/components/surface.h"
 #include "common/components/name.h"
+#include "common/components/resource.h"
 
 conquerspace::scene::UniverseScene::UniverseScene(
     conquerspace::engine::Application& app) : Scene(app) {}
@@ -32,9 +34,11 @@ void conquerspace::scene::UniverseScene::Init() {
     namespace cqspb = conquerspace::components::bodies;
     simulation = new conquerspace::systems::simulation::Simulation(GetApplication().GetUniverse());
 
-    system_renderer = new conquerspace::client::SysStarSystemRenderer(
+    system_renderer = new conquerspace::client::systems::SysStarSystemRenderer(
         GetApplication().GetUniverse(), GetApplication());
     system_renderer->Initialize();
+
+    planet_information = new conquerspace::client::systems::SysPlanetInformation();
 
     auto civilizationView =
         GetApplication().GetUniverse().registry.
@@ -119,87 +123,7 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
 }
 
 void conquerspace::scene::UniverseScene::Ui(float deltaTime) {
-    if (selected_planet != entt::null && to_show_planet_window) {
-        ImGui::SetNextWindowSize(
-            ImVec2(ImGui::GetIO().DisplaySize.x * 0.4f, ImGui::GetIO().DisplaySize.y * 0.7f),
-            ImGuiCond_Appearing);
-        ImGui::SetNextWindowPos(
-            ImVec2(ImGui::GetIO().DisplaySize.x * 0.75f, ImGui::GetIO().DisplaySize.y * 0.6f),
-            ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-        ImGui::Begin("Planet info", &to_show_planet_window);
-        if (GetApplication().GetUniverse().
-                        registry.all_of<conquerspace::components::Name>(selected_planet)) {
-            std::string i = GetApplication().GetUniverse().
-                                registry.get<conquerspace::components::Name>(selected_planet).name;
-            ImGui::Text(fmt::format("Planet {}", i).c_str());
-        }
-
-        if (GetApplication().GetUniverse()
-                .registry.all_of<conquerspace::components::Habitation>(selected_planet)) {
-            auto& habit =
-                GetApplication()
-                    .GetUniverse()
-                    .registry.get<conquerspace::components::Habitation>(
-                        selected_planet);
-            ImGui::Text(fmt::format("{}", habit.settlements.size()).c_str());
-
-            // List cities
-            ImGui::BeginChild("Left pane", ImVec2(150, 0));
-            for (int i = 0; i < habit.settlements.size(); i++) {
-                const bool is_selected = (selected_city == i);
-
-                entt::entity e = habit.settlements[i];
-                std::string name = GetApplication()
-                    .GetUniverse()
-                    .registry.get<conquerspace::components::Name>(
-                        e).name;
-                if (ImGui::Selectable(
-                        fmt::format("{}", name).c_str(),
-                        is_selected)) {
-                    // Load city
-                    selected_city = i;
-                }
-                if (ImGui::IsItemActive() || ImGui::IsItemHovered()) {
-                    ImGui::SetTooltip(fmt::format("{}", name).c_str());
-                }
-            }
-            ImGui::EndChild();
-            ImGui::SameLine();
-            ImGui::BeginGroup();
-            ImGui::BeginChild("City info", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()));
-
-            // Show city information
-            entt::entity e = habit.settlements[selected_city];
-            ImGui::Text(fmt::format("{}", GetApplication()
-                    .GetUniverse()
-                    .registry.get<conquerspace::components::Name>(
-                        e).name).c_str());
-
-            if (GetApplication()
-                .GetUniverse()
-                .registry.all_of<conquerspace::components::Settlement>(e)) {
-                int size = GetApplication()
-                    .GetUniverse()
-                    .registry.get<conquerspace::components::Settlement>(e).population.size();
-                ImGui::Text(fmt::format("{}", size).c_str());
-
-                for (auto b : GetApplication()
-                    .GetUniverse()
-                    .registry.get<conquerspace::components::Settlement>(e).population) {
-                    auto bad_var_name = GetApplication()
-                        .GetUniverse()
-                        .registry.get<conquerspace::components::PopulationSegment>(b);
-                    ImGui::Text(fmt::format("Popsize: {}", bad_var_name.population).c_str());
-                }
-            } else {
-                ImGui::Text(fmt::format("Nothing").c_str());
-            }
-
-            ImGui::EndChild();
-            ImGui::EndGroup();
-        }
-        ImGui::End();
-    }
+    planet_information->DisplayPlanet(selected_planet, GetApplication());
 
     /*int size = 20;
     auto draw = ImGui::GetForegroundDrawList();
@@ -215,5 +139,6 @@ void conquerspace::scene::UniverseScene::Ui(float deltaTime) {
 }
 
 void conquerspace::scene::UniverseScene::Render(float deltaTime) {
+    glEnable(GL_MULTISAMPLE);
     system_renderer->Render();
 }

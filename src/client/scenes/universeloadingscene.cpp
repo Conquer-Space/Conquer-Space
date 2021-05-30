@@ -79,9 +79,41 @@ void conquerspace::scene::UniverseLoadingScene::LoadUniverse() {
                 .GetUniverse()
                 .registry.emplace<conquerspace::components::Identifier>(good);
         id_object.identifier = val["identifier"].to_string();
+        GetApplication().GetUniverse().goods[val["identifier"].to_string()] = good;
         assets_loaded++;
     }
     spdlog::info("Loaded {} goods", assets_loaded);
+
+    conquerspace::asset::HjsonAsset* recipe_asset = GetApplication()
+                .GetAssetManager().GetAsset<conquerspace::asset::HjsonAsset>("recipes");
+    for (int i = 0; i < recipe_asset->data.size(); i++) {
+        Hjson::Value& val = recipe_asset->data[i];
+
+        entt::entity recipe =  GetApplication().GetUniverse().registry.create();
+        auto& recipe_component = GetApplication()
+            .GetUniverse()
+            .registry.emplace<conquerspace::components::Recipe>(recipe);
+        Hjson::Value& input_value = val["input"];
+        for (auto input_good : input_value) {
+            recipe_component
+                .input[GetApplication().GetUniverse().goods[input_good.first]] =
+                input_good.second;
+        }
+
+        Hjson::Value& output_value = val["output"];
+        for (auto output_good : output_value) {
+            recipe_component
+                .input[GetApplication().GetUniverse().goods[output_good.first]] =
+                output_good.second;
+        }
+
+        auto &name_object =
+            GetApplication()
+                .GetUniverse()
+                .registry.emplace<conquerspace::components::Identifier>(recipe);
+        name_object.identifier = val["identifier"].to_string();
+        GetApplication().GetUniverse().recipes[name_object.identifier] = recipe;
+    }
 
     conquerspace::systems::universegenerator::SysGenerateUniverse(GetApplication());
     m_completed_loading = true;

@@ -15,10 +15,13 @@ add_planet_habitation(planet)
 -- Add city
 local city_count = random(30, 50)
 for index = 0, city_count, 1 do
-    local settlement = add_planet_settlement(planet)
-    set_name(settlement, "City ".. index)
-    local pop_unit = add_population_segment(settlement, 100000000) -- 1 million
-    add_population_segment(settlement, 100000000) -- 1 million
-    add_population_segment(settlement, 100000000) -- 1 million
-    add_population_segment(settlement, 100000000) -- 1 million
+    local city = add_planet_settlement(planet)
+    set_name(city, "City ".. index)
+    local pop_unit = add_population_segment(city, 100000000) -- 100 million
+    -- Add industry
+    create_industries(city)
+    create_factory(city, recipes["steel_forging"])
+    -- Add various factories
+    create_factory(city, recipes["consumer_good_manufacturing"])
+    create_mine(city, goods["iron"], 10)
 end

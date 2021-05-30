@@ -14,19 +14,19 @@
 
 namespace conquerspace {
 namespace client {
-
+namespace systems {
 /*
-* Tag class for bodies to render.
-*/
-struct ToRender { };
+ * Tag class for bodies to render.
+ */
+struct ToRender {};
 
 /*
  * Main renderer for the universe
-*/
-class SysStarSystemRenderer{
+ */
+class SysStarSystemRenderer {
  public:
     SysStarSystemRenderer(conquerspace::components::Universe &,
-                           conquerspace::engine::Application &);
+                          conquerspace::engine::Application &);
     void Initialize();
     void Render();
     void SeeStarSystem(entt::entity);
@@ -76,5 +76,6 @@ class SysStarSystemRenderer{
 
     glm::vec3 sun_position;
 };
+}  // namespace systems
 }  // namespace client
 }  // namespace conquerspace

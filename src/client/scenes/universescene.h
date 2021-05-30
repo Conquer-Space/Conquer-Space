@@ -4,6 +4,7 @@
 #pragma once
 
 #include "client/systems/sysstarsystemrenderer.h"
+#include "client/systems/sysplanetviewer.h"
 #include "common/components/bodies.h"
 #include "common/components/organizations.h"
 #include "engine/scene.h"
@@ -20,6 +21,7 @@ class UniverseScene : public conquerspace::engine::Scene {
     ~UniverseScene() {
         delete system_renderer;
         delete simulation;
+        delete planet_information;
     }
 
     void Init();
@@ -44,13 +46,12 @@ class UniverseScene : public conquerspace::engine::Scene {
     conquerspace::components::Civilization* player_civ;
     conquerspace::components::bodies::StarSystem* star_system;
 
-    conquerspace::client::SysStarSystemRenderer* system_renderer;
+    conquerspace::client::systems::SysStarSystemRenderer* system_renderer;
+    conquerspace::client::systems::SysPlanetInformation* planet_information;
 
     conquerspace::systems::simulation::Simulation* simulation;
 
     bool to_show_planet_window = false;
-
-    int selected_city = 0;
 };
 }  // namespace scene
 }  // namespace conquerspace

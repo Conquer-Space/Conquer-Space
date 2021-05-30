@@ -16,7 +16,7 @@
 #include "common/components/player.h"
 #include "common/components/orbit.h"
 
-conquerspace::client::SysStarSystemRenderer::SysStarSystemRenderer
+conquerspace::client::systems::SysStarSystemRenderer::SysStarSystemRenderer
                                                     (conquerspace::components::Universe &_u,
                                                     conquerspace::engine::Application &_a) :
                                                     m_universe(_u), m_app(_a),
@@ -24,7 +24,7 @@ conquerspace::client::SysStarSystemRenderer::SysStarSystemRenderer
                                                     view_y(0), view_center(glm::vec3(1, 1, 1)) {
 }
 
-void conquerspace::client::SysStarSystemRenderer::Initialize() {
+void conquerspace::client::systems::SysStarSystemRenderer::Initialize() {
     // Initialize meshes, etc
     conquerspace::engine::Mesh* sphere_mesh = new conquerspace::engine::Mesh();
     conquerspace::primitive::ConstructSphereMesh(64, 64, *sphere_mesh);
@@ -68,7 +68,7 @@ void conquerspace::client::SysStarSystemRenderer::Initialize() {
     sun.shaderProgram = star_shader;
 }
 
-void conquerspace::client::SysStarSystemRenderer::Render() {
+void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     namespace cqspb = conquerspace::components::bodies;
     CalculateCamera();
 
@@ -126,7 +126,7 @@ void conquerspace::client::SysStarSystemRenderer::Render() {
     glDepthFunc(GL_LESS);
 }
 
-void conquerspace::client::SysStarSystemRenderer::SeeStarSystem(
+void conquerspace::client::systems::SysStarSystemRenderer::SeeStarSystem(
     entt::entity system) {
     namespace cqspb = conquerspace::components::bodies;
     if (m_star_system != entt::null &&
@@ -148,7 +148,7 @@ void conquerspace::client::SysStarSystemRenderer::SeeStarSystem(
     }
 }
 
-void conquerspace::client::SysStarSystemRenderer::DrawPlanetIcon(
+void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanetIcon(
     glm::vec3 &object_pos, glm::mat4 &cameraMatrix, glm::mat4 &projection, glm::vec4 &viewport) {
     glm::vec3 pos = glm::project(object_pos, cameraMatrix,
                                         projection, viewport);
@@ -188,7 +188,7 @@ void conquerspace::client::SysStarSystemRenderer::DrawPlanetIcon(
     engine::Draw(planet_circle);
 }
 
-void conquerspace::client::SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_pos,
+void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_pos,
                                                             glm::mat4 &cameraMatrix,
                                                             glm::mat4 &projection,
                                                             glm::vec3 &cam_pos) {
@@ -219,7 +219,7 @@ void conquerspace::client::SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_p
     engine::Draw(planet);
 }
 
-void conquerspace::client::SysStarSystemRenderer::DrawStar(
+void conquerspace::client::systems::SysStarSystemRenderer::DrawStar(
     glm::vec3 &object_pos, glm::mat4 &cameraMatrix, glm::mat4 &projection,
     glm::vec3 &cam_pos) {
     glm::mat4 position = glm::mat4(1.f);
@@ -239,7 +239,7 @@ void conquerspace::client::SysStarSystemRenderer::DrawStar(
     engine::Draw(sun);
 }
 
-glm::vec3 conquerspace::client::SysStarSystemRenderer::CalculateObjectPos(
+glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateObjectPos(
     entt::entity &ent) {
     namespace cqspb = conquerspace::components::bodies;
     cqspb::Orbit& orbit = m_app.GetUniverse().registry.get<cqspb::Orbit>(ent);
@@ -247,7 +247,7 @@ glm::vec3 conquerspace::client::SysStarSystemRenderer::CalculateObjectPos(
     return (glm::vec3(vec.x / divider, 0, vec.y / divider) - focus_vec);
 }
 
-void conquerspace::client::SysStarSystemRenderer::CalculateCamera() {
+void conquerspace::client::systems::SysStarSystemRenderer::CalculateCamera() {
     cam_pos = glm::vec3(
                 cos(view_y) * sin(view_x) * scroll,
                 sin(view_y) * scroll,
@@ -264,7 +264,7 @@ void conquerspace::client::SysStarSystemRenderer::CalculateCamera() {
                             m_app.GetWindowWidth(), m_app.GetWindowHeight());
 }
 
-entt::entity conquerspace::client::SysStarSystemRenderer::GetMouseOnObject(
+entt::entity conquerspace::client::systems::SysStarSystemRenderer::GetMouseOnObject(
     int mouse_x, int mouse_y) {
     namespace cqspb = conquerspace::components::bodies;
 
