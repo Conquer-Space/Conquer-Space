@@ -20,6 +20,18 @@ struct Good {
 struct Recipe {
     std::map<entt::entity, int> input;
     std::map<entt::entity, int> output;
+
+    float interval;
+};
+
+struct FactoryProductivity {
+    // Amount generated per generation
+    float productivity;
+};
+
+struct FactoryTimer {
+    float interval;
+    float time_left;
 };
 
 struct ResourceGenerator {
@@ -28,7 +40,6 @@ struct ResourceGenerator {
 
 struct ResourceConverter {
     entt::entity recipe;
-    int productivity = 1;
 };
 
 struct ResourceStockpile {

@@ -103,7 +103,7 @@ void conquerspace::scene::UniverseLoadingScene::LoadUniverse() {
         Hjson::Value& output_value = val["output"];
         for (auto output_good : output_value) {
             recipe_component
-                .input[GetApplication().GetUniverse().goods[output_good.first]] =
+                .output[GetApplication().GetUniverse().goods[output_good.first]] =
                 output_good.second;
         }
 

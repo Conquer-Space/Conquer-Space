@@ -3,8 +3,10 @@
 */
 #pragma once
 
-#include<entt/entt.hpp>
 #include <map>
+#include<string>
+
+#include <entt/entt.hpp>
 
 #include "common/stardate.h"
 

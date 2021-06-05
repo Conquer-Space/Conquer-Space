@@ -20,8 +20,11 @@ for index = 0, city_count, 1 do
     local pop_unit = add_population_segment(city, 100000000) -- 100 million
     -- Add industry
     create_industries(city)
-    create_factory(city, recipes["steel_forging"])
+    create_factory(city, recipes["steel_forging"], 5)
     -- Add various factories
-    create_factory(city, recipes["consumer_good_manufacturing"])
-    create_mine(city, goods["iron"], 10)
+    create_factory(city, recipes["consumer_good_manufacturing"], 20)
+    create_mine(city, goods["iron"], 10, 1)
+    create_mine(city, goods["copper"], 10, 1)
+    create_mine(city, goods["aluminium"], 10, 1)
+    create_mine(city, goods["iron"], 20, 1)
 end

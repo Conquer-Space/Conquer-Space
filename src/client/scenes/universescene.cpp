@@ -119,6 +119,7 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
         }
     }
 
+    // Game tick
     simulation->tick();
 }
 

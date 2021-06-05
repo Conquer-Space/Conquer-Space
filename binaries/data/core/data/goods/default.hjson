@@ -10,6 +10,22 @@
         ]
     }
     {
+        name: Copper
+        identifier: copper
+        volume: 1
+        mass: 8.96
+        tags: [
+        ]
+    }
+    {
+        name: Aluminium
+        identifier: aluminium
+        volume: 1
+        mass: 2.7
+        tags: [
+        ]
+    }
+    {
         name: Consumer Good
         identifier: consumer_good
         volume: 1
