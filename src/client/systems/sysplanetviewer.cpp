@@ -212,7 +212,6 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
                         ImGui::TableNextRow();
                         ImGui::TableSetColumnIndex(0);
 
-                        ImGui::SameLine();
                         ImGui::Text(fmt::format("{}", m_app.GetUniverse().registry.
                                                         get<cqspc::Identifier>(iterator->first)
                                                         .identifier).c_str());
@@ -234,6 +233,50 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
                 ImGui::Text("GDP:");
 
                 ImGui::EndChild();
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Resources")) {
+                // Consolidate resources
+                auto &city_industry = m_app.GetUniverse()
+                    .registry.get<cqspc::Industry>(selected_city_entity);
+                std::map<entt::entity, int> resources;
+                for (auto area : city_industry.industries) {
+                    if (m_app.GetUniverse().registry.all_of<cqspc::ResourceStockpile>(area)) {
+                        // Add resources
+                        auto& stockpile =
+                            m_app.GetUniverse()
+                                .registry.get<cqspc::ResourceStockpile>(area);
+                        for (auto iterator = stockpile.stored.begin();
+                            iterator != stockpile.stored.end(); iterator++) {
+                            if (resources.find(iterator->first) == resources.end()) {
+                                resources[iterator->first] = 0;
+                            }
+                            resources[iterator->first] = resources[iterator->first]
+                                                                                + iterator->second;
+                        }
+                    }
+                }
+
+                if (ImGui::BeginTable("table1", 2,
+                                            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+                    ImGui::TableSetupColumn("Good");
+                    ImGui::TableSetupColumn("Amount");
+                    ImGui::TableHeadersRow();
+                    for (auto iterator = resources.begin();
+                                                        iterator != resources.end(); iterator++) {
+                        ImGui::TableNextRow();
+                        ImGui::TableSetColumnIndex(0);
+
+                        ImGui::Text(fmt::format("{}", m_app.GetUniverse().registry.
+                                                        get<cqspc::Identifier>(iterator->first)
+                                                        .identifier).c_str());
+
+                        ImGui::TableSetColumnIndex(1);
+                        ImGui::Text(fmt::format("{}", conquerspace::util::
+                                                    LongToHumanString(iterator->second)).c_str());
+                    }
+                    ImGui::EndTable();
+                }
                 ImGui::EndTabItem();
             }
             ImGui::EndTabBar();

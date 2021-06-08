@@ -167,11 +167,12 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
         auto& prod = universe.registry.emplace<cqspc::FactoryProductivity>(factory);
         prod.productivity = productivity;
 
+        universe.registry.emplace<cqspc::ResourceStockpile>(factory);
+
         // Add recipes and stuff
         gen.recipe = recipe;
         universe.registry.get<cqspc::Industry>(city).industries.push_back(factory);
 
-        universe.registry.emplace<cqspc::ResourceStockpile>(factory);
         return factory;
      });
 

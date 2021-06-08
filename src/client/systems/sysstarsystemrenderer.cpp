@@ -5,6 +5,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/polar_coordinates.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "engine/renderer/primitives/uvsphere.h"
 #include "engine/renderer/renderer.h"

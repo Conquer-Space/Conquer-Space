@@ -45,5 +45,8 @@ struct ResourceConverter {
 struct ResourceStockpile {
     std::map<entt::entity, int> stored;
 };
+
+class ResourceLedger {
+};
 }  // namespace components
 }  // namespace conquerspace
