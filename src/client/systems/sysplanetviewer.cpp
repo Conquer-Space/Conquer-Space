@@ -21,6 +21,10 @@
 void conquerspace::client::systems::SysPlanetInformation::DisplayPlanet(
     entt::entity& planet, conquerspace::engine::Application& m_app) {
     namespace cqspc = conquerspace::components;
+    if (!to_see) {
+        return;
+    }
+
     ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x * 0.4f,
                                     ImGui::GetIO().DisplaySize.y * 0.9f),
                              ImGuiCond_Appearing);
@@ -31,10 +35,10 @@ void conquerspace::client::systems::SysPlanetInformation::DisplayPlanet(
     if (planet == entt::null) {
         return;
     }
-    if (m_app.GetUniverse().registry.all_of<cqspc::Name>(planet)) {
-        planet_name = m_app.GetUniverse().registry.get<cqspc::Name>(planet).name;
+    if (m_app.GetUniverse().all_of<cqspc::Name>(planet)) {
+        planet_name = m_app.GetUniverse().get<cqspc::Name>(planet).name;
     }
-    ImGui::Begin(planet_name.c_str());
+    ImGui::Begin(planet_name.c_str(), &to_see);
     switch (view_mode) {
         case ViewMode::PLANET_VIEW:
             PlanetInformationPanel(planet, m_app);
@@ -57,16 +61,16 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
     static bool thing = true;
     ImGui::Checkbox("Macroeconomic/Ownership mode", &thing);
 
-    ImGui::Text(fmt::format("{}", m_app.GetUniverse().registry.
+    ImGui::Text(fmt::format("{}", m_app.GetUniverse().
                                             get<cqspc::Name>(selected_city_entity).name).c_str());
 
-    if (m_app.GetUniverse().registry.all_of<cqspc::Settlement>(selected_city_entity)) {
-        int size = m_app.GetUniverse().registry
+    if (m_app.GetUniverse().all_of<cqspc::Settlement>(selected_city_entity)) {
+        int size = m_app.GetUniverse()
                 .get<cqspc::Settlement>(selected_city_entity).population.size();
-        for (auto b : m_app.GetUniverse().registry.get<cqspc::Settlement>(
+        for (auto b : m_app.GetUniverse().get<cqspc::Settlement>(
                               selected_city_entity).population) {
             auto& bad_var_name = m_app.GetUniverse()
-                                    .registry.get<cqspc::PopulationSegment>(b);
+                                    .get<cqspc::PopulationSegment>(b);
             ImGui::Text(fmt::format("Population: {}",
                         conquerspace::util::LongToHumanString(bad_var_name.population)).c_str());
         }
@@ -74,13 +78,13 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
         ImGui::Text(fmt::format("No population").c_str());
     }
 
-    if (m_app.GetUniverse().registry.all_of<cqspc::Industry>(selected_city_entity)) {
-        size_t industries = m_app.GetUniverse().registry
+    if (m_app.GetUniverse().all_of<cqspc::Industry>(selected_city_entity)) {
+        size_t industries = m_app.GetUniverse()
                 .get<cqspc::Industry>(selected_city_entity).industries.size();
         if (ImGui::BeginTabBar("CityTabs", ImGuiTabBarFlags_None)) {
             if (ImGui::BeginTabItem("Industries")) {
                 auto &city_industry = m_app.GetUniverse()
-                    .registry.get<cqspc::Industry>(selected_city_entity);
+                    .get<cqspc::Industry>(selected_city_entity);
 
                 ImGui::Text(fmt::format("Factories: {}", industries).c_str());
                 ImGui::BeginChild("salepanel",
@@ -106,11 +110,11 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
                 std::map<entt::entity, int> output_resources;
                 for (auto thingies : city_industry.industries) {
                     if (m_app.GetUniverse()
-                        .registry.all_of<cqspc::ResourceConverter, cqspc::Factory>(thingies)) {
+                        .all_of<cqspc::ResourceConverter, cqspc::Factory>(thingies)) {
                         auto& generator =
-                            m_app.GetUniverse().registry.get<cqspc::ResourceConverter>(thingies);
+                            m_app.GetUniverse().get<cqspc::ResourceConverter>(thingies);
                         auto& recipe =
-                            m_app.GetUniverse().registry.get<cqspc::Recipe>(
+                            m_app.GetUniverse().get<cqspc::Recipe>(
                                 generator.recipe);
                         for (auto iterator = recipe.input.begin();
                              iterator != recipe.input.end(); iterator++) {
@@ -144,7 +148,7 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
                         ImGui::TableNextRow();
                         ImGui::TableSetColumnIndex(0);
                         ImGui::Text(
-                            fmt::format("{}", m_app.GetUniverse().registry
+                            fmt::format("{}", m_app.GetUniverse()
                                     .get<cqspc::Identifier>(iterator->first).identifier).c_str());
 
                         ImGui::TableSetColumnIndex(1);
@@ -165,7 +169,7 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
                         ImGui::TableNextRow();
                         ImGui::TableSetColumnIndex(0);
                         ImGui::Text(fmt::format("{}",
-                                                m_app.GetUniverse().registry.
+                                                m_app.GetUniverse().
                                                 get<cqspc::Identifier>(iterator->first)
                                                 .identifier).c_str());
 
@@ -186,12 +190,12 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
                 std::map<entt::entity, int> resources;
                 for (auto thingies : city_industry.industries) {
                     if (m_app.GetUniverse()
-                        .registry.all_of<cqspc::ResourceGenerator, cqspc::Mine>(thingies)) {
+                        .all_of<cqspc::ResourceGenerator, cqspc::Mine>(thingies)) {
                         auto& generator =
-                            m_app.GetUniverse().registry.get<cqspc::ResourceGenerator>(thingies);
+                            m_app.GetUniverse().get<cqspc::ResourceGenerator>(thingies);
 
-                        for (auto iterator = generator.output.begin();
-                            iterator != generator.output.end(); iterator++) {
+                        for (auto iterator = generator.begin();
+                            iterator != generator.end(); iterator++) {
                             if (resources.find(iterator->first) == resources.end()) {
                                 resources[iterator->first] = 0;
                             }
@@ -212,7 +216,7 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
                         ImGui::TableNextRow();
                         ImGui::TableSetColumnIndex(0);
 
-                        ImGui::Text(fmt::format("{}", m_app.GetUniverse().registry.
+                        ImGui::Text(fmt::format("{}", m_app.GetUniverse().
                                                         get<cqspc::Identifier>(iterator->first)
                                                         .identifier).c_str());
 
@@ -238,16 +242,14 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
             if (ImGui::BeginTabItem("Resources")) {
                 // Consolidate resources
                 auto &city_industry = m_app.GetUniverse()
-                    .registry.get<cqspc::Industry>(selected_city_entity);
+                    .get<cqspc::Industry>(selected_city_entity);
                 std::map<entt::entity, int> resources;
                 for (auto area : city_industry.industries) {
-                    if (m_app.GetUniverse().registry.all_of<cqspc::ResourceStockpile>(area)) {
+                    if (m_app.GetUniverse().all_of<cqspc::ResourceStockpile>(area)) {
                         // Add resources
-                        auto& stockpile =
-                            m_app.GetUniverse()
-                                .registry.get<cqspc::ResourceStockpile>(area);
-                        for (auto iterator = stockpile.stored.begin();
-                            iterator != stockpile.stored.end(); iterator++) {
+                        auto& stockpile = m_app.GetUniverse().get<cqspc::ResourceStockpile>(area);
+                        for (auto iterator = stockpile.begin();
+                            iterator != stockpile.end(); iterator++) {
                             if (resources.find(iterator->first) == resources.end()) {
                                 resources[iterator->first] = 0;
                             }
@@ -267,7 +269,7 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
                         ImGui::TableNextRow();
                         ImGui::TableSetColumnIndex(0);
 
-                        ImGui::Text(fmt::format("{}", m_app.GetUniverse().registry.
+                        ImGui::Text(fmt::format("{}", m_app.GetUniverse().
                                                         get<cqspc::Identifier>(iterator->first)
                                                         .identifier).c_str());
 
@@ -288,15 +290,15 @@ void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel
                             entt::entity& planet,
                             conquerspace::engine::Application& m_app) {
     namespace cqspc = conquerspace::components;
-    if (m_app.GetUniverse().registry.all_of<cqspc::Habitation>(planet)) {
-        auto& habit = m_app.GetUniverse().registry.get<cqspc::Habitation>(planet);
+    if (m_app.GetUniverse().all_of<cqspc::Habitation>(planet)) {
+        auto& habit = m_app.GetUniverse().get<cqspc::Habitation>(planet);
         ImGui::Text(fmt::format("Cities: {}", habit.settlements.size()).c_str());
         // List cities
         for (int i = 0; i < habit.settlements.size(); i++) {
             const bool is_selected = (selected_city_index == i);
 
             entt::entity e = habit.settlements[i];
-            std::string name = m_app.GetUniverse().registry.get<cqspc::Name>(e)
+            std::string name = m_app.GetUniverse().get<cqspc::Name>(e)
                     .name;
             if (ImGui::Selectable(fmt::format("{}", name).c_str(), is_selected)) {
                 // Load city

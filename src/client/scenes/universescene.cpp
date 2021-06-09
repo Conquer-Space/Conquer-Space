@@ -41,20 +41,20 @@ void conquerspace::scene::UniverseScene::Init() {
     planet_information = new conquerspace::client::systems::SysPlanetInformation();
 
     auto civilizationView =
-        GetApplication().GetUniverse().registry.
+        GetApplication().GetUniverse().
                 view<conquerspace::components::Civilization, conquerspace::components::Player>();
     for (auto [entity, civ] : civilizationView.each()) {
         player = entity;
         player_civ = &civ;
     }
     cqspb::Body body = GetApplication().GetUniverse().
-                        registry.get<cqspb::Body>(player_civ->starting_planet);
+                        get<cqspb::Body>(player_civ->starting_planet);
     system_renderer->SeeStarSystem(body.star_system);
     star_system = &GetApplication().GetUniverse().
-                        registry.get<cqspb::StarSystem>(body.star_system);
+                        get<cqspb::StarSystem>(body.star_system);
 
     // Set view center
-    cqspb::Orbit& orbit = GetApplication().GetUniverse().registry.
+    cqspb::Orbit& orbit = GetApplication().GetUniverse().
                                 get<cqspb::Orbit>(player_civ->starting_planet);
     cqspb::Vec2& vec = cqspb::toVec2(orbit);
     system_renderer->view_center = glm::vec3(vec.x / system_renderer->GetDivider(),
@@ -108,7 +108,7 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
                     GetApplication().GetMouseY())) != entt::null) {
             // Go to the place
             conquerspace::components::bodies::Orbit& orbit =
-                                GetApplication().GetUniverse().registry.
+                                GetApplication().GetUniverse().
                                 get<conquerspace::components::bodies::Orbit>(ent);
             conquerspace::components::bodies::Vec2& vec =
                                                     conquerspace::components::bodies::toVec2(orbit);
@@ -116,14 +116,24 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
                                                         0, vec.y / system_renderer->GetDivider());
             selected_planet = ent;
             to_show_planet_window = true;
+            planet_information->to_see = true;
         }
     }
 
-    // Game tick
-    simulation->tick();
+    // Check for last tick
+    if (glfwGetTime() - last_tick > 0.5) {
+        last_tick = glfwGetTime();
+        // Game tick
+        simulation->tick();
+    }
 }
 
 void conquerspace::scene::UniverseScene::Ui(float deltaTime) {
+    // Turn window
+    ImGui::Begin("TS window");
+    // Show date
+    ImGui::End();
+
     planet_information->DisplayPlanet(selected_planet, GetApplication());
 
     /*int size = 20;

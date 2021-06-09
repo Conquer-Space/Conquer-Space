@@ -40,8 +40,8 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
 
     // Init civilization script
     lua.set_function("create_star_system", [&] () {
-        entt::entity ent = universe.registry.create();
-        universe.registry.emplace<cqspb::StarSystem>(ent);
+        entt::entity ent = universe.create();
+        universe.emplace<cqspb::StarSystem>(ent);
         return ent;
      });
 
@@ -72,23 +72,23 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
     });
 
     lua.set_function("add_planet", [&] (entt::entity system) {
-        entt::entity planet = universe.registry.create();
-        auto& body = universe.registry.emplace<cqspb::Body>(planet);
+        entt::entity planet = universe.create();
+        auto& body = universe.emplace<cqspb::Body>(planet);
         body.star_system = system;
-        universe.registry.emplace<cqspb::Planet>(planet);
-        universe.registry.get<cqspb::StarSystem>(system).bodies.push_back(planet);
+        universe.emplace<cqspb::Planet>(planet);
+        universe.get<cqspb::StarSystem>(system).bodies.push_back(planet);
         return planet;
     });
 
     lua.set_function("add_star", [&] (entt::entity system) {
-        entt::entity star = universe.registry.create();
-        universe.registry.emplace<cqspb::Star>(star);
-        auto& body = universe.registry.emplace<cqspb::Body>(star);
+        entt::entity star = universe.create();
+        universe.emplace<cqspb::Star>(star);
+        auto& body = universe.emplace<cqspb::Body>(star);
         body.star_system = system;
 
-        universe.registry.emplace<cqspb::LightEmitter>(star);
+        universe.emplace<cqspb::LightEmitter>(star);
 
-        universe.registry.get<cqspb::StarSystem>(system).bodies.push_back(star);
+        universe.get<cqspb::StarSystem>(system).bodies.push_back(star);
         return star;
     });
 
@@ -97,7 +97,7 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
                                             double theta,
                                             double eccentricity,
                                             double argument) {
-        cqspb::Orbit orb = universe.registry.emplace<cqspb::Orbit>(body,
+        cqspb::Orbit orb = universe.emplace<cqspb::Orbit>(body,
                                                                     theta,
                                                                     distance,
                                                                     eccentricity,
@@ -105,91 +105,91 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
     });
 
     lua.set_function("set_radius", [&] (entt::entity body, int radius) {
-        cqspb::Body &bod = universe.registry.get<cqspb::Body>(body);
+        cqspb::Body &bod = universe.get<cqspb::Body>(body);
         bod.radius = radius;
     });
 
     lua.set_function("add_civilization", [&] () {
-        entt::entity civ = universe.registry.create();
-        universe.registry.emplace<cqspc::Organization>(civ);
+        entt::entity civ = universe.create();
+        universe.emplace<cqspc::Organization>(civ);
         return civ;
     });
 
     lua.set_function("set_civilization_planet", [&] (entt::entity civ, entt::entity planet) {
-        universe.registry.emplace<cqspc::Civilization>(civ, planet);
+        universe.emplace<cqspc::Civilization>(civ, planet);
     });
 
     lua.set_function("get_civilization_planet", [&] (entt::entity civ) {
-        return universe.registry.get<cqspc::Civilization>(civ).starting_planet;
+        return universe.get<cqspc::Civilization>(civ).starting_planet;
     });
 
     lua.set_function("is_player", [&] (entt::entity civ) {
-        return static_cast<bool>(universe.registry.all_of<cqspc::Player>(civ));
+        return static_cast<bool>(universe.all_of<cqspc::Player>(civ));
     });
 
     lua.set_function("add_planet_habitation", [&] (entt::entity planet) {
-        universe.registry.emplace<cqspc::Habitation>(planet);
+        universe.emplace<cqspc::Habitation>(planet);
     });
 
     lua.set_function("add_planet_settlement", [&] (entt::entity planet) {
-        entt::entity settlement = universe.registry.create();
-        universe.registry.emplace<cqspc::Settlement>(settlement);
+        entt::entity settlement = universe.create();
+        universe.emplace<cqspc::Settlement>(settlement);
         // Add to planet list
-        universe.registry.get<cqspc::Habitation>(planet).settlements.push_back(settlement);
+        universe.get<cqspc::Habitation>(planet).settlements.push_back(settlement);
         return settlement;
     });
 
     lua.set_function("add_population_segment", [&] (entt::entity settlement, uint64_t popsize) {
-        entt::entity population = universe.registry.create();
-        universe.registry.emplace<cqspc::PopulationSegment>(population, popsize);
+        entt::entity population = universe.create();
+        universe.emplace<cqspc::PopulationSegment>(population, popsize);
         // Add to planet list
-        universe.registry.get<cqspc::Settlement>(settlement).population.push_back(population);
+        universe.get<cqspc::Settlement>(settlement).population.push_back(population);
 
         return population;
     });
 
     // Configure the population
     lua.set_function("set_name", [&] (entt::entity entity, std::string name) {
-        universe.registry.emplace_or_replace<cqspc::Name>(entity, name);
+        universe.emplace_or_replace<cqspc::Name>(entity, name);
     });
 
     lua.set_function("create_industries", [&] (entt::entity city) {
-        universe.registry.emplace<cqspc::Industry>(city);
+        universe.emplace<cqspc::Industry>(city);
     });
 
     lua.set_function("create_factory", [&](entt::entity city, entt::entity recipe,
                                                                             float productivity) {
-        entt::entity factory = universe.registry.create();
-        auto& gen = universe.registry.emplace<cqspc::ResourceConverter>(factory);
-        universe.registry.emplace<cqspc::Factory>(factory);
+        entt::entity factory = universe.create();
+        auto& gen = universe.emplace<cqspc::ResourceConverter>(factory);
+        universe.emplace<cqspc::Factory>(factory);
 
         // Add producivity
-        auto& prod = universe.registry.emplace<cqspc::FactoryProductivity>(factory);
+        auto& prod = universe.emplace<cqspc::FactoryProductivity>(factory);
         prod.productivity = productivity;
 
-        universe.registry.emplace<cqspc::ResourceStockpile>(factory);
+        universe.emplace<cqspc::ResourceStockpile>(factory);
 
         // Add recipes and stuff
         gen.recipe = recipe;
-        universe.registry.get<cqspc::Industry>(city).industries.push_back(factory);
+        universe.get<cqspc::Industry>(city).industries.push_back(factory);
 
         return factory;
      });
 
     lua.set_function("create_mine", [&](entt::entity city, entt::entity resource, int amount,
                                                                             float productivity) {
-        entt::entity mine = universe.registry.create();
-        auto& gen = universe.registry.emplace<cqspc::ResourceGenerator>(mine);
-        universe.registry.emplace<cqspc::Mine>(mine);
+        entt::entity mine = universe.create();
+        auto& gen = universe.emplace<cqspc::ResourceGenerator>(mine);
+        universe.emplace<cqspc::Mine>(mine);
 
-        gen.output.emplace(resource, amount);
-        universe.registry.get<cqspc::Industry>(city).industries.push_back(mine);
+        gen.emplace(resource, amount);
+        universe.get<cqspc::Industry>(city).industries.push_back(mine);
 
         // Add producivity
-        auto& prod = universe.registry.emplace<cqspc::FactoryProductivity>(mine);
+        auto& prod = universe.emplace<cqspc::FactoryProductivity>(mine);
         prod.productivity = productivity;
 
-        universe.registry.emplace<cqspc::ResourceStockpile>(mine);
+        universe.emplace<cqspc::ResourceStockpile>(mine);
         return mine;
     });
 
@@ -212,13 +212,13 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
     }
 
     // Create player
-    auto player = universe.registry.create();
-    universe.registry.emplace<cqspc::Organization>(player);
-    universe.registry.emplace<cqspc::Player>(player);
+    auto player = universe.create();
+    universe.emplace<cqspc::Organization>(player);
+    universe.emplace<cqspc::Player>(player);
 
     for (int i = 0; i < 9; i++) {
-        auto civ = universe.registry.create();
-        universe.registry.emplace<cqspc::Organization>(civ);
+        auto civ = universe.create();
+        universe.emplace<cqspc::Organization>(civ);
     }
 
     cqspa::TextAsset* civgenscript
@@ -227,7 +227,7 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
 
     // Loop through each civilization
     auto civilizationView =
-        universe.registry.view<cqspc::Organization>();
+        universe.view<cqspc::Organization>();
 
     for (auto a : civilizationView) {
         lua.set("civ", a);

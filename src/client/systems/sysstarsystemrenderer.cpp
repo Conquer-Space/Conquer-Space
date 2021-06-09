@@ -74,7 +74,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     CalculateCamera();
 
     // Draw stars
-    auto stars = m_app.GetUniverse().registry.
+    auto stars = m_app.GetUniverse().
         view<ToRender, cqspb::Body, cqspb::LightEmitter>();
     for (auto [ent_id, body] : stars.each()) {
         // Draw the planet circle
@@ -93,9 +93,8 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     }
 
     // Draw other bodies
-    auto bodies = m_app.GetUniverse().registry.
-        view<ToRender, cqspb::Body>(
-                entt::exclude<cqspb::LightEmitter>);
+    auto bodies = 
+                m_app.GetUniverse().view<ToRender, cqspb::Body>(entt::exclude<cqspb::LightEmitter>);
     for (auto [ent_id, body] : bodies.each()) {
         // Draw the planet circle
         glm::vec3 object_pos = CalculateObjectPos(ent_id);
@@ -131,21 +130,21 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeStarSystem(
     entt::entity system) {
     namespace cqspb = conquerspace::components::bodies;
     if (m_star_system != entt::null &&
-        m_universe.registry.all_of<cqspb::StarSystem>(m_star_system)) {
+        m_universe.all_of<cqspb::StarSystem>(m_star_system)) {
         // Remove tags
         auto star_system_component =
-            m_universe.registry.get<cqspb::StarSystem>(m_star_system);
+            m_universe.get<cqspb::StarSystem>(m_star_system);
         for (auto body : star_system_component.bodies) {
             // Add a tag
-            m_universe.registry.remove_if_exists<ToRender>(body);
+            m_universe.remove_if_exists<ToRender>(body);
         }
     }
 
     m_star_system = system;
-    auto star_system_component = m_universe.registry.get<cqspb::StarSystem>(m_star_system);
+    auto star_system_component = m_universe.get<cqspb::StarSystem>(m_star_system);
     for (auto body : star_system_component.bodies) {
         // Add a tag
-        m_universe.registry.emplace_or_replace<ToRender>(body);
+        m_universe.emplace_or_replace<ToRender>(body);
     }
 }
 
@@ -243,7 +242,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawStar(
 glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateObjectPos(
     entt::entity &ent) {
     namespace cqspb = conquerspace::components::bodies;
-    cqspb::Orbit& orbit = m_app.GetUniverse().registry.get<cqspb::Orbit>(ent);
+    cqspb::Orbit& orbit = m_app.GetUniverse().get<cqspb::Orbit>(ent);
     cqspb::Vec2& vec = cqspb::toVec2(orbit);
     return (glm::vec3(vec.x / divider, 0, vec.y / divider) - focus_vec);
 }
@@ -270,8 +269,7 @@ entt::entity conquerspace::client::systems::SysStarSystemRenderer::GetMouseOnObj
     namespace cqspb = conquerspace::components::bodies;
 
     // Loop through objects
-    auto bodies = m_app.GetUniverse().registry.
-        view<ToRender, conquerspace::components::bodies::Body>();
+    auto bodies = m_app.GetUniverse().view<ToRender, conquerspace::components::bodies::Body>();
     for (auto [ent_id, body] : bodies.each()) {
         glm::vec3 object_pos = CalculateObjectPos(ent_id);
 
@@ -305,7 +303,7 @@ entt::entity conquerspace::client::systems::SysStarSystemRenderer::GetMouseOnObj
             ray_wor = glm::normalize(ray_wor);
 
             float radius = 1;
-            if (m_app.GetUniverse().registry.all_of<cqspb::LightEmitter>(ent_id)) {
+            if (m_app.GetUniverse().all_of<cqspb::LightEmitter>(ent_id)) {
                 radius = 10;
             }
             // Check for intersection for sphere

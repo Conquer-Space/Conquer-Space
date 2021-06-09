@@ -52,6 +52,8 @@ class UniverseScene : public conquerspace::engine::Scene {
     conquerspace::systems::simulation::Simulation* simulation;
 
     bool to_show_planet_window = false;
+
+    double last_tick = 0;
 };
 }  // namespace scene
 }  // namespace conquerspace

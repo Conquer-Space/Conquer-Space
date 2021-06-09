@@ -18,6 +18,7 @@ class SysPlanetInformation {
     int selected_city_index = 0;
     enum class ViewMode { PLANET_VIEW, CITY_VIEW };
     ViewMode view_mode = ViewMode::PLANET_VIEW;
+    bool to_see = false;
  private:
     void CityInformationPanel(entt::entity& planet, conquerspace::engine::Application& m_app);
     void PlanetInformationPanel(entt::entity& planet, conquerspace::engine::Application& m_app);

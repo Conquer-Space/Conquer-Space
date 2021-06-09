@@ -13,95 +13,95 @@ void conquerspace::systems::simulation::Simulation::tick() {
     // Get previous tick spacing
     namespace cqspc = conquerspace::components;
     // Tick date
-    auto resource_generator = m_universe.registry.view<cqspc::ResourceGenerator,
-                                                                        cqspc::ResourceStockpile>();
+    auto resource_generator = m_universe.view<cqspc::ResourceGenerator,
+                                                                       cqspc::ResourceStockpile>();
 
     for (entt::entity entity : resource_generator) {
         // Make resources
         cqspc::ResourceGenerator &generator =
-                                        m_universe.registry.get<cqspc::ResourceGenerator>(entity);
+                                        m_universe.get<cqspc::ResourceGenerator>(entity);
         cqspc::ResourceStockpile &resource_stockpile =
-                                        m_universe.registry.get<cqspc::ResourceStockpile>(entity);
+                                        m_universe.get<cqspc::ResourceStockpile>(entity);
 
         // Create resources
-        for (auto iterator = generator.output.begin();
-                                                iterator != generator.output.end(); iterator++) {
+        for (auto iterator = generator.begin();
+                                                iterator != generator.end(); iterator++) {
             double resource_count = 0;
-            if (resource_stockpile.stored.find(iterator->first)
-                                                            != resource_stockpile.stored.end()) {
-                resource_count = resource_stockpile.stored[iterator->first];
+            if (resource_stockpile.find(iterator->first)
+                                                            != resource_stockpile.end()) {
+                resource_count = resource_stockpile[iterator->first];
             }
             float productivity = 1;
-            if (m_universe.registry.all_of<cqspc::FactoryProductivity>(entity)) {
-                productivity = m_universe.registry.get<cqspc::FactoryProductivity>(entity)
+            if (m_universe.all_of<cqspc::FactoryProductivity>(entity)) {
+                productivity = m_universe.get<cqspc::FactoryProductivity>(entity)
                     .productivity;
             }
             resource_count += iterator->second * productivity;
             // Add to resource stockpile
-            resource_stockpile.stored[iterator->first] = resource_count;
+            resource_stockpile[iterator->first] = resource_count;
         }
     }
 
-    auto view = m_universe.registry.view<cqspc::Production,
+    auto view = m_universe.view<cqspc::Production,
                                             cqspc::ResourceConverter, cqspc::ResourceStockpile>();
     for (entt::entity entity : view) {
         // Do the same thing
         // Make resources
         cqspc::ResourceConverter &generator =
-                                    m_universe.registry.get<cqspc::ResourceConverter>(entity);
+                                    m_universe.get<cqspc::ResourceConverter>(entity);
         cqspc::ResourceStockpile &resource_stockpile =
-                                        m_universe.registry.get<cqspc::ResourceStockpile>(entity);
-        cqspc::Recipe &recipe = m_universe.registry.get<cqspc::Recipe>(generator.recipe);
+                                        m_universe.get<cqspc::ResourceStockpile>(entity);
+        cqspc::Recipe &recipe = m_universe.get<cqspc::Recipe>(generator.recipe);
 
         // Create resources
         for (auto iterator = recipe.output.begin(); iterator != recipe.output.end(); iterator++) {
             double resource_count = 0;
-            if (resource_stockpile.stored.find(iterator->first)
-                                                            != resource_stockpile.stored.end()) {
-                resource_count = resource_stockpile.stored[iterator->first];
+            if (resource_stockpile.find(iterator->first)
+                                                            != resource_stockpile.end()) {
+                resource_count = resource_stockpile[iterator->first];
             }
 
             float productivity = 1;
-            if (m_universe.registry.all_of<cqspc::FactoryProductivity>(entity)) {
+            if (m_universe.all_of<cqspc::FactoryProductivity>(entity)) {
                 productivity =
-                        m_universe.registry.get<cqspc::FactoryProductivity>(entity).productivity;
+                        m_universe.get<cqspc::FactoryProductivity>(entity).productivity;
             }
             resource_count += (iterator->second * productivity);
             // Add to resource stockpile
 
-            resource_stockpile.stored[iterator->first] = resource_count;
+            resource_stockpile[iterator->first] = resource_count;
         }
     }
 
     // Consume resources
-    auto consume = m_universe.registry.view<cqspc::ResourceConverter, cqspc::ResourceStockpile>();
+    auto consume = m_universe.view<cqspc::ResourceConverter, cqspc::ResourceStockpile>();
     for (entt::entity entity : consume) {
         // Do the same thing
         // Make resources
         cqspc::ResourceConverter &generator =
-                                    m_universe.registry.get<cqspc::ResourceConverter>(entity);
+                                    m_universe.get<cqspc::ResourceConverter>(entity);
         cqspc::ResourceStockpile &resource_stockpile =
-                                    m_universe.registry.get<cqspc::ResourceStockpile>(entity);
-        cqspc::Recipe &recipe = m_universe.registry.get<cqspc::Recipe>(generator.recipe);
+                                    m_universe.get<cqspc::ResourceStockpile>(entity);
+        cqspc::Recipe &recipe = m_universe.get<cqspc::Recipe>(generator.recipe);
         // Create resources
         for (auto iterator = recipe.input.begin(); iterator != recipe.input.end(); iterator++) {
             double resource_count = 0;
-            if (resource_stockpile.stored.find(iterator->first)
-                                                            != resource_stockpile.stored.end()) {
-                resource_count = resource_stockpile.stored[iterator->first];
+            if (resource_stockpile.find(iterator->first)
+                                                            != resource_stockpile.end()) {
+                resource_count = resource_stockpile[iterator->first];
             }
             float productivity = 1;
-            if (m_universe.registry.all_of<cqspc::FactoryProductivity>(entity)) {
-                productivity = m_universe.registry.get<cqspc::FactoryProductivity>(entity)
+            if (m_universe.all_of<cqspc::FactoryProductivity>(entity)) {
+                productivity = m_universe.get<cqspc::FactoryProductivity>(entity)
                     .productivity;
             }
 
             resource_count -= iterator->second * productivity;
 
-            m_universe.registry.emplace_or_replace<cqspc::Production>(entity);
+            m_universe.emplace_or_replace<cqspc::Production>(entity);
 
             // Add to resource stockpile
-            resource_stockpile.stored[iterator->first] = resource_count;
+            resource_stockpile[iterator->first] = resource_count;
         }
     }
 

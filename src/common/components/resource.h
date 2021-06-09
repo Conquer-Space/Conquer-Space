@@ -34,16 +34,14 @@ struct FactoryTimer {
     float time_left;
 };
 
-struct ResourceGenerator {
-    std::map<entt::entity, int> output;
+struct ResourceGenerator : public std::map<entt::entity, double> {
 };
 
 struct ResourceConverter {
     entt::entity recipe;
 };
 
-struct ResourceStockpile {
-    std::map<entt::entity, int> stored;
+struct ResourceStockpile : public std::map<entt::entity, double>{
 };
 
 class ResourceLedger {

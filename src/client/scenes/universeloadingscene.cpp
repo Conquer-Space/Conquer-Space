@@ -63,21 +63,20 @@ void conquerspace::scene::UniverseLoadingScene::LoadUniverse() {
     for (int i = 0; i < good_assets->data.size(); i++) {
         Hjson::Value& val = good_assets->data[i];
         // Create good
-        entt::entity good = GetApplication().GetUniverse().registry.create();
-        auto& good_object = GetApplication()
-            .GetUniverse()
-            .registry.emplace<conquerspace::components::Good>(good);
+        entt::entity good = GetApplication().GetUniverse().create();
+        auto& good_object = GetApplication().GetUniverse()
+            .emplace<conquerspace::components::Good>(good);
         good_object.mass = val["mass"];
         good_object.volume = val["volume"];
         auto &name_object =
             GetApplication()
                 .GetUniverse()
-                .registry.emplace<conquerspace::components::Name>(good);
+                .emplace<conquerspace::components::Name>(good);
         name_object.name = val["name"].to_string();
         auto &id_object =
             GetApplication()
                 .GetUniverse()
-                .registry.emplace<conquerspace::components::Identifier>(good);
+                .emplace<conquerspace::components::Identifier>(good);
         id_object.identifier = val["identifier"].to_string();
         GetApplication().GetUniverse().goods[val["identifier"].to_string()] = good;
         assets_loaded++;
@@ -89,10 +88,9 @@ void conquerspace::scene::UniverseLoadingScene::LoadUniverse() {
     for (int i = 0; i < recipe_asset->data.size(); i++) {
         Hjson::Value& val = recipe_asset->data[i];
 
-        entt::entity recipe =  GetApplication().GetUniverse().registry.create();
+        entt::entity recipe =  GetApplication().GetUniverse().create();
         auto& recipe_component = GetApplication()
-            .GetUniverse()
-            .registry.emplace<conquerspace::components::Recipe>(recipe);
+            .GetUniverse().emplace<conquerspace::components::Recipe>(recipe);
         Hjson::Value& input_value = val["input"];
         for (auto input_good : input_value) {
             recipe_component
@@ -108,9 +106,7 @@ void conquerspace::scene::UniverseLoadingScene::LoadUniverse() {
         }
 
         auto &name_object =
-            GetApplication()
-                .GetUniverse()
-                .registry.emplace<conquerspace::components::Identifier>(recipe);
+            GetApplication().GetUniverse().emplace<conquerspace::components::Identifier>(recipe);
         name_object.identifier = val["identifier"].to_string();
         GetApplication().GetUniverse().recipes[name_object.identifier] = recipe;
     }

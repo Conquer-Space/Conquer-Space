@@ -12,10 +12,9 @@
 
 namespace conquerspace {
 namespace components {
-class Universe {
+class Universe : public entt::registry {
  public:
     StarDate date;
-    entt::registry registry;
 
     std::map<std::string, entt::entity> goods;
     std::map<std::string, entt::entity> recipes;
