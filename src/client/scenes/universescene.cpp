@@ -120,8 +120,14 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
         }
     }
 
+    if (!ImGui::GetIO().WantCaptureKeyboard) {
+        if (GetApplication().ButtonIsReleased(GLFW_KEY_SPACE)) {
+            TogglePlayState();
+        }
+    }
+
     // Check for last tick
-    if (glfwGetTime() - last_tick > 0.5) {
+    if (to_tick && glfwGetTime() - last_tick > static_cast<float>(tick_speeds[tick_speed])/1000.f) {
         last_tick = glfwGetTime();
         // Game tick
         simulation->tick();
@@ -130,8 +136,33 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
 
 void conquerspace::scene::UniverseScene::Ui(float deltaTime) {
     // Turn window
-    ImGui::Begin("TS window");
+    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x,
+                                   30),
+                            ImGuiCond_Always, ImVec2(1.f, 0.f));
+    ImGui::SetNextWindowSize(ImVec2(150, 65), ImGuiCond_Always);
+    bool to_show = true;
+    ImGui::Begin("TS window", &to_show, ImGuiWindowFlags_NoTitleBar |
+                                    ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
     // Show date
+    ImGui::Text(fmt::format("Date: {} Speed: {}", GetApplication().GetUniverse().date.GetDate(),
+                                                                            tick_speed).c_str());
+    if (ImGui::Button("<<")) {
+        // Slower
+        if (tick_speed > 0) {
+            tick_speed--;
+        }
+    }
+    ImGui::SameLine();
+    if (ImGui::Button(to_tick ? "Running" : "Paused")) {
+        TogglePlayState();
+    }
+    ImGui::SameLine();
+    if (ImGui::Button(">>")) {
+        // Faster
+        if (tick_speed < tick_speeds.size() - 1) {
+            tick_speed++;
+        }
+    }
     ImGui::End();
 
     planet_information->DisplayPlanet(selected_planet, GetApplication());
@@ -152,4 +183,8 @@ void conquerspace::scene::UniverseScene::Ui(float deltaTime) {
 void conquerspace::scene::UniverseScene::Render(float deltaTime) {
     glEnable(GL_MULTISAMPLE);
     system_renderer->Render();
+}
+
+void conquerspace::scene::UniverseScene::TogglePlayState() {
+    to_tick = !to_tick;
 }

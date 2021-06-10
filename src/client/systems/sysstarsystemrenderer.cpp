@@ -93,7 +93,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     }
 
     // Draw other bodies
-    auto bodies = 
+    auto bodies =
                 m_app.GetUniverse().view<ToRender, cqspb::Body>(entt::exclude<cqspb::LightEmitter>);
     for (auto [ent_id, body] : bodies.each()) {
         // Draw the planet circle

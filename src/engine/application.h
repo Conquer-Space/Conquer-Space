@@ -112,6 +112,8 @@ class Application {
     conquerspace::components::Universe& GetUniverse() { return m_universe; }
 
     bool ButtonIsHeld(int btn) { return m_keys_held[btn]; }
+    bool ButtonIsReleased(int btn) { return m_keys_released[btn]; }
+    bool ButtonIsPressed(int btn) { return m_keys_pressed[btn]; }
 
     double GetScrollAmount() { return m_scroll_amount; }
 

@@ -3,6 +3,8 @@
  */
 #pragma once
 
+#include <vector>
+
 #include "client/systems/sysstarsystemrenderer.h"
 #include "client/systems/sysplanetviewer.h"
 #include "common/components/bodies.h"
@@ -30,6 +32,7 @@ class UniverseScene : public conquerspace::engine::Scene {
     void Render(float deltaTime);
 
  private:
+    void TogglePlayState();
     conquerspace::engine::Renderable sphere;
     conquerspace::engine::Renderable sky;
     conquerspace::engine::Renderable planetDisp;
@@ -54,6 +57,11 @@ class UniverseScene : public conquerspace::engine::Scene {
     bool to_show_planet_window = false;
 
     double last_tick = 0;
+
+    bool to_tick = false;
+
+    std::vector<int> tick_speeds{1000, 500, 333, 100, 50, 10, 1};
+    int tick_speed = tick_speeds.size() / 2;
 };
 }  // namespace scene
 }  // namespace conquerspace

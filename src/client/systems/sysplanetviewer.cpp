@@ -26,10 +26,10 @@ void conquerspace::client::systems::SysPlanetInformation::DisplayPlanet(
     }
 
     ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x * 0.4f,
-                                    ImGui::GetIO().DisplaySize.y * 0.9f),
+                                    ImGui::GetIO().DisplaySize.y * 0.8f),
                              ImGuiCond_Appearing);
-    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.75f,
-                                   ImGui::GetIO().DisplaySize.y * 0.5f),
+    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.79f,
+                                   ImGui::GetIO().DisplaySize.y * 0.55f),
                             ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
     std::string planet_name = "Planet";
     if (planet == entt::null) {
