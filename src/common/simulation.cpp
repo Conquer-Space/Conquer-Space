@@ -24,17 +24,14 @@ void conquerspace::systems::simulation::Simulation::tick() {
                                         m_universe.get<cqspc::ResourceStockpile>(entity);
 
         // Create resources
-        for (auto iterator = generator.begin();
-                                                iterator != generator.end(); iterator++) {
+        for (auto iterator = generator.begin(); iterator != generator.end(); iterator++) {
             double resource_count = 0;
-            if (resource_stockpile.find(iterator->first)
-                                                            != resource_stockpile.end()) {
+            if (resource_stockpile.find(iterator->first)!= resource_stockpile.end()) {
                 resource_count = resource_stockpile[iterator->first];
             }
             float productivity = 1;
             if (m_universe.all_of<cqspc::FactoryProductivity>(entity)) {
-                productivity = m_universe.get<cqspc::FactoryProductivity>(entity)
-                    .productivity;
+                productivity = m_universe.get<cqspc::FactoryProductivity>(entity).productivity;
             }
             resource_count += iterator->second * productivity;
             // Add to resource stockpile
@@ -47,24 +44,21 @@ void conquerspace::systems::simulation::Simulation::tick() {
     for (entt::entity entity : view) {
         // Do the same thing
         // Make resources
-        cqspc::ResourceConverter &generator =
-                                    m_universe.get<cqspc::ResourceConverter>(entity);
+        cqspc::ResourceConverter &generator = m_universe.get<cqspc::ResourceConverter>(entity);
         cqspc::ResourceStockpile &resource_stockpile =
-                                        m_universe.get<cqspc::ResourceStockpile>(entity);
+                                      m_universe.get<cqspc::ResourceStockpile>(entity);
         cqspc::Recipe &recipe = m_universe.get<cqspc::Recipe>(generator.recipe);
 
         // Create resources
         for (auto iterator = recipe.output.begin(); iterator != recipe.output.end(); iterator++) {
             double resource_count = 0;
-            if (resource_stockpile.find(iterator->first)
-                                                            != resource_stockpile.end()) {
+            if (resource_stockpile.find(iterator->first) != resource_stockpile.end()) {
                 resource_count = resource_stockpile[iterator->first];
             }
 
             float productivity = 1;
             if (m_universe.all_of<cqspc::FactoryProductivity>(entity)) {
-                productivity =
-                        m_universe.get<cqspc::FactoryProductivity>(entity).productivity;
+                productivity = m_universe.get<cqspc::FactoryProductivity>(entity).productivity;
             }
             resource_count += (iterator->second * productivity);
             // Add to resource stockpile
@@ -86,14 +80,12 @@ void conquerspace::systems::simulation::Simulation::tick() {
         // Create resources
         for (auto iterator = recipe.input.begin(); iterator != recipe.input.end(); iterator++) {
             double resource_count = 0;
-            if (resource_stockpile.find(iterator->first)
-                                                            != resource_stockpile.end()) {
+            if (resource_stockpile.find(iterator->first) != resource_stockpile.end()) {
                 resource_count = resource_stockpile[iterator->first];
             }
             float productivity = 1;
             if (m_universe.all_of<cqspc::FactoryProductivity>(entity)) {
-                productivity = m_universe.get<cqspc::FactoryProductivity>(entity)
-                    .productivity;
+                productivity = m_universe.get<cqspc::FactoryProductivity>(entity).productivity;
             }
 
             resource_count -= iterator->second * productivity;

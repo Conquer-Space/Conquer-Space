@@ -17,9 +17,22 @@ struct Good {
     conquerspace::components::types::kilogram mass;
 };
 
+struct ResourceLedger : public std::map<entt::entity, double> {
+    ResourceLedger operator-(ResourceLedger&);
+    ResourceLedger operator+(ResourceLedger&);
+    ResourceLedger operator*(double value);
+    void operator-=(const ResourceLedger&);
+    void operator+=(const ResourceLedger&);
+    void operator*=(const double value);
+
+    bool HasGood(entt::entity good) {
+        return (*this).find(good) == (*this).end();
+    }
+};
+
 struct Recipe {
-    std::map<entt::entity, int> input;
-    std::map<entt::entity, int> output;
+    ResourceLedger input;
+    ResourceLedger output;
 
     float interval;
 };
@@ -34,17 +47,14 @@ struct FactoryTimer {
     float time_left;
 };
 
-struct ResourceGenerator : public std::map<entt::entity, double> {
+struct ResourceGenerator : public ResourceLedger {
 };
 
 struct ResourceConverter {
     entt::entity recipe;
 };
 
-struct ResourceStockpile : public std::map<entt::entity, double>{
-};
-
-class ResourceLedger {
+struct ResourceStockpile : public ResourceLedger {
 };
 }  // namespace components
 }  // namespace conquerspace

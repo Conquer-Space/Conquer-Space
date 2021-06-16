@@ -226,8 +226,7 @@ void conquerspace::systems::universegenerator::SysGenerateUniverse(
     sol::load_result civGenResult = lua.load(civgenscript->data);
 
     // Loop through each civilization
-    auto civilizationView =
-        universe.view<cqspc::Organization>();
+    auto civilizationView = universe.view<cqspc::Organization>();
 
     for (auto a : civilizationView) {
         lua.set("civ", a);

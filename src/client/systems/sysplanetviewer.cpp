@@ -106,39 +106,22 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
                 // List all the stuff it produces
                 ImGui::Text("GDP:");
 
-                std::map<entt::entity, int> input_resources;
-                std::map<entt::entity, int> output_resources;
+                cqspc::ResourceLedger input_resources;
+                cqspc::ResourceLedger output_resources;
                 for (auto thingies : city_industry.industries) {
                     if (m_app.GetUniverse()
                         .all_of<cqspc::ResourceConverter, cqspc::Factory>(thingies)) {
                         auto& generator =
                             m_app.GetUniverse().get<cqspc::ResourceConverter>(thingies);
-                        auto& recipe =
-                            m_app.GetUniverse().get<cqspc::Recipe>(
-                                generator.recipe);
-                        for (auto iterator = recipe.input.begin();
-                             iterator != recipe.input.end(); iterator++) {
-                             if (input_resources.find(iterator->first) == input_resources.end()) {
-                                 input_resources[iterator->first] = 0;
-                             }
-                             input_resources[iterator->first] = input_resources[iterator->first]
-                                                                                + iterator->second;
-                        }
-                        for (auto iterator = recipe.output.begin();
-                             iterator != recipe.output.end(); iterator++) {
-                             if (output_resources.find(iterator->first)
-                                                                    == output_resources.end()) {
-                                 output_resources[iterator->first] = 0;
-                             }
-                             output_resources[iterator->first] = output_resources[iterator->first]
-                                                                                + iterator->second;
-                        }
+                        auto& recipe = m_app.GetUniverse().get<cqspc::Recipe>(generator.recipe);
+                        input_resources += recipe.input;
+                        output_resources += recipe.output;
                     }
                 }
 
                 ImGui::Text("Output");
                 // Output table
-                if (ImGui::BeginTable("output_tabke", 2, ImGuiTableFlags_Borders |
+                if (ImGui::BeginTable("output_table", 2, ImGuiTableFlags_Borders |
                                                                         ImGuiTableFlags_RowBg)) {
                     ImGui::TableSetupColumn("Good");
                     ImGui::TableSetupColumn("Amount");
@@ -147,19 +130,17 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
                                                 iterator != output_resources.end(); iterator++) {
                         ImGui::TableNextRow();
                         ImGui::TableSetColumnIndex(0);
-                        ImGui::Text(
-                            fmt::format("{}", m_app.GetUniverse()
+                        ImGui::Text(fmt::format("{}", m_app.GetUniverse()
                                     .get<cqspc::Identifier>(iterator->first).identifier).c_str());
-
                         ImGui::TableSetColumnIndex(1);
-                        ImGui::Text(fmt::format("{}",
-                                conquerspace::util::LongToHumanString(iterator->second)).c_str());
+                        ImGui::Text(fmt::format("{}", iterator->second).c_str());
+                                //conquerspace::util::LongToHumanString(static_cast<int64_t>(iterator->second))).c_str());
                     }
                     ImGui::EndTable();
                 }
 
                 ImGui::Text("Input");
-                if (ImGui::BeginTable("input_tabke", 2,
+                if (ImGui::BeginTable("input_table", 2,
                                                 ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
                     ImGui::TableSetupColumn("Good");
                     ImGui::TableSetupColumn("Amount");
@@ -187,21 +168,13 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
                 ImGui::Text("Mining Sector");
                 ImGui::Text("GDP:");
                 // Get what resources they are making
-                std::map<entt::entity, int> resources;
+                cqspc::ResourceLedger resources;
                 for (auto thingies : city_industry.industries) {
                     if (m_app.GetUniverse()
                         .all_of<cqspc::ResourceGenerator, cqspc::Mine>(thingies)) {
                         auto& generator =
                             m_app.GetUniverse().get<cqspc::ResourceGenerator>(thingies);
-
-                        for (auto iterator = generator.begin();
-                            iterator != generator.end(); iterator++) {
-                            if (resources.find(iterator->first) == resources.end()) {
-                                resources[iterator->first] = 0;
-                            }
-                            resources[iterator->first] = resources[iterator->first]
-                                                                                + iterator->second;
-                        }
+                        resources += generator;
                     }
                 }
 
@@ -243,19 +216,12 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
                 // Consolidate resources
                 auto &city_industry = m_app.GetUniverse()
                     .get<cqspc::Industry>(selected_city_entity);
-                std::map<entt::entity, int> resources;
+                cqspc::ResourceLedger resources;
                 for (auto area : city_industry.industries) {
                     if (m_app.GetUniverse().all_of<cqspc::ResourceStockpile>(area)) {
                         // Add resources
                         auto& stockpile = m_app.GetUniverse().get<cqspc::ResourceStockpile>(area);
-                        for (auto iterator = stockpile.begin();
-                            iterator != stockpile.end(); iterator++) {
-                            if (resources.find(iterator->first) == resources.end()) {
-                                resources[iterator->first] = 0;
-                            }
-                            resources[iterator->first] = resources[iterator->first]
-                                                                                + iterator->second;
-                        }
+                        resources += stockpile;
                     }
                 }
 
