@@ -148,6 +148,15 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeStarSystem(
     }
 }
 
+void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity(entt::entity entity) {
+    namespace cqspb = conquerspace::components::bodies;
+    // See the object
+    cqspb::Orbit& orbit = m_app.GetUniverse().
+                                get<cqspb::Orbit>(entity);
+    cqspb::Vec2& vec = cqspb::toVec2(orbit);
+    view_center = glm::vec3(vec.x / GetDivider(), 0, vec.y / GetDivider());
+}
+
 void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanetIcon(
     glm::vec3 &object_pos, glm::mat4 &cameraMatrix, glm::mat4 &projection, glm::vec4 &viewport) {
     glm::vec3 pos = glm::project(object_pos, cameraMatrix,
@@ -159,26 +168,21 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanetIcon(
 
     planetDispMat = glm::translate(
         planetDispMat,
-        glm::vec3(
-            (pos.x / m_app.GetWindowWidth() - 0.5) * 2,
+        glm::vec3((pos.x / m_app.GetWindowWidth() - 0.5) * 2,
             (pos.y / m_app.GetWindowHeight() - 0.5) * 2, 0));
 
     planetDispMat =
         glm::scale(planetDispMat, glm::vec3(circle_size, circle_size, circle_size));
     planetDispMat = glm::scale(
         planetDispMat,
-        glm::vec3(
-            1,
+        glm::vec3(1,
             static_cast<float>(m_app.GetWindowWidth()) /
-                static_cast<float>(m_app.GetWindowHeight()),
-            1));
+                static_cast<float>(m_app.GetWindowHeight()), 1));
     glm::mat4 twodimproj = glm::scale(
         glm::mat4(1.0f),
-        glm::vec3(
-            1,
+        glm::vec3(1,
             static_cast<float>(m_app.GetWindowWidth()) /
-                static_cast<float>(m_app.GetWindowHeight()),
-            1));
+                static_cast<float>(m_app.GetWindowHeight()), 1));
 
     twodimproj = glm::mat4(1.0f);
     planet_circle.shaderProgram->UseProgram();
@@ -197,7 +201,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanet(glm::vec3 
 
     glm::mat4 transform = glm::mat4(1.f);
     // For some reason, the sphere we make needs to be inverted
-    transform = glm::scale(transform, glm::vec3(1, -1, 1));
+    transform = glm::scale(transform, glm::vec3(1, 1, 1));
 
     position = position * transform;
 

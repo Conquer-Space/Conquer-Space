@@ -54,11 +54,7 @@ void conquerspace::scene::UniverseScene::Init() {
                         get<cqspb::StarSystem>(body.star_system);
 
     // Set view center
-    cqspb::Orbit& orbit = GetApplication().GetUniverse().
-                                get<cqspb::Orbit>(player_civ->starting_planet);
-    cqspb::Vec2& vec = cqspb::toVec2(orbit);
-    system_renderer->view_center = glm::vec3(vec.x / system_renderer->GetDivider(),
-                                                        0, vec.y / system_renderer->GetDivider());
+    system_renderer->SeeEntity(player_civ->starting_planet);
     selected_planet = player_civ->starting_planet;
 }
 
@@ -107,13 +103,8 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
                     (ent = system_renderer->GetMouseOnObject(GetApplication().GetMouseX(),
                     GetApplication().GetMouseY())) != entt::null) {
             // Go to the place
-            conquerspace::components::bodies::Orbit& orbit =
-                                GetApplication().GetUniverse().
-                                get<conquerspace::components::bodies::Orbit>(ent);
-            conquerspace::components::bodies::Vec2& vec =
-                                                    conquerspace::components::bodies::toVec2(orbit);
-            system_renderer->view_center = glm::vec3(vec.x / system_renderer->GetDivider(),
-                                                        0, vec.y / system_renderer->GetDivider());
+            system_renderer->SeeEntity(ent);
+
             selected_planet = ent;
             to_show_planet_window = true;
             planet_information->to_see = true;

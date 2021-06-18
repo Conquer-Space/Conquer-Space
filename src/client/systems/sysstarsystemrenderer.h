@@ -30,6 +30,7 @@ class SysStarSystemRenderer {
     void Initialize();
     void Render();
     void SeeStarSystem(entt::entity);
+    void SeeEntity(entt::entity);
 
     float view_x;
     float view_y;

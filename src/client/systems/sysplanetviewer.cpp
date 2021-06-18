@@ -5,6 +5,8 @@
 
 #include <string>
 #include <map>
+#include <noise/noise.h>
+
 
 #include "common/components/area.h"
 #include "common/components/bodies.h"
@@ -17,6 +19,7 @@
 #include "common/components/surface.h"
 #include "engine/gui.h"
 #include "util/utilnumberdisplay.h"
+#include "noiseutils.h"
 
 void conquerspace::client::systems::SysPlanetInformation::DisplayPlanet(
     entt::entity& planet, conquerspace::engine::Application& m_app) {
