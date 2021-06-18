@@ -12,7 +12,7 @@ link_directories("${CMAKE_SOURCE_DIR}/lib/win64/boost/stage/lib")
 file (GLOB_RECURSE CPP_FILES *.cpp)
 list(FILTER CPP_FILES EXCLUDE REGEX ".*main.cpp$")
 file (GLOB_RECURSE H_FILES *.h)
-file (GLOB_RECURSE LIB_FILES ${CMAKE_SOURCE_DIR}/lib/src/*.c)
+file (GLOB_RECURSE LIB_FILES ${CMAKE_SOURCE_DIR}/lib/src/*.c ${CMAKE_SOURCE_DIR}/lib/src/*.cpp ${CMAKE_SOURCE_DIR}/lib/include/*.h ${CMAKE_SOURCE_DIR}/lib/include/*.hpp)
 
 ###
 # Add imgui
@@ -29,8 +29,9 @@ set(IMGUI ${IMGUI} ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_glfw.h
 
 add_library(ImGui ${IMGUI})
 target_link_libraries(ImGui PUBLIC glfw3_mt)
-
+set_target_properties(ImGui PROPERTIES FOLDER "Libs")
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/backends)
+
 # Imgui
 ###
 
@@ -43,6 +44,7 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/stb)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
 include_directories(${CMAKE_SOURCE_DIR}/lib/freetype/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/fmt/include)
+include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/include)
 # Lua
 include_directories(${CMAKE_SOURCE_DIR}/lib/lua/)
 include_directories(${CMAKE_SOURCE_DIR}/lib/sol2/include)
@@ -52,11 +54,19 @@ if(MSVC)
 	set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
 endif()
 
-SET(ICON_FILE "")
+
+# Add icon file for windowsSET(ICON_FILE "")
 if(WIN32)
 SET(ICON_FILE "${CMAKE_SOURCE_DIR}/binaries/data/app.rc")
 endif()
 
+# Put files in filtersfile(GLOB_RECURSE ${SOURCE_FILES} *.cpp* *.h* *.hpp* *.c)
+foreach(_source IN ITEMS ${SOURCE_FILES})
+    get_filename_component(_source_path "${_source}" PATH)
+    string(REPLACE "${CMAKE_SOURCE_DIR}" "" _group_path "${_source_path}")
+    string(REPLACE "/" "\\" _group_path "${_group_path}")
+    source_group("${_group_path}" FILES "${_source}")
+endforeach()
 add_library(cqsp-core ${SOURCE_FILES})
 add_executable(Conquer-Space main.cpp ${ICON_FILE})
 
@@ -70,6 +80,7 @@ set(CQSP_LIBRARIES glfw3_mt
     liblua-static
     freetype
     fmt
+    libnoise
     )
 
 target_link_libraries(cqsp-core PUBLIC 

@@ -37,3 +37,6 @@
 [submodule "lib/fmt"]
 	path = lib/fmt
 	url = https://github.com/fmtlib/fmt
+[submodule "lib/libnoise"]
+	path = lib/libnoise
+	url = https://github.com/eXpl0it3r/libnoise

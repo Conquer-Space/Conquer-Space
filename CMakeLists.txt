@@ -11,6 +11,8 @@ SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(TESTS "Enable tests" OFF)
 
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 # Make everything static
 if(TESTS)
   if(MSVC)

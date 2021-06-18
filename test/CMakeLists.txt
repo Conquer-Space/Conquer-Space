@@ -45,6 +45,8 @@ target_link_libraries(cqsp-tests
     liblua-static
     spdlog
     freetype
-    fmt)
+    fmt
+    libnoise
+    )
 
 add_test(NAME main-test COMMAND cqsp-tests)
