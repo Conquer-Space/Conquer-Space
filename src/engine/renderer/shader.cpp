@@ -96,20 +96,17 @@ void conquerspace::asset::ShaderProgram::setVec4(const std::string& name,
 
 void conquerspace::asset::ShaderProgram::setMat2(const std::string& name,
                                    const glm::mat2& mat) {
-    glUniformMatrix2fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE,
-                       &mat[0][0]);
+    glUniformMatrix2fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
 
 void conquerspace::asset::ShaderProgram::setMat3(const std::string& name,
                                    const glm::mat3& mat) {
-    glUniformMatrix3fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE,
-                       &mat[0][0]);
+    glUniformMatrix3fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
 
 void conquerspace::asset::ShaderProgram::setMat4(const std::string& name,
                                    const glm::mat4& mat) {
-    glUniformMatrix4fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE,
-                       &mat[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
 
 void conquerspace::asset::ShaderProgram::UseProgram() {

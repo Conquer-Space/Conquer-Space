@@ -11,3 +11,11 @@ void conquerspace::engine::Renderable::SetTexture(const std::string& name,
 
     textures.push_back(texture);
 }
+
+void conquerspace::engine::Renderable::SetMVP(glm::mat4& model, glm::mat4& view,
+                                              glm::mat4& projection) {
+    shaderProgram->UseProgram();
+    shaderProgram->setMat4("model", model);
+    shaderProgram->setMat4("view", view);
+    shaderProgram->setMat4("projection", projection);
+}

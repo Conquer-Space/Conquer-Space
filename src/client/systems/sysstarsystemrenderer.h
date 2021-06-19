@@ -3,6 +3,8 @@
 */
 #pragma once
 
+#include <noiseutils.h>
+
 #include <entt/entt.hpp>
 
 #include <glm/glm.hpp>
@@ -60,7 +62,6 @@ class SysStarSystemRenderer {
 
     glm::vec3 cam_pos;
     glm::vec3 cam_up = glm::vec3(0.0f, 1.0f, 0.0f);
-    glm::vec3 focus_vec;
     glm::mat4 camera_matrix;
     glm::mat4 projection;
     glm::vec4 viewport;
@@ -75,12 +76,20 @@ class SysStarSystemRenderer {
                   glm::mat4 &projection, glm::vec3 &cam_pos);
 
     glm::vec3 CalculateObjectPos(entt::entity &);
+    glm::vec3 CalculateCenteredObject(entt::entity &);
     void CalculateCamera();
 
+    void SetPlanetTexture(TerrainImageGenerator &);
+    unsigned int GeneratePlanetTexture(noise::utils::Image& image);
+    glm::vec3 CalculateMouseRay(glm::vec3 &ray_nds);
+    float GetWindowRatio();
+
+    conquerspace::asset::Texture* GenerateTexture(unsigned int, noise::utils::Image&);
     // How much to scale the the star system.
     const double divider = 0.01;
 
     glm::vec3 sun_position;
+    glm::vec3 sun_color;
 
     TerrainImageGenerator image_generator;
 };

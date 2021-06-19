@@ -4,13 +4,10 @@
 #include "client/systems/sysstarsystemrenderer.h"
 
 #include <noise/noise.h>
-#include <noiseutils.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/polar_coordinates.hpp>
 #include <glm/gtx/string_cast.hpp>
-
-#include <boost/timer/timer.hpp>
 
 #include "engine/renderer/primitives/uvsphere.h"
 #include "engine/renderer/renderer.h"
@@ -27,7 +24,8 @@ conquerspace::client::systems::SysStarSystemRenderer::SysStarSystemRenderer
                                                     conquerspace::engine::Application &_a) :
                                                     m_universe(_u), m_app(_a),
                                                     scroll(5), view_x(0),
-                                                    view_y(0), view_center(glm::vec3(1, 1, 1)) {
+                                                    view_y(0), view_center(glm::vec3(1, 1, 1)),
+                                                    sun_color(glm::vec3(10, 10, 10)) {
 }
 
 void conquerspace::client::systems::SysStarSystemRenderer::Initialize() {
@@ -35,35 +33,30 @@ void conquerspace::client::systems::SysStarSystemRenderer::Initialize() {
     conquerspace::engine::Mesh* sphere_mesh = new conquerspace::engine::Mesh();
     conquerspace::primitive::ConstructSphereMesh(64, 64, *sphere_mesh);
 
-    // Initialize shaders
-    asset::ShaderProgram* planet_shader =
-                            m_app.GetAssetManager().CreateShaderProgram("objectvert",
-                                                                        "defaultfrag");
-
-    asset::ShaderProgram* star_shader =
-                            m_app.GetAssetManager().CreateShaderProgram("objectvert", "sunshader");
-
-    asset::ShaderProgram* circle_shader =
-                        m_app.GetAssetManager().
-                        CreateShaderProgram("shader.pane.vert", "coloredcirclefrag");
-
-    asset::ShaderProgram* skybox_shader =
-                            m_app.GetAssetManager().CreateShaderProgram("skycubevert",
-                                                               "skycubefrag");
-
     // Initialize sky box
     asset::Texture* sky_texture = m_app.GetAssetManager()
         .GetAsset<conquerspace::asset::Texture>("skycubemap");
+
+    asset::ShaderProgram* skybox_shader =
+                        m_app.GetAssetManager().CreateShaderProgram("skycubevert", "skycubefrag");
 
     sky.mesh = new conquerspace::engine::Mesh();
     primitive::MakeCube(*sky.mesh);
     sky.shaderProgram = skybox_shader;
     sky.SetTexture("texture0", 0, sky_texture);
 
+    asset::ShaderProgram* circle_shader =
+                    m_app.GetAssetManager().
+                    CreateShaderProgram("shader.pane.vert", "coloredcirclefrag");
+
     planet_circle.mesh = new conquerspace::engine::Mesh();
     primitive::CreateFilledCircle(*planet_circle.mesh);
     planet_circle.shaderProgram = circle_shader;
 
+    // Initialize shaders
+    asset::ShaderProgram* planet_shader =
+                            m_app.GetAssetManager().CreateShaderProgram("objectvert",
+                                                                        "defaultfrag");
     // Planet spheres
     planet.mesh = sphere_mesh;
     planet_shader->setInt("albedomap", 0);
@@ -71,6 +64,9 @@ void conquerspace::client::systems::SysStarSystemRenderer::Initialize() {
 
     planet.shaderProgram = planet_shader;
 
+    // Initialize sun
+    asset::ShaderProgram* star_shader =
+                            m_app.GetAssetManager().CreateShaderProgram("objectvert", "sunshader");
     sun.mesh = sphere_mesh;
     sun.shaderProgram = star_shader;
 }
@@ -83,50 +79,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
         spdlog::info("Done terrain generation");
         thread.join();
         terrain_complete = false;
-        int width = std::pow(2, 11);
-        int height = std::pow(2, 10);
-        // Generate the terrain
-        unsigned int roughness_texture;
-        glGenTextures(1, &roughness_texture);
-        glBindTexture(GL_TEXTURE_2D, roughness_texture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, width, height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8,
-                                            image_generator.GetRoughnessMap().GetConstSlabPtr());
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-
-        unsigned int albedo_map;
-        glGenTextures(1, &albedo_map);
-        glBindTexture(GL_TEXTURE_2D, albedo_map);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, width, height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8,
-                                            image_generator.GetAlbedoMap().GetConstSlabPtr());
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        image_generator.ClearData();
-
-        for (auto t : planet.textures) {
-            delete t;
-        }
-        planet.textures.clear();
-
-        conquerspace::asset::Texture *tex = new conquerspace::asset::Texture();
-        tex->id = albedo_map;
-        tex->width = width;
-        tex->height = height;
-        planet.textures.push_back(tex);
-
-        conquerspace::asset::Texture* new_tex = new conquerspace::asset::Texture();
-        new_tex->id = roughness_texture;
-        new_tex->width = width;
-        new_tex->height = height;
-        planet.textures.push_back(new_tex);
+        SetPlanetTexture(image_generator);
     }
 
     // Draw stars
@@ -134,11 +87,10 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
         view<ToRender, cqspb::Body, cqspb::LightEmitter>();
     for (auto [ent_id, body] : stars.each()) {
         // Draw the planet circle
-        glm::vec3 object_pos = CalculateObjectPos(ent_id);
+        glm::vec3 object_pos = CalculateCenteredObject(ent_id);
         sun_position = object_pos;
         if (glm::distance(object_pos, cam_pos) > 900) {
             // Check if it's obscured by a planet, but eh, we can deal with it later
-
             planet_circle.shaderProgram->UseProgram();
             planet_circle.shaderProgram->setVec4("color", 1, 1, 0, 1);
             DrawPlanetIcon(object_pos, camera_matrix, projection, viewport);
@@ -154,7 +106,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
                 cqspb::Body>(entt::exclude<cqspb::LightEmitter>);
     for (auto [ent_id, body] : bodies.each()) {
         // Draw the planet circle
-        glm::vec3 object_pos = CalculateObjectPos(ent_id);
+        glm::vec3 object_pos = CalculateCenteredObject(ent_id);
 
         if (glm::distance(object_pos, cam_pos) > 200) {
             // Check if it's obscured by a planet, but eh, we can deal with it later
@@ -173,8 +125,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
 
     // Draw sky
     sky.shaderProgram->UseProgram();
-    sky.shaderProgram->setMat4("view",
-                        glm::mat4(glm::mat3(camera_matrix)));
+    sky.shaderProgram->setMat4("view", glm::mat4(glm::mat3(camera_matrix)));
     sky.shaderProgram->setMat4("projection", projection);
 
     glDepthFunc(GL_LEQUAL);
@@ -208,97 +159,11 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeStarSystem(
 void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity(entt::entity entity) {
     namespace cqspb = conquerspace::components::bodies;
     // See the object
-    cqspb::Orbit& orbit = m_app.GetUniverse().
-                                get<cqspb::Orbit>(entity);
-    cqspb::Vec2& vec = cqspb::toVec2(orbit);
-    view_center = glm::vec3(vec.x / GetDivider(), 0, vec.y / GetDivider());
+    view_center = CalculateObjectPos(entity);
 
-    // Generate terrain each time
-    // Free previous sprite
-    boost::timer::auto_cpu_timer t;
-    noise::module::Perlin noise_module;
-    noise_module.SetOctaveCount(1);
-
-    noise::utils::NoiseMap height_map;
-    int textureWidth = 8;
-    int textureHeight = 4;
-    utils::NoiseMapBuilderSphere heightMapBuilder;
-    heightMapBuilder.SetSourceModule(noise_module);
-    heightMapBuilder.SetDestNoiseMap(height_map);
-    heightMapBuilder.SetDestSize(textureWidth, textureHeight);
-
-    heightMapBuilder.SetBounds(-90.0, 90.0, -180.0, 180.0);
-    heightMapBuilder.Build();
-
-    noise::utils::RendererImage renderer;
-    noise::utils::Image roughness_map;
-    renderer.SetSourceNoiseMap(height_map);
-    renderer.SetDestImage(roughness_map);
-    renderer.Render();
-
-    unsigned int roughness_texture;
-    glGenTextures(1, &roughness_texture);
-    glBindTexture(GL_TEXTURE_2D, roughness_texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, textureWidth, textureHeight, 0,
-                            GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, roughness_map.GetConstSlabPtr());
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-
-    noise::utils::Image image;
-    renderer.SetSourceNoiseMap(height_map);
-    renderer.SetDestImage(image);
-
-    renderer.ClearGradient();
-    renderer.AddGradientPoint(-1.0000, utils::Color(0, 0, 128, 255));  // deeps
-    renderer.AddGradientPoint(-0.2500, utils::Color(0, 0, 255, 255));  // shallow
-    renderer.AddGradientPoint(0.0000, utils::Color(0, 128, 255, 255));  // shore
-    renderer.AddGradientPoint(0.0625, utils::Color(240, 240, 64, 255));  // sand
-    renderer.AddGradientPoint(0.1250, utils::Color(32, 160, 0, 255));  // grass
-    renderer.AddGradientPoint(0.3750, utils::Color(224, 224, 0, 255));  // dirt
-    renderer.AddGradientPoint(0.7500, utils::Color(128, 128, 128, 255));  // rock
-    renderer.AddGradientPoint(1.0000, utils::Color(255, 255, 255, 255));  // snow
-    renderer.EnableLight();
-    renderer.SetLightContrast(3.0);
-    renderer.SetLightBrightness(2.0);
-    renderer.Render();
-
-    unsigned int terraintexture;
-    glGenTextures(1, &terraintexture);
-    glBindTexture(GL_TEXTURE_2D, terraintexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, textureWidth,
-                    textureHeight, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, image.GetConstSlabPtr());
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-
-    image.ReclaimMem();
-    roughness_map.ReclaimMem();
-
-    // Free the original textures
-    for (auto t : planet.textures) {
-        delete t;
-    }
-    planet.textures.clear();
-
-    // Assign textures
-    conquerspace::asset::Texture *tex = new conquerspace::asset::Texture();
-    tex->id = terraintexture;
-    tex->width = textureWidth;
-    tex->height = textureHeight;
-    planet.textures.push_back(tex);
-
-    conquerspace::asset::Texture* new_tex = new conquerspace::asset::Texture();
-    new_tex->id = roughness_texture;
-    new_tex->width = textureWidth;
-    new_tex->height = textureHeight;
-    planet.textures.push_back(new_tex);
+    conquerspace::client::systems::TerrainImageGenerator generator;
+    generator.GenerateTerrain(1, 2);
+    SetPlanetTexture(generator);
 
     // Make thread for things
     thread = std::thread([&]() {
@@ -316,23 +181,16 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanetIcon(
         return;
     }
 
-    planetDispMat = glm::translate(
-        planetDispMat,
+    planetDispMat = glm::translate(planetDispMat,
         glm::vec3((pos.x / m_app.GetWindowWidth() - 0.5) * 2,
             (pos.y / m_app.GetWindowHeight() - 0.5) * 2, 0));
 
     planetDispMat =
         glm::scale(planetDispMat, glm::vec3(circle_size, circle_size, circle_size));
-    planetDispMat = glm::scale(
-        planetDispMat,
-        glm::vec3(1,
-            static_cast<float>(m_app.GetWindowWidth()) /
-                static_cast<float>(m_app.GetWindowHeight()), 1));
-    glm::mat4 twodimproj = glm::scale(
-        glm::mat4(1.0f),
-        glm::vec3(1,
-            static_cast<float>(m_app.GetWindowWidth()) /
-                static_cast<float>(m_app.GetWindowHeight()), 1));
+
+    float window_ratio = GetWindowRatio();
+    planetDispMat = glm::scale(planetDispMat, glm::vec3(1, window_ratio, 1));
+    glm::mat4 twodimproj = glm::scale(glm::mat4(1.0f), glm::vec3(1, window_ratio, 1));
 
     twodimproj = glm::mat4(1.0f);
     planet_circle.shaderProgram->UseProgram();
@@ -355,20 +213,14 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanet(glm::vec3 
 
     position = position * transform;
 
+    planet.SetMVP(position, cameraMatrix, projection);
     planet.shaderProgram->UseProgram();
-    planet.shaderProgram->setMat4("model", position);
-    planet.shaderProgram->setMat4("view", cameraMatrix);
-    planet.shaderProgram->setMat4("projection", projection);
 
     planet.shaderProgram->setVec3("lightDir", glm::normalize(sun_position - object_pos));
     planet.shaderProgram->setVec3("lightPosition", sun_position);
 
-    planet.shaderProgram->setVec3("lightColor", 10, 10, 10);
-    planet.shaderProgram->setVec3("albedo", 1, 0, 1);
+    planet.shaderProgram->setVec3("lightColor", sun_color);
     planet.shaderProgram->setVec3("viewPos", cam_pos);
-    planet.shaderProgram->setFloat("metallic", 0.5);
-    planet.shaderProgram->setFloat("roughness", 0.1);
-    planet.shaderProgram->setFloat("ao", 1.0);
 
     engine::Draw(planet);
 }
@@ -380,16 +232,11 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawStar(
     position = glm::translate(position, object_pos);
 
     glm::mat4 transform = glm::mat4(1.f);
-
     transform = glm::scale(transform, glm::vec3(1, 1, 1));
     transform = glm::scale(transform, glm::vec3(5, 5, 5));
-
     position = position * transform;
 
-    sun.shaderProgram->UseProgram();
-    sun.shaderProgram->setMat4("model", position);
-    sun.shaderProgram->setMat4("view", cameraMatrix);
-    sun.shaderProgram->setMat4("projection", projection);
+    sun.SetMVP(position, cameraMatrix, projection);
     engine::Draw(sun);
 }
 
@@ -398,7 +245,13 @@ glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateObjectP
     namespace cqspb = conquerspace::components::bodies;
     cqspb::Orbit& orbit = m_app.GetUniverse().get<cqspb::Orbit>(ent);
     cqspb::Vec2& vec = cqspb::toVec2(orbit);
-    return (glm::vec3(vec.x / divider, 0, vec.y / divider) - focus_vec);
+    return glm::vec3(vec.x / divider, 0, vec.y / divider);
+}
+
+glm::vec3
+conquerspace::client::systems::SysStarSystemRenderer::CalculateCenteredObject(
+    entt::entity &ent) {
+    return CalculateObjectPos(ent) - view_center;
 }
 
 void conquerspace::client::systems::SysStarSystemRenderer::CalculateCamera() {
@@ -407,15 +260,70 @@ void conquerspace::client::systems::SysStarSystemRenderer::CalculateCamera() {
                 sin(view_y) * scroll,
                 cos(view_y) * cos(view_x) * scroll);
     cam_up = glm::vec3(0.0f, 1.0f, 0.0f);
-    focus_vec = glm::vec3(view_center.x, view_center.y, view_center.z);
-    cam_pos = cam_pos;
     camera_matrix = glm::lookAt(cam_pos, glm::vec3(0.f, 0.f, 0.f), cam_up);
-    projection =
-              glm::infinitePerspective(glm::radians(45.f),
-                                static_cast<float>(m_app.GetWindowWidth()) /
-                                static_cast<float>(m_app.GetWindowHeight()), 0.1f);
-    viewport = glm::vec4(0.f, 0.f,
-                            m_app.GetWindowWidth(), m_app.GetWindowHeight());
+    projection = glm::infinitePerspective(glm::radians(45.f), GetWindowRatio(), 0.1f);
+    viewport = glm::vec4(0.f, 0.f, m_app.GetWindowWidth(), m_app.GetWindowHeight());
+}
+
+void conquerspace::client::systems::SysStarSystemRenderer::SetPlanetTexture(
+    TerrainImageGenerator &generator) {
+    unsigned int albedo_map = GeneratePlanetTexture(generator.GetAlbedoMap());
+    unsigned int roughness_map  = GeneratePlanetTexture(generator.GetRoughnessMap());
+
+    generator.ClearData();
+
+    // Free textures in texture
+    for (auto t : planet.textures) {
+        delete t;
+    }
+    planet.textures.clear();
+
+    // Assign textures
+    planet.textures.push_back(GenerateTexture(albedo_map, generator.GetAlbedoMap()));
+    planet.textures.push_back(GenerateTexture(roughness_map, generator.GetRoughnessMap()));
+}
+
+unsigned int
+conquerspace::client::systems::SysStarSystemRenderer::GeneratePlanetTexture(
+    noise::utils::Image &image) {
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, image.GetWidth(), image.GetHeight(), 0, GL_RGBA,
+                          GL_UNSIGNED_INT_8_8_8_8, image.GetConstSlabPtr());
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    return texture;
+}
+
+glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateMouseRay(
+    glm::vec3 &ray_nds) {
+    glm::vec4 ray_clip = glm::vec4(ray_nds.x, ray_nds.y, -1.0, 1.0);
+    glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
+    ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0, 0.0);
+    glm::vec4 inv = (glm::inverse(camera_matrix) * ray_eye);
+
+    // Normalize vector
+    return glm::normalize(glm::vec3(inv.x, inv.y, inv.z));
+}
+
+float conquerspace::client::systems::SysStarSystemRenderer::GetWindowRatio() {
+    return static_cast<float>(m_app.GetWindowWidth()) /
+                                static_cast<float>(m_app.GetWindowHeight());
+}
+
+conquerspace::asset::Texture *
+conquerspace::client::systems::SysStarSystemRenderer::GenerateTexture(
+    unsigned int tex, noise::utils::Image &image) {
+    conquerspace::asset::Texture *texture = new conquerspace::asset::Texture();
+    texture->id = tex;
+    texture->width = image.GetWidth();
+    texture->height = image.GetHeight();
+    return texture;
 }
 
 entt::entity conquerspace::client::systems::SysStarSystemRenderer::GetMouseOnObject(
@@ -425,7 +333,7 @@ entt::entity conquerspace::client::systems::SysStarSystemRenderer::GetMouseOnObj
     // Loop through objects
     auto bodies = m_app.GetUniverse().view<ToRender, conquerspace::components::bodies::Body>();
     for (auto [ent_id, body] : bodies.each()) {
-        glm::vec3 object_pos = CalculateObjectPos(ent_id);
+        glm::vec3 object_pos = CalculateCenteredObject(ent_id);
 
         // Check if the sphere is rendered or not
         if (glm::distance(object_pos, cam_pos) > 100) {
@@ -447,19 +355,13 @@ entt::entity conquerspace::client::systems::SysStarSystemRenderer::GetMouseOnObj
             float y = 1.0f - (2.0f * mouse_y) / m_app.GetWindowHeight();
             float z = 1.0f;
 
-            glm::vec3 ray_nds = glm::vec3(x, y, z);
-            glm::vec4 ray_clip = glm::vec4(ray_nds.x, ray_nds.y, -1.0, 1.0);
-            glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
-            ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0, 0.0);
-            glm::vec4 inv = (glm::inverse(camera_matrix) * ray_eye);
-            glm::vec3 ray_wor = glm::vec3(inv.x, inv.y, inv.z);
-            // don't forget to normalise the vector at some point
-            ray_wor = glm::normalize(ray_wor);
+            glm::vec3 ray_wor = CalculateMouseRay(glm::vec3(x, y, z));
 
             float radius = 1;
             if (m_app.GetUniverse().all_of<cqspb::LightEmitter>(ent_id)) {
                 radius = 10;
             }
+
             // Check for intersection for sphere
             glm::vec3 sub = cam_pos - object_pos;
             float b = glm::dot(ray_wor, sub);

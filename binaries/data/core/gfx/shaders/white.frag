@@ -5,7 +5,7 @@ in vec3 FragPos;
 in vec3 Normal;
 
 // lights
-uniform vec3 lightPos;
+uniform vec3 lightPosition;
 uniform vec3 lightColor;
 uniform vec3 lightDir;
 
@@ -91,7 +91,7 @@ void main()
 
     float roughness = 0.1;
     vec3 N = normalize(Normal);
-    if(texture(heightmap, TexCoords).r > 0.10) {
+    if(texture(heightmap, TexCoords).r > 0.05) {
         roughness = 1;
         N = getNormalFromMap();
     }
@@ -111,7 +111,7 @@ void main()
     // Do directional light because stars are so much larger than planets. 
     vec3 L = lightDir;//normalize(lightPos - FragPos);
     vec3 H = normalize(V + L);
-    float distance = length(lightPos - FragPos);
+    float distance = length(lightPosition - FragPos);
 
     vec3 radiance = lightColor;
 

@@ -101,13 +101,14 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
 
         if (GetApplication().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) &&
                     (ent = system_renderer->GetMouseOnObject(GetApplication().GetMouseX(),
-                    GetApplication().GetMouseY())) != entt::null && selected_planet != ent) {
+                    GetApplication().GetMouseY())) != entt::null) {
             // Go to the place
             spdlog::info("Seeing {}", ent);
-            system_renderer->SeeEntity(ent);
-
-            selected_planet = ent;
-            to_show_planet_window = true;
+            if (selected_planet != ent) {
+                system_renderer->SeeEntity(ent);
+                selected_planet = ent;
+                to_show_planet_window = true;
+            }
             planet_information->to_see = true;
         }
     }
