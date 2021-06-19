@@ -20,6 +20,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <stb_image.h>
+
 int conquerspace::engine::Application::init() {
     // Initialize logger
 #ifdef NDEBUG
@@ -41,8 +43,7 @@ int conquerspace::engine::Application::init() {
 #endif
 
     // Create window
-    m_window = glfwCreateWindow(m_window_width, m_window_height, "Conquer Space",
-                                NULL, NULL);
+    m_window = glfwCreateWindow(m_window_width, m_window_height, "Conquer Space", NULL, NULL);
     if (m_window == NULL) {
         glfwTerminate();
         spdlog::error("Cannot load glfw");
@@ -64,6 +65,7 @@ int conquerspace::engine::Application::init() {
         return -2;
     }
 
+    SetIcon();
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -94,14 +96,17 @@ int conquerspace::engine::Application::destroy() {
 }
 
 conquerspace::engine::Application::Application() {
-    std::ifstream configPath("../config/settings.hjson");
-    if (configPath.good()) {
-        m_program_options.LoadOptions(configPath);
+    std::ifstream config_path("../config/settings.hjson");
+    if (config_path.good()) {
+        m_program_options.LoadOptions(config_path);
         // Read config file
 
-        Hjson::Value windowDimensions = m_program_options["window"];
-        m_window_width = windowDimensions["width"];
-        m_window_height = windowDimensions["height"];
+        Hjson::Value window_dimensions = m_program_options["window"];
+        m_window_width = window_dimensions["width"];
+        m_window_height = window_dimensions["height"];
+
+        // Set icon path
+        icon_path = m_program_options["icon"].to_string();
     } else {
         m_window_width = 1280;
         m_window_height = 720;
@@ -200,8 +205,7 @@ void conquerspace::engine::Application::AddCallbacks() {
     };
 
     auto cursor_enter_callback = [](GLFWwindow* _w, int entered) {
-        static_cast<Application*>(glfwGetWindowUserPointer(_w))
-            ->MouseEnterCallback(_w, entered);
+        static_cast<Application*>(glfwGetWindowUserPointer(_w))->MouseEnterCallback(_w, entered);
     };
 
     auto mouse_button_callback = [](GLFWwindow* _w, int button, int action,
@@ -317,6 +321,14 @@ void conquerspace::engine::Application::FrameBufferSizeCallback(
 
     m_window_width = width;
     m_window_height = height;
+}
+
+void conquerspace::engine::Application::SetIcon() {
+    GLFWimage images[1]; 
+    images[0].pixels = stbi_load(("../data/" + icon_path).c_str(), &images[0].width,
+                                                                    &images[0].height, 0, 4);
+    glfwSetWindowIcon(m_window, 1, images); 
+    stbi_image_free(images[0].pixels);
 }
 
 void conquerspace::engine::SceneManager::SetInitialScene(

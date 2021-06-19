@@ -146,6 +146,7 @@ class Application {
     void DropCallback(GLFWwindow* _w, int count, const char** paths);
     void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
 
+    void SetIcon();
     /*
      * Intializes glfw and imgui.
      */
@@ -158,6 +159,7 @@ class Application {
 
     GLFWwindow *m_window;
     int m_window_width, m_window_height;
+    std::string icon_path;
 
     SceneManager m_scene_manager;
 
