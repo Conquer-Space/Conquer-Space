@@ -52,8 +52,13 @@ if(MSVC)
 	set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
 endif()
 
+SET(ICON_FILE "")
+if(WIN32)
+SET(ICON_FILE "${CMAKE_SOURCE_DIR}/binaries/data/app.rc")
+endif()
+
 add_library(cqsp-core ${SOURCE_FILES})
-add_executable(Conquer-Space main.cpp)
+add_executable(Conquer-Space main.cpp ${ICON_FILE})
 
 set(CQSP_LIBRARIES glfw3_mt
     OpenGL::GL
