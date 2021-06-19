@@ -53,6 +53,10 @@ class SysStarSystemRenderer {
     conquerspace::engine::Renderable planet_circle;
     conquerspace::engine::Renderable sun;
 
+    std::thread thread;
+
+    bool terrain_complete = false;
+
     glm::vec3 cam_pos;
     glm::vec3 cam_up = glm::vec3(0.0f, 1.0f, 0.0f);
     glm::vec3 focus_vec;

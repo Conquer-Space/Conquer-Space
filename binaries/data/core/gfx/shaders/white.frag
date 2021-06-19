@@ -11,17 +11,27 @@ uniform vec3 lightDir;
 
 uniform vec3 viewPos;
 
-uniform sampler2D texture0;
-uniform sampler2D normalMap;
-uniform sampler2D roughnessMap;
+uniform sampler2D albedomap;
+uniform sampler2D heightmap;
 
 const float PI = 3.14159265359;
 // ----------------------------------------------------------------------------
 vec3 getNormalFromMap()
 {
-    vec3 tangentNormal = texture(normalMap, TexCoords).xyz * 2.0 - 1.0;
-    tangentNormal *= 0.3;
-
+    const vec2 size = vec2(2.0,0.0);
+    const ivec3 off = ivec3(-1,0,1);
+    vec4 wave = texture(heightmap, TexCoords);
+    float s11 = wave.x;
+    float s01 = textureOffset(heightmap, TexCoords, off.xy).x;
+    float s21 = textureOffset(heightmap, TexCoords, off.zy).x;
+    float s10 = textureOffset(heightmap, TexCoords, off.yx).x;
+    float s12 = textureOffset(heightmap, TexCoords, off.yz).x;
+    vec3 va = normalize(vec3(size.xy,s21-s01));
+    vec3 vb = normalize(vec3(size.yx,s12-s10));
+    vec4 bump = vec4( cross(va,vb), s11 );
+    vec3 tangentNormal = bump.xyz * 20;
+    //vec3 tangentNormal = texture(normalMap, TexCoords).xyz * 2.0 - 1.0;
+    //vec3 tangentNormal = vec4(bumpFromDepth(uv, WorldPos.xy, .1).rgb * .5 + .5, 1.).xyz * 2.0 - 1.0;
     vec3 Q1  = dFdx(FragPos);
     vec3 Q2  = dFdy(FragPos);
     vec2 st1 = dFdx(TexCoords);
@@ -77,8 +87,8 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
 // ----------------------------------------------------------------------------
 void main()
 {
-    vec3 albedo = pow(texture(texture0, TexCoords).rgb, vec3(2.2));
-    float roughness = (1-texture(roughnessMap, TexCoords).r) + 0.15;
+    vec3 albedo = pow(texture(albedomap, TexCoords).rgb, vec3(2.2));
+    float roughness = (texture(heightmap, TexCoords).r) + 0.15;
     float metallic = 0.99;
 
     vec3 N = getNormalFromMap();
