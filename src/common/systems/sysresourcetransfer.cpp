@@ -1,3 +1,6 @@
+/*
+ * Copyright 2021 Conquer Space
+ */
 #include "common/systems/sysresourcetransfer.h"
 
 #include "common/components/resource.h"
@@ -8,7 +11,7 @@ bool conquerspace::systems::resource::TransferResources(entt::registry &registry
                                                         entt::entity good, double amount) {
     namespace cqspc = conquerspace::components;
     // Get resource stockpile
-    if(!(registry.all_of<cqspc::ResourceStockpile>(from) &&
+    if (!(registry.all_of<cqspc::ResourceStockpile>(from) &&
                             registry.all_of<cqspc::ResourceStockpile>(to) &&
                             registry.all_of<cqspc::Good>(good))) {
         return false;

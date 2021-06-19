@@ -1,3 +1,6 @@
+/*
+ * Copyright 2021 Conquer Space
+ */
 #include "common/components/resource.h"
 
 #include <spdlog/spdlog.h>

@@ -3,11 +3,12 @@
  */
 #include "client/systems/sysstarsystemrenderer.h"
 
+#include <noise/noise.h>
+#include <noiseutils.h>
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/polar_coordinates.hpp>
 #include <glm/gtx/string_cast.hpp>
-
-#include <noise/noise.h>
 
 #include <boost/timer/timer.hpp>
 
@@ -20,9 +21,6 @@
 #include "common/components/organizations.h"
 #include "common/components/player.h"
 #include "common/components/orbit.h"
-#include "client/systems/sysplanetterraingenerator.h"
-
-#include "noiseutils.h"
 
 conquerspace::client::systems::SysStarSystemRenderer::SysStarSystemRenderer
                                                     (conquerspace::components::Universe &_u,
@@ -43,13 +41,11 @@ void conquerspace::client::systems::SysStarSystemRenderer::Initialize() {
                                                                         "defaultfrag");
 
     asset::ShaderProgram* star_shader =
-                            m_app.GetAssetManager().CreateShaderProgram("objectvert",
-                                                                        "sunshader");
+                            m_app.GetAssetManager().CreateShaderProgram("objectvert", "sunshader");
 
     asset::ShaderProgram* circle_shader =
                         m_app.GetAssetManager().
-                        CreateShaderProgram("shader.pane.vert",
-                                            "coloredcirclefrag");
+                        CreateShaderProgram("shader.pane.vert", "coloredcirclefrag");
 
     asset::ShaderProgram* skybox_shader =
                             m_app.GetAssetManager().CreateShaderProgram("skycubevert",
@@ -87,7 +83,50 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
         spdlog::info("Done terrain generation");
         thread.join();
         terrain_complete = false;
+        int width = std::pow(2, 11);
+        int height = std::pow(2, 10);
         // Generate the terrain
+        unsigned int roughness_texture;
+        glGenTextures(1, &roughness_texture);
+        glBindTexture(GL_TEXTURE_2D, roughness_texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, width, height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8,
+                                            image_generator.GetRoughnessMap().GetConstSlabPtr());
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+        unsigned int albedo_map;
+        glGenTextures(1, &albedo_map);
+        glBindTexture(GL_TEXTURE_2D, albedo_map);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, width, height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8,
+                                            image_generator.GetAlbedoMap().GetConstSlabPtr());
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        image_generator.ClearData();
+
+        for (auto t : planet.textures) {
+            delete t;
+        }
+        planet.textures.clear();
+
+        conquerspace::asset::Texture *tex = new conquerspace::asset::Texture();
+        tex->id = albedo_map;
+        tex->width = width;
+        tex->height = height;
+        planet.textures.push_back(tex);
+
+        conquerspace::asset::Texture* new_tex = new conquerspace::asset::Texture();
+        new_tex->id = roughness_texture;
+        new_tex->width = width;
+        new_tex->height = height;
+        planet.textures.push_back(new_tex);
     }
 
     // Draw stars
@@ -111,7 +150,8 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
 
     // Draw other bodies
     auto bodies =
-                m_app.GetUniverse().view<ToRender, cqspb::Body>(entt::exclude<cqspb::LightEmitter>);
+                m_app.GetUniverse().view<ToRender,
+                cqspb::Body>(entt::exclude<cqspb::LightEmitter>);
     for (auto [ent_id, body] : bodies.each()) {
         // Draw the planet circle
         glm::vec3 object_pos = CalculateObjectPos(ent_id);
@@ -199,7 +239,8 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity(entt::entit
     unsigned int roughness_texture;
     glGenTextures(1, &roughness_texture);
     glBindTexture(GL_TEXTURE_2D, roughness_texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, textureWidth, textureHeight, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, roughness_map.GetConstSlabPtr());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, textureWidth, textureHeight, 0,
+                            GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, roughness_map.GetConstSlabPtr());
     glGenerateMipmap(GL_TEXTURE_2D);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -212,14 +253,14 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity(entt::entit
     renderer.SetDestImage(image);
 
     renderer.ClearGradient();
-    renderer.AddGradientPoint(-1.0000, utils::Color(  0,   0, 128, 255)); // deeps
-    renderer.AddGradientPoint(-0.2500, utils::Color(  0,   0, 255, 255)); // shallow
-    renderer.AddGradientPoint( 0.0000, utils::Color(  0, 128, 255, 255)); // shore
-    renderer.AddGradientPoint( 0.0625, utils::Color(240, 240,  64, 255)); // sand
-    renderer.AddGradientPoint( 0.1250, utils::Color( 32, 160,   0, 255)); // grass
-    renderer.AddGradientPoint( 0.3750, utils::Color(224, 224,   0, 255)); // dirt
-    renderer.AddGradientPoint( 0.7500, utils::Color(128, 128, 128, 255)); // rock
-    renderer.AddGradientPoint( 1.0000, utils::Color(255, 255, 255, 255)); // snow
+    renderer.AddGradientPoint(-1.0000, utils::Color(0, 0, 128, 255));  // deeps
+    renderer.AddGradientPoint(-0.2500, utils::Color(0, 0, 255, 255));  // shallow
+    renderer.AddGradientPoint(0.0000, utils::Color(0, 128, 255, 255));  // shore
+    renderer.AddGradientPoint(0.0625, utils::Color(240, 240, 64, 255));  // sand
+    renderer.AddGradientPoint(0.1250, utils::Color(32, 160, 0, 255));  // grass
+    renderer.AddGradientPoint(0.3750, utils::Color(224, 224, 0, 255));  // dirt
+    renderer.AddGradientPoint(0.7500, utils::Color(128, 128, 128, 255));  // rock
+    renderer.AddGradientPoint(1.0000, utils::Color(255, 255, 255, 255));  // snow
     renderer.EnableLight();
     renderer.SetLightContrast(3.0);
     renderer.SetLightBrightness(2.0);
@@ -228,7 +269,8 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity(entt::entit
     unsigned int terraintexture;
     glGenTextures(1, &terraintexture);
     glBindTexture(GL_TEXTURE_2D, terraintexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, textureWidth, textureHeight, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, image.GetConstSlabPtr());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, textureWidth,
+                    textureHeight, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, image.GetConstSlabPtr());
     glGenerateMipmap(GL_TEXTURE_2D);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -236,14 +278,20 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity(entt::entit
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
-    // Set planet texture
-    // Make texture
-    // Remove texture when done, somehow
+    image.ReclaimMem();
+    roughness_map.ReclaimMem();
+
+    // Free the original textures
+    for (auto t : planet.textures) {
+        delete t;
+    }
+    planet.textures.clear();
+
+    // Assign textures
     conquerspace::asset::Texture *tex = new conquerspace::asset::Texture();
     tex->id = terraintexture;
     tex->width = textureWidth;
     tex->height = textureHeight;
-    planet.textures.clear();
     planet.textures.push_back(tex);
 
     conquerspace::asset::Texture* new_tex = new conquerspace::asset::Texture();
@@ -254,7 +302,6 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity(entt::entit
 
     // Make thread for things
     thread = std::thread([&]() {
-        TerrainImageGenerator image_generator;
         image_generator.GenerateTerrain(8, 10);
         terrain_complete = true;
     });

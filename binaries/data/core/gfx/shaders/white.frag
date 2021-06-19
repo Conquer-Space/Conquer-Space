@@ -87,11 +87,16 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
 // ----------------------------------------------------------------------------
 void main()
 {
-    vec3 albedo = pow(texture(albedomap, TexCoords).rgb, vec3(2.2));
-    float roughness = (texture(heightmap, TexCoords).r) + 0.15;
-    float metallic = 0.99;
+    vec3 albedo = pow(texture(albedomap, TexCoords).rgb, vec3(3.));
 
-    vec3 N = getNormalFromMap();
+    float roughness = 0.1;
+    vec3 N = normalize(Normal);
+    if(texture(heightmap, TexCoords).r > 0.10) {
+        roughness = 1;
+        N = getNormalFromMap();
+    }
+
+    float metallic = 0.99;
     vec3 V = normalize(viewPos - FragPos);
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 

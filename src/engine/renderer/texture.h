@@ -24,6 +24,7 @@ class Texture : public Asset {
     int texture_type;
 
     Texture();
+    ~Texture();
 };
 
 unsigned int LoadTexture(unsigned char*& data,

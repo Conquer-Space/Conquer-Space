@@ -7,6 +7,7 @@
 
 #include <glm/glm.hpp>
 
+#include "client/systems/sysplanetterraingenerator.h"
 #include "common/universe.h"
 #include "engine/renderer/renderable.h"
 #include "engine/renderer/renderer.h"
@@ -80,6 +81,8 @@ class SysStarSystemRenderer {
     const double divider = 0.01;
 
     glm::vec3 sun_position;
+
+    TerrainImageGenerator image_generator;
 };
 }  // namespace systems
 }  // namespace client

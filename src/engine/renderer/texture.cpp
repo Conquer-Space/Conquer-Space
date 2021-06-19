@@ -9,6 +9,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <spdlog/spdlog.h>
+
 unsigned int conquerspace::asset::LoadTexture(unsigned char*& data,
                                         int components,
                                         int width,
@@ -89,3 +91,8 @@ void conquerspace::asset::LoadCubemap(Texture &texture, std::vector<unsigned cha
 }
 
 conquerspace::asset::Texture::Texture() { texture_type = GL_TEXTURE_2D; }
+
+conquerspace::asset::Texture::~Texture() {
+    // Delete textures
+    glDeleteTextures(1, &id);
+}

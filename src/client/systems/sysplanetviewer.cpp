@@ -3,10 +3,11 @@
 */
 #include "client/systems/sysplanetviewer.h"
 
-#include <string>
-#include <map>
+#include <noiseutils.h>
 #include <noise/noise.h>
 
+#include <string>
+#include <map>
 
 #include "common/components/area.h"
 #include "common/components/bodies.h"
@@ -19,7 +20,6 @@
 #include "common/components/surface.h"
 #include "engine/gui.h"
 #include "util/utilnumberdisplay.h"
-#include "noiseutils.h"
 
 void conquerspace::client::systems::SysPlanetInformation::DisplayPlanet(
     entt::entity& planet, conquerspace::engine::Application& m_app) {
@@ -136,8 +136,8 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
                         ImGui::Text(fmt::format("{}", m_app.GetUniverse()
                                     .get<cqspc::Identifier>(iterator->first).identifier).c_str());
                         ImGui::TableSetColumnIndex(1);
-                        ImGui::Text(fmt::format("{}", iterator->second).c_str());
-                                //conquerspace::util::LongToHumanString(static_cast<int64_t>(iterator->second))).c_str());
+                        ImGui::Text(fmt::format("{}", conquerspace::util::
+                                LongToHumanString(static_cast<int64_t>(iterator->second))).c_str());
                     }
                     ImGui::EndTable();
                 }
