@@ -13,6 +13,8 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include <stb_image.h>
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -20,7 +22,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <stb_image.h>
 
 int conquerspace::engine::Application::init() {
     // Initialize logger
@@ -324,10 +325,10 @@ void conquerspace::engine::Application::FrameBufferSizeCallback(
 }
 
 void conquerspace::engine::Application::SetIcon() {
-    GLFWimage images[1]; 
+    GLFWimage images[1];
     images[0].pixels = stbi_load(("../data/" + icon_path).c_str(), &images[0].width,
                                                                     &images[0].height, 0, 4);
-    glfwSetWindowIcon(m_window, 1, images); 
+    glfwSetWindowIcon(m_window, 1, images);
     stbi_image_free(images[0].pixels);
 }
 

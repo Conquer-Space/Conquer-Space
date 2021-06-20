@@ -56,9 +56,10 @@ void conquerspace::client::systems::SysStarSystemRenderer::Initialize() {
     // Initialize shaders
     asset::ShaderProgram* planet_shader =
                             m_app.GetAssetManager().CreateShaderProgram("objectvert",
-                                                                        "defaultfrag");
+                                                                        "planetfrag");
     // Planet spheres
     planet.mesh = sphere_mesh;
+    planet_shader->UseProgram();
     planet_shader->setInt("albedomap", 0);
     planet_shader->setInt("heightmap", 1);
 
@@ -75,16 +76,22 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     namespace cqspb = conquerspace::components::bodies;
     CalculateCamera();
 
+    if (second_terrain_complete && !terrain_complete) {
+        spdlog::info("Done less detailed planet generation");
+        less_detailed_terrain_generator_thread.join();
+        SetPlanetTexture(intermediate_image_generator);
+        second_terrain_complete = false;
+    }
+
     if (terrain_complete) {
         spdlog::info("Done terrain generation");
-        thread.join();
+        terrain_generator_thread.join();
+        SetPlanetTexture(final_image_generator);
         terrain_complete = false;
-        SetPlanetTexture(image_generator);
     }
 
     // Draw stars
-    auto stars = m_app.GetUniverse().
-        view<ToRender, cqspb::Body, cqspb::LightEmitter>();
+    auto stars = m_app.GetUniverse().view<ToRender, cqspb::Body, cqspb::LightEmitter>();
     for (auto [ent_id, body] : stars.each()) {
         // Draw the planet circle
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
@@ -101,8 +108,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     }
 
     // Draw other bodies
-    auto bodies =
-                m_app.GetUniverse().view<ToRender,
+    auto bodies = m_app.GetUniverse().view<ToRender,
                 cqspb::Body>(entt::exclude<cqspb::LightEmitter>);
     for (auto [ent_id, body] : bodies.each()) {
         // Draw the planet circle
@@ -165,9 +171,16 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity(entt::entit
     generator.GenerateTerrain(1, 2);
     SetPlanetTexture(generator);
 
+    less_detailed_terrain_generator_thread = std::thread([&]() {
+        // Generate slightly less detailed terrain so that it looks better at first
+        intermediate_image_generator.GenerateTerrain(6, 5);
+        second_terrain_complete = true;
+    });
+
     // Make thread for things
-    thread = std::thread([&]() {
-        image_generator.GenerateTerrain(8, 10);
+    terrain_generator_thread = std::thread([&]() {
+        // Generate slightly less detailed terrain so that it looks better at first
+        final_image_generator.GenerateTerrain(8, 9);
         terrain_complete = true;
     });
 }
@@ -268,8 +281,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::CalculateCamera() {
 void conquerspace::client::systems::SysStarSystemRenderer::SetPlanetTexture(
     TerrainImageGenerator &generator) {
     unsigned int albedo_map = GeneratePlanetTexture(generator.GetAlbedoMap());
-    unsigned int roughness_map  = GeneratePlanetTexture(generator.GetRoughnessMap());
-
+    unsigned int height_map  = GeneratePlanetTexture(generator.GetHeightMap());
     generator.ClearData();
 
     // Free textures in texture
@@ -280,7 +292,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::SetPlanetTexture(
 
     // Assign textures
     planet.textures.push_back(GenerateTexture(albedo_map, generator.GetAlbedoMap()));
-    planet.textures.push_back(GenerateTexture(roughness_map, generator.GetRoughnessMap()));
+    planet.textures.push_back(GenerateTexture(height_map, generator.GetHeightMap()));
 }
 
 unsigned int

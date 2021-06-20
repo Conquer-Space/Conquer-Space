@@ -15,11 +15,11 @@ class TerrainImageGenerator {
     void GenerateTerrain(int, int);
     void ClearData();
 
-    noise::utils::Image& GetRoughnessMap() { return roughness_map; }
+    noise::utils::Image& GetHeightMap() { return height_map; }
     noise::utils::Image& GetAlbedoMap() { return albedo_map; }
  private:
     int seed;
-    noise::utils::Image roughness_map;
+    noise::utils::Image height_map;
     noise::utils::Image albedo_map;
 };
 }  // namespace systems

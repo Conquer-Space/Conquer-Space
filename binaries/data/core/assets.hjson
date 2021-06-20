@@ -98,8 +98,8 @@
             type: vert
         }
     }
-    defaultfrag: {
-        path: gfx/shaders/white.frag
+    planetfrag: {
+        path: gfx/shaders/planet.frag
         type: shader
         hints: {
             type: frag

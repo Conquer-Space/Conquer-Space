@@ -9,25 +9,26 @@ void conquerspace::client::systems::TerrainImageGenerator::GenerateTerrain(int o
     noise::module::Perlin noise_module;
     noise_module.SetOctaveCount(octaves);
     noise_module.SetSeed(seed);
+    noise_module.SetFrequency(2);
 
-    noise::utils::NoiseMap height_map;
+    noise::utils::NoiseMap noise_map;
 
-    int textureWidth = std::pow(2, size + 1);
+    int textureWidth = std::pow(2, size);
     int textureHeight = std::pow(2, size);
     utils::NoiseMapBuilderSphere heightMapBuilder;
     heightMapBuilder.SetSourceModule(noise_module);
-    heightMapBuilder.SetDestNoiseMap(height_map);
+    heightMapBuilder.SetDestNoiseMap(noise_map);
     heightMapBuilder.SetDestSize(textureWidth, textureHeight);
 
     heightMapBuilder.SetBounds(-90.0, 90.0, -180.0, 180.0);
     heightMapBuilder.Build();
 
     noise::utils::RendererImage renderer;
-    renderer.SetSourceNoiseMap(height_map);
-    renderer.SetDestImage(roughness_map);
+    renderer.SetSourceNoiseMap(noise_map);
+    renderer.SetDestImage(height_map);
     renderer.Render();
 
-    renderer.SetSourceNoiseMap(height_map);
+    renderer.SetSourceNoiseMap(noise_map);
     renderer.SetDestImage(albedo_map);
 
     renderer.ClearGradient();
@@ -42,10 +43,12 @@ void conquerspace::client::systems::TerrainImageGenerator::GenerateTerrain(int o
     renderer.EnableLight();
     renderer.SetLightContrast(3.0);
     renderer.SetLightBrightness(2.0);
+    renderer.SetLightAzimuth(0);
+
     renderer.Render();
 }
 
 void conquerspace::client::systems::TerrainImageGenerator::ClearData() {
-    roughness_map.ReclaimMem();
+    height_map.ReclaimMem();
     albedo_map.ReclaimMem();
 }

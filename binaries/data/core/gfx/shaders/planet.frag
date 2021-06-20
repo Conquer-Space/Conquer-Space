@@ -91,12 +91,12 @@ void main()
 
     float roughness = 0.1;
     vec3 N = normalize(Normal);
-    if(texture(heightmap, TexCoords).r > 0.05) {
+    if(texture(heightmap, TexCoords).r > 0.5) {
         roughness = 1;
         N = getNormalFromMap();
     }
-
     float metallic = 0.99;
+
     vec3 V = normalize(viewPos - FragPos);
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 

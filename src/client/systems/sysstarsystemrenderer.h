@@ -56,10 +56,6 @@ class SysStarSystemRenderer {
     conquerspace::engine::Renderable planet_circle;
     conquerspace::engine::Renderable sun;
 
-    std::thread thread;
-
-    bool terrain_complete = false;
-
     glm::vec3 cam_pos;
     glm::vec3 cam_up = glm::vec3(0.0f, 1.0f, 0.0f);
     glm::mat4 camera_matrix;
@@ -91,7 +87,11 @@ class SysStarSystemRenderer {
     glm::vec3 sun_position;
     glm::vec3 sun_color;
 
-    TerrainImageGenerator image_generator;
+    std::thread terrain_generator_thread, less_detailed_terrain_generator_thread;
+
+    bool terrain_complete = false, second_terrain_complete = false;
+
+    TerrainImageGenerator final_image_generator, intermediate_image_generator;
 };
 }  // namespace systems
 }  // namespace client
