@@ -13,8 +13,6 @@
 #include <utility>
 #include <string>
 
-#include <spirit_po/spirit_po.hpp>
-
 #include "client/clientoptions.h"
 
 #include "engine/assetmanager.h"
@@ -79,10 +77,6 @@ class Application {
 
     const client::ProgramOptions& GetClientOptions() const {
         return m_program_options;
-    }
-
-    const std::unique_ptr<spirit_po::default_catalog>& GetCatalogue() const {
-        return catalog;
     }
 
     int GetWindowHeight() const { return m_window_height; }
@@ -174,7 +168,6 @@ class Application {
     double deltaTime, lastFrame;
 
     std::string locale;
-    std::unique_ptr<spirit_po::default_catalog> catalog;
 
     std::shared_ptr<spdlog::logger> logger;
 

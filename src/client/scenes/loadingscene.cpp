@@ -63,13 +63,6 @@ void conquerspace::scene::LoadingScene::Render(float deltaTime) { }
 
 void conquerspace::scene::LoadingScene::LoadResources() {
     // Loading goes here
-    // Load i18n
-    std::ifstream ifs("../data/core/i18n/default.po");
-    std::string po_file{std::istreambuf_iterator<char>{ifs},
-                        std::istreambuf_iterator<char>()};
-    auto a = std::make_unique<spirit_po::default_catalog>(
-        spirit_po::default_catalog::from_range(po_file));
-
     std::ifstream assetLibrary("../data/core/assets.hjson");
 
     assetLoader.manager = &GetApp().GetAssetManager();
