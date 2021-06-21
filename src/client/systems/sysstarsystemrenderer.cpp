@@ -74,6 +74,16 @@ void conquerspace::client::systems::SysStarSystemRenderer::Initialize() {
 
 void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     namespace cqspb = conquerspace::components::bodies;
+
+    entt::entity current_planet = m_app.GetUniverse().view<RenderingPlanet>().front();
+    if (current_planet != m_viewing_entity) {
+        m_viewing_entity = current_planet;
+        // Do terrain
+        SeeEntity();
+    }
+
+    m_star_system  = m_app.GetUniverse().view<RenderingStarSystem>().front();
+
     CalculateCamera();
 
     if (second_terrain_complete && !terrain_complete) {
@@ -93,7 +103,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     // Draw stars
     auto stars = m_app.GetUniverse().view<ToRender, cqspb::Body, cqspb::LightEmitter>();
     for (auto [ent_id, body] : stars.each()) {
-        // Draw the planet circle
+        // Draw the star circle
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
         sun_position = object_pos;
         if (glm::distance(object_pos, cam_pos) > 900) {
@@ -140,8 +150,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     glDepthFunc(GL_LESS);
 }
 
-void conquerspace::client::systems::SysStarSystemRenderer::SeeStarSystem(
-    entt::entity system) {
+void conquerspace::client::systems::SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
     namespace cqspb = conquerspace::components::bodies;
     if (m_star_system != entt::null &&
         m_universe.all_of<cqspb::StarSystem>(m_star_system)) {
@@ -162,10 +171,10 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeStarSystem(
     }
 }
 
-void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity(entt::entity entity) {
+void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity() {
     namespace cqspb = conquerspace::components::bodies;
     // See the object
-    view_center = CalculateObjectPos(entity);
+    view_center = CalculateObjectPos(m_viewing_entity);
 
     conquerspace::client::systems::TerrainImageGenerator generator;
     generator.GenerateTerrain(1, 2);

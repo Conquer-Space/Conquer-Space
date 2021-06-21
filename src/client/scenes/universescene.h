@@ -61,5 +61,10 @@ class UniverseScene : public conquerspace::engine::Scene {
 
     std::vector<std::unique_ptr<conquerspace::client::systems::SysUserInterface>> user_interfaces;
 };
+
+void SeePlanet(conquerspace::engine::Application&, entt::entity);
+void SeeStarSystem(conquerspace::engine::Application&, entt::entity);
+entt::entity GetCurrentViewingPlanet(conquerspace::engine::Application&);
+
 }  // namespace scene
 }  // namespace conquerspace

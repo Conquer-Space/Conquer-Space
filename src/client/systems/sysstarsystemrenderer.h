@@ -26,6 +26,9 @@ struct ToRender {};
 struct MouseOverEntity {};
 
 struct RenderingStarSystem {};
+
+struct RenderingPlanet {};
+
 /*
  * Main renderer for the universe
  */
@@ -36,7 +39,7 @@ class SysStarSystemRenderer {
     void Initialize();
     void Render();
     void SeeStarSystem(entt::entity);
-    void SeeEntity(entt::entity);
+    void SeeEntity();
 
     float view_x;
     float view_y;
@@ -51,6 +54,7 @@ class SysStarSystemRenderer {
 
  private:
     entt::entity m_star_system = entt::null;
+    entt::entity m_viewing_entity = entt::null;
     conquerspace::components::Universe &m_universe;
     conquerspace::engine::Application &m_app;
 

@@ -55,10 +55,9 @@ void conquerspace::scene::UniverseScene::Init() {
     star_system = &GetApp().GetUniverse().
                         get<cqspb::StarSystem>(body.star_system);
 
-    GetApp().GetUniverse().
-            emplace<conquerspace::client::systems::RenderingStarSystem>(body.star_system);
+    SeeStarSystem(GetApp(), body.star_system);
+    SeePlanet(GetApp(), player_civ->starting_planet);
 
-    system_renderer->SeeEntity(player_civ->starting_planet);
     selected_planet = player_civ->starting_planet;
 
     AddUISystem<conquerspace::client::systems::SysPlanetInformation>();
@@ -103,6 +102,14 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
 
         previous_mouseX = GetApp().GetMouseX();
         previous_mouseY = GetApp().GetMouseY();
+
+        // If clicks on object, go to the planet
+        entt::entity ent = GetApp().GetUniverse()
+            .view<conquerspace::client::systems::MouseOverEntity>().front();
+        if (GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) && ent != entt::null) {
+            // Then go to the object
+            SeePlanet(GetApp(), ent);
+        }
     }
 
     // Check for last tick
@@ -140,3 +147,16 @@ void conquerspace::scene::UniverseScene::Render(float deltaTime) {
     system_renderer->Render();
 }
 
+void conquerspace::scene::SeePlanet(conquerspace::engine::Application& app, entt::entity ent) {
+    app.GetUniverse().clear<conquerspace::client::systems::RenderingPlanet>();
+    app.GetUniverse().emplace<conquerspace::client::systems::RenderingPlanet>(ent);
+}
+
+void conquerspace::scene::SeeStarSystem(conquerspace::engine::Application& app, entt::entity ent) {
+    app.GetUniverse().clear<conquerspace::client::systems::RenderingStarSystem>();
+    app.GetUniverse().emplace<conquerspace::client::systems::RenderingStarSystem>(ent);
+}
+
+entt::entity conquerspace::scene::GetCurrentViewingPlanet(conquerspace::engine::Application& app) {
+    return app.GetUniverse().view<conquerspace::client::systems::RenderingPlanet>().front();
+}

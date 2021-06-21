@@ -6,6 +6,7 @@
 #include <string>
 
 #include "client/systems/sysstarsystemrenderer.h"
+#include "client/scenes/universescene.h"
 #include "common/components/bodies.h"
 #include "common/components/name.h"
 
@@ -13,11 +14,10 @@ void conquerspace::client::systems::SysStarSystemTree::Init() {}
 
 void conquerspace::client::systems::SysStarSystemTree::DoUI(int delta_time) {
     namespace cqspb = conquerspace::components::bodies;
-    using RenderingStarSystem =
-        conquerspace::client::systems::RenderingStarSystem;
+    namespace cqspcs = conquerspace::client::systems;
     // Get star system
     entt::entity ent =
-        GetApp().GetUniverse().view<RenderingStarSystem>().front();
+        GetApp().GetUniverse().view<cqspcs::RenderingStarSystem>().front();
     if (ent == entt::null) {
         return;
     }
@@ -29,8 +29,10 @@ void conquerspace::client::systems::SysStarSystemTree::DoUI(int delta_time) {
                 NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
     if (ImGui::BeginListBox("Star Systems", ImVec2(-FLT_MIN, -FLT_MIN))) {
         int index = 0;
+        // Get selected planet
+        entt::entity current_planet = conquerspace::scene::GetCurrentViewingPlanet(GetApp());
         for (auto entity : star_system.bodies) {
-            bool is_selected = (selected_index == index);
+            bool is_selected = (entity == current_planet);
             std::string star_system_name = fmt::format("{}", entity);
             if (GetApp().GetUniverse().all_of<conquerspace::components::Name>(entity)) {
                 star_system_name = fmt::format(
@@ -38,7 +40,7 @@ void conquerspace::client::systems::SysStarSystemTree::DoUI(int delta_time) {
                             .name);
             }
 
-            if (ImGui::Selectable(fmt::format("{}", entity).c_str(), is_selected)) {
+            if (ImGui::Selectable(star_system_name.c_str(), is_selected)) {
                 // Selected object
                 selected_index = index;
             }
