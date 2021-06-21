@@ -12,7 +12,7 @@ class Scene {
  public:
     explicit Scene(Application& app);
 
-    Application& GetApplication() { return m_application; }
+    Application& GetApp() { return m_application; }
 
     virtual void Init() = 0;
     virtual void Update(float deltaTime) = 0;

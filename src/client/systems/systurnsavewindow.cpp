@@ -10,8 +10,7 @@ void conquerspace::client::systems::SysTurnSaveWindow::Init() {
 
 void conquerspace::client::systems::SysTurnSaveWindow::DoUI(int delta_time) {
         // Turn window
-    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x,
-                                   30),
+    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x, 30),
                             ImGuiCond_Always, ImVec2(1.f, 0.f));
     ImGui::SetNextWindowSize(ImVec2(150, 65), ImGuiCond_Always);
     bool to_show = true;

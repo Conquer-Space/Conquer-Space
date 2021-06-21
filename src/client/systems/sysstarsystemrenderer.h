@@ -24,6 +24,8 @@ namespace systems {
 struct ToRender {};
 
 struct MouseOverEntity {};
+
+struct RenderingStarSystem {};
 /*
  * Main renderer for the universe
  */

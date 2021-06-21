@@ -23,11 +23,11 @@ conquerspace::scene::MainMenuScene::MainMenuScene(
     : conquerspace::engine::Scene(app) { }
 
 void conquerspace::scene::MainMenuScene::Init() {
-    m_texture = GetApplication()
+    m_texture = GetApp()
         .GetAssetManager()
         .GetAsset<conquerspace::asset::Texture>("cqspbanner");
 
-    m_credits = GetApplication()
+    m_credits = GetApp()
                     .GetAssetManager()
                     .GetAsset<conquerspace::asset::TextAsset>("credits");
 
@@ -40,18 +40,18 @@ void conquerspace::scene::MainMenuScene::Init() {
     conquerspace::primitive::MakeTexturedPaneMesh(*titleBanner);
 
     conquerspace::asset::Texture* earthrise_texture =
-        GetApplication()
+        GetApp()
         .GetAssetManager()
         .GetAsset<conquerspace::asset::Texture>("earthrise");
 
     conquerspace::asset::Texture* asset2 =
-        GetApplication()
+        GetApp()
         .GetAssetManager()
         .GetAsset<conquerspace::asset::Texture>("title");
 
     // Create new shader program
     asset::ShaderProgram* program =
-        GetApplication().GetAssetManager().
+        GetApp().GetAssetManager().
         CreateShaderProgram("shader.pane.vert", "shader.texturedpane.frag");
 
     splashscreen->shaderProgram = program;
@@ -78,8 +78,8 @@ void conquerspace::scene::MainMenuScene::Init() {
 
     mat = glm::mat4(1.f);
     mat = glm::scale(mat,
-            glm::vec3(1, static_cast<float>(GetApplication().GetWindowWidth())
-                                /static_cast<float>(GetApplication().GetWindowHeight()), 1));
+            glm::vec3(1, static_cast<float>(GetApp().GetWindowWidth())
+                                /static_cast<float>(GetApp().GetWindowHeight()), 1));
     renderer.projection = mat;
 }
 
@@ -88,8 +88,8 @@ void conquerspace::scene::MainMenuScene::Update(float deltaTime) {}
 void conquerspace::scene::MainMenuScene::Ui(float deltaTime) {
     float winWidth = width;
     float winHeight = height;
-    ImGui::SetNextWindowPos(ImVec2(GetApplication().GetWindowWidth() / 2 - winWidth / 2,
-               3 * GetApplication().GetWindowHeight() / 3 - winHeight * 1.5f));
+    ImGui::SetNextWindowPos(ImVec2(GetApp().GetWindowWidth() / 2 - winWidth / 2,
+               3 * GetApp().GetWindowHeight() / 3 - winHeight * 1.5f));
 
     ImGui::Begin("Conquer Space", nullptr,
                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
@@ -130,7 +130,7 @@ void conquerspace::scene::MainMenuScene::Ui(float deltaTime) {
     ImGui::Button("Others", ImVec2(buttonWidth, buttonHeight));
     ImGui::TableNextColumn();
     if (ImGui::Button("Quit", ImVec2(buttonWidth, buttonHeight))) {
-        GetApplication().ExitApplication();
+        GetApp().ExitApplication();
     }
     ImGui::EndTable();
 
@@ -146,7 +146,7 @@ void conquerspace::scene::MainMenuScene::Ui(float deltaTime) {
             ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
         if (ImGui::Button("New Game")) {
             // Switch scene
-            GetApplication().SetScene<conquerspace::scene::UniverseLoadingScene>();
+            GetApp().SetScene<conquerspace::scene::UniverseLoadingScene>();
         }
         ImGui::End();
     }
@@ -165,7 +165,7 @@ void conquerspace::scene::MainMenuScene::Ui(float deltaTime) {
             ImGuiCond_Always, ImVec2(0.5f, 0.5f));
         ImGui::Begin("Credits", &m_credits_window, ImGuiWindowFlags_NoCollapse);
         ImGui::Markdown(m_credits->data.c_str(), m_credits->data.length(),
-            GetApplication().markdownConfig);
+            GetApp().markdownConfig);
         ImGui::End();
     }
 }

@@ -42,7 +42,7 @@ void conquerspace::scene::LoadingScene::Update(float deltaTime) {
         // Load font after all the shaders are done
 
         LoadFont();
-        GetApplication().SetScene<conquerspace::scene::MainMenuScene>();
+        GetApp().SetScene<conquerspace::scene::MainMenuScene>();
     }
 }
 
@@ -72,7 +72,7 @@ void conquerspace::scene::LoadingScene::LoadResources() {
 
     std::ifstream assetLibrary("../data/core/assets.hjson");
 
-    assetLoader.manager = &GetApplication().GetAssetManager();
+    assetLoader.manager = &GetApp().GetAssetManager();
     assetLoader.LoadAssets(assetLibrary);
 
     spdlog::info("Done loading items");
@@ -80,24 +80,24 @@ void conquerspace::scene::LoadingScene::LoadResources() {
 }
 
 void conquerspace::scene::LoadingScene::LoadFont() {
-    conquerspace::asset::ShaderProgram* fontshader = new asset::ShaderProgram(*GetApplication()
+    conquerspace::asset::ShaderProgram* fontshader = new asset::ShaderProgram(*GetApp()
         .GetAssetManager()
         .GetAsset<conquerspace::asset::Shader>("fontvertexshader"),
-        *GetApplication()
+        *GetApp()
         .GetAssetManager()
         .GetAsset<conquerspace::asset::Shader>("fontfragshader"));
 
-    conquerspace::asset::Font* font = GetApplication()
+    conquerspace::asset::Font* font = GetApp()
         .GetAssetManager()
         .GetAsset<conquerspace::asset::Font>("defaultfont");
 
     glm::mat4 projection =
-        glm::ortho(0.0f, static_cast<float>(GetApplication().GetWindowWidth()), 0.0f,
-                    static_cast<float>(GetApplication().GetWindowHeight()));
+        glm::ortho(0.0f, static_cast<float>(GetApp().GetWindowWidth()), 0.0f,
+                    static_cast<float>(GetApp().GetWindowHeight()));
 
     fontshader->UseProgram();
     fontshader->setMat4("projection", projection);
 
-    GetApplication().SetFont(font);
-    GetApplication().SetFontShader(fontshader);
+    GetApp().SetFont(font);
+    GetApp().SetFontShader(fontshader);
 }

@@ -30,9 +30,10 @@ class UniverseScene : public conquerspace::engine::Scene {
     void Update(float deltaTime);
     void Ui(float deltaTime);
     void Render(float deltaTime);
+
     template <class T>
     void AddUISystem() {
-        user_interfaces.push_back(std::make_unique<T>(GetApplication()));
+        user_interfaces.push_back(std::make_unique<T>(GetApp()));
     }
 
  private:

@@ -29,64 +29,69 @@
 
 #include "client/systems/sysplanetviewer.h"
 #include "client/systems/systurnsavewindow.h"
+#include "client/systems/sysstarsystemtree.h"
 
 conquerspace::scene::UniverseScene::UniverseScene(
     conquerspace::engine::Application& app) : Scene(app) {}
 
 void conquerspace::scene::UniverseScene::Init() {
     namespace cqspb = conquerspace::components::bodies;
-    simulation = new conquerspace::systems::simulation::Simulation(GetApplication().GetUniverse());
+    simulation = new conquerspace::systems::simulation::Simulation(GetApp().GetUniverse());
 
     system_renderer = new conquerspace::client::systems::SysStarSystemRenderer(
-        GetApplication().GetUniverse(), GetApplication());
+        GetApp().GetUniverse(), GetApp());
     system_renderer->Initialize();
 
     auto civilizationView =
-        GetApplication().GetUniverse().
+        GetApp().GetUniverse().
                 view<conquerspace::components::Civilization, conquerspace::components::Player>();
     for (auto [entity, civ] : civilizationView.each()) {
         player = entity;
         player_civ = &civ;
     }
-    cqspb::Body body = GetApplication().GetUniverse().
+    cqspb::Body body = GetApp().GetUniverse().
                         get<cqspb::Body>(player_civ->starting_planet);
     system_renderer->SeeStarSystem(body.star_system);
-    star_system = &GetApplication().GetUniverse().
+    star_system = &GetApp().GetUniverse().
                         get<cqspb::StarSystem>(body.star_system);
+
+    GetApp().GetUniverse().
+            emplace<conquerspace::client::systems::RenderingStarSystem>(body.star_system);
 
     system_renderer->SeeEntity(player_civ->starting_planet);
     selected_planet = player_civ->starting_planet;
 
     AddUISystem<conquerspace::client::systems::SysPlanetInformation>();
     AddUISystem<conquerspace::client::systems::SysTurnSaveWindow>();
+    AddUISystem<conquerspace::client::systems::SysStarSystemTree>();
 }
 
 void conquerspace::scene::UniverseScene::Update(float deltaTime) {
     if (!ImGui::GetIO().WantCaptureKeyboard) {
-        if (GetApplication().ButtonIsHeld(GLFW_KEY_A)) {
+        if (GetApp().ButtonIsHeld(GLFW_KEY_A)) {
             x += (deltaTime * 10);
         }
-        if (GetApplication().ButtonIsHeld(GLFW_KEY_D)) {
+        if (GetApp().ButtonIsHeld(GLFW_KEY_D)) {
             x -= (deltaTime * 10);
         }
-        if (GetApplication().ButtonIsHeld(GLFW_KEY_W)) {
+        if (GetApp().ButtonIsHeld(GLFW_KEY_W)) {
             y += (deltaTime * 10);
         }
-        if (GetApplication().ButtonIsHeld(GLFW_KEY_S)) {
+        if (GetApp().ButtonIsHeld(GLFW_KEY_S)) {
             y -= (deltaTime * 10);
         }
     }
 
-    double deltaX = previous_mouseX - GetApplication().GetMouseX();
-    double deltaY = previous_mouseY - GetApplication().GetMouseY();
+    double deltaX = previous_mouseX - GetApp().GetMouseX();
+    double deltaY = previous_mouseY - GetApp().GetMouseY();
     if (!ImGui::GetIO().WantCaptureMouse) {
-        if (system_renderer->scroll + GetApplication().GetScrollAmount() * 3 > 1.5) {
-            system_renderer->scroll += GetApplication().GetScrollAmount() * 3;
+        if (system_renderer->scroll + GetApp().GetScrollAmount() * 3 > 1.5) {
+            system_renderer->scroll += GetApp().GetScrollAmount() * 3;
         }
 
-        if (GetApplication().MouseButtonIsHeld(GLFW_MOUSE_BUTTON_LEFT)) {
-            system_renderer->view_x += deltaX/GetApplication().GetWindowWidth()*3.1415*4;
-            system_renderer->view_y -= deltaY/GetApplication().GetWindowHeight()*3.1415*4;
+        if (GetApp().MouseButtonIsHeld(GLFW_MOUSE_BUTTON_LEFT)) {
+            system_renderer->view_x += deltaX/GetApp().GetWindowWidth()*3.1415*4;
+            system_renderer->view_y -= deltaY/GetApp().GetWindowHeight()*3.1415*4;
 
             if (glm::degrees(system_renderer->view_y) > 89.f) {
                 system_renderer->view_y = glm::radians(89.f);
@@ -96,17 +101,17 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
             }
         }
 
-        previous_mouseX = GetApplication().GetMouseX();
-        previous_mouseY = GetApplication().GetMouseY();
+        previous_mouseX = GetApp().GetMouseX();
+        previous_mouseY = GetApp().GetMouseY();
     }
 
     // Check for last tick
-    if (GetApplication().GetUniverse().ToTick()) {
+    if (GetApp().GetUniverse().ToTick()) {
         // Game tick
         simulation->tick();
     }
-    GetApplication().GetUniverse().clear<conquerspace::client::systems::MouseOverEntity>();
-    system_renderer->GetMouseOnObject(GetApplication().GetMouseX(), GetApplication().GetMouseY());
+    GetApp().GetUniverse().clear<conquerspace::client::systems::MouseOverEntity>();
+    system_renderer->GetMouseOnObject(GetApp().GetMouseX(), GetApp().GetMouseY());
     for (auto& ui : user_interfaces) {
         ui->DoUpdate(deltaTime);
     }
