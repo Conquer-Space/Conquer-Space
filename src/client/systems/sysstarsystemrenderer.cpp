@@ -180,13 +180,16 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity() {
     generator.GenerateTerrain(1, 2);
     SetPlanetTexture(generator);
 
+    // TODO(EhWhoAmI):  If it's in the process of generating, find some way to kill the gen,
+    // and move on to the new terrain.
+
+    // Generate terrain
     less_detailed_terrain_generator_thread = std::thread([&]() {
         // Generate slightly less detailed terrain so that it looks better at first
         intermediate_image_generator.GenerateTerrain(6, 5);
         second_terrain_complete = true;
     });
 
-    // Make thread for things
     terrain_generator_thread = std::thread([&]() {
         // Generate slightly less detailed terrain so that it looks better at first
         final_image_generator.GenerateTerrain(8, 9);

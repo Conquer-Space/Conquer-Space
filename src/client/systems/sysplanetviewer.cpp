@@ -10,6 +10,8 @@
 #include <map>
 
 #include "client/systems/sysstarsystemrenderer.h"
+#include "client/scenes/universescene.h"
+
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/name.h"
@@ -62,16 +64,14 @@ void conquerspace::client::systems::SysPlanetInformation::DoUI(int delta_time) {
 void conquerspace::client::systems::SysPlanetInformation::DoUpdate(int delta_time) {
     // If clicked on a planet, go to the planet
     // Get the thing
+    selected_planet = conquerspace::scene::GetCurrentViewingPlanet(GetApp());
+    entt::entity mouse_over = GetApp().GetUniverse().
+                        view<conquerspace::client::systems::MouseOverEntity>().front();
     if (!ImGui::GetIO().WantCaptureMouse &&
-                GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT)) {
-        // Set the object
-        entt::entity ent = GetApp().GetUniverse()
-                            .view<conquerspace::client::systems::MouseOverEntity>().front();
-        if (ent != entt::null) {
-            to_see = true;
-            selected_planet = ent;
-            spdlog::info("Switched entity");
-        }
+                GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) &&
+                mouse_over == selected_planet) {
+        to_see = true;
+        spdlog::info("Switched entity");
     }
 }
 

@@ -40,9 +40,14 @@ void conquerspace::client::systems::SysStarSystemTree::DoUI(int delta_time) {
                             .name);
             }
 
-            if (ImGui::Selectable(star_system_name.c_str(), is_selected)) {
+            if (ImGui::Selectable(star_system_name.c_str(),
+                            is_selected, ImGuiSelectableFlags_AllowDoubleClick)) {
                 // Selected object
                 selected_index = index;
+                if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+                    // Go to the planet
+                    conquerspace::scene::SeePlanet(GetApp(), entity);
+                }
             }
             index++;
         }
