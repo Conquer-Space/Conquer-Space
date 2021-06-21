@@ -27,3 +27,27 @@ add_subdirectory(fmt)
 add_subdirectory(libnoise)
 
 set_target_properties(aob fmt freetype hjson libnoise spdlog uninstall PROPERTIES FOLDER "Libs")
+
+# Add imgui
+include_directories(${CMAKE_SOURCE_DIR}/lib/imgui)
+include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
+include_directories(${CMAKE_SOURCE_DIR}/lib/freetype/include)
+include_directories(${GLFW3_INCLUDE_PATH})
+file (GLOB IMGUI ${CMAKE_SOURCE_DIR}/lib/imgui/*.cpp)
+set(IMGUI ${IMGUI} ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_glfw.h 
+    ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_glfw.cpp 
+    ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_opengl3.h 
+    ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_opengl3.cpp
+    ${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype/imgui_freetype.cpp
+    ${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype/imgui_freetype.h)
+
+add_library(ImGui ${IMGUI})
+target_link_libraries(ImGui PUBLIC glfw3_mt)
+set_target_properties(ImGui PROPERTIES FOLDER "Libs")
+
+# Create libnoise utils library
+include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/include)
+include_directories(${CMAKE_SOURCE_DIR}/lib/include)
+add_library(libnoise-utils ${CMAKE_SOURCE_DIR}/lib/src/noiseutils.cpp)
+target_link_libraries(libnoise-utils PUBLIC libnoise)
+set_target_properties(ImGui PROPERTIES FOLDER "Libs")

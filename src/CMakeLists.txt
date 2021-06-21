@@ -1,9 +1,4 @@
 # Copyright 2021 Conquer Space
-
-# Libraries
-find_package(glfw3 REQUIRED)
-find_package(OpenGL REQUIRED)
-
 set(BOOST_ROOT "${CMAKE_SOURCE_DIR}/lib/win64/boost")
 find_package(Boost 1.65.0 REQUIRED)
 link_directories("${CMAKE_SOURCE_DIR}/lib/win64/boost/stage/lib")
@@ -13,27 +8,6 @@ file (GLOB_RECURSE CPP_FILES *.cpp)
 list(FILTER CPP_FILES EXCLUDE REGEX ".*main.cpp$")
 file (GLOB_RECURSE H_FILES *.h)
 file (GLOB_RECURSE LIB_FILES ${CMAKE_SOURCE_DIR}/lib/src/*.c ${CMAKE_SOURCE_DIR}/lib/src/*.cpp ${CMAKE_SOURCE_DIR}/lib/include/*.h ${CMAKE_SOURCE_DIR}/lib/include/*.hpp)
-
-###
-# Add imgui
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui)
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
-include_directories(${GLFW3_INCLUDE_PATH})
-file (GLOB IMGUI ${CMAKE_SOURCE_DIR}/lib/imgui/*.cpp)
-set(IMGUI ${IMGUI} ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_glfw.h 
-    ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_glfw.cpp 
-    ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_opengl3.h 
-    ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_opengl3.cpp
-    ${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype/imgui_freetype.cpp
-    ${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype/imgui_freetype.h)
-
-add_library(ImGui ${IMGUI})
-target_link_libraries(ImGui PUBLIC glfw3_mt)
-set_target_properties(ImGui PROPERTIES FOLDER "Libs")
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/backends)
-
-# Imgui
-###
 
 set (SOURCE_FILES ${CPP_FILES} ${H_FILES} ${LIB_FILES})
 
@@ -49,6 +23,11 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/lua/)
 include_directories(${CMAKE_SOURCE_DIR}/lib/sol2/include)
 
+include_directories(${CMAKE_SOURCE_DIR}/lib/imgui)
+include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
+include_directories(${GLFW3_INCLUDE_PATH})
+include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/backends)
+
 # Hide the console window in visual studio projects - Release
 if(MSVC)
 	set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
@@ -60,15 +39,11 @@ if(WIN32)
 SET(ICON_FILE "${CMAKE_SOURCE_DIR}/binaries/data/app.rc")
 endif()
 
-# Put files in filtersfile(GLOB_RECURSE ${SOURCE_FILES} *.cpp* *.h* *.hpp* *.c)
-foreach(_source IN ITEMS ${SOURCE_FILES})
-    get_filename_component(_source_path "${_source}" PATH)
-    string(REPLACE "${CMAKE_SOURCE_DIR}" "" _group_path "${_source_path}")
-    string(REPLACE "/" "\\" _group_path "${_group_path}")
-    source_group("${_group_path}" FILES "${_source}")
-endforeach()
-add_library(cqsp-core ${SOURCE_FILES})
-add_executable(Conquer-Space main.cpp ${ICON_FILE})
+add_subdirectory(common)
+add_subdirectory(engine)
+add_subdirectory(client)
+
+add_executable(Conquer-Space main.cpp)
 
 set(CQSP_LIBRARIES glfw3_mt
     OpenGL::GL
@@ -83,15 +58,13 @@ set(CQSP_LIBRARIES glfw3_mt
     libnoise
     )
 
-target_link_libraries(cqsp-core PUBLIC 
-    ${CQSP_LIBRARIES}
-)
-
 # Set some msvc convinence things
 
 target_link_libraries(Conquer-Space PRIVATE
     ${CQSP_LIBRARIES}
     cqsp-core
+    cqsp-client
+    cqsp-engine
 )
 
 # Set output dirs
