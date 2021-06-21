@@ -1,17 +1,6 @@
 # Copyright 2021 Conquer Space
-set(BOOST_ROOT "${CMAKE_SOURCE_DIR}/lib/win64/boost")
-find_package(Boost 1.65.0 REQUIRED)
-link_directories("${CMAKE_SOURCE_DIR}/lib/win64/boost/stage/lib")
 
-# All source files
-file (GLOB_RECURSE CPP_FILES *.cpp)
-list(FILTER CPP_FILES EXCLUDE REGEX ".*main.cpp$")
-file (GLOB_RECURSE H_FILES *.h)
-file (GLOB_RECURSE LIB_FILES ${CMAKE_SOURCE_DIR}/lib/src/*.c ${CMAKE_SOURCE_DIR}/lib/src/*.cpp ${CMAKE_SOURCE_DIR}/lib/include/*.h ${CMAKE_SOURCE_DIR}/lib/include/*.hpp)
-
-set (SOURCE_FILES ${CPP_FILES} ${H_FILES} ${LIB_FILES})
-
-# Other include files
+# Include files
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 include_directories(${Boost_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/lib/stb)
@@ -39,6 +28,7 @@ if(WIN32)
 SET(ICON_FILE "${CMAKE_SOURCE_DIR}/binaries/data/app.rc")
 endif()
 
+# Add libraries
 add_subdirectory(common)
 add_subdirectory(engine)
 add_subdirectory(client)

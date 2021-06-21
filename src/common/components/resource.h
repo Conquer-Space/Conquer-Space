@@ -11,10 +11,11 @@
 #include "common/components/units.h"
 
 namespace conquerspace {
+namespace common {
 namespace components {
 struct Good {
-    conquerspace::components::types::meter_cube volume;
-    conquerspace::components::types::kilogram mass;
+    conquerspace::common::components::types::meter_cube volume;
+    conquerspace::common::components::types::kilogram mass;
 };
 
 struct ResourceLedger : public std::map<entt::entity, double> {
@@ -47,14 +48,13 @@ struct FactoryTimer {
     float time_left;
 };
 
-struct ResourceGenerator : public ResourceLedger {
-};
+struct ResourceGenerator : public ResourceLedger {};
 
 struct ResourceConverter {
     entt::entity recipe;
 };
 
-struct ResourceStockpile : public ResourceLedger {
-};
+struct ResourceStockpile : public ResourceLedger {};
 }  // namespace components
+}  // namespace common
 }  // namespace conquerspace

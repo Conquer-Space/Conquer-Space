@@ -103,7 +103,7 @@ class Application {
 
     ImGui::MarkdownConfig markdownConfig;
 
-    conquerspace::components::Universe& GetUniverse() { return m_universe; }
+    conquerspace::common::components::Universe& GetUniverse() { return m_universe; }
 
     bool ButtonIsHeld(int btn) { return m_keys_held[btn]; }
     bool ButtonIsReleased(int btn) { return m_keys_released[btn]; }
@@ -173,7 +173,7 @@ class Application {
 
     conquerspace::asset::AssetManager manager;
 
-    conquerspace::components::Universe m_universe;
+    conquerspace::common::components::Universe m_universe;
 
     double m_mouse_x;
     double m_mouse_y;

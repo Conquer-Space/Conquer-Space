@@ -23,13 +23,13 @@
 #include "common/components/area.h"
 #include "common/components/resource.h"
 
-void conquerspace::systems::universegenerator::SysGenerateUniverse(
+void conquerspace::common::systems::universegenerator::SysGenerateUniverse(
     conquerspace::engine::Application& app) {
     namespace cqspa = conquerspace::asset;
-    namespace cqspb = conquerspace::components::bodies;
-    namespace cqspc = conquerspace::components;
+    namespace cqspb = conquerspace::common::components::bodies;
+    namespace cqspc = conquerspace::common::components;
 
-    conquerspace::components::Universe& universe = app.GetUniverse();
+    conquerspace::common::components::Universe& universe = app.GetUniverse();
 
     cqspa::HjsonAsset* val
         = app.GetAssetManager().GetAsset<cqspa::HjsonAsset>("defaultuniversegen");

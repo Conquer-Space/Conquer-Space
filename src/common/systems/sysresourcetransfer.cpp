@@ -5,11 +5,11 @@
 
 #include "common/components/resource.h"
 
-bool conquerspace::systems::resource::TransferResources(entt::registry &registry,
+bool conquerspace::common::systems::resource::TransferResources(entt::registry &registry,
                                                         entt::entity from,
                                                         entt::entity to,
                                                         entt::entity good, double amount) {
-    namespace cqspc = conquerspace::components;
+    namespace cqspc = conquerspace::common::components;
     // Get resource stockpile
     if (!(registry.all_of<cqspc::ResourceStockpile>(from) &&
                             registry.all_of<cqspc::ResourceStockpile>(to) &&
@@ -18,8 +18,8 @@ bool conquerspace::systems::resource::TransferResources(entt::registry &registry
     }
 
     // Get resource stockpile
-    auto& from_stockpile = registry.get<conquerspace::components::ResourceStockpile>(from);
-    auto& to_stockpile = registry.get<conquerspace::components::ResourceStockpile>(from);
+    auto& from_stockpile = registry.get<cqspc::ResourceStockpile>(from);
+    auto& to_stockpile = registry.get<cqspc::ResourceStockpile>(from);
     // Transfer resources
     if (from_stockpile.HasGood(good)) {
         // Then we can transfer

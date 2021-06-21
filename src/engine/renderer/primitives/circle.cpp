@@ -24,7 +24,7 @@ void conquerspace::primitive::CreateFilledCircle(
 
     // Add texture coords
     for (int i = 0; i <= segments; i++) {
-        double theta = i * conquerspace::components::bodies::toRadian(360.f/segments);
+        double theta = i * conquerspace::common::components::bodies::toRadian(360.f/segments);
         double y = std::sin(theta);
         double x = std::cos(theta);
 

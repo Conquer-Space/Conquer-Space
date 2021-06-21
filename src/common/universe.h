@@ -11,9 +11,10 @@
 #include "common/stardate.h"
 
 namespace conquerspace {
+namespace common {
 namespace components {
 class Universe : public entt::registry {
- public:
+   public:
     StarDate date;
 
     std::map<std::string, entt::entity> goods;
@@ -23,8 +24,9 @@ class Universe : public entt::registry {
     void DisableTick() { to_tick = false; }
     bool ToTick() { return to_tick; }
 
- private:
+   private:
     bool to_tick = false;
 };
 }  // namespace components
+}  // namespace common
 }  // namespace conquerspace

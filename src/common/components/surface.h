@@ -8,23 +8,25 @@
 #include <entt/entt.hpp>
 
 namespace conquerspace {
+namespace common {
 namespace components {
 struct Surface {
     int64_t seed;
 };
 
 /*
-* If people are living in the place or not
-*/
+ * If people are living in the place or not
+ */
 struct Habitation {
     std::vector<entt::entity> settlements;
 };
 
 /*
  * People who live there.
-*/
+ */
 struct Settlement {
     std::vector<entt::entity> population;
 };
 }  // namespace components
+}  // namespace common
 }  // namespace conquerspace

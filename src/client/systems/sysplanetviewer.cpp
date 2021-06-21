@@ -25,7 +25,7 @@
 #include "util/utilnumberdisplay.h"
 
 void conquerspace::client::systems::SysPlanetInformation::DisplayPlanet() {
-    namespace cqspc = conquerspace::components;
+    namespace cqspc = conquerspace::common::components;
     if (!to_see) {
         return;
     }
@@ -76,7 +76,7 @@ void conquerspace::client::systems::SysPlanetInformation::DoUpdate(int delta_tim
 }
 
 void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel() {
-    namespace cqspc = conquerspace::components;
+    namespace cqspc = conquerspace::common::components;
     if (ImGui::Button("<")) {
         view_mode = ViewMode::PLANET_VIEW;
     }
@@ -276,7 +276,7 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
 }
 
 void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel() {
-    namespace cqspc = conquerspace::components;
+    namespace cqspc = conquerspace::common::components;
     if (GetApp().GetUniverse().all_of<cqspc::Habitation>(selected_planet)) {
         auto& habit = GetApp().GetUniverse().get<cqspc::Habitation>(selected_planet);
         ImGui::Text(fmt::format("Cities: {}", habit.settlements.size()).c_str());

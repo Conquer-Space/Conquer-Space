@@ -6,19 +6,22 @@
 #include "common/universe.h"
 
 namespace conquerspace {
+namespace common {
 namespace systems {
 namespace simulation {
 
 /*
  * Main simulation of game.
-*/
+ */
 class Simulation {
- public:
-    explicit Simulation(conquerspace::components::Universe &_universe) : m_universe(_universe) {}
+   public:
+    explicit Simulation(conquerspace::common::components::Universe &_universe)
+        : m_universe(_universe) {}
     void tick();
 
-    conquerspace::components::Universe &m_universe;
+    conquerspace::common::components::Universe &m_universe;
 };
 }  // namespace simulation
 }  // namespace systems
+}  // namespace common
 }  // namespace conquerspace

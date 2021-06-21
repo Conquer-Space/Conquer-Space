@@ -50,12 +50,12 @@ class UniverseScene : public conquerspace::engine::Scene {
     entt::entity player;
     entt::entity selected_planet = entt::null;
 
-    conquerspace::components::Civilization* player_civ;
-    conquerspace::components::bodies::StarSystem* star_system;
+    conquerspace::common::components::Civilization* player_civ;
+    conquerspace::common::components::bodies::StarSystem* star_system;
 
     conquerspace::client::systems::SysStarSystemRenderer* system_renderer;
 
-    conquerspace::systems::simulation::Simulation* simulation;
+    conquerspace::common::systems::simulation::Simulation* simulation;
 
     bool to_show_planet_window = false;
 

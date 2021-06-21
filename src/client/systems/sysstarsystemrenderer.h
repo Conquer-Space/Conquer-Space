@@ -34,7 +34,7 @@ struct RenderingPlanet {};
  */
 class SysStarSystemRenderer {
  public:
-    SysStarSystemRenderer(conquerspace::components::Universe &,
+    SysStarSystemRenderer(conquerspace::common::components::Universe &,
                           conquerspace::engine::Application &);
     void Initialize();
     void Render();
@@ -55,7 +55,7 @@ class SysStarSystemRenderer {
  private:
     entt::entity m_star_system = entt::null;
     entt::entity m_viewing_entity = entt::null;
-    conquerspace::components::Universe &m_universe;
+    conquerspace::common::components::Universe &m_universe;
     conquerspace::engine::Application &m_app;
 
     conquerspace::engine::Renderable planet;

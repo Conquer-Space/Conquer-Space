@@ -7,7 +7,7 @@
 
 // Tests for input from client options
 TEST(Common_OrbitTest, toVec2Test) {
-    namespace cqspb = conquerspace::components::bodies;
+    namespace cqspb = conquerspace::common::components::bodies;
     cqspb::Orbit orbit1;
     orbit1.semiMajorAxis = 100;
     orbit1.eccentricity = 0;
@@ -49,7 +49,7 @@ TEST(Common_OrbitTest, toVec2Test) {
 }
 
 TEST(Common_OrbitTest, ToRadianTest) {
-    namespace cqspb = conquerspace::components::bodies;
+    namespace cqspb = conquerspace::common::components::bodies;
     namespace boostc = boost::math::constants;
     EXPECT_DOUBLE_EQ(boostc::pi<double>()/2, cqspb::toRadian(90));
     EXPECT_DOUBLE_EQ(boostc::pi<double>(), cqspb::toRadian(180));
@@ -60,7 +60,7 @@ TEST(Common_OrbitTest, ToRadianTest) {
 }
 
 TEST(Common_OrbitTest, ToDegreeTest) {
-    namespace cqspb = conquerspace::components::bodies;
+    namespace cqspb = conquerspace::common::components::bodies;
     namespace boostc = boost::math::constants;
     EXPECT_DOUBLE_EQ(30, cqspb::toDegree(boostc::pi<double>()/6));
     EXPECT_DOUBLE_EQ(45, cqspb::toDegree(boostc::pi<double>()/4));

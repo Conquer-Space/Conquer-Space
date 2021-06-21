@@ -35,8 +35,9 @@ conquerspace::scene::UniverseScene::UniverseScene(
     conquerspace::engine::Application& app) : Scene(app) {}
 
 void conquerspace::scene::UniverseScene::Init() {
-    namespace cqspb = conquerspace::components::bodies;
-    simulation = new conquerspace::systems::simulation::Simulation(GetApp().GetUniverse());
+    namespace cqspb = conquerspace::common::components::bodies;
+    namespace cqspco = conquerspace::common;
+    simulation = new cqspco::systems::simulation::Simulation(GetApp().GetUniverse());
 
     system_renderer = new conquerspace::client::systems::SysStarSystemRenderer(
         GetApp().GetUniverse(), GetApp());
@@ -44,7 +45,8 @@ void conquerspace::scene::UniverseScene::Init() {
 
     auto civilizationView =
         GetApp().GetUniverse().
-                view<conquerspace::components::Civilization, conquerspace::components::Player>();
+                view<cqspco::components::Civilization,
+                cqspco::components::Player>();
     for (auto [entity, civ] : civilizationView.each()) {
         player = entity;
         player_civ = &civ;

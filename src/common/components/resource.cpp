@@ -35,21 +35,24 @@ Map merge_apply(const Map &m1, const Map &m2,
     return res;
 }
 
-conquerspace::components::ResourceLedger conquerspace::components::ResourceLedger::operator-(
+conquerspace::common::components::ResourceLedger
+                            conquerspace::common::components::ResourceLedger::operator-(
     ResourceLedger &other) {
     ResourceLedger ledger;
     ledger = merge_apply(*this, other, 0, [](int a, int b) { return a - b; });
     return ledger;
 }
 
-conquerspace::components::ResourceLedger conquerspace::components::ResourceLedger::operator+(
+conquerspace::common::components::ResourceLedger
+                    conquerspace::common::components::ResourceLedger::operator+(
     ResourceLedger &other) {
     ResourceLedger ledger;
     ledger = merge_apply(*this, other, 0, [](int a, int b) { return a + b; });
     return ledger;
 }
 
-conquerspace::components::ResourceLedger conquerspace::components::ResourceLedger::operator*(
+conquerspace::common::components::ResourceLedger
+                                conquerspace::common::components::ResourceLedger::operator*(
     double value) {
     ResourceLedger ledger;
     for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
@@ -58,7 +61,7 @@ conquerspace::components::ResourceLedger conquerspace::components::ResourceLedge
     return ledger;
 }
 
-void conquerspace::components::ResourceLedger::operator-=(const ResourceLedger &other) {
+void conquerspace::common::components::ResourceLedger::operator-=(const ResourceLedger &other) {
     for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
         if (HasGood(iterator->first)) {
             (*this)[iterator->first] = 0;
@@ -67,7 +70,7 @@ void conquerspace::components::ResourceLedger::operator-=(const ResourceLedger &
     }
 }
 
-void conquerspace::components::ResourceLedger::operator+=(const ResourceLedger &other) {
+void conquerspace::common::components::ResourceLedger::operator+=(const ResourceLedger &other) {
     for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
         if (HasGood(iterator->first)) {
             (*this)[iterator->first] = 0;
@@ -76,7 +79,7 @@ void conquerspace::components::ResourceLedger::operator+=(const ResourceLedger &
     }
 }
 
-void conquerspace::components::ResourceLedger::operator*=(const double value) {
+void conquerspace::common::components::ResourceLedger::operator*=(const double value) {
     for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
         (*this)[iterator->first] = iterator->second * value;
     }

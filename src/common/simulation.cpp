@@ -9,10 +9,10 @@
 #include "common/components/name.h"
 #include "common/components/resource.h"
 
-void conquerspace::systems::simulation::Simulation::tick() {
+void conquerspace::common::systems::simulation::Simulation::tick() {
     m_universe.DisableTick();
     // Get previous tick spacing
-    namespace cqspc = conquerspace::components;
+    namespace cqspc = conquerspace::common::components;
     // Tick date
     auto resource_generator = m_universe.view<cqspc::ResourceGenerator,
                                                                        cqspc::ResourceStockpile>();

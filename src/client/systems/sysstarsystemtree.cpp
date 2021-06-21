@@ -13,7 +13,7 @@
 void conquerspace::client::systems::SysStarSystemTree::Init() {}
 
 void conquerspace::client::systems::SysStarSystemTree::DoUI(int delta_time) {
-    namespace cqspb = conquerspace::components::bodies;
+    namespace cqspb = conquerspace::common::components::bodies;
     namespace cqspcs = conquerspace::client::systems;
     // Get star system
     entt::entity ent =
@@ -34,9 +34,10 @@ void conquerspace::client::systems::SysStarSystemTree::DoUI(int delta_time) {
         for (auto entity : star_system.bodies) {
             bool is_selected = (entity == current_planet);
             std::string star_system_name = fmt::format("{}", entity);
-            if (GetApp().GetUniverse().all_of<conquerspace::components::Name>(entity)) {
+            if (GetApp().GetUniverse().all_of<conquerspace::common::components::Name>(entity)) {
                 star_system_name = fmt::format(
-                    "{}", GetApp().GetUniverse().get<conquerspace::components::Name>(entity)
+                            "{}", GetApp().GetUniverse()
+                            .get<conquerspace::common::components::Name>(entity)
                             .name);
             }
 

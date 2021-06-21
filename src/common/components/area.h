@@ -6,6 +6,7 @@
 #include <vector>
 
 namespace conquerspace {
+namespace common {
 namespace components {
 struct Industry {
     std::vector<entt::entity> industries;
@@ -15,13 +16,11 @@ struct Production {
     float amount;
 };
 
-struct Factory {
-};
+struct Factory {};
 
-struct Mine {
-};
+struct Mine {};
 
-struct Farm {
-};
+struct Farm {};
 }  // namespace components
+}  // namespace common
 }  // namespace conquerspace

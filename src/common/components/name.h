@@ -7,6 +7,7 @@
 #include <vector>
 
 namespace conquerspace {
+namespace common {
 namespace components {
 struct Name {
     std::string name;
@@ -15,4 +16,5 @@ struct Identifier {
     std::string identifier;
 };
 }  // namespace components
+}  // namespace common
 }  // namespace conquerspace

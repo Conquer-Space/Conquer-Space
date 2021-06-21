@@ -44,6 +44,10 @@ include_directories(src)
 find_package(glfw3 REQUIRED)
 find_package(OpenGL REQUIRED)
 
+set(BOOST_ROOT "${CMAKE_SOURCE_DIR}/lib/win64/boost")
+find_package(Boost 1.65.0 REQUIRED)
+link_directories("${CMAKE_SOURCE_DIR}/lib/win64/boost/stage/lib")
+
 message(${GLFW3_INCLUDE_PATH})
 
 add_subdirectory(lib)

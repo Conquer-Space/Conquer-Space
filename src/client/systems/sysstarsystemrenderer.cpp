@@ -20,12 +20,12 @@
 #include "common/components/orbit.h"
 
 conquerspace::client::systems::SysStarSystemRenderer::SysStarSystemRenderer
-                                                    (conquerspace::components::Universe &_u,
-                                                    conquerspace::engine::Application &_a) :
-                                                    m_universe(_u), m_app(_a),
-                                                    scroll(5), view_x(0),
-                                                    view_y(0), view_center(glm::vec3(1, 1, 1)),
-                                                    sun_color(glm::vec3(10, 10, 10)) {
+                                                (conquerspace::common::components::Universe &_u,
+                                                conquerspace::engine::Application &_a) :
+                                                m_universe(_u), m_app(_a),
+                                                scroll(5), view_x(0),
+                                                view_y(0), view_center(glm::vec3(1, 1, 1)),
+                                                sun_color(glm::vec3(10, 10, 10)) {
 }
 
 void conquerspace::client::systems::SysStarSystemRenderer::Initialize() {
@@ -73,7 +73,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::Initialize() {
 }
 
 void conquerspace::client::systems::SysStarSystemRenderer::Render() {
-    namespace cqspb = conquerspace::components::bodies;
+    namespace cqspb = conquerspace::common::components::bodies;
 
     entt::entity current_planet = m_app.GetUniverse().view<RenderingPlanet>().front();
     if (current_planet != m_viewing_entity) {
@@ -151,7 +151,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
 }
 
 void conquerspace::client::systems::SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
-    namespace cqspb = conquerspace::components::bodies;
+    namespace cqspb = conquerspace::common::components::bodies;
     if (m_star_system != entt::null &&
         m_universe.all_of<cqspb::StarSystem>(m_star_system)) {
         // Remove tags
@@ -172,7 +172,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeStarSystem(entt::e
 }
 
 void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity() {
-    namespace cqspb = conquerspace::components::bodies;
+    namespace cqspb = conquerspace::common::components::bodies;
     // See the object
     view_center = CalculateObjectPos(m_viewing_entity);
 
@@ -267,7 +267,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawStar(
 
 glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateObjectPos(
     entt::entity &ent) {
-    namespace cqspb = conquerspace::components::bodies;
+    namespace cqspb = conquerspace::common::components::bodies;
     cqspb::Orbit& orbit = m_app.GetUniverse().get<cqspb::Orbit>(ent);
     cqspb::Vec2& vec = cqspb::toVec2(orbit);
     return glm::vec3(vec.x / divider, 0, vec.y / divider);
@@ -352,10 +352,11 @@ conquerspace::client::systems::SysStarSystemRenderer::GenerateTexture(
 
 entt::entity conquerspace::client::systems::SysStarSystemRenderer::GetMouseOnObject(
     int mouse_x, int mouse_y) {
-    namespace cqspb = conquerspace::components::bodies;
+    namespace cqspb = conquerspace::common::components::bodies;
 
     // Loop through objects
-    auto bodies = m_app.GetUniverse().view<ToRender, conquerspace::components::bodies::Body>();
+    auto bodies = m_app.GetUniverse().view<ToRender,
+                            conquerspace::common::components::bodies::Body>();
     for (auto [ent_id, body] : bodies.each()) {
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
 
