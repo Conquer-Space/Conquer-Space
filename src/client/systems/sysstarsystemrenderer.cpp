@@ -359,6 +359,7 @@ entt::entity conquerspace::client::systems::SysStarSystemRenderer::GetMouseOnObj
             float dim = circle_size * m_app.GetWindowHeight();
             if (glm::distance(glm::vec2(pos.x, m_app.GetWindowHeight() - pos.y),
                     glm::vec2(mouse_x, mouse_y)) <= dim) {
+                m_app.GetUniverse().emplace<MouseOverEntity>(ent_id);
                 return ent_id;
             }
         } else {
@@ -379,6 +380,7 @@ entt::entity conquerspace::client::systems::SysStarSystemRenderer::GetMouseOnObj
             float b = glm::dot(ray_wor, sub);
             float c = glm::dot(sub, sub) - radius * radius;
             if ((b * b - c) >= 0) {
+                m_app.GetUniverse().emplace<MouseOverEntity>(ent_id);
                 return ent_id;
             }
         }

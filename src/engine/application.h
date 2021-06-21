@@ -132,6 +132,10 @@ class Application {
         fontShader = shader;
     }
 
+    double GetTime() {
+        return glfwGetTime();
+    }
+
  private:
     void AddCallbacks();
 

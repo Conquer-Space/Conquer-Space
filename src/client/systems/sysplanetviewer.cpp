@@ -9,6 +9,7 @@
 #include <string>
 #include <map>
 
+#include "client/systems/sysstarsystemrenderer.h"
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/name.h"
@@ -21,8 +22,7 @@
 #include "engine/gui.h"
 #include "util/utilnumberdisplay.h"
 
-void conquerspace::client::systems::SysPlanetInformation::DisplayPlanet(
-    entt::entity& planet, conquerspace::engine::Application& m_app) {
+void conquerspace::client::systems::SysPlanetInformation::DisplayPlanet() {
     namespace cqspc = conquerspace::components;
     if (!to_see) {
         return;
@@ -35,27 +35,47 @@ void conquerspace::client::systems::SysPlanetInformation::DisplayPlanet(
                                    ImGui::GetIO().DisplaySize.y * 0.55f),
                             ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
     std::string planet_name = "Planet";
-    if (planet == entt::null) {
+    if (selected_planet == entt::null) {
         return;
     }
-    if (m_app.GetUniverse().all_of<cqspc::Name>(planet)) {
-        planet_name = m_app.GetUniverse().get<cqspc::Name>(planet).name;
+    if (GetApp().GetUniverse().all_of<cqspc::Name>(selected_planet)) {
+        planet_name = GetApp().GetUniverse().get<cqspc::Name>(selected_planet).name;
     }
     ImGui::Begin(planet_name.c_str(), &to_see);
     switch (view_mode) {
         case ViewMode::PLANET_VIEW:
-            PlanetInformationPanel(planet, m_app);
+            PlanetInformationPanel();
             break;
         case ViewMode::CITY_VIEW:
-            CityInformationPanel(planet, m_app);
+            CityInformationPanel();
             break;
     }
     ImGui::End();
 }
 
-void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
-                                                        entt::entity& planet,
-                                                        conquerspace::engine::Application& m_app) {
+void conquerspace::client::systems::SysPlanetInformation::Init() {}
+
+void conquerspace::client::systems::SysPlanetInformation::DoUI(int delta_time) {
+    DisplayPlanet();
+}
+
+void conquerspace::client::systems::SysPlanetInformation::DoUpdate(int delta_time) {
+    // If clicked on a planet, go to the planet
+    // Get the thing
+    if (!ImGui::GetIO().WantCaptureMouse &&
+                GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT)) {
+        // Set the object
+        entt::entity ent = GetApp().GetUniverse()
+                            .view<conquerspace::client::systems::MouseOverEntity>().front();
+        if (ent != entt::null) {
+            to_see = true;
+            selected_planet = ent;
+            spdlog::info("Switched entity");
+        }
+    }
+}
+
+void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel() {
     namespace cqspc = conquerspace::components;
     if (ImGui::Button("<")) {
         view_mode = ViewMode::PLANET_VIEW;
@@ -64,15 +84,15 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
     static bool thing = true;
     ImGui::Checkbox("Macroeconomic/Ownership mode", &thing);
 
-    ImGui::Text(fmt::format("{}", m_app.GetUniverse().
+    ImGui::Text(fmt::format("{}", GetApp().GetUniverse().
                                             get<cqspc::Name>(selected_city_entity).name).c_str());
 
-    if (m_app.GetUniverse().all_of<cqspc::Settlement>(selected_city_entity)) {
-        int size = m_app.GetUniverse()
+    if (GetApp().GetUniverse().all_of<cqspc::Settlement>(selected_city_entity)) {
+        int size = GetApp().GetUniverse()
                 .get<cqspc::Settlement>(selected_city_entity).population.size();
-        for (auto b : m_app.GetUniverse().get<cqspc::Settlement>(
+        for (auto b : GetApp().GetUniverse().get<cqspc::Settlement>(
                               selected_city_entity).population) {
-            auto& bad_var_name = m_app.GetUniverse()
+            auto& bad_var_name = GetApp().GetUniverse()
                                     .get<cqspc::PopulationSegment>(b);
             ImGui::Text(fmt::format("Population: {}",
                         conquerspace::util::LongToHumanString(bad_var_name.population)).c_str());
@@ -81,12 +101,12 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
         ImGui::Text(fmt::format("No population").c_str());
     }
 
-    if (m_app.GetUniverse().all_of<cqspc::Industry>(selected_city_entity)) {
-        size_t industries = m_app.GetUniverse()
+    if (GetApp().GetUniverse().all_of<cqspc::Industry>(selected_city_entity)) {
+        size_t industries = GetApp().GetUniverse()
                 .get<cqspc::Industry>(selected_city_entity).industries.size();
         if (ImGui::BeginTabBar("CityTabs", ImGuiTabBarFlags_None)) {
             if (ImGui::BeginTabItem("Industries")) {
-                auto &city_industry = m_app.GetUniverse()
+                auto &city_industry = GetApp().GetUniverse()
                     .get<cqspc::Industry>(selected_city_entity);
 
                 ImGui::Text(fmt::format("Factories: {}", industries).c_str());
@@ -112,11 +132,11 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
                 cqspc::ResourceLedger input_resources;
                 cqspc::ResourceLedger output_resources;
                 for (auto thingies : city_industry.industries) {
-                    if (m_app.GetUniverse()
+                    if (GetApp().GetUniverse()
                         .all_of<cqspc::ResourceConverter, cqspc::Factory>(thingies)) {
                         auto& generator =
-                            m_app.GetUniverse().get<cqspc::ResourceConverter>(thingies);
-                        auto& recipe = m_app.GetUniverse().get<cqspc::Recipe>(generator.recipe);
+                            GetApp().GetUniverse().get<cqspc::ResourceConverter>(thingies);
+                        auto& recipe = GetApp().GetUniverse().get<cqspc::Recipe>(generator.recipe);
                         input_resources += recipe.input;
                         output_resources += recipe.output;
                     }
@@ -133,7 +153,7 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
                                                 iterator != output_resources.end(); iterator++) {
                         ImGui::TableNextRow();
                         ImGui::TableSetColumnIndex(0);
-                        ImGui::Text(fmt::format("{}", m_app.GetUniverse()
+                        ImGui::Text(fmt::format("{}", GetApp().GetUniverse()
                                     .get<cqspc::Identifier>(iterator->first).identifier).c_str());
                         ImGui::TableSetColumnIndex(1);
                         ImGui::Text(fmt::format("{}", conquerspace::util::
@@ -152,8 +172,7 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
                                                 iterator != input_resources.end(); iterator++) {
                         ImGui::TableNextRow();
                         ImGui::TableSetColumnIndex(0);
-                        ImGui::Text(fmt::format("{}",
-                                                m_app.GetUniverse().
+                        ImGui::Text(fmt::format("{}", GetApp().GetUniverse().
                                                 get<cqspc::Identifier>(iterator->first)
                                                 .identifier).c_str());
 
@@ -173,10 +192,10 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
                 // Get what resources they are making
                 cqspc::ResourceLedger resources;
                 for (auto thingies : city_industry.industries) {
-                    if (m_app.GetUniverse()
+                    if (GetApp().GetUniverse()
                         .all_of<cqspc::ResourceGenerator, cqspc::Mine>(thingies)) {
                         auto& generator =
-                            m_app.GetUniverse().get<cqspc::ResourceGenerator>(thingies);
+                            GetApp().GetUniverse().get<cqspc::ResourceGenerator>(thingies);
                         resources += generator;
                     }
                 }
@@ -192,7 +211,7 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
                         ImGui::TableNextRow();
                         ImGui::TableSetColumnIndex(0);
 
-                        ImGui::Text(fmt::format("{}", m_app.GetUniverse().
+                        ImGui::Text(fmt::format("{}", GetApp().GetUniverse().
                                                         get<cqspc::Identifier>(iterator->first)
                                                         .identifier).c_str());
 
@@ -217,13 +236,14 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
             }
             if (ImGui::BeginTabItem("Resources")) {
                 // Consolidate resources
-                auto &city_industry = m_app.GetUniverse()
+                auto &city_industry = GetApp().GetUniverse()
                     .get<cqspc::Industry>(selected_city_entity);
                 cqspc::ResourceLedger resources;
                 for (auto area : city_industry.industries) {
-                    if (m_app.GetUniverse().all_of<cqspc::ResourceStockpile>(area)) {
+                    if (GetApp().GetUniverse().all_of<cqspc::ResourceStockpile>(area)) {
                         // Add resources
-                        auto& stockpile = m_app.GetUniverse().get<cqspc::ResourceStockpile>(area);
+                        auto& stockpile =
+                                        GetApp().GetUniverse().get<cqspc::ResourceStockpile>(area);
                         resources += stockpile;
                     }
                 }
@@ -238,7 +258,7 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
                         ImGui::TableNextRow();
                         ImGui::TableSetColumnIndex(0);
 
-                        ImGui::Text(fmt::format("{}", m_app.GetUniverse().
+                        ImGui::Text(fmt::format("{}", GetApp().GetUniverse().
                                                         get<cqspc::Identifier>(iterator->first)
                                                         .identifier).c_str());
 
@@ -255,19 +275,17 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel(
     }
 }
 
-void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel(
-                            entt::entity& planet,
-                            conquerspace::engine::Application& m_app) {
+void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel() {
     namespace cqspc = conquerspace::components;
-    if (m_app.GetUniverse().all_of<cqspc::Habitation>(planet)) {
-        auto& habit = m_app.GetUniverse().get<cqspc::Habitation>(planet);
+    if (GetApp().GetUniverse().all_of<cqspc::Habitation>(selected_planet)) {
+        auto& habit = GetApp().GetUniverse().get<cqspc::Habitation>(selected_planet);
         ImGui::Text(fmt::format("Cities: {}", habit.settlements.size()).c_str());
         // List cities
         for (int i = 0; i < habit.settlements.size(); i++) {
             const bool is_selected = (selected_city_index == i);
 
             entt::entity e = habit.settlements[i];
-            std::string name = m_app.GetUniverse().get<cqspc::Name>(e)
+            std::string name = GetApp().GetUniverse().get<cqspc::Name>(e)
                     .name;
             if (ImGui::Selectable(fmt::format("{}", name).c_str(), is_selected)) {
                 // Load city

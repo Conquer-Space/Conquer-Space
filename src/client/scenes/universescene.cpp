@@ -27,6 +27,9 @@
 #include "common/components/name.h"
 #include "common/components/resource.h"
 
+#include "client/systems/sysplanetviewer.h"
+#include "client/systems/systurnsavewindow.h"
+
 conquerspace::scene::UniverseScene::UniverseScene(
     conquerspace::engine::Application& app) : Scene(app) {}
 
@@ -37,8 +40,6 @@ void conquerspace::scene::UniverseScene::Init() {
     system_renderer = new conquerspace::client::systems::SysStarSystemRenderer(
         GetApplication().GetUniverse(), GetApplication());
     system_renderer->Initialize();
-
-    planet_information = new conquerspace::client::systems::SysPlanetInformation();
 
     auto civilizationView =
         GetApplication().GetUniverse().
@@ -53,9 +54,11 @@ void conquerspace::scene::UniverseScene::Init() {
     star_system = &GetApplication().GetUniverse().
                         get<cqspb::StarSystem>(body.star_system);
 
-    // Set view center
     system_renderer->SeeEntity(player_civ->starting_planet);
     selected_planet = player_civ->starting_planet;
+
+    AddUISystem<conquerspace::client::systems::SysPlanetInformation>();
+    AddUISystem<conquerspace::client::systems::SysTurnSaveWindow>();
 }
 
 void conquerspace::scene::UniverseScene::Update(float deltaTime) {
@@ -95,70 +98,24 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
 
         previous_mouseX = GetApplication().GetMouseX();
         previous_mouseY = GetApplication().GetMouseY();
-
-        // If clicked on a planet, go to the planet
-        entt::entity ent = entt::null;
-
-        if (GetApplication().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) &&
-                    (ent = system_renderer->GetMouseOnObject(GetApplication().GetMouseX(),
-                    GetApplication().GetMouseY())) != entt::null) {
-            // Go to the place
-            spdlog::info("Seeing {}", ent);
-            if (selected_planet != ent) {
-                system_renderer->SeeEntity(ent);
-                selected_planet = ent;
-                to_show_planet_window = true;
-            }
-            planet_information->to_see = true;
-        }
-    }
-
-    if (!ImGui::GetIO().WantCaptureKeyboard) {
-        if (GetApplication().ButtonIsReleased(GLFW_KEY_SPACE)) {
-            TogglePlayState();
-        }
     }
 
     // Check for last tick
-    if (to_tick && glfwGetTime() - last_tick > static_cast<float>(tick_speeds[tick_speed])/1000.f) {
-        last_tick = glfwGetTime();
+    if (GetApplication().GetUniverse().ToTick()) {
         // Game tick
         simulation->tick();
+    }
+    GetApplication().GetUniverse().clear<conquerspace::client::systems::MouseOverEntity>();
+    system_renderer->GetMouseOnObject(GetApplication().GetMouseX(), GetApplication().GetMouseY());
+    for (auto& ui : user_interfaces) {
+        ui->DoUpdate(deltaTime);
     }
 }
 
 void conquerspace::scene::UniverseScene::Ui(float deltaTime) {
-    // Turn window
-    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x,
-                                   30),
-                            ImGuiCond_Always, ImVec2(1.f, 0.f));
-    ImGui::SetNextWindowSize(ImVec2(150, 65), ImGuiCond_Always);
-    bool to_show = true;
-    ImGui::Begin("TS window", &to_show, ImGuiWindowFlags_NoTitleBar |
-                                    ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-    // Show date
-    ImGui::Text(fmt::format("Date: {} Speed: {}", GetApplication().GetUniverse().date.GetDate(),
-                                                                            tick_speed).c_str());
-    if (ImGui::Button("<<")) {
-        // Slower
-        if (tick_speed > 0) {
-            tick_speed--;
-        }
+    for (auto& ui : user_interfaces) {
+        ui->DoUI(deltaTime);
     }
-    ImGui::SameLine();
-    if (ImGui::Button(to_tick ? "Running" : "Paused")) {
-        TogglePlayState();
-    }
-    ImGui::SameLine();
-    if (ImGui::Button(">>")) {
-        // Faster
-        if (tick_speed < tick_speeds.size() - 1) {
-            tick_speed++;
-        }
-    }
-    ImGui::End();
-
-    planet_information->DisplayPlanet(selected_planet, GetApplication());
 
     /*int size = 20;
     auto draw = ImGui::GetForegroundDrawList();
@@ -178,6 +135,3 @@ void conquerspace::scene::UniverseScene::Render(float deltaTime) {
     system_renderer->Render();
 }
 
-void conquerspace::scene::UniverseScene::TogglePlayState() {
-    to_tick = !to_tick;
-}

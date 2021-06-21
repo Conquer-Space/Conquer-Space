@@ -4,9 +4,10 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 #include "client/systems/sysstarsystemrenderer.h"
-#include "client/systems/sysplanetviewer.h"
+#include "client/systems/sysgui.h"
 #include "common/components/bodies.h"
 #include "common/components/organizations.h"
 #include "engine/scene.h"
@@ -23,16 +24,18 @@ class UniverseScene : public conquerspace::engine::Scene {
     ~UniverseScene() {
         delete system_renderer;
         delete simulation;
-        delete planet_information;
     }
 
     void Init();
     void Update(float deltaTime);
     void Ui(float deltaTime);
     void Render(float deltaTime);
+    template <class T>
+    void AddUISystem() {
+        user_interfaces.push_back(std::make_unique<T>(GetApplication()));
+    }
 
  private:
-    void TogglePlayState();
     conquerspace::engine::Renderable sphere;
     conquerspace::engine::Renderable sky;
     conquerspace::engine::Renderable planetDisp;
@@ -50,18 +53,12 @@ class UniverseScene : public conquerspace::engine::Scene {
     conquerspace::components::bodies::StarSystem* star_system;
 
     conquerspace::client::systems::SysStarSystemRenderer* system_renderer;
-    conquerspace::client::systems::SysPlanetInformation* planet_information;
 
     conquerspace::systems::simulation::Simulation* simulation;
 
     bool to_show_planet_window = false;
 
-    double last_tick = 0;
-
-    bool to_tick = false;
-
-    std::vector<int> tick_speeds{1000, 500, 333, 100, 50, 10, 1};
-    int tick_speed = tick_speeds.size() / 2;
+    std::vector<std::unique_ptr<conquerspace::client::systems::SysUserInterface>> user_interfaces;
 };
 }  // namespace scene
 }  // namespace conquerspace

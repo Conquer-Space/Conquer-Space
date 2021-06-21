@@ -10,6 +10,7 @@
 #include "common/components/resource.h"
 
 void conquerspace::systems::simulation::Simulation::tick() {
+    m_universe.DisableTick();
     // Get previous tick spacing
     namespace cqspc = conquerspace::components;
     // Tick date
