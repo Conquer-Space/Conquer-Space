@@ -175,6 +175,10 @@ void conquerspace::common::systems::universegenerator::IScriptUniverseGenerator:
         return mine;
     });
 
+    lua.set_function("create_terrain", [&](entt::entity planet, int seed) {
+        universe.emplace<cqspb::Terrain>(planet, seed);
+    });
+
     lua["goods"] = universe.goods;
     lua["recipes"] = universe.recipes;
 

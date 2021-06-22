@@ -71,12 +71,10 @@ class SysStarSystemRenderer {
 
     float circle_size = 0.01f;
 
-    void DrawPlanetIcon(glm::vec3 &object_pos, glm::mat4 &cameraMatrix,
-                        glm::mat4 &projection, glm::vec4 &viewport);
-    void DrawPlanet(glm::vec3 &object_pos, glm::mat4 &cameraMatrix,
-                    glm::mat4 &projection, glm::vec3 &cam_pos);
-    void DrawStar(glm::vec3 &object_pos, glm::mat4 &cameraMatrix,
-                  glm::mat4 &projection, glm::vec3 &cam_pos);
+    void DrawPlanetIcon(glm::vec3 &object_pos);
+    void DrawPlanet(glm::vec3 &object_pos);
+    void DrawStar(glm::vec3 &object_pos);
+    void DrawTerrainlessPlanet(glm::vec3 &object_pos);
 
     glm::vec3 CalculateObjectPos(entt::entity &);
     glm::vec3 CalculateCenteredObject(entt::entity &);

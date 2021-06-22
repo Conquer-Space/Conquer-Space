@@ -3,11 +3,14 @@
 */
 #include "client/systems/sysplanetterraingenerator.h"
 
+#include <spdlog/spdlog.h>
+
 #include <cmath>
 
 void conquerspace::client::systems::TerrainImageGenerator::GenerateTerrain(int octaves, int size) {
     noise::module::Perlin noise_module;
     noise_module.SetOctaveCount(octaves);
+    spdlog::info("Seed: {}", seed);
     noise_module.SetSeed(seed);
     noise_module.SetFrequency(2);
 
@@ -32,6 +35,8 @@ void conquerspace::client::systems::TerrainImageGenerator::GenerateTerrain(int o
     renderer.SetDestImage(albedo_map);
 
     renderer.ClearGradient();
+
+    // TODO(EhWhoAmI): Need to add different types of terrain.
     renderer.AddGradientPoint(-1.0000, utils::Color(0, 0, 128, 255));  // deeps
     renderer.AddGradientPoint(-0.2500, utils::Color(0, 0, 255, 255));  // shallow
     renderer.AddGradientPoint(0.0000, utils::Color(0, 128, 255, 255));  // shore

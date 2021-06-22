@@ -77,6 +77,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
 
     entt::entity current_planet = m_app.GetUniverse().view<RenderingPlanet>().front();
     if (current_planet != m_viewing_entity) {
+        spdlog::info("Switched displaying planet, seeing {}", current_planet);
         m_viewing_entity = current_planet;
         // Do terrain
         SeeEntity();
@@ -110,11 +111,11 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
             // Check if it's obscured by a planet, but eh, we can deal with it later
             planet_circle.shaderProgram->UseProgram();
             planet_circle.shaderProgram->setVec4("color", 1, 1, 0, 1);
-            DrawPlanetIcon(object_pos, camera_matrix, projection, viewport);
+            DrawPlanetIcon(object_pos);
             continue;
         }
 
-        DrawStar(object_pos, camera_matrix, projection, cam_pos);
+        DrawStar(object_pos);
     }
 
     // Draw other bodies
@@ -129,10 +130,18 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
             // Set planet circle color
             planet_circle.shaderProgram->UseProgram();
             planet_circle.shaderProgram->setVec4("color", 1, 0, 1, 1);
-            DrawPlanetIcon(object_pos, camera_matrix, projection, viewport);
+            DrawPlanetIcon(object_pos);
             continue;
         }
-        DrawPlanet(object_pos, camera_matrix, projection, cam_pos);
+
+        namespace cqspb = conquerspace::common::components::bodies;
+        // Check if planet has terrain or not
+        if (m_app.GetUniverse().all_of<cqspb::Terrain>(m_viewing_entity)) {
+            // Do empty terrain
+            DrawPlanet(object_pos);
+        } else {
+            DrawTerrainlessPlanet(object_pos);
+        }
     }
 
     glEnable(GL_DEPTH_TEST);
@@ -176,7 +185,17 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity() {
     // See the object
     view_center = CalculateObjectPos(m_viewing_entity);
 
+    // If it has a terrain, then do things, if it doesn't have a terrain, render a blank sphere
+    int seed = 0;
+    if (!m_app.GetUniverse().all_of<cqspb::Terrain>(m_viewing_entity)) {
+        return;
+    }
+
+    // Set seed
+    seed = m_app.GetUniverse().get<cqspb::Terrain>(m_viewing_entity).seed;
+
     conquerspace::client::systems::TerrainImageGenerator generator;
+    generator.seed = seed;
     generator.GenerateTerrain(1, 2);
     SetPlanetTexture(generator);
 
@@ -184,6 +203,9 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity() {
     // and move on to the new terrain.
 
     // Generate terrain
+    intermediate_image_generator.seed = seed;
+    final_image_generator.seed = seed;
+
     less_detailed_terrain_generator_thread = std::thread([&]() {
         // Generate slightly less detailed terrain so that it looks better at first
         intermediate_image_generator.GenerateTerrain(6, 5);
@@ -197,10 +219,8 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity() {
     });
 }
 
-void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanetIcon(
-    glm::vec3 &object_pos, glm::mat4 &cameraMatrix, glm::mat4 &projection, glm::vec4 &viewport) {
-    glm::vec3 pos = glm::project(object_pos, cameraMatrix,
-                                        projection, viewport);
+void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanetIcon(glm::vec3 &object_pos) {
+    glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
     glm::mat4 planetDispMat = glm::mat4(1.0f);
     if (pos.z >= 1 || pos.z <= -1) {
         return;
@@ -225,10 +245,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanetIcon(
     engine::Draw(planet_circle);
 }
 
-void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_pos,
-                                                            glm::mat4 &cameraMatrix,
-                                                            glm::mat4 &projection,
-                                                            glm::vec3 &cam_pos) {
+void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_pos) {
     glm::mat4 position = glm::mat4(1.f);
     position = glm::translate(position, object_pos);
 
@@ -238,7 +255,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanet(glm::vec3 
 
     position = position * transform;
 
-    planet.SetMVP(position, cameraMatrix, projection);
+    planet.SetMVP(position, camera_matrix, projection);
     planet.shaderProgram->UseProgram();
 
     planet.shaderProgram->setVec3("lightDir", glm::normalize(sun_position - object_pos));
@@ -250,18 +267,29 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanet(glm::vec3 
     engine::Draw(planet);
 }
 
-void conquerspace::client::systems::SysStarSystemRenderer::DrawStar(
-    glm::vec3 &object_pos, glm::mat4 &cameraMatrix, glm::mat4 &projection,
-    glm::vec3 &cam_pos) {
+void conquerspace::client::systems::SysStarSystemRenderer::DrawStar(glm::vec3 &object_pos) {
     glm::mat4 position = glm::mat4(1.f);
     position = glm::translate(position, object_pos);
 
     glm::mat4 transform = glm::mat4(1.f);
-    transform = glm::scale(transform, glm::vec3(1, 1, 1));
     transform = glm::scale(transform, glm::vec3(5, 5, 5));
     position = position * transform;
 
-    sun.SetMVP(position, cameraMatrix, projection);
+    sun.SetMVP(position, camera_matrix, projection);
+    sun.shaderProgram->setVec4("color", 1, 1, 1, 1);
+    engine::Draw(sun);
+}
+
+void conquerspace::client::systems::SysStarSystemRenderer::DrawTerrainlessPlanet(
+                                            glm::vec3 &object_pos) {
+    glm::mat4 position = glm::mat4(1.f);
+    position = glm::translate(position, object_pos);
+
+    glm::mat4 transform = glm::mat4(1.f);
+    position = position * transform;
+
+    sun.SetMVP(position, camera_matrix, projection);
+    sun.shaderProgram->setVec4("color", 1, 0, 1, 1);
     engine::Draw(sun);
 }
 

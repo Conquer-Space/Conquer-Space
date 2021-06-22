@@ -79,6 +79,7 @@ for _, civ in pairs(civilizations) do
         set_name(planet_entity, ""..planet_entity)
         local radius = random(1000, 30000)
         set_radius(planet_entity, radius)
+        create_terrain(planet_entity, random(0, 10000000))
         -- Set planet type
         -- Set planet terrain
         -- Esh, we'll deal with that later

@@ -17,8 +17,9 @@ class TerrainImageGenerator {
 
     noise::utils::Image& GetHeightMap() { return height_map; }
     noise::utils::Image& GetAlbedoMap() { return albedo_map; }
- private:
+
     int seed;
+ private:
     noise::utils::Image height_map;
     noise::utils::Image albedo_map;
 };
