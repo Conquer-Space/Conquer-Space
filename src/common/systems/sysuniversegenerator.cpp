@@ -11,8 +11,6 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include <boost/random/normal_distribution.hpp>
 
-#include <sol/sol.hpp>
-
 #include "common/components/bodies.h"
 #include "common/components/orbit.h"
 #include "common/components/organizations.h"
@@ -23,20 +21,10 @@
 #include "common/components/area.h"
 #include "common/components/resource.h"
 
-void conquerspace::common::systems::universegenerator::SysGenerateUniverse(
-    conquerspace::engine::Application& app) {
-    namespace cqspa = conquerspace::asset;
+void conquerspace::common::systems::universegenerator::IScriptUniverseGenerator::Generate(
+    conquerspace::common::components::Universe& universe) {
     namespace cqspb = conquerspace::common::components::bodies;
     namespace cqspc = conquerspace::common::components;
-
-    conquerspace::common::components::Universe& universe = app.GetUniverse();
-
-    cqspa::HjsonAsset* val
-        = app.GetAssetManager().GetAsset<cqspa::HjsonAsset>("defaultuniversegen");
-
-    // Initialize lua environment
-    sol::state lua;
-    lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::table);
 
     // Init civilization script
     lua.set_function("create_star_system", [&] () {
@@ -48,13 +36,13 @@ void conquerspace::common::systems::universegenerator::SysGenerateUniverse(
     // Set print functions
     lua.set_function("print", sol::overload(
     [] (const char * y) {
-        spdlog::info("* [lua]: {}", y);
+        spdlog::info("*[lua]: {}", y);
     },
     [](int y) {
-        spdlog::info("* [lua]: {}", y);
+        spdlog::info("*[lua]: {}", y);
     },
     [](double y) {
-        spdlog::info("* [lua]: {}", y);
+        spdlog::info("*[lua]: {}", y);
     }));
 
     // RNG
@@ -92,15 +80,9 @@ void conquerspace::common::systems::universegenerator::SysGenerateUniverse(
         return star;
     });
 
-    lua.set_function("set_orbit", [&] (entt::entity body,
-                                            double distance,
-                                            double theta,
-                                            double eccentricity,
-                                            double argument) {
-        cqspb::Orbit orb = universe.emplace<cqspb::Orbit>(body,
-                                                                    theta,
-                                                                    distance,
-                                                                    eccentricity,
+    lua.set_function("set_orbit", [&] (entt::entity body, double distance, double theta,
+                                            double eccentricity, double argument) {
+        cqspb::Orbit orb = universe.emplace<cqspb::Orbit>(body, theta, distance, eccentricity,
                                                                     argument);
     });
 
@@ -197,13 +179,8 @@ void conquerspace::common::systems::universegenerator::SysGenerateUniverse(
     lua["recipes"] = universe.recipes;
 
     // Load and run utility scripts
-    for (int i = 0; i < val->data["utility"].size(); i++) {
-        std::string utility_script = val->data[i];
-        cqspa::TextAsset* civgenscriptasset =
-                    app.GetAssetManager().GetAsset<cqspa::TextAsset>(utility_script);
-        sol::load_result utility_result = lua.load(civgenscriptasset->data);
-
-        sol::protected_function_result res = utility_result();
+    for (int i = 0; i < utility.size(); i++) {
+        sol::protected_function_result res = utility[i]();
         if (!res.valid()) {
             sol::error err = res;
             std::string what = err.what();
@@ -221,45 +198,33 @@ void conquerspace::common::systems::universegenerator::SysGenerateUniverse(
         universe.emplace<cqspc::Organization>(civ);
     }
 
-    cqspa::TextAsset* civgenscript
-            = app.GetAssetManager().GetAsset<cqspa::TextAsset>(val->data["civ-gen"]);
-    sol::load_result civGenResult = lua.load(civgenscript->data);
-
     // Loop through each civilization
     auto civilizationView = universe.view<cqspc::Organization>();
 
     for (auto a : civilizationView) {
         lua.set("civ", a);
-        sol::protected_function_result res = civGenResult();
+        sol::protected_function_result res = civ_gen();
         if (!res.valid()) {
             sol::error err = res;
             std::string what = err.what();
             spdlog::info("*[lua]: {}", what);
         }
     }
-
     lua.set("civilizations", sol::as_table(civilizationView));
 
-    cqspa::TextAsset* as
-            = app.GetAssetManager().GetAsset<cqspa::TextAsset>(val->data["universe-gen"]);
-    sol::load_result script = lua.load(as->data);
-
-    sol::protected_function_result result = script();
+    // Generate galaxy
+    sol::protected_function_result result = galaxy_generator();
     if (!result.valid()) {
         sol::error err = result;
         std::string what = err.what();
         spdlog::info("*[lua]: {}", what);
     }
 
-    // Now add civilization
-    cqspa::TextAsset* civgen =
-        app.GetAssetManager().GetAsset<cqspa::TextAsset>(val->data["civ-system"]);
-    sol::load_result civGenScript = lua.load(civgen->data);
-
+    // Now add civilizations
     for (auto ent : civilizationView.each()) {
         lua.set("civilization_id", ent);
         // Initialize, etc
-        sol::protected_function_result result = civGenScript();
+        sol::protected_function_result result = civ_initializer();
         if (!result.valid()) {
             // aww
             sol::error err = result;
@@ -267,4 +232,24 @@ void conquerspace::common::systems::universegenerator::SysGenerateUniverse(
             spdlog::info("*[lua]: {}", what);
         }
     }
+}
+
+void conquerspace::common::systems::universegenerator::
+    IScriptUniverseGenerator::AddUtility(const std::string& code) {
+    utility.push_back(lua.load(code));
+}
+
+void conquerspace::common::systems::universegenerator::
+    IScriptUniverseGenerator::SetCivGen(const std::string& code) {
+    civ_gen = lua.load(code);
+}
+
+void conquerspace::common::systems::universegenerator::
+    IScriptUniverseGenerator::SetGalaxyGenerator(const std::string& code) {
+    galaxy_generator = lua.load(code);
+}
+
+void conquerspace::common::systems::universegenerator::
+    IScriptUniverseGenerator::SetCivInitializer(const std::string& code) {
+    civ_initializer = lua.load(code);
 }

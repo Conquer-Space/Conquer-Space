@@ -7,12 +7,12 @@ namespace conquerspace {
 namespace common {
 namespace components {
 class StarDate {
-   public:
+ public:
     void IncrementDate() { date++; }
 
     int GetDate() { return date; }
 
-   private:
+ private:
     unsigned int date = 0;
 };
 }  // namespace components

@@ -5,6 +5,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include <string>
+
 #include <boost/random.hpp>
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
@@ -55,63 +57,84 @@ void conquerspace::scene::UniverseLoadingScene::Ui(float deltaTime) {
 
 void conquerspace::scene::UniverseLoadingScene::Render(float deltaTime) {}
 
-void conquerspace::scene::UniverseLoadingScene::LoadUniverse() {
+void LoadGoods(conquerspace::engine::Application& app) {
     namespace cqspc = conquerspace::common::components;
-    // Load goods
-    conquerspace::asset::HjsonAsset* good_assets = GetApp()
+    conquerspace::asset::HjsonAsset* good_assets = app
                 .GetAssetManager().GetAsset<conquerspace::asset::HjsonAsset>("goods");
     int assets_loaded = 0;
     for (int i = 0; i < good_assets->data.size(); i++) {
         Hjson::Value& val = good_assets->data[i];
         // Create good
-        entt::entity good = GetApp().GetUniverse().create();
-        auto& good_object = GetApp().GetUniverse()
-            .emplace<conquerspace::common::components::Good>(good);
+        entt::entity good = app.GetUniverse().create();
+        auto& good_object = app.GetUniverse().emplace<cqspc::Good>(good);
         good_object.mass = val["mass"];
         good_object.volume = val["volume"];
-        auto &name_object =
-            GetApp()
-                .GetUniverse()
-                .emplace<cqspc::Name>(good);
+        auto &name_object = app.GetUniverse().emplace<cqspc::Name>(good);
         name_object.name = val["name"].to_string();
-        auto &id_object =
-            GetApp()
-                .GetUniverse()
-                .emplace<cqspc::Identifier>(good);
+        auto &id_object = app.GetUniverse().emplace<cqspc::Identifier>(good);
         id_object.identifier = val["identifier"].to_string();
-        GetApp().GetUniverse().goods[val["identifier"].to_string()] = good;
+        app.GetUniverse().goods[val["identifier"].to_string()] = good;
         assets_loaded++;
     }
     spdlog::info("Loaded {} goods", assets_loaded);
+}
 
-    conquerspace::asset::HjsonAsset* recipe_asset = GetApp()
+void LoadRecipes(conquerspace::engine::Application& app) {
+    namespace cqspc = conquerspace::common::components;
+
+    conquerspace::asset::HjsonAsset* recipe_asset = app
                 .GetAssetManager().GetAsset<conquerspace::asset::HjsonAsset>("recipes");
     for (int i = 0; i < recipe_asset->data.size(); i++) {
         Hjson::Value& val = recipe_asset->data[i];
 
-        entt::entity recipe =  GetApp().GetUniverse().create();
-        auto& recipe_component = GetApp()
-            .GetUniverse().emplace<cqspc::Recipe>(recipe);
+        entt::entity recipe = app.GetUniverse().create();
+        auto& recipe_component = app.GetUniverse().emplace<cqspc::Recipe>(recipe);
         Hjson::Value& input_value = val["input"];
         for (auto input_good : input_value) {
-            recipe_component
-                .input[GetApp().GetUniverse().goods[input_good.first]] =
+            recipe_component.input[app.GetUniverse().goods[input_good.first]] =
                 input_good.second;
         }
 
         Hjson::Value& output_value = val["output"];
         for (auto output_good : output_value) {
-            recipe_component
-                .output[GetApp().GetUniverse().goods[output_good.first]] =
+            recipe_component.output[app.GetUniverse().goods[output_good.first]] =
                 output_good.second;
         }
 
-        auto &name_object =
-            GetApp().GetUniverse().emplace<conquerspace::common::components::Identifier>(recipe);
+        auto &name_object = app.GetUniverse().emplace<cqspc::Identifier>(recipe);
         name_object.identifier = val["identifier"].to_string();
-        GetApp().GetUniverse().recipes[name_object.identifier] = recipe;
+        app.GetUniverse().recipes[name_object.identifier] = recipe;
     }
+}
 
-    conquerspace::common::systems::universegenerator::SysGenerateUniverse(GetApp());
+void conquerspace::scene::UniverseLoadingScene::LoadUniverse() {
+    namespace cqspa = conquerspace::asset;
+    // Load goods
+    LoadGoods(GetApp());
+    LoadRecipes(GetApp());
+
+    // Load universe
+    conquerspace::common::systems::universegenerator::IScriptUniverseGenerator script_generator;
+    // Initialze scripts
+    cqspa::HjsonAsset* default_gen =
+            GetApp().GetAssetManager().GetAsset<cqspa::HjsonAsset>("defaultuniversegen");
+    for (int i = 0; i < default_gen->data["utility"].size(); i++) {
+        std::string utility_script_name = default_gen->data[i];
+        cqspa::TextAsset* utility_script =
+            GetApp().GetAssetManager().GetAsset<cqspa::TextAsset>(utility_script_name);
+        script_generator.AddUtility(utility_script->data);
+    }
+    cqspa::TextAsset* civ_gen_script =
+            GetApp().GetAssetManager().GetAsset<cqspa::TextAsset>(default_gen->data["civ-gen"]);
+    script_generator.SetCivGen(civ_gen_script->data);
+    cqspa::TextAsset* universe_gen_script =
+            GetApp().GetAssetManager().
+            GetAsset<cqspa::TextAsset>(default_gen->data["universe-gen"]);
+    script_generator.SetGalaxyGenerator(universe_gen_script->data);
+    cqspa::TextAsset* civ_init_script =
+            GetApp().GetAssetManager().GetAsset<cqspa::TextAsset>(default_gen->data["civ-system"]);
+    script_generator.SetCivInitializer(civ_init_script->data);
+
+    script_generator.Generate(GetApp().GetUniverse());
     m_completed_loading = true;
 }

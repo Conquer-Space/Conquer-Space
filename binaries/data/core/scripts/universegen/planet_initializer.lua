@@ -6,7 +6,7 @@ print("Initializing civ ".. civilization_id)
 local planet = get_civilization_planet(civilization_id)
 
 if is_player(civilization_id) then
-    print("Is player, do something")
+    print("Is player")
 end
 
 -- Add cities

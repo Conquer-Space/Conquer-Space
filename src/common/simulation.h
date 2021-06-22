@@ -14,7 +14,7 @@ namespace simulation {
  * Main simulation of game.
  */
 class Simulation {
-   public:
+ public:
     explicit Simulation(conquerspace::common::components::Universe &_universe)
         : m_universe(_universe) {}
     void tick();
