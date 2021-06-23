@@ -17,6 +17,8 @@ class SysUserInterface {
 
     conquerspace::engine::Application &GetApp() { return m_app; }
 
+    ImGuiWindowFlags window_flags = 0;
+
  private:
     conquerspace::engine::Application &m_app;
 };

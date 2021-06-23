@@ -14,8 +14,8 @@ void conquerspace::client::systems::SysTurnSaveWindow::DoUI(int delta_time) {
                             ImGuiCond_Always, ImVec2(1.f, 0.f));
     ImGui::SetNextWindowSize(ImVec2(150, 65), ImGuiCond_Always);
     bool to_show = true;
-    ImGui::Begin("TS window", &to_show, ImGuiWindowFlags_NoTitleBar |
-                                    ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Begin("TS window", &to_show, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
+                                     ImGuiWindowFlags_AlwaysAutoResize | window_flags);
     // Show date
     ImGui::Text(fmt::format("Date: {} Speed: {}", GetApp().GetUniverse().date.GetDate(),
                                                                             tick_speed).c_str());
@@ -39,8 +39,7 @@ void conquerspace::client::systems::SysTurnSaveWindow::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void conquerspace::client::systems::SysTurnSaveWindow::DoUpdate(
-    int delta_time) {
+void conquerspace::client::systems::SysTurnSaveWindow::DoUpdate(int delta_time) {
     if (!ImGui::GetIO().WantCaptureKeyboard) {
         if (GetApp().ButtonIsReleased(GLFW_KEY_SPACE)) {
             TogglePlayState();

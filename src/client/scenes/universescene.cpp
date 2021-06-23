@@ -30,6 +30,9 @@
 #include "client/systems/sysplanetviewer.h"
 #include "client/systems/systurnsavewindow.h"
 #include "client/systems/sysstarsystemtree.h"
+#include "client/systems/syspausemenu.h"
+
+bool game_halted = false;
 
 conquerspace::scene::UniverseScene::UniverseScene(
     conquerspace::engine::Application& app) : Scene(app) {}
@@ -65,10 +68,11 @@ void conquerspace::scene::UniverseScene::Init() {
     AddUISystem<conquerspace::client::systems::SysPlanetInformation>();
     AddUISystem<conquerspace::client::systems::SysTurnSaveWindow>();
     AddUISystem<conquerspace::client::systems::SysStarSystemTree>();
+    AddUISystem<conquerspace::client::systems::SysPauseMenu>();
 }
 
 void conquerspace::scene::UniverseScene::Update(float deltaTime) {
-    if (!ImGui::GetIO().WantCaptureKeyboard) {
+    if (!ImGui::GetIO().WantCaptureKeyboard && !game_halted) {
         if (GetApp().ButtonIsHeld(GLFW_KEY_A)) {
             x += (deltaTime * 10);
         }
@@ -85,7 +89,7 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
 
     double deltaX = previous_mouseX - GetApp().GetMouseX();
     double deltaY = previous_mouseY - GetApp().GetMouseY();
-    if (!ImGui::GetIO().WantCaptureMouse) {
+    if (!ImGui::GetIO().WantCaptureMouse && !game_halted) {
         if (system_renderer->scroll + GetApp().GetScrollAmount() * 3 > 1.5) {
             system_renderer->scroll += GetApp().GetScrollAmount() * 3;
         }
@@ -115,13 +119,18 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
     }
 
     // Check for last tick
-    if (GetApp().GetUniverse().ToTick()) {
+    if (GetApp().GetUniverse().ToTick() && !game_halted) {
         // Game tick
         simulation->tick();
     }
     GetApp().GetUniverse().clear<conquerspace::client::systems::MouseOverEntity>();
     system_renderer->GetMouseOnObject(GetApp().GetMouseX(), GetApp().GetMouseY());
     for (auto& ui : user_interfaces) {
+        if (game_halted) {
+            ui->window_flags = ImGuiWindowFlags_NoInputs;
+        } else {
+            ui->window_flags = 0;
+        }
         ui->DoUpdate(deltaTime);
     }
 }
@@ -162,3 +171,7 @@ void conquerspace::scene::SeeStarSystem(conquerspace::engine::Application& app, 
 entt::entity conquerspace::scene::GetCurrentViewingPlanet(conquerspace::engine::Application& app) {
     return app.GetUniverse().view<conquerspace::client::systems::RenderingPlanet>().front();
 }
+
+void conquerspace::scene::SetGameHalted(bool b) { game_halted = b; }
+
+bool conquerspace::scene::IsGameHalted() { return game_halted; }

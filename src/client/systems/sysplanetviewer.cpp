@@ -43,7 +43,7 @@ void conquerspace::client::systems::SysPlanetInformation::DisplayPlanet() {
     if (GetApp().GetUniverse().all_of<cqspc::Name>(selected_planet)) {
         planet_name = GetApp().GetUniverse().get<cqspc::Name>(selected_planet).name;
     }
-    ImGui::Begin(planet_name.c_str(), &to_see);
+    ImGui::Begin(planet_name.c_str(), &to_see, window_flags);
     switch (view_mode) {
         case ViewMode::PLANET_VIEW:
             PlanetInformationPanel();
@@ -69,7 +69,7 @@ void conquerspace::client::systems::SysPlanetInformation::DoUpdate(int delta_tim
                         view<conquerspace::client::systems::MouseOverEntity>().front();
     if (!ImGui::GetIO().WantCaptureMouse &&
                 GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) &&
-                mouse_over == selected_planet) {
+                mouse_over == selected_planet && !conquerspace::scene::IsGameHalted()) {
         to_see = true;
         spdlog::info("Switched entity");
     }
@@ -77,7 +77,7 @@ void conquerspace::client::systems::SysPlanetInformation::DoUpdate(int delta_tim
 
 void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel() {
     namespace cqspc = conquerspace::common::components;
-    if (ImGui::Button("<")) {
+    if (ImGui::ArrowButton("cityinformationpanel", ImGuiDir_Left)) {
         view_mode = ViewMode::PLANET_VIEW;
     }
     ImGui::SameLine();
@@ -113,7 +113,8 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
                 ImGui::BeginChild("salepanel",
                                             ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f
                                             - ImGui::GetStyle().ItemSpacing.y, 260),
-                                            true, ImGuiWindowFlags_HorizontalScrollbar);
+                                            true, ImGuiWindowFlags_HorizontalScrollbar |
+                                            window_flags);
                 ImGui::Text("Services Sector");
                 // List all the stuff it produces
                 ImGui::Text("GDP:");
@@ -124,7 +125,8 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
                 ImGui::BeginChild("ManufacturingPanel",
                                             ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f
                                             - ImGui::GetStyle().ItemSpacing.y, 260),
-                                            true, ImGuiWindowFlags_HorizontalScrollbar);
+                                            true, ImGuiWindowFlags_HorizontalScrollbar |
+                                            window_flags);
                 ImGui::Text("Manufactuing Sector");
                 // List all the stuff it produces
                 ImGui::Text("GDP:");
@@ -186,7 +188,8 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
 
                 ImGui::BeginChild("MinePanel", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f
                                                 - ImGui::GetStyle().ItemSpacing.y, 260),
-                                                true, ImGuiWindowFlags_HorizontalScrollbar);
+                                                true, ImGuiWindowFlags_HorizontalScrollbar |
+                                                window_flags);
                 ImGui::Text("Mining Sector");
                 ImGui::Text("GDP:");
                 // Get what resources they are making
@@ -227,7 +230,8 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
 
                 ImGui::BeginChild("AgriPanel", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f
                                                        - ImGui::GetStyle().ItemSpacing.y, 260),
-                                                       true, ImGuiWindowFlags_HorizontalScrollbar);
+                                                       true, ImGuiWindowFlags_HorizontalScrollbar |
+                                                       window_flags);
                 ImGui::Text("Agriculture Sector");
                 ImGui::Text("GDP:");
 
@@ -280,6 +284,9 @@ void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel
     if (GetApp().GetUniverse().all_of<cqspc::Habitation>(selected_planet)) {
         auto& habit = GetApp().GetUniverse().get<cqspc::Habitation>(selected_planet);
         ImGui::Text(fmt::format("Cities: {}", habit.settlements.size()).c_str());
+
+        ImGui::BeginChild("citylist", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar |
+                                            window_flags);
         // List cities
         for (int i = 0; i < habit.settlements.size(); i++) {
             const bool is_selected = (selected_city_index == i);
@@ -303,5 +310,6 @@ void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel
                 ImGui::SetTooltip(fmt::format("{}", name).c_str());
             }
         }
+        ImGui::EndChild();
     }
 }

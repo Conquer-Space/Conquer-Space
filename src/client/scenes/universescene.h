@@ -65,6 +65,8 @@ class UniverseScene : public conquerspace::engine::Scene {
 void SeePlanet(conquerspace::engine::Application&, entt::entity);
 void SeeStarSystem(conquerspace::engine::Application&, entt::entity);
 entt::entity GetCurrentViewingPlanet(conquerspace::engine::Application&);
-
+// Halts all other things
+void SetGameHalted(bool b);
+bool IsGameHalted();
 }  // namespace scene
 }  // namespace conquerspace
