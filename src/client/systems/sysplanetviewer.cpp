@@ -69,7 +69,8 @@ void conquerspace::client::systems::SysPlanetInformation::DoUpdate(int delta_tim
                         view<conquerspace::client::systems::MouseOverEntity>().front();
     if (!ImGui::GetIO().WantCaptureMouse &&
                 GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) &&
-                mouse_over == selected_planet && !conquerspace::scene::IsGameHalted()) {
+                mouse_over == selected_planet && !conquerspace::scene::IsGameHalted() &&
+                !GetApp().MouseDragged()) {
         to_see = true;
         spdlog::info("Switched entity");
     }

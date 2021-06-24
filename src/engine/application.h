@@ -130,6 +130,8 @@ class Application {
         return glfwGetTime();
     }
 
+    bool MouseDragged();
+
  private:
     void AddCallbacks();
 
@@ -177,6 +179,9 @@ class Application {
 
     double m_mouse_x;
     double m_mouse_y;
+
+    double m_mouse_x_on_pressed;
+    double m_mouse_y_on_pressed;
 
     bool m_mouse_keys_held[GLFW_MOUSE_BUTTON_LAST] = {false};
     bool m_mouse_keys_released[GLFW_MOUSE_BUTTON_LAST] = {false};

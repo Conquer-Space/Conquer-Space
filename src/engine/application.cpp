@@ -189,6 +189,8 @@ void conquerspace::engine::Application::DrawText(const std::string& text, float 
     }
 }
 
+bool conquerspace::engine::Application::MouseDragged() { return !(m_mouse_x == m_mouse_x_on_pressed && m_mouse_y == m_mouse_y_on_pressed); }
+
 void conquerspace::engine::Application::AddCallbacks() {
     // Set user pointer
     glfwSetWindowUserPointer(m_window, this);
@@ -301,6 +303,8 @@ void conquerspace::engine::Application::MouseButtonCallback(GLFWwindow* _w,
     if (action == GLFW_PRESS) {
         m_mouse_keys_held[button] = true;
         m_mouse_keys_pressed[button] = true;
+        m_mouse_x_on_pressed = m_mouse_x;
+        m_mouse_y_on_pressed = m_mouse_y;
     } else if (action == GLFW_RELEASE) {
         m_mouse_keys_held[button] = false;
         m_mouse_keys_released[button] = true;
