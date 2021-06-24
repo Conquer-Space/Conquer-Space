@@ -13,7 +13,6 @@ class SysPauseMenu : public SysUserInterface {
     explicit SysPauseMenu(conquerspace::engine::Application& app)
         : SysUserInterface(app) {}
 
-    entt::entity selected_city_entity = entt::null;
     void Init();
     void DoUI(int delta_time);
     void DoUpdate(int delta_time);

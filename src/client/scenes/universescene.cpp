@@ -31,6 +31,7 @@
 #include "client/systems/systurnsavewindow.h"
 #include "client/systems/sysstarsystemtree.h"
 #include "client/systems/syspausemenu.h"
+#include "client/systems/sysdebuggui.h"
 
 bool game_halted = false;
 
@@ -69,6 +70,7 @@ void conquerspace::scene::UniverseScene::Init() {
     AddUISystem<conquerspace::client::systems::SysTurnSaveWindow>();
     AddUISystem<conquerspace::client::systems::SysStarSystemTree>();
     AddUISystem<conquerspace::client::systems::SysPauseMenu>();
+    AddUISystem<conquerspace::client::systems::SysDebugMenu>();
 }
 
 void conquerspace::scene::UniverseScene::Update(float deltaTime) {
@@ -123,6 +125,7 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
         // Game tick
         simulation->tick();
     }
+
     GetApp().GetUniverse().clear<conquerspace::client::systems::MouseOverEntity>();
     system_renderer->GetMouseOnObject(GetApp().GetMouseX(), GetApp().GetMouseY());
     for (auto& ui : user_interfaces) {

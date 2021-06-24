@@ -21,8 +21,8 @@
 #include "common/components/population.h"
 #include "common/components/resource.h"
 #include "common/components/surface.h"
+#include "common/util/utilnumberdisplay.h"
 #include "engine/gui.h"
-#include "util/utilnumberdisplay.h"
 
 void conquerspace::client::systems::SysPlanetInformation::DisplayPlanet() {
     namespace cqspc = conquerspace::common::components;

@@ -46,7 +46,8 @@ void conquerspace::client::systems::SysTurnSaveWindow::DoUpdate(int delta_time) 
         }
     }
     // Update tick
-    if (to_tick && glfwGetTime() - last_tick > static_cast<float>(tick_speeds[tick_speed])/1000.f) {
+    if (to_tick && GetApp().GetTime() - last_tick >
+                                            static_cast<float>(tick_speeds[tick_speed])/1000.f) {
         GetApp().GetUniverse().EnableTick();
         last_tick = GetApp().GetTime();
     }

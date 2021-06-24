@@ -8,11 +8,15 @@
 #include "common/components/area.h"
 #include "common/components/name.h"
 #include "common/components/resource.h"
+#include "common/util/profiler.h"
 
 void conquerspace::common::systems::simulation::Simulation::tick() {
     m_universe.DisableTick();
     // Get previous tick spacing
     namespace cqspc = conquerspace::common::components;
+
+    BEGIN_TIMED_BLOCK(Resource_Gen);
+
     // Tick date
     auto resource_generator = m_universe.view<cqspc::ResourceGenerator,
                                                                        cqspc::ResourceStockpile>();
@@ -39,7 +43,9 @@ void conquerspace::common::systems::simulation::Simulation::tick() {
             resource_stockpile[iterator->first] = resource_count;
         }
     }
+    END_TIMED_BLOCK(Resource_Gen);
 
+    BEGIN_TIMED_BLOCK(Production);
     auto view = m_universe.view<cqspc::Production,
                                             cqspc::ResourceConverter, cqspc::ResourceStockpile>();
     for (entt::entity entity : view) {
@@ -67,7 +73,9 @@ void conquerspace::common::systems::simulation::Simulation::tick() {
             resource_stockpile[iterator->first] = resource_count;
         }
     }
+    END_TIMED_BLOCK(Production);
 
+    BEGIN_TIMED_BLOCK(Resource_Consume);
     // Consume resources
     auto consume = m_universe.view<cqspc::ResourceConverter, cqspc::ResourceStockpile>();
     for (entt::entity entity : consume) {
@@ -97,6 +105,7 @@ void conquerspace::common::systems::simulation::Simulation::tick() {
             resource_stockpile[iterator->first] = resource_count;
         }
     }
+    END_TIMED_BLOCK(Resource_Consume);
 
     m_universe.date.IncrementDate();
 }

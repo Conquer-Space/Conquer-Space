@@ -126,9 +126,7 @@ class Application {
         fontShader = shader;
     }
 
-    double GetTime() {
-        return glfwGetTime();
-    }
+    double GetTime();
 
     bool MouseDragged();
 

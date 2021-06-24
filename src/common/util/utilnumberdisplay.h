@@ -11,7 +11,7 @@
 namespace conquerspace {
 namespace util {
 inline std::string LongToHumanString(int64_t l) {
-    if (l < 1000) {
+    if (abs(l) < 1000) {
         return fmt::format("{}", l);
     }
     static const std::string numbers[] = {

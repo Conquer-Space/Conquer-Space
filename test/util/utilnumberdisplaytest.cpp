@@ -4,7 +4,7 @@
 #include <gtest/gtest.h>
 #include <spdlog/spdlog.h>
 
-#include "util/utilnumberdisplay.h"
+#include "common/util/utilnumberdisplay.h"
 
 TEST(NumberDisplayTest, LongToHumanStringTest) {
     EXPECT_STREQ("1 thousand", conquerspace::util::LongToHumanString(1000).c_str());

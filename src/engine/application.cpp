@@ -22,6 +22,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "common/util/profiler.h"
 
 int conquerspace::engine::Application::init() {
     // Initialize logger
@@ -70,6 +71,7 @@ int conquerspace::engine::Application::init() {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    ImPlot::CreateContext();
     ImGui::StyleColorsDark();
     ImGui::GetIO().IniFilename = NULL;
 
@@ -87,6 +89,7 @@ int conquerspace::engine::Application::init() {
 int conquerspace::engine::Application::destroy() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
+    ImPlot::DestroyContext();
     ImGui::DestroyContext();
 
     glfwDestroyWindow(m_window);
@@ -125,7 +128,7 @@ void conquerspace::engine::Application::run() {
 
     while (ShouldExit()) {
         // Calculate FPS
-        double currentFrame = glfwGetTime();
+        double currentFrame = GetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
         fps = 1 / deltaTime;
@@ -146,15 +149,21 @@ void conquerspace::engine::Application::run() {
         // Gui
         m_scene_manager.GetScene()->Ui(deltaTime);
 
+        BEGIN_TIMED_BLOCK(ImGui_Render);
         ImGui::Render();
+        END_TIMED_BLOCK(ImGui_Render);
 
         // Render
         glClearColor(0.f, 0.f, 0.f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        BEGIN_TIMED_BLOCK(Scene_Render);
         m_scene_manager.GetScene()->Render(deltaTime);
+        END_TIMED_BLOCK(Scene_Render);
 
+        BEGIN_TIMED_BLOCK(ImGui_Render_Draw);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        END_TIMED_BLOCK(ImGui_Render_Draw);
 
         DrawText(fmt::format("FPS: {:.0f}", fps), GetWindowWidth() - 80, GetWindowHeight() - 24);
 
@@ -189,7 +198,11 @@ void conquerspace::engine::Application::DrawText(const std::string& text, float 
     }
 }
 
-bool conquerspace::engine::Application::MouseDragged() { return !(m_mouse_x == m_mouse_x_on_pressed && m_mouse_y == m_mouse_y_on_pressed); }
+double conquerspace::engine::Application::GetTime() { return glfwGetTime(); }
+
+bool conquerspace::engine::Application::MouseDragged() {
+    return !(m_mouse_x == m_mouse_x_on_pressed && m_mouse_y == m_mouse_y_on_pressed);
+}
 
 void conquerspace::engine::Application::AddCallbacks() {
     // Set user pointer
