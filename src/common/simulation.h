@@ -3,7 +3,11 @@
 */
 #pragma once
 
+#include <memory>
+#include <vector>
+
 #include "common/universe.h"
+#include "common/systems/isimulationsystem.h"
 
 namespace conquerspace {
 namespace common {
@@ -15,11 +19,17 @@ namespace simulation {
  */
 class Simulation {
  public:
-    explicit Simulation(conquerspace::common::components::Universe &_universe)
-        : m_universe(_universe) {}
+    explicit Simulation(conquerspace::common::components::Universe &_universe);
     void tick();
 
+    template <class T>
+    void AddSystem() {
+        system_list.push_back(std::make_unique<T>());
+    }
+
+ private:
     conquerspace::common::components::Universe &m_universe;
+    std::vector<std::unique_ptr<conquerspace::common::systems::ISimulationSystem>> system_list;
 };
 }  // namespace simulation
 }  // namespace systems

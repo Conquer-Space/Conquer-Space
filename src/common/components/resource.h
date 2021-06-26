@@ -50,6 +50,8 @@ struct FactoryTimer {
 
 struct ResourceGenerator : public ResourceLedger {};
 
+struct ResourceConsumption : public ResourceLedger {};
+
 struct ResourceConverter {
     entt::entity recipe;
 };
