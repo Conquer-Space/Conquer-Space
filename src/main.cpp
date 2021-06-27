@@ -10,7 +10,6 @@
 #include "engine/application.h"
 
 int main(int argc, char* argv[]) {
-    // Command line argument parser
     conquerspace::engine::Application application;
 
     // Set initial scene

@@ -75,7 +75,7 @@ class Application {
     */
     void run();
 
-    const client::ProgramOptions& GetClientOptions() const {
+    client::ProgramOptions& GetClientOptions() {
         return m_program_options;
     }
 
@@ -130,6 +130,9 @@ class Application {
 
     bool MouseDragged();
 
+    void SetWindowDimensions(int width, int height);
+    void SetFullScreen(bool screen);
+
  private:
     void AddCallbacks();
 
@@ -157,6 +160,7 @@ class Application {
 
     GLFWwindow *m_window;
     int m_window_width, m_window_height;
+    bool full_screen;
     std::string icon_path;
 
     SceneManager m_scene_manager;

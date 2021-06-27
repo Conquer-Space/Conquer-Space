@@ -7,7 +7,6 @@
 #include "engine/renderer/renderable.h"
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/primitives/pane.h"
-#include "engine/gui.h"
 #include "engine/renderer/text.h"
 
 namespace conquerspace {
@@ -28,8 +27,7 @@ class MainMenuScene : public conquerspace::engine::Scene{
     bool m_credits_window = false;
     bool m_save_game_window = false;
     bool m_new_game_window = false;
-
-    ImFont* H1 = nullptr;
+    bool m_options_window = false;
 
     float ratio, ratio2;
     float width, height;

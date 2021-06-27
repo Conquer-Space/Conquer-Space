@@ -81,6 +81,10 @@ int conquerspace::engine::Application::init() {
     ImGui_ImplGlfw_InitForOpenGL(m_window, true);
     ImGui_ImplOpenGL3_Init("#version 130");
 
+    if (full_screen) {
+        SetFullScreen(true);
+    }
+
     std::shared_ptr<Scene> initial_scene = std::make_shared<EmptyScene>(*this);
     m_scene_manager.SetInitialScene(initial_scene);
     return 0;
@@ -95,26 +99,28 @@ int conquerspace::engine::Application::destroy() {
     glfwDestroyWindow(m_window);
     glfwTerminate();
 
+    // Save options
+    std::ofstream config_path(m_program_options.GetDefaultLocation(), std::ios::trunc);
+    m_program_options.WriteOptions(config_path);
     spdlog::shutdown();
     return 0;
 }
 
 conquerspace::engine::Application::Application() {
-    std::ifstream config_path("../config/settings.hjson");
+    std::ifstream config_path(m_program_options.GetDefaultLocation());
     if (config_path.good()) {
         m_program_options.LoadOptions(config_path);
-        // Read config file
-
-        Hjson::Value window_dimensions = m_program_options["window"];
-        m_window_width = window_dimensions["width"];
-        m_window_height = window_dimensions["height"];
-
-        // Set icon path
-        icon_path = m_program_options["icon"].to_string();
     } else {
-        m_window_width = 1280;
-        m_window_height = 720;
+        m_program_options.LoadDefaultOptions();
     }
+    Hjson::Value window_dimensions = m_program_options.GetOptions()["window"];
+    m_window_width = window_dimensions["width"];
+    m_window_height = window_dimensions["height"];
+
+    // Set icon path
+    icon_path = m_program_options.GetOptions()["icon"].to_string();
+
+    full_screen = static_cast<bool>(m_program_options.GetOptions()["full_screen"]);
 }
 
 void conquerspace::engine::Application::run() {
@@ -347,6 +353,24 @@ void conquerspace::engine::Application::SetIcon() {
                                                                     &images[0].height, 0, 4);
     glfwSetWindowIcon(m_window, 1, images);
     stbi_image_free(images[0].pixels);
+}
+
+void conquerspace::engine::Application::SetWindowDimensions(int width, int height) {
+    glfwSetWindowSize(m_window, width, height);
+}
+
+void conquerspace::engine::Application::SetFullScreen(bool screen) {
+    if (screen == true) {
+        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        glfwSetWindowMonitor(m_window, glfwGetPrimaryMonitor(), 0, 0,
+                             mode->width, mode->height, mode->refreshRate);
+    } else {
+        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        glfwSetWindowMonitor(m_window, NULL, 40, 40,
+                                GetClientOptions().GetOptions()["window"]["width"],
+                                GetClientOptions().GetOptions()["window"]["height"],
+                                mode->refreshRate);
+    }
 }
 
 void conquerspace::engine::SceneManager::SetInitialScene(

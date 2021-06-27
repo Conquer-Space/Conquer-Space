@@ -17,6 +17,7 @@
 #include "engine/asset.h"
 #include "engine/gui.h"
 #include "engine/renderer/text.h"
+#include "client/systems/sysoptionswindow.h"
 
 conquerspace::scene::MainMenuScene::MainMenuScene(
     conquerspace::engine::Application& app)
@@ -96,8 +97,7 @@ void conquerspace::scene::MainMenuScene::Ui(float deltaTime) {
                      ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoBackground);
 
     float buttonHeight = 24;
-    float buttonWidth = 600 / 3 - 5;  // Subtract some space for padding
-    float buttonWidthSubtraction = 5;
+    float buttonWidth = GetApp().GetWindowWidth()/6 - 5 * 6;  // Subtract some space for padding
 
     ImGui::BeginTable("table1", 6, ImGuiTableFlags_NoPadOuterX);
     ImGui::TableNextColumn();
@@ -118,7 +118,9 @@ void conquerspace::scene::MainMenuScene::Ui(float deltaTime) {
     ImGui::PopStyleColor(3);
 
     ImGui::TableNextColumn();
-    ImGui::Button("Options", ImVec2(buttonWidth, buttonHeight));
+    if (ImGui::Button("Options", ImVec2(buttonWidth, buttonHeight))) {
+        m_options_window = true;
+    }
     ImGui::TableNextColumn();
 
     if (ImGui::Button("Credits", ImVec2(buttonWidth, buttonHeight))) {
@@ -128,6 +130,7 @@ void conquerspace::scene::MainMenuScene::Ui(float deltaTime) {
 
     ImGui::TableNextColumn();
     ImGui::Button("Others", ImVec2(buttonWidth, buttonHeight));
+
     ImGui::TableNextColumn();
     if (ImGui::Button("Quit", ImVec2(buttonWidth, buttonHeight))) {
         GetApp().ExitApplication();
@@ -167,6 +170,10 @@ void conquerspace::scene::MainMenuScene::Ui(float deltaTime) {
         ImGui::Markdown(m_credits->data.c_str(), m_credits->data.length(),
             GetApp().markdownConfig);
         ImGui::End();
+    }
+
+    if (m_options_window) {
+        conquerspace::client::systems::ShowOptionsWindow(&m_options_window, GetApp());
     }
 }
 
