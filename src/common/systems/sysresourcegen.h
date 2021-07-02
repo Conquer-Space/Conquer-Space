@@ -1,6 +1,8 @@
 /*
 * Copyright 2021 Conquer Space
 */
+#pragma once
+
 #include "common/systems/isimulationsystem.h"
 
 

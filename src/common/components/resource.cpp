@@ -84,3 +84,9 @@ void conquerspace::common::components::ResourceLedger::operator*=(const double v
         (*this)[iterator->first] = iterator->second * value;
     }
 }
+
+void conquerspace::common::components::ResourceLedger::AssignFrom(const ResourceLedger &ledger) {
+    for (auto iterator = ledger.begin(); iterator != ledger.end(); iterator++) {
+        (*this)[iterator->first] = iterator->second;
+    }
+}

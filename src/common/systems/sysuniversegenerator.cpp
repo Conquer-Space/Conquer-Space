@@ -16,6 +16,7 @@
 #include "common/components/organizations.h"
 #include "common/components/player.h"
 #include "common/components/surface.h"
+#include "common/components/economy.h"
 #include "common/components/name.h"
 #include "common/components/population.h"
 #include "common/components/area.h"
@@ -157,6 +158,23 @@ void conquerspace::common::systems::universegenerator::IScriptUniverseGenerator:
 
         return factory;
      });
+
+    lua.set_function("create_market", [&]() {
+        entt::entity entity = universe.create();
+        universe.emplace<cqspc::Market>(entity);
+        universe.emplace<cqspc::ResourceStockpile>(entity);
+        return entity;
+    });
+
+    lua.set_function("place_market", [&](entt::entity market, entt::entity planet) {
+        universe.emplace<cqspc::MarketCenter>(planet, market);
+    });
+
+    lua.set_function("attach_market", [&](entt::entity market_entity, entt::entity participant) {
+        auto& market = universe.get<cqspc::Market>(market_entity);
+        market.participants.push_back(participant);
+        universe.emplace<cqspc::MarketParticipants>(participant, market_entity);
+    });
 
     lua.set_function("create_mine", [&](entt::entity city, entt::entity resource, int amount,
                                                                             float productivity) {

@@ -21,6 +21,7 @@
 #include "common/components/population.h"
 #include "common/components/resource.h"
 #include "common/components/surface.h"
+#include "common/components/economy.h"
 #include "common/util/utilnumberdisplay.h"
 #include "engine/gui.h"
 
@@ -282,35 +283,45 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
 
 void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel() {
     namespace cqspc = conquerspace::common::components;
-    if (GetApp().GetUniverse().all_of<cqspc::Habitation>(selected_planet)) {
-        auto& habit = GetApp().GetUniverse().get<cqspc::Habitation>(selected_planet);
-        ImGui::Text(fmt::format("Cities: {}", habit.settlements.size()).c_str());
+    if (!GetApp().GetUniverse().all_of<cqspc::Habitation>(selected_planet)) {
+        return;
+    }
+    auto& habit = GetApp().GetUniverse().get<cqspc::Habitation>(selected_planet);
+    ImGui::Text(fmt::format("Cities: {}", habit.settlements.size()).c_str());
 
-        ImGui::BeginChild("citylist", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar |
-                                            window_flags);
-        // List cities
-        for (int i = 0; i < habit.settlements.size(); i++) {
-            const bool is_selected = (selected_city_index == i);
+    ImGui::BeginChild("citylist", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar |
+                                        window_flags);
+    // Market
+    if (GetApp().GetUniverse().all_of<cqspc::MarketCenter>(selected_planet)) {
+        auto& center = GetApp().GetUniverse().get<cqspc::MarketCenter>(selected_planet);
+        int nu = GetApp().GetUniverse().get<cqspc::Market>(center.market).participants.size();
+        ImGui::Text("Is market center");
+        ImGui::Text(fmt::format("Has {} markets attached to it", nu).c_str());
+        ImGui::Separator();
+    }
 
-            entt::entity e = habit.settlements[i];
-            std::string name = GetApp().GetUniverse().get<cqspc::Name>(e)
-                    .name;
-            if (ImGui::Selectable(fmt::format("{}", name).c_str(), is_selected)) {
-                // Load city
-                selected_city_index = i;
-                selected_city_entity = habit.settlements[i];
-                view_mode = ViewMode::CITY_VIEW;
+    // List cities
+    for (int i = 0; i < habit.settlements.size(); i++) {
+        const bool is_selected = (selected_city_index == i);
 
-                if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-                    // See city
-                    spdlog::info("Mouse clicked");
-                }
-            }
+        entt::entity e = habit.settlements[i];
+        std::string name = GetApp().GetUniverse().get<cqspc::Name>(e)
+                .name;
+        if (ImGui::Selectable(fmt::format("{}", name).c_str(), is_selected)) {
+            // Load city
+            selected_city_index = i;
+            selected_city_entity = habit.settlements[i];
+            view_mode = ViewMode::CITY_VIEW;
 
-            if (ImGui::IsItemActive() || ImGui::IsItemHovered()) {
-                ImGui::SetTooltip(fmt::format("{}", name).c_str());
+            if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+                // See city
+                spdlog::info("Mouse clicked");
             }
         }
-        ImGui::EndChild();
+
+        if (ImGui::IsItemActive() || ImGui::IsItemHovered()) {
+            ImGui::SetTooltip(fmt::format("{}", name).c_str());
+        }
     }
+    ImGui::EndChild();
 }

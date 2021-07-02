@@ -26,6 +26,8 @@ struct ResourceLedger : public std::map<entt::entity, double> {
     void operator+=(const ResourceLedger&);
     void operator*=(const double value);
 
+    void AssignFrom(const ResourceLedger&);
+
     bool HasGood(entt::entity good) {
         return (*this).find(good) == (*this).end();
     }

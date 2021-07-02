@@ -11,7 +11,8 @@
 #include "common/util/profiler.h"
 #include "common/systems/sysresourcegen.h"
 
-conquerspace::common::systems::simulation::Simulation::Simulation(conquerspace::common::components::Universe& _universe) : m_universe(_universe) {
+conquerspace::common::systems::simulation::Simulation::Simulation(
+                    conquerspace::common::components::Universe& _universe) : m_universe(_universe) {
     AddSystem<conquerspace::common::systems::SysResourceGen>();
     AddSystem<conquerspace::common::systems::SysFactoryResourceProduction>();
     AddSystem<conquerspace::common::systems::SysFactoryResourceConsumption>();
@@ -23,7 +24,9 @@ void conquerspace::common::systems::simulation::Simulation::tick() {
     namespace cqspc = conquerspace::common::components;
 
     for (auto& sys : system_list) {
-        sys->DoSystem(m_universe);
+        if (m_universe.date.GetDate() % sys->Interval() == 0) {
+            sys->DoSystem(m_universe);
+        }
     }
     m_universe.date.IncrementDate();
 }
