@@ -180,6 +180,20 @@
             type: frag
         }
     }
+    framebuffervert: {
+        path: gfx/shaders/framebuffer.vert
+        type: shader
+        hints: {
+            type: vert
+        }
+    }
+    framebufferfrag: {
+        path: gfx/shaders/framebuffer.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
     goods: {
         path: data/goods
         type: hjson
