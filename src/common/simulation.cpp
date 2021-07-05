@@ -10,11 +10,14 @@
 #include "common/components/resource.h"
 #include "common/util/profiler.h"
 #include "common/systems/sysresourcegen.h"
+#include "common/systems/economy/sysmarketplace.h"
 
 conquerspace::common::systems::simulation::Simulation::Simulation(
                     conquerspace::common::components::Universe& _universe) : m_universe(_universe) {
     AddSystem<conquerspace::common::systems::SysResourceGen>();
     AddSystem<conquerspace::common::systems::SysFactoryResourceProduction>();
+    AddSystem<conquerspace::common::systems::SysMarketSeller>();
+    // Buy from system, or something
     AddSystem<conquerspace::common::systems::SysFactoryResourceConsumption>();
 }
 

@@ -14,8 +14,8 @@ struct Market {
     std::vector<entt::entity> participants;
 };
 
-struct MarketParticipants {
-    entt::entity entity;
+struct MarketParticipant {
+    entt::entity market;
 };
 
 struct MarketCenter {

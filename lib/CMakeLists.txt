@@ -4,6 +4,10 @@ add_subdirectory(entt)
 
 add_subdirectory(hjson-cpp)
 
+add_subdirectory(fmt)
+
+# Tell spdlog to use another fmt to avoid compile conflicts.
+SET(SPDLOG_FMT_EXTERNAL ON)
 add_subdirectory(spdlog)
 
 add_subdirectory(glm)
@@ -22,7 +26,6 @@ set_target_properties(buildvm liblua-shared lua-static lua liblua-static minilua
 
 add_subdirectory(freetype)
 
-add_subdirectory(fmt)
 
 add_subdirectory(libnoise)
 

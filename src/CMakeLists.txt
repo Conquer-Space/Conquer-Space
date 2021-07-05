@@ -37,23 +37,9 @@ add_subdirectory(client)
 
 add_executable(Conquer-Space main.cpp)
 
-set(CQSP_LIBRARIES glfw3_mt
-    OpenGL::GL
-    ImGui
-    EnTT::EnTT
-    hjson
-    spdlog
-    glm
-    liblua-static
-    freetype
-    fmt
-    libnoise
-    )
-
 # Set some msvc convinence things
 
 target_link_libraries(Conquer-Space PRIVATE
-    ${CQSP_LIBRARIES}
     cqsp-core
     cqsp-client
     cqsp-engine
