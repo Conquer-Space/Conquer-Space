@@ -176,6 +176,12 @@ void conquerspace::common::systems::universegenerator::IScriptUniverseGenerator:
         universe.emplace<cqspc::MarketParticipant>(participant, market_entity);
     });
 
+    lua.set_function("add_resource", [&](entt::entity storage,
+                                          entt::entity resource, int amount) {
+        // Add resources to the resource stockpile
+        universe.get<cqspc::ResourceStockpile>(storage)[resource] += amount;
+    });
+
     lua.set_function("create_mine", [&](entt::entity city, entt::entity resource, int amount,
                                                                             float productivity) {
         entt::entity mine = universe.create();

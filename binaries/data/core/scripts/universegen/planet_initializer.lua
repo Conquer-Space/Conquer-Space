@@ -16,6 +16,9 @@ local market = create_market()
 
 place_market(market, planet)
 
+add_resource(market, goods["steel"], 50000)
+add_resource(market, goods["copper"], 50000)
+
 -- Add city
 local city_count = random(30, 50)
 for index = 0, city_count, 1 do
@@ -27,7 +30,7 @@ for index = 0, city_count, 1 do
     -- Attach these stuff to market
     attach_market(market, create_factory(city, recipes["steel_forging"], 10))
     -- Add various factories
-    attach_market(market, create_factory(city, recipes["consumer_good_manufacturing"], 9))
+    attach_market(market, create_factory(city, recipes["consumer_good_manufacturing"], 10))
     attach_market(market, create_mine(city, goods["copper"], 10, 1))
     attach_market(market, create_mine(city, goods["aluminium"], 10, 1))
     attach_market(market, create_mine(city, goods["iron"], 70, 1))
