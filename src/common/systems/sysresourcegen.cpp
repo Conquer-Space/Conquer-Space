@@ -6,6 +6,7 @@
 #include <spdlog/spdlog.h>
 
 #include "common/components/area.h"
+#include "common/components/economy.h"
 #include "common/components/resource.h"
 
 void conquerspace::common::systems::SysResourceGen::DoSystem(components::Universe& universe) {
@@ -25,7 +26,7 @@ void conquerspace::common::systems::SysResourceGen::DoSystem(components::Univers
             productivity = universe.get<cqspc::FactoryProductivity>(entity).productivity;
         }
 
-        resource_stockpile.AssignFrom(generator *(productivity* Interval()) + resource_stockpile);
+        resource_stockpile += generator * productivity * Interval();
     }
 }
 
@@ -47,7 +48,7 @@ void conquerspace::common::systems::SysFactoryResourceProduction::DoSystem(
             productivity = universe.get<cqspc::FactoryProductivity>(entity).productivity;
         }
 
-        resource_stockpile.AssignFrom(recipe.output *productivity* Interval() + resource_stockpile);
+        resource_stockpile += (recipe.output *productivity* Interval());
     }
 }
 
@@ -56,7 +57,7 @@ void conquerspace::common::systems::SysFactoryResourceConsumption::DoSystem(
     namespace cqspc = conquerspace::common::components;
 
     // Consume resources
-    auto consume = universe.view<cqspc::ResourceConverter, cqspc::ResourceStockpile>();
+    auto consume = universe.view<cqspc::ResourceConverter, cqspc::ResourceStockpile, cqspc::MarketParticipant>();
     for (entt::entity entity : consume) {
         // Do the same thing
         // Make resources
@@ -69,8 +70,15 @@ void conquerspace::common::systems::SysFactoryResourceConsumption::DoSystem(
         if (universe.all_of<cqspc::FactoryProductivity>(entity)) {
             productivity = universe.get<cqspc::FactoryProductivity>(entity).productivity;
         }
-
-        resource_stockpile.AssignFrom(recipe.input * -1 * productivity * Interval() +
-                                                                            resource_stockpile);
+        // Check if attached to market, and buy from market
+        auto& participant = universe.get<cqspc::MarketParticipant>(entity);
+        // Get market and stuff
+        auto &market_stockpile =
+            universe.get<cqspc::ResourceStockpile>(participant.market);
+        //If it's enough, add production
+        if (market_stockpile > resource_stockpile) {
+            universe.emplace_or_replace<cqspc::Production>(entity);
+            market_stockpile -= (recipe.input * productivity * Interval());
+        }
     }
 }

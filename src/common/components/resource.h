@@ -25,6 +25,8 @@ struct ResourceLedger : public std::map<entt::entity, double> {
     void operator-=(const ResourceLedger&);
     void operator+=(const ResourceLedger&);
     void operator*=(const double value);
+    bool operator<(const ResourceLedger&);
+    bool operator>(const ResourceLedger&);
 
     void AssignFrom(const ResourceLedger&);
 

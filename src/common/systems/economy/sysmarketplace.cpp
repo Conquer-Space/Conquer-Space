@@ -19,3 +19,6 @@ void conquerspace::common::systems::SysMarketSeller::DoSystem(components::Univer
         stockpile.clear();
     }
 }
+
+void conquerspace::common::systems::SysMarketBuyer::DoSystem(
+    components::Universe &universe) {}

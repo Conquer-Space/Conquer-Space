@@ -16,8 +16,11 @@ conquerspace::common::systems::simulation::Simulation::Simulation(
                     conquerspace::common::components::Universe& _universe) : m_universe(_universe) {
     AddSystem<conquerspace::common::systems::SysResourceGen>();
     AddSystem<conquerspace::common::systems::SysFactoryResourceProduction>();
+    // Sell the resources they produce
     AddSystem<conquerspace::common::systems::SysMarketSeller>();
-    // Buy from system, or something
+    // Buy resources
+    // Request demand, and buy things
+    AddSystem<conquerspace::common::systems::SysMarketBuyer>();
     AddSystem<conquerspace::common::systems::SysFactoryResourceConsumption>();
 }
 

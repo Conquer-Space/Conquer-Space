@@ -13,6 +13,11 @@ class SysMarketSeller : public ISimulationSystem {
  public:
      void DoSystem(components::Universe& universe);
 };
+
+class SysMarketBuyer : public ISimulationSystem {
+ public:
+     void DoSystem(components::Universe& universe);
+};
 }
 }
 }

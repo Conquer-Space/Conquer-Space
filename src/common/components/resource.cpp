@@ -85,6 +85,14 @@ void conquerspace::common::components::ResourceLedger::operator*=(const double v
     }
 }
 
+bool conquerspace::common::components::ResourceLedger::operator>(const ResourceLedger &) {
+    return true;
+}
+
+bool conquerspace::common::components::ResourceLedger::operator<(const ResourceLedger &) {
+    return true;
+}
+
 void conquerspace::common::components::ResourceLedger::AssignFrom(const ResourceLedger &ledger) {
     for (auto iterator = ledger.begin(); iterator != ledger.end(); iterator++) {
         (*this)[iterator->first] = iterator->second;
