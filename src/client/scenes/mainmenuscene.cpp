@@ -18,6 +18,7 @@
 #include "engine/gui.h"
 #include "engine/renderer/text.h"
 #include "client/systems/sysoptionswindow.h"
+#include "common/version.h"
 
 conquerspace::scene::MainMenuScene::MainMenuScene(
     conquerspace::engine::Application& app)
@@ -182,4 +183,5 @@ void conquerspace::scene::MainMenuScene::Render(float deltaTime) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     renderer.Draw();
+    GetApp().DrawText(fmt::format("Version: {}", CQSP_VERSION_STRING), 8, 8);
 }

@@ -6,3 +6,5 @@
 /docs/latex
 /docs/html
 /.vscode
+
+/src/common/git-commit.h

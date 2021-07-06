@@ -30,6 +30,8 @@ if(WIN32)
 SET(ICON_FILE "${CMAKE_SOURCE_DIR}/binaries/data/app.rc")
 endif()
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/common/version.h.in ${CMAKE_CURRENT_SOURCE_DIR}/common/version.h @ONLY)
+
 # Add libraries
 add_subdirectory(common)
 add_subdirectory(engine)

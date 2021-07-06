@@ -1,0 +1,17 @@
+/*
+* Copyright 2021 Conquer Space
+*/
+#pragma once
+
+#cmakedefine GIT_INFO "@GIT_INFO@"
+#cmakedefine CQSP_VERSION "@CQSP_VERSION@"
+
+// Make sure that things are still defined
+#ifndef GIT_INFO
+#define GIT_INFO "N/A"
+#endif
+#ifndef CQSP_VERSION
+#define CQSP_VERSION "N/A"
+#endif
+
+#define CQSP_VERSION_STRING CQSP_VERSION " (" GIT_INFO ")"
