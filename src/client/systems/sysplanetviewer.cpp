@@ -85,8 +85,8 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
     static bool thing = true;
     ImGui::Checkbox("Macroeconomic/Ownership mode", &thing);
 
-    ImGui::Text(fmt::format("{}", GetApp().GetUniverse().
-                                            get<cqspc::Name>(selected_city_entity).name).c_str());
+    ImGui::TextFmt("{}", GetApp().GetUniverse().
+                                            get<cqspc::Name>(selected_city_entity).name);
 
     if (GetApp().GetUniverse().all_of<cqspc::Settlement>(selected_city_entity)) {
         int size = GetApp().GetUniverse()
@@ -95,11 +95,11 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
                               selected_city_entity).population) {
             auto& bad_var_name = GetApp().GetUniverse()
                                     .get<cqspc::PopulationSegment>(b);
-            ImGui::Text(fmt::format("Population: {}",
-                        conquerspace::util::LongToHumanString(bad_var_name.population)).c_str());
+            ImGui::TextFmt("Population: {}",
+                        conquerspace::util::LongToHumanString(bad_var_name.population));
         }
     } else {
-        ImGui::Text(fmt::format("No population").c_str());
+        ImGui::TextFmt("No population");
     }
 
     if (GetApp().GetUniverse().all_of<cqspc::Industry>(selected_city_entity)) {
@@ -110,7 +110,7 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
                 auto &city_industry = GetApp().GetUniverse()
                     .get<cqspc::Industry>(selected_city_entity);
 
-                ImGui::Text(fmt::format("Factories: {}", industries).c_str());
+                ImGui::TextFmt("Factories: {}", industries);
                 ImGui::BeginChild("salepanel",
                                             ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f
                                             - ImGui::GetStyle().ItemSpacing.y, 260),
@@ -156,11 +156,11 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
                                                 iterator != output_resources.end(); iterator++) {
                         ImGui::TableNextRow();
                         ImGui::TableSetColumnIndex(0);
-                        ImGui::Text(fmt::format("{}", GetApp().GetUniverse()
-                                    .get<cqspc::Identifier>(iterator->first).identifier).c_str());
+                        ImGui::TextFmt("{}", GetApp().GetUniverse()
+                                    .get<cqspc::Identifier>(iterator->first).identifier);
                         ImGui::TableSetColumnIndex(1);
-                        ImGui::Text(fmt::format("{}", conquerspace::util::
-                                LongToHumanString(static_cast<int64_t>(iterator->second))).c_str());
+                        ImGui::TextFmt("{}", conquerspace::util::LongToHumanString(
+                                                        static_cast<int64_t>(iterator->second)));
                     }
                     ImGui::EndTable();
                 }
@@ -175,13 +175,13 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
                                                 iterator != input_resources.end(); iterator++) {
                         ImGui::TableNextRow();
                         ImGui::TableSetColumnIndex(0);
-                        ImGui::Text(fmt::format("{}", GetApp().GetUniverse().
+                        ImGui::TextFmt("{}", GetApp().GetUniverse().
                                                 get<cqspc::Identifier>(iterator->first)
-                                                .identifier).c_str());
+                                                .identifier);
 
                         ImGui::TableSetColumnIndex(1);
-                        ImGui::Text(fmt::format("{}",
-                                conquerspace::util::LongToHumanString(iterator->second)).c_str());
+                        ImGui::TextFmt("{}", conquerspace::util::LongToHumanString
+                                                                                (iterator->second));
                     }
                     ImGui::EndTable();
                 }
@@ -215,13 +215,12 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
                         ImGui::TableNextRow();
                         ImGui::TableSetColumnIndex(0);
 
-                        ImGui::Text(fmt::format("{}", GetApp().GetUniverse().
-                                                        get<cqspc::Identifier>(iterator->first)
-                                                        .identifier).c_str());
+                        ImGui::TextFmt("{}", GetApp()
+                                .GetUniverse().get<cqspc::Identifier>(iterator->first).identifier);
 
                         ImGui::TableSetColumnIndex(1);
-                        ImGui::Text(fmt::format("{}", conquerspace::util::
-                                                    LongToHumanString(iterator->second)).c_str());
+                        ImGui::TextFmt("{}",
+                                        conquerspace::util::LongToHumanString(iterator->second));
                     }
                     ImGui::EndTable();
                 }
@@ -263,13 +262,12 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
                         ImGui::TableNextRow();
                         ImGui::TableSetColumnIndex(0);
 
-                        ImGui::Text(fmt::format("{}", GetApp().GetUniverse().
-                                                        get<cqspc::Identifier>(iterator->first)
-                                                        .identifier).c_str());
+                        ImGui::TextFmt("{}", GetApp().
+                                GetUniverse().get<cqspc::Identifier>(iterator->first).identifier);
 
                         ImGui::TableSetColumnIndex(1);
-                        ImGui::Text(fmt::format("{}", conquerspace::util::
-                                                    LongToHumanString(iterator->second)).c_str());
+                        ImGui::TextFmt("{}",
+                                    conquerspace::util::LongToHumanString(iterator->second));
                     }
                     ImGui::EndTable();
                 }
@@ -284,7 +282,7 @@ void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel
     namespace cqspc = conquerspace::common::components;
     if (GetApp().GetUniverse().all_of<cqspc::Habitation>(selected_planet)) {
         auto& habit = GetApp().GetUniverse().get<cqspc::Habitation>(selected_planet);
-        ImGui::Text(fmt::format("Cities: {}", habit.settlements.size()).c_str());
+        ImGui::TextFmt("Cities: {}", habit.settlements.size());
 
         ImGui::BeginChild("citylist", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar |
                                             window_flags);

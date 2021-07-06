@@ -17,8 +17,7 @@ void conquerspace::client::systems::SysTurnSaveWindow::DoUI(int delta_time) {
     ImGui::Begin("TS window", &to_show, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
                                      ImGuiWindowFlags_AlwaysAutoResize | window_flags);
     // Show date
-    ImGui::Text(fmt::format("Date: {} Speed: {}", GetApp().GetUniverse().date.GetDate(),
-                                                                            tick_speed).c_str());
+    ImGui::TextFmt("Date: {} Speed: {}", GetApp().GetUniverse().date.GetDate(), tick_speed);
     if (ImGui::Button("<<")) {
         // Slower
         if (tick_speed > 0) {
