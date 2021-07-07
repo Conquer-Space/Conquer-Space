@@ -23,7 +23,7 @@ void conquerspace::client::systems::ShowOptionsWindow(bool* open,
     };
     static int item_current_idx = 0;
     for (int n = 0; n < IM_ARRAYSIZE(common_resolutions); n++) {
-        if (app.GetClientOptions().GetOptions()["window"]["width"] == 
+        if (app.GetClientOptions().GetOptions()["window"]["width"] ==
                                                     static_cast<int>(common_resolutions[n].x)
                  && app.GetClientOptions().GetOptions()["window"]["height"] ==
                                             static_cast<int>(common_resolutions[n].y)) {

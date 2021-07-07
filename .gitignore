@@ -8,3 +8,4 @@
 /.vscode
 
 /src/common/git-commit.h
+/src/common/version.h

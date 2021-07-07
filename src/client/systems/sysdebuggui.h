@@ -15,10 +15,6 @@
 namespace conquerspace {
 namespace client {
 namespace systems {
-typedef std::function<void(conquerspace::engine::Application& app,
-                           const std::string_view& args,
-                           std::vector<std::string>& input)>
-    DebugCommand_t;
 class SysDebugMenu : public SysUserInterface {
  public:
     explicit SysDebugMenu(conquerspace::engine::Application& app);
@@ -28,6 +24,8 @@ class SysDebugMenu : public SysUserInterface {
     void DoUpdate(int delta_time);
 
  private:
+    void CqspMetricsWindow();
+
     bool to_show_window = false;
     bool to_show_metrics_window = false;
     bool to_show_imgui_about = false;
@@ -37,6 +35,11 @@ class SysDebugMenu : public SysUserInterface {
     bool to_show_cqsp_metrics = false;
     std::string command;
     std::vector<std::string> items;
+
+    typedef std::vector<std::string> CommandOutput;
+    typedef std::function<void(conquerspace::engine::Application& app,
+                           const std::string_view& args,
+                           CommandOutput& input)> DebugCommand_t;
     std::map<std::string, std::pair<std::string, DebugCommand_t>, std::less<>> commands;
     std::vector<ImVec2> fps_history;
     float fps_history_len = 10;
