@@ -148,6 +148,9 @@ class Application {
     void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
 
     void SetIcon();
+
+    void GlInit();
+    void LoggerInit();
     /*
      * Intializes glfw and imgui.
      */
@@ -199,6 +202,8 @@ class Application {
 
     conquerspace::asset::Font* m_font = nullptr;
     conquerspace::asset::ShaderProgram* fontShader = nullptr;
+
+    std::map<std::string, std::string> properties;
 };
 }  // namespace engine
 }  // namespace conquerspace

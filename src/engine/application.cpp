@@ -18,54 +18,17 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <filesystem>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "common/util/profiler.h"
+#include "engine/paths.h"
 
 int conquerspace::engine::Application::init() {
-    // Initialize logger
-#ifdef NDEBUG
-    spdlog::flush_every(std::chrono::seconds(3));
-    logger = spdlog::basic_logger_mt("application", "log.txt", true);
-#else
-    logger = spdlog::stdout_color_mt("application");
-#endif
-    spdlog::set_default_logger(logger);
-
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_SAMPLES, 4);
-
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-
-    // Create window
-    m_window = glfwCreateWindow(m_window_width, m_window_height, "Conquer Space", NULL, NULL);
-    if (m_window == NULL) {
-        glfwTerminate();
-        spdlog::error("Cannot load glfw");
-        return -1;
-    }
-
-    glfwMakeContextCurrent(m_window);
-
-    // Enable vsync
-    glfwSwapInterval(1);
-
-    // Add callbacks
-    AddCallbacks();
-
-    // Init glad
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        glfwTerminate();
-        spdlog::error("Cannot load glad");
-        return -2;
-    }
+    LoggerInit();
+    GlInit();
 
     SetIcon();
     // Setup Dear ImGui context
@@ -353,6 +316,61 @@ void conquerspace::engine::Application::SetIcon() {
                                                                     &images[0].height, 0, 4);
     glfwSetWindowIcon(m_window, 1, images);
     stbi_image_free(images[0].pixels);
+}
+
+void conquerspace::engine::Application::GlInit() {
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_SAMPLES, 4);
+
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
+    // Create window
+    m_window = glfwCreateWindow(m_window_width, m_window_height, "Conquer Space", NULL, NULL);
+    if (m_window == NULL) {
+        glfwTerminate();
+        spdlog::error("Cannot load glfw");
+    }
+
+    glfwMakeContextCurrent(m_window);
+
+    // Enable vsync
+    glfwSwapInterval(1);
+
+    // Add callbacks
+    AddCallbacks();
+
+    // Init glad
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        glfwTerminate();
+        spdlog::error("Cannot load glad");
+    }
+}
+
+void conquerspace::engine::Application::LoggerInit() {
+    properties["data"] = GetConquerSpacePath();
+    std::filesystem::path log_folder = std::filesystem::path(properties["data"]) / "logs";
+    // Make logs folder
+    // Initialize logger
+    std::vector<spdlog::sink_ptr> sinks;
+    auto error_log = std::make_shared<spdlog::sinks::basic_file_sink_mt>(
+                                                        (log_folder/"error.txt").string(), true);
+    error_log->set_level(spdlog::level::err);
+    sinks.push_back(error_log);
+
+#ifdef NDEBUG
+    spdlog::flush_every(std::chrono::seconds(3));
+    auto basic_logger = spdlog::basic_logger_mt("application", log_folder/"cqsp.txt", true);
+    sinks.push_back(basic_logger)
+#else
+    sinks.push_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
+#endif
+    logger = std::make_shared<spdlog::logger>("application", sinks.begin(), sinks.end());
+    spdlog::set_default_logger(logger);
 }
 
 void conquerspace::engine::Application::SetWindowDimensions(int width, int height) {
