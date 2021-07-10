@@ -76,7 +76,7 @@ void LoadGoods(conquerspace::engine::Application& app) {
         app.GetUniverse().goods[val["identifier"].to_string()] = good;
         assets_loaded++;
     }
-    spdlog::info("Loaded {} goods", assets_loaded);
+    SPDLOG_INFO("Loaded {} goods", assets_loaded);
 }
 
 void LoadRecipes(conquerspace::engine::Application& app) {

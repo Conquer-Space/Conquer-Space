@@ -19,15 +19,21 @@
 #include <fstream>
 #include <string>
 #include <filesystem>
+#include <vector>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <boost/version.hpp>
+#include <boost/config.hpp>
+
 #include "common/util/profiler.h"
 #include "engine/paths.h"
+#include "common/version.h"
 
 int conquerspace::engine::Application::init() {
     LoggerInit();
+    LogInfo();
     GlInit();
 
     SetIcon();
@@ -62,6 +68,7 @@ int conquerspace::engine::Application::destroy() {
     glfwDestroyWindow(m_window);
     glfwTerminate();
 
+    SPDLOG_INFO("Killed GLFW");
     // Save options
     std::ofstream config_path(m_program_options.GetDefaultLocation(), std::ios::trunc);
     m_program_options.WriteOptions(config_path);
@@ -333,7 +340,7 @@ void conquerspace::engine::Application::GlInit() {
     m_window = glfwCreateWindow(m_window_width, m_window_height, "Conquer Space", NULL, NULL);
     if (m_window == NULL) {
         glfwTerminate();
-        spdlog::error("Cannot load glfw");
+        SPDLOG_CRITICAL("Cannot load glfw");
     }
 
     glfwMakeContextCurrent(m_window);
@@ -347,11 +354,18 @@ void conquerspace::engine::Application::GlInit() {
     // Init glad
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         glfwTerminate();
-        spdlog::error("Cannot load glad");
+        SPDLOG_CRITICAL("Cannot load glad");
     }
+    SPDLOG_INFO(" --- GL information ---");
+    SPDLOG_INFO("GL version: {}", glGetString(GL_VERSION));
+    SPDLOG_INFO("GL vendor: {}", glGetString(GL_VENDOR));
+    SPDLOG_INFO("GL Renderer: {}", glGetString(GL_RENDERER));
+    SPDLOG_INFO("GL shading language: {}", glGetString(GL_SHADING_LANGUAGE_VERSION));
+    SPDLOG_INFO(" --- GL information ---");
 }
 
 void conquerspace::engine::Application::LoggerInit() {
+    // Get path
     properties["data"] = GetConquerSpacePath();
     std::filesystem::path log_folder = std::filesystem::path(properties["data"]) / "logs";
     // Make logs folder
@@ -364,13 +378,26 @@ void conquerspace::engine::Application::LoggerInit() {
 
 #ifdef NDEBUG
     spdlog::flush_every(std::chrono::seconds(3));
-    auto basic_logger = spdlog::basic_logger_mt("application", log_folder/"cqsp.txt", true);
-    sinks.push_back(basic_logger)
+    auto basic_logger = std::make_shared<spdlog::sinks::basic_file_sink_mt>(
+                                                        (log_folder/"info.txt").string(), true);
+    sinks.push_back(basic_logger);
 #else
-    sinks.push_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
+    auto console_logger = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+    sinks.push_back(console_logger);
 #endif
     logger = std::make_shared<spdlog::logger>("application", sinks.begin(), sinks.end());
     spdlog::set_default_logger(logger);
+    spdlog::set_pattern("[%T.%e] [%^%l%$] [%s:%#] %v");
+}
+
+void conquerspace::engine::Application::LogInfo() {
+    SPDLOG_INFO("Conquer Space {}", CQSP_VERSION_STRING);
+    SPDLOG_INFO("Platform: {}", BOOST_PLATFORM);
+    SPDLOG_INFO("Compiled {} {}", __DATE__, __TIME__);
+    SPDLOG_INFO("Compiled on {} with {}", BOOST_COMPILER, BOOST_STDLIB);
+#ifndef NDEBUG
+    SPDLOG_INFO("In debug mode");
+#endif
 }
 
 void conquerspace::engine::Application::SetWindowDimensions(int width, int height) {
@@ -404,9 +431,9 @@ void conquerspace::engine::SceneManager::SetScene(
 
 void conquerspace::engine::SceneManager::SwitchScene() {
     m_scene = std::move(m_next_scene);
-    spdlog::trace("Initializing scene");
+    SPDLOG_TRACE("Initializing scene");
     m_scene->Init();
-    spdlog::trace("Done Initializing scene");
+    SPDLOG_TRACE("Done Initializing scene");
     m_switch = false;
 }
 

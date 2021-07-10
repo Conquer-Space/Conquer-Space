@@ -77,7 +77,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
 
     entt::entity current_planet = m_app.GetUniverse().view<RenderingPlanet>().front();
     if (current_planet != m_viewing_entity) {
-        spdlog::info("Switched displaying planet, seeing {}", current_planet);
+        SPDLOG_INFO("Switched displaying planet, seeing {}", current_planet);
         m_viewing_entity = current_planet;
         // Do terrain
         SeeEntity();
@@ -88,14 +88,14 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     CalculateCamera();
 
     if (second_terrain_complete && !terrain_complete) {
-        spdlog::info("Done less detailed planet generation");
+        SPDLOG_INFO("Done less detailed planet generation");
         less_detailed_terrain_generator_thread.join();
         SetPlanetTexture(intermediate_image_generator);
         second_terrain_complete = false;
     }
 
     if (terrain_complete) {
-        spdlog::info("Done terrain generation");
+        SPDLOG_INFO("Done terrain generation");
         terrain_generator_thread.join();
         SetPlanetTexture(final_image_generator);
         terrain_complete = false;

@@ -9,6 +9,8 @@
 #include FT_FREETYPE_H
 #include FT_STROKER_H
 
+#include <spdlog/spdlog.h>
+
 #include <map>
 #include <string>
 #include <memory>
@@ -110,21 +112,21 @@ class AssetManager {
     template <class T>
     T* GetAsset(std::string& key) {
         if (!assets.count(key))
-            spdlog::error("Invalid key {}", key);
+            SPDLOG_ERROR("Invalid key {}", key);
         return dynamic_cast<T*>(assets[key].get());
     }
 
     template <class T>
     T* GetAsset(const char* key) {
         if (!assets.count(key))
-            spdlog::error("Invalid key {}", key);
+            SPDLOG_ERROR("Invalid key {}", key);
         return dynamic_cast<T*>(assets[key].get());
     }
 
     template <class T>
     T* GetAsset(char* key) {
         if (!assets.count(key))
-            spdlog::error("Invalid key {}", key);
+            SPDLOG_ERROR("Invalid key {}", key);
         return dynamic_cast<T*>(assets[key].get());
     }
 

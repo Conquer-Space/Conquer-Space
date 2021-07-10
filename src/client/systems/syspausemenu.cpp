@@ -3,8 +3,6 @@
 */
 #include "client/systems/syspausemenu.h"
 
-#include <spdlog/spdlog.h>
-
 #include "client/scenes/universescene.h"
 #include "client/systems/sysoptionswindow.h"
 #include "common/version.h"

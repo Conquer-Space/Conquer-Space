@@ -8,10 +8,10 @@
 
 #include <spdlog/spdlog.h>
 
-
 #include <memory>
 #include <utility>
 #include <string>
+#include <map>
 
 #include "client/clientoptions.h"
 
@@ -151,6 +151,7 @@ class Application {
 
     void GlInit();
     void LoggerInit();
+    void LogInfo();
     /*
      * Intializes glfw and imgui.
      */

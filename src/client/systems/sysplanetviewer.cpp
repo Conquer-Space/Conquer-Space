@@ -72,7 +72,7 @@ void conquerspace::client::systems::SysPlanetInformation::DoUpdate(int delta_tim
                 mouse_over == selected_planet && !conquerspace::scene::IsGameHalted() &&
                 !GetApp().MouseDragged()) {
         to_see = true;
-        spdlog::info("Switched entity");
+        SPDLOG_INFO("Switched entity");
     }
 }
 
@@ -301,7 +301,7 @@ void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel
 
                 if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
                     // See city
-                    spdlog::info("Mouse clicked");
+                    SPDLOG_INFO("Mouse clicked");
                 }
             }
 

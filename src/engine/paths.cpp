@@ -1,11 +1,14 @@
+/*
+ * Copyright 2021 Conquer Space
+ */
 #include "engine/paths.h"
 
 #include <filesystem>
 
 #ifdef _WIN32
 #include <windows.h>
-#include <iostream>
 #include <shlobj.h>
+#include <iostream>
 #endif
 #ifdef __linux__
 #include <unistd.h>

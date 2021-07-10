@@ -3,7 +3,6 @@
 */
 #include "client/scenes/mainmenuscene.h"
 
-#include <spdlog/spdlog.h>
 #include <imgui_markdown.h>
 
 #include <utility>

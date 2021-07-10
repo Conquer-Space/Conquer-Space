@@ -20,7 +20,7 @@ void conquerspace::asset::LoadFont(Font &font, unsigned char *fontBuffer,
     FT_Library ft;
     // All functions return a value different than 0 whenever an error occurred
     if (FT_Init_FreeType(&ft)) {
-        spdlog::info("Cannot load freetype library");
+        SPDLOG_INFO("Cannot load freetype library");
     }
 
     // Create a face from a memory buffer.  Be sure not to delete the memory
@@ -29,7 +29,7 @@ void conquerspace::asset::LoadFont(Font &font, unsigned char *fontBuffer,
     FT_Face face;
     int id = -12;
     if ((id = FT_New_Memory_Face(ft, fontBuffer, size, 0, &face))) {
-        spdlog::info("Cannot load font: {}", id);
+        SPDLOG_INFO("Cannot load font: {}", id);
         return;
     }
 
@@ -44,7 +44,7 @@ void conquerspace::asset::LoadFont(Font &font, unsigned char *fontBuffer,
     for (unsigned char c = 0; c < 128; c++) {
         // Load character glyph
         if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
-            spdlog::info("No character {}", c);
+            SPDLOG_WARN("Freetype does not have character {}", c);
             continue;
         }
         // generate texture

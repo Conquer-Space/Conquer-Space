@@ -24,7 +24,7 @@ conquerspace::scene::LoadingScene::LoadingScene(
 
 void conquerspace::scene::LoadingScene::Init() {
     auto loading = [&]() {
-        spdlog::info("Loading resources");
+        SPDLOG_INFO("Loading resources");
         LoadResources();
     };
 
@@ -68,7 +68,7 @@ void conquerspace::scene::LoadingScene::LoadResources() {
     assetLoader.manager = &GetApp().GetAssetManager();
     assetLoader.LoadAssets(assetLibrary);
 
-    spdlog::info("Done loading items");
+    SPDLOG_INFO("Done loading items");
     m_done_loading = true;
 }
 

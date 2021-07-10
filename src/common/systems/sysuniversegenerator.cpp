@@ -4,6 +4,7 @@
 #include "common/systems/sysuniversegenerator.h"
 
 #include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include <string>
 
 #include <boost/random.hpp>
@@ -21,6 +22,7 @@
 #include "common/components/area.h"
 #include "common/components/resource.h"
 
+
 void conquerspace::common::systems::universegenerator::IScriptUniverseGenerator::Generate(
     conquerspace::common::components::Universe& universe) {
     namespace cqspb = conquerspace::common::components::bodies;
@@ -32,17 +34,18 @@ void conquerspace::common::systems::universegenerator::IScriptUniverseGenerator:
         universe.emplace<cqspb::StarSystem>(ent);
         return ent;
      });
-
+    // Create lua logger
+    auto lua_logger = spdlog::stdout_color_mt("lua");
     // Set print functions
     lua.set_function("print", sol::overload(
-    [] (const char * y) {
-        spdlog::info("*[lua]: {}", y);
+    [&] (const char * y) {
+        SPDLOG_LOGGER_INFO(lua_logger, "{}", y);
     },
-    [](int y) {
-        spdlog::info("*[lua]: {}", y);
+    [&](int y) {
+        SPDLOG_LOGGER_INFO(lua_logger, "{}", y);
     },
-    [](double y) {
-        spdlog::info("*[lua]: {}", y);
+    [&](double y) {
+        SPDLOG_LOGGER_INFO(lua_logger, "{}", y);
     }));
 
     // RNG
