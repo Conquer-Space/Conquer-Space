@@ -21,6 +21,7 @@
 #include "common/universe.h"
 #include "engine/gui.h"
 #include "engine/renderer/text.h"
+#include "common/scripting/scripting.h"
 
 namespace conquerspace {
 namespace engine {
@@ -104,6 +105,9 @@ class Application {
     ImGui::MarkdownConfig markdownConfig;
 
     conquerspace::common::components::Universe& GetUniverse() { return m_universe; }
+    conquerspace::scripting::ScriptInterface& GetScriptInterface() {
+        return m_script_interface;
+    }
 
     bool ButtonIsHeld(int btn) { return m_keys_held[btn]; }
     bool ButtonIsReleased(int btn) { return m_keys_released[btn]; }
@@ -205,6 +209,8 @@ class Application {
     conquerspace::asset::ShaderProgram* fontShader = nullptr;
 
     std::map<std::string, std::string> properties;
+
+    conquerspace::scripting::ScriptInterface m_script_interface;
 };
 }  // namespace engine
 }  // namespace conquerspace

@@ -14,6 +14,7 @@
 #include "engine/assetmanager.h"
 #include "client/scenes/mainmenuscene.h"
 #include "engine/gui.h"
+#include "common/scripting/scripting.h"
 
 conquerspace::scene::LoadingScene::LoadingScene(
     conquerspace::engine::Application& app)
@@ -37,11 +38,9 @@ void conquerspace::scene::LoadingScene::Update(float deltaTime) {
         assetLoader.BuildNextAsset();
     }
     if (m_done_loading && !assetLoader.QueueHasItems()) {
-        // Done!
-
         // Load font after all the shaders are done
-
         LoadFont();
+        // Set main menu scene
         GetApp().SetScene<conquerspace::scene::MainMenuScene>();
     }
 }
@@ -67,6 +66,9 @@ void conquerspace::scene::LoadingScene::LoadResources() {
 
     assetLoader.manager = &GetApp().GetAssetManager();
     assetLoader.LoadAssets(assetLibrary);
+
+    GetApp().GetScriptInterface().RegisterDataGroup("generators");
+    GetApp().GetScriptInterface().RunScript(GetApp().GetAssetManager().GetAsset<conquerspace::asset::TextAsset>("defaultgen")->data);
 
     SPDLOG_INFO("Done loading items");
     m_done_loading = true;

@@ -61,32 +61,8 @@
             type: vert
         }
     }
-    universegenutilities: {
-        path: scripts/universegen/utilities.lua
-        type: text
-        hints: {
-        }
-    }
-    defaultuniversegen: {
-        path: scripts/universegen/defaultuniversegen.hjson
-        type: hjson
-        hints: {
-        }
-    }
-    civgenscript: {
-        path: scripts/universegen/civilization_init.lua
-        type: text
-        hints: {
-        }
-    }
-    universegenscript: {
-        path: scripts/universegen/default.lua
-        type: text
-        hints: {
-        }
-    }
-    civsysteminit: {
-        path: scripts/universegen/planet_initializer.lua
+    defaultgen: {
+        path: scripts/defaultgen.lua
         type: text
         hints: {
         }

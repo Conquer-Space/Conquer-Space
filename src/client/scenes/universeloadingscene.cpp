@@ -114,26 +114,7 @@ void conquerspace::scene::UniverseLoadingScene::LoadUniverse() {
     LoadRecipes(GetApp());
 
     // Load universe
-    conquerspace::common::systems::universegenerator::IScriptUniverseGenerator script_generator;
-    // Initialze scripts
-    cqspa::HjsonAsset* default_gen =
-            GetApp().GetAssetManager().GetAsset<cqspa::HjsonAsset>("defaultuniversegen");
-    for (int i = 0; i < default_gen->data["utility"].size(); i++) {
-        std::string utility_script_name = default_gen->data[i];
-        cqspa::TextAsset* utility_script =
-            GetApp().GetAssetManager().GetAsset<cqspa::TextAsset>(utility_script_name);
-        script_generator.AddUtility(utility_script->data);
-    }
-    cqspa::TextAsset* civ_gen_script =
-            GetApp().GetAssetManager().GetAsset<cqspa::TextAsset>(default_gen->data["civ-gen"]);
-    script_generator.SetCivGen(civ_gen_script->data);
-    cqspa::TextAsset* universe_gen_script =
-            GetApp().GetAssetManager().
-            GetAsset<cqspa::TextAsset>(default_gen->data["universe-gen"]);
-    script_generator.SetGalaxyGenerator(universe_gen_script->data);
-    cqspa::TextAsset* civ_init_script =
-            GetApp().GetAssetManager().GetAsset<cqspa::TextAsset>(default_gen->data["civ-system"]);
-    script_generator.SetCivInitializer(civ_init_script->data);
+    conquerspace::common::systems::universegenerator::ScriptUniverseGenerator script_generator(GetApp().GetScriptInterface());
 
     script_generator.Generate(GetApp().GetUniverse());
     m_completed_loading = true;

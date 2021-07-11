@@ -6,9 +6,8 @@
 #include <string>
 #include <vector>
 
-#include <sol/sol.hpp>
-
 #include "common/universe.h"
+#include "common/scripting/scripting.h"
 
 namespace conquerspace {
 namespace common {
@@ -20,30 +19,13 @@ class ISysUniverseGenerator {
     virtual void Generate(conquerspace::common::components::Universe& universe) = 0;
 };
 
-class IScriptUniverseGenerator : public ISysUniverseGenerator {
+class ScriptUniverseGenerator : public ISysUniverseGenerator {
  public:
-    IScriptUniverseGenerator() {
-        // Load the scripts
-        // Initialize lua environment
-        lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::table);
-    }
+    ScriptUniverseGenerator(conquerspace::scripting::ScriptInterface& _interface) : script_engine(_interface){}
     void Generate(conquerspace::common::components::Universe& universe);
 
-    void AddUtility(const std::string&);
-    void SetCivGen(const std::string&);
-    void SetGalaxyGenerator(const std::string&);
-    void SetCivInitializer(const std::string&);
  private:
-    sol::state lua;
-    // Lua scripts
-    std::vector<sol::load_result> utility;
-
-    // Generates civilizations
-    sol::load_result civ_gen;
-    sol::load_result galaxy_generator;
-
-    // Initializes planets of civilizations
-    sol::load_result civ_initializer;
+    conquerspace::scripting::ScriptInterface& script_engine;
 };
 
 }  // namespace universegenerator

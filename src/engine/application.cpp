@@ -56,6 +56,8 @@ int conquerspace::engine::Application::init() {
 
     std::shared_ptr<Scene> initial_scene = std::make_shared<EmptyScene>(*this);
     m_scene_manager.SetInitialScene(initial_scene);
+
+    m_script_interface.Init();
     return 0;
 }
 
