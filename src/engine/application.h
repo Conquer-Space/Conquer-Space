@@ -104,9 +104,9 @@ class Application {
 
     ImGui::MarkdownConfig markdownConfig;
 
-    conquerspace::common::components::Universe& GetUniverse() { return m_universe; }
+    conquerspace::common::components::Universe& GetUniverse() { return *m_universe; }
     conquerspace::scripting::ScriptInterface& GetScriptInterface() {
-        return m_script_interface;
+        return *m_script_interface;
     }
 
     bool ButtonIsHeld(int btn) { return m_keys_held[btn]; }
@@ -185,7 +185,7 @@ class Application {
 
     conquerspace::asset::AssetManager manager;
 
-    conquerspace::common::components::Universe m_universe;
+    std::unique_ptr<conquerspace::common::components::Universe> m_universe;
 
     double m_mouse_x;
     double m_mouse_y;
@@ -210,7 +210,7 @@ class Application {
 
     std::map<std::string, std::string> properties;
 
-    conquerspace::scripting::ScriptInterface m_script_interface;
+    std::unique_ptr<conquerspace::scripting::ScriptInterface> m_script_interface;
 };
 }  // namespace engine
 }  // namespace conquerspace

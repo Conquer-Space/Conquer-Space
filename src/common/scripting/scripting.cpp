@@ -14,13 +14,15 @@ ScriptInterface::ScriptInterface() {
     open_libraries(sol::lib::base, sol::lib::table, sol::lib::math);
 }
 
-void ScriptInterface::RunScript(std::string_view str) {
-    sol::protected_function_result result = do_string(str);
+void ScriptInterface::ParseResult(sol::protected_function_result& result) {
     if (!result.valid()) {
         sol::error err = result;
         std::string what = err.what();
         SPDLOG_LOGGER_INFO(lua_logger, "{}", what);
     }
+}
+void ScriptInterface::RunScript(std::string_view str) {
+    ParseResult(do_string(str));
 }
 
 void ScriptInterface::RegisterDataGroup(std::string_view name) {
@@ -46,7 +48,7 @@ void ScriptInterface::Init() {
         },
         [&](double y) {
             SPDLOG_LOGGER_INFO(lua_logger, "{}", y);
-        }));
+    }));
 }
 
 int ScriptInterface::GetLength(std::string_view a) {

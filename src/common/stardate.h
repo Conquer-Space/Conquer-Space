@@ -13,7 +13,7 @@ class StarDate {
     int GetDate() { return date; }
 
  private:
-    unsigned int date = 0;
+    unsigned int date = -1;
 };
 }  // namespace components
 }  // namespace common

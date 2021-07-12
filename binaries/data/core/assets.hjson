@@ -62,9 +62,29 @@
         }
     }
     defaultgen: {
-        path: scripts/defaultgen.lua
+        path: scripts/universegen/defaultgen.lua
         type: text
         hints: {
+        }
+    }
+    defaultevent: {
+        path: scripts/events/default.lua
+        type: text
+        hints: {
+        }
+    }
+    eventimage: {
+        path: gfx/event2.png
+        type: texture
+        hints: {
+            magfilter: false
+        }
+    }
+    eventimage2: {
+        path: gfx/fleetevent.jpg
+        type: texture
+        hints: {
+            magfilter: false
         }
     }
     objectvert: {

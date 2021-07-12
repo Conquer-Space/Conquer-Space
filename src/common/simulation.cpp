@@ -9,11 +9,56 @@
 #include "common/components/name.h"
 #include "common/components/resource.h"
 #include "common/util/profiler.h"
+#include "common/components/event.h"
+#include "common/components/organizations.h"
+#include "common/components/player.h"
+
+conquerspace::common::systems::simulation::Simulation::Simulation(
+    conquerspace::common::components::Universe &_universe,
+    scripting::ScriptInterface &script_interface)
+    : m_universe(_universe), script_runner(_universe, script_interface) {
+    // Register functions
+    script_interface.set_function("event_player", [&](sol::table event_table) {
+        sol::table action_list = event_table["actions"];
+        std::string name = action_list[1]["name"];
+        auto view = m_universe.view<conquerspace::common::components::Player>();
+        for (auto b : view) {
+            auto& queue = m_universe.get_or_emplace<event::EventQueue>(b);
+            auto event = std::make_shared<event::Event>();
+            event->title = event_table["title"];
+            event->content = event_table["content"];
+            event->image = event_table["image"];
+            //event.table = event_table;
+            sol::optional<std::vector<sol::table>> optional = event_table["actions"];
+
+            for(auto& action : *optional) {
+                auto event_result = std::make_shared<event::EventResult>();
+                event_result->name = action["name"];
+                sol::optional<std::string> tooltip = action["tooltip"];
+                if (tooltip) {
+                    event_result->tooltip = *tooltip;
+                }
+
+                event->table = event_table;
+                sol::function f = action["action"];
+                event_result->action = f;
+                event->actions.push_back(event_result);
+            }
+            queue.events.push_back(event);
+        }
+    });
+}
 
 void conquerspace::common::systems::simulation::Simulation::tick() {
     m_universe.DisableTick();
+    m_universe.date.IncrementDate();
     // Get previous tick spacing
     namespace cqspc = conquerspace::common::components;
+
+
+    BEGIN_TIMED_BLOCK(ScriptEngine);
+    this->script_runner.ScriptEngine();
+    END_TIMED_BLOCK(ScriptEngine);
 
     BEGIN_TIMED_BLOCK(Resource_Gen);
 
@@ -106,6 +151,4 @@ void conquerspace::common::systems::simulation::Simulation::tick() {
         }
     }
     END_TIMED_BLOCK(Resource_Consume);
-
-    m_universe.date.IncrementDate();
 }
