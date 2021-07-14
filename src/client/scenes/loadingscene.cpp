@@ -68,10 +68,12 @@ void conquerspace::scene::LoadingScene::LoadResources() {
     assetLoader.LoadAssets(assetLibrary);
 
     GetApp().GetScriptInterface().RegisterDataGroup("generators");
-    GetApp().GetScriptInterface().RunScript(GetApp().GetAssetManager().GetAsset<conquerspace::asset::TextAsset>("defaultgen")->data);
+    GetApp().GetScriptInterface().RunScript(GetApp().GetAssetManager().
+                                    GetAsset<conquerspace::asset::TextAsset>("defaultgen")->data);
 
     GetApp().GetScriptInterface().RegisterDataGroup("events");
-    GetApp().GetScriptInterface().RunScript(GetApp().GetAssetManager().GetAsset<conquerspace::asset::TextAsset>("defaultevent")->data);
+    GetApp().GetScriptInterface().RunScript(GetApp().GetAssetManager().
+                                    GetAsset<conquerspace::asset::TextAsset>("defaultevent")->data);
     SPDLOG_INFO("Done loading items");
     m_done_loading = true;
 }

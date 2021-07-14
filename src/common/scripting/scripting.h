@@ -1,12 +1,16 @@
+/*
+ * Copyright 2021 Conquer Space
+ */
 #pragma once
 
-#include <sol/sol.hpp>
 #include <string_view>
+
+#include <sol/sol.hpp>
 
 namespace conquerspace {
 namespace scripting {
 class ScriptInterface : public sol::state {
-   public:
+ public:
     using sol::state::state;
     ScriptInterface();
     void RunScript(std::string_view str);
@@ -14,11 +18,6 @@ class ScriptInterface : public sol::state {
     void RegisterDataGroup(std::string_view name);
     void Init();
     int GetLength(std::string_view);
-
-    ~ScriptInterface(){
-        printf("Destroying sol2");
-    }
-   private:
 };
 }  // namespace scripting
 }  // namespace conquerspace

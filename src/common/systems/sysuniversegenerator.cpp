@@ -87,7 +87,8 @@ void conquerspace::common::systems::universegenerator::ScriptUniverseGenerator::
         return civ;
     });
 
-    script_engine.set_function("set_civilization_planet", [&] (entt::entity civ, entt::entity planet) {
+    script_engine.set_function("set_civilization_planet",
+                                                [&] (entt::entity civ, entt::entity planet) {
         universe.emplace<cqspc::Civilization>(civ, planet);
     });
 
@@ -111,7 +112,8 @@ void conquerspace::common::systems::universegenerator::ScriptUniverseGenerator::
         return settlement;
     });
 
-    script_engine.set_function("add_population_segment", [&] (entt::entity settlement, uint64_t popsize) {
+    script_engine.set_function("add_population_segment",
+                                                [&](entt::entity settlement, uint64_t popsize) {
         entt::entity population = universe.create();
         universe.emplace<cqspc::PopulationSegment>(population, popsize);
         // Add to planet list
@@ -121,11 +123,11 @@ void conquerspace::common::systems::universegenerator::ScriptUniverseGenerator::
     });
 
     // Configure the population
-    script_engine.set_function("set_name", [&] (entt::entity entity, std::string name) {
+    script_engine.set_function("set_name", [&](entt::entity entity, std::string name) {
         universe.emplace_or_replace<cqspc::Name>(entity, name);
     });
 
-    script_engine.set_function("create_industries", [&] (entt::entity city) {
+    script_engine.set_function("create_industries", [&](entt::entity city) {
         universe.emplace<cqspc::Industry>(city);
     });
 
@@ -148,8 +150,8 @@ void conquerspace::common::systems::universegenerator::ScriptUniverseGenerator::
         return factory;
      });
 
-    script_engine.set_function("create_mine", [&](entt::entity city, entt::entity resource, int amount,
-                                                                            float productivity) {
+    script_engine.set_function("create_mine", [&](entt::entity city, entt::entity resource,
+                                                            int amount, float productivity) {
         entt::entity mine = universe.create();
         auto& gen = universe.emplace<cqspc::ResourceGenerator>(mine);
         universe.emplace<cqspc::Mine>(mine);

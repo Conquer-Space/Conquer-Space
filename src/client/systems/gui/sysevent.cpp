@@ -1,12 +1,16 @@
-#include "sysevent.h"
+/*
+ * Copyright 2021 Conquer Space
+ */
+#include "client/systems/gui/sysevent.h"
+
+#include <memory>
+#include <string>
 
 #include "common/components/player.h"
 
 void conquerspace::client::systems::gui::SysEvent::Init() {
     GetApp().markdownConfig.tooltipCallback = [](ImGui::MarkdownTooltipCallbackData conf) {
         ImGui::BeginTooltip();
-        ImGui::Text("hihi");
-        ImGui::Text("hihi2");
         ImGui::Text(std::string(conf.linkData.link, conf.linkData.linkLength).c_str());
         ImGui::EndTooltip();
     };
@@ -14,7 +18,8 @@ void conquerspace::client::systems::gui::SysEvent::Init() {
 
 void conquerspace::client::systems::gui::SysEvent::DoUI(int delta_time) {
     auto events =
-        GetApp().GetUniverse().view<conquerspace::common::components::Player, conquerspace::common::event::EventQueue>();
+        GetApp().GetUniverse().view<conquerspace::common::components::Player,
+                                            conquerspace::common::event::EventQueue>();
     for (auto& [ent, queue] : events.each()) {
         if (queue.events.empty()) {
             continue;
@@ -29,7 +34,9 @@ void conquerspace::client::systems::gui::SysEvent::DoUI(int delta_time) {
                      ImGuiWindowFlags_NoCollapse | window_flags |
                          ImGuiWindowFlags_NoScrollbar |
                          ImGuiWindowFlags_AlwaysAutoResize);
-        ImGui::Image((void*)GetApp().GetAssetManager().GetAsset<asset::Texture>(env->image)->id, ImVec2(450, 150));
+        ImGui::Image(reinterpret_cast<void*>(GetApp().GetAssetManager().
+                                                        GetAsset<asset::Texture>(env->image)->id),
+                                                        ImVec2(450, 150));
         ImGui::Separator();
         ImGui::BeginChild("eventchild", ImVec2(-FLT_MIN, 150), false,
                           window_flags);

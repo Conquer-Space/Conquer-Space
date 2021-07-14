@@ -1,4 +1,9 @@
+/*
+ * Copyright 2021 Conquer Space
+ */
 #pragma once
+
+#include <vector>
 
 #include "common/scripting/scripting.h"
 #include "common/universe.h"
@@ -17,6 +22,6 @@ class SysEventScriptRunner {
     conquerspace::common::components::Universe& universe;
     std::vector<sol::table> events;
 };
-}
+}  // namespace systems
 }  // namespace common
 }  // namespace conquerspace

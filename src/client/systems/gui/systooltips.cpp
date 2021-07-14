@@ -1,4 +1,7 @@
-#include "systooltips.h"
+/*
+ * Copyright 2021 Conquer Space
+ */
+#include "client/systems/gui/systooltips.h"
 
 #include "common/components/name.h"
 #include "common/components/surface.h"

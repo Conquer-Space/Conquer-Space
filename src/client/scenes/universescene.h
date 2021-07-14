@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <memory>
+#include <utility>
 
 #include "client/systems/sysstarsystemrenderer.h"
 #include "client/systems/sysgui.h"

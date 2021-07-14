@@ -114,7 +114,8 @@ void conquerspace::scene::UniverseLoadingScene::LoadUniverse() {
     LoadRecipes(GetApp());
 
     // Load universe
-    conquerspace::common::systems::universegenerator::ScriptUniverseGenerator script_generator(GetApp().GetScriptInterface());
+    conquerspace::common::systems::universegenerator::ScriptUniverseGenerator
+                                                    script_generator(GetApp().GetScriptInterface());
 
     script_generator.Generate(GetApp().GetUniverse());
     m_completed_loading = true;

@@ -1,3 +1,6 @@
+/*
+ * Copyright 2021 Conquer Space
+ */
 #pragma once
 
 #include "client/systems/sysgui.h"
@@ -8,7 +11,7 @@ namespace client {
 namespace systems {
 namespace gui {
 class SysEvent : public SysUserInterface {
-   public:
+ public:
     explicit SysEvent(conquerspace::engine::Application& app)
         : SysUserInterface(app) {}
 

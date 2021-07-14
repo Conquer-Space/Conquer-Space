@@ -21,7 +21,8 @@ class ISysUniverseGenerator {
 
 class ScriptUniverseGenerator : public ISysUniverseGenerator {
  public:
-    ScriptUniverseGenerator(conquerspace::scripting::ScriptInterface& _interface) : script_engine(_interface){}
+    explicit ScriptUniverseGenerator(conquerspace::scripting::ScriptInterface& _interface) :
+                                                                  script_engine(_interface) {}
     void Generate(conquerspace::common::components::Universe& universe);
 
  private:

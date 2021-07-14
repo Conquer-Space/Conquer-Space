@@ -1,6 +1,12 @@
-#include "scriptrunner.h"
+/*
+ * Copyright 2021 Conquer Space
+ */
+#include "common/systems/scriptrunner.h"
 
 #include <spdlog/spdlog.h>
+
+#include <vector>
+#include <string>
 
 conquerspace::common::systems::SysEventScriptRunner::SysEventScriptRunner(
     conquerspace::common::components::Universe &_universe,

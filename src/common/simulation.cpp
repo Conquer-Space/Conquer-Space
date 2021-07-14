@@ -5,6 +5,10 @@
 
 #include <spdlog/spdlog.h>
 
+#include <vector>
+#include <memory>
+#include <string>
+
 #include "common/components/area.h"
 #include "common/components/name.h"
 #include "common/components/resource.h"
@@ -28,10 +32,9 @@ conquerspace::common::systems::simulation::Simulation::Simulation(
             event->title = event_table["title"];
             event->content = event_table["content"];
             event->image = event_table["image"];
-            //event.table = event_table;
             sol::optional<std::vector<sol::table>> optional = event_table["actions"];
 
-            for(auto& action : *optional) {
+            for (auto& action : *optional) {
                 auto event_result = std::make_shared<event::EventResult>();
                 event_result->name = action["name"];
                 sol::optional<std::string> tooltip = action["tooltip"];

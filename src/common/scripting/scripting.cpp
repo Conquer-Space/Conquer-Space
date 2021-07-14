@@ -1,10 +1,15 @@
-#include "scripting.h"
+/*
+ * Copyright 2021 Conquer Space
+ */
+#include "common/scripting/scripting.h"
 
-#include <iostream>
-#include <fmt/format.h>
 
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <fmt/format.h>
+
+#include <string>
+#include <iostream>
 
 auto lua_logger = spdlog::stdout_color_mt("lua");
 

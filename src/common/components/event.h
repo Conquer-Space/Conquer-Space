@@ -1,7 +1,12 @@
+/*
+ * Copyright 2021 Conquer Space
+ */
 #pragma once
 
 #include <string>
 #include <vector>
+#include <memory>
+
 #include <sol/sol.hpp>
 
 namespace conquerspace {
@@ -23,6 +28,6 @@ struct Event {
 struct EventQueue {
     std::vector<std::shared_ptr<Event>> events;
 };
-}
-}
-}
+}  // namespace event
+}  // namespace common
+}  // namespace conquerspace
