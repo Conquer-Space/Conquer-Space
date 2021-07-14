@@ -1,9 +1,4 @@
 # Copyright 2021 Conquer Space
-
-set(BOOST_ROOT "${CMAKE_SOURCE_DIR}/lib/win64/boost")
-find_package(Boost 1.65.0 REQUIRED)
-link_directories("${CMAKE_SOURCE_DIR}/lib/win64/boost/stage/lib")
-
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 include_directories(${Boost_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/lib/stb)

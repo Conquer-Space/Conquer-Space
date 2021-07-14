@@ -31,7 +31,7 @@ void conquerspace::scene::UniverseLoadingScene::Init() {
     };
 
     m_completed_loading = false;
-    thread = std::make_unique<boost::thread>(loading);
+    thread = std::make_unique<std::thread>(loading);
     thread->detach();
 }
 

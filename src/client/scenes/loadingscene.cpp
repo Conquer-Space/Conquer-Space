@@ -28,7 +28,7 @@ void conquerspace::scene::LoadingScene::Init() {
         LoadResources();
     };
 
-    thread = std::make_unique<boost::thread>(loading);
+    thread = std::make_unique<std::thread>(loading);
     thread->detach();
 }
 
