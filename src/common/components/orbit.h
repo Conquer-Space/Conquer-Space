@@ -3,7 +3,6 @@
 */
 #pragma once
 
-#include <boost/math/constants/constants.hpp>
 #include <entt/entt.hpp>
 
 #include "common/components/units.h"
@@ -53,11 +52,11 @@ struct PolarCoordinate {
 };
 
 inline types::radian toRadian(types::degree theta) {
-    return theta * (boost::math::constants::pi<double>() / 180);
+    return theta * (conquerspace::common::components::types::PI / 180);
 }
 
 inline types::degree toDegree(types::radian theta) {
-    return theta * (180 / boost::math::constants::pi<double>());
+    return theta * (180 / conquerspace::common::components::types::PI);
 }
 
 inline Vec2 toVec2(const PolarCoordinate& coordinate) {

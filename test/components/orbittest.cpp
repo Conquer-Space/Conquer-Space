@@ -49,23 +49,23 @@ TEST(Common_OrbitTest, toVec2Test) {
 }
 
 TEST(Common_OrbitTest, ToRadianTest) {
+    namespace cqspt = conquerspace::common::components::types;
     namespace cqspb = conquerspace::common::components::bodies;
-    namespace boostc = boost::math::constants;
-    EXPECT_DOUBLE_EQ(boostc::pi<double>()/2, cqspb::toRadian(90));
-    EXPECT_DOUBLE_EQ(boostc::pi<double>(), cqspb::toRadian(180));
-    EXPECT_DOUBLE_EQ(boostc::pi<double>() * 2.f, cqspb::toRadian(360));
-    EXPECT_DOUBLE_EQ(boostc::pi<double>()/6, cqspb::toRadian(30));
-    EXPECT_DOUBLE_EQ(boostc::pi<double>()/3, cqspb::toRadian(60));
-    EXPECT_DOUBLE_EQ(boostc::pi<double>()/4, cqspb::toRadian(45));
+    EXPECT_DOUBLE_EQ(cqspt::PI/2, cqspb::toRadian(90));
+    EXPECT_DOUBLE_EQ(cqspt::PI, cqspb::toRadian(180));
+    EXPECT_DOUBLE_EQ(cqspt::PI * 2.f, cqspb::toRadian(360));
+    EXPECT_DOUBLE_EQ(cqspt::PI/6, cqspb::toRadian(30));
+    EXPECT_DOUBLE_EQ(cqspt::PI/3, cqspb::toRadian(60));
+    EXPECT_DOUBLE_EQ(cqspt::PI/4, cqspb::toRadian(45));
 }
 
 TEST(Common_OrbitTest, ToDegreeTest) {
     namespace cqspb = conquerspace::common::components::bodies;
-    namespace boostc = boost::math::constants;
-    EXPECT_DOUBLE_EQ(30, cqspb::toDegree(boostc::pi<double>()/6));
-    EXPECT_DOUBLE_EQ(45, cqspb::toDegree(boostc::pi<double>()/4));
-    EXPECT_DOUBLE_EQ(60, cqspb::toDegree(boostc::pi<double>()/3));
-    EXPECT_DOUBLE_EQ(90, cqspb::toDegree(boostc::pi<double>()/2));
-    EXPECT_DOUBLE_EQ(180, cqspb::toDegree(boostc::pi<double>()));
-    EXPECT_DOUBLE_EQ(360, cqspb::toDegree(boostc::pi<double>()*2));
+    namespace cqspt = conquerspace::common::components::types;
+    EXPECT_DOUBLE_EQ(30, cqspb::toDegree(cqspt::PI/6));
+    EXPECT_DOUBLE_EQ(45, cqspb::toDegree(cqspt::PI/4));
+    EXPECT_DOUBLE_EQ(60, cqspb::toDegree(cqspt::PI/3));
+    EXPECT_DOUBLE_EQ(90, cqspb::toDegree(cqspt::PI/2));
+    EXPECT_DOUBLE_EQ(180, cqspb::toDegree(cqspt::PI));
+    EXPECT_DOUBLE_EQ(360, cqspb::toDegree(cqspt::PI*2));
 }

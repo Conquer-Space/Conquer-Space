@@ -5,8 +5,8 @@
 
 #include <memory>
 
-#include <boost/atomic.hpp>
-#include <boost/thread.hpp>
+#include <atomic>
+#include <thread>
 
 #include "engine/scene.h"
 
@@ -23,8 +23,8 @@ class UniverseLoadingScene : public conquerspace::engine::Scene {
     void Render(float deltaTime);
 
  private:
-    boost::atomic<bool> m_done_loading;
-    std::unique_ptr<boost::thread> thread;
+    std::atomic<bool> m_done_loading;
+    std::unique_ptr<std::thread> thread;
 
     void LoadUniverse();
 
