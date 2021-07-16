@@ -6,15 +6,16 @@ add_subdirectory(hjson-cpp)
 
 add_subdirectory(fmt)
 
-set(SPDLOG_FMT_EXTERNAL ON)
+set(SPDLOG_FMT_EXTERNAL ON CACHE BOOL "" FORCE)
 add_subdirectory(spdlog)
 
 add_subdirectory(glm)
 
+if (TESTS)
 add_subdirectory(googletest)
 
 set_target_properties(gmock gmock_main gtest_main gtest PROPERTIES FOLDER "GoogleTest")
-
+endif()
 # Add lua
 add_subdirectory(LuaJIT-cmake)
 

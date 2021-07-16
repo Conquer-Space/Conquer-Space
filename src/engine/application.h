@@ -76,8 +76,8 @@ class Application {
     */
     void run();
 
-    client::ProgramOptions& GetClientOptions() {
-        return m_program_options;
+    client::ClientOptions& GetClientOptions() {
+        return m_client_options;
     }
 
     int GetWindowHeight() const { return m_window_height; }
@@ -173,7 +173,7 @@ class Application {
 
     SceneManager m_scene_manager;
 
-    client::ProgramOptions m_program_options;
+    client::ClientOptions m_client_options;
 
     double fps;
 

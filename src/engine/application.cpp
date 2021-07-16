@@ -77,27 +77,27 @@ int conquerspace::engine::Application::destroy() {
 
     SPDLOG_INFO("Killed GLFW");
     // Save options
-    std::ofstream config_path(m_program_options.GetDefaultLocation(), std::ios::trunc);
-    m_program_options.WriteOptions(config_path);
+    std::ofstream config_path(m_client_options.GetDefaultLocation(), std::ios::trunc);
+    m_client_options.WriteOptions(config_path);
     spdlog::shutdown();
     return 0;
 }
 
 conquerspace::engine::Application::Application() {
-    std::ifstream config_path(m_program_options.GetDefaultLocation());
+    std::ifstream config_path(m_client_options.GetDefaultLocation());
     if (config_path.good()) {
-        m_program_options.LoadOptions(config_path);
+        m_client_options.LoadOptions(config_path);
     } else {
-        m_program_options.LoadDefaultOptions();
+        m_client_options.LoadDefaultOptions();
     }
-    Hjson::Value window_dimensions = m_program_options.GetOptions()["window"];
+    Hjson::Value window_dimensions = m_client_options.GetOptions()["window"];
     m_window_width = window_dimensions["width"];
     m_window_height = window_dimensions["height"];
 
     // Set icon path
-    icon_path = m_program_options.GetOptions()["icon"].to_string();
+    icon_path = m_client_options.GetOptions()["icon"].to_string();
 
-    full_screen = static_cast<bool>(m_program_options.GetOptions()["full_screen"]);
+    full_screen = static_cast<bool>(m_client_options.GetOptions()["full_screen"]);
 }
 
 void conquerspace::engine::Application::run() {

@@ -10,7 +10,7 @@
 
 namespace conquerspace {
 namespace client {
-class ProgramOptions {
+class ClientOptions {
  public:
      void LoadOptions(std::istream& stream);
      void WriteOptions(std::ostream& stream);
@@ -18,8 +18,6 @@ class ProgramOptions {
      void LoadDefaultOptions();
 
      Hjson::Value& GetOptions() { return options; }
-
-     void CommandLineOptions(int argc, char* argv[]);
 
      Hjson::Value GetDefaultOptions();
 
