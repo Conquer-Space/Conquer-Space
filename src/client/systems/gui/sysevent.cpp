@@ -50,15 +50,19 @@ void conquerspace::client::systems::gui::SysEvent::DoUI(int delta_time) {
         } else {
             int pressed = -1;
             int i = 0;
-            for (auto& action_results : env->actions) {
+            for (auto& action_result : env->actions) {
                 i++;
-                if (ImGui::Button(action_results->name.c_str(), ImVec2(-FLT_MIN, 0))) {
+                if (ImGui::Button(action_result->name.c_str(), ImVec2(-FLT_MIN, 0))) {
                     pressed = i;
-                    GetApp().GetScriptInterface().ParseResult(action_results->action(env->table));
+                    // Check if it has an event
+                    if (action_result->has_event) {
+                        GetApp().GetScriptInterface()
+                                    .ParseResult(action_result->action(env->table));
+                    }
                 }
-                if (ImGui::IsItemHovered() && !action_results->tooltip.empty()) {
+                if (ImGui::IsItemHovered() && !action_result->tooltip.empty()) {
                     ImGui::BeginTooltip();
-                    ImGui::Text(action_results->tooltip.c_str());
+                    ImGui::Text(action_result->tooltip.c_str());
                     ImGui::EndTooltip();
                 }
             }

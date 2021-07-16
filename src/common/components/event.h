@@ -16,6 +16,7 @@ struct EventResult {
     std::string name;
     std::string tooltip;
     sol::function action;
+    bool has_event;
 };
 
 struct Event {

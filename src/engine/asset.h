@@ -6,6 +6,7 @@
 #include <hjson.h>
 
 #include <string>
+#include <vector>
 
 namespace conquerspace {
 namespace asset {
@@ -18,6 +19,11 @@ class Asset {
 class TextAsset : public Asset {
  public:
     std::string data;
+};
+
+class TextDirectoryAsset : public Asset {
+ public:
+    std::vector<std::string> data;
 };
 
 class HjsonAsset : public Asset {

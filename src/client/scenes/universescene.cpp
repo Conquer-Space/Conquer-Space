@@ -74,6 +74,7 @@ void conquerspace::scene::UniverseScene::Init() {
     AddUISystem<conquerspace::client::systems::SysPauseMenu>();
     AddUISystem<conquerspace::client::systems::SysDebugMenu>();
     AddUISystem<conquerspace::client::systems::gui::SysEvent>();
+    simulation->tick();
 }
 
 void conquerspace::scene::UniverseScene::Update(float deltaTime) {

@@ -27,7 +27,7 @@
 namespace conquerspace {
 namespace asset {
 
-enum class AssetType { NONE, TEXTURE, SHADER, HJSON, TEXT, MODEL, FONT, CUBEMAP };
+enum class AssetType { NONE, TEXTURE, SHADER, HJSON, TEXT, MODEL, FONT, CUBEMAP, TEXT_ARRAY };
 enum PrototypeType { NONE = 0, TEXTURE, SHADER, FONT, CUBEMAP };
 
 class Prototype {
@@ -159,8 +159,10 @@ class AssetLoader {
                                       Hjson::Value& hints);
     std::unique_ptr<HjsonAsset> LoadHjson(std::istream &asset_stream,
                                       Hjson::Value& hints);
+    std::unique_ptr<TextDirectoryAsset> LoadTextDirectory(std::string name, Hjson::Value& hints);
     void LoadHjson(std::istream &asset_stream, Hjson::Value& value,
                                       Hjson::Value& hints);
+    void LoadHjsonDir(std::string& path, Hjson::Value& value, Hjson::Value& hints);
     // Load singular asset
     void LoadAsset(std::string&, std::string&, std::string&, Hjson::Value&);
     void LoadImage(std::string& key, std::string& filePath, Hjson::Value& hints);

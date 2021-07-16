@@ -394,7 +394,7 @@ void conquerspace::engine::Application::LoggerInit() {
 #endif
     logger = std::make_shared<spdlog::logger>("application", sinks.begin(), sinks.end());
     spdlog::set_default_logger(logger);
-    spdlog::set_pattern("[%T.%e] [%^%l%$] [%s:%#] %v");
+    spdlog::set_pattern("[%T.%e] [%^%l%$] [%n] [%s:%#] %v");
 }
 
 void conquerspace::engine::Application::LogInfo() {

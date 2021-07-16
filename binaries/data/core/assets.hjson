@@ -68,8 +68,8 @@
         }
     }
     defaultevent: {
-        path: scripts/events/default.lua
-        type: text
+        path: scripts/events
+        type: directory
         hints: {
         }
     }

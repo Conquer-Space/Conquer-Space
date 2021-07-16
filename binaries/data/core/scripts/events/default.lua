@@ -30,7 +30,6 @@ function test_event:on_tick()
         self.evented = true
     end
     if date % 30 == 0 and self.choice > -1 then
-        print("Choice")
         event_player({
             id = "republic_event",
             image = "eventimage2",

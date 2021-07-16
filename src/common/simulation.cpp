@@ -23,29 +23,35 @@ conquerspace::common::systems::simulation::Simulation::Simulation(
     : m_universe(_universe), script_runner(_universe, script_interface) {
     // Register functions
     script_interface.set_function("event_player", [&](sol::table event_table) {
-        sol::table action_list = event_table["actions"];
-        std::string name = action_list[1]["name"];
         auto view = m_universe.view<conquerspace::common::components::Player>();
         for (auto b : view) {
             auto& queue = m_universe.get_or_emplace<event::EventQueue>(b);
             auto event = std::make_shared<event::Event>();
             event->title = event_table["title"];
+            SPDLOG_INFO("Parsing event \"{}\"", event->title);
             event->content = event_table["content"];
             event->image = event_table["image"];
             sol::optional<std::vector<sol::table>> optional = event_table["actions"];
+            if (optional) {
+                for (auto &action : *optional) {
+                    if (action == sol::nil) {
+                        continue;
+                    }
+                    auto event_result = std::make_shared<event::EventResult>();
+                    event_result->name = action["name"];
+                    sol::optional<std::string> tooltip = action["tooltip"];
+                    if (tooltip) {
+                        event_result->tooltip = *tooltip;
+                    }
 
-            for (auto& action : *optional) {
-                auto event_result = std::make_shared<event::EventResult>();
-                event_result->name = action["name"];
-                sol::optional<std::string> tooltip = action["tooltip"];
-                if (tooltip) {
-                    event_result->tooltip = *tooltip;
+                    event->table = event_table;
+                    sol::optional<sol::function> f = action["action"];
+                    event_result->has_event = f.has_value();
+                    if (f) {
+                        event_result->action = *f;
+                    }
+                    event->actions.push_back(event_result);
                 }
-
-                event->table = event_table;
-                sol::function f = action["action"];
-                event_result->action = f;
-                event->actions.push_back(event_result);
             }
             queue.events.push_back(event);
         }
