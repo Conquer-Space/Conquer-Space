@@ -6,6 +6,7 @@
 #include <string>
 
 #include "client/systems/sysstarsystemrenderer.h"
+#include "client/systems/gui/systooltips.h"
 #include "client/scenes/universescene.h"
 #include "common/components/bodies.h"
 #include "common/components/name.h"
@@ -32,15 +33,15 @@ void conquerspace::client::systems::SysStarSystemTree::DoUI(int delta_time) {
     entt::entity current_planet = conquerspace::scene::GetCurrentViewingPlanet(GetApp());
     for (auto entity : star_system.bodies) {
         bool is_selected = (entity == current_planet);
-        std::string star_system_name = fmt::format("{}", entity);
+        std::string planet_name = fmt::format("{}", entity);
         if (GetApp().GetUniverse().all_of<conquerspace::common::components::Name>(entity)) {
-            star_system_name = fmt::format(
+            planet_name = fmt::format(
                         "{}", GetApp().GetUniverse()
                         .get<conquerspace::common::components::Name>(entity)
                         .name);
         }
 
-        if (ImGui::Selectable(star_system_name.c_str(),
+        if (ImGui::Selectable(planet_name.c_str(),
                         is_selected, ImGuiSelectableFlags_AllowDoubleClick)) {
             // Selected object
             selected_index = index;
@@ -49,6 +50,7 @@ void conquerspace::client::systems::SysStarSystemTree::DoUI(int delta_time) {
                 conquerspace::scene::SeePlanet(GetApp(), entity);
             }
         }
+        gui::EntityTooltip(entity, GetApp().GetUniverse());
         index++;
     }
     ImGui::End();

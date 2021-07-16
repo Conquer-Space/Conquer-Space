@@ -23,46 +23,33 @@
 #include "common/components/resource.h"
 
 
-void conquerspace::common::systems::universegenerator::IScriptUniverseGenerator::Generate(
+void conquerspace::common::systems::universegenerator::ScriptUniverseGenerator::Generate(
     conquerspace::common::components::Universe& universe) {
     namespace cqspb = conquerspace::common::components::bodies;
     namespace cqspc = conquerspace::common::components;
 
     // Init civilization script
-    lua.set_function("create_star_system", [&] () {
+    script_engine.set_function("create_star_system", [&] () {
         entt::entity ent = universe.create();
         universe.emplace<cqspb::StarSystem>(ent);
         return ent;
      });
-    // Create lua logger
-    auto lua_logger = spdlog::stdout_color_mt("lua");
-    // Set print functions
-    lua.set_function("print", sol::overload(
-    [&] (const char * y) {
-        SPDLOG_LOGGER_INFO(lua_logger, "{}", y);
-    },
-    [&](int y) {
-        SPDLOG_LOGGER_INFO(lua_logger, "{}", y);
-    },
-    [&](double y) {
-        SPDLOG_LOGGER_INFO(lua_logger, "{}", y);
-    }));
 
     // RNG
     boost::mt19937 gen;
-    lua.set_function("random", [&gen] (int low, int high) {
+    script_engine.set_function("random", [&gen] (int low, int high) {
         boost::random::uniform_int_distribution<> dist(low, high);
         return dist(gen);
     });
 
-    lua.set_function("random_normal_int", [&gen] (int mean, int sd) {
+    script_engine.set_function("random_normal_int", [&gen] (int mean, int sd) {
         boost::normal_distribution<> nd(mean, sd);
         boost::variate_generator<boost::mt19937&,
                            boost::normal_distribution<> > var_nor(gen, nd);
         return static_cast<int>(round(var_nor()));
     });
 
-    lua.set_function("add_planet", [&] (entt::entity system) {
+    script_engine.set_function("add_planet", [&] (entt::entity system) {
         entt::entity planet = universe.create();
         auto& body = universe.emplace<cqspb::Body>(planet);
         body.star_system = system;
@@ -71,7 +58,7 @@ void conquerspace::common::systems::universegenerator::IScriptUniverseGenerator:
         return planet;
     });
 
-    lua.set_function("add_star", [&] (entt::entity system) {
+    script_engine.set_function("add_star", [&] (entt::entity system) {
         entt::entity star = universe.create();
         universe.emplace<cqspb::Star>(star);
         auto& body = universe.emplace<cqspb::Body>(star);
@@ -83,40 +70,41 @@ void conquerspace::common::systems::universegenerator::IScriptUniverseGenerator:
         return star;
     });
 
-    lua.set_function("set_orbit", [&] (entt::entity body, double distance, double theta,
+    script_engine.set_function("set_orbit", [&] (entt::entity body, double distance, double theta,
                                             double eccentricity, double argument) {
         cqspb::Orbit orb = universe.emplace<cqspb::Orbit>(body, theta, distance, eccentricity,
                                                                     argument);
     });
 
-    lua.set_function("set_radius", [&] (entt::entity body, int radius) {
+    script_engine.set_function("set_radius", [&] (entt::entity body, int radius) {
         cqspb::Body &bod = universe.get<cqspb::Body>(body);
         bod.radius = radius;
     });
 
-    lua.set_function("add_civilization", [&] () {
+    script_engine.set_function("add_civilization", [&] () {
         entt::entity civ = universe.create();
         universe.emplace<cqspc::Organization>(civ);
         return civ;
     });
 
-    lua.set_function("set_civilization_planet", [&] (entt::entity civ, entt::entity planet) {
+    script_engine.set_function("set_civilization_planet",
+                                                [&] (entt::entity civ, entt::entity planet) {
         universe.emplace<cqspc::Civilization>(civ, planet);
     });
 
-    lua.set_function("get_civilization_planet", [&] (entt::entity civ) {
+    script_engine.set_function("get_civilization_planet", [&] (entt::entity civ) {
         return universe.get<cqspc::Civilization>(civ).starting_planet;
     });
 
-    lua.set_function("is_player", [&] (entt::entity civ) {
+    script_engine.set_function("is_player", [&] (entt::entity civ) {
         return static_cast<bool>(universe.all_of<cqspc::Player>(civ));
     });
 
-    lua.set_function("add_planet_habitation", [&] (entt::entity planet) {
+    script_engine.set_function("add_planet_habitation", [&] (entt::entity planet) {
         universe.emplace<cqspc::Habitation>(planet);
     });
 
-    lua.set_function("add_planet_settlement", [&] (entt::entity planet) {
+    script_engine.set_function("add_planet_settlement", [&] (entt::entity planet) {
         entt::entity settlement = universe.create();
         universe.emplace<cqspc::Settlement>(settlement);
         // Add to planet list
@@ -124,7 +112,8 @@ void conquerspace::common::systems::universegenerator::IScriptUniverseGenerator:
         return settlement;
     });
 
-    lua.set_function("add_population_segment", [&] (entt::entity settlement, uint64_t popsize) {
+    script_engine.set_function("add_population_segment",
+                                                [&](entt::entity settlement, uint64_t popsize) {
         entt::entity population = universe.create();
         universe.emplace<cqspc::PopulationSegment>(population, popsize);
         // Add to planet list
@@ -134,15 +123,15 @@ void conquerspace::common::systems::universegenerator::IScriptUniverseGenerator:
     });
 
     // Configure the population
-    lua.set_function("set_name", [&] (entt::entity entity, std::string name) {
+    script_engine.set_function("set_name", [&](entt::entity entity, std::string name) {
         universe.emplace_or_replace<cqspc::Name>(entity, name);
     });
 
-    lua.set_function("create_industries", [&] (entt::entity city) {
+    script_engine.set_function("create_industries", [&](entt::entity city) {
         universe.emplace<cqspc::Industry>(city);
     });
 
-    lua.set_function("create_factory", [&](entt::entity city, entt::entity recipe,
+    script_engine.set_function("create_factory", [&](entt::entity city, entt::entity recipe,
                                                                             float productivity) {
         entt::entity factory = universe.create();
         auto& gen = universe.emplace<cqspc::ResourceConverter>(factory);
@@ -161,8 +150,8 @@ void conquerspace::common::systems::universegenerator::IScriptUniverseGenerator:
         return factory;
      });
 
-    lua.set_function("create_mine", [&](entt::entity city, entt::entity resource, int amount,
-                                                                            float productivity) {
+    script_engine.set_function("create_mine", [&](entt::entity city, entt::entity resource,
+                                                            int amount, float productivity) {
         entt::entity mine = universe.create();
         auto& gen = universe.emplace<cqspc::ResourceGenerator>(mine);
         universe.emplace<cqspc::Mine>(mine);
@@ -178,22 +167,12 @@ void conquerspace::common::systems::universegenerator::IScriptUniverseGenerator:
         return mine;
     });
 
-    lua.set_function("create_terrain", [&](entt::entity planet, int seed) {
+    script_engine.set_function("create_terrain", [&](entt::entity planet, int seed) {
         universe.emplace<cqspb::Terrain>(planet, seed);
     });
 
-    lua["goods"] = universe.goods;
-    lua["recipes"] = universe.recipes;
-
-    // Load and run utility scripts
-    for (int i = 0; i < utility.size(); i++) {
-        sol::protected_function_result res = utility[i]();
-        if (!res.valid()) {
-            sol::error err = res;
-            std::string what = err.what();
-            spdlog::info("*[lua]: {}", what);
-        }
-    }
+    script_engine["goods"] = universe.goods;
+    script_engine["recipes"] = universe.recipes;
 
     // Create player
     auto player = universe.create();
@@ -205,58 +184,14 @@ void conquerspace::common::systems::universegenerator::IScriptUniverseGenerator:
         universe.emplace<cqspc::Organization>(civ);
     }
 
-    // Loop through each civilization
-    auto civilizationView = universe.view<cqspc::Organization>();
-
-    for (auto a : civilizationView) {
-        lua.set("civ", a);
-        sol::protected_function_result res = civ_gen();
-        if (!res.valid()) {
-            sol::error err = res;
-            std::string what = err.what();
-            spdlog::info("*[lua]: {}", what);
+    sol::optional<sol::table> generator = script_engine["generators"]["data"][1];
+    if (generator) {
+        (*generator)["civ_init"]();
+        script_engine["civilizations"] = sol::as_table(universe.view<cqspc::Organization>());
+        (*generator)["universe_gen"]();
+        auto view = universe.view<cqspc::Organization>();
+        for (auto ent : view) {
+            (*generator)["planets"](ent);
         }
     }
-    lua.set("civilizations", sol::as_table(civilizationView));
-
-    // Generate galaxy
-    sol::protected_function_result result = galaxy_generator();
-    if (!result.valid()) {
-        sol::error err = result;
-        std::string what = err.what();
-        spdlog::info("*[lua]: {}", what);
-    }
-
-    // Now add civilizations
-    for (auto ent : civilizationView.each()) {
-        lua.set("civilization_id", ent);
-        // Initialize, etc
-        sol::protected_function_result result = civ_initializer();
-        if (!result.valid()) {
-            // aww
-            sol::error err = result;
-            std::string what = err.what();
-            spdlog::info("*[lua]: {}", what);
-        }
-    }
-}
-
-void conquerspace::common::systems::universegenerator::
-    IScriptUniverseGenerator::AddUtility(const std::string& code) {
-    utility.push_back(lua.load(code));
-}
-
-void conquerspace::common::systems::universegenerator::
-    IScriptUniverseGenerator::SetCivGen(const std::string& code) {
-    civ_gen = lua.load(code);
-}
-
-void conquerspace::common::systems::universegenerator::
-    IScriptUniverseGenerator::SetGalaxyGenerator(const std::string& code) {
-    galaxy_generator = lua.load(code);
-}
-
-void conquerspace::common::systems::universegenerator::
-    IScriptUniverseGenerator::SetCivInitializer(const std::string& code) {
-    civ_initializer = lua.load(code);
 }

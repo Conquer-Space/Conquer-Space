@@ -61,34 +61,30 @@
             type: vert
         }
     }
-    universegenutilities: {
-        path: scripts/universegen/utilities.lua
+    defaultgen: {
+        path: scripts/universegen/defaultgen.lua
         type: text
         hints: {
         }
     }
-    defaultuniversegen: {
-        path: scripts/universegen/defaultuniversegen.hjson
-        type: hjson
+    defaultevent: {
+        path: scripts/events
+        type: directory
         hints: {
         }
     }
-    civgenscript: {
-        path: scripts/universegen/civilization_init.lua
-        type: text
+    eventimage: {
+        path: gfx/event2.png
+        type: texture
         hints: {
+            magfilter: false
         }
     }
-    universegenscript: {
-        path: scripts/universegen/default.lua
-        type: text
+    eventimage2: {
+        path: gfx/fleetevent.jpg
+        type: texture
         hints: {
-        }
-    }
-    civsysteminit: {
-        path: scripts/universegen/planet_initializer.lua
-        type: text
-        hints: {
+            magfilter: false
         }
     }
     objectvert: {

@@ -56,10 +56,17 @@ int conquerspace::engine::Application::init() {
 
     std::shared_ptr<Scene> initial_scene = std::make_shared<EmptyScene>(*this);
     m_scene_manager.SetInitialScene(initial_scene);
+
+    m_script_interface =
+        std::make_unique<conquerspace::scripting::ScriptInterface>();
+    m_universe = std::make_unique<conquerspace::common::components::Universe>();
+    m_script_interface->Init();
     return 0;
 }
 
 int conquerspace::engine::Application::destroy() {
+    m_universe.reset();
+    m_script_interface.reset();
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImPlot::DestroyContext();
@@ -387,7 +394,7 @@ void conquerspace::engine::Application::LoggerInit() {
 #endif
     logger = std::make_shared<spdlog::logger>("application", sinks.begin(), sinks.end());
     spdlog::set_default_logger(logger);
-    spdlog::set_pattern("[%T.%e] [%^%l%$] [%s:%#] %v");
+    spdlog::set_pattern("[%T.%e] [%^%l%$] [%n] [%s:%#] %v");
 }
 
 void conquerspace::engine::Application::LogInfo() {
@@ -418,13 +425,11 @@ void conquerspace::engine::Application::SetFullScreen(bool screen) {
     }
 }
 
-void conquerspace::engine::SceneManager::SetInitialScene(
-    std::shared_ptr<Scene>& scene) {
+void conquerspace::engine::SceneManager::SetInitialScene(std::shared_ptr<Scene>& scene) {
     m_scene = std::move(scene);
 }
 
-void conquerspace::engine::SceneManager::SetScene(
-    std::shared_ptr<Scene>& scene) {
+void conquerspace::engine::SceneManager::SetScene(std::shared_ptr<Scene>& scene) {
     m_next_scene = std::move(scene);
     m_switch = true;
 }

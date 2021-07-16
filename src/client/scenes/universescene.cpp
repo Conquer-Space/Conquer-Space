@@ -32,6 +32,7 @@
 #include "client/systems/sysstarsystemtree.h"
 #include "client/systems/syspausemenu.h"
 #include "client/systems/sysdebuggui.h"
+#include "client/systems/gui/sysevent.h"
 
 bool game_halted = false;
 
@@ -41,7 +42,8 @@ conquerspace::scene::UniverseScene::UniverseScene(
 void conquerspace::scene::UniverseScene::Init() {
     namespace cqspb = conquerspace::common::components::bodies;
     namespace cqspco = conquerspace::common;
-    simulation = new cqspco::systems::simulation::Simulation(GetApp().GetUniverse());
+    simulation = std::make_shared<cqspco::systems::simulation::Simulation>
+                                        (GetApp().GetUniverse(), GetApp().GetScriptInterface());
 
     system_renderer = new conquerspace::client::systems::SysStarSystemRenderer(
         GetApp().GetUniverse(), GetApp());
@@ -71,6 +73,8 @@ void conquerspace::scene::UniverseScene::Init() {
     AddUISystem<conquerspace::client::systems::SysStarSystemTree>();
     AddUISystem<conquerspace::client::systems::SysPauseMenu>();
     AddUISystem<conquerspace::client::systems::SysDebugMenu>();
+    AddUISystem<conquerspace::client::systems::gui::SysEvent>();
+    simulation->tick();
 }
 
 void conquerspace::scene::UniverseScene::Update(float deltaTime) {

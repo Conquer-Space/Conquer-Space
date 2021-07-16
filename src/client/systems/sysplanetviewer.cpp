@@ -11,6 +11,7 @@
 
 #include "client/systems/sysstarsystemrenderer.h"
 #include "client/scenes/universescene.h"
+#include "client/systems/gui/systooltips.h"
 
 #include "common/components/area.h"
 #include "common/components/bodies.h"
@@ -301,13 +302,10 @@ void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel
 
                 if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
                     // See city
-                    SPDLOG_INFO("Mouse clicked");
+                    SPDLOG_TRACE("Mouse clicked");
                 }
             }
-
-            if (ImGui::IsItemActive() || ImGui::IsItemHovered()) {
-                ImGui::SetTooltip(fmt::format("{}", name).c_str());
-            }
+            gui::EntityTooltip(e, GetApp().GetUniverse());
         }
         ImGui::EndChild();
     }

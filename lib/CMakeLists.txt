@@ -4,6 +4,9 @@ add_subdirectory(entt)
 
 add_subdirectory(hjson-cpp)
 
+add_subdirectory(fmt)
+
+set(SPDLOG_FMT_EXTERNAL ON)
 add_subdirectory(spdlog)
 
 add_subdirectory(glm)
@@ -21,8 +24,6 @@ add_subdirectory(sol2)
 set_target_properties(buildvm liblua-shared lua-static lua liblua-static minilua PROPERTIES FOLDER "Lua")
 
 add_subdirectory(freetype)
-
-add_subdirectory(fmt)
 
 add_subdirectory(libnoise)
 
