@@ -11,6 +11,16 @@ add_subdirectory(spdlog)
 
 add_subdirectory(glm)
 
+set(ALSOFT_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(ALSOFT_UTILS OFF CACHE BOOL "" FORCE)
+set(ALSOFT_INSTALL_UTILS OFF CACHE BOOL "" FORCE)
+set(ALSOFT_INSTALL_CONFIG OFF CACHE BOOL "" FORCE)
+set(ALSOFT_UPDATE_BUILD_VERSION OFF CACHE BOOL "" FORCE)
+set(LIBTYPE "STATIC" CACHE BOOL "" FORCE)
+set(OPENAL_LIBRARY "(${CMAKE_SOURCE_DIR}/lib/openal-soft")
+set(OPENAL_INCLUDE_DIR "(${CMAKE_SOURCE_DIR}/lib/openal-soft/include")
+add_subdirectory(openal-soft)
+
 if (TESTS)
 add_subdirectory(googletest)
 
