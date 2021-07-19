@@ -12,6 +12,7 @@
 #include "client/systems/sysplanetterraingenerator.h"
 #include "common/universe.h"
 #include "engine/renderer/renderable.h"
+#include "engine/renderer/texturerenderer.h"
 #include "engine/renderer/renderer.h"
 #include "engine/application.h"
 
@@ -97,6 +98,10 @@ class SysStarSystemRenderer {
     bool terrain_complete = false, second_terrain_complete = false;
 
     TerrainImageGenerator final_image_generator, intermediate_image_generator;
+
+    engine::FramebufferRenderer buffer_renderer;
+    engine::FramebufferRenderer planet_renderer;
+    engine::FramebufferRenderer skybox_renderer;
 };
 }  // namespace systems
 }  // namespace client
