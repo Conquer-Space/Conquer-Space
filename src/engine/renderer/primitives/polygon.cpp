@@ -1,7 +1,7 @@
 /*
  * Copyright 2021 Conquer Space
 */
-#include "engine/renderer/primitives/circle.h"
+#include "engine/renderer/primitives/polygon.h"
 
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
@@ -24,7 +24,7 @@ void conquerspace::primitive::CreateFilledCircle(
 
     // Add texture coords
     for (int i = 0; i <= segments; i++) {
-        double theta = i * conquerspace::common::components::bodies::toRadian(360.f/segments);
+        double theta = i * conquerspace::common::components::types::toRadian(360.f/segments);
         double y = std::sin(theta);
         double x = std::cos(theta);
 
@@ -60,4 +60,13 @@ void conquerspace::primitive::CreateFilledCircle(
     mesh.RenderType = GL_TRIANGLE_FAN;
     mesh.indicies = segments+2;
     mesh.buffer_type = 0;
+}
+
+void conquerspace::primitive::CreateFilledTriangle(conquerspace::engine::Mesh& renderable) 
+{
+    conquerspace::primitive::CreateFilledCircle(renderable, 3);
+}
+void conquerspace::primitive::CreateFilledSquare(conquerspace::engine::Mesh& renderable)
+{
+    conquerspace::primitive::CreateFilledCircle(renderable, 4);
 }

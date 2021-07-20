@@ -16,6 +16,9 @@
 #include "common/components/event.h"
 #include "common/components/organizations.h"
 #include "common/components/player.h"
+#include "common/components/ships.h"
+#include "common/components/orbit.h"
+#include "common/components/units.h"
 
 conquerspace::common::systems::simulation::Simulation::Simulation(
     conquerspace::common::components::Universe &_universe,
@@ -63,6 +66,8 @@ void conquerspace::common::systems::simulation::Simulation::tick() {
     m_universe.date.IncrementDate();
     // Get previous tick spacing
     namespace cqspc = conquerspace::common::components;
+    namespace cqsps = conquerspace::common::components::ships;
+    namespace cqspt = conquerspace::common::components::types;
 
 
     BEGIN_TIMED_BLOCK(ScriptEngine);
@@ -160,4 +165,12 @@ void conquerspace::common::systems::simulation::Simulation::tick() {
         }
     }
     END_TIMED_BLOCK(Resource_Consume);
+
+
+    BEGIN_TIMED_BLOCK(Orbit_Sim);
+    auto bodies = m_universe.view<cqspt::Orbit>();
+    for (entt::entity body : bodies) {
+        cqspt::updateOrbit(m_universe.get<cqspt::Orbit>(body));
+    }
+    END_TIMED_BLOCK(Orbit_Sim);
 }

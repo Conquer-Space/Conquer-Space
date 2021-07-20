@@ -62,6 +62,7 @@ class SysStarSystemRenderer {
     conquerspace::engine::Renderable planet;
     conquerspace::engine::Renderable sky;
     conquerspace::engine::Renderable planet_circle;
+    conquerspace::engine::Renderable ship_overlay;
     conquerspace::engine::Renderable sun;
 
     glm::vec3 cam_pos;
@@ -72,7 +73,9 @@ class SysStarSystemRenderer {
 
     float circle_size = 0.01f;
 
+    void DrawEntityName(glm::vec3 &object_pos, entt::entity ent_id);
     void DrawPlanetIcon(glm::vec3 &object_pos);
+    void DrawShipIcon(glm::vec3 &object_pos);
     void DrawPlanet(glm::vec3 &object_pos);
     void DrawStar(glm::vec3 &object_pos);
     void DrawTerrainlessPlanet(glm::vec3 &object_pos);
