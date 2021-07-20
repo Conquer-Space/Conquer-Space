@@ -14,7 +14,7 @@
 #include "engine/renderer/primitives/uvsphere.h"
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/primitives/cube.h"
-#include "engine/renderer/primitives/circle.h"
+#include "engine/renderer/primitives/polygon.h"
 #include "engine/gui.h"
 
 #include "common/components/bodies.h"
@@ -128,6 +128,7 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
     if (GetApp().GetUniverse().ToTick() && !game_halted) {
         // Game tick
         simulation->tick();
+        system_renderer->OnTick();
     }
 
     GetApp().GetUniverse().clear<conquerspace::client::systems::MouseOverEntity>();

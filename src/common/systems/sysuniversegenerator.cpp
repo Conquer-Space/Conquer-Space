@@ -21,11 +21,14 @@
 #include "common/components/population.h"
 #include "common/components/area.h"
 #include "common/components/resource.h"
+#include "common/components/ships.h"
 
 
 void conquerspace::common::systems::universegenerator::ScriptUniverseGenerator::Generate(
     conquerspace::common::components::Universe& universe) {
     namespace cqspb = conquerspace::common::components::bodies;
+    namespace cqsps = conquerspace::common::components::ships;
+    namespace cqspt = conquerspace::common::components::types;
     namespace cqspc = conquerspace::common::components;
 
     // Init civilization script
@@ -70,10 +73,10 @@ void conquerspace::common::systems::universegenerator::ScriptUniverseGenerator::
         return star;
     });
 
-    script_engine.set_function("set_orbit", [&] (entt::entity body, double distance, double theta,
+    script_engine.set_function("set_orbit", [&] (entt::entity orbital_entity, double distance, double theta,
                                             double eccentricity, double argument) {
-        cqspb::Orbit orb = universe.emplace<cqspb::Orbit>(body, theta, distance, eccentricity,
-                                                                    argument);
+        cqspt::Orbit &orb = universe.emplace<cqspt::Orbit>(orbital_entity, theta, distance, eccentricity, argument, 40);
+        cqspt::findPeriod(orb);
     });
 
     script_engine.set_function("set_radius", [&] (entt::entity body, int radius) {
@@ -169,6 +172,18 @@ void conquerspace::common::systems::universegenerator::ScriptUniverseGenerator::
 
     script_engine.set_function("create_terrain", [&](entt::entity planet, int seed) {
         universe.emplace<cqspb::Terrain>(planet, seed);
+    });
+
+    script_engine.set_function("create_ship", [&](entt::entity civ, entt::entity orbit, entt::entity starsystem) 
+    {
+        entt::entity ship = universe.create();
+        universe.emplace<cqsps::Ship>(ship);
+        cqspt::Orbit orb = universe.get<cqspt::Orbit>(orbit);
+        cqspt::Orbit& orbship = universe.emplace<cqspt::Orbit>(
+            ship, orb.theta, orb.semiMajorAxis,
+                                           orb.eccentricity, orb.argument, 80);
+        universe.get<cqspb::StarSystem>(starsystem).bodies.push_back(ship);
+        cqspt::findPeriod(orbship);
     });
 
     script_engine["goods"] = universe.goods;

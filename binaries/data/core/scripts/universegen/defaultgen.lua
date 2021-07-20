@@ -34,7 +34,7 @@ generators:insert({
         
             -- Add star
             local star = add_star(sys)
-            set_orbit(star, 0, 0, 0, 0)
+            set_orbit(star, 0.001, 0, 0, 0)
             set_radius(star, random(1500000, 3000000))
         
             local planet_count = get_planet_count()
@@ -67,7 +67,7 @@ generators:insert({
         
             -- Add star
             local star = add_star(sys)
-            set_orbit(star, 0, 0, 0, 0)
+            set_orbit(star, 0.001, 0, 0, 0)
             set_radius(star, random(1500000, 3000000))
         
             local planet_count = random_normal_int(7, 2)
@@ -96,6 +96,7 @@ generators:insert({
                     -- Set as civ home planet
                     set_civilization_planet(civ, planet_entity)
                     set_name(planet_entity, "Earting")
+                    create_ship(civ, planet_entity, sys)
                 end
             end
         end
