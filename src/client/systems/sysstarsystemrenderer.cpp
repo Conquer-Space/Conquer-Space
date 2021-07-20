@@ -308,12 +308,10 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawEntityName(
         }
         buffer_renderer.EndDraw();
     }
-
 }
 
 
 void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanetIcon(glm::vec3 &object_pos) {
-
 
 
     glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
