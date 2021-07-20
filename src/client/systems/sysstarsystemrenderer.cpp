@@ -78,6 +78,11 @@ void conquerspace::client::systems::SysStarSystemRenderer::Initialize() {
     sun.mesh = sphere_mesh;
     sun.shaderProgram = star_shader;
 
+    overlay_renderer.InitTexture();
+    primitive::MakeTexturedPaneMesh(overlay_renderer.mesh_output, true);
+    overlay_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("framebuffervert", "framebufferfrag");
+    overlay_renderer.buffer_shader.setInt("screenTexture", 0);
+
     buffer_renderer.InitTexture();
     primitive::MakeTexturedPaneMesh(buffer_renderer.mesh_output, true);
     buffer_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("framebuffervert", "framebufferfrag");
@@ -111,6 +116,9 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     planet_renderer.BeginDraw();
     planet_renderer.Clear();
     planet_renderer.EndDraw();
+    overlay_renderer.BeginDraw();
+    overlay_renderer.Clear();
+    overlay_renderer.EndDraw();
 
     glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -202,8 +210,9 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     glDepthFunc(GL_LESS);
     skybox_renderer.EndDraw();
 
-    buffer_renderer.RenderBuffer();
+    overlay_renderer.RenderBuffer();
     planet_renderer.RenderBuffer();
+    buffer_renderer.RenderBuffer();
     skybox_renderer.RenderBuffer();
 }
 
@@ -325,6 +334,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanetIcon(glm::v
     planet_circle.shaderProgram->setMat4("projection", twodimproj);
 
     engine::Draw(planet_circle);
+    
     buffer_renderer.EndDraw();
 }
 
@@ -344,21 +354,21 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawShipIcon(
 
     shipDispMat = glm::scale(
         shipDispMat,
-        glm::vec3(circle_size * 2, circle_size * 2, circle_size * 2));
+        glm::vec3(circle_size, circle_size, circle_size));
 
     float window_ratio = GetWindowRatio();
     shipDispMat = glm::scale(shipDispMat, glm::vec3(1, window_ratio, 1));
     glm::mat4 twodimproj =
         glm::scale(glm::mat4(1.0f), glm::vec3(1, window_ratio, 1));
 
-    buffer_renderer.BeginDraw();
+    overlay_renderer.BeginDraw();
     twodimproj = glm::mat4(1.0f);
     ship_overlay.shaderProgram->UseProgram();
     ship_overlay.shaderProgram->setMat4("model", shipDispMat);
     ship_overlay.shaderProgram->setMat4("projection", twodimproj);
 
     engine::Draw(ship_overlay);
-    buffer_renderer.EndDraw();
+    overlay_renderer.EndDraw();
 }
 
 void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_pos) {

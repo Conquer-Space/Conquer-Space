@@ -103,6 +103,7 @@ class SysStarSystemRenderer {
 
     TerrainImageGenerator final_image_generator, intermediate_image_generator;
 
+    engine::FramebufferRenderer overlay_renderer;
     engine::FramebufferRenderer buffer_renderer;
     engine::FramebufferRenderer planet_renderer;
     engine::FramebufferRenderer skybox_renderer;
