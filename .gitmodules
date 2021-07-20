@@ -40,9 +40,6 @@
 [submodule "lib/libnoise"]
 	path = lib/libnoise
 	url = https://github.com/eXpl0it3r/libnoise
-[submodule "lib/freealut"]
-	path = lib/freealut
-	url = https://github.com/vancegroup/freealut
 [submodule "lib/openal-soft"]
 	path = lib/openal-soft
 	url = https://github.com/kcat/openal-soft

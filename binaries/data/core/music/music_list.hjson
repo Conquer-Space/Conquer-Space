@@ -1,0 +1,27 @@
+[
+  {
+    name: Starlight
+    composer: Nirekin Inc.
+    file: Starlight.ogg
+  }
+  {
+    name: Dark Times
+    composer: Kevin MacLeod
+    file: darktimes.ogg
+  }
+  {
+    name: Lost Time
+    composer: Kevin MacLeod
+    file: LostTime.ogg
+  }
+  {
+    name: Our Story Begins
+    composer: Kevin MacLeod
+    file: OurStoryBegins.ogg
+  }
+  {
+    name: Prelude In C
+    composer: Bach, arranged by Kevin MacLeod
+    file: PreludeInC.ogg
+  }
+]

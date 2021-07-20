@@ -17,7 +17,6 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/imgui)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
 include_directories(${GLFW3_INCLUDE_PATH})
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/backends)
-include_directories(${CMAKE_SOURCE_DIR}/lib/freealut/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/openal-soft/include)
 
 # Set source files

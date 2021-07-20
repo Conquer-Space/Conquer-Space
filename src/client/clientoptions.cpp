@@ -24,5 +24,6 @@ Hjson::Value conquerspace::client::ClientOptions::GetDefaultOptions() {
     default_options["window"]["height"] = 720;
     default_options["full_screen"] = false;
     default_options["icon"] = "icon.png";
+    default_options["audio"]["music"] = 1.0f;
     return default_options;
 }
