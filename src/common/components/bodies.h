@@ -35,7 +35,6 @@ struct LightEmitter {};
  */
 struct StarSystem {
     std::vector<entt::entity> bodies;
-    std::vector<entt::entity> ships;
 };
 }  // namespace bodies
 }  // namespace components

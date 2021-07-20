@@ -62,11 +62,9 @@ void conquerspace::primitive::CreateFilledCircle(
     mesh.buffer_type = 0;
 }
 
-void conquerspace::primitive::CreateFilledTriangle(conquerspace::engine::Mesh& renderable) 
-{
+void conquerspace::primitive::CreateFilledTriangle(conquerspace::engine::Mesh& renderable) {
     conquerspace::primitive::CreateFilledCircle(renderable, 3);
 }
-void conquerspace::primitive::CreateFilledSquare(conquerspace::engine::Mesh& renderable)
-{
+void conquerspace::primitive::CreateFilledSquare(conquerspace::engine::Mesh& renderable) {
     conquerspace::primitive::CreateFilledCircle(renderable, 4);
 }

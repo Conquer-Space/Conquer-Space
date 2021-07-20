@@ -38,6 +38,7 @@ class SysStarSystemRenderer {
     SysStarSystemRenderer(conquerspace::common::components::Universe &,
                           conquerspace::engine::Application &);
     void Initialize();
+    void OnTick();
     void Render();
     void SeeStarSystem(entt::entity);
     void SeeEntity();

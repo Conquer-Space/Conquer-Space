@@ -78,12 +78,10 @@ void conquerspace::client::systems::SysStarSystemRenderer::Initialize() {
     sun.mesh = sphere_mesh;
     sun.shaderProgram = star_shader;
 
-
     buffer_renderer.InitTexture();
     primitive::MakeTexturedPaneMesh(buffer_renderer.mesh_output, true);
     buffer_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("framebuffervert", "framebufferfrag");
     buffer_renderer.buffer_shader.setInt("screenTexture", 0);
-
 
     planet_renderer.InitTexture();
     primitive::MakeTexturedPaneMesh(planet_renderer.mesh_output, true);
@@ -94,6 +92,14 @@ void conquerspace::client::systems::SysStarSystemRenderer::Initialize() {
     primitive::MakeTexturedPaneMesh(skybox_renderer.mesh_output, true);
     skybox_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("framebuffervert", "framebufferfrag");
     skybox_renderer.buffer_shader.setInt("screenTexture", 0);
+}
+
+void conquerspace::client::systems::SysStarSystemRenderer::OnTick() {
+    entt::entity current_planet =
+        m_app.GetUniverse().view<RenderingPlanet>().front();
+    if (current_planet != entt::null) {
+        view_center = CalculateObjectPos(m_viewing_entity);
+    }
 }
 
 void conquerspace::client::systems::SysStarSystemRenderer::Render() {
@@ -114,8 +120,6 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
         m_viewing_entity = current_planet;
         // Do terrain
         SeeEntity();
-    } else if (current_planet != entt::null) {
-        //view_center = CalculateObjectPos(m_viewing_entity);
     }
 
     m_star_system  = m_app.GetUniverse().view<RenderingStarSystem>().front();
@@ -215,10 +219,6 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeStarSystem(
             // Add a tag
             m_universe.remove_if_exists<ToRender>(body);
         }
-        for (auto ship : star_system_component.ships) {
-            // Add a tag
-            m_universe.remove_if_exists<ToRender>(ship);
-        }
     }
 
     m_star_system = system;
@@ -227,10 +227,6 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeStarSystem(
     for (auto body : star_system_component.bodies) {
         // Add a tag
         m_universe.emplace_or_replace<ToRender>(body);
-    }
-    for (auto ship : star_system_component.ships) {
-        // Add a tag
-        m_universe.emplace_or_replace<ToRender>(ship);
     }
 }
 
@@ -282,32 +278,23 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity() {
 
 void conquerspace::client::systems::SysStarSystemRenderer::DrawEntityName(
     glm::vec3 &object_pos, entt::entity ent_id) {
-
-    if (m_app.GetUniverse().all_of<conquerspace::common::components::Name>(
-        ent_id)) {
-    std::string &name =
-        m_app.GetUniverse()
-            .get<conquerspace::common::components::Name>(ent_id)
-            .name;
-    glm::vec3 pos =
-        glm::project(object_pos, camera_matrix, projection, viewport);
-
+    using conquerspace::common::components::Name;
     buffer_renderer.BeginDraw();
-    if (pos.z >= 1 || pos.z <= -1) {
-    } else {
-        m_app.DrawText(name, pos.x, pos.y);
-    }
-    buffer_renderer.EndDraw();
+    if (m_app.GetUniverse().all_of<Name>(ent_id)) {
+        std::string &name = m_app.GetUniverse().get<Name>(ent_id).name;
+        glm::vec3 pos =
+            glm::project(object_pos, camera_matrix, projection, viewport);
+        if (!(pos.z >= 1 || pos.z <= -1)) {
+            m_app.DrawText(name, pos.x, pos.y);
+        }
     } else {
         glm::vec3 pos =
             glm::project(object_pos, camera_matrix, projection, viewport);
-        buffer_renderer.BeginDraw();
-        if (pos.z >= 1 || pos.z <= -1) {
-        } else {
+        if (!(pos.z >= 1 || pos.z <= -1)) {
             m_app.DrawText(fmt::format("{}", ent_id), pos.x, pos.y);
         }
-        buffer_renderer.EndDraw();
     }
+    buffer_renderer.EndDraw();
 }
 
 

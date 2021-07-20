@@ -128,7 +128,7 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
     if (GetApp().GetUniverse().ToTick() && !game_halted) {
         // Game tick
         simulation->tick();
-        system_renderer->SeeEntity();
+        system_renderer->OnTick();
     }
 
     GetApp().GetUniverse().clear<conquerspace::client::systems::MouseOverEntity>();
