@@ -1,9 +1,13 @@
+/*
+* Copyright 2021 Conquer Space
+*/
 #include "engine/audio/audiointerface.h"
 
-#include <chrono>
-
 #include <spdlog/sinks/stdout_color_sinks.h>
-#include <stb_vorbis.c>
+#include <stb_vorbis.h>
+
+#include <chrono>
+#include <string>
 
 namespace conquerspace::engine::audio {
 class ALAudioAsset : public AudioAsset {
@@ -25,7 +29,7 @@ class ALAudioAsset : public AudioAsset {
         alSourcef(source, AL_GAIN, gain);
     }
 
-    void SetPitch(float pitch){
+    void SetPitch(float pitch) {
         alSourcef(source, AL_PITCH, pitch);
     }
 
@@ -37,7 +41,7 @@ class ALAudioAsset : public AudioAsset {
         alSourcePlay(source);
     }
 
-    void Stop() { 
+    void Stop() {
         alSourceStop(source);
     }
 
@@ -53,7 +57,7 @@ class ALAudioAsset : public AudioAsset {
         alSourceRewind(source);
     }
 
-    bool IsPlaying() { 
+    bool IsPlaying() {
         ALint source_state;
         alGetSourcei(source, AL_SOURCE_STATE, &source_state);
         return (source_state == AL_PLAYING);
@@ -83,11 +87,14 @@ class ALAudioAsset : public AudioAsset {
 };
 }  // namespace conquerspace::engine::audio
 
-conquerspace::engine::audio::AudioInterface::AudioInterface() {
+using conquerspace::engine::audio::AudioInterface;
+using conquerspace::engine::audio::AudioAsset;
+
+AudioInterface::AudioInterface() {
     logger = spdlog::stdout_color_mt("audio");
 }
 
-void conquerspace::engine::audio::AudioInterface::Initialize() {
+void AudioInterface::Initialize() {
     SPDLOG_LOGGER_INFO(logger, "Intializing OpenAL");
     InitALContext();
     PrintInformation();
@@ -99,15 +106,15 @@ void conquerspace::engine::audio::AudioInterface::Initialize() {
     playlist_input >> Hjson::StreamDecoder(playlist, decOpt);
 }
 
-void conquerspace::engine::audio::AudioInterface::Pause(bool to_pause) {}
+void AudioInterface::Pause(bool to_pause) {}
 
-void conquerspace::engine::audio::AudioInterface::PauseMusic(bool to_pause) {}
+void AudioInterface::PauseMusic(bool to_pause) {}
 
-std::string conquerspace::engine::audio::AudioInterface::GetAudioVersion() {
+std::string AudioInterface::GetAudioVersion() {
     return std::string();
 }
 
-void conquerspace::engine::audio::AudioInterface::Destruct() {
+void AudioInterface::Destruct() {
     to_quit = true;
     worker_thread.join();
     SPDLOG_LOGGER_INFO(logger, "Killed OpenAL");
@@ -119,21 +126,20 @@ void conquerspace::engine::audio::AudioInterface::Destruct() {
     alcCloseDevice(device);
 }
 
-void conquerspace::engine::audio::AudioInterface::StartWorker() {
+void AudioInterface::StartWorker() {
     to_quit = false;
     // Worker thread
     worker_thread = std::thread([&]() {
-        srand(time(0));
-        // Play music
-        // Handle playlist
-        int selected_track = rand() % playlist.size();
+        // Play music, handle playlist
+        // Quickly inserted random algorithm to make linter happy.
+        int selected_track = (time(0) * 0x0000BC8F) % 0x7FFFFFFF % playlist.size();
         while (!to_quit) {
             // Choose random song from thing
             selected_track++;
             selected_track %= playlist.size();
             Hjson::Value track_info = playlist[selected_track];
             std::string track_file = "../data/core/music/" + track_info["file"];
-            SPDLOG_LOGGER_INFO(logger, "Loading track {}", track_info["name"]);
+            SPDLOG_LOGGER_INFO(logger, "Loading track \'{}\'", track_info["name"]);
             auto mfile = std::ifstream(track_file, std::ios::binary);
             if (mfile.good()) {
                 music = LoadOgg(mfile);
@@ -157,34 +163,33 @@ void conquerspace::engine::audio::AudioInterface::StartWorker() {
     });
 }
 
-void conquerspace::engine::audio::AudioInterface::RequestPlayAudio() {}
+void AudioInterface::RequestPlayAudio() {}
 
-void conquerspace::engine::audio::AudioInterface::SetMusicVolume(float volume) {
+void AudioInterface::SetMusicVolume(float volume) {
     if (music != nullptr) {
         music->SetGain(volume);
     }
     music_volume = volume;
 }
 
-using conquerspace::engine::audio::AudioAsset;
-
 inline bool isBigEndian() {
     int a = 1;
-    return !((char*)&a)[0];
+    return !(reinterpret_cast<char*>(&a))[0];
 }
 
 inline int convertToInt(char* buffer, int len) {
     int a = 0;
-    if (!isBigEndian())
-        for (int i = 0; i<len; i++)
-            ((char*)&a)[i] = buffer[i];
-    else
-        for (int i = 0; i<len; i++)
-            ((char*)&a)[3 - i] = buffer[i];
+    if (!isBigEndian()) {
+        for (int i = 0; i < len; i++)
+            (reinterpret_cast<char*>(&a))[i] = buffer[i];
+    } else {
+        for (int i = 0; i < len; i++)
+            (reinterpret_cast<char*>(&a))[3 - i] = buffer[i];
+    }
     return a;
 }
 
-inline ALenum to_al_format(short channels, short samples) {
+inline ALenum to_al_format(int16 channels, int16 samples) {
     bool stereo = (channels > 1);
 
     switch (samples) {
@@ -197,7 +202,7 @@ inline ALenum to_al_format(short channels, short samples) {
     }
 }
 
-std::unique_ptr<AudioAsset> conquerspace::engine::audio::AudioInterface::LoadWav(std::ifstream &in) {
+std::unique_ptr<AudioAsset> AudioInterface::LoadWav(std::ifstream &in) {
     auto audio_asset = std::make_unique<ALAudioAsset>();
     char buffer[4];
     in.read(buffer, 4);
@@ -205,10 +210,10 @@ std::unique_ptr<AudioAsset> conquerspace::engine::audio::AudioInterface::LoadWav
         // Not a valid file
     }
     in.read(buffer, 4);
-    in.read(buffer, 4);      //WAVE
-    in.read(buffer, 4);      //fmt
-    in.read(buffer, 4);      //16
-    in.read(buffer, 2);      //1
+    in.read(buffer, 4);      // WAVE
+    in.read(buffer, 4);      // fmt
+    in.read(buffer, 4);      // 16
+    in.read(buffer, 2);      // 1
     in.read(buffer, 2);
     int channels = convertToInt(buffer, 2);
     in.read(buffer, 4);
@@ -217,7 +222,7 @@ std::unique_ptr<AudioAsset> conquerspace::engine::audio::AudioInterface::LoadWav
     in.read(buffer, 2);
     in.read(buffer, 2);
     int frequency = convertToInt(buffer, 2);
-    in.read(buffer, 4);      //data
+    in.read(buffer, 4);      // data
     in.read(buffer, 4);
     int size = convertToInt(buffer, 4);
     char* data = new char[size];
@@ -233,22 +238,24 @@ std::unique_ptr<AudioAsset> conquerspace::engine::audio::AudioInterface::LoadWav
     return audio_asset;
 }
 
-std::unique_ptr<AudioAsset> conquerspace::engine::audio::AudioInterface::LoadOgg(std::ifstream& input) {
+std::unique_ptr<AudioAsset> AudioInterface::LoadOgg(std::ifstream& input) {
     // Read file
-    input.seekg (0, std::ios::end);
+    input.seekg(0, std::ios::end);
     std::streamsize size = input.tellg();
     input.seekg(0, std::ios::beg);
     char* data = new char[size];
     input.read(data, size);
 
     auto audio_asset = std::make_unique<ALAudioAsset>();
-    short* buffer;
+    int16* buffer;
     int channels;
     int sample_rate;
-    int numSamples = stb_vorbis_decode_memory((unsigned char*)(data), size, &channels, &sample_rate, &buffer);
+    int numSamples = stb_vorbis_decode_memory((unsigned char*)(data),
+                                size, &channels, &sample_rate, &buffer);
 
     ALenum format = channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
-    alBufferData(audio_asset->buffer, format, buffer, numSamples * channels * sizeof(short), sample_rate);
+    alBufferData(audio_asset->buffer, format, buffer,
+                                numSamples * channels * sizeof(int16), sample_rate);
     if (alGetError() != ALC_NO_ERROR) {
         spdlog::info("{}", alGetError());
     }
@@ -261,14 +268,14 @@ std::unique_ptr<AudioAsset> conquerspace::engine::audio::AudioInterface::LoadOgg
     return audio_asset;
 }
 
-void conquerspace::engine::audio::AudioInterface::PrintInformation() {
+void AudioInterface::PrintInformation() {
     // OpenAL information
     SPDLOG_LOGGER_INFO(logger, "OpenAL version: {}", alGetString(AL_VERSION));
     SPDLOG_LOGGER_INFO(logger, "OpenAL renderer: {}", alGetString(AL_RENDERER));
     SPDLOG_LOGGER_INFO(logger, "OpenAL vendor: {}", alGetString(AL_VENDOR));
 }
 
-void conquerspace::engine::audio::AudioInterface::InitListener() {
+void AudioInterface::InitListener() {
     // Set listener
     alListener3f(AL_POSITION, 0, 0, -0);
     alListener3f(AL_VELOCITY, 0, 0, 0);
@@ -276,7 +283,7 @@ void conquerspace::engine::audio::AudioInterface::InitListener() {
     alListenerfv(AL_ORIENTATION, listenerOri);
 }
 
-void conquerspace::engine::audio::AudioInterface::InitALContext() {
+void AudioInterface::InitALContext() {
     // Init devices
     enumeration = alcIsExtensionPresent(NULL, "ALC_ENUMERATION_EXT");
     if (enumeration == AL_FALSE) {

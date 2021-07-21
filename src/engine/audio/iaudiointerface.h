@@ -1,8 +1,11 @@
+/*
+ * Copyright 2021 Conquer Space
+ */
 #pragma once
 
-#include <string>
-
 #include <hjson.h>
+
+#include <string>
 
 namespace conquerspace {
 namespace engine {
@@ -18,6 +21,6 @@ class IAudioInterface {
     virtual void RequestPlayAudio() = 0;
     virtual void SetMusicVolume(float volume) = 0;
 };
-}
-}
-}
+}  // namespace audio
+}  // namespace engine
+}  // namespace conquerspace

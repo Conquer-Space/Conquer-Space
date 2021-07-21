@@ -1,6 +1,7 @@
+/*
+* Copyright 2021 Conquer Space
+*/
 #pragma once
-
-#include "engine/audio/iaudiointerface.h"
 
 #include <AL/al.h>
 #include <AL/alc.h>
@@ -10,8 +11,10 @@
 #include <thread>
 #include <atomic>
 #include <memory>
+#include <string>
 
 #include "engine/audio/audioasset.h"
+#include "engine/audio/iaudiointerface.h"
 
 namespace conquerspace {
 namespace engine {

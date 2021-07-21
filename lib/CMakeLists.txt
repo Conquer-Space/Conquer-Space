@@ -72,3 +72,6 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 add_library(libnoise-utils ${CMAKE_SOURCE_DIR}/lib/src/noiseutils.cpp)
 target_link_libraries(libnoise-utils PUBLIC libnoise)
 set_target_properties(ImGui PROPERTIES FOLDER "Libs")
+
+# Copy stb_vorbis header file
+configure_file(${CMAKE_SOURCE_DIR}/lib/stb/stb_vorbis.c ${CMAKE_SOURCE_DIR}/lib/include/stb_vorbis.h COPYONLY)
