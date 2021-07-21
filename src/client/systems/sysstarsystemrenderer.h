@@ -12,6 +12,7 @@
 #include "client/systems/sysplanetterraingenerator.h"
 #include "common/universe.h"
 #include "engine/renderer/renderable.h"
+#include "engine/renderer/texturerenderer.h"
 #include "engine/renderer/renderer.h"
 #include "engine/application.h"
 
@@ -37,6 +38,7 @@ class SysStarSystemRenderer {
     SysStarSystemRenderer(conquerspace::common::components::Universe &,
                           conquerspace::engine::Application &);
     void Initialize();
+    void OnTick();
     void Render();
     void SeeStarSystem(entt::entity);
     void SeeEntity();
@@ -61,6 +63,7 @@ class SysStarSystemRenderer {
     conquerspace::engine::Renderable planet;
     conquerspace::engine::Renderable sky;
     conquerspace::engine::Renderable planet_circle;
+    conquerspace::engine::Renderable ship_overlay;
     conquerspace::engine::Renderable sun;
 
     glm::vec3 cam_pos;
@@ -71,7 +74,9 @@ class SysStarSystemRenderer {
 
     float circle_size = 0.01f;
 
+    void DrawEntityName(glm::vec3 &object_pos, entt::entity ent_id);
     void DrawPlanetIcon(glm::vec3 &object_pos);
+    void DrawShipIcon(glm::vec3 &object_pos);
     void DrawPlanet(glm::vec3 &object_pos);
     void DrawStar(glm::vec3 &object_pos);
     void DrawTerrainlessPlanet(glm::vec3 &object_pos);
@@ -97,6 +102,11 @@ class SysStarSystemRenderer {
     bool terrain_complete = false, second_terrain_complete = false;
 
     TerrainImageGenerator final_image_generator, intermediate_image_generator;
+
+    engine::FramebufferRenderer overlay_renderer;
+    engine::FramebufferRenderer buffer_renderer;
+    engine::FramebufferRenderer planet_renderer;
+    engine::FramebufferRenderer skybox_renderer;
 };
 }  // namespace systems
 }  // namespace client

@@ -9,6 +9,8 @@
 #include "common/universe.h"
 #include "common/systems/isimulationsystem.h"
 
+#include "common/systems/scriptrunner.h"
+
 namespace conquerspace {
 namespace common {
 namespace systems {
@@ -19,7 +21,8 @@ namespace simulation {
  */
 class Simulation {
  public:
-    explicit Simulation(conquerspace::common::components::Universe &_universe);
+    explicit Simulation(conquerspace::common::components::Universe &_universe,
+                        scripting::ScriptInterface &script_interface);
     void tick();
 
     template <class T>
@@ -28,8 +31,9 @@ class Simulation {
     }
 
  private:
-    conquerspace::common::components::Universe &m_universe;
+    conquerspace::common::systems::SysEventScriptRunner script_runner;
     std::vector<std::unique_ptr<conquerspace::common::systems::ISimulationSystem>> system_list;
+    conquerspace::common::components::Universe &m_universe;
 };
 }  // namespace simulation
 }  // namespace systems

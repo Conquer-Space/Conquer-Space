@@ -6,3 +6,7 @@
 /docs/latex
 /docs/html
 /.vscode
+
+/src/common/git-commit.h
+/src/common/version.h
+/lib/include/stb_vorbis.h

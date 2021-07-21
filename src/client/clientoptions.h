@@ -5,24 +5,24 @@
 
 #include <hjson.h>
 #include <istream>
+#include <fstream>
 #include <string>
 
 namespace conquerspace {
 namespace client {
-class ProgramOptions {
+class ClientOptions {
  public:
      void LoadOptions(std::istream& stream);
-
-     Hjson::Value& GetOptions() { return options; }
-
-     const Hjson::Value operator[](const std::string& val) const { return options[val]; }
-     const Hjson::Value operator[](const char* val) const { return options[val]; }
-     const Hjson::Value operator[](char* val) const { return options[val]; }
-     const Hjson::Value& operator[](int val) { return options[val]; }
+     void WriteOptions(std::ostream& stream);
 
      void LoadDefaultOptions();
 
-     void CommandLineOptions(int argc, char* argv[]);
+     Hjson::Value& GetOptions() { return options; }
+
+     Hjson::Value GetDefaultOptions();
+
+     std::string GetDefaultLocation() { return "settings.hjson"; }
+
  private:
      Hjson::Value options;
 };

@@ -14,7 +14,7 @@
 #include "engine/renderer/primitives/uvsphere.h"
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/primitives/cube.h"
-#include "engine/renderer/primitives/circle.h"
+#include "engine/renderer/primitives/polygon.h"
 #include "engine/gui.h"
 
 #include "common/components/bodies.h"
@@ -32,6 +32,7 @@
 #include "client/systems/sysstarsystemtree.h"
 #include "client/systems/syspausemenu.h"
 #include "client/systems/sysdebuggui.h"
+#include "client/systems/gui/sysevent.h"
 
 bool game_halted = false;
 
@@ -41,7 +42,8 @@ conquerspace::scene::UniverseScene::UniverseScene(
 void conquerspace::scene::UniverseScene::Init() {
     namespace cqspb = conquerspace::common::components::bodies;
     namespace cqspco = conquerspace::common;
-    simulation = new cqspco::systems::simulation::Simulation(GetApp().GetUniverse());
+    simulation = std::make_shared<cqspco::systems::simulation::Simulation>
+                                        (GetApp().GetUniverse(), GetApp().GetScriptInterface());
 
     system_renderer = new conquerspace::client::systems::SysStarSystemRenderer(
         GetApp().GetUniverse(), GetApp());
@@ -71,6 +73,8 @@ void conquerspace::scene::UniverseScene::Init() {
     AddUISystem<conquerspace::client::systems::SysStarSystemTree>();
     AddUISystem<conquerspace::client::systems::SysPauseMenu>();
     AddUISystem<conquerspace::client::systems::SysDebugMenu>();
+    AddUISystem<conquerspace::client::systems::gui::SysEvent>();
+    simulation->tick();
 }
 
 void conquerspace::scene::UniverseScene::Update(float deltaTime) {
@@ -124,6 +128,7 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
     if (GetApp().GetUniverse().ToTick() && !game_halted) {
         // Game tick
         simulation->tick();
+        system_renderer->OnTick();
     }
 
     GetApp().GetUniverse().clear<conquerspace::client::systems::MouseOverEntity>();

@@ -8,10 +8,10 @@
 
 #include <spdlog/spdlog.h>
 
-
 #include <memory>
 #include <utility>
 #include <string>
+#include <map>
 
 #include "client/clientoptions.h"
 
@@ -21,6 +21,8 @@
 #include "common/universe.h"
 #include "engine/gui.h"
 #include "engine/renderer/text.h"
+#include "common/scripting/scripting.h"
+#include "engine/audio/iaudiointerface.h"
 
 namespace conquerspace {
 namespace engine {
@@ -75,8 +77,8 @@ class Application {
     */
     void run();
 
-    const client::ProgramOptions& GetClientOptions() const {
-        return m_program_options;
+    client::ClientOptions& GetClientOptions() {
+        return m_client_options;
     }
 
     int GetWindowHeight() const { return m_window_height; }
@@ -103,7 +105,13 @@ class Application {
 
     ImGui::MarkdownConfig markdownConfig;
 
-    conquerspace::common::components::Universe& GetUniverse() { return m_universe; }
+    conquerspace::common::components::Universe& GetUniverse() { return *m_universe; }
+    conquerspace::scripting::ScriptInterface& GetScriptInterface() {
+        return *m_script_interface;
+    }
+    conquerspace::engine::audio::IAudioInterface& GetAudioInterface() {
+        return *m_audio_interface;
+    }
 
     bool ButtonIsHeld(int btn) { return m_keys_held[btn]; }
     bool ButtonIsReleased(int btn) { return m_keys_released[btn]; }
@@ -130,6 +138,9 @@ class Application {
 
     bool MouseDragged();
 
+    void SetWindowDimensions(int width, int height);
+    void SetFullScreen(bool screen);
+
  private:
     void AddCallbacks();
 
@@ -145,6 +156,10 @@ class Application {
     void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
 
     void SetIcon();
+
+    void GlInit();
+    void LoggerInit();
+    void LogInfo();
     /*
      * Intializes glfw and imgui.
      */
@@ -157,11 +172,12 @@ class Application {
 
     GLFWwindow *m_window;
     int m_window_width, m_window_height;
+    bool full_screen;
     std::string icon_path;
 
     SceneManager m_scene_manager;
 
-    client::ProgramOptions m_program_options;
+    client::ClientOptions m_client_options;
 
     double fps;
 
@@ -173,7 +189,7 @@ class Application {
 
     conquerspace::asset::AssetManager manager;
 
-    conquerspace::common::components::Universe m_universe;
+    std::unique_ptr<conquerspace::common::components::Universe> m_universe;
 
     double m_mouse_x;
     double m_mouse_y;
@@ -195,6 +211,15 @@ class Application {
 
     conquerspace::asset::Font* m_font = nullptr;
     conquerspace::asset::ShaderProgram* fontShader = nullptr;
+
+    std::map<std::string, std::string> properties;
+
+    std::unique_ptr<conquerspace::scripting::ScriptInterface> m_script_interface;
+    std::thread audio;
+
+    conquerspace::engine::audio::IAudioInterface *m_audio_interface;
+
+    bool to_halt;
 };
 }  // namespace engine
 }  // namespace conquerspace

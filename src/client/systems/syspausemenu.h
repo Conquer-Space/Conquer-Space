@@ -19,6 +19,7 @@ class SysPauseMenu : public SysUserInterface {
 
  private:
     bool to_show = false;
+    bool to_show_options_window = false;
 };
 }  // namespace systems
 }  // namespace client

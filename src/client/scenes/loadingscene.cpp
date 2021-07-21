@@ -14,6 +14,7 @@
 #include "engine/assetmanager.h"
 #include "client/scenes/mainmenuscene.h"
 #include "engine/gui.h"
+#include "common/scripting/scripting.h"
 
 conquerspace::scene::LoadingScene::LoadingScene(
     conquerspace::engine::Application& app)
@@ -24,11 +25,11 @@ conquerspace::scene::LoadingScene::LoadingScene(
 
 void conquerspace::scene::LoadingScene::Init() {
     auto loading = [&]() {
-        spdlog::info("Loading resources");
+        SPDLOG_INFO("Loading resources");
         LoadResources();
     };
 
-    thread = std::make_unique<boost::thread>(loading);
+    thread = std::make_unique<std::thread>(loading);
     thread->detach();
 }
 
@@ -37,11 +38,9 @@ void conquerspace::scene::LoadingScene::Update(float deltaTime) {
         assetLoader.BuildNextAsset();
     }
     if (m_done_loading && !assetLoader.QueueHasItems()) {
-        // Done!
-
         // Load font after all the shaders are done
-
         LoadFont();
+        // Set main menu scene
         GetApp().SetScene<conquerspace::scene::MainMenuScene>();
     }
 }
@@ -68,7 +67,19 @@ void conquerspace::scene::LoadingScene::LoadResources() {
     assetLoader.manager = &GetApp().GetAssetManager();
     assetLoader.LoadAssets(assetLibrary);
 
-    spdlog::info("Done loading items");
+    GetApp().GetScriptInterface().RegisterDataGroup("generators");
+    GetApp().GetScriptInterface().RunScript(GetApp().GetAssetManager().
+                                    GetAsset<conquerspace::asset::TextAsset>("defaultgen")->data);
+
+    // Process entirity of directories
+    GetApp().GetScriptInterface().RegisterDataGroup("events");
+
+    conquerspace::asset::TextDirectoryAsset* event_list = GetApp().GetAssetManager()
+                            .GetAsset<conquerspace::asset::TextDirectoryAsset>("defaultevent");
+    for (auto& text : event_list->data) {
+        GetApp().GetScriptInterface().RunScript(text);
+    }
+    SPDLOG_INFO("Done loading items");
     m_done_loading = true;
 }
 

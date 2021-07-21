@@ -18,54 +18,30 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <filesystem>
+#include <vector>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <boost/version.hpp>
+#include <boost/config.hpp>
+
 #include "common/util/profiler.h"
+#include "engine/paths.h"
+#include "common/version.h"
+#include "engine/audio/audiointerface.h"
 
 int conquerspace::engine::Application::init() {
-    // Initialize logger
-#ifdef NDEBUG
-    spdlog::flush_every(std::chrono::seconds(3));
-    logger = spdlog::basic_logger_mt("application", "log.txt", true);
-#else
-    logger = spdlog::stdout_color_mt("application");
-#endif
-    spdlog::set_default_logger(logger);
+    LoggerInit();
+    LogInfo();
+    GlInit();
 
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_SAMPLES, 4);
-
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-
-    // Create window
-    m_window = glfwCreateWindow(m_window_width, m_window_height, "Conquer Space", NULL, NULL);
-    if (m_window == NULL) {
-        glfwTerminate();
-        spdlog::error("Cannot load glfw");
-        return -1;
-    }
-
-    glfwMakeContextCurrent(m_window);
-
-    // Enable vsync
-    glfwSwapInterval(1);
-
-    // Add callbacks
-    AddCallbacks();
-
-    // Init glad
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        glfwTerminate();
-        spdlog::error("Cannot load glad");
-        return -2;
-    }
+    // Init audio
+    m_audio_interface = new conquerspace::engine::audio::AudioInterface();
+    m_audio_interface->Initialize();
+    // Set option things
+    m_audio_interface->SetMusicVolume(m_client_options.GetOptions()["audio"]["music"]);
 
     SetIcon();
     // Setup Dear ImGui context
@@ -81,12 +57,25 @@ int conquerspace::engine::Application::init() {
     ImGui_ImplGlfw_InitForOpenGL(m_window, true);
     ImGui_ImplOpenGL3_Init("#version 130");
 
+    if (full_screen) {
+        SetFullScreen(true);
+    }
+
     std::shared_ptr<Scene> initial_scene = std::make_shared<EmptyScene>(*this);
     m_scene_manager.SetInitialScene(initial_scene);
+
+    m_script_interface =
+        std::make_unique<conquerspace::scripting::ScriptInterface>();
+    m_universe = std::make_unique<conquerspace::common::components::Universe>();
+    m_script_interface->Init();
     return 0;
 }
 
 int conquerspace::engine::Application::destroy() {
+    m_audio_interface->Destruct();
+    delete m_audio_interface;
+    m_universe.reset();
+    m_script_interface.reset();
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImPlot::DestroyContext();
@@ -95,26 +84,29 @@ int conquerspace::engine::Application::destroy() {
     glfwDestroyWindow(m_window);
     glfwTerminate();
 
+    SPDLOG_INFO("Killed GLFW");
+    // Save options
+    std::ofstream config_path(m_client_options.GetDefaultLocation(), std::ios::trunc);
+    m_client_options.WriteOptions(config_path);
     spdlog::shutdown();
     return 0;
 }
 
 conquerspace::engine::Application::Application() {
-    std::ifstream config_path("../config/settings.hjson");
+    std::ifstream config_path(m_client_options.GetDefaultLocation());
     if (config_path.good()) {
-        m_program_options.LoadOptions(config_path);
-        // Read config file
-
-        Hjson::Value window_dimensions = m_program_options["window"];
-        m_window_width = window_dimensions["width"];
-        m_window_height = window_dimensions["height"];
-
-        // Set icon path
-        icon_path = m_program_options["icon"].to_string();
+        m_client_options.LoadOptions(config_path);
     } else {
-        m_window_width = 1280;
-        m_window_height = 720;
+        m_client_options.LoadDefaultOptions();
     }
+    Hjson::Value window_dimensions = m_client_options.GetOptions()["window"];
+    m_window_width = window_dimensions["width"];
+    m_window_height = window_dimensions["height"];
+
+    // Set icon path
+    icon_path = m_client_options.GetOptions()["icon"].to_string();
+
+    full_screen = static_cast<bool>(m_client_options.GetOptions()["full_screen"]);
 }
 
 void conquerspace::engine::Application::run() {
@@ -125,7 +117,7 @@ void conquerspace::engine::Application::run() {
         // Fail
         return;
     }
-
+    m_audio_interface->StartWorker();
     while (ShouldExit()) {
         // Calculate FPS
         double currentFrame = GetTime();
@@ -186,8 +178,7 @@ void conquerspace::engine::Application::ExitApplication() {
     glfwSetWindowShouldClose(m_window, true);
 }
 
-void conquerspace::engine::Application::DrawText(const std::string& text, float x,
-                                                 float y) {
+void conquerspace::engine::Application::DrawText(const std::string& text, float x, float y) {
     if (fontShader != nullptr && m_font != nullptr) {
     glm::mat4 projection =
         glm::ortho(0.0f, static_cast<float>(GetWindowWidth()), 0.0f,
@@ -208,14 +199,12 @@ void conquerspace::engine::Application::AddCallbacks() {
     // Set user pointer
     glfwSetWindowUserPointer(m_window, this);
 
-    auto key_callback = [](GLFWwindow* _w, int key, int scancode, int action,
-                           int mods) {
+    auto key_callback = [](GLFWwindow* _w, int key, int scancode, int action, int mods) {
         static_cast<Application*>(glfwGetWindowUserPointer(_w))
             ->KeyboardCallback(_w, key, scancode, action, mods);
     };
 
-    auto cursor_position_callback = [](GLFWwindow* _w, double xpos,
-                                       double ypos) {
+    auto cursor_position_callback = [](GLFWwindow* _w, double xpos, double ypos) {
         static_cast<Application*>(glfwGetWindowUserPointer(_w))
             ->MousePositionCallback(_w, xpos, ypos);
     };
@@ -224,8 +213,7 @@ void conquerspace::engine::Application::AddCallbacks() {
         static_cast<Application*>(glfwGetWindowUserPointer(_w))->MouseEnterCallback(_w, entered);
     };
 
-    auto mouse_button_callback = [](GLFWwindow* _w, int button, int action,
-                                    int mods) {
+    auto mouse_button_callback = [](GLFWwindow* _w, int button, int action, int mods) {
         static_cast<Application*>(glfwGetWindowUserPointer(_w))
             ->MouseButtonCallback(_w, button, action, mods);
     };
@@ -287,8 +275,7 @@ void conquerspace::engine::Application::InitFonts() {
     markdownConfig.headingFormats[2] = {h3font, true};
 }
 
-void conquerspace::engine::Application::KeyboardCallback(GLFWwindow* _w,
-                                                         int key, int scancode,
+void conquerspace::engine::Application::KeyboardCallback(GLFWwindow* _w, int key, int scancode,
                                                          int action, int mods) {
     if (action == GLFW_PRESS) {
         m_keys_held[key] = true;
@@ -299,20 +286,16 @@ void conquerspace::engine::Application::KeyboardCallback(GLFWwindow* _w,
     }
 }
 
-void conquerspace::engine::Application::MousePositionCallback(GLFWwindow* _w,
-                                                              double xpos,
+void conquerspace::engine::Application::MousePositionCallback(GLFWwindow* _w, double xpos,
                                                               double ypos) {
     m_mouse_x = xpos;
     m_mouse_y = ypos;
 }
 
-void conquerspace::engine::Application::MouseEnterCallback(GLFWwindow* _w,
-                                                           int entered) {}
+void conquerspace::engine::Application::MouseEnterCallback(GLFWwindow* _w, int entered) {}
 
-void conquerspace::engine::Application::MouseButtonCallback(GLFWwindow* _w,
-                                                            int button,
-                                                            int action,
-                                                            int mods) {
+void conquerspace::engine::Application::MouseButtonCallback(GLFWwindow* _w,  int button,
+                                                            int action, int mods) {
     if (action == GLFW_PRESS) {
         m_mouse_keys_held[button] = true;
         m_mouse_keys_pressed[button] = true;
@@ -324,8 +307,7 @@ void conquerspace::engine::Application::MouseButtonCallback(GLFWwindow* _w,
     }
 }
 
-void conquerspace::engine::Application::ScrollCallback(GLFWwindow* _w,
-                                                       double xoffset,
+void conquerspace::engine::Application::ScrollCallback(GLFWwindow* _w, double xoffset,
                                                        double yoffset) {
     m_scroll_amount = yoffset;
 }
@@ -349,22 +331,113 @@ void conquerspace::engine::Application::SetIcon() {
     stbi_image_free(images[0].pixels);
 }
 
-void conquerspace::engine::SceneManager::SetInitialScene(
-    std::shared_ptr<Scene>& scene) {
+void conquerspace::engine::Application::GlInit() {
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_SAMPLES, 4);
+
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
+    // Create window
+    m_window = glfwCreateWindow(m_window_width, m_window_height, "Conquer Space", NULL, NULL);
+    if (m_window == NULL) {
+        glfwTerminate();
+        SPDLOG_CRITICAL("Cannot load glfw");
+    }
+
+    glfwMakeContextCurrent(m_window);
+
+    // Enable vsync
+    glfwSwapInterval(1);
+
+    // Add callbacks
+    AddCallbacks();
+
+    // Init glad
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        glfwTerminate();
+        SPDLOG_CRITICAL("Cannot load glad");
+    }
+    SPDLOG_INFO(" --- GL information ---");
+    SPDLOG_INFO("GL version: {}", glGetString(GL_VERSION));
+    SPDLOG_INFO("GL vendor: {}", glGetString(GL_VENDOR));
+    SPDLOG_INFO("GL Renderer: {}", glGetString(GL_RENDERER));
+    SPDLOG_INFO("GL shading language: {}", glGetString(GL_SHADING_LANGUAGE_VERSION));
+    SPDLOG_INFO(" --- GL information ---");
+}
+
+void conquerspace::engine::Application::LoggerInit() {
+    // Get path
+    properties["data"] = GetConquerSpacePath();
+    std::filesystem::path log_folder = std::filesystem::path(properties["data"]) / "logs";
+    // Make logs folder
+    // Initialize logger
+    std::vector<spdlog::sink_ptr> sinks;
+    auto error_log = std::make_shared<spdlog::sinks::basic_file_sink_mt>(
+                                                        (log_folder/"error.txt").string(), true);
+    error_log->set_level(spdlog::level::err);
+    sinks.push_back(error_log);
+
+#ifdef NDEBUG
+    spdlog::flush_every(std::chrono::seconds(3));
+    auto basic_logger = std::make_shared<spdlog::sinks::basic_file_sink_mt>(
+                                                        (log_folder/"info.txt").string(), true);
+    sinks.push_back(basic_logger);
+#else
+    auto console_logger = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+    sinks.push_back(console_logger);
+#endif
+    logger = std::make_shared<spdlog::logger>("application", sinks.begin(), sinks.end());
+    spdlog::set_default_logger(logger);
+    spdlog::set_pattern("[%T.%e] [%^%l%$] [%n] [%s:%#] %v");
+}
+
+void conquerspace::engine::Application::LogInfo() {
+    SPDLOG_INFO("Conquer Space {}", CQSP_VERSION_STRING);
+    SPDLOG_INFO("Platform: {}", BOOST_PLATFORM);
+    SPDLOG_INFO("Compiled {} {}", __DATE__, __TIME__);
+    SPDLOG_INFO("Compiled on {} with {}", BOOST_COMPILER, BOOST_STDLIB);
+#ifndef NDEBUG
+    SPDLOG_INFO("In debug mode");
+#endif
+}
+
+void conquerspace::engine::Application::SetWindowDimensions(int width, int height) {
+    glfwSetWindowSize(m_window, width, height);
+}
+
+void conquerspace::engine::Application::SetFullScreen(bool screen) {
+    if (screen == true) {
+        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        glfwSetWindowMonitor(m_window, glfwGetPrimaryMonitor(), 0, 0,
+                             mode->width, mode->height, mode->refreshRate);
+    } else {
+        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        glfwSetWindowMonitor(m_window, NULL, 40, 40,
+                                GetClientOptions().GetOptions()["window"]["width"],
+                                GetClientOptions().GetOptions()["window"]["height"],
+                                mode->refreshRate);
+    }
+}
+
+void conquerspace::engine::SceneManager::SetInitialScene(std::shared_ptr<Scene>& scene) {
     m_scene = std::move(scene);
 }
 
-void conquerspace::engine::SceneManager::SetScene(
-    std::shared_ptr<Scene>& scene) {
+void conquerspace::engine::SceneManager::SetScene(std::shared_ptr<Scene>& scene) {
     m_next_scene = std::move(scene);
     m_switch = true;
 }
 
 void conquerspace::engine::SceneManager::SwitchScene() {
     m_scene = std::move(m_next_scene);
-    spdlog::trace("Initializing scene");
+    SPDLOG_TRACE("Initializing scene");
     m_scene->Init();
-    spdlog::trace("Done Initializing scene");
+    SPDLOG_TRACE("Done Initializing scene");
     m_switch = false;
 }
 

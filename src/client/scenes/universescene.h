@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <memory>
+#include <utility>
 
 #include "client/systems/sysstarsystemrenderer.h"
 #include "client/systems/sysgui.h"
@@ -23,7 +24,6 @@ class UniverseScene : public conquerspace::engine::Scene {
     explicit UniverseScene(conquerspace::engine::Application& app);
     ~UniverseScene() {
         delete system_renderer;
-        delete simulation;
     }
 
     void Init();
@@ -33,7 +33,9 @@ class UniverseScene : public conquerspace::engine::Scene {
 
     template <class T>
     void AddUISystem() {
-        user_interfaces.push_back(std::make_unique<T>(GetApp()));
+        auto ui = std::make_unique<T>(GetApp());
+        ui->Init();
+        user_interfaces.push_back(std::move(ui));
     }
 
  private:
@@ -55,7 +57,7 @@ class UniverseScene : public conquerspace::engine::Scene {
 
     conquerspace::client::systems::SysStarSystemRenderer* system_renderer;
 
-    conquerspace::common::systems::simulation::Simulation* simulation;
+    std::shared_ptr<conquerspace::common::systems::simulation::Simulation> simulation;
 
     bool to_show_planet_window = false;
 

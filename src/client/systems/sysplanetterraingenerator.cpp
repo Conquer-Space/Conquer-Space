@@ -10,7 +10,6 @@
 void conquerspace::client::systems::TerrainImageGenerator::GenerateTerrain(int octaves, int size) {
     noise::module::Perlin noise_module;
     noise_module.SetOctaveCount(octaves);
-    spdlog::info("Seed: {}", seed);
     noise_module.SetSeed(seed);
     noise_module.SetFrequency(2);
 

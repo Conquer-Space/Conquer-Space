@@ -34,6 +34,7 @@ conquerspace::asset::AssetLoader::AssetLoader() : m_asset_queue(16) {
     asset_type_map["model"] = AssetType::MODEL;
     asset_type_map["font"] = AssetType::FONT;
     asset_type_map["cubemap"] = AssetType::CUBEMAP;
+    asset_type_map["directory"] = AssetType::TEXT_ARRAY;
 }
 
 namespace cqspa = conquerspace::asset;
@@ -45,17 +46,17 @@ void conquerspace::asset::AssetLoader::LoadAssets(std::istream& stream) {
     stream >> Hjson::StreamDecoder(assets, decOpt);
 
     int size = static_cast<int>(assets.size());
-    spdlog::info("Loading {} asset(s)", size);
+    SPDLOG_INFO("Loading {} asset(s)", size);
 
     for (auto [key, val] : assets) {
-        spdlog::trace("Loading {}", key);
+        SPDLOG_TRACE("Loading {}", key);
 
         // Load from asset
         std::string type = val["type"];
         std::string path = "../data/core/" + val["path"];
 
         if (!std::filesystem::exists(path)) {
-            spdlog::warn("Cannot find asset {}", key);
+            SPDLOG_WARN("Cannot find asset {}", key);
             continue;
         }
         LoadAsset(type, path, static_cast<std::string>(key), val["hints"]);
@@ -87,16 +88,7 @@ switch (asset_type_map[type]) {
             if (std::filesystem::is_directory(path)) {
                 // Load and append to assets.
                 Hjson::Value data;
-                for (const auto& dirEntry : std::filesystem::recursive_directory_iterator(path)) {
-                    // Loop through each hjson
-                    std::ifstream asset_stream(dirEntry.path().c_str());
-
-                    if (!asset_stream.good()) {
-                        continue;
-                    }
-                    LoadHjson(asset_stream, data, hints);
-                }
-                // Make asset
+                LoadHjsonDir(path, data, hints);
                 std::unique_ptr<cqspa::HjsonAsset> asset =
                     std::make_unique<cqspa::HjsonAsset>();
                 asset->data = data;
@@ -111,6 +103,11 @@ switch (asset_type_map[type]) {
         {
         std::ifstream asset_stream(path);
         manager->assets[key] = LoadText(asset_stream, hints);
+        break;
+        }
+        case AssetType::TEXT_ARRAY:
+        {
+        manager->assets[key] = LoadTextDirectory(path, hints);
         break;
         }
         case AssetType::MODEL:
@@ -166,7 +163,7 @@ void conquerspace::asset::AssetLoader::BuildNextAsset() {
             shaderAsset->id = shaderId;
             manager->assets[shader->key] = std::move(shaderAsset);
         } catch (std::runtime_error &error) {
-            spdlog::warn("Exception in loading shader {}: {}", shader->key, error.what());
+            SPDLOG_WARN("Exception in loading shader {}: {}", shader->key, error.what());
         }
         break;
         }
@@ -222,6 +219,23 @@ std::unique_ptr<cqspa::HjsonAsset> cqspa::AssetLoader::LoadHjson(std::istream &a
     return asset;
 }
 
+std::unique_ptr<conquerspace::asset::TextDirectoryAsset>
+conquerspace::asset::AssetLoader::LoadTextDirectory(std::string path,
+                                                    Hjson::Value& hints) {
+        std::filesystem::recursive_directory_iterator iterator(path);
+        auto asset = std::make_unique<asset::TextDirectoryAsset>();
+        for (auto& sub_path : iterator) {
+            if (!sub_path.is_regular_file()) {
+                continue;
+            }
+            std::ifstream asset_stream(sub_path);
+            std::string asset_data{std::istreambuf_iterator<char>{asset_stream},
+                            std::istreambuf_iterator<char>()};
+            asset->data.push_back(asset_data);
+        }
+        return asset;
+}
+
 void cqspa::AssetLoader::LoadHjson(std::istream &asset_stream, Hjson::Value& value,
                                       Hjson::Value& hints) {
     Hjson::DecoderOptions decOpt;
@@ -234,8 +248,20 @@ void cqspa::AssetLoader::LoadHjson(std::istream &asset_stream, Hjson::Value& val
     }
 }
 
-void cqspa::AssetLoader::LoadImage(std::string& key,
-                                                 std::string& filePath,
+void conquerspace::asset::AssetLoader::LoadHjsonDir(std::string& path, Hjson::Value& value,
+                                                                            Hjson::Value& hints) {
+    for (const auto& dirEntry : std::filesystem::recursive_directory_iterator(path)) {
+        // Loop through each hjson
+        std::ifstream asset_stream(dirEntry.path().c_str());
+
+        if (!asset_stream.good()) {
+            continue;
+        }
+        LoadHjson(asset_stream, value, hints);
+    }
+}
+
+void cqspa::AssetLoader::LoadImage(std::string& key, std::string& filePath,
                                                  Hjson::Value& hints) {
     ImagePrototype* prototype = new ImagePrototype();
 
@@ -263,17 +289,16 @@ void cqspa::AssetLoader::LoadImage(std::string& key,
         QueueHolder holder(prototype);
 
         if (!m_asset_queue.push(holder)) {
-            spdlog::info("Failed to push image");
+            SPDLOG_INFO("Failed to push image");
             delete prototype;
         }
     } else {
-        spdlog::info("Failed to load {}", key);
+        SPDLOG_INFO("Failed to load {}", key);
         delete prototype;
     }
 }
 
-void cqspa::AssetLoader::LoadShader(std::string& key,
-                                                  std::istream &asset_stream,
+void cqspa::AssetLoader::LoadShader(std::string& key, std::istream &asset_stream,
                                                   Hjson::Value& hints) {
     // Get shader type
     std::string type = hints["type"];
@@ -298,13 +323,12 @@ void cqspa::AssetLoader::LoadShader(std::string& key,
     QueueHolder holder(prototype);
 
     if (!m_asset_queue.push(holder)) {
-        spdlog::info("Failed to push image");
+        SPDLOG_INFO("Failed to push image");
         delete(prototype);
     }
 }
 
-void conquerspace::asset::AssetLoader::LoadFont(std::string& key,
-                                                std::istream& asset_stream,
+void conquerspace::asset::AssetLoader::LoadFont(std::string& key, std::istream& asset_stream,
                                                 Hjson::Value& hints) {
     asset_stream.seekg(0, std::ios::end);
     std::fstream::pos_type fontFileSize = asset_stream.tellg();
@@ -320,7 +344,7 @@ void conquerspace::asset::AssetLoader::LoadFont(std::string& key,
     QueueHolder holder(prototype);
 
     if (!m_asset_queue.push(holder)) {
-        spdlog::info("Failed to push font");
+        SPDLOG_INFO("Failed to push font");
         delete(prototype);
     }
 }
@@ -359,7 +383,7 @@ void conquerspace::asset::AssetLoader::LoadCubemap(std::string& key,
     QueueHolder holder(prototype);
 
     if (!m_asset_queue.push(holder)) {
-        spdlog::info("Failed to push cubemap");
+        SPDLOG_INFO("Failed to push cubemap");
         delete(prototype);
     }
 }

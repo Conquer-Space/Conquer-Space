@@ -3,7 +3,8 @@
 cmake_minimum_required(VERSION 3.10)
 
 # set the project name
-project(Conquer-Space VERSION 0.0)
+project(Conquer-Space VERSION 0.0.0)
+SET(CQSP_VERSION ${CMAKE_PROJECT_VERSION})
 
 SET(CMAKE_CXX_STANDARD 17)
 SET(CMAKE_CXX_EXTENSIONS OFF)
@@ -41,14 +42,18 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/modules/" ${CMAKE_MODULE_PATH})
 
 include_directories(src)
 
+if (WIN32)
+set(Boost_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/lib/win64/boost")
+endif()
 find_package(glfw3 REQUIRED)
 find_package(OpenGL REQUIRED)
 
-set(BOOST_ROOT "${CMAKE_SOURCE_DIR}/lib/win64/boost")
-find_package(Boost 1.65.0 REQUIRED)
-link_directories("${CMAKE_SOURCE_DIR}/lib/win64/boost/stage/lib")
-
-message(${GLFW3_INCLUDE_PATH})
+execute_process(
+  COMMAND git describe --tags --always --dirty --match "[0-9]*.*"
+  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+  OUTPUT_VARIABLE GIT_INFO
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
 
 add_subdirectory(lib)
 add_subdirectory(src)

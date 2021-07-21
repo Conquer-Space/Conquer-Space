@@ -12,6 +12,7 @@
 #include "client/systems/sysstarsystemrenderer.h"
 #include "client/systems/ui/sysstockpileui.h"
 #include "client/scenes/universescene.h"
+#include "client/systems/gui/systooltips.h"
 
 #include "common/components/area.h"
 #include "common/components/bodies.h"
@@ -74,7 +75,7 @@ void conquerspace::client::systems::SysPlanetInformation::DoUpdate(int delta_tim
                 mouse_over == selected_planet && !conquerspace::scene::IsGameHalted() &&
                 !GetApp().MouseDragged()) {
         to_see = true;
-        spdlog::info("Switched entity");
+        SPDLOG_INFO("Switched entity");
     }
 }
 
@@ -87,8 +88,8 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
     static bool thing = true;
     ImGui::Checkbox("Macroeconomic/Ownership mode", &thing);
 
-    ImGui::Text(fmt::format("{}", GetApp().GetUniverse().
-                                            get<cqspc::Name>(selected_city_entity).name).c_str());
+    ImGui::TextFmt("{}", GetApp().GetUniverse().
+                                            get<cqspc::Name>(selected_city_entity).name);
 
     if (GetApp().GetUniverse().all_of<cqspc::Settlement>(selected_city_entity)) {
         int size = GetApp().GetUniverse()
@@ -97,17 +98,16 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
                               selected_city_entity).population) {
             auto& bad_var_name = GetApp().GetUniverse()
                                     .get<cqspc::PopulationSegment>(b);
-            ImGui::Text(fmt::format("Population: {}",
-                        conquerspace::util::LongToHumanString(bad_var_name.population)).c_str());
+            ImGui::TextFmt("Population: {}",
+                        conquerspace::util::LongToHumanString(bad_var_name.population));
         }
     } else {
-        ImGui::Text(fmt::format("No population").c_str());
+        ImGui::TextFmt("No population");
     }
 
     if (GetApp().GetUniverse().all_of<cqspc::Industry>(selected_city_entity)) {
         if (ImGui::BeginTabBar("CityTabs", ImGuiTabBarFlags_None)) {
-            if (ImGui::BeginTabItem("Industries")) {
-                IndustryTab();
+            if (ImGui::BeginTabItem("Industries")) {                IndustryTab();
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("Resources")) {
@@ -163,10 +163,7 @@ void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel
                 spdlog::info("Mouse clicked");
             }
         }
-
-        if (ImGui::IsItemActive() || ImGui::IsItemHovered()) {
-            ImGui::SetTooltip(fmt::format("{}", name).c_str());
-        }
+        gui::EntityTooltip(e, GetApp().GetUniverse());
     }
     ImGui::EndChild();
 }
