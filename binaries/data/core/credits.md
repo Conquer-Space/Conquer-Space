@@ -1,7 +1,7 @@
 # Credits
 ## Programmers
 EhWhoAmI
-
+AGM-114
 
 ## Music
 Starlight by Nirekin Inc.
