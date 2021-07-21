@@ -30,6 +30,8 @@ class SysPlanetInformation : public SysUserInterface {
     entt::entity selected_planet = entt::null;
     void CityInformationPanel();
     void PlanetInformationPanel();
+    void ResourcesTab();
+    void IndustryTab();
 };
 }  // namespace systems
 }  // namespace client

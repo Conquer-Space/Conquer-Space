@@ -17,6 +17,7 @@
 #include "common/components/organizations.h"
 #include "common/components/player.h"
 #include "common/components/surface.h"
+#include "common/components/economy.h"
 #include "common/components/name.h"
 #include "common/components/population.h"
 #include "common/components/area.h"
@@ -153,8 +154,31 @@ void conquerspace::common::systems::universegenerator::ScriptUniverseGenerator::
         return factory;
      });
 
-    script_engine.set_function("create_mine", [&](entt::entity city, entt::entity resource,
-                                                            int amount, float productivity) {
+    script_engine.set_function("create_market", [&]() {
+        entt::entity entity = universe.create();
+        universe.emplace<cqspc::Market>(entity);
+        universe.emplace<cqspc::ResourceStockpile>(entity);
+        return entity;
+    });
+
+    script_engine.set_function("place_market", [&](entt::entity market, entt::entity planet) {
+        universe.emplace<cqspc::MarketCenter>(planet, market);
+    });
+
+    script_engine.set_function("attach_market", [&](entt::entity market_entity, entt::entity participant) {
+        auto& market = universe.get<cqspc::Market>(market_entity);
+        market.participants.push_back(participant);
+        universe.emplace<cqspc::MarketParticipant>(participant, market_entity);
+    });
+
+    script_engine.set_function("add_resource", [&](entt::entity storage,
+                                          entt::entity resource, int amount) {
+        // Add resources to the resource stockpile
+        universe.get<cqspc::ResourceStockpile>(storage)[resource] += amount;
+    });
+
+    script_engine.set_function("create_mine", [&](entt::entity city, entt::entity resource, int amount,
+                                                                            float productivity) {
         entt::entity mine = universe.create();
         auto& gen = universe.emplace<cqspc::ResourceGenerator>(mine);
         universe.emplace<cqspc::Mine>(mine);

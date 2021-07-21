@@ -109,6 +109,9 @@ generators:insert({
 
         -- Add cities
         add_planet_habitation(planet)
+        market = create_market()
+        add_resource(market, goods["steel"], 50000)
+        add_resource(market, goods["copper"], 50000)
 
         -- Add city
         local city_count = random(30, 50)
@@ -118,12 +121,12 @@ generators:insert({
             local pop_unit = add_population_segment(city, 100000000) -- 100 million
             -- Add industry
             create_industries(city)
-            create_factory(city, recipes["steel_forging"], 10)
+            attach_market(market, create_factory(city, recipes["steel_forging"], 10))
             -- Add various factories
-            create_factory(city, recipes["consumer_good_manufacturing"], 9)
-            create_mine(city, goods["copper"], 10, 1)
-            create_mine(city, goods["aluminium"], 10, 1)
-            create_mine(city, goods["iron"], 70, 1)
+            attach_market(market, create_factory(city, recipes["consumer_good_manufacturing"], 9))
+            attach_market(market, create_mine(city, goods["copper"], 10, 1))
+            attach_market(market, create_mine(city, goods["aluminium"], 10, 1))
+            attach_market(market, create_mine(city, goods["iron"], 70, 1))
         end
     end
 })

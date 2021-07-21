@@ -6,7 +6,9 @@ add_subdirectory(hjson-cpp)
 
 add_subdirectory(fmt)
 
+# Tell spdlog to use another fmt to avoid compile conflicts.
 set(SPDLOG_FMT_EXTERNAL ON CACHE BOOL "" FORCE)
+
 add_subdirectory(spdlog)
 
 add_subdirectory(glm)

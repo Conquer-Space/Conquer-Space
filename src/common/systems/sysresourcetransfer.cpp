@@ -23,9 +23,6 @@ bool conquerspace::common::systems::resource::TransferResources(entt::registry &
     // Transfer resources
     if (from_stockpile.HasGood(good)) {
         // Then we can transfer
-        if (!to_stockpile.HasGood(good)) {
-            to_stockpile[good] = 0;
-        }
         if (from_stockpile[good] >= amount) {
             from_stockpile[good] -= amount;
             to_stockpile[good] += amount;

@@ -10,6 +10,7 @@
 #include <map>
 
 #include "client/systems/sysstarsystemrenderer.h"
+#include "client/systems/ui/sysstockpileui.h"
 #include "client/scenes/universescene.h"
 #include "client/systems/gui/systooltips.h"
 
@@ -22,6 +23,7 @@
 #include "common/components/population.h"
 #include "common/components/resource.h"
 #include "common/components/surface.h"
+#include "common/components/economy.h"
 #include "common/util/utilnumberdisplay.h"
 #include "engine/gui.h"
 
@@ -104,174 +106,12 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
     }
 
     if (GetApp().GetUniverse().all_of<cqspc::Industry>(selected_city_entity)) {
-        size_t industries = GetApp().GetUniverse()
-                .get<cqspc::Industry>(selected_city_entity).industries.size();
         if (ImGui::BeginTabBar("CityTabs", ImGuiTabBarFlags_None)) {
-            if (ImGui::BeginTabItem("Industries")) {
-                auto &city_industry = GetApp().GetUniverse()
-                    .get<cqspc::Industry>(selected_city_entity);
-
-                ImGui::TextFmt("Factories: {}", industries);
-                ImGui::BeginChild("salepanel",
-                                            ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f
-                                            - ImGui::GetStyle().ItemSpacing.y, 260),
-                                            true, ImGuiWindowFlags_HorizontalScrollbar |
-                                            window_flags);
-                ImGui::Text("Services Sector");
-                // List all the stuff it produces
-                ImGui::Text("GDP:");
-                ImGui::EndChild();
-
-                ImGui::SameLine();
-
-                ImGui::BeginChild("ManufacturingPanel",
-                                            ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f
-                                            - ImGui::GetStyle().ItemSpacing.y, 260),
-                                            true, ImGuiWindowFlags_HorizontalScrollbar |
-                                            window_flags);
-                ImGui::Text("Manufactuing Sector");
-                // List all the stuff it produces
-                ImGui::Text("GDP:");
-
-                cqspc::ResourceLedger input_resources;
-                cqspc::ResourceLedger output_resources;
-                for (auto thingies : city_industry.industries) {
-                    if (GetApp().GetUniverse()
-                        .all_of<cqspc::ResourceConverter, cqspc::Factory>(thingies)) {
-                        auto& generator =
-                            GetApp().GetUniverse().get<cqspc::ResourceConverter>(thingies);
-                        auto& recipe = GetApp().GetUniverse().get<cqspc::Recipe>(generator.recipe);
-                        input_resources += recipe.input;
-                        output_resources += recipe.output;
-                    }
-                }
-
-                ImGui::Text("Output");
-                // Output table
-                if (ImGui::BeginTable("output_table", 2, ImGuiTableFlags_Borders |
-                                                                        ImGuiTableFlags_RowBg)) {
-                    ImGui::TableSetupColumn("Good");
-                    ImGui::TableSetupColumn("Amount");
-                    ImGui::TableHeadersRow();
-                    for (auto iterator = output_resources.begin();
-                                                iterator != output_resources.end(); iterator++) {
-                        ImGui::TableNextRow();
-                        ImGui::TableSetColumnIndex(0);
-                        ImGui::TextFmt("{}", GetApp().GetUniverse()
-                                    .get<cqspc::Identifier>(iterator->first).identifier);
-                        ImGui::TableSetColumnIndex(1);
-                        ImGui::TextFmt("{}", conquerspace::util::LongToHumanString(
-                                                        static_cast<int64_t>(iterator->second)));
-                    }
-                    ImGui::EndTable();
-                }
-
-                ImGui::Text("Input");
-                if (ImGui::BeginTable("input_table", 2,
-                                                ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
-                    ImGui::TableSetupColumn("Good");
-                    ImGui::TableSetupColumn("Amount");
-                    ImGui::TableHeadersRow();
-                    for (auto iterator = input_resources.begin();
-                                                iterator != input_resources.end(); iterator++) {
-                        ImGui::TableNextRow();
-                        ImGui::TableSetColumnIndex(0);
-                        ImGui::TextFmt("{}", GetApp().GetUniverse().
-                                                get<cqspc::Identifier>(iterator->first)
-                                                .identifier);
-
-                        ImGui::TableSetColumnIndex(1);
-                        ImGui::TextFmt("{}", conquerspace::util::LongToHumanString
-                                                                                (iterator->second));
-                    }
-                    ImGui::EndTable();
-                }
-                ImGui::EndChild();
-
-                ImGui::BeginChild("MinePanel", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f
-                                                - ImGui::GetStyle().ItemSpacing.y, 260),
-                                                true, ImGuiWindowFlags_HorizontalScrollbar |
-                                                window_flags);
-                ImGui::Text("Mining Sector");
-                ImGui::Text("GDP:");
-                // Get what resources they are making
-                cqspc::ResourceLedger resources;
-                for (auto thingies : city_industry.industries) {
-                    if (GetApp().GetUniverse()
-                        .all_of<cqspc::ResourceGenerator, cqspc::Mine>(thingies)) {
-                        auto& generator =
-                            GetApp().GetUniverse().get<cqspc::ResourceGenerator>(thingies);
-                        resources += generator;
-                    }
-                }
-
-                // Draw on table
-                if (ImGui::BeginTable("table1", 2,
-                                            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
-                    ImGui::TableSetupColumn("Good");
-                    ImGui::TableSetupColumn("Amount");
-                    ImGui::TableHeadersRow();
-                    for (auto iterator = resources.begin();
-                                                        iterator != resources.end(); iterator++) {
-                        ImGui::TableNextRow();
-                        ImGui::TableSetColumnIndex(0);
-
-                        ImGui::TextFmt("{}", GetApp()
-                                .GetUniverse().get<cqspc::Identifier>(iterator->first).identifier);
-
-                        ImGui::TableSetColumnIndex(1);
-                        ImGui::TextFmt("{}",
-                                        conquerspace::util::LongToHumanString(iterator->second));
-                    }
-                    ImGui::EndTable();
-                }
-
-                ImGui::EndChild();
-                ImGui::SameLine();
-
-                ImGui::BeginChild("AgriPanel", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f
-                                                       - ImGui::GetStyle().ItemSpacing.y, 260),
-                                                       true, ImGuiWindowFlags_HorizontalScrollbar |
-                                                       window_flags);
-                ImGui::Text("Agriculture Sector");
-                ImGui::Text("GDP:");
-
-                ImGui::EndChild();
+            if (ImGui::BeginTabItem("Industries")) {                IndustryTab();
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("Resources")) {
-                // Consolidate resources
-                auto &city_industry = GetApp().GetUniverse()
-                    .get<cqspc::Industry>(selected_city_entity);
-                cqspc::ResourceLedger resources;
-                for (auto area : city_industry.industries) {
-                    if (GetApp().GetUniverse().all_of<cqspc::ResourceStockpile>(area)) {
-                        // Add resources
-                        auto& stockpile =
-                                        GetApp().GetUniverse().get<cqspc::ResourceStockpile>(area);
-                        resources += stockpile;
-                    }
-                }
-
-                if (ImGui::BeginTable("table1", 2,
-                                            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
-                    ImGui::TableSetupColumn("Good");
-                    ImGui::TableSetupColumn("Amount");
-                    ImGui::TableHeadersRow();
-                    for (auto iterator = resources.begin();
-                                                        iterator != resources.end(); iterator++) {
-                        ImGui::TableNextRow();
-                        ImGui::TableSetColumnIndex(0);
-
-                        ImGui::TextFmt("{}", GetApp().
-                                GetUniverse().get<cqspc::Identifier>(iterator->first).identifier);
-
-                        ImGui::TableSetColumnIndex(1);
-                        ImGui::TextFmt("{}",
-                                    conquerspace::util::LongToHumanString(iterator->second));
-                    }
-                    ImGui::EndTable();
-                }
+                ResourcesTab();
                 ImGui::EndTabItem();
             }
             ImGui::EndTabBar();
@@ -281,32 +121,137 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
 
 void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel() {
     namespace cqspc = conquerspace::common::components;
-    if (GetApp().GetUniverse().all_of<cqspc::Habitation>(selected_planet)) {
-        auto& habit = GetApp().GetUniverse().get<cqspc::Habitation>(selected_planet);
-        ImGui::TextFmt("Cities: {}", habit.settlements.size());
-
-        ImGui::BeginChild("citylist", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar |
-                                            window_flags);
-        // List cities
-        for (int i = 0; i < habit.settlements.size(); i++) {
-            const bool is_selected = (selected_city_index == i);
-
-            entt::entity e = habit.settlements[i];
-            std::string name = GetApp().GetUniverse().get<cqspc::Name>(e)
-                    .name;
-            if (ImGui::Selectable(fmt::format("{}", name).c_str(), is_selected)) {
-                // Load city
-                selected_city_index = i;
-                selected_city_entity = habit.settlements[i];
-                view_mode = ViewMode::CITY_VIEW;
-
-                if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-                    // See city
-                    SPDLOG_TRACE("Mouse clicked");
-                }
-            }
-            gui::EntityTooltip(e, GetApp().GetUniverse());
-        }
-        ImGui::EndChild();
+    if (!GetApp().GetUniverse().all_of<cqspc::Habitation>(selected_planet)) {
+        return;
     }
+    auto& habit = GetApp().GetUniverse().get<cqspc::Habitation>(selected_planet);
+    ImGui::Text(fmt::format("Cities: {}", habit.settlements.size()).c_str());
+
+    ImGui::BeginChild("citylist", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar |
+                                        window_flags);
+    // Market
+    if (GetApp().GetUniverse().all_of<cqspc::MarketCenter>(selected_planet)) {
+        auto& center = GetApp().GetUniverse().get<cqspc::MarketCenter>(selected_planet);
+        auto& market = GetApp().GetUniverse().get<cqspc::Market>(center.market);
+        ImGui::Text("Is market center");
+        if (ImGui::IsItemHovered()) {
+            ImGui::BeginTooltip();
+            ImGui::Text(fmt::format("Has {} markets attached to it", market.participants.size()).c_str());
+            // Get resource stockpile
+            auto& stockpile = GetApp().GetUniverse().get<cqspc::ResourceStockpile>(center.market);
+            DrawLedgerTable(GetApp().GetUniverse(), stockpile);
+            ImGui::EndTooltip();
+        }
+        ImGui::Separator();
+    }
+
+    // List cities
+    for (int i = 0; i < habit.settlements.size(); i++) {
+        const bool is_selected = (selected_city_index == i);
+
+        entt::entity e = habit.settlements[i];
+        std::string name = GetApp().GetUniverse().get<cqspc::Name>(e)
+                .name;
+        if (ImGui::Selectable(fmt::format("{}", name).c_str(), is_selected)) {
+            // Load city
+            selected_city_index = i;
+            selected_city_entity = habit.settlements[i];
+            view_mode = ViewMode::CITY_VIEW;
+
+            if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+                // See city
+                spdlog::info("Mouse clicked");
+            }
+        }
+        gui::EntityTooltip(e, GetApp().GetUniverse());
+    }
+    ImGui::EndChild();
+}
+
+void conquerspace::client::systems::SysPlanetInformation::ResourcesTab() {
+    namespace cqspc = conquerspace::common::components;
+    // Consolidate resources
+    auto &city_industry = GetApp().GetUniverse().get<cqspc::Industry>(selected_city_entity);
+    cqspc::ResourceLedger resources;
+    for (auto area : city_industry.industries) {
+        if (GetApp().GetUniverse().all_of<cqspc::ResourceStockpile>(area)) {
+            // Add resources
+            auto& stockpile = GetApp().GetUniverse().get<cqspc::ResourceStockpile>(area);
+            resources += stockpile;
+        }
+    }
+
+    DrawLedgerTable(GetApp().GetUniverse(), resources);
+}
+
+void conquerspace::client::systems::SysPlanetInformation::IndustryTab() {
+    namespace cqspc = conquerspace::common::components;
+    auto& city_industry =
+        GetApp().GetUniverse().get<cqspc::Industry>(selected_city_entity);
+
+    ImGui::Text(
+        fmt::format("Factories: {}", city_industry.industries.size()).c_str());
+    ImGui::BeginChild("salepanel", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f -
+                                 ImGui::GetStyle().ItemSpacing.y, 260), true,
+                      ImGuiWindowFlags_HorizontalScrollbar | window_flags);
+    ImGui::Text("Services Sector");
+    // List all the stuff it produces
+    ImGui::Text("GDP:");
+    ImGui::EndChild();
+
+    ImGui::SameLine();
+
+    ImGui::BeginChild("ManufacturingPanel", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f -
+                                 ImGui::GetStyle().ItemSpacing.y, 260), true,
+                      ImGuiWindowFlags_HorizontalScrollbar | window_flags);
+    ImGui::Text("Manufactuing Sector");
+    // List all the stuff it produces
+    ImGui::Text("GDP:");
+
+    cqspc::ResourceLedger input_resources;
+    cqspc::ResourceLedger output_resources;
+    for (auto thingies : city_industry.industries) {
+        if (GetApp().GetUniverse().all_of<cqspc::ResourceConverter, cqspc::Factory>(thingies)) {
+            auto& generator = GetApp().GetUniverse().get<cqspc::ResourceConverter>(thingies);
+            auto& recipe = GetApp().GetUniverse().get<cqspc::Recipe>(generator.recipe);
+            input_resources += recipe.input;
+            output_resources += recipe.output;
+        }
+    }
+
+    ImGui::Text("Output");
+    // Output table
+    DrawLedgerTable(GetApp().GetUniverse(), output_resources);
+
+    ImGui::Text("Input");
+    DrawLedgerTable(GetApp().GetUniverse(), input_resources);
+    ImGui::EndChild();
+
+    ImGui::BeginChild("MinePanel", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f -
+                                 ImGui::GetStyle().ItemSpacing.y, 260), true,
+                      ImGuiWindowFlags_HorizontalScrollbar | window_flags);
+    ImGui::Text("Mining Sector");
+    ImGui::Text("GDP:");
+    // Get what resources they are making
+    cqspc::ResourceLedger resources;
+    for (auto thingies : city_industry.industries) {
+        if (GetApp().GetUniverse().all_of<cqspc::ResourceGenerator, cqspc::Mine>(thingies)) {
+            auto& generator = GetApp().GetUniverse().get<cqspc::ResourceGenerator>(thingies);
+            resources += generator;
+        }
+    }
+
+    // Draw on table
+    DrawLedgerTable(GetApp().GetUniverse(), resources);
+
+    ImGui::EndChild();
+    ImGui::SameLine();
+
+    ImGui::BeginChild("AgriPanel", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f -
+                                 ImGui::GetStyle().ItemSpacing.y, 260), true,
+                      ImGuiWindowFlags_HorizontalScrollbar | window_flags);
+    ImGui::Text("Agriculture Sector");
+    ImGui::Text("GDP:");
+
+    ImGui::EndChild();
 }
