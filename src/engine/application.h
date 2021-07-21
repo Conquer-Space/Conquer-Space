@@ -22,6 +22,7 @@
 #include "engine/gui.h"
 #include "engine/renderer/text.h"
 #include "common/scripting/scripting.h"
+#include "engine/audio/iaudiointerface.h"
 
 namespace conquerspace {
 namespace engine {
@@ -76,8 +77,8 @@ class Application {
     */
     void run();
 
-    client::ProgramOptions& GetClientOptions() {
-        return m_program_options;
+    client::ClientOptions& GetClientOptions() {
+        return m_client_options;
     }
 
     int GetWindowHeight() const { return m_window_height; }
@@ -107,6 +108,9 @@ class Application {
     conquerspace::common::components::Universe& GetUniverse() { return *m_universe; }
     conquerspace::scripting::ScriptInterface& GetScriptInterface() {
         return *m_script_interface;
+    }
+    conquerspace::engine::audio::IAudioInterface& GetAudioInterface() {
+        return *m_audio_interface;
     }
 
     bool ButtonIsHeld(int btn) { return m_keys_held[btn]; }
@@ -173,7 +177,7 @@ class Application {
 
     SceneManager m_scene_manager;
 
-    client::ProgramOptions m_program_options;
+    client::ClientOptions m_client_options;
 
     double fps;
 
@@ -211,6 +215,11 @@ class Application {
     std::map<std::string, std::string> properties;
 
     std::unique_ptr<conquerspace::scripting::ScriptInterface> m_script_interface;
+    std::thread audio;
+
+    conquerspace::engine::audio::IAudioInterface *m_audio_interface;
+
+    bool to_halt;
 };
 }  // namespace engine
 }  // namespace conquerspace

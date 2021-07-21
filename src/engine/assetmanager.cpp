@@ -248,7 +248,8 @@ void cqspa::AssetLoader::LoadHjson(std::istream &asset_stream, Hjson::Value& val
     }
 }
 
-void conquerspace::asset::AssetLoader::LoadHjsonDir(std::string& path, Hjson::Value& value, Hjson::Value& hints) {
+void conquerspace::asset::AssetLoader::LoadHjsonDir(std::string& path, Hjson::Value& value,
+                                                                            Hjson::Value& hints) {
     for (const auto& dirEntry : std::filesystem::recursive_directory_iterator(path)) {
         // Loop through each hjson
         std::ifstream asset_stream(dirEntry.path().c_str());

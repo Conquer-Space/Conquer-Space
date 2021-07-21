@@ -6,15 +6,26 @@ add_subdirectory(hjson-cpp)
 
 add_subdirectory(fmt)
 
-set(SPDLOG_FMT_EXTERNAL ON)
+set(SPDLOG_FMT_EXTERNAL ON CACHE BOOL "" FORCE)
 add_subdirectory(spdlog)
 
 add_subdirectory(glm)
 
+set(ALSOFT_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(ALSOFT_UTILS OFF CACHE BOOL "" FORCE)
+set(ALSOFT_INSTALL_UTILS OFF CACHE BOOL "" FORCE)
+set(ALSOFT_INSTALL_CONFIG OFF CACHE BOOL "" FORCE)
+set(ALSOFT_UPDATE_BUILD_VERSION OFF CACHE BOOL "" FORCE)
+set(LIBTYPE "STATIC" CACHE BOOL "" FORCE)
+set(OPENAL_LIBRARY "(${CMAKE_SOURCE_DIR}/lib/openal-soft")
+set(OPENAL_INCLUDE_DIR "(${CMAKE_SOURCE_DIR}/lib/openal-soft/include")
+add_subdirectory(openal-soft)
+
+if (TESTS)
 add_subdirectory(googletest)
 
 set_target_properties(gmock gmock_main gtest_main gtest PROPERTIES FOLDER "GoogleTest")
-
+endif()
 # Add lua
 add_subdirectory(LuaJIT-cmake)
 
@@ -61,3 +72,6 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 add_library(libnoise-utils ${CMAKE_SOURCE_DIR}/lib/src/noiseutils.cpp)
 target_link_libraries(libnoise-utils PUBLIC libnoise)
 set_target_properties(ImGui PROPERTIES FOLDER "Libs")
+
+# Copy stb_vorbis header file
+configure_file(${CMAKE_SOURCE_DIR}/lib/stb/stb_vorbis.c ${CMAKE_SOURCE_DIR}/lib/include/stb_vorbis.h COPYONLY)

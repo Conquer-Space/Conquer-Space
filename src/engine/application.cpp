@@ -30,11 +30,18 @@
 #include "common/util/profiler.h"
 #include "engine/paths.h"
 #include "common/version.h"
+#include "engine/audio/audiointerface.h"
 
 int conquerspace::engine::Application::init() {
     LoggerInit();
     LogInfo();
     GlInit();
+
+    // Init audio
+    m_audio_interface = new conquerspace::engine::audio::AudioInterface();
+    m_audio_interface->Initialize();
+    // Set option things
+    m_audio_interface->SetMusicVolume(m_client_options.GetOptions()["audio"]["music"]);
 
     SetIcon();
     // Setup Dear ImGui context
@@ -65,6 +72,8 @@ int conquerspace::engine::Application::init() {
 }
 
 int conquerspace::engine::Application::destroy() {
+    m_audio_interface->Destruct();
+    delete m_audio_interface;
     m_universe.reset();
     m_script_interface.reset();
     ImGui_ImplOpenGL3_Shutdown();
@@ -77,27 +86,27 @@ int conquerspace::engine::Application::destroy() {
 
     SPDLOG_INFO("Killed GLFW");
     // Save options
-    std::ofstream config_path(m_program_options.GetDefaultLocation(), std::ios::trunc);
-    m_program_options.WriteOptions(config_path);
+    std::ofstream config_path(m_client_options.GetDefaultLocation(), std::ios::trunc);
+    m_client_options.WriteOptions(config_path);
     spdlog::shutdown();
     return 0;
 }
 
 conquerspace::engine::Application::Application() {
-    std::ifstream config_path(m_program_options.GetDefaultLocation());
+    std::ifstream config_path(m_client_options.GetDefaultLocation());
     if (config_path.good()) {
-        m_program_options.LoadOptions(config_path);
+        m_client_options.LoadOptions(config_path);
     } else {
-        m_program_options.LoadDefaultOptions();
+        m_client_options.LoadDefaultOptions();
     }
-    Hjson::Value window_dimensions = m_program_options.GetOptions()["window"];
+    Hjson::Value window_dimensions = m_client_options.GetOptions()["window"];
     m_window_width = window_dimensions["width"];
     m_window_height = window_dimensions["height"];
 
     // Set icon path
-    icon_path = m_program_options.GetOptions()["icon"].to_string();
+    icon_path = m_client_options.GetOptions()["icon"].to_string();
 
-    full_screen = static_cast<bool>(m_program_options.GetOptions()["full_screen"]);
+    full_screen = static_cast<bool>(m_client_options.GetOptions()["full_screen"]);
 }
 
 void conquerspace::engine::Application::run() {
@@ -108,7 +117,7 @@ void conquerspace::engine::Application::run() {
         // Fail
         return;
     }
-
+    m_audio_interface->StartWorker();
     while (ShouldExit()) {
         // Calculate FPS
         double currentFrame = GetTime();
@@ -169,8 +178,7 @@ void conquerspace::engine::Application::ExitApplication() {
     glfwSetWindowShouldClose(m_window, true);
 }
 
-void conquerspace::engine::Application::DrawText(const std::string& text, float x,
-                                                 float y) {
+void conquerspace::engine::Application::DrawText(const std::string& text, float x, float y) {
     if (fontShader != nullptr && m_font != nullptr) {
     glm::mat4 projection =
         glm::ortho(0.0f, static_cast<float>(GetWindowWidth()), 0.0f,
@@ -191,14 +199,12 @@ void conquerspace::engine::Application::AddCallbacks() {
     // Set user pointer
     glfwSetWindowUserPointer(m_window, this);
 
-    auto key_callback = [](GLFWwindow* _w, int key, int scancode, int action,
-                           int mods) {
+    auto key_callback = [](GLFWwindow* _w, int key, int scancode, int action, int mods) {
         static_cast<Application*>(glfwGetWindowUserPointer(_w))
             ->KeyboardCallback(_w, key, scancode, action, mods);
     };
 
-    auto cursor_position_callback = [](GLFWwindow* _w, double xpos,
-                                       double ypos) {
+    auto cursor_position_callback = [](GLFWwindow* _w, double xpos, double ypos) {
         static_cast<Application*>(glfwGetWindowUserPointer(_w))
             ->MousePositionCallback(_w, xpos, ypos);
     };
@@ -207,8 +213,7 @@ void conquerspace::engine::Application::AddCallbacks() {
         static_cast<Application*>(glfwGetWindowUserPointer(_w))->MouseEnterCallback(_w, entered);
     };
 
-    auto mouse_button_callback = [](GLFWwindow* _w, int button, int action,
-                                    int mods) {
+    auto mouse_button_callback = [](GLFWwindow* _w, int button, int action, int mods) {
         static_cast<Application*>(glfwGetWindowUserPointer(_w))
             ->MouseButtonCallback(_w, button, action, mods);
     };
@@ -270,8 +275,7 @@ void conquerspace::engine::Application::InitFonts() {
     markdownConfig.headingFormats[2] = {h3font, true};
 }
 
-void conquerspace::engine::Application::KeyboardCallback(GLFWwindow* _w,
-                                                         int key, int scancode,
+void conquerspace::engine::Application::KeyboardCallback(GLFWwindow* _w, int key, int scancode,
                                                          int action, int mods) {
     if (action == GLFW_PRESS) {
         m_keys_held[key] = true;
@@ -282,20 +286,16 @@ void conquerspace::engine::Application::KeyboardCallback(GLFWwindow* _w,
     }
 }
 
-void conquerspace::engine::Application::MousePositionCallback(GLFWwindow* _w,
-                                                              double xpos,
+void conquerspace::engine::Application::MousePositionCallback(GLFWwindow* _w, double xpos,
                                                               double ypos) {
     m_mouse_x = xpos;
     m_mouse_y = ypos;
 }
 
-void conquerspace::engine::Application::MouseEnterCallback(GLFWwindow* _w,
-                                                           int entered) {}
+void conquerspace::engine::Application::MouseEnterCallback(GLFWwindow* _w, int entered) {}
 
-void conquerspace::engine::Application::MouseButtonCallback(GLFWwindow* _w,
-                                                            int button,
-                                                            int action,
-                                                            int mods) {
+void conquerspace::engine::Application::MouseButtonCallback(GLFWwindow* _w,  int button,
+                                                            int action, int mods) {
     if (action == GLFW_PRESS) {
         m_mouse_keys_held[button] = true;
         m_mouse_keys_pressed[button] = true;
@@ -307,8 +307,7 @@ void conquerspace::engine::Application::MouseButtonCallback(GLFWwindow* _w,
     }
 }
 
-void conquerspace::engine::Application::ScrollCallback(GLFWwindow* _w,
-                                                       double xoffset,
+void conquerspace::engine::Application::ScrollCallback(GLFWwindow* _w, double xoffset,
                                                        double yoffset) {
     m_scroll_amount = yoffset;
 }
