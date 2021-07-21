@@ -3,6 +3,9 @@
 */
 #include "client/scenes/universescene.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include <fmt/format.h>
 
 #include <cmath>

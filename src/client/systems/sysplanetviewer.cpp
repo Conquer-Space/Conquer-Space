@@ -3,6 +3,9 @@
 */
 #include "client/systems/sysplanetviewer.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include <noiseutils.h>
 #include <noise/noise.h>
 

@@ -3,6 +3,9 @@
  */
 #include "client/systems/sysstarsystemrenderer.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include <noise/noise.h>
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -81,22 +84,18 @@ void conquerspace::client::systems::SysStarSystemRenderer::Initialize() {
     overlay_renderer.InitTexture();
     primitive::MakeTexturedPaneMesh(overlay_renderer.mesh_output, true);
     overlay_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("framebuffervert", "framebufferfrag");
-    overlay_renderer.buffer_shader.setInt("screenTexture", 0);
 
     buffer_renderer.InitTexture();
     primitive::MakeTexturedPaneMesh(buffer_renderer.mesh_output, true);
     buffer_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("framebuffervert", "framebufferfrag");
-    buffer_renderer.buffer_shader.setInt("screenTexture", 0);
 
     planet_renderer.InitTexture();
     primitive::MakeTexturedPaneMesh(planet_renderer.mesh_output, true);
     planet_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("framebuffervert", "framebufferfrag");
-    planet_renderer.buffer_shader.setInt("screenTexture", 0);
 
     skybox_renderer.InitTexture();
     primitive::MakeTexturedPaneMesh(skybox_renderer.mesh_output, true);
     skybox_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("framebuffervert", "framebufferfrag");
-    skybox_renderer.buffer_shader.setInt("screenTexture", 0);
 }
 
 void conquerspace::client::systems::SysStarSystemRenderer::OnTick() {
@@ -110,15 +109,10 @@ void conquerspace::client::systems::SysStarSystemRenderer::OnTick() {
 void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     namespace cqspb = conquerspace::common::components::bodies;
     namespace cqsps = conquerspace::common::components::ships;
-    buffer_renderer.BeginDraw();
-    buffer_renderer.Clear();
-    buffer_renderer.EndDraw();
-    planet_renderer.BeginDraw();
-    planet_renderer.Clear();
-    planet_renderer.EndDraw();
-    overlay_renderer.BeginDraw();
-    overlay_renderer.Clear();
-    overlay_renderer.EndDraw();
+    // Check for resized window
+    buffer_renderer.NewFrame();
+    planet_renderer.NewFrame();
+    overlay_renderer.NewFrame();
 
     glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -192,6 +186,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     }
     // Draw Ships
     auto ships = m_app.GetUniverse().view<ToRender, cqsps::Ship>();
+    ship_overlay.shaderProgram->UseProgram();
     for (auto [ent_id, ship] : ships.each()) {
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
         ship_overlay.shaderProgram->setVec4("color", 1, 0, 0, 1);
@@ -308,8 +303,6 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawEntityName(
 
 
 void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanetIcon(glm::vec3 &object_pos) {
-
-
     glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
     glm::mat4 planetDispMat = glm::mat4(1.0f);
     if (pos.z >= 1 || pos.z <= -1) {

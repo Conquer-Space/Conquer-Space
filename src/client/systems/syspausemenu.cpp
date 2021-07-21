@@ -3,6 +3,9 @@
 */
 #include "client/systems/syspausemenu.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include "client/scenes/universescene.h"
 #include "client/systems/sysoptionswindow.h"
 #include "common/version.h"

@@ -3,6 +3,10 @@
 */
 #include "client/systems/systurnsavewindow.h"
 
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include "engine/gui.h"
 
 void conquerspace::client::systems::SysTurnSaveWindow::Init() {

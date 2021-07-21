@@ -22,17 +22,21 @@ class TextureRenderer {
 class FramebufferRenderer {
  public:
     unsigned int framebuffer;
-    unsigned int textureColorbuffer;
+    unsigned int colorbuffer;
     conquerspace::asset::ShaderProgram buffer_shader;
     conquerspace::engine::Mesh mesh_output;
-    void InitTexture();
+    void InitTexture(int width  = 1280, int height = 720);
     void Clear();
     void BeginDraw();
     void EndDraw();
     void RenderBuffer();
+    void Free();
+    void NewFrame();
 };
 
-
+/*
+* In progress, not working.
+*/
 class AAFrameBufferRenderer {
     unsigned int framebuffer;
     unsigned int intermediateFBO;

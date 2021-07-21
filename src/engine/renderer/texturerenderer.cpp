@@ -61,18 +61,17 @@ void conquerspace::engine::TextureRenderer::RenderBuffer() {
     glActiveTexture(GL_TEXTURE0);
 }
 
-void conquerspace::engine::FramebufferRenderer::InitTexture() {
-    int width = 1280, height = 720;
+void conquerspace::engine::FramebufferRenderer::InitTexture(int width, int height) {
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
     // create a color attachment texture
 
-    glGenTextures(1, &textureColorbuffer);
-    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    glGenTextures(1, &colorbuffer);
+    glBindTexture(GL_TEXTURE_2D, colorbuffer);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorbuffer, 0);
     // create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
     unsigned int rbo;
     glGenRenderbuffers(1, &rbo);
@@ -100,7 +99,7 @@ void conquerspace::engine::FramebufferRenderer::EndDraw() {
 void conquerspace::engine::FramebufferRenderer::RenderBuffer() {
     buffer_shader.UseProgram();
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    glBindTexture(GL_TEXTURE_2D, colorbuffer);
 
     glBindVertexArray(mesh_output.VAO);
     if (mesh_output.buffer_type == 1) {
@@ -115,6 +114,18 @@ void conquerspace::engine::FramebufferRenderer::RenderBuffer() {
     glActiveTexture(GL_TEXTURE0);
 }
 
+void conquerspace::engine::FramebufferRenderer::Free() {
+    glDeleteFramebuffers(1, &framebuffer);
+    glDeleteBuffers(1, &colorbuffer);
+}
+
+void conquerspace::engine::FramebufferRenderer::NewFrame() {
+    BeginDraw();
+    Clear();
+    EndDraw();
+    // Check if window size changed, and then change the window size.
+
+}
 
 void conquerspace::engine::AAFrameBufferRenderer::InitTexture() {
     const int SCR_WIDTH = 1280, SCR_HEIGHT = 720;

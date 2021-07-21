@@ -3,9 +3,6 @@
  */
 #pragma once
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 #include <spdlog/spdlog.h>
 
 #include <memory>
@@ -23,6 +20,7 @@
 #include "engine/renderer/text.h"
 #include "common/scripting/scripting.h"
 #include "engine/audio/iaudiointerface.h"
+#include "engine/window.h"
 
 namespace conquerspace {
 namespace engine {
@@ -81,16 +79,16 @@ class Application {
         return m_client_options;
     }
 
-    int GetWindowHeight() const { return m_window_height; }
+    int GetWindowHeight() const { return m_window->GetWindowHeight(); }
 
-    int GetWindowWidth() const { return m_window_width; }
+    int GetWindowWidth() const { return m_window->GetWindowWidth(); }
 
     float GetDeltaTime() const { return deltaTime; }
     float GetFps() const { return fps; }
 
     conquerspace::asset::AssetManager& GetAssetManager() { return manager; }
 
-    bool ShouldExit() {return !glfwWindowShouldClose(m_window); }
+    bool ShouldExit();
 
     void ExitApplication();
 
@@ -113,18 +111,18 @@ class Application {
         return *m_audio_interface;
     }
 
-    bool ButtonIsHeld(int btn) { return m_keys_held[btn]; }
-    bool ButtonIsReleased(int btn) { return m_keys_released[btn]; }
-    bool ButtonIsPressed(int btn) { return m_keys_pressed[btn]; }
+    bool ButtonIsHeld(int btn) { return m_window->ButtonIsHeld(btn); }
+    bool ButtonIsReleased(int btn) { return m_window->ButtonIsReleased(btn); }
+    bool ButtonIsPressed(int btn) { return m_window->ButtonIsPressed(btn); }
 
-    double GetScrollAmount() { return m_scroll_amount; }
+    double GetScrollAmount() { return m_window->GetScrollAmount(); }
 
-    double GetMouseX() { return m_mouse_x; }
-    double GetMouseY() { return m_mouse_y; }
+    double GetMouseX() { return m_window->GetMouseX(); }
+    double GetMouseY() { return m_window->GetMouseY(); }
 
-    bool MouseButtonIsHeld(int btn) { return m_mouse_keys_held[btn]; }
-    bool MouseButtonIsReleased(int btn) { return m_mouse_keys_released[btn]; }
-    bool MouseButtonIsPressed(int btn) { return m_mouse_keys_pressed[btn]; }
+    bool MouseButtonIsHeld(int btn) { return  m_window->MouseButtonIsHeld(btn); }
+    bool MouseButtonIsReleased(int btn) { return m_window->MouseButtonIsReleased(btn); }
+    bool MouseButtonIsPressed(int btn) { return m_window->MouseButtonIsPressed(btn); }
 
     conquerspace::asset::Font*& GetFont() { return m_font; }
     void DrawText(const std::string& text, float x, float y);
@@ -136,24 +134,14 @@ class Application {
 
     double GetTime();
 
-    bool MouseDragged();
+    bool MouseDragged() { return m_window->MouseDragged(); }
 
     void SetWindowDimensions(int width, int height);
     void SetFullScreen(bool screen);
 
  private:
-    void AddCallbacks();
 
     void InitFonts();
-
-    void KeyboardCallback(GLFWwindow* _w, int key, int scancode, int action,
-                          int mods);
-    void MousePositionCallback(GLFWwindow* _w, double xpos, double ypos);
-    void MouseEnterCallback(GLFWwindow* _w, int entered);
-    void MouseButtonCallback(GLFWwindow* _w, int button, int action, int mods);
-    void ScrollCallback(GLFWwindow* _w, double xoffset, double yoffset);
-    void DropCallback(GLFWwindow* _w, int count, const char** paths);
-    void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
 
     void SetIcon();
 
@@ -170,8 +158,7 @@ class Application {
      */
     int destroy();
 
-    GLFWwindow *m_window;
-    int m_window_width, m_window_height;
+    Window* m_window;
     bool full_screen;
     std::string icon_path;
 
@@ -190,24 +177,6 @@ class Application {
     conquerspace::asset::AssetManager manager;
 
     std::unique_ptr<conquerspace::common::components::Universe> m_universe;
-
-    double m_mouse_x;
-    double m_mouse_y;
-
-    double m_mouse_x_on_pressed;
-    double m_mouse_y_on_pressed;
-
-    bool m_mouse_keys_held[GLFW_MOUSE_BUTTON_LAST] = {false};
-    bool m_mouse_keys_released[GLFW_MOUSE_BUTTON_LAST] = {false};
-    bool m_mouse_keys_pressed[GLFW_MOUSE_BUTTON_LAST] = {false};
-
-    bool m_keys_held[GLFW_KEY_LAST] = {false};
-    bool m_keys_released[GLFW_KEY_LAST] = {false};
-    bool m_keys_pressed[GLFW_KEY_LAST] = {false};
-
-    double m_scroll_amount;
-
-    int m_mods;
 
     conquerspace::asset::Font* m_font = nullptr;
     conquerspace::asset::ShaderProgram* fontShader = nullptr;

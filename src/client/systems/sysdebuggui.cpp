@@ -3,6 +3,9 @@
 */
 #include "client/systems/sysdebuggui.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include "client/systems/sysstarsystemrenderer.h"
 #include "common/util/profiler.h"
 

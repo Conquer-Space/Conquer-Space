@@ -3,34 +3,230 @@
  */
 #include "engine/application.h"
 
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/basic_file_sink.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
-#include <hjson.h>
-
-#include <fmt/core.h>
-
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include <fmt/core.h>
+#include <hjson.h>
+
+#include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/spdlog.h>
 #include <stb_image.h>
 
-#include <iostream>
-#include <fstream>
-#include <string>
+#include <boost/config.hpp>
+#include <boost/version.hpp>
 #include <filesystem>
-#include <vector>
-
+#include <fstream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-#include <boost/version.hpp>
-#include <boost/config.hpp>
+#include <iostream>
+#include <string>
+#include <vector>
 
 #include "common/util/profiler.h"
-#include "engine/paths.h"
 #include "common/version.h"
 #include "engine/audio/audiointerface.h"
+#include "engine/paths.h"
+
+namespace conquerspace::engine {
+class GLWindow : public Window {
+   public:
+    bool ButtonIsHeld(int btn) { return m_keys_held[btn]; }
+    bool ButtonIsReleased(int btn) { return m_keys_released[btn]; }
+    bool ButtonIsPressed(int btn) { return m_keys_pressed[btn]; }
+    double GetMouseX() { return m_mouse_x; }
+    double GetMouseY() { return m_mouse_y; }
+
+    bool MouseButtonIsHeld(int btn) { return m_mouse_keys_held[btn]; }
+    bool MouseButtonIsReleased(int btn) { return m_mouse_keys_released[btn]; }
+    bool MouseButtonIsPressed(int btn) { return m_mouse_keys_pressed[btn]; }
+
+    bool MouseDragged() {
+        return !(m_mouse_x == m_mouse_x_on_pressed &&
+                 m_mouse_y == m_mouse_y_on_pressed);
+    }
+
+    void KeyboardCallback(GLFWwindow* _w, int key, int scancode, int action,
+                          int mods) {
+        if (action == GLFW_PRESS) {
+            m_keys_held[key] = true;
+            m_keys_pressed[key] = true;
+        } else if (action == GLFW_RELEASE) {
+            m_keys_held[key] = false;
+            m_keys_released[key] = true;
+        }
+    }
+
+    void MousePositionCallback(GLFWwindow* _w, double xpos, double ypos) {
+        m_mouse_x = xpos;
+        m_mouse_y = ypos;
+    }
+
+    void MouseEnterCallback(GLFWwindow* _w, int entered) {}
+
+    void MouseButtonCallback(GLFWwindow* _w, int button, int action, int mods) {
+        if (action == GLFW_PRESS) {
+            m_mouse_keys_held[button] = true;
+            m_mouse_keys_pressed[button] = true;
+            m_mouse_x_on_pressed = m_mouse_x;
+            m_mouse_y_on_pressed = m_mouse_y;
+        } else if (action == GLFW_RELEASE) {
+            m_mouse_keys_held[button] = false;
+            m_mouse_keys_released[button] = true;
+        }
+    }
+
+    void ScrollCallback(GLFWwindow* _w, double xoffset, double yoffset) {
+        m_scroll_amount = yoffset;
+    }
+
+    void DropCallback(GLFWwindow* _w, int count, const char** paths) {}
+
+    void FrameBufferSizeCallback(GLFWwindow* window, int width, int height) {
+        glViewport(0, 0, width, height);
+
+        m_window_width = width;
+        m_window_height = height;
+    }
+
+    void SetCallbacks() {
+        // Set user pointer
+        glfwSetWindowUserPointer(window, this);
+
+        auto key_callback = [](GLFWwindow* _w, int key, int scancode,
+                               int action, int mods) {
+            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))
+                ->KeyboardCallback(_w, key, scancode, action, mods);
+        };
+
+        auto cursor_position_callback = [](GLFWwindow* _w, double xpos,
+                                           double ypos) {
+            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))
+                ->MousePositionCallback(_w, xpos, ypos);
+        };
+
+        auto cursor_enter_callback = [](GLFWwindow* _w, int entered) {
+            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))
+                ->MouseEnterCallback(_w, entered);
+        };
+
+        auto mouse_button_callback = [](GLFWwindow* _w, int button, int action,
+                                        int mods) {
+            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))
+                ->MouseButtonCallback(_w, button, action, mods);
+        };
+
+        auto scroll_callback = [](GLFWwindow* _w, double xoffset,
+                                  double yoffset) {
+            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))
+                ->ScrollCallback(_w, xoffset, yoffset);
+        };
+
+        auto drop_callback = [](GLFWwindow* _w, int count, const char** paths) {
+            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))
+                ->DropCallback(_w, count, paths);
+        };
+
+        auto frame_buffer_callback = [](GLFWwindow* _w, int width, int height) {
+            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))
+                ->FrameBufferSizeCallback(_w, width, height);
+        };
+
+        glfwSetKeyCallback(window, key_callback);
+        glfwSetCursorPosCallback(window, cursor_position_callback);
+        glfwSetCursorEnterCallback(window, cursor_enter_callback);
+        glfwSetMouseButtonCallback(window, mouse_button_callback);
+        glfwSetScrollCallback(window, scroll_callback);
+        glfwSetDropCallback(window, drop_callback);
+        glfwSetFramebufferSizeCallback(window, frame_buffer_callback);
+    }
+
+    void OnFrame() {
+        // Before polling events, clear the buttons
+        std::memset(m_keys_pressed, false, sizeof(m_keys_pressed));
+        std::memset(m_keys_released, false, sizeof(m_keys_released));
+        std::memset(m_mouse_keys_pressed, false, sizeof(m_mouse_keys_pressed));
+        std::memset(m_mouse_keys_released, false, sizeof(m_mouse_keys_released));
+        m_scroll_amount = 0;
+    }
+
+    void SetWindowSize(int width, int height) {
+        m_window_width = width;
+        m_window_height = height;
+        glfwSetWindowSize(window, width, height);
+    }
+
+    int GetScrollAmount() { return m_scroll_amount; }
+    int GetWindowHeight() { return m_window_height; }
+    int GetWindowWidth() { return m_window_width; }
+
+    void InitWindow(int width, int height) {
+        glfwInit();
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_SAMPLES, 4);
+
+#ifdef __APPLE__
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+        m_window_width = width;
+        m_window_height = height;
+
+        // Create window
+        window = glfwCreateWindow(width, height, "Conquer Space", NULL, NULL);
+        if (window == NULL) {
+            glfwTerminate();
+            SPDLOG_CRITICAL("Cannot load glfw");
+        }
+
+        glfwMakeContextCurrent(window);
+
+        // Enable vsync
+        glfwSwapInterval(1);
+
+        // Add callbacks
+        SetCallbacks();
+
+        // Init glad
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+            glfwTerminate();
+            SPDLOG_CRITICAL("Cannot load glad");
+        }
+    }
+
+    GLFWwindow* window;
+
+   private:
+
+    double m_mouse_x;
+    double m_mouse_y;
+
+    double m_mouse_x_on_pressed;
+    double m_mouse_y_on_pressed;
+
+    bool m_mouse_keys_held[GLFW_MOUSE_BUTTON_LAST] = {false};
+    bool m_mouse_keys_released[GLFW_MOUSE_BUTTON_LAST] = {false};
+    bool m_mouse_keys_pressed[GLFW_MOUSE_BUTTON_LAST] = {false};
+
+    bool m_keys_held[GLFW_KEY_LAST] = {false};
+    bool m_keys_released[GLFW_KEY_LAST] = {false};
+    bool m_keys_pressed[GLFW_KEY_LAST] = {false};
+
+    double m_scroll_amount;
+
+    int m_mods;
+
+    int m_window_width, m_window_height;
+};
+
+GLFWwindow* window(Window* window) {
+    return reinterpret_cast<GLWindow*>(window)->window;
+}
+}  // namespace conquerspace::engine
 
 int conquerspace::engine::Application::init() {
     LoggerInit();
@@ -54,7 +250,7 @@ int conquerspace::engine::Application::init() {
     InitFonts();
 
     // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(m_window, true);
+    ImGui_ImplGlfw_InitForOpenGL(window(m_window), true);
     ImGui_ImplOpenGL3_Init("#version 130");
 
     if (full_screen) {
@@ -81,12 +277,13 @@ int conquerspace::engine::Application::destroy() {
     ImPlot::DestroyContext();
     ImGui::DestroyContext();
 
-    glfwDestroyWindow(m_window);
+    glfwDestroyWindow(window(m_window));
     glfwTerminate();
 
     SPDLOG_INFO("Killed GLFW");
     // Save options
-    std::ofstream config_path(m_client_options.GetDefaultLocation(), std::ios::trunc);
+    std::ofstream config_path(m_client_options.GetDefaultLocation(),
+                              std::ios::trunc);
     m_client_options.WriteOptions(config_path);
     spdlog::shutdown();
     return 0;
@@ -99,9 +296,6 @@ conquerspace::engine::Application::Application() {
     } else {
         m_client_options.LoadDefaultOptions();
     }
-    Hjson::Value window_dimensions = m_client_options.GetOptions()["window"];
-    m_window_width = window_dimensions["width"];
-    m_window_height = window_dimensions["height"];
 
     // Set icon path
     icon_path = m_client_options.GetOptions()["icon"].to_string();
@@ -157,90 +351,40 @@ void conquerspace::engine::Application::run() {
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         END_TIMED_BLOCK(ImGui_Render_Draw);
 
-        DrawText(fmt::format("FPS: {:.0f}", fps), GetWindowWidth() - 80, GetWindowHeight() - 24);
+        DrawText(fmt::format("FPS: {:.0f}", fps), GetWindowWidth() - 80,
+                 GetWindowHeight() - 24);
 
-        glfwSwapBuffers(m_window);
+        glfwSwapBuffers(window(m_window));
 
-        // Before polling events, clear the buttons
-        std::memset(m_keys_pressed, false, sizeof(m_keys_pressed));
-        std::memset(m_keys_released, false, sizeof(m_keys_released));
-        std::memset(m_mouse_keys_pressed, false, sizeof(m_mouse_keys_pressed));
-        std::memset(m_mouse_keys_released, false, sizeof(m_mouse_keys_released));
-        m_scroll_amount = 0;
-
+        m_window->OnFrame();
         glfwPollEvents();
     }
 
     destroy();
 }
 
-void conquerspace::engine::Application::ExitApplication() {
-    glfwSetWindowShouldClose(m_window, true);
+bool conquerspace::engine::Application::ShouldExit() {
+    return !glfwWindowShouldClose(window(m_window));
 }
 
-void conquerspace::engine::Application::DrawText(const std::string& text, float x, float y) {
+void conquerspace::engine::Application::ExitApplication() {
+    glfwSetWindowShouldClose(window(m_window), true);
+}
+
+void conquerspace::engine::Application::DrawText(const std::string& text,
+                                                 float x, float y) {
     if (fontShader != nullptr && m_font != nullptr) {
-    glm::mat4 projection =
-        glm::ortho(0.0f, static_cast<float>(GetWindowWidth()), 0.0f,
-                   static_cast<float>(GetWindowHeight()));
-    fontShader->UseProgram();
-    fontShader->setMat4("projection", projection);
-    conquerspace::asset::RenderText(*fontShader, *m_font, text, x, y, 16, glm::vec3(1.f, 1.f, 1.f));
+        glm::mat4 projection =
+            glm::ortho(0.0f, static_cast<float>(GetWindowWidth()), 0.0f,
+                       static_cast<float>(GetWindowHeight()));
+        fontShader->UseProgram();
+        fontShader->setMat4("projection", projection);
+        conquerspace::asset::RenderText(*fontShader, *m_font, text, x, y, 16,
+                                        glm::vec3(1.f, 1.f, 1.f));
     }
 }
 
 double conquerspace::engine::Application::GetTime() { return glfwGetTime(); }
-
-bool conquerspace::engine::Application::MouseDragged() {
-    return !(m_mouse_x == m_mouse_x_on_pressed && m_mouse_y == m_mouse_y_on_pressed);
-}
-
-void conquerspace::engine::Application::AddCallbacks() {
-    // Set user pointer
-    glfwSetWindowUserPointer(m_window, this);
-
-    auto key_callback = [](GLFWwindow* _w, int key, int scancode, int action, int mods) {
-        static_cast<Application*>(glfwGetWindowUserPointer(_w))
-            ->KeyboardCallback(_w, key, scancode, action, mods);
-    };
-
-    auto cursor_position_callback = [](GLFWwindow* _w, double xpos, double ypos) {
-        static_cast<Application*>(glfwGetWindowUserPointer(_w))
-            ->MousePositionCallback(_w, xpos, ypos);
-    };
-
-    auto cursor_enter_callback = [](GLFWwindow* _w, int entered) {
-        static_cast<Application*>(glfwGetWindowUserPointer(_w))->MouseEnterCallback(_w, entered);
-    };
-
-    auto mouse_button_callback = [](GLFWwindow* _w, int button, int action, int mods) {
-        static_cast<Application*>(glfwGetWindowUserPointer(_w))
-            ->MouseButtonCallback(_w, button, action, mods);
-    };
-
-    auto scroll_callback = [](GLFWwindow* _w, double xoffset, double yoffset) {
-        static_cast<Application*>(glfwGetWindowUserPointer(_w))
-            ->ScrollCallback(_w, xoffset, yoffset);
-    };
-
-    auto drop_callback = [](GLFWwindow* _w, int count, const char** paths) {
-        static_cast<Application*>(glfwGetWindowUserPointer(_w))
-            ->DropCallback(_w, count, paths);
-    };
-
-    auto frame_buffer_callback = [](GLFWwindow* _w, int width, int height) {
-        static_cast<Application*>(glfwGetWindowUserPointer(_w))
-            ->FrameBufferSizeCallback(_w, width, height);
-    };
-
-    glfwSetKeyCallback(m_window, key_callback);
-    glfwSetCursorPosCallback(m_window, cursor_position_callback);
-    glfwSetCursorEnterCallback(m_window, cursor_enter_callback);
-    glfwSetMouseButtonCallback(m_window, mouse_button_callback);
-    glfwSetScrollCallback(m_window, scroll_callback);
-    glfwSetDropCallback(m_window, drop_callback);
-    glfwSetFramebufferSizeCallback(m_window, frame_buffer_callback);
-}
 
 void conquerspace::engine::Application::InitFonts() {
     Hjson::Value fontDatabase;
@@ -275,129 +419,59 @@ void conquerspace::engine::Application::InitFonts() {
     markdownConfig.headingFormats[2] = {h3font, true};
 }
 
-void conquerspace::engine::Application::KeyboardCallback(GLFWwindow* _w, int key, int scancode,
-                                                         int action, int mods) {
-    if (action == GLFW_PRESS) {
-        m_keys_held[key] = true;
-        m_keys_pressed[key] = true;
-    } else if (action == GLFW_RELEASE) {
-        m_keys_held[key] = false;
-        m_keys_released[key] = true;
-    }
-}
-
-void conquerspace::engine::Application::MousePositionCallback(GLFWwindow* _w, double xpos,
-                                                              double ypos) {
-    m_mouse_x = xpos;
-    m_mouse_y = ypos;
-}
-
-void conquerspace::engine::Application::MouseEnterCallback(GLFWwindow* _w, int entered) {}
-
-void conquerspace::engine::Application::MouseButtonCallback(GLFWwindow* _w,  int button,
-                                                            int action, int mods) {
-    if (action == GLFW_PRESS) {
-        m_mouse_keys_held[button] = true;
-        m_mouse_keys_pressed[button] = true;
-        m_mouse_x_on_pressed = m_mouse_x;
-        m_mouse_y_on_pressed = m_mouse_y;
-    } else if (action == GLFW_RELEASE) {
-        m_mouse_keys_held[button] = false;
-        m_mouse_keys_released[button] = true;
-    }
-}
-
-void conquerspace::engine::Application::ScrollCallback(GLFWwindow* _w, double xoffset,
-                                                       double yoffset) {
-    m_scroll_amount = yoffset;
-}
-
-void conquerspace::engine::Application::DropCallback(GLFWwindow* _w, int count,
-                                                     const char** paths) {}
-
-void conquerspace::engine::Application::FrameBufferSizeCallback(
-    GLFWwindow* window, int width, int height) {
-    glViewport(0, 0, width, height);
-
-    m_window_width = width;
-    m_window_height = height;
-}
-
 void conquerspace::engine::Application::SetIcon() {
     GLFWimage images[1];
-    images[0].pixels = stbi_load(("../data/" + icon_path).c_str(), &images[0].width,
-                                                                    &images[0].height, 0, 4);
-    glfwSetWindowIcon(m_window, 1, images);
+    images[0].pixels = stbi_load(("../data/" + icon_path).c_str(),
+                                 &images[0].width, &images[0].height, 0, 4);
+    glfwSetWindowIcon(window(m_window), 1, images);
     stbi_image_free(images[0].pixels);
 }
 
 void conquerspace::engine::Application::GlInit() {
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_SAMPLES, 4);
+    m_window = new GLWindow();
+    m_window->InitWindow(m_client_options.GetOptions()["window"]["width"], m_client_options.GetOptions()["window"]["height"]);
 
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-
-    // Create window
-    m_window = glfwCreateWindow(m_window_width, m_window_height, "Conquer Space", NULL, NULL);
-    if (m_window == NULL) {
-        glfwTerminate();
-        SPDLOG_CRITICAL("Cannot load glfw");
-    }
-
-    glfwMakeContextCurrent(m_window);
-
-    // Enable vsync
-    glfwSwapInterval(1);
-
-    // Add callbacks
-    AddCallbacks();
-
-    // Init glad
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        glfwTerminate();
-        SPDLOG_CRITICAL("Cannot load glad");
-    }
+    // Print gl information
     SPDLOG_INFO(" --- GL information ---");
     SPDLOG_INFO("GL version: {}", glGetString(GL_VERSION));
     SPDLOG_INFO("GL vendor: {}", glGetString(GL_VENDOR));
     SPDLOG_INFO("GL Renderer: {}", glGetString(GL_RENDERER));
-    SPDLOG_INFO("GL shading language: {}", glGetString(GL_SHADING_LANGUAGE_VERSION));
+    SPDLOG_INFO("GL shading language: {}",
+                glGetString(GL_SHADING_LANGUAGE_VERSION));
     SPDLOG_INFO(" --- GL information ---");
 }
 
 void conquerspace::engine::Application::LoggerInit() {
     // Get path
     properties["data"] = GetConquerSpacePath();
-    std::filesystem::path log_folder = std::filesystem::path(properties["data"]) / "logs";
+    std::filesystem::path log_folder =
+        std::filesystem::path(properties["data"]) / "logs";
     // Make logs folder
     // Initialize logger
     std::vector<spdlog::sink_ptr> sinks;
     auto error_log = std::make_shared<spdlog::sinks::basic_file_sink_mt>(
-                                                        (log_folder/"error.txt").string(), true);
+        (log_folder / "error.txt").string(), true);
     error_log->set_level(spdlog::level::err);
     sinks.push_back(error_log);
 
 #ifdef NDEBUG
     spdlog::flush_every(std::chrono::seconds(3));
     auto basic_logger = std::make_shared<spdlog::sinks::basic_file_sink_mt>(
-                                                        (log_folder/"info.txt").string(), true);
+        (log_folder / "info.txt").string(), true);
     sinks.push_back(basic_logger);
 #else
-    auto console_logger = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+    auto console_logger =
+        std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
     sinks.push_back(console_logger);
 #endif
-    logger = std::make_shared<spdlog::logger>("application", sinks.begin(), sinks.end());
+    logger = std::make_shared<spdlog::logger>("application", sinks.begin(),
+                                              sinks.end());
     spdlog::set_default_logger(logger);
     spdlog::set_pattern("[%T.%e] [%^%l%$] [%n] [%s:%#] %v");
 }
 
 void conquerspace::engine::Application::LogInfo() {
-    SPDLOG_INFO("Conquer Space {}", CQSP_VERSION_STRING);
+    SPDLOG_INFO("Conquer Space {} {}", CQSP_VERSION_STRING, GIT_INFO);
     SPDLOG_INFO("Platform: {}", BOOST_PLATFORM);
     SPDLOG_INFO("Compiled {} {}", __DATE__, __TIME__);
     SPDLOG_INFO("Compiled on {} with {}", BOOST_COMPILER, BOOST_STDLIB);
@@ -407,20 +481,21 @@ void conquerspace::engine::Application::LogInfo() {
 }
 
 void conquerspace::engine::Application::SetWindowDimensions(int width, int height) {
-    glfwSetWindowSize(m_window, width, height);
+    m_window->SetWindowSize(width, height);
 }
 
 void conquerspace::engine::Application::SetFullScreen(bool screen) {
     if (screen == true) {
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowMonitor(m_window, glfwGetPrimaryMonitor(), 0, 0,
+        glfwSetWindowMonitor(window(m_window), glfwGetPrimaryMonitor(), 0, 0,
                              mode->width, mode->height, mode->refreshRate);
     } else {
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowMonitor(m_window, NULL, 40, 40,
-                                GetClientOptions().GetOptions()["window"]["width"],
-                                GetClientOptions().GetOptions()["window"]["height"],
-                                mode->refreshRate);
+        glfwSetWindowMonitor(
+            window(m_window), NULL, 40, 40,
+            GetClientOptions().GetOptions()["window"]["width"],
+            GetClientOptions().GetOptions()["window"]["height"],
+            mode->refreshRate);
     }
 }
 
