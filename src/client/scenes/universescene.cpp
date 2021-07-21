@@ -121,7 +121,7 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
         // If clicks on object, go to the planet
         entt::entity ent = GetApp().GetUniverse()
             .view<conquerspace::client::systems::MouseOverEntity>().front();
-        if (GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) && ent != entt::null) {
+        if (GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) && ent != entt::null && !GetApp().MouseDragged()) {
             // Then go to the object
             SeePlanet(GetApp(), ent);
         }

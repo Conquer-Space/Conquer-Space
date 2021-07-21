@@ -90,6 +90,7 @@ class GLWindow : public Window {
 
         m_window_width = width;
         m_window_height = height;
+        window_size_changed = true;
     }
 
     void SetCallbacks() {
@@ -151,6 +152,7 @@ class GLWindow : public Window {
         std::memset(m_mouse_keys_pressed, false, sizeof(m_mouse_keys_pressed));
         std::memset(m_mouse_keys_released, false, sizeof(m_mouse_keys_released));
         m_scroll_amount = 0;
+        window_size_changed = false;
     }
 
     void SetWindowSize(int width, int height) {
@@ -158,6 +160,8 @@ class GLWindow : public Window {
         m_window_height = height;
         glfwSetWindowSize(window, width, height);
     }
+
+    bool WindowSizeChanged() { return window_size_changed; }
 
     int GetScrollAmount() { return m_scroll_amount; }
     int GetWindowHeight() { return m_window_height; }
@@ -201,7 +205,7 @@ class GLWindow : public Window {
     GLFWwindow* window;
 
    private:
-
+    bool window_size_changed;
     double m_mouse_x;
     double m_mouse_y;
 
@@ -485,10 +489,10 @@ void conquerspace::engine::Application::SetWindowDimensions(int width, int heigh
 }
 
 void conquerspace::engine::Application::SetFullScreen(bool screen) {
-    if (screen == true) {
+    if (screen) {
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowMonitor(window(m_window), glfwGetPrimaryMonitor(), 0, 0,
-                             mode->width, mode->height, mode->refreshRate);
+                             mode->width, mode->height, GLFW_DONT_CARE);
     } else {
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowMonitor(

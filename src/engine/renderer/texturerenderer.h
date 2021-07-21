@@ -4,6 +4,7 @@
 #pragma once
 
 #include "engine/renderer/renderer.h"
+#include "engine/window.h"
 
 namespace conquerspace {
 namespace engine {
@@ -31,7 +32,7 @@ class FramebufferRenderer {
     void EndDraw();
     void RenderBuffer();
     void Free();
-    void NewFrame();
+    void NewFrame(Window& window);
 };
 
 /*

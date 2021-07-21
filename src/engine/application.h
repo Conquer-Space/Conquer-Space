@@ -124,6 +124,8 @@ class Application {
     bool MouseButtonIsReleased(int btn) { return m_window->MouseButtonIsReleased(btn); }
     bool MouseButtonIsPressed(int btn) { return m_window->MouseButtonIsPressed(btn); }
 
+    Window* GetWindow() { return m_window; }
+
     conquerspace::asset::Font*& GetFont() { return m_font; }
     void DrawText(const std::string& text, float x, float y);
 
@@ -158,8 +160,8 @@ class Application {
      */
     int destroy();
 
-    Window* m_window;
     bool full_screen;
+    Window* m_window;
     std::string icon_path;
 
     SceneManager m_scene_manager;

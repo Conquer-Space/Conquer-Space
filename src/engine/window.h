@@ -29,6 +29,8 @@ class Window {
     virtual void OnFrame() = 0;
 
     virtual void InitWindow(int width, int height) = 0;
+
+    virtual bool WindowSizeChanged() = 0;
 };
 }  // namespace engine
 }  // namespace conquerspace

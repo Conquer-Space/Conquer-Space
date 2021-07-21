@@ -24,6 +24,7 @@
 #include "common/components/orbit.h"
 #include "common/components/name.h"
 #include "common/components/ships.h"
+#include "common/util/profiler.h"
 
 conquerspace::client::systems::SysStarSystemRenderer::SysStarSystemRenderer
                                                 (conquerspace::common::components::Universe &_u,
@@ -81,15 +82,15 @@ void conquerspace::client::systems::SysStarSystemRenderer::Initialize() {
     sun.mesh = sphere_mesh;
     sun.shaderProgram = star_shader;
 
-    overlay_renderer.InitTexture();
+    overlay_renderer.InitTexture(m_app.GetWindowWidth(), m_app.GetWindowHeight());
     primitive::MakeTexturedPaneMesh(overlay_renderer.mesh_output, true);
     overlay_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("framebuffervert", "framebufferfrag");
 
-    buffer_renderer.InitTexture();
+    buffer_renderer.InitTexture(m_app.GetWindowWidth(), m_app.GetWindowHeight());
     primitive::MakeTexturedPaneMesh(buffer_renderer.mesh_output, true);
     buffer_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("framebuffervert", "framebufferfrag");
 
-    planet_renderer.InitTexture();
+    planet_renderer.InitTexture(m_app.GetWindowWidth(), m_app.GetWindowHeight());
     primitive::MakeTexturedPaneMesh(planet_renderer.mesh_output, true);
     planet_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("framebuffervert", "framebufferfrag");
 
@@ -110,9 +111,12 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     namespace cqspb = conquerspace::common::components::bodies;
     namespace cqsps = conquerspace::common::components::ships;
     // Check for resized window
-    buffer_renderer.NewFrame();
-    planet_renderer.NewFrame();
-    overlay_renderer.NewFrame();
+    BEGIN_TIMED_BLOCK(System_Renderer_New_Frame)
+    buffer_renderer.NewFrame(*m_app.GetWindow());
+    planet_renderer.NewFrame(*m_app.GetWindow());
+    overlay_renderer.NewFrame(*m_app.GetWindow());
+    skybox_renderer.NewFrame(*m_app.GetWindow());
+    END_TIMED_BLOCK(System_Renderer_New_Frame)
 
     glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -184,6 +188,8 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
             DrawTerrainlessPlanet(object_pos);
         }
     }
+
+    BEGIN_TIMED_BLOCK(System_Renderer_Ship_Drawing)
     // Draw Ships
     auto ships = m_app.GetUniverse().view<ToRender, cqsps::Ship>();
     ship_overlay.shaderProgram->UseProgram();
@@ -192,10 +198,10 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
         ship_overlay.shaderProgram->setVec4("color", 1, 0, 0, 1);
         DrawShipIcon(object_pos);
     }
+    END_TIMED_BLOCK(System_Renderer_Ship_Drawing)
 
     // Draw sky box
     skybox_renderer.BeginDraw();
-    skybox_renderer.Clear();
     sky.shaderProgram->UseProgram();
     sky.shaderProgram->setMat4("view", glm::mat4(glm::mat3(camera_matrix)));
     sky.shaderProgram->setMat4("projection", projection);
@@ -205,10 +211,12 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     glDepthFunc(GL_LESS);
     skybox_renderer.EndDraw();
 
+    BEGIN_TIMED_BLOCK(System_Renderer_Render_Buffer)
     overlay_renderer.RenderBuffer();
     planet_renderer.RenderBuffer();
     buffer_renderer.RenderBuffer();
     skybox_renderer.RenderBuffer();
+    END_TIMED_BLOCK(System_Renderer_Render_Buffer)
 }
 
 void conquerspace::client::systems::SysStarSystemRenderer::SeeStarSystem(

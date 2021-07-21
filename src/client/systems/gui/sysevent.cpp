@@ -56,8 +56,8 @@ void conquerspace::client::systems::gui::SysEvent::DoUI(int delta_time) {
                     pressed = i;
                     // Check if it has an event
                     if (action_result->has_event) {
-                        GetApp().GetScriptInterface()
-                                    .ParseResult(action_result->action(env->table));
+                        sol::protected_function_result res = action_result->action(env->table);
+                        GetApp().GetScriptInterface().ParseResult(res);
                     }
                 }
                 if (ImGui::IsItemHovered() && !action_result->tooltip.empty()) {

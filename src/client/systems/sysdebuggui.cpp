@@ -64,7 +64,7 @@ void SysDebugMenu::CqspMetricsWindow() {
 
         ImPlot::SetNextPlotLimitsX(GetApp().GetTime() - fps_history_len, GetApp().GetTime(),
                                                                             ImGuiCond_Always);
-        if (ImPlot::BeginPlot("Profiler", "ms", "Run time (s)", ImVec2(-1, 0),
+        if (ImPlot::BeginPlot("Profiler", "Time (s)", "Run time (us)", ImVec2(-1, 0),
                                     ImPlotFlags_NoMousePos | ImPlotFlags_NoChild,
                                     ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit)) {
             ImPlot::SetLegendLocation(ImPlotLocation_SouthEast);
@@ -80,6 +80,20 @@ void SysDebugMenu::CqspMetricsWindow() {
 }
 
 void SysDebugMenu::DoUI(int delta_time) {
+    if (to_show_imgui_about) {
+        ImGui::ShowAboutWindow(&to_show_imgui_about);
+    }
+    if (to_show_metrics_window) {
+        ImGui::ShowMetricsWindow(&to_show_metrics_window);
+    }
+    if (to_show_implot_metrics) {
+        ImPlot::ShowMetricsWindow(&to_show_implot_metrics);
+    }
+
+    if (to_show_cqsp_metrics) {
+        CqspMetricsWindow();
+    }
+
     if (!to_show_window) {
         return;
     }
@@ -163,20 +177,6 @@ void SysDebugMenu::DoUI(int delta_time) {
     }
 
     ImGui::End();
-
-    if (to_show_imgui_about) {
-        ImGui::ShowAboutWindow(&to_show_imgui_about);
-    }
-    if (to_show_metrics_window) {
-        ImGui::ShowMetricsWindow(&to_show_metrics_window);
-    }
-    if (to_show_implot_metrics) {
-        ImPlot::ShowMetricsWindow(&to_show_implot_metrics);
-    }
-
-    if (to_show_cqsp_metrics) {
-        CqspMetricsWindow();
-    }
 }
 
 void SysDebugMenu::DoUpdate(int delta_time) {

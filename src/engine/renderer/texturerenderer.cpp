@@ -5,6 +5,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include "common/util/profiler.h"
+
 void conquerspace::engine::TextureRenderer::Draw() {
     if (framebuffer == 0) {
         glGenFramebuffers(1, &framebuffer);
@@ -119,12 +121,16 @@ void conquerspace::engine::FramebufferRenderer::Free() {
     glDeleteBuffers(1, &colorbuffer);
 }
 
-void conquerspace::engine::FramebufferRenderer::NewFrame() {
+void conquerspace::engine::FramebufferRenderer::NewFrame(Window& window) {
     BeginDraw();
     Clear();
     EndDraw();
     // Check if window size changed, and then change the window size.
-
+    if (window.WindowSizeChanged()) {
+        // Then resize window
+        Free();
+        InitTexture(window.GetWindowWidth(), window.GetWindowHeight());
+    }
 }
 
 void conquerspace::engine::AAFrameBufferRenderer::InitTexture() {
