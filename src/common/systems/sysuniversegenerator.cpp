@@ -13,7 +13,7 @@
 #include <boost/random/normal_distribution.hpp>
 
 #include "common/components/bodies.h"
-#include "common/components/orbit.h"
+#include "common/components/movement.h"
 #include "common/components/organizations.h"
 #include "common/components/player.h"
 #include "common/components/surface.h"
@@ -77,6 +77,7 @@ void conquerspace::common::systems::universegenerator::ScriptUniverseGenerator::
     script_engine.set_function("set_orbit", [&] (entt::entity orbital_entity, double distance, double theta,
                                             double eccentricity, double argument) {
         cqspt::Orbit &orb = universe.emplace<cqspt::Orbit>(orbital_entity, theta, distance, eccentricity, argument, 40);
+        universe.emplace<cqspt::Kinematics>(orbital_entity);
         cqspt::findPeriod(orb);
     });
 
@@ -202,12 +203,11 @@ void conquerspace::common::systems::universegenerator::ScriptUniverseGenerator::
     {
         entt::entity ship = universe.create();
         universe.emplace<cqsps::Ship>(ship);
-        cqspt::Orbit orb = universe.get<cqspt::Orbit>(orbit);
-        cqspt::Orbit& orbship = universe.emplace<cqspt::Orbit>(
-            ship, orb.theta, orb.semiMajorAxis,
-                                           orb.eccentricity, orb.argument, 80);
+        universe.emplace<cqspt::Kinematics>(ship);
+        //cqspt::Kinematics orb = universe.get<cqspt::Kinematics>(orbit);
+        //cqspt::updatePos(orb);
         universe.get<cqspb::StarSystem>(starsystem).bodies.push_back(ship);
-        cqspt::findPeriod(orbship);
+        return ship;
     });
 
     script_engine["goods"] = universe.goods;

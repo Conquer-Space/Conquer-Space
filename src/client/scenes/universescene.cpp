@@ -23,7 +23,7 @@
 #include "common/components/bodies.h"
 #include "common/components/organizations.h"
 #include "common/components/player.h"
-#include "common/components/orbit.h"
+#include "common/components/movement.h"
 #include "common/components/population.h"
 #include "common/components/area.h"
 #include "common/components/surface.h"
@@ -35,6 +35,7 @@
 #include "client/systems/sysstarsystemtree.h"
 #include "client/systems/syspausemenu.h"
 #include "client/systems/sysdebuggui.h"
+#include "client/systems/syscommand.h"
 #include "client/systems/gui/sysevent.h"
 
 bool game_halted = false;
@@ -76,6 +77,7 @@ void conquerspace::scene::UniverseScene::Init() {
     AddUISystem<conquerspace::client::systems::SysStarSystemTree>();
     AddUISystem<conquerspace::client::systems::SysPauseMenu>();
     AddUISystem<conquerspace::client::systems::SysDebugMenu>();
+    AddUISystem<conquerspace::client::systems::SysCommand>();
     AddUISystem<conquerspace::client::systems::gui::SysEvent>();
     simulation->tick();
 }

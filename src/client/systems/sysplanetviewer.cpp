@@ -20,7 +20,7 @@
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/name.h"
-#include "common/components/orbit.h"
+#include "common/components/movement.h"
 #include "common/components/organizations.h"
 #include "common/components/player.h"
 #include "common/components/population.h"
@@ -70,15 +70,20 @@ void conquerspace::client::systems::SysPlanetInformation::DoUI(int delta_time) {
 void conquerspace::client::systems::SysPlanetInformation::DoUpdate(int delta_time) {
     // If clicked on a planet, go to the planet
     // Get the thing
+    namespace cqspb = conquerspace::common::components::bodies;
     selected_planet = conquerspace::scene::GetCurrentViewingPlanet(GetApp());
     entt::entity mouse_over = GetApp().GetUniverse().
                         view<conquerspace::client::systems::MouseOverEntity>().front();
     if (!ImGui::GetIO().WantCaptureMouse &&
                 GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) &&
                 mouse_over == selected_planet && !conquerspace::scene::IsGameHalted() &&
-                !GetApp().MouseDragged()) {
+        !GetApp().MouseDragged()) {
         to_see = true;
         SPDLOG_INFO("Switched entity");
+
+    }
+    if (!GetApp().GetUniverse().all_of<cqspb::Body>(selected_planet)) {
+        to_see = false;
     }
 }
 

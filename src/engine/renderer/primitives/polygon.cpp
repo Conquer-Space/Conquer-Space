@@ -10,9 +10,6 @@
 
 #include <glm/glm.hpp>
 
-#include "common/components/orbit.h"
-
-
 void conquerspace::primitive::CreateFilledCircle(
     conquerspace::engine::Mesh& mesh, int segments) {
     std::vector<float> positions;

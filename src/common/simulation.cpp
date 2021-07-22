@@ -20,7 +20,7 @@
 #include "common/components/organizations.h"
 #include "common/components/player.h"
 #include "common/components/ships.h"
-#include "common/components/orbit.h"
+#include "common/components/movement.h"
 #include "common/components/units.h"
 
 conquerspace::common::systems::simulation::Simulation::Simulation(
@@ -92,10 +92,33 @@ void conquerspace::common::systems::simulation::Simulation::tick() {
         }
     }
 
-    BEGIN_TIMED_BLOCK(Orbit_Sim);
+    BEGIN_TIMED_BLOCK(Movement);
     auto bodies = m_universe.view<cqspt::Orbit>();
     for (entt::entity body : bodies) {
-        cqspt::updateOrbit(m_universe.get<cqspt::Orbit>(body));
+        auto &orb = cqspt::updateOrbit(m_universe.get<cqspt::Orbit>(body));
+        cqspt::updatePos(m_universe.get<cqspt::Kinematics>(body), orb);
     }
-    END_TIMED_BLOCK(Orbit_Sim);
+    auto bodies2 =
+        m_universe.view<cqspt::MoveTarget>(entt::exclude<cqspt::Orbit>);
+
+    for (entt::entity body : bodies2) {
+        cqspt::Kinematics & bodykin = m_universe.get<cqspt::Kinematics>(body);
+        cqspt::Kinematics & targetkin = m_universe.get<cqspt::Kinematics>(
+            m_universe.get<cqspt::MoveTarget>(body).targetent);
+        
+        SPDLOG_INFO(bodykin.postion.x);
+        SPDLOG_INFO(targetkin.postion.x);
+        glm::vec3 path = targetkin.postion - bodykin.postion;
+        SPDLOG_INFO("Move Target");
+        SPDLOG_INFO(distance(targetkin.postion, bodykin.postion));
+        if (glm::distance(targetkin.postion, bodykin.postion) <
+            bodykin.topspeed) {
+            bodykin.postion = targetkin.postion;
+            bodykin.velocity = glm::vec3(0, 0, 0);
+        } else {
+            bodykin.velocity = bodykin.topspeed * glm::normalize(path);
+        }
+        cqspt::updatePos(m_universe.get<cqspt::Kinematics>(body));
+    }
+    END_TIMED_BLOCK(Movement);
 }
