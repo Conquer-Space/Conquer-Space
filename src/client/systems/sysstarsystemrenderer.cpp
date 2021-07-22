@@ -277,13 +277,13 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity() {
 
     less_detailed_terrain_generator_thread = std::thread([&]() {
         // Generate slightly less detailed terrain so that it looks better at first
-        intermediate_image_generator.GenerateTerrain(6, 5);
+        intermediate_image_generator.GenerateTerrain(6, 6);
         second_terrain_complete = true;
     });
 
     terrain_generator_thread = std::thread([&]() {
         // Generate slightly less detailed terrain so that it looks better at first
-        final_image_generator.GenerateTerrain(8, 9);
+        final_image_generator.GenerateTerrain(8, 11);
         terrain_complete = true;
     });
 }

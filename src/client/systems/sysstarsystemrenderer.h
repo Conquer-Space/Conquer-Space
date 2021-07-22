@@ -103,10 +103,10 @@ class SysStarSystemRenderer {
 
     TerrainImageGenerator final_image_generator, intermediate_image_generator;
 
-    engine::FramebufferRenderer overlay_renderer;
-    engine::FramebufferRenderer buffer_renderer;
-    engine::FramebufferRenderer planet_renderer;
-    engine::FramebufferRenderer skybox_renderer;
+    engine::AAFrameBufferRenderer overlay_renderer;
+    engine::AAFrameBufferRenderer buffer_renderer;
+    engine::AAFrameBufferRenderer planet_renderer;
+    engine::AAFrameBufferRenderer skybox_renderer;
 };
 }  // namespace systems
 }  // namespace client
