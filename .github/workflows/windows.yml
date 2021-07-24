@@ -16,7 +16,7 @@ jobs:
         submodules: recursive
     - name: Install dependencies
       run: |
-        vcpkg install glfw3:x64-windows
+        vcpkg install glfw3:x64-windows Boost:x64-windows-static
         ls
     - name: Build Conquer Space
       run: |
