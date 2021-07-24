@@ -200,21 +200,21 @@ class AssetLoader {
 
  private:
     std::unique_ptr<TextAsset> LoadText(std::istream &asset_stream,
-                                      Hjson::Value& hints);
+                                        const Hjson::Value& hints);
     std::unique_ptr<HjsonAsset> LoadHjson(std::istream &asset_stream,
-                                      Hjson::Value& hints);
-    std::unique_ptr<TextDirectoryAsset> LoadTextDirectory(std::string name, Hjson::Value& hints);
+                                        const Hjson::Value& hints);
+    std::unique_ptr<TextDirectoryAsset> LoadTextDirectory(const std::string& name, const Hjson::Value& hints);
     void LoadHjson(std::istream &asset_stream, Hjson::Value& value,
-                                      Hjson::Value& hints);
-    void LoadHjsonDir(std::string& path, Hjson::Value& value, Hjson::Value& hints);
+                                        const Hjson::Value& hints);
+    void LoadHjsonDir(const std::string& path, Hjson::Value& value, const Hjson::Value& hints);
     // Load singular asset
-    void LoadAsset(std::string&, std::string&, std::string&, Hjson::Value&);
-    void LoadImage(std::string& key, std::string& filePath, Hjson::Value& hints);
+    void LoadAsset(const std::string&, const std::string&, const std::string&, const Hjson::Value&);
+    void LoadImage(const std::string& key, const std::string& filePath, const Hjson::Value& hints);
 
-    void LoadShader(std::string& key, std::istream &asset_stream, Hjson::Value& hints);
-    void LoadFont(std::string& key, std::istream &asset_stream, Hjson::Value& hints);
-    void LoadCubemap(std::string& key, std::string &path,
-                        std::istream &asset_stream, Hjson::Value& hints);
+    void LoadShader(const std::string& key, std::istream &asset_stream, const Hjson::Value& hints);
+    void LoadFont(const std::string& key, std::istream &asset_stream, const Hjson::Value& hints);
+    void LoadCubemap(const std::string& key, const std::string &path,
+                        std::istream &asset_stream, const Hjson::Value& hints);
 
     std::map<std::string, AssetType> asset_type_map;
 

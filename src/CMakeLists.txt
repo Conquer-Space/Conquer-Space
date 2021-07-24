@@ -1,5 +1,7 @@
 # Copyright 2021 Conquer Space
 
+find_package(Threads)
+
 # Include files
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/stb)

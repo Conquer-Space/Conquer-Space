@@ -20,7 +20,7 @@ void conquerspace::client::systems::gui::SysEvent::DoUI(int delta_time) {
     auto events =
         GetApp().GetUniverse().view<conquerspace::common::components::Player,
                                             conquerspace::common::event::EventQueue>();
-    for (auto& [ent, queue] : events.each()) {
+    for (auto [ent, queue] : events.each()) {
         if (queue.events.empty()) {
             continue;
         }

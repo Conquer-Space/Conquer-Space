@@ -19,7 +19,7 @@ ScriptInterface::ScriptInterface() {
     open_libraries(sol::lib::base, sol::lib::table, sol::lib::math);
 }
 
-void ScriptInterface::ParseResult(sol::protected_function_result& result) {
+void ScriptInterface::ParseResult(const sol::protected_function_result& result) {
     if (!result.valid()) {
         sol::error err = result;
         std::string what = err.what();

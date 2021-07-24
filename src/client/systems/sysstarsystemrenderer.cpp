@@ -429,8 +429,8 @@ glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateObjectP
     entt::entity &ent) {
     namespace cqspb = conquerspace::common::components::bodies;
     namespace cqspt = conquerspace::common::components::types;
-    cqspt::Orbit &orbit = m_app.GetUniverse().get<cqspt::Orbit>(ent);
-    cqspt::Vec2 &vec = cqspt::toVec2(orbit);
+    const cqspt::Orbit &orbit = m_app.GetUniverse().get<cqspt::Orbit>(ent);
+    cqspt::Vec2 vec = cqspt::toVec2(orbit);
     return glm::vec3(vec.x / divider, 0, vec.y / divider);
 }
 
@@ -485,7 +485,7 @@ conquerspace::client::systems::SysStarSystemRenderer::GeneratePlanetTexture(
 }
 
 glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateMouseRay(
-    glm::vec3 &ray_nds) {
+    const glm::vec3 &ray_nds) {
     glm::vec4 ray_clip = glm::vec4(ray_nds.x, ray_nds.y, -1.0, 1.0);
     glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
     ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0, 0.0);

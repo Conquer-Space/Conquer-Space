@@ -10,7 +10,7 @@
 #include <string>
 #include <map>
 
-#include "client/clientoptions.h"
+#include "engine/clientoptions.h"
 
 #include "engine/assetmanager.h"
 #include "engine/engine.h"
@@ -186,7 +186,6 @@ class Application {
     std::map<std::string, std::string> properties;
 
     std::unique_ptr<conquerspace::scripting::ScriptInterface> m_script_interface;
-    std::thread audio;
 
     conquerspace::engine::audio::IAudioInterface *m_audio_interface;
 
