@@ -65,7 +65,7 @@ set(IMGUI ${IMGUI} ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_glfw.h
     ${CMAKE_SOURCE_DIR}/lib/imgui/misc/cpp/imgui_stdlib.cpp)
 
 add_library(ImGui ${IMGUI})
-target_link_libraries(ImGui PUBLIC ${GLFW3_LIBRARY})
+target_link_libraries(ImGui PUBLIC ${GLFW_LIBRARIES})
 set_target_properties(ImGui PROPERTIES FOLDER "Libs")
 
 # Create libnoise utils library
