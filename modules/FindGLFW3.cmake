@@ -13,10 +13,11 @@ IF(WIN32)
 		DOC "The directory where GLFW/glfw3.h resides")
 
     FIND_LIBRARY( GLFW3_LIBRARY
-        NAMES glfw3 GLFW
+        NAMES glfw3 GLFW glfw glfw3dll
         PATHS
         $ENV{PROGRAMFILES}/GLFW/lib
 		${GLFW_ROOT_DIR}/lib-vc2019
+		${GLFW_ROOT_DIR}/lib
         DOC "The GLFW library")
 
 ELSE()

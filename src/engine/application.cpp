@@ -16,8 +16,6 @@
 #include <spdlog/spdlog.h>
 #include <stb_image.h>
 
-#include <boost/config.hpp>
-#include <boost/version.hpp>
 #include <filesystem>
 #include <fstream>
 #include <glm/gtc/matrix_transform.hpp>
@@ -560,9 +558,8 @@ void conquerspace::engine::Application::LoggerInit() {
 
 void conquerspace::engine::Application::LogInfo() {
     SPDLOG_INFO("Conquer Space {} {}", CQSP_VERSION_STRING, GIT_INFO);
-    SPDLOG_INFO("Platform: {}", BOOST_PLATFORM);
+    SPDLOG_INFO("Platform: {}", PLATFORM_NAME);
     SPDLOG_INFO("Compiled {} {}", __DATE__, __TIME__);
-    SPDLOG_INFO("Compiled on {} with {}", BOOST_COMPILER, BOOST_STDLIB);
 #ifndef NDEBUG
     SPDLOG_INFO("In debug mode");
 #endif

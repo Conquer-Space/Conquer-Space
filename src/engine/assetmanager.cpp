@@ -25,7 +25,7 @@ conquerspace::asset::ShaderProgram* conquerspace::asset::AssetManager::CreateSha
                                     *GetAsset<conquerspace::asset::Shader>(frag.c_str()));
 }
 
-conquerspace::asset::AssetLoader::AssetLoader() : m_asset_queue(16) {
+conquerspace::asset::AssetLoader::AssetLoader() : m_asset_queue() {
     asset_type_map["none"] = AssetType::NONE;
     asset_type_map["texture"] = AssetType::TEXTURE;
     asset_type_map["shader"] = AssetType::SHADER;
@@ -130,12 +130,15 @@ switch (asset_type_map[type]) {
 }
 
 void conquerspace::asset::AssetLoader::BuildNextAsset() {
-    if (m_asset_queue.empty()) {
+    if (m_asset_queue.size() == 0) {
         return;
     }
 
-    QueueHolder temp;
-    m_asset_queue.pop(temp);
+    auto value = m_asset_queue.pop();
+    if (!value.has_value()) {
+        return;
+    }
+    QueueHolder temp = *value;
 
     switch (temp.prototype->GetPrototypeType()) {
         case PrototypeType::TEXTURE:
@@ -288,10 +291,7 @@ void cqspa::AssetLoader::LoadImage(std::string& key, std::string& filePath,
     if (prototype->data) {
         QueueHolder holder(prototype);
 
-        if (!m_asset_queue.push(holder)) {
-            SPDLOG_INFO("Failed to push image");
-            delete prototype;
-        }
+        m_asset_queue.push(holder);
     } else {
         SPDLOG_INFO("Failed to load {}", key);
         delete prototype;
@@ -321,11 +321,7 @@ void cqspa::AssetLoader::LoadShader(std::string& key, std::istream &asset_stream
     prototype->data = s;
 
     QueueHolder holder(prototype);
-
-    if (!m_asset_queue.push(holder)) {
-        SPDLOG_INFO("Failed to push image");
-        delete(prototype);
-    }
+    m_asset_queue.push(holder);
 }
 
 void conquerspace::asset::AssetLoader::LoadFont(std::string& key, std::istream& asset_stream,
@@ -342,11 +338,7 @@ void conquerspace::asset::AssetLoader::LoadFont(std::string& key, std::istream& 
     prototype->key = key;
 
     QueueHolder holder(prototype);
-
-    if (!m_asset_queue.push(holder)) {
-        SPDLOG_INFO("Failed to push font");
-        delete(prototype);
-    }
+    m_asset_queue.push(holder);
 }
 
 void conquerspace::asset::AssetLoader::LoadCubemap(std::string& key,
@@ -382,8 +374,5 @@ void conquerspace::asset::AssetLoader::LoadCubemap(std::string& key,
 
     QueueHolder holder(prototype);
 
-    if (!m_asset_queue.push(holder)) {
-        SPDLOG_INFO("Failed to push cubemap");
-        delete(prototype);
-    }
+    m_asset_queue.push(holder);
 }
