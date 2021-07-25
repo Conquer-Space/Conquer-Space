@@ -10,7 +10,7 @@ void conquerspace::common::systems::SysMarketSeller::DoSystem(components::Univer
     using conquerspace::common::components::Market;
     auto view = universe.view<MarketParticipant, ResourceStockpile>();
 
-    for (auto &[ent_id, participant, stockpile] : view.each()) {
+    for (auto [ent_id, participant, stockpile] : view.each()) {
         // Sell stuff to the market
         auto &market_place = universe.get<Market>(participant.market);
         auto &market_stockpile  = universe.get<ResourceStockpile>(participant.market);

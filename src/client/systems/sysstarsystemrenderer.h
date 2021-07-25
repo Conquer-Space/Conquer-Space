@@ -5,6 +5,8 @@
 
 #include <noiseutils.h>
 
+#include <thread>
+
 #include <entt/entt.hpp>
 
 #include <glm/glm.hpp>
@@ -87,7 +89,7 @@ class SysStarSystemRenderer {
 
     void SetPlanetTexture(TerrainImageGenerator &);
     unsigned int GeneratePlanetTexture(noise::utils::Image& image);
-    glm::vec3 CalculateMouseRay(glm::vec3 &ray_nds);
+    glm::vec3 CalculateMouseRay(const glm::vec3 &ray_nds);
     float GetWindowRatio();
 
     conquerspace::asset::Texture* GenerateTexture(unsigned int, noise::utils::Image&);

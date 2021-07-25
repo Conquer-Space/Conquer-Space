@@ -1,7 +1,7 @@
 /*
  * Copyright 2021 Conquer Space
  */
-#include "client/clientoptions.h"
+#include "engine/clientoptions.h"
 
 void conquerspace::client::ClientOptions::LoadOptions(std::istream& inputstream) {
     Hjson::DecoderOptions decOpt;

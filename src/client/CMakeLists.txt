@@ -33,7 +33,9 @@ foreach(_source IN ITEMS ${SOURCE_FILES})
 endforeach()
 
 add_library(cqsp-client ${SOURCE_FILES})
-target_link_libraries(cqsp-client PUBLIC 
+target_link_libraries(cqsp-client PUBLIC
+    cqsp-core
+    cqsp-engine
     OpenGL::GL
     ImGui
     EnTT::EnTT

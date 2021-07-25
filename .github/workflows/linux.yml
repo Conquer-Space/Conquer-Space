@@ -1,0 +1,33 @@
+name: Linux
+
+on:
+  pull_request:
+  push:
+  release:
+    types: published
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt install -y libglfw3 libglfw3-dev
+    - name: Build Conquer Space
+      run: |
+        ls
+        mkdir build && cd build
+        cmake ..
+        make
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: release
+        path: |
+          binaries

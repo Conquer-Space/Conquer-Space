@@ -40,15 +40,15 @@ conquerspace::asset::AssetLoader::AssetLoader() : m_asset_queue() {
 namespace cqspa = conquerspace::asset;
 
 void conquerspace::asset::AssetLoader::LoadAssets(std::istream& stream) {
-    Hjson::Value assets;
+    Hjson::Value asset_value;
     Hjson::DecoderOptions decOpt;
     decOpt.comments = false;
-    stream >> Hjson::StreamDecoder(assets, decOpt);
+    stream >> Hjson::StreamDecoder(asset_value, decOpt);
 
-    int size = static_cast<int>(assets.size());
+    int size = static_cast<int>(asset_value.size());
     SPDLOG_INFO("Loading {} asset(s)", size);
 
-    for (auto [key, val] : assets) {
+    for (const auto [key, val] : asset_value) {
         SPDLOG_TRACE("Loading {}", key);
 
         // Load from asset
@@ -59,14 +59,14 @@ void conquerspace::asset::AssetLoader::LoadAssets(std::istream& stream) {
             SPDLOG_WARN("Cannot find asset {}", key);
             continue;
         }
-        LoadAsset(type, path, static_cast<std::string>(key), val["hints"]);
+        LoadAsset(type, path, std::string(key), val["hints"]);
     }
 }
 
-void conquerspace::asset::AssetLoader::LoadAsset(std::string& type,
-                                                    std::string& path,
-                                                    std::string& key,
-                                                    Hjson::Value &hints) {
+void conquerspace::asset::AssetLoader::LoadAsset(const std::string& type,
+                                                    const std::string& path,
+                                                    const std::string& key,
+                                                    const Hjson::Value &hints) {
 switch (asset_type_map[type]) {
         case AssetType::NONE:
         // Nothing to load
@@ -199,7 +199,7 @@ void conquerspace::asset::AssetLoader::BuildNextAsset() {
 }
 
 std::unique_ptr<cqspa::TextAsset> conquerspace::asset::AssetLoader::LoadText(
-    std::istream& asset_stream, Hjson::Value& hints) {
+    std::istream& asset_stream, const Hjson::Value& hints) {
     std::unique_ptr<cqspa::TextAsset> asset =
         std::make_unique<cqspa::TextAsset>();
 
@@ -212,7 +212,7 @@ std::unique_ptr<cqspa::TextAsset> conquerspace::asset::AssetLoader::LoadText(
 }
 
 std::unique_ptr<cqspa::HjsonAsset> cqspa::AssetLoader::LoadHjson(std::istream &asset_stream,
-                                      Hjson::Value& hints) {
+                                    const Hjson::Value& hints) {
     std::unique_ptr<cqspa::HjsonAsset> asset =
         std::make_unique<cqspa::HjsonAsset>();
 
@@ -223,15 +223,15 @@ std::unique_ptr<cqspa::HjsonAsset> cqspa::AssetLoader::LoadHjson(std::istream &a
 }
 
 std::unique_ptr<conquerspace::asset::TextDirectoryAsset>
-conquerspace::asset::AssetLoader::LoadTextDirectory(std::string path,
-                                                    Hjson::Value& hints) {
+conquerspace::asset::AssetLoader::LoadTextDirectory(const std::string& path,
+                                                    const Hjson::Value& hints) {
         std::filesystem::recursive_directory_iterator iterator(path);
         auto asset = std::make_unique<asset::TextDirectoryAsset>();
         for (auto& sub_path : iterator) {
             if (!sub_path.is_regular_file()) {
                 continue;
             }
-            std::ifstream asset_stream(sub_path);
+            std::ifstream asset_stream(sub_path.path().string());
             std::string asset_data{std::istreambuf_iterator<char>{asset_stream},
                             std::istreambuf_iterator<char>()};
             asset->data.push_back(asset_data);
@@ -240,7 +240,7 @@ conquerspace::asset::AssetLoader::LoadTextDirectory(std::string path,
 }
 
 void cqspa::AssetLoader::LoadHjson(std::istream &asset_stream, Hjson::Value& value,
-                                      Hjson::Value& hints) {
+                                    const Hjson::Value& hints) {
     Hjson::DecoderOptions decOpt;
     decOpt.comments = false;
     Hjson::Value data;
@@ -251,8 +251,8 @@ void cqspa::AssetLoader::LoadHjson(std::istream &asset_stream, Hjson::Value& val
     }
 }
 
-void conquerspace::asset::AssetLoader::LoadHjsonDir(std::string& path, Hjson::Value& value,
-                                                                            Hjson::Value& hints) {
+void conquerspace::asset::AssetLoader::LoadHjsonDir(const std::string& path, Hjson::Value& value,
+                                                                            const Hjson::Value& hints) {
     for (const auto& dirEntry : std::filesystem::recursive_directory_iterator(path)) {
         // Loop through each hjson
         std::ifstream asset_stream(dirEntry.path().c_str());
@@ -264,8 +264,8 @@ void conquerspace::asset::AssetLoader::LoadHjsonDir(std::string& path, Hjson::Va
     }
 }
 
-void cqspa::AssetLoader::LoadImage(std::string& key, std::string& filePath,
-                                                 Hjson::Value& hints) {
+void cqspa::AssetLoader::LoadImage(const std::string& key, const std::string& filePath,
+                                                const Hjson::Value& hints) {
     ImagePrototype* prototype = new ImagePrototype();
 
     // Load image
@@ -298,8 +298,8 @@ void cqspa::AssetLoader::LoadImage(std::string& key, std::string& filePath,
     }
 }
 
-void cqspa::AssetLoader::LoadShader(std::string& key, std::istream &asset_stream,
-                                                  Hjson::Value& hints) {
+void cqspa::AssetLoader::LoadShader(const std::string& key, std::istream &asset_stream,
+                                                const Hjson::Value& hints) {
     // Get shader type
     std::string type = hints["type"];
     int shader_type = -1;
@@ -324,8 +324,8 @@ void cqspa::AssetLoader::LoadShader(std::string& key, std::istream &asset_stream
     m_asset_queue.push(holder);
 }
 
-void conquerspace::asset::AssetLoader::LoadFont(std::string& key, std::istream& asset_stream,
-                                                Hjson::Value& hints) {
+void conquerspace::asset::AssetLoader::LoadFont(const std::string& key, std::istream& asset_stream,
+                                                const Hjson::Value& hints) {
     asset_stream.seekg(0, std::ios::end);
     std::fstream::pos_type fontFileSize = asset_stream.tellg();
     asset_stream.seekg(0);
@@ -341,10 +341,10 @@ void conquerspace::asset::AssetLoader::LoadFont(std::string& key, std::istream& 
     m_asset_queue.push(holder);
 }
 
-void conquerspace::asset::AssetLoader::LoadCubemap(std::string& key,
-                                                    std::string &path,
+void conquerspace::asset::AssetLoader::LoadCubemap(const std::string& key,
+                                                    const std::string &path,
                                                     std::istream &asset_stream,
-                                                    Hjson::Value& hints) {
+                                                    const Hjson::Value& hints) {
     // Read file, which will be hjson, and load those files too
     Hjson::Value images;
     Hjson::DecoderOptions decOpt;

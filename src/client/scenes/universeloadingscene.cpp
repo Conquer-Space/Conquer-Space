@@ -58,7 +58,7 @@ void LoadGoods(conquerspace::engine::Application& app) {
                 .GetAssetManager().GetAsset<conquerspace::asset::HjsonAsset>("goods");
     int assets_loaded = 0;
     for (int i = 0; i < good_assets->data.size(); i++) {
-        Hjson::Value& val = good_assets->data[i];
+        Hjson::Value val = good_assets->data[i];
         // Create good
         entt::entity good = app.GetUniverse().create();
         auto& good_object = app.GetUniverse().emplace<cqspc::Good>(good);
@@ -84,13 +84,13 @@ void LoadRecipes(conquerspace::engine::Application& app) {
 
         entt::entity recipe = app.GetUniverse().create();
         auto& recipe_component = app.GetUniverse().emplace<cqspc::Recipe>(recipe);
-        Hjson::Value& input_value = val["input"];
+        Hjson::Value input_value = val["input"];
         for (auto input_good : input_value) {
             recipe_component.input[app.GetUniverse().goods[input_good.first]] =
                 input_good.second;
         }
 
-        Hjson::Value& output_value = val["output"];
+        Hjson::Value output_value = val["output"];
         for (auto output_good : output_value) {
             recipe_component.output[app.GetUniverse().goods[output_good.first]] =
                 output_good.second;
