@@ -6,6 +6,8 @@
 # GLFW3_INCLUDE_PATH
 # GLFW3_LIBRARY
 # 
+
+message("Searching for glfw")
 IF(WIN32)
     FIND_PATH( GLFW3_INCLUDE_PATH GLFW/glfw3.h
 		$ENV{PROGRAMFILES}/GLFW/include
@@ -19,7 +21,6 @@ IF(WIN32)
 		${GLFW_ROOT_DIR}/lib-vc2019
 		${GLFW_ROOT_DIR}/lib
         DOC "The GLFW library")
-
 ELSE()
 	FIND_PATH( GLFW3_INCLUDE_PATH GLFW/glfw3.h
 		/usr/include
@@ -31,7 +32,7 @@ ELSE()
 
 	# Prefer the static library.
 	FIND_LIBRARY( GLFW3_LIBRARY
-        NAMES libGLFW.a GLFW libGLFW3.a GLFW3 libglfw.so libglfw.so.3 libglfw.so.3.0
+        NAMES libGLFW.a GLFW libGLFW3.a GLFW3 libglfw.so libglfw.so.3 libglfw.so.3.0 glfw
 		PATHS
 		/usr/lib64
 		/usr/lib
