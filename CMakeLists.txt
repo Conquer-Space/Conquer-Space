@@ -38,8 +38,8 @@ if(MSVC)
       "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:library")
 endif()
 
-# set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/modules/" ${CMAKE_MODULE_PATH})
-
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/modules/" ${CMAKE_MODULE_PATH})
+message(${CMAKE_MODULE_PATH})
 include_directories(src)
 
 message("Getting glfw")
