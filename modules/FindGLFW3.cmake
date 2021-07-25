@@ -20,6 +20,7 @@ IF(WIN32)
         PATHS
         $ENV{PROGRAMFILES}/GLFW/lib
 		${GLFW_ROOT_DIR}/lib-vc2019
+		${GLFW_ROOT_DIR}/lib
         DOC "The GLFW library")
 
 ELSE()
