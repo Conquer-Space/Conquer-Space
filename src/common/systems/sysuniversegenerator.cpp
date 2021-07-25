@@ -7,10 +7,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <string>
 
-#include <boost/random.hpp>
-#include <boost/random/mersenne_twister.hpp>
-#include <boost/random/uniform_int_distribution.hpp>
-#include <boost/random/normal_distribution.hpp>
+#include "common/util/random/stdrandom.h"
 
 #include "common/components/bodies.h"
 #include "common/components/orbit.h"
@@ -40,17 +37,13 @@ void conquerspace::common::systems::universegenerator::ScriptUniverseGenerator::
      });
 
     // RNG
-    boost::mt19937 gen;
-    script_engine.set_function("random", [&gen] (int low, int high) {
-        boost::random::uniform_int_distribution<> dist(low, high);
-        return dist(gen);
+    conquerspace::common::util::StdRandom random(3746);
+    script_engine.set_function("random", [&random] (int low, int high) {
+        return random.GetRandomInt(low, high);
     });
 
-    script_engine.set_function("random_normal_int", [&gen] (int mean, int sd) {
-        boost::normal_distribution<> nd(mean, sd);
-        boost::variate_generator<boost::mt19937&,
-                           boost::normal_distribution<> > var_nor(gen, nd);
-        return static_cast<int>(round(var_nor()));
+    script_engine.set_function("random_normal_int", [&random] (int mean, int sd) {
+        return random.GetRandomNormal(mean, sd);
     });
 
     script_engine.set_function("add_planet", [&] (entt::entity system) {

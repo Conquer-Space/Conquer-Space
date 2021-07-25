@@ -7,11 +7,6 @@
 
 #include <string>
 
-#include <boost/random.hpp>
-#include <boost/random/mersenne_twister.hpp>
-#include <boost/random/uniform_int_distribution.hpp>
-#include <boost/random/normal_distribution.hpp>
-
 #include <sol/sol.hpp>
 
 #include "client/scenes/universescene.h"

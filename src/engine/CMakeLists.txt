@@ -1,7 +1,6 @@
 # Copyright 2021 Conquer Space
 
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
-include_directories(${Boost_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/lib/stb)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
 include_directories(${CMAKE_SOURCE_DIR}/lib/freetype/include)
