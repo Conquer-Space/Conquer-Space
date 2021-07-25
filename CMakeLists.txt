@@ -43,7 +43,7 @@ message(${CMAKE_MODULE_PATH})
 include_directories(src)
 
 message("Getting glfw")
-find_package(glfw3 CONFIG REQUIRED)
+find_package(glfw3 REQUIRED)
 find_package(OpenGL REQUIRED)
 
 execute_process(
