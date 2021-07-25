@@ -39,10 +39,9 @@ if(MSVC)
 endif()
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/modules/" ${CMAKE_MODULE_PATH})
-message(${CMAKE_MODULE_PATH})
+
 include_directories(src)
 
-message("Getting glfw")
 find_package(glfw3 REQUIRED)
 find_package(OpenGL REQUIRED)
 

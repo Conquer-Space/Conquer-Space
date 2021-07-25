@@ -6,9 +6,6 @@
 # GLFW3_INCLUDE_PATH
 # GLFW3_LIBRARY
 # 
-
-message ("Getting GLFW")
-message(${GLFW_ROOT_DIR})
 IF(WIN32)
     FIND_PATH( GLFW3_INCLUDE_PATH GLFW/glfw3.h
 		$ENV{PROGRAMFILES}/GLFW/include
