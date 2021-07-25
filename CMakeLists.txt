@@ -42,7 +42,11 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/modules/" ${CMAKE_MODULE_PATH})
 set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/modules/" ${CMAKE_MODULE_PATH})
 include_directories(src)
 
+if(WIN32)
+find_package(glfw3 REQUIRED)
+else()
 find_package(GLFW3 REQUIRED)
+endif()
 find_package(OpenGL REQUIRED)
 
 message(${GLFW3_INCLUDE_PATH})
