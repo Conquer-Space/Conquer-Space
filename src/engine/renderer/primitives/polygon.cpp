@@ -2,16 +2,14 @@
  * Copyright 2021 Conquer Space
 */
 #include "engine/renderer/primitives/polygon.h"
-
+#include "common/components/units.h"
+#include "common/components/movement.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <vector>
 
 #include <glm/glm.hpp>
-
-#include "common/components/orbit.h"
-
 
 void conquerspace::primitive::CreateFilledCircle(
     conquerspace::engine::Mesh& mesh, int segments) {

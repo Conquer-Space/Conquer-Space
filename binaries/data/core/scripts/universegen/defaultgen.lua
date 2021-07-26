@@ -96,7 +96,7 @@ generators:insert({
                     -- Set as civ home planet
                     set_civilization_planet(civ, planet_entity)
                     set_name(planet_entity, "Earting")
-                    create_ship(civ, planet_entity, sys)
+                    set_name(create_ship(civ, planet_entity, sys), "Earting Ship")
                 end
             end
         end

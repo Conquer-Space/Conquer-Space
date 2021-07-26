@@ -21,7 +21,7 @@
 #include "common/components/bodies.h"
 #include "common/components/organizations.h"
 #include "common/components/player.h"
-#include "common/components/orbit.h"
+#include "common/components/movement.h"
 #include "common/components/name.h"
 #include "common/components/ships.h"
 #include "common/util/profiler.h"
@@ -429,9 +429,7 @@ glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateObjectP
     entt::entity &ent) {
     namespace cqspb = conquerspace::common::components::bodies;
     namespace cqspt = conquerspace::common::components::types;
-    const cqspt::Orbit &orbit = m_app.GetUniverse().get<cqspt::Orbit>(ent);
-    cqspt::Vec2 vec = cqspt::toVec2(orbit);
-    return glm::vec3(vec.x / divider, 0, vec.y / divider);
+    return m_app.GetUniverse().get<cqspt::Kinematics>(ent).postion;
 }
 
 glm::vec3
@@ -515,26 +513,26 @@ entt::entity conquerspace::client::systems::SysStarSystemRenderer::GetMouseOnObj
     namespace cqspb = conquerspace::common::components::bodies;
 
     // Loop through objects
-    auto bodies = m_app.GetUniverse().view<ToRender,
-                            conquerspace::common::components::bodies::Body>();
-    for (auto [ent_id, body] : bodies.each()) {
+    auto bodies = m_app.GetUniverse().view<ToRender>();
+    for (entt::entity ent_id : bodies) {
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
+        bool planet = m_app.GetUniverse().all_of<cqspb::Body>(ent_id);
 
         // Check if the sphere is rendered or not
-        if (glm::distance(object_pos, cam_pos) > 100) {
-            // Calculate circle
-            glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
-            if (pos.z >= 1) {
-                continue;
-            }
+        if (planet && glm::distance(object_pos, cam_pos) > 100) {
+        // Calculate circle
+        glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
+        if (pos.z >= 1) {
+            continue;
+        }
 
-            // Check if it's intersecting
-            float dim = circle_size * m_app.GetWindowHeight();
-            if (glm::distance(glm::vec2(pos.x, m_app.GetWindowHeight() - pos.y),
-                    glm::vec2(mouse_x, mouse_y)) <= dim) {
-                m_app.GetUniverse().emplace<MouseOverEntity>(ent_id);
-                return ent_id;
-            }
+        // Check if it's intersecting
+        float dim = circle_size * m_app.GetWindowHeight();
+        if (glm::distance(glm::vec2(pos.x, m_app.GetWindowHeight() - pos.y),
+                glm::vec2(mouse_x, mouse_y)) <= dim) {
+            m_app.GetUniverse().emplace<MouseOverEntity>(ent_id);
+            return ent_id;
+        }
         } else {
             // Normalize 3d device coordinates
             float x = (2.0f * mouse_x) / m_app.GetWindowWidth() - 1.0f;
