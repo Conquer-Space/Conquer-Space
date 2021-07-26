@@ -16,8 +16,6 @@
 #include <spdlog/spdlog.h>
 #include <stb_image.h>
 
-#include <boost/config.hpp>
-#include <boost/version.hpp>
 #include <filesystem>
 #include <fstream>
 #include <glm/gtc/matrix_transform.hpp>
@@ -32,6 +30,81 @@
 #include "engine/paths.h"
 
 namespace conquerspace::engine {
+void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id,
+                            GLenum severity, GLsizei length,
+                            const char* message, const void* userParam) {
+    if (id == 131169 || id == 131185 || id == 131218 || id == 131204)
+        return;  // ignore these non-significant error codes
+
+    SPDLOG_ERROR("Debug message ({}): {}", id, message);
+
+    switch (source) {
+        case GL_DEBUG_SOURCE_API:
+            SPDLOG_ERROR("Source: API");
+            break;
+        case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
+            SPDLOG_ERROR("Source: Window System");
+            break;
+        case GL_DEBUG_SOURCE_SHADER_COMPILER:
+            SPDLOG_ERROR("Source: Shader Compiler");
+            break;
+        case GL_DEBUG_SOURCE_THIRD_PARTY:
+            SPDLOG_ERROR("Source: Third Party");
+            break;
+        case GL_DEBUG_SOURCE_APPLICATION:
+            SPDLOG_ERROR("Source: Application");
+            break;
+        case GL_DEBUG_SOURCE_OTHER:
+            SPDLOG_ERROR("Source: Other");
+            break;
+
+        switch (type) {
+            case GL_DEBUG_TYPE_ERROR:
+                SPDLOG_ERROR("Type: Error");
+                break;
+            case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+                SPDLOG_ERROR("Type: Deprecated Behaviour");
+                break;
+            case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+                SPDLOG_ERROR("Type: Undefined Behaviour");
+                break;
+            case GL_DEBUG_TYPE_PORTABILITY:
+                SPDLOG_ERROR("Type: Portability");
+                break;
+            case GL_DEBUG_TYPE_PERFORMANCE:
+                SPDLOG_ERROR("Type: Performance");
+                break;
+            case GL_DEBUG_TYPE_MARKER:
+                SPDLOG_ERROR("Type: Marker");
+                break;
+            case GL_DEBUG_TYPE_PUSH_GROUP:
+                SPDLOG_ERROR("Type: Push Group");
+                break;
+            case GL_DEBUG_TYPE_POP_GROUP:
+                SPDLOG_ERROR("Type: Pop Group");
+                break;
+            case GL_DEBUG_TYPE_OTHER:
+                SPDLOG_ERROR("Type: Other");
+                break;
+        }
+
+        switch (severity) {
+            case GL_DEBUG_SEVERITY_HIGH:
+                SPDLOG_ERROR("Severity: high");
+                break;
+            case GL_DEBUG_SEVERITY_MEDIUM:
+                SPDLOG_ERROR("Severity: medium");
+                break;
+            case GL_DEBUG_SEVERITY_LOW:
+                SPDLOG_ERROR("Severity: low");
+                break;
+            case GL_DEBUG_SEVERITY_NOTIFICATION:
+                SPDLOG_ERROR("Severity: notification");
+                break;
+        }
+    }
+}
+
 class GLWindow : public Window {
    public:
     bool ButtonIsHeld(int btn) { return m_keys_held[btn]; }
@@ -169,10 +242,11 @@ class GLWindow : public Window {
 
     void InitWindow(int width, int height) {
         glfwInit();
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_SAMPLES, 4);
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);  
 
 #ifdef __APPLE__
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -200,9 +274,17 @@ class GLWindow : public Window {
             glfwTerminate();
             SPDLOG_CRITICAL("Cannot load glad");
         }
+        int flags; glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+        if (flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
+            glEnable(GL_DEBUG_OUTPUT);
+            glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS); // makes sure errors are displayed synchronously
+            glDebugMessageCallback(glDebugOutput, nullptr);
+            glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+        }
     }
 
     GLFWwindow* window;
+
 
    private:
     bool window_size_changed;
@@ -476,9 +558,8 @@ void conquerspace::engine::Application::LoggerInit() {
 
 void conquerspace::engine::Application::LogInfo() {
     SPDLOG_INFO("Conquer Space {} {}", CQSP_VERSION_STRING, GIT_INFO);
-    SPDLOG_INFO("Platform: {}", BOOST_PLATFORM);
+    SPDLOG_INFO("Platform: {}", PLATFORM_NAME);
     SPDLOG_INFO("Compiled {} {}", __DATE__, __TIME__);
-    SPDLOG_INFO("Compiled on {} with {}", BOOST_COMPILER, BOOST_STDLIB);
 #ifndef NDEBUG
     SPDLOG_INFO("In debug mode");
 #endif

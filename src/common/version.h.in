@@ -15,3 +15,38 @@
 #endif
 
 #define CQSP_VERSION_STRING CQSP_VERSION " (" GIT_INFO ")"
+
+// Platform name
+#if defined(_WIN32)
+    #define PLATFORM_NAME "Windows" // Windows
+#elif defined(_WIN64)
+    #define PLATFORM_NAME "Windows" // Windows
+#elif defined(__CYGWIN__) && !defined(_WIN32)
+    #define PLATFORM_NAME "Windows (Cygwin POSIX under Microsoft Window)" // Windows (Cygwin POSIX under Microsoft Window)
+#elif defined(__ANDROID__)
+    #define PLATFORM_NAME "Android" // Android (implies Linux, so it must come first)
+#elif defined(__linux__)
+    #define PLATFORM_NAME "Linux" // Debian, Ubuntu, Gentoo, Fedora, openSUSE, RedHat, Centos and other
+#elif defined(__unix__) || !defined(__APPLE__) && defined(__MACH__)
+    #include <sys/param.h>
+    #if defined(BSD)
+        #define PLATFORM_NAME "BSD" // FreeBSD, NetBSD, OpenBSD, DragonFly BSD
+    #endif
+#elif defined(__hpux)
+    #define PLATFORM_NAME "HP-UX" // HP-UX
+#elif defined(_AIX)
+    #define PLATFORM_NAME "IBM AIX" // IBM AIX
+#elif defined(__APPLE__) && defined(__MACH__) // Apple OSX and iOS (Darwin)
+    #include <TargetConditionals.h>
+    #if TARGET_IPHONE_SIMULATOR == 1
+        #define PLATFORM_NAME "Apple iOS" // Apple iOS
+    #elif TARGET_OS_IPHONE == 1
+        #define PLATFORM_NAME "Apple iOS" // Apple iOS
+    #elif TARGET_OS_MAC == 1
+        #define PLATFORM_NAME "Apple OSX" // Apple OSX
+    #endif
+#elif defined(__sun) && defined(__SVR4)
+    #define PLATFORM_NAME "Solaris" // Oracle Solaris, Open Indiana
+#else
+    #define PLATFORM_NAME NULL
+#endif

@@ -17,7 +17,8 @@
 #include <istream>
 #include <vector>
 
-#include <boost/lockfree/queue.hpp>
+#include <optional>
+#include <queue>
 
 #include "engine/renderer/texture.h"
 #include "engine/renderer/shader.h"
@@ -94,6 +95,49 @@ class QueueHolder {
     Prototype* prototype;
 };
 
+// Queue
+template <typename T>
+class ThreadsafeQueue {
+    std::queue<T> queue_;
+    mutable std::mutex mutex_;
+
+    // Moved out of public interface to prevent races between this
+    // and pop().
+    bool empty() const { return queue_.empty(); }
+
+ public:
+    ThreadsafeQueue() = default;
+    ThreadsafeQueue(const ThreadsafeQueue<T>&) = delete;
+    ThreadsafeQueue& operator=(const ThreadsafeQueue<T>&) = delete;
+
+    ThreadsafeQueue(ThreadsafeQueue<T>&& other) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        queue_ = std::move(other.queue_);
+    }
+
+    virtual ~ThreadsafeQueue() {}
+
+    unsigned long size() const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        return queue_.size();
+    }
+
+    std::optional<T> pop() {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (queue_.empty()) {
+            return {};
+        }
+        T tmp = queue_.front();
+        queue_.pop();
+        return tmp;
+    }
+
+    void push(const T& item) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        queue_.push(item);
+    }
+};
+
 class AssetLoader;
 
 class AssetManager {
@@ -152,29 +196,29 @@ class AssetLoader {
 
     AssetManager* manager;
 
-    bool QueueHasItems() { return !m_asset_queue.empty(); }
+    bool QueueHasItems() { return m_asset_queue.size() != 0; }
 
  private:
     std::unique_ptr<TextAsset> LoadText(std::istream &asset_stream,
-                                      Hjson::Value& hints);
+                                        const Hjson::Value& hints);
     std::unique_ptr<HjsonAsset> LoadHjson(std::istream &asset_stream,
-                                      Hjson::Value& hints);
-    std::unique_ptr<TextDirectoryAsset> LoadTextDirectory(std::string name, Hjson::Value& hints);
+                                        const Hjson::Value& hints);
+    std::unique_ptr<TextDirectoryAsset> LoadTextDirectory(const std::string& name, const Hjson::Value& hints);
     void LoadHjson(std::istream &asset_stream, Hjson::Value& value,
-                                      Hjson::Value& hints);
-    void LoadHjsonDir(std::string& path, Hjson::Value& value, Hjson::Value& hints);
+                                        const Hjson::Value& hints);
+    void LoadHjsonDir(const std::string& path, Hjson::Value& value, const Hjson::Value& hints);
     // Load singular asset
-    void LoadAsset(std::string&, std::string&, std::string&, Hjson::Value&);
-    void LoadImage(std::string& key, std::string& filePath, Hjson::Value& hints);
+    void LoadAsset(const std::string&, const std::string&, const std::string&, const Hjson::Value&);
+    void LoadImage(const std::string& key, const std::string& filePath, const Hjson::Value& hints);
 
-    void LoadShader(std::string& key, std::istream &asset_stream, Hjson::Value& hints);
-    void LoadFont(std::string& key, std::istream &asset_stream, Hjson::Value& hints);
-    void LoadCubemap(std::string& key, std::string &path,
-                        std::istream &asset_stream, Hjson::Value& hints);
+    void LoadShader(const std::string& key, std::istream &asset_stream, const Hjson::Value& hints);
+    void LoadFont(const std::string& key, std::istream &asset_stream, const Hjson::Value& hints);
+    void LoadCubemap(const std::string& key, const std::string &path,
+                        std::istream &asset_stream, const Hjson::Value& hints);
 
     std::map<std::string, AssetType> asset_type_map;
 
-    boost::lockfree::queue<QueueHolder> m_asset_queue;
+    ThreadsafeQueue<QueueHolder> m_asset_queue;
 };
 }  // namespace asset
 }  // namespace conquerspace

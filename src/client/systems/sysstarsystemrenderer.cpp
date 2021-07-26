@@ -277,13 +277,13 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity() {
 
     less_detailed_terrain_generator_thread = std::thread([&]() {
         // Generate slightly less detailed terrain so that it looks better at first
-        intermediate_image_generator.GenerateTerrain(6, 5);
+        intermediate_image_generator.GenerateTerrain(6, 6);
         second_terrain_complete = true;
     });
 
     terrain_generator_thread = std::thread([&]() {
         // Generate slightly less detailed terrain so that it looks better at first
-        final_image_generator.GenerateTerrain(8, 9);
+        final_image_generator.GenerateTerrain(8, 11);
         terrain_complete = true;
     });
 }
@@ -429,8 +429,7 @@ glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateObjectP
     entt::entity &ent) {
     namespace cqspb = conquerspace::common::components::bodies;
     namespace cqspt = conquerspace::common::components::types;
-    cqspt::Kinematics &orbit = m_app.GetUniverse().get<cqspt::Kinematics>(ent);
-    return orbit.postion;
+    return m_app.GetUniverse().get<cqspt::Kinematics>(ent).postion;
 }
 
 glm::vec3
@@ -473,19 +472,18 @@ conquerspace::client::systems::SysStarSystemRenderer::GeneratePlanetTexture(
     unsigned int texture;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, image.GetWidth(), image.GetHeight(), 0, GL_RGBA,
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.GetWidth(), image.GetHeight(), 0, GL_RGBA,
                           GL_UNSIGNED_INT_8_8_8_8, image.GetConstSlabPtr());
     glGenerateMipmap(GL_TEXTURE_2D);
-
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     return texture;
 }
 
 glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateMouseRay(
-    glm::vec3 &ray_nds) {
+    const glm::vec3 &ray_nds) {
     glm::vec4 ray_clip = glm::vec4(ray_nds.x, ray_nds.y, -1.0, 1.0);
     glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
     ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0, 0.0);

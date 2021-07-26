@@ -1,6 +1,5 @@
 # Copyright 2021 Conquer Space
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
-include_directories(${Boost_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/lib/stb)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
 include_directories(${CMAKE_SOURCE_DIR}/lib/freetype/include)
@@ -34,7 +33,9 @@ foreach(_source IN ITEMS ${SOURCE_FILES})
 endforeach()
 
 add_library(cqsp-client ${SOURCE_FILES})
-target_link_libraries(cqsp-client PUBLIC 
+target_link_libraries(cqsp-client PUBLIC
+    cqsp-core
+    cqsp-engine
     OpenGL::GL
     ImGui
     EnTT::EnTT

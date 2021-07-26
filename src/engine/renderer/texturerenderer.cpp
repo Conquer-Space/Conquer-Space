@@ -133,21 +133,24 @@ void conquerspace::engine::FramebufferRenderer::NewFrame(Window& window) {
     }
 }
 
-void conquerspace::engine::AAFrameBufferRenderer::InitTexture() {
-    const int SCR_WIDTH = 1280, SCR_HEIGHT = 720;
+void conquerspace::engine::AAFrameBufferRenderer::InitTexture(int width,
+                                                              int height) {
+    this->width = width;
+    this->height = height;
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
     // create a multisampled color attachment texture
     glGenTextures(1, &textureColorBufferMultiSampled);
     glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, textureColorBufferMultiSampled);
-    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, SCR_WIDTH, SCR_HEIGHT, GL_TRUE);
+
+    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA, width, height, GL_TRUE);
     glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, textureColorBufferMultiSampled, 0);
     // create a (also multisampled) renderbuffer object for depth and stencil attachments
     unsigned int rbo;
     glGenRenderbuffers(1, &rbo);
     glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-    glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT);
+    glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, width, height);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
@@ -161,7 +164,7 @@ void conquerspace::engine::AAFrameBufferRenderer::InitTexture() {
     // create a color attachment texture
     glGenTextures(1, &screenTexture);
     glBindTexture(GL_TEXTURE_2D, screenTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture, 0);	// we only need a color buffer
@@ -184,12 +187,20 @@ void conquerspace::engine::AAFrameBufferRenderer::EndDraw() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void conquerspace::engine::AAFrameBufferRenderer::Free() {
+    glDeleteFramebuffers(1, &framebuffer);
+    glDeleteFramebuffers(1, &intermediateFBO);
+    glDeleteBuffers(1, &screenTexture);
+    glDeleteFramebuffers(1, &textureColorBufferMultiSampled);
+}
+
 void conquerspace::engine::AAFrameBufferRenderer::RenderBuffer() {
-    BeginDraw();
     glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, intermediateFBO);
-    glBlitFramebuffer(0, 0, 1280, 720, 0, 0, 1280, 720, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-    EndDraw();
+    glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT,  GL_NEAREST);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
     buffer_shader.UseProgram();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, screenTexture);
@@ -205,4 +216,18 @@ void conquerspace::engine::AAFrameBufferRenderer::RenderBuffer() {
 
     // Reset active texture
     glActiveTexture(GL_TEXTURE0);
+}
+
+void conquerspace::engine::AAFrameBufferRenderer::NewFrame(Window& window) {
+    BeginDraw();
+    Clear();
+    EndDraw();
+
+    // Remake frame
+    // Check if window size changed, and then change the window size.
+    if (window.WindowSizeChanged()) {
+        // Then resize window
+        Free();
+        InitTexture(window.GetWindowWidth(), window.GetWindowHeight());
+    }
 }

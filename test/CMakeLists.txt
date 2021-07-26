@@ -8,7 +8,6 @@ file (GLOB_RECURSE CPP_FILES *.cpp)
 file (GLOB_RECURSE H_FILES *.h)
 
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
-include_directories(${Boost_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/lib/fmt/include)
 # Lua
 include_directories(${CMAKE_SOURCE_DIR}/lib/lua/)

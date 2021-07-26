@@ -14,7 +14,7 @@ class ScriptInterface : public sol::state {
     using sol::state::state;
     ScriptInterface();
     void RunScript(std::string_view str);
-    void ParseResult(sol::protected_function_result&);
+    void ParseResult(const sol::protected_function_result&);
     void RegisterDataGroup(std::string_view name);
     void Init();
     int GetLength(std::string_view);

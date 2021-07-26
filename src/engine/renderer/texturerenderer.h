@@ -39,17 +39,23 @@ class FramebufferRenderer {
 * In progress, not working.
 */
 class AAFrameBufferRenderer {
+ public:
     unsigned int framebuffer;
     unsigned int intermediateFBO;
     unsigned int screenTexture;
     unsigned int textureColorBufferMultiSampled;
     conquerspace::asset::ShaderProgram buffer_shader;
     conquerspace::engine::Mesh mesh_output;
-    void InitTexture();
+    void InitTexture(int width  = 1280, int height = 720);
     void Clear();
     void BeginDraw();
     void EndDraw();
+    void Free();
     void RenderBuffer();
+    void NewFrame(Window& window);
+
+    int width;
+    int height;
 };
 }  // namespace engine
 }  // namespace conquerspace

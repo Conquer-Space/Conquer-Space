@@ -39,15 +39,12 @@ if(MSVC)
 endif()
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/modules/" ${CMAKE_MODULE_PATH})
-
 include_directories(src)
 
-if (WIN32)
-set(Boost_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/lib/win64/boost")
-endif()
-find_package(glfw3 REQUIRED)
+find_package(GLFW3 REQUIRED)
 find_package(OpenGL REQUIRED)
 
+message(${GLFW3_INCLUDE_PATH})
 execute_process(
   COMMAND git describe --tags --always --dirty --match "[0-9]*.*"
   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
