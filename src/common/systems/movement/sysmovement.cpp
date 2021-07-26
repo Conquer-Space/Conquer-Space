@@ -49,8 +49,6 @@ void conquerspace::common::systems::SysMove::DoSystem(
     namespace cqspc = conquerspace::common::components;
     namespace cqsps = conquerspace::common::components::ships;
     namespace cqspt = conquerspace::common::components::types;
-
-
 }
 
 

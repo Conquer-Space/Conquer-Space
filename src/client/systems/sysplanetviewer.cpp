@@ -80,7 +80,6 @@ void conquerspace::client::systems::SysPlanetInformation::DoUpdate(int delta_tim
         !GetApp().MouseDragged()) {
         to_see = true;
         SPDLOG_INFO("Switched entity");
-
     }
     if (!GetApp().GetUniverse().all_of<cqspb::Body>(selected_planet)) {
         to_see = false;
