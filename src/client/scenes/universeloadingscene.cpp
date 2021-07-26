@@ -14,7 +14,7 @@
 #include "common/components/bodies.h"
 #include "common/components/resource.h"
 #include "common/components/name.h"
-#include "common/components/orbit.h"
+#include "common/components/movement.h"
 #include "common/systems/sysuniversegenerator.h"
 
 conquerspace::scene::UniverseLoadingScene::UniverseLoadingScene(
