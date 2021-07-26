@@ -2,7 +2,8 @@
  * Copyright 2021 Conquer Space
 */
 #include "engine/renderer/primitives/polygon.h"
-
+#include "common/components/units.h"
+#include "common/components/movement.h"
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 
