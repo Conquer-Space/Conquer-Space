@@ -46,4 +46,4 @@ function test_event:on_tick()
         })
     end
 end
-events:insert(test_event)
+-- events:insert(test_event)

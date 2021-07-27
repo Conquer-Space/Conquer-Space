@@ -558,3 +558,13 @@ entt::entity conquerspace::client::systems::SysStarSystemRenderer::GetMouseOnObj
     }
     return entt::null;
 }
+
+conquerspace::client::systems::SysStarSystemRenderer::~SysStarSystemRenderer() {
+    if (less_detailed_terrain_generator_thread.joinable()) {
+        less_detailed_terrain_generator_thread.join();
+    }
+    if (terrain_generator_thread.joinable()) {
+        terrain_generator_thread.join();
+    }
+    printf("ASDF");
+}

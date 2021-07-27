@@ -96,6 +96,8 @@ struct ResourceConverter {
 };
 
 struct ResourceStockpile : public ResourceLedger {};
+
+struct ResourceDemand : public ResourceLedger {};
 }  // namespace components
 }  // namespace common
 }  // namespace conquerspace

@@ -145,8 +145,15 @@ void conquerspace::common::systems::universegenerator::ScriptUniverseGenerator::
         gen.recipe = recipe;
         universe.get<cqspc::Industry>(city).industries.push_back(factory);
 
+        // Factory will produce in the first tick
+        universe.emplace<cqspc::Production>(factory);
         return factory;
      });
+
+    script_engine.set_function("set_resource_consume", [&](entt::entity entity, entt::entity good, double amount) {
+        auto& consumption = universe.get_or_emplace<cqspc::ResourceConsumption>(entity);
+        consumption[good] = amount;
+    });
 
     script_engine.set_function("create_market", [&]() {
         entt::entity entity = universe.create();
