@@ -110,6 +110,7 @@ generators:insert({
         -- Add cities
         add_planet_habitation(planet)
         market = create_market()
+        place_market(market, planet)
         add_resource(market, goods["steel"], 50000)
         add_resource(market, goods["copper"], 50000)
 
@@ -119,14 +120,16 @@ generators:insert({
             local city = add_planet_settlement(planet)
             set_name(city, "City ".. index)
             local pop_unit = add_population_segment(city, 100000000) -- 100 million
+            attach_market(market, pop_unit)
+            set_resource_consume(pop_unit, goods["consumer_good"], 1750)
             -- Add industry
             create_industries(city)
-            attach_market(market, create_factory(city, recipes["steel_forging"], 10))
+            attach_market(market, create_factory(city, recipes["steel_forging"], 1000))
             -- Add various factories
-            attach_market(market, create_factory(city, recipes["consumer_good_manufacturing"], 9))
-            attach_market(market, create_mine(city, goods["copper"], 10, 1))
-            attach_market(market, create_mine(city, goods["aluminium"], 10, 1))
-            attach_market(market, create_mine(city, goods["iron"], 70, 1))
+            attach_market(market, create_factory(city, recipes["consumer_good_manufacturing"], 1000))
+            attach_market(market, create_mine(city, goods["copper"], 1000, 1))
+            attach_market(market, create_mine(city, goods["aluminium"], 1000, 1))
+            attach_market(market, create_mine(city, goods["iron"], 10000, 1))
         end
     end
 })

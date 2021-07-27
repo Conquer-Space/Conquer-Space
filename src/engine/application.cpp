@@ -367,6 +367,8 @@ int conquerspace::engine::Application::init() {
 }
 
 int conquerspace::engine::Application::destroy() {
+    // Delete scene
+    m_scene_manager.GetScene().reset();
     m_audio_interface->Destruct();
     delete m_audio_interface;
     m_universe.reset();

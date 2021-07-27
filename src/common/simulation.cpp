@@ -26,9 +26,8 @@
 #include "common/components/name.h"
 #include "common/components/resource.h"
 #include "common/util/profiler.h"
-#include "common/systems/sysresourcegen.h"
-#include "common/systems/economy/sysmarketplace.h"
 #include "common/systems/movement/sysmovement.h"
+#include "common/systems/syseconomy.h"
 
 #include "common/components/event.h"
 #include "common/components/organizations.h"
@@ -37,22 +36,14 @@
 #include "common/components/movement.h"
 #include "common/components/units.h"
 
-conquerspace::common::systems::simulation::Simulation::Simulation(
-    conquerspace::common::components::Universe &_universe,
-    scripting::ScriptInterface &script_interface)
-    : m_universe(_universe), script_runner(_universe, script_interface) {
-    AddSystem<conquerspace::common::systems::SysResourceGen>();
-    AddSystem<conquerspace::common::systems::SysFactoryResourceProduction>();
-    // Sell the resources they produce
-    AddSystem<conquerspace::common::systems::SysMarketSeller>();
-    // Buy resources
-    // Request demand, and buy things
-    AddSystem<conquerspace::common::systems::SysMarketBuyer>();
-    AddSystem<conquerspace::common::systems::SysFactoryResourceConsumption>();
-    // Move planets around orbits
-    // Move ships towards targets
-    AddSystem<conquerspace::common::systems::SysOrbit>();
-    AddSystem<conquerspace::common::systems::SysPath>();
+using conquerspace::common::systems::simulation::Simulation;
+using conquerspace::common::components::Universe;
+Simulation::Simulation(Universe &_universe,scripting::ScriptInterface &script_interface) :
+    m_universe(_universe), script_runner(_universe, script_interface) {
+    namespace cqspcs = conquerspace::common::systems;
+    AddSystem<cqspcs::SysFactory>();
+    AddSystem<cqspcs::SysOrbit>();
+    AddSystem<cqspcs::SysPath>();
     
     // Register functions
     script_interface.set_function("event_player", [&](sol::table event_table) {
@@ -99,7 +90,7 @@ void conquerspace::common::systems::simulation::Simulation::tick() {
     namespace cqsps = conquerspace::common::components::ships;
     namespace cqspt = conquerspace::common::components::types;
 
-
+    BEGIN_TIMED_BLOCK(Game_Loop);
     BEGIN_TIMED_BLOCK(ScriptEngine);
     this->script_runner.ScriptEngine();
     END_TIMED_BLOCK(ScriptEngine);
@@ -109,4 +100,5 @@ void conquerspace::common::systems::simulation::Simulation::tick() {
             sys->DoSystem(m_universe);
         }
     }
+    END_TIMED_BLOCK(Game_Loop);
 }

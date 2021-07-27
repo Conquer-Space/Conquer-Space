@@ -29,7 +29,6 @@
         catalyst: {
         }
         tags: [
-            # This is a ratio, which means that fractions of this recipe can be used
             ratio
         ]
     }

@@ -69,6 +69,8 @@ class SysStarSystemRenderer {
 
     entt::entity GetMouseOnObject(int mouse_x, int mouse_y);
 
+    ~SysStarSystemRenderer();
+
  private:
     entt::entity m_star_system = entt::null;
     entt::entity m_viewing_entity = entt::null;
