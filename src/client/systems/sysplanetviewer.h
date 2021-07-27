@@ -26,12 +26,18 @@ class SysPlanetInformation : public SysUserInterface {
     enum class ViewMode { PLANET_VIEW, CITY_VIEW };
     ViewMode view_mode = ViewMode::PLANET_VIEW;
     bool to_see = false;
+
  private:
     entt::entity selected_planet = entt::null;
     void CityInformationPanel();
     void PlanetInformationPanel();
     void ResourcesTab();
     void IndustryTab();
+    void IndustryTabServicesChild();
+    void IndustryTabManufacturingChild();
+    void IndustryTabMiningChild();
+    void IndustryTabAgricultureChild();
+    void DemographicsTab();
 };
 }  // namespace systems
 }  // namespace client

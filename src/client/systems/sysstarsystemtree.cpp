@@ -17,8 +17,7 @@ void conquerspace::client::systems::SysStarSystemTree::DoUI(int delta_time) {
     namespace cqspb = conquerspace::common::components::bodies;
     namespace cqspcs = conquerspace::client::systems;
     // Get star system
-    entt::entity ent =
-        GetApp().GetUniverse().view<cqspcs::RenderingStarSystem>().front();
+    entt::entity ent = GetApp().GetUniverse().view<cqspcs::RenderingStarSystem>().front();
     if (ent == entt::null) {
         return;
     }
