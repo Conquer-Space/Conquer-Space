@@ -41,6 +41,8 @@
 #include "common/components/surface.h"
 #include "common/components/economy.h"
 #include "common/util/utilnumberdisplay.h"
+#include "common/systems/actions/factoryconstructaction.h"
+
 #include "engine/gui.h"
 
 void conquerspace::client::systems::SysPlanetInformation::DisplayPlanet() {
@@ -137,6 +139,10 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
             }
             if (ImGui::BeginTabItem("Resources")) {
                 ResourcesTab();
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Construction")) {
+               ConstructionTab();
                 ImGui::EndTabItem();
             }
             ImGui::EndTabBar();
@@ -381,8 +387,8 @@ void conquerspace::client::systems::SysPlanetInformation::IndustryTabMiningChild
                 // Load 
                 selected_mine = mine_index;
             }
-        gui::EntityTooltip(e, GetApp().GetUniverse());
-    }
+            gui::EntityTooltip(e, GetApp().GetUniverse());
+        }
         ImGui::End();
     }
 
@@ -404,4 +410,40 @@ void conquerspace::client::systems::SysPlanetInformation::DemographicsTab() {
     }
 
     // Then do demand and other things.
+}
+
+void conquerspace::client::systems::SysPlanetInformation::ConstructionTab() {
+    namespace cqspc = conquerspace::common::components;
+    ImGui::Text("Construction");
+    auto recipes = GetApp().GetUniverse().view<cqspc::Recipe>();
+    static int selected_recipe_index = -1;
+    static entt::entity selected_recipe = entt::null;
+    int index = 0;
+
+    ImGui::BeginChild("constructionlist", ImVec2(0, 0), false, window_flags);
+    for (entt::entity entity : recipes) {
+        if (selected_recipe_index == -1) {
+            selected_recipe_index = 0;
+            selected_recipe = entity;
+        }
+        const bool selected = selected_recipe_index == index;
+        std::string name = GetApp().GetUniverse().all_of<cqspc::Identifier>(entity) ? GetApp().GetUniverse().get<cqspc::Identifier>(entity).identifier : fmt::format("{}", entity);
+        if (ImGui::Selectable(fmt::format("{}", name).c_str(), selected)) {
+            selected_recipe_index = index;
+            selected_recipe = entity;
+        }
+        index++;
+    }
+    ImGui::EndChild();
+
+    static int prod = 1;
+    ImGui::PushItemWidth(-1);
+    ImGui::SliderInt("label", &prod, 1, 100, "%d");
+    ImGui::PopItemWidth();
+    if (ImGui::Button("Construct!")) {
+        // Construct things
+        spdlog::info("Constructing factory with recipe {}", selected_recipe);
+        conquerspace::common::systems::actions::ConstructFactory(
+            GetApp().GetUniverse(), selected_city_entity, selected_recipe, prod);
+    }
 }

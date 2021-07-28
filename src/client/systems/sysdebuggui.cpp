@@ -20,6 +20,7 @@
 #include <GLFW/glfw3.h>
 
 #include "client/systems/sysstarsystemrenderer.h"
+#include "common/components/name.h"
 #include "common/util/profiler.h"
 
 using conquerspace::client::systems::SysDebugMenu;
@@ -52,11 +53,28 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
                         app.GetUniverse().size(), app.GetUniverse().alive()));
     };
 
+    auto entity_name = [](Application& app, const string_view& args, CommandOutput& input) {
+        if (std::all_of(args.begin(), args.end(), ::isdigit)) {
+            entt::entity entity = static_cast<entt::entity>(atoi(args.data()));
+            std::string name = "N/A";
+            if (app.GetUniverse().all_of<conquerspace::common::components::Name>(entity)) {
+                name = app.GetUniverse().get<conquerspace::common::components::Name>(entity).name;
+            }
+            std::string identifier = "N/A";
+            if (app.GetUniverse().all_of<conquerspace::common::components::Identifier>(entity)) {
+                identifier = app.GetUniverse().get<conquerspace::common::components::Identifier>(entity).identifier;
+            }
+            input.push_back(fmt::format("Name: {}, {}", name, identifier));
+        }
+    };
+
+
     commands = {
         {"help", {"Shows this help menu", help_command}},
         {"mouseon", {"Get the entitiy the mouse is over", entity_command}},
         {"clear", {"Clears screen", screen_clear}},
-        {"entitycount", {"Gets number of entities", entitycount}}
+        {"entitycount", {"Gets number of entities", entitycount}},
+        {"name", {"Gets name and identifier of entity", entity_name}}
     };
 }
 
@@ -167,7 +185,7 @@ void SysDebugMenu::DoUI(int delta_time) {
             bool no_command = true;
             for (auto it = commands.begin(); it != commands.end(); it++) {
                 if (command.rfind(it->first, 0) == 0) {
-                    it->second.second(GetApp(), it->first, items);
+                    it->second.second(GetApp(), command.length()==it->first.length() ? "" : command.substr(it->first.length()+1) , items);
                     no_command = false;
                     break;
                 }
