@@ -1,7 +1,6 @@
 /binaries/bin
 !/binaries/bin/README.txt
 /build
-/lib/win64
 
 # Doxygen
 /docs/latex
