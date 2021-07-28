@@ -32,4 +32,19 @@
             ratio
         ]
     }
+    {
+        identifier: concrete_manufacturing
+        input: {
+            steel: 1
+            stone: 2
+        }
+        output: {
+            concrete: 3
+        }
+        catalyst: {
+        }
+        tags: [
+            ratio
+        ]
+    }
 ]
