@@ -3,5 +3,5 @@
 cd ..
 mkdir build
 cd build
-cmake -DTESTS=ON -DGLFW_ROOT_DIR=lib/win64/glfw ..
+cmake -DTESTS=ON ..
 cd ../tools
