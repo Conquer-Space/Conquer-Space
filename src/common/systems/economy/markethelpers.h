@@ -16,33 +16,16 @@
 */
 #pragma once
 
-#include <string>
-#include <vector>
 #include <entt/entt.hpp>
 
-#include "common/components/resource.h"
+#include "common/universe.h"
 
 namespace conquerspace {
 namespace common {
-namespace components {
-struct Market {
-    std::set<entt::entity> participants;
-    std::map<entt::entity, double> prices;
-    ResourceLedger demand;
-    ResourceLedger supply;
-
-    void AddParticipant(entt::entity participant) {
-        participants.insert(participant);
-    }
-};
-
-struct MarketParticipant {
-    entt::entity market;
-};
-
-struct MarketCenter {
-    entt::entity market;
-};
-}  // namespace components
-}  // namespace common
-}  // namespace conquerspace
+namespace systems {
+namespace economy {
+void AddParticipant(conquerspace::common::components::Universe& universe, entt::entity market, entt::entity entity);
+}
+}
+}
+}

@@ -35,6 +35,7 @@
 #include "common/components/ships.h"
 
 #include "common/systems/actions/factoryconstructaction.h"
+#include "common/systems/economy/markethelpers.h"
 
 
 void conquerspace::common::systems::universegenerator::ScriptUniverseGenerator::Generate(
@@ -146,7 +147,7 @@ void conquerspace::common::systems::universegenerator::ScriptUniverseGenerator::
 
     script_engine.set_function("create_factory", [&](entt::entity city, entt::entity recipe,
                                                                             float productivity) {
-        entt::entity factory = conquerspace::common::systems::actions::ConstructFactory(universe,
+        entt::entity factory = conquerspace::common::systems::actions::CreateFactory(universe,
                                                     city, recipe, productivity);
         // Factory will produce in the first tick
         universe.emplace<cqspc::Production>(factory);
@@ -170,9 +171,7 @@ void conquerspace::common::systems::universegenerator::ScriptUniverseGenerator::
     });
 
     script_engine.set_function("attach_market", [&](entt::entity market_entity, entt::entity participant) {
-        auto& market = universe.get<cqspc::Market>(market_entity);
-        market.participants.push_back(participant);
-        universe.emplace<cqspc::MarketParticipant>(participant, market_entity);
+        conquerspace::common::systems::economy::AddParticipant(universe, market_entity, participant);
     });
 
     script_engine.set_function("add_resource", [&](entt::entity storage,

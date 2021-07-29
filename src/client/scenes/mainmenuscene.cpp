@@ -35,8 +35,7 @@
 #include "client/systems/sysoptionswindow.h"
 #include "common/version.h"
 
-conquerspace::scene::MainMenuScene::MainMenuScene(
-    conquerspace::engine::Application& app)
+conquerspace::scene::MainMenuScene::MainMenuScene(conquerspace::engine::Application& app)
     : conquerspace::engine::Scene(app) { }
 
 void conquerspace::scene::MainMenuScene::Init() {
