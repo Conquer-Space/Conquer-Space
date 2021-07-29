@@ -127,8 +127,10 @@ generators:insert({
             attach_market(market, create_factory(city, recipes["steel_forging"], 1000))
             -- Add various factories
             attach_market(market, create_factory(city, recipes["consumer_good_manufacturing"], 1000))
+            attach_market(market, create_factory(city, recipes["concrete_manufacturing"], 300))
             attach_market(market, create_mine(city, goods["copper"], 1000, 1))
             attach_market(market, create_mine(city, goods["aluminium"], 1000, 1))
+            attach_market(market, create_mine(city, goods["stone"], 1000, 1))
             attach_market(market, create_mine(city, goods["iron"], 10000, 1))
         end
     end

@@ -28,6 +28,6 @@ jobs:
 
     - uses: actions/upload-artifact@v2
       with:
-        name: release
+        name: Conquer-Space
         path: |
           binaries

@@ -5,7 +5,7 @@
         name: Iron
         identifier: iron
         volume: 1
-        mass: 7.874
+        mass: 7874
         tags: [
         ]
     }
@@ -13,7 +13,7 @@
         name: Copper
         identifier: copper
         volume: 1
-        mass: 8.96
+        mass: 8960
         tags: [
         ]
     }
@@ -21,7 +21,7 @@
         name: Aluminium
         identifier: aluminium
         volume: 1
-        mass: 2.7
+        mass: 2700
         tags: [
         ]
     }
@@ -29,7 +29,7 @@
         name: Consumer Good
         identifier: consumer_good
         volume: 1
-        mass: 6.5
+        mass: 6500
         tags: [
         ]
     }
@@ -37,7 +37,7 @@
         name: Water
         identifier: water
         volume: 1
-        mass: 1
+        mass: 1000
         tags: [
         ]
     }
@@ -45,7 +45,23 @@
         name: Steel
         identifier: steel
         volume: 1
-        mass: 1
+        mass: 7900
+        tags: [
+        ]
+    }
+    {
+        name: Concrete
+        identifier: concrete
+        volume: 1
+        mass: 2400
+        tags: [
+        ]
+    }
+    {
+        name: Stone
+        identifier: stone
+        volume: 1
+        mass: 2500
         tags: [
         ]
     }

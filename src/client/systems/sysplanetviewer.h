@@ -51,6 +51,7 @@ class SysPlanetInformation : public SysUserInterface {
     void IndustryTabMiningChild();
     void IndustryTabAgricultureChild();
     void DemographicsTab();
+    void ConstructionTab();
 };
 }  // namespace systems
 }  // namespace client
