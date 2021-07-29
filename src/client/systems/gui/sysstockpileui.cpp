@@ -10,7 +10,7 @@ using conquerspace::common::components::Universe;
 using conquerspace::common::components::Identifier;
 using conquerspace::util::LongToHumanString;
 using conquerspace::common::components::ResourceLedger;
-void conquerspace::client::systems::DrawLedgerTable(const std::string &name, Universe &universe, ResourceLedger& ledger) {
+void conquerspace::client::systems::DrawLedgerTable(const std::string &name, const Universe &universe, const ResourceLedger& ledger) {
     if (ledger.empty()) {
         ImGui::Text("Empty ledger");
         return;

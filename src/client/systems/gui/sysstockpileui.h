@@ -24,7 +24,7 @@
 namespace conquerspace {
 namespace client {
 namespace systems {
-void DrawLedgerTable(const std::string &name, conquerspace::common::components::Universe&, conquerspace::common::components::ResourceLedger& ledger);
+void DrawLedgerTable(const std::string &name, const conquerspace::common::components::Universe&, const conquerspace::common::components::ResourceLedger& ledger);
 }  // namespace systems
 }  // namespace client
 }  // namespace conquerspace
