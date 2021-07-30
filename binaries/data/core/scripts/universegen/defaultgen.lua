@@ -119,7 +119,7 @@ generators:insert({
         for index = 0, city_count, 1 do
             local city = add_planet_settlement(planet)
             set_name(city, "City ".. index)
-            local pop_unit = add_population_segment(city, 100000000) -- 100 million
+            local pop_unit = add_population_segment(city, random_normal_int(50000000, 2000000)) -- 100 million
             attach_market(market, pop_unit)
             set_resource_consume(pop_unit, goods["consumer_good"], 1750)
             -- Add industry
