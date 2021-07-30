@@ -17,6 +17,7 @@
 #include "client/systems/sysoptionswindow.h"
 
 #include "common/version.h"
+#include "engine/cqspgui.h"
 
 void conquerspace::client::systems::ShowOptionsWindow(
     bool* open, conquerspace::engine::Application& app) {
@@ -56,11 +57,9 @@ void conquerspace::client::systems::ShowOptionsWindow(
                         .c_str())) {
                 for (int n = 0; n < IM_ARRAYSIZE(common_resolutions); n++) {
                     const bool is_selected = (item_current_idx == n);
-                    if (ImGui::Selectable(
+                    if (CQSPGui::DefaultSelectable(app,
                             fmt::format("{}x{}", common_resolutions[n].x,
-                                        common_resolutions[n].y)
-                                .c_str(),
-                            is_selected)) {
+                            common_resolutions[n].y).c_str(), is_selected)) {
                         item_current_idx = n;
 
                         // Change options
@@ -70,8 +69,7 @@ void conquerspace::client::systems::ShowOptionsWindow(
                             .GetOptions()["window"]["height"] =
                             static_cast<int>(common_resolutions[n].y);
 
-                        if (!static_cast<bool>(
-                                app.GetClientOptions()
+                        if (!static_cast<bool>(app.GetClientOptions()
                                     .GetOptions()["full_screen"])) {
                             // Set resolution
                             app.SetWindowDimensions(common_resolutions[n].x,

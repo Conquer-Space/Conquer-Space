@@ -40,6 +40,9 @@ void conquerspace::scene::LoadingScene::Init() {
     auto loading = [&]() {
         SPDLOG_INFO("Loading resources");
         LoadResources();
+        // Load audio
+        auto asset = GetApp().GetAssetManager().GetAsset<conquerspace::asset::AudioAsset>("button_press");
+        GetApp().GetAudioInterface().AddAudioClip("button.press", asset);
     };
 
     thread = std::make_unique<std::thread>(loading);

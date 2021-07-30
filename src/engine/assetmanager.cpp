@@ -29,6 +29,7 @@
 
 #include "engine/renderer/shader.h"
 #include "engine/renderer/text.h"
+#include "engine/audio/alaudioasset.h"
 
 conquerspace::asset::AssetManager::AssetManager() {}
 
@@ -36,6 +37,13 @@ conquerspace::asset::ShaderProgram* conquerspace::asset::AssetManager::CreateSha
     const std::string& vert, const std::string& frag) {
     return new ShaderProgram(*GetAsset<conquerspace::asset::Shader>(vert.c_str()),
                                     *GetAsset<conquerspace::asset::Shader>(frag.c_str()));
+}
+
+void conquerspace::asset::AssetManager::ClearAssets() {
+    for(auto a = assets.begin(); a != assets.end(); a++) {
+        a->second.reset();
+    }
+    assets.clear();
 }
 
 conquerspace::asset::AssetLoader::AssetLoader() : m_asset_queue() {
@@ -48,6 +56,7 @@ conquerspace::asset::AssetLoader::AssetLoader() : m_asset_queue() {
     asset_type_map["font"] = AssetType::FONT;
     asset_type_map["cubemap"] = AssetType::CUBEMAP;
     asset_type_map["directory"] = AssetType::TEXT_ARRAY;
+    asset_type_map["audio"] = AssetType::AUDIO;
 }
 
 namespace cqspa = conquerspace::asset;
@@ -137,6 +146,18 @@ switch (asset_type_map[type]) {
         LoadFont(key, asset_stream, hints);
         break;
         }
+        case AssetType::AUDIO:
+        {
+            spdlog::info(path);
+        std::ifstream asset_stream(path, std::ios::binary);
+        if (asset_stream.good()) {
+            manager->assets[key] = conquerspace::asset::LoadOgg(asset_stream);
+        } else {
+            SPDLOG_WARN("Invalid ogg file {}", path);
+        }
+        break;
+        }
+        break;
         default:
         break;
     }

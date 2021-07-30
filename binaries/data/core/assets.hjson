@@ -202,4 +202,16 @@
         hints: {
         }
     }
+    ui_sounds: {
+        path: gui/ui_sounds.hjson
+        type: hjson
+        hints: {
+        }
+    }
+    button_press: {
+        path: sound/gui/click.ogg
+        type: audio
+        hints: {
+        }
+    }
 }

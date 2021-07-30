@@ -17,91 +17,14 @@
 #include "engine/audio/audiointerface.h"
 
 #include <spdlog/sinks/stdout_color_sinks.h>
-#include <stb_vorbis.h>
 
 #include <chrono>
 #include <string>
 
-namespace conquerspace::engine::audio {
-class ALAudioAsset : public AudioAsset {
- public:
-    ALAudioAsset() {
-        // Make audio things
-        alGenBuffers(1, &buffer);
-        alGenSources((ALuint)1, &source);
-
-        alSourcef(source, AL_PITCH, 1);
-        alSourcef(source, AL_GAIN, 1);
-
-        alSource3f(source, AL_POSITION, 0, 0, 0);
-        alSource3f(source, AL_VELOCITY, 0, 0, 0);
-        alSourcei(source, AL_LOOPING, AL_FALSE);
-    }
-
-    void SetGain(float gain) {
-        alSourcef(source, AL_GAIN, gain);
-    }
-
-    void SetPitch(float pitch) {
-        alSourcef(source, AL_PITCH, pitch);
-    }
-
-    void SetLooping(bool looping) {
-        alSourcei(source, AL_LOOPING, looping ? AL_TRUE : AL_FALSE);
-    }
-
-    void Play() {
-        alSourcePlay(source);
-    }
-
-    void Stop() {
-        alSourceStop(source);
-    }
-
-    void Resume() {
-        alSourcePlay(source);
-    }
-
-    void Pause() {
-        alSourcePause(source);
-    }
-
-    void Rewind() {
-        alSourceRewind(source);
-    }
-
-    bool IsPlaying() {
-        ALint source_state;
-        alGetSourcei(source, AL_SOURCE_STATE, &source_state);
-        return (source_state == AL_PLAYING);
-    }
-
-    float PlayPosition() {
-        float length;
-        alGetSourcef(source, AL_SEC_OFFSET, &length);
-        return length;
-    }
-
-    /**
-     * Length in seconds.
-     */
-    float Length() {
-        return length;
-    }
-
-    ALuint source;
-    ALuint buffer;
-    float length = 0;
-
-    ~ALAudioAsset() {
-        alDeleteSources(1, &source);
-        alDeleteBuffers(1, &buffer);
-    }
-};
-}  // namespace conquerspace::engine::audio
+#include "engine/audio/alaudioasset.h"
 
 using conquerspace::engine::audio::AudioInterface;
-using conquerspace::engine::audio::AudioAsset;
+using conquerspace::asset::AudioAsset;
 
 AudioInterface::AudioInterface() {
     logger = spdlog::stdout_color_mt("audio");
@@ -155,7 +78,7 @@ void AudioInterface::StartWorker() {
             SPDLOG_LOGGER_INFO(logger, "Loading track \'{}\'", track_info["name"]);
             auto mfile = std::ifstream(track_file, std::ios::binary);
             if (mfile.good()) {
-                music = LoadOgg(mfile);
+                music = conquerspace::asset::LoadOgg(mfile);
                 SPDLOG_LOGGER_INFO(logger, "Length of audio: {}", music->Length());
             } else {
                 SPDLOG_LOGGER_ERROR(logger, "Failed to load audio {}", track_info["name"]);
@@ -185,6 +108,19 @@ void AudioInterface::SetMusicVolume(float volume) {
     music_volume = volume;
 }
 
+void conquerspace::engine::audio::AudioInterface::AddAudioClip(const std::string& key, AudioAsset* asset) {
+    assets[key] = asset;
+}
+
+void conquerspace::engine::audio::AudioInterface::PlayAudioClip(const std::string& key) {
+    if (assets.find(key) == assets.end()) {
+        SPDLOG_LOGGER_WARN(logger, "Unable to find audio clip {}", key);
+    } else {
+        assets[key]->Rewind();
+        assets[key]->Play();
+    }
+}
+
 inline bool isBigEndian() {
     int a = 1;
     return !(reinterpret_cast<char*>(&a))[0];
@@ -202,7 +138,7 @@ inline int convertToInt(char* buffer, int len) {
     return a;
 }
 
-inline ALenum to_al_format(int16 channels, int16 samples) {
+inline ALenum to_al_format(int16_t channels, int16_t samples) {
     bool stereo = (channels > 1);
 
     switch (samples) {
@@ -216,7 +152,7 @@ inline ALenum to_al_format(int16 channels, int16 samples) {
 }
 
 std::unique_ptr<AudioAsset> AudioInterface::LoadWav(std::ifstream &in) {
-    auto audio_asset = std::make_unique<ALAudioAsset>();
+    auto audio_asset = std::make_unique<conquerspace::asset::ALAudioAsset>();
     char buffer[4];
     in.read(buffer, 4);
     if (strncmp(buffer, "RIFF", 4) != 0) {
@@ -248,36 +184,6 @@ std::unique_ptr<AudioAsset> AudioInterface::LoadWav(std::ifstream &in) {
     alSourcei(audio_asset->source, AL_BUFFER, audio_asset->buffer);
 
     delete[] data;
-    return audio_asset;
-}
-
-std::unique_ptr<AudioAsset> AudioInterface::LoadOgg(std::ifstream& input) {
-    // Read file
-    input.seekg(0, std::ios::end);
-    std::streamsize size = input.tellg();
-    input.seekg(0, std::ios::beg);
-    char* data = new char[size];
-    input.read(data, size);
-
-    auto audio_asset = std::make_unique<ALAudioAsset>();
-    int16* buffer;
-    int channels;
-    int sample_rate;
-    int numSamples = stb_vorbis_decode_memory((unsigned char*)(data),
-                                size, &channels, &sample_rate, &buffer);
-
-    ALenum format = channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
-    alBufferData(audio_asset->buffer, format, buffer,
-                                numSamples * channels * sizeof(int16), sample_rate);
-    if (alGetError() != ALC_NO_ERROR) {
-        spdlog::info("{}", alGetError());
-    }
-    audio_asset->length = static_cast<float>(numSamples) / static_cast<float>(sample_rate);
-    alSourcei(audio_asset->source, AL_BUFFER, audio_asset->buffer);
-
-    // Free memory
-    delete[] data;
-    free(buffer);
     return audio_asset;
 }
 

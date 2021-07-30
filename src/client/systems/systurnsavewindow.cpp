@@ -21,6 +21,7 @@
 #include <GLFW/glfw3.h>
 
 #include "engine/gui.h"
+#include "engine/cqspgui.h"
 
 void conquerspace::client::systems::SysTurnSaveWindow::Init() {
 }
@@ -35,18 +36,18 @@ void conquerspace::client::systems::SysTurnSaveWindow::DoUI(int delta_time) {
                                      ImGuiWindowFlags_AlwaysAutoResize | window_flags);
     // Show date
     ImGui::TextFmt("Date: {} Speed: {}", GetApp().GetUniverse().date.GetDate(), tick_speed);
-    if (ImGui::Button("<<")) {
+    if (CQSPGui::DefaultButton(GetApp(), "<<")) {
         // Slower
         if (tick_speed > 0) {
             tick_speed--;
         }
     }
     ImGui::SameLine();
-    if (ImGui::Button(to_tick ? "Running" : "Paused")) {
+    if (CQSPGui::DefaultButton(GetApp(), to_tick ? "Running" : "Paused")) {
         TogglePlayState();
     }
     ImGui::SameLine();
-    if (ImGui::Button(">>")) {
+    if (CQSPGui::DefaultButton(GetApp(), ">>")) {
         // Faster
         if (tick_speed < tick_speeds.size() - 1) {
             tick_speed++;

@@ -359,8 +359,7 @@ int conquerspace::engine::Application::init() {
     std::shared_ptr<Scene> initial_scene = std::make_shared<EmptyScene>(*this);
     m_scene_manager.SetInitialScene(initial_scene);
 
-    m_script_interface =
-        std::make_unique<conquerspace::scripting::ScriptInterface>();
+    m_script_interface = std::make_unique<conquerspace::scripting::ScriptInterface>();
     m_universe = std::make_unique<conquerspace::common::components::Universe>();
     m_script_interface->Init();
     return 0;
@@ -369,10 +368,12 @@ int conquerspace::engine::Application::init() {
 int conquerspace::engine::Application::destroy() {
     // Delete scene
     m_scene_manager.GetScene().reset();
-    m_audio_interface->Destruct();
-    delete m_audio_interface;
+    // Clear assets
     m_universe.reset();
     m_script_interface.reset();
+    manager.ClearAssets();
+    m_audio_interface->Destruct();
+    delete m_audio_interface;
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImPlot::DestroyContext();

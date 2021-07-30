@@ -16,10 +16,11 @@
 */
 #pragma once
 
+#include "engine/asset.h"
+
 namespace conquerspace {
-namespace engine {
-namespace audio {
-class AudioAsset {
+namespace asset {
+class AudioAsset : public conquerspace::asset::Asset{
  public:
     virtual void SetGain(float gain) = 0;
     virtual void SetPitch(float pitch) = 0;
@@ -41,6 +42,5 @@ class AudioAsset {
 
     // Get playlist
 };
-}  // namespace audio
-}  // namespace engine
+}  // namespace asset
 }  // namespace conquerspace

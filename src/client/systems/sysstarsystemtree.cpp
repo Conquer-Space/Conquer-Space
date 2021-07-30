@@ -24,6 +24,8 @@
 #include "common/components/bodies.h"
 #include "common/components/name.h"
 
+#include "engine/cqspgui.h"
+
 void conquerspace::client::systems::SysStarSystemTree::Init() {}
 
 void conquerspace::client::systems::SysStarSystemTree::DoUI(int delta_time) {
@@ -53,7 +55,7 @@ void conquerspace::client::systems::SysStarSystemTree::DoUI(int delta_time) {
                         .name);
         }
 
-        if (ImGui::Selectable(planet_name.c_str(),
+        if (CQSPGui::DefaultSelectable(GetApp(), planet_name.c_str(),
                         is_selected, ImGuiSelectableFlags_AllowDoubleClick)) {
             // Selected object
             selected_index = index;

@@ -20,6 +20,8 @@
 
 #include <string>
 
+#include "engine/audio/audioasset.h"
+
 namespace conquerspace {
 namespace engine {
 namespace audio {
@@ -33,6 +35,9 @@ class IAudioInterface {
     virtual void StartWorker() = 0;
     virtual void RequestPlayAudio() = 0;
     virtual void SetMusicVolume(float volume) = 0;
+
+    virtual void AddAudioClip(const std::string &key, conquerspace::asset::AudioAsset *asset) = 0;
+    virtual void PlayAudioClip(const std::string &key) = 0;
 };
 }  // namespace audio
 }  // namespace engine

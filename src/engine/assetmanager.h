@@ -41,7 +41,7 @@
 namespace conquerspace {
 namespace asset {
 
-enum class AssetType { NONE, TEXTURE, SHADER, HJSON, TEXT, MODEL, FONT, CUBEMAP, TEXT_ARRAY };
+enum class AssetType { NONE, TEXTURE, SHADER, HJSON, TEXT, MODEL, FONT, CUBEMAP, TEXT_ARRAY, AUDIO };
 enum PrototypeType { NONE = 0, TEXTURE, SHADER, FONT, CUBEMAP };
 
 class Prototype {
@@ -186,6 +186,8 @@ class AssetManager {
             SPDLOG_ERROR("Invalid key {}", key);
         return dynamic_cast<T*>(assets[key].get());
     }
+
+    void ClearAssets();
 
  private:
     std::map<std::string, std::unique_ptr<Asset>> assets;

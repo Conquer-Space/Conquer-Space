@@ -32,7 +32,6 @@
 namespace conquerspace {
 namespace engine {
 namespace audio {
-
 class AudioInterface : public IAudioInterface {
  public:
     AudioInterface();
@@ -49,12 +48,14 @@ class AudioInterface : public IAudioInterface {
     void RequestPlayAudio();
     void SetMusicVolume(float volume);
 
+    void AddAudioClip(const std::string &key, conquerspace::asset::AudioAsset *asset);
+    void PlayAudioClip(const std::string &key);
+
     ~AudioInterface() {}
 
     std::thread worker_thread;
-    std::unique_ptr<AudioAsset> LoadWav(std::ifstream &input);
-    std::unique_ptr<AudioAsset> LoadOgg(std::ifstream& input);
-    std::unique_ptr<AudioAsset> music = nullptr;
+    std::unique_ptr<conquerspace::asset::AudioAsset> LoadWav(std::ifstream &input);
+    std::unique_ptr<conquerspace::asset::AudioAsset> music = nullptr;
 
     std::shared_ptr<spdlog::logger> logger;
 
@@ -66,6 +67,7 @@ class AudioInterface : public IAudioInterface {
     void PrintInformation();
     void InitListener();
     void InitALContext();
+    std::map<std::string, conquerspace::asset::AudioAsset *> assets;
 
     float music_volume = 0;
 };
