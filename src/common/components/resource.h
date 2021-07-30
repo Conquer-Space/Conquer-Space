@@ -111,6 +111,10 @@ struct ResourceConverter {
 struct ResourceStockpile : public ResourceLedger {};
 
 struct ResourceDemand : public ResourceLedger {};
+
+struct FailedResourceTransfer {
+    // Ledgers later to show how much
+};
 }  // namespace components
 }  // namespace common
 }  // namespace conquerspace

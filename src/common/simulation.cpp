@@ -43,10 +43,11 @@ Simulation::Simulation(Universe &_universe,scripting::ScriptInterface &script_in
     m_universe(_universe), script_runner(_universe, script_interface) {
     namespace cqspcs = conquerspace::common::systems;
     AddSystem<cqspcs::SysPopulationGrowth>();
+    AddSystem<cqspcs::SysPopulationConsumption>();
     AddSystem<cqspcs::SysFactory>();
     AddSystem<cqspcs::SysOrbit>();
     AddSystem<cqspcs::SysPath>();
-    
+
     // Register functions
     script_interface.set_function("event_player", [&](sol::table event_table) {
         auto view = m_universe.view<conquerspace::common::components::Player>();

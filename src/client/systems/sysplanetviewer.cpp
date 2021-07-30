@@ -195,6 +195,15 @@ void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel
             ImGui::EndTooltip();
         }
     }
+
+    // Get population
+    uint64_t pop_size = 0;
+    for (entt::entity settlement : habit.settlements) {
+        for (entt::entity population : GetApp().GetUniverse().get<cqspc::Settlement>(settlement).population) {
+            pop_size += GetApp().GetUniverse().get<cqspc::PopulationSegment>(population).population;
+        }
+    }
+    ImGui::TextFmt("Population: {} ({})", conquerspace::util::LongToHumanString(pop_size), pop_size);
     ImGui::Separator();
 
     // List cities
@@ -403,13 +412,17 @@ void conquerspace::client::systems::SysPlanetInformation::IndustryTabAgriculture
 }
 
 void conquerspace::client::systems::SysPlanetInformation::DemographicsTab() {
+    namespace cqspc = conquerspace::common::components;
     using conquerspace::common::components::Settlement;
     using conquerspace::common::components::PopulationSegment;
+
     auto& settlement = GetApp().GetUniverse().get<Settlement>(selected_city_entity);
     for (auto &b : settlement.population) {
         ImGui::TextFmt("Population: {}", GetApp().GetUniverse().get<PopulationSegment>(b).population);
+        if (GetApp().GetUniverse().all_of<cqspc::Hunger>(b)) {
+            ImGui::TextFmt("Hungry");
+        }
     }
-
     // Then do demand and other things.
 }
 

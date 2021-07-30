@@ -22,6 +22,8 @@ namespace components {
 struct PopulationSegment {
     uint64_t population;
 };
+
+struct Hunger {};
 }  // namespace components
 }  // namespace common
 }  // namespace conquerspace

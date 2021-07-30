@@ -124,7 +124,7 @@ generators:insert({
             set_resource_consume(pop_unit, goods["consumer_good"], 1750)
             -- Add industry
             create_industries(city)
-            attach_market(market, create_factory(city, recipes["steel_forging"], 1000))
+            attach_market(market, create_factory(city, recipes["steel_forging"], 1500))
             -- Add various factories
             attach_market(market, create_factory(city, recipes["consumer_good_manufacturing"], 1000))
             attach_market(market, create_factory(city, recipes["concrete_manufacturing"], 300))

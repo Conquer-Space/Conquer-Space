@@ -16,6 +16,7 @@
 */
 #include "syspopulation.h"
 
+#include <spdlog/spdlog.h>
 #include "common/components/population.h"
 #include "common/components/resource.h"
 
@@ -23,8 +24,17 @@ void conquerspace::common::systems::SysPopulationGrowth::DoSystem(components::Un
     namespace cqspc = conquerspace::common::components;
     auto view = universe.view<cqspc::PopulationSegment>();
     for (auto [entity, segment] : view.each()) {
-        float increase = static_cast<float>(Interval()) / 100000.f + 1;
-        segment.population *= increase;
+        if (universe.all_of<cqspc::FailedResourceTransfer>(entity)) {
+            // Then alert hunger.
+            universe.emplace_or_replace<cqspc::Hunger>(entity);
+        } else {
+            universe.remove_if_exists<cqspc::Hunger>(entity);
+        }
+        // If not hungry
+        if (!universe.all_of<cqspc::Hunger>(entity)) {
+            float increase = static_cast<float>(Interval()) / 1000.f + 1;
+            segment.population *= increase;
+        }
     }
 }
 
@@ -34,7 +44,7 @@ void conquerspace::common::systems::SysPopulationConsumption::DoSystem(component
     for (auto [entity, segment] : view.each()) {
         // The population will feed, I guess
         entt::entity good = universe.goods["consumer_good"];
-        long consumption = segment.population * 1;
-        universe.get_or_emplace<cqspc::ResourceDemand>(entity)[good] = consumption;
+        uint64_t consumption = segment.population * 1;
+        universe.get_or_emplace<cqspc::ResourceConsumption>(entity)[good] = consumption;
     }
 }
