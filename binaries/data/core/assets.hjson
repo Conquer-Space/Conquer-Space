@@ -220,4 +220,10 @@
         hints: {
         }
     }
+    scrollclick: {
+        path: sound/gui/scrollclick.ogg
+        type: audio
+        hints: {
+        }
+    }
 }

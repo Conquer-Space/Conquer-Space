@@ -56,3 +56,21 @@ bool CQSPGui::ArrowButton(const char* label, ImGuiDir dir) {
     return false;
 }
 
+bool CQSPGui::SliderFloat(const char* label, float* v, float v_min, float v_max,
+                          const char* format, ImGuiSliderFlags flags) {
+    if (ImGui::SliderFloat(label, v, v_min, v_max, format, flags)) {
+        AppContext->GetAudioInterface().PlayAudioClip("scroll.tick");
+        return true;
+    }
+    return false;
+}
+
+bool CQSPGui::SliderInt(const char* label, int* v, int v_min, int v_max,
+                        const char* format, ImGuiSliderFlags flags) {
+    if (ImGui::SliderInt(label, v, v_min, v_max, format, flags)) {
+        AppContext->GetAudioInterface().PlayAudioClip("scroll.tick");
+        return true;
+    }
+    return false;
+}
+
