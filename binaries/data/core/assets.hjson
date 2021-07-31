@@ -209,7 +209,13 @@
         }
     }
     button_press: {
-        path: sound/gui/click.ogg
+        path: sound/gui/buttonselect.ogg
+        type: audio
+        hints: {
+        }
+    }
+    button_swipe: {
+        path: sound/gui/swipe.ogg
         type: audio
         hints: {
         }

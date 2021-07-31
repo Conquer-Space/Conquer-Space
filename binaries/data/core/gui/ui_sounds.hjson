@@ -1,3 +1,4 @@
 {
     button.press: button_press
+    button.back: button_swipe
 }

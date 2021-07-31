@@ -55,8 +55,8 @@ void conquerspace::client::systems::SysStarSystemTree::DoUI(int delta_time) {
                         .name);
         }
 
-        if (CQSPGui::DefaultSelectable(GetApp(), planet_name.c_str(),
-                        is_selected, ImGuiSelectableFlags_AllowDoubleClick)) {
+        if (CQSPGui::DefaultSelectable(planet_name.c_str(), is_selected,
+                                ImGuiSelectableFlags_AllowDoubleClick)) {
             // Selected object
             selected_index = index;
             if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {

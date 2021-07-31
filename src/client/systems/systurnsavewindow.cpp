@@ -36,18 +36,18 @@ void conquerspace::client::systems::SysTurnSaveWindow::DoUI(int delta_time) {
                                      ImGuiWindowFlags_AlwaysAutoResize | window_flags);
     // Show date
     ImGui::TextFmt("Date: {} Speed: {}", GetApp().GetUniverse().date.GetDate(), tick_speed);
-    if (CQSPGui::DefaultButton(GetApp(), "<<")) {
+    if (CQSPGui::DefaultButton("<<")) {
         // Slower
         if (tick_speed > 0) {
             tick_speed--;
         }
     }
     ImGui::SameLine();
-    if (CQSPGui::DefaultButton(GetApp(), to_tick ? "Running" : "Paused")) {
+    if (CQSPGui::DefaultButton( to_tick ? "Running" : "Paused")) {
         TogglePlayState();
     }
     ImGui::SameLine();
-    if (CQSPGui::DefaultButton(GetApp(), ">>")) {
+    if (CQSPGui::DefaultButton(">>")) {
         // Faster
         if (tick_speed < tick_speeds.size() - 1) {
             tick_speed++;

@@ -105,12 +105,12 @@ void conquerspace::client::systems::SysPlanetInformation::DoUpdate(int delta_tim
 
 void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel() {
     namespace cqspc = conquerspace::common::components;
-    if (ImGui::ArrowButton("cityinformationpanel", ImGuiDir_Left)) {
+    if (CQSPGui::ArrowButton("cityinformationpanel", ImGuiDir_Left)) {
         view_mode = ViewMode::PLANET_VIEW;
     }
     ImGui::SameLine();
     static bool thing = true;
-    ImGui::Checkbox("Macroeconomic/Ownership mode", &thing);
+    CQSPGui::DefaultCheckbox("Macroeconomic/Ownership mode", &thing);
 
     ImGui::TextFmt("{}", GetApp().GetUniverse().
                                             get<cqspc::Name>(selected_city_entity).name);
@@ -205,7 +205,7 @@ void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel
         entt::entity e = habit.settlements[i];
         std::string name = GetApp().GetUniverse().get<cqspc::Name>(e)
                 .name;
-        if (CQSPGui::DefaultSelectable(GetApp(), fmt::format("{}", name).c_str(), is_selected)) {
+        if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
             // Load city
             selected_city_index = i;
             selected_city_entity = habit.settlements[i];
@@ -302,7 +302,7 @@ void conquerspace::client::systems::SysPlanetInformation::IndustryTabManufacturi
 
     ImGui::SameLine();
     static bool factory_button = false;
-    if (CQSPGui::SmallDefaultButton(GetApp(), "Factory List")) {
+    if (CQSPGui::SmallDefaultButton("Factory List")) {
         factory_button = true;
     }
 
@@ -325,7 +325,7 @@ void conquerspace::client::systems::SysPlanetInformation::IndustryTabManufacturi
             if (GetApp().GetUniverse().all_of<cqspc::Name>(e)) {
                 name = GetApp().GetUniverse().get<cqspc::Name>(e).name;
             }
-            if (CQSPGui::DefaultSelectable(GetApp(), fmt::format("{}", name).c_str(), is_selected)) {
+            if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
                 // Load 
                 selected_factory = factory_index;
             }
@@ -362,7 +362,7 @@ void conquerspace::client::systems::SysPlanetInformation::IndustryTabMiningChild
 
     ImGui::SameLine();
     static bool mine_list_panel = false;
-    if (CQSPGui::SmallDefaultButton(GetApp(), "Mine List")) {
+    if (CQSPGui::SmallDefaultButton("Mine List")) {
         mine_list_panel = true;
     }
 
@@ -385,7 +385,7 @@ void conquerspace::client::systems::SysPlanetInformation::IndustryTabMiningChild
             if (GetApp().GetUniverse().all_of<cqspc::Name>(e)) {
                 name = GetApp().GetUniverse().get<cqspc::Name>(e).name;
             }
-            if (CQSPGui::DefaultSelectable(GetApp(), fmt::format("{}", name).c_str(), is_selected)) {
+            if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
                 // Load 
                 selected_mine = mine_index;
             }
@@ -433,7 +433,7 @@ void conquerspace::client::systems::SysPlanetInformation::ConstructionTab() {
         const bool selected = selected_recipe_index == index;
         std::string name = GetApp().GetUniverse().all_of<cqspc::Identifier>(entity) ?
             GetApp().GetUniverse().get<cqspc::Identifier>(entity).identifier : fmt::format("{}", entity);
-        if (CQSPGui::DefaultSelectable(GetApp(), fmt::format("{}", name).c_str(), selected)) {
+        if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), selected)) {
             selected_recipe_index = index;
             selected_recipe = entity;
         }
@@ -445,7 +445,7 @@ void conquerspace::client::systems::SysPlanetInformation::ConstructionTab() {
     ImGui::PushItemWidth(-1);
     ImGui::SliderInt("label", &prod, 1, 100, "%d");
     ImGui::PopItemWidth();
-    if (CQSPGui::DefaultButton(GetApp(), "Construct!")) {
+    if (CQSPGui::DefaultButton("Construct!")) {
         // Construct things
         SPDLOG_INFO("Constructing factory with recipe {}", selected_recipe);
         // Add demand to the market for the amount of resources

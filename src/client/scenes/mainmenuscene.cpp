@@ -117,7 +117,7 @@ void conquerspace::scene::MainMenuScene::Ui(float deltaTime) {
 
     ImGui::BeginTable("table1", 6, ImGuiTableFlags_NoPadOuterX);
     ImGui::TableNextColumn();
-    if (CQSPGui::DefaultButton(GetApp(), "New Game", ImVec2(buttonWidth, buttonHeight))) {
+    if (CQSPGui::DefaultButton("New Game", ImVec2(buttonWidth, buttonHeight))) {
         // Switch scene to new game menu
         m_new_game_window = true;
     }
@@ -127,28 +127,28 @@ void conquerspace::scene::MainMenuScene::Ui(float deltaTime) {
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(grey, grey, grey)));
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(grey, grey, grey)));
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(grey, grey, grey)));
-    if (CQSPGui::DefaultButton(GetApp(), "Load Save", ImVec2(buttonWidth, buttonHeight)), ImGuiButtonFlags_None) {
+    if (CQSPGui::DefaultButton("Load Save", ImVec2(buttonWidth, buttonHeight)), ImGuiButtonFlags_None) {
         // Get save game
         m_save_game_window = true;
     }
     ImGui::PopStyleColor(3);
 
     ImGui::TableNextColumn();
-    if (CQSPGui::DefaultButton(GetApp(), "Options", ImVec2(buttonWidth, buttonHeight))) {
+    if (CQSPGui::DefaultButton("Options", ImVec2(buttonWidth, buttonHeight))) {
         m_options_window = true;
     }
     ImGui::TableNextColumn();
 
-    if (CQSPGui::DefaultButton(GetApp(), "Credits", ImVec2(buttonWidth, buttonHeight))) {
+    if (CQSPGui::DefaultButton("Credits", ImVec2(buttonWidth, buttonHeight))) {
         // Then show credits window
         m_credits_window = true;
     }
 
     ImGui::TableNextColumn();
-    CQSPGui::DefaultButton(GetApp(), "Others", ImVec2(buttonWidth, buttonHeight));
+    CQSPGui::DefaultButton("Others", ImVec2(buttonWidth, buttonHeight));
 
     ImGui::TableNextColumn();
-    if (CQSPGui::DefaultButton(GetApp(), "Quit", ImVec2(buttonWidth, buttonHeight))) {
+    if (CQSPGui::DefaultButton("Quit", ImVec2(buttonWidth, buttonHeight))) {
         GetApp().ExitApplication();
     }
     ImGui::EndTable();
@@ -163,7 +163,7 @@ void conquerspace::scene::MainMenuScene::Ui(float deltaTime) {
             ImGuiCond_Always, ImVec2(0.5f, 0.5f));
         ImGui::Begin("New Game", &m_new_game_window,
             ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
-        if (CQSPGui::DefaultButton(GetApp(), "New Game")) {
+        if (CQSPGui::DefaultButton("New Game")) {
             // Switch scene
             GetApp().SetScene<conquerspace::scene::UniverseLoadingScene>();
         }

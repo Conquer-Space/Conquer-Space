@@ -41,6 +41,7 @@
 #include "common/version.h"
 #include "engine/audio/audiointerface.h"
 #include "engine/paths.h"
+#include "engine/cqspgui.h"
 
 namespace conquerspace::engine {
 void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id,
@@ -345,7 +346,7 @@ int conquerspace::engine::Application::init() {
     ImPlot::CreateContext();
     ImGui::StyleColorsDark();
     ImGui::GetIO().IniFilename = NULL;
-
+    CQSPGui::SetApplication(this);
     InitFonts();
 
     // Setup Platform/Renderer backends

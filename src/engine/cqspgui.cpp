@@ -1,36 +1,58 @@
 #include "cqspgui.h"
 
-bool CQSPGui::DefaultButton(conquerspace::engine::Application& app,
-                            const char* name, const ImVec2& size) {
+//namespace CQSPGui
+conquerspace::engine::Application* AppContext = nullptr;
+void CQSPGui::SetApplication(conquerspace::engine::Application* context) {
+    AppContext = context;
+}
+
+bool CQSPGui::DefaultButton(const char* name, const ImVec2& size) {
     if (ImGui::Button(name, size)) {
-        app.GetAudioInterface().PlayAudioClip("button.press");
+        AppContext->GetAudioInterface().PlayAudioClip("button.press");
         return true;
     }
     return false;
 }
 
-bool CQSPGui::SmallDefaultButton(conquerspace::engine::Application& app, const char* label) {
+bool CQSPGui::SmallDefaultButton(const char* label) {
     if (ImGui::SmallButton(label)) {
-        app.GetAudioInterface().PlayAudioClip("button.press");
+        AppContext->GetAudioInterface().PlayAudioClip("button.press");
         return true;
     }
     return false;
 }
 
-bool CQSPGui::DefaultSelectable(conquerspace::engine::Application& app, const char* label,
+bool CQSPGui::DefaultSelectable(const char* label,
                                 bool selected, ImGuiSelectableFlags flags, const ImVec2& size) {
     if (ImGui::Selectable(label, selected, flags, size)) {
-        app.GetAudioInterface().PlayAudioClip("button.press");
+        AppContext->GetAudioInterface().PlayAudioClip("button.press");
         return true;
     }
     return false;
 }
 
-bool CQSPGui::DefaultSelectable(conquerspace::engine::Application& app, const char* label,
+bool CQSPGui::DefaultSelectable(const char* label,
                             bool* p_selected, ImGuiSelectableFlags flags, const ImVec2& size) {
     if (ImGui::Selectable(label, p_selected, flags, size)) {
-        app.GetAudioInterface().PlayAudioClip("button.press");
+        AppContext->GetAudioInterface().PlayAudioClip("button.press");
         return true;
     }
     return false;
 }
+
+bool CQSPGui::DefaultCheckbox(const char* label, bool* v) {
+    if (ImGui::Checkbox(label, v)) {
+        AppContext->GetAudioInterface().PlayAudioClip("button.press");
+        return true;
+    }
+    return false;
+}
+
+bool CQSPGui::ArrowButton(const char* label, ImGuiDir dir) {
+    if (ImGui::ArrowButton(label, dir)) {
+        AppContext->GetAudioInterface().PlayAudioClip("button.back");
+        return true;
+    }
+    return false;
+}
+

@@ -41,8 +41,11 @@ void conquerspace::scene::LoadingScene::Init() {
         SPDLOG_INFO("Loading resources");
         LoadResources();
         // Load audio
-        auto asset = GetApp().GetAssetManager().GetAsset<conquerspace::asset::AudioAsset>("button_press");
-        GetApp().GetAudioInterface().AddAudioClip("button.press", asset);
+        auto hjson = GetApp().GetAssetManager().GetAsset<conquerspace::asset::HjsonAsset>("ui_sounds");
+        for (auto element : hjson->data) {
+            auto audio_asset = GetApp().GetAssetManager().GetAsset<conquerspace::asset::AudioAsset>(element.second);
+            GetApp().GetAudioInterface().AddAudioClip(element.first, audio_asset);
+        }
     };
 
     thread = std::make_unique<std::thread>(loading);

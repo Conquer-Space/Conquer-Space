@@ -57,8 +57,7 @@ void conquerspace::client::systems::ShowOptionsWindow(
                         .c_str())) {
                 for (int n = 0; n < IM_ARRAYSIZE(common_resolutions); n++) {
                     const bool is_selected = (item_current_idx == n);
-                    if (CQSPGui::DefaultSelectable(app,
-                            fmt::format("{}x{}", common_resolutions[n].x,
+                    if (CQSPGui::DefaultSelectable(fmt::format("{}x{}", common_resolutions[n].x,
                             common_resolutions[n].y).c_str(), is_selected)) {
                         item_current_idx = n;
 

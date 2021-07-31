@@ -65,7 +65,7 @@ void conquerspace::client::systems::SysCommand::DoUI(int delta_time) {
                         .name);
         }
 
-        if (CQSPGui::DefaultSelectable(GetApp(), planet_name.c_str(),
+        if (CQSPGui::DefaultSelectable(planet_name.c_str(),
                         is_selected, ImGuiSelectableFlags_AllowDoubleClick)) {
             // Selected object
             selected_index = index;
