@@ -18,17 +18,14 @@ std::unique_ptr<AudioAsset> LoadOgg(std::ifstream& input) {
     int sample_rate;
     int numSamples = stb_vorbis_decode_memory((unsigned char*)(data),
                                 size, &channels, &sample_rate, &buffer);
-    spdlog::info("sample rate: {} {}", sample_rate, size);
 
     ALenum format = channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
     alBufferData(audio_asset->buffer, format, buffer,
                                 numSamples * channels * sizeof(int16), sample_rate);
     ALenum error;
     if ((error = alGetError()) != ALC_NO_ERROR) {
-        spdlog::critical("{}", error);
     }
     audio_asset->length = static_cast<float>(numSamples) / static_cast<float>(sample_rate);
-    alSourcei(audio_asset->source, AL_BUFFER, audio_asset->buffer);
 
     // Free memory
     delete[] data;

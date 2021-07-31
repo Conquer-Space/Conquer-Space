@@ -148,7 +148,6 @@ switch (asset_type_map[type]) {
         }
         case AssetType::AUDIO:
         {
-            spdlog::info(path);
         std::ifstream asset_stream(path, std::ios::binary);
         if (asset_stream.good()) {
             manager->assets[key] = conquerspace::asset::LoadOgg(asset_stream);

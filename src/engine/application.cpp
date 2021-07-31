@@ -338,6 +338,8 @@ int conquerspace::engine::Application::init() {
     m_audio_interface->Initialize();
     // Set option things
     m_audio_interface->SetMusicVolume(m_client_options.GetOptions()["audio"]["music"]);
+    m_audio_interface->SetChannelVolume(1, m_client_options.GetOptions()["audio"]["ui"]);
+
 
     SetIcon();
     // Setup Dear ImGui context

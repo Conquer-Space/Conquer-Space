@@ -443,7 +443,7 @@ void conquerspace::client::systems::SysPlanetInformation::ConstructionTab() {
 
     static int prod = 1;
     ImGui::PushItemWidth(-1);
-    ImGui::SliderInt("label", &prod, 1, 100, "%d");
+    CQSPGui::SliderInt("label", &prod, 1, 100, "%d");
     ImGui::PopItemWidth();
     if (CQSPGui::DefaultButton("Construct!")) {
         // Construct things

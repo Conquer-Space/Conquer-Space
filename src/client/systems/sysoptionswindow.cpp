@@ -95,12 +95,21 @@ void conquerspace::client::systems::ShowOptionsWindow(
         if (ImGui::BeginTabItem("Sound")) {
             static float volume = app.GetClientOptions().GetOptions()["audio"]["music"];
 
-            ImGui::Text("Volume");
+            ImGui::Text("Music Volume");
             ImGui::SameLine();
             if (CQSPGui::SliderFloat("###Volume", &volume, 0, 1, "")) {
                 // Then set volume
                 app.GetAudioInterface().SetMusicVolume(volume);
                 app.GetClientOptions().GetOptions()["audio"]["music"] = volume;
+            }
+
+            static float ui_volume = app.GetClientOptions().GetOptions()["audio"]["ui"];
+            ImGui::Text("UI Volume");
+            ImGui::SameLine();
+            if (CQSPGui::SliderFloat("###UiVolume", &ui_volume, 0, 1, "")) {
+                // Then set volume
+                app.GetAudioInterface().SetChannelVolume(1, ui_volume);
+                app.GetClientOptions().GetOptions()["audio"]["ui"] = ui_volume;
             }
             ImGui::EndTabItem();
         }

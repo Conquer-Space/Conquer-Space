@@ -40,6 +40,8 @@ void AudioInterface::Initialize() {
     std::ifstream playlist_input = std::ifstream("../data/core/music/music_list.hjson");
     Hjson::DecoderOptions decOpt;
     playlist_input >> Hjson::StreamDecoder(playlist, decOpt);
+    channels.push_back(std::make_unique<AudioChannel>());
+    channels.push_back(std::make_unique<AudioChannel>());
 }
 
 void AudioInterface::Pause(bool to_pause) {}
@@ -55,6 +57,7 @@ void AudioInterface::Destruct() {
     worker_thread.join();
     SPDLOG_LOGGER_INFO(logger, "Killed OpenAL");
     // Clear sources and buffers
+    for (int i = 0; i < channels.size(); i++) channels[i].reset();
     music.reset();
     // Kill off music
     alcMakeContextCurrent(NULL);
@@ -85,13 +88,15 @@ void AudioInterface::StartWorker() {
             }
 
             if (music != nullptr) {
-                music->SetGain(music_volume);
-                music->Play();
-                while (music->IsPlaying() && !to_quit) {
+                // Set the music
+                channels[0]->SetBuffer(music.get());
+                channels[0]->SetGain(music_volume);
+                channels[0]->Play();
+                while (channels[0]->IsPlaying() && !to_quit) {
                     // Wait
                 }
                 // Stop music
-                music->Stop();
+                channels[0]->Stop();
                 music.reset();
                 SPDLOG_LOGGER_INFO(logger, "Completed track");
             }
@@ -103,7 +108,7 @@ void AudioInterface::RequestPlayAudio() {}
 
 void AudioInterface::SetMusicVolume(float volume) {
     if (music != nullptr) {
-        music->SetGain(volume);
+        channels[0]->SetGain(volume);
     }
     music_volume = volume;
 }
@@ -116,9 +121,18 @@ void conquerspace::engine::audio::AudioInterface::PlayAudioClip(const std::strin
     if (assets.find(key) == assets.end()) {
         SPDLOG_LOGGER_WARN(logger, "Unable to find audio clip {}", key);
     } else {
-        assets[key]->Rewind();
-        assets[key]->Play();
+        channels[1]->Stop();
+        channels[1]->SetBuffer(assets[key]);
+        channels[1]->Rewind();
+        channels[1]->Play();
     }
+}
+
+void conquerspace::engine::audio::AudioInterface::PlayAudioClip(
+    conquerspace::asset::AudioAsset* asset, int channel) {}
+
+void conquerspace::engine::audio::AudioInterface::SetChannelVolume(int channel, float gain) {
+    channels[channel]->SetGain(gain);
 }
 
 inline bool isBigEndian() {
@@ -181,7 +195,7 @@ std::unique_ptr<AudioAsset> AudioInterface::LoadWav(std::ifstream &in) {
 
     // Copy buffer
     alBufferData(audio_asset->buffer, format, data, size, samplerate);
-    alSourcei(audio_asset->source, AL_BUFFER, audio_asset->buffer);
+    //alSourcei(audio_asset->source, AL_BUFFER, audio_asset->buffer);
 
     delete[] data;
     return audio_asset;
@@ -220,4 +234,8 @@ void AudioInterface::InitALContext() {
     if (!alcMakeContextCurrent(context)) {
         SPDLOG_LOGGER_ERROR(logger, "Failed to make default context");
     }
+}
+
+void conquerspace::engine::audio::AudioChannel::SetBuffer(conquerspace::asset::AudioAsset* buffer) {
+    alSourcei(source, AL_BUFFER, dynamic_cast<conquerspace::asset::ALAudioAsset*>(buffer)->buffer);
 }
