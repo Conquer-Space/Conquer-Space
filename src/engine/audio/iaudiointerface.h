@@ -20,9 +20,12 @@
 
 #include <string>
 
+#include "engine/audio/audioasset.h"
+
 namespace conquerspace {
 namespace engine {
 namespace audio {
+enum ChannelType {};
 class IAudioInterface {
  public:
     virtual void Pause(bool to_pause) = 0;
@@ -33,6 +36,11 @@ class IAudioInterface {
     virtual void StartWorker() = 0;
     virtual void RequestPlayAudio() = 0;
     virtual void SetMusicVolume(float volume) = 0;
+    virtual void PlayAudioClip(conquerspace::asset::AudioAsset *asset, int channel) = 0;
+    virtual void SetChannelVolume(int channel, float gain) = 0;
+
+    virtual void AddAudioClip(const std::string &key, conquerspace::asset::AudioAsset *asset) = 0;
+    virtual void PlayAudioClip(const std::string &key) = 0;
 };
 }  // namespace audio
 }  // namespace engine

@@ -22,6 +22,8 @@
 #include "client/scenes/universescene.h"
 #include "client/systems/sysoptionswindow.h"
 #include "common/version.h"
+#include "engine/cqspgui.h"
+
 
 void conquerspace::client::systems::SysPauseMenu::Init() {}
 
@@ -42,21 +44,21 @@ void conquerspace::client::systems::SysPauseMenu::DoUI(int delta_time) {
         ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.5f, 0.5f));
 
         const float button_height = 0;
-        if (ImGui::Button("Resume", ImVec2(-FLT_MIN, button_height))) {
+        if (CQSPGui::DefaultButton("Resume", ImVec2(-FLT_MIN, button_height))) {
             to_show = false;
             conquerspace::scene::SetGameHalted(false);
         }
-        ImGui::Button("Save Game", ImVec2(-FLT_MIN, button_height));
-        ImGui::Button("Load Game", ImVec2(-FLT_MIN, button_height));
+        CQSPGui::DefaultButton("Save Game", ImVec2(-FLT_MIN, button_height));
+        CQSPGui::DefaultButton("Load Game", ImVec2(-FLT_MIN, button_height));
         ImGui::Separator();
 
-        if (ImGui::Button("Options", ImVec2(-FLT_MIN, button_height))) {
+        if (CQSPGui::DefaultButton("Options", ImVec2(-FLT_MIN, button_height))) {
             to_show_options_window = true;
         }
 
         ImGui::Separator();
-        ImGui::Button("Exit To Menu", ImVec2(-FLT_MIN, button_height));
-        if (ImGui::Button("Exit Game", ImVec2(-FLT_MIN, button_height))) {
+        CQSPGui::DefaultButton( "Exit To Menu", ImVec2(-FLT_MIN, button_height));
+        if (CQSPGui::DefaultButton("Exit Game", ImVec2(-FLT_MIN, button_height))) {
             // Kill game
             GetApp().ExitApplication();
         }

@@ -202,4 +202,28 @@
         hints: {
         }
     }
+    ui_sounds: {
+        path: gui/ui_sounds.hjson
+        type: hjson
+        hints: {
+        }
+    }
+    button_press: {
+        path: sound/gui/buttonselect.ogg
+        type: audio
+        hints: {
+        }
+    }
+    button_swipe: {
+        path: sound/gui/swipe.ogg
+        type: audio
+        hints: {
+        }
+    }
+    scrollclick: {
+        path: sound/gui/scrollclick.ogg
+        type: audio
+        hints: {
+        }
+    }
 }

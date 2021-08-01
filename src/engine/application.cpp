@@ -41,6 +41,7 @@
 #include "common/version.h"
 #include "engine/audio/audiointerface.h"
 #include "engine/paths.h"
+#include "engine/cqspgui.h"
 
 namespace conquerspace::engine {
 void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id,
@@ -337,6 +338,8 @@ int conquerspace::engine::Application::init() {
     m_audio_interface->Initialize();
     // Set option things
     m_audio_interface->SetMusicVolume(m_client_options.GetOptions()["audio"]["music"]);
+    m_audio_interface->SetChannelVolume(1, m_client_options.GetOptions()["audio"]["ui"]);
+
 
     SetIcon();
     // Setup Dear ImGui context
@@ -345,7 +348,7 @@ int conquerspace::engine::Application::init() {
     ImPlot::CreateContext();
     ImGui::StyleColorsDark();
     ImGui::GetIO().IniFilename = NULL;
-
+    CQSPGui::SetApplication(this);
     InitFonts();
 
     // Setup Platform/Renderer backends
@@ -359,8 +362,7 @@ int conquerspace::engine::Application::init() {
     std::shared_ptr<Scene> initial_scene = std::make_shared<EmptyScene>(*this);
     m_scene_manager.SetInitialScene(initial_scene);
 
-    m_script_interface =
-        std::make_unique<conquerspace::scripting::ScriptInterface>();
+    m_script_interface = std::make_unique<conquerspace::scripting::ScriptInterface>();
     m_universe = std::make_unique<conquerspace::common::components::Universe>();
     m_script_interface->Init();
     return 0;
@@ -369,10 +371,12 @@ int conquerspace::engine::Application::init() {
 int conquerspace::engine::Application::destroy() {
     // Delete scene
     m_scene_manager.GetScene().reset();
-    m_audio_interface->Destruct();
-    delete m_audio_interface;
+    // Clear assets
     m_universe.reset();
     m_script_interface.reset();
+    manager.ClearAssets();
+    m_audio_interface->Destruct();
+    delete m_audio_interface;
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImPlot::DestroyContext();

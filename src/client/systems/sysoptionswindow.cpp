@@ -17,6 +17,7 @@
 #include "client/systems/sysoptionswindow.h"
 
 #include "common/version.h"
+#include "engine/cqspgui.h"
 
 void conquerspace::client::systems::ShowOptionsWindow(
     bool* open, conquerspace::engine::Application& app) {
@@ -49,18 +50,14 @@ void conquerspace::client::systems::ShowOptionsWindow(
 
             ImGui::Text("Window Dimensions");
             ImGui::SameLine();
-            if (ImGui::BeginCombo(
-                    "##window size combo box",
+            if (ImGui::BeginCombo("##window size combo box",
                     fmt::format("{}x{}", common_resolutions[item_current_idx].x,
                                 common_resolutions[item_current_idx].y)
                         .c_str())) {
                 for (int n = 0; n < IM_ARRAYSIZE(common_resolutions); n++) {
                     const bool is_selected = (item_current_idx == n);
-                    if (ImGui::Selectable(
-                            fmt::format("{}x{}", common_resolutions[n].x,
-                                        common_resolutions[n].y)
-                                .c_str(),
-                            is_selected)) {
+                    if (CQSPGui::DefaultSelectable(fmt::format("{}x{}", common_resolutions[n].x,
+                            common_resolutions[n].y).c_str(), is_selected)) {
                         item_current_idx = n;
 
                         // Change options
@@ -70,8 +67,7 @@ void conquerspace::client::systems::ShowOptionsWindow(
                             .GetOptions()["window"]["height"] =
                             static_cast<int>(common_resolutions[n].y);
 
-                        if (!static_cast<bool>(
-                                app.GetClientOptions()
+                        if (!static_cast<bool>(app.GetClientOptions()
                                     .GetOptions()["full_screen"])) {
                             // Set resolution
                             app.SetWindowDimensions(common_resolutions[n].x,
@@ -88,7 +84,7 @@ void conquerspace::client::systems::ShowOptionsWindow(
                 app.GetClientOptions().GetOptions()["full_screen"]);
             ImGui::Text("Full Screen");
             ImGui::SameLine();
-            if (ImGui::Checkbox("##Full Screen", &full_screen_checkbox)) {
+            if (CQSPGui::DefaultCheckbox("##Full Screen", &full_screen_checkbox)) {
                 // Switch screen
                 app.SetFullScreen(full_screen_checkbox);
                 app.GetClientOptions().GetOptions()["full_screen"] =
@@ -99,12 +95,21 @@ void conquerspace::client::systems::ShowOptionsWindow(
         if (ImGui::BeginTabItem("Sound")) {
             static float volume = app.GetClientOptions().GetOptions()["audio"]["music"];
 
-            ImGui::Text("Volume");
+            ImGui::Text("Music Volume");
             ImGui::SameLine();
-            if (ImGui::SliderFloat("###Volume", &volume, 0, 1, "")) {
+            if (CQSPGui::SliderFloat("###Volume", &volume, 0, 1, "")) {
                 // Then set volume
                 app.GetAudioInterface().SetMusicVolume(volume);
                 app.GetClientOptions().GetOptions()["audio"]["music"] = volume;
+            }
+
+            static float ui_volume = app.GetClientOptions().GetOptions()["audio"]["ui"];
+            ImGui::Text("UI Volume");
+            ImGui::SameLine();
+            if (CQSPGui::SliderFloat("###UiVolume", &ui_volume, 0, 1, "")) {
+                // Then set volume
+                app.GetAudioInterface().SetChannelVolume(1, ui_volume);
+                app.GetClientOptions().GetOptions()["audio"]["ui"] = ui_volume;
             }
             ImGui::EndTabItem();
         }

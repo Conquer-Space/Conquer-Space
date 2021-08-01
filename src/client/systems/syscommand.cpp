@@ -27,6 +27,7 @@
 #include "common/components/name.h"
 #include "common/components/movement.h"
 #include "common/components/ships.h"
+#include "engine/cqspgui.h"
 
 void conquerspace::client::systems::SysCommand::Init() {}
 
@@ -64,7 +65,7 @@ void conquerspace::client::systems::SysCommand::DoUI(int delta_time) {
                         .name);
         }
 
-        if (ImGui::Selectable(planet_name.c_str(),
+        if (CQSPGui::DefaultSelectable(planet_name.c_str(),
                         is_selected, ImGuiSelectableFlags_AllowDoubleClick)) {
             // Selected object
             selected_index = index;

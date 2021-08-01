@@ -32,6 +32,71 @@
 namespace conquerspace {
 namespace engine {
 namespace audio {
+struct AudioChannel {
+    ALuint source;
+    // Set all variables
+    AudioChannel() {
+        alGenSources((ALuint)1, &source);
+
+        alSourcef(source, AL_PITCH, 1);
+        alSourcef(source, AL_GAIN, 1);
+
+        alSource3f(source, AL_POSITION, 0, 0, 0);
+        alSource3f(source, AL_VELOCITY, 0, 0, 0);
+        alSourcei(source, AL_LOOPING, AL_FALSE);
+    }
+
+    void SetGain(float gain) {
+        alSourcef(source, AL_GAIN, gain);
+    }
+
+    void SetPitch(float pitch) {
+        alSourcef(source, AL_PITCH, pitch);
+    }
+
+    void SetLooping(bool looping) {
+        alSourcei(source, AL_LOOPING, looping ? AL_TRUE : AL_FALSE);
+    }
+
+    void Play() {
+        alSourcePlay(source);
+    }
+
+    void Stop() {
+        alSourceStop(source);
+    }
+
+    void Resume() {
+        alSourcePlay(source);
+    }
+
+    void Pause() {
+        alSourcePause(source);
+    }
+
+    void Rewind() {
+        alSourceRewind(source);
+    }
+
+    bool IsPlaying() {
+        ALint source_state;
+        alGetSourcei(source, AL_SOURCE_STATE, &source_state);
+        return (source_state == AL_PLAYING);
+    }
+
+    float PlayPosition() {
+        float length;
+        alGetSourcef(source, AL_SEC_OFFSET, &length);
+        return length;
+    }
+
+    void SetBuffer(conquerspace::asset::AudioAsset *buffer);
+    float length = 0;
+
+    ~AudioChannel() {
+        alDeleteSources(1, &source);
+    }
+};
 
 class AudioInterface : public IAudioInterface {
  public:
@@ -49,12 +114,16 @@ class AudioInterface : public IAudioInterface {
     void RequestPlayAudio();
     void SetMusicVolume(float volume);
 
+    void AddAudioClip(const std::string &key, conquerspace::asset::AudioAsset *asset);
+    void PlayAudioClip(const std::string &key);
+    void PlayAudioClip(conquerspace::asset::AudioAsset *asset, int channel);
+    void SetChannelVolume(int channel, float gain);
+
     ~AudioInterface() {}
 
     std::thread worker_thread;
-    std::unique_ptr<AudioAsset> LoadWav(std::ifstream &input);
-    std::unique_ptr<AudioAsset> LoadOgg(std::ifstream& input);
-    std::unique_ptr<AudioAsset> music = nullptr;
+    std::unique_ptr<conquerspace::asset::AudioAsset> LoadWav(std::ifstream &input);
+    std::unique_ptr<conquerspace::asset::AudioAsset> music = nullptr;
 
     std::shared_ptr<spdlog::logger> logger;
 
@@ -66,6 +135,8 @@ class AudioInterface : public IAudioInterface {
     void PrintInformation();
     void InitListener();
     void InitALContext();
+    std::map<std::string, conquerspace::asset::AudioAsset *> assets;
+    std::vector<std::unique_ptr<AudioChannel>> channels;
 
     float music_volume = 0;
 };

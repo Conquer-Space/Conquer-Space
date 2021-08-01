@@ -20,6 +20,7 @@
 #include <string>
 
 #include "common/components/player.h"
+#include "engine/cqspgui.h"
 
 void conquerspace::client::systems::gui::SysEvent::Init() {
     GetApp().markdownConfig.tooltipCallback = [](ImGui::MarkdownTooltipCallbackData conf) {
@@ -57,7 +58,7 @@ void conquerspace::client::systems::gui::SysEvent::DoUI(int delta_time) {
                         GetApp().markdownConfig);
         ImGui::EndChild();
         if (env->actions.empty()) {
-            if (ImGui::Button("Ok", ImVec2(-FLT_MIN, 0))) {
+            if (CQSPGui::DefaultButton("Ok", ImVec2(-FLT_MIN, 0))) {
                 queue.events.clear();
             }
         } else {
@@ -65,7 +66,7 @@ void conquerspace::client::systems::gui::SysEvent::DoUI(int delta_time) {
             int i = 0;
             for (auto& action_result : env->actions) {
                 i++;
-                if (ImGui::Button(action_result->name.c_str(), ImVec2(-FLT_MIN, 0))) {
+                if (CQSPGui::DefaultButton(action_result->name.c_str(), ImVec2(-FLT_MIN, 0))) {
                     pressed = i;
                     // Check if it has an event
                     if (action_result->has_event) {
