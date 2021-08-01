@@ -130,6 +130,14 @@ void SysFactory::SysDemandResolver(components::Universe& universe) {
         // Add to supply
         market.demand += demand;
         auto& market_stockpile = universe.get<cqspc::ResourceStockpile>(market_participant.market);
+
+        // Check if it can handle it
+        if (market_stockpile > demand) {
+            universe.remove_if_exists<cqspc::FailedResourceTransfer>(entity);
+        } else {
+            universe.emplace_or_replace<cqspc::FailedResourceTransfer>(entity);
+        }
+
         market_stockpile -= demand;
         if (universe.all_of<cqspc::ResourceStockpile>(entity)) {
             universe.get<cqspc::ResourceStockpile>(entity) += demand;

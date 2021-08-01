@@ -16,14 +16,16 @@
 */
 #pragma once
 
-namespace conquerspace {
-namespace common {
-namespace components {
-struct PopulationSegment {
-    uint64_t population;
+#include "common/systems/isimulationsystem.h"
+
+namespace conquerspace::common::systems {
+class SysPopulationGrowth : public ISimulationSystem {
+ public:
+    void DoSystem(components::Universe& universe);
 };
 
-struct Hunger {};
-}  // namespace components
-}  // namespace common
-}  // namespace conquerspace
+class SysPopulationConsumption : public ISimulationSystem {
+ public:
+    void DoSystem(components::Universe& universe);
+};
+}  // namespace conquerspace::common::systems
