@@ -89,7 +89,7 @@ void conquerspace::asset::AssetLoader::LoadAsset(const std::string& type,
                                                     const std::string& path,
                                                     const std::string& key,
                                                     const Hjson::Value &hints) {
-switch (asset_type_map[type]) {
+    switch (asset_type_map[type]) {
         case AssetType::NONE:
         // Nothing to load
         break;
@@ -106,19 +106,7 @@ switch (asset_type_map[type]) {
         }
         case AssetType::HJSON:
         {
-            // Load a directory if it's a directory
-            if (std::filesystem::is_directory(path)) {
-                // Load and append to assets.
-                Hjson::Value data;
-                LoadHjsonDir(path, data, hints);
-                std::unique_ptr<cqspa::HjsonAsset> asset =
-                    std::make_unique<cqspa::HjsonAsset>();
-                asset->data = data;
-                manager->assets[key] = std::move(asset);
-            } else {
-                std::ifstream asset_stream(path);
-                manager->assets[key] = LoadHjson(asset_stream, hints);
-            }
+        manager->assets[key] = LoadHjson(path, hints);
         break;
         }
         case AssetType::TEXT:
@@ -149,11 +137,7 @@ switch (asset_type_map[type]) {
         case AssetType::AUDIO:
         {
         std::ifstream asset_stream(path, std::ios::binary);
-        if (asset_stream.good()) {
-            manager->assets[key] = conquerspace::asset::LoadOgg(asset_stream);
-        } else {
-            SPDLOG_WARN("Invalid ogg file {}", path);
-        }
+        manager->assets[key] = conquerspace::asset::LoadOgg(asset_stream);
         break;
         }
         break;
@@ -244,14 +228,23 @@ std::unique_ptr<cqspa::TextAsset> conquerspace::asset::AssetLoader::LoadText(
     return asset;
 }
 
-std::unique_ptr<cqspa::HjsonAsset> cqspa::AssetLoader::LoadHjson(std::istream &asset_stream,
+std::unique_ptr<cqspa::HjsonAsset> cqspa::AssetLoader::LoadHjson(const std::string &path,
                                     const Hjson::Value& hints) {
     std::unique_ptr<cqspa::HjsonAsset> asset =
         std::make_unique<cqspa::HjsonAsset>();
-
-    Hjson::DecoderOptions decOpt;
-    decOpt.comments = false;
-    asset_stream >> Hjson::StreamDecoder(asset->data, decOpt);
+        // Load a directory if it's a directory
+    if (std::filesystem::is_directory(path)) {
+        // Load and append to assets.
+        Hjson::Value data;
+        LoadHjsonDir(path, data, hints);
+        asset->data = data;
+        return asset;
+    } else {
+        std::ifstream asset_stream(path);
+        Hjson::DecoderOptions decOpt;
+        decOpt.comments = false;
+        asset_stream >> Hjson::StreamDecoder(asset->data, decOpt);
+    }
     return asset;
 }
 

@@ -18,10 +18,6 @@
 
 #include <hjson.h>
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
-#include FT_STROKER_H
-
 #include <spdlog/spdlog.h>
 
 #include <map>
@@ -216,7 +212,7 @@ class AssetLoader {
  private:
     std::unique_ptr<TextAsset> LoadText(std::istream &asset_stream,
                                         const Hjson::Value& hints);
-    std::unique_ptr<HjsonAsset> LoadHjson(std::istream &asset_stream,
+    std::unique_ptr<HjsonAsset> LoadHjson(const std::string &path,
                                         const Hjson::Value& hints);
     std::unique_ptr<TextDirectoryAsset> LoadTextDirectory(const std::string& name, const Hjson::Value& hints);
     void LoadHjson(std::istream &asset_stream, Hjson::Value& value,
@@ -230,7 +226,6 @@ class AssetLoader {
     void LoadFont(const std::string& key, std::istream &asset_stream, const Hjson::Value& hints);
     void LoadCubemap(const std::string& key, const std::string &path,
                         std::istream &asset_stream, const Hjson::Value& hints);
-
     std::map<std::string, AssetType> asset_type_map;
 
     ThreadsafeQueue<QueueHolder> m_asset_queue;

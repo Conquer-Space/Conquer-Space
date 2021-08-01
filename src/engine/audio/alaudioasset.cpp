@@ -22,9 +22,6 @@ std::unique_ptr<AudioAsset> LoadOgg(std::ifstream& input) {
     ALenum format = channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
     alBufferData(audio_asset->buffer, format, buffer,
                                 numSamples * channels * sizeof(int16), sample_rate);
-    ALenum error;
-    if ((error = alGetError()) != ALC_NO_ERROR) {
-    }
     audio_asset->length = static_cast<float>(numSamples) / static_cast<float>(sample_rate);
 
     // Free memory
