@@ -19,13 +19,11 @@ local function set_planet_orbit(planet, index, m, b)
 
     set_orbit(planet, distance, degrees, ecc, 0)
 end
-print("Generating")
 generators:insert({
     name = "default",
     civ_init = function()
     end,
     universe_gen = function()
-        print("Generating star system")
         for x = 1, 1000, 1 do
             local sys = create_star_system()
         
@@ -58,7 +56,7 @@ generators:insert({
         end
         
         for _, civ in pairs(civilizations) do
-            print("Making civilization")
+            print("Making civilization "..civ)
             -- Set planets
             local sys = create_star_system()
         
@@ -104,7 +102,7 @@ generators:insert({
     planets = function(civ_id)
         local planet = get_civilization_planet(civ_id)
         if is_player(civ_id) then
-            print("Is player")
+            print("Initializing player")
         end
 
         -- Add cities

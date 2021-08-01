@@ -68,13 +68,19 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
         }
     };
 
+    auto lua = [](Application& app, const string_view& args, CommandOutput& input) {
+        app.GetScriptInterface().RunScript(args);
+    };
+
 
     commands = {
         {"help", {"Shows this help menu", help_command}},
         {"mouseon", {"Get the entitiy the mouse is over", entity_command}},
         {"clear", {"Clears screen", screen_clear}},
         {"entitycount", {"Gets number of entities", entitycount}},
-        {"name", {"Gets name and identifier of entity", entity_name}}
+        {"name", {"Gets name and identifier of entity", entity_name}},
+        {"lua", {"Executes lua script", lua}
+}
     };
 }
 
@@ -231,5 +237,14 @@ void SysDebugMenu::DoUpdate(int delta_time) {
         }
 
         history_maps[it->first].push_back(ImVec2(time, it->second));
+    }
+
+    // Add lua logging information
+    if (!GetApp().GetScriptInterface().values.empty()) {
+        // Fill up the things
+        for (auto str : GetApp().GetScriptInterface().values) {
+            items.push_back("[lua] " + str);
+        }
+        GetApp().GetScriptInterface().values.clear();
     }
 }
