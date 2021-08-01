@@ -15,3 +15,8 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #include "common/universe.h"
+
+#include "common/util/random/stdrandom.h"
+conquerspace::common::components::Universe::Universe() {
+    random = std::make_unique<conquerspace::common::util::StdRandom>(42);
+}

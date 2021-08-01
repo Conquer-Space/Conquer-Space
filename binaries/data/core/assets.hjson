@@ -226,4 +226,10 @@
         hints: {
         }
     }
+    scripts: {
+        path: scripts
+        type: directory
+        hints: {
+        }
+    }
 }
