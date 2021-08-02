@@ -22,12 +22,14 @@
 #include <entt/entt.hpp>
 
 #include "common/stardate.h"
+#include "common/util/random/random.h"
 
 namespace conquerspace {
 namespace common {
 namespace components {
 class Universe : public entt::registry {
  public:
+    Universe();
     StarDate date;
 
     std::map<std::string, entt::entity> goods;
@@ -36,7 +38,7 @@ class Universe : public entt::registry {
     void EnableTick() { to_tick = true; }
     void DisableTick() { to_tick = false; }
     bool ToTick() { return to_tick; }
-
+    std::unique_ptr<conquerspace::common::util::IRandom> random;
  private:
     bool to_tick = false;
 };

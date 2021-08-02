@@ -48,14 +48,14 @@ void conquerspace::client::systems::gui::SysEvent::DoUI(int delta_time) {
                      ImGuiWindowFlags_NoCollapse | window_flags |
                          ImGuiWindowFlags_NoScrollbar |
                          ImGuiWindowFlags_AlwaysAutoResize);
-        ImGui::Image(reinterpret_cast<void*>(GetApp().GetAssetManager().
-                                                        GetAsset<asset::Texture>(env->image)->id),
-                                                        ImVec2(450, 150));
+
+        asset::Texture* texture = GetApp().GetAssetManager().GetAsset<asset::Texture>(env->image);
+        float multiplier = 450.f / texture->width;
+        ImGui::Image(reinterpret_cast<void*>(texture->id), ImVec2(texture->width * multiplier, texture->height * multiplier));
         ImGui::Separator();
         ImGui::BeginChild("eventchild", ImVec2(-FLT_MIN, 150), false,
                           window_flags);
-        ImGui::Markdown(env->content.c_str(), env->content.length(),
-                        GetApp().markdownConfig);
+        ImGui::Markdown(env->content.c_str(), env->content.length(), GetApp().markdownConfig);
         ImGui::EndChild();
         if (env->actions.empty()) {
             if (CQSPGui::DefaultButton("Ok", ImVec2(-FLT_MIN, 0))) {

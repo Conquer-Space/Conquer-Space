@@ -73,20 +73,6 @@
         hints: {
         }
     }
-    eventimage: {
-        path: gfx/event2.png
-        type: texture
-        hints: {
-            magfilter: false
-        }
-    }
-    eventimage2: {
-        path: gfx/fleetevent.jpg
-        type: texture
-        hints: {
-            magfilter: false
-        }
-    }
     objectvert: {
         path: gfx/shaders/object.vert
         type: shader
@@ -224,6 +210,19 @@
         path: sound/gui/scrollclick.ogg
         type: audio
         hints: {
+        }
+    }
+    scripts: {
+        path: scripts
+        type: directory
+        hints: {
+        }
+    }
+    rocket-event: {
+        path: gfx/event/rocket-event.jpg
+        type: texture
+        hints: {
+            attribution: "NASA, Public domain, via Wikimedia Commons"
         }
     }
 }

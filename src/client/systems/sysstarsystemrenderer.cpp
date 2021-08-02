@@ -579,5 +579,4 @@ conquerspace::client::systems::SysStarSystemRenderer::~SysStarSystemRenderer() {
     if (terrain_generator_thread.joinable()) {
         terrain_generator_thread.join();
     }
-    printf("ASDF");
 }

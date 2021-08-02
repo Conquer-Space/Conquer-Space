@@ -29,6 +29,7 @@
 #include "common/components/name.h"
 #include "common/components/movement.h"
 #include "common/systems/sysuniversegenerator.h"
+#include "common/scripting/luafunctions.h"
 
 conquerspace::scene::UniverseLoadingScene::UniverseLoadingScene(
     conquerspace::engine::Application& app) : Scene(app) {}
@@ -120,6 +121,20 @@ void conquerspace::scene::UniverseLoadingScene::LoadUniverse() {
     // Load goods
     LoadGoods(GetApp());
     LoadRecipes(GetApp());
+
+    // Load scripts
+    // Load lua functions
+    conquerspace::scripting::LoadFunctions(GetApp());
+    // Register data groups
+    GetApp().GetScriptInterface().RegisterDataGroup("generators");
+    GetApp().GetScriptInterface().RegisterDataGroup("events");
+
+    // Process all scripts
+    conquerspace::asset::TextDirectoryAsset* script_list = GetApp().GetAssetManager()
+                            .GetAsset<conquerspace::asset::TextDirectoryAsset>("scripts");
+    for (auto& text : script_list->data) {
+        GetApp().GetScriptInterface().RunScript(text);
+    }
 
     // Load universe
     conquerspace::common::systems::universegenerator::ScriptUniverseGenerator

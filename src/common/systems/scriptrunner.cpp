@@ -33,11 +33,7 @@ void conquerspace::common::systems::SysEventScriptRunner::ScriptEngine() {
     m_script_interface["date"] = universe.date.GetDate();
     for (auto &a : events) {
         sol::protected_function_result result = a["on_tick"](a);
-        if (!result.valid()) {
-            sol::error err = result;
-            std::string what = err.what();
-            SPDLOG_INFO("{}", what);
-        }
+        m_script_interface.ParseResult(result);
     }
 }
 

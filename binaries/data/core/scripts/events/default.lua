@@ -1,49 +1,44 @@
-local test_event = {
-    evented = false,
-    choice = -1
+local starting_event = {
+    chain = 0
 }
 
-function test_event:on_tick()
-    if date % 30 == 0 and not self.evented then
-        event_player({
-            id = "galactic_empire_event",
-            image = "eventimage",
-            title = "Declaration of a New Order",
-            content = "*In order to ensure our security and continuing stability, the Republic will be reorganized into the first Galactic Empire, for a safe and secure society, which I assure you will last for ten thousand years!* \n\nWith these words, Supreme Chancellor Palpatine became Emperor Palpatine, and abolished the Galactic Republic. The Jedi Order was abolished, and members of it were brutally massacred. The Galactic Senate unanimously approved this transition, allowing for the consolidation of power to one individual, the Galactic Emperor. How this will affect the galaxy at large, is yet to be seen.",
-            actions = {
-                {
-                    name = "This is how liberty dies ... with thunderous applause",
-                    tooltip = "The Galactic Rebellion is founded",
-                    action = function()
-                        self.choice = 0
-                    end
-                },
-                {
-                    name = "Safety, Security, Justice, and Peace!",
-                    tooltip = "The Galactic Empire gains your support",
-                    action = function()
-                        self.choice = 1
-                    end
-                }
-            }
+function starting_event:on_tick()
+    if date == 0 then
+        local home_name = get_name(get_civilization_planet(get_player()))
+        push_event(get_player(), {
+            id = "rocket-event",
+            image = "rocket-event",
+            title = "Our Future is in the Stars",
+            content = "Since antiquity, our ancestors have always looked to "..
+            "the stars for guidance, inspiration, and hope. But now, "..
+            "we have finally reached the technological advancement to touch the stars. "..
+            "This promises to bring untold changes to our culture, economy, and technology. "..
+            "This will change our future forever. For the first time in history, our people "..
+            "will no longer solely reside on "..home_name..", and will be an interplanetary civilization.",
+            actions = {{
+                name = "Begin!",
+                tooltip = "Starts the \"Conquer The Stars\" event chain",
+                action = function()
+                    chain = 1
+                end
+            }}
         })
-        self.evented = true
     end
-    if date % 30 == 0 and self.choice > -1 then
-        event_player({
-            id = "republic_event",
-            image = "eventimage2",
-            title = "The Alliance to Restore the Republic",
-            content = "*They've no idea we're coming. They've no reason to expect us. If we can make it to the ground, we'll take the next chance, and the next, on and on until we win, or the chances are spent.*\n\nAfter years of insurgency and small guerilla attacks, the first large fleet operations of the Rebel Alliance took place off the surface of Scarif. Scarif contained valuable information pertaining to the Galactic Empire’s weapons project. How this would affect the Empire as a whole is yet to be seen.",
-            actions = {
-                {
-                    name = "The Galactic Civil War has Begun",
-                    action = function()
-                        self.choice = -1
-                    end
-                }
-            }
+    if chain == 1 and date > 100 then
+        push_event(get_player(), {
+            id = "rocket-event",
+            image = "rocket-event",
+            title = "Conquer The Stars 1",
+            content = "We need the technology to conquer the stars. First, let's research stuff.",
+            actions = {{
+                name = "Begin!",
+                tooltip = "Starts the \"Conquer The Stars\" event chain",
+                action = function()
+                    chain = 2
+                end
+            }}
         })
     end
 end
--- events:insert(test_event)
+
+events:insert(starting_event)

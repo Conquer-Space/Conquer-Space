@@ -31,6 +31,8 @@ class ScriptInterface : public sol::state {
     void RegisterDataGroup(std::string_view name);
     void Init();
     int GetLength(std::string_view);
+
+    std::vector<std::string> values;
 };
 }  // namespace scripting
 }  // namespace conquerspace

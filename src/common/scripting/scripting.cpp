@@ -36,6 +36,7 @@ void ScriptInterface::ParseResult(const sol::protected_function_result& result) 
     if (!result.valid()) {
         sol::error err = result;
         std::string what = err.what();
+        values.push_back(fmt::format("{}", what));
         SPDLOG_LOGGER_INFO(lua_logger, "{}", what);
     }
 }
@@ -59,12 +60,15 @@ void ScriptInterface::Init() {
     // Set print functions
     set_function("print", sol::overload(
         [&] (const char * y) {
+            values.push_back(fmt::format("{}", y));
             SPDLOG_LOGGER_INFO(lua_logger, "{}", y);
         },
         [&](int y) {
+            values.push_back(fmt::format("{}", y));
             SPDLOG_LOGGER_INFO(lua_logger, "{}", y);
         },
         [&](double y) {
+            values.push_back(fmt::format("{}", y));
             SPDLOG_LOGGER_INFO(lua_logger, "{}", y);
     }));
 }

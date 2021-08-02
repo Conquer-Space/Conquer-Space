@@ -68,13 +68,19 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
         }
     };
 
+    auto lua = [](Application& app, const string_view& args, CommandOutput& input) {
+        app.GetScriptInterface().RunScript(args);
+    };
+
 
     commands = {
         {"help", {"Shows this help menu", help_command}},
         {"mouseon", {"Get the entitiy the mouse is over", entity_command}},
         {"clear", {"Clears screen", screen_clear}},
         {"entitycount", {"Gets number of entities", entitycount}},
-        {"name", {"Gets name and identifier of entity", entity_name}}
+        {"name", {"Gets name and identifier of entity", entity_name}},
+        {"lua", {"Executes lua script", lua}
+}
     };
 }
 
@@ -175,16 +181,17 @@ void SysDebugMenu::DoUI(int delta_time) {
 
     // Text and other things
     ImGui::Separator();
-
     ImGui::PushItemWidth(-1);
     if (ImGui::InputText("DebugInput", &command, ImGuiInputTextFlags_EnterReturnsTrue |
-                ImGuiInputTextFlags_CallbackCompletion | ImGuiInputTextFlags_CallbackHistory)) {
-        std::transform(command.begin(), command.end(), command.begin(),
+                             ImGuiInputTextFlags_CallbackCompletion |
+                             ImGuiInputTextFlags_CallbackHistory)) {
+        std::string command_request = std::string(command);
+        std::transform(command_request.begin(), command_request.end(), command_request.begin(),
                     [](unsigned char c){ return std::tolower(c); });
-        if (!command.empty()) {
+        if (!command_request.empty()) {
             bool no_command = true;
             for (auto it = commands.begin(); it != commands.end(); it++) {
-                if (command.rfind(it->first, 0) == 0) {
+                if (command_request.rfind(it->first, 0) == 0) {
                     it->second.second(GetApp(), command.length()==it->first.length() ? "" : command.substr(it->first.length()+1) , items);
                     no_command = false;
                     break;
@@ -231,5 +238,14 @@ void SysDebugMenu::DoUpdate(int delta_time) {
         }
 
         history_maps[it->first].push_back(ImVec2(time, it->second));
+    }
+
+    // Add lua logging information
+    if (!GetApp().GetScriptInterface().values.empty()) {
+        // Fill up the things
+        for (auto str : GetApp().GetScriptInterface().values) {
+            items.push_back("[lua] " + str);
+        }
+        GetApp().GetScriptInterface().values.clear();
     }
 }

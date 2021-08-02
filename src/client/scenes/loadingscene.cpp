@@ -86,18 +86,6 @@ void conquerspace::scene::LoadingScene::LoadResources() {
     assetLoader.manager = &GetApp().GetAssetManager();
     assetLoader.LoadAssets(assetLibrary);
 
-    GetApp().GetScriptInterface().RegisterDataGroup("generators");
-    GetApp().GetScriptInterface().RunScript(GetApp().GetAssetManager().
-                                    GetAsset<conquerspace::asset::TextAsset>("defaultgen")->data);
-
-    // Process entirity of directories
-    GetApp().GetScriptInterface().RegisterDataGroup("events");
-
-    conquerspace::asset::TextDirectoryAsset* event_list = GetApp().GetAssetManager()
-                            .GetAsset<conquerspace::asset::TextDirectoryAsset>("defaultevent");
-    for (auto& text : event_list->data) {
-        GetApp().GetScriptInterface().RunScript(text);
-    }
     SPDLOG_INFO("Done loading items");
     m_done_loading = true;
 }
