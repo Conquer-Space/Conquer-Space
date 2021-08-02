@@ -50,20 +50,20 @@ void conquerspace::common::systems::universegenerator::ScriptUniverseGenerator::
 
     // Create player
     auto player = universe.create();
-    universe.emplace<cqspc::Organization>(player);
+    universe.emplace<cqspc::Civilization>(player);
     universe.emplace<cqspc::Player>(player);
 
     for (int i = 0; i < 9; i++) {
         auto civ = universe.create();
-        universe.emplace<cqspc::Organization>(civ);
+        universe.emplace<cqspc::Civilization>(civ);
     }
 
     sol::optional<sol::table> generator = script_engine["generators"]["data"][1];
     if (generator) {
         (*generator)["civ_init"]();
-        script_engine["civilizations"] = sol::as_table(universe.view<cqspc::Organization>());
+        script_engine["civilizations"] = sol::as_table(universe.view<cqspc::Civilization>());
         (*generator)["universe_gen"]();
-        auto view = universe.view<cqspc::Organization>();
+        auto view = universe.view<cqspc::Civilization>();
         for (auto ent : view) {
             (*generator)["planets"](ent);
         }
