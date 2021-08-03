@@ -24,7 +24,8 @@ namespace conquerspace {
 namespace client {
 namespace systems {
 namespace gui {
-void EntityTooltip(entt::entity, conquerspace::common::components::Universe&);
+std::string GetName(conquerspace::common::components::Universe &universe, entt::entity entity);
+void EntityTooltip(conquerspace::common::components::Universe&, entt::entity);
 }
 }
 }

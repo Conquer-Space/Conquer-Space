@@ -64,7 +64,7 @@ void conquerspace::client::systems::SysPlanetInformation::DisplayPlanet() {
         return;
     }
     if (GetApp().GetUniverse().all_of<cqspc::Name>(selected_planet)) {
-        planet_name = GetApp().GetUniverse().get<cqspc::Name>(selected_planet).name;
+        planet_name = GetApp().GetUniverse().get<cqspc::Name>(selected_planet);
     }
     ImGui::Begin(planet_name.c_str(), &to_see, window_flags);
     switch (view_mode) {
@@ -114,18 +114,13 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
     static bool thing = true;
     CQSPGui::DefaultCheckbox("Macroeconomic/Ownership mode", &thing);
 
-    ImGui::TextFmt("{}", GetApp().GetUniverse().
-                                            get<cqspc::Name>(selected_city_entity).name);
+    ImGui::TextFmt("{}", GetApp().GetUniverse().get<cqspc::Name>(selected_city_entity));
 
     if (GetApp().GetUniverse().all_of<cqspc::Settlement>(selected_city_entity)) {
-        int size = GetApp().GetUniverse()
-                .get<cqspc::Settlement>(selected_city_entity).population.size();
-        for (auto b : GetApp().GetUniverse().get<cqspc::Settlement>(
-                              selected_city_entity).population) {
-            auto& bad_var_name = GetApp().GetUniverse()
-                                    .get<cqspc::PopulationSegment>(b);
-            ImGui::TextFmt("Population: {}",
-                        conquerspace::util::LongToHumanString(bad_var_name.population));
+        int size = GetApp().GetUniverse().get<cqspc::Settlement>(selected_city_entity).population.size();
+        for (auto b : GetApp().GetUniverse().get<cqspc::Settlement>(selected_city_entity).population) {
+            auto& bad_var_name = GetApp().GetUniverse().get<cqspc::PopulationSegment>(b);
+            ImGui::TextFmt("Population: {}",conquerspace::util::LongToHumanString(bad_var_name.population));
         }
     } else {
         ImGui::TextFmt("No population");
@@ -185,7 +180,7 @@ void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel
                 for (auto& price : market.prices) {
                     ImGui::TableNextRow();
                     ImGui::TableSetColumnIndex(0);
-                    ImGui::TextFmt("{}", GetApp().GetUniverse().get<cqspc::Identifier>(price.first).identifier);
+                    ImGui::TextFmt("{}", GetApp().GetUniverse().get<cqspc::Identifier>(price.first));
                     ImGui::TableSetColumnIndex(1);
                     ImGui::TextFmt("{}", price.second);
                 }
@@ -214,8 +209,7 @@ void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel
         const bool is_selected = (selected_city_index == i);
 
         entt::entity e = habit.settlements[i];
-        std::string name = GetApp().GetUniverse().get<cqspc::Name>(e)
-                .name;
+        std::string name = GetApp().GetUniverse().get<cqspc::Name>(e);
         if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
             // Load city
             selected_city_index = i;
@@ -227,7 +221,7 @@ void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel
                 spdlog::info("Mouse clicked");
             }
         }
-        gui::EntityTooltip(e, GetApp().GetUniverse());
+        gui::EntityTooltip(GetApp().GetUniverse(), e);
     }
     ImGui::EndChild();
 }
@@ -403,7 +397,7 @@ void conquerspace::client::systems::SysPlanetInformation::FactoryConstruction() 
         }
         const bool selected = selected_recipe_index == index;
         std::string name = GetApp().GetUniverse().all_of<cqspc::Identifier>(entity) ?
-            GetApp().GetUniverse().get<cqspc::Identifier>(entity).identifier : fmt::format("{}", entity);
+            GetApp().GetUniverse().get<cqspc::Identifier>(entity) : fmt::format("{}", entity);
         if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), selected)) {
             selected_recipe_index = index;
             selected_recipe = entity;
@@ -458,7 +452,7 @@ void conquerspace::client::systems::SysPlanetInformation::MineConstruction() {
         }
         const bool selected = selected_good_index == index;
         std::string name = GetApp().GetUniverse().all_of<cqspc::Identifier>(entity) ?
-            GetApp().GetUniverse().get<cqspc::Identifier>(entity).identifier : fmt::format("{}", entity);
+            GetApp().GetUniverse().get<cqspc::Identifier>(entity) : fmt::format("{}", entity);
         if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), selected)) {
             selected_good_index = index;
             selected_good = entity;
@@ -519,13 +513,13 @@ void conquerspace::client::systems::SysPlanetInformation::MineInformationPanel()
             const bool is_selected = (selected_mine == mine_index);
             std::string name = fmt::format("{}", e);
             if (GetApp().GetUniverse().all_of<cqspc::Name>(e)) {
-                name = GetApp().GetUniverse().get<cqspc::Name>(e).name;
+                name = GetApp().GetUniverse().get<cqspc::Name>(e);
             }
             if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
                 // Load 
                 selected_mine = mine_index;
             }
-            gui::EntityTooltip(e, GetApp().GetUniverse());
+            gui::EntityTooltip(GetApp().GetUniverse(), e);
         }
         ImGui::End();
     }
@@ -551,13 +545,13 @@ void conquerspace::client::systems::SysPlanetInformation::FactoryInformationPane
             const bool is_selected = (selected_factory == factory_index);
             std::string name = fmt::format("{}", e);
             if (GetApp().GetUniverse().all_of<cqspc::Name>(e)) {
-                name = GetApp().GetUniverse().get<cqspc::Name>(e).name;
+                name = GetApp().GetUniverse().get<cqspc::Name>(e);
             }
             if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
                 // Load 
                 selected_factory = factory_index;
             }
-            gui::EntityTooltip(e, GetApp().GetUniverse());
+            gui::EntityTooltip(GetApp().GetUniverse(), e);
         }
         ImGui::End();
     }

@@ -117,7 +117,7 @@ void LoadRecipes(conquerspace::engine::Application& app) {
 
         auto &name_object = app.GetUniverse().emplace<cqspc::Identifier>(recipe);
         name_object.identifier = val["identifier"].to_string();
-        app.GetUniverse().recipes[name_object.identifier] = recipe;
+        app.GetUniverse().recipes[name_object] = recipe;
     }
 }
 

@@ -214,7 +214,7 @@ void conquerspace::scripting::LoadFunctions(conquerspace::engine::Application& a
 
     // Get population segments of a planet
     REGISTER_FUNCTION("get_name", [&](entt::entity entity) {
-        return universe.get<cqspc::Name>(entity).name;
+        return universe.get<cqspc::Name>(entity);
     });
 
     REGISTER_FUNCTION("push_event", [&](entt::entity entity, sol::table event_table) {

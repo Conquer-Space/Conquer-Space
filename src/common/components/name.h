@@ -19,15 +19,53 @@
 #include <string>
 #include <vector>
 
+#include <fmt/format.h>
+
 namespace conquerspace {
 namespace common {
 namespace components {
 struct Name {
     std::string name;
+    operator std::string&() { return name; }
+
 };
+
 struct Identifier {
     std::string identifier;
+    operator std::string&() { return identifier; }
 };
+
 }  // namespace components
 }  // namespace common
 }  // namespace conquerspace
+
+// Various formatters
+template <>
+struct fmt::formatter<conquerspace::common::components::Name> {
+    char presentation = 'q';
+
+    constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin()) {
+        auto it = ctx.begin(), end = ctx.end();
+        return it;
+    }
+
+    template <typename FormatContext>
+    auto format(const conquerspace::common::components::Name& p, FormatContext& ctx) -> decltype(ctx.out()) {
+        return format_to(ctx.out(), p.name);
+    }
+};
+
+template <>
+struct fmt::formatter<conquerspace::common::components::Identifier> {
+    char presentation = 'q';
+
+    constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin()) {
+        auto it = ctx.begin(), end = ctx.end();
+        return it;
+    }
+
+    template <typename FormatContext>
+    auto format(const conquerspace::common::components::Identifier& p, FormatContext& ctx) -> decltype(ctx.out()) {
+        return format_to(ctx.out(), p.identifier);
+    }
+};
