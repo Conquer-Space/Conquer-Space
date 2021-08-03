@@ -42,6 +42,8 @@ class SysPlanetInformation : public SysUserInterface {
 
  private:
     entt::entity selected_planet = entt::null;
+    bool mine_list_panel = false;
+    bool factory_list_panel = false;
     void CityInformationPanel();
     void PlanetInformationPanel();
     void ResourcesTab();
@@ -52,6 +54,10 @@ class SysPlanetInformation : public SysUserInterface {
     void IndustryTabAgricultureChild();
     void DemographicsTab();
     void ConstructionTab();
+    void FactoryConstruction();
+    void MineConstruction();
+    void MineInformationPanel();
+    void FactoryInformationPanel();
 };
 }  // namespace systems
 }  // namespace client

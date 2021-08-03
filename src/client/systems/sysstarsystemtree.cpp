@@ -31,6 +31,7 @@ void conquerspace::client::systems::SysStarSystemTree::Init() {}
 void conquerspace::client::systems::SysStarSystemTree::DoUI(int delta_time) {
     namespace cqspb = conquerspace::common::components::bodies;
     namespace cqspcs = conquerspace::client::systems;
+    namespace cqspc = conquerspace::common::components;
     // Get star system
     entt::entity ent = GetApp().GetUniverse().view<cqspcs::RenderingStarSystem>().front();
     if (ent == entt::null) {
@@ -48,11 +49,8 @@ void conquerspace::client::systems::SysStarSystemTree::DoUI(int delta_time) {
     for (auto entity : star_system.bodies) {
         bool is_selected = (entity == current_planet);
         std::string planet_name = fmt::format("{}", entity);
-        if (GetApp().GetUniverse().all_of<conquerspace::common::components::Name>(entity)) {
-            planet_name = fmt::format(
-                        "{}", GetApp().GetUniverse()
-                        .get<conquerspace::common::components::Name>(entity)
-                        .name);
+        if (GetApp().GetUniverse().all_of<cqspc::Name>(entity)) {
+            planet_name = fmt::format("{}", GetApp().GetUniverse().get<cqspc::Name>(entity));
         }
 
         if (CQSPGui::DefaultSelectable(planet_name.c_str(), is_selected,
@@ -64,7 +62,7 @@ void conquerspace::client::systems::SysStarSystemTree::DoUI(int delta_time) {
                 conquerspace::scene::SeePlanet(GetApp(), entity);
             }
         }
-        gui::EntityTooltip(entity, GetApp().GetUniverse());
+        gui::EntityTooltip(GetApp().GetUniverse(), entity);
         index++;
     }
     ImGui::End();

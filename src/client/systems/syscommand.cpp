@@ -61,8 +61,7 @@ void conquerspace::client::systems::SysCommand::DoUI(int delta_time) {
         if (GetApp().GetUniverse().all_of<conquerspace::common::components::Name>(entity)) {
             planet_name = fmt::format(
                         "{}", GetApp().GetUniverse()
-                        .get<conquerspace::common::components::Name>(entity)
-                        .name);
+                        .get<conquerspace::common::components::Name>(entity));
         }
 
         if (CQSPGui::DefaultSelectable(planet_name.c_str(),
@@ -76,7 +75,7 @@ void conquerspace::client::systems::SysCommand::DoUI(int delta_time) {
                 SPDLOG_INFO("Move Ordered");
             }
         }
-        gui::EntityTooltip(entity, GetApp().GetUniverse());
+        gui::EntityTooltip(GetApp().GetUniverse(), entity);
         index++;
     }
     ImGui::End();

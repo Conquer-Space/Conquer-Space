@@ -172,21 +172,8 @@ void conquerspace::scripting::LoadFunctions(conquerspace::engine::Application& a
         universe.get<cqspc::ResourceStockpile>(storage)[resource] += amount;
     });
 
-    REGISTER_FUNCTION("create_mine", [&](entt::entity city, entt::entity resource, int amount,
-                                                                            float productivity) {
-        entt::entity mine = universe.create();
-        auto& gen = universe.emplace<cqspc::ResourceGenerator>(mine);
-        universe.emplace<cqspc::Mine>(mine);
-
-        gen.emplace(resource, amount);
-        universe.get<cqspc::Industry>(city).industries.push_back(mine);
-
-        // Add producivity
-        auto& prod = universe.emplace<cqspc::FactoryProductivity>(mine);
-        prod.productivity = productivity;
-
-        universe.emplace<cqspc::ResourceStockpile>(mine);
-        return mine;
+    REGISTER_FUNCTION("create_mine", [&](entt::entity city, entt::entity resource, int amount, float productivity) {
+        return conquerspace::common::systems::actions::CreateMine(universe, city, resource, amount);
     });
 
     REGISTER_FUNCTION("create_terrain", [&](entt::entity planet, int seed) {
@@ -227,7 +214,7 @@ void conquerspace::scripting::LoadFunctions(conquerspace::engine::Application& a
 
     // Get population segments of a planet
     REGISTER_FUNCTION("get_name", [&](entt::entity entity) {
-        return universe.get<cqspc::Name>(entity).name;
+        return universe.get<cqspc::Name>(entity);
     });
 
     REGISTER_FUNCTION("push_event", [&](entt::entity entity, sol::table event_table) {

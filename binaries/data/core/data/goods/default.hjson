@@ -7,6 +7,8 @@
         volume: 1
         mass: 7874
         tags: [
+            # This means that it can be dug out of the ground
+            mineral
         ]
     }
     {
@@ -15,6 +17,7 @@
         volume: 1
         mass: 8960
         tags: [
+            mineral
         ]
     }
     {
@@ -23,6 +26,7 @@
         volume: 1
         mass: 2700
         tags: [
+            mineral
         ]
     }
     {
@@ -39,6 +43,7 @@
         volume: 1
         mass: 1000
         tags: [
+            mineral
         ]
     }
     {
@@ -63,6 +68,7 @@
         volume: 1
         mass: 2500
         tags: [
+            mineral
         ]
     }
 ]

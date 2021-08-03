@@ -23,7 +23,7 @@ void conquerspace::client::systems::DrawLedgerTable(const std::string &name, con
                                     iterator != ledger.end(); iterator++) {
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
-            ImGui::TextFmt("{}", universe.get<Identifier>(iterator->first).identifier);
+            ImGui::TextFmt("{}", universe.get<Identifier>(iterator->first));
             ImGui::TableSetColumnIndex(1);
             ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(iterator->second)));
         }

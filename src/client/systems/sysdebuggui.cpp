@@ -55,14 +55,15 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
 
     auto entity_name = [](Application& app, const string_view& args, CommandOutput& input) {
         if (std::all_of(args.begin(), args.end(), ::isdigit)) {
+            namespace cqspc = conquerspace::common::components;
             entt::entity entity = static_cast<entt::entity>(atoi(args.data()));
             std::string name = "N/A";
-            if (app.GetUniverse().all_of<conquerspace::common::components::Name>(entity)) {
-                name = app.GetUniverse().get<conquerspace::common::components::Name>(entity).name;
+            if (app.GetUniverse().all_of<cqspc::Name>(entity)) {
+                name = app.GetUniverse().get<cqspc::Name>(entity);
             }
             std::string identifier = "N/A";
-            if (app.GetUniverse().all_of<conquerspace::common::components::Identifier>(entity)) {
-                identifier = app.GetUniverse().get<conquerspace::common::components::Identifier>(entity).identifier;
+            if (app.GetUniverse().all_of<cqspc::Identifier>(entity)) {
+                identifier = app.GetUniverse().get<cqspc::Identifier>(entity);
             }
             input.push_back(fmt::format("Name: {}, {}", name, identifier));
         }

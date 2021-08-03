@@ -52,6 +52,13 @@ entt::entity CreateFactory(conquerspace::common::components::Universe& universe,
 conquerspace::common::components::ResourceLedger GetFactoryCost(
     conquerspace::common::components::Universe& universe, entt::entity city,
     entt::entity recipe, int productivity);
+
+entt::entity CreateMine(conquerspace::common::components::Universe& universe,
+                        entt::entity city, entt::entity good, int amount);
+
+conquerspace::common::components::ResourceLedger GetMineCost(
+    conquerspace::common::components::Universe& universe, entt::entity city,
+    entt::entity good, int amount);
 }  // namespace actions
 }  // namespace systems
 }  // namespace common

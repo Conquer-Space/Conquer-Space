@@ -64,7 +64,7 @@ void conquerspace::client::systems::SysPlanetInformation::DisplayPlanet() {
         return;
     }
     if (GetApp().GetUniverse().all_of<cqspc::Name>(selected_planet)) {
-        planet_name = GetApp().GetUniverse().get<cqspc::Name>(selected_planet).name;
+        planet_name = GetApp().GetUniverse().get<cqspc::Name>(selected_planet);
     }
     ImGui::Begin(planet_name.c_str(), &to_see, window_flags);
     switch (view_mode) {
@@ -73,6 +73,8 @@ void conquerspace::client::systems::SysPlanetInformation::DisplayPlanet() {
             break;
         case ViewMode::CITY_VIEW:
             CityInformationPanel();
+            MineInformationPanel();
+            FactoryInformationPanel();
             break;
     }
     ImGui::End();
@@ -112,18 +114,13 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
     static bool thing = true;
     CQSPGui::DefaultCheckbox("Macroeconomic/Ownership mode", &thing);
 
-    ImGui::TextFmt("{}", GetApp().GetUniverse().
-                                            get<cqspc::Name>(selected_city_entity).name);
+    ImGui::TextFmt("{}", GetApp().GetUniverse().get<cqspc::Name>(selected_city_entity));
 
     if (GetApp().GetUniverse().all_of<cqspc::Settlement>(selected_city_entity)) {
-        int size = GetApp().GetUniverse()
-                .get<cqspc::Settlement>(selected_city_entity).population.size();
-        for (auto b : GetApp().GetUniverse().get<cqspc::Settlement>(
-                              selected_city_entity).population) {
-            auto& bad_var_name = GetApp().GetUniverse()
-                                    .get<cqspc::PopulationSegment>(b);
-            ImGui::TextFmt("Population: {}",
-                        conquerspace::util::LongToHumanString(bad_var_name.population));
+        int size = GetApp().GetUniverse().get<cqspc::Settlement>(selected_city_entity).population.size();
+        for (auto b : GetApp().GetUniverse().get<cqspc::Settlement>(selected_city_entity).population) {
+            auto& bad_var_name = GetApp().GetUniverse().get<cqspc::PopulationSegment>(b);
+            ImGui::TextFmt("Population: {}",conquerspace::util::LongToHumanString(bad_var_name.population));
         }
     } else {
         ImGui::TextFmt("No population");
@@ -183,7 +180,7 @@ void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel
                 for (auto& price : market.prices) {
                     ImGui::TableNextRow();
                     ImGui::TableSetColumnIndex(0);
-                    ImGui::TextFmt("{}", GetApp().GetUniverse().get<cqspc::Identifier>(price.first).identifier);
+                    ImGui::TextFmt("{}", GetApp().GetUniverse().get<cqspc::Identifier>(price.first));
                     ImGui::TableSetColumnIndex(1);
                     ImGui::TextFmt("{}", price.second);
                 }
@@ -212,8 +209,7 @@ void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel
         const bool is_selected = (selected_city_index == i);
 
         entt::entity e = habit.settlements[i];
-        std::string name = GetApp().GetUniverse().get<cqspc::Name>(e)
-                .name;
+        std::string name = GetApp().GetUniverse().get<cqspc::Name>(e);
         if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
             // Load city
             selected_city_index = i;
@@ -225,7 +221,7 @@ void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel
                 spdlog::info("Mouse clicked");
             }
         }
-        gui::EntityTooltip(e, GetApp().GetUniverse());
+        gui::EntityTooltip(GetApp().GetUniverse(), e);
     }
     ImGui::EndChild();
 }
@@ -310,39 +306,9 @@ void conquerspace::client::systems::SysPlanetInformation::IndustryTabManufacturi
     ImGui::TextFmt("Factories: {}", count);
 
     ImGui::SameLine();
-    static bool factory_button = false;
     if (CQSPGui::SmallDefaultButton("Factory List")) {
-        factory_button = true;
+        factory_list_panel = true;
     }
-
-    if(factory_button) {
-        ImGui::Begin("Factories", &factory_button);
-        // List mines
-        static int selected_factory = 0;
-        int factory_index = 0;
-        for (int i = 0; i < city_industry.industries.size(); i++) {
-            entt::entity e = city_industry.industries[i];
-            if (GetApp().GetUniverse().all_of<cqspc::Factory>(e)) {
-                // Then do the things
-                factory_index++;
-            } else {
-                continue;
-            }
-
-            const bool is_selected = (selected_factory == factory_index);
-            std::string name = fmt::format("{}", e);
-            if (GetApp().GetUniverse().all_of<cqspc::Name>(e)) {
-                name = GetApp().GetUniverse().get<cqspc::Name>(e).name;
-            }
-            if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
-                // Load 
-                selected_factory = factory_index;
-            }
-            gui::EntityTooltip(e, GetApp().GetUniverse());
-        }
-        ImGui::End();
-    }
-
 
     ImGui::Text("Output");
     // Output table
@@ -370,37 +336,8 @@ void conquerspace::client::systems::SysPlanetInformation::IndustryTabMiningChild
     ImGui::TextFmt("Mines: {}", mine_count);
 
     ImGui::SameLine();
-    static bool mine_list_panel = false;
     if (CQSPGui::SmallDefaultButton("Mine List")) {
         mine_list_panel = true;
-    }
-
-    if(mine_list_panel) {
-        ImGui::Begin("Mines", &mine_list_panel);
-        // List mines
-        static int selected_mine = 0;
-        int mine_index = 0;
-        for (int i = 0; i < city_industry.industries.size(); i++) {
-            entt::entity e = city_industry.industries[i];
-            if (GetApp().GetUniverse().all_of<cqspc::Mine>(e)) {
-                // Then do the things
-                mine_index++;
-            } else {
-                continue;
-            }
-
-            const bool is_selected = (selected_mine == mine_index);
-            std::string name = fmt::format("{}", e);
-            if (GetApp().GetUniverse().all_of<cqspc::Name>(e)) {
-                name = GetApp().GetUniverse().get<cqspc::Name>(e).name;
-            }
-            if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
-                // Load 
-                selected_mine = mine_index;
-            }
-            gui::EntityTooltip(e, GetApp().GetUniverse());
-        }
-        ImGui::End();
     }
 
     // Draw on table
@@ -432,11 +369,26 @@ void conquerspace::client::systems::SysPlanetInformation::ConstructionTab() {
     ImGui::Text("Construction");
     ImGui::Text("Construct factories");
 
+    if (ImGui::BeginTabBar("constructiontab")) {
+        if (ImGui::BeginTabItem("Factories")) {
+            FactoryConstruction();
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Mines")) {
+            MineConstruction();
+            ImGui::EndTabItem();
+        }
+        // TODO(EhWhoAmI): Add other things like labs, infrastructure, etc.
+        ImGui::EndTabBar();
+    }
+}
+
+void conquerspace::client::systems::SysPlanetInformation::FactoryConstruction() {
+    namespace cqspc = conquerspace::common::components;
     auto recipes = GetApp().GetUniverse().view<cqspc::Recipe>();
     static int selected_recipe_index = -1;
     static entt::entity selected_recipe = entt::null;
     int index = 0;
-
     ImGui::BeginChild("constructionlist", ImVec2(0, 150), true, window_flags);
     for (entt::entity entity : recipes) {
         if (selected_recipe_index == -1) {
@@ -445,7 +397,7 @@ void conquerspace::client::systems::SysPlanetInformation::ConstructionTab() {
         }
         const bool selected = selected_recipe_index == index;
         std::string name = GetApp().GetUniverse().all_of<cqspc::Identifier>(entity) ?
-            GetApp().GetUniverse().get<cqspc::Identifier>(entity).identifier : fmt::format("{}", entity);
+            GetApp().GetUniverse().get<cqspc::Identifier>(entity) : fmt::format("{}", entity);
         if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), selected)) {
             selected_recipe_index = index;
             selected_recipe = entity;
@@ -456,7 +408,7 @@ void conquerspace::client::systems::SysPlanetInformation::ConstructionTab() {
 
     static int prod = 1;
     ImGui::PushItemWidth(-1);
-    CQSPGui::SliderInt("label", &prod, 1, 100, "%d");
+    CQSPGui::DragInt("label", &prod, 1, 1, INT_MAX);
     ImGui::PopItemWidth();
     if (CQSPGui::DefaultButton("Construct!")) {
         // Construct things
@@ -474,6 +426,7 @@ void conquerspace::client::systems::SysPlanetInformation::ConstructionTab() {
             GetApp().GetUniverse(), selected_city_entity, selected_recipe, prod);
         conquerspace::common::systems::economy::AddParticipant(
                                                     GetApp().GetUniverse(), city_market, factory);
+        // Enable confirmation window
     }
 
     if (ImGui::IsItemHovered()) {
@@ -482,5 +435,124 @@ void conquerspace::client::systems::SysPlanetInformation::ConstructionTab() {
                     conquerspace::common::systems::actions::GetFactoryCost(
                             GetApp().GetUniverse(), selected_city_entity, selected_recipe, prod));
         ImGui::EndTooltip();
+    }
+}
+
+void conquerspace::client::systems::SysPlanetInformation::MineConstruction() {
+    namespace cqspc = conquerspace::common::components;
+    ImGui::BeginChild("mineconstructionlist", ImVec2(0, 150), true, window_flags);
+    auto recipes = GetApp().GetUniverse().view<cqspc::Good, cqspc::Mineral>();
+    static int selected_good_index = -1;
+    static entt::entity selected_good = entt::null;
+    int index = 0;
+    for (entt::entity entity : recipes) {
+        if (selected_good_index == -1) {
+            selected_good_index = 0;
+            selected_good = entity;
+        }
+        const bool selected = selected_good_index == index;
+        std::string name = GetApp().GetUniverse().all_of<cqspc::Identifier>(entity) ?
+            GetApp().GetUniverse().get<cqspc::Identifier>(entity) : fmt::format("{}", entity);
+        if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), selected)) {
+            selected_good_index = index;
+            selected_good = entity;
+        }
+        index++;
+    }
+    ImGui::EndChild();
+
+    static int prod = 1;
+    ImGui::PushItemWidth(-1);
+    ImGui::Text("Production");
+    ImGui::SameLine();
+    CQSPGui::DragInt("label", &prod, 1, 1, INT_MAX);
+    ImGui::PopItemWidth();
+    if (CQSPGui::DefaultButton("Construct!")) {
+        // Construct things
+        SPDLOG_INFO("Constructing mine with good {}", selected_good);
+        // Add demand to the market for the amount of resources
+        // When construction takes time in the future, then do the costs.
+        // So first charge it to the market
+        entt::entity city_market = GetApp().GetUniverse().get<cqspc::MarketCenter>(selected_planet).market;
+        auto cost = conquerspace::common::systems::actions::GetFactoryCost(
+            GetApp().GetUniverse(), selected_city_entity, selected_good, prod);
+        GetApp().GetUniverse().get<cqspc::Market>(city_market).demand += cost;
+        GetApp().GetUniverse().get<cqspc::ResourceStockpile>(city_market) -= cost;
+        // Buy things on the market
+        entt::entity factory = conquerspace::common::systems::actions::CreateMine(
+            GetApp().GetUniverse(), selected_city_entity, selected_good, prod);
+        conquerspace::common::systems::economy::AddParticipant(GetApp().GetUniverse(), city_market, factory);
+    }
+
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        DrawLedgerTable("building_cost_tooltip", GetApp().GetUniverse(),
+                    conquerspace::common::systems::actions::GetMineCost(
+                            GetApp().GetUniverse(), selected_city_entity, selected_good, prod));
+        ImGui::EndTooltip();
+    }
+}
+
+void conquerspace::client::systems::SysPlanetInformation::MineInformationPanel() {
+    namespace cqspc = conquerspace::common::components;
+    if(mine_list_panel) {
+        auto &city_industry = GetApp().GetUniverse().get<cqspc::Industry>(selected_city_entity);
+        ImGui::Begin(fmt::format("Mines of {}", selected_city_entity).c_str(), &mine_list_panel);
+        // List mines
+        static int selected_mine = 0;
+        int mine_index = 0;
+        for (int i = 0; i < city_industry.industries.size(); i++) {
+            entt::entity e = city_industry.industries[i];
+            if (GetApp().GetUniverse().all_of<cqspc::Mine>(e)) {
+                // Then do the things
+                mine_index++;
+            } else {
+                continue;
+            }
+
+            const bool is_selected = (selected_mine == mine_index);
+            std::string name = fmt::format("{}", e);
+            if (GetApp().GetUniverse().all_of<cqspc::Name>(e)) {
+                name = GetApp().GetUniverse().get<cqspc::Name>(e);
+            }
+            if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
+                // Load 
+                selected_mine = mine_index;
+            }
+            gui::EntityTooltip(GetApp().GetUniverse(), e);
+        }
+        ImGui::End();
+    }
+}
+
+void conquerspace::client::systems::SysPlanetInformation::FactoryInformationPanel() {
+    namespace cqspc = conquerspace::common::components;
+    if(factory_list_panel) {
+        auto &city_industry = GetApp().GetUniverse().get<cqspc::Industry>(selected_city_entity);
+        ImGui::Begin(fmt::format("Factories of {}", selected_city_entity).c_str(), &factory_list_panel);
+        // List mines
+        static int selected_factory = 0;
+        int factory_index = 0;
+        for (int i = 0; i < city_industry.industries.size(); i++) {
+            entt::entity e = city_industry.industries[i];
+            if (GetApp().GetUniverse().all_of<cqspc::Factory>(e)) {
+                // Then do the things
+                factory_index++;
+            } else {
+                continue;
+            }
+
+            const bool is_selected = (selected_factory == factory_index);
+            std::string name = fmt::format("{}", e);
+            if (GetApp().GetUniverse().all_of<cqspc::Name>(e)) {
+                name = GetApp().GetUniverse().get<cqspc::Name>(e);
+            }
+            if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
+                // Load 
+                selected_factory = factory_index;
+            }
+            gui::EntityTooltip(GetApp().GetUniverse(), e);
+        }
+        ImGui::End();
     }
 }

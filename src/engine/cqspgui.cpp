@@ -74,3 +74,22 @@ bool CQSPGui::SliderInt(const char* label, int* v, int v_min, int v_max,
     return false;
 }
 
+bool CQSPGui::DragFloat(const char* label, float* v, float v_speed, float v_min,
+                        float v_max, const char* format,
+                        ImGuiSliderFlags flags) {
+    if (ImGui::DragFloat(label, v, v_speed, v_min, v_max, format, flags)) {
+        AppContext->GetAudioInterface().PlayAudioClip("scroll.tick");
+        return true;
+    }
+    return false;
+}
+
+bool CQSPGui::DragInt(const char* label, int* v, float v_speed, int v_min,
+                      int v_max, const char* format, ImGuiSliderFlags flags) {
+    if (ImGui::DragInt(label, v, v_speed, v_min, v_max, format, flags)) {
+        AppContext->GetAudioInterface().PlayAudioClip("scroll.tick");
+        return true;
+    }
+    return false;
+}
+

@@ -306,7 +306,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawEntityName(
     using conquerspace::common::components::Name;
     buffer_renderer.BeginDraw();
     if (m_app.GetUniverse().all_of<Name>(ent_id)) {
-        std::string &name = m_app.GetUniverse().get<Name>(ent_id).name;
+        std::string &name = m_app.GetUniverse().get<Name>(ent_id);
         glm::vec3 pos =
             glm::project(object_pos, camera_matrix, projection, viewport);
         if (!(pos.z >= 1 || pos.z <= -1)) {
