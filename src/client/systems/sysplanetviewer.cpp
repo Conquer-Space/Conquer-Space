@@ -432,55 +432,115 @@ void conquerspace::client::systems::SysPlanetInformation::ConstructionTab() {
     ImGui::Text("Construction");
     ImGui::Text("Construct factories");
 
-    auto recipes = GetApp().GetUniverse().view<cqspc::Recipe>();
-    static int selected_recipe_index = -1;
-    static entt::entity selected_recipe = entt::null;
-    int index = 0;
+    if (ImGui::BeginTabBar("constructiontab")) {
+        if (ImGui::BeginTabItem("Factories")) {
+            auto recipes = GetApp().GetUniverse().view<cqspc::Recipe>();
+            static int selected_recipe_index = -1;
+            static entt::entity selected_recipe = entt::null;
+            int index = 0;
+            ImGui::BeginChild("constructionlist", ImVec2(0, 150), true, window_flags);
+            for (entt::entity entity : recipes) {
+                if (selected_recipe_index == -1) {
+                    selected_recipe_index = 0;
+                    selected_recipe = entity;
+                }
+                const bool selected = selected_recipe_index == index;
+                std::string name = GetApp().GetUniverse().all_of<cqspc::Identifier>(entity) ?
+                    GetApp().GetUniverse().get<cqspc::Identifier>(entity).identifier : fmt::format("{}", entity);
+                if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), selected)) {
+                    selected_recipe_index = index;
+                    selected_recipe = entity;
+                }
+                index++;
+            }
+            ImGui::EndChild();
 
-    ImGui::BeginChild("constructionlist", ImVec2(0, 150), true, window_flags);
-    for (entt::entity entity : recipes) {
-        if (selected_recipe_index == -1) {
-            selected_recipe_index = 0;
-            selected_recipe = entity;
+            static int prod = 1;
+            ImGui::PushItemWidth(-1);
+            CQSPGui::DragInt("label", &prod, 1, 1, INT_MAX);
+            ImGui::PopItemWidth();
+            if (CQSPGui::DefaultButton("Construct!")) {
+                // Construct things
+                SPDLOG_INFO("Constructing factory with recipe {}", selected_recipe);
+                // Add demand to the market for the amount of resources
+                // When construction takes time in the future, then do the costs.
+                // So first charge it to the market
+                entt::entity city_market = GetApp().GetUniverse().get<cqspc::MarketCenter>(selected_planet).market;
+                auto cost = conquerspace::common::systems::actions::GetFactoryCost(
+                    GetApp().GetUniverse(), selected_city_entity, selected_recipe, prod);
+                GetApp().GetUniverse().get<cqspc::Market>(city_market).demand += cost;
+                GetApp().GetUniverse().get<cqspc::ResourceStockpile>(city_market) -= cost;
+                // Buy things on the market
+                entt::entity factory = conquerspace::common::systems::actions::CreateFactory(
+                    GetApp().GetUniverse(), selected_city_entity, selected_recipe, prod);
+                conquerspace::common::systems::economy::AddParticipant(
+                                                            GetApp().GetUniverse(), city_market, factory);
+            }
+
+            if (ImGui::IsItemHovered()) {
+                ImGui::BeginTooltip();
+                DrawLedgerTable("building_cost_tooltip", GetApp().GetUniverse(),
+                            conquerspace::common::systems::actions::GetFactoryCost(
+                                    GetApp().GetUniverse(), selected_city_entity, selected_recipe, prod));
+                ImGui::EndTooltip();
+            }
+            ImGui::EndTabItem();
         }
-        const bool selected = selected_recipe_index == index;
-        std::string name = GetApp().GetUniverse().all_of<cqspc::Identifier>(entity) ?
-            GetApp().GetUniverse().get<cqspc::Identifier>(entity).identifier : fmt::format("{}", entity);
-        if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), selected)) {
-            selected_recipe_index = index;
-            selected_recipe = entity;
+        if (ImGui::BeginTabItem("Mines")) {
+            ImGui::BeginChild("mineconstructionlist", ImVec2(0, 150), true, window_flags);
+            auto recipes = GetApp().GetUniverse().view<cqspc::Good, cqspc::Mineral>();
+            static int selected_good_index = -1;
+            static entt::entity selected_good = entt::null;
+            int index = 0;
+            for (entt::entity entity : recipes) {
+                if (selected_good_index == -1) {
+                    selected_good_index = 0;
+                    selected_good = entity;
+                }
+                const bool selected = selected_good_index == index;
+                std::string name = GetApp().GetUniverse().all_of<cqspc::Identifier>(entity) ?
+                    GetApp().GetUniverse().get<cqspc::Identifier>(entity).identifier : fmt::format("{}", entity);
+                if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), selected)) {
+                    selected_good_index = index;
+                    selected_good = entity;
+                }
+                index++;
+            }
+            ImGui::EndChild();
+
+            static int prod = 1;
+            ImGui::PushItemWidth(-1);
+            ImGui::Text("Production");
+            ImGui::SameLine();
+            CQSPGui::DragInt("label", &prod, 1, 1, INT_MAX);
+            ImGui::PopItemWidth();
+            if (CQSPGui::DefaultButton("Construct!")) {
+                // Construct things
+                SPDLOG_INFO("Constructing mine with good {}", selected_good);
+                // Add demand to the market for the amount of resources
+                // When construction takes time in the future, then do the costs.
+                // So first charge it to the market
+                entt::entity city_market = GetApp().GetUniverse().get<cqspc::MarketCenter>(selected_planet).market;
+                auto cost = conquerspace::common::systems::actions::GetFactoryCost(
+                    GetApp().GetUniverse(), selected_city_entity, selected_good, prod);
+                GetApp().GetUniverse().get<cqspc::Market>(city_market).demand += cost;
+                GetApp().GetUniverse().get<cqspc::ResourceStockpile>(city_market) -= cost;
+                // Buy things on the market
+                entt::entity factory = conquerspace::common::systems::actions::CreateMine(
+                    GetApp().GetUniverse(), selected_city_entity, selected_good, prod);
+                conquerspace::common::systems::economy::AddParticipant(GetApp().GetUniverse(), city_market, factory);
+            }
+
+            if (ImGui::IsItemHovered()) {
+                ImGui::BeginTooltip();
+                DrawLedgerTable("building_cost_tooltip", GetApp().GetUniverse(),
+                            conquerspace::common::systems::actions::GetMineCost(
+                                    GetApp().GetUniverse(), selected_city_entity, selected_good, prod));
+                ImGui::EndTooltip();
+            }   
+            ImGui::EndTabItem();
         }
-        index++;
-    }
-    ImGui::EndChild();
-
-    static int prod = 1;
-    ImGui::PushItemWidth(-1);
-    CQSPGui::SliderInt("label", &prod, 1, 100, "%d");
-    ImGui::PopItemWidth();
-    if (CQSPGui::DefaultButton("Construct!")) {
-        // Construct things
-        SPDLOG_INFO("Constructing factory with recipe {}", selected_recipe);
-        // Add demand to the market for the amount of resources
-        // When construction takes time in the future, then do the costs.
-        // So first charge it to the market
-        entt::entity city_market = GetApp().GetUniverse().get<cqspc::MarketCenter>(selected_planet).market;
-        auto cost = conquerspace::common::systems::actions::GetFactoryCost(
-            GetApp().GetUniverse(), selected_city_entity, selected_recipe, prod);
-        GetApp().GetUniverse().get<cqspc::Market>(city_market).demand += cost;
-        GetApp().GetUniverse().get<cqspc::ResourceStockpile>(city_market) -= cost;
-        // Buy things on the market
-        entt::entity factory = conquerspace::common::systems::actions::CreateFactory(
-            GetApp().GetUniverse(), selected_city_entity, selected_recipe, prod);
-        conquerspace::common::systems::economy::AddParticipant(
-                                                    GetApp().GetUniverse(), city_market, factory);
-    }
-
-    if (ImGui::IsItemHovered()) {
-        ImGui::BeginTooltip();
-        DrawLedgerTable("building_cost_tooltip", GetApp().GetUniverse(),
-                    conquerspace::common::systems::actions::GetFactoryCost(
-                            GetApp().GetUniverse(), selected_city_entity, selected_recipe, prod));
-        ImGui::EndTooltip();
+        // TODO(EhWhoAmI): Add other things like labs, infrastructure, etc.
+        ImGui::EndTabBar();
     }
 }

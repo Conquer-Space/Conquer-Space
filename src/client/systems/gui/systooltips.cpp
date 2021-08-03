@@ -76,12 +76,15 @@ void conquerspace::client::systems::gui::EntityTooltip(
     if (universe.all_of<cqspc::Production>(entity)) {
         ImGui::Text("Producing next tick");
     }
-    if (universe.all_of<cqspc::ResourceDemand>(entity)) {
+    if (universe.all_of<cqspc::Production>(entity)) {
+        ImGui::Text("Producing next tick");
+    }
+    if (universe.all_of<cqspc::ResourceGenerator>(entity)) {
         ImGui::Separator();
-        ImGui::TextFmt("Demand");
+        ImGui::TextFmt("Generating");
         // Then do demand
         conquerspace::client::systems::DrawLedgerTable(
-            "marketdemandtooltip", universe, universe.get<cqspc::ResourceDemand>(entity));
+            "factorygentooltip", universe, universe.get<cqspc::ResourceGenerator>(entity));
     }
     ImGui::EndTooltip();
 }

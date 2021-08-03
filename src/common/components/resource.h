@@ -31,6 +31,8 @@ struct Good {
     conquerspace::common::components::types::kilogram mass;
 };
 
+struct Mineral {};
+
 struct ResourceLedger : public std::map<entt::entity, double> {
     ResourceLedger operator-(ResourceLedger&);
     ResourceLedger operator+(ResourceLedger&);

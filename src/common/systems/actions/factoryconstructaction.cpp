@@ -56,3 +56,28 @@ conquerspace::common::systems::actions::GetFactoryCost(
     ledger[universe.goods["concrete"]] = 1000;
     return ledger;
 }
+
+entt::entity conquerspace::common::systems::actions::CreateMine(
+    conquerspace::common::components::Universe& universe, entt::entity city,
+    entt::entity good, int amount) {
+    namespace cqspc = conquerspace::common::components;
+    entt::entity mine = universe.create();
+    auto& gen = universe.emplace<cqspc::ResourceGenerator>(mine);
+    universe.emplace<cqspc::Mine>(mine);
+
+    gen.emplace(good, amount);
+    universe.get<cqspc::Industry>(city).industries.push_back(mine);
+
+    // Add producivity
+    universe.emplace<cqspc::FactoryProductivity>(mine);
+
+    universe.emplace<cqspc::ResourceStockpile>(mine);
+    return mine;
+}
+
+conquerspace::common::components::ResourceLedger
+conquerspace::common::systems::actions::GetMineCost(
+    conquerspace::common::components::Universe& universe, entt::entity city,
+    entt::entity good, int amount) {
+    return conquerspace::common::components::ResourceLedger();
+}

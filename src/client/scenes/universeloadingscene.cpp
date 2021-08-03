@@ -82,6 +82,11 @@ void LoadGoods(conquerspace::engine::Application& app) {
         name_object.name = val["name"].to_string();
         auto &id_object = app.GetUniverse().emplace<cqspc::Identifier>(good);
         id_object.identifier = val["identifier"].to_string();
+        for (int i = 0; i < val["tags"].size(); i++) {
+            if (val["tags"][i] == "mineral") {
+                app.GetUniverse().emplace_or_replace<cqspc::Mineral>(good);
+            }
+        }
         app.GetUniverse().goods[val["identifier"].to_string()] = good;
         assets_loaded++;
     }
