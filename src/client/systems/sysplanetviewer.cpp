@@ -141,7 +141,11 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("Construction")) {
-               ConstructionTab();
+                ConstructionTab();
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Space Port")) {
+                SpacePortTab();
                 ImGui::EndTabItem();
             }
             ImGui::EndTabBar();
@@ -556,3 +560,5 @@ void conquerspace::client::systems::SysPlanetInformation::FactoryInformationPane
         ImGui::End();
     }
 }
+
+void conquerspace::client::systems::SysPlanetInformation::SpacePortTab() {}

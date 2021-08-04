@@ -206,7 +206,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     // Draw Ships
     auto ships = m_app.GetUniverse().view<ToRender, cqsps::Ship>();
     ship_overlay.shaderProgram->UseProgram();
-    for (auto [ent_id, ship] : ships.each()) {
+    for (auto [ent_id] : ships.each()) {
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
         ship_overlay.shaderProgram->setVec4("color", 1, 0, 0, 1);
         DrawShipIcon(object_pos);
@@ -438,15 +438,14 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawTerrainlessPlanet
     planet_renderer.EndDraw();
 }
 
-glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateObjectPos(
-    entt::entity &ent) {
+glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateObjectPos(entt::entity &ent) {
     namespace cqspb = conquerspace::common::components::bodies;
     namespace cqspt = conquerspace::common::components::types;
-    return m_app.GetUniverse().get<cqspt::Kinematics>(ent).postion;
+    auto &pos = m_app.GetUniverse().get<cqspt::Kinematics>(ent);
+    return glm::vec3(pos.position.y, 0, pos.position.x);
 }
 
-glm::vec3
-conquerspace::client::systems::SysStarSystemRenderer::CalculateCenteredObject(
+glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateCenteredObject(
     entt::entity &ent) {
     return CalculateObjectPos(ent) - view_center;
 }

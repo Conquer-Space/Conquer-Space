@@ -26,14 +26,10 @@ namespace conquerspace {
 namespace common {
 namespace components {
 namespace types {
-
-
 struct Kinematics {
-    glm::vec3 postion = glm::vec3(0, 0, 0);
-    glm::vec3 velocity = glm::vec3(0, 0, 0);
+    glm::vec2 position;
+    glm::vec2 velocity;
     float topspeed = 10;
-    //glm::vec3 target;
-    //entt::entity targetent;
 };
 
 struct MoveTarget {
@@ -58,12 +54,9 @@ struct Orbit {
     // So we can prepare for moons and stuff
     entt::entity referenceBody = entt::null;
 
-
-
     Orbit() = default;
     Orbit(types::degree _trueAnomaly, types::astronomical_unit _semiMajorAxis,
-          double _eccentricity, types::degree _argument, double _gravparam)
-        : theta(_trueAnomaly),
+          double _eccentricity, types::degree _argument, double _gravparam): theta(_trueAnomaly),
           semiMajorAxis(_semiMajorAxis),
           eccentricity(_eccentricity),
           argument(_argument),
@@ -72,7 +65,7 @@ struct Orbit {
 
 struct Vec2 {
     astronomical_unit x;
-    types::astronomical_unit y;
+    astronomical_unit y;
 
     Vec2() = default;
     Vec2(types::astronomical_unit _x, types::astronomical_unit _y)
@@ -84,8 +77,7 @@ struct PolarCoordinate {
     degree theta;
 
     PolarCoordinate() = default;
-    PolarCoordinate(types::astronomical_unit _r, types::degree _theta)
-        : r(_r), theta(_theta) {}
+    PolarCoordinate(types::astronomical_unit _r, types::degree _theta) : r(_r), theta(_theta) {}
 };
 
 
@@ -97,7 +89,7 @@ inline Orbit& updateOrbit(Orbit& orb) {
 }
 
 inline void updatePos(Kinematics& objkin) { 
-        objkin.postion += objkin.velocity;
+        objkin.position += objkin.velocity;
 }
 
 inline void findPeriod(Orbit& orb) { 
@@ -105,8 +97,6 @@ inline void findPeriod(Orbit& orb) {
                                     orb.gravitationalparameter);
     orb.angularvelocity = 360.0 * (1.0 / (orb.period * 365));
 }
-
-
 
 inline types::radian toRadian(types::degree theta) {
     return theta * (conquerspace::common::components::types::PI / 180);
@@ -136,20 +126,15 @@ inline PolarCoordinate toPolarCoordinate(const Orbit& orb) {
 
 inline Vec2 toVec2(const Orbit& orb) { return toVec2(toPolarCoordinate(orb)); }
 
-inline glm::vec3 CalculateObjectPos(Orbit& orbit) {
+inline glm::vec2 CalculateObjectPos(Orbit& orbit) {
     const double divider = 0.01;
     Vec2 vec = toVec2(orbit);
-    return glm::vec3(vec.x / divider, 0, vec.y / divider);
+    return glm::vec2(vec.x / divider, vec.y / divider);
 }
 
-inline glm::vec3 updatePos(Kinematics& objkin, Orbit& orb) {
-    return objkin.postion = CalculateObjectPos(orb);
+inline glm::vec2 updatePos(Kinematics& objkin, Orbit& orb) {
+    return objkin.position = CalculateObjectPos(orb);
 }
-
-
-
-
-
 }  // namespace bodies
 }  // namespace components
 }  // namespace common
