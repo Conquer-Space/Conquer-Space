@@ -70,8 +70,7 @@ void conquerspace::client::systems::SysCommand::DoUI(int delta_time) {
             selected_index = index;
             if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && selected_ship!= entt::null) {
                 // Go to the planet
-                GetApp().GetUniverse().emplace_or_replace<cqspt::MoveTarget>(
-                    selected_ship, entity);
+                GetApp().GetUniverse().emplace_or_replace<cqspt::MoveTarget>(selected_ship, entity);
                 SPDLOG_INFO("Move Ordered");
             }
         }
@@ -85,13 +84,13 @@ void conquerspace::client::systems::SysCommand::DoUpdate(int delta_time) {
     namespace cqspb = conquerspace::common::components::bodies;
     namespace cqspt = conquerspace::common::components::types;
     selected_planet = conquerspace::scene::GetCurrentViewingPlanet(GetApp());
-    entt::entity mouse_over = GetApp().GetUniverse()
+    /*entt::entity mouse_over = GetApp().GetUniverse()
             .view<conquerspace::client::systems::MouseOverEntity, cqspt::Kinematics>().front();
     if (!ImGui::GetIO().WantCaptureMouse &&
         GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) &&
         mouse_over == selected_planet && !GetApp().MouseDragged()) {
         to_see = true;
-    }
+    }*/
 }
 
 void conquerspace::client::systems::SysCommand::ShipList() {

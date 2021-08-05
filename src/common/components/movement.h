@@ -26,15 +26,14 @@ namespace conquerspace {
 namespace common {
 namespace components {
 namespace types {
-struct Kinematics {
-    glm::vec2 position;
-    glm::vec2 velocity;
-    float topspeed = 10;
-};
+//struct Kinematics {
+//    glm::vec2 velocity;
+//    float topspeed = 10;
+//};
 
 struct MoveTarget {
-    entt::entity targetent;
-    MoveTarget(entt::entity _targetent) : targetent(_targetent) {}
+    entt::entity target;
+    MoveTarget(entt::entity _targetent) : target(_targetent) {}
 };
 
 
@@ -68,8 +67,88 @@ struct Vec2 {
     astronomical_unit y;
 
     Vec2() = default;
-    Vec2(types::astronomical_unit _x, types::astronomical_unit _y)
+    constexpr Vec2(types::astronomical_unit _x, types::astronomical_unit _y)
         : x(_x), y(_y) {}
+
+    constexpr Vec2(const Vec2& v) : x(v.x), y(v.y) {}
+
+    template<class T>
+    constexpr Vec2(const T& v) : x(v.x), y(v.y) {}
+
+    constexpr Vec2& operator+=(const Vec2& v) {
+        this->x = v.x;
+        this->y = v.y;
+        return *this;
+    }
+
+    constexpr Vec2& operator-=(const Vec2& v) {
+        this->x -= v.x;
+        this->y -= v.y;
+        return *this;
+    }
+
+    template<typename T>
+    constexpr Vec2& operator*=(T scalar) {
+        this->x *= scalar;
+        this->y *= scalar;
+        return *this;
+    }
+
+    template<typename T>
+    constexpr Vec2& operator/=(T scalar) {
+        this->x /= scalar;
+        this->y /= scalar;
+        return *this;
+    }
+
+    constexpr Vec2 operator+(const Vec2& c) const {
+        return Vec2(this->x + c.x, this->y + c.y);
+    }
+
+    constexpr Vec2 operator-(const Vec2& c) const {
+        return Vec2(this->x - c.x, this->y - c.y);
+    }
+
+    template<typename T>
+    constexpr Vec2 operator*(T scalar) const {
+        return Vec2(this->x * scalar, this->y * scalar);
+    }
+
+    bool operator==(const Vec2& v) {
+        return this->x == v.x && this->y == v.y;
+    }
+
+    template<class T>
+    operator Vec2() {
+        return T(this->x, this.y);
+    }
+
+    template<typename T>
+    constexpr Vec2 operator/(T scalar) const {
+        return Vec2(this->x / scalar, this->y / scalar);
+    }
+
+    double distance(const Vec2& v) { return distance(*this, v); }
+
+    Vec2 normalize() {
+        return normalize(*this);
+    }
+
+    static double distance(const Vec2& a, const Vec2& b) {
+        return length((a - b));
+    }
+
+    static double length(const Vec2& v) {
+        return sqrt((v.x * v.x) + (v.y * v.y));
+    }
+
+    static Vec2 normalize(const Vec2& v) {
+        return v/length(v);
+    }
+};
+
+struct Position : public Vec2 {
+    using Vec2::Vec2;
 };
 
 struct PolarCoordinate {
@@ -80,16 +159,9 @@ struct PolarCoordinate {
     PolarCoordinate(types::astronomical_unit _r, types::degree _theta) : r(_r), theta(_theta) {}
 };
 
-
-
-
 inline Orbit& updateOrbit(Orbit& orb) {
     orb.theta += orb.angularvelocity;
     return orb;
-}
-
-inline void updatePos(Kinematics& objkin) { 
-        objkin.position += objkin.velocity;
 }
 
 inline void findPeriod(Orbit& orb) { 
@@ -125,16 +197,6 @@ inline PolarCoordinate toPolarCoordinate(const Orbit& orb) {
 }
 
 inline Vec2 toVec2(const Orbit& orb) { return toVec2(toPolarCoordinate(orb)); }
-
-inline glm::vec2 CalculateObjectPos(Orbit& orbit) {
-    const double divider = 0.01;
-    Vec2 vec = toVec2(orbit);
-    return glm::vec2(vec.x / divider, vec.y / divider);
-}
-
-inline glm::vec2 updatePos(Kinematics& objkin, Orbit& orb) {
-    return objkin.position = CalculateObjectPos(orb);
-}
 }  // namespace bodies
 }  // namespace components
 }  // namespace common

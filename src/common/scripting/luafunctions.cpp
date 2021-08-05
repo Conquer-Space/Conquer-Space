@@ -72,7 +72,6 @@ void conquerspace::scripting::LoadFunctions(conquerspace::engine::Application& a
     REGISTER_FUNCTION("set_orbit", [&] (entt::entity orbital_entity, double distance, double theta,
                                             double eccentricity, double argument) {
         cqspt::Orbit &orb = universe.emplace<cqspt::Orbit>(orbital_entity, theta, distance, eccentricity, argument, 40);
-        universe.emplace<cqspt::Kinematics>(orbital_entity);
         cqspt::findPeriod(orb);
     });
 
@@ -183,9 +182,12 @@ void conquerspace::scripting::LoadFunctions(conquerspace::engine::Application& a
     REGISTER_FUNCTION("create_ship", [&](entt::entity civ, entt::entity orbit, entt::entity starsystem) {
         entt::entity ship = universe.create();
         universe.emplace<cqsps::Ship>(ship);
-        universe.emplace<cqspt::Kinematics>(ship);
+        //universe.emplace<cqspt::Kinematics>(ship);
         // cqspt::Kinematics orb = universe.get<cqspt::Kinematics>(orbit);
         // cqspt::updatePos(orb);
+        auto &position = universe.emplace<cqspt::Position>(ship);
+        // Get planet position
+        position = cqspt::toVec2(universe.get<cqspt::Orbit>(orbit));
         universe.get<cqspb::StarSystem>(starsystem).bodies.push_back(ship);
         return ship;
     });

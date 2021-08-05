@@ -27,8 +27,8 @@ void conquerspace::common::systems::SysOrbit::DoSystem(components::Universe& uni
 
     auto bodies = universe.view<cqspt::Orbit>();
     for (entt::entity body : bodies) {
-        auto &orb = cqspt::updateOrbit(universe.get<cqspt::Orbit>(body));
-        cqspt::updatePos(universe.get<cqspt::Kinematics>(body), orb);
+        //auto &orb = cqspt::updateOrbit(universe.get<cqspt::Orbit>(body));
+        //cqspt::updatePos(universe.get<cqspt::Kinematics>(body), orb);
     }
 }
 
@@ -39,21 +39,22 @@ void conquerspace::common::systems::SysPath::DoSystem(components::Universe& univ
     namespace cqsps = conquerspace::common::components::ships;
     namespace cqspt = conquerspace::common::components::types;
 
-    auto bodies = universe.view<cqspt::MoveTarget>(entt::exclude<cqspt::Orbit>);
+    auto bodies = universe.view<cqspt::MoveTarget, cqspt::Position>(entt::exclude<cqspt::Orbit>);
     for (entt::entity body : bodies) {
         spdlog::info("parsing {}", body);
-        cqspt::Kinematics& bodykin = universe.get<cqspt::Kinematics>(body);
-        cqspt::Kinematics& targetkin = universe.get<cqspt::Kinematics>(
-            universe.get<cqspt::MoveTarget>(body).targetent);
+        cqspt::Position& bodykin = universe.get<cqspt::Position>(body);
+        // Get the position
+        cqspt::Position targetkin = cqspt::toVec2(universe.get<cqspt::Orbit>(universe.get<cqspt::MoveTarget>(body).target));
 
-        glm::vec2 path = targetkin.position - bodykin.position;
-        if (glm::distance(targetkin.position, bodykin.position) < bodykin.topspeed) {
-            bodykin.position = targetkin.position;
-            bodykin.velocity = glm::vec2(0, 0);
+        // Get position
+        cqspt::Vec2 path = bodykin - targetkin;
+        if (targetkin.distance(bodykin) < 100) {
+            bodykin = targetkin;
+            bodykin = cqspt::Vec2(0, 0);
         } else {
-            bodykin.velocity = bodykin.topspeed * glm::normalize(path);
+           bodykin += (path.normalize() * 100);
         }
-        cqspt::updatePos(universe.get<cqspt::Kinematics>(body));
+        //cqspt::updatePos(universe.get<cqspt::Kinematics>(body));
     }
 }
 

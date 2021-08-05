@@ -21,6 +21,7 @@ namespace common {
 namespace components {
 namespace types {
 typedef double astronomical_unit;
+typedef double kilometer;
 typedef double solar_mass;
 typedef double degree;
 typedef double days;

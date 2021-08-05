@@ -232,8 +232,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     END_TIMED_BLOCK(System_Renderer_Render_Buffer)
 }
 
-void conquerspace::client::systems::SysStarSystemRenderer::SeeStarSystem(
-    entt::entity system) {
+void conquerspace::client::systems::SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
     namespace cqspb = conquerspace::common::components::bodies;
     if (m_star_system != entt::null &&
         m_universe.all_of<cqspb::StarSystem>(m_star_system)) {
@@ -296,7 +295,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity() {
 
     terrain_generator_thread = std::thread([&]() {
         // Generate slightly less detailed terrain so that it looks better at first
-        final_image_generator.GenerateTerrain(8, 11);
+        final_image_generator.GenerateTerrain(8, 10);
         terrain_complete = true;
     });
 }
@@ -307,8 +306,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawEntityName(
     buffer_renderer.BeginDraw();
     if (m_app.GetUniverse().all_of<Name>(ent_id)) {
         std::string &name = m_app.GetUniverse().get<Name>(ent_id);
-        glm::vec3 pos =
-            glm::project(object_pos, camera_matrix, projection, viewport);
+        glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
         if (!(pos.z >= 1 || pos.z <= -1)) {
             m_app.DrawText(name, pos.x, pos.y);
         }
@@ -354,8 +352,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanetIcon(glm::v
 
 void conquerspace::client::systems::SysStarSystemRenderer::DrawShipIcon(
     glm::vec3 &object_pos) {
-    glm::vec3 pos =
-        glm::project(object_pos, camera_matrix, projection, viewport);
+    glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
     glm::mat4 shipDispMat = glm::mat4(1.0f);
     if (pos.z >= 1 || pos.z <= -1) {
         return;
@@ -441,12 +438,18 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawTerrainlessPlanet
 glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateObjectPos(entt::entity &ent) {
     namespace cqspb = conquerspace::common::components::bodies;
     namespace cqspt = conquerspace::common::components::types;
-    auto &pos = m_app.GetUniverse().get<cqspt::Kinematics>(ent);
-    return glm::vec3(pos.position.y, 0, pos.position.x);
+    // Get the things
+    if (m_universe.all_of<cqspt::Orbit>(ent)) {
+        cqspt::Vec2 pos = cqspt::toVec2(m_universe.get<cqspt::Orbit>(ent))/0.01;
+        return glm::vec3(pos.y, 0, pos.x);
+    } else if (m_universe.all_of<cqspt::Position>(ent)) {
+        cqspt::Vec2 &pos = m_universe.get<cqspt::Position>(ent);
+        return (glm::vec3(pos.y/0.01, 0, pos.x/0.01));
+    }
+    return glm::vec3(0, 0, 0);
 }
 
-glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateCenteredObject(
-    entt::entity &ent) {
+glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateCenteredObject(entt::entity &ent) {
     return CalculateObjectPos(ent) - view_center;
 }
 
