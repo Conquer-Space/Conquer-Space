@@ -577,8 +577,7 @@ void conquerspace::client::systems::SysPlanetInformation::SpacePortTab() {
         auto &position = GetApp().GetUniverse().emplace<cqspt::Position>(ship);
         position = cqspt::toVec2(GetApp().GetUniverse().get<cqspt::Orbit>(selected_planet));
         SPDLOG_INFO("{} {}", position.x, position.y);
-        cqspt::Vec2 v = cqspt::toVec2(
-            GetApp().GetUniverse().get<cqspt::Orbit>(selected_planet));
+        cqspt::Vec2 v = cqspt::toVec2(GetApp().GetUniverse().get<cqspt::Orbit>(selected_planet));
         SPDLOG_INFO("{} {}", v.x, v.y);
         // Set it to orbit the planet thing
         GetApp().GetUniverse().get<cqspb::StarSystem>(star_system).bodies.push_back(ship);

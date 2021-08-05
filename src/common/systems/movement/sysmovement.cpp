@@ -41,32 +41,22 @@ void conquerspace::common::systems::SysPath::DoSystem(components::Universe& univ
 
     auto bodies = universe.view<cqspt::MoveTarget, cqspt::Position>(entt::exclude<cqspt::Orbit>);
     for (entt::entity body : bodies) {
-        spdlog::info("parsing {}", body);
         cqspt::Position& bodykin = universe.get<cqspt::Position>(body);
-        // Get the position
         cqspt::Position targetkin = cqspt::toVec2(universe.get<cqspt::Orbit>(universe.get<cqspt::MoveTarget>(body).target));
-
-        // Get position
-        cqspt::Vec2 path = bodykin - targetkin;
-        if (targetkin.distance(bodykin) < 100) {
+        cqspt::Vec2 path = targetkin - bodykin;
+        float velocity = 2.f;
+        if (targetkin.distance(bodykin) < velocity) {
             bodykin = targetkin;
-            bodykin = cqspt::Vec2(0, 0);
         } else {
-           bodykin += (path.normalize() * 100);
+           bodykin += (velocity * path.normalize());
         }
-        //cqspt::updatePos(universe.get<cqspt::Kinematics>(body));
     }
 }
 
 int conquerspace::common::systems::SysPath::Interval() { return 1; }
 
-void conquerspace::common::systems::SysMove::DoSystem(
-    components::Universe& universe) {
+void conquerspace::common::systems::SysMove::DoSystem(components::Universe& universe) {
     namespace cqspc = conquerspace::common::components;
     namespace cqsps = conquerspace::common::components::ships;
     namespace cqspt = conquerspace::common::components::types;
 }
-
-
-
-

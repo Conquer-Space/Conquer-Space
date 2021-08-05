@@ -113,10 +113,17 @@ void conquerspace::client::systems::SysStarSystemRenderer::Initialize() {
 }
 
 void conquerspace::client::systems::SysStarSystemRenderer::OnTick() {
-    entt::entity current_planet =
-        m_app.GetUniverse().view<RenderingPlanet>().front();
+    entt::entity current_planet = m_app.GetUniverse().view<RenderingPlanet>().front();
     if (current_planet != entt::null) {
         view_center = CalculateObjectPos(m_viewing_entity);
+    }
+
+    namespace cqspb = conquerspace::common::components::bodies;
+
+    entt::entity system = m_app.GetUniverse().view<RenderingStarSystem>().front();
+    auto &system_comp = m_app.GetUniverse().get<cqspb::StarSystem>(system);
+    for (entt::entity ent : system_comp.bodies) {
+        m_app.GetUniverse().emplace_or_replace<ToRender>(ent);
     }
 }
 
@@ -177,8 +184,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     }
 
     // Draw other bodies
-    auto bodies = m_app.GetUniverse().view<ToRender,
-                cqspb::Body>(entt::exclude<cqspb::LightEmitter>);
+    auto bodies = m_app.GetUniverse().view<ToRender, cqspb::Body>(entt::exclude<cqspb::LightEmitter>);
     for (auto [ent_id, body] : bodies.each()) {
         // Draw the planet circle
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
@@ -350,8 +356,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanetIcon(glm::v
     buffer_renderer.EndDraw();
 }
 
-void conquerspace::client::systems::SysStarSystemRenderer::DrawShipIcon(
-    glm::vec3 &object_pos) {
+void conquerspace::client::systems::SysStarSystemRenderer::DrawShipIcon(glm::vec3 &object_pos) {
     glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
     glm::mat4 shipDispMat = glm::mat4(1.0f);
     if (pos.z >= 1 || pos.z <= -1) {

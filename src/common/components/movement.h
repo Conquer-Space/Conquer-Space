@@ -26,17 +26,6 @@ namespace conquerspace {
 namespace common {
 namespace components {
 namespace types {
-//struct Kinematics {
-//    glm::vec2 velocity;
-//    float topspeed = 10;
-//};
-
-struct MoveTarget {
-    entt::entity target;
-    MoveTarget(entt::entity _targetent) : target(_targetent) {}
-};
-
-
 /**
  * Orbit of a body
  */
@@ -67,7 +56,7 @@ struct Vec2 {
     astronomical_unit y;
 
     Vec2() = default;
-    constexpr Vec2(types::astronomical_unit _x, types::astronomical_unit _y)
+    constexpr Vec2(astronomical_unit _x, astronomical_unit _y)
         : x(_x), y(_y) {}
 
     constexpr Vec2(const Vec2& v) : x(v.x), y(v.y) {}
@@ -76,12 +65,27 @@ struct Vec2 {
     constexpr Vec2(const T& v) : x(v.x), y(v.y) {}
 
     constexpr Vec2& operator+=(const Vec2& v) {
-        this->x = v.x;
-        this->y = v.y;
+        this->x += v.x;
+        this->y += v.y;
+        return *this;
+    }
+
+    template<class T>
+    constexpr Vec2& operator+=(const T& v) {
+        this->x += v.x;
+        this->y += v.y;
         return *this;
     }
 
     constexpr Vec2& operator-=(const Vec2& v) {
+        this->x -= v.x;
+        this->y -= v.y;
+        return *this;
+    }
+
+    
+    template<class T>
+    constexpr Vec2& operator-=(const T& v) {
         this->x -= v.x;
         this->y -= v.y;
         return *this;
@@ -112,6 +116,11 @@ struct Vec2 {
     template<typename T>
     constexpr Vec2 operator*(T scalar) const {
         return Vec2(this->x * scalar, this->y * scalar);
+    }
+
+    template<typename T, class B>
+    friend constexpr Vec2 operator*(T scalar, const B& v) {
+        return Vec2(v.x * scalar, v.y * scalar);
     }
 
     bool operator==(const Vec2& v) {
@@ -151,22 +160,31 @@ struct Position : public Vec2 {
     using Vec2::Vec2;
 };
 
-struct PolarCoordinate {
-    astronomical_unit r;
+template<typename T>
+struct PolarCoordinate_tp {
+    T r;
     degree theta;
 
-    PolarCoordinate() = default;
-    PolarCoordinate(types::astronomical_unit _r, types::degree _theta) : r(_r), theta(_theta) {}
+    PolarCoordinate_tp() = default;
+    PolarCoordinate_tp(T _r, types::degree _theta) : r(_r), theta(_theta) {}
+};
+typedef PolarCoordinate_tp<types::astronomical_unit> PolarCoordinate;
+
+struct MoveTarget {
+    entt::entity target;
+    MoveTarget(entt::entity _targetent) : target(_targetent) {}
 };
 
+struct MoveTarget2 : public Vec2 {
+
+};
 inline Orbit& updateOrbit(Orbit& orb) {
     orb.theta += orb.angularvelocity;
     return orb;
 }
 
 inline void findPeriod(Orbit& orb) { 
-    orb.period = TWOPI * std::sqrt(std::pow(orb.semiMajorAxis, 3) /
-                                    orb.gravitationalparameter);
+    orb.period = TWOPI * std::sqrt(std::pow(orb.semiMajorAxis, 3) / orb.gravitationalparameter);
     orb.angularvelocity = 360.0 * (1.0 / (orb.period * 365));
 }
 
@@ -178,15 +196,8 @@ inline types::degree toDegree(types::radian theta) {
     return theta * (180 / conquerspace::common::components::types::PI);
 }
 
-
-
 inline Vec2 toVec2(const PolarCoordinate& coordinate) {
-    return Vec2{static_cast<types::astronomical_unit>(
-                    static_cast<double>(coordinate.r) *
-                    cos(toRadian(coordinate.theta))),
-                static_cast<types::astronomical_unit>(
-                    static_cast<double>(coordinate.r) *
-                    sin(toRadian(coordinate.theta)))};
+    return Vec2{coordinate.r * cos(toRadian(coordinate.theta)), coordinate.r * sin(toRadian(coordinate.theta))};
 }
 
 inline PolarCoordinate toPolarCoordinate(const Orbit& orb) {
