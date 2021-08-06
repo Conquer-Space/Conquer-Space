@@ -27,8 +27,8 @@ jobs:
         make
     - name: Tests
       run: |
-        tree
-        ./cqsp-tests
+        cd binaries/data
+        ../../build/cqsp-tests
 
     - uses: actions/upload-artifact@v2
       with:
