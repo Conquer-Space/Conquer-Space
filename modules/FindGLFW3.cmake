@@ -12,13 +12,24 @@ IF(WIN32)
 		${GLFW_ROOT_DIR}/include
 		DOC "The directory where GLFW/glfw3.h resides")
 
-    FIND_LIBRARY( GLFW3_LIBRARY
-        NAMES glfw3 GLFW glfw glfw3dll
+	if (GLFW_USE_STATIC)
+	FIND_LIBRARY( GLFW3_LIBRARY
+        NAMES glfw3_mt
         PATHS
         $ENV{PROGRAMFILES}/GLFW/lib
 		${GLFW_ROOT_DIR}/lib-vc2019
 		${GLFW_ROOT_DIR}/lib
         DOC "The GLFW library")
+	else()
+	
+    FIND_LIBRARY( GLFW3_LIBRARY
+        NAMES glfw3 GLFW glfw
+        PATHS
+        $ENV{PROGRAMFILES}/GLFW/lib
+		${GLFW_ROOT_DIR}/lib-vc2019
+		${GLFW_ROOT_DIR}/lib
+        DOC "The GLFW library")
+	endif()
 
 ELSE()
 	FIND_PATH( GLFW3_INCLUDE_PATH GLFW/glfw3.h
@@ -28,7 +39,6 @@ ELSE()
         /opt/local/include
 		${GLFW_ROOT_DIR}/include
 		DOC "The directory where GLFW/glfw3.h resides")
-
 	# Prefer the static library.
 	FIND_LIBRARY( GLFW3_LIBRARY
         NAMES libGLFW.a GLFW libGLFW3.a GLFW3 libglfw.so libglfw.so.3 libglfw.so.3.0

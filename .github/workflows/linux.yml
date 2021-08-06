@@ -25,6 +25,10 @@ jobs:
         mkdir build && cd build
         cmake ..
         make
+    - name: Tests
+      run: |
+        ls
+        make test
 
     - uses: actions/upload-artifact@v2
       with:

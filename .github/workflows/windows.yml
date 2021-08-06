@@ -14,14 +14,11 @@ jobs:
       with:
         fetch-depth: 1
         submodules: recursive
-    - name: Install dependencies
-      run: |
-        vcpkg install glfw3:x64-windows
-        ls
     - name: Build Conquer Space
       run: |
-        cmake -B build -DGLFW_ROOT_DIR=C:\vcpkg\installed/x64-windows-static -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=x64-windows -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake
+        cmake -B build -DTESTS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=x64-windows -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake
         cmake --build build --parallel --config Release --target Conquer-Space
+    - name: Tests
 
     - uses: actions/upload-artifact@v2
       with:
