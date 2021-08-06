@@ -23,7 +23,7 @@ jobs:
       run: |
         ls
         mkdir build && cd build
-        cmake ..
+        cmake -DTESTS=ON ..
         make
     - name: Tests
       run: |
