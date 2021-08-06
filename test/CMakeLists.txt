@@ -44,3 +44,5 @@ target_link_libraries(cqsp-tests
     )
 
 add_test(NAME main-test COMMAND cqsp-tests)
+
+add_custom_target(test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/cqsp-tests)

@@ -19,7 +19,8 @@ jobs:
         cmake -B build -DTESTS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=x64-windows -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake
         cmake --build build --parallel --config Release --target Conquer-Space
     - name: Tests
-      run: 
+      run: |
+        ls
 
     - uses: actions/upload-artifact@v2
       with:
