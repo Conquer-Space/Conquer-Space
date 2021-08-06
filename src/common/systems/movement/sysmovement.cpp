@@ -44,7 +44,7 @@ void conquerspace::common::systems::SysPath::DoSystem(components::Universe& univ
         cqspt::Position& bodykin = universe.get<cqspt::Position>(body);
         cqspt::Position targetkin = cqspt::toVec2(universe.get<cqspt::Orbit>(universe.get<cqspt::MoveTarget>(body).target));
         cqspt::Vec2 path = targetkin - bodykin;
-        float velocity = 2.f;
+        float velocity = .5f;
         if (targetkin.distance(bodykin) < velocity) {
             bodykin = targetkin;
         } else {
