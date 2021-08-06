@@ -26,6 +26,7 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/fmt/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/lua/)
 include_directories(${CMAKE_SOURCE_DIR}/lib/sol2/include)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 add_executable(cqsp-tests ${CPP_FILES} ${H_FILES})
 
 # Test libraries
@@ -44,5 +45,3 @@ target_link_libraries(cqsp-tests
     )
 
 add_test(NAME main-test COMMAND cqsp-tests)
-
-add_custom_target(test COMMAND ${CMAKE_CURRENT_BINARY_DIR}/cqsp-tests)

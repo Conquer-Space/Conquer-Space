@@ -28,7 +28,7 @@ jobs:
     - name: Tests
       run: |
         ls
-        make test
+        ./cqsp-tests
 
     - uses: actions/upload-artifact@v2
       with:
