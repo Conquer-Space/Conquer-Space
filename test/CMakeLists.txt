@@ -34,7 +34,7 @@ target_link_libraries(cqsp-tests gtest gtest_main)
 target_link_libraries(cqsp-tests cqsp-core)
 
 # External libraries
-target_link_libraries(cqsp-tests 
+target_link_libraries(cqsp-tests
     EnTT::EnTT
     hjson
     spdlog
@@ -45,3 +45,6 @@ target_link_libraries(cqsp-tests
     )
 
 add_test(NAME main-test COMMAND cqsp-tests)
+# Disable logging
+target_compile_definitions(cqsp-tests PRIVATE SPDLOG_ACTIVE_LEVEL=1000)
+
