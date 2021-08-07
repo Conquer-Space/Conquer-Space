@@ -32,6 +32,6 @@ jobs:
 
     - uses: actions/upload-artifact@v2
       with:
-        name: Conquer-Space
+        name: Conquer-Space_b${{ github.run_number }}
         path: |
           binaries
