@@ -16,11 +16,11 @@
 */
 #include <gtest/gtest.h>
 
-#include "common/components/orbit.h"
+#include "common/components/movement.h"
 
 // Tests for input from client options
 TEST(Common_OrbitTest, toVec2Test) {
-    namespace cqspb = conquerspace::common::components::bodies;
+    namespace cqspb = conquerspace::common::components::types;
     cqspb::Orbit orbit1;
     orbit1.semiMajorAxis = 100;
     orbit1.eccentricity = 0;
@@ -63,7 +63,7 @@ TEST(Common_OrbitTest, toVec2Test) {
 
 TEST(Common_OrbitTest, ToRadianTest) {
     namespace cqspt = conquerspace::common::components::types;
-    namespace cqspb = conquerspace::common::components::bodies;
+    namespace cqspb = conquerspace::common::components::types;
     EXPECT_DOUBLE_EQ(cqspt::PI/2, cqspb::toRadian(90));
     EXPECT_DOUBLE_EQ(cqspt::PI, cqspb::toRadian(180));
     EXPECT_DOUBLE_EQ(cqspt::PI * 2.f, cqspb::toRadian(360));
@@ -73,7 +73,7 @@ TEST(Common_OrbitTest, ToRadianTest) {
 }
 
 TEST(Common_OrbitTest, ToDegreeTest) {
-    namespace cqspb = conquerspace::common::components::bodies;
+    namespace cqspb = conquerspace::common::components::types;
     namespace cqspt = conquerspace::common::components::types;
     EXPECT_DOUBLE_EQ(30, cqspb::toDegree(cqspt::PI/6));
     EXPECT_DOUBLE_EQ(45, cqspb::toDegree(cqspt::PI/4));

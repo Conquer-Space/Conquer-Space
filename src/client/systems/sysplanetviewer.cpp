@@ -43,6 +43,7 @@
 #include "common/components/ships.h"
 #include "common/util/utilnumberdisplay.h"
 #include "common/systems/actions/factoryconstructaction.h"
+#include "common/systems/actions/shiplaunchaction.h"
 #include "common/systems/economy/markethelpers.h"
 
 #include "engine/gui.h"
@@ -568,18 +569,9 @@ void conquerspace::client::systems::SysPlanetInformation::SpacePortTab() {
     namespace cqsps = conquerspace::common::components::ships;
     namespace cqspb = conquerspace::common::components::bodies;
 
-    if (ImGui::Button("Launch!")) {
-        // Add a space ship to star system
+if (ImGui::Button("Launch!")) {
         entt::entity star_system = GetApp().GetUniverse().get<cqspc::bodies::Body>(selected_planet).star_system;
-        // Then make a ship there
-        entt::entity ship = GetApp().GetUniverse().create();
-        GetApp().GetUniverse().emplace<cqsps::Ship>(ship);
-        auto &position = GetApp().GetUniverse().emplace<cqspt::Position>(ship);
-        position = cqspt::toVec2(GetApp().GetUniverse().get<cqspt::Orbit>(selected_planet));
-        SPDLOG_INFO("{} {}", position.x, position.y);
-        cqspt::Vec2 v = cqspt::toVec2(GetApp().GetUniverse().get<cqspt::Orbit>(selected_planet));
-        SPDLOG_INFO("{} {}", v.x, v.y);
-        // Set it to orbit the planet thing
-        GetApp().GetUniverse().get<cqspb::StarSystem>(star_system).bodies.push_back(ship);
+        conquerspace::common::systems::actions::CreateShip(
+        GetApp().GetUniverse(), entt::null, selected_planet, star_system);
     }
 }

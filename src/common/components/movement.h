@@ -139,6 +139,10 @@ struct Vec2 {
 
     double distance(const Vec2& v) { return distance(*this, v); }
 
+    double length() {
+        return length(*this);
+    }
+
     Vec2 normalize() {
         return normalize(*this);
     }
@@ -153,6 +157,14 @@ struct Vec2 {
 
     static Vec2 normalize(const Vec2& v) {
         return v/length(v);
+    }
+
+    double angle() {
+        return angle(*this);
+    }
+
+    static double angle(const Vec2& v) {
+        return atan2(v.y, v.x);
     }
 };
 

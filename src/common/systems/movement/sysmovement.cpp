@@ -27,6 +27,7 @@ void conquerspace::common::systems::SysOrbit::DoSystem(components::Universe& uni
 
     auto bodies = universe.view<cqspt::Orbit>();
     for (entt::entity body : bodies) {
+        // Disable orbits for now
         //auto &orb = cqspt::updateOrbit(universe.get<cqspt::Orbit>(body));
         //cqspt::updatePos(universe.get<cqspt::Kinematics>(body), orb);
     }
@@ -54,9 +55,3 @@ void conquerspace::common::systems::SysPath::DoSystem(components::Universe& univ
 }
 
 int conquerspace::common::systems::SysPath::Interval() { return 1; }
-
-void conquerspace::common::systems::SysMove::DoSystem(components::Universe& universe) {
-    namespace cqspc = conquerspace::common::components;
-    namespace cqsps = conquerspace::common::components::ships;
-    namespace cqspt = conquerspace::common::components::types;
-}

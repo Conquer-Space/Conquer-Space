@@ -18,6 +18,7 @@
 
 #include "common/systems/actions/factoryconstructaction.h"
 #include "common/systems/economy/markethelpers.h"
+#include "common/systems/actions/shiplaunchaction.h"
 #include "common/util/utilnumberdisplay.h"
 
 // So that we can document in the future
@@ -179,17 +180,10 @@ void conquerspace::scripting::LoadFunctions(conquerspace::engine::Application& a
         universe.emplace<cqspb::Terrain>(planet, seed);
     });
 
-    REGISTER_FUNCTION("create_ship", [&](entt::entity civ, entt::entity orbit, entt::entity starsystem) {
-        entt::entity ship = universe.create();
-        universe.emplace<cqsps::Ship>(ship);
-        //universe.emplace<cqspt::Kinematics>(ship);
-        // cqspt::Kinematics orb = universe.get<cqspt::Kinematics>(orbit);
-        // cqspt::updatePos(orb);
-        auto &position = universe.emplace<cqspt::Position>(ship);
-        // Get planet position
-        position = cqspt::toVec2(universe.get<cqspt::Orbit>(orbit));
-        universe.get<cqspb::StarSystem>(starsystem).bodies.push_back(ship);
-        return ship;
+    REGISTER_FUNCTION("create_ship", [&](entt::entity civ, entt::entity orbit,
+                                                            entt::entity starsystem) {
+        return conquerspace::common::systems::actions::CreateShip(universe, civ, orbit,
+                                                                        starsystem);
     });
 
     REGISTER_FUNCTION("get_player", [&]() {

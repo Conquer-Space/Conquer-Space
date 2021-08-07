@@ -16,23 +16,16 @@
 */
 #pragma once
 
+#include <entt/entt.hpp>
+
+#include "common/universe.h"
+
 namespace conquerspace {
 namespace common {
-namespace components {
-namespace types {
-typedef double astronomical_unit;
-typedef double kilometer;
-typedef double solar_mass;
-typedef double degree;
-typedef double days;
-typedef double years;
-typedef double radian;
-typedef double meter_cube;
-typedef double kilogram;
-
-const double PI = 3.14159265358979323846;
-const double TWOPI = PI * 2;
-}  // namespace types
-}  // namespace components
+namespace systems {
+namespace actions {
+entt::entity CreateShip(conquerspace::common::components::Universe &universe, entt::entity civ, entt::entity orbit, entt::entity starsystem);
+}
+}  // namespace systems
 }  // namespace common
 }  // namespace conquerspace
