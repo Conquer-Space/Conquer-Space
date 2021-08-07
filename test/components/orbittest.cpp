@@ -16,11 +16,11 @@
 */
 #include <gtest/gtest.h>
 
-#include "common/components/orbit.h"
+#include "common/components/movement.h"
 
 // Tests for input from client options
 TEST(Common_OrbitTest, toVec2Test) {
-    namespace cqspb = conquerspace::common::components::bodies;
+    namespace cqspb = conquerspace::common::components::types;
     cqspb::Orbit orbit1;
     orbit1.semiMajorAxis = 100;
     orbit1.eccentricity = 0;
@@ -63,22 +63,20 @@ TEST(Common_OrbitTest, toVec2Test) {
 
 TEST(Common_OrbitTest, ToRadianTest) {
     namespace cqspt = conquerspace::common::components::types;
-    namespace cqspb = conquerspace::common::components::bodies;
-    EXPECT_DOUBLE_EQ(cqspt::PI/2, cqspb::toRadian(90));
-    EXPECT_DOUBLE_EQ(cqspt::PI, cqspb::toRadian(180));
-    EXPECT_DOUBLE_EQ(cqspt::PI * 2.f, cqspb::toRadian(360));
-    EXPECT_DOUBLE_EQ(cqspt::PI/6, cqspb::toRadian(30));
-    EXPECT_DOUBLE_EQ(cqspt::PI/3, cqspb::toRadian(60));
-    EXPECT_DOUBLE_EQ(cqspt::PI/4, cqspb::toRadian(45));
+    EXPECT_DOUBLE_EQ(cqspt::PI/2, cqspt::toRadian(90));
+    EXPECT_DOUBLE_EQ(cqspt::PI, cqspt::toRadian(180));
+    EXPECT_DOUBLE_EQ(cqspt::PI * 2.f, cqspt::toRadian(360));
+    EXPECT_DOUBLE_EQ(cqspt::PI/6, cqspt::toRadian(30));
+    EXPECT_DOUBLE_EQ(cqspt::PI/3, cqspt::toRadian(60));
+    EXPECT_DOUBLE_EQ(cqspt::PI/4, cqspt::toRadian(45));
 }
 
 TEST(Common_OrbitTest, ToDegreeTest) {
-    namespace cqspb = conquerspace::common::components::bodies;
     namespace cqspt = conquerspace::common::components::types;
-    EXPECT_DOUBLE_EQ(30, cqspb::toDegree(cqspt::PI/6));
-    EXPECT_DOUBLE_EQ(45, cqspb::toDegree(cqspt::PI/4));
-    EXPECT_DOUBLE_EQ(60, cqspb::toDegree(cqspt::PI/3));
-    EXPECT_DOUBLE_EQ(90, cqspb::toDegree(cqspt::PI/2));
-    EXPECT_DOUBLE_EQ(180, cqspb::toDegree(cqspt::PI));
-    EXPECT_DOUBLE_EQ(360, cqspb::toDegree(cqspt::PI*2));
+    EXPECT_DOUBLE_EQ(30, cqspt::toDegree(cqspt::PI/6));
+    EXPECT_DOUBLE_EQ(45, cqspt::toDegree(cqspt::PI/4));
+    EXPECT_DOUBLE_EQ(60, cqspt::toDegree(cqspt::PI/3));
+    EXPECT_DOUBLE_EQ(90, cqspt::toDegree(cqspt::PI/2));
+    EXPECT_DOUBLE_EQ(180, cqspt::toDegree(cqspt::PI));
+    EXPECT_DOUBLE_EQ(360, cqspt::toDegree(cqspt::PI*2));
 }

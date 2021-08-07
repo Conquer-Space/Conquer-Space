@@ -1,10 +1,6 @@
 name: Linux
 
-on:
-  pull_request:
-  push:
-  release:
-    types: published
+on: [ pull_request, push ]
 
 jobs:
   build:
@@ -18,16 +14,20 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt install -y libglfw3 libglfw3-dev
+        sudo apt install -y libglfw3 libglfw3-dev tree
     - name: Build Conquer Space
       run: |
         ls
         mkdir build && cd build
-        cmake ..
+        cmake -DTESTS=ON ..
         make
+    - name: Tests
+      run: |
+        cd binaries/data
+        ../../build/cqsp-tests
 
     - uses: actions/upload-artifact@v2
       with:
-        name: Conquer-Space
+        name: Conquer-Space_b${{ github.run_number }}
         path: |
           binaries
