@@ -35,6 +35,7 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/backends)
 
 # Hide the console window in visual studio projects - Release
 if(MSVC)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:MSVCRT")
 	set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
 endif()
 
