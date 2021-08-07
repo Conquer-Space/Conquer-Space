@@ -35,6 +35,4 @@ TEST(NumberDisplayTest, LongToHumanStringTest) {
                                 conquerspace::util::LongToHumanString(9223372036854775806).c_str());
     EXPECT_STREQ("-3.15 million", conquerspace::util::LongToHumanString(-3150000).c_str());
     EXPECT_STREQ("3.15 million", conquerspace::util::LongToHumanString(3145000).c_str());
-    SPDLOG_INFO("Test log");
-    ASSERT_EQ(3, 1);
 }
