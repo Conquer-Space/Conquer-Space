@@ -129,7 +129,7 @@ struct Vec2 {
 
     template<class T>
     operator Vec2() {
-        return T(this->x, this.y);
+        return T(this->x, this->y);
     }
 
     template<typename T>
@@ -187,9 +187,6 @@ struct MoveTarget {
     MoveTarget(entt::entity _targetent) : target(_targetent) {}
 };
 
-struct MoveTarget2 : public Vec2 {
-
-};
 inline Orbit& updateOrbit(Orbit& orb) {
     orb.theta += orb.angularvelocity;
     return orb;
