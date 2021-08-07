@@ -56,6 +56,10 @@ include_directories(src)
 
 if (MSVC)
   set(GLFW_ROOT_DIR lib/win64/glfw)
+  # Set type
+  if (TESTS)
+    set (GLFW_USE_STATIC true CACHE BOOL "" FORCE)
+  endif()
 endif()
 find_package(GLFW3 REQUIRED)
 find_package(OpenGL REQUIRED)
