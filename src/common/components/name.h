@@ -33,7 +33,6 @@ struct Identifier {
     std::string identifier;
     operator std::string&() { return identifier; }
 };
-
 }  // namespace components
 }  // namespace common
 }  // namespace conquerspace

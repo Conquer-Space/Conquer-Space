@@ -33,11 +33,6 @@ class SysPath : public ISimulationSystem {
      void DoSystem(components::Universe& universe);
      int Interval();
 };
-
-class SysMove : public ISimulationSystem {
-   public:
-    void DoSystem(components::Universe& universe);
-};
 }
 }
 }

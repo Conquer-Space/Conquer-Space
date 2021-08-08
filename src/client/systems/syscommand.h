@@ -34,6 +34,8 @@ class SysCommand : public SysUserInterface {
  private:
     int selected_index = 0;
     entt::entity selected_planet = entt::null;
+    entt::entity selected_ship = entt::null;
+    void ShipList();
 };
 }  // namespace systems
 }  // namespace client

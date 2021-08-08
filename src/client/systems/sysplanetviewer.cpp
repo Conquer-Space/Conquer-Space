@@ -40,8 +40,10 @@
 #include "common/components/resource.h"
 #include "common/components/surface.h"
 #include "common/components/economy.h"
+#include "common/components/ships.h"
 #include "common/util/utilnumberdisplay.h"
 #include "common/systems/actions/factoryconstructaction.h"
+#include "common/systems/actions/shiplaunchaction.h"
 #include "common/systems/economy/markethelpers.h"
 
 #include "engine/gui.h"
@@ -141,7 +143,11 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("Construction")) {
-               ConstructionTab();
+                ConstructionTab();
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Space Port")) {
+                SpacePortTab();
                 ImGui::EndTabItem();
             }
             ImGui::EndTabBar();
@@ -554,5 +560,18 @@ void conquerspace::client::systems::SysPlanetInformation::FactoryInformationPane
             gui::EntityTooltip(GetApp().GetUniverse(), e);
         }
         ImGui::End();
+    }
+}
+
+void conquerspace::client::systems::SysPlanetInformation::SpacePortTab() {
+    namespace cqspc = conquerspace::common::components;
+    namespace cqspt = conquerspace::common::components::types;
+    namespace cqsps = conquerspace::common::components::ships;
+    namespace cqspb = conquerspace::common::components::bodies;
+
+if (ImGui::Button("Launch!")) {
+        entt::entity star_system = GetApp().GetUniverse().get<cqspc::bodies::Body>(selected_planet).star_system;
+        conquerspace::common::systems::actions::CreateShip(
+        GetApp().GetUniverse(), entt::null, selected_planet, star_system);
     }
 }

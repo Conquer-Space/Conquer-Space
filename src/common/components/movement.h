@@ -26,22 +26,6 @@ namespace conquerspace {
 namespace common {
 namespace components {
 namespace types {
-
-
-struct Kinematics {
-    glm::vec3 postion = glm::vec3(0, 0, 0);
-    glm::vec3 velocity = glm::vec3(0, 0, 0);
-    float topspeed = 10;
-    //glm::vec3 target;
-    //entt::entity targetent;
-};
-
-struct MoveTarget {
-    entt::entity targetent;
-    MoveTarget(entt::entity _targetent) : targetent(_targetent) {}
-};
-
-
 /**
  * Orbit of a body
  */
@@ -58,12 +42,9 @@ struct Orbit {
     // So we can prepare for moons and stuff
     entt::entity referenceBody = entt::null;
 
-
-
     Orbit() = default;
     Orbit(types::degree _trueAnomaly, types::astronomical_unit _semiMajorAxis,
-          double _eccentricity, types::degree _argument, double _gravparam)
-        : theta(_trueAnomaly),
+          double _eccentricity, types::degree _argument, double _gravparam): theta(_trueAnomaly),
           semiMajorAxis(_semiMajorAxis),
           eccentricity(_eccentricity),
           argument(_argument),
@@ -72,41 +53,164 @@ struct Orbit {
 
 struct Vec2 {
     astronomical_unit x;
-    types::astronomical_unit y;
+    astronomical_unit y;
 
     Vec2() = default;
-    Vec2(types::astronomical_unit _x, types::astronomical_unit _y)
+    constexpr Vec2(astronomical_unit _x, astronomical_unit _y)
         : x(_x), y(_y) {}
+
+    constexpr Vec2(const Vec2& v) : x(v.x), y(v.y) {}
+
+    template<class T>
+    constexpr Vec2(const T& v) : x(v.x), y(v.y) {}
+
+    template<class T>
+    constexpr operator T() const {
+        return T(this->x, this->y);
+    }
+
+    constexpr Vec2& operator+=(const Vec2& v) {
+        this->x += v.x;
+        this->y += v.y;
+        return *this;
+    }
+
+    template<class T>
+    constexpr Vec2& operator+=(const T& v) {
+        this->x += v.x;
+        this->y += v.y;
+        return *this;
+    }
+
+    constexpr Vec2& operator-=(const Vec2& v) {
+        this->x -= v.x;
+        this->y -= v.y;
+        return *this;
+    }
+
+    
+    template<class T>
+    constexpr Vec2& operator-=(const T& v) {
+        this->x -= v.x;
+        this->y -= v.y;
+        return *this;
+    }
+
+    template<typename T>
+    constexpr Vec2& operator*=(T scalar) {
+        this->x *= scalar;
+        this->y *= scalar;
+        return *this;
+    }
+
+    template<typename T>
+    constexpr Vec2& operator/=(T scalar) {
+        this->x /= scalar;
+        this->y /= scalar;
+        return *this;
+    }
+
+    constexpr Vec2 operator+(const Vec2& c) const {
+        return Vec2(this->x + c.x, this->y + c.y);
+    }
+
+    constexpr Vec2 operator-(const Vec2& c) const {
+        return Vec2(this->x - c.x, this->y - c.y);
+    }
+
+    template<typename T>
+    constexpr Vec2 operator*(T scalar) const {
+        return Vec2(this->x * scalar, this->y * scalar);
+    }
+
+    template<typename T, class B>
+    friend constexpr Vec2 operator*(T scalar, const B& v) {
+        return Vec2(v.x * scalar, v.y * scalar);
+    }
+
+    bool operator==(const Vec2& v) {
+        return this->x == v.x && this->y == v.y;
+    }
+
+    template<typename T>
+    bool operator==(const T& v) {
+        return this->x == v.x && this->y == v.y;
+    }
+
+    template<class T>
+    operator Vec2() {
+        return T(this->x, this->y);
+    }
+
+    template<typename T>
+    constexpr Vec2 operator/(T scalar) const {
+        return Vec2(this->x / scalar, this->y / scalar);
+    }
+
+    double distance(const Vec2& v) { return distance(*this, v); }
+
+    double length() {
+        return length(*this);
+    }
+
+    Vec2 normalize() {
+        return normalize(*this);
+    }
+
+    static double distance(const Vec2& a, const Vec2& b) {
+        return length((a - b));
+    }
+
+    static double length(const Vec2& v) {
+        return sqrt((v.x * v.x) + (v.y * v.y));
+    }
+
+    static Vec2 normalize(const Vec2& v) {
+        return v/length(v);
+    }
+
+    double angle() {
+        return angle(*this);
+    }
+
+    static double angle(const Vec2& v) {
+        return atan2(v.y, v.x);
+    }
+
+    template<class T>
+    static double angle(const T& v) {
+        return atan2(v.y, v.x);
+    }
 };
 
-struct PolarCoordinate {
-    astronomical_unit r;
+struct Position : public Vec2 {
+    using Vec2::Vec2;
+};
+
+template<typename T>
+struct PolarCoordinate_tp {
+    T r;
     degree theta;
 
-    PolarCoordinate() = default;
-    PolarCoordinate(types::astronomical_unit _r, types::degree _theta)
-        : r(_r), theta(_theta) {}
+    PolarCoordinate_tp() = default;
+    PolarCoordinate_tp(T _r, types::degree _theta) : r(_r), theta(_theta) {}
 };
+typedef PolarCoordinate_tp<types::astronomical_unit> PolarCoordinate;
 
-
-
+struct MoveTarget {
+    entt::entity target;
+    MoveTarget(entt::entity _targetent) : target(_targetent) {}
+};
 
 inline Orbit& updateOrbit(Orbit& orb) {
     orb.theta += orb.angularvelocity;
     return orb;
 }
 
-inline void updatePos(Kinematics& objkin) { 
-        objkin.postion += objkin.velocity;
-}
-
 inline void findPeriod(Orbit& orb) { 
-    orb.period = TWOPI * std::sqrt(std::pow(orb.semiMajorAxis, 3) /
-                                    orb.gravitationalparameter);
+    orb.period = TWOPI * std::sqrt(std::pow(orb.semiMajorAxis, 3) / orb.gravitationalparameter);
     orb.angularvelocity = 360.0 * (1.0 / (orb.period * 365));
 }
-
-
 
 inline types::radian toRadian(types::degree theta) {
     return theta * (conquerspace::common::components::types::PI / 180);
@@ -116,15 +220,8 @@ inline types::degree toDegree(types::radian theta) {
     return theta * (180 / conquerspace::common::components::types::PI);
 }
 
-
-
 inline Vec2 toVec2(const PolarCoordinate& coordinate) {
-    return Vec2{static_cast<types::astronomical_unit>(
-                    static_cast<double>(coordinate.r) *
-                    cos(toRadian(coordinate.theta))),
-                static_cast<types::astronomical_unit>(
-                    static_cast<double>(coordinate.r) *
-                    sin(toRadian(coordinate.theta)))};
+    return Vec2{coordinate.r * cos(toRadian(coordinate.theta)), coordinate.r * sin(toRadian(coordinate.theta))};
 }
 
 inline PolarCoordinate toPolarCoordinate(const Orbit& orb) {
@@ -135,21 +232,6 @@ inline PolarCoordinate toPolarCoordinate(const Orbit& orb) {
 }
 
 inline Vec2 toVec2(const Orbit& orb) { return toVec2(toPolarCoordinate(orb)); }
-
-inline glm::vec3 CalculateObjectPos(Orbit& orbit) {
-    const double divider = 0.01;
-    Vec2 vec = toVec2(orbit);
-    return glm::vec3(vec.x / divider, 0, vec.y / divider);
-}
-
-inline glm::vec3 updatePos(Kinematics& objkin, Orbit& orb) {
-    return objkin.postion = CalculateObjectPos(orb);
-}
-
-
-
-
-
 }  // namespace bodies
 }  // namespace components
 }  // namespace common

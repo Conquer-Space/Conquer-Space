@@ -18,6 +18,7 @@
 
 #include "common/systems/actions/factoryconstructaction.h"
 #include "common/systems/economy/markethelpers.h"
+#include "common/systems/actions/shiplaunchaction.h"
 #include "common/util/utilnumberdisplay.h"
 
 // So that we can document in the future
@@ -72,7 +73,6 @@ void conquerspace::scripting::LoadFunctions(conquerspace::engine::Application& a
     REGISTER_FUNCTION("set_orbit", [&] (entt::entity orbital_entity, double distance, double theta,
                                             double eccentricity, double argument) {
         cqspt::Orbit &orb = universe.emplace<cqspt::Orbit>(orbital_entity, theta, distance, eccentricity, argument, 40);
-        universe.emplace<cqspt::Kinematics>(orbital_entity);
         cqspt::findPeriod(orb);
     });
 
@@ -180,14 +180,10 @@ void conquerspace::scripting::LoadFunctions(conquerspace::engine::Application& a
         universe.emplace<cqspb::Terrain>(planet, seed);
     });
 
-    REGISTER_FUNCTION("create_ship", [&](entt::entity civ, entt::entity orbit, entt::entity starsystem) {
-        entt::entity ship = universe.create();
-        universe.emplace<cqsps::Ship>(ship);
-        universe.emplace<cqspt::Kinematics>(ship);
-        // cqspt::Kinematics orb = universe.get<cqspt::Kinematics>(orbit);
-        // cqspt::updatePos(orb);
-        universe.get<cqspb::StarSystem>(starsystem).bodies.push_back(ship);
-        return ship;
+    REGISTER_FUNCTION("create_ship", [&](entt::entity civ, entt::entity orbit,
+                                                            entt::entity starsystem) {
+        return conquerspace::common::systems::actions::CreateShip(universe, civ, orbit,
+                                                                        starsystem);
     });
 
     REGISTER_FUNCTION("get_player", [&]() {
@@ -214,7 +210,7 @@ void conquerspace::scripting::LoadFunctions(conquerspace::engine::Application& a
 
     // Get population segments of a planet
     REGISTER_FUNCTION("get_name", [&](entt::entity entity) {
-        return universe.get<cqspc::Name>(entity);
+        return universe.get<cqspc::Name>(entity).name;
     });
 
     REGISTER_FUNCTION("push_event", [&](entt::entity entity, sol::table event_table) {

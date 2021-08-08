@@ -27,46 +27,31 @@ void conquerspace::common::systems::SysOrbit::DoSystem(components::Universe& uni
 
     auto bodies = universe.view<cqspt::Orbit>();
     for (entt::entity body : bodies) {
-        auto &orb = cqspt::updateOrbit(universe.get<cqspt::Orbit>(body));
-        cqspt::updatePos(universe.get<cqspt::Kinematics>(body), orb);
+        // Disable orbits for now
+        //auto &orb = cqspt::updateOrbit(universe.get<cqspt::Orbit>(body));
+        //cqspt::updatePos(universe.get<cqspt::Kinematics>(body), orb);
     }
 }
 
 int conquerspace::common::systems::SysOrbit::Interval() { return 1; }
 
-void conquerspace::common::systems::SysPath::DoSystem(
-    components::Universe& universe) {
+void conquerspace::common::systems::SysPath::DoSystem(components::Universe& universe) {
     namespace cqspc = conquerspace::common::components;
     namespace cqsps = conquerspace::common::components::ships;
     namespace cqspt = conquerspace::common::components::types;
 
-    auto bodies = universe.view<cqspt::MoveTarget>(entt::exclude<cqspt::Orbit>);
+    auto bodies = universe.view<cqspt::MoveTarget, cqspt::Position>(entt::exclude<cqspt::Orbit>);
     for (entt::entity body : bodies) {
-        cqspt::Kinematics& bodykin = universe.get<cqspt::Kinematics>(body);
-        cqspt::Kinematics& targetkin = universe.get<cqspt::Kinematics>(
-            universe.get<cqspt::MoveTarget>(body).targetent);
-
-        glm::vec3 path = targetkin.postion - bodykin.postion;
-        if (glm::distance(targetkin.postion, bodykin.postion) <
-            bodykin.topspeed) {
-            bodykin.postion = targetkin.postion;
-            bodykin.velocity = glm::vec3(0, 0, 0);
+        cqspt::Position& bodykin = universe.get<cqspt::Position>(body);
+        cqspt::Position targetkin = cqspt::toVec2(universe.get<cqspt::Orbit>(universe.get<cqspt::MoveTarget>(body).target));
+        cqspt::Vec2 path = targetkin - bodykin;
+        float velocity = .5f;
+        if (targetkin.distance(bodykin) < velocity) {
+            bodykin = targetkin;
         } else {
-            bodykin.velocity = bodykin.topspeed * glm::normalize(path);
+           bodykin += (velocity * path.normalize());
         }
-        cqspt::updatePos(universe.get<cqspt::Kinematics>(body));
     }
 }
 
 int conquerspace::common::systems::SysPath::Interval() { return 1; }
-
-void conquerspace::common::systems::SysMove::DoSystem(
-    components::Universe& universe) {
-    namespace cqspc = conquerspace::common::components;
-    namespace cqsps = conquerspace::common::components::ships;
-    namespace cqspt = conquerspace::common::components::types;
-}
-
-
-
-
