@@ -64,6 +64,11 @@ struct Vec2 {
     template<class T>
     constexpr Vec2(const T& v) : x(v.x), y(v.y) {}
 
+    template<class T>
+    constexpr operator T() const {
+        return T(this->x, this->y);
+    }
+
     constexpr Vec2& operator+=(const Vec2& v) {
         this->x += v.x;
         this->y += v.y;
@@ -127,6 +132,11 @@ struct Vec2 {
         return this->x == v.x && this->y == v.y;
     }
 
+    template<typename T>
+    bool operator==(const T& v) {
+        return this->x == v.x && this->y == v.y;
+    }
+
     template<class T>
     operator Vec2() {
         return T(this->x, this->y);
@@ -164,6 +174,11 @@ struct Vec2 {
     }
 
     static double angle(const Vec2& v) {
+        return atan2(v.y, v.x);
+    }
+
+    template<class T>
+    static double angle(const T& v) {
         return atan2(v.y, v.x);
     }
 };
