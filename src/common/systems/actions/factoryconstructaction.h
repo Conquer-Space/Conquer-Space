@@ -21,7 +21,7 @@
 #include "common/components/resource.h"
 #include "common/universe.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace systems {
 namespace actions {
@@ -35,7 +35,7 @@ namespace actions {
 /// <param name="builder"></param>
 /// <returns>The factory entity created, entt::null if it's not possible.</returns>
 entt::entity OrderConstructionFactory(
-    conquerspace::common::components::Universe& universe, entt::entity city,
+    cqsp::common::Universe& universe, entt::entity city,
     entt::entity recipe, int productivity, entt::entity builder);
 
 /// <summary>
@@ -46,20 +46,20 @@ entt::entity OrderConstructionFactory(
 /// <param name="recipe"></param>
 /// <param name="productivity"></param>
 /// <returns>The factory entity created</returns>
-entt::entity CreateFactory(conquerspace::common::components::Universe& universe,
+entt::entity CreateFactory(cqsp::common::Universe& universe,
     entt::entity city, entt::entity recipe, int productivity);
 
-conquerspace::common::components::ResourceLedger GetFactoryCost(
-    conquerspace::common::components::Universe& universe, entt::entity city,
+cqsp::common::components::ResourceLedger GetFactoryCost(
+    cqsp::common::Universe& universe, entt::entity city,
     entt::entity recipe, int productivity);
 
-entt::entity CreateMine(conquerspace::common::components::Universe& universe,
+entt::entity CreateMine(cqsp::common::Universe& universe,
                         entt::entity city, entt::entity good, int amount);
 
-conquerspace::common::components::ResourceLedger GetMineCost(
-    conquerspace::common::components::Universe& universe, entt::entity city,
+cqsp::common::components::ResourceLedger GetMineCost(
+    cqsp::common::Universe& universe, entt::entity city,
     entt::entity good, int amount);
 }  // namespace actions
 }  // namespace systems
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

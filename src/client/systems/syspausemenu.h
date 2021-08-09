@@ -18,12 +18,12 @@
 
 #include "client/systems/sysgui.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace client {
 namespace systems {
 class SysPauseMenu : public SysUserInterface {
  public:
-    explicit SysPauseMenu(conquerspace::engine::Application& app)
+    explicit SysPauseMenu(cqsp::engine::Application& app)
         : SysUserInterface(app) {}
 
     void Init();
@@ -36,4 +36,4 @@ class SysPauseMenu : public SysUserInterface {
 };
 }  // namespace systems
 }  // namespace client
-}  // namespace conquerspace
+}  // namespace cqsp

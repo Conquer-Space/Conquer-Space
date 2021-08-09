@@ -18,12 +18,12 @@
 
 #include "client/systems/sysgui.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace client {
 namespace systems {
 class SysCommand : public SysUserInterface {
  public:
-    explicit SysCommand(conquerspace::engine::Application& app)
+    explicit SysCommand(cqsp::engine::Application& app)
         : SysUserInterface(app) {}
 
     void Init();
@@ -39,4 +39,4 @@ class SysCommand : public SysUserInterface {
 };
 }  // namespace systems
 }  // namespace client
-}  // namespace conquerspace
+}  // namespace cqsp

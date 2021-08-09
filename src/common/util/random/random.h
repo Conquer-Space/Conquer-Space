@@ -16,7 +16,7 @@
 */
 #pragma once
 
-namespace conquerspace::common::util {
+namespace cqsp::common::util {
 class IRandom {
  public:
     IRandom(int _seed) : seed(_seed) {};

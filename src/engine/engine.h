@@ -16,11 +16,11 @@
 */
 #pragma once
 
-namespace conquerspace {
+namespace cqsp {
 namespace engine {
 class Application;
 class SceneManager;
 class Scene;
 class EmptyScene;
 }  // namespace engine
-}  // namespace conquerspace
+}  // namespace cqsp

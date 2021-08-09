@@ -29,7 +29,7 @@
 #include <pwd.h>
 #endif
 
-std::string conquerspace::engine::GetConquerSpacePath() {
+std::string cqsp::engine::GetcqspPath() {
     std::string directory = "";
 #ifdef _WIN32
     // Set log folder
@@ -46,7 +46,7 @@ std::string conquerspace::engine::GetConquerSpacePath() {
 #endif
     // Create folder
     auto filesystem = std::filesystem::path(directory);
-    filesystem /= "ConquerSpace";
+    filesystem /= "cqsp";
     // Create dirs, and be done with it
     if (!std::filesystem::exists(filesystem))
         std::filesystem::create_directories(filesystem);

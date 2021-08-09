@@ -22,7 +22,7 @@
 
 #include "common/components/resource.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace components {
 struct Market {
@@ -45,4 +45,4 @@ struct MarketCenter {
 };
 }  // namespace components
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

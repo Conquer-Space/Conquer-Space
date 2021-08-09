@@ -1,8 +1,8 @@
 #include "cqspgui.h"
 
 //namespace CQSPGui
-conquerspace::engine::Application* AppContext = nullptr;
-void CQSPGui::SetApplication(conquerspace::engine::Application* context) {
+cqsp::engine::Application* AppContext = nullptr;
+void CQSPGui::SetApplication(cqsp::engine::Application* context) {
     AppContext = context;
 }
 

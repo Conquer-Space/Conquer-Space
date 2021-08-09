@@ -28,7 +28,7 @@
 #include <string>
 #include <utility>
 
-void conquerspace::asset::LoadFont(Font &font, unsigned char *fontBuffer,
+void cqsp::asset::LoadFont(Font &font, unsigned char *fontBuffer,
                                    uint64_t size) {
     FT_Library ft;
     // All functions return a value different than 0 whenever an error occurred
@@ -105,7 +105,7 @@ void conquerspace::asset::LoadFont(Font &font, unsigned char *fontBuffer,
     glBindVertexArray(0);
 }
 
-void conquerspace::asset::RenderText(conquerspace::asset::ShaderProgram &shader,
+void cqsp::asset::RenderText(cqsp::asset::ShaderProgram &shader,
                                         Font &font, std::string text,
                                         float x, float y, float scale, glm::vec3 color) {
     // activate corresponding render state

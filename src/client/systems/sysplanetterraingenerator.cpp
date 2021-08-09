@@ -20,7 +20,7 @@
 
 #include <cmath>
 
-void conquerspace::client::systems::TerrainImageGenerator::GenerateTerrain(int octaves, int size) {
+void cqsp::client::systems::TerrainImageGenerator::GenerateTerrain(int octaves, int size) {
     noise::module::Perlin noise_module;
     noise_module.SetOctaveCount(octaves);
     noise_module.SetSeed(seed);
@@ -65,7 +65,7 @@ void conquerspace::client::systems::TerrainImageGenerator::GenerateTerrain(int o
     renderer.Render();
 }
 
-void conquerspace::client::systems::TerrainImageGenerator::ClearData() {
+void cqsp::client::systems::TerrainImageGenerator::ClearData() {
     height_map.ReclaimMem();
     albedo_map.ReclaimMem();
 }

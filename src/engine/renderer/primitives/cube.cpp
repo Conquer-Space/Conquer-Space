@@ -21,7 +21,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-void conquerspace::primitive::MakeCube(conquerspace::engine::Mesh& mesh) {
+void cqsp::primitive::MakeCube(cqsp::engine::Mesh& mesh) {
     float verticies[] = {
         // positions
         -1.0f,  1.0f, -1.0f,

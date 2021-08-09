@@ -23,8 +23,8 @@
 #include "common/components/name.h"
 #include "common/util/profiler.h"
 
-using conquerspace::client::systems::SysDebugMenu;
-using conquerspace::engine::Application;
+using cqsp::client::systems::SysDebugMenu;
+using cqsp::engine::Application;
 
 SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
     using std::string_view;
@@ -35,7 +35,7 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
     };
 
     auto entity_command = [](Application& app, const string_view& args, CommandOutput& input) {
-        using conquerspace::client::systems::MouseOverEntity;
+        using cqsp::client::systems::MouseOverEntity;
         entt::entity ent = app.GetUniverse().view<MouseOverEntity>().front();
         if (ent == entt::null) {
             input.push_back(fmt::format("Mouse is over null"));
@@ -55,7 +55,7 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
 
     auto entity_name = [](Application& app, const string_view& args, CommandOutput& input) {
         if (std::all_of(args.begin(), args.end(), ::isdigit)) {
-            namespace cqspc = conquerspace::common::components;
+            namespace cqspc = cqsp::common::components;
             entt::entity entity = static_cast<entt::entity>(atoi(args.data()));
             std::string name = "N/A";
             if (app.GetUniverse().all_of<cqspc::Name>(entity)) {

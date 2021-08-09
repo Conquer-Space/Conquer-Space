@@ -23,9 +23,9 @@
 #include "engine/application.h"
 
 int main(int argc, char* argv[]) {
-    conquerspace::engine::Application application;
+    cqsp::engine::Application application;
 
     // Set initial scene
-    application.SetScene<conquerspace::scene::LoadingScene>();
+    application.SetScene<cqsp::scene::LoadingScene>();
     application.run();
 }

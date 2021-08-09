@@ -31,10 +31,10 @@
 #include "common/systems/sysuniversegenerator.h"
 #include "common/scripting/luafunctions.h"
 
-conquerspace::scene::UniverseLoadingScene::UniverseLoadingScene(
-    conquerspace::engine::Application& app) : Scene(app) {}
+cqsp::scene::UniverseLoadingScene::UniverseLoadingScene(
+    cqsp::engine::Application& app) : Scene(app) {}
 
-void conquerspace::scene::UniverseLoadingScene::Init() {
+void cqsp::scene::UniverseLoadingScene::Init() {
     auto loading = [&]() {
         LoadUniverse();
     };
@@ -44,14 +44,14 @@ void conquerspace::scene::UniverseLoadingScene::Init() {
     thread->detach();
 }
 
-void conquerspace::scene::UniverseLoadingScene::Update(float deltaTime) {
+void cqsp::scene::UniverseLoadingScene::Update(float deltaTime) {
     if (m_completed_loading) {
         // Switch scene
-        GetApp().SetScene<conquerspace::scene::UniverseScene>();
+        GetApp().SetScene<cqsp::scene::UniverseScene>();
     }
 }
 
-void conquerspace::scene::UniverseLoadingScene::Ui(float deltaTime) {
+void cqsp::scene::UniverseLoadingScene::Ui(float deltaTime) {
     ImGui::SetNextWindowPos(
             ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
             ImGuiCond_Always, ImVec2(0.5f, 0.5f));
@@ -64,12 +64,12 @@ void conquerspace::scene::UniverseLoadingScene::Ui(float deltaTime) {
     ImGui::End();
 }
 
-void conquerspace::scene::UniverseLoadingScene::Render(float deltaTime) {}
+void cqsp::scene::UniverseLoadingScene::Render(float deltaTime) {}
 
-void LoadGoods(conquerspace::engine::Application& app) {
-    namespace cqspc = conquerspace::common::components;
-    conquerspace::asset::HjsonAsset* good_assets = app
-                .GetAssetManager().GetAsset<conquerspace::asset::HjsonAsset>("goods");
+void LoadGoods(cqsp::engine::Application& app) {
+    namespace cqspc = cqsp::common::components;
+    cqsp::asset::HjsonAsset* good_assets = app
+                .GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("goods");
     int assets_loaded = 0;
     for (int i = 0; i < good_assets->data.size(); i++) {
         Hjson::Value val = good_assets->data[i];
@@ -93,11 +93,11 @@ void LoadGoods(conquerspace::engine::Application& app) {
     SPDLOG_INFO("Loaded {} goods", assets_loaded);
 }
 
-void LoadRecipes(conquerspace::engine::Application& app) {
-    namespace cqspc = conquerspace::common::components;
+void LoadRecipes(cqsp::engine::Application& app) {
+    namespace cqspc = cqsp::common::components;
 
-    conquerspace::asset::HjsonAsset* recipe_asset = app
-                .GetAssetManager().GetAsset<conquerspace::asset::HjsonAsset>("recipes");
+    cqsp::asset::HjsonAsset* recipe_asset = app
+                .GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("recipes");
     for (int i = 0; i < recipe_asset->data.size(); i++) {
         Hjson::Value& val = recipe_asset->data[i];
 
@@ -121,28 +121,28 @@ void LoadRecipes(conquerspace::engine::Application& app) {
     }
 }
 
-void conquerspace::scene::UniverseLoadingScene::LoadUniverse() {
-    namespace cqspa = conquerspace::asset;
+void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
+    namespace cqspa = cqsp::asset;
     // Load goods
     LoadGoods(GetApp());
     LoadRecipes(GetApp());
 
     // Load scripts
     // Load lua functions
-    conquerspace::scripting::LoadFunctions(GetApp());
+    cqsp::scripting::LoadFunctions(GetApp());
     // Register data groups
     GetApp().GetScriptInterface().RegisterDataGroup("generators");
     GetApp().GetScriptInterface().RegisterDataGroup("events");
 
     // Process all scripts
-    conquerspace::asset::TextDirectoryAsset* script_list = GetApp().GetAssetManager()
-                            .GetAsset<conquerspace::asset::TextDirectoryAsset>("scripts");
+    cqsp::asset::TextDirectoryAsset* script_list = GetApp().GetAssetManager()
+                            .GetAsset<cqsp::asset::TextDirectoryAsset>("scripts");
     for (auto& text : script_list->data) {
         GetApp().GetScriptInterface().RunScript(text);
     }
 
     // Load universe
-    conquerspace::common::systems::universegenerator::ScriptUniverseGenerator
+    cqsp::common::systems::universegenerator::ScriptUniverseGenerator
                                                     script_generator(GetApp().GetScriptInterface());
 
     script_generator.Generate(GetApp().GetUniverse());

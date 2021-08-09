@@ -18,12 +18,12 @@
 
 #include "client/systems/sysgui.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace client {
 namespace systems {
 class SysStarSystemTree : public SysUserInterface {
  public:
-    explicit SysStarSystemTree(conquerspace::engine::Application& app)
+    explicit SysStarSystemTree(cqsp::engine::Application& app)
         : SysUserInterface(app) {}
 
     void Init();
@@ -35,4 +35,4 @@ class SysStarSystemTree : public SysUserInterface {
 };
 }  // namespace systems
 }  // namespace client
-}  // namespace conquerspace
+}  // namespace cqsp

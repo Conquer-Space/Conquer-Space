@@ -20,11 +20,11 @@
 
 #include "common/universe.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace systems {
 namespace economy {
-void AddParticipant(conquerspace::common::components::Universe& universe, entt::entity market, entt::entity entity);
+void AddParticipant(cqsp::common::Universe& universe, entt::entity market, entt::entity entity);
 }
 }
 }

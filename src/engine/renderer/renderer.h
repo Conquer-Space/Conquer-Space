@@ -22,7 +22,7 @@
 #include <glm/glm.hpp>
 #include "engine/renderer/renderable.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace engine {
 void Draw(Renderable &);
 
@@ -38,4 +38,4 @@ class BasicRenderer {
     void Draw();
 };
 }  // namespace engine
-}  // namespace conquerspace
+}  // namespace cqsp

@@ -22,9 +22,9 @@
 
 #include "common/util/profiler.h"
 
-using conquerspace::common::systems::SysFactory;
-void SysFactory::DoSystem(components::Universe& universe) {
-    namespace cqspc = conquerspace::common::components;
+using cqsp::common::systems::SysFactory;
+void SysFactory::DoSystem(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
     // Produce resources
     BEGIN_TIMED_BLOCK(Resource_gen);
     SysResourceGenerator(universe);
@@ -41,8 +41,8 @@ void SysFactory::DoSystem(components::Universe& universe) {
     END_TIMED_BLOCK(Production_sim);
 }
 
-void SysFactory::SysResourceGenerator(components::Universe& universe) {
-    namespace cqspc = conquerspace::common::components;
+void SysFactory::SysResourceGenerator(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
     auto view = universe.view<cqspc::ResourceGenerator, cqspc::ResourceStockpile>();
     for (auto [entity, production, stockpile] : view.each()) {
         // Make the resources, and dump to market
@@ -55,8 +55,8 @@ void SysFactory::SysResourceGenerator(components::Universe& universe) {
     }
 }
 
-void SysFactory::SysProduction(components::Universe& universe) {
-    namespace cqspc = conquerspace::common::components;
+void SysFactory::SysProduction(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
     auto view = universe.view<cqspc::Production, cqspc::ResourceConverter, cqspc::ResourceStockpile>();
     for (auto [entity, production, converter, stockpile] : view.each()) {
         // Make the resources, and dump to market
@@ -72,8 +72,8 @@ void SysFactory::SysProduction(components::Universe& universe) {
     }
 }
 
-void SysFactory::SysConsumption(components::Universe& universe) {
-    namespace cqspc = conquerspace::common::components;
+void SysFactory::SysConsumption(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
     auto consumption_view = universe.view<cqspc::ResourceConsumption, cqspc::MarketParticipant>();
     // Demand for next time
     for (auto [entity, consumption, participant] : consumption_view.each()) {
@@ -86,8 +86,8 @@ void SysFactory::SysConsumption(components::Universe& universe) {
     }
 }
 
-void SysFactory::SysFactoryDemandCreator(components::Universe& universe) {
-    namespace cqspc = conquerspace::common::components;
+void SysFactory::SysFactoryDemandCreator(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
     auto demand_view = universe.view<cqspc::ResourceConverter, cqspc::MarketParticipant>();
     // Demand for next time
     for (auto [entity, converter, participant] : demand_view.each()) {
@@ -102,8 +102,8 @@ void SysFactory::SysFactoryDemandCreator(components::Universe& universe) {
     }
 }
 
-void SysFactory::SysGoodSeller(components::Universe& universe) {
-    namespace cqspc = conquerspace::common::components;
+void SysFactory::SysGoodSeller(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
 
     // Sell all goods
     auto good_seller = universe.view<cqspc::ResourceStockpile, cqspc::MarketParticipant>();
@@ -119,8 +119,8 @@ void SysFactory::SysGoodSeller(components::Universe& universe) {
     }
 }
 
-void SysFactory::SysDemandResolver(components::Universe& universe) {
-    namespace cqspc = conquerspace::common::components;
+void SysFactory::SysDemandResolver(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
 
     // Process demand
     auto demand_processor_view = universe.view<cqspc::ResourceDemand, cqspc::MarketParticipant>();
@@ -147,8 +147,8 @@ void SysFactory::SysDemandResolver(components::Universe& universe) {
     }
 }
 
-void SysFactory::SysProductionStarter(components::Universe& universe) {
-    namespace cqspc = conquerspace::common::components;
+void SysFactory::SysProductionStarter(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
     // Gather resources for the next run, and signify if they want to produce
     auto production_view = universe.view<cqspc::ResourceConverter, cqspc::ResourceStockpile>();
     for (auto [entity, converter, stockpile] : production_view.each()) {

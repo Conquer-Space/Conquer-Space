@@ -16,7 +16,7 @@
 */
 #include "engine/renderer/renderable.h"
 
-void conquerspace::engine::Renderable::SetTexture(const std::string& name,
+void cqsp::engine::Renderable::SetTexture(const std::string& name,
                                                   int id,
                                                   asset::Texture* texture) {
     shaderProgram->UseProgram();
@@ -25,7 +25,7 @@ void conquerspace::engine::Renderable::SetTexture(const std::string& name,
     textures.push_back(texture);
 }
 
-void conquerspace::engine::Renderable::SetMVP(glm::mat4& model, glm::mat4& view,
+void cqsp::engine::Renderable::SetMVP(glm::mat4& model, glm::mat4& view,
                                               glm::mat4& projection) {
     shaderProgram->UseProgram();
     shaderProgram->setMat4("model", model);

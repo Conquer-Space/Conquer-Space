@@ -21,13 +21,13 @@
 #include "client/systems/sysgui.h"
 #include "engine/application.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace client {
 namespace systems {
 
 class SysTurnSaveWindow : public SysUserInterface {
  public:
-    explicit SysTurnSaveWindow(conquerspace::engine::Application& app)
+    explicit SysTurnSaveWindow(cqsp::engine::Application& app)
         : SysUserInterface(app) {}
 
     void Init();
@@ -44,4 +44,4 @@ class SysTurnSaveWindow : public SysUserInterface {
 };
 }  // namespace systems
 }  // namespace client
-}  // namespace conquerspace
+}  // namespace cqsp

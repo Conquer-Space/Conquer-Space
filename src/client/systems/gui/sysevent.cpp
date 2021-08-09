@@ -22,7 +22,7 @@
 #include "common/components/player.h"
 #include "engine/cqspgui.h"
 
-void conquerspace::client::systems::gui::SysEvent::Init() {
+void cqsp::client::systems::gui::SysEvent::Init() {
     GetApp().markdownConfig.tooltipCallback = [](ImGui::MarkdownTooltipCallbackData conf) {
         ImGui::BeginTooltip();
         ImGui::Text(std::string(conf.linkData.link, conf.linkData.linkLength).c_str());
@@ -30,17 +30,17 @@ void conquerspace::client::systems::gui::SysEvent::Init() {
     };
 }
 
-void conquerspace::client::systems::gui::SysEvent::DoUI(int delta_time) {
+void cqsp::client::systems::gui::SysEvent::DoUI(int delta_time) {
     auto events =
-        GetApp().GetUniverse().view<conquerspace::common::components::Player,
-                                            conquerspace::common::event::EventQueue>();
+        GetApp().GetUniverse().view<cqsp::common::components::Player,
+                                            cqsp::common::event::EventQueue>();
     for (auto [ent, queue] : events.each()) {
         if (queue.events.empty()) {
             continue;
         }
         // Halt the game
         GetApp().GetUniverse().DisableTick();
-        std::shared_ptr<conquerspace::common::event::Event> env = queue.events.front();
+        std::shared_ptr<cqsp::common::event::Event> env = queue.events.front();
         ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f,
                                        ImGui::GetIO().DisplaySize.y * 0.5f),
                                 ImGuiCond_Always, ImVec2(0.5f, 0.5f));
@@ -88,6 +88,6 @@ void conquerspace::client::systems::gui::SysEvent::DoUI(int delta_time) {
     }
 }
 
-void conquerspace::client::systems::gui::SysEvent::DoUpdate(int delta_time) {}
+void cqsp::client::systems::gui::SysEvent::DoUpdate(int delta_time) {}
 
-void conquerspace::client::systems::gui::SysEvent::FireEvent() {}
+void cqsp::client::systems::gui::SysEvent::FireEvent() {}

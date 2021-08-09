@@ -16,7 +16,7 @@
 */
 #pragma once
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace components {
 namespace types {
@@ -35,4 +35,4 @@ const double TWOPI = PI * 2;
 }  // namespace types
 }  // namespace components
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

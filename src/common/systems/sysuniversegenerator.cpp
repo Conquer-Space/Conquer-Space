@@ -38,12 +38,12 @@
 #include "common/systems/economy/markethelpers.h"
 
 
-void conquerspace::common::systems::universegenerator::ScriptUniverseGenerator::Generate(
-    conquerspace::common::components::Universe& universe) {
-    namespace cqspb = conquerspace::common::components::bodies;
-    namespace cqsps = conquerspace::common::components::ships;
-    namespace cqspt = conquerspace::common::components::types;
-    namespace cqspc = conquerspace::common::components;
+void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::Generate(
+    cqsp::common::Universe& universe) {
+    namespace cqspb = cqsp::common::components::bodies;
+    namespace cqsps = cqsp::common::components::ships;
+    namespace cqspt = cqsp::common::components::types;
+    namespace cqspc = cqsp::common::components;
 
     script_engine["goods"] = universe.goods;
     script_engine["recipes"] = universe.recipes;

@@ -18,7 +18,7 @@
 
 #include <entt/entt.hpp>
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace components {
 struct Organization {};
@@ -28,4 +28,4 @@ struct Civilization {
 };
 }  // namespace components
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

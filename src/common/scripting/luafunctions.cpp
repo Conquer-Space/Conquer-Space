@@ -24,14 +24,15 @@
 // So that we can document in the future
 #define REGISTER_FUNCTION(name, lambda) \
         script_engine.set_function(name, lambda)
-void conquerspace::scripting::LoadFunctions(conquerspace::engine::Application& app) {
-    conquerspace::common::components::Universe& universe = app.GetUniverse();
-    conquerspace::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
 
-    namespace cqspb = conquerspace::common::components::bodies;
-    namespace cqsps = conquerspace::common::components::ships;
-    namespace cqspt = conquerspace::common::components::types;
-    namespace cqspc = conquerspace::common::components;
+void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
+    cqsp::common::Universe& universe = app.GetUniverse();
+    cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
+
+    namespace cqspb = cqsp::common::components::bodies;
+    namespace cqsps = cqsp::common::components::ships;
+    namespace cqspt = cqsp::common::components::types;
+    namespace cqspc = cqsp::common::components;
 
     // Init civilization script
     REGISTER_FUNCTION("create_star_system", [&] () {
@@ -135,7 +136,7 @@ void conquerspace::scripting::LoadFunctions(conquerspace::engine::Application& a
 
     REGISTER_FUNCTION("create_factory", [&](entt::entity city, entt::entity recipe,
                                                                             float productivity) {
-        entt::entity factory = conquerspace::common::systems::actions::CreateFactory(universe,
+        entt::entity factory = cqsp::common::systems::actions::CreateFactory(universe,
                                                     city, recipe, productivity);
         // Factory will produce in the first tick
         universe.emplace<cqspc::Production>(factory);
@@ -159,11 +160,11 @@ void conquerspace::scripting::LoadFunctions(conquerspace::engine::Application& a
     });
 
     REGISTER_FUNCTION("attach_market", [&](entt::entity market_entity, entt::entity participant) {
-        conquerspace::common::systems::economy::AddParticipant(universe, market_entity, participant);
+        cqsp::common::systems::economy::AddParticipant(universe, market_entity, participant);
     });
 
     REGISTER_FUNCTION("to_human_string", [&](int64_t number) {
-        return conquerspace::util::LongToHumanString(number);
+        return cqsp::util::LongToHumanString(number);
     });
 
     REGISTER_FUNCTION("add_resource", [&](entt::entity storage,
@@ -173,7 +174,7 @@ void conquerspace::scripting::LoadFunctions(conquerspace::engine::Application& a
     });
 
     REGISTER_FUNCTION("create_mine", [&](entt::entity city, entt::entity resource, int amount, float productivity) {
-        return conquerspace::common::systems::actions::CreateMine(universe, city, resource, amount);
+        return cqsp::common::systems::actions::CreateMine(universe, city, resource, amount);
     });
 
     REGISTER_FUNCTION("create_terrain", [&](entt::entity planet, int seed) {
@@ -182,7 +183,7 @@ void conquerspace::scripting::LoadFunctions(conquerspace::engine::Application& a
 
     REGISTER_FUNCTION("create_ship", [&](entt::entity civ, entt::entity orbit,
                                                             entt::entity starsystem) {
-        return conquerspace::common::systems::actions::CreateShip(universe, civ, orbit,
+        return cqsp::common::systems::actions::CreateShip(universe, civ, orbit,
                                                                         starsystem);
     });
 
@@ -214,8 +215,8 @@ void conquerspace::scripting::LoadFunctions(conquerspace::engine::Application& a
     });
 
     REGISTER_FUNCTION("push_event", [&](entt::entity entity, sol::table event_table) {
-        auto& queue = universe.get_or_emplace<conquerspace::common::event::EventQueue>(entity);
-        auto event = std::make_shared<conquerspace::common::event::Event>();
+        auto& queue = universe.get_or_emplace<cqsp::common::event::EventQueue>(entity);
+        auto event = std::make_shared<cqsp::common::event::Event>();
         event->title = event_table["title"];
         SPDLOG_INFO("Parsing event \"{}\"", event->title);
         event->content = event_table["content"];
@@ -226,7 +227,7 @@ void conquerspace::scripting::LoadFunctions(conquerspace::engine::Application& a
                 if (action == sol::nil) {
                     continue;
                 }
-                auto event_result = std::make_shared<conquerspace::common::event::EventResult>();
+                auto event_result = std::make_shared<cqsp::common::event::EventResult>();
                 event_result->name = action["name"];
                 sol::optional<std::string> tooltip = action["tooltip"];
                 if (tooltip) {

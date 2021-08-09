@@ -25,12 +25,12 @@
 
 #include "client/systems/sysgui.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace client {
 namespace systems {
 class SysDebugMenu : public SysUserInterface {
  public:
-    explicit SysDebugMenu(conquerspace::engine::Application& app);
+    explicit SysDebugMenu(cqsp::engine::Application& app);
 
     void Init();
     void DoUI(int delta_time);
@@ -50,7 +50,7 @@ class SysDebugMenu : public SysUserInterface {
     std::vector<std::string> items;
 
     typedef std::vector<std::string> CommandOutput;
-    typedef std::function<void(conquerspace::engine::Application& app,
+    typedef std::function<void(cqsp::engine::Application& app,
                            const std::string_view& args,
                            CommandOutput& input)> DebugCommand_t;
     std::map<std::string, std::pair<std::string, DebugCommand_t>, std::less<>> commands;
@@ -61,4 +61,4 @@ class SysDebugMenu : public SysUserInterface {
 };
 }  // namespace systems
 }  // namespace client
-}  // namespace conquerspace
+}  // namespace cqsp

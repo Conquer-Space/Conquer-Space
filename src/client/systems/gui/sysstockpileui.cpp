@@ -6,11 +6,11 @@
 #include "common/util/utilnumberdisplay.h"
 #include "engine/gui.h"
 
-using conquerspace::common::components::Universe;
-using conquerspace::common::components::Identifier;
-using conquerspace::util::LongToHumanString;
-using conquerspace::common::components::ResourceLedger;
-void conquerspace::client::systems::DrawLedgerTable(const std::string &name, const Universe &universe, const ResourceLedger& ledger) {
+using cqsp::common::Universe;
+using cqsp::common::components::Identifier;
+using cqsp::util::LongToHumanString;
+using cqsp::common::components::ResourceLedger;
+void cqsp::client::systems::DrawLedgerTable(const std::string &name, const Universe &universe, const ResourceLedger& ledger) {
     if (ledger.empty()) {
         ImGui::Text("Empty ledger");
         return;

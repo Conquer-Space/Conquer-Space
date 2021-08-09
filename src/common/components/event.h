@@ -22,7 +22,7 @@
 
 #include <sol/sol.hpp>
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace event {
 struct EventResult {
@@ -44,4 +44,4 @@ struct EventQueue {
 };
 }  // namespace event
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

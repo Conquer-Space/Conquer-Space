@@ -19,13 +19,13 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-namespace cqspe = conquerspace::engine;
-void conquerspace::primitive::MakeTexturedPaneMesh(cqspe::Renderable& renderable) {
+namespace cqspe = cqsp::engine;
+void cqsp::primitive::MakeTexturedPaneMesh(cqspe::Renderable& renderable) {
     renderable.mesh = new cqspe::Mesh();
     MakeTexturedPaneMesh(*renderable.mesh);
 }
 
-void conquerspace::primitive::MakeTexturedPaneMesh(conquerspace::engine::Mesh& mesh) {
+void cqsp::primitive::MakeTexturedPaneMesh(cqsp::engine::Mesh& mesh) {
     float vertices[] = {
         // positions // texture coords
         1.0f, -1.0f, 0.0f, 1.0f, 1.0f,  // top right
@@ -67,7 +67,7 @@ void conquerspace::primitive::MakeTexturedPaneMesh(conquerspace::engine::Mesh& m
     mesh.RenderType = GL_TRIANGLES;
 }
 
-void conquerspace::primitive::MakeTexturedPaneMesh(cqspe::Mesh& mesh, bool mirrored) {
+void cqsp::primitive::MakeTexturedPaneMesh(cqspe::Mesh& mesh, bool mirrored) {
         float vertices[] = {
         // positions // texture coords
         1.0f, -1.0f, 0.0f, 1.0f, 0.0f,  // top right

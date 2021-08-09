@@ -18,6 +18,6 @@
 
 #include "common/util/random/stdrandom.h"
 
-conquerspace::common::components::Universe::Universe() {
-    random = std::make_unique<conquerspace::common::util::StdRandom>(42);
+cqsp::common::Universe::Universe() {
+    random = std::make_unique<cqsp::common::util::StdRandom>(42);
 }

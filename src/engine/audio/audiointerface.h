@@ -29,7 +29,7 @@
 #include "engine/audio/audioasset.h"
 #include "engine/audio/iaudiointerface.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace engine {
 namespace audio {
 struct AudioChannel {
@@ -90,7 +90,7 @@ struct AudioChannel {
         return length;
     }
 
-    void SetBuffer(conquerspace::asset::AudioAsset *buffer);
+    void SetBuffer(cqsp::asset::AudioAsset *buffer);
     float length = 0;
 
     ~AudioChannel() {
@@ -114,16 +114,16 @@ class AudioInterface : public IAudioInterface {
     void RequestPlayAudio();
     void SetMusicVolume(float volume);
 
-    void AddAudioClip(const std::string &key, conquerspace::asset::AudioAsset *asset);
+    void AddAudioClip(const std::string &key, cqsp::asset::AudioAsset *asset);
     void PlayAudioClip(const std::string &key);
-    void PlayAudioClip(conquerspace::asset::AudioAsset *asset, int channel);
+    void PlayAudioClip(cqsp::asset::AudioAsset *asset, int channel);
     void SetChannelVolume(int channel, float gain);
 
     ~AudioInterface() {}
 
     std::thread worker_thread;
-    std::unique_ptr<conquerspace::asset::AudioAsset> LoadWav(std::ifstream &input);
-    std::unique_ptr<conquerspace::asset::AudioAsset> music = nullptr;
+    std::unique_ptr<cqsp::asset::AudioAsset> LoadWav(std::ifstream &input);
+    std::unique_ptr<cqsp::asset::AudioAsset> music = nullptr;
 
     std::shared_ptr<spdlog::logger> logger;
 
@@ -135,11 +135,11 @@ class AudioInterface : public IAudioInterface {
     void PrintInformation();
     void InitListener();
     void InitALContext();
-    std::map<std::string, conquerspace::asset::AudioAsset *> assets;
+    std::map<std::string, cqsp::asset::AudioAsset *> assets;
     std::vector<std::unique_ptr<AudioChannel>> channels;
 
     float music_volume = 0;
 };
 }  // namespace audio
 }  // namespace engine
-}  // namespace conquerspace
+}  // namespace cqsp

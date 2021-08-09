@@ -16,7 +16,7 @@
 */
 #pragma once
 
-namespace conquerspace {
+namespace cqsp {
 namespace engine {
 class Window {
    public:
@@ -46,4 +46,4 @@ class Window {
     virtual bool WindowSizeChanged() = 0;
 };
 }  // namespace engine
-}  // namespace conquerspace
+}  // namespace cqsp

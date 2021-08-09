@@ -22,7 +22,7 @@
 #include "spdlog/spdlog.h"
 #include "glm/glm.hpp"
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace components {
 namespace types {
@@ -213,11 +213,11 @@ inline void findPeriod(Orbit& orb) {
 }
 
 inline types::radian toRadian(types::degree theta) {
-    return theta * (conquerspace::common::components::types::PI / 180);
+    return theta * (cqsp::common::components::types::PI / 180);
 }
 
 inline types::degree toDegree(types::radian theta) {
-    return theta * (180 / conquerspace::common::components::types::PI);
+    return theta * (180 / cqsp::common::components::types::PI);
 }
 
 inline Vec2 toVec2(const PolarCoordinate& coordinate) {
@@ -235,4 +235,4 @@ inline Vec2 toVec2(const Orbit& orb) { return toVec2(toPolarCoordinate(orb)); }
 }  // namespace bodies
 }  // namespace components
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

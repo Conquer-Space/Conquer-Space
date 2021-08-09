@@ -22,11 +22,11 @@
 #include "engine/renderer/primitives/pane.h"
 #include "engine/renderer/text.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace scene {
-class MainMenuScene : public conquerspace::engine::Scene{
+class MainMenuScene : public cqsp::engine::Scene{
  public:
-    explicit MainMenuScene(conquerspace::engine::Application& app);
+    explicit MainMenuScene(cqsp::engine::Application& app);
     ~MainMenuScene() { }
 
     void Init();
@@ -35,8 +35,8 @@ class MainMenuScene : public conquerspace::engine::Scene{
     void Render(float deltaTime);
 
  private:
-    conquerspace::asset::Texture* m_texture;
-    conquerspace::asset::TextAsset* m_credits;
+    cqsp::asset::Texture* m_texture;
+    cqsp::asset::TextAsset* m_credits;
     bool m_credits_window = false;
     bool m_save_game_window = false;
     bool m_new_game_window = false;
@@ -45,7 +45,7 @@ class MainMenuScene : public conquerspace::engine::Scene{
     float ratio, ratio2;
     float width, height;
 
-    conquerspace::engine::BasicRenderer renderer;
+    cqsp::engine::BasicRenderer renderer;
 };
 }  // namespace scene
-}  // namespace conquerspace
+}  // namespace cqsp

@@ -26,7 +26,7 @@
 
 auto lua_logger = spdlog::stdout_color_mt("lua");
 
-using conquerspace::scripting::ScriptInterface;
+using cqsp::scripting::ScriptInterface;
 
 ScriptInterface::ScriptInterface() {
     open_libraries(sol::lib::base, sol::lib::table, sol::lib::math);

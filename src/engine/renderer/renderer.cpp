@@ -22,10 +22,10 @@
 #include <algorithm>
 #include <vector>
 
-void conquerspace::engine::Draw(Renderable &renderable) {
+void cqsp::engine::Draw(Renderable &renderable) {
     renderable.shaderProgram->UseProgram();
     int i = 0;
-    for (std::vector<conquerspace::asset::Texture*>::iterator it = renderable.textures.begin();
+    for (std::vector<cqsp::asset::Texture*>::iterator it = renderable.textures.begin();
                                                         it != renderable.textures.end(); ++it) {
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture((*it)->texture_type, (*it)->id);
@@ -45,11 +45,11 @@ void conquerspace::engine::Draw(Renderable &renderable) {
     glActiveTexture(GL_TEXTURE0);
 }
 
-conquerspace::engine::BasicRendererObject conquerspace::engine::MakeRenderable() {
-    return std::make_shared<conquerspace::engine::Renderable>();
+cqsp::engine::BasicRendererObject cqsp::engine::MakeRenderable() {
+    return std::make_shared<cqsp::engine::Renderable>();
 }
 
-void conquerspace::engine::BasicRenderer::Draw() {
+void cqsp::engine::BasicRenderer::Draw() {
     // Then iterate through them and render
     for (auto renderable : renderables) {
         renderable->shaderProgram->UseProgram();
@@ -57,7 +57,7 @@ void conquerspace::engine::BasicRenderer::Draw() {
         renderable->shaderProgram->setMat4("view", view);
         renderable->shaderProgram->setMat4("projection", projection);
         int i = 0;
-        for (std::vector<conquerspace::asset::Texture*>::iterator it = renderable->textures.begin();
+        for (std::vector<cqsp::asset::Texture*>::iterator it = renderable->textures.begin();
                                                     it != renderable->textures.end(); ++it) {
             glActiveTexture(GL_TEXTURE0 + i);
             glBindTexture((*it)->texture_type, (*it)->id);

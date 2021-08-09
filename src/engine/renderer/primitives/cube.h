@@ -18,8 +18,8 @@
 
 #include "engine/renderer/mesh.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace primitive {
-void MakeCube(conquerspace::engine::Mesh& mesh);
+void MakeCube(cqsp::engine::Mesh& mesh);
 }
 }

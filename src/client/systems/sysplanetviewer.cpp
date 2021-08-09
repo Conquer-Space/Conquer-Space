@@ -49,8 +49,8 @@
 #include "engine/gui.h"
 #include "engine/cqspgui.h"
 
-void conquerspace::client::systems::SysPlanetInformation::DisplayPlanet() {
-    namespace cqspc = conquerspace::common::components;
+void cqsp::client::systems::SysPlanetInformation::DisplayPlanet() {
+    namespace cqspc = cqsp::common::components;
     if (!to_see) {
         return;
     }
@@ -82,22 +82,22 @@ void conquerspace::client::systems::SysPlanetInformation::DisplayPlanet() {
     ImGui::End();
 }
 
-void conquerspace::client::systems::SysPlanetInformation::Init() {}
+void cqsp::client::systems::SysPlanetInformation::Init() {}
 
-void conquerspace::client::systems::SysPlanetInformation::DoUI(int delta_time) {
+void cqsp::client::systems::SysPlanetInformation::DoUI(int delta_time) {
     DisplayPlanet();
 }
 
-void conquerspace::client::systems::SysPlanetInformation::DoUpdate(int delta_time) {
+void cqsp::client::systems::SysPlanetInformation::DoUpdate(int delta_time) {
     // If clicked on a planet, go to the planet
     // Get the thing
-    namespace cqspb = conquerspace::common::components::bodies;
-    selected_planet = conquerspace::scene::GetCurrentViewingPlanet(GetApp());
+    namespace cqspb = cqsp::common::components::bodies;
+    selected_planet = cqsp::scene::GetCurrentViewingPlanet(GetApp());
     entt::entity mouse_over = GetApp().GetUniverse().
-                        view<conquerspace::client::systems::MouseOverEntity>().front();
+                        view<cqsp::client::systems::MouseOverEntity>().front();
     if (!ImGui::GetIO().WantCaptureMouse &&
                 GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) &&
-                mouse_over == selected_planet && !conquerspace::scene::IsGameHalted() &&
+                mouse_over == selected_planet && !cqsp::scene::IsGameHalted() &&
         !GetApp().MouseDragged()) {
         to_see = true;
         SPDLOG_INFO("Switched entity");
@@ -107,8 +107,8 @@ void conquerspace::client::systems::SysPlanetInformation::DoUpdate(int delta_tim
     }
 }
 
-void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel() {
-    namespace cqspc = conquerspace::common::components;
+void cqsp::client::systems::SysPlanetInformation::CityInformationPanel() {
+    namespace cqspc = cqsp::common::components;
     if (CQSPGui::ArrowButton("cityinformationpanel", ImGuiDir_Left)) {
         view_mode = ViewMode::PLANET_VIEW;
     }
@@ -122,7 +122,7 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
         int size = GetApp().GetUniverse().get<cqspc::Settlement>(selected_city_entity).population.size();
         for (auto b : GetApp().GetUniverse().get<cqspc::Settlement>(selected_city_entity).population) {
             auto& bad_var_name = GetApp().GetUniverse().get<cqspc::PopulationSegment>(b);
-            ImGui::TextFmt("Population: {}",conquerspace::util::LongToHumanString(bad_var_name.population));
+            ImGui::TextFmt("Population: {}",cqsp::util::LongToHumanString(bad_var_name.population));
         }
     } else {
         ImGui::TextFmt("No population");
@@ -155,8 +155,8 @@ void conquerspace::client::systems::SysPlanetInformation::CityInformationPanel()
     }
 }
 
-void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel() {
-    namespace cqspc = conquerspace::common::components;
+void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
+    namespace cqspc = cqsp::common::components;
     if (!GetApp().GetUniverse().all_of<cqspc::Habitation>(selected_planet)) {
         return;
     }
@@ -207,7 +207,7 @@ void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel
             pop_size += GetApp().GetUniverse().get<cqspc::PopulationSegment>(population).population;
         }
     }
-    ImGui::TextFmt("Population: {} ({})", conquerspace::util::LongToHumanString(pop_size), pop_size);
+    ImGui::TextFmt("Population: {} ({})", cqsp::util::LongToHumanString(pop_size), pop_size);
     ImGui::Separator();
 
     // List cities
@@ -232,8 +232,8 @@ void conquerspace::client::systems::SysPlanetInformation::PlanetInformationPanel
     ImGui::EndChild();
 }
 
-void conquerspace::client::systems::SysPlanetInformation::ResourcesTab() {
-    namespace cqspc = conquerspace::common::components;
+void cqsp::client::systems::SysPlanetInformation::ResourcesTab() {
+    namespace cqspc = cqsp::common::components;
     // Consolidate resources
     auto &city_industry = GetApp().GetUniverse().get<cqspc::Industry>(selected_city_entity);
     cqspc::ResourceLedger resources;
@@ -248,8 +248,8 @@ void conquerspace::client::systems::SysPlanetInformation::ResourcesTab() {
     DrawLedgerTable("cityresources", GetApp().GetUniverse(), resources);
 }
 
-void conquerspace::client::systems::SysPlanetInformation::IndustryTab() {
-    namespace cqspc = conquerspace::common::components;
+void cqsp::client::systems::SysPlanetInformation::IndustryTab() {
+    namespace cqspc = cqsp::common::components;
     auto& city_industry =
         GetApp().GetUniverse().get<cqspc::Industry>(selected_city_entity);
 
@@ -283,14 +283,14 @@ void conquerspace::client::systems::SysPlanetInformation::IndustryTab() {
     ImGui::EndChild();
 }
 
-void conquerspace::client::systems::SysPlanetInformation::IndustryTabServicesChild() {
+void cqsp::client::systems::SysPlanetInformation::IndustryTabServicesChild() {
     ImGui::Text("Services Sector");
     // List all the stuff it produces
     ImGui::Text("GDP:");
 }
 
-void conquerspace::client::systems::SysPlanetInformation::IndustryTabManufacturingChild() {
-    namespace cqspc = conquerspace::common::components;
+void cqsp::client::systems::SysPlanetInformation::IndustryTabManufacturingChild() {
+    namespace cqspc = cqsp::common::components;
     auto& city_industry =
         GetApp().GetUniverse().get<cqspc::Industry>(selected_city_entity);
     ImGui::Text("Manufactuing Sector");
@@ -324,8 +324,8 @@ void conquerspace::client::systems::SysPlanetInformation::IndustryTabManufacturi
     DrawLedgerTable("industryinput", GetApp().GetUniverse(), input_resources);
 }
 
-void conquerspace::client::systems::SysPlanetInformation::IndustryTabMiningChild() {
-    namespace cqspc = conquerspace::common::components;
+void cqsp::client::systems::SysPlanetInformation::IndustryTabMiningChild() {
+    namespace cqspc = cqsp::common::components;
     auto& city_industry = GetApp().GetUniverse().get<cqspc::Industry>(selected_city_entity);
     ImGui::Text("Mining Sector");
     ImGui::Text("GDP:");
@@ -350,15 +350,15 @@ void conquerspace::client::systems::SysPlanetInformation::IndustryTabMiningChild
     DrawLedgerTable("mineproduction", GetApp().GetUniverse(), resources);
 }
 
-void conquerspace::client::systems::SysPlanetInformation::IndustryTabAgricultureChild() {
+void cqsp::client::systems::SysPlanetInformation::IndustryTabAgricultureChild() {
     ImGui::Text("Agriculture Sector");
     ImGui::Text("GDP:");
 }
 
-void conquerspace::client::systems::SysPlanetInformation::DemographicsTab() {
-    namespace cqspc = conquerspace::common::components;
-    using conquerspace::common::components::Settlement;
-    using conquerspace::common::components::PopulationSegment;
+void cqsp::client::systems::SysPlanetInformation::DemographicsTab() {
+    namespace cqspc = cqsp::common::components;
+    using cqsp::common::components::Settlement;
+    using cqsp::common::components::PopulationSegment;
 
     auto& settlement = GetApp().GetUniverse().get<Settlement>(selected_city_entity);
     for (auto &b : settlement.population) {
@@ -370,8 +370,8 @@ void conquerspace::client::systems::SysPlanetInformation::DemographicsTab() {
     // Then do demand and other things.
 }
 
-void conquerspace::client::systems::SysPlanetInformation::ConstructionTab() {
-    namespace cqspc = conquerspace::common::components;
+void cqsp::client::systems::SysPlanetInformation::ConstructionTab() {
+    namespace cqspc = cqsp::common::components;
     ImGui::Text("Construction");
     ImGui::Text("Construct factories");
 
@@ -389,8 +389,8 @@ void conquerspace::client::systems::SysPlanetInformation::ConstructionTab() {
     }
 }
 
-void conquerspace::client::systems::SysPlanetInformation::FactoryConstruction() {
-    namespace cqspc = conquerspace::common::components;
+void cqsp::client::systems::SysPlanetInformation::FactoryConstruction() {
+    namespace cqspc = cqsp::common::components;
     auto recipes = GetApp().GetUniverse().view<cqspc::Recipe>();
     static int selected_recipe_index = -1;
     static entt::entity selected_recipe = entt::null;
@@ -423,14 +423,14 @@ void conquerspace::client::systems::SysPlanetInformation::FactoryConstruction() 
         // When construction takes time in the future, then do the costs.
         // So first charge it to the market
         entt::entity city_market = GetApp().GetUniverse().get<cqspc::MarketCenter>(selected_planet).market;
-        auto cost = conquerspace::common::systems::actions::GetFactoryCost(
+        auto cost = cqsp::common::systems::actions::GetFactoryCost(
             GetApp().GetUniverse(), selected_city_entity, selected_recipe, prod);
         GetApp().GetUniverse().get<cqspc::Market>(city_market).demand += cost;
         GetApp().GetUniverse().get<cqspc::ResourceStockpile>(city_market) -= cost;
         // Buy things on the market
-        entt::entity factory = conquerspace::common::systems::actions::CreateFactory(
+        entt::entity factory = cqsp::common::systems::actions::CreateFactory(
             GetApp().GetUniverse(), selected_city_entity, selected_recipe, prod);
-        conquerspace::common::systems::economy::AddParticipant(
+        cqsp::common::systems::economy::AddParticipant(
                                                     GetApp().GetUniverse(), city_market, factory);
         // Enable confirmation window
     }
@@ -438,14 +438,14 @@ void conquerspace::client::systems::SysPlanetInformation::FactoryConstruction() 
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
         DrawLedgerTable("building_cost_tooltip", GetApp().GetUniverse(),
-                    conquerspace::common::systems::actions::GetFactoryCost(
+                    cqsp::common::systems::actions::GetFactoryCost(
                             GetApp().GetUniverse(), selected_city_entity, selected_recipe, prod));
         ImGui::EndTooltip();
     }
 }
 
-void conquerspace::client::systems::SysPlanetInformation::MineConstruction() {
-    namespace cqspc = conquerspace::common::components;
+void cqsp::client::systems::SysPlanetInformation::MineConstruction() {
+    namespace cqspc = cqsp::common::components;
     ImGui::BeginChild("mineconstructionlist", ImVec2(0, 150), true, window_flags);
     auto recipes = GetApp().GetUniverse().view<cqspc::Good, cqspc::Mineral>();
     static int selected_good_index = -1;
@@ -480,27 +480,27 @@ void conquerspace::client::systems::SysPlanetInformation::MineConstruction() {
         // When construction takes time in the future, then do the costs.
         // So first charge it to the market
         entt::entity city_market = GetApp().GetUniverse().get<cqspc::MarketCenter>(selected_planet).market;
-        auto cost = conquerspace::common::systems::actions::GetFactoryCost(
+        auto cost = cqsp::common::systems::actions::GetFactoryCost(
             GetApp().GetUniverse(), selected_city_entity, selected_good, prod);
         GetApp().GetUniverse().get<cqspc::Market>(city_market).demand += cost;
         GetApp().GetUniverse().get<cqspc::ResourceStockpile>(city_market) -= cost;
         // Buy things on the market
-        entt::entity factory = conquerspace::common::systems::actions::CreateMine(
+        entt::entity factory = cqsp::common::systems::actions::CreateMine(
             GetApp().GetUniverse(), selected_city_entity, selected_good, prod);
-        conquerspace::common::systems::economy::AddParticipant(GetApp().GetUniverse(), city_market, factory);
+        cqsp::common::systems::economy::AddParticipant(GetApp().GetUniverse(), city_market, factory);
     }
 
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
         DrawLedgerTable("building_cost_tooltip", GetApp().GetUniverse(),
-                    conquerspace::common::systems::actions::GetMineCost(
+                    cqsp::common::systems::actions::GetMineCost(
                             GetApp().GetUniverse(), selected_city_entity, selected_good, prod));
         ImGui::EndTooltip();
     }
 }
 
-void conquerspace::client::systems::SysPlanetInformation::MineInformationPanel() {
-    namespace cqspc = conquerspace::common::components;
+void cqsp::client::systems::SysPlanetInformation::MineInformationPanel() {
+    namespace cqspc = cqsp::common::components;
     if(mine_list_panel) {
         auto &city_industry = GetApp().GetUniverse().get<cqspc::Industry>(selected_city_entity);
         ImGui::Begin(fmt::format("Mines of {}", selected_city_entity).c_str(), &mine_list_panel);
@@ -531,8 +531,8 @@ void conquerspace::client::systems::SysPlanetInformation::MineInformationPanel()
     }
 }
 
-void conquerspace::client::systems::SysPlanetInformation::FactoryInformationPanel() {
-    namespace cqspc = conquerspace::common::components;
+void cqsp::client::systems::SysPlanetInformation::FactoryInformationPanel() {
+    namespace cqspc = cqsp::common::components;
     if(factory_list_panel) {
         auto &city_industry = GetApp().GetUniverse().get<cqspc::Industry>(selected_city_entity);
         ImGui::Begin(fmt::format("Factories of {}", selected_city_entity).c_str(), &factory_list_panel);
@@ -563,15 +563,15 @@ void conquerspace::client::systems::SysPlanetInformation::FactoryInformationPane
     }
 }
 
-void conquerspace::client::systems::SysPlanetInformation::SpacePortTab() {
-    namespace cqspc = conquerspace::common::components;
-    namespace cqspt = conquerspace::common::components::types;
-    namespace cqsps = conquerspace::common::components::ships;
-    namespace cqspb = conquerspace::common::components::bodies;
+void cqsp::client::systems::SysPlanetInformation::SpacePortTab() {
+    namespace cqspc = cqsp::common::components;
+    namespace cqspt = cqsp::common::components::types;
+    namespace cqsps = cqsp::common::components::ships;
+    namespace cqspb = cqsp::common::components::bodies;
 
 if (ImGui::Button("Launch!")) {
         entt::entity star_system = GetApp().GetUniverse().get<cqspc::bodies::Body>(selected_planet).star_system;
-        conquerspace::common::systems::actions::CreateShip(
+        cqsp::common::systems::actions::CreateShip(
         GetApp().GetUniverse(), entt::null, selected_planet, star_system);
     }
 }

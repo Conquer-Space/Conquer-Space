@@ -23,12 +23,12 @@
 #include "engine/renderer/texture.h"
 #include "engine/renderer/mesh.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace engine {
 class Renderable {
  public:
     Mesh* mesh;
-    conquerspace::asset::ShaderProgram* shaderProgram;
+    cqsp::asset::ShaderProgram* shaderProgram;
     std::vector<asset::Texture*> textures;
     glm::mat4 model;
 
@@ -38,4 +38,4 @@ class Renderable {
     int z = 0;
 };
 }  // namespace engine
-}  // namespace conquerspace
+}  // namespace cqsp

@@ -29,21 +29,21 @@
 #include "engine/gui.h"
 #include "common/scripting/scripting.h"
 
-conquerspace::scene::LoadingScene::LoadingScene(
-    conquerspace::engine::Application& app)
-    : conquerspace::engine::Scene(app) {
+cqsp::scene::LoadingScene::LoadingScene(
+    cqsp::engine::Application& app)
+    : cqsp::engine::Scene(app) {
     m_done_loading = false;
     percentage = 0;
 }
 
-void conquerspace::scene::LoadingScene::Init() {
+void cqsp::scene::LoadingScene::Init() {
     auto loading = [&]() {
         SPDLOG_INFO("Loading resources");
         LoadResources();
         // Load audio
-        auto hjson = GetApp().GetAssetManager().GetAsset<conquerspace::asset::HjsonAsset>("ui_sounds");
+        auto hjson = GetApp().GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("ui_sounds");
         for (auto element : hjson->data) {
-            auto audio_asset = GetApp().GetAssetManager().GetAsset<conquerspace::asset::AudioAsset>(element.second);
+            auto audio_asset = GetApp().GetAssetManager().GetAsset<cqsp::asset::AudioAsset>(element.second);
             GetApp().GetAudioInterface().AddAudioClip(element.first, audio_asset);
         }
     };
@@ -52,7 +52,7 @@ void conquerspace::scene::LoadingScene::Init() {
     thread->detach();
 }
 
-void conquerspace::scene::LoadingScene::Update(float deltaTime) {
+void cqsp::scene::LoadingScene::Update(float deltaTime) {
     while (assetLoader.QueueHasItems()) {
         assetLoader.BuildNextAsset();
     }
@@ -60,11 +60,11 @@ void conquerspace::scene::LoadingScene::Update(float deltaTime) {
         // Load font after all the shaders are done
         LoadFont();
         // Set main menu scene
-        GetApp().SetScene<conquerspace::scene::MainMenuScene>();
+        GetApp().SetScene<cqsp::scene::MainMenuScene>();
     }
 }
 
-void conquerspace::scene::LoadingScene::Ui(float deltaTime) {
+void cqsp::scene::LoadingScene::Ui(float deltaTime) {
     ImGui::SetNextWindowPos(
             ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
             ImGuiCond_Always, ImVec2(0.5f, 0.5f));
@@ -77,9 +77,9 @@ void conquerspace::scene::LoadingScene::Ui(float deltaTime) {
     ImGui::End();
 }
 
-void conquerspace::scene::LoadingScene::Render(float deltaTime) { }
+void cqsp::scene::LoadingScene::Render(float deltaTime) { }
 
-void conquerspace::scene::LoadingScene::LoadResources() {
+void cqsp::scene::LoadingScene::LoadResources() {
     // Loading goes here
     std::ifstream assetLibrary("../data/core/assets.hjson");
 
@@ -90,17 +90,17 @@ void conquerspace::scene::LoadingScene::LoadResources() {
     m_done_loading = true;
 }
 
-void conquerspace::scene::LoadingScene::LoadFont() {
-    conquerspace::asset::ShaderProgram* fontshader = new asset::ShaderProgram(*GetApp()
+void cqsp::scene::LoadingScene::LoadFont() {
+    cqsp::asset::ShaderProgram* fontshader = new asset::ShaderProgram(*GetApp()
         .GetAssetManager()
-        .GetAsset<conquerspace::asset::Shader>("fontvertexshader"),
+        .GetAsset<cqsp::asset::Shader>("fontvertexshader"),
         *GetApp()
         .GetAssetManager()
-        .GetAsset<conquerspace::asset::Shader>("fontfragshader"));
+        .GetAsset<cqsp::asset::Shader>("fontfragshader"));
 
-    conquerspace::asset::Font* font = GetApp()
+    cqsp::asset::Font* font = GetApp()
         .GetAssetManager()
-        .GetAsset<conquerspace::asset::Font>("defaultfont");
+        .GetAsset<cqsp::asset::Font>("defaultfont");
 
     glm::mat4 projection =
         glm::ortho(0.0f, static_cast<float>(GetApp().GetWindowWidth()), 0.0f,

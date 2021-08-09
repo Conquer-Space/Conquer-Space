@@ -30,11 +30,11 @@
 #include "engine/renderer/renderer.h"
 #include "common/simulation.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace scene {
-class UniverseScene : public conquerspace::engine::Scene {
+class UniverseScene : public cqsp::engine::Scene {
  public:
-    explicit UniverseScene(conquerspace::engine::Application& app);
+    explicit UniverseScene(cqsp::engine::Application& app);
     ~UniverseScene() {
         delete system_renderer;
     }
@@ -52,10 +52,10 @@ class UniverseScene : public conquerspace::engine::Scene {
     }
 
  private:
-    conquerspace::engine::Renderable sphere;
-    conquerspace::engine::Renderable sky;
-    conquerspace::engine::Renderable planetDisp;
-    conquerspace::engine::Renderable sun;
+    cqsp::engine::Renderable sphere;
+    cqsp::engine::Renderable sky;
+    cqsp::engine::Renderable planetDisp;
+    cqsp::engine::Renderable sun;
 
     float x = 0, y = 0;
 
@@ -65,23 +65,23 @@ class UniverseScene : public conquerspace::engine::Scene {
     entt::entity player;
     entt::entity selected_planet = entt::null;
 
-    conquerspace::common::components::Civilization* player_civ;
-    conquerspace::common::components::bodies::StarSystem* star_system;
+    cqsp::common::components::Civilization* player_civ;
+    cqsp::common::components::bodies::StarSystem* star_system;
 
-    conquerspace::client::systems::SysStarSystemRenderer* system_renderer;
+    cqsp::client::systems::SysStarSystemRenderer* system_renderer;
 
-    std::shared_ptr<conquerspace::common::systems::simulation::Simulation> simulation;
+    std::shared_ptr<cqsp::common::systems::simulation::Simulation> simulation;
 
     bool to_show_planet_window = false;
 
-    std::vector<std::unique_ptr<conquerspace::client::systems::SysUserInterface>> user_interfaces;
+    std::vector<std::unique_ptr<cqsp::client::systems::SysUserInterface>> user_interfaces;
 };
 
-void SeePlanet(conquerspace::engine::Application&, entt::entity);
-void SeeStarSystem(conquerspace::engine::Application&, entt::entity);
-entt::entity GetCurrentViewingPlanet(conquerspace::engine::Application&);
+void SeePlanet(cqsp::engine::Application&, entt::entity);
+void SeeStarSystem(cqsp::engine::Application&, entt::entity);
+entt::entity GetCurrentViewingPlanet(cqsp::engine::Application&);
 // Halts all other things
 void SetGameHalted(bool b);
 bool IsGameHalted();
 }  // namespace scene
-}  // namespace conquerspace
+}  // namespace cqsp

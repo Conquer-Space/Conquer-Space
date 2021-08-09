@@ -31,7 +31,7 @@
 #include "engine/renderer/renderer.h"
 #include "engine/application.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace client {
 namespace systems {
 /*
@@ -50,8 +50,8 @@ struct RenderingPlanet {};
  */
 class SysStarSystemRenderer {
  public:
-    SysStarSystemRenderer(conquerspace::common::components::Universe &,
-                          conquerspace::engine::Application &);
+    SysStarSystemRenderer(cqsp::common::Universe &,
+                          cqsp::engine::Application &);
     void Initialize();
     void OnTick();
     void Render();
@@ -74,14 +74,14 @@ class SysStarSystemRenderer {
  private:
     entt::entity m_star_system = entt::null;
     entt::entity m_viewing_entity = entt::null;
-    conquerspace::common::components::Universe &m_universe;
-    conquerspace::engine::Application &m_app;
+    cqsp::common::Universe &m_universe;
+    cqsp::engine::Application &m_app;
 
-    conquerspace::engine::Renderable planet;
-    conquerspace::engine::Renderable sky;
-    conquerspace::engine::Renderable planet_circle;
-    conquerspace::engine::Renderable ship_overlay;
-    conquerspace::engine::Renderable sun;
+    cqsp::engine::Renderable planet;
+    cqsp::engine::Renderable sky;
+    cqsp::engine::Renderable planet_circle;
+    cqsp::engine::Renderable ship_overlay;
+    cqsp::engine::Renderable sun;
 
     glm::vec3 cam_pos;
     glm::vec3 cam_up = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -107,7 +107,7 @@ class SysStarSystemRenderer {
     glm::vec3 CalculateMouseRay(const glm::vec3 &ray_nds);
     float GetWindowRatio();
 
-    conquerspace::asset::Texture* GenerateTexture(unsigned int, noise::utils::Image&);
+    cqsp::asset::Texture* GenerateTexture(unsigned int, noise::utils::Image&);
     // How much to scale the the star system.
     const double divider = 0.01;
 
@@ -127,4 +127,4 @@ class SysStarSystemRenderer {
 };
 }  // namespace systems
 }  // namespace client
-}  // namespace conquerspace
+}  // namespace cqsp

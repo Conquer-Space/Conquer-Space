@@ -21,13 +21,13 @@
 #include "client/systems/sysgui.h"
 #include "engine/application.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace client {
 namespace systems {
 
 class SysPlanetInformation : public SysUserInterface {
  public:
-    explicit SysPlanetInformation(conquerspace::engine::Application& app) : SysUserInterface(app) {}
+    explicit SysPlanetInformation(cqsp::engine::Application& app) : SysUserInterface(app) {}
     void DisplayPlanet();
 
     entt::entity selected_city_entity = entt::null;
@@ -62,4 +62,4 @@ class SysPlanetInformation : public SysUserInterface {
 };
 }  // namespace systems
 }  // namespace client
-}  // namespace conquerspace
+}  // namespace cqsp

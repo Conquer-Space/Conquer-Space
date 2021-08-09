@@ -18,7 +18,7 @@
 
 #include "common/components/resource.h"
 
-using conquerspace::common::components::ResourceLedger;
+using cqsp::common::components::ResourceLedger;
 
 TEST(Common_ResourceLedger, ResourceLedgerComparison) {
     ResourceLedger first, second;

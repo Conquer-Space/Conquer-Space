@@ -43,7 +43,7 @@
 #include "engine/paths.h"
 #include "engine/cqspgui.h"
 
-namespace conquerspace::engine {
+namespace cqsp::engine {
 void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id,
                             GLenum severity, GLsizei length,
                             const char* message, const void* userParam) {
@@ -326,15 +326,15 @@ class GLWindow : public Window {
 GLFWwindow* window(Window* window) {
     return reinterpret_cast<GLWindow*>(window)->window;
 }
-}  // namespace conquerspace::engine
+}  // namespace cqsp::engine
 
-int conquerspace::engine::Application::init() {
+int cqsp::engine::Application::init() {
     LoggerInit();
     LogInfo();
     GlInit();
 
     // Init audio
-    m_audio_interface = new conquerspace::engine::audio::AudioInterface();
+    m_audio_interface = new cqsp::engine::audio::AudioInterface();
     m_audio_interface->Initialize();
     // Set option things
     m_audio_interface->SetMusicVolume(m_client_options.GetOptions()["audio"]["music"]);
@@ -362,13 +362,13 @@ int conquerspace::engine::Application::init() {
     std::shared_ptr<Scene> initial_scene = std::make_shared<EmptyScene>(*this);
     m_scene_manager.SetInitialScene(initial_scene);
 
-    m_script_interface = std::make_unique<conquerspace::scripting::ScriptInterface>();
-    m_universe = std::make_unique<conquerspace::common::components::Universe>();
+    m_script_interface = std::make_unique<cqsp::scripting::ScriptInterface>();
+    m_universe = std::make_unique<cqsp::common::Universe>();
     m_script_interface->Init();
     return 0;
 }
 
-int conquerspace::engine::Application::destroy() {
+int cqsp::engine::Application::destroy() {
     // Delete scene
     m_scene_manager.GetScene().reset();
     // Clear assets
@@ -394,7 +394,7 @@ int conquerspace::engine::Application::destroy() {
     return 0;
 }
 
-conquerspace::engine::Application::Application() {
+cqsp::engine::Application::Application() {
     std::ifstream config_path(m_client_options.GetDefaultLocation());
     if (config_path.good()) {
         m_client_options.LoadOptions(config_path);
@@ -408,7 +408,7 @@ conquerspace::engine::Application::Application() {
     full_screen = static_cast<bool>(m_client_options.GetOptions()["full_screen"]);
 }
 
-void conquerspace::engine::Application::run() {
+void cqsp::engine::Application::run() {
     // Main loop
     int code = init();
     fps = 0;
@@ -468,15 +468,15 @@ void conquerspace::engine::Application::run() {
     destroy();
 }
 
-bool conquerspace::engine::Application::ShouldExit() {
+bool cqsp::engine::Application::ShouldExit() {
     return !glfwWindowShouldClose(window(m_window));
 }
 
-void conquerspace::engine::Application::ExitApplication() {
+void cqsp::engine::Application::ExitApplication() {
     glfwSetWindowShouldClose(window(m_window), true);
 }
 
-void conquerspace::engine::Application::DrawText(const std::string& text,
+void cqsp::engine::Application::DrawText(const std::string& text,
                                                  float x, float y) {
     if (fontShader != nullptr && m_font != nullptr) {
         glm::mat4 projection =
@@ -484,14 +484,14 @@ void conquerspace::engine::Application::DrawText(const std::string& text,
                        static_cast<float>(GetWindowHeight()));
         fontShader->UseProgram();
         fontShader->setMat4("projection", projection);
-        conquerspace::asset::RenderText(*fontShader, *m_font, text, x, y, 16,
+        cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, 16,
                                         glm::vec3(1.f, 1.f, 1.f));
     }
 }
 
-double conquerspace::engine::Application::GetTime() { return glfwGetTime(); }
+double cqsp::engine::Application::GetTime() { return glfwGetTime(); }
 
-void conquerspace::engine::Application::InitFonts() {
+void cqsp::engine::Application::InitFonts() {
     Hjson::Value fontDatabase;
     Hjson::DecoderOptions decOpt;
     decOpt.comments = false;
@@ -524,7 +524,7 @@ void conquerspace::engine::Application::InitFonts() {
     markdownConfig.headingFormats[2] = {h3font, true};
 }
 
-void conquerspace::engine::Application::SetIcon() {
+void cqsp::engine::Application::SetIcon() {
     GLFWimage images[1];
     images[0].pixels = stbi_load(("../data/" + icon_path).c_str(),
                                  &images[0].width, &images[0].height, 0, 4);
@@ -532,7 +532,7 @@ void conquerspace::engine::Application::SetIcon() {
     stbi_image_free(images[0].pixels);
 }
 
-void conquerspace::engine::Application::GlInit() {
+void cqsp::engine::Application::GlInit() {
     m_window = new GLWindow();
     m_window->InitWindow(m_client_options.GetOptions()["window"]["width"], m_client_options.GetOptions()["window"]["height"]);
 
@@ -546,9 +546,9 @@ void conquerspace::engine::Application::GlInit() {
     SPDLOG_INFO(" --- GL information ---");
 }
 
-void conquerspace::engine::Application::LoggerInit() {
+void cqsp::engine::Application::LoggerInit() {
     // Get path
-    properties["data"] = GetConquerSpacePath();
+    properties["data"] = GetcqspPath();
     std::filesystem::path log_folder =
         std::filesystem::path(properties["data"]) / "logs";
     // Make logs folder
@@ -575,7 +575,7 @@ void conquerspace::engine::Application::LoggerInit() {
     spdlog::set_pattern("[%T.%e] [%^%l%$] [%n] [%s:%#] %v");
 }
 
-void conquerspace::engine::Application::LogInfo() {
+void cqsp::engine::Application::LogInfo() {
     SPDLOG_INFO("Conquer Space {} {}", CQSP_VERSION_STRING, GIT_INFO);
     SPDLOG_INFO("Platform: {}", PLATFORM_NAME);
     SPDLOG_INFO("Compiled {} {}", __DATE__, __TIME__);
@@ -584,11 +584,11 @@ void conquerspace::engine::Application::LogInfo() {
 #endif
 }
 
-void conquerspace::engine::Application::SetWindowDimensions(int width, int height) {
+void cqsp::engine::Application::SetWindowDimensions(int width, int height) {
     m_window->SetWindowSize(width, height);
 }
 
-void conquerspace::engine::Application::SetFullScreen(bool screen) {
+void cqsp::engine::Application::SetFullScreen(bool screen) {
     if (screen) {
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowMonitor(window(m_window), glfwGetPrimaryMonitor(), 0, 0,
@@ -603,16 +603,16 @@ void conquerspace::engine::Application::SetFullScreen(bool screen) {
     }
 }
 
-void conquerspace::engine::SceneManager::SetInitialScene(std::shared_ptr<Scene>& scene) {
+void cqsp::engine::SceneManager::SetInitialScene(std::shared_ptr<Scene>& scene) {
     m_scene = std::move(scene);
 }
 
-void conquerspace::engine::SceneManager::SetScene(std::shared_ptr<Scene>& scene) {
+void cqsp::engine::SceneManager::SetScene(std::shared_ptr<Scene>& scene) {
     m_next_scene = std::move(scene);
     m_switch = true;
 }
 
-void conquerspace::engine::SceneManager::SwitchScene() {
+void cqsp::engine::SceneManager::SwitchScene() {
     m_scene = std::move(m_next_scene);
     SPDLOG_TRACE("Initializing scene");
     m_scene->Init();
@@ -620,7 +620,7 @@ void conquerspace::engine::SceneManager::SwitchScene() {
     m_switch = false;
 }
 
-std::shared_ptr<conquerspace::engine::Scene>
-conquerspace::engine::SceneManager::GetScene() {
+std::shared_ptr<cqsp::engine::Scene>
+cqsp::engine::SceneManager::GetScene() {
     return m_scene;
 }

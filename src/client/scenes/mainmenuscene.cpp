@@ -36,35 +36,35 @@
 #include "client/systems/sysoptionswindow.h"
 #include "common/version.h"
 
-conquerspace::scene::MainMenuScene::MainMenuScene(conquerspace::engine::Application& app)
-    : conquerspace::engine::Scene(app) { }
+cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app)
+    : cqsp::engine::Scene(app) { }
 
-void conquerspace::scene::MainMenuScene::Init() {
+void cqsp::scene::MainMenuScene::Init() {
     m_texture = GetApp()
         .GetAssetManager()
-        .GetAsset<conquerspace::asset::Texture>("cqspbanner");
+        .GetAsset<cqsp::asset::Texture>("cqspbanner");
 
     m_credits = GetApp()
                     .GetAssetManager()
-                    .GetAsset<conquerspace::asset::TextAsset>("credits");
+                    .GetAsset<cqsp::asset::TextAsset>("credits");
 
-    conquerspace::engine::BasicRendererObject splashscreen =
-        conquerspace::engine::MakeRenderable();
-    conquerspace::engine::BasicRendererObject titleBanner =
-        conquerspace::engine::MakeRenderable();
+    cqsp::engine::BasicRendererObject splashscreen =
+        cqsp::engine::MakeRenderable();
+    cqsp::engine::BasicRendererObject titleBanner =
+        cqsp::engine::MakeRenderable();
 
-    conquerspace::primitive::MakeTexturedPaneMesh(*splashscreen);
-    conquerspace::primitive::MakeTexturedPaneMesh(*titleBanner);
+    cqsp::primitive::MakeTexturedPaneMesh(*splashscreen);
+    cqsp::primitive::MakeTexturedPaneMesh(*titleBanner);
 
-    conquerspace::asset::Texture* earthrise_texture =
+    cqsp::asset::Texture* earthrise_texture =
         GetApp()
         .GetAssetManager()
-        .GetAsset<conquerspace::asset::Texture>("earthrise");
+        .GetAsset<cqsp::asset::Texture>("earthrise");
 
-    conquerspace::asset::Texture* asset2 =
+    cqsp::asset::Texture* asset2 =
         GetApp()
         .GetAssetManager()
-        .GetAsset<conquerspace::asset::Texture>("title");
+        .GetAsset<cqsp::asset::Texture>("title");
 
     // Create new shader program
     asset::ShaderProgram* program =
@@ -100,9 +100,9 @@ void conquerspace::scene::MainMenuScene::Init() {
     renderer.projection = mat;
 }
 
-void conquerspace::scene::MainMenuScene::Update(float deltaTime) {}
+void cqsp::scene::MainMenuScene::Update(float deltaTime) {}
 
-void conquerspace::scene::MainMenuScene::Ui(float deltaTime) {
+void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
     float winWidth = width;
     float winHeight = height;
     ImGui::SetNextWindowPos(ImVec2(GetApp().GetWindowWidth() / 2 - winWidth / 2,
@@ -165,7 +165,7 @@ void conquerspace::scene::MainMenuScene::Ui(float deltaTime) {
             ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
         if (CQSPGui::DefaultButton("New Game")) {
             // Switch scene
-            GetApp().SetScene<conquerspace::scene::UniverseLoadingScene>();
+            GetApp().SetScene<cqsp::scene::UniverseLoadingScene>();
         }
         ImGui::End();
     }
@@ -189,11 +189,11 @@ void conquerspace::scene::MainMenuScene::Ui(float deltaTime) {
     }
 
     if (m_options_window) {
-        conquerspace::client::systems::ShowOptionsWindow(&m_options_window, GetApp());
+        cqsp::client::systems::ShowOptionsWindow(&m_options_window, GetApp());
     }
 }
 
-void conquerspace::scene::MainMenuScene::Render(float deltaTime) {
+void cqsp::scene::MainMenuScene::Render(float deltaTime) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

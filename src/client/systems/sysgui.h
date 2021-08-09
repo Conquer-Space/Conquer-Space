@@ -18,23 +18,23 @@
 
 #include "engine/application.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace client {
 namespace systems {
 class SysUserInterface {
  public:
-    explicit SysUserInterface(conquerspace::engine::Application &);
+    explicit SysUserInterface(cqsp::engine::Application &);
     virtual void Init() = 0;
     virtual void DoUI(int delta_time) = 0;
     virtual void DoUpdate(int delta_time) = 0;
 
-    conquerspace::engine::Application &GetApp() { return m_app; }
+    cqsp::engine::Application &GetApp() { return m_app; }
 
     ImGuiWindowFlags window_flags = 0;
 
  private:
-    conquerspace::engine::Application &m_app;
+    cqsp::engine::Application &m_app;
 };
 }  // namespace systems
 }  // namespace client
-}  // namespace conquerspace
+}  // namespace cqsp

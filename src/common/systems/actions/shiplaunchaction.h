@@ -20,12 +20,12 @@
 
 #include "common/universe.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace systems {
 namespace actions {
-entt::entity CreateShip(conquerspace::common::components::Universe &universe, entt::entity civ, entt::entity orbit, entt::entity starsystem);
+entt::entity CreateShip(cqsp::common::Universe &universe, entt::entity civ, entt::entity orbit, entt::entity starsystem);
 }
 }  // namespace systems
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

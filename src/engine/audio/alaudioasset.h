@@ -7,7 +7,7 @@
 
 #include "engine/audio/audioasset.h"
 
-namespace conquerspace::asset {
+namespace cqsp::asset {
 class ALAudioAsset : public AudioAsset {
  public:
     ALAudioAsset() {
@@ -31,4 +31,4 @@ class ALAudioAsset : public AudioAsset {
 };
 
 std::unique_ptr<AudioAsset> LoadOgg(std::ifstream& input);
-}  // namespace conquerspace::asset
+}  // namespace cqsp::asset

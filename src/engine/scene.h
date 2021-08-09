@@ -19,7 +19,7 @@
 #include "engine/application.h"
 #include "engine/engine.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace engine {
 class Scene {
  public:
@@ -46,4 +46,4 @@ class EmptyScene : public Scene {
     void Render(float deltaTime);
 };
 }  // namespace engine
-}  // namespace conquerspace
+}  // namespace cqsp

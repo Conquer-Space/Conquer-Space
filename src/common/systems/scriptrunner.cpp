@@ -21,15 +21,15 @@
 #include <vector>
 #include <string>
 
-conquerspace::common::systems::SysEventScriptRunner::SysEventScriptRunner(
-    conquerspace::common::components::Universe &_universe,
+cqsp::common::systems::SysEventScriptRunner::SysEventScriptRunner(
+    cqsp::common::Universe &_universe,
     scripting::ScriptInterface &interface) : universe(_universe), m_script_interface(interface) {
         sol::optional<std::vector<sol::table>> optional = m_script_interface["events"]["data"];
         events = *optional;
     // Add functions and stuff
 }
 
-void conquerspace::common::systems::SysEventScriptRunner::ScriptEngine() {
+void cqsp::common::systems::SysEventScriptRunner::ScriptEngine() {
     m_script_interface["date"] = universe.date.GetDate();
     for (auto &a : events) {
         sol::protected_function_result result = a["on_tick"](a);
@@ -37,7 +37,7 @@ void conquerspace::common::systems::SysEventScriptRunner::ScriptEngine() {
     }
 }
 
-conquerspace::common::systems::SysEventScriptRunner::~SysEventScriptRunner() {
+cqsp::common::systems::SysEventScriptRunner::~SysEventScriptRunner() {
     // So it doesn't crash when we delete this
     for (auto& evet : events) {
         evet.abandon();

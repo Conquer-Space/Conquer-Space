@@ -37,11 +37,11 @@
 #include "common/components/movement.h"
 #include "common/components/units.h"
 
-using conquerspace::common::systems::simulation::Simulation;
-using conquerspace::common::components::Universe;
+using cqsp::common::systems::simulation::Simulation;
+using cqsp::common::Universe;
 Simulation::Simulation(Universe &_universe,scripting::ScriptInterface &script_interface) :
     m_universe(_universe), script_runner(_universe, script_interface) {
-    namespace cqspcs = conquerspace::common::systems;
+    namespace cqspcs = cqsp::common::systems;
     AddSystem<cqspcs::SysPopulationGrowth>();
     AddSystem<cqspcs::SysPopulationConsumption>();
     AddSystem<cqspcs::SysFactory>();
@@ -49,13 +49,13 @@ Simulation::Simulation(Universe &_universe,scripting::ScriptInterface &script_in
     AddSystem<cqspcs::SysPath>();
 }
 
-void conquerspace::common::systems::simulation::Simulation::tick() {
+void cqsp::common::systems::simulation::Simulation::tick() {
     m_universe.DisableTick();
     m_universe.date.IncrementDate();
     // Get previous tick spacing
-    namespace cqspc = conquerspace::common::components;
-    namespace cqsps = conquerspace::common::components::ships;
-    namespace cqspt = conquerspace::common::components::types;
+    namespace cqspc = cqsp::common::components;
+    namespace cqsps = cqsp::common::components::ships;
+    namespace cqspt = cqsp::common::components::types;
 
     BEGIN_TIMED_BLOCK(Game_Loop);
     BEGIN_TIMED_BLOCK(ScriptEngine);
