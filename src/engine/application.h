@@ -155,7 +155,6 @@ class Application {
     void SetFullScreen(bool screen);
 
  private:
-
     void InitFonts();
 
     void SetIcon();

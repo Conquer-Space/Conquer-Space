@@ -44,6 +44,54 @@
 #include "engine/cqspgui.h"
 
 namespace cqsp::engine {
+void ParseType(GLenum type) {
+    switch (type) {
+        case GL_DEBUG_TYPE_ERROR:
+            SPDLOG_ERROR("Type: Error");
+            break;
+        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+            SPDLOG_ERROR("Type: Deprecated Behaviour");
+            break;
+        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+            SPDLOG_ERROR("Type: Undefined Behaviour");
+            break;
+        case GL_DEBUG_TYPE_PORTABILITY:
+            SPDLOG_ERROR("Type: Portability");
+            break;
+        case GL_DEBUG_TYPE_PERFORMANCE:
+            SPDLOG_ERROR("Type: Performance");
+            break;
+        case GL_DEBUG_TYPE_MARKER:
+            SPDLOG_ERROR("Type: Marker");
+            break;
+        case GL_DEBUG_TYPE_PUSH_GROUP:
+            SPDLOG_ERROR("Type: Push Group");
+            break;
+        case GL_DEBUG_TYPE_POP_GROUP:
+            SPDLOG_ERROR("Type: Pop Group");
+            break;
+        case GL_DEBUG_TYPE_OTHER:
+            SPDLOG_ERROR("Type: Other");
+            break;
+    }
+}
+
+void ParseSeverity(GLenum severity) {
+    switch (severity) {
+        case GL_DEBUG_SEVERITY_HIGH:
+            SPDLOG_ERROR("Severity: high");
+            break;
+        case GL_DEBUG_SEVERITY_MEDIUM:
+            SPDLOG_ERROR("Severity: medium");
+            break;
+        case GL_DEBUG_SEVERITY_LOW:
+            SPDLOG_ERROR("Severity: low");
+            break;
+        case GL_DEBUG_SEVERITY_NOTIFICATION:
+            SPDLOG_ERROR("Severity: notification");
+            break;
+    }
+}
 void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id,
                             GLenum severity, GLsizei length,
                             const char* message, const void* userParam) {
@@ -72,50 +120,9 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id,
             SPDLOG_ERROR("Source: Other");
             break;
 
-        switch (type) {
-            case GL_DEBUG_TYPE_ERROR:
-                SPDLOG_ERROR("Type: Error");
-                break;
-            case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
-                SPDLOG_ERROR("Type: Deprecated Behaviour");
-                break;
-            case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
-                SPDLOG_ERROR("Type: Undefined Behaviour");
-                break;
-            case GL_DEBUG_TYPE_PORTABILITY:
-                SPDLOG_ERROR("Type: Portability");
-                break;
-            case GL_DEBUG_TYPE_PERFORMANCE:
-                SPDLOG_ERROR("Type: Performance");
-                break;
-            case GL_DEBUG_TYPE_MARKER:
-                SPDLOG_ERROR("Type: Marker");
-                break;
-            case GL_DEBUG_TYPE_PUSH_GROUP:
-                SPDLOG_ERROR("Type: Push Group");
-                break;
-            case GL_DEBUG_TYPE_POP_GROUP:
-                SPDLOG_ERROR("Type: Pop Group");
-                break;
-            case GL_DEBUG_TYPE_OTHER:
-                SPDLOG_ERROR("Type: Other");
-                break;
-        }
+        ParseType(type);
 
-        switch (severity) {
-            case GL_DEBUG_SEVERITY_HIGH:
-                SPDLOG_ERROR("Severity: high");
-                break;
-            case GL_DEBUG_SEVERITY_MEDIUM:
-                SPDLOG_ERROR("Severity: medium");
-                break;
-            case GL_DEBUG_SEVERITY_LOW:
-                SPDLOG_ERROR("Severity: low");
-                break;
-            case GL_DEBUG_SEVERITY_NOTIFICATION:
-                SPDLOG_ERROR("Severity: notification");
-                break;
-        }
+        ParseSeverity(severity);
     }
 }
 

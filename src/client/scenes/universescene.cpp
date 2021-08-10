@@ -96,50 +96,8 @@ void cqsp::scene::UniverseScene::Init() {
 }
 
 void cqsp::scene::UniverseScene::Update(float deltaTime) {
-    if (!ImGui::GetIO().WantCaptureKeyboard && !game_halted) {
-        if (GetApp().ButtonIsHeld(GLFW_KEY_A)) {
-            x += (deltaTime * 10);
-        }
-        if (GetApp().ButtonIsHeld(GLFW_KEY_D)) {
-            x -= (deltaTime * 10);
-        }
-        if (GetApp().ButtonIsHeld(GLFW_KEY_W)) {
-            y += (deltaTime * 10);
-        }
-        if (GetApp().ButtonIsHeld(GLFW_KEY_S)) {
-            y -= (deltaTime * 10);
-        }
-    }
-
-    double deltaX = previous_mouseX - GetApp().GetMouseX();
-    double deltaY = previous_mouseY - GetApp().GetMouseY();
-    if (!ImGui::GetIO().WantCaptureMouse && !game_halted) {
-        if (system_renderer->scroll + GetApp().GetScrollAmount() * 3 > 1.5) {
-            system_renderer->scroll += GetApp().GetScrollAmount() * 3;
-        }
-
-        if (GetApp().MouseButtonIsHeld(GLFW_MOUSE_BUTTON_LEFT)) {
-            system_renderer->view_x += deltaX/GetApp().GetWindowWidth()*3.1415*4;
-            system_renderer->view_y -= deltaY/GetApp().GetWindowHeight()*3.1415*4;
-
-            if (glm::degrees(system_renderer->view_y) > 89.f) {
-                system_renderer->view_y = glm::radians(89.f);
-            }
-            if (glm::degrees(system_renderer->view_y) < -89.f) {
-                system_renderer->view_y = glm::radians(-89.f);
-            }
-        }
-
-        previous_mouseX = GetApp().GetMouseX();
-        previous_mouseY = GetApp().GetMouseY();
-
-        // If clicks on object, go to the planet
-        entt::entity ent = GetApp().GetUniverse()
-            .view<cqsp::client::systems::MouseOverEntity>().front();
-        if (GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) && ent != entt::null && !GetApp().MouseDragged()) {
-            // Then go to the object
-            SeePlanet(GetApp(), ent);
-        }
+    if (!game_halted) {
+        system_renderer->Update();
     }
 
     // Check for last tick
@@ -151,6 +109,7 @@ void cqsp::scene::UniverseScene::Update(float deltaTime) {
 
     GetApp().GetUniverse().clear<cqsp::client::systems::MouseOverEntity>();
     system_renderer->GetMouseOnObject(GetApp().GetMouseX(), GetApp().GetMouseY());
+
     for (auto& ui : user_interfaces) {
         if (game_halted) {
             ui->window_flags = ImGuiWindowFlags_NoInputs;
@@ -165,28 +124,11 @@ void cqsp::scene::UniverseScene::Ui(float deltaTime) {
     for (auto& ui : user_interfaces) {
         ui->DoUI(deltaTime);
     }
-
-    /*int size = 20;
-    auto draw = ImGui::GetForegroundDrawList();
-    for (int x = 0; x < GetApplication().GetWindowWidth(); x+=size) {
-        for (int y = 0; y < GetApplication().GetWindowHeight(); y+=size) {
-            ImVec2 vec(x, y);
-            if (system_renderer->GetMouseOnObject(x, y) != entt::null) {
-                draw->AddRectFilled(vec, ImVec2(x + 1, y + 1),
-                                    IM_COL32(255, 0, 0, 255));
-            }
-        }
-    }*/
 }
 
 void cqsp::scene::UniverseScene::Render(float deltaTime) {
     glEnable(GL_MULTISAMPLE);
     system_renderer->Render();
-}
-
-void cqsp::scene::SeePlanet(cqsp::engine::Application& app, entt::entity ent) {
-    app.GetUniverse().clear<cqsp::client::systems::RenderingPlanet>();
-    app.GetUniverse().emplace<cqsp::client::systems::RenderingPlanet>(ent);
 }
 
 void cqsp::scene::SeeStarSystem(cqsp::engine::Application& app, entt::entity ent) {
@@ -196,6 +138,11 @@ void cqsp::scene::SeeStarSystem(cqsp::engine::Application& app, entt::entity ent
 
 entt::entity cqsp::scene::GetCurrentViewingPlanet(cqsp::engine::Application& app) {
     return app.GetUniverse().view<cqsp::client::systems::RenderingPlanet>().front();
+}
+
+void cqsp::scene::SeePlanet(cqsp::engine::Application& app, entt::entity ent) {
+    app.GetUniverse().clear<cqsp::client::systems::RenderingPlanet>();
+    app.GetUniverse().emplace<cqsp::client::systems::RenderingPlanet>(ent);
 }
 
 void cqsp::scene::SetGameHalted(bool b) { game_halted = b; }

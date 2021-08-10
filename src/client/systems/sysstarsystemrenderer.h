@@ -57,9 +57,14 @@ class SysStarSystemRenderer {
     void Render();
     void SeeStarSystem(entt::entity);
     void SeeEntity();
+    void Update();
+    void SeePlanet(entt::entity);
 
     float view_x;
     float view_y;
+
+    double previous_mouseX;
+    double previous_mouseY;
 
     float scroll = 10;
 

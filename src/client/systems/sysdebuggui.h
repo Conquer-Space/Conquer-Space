@@ -38,6 +38,10 @@ class SysDebugMenu : public SysUserInterface {
 
  private:
     void CqspMetricsWindow();
+    void ShowWindows();
+    void CreateMenuBar();
+    void DrawConsole();
+    void ConsoleInput();
 
     bool to_show_window = false;
     bool to_show_metrics_window = false;

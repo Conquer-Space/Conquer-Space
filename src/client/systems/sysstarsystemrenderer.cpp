@@ -306,6 +306,43 @@ void cqsp::client::systems::SysStarSystemRenderer::SeeEntity() {
     });
 }
 
+void cqsp::client::systems::SysStarSystemRenderer::Update() {
+    double deltaX = previous_mouseX - m_app.GetMouseX();
+    double deltaY = previous_mouseY - m_app.GetMouseY();
+    if (!ImGui::GetIO().WantCaptureMouse) {
+        if (scroll + m_app.GetScrollAmount() * 3 > 1.5) {
+            scroll += m_app.GetScrollAmount() * 3;
+        }
+
+        if (m_app.MouseButtonIsHeld(GLFW_MOUSE_BUTTON_LEFT)) {
+            view_x += deltaX/m_app.GetWindowWidth()*3.1415*4;
+            view_y -= deltaY/m_app.GetWindowHeight()*3.1415*4;
+
+            if (glm::degrees(view_y) > 89.f) {
+                view_y = glm::radians(89.f);
+            }
+            if (glm::degrees(view_y) < -89.f) {
+                view_y = glm::radians(-89.f);
+            }
+        }
+
+        previous_mouseX = m_app.GetMouseX();
+        previous_mouseY = m_app.GetMouseY();
+
+        // If clicks on object, go to the planet
+        entt::entity ent = m_app.GetUniverse().view<MouseOverEntity>().front();
+        if (m_app.MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) && ent != entt::null && !m_app.MouseDragged()) {
+            // Then go to the object
+            SeePlanet(ent);
+        }
+    }
+}
+
+void cqsp::client::systems::SysStarSystemRenderer::SeePlanet(entt::entity ent) {
+    m_app.GetUniverse().clear<RenderingPlanet>();
+    m_app.GetUniverse().emplace<RenderingPlanet>(ent);
+}
+
 void cqsp::client::systems::SysStarSystemRenderer::DrawEntityName(
     glm::vec3 &object_pos, entt::entity ent_id) {
     using cqsp::common::components::Name;

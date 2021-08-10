@@ -27,6 +27,32 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <pwd.h>
+
+char* get_home_dir(uid_t uid) {
+    char *strbuf;
+    char *result;
+    struct passwd pwbuf;
+    struct passwd *pw = NULL;
+    long val = sysconf(_SC_GETPW_R_SIZE_MAX);
+    size_t strbuflen = val;
+
+    if (val < 0)
+        return NULL;
+
+    if (malloc(sizeof(strbuf) * strbuflen) < 0)
+        return NULL;
+
+    if (getpwuid_r(uid, &pwbuf, strbuf, strbuflen, &pw) != 0 || pw == NULL) {
+        free(strbuf);
+        return NULL;
+    }
+
+    result = strdup(pw->pw_dir);
+
+    free(strbuf);
+
+    return result;
+}
 #endif
 
 std::string cqsp::engine::GetcqspPath() {
@@ -38,12 +64,10 @@ std::string cqsp::engine::GetcqspPath() {
 
     directory = std::string(my_documents);
 #else
-    // Help
-    struct passwd *pw = getpwuid(getuid());
-
-    const char *homedir = pw->pw_dir;
+    const char *homedir= get_home_dir(getuid());
     directory = std::string(homedir);
 #endif
+
     // Create folder
     auto filesystem = std::filesystem::path(directory);
     filesystem /= "cqsp";
