@@ -47,7 +47,7 @@ char* get_home_dir(uid_t uid) {
         return NULL;
     }
 
-    result = strdup(pw->pw_dir);
+    result = pw->pw_dir;
 
     free(strbuf);
 
