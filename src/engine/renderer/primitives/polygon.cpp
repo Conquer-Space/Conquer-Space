@@ -24,8 +24,8 @@
 
 #include <glm/glm.hpp>
 
-void conquerspace::primitive::CreateFilledCircle(
-    conquerspace::engine::Mesh& mesh, int segments) {
+void cqsp::primitive::CreateFilledCircle(
+    cqsp::engine::Mesh& mesh, int segments) {
     std::vector<float> positions;
     positions.push_back(0);
     positions.push_back(0);
@@ -35,7 +35,7 @@ void conquerspace::primitive::CreateFilledCircle(
 
     // Add texture coords
     for (int i = 0; i <= segments; i++) {
-        double theta = i * conquerspace::common::components::types::toRadian(360.f/segments);
+        double theta = i * cqsp::common::components::types::toRadian(360.f/segments);
         double y = std::sin(theta);
         double x = std::cos(theta);
 
@@ -73,9 +73,9 @@ void conquerspace::primitive::CreateFilledCircle(
     mesh.buffer_type = 0;
 }
 
-void conquerspace::primitive::CreateFilledTriangle(conquerspace::engine::Mesh& renderable) {
-    conquerspace::primitive::CreateFilledCircle(renderable, 3);
+void cqsp::primitive::CreateFilledTriangle(cqsp::engine::Mesh& renderable) {
+    cqsp::primitive::CreateFilledCircle(renderable, 3);
 }
-void conquerspace::primitive::CreateFilledSquare(conquerspace::engine::Mesh& renderable) {
-    conquerspace::primitive::CreateFilledCircle(renderable, 4);
+void cqsp::primitive::CreateFilledSquare(cqsp::engine::Mesh& renderable) {
+    cqsp::primitive::CreateFilledCircle(renderable, 4);
 }

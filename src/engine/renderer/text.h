@@ -23,7 +23,7 @@
 
 #include "engine/renderer/shader.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace asset {
 struct Character {
     unsigned int TextureID;  // ID handle of the glyph texture
@@ -41,7 +41,7 @@ class Font : public Asset {
 };
 
 void LoadFont(Font& font, unsigned char *fontBuffer, uint64_t size);
-void RenderText(conquerspace::asset::ShaderProgram &shader, Font& font,
+void RenderText(cqsp::asset::ShaderProgram &shader, Font& font,
                 std::string text, float x, float y, float scale, glm::vec3 color);
 }  // namespace asset
-}  // namespace conquerspace
+}  // namespace cqsp

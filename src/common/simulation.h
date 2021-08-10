@@ -24,7 +24,7 @@
 
 #include "common/systems/scriptrunner.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace systems {
 namespace simulation {
@@ -34,7 +34,7 @@ namespace simulation {
  */
 class Simulation {
  public:
-    explicit Simulation(conquerspace::common::components::Universe &_universe,
+    explicit Simulation(cqsp::common::Universe &_universe,
                         scripting::ScriptInterface &script_interface);
     void tick();
 
@@ -44,11 +44,11 @@ class Simulation {
     }
 
  private:
-    conquerspace::common::systems::SysEventScriptRunner script_runner;
-    std::vector<std::unique_ptr<conquerspace::common::systems::ISimulationSystem>> system_list;
-    conquerspace::common::components::Universe &m_universe;
+    cqsp::common::systems::SysEventScriptRunner script_runner;
+    std::vector<std::unique_ptr<cqsp::common::systems::ISimulationSystem>> system_list;
+    cqsp::common::Universe &m_universe;
 };
 }  // namespace simulation
 }  // namespace systems
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

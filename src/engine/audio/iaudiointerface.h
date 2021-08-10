@@ -22,7 +22,7 @@
 
 #include "engine/audio/audioasset.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace engine {
 namespace audio {
 enum ChannelType {};
@@ -36,12 +36,12 @@ class IAudioInterface {
     virtual void StartWorker() = 0;
     virtual void RequestPlayAudio() = 0;
     virtual void SetMusicVolume(float volume) = 0;
-    virtual void PlayAudioClip(conquerspace::asset::AudioAsset *asset, int channel) = 0;
+    virtual void PlayAudioClip(cqsp::asset::AudioAsset *asset, int channel) = 0;
     virtual void SetChannelVolume(int channel, float gain) = 0;
 
-    virtual void AddAudioClip(const std::string &key, conquerspace::asset::AudioAsset *asset) = 0;
+    virtual void AddAudioClip(const std::string &key, cqsp::asset::AudioAsset *asset) = 0;
     virtual void PlayAudioClip(const std::string &key) = 0;
 };
 }  // namespace audio
 }  // namespace engine
-}  // namespace conquerspace
+}  // namespace cqsp

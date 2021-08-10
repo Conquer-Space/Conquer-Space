@@ -21,7 +21,7 @@
 
 #include <fmt/format.h>
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace components {
 struct Name {
@@ -35,11 +35,11 @@ struct Identifier {
 };
 }  // namespace components
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp
 
 // Various formatters
 template <>
-struct fmt::formatter<conquerspace::common::components::Name> {
+struct fmt::formatter<cqsp::common::components::Name> {
     char presentation = 'q';
 
     constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin()) {
@@ -48,13 +48,13 @@ struct fmt::formatter<conquerspace::common::components::Name> {
     }
 
     template <typename FormatContext>
-    auto format(const conquerspace::common::components::Name& p, FormatContext& ctx) -> decltype(ctx.out()) {
+    auto format(const cqsp::common::components::Name& p, FormatContext& ctx) -> decltype(ctx.out()) {
         return format_to(ctx.out(), p.name);
     }
 };
 
 template <>
-struct fmt::formatter<conquerspace::common::components::Identifier> {
+struct fmt::formatter<cqsp::common::components::Identifier> {
     char presentation = 'q';
 
     constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin()) {
@@ -63,7 +63,7 @@ struct fmt::formatter<conquerspace::common::components::Identifier> {
     }
 
     template <typename FormatContext>
-    auto format(const conquerspace::common::components::Identifier& p, FormatContext& ctx) -> decltype(ctx.out()) {
+    auto format(const cqsp::common::components::Identifier& p, FormatContext& ctx) -> decltype(ctx.out()) {
         return format_to(ctx.out(), p.identifier);
     }
 };

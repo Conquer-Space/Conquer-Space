@@ -26,12 +26,12 @@
 
 #include "engine/cqspgui.h"
 
-void conquerspace::client::systems::SysStarSystemTree::Init() {}
+void cqsp::client::systems::SysStarSystemTree::Init() {}
 
-void conquerspace::client::systems::SysStarSystemTree::DoUI(int delta_time) {
-    namespace cqspb = conquerspace::common::components::bodies;
-    namespace cqspcs = conquerspace::client::systems;
-    namespace cqspc = conquerspace::common::components;
+void cqsp::client::systems::SysStarSystemTree::DoUI(int delta_time) {
+    namespace cqspb = cqsp::common::components::bodies;
+    namespace cqspcs = cqsp::client::systems;
+    namespace cqspc = cqsp::common::components;
     // Get star system
     entt::entity ent = GetApp().GetUniverse().view<cqspcs::RenderingStarSystem>().front();
     if (ent == entt::null) {
@@ -45,7 +45,7 @@ void conquerspace::client::systems::SysStarSystemTree::DoUI(int delta_time) {
                 NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | window_flags);
     int index = 0;
     // Get selected planet
-    entt::entity current_planet = conquerspace::scene::GetCurrentViewingPlanet(GetApp());
+    entt::entity current_planet = cqsp::scene::GetCurrentViewingPlanet(GetApp());
     for (auto entity : star_system.bodies) {
         bool is_selected = (entity == current_planet);
         std::string planet_name = fmt::format("{}", entity);
@@ -59,7 +59,7 @@ void conquerspace::client::systems::SysStarSystemTree::DoUI(int delta_time) {
             selected_index = index;
             if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
                 // Go to the planet
-                conquerspace::scene::SeePlanet(GetApp(), entity);
+                cqsp::scene::SeePlanet(GetApp(), entity);
             }
         }
         gui::EntityTooltip(GetApp().GetUniverse(), entity);
@@ -68,4 +68,4 @@ void conquerspace::client::systems::SysStarSystemTree::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void conquerspace::client::systems::SysStarSystemTree::DoUpdate(int delta_time) {}
+void cqsp::client::systems::SysStarSystemTree::DoUpdate(int delta_time) {}

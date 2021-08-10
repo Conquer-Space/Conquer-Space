@@ -23,12 +23,12 @@
 
 #include "common/components/units.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace components {
 struct Good {
-    conquerspace::common::components::types::meter_cube volume;
-    conquerspace::common::components::types::kilogram mass;
+    cqsp::common::components::types::meter_cube volume;
+    cqsp::common::components::types::kilogram mass;
 };
 
 struct Mineral {};
@@ -119,4 +119,4 @@ struct FailedResourceTransfer {
 };
 }  // namespace components
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

@@ -16,22 +16,22 @@
 */
 #include "engine/clientoptions.h"
 
-void conquerspace::client::ClientOptions::LoadOptions(std::istream& inputstream) {
+void cqsp::client::ClientOptions::LoadOptions(std::istream& inputstream) {
     Hjson::DecoderOptions decOpt;
     inputstream >> Hjson::StreamDecoder(options, decOpt);
     options = Hjson::Merge(GetDefaultOptions(), options);
 }
 
-void conquerspace::client::ClientOptions::WriteOptions(std::ostream& output_stream) {
+void cqsp::client::ClientOptions::WriteOptions(std::ostream& output_stream) {
     Hjson::EncoderOptions decOpt;
     output_stream << Hjson::StreamEncoder(options, decOpt);
 }
 
-void conquerspace::client::ClientOptions::LoadDefaultOptions() {
+void cqsp::client::ClientOptions::LoadDefaultOptions() {
     options = Hjson::Merge(GetDefaultOptions(), options);
 }
 
-Hjson::Value conquerspace::client::ClientOptions::GetDefaultOptions() {
+Hjson::Value cqsp::client::ClientOptions::GetDefaultOptions() {
     Hjson::Value default_options;
     default_options["window"]["width"] = 1280;
     default_options["window"]["height"] = 720;

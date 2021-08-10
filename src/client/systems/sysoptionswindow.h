@@ -18,10 +18,10 @@
 
 #include "engine/application.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace client {
 namespace systems {
-void ShowOptionsWindow(bool* open, conquerspace::engine::Application& app);
+void ShowOptionsWindow(bool* open, cqsp::engine::Application& app);
 }  // namespace systems
 }  // namespace client
-}  // namespace conquerspace
+}  // namespace cqsp

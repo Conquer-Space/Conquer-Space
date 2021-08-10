@@ -21,10 +21,10 @@
 #include "common/universe.h"
 #include "common/components/resource.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace client {
 namespace systems {
-void DrawLedgerTable(const std::string &name, const conquerspace::common::components::Universe&, const conquerspace::common::components::ResourceLedger& ledger);
+void DrawLedgerTable(const std::string &name, const cqsp::common::Universe&, const cqsp::common::components::ResourceLedger& ledger);
 }  // namespace systems
 }  // namespace client
-}  // namespace conquerspace
+}  // namespace cqsp

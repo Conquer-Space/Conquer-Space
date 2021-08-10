@@ -39,28 +39,28 @@
 #include "common/components/ships.h"
 #include "common/util/profiler.h"
 
-conquerspace::client::systems::SysStarSystemRenderer::SysStarSystemRenderer
-                                                (conquerspace::common::components::Universe &_u,
-                                                conquerspace::engine::Application &_a) :
+cqsp::client::systems::SysStarSystemRenderer::SysStarSystemRenderer
+                                                (cqsp::common::Universe &_u,
+                                                cqsp::engine::Application &_a) :
                                                 m_universe(_u), m_app(_a),
                                                 scroll(5), view_x(0),
                                                 view_y(0), view_center(glm::vec3(1, 1, 1)),
                                                 sun_color(glm::vec3(10, 10, 10)) {
 }
 
-void conquerspace::client::systems::SysStarSystemRenderer::Initialize() {
+void cqsp::client::systems::SysStarSystemRenderer::Initialize() {
     // Initialize meshes, etc
-    conquerspace::engine::Mesh* sphere_mesh = new conquerspace::engine::Mesh();
-    conquerspace::primitive::ConstructSphereMesh(64, 64, *sphere_mesh);
+    cqsp::engine::Mesh* sphere_mesh = new cqsp::engine::Mesh();
+    cqsp::primitive::ConstructSphereMesh(64, 64, *sphere_mesh);
 
     // Initialize sky box
     asset::Texture* sky_texture = m_app.GetAssetManager()
-        .GetAsset<conquerspace::asset::Texture>("skycubemap");
+        .GetAsset<cqsp::asset::Texture>("skycubemap");
 
     asset::ShaderProgram* skybox_shader =
                         m_app.GetAssetManager().CreateShaderProgram("skycubevert", "skycubefrag");
 
-    sky.mesh = new conquerspace::engine::Mesh();
+    sky.mesh = new cqsp::engine::Mesh();
     primitive::MakeCube(*sky.mesh);
     sky.shaderProgram = skybox_shader;
     sky.SetTexture("texture0", 0, sky_texture);
@@ -69,11 +69,11 @@ void conquerspace::client::systems::SysStarSystemRenderer::Initialize() {
                     m_app.GetAssetManager().
                     CreateShaderProgram("shader.pane.vert", "coloredcirclefrag");
 
-    planet_circle.mesh = new conquerspace::engine::Mesh();
+    planet_circle.mesh = new cqsp::engine::Mesh();
     primitive::CreateFilledCircle(*planet_circle.mesh);
     planet_circle.shaderProgram = circle_shader;
 
-    ship_overlay.mesh = new conquerspace::engine::Mesh();
+    ship_overlay.mesh = new cqsp::engine::Mesh();
     primitive::CreateFilledTriangle(*ship_overlay.mesh);
     ship_overlay.shaderProgram = circle_shader;
 
@@ -112,13 +112,13 @@ void conquerspace::client::systems::SysStarSystemRenderer::Initialize() {
     skybox_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("framebuffervert", "framebufferfrag");
 }
 
-void conquerspace::client::systems::SysStarSystemRenderer::OnTick() {
+void cqsp::client::systems::SysStarSystemRenderer::OnTick() {
     entt::entity current_planet = m_app.GetUniverse().view<RenderingPlanet>().front();
     if (current_planet != entt::null) {
         view_center = CalculateObjectPos(m_viewing_entity);
     }
 
-    namespace cqspb = conquerspace::common::components::bodies;
+    namespace cqspb = cqsp::common::components::bodies;
 
     entt::entity system = m_app.GetUniverse().view<RenderingStarSystem>().front();
     auto &system_comp = m_app.GetUniverse().get<cqspb::StarSystem>(system);
@@ -127,9 +127,9 @@ void conquerspace::client::systems::SysStarSystemRenderer::OnTick() {
     }
 }
 
-void conquerspace::client::systems::SysStarSystemRenderer::Render() {
-    namespace cqspb = conquerspace::common::components::bodies;
-    namespace cqsps = conquerspace::common::components::ships;
+void cqsp::client::systems::SysStarSystemRenderer::Render() {
+    namespace cqspb = cqsp::common::components::bodies;
+    namespace cqsps = cqsp::common::components::ships;
     // Check for resized window
     BEGIN_TIMED_BLOCK(System_Renderer_New_Frame)
     buffer_renderer.NewFrame(*m_app.GetWindow());
@@ -238,8 +238,8 @@ void conquerspace::client::systems::SysStarSystemRenderer::Render() {
     END_TIMED_BLOCK(System_Renderer_Render_Buffer)
 }
 
-void conquerspace::client::systems::SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
-    namespace cqspb = conquerspace::common::components::bodies;
+void cqsp::client::systems::SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
+    namespace cqspb = cqsp::common::components::bodies;
     if (m_star_system != entt::null &&
         m_universe.all_of<cqspb::StarSystem>(m_star_system)) {
         // Remove tags
@@ -260,8 +260,8 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeStarSystem(entt::e
     }
 }
 
-void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity() {
-    namespace cqspb = conquerspace::common::components::bodies;
+void cqsp::client::systems::SysStarSystemRenderer::SeeEntity() {
+    namespace cqspb = cqsp::common::components::bodies;
     // See the object
     view_center = CalculateObjectPos(m_viewing_entity);
 
@@ -274,7 +274,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity() {
     // Set seed
     seed = m_app.GetUniverse().get<cqspb::Terrain>(m_viewing_entity).seed;
 
-    conquerspace::client::systems::TerrainImageGenerator generator;
+    cqsp::client::systems::TerrainImageGenerator generator;
     generator.seed = seed;
     generator.GenerateTerrain(1, 2);
     SetPlanetTexture(generator);
@@ -306,9 +306,46 @@ void conquerspace::client::systems::SysStarSystemRenderer::SeeEntity() {
     });
 }
 
-void conquerspace::client::systems::SysStarSystemRenderer::DrawEntityName(
+void cqsp::client::systems::SysStarSystemRenderer::Update() {
+    double deltaX = previous_mouseX - m_app.GetMouseX();
+    double deltaY = previous_mouseY - m_app.GetMouseY();
+    if (!ImGui::GetIO().WantCaptureMouse) {
+        if (scroll + m_app.GetScrollAmount() * 3 > 1.5) {
+            scroll += m_app.GetScrollAmount() * 3;
+        }
+
+        if (m_app.MouseButtonIsHeld(GLFW_MOUSE_BUTTON_LEFT)) {
+            view_x += deltaX/m_app.GetWindowWidth()*3.1415*4;
+            view_y -= deltaY/m_app.GetWindowHeight()*3.1415*4;
+
+            if (glm::degrees(view_y) > 89.f) {
+                view_y = glm::radians(89.f);
+            }
+            if (glm::degrees(view_y) < -89.f) {
+                view_y = glm::radians(-89.f);
+            }
+        }
+
+        previous_mouseX = m_app.GetMouseX();
+        previous_mouseY = m_app.GetMouseY();
+
+        // If clicks on object, go to the planet
+        entt::entity ent = m_app.GetUniverse().view<MouseOverEntity>().front();
+        if (m_app.MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) && ent != entt::null && !m_app.MouseDragged()) {
+            // Then go to the object
+            SeePlanet(ent);
+        }
+    }
+}
+
+void cqsp::client::systems::SysStarSystemRenderer::SeePlanet(entt::entity ent) {
+    m_app.GetUniverse().clear<RenderingPlanet>();
+    m_app.GetUniverse().emplace<RenderingPlanet>(ent);
+}
+
+void cqsp::client::systems::SysStarSystemRenderer::DrawEntityName(
     glm::vec3 &object_pos, entt::entity ent_id) {
-    using conquerspace::common::components::Name;
+    using cqsp::common::components::Name;
     buffer_renderer.BeginDraw();
     if (m_app.GetUniverse().all_of<Name>(ent_id)) {
         std::string &name = m_app.GetUniverse().get<Name>(ent_id);
@@ -327,7 +364,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawEntityName(
 }
 
 
-void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanetIcon(glm::vec3 &object_pos) {
+void cqsp::client::systems::SysStarSystemRenderer::DrawPlanetIcon(glm::vec3 &object_pos) {
     glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
     glm::mat4 planetDispMat = glm::mat4(1.0f);
     if (pos.z >= 1 || pos.z <= -1) {
@@ -356,7 +393,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanetIcon(glm::v
     buffer_renderer.EndDraw();
 }
 
-void conquerspace::client::systems::SysStarSystemRenderer::DrawShipIcon(glm::vec3 &object_pos) {
+void cqsp::client::systems::SysStarSystemRenderer::DrawShipIcon(glm::vec3 &object_pos) {
     glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
     glm::mat4 shipDispMat = glm::mat4(1.0f);
     if (pos.z >= 1 || pos.z <= -1) {
@@ -387,7 +424,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawShipIcon(glm::vec
     overlay_renderer.EndDraw();
 }
 
-void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_pos) {
+void cqsp::client::systems::SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_pos) {
     glm::mat4 position = glm::mat4(1.f);
     position = glm::translate(position, object_pos);
 
@@ -410,7 +447,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawPlanet(glm::vec3 
     planet_renderer.EndDraw();
 }
 
-void conquerspace::client::systems::SysStarSystemRenderer::DrawStar(glm::vec3 &object_pos) {
+void cqsp::client::systems::SysStarSystemRenderer::DrawStar(glm::vec3 &object_pos) {
     glm::mat4 position = glm::mat4(1.f);
     position = glm::translate(position, object_pos);
 
@@ -425,7 +462,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawStar(glm::vec3 &o
     planet_renderer.EndDraw();
 }
 
-void conquerspace::client::systems::SysStarSystemRenderer::DrawTerrainlessPlanet(
+void cqsp::client::systems::SysStarSystemRenderer::DrawTerrainlessPlanet(
                                             glm::vec3 &object_pos) {
     glm::mat4 position = glm::mat4(1.f);
     position = glm::translate(position, object_pos);
@@ -440,9 +477,9 @@ void conquerspace::client::systems::SysStarSystemRenderer::DrawTerrainlessPlanet
     planet_renderer.EndDraw();
 }
 
-glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateObjectPos(entt::entity &ent) {
-    namespace cqspb = conquerspace::common::components::bodies;
-    namespace cqspt = conquerspace::common::components::types;
+glm::vec3 cqsp::client::systems::SysStarSystemRenderer::CalculateObjectPos(entt::entity &ent) {
+    namespace cqspb = cqsp::common::components::bodies;
+    namespace cqspt = cqsp::common::components::types;
     // Get the things
     if (m_universe.all_of<cqspt::Orbit>(ent)) {
         cqspt::Vec2 pos = cqspt::toVec2(m_universe.get<cqspt::Orbit>(ent))/0.01;
@@ -454,11 +491,11 @@ glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateObjectP
     return glm::vec3(0, 0, 0);
 }
 
-glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateCenteredObject(entt::entity &ent) {
+glm::vec3 cqsp::client::systems::SysStarSystemRenderer::CalculateCenteredObject(entt::entity &ent) {
     return CalculateObjectPos(ent) - view_center;
 }
 
-void conquerspace::client::systems::SysStarSystemRenderer::CalculateCamera() {
+void cqsp::client::systems::SysStarSystemRenderer::CalculateCamera() {
     cam_pos = glm::vec3(
                 cos(view_y) * sin(view_x) * scroll,
                 sin(view_y) * scroll,
@@ -469,7 +506,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::CalculateCamera() {
     viewport = glm::vec4(0.f, 0.f, m_app.GetWindowWidth(), m_app.GetWindowHeight());
 }
 
-void conquerspace::client::systems::SysStarSystemRenderer::SetPlanetTexture(
+void cqsp::client::systems::SysStarSystemRenderer::SetPlanetTexture(
     TerrainImageGenerator &generator) {
     unsigned int albedo_map = GeneratePlanetTexture(generator.GetAlbedoMap());
     unsigned int height_map  = GeneratePlanetTexture(generator.GetHeightMap());
@@ -487,7 +524,7 @@ void conquerspace::client::systems::SysStarSystemRenderer::SetPlanetTexture(
 }
 
 unsigned int
-conquerspace::client::systems::SysStarSystemRenderer::GeneratePlanetTexture(
+cqsp::client::systems::SysStarSystemRenderer::GeneratePlanetTexture(
     noise::utils::Image &image) {
     unsigned int texture;
     glGenTextures(1, &texture);
@@ -502,7 +539,7 @@ conquerspace::client::systems::SysStarSystemRenderer::GeneratePlanetTexture(
     return texture;
 }
 
-glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateMouseRay(
+glm::vec3 cqsp::client::systems::SysStarSystemRenderer::CalculateMouseRay(
     const glm::vec3 &ray_nds) {
     glm::vec4 ray_clip = glm::vec4(ray_nds.x, ray_nds.y, -1.0, 1.0);
     glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
@@ -513,24 +550,24 @@ glm::vec3 conquerspace::client::systems::SysStarSystemRenderer::CalculateMouseRa
     return glm::normalize(glm::vec3(inv.x, inv.y, inv.z));
 }
 
-float conquerspace::client::systems::SysStarSystemRenderer::GetWindowRatio() {
+float cqsp::client::systems::SysStarSystemRenderer::GetWindowRatio() {
     return static_cast<float>(m_app.GetWindowWidth()) /
                                 static_cast<float>(m_app.GetWindowHeight());
 }
 
-conquerspace::asset::Texture *
-conquerspace::client::systems::SysStarSystemRenderer::GenerateTexture(
+cqsp::asset::Texture *
+cqsp::client::systems::SysStarSystemRenderer::GenerateTexture(
     unsigned int tex, noise::utils::Image &image) {
-    conquerspace::asset::Texture *texture = new conquerspace::asset::Texture();
+    cqsp::asset::Texture *texture = new cqsp::asset::Texture();
     texture->id = tex;
     texture->width = image.GetWidth();
     texture->height = image.GetHeight();
     return texture;
 }
 
-entt::entity conquerspace::client::systems::SysStarSystemRenderer::GetMouseOnObject(
+entt::entity cqsp::client::systems::SysStarSystemRenderer::GetMouseOnObject(
     int mouse_x, int mouse_y) {
-    namespace cqspb = conquerspace::common::components::bodies;
+    namespace cqspb = cqsp::common::components::bodies;
 
     // Loop through objects
     auto bodies = m_app.GetUniverse().view<ToRender>();
@@ -579,7 +616,7 @@ entt::entity conquerspace::client::systems::SysStarSystemRenderer::GetMouseOnObj
     return entt::null;
 }
 
-conquerspace::client::systems::SysStarSystemRenderer::~SysStarSystemRenderer() {
+cqsp::client::systems::SysStarSystemRenderer::~SysStarSystemRenderer() {
     if (less_detailed_terrain_generator_thread.joinable()) {
         less_detailed_terrain_generator_thread.join();
     }

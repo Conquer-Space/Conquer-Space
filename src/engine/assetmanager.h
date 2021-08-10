@@ -34,7 +34,7 @@
 #include "engine/asset.h"
 #include "engine/gui.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace asset {
 
 enum class AssetType { NONE, TEXTURE, SHADER, HJSON, TEXT, MODEL, FONT, CUBEMAP, TEXT_ARRAY, AUDIO };
@@ -159,7 +159,7 @@ class AssetManager {
 
     std::unique_ptr<Asset>& operator[](char* val) { return assets[std::string(val)]; }
 
-    conquerspace::asset::ShaderProgram* CreateShaderProgram(const std::string &vert,
+    cqsp::asset::ShaderProgram* CreateShaderProgram(const std::string &vert,
                                                             const std::string &frag);
 
     template <class T>
@@ -231,4 +231,4 @@ class AssetLoader {
     ThreadsafeQueue<QueueHolder> m_asset_queue;
 };
 }  // namespace asset
-}  // namespace conquerspace
+}  // namespace cqsp

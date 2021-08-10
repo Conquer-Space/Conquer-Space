@@ -21,7 +21,7 @@
 
 #include "common/components/units.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace components {
 namespace bodies {
@@ -52,4 +52,4 @@ struct StarSystem {
 }  // namespace bodies
 }  // namespace components
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

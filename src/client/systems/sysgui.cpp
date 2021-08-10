@@ -16,6 +16,6 @@
 */
 #include "client/systems/sysgui.h"
 
-conquerspace::client::systems::SysUserInterface::SysUserInterface(
-    conquerspace::engine::Application &_app) : m_app(_app) {
+cqsp::client::systems::SysUserInterface::SysUserInterface(
+    cqsp::engine::Application &_app) : m_app(_app) {
 }

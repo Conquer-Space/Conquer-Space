@@ -24,9 +24,9 @@
 #include "client/systems/gui/sysstockpileui.h"
 #include "engine/gui.h"
 
-using conquerspace::common::components::Universe;
-std::string conquerspace::client::systems::gui::GetName(Universe& universe, entt::entity entity) {
-    namespace cqspc = conquerspace::common::components;
+using cqsp::common::Universe;
+std::string cqsp::client::systems::gui::GetName(Universe& universe, entt::entity entity) {
+    namespace cqspc = cqsp::common::components;
     if (universe.all_of<cqspc::Name>(entity)) {
         return universe.get<cqspc::Name>(entity);
     } else if (universe.all_of<cqspc::Identifier>(entity)) {
@@ -36,9 +36,9 @@ std::string conquerspace::client::systems::gui::GetName(Universe& universe, entt
     }
 }
 
-namespace conquerspace::client::systems::gui {
+namespace cqsp::client::systems::gui {
 void RenderEntityType(Universe& universe, entt::entity entity) {
-    namespace cqspc = conquerspace::common::components;
+    namespace cqspc = cqsp::common::components;
     // Then get type of entity
     if (universe.all_of<cqspc::bodies::Star>(entity)) {
         ImGui::TextFmt("Star");
@@ -67,13 +67,13 @@ void RenderEntityType(Universe& universe, entt::entity entity) {
         ImGui::TextFmt("Unknown");
     }
 }
-}  // namespace conquerspace::client::systems::gui
+}  // namespace cqsp::client::systems::gui
 
-void conquerspace::client::systems::gui::EntityTooltip(Universe &universe, entt::entity entity) {
+void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity entity) {
     if (!ImGui::IsItemHovered()) {
         return;
     }
-    namespace cqspc = conquerspace::common::components;
+    namespace cqspc = cqsp::common::components;
     ImGui::BeginTooltip();
     ImGui::TextFmt("{}", GetName(universe, entity));
 
@@ -83,7 +83,7 @@ void conquerspace::client::systems::gui::EntityTooltip(Universe &universe, entt:
         ImGui::Separator();
         ImGui::TextFmt("Resources");
         // Then do demand
-        conquerspace::client::systems::DrawLedgerTable(
+        cqsp::client::systems::DrawLedgerTable(
             "resourcesstockpiletooltip", universe, universe.get<cqspc::ResourceStockpile>(entity));
     }
     if (universe.all_of<cqspc::Production>(entity)) {
@@ -93,7 +93,7 @@ void conquerspace::client::systems::gui::EntityTooltip(Universe &universe, entt:
         ImGui::Separator();
         ImGui::TextFmt("Generating");
         // Then do demand
-        conquerspace::client::systems::DrawLedgerTable(
+        cqsp::client::systems::DrawLedgerTable(
             "factorygentooltip", universe, universe.get<cqspc::ResourceGenerator>(entity));
     }
     ImGui::EndTooltip();

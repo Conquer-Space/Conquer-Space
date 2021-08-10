@@ -20,7 +20,7 @@
 
 #include <sol/sol.hpp>
 
-namespace conquerspace {
+namespace cqsp {
 namespace scripting {
 class ScriptInterface : public sol::state {
  public:
@@ -35,4 +35,4 @@ class ScriptInterface : public sol::state {
     std::vector<std::string> values;
 };
 }  // namespace scripting
-}  // namespace conquerspace
+}  // namespace cqsp

@@ -23,8 +23,8 @@
 #include "common/components/name.h"
 #include "common/util/profiler.h"
 
-using conquerspace::client::systems::SysDebugMenu;
-using conquerspace::engine::Application;
+using cqsp::client::systems::SysDebugMenu;
+using cqsp::engine::Application;
 
 SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
     using std::string_view;
@@ -35,7 +35,7 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
     };
 
     auto entity_command = [](Application& app, const string_view& args, CommandOutput& input) {
-        using conquerspace::client::systems::MouseOverEntity;
+        using cqsp::client::systems::MouseOverEntity;
         entt::entity ent = app.GetUniverse().view<MouseOverEntity>().front();
         if (ent == entt::null) {
             input.push_back(fmt::format("Mouse is over null"));
@@ -55,7 +55,7 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
 
     auto entity_name = [](Application& app, const string_view& args, CommandOutput& input) {
         if (std::all_of(args.begin(), args.end(), ::isdigit)) {
-            namespace cqspc = conquerspace::common::components;
+            namespace cqspc = cqsp::common::components;
             entt::entity entity = static_cast<entt::entity>(atoi(args.data()));
             std::string name = "N/A";
             if (app.GetUniverse().all_of<cqspc::Name>(entity)) {
@@ -117,7 +117,7 @@ void SysDebugMenu::CqspMetricsWindow() {
         ImGui::End();
 }
 
-void SysDebugMenu::DoUI(int delta_time) {
+void cqsp::client::systems::SysDebugMenu::ShowWindows() {
     if (to_show_imgui_about) {
         ImGui::ShowAboutWindow(&to_show_imgui_about);
     }
@@ -127,21 +127,12 @@ void SysDebugMenu::DoUI(int delta_time) {
     if (to_show_implot_metrics) {
         ImPlot::ShowMetricsWindow(&to_show_implot_metrics);
     }
-
     if (to_show_cqsp_metrics) {
         CqspMetricsWindow();
     }
+}
 
-    if (!to_show_window) {
-        return;
-    }
-    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x*.5f,
-                                ImGui::GetIO().DisplaySize.y * 0.75f), ImGuiCond_Always);
-    ImGui::SetNextWindowBgAlpha(0.6f);
-    ImGui::Begin("Debug Gui", &to_show_window,
-                 ImGuiWindowFlags_MenuBar | window_flags |
-                     ImGuiWindowFlags_NoDecoration);
+void cqsp::client::systems::SysDebugMenu::CreateMenuBar() {
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("Tools")) {
             ImGui::MenuItem("Benckmarks", 0, &to_show_cqsp_metrics);
@@ -155,7 +146,9 @@ void SysDebugMenu::DoUI(int delta_time) {
         }
         ImGui::EndMenuBar();
     }
+}
 
+void cqsp::client::systems::SysDebugMenu::DrawConsole() {
     const float footer_height_to_reserve =
         ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
     ImGui::BeginChild("consolearea", ImVec2(0, -footer_height_to_reserve), false,
@@ -179,9 +172,9 @@ void SysDebugMenu::DoUI(int delta_time) {
     }
     scroll_to_bottom = false;
     ImGui::EndChild();
+}
 
-    // Text and other things
-    ImGui::Separator();
+void cqsp::client::systems::SysDebugMenu::ConsoleInput() {
     ImGui::PushItemWidth(-1);
     if (ImGui::InputText("DebugInput", &command, ImGuiInputTextFlags_EnterReturnsTrue |
                              ImGuiInputTextFlags_CallbackCompletion |
@@ -192,11 +185,12 @@ void SysDebugMenu::DoUI(int delta_time) {
         if (!command_request.empty()) {
             bool no_command = true;
             for (auto it = commands.begin(); it != commands.end(); it++) {
-                if (command_request.rfind(it->first, 0) == 0) {
-                    it->second.second(GetApp(), command.length()==it->first.length() ? "" : command.substr(it->first.length()+1) , items);
-                    no_command = false;
-                    break;
+                if (command_request.rfind(it->first, 0) != 0) {
+                    continue;
                 }
+                it->second.second(GetApp(), command.length()==it->first.length() ? "" : command.substr(it->first.length()+1) , items);
+                no_command = false;
+                break;
             }
             if (no_command) {
                 items.push_back("#Command does not exist!");
@@ -214,6 +208,26 @@ void SysDebugMenu::DoUI(int delta_time) {
         ImGui::SetKeyboardFocusHere(-1);
         reclaim_focus = false;
     }
+}
+
+void SysDebugMenu::DoUI(int delta_time) {
+    ShowWindows();
+    if (!to_show_window) {
+        return;
+    }
+    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x*.5f,
+                                ImGui::GetIO().DisplaySize.y * 0.75f), ImGuiCond_Always);
+    ImGui::SetNextWindowBgAlpha(0.6f);
+    ImGui::Begin("Debug Gui", &to_show_window,
+                 ImGuiWindowFlags_MenuBar | window_flags |
+                     ImGuiWindowFlags_NoDecoration);
+    CreateMenuBar();
+    DrawConsole();
+
+    // Text and other things
+    ImGui::Separator();
+    ConsoleInput();
 
     ImGui::End();
 }

@@ -19,13 +19,13 @@
 #include "client/systems/sysgui.h"
 #include "common/components/event.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace client {
 namespace systems {
 namespace gui {
 class SysEvent : public SysUserInterface {
  public:
-    explicit SysEvent(conquerspace::engine::Application& app)
+    explicit SysEvent(cqsp::engine::Application& app)
         : SysUserInterface(app) {}
 
     void Init();
@@ -37,4 +37,4 @@ class SysEvent : public SysUserInterface {
 }  // namespace gui
 }  // namespace systems
 }  // namespace client
-}  // namespace conquerspace
+}  // namespace cqsp

@@ -18,14 +18,14 @@
 
 #include "common/systems/isimulationsystem.h"
 
-namespace conquerspace::common::systems {
+namespace cqsp::common::systems {
 class SysPopulationGrowth : public ISimulationSystem {
  public:
-    void DoSystem(components::Universe& universe);
+    void DoSystem(Universe& universe);
 };
 
 class SysPopulationConsumption : public ISimulationSystem {
  public:
-    void DoSystem(components::Universe& universe);
+    void DoSystem(Universe& universe);
 };
-}  // namespace conquerspace::common::systems
+}  // namespace cqsp::common::systems

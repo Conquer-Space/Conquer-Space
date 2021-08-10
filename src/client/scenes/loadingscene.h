@@ -23,11 +23,11 @@
 
 #include "engine/scene.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace scene {
-class LoadingScene : public conquerspace::engine::Scene {
+class LoadingScene : public cqsp::engine::Scene {
  public:
-    explicit LoadingScene(conquerspace::engine::Application& app);
+    explicit LoadingScene(cqsp::engine::Application& app);
     ~LoadingScene() {}
 
     void Init();
@@ -49,9 +49,9 @@ class LoadingScene : public conquerspace::engine::Scene {
 
     std::atomic<float> percentage;
 
-    conquerspace::asset::AssetLoader assetLoader;
+    cqsp::asset::AssetLoader assetLoader;
 
     void LoadFont();
 };
 }  // namespace scene
-}  // namespace conquerspace
+}  // namespace cqsp

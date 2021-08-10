@@ -16,10 +16,10 @@
 */
 #pragma once
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace components {
 class SpacePort {};
 }
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

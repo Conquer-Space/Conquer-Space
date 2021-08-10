@@ -21,7 +21,7 @@
 #include <fstream>
 #include <string>
 
-namespace conquerspace {
+namespace cqsp {
 namespace client {
 class ClientOptions {
  public:
@@ -40,4 +40,4 @@ class ClientOptions {
      Hjson::Value options;
 };
 }  // namespace client
-}  // namespace conquerspace
+}  // namespace cqsp

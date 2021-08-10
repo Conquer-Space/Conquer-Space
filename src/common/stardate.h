@@ -16,7 +16,7 @@
 */
 #pragma once
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace components {
 class StarDate {
@@ -30,4 +30,4 @@ class StarDate {
 };
 }  // namespace components
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

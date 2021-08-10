@@ -21,7 +21,7 @@
 #include <string>
 #include <vector>
 
-namespace conquerspace {
+namespace cqsp {
 namespace asset {
 class Asset {
  public:
@@ -44,4 +44,4 @@ class HjsonAsset : public Asset {
     Hjson::Value data;
 };
 }  // namespace asset
-}  // namespace conquerspace
+}  // namespace cqsp

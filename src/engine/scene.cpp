@@ -18,16 +18,16 @@
 
 #include "engine/gui.h"
 
-conquerspace::engine::Scene::Scene(Application& app)
+cqsp::engine::Scene::Scene(Application& app)
     : m_application(app) {}
 
-conquerspace::engine::EmptyScene::EmptyScene(Application& app)
+cqsp::engine::EmptyScene::EmptyScene(Application& app)
     : Scene(app) {}
 
-void conquerspace::engine ::EmptyScene::Init() {}
+void cqsp::engine ::EmptyScene::Init() {}
 
-void conquerspace::engine::EmptyScene::Update(float deltaTime) {}
+void cqsp::engine::EmptyScene::Update(float deltaTime) {}
 
-void conquerspace::engine::EmptyScene::Ui(float deltaTime) {}
+void cqsp::engine::EmptyScene::Ui(float deltaTime) {}
 
-void conquerspace::engine::EmptyScene::Render(float deltaTime) {}
+void cqsp::engine::EmptyScene::Render(float deltaTime) {}

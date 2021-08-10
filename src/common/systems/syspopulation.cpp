@@ -20,8 +20,8 @@
 #include "common/components/population.h"
 #include "common/components/resource.h"
 
-void conquerspace::common::systems::SysPopulationGrowth::DoSystem(components::Universe& universe) {
-    namespace cqspc = conquerspace::common::components;
+void cqsp::common::systems::SysPopulationGrowth::DoSystem(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
     auto view = universe.view<cqspc::PopulationSegment>();
     for (auto [entity, segment] : view.each()) {
         if (universe.all_of<cqspc::FailedResourceTransfer>(entity)) {
@@ -38,8 +38,8 @@ void conquerspace::common::systems::SysPopulationGrowth::DoSystem(components::Un
     }
 }
 
-void conquerspace::common::systems::SysPopulationConsumption::DoSystem(components::Universe& universe) {
-    namespace cqspc = conquerspace::common::components;
+void cqsp::common::systems::SysPopulationConsumption::DoSystem(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
     auto view = universe.view<cqspc::PopulationSegment>();
     for (auto [entity, segment] : view.each()) {
         // The population will feed, I guess

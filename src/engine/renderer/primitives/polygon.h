@@ -18,10 +18,10 @@
 
 #include "engine/renderer/mesh.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace primitive {
-void CreateFilledCircle(conquerspace::engine::Mesh& renderable, int segments = 64);
-void CreateFilledTriangle(conquerspace::engine::Mesh& renderable);
-void CreateFilledSquare(conquerspace::engine::Mesh& renderable);
+void CreateFilledCircle(cqsp::engine::Mesh& renderable, int segments = 64);
+void CreateFilledTriangle(cqsp::engine::Mesh& renderable);
+void CreateFilledSquare(cqsp::engine::Mesh& renderable);
 }  // namespace primitive
-}  // namespace conquerspace
+}  // namespace cqsp

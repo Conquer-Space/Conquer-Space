@@ -19,8 +19,8 @@
 #include "common/version.h"
 #include "engine/cqspgui.h"
 
-void conquerspace::client::systems::ShowOptionsWindow(
-    bool* open, conquerspace::engine::Application& app) {
+void cqsp::client::systems::ShowOptionsWindow(
+    bool* open, cqsp::engine::Application& app) {
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f,
                                    ImGui::GetIO().DisplaySize.y * 0.5f),
                             ImGuiCond_Always, ImVec2(0.5f, 0.5f));

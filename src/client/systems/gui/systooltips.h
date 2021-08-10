@@ -20,12 +20,12 @@
 
 #include "common/universe.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace client {
 namespace systems {
 namespace gui {
-std::string GetName(conquerspace::common::components::Universe &universe, entt::entity entity);
-void EntityTooltip(conquerspace::common::components::Universe&, entt::entity);
+std::string GetName(cqsp::common::Universe &universe, entt::entity entity);
+void EntityTooltip(cqsp::common::Universe&, entt::entity);
 }
 }
 }

@@ -4,12 +4,12 @@
 #include "common/components/ships.h"
 #include "common/components/bodies.h"
 
-entt::entity conquerspace::common::systems::actions::CreateShip(
-    conquerspace::common::components::Universe& universe, entt::entity civ,
-    entt::entity orbit, entt::entity starsystem) {
-    namespace cqspt = conquerspace::common::components::types;
-    namespace cqsps = conquerspace::common::components::ships;
-    namespace cqspb = conquerspace::common::components::bodies;
+entt::entity cqsp::common::systems::actions::CreateShip(
+    cqsp::common::Universe& universe, entt::entity civ, entt::entity orbit,
+    entt::entity starsystem) {
+    namespace cqspt = cqsp::common::components::types;
+    namespace cqsps = cqsp::common::components::ships;
+    namespace cqspb = cqsp::common::components::bodies;
     entt::entity ship = universe.create();
     universe.emplace<cqsps::Ship>(ship);
 
@@ -19,4 +19,5 @@ entt::entity conquerspace::common::systems::actions::CreateShip(
     position = cqspt::toVec2(universe.get<cqspt::Orbit>(orbit));
     universe.get<cqspb::StarSystem>(starsystem).bodies.push_back(ship);
     return ship;
+    return entt::entity();
 }

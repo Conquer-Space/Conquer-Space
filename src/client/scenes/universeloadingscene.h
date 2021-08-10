@@ -23,11 +23,11 @@
 
 #include "engine/scene.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace scene {
-class UniverseLoadingScene : public conquerspace::engine::Scene {
+class UniverseLoadingScene : public cqsp::engine::Scene {
  public:
-    explicit UniverseLoadingScene(conquerspace::engine::Application& app);
+    explicit UniverseLoadingScene(cqsp::engine::Application& app);
     ~UniverseLoadingScene() {}
 
     void Init();
@@ -44,4 +44,4 @@ class UniverseLoadingScene : public conquerspace::engine::Scene {
     bool m_completed_loading;
 };
 }  // namespace scene
-}  // namespace conquerspace
+}  // namespace cqsp

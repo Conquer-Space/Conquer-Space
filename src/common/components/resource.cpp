@@ -78,7 +78,7 @@ bool MergeCompare(const Map &m1, const Map &m2,  typename Map::mapped_type ident
     return op;
 }
 
-using conquerspace::common::components::ResourceLedger;
+using cqsp::common::components::ResourceLedger;
 
 ResourceLedger ResourceLedger::operator-(ResourceLedger &other) {
     ResourceLedger ledger;

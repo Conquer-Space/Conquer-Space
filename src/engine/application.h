@@ -35,7 +35,7 @@
 #include "engine/audio/iaudiointerface.h"
 #include "engine/window.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace engine {
 
 /**
@@ -99,7 +99,7 @@ class Application {
     float GetDeltaTime() const { return deltaTime; }
     float GetFps() const { return fps; }
 
-    conquerspace::asset::AssetManager& GetAssetManager() { return manager; }
+    cqsp::asset::AssetManager& GetAssetManager() { return manager; }
 
     bool ShouldExit();
 
@@ -116,11 +116,11 @@ class Application {
 
     ImGui::MarkdownConfig markdownConfig;
 
-    conquerspace::common::components::Universe& GetUniverse() { return *m_universe; }
-    conquerspace::scripting::ScriptInterface& GetScriptInterface() {
+    cqsp::common::Universe& GetUniverse() { return *m_universe; }
+    cqsp::scripting::ScriptInterface& GetScriptInterface() {
         return *m_script_interface;
     }
-    conquerspace::engine::audio::IAudioInterface& GetAudioInterface() {
+    cqsp::engine::audio::IAudioInterface& GetAudioInterface() {
         return *m_audio_interface;
     }
 
@@ -139,11 +139,11 @@ class Application {
 
     Window* GetWindow() { return m_window; }
 
-    conquerspace::asset::Font*& GetFont() { return m_font; }
+    cqsp::asset::Font*& GetFont() { return m_font; }
     void DrawText(const std::string& text, float x, float y);
 
-    void SetFont(conquerspace::asset::Font* font) { m_font = font; }
-    void SetFontShader(conquerspace::asset::ShaderProgram* shader) {
+    void SetFont(cqsp::asset::Font* font) { m_font = font; }
+    void SetFontShader(cqsp::asset::ShaderProgram* shader) {
         fontShader = shader;
     }
 
@@ -155,7 +155,6 @@ class Application {
     void SetFullScreen(bool screen);
 
  private:
-
     void InitFonts();
 
     void SetIcon();
@@ -189,20 +188,20 @@ class Application {
 
     std::shared_ptr<spdlog::logger> logger;
 
-    conquerspace::asset::AssetManager manager;
+    cqsp::asset::AssetManager manager;
 
-    std::unique_ptr<conquerspace::common::components::Universe> m_universe;
+    std::unique_ptr<cqsp::common::Universe> m_universe;
 
-    conquerspace::asset::Font* m_font = nullptr;
-    conquerspace::asset::ShaderProgram* fontShader = nullptr;
+    cqsp::asset::Font* m_font = nullptr;
+    cqsp::asset::ShaderProgram* fontShader = nullptr;
 
     std::map<std::string, std::string> properties;
 
-    std::unique_ptr<conquerspace::scripting::ScriptInterface> m_script_interface;
+    std::unique_ptr<cqsp::scripting::ScriptInterface> m_script_interface;
 
-    conquerspace::engine::audio::IAudioInterface *m_audio_interface;
+    cqsp::engine::audio::IAudioInterface *m_audio_interface;
 
     bool to_halt;
 };
 }  // namespace engine
-}  // namespace conquerspace
+}  // namespace cqsp

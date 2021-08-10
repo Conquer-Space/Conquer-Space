@@ -23,7 +23,7 @@
 
 #include "engine/asset.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace asset {
 enum class ShaderType {VERT, FRAG, GEOM};
 
@@ -63,4 +63,4 @@ unsigned int MakeShaderProgram(int vertex, int fragment);
 
 std::string GetErrorLog(unsigned int shader);
 }  // namespace asset
-}  // namespace conquerspace
+}  // namespace cqsp

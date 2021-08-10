@@ -18,11 +18,11 @@
 
 #include "common/components/resource.h"
 
-bool conquerspace::common::systems::resource::TransferResources(entt::registry &registry,
+bool cqsp::common::systems::resource::TransferResources(entt::registry &registry,
                                                         entt::entity from,
                                                         entt::entity to,
                                                         entt::entity good, double amount) {
-    namespace cqspc = conquerspace::common::components;
+    namespace cqspc = cqsp::common::components;
     // Get resource stockpile
     if (!(registry.all_of<cqspc::ResourceStockpile>(from) &&
                             registry.all_of<cqspc::ResourceStockpile>(to) &&

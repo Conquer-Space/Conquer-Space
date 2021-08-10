@@ -16,10 +16,10 @@
 */
 #pragma once
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace components {
 class Player {};
 }  // namespace components
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

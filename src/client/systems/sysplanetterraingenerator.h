@@ -20,7 +20,7 @@
 
 #include <noiseutils.h>
 
-namespace conquerspace {
+namespace cqsp {
 namespace client {
 namespace systems {
 class TerrainImageGenerator {
@@ -38,4 +38,4 @@ class TerrainImageGenerator {
 };
 }  // namespace systems
 }  // namespace client
-}  // namespace conquerspace
+}  // namespace cqsp

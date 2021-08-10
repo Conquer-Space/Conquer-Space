@@ -19,15 +19,15 @@
 #include "engine/renderer/renderer.h"
 #include "engine/window.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace engine {
 class TextureRenderer {
  public:
     glm::mat4 projection = glm::mat4(1.0);
     glm::mat4 view = glm::mat4(1.0);
     std::vector<BasicRendererObject> renderables;
-    conquerspace::asset::ShaderProgram* buffer_shader;
-    conquerspace::engine::Mesh* mesh_output;
+    cqsp::asset::ShaderProgram* buffer_shader;
+    cqsp::engine::Mesh* mesh_output;
     unsigned int framebuffer = 0;
     void Draw();
     void RenderBuffer();
@@ -37,8 +37,8 @@ class FramebufferRenderer {
  public:
     unsigned int framebuffer;
     unsigned int colorbuffer;
-    conquerspace::asset::ShaderProgram buffer_shader;
-    conquerspace::engine::Mesh mesh_output;
+    cqsp::asset::ShaderProgram buffer_shader;
+    cqsp::engine::Mesh mesh_output;
     void InitTexture(int width  = 1280, int height = 720);
     void Clear();
     void BeginDraw();
@@ -57,8 +57,8 @@ class AAFrameBufferRenderer {
     unsigned int intermediateFBO;
     unsigned int screenTexture;
     unsigned int textureColorBufferMultiSampled;
-    conquerspace::asset::ShaderProgram buffer_shader;
-    conquerspace::engine::Mesh mesh_output;
+    cqsp::asset::ShaderProgram buffer_shader;
+    cqsp::engine::Mesh mesh_output;
     void InitTexture(int width  = 1280, int height = 720);
     void Clear();
     void BeginDraw();
@@ -71,4 +71,4 @@ class AAFrameBufferRenderer {
     int height;
 };
 }  // namespace engine
-}  // namespace conquerspace
+}  // namespace cqsp

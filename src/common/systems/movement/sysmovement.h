@@ -19,18 +19,18 @@
 #include "common/systems/isimulationsystem.h"
 
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace systems {
 class SysOrbit : public ISimulationSystem {
  public:
-     void DoSystem(components::Universe& universe);
+     void DoSystem(Universe& universe);
      int Interval();
 };
 
 class SysPath : public ISimulationSystem {
  public:
-     void DoSystem(components::Universe& universe);
+     void DoSystem(Universe& universe);
      int Interval();
 };
 }

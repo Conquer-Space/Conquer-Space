@@ -20,7 +20,7 @@
 
 #include "engine/asset.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace asset {
 
 struct TextureLoadingOptions {
@@ -58,4 +58,4 @@ void LoadCubemap(Texture &texture, std::vector<unsigned char*>& data,
                     int height,
                     TextureLoadingOptions& options);
 }  // namespace asset
-}  // namespace conquerspace
+}  // namespace cqsp

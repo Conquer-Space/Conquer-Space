@@ -1,7 +1,7 @@
 #include "engine/application.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace scripting {
-void LoadFunctions(conquerspace::engine::Application& app);
+void LoadFunctions(cqsp::engine::Application& app);
 }
 }

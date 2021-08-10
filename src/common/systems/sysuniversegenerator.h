@@ -22,27 +22,27 @@
 #include "common/universe.h"
 #include "common/scripting/scripting.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace systems {
 namespace universegenerator {
 
 class ISysUniverseGenerator {
  public:
-    virtual void Generate(conquerspace::common::components::Universe& universe) = 0;
+    virtual void Generate(cqsp::common::Universe& universe) = 0;
 };
 
 class ScriptUniverseGenerator : public ISysUniverseGenerator {
  public:
-    explicit ScriptUniverseGenerator(conquerspace::scripting::ScriptInterface& _interface) :
+    explicit ScriptUniverseGenerator(cqsp::scripting::ScriptInterface& _interface) :
                                                                   script_engine(_interface) {}
-    void Generate(conquerspace::common::components::Universe& universe);
+    void Generate(cqsp::common::Universe& universe);
 
  private:
-    conquerspace::scripting::ScriptInterface& script_engine;
+    cqsp::scripting::ScriptInterface& script_engine;
 };
 
 }  // namespace universegenerator
 }  // namespace systems
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

@@ -19,7 +19,7 @@
 #include "common/components/movement.h"
 
 TEST(Common_vector2test, vec_len_test) {
-    namespace cqspt = conquerspace::common::components::types;
+    namespace cqspt = cqsp::common::components::types;
     cqspt::Vec2 vec2(3, 4);
     ASSERT_DOUBLE_EQ(vec2.length(), 5.f);
     vec2 = cqspt::Vec2(5, -12);
@@ -27,7 +27,7 @@ TEST(Common_vector2test, vec_len_test) {
 }
 
 TEST(Common_vector2test, vec2_normalize_test) {
-    namespace cqspt = conquerspace::common::components::types;
+    namespace cqspt = cqsp::common::components::types;
     cqspt::Vec2 vec2(3, 4);
     cqspt::Vec2 normalized = vec2.normalize();
     ASSERT_FLOAT_EQ(normalized.length(), 1.f);
@@ -36,7 +36,7 @@ TEST(Common_vector2test, vec2_normalize_test) {
 }
 
 TEST(Common_vector2test, vec2_angle_test) {
-    namespace cqspt = conquerspace::common::components::types;
+    namespace cqspt = cqsp::common::components::types;
     cqspt::Vec2 vec2(3, 3);
     ASSERT_DOUBLE_EQ(vec2.angle(), cqspt::PI/4);
     vec2 = cqspt::Vec2(0, 3);

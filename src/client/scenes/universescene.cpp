@@ -53,16 +53,16 @@
 
 bool game_halted = false;
 
-conquerspace::scene::UniverseScene::UniverseScene(
-    conquerspace::engine::Application& app) : Scene(app) {}
+cqsp::scene::UniverseScene::UniverseScene(
+    cqsp::engine::Application& app) : Scene(app) {}
 
-void conquerspace::scene::UniverseScene::Init() {
-    namespace cqspb = conquerspace::common::components::bodies;
-    namespace cqspco = conquerspace::common;
+void cqsp::scene::UniverseScene::Init() {
+    namespace cqspb = cqsp::common::components::bodies;
+    namespace cqspco = cqsp::common;
     simulation = std::make_shared<cqspco::systems::simulation::Simulation>
                                         (GetApp().GetUniverse(), GetApp().GetScriptInterface());
 
-    system_renderer = new conquerspace::client::systems::SysStarSystemRenderer(
+    system_renderer = new cqsp::client::systems::SysStarSystemRenderer(
         GetApp().GetUniverse(), GetApp());
     system_renderer->Initialize();
 
@@ -85,61 +85,19 @@ void conquerspace::scene::UniverseScene::Init() {
 
     selected_planet = player_civ->starting_planet;
 
-    AddUISystem<conquerspace::client::systems::SysPlanetInformation>();
-    AddUISystem<conquerspace::client::systems::SysTurnSaveWindow>();
-    AddUISystem<conquerspace::client::systems::SysStarSystemTree>();
-    AddUISystem<conquerspace::client::systems::SysPauseMenu>();
-    AddUISystem<conquerspace::client::systems::SysDebugMenu>();
-    AddUISystem<conquerspace::client::systems::SysCommand>();
-    AddUISystem<conquerspace::client::systems::gui::SysEvent>();
+    AddUISystem<cqsp::client::systems::SysPlanetInformation>();
+    AddUISystem<cqsp::client::systems::SysTurnSaveWindow>();
+    AddUISystem<cqsp::client::systems::SysStarSystemTree>();
+    AddUISystem<cqsp::client::systems::SysPauseMenu>();
+    AddUISystem<cqsp::client::systems::SysDebugMenu>();
+    AddUISystem<cqsp::client::systems::SysCommand>();
+    AddUISystem<cqsp::client::systems::gui::SysEvent>();
     simulation->tick();
 }
 
-void conquerspace::scene::UniverseScene::Update(float deltaTime) {
-    if (!ImGui::GetIO().WantCaptureKeyboard && !game_halted) {
-        if (GetApp().ButtonIsHeld(GLFW_KEY_A)) {
-            x += (deltaTime * 10);
-        }
-        if (GetApp().ButtonIsHeld(GLFW_KEY_D)) {
-            x -= (deltaTime * 10);
-        }
-        if (GetApp().ButtonIsHeld(GLFW_KEY_W)) {
-            y += (deltaTime * 10);
-        }
-        if (GetApp().ButtonIsHeld(GLFW_KEY_S)) {
-            y -= (deltaTime * 10);
-        }
-    }
-
-    double deltaX = previous_mouseX - GetApp().GetMouseX();
-    double deltaY = previous_mouseY - GetApp().GetMouseY();
-    if (!ImGui::GetIO().WantCaptureMouse && !game_halted) {
-        if (system_renderer->scroll + GetApp().GetScrollAmount() * 3 > 1.5) {
-            system_renderer->scroll += GetApp().GetScrollAmount() * 3;
-        }
-
-        if (GetApp().MouseButtonIsHeld(GLFW_MOUSE_BUTTON_LEFT)) {
-            system_renderer->view_x += deltaX/GetApp().GetWindowWidth()*3.1415*4;
-            system_renderer->view_y -= deltaY/GetApp().GetWindowHeight()*3.1415*4;
-
-            if (glm::degrees(system_renderer->view_y) > 89.f) {
-                system_renderer->view_y = glm::radians(89.f);
-            }
-            if (glm::degrees(system_renderer->view_y) < -89.f) {
-                system_renderer->view_y = glm::radians(-89.f);
-            }
-        }
-
-        previous_mouseX = GetApp().GetMouseX();
-        previous_mouseY = GetApp().GetMouseY();
-
-        // If clicks on object, go to the planet
-        entt::entity ent = GetApp().GetUniverse()
-            .view<conquerspace::client::systems::MouseOverEntity>().front();
-        if (GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) && ent != entt::null && !GetApp().MouseDragged()) {
-            // Then go to the object
-            SeePlanet(GetApp(), ent);
-        }
+void cqsp::scene::UniverseScene::Update(float deltaTime) {
+    if (!game_halted) {
+        system_renderer->Update();
     }
 
     // Check for last tick
@@ -149,8 +107,9 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
         system_renderer->OnTick();
     }
 
-    GetApp().GetUniverse().clear<conquerspace::client::systems::MouseOverEntity>();
+    GetApp().GetUniverse().clear<cqsp::client::systems::MouseOverEntity>();
     system_renderer->GetMouseOnObject(GetApp().GetMouseX(), GetApp().GetMouseY());
+
     for (auto& ui : user_interfaces) {
         if (game_halted) {
             ui->window_flags = ImGuiWindowFlags_NoInputs;
@@ -161,43 +120,31 @@ void conquerspace::scene::UniverseScene::Update(float deltaTime) {
     }
 }
 
-void conquerspace::scene::UniverseScene::Ui(float deltaTime) {
+void cqsp::scene::UniverseScene::Ui(float deltaTime) {
     for (auto& ui : user_interfaces) {
         ui->DoUI(deltaTime);
     }
-
-    /*int size = 20;
-    auto draw = ImGui::GetForegroundDrawList();
-    for (int x = 0; x < GetApplication().GetWindowWidth(); x+=size) {
-        for (int y = 0; y < GetApplication().GetWindowHeight(); y+=size) {
-            ImVec2 vec(x, y);
-            if (system_renderer->GetMouseOnObject(x, y) != entt::null) {
-                draw->AddRectFilled(vec, ImVec2(x + 1, y + 1),
-                                    IM_COL32(255, 0, 0, 255));
-            }
-        }
-    }*/
 }
 
-void conquerspace::scene::UniverseScene::Render(float deltaTime) {
+void cqsp::scene::UniverseScene::Render(float deltaTime) {
     glEnable(GL_MULTISAMPLE);
     system_renderer->Render();
 }
 
-void conquerspace::scene::SeePlanet(conquerspace::engine::Application& app, entt::entity ent) {
-    app.GetUniverse().clear<conquerspace::client::systems::RenderingPlanet>();
-    app.GetUniverse().emplace<conquerspace::client::systems::RenderingPlanet>(ent);
+void cqsp::scene::SeeStarSystem(cqsp::engine::Application& app, entt::entity ent) {
+    app.GetUniverse().clear<cqsp::client::systems::RenderingStarSystem>();
+    app.GetUniverse().emplace<cqsp::client::systems::RenderingStarSystem>(ent);
 }
 
-void conquerspace::scene::SeeStarSystem(conquerspace::engine::Application& app, entt::entity ent) {
-    app.GetUniverse().clear<conquerspace::client::systems::RenderingStarSystem>();
-    app.GetUniverse().emplace<conquerspace::client::systems::RenderingStarSystem>(ent);
+entt::entity cqsp::scene::GetCurrentViewingPlanet(cqsp::engine::Application& app) {
+    return app.GetUniverse().view<cqsp::client::systems::RenderingPlanet>().front();
 }
 
-entt::entity conquerspace::scene::GetCurrentViewingPlanet(conquerspace::engine::Application& app) {
-    return app.GetUniverse().view<conquerspace::client::systems::RenderingPlanet>().front();
+void cqsp::scene::SeePlanet(cqsp::engine::Application& app, entt::entity ent) {
+    app.GetUniverse().clear<cqsp::client::systems::RenderingPlanet>();
+    app.GetUniverse().emplace<cqsp::client::systems::RenderingPlanet>(ent);
 }
 
-void conquerspace::scene::SetGameHalted(bool b) { game_halted = b; }
+void cqsp::scene::SetGameHalted(bool b) { game_halted = b; }
 
-bool conquerspace::scene::IsGameHalted() { return game_halted; }
+bool cqsp::scene::IsGameHalted() { return game_halted; }

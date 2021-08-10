@@ -3,7 +3,7 @@
 #include <stb_vorbis.h>
 
 #include <spdlog/spdlog.h>
-namespace conquerspace::asset {
+namespace cqsp::asset {
 std::unique_ptr<AudioAsset> LoadOgg(std::ifstream& input) {
     // Read file
     input.seekg(0, std::ios::end);
@@ -29,4 +29,4 @@ std::unique_ptr<AudioAsset> LoadOgg(std::ifstream& input) {
     free(buffer);
     return audio_asset;
 }
-} // namespace conquerspace::asset
+} // namespace cqsp::asset

@@ -20,10 +20,10 @@
 #include "common/components/movement.h"
 #include "common/components/units.h"
 
-void conquerspace::common::systems::SysOrbit::DoSystem(components::Universe& universe) {
-    namespace cqspc = conquerspace::common::components;
-    namespace cqsps = conquerspace::common::components::ships;
-    namespace cqspt = conquerspace::common::components::types;
+void cqsp::common::systems::SysOrbit::DoSystem(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
+    namespace cqsps = cqsp::common::components::ships;
+    namespace cqspt = cqsp::common::components::types;
 
     auto bodies = universe.view<cqspt::Orbit>();
     for (entt::entity body : bodies) {
@@ -33,12 +33,12 @@ void conquerspace::common::systems::SysOrbit::DoSystem(components::Universe& uni
     }
 }
 
-int conquerspace::common::systems::SysOrbit::Interval() { return 1; }
+int cqsp::common::systems::SysOrbit::Interval() { return 1; }
 
-void conquerspace::common::systems::SysPath::DoSystem(components::Universe& universe) {
-    namespace cqspc = conquerspace::common::components;
-    namespace cqsps = conquerspace::common::components::ships;
-    namespace cqspt = conquerspace::common::components::types;
+void cqsp::common::systems::SysPath::DoSystem(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
+    namespace cqsps = cqsp::common::components::ships;
+    namespace cqspt = cqsp::common::components::types;
 
     auto bodies = universe.view<cqspt::MoveTarget, cqspt::Position>(entt::exclude<cqspt::Orbit>);
     for (entt::entity body : bodies) {
@@ -54,4 +54,4 @@ void conquerspace::common::systems::SysPath::DoSystem(components::Universe& univ
     }
 }
 
-int conquerspace::common::systems::SysPath::Interval() { return 1; }
+int cqsp::common::systems::SysPath::Interval() { return 1; }

@@ -16,7 +16,7 @@
 */
 #pragma once
 
-namespace conquerspace {
+namespace cqsp {
 namespace engine {
 class UserInput {
 };

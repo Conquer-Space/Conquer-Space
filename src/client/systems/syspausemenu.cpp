@@ -25,9 +25,9 @@
 #include "engine/cqspgui.h"
 
 
-void conquerspace::client::systems::SysPauseMenu::Init() {}
+void cqsp::client::systems::SysPauseMenu::Init() {}
 
-void conquerspace::client::systems::SysPauseMenu::DoUI(int delta_time) {
+void cqsp::client::systems::SysPauseMenu::DoUI(int delta_time) {
     if (!to_show) {
         return;
     }
@@ -46,7 +46,7 @@ void conquerspace::client::systems::SysPauseMenu::DoUI(int delta_time) {
         const float button_height = 0;
         if (CQSPGui::DefaultButton("Resume", ImVec2(-FLT_MIN, button_height))) {
             to_show = false;
-            conquerspace::scene::SetGameHalted(false);
+            cqsp::scene::SetGameHalted(false);
         }
         CQSPGui::DefaultButton("Save Game", ImVec2(-FLT_MIN, button_height));
         CQSPGui::DefaultButton("Load Game", ImVec2(-FLT_MIN, button_height));
@@ -71,15 +71,15 @@ void conquerspace::client::systems::SysPauseMenu::DoUI(int delta_time) {
     }
 
     if (to_show_options_window) {
-        conquerspace::client::systems::ShowOptionsWindow(&to_show_options_window, GetApp());
+        cqsp::client::systems::ShowOptionsWindow(&to_show_options_window, GetApp());
     }
 }
 
-void conquerspace::client::systems::SysPauseMenu::DoUpdate(int delta_time) {
+void cqsp::client::systems::SysPauseMenu::DoUpdate(int delta_time) {
     if (GetApp().ButtonIsReleased(GLFW_KEY_ESCAPE)) {
         // Then pause
         to_show = !to_show;
         to_show_options_window = false;
-        conquerspace::scene::SetGameHalted(to_show);
+        cqsp::scene::SetGameHalted(to_show);
     }
 }

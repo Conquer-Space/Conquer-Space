@@ -7,7 +7,7 @@
 
 #include "common/util/profiler.h"
 
-void conquerspace::engine::TextureRenderer::Draw() {
+void cqsp::engine::TextureRenderer::Draw() {
     if (framebuffer == 0) {
         glGenFramebuffers(1, &framebuffer);
     }
@@ -23,7 +23,7 @@ void conquerspace::engine::TextureRenderer::Draw() {
         renderable->shaderProgram->setMat4("view", view);
         renderable->shaderProgram->setMat4("projection", projection);
         int i = 0;
-        for (std::vector<conquerspace::asset::Texture*>::iterator it = renderable->textures.begin();
+        for (std::vector<cqsp::asset::Texture*>::iterator it = renderable->textures.begin();
                                                     it != renderable->textures.end(); ++it) {
             glActiveTexture(GL_TEXTURE0 + i);
             glBindTexture((*it)->texture_type, (*it)->id);
@@ -45,7 +45,7 @@ void conquerspace::engine::TextureRenderer::Draw() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void conquerspace::engine::TextureRenderer::RenderBuffer() {
+void cqsp::engine::TextureRenderer::RenderBuffer() {
     buffer_shader->UseProgram();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, framebuffer);
@@ -63,7 +63,7 @@ void conquerspace::engine::TextureRenderer::RenderBuffer() {
     glActiveTexture(GL_TEXTURE0);
 }
 
-void conquerspace::engine::FramebufferRenderer::InitTexture(int width, int height) {
+void cqsp::engine::FramebufferRenderer::InitTexture(int width, int height) {
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
     // create a color attachment texture
@@ -85,20 +85,20 @@ void conquerspace::engine::FramebufferRenderer::InitTexture(int width, int heigh
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void conquerspace::engine::FramebufferRenderer::Clear() {
+void cqsp::engine::FramebufferRenderer::Clear() {
     glClearColor(0.f, 0.f, 0.f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void conquerspace::engine::FramebufferRenderer::BeginDraw() {
+void cqsp::engine::FramebufferRenderer::BeginDraw() {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 }
 
-void conquerspace::engine::FramebufferRenderer::EndDraw() {
+void cqsp::engine::FramebufferRenderer::EndDraw() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void conquerspace::engine::FramebufferRenderer::RenderBuffer() {
+void cqsp::engine::FramebufferRenderer::RenderBuffer() {
     buffer_shader.UseProgram();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, colorbuffer);
@@ -116,12 +116,12 @@ void conquerspace::engine::FramebufferRenderer::RenderBuffer() {
     glActiveTexture(GL_TEXTURE0);
 }
 
-void conquerspace::engine::FramebufferRenderer::Free() {
+void cqsp::engine::FramebufferRenderer::Free() {
     glDeleteFramebuffers(1, &framebuffer);
     glDeleteBuffers(1, &colorbuffer);
 }
 
-void conquerspace::engine::FramebufferRenderer::NewFrame(Window& window) {
+void cqsp::engine::FramebufferRenderer::NewFrame(Window& window) {
     BeginDraw();
     Clear();
     EndDraw();
@@ -133,7 +133,7 @@ void conquerspace::engine::FramebufferRenderer::NewFrame(Window& window) {
     }
 }
 
-void conquerspace::engine::AAFrameBufferRenderer::InitTexture(int width,
+void cqsp::engine::AAFrameBufferRenderer::InitTexture(int width,
                                                               int height) {
     this->width = width;
     this->height = height;
@@ -174,27 +174,27 @@ void conquerspace::engine::AAFrameBufferRenderer::InitTexture(int width,
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void conquerspace::engine::AAFrameBufferRenderer::Clear() {
+void cqsp::engine::AAFrameBufferRenderer::Clear() {
     glClearColor(0.f, 0.f, 0.f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void conquerspace::engine::AAFrameBufferRenderer::BeginDraw() {
+void cqsp::engine::AAFrameBufferRenderer::BeginDraw() {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 }
 
-void conquerspace::engine::AAFrameBufferRenderer::EndDraw() {
+void cqsp::engine::AAFrameBufferRenderer::EndDraw() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void conquerspace::engine::AAFrameBufferRenderer::Free() {
+void cqsp::engine::AAFrameBufferRenderer::Free() {
     glDeleteFramebuffers(1, &framebuffer);
     glDeleteFramebuffers(1, &intermediateFBO);
     glDeleteBuffers(1, &screenTexture);
     glDeleteFramebuffers(1, &textureColorBufferMultiSampled);
 }
 
-void conquerspace::engine::AAFrameBufferRenderer::RenderBuffer() {
+void cqsp::engine::AAFrameBufferRenderer::RenderBuffer() {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, intermediateFBO);
     glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT,  GL_NEAREST);
@@ -218,7 +218,7 @@ void conquerspace::engine::AAFrameBufferRenderer::RenderBuffer() {
     glActiveTexture(GL_TEXTURE0);
 }
 
-void conquerspace::engine::AAFrameBufferRenderer::NewFrame(Window& window) {
+void cqsp::engine::AAFrameBufferRenderer::NewFrame(Window& window) {
     BeginDraw();
     Clear();
     EndDraw();

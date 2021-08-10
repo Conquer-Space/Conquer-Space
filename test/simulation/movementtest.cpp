@@ -22,13 +22,13 @@
 #include "common/components/movement.h"
 #include "common/components/ships.h"
 
-namespace cqspt = conquerspace::common::components::types;
+namespace cqspt = cqsp::common::components::types;
 class SystemsMovementTest : public ::testing::Test {
  protected:
     static void SetUpTestSuite() {
         star_system = universe.create();
 
-        universe.emplace<conquerspace::common::components::bodies::StarSystem>(star_system);
+        universe.emplace<cqsp::common::components::bodies::StarSystem>(star_system);
 
         planet = universe.create();
 
@@ -45,10 +45,10 @@ class SystemsMovementTest : public ::testing::Test {
     static entt::entity planet;
     static entt::entity ship;
     static entt::entity target;
-    static conquerspace::common::components::Universe universe;
+    static cqsp::common::Universe universe;
 };
 
-conquerspace::common::components::Universe SystemsMovementTest::universe = conquerspace::common::components::Universe();
+cqsp::common::Universe SystemsMovementTest::universe = cqsp::common::Universe();
 entt::entity SystemsMovementTest::star_system = entt::null;
 entt::entity SystemsMovementTest::planet = entt::null;
 entt::entity SystemsMovementTest::ship = entt::null;
@@ -56,10 +56,10 @@ entt::entity SystemsMovementTest::target = entt::null;
 
 TEST_F(SystemsMovementTest, ShipCreationTest) {
     // Test out the things
-    ship = conquerspace::common::systems::actions::CreateShip(universe, entt::null,
+    ship = cqsp::common::systems::actions::CreateShip(universe, entt::null,
                                                        planet, star_system);
     EXPECT_TRUE(universe.valid(ship));
-    bool all_of_pos_and_ship = universe.all_of<cqspt::Position, conquerspace::common::components::ships::Ship>(ship);
+    bool all_of_pos_and_ship = universe.all_of<cqspt::Position, cqsp::common::components::ships::Ship>(ship);
     ASSERT_TRUE(all_of_pos_and_ship);
     auto& position = universe.get<cqspt::Position>(ship);
 
@@ -70,7 +70,7 @@ TEST_F(SystemsMovementTest, ShipCreationTest) {
 
 TEST_F(SystemsMovementTest, ShipMovementTest) {
     // Do it a couple of times and see if it arrives
-    conquerspace::common::systems::SysPath system;
+    cqsp::common::systems::SysPath system;
     EXPECT_TRUE(universe.valid(ship));
     EXPECT_EQ(universe.size(), 4);
 

@@ -21,20 +21,20 @@
 #include "common/scripting/scripting.h"
 #include "common/universe.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace systems {
 class SysEventScriptRunner {
  public:
-    SysEventScriptRunner(conquerspace::common::components::Universe& _universe,
+    SysEventScriptRunner(cqsp::common::Universe& _universe,
                          scripting::ScriptInterface& interface);
     void ScriptEngine();
     ~SysEventScriptRunner();
  private:
     scripting::ScriptInterface &m_script_interface;
-    conquerspace::common::components::Universe& universe;
+    cqsp::common::Universe& universe;
     std::vector<sol::table> events;
 };
 }  // namespace systems
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

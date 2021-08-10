@@ -18,12 +18,12 @@
 
 #include "engine/renderer/renderable.h"
 #include "engine/renderer/mesh.h"
-namespace conquerspace {
+namespace cqsp {
 namespace primitive {
-void MakeTexturedPaneMesh(conquerspace::engine::Renderable&);
+void MakeTexturedPaneMesh(cqsp::engine::Renderable&);
 // Normal pane
-void MakeTexturedPaneMesh(conquerspace::engine::Mesh&);
+void MakeTexturedPaneMesh(cqsp::engine::Mesh&);
 // In case you need a mirrored pane, like for framebuffers
-void MakeTexturedPaneMesh(conquerspace::engine::Mesh&, bool);
+void MakeTexturedPaneMesh(cqsp::engine::Mesh&, bool);
 }
 }

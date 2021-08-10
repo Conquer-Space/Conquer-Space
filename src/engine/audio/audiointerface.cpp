@@ -23,8 +23,8 @@
 
 #include "engine/audio/alaudioasset.h"
 
-using conquerspace::engine::audio::AudioInterface;
-using conquerspace::asset::AudioAsset;
+using cqsp::engine::audio::AudioInterface;
+using cqsp::asset::AudioAsset;
 
 AudioInterface::AudioInterface() {
     logger = spdlog::stdout_color_mt("audio");
@@ -81,7 +81,7 @@ void AudioInterface::StartWorker() {
             SPDLOG_LOGGER_INFO(logger, "Loading track \'{}\'", track_info["name"]);
             auto mfile = std::ifstream(track_file, std::ios::binary);
             if (mfile.good()) {
-                music = conquerspace::asset::LoadOgg(mfile);
+                music = cqsp::asset::LoadOgg(mfile);
                 SPDLOG_LOGGER_INFO(logger, "Length of audio: {}", music->Length());
             } else {
                 SPDLOG_LOGGER_ERROR(logger, "Failed to load audio {}", track_info["name"]);
@@ -113,11 +113,11 @@ void AudioInterface::SetMusicVolume(float volume) {
     music_volume = volume;
 }
 
-void conquerspace::engine::audio::AudioInterface::AddAudioClip(const std::string& key, AudioAsset* asset) {
+void cqsp::engine::audio::AudioInterface::AddAudioClip(const std::string& key, AudioAsset* asset) {
     assets[key] = asset;
 }
 
-void conquerspace::engine::audio::AudioInterface::PlayAudioClip(const std::string& key) {
+void cqsp::engine::audio::AudioInterface::PlayAudioClip(const std::string& key) {
     if (assets.find(key) == assets.end()) {
         SPDLOG_LOGGER_WARN(logger, "Unable to find audio clip {}", key);
     } else {
@@ -128,10 +128,10 @@ void conquerspace::engine::audio::AudioInterface::PlayAudioClip(const std::strin
     }
 }
 
-void conquerspace::engine::audio::AudioInterface::PlayAudioClip(
-    conquerspace::asset::AudioAsset* asset, int channel) {}
+void cqsp::engine::audio::AudioInterface::PlayAudioClip(
+    cqsp::asset::AudioAsset* asset, int channel) {}
 
-void conquerspace::engine::audio::AudioInterface::SetChannelVolume(int channel, float gain) {
+void cqsp::engine::audio::AudioInterface::SetChannelVolume(int channel, float gain) {
     channels[channel]->SetGain(gain);
 }
 
@@ -166,7 +166,7 @@ inline ALenum to_al_format(int16_t channels, int16_t samples) {
 }
 
 std::unique_ptr<AudioAsset> AudioInterface::LoadWav(std::ifstream &in) {
-    auto audio_asset = std::make_unique<conquerspace::asset::ALAudioAsset>();
+    auto audio_asset = std::make_unique<cqsp::asset::ALAudioAsset>();
     char buffer[4];
     in.read(buffer, 4);
     if (strncmp(buffer, "RIFF", 4) != 0) {
@@ -236,6 +236,6 @@ void AudioInterface::InitALContext() {
     }
 }
 
-void conquerspace::engine::audio::AudioChannel::SetBuffer(conquerspace::asset::AudioAsset* buffer) {
-    alSourcei(source, AL_BUFFER, dynamic_cast<conquerspace::asset::ALAudioAsset*>(buffer)->buffer);
+void cqsp::engine::audio::AudioChannel::SetBuffer(cqsp::asset::AudioAsset* buffer) {
+    alSourcei(source, AL_BUFFER, dynamic_cast<cqsp::asset::ALAudioAsset*>(buffer)->buffer);
 }

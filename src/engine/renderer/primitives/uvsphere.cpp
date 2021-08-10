@@ -22,8 +22,8 @@
 
 #include <vector>
 
-void conquerspace::primitive::ConstructSphereMesh(
-    int x_segments, int y_segments, conquerspace::engine::Mesh& mesh) {
+void cqsp::primitive::ConstructSphereMesh(
+    int x_segments, int y_segments, cqsp::engine::Mesh& mesh) {
     GLuint VAO = 0;
     glGenVertexArrays(1, &VAO);
 

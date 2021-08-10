@@ -16,7 +16,7 @@
 */
 #pragma once
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace components {
 struct PopulationSegment {
@@ -26,4 +26,4 @@ struct PopulationSegment {
 struct Hunger {};
 }  // namespace components
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

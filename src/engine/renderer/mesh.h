@@ -18,7 +18,7 @@
 
 #include <vector>
 
-namespace conquerspace {
+namespace cqsp {
 namespace engine {
 
 class Mesh {
@@ -38,4 +38,4 @@ class Mesh {
     unsigned int buffer_type = 1;
 };
 }  // namespace engine
-}  // namespace conquerspace
+}  // namespace cqsp

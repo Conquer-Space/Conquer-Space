@@ -20,7 +20,7 @@
 
 #include <entt/entt.hpp>
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace components {
 struct Surface {
@@ -42,4 +42,4 @@ struct Settlement {
 };
 }  // namespace components
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

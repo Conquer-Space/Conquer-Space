@@ -20,14 +20,14 @@
 
 #include "common/universe.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace systems {
 class ISimulationSystem {
  public:
-    virtual void DoSystem(components::Universe& universe) = 0;
+    virtual void DoSystem(Universe& universe) = 0;
     virtual int Interval() { return 25; }
 };
 }  // namespace systems
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

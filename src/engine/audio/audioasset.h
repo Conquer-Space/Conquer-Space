@@ -18,9 +18,9 @@
 
 #include "engine/asset.h"
 
-namespace conquerspace {
+namespace cqsp {
 namespace asset {
-class AudioAsset : public conquerspace::asset::Asset {
+class AudioAsset : public cqsp::asset::Asset {
  public:
     /**
      * Length in seconds.
@@ -30,4 +30,4 @@ class AudioAsset : public conquerspace::asset::Asset {
     virtual ~AudioAsset() {}
 };
 }  // namespace asset
-}  // namespace conquerspace
+}  // namespace cqsp

@@ -19,7 +19,7 @@
 #include <entt/entt.hpp>
 
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace systems {
 namespace resource {
@@ -37,4 +37,4 @@ bool TransferResources(entt::registry &registry, entt::entity from, entt::entity
 }
 }  // namespace systems
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

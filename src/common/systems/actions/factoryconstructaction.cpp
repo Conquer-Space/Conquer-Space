@@ -21,16 +21,16 @@
 
 #include <spdlog/spdlog.h>
 
-using conquerspace::common::components::Universe;
-entt::entity conquerspace::common::systems::actions::OrderConstructionFactory(
-    conquerspace::common::components::Universe& universe, entt::entity city,
+using cqsp::common::Universe;
+entt::entity cqsp::common::systems::actions::OrderConstructionFactory(
+    cqsp::common::Universe& universe, entt::entity city,
     entt::entity recipe, int productivity, entt::entity builder) {
     return entt::entity();
 }
-entt::entity conquerspace::common::systems::actions::CreateFactory(
+entt::entity cqsp::common::systems::actions::CreateFactory(
     Universe& universe, entt::entity city, entt::entity recipe,
     int productivity) {
-    namespace cqspc = conquerspace::common::components;
+    namespace cqspc = cqsp::common::components;
     // Make the factory
     entt::entity factory = universe.create();
     auto& factory_converter = universe.emplace<cqspc::ResourceConverter>(factory);
@@ -48,19 +48,19 @@ entt::entity conquerspace::common::systems::actions::CreateFactory(
     return factory;
 }
 
-conquerspace::common::components::ResourceLedger
-conquerspace::common::systems::actions::GetFactoryCost(
-    conquerspace::common::components::Universe& universe, entt::entity city,
+cqsp::common::components::ResourceLedger
+cqsp::common::systems::actions::GetFactoryCost(
+    cqsp::common::Universe& universe, entt::entity city,
     entt::entity recipe, int productivity) {
-    conquerspace::common::components::ResourceLedger ledger;
+    cqsp::common::components::ResourceLedger ledger;
     ledger[universe.goods["concrete"]] = 1000;
     return ledger;
 }
 
-entt::entity conquerspace::common::systems::actions::CreateMine(
-    conquerspace::common::components::Universe& universe, entt::entity city,
+entt::entity cqsp::common::systems::actions::CreateMine(
+    cqsp::common::Universe& universe, entt::entity city,
     entt::entity good, int amount) {
-    namespace cqspc = conquerspace::common::components;
+    namespace cqspc = cqsp::common::components;
     entt::entity mine = universe.create();
     auto& gen = universe.emplace<cqspc::ResourceGenerator>(mine);
     universe.emplace<cqspc::Mine>(mine);
@@ -75,9 +75,9 @@ entt::entity conquerspace::common::systems::actions::CreateMine(
     return mine;
 }
 
-conquerspace::common::components::ResourceLedger
-conquerspace::common::systems::actions::GetMineCost(
-    conquerspace::common::components::Universe& universe, entt::entity city,
+cqsp::common::components::ResourceLedger
+cqsp::common::systems::actions::GetMineCost(
+    cqsp::common::Universe& universe, entt::entity city,
     entt::entity good, int amount) {
-    return conquerspace::common::components::ResourceLedger();
+    return cqsp::common::components::ResourceLedger();
 }

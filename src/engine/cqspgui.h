@@ -7,7 +7,7 @@
 /// Gui with sound
 /// </summary>
 namespace CQSPGui {
-void SetApplication(conquerspace::engine::Application*);
+void SetApplication(cqsp::engine::Application*);
 bool DefaultButton(const char* name,
                    const ImVec2& size = ImVec2(0, 0));
 bool SmallDefaultButton(const char* label);

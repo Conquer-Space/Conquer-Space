@@ -18,6 +18,6 @@
 
 #include <string>
 
-namespace conquerspace::engine {
-std::string GetConquerSpacePath();
-}  // namespace conquerspace::engine
+namespace cqsp::engine {
+std::string GetcqspPath();
+}  // namespace cqsp::engine

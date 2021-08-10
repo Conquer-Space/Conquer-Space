@@ -18,7 +18,7 @@
 
 #include <vector>
 
-namespace conquerspace {
+namespace cqsp {
 namespace common {
 namespace components {
 struct Industry {
@@ -36,4 +36,4 @@ struct Mine {};
 struct Farm {};
 }  // namespace components
 }  // namespace common
-}  // namespace conquerspace
+}  // namespace cqsp

@@ -22,7 +22,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-unsigned int conquerspace::asset::LoadTexture(unsigned char*& data,
+unsigned int cqsp::asset::LoadTexture(unsigned char*& data,
                                         int components,
                                         int width,
                                         int height,
@@ -57,7 +57,7 @@ unsigned int conquerspace::asset::LoadTexture(unsigned char*& data,
     return texid;
 }
 
-void conquerspace::asset::LoadTexture(Texture& texture, unsigned char*& data,
+void cqsp::asset::LoadTexture(Texture& texture, unsigned char*& data,
                                       int components, int width, int height,
                                       TextureLoadingOptions& options) {
     texture.id = LoadTexture(data, components, width, height, options);
@@ -65,7 +65,7 @@ void conquerspace::asset::LoadTexture(Texture& texture, unsigned char*& data,
     texture.height = height;
 }
 
-void conquerspace::asset::LoadCubemap(Texture &texture, std::vector<unsigned char*>& faces,
+void cqsp::asset::LoadCubemap(Texture &texture, std::vector<unsigned char*>& faces,
                     int components,
                     int width,
                     int height,
@@ -101,9 +101,9 @@ void conquerspace::asset::LoadCubemap(Texture &texture, std::vector<unsigned cha
     texture.texture_type = GL_TEXTURE_CUBE_MAP;
 }
 
-conquerspace::asset::Texture::Texture() { texture_type = GL_TEXTURE_2D; }
+cqsp::asset::Texture::Texture() { texture_type = GL_TEXTURE_2D; }
 
-conquerspace::asset::Texture::~Texture() {
+cqsp::asset::Texture::~Texture() {
     // Delete textures
     glDeleteTextures(1, &id);
 }

@@ -21,7 +21,7 @@
 #include <cmath>
 #include <string>
 
-namespace conquerspace {
+namespace cqsp {
 namespace util {
 inline std::string LongToHumanString(int64_t l) {
     if (abs(l) < 1000) {
@@ -45,4 +45,4 @@ inline std::string LongToHumanString(int64_t l) {
     return s;
 }
 }  // namespace util
-}  // namespace conquerspace
+}  // namespace cqsp

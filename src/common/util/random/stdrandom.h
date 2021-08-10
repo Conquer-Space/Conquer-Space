@@ -20,7 +20,7 @@
 
 #include "common/util/random/random.h"
 
-namespace conquerspace::common::util {
+namespace cqsp::common::util {
 class StdRandom : public IRandom {
    public:
     StdRandom(int _seed) : IRandom(_seed), random_gen(_seed){};
@@ -38,4 +38,4 @@ class StdRandom : public IRandom {
  private:
     std::mt19937 random_gen;
 };
-}  // namespace conquerspace::common::util
+}  // namespace cqsp::common::util
