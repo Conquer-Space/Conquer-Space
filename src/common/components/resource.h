@@ -117,6 +117,8 @@ struct ResourceDemand : public ResourceLedger {};
 struct FailedResourceTransfer {
     // Ledgers later to show how much
 };
+
+struct ResourceDistribution : public std::map<entt::entity, double> {};
 }  // namespace components
 }  // namespace common
 }  // namespace cqsp

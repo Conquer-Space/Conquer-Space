@@ -148,6 +148,11 @@ void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
         consumption[good] = amount;
     });
 
+    REGISTER_FUNCTION("set_resource", [&](entt::entity planet, entt::entity resource, int seed) {
+        auto& dist = universe.get_or_emplace<cqspc::ResourceDistribution>(planet);
+        dist[resource] = seed;
+    });
+
     REGISTER_FUNCTION("create_market", [&]() {
         entt::entity entity = universe.create();
         universe.emplace<cqspc::Market>(entity);

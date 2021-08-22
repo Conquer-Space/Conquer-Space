@@ -295,13 +295,13 @@ void SysStarSystemRenderer::SeeEntity() {
 
     less_detailed_terrain_generator_thread = std::thread([&]() {
         // Generate slightly less detailed terrain so that it looks better at first
-        intermediate_image_generator.GenerateTerrain(6, 6);
+        intermediate_image_generator.GenerateTerrain(4, 6);
         second_terrain_complete = true;
     });
 
     terrain_generator_thread = std::thread([&]() {
         // Generate slightly less detailed terrain so that it looks better at first
-        final_image_generator.GenerateTerrain(8, 10);
+        final_image_generator.GenerateTerrain(1, 11);
         terrain_complete = true;
     });
 }

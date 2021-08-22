@@ -25,7 +25,7 @@ namespace client {
 namespace systems {
 class TerrainImageGenerator {
  public:
-    void GenerateTerrain(int, int);
+    void GenerateTerrain(int octaves, int size);
     void ClearData();
 
     noise::utils::Image& GetHeightMap() { return height_map; }
