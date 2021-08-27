@@ -23,6 +23,7 @@
 void cqsp::client::systems::TerrainImageGenerator::GenerateTerrain(int octaves, int size) {
     noise::module::Perlin noise_module;
     noise_module.SetOctaveCount(octaves);
+    noise_module.SetNoiseQuality(noise::QUALITY_FAST);
     noise_module.SetSeed(seed);
     noise_module.SetFrequency(2);
 
@@ -57,10 +58,10 @@ void cqsp::client::systems::TerrainImageGenerator::GenerateTerrain(int octaves, 
     renderer.AddGradientPoint(0.3750, utils::Color(224, 224, 0, 255));  // dirt
     renderer.AddGradientPoint(0.7500, utils::Color(128, 128, 128, 255));  // rock
     renderer.AddGradientPoint(1.0000, utils::Color(255, 255, 255, 255));  // snow
-    renderer.EnableLight();
+    /*renderer.EnableLight();
     renderer.SetLightContrast(3.0);
     renderer.SetLightBrightness(2.0);
-    renderer.SetLightAzimuth(0);
+    renderer.SetLightAzimuth(0);*/
 
     renderer.Render();
 }

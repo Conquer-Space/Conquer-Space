@@ -301,7 +301,11 @@ void SysStarSystemRenderer::SeeEntity() {
 
     terrain_generator_thread = std::thread([&]() {
         // Generate slightly less detailed terrain so that it looks better at first
-        final_image_generator.GenerateTerrain(1, 11);
+        auto start = std::chrono::high_resolution_clock::now();
+        final_image_generator.GenerateTerrain(6, 11);
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+        SPDLOG_INFO("{}", duration.count());
         terrain_complete = true;
     });
 }
