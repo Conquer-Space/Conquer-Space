@@ -112,6 +112,8 @@ generators:insert({
         add_resource(market, goods["steel"], 50000)
         add_resource(market, goods["copper"], 50000)
 
+        set_resource(planet, goods["copper"], 10)
+
         -- Add city
         local city_count = random(30, 50)
         for index = 0, city_count, 1 do

@@ -14,10 +14,16 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "engine/application.h"
+#pragma once
+
+#include <entt/entt.hpp>
 
 namespace cqsp {
-namespace scripting {
-void LoadFunctions(cqsp::engine::Application& app);
-}
-}
+namespace client {
+namespace components {
+struct PlanetTerrainRender {
+    entt::entity resource;
+};
+}  // namespace components
+}  // namespace client
+}  // namespace cqsp

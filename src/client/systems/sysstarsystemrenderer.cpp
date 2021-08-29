@@ -25,6 +25,8 @@
 #include <glm/gtx/polar_coordinates.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+#include "client/components/planetrendering.h"
+
 #include "engine/renderer/primitives/uvsphere.h"
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/primitives/cube.h"
@@ -340,6 +342,13 @@ void SysStarSystemRenderer::Update() {
             SeePlanet(ent);
         }
     }
+    // Check if it has terrain resource rendering, and make terrain thing
+    if (m_app.GetUniverse().all_of<cqsp::client::components::PlanetTerrainRender>(m_viewing_entity)) {
+        auto &rend = m_app.GetUniverse()
+                         .get<cqsp::client::components::PlanetTerrainRender>(
+                             m_viewing_entity);
+        // Check if it's the same
+    }
 }
 
 void SysStarSystemRenderer::SeePlanet(entt::entity ent) {
@@ -510,8 +519,7 @@ void SysStarSystemRenderer::CalculateCamera() {
     viewport = glm::vec4(0.f, 0.f, m_app.GetWindowWidth(), m_app.GetWindowHeight());
 }
 
-void SysStarSystemRenderer::SetPlanetTexture(
-    TerrainImageGenerator &generator) {
+void SysStarSystemRenderer::SetPlanetTexture(TerrainImageGenerator &generator) {
     unsigned int albedo_map = GeneratePlanetTexture(generator.GetAlbedoMap());
     unsigned int height_map  = GeneratePlanetTexture(generator.GetHeightMap());
     generator.ClearData();
