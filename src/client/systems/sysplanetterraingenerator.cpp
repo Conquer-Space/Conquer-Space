@@ -16,6 +16,8 @@
 */
 #include "client/systems/sysplanetterraingenerator.h"
 
+
+#include <noise/module/simplex.h>
 #include <spdlog/spdlog.h>
 
 #include <cmath>
@@ -37,7 +39,14 @@ void cqsp::client::systems::TerrainImageGenerator::GenerateTerrain(int octaves, 
     heightMapBuilder.SetDestSize(textureWidth, textureHeight);
 
     heightMapBuilder.SetBounds(-90.0, 90.0, -180.0, 180.0);
-    heightMapBuilder.Build();
+    {
+        auto start = std::chrono::high_resolution_clock::now();
+        heightMapBuilder.Build();
+        auto end = std::chrono::high_resolution_clock::now();
+        SPDLOG_INFO(
+            "Heightmap construction time: {}",
+            std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count());
+    }
 
     noise::utils::RendererImage renderer;
     renderer.SetSourceNoiseMap(noise_map);
@@ -63,7 +72,14 @@ void cqsp::client::systems::TerrainImageGenerator::GenerateTerrain(int octaves, 
     renderer.SetLightBrightness(2.0);
     renderer.SetLightAzimuth(0);*/
 
-    renderer.Render();
+    {
+        auto start = std::chrono::high_resolution_clock::now();
+        renderer.Render();
+        auto end = std::chrono::high_resolution_clock::now();
+        SPDLOG_INFO(
+            "renderer construction time: {}",
+            std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count());
+    }
 }
 
 void cqsp::client::systems::TerrainImageGenerator::ClearData() {

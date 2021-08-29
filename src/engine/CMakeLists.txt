@@ -62,5 +62,4 @@ target_link_libraries(cqsp-engine PUBLIC
     fmt
     libnoise
     OpenAL
-    libnoise-utils
 )
