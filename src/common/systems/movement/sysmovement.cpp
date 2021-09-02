@@ -28,8 +28,8 @@ void cqsp::common::systems::SysOrbit::DoSystem(Universe& universe) {
     auto bodies = universe.view<cqspt::Orbit>();
     for (entt::entity body : bodies) {
         // Disable orbits for now
-        //auto &orb = cqspt::updateOrbit(universe.get<cqspt::Orbit>(body));
-        //cqspt::updatePos(universe.get<cqspt::Kinematics>(body), orb);
+        auto &orb = cqspt::updateOrbit(universe.get<cqspt::Orbit>(body));
+        cqspt::updatePos(universe.get<cqspt::Kinematics>(body), orb);
     }
 }
 
@@ -40,16 +40,16 @@ void cqsp::common::systems::SysPath::DoSystem(Universe& universe) {
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspt = cqsp::common::components::types;
 
-    auto bodies = universe.view<cqspt::MoveTarget, cqspt::Position>(entt::exclude<cqspt::Orbit>);
+    auto bodies = universe.view<cqspt::MoveTarget, cqspt::Kinematics>(entt::exclude<cqspt::Orbit>);
     for (entt::entity body : bodies) {
-        cqspt::Position& bodykin = universe.get<cqspt::Position>(body);
-        cqspt::Position targetkin = cqspt::toVec2(universe.get<cqspt::Orbit>(universe.get<cqspt::MoveTarget>(body).target));
-        cqspt::Vec2 path = targetkin - bodykin;
-        float velocity = .5f;
-        if (targetkin.distance(bodykin) < velocity) {
-            bodykin = targetkin;
+        cqspt::Kinematics& bodykin = universe.get<cqspt::Kinematics>(body);
+        cqspt::Kinematics targetkin = universe.get<cqspt::Kinematics>(
+            universe.get<cqspt::MoveTarget>(body).target);
+        glm::vec3 path = targetkin.postion - bodykin.postion;
+        if (glm::length(path) < bodykin.topspeed) {
+            bodykin.postion = targetkin.postion;
         } else {
-           bodykin += (velocity * path.normalize());
+            bodykin.postion += (targetkin.topspeed * glm::normalize(path));
         }
     }
 }

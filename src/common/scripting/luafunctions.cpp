@@ -75,6 +75,7 @@ void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
                                             double eccentricity, double argument) {
         cqspt::Orbit &orb = universe.emplace<cqspt::Orbit>(orbital_entity, theta, distance, eccentricity, argument, 40);
         cqspt::findPeriod(orb);
+        universe.emplace<cqspt::Kinematics>(orbital_entity);
     });
 
     REGISTER_FUNCTION("set_radius", [&] (entt::entity body, int radius) {

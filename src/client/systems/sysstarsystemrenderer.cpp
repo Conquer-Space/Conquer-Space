@@ -478,15 +478,11 @@ void SysStarSystemRenderer::DrawTerrainlessPlanet(
 }
 
 glm::vec3 SysStarSystemRenderer::CalculateObjectPos(entt::entity &ent) {
-    namespace cqspb = cqsp::common::components::bodies;
+    //namespace cqspb = cqsp::common::components::bodies;
     namespace cqspt = cqsp::common::components::types;
     // Get the things
-    if (m_universe.all_of<cqspt::Orbit>(ent)) {
-        cqspt::Vec2 pos = cqspt::toVec2(m_universe.get<cqspt::Orbit>(ent))/0.01;
-        return glm::vec3(pos.y, 0, pos.x);
-    } else if (m_universe.all_of<cqspt::Position>(ent)) {
-        cqspt::Vec2 &pos = m_universe.get<cqspt::Position>(ent);
-        return (glm::vec3(pos.y/0.01, 0, pos.x/0.01));
+    if (m_universe.all_of<cqspt::Kinematics>(ent)) {
+        return (m_universe.get<cqspt::Kinematics>(ent).postion / 0.01f);
     }
     return glm::vec3(0, 0, 0);
 }

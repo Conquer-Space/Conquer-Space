@@ -51,6 +51,7 @@ struct Orbit {
           gravitationalparameter(_gravparam){}//should be 40
 };
 
+/*
 struct Vec2 {
     astronomical_unit x;
     astronomical_unit y;
@@ -183,9 +184,17 @@ struct Vec2 {
     }
 };
 
-struct Position : public Vec2 {
-    using Vec2::Vec2;
+
+*/
+struct Kinematics {
+    glm::vec3 postion = glm::vec3(0, 0, 0);
+    glm::vec3 velocity = glm::vec3(0, 0, 0);
+    float topspeed = 0.1;
+    // glm::vec3 target;
+    // entt::entity targetent;
 };
+
+
 
 template<typename T>
 struct PolarCoordinate_tp {
@@ -220,8 +229,10 @@ inline types::degree toDegree(types::radian theta) {
     return theta * (180 / cqsp::common::components::types::PI);
 }
 
-inline Vec2 toVec2(const PolarCoordinate& coordinate) {
-    return Vec2{coordinate.r * cos(toRadian(coordinate.theta)), coordinate.r * sin(toRadian(coordinate.theta))};
+inline glm::vec3 tovec3(const PolarCoordinate& coordinate) {
+    return glm::vec3(coordinate.r * cos(toRadian(coordinate.theta)),
+                     0,
+                     coordinate.r * sin(toRadian(coordinate.theta)));
 }
 
 inline PolarCoordinate toPolarCoordinate(const Orbit& orb) {
@@ -231,7 +242,14 @@ inline PolarCoordinate toPolarCoordinate(const Orbit& orb) {
     return PolarCoordinate{(types::astronomical_unit)r, fmod(orb.theta, 360)};
 }
 
-inline Vec2 toVec2(const Orbit& orb) { return toVec2(toPolarCoordinate(orb)); }
+inline glm::vec3 tovec3(const Orbit& orb) {
+    return tovec3(toPolarCoordinate(orb));
+}
+
+inline void updatePos(Kinematics& kin, const Orbit& orb) 
+{ 
+    kin.postion = tovec3(orb); 
+}
 }  // namespace bodies
 }  // namespace components
 }  // namespace common
