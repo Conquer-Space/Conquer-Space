@@ -21,6 +21,7 @@
 #include "common/components/units.h"
 #include "spdlog/spdlog.h"
 #include "glm/glm.hpp"
+#include "bodies.h"
 
 namespace cqsp {
 namespace common {
@@ -37,14 +38,15 @@ struct Orbit {
     double angularvelocity;
     degree argument;
     years period;
-
+    glm::vec3 rotation = glm::vec3(0, 1, 0);
 
     // So we can prepare for moons and stuff
     entt::entity referenceBody = entt::null;
 
     Orbit() = default;
     Orbit(types::degree _trueAnomaly, types::astronomical_unit _semiMajorAxis,
-          double _eccentricity, types::degree _argument, double _gravparam): theta(_trueAnomaly),
+          double _eccentricity, types::degree _argument, double _gravparam): 
+          theta(_trueAnomaly),
           semiMajorAxis(_semiMajorAxis),
           eccentricity(_eccentricity),
           argument(_argument),
@@ -196,6 +198,7 @@ struct Kinematics {
 
 
 
+
 template<typename T>
 struct PolarCoordinate_tp {
     T r;
@@ -224,6 +227,21 @@ inline void findPeriod(Orbit& orb) {
 inline types::radian toRadian(types::degree theta) {
     return theta * (cqsp::common::components::types::PI / 180);
 }
+
+struct SurfaceCoordinate {
+    degree latitude;
+    degree longitude;
+    float radius;
+    entt::entity planet;
+
+    SurfaceCoordinate() = default;
+    SurfaceCoordinate(double _lat, double _long, entt::entity _planet)
+        : latitude(_lat), longitude(_long), planet(_planet) {
+        latitude = toRadian(latitude);
+        longitude = toRadian(longitude);
+        radius = 0.012;
+    }
+};
 
 inline types::degree toDegree(types::radian theta) {
     return theta * (180 / cqsp::common::components::types::PI);

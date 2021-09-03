@@ -105,11 +105,14 @@ void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
         universe.emplace<cqspc::Habitation>(planet);
     });
 
-    REGISTER_FUNCTION("add_planet_settlement", [&] (entt::entity planet) {
+    REGISTER_FUNCTION("add_planet_settlement", [&](entt::entity planet,
+                                                   double lat, double longi) {
         entt::entity settlement = universe.create();
         universe.emplace<cqspc::Settlement>(settlement);
         // Add to planet list
         universe.get<cqspc::Habitation>(planet).settlements.push_back(settlement);
+        universe.emplace<cqspt::SurfaceCoordinate>(settlement, lat, longi, planet);
+        universe.emplace<cqspt::Kinematics>(settlement);
         return settlement;
     });
 

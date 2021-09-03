@@ -32,6 +32,7 @@
 #include "engine/renderer/primitives/pane.h"
 
 #include "common/components/bodies.h"
+#include "common/components/surface.h"
 #include "common/components/organizations.h"
 #include "common/components/player.h"
 #include "common/components/movement.h"
@@ -189,6 +190,25 @@ void SysStarSystemRenderer::Render() {
         // Draw the planet circle
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
 
+        // Draw Ships
+        
+        namespace cqspc = cqsp::common::components;
+
+        if (m_app.GetUniverse().all_of<cqspc::Habitation>(ent_id)) {
+            std::vector<entt::entity> ships =
+                m_app.GetUniverse().get<cqspc::Habitation>(ent_id).settlements;
+            if (ships.size() > 0) {
+                ship_overlay.shaderProgram->UseProgram();
+                for (auto ent_id : ships) {
+                    glm::vec3 object_pos = CalculateCenteredObject(ent_id);
+                    ship_overlay.shaderProgram->setVec4("color", 0.5, 0.5, 0.5, 1);
+                    DrawShipIcon(object_pos);
+                }
+            }
+        }
+
+
+
         if (glm::distance(object_pos, cam_pos) > 200) {
             // Check if it's obscured by a planet, but eh, we can deal with it later
             // Set planet circle color
@@ -218,6 +238,8 @@ void SysStarSystemRenderer::Render() {
         DrawShipIcon(object_pos);
     }
     END_TIMED_BLOCK(System_Renderer_Ship_Drawing)
+
+
 
     // Draw sky box
     skybox_renderer.BeginDraw();
