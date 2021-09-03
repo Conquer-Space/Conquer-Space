@@ -17,28 +17,30 @@
 #include <gtest/gtest.h>
 
 #include "common/components/movement.h"
+#include "glm/glm.hpp"
+
 
 TEST(Common_vector2test, vec_len_test) {
     namespace cqspt = cqsp::common::components::types;
-    cqspt::Vec2 vec2(3, 4);
-    ASSERT_DOUBLE_EQ(vec2.length(), 5.f);
-    vec2 = cqspt::Vec2(5, -12);
-    ASSERT_DOUBLE_EQ(vec2.length(), 13.f);
+    glm::vec3 vec3(3, 0, 4);
+    ASSERT_DOUBLE_EQ(glm::length(vec3), 5.f);
+    vec3 = glm::vec3(5, 0, -12);
+    ASSERT_DOUBLE_EQ(glm::length(vec3), 13.f);
 }
 
 TEST(Common_vector2test, vec2_normalize_test) {
     namespace cqspt = cqsp::common::components::types;
-    cqspt::Vec2 vec2(3, 4);
-    cqspt::Vec2 normalized = vec2.normalize();
-    ASSERT_FLOAT_EQ(normalized.length(), 1.f);
+    glm::vec3 vec3(3, 0 ,4);
+    glm::vec3 normalized = glm::normalize(vec3);
+    ASSERT_FLOAT_EQ(glm::length(normalized), 1.f);
     ASSERT_FLOAT_EQ(normalized.x, 0.6f);
-    ASSERT_FLOAT_EQ(normalized.y, 0.8f);
+    ASSERT_FLOAT_EQ(normalized.z, 0.8f);
 }
 
 TEST(Common_vector2test, vec2_angle_test) {
-    namespace cqspt = cqsp::common::components::types;
-    cqspt::Vec2 vec2(3, 3);
-    ASSERT_DOUBLE_EQ(vec2.angle(), cqspt::PI/4);
-    vec2 = cqspt::Vec2(0, 3);
-    ASSERT_DOUBLE_EQ(vec2.angle(), cqspt::PI/2);
+    //namespace cqspt = cqsp::common::components::types;
+    //cqspt::Vec2 vec2(3, 3);
+    //ASSERT_DOUBLE_EQ(vec2.angle(), cqspt::PI/4);
+    //vec2 = cqspt::Vec2(0, 3);
+    //ASSERT_DOUBLE_EQ(vec2.angle(), cqspt::PI/2);
 }

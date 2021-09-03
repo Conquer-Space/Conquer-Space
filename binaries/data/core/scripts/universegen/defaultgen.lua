@@ -113,9 +113,9 @@ generators:insert({
         add_resource(market, goods["copper"], 50000)
 
         -- Add city
-        local city_count = random(30, 50)
+        local city_count = random(300, 500)
         for index = 0, city_count, 1 do
-            local city = add_planet_settlement(planet)
+            local city = add_planet_settlement(planet, random(-90, 90) , random(-180, 180))
             set_name(city, "City ".. index)
             local pop_unit = add_population_segment(city, random_normal_int(50000000, 2000000)) -- 100 million
             attach_market(market, pop_unit)

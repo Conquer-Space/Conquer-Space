@@ -32,6 +32,7 @@
 #include "engine/renderer/primitives/pane.h"
 
 #include "common/components/bodies.h"
+#include "common/components/surface.h"
 #include "common/components/organizations.h"
 #include "common/components/player.h"
 #include "common/components/movement.h"
@@ -76,6 +77,10 @@ void SysStarSystemRenderer::Initialize() {
     ship_overlay.mesh = new cqsp::engine::Mesh();
     primitive::CreateFilledTriangle(*ship_overlay.mesh);
     ship_overlay.shaderProgram = circle_shader;
+
+    city.mesh = new cqsp::engine::Mesh();
+    primitive::CreateFilledSquare(*city.mesh);
+    city.shaderProgram = circle_shader;
 
     // Initialize shaders
     asset::ShaderProgram* planet_shader =
@@ -189,6 +194,9 @@ void SysStarSystemRenderer::Render() {
         // Draw the planet circle
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
 
+        // Draw Ships
+        namespace cqspc = cqsp::common::components;
+
         if (glm::distance(object_pos, cam_pos) > 200) {
             // Check if it's obscured by a planet, but eh, we can deal with it later
             // Set planet circle color
@@ -205,6 +213,19 @@ void SysStarSystemRenderer::Render() {
             DrawPlanet(object_pos);
         } else {
             DrawTerrainlessPlanet(object_pos);
+        }
+
+        if (m_app.GetUniverse().all_of<cqspc::Habitation>(ent_id)) {
+            std::vector<entt::entity> ships =
+                m_app.GetUniverse().get<cqspc::Habitation>(ent_id).settlements;
+            if (ships.size() > 0) {
+                for (auto ent_id : ships) {
+                    glm::vec3 object_pos = CalculateCenteredObject(ent_id);
+                    city.shaderProgram->UseProgram();
+                    city.shaderProgram->setVec4("color", 0.5, 0.5, 0.5, 1);
+                    DrawCityIcon(object_pos);
+                }
+            }
         }
     }
 
@@ -393,6 +414,38 @@ void SysStarSystemRenderer::DrawPlanetIcon(glm::vec3 &object_pos) {
     buffer_renderer.EndDraw();
 }
 
+void SysStarSystemRenderer::DrawCityIcon(glm::vec3 &object_pos) {
+    glm::vec3 pos =
+        glm::project(object_pos, camera_matrix, projection, viewport);
+    glm::mat4 planetDispMat = glm::mat4(1.0f);
+    if (pos.z >= 1 || pos.z <= -1) {
+        return;
+    }
+
+    planetDispMat = glm::translate(
+        planetDispMat,
+        glm::vec3((pos.x / m_app.GetWindowWidth() - 0.5) * 2,
+                  (pos.y / m_app.GetWindowHeight() - 0.5) * 2, 0));
+
+    planetDispMat = glm::scale(
+        planetDispMat, glm::vec3(circle_size, circle_size, circle_size));
+
+    float window_ratio = GetWindowRatio();
+    planetDispMat = glm::scale(planetDispMat, glm::vec3(1, window_ratio, 1));
+    glm::mat4 twodimproj =
+        glm::scale(glm::mat4(1.0f), glm::vec3(1, window_ratio, 1));
+
+    planet_renderer.BeginDraw();
+    twodimproj = glm::mat4(1.0f);
+    city.shaderProgram->UseProgram();
+    city.shaderProgram->setMat4("model", planetDispMat);
+    city.shaderProgram->setMat4("projection", twodimproj);
+
+    engine::Draw(city);
+
+    planet_renderer.EndDraw();
+}
+
 void SysStarSystemRenderer::DrawShipIcon(glm::vec3 &object_pos) {
     glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
     glm::mat4 shipDispMat = glm::mat4(1.0f);
@@ -478,15 +531,11 @@ void SysStarSystemRenderer::DrawTerrainlessPlanet(
 }
 
 glm::vec3 SysStarSystemRenderer::CalculateObjectPos(entt::entity &ent) {
-    namespace cqspb = cqsp::common::components::bodies;
+    //namespace cqspb = cqsp::common::components::bodies;
     namespace cqspt = cqsp::common::components::types;
     // Get the things
-    if (m_universe.all_of<cqspt::Orbit>(ent)) {
-        cqspt::Vec2 pos = cqspt::toVec2(m_universe.get<cqspt::Orbit>(ent))/0.01;
-        return glm::vec3(pos.y, 0, pos.x);
-    } else if (m_universe.all_of<cqspt::Position>(ent)) {
-        cqspt::Vec2 &pos = m_universe.get<cqspt::Position>(ent);
-        return (glm::vec3(pos.y/0.01, 0, pos.x/0.01));
+    if (m_universe.all_of<cqspt::Kinematics>(ent)) {
+        return (m_universe.get<cqspt::Kinematics>(ent).postion / 0.01f);
     }
     return glm::vec3(0, 0, 0);
 }

@@ -21,6 +21,7 @@
 #include "common/components/units.h"
 #include "spdlog/spdlog.h"
 #include "glm/glm.hpp"
+#include "bodies.h"
 
 namespace cqsp {
 namespace common {
@@ -37,20 +38,22 @@ struct Orbit {
     double angularvelocity;
     degree argument;
     years period;
-
+    glm::vec3 rotation = glm::vec3(0, 1, 0);
 
     // So we can prepare for moons and stuff
     entt::entity referenceBody = entt::null;
 
     Orbit() = default;
     Orbit(types::degree _trueAnomaly, types::astronomical_unit _semiMajorAxis,
-          double _eccentricity, types::degree _argument, double _gravparam): theta(_trueAnomaly),
+          double _eccentricity, types::degree _argument, double _gravparam): 
+          theta(_trueAnomaly),
           semiMajorAxis(_semiMajorAxis),
           eccentricity(_eccentricity),
           argument(_argument),
           gravitationalparameter(_gravparam){}//should be 40
 };
 
+/*
 struct Vec2 {
     astronomical_unit x;
     astronomical_unit y;
@@ -183,9 +186,18 @@ struct Vec2 {
     }
 };
 
-struct Position : public Vec2 {
-    using Vec2::Vec2;
+
+*/
+struct Kinematics {
+    glm::vec3 postion = glm::vec3(0, 0, 0);
+    glm::vec3 velocity = glm::vec3(0, 0, 0);
+    float topspeed = 0.1;
+    // glm::vec3 target;
+    // entt::entity targetent;
 };
+
+
+
 
 template<typename T>
 struct PolarCoordinate_tp {
@@ -216,12 +228,29 @@ inline types::radian toRadian(types::degree theta) {
     return theta * (cqsp::common::components::types::PI / 180);
 }
 
+struct SurfaceCoordinate {
+    degree latitude;
+    degree longitude;
+    float radius;
+    entt::entity planet;
+
+    SurfaceCoordinate() = default;
+    SurfaceCoordinate(double _lat, double _long, entt::entity _planet)
+        : latitude(_lat), longitude(_long), planet(_planet) {
+        latitude = toRadian(latitude);
+        longitude = toRadian(longitude);
+        radius = 0.010;
+    }
+};
+
 inline types::degree toDegree(types::radian theta) {
     return theta * (180 / cqsp::common::components::types::PI);
 }
 
-inline Vec2 toVec2(const PolarCoordinate& coordinate) {
-    return Vec2{coordinate.r * cos(toRadian(coordinate.theta)), coordinate.r * sin(toRadian(coordinate.theta))};
+inline glm::vec3 tovec3(const PolarCoordinate& coordinate) {
+    return glm::vec3(coordinate.r * cos(toRadian(coordinate.theta)),
+                     0,
+                     coordinate.r * sin(toRadian(coordinate.theta)));
 }
 
 inline PolarCoordinate toPolarCoordinate(const Orbit& orb) {
@@ -231,7 +260,14 @@ inline PolarCoordinate toPolarCoordinate(const Orbit& orb) {
     return PolarCoordinate{(types::astronomical_unit)r, fmod(orb.theta, 360)};
 }
 
-inline Vec2 toVec2(const Orbit& orb) { return toVec2(toPolarCoordinate(orb)); }
+inline glm::vec3 tovec3(const Orbit& orb) {
+    return tovec3(toPolarCoordinate(orb));
+}
+
+inline void updatePos(Kinematics& kin, const Orbit& orb) 
+{ 
+    kin.postion = tovec3(orb); 
+}
 }  // namespace bodies
 }  // namespace components
 }  // namespace common
