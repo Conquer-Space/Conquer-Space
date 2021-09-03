@@ -33,11 +33,13 @@ class SystemsMovementTest : public ::testing::Test {
         planet = universe.create();
 
         auto& orbit = universe.emplace<cqspt::Orbit>(planet);
+        universe.emplace<cqspt::Kinematics>(planet);
         orbit.theta = 90;
         orbit.semiMajorAxis = 75;
 
         target = universe.create();
         auto& target_orb = universe.emplace<cqspt::Orbit>(target);
+        universe.emplace<cqspt::Kinematics>(target);
         target_orb.theta = 180;
         target_orb.semiMajorAxis = 75;
     }
