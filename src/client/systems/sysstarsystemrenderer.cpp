@@ -195,12 +195,7 @@ void SysStarSystemRenderer::Render() {
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
 
         // Draw Ships
-        
         namespace cqspc = cqsp::common::components;
-
-
-
-
 
         if (glm::distance(object_pos, cam_pos) > 200) {
             // Check if it's obscured by a planet, but eh, we can deal with it later
@@ -211,9 +206,6 @@ void SysStarSystemRenderer::Render() {
             DrawPlanetIcon(object_pos);
             continue;
         }
-
-        
-
 
         // Check if planet has terrain or not
         if (m_app.GetUniverse().all_of<cqspb::Terrain>(m_viewing_entity)) {
@@ -235,7 +227,6 @@ void SysStarSystemRenderer::Render() {
                 }
             }
         }
-
     }
 
     BEGIN_TIMED_BLOCK(System_Renderer_Ship_Drawing)
@@ -248,8 +239,6 @@ void SysStarSystemRenderer::Render() {
         DrawShipIcon(object_pos);
     }
     END_TIMED_BLOCK(System_Renderer_Ship_Drawing)
-
-
 
     // Draw sky box
     skybox_renderer.BeginDraw();
