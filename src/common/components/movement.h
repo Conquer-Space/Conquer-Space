@@ -239,7 +239,7 @@ struct SurfaceCoordinate {
         : latitude(_lat), longitude(_long), planet(_planet) {
         latitude = toRadian(latitude);
         longitude = toRadian(longitude);
-        radius = 0.012;
+        radius = 0.010;
     }
 };
 

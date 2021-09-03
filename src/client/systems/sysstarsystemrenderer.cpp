@@ -78,6 +78,10 @@ void SysStarSystemRenderer::Initialize() {
     primitive::CreateFilledTriangle(*ship_overlay.mesh);
     ship_overlay.shaderProgram = circle_shader;
 
+    city.mesh = new cqsp::engine::Mesh();
+    primitive::CreateFilledSquare(*city.mesh);
+    city.shaderProgram = circle_shader;
+
     // Initialize shaders
     asset::ShaderProgram* planet_shader =
                             m_app.GetAssetManager().CreateShaderProgram("objectvert",
@@ -194,18 +198,7 @@ void SysStarSystemRenderer::Render() {
         
         namespace cqspc = cqsp::common::components;
 
-        if (m_app.GetUniverse().all_of<cqspc::Habitation>(ent_id)) {
-            std::vector<entt::entity> ships =
-                m_app.GetUniverse().get<cqspc::Habitation>(ent_id).settlements;
-            if (ships.size() > 0) {
-                ship_overlay.shaderProgram->UseProgram();
-                for (auto ent_id : ships) {
-                    glm::vec3 object_pos = CalculateCenteredObject(ent_id);
-                    ship_overlay.shaderProgram->setVec4("color", 0.5, 0.5, 0.5, 1);
-                    DrawShipIcon(object_pos);
-                }
-            }
-        }
+
 
 
 
@@ -219,6 +212,9 @@ void SysStarSystemRenderer::Render() {
             continue;
         }
 
+        
+
+
         // Check if planet has terrain or not
         if (m_app.GetUniverse().all_of<cqspb::Terrain>(m_viewing_entity)) {
             // Do empty terrain
@@ -226,6 +222,20 @@ void SysStarSystemRenderer::Render() {
         } else {
             DrawTerrainlessPlanet(object_pos);
         }
+
+        if (m_app.GetUniverse().all_of<cqspc::Habitation>(ent_id)) {
+            std::vector<entt::entity> ships =
+                m_app.GetUniverse().get<cqspc::Habitation>(ent_id).settlements;
+            if (ships.size() > 0) {
+                for (auto ent_id : ships) {
+                    glm::vec3 object_pos = CalculateCenteredObject(ent_id);
+                    city.shaderProgram->UseProgram();
+                    city.shaderProgram->setVec4("color", 0.5, 0.5, 0.5, 1);
+                    DrawCityIcon(object_pos);
+                }
+            }
+        }
+
     }
 
     BEGIN_TIMED_BLOCK(System_Renderer_Ship_Drawing)
@@ -413,6 +423,38 @@ void SysStarSystemRenderer::DrawPlanetIcon(glm::vec3 &object_pos) {
     engine::Draw(planet_circle);
     
     buffer_renderer.EndDraw();
+}
+
+void SysStarSystemRenderer::DrawCityIcon(glm::vec3 &object_pos) {
+    glm::vec3 pos =
+        glm::project(object_pos, camera_matrix, projection, viewport);
+    glm::mat4 planetDispMat = glm::mat4(1.0f);
+    if (pos.z >= 1 || pos.z <= -1) {
+        return;
+    }
+
+    planetDispMat = glm::translate(
+        planetDispMat,
+        glm::vec3((pos.x / m_app.GetWindowWidth() - 0.5) * 2,
+                  (pos.y / m_app.GetWindowHeight() - 0.5) * 2, 0));
+
+    planetDispMat = glm::scale(
+        planetDispMat, glm::vec3(circle_size, circle_size, circle_size));
+
+    float window_ratio = GetWindowRatio();
+    planetDispMat = glm::scale(planetDispMat, glm::vec3(1, window_ratio, 1));
+    glm::mat4 twodimproj =
+        glm::scale(glm::mat4(1.0f), glm::vec3(1, window_ratio, 1));
+
+    planet_renderer.BeginDraw();
+    twodimproj = glm::mat4(1.0f);
+    city.shaderProgram->UseProgram();
+    city.shaderProgram->setMat4("model", planetDispMat);
+    city.shaderProgram->setMat4("projection", twodimproj);
+
+    engine::Draw(city);
+
+    planet_renderer.EndDraw();
 }
 
 void SysStarSystemRenderer::DrawShipIcon(glm::vec3 &object_pos) {
