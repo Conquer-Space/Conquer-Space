@@ -16,8 +16,6 @@
 */
 #include "client/systems/sysplanetterraingenerator.h"
 
-
-#include <noise/module/simplex.h>
 #include <spdlog/spdlog.h>
 
 #include <cmath>
@@ -30,7 +28,6 @@ void cqsp::client::systems::TerrainImageGenerator::GenerateTerrain(int octaves, 
     noise_module.SetFrequency(2);
 
     noise::utils::NoiseMap noise_map;
-
     int textureWidth = std::pow(2, size);
     int textureHeight = std::pow(2, size);
     utils::NoiseMapBuilderSphere heightMapBuilder;
@@ -39,21 +36,14 @@ void cqsp::client::systems::TerrainImageGenerator::GenerateTerrain(int octaves, 
     heightMapBuilder.SetDestSize(textureWidth, textureHeight);
 
     heightMapBuilder.SetBounds(-90.0, 90.0, -180.0, 180.0);
-    {
-        auto start = std::chrono::high_resolution_clock::now();
-        heightMapBuilder.Build();
-        auto end = std::chrono::high_resolution_clock::now();
-        SPDLOG_INFO(
-            "Heightmap construction time: {}",
-            std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count());
-    }
+
+    heightMapBuilder.Build();
 
     noise::utils::RendererImage renderer;
     renderer.SetSourceNoiseMap(noise_map);
     renderer.SetDestImage(height_map);
     renderer.Render();
 
-    renderer.SetSourceNoiseMap(noise_map);
     renderer.SetDestImage(albedo_map);
 
     renderer.ClearGradient();
@@ -72,14 +62,32 @@ void cqsp::client::systems::TerrainImageGenerator::GenerateTerrain(int octaves, 
     renderer.SetLightBrightness(2.0);
     renderer.SetLightAzimuth(0);*/
 
-    {
-        auto start = std::chrono::high_resolution_clock::now();
-        renderer.Render();
-        auto end = std::chrono::high_resolution_clock::now();
-        SPDLOG_INFO(
-            "renderer construction time: {}",
-            std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count());
-    }
+    renderer.Render();
+}
+
+void cqsp::client::systems::TerrainImageGenerator::GenerateHeightMap(int octaves, int size) {
+    noise::module::Perlin noise_module;
+    noise_module.SetOctaveCount(octaves);
+    noise_module.SetNoiseQuality(noise::QUALITY_FAST);
+    noise_module.SetSeed(seed);
+    noise_module.SetFrequency(2);
+
+    noise::utils::NoiseMap noise_map;
+    int textureWidth = std::pow(2, size);
+    int textureHeight = std::pow(2, size);
+    utils::NoiseMapBuilderSphere heightMapBuilder;
+    heightMapBuilder.SetSourceModule(noise_module);
+    heightMapBuilder.SetDestNoiseMap(noise_map);
+    heightMapBuilder.SetDestSize(textureWidth, textureHeight);
+
+    heightMapBuilder.SetBounds(-90.0, 90.0, -180.0, 180.0);
+
+    heightMapBuilder.Build();
+
+    noise::utils::RendererImage renderer;
+    renderer.SetSourceNoiseMap(noise_map);
+    renderer.SetDestImage(height_map);
+    renderer.Render();
 }
 
 void cqsp::client::systems::TerrainImageGenerator::ClearData() {

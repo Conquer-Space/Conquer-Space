@@ -214,14 +214,16 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
     // Show resources
     if (GetApp().GetUniverse().all_of<cqspc::ResourceDistribution>(selected_planet)) {
         auto& dist = GetApp().GetUniverse().get<cqspc::ResourceDistribution>(selected_planet);
+        using cqsp::client::components::PlanetTerrainRender;
         // Show the resources on it
         ImGui::Text("Resources");
-        ImGui::Button("Default");
+        if (ImGui::Button("Default")) {
+            GetApp().GetUniverse().remove_if_exists<PlanetTerrainRender>(selected_planet);
+        }
         for (auto it = dist.begin(); it != dist.end(); it++) {
-            if (ImGui::Button(fmt::format("{}", it->first).c_str())) {
+            if (ImGui::Button(cqsp::client::systems::gui::GetName(GetApp().GetUniverse(), it->first).c_str())) {
                 // Set rendering thing
-                GetApp().GetUniverse()
-                    .emplace_or_replace<cqsp::client::components::PlanetTerrainRender>(
+                GetApp().GetUniverse().emplace_or_replace<PlanetTerrainRender>(
                         selected_planet, it->first);
             }
         }
@@ -237,11 +239,6 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
             selected_city_index = i;
             selected_city_entity = habit.settlements[i];
             view_mode = ViewMode::CITY_VIEW;
-
-            if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-                // See city
-                spdlog::info("Mouse clicked");
-            }
         }
         gui::EntityTooltip(GetApp().GetUniverse(), e);
     }

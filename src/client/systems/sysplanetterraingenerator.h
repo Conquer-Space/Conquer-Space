@@ -26,6 +26,7 @@ namespace systems {
 class TerrainImageGenerator {
  public:
     void GenerateTerrain(int octaves, int size);
+    void GenerateHeightMap(int octaves, int size);
     void ClearData();
 
     noise::utils::Image& GetHeightMap() { return height_map; }
