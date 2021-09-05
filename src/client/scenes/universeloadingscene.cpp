@@ -69,7 +69,7 @@ void cqsp::scene::UniverseLoadingScene::Render(float deltaTime) {}
 void LoadGoods(cqsp::engine::Application& app) {
     namespace cqspc = cqsp::common::components;
     cqsp::asset::HjsonAsset* good_assets = app
-                .GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("goods");
+                .GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("core:goods");
     int assets_loaded = 0;
     for (int i = 0; i < good_assets->data.size(); i++) {
         Hjson::Value val = good_assets->data[i];
@@ -97,7 +97,7 @@ void LoadRecipes(cqsp::engine::Application& app) {
     namespace cqspc = cqsp::common::components;
 
     cqsp::asset::HjsonAsset* recipe_asset = app
-                .GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("recipes");
+                .GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("core:recipes");
     for (int i = 0; i < recipe_asset->data.size(); i++) {
         Hjson::Value& val = recipe_asset->data[i];
 
@@ -135,8 +135,7 @@ void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
     GetApp().GetScriptInterface().RegisterDataGroup("events");
 
     // Process all scripts
-    cqsp::asset::TextDirectoryAsset* script_list = GetApp().GetAssetManager()
-                            .GetAsset<cqsp::asset::TextDirectoryAsset>("scripts");
+    cqsp::asset::TextDirectoryAsset* script_list = GetApp().GetAssetManager().GetAsset<cqsp::asset::TextDirectoryAsset>("core:scripts");
     for (auto& text : script_list->data) {
         GetApp().GetScriptInterface().RunScript(text);
     }

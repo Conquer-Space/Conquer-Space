@@ -1,0 +1,100 @@
+{
+    shader.texturedpane.frag: {
+        path: textured_pane.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
+    shader.pane.vert: {
+        path: pane.vert
+        type: shader
+        hints: {
+            type: vert
+        }
+    }
+    objectvert: {
+        path: object.vert
+        type: shader
+        hints: {
+            type: vert
+        }
+    }
+    planetfrag: {
+        path: pbr_directional_textured.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
+    skyboxfrag: {
+        path: textured_sphere.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
+    fontvertexshader: {
+        path: font_shader.vert
+        type: shader
+        hints: {
+            type: vert
+        }
+    }
+    fontfragshader: {
+        path: font_shader.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
+        skycubefrag: {
+        path: skybox.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
+    skycubevert: {
+        path: skybox.vert
+        type: shader
+        hints: {
+            type: vert
+        }
+    }
+    sunshader: {
+        path: color_shader.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
+    coloredcirclefrag: {
+        path: color_shader.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
+    spherefrag: {
+        path: pbr_directional.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
+    framebuffervert: {
+        path: framebuffer.vert
+        type: shader
+        hints: {
+            type: vert
+        }
+    }
+    framebufferfrag: {
+        path: framebuffer.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
+}

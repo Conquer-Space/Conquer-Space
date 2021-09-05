@@ -1,0 +1,13 @@
+{
+    pbr_directional_textureless: {
+        vert: object
+        frag: pbr_directional
+        initial: {
+            lightDir: [0, 0, 0]
+            lightColor: [1, 1, 1]
+            viewPos: [0, 0, 0]
+            albedo: [1, 1, 1]
+            metallic: 
+        }
+    }
+}

@@ -24,6 +24,7 @@
 #include <fstream>
 #include <utility>
 #include <algorithm>
+#include <regex>
 
 #include <filesystem>
 
@@ -64,6 +65,7 @@ class ShaderPrototype : public AssetPrototype {
     std::string key;
     std::string data;
     int type;
+    Hjson::Value hints;
 
     int GetPrototypeType() { return PrototypeType::SHADER; }
 };
@@ -109,26 +111,38 @@ cqsp::asset::AssetLoader::AssetLoader() : m_asset_queue() {
 namespace cqspa = cqsp::asset;
 
 void cqsp::asset::AssetLoader::LoadAssets(std::istream& stream) {
-    Hjson::Value asset_value;
-    Hjson::DecoderOptions decOpt;
-    decOpt.comments = false;
-    stream >> Hjson::StreamDecoder(asset_value, decOpt);
+    // Load enabled mods
+    // Load core
+    const char sep = std::filesystem::path::preferred_separator;
+    std::filesystem::recursive_directory_iterator it(std::filesystem::path(fmt::format("..{0}data{0}core", sep)));
 
-    int size = static_cast<int>(asset_value.size());
-    SPDLOG_INFO("Loading {} asset(s)", size);
+    for (auto a : it) {
+        if (a.path().filename() == "resource.hjson") {
+            // Load the particular asset folder
+            // Open the file
+            std::ifstream asset(a.path());
+            Hjson::Value asset_value;
+            Hjson::DecoderOptions decOpt;
+            decOpt.comments = false;
+            asset >> Hjson::StreamDecoder(asset_value, decOpt);
 
-    for (const auto [key, val] : asset_value) {
-        SPDLOG_TRACE("Loading {}", key);
+            for (const auto [key, val] : asset_value) {
+                SPDLOG_TRACE("Loading {}", key);
 
-        // Load from asset
-        std::string type = val["type"];
-        std::string path = "../data/core/" + val["path"];
+                // Load from asset
+                std::string type = val["type"];
+                std::string path = a.path().parent_path().string() + sep + val["path"];
 
-        if (!std::filesystem::exists(path)) {
-            SPDLOG_WARN("Cannot find asset {}", key);
-            continue;
+                if (!std::filesystem::exists(path)) {
+                    SPDLOG_WARN("Cannot find asset {}", key);
+                    continue;
+                }
+                // Put in core namespace, I guess
+                LoadAsset(type, path, std::string("core:" + key), val["hints"]);
+                // Set the key to be the part of core
+            }
         }
-        LoadAsset(type, path, std::string(key), val["hints"]);
+        // Load assets
     }
 }
 
@@ -419,8 +433,7 @@ cqsp::asset::AssetPrototype* cqsp::asset::AssetLoader::LoadImage(
     }
 }
 
-void cqspa::AssetLoader::LoadShader(const std::string& key,
-                                    std::istream& asset_stream,
+void cqspa::AssetLoader::LoadShader(const std::string& key, std::istream& asset_stream,
                                                 const Hjson::Value& hints) {
     // Get shader type
     std::string type = hints["type"];
@@ -438,6 +451,7 @@ void cqspa::AssetLoader::LoadShader(const std::string& key,
 
     prototype->key = key;
     prototype->type = shader_type;
+    prototype->hints = hints;
     std::istreambuf_iterator<char> eos;
     std::string s(std::istreambuf_iterator<char>(asset_stream), eos);
     prototype->data = s;
