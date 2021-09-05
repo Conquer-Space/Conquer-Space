@@ -7,7 +7,7 @@ function starting_event:on_tick()
         local home_name = get_name(get_civilization_planet(get_player()))
         push_event(get_player(), {
             id = "rocket-event",
-            image = "rocket-event",
+            image = "core:rocket-event",
             title = "Our Future is in the Stars",
             content = "Since antiquity, our ancestors have always looked to "..
             "the stars for guidance, inspiration, and hope. But now, "..
@@ -27,7 +27,7 @@ function starting_event:on_tick()
     if chain == 1 and date > 100 then
         push_event(get_player(), {
             id = "rocket-event",
-            image = "rocket-event",
+            image = "core:rocket-event",
             title = "Conquer The Stars 1",
             content = "We need the technology to conquer the stars. First, let's research stuff.",
             actions = {{

@@ -1,0 +1,57 @@
+{
+    cqspbanner: {
+        path: cqspbanner1.png
+        type: texture
+
+        # Loading hints
+        hints: {}
+    }
+    earthrise: {
+        path: earthrise.png
+        type: texture
+        hints: {
+            magfilter: false
+        }
+    }
+    earth: {
+        path: earth2k.jpg
+        type: texture
+        hints: {
+            magfilter: true
+        }
+    }
+    earthnormal: {
+        path: earthnormal2k.jpg
+        type: texture
+        hints: {
+            magfilter: false
+        }
+    }
+    earthroughness: {
+        path: earthspecular2k.jpg
+        type: texture
+        hints: {
+            magfilter: false
+        }
+    }
+    title: {
+        path: mainbanner2.png
+        type: texture
+        hints: {
+            magfilter: true
+        }
+    }
+    sky: {
+        path: sky.jpg
+        type: texture
+        hints: {
+            magfilter: false
+        }
+    }
+    skycubemap: {
+        path: skybox/skybox.hjson
+        type: cubemap
+        hints: {
+        }
+    }
+}

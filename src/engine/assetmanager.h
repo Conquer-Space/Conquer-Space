@@ -40,71 +40,29 @@ namespace asset {
 enum class AssetType { NONE, TEXTURE, SHADER, HJSON, TEXT, MODEL, FONT, CUBEMAP, TEXT_ARRAY, AUDIO };
 enum PrototypeType { NONE = 0, TEXTURE, SHADER, FONT, CUBEMAP };
 
-class Prototype {
+/**
+* Asset Prototypes are for assets that need additional processing
+* in the main thread, such as images.
+*/
+class AssetPrototype {
  public:
     virtual int GetPrototypeType() { return PrototypeType::NONE; }
 };
 
-class ImagePrototype : public Prototype{
- public:
-    char* key;
-    unsigned char* data;
-    int width;
-    int height;
-    int components;
-
-    asset::TextureLoadingOptions options;
-
-    int GetPrototypeType() { return PrototypeType::TEXTURE; }
-};
-
-class CubemapPrototype : public Prototype{
- public:
-    char* key;
-    std::vector<unsigned char*> data;
-    int width;
-    int height;
-    int components;
-
-    asset::TextureLoadingOptions options;
-
-    int GetPrototypeType() { return PrototypeType::CUBEMAP; }
-};
-
-class ShaderPrototype : public Prototype {
- public:
-    std::string key;
-    std::string data;
-    int type;
-
-    int GetPrototypeType() {
-        return PrototypeType::SHADER;
-    }
-};
-
-class FontPrototype : public Prototype {
- public:
-    unsigned char* fontBuffer;
-    int size;
-    std::string key;
-
-    int GetPrototypeType() {
-        return PrototypeType::FONT;
-    }
-};
-
-/*
-* Holds a prototype in the queue.
+/**
+* Holds a prototype in the queue to be loaded in the main thread
 */
 class QueueHolder {
  public:
     QueueHolder() { prototype = nullptr; }
-    explicit QueueHolder(Prototype* type) : prototype(type) {}
+    explicit QueueHolder(AssetPrototype* type) : prototype(type) {}
 
-    Prototype* prototype;
+    AssetPrototype* prototype;
 };
 
-// Queue
+/**
+* Queue to hold the asset prototypes.
+*/
 template <typename T>
 class ThreadsafeQueue {
     std::queue<T> queue_;
@@ -222,6 +180,7 @@ class AssetLoader {
     void LoadAsset(const std::string&, const std::string&, const std::string&, const Hjson::Value&);
     void LoadImage(const std::string& key, const std::string& filePath, const Hjson::Value& hints);
 
+    AssetPrototype* LoadImage(std::istream& asset_stream, const Hjson::Value& hints);
     void LoadShader(const std::string& key, std::istream &asset_stream, const Hjson::Value& hints);
     void LoadFont(const std::string& key, std::istream &asset_stream, const Hjson::Value& hints);
     void LoadCubemap(const std::string& key, const std::string &path,

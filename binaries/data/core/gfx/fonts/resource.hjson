@@ -1,0 +1,8 @@
+{
+    defaultfont: {
+        path: OpenSans-Regular.ttf
+        type: font
+        hints: {
+        }
+    }
+}
