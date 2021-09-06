@@ -33,12 +33,6 @@ class SysPath : public ISimulationSystem {
      void DoSystem(Universe& universe);
      int Interval();
 };
-
-class SysSurface : public ISimulationSystem {
-   public:
-    void DoSystem(Universe& universe);
-    int Interval();
-};
 }
 }
 }
