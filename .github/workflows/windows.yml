@@ -16,9 +16,10 @@ jobs:
     - name: Build Conquer Space
       run: |
         cmake -B build -DTESTS=ON -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=x64-windows -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake
-        cmake --build build --parallel --config ${{ matrix.config }} --target Conquer-Space
+        cmake --build build --parallel --config ${{ matrix.config }}
+
     - name: Run Tests
-      run: ctest --schedule-random --progress --output-on-failure --parallel --no-tests error --build-config ${{ matrix.config }} --test-dir build/test
+      run: ctest -V --schedule-random --progress --output-on-failure --parallel --no-tests error --build-config ${{ matrix.config }} --test-dir build/test
 
     - uses: actions/upload-artifact@v2
       with:

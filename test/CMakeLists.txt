@@ -43,7 +43,6 @@ target_link_libraries(cqsp-tests
     libnoise
     )
 
-add_test(NAME main-test COMMAND cqsp-tests)
+add_test(NAME cqsp-test COMMAND cqsp-tests)
 # Disable logging
 target_compile_definitions(cqsp-tests PRIVATE SPDLOG_ACTIVE_LEVEL=1000)
-
