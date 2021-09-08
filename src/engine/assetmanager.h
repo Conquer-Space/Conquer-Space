@@ -148,10 +148,10 @@ class AssetManager {
     template<class T>
     void AddAsset(std::string key, std::unique_ptr<T> &&asset) {
         // Check for asset collision
-        if (assets.find(name) != assets.end()) {
-            SPDLOG_WARN("Didn't add asset {} due to asset collision", name);
+        if (assets.find(key) != assets.end()) {
+            SPDLOG_WARN("Didn't add asset {} due to asset collision", key);
         } else {
-            assets[name] = std::move(asset);
+            assets[key] = std::move(asset);
         }
     }
     std::map<std::string, std::unique_ptr<Asset>> assets;
