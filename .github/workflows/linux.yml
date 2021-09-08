@@ -10,8 +10,7 @@ jobs:
         config: [Release, Debug]
 
     env:
-      CC:  ${{ matrix.compiler == 'gcc' && 'gcc' || 'clang'   }}
-      CXX: ${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}
+      CXX: ${{ matrix.compiler == 'g++' || 'clang++' }}
 
     runs-on: ubuntu-latest
     steps:
