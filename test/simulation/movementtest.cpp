@@ -57,15 +57,16 @@ entt::entity SystemsMovementTest::ship = entt::null;
 entt::entity SystemsMovementTest::target = entt::null;
 
 TEST_F(SystemsMovementTest, ShipCreationTest) {
-    // Test out the things
+    // Test out if the ship is created
     ship = cqsp::common::systems::actions::CreateShip(universe, entt::null,
                                                        planet, star_system);
     EXPECT_TRUE(universe.valid(ship));
     bool all_of_pos_and_ship = universe.all_of<cqspt::Kinematics, cqsp::common::components::ships::Ship>(ship);
     ASSERT_TRUE(all_of_pos_and_ship);
     auto& position = universe.get<cqspt::Kinematics>(ship);
-
+    position.topspeed = 10;
     glm::vec3 vec = cqspt::tovec3(universe.get<cqspt::Orbit>(planet));
+    printf("%f, %f, %f", position.postion.x, position.postion.y, position.postion.z);
     EXPECT_NEAR(position.postion.x, vec.x, 4);
     EXPECT_NEAR(position.postion.y, vec.y, 4);
 }
@@ -73,8 +74,12 @@ TEST_F(SystemsMovementTest, ShipCreationTest) {
 TEST_F(SystemsMovementTest, ShipMovementTest) {
     // Do it a couple of times and see if it arrives
     cqsp::common::systems::SysPath system;
+
+    // Ensure system is the same
     EXPECT_TRUE(universe.valid(ship));
     EXPECT_EQ(universe.size(), 4);
+
+    universe.emplace_or_replace<cqspt::Kinematics>(target, cqspt::tovec3(universe.get<cqspt::Orbit>(target)));
 
     universe.emplace_or_replace<cqspt::MoveTarget>(ship, target);
     for (int i = 0; i < 1000; i++) {
@@ -82,6 +87,8 @@ TEST_F(SystemsMovementTest, ShipMovementTest) {
     }
     auto& position = universe.get<cqspt::Kinematics>(ship);
     glm::vec3 vec = cqspt::tovec3(universe.get<cqspt::Orbit>(target));
+    printf("%f, %f, %f\n", vec.x, vec.y, vec.z);
+    printf("%f, %f, %f", position.postion.x, position.postion.y, position.postion.z);
     EXPECT_NEAR(position.postion.x, vec.x, 4);
     EXPECT_NEAR(position.postion.y, vec.y, 4);
 }

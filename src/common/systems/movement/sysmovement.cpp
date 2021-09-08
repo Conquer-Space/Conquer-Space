@@ -67,8 +67,7 @@ void cqsp::common::systems::SysPath::DoSystem(Universe& universe) {
     auto bodies = universe.view<cqspt::MoveTarget, cqspt::Kinematics>(entt::exclude<cqspt::Orbit>);
     for (entt::entity body : bodies) {
         cqspt::Kinematics& bodykin = universe.get<cqspt::Kinematics>(body);
-        cqspt::Kinematics targetkin = universe.get<cqspt::Kinematics>(
-            universe.get<cqspt::MoveTarget>(body).target);
+        cqspt::Kinematics& targetkin = universe.get<cqspt::Kinematics>(universe.get<cqspt::MoveTarget>(body).target);
         glm::vec3 path = targetkin.postion - bodykin.postion;
         if (glm::length(path) < bodykin.topspeed) {
             bodykin.postion = targetkin.postion;
