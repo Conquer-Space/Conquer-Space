@@ -46,6 +46,7 @@ enum PrototypeType { NONE = 0, TEXTURE, SHADER, FONT, CUBEMAP };
 */
 class AssetPrototype {
  public:
+    std::string key;
     virtual int GetPrototypeType() { return PrototypeType::NONE; }
 };
 
@@ -144,6 +145,10 @@ class AssetManager {
     void ClearAssets();
 
  private:
+    template<class T>
+    void AddAsset(std::string name, std::unique_ptr<T> &&asset) {
+        assets[name] = std::move(asset);
+    }
     std::map<std::string, std::unique_ptr<Asset>> assets;
 
     friend class AssetLoader;

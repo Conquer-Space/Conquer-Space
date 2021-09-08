@@ -167,18 +167,18 @@ void cqsp::asset::AssetLoader::LoadAsset(const std::string& type,
         }
         case AssetType::HJSON:
         {
-        manager->assets[key] = LoadHjson(path, hints);
+        manager->AddAsset(key, LoadHjson(path, hints));
         break;
         }
         case AssetType::TEXT:
         {
         std::ifstream asset_stream(path);
-        manager->assets[key] = LoadText(asset_stream, hints);
+        manager->AddAsset(key, LoadText(asset_stream, hints));
         break;
         }
         case AssetType::TEXT_ARRAY:
         {
-        manager->assets[key] = LoadTextDirectory(path, hints);
+        manager->AddAsset(key, LoadTextDirectory(path, hints));;
         break;
         }
         case AssetType::MODEL:
@@ -198,7 +198,7 @@ void cqsp::asset::AssetLoader::LoadAsset(const std::string& type,
         case AssetType::AUDIO:
         {
         std::ifstream asset_stream(path, std::ios::binary);
-        manager->assets[key] = cqsp::asset::LoadOgg(asset_stream);
+        manager->AddAsset(key, cqsp::asset::LoadOgg(asset_stream));
         break;
         }
         break;
