@@ -36,7 +36,6 @@
 namespace cqsp::asset {
 class ImagePrototype : public AssetPrototype {
    public:
-    char* key;
     unsigned char* data;
     int width;
     int height;
@@ -49,7 +48,6 @@ class ImagePrototype : public AssetPrototype {
 
 class CubemapPrototype : public AssetPrototype {
    public:
-    char* key;
     std::vector<unsigned char*> data;
     int width;
     int height;
@@ -62,7 +60,6 @@ class CubemapPrototype : public AssetPrototype {
 
 class ShaderPrototype : public AssetPrototype {
    public:
-    std::string key;
     std::string data;
     int type;
     Hjson::Value hints;
@@ -74,7 +71,6 @@ class FontPrototype : public AssetPrototype {
    public:
     unsigned char* fontBuffer;
     int size;
-    std::string key;
 
     int GetPrototypeType() { return PrototypeType::FONT; }
 };
@@ -121,15 +117,28 @@ void cqsp::asset::AssetLoader::LoadAssets(std::istream& stream) {
             // Load the particular asset folder
             // Open the file
             std::ifstream asset(a.path());
+            std::string asset_data(std::istreambuf_iterator<char>(asset), {});
             Hjson::Value asset_value;
             Hjson::DecoderOptions decOpt;
-            decOpt.comments = false;
-            asset >> Hjson::StreamDecoder(asset_value, decOpt);
+            decOpt.comments = false; 
+            decOpt.duplicateKeyException = true;
+
+            // Try to load and check for duplicate options, sadly hjson doesn't provide good
+            // ways to see which keys are duplicated, except by exception, so we'll have
+            // to do this as a hack for now
+            try {
+                asset_value = Hjson::Unmarshal(asset_data, decOpt);
+            } catch (Hjson::syntax_error &se) {
+                SPDLOG_WARN(se.what());
+                // Then try again without the options
+                decOpt.duplicateKeyException = false;
+                asset_value = Hjson::Unmarshal(asset_data, decOpt);
+            }
 
             for (const auto [key, val] : asset_value) {
                 SPDLOG_TRACE("Loading {}", key);
 
-                // Load from asset
+                // Load asset
                 std::string type = val["type"];
                 std::string path = a.path().parent_path().string() + sep + val["path"];
 
@@ -139,10 +148,8 @@ void cqsp::asset::AssetLoader::LoadAssets(std::istream& stream) {
                 }
                 // Put in core namespace, I guess
                 LoadAsset(type, path, std::string("core:" + key), val["hints"]);
-                // Set the key to be the part of core
             }
         }
-        // Load assets
     }
 }
 
@@ -151,9 +158,6 @@ void cqsp::asset::AssetLoader::LoadAsset(const std::string& type,
                                                     const std::string& key,
                                                     const Hjson::Value &hints) {
     switch (asset_type_map[type]) {
-        case AssetType::NONE:
-        // Nothing to load
-        break;
         case AssetType::TEXTURE:
         {
         LoadImage(key, path, hints);
@@ -167,18 +171,18 @@ void cqsp::asset::AssetLoader::LoadAsset(const std::string& type,
         }
         case AssetType::HJSON:
         {
-        manager->assets[key] = LoadHjson(path, hints);
+        manager->AddAsset(key, LoadHjson(path, hints));
         break;
         }
         case AssetType::TEXT:
         {
         std::ifstream asset_stream(path);
-        manager->assets[key] = LoadText(asset_stream, hints);
+        manager->AddAsset(key, LoadText(asset_stream, hints));
         break;
         }
         case AssetType::TEXT_ARRAY:
         {
-        manager->assets[key] = LoadTextDirectory(path, hints);
+        manager->AddAsset(key, LoadTextDirectory(path, hints));;
         break;
         }
         case AssetType::MODEL:
@@ -198,10 +202,11 @@ void cqsp::asset::AssetLoader::LoadAsset(const std::string& type,
         case AssetType::AUDIO:
         {
         std::ifstream asset_stream(path, std::ios::binary);
-        manager->assets[key] = cqsp::asset::LoadOgg(asset_stream);
+        manager->AddAsset(key, cqsp::asset::LoadOgg(asset_stream));
         break;
         }
         break;
+        case AssetType::NONE:
         default:
         break;
     }
@@ -217,7 +222,7 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
         return;
     }
     QueueHolder temp = *value;
-
+    std::string key = temp.prototype->key;
     switch (temp.prototype->GetPrototypeType()) {
         case PrototypeType::TEXTURE:
         {
@@ -229,9 +234,7 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
             texture_prototype->width,
             texture_prototype->height,
             texture_prototype->options);
-
-        manager->assets[texture_prototype->key] = std::move(textureAsset);
-
+        manager->AddAsset(key, std::move(textureAsset));
         break;
         }
         case PrototypeType::SHADER:
@@ -242,7 +245,7 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
             int shaderId = asset::LoadShader(shader->data, shader->type);
             std::unique_ptr<Shader> shaderAsset = std::make_unique<Shader>();
             shaderAsset->id = shaderId;
-            manager->assets[shader->key] = std::move(shaderAsset);
+            manager->AddAsset(key, std::move(shaderAsset));
         } catch (std::runtime_error &error) {
             SPDLOG_WARN("Exception in loading shader {}: {}", shader->key, error.what());
         }
@@ -253,7 +256,7 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
             FontPrototype* prototype = dynamic_cast<FontPrototype*>(temp.prototype);
             std::unique_ptr<Font> fontAsset = std::make_unique<Font>();
             asset::LoadFont(*fontAsset.get(), prototype->fontBuffer, prototype->size);
-            manager->assets[prototype->key] = std::move(fontAsset);
+            manager->AddAsset(key, std::move(fontAsset));
         }
         break;
         case PrototypeType::CUBEMAP:
@@ -267,7 +270,7 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
                 prototype->height,
                 prototype->options);
 
-            manager->assets[prototype->key] = std::move(textureAsset);
+            manager->AddAsset(key, std::move(textureAsset));
         }
         break;
     }
@@ -352,12 +355,9 @@ void cqsp::asset::AssetLoader::LoadHjsonDir(const std::string& path, Hjson::Valu
 void cqspa::AssetLoader::LoadImage(const std::string& key, const std::string& filePath,
                                                 const Hjson::Value& hints) {
     ImagePrototype* prototype = new ImagePrototype();
+    prototype->key = key;
 
     // Load image
-    prototype->key = new char[key.size() + 1];
-    std::copy(key.begin(), key.end(), prototype->key);
-    prototype->key[key.size()] = '\0';
-
     Hjson::Value pixellated = hints["magfilter"];
 
     if (pixellated.defined() && pixellated.type() == Hjson::Type::Bool) {
@@ -369,9 +369,6 @@ void cqspa::AssetLoader::LoadImage(const std::string& key, const std::string& fi
     }
     
     std::ifstream input(filePath, std::ios::binary);
-    if (!input.good()) {
-        SPDLOG_INFO("HELP");
-    }
     input.seekg(0, std::ios::end);
     std::streamsize size = input.tellg();
     input.seekg(0, std::ios::beg);
@@ -387,48 +384,6 @@ void cqspa::AssetLoader::LoadImage(const std::string& key, const std::string& fi
         m_asset_queue.push(holder);
     } else {
         SPDLOG_INFO("Failed to load image {}", key);
-        delete prototype;
-    }
-}
-
-cqsp::asset::AssetPrototype* cqsp::asset::AssetLoader::LoadImage(
-    std::istream& asset_stream, const Hjson::Value& hints) {
-    ImagePrototype* prototype = new ImagePrototype();
-
-    // Load image
-    /*prototype->key = new char[key.size() + 1];
-    std::copy(key.begin(), key.end(), prototype->key);
-    prototype->key[key.size()] = '\0';*/
-
-    Hjson::Value pixellated = hints["magfilter"];
-
-    if (pixellated.defined() && pixellated.type() == Hjson::Type::Bool) {
-        // Then it's good
-        prototype->options.mag_filter = static_cast<bool>(pixellated);
-    } else {
-        // Then loading it was a mistake (jk), then it's linear.
-        prototype->options.mag_filter = false;
-    }
-    
-    if (!asset_stream.good()) {
-        SPDLOG_INFO("Cannot load file");
-        return nullptr;
-    }
-    asset_stream.seekg(0, std::ios::end);
-    std::streamsize size = asset_stream.tellg();
-    asset_stream.seekg(0, std::ios::beg);
-    char* data = new char[size];
-    asset_stream.read(data, size);  
-    unsigned char* d = (unsigned char *) data;
-    prototype->data = stbi_load_from_memory(d, size, &prototype->width, &prototype->height,
-                           &prototype->components, 0);
-
-    if (prototype->data) {
-        QueueHolder holder(prototype);
-
-        m_asset_queue.push(holder);
-    } else {
-        //SPDLOG_INFO("Failed to load image {}", key);
         delete prototype;
     }
 }
@@ -489,9 +444,7 @@ void cqsp::asset::AssetLoader::LoadCubemap(const std::string& key,
 
     CubemapPrototype* prototype = new CubemapPrototype();
 
-    prototype->key = new char[key.size() + 1];
-    std::copy(key.begin(), key.end(), prototype->key);
-    prototype->key[key.size()] = '\0';
+    prototype->key = key;
 
     std::filesystem::path p(path);
     std::filesystem::path dir = p.parent_path();
