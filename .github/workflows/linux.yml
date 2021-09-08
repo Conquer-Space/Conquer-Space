@@ -6,11 +6,7 @@ jobs:
   build:
     strategy:
       matrix:
-        compiler: [g++, clang]
         config: [Release, Debug]
-
-    env:
-      CXX: ${{ matrix.compiler == 'g++' || 'clang++' }}
 
     runs-on: ubuntu-latest
     steps:
