@@ -146,7 +146,7 @@ class AssetManager {
 
  private:
     template<class T>
-    void AddAsset(std::string key, std::unique_ptr<T> &&asset) {        case AssetType::NONE:
+    void AddAsset(std::string key, std::unique_ptr<T> &&asset) {
         // Check for asset collision
         if (assets.find(name) != assets.end()) {
             SPDLOG_WARN("Didn't add asset {} due to asset collision", name);
