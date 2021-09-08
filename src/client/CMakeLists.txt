@@ -61,5 +61,4 @@ target_link_libraries(cqsp-client PUBLIC
     fmt
     libnoise
     ${OPENAL_LIBRARY}
-    libnoise-utils
 )

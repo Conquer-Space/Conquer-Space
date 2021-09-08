@@ -45,5 +45,4 @@ target_link_libraries(cqsp-core PUBLIC
     liblua-static
     fmt
     libnoise
-    libnoise-utils
 )

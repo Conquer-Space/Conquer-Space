@@ -79,6 +79,8 @@ class SysStarSystemRenderer {
  private:
     entt::entity m_star_system = entt::null;
     entt::entity m_viewing_entity = entt::null;
+    entt::entity terrain_displaying = entt::null;
+
     cqsp::common::Universe &m_universe;
     cqsp::engine::Application &m_app;
 
@@ -87,6 +89,13 @@ class SysStarSystemRenderer {
     cqsp::engine::Renderable planet_circle;
     cqsp::engine::Renderable ship_overlay;
     cqsp::engine::Renderable sun;
+
+    cqsp::asset::ShaderProgram *pbr_shader;
+    cqsp::asset::ShaderProgram *no_light_shader;
+
+    cqsp::asset::Texture* planet_texture;
+    cqsp::asset::Texture* planet_heightmap;
+    cqsp::asset::Texture* planet_resource;
 
     glm::vec3 cam_pos;
     glm::vec3 cam_up = glm::vec3(0.0f, 1.0f, 0.0f);

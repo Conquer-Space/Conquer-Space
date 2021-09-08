@@ -63,6 +63,7 @@ add_subdirectory(libnoise)
 set_target_properties(aob fmt hjson libnoise spdlog uninstall PROPERTIES FOLDER "Libs")
 
 # Add imgui
+include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui)
 include_directories(${CMAKE_SOURCE_DIR}/lib/implot)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
@@ -86,13 +87,6 @@ set(IMGUI ${IMGUI} ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_glfw.h
 
 add_library(ImGui ${IMGUI})
 target_link_libraries(ImGui PUBLIC ${GLFW_LIBRARIES})
-set_target_properties(ImGui PROPERTIES FOLDER "Libs")
-
-# Create libnoise utils library
-include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/include)
-include_directories(${CMAKE_SOURCE_DIR}/lib/include)
-add_library(libnoise-utils ${CMAKE_SOURCE_DIR}/lib/src/noiseutils.cpp)
-target_link_libraries(libnoise-utils PUBLIC libnoise)
 set_target_properties(ImGui PROPERTIES FOLDER "Libs")
 
 # Copy stb_vorbis header file

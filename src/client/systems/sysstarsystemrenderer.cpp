@@ -25,6 +25,8 @@
 #include <glm/gtx/polar_coordinates.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+#include "client/components/planetrendering.h"
+
 #include "engine/renderer/primitives/uvsphere.h"
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/primitives/cube.h"
@@ -34,6 +36,7 @@
 #include "common/components/bodies.h"
 #include "common/components/organizations.h"
 #include "common/components/player.h"
+#include "common/components/resource.h"
 #include "common/components/movement.h"
 #include "common/components/name.h"
 #include "common/components/ships.h"
@@ -81,6 +84,10 @@ void SysStarSystemRenderer::Initialize() {
     asset::ShaderProgram* planet_shader =
                             m_app.GetAssetManager().CreateShaderProgram("core:objectvert",
                                                                         "core:planetfrag");
+    pbr_shader = planet_shader;
+
+    no_light_shader = m_app.GetAssetManager().CreateShaderProgram("core:objectvert", "core:skyboxfrag");
+
     // Planet spheres
     planet.mesh = sphere_mesh;
     planet_shader->UseProgram();
@@ -295,13 +302,17 @@ void SysStarSystemRenderer::SeeEntity() {
 
     less_detailed_terrain_generator_thread = std::thread([&]() {
         // Generate slightly less detailed terrain so that it looks better at first
-        intermediate_image_generator.GenerateTerrain(6, 6);
+        intermediate_image_generator.GenerateTerrain(4, 6);
         second_terrain_complete = true;
     });
 
     terrain_generator_thread = std::thread([&]() {
         // Generate slightly less detailed terrain so that it looks better at first
-        final_image_generator.GenerateTerrain(8, 10);
+        auto start = std::chrono::high_resolution_clock::now();
+        final_image_generator.GenerateTerrain(5, 10);
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+        SPDLOG_INFO("Took {}us to generate terrain", duration.count());
         terrain_complete = true;
     });
 }
@@ -335,6 +346,34 @@ void SysStarSystemRenderer::Update() {
             // Then go to the object
             SeePlanet(ent);
         }
+    }
+    // Check if it has terrain resource rendering, and make terrain thing
+    if (m_viewing_entity != entt::null && m_app.GetUniverse().all_of<cqsp::client::components::PlanetTerrainRender>(m_viewing_entity)) {
+        // Then check if it's the same rendered object
+        auto &rend = m_app.GetUniverse().get<cqsp::client::components::PlanetTerrainRender>(m_viewing_entity);
+        if (rend.resource != terrain_displaying) {
+            // Check if it's the same
+            using cqsp::common::components::ResourceDistribution;
+            if (m_app.GetUniverse().any_of<ResourceDistribution>(m_viewing_entity)) {
+                auto &dist = m_app.GetUniverse().get<ResourceDistribution>(m_viewing_entity);
+                TerrainImageGenerator gen;
+                gen.seed = dist[rend.resource];
+                gen.GenerateHeightMap(3, 9);
+                // Make the UI
+                unsigned int a = GeneratePlanetTexture(gen.GetHeightMap());
+                planet_resource = GenerateTexture(a, gen.GetHeightMap());
+                terrain_displaying = rend.resource;
+                // Switch view mode
+                planet.textures[0] = planet_resource;
+                planet.shaderProgram = no_light_shader;
+            }
+        }
+    } else if (m_viewing_entity != entt::null) {
+        // Reset to default
+        planet.textures[0] = planet_texture;
+        terrain_displaying = entt::null;
+        // Also change up the shader
+        planet.shaderProgram = pbr_shader;
     }
 }
 
@@ -462,8 +501,7 @@ void SysStarSystemRenderer::DrawStar(glm::vec3 &object_pos) {
     planet_renderer.EndDraw();
 }
 
-void SysStarSystemRenderer::DrawTerrainlessPlanet(
-                                            glm::vec3 &object_pos) {
+void SysStarSystemRenderer::DrawTerrainlessPlanet(glm::vec3 &object_pos) {
     glm::mat4 position = glm::mat4(1.f);
     position = glm::translate(position, object_pos);
 
@@ -506,10 +544,9 @@ void SysStarSystemRenderer::CalculateCamera() {
     viewport = glm::vec4(0.f, 0.f, m_app.GetWindowWidth(), m_app.GetWindowHeight());
 }
 
-void SysStarSystemRenderer::SetPlanetTexture(
-    TerrainImageGenerator &generator) {
-    unsigned int albedo_map = GeneratePlanetTexture(generator.GetAlbedoMap());
-    unsigned int height_map  = GeneratePlanetTexture(generator.GetHeightMap());
+void SysStarSystemRenderer::SetPlanetTexture(TerrainImageGenerator &generator) {
+    unsigned int gl_planet_texture = GeneratePlanetTexture(generator.GetAlbedoMap());
+    unsigned int gl_planet_heightmap  = GeneratePlanetTexture(generator.GetHeightMap());
     generator.ClearData();
 
     // Free textures in texture
@@ -518,13 +555,15 @@ void SysStarSystemRenderer::SetPlanetTexture(
     }
     planet.textures.clear();
 
+    planet_texture = GenerateTexture(gl_planet_texture, generator.GetAlbedoMap());
+    planet_heightmap = GenerateTexture(gl_planet_heightmap, generator.GetAlbedoMap());
+
     // Assign textures
-    planet.textures.push_back(GenerateTexture(albedo_map, generator.GetAlbedoMap()));
-    planet.textures.push_back(GenerateTexture(height_map, generator.GetHeightMap()));
+    planet.textures.push_back(planet_texture);
+    planet.textures.push_back(planet_heightmap);
 }
 
-unsigned int SysStarSystemRenderer::GeneratePlanetTexture(
-    noise::utils::Image &image) {
+unsigned int SysStarSystemRenderer::GeneratePlanetTexture(noise::utils::Image &image) {
     unsigned int texture;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);

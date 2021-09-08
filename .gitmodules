@@ -39,7 +39,7 @@
 	url = https://github.com/fmtlib/fmt
 [submodule "lib/libnoise"]
 	path = lib/libnoise
-	url = https://github.com/eXpl0it3r/libnoise
+	url = https://github.com/EhWhoAmI/libnoise
 [submodule "lib/openal-soft"]
 	path = lib/openal-soft
 	url = https://github.com/kcat/openal-soft

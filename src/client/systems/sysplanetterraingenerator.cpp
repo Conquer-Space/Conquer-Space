@@ -23,11 +23,11 @@
 void cqsp::client::systems::TerrainImageGenerator::GenerateTerrain(int octaves, int size) {
     noise::module::Perlin noise_module;
     noise_module.SetOctaveCount(octaves);
+    noise_module.SetNoiseQuality(noise::QUALITY_FAST);
     noise_module.SetSeed(seed);
     noise_module.SetFrequency(2);
 
     noise::utils::NoiseMap noise_map;
-
     int textureWidth = std::pow(2, size);
     int textureHeight = std::pow(2, size);
     utils::NoiseMapBuilderSphere heightMapBuilder;
@@ -36,6 +36,7 @@ void cqsp::client::systems::TerrainImageGenerator::GenerateTerrain(int octaves, 
     heightMapBuilder.SetDestSize(textureWidth, textureHeight);
 
     heightMapBuilder.SetBounds(-90.0, 90.0, -180.0, 180.0);
+
     heightMapBuilder.Build();
 
     noise::utils::RendererImage renderer;
@@ -43,7 +44,6 @@ void cqsp::client::systems::TerrainImageGenerator::GenerateTerrain(int octaves, 
     renderer.SetDestImage(height_map);
     renderer.Render();
 
-    renderer.SetSourceNoiseMap(noise_map);
     renderer.SetDestImage(albedo_map);
 
     renderer.ClearGradient();
@@ -57,11 +57,36 @@ void cqsp::client::systems::TerrainImageGenerator::GenerateTerrain(int octaves, 
     renderer.AddGradientPoint(0.3750, utils::Color(224, 224, 0, 255));  // dirt
     renderer.AddGradientPoint(0.7500, utils::Color(128, 128, 128, 255));  // rock
     renderer.AddGradientPoint(1.0000, utils::Color(255, 255, 255, 255));  // snow
-    renderer.EnableLight();
+    /*renderer.EnableLight();
     renderer.SetLightContrast(3.0);
     renderer.SetLightBrightness(2.0);
-    renderer.SetLightAzimuth(0);
+    renderer.SetLightAzimuth(0);*/
 
+    renderer.Render();
+}
+
+void cqsp::client::systems::TerrainImageGenerator::GenerateHeightMap(int octaves, int size) {
+    noise::module::Perlin noise_module;
+    noise_module.SetOctaveCount(octaves);
+    noise_module.SetNoiseQuality(noise::QUALITY_FAST);
+    noise_module.SetSeed(seed);
+    noise_module.SetFrequency(2);
+
+    noise::utils::NoiseMap noise_map;
+    int textureWidth = std::pow(2, size);
+    int textureHeight = std::pow(2, size);
+    utils::NoiseMapBuilderSphere heightMapBuilder;
+    heightMapBuilder.SetSourceModule(noise_module);
+    heightMapBuilder.SetDestNoiseMap(noise_map);
+    heightMapBuilder.SetDestSize(textureWidth, textureHeight);
+
+    heightMapBuilder.SetBounds(-90.0, 90.0, -180.0, 180.0);
+
+    heightMapBuilder.Build();
+
+    noise::utils::RendererImage renderer;
+    renderer.SetSourceNoiseMap(noise_map);
+    renderer.SetDestImage(height_map);
     renderer.Render();
 }
 

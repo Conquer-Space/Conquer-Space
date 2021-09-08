@@ -29,6 +29,7 @@
 #include "client/systems/gui/sysstockpileui.h"
 #include "client/scenes/universescene.h"
 #include "client/systems/gui/systooltips.h"
+#include "client/components/planetrendering.h"
 
 #include "common/components/area.h"
 #include "common/components/bodies.h"
@@ -210,6 +211,23 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
     ImGui::TextFmt("Population: {} ({})", cqsp::util::LongToHumanString(pop_size), pop_size);
     ImGui::Separator();
 
+    // Show resources
+    if (GetApp().GetUniverse().all_of<cqspc::ResourceDistribution>(selected_planet)) {
+        auto& dist = GetApp().GetUniverse().get<cqspc::ResourceDistribution>(selected_planet);
+        using cqsp::client::components::PlanetTerrainRender;
+        // Show the resources on it
+        ImGui::Text("Resources");
+        if (ImGui::Button("Default")) {
+            GetApp().GetUniverse().remove_if_exists<PlanetTerrainRender>(selected_planet);
+        }
+        for (auto it = dist.begin(); it != dist.end(); it++) {
+            if (ImGui::Button(cqsp::client::systems::gui::GetName(GetApp().GetUniverse(), it->first).c_str())) {
+                // Set rendering thing
+                GetApp().GetUniverse().emplace_or_replace<PlanetTerrainRender>(
+                        selected_planet, it->first);
+            }
+        }
+    }
     // List cities
     for (int i = 0; i < habit.settlements.size(); i++) {
         const bool is_selected = (selected_city_index == i);
@@ -221,11 +239,6 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
             selected_city_index = i;
             selected_city_entity = habit.settlements[i];
             view_mode = ViewMode::CITY_VIEW;
-
-            if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-                // See city
-                spdlog::info("Mouse clicked");
-            }
         }
         gui::EntityTooltip(GetApp().GetUniverse(), e);
     }
