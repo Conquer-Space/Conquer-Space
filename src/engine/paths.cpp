@@ -29,16 +29,30 @@
 #include <pwd.h>
 
 char* get_home_dir(uid_t uid) {
-    struct passwd pwent;
-    struct passwd *pwentp;
-    char buf[1024];
+    char *strbuf;
+    char *result;
+    struct passwd pwbuf;
+    struct passwd *pw = NULL;
+    long val = sysconf(_SC_GETPW_R_SIZE_MAX);
+    size_t strbuflen = val;
 
-    if (getpwuid_r(101, &pwent, buf, sizeof buf, &pwentp)) {
-        return "";
+    if (val < 0)
+        return NULL;
+
+    if (malloc(sizeof(strbuf) * strbuflen) < 0)
+        return NULL;
+
+    if (getpwuid_r(uid, &pwbuf, strbuf, strbuflen, &pw) != 0 || pw == NULL) {
+        free(strbuf);
+        return NULL;
     }
-    else {
-        return pwent.pw_dir;
-    }
+
+    result = pw->pw_dir;
+
+    free(strbuf);
+
+    return result;
+}
 }
 #endif
 
