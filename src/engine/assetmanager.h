@@ -146,9 +146,13 @@ class AssetManager {
 
  private:
     template<class T>
-    void AddAsset(std::string name, std::unique_ptr<T> &&asset) {
-        SPDLOG_INFO("loading {}", name);
-        assets[name] = std::move(asset);
+    void AddAsset(std::string key, std::unique_ptr<T> &&asset) {        case AssetType::NONE:
+        // Check for asset collision
+        if (assets.find(name) != assets.end()) {
+            SPDLOG_WARN("Didn't add asset {} due to asset collision", name);
+        } else {
+            assets[name] = std::move(asset);
+        }
     }
     std::map<std::string, std::unique_ptr<Asset>> assets;
 
@@ -186,7 +190,6 @@ class AssetLoader {
     void LoadAsset(const std::string&, const std::string&, const std::string&, const Hjson::Value&);
     void LoadImage(const std::string& key, const std::string& filePath, const Hjson::Value& hints);
 
-    AssetPrototype* LoadImage(std::istream& asset_stream, const Hjson::Value& hints);
     void LoadShader(const std::string& key, std::istream &asset_stream, const Hjson::Value& hints);
     void LoadFont(const std::string& key, std::istream &asset_stream, const Hjson::Value& hints);
     void LoadCubemap(const std::string& key, const std::string &path,
