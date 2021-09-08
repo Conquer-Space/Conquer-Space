@@ -31,7 +31,7 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/imgui)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
 include_directories(${GLFW3_INCLUDE_PATH})
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/backends)
-include_directories(${CMAKE_SOURCE_DIR}/lib/openal-soft/include)
+include_directories(${OPENAL_INCLUDE_DIR})
 
 file (GLOB_RECURSE CPP_FILES *.cpp)
 list(FILTER CPP_FILES EXCLUDE REGEX ".*main.cpp$")
@@ -62,4 +62,5 @@ target_link_libraries(cqsp-engine PUBLIC
     fmt
     libnoise
     OpenAL
+    ${OPENAL_LIBRARY}
 )

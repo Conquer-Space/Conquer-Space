@@ -26,16 +26,19 @@ add_subdirectory(spdlog)
 
 add_subdirectory(glm)
 
-set(ALSOFT_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(ALSOFT_UTILS OFF CACHE BOOL "" FORCE)
-set(ALSOFT_INSTALL_UTILS OFF CACHE BOOL "" FORCE)
-set(ALSOFT_INSTALL_CONFIG OFF CACHE BOOL "" FORCE)
-set(ALSOFT_UPDATE_BUILD_VERSION OFF CACHE BOOL "" FORCE)
-set(LIBTYPE "STATIC" CACHE BOOL "" FORCE)
-set(OPENAL_LIBRARY "(${CMAKE_SOURCE_DIR}/lib/openal-soft")
-set(OPENAL_INCLUDE_DIR "(${CMAKE_SOURCE_DIR}/lib/openal-soft/include")
-add_subdirectory(openal-soft)
-set_target_properties(common OpenAL ex-common PROPERTIES FOLDER "OpenAL")
+find_package(OpenAL)
+if(NOT OPENAL_FOUND)
+  message("OpenAL library not found")
+  set(ALSOFT_EXAMPLES OFF CACHE BOOL "" FORCE)
+  set(ALSOFT_UTILS OFF CACHE BOOL "" FORCE)
+  set(ALSOFT_INSTALL_UTILS OFF CACHE BOOL "" FORCE)
+  set(ALSOFT_INSTALL_CONFIG OFF CACHE BOOL "" FORCE)
+  set(ALSOFT_UPDATE_BUILD_VERSION OFF CACHE BOOL "" FORCE)
+  set(LIBTYPE "STATIC" CACHE BOOL "" FORCE)
+  set(OPENAL_LIBRARY "OpenAL" CACHE INTERNAL "")
+  set(OPENAL_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/lib/openal-soft/include" CACHE INTERNAL "")
+  add_subdirectory(openal-soft)
+endif()
 
 if (TESTS)
 add_subdirectory(googletest)
@@ -50,11 +53,14 @@ add_subdirectory(sol2)
 # Set properties for lua projects
 set_target_properties(buildvm liblua-shared lua-static lua liblua-static minilua PROPERTIES FOLDER "Lua")
 
-add_subdirectory(freetype)
+if (NOT FREETYPE_FOUND)
+    add_subdirectory(freetype)
+    set_target_properties(freetype PROPERTIES FOLDER "Libs")
+endif()
 
 add_subdirectory(libnoise)
 
-set_target_properties(aob fmt freetype hjson libnoise spdlog uninstall PROPERTIES FOLDER "Libs")
+set_target_properties(aob fmt hjson libnoise spdlog uninstall PROPERTIES FOLDER "Libs")
 
 # Add imgui
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)

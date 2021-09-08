@@ -1,0 +1,20 @@
+{
+    button_press: {
+        path: gui/buttonselect.ogg
+        type: audio
+        hints: {
+        }
+    }
+    button_swipe: {
+        path: gui/swipe.ogg
+        type: audio
+        hints: {
+        }
+    }
+    scrollclick: {
+        path: gui/scrollclick.ogg
+        type: audio
+        hints: {
+        }
+    }
+}

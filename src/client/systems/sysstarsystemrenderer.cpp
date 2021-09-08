@@ -58,10 +58,10 @@ void SysStarSystemRenderer::Initialize() {
 
     // Initialize sky box
     asset::Texture* sky_texture = m_app.GetAssetManager()
-        .GetAsset<cqsp::asset::Texture>("skycubemap");
+        .GetAsset<cqsp::asset::Texture>("core:skycubemap");
 
     asset::ShaderProgram* skybox_shader =
-                        m_app.GetAssetManager().CreateShaderProgram("skycubevert", "skycubefrag");
+                        m_app.GetAssetManager().CreateShaderProgram("core:skycubevert", "core:skycubefrag");
 
     sky.mesh = new cqsp::engine::Mesh();
     primitive::MakeCube(*sky.mesh);
@@ -70,7 +70,7 @@ void SysStarSystemRenderer::Initialize() {
 
     asset::ShaderProgram* circle_shader =
                     m_app.GetAssetManager().
-                    CreateShaderProgram("shader.pane.vert", "coloredcirclefrag");
+                    CreateShaderProgram("core:shader.pane.vert", "core:coloredcirclefrag");
 
     planet_circle.mesh = new cqsp::engine::Mesh();
     primitive::CreateFilledCircle(*planet_circle.mesh);
@@ -82,11 +82,12 @@ void SysStarSystemRenderer::Initialize() {
 
     // Initialize shaders
     asset::ShaderProgram* planet_shader =
-                            m_app.GetAssetManager().CreateShaderProgram("objectvert",
-                                                                        "planetfrag");
+                            m_app.GetAssetManager().CreateShaderProgram("core:objectvert",
+                                                                        "core:planetfrag");
     pbr_shader = planet_shader;
 
-    no_light_shader = m_app.GetAssetManager().CreateShaderProgram("objectvert", "skyboxfrag");
+    no_light_shader = m_app.GetAssetManager().CreateShaderProgram("core:objectvert", "core:skyboxfrag");
+
     // Planet spheres
     planet.mesh = sphere_mesh;
     planet_shader->UseProgram();
@@ -97,25 +98,25 @@ void SysStarSystemRenderer::Initialize() {
 
     // Initialize sun
     asset::ShaderProgram* star_shader =
-                            m_app.GetAssetManager().CreateShaderProgram("objectvert", "sunshader");
+                            m_app.GetAssetManager().CreateShaderProgram("core:objectvert", "core:sunshader");
     sun.mesh = sphere_mesh;
     sun.shaderProgram = star_shader;
 
     overlay_renderer.InitTexture(m_app.GetWindowWidth(), m_app.GetWindowHeight());
     primitive::MakeTexturedPaneMesh(overlay_renderer.mesh_output, true);
-    overlay_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("framebuffervert", "framebufferfrag");
+    overlay_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("core:framebuffervert", "core:framebufferfrag");
 
     buffer_renderer.InitTexture(m_app.GetWindowWidth(), m_app.GetWindowHeight());
     primitive::MakeTexturedPaneMesh(buffer_renderer.mesh_output, true);
-    buffer_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("framebuffervert", "framebufferfrag");
+    buffer_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("core:framebuffervert", "core:framebufferfrag");
 
     planet_renderer.InitTexture(m_app.GetWindowWidth(), m_app.GetWindowHeight());
     primitive::MakeTexturedPaneMesh(planet_renderer.mesh_output, true);
-    planet_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("framebuffervert", "framebufferfrag");
+    planet_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("core:framebuffervert", "core:framebufferfrag");
 
     skybox_renderer.InitTexture();
     primitive::MakeTexturedPaneMesh(skybox_renderer.mesh_output, true);
-    skybox_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("framebuffervert", "framebufferfrag");
+    skybox_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("core:framebuffervert", "core:framebufferfrag");
 }
 
 void SysStarSystemRenderer::OnTick() {

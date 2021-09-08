@@ -1,5 +1,5 @@
 {
-    button.press: button_press
-    button.back: button_swipe
-    scroll.tick: scrollclick
+    button.press: core:button_press
+    button.back: core:button_swipe
+    scroll.tick: core:scrollclick
 }

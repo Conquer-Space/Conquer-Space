@@ -41,7 +41,7 @@ void cqsp::scene::LoadingScene::Init() {
         SPDLOG_INFO("Loading resources");
         LoadResources();
         // Load audio
-        auto hjson = GetApp().GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("ui_sounds");
+        auto hjson = GetApp().GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("core:ui_sounds");
         for (auto element : hjson->data) {
             auto audio_asset = GetApp().GetAssetManager().GetAsset<cqsp::asset::AudioAsset>(element.second);
             GetApp().GetAudioInterface().AddAudioClip(element.first, audio_asset);
@@ -91,16 +91,15 @@ void cqsp::scene::LoadingScene::LoadResources() {
 }
 
 void cqsp::scene::LoadingScene::LoadFont() {
-    cqsp::asset::ShaderProgram* fontshader = new asset::ShaderProgram(*GetApp()
-        .GetAssetManager()
-        .GetAsset<cqsp::asset::Shader>("fontvertexshader"),
+    cqsp::asset::ShaderProgram* fontshader = new asset::ShaderProgram(*GetApp().GetAssetManager()
+        .GetAsset<cqsp::asset::Shader>("core:fontvertexshader"),
         *GetApp()
         .GetAssetManager()
-        .GetAsset<cqsp::asset::Shader>("fontfragshader"));
+        .GetAsset<cqsp::asset::Shader>("core:fontfragshader"));
 
     cqsp::asset::Font* font = GetApp()
         .GetAssetManager()
-        .GetAsset<cqsp::asset::Font>("defaultfont");
+        .GetAsset<cqsp::asset::Font>("core:defaultfont");
 
     glm::mat4 projection =
         glm::ortho(0.0f, static_cast<float>(GetApp().GetWindowWidth()), 0.0f,
