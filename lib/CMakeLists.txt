@@ -55,7 +55,7 @@ set_target_properties(buildvm liblua-shared lua-static lua liblua-static minilua
 
 if (NOT FREETYPE_FOUND)
     add_subdirectory(freetype)
-    set_target_properties(freetype "Libs")
+    set_target_properties(freetype FOLDER "Libs")
 endif()
 
 add_subdirectory(libnoise)
