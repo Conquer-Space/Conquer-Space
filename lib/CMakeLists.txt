@@ -26,7 +26,7 @@ add_subdirectory(spdlog)
 
 add_subdirectory(glm)
 
-find_library(OpenAL)
+find_package(OpenAL)
 if(NOT OPENAL_FOUND)
   message("OpenAL library not found")
   set(ALSOFT_EXAMPLES OFF CACHE BOOL "" FORCE)
