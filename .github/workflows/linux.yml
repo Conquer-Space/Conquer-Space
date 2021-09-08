@@ -6,7 +6,7 @@ jobs:
   build:
     strategy:
       matrix:
-        compiler: [gcc, clang]
+        compiler: [g++, clang]
         config: [Release, Debug]
 
     env:
