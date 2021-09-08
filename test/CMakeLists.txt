@@ -26,7 +26,6 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/fmt/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/lua/)
 include_directories(${CMAKE_SOURCE_DIR}/lib/sol2/include)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 add_executable(cqsp-tests ${CPP_FILES} ${H_FILES})
 
 # Test libraries
@@ -44,7 +43,6 @@ target_link_libraries(cqsp-tests
     libnoise
     )
 
-add_test(NAME main-test COMMAND cqsp-tests)
+add_test(NAME cqsp-test COMMAND cqsp-tests)
 # Disable logging
 target_compile_definitions(cqsp-tests PRIVATE SPDLOG_ACTIVE_LEVEL=1000)
-
