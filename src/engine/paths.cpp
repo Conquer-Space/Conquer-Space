@@ -53,7 +53,6 @@ char* get_home_dir(uid_t uid) {
 
     return result;
 }
-}
 #endif
 
 std::string cqsp::engine::GetcqspPath() {
