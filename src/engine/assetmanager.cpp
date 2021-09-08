@@ -142,7 +142,6 @@ void cqsp::asset::AssetLoader::LoadAssets(std::istream& stream) {
                 // Set the key to be the part of core
             }
         }
-        // Load assets
     }
 }
 
@@ -217,7 +216,7 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
         return;
     }
     QueueHolder temp = *value;
-
+    std::string key = temp.prototype->key;
     switch (temp.prototype->GetPrototypeType()) {
         case PrototypeType::TEXTURE:
         {
@@ -229,9 +228,7 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
             texture_prototype->width,
             texture_prototype->height,
             texture_prototype->options);
-
-        manager->assets[texture_prototype->key] = std::move(textureAsset);
-
+        manager->AddAsset(temp.prototype->key, std::move(textureAsset));
         break;
         }
         case PrototypeType::SHADER:
@@ -242,7 +239,7 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
             int shaderId = asset::LoadShader(shader->data, shader->type);
             std::unique_ptr<Shader> shaderAsset = std::make_unique<Shader>();
             shaderAsset->id = shaderId;
-            manager->assets[shader->key] = std::move(shaderAsset);
+            manager->AddAsset(temp.prototype->key, std::move(shaderAsset));
         } catch (std::runtime_error &error) {
             SPDLOG_WARN("Exception in loading shader {}: {}", shader->key, error.what());
         }
@@ -253,7 +250,7 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
             FontPrototype* prototype = dynamic_cast<FontPrototype*>(temp.prototype);
             std::unique_ptr<Font> fontAsset = std::make_unique<Font>();
             asset::LoadFont(*fontAsset.get(), prototype->fontBuffer, prototype->size);
-            manager->assets[prototype->key] = std::move(fontAsset);
+            manager->AddAsset(temp.prototype->key, std::move(fontAsset));
         }
         break;
         case PrototypeType::CUBEMAP:
@@ -267,7 +264,7 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
                 prototype->height,
                 prototype->options);
 
-            manager->assets[prototype->key] = std::move(textureAsset);
+            manager->AddAsset(temp.prototype->key, std::move(textureAsset));
         }
         break;
     }

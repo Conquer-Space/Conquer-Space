@@ -147,6 +147,7 @@ class AssetManager {
  private:
     template<class T>
     void AddAsset(std::string name, std::unique_ptr<T> &&asset) {
+        SPDLOG_INFO("loading {}", name);
         assets[name] = std::move(asset);
     }
     std::map<std::string, std::unique_ptr<Asset>> assets;
