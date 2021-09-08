@@ -6,7 +6,12 @@ jobs:
   build:
     strategy:
       matrix:
+        compiler: [gcc, clang]
         config: [Release, Debug]
+
+      env:
+        CC:  ${{ matrix.compiler == 'gcc' && 'gcc' || 'clang'   }}
+        CXX: ${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}
 
     runs-on: ubuntu-latest
     steps:
@@ -18,7 +23,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt install -y libglfw3 libglfw3-dev tree
+        sudo apt install -y libglfw3 libglfw3-dev libopenal-dev
 
     - name: Configure Build files
       run: |
