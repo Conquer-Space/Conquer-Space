@@ -4,6 +4,15 @@ on: [ pull_request, push ]
 
 jobs:
   build:
+    strategy:
+      matrix:
+        compiler: [gcc, clang]
+        config: [Release, Debug]
+
+    env:
+      CC:  ${{ matrix.compiler == 'gcc' && 'gcc' || 'clang'   }}
+      CXX: ${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}
+
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -17,14 +26,11 @@ jobs:
         sudo apt install -y libglfw3 libglfw3-dev tree
     - name: Build Conquer Space
       run: |
-        ls
-        mkdir build && cd build
-        cmake -DTESTS=ON ..
-        make
+         cmake --build build --parallel --config ${{ matrix.config }}
+
     - name: Tests
       run: |
-        cd binaries/data
-        ../../build/cqsp-tests
+        ctest --schedule-random --progress --output-on-failure --parallel --no-tests error --build-config ${{ matrix.config }} --test-dir build/test
 
     - uses: actions/upload-artifact@v2
       with:
