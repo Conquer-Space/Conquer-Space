@@ -84,6 +84,23 @@ cqsp::asset::ShaderProgram* cqsp::asset::AssetManager::CreateShaderProgram(
                                     *GetAsset<cqsp::asset::Shader>(frag.c_str()));
 }
 
+void cqsp::asset::AssetManager::LoadDefaultTexture() {
+    unsigned char ar[] = {
+        255, 0, 255,
+        0, 0, 0,
+        0, 0, 0,
+        // Trailing bytes because some reason, opengl needs it
+        0, 0,
+        255, 0, 255
+    };
+
+    // Then make image
+    asset::TextureLoadingOptions f;
+    f.mag_filter = true;
+    unsigned char* a = &ar[0];
+    asset::LoadTexture(empty_texture, a, 3, 2, 2, f);
+}
+
 void cqsp::asset::AssetManager::ClearAssets() {
     for(auto a = assets.begin(); a != assets.end(); a++) {
         a->second.reset();
@@ -143,7 +160,13 @@ void cqsp::asset::AssetLoader::LoadAssets(std::istream& stream) {
                 std::string path = a.path().parent_path().string() + sep + val["path"];
 
                 if (!std::filesystem::exists(path)) {
-                    SPDLOG_WARN("Cannot find asset {}", key);
+                    SPDLOG_WARN("Cannot find asset {} at {}", key, val["path"]);
+                    // Check if it's required
+                    if (!val["required"].empty() && val["required"]) {
+                        // Then required
+                        SPDLOG_CRITICAL("Cannot find critical resource {}, exiting", key);
+                        missing_assets.push_back(key);
+                    }
                     continue;
                 }
                 // Put in core namespace, I guess
@@ -234,6 +257,7 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
             texture_prototype->width,
             texture_prototype->height,
             texture_prototype->options);
+        stbi_image_free(texture_prototype->data);
         manager->AddAsset(key, std::move(textureAsset));
         break;
         }

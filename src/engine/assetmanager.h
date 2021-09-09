@@ -121,27 +121,19 @@ class AssetManager {
     cqsp::asset::ShaderProgram* CreateShaderProgram(const std::string &vert,
                                                             const std::string &frag);
 
-    template <class T>
-    T* GetAsset(std::string& key) {
-        if (!assets.count(key))
+    template <class T, typename K>
+    T* GetAsset(const K key) {
+        if (!assets.count(key)) {
             SPDLOG_ERROR("Invalid key {}", key);
+            if constexpr (std::is_same<T, asset::Texture>::value) {
+                // Then load default texture
+                return &empty_texture;
+            }
+        }
         return dynamic_cast<T*>(assets[key].get());
     }
 
-    template <class T>
-    T* GetAsset(const char* key) {
-        if (!assets.count(key))
-            SPDLOG_ERROR("Invalid key {}", key);
-        return dynamic_cast<T*>(assets[key].get());
-    }
-
-    template <class T>
-    T* GetAsset(char* key) {
-        if (!assets.count(key))
-            SPDLOG_ERROR("Invalid key {}", key);
-        return dynamic_cast<T*>(assets[key].get());
-    }
-
+    void LoadDefaultTexture();
     void ClearAssets();
 
  private:
@@ -155,7 +147,7 @@ class AssetManager {
         }
     }
     std::map<std::string, std::unique_ptr<Asset>> assets;
-
+    asset::Texture empty_texture;
     friend class AssetLoader;
 };
 
@@ -177,6 +169,8 @@ class AssetLoader {
 
     bool QueueHasItems() { return m_asset_queue.size() != 0; }
 
+    std::vector<std::string>& GetMissingAssets() { return missing_assets; }
+
  private:
     std::unique_ptr<TextAsset> LoadText(std::istream &asset_stream,
                                         const Hjson::Value& hints);
@@ -196,6 +190,7 @@ class AssetLoader {
                         std::istream &asset_stream, const Hjson::Value& hints);
     std::map<std::string, AssetType> asset_type_map;
 
+    std::vector<std::string> missing_assets;
     ThreadsafeQueue<QueueHolder> m_asset_queue;
 };
 }  // namespace asset

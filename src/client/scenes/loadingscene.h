@@ -52,6 +52,8 @@ class LoadingScene : public cqsp::engine::Scene {
     cqsp::asset::AssetLoader assetLoader;
 
     void LoadFont();
+
+    bool need_halt = false;
 };
 }  // namespace scene
 }  // namespace cqsp
