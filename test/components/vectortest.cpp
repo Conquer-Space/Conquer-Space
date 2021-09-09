@@ -36,11 +36,3 @@ TEST(Common_vector2test, vec2_normalize_test) {
     ASSERT_FLOAT_EQ(normalized.x, 0.6f);
     ASSERT_FLOAT_EQ(normalized.z, 0.8f);
 }
-
-TEST(Common_vector2test, vec2_angle_test) {
-    //namespace cqspt = cqsp::common::components::types;
-    //cqspt::Vec2 vec2(3, 3);
-    //ASSERT_DOUBLE_EQ(vec2.angle(), cqspt::PI/4);
-    //vec2 = cqspt::Vec2(0, 3);
-    //ASSERT_DOUBLE_EQ(vec2.angle(), cqspt::PI/2);
-}

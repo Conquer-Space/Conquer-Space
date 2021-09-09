@@ -104,9 +104,11 @@ class SysStarSystemRenderer {
     void DrawPlanet(glm::vec3 &object_pos);
     void DrawStar(glm::vec3 &object_pos);
     void DrawTerrainlessPlanet(glm::vec3 &object_pos);
+    void RenderCities(const glm::vec3 &object_pos, const entt::entity &body_entity);
 
     glm::vec3 CalculateObjectPos(entt::entity &);
     glm::vec3 CalculateCenteredObject(entt::entity &);
+    glm::vec3 CalculateCenteredObject(glm::vec3 &);
     void CalculateCamera();
 
     void SetPlanetTexture(TerrainImageGenerator &);

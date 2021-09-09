@@ -26,10 +26,10 @@ TEST(Common_OrbitTest, toVec2Test) {
     orbit1.eccentricity = 0;
     orbit1.argument = 0;
     orbit1.theta = 0;
-    glm::vec3 vec1 = cqspb::tovec3(orbit1);
+    glm::vec3 vec1 = cqspb::toVec3(orbit1);
 
     orbit1.theta = 360;
-    glm::vec3 vec2 = cqspb::tovec3(orbit1);
+    glm::vec3 vec2 = cqspb::toVec3(orbit1);
     EXPECT_EQ(vec1.x, vec2.x);
     EXPECT_EQ(vec1.z, vec2.z);
 
@@ -37,26 +37,26 @@ TEST(Common_OrbitTest, toVec2Test) {
     orbit1.eccentricity = 0.5;
     orbit1.argument = 50;
     orbit1.theta = 0;
-    vec1 = cqspb::tovec3(orbit1);
+    vec1 = cqspb::toVec3(orbit1);
 
     orbit1.theta = 360;
-    vec2 = cqspb::tovec3(orbit1);
+    vec2 = cqspb::toVec3(orbit1);
     EXPECT_EQ(vec1.x, vec2.x);
     EXPECT_EQ(vec1.z, vec2.z);
 
     orbit1.theta = 50;
-    vec1 = cqspb::tovec3(orbit1);
+    vec1 = cqspb::toVec3(orbit1);
 
     orbit1.theta = 360 + 50;
-    vec2 = cqspb::tovec3(orbit1);
+    vec2 = cqspb::toVec3(orbit1);
     EXPECT_EQ(vec1.x, vec2.x);
     EXPECT_EQ(vec1.z, vec2.z);
 
     orbit1.theta = 10;
-    vec1 = cqspb::tovec3(orbit1);
+    vec1 = cqspb::toVec3(orbit1);
 
     orbit1.theta = 360 + 10;
-    vec2 = cqspb::tovec3(orbit1);
+    vec2 = cqspb::toVec3(orbit1);
     EXPECT_EQ(vec1.x, vec2.x);
     EXPECT_EQ(vec1.z, vec2.z);
 }

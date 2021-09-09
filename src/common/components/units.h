@@ -32,6 +32,10 @@ typedef double kilogram;
 
 const double PI = 3.14159265358979323846;
 const double TWOPI = PI * 2;
+
+// Conversions
+inline astronomical_unit toAU(kilometer km) { return km / 149597870.700; }
+inline kilometer toKm(astronomical_unit au) { return au * 149597870.700; }
 }  // namespace types
 }  // namespace components
 }  // namespace common

@@ -43,15 +43,15 @@ void cqsp::common::systems::SysSurface::DoSystem(Universe& universe) {
 
     auto objects = universe.view<cqspt::SurfaceCoordinate>();
     for (entt::entity object : objects) {
-        cqspt::SurfaceCoordinate& surface =
-            universe.get<cqspt::SurfaceCoordinate>(object);
-        cqspt::Kinematics& surfacekin = universe.get<cqspt::Kinematics>(object);
-        cqspt::Kinematics& center = universe.get<cqspt::Kinematics>(surface.planet);
+        cqspt::SurfaceCoordinate& surface = universe.get<cqspt::SurfaceCoordinate>(object);
+        //cqspt::Kinematics& surfacekin = universe.get_or_emplace<cqspt::Kinematics>(object);
+        //cqspt::Kinematics& center = universe.get<cqspt::Kinematics>(surface.planet);
         glm::vec3 anglevec =
             glm::vec3(cos(surface.latitude) * cos(surface.longitude),
                       cos(surface.latitude) * sin(surface.longitude),
                       sin(surface.latitude));
-        surfacekin.postion = (anglevec * surface.radius + center.postion);
+        // Get planet radius
+        //surfacekin.position = (anglevec * surface.radius + center.position);
     }
 }
 
@@ -68,11 +68,11 @@ void cqsp::common::systems::SysPath::DoSystem(Universe& universe) {
     for (entt::entity body : bodies) {
         cqspt::Kinematics& bodykin = universe.get<cqspt::Kinematics>(body);
         cqspt::Kinematics& targetkin = universe.get<cqspt::Kinematics>(universe.get<cqspt::MoveTarget>(body).target);
-        glm::vec3 path = targetkin.postion - bodykin.postion;
+        glm::vec3 path = targetkin.position - bodykin.position;
         if (glm::length(path) < bodykin.topspeed) {
-            bodykin.postion = targetkin.postion;
+            bodykin.position = targetkin.position;
         } else {
-            bodykin.postion += (targetkin.topspeed * glm::normalize(path));
+            bodykin.position += (targetkin.topspeed * glm::normalize(path));
         }
     }
 }

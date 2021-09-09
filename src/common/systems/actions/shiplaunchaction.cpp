@@ -16,7 +16,7 @@ entt::entity cqsp::common::systems::actions::CreateShip(
     auto &position = universe.emplace<cqspt::Kinematics>(ship);
 
     // Get planet position
-    position.postion = cqspt::tovec3(universe.get<cqspt::Orbit>(orbit));
+    position.position = cqspt::toVec3(universe.get<cqspt::Orbit>(orbit));
     universe.get<cqspb::StarSystem>(starsystem).bodies.push_back(ship);
     return ship;
     return entt::entity();

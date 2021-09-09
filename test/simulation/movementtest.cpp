@@ -66,9 +66,9 @@ TEST_F(SystemsMovementTest, ShipCreationTest) {
     auto& position = universe.get<cqspt::Kinematics>(ship);
     position.topspeed = 10;
     glm::vec3 vec = cqspt::tovec3(universe.get<cqspt::Orbit>(planet));
-    printf("%f, %f, %f", position.postion.x, position.postion.y, position.postion.z);
-    EXPECT_NEAR(position.postion.x, vec.x, 4);
-    EXPECT_NEAR(position.postion.y, vec.y, 4);
+    printf("%f, %f, %f", position.position.x, position.position.y, position.position.z);
+    EXPECT_NEAR(position.position.x, vec.x, 4);
+    EXPECT_NEAR(position.position.y, vec.y, 4);
 }
 
 TEST_F(SystemsMovementTest, ShipMovementTest) {
@@ -88,7 +88,7 @@ TEST_F(SystemsMovementTest, ShipMovementTest) {
     auto& position = universe.get<cqspt::Kinematics>(ship);
     glm::vec3 vec = cqspt::tovec3(universe.get<cqspt::Orbit>(target));
     printf("%f, %f, %f\n", vec.x, vec.y, vec.z);
-    printf("%f, %f, %f", position.postion.x, position.postion.y, position.postion.z);
-    EXPECT_NEAR(position.postion.x, vec.x, 4);
-    EXPECT_NEAR(position.postion.y, vec.y, 4);
+    printf("%f, %f, %f", position.position.x, position.position.y, position.position.z);
+    EXPECT_NEAR(position.position.x, vec.x, 4);
+    EXPECT_NEAR(position.position.y, vec.y, 4);
 }

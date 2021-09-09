@@ -111,8 +111,7 @@ void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
         universe.emplace<cqspc::Settlement>(settlement);
         // Add to planet list
         universe.get<cqspc::Habitation>(planet).settlements.push_back(settlement);
-        universe.emplace<cqspt::SurfaceCoordinate>(settlement, lat, longi, planet);
-        universe.emplace<cqspt::Kinematics>(settlement);
+        universe.emplace<cqspt::SurfaceCoordinate>(settlement, lat, longi);
         return settlement;
     });
 

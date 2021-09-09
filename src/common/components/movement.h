@@ -16,12 +16,14 @@
 */
 #pragma once
 
-#include <entt/entt.hpp>
+#include <spdlog/spdlog.h>
 #include <math.h>
+
+#include <entt/entt.hpp>
+#include <glm/glm.hpp>
+
+#include "common/components/bodies.h"
 #include "common/components/units.h"
-#include "spdlog/spdlog.h"
-#include "glm/glm.hpp"
-#include "bodies.h"
 
 namespace cqsp {
 namespace common {
@@ -51,153 +53,14 @@ struct Orbit {
           eccentricity(_eccentricity),
           argument(_argument),
           gravitationalparameter(_gravparam){}//should be 40
+
 };
 
-/*
-struct Vec2 {
-    astronomical_unit x;
-    astronomical_unit y;
-
-    Vec2() = default;
-    constexpr Vec2(astronomical_unit _x, astronomical_unit _y)
-        : x(_x), y(_y) {}
-
-    constexpr Vec2(const Vec2& v) : x(v.x), y(v.y) {}
-
-    template<class T>
-    constexpr Vec2(const T& v) : x(v.x), y(v.y) {}
-
-    template<class T>
-    constexpr operator T() const {
-        return T(this->x, this->y);
-    }
-
-    constexpr Vec2& operator+=(const Vec2& v) {
-        this->x += v.x;
-        this->y += v.y;
-        return *this;
-    }
-
-    template<class T>
-    constexpr Vec2& operator+=(const T& v) {
-        this->x += v.x;
-        this->y += v.y;
-        return *this;
-    }
-
-    constexpr Vec2& operator-=(const Vec2& v) {
-        this->x -= v.x;
-        this->y -= v.y;
-        return *this;
-    }
-
-    
-    template<class T>
-    constexpr Vec2& operator-=(const T& v) {
-        this->x -= v.x;
-        this->y -= v.y;
-        return *this;
-    }
-
-    template<typename T>
-    constexpr Vec2& operator*=(T scalar) {
-        this->x *= scalar;
-        this->y *= scalar;
-        return *this;
-    }
-
-    template<typename T>
-    constexpr Vec2& operator/=(T scalar) {
-        this->x /= scalar;
-        this->y /= scalar;
-        return *this;
-    }
-
-    constexpr Vec2 operator+(const Vec2& c) const {
-        return Vec2(this->x + c.x, this->y + c.y);
-    }
-
-    constexpr Vec2 operator-(const Vec2& c) const {
-        return Vec2(this->x - c.x, this->y - c.y);
-    }
-
-    template<typename T>
-    constexpr Vec2 operator*(T scalar) const {
-        return Vec2(this->x * scalar, this->y * scalar);
-    }
-
-    template<typename T, class B>
-    friend constexpr Vec2 operator*(T scalar, const B& v) {
-        return Vec2(v.x * scalar, v.y * scalar);
-    }
-
-    bool operator==(const Vec2& v) {
-        return this->x == v.x && this->y == v.y;
-    }
-
-    template<typename T>
-    bool operator==(const T& v) {
-        return this->x == v.x && this->y == v.y;
-    }
-
-    template<class T>
-    operator Vec2() {
-        return T(this->x, this->y);
-    }
-
-    template<typename T>
-    constexpr Vec2 operator/(T scalar) const {
-        return Vec2(this->x / scalar, this->y / scalar);
-    }
-
-    double distance(const Vec2& v) { return distance(*this, v); }
-
-    double length() {
-        return length(*this);
-    }
-
-    Vec2 normalize() {
-        return normalize(*this);
-    }
-
-    static double distance(const Vec2& a, const Vec2& b) {
-        return length((a - b));
-    }
-
-    static double length(const Vec2& v) {
-        return sqrt((v.x * v.x) + (v.y * v.y));
-    }
-
-    static Vec2 normalize(const Vec2& v) {
-        return v/length(v);
-    }
-
-    double angle() {
-        return angle(*this);
-    }
-
-    static double angle(const Vec2& v) {
-        return atan2(v.y, v.x);
-    }
-
-    template<class T>
-    static double angle(const T& v) {
-        return atan2(v.y, v.x);
-    }
-};
-
-
-*/
 struct Kinematics {
-    glm::vec3 postion = glm::vec3(0, 0, 0);
+    glm::vec3 position = glm::vec3(0, 0, 0);
     glm::vec3 velocity = glm::vec3(0, 0, 0);
     float topspeed = 0.1;
-    // glm::vec3 target;
-    // entt::entity targetent;
 };
-
-
-
 
 template<typename T>
 struct PolarCoordinate_tp {
@@ -225,29 +88,35 @@ inline void findPeriod(Orbit& orb) {
 }
 
 inline types::radian toRadian(types::degree theta) {
-    return theta * (cqsp::common::components::types::PI / 180);
+    return theta * (cqsp::common::components::types::PI / 180.f);
 }
 
 struct SurfaceCoordinate {
-    degree latitude;
-    degree longitude;
-    float radius;
-    entt::entity planet;
+    radian latitude;
+    radian longitude;
 
     SurfaceCoordinate() = default;
-    SurfaceCoordinate(double _lat, double _long, entt::entity _planet)
-        : latitude(_lat), longitude(_long), planet(_planet) {
-        latitude = toRadian(latitude);
-        longitude = toRadian(longitude);
-        radius = 0.010;
-    }
+
+    /// <summary>
+    /// Creates a surface coordinate
+    /// </summary>
+    /// <param name="_lat">Latitude in degrees</param>
+    /// <param name="_long">Longtitude in degrees</param>
+    SurfaceCoordinate(degree _lat, degree _long)
+        : latitude(toRadian(_lat)), longitude(toRadian(_long)) {}
 };
+
+inline glm::vec3 toVec3(SurfaceCoordinate coord, float radius) {
+    return glm::vec3(cos(coord.latitude) * sin(coord.longitude),
+                     sin(coord.latitude),
+                     cos(coord.latitude) * cos(coord.longitude)) * radius;
+}
 
 inline types::degree toDegree(types::radian theta) {
     return theta * (180 / cqsp::common::components::types::PI);
 }
 
-inline glm::vec3 tovec3(const PolarCoordinate& coordinate) {
+inline glm::vec3 toVec3(const PolarCoordinate& coordinate) {
     return glm::vec3(coordinate.r * cos(toRadian(coordinate.theta)),
                      0,
                      coordinate.r * sin(toRadian(coordinate.theta)));
@@ -260,13 +129,13 @@ inline PolarCoordinate toPolarCoordinate(const Orbit& orb) {
     return PolarCoordinate{(types::astronomical_unit)r, fmod(orb.theta, 360)};
 }
 
-inline glm::vec3 tovec3(const Orbit& orb) {
-    return tovec3(toPolarCoordinate(orb));
+inline glm::vec3 toVec3(const Orbit& orb) {
+    return toVec3(toPolarCoordinate(orb));
 }
 
 inline void updatePos(Kinematics& kin, const Orbit& orb) 
 { 
-    kin.postion = tovec3(orb); 
+    kin.position = toVec3(orb); 
 }
 }  // namespace bodies
 }  // namespace components
