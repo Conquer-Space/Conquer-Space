@@ -19,6 +19,7 @@
 #include "common/components/ships.h"
 #include "common/components/movement.h"
 #include "common/components/units.h"
+#include <math.h>
 
 void cqsp::common::systems::SysOrbit::DoSystem(Universe& universe) {
     namespace cqspc = cqsp::common::components;
@@ -28,30 +29,54 @@ void cqsp::common::systems::SysOrbit::DoSystem(Universe& universe) {
     auto bodies = universe.view<cqspt::Orbit>();
     for (entt::entity body : bodies) {
         // Disable orbits for now
-        //auto &orb = cqspt::updateOrbit(universe.get<cqspt::Orbit>(body));
-        //cqspt::updatePos(universe.get<cqspt::Kinematics>(body), orb);
+        auto &orb = cqspt::updateOrbit(universe.get<cqspt::Orbit>(body));
+        cqspt::updatePos(universe.get<cqspt::Kinematics>(body), orb);
     }
 }
 
 int cqsp::common::systems::SysOrbit::Interval() { return 1; }
+
+void cqsp::common::systems::SysSurface::DoSystem(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
+    namespace cqsps = cqsp::common::components::ships;
+    namespace cqspt = cqsp::common::components::types;
+
+    auto objects = universe.view<cqspt::SurfaceCoordinate>();
+    for (entt::entity object : objects) {
+        cqspt::SurfaceCoordinate& surface = universe.get<cqspt::SurfaceCoordinate>(object);
+        //cqspt::Kinematics& surfacekin = universe.get_or_emplace<cqspt::Kinematics>(object);
+        //cqspt::Kinematics& center = universe.get<cqspt::Kinematics>(surface.planet);
+        glm::vec3 anglevec =
+            glm::vec3(cos(surface.latitude) * cos(surface.longitude),
+                      cos(surface.latitude) * sin(surface.longitude),
+                      sin(surface.latitude));
+        // Get planet radius
+        //surfacekin.position = (anglevec * surface.radius + center.position);
+    }
+}
+
+int cqsp::common::systems::SysSurface::Interval() {
+    return SysOrbit().Interval();
+}
 
 void cqsp::common::systems::SysPath::DoSystem(Universe& universe) {
     namespace cqspc = cqsp::common::components;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspt = cqsp::common::components::types;
 
-    auto bodies = universe.view<cqspt::MoveTarget, cqspt::Position>(entt::exclude<cqspt::Orbit>);
+    auto bodies = universe.view<cqspt::MoveTarget, cqspt::Kinematics>(entt::exclude<cqspt::Orbit>);
     for (entt::entity body : bodies) {
-        cqspt::Position& bodykin = universe.get<cqspt::Position>(body);
-        cqspt::Position targetkin = cqspt::toVec2(universe.get<cqspt::Orbit>(universe.get<cqspt::MoveTarget>(body).target));
-        cqspt::Vec2 path = targetkin - bodykin;
-        float velocity = .5f;
-        if (targetkin.distance(bodykin) < velocity) {
-            bodykin = targetkin;
+        cqspt::Kinematics& bodykin = universe.get<cqspt::Kinematics>(body);
+        cqspt::Kinematics& targetkin = universe.get<cqspt::Kinematics>(universe.get<cqspt::MoveTarget>(body).target);
+        glm::vec3 path = targetkin.position - bodykin.position;
+        if (glm::length(path) < bodykin.topspeed) {
+            bodykin.position = targetkin.position;
         } else {
-           bodykin += (velocity * path.normalize());
+            bodykin.position += (targetkin.topspeed * glm::normalize(path));
         }
     }
 }
 
 int cqsp::common::systems::SysPath::Interval() { return 1; }
+
+

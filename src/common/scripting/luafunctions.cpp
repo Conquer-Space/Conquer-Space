@@ -91,6 +91,7 @@ void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
                                             double eccentricity, double argument) {
         cqspt::Orbit &orb = universe.emplace<cqspt::Orbit>(orbital_entity, theta, distance, eccentricity, argument, 40);
         cqspt::findPeriod(orb);
+        universe.emplace<cqspt::Kinematics>(orbital_entity);
     });
 
     REGISTER_FUNCTION("set_radius", [&] (entt::entity body, int radius) {
@@ -120,11 +121,13 @@ void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
         universe.emplace<cqspc::Habitation>(planet);
     });
 
-    REGISTER_FUNCTION("add_planet_settlement", [&] (entt::entity planet) {
+    REGISTER_FUNCTION("add_planet_settlement", [&](entt::entity planet,
+                                                   double lat, double longi) {
         entt::entity settlement = universe.create();
         universe.emplace<cqspc::Settlement>(settlement);
         // Add to planet list
         universe.get<cqspc::Habitation>(planet).settlements.push_back(settlement);
+        universe.emplace<cqspt::SurfaceCoordinate>(settlement, lat, longi);
         return settlement;
     });
 

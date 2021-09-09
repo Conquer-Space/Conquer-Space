@@ -88,6 +88,7 @@ class SysStarSystemRenderer {
     cqsp::engine::Renderable sky;
     cqsp::engine::Renderable planet_circle;
     cqsp::engine::Renderable ship_overlay;
+    cqsp::engine::Renderable city;
     cqsp::engine::Renderable sun;
 
     cqsp::asset::ShaderProgram *pbr_shader;
@@ -108,12 +109,15 @@ class SysStarSystemRenderer {
     void DrawEntityName(glm::vec3 &object_pos, entt::entity ent_id);
     void DrawPlanetIcon(glm::vec3 &object_pos);
     void DrawShipIcon(glm::vec3 &object_pos);
+    void DrawCityIcon(glm::vec3 &object_pos);
     void DrawPlanet(glm::vec3 &object_pos);
     void DrawStar(glm::vec3 &object_pos);
     void DrawTerrainlessPlanet(glm::vec3 &object_pos);
+    void RenderCities(const glm::vec3 &object_pos, const entt::entity &body_entity);
 
-    glm::vec3 CalculateObjectPos(entt::entity &);
-    glm::vec3 CalculateCenteredObject(entt::entity &);
+    glm::vec3 CalculateObjectPos(const entt::entity &);
+    glm::vec3 CalculateCenteredObject(const entt::entity &);
+    glm::vec3 CalculateCenteredObject(const glm::vec3 &);
     void CalculateCamera();
 
     void SetPlanetTexture(TerrainImageGenerator &);

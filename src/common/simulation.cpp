@@ -47,6 +47,7 @@ Simulation::Simulation(Universe &_universe,scripting::ScriptInterface &script_in
     AddSystem<cqspcs::SysFactory>();
     AddSystem<cqspcs::SysOrbit>();
     AddSystem<cqspcs::SysPath>();
+    AddSystem<cqspcs::SysSurface>();
 }
 
 void cqsp::common::systems::simulation::Simulation::tick() {

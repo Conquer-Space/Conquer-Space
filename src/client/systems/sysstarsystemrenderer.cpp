@@ -16,6 +16,8 @@
 */
 #include "client/systems/sysstarsystemrenderer.h"
 
+#include <cmath>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -34,12 +36,14 @@
 #include "engine/renderer/primitives/pane.h"
 
 #include "common/components/bodies.h"
+#include "common/components/surface.h"
 #include "common/components/organizations.h"
 #include "common/components/player.h"
 #include "common/components/resource.h"
 #include "common/components/movement.h"
 #include "common/components/name.h"
 #include "common/components/ships.h"
+#include "common/components/units.h"
 #include "common/util/profiler.h"
 
 using cqsp::client::systems::SysStarSystemRenderer;
@@ -79,6 +83,10 @@ void SysStarSystemRenderer::Initialize() {
     ship_overlay.mesh = new cqsp::engine::Mesh();
     primitive::CreateFilledTriangle(*ship_overlay.mesh);
     ship_overlay.shaderProgram = circle_shader;
+
+    city.mesh = new cqsp::engine::Mesh();
+    primitive::CreateFilledSquare(*city.mesh);
+    city.shaderProgram = circle_shader;
 
     // Initialize shaders
     asset::ShaderProgram* planet_shader =
@@ -192,16 +200,20 @@ void SysStarSystemRenderer::Render() {
 
     // Draw other bodies
     auto bodies = m_app.GetUniverse().view<ToRender, cqspb::Body>(entt::exclude<cqspb::LightEmitter>);
-    for (auto [ent_id, body] : bodies.each()) {
+    for (auto [body_entity, body] : bodies.each()) {
         // Draw the planet circle
-        glm::vec3 object_pos = CalculateCenteredObject(ent_id);
+        glm::vec3 object_pos = CalculateCenteredObject(body_entity);
+
+        // Draw Ships
+        namespace cqspc = cqsp::common::components;
+        namespace cqspt = cqsp::common::components::types;
 
         if (glm::distance(object_pos, cam_pos) > 200) {
             // Check if it's obscured by a planet, but eh, we can deal with it later
             // Set planet circle color
             planet_circle.shaderProgram->UseProgram();
             planet_circle.shaderProgram->setVec4("color", 0, 0, 1, 1);
-            DrawEntityName(object_pos, ent_id);
+            DrawEntityName(object_pos, body_entity);
             DrawPlanetIcon(object_pos);
             continue;
         }
@@ -213,6 +225,7 @@ void SysStarSystemRenderer::Render() {
         } else {
             DrawTerrainlessPlanet(object_pos);
         }
+        RenderCities(object_pos, body_entity);
     }
 
     BEGIN_TIMED_BLOCK(System_Renderer_Ship_Drawing)
@@ -250,8 +263,7 @@ void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
     if (m_star_system != entt::null &&
         m_universe.all_of<cqspb::StarSystem>(m_star_system)) {
         // Remove tags
-        auto star_system_component =
-            m_universe.get<cqspb::StarSystem>(m_star_system);
+        auto star_system_component = m_universe.get<cqspb::StarSystem>(m_star_system);
         for (auto body : star_system_component.bodies) {
             // Add a tag
             m_universe.remove_if_exists<ToRender>(body);
@@ -259,8 +271,7 @@ void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
     }
 
     m_star_system = system;
-    auto star_system_component =
-        m_universe.get<cqspb::StarSystem>(m_star_system);
+    auto star_system_component = m_universe.get<cqspb::StarSystem>(m_star_system);
     for (auto body : star_system_component.bodies) {
         // Add a tag
         m_universe.emplace_or_replace<ToRender>(body);
@@ -393,8 +404,7 @@ void SysStarSystemRenderer::DrawEntityName(
             m_app.DrawText(name, pos.x, pos.y);
         }
     } else {
-        glm::vec3 pos =
-            glm::project(object_pos, camera_matrix, projection, viewport);
+        glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
         if (!(pos.z >= 1 || pos.z <= -1)) {
             m_app.DrawText(fmt::format("{}", ent_id), pos.x, pos.y);
         }
@@ -430,6 +440,36 @@ void SysStarSystemRenderer::DrawPlanetIcon(glm::vec3 &object_pos) {
     engine::Draw(planet_circle);
     
     buffer_renderer.EndDraw();
+}
+
+void SysStarSystemRenderer::DrawCityIcon(glm::vec3 &object_pos) {
+    glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
+    glm::mat4 planetDispMat = glm::mat4(1.0f);
+    if (pos.z >= 1 || pos.z <= -1) {
+        return;
+    }
+
+    planetDispMat = glm::translate(planetDispMat,
+        glm::vec3((pos.x / m_app.GetWindowWidth() - 0.5) * 2,
+                  (pos.y / m_app.GetWindowHeight() - 0.5) * 2, 0));
+
+    planetDispMat = glm::scale(
+        planetDispMat, glm::vec3(circle_size, circle_size, circle_size));
+
+    float window_ratio = GetWindowRatio();
+    planetDispMat = glm::scale(planetDispMat, glm::vec3(1, window_ratio, 1));
+    glm::mat4 twodimproj =
+        glm::scale(glm::mat4(1.0f), glm::vec3(1, window_ratio, 1));
+
+    planet_renderer.BeginDraw();
+    twodimproj = glm::mat4(1.0f);
+    city.shaderProgram->UseProgram();
+    city.shaderProgram->setMat4("model", planetDispMat);
+    city.shaderProgram->setMat4("projection", twodimproj);
+
+    engine::Draw(city);
+
+    planet_renderer.EndDraw();
 }
 
 void SysStarSystemRenderer::DrawShipIcon(glm::vec3 &object_pos) {
@@ -515,29 +555,60 @@ void SysStarSystemRenderer::DrawTerrainlessPlanet(glm::vec3 &object_pos) {
     planet_renderer.EndDraw();
 }
 
-glm::vec3 SysStarSystemRenderer::CalculateObjectPos(entt::entity &ent) {
-    namespace cqspb = cqsp::common::components::bodies;
+void cqsp::client::systems::SysStarSystemRenderer::RenderCities(const glm::vec3 &object_pos, const entt::entity &body_entity) {
+    // Draw Ships
+    namespace cqspc = cqsp::common::components;
+    namespace cqspt = cqsp::common::components::types;
+    if (!m_app.GetUniverse().all_of<cqspc::Habitation>(body_entity)) {
+        return;
+    }
+    std::vector<entt::entity> cities = m_app.GetUniverse().get<cqspc::Habitation>(body_entity).settlements;
+    if (cities.empty()) {
+        return;
+    }
+    for (auto city_entity : cities) {
+        if (!m_app.GetUniverse().all_of<cqspt::SurfaceCoordinate>(city_entity)) {
+            continue;
+        }
+        auto& coord = m_app.GetUniverse().get<cqspt::SurfaceCoordinate>(city_entity);
+        // TODO(EhWhoAmI/AGM-114): Don't render the planet if the city is behind the planet
+        // Can probably be done by checking the angle of where the camera is, and the surface
+        // coordinate of the planet is facing.
+
+        // This works, but not very well, so will procrastinate this for a while.
+        /*if (abs(std::fmod(view_x, cqspt::PI) - coord.longitude) > cqspt::PI / 2.f) {
+            continue;
+        }*/
+
+        // Calculate position to render
+        glm::vec3 city_pos = cqspt::toVec3(coord, 1) + object_pos;
+        city.shaderProgram->UseProgram();
+        city.shaderProgram->setVec4("color", 0.5, 0.5, 0.5, 1);
+        DrawCityIcon(city_pos);
+    }
+}
+
+glm::vec3 SysStarSystemRenderer::CalculateObjectPos(const entt::entity &ent) {
+    //namespace cqspb = cqsp::common::components::bodies;
     namespace cqspt = cqsp::common::components::types;
     // Get the things
-    if (m_universe.all_of<cqspt::Orbit>(ent)) {
-        cqspt::Vec2 pos = cqspt::toVec2(m_universe.get<cqspt::Orbit>(ent))/0.01;
-        return glm::vec3(pos.y, 0, pos.x);
-    } else if (m_universe.all_of<cqspt::Position>(ent)) {
-        cqspt::Vec2 &pos = m_universe.get<cqspt::Position>(ent);
-        return (glm::vec3(pos.y/0.01, 0, pos.x/0.01));
+    if (m_universe.all_of<cqspt::Kinematics>(ent)) {
+        return (m_universe.get<cqspt::Kinematics>(ent).position / 0.01f);
     }
     return glm::vec3(0, 0, 0);
 }
 
-glm::vec3 SysStarSystemRenderer::CalculateCenteredObject(entt::entity &ent) {
-    return CalculateObjectPos(ent) - view_center;
+glm::vec3 SysStarSystemRenderer::CalculateCenteredObject(const glm::vec3 &vec) { return vec - view_center; }
+
+glm::vec3 SysStarSystemRenderer::CalculateCenteredObject(const entt::entity &ent) {
+    return CalculateCenteredObject(CalculateObjectPos(ent));
 }
 
 void SysStarSystemRenderer::CalculateCamera() {
     cam_pos = glm::vec3(
-                cos(view_y) * sin(view_x) * scroll,
-                sin(view_y) * scroll,
-                cos(view_y) * cos(view_x) * scroll);
+                cos(view_y) * sin(view_x),
+                sin(view_y),
+                cos(view_y) * cos(view_x)) * scroll;
     cam_up = glm::vec3(0.0f, 1.0f, 0.0f);
     camera_matrix = glm::lookAt(cam_pos, glm::vec3(0.f, 0.f, 0.f), cam_up);
     projection = glm::infinitePerspective(glm::radians(45.f), GetWindowRatio(), 0.1f);
