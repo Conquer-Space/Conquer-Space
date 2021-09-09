@@ -53,7 +53,6 @@ struct Orbit {
           eccentricity(_eccentricity),
           argument(_argument),
           gravitationalparameter(_gravparam){}//should be 40
-
 };
 
 struct Kinematics {
