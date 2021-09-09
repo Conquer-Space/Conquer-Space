@@ -340,6 +340,7 @@ int cqsp::engine::Application::init() {
     LogInfo();
     GlInit();
 
+    manager.LoadDefaultTexture();
     // Init audio
     m_audio_interface = new cqsp::engine::audio::AudioInterface();
     m_audio_interface->Initialize();

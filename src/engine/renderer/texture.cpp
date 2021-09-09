@@ -53,7 +53,6 @@ unsigned int cqsp::asset::LoadTexture(unsigned char*& data,
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
 
-    stbi_image_free(data);
     return texid;
 }
 
