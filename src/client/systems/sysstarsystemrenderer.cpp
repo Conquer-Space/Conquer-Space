@@ -550,7 +550,7 @@ void cqsp::client::systems::SysStarSystemRenderer::RenderCities(const glm::vec3 
     }
 }
 
-glm::vec3 SysStarSystemRenderer::CalculateObjectPos(entt::entity &ent) {
+glm::vec3 SysStarSystemRenderer::CalculateObjectPos(const entt::entity &ent) {
     //namespace cqspb = cqsp::common::components::bodies;
     namespace cqspt = cqsp::common::components::types;
     // Get the things
@@ -560,9 +560,9 @@ glm::vec3 SysStarSystemRenderer::CalculateObjectPos(entt::entity &ent) {
     return glm::vec3(0, 0, 0);
 }
 
-glm::vec3 SysStarSystemRenderer::CalculateCenteredObject(glm::vec3 &vec) { return vec - view_center; }
+glm::vec3 SysStarSystemRenderer::CalculateCenteredObject(const glm::vec3 &vec) { return vec - view_center; }
 
-glm::vec3 SysStarSystemRenderer::CalculateCenteredObject(entt::entity &ent) {
+glm::vec3 SysStarSystemRenderer::CalculateCenteredObject(const entt::entity &ent) {
     return CalculateCenteredObject(CalculateObjectPos(ent));
 }
 
