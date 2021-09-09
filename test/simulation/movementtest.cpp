@@ -65,7 +65,7 @@ TEST_F(SystemsMovementTest, ShipCreationTest) {
     ASSERT_TRUE(all_of_pos_and_ship);
     auto& position = universe.get<cqspt::Kinematics>(ship);
     position.topspeed = 10;
-    glm::vec3 vec = cqspt::tovec3(universe.get<cqspt::Orbit>(planet));
+    glm::vec3 vec = cqspt::toVec3(universe.get<cqspt::Orbit>(planet));
     printf("%f, %f, %f", position.position.x, position.position.y, position.position.z);
     EXPECT_NEAR(position.position.x, vec.x, 4);
     EXPECT_NEAR(position.position.y, vec.y, 4);
@@ -79,14 +79,14 @@ TEST_F(SystemsMovementTest, ShipMovementTest) {
     EXPECT_TRUE(universe.valid(ship));
     EXPECT_EQ(universe.size(), 4);
 
-    universe.emplace_or_replace<cqspt::Kinematics>(target, cqspt::tovec3(universe.get<cqspt::Orbit>(target)));
+    universe.emplace_or_replace<cqspt::Kinematics>(target, cqspt::toVec3(universe.get<cqspt::Orbit>(target)));
 
     universe.emplace_or_replace<cqspt::MoveTarget>(ship, target);
     for (int i = 0; i < 1000; i++) {
         system.DoSystem(universe);
     }
     auto& position = universe.get<cqspt::Kinematics>(ship);
-    glm::vec3 vec = cqspt::tovec3(universe.get<cqspt::Orbit>(target));
+    glm::vec3 vec = cqspt::toVec3(universe.get<cqspt::Orbit>(target));
     printf("%f, %f, %f\n", vec.x, vec.y, vec.z);
     printf("%f, %f, %f", position.position.x, position.position.y, position.position.z);
     EXPECT_NEAR(position.position.x, vec.x, 4);
