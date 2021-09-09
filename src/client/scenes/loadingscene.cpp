@@ -40,12 +40,7 @@ void cqsp::scene::LoadingScene::Init() {
     auto loading = [&]() {
         SPDLOG_INFO("Loading resources");
         LoadResources();
-        // Load audio
-        auto hjson = GetApp().GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("core:ui_sounds");
-        for (auto element : hjson->data) {
-            auto audio_asset = GetApp().GetAssetManager().GetAsset<cqsp::asset::AudioAsset>(element.second);
-            GetApp().GetAudioInterface().AddAudioClip(element.first, audio_asset);
-        }
+        SPDLOG_INFO("Need halt: {}", need_halt);
     };
 
     thread = std::make_unique<std::thread>(loading);
@@ -56,9 +51,16 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
     while (assetLoader.QueueHasItems()) {
         assetLoader.BuildNextAsset();
     }
-    if (m_done_loading && !assetLoader.QueueHasItems()) {
+    if (m_done_loading && !assetLoader.QueueHasItems() && !need_halt) {
         // Load font after all the shaders are done
         LoadFont();
+
+        // Load audio
+        auto hjson = GetApp().GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("core:ui_sounds");
+        for (auto element : hjson->data) {
+            auto audio_asset = GetApp().GetAssetManager().GetAsset<cqsp::asset::AudioAsset>(element.second);
+            GetApp().GetAudioInterface().AddAudioClip(element.first, audio_asset);
+        }
         // Set main menu scene
         GetApp().SetScene<cqsp::scene::MainMenuScene>();
     }
@@ -75,6 +77,19 @@ void cqsp::scene::LoadingScene::Ui(float deltaTime) {
     ImGui::Text("Loading...");
     ImGui::ProgressBar(percentage/100.f);
     ImGui::End();
+
+    if (m_done_loading && need_halt) {
+        ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f,
+                                       ImGui::GetIO().DisplaySize.y * 0.5f),
+                                ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+        ImGui::Begin("Error", NULL, ImGuiWindowFlags_NoResize |ImGuiWindowFlags_NoCollapse);
+        ImGui::Text("Found missing assets!");
+
+        if (ImGui::Button("Exit", ImVec2(-FLT_MIN, 0))) {
+            GetApp().ExitApplication();
+        }
+        ImGui::End();
+    }
 }
 
 void cqsp::scene::LoadingScene::Render(float deltaTime) { }
@@ -87,6 +102,7 @@ void cqsp::scene::LoadingScene::LoadResources() {
     assetLoader.LoadAssets(assetLibrary);
 
     SPDLOG_INFO("Done loading items");
+    need_halt = !assetLoader.GetMissingAssets().empty();
     m_done_loading = true;
 }
 

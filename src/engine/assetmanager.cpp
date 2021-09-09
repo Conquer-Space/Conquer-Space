@@ -165,6 +165,7 @@ void cqsp::asset::AssetLoader::LoadAssets(std::istream& stream) {
                     if (!val["required"].empty() && val["required"]) {
                         // Then required
                         SPDLOG_CRITICAL("Cannot find critical resource {}, exiting", key);
+                        missing_assets.push_back(key);
                     }
                     continue;
                 }

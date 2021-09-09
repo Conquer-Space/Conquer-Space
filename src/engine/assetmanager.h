@@ -169,6 +169,8 @@ class AssetLoader {
 
     bool QueueHasItems() { return m_asset_queue.size() != 0; }
 
+    std::vector<std::string>& GetMissingAssets() { return missing_assets; }
+
  private:
     std::unique_ptr<TextAsset> LoadText(std::istream &asset_stream,
                                         const Hjson::Value& hints);
@@ -188,6 +190,7 @@ class AssetLoader {
                         std::istream &asset_stream, const Hjson::Value& hints);
     std::map<std::string, AssetType> asset_type_map;
 
+    std::vector<std::string> missing_assets;
     ThreadsafeQueue<QueueHolder> m_asset_queue;
 };
 }  // namespace asset
