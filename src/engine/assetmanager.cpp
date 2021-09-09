@@ -160,7 +160,12 @@ void cqsp::asset::AssetLoader::LoadAssets(std::istream& stream) {
                 std::string path = a.path().parent_path().string() + sep + val["path"];
 
                 if (!std::filesystem::exists(path)) {
-                    SPDLOG_WARN("Cannot find asset {}", key);
+                    SPDLOG_WARN("Cannot find asset {} at {}", key, val["path"]);
+                    // Check if it's required
+                    if (!val["required"].empty() && val["required"]) {
+                        // Then required
+                        SPDLOG_CRITICAL("Cannot find critical resource {}, exiting", key);
+                    }
                     continue;
                 }
                 // Put in core namespace, I guess

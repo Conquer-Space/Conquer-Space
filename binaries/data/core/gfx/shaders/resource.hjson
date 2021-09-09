@@ -2,7 +2,6 @@
     shader.texturedpane.frag: {
         path: textured_pane.frag
         type: shader
-        required: true
         hints: {
             type: frag
         }
