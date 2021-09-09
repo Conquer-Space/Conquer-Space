@@ -28,7 +28,6 @@ void cqsp::common::systems::SysOrbit::DoSystem(Universe& universe) {
 
     auto bodies = universe.view<cqspt::Orbit>();
     for (entt::entity body : bodies) {
-        // Disable orbits for now
         auto &orb = cqspt::updateOrbit(universe.get<cqspt::Orbit>(body));
         cqspt::updatePos(universe.get<cqspt::Kinematics>(body), orb);
     }
@@ -78,5 +77,3 @@ void cqsp::common::systems::SysPath::DoSystem(Universe& universe) {
 }
 
 int cqsp::common::systems::SysPath::Interval() { return 1; }
-
-
