@@ -80,6 +80,8 @@ struct ResourceLedger : public std::map<entt::entity, double> {
 
     void AssignFrom(const ResourceLedger&);
 
+    void TransferTo(ResourceLedger&, const ResourceLedger&);
+
     bool HasGood(entt::entity good) {
         return (*this).find(good) != (*this).end();
     }

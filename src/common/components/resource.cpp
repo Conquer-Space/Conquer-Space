@@ -91,8 +91,6 @@ ResourceLedger ResourceLedger::operator+(ResourceLedger &other) {
     ResourceLedger ledger;
     ledger = *this;
     ledger += other;
-    // merge_apply(*this, other, 0, [](double a, double b) {
-                     // return a + b; });
     return ledger;
 }
 
@@ -179,4 +177,8 @@ void ResourceLedger::AssignFrom(const ResourceLedger &ledger) {
     for (auto iterator = ledger.begin(); iterator != ledger.end(); iterator++) {
         (*this)[iterator->first] = iterator->second;
     }
+}
+
+void ResourceLedger::TransferTo(ResourceLedger &, const ResourceLedger&) {
+
 }

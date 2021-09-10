@@ -56,7 +56,7 @@ void cqsp::common::systems::simulation::Simulation::tick() {
     namespace cqspc = cqsp::common::components;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspt = cqsp::common::components::types;
-
+    auto start = std::chrono::high_resolution_clock::now();
     BEGIN_TIMED_BLOCK(Game_Loop);
     BEGIN_TIMED_BLOCK(ScriptEngine);
     this->script_runner.ScriptEngine();
@@ -68,4 +68,10 @@ void cqsp::common::systems::simulation::Simulation::tick() {
         }
     }
     END_TIMED_BLOCK(Game_Loop);
+    auto end = std::chrono::high_resolution_clock::now();
+    int len = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    int expected_len = 500;
+    if (len > expected_len) {
+        SPDLOG_WARN("Tick has taken more than {} ms at {} ms", expected_len, len);
+    }
 }
