@@ -82,13 +82,17 @@ using cqsp::common::components::ResourceLedger;
 
 ResourceLedger ResourceLedger::operator-(ResourceLedger &other) {
     ResourceLedger ledger;
-    ledger = merge_apply(*this, other, 0, [](double a, double b) { return a - b; });
+    ledger = *this;
+    ledger -= other;
     return ledger;
 }
 
 ResourceLedger ResourceLedger::operator+(ResourceLedger &other) {
     ResourceLedger ledger;
-    ledger = merge_apply(*this, other, 0, [](double a, double b) { return a + b; });
+    ledger = *this;
+    ledger += other;
+    // merge_apply(*this, other, 0, [](double a, double b) {
+                     // return a + b; });
     return ledger;
 }
 
