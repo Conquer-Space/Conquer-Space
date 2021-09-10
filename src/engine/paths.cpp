@@ -39,7 +39,7 @@ char* get_home_dir(uid_t uid) {
     if (val < 0)
         return NULL;
 
-    if (malloc(sizeof(strbuf) * strbuflen) < 0)
+    if (malloc(sizeof(strbuf) * strbuflen) == NULL)
         return NULL;
 
     if (getpwuid_r(uid, &pwbuf, strbuf, strbuflen, &pw) != 0 || pw == NULL) {
