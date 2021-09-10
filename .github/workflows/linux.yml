@@ -12,7 +12,7 @@ jobs:
     env:
       CC:  ${{ matrix.compiler == 'gcc' && 'gcc' || 'clang'   }}
       CXX: ${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}
-      
+
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
