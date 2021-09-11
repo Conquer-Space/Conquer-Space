@@ -70,7 +70,7 @@ void cqsp::common::systems::simulation::Simulation::tick() {
     END_TIMED_BLOCK(Game_Loop);
     auto end = std::chrono::high_resolution_clock::now();
     int len = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-    int expected_len = 500;
+    int expected_len = 250;
     if (len > expected_len) {
         SPDLOG_WARN("Tick has taken more than {} ms at {} ms", expected_len, len);
     }

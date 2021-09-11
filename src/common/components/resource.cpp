@@ -80,14 +80,14 @@ bool MergeCompare(const Map &m1, const Map &m2,  typename Map::mapped_type ident
 
 using cqsp::common::components::ResourceLedger;
 
-ResourceLedger ResourceLedger::operator-(ResourceLedger &other) {
+ResourceLedger ResourceLedger::operator-(const ResourceLedger &other) {
     ResourceLedger ledger;
     ledger = *this;
     ledger -= other;
     return ledger;
 }
 
-ResourceLedger ResourceLedger::operator+(ResourceLedger &other) {
+ResourceLedger ResourceLedger::operator+(const ResourceLedger &other) {
     ResourceLedger ledger;
     ledger = *this;
     ledger += other;
@@ -120,45 +120,36 @@ void ResourceLedger::operator*=(const double value) {
     }
 }
 
-bool ResourceLedger::operator>(const ResourceLedger &ledger) {
-    return MergeCompare(*this, ledger, 0, [](double a, double b) { return a > b; });
-}
-
-bool ResourceLedger::operator<=(
-    const ResourceLedger & ledger) {
-    return MergeCompare(*this, ledger, 0, [](double a, double b) { return a <= b; });
-}
-
-template<class Map, class Function>
-bool CompareMapDouble(const Map &m1, typename Map::mapped_type compare_to, Function func) {
-    bool op = true;
-    if (m1.size() == 0) {
-        return func(0, compare_to);
-    }
-    for (auto iterator = m1.begin(); iterator != m1.end(); iterator++) {
-        op &= func(iterator->second, compare_to);
-    }
+// Not sure if this is faster than a function, but wanted to have fun with the preprocessor,
+// so here we go
+#define compare(map, compare_to, comparison) \
+    bool op = true; \
+    if (map.size() == 0) { \
+        return 0 comparison compare_to; \
+    } \
+    for (auto iterator = map.begin(); iterator != map.end(); iterator++) { \
+        op &= iterator->second comparison compare_to; \
+    } \
     return op;
-}
 
 bool ResourceLedger::operator>(const double &i) {
-    return CompareMapDouble(*this, i, [](double a, double b) { return a > b; });
+    compare((*this), i, >)
 }
 
 bool ResourceLedger::operator<(const double & i) {
-    return CompareMapDouble(*this, i, [](double a, double b) { return a < b; });
+    compare((*this), i, <)
 }
 
 bool ResourceLedger::operator==(const double &i) {
-    return CompareMapDouble(*this, i, [](double a, double b) { return a == b; });
+    compare((*this), i, ==)
 }
 
 bool ResourceLedger::operator<=(const double &i) {
-    return CompareMapDouble(*this, i, [](double a, double b) { return a <= b; });
+    compare((*this), i, <=)
 }
 
 bool ResourceLedger::operator>=(const double &i) {
-    return CompareMapDouble(*this, i, [](double a, double b) { return a >= b; });
+    compare((*this), i, >=)
 }
 
 bool ResourceLedger::operator>=(const ResourceLedger &ledger) {
@@ -173,12 +164,30 @@ bool ResourceLedger::operator<(const ResourceLedger &ledger) {
     return MergeCompare(*this, ledger, 0, [](double a, double b) { return a < b; });
 }
 
+
+bool ResourceLedger::operator>(const ResourceLedger &ledger) {
+    return MergeCompare(*this, ledger, 0, [](double a, double b) { return a > b; });
+}
+
+bool ResourceLedger::operator<=(const ResourceLedger &ledger) {
+    return MergeCompare(*this, ledger, 0, [](double a, double b) { return a <= b; });
+}
+
 void ResourceLedger::AssignFrom(const ResourceLedger &ledger) {
     for (auto iterator = ledger.begin(); iterator != ledger.end(); iterator++) {
         (*this)[iterator->first] = iterator->second;
     }
 }
 
-void ResourceLedger::TransferTo(ResourceLedger &, const ResourceLedger&) {
+void ResourceLedger::TransferTo(ResourceLedger& ledger_to, const ResourceLedger & amount) {
+    for (auto iterator = amount.begin(); iterator != amount.end(); iterator++) {
+        (*this)[iterator->first] -= iterator->second;
+        ledger_to[iterator->first] += iterator->second;
+    }
+}
 
+void ResourceLedger::MultiplyAdd(const ResourceLedger & other, double value) {
+    for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
+        (*this)[iterator->first] = iterator->second * value;
+    }
 }

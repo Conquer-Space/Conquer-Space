@@ -21,6 +21,7 @@
 #include <map>
 #include <entt/entt.hpp>
 
+#include <iostream>
 #include "common/components/units.h"
 
 namespace cqsp {
@@ -34,8 +35,11 @@ struct Good {
 struct Mineral {};
 
 struct ResourceLedger : public std::map<entt::entity, double> {
-    ResourceLedger operator-(ResourceLedger&);
-    ResourceLedger operator+(ResourceLedger&);
+    ResourceLedger() = default;
+    ~ResourceLedger() = default;
+
+    ResourceLedger operator-(const ResourceLedger&);
+    ResourceLedger operator+(const ResourceLedger&);
     ResourceLedger operator*(double value);
     void operator-=(const ResourceLedger&);
     void operator+=(const ResourceLedger&);
@@ -81,6 +85,8 @@ struct ResourceLedger : public std::map<entt::entity, double> {
     void AssignFrom(const ResourceLedger&);
 
     void TransferTo(ResourceLedger&, const ResourceLedger&);
+    // Equivalant to this += other * double
+    void MultiplyAdd(const ResourceLedger&, double);
 
     bool HasGood(entt::entity good) {
         return (*this).find(good) != (*this).end();
