@@ -25,6 +25,7 @@
 using cqsp::common::systems::SysFactory;
 void SysFactory::DoSystem(Universe& universe) {
     namespace cqspc = cqsp::common::components;
+    BEGIN_TIMED_BLOCK(SysFactory);
     // Produce resources
     BEGIN_TIMED_BLOCK(Resource_gen);
     SysResourceGenerator(universe);
@@ -32,13 +33,14 @@ void SysFactory::DoSystem(Universe& universe) {
     SysConsumption(universe);
     END_TIMED_BLOCK(Resource_gen);
     BEGIN_TIMED_BLOCK(Market_sim);
-    SysFactoryDemandCreator(universe);
+    //SysFactoryDemandCreator(universe);
     SysGoodSeller(universe);
     SysDemandResolver(universe);
     END_TIMED_BLOCK(Market_sim);
     BEGIN_TIMED_BLOCK(Production_sim);
     SysProductionStarter(universe);
     END_TIMED_BLOCK(Production_sim);
+    END_TIMED_BLOCK(SysFactory);
 }
 
 void SysFactory::SysResourceGenerator(Universe& universe) {
@@ -51,7 +53,7 @@ void SysFactory::SysResourceGenerator(Universe& universe) {
         if (universe.all_of<cqspc::FactoryProductivity>(entity)) {
             productivity = universe.get<cqspc::FactoryProductivity>(entity).productivity;
         }
-        stockpile += production* productivity* Interval();
+        stockpile.MultiplyAdd(production, productivity * Interval());
     }
 }
 
@@ -66,7 +68,7 @@ void SysFactory::SysProduction(Universe& universe) {
         if (universe.all_of<cqspc::FactoryProductivity>(entity)) {
             productivity = universe.get<cqspc::FactoryProductivity>(entity).productivity;
         }
-        stockpile += recipe.output* productivity* Interval();
+        stockpile.MultiplyAdd(recipe.output, productivity * Interval());
         // Produced, so remove the production
         universe.remove<cqspc::Production>(entity);
     }
@@ -82,7 +84,7 @@ void SysFactory::SysConsumption(Universe& universe) {
             productivity = universe.get<cqspc::FactoryProductivity>(entity).productivity;
         }
         auto &demand = universe.emplace<cqspc::ResourceDemand>(entity);
-        demand += consumption* productivity* Interval();
+        demand.MultiplyAdd(consumption, productivity * Interval());
     }
 }
 
@@ -98,7 +100,7 @@ void SysFactory::SysFactoryDemandCreator(Universe& universe) {
             productivity = universe.get<cqspc::FactoryProductivity>(entity).productivity;
         }
         auto &demand = universe.emplace<cqspc::ResourceDemand>(entity);
-        demand += recipe.input* productivity* Interval();
+        demand.MultiplyAdd(recipe.input, productivity * Interval());
     }
 }
 
@@ -138,9 +140,8 @@ void SysFactory::SysDemandResolver(Universe& universe) {
             universe.emplace_or_replace<cqspc::FailedResourceTransfer>(entity);
         }
 
-        market_stockpile -= demand;
         if (universe.all_of<cqspc::ResourceStockpile>(entity)) {
-            universe.get<cqspc::ResourceStockpile>(entity) += demand;
+            market_stockpile.TransferTo(universe.get<cqspc::ResourceStockpile>(entity), demand);
         }
         universe.remove<cqspc::ResourceDemand>(entity);
         // TODO(EhWhoAmI): Market prices
@@ -160,8 +161,10 @@ void SysFactory::SysProductionStarter(Universe& universe) {
             productivity = universe.get<cqspc::FactoryProductivity>(entity).productivity;
         }
         // Wanted resources:
-        if (stockpile >= recipe.input * productivity * Interval()) {
-            stockpile -= recipe.input * productivity * Interval();
+        cqspc::ResourceLedger stockpile_calc;
+        stockpile_calc.MultiplyAdd(recipe.input, productivity * Interval());
+        if (stockpile >= stockpile_calc) {
+            stockpile -= stockpile_calc;
             // Produced, so remove the production
             universe.emplace<cqspc::Production>(entity);
         }
