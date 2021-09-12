@@ -1,6 +1,6 @@
 #include "common/systems/actions/shiplaunchaction.h"
 
-#include "common/components/movement.h"
+#include "common/components/coordinates.h"
 #include "common/components/ships.h"
 #include "common/components/bodies.h"
 

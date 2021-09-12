@@ -19,7 +19,7 @@
 #include "common/util/random/stdrandom.h"
 
 #include "common/components/bodies.h"
-#include "common/components/movement.h"
+#include "common/components/coordinates.h"
 #include "common/components/organizations.h"
 #include "common/components/player.h"
 #include "common/components/surface.h"
@@ -90,7 +90,6 @@ void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
     REGISTER_FUNCTION("set_orbit", [&] (entt::entity orbital_entity, double distance, double theta,
                                             double eccentricity, double argument) {
         cqspt::Orbit &orb = universe.emplace<cqspt::Orbit>(orbital_entity, theta, distance, eccentricity, argument, 40);
-        cqspt::findPeriod(orb);
         universe.emplace<cqspt::Kinematics>(orbital_entity);
     });
 

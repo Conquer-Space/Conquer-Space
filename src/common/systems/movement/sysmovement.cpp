@@ -14,10 +14,10 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "sysmovement.h"
+#include "common/systems/movement/sysmovement.h"
 
 #include "common/components/ships.h"
-#include "common/components/movement.h"
+#include "common/components/coordinates.h"
 #include "common/components/units.h"
 #include <math.h>
 
@@ -28,7 +28,8 @@ void cqsp::common::systems::SysOrbit::DoSystem(Universe& universe) {
 
     auto bodies = universe.view<cqspt::Orbit>();
     for (entt::entity body : bodies) {
-        auto &orb = cqspt::updateOrbit(universe.get<cqspt::Orbit>(body));
+        auto& orb = universe.get<cqspt::Orbit>(body);
+        cqspt::UpdateOrbit(orb);
         cqspt::updatePos(universe.get<cqspt::Kinematics>(body), orb);
     }
 }
@@ -55,7 +56,7 @@ void cqsp::common::systems::SysSurface::DoSystem(Universe& universe) {
 }
 
 int cqsp::common::systems::SysSurface::Interval() {
-    return SysOrbit().Interval();
+    return 1;
 }
 
 void cqsp::common::systems::SysPath::DoSystem(Universe& universe) {

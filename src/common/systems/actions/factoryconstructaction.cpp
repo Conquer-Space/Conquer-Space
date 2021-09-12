@@ -27,6 +27,7 @@ entt::entity cqsp::common::systems::actions::OrderConstructionFactory(
     entt::entity recipe, int productivity, entt::entity builder) {
     return entt::entity();
 }
+
 entt::entity cqsp::common::systems::actions::CreateFactory(
     Universe& universe, entt::entity city, entt::entity recipe,
     int productivity) {

@@ -16,7 +16,7 @@
 */
 #include "engine/renderer/primitives/polygon.h"
 #include "common/components/units.h"
-#include "common/components/movement.h"
+#include "common/components/coordinates.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 

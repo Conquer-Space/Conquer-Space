@@ -34,7 +34,7 @@
 #include "common/components/organizations.h"
 #include "common/components/player.h"
 #include "common/components/ships.h"
-#include "common/components/movement.h"
+#include "common/components/coordinates.h"
 #include "common/components/units.h"
 
 using cqsp::common::systems::simulation::Simulation;
