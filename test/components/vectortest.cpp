@@ -16,7 +16,7 @@
 */
 #include <gtest/gtest.h>
 
-#include "common/components/movement.h"
+#include "common/components/coordinates.h"
 #include "glm/glm.hpp"
 
 
