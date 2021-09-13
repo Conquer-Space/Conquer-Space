@@ -35,7 +35,7 @@ jobs:
         cmake --build build --parallel --config ${{ matrix.config }}
     - name: Linting
       run: |
-        cpplint src/*.* test/*.*
+        cpplint src/*/*.* test/*/*.*
 
     - name: Tests
       run: |
