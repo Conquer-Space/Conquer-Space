@@ -71,10 +71,37 @@ TEST(Common_ResourceLedger, ResourceLedgerComparison) {
     EXPECT_FALSE(first == second);
 
     first.clear();
+}
+
+TEST(Common_ResourceLedger, ResourceLedgerDoubleComparison) {
+    ResourceLedger first;
+
+    entt::registry reg;
+    entt::entity good_one = reg.create();
+    entt::entity good_two = reg.create();
 
     EXPECT_FALSE(first > 0);
     EXPECT_FALSE(first < 0);
     EXPECT_TRUE(first == 0);
     EXPECT_TRUE(first >= 0);
     EXPECT_TRUE(first <= 0);
+
+    first[good_one] = 0;
+    first[good_two] = 0;
+
+    EXPECT_FALSE(first > 0);
+    EXPECT_FALSE(first < 0);
+    EXPECT_TRUE(first == 0);
+    EXPECT_TRUE(first >= 0);
+    EXPECT_TRUE(first <= 0);
+
+    first[good_one] = 10;
+    first[good_two] = -5;
+
+    EXPECT_FALSE(first > 0);
+    EXPECT_FALSE(first < 0);
+    EXPECT_FALSE(first == 0);
+    EXPECT_FALSE(first >= 0);
+    EXPECT_FALSE(first <= 0);
+
 }
