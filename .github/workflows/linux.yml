@@ -24,7 +24,6 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt install -y libglfw3 libglfw3-dev libopenal-dev
-        sudo pip install cpplint
 
     - name: Configure Build files
       run: |
@@ -33,9 +32,6 @@ jobs:
     - name: Build Conquer Space
       run: |
         cmake --build build --parallel --config ${{ matrix.config }}
-    - name: Linting
-      run: |
-        cpplint src/*/*.* test/*/*.*
 
     - name: Tests
       run: |
