@@ -1,0 +1,19 @@
+name: Linux
+
+on: [ pull_request, push ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+
+    - name: Install dependencies
+      run: |
+        sudo pip install cpplint
+
+    - name: Linting
+      run: |
+        cpplint src/*/*.* test/*/*.*
