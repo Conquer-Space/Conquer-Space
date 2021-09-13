@@ -26,6 +26,6 @@ jobs:
 
     - uses: actions/upload-artifact@v2
       with:
-        name: Conquer-Space_win32_${{ github.run_number }}
+        name: Conquer-Space_win32_${{ matrix.config }}_${{ github.run_number }}
         path: |
           binaries
