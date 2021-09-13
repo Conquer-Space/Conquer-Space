@@ -1,4 +1,4 @@
-name: Linux
+name: Linting
 
 on: [ pull_request, push ]
 
@@ -16,4 +16,4 @@ jobs:
 
     - name: Linting
       run: |
-        cpplint src/*/*.* test/*/*.*
+        cpplint --linelength=120 src/*/*.* test/*/*.*
