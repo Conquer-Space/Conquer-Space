@@ -20,6 +20,6 @@ jobs:
       run: |
         cpplint --quiet --linelength=120 --recursive --filter=-runtime/references,-build/c++11 --verbose=0 src test
 
-   - name: Lua Linting
-     run: |
-         luacheck binaries/data
+    - name: Lua Linting
+      run: |
+          luacheck binaries/data
