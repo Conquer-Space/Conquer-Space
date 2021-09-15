@@ -14,7 +14,7 @@ jobs:
       run: |
         sudo apt-get install luarocks
         sudo pip install cpplint
-        sudo luarocks install luacheck luafilesystem
+        sudo luarocks install luacheck
 
     - name: C++ Linting
       run: |
