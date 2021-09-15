@@ -1,4 +1,4 @@
-name: Linting
+name: C++ Linting
 
 on: [ pull_request, push ]
 
