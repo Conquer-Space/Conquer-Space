@@ -12,14 +12,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-        sudo apt-get install luarocks
         sudo pip install cpplint
-        sudo luarocks install luacheck
 
-    - name: C++ Linting
+    - name: Linting
       run: |
         cpplint --quiet --linelength=120 --recursive --filter=-runtime/references,-build/c++11 --verbose=0 src test
-
-    - name: Lua Linting
-      run: |
-          luacheck binaries/data
