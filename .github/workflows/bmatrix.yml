@@ -1,9 +1,8 @@
 name: Build Matrix
 
 on:
-  push:
-    branches: main
   pull-request:
+  push:
 
 jobs:
   skip-duplicates:
@@ -36,7 +35,7 @@ jobs:
     name: ${{ matrix.os }} ${{ matrix.config }}
     runs-on: ${{ matrix.os }}
     steps:
-    
+
     - uses: actions/checkout@v2
       with:
         fetch-depth: 1
