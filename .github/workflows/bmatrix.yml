@@ -1,4 +1,4 @@
-name: Linux
+name: Build Matrix
 
 on:
   pull_request:
@@ -18,35 +18,39 @@ jobs:
           # All of these options are optional, so you can remove them if you are happy with the defaults
           concurrent_skipping: 'never'
           skip_after_successful_duplicate: 'true'
-          paths_ignore: '["**/README.md", "**/docs/**"]'
-          do_not_skip: '["pull_request", "workflow_dispatch", "schedule"]'
+          cancel_others: 'true'
+          # Will ignore data because our checks don't use it yet
+          paths_ignore: '["README.md", "docs/**, "tools/**", "data/**"]'
 
   build:
     needs: skip-duplicates
-    if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
-
+    # Skip tasks
+    if: ${{ needs.skip-duplicates.outputs.should_skip != 'true' }}
     strategy:
       matrix:
         config: [Release, Debug]
         compiler: [gcc, clang]
-        os: [macos-latest, windows-latest, ubuntu-18.04]
+        os: [windows-latest, ubuntu-latest]
 
     env:
-      CC:  ${{ matrix.compiler == 'gcc' && 'gcc' || 'clang'   }}
-      CXX: ${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}
-      CMAKE_C_COMPILER_LAUNCHER: ccache
-      CMAKE_CXX_COMPILER_LAUNCHER: ccache
+      if: ${{ matrix.os != 'windows-latest' }}
+        CC:  ${{ matrix.compiler == 'gcc' && 'gcc' || 'clang'   }}
+        CXX: ${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}
+        CMAKE_C_COMPILER_LAUNCHER: ccache
+        CMAKE_CXX_COMPILER_LAUNCHER: ccache
 
-    runs-on: ubuntu-latest
+    name: ${{ matrix.title }} ${{ matrix.config }}
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 1
         submodules: recursive
 
-    - uses: hendrikmuhs/ccache-action@v1
+    - if: ${{ matrix.os != 'windows-latest' }}
+      uses: hendrikmuhs/ccache-action@v1
       with:
-        key: linux-${{ matrix.compiler }}-${{ matrix.config }}
+        key: build${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.config }}
 
     - name: Install dependencies
       run: |
@@ -67,6 +71,6 @@ jobs:
 
     - uses: actions/upload-artifact@v2
       with:
-        name: Conquer-Space_${{ matrix.config }}_b${{ github.run_number }}
+        name: Conquer-Space_${{ matrix.os }}_${{ matrix.config }}_b${{ github.run_number }}
         path: |
           binaries
