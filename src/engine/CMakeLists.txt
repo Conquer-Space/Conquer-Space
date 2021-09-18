@@ -32,6 +32,7 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
 include_directories(${GLFW3_INCLUDE_PATH})
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/backends)
 include_directories(${OPENAL_INCLUDE_DIR})
+include_directories(${GLAD_INCLUDE_DIRS})
 
 file (GLOB_RECURSE CPP_FILES *.cpp)
 list(FILTER CPP_FILES EXCLUDE REGEX ".*main.cpp$")
@@ -61,5 +62,6 @@ target_link_libraries(cqsp-engine PUBLIC
     freetype
     fmt
     libnoise
+    glad
     ${OPENAL_LIBRARY}
 )

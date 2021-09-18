@@ -35,7 +35,8 @@ if(NOT OPENAL_FOUND)
   set(ALSOFT_INSTALL_CONFIG OFF CACHE BOOL "" FORCE)
   set(ALSOFT_UPDATE_BUILD_VERSION OFF CACHE BOOL "" FORCE)
   set(LIBTYPE "STATIC" CACHE BOOL "" FORCE)
-  set(OPENAL_LIBRARY "OpenAL" CACHE INTERNAL "")
+  set(OPENAL_LIBRARY "OpenAL" CACHE INTERNAL "" FORCE)
+  set(OPENAL_FOUND ON CACHE BOOL "" FORCE)
   set(OPENAL_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/lib/openal-soft/include" CACHE INTERNAL "")
   add_subdirectory(openal-soft)
 endif()
@@ -62,8 +63,17 @@ add_subdirectory(libnoise)
 
 set_target_properties(aob fmt hjson libnoise spdlog uninstall PROPERTIES FOLDER "Libs")
 
+# Glad
+set(GLAD_API "gl=4.3" CACHE STRING "" FORCE)
+set(GLAD_EXPORT ON CACHE BOOL "" FORCE)
+set(GLAD_EXTENSIONS "GL_AMD_debug_output" CACHE STRING "" FORCE)
+add_subdirectory(glad)
+# Set parent scope because this is not root directory
+set(GLAD_INCLUDE_DIRS ${GLAD_INCLUDE_DIRS} PARENT_SCOPE)
+
 # Add imgui
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
+include_directories(${GLAD_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui)
 include_directories(${CMAKE_SOURCE_DIR}/lib/implot)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
