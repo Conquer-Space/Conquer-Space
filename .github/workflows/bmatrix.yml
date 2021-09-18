@@ -32,12 +32,12 @@ jobs:
         compiler: [gcc, clang]
         os: [windows-latest, ubuntu-latest]
 
+    if: ${{ matrix.os != 'windows-latest' }}
     env:
-      if: ${{ matrix.os != 'windows-latest' }}
-        CC:  ${{ matrix.compiler == 'gcc' && 'gcc' || 'clang'   }}
-        CXX: ${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}
-        CMAKE_C_COMPILER_LAUNCHER: ccache
-        CMAKE_CXX_COMPILER_LAUNCHER: ccache
+      CC:  ${{ matrix.compiler == 'gcc' && 'gcc' || 'clang'   }}
+      CXX: ${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}
+      CMAKE_C_COMPILER_LAUNCHER: ccache
+      CMAKE_CXX_COMPILER_LAUNCHER: ccache
 
     name: ${{ matrix.title }} ${{ matrix.config }}
     runs-on: ${{ matrix.os }}

@@ -29,7 +29,6 @@ jobs:
       matrix:
         config: [Release, Debug]
         compiler: [gcc, clang]
-        os: [macos-latest, windows-latest, ubuntu-18.04]
 
     env:
       CC:  ${{ matrix.compiler == 'gcc' && 'gcc' || 'clang'   }}
