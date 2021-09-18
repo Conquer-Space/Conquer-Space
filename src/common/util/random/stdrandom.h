@@ -22,8 +22,8 @@
 
 namespace cqsp::common::util {
 class StdRandom : public IRandom {
-   public:
-    StdRandom(int _seed) : IRandom(_seed), random_gen(_seed){};
+ public:
+    explicit StdRandom(int _seed) : IRandom(_seed), random_gen(_seed) {}
 
     int GetRandomInt(int min, int max) {
         std::uniform_int_distribution<> dist(min, max);

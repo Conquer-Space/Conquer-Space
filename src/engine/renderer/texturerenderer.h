@@ -16,6 +16,8 @@
 */
 #pragma once
 
+#include <vector>
+
 #include "engine/renderer/renderer.h"
 #include "engine/window.h"
 

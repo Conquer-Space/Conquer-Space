@@ -103,5 +103,4 @@ TEST(Common_ResourceLedger, ResourceLedgerDoubleComparison) {
     EXPECT_FALSE(first == 0);
     EXPECT_FALSE(first >= 0);
     EXPECT_FALSE(first <= 0);
-
 }

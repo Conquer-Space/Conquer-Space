@@ -16,6 +16,8 @@
 */
 #include "common/universe.h"
 
+#include <memory>
+
 #include "common/util/random/stdrandom.h"
 
 cqsp::common::Universe::Universe() {

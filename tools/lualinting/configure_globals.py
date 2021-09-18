@@ -52,7 +52,6 @@ with open("src/common/scripting/luafunctions.cpp", "r") as f:
     variables.append("civilizations")
     variables.append("date")
 
-    print("Variables list:", variables)
     if not os.path.exists("temp"):
         os.makedirs("temp")
     with open("temp/luaconfig.lua", "w") as output:
@@ -61,3 +60,5 @@ with open("src/common/scripting/luafunctions.cpp", "r") as f:
         variables = ["\"" + element + "\"" for element in variables]
         output.write(", ".join(variables))
         output.write("}")
+        # Close file
+        output.close()

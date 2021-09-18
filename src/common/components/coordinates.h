@@ -51,7 +51,7 @@ struct Orbit {
 
     Orbit() = default;
     Orbit(types::degree _trueAnomaly, types::astronomical_unit _semiMajorAxis,
-          double _eccentricity, types::degree _argument, double _gravparam): 
+          double _eccentricity, types::degree _argument, double _gravparam):
           theta(_trueAnomaly),
           semiMajorAxis(_semiMajorAxis),
           eccentricity(_eccentricity),
@@ -79,11 +79,11 @@ typedef PolarCoordinate_tp<types::astronomical_unit> PolarCoordinate;
 
 struct MoveTarget {
     entt::entity target;
-    MoveTarget(entt::entity _targetent) : target(_targetent) {}
+    explicit MoveTarget(entt::entity _targetent) : target(_targetent) {}
 };
 
 // Period in hours
-inline int FindPeriod(const Orbit& orb) { 
+inline int FindPeriod(const Orbit& orb) {
     // Period in seconds
     return TWOPI * std::sqrt(std::pow(orb.semiMajorAxis, 3) / orb.gravitationalparameter)/3600.f;
 }
@@ -143,11 +143,10 @@ inline glm::vec3 toVec3(const Orbit& orb) {
     return toVec3(toPolarCoordinate(orb));
 }
 
-inline void updatePos(Kinematics& kin, const Orbit& orb) 
-{ 
-    kin.position = toVec3(orb); 
+inline void updatePos(Kinematics& kin, const Orbit& orb) {
+    kin.position = toVec3(orb);
 }
-}  // namespace bodies
+}  // namespace types
 }  // namespace components
 }  // namespace common
 }  // namespace cqsp

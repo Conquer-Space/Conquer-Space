@@ -188,7 +188,8 @@ void cqsp::client::systems::SysDebugMenu::ConsoleInput() {
                 if (command_request.rfind(it->first, 0) != 0) {
                     continue;
                 }
-                it->second.second(GetApp(), command.length()==it->first.length() ? "" : command.substr(it->first.length()+1) , items);
+                it->second.second(GetApp(), command.length() == it->first.length() ? "" :
+                                                command.substr(it->first.length()+1) , items);
                 no_command = false;
                 break;
             }

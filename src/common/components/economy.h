@@ -18,6 +18,9 @@
 
 #include <string>
 #include <vector>
+#include <set>
+#include <map>
+
 #include <entt/entt.hpp>
 
 #include "common/components/resource.h"

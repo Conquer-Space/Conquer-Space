@@ -16,4 +16,4 @@ jobs:
 
     - name: Linting
       run: |
-        cpplint --quiet --linelength=120 --recursive --filter=-runtime/references,-build/c++11 --verbose=0 src test
+        cpplint --quiet --linelength=120 --recursive --filter=-runtime/references,-build/c++11,-readability/check,-whitespace/comments,-runtime/int --verbose=0 src test

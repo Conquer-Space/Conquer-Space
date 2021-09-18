@@ -135,7 +135,8 @@ void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
     GetApp().GetScriptInterface().RegisterDataGroup("events");
 
     // Process all scripts
-    cqsp::asset::TextDirectoryAsset* script_list = GetApp().GetAssetManager().GetAsset<cqsp::asset::TextDirectoryAsset>("core:scripts");
+    cqsp::asset::TextDirectoryAsset* script_list = GetApp().GetAssetManager().
+                                                    GetAsset<cqsp::asset::TextDirectoryAsset>("core:scripts");
     for (auto& text : script_list->data) {
         GetApp().GetScriptInterface().RunScript(text);
     }

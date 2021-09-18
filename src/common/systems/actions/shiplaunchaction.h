@@ -24,7 +24,8 @@ namespace cqsp {
 namespace common {
 namespace systems {
 namespace actions {
-entt::entity CreateShip(cqsp::common::Universe &universe, entt::entity civ, entt::entity orbit, entt::entity starsystem);
+entt::entity CreateShip(cqsp::common::Universe &universe, entt::entity civ,
+                        entt::entity orbit, entt::entity starsystem);
 }
 }  // namespace systems
 }  // namespace common

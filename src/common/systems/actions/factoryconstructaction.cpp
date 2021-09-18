@@ -16,10 +16,11 @@
 */
 #include "common/systems/actions/factoryconstructaction.h"
 
+#include <spdlog/spdlog.h>
+
 #include "common/components/resource.h"
 #include "common/components/area.h"
 
-#include <spdlog/spdlog.h>
 
 using cqsp::common::Universe;
 entt::entity cqsp::common::systems::actions::OrderConstructionFactory(

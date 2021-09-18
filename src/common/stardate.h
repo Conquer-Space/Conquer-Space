@@ -36,7 +36,7 @@ namespace components {
 /// rotational periods from planets, and it would be rather human-centric to assume other
 /// civilizations would use our calendar. As a result, I plan to introduce a system that allows
 /// the creation of different types of calendars. That would come later, though
-/// 
+///
 /// However, this can bring some issues with statistics, because it can be hard for the player
 /// to know how much they are gaining over some year, especially as we calculate over the period
 /// that is irregular with a year. We can do that by calculating the ratio between the interval

@@ -39,7 +39,7 @@
 
 using cqsp::common::systems::simulation::Simulation;
 using cqsp::common::Universe;
-Simulation::Simulation(Universe &_universe,scripting::ScriptInterface &script_interface) :
+Simulation::Simulation(Universe &_universe, scripting::ScriptInterface &script_interface) :
     m_universe(_universe), script_runner(_universe, script_interface) {
     namespace cqspcs = cqsp::common::systems;
     AddSystem<cqspcs::SysPopulationGrowth>();

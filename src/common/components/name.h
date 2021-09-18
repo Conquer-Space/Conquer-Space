@@ -16,10 +16,10 @@
 */
 #pragma once
 
+#include <fmt/format.h>
+
 #include <string>
 #include <vector>
-
-#include <fmt/format.h>
 
 namespace cqsp {
 namespace common {

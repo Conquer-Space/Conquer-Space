@@ -16,6 +16,10 @@
 */
 #include "common/scripting/luafunctions.h"
 
+#include <string>
+#include <memory>
+#include <vector>
+
 #include "common/util/random/stdrandom.h"
 
 #include "common/components/bodies.h"
@@ -29,7 +33,6 @@
 #include "common/components/area.h"
 #include "common/components/resource.h"
 #include "common/components/ships.h"
-#include "common/components/player.h"
 #include "common/components/event.h"
 
 #include "common/systems/actions/factoryconstructaction.h"

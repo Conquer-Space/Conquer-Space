@@ -25,6 +25,8 @@
 #include <atomic>
 #include <memory>
 #include <string>
+#include <vector>
+#include <map>
 
 #include "engine/audio/audioasset.h"
 #include "engine/audio/iaudiointerface.h"

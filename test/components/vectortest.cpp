@@ -30,7 +30,7 @@ TEST(Common_vector2test, vec_len_test) {
 
 TEST(Common_vector2test, vec2_normalize_test) {
     namespace cqspt = cqsp::common::components::types;
-    glm::vec3 vec3(3, 0 ,4);
+    glm::vec3 vec3(3, 0, 4);
     glm::vec3 normalized = glm::normalize(vec3);
     ASSERT_FLOAT_EQ(glm::length(normalized), 1.f);
     ASSERT_FLOAT_EQ(normalized.x, 0.6f);

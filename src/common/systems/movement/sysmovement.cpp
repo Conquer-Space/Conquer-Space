@@ -16,10 +16,11 @@
 */
 #include "common/systems/movement/sysmovement.h"
 
+#include <math.h>
+
 #include "common/components/ships.h"
 #include "common/components/coordinates.h"
 #include "common/components/units.h"
-#include <math.h>
 
 void cqsp::common::systems::SysOrbit::DoSystem(Universe& universe) {
     namespace cqspc = cqsp::common::components;

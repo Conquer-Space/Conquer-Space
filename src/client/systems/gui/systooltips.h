@@ -16,6 +16,8 @@
 */
 #pragma once
 
+#include <string>
+
 #include <entt/entt.hpp>
 
 #include "common/universe.h"
