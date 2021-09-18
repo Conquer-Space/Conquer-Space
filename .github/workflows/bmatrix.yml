@@ -32,7 +32,7 @@ jobs:
         compiler: [gcc, clang]
         os: [windows-latest, ubuntu-latest]
 
-    name: ${{ matrix.title }} ${{ matrix.config }}
+    name: ${{ matrix.os }} ${{ matrix.config }}
     runs-on: ${{ matrix.os }}
     steps:
     
@@ -54,7 +54,8 @@ jobs:
       with:
         key: build${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.config }}
 
-    - name: Install dependencies
+    - if: ${{ matrix.os == 'ubuntu-latest' }}
+      name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt install -y libglfw3 libglfw3-dev libopenal-dev
