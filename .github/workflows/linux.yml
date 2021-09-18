@@ -1,6 +1,6 @@
 name: Linux
 
-on: 
+on:
   pull_request:
   push:
 

@@ -1,6 +1,6 @@
 name: Lua Linting
 
-on: 
+on:
   pull_request:
   push:
 
