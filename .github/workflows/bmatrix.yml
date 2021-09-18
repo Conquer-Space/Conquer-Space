@@ -2,6 +2,8 @@ name: Build Matrix
 
 on:
   push:
+    branches: main
+  pull-request:
 
 jobs:
   skip-duplicates:
@@ -21,7 +23,7 @@ jobs:
           # Will ignore data because our checks don't use it yet
           paths_ignore: '["README.md", "docs/**", "tools/**", "data/**"]'
 
-  build:
+  linux-build:
     needs: skip-duplicates
     # Skip tasks
     if: ${{ needs.skip-duplicates.outputs.should_skip != 'true' }}
@@ -29,7 +31,7 @@ jobs:
       matrix:
         config: [Release, Debug]
         compiler: [gcc, clang]
-        os: [windows-latest, ubuntu-latest]
+        os: [ubuntu-latest]
 
     name: ${{ matrix.os }} ${{ matrix.config }}
     runs-on: ${{ matrix.os }}
@@ -40,21 +42,18 @@ jobs:
         fetch-depth: 1
         submodules: recursive
 
-    - if: ${{ matrix.os != 'windows-latest' }}
-      name: Set compiler
+    - name: Set compiler
       run: |
         echo "CC=${{ matrix.compiler == 'gcc' && 'gcc' || 'clang'   }}" >> $GITHUB_ENV
         echo "CXX=${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}" >> $GITHUB_ENV
         echo "CMAKE_C_COMPILER_LAUNCHER=ccache" >> $GITHUB_ENV
         echo "CMAKE_CXX_COMPILER_LAUNCHER=ccache" >> $GITHUB_ENV
 
-    - if: ${{ matrix.os != 'windows-latest' }}
-      uses: hendrikmuhs/ccache-action@v1
+    - uses: hendrikmuhs/ccache-action@v1
       with:
         key: build${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.config }}
 
-    - if: ${{ matrix.os == 'ubuntu-latest' }}
-      name: Install dependencies
+    - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt install -y libglfw3 libglfw3-dev libopenal-dev
@@ -74,5 +73,36 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: Conquer-Space_${{ matrix.os }}_${{ matrix.config }}_b${{ github.run_number }}
+        path: |
+          binaries
+
+  windows-build:
+    needs: skip-duplicates
+    # Skip tasks
+    if: ${{ needs.skip-duplicates.outputs.should_skip != 'true' }}
+    strategy:
+      matrix:
+        config: [Release, Debug]
+    runs-on: [windows-latest]
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+        submodules: recursive
+
+    - name: Configure Build Files
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=x64-windows -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake
+
+    - name: Build Conquer Space
+      run: |
+        cmake --build build --parallel --config ${{ matrix.config }}
+
+    - name: Run Tests
+      run: ctest -V --schedule-random --progress --output-on-failure --parallel --no-tests error --build-config ${{ matrix.config }} --test-dir build/test
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Conquer-Space_Windows_${{ matrix.config }}_${{ github.run_number }}
         path: |
           binaries
