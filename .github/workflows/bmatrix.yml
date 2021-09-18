@@ -32,20 +32,22 @@ jobs:
         compiler: [gcc, clang]
         os: [windows-latest, ubuntu-latest]
 
-      env:
-        if: ${{ matrix.os != 'windows-latest' }}
-          CC:  ${{ matrix.compiler == 'gcc' && 'gcc' || 'clang'   }}
-          CXX: ${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}
-          CMAKE_C_COMPILER_LAUNCHER: ccache
-          CMAKE_CXX_COMPILER_LAUNCHER: ccache
-
     name: ${{ matrix.title }} ${{ matrix.config }}
     runs-on: ${{ matrix.os }}
     steps:
+    
     - uses: actions/checkout@v2
       with:
         fetch-depth: 1
         submodules: recursive
+
+    - if: ${{ matrix.os != 'windows-latest' }}
+      name: Set compiler
+      run: |
+        echo "CC=${{ matrix.compiler == 'gcc' && 'gcc' || 'clang'   }}" >> $GITHUB_ENV
+        echo "CXX=${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}" >> $GITHUB_ENV
+        echo "CMAKE_C_COMPILER_LAUNCHER=ccache" >> $GITHUB_ENV
+        echo "CMAKE_CXX_COMPILER_LAUNCHER=ccache" >> $GITHUB_ENV
 
     - if: ${{ matrix.os != 'windows-latest' }}
       uses: hendrikmuhs/ccache-action@v1
