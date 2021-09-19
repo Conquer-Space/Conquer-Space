@@ -143,7 +143,7 @@ inline glm::vec3 toVec3(const Orbit& orb) {
     return toVec3(toPolarCoordinate(orb));
 }
 
-inline void updatePos(Kinematics& kin, const Orbit& orb) {
+inline void UpdatePos(Kinematics& kin, const Orbit& orb) {
     kin.position = toVec3(orb);
 }
 }  // namespace types

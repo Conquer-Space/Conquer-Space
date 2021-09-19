@@ -41,6 +41,17 @@ if(NOT OPENAL_FOUND)
   add_subdirectory(openal-soft)
 endif()
 
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
+if (WIN32)
+add_subdirectory(glfw)
+set(GLFW3_INCLUDE_PATH glfw/include) # Because imgui doesn't like it for some reason
+else()
+find_package(glfw3 3.3 REQUIRED)
+endif()
+
 if (TESTS)
 add_subdirectory(googletest)
 
