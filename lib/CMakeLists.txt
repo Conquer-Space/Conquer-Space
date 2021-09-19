@@ -45,7 +45,11 @@ set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
+if (WIN32)
 add_subdirectory(glfw)
+else()
+find_package(glfw3 3.3 REQUIRED)
+endif()
 
 if (TESTS)
 add_subdirectory(googletest)
