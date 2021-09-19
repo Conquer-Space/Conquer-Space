@@ -47,6 +47,7 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 if (WIN32)
 add_subdirectory(glfw)
+set(GLFW3_INCLUDE_PATH glfw/include) # Because imgui doesn't like it for some reason
 else()
 find_package(glfw3 3.3 REQUIRED)
 endif()
@@ -88,6 +89,7 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/imgui)
 include_directories(${CMAKE_SOURCE_DIR}/lib/implot)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
 include_directories(${CMAKE_SOURCE_DIR}/lib/freetype/include)
+include_directories(${GLFW3_INCLUDE_PATH})
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/cpp/)
 file (GLOB IMGUI ${CMAKE_SOURCE_DIR}/lib/imgui/*.cpp)
 set(IMGUI ${IMGUI} ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_glfw.h 
