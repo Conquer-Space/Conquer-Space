@@ -107,3 +107,12 @@ jobs:
         name: Conquer-Space_Windows_${{ matrix.config }}_${{ github.run_number }}
         path: |
           binaries
+
+  build-check:
+    needs: [windows-build, linux-build]
+    runs-on: ubuntu-latest
+    name: Build Matrix
+    steps:
+      - name: Check
+        run: |
+          echo success
