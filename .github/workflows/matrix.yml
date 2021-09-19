@@ -33,7 +33,7 @@ jobs:
         compiler: [gcc, clang]
         os: [ubuntu-latest]
 
-    name: ${{ matrix.os }} ${{ matrix.config }}
+    name: Ubuntu with ${{ matrix.compiler }} (${{ matrix.config }})
     runs-on: ${{ matrix.os }}
     steps:
 
@@ -84,6 +84,7 @@ jobs:
       matrix:
         config: [Release, Debug]
     runs-on: [windows-latest]
+    name: Windows (${{ matrix.config }})
     steps:
     - uses: actions/checkout@v2
       with:
