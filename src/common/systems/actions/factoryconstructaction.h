@@ -26,7 +26,8 @@ namespace common {
 namespace systems {
 namespace actions {
 /// <summary>
-/// Will charge the entity builder the amount needed to construct the factory/building. You'll have to find a organization that can construct it though.
+/// Will charge the entity builder the amount needed to construct the factory/building. You'll have to find a
+/// organization that can construct it though.
 /// </summary>
 /// <param name="universe"></param>
 /// <param name="city"></param>

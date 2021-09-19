@@ -23,7 +23,7 @@
 #include "common/util/random/stdrandom.h"
 
 #include "common/components/bodies.h"
-#include "common/components/movement.h"
+#include "common/components/coordinates.h"
 #include "common/components/organizations.h"
 #include "common/components/player.h"
 #include "common/components/surface.h"

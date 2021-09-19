@@ -34,8 +34,9 @@ namespace simulation {
  */
 class Simulation {
  public:
-    explicit Simulation(cqsp::common::Universe &_universe,
-                        scripting::ScriptInterface &script_interface);
+    explicit
+    Simulation(cqsp::common::Universe &_universe, scripting::ScriptInterface &script_interface);
+
     void tick();
 
     template <class T>

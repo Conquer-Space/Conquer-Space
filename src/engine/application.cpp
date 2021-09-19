@@ -31,11 +31,12 @@
 
 #include <filesystem>
 #include <fstream>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <string>
 #include <vector>
+
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "common/util/profiler.h"
 #include "common/version.h"
@@ -127,7 +128,7 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id,
 }
 
 class GLWindow : public Window {
-   public:
+ public:
     bool ButtonIsHeld(int btn) { return m_keys_held[btn]; }
     bool ButtonIsReleased(int btn) { return m_keys_released[btn]; }
     bool ButtonIsPressed(int btn) { return m_keys_pressed[btn]; }
@@ -267,7 +268,7 @@ class GLWindow : public Window {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_SAMPLES, 4);
-        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);  
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 
 #ifdef __APPLE__
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -295,7 +296,9 @@ class GLWindow : public Window {
             glfwTerminate();
             SPDLOG_CRITICAL("Cannot load glad");
         }
-        int flags; glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+        int flags;
+        glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+
         if (flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
             glEnable(GL_DEBUG_OUTPUT);
             glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS); // makes sure errors are displayed synchronously
@@ -307,7 +310,7 @@ class GLWindow : public Window {
     GLFWwindow* window;
 
 
-   private:
+ private:
     bool window_size_changed;
     double m_mouse_x;
     double m_mouse_y;
@@ -542,7 +545,8 @@ void cqsp::engine::Application::SetIcon() {
 
 void cqsp::engine::Application::GlInit() {
     m_window = new GLWindow();
-    m_window->InitWindow(m_client_options.GetOptions()["window"]["width"], m_client_options.GetOptions()["window"]["height"]);
+    m_window->InitWindow(m_client_options.GetOptions()["window"]["width"],
+                            m_client_options.GetOptions()["window"]["height"]);
 
     // Print gl information
     SPDLOG_INFO(" --- GL information ---");

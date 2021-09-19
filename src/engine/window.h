@@ -19,7 +19,7 @@
 namespace cqsp {
 namespace engine {
 class Window {
-   public:
+ public:
     virtual bool ButtonIsHeld(int btn) = 0;
     virtual bool ButtonIsReleased(int btn) = 0;
     virtual bool ButtonIsPressed(int btn) = 0;

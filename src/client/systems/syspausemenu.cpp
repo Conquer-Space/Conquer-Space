@@ -57,7 +57,7 @@ void cqsp::client::systems::SysPauseMenu::DoUI(int delta_time) {
         }
 
         ImGui::Separator();
-        CQSPGui::DefaultButton( "Exit To Menu", ImVec2(-FLT_MIN, button_height));
+        CQSPGui::DefaultButton("Exit To Menu", ImVec2(-FLT_MIN, button_height));
         if (CQSPGui::DefaultButton("Exit Game", ImVec2(-FLT_MIN, button_height))) {
             // Kill game
             GetApp().ExitApplication();

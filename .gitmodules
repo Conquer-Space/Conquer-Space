@@ -43,3 +43,6 @@
 [submodule "lib/openal-soft"]
 	path = lib/openal-soft
 	url = https://github.com/kcat/openal-soft
+[submodule "lib/glad"]
+	path = lib/glad
+	url = ../../Dav1dde/glad

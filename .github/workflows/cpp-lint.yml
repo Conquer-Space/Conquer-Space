@@ -1,0 +1,23 @@
+name: C++ Linting
+
+on:
+  push:
+  pull_request:
+    types: [opened]
+
+jobs:
+  cpp-lint:
+    name: C++ Linting
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+
+    - name: Install dependencies
+      run: |
+        sudo pip install cpplint
+
+    - name: Linting
+      run: |
+        cpplint --quiet --linelength=120 --recursive --filter=-runtime/references,-build/c++11,-readability/check,-whitespace/comments,-runtime/int --verbose=0 src test

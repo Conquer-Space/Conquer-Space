@@ -35,7 +35,7 @@
 // Definition for prototypes
 namespace cqsp::asset {
 class ImagePrototype : public AssetPrototype {
-   public:
+ public:
     unsigned char* data;
     int width;
     int height;
@@ -47,7 +47,7 @@ class ImagePrototype : public AssetPrototype {
 };
 
 class CubemapPrototype : public AssetPrototype {
-   public:
+ public:
     std::vector<unsigned char*> data;
     int width;
     int height;
@@ -59,7 +59,7 @@ class CubemapPrototype : public AssetPrototype {
 };
 
 class ShaderPrototype : public AssetPrototype {
-   public:
+ public:
     std::string data;
     int type;
     Hjson::Value hints;
@@ -68,7 +68,7 @@ class ShaderPrototype : public AssetPrototype {
 };
 
 class FontPrototype : public AssetPrototype {
-   public:
+ public:
     unsigned char* fontBuffer;
     int size;
 
@@ -102,7 +102,7 @@ void cqsp::asset::AssetManager::LoadDefaultTexture() {
 }
 
 void cqsp::asset::AssetManager::ClearAssets() {
-    for(auto a = assets.begin(); a != assets.end(); a++) {
+    for (auto a = assets.begin(); a != assets.end(); a++) {
         a->second.reset();
     }
     assets.clear();
@@ -137,7 +137,7 @@ void cqsp::asset::AssetLoader::LoadAssets(std::istream& stream) {
             std::string asset_data(std::istreambuf_iterator<char>(asset), {});
             Hjson::Value asset_value;
             Hjson::DecoderOptions decOpt;
-            decOpt.comments = false; 
+            decOpt.comments = false;
             decOpt.duplicateKeyException = true;
 
             // Try to load and check for duplicate options, sadly hjson doesn't provide good
@@ -205,7 +205,7 @@ void cqsp::asset::AssetLoader::LoadAsset(const std::string& type,
         }
         case AssetType::TEXT_ARRAY:
         {
-        manager->AddAsset(key, LoadTextDirectory(path, hints));;
+        manager->AddAsset(key, LoadTextDirectory(path, hints));
         break;
         }
         case AssetType::MODEL:
@@ -391,7 +391,7 @@ void cqspa::AssetLoader::LoadImage(const std::string& key, const std::string& fi
         // Then loading it was a mistake (jk), then it's linear.
         prototype->options.mag_filter = false;
     }
-    
+
     std::ifstream input(filePath, std::ios::binary);
     input.seekg(0, std::ios::end);
     std::streamsize size = input.tellg();

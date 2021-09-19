@@ -1,0 +1,118 @@
+name: Build Matrix
+
+on:
+  pull_request:
+    types: [opened]
+  push:
+
+jobs:
+  skip-duplicates:
+    # continue-on-error: true # Uncomment once integration is finished
+    runs-on: ubuntu-latest
+    # Map a step output to a job output
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@master
+        with:
+          # All of these options are optional, so you can remove them if you are happy with the defaults
+          concurrent_skipping: 'never'
+          skip_after_successful_duplicate: 'true'
+          cancel_others: 'true'
+          # Will ignore data because our checks don't use it yet
+          paths_ignore: '["README.md", "docs/**", "tools/**", "data/**"]'
+
+  linux-build:
+    needs: skip-duplicates
+    # Skip tasks
+    if: ${{ needs.skip-duplicates.outputs.should_skip != 'true' }}
+    strategy:
+      matrix:
+        config: [Release, Debug]
+        compiler: [gcc, clang]
+        os: [ubuntu-latest]
+
+    name: Ubuntu with ${{ matrix.compiler }} (${{ matrix.config }})
+    runs-on: ${{ matrix.os }}
+    steps:
+
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+        submodules: recursive
+
+    - name: Set compiler
+      run: |
+        echo "CC=${{ matrix.compiler == 'gcc' && 'gcc' || 'clang'   }}" >> $GITHUB_ENV
+        echo "CXX=${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}" >> $GITHUB_ENV
+        echo "CMAKE_C_COMPILER_LAUNCHER=ccache" >> $GITHUB_ENV
+        echo "CMAKE_CXX_COMPILER_LAUNCHER=ccache" >> $GITHUB_ENV
+
+    - uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: build${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.config }}
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt install -y libglfw3 libglfw3-dev libopenal-dev
+
+    - name: Configure Build files
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+
+    - name: Build Conquer Space
+      run: |
+        cmake --build build --parallel --config ${{ matrix.config }}
+
+    - name: Tests
+      run: |
+        ctest -V --schedule-random --progress --output-on-failure --parallel --no-tests error --build-config ${{ matrix.config }} --test-dir build/test
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Conquer-Space_${{ matrix.os }}${{ matrix.compiler }}_${{ matrix.config }}_b${{ github.run_number }}
+        path: |
+          binaries
+
+  windows-build:
+    needs: skip-duplicates
+    # Skip tasks
+    if: ${{ needs.skip-duplicates.outputs.should_skip != 'true' }}
+    strategy:
+      matrix:
+        config: [Release, Debug]
+    runs-on: [windows-latest]
+    name: Windows (${{ matrix.config }})
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+        submodules: recursive
+
+    - name: Configure Build Files
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=x64-windows -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake
+
+    - name: Build Conquer Space
+      run: |
+        cmake --build build --parallel --config ${{ matrix.config }}
+
+    - name: Run Tests
+      run: ctest -V --schedule-random --progress --output-on-failure --parallel --no-tests error --build-config ${{ matrix.config }} --test-dir build/test
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Conquer-Space_Windows_${{ matrix.config }}_${{ github.run_number }}
+        path: |
+          binaries
+
+  build-check:
+    needs: [windows-build, linux-build]
+    runs-on: ubuntu-latest
+    name: Build Matrix
+    steps:
+      - name: Check
+        run: |
+          echo success

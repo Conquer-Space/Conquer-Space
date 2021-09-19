@@ -16,7 +16,7 @@
 */
 #include <gtest/gtest.h>
 
-#include "common/components/movement.h"
+#include "common/components/coordinates.h"
 
 // Tests for input from client options
 TEST(Common_OrbitTest, toVec2Test) {

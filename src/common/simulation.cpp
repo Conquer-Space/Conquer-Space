@@ -34,12 +34,12 @@
 #include "common/components/organizations.h"
 #include "common/components/player.h"
 #include "common/components/ships.h"
-#include "common/components/movement.h"
+#include "common/components/coordinates.h"
 #include "common/components/units.h"
 
 using cqsp::common::systems::simulation::Simulation;
 using cqsp::common::Universe;
-Simulation::Simulation(Universe &_universe,scripting::ScriptInterface &script_interface) :
+Simulation::Simulation(Universe &_universe, scripting::ScriptInterface &script_interface) :
     m_universe(_universe), script_runner(_universe, script_interface) {
     namespace cqspcs = cqsp::common::systems;
     AddSystem<cqspcs::SysPopulationGrowth>();

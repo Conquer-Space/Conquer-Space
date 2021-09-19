@@ -19,6 +19,7 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
 include_directories(${CMAKE_SOURCE_DIR}/lib/freetype/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/fmt/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/include)
+include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/examples)
 
 # Lua
 include_directories(${CMAKE_SOURCE_DIR}/lib/lua/)
@@ -31,6 +32,7 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
 include_directories(${GLFW3_INCLUDE_PATH})
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/backends)
 include_directories(${OPENAL_INCLUDE_DIR})
+include_directories(${GLAD_INCLUDE_DIRS})
 
 # Set source files
 file (GLOB_RECURSE CPP_FILES *.cpp)
@@ -60,5 +62,6 @@ target_link_libraries(cqsp-client PUBLIC
     freetype
     fmt
     libnoise
+    glad
     ${OPENAL_LIBRARY}
 )

@@ -34,7 +34,7 @@
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/name.h"
-#include "common/components/movement.h"
+#include "common/components/coordinates.h"
 #include "common/components/organizations.h"
 #include "common/components/player.h"
 #include "common/components/population.h"
@@ -123,7 +123,7 @@ void cqsp::client::systems::SysPlanetInformation::CityInformationPanel() {
         int size = GetApp().GetUniverse().get<cqspc::Settlement>(selected_city_entity).population.size();
         for (auto b : GetApp().GetUniverse().get<cqspc::Settlement>(selected_city_entity).population) {
             auto& bad_var_name = GetApp().GetUniverse().get<cqspc::PopulationSegment>(b);
-            ImGui::TextFmt("Population: {}",cqsp::util::LongToHumanString(bad_var_name.population));
+            ImGui::TextFmt("Population: {}", cqsp::util::LongToHumanString(bad_var_name.population));
         }
     } else {
         ImGui::TextFmt("No population");
@@ -514,7 +514,7 @@ void cqsp::client::systems::SysPlanetInformation::MineConstruction() {
 
 void cqsp::client::systems::SysPlanetInformation::MineInformationPanel() {
     namespace cqspc = cqsp::common::components;
-    if(mine_list_panel) {
+    if (mine_list_panel) {
         auto &city_industry = GetApp().GetUniverse().get<cqspc::Industry>(selected_city_entity);
         ImGui::Begin(fmt::format("Mines of {}", selected_city_entity).c_str(), &mine_list_panel);
         // List mines
@@ -535,7 +535,7 @@ void cqsp::client::systems::SysPlanetInformation::MineInformationPanel() {
                 name = GetApp().GetUniverse().get<cqspc::Name>(e);
             }
             if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
-                // Load 
+                // Load
                 selected_mine = mine_index;
             }
             gui::EntityTooltip(GetApp().GetUniverse(), e);
@@ -546,7 +546,7 @@ void cqsp::client::systems::SysPlanetInformation::MineInformationPanel() {
 
 void cqsp::client::systems::SysPlanetInformation::FactoryInformationPanel() {
     namespace cqspc = cqsp::common::components;
-    if(factory_list_panel) {
+    if (factory_list_panel) {
         auto &city_industry = GetApp().GetUniverse().get<cqspc::Industry>(selected_city_entity);
         ImGui::Begin(fmt::format("Factories of {}", selected_city_entity).c_str(), &factory_list_panel);
         // List mines
@@ -567,7 +567,7 @@ void cqsp::client::systems::SysPlanetInformation::FactoryInformationPanel() {
                 name = GetApp().GetUniverse().get<cqspc::Name>(e);
             }
             if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
-                // Load 
+                // Load
                 selected_factory = factory_index;
             }
             gui::EntityTooltip(GetApp().GetUniverse(), e);

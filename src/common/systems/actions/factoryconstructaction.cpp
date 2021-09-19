@@ -16,10 +16,11 @@
 */
 #include "common/systems/actions/factoryconstructaction.h"
 
+#include <spdlog/spdlog.h>
+
 #include "common/components/resource.h"
 #include "common/components/area.h"
 
-#include <spdlog/spdlog.h>
 
 using cqsp::common::Universe;
 entt::entity cqsp::common::systems::actions::OrderConstructionFactory(
@@ -27,6 +28,7 @@ entt::entity cqsp::common::systems::actions::OrderConstructionFactory(
     entt::entity recipe, int productivity, entt::entity builder) {
     return entt::entity();
 }
+
 entt::entity cqsp::common::systems::actions::CreateFactory(
     Universe& universe, entt::entity city, entt::entity recipe,
     int productivity) {

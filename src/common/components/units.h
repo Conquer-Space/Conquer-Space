@@ -24,8 +24,6 @@ typedef double astronomical_unit;
 typedef double kilometer;
 typedef double solar_mass;
 typedef double degree;
-typedef double days;
-typedef double years;
 typedef double radian;
 typedef double meter_cube;
 typedef double kilogram;

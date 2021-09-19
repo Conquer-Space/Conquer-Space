@@ -1,0 +1,27 @@
+name: Lua Linting
+
+on:
+  pull_request:
+    types: [opened]
+  push:
+
+jobs:
+  lua-lint:
+    name: Lua Linting
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get install luarocks
+        sudo luarocks install luacheck
+
+    - name: Config setup
+      run: |
+        python tools/lualinting/configure_globals.py
+    - name: Linting
+      run: |
+        luacheck --config temp/luaconfig.lua binaries/data

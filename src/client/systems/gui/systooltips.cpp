@@ -16,6 +16,8 @@
 */
 #include "client/systems/gui/systooltips.h"
 
+#include <string>
+
 #include "common/components/name.h"
 #include "common/components/surface.h"
 #include "common/components/bodies.h"

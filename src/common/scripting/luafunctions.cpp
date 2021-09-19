@@ -1,4 +1,4 @@
-/* Conquer Space
+/*
 * Copyright (C) 2021 Conquer Space
 *
 * This program is free software: you can redistribute it and/or modify
@@ -14,12 +14,16 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "luafunctions.h"
+#include "common/scripting/luafunctions.h"
+
+#include <string>
+#include <memory>
+#include <vector>
 
 #include "common/util/random/stdrandom.h"
 
 #include "common/components/bodies.h"
-#include "common/components/movement.h"
+#include "common/components/coordinates.h"
 #include "common/components/organizations.h"
 #include "common/components/player.h"
 #include "common/components/surface.h"
@@ -29,7 +33,6 @@
 #include "common/components/area.h"
 #include "common/components/resource.h"
 #include "common/components/ships.h"
-#include "common/components/player.h"
 #include "common/components/event.h"
 
 #include "common/systems/actions/factoryconstructaction.h"
@@ -90,7 +93,6 @@ void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
     REGISTER_FUNCTION("set_orbit", [&] (entt::entity orbital_entity, double distance, double theta,
                                             double eccentricity, double argument) {
         cqspt::Orbit &orb = universe.emplace<cqspt::Orbit>(orbital_entity, theta, distance, eccentricity, argument, 40);
-        cqspt::findPeriod(orb);
         universe.emplace<cqspt::Kinematics>(orbital_entity);
     });
 

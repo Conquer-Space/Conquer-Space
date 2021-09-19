@@ -15,14 +15,16 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #include "engine/renderer/primitives/polygon.h"
-#include "common/components/units.h"
-#include "common/components/movement.h"
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <vector>
 
 #include <glm/glm.hpp>
+
+#include "common/components/units.h"
+#include "common/components/coordinates.h"
 
 void cqsp::primitive::CreateFilledCircle(
     cqsp::engine::Mesh& mesh, int segments) {

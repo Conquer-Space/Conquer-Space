@@ -25,7 +25,7 @@
 #include "client/scenes/universescene.h"
 #include "common/components/bodies.h"
 #include "common/components/name.h"
-#include "common/components/movement.h"
+#include "common/components/coordinates.h"
 #include "common/components/ships.h"
 #include "engine/cqspgui.h"
 

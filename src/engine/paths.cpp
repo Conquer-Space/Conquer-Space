@@ -33,7 +33,7 @@ char* get_home_dir(uid_t uid) {
     char *result;
     struct passwd pwbuf;
     struct passwd *pw = NULL;
-    long val = sysconf(_SC_GETPW_R_SIZE_MAX);
+    int64_t val = sysconf(_SC_GETPW_R_SIZE_MAX);
     size_t strbuflen = val;
 
     if (val < 0)
@@ -64,7 +64,7 @@ std::string cqsp::engine::GetcqspPath() {
 
     directory = std::string(my_documents);
 #else
-    const char *homedir= get_home_dir(getuid());
+    const char *homedir = get_home_dir(getuid());
     directory = std::string(homedir);
 #endif
 

@@ -16,12 +16,15 @@
 */
 #include "client/systems/sysstarsystemrenderer.h"
 
-#include <cmath>
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <noise/noise.h>
+
+#include <cmath>
+#include <string>
+#include <memory>
+#include <vector>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/polar_coordinates.hpp>
@@ -40,7 +43,7 @@
 #include "common/components/organizations.h"
 #include "common/components/player.h"
 #include "common/components/resource.h"
-#include "common/components/movement.h"
+#include "common/components/coordinates.h"
 #include "common/components/name.h"
 #include "common/components/ships.h"
 #include "common/components/units.h"
@@ -112,19 +115,23 @@ void SysStarSystemRenderer::Initialize() {
 
     overlay_renderer.InitTexture(m_app.GetWindowWidth(), m_app.GetWindowHeight());
     primitive::MakeTexturedPaneMesh(overlay_renderer.mesh_output, true);
-    overlay_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("core:framebuffervert", "core:framebufferfrag");
+    overlay_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("core:framebuffervert",
+                                                                                    "core:framebufferfrag");
 
     buffer_renderer.InitTexture(m_app.GetWindowWidth(), m_app.GetWindowHeight());
     primitive::MakeTexturedPaneMesh(buffer_renderer.mesh_output, true);
-    buffer_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("core:framebuffervert", "core:framebufferfrag");
+    buffer_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("core:framebuffervert",
+                                                                                    "core:framebufferfrag");
 
     planet_renderer.InitTexture(m_app.GetWindowWidth(), m_app.GetWindowHeight());
     primitive::MakeTexturedPaneMesh(planet_renderer.mesh_output, true);
-    planet_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("core:framebuffervert", "core:framebufferfrag");
+    planet_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("core:framebuffervert",
+                                                                                    "core:framebufferfrag");
 
     skybox_renderer.InitTexture();
     primitive::MakeTexturedPaneMesh(skybox_renderer.mesh_output, true);
-    skybox_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("core:framebuffervert", "core:framebufferfrag");
+    skybox_renderer.buffer_shader = *m_app.GetAssetManager().CreateShaderProgram("core:framebuffervert",
+                                                                                    "core:framebufferfrag");
 }
 
 void SysStarSystemRenderer::OnTick() {
@@ -359,7 +366,8 @@ void SysStarSystemRenderer::Update() {
         }
     }
     // Check if it has terrain resource rendering, and make terrain thing
-    if (m_viewing_entity != entt::null && m_app.GetUniverse().all_of<cqsp::client::components::PlanetTerrainRender>(m_viewing_entity)) {
+    if (m_viewing_entity != entt::null &&
+        m_app.GetUniverse().all_of<cqsp::client::components::PlanetTerrainRender>(m_viewing_entity)) {
         // Then check if it's the same rendered object
         auto &rend = m_app.GetUniverse().get<cqsp::client::components::PlanetTerrainRender>(m_viewing_entity);
         if (rend.resource != terrain_displaying) {
@@ -438,7 +446,7 @@ void SysStarSystemRenderer::DrawPlanetIcon(glm::vec3 &object_pos) {
     planet_circle.shaderProgram->setMat4("projection", twodimproj);
 
     engine::Draw(planet_circle);
-    
+
     buffer_renderer.EndDraw();
 }
 
@@ -555,7 +563,8 @@ void SysStarSystemRenderer::DrawTerrainlessPlanet(glm::vec3 &object_pos) {
     planet_renderer.EndDraw();
 }
 
-void cqsp::client::systems::SysStarSystemRenderer::RenderCities(const glm::vec3 &object_pos, const entt::entity &body_entity) {
+void cqsp::client::systems::SysStarSystemRenderer::RenderCities(const glm::vec3 &object_pos,
+                                                                const entt::entity &body_entity) {
     // Draw Ships
     namespace cqspc = cqsp::common::components;
     namespace cqspt = cqsp::common::components::types;

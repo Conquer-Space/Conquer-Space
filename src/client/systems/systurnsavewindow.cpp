@@ -43,7 +43,7 @@ void cqsp::client::systems::SysTurnSaveWindow::DoUI(int delta_time) {
         }
     }
     ImGui::SameLine();
-    if (CQSPGui::DefaultButton( to_tick ? "Running" : "Paused")) {
+    if (CQSPGui::DefaultButton(to_tick ? "Running" : "Paused")) {
         TogglePlayState();
     }
     ImGui::SameLine();

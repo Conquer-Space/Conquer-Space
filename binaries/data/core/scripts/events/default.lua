@@ -19,12 +19,12 @@ function starting_event:on_tick()
                 name = "Begin!",
                 tooltip = "Starts the \"Conquer The Stars\" event chain",
                 action = function()
-                    chain = 1
+                    self.chain = 1
                 end
             }}
         })
     end
-    if chain == 1 and date > 100 then
+    if self.chain == 1 and date > 100 then
         push_event(get_player(), {
             id = "rocket-event",
             image = "core:rocket-event",
@@ -34,7 +34,7 @@ function starting_event:on_tick()
                 name = "Begin!",
                 tooltip = "Starts the \"Conquer The Stars\" event chain",
                 action = function()
-                    chain = 2
+                    self.chain = 2
                 end
             }}
         })

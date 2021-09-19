@@ -29,6 +29,10 @@ namespace cqsp {
 namespace common {
 namespace components {
 namespace types {
+
+struct Orbit;
+inline double FindAngularVelocity(const Orbit& orb);
+
 /**
  * Orbit of a body
  */
@@ -37,9 +41,9 @@ struct Orbit {
     degree theta;
     astronomical_unit semiMajorAxis;
     double eccentricity;
-    double angularvelocity;
     degree argument;
-    years period;
+    double angular_velocity;
+
     glm::vec3 rotation = glm::vec3(0, 1, 0);
 
     // So we can prepare for moons and stuff
@@ -47,12 +51,14 @@ struct Orbit {
 
     Orbit() = default;
     Orbit(types::degree _trueAnomaly, types::astronomical_unit _semiMajorAxis,
-          double _eccentricity, types::degree _argument, double _gravparam): 
+          double _eccentricity, types::degree _argument, double _gravparam):
           theta(_trueAnomaly),
           semiMajorAxis(_semiMajorAxis),
           eccentricity(_eccentricity),
           argument(_argument),
-          gravitationalparameter(_gravparam){}//should be 40
+          gravitationalparameter(_gravparam) {
+        angular_velocity = FindAngularVelocity(*this);
+    }
 };
 
 struct Kinematics {
@@ -73,17 +79,22 @@ typedef PolarCoordinate_tp<types::astronomical_unit> PolarCoordinate;
 
 struct MoveTarget {
     entt::entity target;
-    MoveTarget(entt::entity _targetent) : target(_targetent) {}
+    explicit MoveTarget(entt::entity _targetent) : target(_targetent) {}
 };
 
-inline Orbit& updateOrbit(Orbit& orb) {
-    orb.theta += orb.angularvelocity;
-    return orb;
+// Period in hours
+inline int FindPeriod(const Orbit& orb) {
+    // Period in seconds
+    return TWOPI * std::sqrt(std::pow(orb.semiMajorAxis, 3) / orb.gravitationalparameter)/3600.f;
 }
 
-inline void findPeriod(Orbit& orb) { 
-    orb.period = TWOPI * std::sqrt(std::pow(orb.semiMajorAxis, 3) / orb.gravitationalparameter);
-    orb.angularvelocity = 360.0 * (1.0 / (orb.period * 365));
+// Angular velocity in radians per hour
+inline double FindAngularVelocity(const Orbit& orb) {
+    return 360.0 * (1.0 / FindPeriod(orb));
+}
+
+inline void UpdateOrbit(Orbit& orb) {
+    orb.theta += FindAngularVelocity(orb);
 }
 
 inline types::radian toRadian(types::degree theta) {
@@ -132,11 +143,10 @@ inline glm::vec3 toVec3(const Orbit& orb) {
     return toVec3(toPolarCoordinate(orb));
 }
 
-inline void updatePos(Kinematics& kin, const Orbit& orb) 
-{ 
-    kin.position = toVec3(orb); 
+inline void updatePos(Kinematics& kin, const Orbit& orb) {
+    kin.position = toVec3(orb);
 }
-}  // namespace bodies
+}  // namespace types
 }  // namespace components
 }  // namespace common
 }  // namespace cqsp

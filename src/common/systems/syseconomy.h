@@ -20,10 +20,10 @@
 
 namespace cqsp::common::systems {
 class SysFactory : public ISimulationSystem {
-   public:
+ public:
     void DoSystem(Universe& universe);
 
-   private:
+ private:
     void SysResourceGenerator(Universe& universe);
     void SysProduction(Universe& universe);
 
@@ -57,4 +57,4 @@ class SysFactory : public ISimulationSystem {
     /// <param name="universe"></param>
     void SysProductionStarter(Universe& universe);
 };
-}
+}  // namespace cqsp::common::systems

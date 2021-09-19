@@ -17,6 +17,8 @@
 #pragma once
 
 #include <string_view>
+#include <vector>
+#include <string>
 
 #include <sol/sol.hpp>
 

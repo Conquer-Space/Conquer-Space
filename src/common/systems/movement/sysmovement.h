@@ -35,10 +35,10 @@ class SysPath : public ISimulationSystem {
 };
 
 class SysSurface : public ISimulationSystem {
-   public:
+ public:
     void DoSystem(Universe& universe);
     int Interval();
 };
-}
-}
-}
+}  // namespace systems
+}  // namespace common
+}  // namespace cqsp
