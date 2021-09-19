@@ -93,7 +93,8 @@ void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
     REGISTER_FUNCTION("set_orbit", [&] (entt::entity orbital_entity, double distance, double theta,
                                             double eccentricity, double argument) {
         cqspt::Orbit &orb = universe.emplace<cqspt::Orbit>(orbital_entity, theta, distance, eccentricity, argument, 40);
-        universe.emplace<cqspt::Kinematics>(orbital_entity);
+        auto& kinematics = universe.emplace<cqspt::Kinematics>(orbital_entity);
+        cqspt::UpdatePos(kinematics, orb);
     });
 
     REGISTER_FUNCTION("set_radius", [&] (entt::entity body, int radius) {

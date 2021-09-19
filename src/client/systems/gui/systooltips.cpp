@@ -23,6 +23,7 @@
 #include "common/components/bodies.h"
 #include "common/components/area.h"
 #include "common/components/resource.h"
+#include "common/components/coordinates.h"
 #include "client/systems/gui/sysstockpileui.h"
 #include "engine/gui.h"
 
@@ -80,6 +81,11 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
     ImGui::TextFmt("{}", GetName(universe, entity));
 
     RenderEntityType(universe, entity);
+
+    if (universe.all_of<cqsp::common::components::types::Kinematics>(entity)) {
+        auto& a = universe.get<cqsp::common::components::types::Kinematics>(entity);
+        ImGui::TextFmt("Position: {} {} {}", a.position.x, a.position.y, a.position.z);
+    }
 
     if (universe.all_of<cqspc::ResourceStockpile>(entity)) {
         ImGui::Separator();

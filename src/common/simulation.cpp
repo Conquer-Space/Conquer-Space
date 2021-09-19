@@ -45,7 +45,7 @@ Simulation::Simulation(Universe &_universe, scripting::ScriptInterface &script_i
     AddSystem<cqspcs::SysPopulationGrowth>();
     AddSystem<cqspcs::SysPopulationConsumption>();
     AddSystem<cqspcs::SysFactory>();
-    AddSystem<cqspcs::SysOrbit>();
+    //AddSystem<cqspcs::SysOrbit>();
     AddSystem<cqspcs::SysPath>();
 }
 

@@ -150,8 +150,7 @@ void cqsp::engine::FramebufferRenderer::NewFrame(Window& window) {
     }
 }
 
-void cqsp::engine::AAFrameBufferRenderer::InitTexture(int width,
-                                                              int height) {
+void cqsp::engine::AAFrameBufferRenderer::InitTexture(int width, int height) {
     this->width = width;
     this->height = height;
     glGenFramebuffers(1, &framebuffer);
@@ -173,7 +172,7 @@ void cqsp::engine::AAFrameBufferRenderer::InitTexture(int width,
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        spdlog::info("ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
+        SPDLOG_INFO("ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // configure second post-processing framebuffer
@@ -188,7 +187,7 @@ void cqsp::engine::AAFrameBufferRenderer::InitTexture(int width,
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture, 0);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        spdlog::info("ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
+        SPDLOG_INFO("ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
