@@ -46,3 +46,6 @@
 [submodule "lib/glad"]
 	path = lib/glad
 	url = ../../Dav1dde/glad
+[submodule "lib/glfw"]
+	path = lib/glfw
+	url = https://github.com/glfw/glfw
