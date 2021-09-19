@@ -3,6 +3,7 @@ name: C++ Linting
 on:
   push:
   pull_request:
+    type: [opened]
 
 jobs:
   build:

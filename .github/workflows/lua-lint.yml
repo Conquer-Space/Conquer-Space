@@ -2,6 +2,7 @@ name: Lua Linting
 
 on:
   pull_request:
+    type: [opened]
   push:
 
 jobs:
