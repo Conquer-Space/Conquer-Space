@@ -71,7 +71,7 @@ entt::entity cqsp::common::systems::actions::CreateMine(
     universe.get<cqspc::Industry>(city).industries.push_back(mine);
 
     // Add producivity
-    universe.emplace<cqspc::FactoryProductivity>(mine);
+    universe.emplace<cqspc::FactoryProductivity>(mine, 1.f);
 
     universe.emplace<cqspc::ResourceStockpile>(mine);
     return mine;

@@ -39,6 +39,22 @@ struct Market {
     }
 };
 
+
+// Will be handled in the future
+struct Currency {};
+
+// Records the prices of goods and other things
+struct CostTable : public ResourceLedger {};
+
+// TODO(EhWhoAmI): Add multiple currency support
+struct Wallet {
+    Wallet() = default;
+    Wallet(entt::entity _currency, double _balance) : balance(_balance), currency(_currency) {}
+
+    double balance;
+    entt::entity currency;
+};
+
 struct MarketParticipant {
     entt::entity market;
 };

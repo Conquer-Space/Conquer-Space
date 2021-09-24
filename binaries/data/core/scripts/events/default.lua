@@ -41,4 +41,4 @@ function starting_event:on_tick()
     end
 end
 
-events:insert(starting_event)
+-- events:insert(starting_event)

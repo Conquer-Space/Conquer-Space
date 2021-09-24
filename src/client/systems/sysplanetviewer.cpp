@@ -121,9 +121,9 @@ void cqsp::client::systems::SysPlanetInformation::CityInformationPanel() {
 
     if (GetApp().GetUniverse().all_of<cqspc::Settlement>(selected_city_entity)) {
         int size = GetApp().GetUniverse().get<cqspc::Settlement>(selected_city_entity).population.size();
-        for (auto b : GetApp().GetUniverse().get<cqspc::Settlement>(selected_city_entity).population) {
-            auto& bad_var_name = GetApp().GetUniverse().get<cqspc::PopulationSegment>(b);
-            ImGui::TextFmt("Population: {}", cqsp::util::LongToHumanString(bad_var_name.population));
+        for (auto seg_entity : GetApp().GetUniverse().get<cqspc::Settlement>(selected_city_entity).population) {
+            auto& pop_segement = GetApp().GetUniverse().get<cqspc::PopulationSegment>(seg_entity);
+            ImGui::TextFmt("Population: {}", cqsp::util::LongToHumanString(pop_segement.population));
         }
     } else {
         ImGui::TextFmt("No population");
@@ -176,6 +176,7 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
             ImGui::Text(fmt::format("Has {} entities attached to it", market.participants.size()).c_str());
             // Get resource stockpile
             auto& stockpile = GetApp().GetUniverse().get<cqspc::ResourceStockpile>(center.market);
+            ImGui::Text("Resources");
             DrawLedgerTable("marketstockpile", GetApp().GetUniverse(), stockpile);
 
             // Market prices
@@ -374,9 +375,10 @@ void cqsp::client::systems::SysPlanetInformation::DemographicsTab() {
     using cqsp::common::components::PopulationSegment;
 
     auto& settlement = GetApp().GetUniverse().get<Settlement>(selected_city_entity);
-    for (auto &b : settlement.population) {
-        ImGui::TextFmt("Population: {}", GetApp().GetUniverse().get<PopulationSegment>(b).population);
-        if (GetApp().GetUniverse().all_of<cqspc::Hunger>(b)) {
+    for (auto &seg_entity : settlement.population) {
+        ImGui::TextFmt("Population: {}", GetApp().GetUniverse().get<PopulationSegment>(seg_entity).population);
+        cqsp::client::systems::gui::EntityTooltip(GetApp().GetUniverse(), seg_entity);
+        if (GetApp().GetUniverse().all_of<cqspc::Hunger>(seg_entity)) {
             ImGui::TextFmt("Hungry");
         }
     }

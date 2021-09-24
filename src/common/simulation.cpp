@@ -27,7 +27,7 @@
 #include "common/components/resource.h"
 #include "common/util/profiler.h"
 #include "common/systems/movement/sysmovement.h"
-#include "common/systems/syseconomy.h"
+#include "common/systems/economy/syseconomy.h"
 #include "common/systems/syspopulation.h"
 
 #include "common/components/event.h"

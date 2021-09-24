@@ -39,6 +39,13 @@ struct ResourceLedger : public std::map<entt::entity, double> {
     ResourceLedger() = default;
     ~ResourceLedger() = default;
 
+    /// <summary>
+    /// This resource ledger has enough resources inside to transfer away X
+    /// </summary>
+    /// <param name="amount">Other resource ledger</param>
+    /// <returns></returns>
+    bool EnoughToTransfer(const ResourceLedger& amount);
+
     ResourceLedger operator-(const ResourceLedger&);
     ResourceLedger operator+(const ResourceLedger&);
     ResourceLedger operator*(double value);
@@ -92,6 +99,8 @@ struct ResourceLedger : public std::map<entt::entity, double> {
     bool HasGood(entt::entity good) {
         return (*this).find(good) != (*this).end();
     }
+
+    std::string to_string();
 };
 
 struct Recipe {
@@ -126,6 +135,8 @@ struct ResourceDemand : public ResourceLedger {};
 struct FailedResourceTransfer {
     // Ledgers later to show how much
 };
+
+struct FailedResourceProduction {};
 
 struct ResourceDistribution : public std::map<entt::entity, double> {};
 }  // namespace components

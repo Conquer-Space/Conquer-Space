@@ -24,6 +24,7 @@
 #include "common/components/area.h"
 #include "common/components/resource.h"
 #include "common/components/coordinates.h"
+#include "common/components/economy.h"
 #include "client/systems/gui/sysstockpileui.h"
 #include "engine/gui.h"
 
@@ -72,6 +73,7 @@ void RenderEntityType(Universe& universe, entt::entity entity) {
 }
 }  // namespace cqsp::client::systems::gui
 
+// TODO(EhWhoAmI): Organize this so that it makes logical sense and order.
 void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity entity) {
     if (!ImGui::IsItemHovered()) {
         return;
@@ -82,9 +84,25 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
 
     RenderEntityType(universe, entity);
 
-    if (universe.all_of<cqsp::common::components::types::Kinematics>(entity)) {
+    if (universe.all_of<cqspc::Wallet>(entity)) {
+        auto balance = universe.get<cqsp::common::components::Wallet>(entity).balance;
+        ImGui::TextFmt("Wallet: {}", balance);
+    }
+
+    if (universe.all_of<cqspc::MarketParticipant>(entity)) {
+        ImGui::TextFmt("Is Market Participant");
+    }
+    if (universe.all_of<cqspc::types::Kinematics>(entity)) {
         auto& a = universe.get<cqsp::common::components::types::Kinematics>(entity);
         ImGui::TextFmt("Position: {} {} {}", a.position.x, a.position.y, a.position.z);
+    }
+
+    //TODO(EhWhoAmI): Set these text red, but too lazy to do it for now
+    if(universe.all_of<cqspc::FailedResourceTransfer>(entity)) {
+        ImGui::TextFmt("Failed resource transfer last tick");
+    }
+    if(universe.all_of<cqspc::FailedResourceProduction>(entity)) {
+        ImGui::TextFmt("Failed resource production last tick");
     }
 
     if (universe.all_of<cqspc::ResourceStockpile>(entity)) {

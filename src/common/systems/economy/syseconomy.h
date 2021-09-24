@@ -25,16 +25,20 @@ class SysFactory : public ISimulationSystem {
 
  private:
     void SysResourceGenerator(Universe& universe);
+    /// <summary>
+    /// Creates goods that factories generate
+    /// </summary>
+    /// <param name="universe"></param>
     void SysProduction(Universe& universe);
 
     /// <summary>
     /// Creates demand for the system ResourceConsumption
     /// </summary>
     /// <param name="universe"></param>
-    void SysConsumption(Universe& universe);
+    void SysDemand(Universe& universe);
 
     /// <summary>
-    /// Creates demand for the factory
+    /// Creates demand for factories
     /// </summary>
     /// <param name="universe"></param>
     void SysFactoryDemandCreator(Universe& universe);
@@ -46,7 +50,7 @@ class SysFactory : public ISimulationSystem {
     void SysGoodSeller(Universe& universe);
 
     /// <summary>
-    /// Gives the demand to the supply
+    /// Resolves demand to supply, delivers goods to demand
     /// </summary>
     /// <param name="universe"></param>
     void SysDemandResolver(Universe& universe);

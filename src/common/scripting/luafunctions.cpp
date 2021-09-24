@@ -179,6 +179,7 @@ void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
         entt::entity entity = universe.create();
         universe.emplace<cqspc::Market>(entity);
         universe.emplace<cqspc::ResourceStockpile>(entity);
+        universe.emplace<cqspc::CostTable>(entity);
         return entity;
     });
 
@@ -188,14 +189,19 @@ void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
 
     REGISTER_FUNCTION("attach_market", [&](entt::entity market_entity, entt::entity participant) {
         cqsp::common::systems::economy::AddParticipant(universe, market_entity, participant);
+        auto& wallet = universe.emplace<cqspc::Wallet>(participant);
+        wallet.balance = 0;
+    });
+
+    REGISTER_FUNCTION("add_cash", [&](entt::entity participant, double balance) {
+        universe.get<cqspc::Wallet>(participant).balance += balance;
     });
 
     REGISTER_FUNCTION("to_human_string", [&](int64_t number) {
         return cqsp::util::LongToHumanString(number);
     });
 
-    REGISTER_FUNCTION("add_resource", [&](entt::entity storage,
-                                          entt::entity resource, int amount) {
+    REGISTER_FUNCTION("add_resource", [&](entt::entity storage, entt::entity resource, int amount) {
         // Add resources to the resource stockpile
         universe.get<cqspc::ResourceStockpile>(storage)[resource] += amount;
     });
@@ -208,10 +214,8 @@ void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
         universe.emplace<cqspb::Terrain>(planet, seed);
     });
 
-    REGISTER_FUNCTION("create_ship", [&](entt::entity civ, entt::entity orbit,
-                                                            entt::entity starsystem) {
-        return cqsp::common::systems::actions::CreateShip(universe, civ, orbit,
-                                                                        starsystem);
+    REGISTER_FUNCTION("create_ship", [&](entt::entity civ, entt::entity orbit, entt::entity starsystem) {
+        return cqsp::common::systems::actions::CreateShip(universe, civ, orbit, starsystem);
     });
 
     REGISTER_FUNCTION("get_player", [&]() {

@@ -80,6 +80,14 @@ bool MergeCompare(const Map &m1, const Map &m2,  typename Map::mapped_type ident
 
 using cqsp::common::components::ResourceLedger;
 
+bool cqsp::common::components::ResourceLedger::EnoughToTransfer(const ResourceLedger &amount) {
+    bool b = true;
+    for (auto it = amount.begin(); it != amount.end(); it++) {
+        b &= (*this)[it->first] >= it->second;
+    }
+    return b;
+}
+
 ResourceLedger ResourceLedger::operator-(const ResourceLedger &other) {
     ResourceLedger ledger;
     ledger = *this;
@@ -164,7 +172,6 @@ bool ResourceLedger::operator<(const ResourceLedger &ledger) {
     return MergeCompare(*this, ledger, 0, [](double a, double b) { return a < b; });
 }
 
-
 bool ResourceLedger::operator>(const ResourceLedger &ledger) {
     return MergeCompare(*this, ledger, 0, [](double a, double b) { return a > b; });
 }
@@ -188,6 +195,18 @@ void ResourceLedger::TransferTo(ResourceLedger& ledger_to, const ResourceLedger 
 
 void ResourceLedger::MultiplyAdd(const ResourceLedger & other, double value) {
     for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
-        (*this)[iterator->first] = iterator->second * value;
+        (*this)[iterator->first] += iterator->second * value;
     }
+}
+
+std::string cqsp::common::components::ResourceLedger::to_string() {
+    std::string str = "{";
+    for (auto it = this->begin(); it != this->end(); it++) {
+        str.append(" ");
+        str.append(std::to_string(static_cast<std::uint32_t>(it->first)));
+        str.append(",");
+        str.append(std::to_string(it->second));
+    }
+    str.append("}");
+    return str;
 }
