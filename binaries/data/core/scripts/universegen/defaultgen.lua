@@ -19,6 +19,13 @@ local function set_planet_orbit(planet, index, m, b)
 
     set_orbit(planet, distance, degrees, ecc, 0)
 end
+
+local function place_factory_on_market(market, city, resource, amount)
+    local factory = create_factory(city, recipes[resource], amount)
+    attach_market(market, factory)
+    return factory
+end
+
 generators:insert({
     name = "default",
     civ_init = function()
@@ -94,6 +101,7 @@ generators:insert({
         end
     end,
     planets = function(civ_id)
+        -- TODO(EhWhoAmI): Add earth cities and earth
         local planet = get_civilization_planet(civ_id)
         if is_player(civ_id) then
             print("Initializing player")
@@ -109,23 +117,26 @@ generators:insert({
         set_resource(planet, goods["copper"], 10)
 
         -- Add city
-        local city_count = random(300, 500)
+        -- TODO(EhWhoAmI): Create more complex economy, with cities specializing in stuff
+        -- TODO(EhWhoAmI): Make slider for configuring the amount of cities and stuff
+        local city_count = 250
         for index = 0, city_count, 1 do
             local city = add_planet_settlement(planet, random(-90, 90), random(-180, 180))
             set_name(city, "City ".. index)
             local pop_unit = add_population_segment(city, random_normal_int(50000000, 2000000)) -- 100 million
+            add_cash(pop_unit, 1000000000) -- 1 billion
             attach_market(market, pop_unit)
-            set_resource_consume(pop_unit, goods["consumer_good"], 1750)
+            set_resource_consume(pop_unit, goods["consumer_good"], 10000)
             -- Add industry
             create_industries(city)
-            attach_market(market, create_factory(city, recipes["steel_forging"], 1500))
+            place_factory_on_market(market, city, "steel_forging", 5000)
             -- Add various factories
-            attach_market(market, create_factory(city, recipes["consumer_good_manufacturing"], 1000))
-            attach_market(market, create_factory(city, recipes["concrete_manufacturing"], 300))
-            attach_market(market, create_mine(city, goods["copper"], 1000, 1))
-            attach_market(market, create_mine(city, goods["aluminium"], 1000, 1))
-            attach_market(market, create_mine(city, goods["stone"], 1000, 1))
-            attach_market(market, create_mine(city, goods["iron"], 10000, 1))
+            place_factory_on_market(market, city, "consumer_good_manufacturing", 1000)
+            place_factory_on_market(market, city, "concrete_manufacturing", 300)
+            attach_market(market, create_mine(city, goods["copper"], 10000, 1))
+            attach_market(market, create_mine(city, goods["aluminium"], 10000, 1))
+            attach_market(market, create_mine(city, goods["stone"], 10000, 1))
+            attach_market(market, create_mine(city, goods["iron"], 60000, 1))
         end
     end
 })

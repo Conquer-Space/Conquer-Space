@@ -41,4 +41,8 @@ function starting_event:on_tick()
     end
 end
 
-events:insert(starting_event)
+-- Disable the starting event for now because it was for testing
+-- events:insert(starting_event)
+
+-- To silence the linter
+print(type(starting_event))

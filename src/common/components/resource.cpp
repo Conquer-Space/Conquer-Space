@@ -80,6 +80,14 @@ bool MergeCompare(const Map &m1, const Map &m2,  typename Map::mapped_type ident
 
 using cqsp::common::components::ResourceLedger;
 
+bool cqsp::common::components::ResourceLedger::EnoughToTransfer(const ResourceLedger &amount) {
+    bool b = true;
+    for (auto it = amount.begin(); it != amount.end(); it++) {
+        b &= (*this)[it->first] >= it->second;
+    }
+    return b;
+}
+
 ResourceLedger ResourceLedger::operator-(const ResourceLedger &other) {
     ResourceLedger ledger;
     ledger = *this;
@@ -102,6 +110,13 @@ ResourceLedger ResourceLedger::operator*(double value) {
     return ledger;
 }
 
+ResourceLedger cqsp::common::components::ResourceLedger::operator*(ResourceLedger &other) {
+    ResourceLedger ledger;
+    ledger = *this;
+    ledger *= other;
+    return ledger;
+}
+
 void ResourceLedger::operator-=(const ResourceLedger &other) {
     for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
         (*this)[iterator->first] -= iterator->second;
@@ -117,6 +132,12 @@ void ResourceLedger::operator+=(const ResourceLedger &other) {
 void ResourceLedger::operator*=(const double value) {
     for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
         (*this)[iterator->first] = iterator->second * value;
+    }
+}
+
+void cqsp::common::components::ResourceLedger::operator*=(ResourceLedger &other) {
+    for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
+        (*this)[iterator->first] = iterator->second * other[iterator->first];
     }
 }
 
@@ -164,7 +185,6 @@ bool ResourceLedger::operator<(const ResourceLedger &ledger) {
     return MergeCompare(*this, ledger, 0, [](double a, double b) { return a < b; });
 }
 
-
 bool ResourceLedger::operator>(const ResourceLedger &ledger) {
     return MergeCompare(*this, ledger, 0, [](double a, double b) { return a > b; });
 }
@@ -188,6 +208,34 @@ void ResourceLedger::TransferTo(ResourceLedger& ledger_to, const ResourceLedger 
 
 void ResourceLedger::MultiplyAdd(const ResourceLedger & other, double value) {
     for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
-        (*this)[iterator->first] = iterator->second * value;
+        (*this)[iterator->first] += iterator->second * value;
     }
+}
+
+double cqsp::common::components::ResourceLedger::GetSum() {
+    double t = 0;
+    for (auto it = this->begin(); it != this->end(); it++) {
+        t += it->second;
+    }
+    return t;
+}
+
+double cqsp::common::components::ResourceLedger::MultiplyAndGetSum(ResourceLedger &other) {
+    double sum = 0;
+    for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
+        sum += iterator->second * other[iterator->first];
+    }
+    return sum;
+}
+
+std::string cqsp::common::components::ResourceLedger::to_string() {
+    std::string str = "{";
+    for (auto it = this->begin(); it != this->end(); it++) {
+        str.append(" ");
+        str.append(std::to_string(static_cast<std::uint32_t>(it->first)));
+        str.append(",");
+        str.append(std::to_string(it->second));
+    }
+    str.append("}");
+    return str;
 }

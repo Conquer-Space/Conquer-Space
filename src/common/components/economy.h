@@ -30,7 +30,7 @@ namespace common {
 namespace components {
 struct Market {
     std::set<entt::entity> participants;
-    std::map<entt::entity, double> prices;
+    ResourceLedger prices;
     ResourceLedger demand;
     ResourceLedger supply;
 
@@ -39,7 +39,28 @@ struct Market {
     }
 };
 
-struct MarketParticipant {
+struct Price {
+    double price;
+
+    operator double() { return price; }
+};
+
+// Will be handled in the future
+struct Currency {};
+
+// Records the prices of goods and other things
+struct CostTable : public ResourceLedger {};
+
+// TODO(EhWhoAmI): Add multiple currency support
+struct Wallet {
+    Wallet() = default;
+    Wallet(entt::entity _currency, double _balance) : balance(_balance), currency(_currency) {}
+
+    double balance = 0;
+    entt::entity currency;
+};
+
+struct MarketAgent {
     entt::entity market;
 };
 

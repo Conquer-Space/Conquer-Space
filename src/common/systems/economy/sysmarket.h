@@ -14,20 +14,13 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+#pragma once
 
-#include <iostream>
-#include <memory>
-#include <fstream>
+#include "common/universe.h"
 
-#include "client/scenes/loadingscene.h"
-#include "engine/application.h"
+namespace cqsp::common::systems::market {
+    void DeterminePrice(cqsp::common::Universe& universe, entt::entity market, entt::entity good);
+    // Determines all the prices for the market
+    void DeterminePrices(cqsp::common::Universe& universe, entt::entity market);
 
-int main(int argc, char* argv[]) {
-    cqsp::engine::Application application;
-
-    // TODO(EhWhoAmI): Run the game and subsequent simulation in a headless mode, so that we don't
-    // have to load the UI
-    // Set initial scene
-    application.SetScene<cqsp::scene::LoadingScene>();
-    application.run();
-}
+}  // namespace cqsp::common::systems::market

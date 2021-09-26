@@ -27,7 +27,7 @@
 #include "common/components/resource.h"
 #include "common/util/profiler.h"
 #include "common/systems/movement/sysmovement.h"
-#include "common/systems/syseconomy.h"
+#include "common/systems/economy/syseconomy.h"
 #include "common/systems/syspopulation.h"
 
 #include "common/components/event.h"
@@ -44,7 +44,7 @@ Simulation::Simulation(Universe &_universe, scripting::ScriptInterface &script_i
     namespace cqspcs = cqsp::common::systems;
     AddSystem<cqspcs::SysPopulationGrowth>();
     AddSystem<cqspcs::SysPopulationConsumption>();
-    AddSystem<cqspcs::SysFactory>();
+    AddSystem<cqspcs::SysEconomy>();
     //AddSystem<cqspcs::SysOrbit>();
     AddSystem<cqspcs::SysPath>();
 }

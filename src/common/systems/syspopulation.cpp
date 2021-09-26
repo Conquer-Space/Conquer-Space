@@ -44,7 +44,7 @@ void cqsp::common::systems::SysPopulationConsumption::DoSystem(Universe& univers
     for (auto [entity, segment] : view.each()) {
         // The population will feed, I guess
         entt::entity good = universe.goods["consumer_good"];
-        uint64_t consumption = segment.population * 1;
+        uint64_t consumption = segment.population * 0.0001;
         universe.get_or_emplace<cqspc::ResourceConsumption>(entity)[good] = consumption;
     }
 }

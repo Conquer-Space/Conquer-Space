@@ -19,22 +19,26 @@
 #include "common/systems/isimulationsystem.h"
 
 namespace cqsp::common::systems {
-class SysFactory : public ISimulationSystem {
+class SysEconomy : public ISimulationSystem {
  public:
     void DoSystem(Universe& universe);
 
  private:
     void SysResourceGenerator(Universe& universe);
+    /// <summary>
+    /// Creates goods that factories generate
+    /// </summary>
+    /// <param name="universe"></param>
     void SysProduction(Universe& universe);
 
     /// <summary>
     /// Creates demand for the system ResourceConsumption
     /// </summary>
     /// <param name="universe"></param>
-    void SysConsumption(Universe& universe);
+    void SysDemandCreator(Universe& universe);
 
     /// <summary>
-    /// Creates demand for the factory
+    /// Creates demand for factories
     /// </summary>
     /// <param name="universe"></param>
     void SysFactoryDemandCreator(Universe& universe);
@@ -46,7 +50,7 @@ class SysFactory : public ISimulationSystem {
     void SysGoodSeller(Universe& universe);
 
     /// <summary>
-    /// Gives the demand to the supply
+    /// Resolves demand to supply, delivers goods to demand
     /// </summary>
     /// <param name="universe"></param>
     void SysDemandResolver(Universe& universe);
@@ -56,5 +60,13 @@ class SysFactory : public ISimulationSystem {
     /// </summary>
     /// <param name="universe"></param>
     void SysProductionStarter(Universe& universe);
+
+    void SysPriceDetermine(Universe& universe);
+
+    /// <summary>
+    /// Consumes resource consumption.
+    /// </summary>
+    /// <param name="universe"></param>
+    void SysConsumptionConsume(Universe& universe);
 };
 }  // namespace cqsp::common::systems
