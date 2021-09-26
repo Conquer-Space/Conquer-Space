@@ -137,6 +137,7 @@ void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
     REGISTER_FUNCTION("add_population_segment", [&](entt::entity settlement, uint64_t popsize) {
         entt::entity population = universe.create();
         universe.emplace<cqspc::PopulationSegment>(population, popsize);
+        universe.emplace<cqspc::ResourceStockpile>(population);
         // Add to planet list
         universe.get<cqspc::Settlement>(settlement).population.push_back(population);
 
@@ -175,13 +176,22 @@ void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
         dist[resource] = seed;
     });
 
-    REGISTER_FUNCTION("create_market", [&]() {
+    // TODO(EhWhoAmI): Will have to fix the documentation for this so that it looks neater
+    auto lambda = [&]() {
         entt::entity entity = universe.create();
-        universe.emplace<cqspc::Market>(entity);
+        auto& market = universe.emplace<cqspc::Market>(entity);
         universe.emplace<cqspc::ResourceStockpile>(entity);
-        universe.emplace<cqspc::CostTable>(entity);
+        // Set the market prices
+        // TODO(EhWhoAmI): This is a bandaid solution, please fix this
+
+        auto view = universe.view<cqspc::Good, cqspc::Price>();
+        for (entt::entity entity : view) {
+            // Assign price to market
+            market.prices[entity] = universe.get<cqspc::Price>(entity);
+        }
         return entity;
-    });
+    };
+    REGISTER_FUNCTION("create_market", lambda);
 
     REGISTER_FUNCTION("place_market", [&](entt::entity market, entt::entity planet) {
         universe.emplace<cqspc::MarketCenter>(planet, market);
@@ -189,12 +199,11 @@ void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
 
     REGISTER_FUNCTION("attach_market", [&](entt::entity market_entity, entt::entity participant) {
         cqsp::common::systems::economy::AddParticipant(universe, market_entity, participant);
-        auto& wallet = universe.emplace<cqspc::Wallet>(participant);
-        wallet.balance = 0;
+        auto& wallet = universe.get_or_emplace<cqspc::Wallet>(participant);
     });
 
     REGISTER_FUNCTION("add_cash", [&](entt::entity participant, double balance) {
-        universe.get<cqspc::Wallet>(participant).balance += balance;
+        universe.get_or_emplace<cqspc::Wallet>(participant).balance += balance;
     });
 
     REGISTER_FUNCTION("to_human_string", [&](int64_t number) {

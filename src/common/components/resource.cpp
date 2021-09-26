@@ -110,6 +110,13 @@ ResourceLedger ResourceLedger::operator*(double value) {
     return ledger;
 }
 
+ResourceLedger cqsp::common::components::ResourceLedger::operator*(ResourceLedger &other) {
+    ResourceLedger ledger;
+    ledger = *this;
+    ledger *= other;
+    return ledger;
+}
+
 void ResourceLedger::operator-=(const ResourceLedger &other) {
     for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
         (*this)[iterator->first] -= iterator->second;
@@ -125,6 +132,12 @@ void ResourceLedger::operator+=(const ResourceLedger &other) {
 void ResourceLedger::operator*=(const double value) {
     for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
         (*this)[iterator->first] = iterator->second * value;
+    }
+}
+
+void cqsp::common::components::ResourceLedger::operator*=(ResourceLedger &other) {
+    for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
+        (*this)[iterator->first] = iterator->second * other[iterator->first];
     }
 }
 
@@ -197,6 +210,22 @@ void ResourceLedger::MultiplyAdd(const ResourceLedger & other, double value) {
     for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
         (*this)[iterator->first] += iterator->second * value;
     }
+}
+
+double cqsp::common::components::ResourceLedger::GetSum() {
+    double t = 0;
+    for (auto it = this->begin(); it != this->end(); it++) {
+        t += it->second;
+    }
+    return t;
+}
+
+double cqsp::common::components::ResourceLedger::MultiplyAndGetSum(ResourceLedger &other) {
+    double sum = 0;
+    for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
+        sum += iterator->second * other[iterator->first];
+    }
+    return sum;
 }
 
 std::string cqsp::common::components::ResourceLedger::to_string() {

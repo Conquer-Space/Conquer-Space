@@ -20,4 +20,7 @@
 
 namespace cqsp::common::systems::market {
     void DeterminePrice(cqsp::common::Universe& universe, entt::entity market, entt::entity good);
+    // Determines all the prices for the market
+    void DeterminePrices(cqsp::common::Universe& universe, entt::entity market);
+
 }  // namespace cqsp::common::systems::market

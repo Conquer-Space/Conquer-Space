@@ -28,6 +28,7 @@
 #include "common/components/resource.h"
 #include "common/components/name.h"
 #include "common/components/coordinates.h"
+#include "common/components/economy.h"
 #include "common/systems/sysuniversegenerator.h"
 #include "common/scripting/luafunctions.h"
 
@@ -66,6 +67,7 @@ void cqsp::scene::UniverseLoadingScene::Ui(float deltaTime) {
 
 void cqsp::scene::UniverseLoadingScene::Render(float deltaTime) {}
 
+// TODO(EhWhoAmI): All things under this line should eventually be moved to cqsp-core
 void LoadGoods(cqsp::engine::Application& app) {
     namespace cqspc = cqsp::common::components;
     cqsp::asset::HjsonAsset* good_assets = app
@@ -87,6 +89,7 @@ void LoadGoods(cqsp::engine::Application& app) {
                 app.GetUniverse().emplace_or_replace<cqspc::Mineral>(good);
             }
         }
+        app.GetUniverse().emplace<cqspc::Price>(good, val["price"]);
         app.GetUniverse().goods[val["identifier"].to_string()] = good;
         assets_loaded++;
     }

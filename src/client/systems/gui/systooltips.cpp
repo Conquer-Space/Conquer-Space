@@ -89,7 +89,7 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
         ImGui::TextFmt("Wallet: {}", balance);
     }
 
-    if (universe.all_of<cqspc::MarketParticipant>(entity)) {
+    if (universe.all_of<cqspc::MarketAgent>(entity)) {
         ImGui::TextFmt("Is Market Participant");
     }
     if (universe.all_of<cqspc::types::Kinematics>(entity)) {
@@ -98,10 +98,10 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
     }
 
     //TODO(EhWhoAmI): Set these text red, but too lazy to do it for now
-    if(universe.all_of<cqspc::FailedResourceTransfer>(entity)) {
+    if (universe.all_of<cqspc::FailedResourceTransfer>(entity)) {
         ImGui::TextFmt("Failed resource transfer last tick");
     }
-    if(universe.all_of<cqspc::FailedResourceProduction>(entity)) {
+    if (universe.all_of<cqspc::FailedResourceProduction>(entity)) {
         ImGui::TextFmt("Failed resource production last tick");
     }
 

@@ -25,6 +25,8 @@
 int main(int argc, char* argv[]) {
     cqsp::engine::Application application;
 
+    // TODO(EhWhoAmI): Run the game and subsequent simulation in a headless mode, so that we don't
+    // have to load the UI
     // Set initial scene
     application.SetScene<cqsp::scene::LoadingScene>();
     application.run();

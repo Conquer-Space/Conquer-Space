@@ -19,7 +19,7 @@
 #include "common/systems/isimulationsystem.h"
 
 namespace cqsp::common::systems {
-class SysFactory : public ISimulationSystem {
+class SysEconomy : public ISimulationSystem {
  public:
     void DoSystem(Universe& universe);
 
@@ -35,7 +35,7 @@ class SysFactory : public ISimulationSystem {
     /// Creates demand for the system ResourceConsumption
     /// </summary>
     /// <param name="universe"></param>
-    void SysDemand(Universe& universe);
+    void SysDemandCreator(Universe& universe);
 
     /// <summary>
     /// Creates demand for factories
@@ -60,5 +60,13 @@ class SysFactory : public ISimulationSystem {
     /// </summary>
     /// <param name="universe"></param>
     void SysProductionStarter(Universe& universe);
+
+    void SysPriceDetermine(Universe& universe);
+
+    /// <summary>
+    /// Consumes resource consumption.
+    /// </summary>
+    /// <param name="universe"></param>
+    void SysConsumptionConsume(Universe& universe);
 };
 }  // namespace cqsp::common::systems

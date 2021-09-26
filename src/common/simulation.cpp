@@ -44,7 +44,7 @@ Simulation::Simulation(Universe &_universe, scripting::ScriptInterface &script_i
     namespace cqspcs = cqsp::common::systems;
     AddSystem<cqspcs::SysPopulationGrowth>();
     AddSystem<cqspcs::SysPopulationConsumption>();
-    AddSystem<cqspcs::SysFactory>();
+    AddSystem<cqspcs::SysEconomy>();
     //AddSystem<cqspcs::SysOrbit>();
     AddSystem<cqspcs::SysPath>();
 }

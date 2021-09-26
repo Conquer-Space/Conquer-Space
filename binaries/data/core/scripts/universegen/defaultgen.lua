@@ -119,23 +119,24 @@ generators:insert({
         -- Add city
         -- TODO(EhWhoAmI): Create more complex economy, with cities specializing in stuff
         -- TODO(EhWhoAmI): Make slider for configuring the amount of cities and stuff
-        local city_count = 0
+        local city_count = 250
         for index = 0, city_count, 1 do
             local city = add_planet_settlement(planet, random(-90, 90), random(-180, 180))
             set_name(city, "City ".. index)
             local pop_unit = add_population_segment(city, random_normal_int(50000000, 2000000)) -- 100 million
+            add_cash(pop_unit, 1000000000) -- 1 billion
             attach_market(market, pop_unit)
-            set_resource_consume(pop_unit, goods["consumer_good"], 1750)
+            set_resource_consume(pop_unit, goods["consumer_good"], 10000)
             -- Add industry
             create_industries(city)
-            place_factory_on_market(market, city, "steel_forging", 1500)
+            place_factory_on_market(market, city, "steel_forging", 5000)
             -- Add various factories
             place_factory_on_market(market, city, "consumer_good_manufacturing", 1000)
             place_factory_on_market(market, city, "concrete_manufacturing", 300)
-            attach_market(market, create_mine(city, goods["copper"], 1000, 1))
-            attach_market(market, create_mine(city, goods["aluminium"], 1000, 1))
-            attach_market(market, create_mine(city, goods["stone"], 1000, 1))
-            attach_market(market, create_mine(city, goods["iron"], 1000, 1))
+            attach_market(market, create_mine(city, goods["copper"], 10000, 1))
+            attach_market(market, create_mine(city, goods["aluminium"], 10000, 1))
+            attach_market(market, create_mine(city, goods["stone"], 10000, 1))
+            attach_market(market, create_mine(city, goods["iron"], 60000, 1))
         end
     end
 })

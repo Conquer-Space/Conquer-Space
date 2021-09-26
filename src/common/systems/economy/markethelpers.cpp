@@ -23,5 +23,5 @@ void cqsp::common::systems::economy::AddParticipant(
     namespace cqspc = cqsp::common::components;
     auto& market = universe.get<cqspc::Market>(market_entity);
     market.participants.insert(entity);
-    universe.emplace<cqspc::MarketParticipant>(entity, market_entity);
+    universe.emplace<cqspc::MarketAgent>(entity, market_entity);
 }

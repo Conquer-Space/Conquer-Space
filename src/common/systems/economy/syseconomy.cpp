@@ -21,6 +21,7 @@
 #include "common/components/resource.h"
 #include "common/components/economy.h"
 #include "common/components/area.h"
+#include "common/systems/economy/sysmarket.h"
 
 #include "common/util/profiler.h"
 
@@ -32,28 +33,30 @@
 // we already have demand and supply, but I think it could be a bit more rigid, whatever that means.
 //
 
-using cqsp::common::systems::SysFactory;
-void SysFactory::DoSystem(Universe& universe) {
+using cqsp::common::systems::SysEconomy;
+void SysEconomy::DoSystem(Universe& universe) {
     namespace cqspc = cqsp::common::components;
-    BEGIN_TIMED_BLOCK(SysFactory);
+    BEGIN_TIMED_BLOCK(SysEconomy);
     // Produce resources
     BEGIN_TIMED_BLOCK(Resource_gen);
     SysResourceGenerator(universe);
     SysProduction(universe);
-    SysDemand(universe);
+    SysDemandCreator(universe);
     SysFactoryDemandCreator(universe);
     END_TIMED_BLOCK(Resource_gen);
     BEGIN_TIMED_BLOCK(Market_sim);
     SysGoodSeller(universe);
+    SysPriceDetermine(universe);
     SysDemandResolver(universe);
     END_TIMED_BLOCK(Market_sim);
     BEGIN_TIMED_BLOCK(Production_sim);
+    SysConsumptionConsume(universe);
     SysProductionStarter(universe);
     END_TIMED_BLOCK(Production_sim);
-    END_TIMED_BLOCK(SysFactory);
+    END_TIMED_BLOCK(SysEconomy);
 }
 
-void SysFactory::SysResourceGenerator(Universe& universe) {
+void SysEconomy::SysResourceGenerator(Universe& universe) {
     namespace cqspc = cqsp::common::components;
     auto view = universe.view<cqspc::ResourceGenerator, cqspc::ResourceStockpile>();
     SPDLOG_TRACE("Creating resources for {} resource generators", view.size_hint());
@@ -70,7 +73,7 @@ void SysFactory::SysResourceGenerator(Universe& universe) {
     }
 }
 
-void SysFactory::SysProduction(Universe& universe) {
+void SysEconomy::SysProduction(Universe& universe) {
     namespace cqspc = cqsp::common::components;
     auto view = universe.view<cqspc::Production, cqspc::ResourceConverter, cqspc::ResourceStockpile>();
     SPDLOG_TRACE("Creating resources for {} factories", view.size_hint());
@@ -88,14 +91,14 @@ void SysFactory::SysProduction(Universe& universe) {
     }
 }
 
-void SysFactory::SysDemand(Universe& universe) {
+void SysEconomy::SysDemandCreator(Universe& universe) {
     namespace cqspc = cqsp::common::components;
-    auto view = universe.view<cqspc::ResourceConsumption, cqspc::MarketParticipant>();
+    auto view = universe.view<cqspc::ResourceConsumption, cqspc::MarketAgent>();
     SPDLOG_TRACE("Creating {} resource consumption demands", view.size_hint());
     // Demand for next time
     for (auto entity : view) {
         auto& consumption = universe.get<cqspc::ResourceConsumption>(entity);
-        auto& participant = universe.get<cqspc::MarketParticipant>(entity);
+        auto& participant = universe.get<cqspc::MarketAgent>(entity);
         float productivity = 1;
         if (universe.all_of<cqspc::FactoryProductivity>(entity)) {
             productivity = universe.get<cqspc::FactoryProductivity>(entity).productivity;
@@ -105,14 +108,14 @@ void SysFactory::SysDemand(Universe& universe) {
     }
 }
 
-void SysFactory::SysFactoryDemandCreator(Universe& universe) {
+void SysEconomy::SysFactoryDemandCreator(Universe& universe) {
     namespace cqspc = cqsp::common::components;
-    auto view = universe.view<cqspc::ResourceConverter, cqspc::MarketParticipant>();
+    auto view = universe.view<cqspc::ResourceConverter, cqspc::MarketAgent>();
     SPDLOG_TRACE("Creating {} factory demands", view.size_hint());
     // Demand for next time
     for (auto entity : view) {
         auto& converter = universe.get<cqspc::ResourceConverter>(entity);
-        auto& participant = universe.get<cqspc::MarketParticipant>(entity);
+        auto& participant = universe.get<cqspc::MarketAgent>(entity);
         auto& recipe = universe.get<cqspc::Recipe>(converter.recipe);
 
         float productivity = 1;
@@ -124,11 +127,11 @@ void SysFactory::SysFactoryDemandCreator(Universe& universe) {
     }
 }
 
-void SysFactory::SysGoodSeller(Universe& universe) {
+void SysEconomy::SysGoodSeller(Universe& universe) {
     namespace cqspc = cqsp::common::components;
 
     // Sell all goods
-    auto view = universe.view<cqspc::ResourceStockpile, cqspc::MarketParticipant>();
+    auto view = universe.view<cqspc::ResourceStockpile, cqspc::MarketAgent>();
     SPDLOG_TRACE("Selling for {} stockpiles", view.size_hint());
     // Demand for next time
     for (auto [entity, stockpile, market_participant] : view.each()) {
@@ -136,20 +139,52 @@ void SysFactory::SysGoodSeller(Universe& universe) {
         // Add to supply
         auto& market_stockpile = universe.get<cqspc::ResourceStockpile>(market_participant.market);
         market_stockpile += stockpile;
-        // TODO(EhWhoAmI): Market prices
+        auto& market = universe.get<cqspc::Market>(market_participant.market);
+        // Sell goods
+
+        // Adjust wallet
+        universe.get<cqspc::Wallet>(entity).balance += stockpile.MultiplyAndGetSum(market.prices);
         stockpile.clear();
     }
 }
 
-void SysFactory::SysDemandResolver(Universe& universe) {
+void SysEconomy::SysPriceDetermine(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
+    auto view = universe.view<cqspc::Market>();
+    for (entt::entity entity : view) {
+        // Sort through market, and get goods
+        auto& market = universe.get<cqspc::Market>(entity);
+        // Sort through demand and calculate things
+        cqsp::common::systems::market::DeterminePrices(universe, entity);
+        // Clear demand because we have already determined all the things we needed
+        market.demand.clear();
+    }
+}
+
+void cqsp::common::systems::SysEconomy::SysConsumptionConsume(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
+
+    auto view = universe.view<cqspc::ResourceConsumption, cqspc::ResourceStockpile>();
+    SPDLOG_TRACE("Resolving consumption for {} entities", view.size_hint());
+    for (entt::entity entity : view) {
+        auto& stockpile = universe.get<cqspc::ResourceStockpile>(entity);
+        auto& consumption = universe.get<cqspc::ResourceConsumption>(entity);
+        // FIXME(EhWhoAmI): This leaves resources at negative level, and I don't know why
+        // Good news is it doesn't go down lower than a certain amount, so maybe it's a problem with
+        // the order it's doing it
+        stockpile.MultiplyAdd(consumption, Interval() * -1);
+    }
+}
+
+void SysEconomy::SysDemandResolver(Universe& universe) {
     namespace cqspc = cqsp::common::components;
 
     // Process demand
-    auto view = universe.view<cqspc::ResourceDemand, cqspc::MarketParticipant, cqspc::ResourceStockpile>();
+    auto view = universe.view<cqspc::ResourceDemand, cqspc::MarketAgent, cqspc::ResourceStockpile>();
     SPDLOG_TRACE("Resolving demand for {} participants", view.size_hint());
     // Demand for next time
     for (auto entity : view) {
-        auto& market_participant = universe.get<cqspc::MarketParticipant>(entity);
+        auto& market_participant = universe.get<cqspc::MarketAgent>(entity);
         auto& demand = universe.get<cqspc::ResourceDemand>(entity);
         auto& market = universe.get<cqspc::Market>(market_participant.market);
         // Add to demand
@@ -157,21 +192,34 @@ void SysFactory::SysDemandResolver(Universe& universe) {
         auto& market_stockpile = universe.get<cqspc::ResourceStockpile>(market_participant.market);
 
         // Check if it can handle it, and transfer resources on success
-        if (market_stockpile > demand) {
+        if (market_stockpile.EnoughToTransfer(demand)) {
             universe.remove_if_exists<cqspc::FailedResourceTransfer>(entity);
             if (universe.all_of<cqspc::ResourceStockpile>(entity)) {
-                market_stockpile.TransferTo(universe.get<cqspc::ResourceStockpile>(entity), demand);
+                // Market prices
+                // TODO(EhWhoAmI): Fix wallet so that it takes into account negative values better,
+                // So that it would buy less stuff when it has a low wallet balance
+                // Buy all the resources
+                double &balance = universe.get<cqspc::Wallet>(entity).balance;
+                double amount = demand.MultiplyAndGetSum(market.prices);
+                if (amount > balance) {
+                    // Failed transaction
+                    universe.emplace_or_replace<cqspc::FailedResourceTransfer>(entity);
+                } else {
+                    balance -= demand.MultiplyAndGetSum(market.prices);
+                    market_stockpile.TransferTo(universe.get<cqspc::ResourceStockpile>(entity), demand);
+                }
             }
         } else {
+            // Failed due to not enough resources in the market,
+            // TODO(EhWhoAmI): Try to get all the resources remaining in the stockpile
             universe.emplace_or_replace<cqspc::FailedResourceTransfer>(entity);
         }
 
         universe.remove<cqspc::ResourceDemand>(entity);
-        // TODO(EhWhoAmI): Market prices
     }
 }
 
-void SysFactory::SysProductionStarter(Universe& universe) {
+void SysEconomy::SysProductionStarter(Universe& universe) {
     namespace cqspc = cqsp::common::components;
     // Gather resources for the next run, and signify if they want to produce
     auto production_view = universe.view<cqspc::ResourceConverter, cqspc::ResourceStockpile>();
