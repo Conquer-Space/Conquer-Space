@@ -24,6 +24,7 @@ class SysEconomy : public ISimulationSystem {
     void DoSystem(Universe& universe);
 
  private:
+    void SysEmploymentHandler(Universe& universe);
     void SysResourceGenerator(Universe& universe);
     /// <summary>
     /// Creates goods that factories generate

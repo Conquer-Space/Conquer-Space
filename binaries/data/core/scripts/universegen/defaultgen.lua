@@ -119,7 +119,7 @@ generators:insert({
         -- Add city
         -- TODO(EhWhoAmI): Create more complex economy, with cities specializing in stuff
         -- TODO(EhWhoAmI): Make slider for configuring the amount of cities and stuff
-        local city_count = 250
+        local city_count = 1
         for index = 0, city_count, 1 do
             local city = add_planet_settlement(planet, random(-90, 90), random(-180, 180))
             set_name(city, "City ".. index)

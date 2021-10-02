@@ -138,6 +138,7 @@ void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
         entt::entity population = universe.create();
         universe.emplace<cqspc::PopulationSegment>(population, popsize);
         universe.emplace<cqspc::ResourceStockpile>(population);
+        universe.emplace<cqspc::Employee>(population);
         // Add to planet list
         universe.get<cqspc::Settlement>(settlement).population.push_back(population);
 

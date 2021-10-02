@@ -21,6 +21,8 @@
 #include "common/components/resource.h"
 #include "common/components/economy.h"
 #include "common/components/area.h"
+#include "common/components/population.h"
+#include "common/components/surface.h"
 #include "common/systems/economy/sysmarket.h"
 
 #include "common/util/profiler.h"
@@ -38,6 +40,7 @@ void SysEconomy::DoSystem(Universe& universe) {
     namespace cqspc = cqsp::common::components;
     BEGIN_TIMED_BLOCK(SysEconomy);
     // Produce resources
+    SysEmploymentHandler(universe);
     BEGIN_TIMED_BLOCK(Resource_gen);
     SysResourceGenerator(universe);
     SysProduction(universe);
@@ -54,6 +57,28 @@ void SysEconomy::DoSystem(Universe& universe) {
     SysProductionStarter(universe);
     END_TIMED_BLOCK(Production_sim);
     END_TIMED_BLOCK(SysEconomy);
+}
+
+void SysEconomy::SysEmploymentHandler(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
+    auto view = universe.view<cqspc::Settlement, cqspc::Industry>();
+    SPDLOG_INFO("Organizing jobs for {} settlements", view.size_hint());
+    for (auto entity : view) {
+        // Now iterate through the population segments, and the industrial things, and determine the number of jobs needed
+        // Because we only have one population segment for each city, we would only take from the first segment
+        // TODO(EhWhoAmI): Take into account multiple population segments
+        auto &jib = universe.get<cqspc::Employee>(universe.get<cqspc::Settlement>(entity).population[0]);
+        jib.employed_population = 0;
+
+        for (auto factory : universe.get<cqspc::Industry>(entity).industries) {
+            // Get all the available jobs
+            if (universe.all_of<cqspc::Employer>(factory)) {
+                // Then assign the work
+                auto& jobs = universe.get<cqspc::Employer>(factory);
+                jib.employed_population += jobs.population_needed;
+            }
+        }
+    }
 }
 
 void SysEconomy::SysResourceGenerator(Universe& universe) {
@@ -200,10 +225,16 @@ void SysEconomy::SysDemandResolver(Universe& universe) {
                 // So that it would buy less stuff when it has a low wallet balance
                 // Buy all the resources
                 double &balance = universe.get<cqspc::Wallet>(entity).balance;
-                double amount = demand.MultiplyAndGetSum(market.prices);
-                if (amount > balance) {
+                double cost = demand.MultiplyAndGetSum(market.prices);
+                if (cost > balance) {
                     // Failed transaction
-                    universe.emplace_or_replace<cqspc::FailedResourceTransfer>(entity);
+                    //universe.emplace_or_replace<cqspc::FailedResourceTransfer>(entity);
+                    // Try to buy the maximum available
+                    // Get ratio of the things, multiply by price, and then
+                    demand *= (balance / cost);
+                    cost = demand.MultiplyAndGetSum(market.prices);
+                    balance -= 0;
+                    market_stockpile.TransferTo(universe.get<cqspc::ResourceStockpile>(entity), demand);
                 } else {
                     balance -= demand.MultiplyAndGetSum(market.prices);
                     market_stockpile.TransferTo(universe.get<cqspc::ResourceStockpile>(entity), demand);

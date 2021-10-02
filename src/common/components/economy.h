@@ -67,6 +67,27 @@ struct MarketAgent {
 struct MarketCenter {
     entt::entity market;
 };
+
+// Something that hires people, and will pay the people
+struct Employer {
+    int population_needed;
+    int population_fufilled;
+    entt::entity segment;
+};
+
+/// <summary>
+/// Population segment that is employed
+/// </summary>
+struct Employee {
+    /// <summary>
+    /// The population that is available to work
+    /// </summary>
+    int working_population;
+    /// <summary>
+    /// The current population is currently working.
+    /// </summary>
+    int employed_population;
+};
 }  // namespace components
 }  // namespace common
 }  // namespace cqsp

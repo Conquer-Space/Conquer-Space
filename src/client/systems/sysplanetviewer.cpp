@@ -381,6 +381,13 @@ void cqsp::client::systems::SysPlanetInformation::DemographicsTab() {
         if (GetApp().GetUniverse().all_of<cqspc::Hunger>(seg_entity)) {
             ImGui::TextFmt("Hungry");
         }
+        if (GetApp().GetUniverse().any_of<cqsp::common::components::Employee>(seg_entity)) {
+            auto& employee = GetApp().GetUniverse().get<cqspc::Employee>(seg_entity);
+            ImGui::TextFmt("{}/{}", employee.employed_population, employee.working_population);
+            if (employee.working_population > 0) {
+                ImGui::ProgressBar(static_cast<float>(employee.employed_population) / static_cast<float>(employee.working_population));
+            }
+        }
     }
     // Then do demand and other things.
 }

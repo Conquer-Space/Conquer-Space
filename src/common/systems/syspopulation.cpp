@@ -19,6 +19,7 @@
 #include <spdlog/spdlog.h>
 #include "common/components/population.h"
 #include "common/components/resource.h"
+#include "common/components/economy.h"
 
 void cqsp::common::systems::SysPopulationGrowth::DoSystem(Universe& universe) {
     namespace cqspc = cqsp::common::components;
@@ -35,6 +36,13 @@ void cqsp::common::systems::SysPopulationGrowth::DoSystem(Universe& universe) {
             float increase = static_cast<float>(Interval()) / 1000.f + 1;
             segment.population *= increase;
         }
+
+        // Resolve jobs
+        // TODO(EhWhoAmI)
+        // For now, we would have 100% of the population working, because we haven't got to social simulation
+        // yet. But in the future, this will probably have to change.
+        auto& employee = universe.get_or_emplace<cqspc::Employee>(entity);
+        employee.working_population = segment.population;
     }
 }
 
