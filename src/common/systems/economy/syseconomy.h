@@ -57,7 +57,8 @@ class SysEconomy : public ISimulationSystem {
     void SysDemandResolver(Universe& universe);
 
     /// <summary>
-    /// Consumes resources for next production tick
+    /// Consumes resources for next production tick, and also verifies the conditions that this factory can
+    /// generate resources, such as working population.
     /// </summary>
     /// <param name="universe"></param>
     void SysProductionStarter(Universe& universe);

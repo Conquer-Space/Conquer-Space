@@ -262,9 +262,20 @@ void SysEconomy::SysProductionStarter(Universe& universe) {
         if (universe.all_of<cqspc::FactoryProductivity>(entity)) {
             productivity = universe.get<cqspc::FactoryProductivity>(entity).productivity;
         }
+        // Check if there are enough people working
+        if (universe.all_of<cqspc::Employer>(entity)) {
+            auto& employer = universe.get<cqspc::Employer>(entity);
+            if (employer.population_needed > employer.population_fufilled) {
+                // Then not enough people, and then it cannot work
+                universe.emplace_or_replace<cqspc::FailedResourceProduction>(entity);
+                continue;
+            }
+        }
+
         // Wanted resources:
         cqspc::ResourceLedger stockpile_calc;
         stockpile_calc.MultiplyAdd(recipe.input, productivity * Interval());
+        // Also verify if there were enough people working there to ensure 
         if (stockpile.EnoughToTransfer(stockpile_calc)) {
             stockpile -= stockpile_calc;
             // Produced, so add production
