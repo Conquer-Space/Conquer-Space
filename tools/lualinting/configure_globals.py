@@ -20,8 +20,17 @@
 import re
 import os
 
+# Get conquer space base path, which should be the folder cqsp
+# Can probably make this even more reliable if we change this to looking for a file in the root of
+# the folder, but this is simpler to implement.
 
-with open("src/common/scripting/luafunctions.cpp", "r") as f:
+cqsp_root = os.getcwd()
+if "cqsp" not in cqsp_root:
+    import sys
+    sys.exit("Not running this script in a conquer space repository path, the folder name should be 'cqsp'."
+else:
+    cqsp_root = cqsp_root[:cqsp_root.rfind("cqsp")] + "cqsp/"
+with open(cqsp_root + "src/common/scripting/luafunctions.cpp", "r") as f:
     data = f.read()
     # Parse data, look for 'REGISTER_FUNCTION' in the file
     # The register function marco looks like this:
