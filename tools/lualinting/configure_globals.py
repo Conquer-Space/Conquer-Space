@@ -27,7 +27,7 @@ import os
 cqsp_root = os.getcwd()
 if "cqsp" not in cqsp_root:
     import sys
-    sys.exit("Not running this script in a conquer space repository path, the folder name should be 'cqsp'."
+    sys.exit("Not running this script in a conquer space repository path, the folder name should be 'cqsp'.")
 else:
     cqsp_root = cqsp_root[:cqsp_root.rfind("cqsp")] + "cqsp/"
 with open(cqsp_root + "src/common/scripting/luafunctions.cpp", "r") as f:
