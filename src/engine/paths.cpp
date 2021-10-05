@@ -28,8 +28,6 @@
 #include <sys/types.h>
 #include <pwd.h>
 
-#include <iostream>
-
 char* get_home_dir(uid_t uid) {
     struct passwd pwent;
     struct passwd *pwentp;
