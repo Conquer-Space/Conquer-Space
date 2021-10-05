@@ -35,8 +35,7 @@ char* get_home_dir(uid_t uid) {
 
     if (getpwuid_r(uid, &pwent, buf, sizeof buf, &pwentp)) {
         return "~";  // Easy trick because we couldn't find the dir
-    }
-    else {
+    } else {
         return pwent.pw_dir;
     }
 }
