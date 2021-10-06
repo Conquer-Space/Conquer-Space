@@ -31,6 +31,7 @@
 #include "engine/renderer/shader.h"
 #include "engine/renderer/text.h"
 #include "engine/audio/alaudioasset.h"
+#include "engine/paths.h"
 
 // Definition for prototypes
 namespace cqsp::asset {
@@ -123,11 +124,12 @@ cqsp::asset::AssetLoader::AssetLoader() : m_asset_queue() {
 
 namespace cqspa = cqsp::asset;
 
-void cqsp::asset::AssetLoader::LoadAssets(std::istream& stream) {
+void cqsp::asset::AssetLoader::LoadAssets() {
     // Load enabled mods
     // Load core
-    const char sep = std::filesystem::path::preferred_separator;
-    std::filesystem::recursive_directory_iterator it(std::filesystem::path(fmt::format("..{0}data{0}core", sep)));
+    std::filesystem::path data_path(cqsp::engine::GetCqspDataPath());
+    
+    std::filesystem::recursive_directory_iterator it(data_path);
 
     for (auto a : it) {
         if (a.path().filename() == "resource.hjson") {
@@ -157,10 +159,10 @@ void cqsp::asset::AssetLoader::LoadAssets(std::istream& stream) {
 
                 // Load asset
                 std::string type = val["type"];
-                std::string path = a.path().parent_path().string() + sep + val["path"];
+                std::string path = (a.path().parent_path() / val["path"].to_string()).string();
 
                 if (!std::filesystem::exists(path)) {
-                    SPDLOG_WARN("Cannot find asset {} at {}", key, val["path"]);
+                    SPDLOG_WARN("Cannot find asset {} at {}", key, path);
                     // Check if it's required
                     if (!val["required"].empty() && val["required"]) {
                         // Then required
@@ -343,9 +345,16 @@ cqsp::asset::AssetLoader::LoadTextDirectory(const std::string& path, const Hjson
         if (!sub_path.is_regular_file()) {
             continue;
         }
+
+        SPDLOG_INFO("{}", sub_path.path().string());
         std::ifstream asset_stream(sub_path.path().string());
-        std::string asset_data{std::istreambuf_iterator<char>{asset_stream},
+        cqsp::asset::PathedTextAsset asset_data{std::istreambuf_iterator<char>{asset_stream},
                         std::istreambuf_iterator<char>()};
+
+        // Get the path
+        asset_data.path = std::filesystem::relative(sub_path.path(), std::filesystem::path(path)).string();
+        SPDLOG_INFO("{}", asset_data.path);
+
         asset->data.push_back(asset_data);
     }
     return asset;

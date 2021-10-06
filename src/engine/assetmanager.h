@@ -158,7 +158,7 @@ class AssetLoader {
  public:
     AssetLoader();
 
-    void LoadAssets(std::istream&);
+    void LoadAssets();
 
     /*
      * The assets that need to be on the opengl. Takes one asset from the queue

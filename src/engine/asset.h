@@ -34,9 +34,17 @@ class TextAsset : public Asset {
     std::string data;
 };
 
+class PathedTextAsset : public std::string {
+    using std::string::basic_string;
+    // Relative path for the asset compared to the resource.hjson
+ public:
+    std::string path;
+};
+
 class TextDirectoryAsset : public Asset {
  public:
-    std::vector<std::string> data;
+    // Get the path of the assets
+    std::vector<PathedTextAsset> data;
 };
 
 class HjsonAsset : public Asset {
