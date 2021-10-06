@@ -53,8 +53,7 @@
 
 bool game_halted = false;
 
-cqsp::scene::UniverseScene::UniverseScene(
-    cqsp::engine::Application& app) : Scene(app) {}
+cqsp::scene::UniverseScene::UniverseScene(cqsp::engine::Application& app) : Scene(app) {}
 
 void cqsp::scene::UniverseScene::Init() {
     namespace cqspb = cqsp::common::components::bodies;
@@ -74,11 +73,9 @@ void cqsp::scene::UniverseScene::Init() {
         player = entity;
         player_civ = &civ;
     }
-    cqspb::Body body = GetApp().GetUniverse().
-                        get<cqspb::Body>(player_civ->starting_planet);
+    cqspb::Body body = GetApp().GetUniverse().get<cqspb::Body>(player_civ->starting_planet);
     system_renderer->SeeStarSystem(body.star_system);
-    star_system = &GetApp().GetUniverse().
-                        get<cqspb::StarSystem>(body.star_system);
+    star_system = &GetApp().GetUniverse().get<cqspb::StarSystem>(body.star_system);
 
     SeeStarSystem(GetApp(), body.star_system);
     SeePlanet(GetApp(), player_civ->starting_planet);

@@ -337,6 +337,7 @@ std::unique_ptr<cqspa::HjsonAsset> cqspa::AssetLoader::LoadHjson(const std::stri
     return asset;
 }
 
+// This is essentially all for lua
 std::unique_ptr<cqsp::asset::TextDirectoryAsset>
 cqsp::asset::AssetLoader::LoadTextDirectory(const std::string& path, const Hjson::Value& hints) {
     std::filesystem::recursive_directory_iterator iterator(path);
@@ -346,16 +347,15 @@ cqsp::asset::AssetLoader::LoadTextDirectory(const std::string& path, const Hjson
             continue;
         }
 
-        SPDLOG_INFO("{}", sub_path.path().string());
         std::ifstream asset_stream(sub_path.path().string());
         cqsp::asset::PathedTextAsset asset_data{std::istreambuf_iterator<char>{asset_stream},
                         std::istreambuf_iterator<char>()};
 
         // Get the path
-        asset_data.path = std::filesystem::relative(sub_path.path(), std::filesystem::path(path)).string();
-        SPDLOG_INFO("{}", asset_data.path);
+        asset_data.path = std::filesystem::relative(sub_path.path(), std::filesystem::path(path)).replace_extension("").string();
+        std::replace(asset_data.path.begin(), asset_data.path.end(), static_cast<char>(std::filesystem::path::preferred_separator), '.');
 
-        asset->data.push_back(asset_data);
+        asset->paths[asset_data.path] = asset_data;
     }
     return asset;
 }

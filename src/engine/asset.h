@@ -44,7 +44,7 @@ class PathedTextAsset : public std::string {
 class TextDirectoryAsset : public Asset {
  public:
     // Get the path of the assets
-    std::vector<PathedTextAsset> data;
+    std::map<std::string, PathedTextAsset> paths;
 };
 
 class HjsonAsset : public Asset {

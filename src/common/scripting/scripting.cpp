@@ -29,7 +29,7 @@ auto lua_logger = spdlog::stdout_color_mt("lua");
 using cqsp::scripting::ScriptInterface;
 
 ScriptInterface::ScriptInterface() {
-    open_libraries(sol::lib::base, sol::lib::table, sol::lib::math);
+    open_libraries(sol::lib::base, sol::lib::table, sol::lib::math, sol::lib::package);
 }
 
 void ScriptInterface::ParseResult(const sol::protected_function_result& result) {

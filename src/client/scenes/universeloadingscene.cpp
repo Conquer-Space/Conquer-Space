@@ -137,12 +137,10 @@ void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
     GetApp().GetScriptInterface().RegisterDataGroup("generators");
     GetApp().GetScriptInterface().RegisterDataGroup("events");
 
-    // Process all scripts
-    cqsp::asset::TextDirectoryAsset* script_list = GetApp().GetAssetManager().
-                                                    GetAsset<cqsp::asset::TextDirectoryAsset>("core:scripts");
-    for (auto& text : script_list->data) {
-        GetApp().GetScriptInterface().RunScript(text);
-    }
+    // Process scripts for core
+    cqsp::asset::TextAsset* script_list = GetApp().GetAssetManager().
+                                                    GetAsset<cqsp::asset::TextAsset>("core:core");
+    GetApp().GetScriptInterface().RunScript(script_list->data);
 
     // Load universe
     cqsp::common::systems::universegenerator::ScriptUniverseGenerator

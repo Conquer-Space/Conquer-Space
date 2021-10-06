@@ -39,6 +39,7 @@
 #include "common/systems/economy/markethelpers.h"
 #include "common/systems/actions/shiplaunchaction.h"
 #include "common/util/utilnumberdisplay.h"
+#include "engine/asset.h"
 
 // So that we can document in the future
 #define REGISTER_FUNCTION(name, lambda) \
@@ -52,6 +53,19 @@ void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspt = cqsp::common::components::types;
     namespace cqspc = cqsp::common::components;
+
+    REGISTER_FUNCTION("require", [&](const char* script) {
+        //app.GetAssetManager();
+        // Get script from asset loader
+        cqsp::asset::TextDirectoryAsset* asset = app.GetAssetManager().GetAsset<cqsp::asset::TextDirectoryAsset>("core:scripts");
+        // Get the thing
+        if (asset->paths.find(script) != asset->paths.end()) {
+            return script_engine.require_script(script, asset->paths[script]);
+        } else {
+            SPDLOG_INFO("Cannot find require {}", script);
+            return sol::make_object(script_engine, sol::nil);
+        }
+    });
 
     // Init civilization script
     REGISTER_FUNCTION("create_star_system", [&] () {
