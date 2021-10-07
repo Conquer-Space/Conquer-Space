@@ -70,5 +70,7 @@ class SysEconomy : public ISimulationSystem {
     /// </summary>
     /// <param name="universe"></param>
     void SysConsumptionConsume(Universe& universe);
+
+    void SysCommercialProcess(Universe& universe);
 };
 }  // namespace cqsp::common::systems

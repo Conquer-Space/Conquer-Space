@@ -39,8 +39,9 @@ using cqsp::common::systems::SysEconomy;
 void SysEconomy::DoSystem(Universe& universe) {
     namespace cqspc = cqsp::common::components;
     BEGIN_TIMED_BLOCK(SysEconomy);
-    // Produce resources
+    SysCommercialProcess(universe);
     SysEmploymentHandler(universe);
+    // Produce resources
     BEGIN_TIMED_BLOCK(Resource_gen);
     SysResourceGenerator(universe);
     SysProduction(universe);
@@ -57,6 +58,26 @@ void SysEconomy::DoSystem(Universe& universe) {
     SysProductionStarter(universe);
     END_TIMED_BLOCK(Production_sim);
     END_TIMED_BLOCK(SysEconomy);
+}
+
+void SysEconomy::SysCommercialProcess(Universe &universe) {
+    namespace cqspc = cqsp::common::components;
+    auto view = universe.view<cqspc::Commercial>();
+    for (entt::entity entity : view) {
+        // If it's a commercial area, add employing things
+        // They will employ from a place by default
+        auto &employer = universe.get<cqspc::Employer>(entity);
+        // Get population, presumably it's a city, so we would know how many people we have
+        // Get city population
+        //
+        // For now, services will just fall under general services, but a more detailed breakdown
+        // will be done in thhe future.
+
+        auto &commercial = universe.get<cqspc::Commercial>(entity);
+        // Get population
+        entt::entity population_segment = universe.get<cqspc::Settlement>(commercial.city).population.front();
+        employer.population_needed = universe.get<cqspc::PopulationSegment>(population_segment).population * 0.5;
+    }
 }
 
 void SysEconomy::SysEmploymentHandler(Universe& universe) {

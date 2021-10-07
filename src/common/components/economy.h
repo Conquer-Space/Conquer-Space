@@ -98,6 +98,8 @@ struct MarketCenter {
 /// but they play an intergral role in tax revenue, and population consumption, and maybe tourism in the future.
 /// </summary>
 struct Commercial {
+    /// The city that it's based in
+    entt::entity city;
     int size;
 };
 

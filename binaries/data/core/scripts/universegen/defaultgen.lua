@@ -131,6 +131,7 @@ generators:insert({
             create_industries(city)
             place_factory_on_market(market, city, "steel_forging", 5000)
             -- Add various factories
+            create_commercial_area(city)
             place_factory_on_market(market, city, "consumer_good_manufacturing", 1000)
             place_factory_on_market(market, city, "concrete_manufacturing", 300)
             attach_market(market, create_mine(city, goods["copper"], 10000, 1))
