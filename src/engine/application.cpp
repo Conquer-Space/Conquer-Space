@@ -405,7 +405,10 @@ int cqsp::engine::Application::destroy() {
     return 0;
 }
 
-cqsp::engine::Application::Application() {
+cqsp::engine::Application::Application(int _argc, char* _argv[]) : argc(_argc), argv(_argv) {
+    cqsp::engine::exe_path = argv[0];
+
+    // Get exe path
     std::ifstream config_path(m_client_options.GetDefaultLocation());
     if (config_path.good()) {
         m_client_options.LoadOptions(config_path);
@@ -506,10 +509,10 @@ void cqsp::engine::Application::InitFonts() {
     Hjson::Value fontDatabase;
     Hjson::DecoderOptions decOpt;
     decOpt.comments = false;
-    std::fstream stream("../data/core/gfx/fonts/fonts.hjson");
+    std::fstream stream(cqsp::engine::GetCqspDataPath() + "/core/gfx/fonts/fonts.hjson");
 
     stream >> Hjson::StreamDecoder(fontDatabase, decOpt);
-    std::string fontPath = "../data/core/gfx/fonts/";
+    std::string fontPath = cqsp::engine::GetCqspDataPath() + "/core/gfx/fonts/";
     ImGuiIO io = ImGui::GetIO();
     ImFont* defaultFont = io.Fonts->AddFontFromFileTTF(
         (fontPath + fontDatabase["default"]["path"]).c_str(),
@@ -537,7 +540,7 @@ void cqsp::engine::Application::InitFonts() {
 
 void cqsp::engine::Application::SetIcon() {
     GLFWimage images[1];
-    images[0].pixels = stbi_load(("../data/" + icon_path).c_str(),
+    images[0].pixels = stbi_load((cqsp::engine::GetCqspDataPath() + "/" + icon_path).c_str(),
                                  &images[0].width, &images[0].height, 0, 4);
     glfwSetWindowIcon(window(m_window), 1, images);
     stbi_image_free(images[0].pixels);
@@ -560,7 +563,7 @@ void cqsp::engine::Application::GlInit() {
 
 void cqsp::engine::Application::LoggerInit() {
     // Get path
-    properties["data"] = GetcqspPath();
+    properties["data"] = GetCqspSavePath();
     std::filesystem::path log_folder =
         std::filesystem::path(properties["data"]) / "logs";
     // Make logs folder
@@ -594,6 +597,8 @@ void cqsp::engine::Application::LogInfo() {
 #ifndef NDEBUG
     SPDLOG_INFO("In debug mode");
 #endif
+    SPDLOG_INFO("Exe Path: {}", exe_path);
+    SPDLOG_INFO("Data Path: {}", GetCqspDataPath());
 }
 
 void cqsp::engine::Application::SetWindowDimensions(int width, int height) {

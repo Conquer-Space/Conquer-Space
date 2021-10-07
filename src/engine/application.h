@@ -81,7 +81,7 @@ class SceneManager {
 
 class Application {
  public:
-    Application();
+    Application(int _argc, char* _argv[]);
 
     /*
     * Runs the entire application.
@@ -172,6 +172,8 @@ class Application {
      */
     int destroy();
 
+    int argc;
+    char** argv;
     bool full_screen;
     Window* m_window;
     std::string icon_path;

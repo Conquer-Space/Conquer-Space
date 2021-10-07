@@ -18,6 +18,8 @@
 
 #include <filesystem>
 
+char* cqsp::engine::exe_path = "";
+
 #ifdef _WIN32
 #include <windows.h>
 #include <shlobj.h>
@@ -41,8 +43,9 @@ char* get_home_dir(uid_t uid) {
 }
 #endif
 
-std::string cqsp::engine::GetcqspPath() {
+std::string cqsp::engine::GetCqspSavePath() {
     std::string directory = "";
+    std::string dirname = "cqsp";
 #ifdef _WIN32
     // Set log folder
     CHAR my_documents[MAX_PATH];
@@ -50,15 +53,44 @@ std::string cqsp::engine::GetcqspPath() {
 
     directory = std::string(my_documents);
 #else
+    // Get home directory to put the save data, and other data
     const char *homedir = get_home_dir(getuid());
     directory = std::string(homedir);
+    dirname = "." + dirname;
 #endif
 
     // Create folder
     auto filesystem = std::filesystem::path(directory);
-    filesystem /= "cqsp";
+    filesystem /= dirname;
     // Create dirs, and be done with it
     if (!std::filesystem::exists(filesystem))
         std::filesystem::create_directories(filesystem);
     return filesystem.string();
+}
+
+std::string cqsp::engine::GetCqspExePath() {
+    // Get current path
+    std::filesystem::path p(exe_path);
+    p = p.remove_filename();
+    return std::filesystem::canonical(p).string();
+}
+
+std::string cqsp::engine::GetCqspDataPath() {
+    // If it's cmake, then the directory may be different
+#if defined(_DEBUG) && defined(_MSC_VER)
+    // so if it's debug, we'd automatically assume we're running from the local windows debugger
+    // Because apparently linux doesn't build the debug version.
+    // Not sure about other versions, but we'd probably have do deal with it in the future
+    // Usually, the output is at build\src\Debug, so we need to access ../../../binaries/data
+    return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) /
+                                      "../../../binaries/data").string();
+#else
+    // Then just search the default path
+    std::string path = GetCqspExePath();
+    // The folder structure is
+    // - binaries
+    //   - bin
+    //   - data <-- data is here, so it's ../data/
+    return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) / "../data").string();
+#endif
 }

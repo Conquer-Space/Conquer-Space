@@ -23,7 +23,7 @@
 #include "engine/application.h"
 
 int main(int argc, char* argv[]) {
-    cqsp::engine::Application application;
+    cqsp::engine::Application application(argc, argv);
 
     // TODO(EhWhoAmI): Run the game and subsequent simulation in a headless mode, so that we don't
     // have to load the UI

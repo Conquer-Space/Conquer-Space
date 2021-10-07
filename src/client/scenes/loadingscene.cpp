@@ -28,6 +28,7 @@
 #include "client/scenes/mainmenuscene.h"
 #include "engine/gui.h"
 #include "common/scripting/scripting.h"
+#include "engine/paths.h"
 
 cqsp::scene::LoadingScene::LoadingScene(
     cqsp::engine::Application& app)
@@ -96,10 +97,9 @@ void cqsp::scene::LoadingScene::Render(float deltaTime) { }
 
 void cqsp::scene::LoadingScene::LoadResources() {
     // Loading goes here
-    std::ifstream assetLibrary("../data/core/assets.hjson");
-
+    // Read core mod
     assetLoader.manager = &GetApp().GetAssetManager();
-    assetLoader.LoadAssets(assetLibrary);
+    assetLoader.LoadAssets();
 
     SPDLOG_INFO("Done loading items");
     need_halt = !assetLoader.GetMissingAssets().empty();

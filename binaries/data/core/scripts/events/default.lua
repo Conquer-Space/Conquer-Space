@@ -45,4 +45,4 @@ end
 -- events:insert(starting_event)
 
 -- To silence the linter
-print(type(starting_event))
+type(starting_event)
