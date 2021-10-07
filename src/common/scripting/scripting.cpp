@@ -41,7 +41,7 @@ void ScriptInterface::ParseResult(const sol::protected_function_result& result) 
     }
 }
 void ScriptInterface::RunScript(std::string_view str) {
-    ParseResult(do_string(str));
+    ParseResult(safe_script(str));
 }
 
 void ScriptInterface::RegisterDataGroup(std::string_view name) {

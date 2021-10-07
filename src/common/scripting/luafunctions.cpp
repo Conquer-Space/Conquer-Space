@@ -45,6 +45,64 @@
 #define REGISTER_FUNCTION(name, lambda) \
         script_engine.set_function(name, lambda)
 
+void jsonToLuaObject(sol::table& table, std::string key, const Hjson::Value &j) {
+    switch (j.type()) {
+        case Hjson::Type::String:
+            table[key] = j.to_string();
+        case Hjson::Type::Bool:
+            table[key] = j.operator bool();
+        case Hjson::Type::Double:
+            table[key] = j.to_double();
+        case Hjson::Type::Int64:
+            table[key] = j.to_int64();
+        case Hjson::Type::Map: {
+            sol::table obj;
+            for (auto it = j.begin(); it != j.end(); ++it) {
+                SPDLOG_INFO("{}", it->first);
+                jsonToLuaObject(obj, it->first, it->second);
+            }
+            table[key] = obj;
+        }
+        case Hjson::Type::Vector: {
+
+        }
+        default:
+        case Hjson::Type::Null:
+            break;
+    }
+}
+sol::object jsonToLuaObject(const Hjson::Value &j, const sol::state & lua) {
+    switch (j.type()) {
+        case Hjson::Type::String:
+            return sol::make_object(lua, j.to_string());
+        case Hjson::Type::Bool:
+            return sol::make_object(lua, j.operator bool());
+        case Hjson::Type::Double:
+            return sol::make_object(lua, j.to_double());
+        case Hjson::Type::Int64:
+            return sol::make_object(lua, j.to_int64());
+        case Hjson::Type::Map: {
+            std::map<std::string, sol::object> obj;
+            for (auto it = j.begin(); it != j.end(); ++it) {
+                sol::object ob = jsonToLuaObject(it->second, lua);
+                obj[it->first] = ob;
+            }
+            return sol::make_object(lua, obj);
+        }
+        case Hjson::Type::Vector: {
+            std::vector<sol::object> vec;
+            unsigned long i = 0;
+            for (auto it = j.begin(); it != j.end(); ++it) {
+                vec.push_back(jsonToLuaObject(it->second, lua));
+            }
+            return sol::make_object(lua, vec);
+        }
+        default:
+        case Hjson::Type::Null:
+            return sol::make_object(lua, sol::nil);
+    }
+}
+
 void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
     cqsp::common::Universe& universe = app.GetUniverse();
     cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
@@ -66,6 +124,25 @@ void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
             return sol::make_object(script_engine, sol::nil);
         }
     });
+
+    REGISTER_FUNCTION("get_text_asset", [&](const char* id) {
+        cqsp::asset::TextAsset* asset =
+            app.GetAssetManager().GetAsset<cqsp::asset::TextAsset>(id);
+        return sol::make_object<std::string>(script_engine, asset->data);
+    });
+
+    /*
+    * This does not work, for some reason, so it will be disabled for now
+    REGISTER_
+    FUNCTION("get_hjson_asset", [&](const char* string) -> sol::table {
+        cqsp::asset::HjsonAsset* as = app.GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>(string);
+        // Create json object.
+        sol::table tb = jsonToLuaObject(as->data, script_engine).as<sol::table>();
+        spdlog::info("{}", tb.get_type());
+
+        spdlog::info("{}", jsonToLuaObject(as->data, script_engine).get_type());
+        return tb;
+    });*/
 
     // Init civilization script
     REGISTER_FUNCTION("create_star_system", [&] () {
