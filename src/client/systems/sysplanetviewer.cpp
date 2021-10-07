@@ -385,7 +385,8 @@ void cqsp::client::systems::SysPlanetInformation::DemographicsTab() {
             auto& employee = GetApp().GetUniverse().get<cqspc::Employee>(seg_entity);
             ImGui::TextFmt("{}/{}", employee.employed_population, employee.working_population);
             if (employee.working_population > 0) {
-                ImGui::ProgressBar(static_cast<float>(employee.employed_population) / static_cast<float>(employee.working_population));
+                ImGui::ProgressBar(static_cast<float>(employee.employed_population) /
+                                    static_cast<float>(employee.working_population));
             }
         }
     }

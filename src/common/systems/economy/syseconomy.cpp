@@ -85,7 +85,8 @@ void SysEconomy::SysEmploymentHandler(Universe& universe) {
     auto view = universe.view<cqspc::Settlement, cqspc::Industry>();
     SPDLOG_INFO("Organizing jobs for {} settlements", view.size_hint());
     for (auto entity : view) {
-        // Now iterate through the population segments, and the industrial things, and determine the number of jobs needed
+        // Now iterate through the population segments, and the industrial things, and determine
+        // the number of jobs needed.
         // Because we only have one population segment for each city, we would only take from the first segment
         // TODO(EhWhoAmI): Take into account multiple population segments
         auto &jib = universe.get<cqspc::Employee>(universe.get<cqspc::Settlement>(entity).population[0]);
@@ -296,7 +297,8 @@ void SysEconomy::SysProductionStarter(Universe& universe) {
         // Wanted resources:
         cqspc::ResourceLedger stockpile_calc;
         stockpile_calc.MultiplyAdd(recipe.input, productivity * Interval());
-        // Also verify if there were enough people working there to ensure 
+        // Also verify if there were enough people working there to ensure
+        // that the area is working
         if (stockpile.EnoughToTransfer(stockpile_calc)) {
             stockpile -= stockpile_calc;
             // Produced, so add production
