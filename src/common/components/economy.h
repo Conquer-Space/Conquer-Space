@@ -28,6 +28,9 @@
 namespace cqsp {
 namespace common {
 namespace components {
+/// <summary>
+/// Market that records the resources
+/// </summary>
 struct Market {
     std::set<entt::entity> participants;
     ResourceLedger prices;
@@ -39,16 +42,32 @@ struct Market {
     }
 };
 
+/// <summary>
+/// Price of a good.
+/// This is temporary, because this is to determine initial prices for goods. In the future, good prices
+/// will be determined by what the market is willing to bear, and we will not need this anymore.
+/// </summary>
 struct Price {
     double price;
 
     operator double() { return price; }
 };
 
-// Will be handled in the future
+/// <summary>
+///  Will be handled in the future, but for now is just a market
+///
+///  Ideas to implement in the future:
+///     - Inflation
+///     - Fiat or hard
+///     - Digital or physical
+///     - Pegs
+///     - Conversion rates to other currencies
+/// </summary>
 struct Currency {};
 
-// Records the prices of goods and other things
+/// <summary>
+///  Records the prices of goods and other things
+/// </summary>
 struct CostTable : public ResourceLedger {};
 
 // TODO(EhWhoAmI): Add multiple currency support
@@ -60,12 +79,26 @@ struct Wallet {
     entt::entity currency;
 };
 
+/// <summary>
+/// An actor in a market that trades goods.
+/// </summary>
 struct MarketAgent {
     entt::entity market;
 };
 
+/// <summary>
+/// An entity where the market is based, and the resources are traded.
+/// </summary>
 struct MarketCenter {
     entt::entity market;
+};
+
+/// <summary>
+/// Represents commercial areas and other amenities that generate economic activity. They don't export goods
+/// but they play an intergral role in tax revenue, and population consumption, and maybe tourism in the future.
+/// </summary>
+struct Commercial {
+    int size;
 };
 
 // Something that hires people, and will pay the people
