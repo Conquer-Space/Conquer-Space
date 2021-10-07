@@ -22,6 +22,7 @@
 #include <string>
 
 #include "engine/audio/alaudioasset.h"
+#include "engine/paths.h"
 
 using cqsp::engine::audio::AudioInterface;
 using cqsp::asset::AudioAsset;
@@ -37,9 +38,11 @@ void AudioInterface::Initialize() {
     InitListener();
 
     // Load playlist
-    std::ifstream playlist_input = std::ifstream("../data/core/music/music_list.hjson");
-    Hjson::DecoderOptions decOpt;
-    playlist_input >> Hjson::StreamDecoder(playlist, decOpt);
+    std::ifstream playlist_input = std::ifstream(cqsp::engine::GetCqspDataPath() + "/core/music/music_list.hjson");
+    if (playlist_input.good()) {
+        Hjson::DecoderOptions decOpt;
+        playlist_input >> Hjson::StreamDecoder(playlist, decOpt);
+    }
     channels.push_back(std::make_unique<AudioChannel>());
     channels.push_back(std::make_unique<AudioChannel>());
 }
@@ -77,7 +80,7 @@ void AudioInterface::StartWorker() {
             selected_track++;
             selected_track %= playlist.size();
             Hjson::Value track_info = playlist[selected_track];
-            std::string track_file = "../data/core/music/" + track_info["file"];
+            std::string track_file = cqsp::engine::GetCqspDataPath() + "/core/music/" + track_info["file"];
             SPDLOG_LOGGER_INFO(logger, "Loading track \'{}\'", track_info["name"]);
             auto mfile = std::ifstream(track_file, std::ios::binary);
             if (mfile.good()) {

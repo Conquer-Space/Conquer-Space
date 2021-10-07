@@ -16,6 +16,8 @@
 */
 #include "engine/clientoptions.h"
 
+#include "engine/paths.h"
+
 void cqsp::client::ClientOptions::LoadOptions(std::istream& inputstream) {
     Hjson::DecoderOptions decOpt;
     inputstream >> Hjson::StreamDecoder(options, decOpt);
@@ -40,4 +42,8 @@ Hjson::Value cqsp::client::ClientOptions::GetDefaultOptions() {
     default_options["audio"]["music"] = 1.0f;
     default_options["audio"]["ui"] = 0.80f;
     return default_options;
+}
+
+std::string cqsp::client::ClientOptions::GetDefaultLocation() {
+    return cqsp::engine::GetCqspSavePath() + "/settings.hjson";
 }

@@ -34,7 +34,7 @@ class ClientOptions {
 
      Hjson::Value GetDefaultOptions();
 
-     std::string GetDefaultLocation() { return "settings.hjson"; }
+     std::string GetDefaultLocation();
 
  private:
      Hjson::Value options;
