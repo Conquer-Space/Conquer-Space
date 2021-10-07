@@ -178,13 +178,13 @@ void FunctionCivilizationGen(cqsp::engine::Application& app) {
         universe.emplace<cqspc::Habitation>(planet);
     });
 
-    REGISTER_FUNCTION("add_planet_settlement", [&](entt::entity planet,
-                                                   double lat, double longi) {
+    REGISTER_FUNCTION("add_planet_settlement", [&](entt::entity planet, double lat, double longi) {
         entt::entity settlement = universe.create();
         universe.emplace<cqspc::Settlement>(settlement);
+        universe.emplace<cqspt::SurfaceCoordinate>(settlement, lat, longi);
+
         // Add to planet list
         universe.get<cqspc::Habitation>(planet).settlements.push_back(settlement);
-        universe.emplace<cqspt::SurfaceCoordinate>(settlement, lat, longi);
         return settlement;
     });
 }
@@ -192,19 +192,21 @@ void FunctionCivilizationGen(cqsp::engine::Application& app) {
 void FunctionEconomy(cqsp::engine::Application& app) {
     cqsp::common::Universe& universe = app.GetUniverse();
     cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
-
+    namespace cqspa = cqsp::common::systems::actions;
     REGISTER_FUNCTION("create_industries", [&](entt::entity city) {
         universe.emplace<cqspc::Industry>(city);
     });
 
-    REGISTER_FUNCTION("create_factory", [&](entt::entity city, entt::entity recipe,
-                                                                            float productivity) {
-        entt::entity factory = cqsp::common::systems::actions::CreateFactory(universe,
-                                                    city, recipe, productivity);
+    REGISTER_FUNCTION("create_factory", [&](entt::entity city, entt::entity recipe, float productivity) {
+        entt::entity factory = cqspa::CreateFactory(universe, city, recipe, productivity);
         // Factory will produce in the first tick
         universe.emplace<cqspc::Production>(factory);
         return factory;
      });
+
+    REGISTER_FUNCTION("create_commercial_area", [&](entt::entity city) {
+        return cqspa::CreateCommercialArea(universe, city);
+    });
 
     REGISTER_FUNCTION("set_resource_consume", [&](entt::entity entity, entt::entity good, double amount) {
         auto& consumption = universe.get_or_emplace<cqspc::ResourceConsumption>(entity);
@@ -247,7 +249,7 @@ void FunctionEconomy(cqsp::engine::Application& app) {
     });
 
     REGISTER_FUNCTION("create_mine", [&](entt::entity city, entt::entity resource, int amount, float productivity) {
-        return cqsp::common::systems::actions::CreateMine(universe, city, resource, amount);
+        return cqspa::CreateMine(universe, city, resource, amount);
     });
 }
 
@@ -280,6 +282,7 @@ void FunctionPopulation(cqsp::engine::Application& app) {
         entt::entity population = universe.create();
         universe.emplace<cqspc::PopulationSegment>(population, popsize);
         universe.emplace<cqspc::ResourceStockpile>(population);
+        universe.emplace<cqspc::Employee>(population);
         // Add to planet list
         universe.get<cqspc::Settlement>(settlement).population.push_back(population);
 

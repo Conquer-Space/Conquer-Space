@@ -24,6 +24,7 @@ class SysEconomy : public ISimulationSystem {
     void DoSystem(Universe& universe);
 
  private:
+    void SysEmploymentHandler(Universe& universe);
     void SysResourceGenerator(Universe& universe);
     /// <summary>
     /// Creates goods that factories generate
@@ -56,7 +57,8 @@ class SysEconomy : public ISimulationSystem {
     void SysDemandResolver(Universe& universe);
 
     /// <summary>
-    /// Consumes resources for next production tick
+    /// Consumes resources for next production tick, and also verifies the conditions that this factory can
+    /// generate resources, such as working population.
     /// </summary>
     /// <param name="universe"></param>
     void SysProductionStarter(Universe& universe);
@@ -68,5 +70,7 @@ class SysEconomy : public ISimulationSystem {
     /// </summary>
     /// <param name="universe"></param>
     void SysConsumptionConsume(Universe& universe);
+
+    void SysCommercialProcess(Universe& universe);
 };
 }  // namespace cqsp::common::systems

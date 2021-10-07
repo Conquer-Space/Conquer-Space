@@ -20,7 +20,7 @@
 
 #include "common/components/resource.h"
 #include "common/components/area.h"
-
+#include "common/components/economy.h"
 
 using cqsp::common::Universe;
 entt::entity cqsp::common::systems::actions::OrderConstructionFactory(
@@ -29,9 +29,8 @@ entt::entity cqsp::common::systems::actions::OrderConstructionFactory(
     return entt::entity();
 }
 
-entt::entity cqsp::common::systems::actions::CreateFactory(
-    Universe& universe, entt::entity city, entt::entity recipe,
-    int productivity) {
+entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, entt::entity city,
+    entt::entity recipe, int productivity) {
     namespace cqspc = cqsp::common::components;
     // Make the factory
     entt::entity factory = universe.create();
@@ -43,6 +42,10 @@ entt::entity cqsp::common::systems::actions::CreateFactory(
     prod.productivity = productivity;
 
     universe.emplace<cqspc::ResourceStockpile>(factory);
+    auto& employer = universe.emplace<cqspc::Employer>(factory);
+    employer.population_fufilled = 1000000;
+    employer.population_needed = 1000000;
+    employer.segment = entt::null;
 
     // Add recipes and stuff
     factory_converter.recipe = recipe;
@@ -51,21 +54,23 @@ entt::entity cqsp::common::systems::actions::CreateFactory(
 }
 
 cqsp::common::components::ResourceLedger
-cqsp::common::systems::actions::GetFactoryCost(
-    cqsp::common::Universe& universe, entt::entity city,
+cqsp::common::systems::actions::GetFactoryCost(cqsp::common::Universe& universe, entt::entity city,
     entt::entity recipe, int productivity) {
     cqsp::common::components::ResourceLedger ledger;
     ledger[universe.goods["concrete"]] = 1000;
     return ledger;
 }
 
-entt::entity cqsp::common::systems::actions::CreateMine(
-    cqsp::common::Universe& universe, entt::entity city,
+entt::entity cqsp::common::systems::actions::CreateMine(cqsp::common::Universe& universe, entt::entity city,
     entt::entity good, int amount) {
     namespace cqspc = cqsp::common::components;
     entt::entity mine = universe.create();
     auto& gen = universe.emplace<cqspc::ResourceGenerator>(mine);
-    universe.emplace<cqspc::Mine>(mine);
+
+    auto& employer = universe.emplace<cqspc::Employer>(mine);
+    employer.population_fufilled = 1000000;
+    employer.population_needed = 1000000;
+    employer.segment = entt::null;
 
     gen.emplace(good, amount);
     universe.get<cqspc::Industry>(city).industries.push_back(mine);
@@ -74,12 +79,25 @@ entt::entity cqsp::common::systems::actions::CreateMine(
     universe.emplace<cqspc::FactoryProductivity>(mine, 1.f);
 
     universe.emplace<cqspc::ResourceStockpile>(mine);
+    universe.emplace<cqspc::Mine>(mine);
     return mine;
 }
 
 cqsp::common::components::ResourceLedger
-cqsp::common::systems::actions::GetMineCost(
-    cqsp::common::Universe& universe, entt::entity city,
+cqsp::common::systems::actions::GetMineCost(cqsp::common::Universe& universe, entt::entity city,
     entt::entity good, int amount) {
     return cqsp::common::components::ResourceLedger();
+}
+
+entt::entity
+cqsp::common::systems::actions::CreateCommercialArea(cqsp::common::Universe& universe, entt::entity city) {
+    namespace cqspc = cqsp::common::components;
+    entt::entity commercial = universe.create();
+
+    universe.emplace<cqspc::Employer>(commercial);
+    universe.emplace<cqspc::Commercial>(commercial, city, 0);
+
+    universe.get<cqspc::Industry>(city).industries.push_back(commercial);
+
+    return commercial;
 }

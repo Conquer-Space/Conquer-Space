@@ -47,19 +47,19 @@ entt::entity OrderConstructionFactory(
 /// <param name="recipe"></param>
 /// <param name="productivity"></param>
 /// <returns>The factory entity created</returns>
-entt::entity CreateFactory(cqsp::common::Universe& universe,
-    entt::entity city, entt::entity recipe, int productivity);
+entt::entity CreateFactory(cqsp::common::Universe& universe, entt::entity city,
+                            entt::entity recipe, int productivity);
 
-cqsp::common::components::ResourceLedger GetFactoryCost(
-    cqsp::common::Universe& universe, entt::entity city,
-    entt::entity recipe, int productivity);
+cqsp::common::components::ResourceLedger GetFactoryCost(cqsp::common::Universe& universe,
+                            entt::entity city, entt::entity recipe, int productivity);
 
 entt::entity CreateMine(cqsp::common::Universe& universe,
                         entt::entity city, entt::entity good, int amount);
 
-cqsp::common::components::ResourceLedger GetMineCost(
-    cqsp::common::Universe& universe, entt::entity city,
-    entt::entity good, int amount);
+cqsp::common::components::ResourceLedger GetMineCost(cqsp::common::Universe& universe,
+                        entt::entity city, entt::entity good, int amount);
+
+entt::entity CreateCommercialArea(cqsp::common::Universe& universe, entt::entity city);
 }  // namespace actions
 }  // namespace systems
 }  // namespace common

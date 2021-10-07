@@ -16,7 +16,6 @@
 */
 #include "common/scripting/scripting.h"
 
-
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <fmt/format.h>
