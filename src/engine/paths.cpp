@@ -18,7 +18,7 @@
 
 #include <filesystem>
 
-std::string cqsp::engine::exe_path = "";
+char* cqsp::engine::exe_path = "";
 
 #ifdef _WIN32
 #include <windows.h>

@@ -19,6 +19,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <map>
 
 #include "common/util/random/stdrandom.h"
 
@@ -305,9 +306,9 @@ void FunctionAssetManagement(cqsp::engine::Application& app) {
     cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
 
     REGISTER_FUNCTION("require", [&](const char* script) {
-        //app.GetAssetManager();
+        using cqsp::asset::TextDirectoryAsset;
         // Get script from asset loader
-        cqsp::asset::TextDirectoryAsset* asset = app.GetAssetManager().GetAsset<cqsp::asset::TextDirectoryAsset>("core:scripts");
+        cqsp::asset::TextDirectoryAsset* asset = app.GetAssetManager().GetAsset<TextDirectoryAsset>("core:scripts");
         // Get the thing
         if (asset->paths.find(script) != asset->paths.end()) {
             return script_engine.require_script(script, asset->paths[script]);
@@ -325,7 +326,7 @@ void FunctionAssetManagement(cqsp::engine::Application& app) {
     REGISTER_FUNCTION("get_hjson_asset", [&](const char* string, sol::this_state s) -> sol::table {
         cqsp::asset::HjsonAsset* as = app.GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>(string);
         // Create json object.
-        return JsonToLuaObject(as->data, s).as<sol::table>();;
+        return JsonToLuaObject(as->data, s).as<sol::table>();
     });
 }
 

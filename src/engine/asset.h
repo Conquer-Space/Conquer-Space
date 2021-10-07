@@ -19,7 +19,7 @@
 #include <hjson.h>
 
 #include <string>
-#include <vector>
+#include <map>
 
 namespace cqsp {
 namespace asset {

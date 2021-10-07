@@ -597,6 +597,8 @@ void cqsp::engine::Application::LogInfo() {
 #ifndef NDEBUG
     SPDLOG_INFO("In debug mode");
 #endif
+    SPDLOG_INFO("Exe Path: {}", exe_path);
+    SPDLOG_INFO("Data Path: {}", GetCqspDataPath());
 }
 
 void cqsp::engine::Application::SetWindowDimensions(int width, int height) {

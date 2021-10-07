@@ -128,7 +128,6 @@ void cqsp::asset::AssetLoader::LoadAssets() {
     // Load enabled mods
     // Load core
     std::filesystem::path data_path(cqsp::engine::GetCqspDataPath());
-    
     std::filesystem::recursive_directory_iterator it(data_path);
 
     for (auto a : it) {
@@ -351,9 +350,16 @@ cqsp::asset::AssetLoader::LoadTextDirectory(const std::string& path, const Hjson
         cqsp::asset::PathedTextAsset asset_data{std::istreambuf_iterator<char>{asset_stream},
                         std::istreambuf_iterator<char>()};
 
-        // Get the path
-        asset_data.path = std::filesystem::relative(sub_path.path(), std::filesystem::path(path)).replace_extension("").string();
-        std::replace(asset_data.path.begin(), asset_data.path.end(), static_cast<char>(std::filesystem::path::preferred_separator), '.');
+        // Get the path, and also remove the .lua extension so that it's easier to access it
+        asset_data.path = std::filesystem::relative(sub_path.path(),
+                                    std::filesystem::path(path)).replace_extension("").string();
+        // Replace the data path so that the name will be using dots, and we don't need to care
+        // about file separators
+        // So requiring a lua file (that is the purpose for this), will look like
+        // require("test.abc")
+
+        std::replace(asset_data.path.begin(), asset_data.path.end(),
+                            static_cast<char>(std::filesystem::path::preferred_separator), '.');
 
         asset->paths[asset_data.path] = asset_data;
     }

@@ -19,7 +19,7 @@
 #include <string>
 
 namespace cqsp::engine {
-extern std::string exe_path;
+extern char* exe_path;
 std::string GetCqspSavePath();
 std::string GetCqspExePath();
 std::string GetCqspDataPath();
