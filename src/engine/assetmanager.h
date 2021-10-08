@@ -32,6 +32,7 @@
 
 #include "engine/renderer/texture.h"
 #include "engine/renderer/shader.h"
+#include "engine/renderer/text.h"
 #include "engine/asset.h"
 #include "engine/gui.h"
 
@@ -48,6 +49,10 @@ enum PrototypeType { NONE = 0, TEXTURE, SHADER, FONT, CUBEMAP };
 class AssetPrototype {
  public:
     std::string key;
+    /// <summary>
+    /// Store the asset here so that at least we have the promise of an asset to the thing
+    /// </summary>
+    Asset* asset;
     virtual int GetPrototypeType() { return PrototypeType::NONE; }
 };
 
@@ -109,6 +114,16 @@ class ThreadsafeQueue {
 
 class AssetLoader;
 
+class Package {
+ public:
+    std::string name;
+    std::string version;
+    std::string title;
+    std::string author;
+
+    std::map<std::string, std::unique_ptr<Asset>> assets;
+};
+
 class AssetManager {
  public:
     AssetManager();
@@ -148,19 +163,9 @@ class AssetManager {
         }
     }
     std::map<std::string, std::unique_ptr<Asset>> assets;
-    asset::Texture empty_texture;
-    friend class AssetLoader;
-};
-
-class Package {
- public:
-    std::string name;
-    std::string version;
-    std::string title;
-    std::string author;
-
-    std::map<std::string, std::unique_ptr<Asset>> assets;
     std::map<std::string, std::unique_ptr<Package>> packages;
+
+    asset::Texture empty_texture;
     friend class AssetLoader;
 };
 
@@ -202,12 +207,15 @@ class AssetLoader {
                                         const Hjson::Value& hints);
     void LoadHjsonDir(const std::string& path, Hjson::Value& value, const Hjson::Value& hints);
     // Load singular asset
-    void LoadAsset(const std::string&, const std::string&, const std::string&, const Hjson::Value&);
+    void LoadAsset(const std::string& type, const std::string& path, const std::string& key, const Hjson::Value&);
+    void LoadAsset(Package& package, const std::string& type, const std::string& path, const std::string& key, const Hjson::Value&);
     void LoadImage(const std::string& key, const std::string& filePath, const Hjson::Value& hints);
+    std::unique_ptr<Texture> LoadImagePtr(const std::string& key, const std::string& filePath, const Hjson::Value& hints);
 
-    void LoadShader(const std::string& key, std::istream &asset_stream, const Hjson::Value& hints);
-    void LoadFont(const std::string& key, std::istream &asset_stream, const Hjson::Value& hints);
-    void LoadCubemap(const std::string& key, const std::string &path,
+
+    std::unique_ptr<Shader> LoadShader(const std::string& key, std::istream &asset_stream, const Hjson::Value& hints);
+    std::unique_ptr<Font> LoadFont(const std::string& key, std::istream &asset_stream, const Hjson::Value& hints);
+    std::unique_ptr<Texture> LoadCubemap(const std::string& key, const std::string &path,
                         std::istream &asset_stream, const Hjson::Value& hints);
     std::map<std::string, AssetType> asset_type_map;
     std::vector<std::string> missing_assets;
