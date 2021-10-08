@@ -138,7 +138,22 @@ void cqsp::asset::AssetLoader::LoadAssets() {
 
     // Load other packages
     // Load mods from the document folders
+    // Find documents folder and load that
 
+    std::filesystem::path save_path(cqsp::engine::GetCqspSavePath());
+    // Get loaded mods
+    // If it doesn't exist, then create it
+    std::filesystem::path mods_path = save_path / "mods.hjson";
+    if (!std::filesystem::exists(mods_path)) {
+        Hjson::Value mods;
+        // Nothing in the mods
+        Hjson::MarshalToFile(mods, mods_path.string());
+    }
+    Hjson::Value mods = Hjson::UnmarshalFromFile(mods_path.string());
+    // Load the mods
+    for (int i = 0; i < mods.size(); i++) {
+        Hjson::Value mod_to_load = mods[i];
+    }
 }
 
 std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std::string path) {

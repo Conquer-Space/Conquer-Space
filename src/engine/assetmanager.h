@@ -173,6 +173,13 @@ class AssetManager {
     void LoadDefaultTexture();
     void ClearAssets();
 
+    Package* GetPackage(const std::string& name) {
+        return packages[name].get();
+    }
+
+    int GetPackageCount() {
+        return packages.size();
+    }
  private:
     std::map<std::string, std::unique_ptr<Package>> packages;
 
