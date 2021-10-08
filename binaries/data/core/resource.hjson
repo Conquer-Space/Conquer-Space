@@ -1,16 +1,4 @@
 {
-    goods: {
-        path: data/goods
-        type: hjson
-        hints: {
-        }
-    }
-    recipes: {
-        path: data/recipes
-        type: hjson
-        hints: {
-        }
-    }
     ui_sounds: {
         path: gui/ui_sounds.hjson
         type: hjson

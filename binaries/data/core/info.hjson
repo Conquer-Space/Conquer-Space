@@ -1,0 +1,8 @@
+{
+    name: core
+    version: 0.0.0
+    title: Conquer Space Core
+    author: Conquer Space Team
+    # Other information can go here, like contacts and other things, but we won't care about it so far
+    dependencies: []
+}

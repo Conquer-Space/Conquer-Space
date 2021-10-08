@@ -177,6 +177,97 @@ void cqsp::asset::AssetLoader::LoadAssets() {
     }
 }
 
+void cqsp::asset::AssetLoader::LoadPackage(std::string path) {
+    // Load the assets of a package specified by a path
+    // First load info.hjson, the info path of the file.
+    std::filesystem::path package_path(path);
+    Hjson::Value info = Hjson::UnmarshalFromFile((package_path/"info.hjson").string());
+    // This will also serve as the namespace name, so no spaces, periods, semicolons please
+
+    std::unique_ptr<Package> package = std::make_unique<Package>();
+    package->name = info["name"].to_string();
+    package->version = info["version"].to_string();
+    package->title = info["title"].to_string();
+    package->author = info["author"].to_string();
+
+    // Load dependencies
+    // Now load the 'important' folders
+    // Load base.lua for the base folder
+
+    auto base = LoadText(std::fstream(package_path / "scripts" / "base.lua"), Hjson::Value());
+    package->assets["base"] = std::move(base);
+    // Load scripts
+    package->assets["scripts"] = LoadScriptDirectory((package_path / "scripts").string(), Hjson::Value());
+
+    // Load a few other hjson folders.
+    // So the folders we have to keep track off are the goods and recipes
+    Hjson::Value goods;
+    {
+        Hjson::Value hints;
+        std::unique_ptr<HjsonAsset> asset = std::make_unique<HjsonAsset>();
+        LoadHjsonDir((package_path / "data" / "goods").string(), asset->data, hints);
+        package->assets["goods"] = std::move(asset);
+    }
+
+    Hjson::Value recipes;
+    {
+        Hjson::Value hints;
+        std::unique_ptr<HjsonAsset> asset = std::make_unique<HjsonAsset>();
+        LoadHjsonDir((package_path / "data" / "recipes").string(), asset->data, hints);
+        package->assets["recipes"] = std::move(asset);
+    }
+
+    // Then load all the other assets
+    // Load resource.hjsons
+    std::filesystem::recursive_directory_iterator it(package_path);
+
+    for (auto a : it) {
+        if (a.path().filename() == "resource.hjson") {
+            // Load the particular asset folder
+            // Open the file
+            std::ifstream asset(a.path());
+            std::string asset_data(std::istreambuf_iterator<char>(asset), {});
+            Hjson::Value asset_value;
+            Hjson::DecoderOptions decOpt;
+            decOpt.comments = false;
+            decOpt.duplicateKeyException = true;
+
+            // Try to load and check for duplicate options, sadly hjson doesn't provide good
+            // ways to see which keys are duplicated, except by exception, so we'll have
+            // to do this as a hack for now
+            try {
+                asset_value = Hjson::Unmarshal(asset_data, decOpt);
+            } catch (Hjson::syntax_error &se) {
+                SPDLOG_WARN(se.what());
+                // Then try again without the options
+                decOpt.duplicateKeyException = false;
+                asset_value = Hjson::Unmarshal(asset_data, decOpt);
+            }
+
+            for (const auto [key, val] : asset_value) {
+                SPDLOG_TRACE("Loading {}", key);
+
+                // Load asset
+                std::string type = val["type"];
+                std::string path = (a.path().parent_path() / val["path"].to_string()).string();
+
+                if (!std::filesystem::exists(path)) {
+                    SPDLOG_WARN("Cannot find asset {} at {}", key, path);
+                    // Check if it's required
+                    if (!val["required"].empty() && val["required"]) {
+                        // Then required
+                        SPDLOG_CRITICAL("Cannot find critical resource {}, exiting", key);
+                        missing_assets.push_back(key);
+                    }
+                    continue;
+                }
+                // Put in core namespace, I guess
+                LoadAsset(type, path, std::string("core:" + key), val["hints"]);
+            }
+        }
+    }
+}
+
 void cqsp::asset::AssetLoader::LoadAsset(const std::string& type,
                                                     const std::string& path,
                                                     const std::string& key,
@@ -335,6 +426,40 @@ std::unique_ptr<cqspa::HjsonAsset> cqspa::AssetLoader::LoadHjson(const std::stri
     }
     return asset;
 }
+
+std::unique_ptr<cqsp::asset::TextDirectoryAsset> cqsp::asset::AssetLoader::LoadScriptDirectory(const std::string& path, const Hjson::Value& hints) {
+    std::filesystem::recursive_directory_iterator iterator(path);
+    auto asset = std::make_unique<asset::TextDirectoryAsset>();
+    std::filesystem::path root(path);
+    for (auto& sub_path : iterator) {
+        // Ensure it's a lua file
+        
+        if (!sub_path.is_regular_file() && sub_path.path().extension() != "lua" &&
+            std::filesystem::relative(sub_path.path(), root).filename() == "base.lua") {  // Ignore base.lua
+            continue;
+        }
+
+        std::ifstream asset_stream(sub_path.path().string());
+        cqsp::asset::PathedTextAsset asset_data{std::istreambuf_iterator<char>{asset_stream},
+                        std::istreambuf_iterator<char>()};
+
+        // Get the path, and also remove the .lua extension so that it's easier to access it
+        asset_data.path = std::filesystem::relative(sub_path.path(),
+                                    std::filesystem::path(path)).replace_extension("").string();
+        // Replace the data path so that the name will be using dots, and we don't need to care
+        // about file separators
+        // So requiring a lua file (that is the purpose for this), will look like
+        // require("test.abc") 
+        // to require a file called test/abc.lua
+
+        std::replace(asset_data.path.begin(), asset_data.path.end(),
+                            static_cast<char>(std::filesystem::path::preferred_separator), '.');
+
+        asset->paths[asset_data.path] = asset_data;
+    }
+    return asset;
+}
+
 
 // This is essentially all for lua
 std::unique_ptr<cqsp::asset::TextDirectoryAsset>

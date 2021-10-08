@@ -152,6 +152,18 @@ class AssetManager {
     friend class AssetLoader;
 };
 
+class Package {
+ public:
+    std::string name;
+    std::string version;
+    std::string title;
+    std::string author;
+
+    std::map<std::string, std::unique_ptr<Asset>> assets;
+    std::map<std::string, std::unique_ptr<Package>> packages;
+    friend class AssetLoader;
+};
+
 class AssetLoader {
   friend class AssetManager;
 
@@ -160,6 +172,11 @@ class AssetLoader {
 
     void LoadAssets();
 
+    /// <summary>
+    /// Loads a package
+    /// </summary>
+    /// <param name="package">Path of the package folder</param>
+    void LoadPackage(std::string package);
     /*
      * The assets that need to be on the opengl. Takes one asset from the queue
      * and processes it
@@ -178,6 +195,9 @@ class AssetLoader {
     std::unique_ptr<HjsonAsset> LoadHjson(const std::string &path,
                                         const Hjson::Value& hints);
     std::unique_ptr<TextDirectoryAsset> LoadTextDirectory(const std::string& name, const Hjson::Value& hints);
+
+    std::unique_ptr<TextDirectoryAsset> LoadScriptDirectory(const std::string& path, const Hjson::Value& hints);
+
     void LoadHjson(std::istream &asset_stream, Hjson::Value& value,
                                         const Hjson::Value& hints);
     void LoadHjsonDir(const std::string& path, Hjson::Value& value, const Hjson::Value& hints);
@@ -190,7 +210,6 @@ class AssetLoader {
     void LoadCubemap(const std::string& key, const std::string &path,
                         std::istream &asset_stream, const Hjson::Value& hints);
     std::map<std::string, AssetType> asset_type_map;
-
     std::vector<std::string> missing_assets;
     ThreadsafeQueue<QueueHolder> m_asset_queue;
 };
