@@ -135,25 +135,88 @@ void cqsp::asset::AssetLoader::LoadAssets() {
     std::filesystem::path data_path(cqsp::engine::GetCqspDataPath());
     std::filesystem::recursive_directory_iterator it(data_path);
     manager->packages["core"] = LoadPackage((data_path/"core").string());
+    SPDLOG_INFO("Loaded core");
+
+    // Load mods from the document folders
+    // Find documents folder and load the information about the files
+
+    // Keep track of all mods so that we can ensure that all are loaded
+    Hjson::Value all_mods;
+
+    // Some lambda things to keep things less cluttered and simpler
+    auto mod_load = [&](const std::string &name) {
+        all_mods[name] = false;
+    };
+
+    SPDLOG_INFO("Loading potential mods");
+    // Load core
+    mod_load(LoadModPrototype((data_path/"core").string()));
+    // Enable core by default
+    all_mods["core"] = true;
 
     // Load other packages
-    // Load mods from the document folders
-    // Find documents folder and load that
-
     std::filesystem::path save_path(cqsp::engine::GetCqspSavePath());
+    std::filesystem::path mods_folder = save_path / "mods";
+    if (!std::filesystem::exists(mods_folder)) {
+        std::filesystem::create_directories(mods_folder);
+    }
+
+    // List files
+    std::filesystem::directory_iterator mods_folder_iterator(mods_folder);
+    for (auto mod_element : mods_folder_iterator) {
+        mod_load(LoadModPrototype(mod_element.path().string()));
+    }
+
     // Get loaded mods
     // If it doesn't exist, then create it
-    std::filesystem::path mods_path = save_path / "mods.hjson";
+    std::filesystem::path mods_path(GetModFilePath());
     if (!std::filesystem::exists(mods_path)) {
         Hjson::Value mods;
         // Nothing in the mods
         Hjson::MarshalToFile(mods, mods_path.string());
     }
+
     Hjson::Value mods = Hjson::UnmarshalFromFile(mods_path.string());
-    // Load the mods
-    for (int i = 0; i < mods.size(); i++) {
-        Hjson::Value mod_to_load = mods[i];
+    // Apply the current mods to the hjson so that we can see what mods are to be loaded
+    mods = Hjson::Merge(all_mods, mods);
+    SPDLOG_INFO("{}", Hjson::Marshal(mods));
+
+    // Load the mods that are to be loaded
+    for (auto it : mods) {
+        manager->potential_mods[it.first].enabled = static_cast<bool>(it.second);
     }
+
+    // Enable mods, but let's think about that later
+}
+
+std::string cqsp::asset::AssetLoader::GetModFilePath() {
+    return (std::filesystem::path(cqsp::engine::GetCqspSavePath())/"mod.hjson").string();
+}
+
+std::string cqsp::asset::AssetLoader::LoadModPrototype(const std::string& path_string) {
+    std::filesystem::path path(path_string);
+    // Load the info.hjson
+    if (!std::filesystem::is_directory(path)) {
+        return "";
+    }
+    if (!std::filesystem::exists(path/"info.hjson")) {
+        return "";
+    }
+    Hjson::Value mod_info = Hjson::UnmarshalFromFile((path/"info.hjson").string());
+    // Get the info of the file
+    // Add core
+    PackagePrototype prototype;
+    try {
+        prototype.name = mod_info["name"].to_string();
+        prototype.version = mod_info["version"].to_string();
+        prototype.title = mod_info["title"].to_string();
+        prototype.author = mod_info["author"].to_string();
+        manager->potential_mods[prototype.name] = prototype;
+    } catch (Hjson::index_out_of_bounds &ex) {
+        // Don't load the mod
+        SPDLOG_INFO("Hjson::index_out_of_bounds: {}", ex.what());
+    }
+    return prototype.name;
 }
 
 std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std::string path) {
@@ -316,20 +379,24 @@ std::unique_ptr<cqsp::asset::Texture> cqsp::asset::AssetLoader::LoadImage(const 
     Hjson::Value pixellated = hints["magfilter"];
 
     if (pixellated.defined() && pixellated.type() == Hjson::Type::Bool) {
-        // Then it's good
+        // Then it's pixellated, or closest magfilter
         prototype->options.mag_filter = static_cast<bool>(pixellated);
     } else {
-        // Then loading it was a mistake (jk), then it's linear.
+        // it's linear mag filter by default
         prototype->options.mag_filter = false;
     }
 
+    // Read entire file
     std::ifstream input(filePath, std::ios::binary);
     input.seekg(0, std::ios::end);
+    // Get size
     std::streamsize size = input.tellg();
     input.seekg(0, std::ios::beg);
     char* data = new char[size];
     input.read(data, size);
     unsigned char* d = (unsigned char *) data;
+
+    // Load from file
     prototype->data = stbi_load_from_memory(d, size, &prototype->width, &prototype->height,
                            &prototype->components, 0);
 

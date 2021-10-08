@@ -131,6 +131,16 @@ class Package {
     friend class AssetManager;
 };
 
+class PackagePrototype {
+ public:
+    std::string name;
+    std::string version;
+    std::string title;
+    std::string author;
+
+    bool enabled;
+};
+
 class AssetManager {
  public:
     AssetManager();
@@ -180,9 +190,19 @@ class AssetManager {
     int GetPackageCount() {
         return packages.size();
     }
+
+    auto GetPackageBegin() {
+        return packages.begin();
+    }
+
+    auto GetPackageEnd() {
+        return packages.end();
+    }
+
+    std::map<std::string, PackagePrototype> potential_mods;
+
  private:
     std::map<std::string, std::unique_ptr<Package>> packages;
-
     asset::Texture empty_texture;
     friend class AssetLoader;
 };
@@ -212,7 +232,14 @@ class AssetLoader {
 
     std::vector<std::string>& GetMissingAssets() { return missing_assets; }
 
+    /// <summary>
+    /// Get where the mod.hjson file is.
+    /// </summary>
+    /// <returns></returns>
+    std::string GetModFilePath();
+
  private:
+    std::string LoadModPrototype(const std::string&);
     std::unique_ptr<TextAsset> LoadText(std::istream &asset_stream,
                                         const Hjson::Value& hints);
     std::unique_ptr<HjsonAsset> LoadHjson(const std::string &path,

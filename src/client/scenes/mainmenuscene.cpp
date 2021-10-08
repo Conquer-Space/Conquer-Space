@@ -36,39 +36,30 @@
 #include "client/systems/sysoptionswindow.h"
 #include "common/version.h"
 
+#include "engine/paths.h"
+#include <filesystem>
+
 cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app)
     : cqsp::engine::Scene(app) { }
 
 void cqsp::scene::MainMenuScene::Init() {
-    m_texture = GetApp()
-        .GetAssetManager()
-        .GetAsset<cqsp::asset::Texture>("core:cqspbanner");
+    using cqsp::asset::Texture;
+    m_texture = GetApp().GetAssetManager().GetAsset<cqsp::asset::Texture>("core:cqspbanner");
 
-    m_credits = GetApp()
-                    .GetAssetManager()
-                    .GetAsset<cqsp::asset::TextAsset>("core:credits");
+    m_credits = GetApp().GetAssetManager().GetAsset<cqsp::asset::TextAsset>("core:credits");
 
-    cqsp::engine::BasicRendererObject splashscreen =
-        cqsp::engine::MakeRenderable();
-    cqsp::engine::BasicRendererObject titleBanner =
-        cqsp::engine::MakeRenderable();
+    cqsp::engine::BasicRendererObject splashscreen = cqsp::engine::MakeRenderable();
+    cqsp::engine::BasicRendererObject titleBanner = cqsp::engine::MakeRenderable();
 
     cqsp::primitive::MakeTexturedPaneMesh(*splashscreen);
     cqsp::primitive::MakeTexturedPaneMesh(*titleBanner);
 
-    cqsp::asset::Texture* earthrise_texture =
-        GetApp()
-        .GetAssetManager()
-        .GetAsset<cqsp::asset::Texture>("core:earthrise");
+    cqsp::asset::Texture* earthrise_texture = GetApp().GetAssetManager().GetAsset<Texture>("core:earthrise");
 
-    cqsp::asset::Texture* asset2 =
-        GetApp()
-        .GetAssetManager()
-        .GetAsset<cqsp::asset::Texture>("core:title");
+    cqsp::asset::Texture* asset2 = GetApp().GetAssetManager().GetAsset<Texture>("core:title");
 
     // Create new shader program
-    asset::ShaderProgram* program =
-        GetApp().GetAssetManager().
+    asset::ShaderProgram* program = GetApp().GetAssetManager().
         CreateShaderProgram("core:shader.pane.vert", "core:shader.texturedpane.frag");
 
     splashscreen->shaderProgram = program;
@@ -145,7 +136,10 @@ void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
     }
 
     ImGui::TableNextColumn();
-    CQSPGui::DefaultButton("Others", ImVec2(buttonWidth, buttonHeight));
+    if (CQSPGui::DefaultButton("Mods", ImVec2(buttonWidth, buttonHeight))) {
+        // Then load the mods
+        m_show_mods_window = true;
+    }
 
     ImGui::TableNextColumn();
     if (CQSPGui::DefaultButton("Quit", ImVec2(buttonWidth, buttonHeight))) {
@@ -190,6 +184,26 @@ void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
 
     if (m_options_window) {
         cqsp::client::systems::ShowOptionsWindow(&m_options_window, GetApp());
+    }
+
+    if (m_show_mods_window) {
+        ImGui::Begin("Mods");
+        auto& asset_manager = GetApp().GetAssetManager();
+        for (auto it = asset_manager.potential_mods.begin(); it != asset_manager.potential_mods.end(); it++) {
+            ImGui::Checkbox(it->second.title.c_str(), &it->second.enabled);
+        }
+        if (ImGui::Button("Apply")) {
+            // TODO(EhWhoAmI): Put this in a function in assetmanager.cpp
+            Hjson::Value enabled_mods;
+            // Load the enabled mods, and write to the file. then exit game.
+            for (auto it = asset_manager.potential_mods.begin(); it != asset_manager.potential_mods.end(); it++) {
+                enabled_mods[it->second.name] = it->second.enabled;
+                SPDLOG_INFO("{} {} {}", it->second.name, it->second.enabled, enabled_mods[it->second.name].to_string());
+            }
+            // Write to file
+             Hjson::MarshalToFile(enabled_mods, (std::filesystem::path(cqsp::engine::GetCqspSavePath())/"mod.hjson").string());
+        }
+        ImGui::End();
     }
 }
 
