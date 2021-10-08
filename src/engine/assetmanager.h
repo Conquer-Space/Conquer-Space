@@ -113,56 +113,67 @@ class ThreadsafeQueue {
 };
 
 class AssetLoader;
+class AssetManager;
 
 class Package {
- public:
+  public:
     std::string name;
     std::string version;
     std::string title;
     std::string author;
 
+ private:
     std::map<std::string, std::unique_ptr<Asset>> assets;
+
+    void ClearAssets();
+
+    friend class AssetLoader;
+    friend class AssetManager;
 };
 
 class AssetManager {
  public:
     AssetManager();
 
-    size_t GetSize() { return assets.size(); }
-    std::unique_ptr<Asset>& operator[](std::string& key) { return assets[key]; }
-    std::unique_ptr<Asset>& operator[](const char* key) { return assets[key]; }
+    std::unique_ptr<Asset>& operator[](std::string& key) {
+        // Split the stuff
+        int separation = key.find(":");
+        std::string token = key.substr(0, separation);
+        std::string pkg_key = key.substr(separation, key.length());
+        return packages[token]->assets[pkg_key];
+    }
 
-    std::unique_ptr<Asset>& operator[](char* val) { return assets[std::string(val)]; }
+    std::unique_ptr<Asset>& operator[](const char* key) {
+        std::string str(key);
+        int separation = str.find(":");
+        std::string token = str.substr(0, separation);
+        std::string pkg_key = str.substr(separation, str.length());
+        return packages[token]->assets[pkg_key];
+    }
 
-    cqsp::asset::ShaderProgram* CreateShaderProgram(const std::string &vert,
-                                                            const std::string &frag);
+    cqsp::asset::ShaderProgram* CreateShaderProgram(const std::string &vert, const std::string &frag);
 
-    template <class T, typename K>
-    T* GetAsset(const K key) {
-        if (!assets.count(key)) {
-            SPDLOG_ERROR("Invalid key {}", key);
-            if constexpr (std::is_same<T, asset::Texture>::value) {
-                // Then load default texture
-                return &empty_texture;
-            }
-        }
-        return dynamic_cast<T*>(assets[key].get());
+    template <class T>
+    T* GetAsset(const char* key) {
+        std::string str(key);
+        int separation = str.find(":");
+        std::string token = str.substr(0, separation);
+        std::string pkg_key = str.substr(separation+1, str.length());
+        return dynamic_cast<T*>(packages[token]->assets[pkg_key].get());
+    }
+
+    template <class T>
+    T* GetAsset(const std::string& key) {
+        int separation = key.find(":");
+        std::string token = key.substr(0, separation);
+        std::string pkg_key = key.substr(separation+1, key.length());
+        return dynamic_cast<T*>(packages[token]->assets[pkg_key].get());
     }
 
     void LoadDefaultTexture();
     void ClearAssets();
 
  private:
-    template<class T>
-    void AddAsset(std::string key, std::unique_ptr<T> &&asset) {
-        // Check for asset collision
-        if (assets.find(key) != assets.end()) {
-            SPDLOG_WARN("Didn't add asset {} due to asset collision", key);
-        } else {
-            assets[key] = std::move(asset);
-        }
-    }
-    std::map<std::string, std::unique_ptr<Asset>> assets;
     std::map<std::string, std::unique_ptr<Package>> packages;
 
     asset::Texture empty_texture;
@@ -181,7 +192,7 @@ class AssetLoader {
     /// Loads a package
     /// </summary>
     /// <param name="package">Path of the package folder</param>
-    void LoadPackage(std::string package);
+    std::unique_ptr<Package> LoadPackage(std::string package);
     /*
      * The assets that need to be on the opengl. Takes one asset from the queue
      * and processes it
@@ -206,11 +217,16 @@ class AssetLoader {
     void LoadHjson(std::istream &asset_stream, Hjson::Value& value,
                                         const Hjson::Value& hints);
     void LoadHjsonDir(const std::string& path, Hjson::Value& value, const Hjson::Value& hints);
-    // Load singular asset
-    void LoadAsset(const std::string& type, const std::string& path, const std::string& key, const Hjson::Value&);
+    /// <summary>
+    /// Load singular asset
+    /// </summary>
+    /// <param name="package">package to load into</param>
+    /// <param name="type"></param>
+    /// <param name="path"></param>
+    /// <param name="key"></param>
+    /// <param name=""></param>
     void LoadAsset(Package& package, const std::string& type, const std::string& path, const std::string& key, const Hjson::Value&);
-    void LoadImage(const std::string& key, const std::string& filePath, const Hjson::Value& hints);
-    std::unique_ptr<Texture> LoadImagePtr(const std::string& key, const std::string& filePath, const Hjson::Value& hints);
+    std::unique_ptr<Texture> LoadImage(const std::string& key, const std::string& filePath, const Hjson::Value& hints);
 
 
     std::unique_ptr<Shader> LoadShader(const std::string& key, std::istream &asset_stream, const Hjson::Value& hints);

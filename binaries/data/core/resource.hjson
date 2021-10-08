@@ -5,20 +5,8 @@
         hints: {
         }
     }
-    scripts: {
-        path: scripts
-        type: directory
-        hints: {
-        }
-    }
     credits: {
         path: credits.md
-        type: text
-        hints: {
-        }
-    }
-    core: {
-        path: core.lua
         type: text
         hints: {
         }
