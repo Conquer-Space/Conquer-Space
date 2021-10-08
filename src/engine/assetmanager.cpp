@@ -179,7 +179,6 @@ void cqsp::asset::AssetLoader::LoadAssets() {
     Hjson::Value mods = Hjson::UnmarshalFromFile(mods_path.string());
     // Apply the current mods to the hjson so that we can see what mods are to be loaded
     mods = Hjson::Merge(all_mods, mods);
-    SPDLOG_INFO("{}", Hjson::Marshal(mods));
 
     // Load the mods that are to be loaded
     for (auto it : mods) {

@@ -189,19 +189,46 @@ void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
     if (m_show_mods_window) {
         ImGui::Begin("Mods");
         auto& asset_manager = GetApp().GetAssetManager();
-        for (auto it = asset_manager.potential_mods.begin(); it != asset_manager.potential_mods.end(); it++) {
-            ImGui::Checkbox(it->second.title.c_str(), &it->second.enabled);
+        bool selected = false;
+        if (ImGui::BeginTable("modtable", 2, ImGuiTableFlags_Borders)) {
+            ImGui::TableSetupColumn("###[]", ImGuiTableColumnFlags_NoResize | ImGuiTableColumnFlags_WidthFixed, 25.);
+            ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_NoReorder);
+            static bool enabled = false;
+            ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
+            ImGui::TableSetColumnIndex(0);
+            const char* column_name = ImGui::TableGetColumnName(0); // Retrieve name passed to TableSetupColumn()
+            ImGui::PushID(0);
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+            ImGui::Checkbox("##checkall", &enabled);
+            ImGui::PopStyleVar();
+            ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+            ImGui::TableHeader(column_name);
+            ImGui::PopID();
+            ImGui::TableSetColumnIndex(1);
+            ImGui::PushID(1);
+            ImGui::TableHeader("Name");
+            ImGui::PopID();
+
+            for (auto it = asset_manager.potential_mods.begin(); it != asset_manager.potential_mods.end(); it++) {
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                ImGui::Checkbox(fmt::format("###{}", it->second.name).c_str(), &it->second.enabled);
+                ImGui::TableNextColumn();
+                ImGui::Text(fmt::format("{}", it->second.name).c_str());
+            }
+            ImGui::EndTable();
         }
+
         if (ImGui::Button("Apply")) {
             // TODO(EhWhoAmI): Put this in a function in assetmanager.cpp
             Hjson::Value enabled_mods;
             // Load the enabled mods, and write to the file. then exit game.
             for (auto it = asset_manager.potential_mods.begin(); it != asset_manager.potential_mods.end(); it++) {
                 enabled_mods[it->second.name] = it->second.enabled;
-                SPDLOG_INFO("{} {} {}", it->second.name, it->second.enabled, enabled_mods[it->second.name].to_string());
             }
             // Write to file
              Hjson::MarshalToFile(enabled_mods, (std::filesystem::path(cqsp::engine::GetCqspSavePath())/"mod.hjson").string());
+            SPDLOG_INFO("Writing mods");
         }
         ImGui::End();
     }
