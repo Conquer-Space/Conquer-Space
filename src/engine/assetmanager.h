@@ -199,6 +199,8 @@ class AssetManager {
         return packages.end();
     }
 
+    void SaveModList();
+
     std::map<std::string, PackagePrototype> potential_mods;
 
  private:

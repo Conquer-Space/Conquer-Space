@@ -47,6 +47,8 @@ class MainMenuScene : public cqsp::engine::Scene{
     float width, height;
 
     cqsp::engine::BasicRenderer renderer;
+
+    void ModWindow();
 };
 }  // namespace scene
 }  // namespace cqsp

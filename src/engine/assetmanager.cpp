@@ -114,6 +114,17 @@ void cqsp::asset::AssetManager::ClearAssets() {
     packages.clear();
 }
 
+void cqsp::asset::AssetManager::SaveModList() {
+    Hjson::Value enabled_mods;
+    // Load the enabled mods, and write to the file. then exit game.
+    for (auto it = potential_mods.begin(); it != potential_mods.end(); it++) {
+        enabled_mods[it->second.name] = it->second.enabled;
+    }
+    // Write to file
+    Hjson::MarshalToFile(enabled_mods, (std::filesystem::path(cqsp::engine::GetCqspSavePath())/"mod.hjson").string());
+    SPDLOG_INFO("Writing mods");
+}
+
 cqsp::asset::AssetLoader::AssetLoader() : m_asset_queue() {
     asset_type_map["none"] = AssetType::NONE;
     asset_type_map["texture"] = AssetType::TEXTURE;
