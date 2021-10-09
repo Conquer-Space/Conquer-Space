@@ -116,7 +116,7 @@ class AssetLoader;
 class AssetManager;
 
 class Package {
-  public:
+ public:
     std::string name;
     std::string version;
     std::string title;
@@ -261,7 +261,8 @@ class AssetLoader {
     /// <param name="path"></param>
     /// <param name="key"></param>
     /// <param name=""></param>
-    void LoadAsset(Package& package, const std::string& type, const std::string& path, const std::string& key, const Hjson::Value&);
+    void LoadAsset(Package& package, const std::string& type, const std::string& path, const std::string& key,
+                    const Hjson::Value&);
     std::unique_ptr<Texture> LoadImage(const std::string& key, const std::string& filePath, const Hjson::Value& hints);
 
 

@@ -25,6 +25,8 @@
 #include <algorithm>
 #include <filesystem>
 
+#include <string>
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -257,7 +259,7 @@ void cqsp::scene::MainMenuScene::ModWindow() {
                 ImGui::TableNextColumn();
                 CQSPGui::DefaultCheckbox(fmt::format("###{}", it->second.name).c_str(), &it->second.enabled);
                 ImGui::TableNextColumn();
-                ImGui::Text(fmt::format("{}",it->second.title).c_str());
+                ImGui::Text(fmt::format("{}", it->second.title).c_str());
                 ImGui::TableNextColumn();
                 if (ImGui::SmallButton(fmt::format("Information##{}", it->second.title).c_str())) {
                     package = &it->second;

@@ -322,13 +322,14 @@ std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std:
     return package;
 }
 
-void cqsp::asset::AssetLoader::LoadAsset(Package& package, const std::string& type, const std::string& path, const std::string& key, const Hjson::Value& hints) {
+void cqsp::asset::AssetLoader::LoadAsset(Package& package, const std::string& type, const std::string& path,
+                                        const std::string& key, const Hjson::Value& hints) {
     switch (asset_type_map[type]) {
         case AssetType::TEXTURE:
         {
         package.assets[key] = LoadImage(key, path, hints);
         break;
-        }  
+        }
         case AssetType::SHADER:
         {
         std::ifstream asset_stream(path, std::ios::binary);
@@ -378,7 +379,8 @@ void cqsp::asset::AssetLoader::LoadAsset(Package& package, const std::string& ty
     }
 }
 
-std::unique_ptr<cqsp::asset::Texture> cqsp::asset::AssetLoader::LoadImage(const std::string& key, const std::string & filePath, const Hjson::Value & hints) {
+std::unique_ptr<cqsp::asset::Texture> cqsp::asset::AssetLoader::LoadImage(const std::string& key,
+    const std::string & filePath, const Hjson::Value & hints) {
     // Get the things
     std::unique_ptr<Texture> texture = std::make_unique<Texture>();
     //return asset::Texture();
@@ -515,13 +517,13 @@ std::unique_ptr<cqspa::HjsonAsset> cqspa::AssetLoader::LoadHjson(const std::stri
     return asset;
 }
 
-std::unique_ptr<cqsp::asset::TextDirectoryAsset> cqsp::asset::AssetLoader::LoadScriptDirectory(const std::string& path, const Hjson::Value& hints) {
+std::unique_ptr<cqsp::asset::TextDirectoryAsset> cqsp::asset::AssetLoader::LoadScriptDirectory(const std::string& path,
+    const Hjson::Value& hints) {
     std::filesystem::recursive_directory_iterator iterator(path);
     auto asset = std::make_unique<asset::TextDirectoryAsset>();
     std::filesystem::path root(path);
     for (auto& sub_path : iterator) {
         // Ensure it's a lua file
-        
         if (!sub_path.is_regular_file() && sub_path.path().extension() != "lua" &&
             std::filesystem::relative(sub_path.path(), root).filename() == "base.lua") {  // Ignore base.lua
             continue;
@@ -537,7 +539,7 @@ std::unique_ptr<cqsp::asset::TextDirectoryAsset> cqsp::asset::AssetLoader::LoadS
         // Replace the data path so that the name will be using dots, and we don't need to care
         // about file separators
         // So requiring a lua file (that is the purpose for this), will look like
-        // require("test.abc") 
+        // require("test.abc")
         // to require a file called test/abc.lua
 
         std::replace(asset_data.path.begin(), asset_data.path.end(),
@@ -634,8 +636,8 @@ std::unique_ptr<cqsp::asset::Shader> cqspa::AssetLoader::LoadShader(const std::s
     return shader;
 }
 
-std::unique_ptr<cqsp::asset::Font> cqsp::asset::AssetLoader::LoadFont(const std::string& key, std::istream& asset_stream,
-                                                const Hjson::Value& hints) {
+std::unique_ptr<cqsp::asset::Font> cqsp::asset::AssetLoader::LoadFont(const std::string& key,
+    std::istream& asset_stream, const Hjson::Value& hints) {
     std::unique_ptr<Font> asset = std::make_unique<Font>();
     asset_stream.seekg(0, std::ios::end);
     std::fstream::pos_type fontFileSize = asset_stream.tellg();
@@ -659,7 +661,6 @@ std::unique_ptr<cqsp::asset::Texture> cqsp::asset::AssetLoader::LoadCubemap(cons
                                                     const std::string &path,
                                                     std::istream &asset_stream,
                                                     const Hjson::Value& hints) {
-
     std::unique_ptr<Texture> asset = std::make_unique<Texture>();
 
     // Read file, which will be hjson, and load those files too
