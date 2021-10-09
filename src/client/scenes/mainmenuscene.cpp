@@ -22,6 +22,8 @@
 #include <imgui_markdown.h>
 
 #include <utility>
+#include <algorithm>
+#include <filesystem>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -37,7 +39,6 @@
 #include "common/version.h"
 
 #include "engine/paths.h"
-#include <filesystem>
 
 cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app)
     : cqsp::engine::Scene(app) { }
@@ -187,19 +188,40 @@ void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
     }
 
     if (m_show_mods_window) {
-        ImGui::Begin("Mods");
+        ImGui::SetNextWindowSize(
+            ImVec2(ImGui::GetIO().DisplaySize.x * 0.8f, ImGui::GetIO().DisplaySize.y * 0.8f),
+            ImGuiCond_Always);
+        ImGui::SetNextWindowPos(
+            ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
+            ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+        ImGui::Begin("Mods", &m_show_mods_window);
         auto& asset_manager = GetApp().GetAssetManager();
+
+        int height = ImGui::GetIO().DisplaySize.y * 0.8f - 75;
+        ImGui::BeginChild("modlist", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f -
+                                 ImGui::GetStyle().ItemSpacing.y, height));
+        static cqsp::asset::PackagePrototype* package = nullptr;
         bool selected = false;
-        if (ImGui::BeginTable("modtable", 2, ImGuiTableFlags_Borders)) {
+        // Search bar
+        static std::string search;
+        ImGui::PushItemWidth(-1);
+        ImGui::InputText("###mod search bar", &search);
+
+        if (ImGui::BeginTable("modtable", 3, ImGuiTableFlags_Borders)) {
             ImGui::TableSetupColumn("###[]", ImGuiTableColumnFlags_NoResize | ImGuiTableColumnFlags_WidthFixed, 25.);
             ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_NoReorder);
-            static bool enabled = false;
+            ImGui::TableSetupColumn("Info", ImGuiTableColumnFlags_NoReorder);
+            static bool enable_disable_all_mods = false;
             ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
             ImGui::TableSetColumnIndex(0);
             const char* column_name = ImGui::TableGetColumnName(0); // Retrieve name passed to TableSetupColumn()
             ImGui::PushID(0);
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-            ImGui::Checkbox("##checkall", &enabled);
+            if (ImGui::Checkbox("##checkall", &enable_disable_all_mods)) {
+                for (auto it = asset_manager.potential_mods.begin(); it != asset_manager.potential_mods.end(); it++) {
+                    it->second.enabled = enable_disable_all_mods;
+                }
+            }
             ImGui::PopStyleVar();
             ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
             ImGui::TableHeader(column_name);
@@ -208,16 +230,43 @@ void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
             ImGui::PushID(1);
             ImGui::TableHeader("Name");
             ImGui::PopID();
+            ImGui::TableSetColumnIndex(2);
+            ImGui::PushID(1);
+            ImGui::TableHeader("Info");
+            ImGui::PopID();
 
+            enable_disable_all_mods = true;
             for (auto it = asset_manager.potential_mods.begin(); it != asset_manager.potential_mods.end(); it++) {
-                ImGui::TableNextRow();
-                ImGui::TableNextColumn();
-                ImGui::Checkbox(fmt::format("###{}", it->second.name).c_str(), &it->second.enabled);
-                ImGui::TableNextColumn();
-                ImGui::Text(fmt::format("{}", it->second.name).c_str());
+                // Search to ignore case
+                if (std::search(it->second.title.begin(), it->second.title.end(),
+                        search.begin(), search.end(), [](char ch1, char ch2) {
+                            return std::toupper(ch1) == std::toupper(ch2);
+                        }) != it->second.title.end()) {
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    CQSPGui::DefaultCheckbox(fmt::format("###{}", it->second.name).c_str(), &it->second.enabled);
+                    ImGui::TableNextColumn();
+                    ImGui::Text(fmt::format("{}",it->second.title).c_str());
+                    ImGui::TableNextColumn();
+                    if (ImGui::SmallButton(fmt::format("Information##{}", it->second.title).c_str())) {
+                        package = &it->second;
+                    }
+                    enable_disable_all_mods &= it->second.enabled;
+                }
             }
             ImGui::EndTable();
         }
+        ImGui::EndChild();
+        ImGui::SameLine();
+        ImGui::BeginChild("PackageInfo", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f -
+                                 ImGui::GetStyle().ItemSpacing.y, height));
+        if (package != nullptr) {
+            ImGui::TextFmt("{}", package->title);
+            ImGui::Separator();
+            ImGui::TextFmt("Version: {}", package->version);
+            ImGui::TextFmt("Author: {}", package->author);
+        }
+        ImGui::EndChild();
 
         if (ImGui::Button("Apply")) {
             // TODO(EhWhoAmI): Put this in a function in assetmanager.cpp
@@ -230,6 +279,7 @@ void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
              Hjson::MarshalToFile(enabled_mods, (std::filesystem::path(cqsp::engine::GetCqspSavePath())/"mod.hjson").string());
             SPDLOG_INFO("Writing mods");
         }
+        ImGui::SameLine();
         ImGui::End();
     }
 }

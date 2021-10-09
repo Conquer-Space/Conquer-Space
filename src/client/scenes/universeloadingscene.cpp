@@ -99,8 +99,8 @@ void LoadGoods(cqsp::engine::Application& app) {
 void LoadRecipes(cqsp::engine::Application& app) {
     namespace cqspc = cqsp::common::components;
 
-    cqsp::asset::HjsonAsset* recipe_asset = app
-                .GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("core:recipes");
+    using cqsp::asset::HjsonAsset;
+    HjsonAsset* recipe_asset = app.GetAssetManager().GetAsset<HjsonAsset>("core:recipes");
     for (int i = 0; i < recipe_asset->data.size(); i++) {
         Hjson::Value& val = recipe_asset->data[i];
 
@@ -137,14 +137,14 @@ void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
     GetApp().GetScriptInterface().RegisterDataGroup("generators");
     GetApp().GetScriptInterface().RegisterDataGroup("events");
 
+    using cqsp::asset::TextAsset;
     // Process scripts for core
-    cqsp::asset::TextAsset* script_list = GetApp().GetAssetManager().
-                                                    GetAsset<cqsp::asset::TextAsset>("core:base");
+    TextAsset* script_list = GetApp().GetAssetManager().GetAsset<TextAsset>("core:base");
     GetApp().GetScriptInterface().RunScript(script_list->data);
 
+    using cqsp::common::systems::universegenerator::ScriptUniverseGenerator;
     // Load universe
-    cqsp::common::systems::universegenerator::ScriptUniverseGenerator
-                                                    script_generator(GetApp().GetScriptInterface());
+    ScriptUniverseGenerator script_generator(GetApp().GetScriptInterface());
 
     script_generator.Generate(GetApp().GetUniverse());
     m_completed_loading = true;
