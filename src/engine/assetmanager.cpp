@@ -246,8 +246,8 @@ std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std:
     // Load dependencies
     // Now load the 'important' folders
     // Load base.lua for the base folder
-
-    auto base = LoadText(std::fstream(package_path / "scripts" / "base.lua"), Hjson::Value());
+    auto base_stream = std::fstream(package_path / "scripts" / "base.lua");
+    auto base = LoadText(base_stream, Hjson::Value());
     package->assets["base"] = std::move(base);
     // Load scripts
     package->assets["scripts"] = LoadScriptDirectory((package_path / "scripts").string(), Hjson::Value());
