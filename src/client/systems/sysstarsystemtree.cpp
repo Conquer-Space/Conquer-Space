@@ -33,11 +33,11 @@ void cqsp::client::systems::SysStarSystemTree::DoUI(int delta_time) {
     namespace cqspcs = cqsp::client::systems;
     namespace cqspc = cqsp::common::components;
     // Get star system
-    entt::entity ent = GetApp().GetUniverse().view<cqspcs::RenderingStarSystem>().front();
+    entt::entity ent = GetUniverse().view<cqspcs::RenderingStarSystem>().front();
     if (ent == entt::null) {
         return;
     }
-    auto& star_system = GetApp().GetUniverse().get<cqspb::StarSystem>(ent);
+    auto& star_system = GetUniverse().get<cqspb::StarSystem>(ent);
     ImGui::SetNextWindowPos(ImVec2(30, ImGui::GetIO().DisplaySize.y - 30),
                             ImGuiCond_Always, ImVec2(0.f, 1.f));
     ImGui::SetNextWindowSize(ImVec2(200, 400), ImGuiCond_Always);
@@ -49,8 +49,8 @@ void cqsp::client::systems::SysStarSystemTree::DoUI(int delta_time) {
     for (auto entity : star_system.bodies) {
         bool is_selected = (entity == current_planet);
         std::string planet_name = fmt::format("{}", entity);
-        if (GetApp().GetUniverse().all_of<cqspc::Name>(entity)) {
-            planet_name = fmt::format("{}", GetApp().GetUniverse().get<cqspc::Name>(entity));
+        if (GetUniverse().all_of<cqspc::Name>(entity)) {
+            planet_name = fmt::format("{}", GetUniverse().get<cqspc::Name>(entity));
         }
 
         if (CQSPGui::DefaultSelectable(planet_name.c_str(), is_selected,
@@ -62,7 +62,7 @@ void cqsp::client::systems::SysStarSystemTree::DoUI(int delta_time) {
                 cqsp::scene::SeePlanet(GetApp(), entity);
             }
         }
-        gui::EntityTooltip(GetApp().GetUniverse(), entity);
+        gui::EntityTooltip(GetUniverse(), entity);
         index++;
     }
     ImGui::End();

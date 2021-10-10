@@ -18,8 +18,11 @@
 
 #include "engine/gui.h"
 
-cqsp::engine::Scene::Scene(Application& app)
-    : m_application(app) {}
+cqsp::engine::Scene::Scene(Application& app) : m_application(app) {}
+
+cqsp::common::Universe & cqsp::engine::Scene::GetUniverse() {
+    return GetApp().GetUniverse(); 
+}
 
 cqsp::engine::EmptyScene::EmptyScene(Application& app)
     : Scene(app) {}

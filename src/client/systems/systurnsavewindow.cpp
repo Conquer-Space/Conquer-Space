@@ -35,7 +35,7 @@ void cqsp::client::systems::SysTurnSaveWindow::DoUI(int delta_time) {
     ImGui::Begin("TS window", &to_show, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
                                      ImGuiWindowFlags_AlwaysAutoResize | window_flags);
     // Show date
-    ImGui::TextFmt("Date: {} Speed: {}", GetApp().GetUniverse().date.GetDate(), tick_speed);
+    ImGui::TextFmt("Date: {} Speed: {}", GetUniverse().date.GetDate(), tick_speed);
     if (CQSPGui::DefaultButton("<<")) {
         // Slower
         if (tick_speed > 0) {
@@ -63,9 +63,8 @@ void cqsp::client::systems::SysTurnSaveWindow::DoUpdate(int delta_time) {
         }
     }
     // Update tick
-    if (to_tick && GetApp().GetTime() - last_tick >
-                                            static_cast<float>(tick_speeds[tick_speed])/1000.f) {
-        GetApp().GetUniverse().EnableTick();
+    if (to_tick && GetApp().GetTime() - last_tick > static_cast<float>(tick_speeds[tick_speed])/1000.f) {
+        GetUniverse().EnableTick();
         last_tick = GetApp().GetTime();
     }
 }
