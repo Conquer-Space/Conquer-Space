@@ -33,7 +33,12 @@ struct Factory {};
 
 struct Mine {};
 
-struct Farm {};
+struct Farm {
+    // Farms have a harvest period?
+    // Farms can fluctuate between how much they generate per tick.
+    // Also add food good
+};
+
 }  // namespace components
 }  // namespace common
 }  // namespace cqsp

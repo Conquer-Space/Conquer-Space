@@ -85,8 +85,8 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
     RenderEntityType(universe, entity);
 
     if (universe.all_of<cqspc::Wallet>(entity)) {
-        auto balance = universe.get<cqsp::common::components::Wallet>(entity).balance;
-        ImGui::TextFmt("Wallet: {}", balance);
+        auto& balance = universe.get<cqsp::common::components::Wallet>(entity);
+        ImGui::TextFmt("Wallet: {}", balance.GetBalance());
     }
 
     if (universe.all_of<cqspc::MarketAgent>(entity)) {

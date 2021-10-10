@@ -39,6 +39,7 @@ using cqsp::common::systems::SysEconomy;
 void SysEconomy::DoSystem(Universe& universe) {
     namespace cqspc = cqsp::common::components;
     BEGIN_TIMED_BLOCK(SysEconomy);
+    WalletReset(universe);
     SysCommercialProcess(universe);
     SysEmploymentHandler(universe);
     // Produce resources
@@ -58,6 +59,14 @@ void SysEconomy::DoSystem(Universe& universe) {
     SysProductionStarter(universe);
     END_TIMED_BLOCK(Production_sim);
     END_TIMED_BLOCK(SysEconomy);
+}
+
+void SysEconomy::WalletReset(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
+    auto view = universe.view<cqspc::Wallet>();
+    for (entt::entity entity : view) {
+        universe.get<cqspc::Wallet>(entity).Reset();
+    }
 }
 
 void SysEconomy::SysCommercialProcess(Universe &universe) {
@@ -190,7 +199,7 @@ void SysEconomy::SysGoodSeller(Universe& universe) {
         // Sell goods
 
         // Adjust wallet
-        universe.get<cqspc::Wallet>(entity).balance += stockpile.MultiplyAndGetSum(market.prices);
+        universe.get<cqspc::Wallet>(entity) += stockpile.MultiplyAndGetSum(market.prices);
         stockpile.clear();
     }
 }
@@ -246,7 +255,7 @@ void SysEconomy::SysDemandResolver(Universe& universe) {
                 // TODO(EhWhoAmI): Fix wallet so that it takes into account negative values better,
                 // So that it would buy less stuff when it has a low wallet balance
                 // Buy all the resources
-                double &balance = universe.get<cqspc::Wallet>(entity).balance;
+                cqspc::Wallet& balance = universe.get<cqspc::Wallet>(entity);
                 double cost = demand.MultiplyAndGetSum(market.prices);
                 if (cost > balance) {
                     // Failed transaction
