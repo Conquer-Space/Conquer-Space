@@ -204,7 +204,7 @@ void cqsp::asset::AssetLoader::LoadAssets() {
     }
 
     // Enable mods, but let's think about that later
-    for(auto it : manager->potential_mods) {
+    for (auto it : manager->potential_mods) {
         // Get the thing
         manager->packages[it.first] = LoadPackage(it.second.path);
     }
@@ -245,7 +245,8 @@ void cqsp::asset::AssetLoader::LoadHjsonDirectory(Package& package, std::string 
     Hjson::Value hints;
     std::unique_ptr<HjsonAsset> asset = std::make_unique<HjsonAsset>();
     // Verify that the directory exists
-    if (std::filesystem::exists(std::filesystem::path(path)) &&std::filesystem::is_directory(std::filesystem::path(path))) {
+    if (std::filesystem::exists(std::filesystem::path(path)) &&
+                std::filesystem::is_directory(std::filesystem::path(path))) {
         LoadHjsonDir(path, asset->data, hints);
         package.assets[key] = std::move(asset);
     }
