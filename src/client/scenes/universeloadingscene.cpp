@@ -103,10 +103,9 @@ void LoadRecipes(cqsp::engine::Application& app) {
     namespace cqspc = cqsp::common::components;
 
     using cqsp::asset::HjsonAsset;
-    HjsonAsset* recipe_asset = app.GetAssetManager().GetAsset<HjsonAsset>("core:recipes");
     for (auto it = app.GetAssetManager().GetPackageBegin(); it != app.GetAssetManager().GetPackageEnd(); it++) {
         if (it->second->HasAsset("recipes")) {
-            HjsonAsset* recipe_asset = it->second->GetAsset<HjsonAsset>("core:recipes");
+            HjsonAsset* recipe_asset = it->second->GetAsset<HjsonAsset>("recipes");
             for (int i = 0; i < recipe_asset->data.size(); i++) {
                 Hjson::Value& val = recipe_asset->data[i];
 

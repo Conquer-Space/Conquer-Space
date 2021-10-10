@@ -256,7 +256,7 @@ std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std:
     // Load the assets of a package specified by a path
     // First load info.hjson, the info path of the file.
     std::filesystem::path package_path(path);
-    SPDLOG_INFO("{}", (package_path / "info.hjson").string());
+    SPDLOG_INFO("Loading package {}", (package_path / "info.hjson").string());
     Hjson::Value info = Hjson::UnmarshalFromFile((package_path/"info.hjson").string());
     // This will also serve as the namespace name, so no spaces, periods, semicolons please
 
