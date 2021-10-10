@@ -59,7 +59,7 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
         // Load audio
         auto hjson = GetApp().GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("core:ui_sounds");
         for (auto element : hjson->data) {
-            auto audio_asset = GetApp().GetAssetManager().GetAsset<cqsp::asset::AudioAsset>(element.second);
+            auto audio_asset = GetApp().GetAssetManager().GetAsset<cqsp::asset::AudioAsset>(element.second.to_string());
             GetApp().GetAudioInterface().AddAudioClip(element.first, audio_asset);
         }
         // Set main menu scene

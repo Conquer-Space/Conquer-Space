@@ -1,36 +1,12 @@
 {
-    goods: {
-        path: data/goods
-        type: hjson
-        hints: {
-        }
-    }
-    recipes: {
-        path: data/recipes
-        type: hjson
-        hints: {
-        }
-    }
     ui_sounds: {
         path: gui/ui_sounds.hjson
         type: hjson
         hints: {
         }
     }
-    scripts: {
-        path: scripts
-        type: directory
-        hints: {
-        }
-    }
     credits: {
         path: credits.md
-        type: text
-        hints: {
-        }
-    }
-    core: {
-        path: core.lua
         type: text
         hints: {
         }

@@ -28,8 +28,6 @@
 
 #include <filesystem>
 
-#include "engine/renderer/shader.h"
-#include "engine/renderer/text.h"
 #include "engine/audio/alaudioasset.h"
 #include "engine/paths.h"
 
@@ -77,6 +75,20 @@ class FontPrototype : public AssetPrototype {
 };
 }  // namespace cqsp::asset
 
+bool cqsp::asset::Package::HasAsset(const char* asset) {
+    return assets.count(asset) != 0;
+}
+bool cqsp::asset::Package::HasAsset(const std::string& asset) {
+    return assets.count(asset) != 0;
+}
+
+void cqsp::asset::Package::ClearAssets() {
+    for (auto a = assets.begin(); a != assets.end(); a++) {
+        a->second.reset();
+    }
+    assets.clear();
+}
+
 cqsp::asset::AssetManager::AssetManager() {}
 
 cqsp::asset::ShaderProgram* cqsp::asset::AssetManager::CreateShaderProgram(
@@ -103,10 +115,21 @@ void cqsp::asset::AssetManager::LoadDefaultTexture() {
 }
 
 void cqsp::asset::AssetManager::ClearAssets() {
-    for (auto a = assets.begin(); a != assets.end(); a++) {
-        a->second.reset();
+    for (auto a = packages.begin(); a != packages.end(); a++) {
+        a->second->ClearAssets();
     }
-    assets.clear();
+    packages.clear();
+}
+
+void cqsp::asset::AssetManager::SaveModList() {
+    Hjson::Value enabled_mods;
+    // Load the enabled mods, and write to the file. then exit game.
+    for (auto it = potential_mods.begin(); it != potential_mods.end(); it++) {
+        enabled_mods[it->second.name] = it->second.enabled;
+    }
+    // Write to file
+    Hjson::MarshalToFile(enabled_mods, (std::filesystem::path(cqsp::engine::GetCqspSavePath())/"mod.hjson").string());
+    SPDLOG_INFO("Writing mods");
 }
 
 cqsp::asset::AssetLoader::AssetLoader() : m_asset_queue() {
@@ -129,6 +152,140 @@ void cqsp::asset::AssetLoader::LoadAssets() {
     // Load core
     std::filesystem::path data_path(cqsp::engine::GetCqspDataPath());
     std::filesystem::recursive_directory_iterator it(data_path);
+    manager->packages["core"] = LoadPackage((data_path/"core").string());
+    SPDLOG_INFO("Loaded core");
+
+    // Load mods from the document folders
+    // Find documents folder and load the information about the files
+
+    // Keep track of all mods so that we can ensure that all are loaded
+    Hjson::Value all_mods;
+
+    // Some lambda things to keep things less cluttered and simpler
+    auto mod_load = [&](const std::string &name) {
+        all_mods[name] = false;
+    };
+
+    SPDLOG_INFO("Loading potential mods");
+    // Load core
+    mod_load(LoadModPrototype((data_path/"core").string()));
+    // Enable core by default
+    all_mods["core"] = true;
+
+    // Load other packages
+    std::filesystem::path save_path(cqsp::engine::GetCqspSavePath());
+    std::filesystem::path mods_folder = save_path / "mods";
+    if (!std::filesystem::exists(mods_folder)) {
+        std::filesystem::create_directories(mods_folder);
+    }
+
+    // List files
+    std::filesystem::directory_iterator mods_folder_iterator(mods_folder);
+    for (auto mod_element : mods_folder_iterator) {
+        mod_load(LoadModPrototype(mod_element.path().string()));
+    }
+
+    // Get loaded mods
+    // If it doesn't exist, then create it
+    std::filesystem::path mods_path(GetModFilePath());
+    if (!std::filesystem::exists(mods_path)) {
+        Hjson::Value mods;
+        // Nothing in the mods
+        Hjson::MarshalToFile(mods, mods_path.string());
+    }
+
+    Hjson::Value mods = Hjson::UnmarshalFromFile(mods_path.string());
+    // Apply the current mods to the hjson so that we can see what mods are to be loaded
+    mods = Hjson::Merge(all_mods, mods);
+
+    // Load the mods that are to be loaded
+    for (auto it : mods) {
+        manager->potential_mods[it.first].enabled = static_cast<bool>(it.second);
+    }
+
+    // Enable mods, but let's think about that later
+    for (auto it : manager->potential_mods) {
+        // Get the thing
+        manager->packages[it.first] = LoadPackage(it.second.path);
+    }
+}
+
+std::string cqsp::asset::AssetLoader::GetModFilePath() {
+    return (std::filesystem::path(cqsp::engine::GetCqspSavePath())/"mod.hjson").string();
+}
+
+std::string cqsp::asset::AssetLoader::LoadModPrototype(const std::string& path_string) {
+    std::filesystem::path path(path_string);
+    // Load the info.hjson
+    if (!std::filesystem::is_directory(path)) {
+        return "";
+    }
+    if (!std::filesystem::exists(path/"info.hjson")) {
+        return "";
+    }
+    Hjson::Value mod_info = Hjson::UnmarshalFromFile((path/"info.hjson").string());
+    // Get the info of the file
+    // Add core
+    PackagePrototype prototype;
+    try {
+        prototype.name = mod_info["name"].to_string();
+        prototype.version = mod_info["version"].to_string();
+        prototype.title = mod_info["title"].to_string();
+        prototype.author = mod_info["author"].to_string();
+        prototype.path = path.string();
+        manager->potential_mods[prototype.name] = prototype;
+    } catch (Hjson::index_out_of_bounds &ex) {
+        // Don't load the mod
+        SPDLOG_INFO("Hjson::index_out_of_bounds: {}", ex.what());
+    }
+    return prototype.name;
+}
+
+void cqsp::asset::AssetLoader::LoadHjsonDirectory(Package& package, std::string path, std::string key) {
+    Hjson::Value hints;
+    std::unique_ptr<HjsonAsset> asset = std::make_unique<HjsonAsset>();
+    // Verify that the directory exists
+    if (std::filesystem::exists(std::filesystem::path(path)) &&
+                std::filesystem::is_directory(std::filesystem::path(path))) {
+        LoadHjsonDir(path, asset->data, hints);
+        package.assets[key] = std::move(asset);
+    }
+}
+
+std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std::string path) {
+    // Load the assets of a package specified by a path
+    // First load info.hjson, the info path of the file.
+    std::filesystem::path package_path(path);
+    SPDLOG_INFO("{}", (package_path / "info.hjson").string());
+    Hjson::Value info = Hjson::UnmarshalFromFile((package_path/"info.hjson").string());
+    // This will also serve as the namespace name, so no spaces, periods, semicolons please
+
+    std::unique_ptr<Package> package = std::make_unique<Package>();
+    package->name = info["name"].to_string();
+    package->version = info["version"].to_string();
+    package->title = info["title"].to_string();
+    package->author = info["author"].to_string();
+
+    // Load dependencies
+    // Now load the 'important' folders
+    std::filesystem::path script_path(package_path / "scripts");
+    // Load scripts
+    if (std::filesystem::exists(script_path) && std::filesystem::is_directory(script_path)) {
+        // Load base.lua for the base folder
+        auto base_stream = std::fstream(script_path / "base.lua");
+        auto base = LoadText(base_stream, Hjson::Value());
+        package->assets["base"] = std::move(base);
+        package->assets["scripts"] = LoadScriptDirectory((package_path / "scripts").string(), Hjson::Value());
+    }
+
+    // Load a few other hjson folders.
+    // So the folders we have to keep track off are the goods and recipes
+    LoadHjsonDirectory(*package, (package_path / "data" / "goods").string(), "goods");
+    LoadHjsonDirectory(*package, (package_path / "data" / "recipes").string(), "recipes");
+
+    // Then load all the other assets
+    // Load resource.hjsons
+    std::filesystem::recursive_directory_iterator it(package_path);
 
     for (auto a : it) {
         if (a.path().filename() == "resource.hjson") {
@@ -171,42 +328,41 @@ void cqsp::asset::AssetLoader::LoadAssets() {
                     continue;
                 }
                 // Put in core namespace, I guess
-                LoadAsset(type, path, std::string("core:" + key), val["hints"]);
+                LoadAsset(*package, type, path, std::string(key), val["hints"]);
             }
         }
     }
+    return package;
 }
 
-void cqsp::asset::AssetLoader::LoadAsset(const std::string& type,
-                                                    const std::string& path,
-                                                    const std::string& key,
-                                                    const Hjson::Value &hints) {
+void cqsp::asset::AssetLoader::LoadAsset(Package& package, const std::string& type, const std::string& path,
+                                        const std::string& key, const Hjson::Value& hints) {
     switch (asset_type_map[type]) {
         case AssetType::TEXTURE:
         {
-        LoadImage(key, path, hints);
+        package.assets[key] = LoadImage(key, path, hints);
         break;
         }
         case AssetType::SHADER:
         {
         std::ifstream asset_stream(path, std::ios::binary);
-        LoadShader(key, asset_stream, hints);
+        package.assets[key] = LoadShader(key, asset_stream, hints);
         break;
         }
         case AssetType::HJSON:
         {
-        manager->AddAsset(key, LoadHjson(path, hints));
+        package.assets[key] = LoadHjson(path, hints);
         break;
         }
         case AssetType::TEXT:
         {
         std::ifstream asset_stream(path);
-        manager->AddAsset(key, LoadText(asset_stream, hints));
+        package.assets[key] = LoadText(asset_stream, hints);
         break;
         }
         case AssetType::TEXT_ARRAY:
         {
-        manager->AddAsset(key, LoadTextDirectory(path, hints));
+        package.assets[key] = LoadTextDirectory(path, hints);
         break;
         }
         case AssetType::MODEL:
@@ -214,19 +370,19 @@ void cqsp::asset::AssetLoader::LoadAsset(const std::string& type,
         case AssetType::CUBEMAP:
         {
         std::ifstream asset_stream(path);
-        LoadCubemap(key, path, asset_stream, hints);
+        package.assets[key] = LoadCubemap(key, path, asset_stream, hints);
         break;
         }
         case AssetType::FONT:
         {
         std::ifstream asset_stream(path, std::ios::binary);
-        LoadFont(key, asset_stream, hints);
+        package.assets[key] = LoadFont(key, asset_stream, hints);
         break;
         }
         case AssetType::AUDIO:
         {
         std::ifstream asset_stream(path, std::ios::binary);
-        manager->AddAsset(key, cqsp::asset::LoadOgg(asset_stream));
+        package.assets[key] = cqsp::asset::LoadOgg(asset_stream);
         break;
         }
         break;
@@ -234,6 +390,50 @@ void cqsp::asset::AssetLoader::LoadAsset(const std::string& type,
         default:
         break;
     }
+}
+
+std::unique_ptr<cqsp::asset::Texture> cqsp::asset::AssetLoader::LoadImage(const std::string& key,
+    const std::string & filePath, const Hjson::Value & hints) {
+    // Get the things
+    std::unique_ptr<Texture> texture = std::make_unique<Texture>();
+    //return asset::Texture();
+    ImagePrototype* prototype = new ImagePrototype();
+    prototype->asset = texture.get();
+    prototype->key = key;
+    // Load image
+    Hjson::Value pixellated = hints["magfilter"];
+
+    if (pixellated.defined() && pixellated.type() == Hjson::Type::Bool) {
+        // Then it's pixellated, or closest magfilter
+        prototype->options.mag_filter = static_cast<bool>(pixellated);
+    } else {
+        // it's linear mag filter by default
+        prototype->options.mag_filter = false;
+    }
+
+    // Read entire file
+    std::ifstream input(filePath, std::ios::binary);
+    input.seekg(0, std::ios::end);
+    // Get size
+    std::streamsize size = input.tellg();
+    input.seekg(0, std::ios::beg);
+    char* data = new char[size];
+    input.read(data, size);
+    unsigned char* d = (unsigned char *) data;
+
+    // Load from file
+    prototype->data = stbi_load_from_memory(d, size, &prototype->width, &prototype->height,
+                           &prototype->components, 0);
+
+    if (prototype->data) {
+        QueueHolder holder(prototype);
+
+        m_asset_queue.push(holder);
+    } else {
+        SPDLOG_INFO("Failed to load image {}", key);
+        delete prototype;
+    }
+    return texture;
 }
 
 void cqsp::asset::AssetLoader::BuildNextAsset() {
@@ -251,26 +451,22 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
         case PrototypeType::TEXTURE:
         {
         ImagePrototype* texture_prototype = dynamic_cast<ImagePrototype*>(temp.prototype);
-        std::unique_ptr<Texture> textureAsset = std::make_unique<Texture>();
-
-        asset::LoadTexture(*textureAsset, texture_prototype->data,
+        Texture* asset = dynamic_cast<Texture*>(texture_prototype->asset);
+        asset::LoadTexture(*asset, texture_prototype->data,
             texture_prototype->components,
             texture_prototype->width,
             texture_prototype->height,
             texture_prototype->options);
         stbi_image_free(texture_prototype->data);
-        manager->AddAsset(key, std::move(textureAsset));
         break;
         }
         case PrototypeType::SHADER:
         {
         ShaderPrototype* shader = dynamic_cast<ShaderPrototype*>(temp.prototype);
-
+        Shader* asset = dynamic_cast<Shader*>(shader->asset);
         try  {
             int shaderId = asset::LoadShader(shader->data, shader->type);
-            std::unique_ptr<Shader> shaderAsset = std::make_unique<Shader>();
-            shaderAsset->id = shaderId;
-            manager->AddAsset(key, std::move(shaderAsset));
+            asset->id = shaderId;
         } catch (std::runtime_error &error) {
             SPDLOG_WARN("Exception in loading shader {}: {}", shader->key, error.what());
         }
@@ -278,24 +474,22 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
         }
         case PrototypeType::FONT:
         {
-            FontPrototype* prototype = dynamic_cast<FontPrototype*>(temp.prototype);
-            std::unique_ptr<Font> fontAsset = std::make_unique<Font>();
-            asset::LoadFont(*fontAsset.get(), prototype->fontBuffer, prototype->size);
-            manager->AddAsset(key, std::move(fontAsset));
+        FontPrototype* prototype = dynamic_cast<FontPrototype*>(temp.prototype);
+        Font* asset = dynamic_cast<Font*>(prototype->asset);
+
+        asset::LoadFont(*asset, prototype->fontBuffer, prototype->size);
         }
         break;
         case PrototypeType::CUBEMAP:
         {
-            CubemapPrototype* prototype = dynamic_cast<CubemapPrototype*>(temp.prototype);
-            std::unique_ptr<Texture> textureAsset = std::make_unique<Texture>();
+        CubemapPrototype* prototype = dynamic_cast<CubemapPrototype*>(temp.prototype);
+        Texture* asset = dynamic_cast<Texture*>(prototype->asset);
 
-            asset::LoadCubemap(*textureAsset, prototype->data,
-                prototype->components,
-                prototype->width,
-                prototype->height,
-                prototype->options);
-
-            manager->AddAsset(key, std::move(textureAsset));
+        asset::LoadCubemap(*asset, prototype->data,
+            prototype->components,
+            prototype->width,
+            prototype->height,
+            prototype->options);
         }
         break;
     }
@@ -332,6 +526,39 @@ std::unique_ptr<cqspa::HjsonAsset> cqspa::AssetLoader::LoadHjson(const std::stri
         Hjson::DecoderOptions decOpt;
         decOpt.comments = false;
         asset_stream >> Hjson::StreamDecoder(asset->data, decOpt);
+    }
+    return asset;
+}
+
+std::unique_ptr<cqsp::asset::TextDirectoryAsset> cqsp::asset::AssetLoader::LoadScriptDirectory(const std::string& path,
+    const Hjson::Value& hints) {
+    std::filesystem::recursive_directory_iterator iterator(path);
+    auto asset = std::make_unique<asset::TextDirectoryAsset>();
+    std::filesystem::path root(path);
+    for (auto& sub_path : iterator) {
+        // Ensure it's a lua file
+        if (!sub_path.is_regular_file() && sub_path.path().extension() != "lua" &&
+            std::filesystem::relative(sub_path.path(), root).filename() == "base.lua") {  // Ignore base.lua
+            continue;
+        }
+
+        std::ifstream asset_stream(sub_path.path().string());
+        cqsp::asset::PathedTextAsset asset_data{std::istreambuf_iterator<char>{asset_stream},
+                        std::istreambuf_iterator<char>()};
+
+        // Get the path, and also remove the .lua extension so that it's easier to access it
+        asset_data.path = std::filesystem::relative(sub_path.path(),
+                                    std::filesystem::path(path)).replace_extension("").string();
+        // Replace the data path so that the name will be using dots, and we don't need to care
+        // about file separators
+        // So requiring a lua file (that is the purpose for this), will look like
+        // require("test.abc")
+        // to require a file called test/abc.lua
+
+        std::replace(asset_data.path.begin(), asset_data.path.end(),
+                            static_cast<char>(std::filesystem::path::preferred_separator), '.');
+
+        asset->paths[asset_data.path] = asset_data;
     }
     return asset;
 }
@@ -391,44 +618,9 @@ void cqsp::asset::AssetLoader::LoadHjsonDir(const std::string& path, Hjson::Valu
     }
 }
 
-void cqspa::AssetLoader::LoadImage(const std::string& key, const std::string& filePath,
+std::unique_ptr<cqsp::asset::Shader> cqspa::AssetLoader::LoadShader(const std::string& key, std::istream& asset_stream,
                                                 const Hjson::Value& hints) {
-    ImagePrototype* prototype = new ImagePrototype();
-    prototype->key = key;
-
-    // Load image
-    Hjson::Value pixellated = hints["magfilter"];
-
-    if (pixellated.defined() && pixellated.type() == Hjson::Type::Bool) {
-        // Then it's good
-        prototype->options.mag_filter = static_cast<bool>(pixellated);
-    } else {
-        // Then loading it was a mistake (jk), then it's linear.
-        prototype->options.mag_filter = false;
-    }
-
-    std::ifstream input(filePath, std::ios::binary);
-    input.seekg(0, std::ios::end);
-    std::streamsize size = input.tellg();
-    input.seekg(0, std::ios::beg);
-    char* data = new char[size];
-    input.read(data, size);
-    unsigned char* d = (unsigned char *) data;
-    prototype->data = stbi_load_from_memory(d, size, &prototype->width, &prototype->height,
-                           &prototype->components, 0);
-
-    if (prototype->data) {
-        QueueHolder holder(prototype);
-
-        m_asset_queue.push(holder);
-    } else {
-        SPDLOG_INFO("Failed to load image {}", key);
-        delete prototype;
-    }
-}
-
-void cqspa::AssetLoader::LoadShader(const std::string& key, std::istream& asset_stream,
-                                                const Hjson::Value& hints) {
+    std::unique_ptr<Shader> shader = std::make_unique<Shader>();
     // Get shader type
     std::string type = hints["type"];
     int shader_type = -1;
@@ -438,12 +630,13 @@ void cqspa::AssetLoader::LoadShader(const std::string& key, std::istream& asset_
         shader_type = GL_VERTEX_SHADER;
     } else {
         // Abort, because this is a dud.
-        return;
+        return shader;
     }
 
     ShaderPrototype* prototype = new ShaderPrototype();
 
     prototype->key = key;
+    prototype->asset = shader.get();
     prototype->type = shader_type;
     prototype->hints = hints;
     std::istreambuf_iterator<char> eos;
@@ -452,10 +645,13 @@ void cqspa::AssetLoader::LoadShader(const std::string& key, std::istream& asset_
 
     QueueHolder holder(prototype);
     m_asset_queue.push(holder);
+
+    return shader;
 }
 
-void cqsp::asset::AssetLoader::LoadFont(const std::string& key, std::istream& asset_stream,
-                                                const Hjson::Value& hints) {
+std::unique_ptr<cqsp::asset::Font> cqsp::asset::AssetLoader::LoadFont(const std::string& key,
+    std::istream& asset_stream, const Hjson::Value& hints) {
+    std::unique_ptr<Font> asset = std::make_unique<Font>();
     asset_stream.seekg(0, std::ios::end);
     std::fstream::pos_type fontFileSize = asset_stream.tellg();
     asset_stream.seekg(0);
@@ -466,15 +662,20 @@ void cqsp::asset::AssetLoader::LoadFont(const std::string& key, std::istream& as
     prototype->fontBuffer = fontBuffer;
     prototype->size = fontFileSize;
     prototype->key = key;
+    prototype->asset = asset.get();
 
     QueueHolder holder(prototype);
     m_asset_queue.push(holder);
+
+    return asset;
 }
 
-void cqsp::asset::AssetLoader::LoadCubemap(const std::string& key,
+std::unique_ptr<cqsp::asset::Texture> cqsp::asset::AssetLoader::LoadCubemap(const std::string& key,
                                                     const std::string &path,
                                                     std::istream &asset_stream,
                                                     const Hjson::Value& hints) {
+    std::unique_ptr<Texture> asset = std::make_unique<Texture>();
+
     // Read file, which will be hjson, and load those files too
     Hjson::Value images;
     Hjson::DecoderOptions decOpt;
@@ -491,16 +692,14 @@ void cqsp::asset::AssetLoader::LoadCubemap(const std::string& key,
     for (int i = 0; i < images.size(); i++) {
         std::string filePath = dir.string() + "/" + images[i];
 
-        unsigned char* data =
-            stbi_load(filePath.c_str(),
-                &prototype->width,
-                &prototype->height,
+        unsigned char* data = stbi_load(filePath.c_str(), &prototype->width, &prototype->height,
                 &prototype->components, 0);
 
         prototype->data.push_back(data);
     }
+    prototype->asset = asset.get();
 
     QueueHolder holder(prototype);
-
     m_asset_queue.push(holder);
+    return asset;
 }

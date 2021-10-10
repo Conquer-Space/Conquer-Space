@@ -22,6 +22,10 @@
 #include <imgui_markdown.h>
 
 #include <utility>
+#include <algorithm>
+#include <filesystem>
+
+#include <string>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -36,40 +40,30 @@
 #include "client/systems/sysoptionswindow.h"
 #include "common/version.h"
 
+#include "engine/paths.h"
+
 cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app)
     : cqsp::engine::Scene(app) { }
 
 void cqsp::scene::MainMenuScene::Init() {
-    m_texture = GetApp()
-        .GetAssetManager()
-        .GetAsset<cqsp::asset::Texture>("core:cqspbanner");
+    using cqsp::asset::Texture;
+    m_texture = GetApp().GetAssetManager().GetAsset<cqsp::asset::Texture>("core:cqspbanner");
 
-    m_credits = GetApp()
-                    .GetAssetManager()
-                    .GetAsset<cqsp::asset::TextAsset>("core:credits");
+    m_credits = GetApp().GetAssetManager().GetAsset<cqsp::asset::TextAsset>("core:credits");
 
-    cqsp::engine::BasicRendererObject splashscreen =
-        cqsp::engine::MakeRenderable();
-    cqsp::engine::BasicRendererObject titleBanner =
-        cqsp::engine::MakeRenderable();
+    cqsp::engine::BasicRendererObject splashscreen = cqsp::engine::MakeRenderable();
+    cqsp::engine::BasicRendererObject titleBanner = cqsp::engine::MakeRenderable();
 
     cqsp::primitive::MakeTexturedPaneMesh(*splashscreen);
     cqsp::primitive::MakeTexturedPaneMesh(*titleBanner);
 
-    cqsp::asset::Texture* earthrise_texture =
-        GetApp()
-        .GetAssetManager()
-        .GetAsset<cqsp::asset::Texture>("core:earthrise");
+    cqsp::asset::Texture* earthrise_texture = GetApp().GetAssetManager().GetAsset<Texture>("core:earthrise");
 
-    cqsp::asset::Texture* asset2 =
-        GetApp()
-        .GetAssetManager()
-        .GetAsset<cqsp::asset::Texture>("core:title");
+    cqsp::asset::Texture* asset2 = GetApp().GetAssetManager().GetAsset<Texture>("core:title");
 
     // Create new shader program
-    asset::ShaderProgram* program =
-        GetApp().GetAssetManager().
-        CreateShaderProgram("core:shader.pane.vert", "core:shader.texturedpane.frag");
+    asset::ShaderProgram* program = GetApp().GetAssetManager().
+        CreateShaderProgram("awsf:shader.pane.vert", "core:shader.texturedpane.frag");
 
     splashscreen->shaderProgram = program;
     titleBanner->shaderProgram = program;
@@ -145,7 +139,10 @@ void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
     }
 
     ImGui::TableNextColumn();
-    CQSPGui::DefaultButton("Others", ImVec2(buttonWidth, buttonHeight));
+    if (CQSPGui::DefaultButton("Mods", ImVec2(buttonWidth, buttonHeight))) {
+        // Then load the mods
+        m_show_mods_window = true;
+    }
 
     ImGui::TableNextColumn();
     if (CQSPGui::DefaultButton("Quit", ImVec2(buttonWidth, buttonHeight))) {
@@ -191,6 +188,10 @@ void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
     if (m_options_window) {
         cqsp::client::systems::ShowOptionsWindow(&m_options_window, GetApp());
     }
+
+    if (m_show_mods_window) {
+        ModWindow();
+    }
 }
 
 void cqsp::scene::MainMenuScene::Render(float deltaTime) {
@@ -199,4 +200,90 @@ void cqsp::scene::MainMenuScene::Render(float deltaTime) {
 
     renderer.Draw();
     GetApp().DrawText(fmt::format("Version: {}", CQSP_VERSION_STRING), 8, 8);
+}
+
+void cqsp::scene::MainMenuScene::ModWindow() {
+    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x * 0.8f, ImGui::GetIO().DisplaySize.y * 0.8f),
+        ImGuiCond_Always);
+    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
+        ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+    ImGui::Begin("Mods", &m_show_mods_window);
+    auto& asset_manager = GetApp().GetAssetManager();
+
+    int height = ImGui::GetIO().DisplaySize.y * 0.8f - 75;
+    ImGui::BeginChild("modlist", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f -
+                                ImGui::GetStyle().ItemSpacing.y, height));
+    static cqsp::asset::PackagePrototype* package = nullptr;
+    bool selected = false;
+    // Search bar
+    static std::string search;
+    ImGui::PushItemWidth(-1);
+    ImGui::InputText("###mod search bar", &search);
+
+    if (ImGui::BeginTable("modtable", 3, ImGuiTableFlags_Borders)) {
+        ImGui::TableSetupColumn("###[]", ImGuiTableColumnFlags_NoResize | ImGuiTableColumnFlags_WidthFixed, 25.);
+        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_NoReorder);
+        ImGui::TableSetupColumn("Info", ImGuiTableColumnFlags_NoReorder);
+        static bool enable_disable_all_mods = false;
+        ImGui::TableNextRow(ImGuiTableRowFlags_Headers);
+        ImGui::TableSetColumnIndex(0);
+        const char* column_name = ImGui::TableGetColumnName(0); // Retrieve name passed to TableSetupColumn()
+        ImGui::PushID(0);
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+        if (ImGui::Checkbox("##checkall", &enable_disable_all_mods)) {
+            for (auto it = asset_manager.potential_mods.begin(); it != asset_manager.potential_mods.end(); it++) {
+                it->second.enabled = enable_disable_all_mods;
+            }
+        }
+        ImGui::PopStyleVar();
+        ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+        ImGui::TableHeader(column_name);
+        ImGui::PopID();
+        ImGui::TableSetColumnIndex(1);
+        ImGui::PushID(1);
+        ImGui::TableHeader("Name");
+        ImGui::PopID();
+        ImGui::TableSetColumnIndex(2);
+        ImGui::PushID(1);
+        ImGui::TableHeader("Info");
+        ImGui::PopID();
+
+        enable_disable_all_mods = true;
+        for (auto it = asset_manager.potential_mods.begin(); it != asset_manager.potential_mods.end(); it++) {
+            // Search to ignore case
+            if (std::search(it->second.title.begin(), it->second.title.end(),
+                    search.begin(), search.end(), [](char ch1, char ch2) {
+                        return std::toupper(ch1) == std::toupper(ch2);
+                    }) != it->second.title.end()) {
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                CQSPGui::DefaultCheckbox(fmt::format("###{}", it->second.name).c_str(), &it->second.enabled);
+                ImGui::TableNextColumn();
+                ImGui::Text(fmt::format("{}", it->second.title).c_str());
+                ImGui::TableNextColumn();
+                if (ImGui::SmallButton(fmt::format("Information##{}", it->second.title).c_str())) {
+                    package = &it->second;
+                }
+                enable_disable_all_mods &= it->second.enabled;
+            }
+        }
+        ImGui::EndTable();
+    }
+    ImGui::EndChild();
+    ImGui::SameLine();
+    ImGui::BeginChild("PackageInfo", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f -
+                                ImGui::GetStyle().ItemSpacing.y, height));
+    if (package != nullptr) {
+        ImGui::TextFmt("{}", package->title);
+        ImGui::Separator();
+        ImGui::TextFmt("Version: {}", package->version);
+        ImGui::TextFmt("Author: {}", package->author);
+    }
+    ImGui::EndChild();
+
+    if (ImGui::Button("Apply")) {
+        asset_manager.SaveModList();
+    }
+    ImGui::SameLine();
+    ImGui::End();
 }

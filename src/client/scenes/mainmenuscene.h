@@ -41,11 +41,14 @@ class MainMenuScene : public cqsp::engine::Scene{
     bool m_save_game_window = false;
     bool m_new_game_window = false;
     bool m_options_window = false;
+    bool m_show_mods_window = false;
 
     float ratio, ratio2;
     float width, height;
 
     cqsp::engine::BasicRenderer renderer;
+
+    void ModWindow();
 };
 }  // namespace scene
 }  // namespace cqsp

@@ -83,7 +83,7 @@ std::string cqsp::engine::GetCqspDataPath() {
     // Not sure about other versions, but we'd probably have do deal with it in the future
     // Usually, the output is at build\src\Debug, so we need to access ../../../binaries/data
     return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) /
-                                      "../../../binaries/data").string();
+                                      ".."/".."/".."/"binaries"/"data").string();
 #else
     // Then just search the default path
     std::string path = GetCqspExePath();
