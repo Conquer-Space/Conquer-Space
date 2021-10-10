@@ -185,14 +185,15 @@ class AssetManager {
         if (packages.count(token) == 0) {
             SPDLOG_ERROR("Cannot find package {}", token);
         }
+        std::string pkg_key = key.substr(separation+1, key.length());
         // Probably a better way to do this, to be honest
         // Load default texture
-        if (!packages[token]->HasAsset(key)) {
+        if (!packages[token]->HasAsset(pkg_key)) {
+            SPDLOG_ERROR("Cannot find asset {}", pkg_key);
             if constexpr (std::is_same<T, asset::Texture>::value) {
                 return &empty_texture;
             }
         }
-        std::string pkg_key = key.substr(separation+1, key.length());
         // Check if asset exists
         return packages[token]->GetAsset<T>(pkg_key);
     }
