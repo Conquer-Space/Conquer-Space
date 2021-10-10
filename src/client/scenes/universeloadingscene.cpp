@@ -70,30 +70,33 @@ void cqsp::scene::UniverseLoadingScene::Render(float deltaTime) {}
 // TODO(EhWhoAmI): All things under this line should eventually be moved to cqsp-core
 void LoadGoods(cqsp::engine::Application& app) {
     namespace cqspc = cqsp::common::components;
-    cqsp::asset::HjsonAsset* good_assets = app
-                .GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("core:goods");
-    int assets_loaded = 0;
-    for (int i = 0; i < good_assets->data.size(); i++) {
-        Hjson::Value val = good_assets->data[i];
-        // Create good
-        entt::entity good = app.GetUniverse().create();
-        auto& good_object = app.GetUniverse().emplace<cqspc::Good>(good);
-        good_object.mass = val["mass"];
-        good_object.volume = val["volume"];
-        auto &name_object = app.GetUniverse().emplace<cqspc::Name>(good);
-        name_object.name = val["name"].to_string();
-        auto &id_object = app.GetUniverse().emplace<cqspc::Identifier>(good);
-        id_object.identifier = val["identifier"].to_string();
-        for (int i = 0; i < val["tags"].size(); i++) {
-            if (val["tags"][i] == "mineral") {
-                app.GetUniverse().emplace_or_replace<cqspc::Mineral>(good);
+    for (auto it = app.GetAssetManager().GetPackageBegin(); it != app.GetAssetManager().GetPackageEnd(); it++) {
+        if (it->second->HasAsset("goods")) {
+            cqsp::asset::HjsonAsset* good_assets = it->second->GetAsset<cqsp::asset::HjsonAsset>("goods");
+            int assets_loaded = 0;
+            for (int i = 0; i < good_assets->data.size(); i++) {
+                Hjson::Value val = good_assets->data[i];
+                // Create good
+                entt::entity good = app.GetUniverse().create();
+                auto& good_object = app.GetUniverse().emplace<cqspc::Good>(good);
+                good_object.mass = val["mass"];
+                good_object.volume = val["volume"];
+                auto &name_object = app.GetUniverse().emplace<cqspc::Name>(good);
+                name_object.name = val["name"].to_string();
+                auto &id_object = app.GetUniverse().emplace<cqspc::Identifier>(good);
+                id_object.identifier = val["identifier"].to_string();
+                for (int i = 0; i < val["tags"].size(); i++) {
+                    if (val["tags"][i] == "mineral") {
+                        app.GetUniverse().emplace_or_replace<cqspc::Mineral>(good);
+                    }
+                }
+                app.GetUniverse().emplace<cqspc::Price>(good, val["price"]);
+                app.GetUniverse().goods[val["identifier"].to_string()] = good;
+                assets_loaded++;
             }
+            SPDLOG_INFO("Loaded {} goods", assets_loaded);
         }
-        app.GetUniverse().emplace<cqspc::Price>(good, val["price"]);
-        app.GetUniverse().goods[val["identifier"].to_string()] = good;
-        assets_loaded++;
     }
-    SPDLOG_INFO("Loaded {} goods", assets_loaded);
 }
 
 void LoadRecipes(cqsp::engine::Application& app) {
@@ -101,26 +104,31 @@ void LoadRecipes(cqsp::engine::Application& app) {
 
     using cqsp::asset::HjsonAsset;
     HjsonAsset* recipe_asset = app.GetAssetManager().GetAsset<HjsonAsset>("core:recipes");
-    for (int i = 0; i < recipe_asset->data.size(); i++) {
-        Hjson::Value& val = recipe_asset->data[i];
+    for (auto it = app.GetAssetManager().GetPackageBegin(); it != app.GetAssetManager().GetPackageEnd(); it++) {
+        if (it->second->HasAsset("recipes")) {
+            HjsonAsset* recipe_asset = it->second->GetAsset<HjsonAsset>("core:recipes");
+            for (int i = 0; i < recipe_asset->data.size(); i++) {
+                Hjson::Value& val = recipe_asset->data[i];
 
-        entt::entity recipe = app.GetUniverse().create();
-        auto& recipe_component = app.GetUniverse().emplace<cqspc::Recipe>(recipe);
-        Hjson::Value input_value = val["input"];
-        for (auto input_good : input_value) {
-            recipe_component.input[app.GetUniverse().goods[input_good.first]] =
-                input_good.second;
+                entt::entity recipe = app.GetUniverse().create();
+                auto& recipe_component = app.GetUniverse().emplace<cqspc::Recipe>(recipe);
+                Hjson::Value input_value = val["input"];
+                for (auto input_good : input_value) {
+                    recipe_component.input[app.GetUniverse().goods[input_good.first]] =
+                        input_good.second;
+                }
+
+                Hjson::Value output_value = val["output"];
+                for (auto output_good : output_value) {
+                    recipe_component.output[app.GetUniverse().goods[output_good.first]] =
+                        output_good.second;
+                }
+
+                auto &name_object = app.GetUniverse().emplace<cqspc::Identifier>(recipe);
+                name_object.identifier = val["identifier"].to_string();
+                app.GetUniverse().recipes[name_object] = recipe;
+            }
         }
-
-        Hjson::Value output_value = val["output"];
-        for (auto output_good : output_value) {
-            recipe_component.output[app.GetUniverse().goods[output_good.first]] =
-                output_good.second;
-        }
-
-        auto &name_object = app.GetUniverse().emplace<cqspc::Identifier>(recipe);
-        name_object.identifier = val["identifier"].to_string();
-        app.GetUniverse().recipes[name_object] = recipe;
     }
 }
 

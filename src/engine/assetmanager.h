@@ -122,6 +122,17 @@ class Package {
     std::string title;
     std::string author;
 
+    template<class T, typename V>
+    T* GetAsset(const V asset) {
+        if (!HasAsset(asset)) {
+            SPDLOG_ERROR("Invalid key {}", asset);
+        }
+        return dynamic_cast<T*>(assets[asset].get());
+    }
+
+    bool HasAsset(const char* asset);
+    bool HasAsset(const std::string& asset);
+
  private:
     std::map<std::string, std::unique_ptr<Asset>> assets;
 
@@ -137,6 +148,7 @@ class PackagePrototype {
     std::string version;
     std::string title;
     std::string author;
+    std::string path;
 
     bool enabled;
 };
@@ -145,6 +157,7 @@ class AssetManager {
  public:
     AssetManager();
 
+    [[deprecated]]
     std::unique_ptr<Asset>& operator[](std::string& key) {
         // Split the stuff
         int separation = key.find(":");
@@ -153,6 +166,7 @@ class AssetManager {
         return packages[token]->assets[pkg_key];
     }
 
+    [[deprecated]]
     std::unique_ptr<Asset>& operator[](const char* key) {
         std::string str(key);
         int separation = str.find(":");
@@ -164,20 +178,23 @@ class AssetManager {
     cqsp::asset::ShaderProgram* CreateShaderProgram(const std::string &vert, const std::string &frag);
 
     template <class T>
-    T* GetAsset(const char* key) {
-        std::string str(key);
-        int separation = str.find(":");
-        std::string token = str.substr(0, separation);
-        std::string pkg_key = str.substr(separation+1, str.length());
-        return dynamic_cast<T*>(packages[token]->assets[pkg_key].get());
-    }
-
-    template <class T>
     T* GetAsset(const std::string& key) {
         int separation = key.find(":");
         std::string token = key.substr(0, separation);
+        // Check if package exists
+        if (packages.count(token) == 0) {
+            SPDLOG_ERROR("Cannot find package {}", token);
+        }
+        // Probably a better way to do this, to be honest
+        // Load default texture
+        if (!packages[token]->HasAsset(key)) {
+            if constexpr (std::is_same<T, asset::Texture>::value) {
+                return &empty_texture;
+            }
+        }
         std::string pkg_key = key.substr(separation+1, key.length());
-        return dynamic_cast<T*>(packages[token]->assets[pkg_key].get());
+        // Check if asset exists
+        return packages[token]->GetAsset<T>(pkg_key);
     }
 
     void LoadDefaultTexture();
@@ -242,6 +259,7 @@ class AssetLoader {
 
  private:
     std::string LoadModPrototype(const std::string&);
+    void LoadHjsonDirectory(Package& package, std::string path, std::string key);
     std::unique_ptr<TextAsset> LoadText(std::istream &asset_stream,
                                         const Hjson::Value& hints);
     std::unique_ptr<HjsonAsset> LoadHjson(const std::string &path,

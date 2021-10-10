@@ -75,6 +75,13 @@ class FontPrototype : public AssetPrototype {
 };
 }  // namespace cqsp::asset
 
+bool cqsp::asset::Package::HasAsset(const char* asset) {
+    return assets.count(asset) != 0;
+}
+bool cqsp::asset::Package::HasAsset(const std::string& asset) {
+    return assets.count(asset) != 0;
+}
+
 void cqsp::asset::Package::ClearAssets() {
     for (auto a = assets.begin(); a != assets.end(); a++) {
         a->second.reset();
@@ -197,6 +204,10 @@ void cqsp::asset::AssetLoader::LoadAssets() {
     }
 
     // Enable mods, but let's think about that later
+    for(auto it : manager->potential_mods) {
+        // Get the thing
+        manager->packages[it.first] = LoadPackage(it.second.path);
+    }
 }
 
 std::string cqsp::asset::AssetLoader::GetModFilePath() {
@@ -221,12 +232,23 @@ std::string cqsp::asset::AssetLoader::LoadModPrototype(const std::string& path_s
         prototype.version = mod_info["version"].to_string();
         prototype.title = mod_info["title"].to_string();
         prototype.author = mod_info["author"].to_string();
+        prototype.path = path.string();
         manager->potential_mods[prototype.name] = prototype;
     } catch (Hjson::index_out_of_bounds &ex) {
         // Don't load the mod
         SPDLOG_INFO("Hjson::index_out_of_bounds: {}", ex.what());
     }
     return prototype.name;
+}
+
+void cqsp::asset::AssetLoader::LoadHjsonDirectory(Package& package, std::string path, std::string key) {
+    Hjson::Value hints;
+    std::unique_ptr<HjsonAsset> asset = std::make_unique<HjsonAsset>();
+    // Verify that the directory exists
+    if (std::filesystem::exists(std::filesystem::path(path)) &&std::filesystem::is_directory(std::filesystem::path(path))) {
+        LoadHjsonDir(path, asset->data, hints);
+        package.assets[key] = std::move(asset);
+    }
 }
 
 std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std::string path) {
@@ -245,30 +267,20 @@ std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std:
 
     // Load dependencies
     // Now load the 'important' folders
-    // Load base.lua for the base folder
-    auto base_stream = std::fstream(package_path / "scripts" / "base.lua");
-    auto base = LoadText(base_stream, Hjson::Value());
-    package->assets["base"] = std::move(base);
+    std::filesystem::path script_path(package_path / "scripts");
     // Load scripts
-    package->assets["scripts"] = LoadScriptDirectory((package_path / "scripts").string(), Hjson::Value());
+    if (std::filesystem::exists(script_path) && std::filesystem::is_directory(script_path)) {
+        // Load base.lua for the base folder
+        auto base_stream = std::fstream(script_path / "base.lua");
+        auto base = LoadText(base_stream, Hjson::Value());
+        package->assets["base"] = std::move(base);
+        package->assets["scripts"] = LoadScriptDirectory((package_path / "scripts").string(), Hjson::Value());
+    }
 
     // Load a few other hjson folders.
     // So the folders we have to keep track off are the goods and recipes
-    Hjson::Value goods;
-    {
-        Hjson::Value hints;
-        std::unique_ptr<HjsonAsset> asset = std::make_unique<HjsonAsset>();
-        LoadHjsonDir((package_path / "data" / "goods").string(), asset->data, hints);
-        package->assets["goods"] = std::move(asset);
-    }
-
-    Hjson::Value recipes;
-    {
-        Hjson::Value hints;
-        std::unique_ptr<HjsonAsset> asset = std::make_unique<HjsonAsset>();
-        LoadHjsonDir((package_path / "data" / "recipes").string(), asset->data, hints);
-        package->assets["recipes"] = std::move(asset);
-    }
+    LoadHjsonDirectory(*package, (package_path / "data" / "goods").string(), "goods");
+    LoadHjsonDirectory(*package, (package_path / "data" / "recipes").string(), "recipes");
 
     // Then load all the other assets
     // Load resource.hjsons

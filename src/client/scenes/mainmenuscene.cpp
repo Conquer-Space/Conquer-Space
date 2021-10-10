@@ -63,7 +63,7 @@ void cqsp::scene::MainMenuScene::Init() {
 
     // Create new shader program
     asset::ShaderProgram* program = GetApp().GetAssetManager().
-        CreateShaderProgram("core:shader.pane.vert", "core:shader.texturedpane.frag");
+        CreateShaderProgram("awsf:shader.pane.vert", "core:shader.texturedpane.frag");
 
     splashscreen->shaderProgram = program;
     titleBanner->shaderProgram = program;
