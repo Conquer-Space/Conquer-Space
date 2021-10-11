@@ -21,7 +21,7 @@
 cqsp::engine::Scene::Scene(Application& app) : m_application(app) {}
 
 cqsp::common::Universe & cqsp::engine::Scene::GetUniverse() {
-    return GetApp().GetUniverse(); 
+    return GetApp().GetUniverse();
 }
 
 cqsp::engine::EmptyScene::EmptyScene(Application& app)
