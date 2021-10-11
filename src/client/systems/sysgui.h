@@ -29,7 +29,7 @@ class SysUserInterface {
     virtual void DoUpdate(int delta_time) = 0;
 
     cqsp::engine::Application &GetApp() { return m_app; }
-
+    cqsp::common::Universe &GetUniverse() { return GetApp().GetUniverse(); }
     ImGuiWindowFlags window_flags = 0;
 
  private:

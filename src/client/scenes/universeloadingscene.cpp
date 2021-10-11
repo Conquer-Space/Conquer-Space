@@ -153,6 +153,6 @@ void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
     // Load universe
     ScriptUniverseGenerator script_generator(GetApp().GetScriptInterface());
 
-    script_generator.Generate(GetApp().GetUniverse());
+    script_generator.Generate(GetUniverse());
     m_completed_loading = true;
 }

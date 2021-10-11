@@ -19,6 +19,9 @@
 #include "engine/application.h"
 #include "engine/engine.h"
 
+// This was already included in application.h, but this is needed to be included again for some reason.
+#include "common/universe.h"
+
 namespace cqsp {
 namespace engine {
 class Scene {
@@ -26,6 +29,7 @@ class Scene {
     explicit Scene(Application& app);
 
     Application& GetApp() { return m_application; }
+    cqsp::common::Universe& GetUniverse();
 
     virtual void Init() = 0;
     virtual void Update(float deltaTime) = 0;

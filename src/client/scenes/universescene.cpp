@@ -58,24 +58,21 @@ cqsp::scene::UniverseScene::UniverseScene(cqsp::engine::Application& app) : Scen
 void cqsp::scene::UniverseScene::Init() {
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqspco = cqsp::common;
-    simulation = std::make_shared<cqspco::systems::simulation::Simulation>
-                                        (GetApp().GetUniverse(), GetApp().GetScriptInterface());
+    using cqspco::systems::simulation::Simulation;
+    simulation = std::make_shared<Simulation>(GetUniverse(), GetApp().GetScriptInterface());
 
-    system_renderer = new cqsp::client::systems::SysStarSystemRenderer(
-        GetApp().GetUniverse(), GetApp());
+    system_renderer = new cqsp::client::systems::SysStarSystemRenderer(GetUniverse(), GetApp());
     system_renderer->Initialize();
 
     auto civilizationView =
-        GetApp().GetUniverse().
-                view<cqspco::components::Civilization,
-                cqspco::components::Player>();
+        GetUniverse().view<cqspco::components::Civilization, cqspco::components::Player>();
     for (auto [entity, civ] : civilizationView.each()) {
         player = entity;
         player_civ = &civ;
     }
-    cqspb::Body body = GetApp().GetUniverse().get<cqspb::Body>(player_civ->starting_planet);
+    cqspb::Body body = GetUniverse().get<cqspb::Body>(player_civ->starting_planet);
     system_renderer->SeeStarSystem(body.star_system);
-    star_system = &GetApp().GetUniverse().get<cqspb::StarSystem>(body.star_system);
+    star_system = &GetUniverse().get<cqspb::StarSystem>(body.star_system);
 
     SeeStarSystem(GetApp(), body.star_system);
     SeePlanet(GetApp(), player_civ->starting_planet);
@@ -98,13 +95,13 @@ void cqsp::scene::UniverseScene::Update(float deltaTime) {
     }
 
     // Check for last tick
-    if (GetApp().GetUniverse().ToTick() && !game_halted) {
+    if (GetUniverse().ToTick() && !game_halted) {
         // Game tick
         simulation->tick();
         system_renderer->OnTick();
     }
 
-    GetApp().GetUniverse().clear<cqsp::client::systems::MouseOverEntity>();
+    GetUniverse().clear<cqsp::client::systems::MouseOverEntity>();
     system_renderer->GetMouseOnObject(GetApp().GetMouseX(), GetApp().GetMouseY());
 
     for (auto& ui : user_interfaces) {

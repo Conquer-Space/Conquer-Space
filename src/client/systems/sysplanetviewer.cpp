@@ -66,8 +66,8 @@ void cqsp::client::systems::SysPlanetInformation::DisplayPlanet() {
     if (selected_planet == entt::null) {
         return;
     }
-    if (GetApp().GetUniverse().all_of<cqspc::Name>(selected_planet)) {
-        planet_name = GetApp().GetUniverse().get<cqspc::Name>(selected_planet);
+    if (GetUniverse().all_of<cqspc::Name>(selected_planet)) {
+        planet_name = GetUniverse().get<cqspc::Name>(selected_planet);
     }
     ImGui::Begin(planet_name.c_str(), &to_see, window_flags);
     switch (view_mode) {
@@ -94,7 +94,7 @@ void cqsp::client::systems::SysPlanetInformation::DoUpdate(int delta_time) {
     // Get the thing
     namespace cqspb = cqsp::common::components::bodies;
     selected_planet = cqsp::scene::GetCurrentViewingPlanet(GetApp());
-    entt::entity mouse_over = GetApp().GetUniverse().
+    entt::entity mouse_over = GetUniverse().
                         view<cqsp::client::systems::MouseOverEntity>().front();
     if (!ImGui::GetIO().WantCaptureMouse &&
                 GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) &&
@@ -103,7 +103,7 @@ void cqsp::client::systems::SysPlanetInformation::DoUpdate(int delta_time) {
         to_see = true;
         SPDLOG_INFO("Switched entity");
     }
-    if (!GetApp().GetUniverse().all_of<cqspb::Body>(selected_planet)) {
+    if (!GetUniverse().all_of<cqspb::Body>(selected_planet)) {
         to_see = false;
     }
 }
@@ -117,19 +117,19 @@ void cqsp::client::systems::SysPlanetInformation::CityInformationPanel() {
     static bool thing = true;
     CQSPGui::DefaultCheckbox("Macroeconomic/Ownership mode", &thing);
 
-    ImGui::TextFmt("{}", GetApp().GetUniverse().get<cqspc::Name>(selected_city_entity));
+    ImGui::TextFmt("{}", GetUniverse().get<cqspc::Name>(selected_city_entity));
 
-    if (GetApp().GetUniverse().all_of<cqspc::Settlement>(selected_city_entity)) {
-        int size = GetApp().GetUniverse().get<cqspc::Settlement>(selected_city_entity).population.size();
-        for (auto seg_entity : GetApp().GetUniverse().get<cqspc::Settlement>(selected_city_entity).population) {
-            auto& pop_segement = GetApp().GetUniverse().get<cqspc::PopulationSegment>(seg_entity);
+    if (GetUniverse().all_of<cqspc::Settlement>(selected_city_entity)) {
+        int size = GetUniverse().get<cqspc::Settlement>(selected_city_entity).population.size();
+        for (auto seg_entity : GetUniverse().get<cqspc::Settlement>(selected_city_entity).population) {
+            auto& pop_segement = GetUniverse().get<cqspc::PopulationSegment>(seg_entity);
             ImGui::TextFmt("Population: {}", cqsp::util::LongToHumanString(pop_segement.population));
         }
     } else {
         ImGui::TextFmt("No population");
     }
 
-    if (GetApp().GetUniverse().all_of<cqspc::Industry>(selected_city_entity)) {
+    if (GetUniverse().all_of<cqspc::Industry>(selected_city_entity)) {
         if (ImGui::BeginTabBar("CityTabs", ImGuiTabBarFlags_None)) {
             if (ImGui::BeginTabItem("Demographics")) {
                 DemographicsTab();
@@ -158,26 +158,26 @@ void cqsp::client::systems::SysPlanetInformation::CityInformationPanel() {
 
 void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
     namespace cqspc = cqsp::common::components;
-    if (!GetApp().GetUniverse().all_of<cqspc::Habitation>(selected_planet)) {
+    if (!GetUniverse().all_of<cqspc::Habitation>(selected_planet)) {
         return;
     }
-    auto& habit = GetApp().GetUniverse().get<cqspc::Habitation>(selected_planet);
+    auto& habit = GetUniverse().get<cqspc::Habitation>(selected_planet);
     ImGui::TextFmt("Cities: {}", habit.settlements.size());
 
     ImGui::BeginChild("citylist", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar |
                                         window_flags);
     // Market
-    if (GetApp().GetUniverse().all_of<cqspc::MarketCenter>(selected_planet)) {
-        auto& center = GetApp().GetUniverse().get<cqspc::MarketCenter>(selected_planet);
-        auto& market = GetApp().GetUniverse().get<cqspc::Market>(center.market);
+    if (GetUniverse().all_of<cqspc::MarketCenter>(selected_planet)) {
+        auto& center = GetUniverse().get<cqspc::MarketCenter>(selected_planet);
+        auto& market = GetUniverse().get<cqspc::Market>(center.market);
         ImGui::Text("Is market center");
         if (ImGui::IsItemHovered()) {
             ImGui::BeginTooltip();
             ImGui::Text(fmt::format("Has {} entities attached to it", market.participants.size()).c_str());
             // Get resource stockpile
-            auto& stockpile = GetApp().GetUniverse().get<cqspc::ResourceStockpile>(center.market);
+            auto& stockpile = GetUniverse().get<cqspc::ResourceStockpile>(center.market);
             ImGui::Text("Resources");
-            DrawLedgerTable("marketstockpile", GetApp().GetUniverse(), stockpile);
+            DrawLedgerTable("marketstockpile", GetUniverse(), stockpile);
 
             // Market prices
             ImGui::Separator();
@@ -188,16 +188,16 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
                 for (auto& price : market.prices) {
                     ImGui::TableNextRow();
                     ImGui::TableSetColumnIndex(0);
-                    ImGui::TextFmt("{}", GetApp().GetUniverse().get<cqspc::Identifier>(price.first));
+                    ImGui::TextFmt("{}", GetUniverse().get<cqspc::Identifier>(price.first));
                     ImGui::TableSetColumnIndex(1);
                     ImGui::TextFmt("{}", price.second);
                 }
                 ImGui::EndTable();
             }
             ImGui::Text("Market demands");
-            DrawLedgerTable("marketdemand", GetApp().GetUniverse(), market.demand);
+            DrawLedgerTable("marketdemand", GetUniverse(), market.demand);
             ImGui::Text("Market supply");
-            DrawLedgerTable("marketsupply", GetApp().GetUniverse(), market.supply);
+            DrawLedgerTable("marketsupply", GetUniverse(), market.supply);
             ImGui::EndTooltip();
         }
     }
@@ -205,26 +205,26 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
     // Get population
     uint64_t pop_size = 0;
     for (entt::entity settlement : habit.settlements) {
-        for (entt::entity population : GetApp().GetUniverse().get<cqspc::Settlement>(settlement).population) {
-            pop_size += GetApp().GetUniverse().get<cqspc::PopulationSegment>(population).population;
+        for (entt::entity population : GetUniverse().get<cqspc::Settlement>(settlement).population) {
+            pop_size += GetUniverse().get<cqspc::PopulationSegment>(population).population;
         }
     }
     ImGui::TextFmt("Population: {} ({})", cqsp::util::LongToHumanString(pop_size), pop_size);
     ImGui::Separator();
 
     // Show resources
-    if (GetApp().GetUniverse().all_of<cqspc::ResourceDistribution>(selected_planet)) {
-        auto& dist = GetApp().GetUniverse().get<cqspc::ResourceDistribution>(selected_planet);
+    if (GetUniverse().all_of<cqspc::ResourceDistribution>(selected_planet)) {
+        auto& dist = GetUniverse().get<cqspc::ResourceDistribution>(selected_planet);
         using cqsp::client::components::PlanetTerrainRender;
         // Show the resources on it
         ImGui::Text("Resources");
         if (ImGui::Button("Default")) {
-            GetApp().GetUniverse().remove_if_exists<PlanetTerrainRender>(selected_planet);
+            GetUniverse().remove_if_exists<PlanetTerrainRender>(selected_planet);
         }
         for (auto it = dist.begin(); it != dist.end(); it++) {
-            if (ImGui::Button(cqsp::client::systems::gui::GetName(GetApp().GetUniverse(), it->first).c_str())) {
+            if (ImGui::Button(cqsp::client::systems::gui::GetName(GetUniverse(), it->first).c_str())) {
                 // Set rendering thing
-                GetApp().GetUniverse().emplace_or_replace<PlanetTerrainRender>(
+                GetUniverse().emplace_or_replace<PlanetTerrainRender>(
                         selected_planet, it->first);
             }
         }
@@ -234,14 +234,14 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
         const bool is_selected = (selected_city_index == i);
 
         entt::entity e = habit.settlements[i];
-        std::string name = GetApp().GetUniverse().get<cqspc::Name>(e);
+        std::string name = GetUniverse().get<cqspc::Name>(e);
         if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
             // Load city
             selected_city_index = i;
             selected_city_entity = habit.settlements[i];
             view_mode = ViewMode::CITY_VIEW;
         }
-        gui::EntityTooltip(GetApp().GetUniverse(), e);
+        gui::EntityTooltip(GetUniverse(), e);
     }
     ImGui::EndChild();
 }
@@ -249,23 +249,23 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
 void cqsp::client::systems::SysPlanetInformation::ResourcesTab() {
     namespace cqspc = cqsp::common::components;
     // Consolidate resources
-    auto &city_industry = GetApp().GetUniverse().get<cqspc::Industry>(selected_city_entity);
+    auto &city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
     cqspc::ResourceLedger resources;
     for (auto area : city_industry.industries) {
-        if (GetApp().GetUniverse().all_of<cqspc::ResourceStockpile>(area)) {
+        if (GetUniverse().all_of<cqspc::ResourceStockpile>(area)) {
             // Add resources
-            auto& stockpile = GetApp().GetUniverse().get<cqspc::ResourceStockpile>(area);
+            auto& stockpile = GetUniverse().get<cqspc::ResourceStockpile>(area);
             resources += stockpile;
         }
     }
 
-    DrawLedgerTable("cityresources", GetApp().GetUniverse(), resources);
+    DrawLedgerTable("cityresources", GetUniverse(), resources);
 }
 
 void cqsp::client::systems::SysPlanetInformation::IndustryTab() {
     namespace cqspc = cqsp::common::components;
     auto& city_industry =
-        GetApp().GetUniverse().get<cqspc::Industry>(selected_city_entity);
+        GetUniverse().get<cqspc::Industry>(selected_city_entity);
 
     int height = 300;
     ImGui::TextFmt("Factories: {}", city_industry.industries.size());
@@ -306,7 +306,7 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTabServicesChild() {
 void cqsp::client::systems::SysPlanetInformation::IndustryTabManufacturingChild() {
     namespace cqspc = cqsp::common::components;
     auto& city_industry =
-        GetApp().GetUniverse().get<cqspc::Industry>(selected_city_entity);
+        GetUniverse().get<cqspc::Industry>(selected_city_entity);
     ImGui::Text("Manufactuing Sector");
     // List all the stuff it produces
     ImGui::Text("GDP:");
@@ -315,10 +315,10 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTabManufacturingChild(
     cqspc::ResourceLedger output_resources;
     int count = 0;
     for (auto industry : city_industry.industries) {
-        if (GetApp().GetUniverse().all_of<cqspc::ResourceConverter, cqspc::Factory>(industry)) {
+        if (GetUniverse().all_of<cqspc::ResourceConverter, cqspc::Factory>(industry)) {
             count++;
-            auto& generator = GetApp().GetUniverse().get<cqspc::ResourceConverter>(industry);
-            auto& recipe = GetApp().GetUniverse().get<cqspc::Recipe>(generator.recipe);
+            auto& generator = GetUniverse().get<cqspc::ResourceConverter>(industry);
+            auto& recipe = GetUniverse().get<cqspc::Recipe>(generator.recipe);
             input_resources += recipe.input;
             output_resources += recipe.output;
         }
@@ -332,23 +332,23 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTabManufacturingChild(
 
     ImGui::Text("Output");
     // Output table
-    DrawLedgerTable("industryoutput", GetApp().GetUniverse(), output_resources);
+    DrawLedgerTable("industryoutput", GetUniverse(), output_resources);
 
     ImGui::Text("Input");
-    DrawLedgerTable("industryinput", GetApp().GetUniverse(), input_resources);
+    DrawLedgerTable("industryinput", GetUniverse(), input_resources);
 }
 
 void cqsp::client::systems::SysPlanetInformation::IndustryTabMiningChild() {
     namespace cqspc = cqsp::common::components;
-    auto& city_industry = GetApp().GetUniverse().get<cqspc::Industry>(selected_city_entity);
+    auto& city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
     ImGui::Text("Mining Sector");
     ImGui::Text("GDP:");
     // Get what resources they are making
     cqspc::ResourceLedger resources;
     int mine_count = 0;
     for (auto mine : city_industry.industries) {
-        if (GetApp().GetUniverse().all_of<cqspc::ResourceGenerator, cqspc::Mine>(mine)) {
-            auto& generator = GetApp().GetUniverse().get<cqspc::ResourceGenerator>(mine);
+        if (GetUniverse().all_of<cqspc::ResourceGenerator, cqspc::Mine>(mine)) {
+            auto& generator = GetUniverse().get<cqspc::ResourceGenerator>(mine);
             resources += generator;
             mine_count++;
         }
@@ -361,7 +361,7 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTabMiningChild() {
     }
 
     // Draw on table
-    DrawLedgerTable("mineproduction", GetApp().GetUniverse(), resources);
+    DrawLedgerTable("mineproduction", GetUniverse(), resources);
 }
 
 void cqsp::client::systems::SysPlanetInformation::IndustryTabAgricultureChild() {
@@ -374,15 +374,15 @@ void cqsp::client::systems::SysPlanetInformation::DemographicsTab() {
     using cqsp::common::components::Settlement;
     using cqsp::common::components::PopulationSegment;
 
-    auto& settlement = GetApp().GetUniverse().get<Settlement>(selected_city_entity);
+    auto& settlement = GetUniverse().get<Settlement>(selected_city_entity);
     for (auto &seg_entity : settlement.population) {
-        ImGui::TextFmt("Population: {}", GetApp().GetUniverse().get<PopulationSegment>(seg_entity).population);
-        cqsp::client::systems::gui::EntityTooltip(GetApp().GetUniverse(), seg_entity);
-        if (GetApp().GetUniverse().all_of<cqspc::Hunger>(seg_entity)) {
+        ImGui::TextFmt("Population: {}", GetUniverse().get<PopulationSegment>(seg_entity).population);
+        cqsp::client::systems::gui::EntityTooltip(GetUniverse(), seg_entity);
+        if (GetUniverse().all_of<cqspc::Hunger>(seg_entity)) {
             ImGui::TextFmt("Hungry");
         }
-        if (GetApp().GetUniverse().any_of<cqsp::common::components::Employee>(seg_entity)) {
-            auto& employee = GetApp().GetUniverse().get<cqspc::Employee>(seg_entity);
+        if (GetUniverse().any_of<cqsp::common::components::Employee>(seg_entity)) {
+            auto& employee = GetUniverse().get<cqspc::Employee>(seg_entity);
             ImGui::TextFmt("{}/{}", employee.employed_population, employee.working_population);
             if (employee.working_population > 0) {
                 ImGui::ProgressBar(static_cast<float>(employee.employed_population) /
@@ -414,7 +414,7 @@ void cqsp::client::systems::SysPlanetInformation::ConstructionTab() {
 
 void cqsp::client::systems::SysPlanetInformation::FactoryConstruction() {
     namespace cqspc = cqsp::common::components;
-    auto recipes = GetApp().GetUniverse().view<cqspc::Recipe>();
+    auto recipes = GetUniverse().view<cqspc::Recipe>();
     static int selected_recipe_index = -1;
     static entt::entity selected_recipe = entt::null;
     int index = 0;
@@ -425,8 +425,8 @@ void cqsp::client::systems::SysPlanetInformation::FactoryConstruction() {
             selected_recipe = entity;
         }
         const bool selected = selected_recipe_index == index;
-        std::string name = GetApp().GetUniverse().all_of<cqspc::Identifier>(entity) ?
-            GetApp().GetUniverse().get<cqspc::Identifier>(entity) : fmt::format("{}", entity);
+        std::string name = GetUniverse().all_of<cqspc::Identifier>(entity) ?
+            GetUniverse().get<cqspc::Identifier>(entity) : fmt::format("{}", entity);
         if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), selected)) {
             selected_recipe_index = index;
             selected_recipe = entity;
@@ -445,24 +445,24 @@ void cqsp::client::systems::SysPlanetInformation::FactoryConstruction() {
         // Add demand to the market for the amount of resources
         // When construction takes time in the future, then do the costs.
         // So first charge it to the market
-        entt::entity city_market = GetApp().GetUniverse().get<cqspc::MarketCenter>(selected_planet).market;
+        entt::entity city_market = GetUniverse().get<cqspc::MarketCenter>(selected_planet).market;
         auto cost = cqsp::common::systems::actions::GetFactoryCost(
-            GetApp().GetUniverse(), selected_city_entity, selected_recipe, prod);
-        GetApp().GetUniverse().get<cqspc::Market>(city_market).demand += cost;
-        GetApp().GetUniverse().get<cqspc::ResourceStockpile>(city_market) -= cost;
+            GetUniverse(), selected_city_entity, selected_recipe, prod);
+        GetUniverse().get<cqspc::Market>(city_market).demand += cost;
+        GetUniverse().get<cqspc::ResourceStockpile>(city_market) -= cost;
         // Buy things on the market
         entt::entity factory = cqsp::common::systems::actions::CreateFactory(
-            GetApp().GetUniverse(), selected_city_entity, selected_recipe, prod);
+            GetUniverse(), selected_city_entity, selected_recipe, prod);
         cqsp::common::systems::economy::AddParticipant(
-                                                    GetApp().GetUniverse(), city_market, factory);
+                                                    GetUniverse(), city_market, factory);
         // Enable confirmation window
     }
 
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
-        DrawLedgerTable("building_cost_tooltip", GetApp().GetUniverse(),
+        DrawLedgerTable("building_cost_tooltip", GetUniverse(),
                     cqsp::common::systems::actions::GetFactoryCost(
-                            GetApp().GetUniverse(), selected_city_entity, selected_recipe, prod));
+                            GetUniverse(), selected_city_entity, selected_recipe, prod));
         ImGui::EndTooltip();
     }
 }
@@ -470,7 +470,7 @@ void cqsp::client::systems::SysPlanetInformation::FactoryConstruction() {
 void cqsp::client::systems::SysPlanetInformation::MineConstruction() {
     namespace cqspc = cqsp::common::components;
     ImGui::BeginChild("mineconstructionlist", ImVec2(0, 150), true, window_flags);
-    auto recipes = GetApp().GetUniverse().view<cqspc::Good, cqspc::Mineral>();
+    auto recipes = GetUniverse().view<cqspc::Good, cqspc::Mineral>();
     static int selected_good_index = -1;
     static entt::entity selected_good = entt::null;
     int index = 0;
@@ -480,8 +480,8 @@ void cqsp::client::systems::SysPlanetInformation::MineConstruction() {
             selected_good = entity;
         }
         const bool selected = selected_good_index == index;
-        std::string name = GetApp().GetUniverse().all_of<cqspc::Identifier>(entity) ?
-            GetApp().GetUniverse().get<cqspc::Identifier>(entity) : fmt::format("{}", entity);
+        std::string name = GetUniverse().all_of<cqspc::Identifier>(entity) ?
+            GetUniverse().get<cqspc::Identifier>(entity) : fmt::format("{}", entity);
         if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), selected)) {
             selected_good_index = index;
             selected_good = entity;
@@ -502,22 +502,22 @@ void cqsp::client::systems::SysPlanetInformation::MineConstruction() {
         // Add demand to the market for the amount of resources
         // When construction takes time in the future, then do the costs.
         // So first charge it to the market
-        entt::entity city_market = GetApp().GetUniverse().get<cqspc::MarketCenter>(selected_planet).market;
+        entt::entity city_market = GetUniverse().get<cqspc::MarketCenter>(selected_planet).market;
         auto cost = cqsp::common::systems::actions::GetFactoryCost(
-            GetApp().GetUniverse(), selected_city_entity, selected_good, prod);
-        GetApp().GetUniverse().get<cqspc::Market>(city_market).demand += cost;
-        GetApp().GetUniverse().get<cqspc::ResourceStockpile>(city_market) -= cost;
+            GetUniverse(), selected_city_entity, selected_good, prod);
+        GetUniverse().get<cqspc::Market>(city_market).demand += cost;
+        GetUniverse().get<cqspc::ResourceStockpile>(city_market) -= cost;
         // Buy things on the market
         entt::entity factory = cqsp::common::systems::actions::CreateMine(
-            GetApp().GetUniverse(), selected_city_entity, selected_good, prod);
-        cqsp::common::systems::economy::AddParticipant(GetApp().GetUniverse(), city_market, factory);
+            GetUniverse(), selected_city_entity, selected_good, prod);
+        cqsp::common::systems::economy::AddParticipant(GetUniverse(), city_market, factory);
     }
 
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
-        DrawLedgerTable("building_cost_tooltip", GetApp().GetUniverse(),
+        DrawLedgerTable("building_cost_tooltip", GetUniverse(),
                     cqsp::common::systems::actions::GetMineCost(
-                            GetApp().GetUniverse(), selected_city_entity, selected_good, prod));
+                            GetUniverse(), selected_city_entity, selected_good, prod));
         ImGui::EndTooltip();
     }
 }
@@ -525,14 +525,14 @@ void cqsp::client::systems::SysPlanetInformation::MineConstruction() {
 void cqsp::client::systems::SysPlanetInformation::MineInformationPanel() {
     namespace cqspc = cqsp::common::components;
     if (mine_list_panel) {
-        auto &city_industry = GetApp().GetUniverse().get<cqspc::Industry>(selected_city_entity);
+        auto &city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
         ImGui::Begin(fmt::format("Mines of {}", selected_city_entity).c_str(), &mine_list_panel);
         // List mines
         static int selected_mine = 0;
         int mine_index = 0;
         for (int i = 0; i < city_industry.industries.size(); i++) {
             entt::entity e = city_industry.industries[i];
-            if (GetApp().GetUniverse().all_of<cqspc::Mine>(e)) {
+            if (GetUniverse().all_of<cqspc::Mine>(e)) {
                 // Then do the things
                 mine_index++;
             } else {
@@ -541,14 +541,14 @@ void cqsp::client::systems::SysPlanetInformation::MineInformationPanel() {
 
             const bool is_selected = (selected_mine == mine_index);
             std::string name = fmt::format("{}", e);
-            if (GetApp().GetUniverse().all_of<cqspc::Name>(e)) {
-                name = GetApp().GetUniverse().get<cqspc::Name>(e);
+            if (GetUniverse().all_of<cqspc::Name>(e)) {
+                name = GetUniverse().get<cqspc::Name>(e);
             }
             if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
                 // Load
                 selected_mine = mine_index;
             }
-            gui::EntityTooltip(GetApp().GetUniverse(), e);
+            gui::EntityTooltip(GetUniverse(), e);
         }
         ImGui::End();
     }
@@ -557,14 +557,14 @@ void cqsp::client::systems::SysPlanetInformation::MineInformationPanel() {
 void cqsp::client::systems::SysPlanetInformation::FactoryInformationPanel() {
     namespace cqspc = cqsp::common::components;
     if (factory_list_panel) {
-        auto &city_industry = GetApp().GetUniverse().get<cqspc::Industry>(selected_city_entity);
+        auto &city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
         ImGui::Begin(fmt::format("Factories of {}", selected_city_entity).c_str(), &factory_list_panel);
         // List mines
         static int selected_factory = 0;
         int factory_index = 0;
         for (int i = 0; i < city_industry.industries.size(); i++) {
             entt::entity e = city_industry.industries[i];
-            if (GetApp().GetUniverse().all_of<cqspc::Factory>(e)) {
+            if (GetUniverse().all_of<cqspc::Factory>(e)) {
                 // Then do the things
                 factory_index++;
             } else {
@@ -573,14 +573,14 @@ void cqsp::client::systems::SysPlanetInformation::FactoryInformationPanel() {
 
             const bool is_selected = (selected_factory == factory_index);
             std::string name = fmt::format("{}", e);
-            if (GetApp().GetUniverse().all_of<cqspc::Name>(e)) {
-                name = GetApp().GetUniverse().get<cqspc::Name>(e);
+            if (GetUniverse().all_of<cqspc::Name>(e)) {
+                name = GetUniverse().get<cqspc::Name>(e);
             }
             if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
                 // Load
                 selected_factory = factory_index;
             }
-            gui::EntityTooltip(GetApp().GetUniverse(), e);
+            gui::EntityTooltip(GetUniverse(), e);
         }
         ImGui::End();
     }
@@ -593,8 +593,8 @@ void cqsp::client::systems::SysPlanetInformation::SpacePortTab() {
     namespace cqspb = cqsp::common::components::bodies;
 
 if (ImGui::Button("Launch!")) {
-        entt::entity star_system = GetApp().GetUniverse().get<cqspc::bodies::Body>(selected_planet).star_system;
+        entt::entity star_system = GetUniverse().get<cqspc::bodies::Body>(selected_planet).star_system;
         cqsp::common::systems::actions::CreateShip(
-        GetApp().GetUniverse(), entt::null, selected_planet, star_system);
+        GetUniverse(), entt::null, selected_planet, star_system);
     }
 }
