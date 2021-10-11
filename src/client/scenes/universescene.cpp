@@ -65,7 +65,7 @@ void cqsp::scene::UniverseScene::Init() {
     system_renderer->Initialize();
 
     auto civilizationView =
-        GetUniverse().view<cqspco::components::Civilization,cqspco::components::Player>();
+        GetUniverse().view<cqspco::components::Civilization, cqspco::components::Player>();
     for (auto [entity, civ] : civilizationView.each()) {
         player = entity;
         player_civ = &civ;
