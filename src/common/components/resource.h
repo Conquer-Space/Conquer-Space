@@ -108,6 +108,13 @@ struct ResourceLedger : public std::map<entt::entity, double> {
     // Equivalant to this += other * double
     void MultiplyAdd(const ResourceLedger&, double);
 
+    /// <summary>
+    /// Removes the resources, and if the amount of resources removed are more than the resources
+    /// inside the stockpile, it will set that resource to zero.
+    /// </summary>
+    /// <param name=""></param>
+    void RemoveResourcesLimited(const ResourceLedger&);
+
     bool HasGood(entt::entity good) {
         return (*this).find(good) != (*this).end();
     }
@@ -152,6 +159,8 @@ struct FailedResourceTransfer {
 };
 
 struct FailedResourceProduction {};
+
+struct FailedResourceConsumption {};
 
 struct ResourceDistribution : public std::map<entt::entity, double> {};
 }  // namespace components

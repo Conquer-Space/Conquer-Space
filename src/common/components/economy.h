@@ -87,13 +87,16 @@ struct Wallet {
         // Record the money delta since last reset
         return *this;
     }
+
     operator double() { return balance; }
+
     Wallet& operator=(double _balance) {
         change += (_balance - balance);
         if ((_balance - balance) < 0) {
             GDP_change += _balance - balance;
         }
         balance = _balance;
+        return *this;
     }
 
     double GetBalance() { return balance; }

@@ -126,18 +126,25 @@ generators:insert({
             local pop_unit = add_population_segment(city, random_normal_int(50000000, 2000000)) -- 100 million
             add_cash(pop_unit, 1000000000) -- 1 billion
             attach_market(market, pop_unit)
-            set_resource_consume(pop_unit, goods["consumer_good"], 10000)
             -- Add industry
             create_industries(city)
-            place_factory_on_market(market, city, "steel_forging", 5000)
             -- Add various factories
             create_commercial_area(city)
-            place_factory_on_market(market, city, "consumer_good_manufacturing", 1000)
-            place_factory_on_market(market, city, "concrete_manufacturing", 300)
+
+            -- According to syspopulation.cpp, consumption of resources is about 0.09261 kg per day, multiply that by 25
+            -- for the tick rate, we get 0.09261*25 = 2.31525
+            -- 95% of cities should have a population under 53919928, so we'd calculate for that
+            -- 53919928 * 2.31525 / 2 (for the recipe) = 62419056.651
+
+            place_factory_on_market(market, city, "consumer_good_manufacturing", 62419056.651)
+
+            -- Steel neede
+            place_factory_on_market(market, city, "steel_forging", 62419056.651)
+            -- place_factory_on_market(market, city, "concrete_manufacturing", 300)
             attach_market(market, create_mine(city, goods["copper"], 10000, 1))
             attach_market(market, create_mine(city, goods["aluminium"], 10000, 1))
             attach_market(market, create_mine(city, goods["stone"], 10000, 1))
-            attach_market(market, create_mine(city, goods["iron"], 60000, 1))
+            attach_market(market, create_mine(city, goods["iron"], 374514340, 1))
         end
     end
 })

@@ -197,7 +197,6 @@ void SysEconomy::SysGoodSeller(Universe& universe) {
         market_stockpile += stockpile;
         auto& market = universe.get<cqspc::Market>(market_participant.market);
         // Sell goods
-
         // Adjust wallet
         universe.get<cqspc::Wallet>(entity) += stockpile.MultiplyAndGetSum(market.prices);
         stockpile.clear();
@@ -228,7 +227,13 @@ void cqsp::common::systems::SysEconomy::SysConsumptionConsume(Universe& universe
         // FIXME(EhWhoAmI): This leaves resources at negative level, and I don't know why
         // Good news is it doesn't go down lower than a certain amount, so maybe it's a problem with
         // the order it's doing it
-        stockpile.MultiplyAdd(consumption, Interval() * -1);
+        if (stockpile.EnoughToTransfer(consumption)) {
+            stockpile.MultiplyAdd(consumption, Interval() * -1);
+        } else {
+            // Clear the resources in it.
+            // Also add a tag that it has not enough resources
+            stockpile.RemoveResourcesLimited(consumption);
+        }
     }
 }
 
@@ -250,26 +255,24 @@ void SysEconomy::SysDemandResolver(Universe& universe) {
         // Check if it can handle it, and transfer resources on success
         if (market_stockpile.EnoughToTransfer(demand)) {
             universe.remove_if_exists<cqspc::FailedResourceTransfer>(entity);
-            if (universe.all_of<cqspc::ResourceStockpile>(entity)) {
-                // Market prices
-                // TODO(EhWhoAmI): Fix wallet so that it takes into account negative values better,
-                // So that it would buy less stuff when it has a low wallet balance
-                // Buy all the resources
-                cqspc::Wallet& balance = universe.get<cqspc::Wallet>(entity);
-                double cost = demand.MultiplyAndGetSum(market.prices);
-                if (cost > balance) {
-                    // Failed transaction
-                    //universe.emplace_or_replace<cqspc::FailedResourceTransfer>(entity);
-                    // Try to buy the maximum available
-                    // Get ratio of the things, multiply by price, and then
-                    demand *= (balance / cost);
-                    cost = demand.MultiplyAndGetSum(market.prices);
-                    balance -= 0;
-                    market_stockpile.TransferTo(universe.get<cqspc::ResourceStockpile>(entity), demand);
-                } else {
-                    balance -= demand.MultiplyAndGetSum(market.prices);
-                    market_stockpile.TransferTo(universe.get<cqspc::ResourceStockpile>(entity), demand);
-                }
+            // Market prices
+            // TODO(EhWhoAmI): Fix wallet so that it takes into account negative values better,
+            // So that it would buy less stuff when it has a low wallet balance
+            // Buy all the resources
+            cqspc::Wallet& balance = universe.get<cqspc::Wallet>(entity);
+            double cost = demand.MultiplyAndGetSum(market.prices);
+            if (cost > balance) {
+                // Failed transaction
+                //universe.emplace_or_replace<cqspc::FailedResourceTransfer>(entity);
+                // Try to buy the maximum available
+                // Get ratio of the things, multiply by price, and then
+                demand *= (balance / cost);
+                cost = demand.MultiplyAndGetSum(market.prices);
+                balance = 0;
+                market_stockpile.TransferTo(universe.get<cqspc::ResourceStockpile>(entity), demand);
+            } else {
+                balance -= demand.MultiplyAndGetSum(market.prices);
+                market_stockpile.TransferTo(universe.get<cqspc::ResourceStockpile>(entity), demand);
             }
         } else {
             // Failed due to not enough resources in the market,
