@@ -36,6 +36,7 @@ struct Market {
     ResourceLedger prices;
     ResourceLedger demand;
     ResourceLedger supply;
+    ResourceLedger sd_ratio;
 
     void AddParticipant(entt::entity participant) {
         participants.insert(participant);

@@ -132,9 +132,19 @@ struct Recipe {
     float interval;
 };
 
+/// <summary>
+/// The multiplier of recipes the factory is generating right now.
+/// </summary>
 struct FactoryProductivity {
     // Amount generated per generation
     float productivity;
+};
+
+/// <summary>
+/// The maximum of multiples of recipes the factories can generate.
+/// </summary>
+struct FactoryCapacity {
+    float capacity;
 };
 
 struct FactoryTimer {

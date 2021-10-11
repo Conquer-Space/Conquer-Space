@@ -68,7 +68,7 @@ void cqsps::market::DeterminePrices(cqsp::common::Universe& universe, entt::enti
         // They will try to balance to a sd ratio of about 1
         double &price = market.prices[it->first];
         double sd_ratio = supply / demand;
-
+        market.sd_ratio[it->first] = sd_ratio;
         // TODO(EhWhoAmI): Determine the change in pricebased on the S/D ratio so that the value will
         // be quicker to equalize
 

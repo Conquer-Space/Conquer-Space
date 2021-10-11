@@ -55,6 +55,7 @@ void SysEconomy::DoSystem(Universe& universe) {
     SysDemandResolver(universe);
     END_TIMED_BLOCK(Market_sim);
     BEGIN_TIMED_BLOCK(Production_sim);
+    // TODO(EhWhoAmI): If we are to sim things properly, SysFactory should go here
     SysConsumptionConsume(universe);
     SysProductionStarter(universe);
     END_TIMED_BLOCK(Production_sim);
@@ -92,7 +93,7 @@ void SysEconomy::SysCommercialProcess(Universe &universe) {
 void SysEconomy::SysEmploymentHandler(Universe& universe) {
     namespace cqspc = cqsp::common::components;
     auto view = universe.view<cqspc::Settlement, cqspc::Industry>();
-    SPDLOG_INFO("Organizing jobs for {} settlements", view.size_hint());
+    SPDLOG_TRACE("Organizing jobs for {} settlements", view.size_hint());
     for (auto entity : view) {
         // Now iterate through the population segments, and the industrial things, and determine
         // the number of jobs needed.

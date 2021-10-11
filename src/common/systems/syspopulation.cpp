@@ -25,15 +25,23 @@ void cqsp::common::systems::SysPopulationGrowth::DoSystem(Universe& universe) {
     namespace cqspc = cqsp::common::components;
     auto view = universe.view<cqspc::PopulationSegment>();
     for (auto [entity, segment] : view.each()) {
+        // If it's hungry, decay population
+        if (universe.all_of<cqspc::Hunger>(entity)) {
+            // Population decrease will be about 1 percent each year.
+            float increase = 1.f - static_cast<float>(Interval()) * 0.00000114077116f;
+            segment.population *= increase;
+        }
+
         if (universe.all_of<cqspc::FailedResourceTransfer>(entity)) {
             // Then alert hunger.
             universe.emplace_or_replace<cqspc::Hunger>(entity);
         } else {
             universe.remove_if_exists<cqspc::Hunger>(entity);
         }
-        // If not hungry
+        // If not hungry, grow population
         if (!universe.all_of<cqspc::Hunger>(entity)) {
-            float increase = static_cast<float>(Interval()) / 1000.f + 1;
+            // Population growth will be about 1 percent each year.
+            float increase = static_cast<float>(Interval()) * 0.00000114077116f + 1;
             segment.population *= increase;
         }
 
