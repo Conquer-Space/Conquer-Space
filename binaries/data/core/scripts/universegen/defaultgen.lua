@@ -141,10 +141,10 @@ generators:insert({
             -- Steel neede
             place_factory_on_market(market, city, "steel_forging", 62419056.651)
             -- place_factory_on_market(market, city, "concrete_manufacturing", 300)
-            attach_market(market, create_mine(city, goods["copper"], 10000, 1))
-            attach_market(market, create_mine(city, goods["aluminium"], 10000, 1))
-            attach_market(market, create_mine(city, goods["stone"], 10000, 1))
-            attach_market(market, create_mine(city, goods["iron"], 374514340, 1))
+            attach_market(market, create_mine(city, goods["copper"], 1, 10000))
+            attach_market(market, create_mine(city, goods["aluminium"], 1, 10000))
+            attach_market(market, create_mine(city, goods["stone"], 1, 10000))
+            attach_market(market, create_mine(city, goods["iron"], 1, 374514340))
         end
     end
 })

@@ -16,8 +16,10 @@
 */
 #include "common/systems/economy/sysfactory.h"
 
+#include "common/components/area.h"
 #include "common/components/resource.h"
 #include "common/components/economy.h"
+#include "common/components/name.h"
 
 void cqsp::common::systems::SysFactory::DoSystem(Universe& universe) {
     // Do the thing
@@ -56,7 +58,7 @@ void cqsp::common::systems::SysFactory::DoSystem(Universe& universe) {
 
 void cqsp::common::systems::SysFactory::SysMineProduction(Universe& universe) {
     namespace cqspc = cqsp::common::components;
-    auto view = universe.view<cqspc::ResourceGenerator, cqspc::MarketAgent>();
+    auto view = universe.view<cqspc::Mine, cqspc::ResourceGenerator, cqspc::MarketAgent, cqspc::FactoryProductivity>();
     for (entt::entity entity : view) {
         // Get market and the supply, and determine if you have to generate more or less, based
         // upon maximum production
@@ -65,18 +67,18 @@ void cqsp::common::systems::SysFactory::SysMineProduction(Universe& universe) {
         auto& factory = universe.get<cqspc::ResourceGenerator>(entity);
         for (auto it = factory.begin(); it != factory.end(); it++) {
             // Get supply and demand of the good
-            if (market.sd_ratio[it->first] > 1) {
+            double sd_ratio = market.sd_ratio[it->first];
+            if (sd_ratio > 1) {
                 // Decrease production due to low demand
-                if (universe.all_of<cqspc::FactoryProductivity>(entity)) {
-                    // Reduce by 10%.
-                    // TODO(EhWhoAmI): Tweak this so that this would take into account competitors,
-                    // and also take into account how large the S/D ratio is, so that they can
-                    // drastically or minimally change the price of the good as needed.
-                    universe.get<cqspc::FactoryProductivity>(entity).productivity *= 0.9;
-                }
-            } else {
+                // Reduce by 10%.
+                // TODO(EhWhoAmI): Tweak this so that this would take into account competitors,
+                // and also take into account how large the S/D ratio is, so that they can
+                // drastically or minimally change the price of the good as needed.
+                universe.get<cqspc::FactoryProductivity>(entity).productivity *= 0.9;
+            } else if (sd_ratio < 1){
                 // Then increase production due to the high demand
                 universe.get<cqspc::FactoryProductivity>(entity).productivity *= 1.1;
+                // If it's zero productivity, then get some sort of fraction of the capacity
             }
         }
     }

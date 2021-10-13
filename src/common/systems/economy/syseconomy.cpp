@@ -81,7 +81,7 @@ void SysEconomy::SysCommercialProcess(Universe &universe) {
         // Get city population
         //
         // For now, services will just fall under general services, but a more detailed breakdown
-        // will be done in thhe future.
+        // will be done in the future.
 
         auto &commercial = universe.get<cqspc::Commercial>(entity);
         // Get population

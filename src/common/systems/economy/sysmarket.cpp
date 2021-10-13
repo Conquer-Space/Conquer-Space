@@ -16,6 +16,8 @@
 */
 #include "common/systems/economy/sysmarket.h"
 
+#include <limits>
+
 #include "common/components/resource.h"
 #include "common/components/economy.h"
 
@@ -67,7 +69,21 @@ void cqsps::market::DeterminePrices(cqsp::common::Universe& universe, entt::enti
         // Supply-demand ratio
         // They will try to balance to a sd ratio of about 1
         double &price = market.prices[it->first];
-        double sd_ratio = supply / demand;
+        double sd_ratio = -1;
+        if (supply == 0 && demand == 0) {
+            // Then don't change anything
+            sd_ratio = 1;
+        } else if (demand == 0) {
+            // infinite supply, so zero demand, so set s/d ratio to infinity
+            sd_ratio = std::numeric_limits<double>::infinity();
+        } else if (supply == 0) {
+            // Zero supply, so zero s/d ratio
+            sd_ratio = 0;
+        } else {
+            sd_ratio = supply / demand;
+        }
+        assert(sd_ratio >= 0);
+
         market.sd_ratio[it->first] = sd_ratio;
         // TODO(EhWhoAmI): Determine the change in pricebased on the S/D ratio so that the value will
         // be quicker to equalize

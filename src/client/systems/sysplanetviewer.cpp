@@ -198,6 +198,9 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
             DrawLedgerTable("marketdemand", GetUniverse(), market.demand);
             ImGui::Text("Market supply");
             DrawLedgerTable("marketsupply", GetUniverse(), market.supply);
+
+            ImGui::Text("Supply demand ratio");
+            DrawLedgerTable("marketdsratio", GetUniverse(), market.sd_ratio);
             ImGui::EndTooltip();
         }
     }
