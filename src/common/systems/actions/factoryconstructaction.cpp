@@ -64,7 +64,7 @@ cqsp::common::systems::actions::GetFactoryCost(cqsp::common::Universe& universe,
 }
 
 entt::entity cqsp::common::systems::actions::CreateMine(cqsp::common::Universe& universe,
-    entt::entity city,entt::entity good, int amount, float productivity) {
+    entt::entity city, entt::entity good, int amount, float productivity) {
     namespace cqspc = cqsp::common::components;
     entt::entity mine = universe.create();
     auto& gen = universe.emplace<cqspc::ResourceGenerator>(mine);

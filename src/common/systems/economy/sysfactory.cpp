@@ -21,7 +21,6 @@
 #include "common/components/economy.h"
 #include "common/components/name.h"
 
-#include <spdlog/spdlog.h>
 void cqsp::common::systems::SysFactory::DoSystem(Universe& universe) {
     // Do the thing
     // When demand is higher, increase production, when demand is lower, decrease production.
@@ -79,7 +78,7 @@ void cqsp::common::systems::SysFactory::SysMineProduction(Universe& universe) {
                 // and also take into account how large the S/D ratio is, so that they can
                 // drastically or minimally change the price of the good as needed.
                 universe.get<cqspc::FactoryProductivity>(entity).productivity *= 0.9;
-            } else if (sd_ratio < 1){
+            } else if (sd_ratio < 1) {
                 // Then increase production due to the high demand
                 float& prod = universe.get<cqspc::FactoryProductivity>(entity).productivity;
                 // If productivity is close to zero, then multiply it by a factor of it's maximum capicity

@@ -105,6 +105,7 @@ struct Wallet {
         GDP_change = 0;
     }
     double GetGDPChange() { return GDP_change; }
+
  private:
     double balance = 0;
     double change = 0;
