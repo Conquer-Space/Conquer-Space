@@ -59,6 +59,7 @@ class SysPlanetInformation : public SysUserInterface {
     void MineInformationPanel();
     void FactoryInformationPanel();
     void SpacePortTab();
+    void MarketInformationTooltipContent();
 };
 }  // namespace systems
 }  // namespace client

@@ -63,8 +63,8 @@ cqsp::common::systems::actions::GetFactoryCost(cqsp::common::Universe& universe,
     return ledger;
 }
 
-entt::entity cqsp::common::systems::actions::CreateMine(cqsp::common::Universe& universe, entt::entity city,
-    entt::entity good, int amount) {
+entt::entity cqsp::common::systems::actions::CreateMine(cqsp::common::Universe& universe,
+    entt::entity city,entt::entity good, int amount, float productivity) {
     namespace cqspc = cqsp::common::components;
     entt::entity mine = universe.create();
     auto& gen = universe.emplace<cqspc::ResourceGenerator>(mine);
@@ -77,9 +77,9 @@ entt::entity cqsp::common::systems::actions::CreateMine(cqsp::common::Universe& 
     gen.emplace(good, amount);
     universe.get<cqspc::Industry>(city).industries.push_back(mine);
 
-    universe.emplace<cqspc::FactoryCapacity>(mine, 1.f);
+    universe.emplace<cqspc::FactoryCapacity>(mine, productivity);
     // Add productivity
-    universe.emplace<cqspc::FactoryProductivity>(mine, 1.f);
+    universe.emplace<cqspc::FactoryProductivity>(mine, productivity);
 
     universe.emplace<cqspc::ResourceStockpile>(mine);
     universe.emplace<cqspc::Mine>(mine);

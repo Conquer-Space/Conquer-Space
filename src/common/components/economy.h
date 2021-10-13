@@ -35,7 +35,6 @@ struct Market {
     std::set<entt::entity> participants;
     ResourceLedger prices;
     ResourceLedger demand;
-    ResourceLedger supply;
     ResourceLedger sd_ratio;
 
     void AddParticipant(entt::entity participant) {

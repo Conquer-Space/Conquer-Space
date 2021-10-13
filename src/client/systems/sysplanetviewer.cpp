@@ -168,39 +168,10 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
                                         window_flags);
     // Market
     if (GetUniverse().all_of<cqspc::MarketCenter>(selected_planet)) {
-        auto& center = GetUniverse().get<cqspc::MarketCenter>(selected_planet);
-        auto& market = GetUniverse().get<cqspc::Market>(center.market);
         ImGui::Text("Is market center");
         if (ImGui::IsItemHovered()) {
             ImGui::BeginTooltip();
-            ImGui::Text(fmt::format("Has {} entities attached to it", market.participants.size()).c_str());
-            // Get resource stockpile
-            auto& stockpile = GetUniverse().get<cqspc::ResourceStockpile>(center.market);
-            ImGui::Text("Resources");
-            DrawLedgerTable("marketstockpile", GetUniverse(), stockpile);
-
-            // Market prices
-            ImGui::Separator();
-            ImGui::Text("Market prices");
-            if (ImGui::BeginTable("goodpricetable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
-                ImGui::TableSetupColumn("Good");
-                ImGui::TableSetupColumn("Prices");
-                for (auto& price : market.prices) {
-                    ImGui::TableNextRow();
-                    ImGui::TableSetColumnIndex(0);
-                    ImGui::TextFmt("{}", GetUniverse().get<cqspc::Identifier>(price.first));
-                    ImGui::TableSetColumnIndex(1);
-                    ImGui::TextFmt("{}", price.second);
-                }
-                ImGui::EndTable();
-            }
-            ImGui::Text("Market demands");
-            DrawLedgerTable("marketdemand", GetUniverse(), market.demand);
-            ImGui::Text("Market supply");
-            DrawLedgerTable("marketsupply", GetUniverse(), market.supply);
-
-            ImGui::Text("Supply demand ratio");
-            DrawLedgerTable("marketdsratio", GetUniverse(), market.sd_ratio);
+            MarketInformationTooltipContent();
             ImGui::EndTooltip();
         }
     }
@@ -523,7 +494,7 @@ void cqsp::client::systems::SysPlanetInformation::MineConstruction() {
         GetUniverse().get<cqspc::ResourceStockpile>(city_market) -= cost;
         // Buy things on the market
         entt::entity factory = cqsp::common::systems::actions::CreateMine(
-            GetUniverse(), selected_city_entity, selected_good, prod);
+            GetUniverse(), selected_city_entity, selected_good, 1, prod);
         cqsp::common::systems::economy::AddParticipant(GetUniverse(), city_market, factory);
     }
 
@@ -610,5 +581,51 @@ if (ImGui::Button("Launch!")) {
         entt::entity star_system = GetUniverse().get<cqspc::bodies::Body>(selected_planet).star_system;
         cqsp::common::systems::actions::CreateShip(
         GetUniverse(), entt::null, selected_planet, star_system);
+    }
+}
+
+void cqsp::client::systems::SysPlanetInformation::MarketInformationTooltipContent() {
+    namespace cqspc = cqsp::common::components;
+    auto& center = GetUniverse().get<cqspc::MarketCenter>(selected_planet);
+    auto& market = GetUniverse().get<cqspc::Market>(center.market);
+    ImGui::TextFmt("Has {} entities attached to it", market.participants.size());
+
+    // Market prices
+    ImGui::Text("Market prices");
+    if (ImGui::BeginTable("goodpricetable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Good");
+        ImGui::TableSetupColumn("Prices");
+        for (auto& price : market.prices) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt("{}", GetUniverse().get<cqspc::Identifier>(price.first));
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextFmt("{}", price.second);
+        }
+        ImGui::EndTable();
+    }
+
+    ImGui::Separator();
+
+    // Get resource stockpile
+    auto& stockpile = GetUniverse().get<cqspc::ResourceStockpile>(center.market);
+    if (ImGui::BeginTable("marketinfotable", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Good");
+        ImGui::TableSetupColumn("Supply");
+        ImGui::TableSetupColumn("Demand");
+        ImGui::TableSetupColumn("S/D ratio");
+        ImGui::TableHeadersRow();
+        for (auto& price : market.sd_ratio) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt("{}", GetUniverse().get<cqspc::Identifier>(price.first));
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(stockpile[price.first]));
+            ImGui::TableSetColumnIndex(2);
+            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.demand[price.first]));
+            ImGui::TableSetColumnIndex(3);
+            ImGui::TextFmt("{}", price.second);
+        }
+        ImGui::EndTable();
     }
 }
