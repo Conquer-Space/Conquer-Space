@@ -25,7 +25,17 @@ SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(TESTS "Enable tests" ON)
 
+if (MSVC)
+option(USE_SYSTEM_OPENAL "Use system installed OpenAL library" OFF)
+else()
+option(USE_SYSTEM_OPENAL "Use system installed OpenAL library" ON)
+endif()
+
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+if(NOT DEFINED CMAKE_SUPPRESS_DEVELOPER_WARNINGS)
+  set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS 1 CACHE INTERNAL "No dev warnings")
+endif()
 
 # Make everything static
 if(TESTS)

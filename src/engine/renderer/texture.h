@@ -32,7 +32,8 @@ struct TextureLoadingOptions {
 
 class Texture : public Asset {
  public:
-    int width, height;
+    int width;
+    int height;
     unsigned int id;
     int texture_type;
 

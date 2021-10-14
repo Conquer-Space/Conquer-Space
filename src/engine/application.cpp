@@ -422,6 +422,8 @@ cqsp::engine::Application::Application(int _argc, char* _argv[]) : argc(_argc), 
     full_screen = static_cast<bool>(m_client_options.GetOptions()["full_screen"]);
 }
 
+cqsp::engine::Application::Application() : Application(0, new char*[1]{"Conquer-Space"}) {}
+
 void cqsp::engine::Application::run() {
     // Main loop
     int code = init();

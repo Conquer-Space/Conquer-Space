@@ -13,7 +13,11 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
-find_package(Threads)
+
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+
+file (GLOB_RECURSE CPP_FILES *.cpp)
+file (GLOB_RECURSE H_FILES *.h)
 
 # Include files
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
@@ -33,43 +37,31 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/backends)
 include_directories(${GLAD_INCLUDE_DIRS})
 
-# Hide the console window in visual studio projects - Release
-if(MSVC)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:MSVCRT")
-	set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
-endif()
+add_executable(cqsp-engine-tests ${CPP_FILES} ${H_FILES})
 
-# Add icon file for windows
-if(WIN32)
-SET(ICON_FILE "${CMAKE_SOURCE_DIR}/binaries/data/app.o")
-else()
-SET(ICON_FILE "")
-endif()
+# Test libraries
+target_link_libraries(cqsp-engine-tests gtest gtest_main)
+target_link_libraries(cqsp-engine-tests cqsp-core cqsp-engine)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/common/version.h.in ${CMAKE_CURRENT_SOURCE_DIR}/common/version.h @ONLY)
-
-# Add libraries
-add_subdirectory(common)
-add_subdirectory(engine)
-add_subdirectory(client)
-
-add_executable(Conquer-Space main.cpp ${ICON_FILE})
-
-# Set some msvc convinence things
-
-target_link_libraries(Conquer-Space PRIVATE
+# External libraries
+target_link_libraries(cqsp-engine-tests
     cqsp-core
-    cqsp-client
-    cqsp-engine
+    OpenGL::GL
+    ImGui
+    EnTT::EnTT
+    hjson
+    spdlog
+    glm
+    liblua-static
+    freetype
+    fmt
+    libnoise
+    glad
+    glfw
+    ${OPENAL_LIBRARY}
 )
 
-# Set output dirs
-# First for the generic no-config case (e.g. with mingw)
-# Second, for multi-config builds (e.g. msvc)
-set_target_properties(Conquer-Space
-    PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/binaries/bin"
-    LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/binaries/bin"
-    ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/binaries/bin"
-)
-set_property(TARGET Conquer-Space PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/binaries/bin")
+add_test(NAME cqsp-engine-test COMMAND cqsp-engine-tests)
+
+# Disable logging
+target_compile_definitions(cqsp-engine-tests PRIVATE SPDLOG_ACTIVE_LEVEL=1000)
