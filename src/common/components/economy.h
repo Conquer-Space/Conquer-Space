@@ -35,7 +35,7 @@ struct Market {
     std::set<entt::entity> participants;
     ResourceLedger prices;
     ResourceLedger demand;
-    ResourceLedger supply;
+    ResourceLedger sd_ratio;
 
     void AddParticipant(entt::entity participant) {
         participants.insert(participant);
@@ -75,7 +75,42 @@ struct Wallet {
     Wallet() = default;
     Wallet(entt::entity _currency, double _balance) : balance(_balance), currency(_currency) {}
 
+    Wallet& operator+=(double amount) {
+        this->balance += amount;
+        change += amount;
+        return *this;
+    }
+    Wallet& operator-=(double amount) {
+        this->balance -= amount;
+        change -= amount;
+        GDP_change += amount;
+        // Record the money delta since last reset
+        return *this;
+    }
+
+    operator double() { return balance; }
+
+    Wallet& operator=(double _balance) {
+        change += (_balance - balance);
+        if ((_balance - balance) < 0) {
+            GDP_change += _balance - balance;
+        }
+        balance = _balance;
+        return *this;
+    }
+
+    double GetBalance() { return balance; }
+    void Reset() {
+        change = 0;
+        GDP_change = 0;
+    }
+    double GetGDPChange() { return GDP_change; }
+
+ private:
     double balance = 0;
+    double change = 0;
+    // Only records when spending money, so when money decreases
+    double GDP_change = 0;
     entt::entity currency;
 };
 

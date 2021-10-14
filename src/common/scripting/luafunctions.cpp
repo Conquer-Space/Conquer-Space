@@ -245,11 +245,11 @@ void FunctionEconomy(cqsp::engine::Application& app) {
     });
 
     REGISTER_FUNCTION("add_cash", [&](entt::entity participant, double balance) {
-        universe.get_or_emplace<cqspc::Wallet>(participant).balance += balance;
+        universe.get_or_emplace<cqspc::Wallet>(participant) += balance;
     });
 
     REGISTER_FUNCTION("create_mine", [&](entt::entity city, entt::entity resource, int amount, float productivity) {
-        return cqspa::CreateMine(universe, city, resource, amount);
+        return cqspa::CreateMine(universe, city, resource, amount, productivity);
     });
 }
 

@@ -85,8 +85,8 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
     RenderEntityType(universe, entity);
 
     if (universe.all_of<cqspc::Wallet>(entity)) {
-        auto balance = universe.get<cqsp::common::components::Wallet>(entity).balance;
-        ImGui::TextFmt("Wallet: {}", balance);
+        auto& balance = universe.get<cqsp::common::components::Wallet>(entity);
+        ImGui::TextFmt("Wallet: {}", balance.GetBalance());
     }
 
     if (universe.all_of<cqspc::MarketAgent>(entity)) {
@@ -114,6 +114,9 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
     }
     if (universe.all_of<cqspc::Production>(entity)) {
         ImGui::Text("Producing next tick");
+    }
+    if (universe.all_of<cqspc::FactoryProductivity>(entity)) {
+        ImGui::TextFmt("Productivity: {}", universe.get<cqspc::FactoryProductivity>(entity).productivity);
     }
     if (universe.all_of<cqspc::ResourceGenerator>(entity)) {
         ImGui::Separator();

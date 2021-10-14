@@ -16,29 +16,19 @@
 */
 #pragma once
 
-#include <vector>
+#include "common/systems/isimulationsystem.h"
 
-namespace cqsp {
-namespace common {
-namespace components {
-struct Industry {
-    std::vector<entt::entity> industries;
+namespace cqsp::common::systems {
+/// <summary>
+/// Determines how much resources the factory decides to generate the next tick so that they don't
+/// over produce when there is an insane excess of resources. This will create fluctuations
+/// between production in the economy.
+/// </summary>
+class SysFactory : public ISimulationSystem {
+ public:
+    void DoSystem(Universe& universe);
+
+ private:
+    void SysMineProduction(Universe& universe);
 };
-
-struct Production {
-    float amount;
-};
-
-struct Factory {};
-
-struct Mine {};
-
-struct Farm {
-    // Farms have a harvest period?
-    // Farms can fluctuate between how much they generate per tick.
-    // Also add food good
-};
-
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::systems

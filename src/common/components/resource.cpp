@@ -212,7 +212,17 @@ void ResourceLedger::MultiplyAdd(const ResourceLedger & other, double value) {
     }
 }
 
-double cqsp::common::components::ResourceLedger::GetSum() {
+void ResourceLedger::RemoveResourcesLimited(const ResourceLedger & other) {
+    for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
+        double &t = (*this)[iterator->first];
+         t -= iterator->second;
+         if (t < 0) {
+             t = 0;
+         }
+    }
+}
+
+double ResourceLedger::GetSum() {
     double t = 0;
     for (auto it = this->begin(); it != this->end(); it++) {
         t += it->second;
@@ -220,7 +230,7 @@ double cqsp::common::components::ResourceLedger::GetSum() {
     return t;
 }
 
-double cqsp::common::components::ResourceLedger::MultiplyAndGetSum(ResourceLedger &other) {
+double ResourceLedger::MultiplyAndGetSum(ResourceLedger &other) {
     double sum = 0;
     for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
         sum += iterator->second * other[iterator->first];
@@ -228,7 +238,7 @@ double cqsp::common::components::ResourceLedger::MultiplyAndGetSum(ResourceLedge
     return sum;
 }
 
-std::string cqsp::common::components::ResourceLedger::to_string() {
+std::string ResourceLedger::to_string() {
     std::string str = "{";
     for (auto it = this->begin(); it != this->end(); it++) {
         str.append(" ");

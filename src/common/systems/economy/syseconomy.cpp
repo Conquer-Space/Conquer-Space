@@ -39,6 +39,7 @@ using cqsp::common::systems::SysEconomy;
 void SysEconomy::DoSystem(Universe& universe) {
     namespace cqspc = cqsp::common::components;
     BEGIN_TIMED_BLOCK(SysEconomy);
+    WalletReset(universe);
     SysCommercialProcess(universe);
     SysEmploymentHandler(universe);
     // Produce resources
@@ -54,10 +55,19 @@ void SysEconomy::DoSystem(Universe& universe) {
     SysDemandResolver(universe);
     END_TIMED_BLOCK(Market_sim);
     BEGIN_TIMED_BLOCK(Production_sim);
+    // TODO(EhWhoAmI): If we are to sim things properly, SysFactory should go here
     SysConsumptionConsume(universe);
     SysProductionStarter(universe);
     END_TIMED_BLOCK(Production_sim);
     END_TIMED_BLOCK(SysEconomy);
+}
+
+void SysEconomy::WalletReset(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
+    auto view = universe.view<cqspc::Wallet>();
+    for (entt::entity entity : view) {
+        universe.get<cqspc::Wallet>(entity).Reset();
+    }
 }
 
 void SysEconomy::SysCommercialProcess(Universe &universe) {
@@ -71,7 +81,7 @@ void SysEconomy::SysCommercialProcess(Universe &universe) {
         // Get city population
         //
         // For now, services will just fall under general services, but a more detailed breakdown
-        // will be done in thhe future.
+        // will be done in the future.
 
         auto &commercial = universe.get<cqspc::Commercial>(entity);
         // Get population
@@ -83,7 +93,7 @@ void SysEconomy::SysCommercialProcess(Universe &universe) {
 void SysEconomy::SysEmploymentHandler(Universe& universe) {
     namespace cqspc = cqsp::common::components;
     auto view = universe.view<cqspc::Settlement, cqspc::Industry>();
-    SPDLOG_INFO("Organizing jobs for {} settlements", view.size_hint());
+    SPDLOG_TRACE("Organizing jobs for {} settlements", view.size_hint());
     for (auto entity : view) {
         // Now iterate through the population segments, and the industrial things, and determine
         // the number of jobs needed.
@@ -188,9 +198,8 @@ void SysEconomy::SysGoodSeller(Universe& universe) {
         market_stockpile += stockpile;
         auto& market = universe.get<cqspc::Market>(market_participant.market);
         // Sell goods
-
         // Adjust wallet
-        universe.get<cqspc::Wallet>(entity).balance += stockpile.MultiplyAndGetSum(market.prices);
+        universe.get<cqspc::Wallet>(entity) += stockpile.MultiplyAndGetSum(market.prices);
         stockpile.clear();
     }
 }
@@ -219,7 +228,13 @@ void cqsp::common::systems::SysEconomy::SysConsumptionConsume(Universe& universe
         // FIXME(EhWhoAmI): This leaves resources at negative level, and I don't know why
         // Good news is it doesn't go down lower than a certain amount, so maybe it's a problem with
         // the order it's doing it
-        stockpile.MultiplyAdd(consumption, Interval() * -1);
+        if (stockpile.EnoughToTransfer(consumption)) {
+            stockpile.MultiplyAdd(consumption, Interval() * -1);
+        } else {
+            // Clear the resources in it.
+            // Also add a tag that it has not enough resources
+            stockpile.RemoveResourcesLimited(consumption);
+        }
     }
 }
 
@@ -241,26 +256,24 @@ void SysEconomy::SysDemandResolver(Universe& universe) {
         // Check if it can handle it, and transfer resources on success
         if (market_stockpile.EnoughToTransfer(demand)) {
             universe.remove_if_exists<cqspc::FailedResourceTransfer>(entity);
-            if (universe.all_of<cqspc::ResourceStockpile>(entity)) {
-                // Market prices
-                // TODO(EhWhoAmI): Fix wallet so that it takes into account negative values better,
-                // So that it would buy less stuff when it has a low wallet balance
-                // Buy all the resources
-                double &balance = universe.get<cqspc::Wallet>(entity).balance;
-                double cost = demand.MultiplyAndGetSum(market.prices);
-                if (cost > balance) {
-                    // Failed transaction
-                    //universe.emplace_or_replace<cqspc::FailedResourceTransfer>(entity);
-                    // Try to buy the maximum available
-                    // Get ratio of the things, multiply by price, and then
-                    demand *= (balance / cost);
-                    cost = demand.MultiplyAndGetSum(market.prices);
-                    balance -= 0;
-                    market_stockpile.TransferTo(universe.get<cqspc::ResourceStockpile>(entity), demand);
-                } else {
-                    balance -= demand.MultiplyAndGetSum(market.prices);
-                    market_stockpile.TransferTo(universe.get<cqspc::ResourceStockpile>(entity), demand);
-                }
+            // Market prices
+            // TODO(EhWhoAmI): Fix wallet so that it takes into account negative values better,
+            // So that it would buy less stuff when it has a low wallet balance
+            // Buy all the resources
+            cqspc::Wallet& balance = universe.get<cqspc::Wallet>(entity);
+            double cost = demand.MultiplyAndGetSum(market.prices);
+            if (cost > balance) {
+                // Failed transaction
+                //universe.emplace_or_replace<cqspc::FailedResourceTransfer>(entity);
+                // Try to buy the maximum available
+                // Get ratio of the things, multiply by price, and then
+                demand *= (balance / cost);
+                cost = demand.MultiplyAndGetSum(market.prices);
+                balance = 0;
+                market_stockpile.TransferTo(universe.get<cqspc::ResourceStockpile>(entity), demand);
+            } else {
+                balance -= demand.MultiplyAndGetSum(market.prices);
+                market_stockpile.TransferTo(universe.get<cqspc::ResourceStockpile>(entity), demand);
             }
         } else {
             // Failed due to not enough resources in the market,

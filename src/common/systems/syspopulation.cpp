@@ -25,15 +25,23 @@ void cqsp::common::systems::SysPopulationGrowth::DoSystem(Universe& universe) {
     namespace cqspc = cqsp::common::components;
     auto view = universe.view<cqspc::PopulationSegment>();
     for (auto [entity, segment] : view.each()) {
+        // If it's hungry, decay population
+        if (universe.all_of<cqspc::Hunger>(entity)) {
+            // Population decrease will be about 1 percent each year.
+            float increase = 1.f - static_cast<float>(Interval()) * 0.00000114077116f;
+            segment.population *= increase;
+        }
+
         if (universe.all_of<cqspc::FailedResourceTransfer>(entity)) {
             // Then alert hunger.
             universe.emplace_or_replace<cqspc::Hunger>(entity);
         } else {
             universe.remove_if_exists<cqspc::Hunger>(entity);
         }
-        // If not hungry
+        // If not hungry, grow population
         if (!universe.all_of<cqspc::Hunger>(entity)) {
-            float increase = static_cast<float>(Interval()) / 1000.f + 1;
+            // Population growth will be about 1 percent each year.
+            float increase = static_cast<float>(Interval()) * 0.00000114077116f + 1;
             segment.population *= increase;
         }
 
@@ -52,7 +60,13 @@ void cqsp::common::systems::SysPopulationConsumption::DoSystem(Universe& univers
     for (auto [entity, segment] : view.each()) {
         // The population will feed, I guess
         entt::entity good = universe.goods["consumer_good"];
-        uint64_t consumption = segment.population * 0.0001;
+        // So a consumer good is a kilogram, and the mass of a unit of consumer good is 6500 kg.
+        // A person generated 4.9 pounds every day in the US according to the EPA.
+        // Some of it is food, some it is other resources, but we don't need to have the nuance about
+        // it yet. Since all things have to be thrown away, we'd have to assume that the generation of consumer
+        // goods is the same as the consumption of consumer goods.
+        // 4.9 pounds is roughly equal to 2.2226 kg, and divide it by 24 to get per tick, equals to 0.0926083333kg.
+        uint64_t consumption = segment.population * 0.09261;
         universe.get_or_emplace<cqspc::ResourceConsumption>(entity)[good] = consumption;
     }
 }

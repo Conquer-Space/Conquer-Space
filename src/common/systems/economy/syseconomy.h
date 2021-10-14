@@ -24,6 +24,7 @@ class SysEconomy : public ISimulationSystem {
     void DoSystem(Universe& universe);
 
  private:
+    void WalletReset(Universe& universe);
     void SysEmploymentHandler(Universe& universe);
     void SysResourceGenerator(Universe& universe);
     /// <summary>
@@ -51,7 +52,7 @@ class SysEconomy : public ISimulationSystem {
     void SysGoodSeller(Universe& universe);
 
     /// <summary>
-    /// Resolves demand to supply, delivers goods to demand
+    /// Resolves demand to supply, delivers goods to demand. Essentially it sells the goods.
     /// </summary>
     /// <param name="universe"></param>
     void SysDemandResolver(Universe& universe);

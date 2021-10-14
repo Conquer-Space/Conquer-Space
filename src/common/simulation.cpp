@@ -29,6 +29,7 @@
 #include "common/systems/movement/sysmovement.h"
 #include "common/systems/economy/syseconomy.h"
 #include "common/systems/syspopulation.h"
+#include "common/systems/economy/sysfactory.h"
 
 #include "common/components/event.h"
 #include "common/components/organizations.h"
@@ -45,6 +46,7 @@ Simulation::Simulation(Universe &_universe, scripting::ScriptInterface &script_i
     AddSystem<cqspcs::SysPopulationGrowth>();
     AddSystem<cqspcs::SysPopulationConsumption>();
     AddSystem<cqspcs::SysEconomy>();
+    AddSystem<cqspcs::SysFactory>();
     //AddSystem<cqspcs::SysOrbit>();
     AddSystem<cqspcs::SysPath>();
 }
