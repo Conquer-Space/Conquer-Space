@@ -43,45 +43,52 @@ namespace engine {
 */
 class SceneManager {
  public:
-    /**
-    * Sets the current scene. 
-    */
+    /// <summary>
+    /// Sets the current scene.
+    /// </summary>
+    /// <param name="scene"></param>
     void SetInitialScene(std::shared_ptr<Scene>& scene);
 
-    /**
-    * Sets the next scene, and the scene will be switched when <code>SwitchScene</code> is executed.
-    */
+    /// <summary>
+    /// Sets the next scene, and the scene will be switched when <code>SwitchScene</code> is executed.
+    /// </summary>
     void SetScene(std::shared_ptr<Scene>& scene);
 
-    /**
-    * Sets the next scene to the current.
-    */
+    /// <summary>
+    /// Sets the next scene to the current.
+    /// </summary>
     void SwitchScene();
 
-    /**
-    * Gets current running scene.
-    */
+    /// <summary>
+    /// Gets current running scene.
+    /// </summary>
+    /// <returns></returns>
     std::shared_ptr<Scene> GetScene();
 
-    /**
-    * Verifies if it is appropiate to switch scenes.
-    */
-    bool ToSwitchScene() { return (m_switch
-        && m_next_scene != nullptr); }
+    /// <summary>
+    /// Verifies if it is appropiate to switch scenes.
+    /// </summary>
+    /// <returns></returns>
+    bool ToSwitchScene() { return (m_switch && m_next_scene != nullptr); }
 
  private:
     std::shared_ptr<Scene> m_scene;
     std::shared_ptr<Scene> m_next_scene;
 
-    /**
-    * If the next scene has been set.
-    */
+    /// <summary>
+    /// If the next scene has been set.
+    /// </summary>
     bool m_switch;
 };
 
 class Application {
  public:
     Application(int _argc, char* _argv[]);
+    /// We assume application is run from directory. Unless it's a test,
+    /// Application is not really supposed to be used here.
+    [[deprecated("This constructor is supposed to be used for testing purposes,\
+                    and is not recommended.")]]
+    Application();
 
     /*
     * Runs the entire application.
@@ -96,8 +103,8 @@ class Application {
 
     int GetWindowWidth() const { return m_window->GetWindowWidth(); }
 
-    float GetDeltaTime() const { return deltaTime; }
-    float GetFps() const { return fps; }
+    double GetDeltaTime() const { return deltaTime; }
+    double GetFps() const { return fps; }
 
     cqsp::asset::AssetManager& GetAssetManager() { return manager; }
 

@@ -191,7 +191,7 @@ class AssetManager {
         if (!packages[token]->HasAsset(pkg_key)) {
             SPDLOG_ERROR("Cannot find asset {}", pkg_key);
             if constexpr (std::is_same<T, asset::Texture>::value) {
-                return &empty_texture;
+                //return &empty_texture;
             }
         }
         // Check if asset exists

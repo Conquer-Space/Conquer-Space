@@ -62,6 +62,8 @@ void cqsp::asset::LoadTexture(Texture& texture, unsigned char*& data,
     texture.id = LoadTexture(data, components, width, height, options);
     texture.width = width;
     texture.height = height;
+    // It's a 2d texture, so
+    texture.texture_type = GL_TEXTURE_2D;
 }
 
 void cqsp::asset::LoadCubemap(Texture &texture, std::vector<unsigned char*>& faces,
@@ -100,9 +102,12 @@ void cqsp::asset::LoadCubemap(Texture &texture, std::vector<unsigned char*>& fac
     texture.texture_type = GL_TEXTURE_CUBE_MAP;
 }
 
-cqsp::asset::Texture::Texture() { texture_type = GL_TEXTURE_2D; }
+cqsp::asset::Texture::Texture() : width(-1), height(-1), id(0), texture_type(-1) {}
 
 cqsp::asset::Texture::~Texture() {
     // Delete textures
-    glDeleteTextures(1, &id);
+    // If it's a null texture, then no need to destroy it
+    if (texture_type != -1) {
+        glDeleteTextures(1, &id);
+    }
 }
