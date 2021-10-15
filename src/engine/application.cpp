@@ -129,17 +129,17 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id,
 
 class GLWindow : public Window {
  public:
-    bool ButtonIsHeld(int btn) { return m_keys_held[btn]; }
-    bool ButtonIsReleased(int btn) { return m_keys_released[btn]; }
-    bool ButtonIsPressed(int btn) { return m_keys_pressed[btn]; }
-    double GetMouseX() { return m_mouse_x; }
-    double GetMouseY() { return m_mouse_y; }
+    bool ButtonIsHeld(int btn) const { return m_keys_held[btn]; }
+    bool ButtonIsReleased(int btn) const { return m_keys_released[btn]; }
+    bool ButtonIsPressed(int btn) const { return m_keys_pressed[btn]; }
+    double GetMouseX() const { return m_mouse_x; }
+    double GetMouseY() const { return m_mouse_y; }
 
-    bool MouseButtonIsHeld(int btn) { return m_mouse_keys_held[btn]; }
-    bool MouseButtonIsReleased(int btn) { return m_mouse_keys_released[btn]; }
-    bool MouseButtonIsPressed(int btn) { return m_mouse_keys_pressed[btn]; }
+    bool MouseButtonIsHeld(int btn) const { return m_mouse_keys_held[btn]; }
+    bool MouseButtonIsReleased(int btn) const { return m_mouse_keys_released[btn]; }
+    bool MouseButtonIsPressed(int btn) const { return m_mouse_keys_pressed[btn]; }
 
-    bool MouseDragged() {
+    bool MouseDragged() const {
         return !(m_mouse_x == m_mouse_x_on_pressed &&
                  m_mouse_y == m_mouse_y_on_pressed);
     }
@@ -256,11 +256,11 @@ class GLWindow : public Window {
         glfwSetWindowSize(window, width, height);
     }
 
-    bool WindowSizeChanged() { return window_size_changed; }
+    bool WindowSizeChanged() const { return window_size_changed; }
 
-    int GetScrollAmount() { return m_scroll_amount; }
-    int GetWindowHeight() { return m_window_height; }
-    int GetWindowWidth() { return m_window_width; }
+    int GetScrollAmount() const { return m_scroll_amount; }
+    int GetWindowHeight() const { return m_window_height; }
+    int GetWindowWidth() const { return m_window_width; }
 
     void InitWindow(int width, int height) {
         glfwInit();
@@ -308,7 +308,6 @@ class GLWindow : public Window {
     }
 
     GLFWwindow* window;
-
 
  private:
     bool window_size_changed;
@@ -621,11 +620,11 @@ void cqsp::engine::Application::SetFullScreen(bool screen) {
     }
 }
 
-void cqsp::engine::SceneManager::SetInitialScene(std::shared_ptr<Scene>& scene) {
+void cqsp::engine::SceneManager::SetInitialScene(std::shared_ptr<Scene> scene) {
     m_scene = std::move(scene);
 }
 
-void cqsp::engine::SceneManager::SetScene(std::shared_ptr<Scene>& scene) {
+void cqsp::engine::SceneManager::SetScene(std::shared_ptr<Scene> scene) {
     m_next_scene = std::move(scene);
     m_switch = true;
 }
