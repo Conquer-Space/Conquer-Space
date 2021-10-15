@@ -21,7 +21,6 @@
 #include <thread>
 
 #include <entt/entt.hpp>
-
 #include <glm/glm.hpp>
 
 #include "client/systems/sysplanetterraingenerator.h"
@@ -59,6 +58,7 @@ class SysStarSystemRenderer {
     void SeeEntity();
     void Update();
     void SeePlanet(entt::entity);
+    void DoUI();
 
     float view_x;
     float view_y;
@@ -128,6 +128,7 @@ class SysStarSystemRenderer {
     cqsp::asset::Texture* GenerateTexture(unsigned int, noise::utils::Image&);
     // How much to scale the the star system.
     const double divider = 0.01;
+    float window_ratio;
 
     glm::vec3 sun_position;
     glm::vec3 sun_color;

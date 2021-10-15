@@ -71,7 +71,7 @@ void cqsp::primitive::CreateFilledCircle(
     mesh.VAO = VAO;
     mesh.VBO = vbo;
     mesh.RenderType = GL_TRIANGLE_FAN;
-    mesh.indicies = segments+2;
+    mesh.indicies = segments + 2;
     mesh.buffer_type = 0;
 }
 

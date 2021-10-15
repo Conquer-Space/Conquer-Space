@@ -105,8 +105,7 @@ void cqsp::asset::LoadFont(Font &font, unsigned char *fontBuffer,
     glBindVertexArray(0);
 }
 
-void cqsp::asset::RenderText(cqsp::asset::ShaderProgram &shader,
-                                        Font &font, std::string text,
+void cqsp::asset::RenderText(cqsp::asset::ShaderProgram &shader, Font &font, std::string text,
                                         float x, float y, float scale, glm::vec3 color) {
     // activate corresponding render state
     shader.UseProgram();

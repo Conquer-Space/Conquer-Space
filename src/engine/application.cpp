@@ -492,8 +492,7 @@ void cqsp::engine::Application::ExitApplication() {
     glfwSetWindowShouldClose(window(m_window), true);
 }
 
-void cqsp::engine::Application::DrawText(const std::string& text,
-                                                 float x, float y) {
+void cqsp::engine::Application::DrawText(const std::string& text, float x, float y) {
     if (fontShader != nullptr && m_font != nullptr) {
         glm::mat4 projection =
             glm::ortho(0.0f, static_cast<float>(GetWindowWidth()), 0.0f,
