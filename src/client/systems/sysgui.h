@@ -30,6 +30,9 @@ class SysUserInterface {
 
     cqsp::engine::Application &GetApp() { return m_app; }
     cqsp::common::Universe &GetUniverse() { return GetApp().GetUniverse(); }
+    cqsp::asset::AssetManager &GetAssetManager() {
+        return GetApp().GetAssetManager();
+    }
     ImGuiWindowFlags window_flags = 0;
 
  private:

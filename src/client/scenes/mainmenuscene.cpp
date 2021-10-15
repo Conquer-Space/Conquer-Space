@@ -47,9 +47,9 @@ cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app)
 
 void cqsp::scene::MainMenuScene::Init() {
     using cqsp::asset::Texture;
-    m_texture = GetApp().GetAssetManager().GetAsset<cqsp::asset::Texture>("core:cqspbanner");
+    m_texture = GetAssetManager().GetAsset<cqsp::asset::Texture>("core:cqspbanner");
 
-    m_credits = GetApp().GetAssetManager().GetAsset<cqsp::asset::TextAsset>("core:credits");
+    m_credits = GetAssetManager().GetAsset<cqsp::asset::TextAsset>("core:credits");
 
     cqsp::engine::BasicRendererObject splashscreen = cqsp::engine::MakeRenderable();
     cqsp::engine::BasicRendererObject titleBanner = cqsp::engine::MakeRenderable();
@@ -57,12 +57,12 @@ void cqsp::scene::MainMenuScene::Init() {
     cqsp::primitive::MakeTexturedPaneMesh(*splashscreen);
     cqsp::primitive::MakeTexturedPaneMesh(*titleBanner);
 
-    cqsp::asset::Texture* earthrise_texture = GetApp().GetAssetManager().GetAsset<Texture>("core:earthrise");
+    cqsp::asset::Texture* earthrise_texture = GetAssetManager().GetAsset<Texture>("core:earthrise");
 
-    cqsp::asset::Texture* asset2 = GetApp().GetAssetManager().GetAsset<Texture>("core:title");
+    cqsp::asset::Texture* asset2 = GetAssetManager().GetAsset<Texture>("core:title");
 
     // Create new shader program
-    asset::ShaderProgram* program = GetApp().GetAssetManager().
+    asset::ShaderProgram* program = GetAssetManager().
         CreateShaderProgram("core:shader.pane.vert", "core:shader.texturedpane.frag");
 
     splashscreen->shaderProgram = program;
@@ -208,7 +208,7 @@ void cqsp::scene::MainMenuScene::ModWindow() {
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
         ImGuiCond_Always, ImVec2(0.5f, 0.5f));
     ImGui::Begin("Mods", &m_show_mods_window);
-    auto& asset_manager = GetApp().GetAssetManager();
+    auto& asset_manager = GetAssetManager();
 
     int height = ImGui::GetIO().DisplaySize.y * 0.8f - 75;
     ImGui::BeginChild("modlist", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f -

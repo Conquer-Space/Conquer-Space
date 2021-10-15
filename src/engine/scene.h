@@ -30,6 +30,7 @@ class Scene {
 
     Application& GetApp() { return m_application; }
     cqsp::common::Universe& GetUniverse();
+    cqsp::asset::AssetManager& GetAssetManager();
 
     virtual void Init() = 0;
     virtual void Update(float deltaTime) = 0;

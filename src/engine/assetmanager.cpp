@@ -25,7 +25,7 @@
 #include <utility>
 #include <algorithm>
 #include <regex>
-
+#include <iostream>
 #include <filesystem>
 
 #include "engine/audio/alaudioasset.h"
@@ -98,20 +98,16 @@ cqsp::asset::ShaderProgram* cqsp::asset::AssetManager::CreateShaderProgram(
 }
 
 void cqsp::asset::AssetManager::LoadDefaultTexture() {
-    unsigned char ar[] = {
-        255, 0, 255,
-        0, 0, 0,
-        0, 0, 0,
-        // Trailing bytes because some reason, opengl needs it
-        0, 0,
-        255, 0, 255
+    unsigned char texture_bytes[] = {
+        0, 0, 0, 255, 0, 255,
+        0, 0, // These two padding bytes are needed for some reason. Opengl doesn't like 2x2 images
+        255, 0, 255, 0, 0, 0
     };
 
-    // Then make image
+    unsigned char* buffer = &texture_bytes[0];
     asset::TextureLoadingOptions f;
     f.mag_filter = true;
-    unsigned char* a = &ar[0];
-    asset::LoadTexture(empty_texture, a, 3, 2, 2, f);
+    asset::LoadTexture(empty_texture, buffer, 3, 2, 2, f);
 }
 
 void cqsp::asset::AssetManager::ClearAssets() {

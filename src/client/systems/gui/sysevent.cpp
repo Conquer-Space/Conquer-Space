@@ -49,7 +49,7 @@ void cqsp::client::systems::gui::SysEvent::DoUI(int delta_time) {
                          ImGuiWindowFlags_NoScrollbar |
                          ImGuiWindowFlags_AlwaysAutoResize);
 
-        asset::Texture* texture = GetApp().GetAssetManager().GetAsset<asset::Texture>(env->image);
+        asset::Texture* texture = GetAssetManager().GetAsset<asset::Texture>(env->image);
         float multiplier = 450.f / texture->width;
         ImGui::Image(reinterpret_cast<void*>(texture->id), ImVec2(texture->width * multiplier,
                                                                     texture->height * multiplier));

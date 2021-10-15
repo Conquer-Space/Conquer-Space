@@ -24,6 +24,10 @@ cqsp::common::Universe & cqsp::engine::Scene::GetUniverse() {
     return GetApp().GetUniverse();
 }
 
+cqsp::asset::AssetManager& cqsp::engine::Scene::GetAssetManager() {
+    return GetApp().GetAssetManager();
+}
+
 cqsp::engine::EmptyScene::EmptyScene(Application& app)
     : Scene(app) {}
 
