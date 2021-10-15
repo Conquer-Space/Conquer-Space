@@ -53,14 +53,14 @@ TEST(SceneManagerTest, changeSceneTest) {
     cqspe::SceneManager scene_manager;
 
     std::shared_ptr<TestScene1> initial = std::make_shared<TestScene1>(test_application);
-    scene_manager.SetInitialScene(std::dynamic_pointer_cast<cqspe::Scene>(initial));
+    scene_manager.SetInitialScene(std::static_pointer_cast<cqspe::Scene>(initial));
     scene_manager.GetScene()->Update(0.f);
 
     ASSERT_EQ(11, initial->value);
     ASSERT_EQ(false, scene_manager.ToSwitchScene());
 
     std::shared_ptr<TestScene2> new_scene = std::make_shared<TestScene2>(test_application);
-    scene_manager.SetScene(std::dynamic_pointer_cast<cqspe::Scene>(new_scene));
+    scene_manager.SetScene(std::static_pointer_cast<cqspe::Scene>(new_scene));
 
     ASSERT_EQ(true, scene_manager.ToSwitchScene());
 

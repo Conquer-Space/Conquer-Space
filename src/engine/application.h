@@ -47,12 +47,12 @@ class SceneManager {
     /// Sets the current scene.
     /// </summary>
     /// <param name="scene"></param>
-    void SetInitialScene(std::shared_ptr<Scene>& scene);
+    void SetInitialScene(std::shared_ptr<Scene> scene);
 
     /// <summary>
     /// Sets the next scene, and the scene will be switched when <code>SwitchScene</code> is executed.
     /// </summary>
-    void SetScene(std::shared_ptr<Scene>& scene);
+    void SetScene(std::shared_ptr<Scene> scene);
 
     /// <summary>
     /// Sets the next scene to the current.
@@ -86,8 +86,8 @@ class Application {
     Application(int _argc, char* _argv[]);
     /// We assume application is run from directory. Unless it's a test,
     /// Application is not really supposed to be used here.
-    [[deprecated("This constructor is supposed to be used for testing purposes,\
-                    and is not recommended.")]]
+    [[deprecated("This constructor is supposed to be used for testing purposes,"
+                    "and is not recommended.")]]
     Application();
 
     /*

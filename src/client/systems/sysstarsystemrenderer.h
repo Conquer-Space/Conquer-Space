@@ -106,6 +106,11 @@ class SysStarSystemRenderer {
 
     float circle_size = 0.01f;
 
+    void DrawStars();
+    void DrawBodies();
+    void DrawShips();
+    void DrawSkybox();
+
     void DrawEntityName(glm::vec3 &object_pos, entt::entity ent_id);
     void DrawPlanetIcon(glm::vec3 &object_pos);
     void DrawShipIcon(glm::vec3 &object_pos);
@@ -114,10 +119,12 @@ class SysStarSystemRenderer {
     void DrawStar(glm::vec3 &object_pos);
     void DrawTerrainlessPlanet(glm::vec3 &object_pos);
     void RenderCities(const glm::vec3 &object_pos, const entt::entity &body_entity);
+    void CalculateCityPositions();
 
     glm::vec3 CalculateObjectPos(const entt::entity &);
     glm::vec3 CalculateCenteredObject(const entt::entity &);
     glm::vec3 CalculateCenteredObject(const glm::vec3 &);
+    glm::vec3 TranslateToNormalized(const glm::vec3 &);
     void CalculateCamera();
 
     void SetPlanetTexture(TerrainImageGenerator &);
@@ -139,10 +146,19 @@ class SysStarSystemRenderer {
 
     TerrainImageGenerator final_image_generator, intermediate_image_generator;
 
-    engine::AAFrameBufferRenderer overlay_renderer;
-    engine::AAFrameBufferRenderer buffer_renderer;
-    engine::AAFrameBufferRenderer planet_renderer;
-    engine::AAFrameBufferRenderer skybox_renderer;
+    engine::LayerRenderer renderer;
+
+    int ship_icon_layer;
+    int planet_icon_layer;
+    int physical_layer;
+    int skybox_layer;
+    //engine::AAFrameBufferRenderer overlay_renderer;
+    // Renders planet icons and other icons
+    //engine::AAFrameBufferRenderer buffer_renderer;
+    // Renders the physical planets
+    //engine::AAFrameBufferRenderer planet_renderer;
+    // Self explanatory
+    //engine::AAFrameBufferRenderer skybox_renderer;
 };
 }  // namespace systems
 }  // namespace client

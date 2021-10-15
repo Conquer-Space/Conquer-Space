@@ -22,6 +22,7 @@
 #include <spdlog/spdlog.h>
 
 #include "common/util/profiler.h"
+#include "engine/renderer/primitives/pane.h"
 
 void cqsp::engine::TextureRenderer::Draw() {
     if (framebuffer == 0) {
@@ -138,7 +139,7 @@ void cqsp::engine::FramebufferRenderer::Free() {
     glDeleteBuffers(1, &colorbuffer);
 }
 
-void cqsp::engine::FramebufferRenderer::NewFrame(Window& window) {
+void cqsp::engine::FramebufferRenderer::NewFrame(const Window& window) {
     BeginDraw();
     Clear();
     EndDraw();
@@ -235,7 +236,7 @@ void cqsp::engine::AAFrameBufferRenderer::RenderBuffer() {
     glActiveTexture(GL_TEXTURE0);
 }
 
-void cqsp::engine::AAFrameBufferRenderer::NewFrame(Window& window) {
+void cqsp::engine::AAFrameBufferRenderer::NewFrame(const Window& window) {
     BeginDraw();
     Clear();
     EndDraw();
@@ -247,4 +248,31 @@ void cqsp::engine::AAFrameBufferRenderer::NewFrame(Window& window) {
         Free();
         InitTexture(window.GetWindowWidth(), window.GetWindowHeight());
     }
+}
+
+using cqsp::engine::LayerRenderer;
+void LayerRenderer::BeginDraw(int layer) { framebuffers[layer]->BeginDraw(); }
+
+void LayerRenderer::EndDraw(int layer) { framebuffers[layer]->EndDraw(); }
+
+void LayerRenderer::DrawAllLayers() {
+    for (auto& frame : framebuffers) {
+        frame->RenderBuffer();
+    }
+}
+
+void LayerRenderer::NewFrame(const cqsp::engine::Window& window) {
+    for (auto& frame : framebuffers) {
+        frame->NewFrame(window);
+    }
+}
+
+int LayerRenderer::GetLayerCount() { return framebuffers.size(); }
+
+void LayerRenderer::InitFramebuffer(Framebuffer* buffer, cqsp::asset::ShaderProgram* shader,
+ const cqsp::engine::Window& window) {
+    // Initialize pane
+    buffer->InitTexture(window.GetWindowWidth(), window.GetWindowHeight());
+    primitive::MakeTexturedPaneMesh(buffer->GetMeshOutput(), true);
+    buffer->SetShader(*shader);
 }
