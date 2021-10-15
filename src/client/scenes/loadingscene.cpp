@@ -57,9 +57,9 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
         LoadFont();
 
         // Load audio
-        auto hjson = GetApp().GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("core:ui_sounds");
+        auto hjson = GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("core:ui_sounds");
         for (auto element : hjson->data) {
-            auto audio_asset = GetApp().GetAssetManager().GetAsset<cqsp::asset::AudioAsset>(element.second.to_string());
+            auto audio_asset = GetAssetManager().GetAsset<cqsp::asset::AudioAsset>(element.second.to_string());
             GetApp().GetAudioInterface().AddAudioClip(element.first, audio_asset);
         }
         // Set main menu scene
@@ -98,7 +98,7 @@ void cqsp::scene::LoadingScene::Render(float deltaTime) { }
 void cqsp::scene::LoadingScene::LoadResources() {
     // Loading goes here
     // Read core mod
-    assetLoader.manager = &GetApp().GetAssetManager();
+    assetLoader.manager = &GetAssetManager();
     assetLoader.LoadAssets();
 
     SPDLOG_INFO("Done loading items");
@@ -107,7 +107,7 @@ void cqsp::scene::LoadingScene::LoadResources() {
 }
 
 void cqsp::scene::LoadingScene::LoadFont() {
-    cqsp::asset::ShaderProgram* fontshader = new asset::ShaderProgram(*GetApp().GetAssetManager()
+    cqsp::asset::ShaderProgram* fontshader = new asset::ShaderProgram(*GetAssetManager()
         .GetAsset<cqsp::asset::Shader>("core:fontvertexshader"),
         *GetApp()
         .GetAssetManager()

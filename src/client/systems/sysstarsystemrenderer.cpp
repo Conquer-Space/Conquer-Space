@@ -678,6 +678,7 @@ cqsp::asset::Texture* SysStarSystemRenderer::GenerateTexture(
     texture->id = tex;
     texture->width = image.GetWidth();
     texture->height = image.GetHeight();
+    texture->texture_type = GL_TEXTURE_2D;
     return texture;
 }
 

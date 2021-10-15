@@ -18,18 +18,28 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <spdlog/spdlog.h>
 
 #include <algorithm>
 #include <vector>
 
 void cqsp::engine::Draw(Renderable &renderable) {
     renderable.shaderProgram->UseProgram();
-    int i = 0;
+    int i = -1;
     for (std::vector<cqsp::asset::Texture*>::iterator it = renderable.textures.begin();
                                                         it != renderable.textures.end(); ++it) {
+        i++;
+        if ((*it)->texture_type == -1) {
+            SPDLOG_WARN("Texture {} is not initialized properly", (*it)->id);
+            continue;
+        }
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture((*it)->texture_type, (*it)->id);
-        i++;
+        GLenum error = glGetError();
+        if (error != GL_NO_ERROR) {
+            SPDLOG_ERROR("Error when binding texture {}: {}", (*it)->id,
+                            error);
+        }
     }
 
     glBindVertexArray(renderable.mesh->VAO);
@@ -38,7 +48,10 @@ void cqsp::engine::Draw(Renderable &renderable) {
     } else {
         glDrawArrays(renderable.mesh->RenderType, 0, renderable.mesh->indicies);
     }
-
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR) {
+        SPDLOG_ERROR("Error when rendering renderable, {}", error);
+    }
     glBindVertexArray(0);
 
     // Reset active texture

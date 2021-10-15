@@ -56,9 +56,8 @@ unsigned int cqsp::asset::LoadTexture(unsigned char*& data,
     return texid;
 }
 
-void cqsp::asset::LoadTexture(Texture& texture, unsigned char*& data,
-                                      int components, int width, int height,
-                                      TextureLoadingOptions& options) {
+void cqsp::asset::LoadTexture(Texture& texture, unsigned char*& data, int components, int width,
+    int height, TextureLoadingOptions& options) {
     texture.id = LoadTexture(data, components, width, height, options);
     texture.width = width;
     texture.height = height;
