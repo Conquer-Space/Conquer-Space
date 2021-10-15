@@ -1,8 +1,10 @@
+# Note these files may be a bit too high resolution, so they take a long time to load
+# Made with https://wwwtyro.github.io/space-3d
 [
-    px.png
-    nx.png
-    py.png
-    ny.png
-    pz.png
-    nz.png
+    left.png
+    right.png
+    top.png
+    bottom.png
+    back.png
+    front.png
 ]
