@@ -58,6 +58,10 @@ SysStarSystemRenderer::SysStarSystemRenderer(cqsp::common::Universe &_u,
                                                 sun_color(glm::vec3(10, 10, 10)) {
 }
 
+struct Offset : public glm::vec3 {
+    using glm::vec3::vec;
+};
+
 void SysStarSystemRenderer::Initialize() {
     // Initialize meshes, etc
     cqsp::engine::Mesh* sphere_mesh = new cqsp::engine::Mesh();
@@ -153,6 +157,8 @@ void SysStarSystemRenderer::Render() {
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqsps = cqsp::common::components::ships;
     // Check for resized window
+    window_ratio = static_cast<float>(m_app.GetWindowWidth()) /
+                   static_cast<float>(m_app.GetWindowHeight());
     BEGIN_TIMED_BLOCK(System_Renderer_New_Frame)
     buffer_renderer.NewFrame(*m_app.GetWindow());
     planet_renderer.NewFrame(*m_app.GetWindow());
@@ -220,8 +226,11 @@ void SysStarSystemRenderer::Render() {
             // Set planet circle color
             planet_circle.shaderProgram->UseProgram();
             planet_circle.shaderProgram->setVec4("color", 0, 0, 1, 1);
+            buffer_renderer.BeginDraw();
             DrawEntityName(object_pos, body_entity);
+
             DrawPlanetIcon(object_pos);
+            buffer_renderer.EndDraw();
             continue;
         }
 
@@ -238,12 +247,16 @@ void SysStarSystemRenderer::Render() {
     BEGIN_TIMED_BLOCK(System_Renderer_Ship_Drawing)
     // Draw Ships
     auto ships = m_app.GetUniverse().view<ToRender, cqsps::Ship>();
+
+    overlay_renderer.BeginDraw();
     ship_overlay.shaderProgram->UseProgram();
     for (auto [ent_id] : ships.each()) {
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
         ship_overlay.shaderProgram->setVec4("color", 1, 0, 0, 1);
         DrawShipIcon(object_pos);
     }
+    overlay_renderer.EndDraw();
+
     END_TIMED_BLOCK(System_Renderer_Ship_Drawing)
 
     // Draw sky box
@@ -287,6 +300,8 @@ void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
 
 void SysStarSystemRenderer::SeeEntity() {
     namespace cqspb = cqsp::common::components::bodies;
+    namespace cqspc = cqsp::common::components;
+    namespace cqspt = cqsp::common::components::types;
     // See the object
     view_center = CalculateObjectPos(m_viewing_entity);
 
@@ -304,9 +319,26 @@ void SysStarSystemRenderer::SeeEntity() {
     generator.GenerateTerrain(1, 2);
     SetPlanetTexture(generator);
 
+    // Calculate offset for all cities on planet if they exist
+    if (m_app.GetUniverse().all_of<cqspc::Habitation>(m_viewing_entity)) {
+        std::vector<entt::entity> cities = m_app.GetUniverse()
+                .get<cqspc::Habitation>(m_viewing_entity)
+                .settlements;
+        if (!cities.empty()) {
+            for (auto city_entity : cities) {
+                if (!m_app.GetUniverse().all_of<cqspt::SurfaceCoordinate>(city_entity)) {
+                    continue;
+                }
+                auto& coord = m_app.GetUniverse().get<cqspt::SurfaceCoordinate>(city_entity);
+                m_app.GetUniverse().emplace_or_replace<Offset>(city_entity, cqspt::toVec3(coord,  1));
+            }
+        }
+        SPDLOG_INFO("Calculated offset");
+    }
+    
     // TODO(EhWhoAmI):  If it's in the process of generating, find some way to kill the gen,
     // and move on to the new terrain.
-
+    SPDLOG_INFO("Generating terrain");
     // Generate terrain
     intermediate_image_generator.seed = seed;
     final_image_generator.seed = seed;
@@ -401,23 +433,23 @@ void SysStarSystemRenderer::SeePlanet(entt::entity ent) {
     m_app.GetUniverse().emplace<RenderingPlanet>(ent);
 }
 
-void SysStarSystemRenderer::DrawEntityName(
-    glm::vec3 &object_pos, entt::entity ent_id) {
+void cqsp::client::systems::SysStarSystemRenderer::DoUI() {
+    // UI for debug in the future.
+}
+
+void SysStarSystemRenderer::DrawEntityName(glm::vec3 &object_pos, entt::entity ent_id) {
     using cqsp::common::components::Name;
-    buffer_renderer.BeginDraw();
+    std::string text = "";
     if (m_app.GetUniverse().all_of<Name>(ent_id)) {
-        std::string &name = m_app.GetUniverse().get<Name>(ent_id);
-        glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
-        if (!(pos.z >= 1 || pos.z <= -1)) {
-            m_app.DrawText(name, pos.x, pos.y);
-        }
+        text = m_app.GetUniverse().get<Name>(ent_id);
     } else {
-        glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
-        if (!(pos.z >= 1 || pos.z <= -1)) {
-            m_app.DrawText(fmt::format("{}", ent_id), pos.x, pos.y);
-        }
+        text = fmt::format("{}", ent_id);
     }
-    buffer_renderer.EndDraw();
+    glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
+    // Check if the position on screen is within bounds
+    if (!(pos.z >= 1 || pos.z <= -1) && (pos.x > 0 && pos.x < m_app.GetWindowWidth() && pos.y > 0 && pos.y < m_app.GetWindowHeight())) {
+        m_app.DrawText(text, pos.x, pos.y);
+    }
 }
 
 
@@ -429,25 +461,20 @@ void SysStarSystemRenderer::DrawPlanetIcon(glm::vec3 &object_pos) {
     }
 
     planetDispMat = glm::translate(planetDispMat,
-        glm::vec3((pos.x / m_app.GetWindowWidth() - 0.5) * 2,
+            glm::vec3((pos.x / m_app.GetWindowWidth() - 0.5) * 2,
             (pos.y / m_app.GetWindowHeight() - 0.5) * 2, 0));
 
-    planetDispMat =
-        glm::scale(planetDispMat, glm::vec3(circle_size, circle_size, circle_size));
+    planetDispMat = glm::scale(planetDispMat, glm::vec3(circle_size, circle_size, circle_size));
 
     float window_ratio = GetWindowRatio();
     planetDispMat = glm::scale(planetDispMat, glm::vec3(1, window_ratio, 1));
-    glm::mat4 twodimproj = glm::scale(glm::mat4(1.0f), glm::vec3(1, window_ratio, 1));
+    glm::mat4 twodimproj =  glm::mat4(1.0f);
 
-    buffer_renderer.BeginDraw();
-    twodimproj = glm::mat4(1.0f);
     planet_circle.shaderProgram->UseProgram();
     planet_circle.shaderProgram->setMat4("model", planetDispMat);
     planet_circle.shaderProgram->setMat4("projection", twodimproj);
 
     engine::Draw(planet_circle);
-
-    buffer_renderer.EndDraw();
 }
 
 void SysStarSystemRenderer::DrawCityIcon(glm::vec3 &object_pos) {
@@ -461,23 +488,16 @@ void SysStarSystemRenderer::DrawCityIcon(glm::vec3 &object_pos) {
         glm::vec3((pos.x / m_app.GetWindowWidth() - 0.5) * 2,
                   (pos.y / m_app.GetWindowHeight() - 0.5) * 2, 0));
 
-    planetDispMat = glm::scale(
-        planetDispMat, glm::vec3(circle_size, circle_size, circle_size));
+    planetDispMat = glm::scale(planetDispMat, glm::vec3(circle_size, circle_size, circle_size));
 
     float window_ratio = GetWindowRatio();
     planetDispMat = glm::scale(planetDispMat, glm::vec3(1, window_ratio, 1));
-    glm::mat4 twodimproj =
-        glm::scale(glm::mat4(1.0f), glm::vec3(1, window_ratio, 1));
-
-    planet_renderer.BeginDraw();
-    twodimproj = glm::mat4(1.0f);
+    glm::mat4 twodimproj = glm::mat4(1.0f);
     city.shaderProgram->UseProgram();
     city.shaderProgram->setMat4("model", planetDispMat);
     city.shaderProgram->setMat4("projection", twodimproj);
 
     engine::Draw(city);
-
-    planet_renderer.EndDraw();
 }
 
 void SysStarSystemRenderer::DrawShipIcon(glm::vec3 &object_pos) {
@@ -487,28 +507,21 @@ void SysStarSystemRenderer::DrawShipIcon(glm::vec3 &object_pos) {
         return;
     }
 
-    shipDispMat = glm::translate(
-        shipDispMat,
+    shipDispMat = glm::translate(shipDispMat,
         glm::vec3((pos.x / m_app.GetWindowWidth() - 0.5) * 2,
                   (pos.y / m_app.GetWindowHeight() - 0.5) * 2, 0));
 
-    shipDispMat = glm::scale(
-        shipDispMat,
+    shipDispMat = glm::scale(shipDispMat,
         glm::vec3(circle_size, circle_size, circle_size));
 
     float window_ratio = GetWindowRatio();
     shipDispMat = glm::scale(shipDispMat, glm::vec3(1, window_ratio, 1));
-    glm::mat4 twodimproj =
-        glm::scale(glm::mat4(1.0f), glm::vec3(1, window_ratio, 1));
-
-    overlay_renderer.BeginDraw();
-    twodimproj = glm::mat4(1.0f);
+    glm::mat4 twodimproj = glm::mat4(1.0f);
     ship_overlay.shaderProgram->UseProgram();
     ship_overlay.shaderProgram->setMat4("model", shipDispMat);
     ship_overlay.shaderProgram->setMat4("projection", twodimproj);
 
     engine::Draw(ship_overlay);
-    overlay_renderer.EndDraw();
 }
 
 void SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_pos) {
@@ -563,8 +576,8 @@ void SysStarSystemRenderer::DrawTerrainlessPlanet(glm::vec3 &object_pos) {
     planet_renderer.EndDraw();
 }
 
-void cqsp::client::systems::SysStarSystemRenderer::RenderCities(const glm::vec3 &object_pos,
-                                                                const entt::entity &body_entity) {
+void SysStarSystemRenderer::RenderCities(const glm::vec3 &object_pos,
+                                        const entt::entity &body_entity) {
     // Draw Ships
     namespace cqspc = cqsp::common::components;
     namespace cqspt = cqsp::common::components::types;
@@ -575,26 +588,22 @@ void cqsp::client::systems::SysStarSystemRenderer::RenderCities(const glm::vec3 
     if (cities.empty()) {
         return;
     }
+
+    city.shaderProgram->UseProgram();
+    city.shaderProgram->setVec4("color", 0.5, 0.5, 0.5, 1);
+    planet_renderer.BeginDraw();
     for (auto city_entity : cities) {
-        if (!m_app.GetUniverse().all_of<cqspt::SurfaceCoordinate>(city_entity)) {
-            continue;
-        }
-        auto& coord = m_app.GetUniverse().get<cqspt::SurfaceCoordinate>(city_entity);
-        // TODO(EhWhoAmI/AGM-114): Don't render the planet if the city is behind the planet
-        // Can probably be done by checking the angle of where the camera is, and the surface
-        // coordinate of the planet is facing.
-
-        // This works, but not very well, so will procrastinate this for a while.
-        /*if (abs(std::fmod(view_x, cqspt::PI) - coord.longitude) > cqspt::PI / 2.f) {
-            continue;
-        }*/
-
         // Calculate position to render
-        glm::vec3 city_pos = cqspt::toVec3(coord, 1) + object_pos;
-        city.shaderProgram->UseProgram();
-        city.shaderProgram->setVec4("color", 0.5, 0.5, 0.5, 1);
-        DrawCityIcon(city_pos);
+        glm::vec3 city_pos = m_app.GetUniverse().get<Offset>(city_entity); // = cqspt::toVec3(coord, 1) + object_pos;
+        if (glm::length(city_pos - cam_pos) < (scroll - 0.2)) {
+            // If it's reasonably close, then we can show city names
+            if (scroll < 3) {
+                DrawEntityName(city_pos, city_entity);
+            }
+            DrawCityIcon(city_pos);
+        }
     }
+    planet_renderer.EndDraw();
 }
 
 glm::vec3 SysStarSystemRenderer::CalculateObjectPos(const entt::entity &ent) {
@@ -625,6 +634,7 @@ void SysStarSystemRenderer::CalculateCamera() {
 }
 
 void SysStarSystemRenderer::SetPlanetTexture(TerrainImageGenerator &generator) {
+    SPDLOG_INFO("Set terrain");
     unsigned int gl_planet_texture = GeneratePlanetTexture(generator.GetAlbedoMap());
     unsigned int gl_planet_heightmap  = GeneratePlanetTexture(generator.GetHeightMap());
     generator.ClearData();
@@ -668,8 +678,7 @@ glm::vec3 SysStarSystemRenderer::CalculateMouseRay(const glm::vec3 &ray_nds) {
 }
 
 float SysStarSystemRenderer::GetWindowRatio() {
-    return static_cast<float>(m_app.GetWindowWidth()) /
-                                static_cast<float>(m_app.GetWindowHeight());
+    return window_ratio;
 }
 
 cqsp::asset::Texture* SysStarSystemRenderer::GenerateTexture(
