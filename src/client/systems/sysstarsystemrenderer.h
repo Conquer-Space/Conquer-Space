@@ -43,7 +43,7 @@ struct MouseOverEntity {};
 struct RenderingStarSystem {};
 
 struct RenderingPlanet {};
-
+struct FocusPlanet {};
 /*
  * Main renderer for the universe
  */
@@ -53,12 +53,12 @@ class SysStarSystemRenderer {
                           cqsp::engine::Application &);
     void Initialize();
     void OnTick();
-    void Render();
+    void Render(float deltaTime);
     void SeeStarSystem(entt::entity);
     void SeeEntity();
-    void Update();
+    void Update(float deltaTime);
     void SeePlanet(entt::entity);
-    void DoUI();
+    void DoUI(float deltaTime);
 
     float view_x;
     float view_y;
@@ -126,6 +126,7 @@ class SysStarSystemRenderer {
     glm::vec3 CalculateCenteredObject(const glm::vec3 &);
     glm::vec3 TranslateToNormalized(const glm::vec3 &);
     void CalculateCamera();
+    void MoveCamera(double deltaTime);
 
     void SetPlanetTexture(TerrainImageGenerator &);
     unsigned int GeneratePlanetTexture(noise::utils::Image& image);

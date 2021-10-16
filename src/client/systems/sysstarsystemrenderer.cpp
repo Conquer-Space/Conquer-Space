@@ -121,7 +121,7 @@ void SysStarSystemRenderer::Initialize() {
 void SysStarSystemRenderer::OnTick() {
     entt::entity current_planet = m_app.GetUniverse().view<RenderingPlanet>().front();
     if (current_planet != entt::null) {
-        view_center = CalculateObjectPos(m_viewing_entity);
+        //view_center = CalculateObjectPos(m_viewing_entity);
     }
 
     namespace cqspb = cqsp::common::components::bodies;
@@ -133,7 +133,7 @@ void SysStarSystemRenderer::OnTick() {
     }
 }
 
-void SysStarSystemRenderer::Render() {
+void SysStarSystemRenderer::Render(float deltaTime) {
     namespace cqspb = cqsp::common::components::bodies;
     // Check for resized window
     window_ratio = static_cast<float>(m_app.GetWindowWidth()) /
@@ -143,7 +143,7 @@ void SysStarSystemRenderer::Render() {
     glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     entt::entity current_planet = m_app.GetUniverse().view<RenderingPlanet>().front();
-    if (current_planet != m_viewing_entity) {
+    if (current_planet != m_viewing_entity && current_planet != entt::null) {
         SPDLOG_INFO("Switched displaying planet, seeing {}", current_planet);
         m_viewing_entity = current_planet;
         // Do terrain
@@ -241,17 +241,16 @@ void SysStarSystemRenderer::SeeEntity() {
         auto start = std::chrono::high_resolution_clock::now();
         final_image_generator.GenerateTerrain(m_universe, 5, 10);
         auto end = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
         terrain_complete = true;
     });
 }
 
-void SysStarSystemRenderer::Update() {
+void SysStarSystemRenderer::Update(float deltaTime) {
     double deltaX = previous_mouseX - m_app.GetMouseX();
     double deltaY = previous_mouseY - m_app.GetMouseY();
     if (!ImGui::GetIO().WantCaptureMouse) {
-        if (scroll + m_app.GetScrollAmount() * 3 > 1.5) {
-            scroll += m_app.GetScrollAmount() * 3;
+        if (scroll - m_app.GetScrollAmount() * 3 > 1.5) {
+            scroll -= m_app.GetScrollAmount() * 3;
         }
 
         if (m_app.MouseButtonIsHeld(GLFW_MOUSE_BUTTON_LEFT)) {
@@ -274,8 +273,14 @@ void SysStarSystemRenderer::Update() {
         if (m_app.MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) && ent != entt::null && !m_app.MouseDragged()) {
             // Then go to the object
             SeePlanet(ent);
+            // Discern between showing UI and other things
         }
     }
+
+    if (!ImGui::GetIO().WantCaptureKeyboard) {
+        MoveCamera(deltaTime);
+    }
+
     // Check if it has terrain resource rendering, and make terrain thing
     if (m_viewing_entity != entt::null &&
         m_app.GetUniverse().all_of<cqsp::client::components::PlanetTerrainRender>(m_viewing_entity)) {
@@ -316,8 +321,12 @@ void SysStarSystemRenderer::SeePlanet(entt::entity ent) {
     m_app.GetUniverse().emplace<RenderingPlanet>(ent);
 }
 
-void SysStarSystemRenderer::DoUI() {
+void SysStarSystemRenderer::DoUI(float deltaTime) {
     // UI for debug in the future.
+    ImGui::Begin("Debug ui window");
+    ImGui::TextFmt("{} {} {}", cam_pos.x, cam_pos.y, cam_pos.z);
+    ImGui::TextFmt("{} {} {}", view_center.x, view_center.y, view_center.z);
+    ImGui::End();
 }
 
 void SysStarSystemRenderer::DrawStars() {
@@ -622,6 +631,36 @@ void SysStarSystemRenderer::CalculateCamera() {
     camera_matrix = glm::lookAt(cam_pos, glm::vec3(0.f, 0.f, 0.f), cam_up);
     projection = glm::infinitePerspective(glm::radians(45.f), GetWindowRatio(), 0.1f);
     viewport = glm::vec4(0.f, 0.f, m_app.GetWindowWidth(), m_app.GetWindowHeight());
+}
+
+void SysStarSystemRenderer::MoveCamera(double deltaTime) {
+
+    // Now navigation for changing the center
+    glm::vec3 dir = (view_center - cam_pos);
+    float velocity = deltaTime * 15;
+    // Remove y axis
+    glm::vec3 forward = glm::normalize(glm::vec3(glm::sin(view_x), 0, glm::cos(view_x)));
+    glm::vec3 right = glm::normalize(glm::cross(forward, cam_up));
+    auto post_move = [&]() {
+        m_universe.clear<cqsp::client::systems::RenderingPlanet>();
+    };
+    if (m_app.ButtonIsHeld(GLFW_KEY_W)) {
+        // Get direction
+        view_center -= forward * velocity;
+        post_move();
+    }
+    if (m_app.ButtonIsHeld(GLFW_KEY_S)) {
+        view_center += forward * velocity;
+        post_move();
+    }
+    if (m_app.ButtonIsHeld(GLFW_KEY_A)) {
+        view_center += right * velocity;
+        post_move();
+    }
+    if (m_app.ButtonIsHeld(GLFW_KEY_D)) {
+        view_center -= right * velocity;
+        post_move();
+    }
 }
 
 void SysStarSystemRenderer::SetPlanetTexture(TerrainImageGenerator &generator) {

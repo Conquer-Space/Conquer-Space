@@ -50,6 +50,7 @@
 #include "client/systems/syscommand.h"
 #include "client/systems/gui/sysevent.h"
 
+// If the game is paused or not, like when escape is pressed
 bool game_halted = false;
 
 cqsp::scene::UniverseScene::UniverseScene(cqsp::engine::Application& app) : Scene(app) {}
@@ -57,14 +58,16 @@ cqsp::scene::UniverseScene::UniverseScene(cqsp::engine::Application& app) : Scen
 void cqsp::scene::UniverseScene::Init() {
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqspco = cqsp::common;
+    namespace cqspc = cqsp::common::components;
+    namespace cqsps = cqsp::client::systems;
+
     using cqspco::systems::simulation::Simulation;
     simulation = std::make_unique<Simulation>(GetUniverse(), GetApp().GetScriptInterface());
 
-    system_renderer = new cqsp::client::systems::SysStarSystemRenderer(GetUniverse(), GetApp());
+    system_renderer = new cqsps::SysStarSystemRenderer(GetUniverse(), GetApp());
     system_renderer->Initialize();
 
-    auto civilizationView =
-        GetUniverse().view<cqspco::components::Civilization, cqspco::components::Player>();
+    auto civilizationView = GetUniverse().view<cqspc::Civilization, cqspc::Player>();
     for (auto [entity, civ] : civilizationView.each()) {
         player = entity;
         player_civ = &civ;
@@ -78,19 +81,19 @@ void cqsp::scene::UniverseScene::Init() {
 
     selected_planet = player_civ->starting_planet;
 
-    AddUISystem<cqsp::client::systems::SysPlanetInformation>();
-    AddUISystem<cqsp::client::systems::SysTurnSaveWindow>();
-    AddUISystem<cqsp::client::systems::SysStarSystemTree>();
-    AddUISystem<cqsp::client::systems::SysPauseMenu>();
-    AddUISystem<cqsp::client::systems::SysDebugMenu>();
-    AddUISystem<cqsp::client::systems::SysCommand>();
-    AddUISystem<cqsp::client::systems::gui::SysEvent>();
+    AddUISystem<cqsps::SysPlanetInformation>();
+    AddUISystem<cqsps::SysTurnSaveWindow>();
+    AddUISystem<cqsps::SysStarSystemTree>();
+    AddUISystem<cqsps::SysPauseMenu>();
+    AddUISystem<cqsps::SysDebugMenu>();
+    AddUISystem<cqsps::SysCommand>();
+    AddUISystem<cqsps::gui::SysEvent>();
     simulation->tick();
 }
 
 void cqsp::scene::UniverseScene::Update(float deltaTime) {
     if (!game_halted) {
-        system_renderer->Update();
+        system_renderer->Update(deltaTime);
     }
 
     // Check for last tick
@@ -118,12 +121,12 @@ void cqsp::scene::UniverseScene::Ui(float deltaTime) {
         ui->DoUI(deltaTime);
     }
     // Render star system renderer ui
-    system_renderer->DoUI();
+    system_renderer->DoUI(deltaTime);
 }
 
 void cqsp::scene::UniverseScene::Render(float deltaTime) {
     glEnable(GL_MULTISAMPLE);
-    system_renderer->Render();
+    system_renderer->Render(deltaTime);
 }
 
 void cqsp::scene::SeeStarSystem(cqsp::engine::Application& app, entt::entity ent) {
