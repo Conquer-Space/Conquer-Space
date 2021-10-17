@@ -27,8 +27,6 @@
 #include <vector>
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/polar_coordinates.hpp>
-#include <glm/gtx/string_cast.hpp>
 
 #include "client/components/planetrendering.h"
 
@@ -200,7 +198,6 @@ void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
             generator.terrain = body.second;
             generator.GenerateTerrain(m_universe, 6, 10);
             final_generators[body.first] = generator;
-            SPDLOG_INFO("generating starsystems");
         }
         terrain_gen_complete = true;
         SPDLOG_INFO("Generated terrain");
@@ -214,7 +211,6 @@ void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
             generator.terrain = body.second;
             generator.GenerateTerrain(m_universe, 4, 5);
             intermediate_generators[body.first] = generator;
-            SPDLOG_INFO("generating starsystems");
         }
         less_detailed_gen_complete = true;
         SPDLOG_INFO("Generated terrain");

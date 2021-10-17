@@ -67,6 +67,9 @@ void cqsp::scene::UniverseScene::Init() {
     system_renderer = new cqsps::SysStarSystemRenderer(GetUniverse(), GetApp());
     system_renderer->Initialize();
 
+    galaxy_renderer = new cqsps::GalaxyRenderer(GetUniverse(), GetApp());
+    galaxy_renderer->Initialize();
+
     auto civilizationView = GetUniverse().view<cqspc::Civilization, cqspc::Player>();
     for (auto [entity, civ] : civilizationView.each()) {
         player = entity;
@@ -94,6 +97,7 @@ void cqsp::scene::UniverseScene::Init() {
 void cqsp::scene::UniverseScene::Update(float deltaTime) {
     if (!game_halted) {
         system_renderer->Update(deltaTime);
+        galaxy_renderer->Update(deltaTime);
     }
 
     // Check for last tick
@@ -101,6 +105,7 @@ void cqsp::scene::UniverseScene::Update(float deltaTime) {
         // Game tick
         simulation->tick();
         system_renderer->OnTick();
+        galaxy_renderer->OnTick();
     }
 
     GetUniverse().clear<cqsp::client::systems::MouseOverEntity>();
@@ -122,11 +127,13 @@ void cqsp::scene::UniverseScene::Ui(float deltaTime) {
     }
     // Render star system renderer ui
     system_renderer->DoUI(deltaTime);
+    galaxy_renderer->DoUI(deltaTime);
 }
 
 void cqsp::scene::UniverseScene::Render(float deltaTime) {
     glEnable(GL_MULTISAMPLE);
-    system_renderer->Render(deltaTime);
+    //system_renderer->Render(deltaTime);
+    galaxy_renderer->Render(deltaTime);
 }
 
 void cqsp::scene::SeeStarSystem(cqsp::engine::Application& app, entt::entity ent) {

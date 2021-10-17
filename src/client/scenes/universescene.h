@@ -21,6 +21,7 @@
 #include <utility>
 
 #include "client/systems/sysstarsystemrenderer.h"
+#include "client/systems/galaxyrenderer.h"
 #include "client/systems/sysgui.h"
 #include "common/components/bodies.h"
 #include "common/components/organizations.h"
@@ -75,6 +76,7 @@ class UniverseScene : public cqsp::engine::Scene {
     cqsp::common::components::bodies::StarSystem* star_system;
 
     cqsp::client::systems::SysStarSystemRenderer* system_renderer;
+    cqsp::client::systems::GalaxyRenderer* galaxy_renderer;
 
     std::unique_ptr<cqsp::common::systems::simulation::Simulation> simulation;
 

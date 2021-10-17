@@ -26,6 +26,8 @@ local function place_factory_on_market(market, city, resource, amount)
     return factory
 end
 
+local star_system_min = 0
+local star_system_max = 1000
 generators:insert({
     name = "default",
     civ_init = function()
@@ -34,7 +36,7 @@ generators:insert({
         -- Get the terrain list
         for _ = 1, 1000, 1 do
             local sys = create_star_system()
-            set_system_position(sys, random(0, 1000), random(0, 1000))
+            set_system_position(sys, random(star_system_min, star_system_max), random(star_system_min, star_system_max))
 
             -- Add star
             local star = add_star(sys)
@@ -65,7 +67,7 @@ generators:insert({
             print("Making civilization "..civ)
             -- Set planets
             local sys = create_star_system()
-            set_system_position(sys, random(0, 1000), random(0, 1000))
+            set_system_position(sys, random(star_system_min, star_system_max), random(star_system_min, star_system_max))
 
             -- Add star
             local star = add_star(sys)
