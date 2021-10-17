@@ -19,7 +19,7 @@
 #include <noiseutils.h>
 
 #include <thread>
-
+#include <atomic>
 #include <entt/entt.hpp>
 #include <glm/glm.hpp>
 
@@ -115,7 +115,7 @@ class SysStarSystemRenderer {
     void DrawPlanetIcon(glm::vec3 &object_pos);
     void DrawShipIcon(glm::vec3 &object_pos);
     void DrawCityIcon(glm::vec3 &object_pos);
-    void DrawPlanet(entt::entity terrain, glm::vec3 &object_pos);
+    void DrawPlanet(glm::vec3 &object_pos, entt::entity entity);
     void DrawStar(glm::vec3 &object_pos);
     void DrawTerrainlessPlanet(glm::vec3 &object_pos);
     void RenderCities(glm::vec3 &object_pos, const entt::entity &body_entity);
@@ -128,8 +128,13 @@ class SysStarSystemRenderer {
     void CalculateCamera();
     void MoveCamera(double deltaTime);
 
+    void CheckResourceDistRender();
+
     void SetPlanetTexture(TerrainImageGenerator &);
     unsigned int GeneratePlanetTexture(noise::utils::Image& image);
+    void CheckPlanetTerrain();
+    void CreatePlanetTextures(TerrainImageGenerator&, cqsp::asset::Texture** albedo,
+                              cqsp::asset::Texture** heightmap);
     glm::vec3 CalculateMouseRay(const glm::vec3 &ray_nds);
     float GetWindowRatio();
 
@@ -141,11 +146,14 @@ class SysStarSystemRenderer {
     glm::vec3 sun_position;
     glm::vec3 sun_color;
 
-    std::thread terrain_generator_thread, less_detailed_terrain_generator_thread;
+    std::thread generator_thread;
+    std::thread intermediate_generator_thread;
 
-    bool terrain_complete = false, second_terrain_complete = false;
-
-    TerrainImageGenerator final_image_generator, intermediate_image_generator;
+    std::atomic_bool terrain_gen_complete = false;
+    std::atomic_bool less_detailed_gen_complete = false;
+    std::map<entt::entity, TerrainImageGenerator> final_generators;
+    std::map<entt::entity, TerrainImageGenerator> intermediate_generators;
+    std::map<entt::entity, cqsp::common::components::bodies::Terrain> seeds;
 
     engine::LayerRenderer renderer;
 
