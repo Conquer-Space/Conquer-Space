@@ -141,6 +141,10 @@ void FunctionUniverseBodyGen(cqsp::engine::Application& app) {
         cqspt::UpdatePos(kinematics, orb);
     });
 
+    REGISTER_FUNCTION("set_system_position", [&](entt::entity orbital_ent, double x, double y) {
+        universe.get_or_emplace<cqspt::GalacticCoordinate>(orbital_ent, x, y);
+    });
+
     REGISTER_FUNCTION("set_radius", [&] (entt::entity body, int radius) {
         cqspb::Body &bod = universe.get<cqspb::Body>(body);
         bod.radius = radius;
@@ -330,6 +334,16 @@ void FunctionAssetManagement(cqsp::engine::Application& app) {
         // Create json object.
         return JsonToLuaObject(as->data, s).as<sol::table>();
     });
+
+    // In the future, we can create namespaces from this, such as when we have too many functions,
+    // or need to have core functions or something like that.
+    /*
+    REGISTER_FUNCTION("get_thingy", [&](sol::this_state s) -> sol::table {
+        sol::state_view lua(s);
+        auto ns = lua.create_table();
+        ns.set_function("testf", []() { return 100; });
+        return ns;
+    });*/
 }
 
 void FunctionShips(cqsp::engine::Application& app) {

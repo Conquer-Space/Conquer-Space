@@ -67,6 +67,14 @@ struct Kinematics {
     float topspeed = 0.1;
 };
 
+/// <summary>
+/// Way to position star systems on the universe.
+/// </summary>
+struct GalacticCoordinate {
+    types::light_year x;
+    types::light_year y;
+};
+
 template<typename T>
 struct PolarCoordinate_tp {
     T r;

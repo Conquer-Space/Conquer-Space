@@ -34,6 +34,7 @@ generators:insert({
         -- Get the terrain list
         for _ = 1, 1000, 1 do
             local sys = create_star_system()
+            set_system_position(sys, random(0, 1000), random(0, 1000))
 
             -- Add star
             local star = add_star(sys)
@@ -64,6 +65,7 @@ generators:insert({
             print("Making civilization "..civ)
             -- Set planets
             local sys = create_star_system()
+            set_system_position(sys, random(0, 1000), random(0, 1000))
 
             -- Add star
             local star = add_star(sys)
@@ -124,8 +126,8 @@ generators:insert({
         -- Add city
         -- TODO(EhWhoAmI): Create more complex economy, with cities specializing in stuff
         -- TODO(EhWhoAmI): Make slider for configuring the amount of cities and stuff
-        local city_count = 1
-        for index = 0, city_count, 1 do
+        local city_count = 2
+        for index = 1, city_count, 1 do
             local city = add_planet_settlement(planet, random(-90, 90), random(-180, 180))
             set_name(city, "City ".. index)
             local pop_unit = add_population_segment(city, random_normal_int(50000000, 2000000)) -- 100 million
