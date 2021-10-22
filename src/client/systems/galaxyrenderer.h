@@ -36,5 +36,13 @@ class GalaxyRenderer {
 
     cqsp::engine::Renderable star_system;
 
+    double scroll = 1;
+
+    double previous_mouseX;
+    double previous_mouseY;
+
+    double view_x = 0;
+    double view_y = 0;
+
 };
 }  // namespace cqsp::client::systems

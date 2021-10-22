@@ -123,7 +123,6 @@ void cqsp::asset::RenderText(cqsp::asset::ShaderProgram &shader, Font &font, std
 
         float xpos = x + ch.Bearing.x * scale;
         float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
-
         float w = ch.Size.x * scale;
         float h = ch.Size.y * scale;
         // update VBO for each character
