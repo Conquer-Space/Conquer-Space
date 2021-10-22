@@ -8,6 +8,6 @@ def GetCqspRoot():
     cqsp_root = os.getcwd()
     if "cqsp" not in cqsp_root:
         return ""
-    else:
-        cqsp_root = cqsp_root[:cqsp_root.rfind("cqsp")] + "cqsp/"
-        return cqsp_root
+
+    cqsp_root = cqsp_root[:cqsp_root.rfind("cqsp")] + "cqsp/"
+    return cqsp_root
