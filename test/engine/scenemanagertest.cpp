@@ -23,29 +23,6 @@
 
 namespace cqspe = cqsp::engine;
 
-class TestScene1 : public cqspe::Scene {
- public:
-    explicit TestScene1(cqspe::Application& app) : Scene(app) {}
-
-    void Init() {}
-    void Update(float deltaTime) { value++; }
-    void Ui(float deltaTime) {}
-    void Render(float deltaTime) {}
-
-    int value = 10;
-};
-
-class TestScene2 : public cqspe::Scene {
- public:
-    explicit TestScene2(cqspe::Application& app) : Scene(app) {}
-    void Init() {}
-    void Update(float deltaTime) { value++; }
-    void Ui(float deltaTime) {}
-    void Render(float deltaTime) {}
-
-    int value = 1;
-};
-
 class MockScene : public cqspe::Scene {
  public:
     MOCK_METHOD(void, Init, (), (override));
@@ -54,20 +31,30 @@ class MockScene : public cqspe::Scene {
     MOCK_METHOD(void, Render, (float deltaTime), (override));
 };
 
-TEST(SceneManagerTest, changeSceneTest) {
+using ::testing::_;
+
+TEST(SceneManagerTest, SceneChangeTest) {
     // Empty application that does nothing
     cqspe::SceneManager scene_manager;
 
-    MockScene initial;
-    std::shared_ptr<MockScene> initial_ptr(&initial);
+    std::shared_ptr<MockScene> initial_ptr = std::make_shared<MockScene>();
+    std::shared_ptr<MockScene> new_scene_ptr =  std::make_shared<MockScene>();
+
     scene_manager.SetInitialScene(std::static_pointer_cast<cqspe::Scene>(initial_ptr));
+    EXPECT_FALSE(scene_manager.ToSwitchScene());
 
-    MockScene new_scene;
-    std::shared_ptr<MockScene> new_scene_ptr(&new_scene);
+    scene_manager.SetScene(std::static_pointer_cast<cqspe::Scene>(new_scene_ptr));
+    EXPECT_TRUE(scene_manager.ToSwitchScene());
 
-    //scene_manager.SetScene(std::static_pointer_cast<cqspe::Scene>(new_scene_ptr));
-    EXPECT_CALL(new_scene, Init);
+    EXPECT_CALL(*new_scene_ptr, Update(_)).Times(0);
+    EXPECT_CALL(*initial_ptr, Update(_)).Times(1);
+
+    scene_manager.Update(0);
+
+    EXPECT_CALL(*new_scene_ptr, Init()).Times(1);
     scene_manager.SwitchScene();
-    // Clean up
-    scene_manager.GetScene().reset();
+
+    EXPECT_CALL(*new_scene_ptr, Update(_)).Times(1);
+    EXPECT_CALL(*initial_ptr, Update(_)).Times(0);
+    scene_manager.Update(0);
 }
