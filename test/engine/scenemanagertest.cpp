@@ -15,8 +15,7 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #include <gtest/gtest.h>
-
-#include <memory>
+#include <gmock/gmock.h>
 
 #include "engine/engine.h"
 #include "engine/application.h"
@@ -47,32 +46,28 @@ class TestScene2 : public cqspe::Scene {
     int value = 1;
 };
 
+class MockScene : public cqspe::Scene {
+ public:
+    MOCK_METHOD(void, Init, (), (override));
+    MOCK_METHOD(void, Update, (float deltaTime), (override));
+    MOCK_METHOD(void, Ui, (float deltaTime), (override));
+    MOCK_METHOD(void, Render, (float deltaTime), (override));
+};
+
 TEST(SceneManagerTest, changeSceneTest) {
     // Empty application that does nothing
-    cqspe::Application test_application;
     cqspe::SceneManager scene_manager;
 
-    std::shared_ptr<TestScene1> initial = std::make_shared<TestScene1>(test_application);
-    scene_manager.SetInitialScene(std::static_pointer_cast<cqspe::Scene>(initial));
-    scene_manager.GetScene()->Update(0.f);
+    MockScene initial;
+    std::shared_ptr<MockScene> initial_ptr(&initial);
+    scene_manager.SetInitialScene(std::static_pointer_cast<cqspe::Scene>(initial_ptr));
 
-    ASSERT_EQ(11, initial->value);
-    ASSERT_EQ(false, scene_manager.ToSwitchScene());
+    MockScene new_scene;
+    std::shared_ptr<MockScene> new_scene_ptr(&new_scene);
 
-    std::shared_ptr<TestScene2> new_scene = std::make_shared<TestScene2>(test_application);
-    scene_manager.SetScene(std::static_pointer_cast<cqspe::Scene>(new_scene));
-
-    ASSERT_EQ(true, scene_manager.ToSwitchScene());
-
+    //scene_manager.SetScene(std::static_pointer_cast<cqspe::Scene>(new_scene_ptr));
+    EXPECT_CALL(new_scene, Init);
     scene_manager.SwitchScene();
-
-    ASSERT_EQ(false, scene_manager.ToSwitchScene());
-
-    scene_manager.GetScene()->Update(0.f);
-    ASSERT_EQ(11, initial->value);
-    ASSERT_EQ(2, new_scene->value);
-
-    scene_manager.GetScene()->Update(0.f);
-    ASSERT_EQ(11, initial->value);
-    ASSERT_EQ(3, new_scene->value);
+    // Clean up
+    scene_manager.GetScene().reset();
 }

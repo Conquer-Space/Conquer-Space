@@ -641,3 +641,5 @@ std::shared_ptr<cqsp::engine::Scene>
 cqsp::engine::SceneManager::GetScene() {
     return m_scene;
 }
+
+void cqsp::engine::SceneManager::DeleteCurrentScene() { m_scene.reset(); }

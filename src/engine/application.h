@@ -71,6 +71,7 @@ class SceneManager {
     /// <returns></returns>
     bool ToSwitchScene() { return (m_switch && m_next_scene != nullptr); }
 
+    void DeleteCurrentScene();
  private:
     std::shared_ptr<Scene> m_scene;
     std::shared_ptr<Scene> m_next_scene;

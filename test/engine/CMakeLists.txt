@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+include(GoogleTest)
 
 file (GLOB_RECURSE CPP_FILES *.cpp)
 file (GLOB_RECURSE H_FILES *.h)
@@ -41,11 +41,11 @@ add_executable(cqsp-engine-tests ${CPP_FILES} ${H_FILES})
 
 # Test libraries
 target_link_libraries(cqsp-engine-tests gtest gtest_main)
+target_link_libraries(cqsp-engine-tests gmock)
 target_link_libraries(cqsp-engine-tests cqsp-core cqsp-engine)
 
 # External libraries
 target_link_libraries(cqsp-engine-tests
-    cqsp-core
     OpenGL::GL
     ImGui
     EnTT::EnTT
@@ -61,7 +61,7 @@ target_link_libraries(cqsp-engine-tests
     ${OPENAL_LIBRARY}
 )
 
-add_test(NAME cqsp-engine-test COMMAND cqsp-engine-tests)
+add_test(NAME cqsp-engine-test COMMAND cqsp-engine-tests WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/binaries/bin)
 
 # Disable logging
 target_compile_definitions(cqsp-engine-tests PRIVATE SPDLOG_ACTIVE_LEVEL=1000)
