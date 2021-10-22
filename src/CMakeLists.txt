@@ -41,7 +41,7 @@ endif()
 
 # Add icon file for windows
 if(WIN32)
-SET(ICON_FILE "${CMAKE_SOURCE_DIR}/binaries/data/app.rc")
+SET(ICON_FILE "${CMAKE_SOURCE_DIR}/packaging/windows/app.rc")
 else()
 SET(ICON_FILE "")
 endif()
