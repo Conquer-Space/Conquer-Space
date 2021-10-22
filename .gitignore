@@ -16,3 +16,5 @@
 
 # Files for tools and other things
 /temp/
+/__pycache__/
+*.pyc

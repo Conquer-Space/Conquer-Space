@@ -18,18 +18,14 @@
 # would be helpful to read from other places, but we'll have to find a viable way to define
 # functions a lot more fluidly
 import re
+import sys
 import os
+import os.path
+import pathlib
+sys.path.append(os.path.dirname(pathlib.Path(__file__).parent.resolve()))
+from common.cqsproot import GetCqspRoot
 
-# Get conquer space base path, which should be the folder cqsp
-# Can probably make this even more reliable if we change this to looking for a file in the root of
-# the folder, but this is simpler to implement.
-
-cqsp_root = os.getcwd()
-if "cqsp" not in cqsp_root:
-    import sys
-    sys.exit("Not running this script in a conquer space repository path, the folder name should be 'cqsp'.")
-else:
-    cqsp_root = cqsp_root[:cqsp_root.rfind("cqsp")] + "cqsp/"
+cqsp_root = GetCqspRoot()
 with open(cqsp_root + "src/common/scripting/luafunctions.cpp", "r") as f:
     data = f.read()
     # Parse data, look for 'REGISTER_FUNCTION' in the file
@@ -63,7 +59,7 @@ with open(cqsp_root + "src/common/scripting/luafunctions.cpp", "r") as f:
 
     if not os.path.exists("temp"):
         os.makedirs("temp")
-    with open("temp/luaconfig.lua", "w") as output:
+    with open(cqsp_root + "temp/luaconfig.lua", "w") as output:
         output.write("globals = {")
         # Write the varable list
         variables = ["\"" + element + "\"" for element in variables]
