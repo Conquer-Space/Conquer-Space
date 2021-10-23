@@ -18,10 +18,15 @@
 # would be helpful to read from other places, but we'll have to find a viable way to define
 # functions a lot more fluidly
 import re
+import sys
 import os
+import os.path
+import pathlib
+sys.path.append(os.path.dirname(pathlib.Path(__file__).parent.resolve()))
+from common.cqsproot import GetCqspRoot
 
-
-with open("src/common/scripting/luafunctions.cpp", "r") as f:
+cqsp_root = GetCqspRoot()
+with open(cqsp_root + "src/common/scripting/luafunctions.cpp", "r") as f:
     data = f.read()
     # Parse data, look for 'REGISTER_FUNCTION' in the file
     # The register function marco looks like this:
@@ -54,7 +59,7 @@ with open("src/common/scripting/luafunctions.cpp", "r") as f:
 
     if not os.path.exists("temp"):
         os.makedirs("temp")
-    with open("temp/luaconfig.lua", "w") as output:
+    with open(cqsp_root + "temp/luaconfig.lua", "w") as output:
         output.write("globals = {")
         # Write the varable list
         variables = ["\"" + element + "\"" for element in variables]

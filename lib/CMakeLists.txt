@@ -39,6 +39,8 @@ else()
   set(OPENAL_FOUND ON CACHE BOOL "" FORCE)
   set(OPENAL_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/lib/openal-soft/include" CACHE INTERNAL "")
   add_subdirectory(openal-soft)
+  # Things only the project has
+  set_target_properties(common ex-common OpenAL PROPERTIES FOLDER "Libs")
 endif()
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -71,8 +73,6 @@ if (NOT FREETYPE_FOUND)
 endif()
 
 add_subdirectory(libnoise)
-
-set_target_properties(aob fmt hjson libnoise spdlog uninstall PROPERTIES FOLDER "Libs")
 
 # Glad
 set(GLAD_API "gl=4.3" CACHE STRING "" FORCE)
@@ -112,3 +112,5 @@ set_target_properties(ImGui PROPERTIES FOLDER "Libs")
 
 # Copy stb_vorbis header file
 configure_file(${CMAKE_SOURCE_DIR}/lib/stb/stb_vorbis.c ${CMAKE_SOURCE_DIR}/lib/include/stb_vorbis.h COPYONLY)
+
+set_target_properties(aob fmt hjson libnoise spdlog uninstall glad glad-generate-files PROPERTIES FOLDER "Libs")
