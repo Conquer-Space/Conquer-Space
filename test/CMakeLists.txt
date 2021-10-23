@@ -16,3 +16,5 @@
 enable_testing()
 add_subdirectory(common)
 add_subdirectory(engine)
+
+set_target_properties(cqsp-engine-tests cqsp-tests PROPERTIES FOLDER "Tests")
