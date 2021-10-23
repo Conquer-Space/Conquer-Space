@@ -537,12 +537,6 @@ void cqsp::engine::Application::DrawText(const std::string& text, float x, float
 
 void cqsp::engine::Application::DrawTextNormalized(const std::string& text, float x, float y) {
     if (fontShader != nullptr && m_font != nullptr) {
-        glm::mat4 projection =
-            glm::ortho(0.0f, static_cast<float>(GetWindowWidth()), 0.0f,
-                       static_cast<float>(GetWindowHeight()));
-        fontShader->UseProgram();
-        fontShader->setMat4("projection", projection);
-
         cqsp::asset::RenderText(*fontShader, *m_font, text, (x + 1) * GetWindowWidth()/2,
                                 (y + 1) * GetWindowHeight() / 2, 16, glm::vec3(1.f, 1.f, 1.f));
     }

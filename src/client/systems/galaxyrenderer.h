@@ -44,5 +44,8 @@ class GalaxyRenderer {
     double view_x = 0;
     double view_y = 0;
 
+    entt::entity mouse_over;
+
+    glm::vec2 ConvertCoords(double x, double y);
 };
 }  // namespace cqsp::client::systems

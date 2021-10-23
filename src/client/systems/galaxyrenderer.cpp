@@ -35,8 +35,7 @@ GalaxyRenderer::GalaxyRenderer(cqsp::common::Universe &_u, cqsp::engine::Applica
                                                 m_universe(_u), m_app(_a) {}
 
 void GalaxyRenderer::Initialize() {
-    asset::ShaderProgram* circle_shader = m_app.GetAssetManager().
-                CreateShaderProgram("core:shader.pane.vert", "core:coloredcirclefrag");
+    asset::ShaderProgram_t circle_shader = m_app.GetAssetManager().MakeShader("core:shader.pane.vert", "core:coloredcirclefrag");
 
     star_system.mesh = new cqsp::engine::Mesh();
     primitive::CreateFilledCircle(*star_system.mesh);
@@ -86,36 +85,38 @@ void GalaxyRenderer::Render(float deltaTime) {
 void GalaxyRenderer::Update(float deltaTime) {
     // Check for zooming and clicking, and now we can view the star systems.
     if (!ImGui::GetIO().WantCaptureMouse) {
-        scroll -= m_app.GetScrollAmount() * 0.1;
+        if (scroll - m_app.GetScrollAmount() * 0.1 > 0.1) {
+            scroll -= m_app.GetScrollAmount() * 0.1;
+        }
         // Check for mouse drag
 
         if (m_app.MouseButtonIsHeld(GLFW_MOUSE_BUTTON_LEFT)) {
-            view_x += m_app.GetMouseX() - previous_mouseX;
-            view_y += previous_mouseY - m_app.GetMouseY();
-            // Divide it by the window scale, somehow someway.
+            view_x += (m_app.GetMouseX() - previous_mouseX) / scroll;
+            view_y += (previous_mouseY - m_app.GetMouseY()) / scroll;
         }
-        if (m_app.MouseButtonDoubleClicked(GLFW_MOUSE_BUTTON_LEFT)) {
-            // Click on the star system
-            namespace cqspc = cqsp::common::components;
-            float window_ratio = static_cast<float>(m_app.GetWindowWidth()) /
-                         static_cast<float>(m_app.GetWindowHeight());
-            auto view = m_universe.view<cqspc::bodies::StarSystem, cqspc::types::GalacticCoordinate>();
-            for (entt::entity entity : view) {
-                auto& coordinate = m_universe.get<cqspc::types::GalacticCoordinate>(entity);
-                // Normalized device coordinates
-                float x = (2.0f * m_app.GetMouseX()) / m_app.GetWindowWidth() - 1.0f;
-                float y = 1.0f - (2.0f * m_app.GetMouseY()) / m_app.GetWindowHeight();
-                // Now calculate the position of the thing
-                double posx = view_x / m_app.GetWindowWidth() * scroll + (coordinate.x / 500.f - 1) * m_app.GetWindowWidth();
-                double posy = view_y / m_app.GetWindowHeight() * scroll + (coordinate.y / 500.f - 1) * m_app.GetWindowHeight();
-                double t = glm::length(glm::vec2(x - posx, y - posy));
-                if (t < 0.01 * scroll) {
-                    SPDLOG_INFO("{}", entity);
-                }
+
+        // Click on the star system
+        mouse_over = entt::null;
+        namespace cqspc = cqsp::common::components;
+        float window_ratio = static_cast<float>(m_app.GetWindowWidth()) /
+                        static_cast<float>(m_app.GetWindowHeight());
+        auto view = m_universe.view<cqspc::bodies::StarSystem, cqspc::types::GalacticCoordinate>();
+        float x = (2.0f * m_app.GetMouseX()) / m_app.GetWindowWidth() - 1.0f;
+        float y = 1.0f - (2.0f * m_app.GetMouseY()) / m_app.GetWindowHeight();
+        SPDLOG_INFO("({}, {})", x, y);
+        for (entt::entity entity : view) {
+            auto& coordinate = m_universe.get<cqspc::types::GalacticCoordinate>(entity);
+            double posx = ((view_x + coordinate.x) / 500.f - 1) * scroll;
+            double posy = ((view_y + coordinate.y) / 500.f - 1) * scroll;
+            SPDLOG_INFO("({}, {})", posx, posy);
+            double t = glm::length(glm::vec2(x - posx, y - posy));
+            if (t < 0.1) {
+                mouse_over = entity;
             }
         }
-        previous_mouseX = m_app.GetMouseX();
-        previous_mouseY = m_app.GetMouseY();
+    //}
+    previous_mouseX = m_app.GetMouseX();
+    previous_mouseY = m_app.GetMouseY();
     }
 }
 
@@ -123,5 +124,6 @@ void GalaxyRenderer::DoUI(float deltaTime) {
     ImGui::Begin("Galaxy Renderer Debug window");
     ImGui::TextFmt("Offset: {} {}", view_x, view_y);
     ImGui::TextFmt("Scroll: {}", scroll);
+    ImGui::TextFmt("Mouse over: {}", mouse_over);
     ImGui::End();
 }
