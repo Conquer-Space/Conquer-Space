@@ -72,8 +72,6 @@ endif()
 
 add_subdirectory(libnoise)
 
-set_target_properties(aob fmt hjson libnoise spdlog uninstall PROPERTIES FOLDER "Libs")
-
 # Glad
 set(GLAD_API "gl=4.3" CACHE STRING "" FORCE)
 set(GLAD_EXPORT ON CACHE BOOL "" FORCE)
@@ -112,3 +110,5 @@ set_target_properties(ImGui PROPERTIES FOLDER "Libs")
 
 # Copy stb_vorbis header file
 configure_file(${CMAKE_SOURCE_DIR}/lib/stb/stb_vorbis.c ${CMAKE_SOURCE_DIR}/lib/include/stb_vorbis.h COPYONLY)
+
+set_target_properties(aob fmt hjson libnoise spdlog uninstall common ex-common glad glad-generate-files OpenAL PROPERTIES FOLDER "Libs")
