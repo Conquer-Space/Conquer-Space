@@ -16,12 +16,21 @@
 */
 #pragma once
 
+#include "engine/renderer/shader.h"
+#include "engine/renderer/texture.h"
+#include "engine/renderer/mesh.h"
+
 namespace cqsp {
-namespace asset {
-class Asset {
- public:
-    // Virtual destructor to make class virtual
-    virtual ~Asset(){}
+namespace engine {
+class Renderer2D {
+   public:
+    Renderer2D(cqsp::asset::ShaderProgram* tex, cqsp::asset::ShaderProgram* color);
+
+    void DrawTexturedSprite(cqsp::engine::Mesh* mesh, cqsp::asset::Texture &texture, glm::vec2 position, glm::vec2 size, float rotate);
+    void DrawColoredSprite(cqsp::engine::Mesh* mesh, glm::vec3 color, glm::vec2 position, glm::vec2 size, float rotate);
+
+    cqsp::asset::ShaderProgram* texture_shader;
+    cqsp::asset::ShaderProgram* color_shader;
 };
-}  // namespace asset
+}  // namespace engine
 }  // namespace cqsp

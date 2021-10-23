@@ -28,6 +28,7 @@
 #include "engine/application.h"
 #include "engine/renderer/renderable.h"
 #include "engine/renderer/renderer.h"
+#include "engine/renderer/renderer2d.h"
 #include "common/simulation.h"
 
 namespace cqsp {
@@ -37,6 +38,7 @@ class UniverseScene : public cqsp::engine::Scene {
     explicit UniverseScene(cqsp::engine::Application& app);
     ~UniverseScene() {
         delete system_renderer;
+        delete renderer;
     }
 
     void Init();
@@ -75,6 +77,7 @@ class UniverseScene : public cqsp::engine::Scene {
     bool to_show_planet_window = false;
 
     std::vector<std::unique_ptr<cqsp::client::systems::SysUserInterface>> user_interfaces;
+    cqsp::engine::Renderer2D* renderer;
 };
 
 void SeePlanet(cqsp::engine::Application&, entt::entity);

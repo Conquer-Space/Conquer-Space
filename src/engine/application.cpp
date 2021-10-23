@@ -408,8 +408,7 @@ int cqsp::engine::Application::destroy() {
 void cqsp::engine::Application::CalculateProjections() {
     float window_ratio = static_cast<float>(GetWindowWidth()) /
                     static_cast<float>(GetWindowHeight());
-    three_dim_projection = glm::infinitePerspective(glm::radians(45.f),
-                                                    window_ratio, 0.1f);
+    three_dim_projection = glm::infinitePerspective(glm::radians(45.f), window_ratio, 0.1f);
     two_dim_projection = glm::ortho(0.0f, static_cast<float>(GetWindowWidth()), 0.0f,
                     static_cast<float>(GetWindowHeight()));
 }

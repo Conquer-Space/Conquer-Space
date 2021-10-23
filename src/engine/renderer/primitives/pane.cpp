@@ -17,7 +17,6 @@
 #include "engine/renderer/primitives/pane.h"
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 namespace cqspe = cqsp::engine;
 void cqsp::primitive::MakeTexturedPaneMesh(cqspe::Renderable& renderable) {

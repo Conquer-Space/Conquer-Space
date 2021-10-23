@@ -17,7 +17,6 @@
 #include "engine/renderer/shader.h"
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 #include <vector>
 
@@ -62,73 +61,111 @@ std::string cqsp::asset::GetErrorLog(unsigned int shader) {
     return s;
 }
 
-void cqsp::asset::ShaderProgram::setBool(const std::string& name,
-                                   bool value) {
+using cqsp::asset::ShaderProgram;
+
+void ShaderProgram::setBool(const std::string& name, bool value) {
     glUniform1i(glGetUniformLocation(program, name.c_str()), static_cast<int>(value));
 }
 
-void cqsp::asset::ShaderProgram::setInt(const std::string& name,
-                                  int value) {
+void ShaderProgram::setInt(const std::string& name, int value) {
     glUniform1i(glGetUniformLocation(program, name.c_str()), value);
 }
 
-void cqsp::asset::ShaderProgram::setFloat(const std::string& name,
-                                    int value) {
+void ShaderProgram::setFloat(const std::string& name, float value) {
     glUniform1f(glGetUniformLocation(program, name.c_str()), static_cast<GLfloat>(value));
 }
 
-void cqsp::asset::ShaderProgram::setVec2(const std::string& name,
-                                   const glm::vec2& value) {
+void ShaderProgram::setVec2(const std::string& name, const glm::vec2& value) {
     glUniform2fv(glGetUniformLocation(program, name.c_str()), 1, &value[0]);
 }
 
-void cqsp::asset::ShaderProgram::setVec2(const std::string& name,
-                                   float x, float y) {
+void ShaderProgram::setVec2(const std::string& name, float x, float y) {
     glUniform2f(glGetUniformLocation(program, name.c_str()), x, y);
 }
 
-void cqsp::asset::ShaderProgram::setVec3(const std::string& name,
-                                   const glm::vec3& value) {
+void ShaderProgram::setVec3(const std::string& name, const glm::vec3& value) {
     glUniform3fv(glGetUniformLocation(program, name.c_str()), 1, &value[0]);
 }
 
-void cqsp::asset::ShaderProgram::setVec3(const std::string& name,
-                                   float x, float y, float z) {
+void ShaderProgram::setVec3(const std::string& name, float x, float y, float z) {
     glUniform3f(glGetUniformLocation(program, name.c_str()), x, y, z);
 }
 
-void cqsp::asset::ShaderProgram::setVec4(const std::string& name,
-                                   const glm::vec4& value) {
+void ShaderProgram::setVec4(const std::string& name, const glm::vec4& value) {
     glUniform4fv(glGetUniformLocation(program, name.c_str()), 1, &value[0]);
 }
 
-void cqsp::asset::ShaderProgram::setVec4(const std::string& name,
-                                   float x, float y, float z, float w) {
+void ShaderProgram::setVec4(const std::string& name, float x, float y, float z, float w) {
     glUniform4f(glGetUniformLocation(program, name.c_str()), x, y, z, w);
 }
 
-void cqsp::asset::ShaderProgram::setMat2(const std::string& name,
-                                   const glm::mat2& mat) {
+void ShaderProgram::setMat2(const std::string& name, const glm::mat2& mat) {
     glUniformMatrix2fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
 
-void cqsp::asset::ShaderProgram::setMat3(const std::string& name,
-                                   const glm::mat3& mat) {
+void ShaderProgram::setMat3(const std::string& name, const glm::mat3& mat) {
     glUniformMatrix3fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
 
-void cqsp::asset::ShaderProgram::setMat4(const std::string& name,
-                                   const glm::mat4& mat) {
+void ShaderProgram::setMat4(const std::string& name, const glm::mat4& mat) {
     glUniformMatrix4fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
 
-void cqsp::asset::ShaderProgram::UseProgram() {
+void ShaderProgram::Set(const std::string& name, bool value) {
+    glUniform1i(glGetUniformLocation(program, name.c_str()), static_cast<int>(value));
+}
+
+void ShaderProgram::Set(const std::string& name, int value) {
+    glUniform1i(glGetUniformLocation(program, name.c_str()), value);
+}
+
+void ShaderProgram::Set(const std::string& name, float value) {
+    glUniform1f(glGetUniformLocation(program, name.c_str()), static_cast<GLfloat>(value));
+}
+
+void ShaderProgram::Set(const std::string& name, const glm::vec2& value) {
+    glUniform2fv(glGetUniformLocation(program, name.c_str()), 1, &value[0]);
+}
+
+void ShaderProgram::Set(const std::string& name, float x, float y) {
+    glUniform2f(glGetUniformLocation(program, name.c_str()), x, y);
+}
+
+void ShaderProgram::Set(const std::string& name, const glm::vec3& value) {
+    glUniform3fv(glGetUniformLocation(program, name.c_str()), 1, &value[0]);
+}
+
+void ShaderProgram::Set(const std::string& name, float x, float y, float z) {
+    glUniform3f(glGetUniformLocation(program, name.c_str()), x, y, z);
+}
+
+void ShaderProgram::Set(const std::string& name, const glm::vec4& value) {
+    glUniform4fv(glGetUniformLocation(program, name.c_str()), 1, &value[0]);
+}
+
+void ShaderProgram::Set(const std::string& name, float x, float y, float z, float w) {
+    glUniform4f(glGetUniformLocation(program, name.c_str()), x, y, z, w);
+}
+
+void ShaderProgram::Set(const std::string& name, const glm::mat2& mat) {
+    glUniformMatrix2fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+}
+
+void ShaderProgram::Set(const std::string& name, const glm::mat3& mat) {
+    glUniformMatrix3fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+}
+
+void ShaderProgram::Set(const std::string& name, const glm::mat4& mat) {
+    glUniformMatrix4fv(glGetUniformLocation(program, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+}
+
+void ShaderProgram::UseProgram() {
     glUseProgram(program);
 }
 
-cqsp::asset::ShaderProgram::ShaderProgram() { program = -1; }
+ShaderProgram::ShaderProgram() { program = -1; }
 
-cqsp::asset::ShaderProgram::ShaderProgram(Shader& vert, Shader& frag) {
+ShaderProgram::ShaderProgram(Shader& vert, Shader& frag) {
     program = glCreateProgram();
     glAttachShader(program, vert.id);
     glAttachShader(program, frag.id);
