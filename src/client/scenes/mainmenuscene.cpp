@@ -40,7 +40,7 @@
 #include "client/systems/sysoptionswindow.h"
 #include "common/version.h"
 
-#include "engine/paths.h"
+#include "common/util/paths.h"
 
 cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app)
     : cqsp::engine::Scene(app) { }

@@ -28,7 +28,7 @@
 #include "client/scenes/mainmenuscene.h"
 #include "engine/gui.h"
 #include "common/scripting/scripting.h"
-#include "engine/paths.h"
+#include "common/util/paths.h"
 
 cqsp::scene::LoadingScene::LoadingScene(
     cqsp::engine::Application& app)

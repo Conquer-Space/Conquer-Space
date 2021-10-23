@@ -29,7 +29,7 @@
 #include <filesystem>
 
 #include "engine/audio/alaudioasset.h"
-#include "engine/paths.h"
+#include "common/util/paths.h"
 
 // Definition for prototypes
 namespace cqsp::asset {
@@ -124,7 +124,8 @@ void cqsp::asset::AssetManager::SaveModList() {
         enabled_mods[it->second.name] = it->second.enabled;
     }
     // Write to file
-    Hjson::MarshalToFile(enabled_mods, (std::filesystem::path(cqsp::engine::GetCqspSavePath())/"mod.hjson").string());
+    std::string mods_path = (std::filesystem::path(common::util::GetCqspSavePath())/"mod.hjson").string();
+    Hjson::MarshalToFile(enabled_mods, mods_path);
     SPDLOG_INFO("Writing mods");
 }
 
@@ -146,7 +147,7 @@ namespace cqspa = cqsp::asset;
 void cqsp::asset::AssetLoader::LoadAssets() {
     // Load enabled mods
     // Load core
-    std::filesystem::path data_path(cqsp::engine::GetCqspDataPath());
+    std::filesystem::path data_path(cqsp::common::util::GetCqspDataPath());
     std::filesystem::recursive_directory_iterator it(data_path);
     manager->packages["core"] = LoadPackage((data_path/"core").string());
     SPDLOG_INFO("Loaded core");
@@ -169,7 +170,7 @@ void cqsp::asset::AssetLoader::LoadAssets() {
     all_mods["core"] = true;
 
     // Load other packages
-    std::filesystem::path save_path(cqsp::engine::GetCqspSavePath());
+    std::filesystem::path save_path(cqsp::common::util::GetCqspSavePath());
     std::filesystem::path mods_folder = save_path / "mods";
     if (!std::filesystem::exists(mods_folder)) {
         std::filesystem::create_directories(mods_folder);
@@ -207,7 +208,7 @@ void cqsp::asset::AssetLoader::LoadAssets() {
 }
 
 std::string cqsp::asset::AssetLoader::GetModFilePath() {
-    return (std::filesystem::path(cqsp::engine::GetCqspSavePath())/"mod.hjson").string();
+    return (std::filesystem::path(cqsp::common::util::GetCqspSavePath())/"mod.hjson").string();
 }
 
 std::string cqsp::asset::AssetLoader::LoadModPrototype(const std::string& path_string) {

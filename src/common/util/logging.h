@@ -17,33 +17,16 @@
 #pragma once
 
 #include <spdlog/spdlog.h>
-#include <spdlog/sinks/ringbuffer_sink.h>
 
-#include <string_view>
-#include <vector>
-#include <string>
 #include <memory>
+#include <string>
 
-#include <sol/sol.hpp>
-
-namespace cqsp {
-namespace scripting {
-class ScriptInterface : public sol::state {
- public:
-    using sol::state::state;
-    ScriptInterface();
-    void RunScript(std::string_view str);
-    void ParseResult(const sol::protected_function_result&);
-    void RegisterDataGroup(std::string_view name);
-    void Init();
-    int GetLength(std::string_view);
-
-    std::vector<std::string> values;
-
-    std::vector<std::string> GetLogs();
- private:
-    std::shared_ptr<spdlog::logger> logger;
-    std::shared_ptr<spdlog::sinks::ringbuffer_sink_mt> ringbuffer_sink;
-};
-}  // namespace scripting
-}  // namespace cqsp
+namespace cqsp::common::util {
+/// <summary>
+/// Initializes a logger with the right outputs based on the various configurations
+/// </summary>
+/// <param name="name"></param>
+/// <param name="error">If it wants an error output file, then it will output it as "{name}.error.txt</param>
+/// <returns></returns>
+std::shared_ptr<spdlog::logger> make_logger(std::string name, bool error = false);
+}  // namespace cqsp::common::util
