@@ -74,8 +74,8 @@ endif()
 find_package(GLFW3 REQUIRED)
 find_package(OpenGL REQUIRED)
 
-find_package(GIT)
-if(Git_FOUND)
+find_package(Git)
+if(GIT_FOUND)
 execute_process(
   COMMAND git describe --tags --always --dirty --match "[0-9]*.*"
   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
