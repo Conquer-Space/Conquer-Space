@@ -11,5 +11,8 @@
 /src/common/version.h
 /lib/include/stb_vorbis.h
 
+# Packaging stuff
+*.aps
+
 # Files for tools and other things
 /temp/

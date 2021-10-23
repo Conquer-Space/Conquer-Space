@@ -74,12 +74,17 @@ endif()
 find_package(GLFW3 REQUIRED)
 find_package(OpenGL REQUIRED)
 
+find_package(GIT)
+if(Git_FOUND)
 execute_process(
   COMMAND git describe --tags --always --dirty --match "[0-9]*.*"
   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
   OUTPUT_VARIABLE GIT_INFO
   OUTPUT_STRIP_TRAILING_WHITESPACE
 )
+elseif()
+SET(GIT_INFO "00000")
+endif()
 
 add_subdirectory(lib)
 add_subdirectory(src)

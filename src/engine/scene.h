@@ -27,8 +27,11 @@ namespace engine {
 class Scene {
  public:
     explicit Scene(Application& app);
+    Scene() : m_application(nullptr) {}
 
-    Application& GetApp() { return m_application; }
+    virtual ~Scene() {}
+
+    Application& GetApp() { return (*m_application); }
     cqsp::common::Universe& GetUniverse();
     cqsp::asset::AssetManager& GetAssetManager();
 
@@ -38,7 +41,7 @@ class Scene {
     virtual void Render(float deltaTime) = 0;
 
  private:
-    Application& m_application;
+    Application* m_application;
 };
 
 class EmptyScene : public Scene {

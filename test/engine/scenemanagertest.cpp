@@ -15,8 +15,7 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #include <gtest/gtest.h>
-
-#include <memory>
+#include <gmock/gmock.h>
 
 #include "engine/engine.h"
 #include "engine/application.h"
@@ -24,55 +23,38 @@
 
 namespace cqspe = cqsp::engine;
 
-class TestScene1 : public cqspe::Scene {
+class MockScene : public cqspe::Scene {
  public:
-    explicit TestScene1(cqspe::Application& app) : Scene(app) {}
-
-    void Init() {}
-    void Update(float deltaTime) { value++; }
-    void Ui(float deltaTime) {}
-    void Render(float deltaTime) {}
-
-    int value = 10;
+    MOCK_METHOD(void, Init, (), (override));
+    MOCK_METHOD(void, Update, (float deltaTime), (override));
+    MOCK_METHOD(void, Ui, (float deltaTime), (override));
+    MOCK_METHOD(void, Render, (float deltaTime), (override));
 };
 
-class TestScene2 : public cqspe::Scene {
- public:
-    explicit TestScene2(cqspe::Application& app) : Scene(app) {}
-    void Init() {}
-    void Update(float deltaTime) { value++; }
-    void Ui(float deltaTime) {}
-    void Render(float deltaTime) {}
+using ::testing::_;
 
-    int value = 1;
-};
-
-TEST(SceneManagerTest, changeSceneTest) {
+TEST(SceneManagerTest, SceneChangeTest) {
     // Empty application that does nothing
-    cqspe::Application test_application;
     cqspe::SceneManager scene_manager;
 
-    std::shared_ptr<TestScene1> initial = std::make_shared<TestScene1>(test_application);
-    scene_manager.SetInitialScene(std::static_pointer_cast<cqspe::Scene>(initial));
-    scene_manager.GetScene()->Update(0.f);
+    std::shared_ptr<MockScene> initial_ptr = std::make_shared<MockScene>();
+    std::shared_ptr<MockScene> new_scene_ptr =  std::make_shared<MockScene>();
 
-    ASSERT_EQ(11, initial->value);
-    ASSERT_EQ(false, scene_manager.ToSwitchScene());
+    scene_manager.SetInitialScene(std::static_pointer_cast<cqspe::Scene>(initial_ptr));
+    EXPECT_FALSE(scene_manager.ToSwitchScene());
 
-    std::shared_ptr<TestScene2> new_scene = std::make_shared<TestScene2>(test_application);
-    scene_manager.SetScene(std::static_pointer_cast<cqspe::Scene>(new_scene));
+    scene_manager.SetScene(std::static_pointer_cast<cqspe::Scene>(new_scene_ptr));
+    EXPECT_TRUE(scene_manager.ToSwitchScene());
 
-    ASSERT_EQ(true, scene_manager.ToSwitchScene());
+    EXPECT_CALL(*new_scene_ptr, Update(_)).Times(0);
+    EXPECT_CALL(*initial_ptr, Update(_)).Times(1);
 
+    scene_manager.Update(0);
+
+    EXPECT_CALL(*new_scene_ptr, Init()).Times(1);
     scene_manager.SwitchScene();
 
-    ASSERT_EQ(false, scene_manager.ToSwitchScene());
-
-    scene_manager.GetScene()->Update(0.f);
-    ASSERT_EQ(11, initial->value);
-    ASSERT_EQ(2, new_scene->value);
-
-    scene_manager.GetScene()->Update(0.f);
-    ASSERT_EQ(11, initial->value);
-    ASSERT_EQ(3, new_scene->value);
+    EXPECT_CALL(*new_scene_ptr, Update(_)).Times(1);
+    EXPECT_CALL(*initial_ptr, Update(_)).Times(0);
+    scene_manager.Update(0);
 }

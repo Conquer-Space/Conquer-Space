@@ -38,9 +38,9 @@
 namespace cqsp {
 namespace engine {
 
-/**
-* Manages scenes for the application.
-*/
+/// <summary>
+/// Manages scenes for the application.
+/// </summary>
 class SceneManager {
  public:
     /// <summary>
@@ -70,6 +70,14 @@ class SceneManager {
     /// </summary>
     /// <returns></returns>
     bool ToSwitchScene() { return (m_switch && m_next_scene != nullptr); }
+
+    void Update(float deltaTime);
+
+    void Ui(float deltaTime);
+
+    void Render(float deltaTime);
+
+    void DeleteCurrentScene();
 
  private:
     std::shared_ptr<Scene> m_scene;

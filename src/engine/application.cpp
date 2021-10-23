@@ -445,7 +445,7 @@ void cqsp::engine::Application::run() {
         }
 
         // Update
-        m_scene_manager.GetScene()->Update(deltaTime);
+        m_scene_manager.Update(deltaTime);
 
         // Init imgui
         ImGui_ImplOpenGL3_NewFrame();
@@ -453,7 +453,7 @@ void cqsp::engine::Application::run() {
         ImGui::NewFrame();
 
         // Gui
-        m_scene_manager.GetScene()->Ui(deltaTime);
+        m_scene_manager.Ui(deltaTime);
 
         BEGIN_TIMED_BLOCK(ImGui_Render);
         ImGui::Render();
@@ -464,7 +464,7 @@ void cqsp::engine::Application::run() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         BEGIN_TIMED_BLOCK(Scene_Render);
-        m_scene_manager.GetScene()->Render(deltaTime);
+        m_scene_manager.Render(deltaTime);
         END_TIMED_BLOCK(Scene_Render);
 
         BEGIN_TIMED_BLOCK(ImGui_Render_Draw);
@@ -621,11 +621,11 @@ void cqsp::engine::Application::SetFullScreen(bool screen) {
 }
 
 void cqsp::engine::SceneManager::SetInitialScene(std::shared_ptr<Scene> scene) {
-    m_scene = std::move(scene);
+    m_scene = scene;
 }
 
 void cqsp::engine::SceneManager::SetScene(std::shared_ptr<Scene> scene) {
-    m_next_scene = std::move(scene);
+    m_next_scene = scene;
     m_switch = true;
 }
 
@@ -637,7 +637,14 @@ void cqsp::engine::SceneManager::SwitchScene() {
     m_switch = false;
 }
 
-std::shared_ptr<cqsp::engine::Scene>
-cqsp::engine::SceneManager::GetScene() {
+std::shared_ptr<cqsp::engine::Scene> cqsp::engine::SceneManager::GetScene() {
     return m_scene;
 }
+
+void cqsp::engine::SceneManager::DeleteCurrentScene() { m_scene.reset(); }
+
+void cqsp::engine::SceneManager::Update(float deltaTime) { m_scene->Update(deltaTime); }
+
+void cqsp::engine::SceneManager::Ui(float deltaTime) { m_scene->Ui(deltaTime); }
+
+void cqsp::engine::SceneManager::Render(float deltaTime) { m_scene->Render(deltaTime); }

@@ -19,12 +19,6 @@ find_package(Threads)
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/stb)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
-include_directories(${CMAKE_SOURCE_DIR}/lib/freetype/include)
-include_directories(${CMAKE_SOURCE_DIR}/lib/fmt/include)
-include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/include)
-# Lua
-include_directories(${CMAKE_SOURCE_DIR}/lib/lua/)
-include_directories(${CMAKE_SOURCE_DIR}/lib/sol2/include)
 
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui)
 include_directories(${CMAKE_SOURCE_DIR}/lib/implot)
@@ -41,7 +35,7 @@ endif()
 
 # Add icon file for windows
 if(WIN32)
-SET(ICON_FILE "${CMAKE_SOURCE_DIR}/binaries/data/app.o")
+SET(ICON_FILE "${CMAKE_SOURCE_DIR}/packaging/windows/app.rc")
 else()
 SET(ICON_FILE "")
 endif()
