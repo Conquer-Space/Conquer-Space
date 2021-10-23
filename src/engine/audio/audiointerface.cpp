@@ -37,7 +37,9 @@ void AudioInterface::Initialize() {
     InitListener();
 
     // Load playlist
-    std::ifstream playlist_input = std::ifstream(cqsp::common::util::GetCqspDataPath() + "/core/music/music_list.hjson");
+    // TODO(EhWhoAmI): Load playlist from all mod folders
+    std::string music_playlist_path = cqsp::common::util::GetCqspDataPath() + "/core/music/music_list.hjson";
+    std::ifstream playlist_input = std::ifstream(music_playlist_path);
     if (playlist_input.good()) {
         Hjson::DecoderOptions decOpt;
         playlist_input >> Hjson::StreamDecoder(playlist, decOpt);

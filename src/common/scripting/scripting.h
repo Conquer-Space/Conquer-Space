@@ -22,6 +22,7 @@
 #include <string_view>
 #include <vector>
 #include <string>
+#include <memory>
 
 #include <sol/sol.hpp>
 
@@ -43,7 +44,6 @@ class ScriptInterface : public sol::state {
  private:
     std::shared_ptr<spdlog::logger> logger;
     std::shared_ptr<spdlog::sinks::ringbuffer_sink_mt> ringbuffer_sink;
-
 };
 }  // namespace scripting
 }  // namespace cqsp

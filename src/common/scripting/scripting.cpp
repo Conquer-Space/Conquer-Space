@@ -20,6 +20,7 @@
 
 #include <string>
 #include <iostream>
+#include <memory>
 
 #include "common/util/logging.h"
 

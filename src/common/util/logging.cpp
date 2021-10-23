@@ -18,12 +18,15 @@
 
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+
 #include <filesystem>
+#include <vector>
+#include <string>
 
 #include "common/util/paths.h"
 
 // Change this if you need
-static const std::string DEFAULT_PATTERN = "[%T.%e] [%^%l%$] [%n] [%s:%#] %v";
+static const char* DEFAULT_PATTERN = "[%T.%e] [%^%l%$] [%n] [%s:%#] %v";
 
 std::shared_ptr<spdlog::logger> cqsp::common::util::make_logger(std::string name, bool error) {
     std::shared_ptr<spdlog::logger> logger;

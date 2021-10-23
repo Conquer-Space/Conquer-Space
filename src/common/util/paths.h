@@ -23,4 +23,4 @@ extern char* exe_path;
 std::string GetCqspSavePath();
 std::string GetCqspExePath();
 std::string GetCqspDataPath();
-}  // namespace cqsp::engine
+}  // namespace cqsp::common::util

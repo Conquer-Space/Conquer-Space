@@ -18,6 +18,9 @@
 
 #include <spdlog/spdlog.h>
 
+#include <memory>
+#include <string>
+
 namespace cqsp::common::util {
 /// <summary>
 /// Initializes a logger with the right outputs based on the various configurations
@@ -26,4 +29,4 @@ namespace cqsp::common::util {
 /// <param name="error">If it wants an error output file, then it will output it as "{name}.error.txt</param>
 /// <returns></returns>
 std::shared_ptr<spdlog::logger> make_logger(std::string name, bool error = false);
-}
+}  // namespace cqsp::common::util

@@ -124,7 +124,8 @@ void cqsp::asset::AssetManager::SaveModList() {
         enabled_mods[it->second.name] = it->second.enabled;
     }
     // Write to file
-    Hjson::MarshalToFile(enabled_mods, (std::filesystem::path(cqsp::common::util::GetCqspSavePath())/"mod.hjson").string());
+    std::string mods_path = (std::filesystem::path(common::util::GetCqspSavePath())/"mod.hjson").string();
+    Hjson::MarshalToFile(enabled_mods, mods_path);
     SPDLOG_INFO("Writing mods");
 }
 
