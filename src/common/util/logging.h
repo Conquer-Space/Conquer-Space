@@ -16,11 +16,14 @@
 */
 #pragma once
 
-#include <string>
+#include <spdlog/spdlog.h>
 
-namespace cqsp::engine {
-extern char* exe_path;
-std::string GetCqspSavePath();
-std::string GetCqspExePath();
-std::string GetCqspDataPath();
-}  // namespace cqsp::engine
+namespace cqsp::common::util {
+/// <summary>
+/// Initializes a logger with the right outputs based on the various configurations
+/// </summary>
+/// <param name="name"></param>
+/// <param name="error">If it wants an error output file, then it will output it as "{name}.error.txt</param>
+/// <returns></returns>
+std::shared_ptr<spdlog::logger> make_logger(std::string name, bool error = false);
+}

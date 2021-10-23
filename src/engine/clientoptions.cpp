@@ -16,7 +16,7 @@
 */
 #include "engine/clientoptions.h"
 
-#include "engine/paths.h"
+#include "common/util/paths.h"
 
 void cqsp::client::ClientOptions::LoadOptions(std::istream& inputstream) {
     Hjson::DecoderOptions decOpt;
@@ -45,5 +45,5 @@ Hjson::Value cqsp::client::ClientOptions::GetDefaultOptions() {
 }
 
 std::string cqsp::client::ClientOptions::GetDefaultLocation() {
-    return cqsp::engine::GetCqspSavePath() + "/settings.hjson";
+    return cqsp::common::util::GetCqspSavePath() + "/settings.hjson";
 }

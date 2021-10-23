@@ -16,19 +16,18 @@
 */
 #include "engine/audio/audiointerface.h"
 
-#include <spdlog/sinks/stdout_color_sinks.h>
-
 #include <chrono>
 #include <string>
 
 #include "engine/audio/alaudioasset.h"
-#include "engine/paths.h"
+#include "common/util/logging.h"
+#include "common/util/paths.h"
 
 using cqsp::engine::audio::AudioInterface;
 using cqsp::asset::AudioAsset;
 
 AudioInterface::AudioInterface() {
-    logger = spdlog::stdout_color_mt("audio");
+    logger = cqsp::common::util::make_logger("audio");
 }
 
 void AudioInterface::Initialize() {
@@ -38,7 +37,7 @@ void AudioInterface::Initialize() {
     InitListener();
 
     // Load playlist
-    std::ifstream playlist_input = std::ifstream(cqsp::engine::GetCqspDataPath() + "/core/music/music_list.hjson");
+    std::ifstream playlist_input = std::ifstream(cqsp::common::util::GetCqspDataPath() + "/core/music/music_list.hjson");
     if (playlist_input.good()) {
         Hjson::DecoderOptions decOpt;
         playlist_input >> Hjson::StreamDecoder(playlist, decOpt);
@@ -80,7 +79,7 @@ void AudioInterface::StartWorker() {
             selected_track++;
             selected_track %= playlist.size();
             Hjson::Value track_info = playlist[selected_track];
-            std::string track_file = cqsp::engine::GetCqspDataPath() + "/core/music/" + track_info["file"];
+            std::string track_file = cqsp::common::util::GetCqspDataPath() + "/core/music/" + track_info["file"];
             SPDLOG_LOGGER_INFO(logger, "Loading track \'{}\'", track_info["name"]);
             auto mfile = std::ifstream(track_file, std::ios::binary);
             if (mfile.good()) {

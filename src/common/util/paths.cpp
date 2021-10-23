@@ -14,11 +14,11 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "engine/paths.h"
+#include "common/util/paths.h"
 
 #include <filesystem>
 
-char* cqsp::engine::exe_path = "";
+char* cqsp::common::util::exe_path = "";
 
 #ifdef _WIN32
 #include <windows.h>
@@ -43,7 +43,7 @@ char* get_home_dir(uid_t uid) {
 }
 #endif
 
-std::string cqsp::engine::GetCqspSavePath() {
+std::string cqsp::common::util::GetCqspSavePath() {
     std::string directory = "";
     std::string dirname = "cqsp";
 #ifdef _WIN32
@@ -68,14 +68,14 @@ std::string cqsp::engine::GetCqspSavePath() {
     return filesystem.string();
 }
 
-std::string cqsp::engine::GetCqspExePath() {
+std::string cqsp::common::util::GetCqspExePath() {
     // Get current path
     std::filesystem::path p(exe_path);
     p = p.remove_filename();
     return std::filesystem::canonical(p).string();
 }
 
-std::string cqsp::engine::GetCqspDataPath() {
+std::string cqsp::common::util::GetCqspDataPath() {
     // If it's cmake, then the directory may be different
 #if defined(_DEBUG) && defined(_MSC_VER)
     // so if it's debug, we'd automatically assume we're running from the local windows debugger

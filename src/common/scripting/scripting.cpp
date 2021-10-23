@@ -16,19 +16,23 @@
 */
 #include "common/scripting/scripting.h"
 
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 #include <fmt/format.h>
 
 #include <string>
 #include <iostream>
 
-auto lua_logger = spdlog::stdout_color_mt("lua");
+#include "common/util/logging.h"
 
 using cqsp::scripting::ScriptInterface;
 
 ScriptInterface::ScriptInterface() {
     open_libraries(sol::lib::base, sol::lib::table, sol::lib::math, sol::lib::package);
+    // Initialize loggers
+    logger = cqsp::common::util::make_logger("lua");
+    // Add a sink to get the scripting log
+    ringbuffer_sink = std::make_shared<spdlog::sinks::ringbuffer_sink_mt>(128);
+    ringbuffer_sink->set_pattern("%v");
+    logger->sinks().push_back(ringbuffer_sink);
 }
 
 void ScriptInterface::ParseResult(const sol::protected_function_result& result) {
@@ -36,9 +40,10 @@ void ScriptInterface::ParseResult(const sol::protected_function_result& result) 
         sol::error err = result;
         std::string what = err.what();
         values.push_back(fmt::format("{}", what));
-        SPDLOG_LOGGER_INFO(lua_logger, "{}", what);
+        SPDLOG_LOGGER_INFO(logger, "{}", what);
     }
 }
+
 void ScriptInterface::RunScript(std::string_view str) {
     ParseResult(safe_script(str));
 }
@@ -59,19 +64,20 @@ void ScriptInterface::Init() {
     // Set print functions
     set_function("print", sol::overload(
         [&] (const char * y) {
-            values.push_back(fmt::format("{}", y));
-            SPDLOG_LOGGER_INFO(lua_logger, "{}", y);
+            SPDLOG_LOGGER_INFO(logger, "{}", y);
         },
         [&](int y) {
-            values.push_back(fmt::format("{}", y));
-            SPDLOG_LOGGER_INFO(lua_logger, "{}", y);
+            SPDLOG_LOGGER_INFO(logger, "{}", y);
         },
         [&](double y) {
-            values.push_back(fmt::format("{}", y));
-            SPDLOG_LOGGER_INFO(lua_logger, "{}", y);
+            SPDLOG_LOGGER_INFO(logger, "{}", y);
     }));
 }
 
 int ScriptInterface::GetLength(std::string_view a) {
     return static_cast<int>((*this)[a]["len"]);
+}
+
+std::vector<std::string> cqsp::scripting::ScriptInterface::GetLogs() {
+    return ringbuffer_sink->last_formatted();
 }

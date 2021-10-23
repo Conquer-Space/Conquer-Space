@@ -16,6 +16,9 @@
 */
 #pragma once
 
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/ringbuffer_sink.h>
+
 #include <string_view>
 #include <vector>
 #include <string>
@@ -35,6 +38,12 @@ class ScriptInterface : public sol::state {
     int GetLength(std::string_view);
 
     std::vector<std::string> values;
+
+    std::vector<std::string> GetLogs();
+ private:
+    std::shared_ptr<spdlog::logger> logger;
+    std::shared_ptr<spdlog::sinks::ringbuffer_sink_mt> ringbuffer_sink;
+
 };
 }  // namespace scripting
 }  // namespace cqsp

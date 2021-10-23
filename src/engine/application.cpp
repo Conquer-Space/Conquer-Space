@@ -41,7 +41,8 @@
 #include "common/util/profiler.h"
 #include "common/version.h"
 #include "engine/audio/audiointerface.h"
-#include "engine/paths.h"
+#include "common/util/paths.h"
+#include "common/util/logging.h"
 #include "engine/cqspgui.h"
 
 namespace cqsp::engine {
@@ -405,7 +406,7 @@ int cqsp::engine::Application::destroy() {
 }
 
 cqsp::engine::Application::Application(int _argc, char* _argv[]) : argc(_argc), argv(_argv) {
-    cqsp::engine::exe_path = argv[0];
+    cqsp::common::util::exe_path = argv[0];
 
     // Get exe path
     std::ifstream config_path(m_client_options.GetDefaultLocation());
@@ -509,10 +510,10 @@ void cqsp::engine::Application::InitFonts() {
     Hjson::Value fontDatabase;
     Hjson::DecoderOptions decOpt;
     decOpt.comments = false;
-    std::fstream stream(cqsp::engine::GetCqspDataPath() + "/core/gfx/fonts/fonts.hjson");
+    std::fstream stream(cqsp::common::util::GetCqspDataPath() + "/core/gfx/fonts/fonts.hjson");
 
     stream >> Hjson::StreamDecoder(fontDatabase, decOpt);
-    std::string fontPath = cqsp::engine::GetCqspDataPath() + "/core/gfx/fonts/";
+    std::string fontPath = cqsp::common::util::GetCqspDataPath() + "/core/gfx/fonts/";
     ImGuiIO io = ImGui::GetIO();
     ImFont* defaultFont = io.Fonts->AddFontFromFileTTF(
         (fontPath + fontDatabase["default"]["path"]).c_str(),
@@ -540,7 +541,7 @@ void cqsp::engine::Application::InitFonts() {
 
 void cqsp::engine::Application::SetIcon() {
     GLFWimage images[1];
-    images[0].pixels = stbi_load((cqsp::engine::GetCqspDataPath() + "/" + icon_path).c_str(),
+    images[0].pixels = stbi_load((cqsp::common::util::GetCqspDataPath() + "/" + icon_path).c_str(),
                                  &images[0].width, &images[0].height, 0, 4);
     glfwSetWindowIcon(window(m_window), 1, images);
     stbi_image_free(images[0].pixels);
@@ -563,42 +564,22 @@ void cqsp::engine::Application::GlInit() {
 
 void cqsp::engine::Application::LoggerInit() {
     // Get path
-    properties["data"] = GetCqspSavePath();
-    std::filesystem::path log_folder =
-        std::filesystem::path(properties["data"]) / "logs";
-    // Make logs folder
-    // Initialize logger
-    std::vector<spdlog::sink_ptr> sinks;
-    auto error_log = std::make_shared<spdlog::sinks::basic_file_sink_mt>(
-        (log_folder / "error.txt").string(), true);
-    error_log->set_level(spdlog::level::err);
-    sinks.push_back(error_log);
-
-#ifdef NDEBUG
-    spdlog::flush_every(std::chrono::seconds(3));
-    auto basic_logger = std::make_shared<spdlog::sinks::basic_file_sink_mt>(
-        (log_folder / "info.txt").string(), true);
-    sinks.push_back(basic_logger);
-#else
-    auto console_logger =
-        std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    sinks.push_back(console_logger);
-#endif
-    logger = std::make_shared<spdlog::logger>("application", sinks.begin(),
-                                              sinks.end());
+    properties["data"] = common::util::GetCqspSavePath();
+    logger = cqsp::common::util::make_logger("application", true);
     spdlog::set_default_logger(logger);
-    spdlog::set_pattern("[%T.%e] [%^%l%$] [%n] [%s:%#] %v");
 }
 
 void cqsp::engine::Application::LogInfo() {
+#ifndef NDEBUG
+    SPDLOG_INFO("Conquer Space Debug {} {}", CQSP_VERSION_STRING, GIT_INFO);
+#else
+    SPDLOG_INFO("Conquer Space {} {}", CQSP_VERSION_STRING, GIT_INFO);
+#endif
     SPDLOG_INFO("Conquer Space {} {}", CQSP_VERSION_STRING, GIT_INFO);
     SPDLOG_INFO("Platform: {}", PLATFORM_NAME);
     SPDLOG_INFO("Compiled {} {}", __DATE__, __TIME__);
-#ifndef NDEBUG
-    SPDLOG_INFO("In debug mode");
-#endif
-    SPDLOG_INFO("Exe Path: {}", exe_path);
-    SPDLOG_INFO("Data Path: {}", GetCqspDataPath());
+    SPDLOG_INFO("Exe Path: {}", common::util::exe_path);
+    SPDLOG_INFO("Data Path: {}", common::util::GetCqspDataPath());
 }
 
 void cqsp::engine::Application::SetWindowDimensions(int width, int height) {
