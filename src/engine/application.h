@@ -187,6 +187,8 @@ class Application {
      */
     int destroy();
 
+    void CalculateProjections();
+
     int argc;
     char** argv;
     bool full_screen;
@@ -218,6 +220,8 @@ class Application {
 
     cqsp::engine::audio::IAudioInterface *m_audio_interface;
 
+    glm::mat4 two_dim_projection;
+    glm::mat4 three_dim_projection;
     bool to_halt;
 };
 }  // namespace engine
