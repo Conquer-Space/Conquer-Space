@@ -17,7 +17,6 @@
 #include "client/scenes/universescene.h"
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 #include <fmt/format.h>
 
@@ -59,7 +58,7 @@ void cqsp::scene::UniverseScene::Init() {
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqspco = cqsp::common;
     using cqspco::systems::simulation::Simulation;
-    simulation = std::make_shared<Simulation>(GetUniverse(), GetApp().GetScriptInterface());
+    simulation = std::make_unique<Simulation>(GetUniverse(), GetApp().GetScriptInterface());
 
     system_renderer = new cqsp::client::systems::SysStarSystemRenderer(GetUniverse(), GetApp());
     system_renderer->Initialize();

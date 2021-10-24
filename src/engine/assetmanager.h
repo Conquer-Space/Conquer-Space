@@ -30,10 +30,12 @@
 #include <optional>
 #include <queue>
 
+#include "engine/engine.h"
+#include "engine/asset.h"
+#include "engine/textasset.h"
 #include "engine/renderer/texture.h"
 #include "engine/renderer/shader.h"
 #include "engine/renderer/text.h"
-#include "engine/asset.h"
 #include "engine/gui.h"
 
 namespace cqsp {
@@ -175,7 +177,7 @@ class AssetManager {
         return packages[token]->assets[pkg_key];
     }
 
-    cqsp::asset::ShaderProgram* CreateShaderProgram(const std::string &vert, const std::string &frag);
+    ShaderProgram_t MakeShader(const std::string &vert, const std::string &frag);
 
     template <class T>
     T* GetAsset(const std::string& key) {

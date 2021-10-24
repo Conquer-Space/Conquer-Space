@@ -17,7 +17,7 @@
 #include "engine/renderer/renderer.h"
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
+
 #include <spdlog/spdlog.h>
 
 #include <algorithm>
@@ -60,6 +60,9 @@ void cqsp::engine::Draw(Renderable &renderable) {
 
 cqsp::engine::BasicRendererObject cqsp::engine::MakeRenderable() {
     return std::make_shared<cqsp::engine::Renderable>();
+}
+
+cqsp::engine::BasicRenderer::~BasicRenderer() {
 }
 
 void cqsp::engine::BasicRenderer::Draw() {

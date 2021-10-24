@@ -16,11 +16,6 @@
 */
 #pragma once
 
-#include <hjson.h>
-
-#include <string>
-#include <map>
-
 namespace cqsp {
 namespace asset {
 class Asset {
@@ -28,29 +23,5 @@ class Asset {
     // Virtual destructor to make class virtual
     virtual ~Asset(){}
 };
-
-class TextAsset : public Asset {
- public:
-    std::string data;
-};
-
-class PathedTextAsset : public std::string {
-    using std::string::basic_string;
-    // Relative path for the asset compared to the resource.hjson
- public:
-    std::string path;
-};
-
-class TextDirectoryAsset : public Asset {
- public:
-    // Get the path of the assets
-    std::map<std::string, PathedTextAsset> paths;
-};
-
-class HjsonAsset : public Asset {
- public:
-    Hjson::Value data;
-};
 }  // namespace asset
 }  // namespace cqsp
-

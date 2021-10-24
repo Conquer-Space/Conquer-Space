@@ -17,7 +17,6 @@
 #include "client/scenes/mainmenuscene.h"
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 #include <imgui_markdown.h>
 
@@ -42,56 +41,28 @@
 
 #include "common/util/paths.h"
 
-cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app)
-    : cqsp::engine::Scene(app) { }
+cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app) : cqsp::engine::Scene(app) { }
+
+cqsp::scene::MainMenuScene::~MainMenuScene() {
+    delete object_renderer;
+}
 
 void cqsp::scene::MainMenuScene::Init() {
     using cqsp::asset::Texture;
-    m_texture = GetAssetManager().GetAsset<cqsp::asset::Texture>("core:cqspbanner");
-
     m_credits = GetAssetManager().GetAsset<cqsp::asset::TextAsset>("core:credits");
-
-    cqsp::engine::BasicRendererObject splashscreen = cqsp::engine::MakeRenderable();
-    cqsp::engine::BasicRendererObject titleBanner = cqsp::engine::MakeRenderable();
-
-    cqsp::primitive::MakeTexturedPaneMesh(*splashscreen);
-    cqsp::primitive::MakeTexturedPaneMesh(*titleBanner);
-
-    cqsp::asset::Texture* earthrise_texture = GetAssetManager().GetAsset<Texture>("core:earthrise");
-
-    cqsp::asset::Texture* asset2 = GetAssetManager().GetAsset<Texture>("core:title");
+    splash_screen = GetAssetManager().GetAsset<Texture>("core:earthrise");
+    title_banner_texture = GetAssetManager().GetAsset<Texture>("core:title");
 
     // Create new shader program
-    asset::ShaderProgram* program = GetAssetManager().
-        CreateShaderProgram("core:shader.pane.vert", "core:shader.texturedpane.frag");
+    shader = GetAssetManager().MakeShader("core:shader.pane.vert", "core:shader.texturedpane.frag");
 
-    splashscreen->shaderProgram = program;
-    titleBanner->shaderProgram = program;
+    // Make the renderer
+    object_renderer = new cqsp::engine::Renderer2D(shader);
 
-    // Make shaders
-    splashscreen->SetTexture("texture1", 0, earthrise_texture);
-    titleBanner->SetTexture("texture1", 0, asset2);
+    cqsp::primitive::MakeTexturedPaneMesh(rectangle);
 
-    glm::mat4 mat = glm::mat4(1.f);
-    glm::translate(mat, glm::vec3(0.05, 0.05, 1));
-    splashscreen->model = mat;
-    renderer.renderables.push_back(std::move(splashscreen));
-
-    mat = glm::mat4(1.f);
-    mat = glm::translate(mat, glm::vec3(-0.6, 0.45, 1));
-    // Resize for rectangle
-    mat = glm::scale(mat,
-                    glm::vec3(1, static_cast<float>(asset2->height)/
-                            static_cast<float>(asset2->width), 1));
-    mat = glm::scale(mat, glm::vec3(0.35, 0.35, 1));
-    titleBanner->model = mat;
-    renderer.renderables.push_back(std::move(titleBanner));
-
-    mat = glm::mat4(1.f);
-    mat = glm::scale(mat,
-            glm::vec3(1, static_cast<float>(GetApp().GetWindowWidth())
-                                /static_cast<float>(GetApp().GetWindowHeight()), 1));
-    renderer.projection = mat;
+    shader->UseProgram();
+    shader->Set("texture1", 0);
 }
 
 void cqsp::scene::MainMenuScene::Update(float deltaTime) {}
@@ -198,7 +169,29 @@ void cqsp::scene::MainMenuScene::Render(float deltaTime) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    renderer.Draw();
+    // Update projection
+    object_renderer->SetProjection(GetApp().Get2DProj());
+
+    {
+        int width = GetApp().GetWindowWidth();
+        // Configure so that it matches the width
+        int height = static_cast<float>(splash_screen->height) /
+                     static_cast<float>(splash_screen->width) *
+                     GetApp().GetWindowWidth();
+        object_renderer->DrawTexturedSprite(&rectangle, *splash_screen,
+                                            glm::vec2(width / 2, height / 2),
+                                            glm::vec2(width, height), 0);
+    }
+
+    {
+        // Draw title banner
+        int banner_height = title_banner_texture->height;
+        int banner_width = title_banner_texture->width;
+        object_renderer->DrawTexturedSprite(&rectangle, *title_banner_texture,
+                                            glm::vec2(banner_width / 2 + 50,
+                                            GetApp().GetWindowHeight() - banner_height - 25),
+                                            glm::vec2(banner_width, banner_height), 0);
+    }
     GetApp().DrawText(fmt::format("Version: {}", CQSP_VERSION_STRING), 8, 8);
 }
 

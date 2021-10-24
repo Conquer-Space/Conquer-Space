@@ -17,7 +17,6 @@
 #include "engine/renderer/texturerenderer.h"
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 #include <spdlog/spdlog.h>
 
@@ -117,7 +116,7 @@ void cqsp::engine::FramebufferRenderer::EndDraw() {
 }
 
 void cqsp::engine::FramebufferRenderer::RenderBuffer() {
-    buffer_shader.UseProgram();
+    buffer_shader->UseProgram();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, colorbuffer);
 
@@ -219,7 +218,7 @@ void cqsp::engine::AAFrameBufferRenderer::RenderBuffer() {
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    buffer_shader.UseProgram();
+    buffer_shader->UseProgram();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, screenTexture);
 
@@ -269,10 +268,10 @@ void LayerRenderer::NewFrame(const cqsp::engine::Window& window) {
 
 int LayerRenderer::GetLayerCount() { return framebuffers.size(); }
 
-void LayerRenderer::InitFramebuffer(Framebuffer* buffer, cqsp::asset::ShaderProgram* shader,
+void LayerRenderer::InitFramebuffer(Framebuffer* buffer, cqsp::asset::ShaderProgram_t shader,
  const cqsp::engine::Window& window) {
     // Initialize pane
     buffer->InitTexture(window.GetWindowWidth(), window.GetWindowHeight());
     primitive::MakeTexturedPaneMesh(buffer->GetMeshOutput(), true);
-    buffer->SetShader(*shader);
+    buffer->SetShader(shader);
 }

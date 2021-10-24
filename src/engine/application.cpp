@@ -370,8 +370,8 @@ int cqsp::engine::Application::init() {
         SetFullScreen(true);
     }
 
-    std::shared_ptr<Scene> initial_scene = std::make_shared<EmptyScene>(*this);
-    m_scene_manager.SetInitialScene(initial_scene);
+    std::unique_ptr<Scene> initial_scene = std::make_unique<EmptyScene>(*this);
+    m_scene_manager.SetInitialScene(std::move(initial_scene));
 
     m_script_interface = std::make_unique<cqsp::scripting::ScriptInterface>();
     m_universe = std::make_unique<cqsp::common::Universe>();
@@ -381,7 +381,10 @@ int cqsp::engine::Application::init() {
 
 int cqsp::engine::Application::destroy() {
     // Delete scene
-    m_scene_manager.GetScene().reset();
+    SPDLOG_INFO("Destroying scene");
+    m_scene_manager.DeleteCurrentScene();
+    SPDLOG_INFO("Done Destroying scene");
+
     // Clear assets
     m_universe.reset();
     m_script_interface.reset();
@@ -403,6 +406,14 @@ int cqsp::engine::Application::destroy() {
     m_client_options.WriteOptions(config_path);
     spdlog::shutdown();
     return 0;
+}
+
+void cqsp::engine::Application::CalculateProjections() {
+    float window_ratio = static_cast<float>(GetWindowWidth()) /
+                    static_cast<float>(GetWindowHeight());
+    three_dim_projection = glm::infinitePerspective(glm::radians(45.f), window_ratio, 0.1f);
+    two_dim_projection = glm::ortho(0.0f, static_cast<float>(GetWindowWidth()), 0.0f,
+                    static_cast<float>(GetWindowHeight()));
 }
 
 cqsp::engine::Application::Application(int _argc, char* _argv[]) : argc(_argc), argv(_argv) {
@@ -440,6 +451,13 @@ void cqsp::engine::Application::run() {
         lastFrame = currentFrame;
         fps = 1 / deltaTime;
 
+        CalculateProjections();
+        if (fontShader != nullptr && m_font != nullptr) {
+            // Set font projection
+            fontShader->UseProgram();
+            fontShader->setMat4("projection", two_dim_projection);
+        }
+
         // Switch scene
         if (m_scene_manager.ToSwitchScene()) {
             m_scene_manager.SwitchScene();
@@ -454,16 +472,19 @@ void cqsp::engine::Application::run() {
         ImGui::NewFrame();
 
         // Gui
+        BEGIN_TIMED_BLOCK(UiCreation);
         m_scene_manager.Ui(deltaTime);
+        END_TIMED_BLOCK(UiCreation);
 
         BEGIN_TIMED_BLOCK(ImGui_Render);
         ImGui::Render();
         END_TIMED_BLOCK(ImGui_Render);
 
-        // Render
+        // Clear screen
         glClearColor(0.f, 0.f, 0.f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // Begin render
         BEGIN_TIMED_BLOCK(Scene_Render);
         m_scene_manager.Render(deltaTime);
         END_TIMED_BLOCK(Scene_Render);
@@ -472,6 +493,7 @@ void cqsp::engine::Application::run() {
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         END_TIMED_BLOCK(ImGui_Render_Draw);
 
+        // FPS counter
         DrawText(fmt::format("FPS: {:.0f}", fps), GetWindowWidth() - 80,
                  GetWindowHeight() - 24);
 
@@ -494,13 +516,8 @@ void cqsp::engine::Application::ExitApplication() {
 
 void cqsp::engine::Application::DrawText(const std::string& text, float x, float y) {
     if (fontShader != nullptr && m_font != nullptr) {
-        glm::mat4 projection =
-            glm::ortho(0.0f, static_cast<float>(GetWindowWidth()), 0.0f,
-                       static_cast<float>(GetWindowHeight()));
-        fontShader->UseProgram();
-        fontShader->setMat4("projection", projection);
-        cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, 16,
-                                        glm::vec3(1.f, 1.f, 1.f));
+        // Render with size 16 white text
+        cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, 16, glm::vec3(1.f, 1.f, 1.f));
     }
 }
 
@@ -553,13 +570,12 @@ void cqsp::engine::Application::GlInit() {
                             m_client_options.GetOptions()["window"]["height"]);
 
     // Print gl information
-    SPDLOG_INFO(" --- GL information ---");
+    SPDLOG_INFO(" --- Begin GL information ---");
     SPDLOG_INFO("GL version: {}", glGetString(GL_VERSION));
     SPDLOG_INFO("GL vendor: {}", glGetString(GL_VENDOR));
     SPDLOG_INFO("GL Renderer: {}", glGetString(GL_RENDERER));
-    SPDLOG_INFO("GL shading language: {}",
-                glGetString(GL_SHADING_LANGUAGE_VERSION));
-    SPDLOG_INFO(" --- GL information ---");
+    SPDLOG_INFO("GL shading language: {}", glGetString(GL_SHADING_LANGUAGE_VERSION));
+    SPDLOG_INFO(" --- End of GL information ---");
 }
 
 void cqsp::engine::Application::LoggerInit() {
@@ -601,12 +617,12 @@ void cqsp::engine::Application::SetFullScreen(bool screen) {
     }
 }
 
-void cqsp::engine::SceneManager::SetInitialScene(std::shared_ptr<Scene> scene) {
-    m_scene = scene;
+void cqsp::engine::SceneManager::SetInitialScene(std::unique_ptr<Scene> scene) {
+    m_scene = std::move(scene);
 }
 
-void cqsp::engine::SceneManager::SetScene(std::shared_ptr<Scene> scene) {
-    m_next_scene = scene;
+void cqsp::engine::SceneManager::SetScene(std::unique_ptr<Scene> scene) {
+    m_next_scene = std::move(scene);
     m_switch = true;
 }
 
@@ -618,8 +634,8 @@ void cqsp::engine::SceneManager::SwitchScene() {
     m_switch = false;
 }
 
-std::shared_ptr<cqsp::engine::Scene> cqsp::engine::SceneManager::GetScene() {
-    return m_scene;
+cqsp::engine::Scene* cqsp::engine::SceneManager::GetScene() {
+    return m_scene.get();
 }
 
 void cqsp::engine::SceneManager::DeleteCurrentScene() { m_scene.reset(); }

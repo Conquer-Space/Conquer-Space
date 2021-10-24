@@ -28,6 +28,7 @@
 #include "engine/application.h"
 #include "engine/renderer/renderable.h"
 #include "engine/renderer/renderer.h"
+#include "engine/renderer/renderer2d.h"
 #include "common/simulation.h"
 
 namespace cqsp {
@@ -36,6 +37,11 @@ class UniverseScene : public cqsp::engine::Scene {
  public:
     explicit UniverseScene(cqsp::engine::Application& app);
     ~UniverseScene() {
+        // Delete ui
+        simulation.reset();
+        for (auto it = user_interfaces.begin(); it != user_interfaces.end(); it++) {
+            it->reset();
+        }
         delete system_renderer;
     }
 
@@ -70,7 +76,7 @@ class UniverseScene : public cqsp::engine::Scene {
 
     cqsp::client::systems::SysStarSystemRenderer* system_renderer;
 
-    std::shared_ptr<cqsp::common::systems::simulation::Simulation> simulation;
+    std::unique_ptr<cqsp::common::systems::simulation::Simulation> simulation;
 
     bool to_show_planet_window = false;
 

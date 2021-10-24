@@ -25,9 +25,9 @@
 
 #include "engine/clientoptions.h"
 
-#include "engine/assetmanager.h"
 #include "engine/engine.h"
 #include "engine/scene.h"
+#include "engine/assetmanager.h"
 #include "common/universe.h"
 #include "engine/gui.h"
 #include "engine/renderer/text.h"
@@ -37,7 +37,6 @@
 
 namespace cqsp {
 namespace engine {
-
 /// <summary>
 /// Manages scenes for the application.
 /// </summary>
@@ -47,12 +46,12 @@ class SceneManager {
     /// Sets the current scene.
     /// </summary>
     /// <param name="scene"></param>
-    void SetInitialScene(std::shared_ptr<Scene> scene);
+    void SetInitialScene(std::unique_ptr<Scene> scene);
 
     /// <summary>
     /// Sets the next scene, and the scene will be switched when <code>SwitchScene</code> is executed.
     /// </summary>
-    void SetScene(std::shared_ptr<Scene> scene);
+    void SetScene(std::unique_ptr<Scene> scene);
 
     /// <summary>
     /// Sets the next scene to the current.
@@ -63,7 +62,7 @@ class SceneManager {
     /// Gets current running scene.
     /// </summary>
     /// <returns></returns>
-    std::shared_ptr<Scene> GetScene();
+    Scene* GetScene();
 
     /// <summary>
     /// Verifies if it is appropiate to switch scenes.
@@ -80,8 +79,8 @@ class SceneManager {
     void DeleteCurrentScene();
 
  private:
-    std::shared_ptr<Scene> m_scene;
-    std::shared_ptr<Scene> m_next_scene;
+    std::unique_ptr<Scene> m_scene;
+    std::unique_ptr<Scene> m_next_scene;
 
     /// <summary>
     /// If the next scene has been set.
@@ -125,8 +124,8 @@ class Application {
     */
     template <class T>
     void SetScene() {
-        std::shared_ptr<Scene> ptr = std::make_shared<T>(*this);
-        m_scene_manager.SetScene(ptr);
+        std::unique_ptr<Scene> ptr = std::make_unique<T>(*this);
+        m_scene_manager.SetScene(std::move(ptr));
     }
 
     ImGui::MarkdownConfig markdownConfig;
@@ -169,6 +168,9 @@ class Application {
     void SetWindowDimensions(int width, int height);
     void SetFullScreen(bool screen);
 
+    glm::mat4 Get2DProj() { return two_dim_projection; }
+    glm::mat4 Get3DProj() { return three_dim_projection; }
+
  private:
     void InitFonts();
 
@@ -187,13 +189,15 @@ class Application {
      */
     int destroy();
 
+    void CalculateProjections();
+
     int argc;
     char** argv;
     bool full_screen;
     Window* m_window;
     std::string icon_path;
 
-    SceneManager m_scene_manager;
+    cqsp::engine::SceneManager m_scene_manager;
 
     client::ClientOptions m_client_options;
 
@@ -218,6 +222,8 @@ class Application {
 
     cqsp::engine::audio::IAudioInterface *m_audio_interface;
 
+    glm::mat4 two_dim_projection;
+    glm::mat4 three_dim_projection;
     bool to_halt;
 };
 }  // namespace engine

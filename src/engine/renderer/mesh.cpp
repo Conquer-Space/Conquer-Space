@@ -17,7 +17,6 @@
 #include "engine/renderer/mesh.h"
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 cqsp::engine::Mesh::Mesh() {
     RenderType = GL_TRIANGLES;

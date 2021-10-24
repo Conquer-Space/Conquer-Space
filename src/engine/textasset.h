@@ -16,27 +16,33 @@
 */
 #pragma once
 
-#include <memory>
-#include <vector>
+#include <hjson.h>
 
-#include <glm/glm.hpp>
-#include "engine/renderer/renderable.h"
+#include <string>
+#include <map>
 
-namespace cqsp {
-namespace engine {
-void Draw(Renderable &);
-
-typedef std::shared_ptr<Renderable> BasicRendererObject;
-
-BasicRendererObject MakeRenderable();
-
-class BasicRenderer {
+#include "engine/asset.h"
+namespace cqsp::asset {
+class TextAsset : public Asset {
  public:
-    ~BasicRenderer();
-    glm::mat4 projection = glm::mat4(1.0);
-    glm::mat4 view = glm::mat4(1.0);
-    std::vector<BasicRendererObject> renderables;
-    void Draw();
+    std::string data;
 };
-}  // namespace engine
-}  // namespace cqsp
+
+class PathedTextAsset : public std::string {
+    using std::string::basic_string;
+    // Relative path for the asset compared to the resource.hjson
+ public:
+    std::string path;
+};
+
+class TextDirectoryAsset : public Asset {
+ public:
+    // Get the path of the assets
+    std::map<std::string, PathedTextAsset> paths;
+};
+
+class HjsonAsset : public Asset {
+ public:
+    Hjson::Value data;
+};
+}  // namespace cqsp::asset

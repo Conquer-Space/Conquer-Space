@@ -17,7 +17,6 @@
 #include "engine/renderer/primitives/cube.h"
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 void cqsp::primitive::MakeCube(cqsp::engine::Mesh& mesh) {
     float verticies[] = {

@@ -41,7 +41,7 @@ class TextureRenderer {
 
 class Framebuffer {
  public:
-    virtual void InitTexture(int width  = 1280, int height = 720) = 0;
+    virtual void InitTexture(int width = 1280, int height = 720) = 0;
     virtual void Clear() = 0;
     virtual void BeginDraw() = 0;
     virtual void EndDraw() = 0;
@@ -50,33 +50,51 @@ class Framebuffer {
     virtual void NewFrame(const Window& window) = 0;
 
     virtual cqsp::engine::Mesh& GetMeshOutput() = 0;
-    virtual cqsp::asset::ShaderProgram& GetShader() = 0;
-    virtual void SetShader(cqsp::asset::ShaderProgram shader) = 0;
+    virtual void SetShader(cqsp::asset::ShaderProgram_t shader) = 0;
 };
 
 class FramebufferRenderer : public Framebuffer {
  public:
     FramebufferRenderer() : Framebuffer() {}
+
+    void InitTexture(int width  = 1280, int height = 720) override;
+    void Clear() override;
+    void BeginDraw() override;
+    void EndDraw() override;
+    void RenderBuffer() override;
+    void Free() override;
+    void NewFrame(const Window& window) override;
+    cqsp::engine::Mesh& GetMeshOutput() override { return mesh_output; }
+    void SetShader(cqsp::asset::ShaderProgram_t shader) override {
+        buffer_shader = shader;
+    }
+
+ private:
     unsigned int framebuffer;
     unsigned int colorbuffer;
-    cqsp::asset::ShaderProgram buffer_shader;
+    cqsp::asset::ShaderProgram_t buffer_shader;
     cqsp::engine::Mesh mesh_output;
-    void InitTexture(int width  = 1280, int height = 720);
-    void Clear();
-    void BeginDraw();
-    void EndDraw();
-    void RenderBuffer();
-    void Free();
-    void NewFrame(const Window& window);
-    cqsp::engine::Mesh& GetMeshOutput() { return mesh_output; }
-    cqsp::asset::ShaderProgram& GetShader() { return buffer_shader; }
-    void SetShader(cqsp::asset::ShaderProgram shader) { buffer_shader = shader; }
 };
 
 class AAFrameBufferRenderer : public Framebuffer {
  public:
     AAFrameBufferRenderer() : Framebuffer() {}
 
+    void InitTexture(int width = 1280, int height = 720);
+    void Clear() override;
+    void BeginDraw() override;
+    void EndDraw() override;
+    void Free() override;
+    void RenderBuffer() override;
+    void NewFrame(const Window& window) override;
+
+    cqsp::engine::Mesh& GetMeshOutput() override { return mesh_output; }
+
+    void SetShader(cqsp::asset::ShaderProgram_t shader) override {
+        buffer_shader = shader;
+    }
+
+ private:
     int width;
     int height;
 
@@ -84,26 +102,14 @@ class AAFrameBufferRenderer : public Framebuffer {
     unsigned int intermediateFBO;
     unsigned int screenTexture;
     unsigned int textureColorBufferMultiSampled;
-    cqsp::asset::ShaderProgram buffer_shader;
+    cqsp::asset::ShaderProgram_t buffer_shader;
     cqsp::engine::Mesh mesh_output;
-
-    void InitTexture(int width = 1280, int height = 720);
-    void Clear();
-    void BeginDraw();
-    void EndDraw();
-    void Free();
-    void RenderBuffer();
-    void NewFrame(const Window& window);
-
-    cqsp::engine::Mesh& GetMeshOutput() { return mesh_output; }
-    cqsp::asset::ShaderProgram& GetShader() { return buffer_shader; }
-    void SetShader(cqsp::asset::ShaderProgram shader) { buffer_shader = shader; }
 };
 
 class LayerRenderer {
  public:
     template<class T>
-    int AddLayer(cqsp::asset::ShaderProgram* shader, const cqsp::engine::Window& window) {
+    int AddLayer(asset::ShaderProgram_t shader, const engine::Window& window) {
         std::unique_ptr<T> fb = std::make_unique<T>();
         InitFramebuffer(fb.get(), shader, window);
         framebuffers.push_back(std::move(fb));
@@ -118,7 +124,7 @@ class LayerRenderer {
 
  private:
     std::vector<std::unique_ptr<Framebuffer>> framebuffers;
-    void InitFramebuffer(Framebuffer* buffer, cqsp::asset::ShaderProgram* shader,
+    void InitFramebuffer(Framebuffer* buffer, cqsp::asset::ShaderProgram_t shader,
                             const cqsp::engine::Window& window);
 };
 }  // namespace engine

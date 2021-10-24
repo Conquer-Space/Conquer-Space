@@ -18,6 +18,7 @@
 
 #include <istream>
 #include <string>
+#include <memory>
 
 #include <glm/glm.hpp>
 
@@ -36,10 +37,11 @@ class ShaderProgram {
  public:
     ShaderProgram();
     ShaderProgram(Shader& vert, Shader& frag);
+    ~ShaderProgram();
 
     void setBool(const std::string& name, bool value);
     void setInt(const std::string& name, int value);
-    void setFloat(const std::string& name, int value);
+    void setFloat(const std::string& name, float value);
     void setVec2(const std::string& name, const glm::vec2& value);
     void setVec2(const std::string& name, float x, float y);
     void setVec3(const std::string& name, const glm::vec3& value);
@@ -50,12 +52,28 @@ class ShaderProgram {
     void setMat3(const std::string& name, const glm::mat3& mat);
     void setMat4(const std::string& name, const glm::mat4& mat);
 
+    // Simpler overloaded functions so that you can just say set xxx and change the type
+    // as and when you like.
+    void Set(const std::string& name, bool value);
+    void Set(const std::string& name, int value);
+    void Set(const std::string& name, float value);
+    void Set(const std::string& name, const glm::vec2& value);
+    void Set(const std::string& name, float x, float y);
+    void Set(const std::string& name, const glm::vec3& value);
+    void Set(const std::string& name, float x, float y, float z);
+    void Set(const std::string& name, const glm::vec4& value);
+    void Set(const std::string& name, float x, float y, float z, float w);
+    void Set(const std::string& name, const glm::mat2& mat);
+    void Set(const std::string& name, const glm::mat3& mat);
+    void Set(const std::string& name, const glm::mat4& mat);
+
     void UseProgram();
     unsigned int program;
 
     operator unsigned int() const { return program; }
 };
 
+typedef std::shared_ptr<ShaderProgram> ShaderProgram_t;
 // Set of utility functions that load shaders
 unsigned int LoadShader(std::string& shader, int type);
 
