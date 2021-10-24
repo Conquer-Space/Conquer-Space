@@ -24,13 +24,13 @@ namespace cqsp {
 namespace engine {
 class Renderer2D {
    public:
-    Renderer2D(cqsp::asset::ShaderProgram* tex, cqsp::asset::ShaderProgram* color);
+    Renderer2D(cqsp::asset::ShaderProgram_t tex, cqsp::asset::ShaderProgram_t color);
 
     void DrawTexturedSprite(cqsp::engine::Mesh* mesh, cqsp::asset::Texture &texture, glm::vec2 position, glm::vec2 size, float rotate);
     void DrawColoredSprite(cqsp::engine::Mesh* mesh, glm::vec3 color, glm::vec2 position, glm::vec2 size, float rotate);
 
-    cqsp::asset::ShaderProgram* texture_shader;
-    cqsp::asset::ShaderProgram* color_shader;
+    cqsp::asset::ShaderProgram_t texture_shader;
+    cqsp::asset::ShaderProgram_t color_shader;
 };
 }  // namespace engine
 }  // namespace cqsp

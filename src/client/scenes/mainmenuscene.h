@@ -19,6 +19,7 @@
 #include "engine/scene.h"
 #include "engine/renderer/renderable.h"
 #include "engine/renderer/renderer.h"
+#include "engine/renderer/renderer2d.h"
 #include "engine/renderer/primitives/pane.h"
 #include "engine/renderer/text.h"
 
@@ -37,8 +38,8 @@ class MainMenuScene : public cqsp::engine::Scene{
  private:
     void ModWindow();
 
-    cqsp::asset::Texture* m_texture;
     cqsp::asset::TextAsset* m_credits;
+
     bool m_credits_window = false;
     bool m_save_game_window = false;
     bool m_new_game_window = false;
@@ -48,9 +49,13 @@ class MainMenuScene : public cqsp::engine::Scene{
     float ratio, ratio2;
     float width, height;
 
-    cqsp::engine::BasicRenderer renderer;
-    cqsp::engine::BasicRendererObject splashscreen;
-    cqsp::engine::BasicRendererObject titleBanner;
+    cqsp::engine::Renderer2D* object_renderer;
+    cqsp::engine::Mesh rectangle;
+
+    cqsp::asset::Texture* splash_screen;
+    cqsp::asset::Texture* title_banner_texture;
+    cqsp::asset::ShaderProgram_t program;
+
 };
 }  // namespace scene
 }  // namespace cqsp
