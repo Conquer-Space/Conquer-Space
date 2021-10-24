@@ -27,7 +27,7 @@ namespace scene {
 class MainMenuScene : public cqsp::engine::Scene{
  public:
     explicit MainMenuScene(cqsp::engine::Application& app);
-    ~MainMenuScene() { }
+    ~MainMenuScene();
 
     void Init();
     void Update(float deltaTime);
@@ -35,6 +35,8 @@ class MainMenuScene : public cqsp::engine::Scene{
     void Render(float deltaTime);
 
  private:
+    void ModWindow();
+
     cqsp::asset::Texture* m_texture;
     cqsp::asset::TextAsset* m_credits;
     bool m_credits_window = false;
@@ -47,8 +49,8 @@ class MainMenuScene : public cqsp::engine::Scene{
     float width, height;
 
     cqsp::engine::BasicRenderer renderer;
-
-    void ModWindow();
+    cqsp::engine::BasicRendererObject splashscreen;
+    cqsp::engine::BasicRendererObject titleBanner;
 };
 }  // namespace scene
 }  // namespace cqsp

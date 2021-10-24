@@ -71,17 +71,15 @@ void SysStarSystemRenderer::Initialize() {
     asset::Texture* sky_texture = m_app.GetAssetManager()
         .GetAsset<cqsp::asset::Texture>("core:skycubemap");
 
-    asset::ShaderProgram* skybox_shader =
-                        m_app.GetAssetManager().CreateShaderProgram("core:skycubevert", "core:skycubefrag");
+    asset::ShaderProgram_t skybox_shader = m_app.GetAssetManager().MakeShader("core:skycubevert", "core:skycubefrag");
 
     sky.mesh = new cqsp::engine::Mesh();
     primitive::MakeCube(*sky.mesh);
     sky.shaderProgram = skybox_shader;
     sky.SetTexture("texture0", 0, sky_texture);
 
-    asset::ShaderProgram* circle_shader =
-                    m_app.GetAssetManager().
-                    CreateShaderProgram("core:shader.pane.vert", "core:coloredcirclefrag");
+    asset::ShaderProgram_t circle_shader = m_app.GetAssetManager().
+                                            MakeShader("core:shader.pane.vert", "core:coloredcirclefrag");
 
     planet_circle.mesh = new cqsp::engine::Mesh();
     primitive::CreateFilledCircle(*planet_circle.mesh);
@@ -96,12 +94,10 @@ void SysStarSystemRenderer::Initialize() {
     city.shaderProgram = circle_shader;
 
     // Initialize shaders
-    asset::ShaderProgram* planet_shader =
-                            m_app.GetAssetManager().CreateShaderProgram("core:objectvert",
-                                                                        "core:planetfrag");
+    asset::ShaderProgram_t planet_shader = m_app.GetAssetManager().MakeShader("core:objectvert", "core:planetfrag");
     pbr_shader = planet_shader;
 
-    no_light_shader = m_app.GetAssetManager().CreateShaderProgram("core:objectvert", "core:skyboxfrag");
+    no_light_shader = m_app.GetAssetManager().MakeShader("core:objectvert", "core:skyboxfrag");
 
     // Planet spheres
     planet.mesh = sphere_mesh;
@@ -113,9 +109,9 @@ void SysStarSystemRenderer::Initialize() {
 
     // Initialize sun
     sun.mesh = sphere_mesh;
-    sun.shaderProgram = m_app.GetAssetManager().CreateShaderProgram("core:objectvert", "core:sunshader");
+    sun.shaderProgram = m_app.GetAssetManager().MakeShader("core:objectvert", "core:sunshader");
 
-    auto buffer_shader = m_app.GetAssetManager().CreateShaderProgram("core:framebuffervert", "core:framebufferfrag");
+    auto buffer_shader = m_app.GetAssetManager().MakeShader("core:framebuffervert", "core:framebufferfrag");
     ship_icon_layer = renderer.AddLayer<engine::AAFrameBufferRenderer>(buffer_shader, *m_app.GetWindow());
     physical_layer = renderer.AddLayer<engine::AAFrameBufferRenderer>(buffer_shader, *m_app.GetWindow());
     planet_icon_layer = renderer.AddLayer<engine::AAFrameBufferRenderer>(buffer_shader, *m_app.GetWindow());
@@ -247,7 +243,6 @@ void SysStarSystemRenderer::SeeEntity() {
         final_image_generator.GenerateTerrain(5, 10);
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-        SPDLOG_INFO("Took {}us to generate terrain", duration.count());
         terrain_complete = true;
     });
 }

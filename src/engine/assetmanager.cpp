@@ -90,9 +90,9 @@ void cqsp::asset::Package::ClearAssets() {
 
 cqsp::asset::AssetManager::AssetManager() {}
 
-cqsp::asset::ShaderProgram* cqsp::asset::AssetManager::CreateShaderProgram(
-    const std::string& vert, const std::string& frag) {
-    return new ShaderProgram(*GetAsset<cqsp::asset::Shader>(vert.c_str()),
+cqsp::asset::ShaderProgram_t
+cqsp::asset::AssetManager::MakeShader(const std::string& vert, const std::string& frag) {
+    return std::make_shared<ShaderProgram>(*GetAsset<cqsp::asset::Shader>(vert.c_str()),
                                     *GetAsset<cqsp::asset::Shader>(frag.c_str()));
 }
 

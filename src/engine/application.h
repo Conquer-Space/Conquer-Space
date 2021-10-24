@@ -126,7 +126,7 @@ class Application {
     template <class T>
     void SetScene() {
         std::shared_ptr<Scene> ptr = std::make_shared<T>(*this);
-        m_scene_manager.SetScene(ptr);
+        m_scene_manager.SetScene(std::move(ptr));
     }
 
     ImGui::MarkdownConfig markdownConfig;

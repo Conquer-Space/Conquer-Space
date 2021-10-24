@@ -171,3 +171,9 @@ ShaderProgram::ShaderProgram(Shader& vert, Shader& frag) {
     glAttachShader(program, frag.id);
     glLinkProgram(program);
 }
+
+#include <spdlog/spdlog.h>
+cqsp::asset::ShaderProgram::~ShaderProgram() {
+    SPDLOG_INFO("Deleting shader");
+    glDeleteProgram(program);
+}

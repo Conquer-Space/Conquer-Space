@@ -18,6 +18,7 @@
 
 #include <istream>
 #include <string>
+#include <memory>
 
 #include <glm/glm.hpp>
 
@@ -36,6 +37,7 @@ class ShaderProgram {
  public:
     ShaderProgram();
     ShaderProgram(Shader& vert, Shader& frag);
+    ~ShaderProgram();
 
     void setBool(const std::string& name, bool value);
     void setInt(const std::string& name, int value);
@@ -71,6 +73,7 @@ class ShaderProgram {
     operator unsigned int() const { return program; }
 };
 
+typedef std::shared_ptr<ShaderProgram> ShaderProgram_t;
 // Set of utility functions that load shaders
 unsigned int LoadShader(std::string& shader, int type);
 

@@ -37,6 +37,7 @@ class UniverseScene : public cqsp::engine::Scene {
  public:
     explicit UniverseScene(cqsp::engine::Application& app);
     ~UniverseScene() {
+        SPDLOG_INFO("Deleting universe scene");
         delete system_renderer;
         delete renderer;
     }

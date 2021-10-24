@@ -62,6 +62,9 @@ cqsp::engine::BasicRendererObject cqsp::engine::MakeRenderable() {
     return std::make_shared<cqsp::engine::Renderable>();
 }
 
+cqsp::engine::BasicRenderer::~BasicRenderer() {
+}
+
 void cqsp::engine::BasicRenderer::Draw() {
     // Then iterate through them and render
     for (auto renderable : renderables) {

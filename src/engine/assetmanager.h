@@ -176,7 +176,7 @@ class AssetManager {
         return packages[token]->assets[pkg_key];
     }
 
-    cqsp::asset::ShaderProgram* CreateShaderProgram(const std::string &vert, const std::string &frag);
+    ShaderProgram_t MakeShader(const std::string &vert, const std::string &frag);
 
     template <class T>
     T* GetAsset(const std::string& key) {

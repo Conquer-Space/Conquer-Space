@@ -28,9 +28,10 @@ namespace engine {
 class Renderable {
  public:
     Mesh* mesh;
-    cqsp::asset::ShaderProgram* shaderProgram;
-    std::vector<asset::Texture*> textures;
     glm::mat4 model;
+
+    cqsp::asset::ShaderProgram_t shaderProgram;
+    std::vector<asset::Texture*> textures;
 
     void SetTexture(const std::string& name, int id, asset::Texture* texture);
     void SetMVP(glm::mat4& model, glm::mat4& view, glm::mat4& projection);

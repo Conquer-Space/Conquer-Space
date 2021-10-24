@@ -44,14 +44,18 @@
 cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app)
     : cqsp::engine::Scene(app) { }
 
+cqsp::scene::MainMenuScene::~MainMenuScene() {
+    SPDLOG_INFO("Deleting main menu");
+}
+
 void cqsp::scene::MainMenuScene::Init() {
     using cqsp::asset::Texture;
     m_texture = GetAssetManager().GetAsset<cqsp::asset::Texture>("core:cqspbanner");
 
     m_credits = GetAssetManager().GetAsset<cqsp::asset::TextAsset>("core:credits");
 
-    cqsp::engine::BasicRendererObject splashscreen = cqsp::engine::MakeRenderable();
-    cqsp::engine::BasicRendererObject titleBanner = cqsp::engine::MakeRenderable();
+    splashscreen = cqsp::engine::MakeRenderable();
+    titleBanner = cqsp::engine::MakeRenderable();
 
     cqsp::primitive::MakeTexturedPaneMesh(*splashscreen);
     cqsp::primitive::MakeTexturedPaneMesh(*titleBanner);
@@ -61,8 +65,8 @@ void cqsp::scene::MainMenuScene::Init() {
     cqsp::asset::Texture* asset2 = GetAssetManager().GetAsset<Texture>("core:title");
 
     // Create new shader program
-    asset::ShaderProgram* program = GetAssetManager().
-        CreateShaderProgram("core:shader.pane.vert", "core:shader.texturedpane.frag");
+    cqsp::asset::ShaderProgram_t program = GetAssetManager().
+        MakeShader("core:shader.pane.vert", "core:shader.texturedpane.frag");
 
     splashscreen->shaderProgram = program;
     titleBanner->shaderProgram = program;

@@ -381,7 +381,11 @@ int cqsp::engine::Application::init() {
 
 int cqsp::engine::Application::destroy() {
     // Delete scene
-    m_scene_manager.GetScene().reset();
+    SPDLOG_INFO("Destroying scene");
+    // sus
+    delete m_scene_manager.GetScene().get();
+    SPDLOG_INFO("Done Destroying scene");
+
     // Clear assets
     m_universe.reset();
     m_script_interface.reset();
