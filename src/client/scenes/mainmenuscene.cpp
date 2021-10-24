@@ -60,7 +60,7 @@ void cqsp::scene::MainMenuScene::Init() {
     object_renderer = new cqsp::engine::Renderer2D(shader);
 
     cqsp::primitive::MakeTexturedPaneMesh(rectangle);
-    
+
     shader->UseProgram();
     shader->Set("texture1", 0);
 }

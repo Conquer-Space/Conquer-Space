@@ -23,14 +23,14 @@
 namespace cqsp {
 namespace engine {
 class Renderer2D {
-   public:
+ public:
     Renderer2D(cqsp::asset::ShaderProgram_t tex, cqsp::asset::ShaderProgram_t color);
 
     /// <summary>
     /// Only enable the texture shader
     /// </summary>
     /// <param name="tex"></param>
-    Renderer2D(cqsp::asset::ShaderProgram_t tex);
+    explicit Renderer2D(cqsp::asset::ShaderProgram_t tex);
 
     /// <summary>
     /// Only enable the color shader
@@ -39,8 +39,10 @@ class Renderer2D {
     /// <param name=""></param>
     Renderer2D(cqsp::asset::ShaderProgram_t color, bool);
 
-    void DrawTexturedSprite(cqsp::engine::Mesh* mesh, cqsp::asset::Texture &texture, glm::vec2 position, glm::vec2 size, float rotate);
-    void DrawColoredSprite(cqsp::engine::Mesh* mesh, glm::vec3 color, glm::vec2 position, glm::vec2 size, float rotate);
+    void DrawTexturedSprite(cqsp::engine::Mesh* mesh, cqsp::asset::Texture &texture,
+                           glm::vec2 position, glm::vec2 size, float rotate);
+    void DrawColoredSprite(cqsp::engine::Mesh* mesh, glm::vec3 color, glm::vec2 position,
+                           glm::vec2 size, float rotate);
 
     void SetProjection(const glm::mat4& projection);
 

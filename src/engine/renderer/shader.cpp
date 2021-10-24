@@ -172,8 +172,6 @@ ShaderProgram::ShaderProgram(Shader& vert, Shader& frag) {
     glLinkProgram(program);
 }
 
-#include <spdlog/spdlog.h>
 cqsp::asset::ShaderProgram::~ShaderProgram() {
-    SPDLOG_INFO("Deleting shader");
     glDeleteProgram(program);
 }

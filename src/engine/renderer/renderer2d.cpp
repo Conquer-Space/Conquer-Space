@@ -14,7 +14,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "renderer2d.h"
+#include "engine/renderer/renderer2d.h"
 
 #include <glad/glad.h>
 
