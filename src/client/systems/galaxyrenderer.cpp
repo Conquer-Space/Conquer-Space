@@ -35,9 +35,12 @@ GalaxyRenderer::GalaxyRenderer(cqsp::common::Universe &_u, cqsp::engine::Applica
                                                 m_universe(_u), m_app(_a) {}
 
 void GalaxyRenderer::Initialize() {
-    asset::ShaderProgram_t circle_shader = m_app.GetAssetManager().MakeShader("core:shader.pane.vert", "core:coloredcirclefrag");
+    circle_shader = m_app.GetAssetManager().MakeShader("core:shader.pane.vert", "core:coloredcirclefrag");
+    renderer = new cqsp::engine::Renderer2D(circle_shader, true);
 
     star_system.mesh = new cqsp::engine::Mesh();
+    mesh = new cqsp::engine::Mesh();
+    primitive::CreateFilledCircle(*mesh);
     primitive::CreateFilledCircle(*star_system.mesh);
     star_system.shaderProgram = circle_shader;
     previous_mouseX = m_app.GetMouseX();
@@ -63,21 +66,13 @@ void GalaxyRenderer::Render(float deltaTime) {
 
         const float size = 0.1;
         model = glm::scale(model, glm::vec3(size, size, 1));
+        renderer->SetProjection(m_app.Get2DProj());
+        renderer->DrawColoredSprite(mesh, glm::vec3(1, 0, 0),
+                                    ConvertCoords(coordinate.x, coordinate.y),
+                                    glm::vec2(10, 10), 0);
 
-        glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(m_app.GetWindowWidth()), static_cast<float>(m_app.GetWindowHeight()), 0.0f, -1.0f, 1.0f);
-        star_system.shaderProgram->UseProgram();
-        star_system.shaderProgram->setVec4("color", 1, 0, 0, 1);
-        star_system.shaderProgram->setMat4("model", model);
-        star_system.shaderProgram->setMat4("projection", projection);
-        engine::Draw(star_system);
-
-        //glm::vec3((pos.x / m_app.GetWindowWidth() - 0.5) * 2,
-            //py / m_app.GetWindowHeight() - 0.5) * 2 = ((view_x + coordinate.x) / 500.f - 1) * scroll
-        // m_app.GetWindowHeight() * (scroll * (coordinate.x + view_x - 500) + 500)/1000
-
-        // Draw text at location
-        m_app.DrawTextNormalized(fmt::format("{}", entity), ((view_x + coordinate.x) / 500.f - 1) * scroll,
-            ((view_y + coordinate.y) / 500.f - 1) * scroll * window_ratio);
+        glm::vec2 v = ConvertCoords(coordinate.x, coordinate.y);
+        m_app.DrawText(fmt::format("{}", entity), v.x, v.y);
     }
 }
 
@@ -100,15 +95,15 @@ void GalaxyRenderer::Update(float deltaTime) {
         float window_ratio = static_cast<float>(m_app.GetWindowWidth()) /
                         static_cast<float>(m_app.GetWindowHeight());
         auto view = m_universe.view<cqspc::bodies::StarSystem, cqspc::types::GalacticCoordinate>();
-        float x = (2.0f * m_app.GetMouseX()) / m_app.GetWindowWidth() - 1.0f;
-        float y = 1.0f - (2.0f * m_app.GetMouseY()) / m_app.GetWindowHeight();
+        float x = m_app.GetMouseX();
+        float y = m_app.GetWindowHeight() - m_app.GetMouseY();
         for (entt::entity entity : view) {
             auto& coordinate = m_universe.get<cqspc::types::GalacticCoordinate>(entity);
             glm::vec2 screen_pos = ConvertCoords(coordinate.x, coordinate.y);
             double posx = screen_pos.x;
-            double posy = screen_pos.y * window_ratio;
+            double posy = screen_pos.y;
             double t = glm::length(glm::vec2(x - posx, (y - posy)));
-            if (t < 0.1) {
+            if (t < 10) {
                 mouse_over = entity;
             }
         }
@@ -124,8 +119,8 @@ void GalaxyRenderer::DoUI(float deltaTime) {
     ImGui::TextFmt("Scroll: {}", scroll);
     ImGui::TextFmt("Mouse over: {}", mouse_over);
     namespace cqspc = cqsp::common::components;
-    float x = (2.0f * m_app.GetMouseX()) / m_app.GetWindowWidth() - 1.0f;
-    float y = 1.0f - (2.0f * m_app.GetMouseY()) / m_app.GetWindowHeight();
+    float x = m_app.GetMouseX();
+    float y = m_app.GetWindowHeight() - m_app.GetMouseY();
     ImGui::TextFmt("({}, {})", x, y);
     auto view = m_universe.view<cqspc::bodies::StarSystem, cqspc::types::GalacticCoordinate>();
     for (entt::entity entity : view) {
@@ -139,5 +134,5 @@ void GalaxyRenderer::DoUI(float deltaTime) {
 }
 
 glm::vec2 GalaxyRenderer::ConvertCoords(double x,double y) {
-    return glm::vec2(((view_x + x) / 500.f - 1) * scroll, ((view_y + y) / 500.f - 1) * scroll);
+    return glm::vec2(((view_x + x)) * scroll, ((view_y + y)) * scroll);
 }

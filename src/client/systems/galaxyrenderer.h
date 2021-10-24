@@ -16,6 +16,7 @@
 */
 #pragma once
 
+#include "engine/renderer/renderer2d.h"
 #include "common/universe.h"
 #include "engine/application.h"
 #include "engine/renderer/renderable.h"
@@ -35,6 +36,7 @@ class GalaxyRenderer {
     cqsp::engine::Application &m_app;
 
     cqsp::engine::Renderable star_system;
+    cqsp::engine::Renderer2D *renderer;
 
     double scroll = 1;
 
@@ -47,5 +49,9 @@ class GalaxyRenderer {
     entt::entity mouse_over;
 
     glm::vec2 ConvertCoords(double x, double y);
+
+    asset::ShaderProgram_t circle_shader;
+
+    cqsp::engine::Mesh *mesh;
 };
 }  // namespace cqsp::client::systems

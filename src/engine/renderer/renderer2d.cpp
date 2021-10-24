@@ -17,6 +17,7 @@
 #include "engine/renderer/renderer2d.h"
 
 #include <glad/glad.h>
+#include <spdlog/spdlog.h>
 
 #include <glm/gtx/transform.hpp>
 
@@ -96,7 +97,7 @@ void cqsp::engine::Renderer2D::DrawColoredSprite(cqsp::engine::Mesh* mesh,
     model = glm::scale(model, glm::vec3(size, 1.0f));
 
     color_shader->Set("model", model);
-    color_shader->Set("color", color);
+    color_shader->Set("color", glm::vec4(color, 1));
 
     glBindVertexArray(mesh->VAO);
     if (mesh->buffer_type == 1) {
