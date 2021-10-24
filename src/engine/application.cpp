@@ -370,8 +370,8 @@ int cqsp::engine::Application::init() {
         SetFullScreen(true);
     }
 
-    std::shared_ptr<Scene> initial_scene = std::make_shared<EmptyScene>(*this);
-    m_scene_manager.SetInitialScene(initial_scene);
+    std::unique_ptr<Scene> initial_scene = std::make_unique<EmptyScene>(*this);
+    m_scene_manager.SetInitialScene(std::move(initial_scene));
 
     m_script_interface = std::make_unique<cqsp::scripting::ScriptInterface>();
     m_universe = std::make_unique<cqsp::common::Universe>();
@@ -382,8 +382,7 @@ int cqsp::engine::Application::init() {
 int cqsp::engine::Application::destroy() {
     // Delete scene
     SPDLOG_INFO("Destroying scene");
-    // sus
-    delete m_scene_manager.GetScene().get();
+    m_scene_manager.DeleteCurrentScene();
     SPDLOG_INFO("Done Destroying scene");
 
     // Clear assets
@@ -618,12 +617,12 @@ void cqsp::engine::Application::SetFullScreen(bool screen) {
     }
 }
 
-void cqsp::engine::SceneManager::SetInitialScene(std::shared_ptr<Scene> scene) {
-    m_scene = scene;
+void cqsp::engine::SceneManager::SetInitialScene(std::unique_ptr<Scene> scene) {
+    m_scene = std::move(scene);
 }
 
-void cqsp::engine::SceneManager::SetScene(std::shared_ptr<Scene> scene) {
-    m_next_scene = scene;
+void cqsp::engine::SceneManager::SetScene(std::unique_ptr<Scene> scene) {
+    m_next_scene = std::move(scene);
     m_switch = true;
 }
 
@@ -635,8 +634,8 @@ void cqsp::engine::SceneManager::SwitchScene() {
     m_switch = false;
 }
 
-std::shared_ptr<cqsp::engine::Scene> cqsp::engine::SceneManager::GetScene() {
-    return m_scene;
+cqsp::engine::Scene* cqsp::engine::SceneManager::GetScene() {
+    return m_scene.get();
 }
 
 void cqsp::engine::SceneManager::DeleteCurrentScene() { m_scene.reset(); }

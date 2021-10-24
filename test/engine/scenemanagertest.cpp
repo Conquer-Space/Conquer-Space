@@ -16,6 +16,7 @@
 */
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <iomanip>
 
 #include "engine/engine.h"
 #include "engine/application.h"
@@ -37,24 +38,32 @@ TEST(SceneManagerTest, SceneChangeTest) {
     // Empty application that does nothing
     cqspe::SceneManager scene_manager;
 
-    std::shared_ptr<MockScene> initial_ptr = std::make_shared<MockScene>();
-    std::shared_ptr<MockScene> new_scene_ptr =  std::make_shared<MockScene>();
+    std::unique_ptr<MockScene> initial = std::make_unique<MockScene>();
+    std::unique_ptr<MockScene> new_scene =  std::make_unique<MockScene>();
 
-    scene_manager.SetInitialScene(std::static_pointer_cast<cqspe::Scene>(initial_ptr));
+    // Initial scene is not initialized, because it will be an empty scene.
+    EXPECT_CALL(*new_scene, Init()).Times(1);
+
+    // Before scene
+    EXPECT_CALL(*initial, Update(0)).Times(1);
+    EXPECT_CALL(*new_scene, Update(0)).Times(0);
+
+    // Switch scene
+    EXPECT_CALL(*initial, Update(1)).Times(0);
+    EXPECT_CALL(*new_scene, Update(1)).Times(1);
+
+    scene_manager.SetInitialScene(std::move(initial));
     EXPECT_FALSE(scene_manager.ToSwitchScene());
 
-    scene_manager.SetScene(std::static_pointer_cast<cqspe::Scene>(new_scene_ptr));
+    scene_manager.SetScene(std::move(new_scene));
     EXPECT_TRUE(scene_manager.ToSwitchScene());
 
-    EXPECT_CALL(*new_scene_ptr, Update(_)).Times(0);
-    EXPECT_CALL(*initial_ptr, Update(_)).Times(1);
-
+    // Ensure that scene is not switched yet so that the game doesn't switch scenes
+    // in the middle of a frame
     scene_manager.Update(0);
 
-    EXPECT_CALL(*new_scene_ptr, Init()).Times(1);
     scene_manager.SwitchScene();
+    EXPECT_FALSE(scene_manager.ToSwitchScene());
 
-    EXPECT_CALL(*new_scene_ptr, Update(_)).Times(1);
-    EXPECT_CALL(*initial_ptr, Update(_)).Times(0);
-    scene_manager.Update(0);
+    scene_manager.Update(1);
 }

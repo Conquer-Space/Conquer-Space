@@ -19,8 +19,12 @@
 namespace cqsp {
 namespace engine {
 class Application;
-class SceneManager;
 class Scene;
 class EmptyScene;
+class SceneManager;
 }  // namespace engine
+
+namespace asset {
+class AssetManager;
+}
 }  // namespace cqsp

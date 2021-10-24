@@ -37,9 +37,12 @@ class UniverseScene : public cqsp::engine::Scene {
  public:
     explicit UniverseScene(cqsp::engine::Application& app);
     ~UniverseScene() {
-        SPDLOG_INFO("Deleting universe scene");
+        // Delete ui
+        simulation.reset();
+        for (auto it = user_interfaces.begin(); it != user_interfaces.end(); it++) {
+            it->reset();
+        }
         delete system_renderer;
-        delete renderer;
     }
 
     void Init();
@@ -73,12 +76,11 @@ class UniverseScene : public cqsp::engine::Scene {
 
     cqsp::client::systems::SysStarSystemRenderer* system_renderer;
 
-    std::shared_ptr<cqsp::common::systems::simulation::Simulation> simulation;
+    std::unique_ptr<cqsp::common::systems::simulation::Simulation> simulation;
 
     bool to_show_planet_window = false;
 
     std::vector<std::unique_ptr<cqsp::client::systems::SysUserInterface>> user_interfaces;
-    cqsp::engine::Renderer2D* renderer;
 };
 
 void SeePlanet(cqsp::engine::Application&, entt::entity);

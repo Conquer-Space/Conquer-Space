@@ -30,6 +30,7 @@
 #include <optional>
 #include <queue>
 
+#include "engine/engine.h"
 #include "engine/asset.h"
 #include "engine/textasset.h"
 #include "engine/renderer/texture.h"
