@@ -33,8 +33,8 @@ generators:insert({
     civ_init = function()
     end,
     universe_gen = function()
-        -- Get the terrain list
-        for _ = 1, 1000, 1 do
+        local star_system_count = 1000
+        for _ = 1, star_system_count, 1 do
             local sys = create_star_system()
             set_system_position(sys, random(star_system_min, star_system_max), random(star_system_min, star_system_max))
 

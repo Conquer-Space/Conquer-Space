@@ -79,8 +79,11 @@ void GalaxyRenderer::Render(float deltaTime) {
 void GalaxyRenderer::Update(float deltaTime) {
     // Check for zooming and clicking, and now we can view the star systems.
     if (!ImGui::GetIO().WantCaptureMouse) {
-        if (scroll - m_app.GetScrollAmount() * 0.1 > 0.1) {
-            scroll -= m_app.GetScrollAmount() * 0.1;
+        double scrollBefore = scroll;
+        double newScale = (exp(m_app.GetScrollAmount() * 0.1) * scroll);
+        //Limit scale
+        if (newScale > 1e-16 && newScale < 10) {
+            scroll = newScale;
         }
         // Check for mouse drag
 
@@ -90,21 +93,28 @@ void GalaxyRenderer::Update(float deltaTime) {
         }
 
         // Click on the star system
-        mouse_over = entt::null;
-        namespace cqspc = cqsp::common::components;
-        float window_ratio = static_cast<float>(m_app.GetWindowWidth()) /
-                        static_cast<float>(m_app.GetWindowHeight());
-        auto view = m_universe.view<cqspc::bodies::StarSystem, cqspc::types::GalacticCoordinate>();
-        float x = m_app.GetMouseX();
-        float y = m_app.GetWindowHeight() - m_app.GetMouseY();
-        for (entt::entity entity : view) {
-            auto& coordinate = m_universe.get<cqspc::types::GalacticCoordinate>(entity);
-            glm::vec2 screen_pos = ConvertCoords(coordinate.x, coordinate.y);
-            double posx = screen_pos.x;
-            double posy = screen_pos.y;
-            double t = glm::length(glm::vec2(x - posx, (y - posy)));
-            if (t < 10) {
-                mouse_over = entity;
+        if (m_app.MouseButtonDoubleClicked(GLFW_MOUSE_BUTTON_LEFT)) {
+            mouse_over = entt::null;
+            namespace cqspc = cqsp::common::components;
+            float window_ratio = static_cast<float>(m_app.GetWindowWidth()) /
+                                 static_cast<float>(m_app.GetWindowHeight());
+            auto view = m_universe.view<cqspc::bodies::StarSystem,
+                                        cqspc::types::GalacticCoordinate>();
+            float x = m_app.GetMouseX();
+            float y = m_app.GetWindowHeight() - m_app.GetMouseY();
+            for (entt::entity entity : view) {
+                auto& coordinate =
+                    m_universe.get<cqspc::types::GalacticCoordinate>(entity);
+                glm::vec2 screen_pos =
+                    ConvertCoords(coordinate.x, coordinate.y);
+                double posx = screen_pos.x;
+                double posy = screen_pos.y;
+                double t = glm::length(glm::vec2(x - posx, (y - posy)));
+                if (t < 10) {
+                    mouse_over = entity;
+                    SPDLOG_INFO("Clicked on star system {}, switching to the star system", entity);
+                    break;
+                }
             }
         }
     //}
@@ -117,22 +127,10 @@ void GalaxyRenderer::DoUI(float deltaTime) {
     ImGui::Begin("Galaxy Renderer Debug window");
     ImGui::TextFmt("Offset: {} {}", view_x, view_y);
     ImGui::TextFmt("Scroll: {}", scroll);
-    ImGui::TextFmt("Mouse over: {}", mouse_over);
-    namespace cqspc = cqsp::common::components;
-    float x = m_app.GetMouseX();
-    float y = m_app.GetWindowHeight() - m_app.GetMouseY();
-    ImGui::TextFmt("({}, {})", x, y);
-    auto view = m_universe.view<cqspc::bodies::StarSystem, cqspc::types::GalacticCoordinate>();
-    for (entt::entity entity : view) {
-        auto& coordinate = m_universe.get<cqspc::types::GalacticCoordinate>(entity);
-        glm::vec2 screen_pos = ConvertCoords(coordinate.x, coordinate.y);
-        double posx = screen_pos.x;
-        double posy = screen_pos.y * 2;
-        ImGui::TextFmt("{}: ({}, {})", entity, posx, posy);
-    }
     ImGui::End();
 }
 
 glm::vec2 GalaxyRenderer::ConvertCoords(double x,double y) {
-    return glm::vec2(((view_x + x)) * scroll, ((view_y + y)) * scroll);
+    return glm::vec2(((view_x + x) * scroll + m_app.GetWindowWidth()/2),
+        ((view_y + y)) * scroll + m_app.GetWindowHeight()/2);
 }
