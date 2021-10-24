@@ -41,8 +41,7 @@
 
 #include "common/util/paths.h"
 
-cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app)
-    : cqsp::engine::Scene(app) { }
+cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app) : cqsp::engine::Scene(app) { }
 
 cqsp::scene::MainMenuScene::~MainMenuScene() {
     delete object_renderer;
@@ -55,15 +54,15 @@ void cqsp::scene::MainMenuScene::Init() {
     title_banner_texture = GetAssetManager().GetAsset<Texture>("core:title");
 
     // Create new shader program
-    program = GetAssetManager().MakeShader("core:shader.pane.vert", "core:shader.texturedpane.frag");
+    shader = GetAssetManager().MakeShader("core:shader.pane.vert", "core:shader.texturedpane.frag");
 
     // Make the renderer
-    object_renderer = new cqsp::engine::Renderer2D(program, GetAssetManager().MakeShader("core:shader.pane.vert", "core:coloredcirclefrag"));
+    object_renderer = new cqsp::engine::Renderer2D(shader);
 
     cqsp::primitive::MakeTexturedPaneMesh(rectangle);
     
-    program->UseProgram();
-    program->Set("texture1", 0);
+    shader->UseProgram();
+    shader->Set("texture1", 0);
 }
 
 void cqsp::scene::MainMenuScene::Update(float deltaTime) {}
@@ -171,23 +170,28 @@ void cqsp::scene::MainMenuScene::Render(float deltaTime) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // Update projection
-    program->UseProgram();
-    program->Set("projection", GetApp().Get2DProj());
-    int width = GetApp().GetWindowWidth();
-    int height = static_cast<float>(splash_screen->height)/static_cast<float>(splash_screen->width) * GetApp().GetWindowWidth();
-    object_renderer->DrawTexturedSprite(&rectangle, * splash_screen,
-                                        glm::vec2(width/2, height/2),
-                                        glm::vec2(width, height),
-                                        0);
+    object_renderer->SetProjection(GetApp().Get2DProj());
 
-    // Draw title banner
-    int banner_height = title_banner_texture->height;
-    int banner_width = title_banner_texture->width;
-    object_renderer->DrawTexturedSprite(&rectangle, *title_banner_texture,
-                                        glm::vec2(banner_width/2 + 50, GetApp().GetWindowHeight() - banner_height - 25),
-                                        glm::vec2(banner_width, banner_height),
-                                        0);
-    //renderer.Draw();
+    {
+        int width = GetApp().GetWindowWidth();
+        // Configure so that it matches the width
+        int height = static_cast<float>(splash_screen->height) /
+                     static_cast<float>(splash_screen->width) *
+                     GetApp().GetWindowWidth();
+        object_renderer->DrawTexturedSprite(&rectangle, *splash_screen,
+                                            glm::vec2(width / 2, height / 2),
+                                            glm::vec2(width, height), 0);
+    }
+
+    {
+        // Draw title banner
+        int banner_height = title_banner_texture->height;
+        int banner_width = title_banner_texture->width;
+        object_renderer->DrawTexturedSprite(&rectangle, *title_banner_texture,
+                                            glm::vec2(banner_width / 2 + 50,
+                                            GetApp().GetWindowHeight() - banner_height - 25),
+                                            glm::vec2(banner_width, banner_height), 0);
+    }
     GetApp().DrawText(fmt::format("Version: {}", CQSP_VERSION_STRING), 8, 8);
 }
 

@@ -20,13 +20,24 @@
 
 #include <glm/gtx/transform.hpp>
 
-cqsp::engine::Renderer2D::Renderer2D(cqsp::asset::ShaderProgram_t tex, cqsp::asset::ShaderProgram_t color) : texture_shader(tex), color_shader(color) {
-}
+cqsp::engine::Renderer2D::Renderer2D(cqsp::asset::ShaderProgram_t tex,
+                                     cqsp::asset::ShaderProgram_t color) :
+                                     texture_shader(tex), color_shader(color) { }
+
+cqsp::engine::Renderer2D::Renderer2D(cqsp::asset::ShaderProgram_t tex) :
+                                        texture_shader(tex), color_shader(nullptr) { }
+
+cqsp::engine::Renderer2D::Renderer2D(cqsp::asset::ShaderProgram_t color, bool) :
+                                        texture_shader(nullptr), color_shader(color) { }
+
 
 void cqsp::engine::Renderer2D::DrawTexturedSprite(cqsp::engine::Mesh* mesh,
                                                   cqsp::asset::Texture& texture,
                                                  glm::vec2 position,
                                                  glm::vec2 size, float rotate) {
+    if (texture_shader == nullptr) {
+        return;
+    }
     texture_shader->UseProgram();
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(position, 0.0f));
@@ -54,10 +65,24 @@ void cqsp::engine::Renderer2D::DrawTexturedSprite(cqsp::engine::Mesh* mesh,
     glBindVertexArray(0);
 }
 
+void cqsp::engine::Renderer2D::SetProjection(const glm::mat4 & projection) {
+    if (texture_shader != nullptr) {
+        texture_shader->UseProgram();
+        texture_shader->Set("projection", projection);
+    }
+    if (color_shader != nullptr) {
+        color_shader->UseProgram();
+        color_shader->Set("projection", projection);
+    }
+}
+
 void cqsp::engine::Renderer2D::DrawColoredSprite(cqsp::engine::Mesh* mesh,
                                                  glm::vec3 color,
                                                  glm::vec2 position,
                                                  glm::vec2 size, float rotate) {
+    if (color_shader == nullptr) {
+        return;
+    }
     color_shader->UseProgram();
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(position, 0.0f));
@@ -81,3 +106,7 @@ void cqsp::engine::Renderer2D::DrawColoredSprite(cqsp::engine::Mesh* mesh,
     }
     glBindVertexArray(0);
 }
+
+
+bool cqsp::engine::Renderer2D::ColorEnabled() { return color_shader != nullptr; }
+bool cqsp::engine::Renderer2D::TextureEnabled() { return texture_shader != nullptr; }

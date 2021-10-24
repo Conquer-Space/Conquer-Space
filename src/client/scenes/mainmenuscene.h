@@ -54,8 +54,8 @@ class MainMenuScene : public cqsp::engine::Scene{
 
     cqsp::asset::Texture* splash_screen;
     cqsp::asset::Texture* title_banner_texture;
-    cqsp::asset::ShaderProgram_t program;
-
+    cqsp::asset::ShaderProgram_t shader;
+    
 };
 }  // namespace scene
 }  // namespace cqsp
