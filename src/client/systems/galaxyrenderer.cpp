@@ -25,6 +25,8 @@
 
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
+#include "common/components/player.h"
+#include "common/components/organizations.h"
 #include "engine/renderer/primitives/polygon.h"
 #include "engine/renderer/primitives/uvsphere.h"
 #include "engine/renderer/renderer.h"
@@ -50,9 +52,11 @@ void GalaxyRenderer::Initialize() {
 void GalaxyRenderer::OnTick() {}
 
 void GalaxyRenderer::Render(float deltaTime) {
+    namespace cqspc = cqsp::common::components;
+    entt::entity player = m_universe.view<cqspc::Player>().front();
+    entt::entity starting_planet = m_universe.get<cqspc::Civilization>(player).starting_planet;
+    entt::entity home_system = m_universe.get<cqspc::bodies::Body>(starting_planet).star_system;
     // Render all star systems in galaxy
-    float window_ratio = static_cast<float>(m_app.GetWindowWidth()) /
-                         static_cast<float>(m_app.GetWindowHeight());
     // Just draw circles for now
     namespace cqspc = cqsp::common::components;
     auto view = m_universe.view<cqspc::bodies::StarSystem, cqspc::types::GalacticCoordinate>();
@@ -67,9 +71,12 @@ void GalaxyRenderer::Render(float deltaTime) {
         const float size = 0.1;
         model = glm::scale(model, glm::vec3(size, size, 1));
         renderer->SetProjection(m_app.Get2DProj());
-        renderer->DrawColoredSprite(mesh, glm::vec3(1, 0, 0),
-                                    ConvertCoords(coordinate.x, coordinate.y),
-                                    glm::vec2(10, 10), 0);
+        glm::vec3 color = glm::vec3(1, 0, 0);
+        if (entity == home_system) {
+            color = glm::vec3(0, 1, 0);
+        }
+
+        renderer->DrawColoredSprite(mesh, color, ConvertCoords(coordinate.x, coordinate.y), glm::vec2(10, 10), 0);
 
         glm::vec2 v = ConvertCoords(coordinate.x, coordinate.y);
         m_app.DrawText(fmt::format("{}", entity), v.x, v.y);
@@ -77,6 +84,7 @@ void GalaxyRenderer::Render(float deltaTime) {
 }
 
 void GalaxyRenderer::Update(float deltaTime) {
+    namespace cqspc = cqsp::common::components;
     // Check for zooming and clicking, and now we can view the star systems.
     if (!ImGui::GetIO().WantCaptureMouse) {
         double scrollBefore = scroll;
@@ -85,8 +93,8 @@ void GalaxyRenderer::Update(float deltaTime) {
         if (newScale > 1e-16 && newScale < 10) {
             scroll = newScale;
         }
-        // Check for mouse drag
 
+        // Check for mouse drag
         if (m_app.MouseButtonIsHeld(GLFW_MOUSE_BUTTON_LEFT)) {
             view_x += (m_app.GetMouseX() - previous_mouseX) / scroll;
             view_y += (previous_mouseY - m_app.GetMouseY()) / scroll;
@@ -98,15 +106,12 @@ void GalaxyRenderer::Update(float deltaTime) {
             namespace cqspc = cqsp::common::components;
             float window_ratio = static_cast<float>(m_app.GetWindowWidth()) /
                                  static_cast<float>(m_app.GetWindowHeight());
-            auto view = m_universe.view<cqspc::bodies::StarSystem,
-                                        cqspc::types::GalacticCoordinate>();
+            auto view = m_universe.view<cqspc::bodies::StarSystem, cqspc::types::GalacticCoordinate>();
             float x = m_app.GetMouseX();
             float y = m_app.GetWindowHeight() - m_app.GetMouseY();
             for (entt::entity entity : view) {
-                auto& coordinate =
-                    m_universe.get<cqspc::types::GalacticCoordinate>(entity);
-                glm::vec2 screen_pos =
-                    ConvertCoords(coordinate.x, coordinate.y);
+                auto& coordinate = m_universe.get<cqspc::types::GalacticCoordinate>(entity);
+                glm::vec2 screen_pos = ConvertCoords(coordinate.x, coordinate.y);
                 double posx = screen_pos.x;
                 double posy = screen_pos.y;
                 double t = glm::length(glm::vec2(x - posx, (y - posy)));
@@ -117,9 +122,8 @@ void GalaxyRenderer::Update(float deltaTime) {
                 }
             }
         }
-    //}
-    previous_mouseX = m_app.GetMouseX();
-    previous_mouseY = m_app.GetMouseY();
+        previous_mouseX = m_app.GetMouseX();
+        previous_mouseY = m_app.GetMouseY();
     }
 }
 

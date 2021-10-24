@@ -82,6 +82,9 @@ class UniverseScene : public cqsp::engine::Scene {
 
     bool to_show_planet_window = false;
 
+    // False is galaxy view, true is star system view
+    bool view_mode = true;
+
     std::vector<std::unique_ptr<cqsp::client::systems::SysUserInterface>> user_interfaces;
 };
 

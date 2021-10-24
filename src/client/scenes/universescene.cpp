@@ -17,6 +17,7 @@
 #include "client/scenes/universescene.h"
 
 #include <glad/glad.h>
+#include <glfw/glfw3.h>
 
 #include <fmt/format.h>
 
@@ -96,20 +97,32 @@ void cqsp::scene::UniverseScene::Init() {
 
 void cqsp::scene::UniverseScene::Update(float deltaTime) {
     if (!game_halted) {
-        system_renderer->Update(deltaTime);
-        galaxy_renderer->Update(deltaTime);
+        if (GetApp().ButtonIsReleased(GLFW_KEY_M)) {
+            view_mode = !view_mode;
+        }
+        if (view_mode) {
+            system_renderer->Update(deltaTime);
+        } else {
+            galaxy_renderer->Update(deltaTime);
+        }
+        // Check to see if you have to switch
     }
 
     // Check for last tick
     if (GetUniverse().ToTick() && !game_halted) {
         // Game tick
         simulation->tick();
-        system_renderer->OnTick();
-        galaxy_renderer->OnTick();
+        if (view_mode) {
+            system_renderer->OnTick();
+        } else {
+            galaxy_renderer->OnTick();
+        }
     }
 
-    GetUniverse().clear<cqsp::client::systems::MouseOverEntity>();
-    system_renderer->GetMouseOnObject(GetApp().GetMouseX(), GetApp().GetMouseY());
+    if (view_mode) {
+        GetUniverse().clear<cqsp::client::systems::MouseOverEntity>();
+        system_renderer->GetMouseOnObject(GetApp().GetMouseX(), GetApp().GetMouseY());
+    }
 
     for (auto& ui : user_interfaces) {
         if (game_halted) {
@@ -126,14 +139,21 @@ void cqsp::scene::UniverseScene::Ui(float deltaTime) {
         ui->DoUI(deltaTime);
     }
     // Render star system renderer ui
-    system_renderer->DoUI(deltaTime);
-    galaxy_renderer->DoUI(deltaTime);
+    if (view_mode) {
+        system_renderer->DoUI(deltaTime);
+    } else {
+        galaxy_renderer->DoUI(deltaTime);
+    }
+
 }
 
 void cqsp::scene::UniverseScene::Render(float deltaTime) {
     glEnable(GL_MULTISAMPLE);
-    //system_renderer->Render(deltaTime);
-    galaxy_renderer->Render(deltaTime);
+    if (view_mode) {
+        system_renderer->Render(deltaTime);
+    } else {
+        galaxy_renderer->Render(deltaTime);
+    }
 }
 
 void cqsp::scene::SeeStarSystem(cqsp::engine::Application& app, entt::entity ent) {
