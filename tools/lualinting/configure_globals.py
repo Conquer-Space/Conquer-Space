@@ -56,6 +56,7 @@ with open(cqsp_root + "src/common/scripting/luafunctions.cpp", "r") as f:
     variables.append("events")
     variables.append("civilizations")
     variables.append("date")
+    variables.append("terrain_colors")
 
     if not os.path.exists("temp"):
         os.makedirs("temp")
