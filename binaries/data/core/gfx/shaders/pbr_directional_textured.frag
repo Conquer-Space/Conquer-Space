@@ -14,6 +14,7 @@ out vec4 FragColor;
 uniform vec3 lightPosition;
 uniform vec3 lightColor;
 uniform vec3 lightDir;
+uniform float seaLevel;
 
 uniform vec3 viewPos;
 
@@ -93,7 +94,7 @@ void main() {
 
     float roughness = 0.1;
     vec3 N = normalize(Normal);
-    if(texture(heightmap, TexCoords).r > 0.5) {
+    if(texture(heightmap, TexCoords).r > seaLevel) {
         roughness = 1;
         N = getNormalFromMap();
     }

@@ -1,0 +1,8 @@
+{
+    terrain_colors: {
+        path: planetterrain.hjson
+        type: hjson
+        hints: {
+        }
+    }
+}

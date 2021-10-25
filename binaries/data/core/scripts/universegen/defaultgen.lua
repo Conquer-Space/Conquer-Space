@@ -31,6 +31,7 @@ generators:insert({
     civ_init = function()
     end,
     universe_gen = function()
+        -- Get the terrain list
         for _ = 1, 1000, 1 do
             local sys = create_star_system()
 
@@ -85,17 +86,21 @@ generators:insert({
                 set_name(planet_entity, ""..planet_entity)
                 local radius = random(1000, 30000)
                 set_radius(planet_entity, radius)
-                create_terrain(planet_entity, random(0, 10000000))
                 -- Set planet type
                 -- Set planet terrain
                 -- Esh, we'll deal with that later
                 -- As you go further from the center, make it more likely that it is a gas planet
-
                 if planet_id == 2 then
                     -- Set as civ home planet
                     set_civilization_planet(civ, planet_entity)
-                    set_name(planet_entity, "Earting")
-                    set_name(create_ship(civ, planet_entity, sys), "Earting Ship")
+                    set_name(planet_entity, "Earth")
+                    set_name(create_ship(civ, planet_entity, sys), "Bubbles")
+                    create_terrain(planet_entity, random(0, 10000000), terrain_colors["earth"])
+                else
+                    -- Choose a random terrain
+                    local keys = {"moon", "terrain1", "terrain2"}
+                    local color = terrain_colors[keys[random(1, (#keys))]]
+                    create_terrain(planet_entity, random(0, 10000000), color)
                 end
             end
         end

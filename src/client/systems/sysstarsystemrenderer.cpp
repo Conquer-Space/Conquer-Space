@@ -210,19 +210,18 @@ void SysStarSystemRenderer::SeeEntity() {
     }
 
     // Set seed
-    seed = m_app.GetUniverse().get<cqspb::Terrain>(m_viewing_entity).seed;
-
+    auto &terrain = m_app.GetUniverse().get<cqspb::Terrain>(m_viewing_entity);
     cqsp::client::systems::TerrainImageGenerator generator;
-    generator.seed = seed;
-    generator.GenerateTerrain(1, 2);
+    generator.terrain = terrain;
+    generator.GenerateTerrain(m_universe, 1, 2);
     SetPlanetTexture(generator);
 
     // TODO(EhWhoAmI):  If it's in the process of generating, find some way to kill the gen,
     // and move on to the new terrain.
     SPDLOG_INFO("Generating terrain");
     // Generate terrain
-    intermediate_image_generator.seed = seed;
-    final_image_generator.seed = seed;
+    intermediate_image_generator.terrain = terrain;
+    final_image_generator.terrain = terrain;
 
     if (less_detailed_terrain_generator_thread.joinable()) {
         less_detailed_terrain_generator_thread.join();
@@ -233,14 +232,14 @@ void SysStarSystemRenderer::SeeEntity() {
 
     less_detailed_terrain_generator_thread = std::thread([&]() {
         // Generate slightly less detailed terrain so that it looks better at first
-        intermediate_image_generator.GenerateTerrain(4, 6);
+        intermediate_image_generator.GenerateTerrain(m_universe, 4, 6);
         second_terrain_complete = true;
     });
 
     terrain_generator_thread = std::thread([&]() {
         // Generate slightly less detailed terrain so that it looks better at first
         auto start = std::chrono::high_resolution_clock::now();
-        final_image_generator.GenerateTerrain(5, 10);
+        final_image_generator.GenerateTerrain(m_universe, 5, 10);
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
         terrain_complete = true;
@@ -288,7 +287,11 @@ void SysStarSystemRenderer::Update() {
             if (m_app.GetUniverse().any_of<ResourceDistribution>(m_viewing_entity)) {
                 auto &dist = m_app.GetUniverse().get<ResourceDistribution>(m_viewing_entity);
                 TerrainImageGenerator gen;
-                gen.seed = dist[rend.resource];
+                // Hack to do this, will probably have to rework this in the future.
+                cqsp::common::components::bodies::Terrain t;
+                t.seed = dist[rend.resource];
+                gen.terrain = t;
+
                 gen.GenerateHeightMap(3, 9);
                 // Make the UI
                 unsigned int a = GeneratePlanetTexture(gen.GetHeightMap());
@@ -367,7 +370,7 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
             renderer.BeginDraw(physical_layer);
             if (m_app.GetUniverse().all_of<cqspb::Terrain>(m_viewing_entity)) {
                 // Do empty terrain
-                DrawPlanet(object_pos);
+                DrawPlanet(m_app.GetUniverse().get<cqspb::Terrain>(m_viewing_entity).terrain_type, object_pos);
             } else {
                 DrawTerrainlessPlanet(object_pos);
             }
@@ -486,7 +489,7 @@ void SysStarSystemRenderer::DrawShipIcon(glm::vec3 &object_pos) {
     engine::Draw(ship_overlay);
 }
 
-void SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_pos) {
+void SysStarSystemRenderer::DrawPlanet(entt::entity terrain, glm::vec3 &object_pos) {
     glm::mat4 position = glm::mat4(1.f);
     position = glm::translate(position, object_pos);
 
@@ -504,6 +507,9 @@ void SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_pos) {
 
     planet.shaderProgram->setVec3("lightColor", sun_color);
     planet.shaderProgram->setVec3("viewPos", cam_pos);
+
+    using cqsp::common::components::bodies::TerrainData;
+    planet.shaderProgram->Set("seaLevel", m_universe.get<TerrainData>(terrain).sea_level);
     engine::Draw(planet);
 }
 
@@ -532,7 +538,7 @@ void SysStarSystemRenderer::DrawTerrainlessPlanet(glm::vec3 &object_pos) {
     engine::Draw(sun);
 }
 
-void SysStarSystemRenderer::RenderCities(const glm::vec3 &object_pos,
+void SysStarSystemRenderer::RenderCities(glm::vec3 &object_pos,
                                         const entt::entity &body_entity) {
     // Draw Ships
     namespace cqspc = cqsp::common::components;
@@ -551,13 +557,13 @@ void SysStarSystemRenderer::RenderCities(const glm::vec3 &object_pos,
     for (auto city_entity : cities) {
         // Calculate position to render
         glm::vec3 city_pos = m_app.GetUniverse().get<Offset>(city_entity).offset;
-
         if (glm::length(city_pos - cam_pos) < (scroll - 0.2)) {
             // If it's reasonably close, then we can show city names
+            glm::vec3 pos = city_pos + object_pos;
             if (scroll < 3) {
-                DrawEntityName(city_pos, city_entity);
+                DrawEntityName(pos, city_entity);
             }
-            DrawCityIcon(city_pos);
+            DrawCityIcon(pos);
         }
     }
     renderer.EndDraw(ship_icon_layer);

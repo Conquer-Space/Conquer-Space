@@ -115,10 +115,10 @@ class SysStarSystemRenderer {
     void DrawPlanetIcon(glm::vec3 &object_pos);
     void DrawShipIcon(glm::vec3 &object_pos);
     void DrawCityIcon(glm::vec3 &object_pos);
-    void DrawPlanet(glm::vec3 &object_pos);
+    void DrawPlanet(entt::entity terrain, glm::vec3 &object_pos);
     void DrawStar(glm::vec3 &object_pos);
     void DrawTerrainlessPlanet(glm::vec3 &object_pos);
-    void RenderCities(const glm::vec3 &object_pos, const entt::entity &body_entity);
+    void RenderCities(glm::vec3 &object_pos, const entt::entity &body_entity);
     void CalculateCityPositions();
 
     glm::vec3 CalculateObjectPos(const entt::entity &);
@@ -152,13 +152,6 @@ class SysStarSystemRenderer {
     int planet_icon_layer;
     int physical_layer;
     int skybox_layer;
-    //engine::AAFrameBufferRenderer overlay_renderer;
-    // Renders planet icons and other icons
-    //engine::AAFrameBufferRenderer buffer_renderer;
-    // Renders the physical planets
-    //engine::AAFrameBufferRenderer planet_renderer;
-    // Self explanatory
-    //engine::AAFrameBufferRenderer skybox_renderer;
 };
 }  // namespace systems
 }  // namespace client

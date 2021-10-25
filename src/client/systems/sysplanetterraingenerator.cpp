@@ -20,11 +20,15 @@
 
 #include <cmath>
 
-void cqsp::client::systems::TerrainImageGenerator::GenerateTerrain(int octaves, int size) {
+#include "common/components/bodies.h"
+
+using cqsp::client::systems::TerrainImageGenerator;
+
+void TerrainImageGenerator::GenerateTerrain(cqsp::common::Universe& universe, int octaves, int size) {
     noise::module::Perlin noise_module;
     noise_module.SetOctaveCount(octaves);
     noise_module.SetNoiseQuality(noise::QUALITY_FAST);
-    noise_module.SetSeed(seed);
+    noise_module.SetSeed(terrain.seed);
     noise_module.SetFrequency(2);
 
     noise::utils::NoiseMap noise_map;
@@ -48,28 +52,20 @@ void cqsp::client::systems::TerrainImageGenerator::GenerateTerrain(int octaves, 
 
     renderer.ClearGradient();
 
-    // TODO(EhWhoAmI): Need to add different types of terrain.
-    renderer.AddGradientPoint(-1.0000, utils::Color(0, 0, 128, 255));  // deeps
-    renderer.AddGradientPoint(-0.2500, utils::Color(0, 0, 255, 255));  // shallow
-    renderer.AddGradientPoint(0.0000, utils::Color(0, 128, 255, 255));  // shore
-    renderer.AddGradientPoint(0.0625, utils::Color(240, 240, 64, 255));  // sand
-    renderer.AddGradientPoint(0.1250, utils::Color(32, 160, 0, 255));  // grass
-    renderer.AddGradientPoint(0.3750, utils::Color(224, 224, 0, 255));  // dirt
-    renderer.AddGradientPoint(0.7500, utils::Color(128, 128, 128, 255));  // rock
-    renderer.AddGradientPoint(1.0000, utils::Color(255, 255, 255, 255));  // snow
-    /*renderer.EnableLight();
-    renderer.SetLightContrast(3.0);
-    renderer.SetLightBrightness(2.0);
-    renderer.SetLightAzimuth(0);*/
-
+    auto& terrain_data = universe.get<cqsp::common::components::bodies::TerrainData>(terrain.terrain_type);
+    for (auto it = terrain_data.data.begin(); it != terrain_data.data.end(); it++) {
+        renderer.AddGradientPoint(it->first, noise::utils::Color(
+                           std::get<0>(it->second), std::get<1>(it->second),
+                           std::get<2>(it->second), std::get<3>(it->second)));
+    }
     renderer.Render();
 }
 
-void cqsp::client::systems::TerrainImageGenerator::GenerateHeightMap(int octaves, int size) {
+void TerrainImageGenerator::GenerateHeightMap(int octaves, int size) {
     noise::module::Perlin noise_module;
     noise_module.SetOctaveCount(octaves);
     noise_module.SetNoiseQuality(noise::QUALITY_FAST);
-    noise_module.SetSeed(seed);
+    noise_module.SetSeed(terrain.seed);
     noise_module.SetFrequency(2);
 
     noise::utils::NoiseMap noise_map;
@@ -90,7 +86,7 @@ void cqsp::client::systems::TerrainImageGenerator::GenerateHeightMap(int octaves
     renderer.Render();
 }
 
-void cqsp::client::systems::TerrainImageGenerator::ClearData() {
+void TerrainImageGenerator::ClearData() {
     height_map.ReclaimMem();
     albedo_map.ReclaimMem();
 }

@@ -34,6 +34,7 @@ class Universe : public entt::registry {
 
     std::map<std::string, entt::entity> goods;
     std::map<std::string, entt::entity> recipes;
+    std::map<std::string, entt::entity> terrain_data;
 
     void EnableTick() { to_tick = true; }
     void DisableTick() { to_tick = false; }
