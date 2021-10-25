@@ -695,10 +695,10 @@ void SysStarSystemRenderer::CheckPlanetTerrain() {
         // Generate planet terrain, free the things
         //SetPlanetTexture(intermediate_image_generator);
         // Go through the terrain and add the terrain for the body.
-        for(auto it = intermediate_generators.begin(); it != intermediate_generators.end(); it++) {
+        for (auto it = intermediate_generators.begin(); it != intermediate_generators.end(); it++) {
             auto &data = m_universe.emplace_or_replace<TerrainTextureData>(it->first);
             delete data.terrain_albedo;
-            delete data.heightmap; 
+            delete data.heightmap;
             CreatePlanetTextures(it->second, &data.terrain_albedo, &data.heightmap);
         }
         less_detailed_gen_complete = false;
@@ -710,10 +710,10 @@ void SysStarSystemRenderer::CheckPlanetTerrain() {
         // Generate planet terrain, free the things
         //SetPlanetTexture(intermediate_image_generator);
         // Go through the terrain and add the terrain for the body.
-        for(auto it = final_generators.begin(); it != final_generators.end(); it++) {
+        for (auto it = final_generators.begin(); it != final_generators.end(); it++) {
             auto &data = m_universe.emplace_or_replace<TerrainTextureData>(it->first);
             delete data.terrain_albedo;
-            delete data.heightmap; 
+            delete data.heightmap;
             CreatePlanetTextures(it->second, &data.terrain_albedo, &data.heightmap);
         }
         terrain_gen_complete = false;

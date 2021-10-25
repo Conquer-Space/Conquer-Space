@@ -16,12 +16,12 @@
 */
 #include "client/systems/galaxyrenderer.h"
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
@@ -134,7 +134,7 @@ void GalaxyRenderer::DoUI(float deltaTime) {
     ImGui::End();
 }
 
-glm::vec2 GalaxyRenderer::ConvertCoords(double x,double y) {
+glm::vec2 GalaxyRenderer::ConvertCoords(double x, double y) {
     return glm::vec2(((view_x + x) * scroll + m_app.GetWindowWidth()/2),
         ((view_y + y)) * scroll + m_app.GetWindowHeight()/2);
 }

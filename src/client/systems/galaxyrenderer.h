@@ -23,7 +23,7 @@
 
 namespace cqsp::client::systems {
 class GalaxyRenderer {
-   public:
+ public:
     GalaxyRenderer(cqsp::common::Universe &, cqsp::engine::Application &);
     void Initialize();
     void OnTick();

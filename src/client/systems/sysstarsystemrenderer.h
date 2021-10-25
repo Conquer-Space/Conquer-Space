@@ -20,6 +20,8 @@
 
 #include <thread>
 #include <atomic>
+#include <map>
+
 #include <entt/entt.hpp>
 #include <glm/glm.hpp>
 

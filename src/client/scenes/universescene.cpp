@@ -144,7 +144,6 @@ void cqsp::scene::UniverseScene::Ui(float deltaTime) {
     } else {
         galaxy_renderer->DoUI(deltaTime);
     }
-
 }
 
 void cqsp::scene::UniverseScene::Render(float deltaTime) {
