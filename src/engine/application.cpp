@@ -169,6 +169,8 @@ class GLWindow : public Window {
             m_mouse_keys_pressed[button] = true;
             m_mouse_x_on_pressed = m_mouse_x;
             m_mouse_y_on_pressed = m_mouse_y;
+            m_mouse_pressed_time[button] = glfwGetTime() - m_mouse_keys_last_pressed[button];
+            m_mouse_keys_last_pressed[button] = glfwGetTime();
         } else if (action == GLFW_RELEASE) {
             m_mouse_keys_held[button] = false;
             m_mouse_keys_released[button] = true;
@@ -308,6 +310,15 @@ class GLWindow : public Window {
         }
     }
 
+    double MouseButtonLastReleased(int btn) const {
+        return m_mouse_keys_last_pressed[btn];
+    }
+
+    bool MouseButtonDoubleClicked(int btn) const {
+        bool is_pressed_long_enough = (m_mouse_pressed_time[btn]) <= 0.5f;
+        return (MouseButtonIsPressed(btn) && is_pressed_long_enough);
+    }
+
     GLFWwindow* window;
 
  private:
@@ -321,6 +332,9 @@ class GLWindow : public Window {
     bool m_mouse_keys_held[GLFW_MOUSE_BUTTON_LAST] = {false};
     bool m_mouse_keys_released[GLFW_MOUSE_BUTTON_LAST] = {false};
     bool m_mouse_keys_pressed[GLFW_MOUSE_BUTTON_LAST] = {false};
+
+    double m_mouse_keys_last_pressed[GLFW_MOUSE_BUTTON_LAST] = { 0.0 };
+    double m_mouse_pressed_time[GLFW_MOUSE_BUTTON_LAST] = { 0.0 };
 
     bool m_keys_held[GLFW_KEY_LAST] = {false};
     bool m_keys_released[GLFW_KEY_LAST] = {false};
@@ -518,6 +532,13 @@ void cqsp::engine::Application::DrawText(const std::string& text, float x, float
     if (fontShader != nullptr && m_font != nullptr) {
         // Render with size 16 white text
         cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, 16, glm::vec3(1.f, 1.f, 1.f));
+    }
+}
+
+void cqsp::engine::Application::DrawTextNormalized(const std::string& text, float x, float y) {
+    if (fontShader != nullptr && m_font != nullptr) {
+        cqsp::asset::RenderText(*fontShader, *m_font, text, (x + 1) * GetWindowWidth()/2,
+                                (y + 1) * GetWindowHeight() / 2, 16, glm::vec3(1.f, 1.f, 1.f));
     }
 }
 

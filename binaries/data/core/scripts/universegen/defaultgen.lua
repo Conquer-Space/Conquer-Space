@@ -26,14 +26,17 @@ local function place_factory_on_market(market, city, resource, amount)
     return factory
 end
 
+local star_system_min = 0
+local star_system_max = 1000
 generators:insert({
     name = "default",
     civ_init = function()
     end,
     universe_gen = function()
-        -- Get the terrain list
-        for _ = 1, 1000, 1 do
+        local star_system_count = 1000
+        for _ = 1, star_system_count, 1 do
             local sys = create_star_system()
+            set_system_position(sys, random(star_system_min, star_system_max), random(star_system_min, star_system_max))
 
             -- Add star
             local star = add_star(sys)
@@ -64,6 +67,7 @@ generators:insert({
             print("Making civilization "..civ)
             -- Set planets
             local sys = create_star_system()
+            set_system_position(sys, random(star_system_min, star_system_max), random(star_system_min, star_system_max))
 
             -- Add star
             local star = add_star(sys)
@@ -124,8 +128,8 @@ generators:insert({
         -- Add city
         -- TODO(EhWhoAmI): Create more complex economy, with cities specializing in stuff
         -- TODO(EhWhoAmI): Make slider for configuring the amount of cities and stuff
-        local city_count = 1
-        for index = 0, city_count, 1 do
+        local city_count = 2
+        for index = 1, city_count, 1 do
             local city = add_planet_settlement(planet, random(-90, 90), random(-180, 180))
             set_name(city, "City ".. index)
             local pop_unit = add_population_segment(city, random_normal_int(50000000, 2000000)) -- 100 million

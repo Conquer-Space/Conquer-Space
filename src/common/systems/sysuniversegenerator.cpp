@@ -54,10 +54,10 @@ void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::Generate
     universe.emplace<cqspc::Civilization>(player);
     universe.emplace<cqspc::Player>(player);
 
-    for (int i = 0; i < 9; i++) {
-        auto civ = universe.create();
-        universe.emplace<cqspc::Civilization>(civ);
-    }
+    //for (int i = 0; i < 9; i++) {
+        //auto civ = universe.create();
+        //universe.emplace<cqspc::Civilization>(civ);
+    //}
 
     sol::optional<sol::table> generator = script_engine["generators"]["data"][1];
     if (generator) {

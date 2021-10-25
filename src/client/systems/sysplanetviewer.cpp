@@ -94,8 +94,7 @@ void cqsp::client::systems::SysPlanetInformation::DoUpdate(int delta_time) {
     // Get the thing
     namespace cqspb = cqsp::common::components::bodies;
     selected_planet = cqsp::scene::GetCurrentViewingPlanet(GetApp());
-    entt::entity mouse_over = GetUniverse().
-                        view<cqsp::client::systems::MouseOverEntity>().front();
+    entt::entity mouse_over = GetUniverse().view<cqsp::client::systems::MouseOverEntity>().front();
     if (!ImGui::GetIO().WantCaptureMouse &&
                 GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) &&
                 mouse_over == selected_planet && !cqsp::scene::IsGameHalted() &&
@@ -103,7 +102,7 @@ void cqsp::client::systems::SysPlanetInformation::DoUpdate(int delta_time) {
         to_see = true;
         SPDLOG_INFO("Switched entity");
     }
-    if (!GetUniverse().all_of<cqspb::Body>(selected_planet)) {
+    if (!GetUniverse().valid(selected_planet) || !GetUniverse().all_of<cqspb::Body>(selected_planet)) {
         to_see = false;
     }
 }

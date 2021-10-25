@@ -17,6 +17,7 @@
 #include "client/scenes/universescene.h"
 
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #include <fmt/format.h>
 
@@ -50,6 +51,7 @@
 #include "client/systems/syscommand.h"
 #include "client/systems/gui/sysevent.h"
 
+// If the game is paused or not, like when escape is pressed
 bool game_halted = false;
 
 cqsp::scene::UniverseScene::UniverseScene(cqsp::engine::Application& app) : Scene(app) {}
@@ -57,14 +59,19 @@ cqsp::scene::UniverseScene::UniverseScene(cqsp::engine::Application& app) : Scen
 void cqsp::scene::UniverseScene::Init() {
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqspco = cqsp::common;
+    namespace cqspc = cqsp::common::components;
+    namespace cqsps = cqsp::client::systems;
+
     using cqspco::systems::simulation::Simulation;
     simulation = std::make_unique<Simulation>(GetUniverse(), GetApp().GetScriptInterface());
 
-    system_renderer = new cqsp::client::systems::SysStarSystemRenderer(GetUniverse(), GetApp());
+    system_renderer = new cqsps::SysStarSystemRenderer(GetUniverse(), GetApp());
     system_renderer->Initialize();
 
-    auto civilizationView =
-        GetUniverse().view<cqspco::components::Civilization, cqspco::components::Player>();
+    galaxy_renderer = new cqsps::GalaxyRenderer(GetUniverse(), GetApp());
+    galaxy_renderer->Initialize();
+
+    auto civilizationView = GetUniverse().view<cqspc::Civilization, cqspc::Player>();
     for (auto [entity, civ] : civilizationView.each()) {
         player = entity;
         player_civ = &civ;
@@ -78,30 +85,44 @@ void cqsp::scene::UniverseScene::Init() {
 
     selected_planet = player_civ->starting_planet;
 
-    AddUISystem<cqsp::client::systems::SysPlanetInformation>();
-    AddUISystem<cqsp::client::systems::SysTurnSaveWindow>();
-    AddUISystem<cqsp::client::systems::SysStarSystemTree>();
-    AddUISystem<cqsp::client::systems::SysPauseMenu>();
-    AddUISystem<cqsp::client::systems::SysDebugMenu>();
-    AddUISystem<cqsp::client::systems::SysCommand>();
-    AddUISystem<cqsp::client::systems::gui::SysEvent>();
+    AddUISystem<cqsps::SysPlanetInformation>();
+    AddUISystem<cqsps::SysTurnSaveWindow>();
+    AddUISystem<cqsps::SysStarSystemTree>();
+    AddUISystem<cqsps::SysPauseMenu>();
+    AddUISystem<cqsps::SysDebugMenu>();
+    AddUISystem<cqsps::SysCommand>();
+    AddUISystem<cqsps::gui::SysEvent>();
     simulation->tick();
 }
 
 void cqsp::scene::UniverseScene::Update(float deltaTime) {
     if (!game_halted) {
-        system_renderer->Update();
+        if (GetApp().ButtonIsReleased(GLFW_KEY_M)) {
+            view_mode = !view_mode;
+        }
+        if (view_mode) {
+            system_renderer->Update(deltaTime);
+        } else {
+            galaxy_renderer->Update(deltaTime);
+        }
+        // Check to see if you have to switch
     }
 
     // Check for last tick
     if (GetUniverse().ToTick() && !game_halted) {
         // Game tick
         simulation->tick();
-        system_renderer->OnTick();
+        if (view_mode) {
+            system_renderer->OnTick();
+        } else {
+            galaxy_renderer->OnTick();
+        }
     }
 
-    GetUniverse().clear<cqsp::client::systems::MouseOverEntity>();
-    system_renderer->GetMouseOnObject(GetApp().GetMouseX(), GetApp().GetMouseY());
+    if (view_mode) {
+        GetUniverse().clear<cqsp::client::systems::MouseOverEntity>();
+        system_renderer->GetMouseOnObject(GetApp().GetMouseX(), GetApp().GetMouseY());
+    }
 
     for (auto& ui : user_interfaces) {
         if (game_halted) {
@@ -118,12 +139,20 @@ void cqsp::scene::UniverseScene::Ui(float deltaTime) {
         ui->DoUI(deltaTime);
     }
     // Render star system renderer ui
-    system_renderer->DoUI();
+    if (view_mode) {
+        system_renderer->DoUI(deltaTime);
+    } else {
+        galaxy_renderer->DoUI(deltaTime);
+    }
 }
 
 void cqsp::scene::UniverseScene::Render(float deltaTime) {
     glEnable(GL_MULTISAMPLE);
-    system_renderer->Render();
+    if (view_mode) {
+        system_renderer->Render(deltaTime);
+    } else {
+        galaxy_renderer->Render(deltaTime);
+    }
 }
 
 void cqsp::scene::SeeStarSystem(cqsp::engine::Application& app, entt::entity ent) {

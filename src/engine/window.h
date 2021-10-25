@@ -30,6 +30,8 @@ class Window {
     virtual bool MouseButtonIsReleased(int btn) const = 0;
     virtual bool MouseButtonIsPressed(int btn) const = 0;
     virtual bool MouseDragged() const = 0;
+    virtual double MouseButtonLastReleased(int btn) const = 0;
+    virtual bool MouseButtonDoubleClicked(int btn) const = 0;
 
     virtual int GetScrollAmount() const = 0;
 

@@ -141,6 +141,8 @@ class Application {
     bool ButtonIsHeld(int btn) { return m_window->ButtonIsHeld(btn); }
     bool ButtonIsReleased(int btn) { return m_window->ButtonIsReleased(btn); }
     bool ButtonIsPressed(int btn) { return m_window->ButtonIsPressed(btn); }
+    double MouseButtonLastReleased(int btn) { return m_window->MouseButtonLastReleased(btn); }
+    bool MouseButtonDoubleClicked(int btn) { return m_window->MouseButtonDoubleClicked(btn); }
 
     double GetScrollAmount() { return m_window->GetScrollAmount(); }
 
@@ -155,12 +157,18 @@ class Application {
 
     cqsp::asset::Font*& GetFont() { return m_font; }
     void DrawText(const std::string& text, float x, float y);
+    // Draw text based on normalized device coordinates
+    void DrawTextNormalized(const std::string& text, float x, float y);
 
     void SetFont(cqsp::asset::Font* font) { m_font = font; }
     void SetFontShader(cqsp::asset::ShaderProgram* shader) {
         fontShader = shader;
     }
 
+    /// <summary>
+    /// Time in seconds
+    /// </summary>
+    /// <returns></returns>
     double GetTime();
 
     bool MouseDragged() { return m_window->MouseDragged(); }

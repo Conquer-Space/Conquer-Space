@@ -21,6 +21,7 @@ namespace common {
 namespace components {
 namespace types {
 typedef double astronomical_unit;
+typedef double light_year;
 typedef double kilometer;
 typedef double solar_mass;
 typedef double degree;
@@ -33,6 +34,8 @@ const double TWOPI = PI * 2;
 
 // Conversions
 inline astronomical_unit toAU(kilometer km) { return km / 149597870.700; }
+inline light_year toLightYear(astronomical_unit au) { return au / 63241; }
+inline astronomical_unit LtyrtoAU(light_year ltyr) { return ltyr * 63241; }
 inline kilometer toKm(astronomical_unit au) { return au * 149597870.700; }
 }  // namespace types
 }  // namespace components
