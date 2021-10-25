@@ -19,6 +19,7 @@
 #include <spdlog/spdlog.h>
 
 #include <string>
+#include <tuple>
 
 #include <sol/sol.hpp>
 
@@ -142,7 +143,9 @@ void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
     for (auto it = asset->data.begin(); it != asset->data.end(); it++) {
         entt::entity entity = GetUniverse().create();
 
-        cqsp::common::components::bodies::TerrainData &data = GetUniverse().get_or_emplace<cqsp::common::components::bodies::TerrainData>(entity);
+        using cqsp::common::components::bodies::TerrainData;
+        TerrainData &data = GetUniverse().get_or_emplace<TerrainData>(entity);
+
         data.sea_level = it->second["sealevel"];
         auto terrain_colors = it->second["terrain"];
         for (int i = 0; i < terrain_colors.size(); i++) {

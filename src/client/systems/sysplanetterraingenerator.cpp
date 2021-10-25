@@ -22,7 +22,9 @@
 
 #include "common/components/bodies.h"
 
-void cqsp::client::systems::TerrainImageGenerator::GenerateTerrain(cqsp::common::Universe& universe, int octaves, int size) {
+using cqsp::client::systems::TerrainImageGenerator;
+
+void TerrainImageGenerator::GenerateTerrain(cqsp::common::Universe& universe, int octaves, int size) {
     noise::module::Perlin noise_module;
     noise_module.SetOctaveCount(octaves);
     noise_module.SetNoiseQuality(noise::QUALITY_FAST);
@@ -50,23 +52,16 @@ void cqsp::client::systems::TerrainImageGenerator::GenerateTerrain(cqsp::common:
 
     renderer.ClearGradient();
 
-    // TODO(EhWhoAmI): Need to add different types of terrain.
-
     auto& terrain_data = universe.get<cqsp::common::components::bodies::TerrainData>(terrain.terrain_type);
-    for(auto it = terrain_data.data.begin(); it != terrain_data.data.end(); it++) {
+    for (auto it = terrain_data.data.begin(); it != terrain_data.data.end(); it++) {
         renderer.AddGradientPoint(it->first, noise::utils::Color(
                            std::get<0>(it->second), std::get<1>(it->second),
                            std::get<2>(it->second), std::get<3>(it->second)));
     }
-    /*renderer.EnableLight();
-    renderer.SetLightContrast(3.0);
-    renderer.SetLightBrightness(2.0);
-    renderer.SetLightAzimuth(0);*/
-
     renderer.Render();
 }
 
-void cqsp::client::systems::TerrainImageGenerator::GenerateHeightMap(int octaves, int size) {
+void TerrainImageGenerator::GenerateHeightMap(int octaves, int size) {
     noise::module::Perlin noise_module;
     noise_module.SetOctaveCount(octaves);
     noise_module.SetNoiseQuality(noise::QUALITY_FAST);
@@ -91,7 +86,7 @@ void cqsp::client::systems::TerrainImageGenerator::GenerateHeightMap(int octaves
     renderer.Render();
 }
 
-void cqsp::client::systems::TerrainImageGenerator::ClearData() {
+void TerrainImageGenerator::ClearData() {
     height_map.ReclaimMem();
     albedo_map.ReclaimMem();
 }

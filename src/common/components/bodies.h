@@ -17,6 +17,9 @@
 #pragma once
 
 #include <vector>
+#include <map>
+#include <tuple>
+
 #include <entt/entt.hpp>
 
 #include "common/components/units.h"

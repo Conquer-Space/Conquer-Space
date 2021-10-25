@@ -507,8 +507,9 @@ void SysStarSystemRenderer::DrawPlanet(entt::entity terrain, glm::vec3 &object_p
 
     planet.shaderProgram->setVec3("lightColor", sun_color);
     planet.shaderProgram->setVec3("viewPos", cam_pos);
-    
-    planet.shaderProgram->Set("seaLevel", m_universe.get<cqsp::common::components::bodies::TerrainData>(terrain).sea_level);
+
+    using cqsp::common::components::bodies::TerrainData;
+    planet.shaderProgram->Set("seaLevel", m_universe.get<TerrainData>(terrain).sea_level);
     engine::Draw(planet);
 }
 
