@@ -47,6 +47,7 @@ void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::Generate
 
     script_engine["goods"] = universe.goods;
     script_engine["recipes"] = universe.recipes;
+    script_engine["terrain_colors"] = universe.terrain_data;
 
     // Create player
     auto player = universe.create();

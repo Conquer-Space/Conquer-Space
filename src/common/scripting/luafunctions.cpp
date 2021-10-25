@@ -67,9 +67,8 @@ sol::object JsonToLuaObject(const Hjson::Value &j, const sol::this_state & s) {
         }
         case Hjson::Type::Vector: {
             std::vector<sol::object> vec;
-            unsigned long i = 0;
-            for (auto it = j.begin(); it != j.end(); ++it) {
-                vec.push_back(JsonToLuaObject(it->second, s));
+            for (auto index = 0; index < int(j.size()); ++index) {
+                vec.push_back(JsonToLuaObject(j[index], s));
             }
             return sol::make_object(lua, vec);
         }
@@ -147,8 +146,8 @@ void FunctionUniverseBodyGen(cqsp::engine::Application& app) {
         bod.radius = radius;
     });
 
-    REGISTER_FUNCTION("create_terrain", [&](entt::entity planet, int seed) {
-        universe.emplace<cqspb::Terrain>(planet, seed);
+    REGISTER_FUNCTION("create_terrain", [&](entt::entity planet, int seed, entt::entity terrain_type) {
+        universe.emplace<cqspb::Terrain>(planet, seed, terrain_type);
     });
 }
 

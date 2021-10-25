@@ -20,19 +20,24 @@
 
 #include <noiseutils.h>
 
+#include <hjson.h>
+
+#include "common/universe.h"
+#include "common/components/bodies.h"
+
 namespace cqsp {
 namespace client {
 namespace systems {
 class TerrainImageGenerator {
  public:
-    void GenerateTerrain(int octaves, int size);
+    void GenerateTerrain(cqsp::common::Universe& universe, int octaves, int size);
     void GenerateHeightMap(int octaves, int size);
     void ClearData();
 
     noise::utils::Image& GetHeightMap() { return height_map; }
     noise::utils::Image& GetAlbedoMap() { return albedo_map; }
 
-    int seed;
+    cqsp::common::components::bodies::Terrain terrain;
  private:
     noise::utils::Image height_map;
     noise::utils::Image albedo_map;

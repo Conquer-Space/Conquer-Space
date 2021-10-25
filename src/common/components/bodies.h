@@ -36,6 +36,12 @@ struct Body {
 
 struct Terrain {
     int seed;
+    entt::entity terrain_type;
+};
+
+struct TerrainData {
+    float sea_level;
+    std::map<float, std::tuple<int, int, int, int>> data;
 };
 
 struct Star {};

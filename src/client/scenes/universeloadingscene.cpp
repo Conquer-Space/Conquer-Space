@@ -137,6 +137,36 @@ void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
     LoadGoods(GetApp());
     LoadRecipes(GetApp());
 
+    // Initialize planet terrains
+    cqsp::asset::HjsonAsset* asset = GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("core:terrain_colors");
+    for (auto it = asset->data.begin(); it != asset->data.end(); it++) {
+        entt::entity entity = GetUniverse().create();
+
+        cqsp::common::components::bodies::TerrainData &data = GetUniverse().get_or_emplace<cqsp::common::components::bodies::TerrainData>(entity);
+        data.sea_level = it->second["sealevel"];
+        auto terrain_colors = it->second["terrain"];
+        for (int i = 0; i < terrain_colors.size(); i++) {
+            float place = terrain_colors[i][0];
+            Hjson::Value color = terrain_colors[i][1];
+            if (color.size() == 4) {
+                int r = color[0];
+                int g = color[1];
+                int b = color[2];
+                int a = color[3];
+                std::tuple<int, int, int, int> tuple = std::make_tuple(r, g, b, a);
+                data.data[place] = tuple;
+            } else if (color.size() == 3) {
+                int r = color[0];
+                int g = color[1];
+                int b = color[2];
+                // Now add the tuple
+                std::tuple<int, int, int, int> tuple = std::make_tuple(r, g, b, 255);
+                data.data[place] = tuple;
+            }
+        }
+        GetUniverse().terrain_data[it->first] = entity;
+    }
+
     // Load scripts
     // Load lua functions
     cqsp::scripting::LoadFunctions(GetApp());
