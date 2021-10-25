@@ -538,7 +538,7 @@ void SysStarSystemRenderer::DrawTerrainlessPlanet(glm::vec3 &object_pos) {
     engine::Draw(sun);
 }
 
-void SysStarSystemRenderer::RenderCities(const glm::vec3 &object_pos,
+void SysStarSystemRenderer::RenderCities(glm::vec3 &object_pos,
                                         const entt::entity &body_entity) {
     // Draw Ships
     namespace cqspc = cqsp::common::components;
@@ -559,10 +559,11 @@ void SysStarSystemRenderer::RenderCities(const glm::vec3 &object_pos,
         glm::vec3 city_pos = m_app.GetUniverse().get<Offset>(city_entity).offset;
         if (glm::length(city_pos - cam_pos) < (scroll - 0.2)) {
             // If it's reasonably close, then we can show city names
+            glm::vec3 pos = city_pos + object_pos;
             if (scroll < 3) {
-                DrawEntityName(city_pos + object_pos, city_entity);
+                DrawEntityName(pos, city_entity);
             }
-            DrawCityIcon(city_pos + object_pos);
+            DrawCityIcon(pos);
         }
     }
     renderer.EndDraw(ship_icon_layer);
