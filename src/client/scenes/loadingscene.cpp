@@ -20,6 +20,7 @@
 
 #include <fstream>
 #include <string>
+#include <chrono>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -42,6 +43,7 @@ void cqsp::scene::LoadingScene::Init() {
         SPDLOG_INFO("Loading resources");
         LoadResources();
         SPDLOG_INFO("Need halt: {}", need_halt);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20000) );
     };
 
     thread = std::make_unique<std::thread>(loading);
@@ -71,12 +73,16 @@ void cqsp::scene::LoadingScene::Ui(float deltaTime) {
     ImGui::SetNextWindowPos(
             ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
             ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, 0), ImGuiCond_Always);
     ImGui::Begin("Conquer Space", nullptr,
                 ImGuiWindowFlags_NoTitleBar |
                 ImGuiWindowFlags_NoResize |
                 ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::Text("Loading...");
-    ImGui::ProgressBar(percentage/100.f);
+    float current = static_cast<float>(assetLoader.getMaxLoading());
+    float max = static_cast<float>(assetLoader.getCurrentLoading());
+    std::string progress = fmt::format("{}/{}", current, max);
+    ImGui::ProgressBar(current/max, ImVec2(-FLT_MIN, 0), progress.c_str());
     ImGui::End();
 
     if (m_done_loading && need_halt) {
@@ -113,16 +119,8 @@ void cqsp::scene::LoadingScene::LoadFont() {
         .GetAssetManager()
         .GetAsset<cqsp::asset::Shader>("core:fontfragshader"));
 
-    cqsp::asset::Font* font = GetApp()
-        .GetAssetManager()
-        .GetAsset<cqsp::asset::Font>("core:defaultfont");
-
-    glm::mat4 projection =
-        glm::ortho(0.0f, static_cast<float>(GetApp().GetWindowWidth()), 0.0f,
-                    static_cast<float>(GetApp().GetWindowHeight()));
-
-    fontshader->UseProgram();
-    fontshader->setMat4("projection", projection);
+    cqsp::asset::Font* font =
+        GetApp().GetAssetManager().GetAsset<cqsp::asset::Font>("core:defaultfont");
 
     GetApp().SetFont(font);
     GetApp().SetFontShader(fontshader);

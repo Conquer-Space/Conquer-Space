@@ -260,6 +260,9 @@ class AssetLoader {
     /// <returns></returns>
     std::string GetModFilePath();
 
+    std::atomic_int& getMaxLoading() { return max_loading; }
+    std::atomic_int& getCurrentLoading() { return currentloading; }
+
  private:
     std::string LoadModPrototype(const std::string&);
     void LoadHjsonDirectory(Package& package, std::string path, std::string key);
@@ -294,6 +297,11 @@ class AssetLoader {
     std::map<std::string, AssetType> asset_type_map;
     std::vector<std::string> missing_assets;
     ThreadsafeQueue<QueueHolder> m_asset_queue;
+
+    void LoadDirectory(std::string path, std::function<void(std::string)> file);
+
+    std::atomic_int max_loading;
+    std::atomic_int currentloading;
 };
 }  // namespace asset
 }  // namespace cqsp
