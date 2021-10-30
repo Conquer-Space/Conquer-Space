@@ -321,7 +321,7 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
 
         // Draw Ships
         namespace cqspc = cqsp::common::components;
-        namespace cqspt = cqsp::common::components::types;
+        namespace cqspt = cqsp::common::types;
 
         if (glm::distance(object_pos, cam_pos) > 200) {
             // Check if it's obscured by a planet, but eh, we can deal with it later
@@ -517,7 +517,7 @@ void SysStarSystemRenderer::DrawTerrainlessPlanet(glm::vec3 &object_pos) {
 void SysStarSystemRenderer::RenderCities(glm::vec3 &object_pos, const entt::entity &body_entity) {
     // Draw Ships
     namespace cqspc = cqsp::common::components;
-    namespace cqspt = cqsp::common::components::types;
+    namespace cqspt = cqsp::common::types;
     if (!m_app.GetUniverse().all_of<cqspc::Habitation>(body_entity)) {
         return;
     }
@@ -546,7 +546,7 @@ void SysStarSystemRenderer::RenderCities(glm::vec3 &object_pos, const entt::enti
 
 void SysStarSystemRenderer::CalculateCityPositions() {
     namespace cqspc = cqsp::common::components;
-    namespace cqspt = cqsp::common::components::types;
+    namespace cqspt = cqsp::common::types;
     // Calculate offset for all cities on planet if they exist
     if (!m_app.GetUniverse().all_of<cqspc::Habitation>(m_viewing_entity)) {
         return;
@@ -566,7 +566,7 @@ void SysStarSystemRenderer::CalculateCityPositions() {
 }
 
 glm::vec3 SysStarSystemRenderer::CalculateObjectPos(const entt::entity &ent) {
-    namespace cqspt = cqsp::common::components::types;
+    namespace cqspt = cqsp::common::types;
     // Get the position
     if (m_universe.all_of<cqspt::Kinematics>(ent)) {
         return (m_universe.get<cqspt::Kinematics>(ent).position / 0.01f);

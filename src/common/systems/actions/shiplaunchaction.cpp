@@ -23,7 +23,7 @@
 entt::entity cqsp::common::systems::actions::CreateShip(
     cqsp::common::Universe& universe, entt::entity civ, entt::entity orbit,
     entt::entity starsystem) {
-    namespace cqspt = cqsp::common::components::types;
+    namespace cqspt = cqsp::common::types;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspb = cqsp::common::components::bodies;
     entt::entity ship = universe.create();

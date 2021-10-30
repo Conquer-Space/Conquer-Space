@@ -53,15 +53,16 @@ void GalaxyRenderer::OnTick() {}
 
 void GalaxyRenderer::Render(float deltaTime) {
     namespace cqspc = cqsp::common::components;
+    namespace cqspt = cqsp::common::types;
     entt::entity player = m_universe.view<cqspc::Player>().front();
     entt::entity starting_planet = m_universe.get<cqspc::Civilization>(player).starting_planet;
     entt::entity home_system = m_universe.get<cqspc::bodies::Body>(starting_planet).star_system;
     // Render all star systems in galaxy
     // Just draw circles for now
-    namespace cqspc = cqsp::common::components;
-    auto view = m_universe.view<cqspc::bodies::StarSystem, cqspc::types::GalacticCoordinate>();
+
+    auto view = m_universe.view<cqspc::bodies::StarSystem, cqspt::GalacticCoordinate>();
     for (entt::entity entity : view) {
-        auto& coordinate = m_universe.get<cqspc::types::GalacticCoordinate>(entity);
+        auto& coordinate = m_universe.get<cqspt::GalacticCoordinate>(entity);
         // Render on screen.
         // 2D coordinates for now.
         // Render based on coordinates
@@ -104,13 +105,14 @@ void GalaxyRenderer::Update(float deltaTime) {
         if (m_app.MouseButtonDoubleClicked(GLFW_MOUSE_BUTTON_LEFT)) {
             mouse_over = entt::null;
             namespace cqspc = cqsp::common::components;
+            namespace cqspt = cqsp::common::types;
             float window_ratio = static_cast<float>(m_app.GetWindowWidth()) /
                                  static_cast<float>(m_app.GetWindowHeight());
-            auto view = m_universe.view<cqspc::bodies::StarSystem, cqspc::types::GalacticCoordinate>();
+            auto view = m_universe.view<cqspc::bodies::StarSystem, cqspt::GalacticCoordinate>();
             float x = m_app.GetMouseX();
             float y = m_app.GetWindowHeight() - m_app.GetMouseY();
             for (entt::entity entity : view) {
-                auto& coordinate = m_universe.get<cqspc::types::GalacticCoordinate>(entity);
+                auto& coordinate = m_universe.get<cqspt::GalacticCoordinate>(entity);
                 glm::vec2 screen_pos = ConvertCoords(coordinate.x, coordinate.y);
                 double posx = screen_pos.x;
                 double posy = screen_pos.y;

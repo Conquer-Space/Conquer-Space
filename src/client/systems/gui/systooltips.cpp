@@ -79,6 +79,7 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
         return;
     }
     namespace cqspc = cqsp::common::components;
+    namespace cqspt = cqsp::common::types;
     ImGui::BeginTooltip();
     ImGui::TextFmt("{}", GetName(universe, entity));
 
@@ -92,8 +93,8 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
     if (universe.all_of<cqspc::MarketAgent>(entity)) {
         ImGui::TextFmt("Is Market Participant");
     }
-    if (universe.all_of<cqspc::types::Kinematics>(entity)) {
-        auto& a = universe.get<cqsp::common::components::types::Kinematics>(entity);
+    if (universe.all_of<cqspt::Kinematics>(entity)) {
+        auto& a = universe.get<cqsp::common::types::Kinematics>(entity);
         ImGui::TextFmt("Position: {} {} {}", a.position.x, a.position.y, a.position.z);
     }
 

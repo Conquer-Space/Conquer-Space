@@ -29,12 +29,13 @@ namespace cqsp {
 namespace common {
 namespace components {
 struct Good {
-    cqsp::common::components::types::meter_cube volume;
-    cqsp::common::components::types::kilogram mass;
+    cqsp::common::types::meter_cube volume;
+    cqsp::common::types::kilogram mass;
 };
 
 struct Mineral {};
 
+struct Food { };
 struct ResourceLedger : public std::map<entt::entity, double> {
     ResourceLedger() = default;
     ~ResourceLedger() = default;

@@ -18,7 +18,6 @@
 
 namespace cqsp {
 namespace common {
-namespace components {
 namespace types {
 typedef double astronomical_unit;
 typedef double light_year;
@@ -29,6 +28,11 @@ typedef double radian;
 typedef double meter_cube;
 typedef double kilogram;
 
+// Remember: Big C calories
+typedef int Calories;
+// Larger units for acerage measurements.
+typedef int kiloCalories;
+
 const double PI = 3.14159265358979323846;
 const double TWOPI = PI * 2;
 
@@ -38,6 +42,5 @@ inline light_year toLightYear(astronomical_unit au) { return au / 63241; }
 inline astronomical_unit LtyrtoAU(light_year ltyr) { return ltyr * 63241; }
 inline kilometer toKm(astronomical_unit au) { return au * 149597870.700; }
 }  // namespace types
-}  // namespace components
 }  // namespace common
 }  // namespace cqsp

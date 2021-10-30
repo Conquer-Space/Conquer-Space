@@ -57,7 +57,7 @@ void cqsp::common::systems::simulation::Simulation::tick() {
     // Get previous tick spacing
     namespace cqspc = cqsp::common::components;
     namespace cqsps = cqsp::common::components::ships;
-    namespace cqspt = cqsp::common::components::types;
+    namespace cqspt = cqsp::common::types;
     auto start = std::chrono::high_resolution_clock::now();
     BEGIN_TIMED_BLOCK(Game_Loop);
     BEGIN_TIMED_BLOCK(ScriptEngine);

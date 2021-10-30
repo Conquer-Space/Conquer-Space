@@ -36,7 +36,7 @@ void cqsp::primitive::CreateFilledCircle(
 
     // Add texture coords
     for (int i = 0; i <= segments; i++) {
-        double theta = i * cqsp::common::components::types::toRadian(360.f/segments);
+        double theta = i * cqsp::common::types::toRadian(360.f/segments);
         double y = std::sin(theta);
         double x = std::cos(theta);
 

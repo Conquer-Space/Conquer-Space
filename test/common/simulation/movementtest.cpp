@@ -22,7 +22,7 @@
 #include "common/components/coordinates.h"
 #include "common/components/ships.h"
 
-namespace cqspt = cqsp::common::components::types;
+namespace cqspt = cqsp::common::types;
 class SystemsMovementTest : public ::testing::Test {
  protected:
     static void SetUpTestSuite() {

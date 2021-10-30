@@ -27,7 +27,6 @@
 
 namespace cqsp {
 namespace common {
-namespace components {
 namespace types {
 
 struct Orbit;
@@ -106,7 +105,7 @@ inline void UpdateOrbit(Orbit& orb) {
 }
 
 inline types::radian toRadian(types::degree theta) {
-    return theta * (cqsp::common::components::types::PI / 180.f);
+    return theta * (cqsp::common::types::PI / 180.f);
 }
 
 struct SurfaceCoordinate {
@@ -131,7 +130,7 @@ inline glm::vec3 toVec3(SurfaceCoordinate coord, float radius) {
 }
 
 inline types::degree toDegree(types::radian theta) {
-    return theta * (180 / cqsp::common::components::types::PI);
+    return theta * (180 / cqsp::common::types::PI);
 }
 
 inline glm::vec3 toVec3(const PolarCoordinate& coordinate) {
@@ -155,6 +154,5 @@ inline void UpdatePos(Kinematics& kin, const Orbit& orb) {
     kin.position = toVec3(orb);
 }
 }  // namespace types
-}  // namespace components
 }  // namespace common
 }  // namespace cqsp

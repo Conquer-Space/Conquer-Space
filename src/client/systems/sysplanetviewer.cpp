@@ -572,7 +572,7 @@ void cqsp::client::systems::SysPlanetInformation::FactoryInformationPanel() {
 
 void cqsp::client::systems::SysPlanetInformation::SpacePortTab() {
     namespace cqspc = cqsp::common::components;
-    namespace cqspt = cqsp::common::components::types;
+    namespace cqspt = cqsp::common::types;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspb = cqsp::common::components::bodies;
 

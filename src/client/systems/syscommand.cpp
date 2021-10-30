@@ -39,7 +39,7 @@ void cqsp::client::systems::SysCommand::DoUI(int delta_time) {
 
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqsps = cqsp::common::components::ships;
-    namespace cqspt = cqsp::common::components::types;
+    namespace cqspt = cqsp::common::types;
     namespace cqspcs = cqsp::client::systems;
 
     using cqsp::common::components::Name;
@@ -83,7 +83,7 @@ void cqsp::client::systems::SysCommand::DoUI(int delta_time) {
 
 void cqsp::client::systems::SysCommand::DoUpdate(int delta_time) {
     namespace cqspb = cqsp::common::components::bodies;
-    namespace cqspt = cqsp::common::components::types;
+    namespace cqspt = cqsp::common::types;
     selected_planet = cqsp::scene::GetCurrentViewingPlanet(GetApp());
     /*entt::entity mouse_over = GetUniverse()
             .view<cqsp::client::systems::MouseOverEntity, cqspt::Kinematics>().front();

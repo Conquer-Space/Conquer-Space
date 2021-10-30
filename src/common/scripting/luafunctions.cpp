@@ -81,7 +81,7 @@ sol::object JsonToLuaObject(const Hjson::Value &j, const sol::this_state & s) {
 
 namespace cqspb = cqsp::common::components::bodies;
 namespace cqsps = cqsp::common::components::ships;
-namespace cqspt = cqsp::common::components::types;
+namespace cqspt = cqsp::common::types;
 namespace cqspc = cqsp::common::components;
 
 /// <summary>
@@ -262,7 +262,7 @@ void FunctionUser(cqsp::engine::Application& app) {
 
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqsps = cqsp::common::components::ships;
-    namespace cqspt = cqsp::common::components::types;
+    namespace cqspt = cqsp::common::types;
     namespace cqspc = cqsp::common::components;
     REGISTER_FUNCTION("set_name", [&](entt::entity entity, std::string name) {
         universe.emplace_or_replace<cqspc::Name>(entity, name);

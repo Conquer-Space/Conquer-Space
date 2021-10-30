@@ -25,7 +25,7 @@
 void cqsp::common::systems::SysOrbit::DoSystem(Universe& universe) {
     namespace cqspc = cqsp::common::components;
     namespace cqsps = cqsp::common::components::ships;
-    namespace cqspt = cqsp::common::components::types;
+    namespace cqspt = cqsp::common::types;
 
     auto bodies = universe.view<cqspt::Orbit>();
     for (entt::entity body : bodies) {
@@ -40,7 +40,7 @@ int cqsp::common::systems::SysOrbit::Interval() { return 1; }
 void cqsp::common::systems::SysSurface::DoSystem(Universe& universe) {
     namespace cqspc = cqsp::common::components;
     namespace cqsps = cqsp::common::components::ships;
-    namespace cqspt = cqsp::common::components::types;
+    namespace cqspt = cqsp::common::types;
 
     auto objects = universe.view<cqspt::SurfaceCoordinate>();
     for (entt::entity object : objects) {
@@ -63,7 +63,7 @@ int cqsp::common::systems::SysSurface::Interval() {
 void cqsp::common::systems::SysPath::DoSystem(Universe& universe) {
     namespace cqspc = cqsp::common::components;
     namespace cqsps = cqsp::common::components::ships;
-    namespace cqspt = cqsp::common::components::types;
+    namespace cqspt = cqsp::common::types;
 
     auto bodies = universe.view<cqspt::MoveTarget, cqspt::Kinematics>(entt::exclude<cqspt::Orbit>);
     for (entt::entity body : bodies) {

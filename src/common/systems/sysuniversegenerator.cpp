@@ -42,7 +42,7 @@ void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::Generate
     cqsp::common::Universe& universe) {
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqsps = cqsp::common::components::ships;
-    namespace cqspt = cqsp::common::components::types;
+    namespace cqspt = cqsp::common::types;
     namespace cqspc = cqsp::common::components;
 
     script_engine["goods"] = universe.goods;
