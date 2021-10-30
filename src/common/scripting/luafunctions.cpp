@@ -281,9 +281,15 @@ void FunctionPopulation(cqsp::engine::Application& app) {
     cqsp::common::Universe& universe = app.GetUniverse();
     cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
 
-    REGISTER_FUNCTION("add_population_segment", [&](entt::entity settlement, uint64_t popsize) {
+    REGISTER_FUNCTION("create_species", [&](std::string name) {
+        entt::entity species = universe.create();
+        universe.emplace<cqspc::Name>(species, name);
+        return species;
+    });
+
+    REGISTER_FUNCTION("add_population_segment", [&](entt::entity settlement, uint64_t popsize, entt::entity species) {
         entt::entity population = universe.create();
-        universe.emplace<cqspc::PopulationSegment>(population, popsize);
+        universe.emplace<cqspc::PopulationSegment>(population, popsize, species);
         universe.emplace<cqspc::ResourceStockpile>(population);
         universe.emplace<cqspc::Employee>(population);
         // Add to planet list

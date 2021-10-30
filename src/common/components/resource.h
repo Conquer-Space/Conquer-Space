@@ -35,7 +35,11 @@ struct Good {
 
 struct Mineral {};
 
-struct Food { };
+struct Food {
+    // Calories per unit
+    cqsp::common::types::Calories calories;
+};
+
 struct ResourceLedger : public std::map<entt::entity, double> {
     ResourceLedger() = default;
     ~ResourceLedger() = default;

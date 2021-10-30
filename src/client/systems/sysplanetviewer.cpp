@@ -357,6 +357,10 @@ void cqsp::client::systems::SysPlanetInformation::DemographicsTab() {
     for (auto &seg_entity : settlement.population) {
         ImGui::TextFmt("Population: {}", GetUniverse().get<PopulationSegment>(seg_entity).population);
         cqsp::client::systems::gui::EntityTooltip(GetUniverse(), seg_entity);
+
+        entt::entity species = GetUniverse().get<PopulationSegment>(seg_entity).species;
+        ImGui::TextFmt("Species: {}", GetUniverse().get<cqspc::Name>(species));
+
         if (GetUniverse().all_of<cqspc::Hunger>(seg_entity)) {
             ImGui::TextFmt("Hungry");
         }

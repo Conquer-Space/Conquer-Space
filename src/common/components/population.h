@@ -21,6 +21,12 @@ namespace common {
 namespace components {
 struct PopulationSegment {
     uint64_t population;
+    entt::entity species;
+};
+
+struct Species {
+    // Representation of the food that they can eat
+    entt::entity consume;
 };
 
 struct Hunger {};

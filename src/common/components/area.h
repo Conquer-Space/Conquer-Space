@@ -37,6 +37,8 @@ struct Farm {
     // Farms have a harvest period?
     // Farms can fluctuate between how much they generate per tick.
     // Also add food good
+    entt::entity farmed_good;
+    int acres;
 };
 
 }  // namespace components

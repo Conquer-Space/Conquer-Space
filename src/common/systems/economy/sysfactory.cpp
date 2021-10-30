@@ -22,7 +22,11 @@
 #include "common/components/name.h"
 
 void cqsp::common::systems::SysFactory::DoSystem(Universe& universe) {
-    // Do the thing
+    SysFactoryProduction(universe);
+    SysMineProduction(universe);
+}
+
+void cqsp::common::systems::SysFactory::SysFactoryProduction(Universe& universe) {
     // When demand is higher, increase production, when demand is lower, decrease production.
     namespace cqspc = cqsp::common::components;
 
@@ -54,9 +58,6 @@ void cqsp::common::systems::SysFactory::DoSystem(Universe& universe) {
             }
         }
     }
-
-    // Now do the same for mines
-    SysMineProduction(universe);
 }
 
 void cqsp::common::systems::SysFactory::SysMineProduction(Universe& universe) {
@@ -88,5 +89,15 @@ void cqsp::common::systems::SysFactory::SysMineProduction(Universe& universe) {
                 prod *= 1.1;
             }
         }
+    }
+}
+
+void cqsp::common::systems::SysFactory::SysFarmProduction(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
+    auto view = universe.view<cqspc::Farm>();
+    for (entt::entity entity : view) {
+        // Farms produce a crop
+        auto& farm = universe.get<cqspc::Farm>(entity);
+        // Now generate the resource production
     }
 }
