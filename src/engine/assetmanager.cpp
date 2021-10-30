@@ -88,6 +88,8 @@ void cqsp::asset::Package::ClearAssets() {
     assets.clear();
 }
 
+using cqsp::asset::AssetLoader;
+
 cqsp::asset::AssetManager::AssetManager() {}
 
 cqsp::asset::ShaderProgram_t
@@ -306,6 +308,7 @@ std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std:
                 asset_value = Hjson::Unmarshal(asset_data, decOpt);
             }
 
+            max_loading += asset_value.size();
             for (const auto [key, val] : asset_value) {
                 SPDLOG_TRACE("Loading {}", key);
 
@@ -325,6 +328,7 @@ std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std:
                 }
                 // Put in core namespace, I guess
                 LoadAsset(*package, type, path, std::string(key), val["hints"]);
+                currentloading++;
             }
         }
     }
@@ -526,16 +530,16 @@ std::unique_ptr<cqspa::HjsonAsset> cqspa::AssetLoader::LoadHjson(const std::stri
     return asset;
 }
 
-std::unique_ptr<cqsp::asset::TextDirectoryAsset> cqsp::asset::AssetLoader::LoadScriptDirectory(const std::string& path,
-    const Hjson::Value& hints) {
-    std::filesystem::recursive_directory_iterator iterator(path);
-    auto asset = std::make_unique<asset::TextDirectoryAsset>();
+std::unique_ptr<cqsp::asset::TextDirectoryAsset>
+AssetLoader::LoadScriptDirectory(const std::string& path, const Hjson::Value& hints) {
     std::filesystem::path root(path);
-    for (auto& sub_path : iterator) {
+    auto asset = std::make_unique<asset::TextDirectoryAsset>();
+    LoadDirectory(path, [&](std::string path) {
+        std::filesystem::directory_entry sub_path(path);
         // Ensure it's a lua file
-        if (!sub_path.is_regular_file() && sub_path.path().extension() != "lua" &&
+        if (!sub_path.is_regular_file() && sub_path.path().extension() != "lua" ||
             std::filesystem::relative(sub_path.path(), root).filename() == "base.lua") {  // Ignore base.lua
-            continue;
+            return;
         }
 
         std::ifstream asset_stream(sub_path.path().string());
@@ -544,7 +548,7 @@ std::unique_ptr<cqsp::asset::TextDirectoryAsset> cqsp::asset::AssetLoader::LoadS
 
         // Get the path, and also remove the .lua extension so that it's easier to access it
         asset_data.path = std::filesystem::relative(sub_path.path(),
-                                    std::filesystem::path(path)).replace_extension("").string();
+                                    root).replace_extension("").string();
         // Replace the data path so that the name will be using dots, and we don't need to care
         // about file separators
         // So requiring a lua file (that is the purpose for this), will look like
@@ -555,18 +559,19 @@ std::unique_ptr<cqsp::asset::TextDirectoryAsset> cqsp::asset::AssetLoader::LoadS
                             static_cast<char>(std::filesystem::path::preferred_separator), '.');
 
         asset->paths[asset_data.path] = asset_data;
-    }
+    });
+
     return asset;
 }
 
 // This is essentially all for lua
 std::unique_ptr<cqsp::asset::TextDirectoryAsset>
 cqsp::asset::AssetLoader::LoadTextDirectory(const std::string& path, const Hjson::Value& hints) {
-    std::filesystem::recursive_directory_iterator iterator(path);
     auto asset = std::make_unique<asset::TextDirectoryAsset>();
-    for (auto& sub_path : iterator) {
+    LoadDirectory(path, [&](std::string path) {
+        std::filesystem::directory_entry sub_path(path);
         if (!sub_path.is_regular_file()) {
-            continue;
+            return;
         }
 
         std::ifstream asset_stream(sub_path.path().string());
@@ -585,7 +590,7 @@ cqsp::asset::AssetLoader::LoadTextDirectory(const std::string& path, const Hjson
                             static_cast<char>(std::filesystem::path::preferred_separator), '.');
 
         asset->paths[asset_data.path] = asset_data;
-    }
+    });
     return asset;
 }
 
@@ -601,17 +606,14 @@ void cqspa::AssetLoader::LoadHjson(std::istream &asset_stream, Hjson::Value& val
     }
 }
 
-void cqsp::asset::AssetLoader::LoadHjsonDir(const std::string& path, Hjson::Value& value,
-                                                                            const Hjson::Value& hints) {
-    for (const auto& dirEntry : std::filesystem::recursive_directory_iterator(path)) {
-        // Loop through each hjson
-        std::ifstream asset_stream(dirEntry.path().c_str());
-
+void AssetLoader::LoadHjsonDir(const std::string& path, Hjson::Value& value, const Hjson::Value& hints) {
+    LoadDirectory(path, [&](std::string entry) {
+        std::ifstream asset_stream(entry);
         if (!asset_stream.good()) {
-            continue;
+            return;
         }
         LoadHjson(asset_stream, value, hints);
-    }
+    });
 }
 
 std::unique_ptr<cqsp::asset::Shader> cqspa::AssetLoader::LoadShader(const std::string& key, std::istream& asset_stream,
@@ -698,4 +700,14 @@ std::unique_ptr<cqsp::asset::Texture> cqsp::asset::AssetLoader::LoadCubemap(cons
     QueueHolder holder(prototype);
     m_asset_queue.push(holder);
     return asset;
+}
+
+void AssetLoader::LoadDirectory(std::string path, std::function<void(std::string)> file) {
+    auto iterator = std::filesystem::recursive_directory_iterator(path);
+    int count = std::distance(iterator, std::filesystem::recursive_directory_iterator());
+    max_loading += count;
+    for (const auto& dirEntry : std::filesystem::recursive_directory_iterator(path)) {
+        file(dirEntry.path().string());
+        currentloading++;
+    }
 }
