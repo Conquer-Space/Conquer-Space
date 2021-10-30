@@ -35,69 +35,79 @@ namespace cqsp {
 namespace engine {
 namespace audio {
 struct AudioChannel {
-    ALuint source;
     // Set all variables
     AudioChannel() {
-        alGenSources((ALuint)1, &source);
+        alGenSources((ALuint)1, &channel);
 
-        alSourcef(source, AL_PITCH, 1);
-        alSourcef(source, AL_GAIN, 1);
+        alSourcef(channel, AL_PITCH, 1);
+        alSourcef(channel, AL_GAIN, 1);
 
-        alSource3f(source, AL_POSITION, 0, 0, 0);
-        alSource3f(source, AL_VELOCITY, 0, 0, 0);
-        alSourcei(source, AL_LOOPING, AL_FALSE);
+        alSource3f(channel, AL_POSITION, 0, 0, 0);
+        alSource3f(channel, AL_VELOCITY, 0, 0, 0);
+        alSourcei(channel, AL_LOOPING, AL_FALSE);
     }
 
     void SetGain(float gain) {
-        alSourcef(source, AL_GAIN, gain);
+        alSourcef(channel, AL_GAIN, gain);
     }
 
     void SetPitch(float pitch) {
-        alSourcef(source, AL_PITCH, pitch);
+        alSourcef(channel, AL_PITCH, pitch);
     }
 
     void SetLooping(bool looping) {
-        alSourcei(source, AL_LOOPING, looping ? AL_TRUE : AL_FALSE);
+        alSourcei(channel, AL_LOOPING, looping ? AL_TRUE : AL_FALSE);
     }
 
     void Play() {
-        alSourcePlay(source);
+        alSourcePlay(channel);
     }
 
     void Stop() {
-        alSourceStop(source);
+        alSourceStop(channel);
     }
 
     void Resume() {
-        alSourcePlay(source);
+        alSourcePlay(channel);
     }
 
     void Pause() {
-        alSourcePause(source);
+        alSourcePause(channel);
     }
 
     void Rewind() {
-        alSourceRewind(source);
+        alSourceRewind(channel);
     }
 
     bool IsPlaying() {
         ALint source_state;
-        alGetSourcei(source, AL_SOURCE_STATE, &source_state);
+        alGetSourcei(channel, AL_SOURCE_STATE, &source_state);
         return (source_state == AL_PLAYING);
     }
 
     float PlayPosition() {
         float length;
-        alGetSourcef(source, AL_SEC_OFFSET, &length);
+        alGetSourcef(channel, AL_SEC_OFFSET, &length);
         return length;
+    }
+
+    void EmptyBuffer() {
+        alSourcei(channel, AL_BUFFER, NULL);
     }
 
     void SetBuffer(cqsp::asset::AudioAsset *buffer);
     float length = 0;
 
     ~AudioChannel() {
-        alDeleteSources(1, &source);
+        // Halt playing
+        Stop();
+
+        EmptyBuffer();
+        alDeleteSources(1, &channel);
     }
+
+ private:
+    ALuint channel;
 };
 
 class AudioInterface : public IAudioInterface {
@@ -121,7 +131,7 @@ class AudioInterface : public IAudioInterface {
     void PlayAudioClip(cqsp::asset::AudioAsset *asset, int channel);
     void SetChannelVolume(int channel, float gain);
 
-    ~AudioInterface() {}
+    ~AudioInterface();
 
     std::thread worker_thread;
     std::unique_ptr<cqsp::asset::AudioAsset> LoadWav(std::ifstream &input);
