@@ -79,8 +79,8 @@ void cqsp::scene::LoadingScene::Ui(float deltaTime) {
                 ImGuiWindowFlags_NoResize |
                 ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::Text("Loading...");
-    float current = static_cast<float>(assetLoader.getMaxLoading());
-    float max = static_cast<float>(assetLoader.getCurrentLoading());
+    float current = static_cast<float>(assetLoader.getCurrentLoading());
+    float max = static_cast<float>(assetLoader.getMaxLoading());
     std::string progress = fmt::format("{}/{}", current, max);
     ImGui::ProgressBar(current/max, ImVec2(-FLT_MIN, 0), progress.c_str());
     ImGui::End();

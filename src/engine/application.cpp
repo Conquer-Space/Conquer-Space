@@ -400,11 +400,26 @@ int cqsp::engine::Application::destroy() {
     SPDLOG_INFO("Done Destroying scene");
 
     // Clear assets
+    SPDLOG_INFO("Deleting universe");
     m_universe.reset();
+    SPDLOG_INFO("Done deleting universe");
+
+    SPDLOG_INFO("Deleting script interface");
     m_script_interface.reset();
-    manager.ClearAssets();
+    SPDLOG_INFO("Done deleting script interface");
+
+    SPDLOG_INFO("Deleting audio interface");
     m_audio_interface->Destruct();
+    SPDLOG_INFO("Done deleting audio interface");
+
+    SPDLOG_INFO("Clearing assets");
+    manager.ClearAssets();
+    SPDLOG_INFO("Done clearing assets");
+
+    SPDLOG_INFO("Deleting audio interface");
     delete m_audio_interface;
+    SPDLOG_INFO("Done audio interface");
+
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImPlot::DestroyContext();

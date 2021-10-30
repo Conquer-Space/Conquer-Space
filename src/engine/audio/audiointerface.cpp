@@ -59,14 +59,10 @@ std::string AudioInterface::GetAudioVersion() {
 void AudioInterface::Destruct() {
     to_quit = true;
     worker_thread.join();
-    SPDLOG_LOGGER_INFO(logger, "Killed OpenAL");
+    SPDLOG_LOGGER_INFO(logger, "Killing OpenAL");
     // Clear sources and buffers
     for (int i = 0; i < channels.size(); i++) channels[i].reset();
     music.reset();
-    // Kill off music
-    alcMakeContextCurrent(NULL);
-    alcDestroyContext(context);
-    alcCloseDevice(device);
 }
 
 void AudioInterface::StartWorker() {
@@ -101,6 +97,7 @@ void AudioInterface::StartWorker() {
                 }
                 // Stop music
                 channels[0]->Stop();
+                channels[0]->EmptyBuffer();
                 music.reset();
                 SPDLOG_LOGGER_INFO(logger, "Completed track");
             }
@@ -137,6 +134,12 @@ void cqsp::engine::audio::AudioInterface::PlayAudioClip(
 
 void cqsp::engine::audio::AudioInterface::SetChannelVolume(int channel, float gain) {
     channels[channel]->SetGain(gain);
+}
+
+cqsp::engine::audio::AudioInterface::~AudioInterface() {
+    alcMakeContextCurrent(NULL);
+    alcDestroyContext(context);
+    alcCloseDevice(device);
 }
 
 inline bool isBigEndian() {
@@ -241,5 +244,5 @@ void AudioInterface::InitALContext() {
 }
 
 void cqsp::engine::audio::AudioChannel::SetBuffer(cqsp::asset::AudioAsset* buffer) {
-    alSourcei(source, AL_BUFFER, dynamic_cast<cqsp::asset::ALAudioAsset*>(buffer)->buffer);
+    alSourcei(channel, AL_BUFFER, dynamic_cast<cqsp::asset::ALAudioAsset*>(buffer)->buffer);
 }
