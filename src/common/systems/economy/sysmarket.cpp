@@ -17,6 +17,7 @@
 #include "common/systems/economy/sysmarket.h"
 
 #include <limits>
+#include <spdlog/spdlog.h>
 
 #include "common/components/resource.h"
 #include "common/components/economy.h"
@@ -55,9 +56,9 @@ void cqsps::market::DeterminePrice(cqsp::common::Universe& universe,
     }
 }
 
-void cqsps::market::DeterminePrices(cqsp::common::Universe& universe, entt::entity entity) {
-    auto& market = universe.get<cqspc::components::Market>(entity);
-    auto& stockpile = universe.get<cqspc::components::ResourceStockpile>(entity);
+void cqsps::market::DeterminePrices(cqsp::common::Universe& universe, entt::entity stockpile_entity) {
+    auto& market = universe.get<cqspc::components::Market>(stockpile_entity);
+    auto& stockpile = universe.get<cqspc::components::ResourceStockpile>(stockpile_entity);
     // Sort through demand and calculate things
     for (auto it = market.demand.begin(); it != market.demand.end(); it++) {
         // Get supply and demand determine if we have a lot or very little, then do some math

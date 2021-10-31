@@ -16,6 +16,8 @@
 */
 #include "common/systems/economy/sysfactory.h"
 
+#include <spdlog/spdlog.h>
+
 #include "common/components/area.h"
 #include "common/components/resource.h"
 #include "common/components/economy.h"
@@ -24,6 +26,7 @@
 void cqsp::common::systems::SysFactory::DoSystem(Universe& universe) {
     SysFactoryProduction(universe);
     SysMineProduction(universe);
+    SysFarmProduction(universe);
 }
 
 void cqsp::common::systems::SysFactory::SysFactoryProduction(Universe& universe) {
@@ -99,5 +102,14 @@ void cqsp::common::systems::SysFactory::SysFarmProduction(Universe& universe) {
         // Farms produce a crop
         auto& farm = universe.get<cqspc::Farm>(entity);
         // Now generate the resource production
+        // According to a USDA pdf, because there's a 20 page pdf about everything from the government,
+        // the average yield per acre in the US is 450 cwt per acre, or 22861 kg per acre. So as a result,
+        // we get about 20 units if we divide it by the mass of the potato, and round up.
+        // https://www.nass.usda.gov/Publications/Todays_Reports/reports/pots0920.pdf
+
+        // TODO(EhWhoAmI): Make this a lot more adaptable to the production.
+        double production = farm.acres * 20.f;
+        cqspc::ResourceGenerator& gen = universe.emplace_or_replace<cqspc::ResourceGenerator>(entity);
+        gen[farm.farmed_good] = production;
     }
 }

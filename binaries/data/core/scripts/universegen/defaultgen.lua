@@ -130,8 +130,6 @@ generators:insert({
         end
 
         local species = get_civilization_species(civ_id)
-        print(species)
-        print(get_name(species))
         -- Add cities
         add_planet_habitation(planet)
         local market = create_market()
@@ -167,6 +165,7 @@ generators:insert({
             place_factory_on_market(market, city, "steel_forging", 62419056.651)
             -- place_factory_on_market(market, city, "concrete_manufacturing", 300)
             attach_market(market, create_mine(city, goods["copper"], 1, 10000))
+            attach_market(market, create_farm(city, get_species_food(get_civilization_species(civ_id))))
             attach_market(market, create_mine(city, goods["aluminium"], 1, 10000))
             attach_market(market, create_mine(city, goods["stone"], 1, 10000))
             attach_market(market, create_mine(city, goods["iron"], 1, 374514340))

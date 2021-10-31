@@ -57,16 +57,14 @@ void cqsp::common::systems::SysPopulationGrowth::DoSystem(Universe& universe) {
 void cqsp::common::systems::SysPopulationConsumption::DoSystem(Universe& universe) {
     namespace cqspc = cqsp::common::components;
     auto view = universe.view<cqspc::PopulationSegment>();
-    for (auto [entity, segment] : view.each()) {
-        // The population will feed, I guess
-        entt::entity good = universe.goods["consumer_good"];
-        // So a consumer good is a kilogram, and the mass of a unit of consumer good is 6500 kg.
-        // A person generated 4.9 pounds every day in the US according to the EPA.
-        // Some of it is food, some it is other resources, but we don't need to have the nuance about
-        // it yet. Since all things have to be thrown away, we'd have to assume that the generation of consumer
-        // goods is the same as the consumption of consumer goods.
-        // 4.9 pounds is roughly equal to 2.2226 kg, and divide it by 24 to get per tick, equals to 0.0926083333kg.
+    for (entt::entity entity : view) {
+        auto& segment = universe.get<cqspc::PopulationSegment>(entity);
+        auto& species = universe.get<cqspc::Species>(segment.species);
+
+        entt::entity good = species.consume;
         uint64_t consumption = segment.population * 0.09261;
+        // They need a certain amount of calories a day, so we will have to calculate the calories per
+        // tonne this has, then calculate based on the number of people. We should also alter it to account for waste
         universe.get_or_emplace<cqspc::ResourceConsumption>(entity)[good] = consumption;
     }
 }

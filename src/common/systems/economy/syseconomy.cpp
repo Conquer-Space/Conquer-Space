@@ -78,8 +78,6 @@ void SysEconomy::SysCommercialProcess(Universe &universe) {
         // They will employ from a place by default
         auto &employer = universe.get<cqspc::Employer>(entity);
         // Get population, presumably it's a city, so we would know how many people we have
-        // Get city population
-        //
         // For now, services will just fall under general services, but a more detailed breakdown
         // will be done in the future.
 
@@ -118,6 +116,7 @@ void SysEconomy::SysResourceGenerator(Universe& universe) {
     auto view = universe.view<cqspc::ResourceGenerator, cqspc::ResourceStockpile>();
     SPDLOG_TRACE("Creating resources for {} resource generators", view.size_hint());
     for (auto entity : view) {
+                
         auto& production = universe.get<cqspc::ResourceGenerator>(entity);
         auto& stockpile = universe.get<cqspc::ResourceStockpile>(entity);
         // Make the resources, and dump to market
@@ -192,7 +191,6 @@ void SysEconomy::SysGoodSeller(Universe& universe) {
     SPDLOG_TRACE("Selling for {} stockpiles", view.size_hint());
     // Demand for next time
     for (auto [entity, stockpile, market_participant] : view.each()) {
-        //auto& market = universe.get<cqspc::Market>(market_participant.market);
         // Add to supply
         auto& market_stockpile = universe.get<cqspc::ResourceStockpile>(market_participant.market);
         market_stockpile += stockpile;
@@ -214,6 +212,7 @@ void SysEconomy::SysPriceDetermine(Universe& universe) {
         cqsp::common::systems::market::DeterminePrices(universe, entity);
         // Clear demand because we have already determined all the things we needed
         market.demand.clear();
+        market.volume.clear();
     }
 }
 
@@ -271,9 +270,13 @@ void SysEconomy::SysDemandResolver(Universe& universe) {
                 cost = demand.MultiplyAndGetSum(market.prices);
                 balance = 0;
                 market_stockpile.TransferTo(universe.get<cqspc::ResourceStockpile>(entity), demand);
+                // Add to volume
+                market.volume += universe.get<cqspc::ResourceStockpile>(entity);
             } else {
                 balance -= demand.MultiplyAndGetSum(market.prices);
                 market_stockpile.TransferTo(universe.get<cqspc::ResourceStockpile>(entity), demand);
+                // Add to volume
+                market.volume += universe.get<cqspc::ResourceStockpile>(entity);
             }
         } else {
             // Failed due to not enough resources in the market,

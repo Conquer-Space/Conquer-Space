@@ -224,7 +224,7 @@ void FunctionEconomy(cqsp::engine::Application& app) {
         return cqspa::CreateCommercialArea(universe, city);
     });
 
-    REGISTER_FUNCTION("create_farm_area", [&](entt::entity city, entt::entity good) {
+    REGISTER_FUNCTION("create_farm", [&](entt::entity city, entt::entity good) {
         return cqspa::CreateFarmArea(universe, city, good);
     });
 
@@ -238,8 +238,7 @@ void FunctionEconomy(cqsp::engine::Application& app) {
         dist[resource] = seed;
     });
 
-    // TODO(EhWhoAmI): Will have to fix the documentation for this so that it looks neater
-    auto lambda = [&]() {
+    REGISTER_FUNCTION("create_market", ([&]() {
         entt::entity entity = universe.create();
         auto& market = universe.emplace<cqspc::Market>(entity);
         universe.emplace<cqspc::ResourceStockpile>(entity);
@@ -252,8 +251,7 @@ void FunctionEconomy(cqsp::engine::Application& app) {
             market.prices[entity] = universe.get<cqspc::Price>(entity);
         }
         return entity;
-    };
-    REGISTER_FUNCTION("create_market", lambda);
+    }));
 
     REGISTER_FUNCTION("place_market", [&](entt::entity market, entt::entity planet) {
         universe.emplace<cqspc::MarketCenter>(planet, market);
@@ -309,11 +307,21 @@ void FunctionPopulation(cqsp::engine::Application& app) {
         universe.get<cqspc::Species>(species).consume = food;
     });
 
+    REGISTER_FUNCTION("get_species_food", [&](entt::entity species) {
+        return universe.get<cqspc::Species>(species).consume;
+    });
+
     REGISTER_FUNCTION("create_food", [&]() {
         entt::entity ent = universe.create();
-        universe.emplace<cqspc::Good>(ent);
-        universe.emplace<cqspc::Name>(ent, "Food");
-        universe.emplace<cqspc::Food>(ent);
+        auto& good = universe.emplace<cqspc::Good>(ent);
+        good.volume = 1;
+        good.mass = 1380; // Mass of potato is googled
+
+        universe.emplace<cqspc::Name>(ent, "Potato");
+        universe.emplace<cqspc::Identifier>(ent, "Potato_t");
+
+        auto& food = universe.emplace<cqspc::Food>(ent);
+        food.calories = 77 * 13800;
         return ent;
     });
 

@@ -72,6 +72,9 @@ void RenderEntityType(Universe& universe, entt::entity entity) {
         ImGui::Text("Species");
     } else if (universe.any_of<cqspc::PopulationSegment>(entity)) {
         ImGui::Text("Population Segment");
+    } else if (universe.any_of<cqspc::Farm>(entity)) {
+        entt::entity good = universe.get<cqspc::Farm>(entity).farmed_good;
+        ImGui::TextFmt("{} Farm", GetName(universe, good));
     } else {
         ImGui::TextFmt("Unknown");
     }

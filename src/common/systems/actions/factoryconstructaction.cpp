@@ -112,5 +112,8 @@ CreateFarmArea(cqsp::common::Universe& universe, entt::entity city, entt::entity
     auto& farm_comp = universe.emplace<cqsp::common::components::Farm>(farm);
     farm_comp.farmed_good = good;
     farm_comp.acres = 100000;
+
+    universe.emplace<cqsp::common::components::ResourceStockpile>(farm);
+    universe.get<cqsp::common::components::Industry>(city).industries.push_back(farm);
     return farm;
 }

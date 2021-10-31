@@ -114,7 +114,12 @@ void cqsp::client::systems::SysPlanetInformation::CityInformationPanel() {
     }
     ImGui::SameLine();
     static bool thing = true;
-    CQSPGui::DefaultCheckbox("Macroeconomic/Ownership mode", &thing);
+    ImGui::Text("Market");
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        MarketInformationTooltipContent();
+        ImGui::EndTooltip();
+    }
 
     ImGui::TextFmt("{}", GetUniverse().get<cqspc::Name>(selected_city_entity));
 
@@ -344,8 +349,17 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTabMiningChild() {
 }
 
 void cqsp::client::systems::SysPlanetInformation::IndustryTabAgricultureChild() {
+    namespace cqspc = cqsp::common::components;
     ImGui::Text("Agriculture Sector");
     ImGui::Text("GDP:");
+
+    auto& city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
+    for (auto fact : city_industry.industries) {
+        if (GetUniverse().all_of<cqspc::Farm>(fact)) {
+            ImGui::Text("Farm");
+            cqsp::client::systems::gui::EntityTooltip(GetUniverse(), fact);
+        }
+    }
 }
 
 void cqsp::client::systems::SysPlanetInformation::DemographicsTab() {
@@ -442,8 +456,7 @@ void cqsp::client::systems::SysPlanetInformation::FactoryConstruction() {
         // Buy things on the market
         entt::entity factory = cqsp::common::systems::actions::CreateFactory(
             GetUniverse(), selected_city_entity, selected_recipe, prod);
-        cqsp::common::systems::economy::AddParticipant(
-                                                    GetUniverse(), city_market, factory);
+        cqsp::common::systems::economy::AddParticipant(GetUniverse(), city_market, factory);
         // Enable confirmation window
     }
 
@@ -613,10 +626,11 @@ void cqsp::client::systems::SysPlanetInformation::MarketInformationTooltipConten
 
     // Get resource stockpile
     auto& stockpile = GetUniverse().get<cqspc::ResourceStockpile>(center.market);
-    if (ImGui::BeginTable("marketinfotable", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+    if (ImGui::BeginTable("marketinfotable", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Good");
         ImGui::TableSetupColumn("Supply");
         ImGui::TableSetupColumn("Demand");
+        ImGui::TableSetupColumn("Volume Bought");
         ImGui::TableSetupColumn("S/D ratio");
         ImGui::TableHeadersRow();
         for (auto& price : market.sd_ratio) {
@@ -628,6 +642,8 @@ void cqsp::client::systems::SysPlanetInformation::MarketInformationTooltipConten
             ImGui::TableSetColumnIndex(2);
             ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.demand[price.first]));
             ImGui::TableSetColumnIndex(3);
+            ImGui::TextFmt("{}", market.volume[price.first]);
+            ImGui::TableSetColumnIndex(4);
             ImGui::TextFmt("{}", price.second);
         }
         ImGui::EndTable();
