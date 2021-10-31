@@ -31,6 +31,19 @@ local star_system_max = 1000
 generators:insert({
     name = "default",
     civ_init = function()
+        local player = add_civilization()
+        local player_species = create_species("Human")
+        set_player(player)
+        set_civilization_species(player, player_species)
+        set_species_food(player_species, create_food())
+
+        local civ_count = 9
+        for _ = 1, civ_count, 1 do
+            local civ = add_civilization()
+            local civ_species = create_species("Not Human")
+            set_civilization_species(civ, civ_species)
+            set_species_food(civ_species, create_food())
+        end
     end,
     universe_gen = function()
         local star_system_count = 1000
@@ -116,8 +129,9 @@ generators:insert({
             print("Initializing player")
         end
 
-        local species = create_species("Human");
-
+        local species = get_civilization_species(civ_id)
+        print(species)
+        print(get_name(species))
         -- Add cities
         add_planet_habitation(planet)
         local market = create_market()

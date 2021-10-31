@@ -162,7 +162,20 @@ void FunctionCivilizationGen(cqsp::engine::Application& app) {
     REGISTER_FUNCTION("add_civilization", [&] () {
         entt::entity civ = universe.create();
         universe.emplace<cqspc::Organization>(civ);
+        universe.emplace<cqspc::Civilization>(civ);
         return civ;
+    });
+
+    REGISTER_FUNCTION("set_player", [&] (entt::entity player) {
+        universe.emplace<cqspc::Player>(player);
+    });
+
+    REGISTER_FUNCTION("set_civilization_species", [&](entt::entity civ, entt::entity species) {
+        universe.get<cqspc::Civilization>(civ).founding_species = species;
+    });
+
+    REGISTER_FUNCTION("get_civilization_species", [&](entt::entity civ) {
+        return universe.get<cqspc::Civilization>(civ).founding_species;
     });
 
     REGISTER_FUNCTION("set_civilization_planet", [&] (entt::entity civ, entt::entity planet) {
@@ -209,6 +222,10 @@ void FunctionEconomy(cqsp::engine::Application& app) {
 
     REGISTER_FUNCTION("create_commercial_area", [&](entt::entity city) {
         return cqspa::CreateCommercialArea(universe, city);
+    });
+
+    REGISTER_FUNCTION("create_farm_area", [&](entt::entity city, entt::entity good) {
+        return cqspa::CreateFarmArea(universe, city, good);
     });
 
     REGISTER_FUNCTION("set_resource_consume", [&](entt::entity entity, entt::entity good, double amount) {
@@ -284,7 +301,20 @@ void FunctionPopulation(cqsp::engine::Application& app) {
     REGISTER_FUNCTION("create_species", [&](std::string name) {
         entt::entity species = universe.create();
         universe.emplace<cqspc::Name>(species, name);
+        universe.emplace<cqspc::Species>(species);
         return species;
+    });
+
+    REGISTER_FUNCTION("set_species_food", [&](entt::entity species, entt::entity food) {
+        universe.get<cqspc::Species>(species).consume = food;
+    });
+
+    REGISTER_FUNCTION("create_food", [&]() {
+        entt::entity ent = universe.create();
+        universe.emplace<cqspc::Good>(ent);
+        universe.emplace<cqspc::Name>(ent, "Food");
+        universe.emplace<cqspc::Food>(ent);
+        return ent;
     });
 
     REGISTER_FUNCTION("add_population_segment", [&](entt::entity settlement, uint64_t popsize, entt::entity species) {

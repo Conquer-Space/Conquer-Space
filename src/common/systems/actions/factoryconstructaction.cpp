@@ -104,3 +104,13 @@ cqsp::common::systems::actions::CreateCommercialArea(cqsp::common::Universe& uni
 
     return commercial;
 }
+
+entt::entity
+cqsp::common::systems::actions::
+CreateFarmArea(cqsp::common::Universe& universe, entt::entity city, entt::entity good) {
+    entt::entity farm = universe.create();
+    auto& farm_comp = universe.emplace<cqsp::common::components::Farm>(farm);
+    farm_comp.farmed_good = good;
+    farm_comp.acres = 100000;
+    return farm;
+}

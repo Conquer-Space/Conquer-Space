@@ -49,16 +49,7 @@ void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::Generate
     script_engine["recipes"] = universe.recipes;
     script_engine["terrain_colors"] = universe.terrain_data;
 
-    // Create player
-    auto player = universe.create();
-    universe.emplace<cqspc::Civilization>(player);
-    universe.emplace<cqspc::Player>(player);
-
-    //for (int i = 0; i < 9; i++) {
-        //auto civ = universe.create();
-        //universe.emplace<cqspc::Civilization>(civ);
-    //}
-
+    // Get first generator, we'll have to get a new way to select the generator in the future.
     sol::optional<sol::table> generator = script_engine["generators"]["data"][1];
     if (generator) {
         (*generator)["civ_init"]();

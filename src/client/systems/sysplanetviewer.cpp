@@ -360,6 +360,7 @@ void cqsp::client::systems::SysPlanetInformation::DemographicsTab() {
 
         entt::entity species = GetUniverse().get<PopulationSegment>(seg_entity).species;
         ImGui::TextFmt("Species: {}", GetUniverse().get<cqspc::Name>(species));
+        cqsp::client::systems::gui::EntityTooltip(GetUniverse(), species);
 
         if (GetUniverse().all_of<cqspc::Hunger>(seg_entity)) {
             ImGui::TextFmt("Hungry");

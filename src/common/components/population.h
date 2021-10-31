@@ -25,7 +25,8 @@ struct PopulationSegment {
 };
 
 struct Species {
-    // Representation of the food that they can eat
+    // Representation of the food that they can eat, will probably have to change this in
+    // the future to better represent the diversity of food people can eat
     entt::entity consume;
 };
 

@@ -60,6 +60,8 @@ cqsp::common::components::ResourceLedger GetMineCost(cqsp::common::Universe& uni
                         entt::entity city, entt::entity good, int amount);
 
 entt::entity CreateCommercialArea(cqsp::common::Universe& universe, entt::entity city);
+
+entt::entity CreateFarmArea(cqsp::common::Universe& universe, entt::entity city, entt::entity good);
 }  // namespace actions
 }  // namespace systems
 }  // namespace common

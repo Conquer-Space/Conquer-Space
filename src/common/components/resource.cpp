@@ -16,8 +16,6 @@
 */
 #include "common/components/resource.h"
 
-#include <spdlog/spdlog.h>
-
 template<class Map, class Function>
 Map merge_apply(const Map &m1, const Map &m2, typename Map::mapped_type identity, Function func) {
     auto it1 = m1.begin();

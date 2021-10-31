@@ -25,6 +25,10 @@ struct Organization {};
 
 struct Civilization {
     entt::entity starting_planet;
+    // NOTE(EhWhoAmI): This will not make sense to have in the future, as we transition to have
+    // empires form and destroy on their own, and as galaxies diversify in terms of population.
+    // However, we need it for the intial population generation
+    entt::entity founding_species;
 };
 }  // namespace components
 }  // namespace common

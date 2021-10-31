@@ -25,6 +25,7 @@
 #include "common/components/resource.h"
 #include "common/components/coordinates.h"
 #include "common/components/economy.h"
+#include "common/components/population.h"
 #include "client/systems/gui/sysstockpileui.h"
 #include "engine/gui.h"
 
@@ -67,14 +68,17 @@ void RenderEntityType(Universe& universe, entt::entity entity) {
         std::string production = "";
         auto& generator = universe.get<cqspc::ResourceConverter>(entity);
         ImGui::TextFmt("{} Factory", GetName(universe, generator.recipe));
+    } else if (universe.any_of<cqspc::Species>(entity)) {
+        ImGui::Text("Species");
+    } else if (universe.any_of<cqspc::PopulationSegment>(entity)) {
+        ImGui::Text("Population Segment");
     } else {
         ImGui::TextFmt("Unknown");
     }
 }
-}  // namespace cqsp::client::systems::gui
 
 // TODO(EhWhoAmI): Organize this so that it makes logical sense and order.
-void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity entity) {
+void EntityTooltip(Universe &universe, entt::entity entity) {
     if (!ImGui::IsItemHovered()) {
         return;
     }
@@ -126,5 +130,12 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
         cqsp::client::systems::DrawLedgerTable(
             "factorygentooltip", universe, universe.get<cqspc::ResourceGenerator>(entity));
     }
+
+    // Species information
+    if (universe.all_of<cqspc::Species>(entity)) {
+        auto& species = universe.get<cqspc::Species>(entity);
+        ImGui::TextFmt("Species Food Consumption: {}", GetName(universe, species.consume));
+    }
     ImGui::EndTooltip();
 }
+}  // namespace cqsp::client::systems::gui
