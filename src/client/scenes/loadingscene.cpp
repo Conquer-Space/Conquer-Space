@@ -27,12 +27,12 @@
 
 #include "engine/assetmanager.h"
 #include "client/scenes/mainmenuscene.h"
+#include "client/scenes/universeloadingscene.h"
 #include "engine/gui.h"
 #include "common/scripting/scripting.h"
 #include "common/util/paths.h"
 
-cqsp::scene::LoadingScene::LoadingScene(
-    cqsp::engine::Application& app)
+cqsp::scene::LoadingScene::LoadingScene(cqsp::engine::Application& app)
     : cqsp::engine::Scene(app) {
     m_done_loading = false;
     percentage = 0;
@@ -65,7 +65,12 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
             GetApp().GetAudioInterface().AddAudioClip(element.first, audio_asset);
         }
         // Set main menu scene
-        GetApp().SetScene<cqsp::scene::MainMenuScene>();
+        if (std::find(GetApp().GetCmdLineArgs().begin(), GetApp().GetCmdLineArgs().end(), "-i")
+                                                            != GetApp().GetCmdLineArgs().end()) {
+            GetApp().SetScene<cqsp::scene::UniverseLoadingScene>();
+        } else {
+            GetApp().SetScene<cqsp::scene::MainMenuScene>();
+        }
     }
 }
 
