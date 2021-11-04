@@ -16,29 +16,21 @@
 */
 #pragma once
 
+#include <entt/entt.hpp>
+
 namespace cqsp {
 namespace common {
 namespace components {
-namespace types {
-typedef double astronomical_unit;
-typedef double light_year;
-typedef double kilometer;
-typedef double solar_mass;
-typedef double degree;
-typedef double radian;
-typedef double meter_cube;
-typedef double kilogram;
-typedef double joule;
+namespace infrastructure {
+entt::hashed_string hs = "test";
+// Infrastrucutre provides many benefits
+// Electric grid, roads, railways, water supply, etc.
+struct Infrastructure {
+    // Different types of infrastructure w
+};
 
-const double PI = 3.14159265358979323846;
-const double TWOPI = PI * 2;
-
-// Conversions
-inline astronomical_unit toAU(kilometer km) { return km / 149597870.700; }
-inline light_year toLightYear(astronomical_unit au) { return au / 63241; }
-inline astronomical_unit LtyrtoAU(light_year ltyr) { return ltyr * 63241; }
-inline kilometer toKm(astronomical_unit au) { return au * 149597870.700; }
-}  // namespace types
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+struct CityInfrastructure {};
+}  // namespace infrastructure
+}
+}
+}

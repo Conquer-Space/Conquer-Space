@@ -79,13 +79,26 @@ void LoadGoods(cqsp::engine::Application& app) {
                 Hjson::Value val = good_assets->data[i];
                 // Create good
                 entt::entity good = app.GetUniverse().create();
+                if (val["mass"].defined() && val["volume"].defined()) {
+                    // Then it's matter and physical
+                    auto& matter = app.GetUniverse().emplace<cqspc::Matter>(good);
+                    matter.mass = val["mass"];
+                    matter.volume = val["volume"];
+                }
+
                 auto& good_object = app.GetUniverse().emplace<cqspc::Good>(good);
                 good_object.mass = val["mass"];
                 good_object.volume = val["volume"];
+
                 auto &name_object = app.GetUniverse().emplace<cqspc::Name>(good);
                 name_object.name = val["name"].to_string();
                 auto &id_object = app.GetUniverse().emplace<cqspc::Identifier>(good);
                 id_object.identifier = val["identifier"].to_string();
+
+                if (val["energy"].defined()) {
+                    double t = val["energy"];
+                    app.GetUniverse().emplace<cqspc::Energy>(good, t);
+                }
                 for (int i = 0; i < val["tags"].size(); i++) {
                     if (val["tags"][i] == "mineral") {
                         app.GetUniverse().emplace_or_replace<cqspc::Mineral>(good);

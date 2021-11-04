@@ -28,6 +28,17 @@
 namespace cqsp {
 namespace common {
 namespace components {
+// Something that has a mass
+struct Matter {
+    cqsp::common::components::types::meter_cube volume;
+    cqsp::common::components::types::kilogram mass;
+};
+
+struct Energy {
+    // Energy per unit
+    cqsp::common::components::types::joule energy;
+};
+
 struct Good {
     cqsp::common::components::types::meter_cube volume;
     cqsp::common::components::types::kilogram mass;

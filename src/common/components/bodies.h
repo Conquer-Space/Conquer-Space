@@ -32,7 +32,7 @@ struct Body {
     /*
      * Radius of the body
      */
-    types::astronomical_unit radius;
+    types::kilometer radius;
 
     entt::entity star_system;
 };
