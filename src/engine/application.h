@@ -22,6 +22,7 @@
 #include <utility>
 #include <string>
 #include <map>
+#include <vector>
 
 #include "engine/clientoptions.h"
 
@@ -179,6 +180,8 @@ class Application {
     glm::mat4 Get2DProj() { return two_dim_projection; }
     glm::mat4 Get3DProj() { return three_dim_projection; }
 
+    std::vector<std::string>& GetCmdLineArgs() { return cmd_line_args; }
+
  private:
     void InitFonts();
 
@@ -199,8 +202,7 @@ class Application {
 
     void CalculateProjections();
 
-    int argc;
-    char** argv;
+    std::vector<std::string> cmd_line_args;
     bool full_screen;
     Window* m_window;
     std::string icon_path;

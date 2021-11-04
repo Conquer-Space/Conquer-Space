@@ -445,9 +445,11 @@ void cqsp::engine::Application::CalculateProjections() {
                     static_cast<float>(GetWindowHeight()));
 }
 
-cqsp::engine::Application::Application(int _argc, char* _argv[]) : argc(_argc), argv(_argv) {
-    cqsp::common::util::exe_path = argv[0];
-
+cqsp::engine::Application::Application(int _argc, char* _argv[]) {
+    cqsp::common::util::exe_path = _argv[0];
+    for (int i = 0; i < _argc; i++) {
+        cmd_line_args.push_back(_argv[i]);
+    }
     // Get exe path
     std::ifstream config_path(m_client_options.GetDefaultLocation());
     if (config_path.good()) {

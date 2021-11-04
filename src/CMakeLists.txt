@@ -66,4 +66,8 @@ set_target_properties(Conquer-Space
     LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/binaries/bin"
     ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/binaries/bin"
 )
+
 set_property(TARGET Conquer-Space PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/binaries/bin")
+# -i enables universe loading immediatelt
+set_target_properties(Conquer-Space PROPERTIES
+    VS_DEBUGGER_COMMAND_ARGUMENTS "-i")
