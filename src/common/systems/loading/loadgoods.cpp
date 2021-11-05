@@ -59,11 +59,17 @@ void cqsp::common::systems::loading::LoadGoods(cqsp::common::Universe& universe,
                 universe.emplace_or_replace<cqspc::Mineral>(good);
             }
         }
+
         if (val["price"].defined()) {
             universe.emplace<cqspc::Price>(good, val["price"].to_double());
         } else {
             universe.emplace<cqspc::Price>(good, 1.f);
         }
+
+        if (val["unit"].defined()) {
+            universe.emplace<cqspc::Unit>(good, val["unit"].to_string());
+        }
+
         // Basically if it fails at any point, we'll remove the component
         universe.goods[val["identifier"].to_string()] = good;
     }

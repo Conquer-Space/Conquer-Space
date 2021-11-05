@@ -28,7 +28,9 @@
 namespace cqsp {
 namespace common {
 namespace components {
-// Something that has a mass
+/// <summary>
+/// Something that has a mass.
+/// </summary>
 struct Matter {
     cqsp::common::components::types::meter_cube volume;
     cqsp::common::components::types::kilogram mass;
@@ -39,10 +41,14 @@ struct Energy {
     cqsp::common::components::types::joule energy;
 };
 
-struct Good {
-    cqsp::common::components::types::meter_cube volume;
-    cqsp::common::components::types::kilogram mass;
+/// <summary>
+/// The unit name of the good. If it doesn't have it, then it's a quantity.
+/// </summary>
+struct Unit {
+    std::string unit_name;
 };
+
+struct Good {};
 
 struct Mineral {};
 

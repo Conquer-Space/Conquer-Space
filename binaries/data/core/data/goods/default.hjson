@@ -81,12 +81,22 @@
         ]
     }
     {
+        name: Oil
+        identifier: oil
+        volume: 1
+        mass: 970
+        price: 20
+        energy: 4.5e+10
+        tags: []
+    }
+    {
         # Electricity is massless, so we will do a unit of kilowatt hours
         name: Electricity
         identifier: electricity
         # Electricity is not storeable as a good, so it's not matter
         # The unit we will use to calculate electricity will be kilowatt-hours, which is equivalent to 3600 joules
-        energy: 3600
+        energy: 3600000
+        unit: kWh
         tags: []
     }
 ]
