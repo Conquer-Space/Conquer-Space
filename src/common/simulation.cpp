@@ -30,6 +30,7 @@
 #include "common/systems/economy/syseconomy.h"
 #include "common/systems/syspopulation.h"
 #include "common/systems/economy/sysfactory.h"
+#include "common/systems/sysinfrastructure.h"
 
 #include "common/components/event.h"
 #include "common/components/organizations.h"
@@ -43,6 +44,7 @@ using cqsp::common::Universe;
 Simulation::Simulation(Universe &_universe, scripting::ScriptInterface &script_interface) :
     m_universe(_universe), script_runner(_universe, script_interface) {
     namespace cqspcs = cqsp::common::systems;
+    AddSystem<cqspcs::InfrastructureSim>();
     AddSystem<cqspcs::SysPopulationGrowth>();
     AddSystem<cqspcs::SysPopulationConsumption>();
     AddSystem<cqspcs::SysEconomy>();

@@ -16,35 +16,15 @@
 */
 #pragma once
 
-#include <entt/entt.hpp>
+#include "common/systems/isimulationsystem.h"
 
 namespace cqsp {
 namespace common {
-namespace components {
-namespace infrastructure {
-// Infrastrucutre provides many benefits
-// Electric grid, roads, railways, water supply, etc.
-struct Infrastructure {
-    // Different types of infrastructure w
+namespace systems {
+class InfrastructureSim : public ISimulationSystem {
+ public:
+     void DoSystem(Universe& universe);
 };
-
-struct CityInfrastructure {};
-
-struct PowerPlant {
-    double production;
-};
-
-struct PowerConsumption {
-    double consumption;
-};
-
-struct CityPower {
-    double total_power_prod;
-    double total_power_consumption;
-};
-
-struct BrownOut {};
-}  // namespace infrastructure
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}
+}
+}

@@ -87,7 +87,9 @@
         mass: 970
         price: 20
         energy: 4.5e+10
-        tags: []
+        tags: [
+            liquid
+        ]
     }
     {
         # Electricity is massless, so we will do a unit of kilowatt hours

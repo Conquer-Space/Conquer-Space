@@ -29,6 +29,7 @@
 #include "common/components/player.h"
 #include "common/components/surface.h"
 #include "common/components/economy.h"
+#include "common/components/infrastructure.h"
 #include "common/components/name.h"
 #include "common/components/population.h"
 #include "common/components/area.h"
@@ -205,7 +206,19 @@ void FunctionEconomy(cqsp::engine::Application& app) {
         // Factory will produce in the first tick
         universe.emplace<cqspc::Production>(factory);
         return factory;
-     });
+    });
+
+    REGISTER_FUNCTION("set_power_consumption", [&](entt::entity factory, double productivity) {
+        universe.emplace<cqspc::infrastructure::PowerConsumption>(factory, productivity);
+        return factory;
+    });
+
+    REGISTER_FUNCTION("add_power_plant", [&](entt::entity city, double productivity) {
+        entt::entity entity = universe.create();
+        universe.emplace<cqspc::infrastructure::PowerPlant>(entity, productivity);
+        universe.get<cqspc::Industry>(city).industries.push_back(entity);
+        return entity;
+    });
 
     REGISTER_FUNCTION("create_commercial_area", [&](entt::entity city) {
         return cqspa::CreateCommercialArea(universe, city);

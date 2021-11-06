@@ -41,9 +41,6 @@ class SysPlanetInformation : public SysUserInterface {
     bool to_see = false;
 
  private:
-    entt::entity selected_planet = entt::null;
-    bool mine_list_panel = false;
-    bool factory_list_panel = false;
     void CityInformationPanel();
     void PlanetInformationPanel();
     void ResourcesTab();
@@ -59,7 +56,14 @@ class SysPlanetInformation : public SysUserInterface {
     void MineInformationPanel();
     void FactoryInformationPanel();
     void SpacePortTab();
+    void InfrastructureTab();
     void MarketInformationTooltipContent();
+
+    entt::entity selected_planet = entt::null;
+    bool mine_list_panel = false;
+    bool factory_list_panel = false;
+    bool power_plant_output_panel = false;
+    entt::entity power_plant_changing;
 };
 }  // namespace systems
 }  // namespace client

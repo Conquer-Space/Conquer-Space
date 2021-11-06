@@ -18,7 +18,6 @@
 
 #include "common/systems/isimulationsystem.h"
 
-
 namespace cqsp {
 namespace common {
 namespace systems {

@@ -42,6 +42,8 @@
 #include "common/components/surface.h"
 #include "common/components/economy.h"
 #include "common/components/ships.h"
+#include "common/components/infrastructure.h"
+
 #include "common/util/utilnumberdisplay.h"
 #include "common/systems/actions/factoryconstructaction.h"
 #include "common/systems/actions/shiplaunchaction.h"
@@ -144,6 +146,10 @@ void cqsp::client::systems::SysPlanetInformation::CityInformationPanel() {
             }
             if (ImGui::BeginTabItem("Construction")) {
                 ConstructionTab();
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Infrastructure")) {
+                InfrastructureTab();
                 ImGui::EndTabItem();
             }
             if (ImGui::BeginTabItem("Space Port")) {
@@ -290,8 +296,14 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTabManufacturingChild(
             count++;
             auto& generator = GetUniverse().get<cqspc::ResourceConverter>(industry);
             auto& recipe = GetUniverse().get<cqspc::Recipe>(generator.recipe);
-            input_resources += recipe.input;
-            output_resources += recipe.output;
+
+            double productivity = 1;
+            if (GetUniverse().any_of<cqspc::FactoryProductivity>(industry)) {
+                productivity = GetUniverse().get<cqspc::FactoryProductivity>(industry).productivity;
+            }
+
+            input_resources.MultiplyAdd(recipe.input, productivity);
+            output_resources.MultiplyAdd(recipe.output, productivity);
             if (GetUniverse().all_of<cqspc::Wallet>(industry)) {
                 GDP_calculation += GetUniverse().get<cqspc::Wallet>(industry).GetGDPChange();
             }
@@ -324,7 +336,11 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTabMiningChild() {
     for (auto mine : city_industry.industries) {
         if (GetUniverse().all_of<cqspc::ResourceGenerator, cqspc::Mine>(mine)) {
             auto& generator = GetUniverse().get<cqspc::ResourceGenerator>(mine);
-            resources += generator;
+            double productivity = 1;
+            if (GetUniverse().any_of<cqspc::FactoryProductivity>(mine)) {
+                productivity = GetUniverse().get<cqspc::FactoryProductivity>(mine).productivity;
+            }
+            resources.MultiplyAdd(generator, productivity);
             mine_count++;
             if (GetUniverse().all_of<cqspc::Wallet>(mine)) {
                 GDP_calculation += GetUniverse().get<cqspc::Wallet>(mine).GetGDPChange();
@@ -355,14 +371,16 @@ void cqsp::client::systems::SysPlanetInformation::DemographicsTab() {
 
     auto& settlement = GetUniverse().get<Settlement>(selected_city_entity);
     for (auto &seg_entity : settlement.population) {
-        ImGui::TextFmt("Population: {}", GetUniverse().get<PopulationSegment>(seg_entity).population);
+        ImGui::TextFmt("Population: {}",
+            cqsp::util::LongToHumanString(GetUniverse().get<PopulationSegment>(seg_entity).population));
         cqsp::client::systems::gui::EntityTooltip(GetUniverse(), seg_entity);
         if (GetUniverse().all_of<cqspc::Hunger>(seg_entity)) {
             ImGui::TextFmt("Hungry");
         }
         if (GetUniverse().any_of<cqsp::common::components::Employee>(seg_entity)) {
             auto& employee = GetUniverse().get<cqspc::Employee>(seg_entity);
-            ImGui::TextFmt("{}/{}", employee.employed_population, employee.working_population);
+            ImGui::TextFmt("Working Population: {}/{}", cqsp::util::LongToHumanString(employee.employed_population),
+                                                        cqsp::util::LongToHumanString(employee.working_population));
             if (employee.working_population > 0) {
                 ImGui::ProgressBar(static_cast<float>(employee.employed_population) /
                                     static_cast<float>(employee.working_population));
@@ -371,7 +389,7 @@ void cqsp::client::systems::SysPlanetInformation::DemographicsTab() {
         // Get spending for population
         if (GetUniverse().all_of<cqspc::Wallet>(seg_entity)) {
             auto& wallet = GetUniverse().get<cqspc::Wallet>(seg_entity);
-            ImGui::TextFmt("Spending: {}", wallet.GetGDPChange());
+            ImGui::TextFmt("Spending: {}", cqsp::util::LongToHumanString(wallet.GetGDPChange()));
         }
     }
     // Then do demand and other things.
@@ -389,6 +407,9 @@ void cqsp::client::systems::SysPlanetInformation::ConstructionTab() {
         }
         if (ImGui::BeginTabItem("Mines")) {
             MineConstruction();
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Power Plant")) {
             ImGui::EndTabItem();
         }
         // TODO(EhWhoAmI): Add other things like labs, infrastructure, etc.
@@ -437,8 +458,7 @@ void cqsp::client::systems::SysPlanetInformation::FactoryConstruction() {
         // Buy things on the market
         entt::entity factory = cqsp::common::systems::actions::CreateFactory(
             GetUniverse(), selected_city_entity, selected_recipe, prod);
-        cqsp::common::systems::economy::AddParticipant(
-                                                    GetUniverse(), city_market, factory);
+        cqsp::common::systems::economy::AddParticipant(GetUniverse(), city_market, factory);
         // Enable confirmation window
     }
 
@@ -580,6 +600,56 @@ if (ImGui::Button("Launch!")) {
         entt::entity star_system = GetUniverse().get<cqspc::bodies::Body>(selected_planet).star_system;
         cqsp::common::systems::actions::CreateShip(
         GetUniverse(), entt::null, selected_planet, star_system);
+    }
+}
+
+void cqsp::client::systems::SysPlanetInformation::InfrastructureTab() {
+    namespace cqspc = cqsp::common::components;
+    if (power_plant_output_panel) {
+        ImGui::Begin("Power Plant", &power_plant_output_panel);
+        double& prod_d =GetUniverse().get<cqspc::infrastructure::PowerPlant>(power_plant_changing).production;
+        float prod = (float)prod_d;
+        ImGui::PushItemWidth(-1);
+        CQSPGui::DragFloat("power_plant_supply", &prod, 1, 1, INT_MAX);
+        prod_d = prod;
+        ImGui::PopItemWidth();
+        ImGui::End();
+    }
+    ImGui::Text("Infrastructure");
+    // Get the areas that generate power
+    ImGui::Separator();
+    ImGui::Text("Power");
+    auto &city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
+    // List mines
+    double power_amount = 0;
+    double power_consumption = 0;
+    std::vector<entt::entity> power_plants;
+    for (int i = 0; i < city_industry.industries.size(); i++) {
+        entt::entity industry = city_industry.industries[i];
+        if (GetUniverse().any_of<cqspc::infrastructure::PowerPlant>(industry)) {
+            power_amount += GetUniverse().get<cqspc::infrastructure::PowerPlant>(industry).production;
+            power_plants.push_back(industry);
+        }
+        if (GetUniverse().any_of<cqspc::infrastructure::PowerConsumption>(industry)) {
+            power_consumption += GetUniverse().get<cqspc::infrastructure::PowerConsumption>(industry).consumption;
+        }
+    }
+    ImGui::TextFmt("Power Production: {}/{} MW", power_consumption, power_amount);
+    if (GetUniverse().any_of<cqspc::infrastructure::BrownOut>(selected_city_entity)) {
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(255, 0, 0, 1));
+        // Get seriousness, then do random other things
+        ImGui::TextFmt("Brown Out!");
+        ImGui::PopStyleColor(1);
+    }
+
+    for (entt::entity plant : power_plants) {
+        double prod = GetUniverse().get<cqspc::infrastructure::PowerPlant>(plant).production;
+        ImGui::TextFmt("Power Plant: {} MW", prod);
+        ImGui::SameLine();
+        if (ImGui::Button("Change Power plant output")) {
+            power_plant_output_panel = true;
+            power_plant_changing = plant;
+        }
     }
 }
 
