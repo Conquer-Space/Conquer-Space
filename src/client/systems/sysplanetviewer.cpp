@@ -16,7 +16,6 @@
 */
 #include "client/systems/sysplanetviewer.h"
 
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <noiseutils.h>
@@ -24,6 +23,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 
 #include "client/systems/sysstarsystemrenderer.h"
 #include "client/systems/gui/sysstockpileui.h"
@@ -612,8 +612,8 @@ void cqsp::client::systems::SysPlanetInformation::InfrastructureTab() {
     namespace cqspc = cqsp::common::components;
     if (power_plant_output_panel) {
         ImGui::Begin("Power Plant", &power_plant_output_panel);
-        double& prod_d =GetUniverse().get<cqspc::infrastructure::PowerPlant>(power_plant_changing).production;
-        float prod = (float)prod_d;
+        double& prod_d = GetUniverse().get<cqspc::infrastructure::PowerPlant>(power_plant_changing).production;
+        float prod = static_cast<float>(prod_d);
         ImGui::PushItemWidth(-1);
         CQSPGui::DragFloat("power_plant_supply", &prod, 1, 1, INT_MAX);
         prod_d = prod;

@@ -150,7 +150,8 @@ struct Recipe {
 };
 
 /// <summary>
-/// The multiplier of recipes the factory is generating right now.
+/// The multiplier of recipes the factory is generating right now. This is the amount of recipes the factory wants to
+/// generate, or the production target.
 /// </summary>
 struct FactoryProductivity {
     // Amount generated per generation
@@ -158,7 +159,7 @@ struct FactoryProductivity {
 };
 
 /// <summary>
-/// Because factory productivity is confusing. The multiplier for the amount of production they need for the 
+/// Because factory productivity is confusing. This will be the physical limitations that the factory can generate.
 /// </summary>
 struct FactoryModifiers {
     float production;

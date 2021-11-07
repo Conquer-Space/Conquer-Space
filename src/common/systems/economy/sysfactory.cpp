@@ -104,7 +104,7 @@ void cqsp::common::systems::SysFactory::SysInfrastrutureChecker(Universe& univer
     for (entt::entity entity : view) {
         auto& industry_comp = universe.get<cqspc::Industry>(entity);
         auto& power_supply = universe.get<cqspc::infrastructure::CityPower>(entity);
-        for(entt::entity industry : industry_comp.industries) {
+        for (entt::entity industry : industry_comp.industries) {
             if (universe.any_of<cqspc::infrastructure::PowerConsumption>(industry)) {
                 // Then set the power consumption
                 auto& power = universe.get<cqspc::infrastructure::PowerConsumption>(industry);

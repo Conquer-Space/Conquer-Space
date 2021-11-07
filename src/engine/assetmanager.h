@@ -309,7 +309,7 @@ class AssetLoader {
     std::unique_ptr<TextAsset> LoadText(std::istream &asset_stream, const Hjson::Value& hints);
     std::unique_ptr<TextDirectoryAsset> LoadTextDirectory(const std::string& name, const Hjson::Value& hints);
     /// <summary>
-    /// Loads a script directory. Special care is needed when 
+    /// Loads a script directory.
     /// </summary>
     /// <param name="path"></param>
     /// <param name="hints"></param>
@@ -359,7 +359,8 @@ class AssetLoader {
     void LoadAsset(Package& package, const std::string& type, const std::string& path, const std::string& key,
                     const Hjson::Value& hints);
 
-    std::unique_ptr<Texture> LoadTexture(const std::string& key, const std::string& filePath, const Hjson::Value& hints);
+    std::unique_ptr<Texture> LoadTexture(const std::string& key, const std::string& filePath,
+                    const Hjson::Value& hints);
     std::unique_ptr<Texture> LoadCubemap(const std::string& key, const std::string &path,
                     std::istream &asset_stream, const Hjson::Value& hints);
 
