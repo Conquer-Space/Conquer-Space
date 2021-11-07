@@ -25,6 +25,7 @@
 #include "common/components/resource.h"
 #include "common/components/coordinates.h"
 #include "common/components/economy.h"
+#include "common/components/infrastructure.h"
 #include "client/systems/gui/sysstockpileui.h"
 #include "engine/gui.h"
 
@@ -124,6 +125,14 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
         // Then do demand
         cqsp::client::systems::DrawLedgerTable(
             "factorygentooltip", universe, universe.get<cqspc::ResourceGenerator>(entity));
+    }
+    ImGui::Separator();
+    if (universe.all_of<cqspc::infrastructure::PowerConsumption>(entity)) {
+        ImGui::Separator();
+        auto& consumption = universe.get<cqspc::infrastructure::PowerConsumption>(entity);
+        ImGui::TextFmt("Power: {}", consumption.current);
+        ImGui::TextFmt("Max Power: {}", consumption.max);
+        ImGui::TextFmt("Min Power: {}", consumption.min);
     }
     ImGui::EndTooltip();
 }

@@ -620,21 +620,21 @@ void cqsp::client::systems::SysPlanetInformation::InfrastructureTab() {
     ImGui::Separator();
     ImGui::Text("Power");
     auto &city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
-    // List mines
-    double power_amount = 0;
-    double power_consumption = 0;
+    double power_production = 0;
+    double power_demand = 0;
+    if (GetUniverse().any_of<cqspc::infrastructure::CityPower>(selected_city_entity)) {
+        auto& power = GetUniverse().get<cqspc::infrastructure::CityPower>(selected_city_entity);
+        power_production = power.total_power_prod;
+        power_demand = power.total_power_consumption;
+    }
     std::vector<entt::entity> power_plants;
     for (int i = 0; i < city_industry.industries.size(); i++) {
         entt::entity industry = city_industry.industries[i];
         if (GetUniverse().any_of<cqspc::infrastructure::PowerPlant>(industry)) {
-            power_amount += GetUniverse().get<cqspc::infrastructure::PowerPlant>(industry).production;
             power_plants.push_back(industry);
         }
-        if (GetUniverse().any_of<cqspc::infrastructure::PowerConsumption>(industry)) {
-            power_consumption += GetUniverse().get<cqspc::infrastructure::PowerConsumption>(industry).consumption;
-        }
     }
-    ImGui::TextFmt("Power Production: {}/{} MW", power_consumption, power_amount);
+    ImGui::TextFmt("Power Production: {}/{} MW", power_demand, power_production);
     if (GetUniverse().any_of<cqspc::infrastructure::BrownOut>(selected_city_entity)) {
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(255, 0, 0, 1));
         // Get seriousness, then do random other things

@@ -32,7 +32,7 @@ void cqsp::common::systems::InfrastructureSim::DoSystem(Universe& universe) {
                 power_production += universe.get<cqspc::infrastructure::PowerPlant>(industrial_site).production;
             }
             if (universe.any_of<cqspc::infrastructure::PowerConsumption>(industrial_site)) {
-                power_consumption += universe.get<cqspc::infrastructure::PowerConsumption>(industrial_site).consumption;
+                power_consumption += universe.get<cqspc::infrastructure::PowerConsumption>(industrial_site).max;
             }
         }
         // Now assign infrastrutural information

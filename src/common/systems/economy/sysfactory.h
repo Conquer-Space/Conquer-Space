@@ -29,6 +29,9 @@ class SysFactory : public ISimulationSystem {
     void DoSystem(Universe& universe);
 
  private:
+    void SysFactoryProduction(Universe& universe);
     void SysMineProduction(Universe& universe);
+    void SysInfrastrutureChecker(Universe& universe);
+    void SysPowerProcessor(Universe& universe);
 };
 }  // namespace cqsp::common::systems

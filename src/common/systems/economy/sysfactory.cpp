@@ -16,13 +16,21 @@
 */
 #include "common/systems/economy/sysfactory.h"
 
+#include <spdlog/spdlog.h>
+
 #include "common/components/area.h"
 #include "common/components/resource.h"
 #include "common/components/economy.h"
 #include "common/components/name.h"
+#include "common/components/infrastructure.h"
 
 void cqsp::common::systems::SysFactory::DoSystem(Universe& universe) {
-    // Do the thing
+    SysInfrastrutureChecker(universe);
+    SysFactoryProduction(universe);
+    SysMineProduction(universe);
+}
+
+void cqsp::common::systems::SysFactory::SysFactoryProduction(Universe& universe) {
     // When demand is higher, increase production, when demand is lower, decrease production.
     namespace cqspc = cqsp::common::components;
 
@@ -54,9 +62,6 @@ void cqsp::common::systems::SysFactory::DoSystem(Universe& universe) {
             }
         }
     }
-
-    // Now do the same for mines
-    SysMineProduction(universe);
 }
 
 void cqsp::common::systems::SysFactory::SysMineProduction(Universe& universe) {
@@ -88,5 +93,40 @@ void cqsp::common::systems::SysFactory::SysMineProduction(Universe& universe) {
                 prod *= 1.1;
             }
         }
+    }
+}
+
+void cqsp::common::systems::SysFactory::SysInfrastrutureChecker(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
+    // Checks cities for power and other things
+    auto view = universe.view<cqspc::infrastructure::CityPower, cqspc::Industry>();
+    for (entt::entity entity : view) {
+        auto& industry_comp = universe.get<cqspc::Industry>(entity);
+        auto& power_supply = universe.get<cqspc::infrastructure::CityPower>(entity);
+        for(entt::entity industry : industry_comp.industries) {
+            if (universe.any_of<cqspc::infrastructure::PowerConsumption>(industry)) {
+                // Then set the power consumption
+                auto& power = universe.get<cqspc::infrastructure::PowerConsumption>(industry);
+                if (power_supply.total_power_consumption > power_supply.total_power_prod) {
+                    power.current = power_supply.total_power_prod /
+                                power_supply.total_power_consumption *
+                                power.max;
+                }
+                power.current = power.max;
+            }
+        }
+    }
+}
+
+void cqsp::common::systems::SysFactory::SysPowerProcessor(Universe& universe) {
+    namespace cqspc = cqsp::common::components;
+
+    auto view = universe.view<cqspc::FactoryProductivity, cqspc::infrastructure::PowerConsumption>();
+    for (entt::entity entity : view) {
+        //universe.get<cqspc::FactoryProductivity>();
+        auto& power_consumption = universe.get<cqspc::infrastructure::PowerConsumption>(entity);
+        double prod = power_consumption.current / power_consumption.min;
+        // Modify production
+        universe.get<cqspc::FactoryProductivity>(entity);
     }
 }
