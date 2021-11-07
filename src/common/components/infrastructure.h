@@ -35,7 +35,9 @@ struct PowerPlant {
 };
 
 struct PowerConsumption {
-    double consumption;
+    double max;
+    double min;
+    double current;
 };
 
 struct CityPower {

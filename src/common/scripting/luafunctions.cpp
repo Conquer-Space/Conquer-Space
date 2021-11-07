@@ -208,8 +208,8 @@ void FunctionEconomy(cqsp::engine::Application& app) {
         return factory;
     });
 
-    REGISTER_FUNCTION("set_power_consumption", [&](entt::entity factory, double productivity) {
-        universe.emplace<cqspc::infrastructure::PowerConsumption>(factory, productivity);
+    REGISTER_FUNCTION("set_power_consumption", [&](entt::entity factory, double max, double min) {
+        universe.emplace<cqspc::infrastructure::PowerConsumption>(factory, max, min, 0.f);
         return factory;
     });
 

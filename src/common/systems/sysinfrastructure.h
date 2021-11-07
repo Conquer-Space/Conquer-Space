@@ -22,9 +22,9 @@ namespace cqsp {
 namespace common {
 namespace systems {
 class InfrastructureSim : public ISimulationSystem {
- public:
-     void DoSystem(Universe& universe);
+   public:
+    void DoSystem(Universe& universe);
 };
-}
-}
-}
+}  // namespace systems
+}  // namespace common
+}  // namespace cqsp
