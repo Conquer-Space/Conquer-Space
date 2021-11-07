@@ -301,7 +301,9 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTabManufacturingChild(
             if (GetUniverse().any_of<cqspc::FactoryProductivity>(industry)) {
                 productivity = GetUniverse().get<cqspc::FactoryProductivity>(industry).productivity;
             }
-
+            if (GetUniverse().any_of<cqspc::FactoryModifiers>(industry)) {
+                productivity *= GetUniverse().get<cqspc::FactoryModifiers>(industry).production;
+            }
             input_resources.MultiplyAdd(recipe.input, productivity);
             output_resources.MultiplyAdd(recipe.output, productivity);
             if (GetUniverse().all_of<cqspc::Wallet>(industry)) {
@@ -309,7 +311,7 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTabManufacturingChild(
             }
         }
     }
-    ImGui::TextFmt("GDP: {}", GDP_calculation);
+    ImGui::TextFmt("GDP: {}", cqsp::util::LongToHumanString(GDP_calculation));
     ImGui::TextFmt("Factories: {}", count);
 
     ImGui::SameLine();
@@ -340,6 +342,9 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTabMiningChild() {
             if (GetUniverse().any_of<cqspc::FactoryProductivity>(mine)) {
                 productivity = GetUniverse().get<cqspc::FactoryProductivity>(mine).productivity;
             }
+            if (GetUniverse().any_of<cqspc::FactoryModifiers>(mine)) {
+                productivity *= GetUniverse().get<cqspc::FactoryModifiers>(mine).production;
+            }
             resources.MultiplyAdd(generator, productivity);
             mine_count++;
             if (GetUniverse().all_of<cqspc::Wallet>(mine)) {
@@ -347,7 +352,7 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTabMiningChild() {
             }
         }
     }
-    ImGui::TextFmt("GDP: {}", GDP_calculation);
+    ImGui::TextFmt("GDP: {}", cqsp::util::LongToHumanString(GDP_calculation));
     ImGui::TextFmt("Mines: {}", mine_count);
 
     ImGui::SameLine();

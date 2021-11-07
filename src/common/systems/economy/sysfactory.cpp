@@ -28,6 +28,7 @@ void cqsp::common::systems::SysFactory::DoSystem(Universe& universe) {
     SysInfrastrutureChecker(universe);
     SysFactoryProduction(universe);
     SysMineProduction(universe);
+    SysPowerProcessor(universe);
 }
 
 void cqsp::common::systems::SysFactory::SysFactoryProduction(Universe& universe) {
@@ -111,8 +112,9 @@ void cqsp::common::systems::SysFactory::SysInfrastrutureChecker(Universe& univer
                     power.current = power_supply.total_power_prod /
                                 power_supply.total_power_consumption *
                                 power.max;
+                } else {
+                    power.current = power.max;
                 }
-                power.current = power.max;
             }
         }
     }
@@ -125,8 +127,13 @@ void cqsp::common::systems::SysFactory::SysPowerProcessor(Universe& universe) {
     for (entt::entity entity : view) {
         //universe.get<cqspc::FactoryProductivity>();
         auto& power_consumption = universe.get<cqspc::infrastructure::PowerConsumption>(entity);
-        double prod = power_consumption.current / power_consumption.min;
-        // Modify production
-        universe.get<cqspc::FactoryProductivity>(entity);
+        auto& modifiers = universe.get_or_emplace<cqspc::FactoryModifiers>(entity);
+        if (power_consumption.current < power_consumption.min) {
+            modifiers.production = 0;
+        } else {
+            double prod = power_consumption.current / power_consumption.max;
+            // Modify production
+            modifiers.production = prod;
+        }
     }
 }

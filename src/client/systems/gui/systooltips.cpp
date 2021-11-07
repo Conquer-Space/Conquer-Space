@@ -119,6 +119,10 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
     if (universe.all_of<cqspc::FactoryProductivity>(entity)) {
         ImGui::TextFmt("Productivity: {}", universe.get<cqspc::FactoryProductivity>(entity).productivity);
     }
+    if (universe.all_of<cqspc::FactoryModifiers>(entity)) {
+        ImGui::TextFmt("Extra Modifiers: {}", universe.get<cqspc::FactoryModifiers>(entity).production);
+    }
+
     if (universe.all_of<cqspc::ResourceGenerator>(entity)) {
         ImGui::Separator();
         ImGui::TextFmt("Generating");
@@ -126,7 +130,7 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
         cqsp::client::systems::DrawLedgerTable(
             "factorygentooltip", universe, universe.get<cqspc::ResourceGenerator>(entity));
     }
-    ImGui::Separator();
+
     if (universe.all_of<cqspc::infrastructure::PowerConsumption>(entity)) {
         ImGui::Separator();
         auto& consumption = universe.get<cqspc::infrastructure::PowerConsumption>(entity);

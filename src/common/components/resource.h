@@ -158,6 +158,13 @@ struct FactoryProductivity {
 };
 
 /// <summary>
+/// Because factory productivity is confusing. The multiplier for the amount of production they need for the 
+/// </summary>
+struct FactoryModifiers {
+    float production;
+};
+
+/// <summary>
 /// The maximum of multiples of recipes the factories can generate.
 /// </summary>
 struct FactoryCapacity {
