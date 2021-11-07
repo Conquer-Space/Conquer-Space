@@ -18,7 +18,6 @@
 
 #include <entt/entt.hpp>
 
-
 namespace cqsp {
 namespace common {
 namespace systems {

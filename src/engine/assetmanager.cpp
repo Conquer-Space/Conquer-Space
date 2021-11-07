@@ -254,7 +254,7 @@ std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std:
     // Load the assets of a package specified by a path
     // First load info.hjson, the info path of the file.
     std::filesystem::path package_path(path);
-    SPDLOG_INFO("Loading package {}", (package_path / "info.hjson").string());
+    SPDLOG_INFO("Loading package {}", package_path.string());
     Hjson::Value info = Hjson::UnmarshalFromFile((package_path/"info.hjson").string());
     // This will also serve as the namespace name, so no spaces, periods, semicolons please
 
@@ -283,55 +283,7 @@ std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std:
 
     // Then load all the other assets
     // Load resource.hjsons
-    std::filesystem::recursive_directory_iterator it(package_path);
-
-    for (auto a : it) {
-        if (a.path().filename() == "resource.hjson") {
-            // Load the particular asset folder
-            // Open the file
-            std::ifstream asset(a.path());
-            std::string asset_data(std::istreambuf_iterator<char>(asset), {});
-            Hjson::Value asset_value;
-            Hjson::DecoderOptions decOpt;
-            decOpt.comments = false;
-            decOpt.duplicateKeyException = true;
-
-            // Try to load and check for duplicate options, sadly hjson doesn't provide good
-            // ways to see which keys are duplicated, except by exception, so we'll have
-            // to do this as a hack for now
-            try {
-                asset_value = Hjson::Unmarshal(asset_data, decOpt);
-            } catch (Hjson::syntax_error &se) {
-                SPDLOG_WARN(se.what());
-                // Then try again without the options
-                decOpt.duplicateKeyException = false;
-                asset_value = Hjson::Unmarshal(asset_data, decOpt);
-            }
-
-            max_loading += asset_value.size();
-            for (const auto [key, val] : asset_value) {
-                SPDLOG_TRACE("Loading {}", key);
-
-                // Load asset
-                std::string type = val["type"];
-                std::string path = (a.path().parent_path() / val["path"].to_string()).string();
-
-                if (!std::filesystem::exists(path)) {
-                    SPDLOG_WARN("Cannot find asset {} at {}", key, path);
-                    // Check if it's required
-                    if (!val["required"].empty() && val["required"]) {
-                        // Then required
-                        SPDLOG_CRITICAL("Cannot find critical resource {}, exiting", key);
-                        missing_assets.push_back(key);
-                    }
-                    continue;
-                }
-                // Put in core namespace, I guess
-                LoadAsset(*package, type, path, std::string(key), val["hints"]);
-                currentloading++;
-            }
-        }
-    }
+    LoadResources(*package, package_path.string());
     return package;
 }
 
@@ -340,7 +292,7 @@ void cqsp::asset::AssetLoader::LoadAsset(Package& package, const std::string& ty
     switch (asset_type_map[type]) {
         case AssetType::TEXTURE:
         {
-        package.assets[key] = LoadImage(key, path, hints);
+        package.assets[key] = LoadTexture(key, path, hints);
         break;
         }
         case AssetType::SHADER:
@@ -351,7 +303,11 @@ void cqsp::asset::AssetLoader::LoadAsset(Package& package, const std::string& ty
         }
         case AssetType::HJSON:
         {
-        package.assets[key] = LoadHjson(path, hints);
+        // Check for errors
+        auto p = LoadHjson(path, hints);
+        if (p != nullptr) {
+            package.assets[key] = std::move(p);
+        }
         break;
         }
         case AssetType::TEXT:
@@ -362,8 +318,9 @@ void cqsp::asset::AssetLoader::LoadAsset(Package& package, const std::string& ty
         }
         case AssetType::TEXT_ARRAY:
         {
-        package.assets[key] = LoadTextDirectory(path, hints);
         break;
+        // This is not really needed.
+        package.assets[key] = LoadTextDirectory(path, hints);
         }
         case AssetType::MODEL:
         break;
@@ -392,7 +349,7 @@ void cqsp::asset::AssetLoader::LoadAsset(Package& package, const std::string& ty
     }
 }
 
-std::unique_ptr<cqsp::asset::Texture> cqsp::asset::AssetLoader::LoadImage(const std::string& key,
+std::unique_ptr<cqsp::asset::Texture> cqsp::asset::AssetLoader::LoadTexture(const std::string& key,
     const std::string & filePath, const Hjson::Value & hints) {
     // Get the things
     std::unique_ptr<Texture> texture = std::make_unique<Texture>();
@@ -524,8 +481,13 @@ std::unique_ptr<cqspa::HjsonAsset> cqspa::AssetLoader::LoadHjson(const std::stri
     } else {
         std::ifstream asset_stream(path);
         Hjson::DecoderOptions decOpt;
-        decOpt.comments = false;
-        asset_stream >> Hjson::StreamDecoder(asset->data, decOpt);
+        try {
+            decOpt.comments = false;
+            asset_stream >> Hjson::StreamDecoder(asset->data, decOpt);
+        } catch (Hjson::syntax_error& ex) {
+            SPDLOG_INFO("Failed to load hjson {}: ", path, ex.what());
+            return nullptr;
+        }
     }
     return asset;
 }
@@ -554,10 +516,8 @@ AssetLoader::LoadScriptDirectory(const std::string& path, const Hjson::Value& hi
         // So requiring a lua file (that is the purpose for this), will look like
         // require("test.abc")
         // to require a file called test/abc.lua
-
         std::replace(asset_data.path.begin(), asset_data.path.end(),
                             static_cast<char>(std::filesystem::path::preferred_separator), '.');
-
         asset->paths[asset_data.path] = asset_data;
     });
 
@@ -578,23 +538,12 @@ cqsp::asset::AssetLoader::LoadTextDirectory(const std::string& path, const Hjson
         cqsp::asset::PathedTextAsset asset_data{std::istreambuf_iterator<char>{asset_stream},
                         std::istreambuf_iterator<char>()};
 
-        // Get the path, and also remove the .lua extension so that it's easier to access it
-        asset_data.path = std::filesystem::relative(sub_path.path(),
-                                    std::filesystem::path(path)).replace_extension("").string();
-        // Replace the data path so that the name will be using dots, and we don't need to care
-        // about file separators
-        // So requiring a lua file (that is the purpose for this), will look like
-        // require("test.abc")
-
-        std::replace(asset_data.path.begin(), asset_data.path.end(),
-                            static_cast<char>(std::filesystem::path::preferred_separator), '.');
-
         asset->paths[asset_data.path] = asset_data;
     });
     return asset;
 }
 
-void cqspa::AssetLoader::LoadHjson(std::istream &asset_stream, Hjson::Value& value,
+void cqspa::AssetLoader::LoadHjsonFromArray(std::istream &asset_stream, Hjson::Value& value,
                                     const Hjson::Value& hints) {
     Hjson::DecoderOptions decOpt;
     decOpt.comments = false;
@@ -612,7 +561,7 @@ void AssetLoader::LoadHjsonDir(const std::string& path, Hjson::Value& value, con
         if (!asset_stream.good()) {
             return;
         }
-        LoadHjson(asset_stream, value, hints);
+        LoadHjsonFromArray(asset_stream, value, hints);
     });
 }
 
@@ -709,5 +658,56 @@ void AssetLoader::LoadDirectory(std::string path, std::function<void(std::string
     for (const auto& dirEntry : std::filesystem::recursive_directory_iterator(path)) {
         file(dirEntry.path().string());
         currentloading++;
+    }
+}
+
+void cqsp::asset::AssetLoader::LoadResources(Package& package, std::string path) {
+    std::filesystem::recursive_directory_iterator it(path);
+    for (auto resource_file : it) {
+        if (resource_file.path().filename() == "resource.hjson") {
+            // Load the particular asset folder
+            // Open the file
+            std::ifstream asset(resource_file.path());
+            std::string asset_data(std::istreambuf_iterator<char>(asset), {});
+            Hjson::Value asset_value;
+            Hjson::DecoderOptions decOpt;
+            decOpt.comments = false;
+            decOpt.duplicateKeyException = true;
+
+            // Try to load and check for duplicate options, sadly hjson doesn't provide good
+            // ways to see which keys are duplicated, except by exception, so we'll have
+            // to do this as a hack for now
+            try {
+                asset_value = Hjson::Unmarshal(asset_data, decOpt);
+            } catch (Hjson::syntax_error &se) {
+                SPDLOG_WARN(se.what());
+                // Then try again without the options
+                decOpt.duplicateKeyException = false;
+                asset_value = Hjson::Unmarshal(asset_data, decOpt);
+            }
+
+            max_loading += asset_value.size();
+            for (const auto [key, val] : asset_value) {
+                SPDLOG_TRACE("Loading {}", key);
+
+                // Load asset
+                std::string type = val["type"];
+                std::string path = (resource_file.path().parent_path() / val["path"].to_string()).string();
+
+                if (!std::filesystem::exists(path)) {
+                    SPDLOG_WARN("Cannot find asset {} at {}", key, path);
+                    // Check if it's required
+                    if (!val["required"].empty() && val["required"]) {
+                        // Then required
+                        SPDLOG_CRITICAL("Cannot find critical resource {}, exiting", key);
+                        missing_assets.push_back(key);
+                    }
+                    continue;
+                }
+                // Put in core namespace, I guess
+                LoadAsset(package, type, path, std::string(key), val["hints"]);
+                currentloading++;
+            }
+        }
     }
 }

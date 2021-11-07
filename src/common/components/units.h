@@ -28,6 +28,7 @@ typedef double degree;
 typedef double radian;
 typedef double meter_cube;
 typedef double kilogram;
+typedef double joule;
 
 const double PI = 3.14159265358979323846;
 const double TWOPI = PI * 2;

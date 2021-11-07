@@ -16,22 +16,37 @@
 */
 #pragma once
 
-#include "common/systems/isimulationsystem.h"
+#include <entt/entt.hpp>
 
-namespace cqsp::common::systems {
-/// <summary>
-/// Determines how much resources the factory decides to generate the next tick so that they don't
-/// over produce when there is an insane excess of resources. This will create fluctuations
-/// between production in the economy.
-/// </summary>
-class SysFactory : public ISimulationSystem {
- public:
-    void DoSystem(Universe& universe);
-
- private:
-    void SysFactoryProduction(Universe& universe);
-    void SysMineProduction(Universe& universe);
-    void SysInfrastrutureChecker(Universe& universe);
-    void SysPowerProcessor(Universe& universe);
+namespace cqsp {
+namespace common {
+namespace components {
+namespace infrastructure {
+// Infrastrucutre provides many benefits
+// Electric grid, roads, railways, water supply, etc.
+struct Infrastructure {
+    // Different types of infrastructure w
 };
-}  // namespace cqsp::common::systems
+
+struct CityInfrastructure {};
+
+struct PowerPlant {
+    double production;
+};
+
+struct PowerConsumption {
+    double max;
+    double min;
+    double current;
+};
+
+struct CityPower {
+    double total_power_prod;
+    double total_power_consumption;
+};
+
+struct BrownOut {};
+}  // namespace infrastructure
+}  // namespace components
+}  // namespace common
+}  // namespace cqsp

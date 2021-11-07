@@ -19,22 +19,14 @@
 #include <spdlog/spdlog.h>
 
 #include <string>
-#include <tuple>
 
-#include <sol/sol.hpp>
 
 #include "client/scenes/universescene.h"
-#include "common/universe.h"
-#include "common/components/bodies.h"
-#include "common/components/resource.h"
-#include "common/components/name.h"
-#include "common/components/coordinates.h"
-#include "common/components/economy.h"
 #include "common/systems/sysuniversegenerator.h"
 #include "common/scripting/luafunctions.h"
+#include "common/systems/loading/loadgoods.h"
 
-cqsp::scene::UniverseLoadingScene::UniverseLoadingScene(
-    cqsp::engine::Application& app) : Scene(app) {}
+cqsp::scene::UniverseLoadingScene::UniverseLoadingScene(cqsp::engine::Application& app) : Scene(app) {}
 
 void cqsp::scene::UniverseLoadingScene::Init() {
     auto loading = [&]() {
@@ -68,123 +60,52 @@ void cqsp::scene::UniverseLoadingScene::Ui(float deltaTime) {
 
 void cqsp::scene::UniverseLoadingScene::Render(float deltaTime) {}
 
-// TODO(EhWhoAmI): All things under this line should eventually be moved to cqsp-core
-void LoadGoods(cqsp::engine::Application& app) {
+void LoadResource(cqsp::engine::Application& app, std::string asset_name,
+                    void (*func)(cqsp::common::Universe& universe, Hjson::Value& recipes)) {
     namespace cqspc = cqsp::common::components;
     for (auto it = app.GetAssetManager().GetPackageBegin(); it != app.GetAssetManager().GetPackageEnd(); it++) {
-        if (it->second->HasAsset("goods")) {
-            cqsp::asset::HjsonAsset* good_assets = it->second->GetAsset<cqsp::asset::HjsonAsset>("goods");
-            int assets_loaded = 0;
-            for (int i = 0; i < good_assets->data.size(); i++) {
-                Hjson::Value val = good_assets->data[i];
-                // Create good
-                entt::entity good = app.GetUniverse().create();
-                auto& good_object = app.GetUniverse().emplace<cqspc::Good>(good);
-                good_object.mass = val["mass"];
-                good_object.volume = val["volume"];
-                auto &name_object = app.GetUniverse().emplace<cqspc::Name>(good);
-                name_object.name = val["name"].to_string();
-                auto &id_object = app.GetUniverse().emplace<cqspc::Identifier>(good);
-                id_object.identifier = val["identifier"].to_string();
-                for (int i = 0; i < val["tags"].size(); i++) {
-                    if (val["tags"][i] == "mineral") {
-                        app.GetUniverse().emplace_or_replace<cqspc::Mineral>(good);
-                    }
-                }
-                app.GetUniverse().emplace<cqspc::Price>(good, val["price"]);
-                app.GetUniverse().goods[val["identifier"].to_string()] = good;
-                assets_loaded++;
-            }
-            SPDLOG_INFO("Loaded {} goods", assets_loaded);
+        if (!it->second->HasAsset(asset_name)) {
+            continue;
         }
-    }
-}
-
-void LoadRecipes(cqsp::engine::Application& app) {
-    namespace cqspc = cqsp::common::components;
-
-    using cqsp::asset::HjsonAsset;
-    for (auto it = app.GetAssetManager().GetPackageBegin(); it != app.GetAssetManager().GetPackageEnd(); it++) {
-        if (it->second->HasAsset("recipes")) {
-            HjsonAsset* recipe_asset = it->second->GetAsset<HjsonAsset>("recipes");
-            for (int i = 0; i < recipe_asset->data.size(); i++) {
-                Hjson::Value& val = recipe_asset->data[i];
-
-                entt::entity recipe = app.GetUniverse().create();
-                auto& recipe_component = app.GetUniverse().emplace<cqspc::Recipe>(recipe);
-                Hjson::Value input_value = val["input"];
-                for (auto input_good : input_value) {
-                    recipe_component.input[app.GetUniverse().goods[input_good.first]] =
-                        input_good.second;
-                }
-
-                Hjson::Value output_value = val["output"];
-                for (auto output_good : output_value) {
-                    recipe_component.output[app.GetUniverse().goods[output_good.first]] =
-                        output_good.second;
-                }
-
-                auto &name_object = app.GetUniverse().emplace<cqspc::Identifier>(recipe);
-                name_object.identifier = val["identifier"].to_string();
-                app.GetUniverse().recipes[name_object] = recipe;
-            }
+        cqsp::asset::HjsonAsset* good_assets = it->second->GetAsset<cqsp::asset::HjsonAsset>(asset_name);
+        try {
+            func(app.GetUniverse(), good_assets->data);
+        } catch (std::runtime_error& error) {
+            SPDLOG_INFO("Failed to load hjson asset {}: {}", asset_name, error.what());
+        } catch (Hjson::index_out_of_bounds &) {
         }
     }
 }
 
 void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
     namespace cqspa = cqsp::asset;
-    // Load goods
-    LoadGoods(GetApp());
-    LoadRecipes(GetApp());
+    namespace cqspc = cqsp::common::components;
+
+    LoadResource(GetApp(), "goods", cqsp::common::systems::loading::LoadGoods);
+    LoadResource(GetApp(), "recipes", cqsp::common::systems::loading::LoadRecipes);
 
     // Initialize planet terrains
     cqsp::asset::HjsonAsset* asset = GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("core:terrain_colors");
-    for (auto it = asset->data.begin(); it != asset->data.end(); it++) {
-        entt::entity entity = GetUniverse().create();
-
-        using cqsp::common::components::bodies::TerrainData;
-        TerrainData &data = GetUniverse().get_or_emplace<TerrainData>(entity);
-
-        data.sea_level = it->second["sealevel"];
-        auto terrain_colors = it->second["terrain"];
-        for (int i = 0; i < terrain_colors.size(); i++) {
-            float place = terrain_colors[i][0];
-            Hjson::Value color = terrain_colors[i][1];
-            if (color.size() == 4) {
-                int r = color[0];
-                int g = color[1];
-                int b = color[2];
-                int a = color[3];
-                std::tuple<int, int, int, int> tuple = std::make_tuple(r, g, b, a);
-                data.data[place] = tuple;
-            } else if (color.size() == 3) {
-                int r = color[0];
-                int g = color[1];
-                int b = color[2];
-                // Now add the tuple
-                std::tuple<int, int, int, int> tuple = std::make_tuple(r, g, b, 255);
-                data.data[place] = tuple;
-            }
-        }
-        GetUniverse().terrain_data[it->first] = entity;
-    }
+    cqsp::common::systems::loading::LoadTerrainData(GetApp().GetUniverse(), asset->data);
 
     // Load scripts
     // Load lua functions
     cqsp::scripting::LoadFunctions(GetApp());
+
+    // Load universe
     // Register data groups
-    GetApp().GetScriptInterface().RegisterDataGroup("generators");
-    GetApp().GetScriptInterface().RegisterDataGroup("events");
+    auto& script_interface = GetApp().GetScriptInterface();
+    script_interface.RegisterDataGroup("generators");
+    script_interface.RegisterDataGroup("events");
 
     using cqsp::asset::TextAsset;
     // Process scripts for core
     TextAsset* script_list = GetAssetManager().GetAsset<TextAsset>("core:base");
-    GetApp().GetScriptInterface().RunScript(script_list->data);
+    script_interface.RunScript(script_list->data);
 
     using cqsp::common::systems::universegenerator::ScriptUniverseGenerator;
     // Load universe
-    ScriptUniverseGenerator script_generator(GetApp().GetScriptInterface());
+    ScriptUniverseGenerator script_generator(script_interface);
 
     script_generator.Generate(GetUniverse());
     m_completed_loading = true;

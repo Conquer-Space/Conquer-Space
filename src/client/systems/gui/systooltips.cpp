@@ -25,6 +25,7 @@
 #include "common/components/resource.h"
 #include "common/components/coordinates.h"
 #include "common/components/economy.h"
+#include "common/components/infrastructure.h"
 #include "client/systems/gui/sysstockpileui.h"
 #include "engine/gui.h"
 
@@ -118,12 +119,24 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
     if (universe.all_of<cqspc::FactoryProductivity>(entity)) {
         ImGui::TextFmt("Productivity: {}", universe.get<cqspc::FactoryProductivity>(entity).productivity);
     }
+    if (universe.all_of<cqspc::FactoryModifiers>(entity)) {
+        ImGui::TextFmt("Extra Modifiers: {}", universe.get<cqspc::FactoryModifiers>(entity).production);
+    }
+
     if (universe.all_of<cqspc::ResourceGenerator>(entity)) {
         ImGui::Separator();
         ImGui::TextFmt("Generating");
         // Then do demand
         cqsp::client::systems::DrawLedgerTable(
             "factorygentooltip", universe, universe.get<cqspc::ResourceGenerator>(entity));
+    }
+
+    if (universe.all_of<cqspc::infrastructure::PowerConsumption>(entity)) {
+        ImGui::Separator();
+        auto& consumption = universe.get<cqspc::infrastructure::PowerConsumption>(entity);
+        ImGui::TextFmt("Power: {}", consumption.current);
+        ImGui::TextFmt("Max Power: {}", consumption.max);
+        ImGui::TextFmt("Min Power: {}", consumption.min);
     }
     ImGui::EndTooltip();
 }

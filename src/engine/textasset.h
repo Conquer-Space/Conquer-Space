@@ -28,13 +28,19 @@ class TextAsset : public Asset {
     std::string data;
 };
 
+/// <summary>
+/// Text asset which remembers what it's path is.
+/// </summary>
 class PathedTextAsset : public std::string {
     using std::string::basic_string;
-    // Relative path for the asset compared to the resource.hjson
  public:
+    // Relative path for the asset compared to the resource.hjson
     std::string path;
 };
 
+/// <summary>
+/// Asset to store a directory of text files, and remembers the path of the assets.
+/// </summary>
 class TextDirectoryAsset : public Asset {
  public:
     // Get the path of the assets
