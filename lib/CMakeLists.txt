@@ -108,6 +108,7 @@ set(IMGUI ${IMGUI} ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_glfw.h
 
 add_library(ImGui ${IMGUI})
 target_link_libraries(ImGui PUBLIC ${GLFW_LIBRARIES} glad)
+target_compile_definitions(ImGui PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD)
 set_target_properties(ImGui PROPERTIES FOLDER "Libs")
 
 # Copy stb_vorbis header file
