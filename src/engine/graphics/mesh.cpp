@@ -30,6 +30,11 @@ cqsp::engine::Mesh::~Mesh() {
 
 void cqsp::engine::Mesh::Draw() {
     glBindVertexArray(VAO);
+
+    // There is probably a more elegant way to do this, but for now, just differentiating between
+    // which one is an element and which one is an array is easier.
+    // In the future, hopefully we can use only elements, but that will probably need a rewrite of the
+    // mesh system.
     switch (buffer_type) {
         case DrawType::ELEMENTS:
             glDrawElements(mode, indicies, GL_UNSIGNED_INT, 0);

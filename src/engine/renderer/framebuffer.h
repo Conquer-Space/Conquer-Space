@@ -26,10 +26,12 @@
 namespace cqsp {
 namespace engine {
 /// <summary>
-/// 
+/// Interface for framebuffer renderers.
 /// </summary>
 class IFramebuffer {
  public:
+    virtual ~IFramebuffer() {}
+
     virtual void InitTexture(int width = 1280, int height = 720) = 0;
     virtual void Clear() = 0;
     virtual void BeginDraw() = 0;
@@ -45,6 +47,7 @@ class IFramebuffer {
 class FramebufferRenderer : public IFramebuffer {
  public:
     FramebufferRenderer() : IFramebuffer() {}
+    ~FramebufferRenderer();
 
     void InitTexture(int width  = 1280, int height = 720) override;
     void Clear() override;
@@ -68,6 +71,7 @@ class FramebufferRenderer : public IFramebuffer {
 class AAFrameBufferRenderer : public IFramebuffer {
  public:
     AAFrameBufferRenderer() : IFramebuffer() {}
+    ~AAFrameBufferRenderer();
 
     void InitTexture(int width = 1280, int height = 720);
     void Clear() override;
@@ -90,11 +94,42 @@ class AAFrameBufferRenderer : public IFramebuffer {
     unsigned int framebuffer;
     unsigned int intermediateFBO;
     unsigned int screenTexture;
-    unsigned int textureColorBufferMultiSampled;
+    unsigned int mscat;
     cqsp::asset::ShaderProgram_t buffer_shader;
     cqsp::engine::Mesh mesh_output;
 };
 
+/// <summary>
+/// Renders a series of framebuffers onto screen. This is a relatively simple way of
+/// allowing organization of multiple framebuffers. But layer management is a bit scuffed
+/// and could be made more intuitive. How, that's a different question.
+/// <br>
+/// How to use:
+/// <br>
+/// ```
+/// ShaderProgram_t shader; // Initialized somewhere above
+/// // Init layer renderer
+/// LayerRenderer layers;
+/// // Add a new layer, and you can note down the index number
+/// // The layers will be rendered in order of what you define it, so to reorganize layers
+/// // you can just reorder the order they are initialized.
+/// int first = layers.AddLayer<FramebufferRenderer>(shader, window);
+/// int second = layers.AddLayer<FramebufferRenderer>(shader, window);
+///
+/// // Initialize the frame by doing this:
+/// // .. Inside render loop
+/// NewFrame(window); // Will clear all framebuffers
+/// BeginDraw(first);
+/// // .. some drawing
+/// EndDraw(first);
+/// BeginDraw(second);
+/// // .. More drawing
+/// EndDraw(second);
+///
+/// // Now this will be drawn at the end
+/// DrawAllLayers();
+/// ```
+/// </summary>
 class LayerRenderer {
  public:
     template<class T>
@@ -110,6 +145,8 @@ class LayerRenderer {
     void DrawAllLayers();
     void NewFrame(const cqsp::engine::Window& window);
     int GetLayerCount();
+
+    IFramebuffer* GetFrameBuffer(int layer) { return framebuffers[layer].get(); };
 
  private:
     std::vector<std::unique_ptr<IFramebuffer>> framebuffers;

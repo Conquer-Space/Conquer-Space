@@ -65,25 +65,25 @@ void cqsp::primitive::ConstructSphereMesh(
         }
     }
 
-    std::vector<float> data;
+    std::vector<float> vertices;
     for (unsigned int i = 0; i < positions.size(); ++i) {
-        data.push_back(positions[i].x);
-        data.push_back(positions[i].y);
-        data.push_back(positions[i].z);
+        vertices.push_back(positions[i].x);
+        vertices.push_back(positions[i].y);
+        vertices.push_back(positions[i].z);
         if (uv.size() > 0) {
-            data.push_back(uv[i].x);
-            data.push_back(uv[i].y);
+            vertices.push_back(uv[i].x);
+            vertices.push_back(uv[i].y);
         }
         if (normals.size() > 0) {
-            data.push_back(normals[i].x);
-            data.push_back(normals[i].y);
-            data.push_back(normals[i].z);
+            vertices.push_back(normals[i].x);
+            vertices.push_back(normals[i].y);
+            vertices.push_back(normals[i].z);
         }
     }
 
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                     indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);

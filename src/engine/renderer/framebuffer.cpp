@@ -14,7 +14,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "engine/renderer/texturerenderer.h"
+#include "engine/renderer/framebuffer.h"
 
 #include <glad/glad.h>
 
@@ -23,26 +23,33 @@
 #include "common/util/profiler.h"
 #include "engine/graphics/primitives/pane.h"
 
-void cqsp::engine::FramebufferRenderer::InitTexture(int width, int height) {
+void GenerateFrameBuffer(unsigned int &framebuffer) {
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-    // create a color attachment texture
+}
 
+cqsp::engine::FramebufferRenderer::~FramebufferRenderer() { Free(); }
+
+void cqsp::engine::FramebufferRenderer::InitTexture(int width, int height) {
+    GenerateFrameBuffer(framebuffer);
+    // create a color attachment texture
     glGenTextures(1, &colorbuffer);
     glBindTexture(GL_TEXTURE_2D, colorbuffer);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorbuffer, 0);
+
     // create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
     unsigned int rbo;
     glGenRenderbuffers(1, &rbo);
     glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-    //  use a single renderbuffer object for both a depth AND stencil buffer.
+    // use a single renderbuffer object for both a depth AND stencil buffer.
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
     // now actually attach it
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
+    // Reset framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -87,19 +94,22 @@ void cqsp::engine::FramebufferRenderer::NewFrame(const Window& window) {
     }
 }
 
+cqsp::engine::AAFrameBufferRenderer::~AAFrameBufferRenderer() { Free(); }
+
 void cqsp::engine::AAFrameBufferRenderer::InitTexture(int width, int height) {
     this->width = width;
     this->height = height;
-    glGenFramebuffers(1, &framebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    GenerateFrameBuffer(framebuffer);
+
     // create a multisampled color attachment texture
-    glGenTextures(1, &textureColorBufferMultiSampled);
-    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, textureColorBufferMultiSampled);
+    glGenTextures(1, &mscat);
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, mscat);
 
     glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA, width, height, GL_TRUE);
     glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                            GL_TEXTURE_2D_MULTISAMPLE, textureColorBufferMultiSampled, 0);
+                            GL_TEXTURE_2D_MULTISAMPLE, mscat, 0);
+
     // create a (also multisampled) renderbuffer object for depth and stencil attachments
     unsigned int rbo;
     glGenRenderbuffers(1, &rbo);
@@ -141,13 +151,13 @@ void cqsp::engine::AAFrameBufferRenderer::Free() {
     glDeleteFramebuffers(1, &framebuffer);
     glDeleteFramebuffers(1, &intermediateFBO);
     glDeleteBuffers(1, &screenTexture);
-    glDeleteFramebuffers(1, &textureColorBufferMultiSampled);
+    glDeleteFramebuffers(1, &mscat);
 }
 
 void cqsp::engine::AAFrameBufferRenderer::RenderBuffer() {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, intermediateFBO);
-    glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT,  GL_NEAREST);
+    glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
