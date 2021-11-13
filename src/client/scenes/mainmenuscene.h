@@ -17,11 +17,11 @@
 #pragma once
 
 #include "engine/scene.h"
-#include "engine/renderer/renderable.h"
+#include "engine/graphics/renderable.h"
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/renderer2d.h"
-#include "engine/renderer/primitives/pane.h"
-#include "engine/renderer/text.h"
+#include "engine/graphics/primitives/pane.h"
+#include "engine/graphics/text.h"
 
 namespace cqsp {
 namespace scene {

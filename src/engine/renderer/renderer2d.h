@@ -16,9 +16,9 @@
 */
 #pragma once
 
-#include "engine/renderer/shader.h"
-#include "engine/renderer/texture.h"
-#include "engine/renderer/mesh.h"
+#include "engine/graphics/shader.h"
+#include "engine/graphics/texture.h"
+#include "engine/graphics/mesh.h"
 
 namespace cqsp {
 namespace engine {

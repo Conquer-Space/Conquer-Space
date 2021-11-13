@@ -31,11 +31,11 @@
 #include <queue>
 
 #include "engine/engine.h"
-#include "engine/asset.h"
-#include "engine/textasset.h"
-#include "engine/renderer/texture.h"
-#include "engine/renderer/shader.h"
-#include "engine/renderer/text.h"
+#include "engine/asset/asset.h"
+#include "engine/asset/textasset.h"
+#include "engine/graphics/texture.h"
+#include "engine/graphics/shader.h"
+#include "engine/graphics/text.h"
 #include "engine/gui.h"
 
 namespace cqsp {

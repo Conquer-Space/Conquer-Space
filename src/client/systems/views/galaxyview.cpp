@@ -27,8 +27,8 @@
 #include "common/components/coordinates.h"
 #include "common/components/player.h"
 #include "common/components/organizations.h"
-#include "engine/renderer/primitives/polygon.h"
-#include "engine/renderer/primitives/uvsphere.h"
+#include "engine/graphics/primitives/polygon.h"
+#include "engine/graphics/primitives/uvsphere.h"
 #include "engine/renderer/renderer.h"
 
 using cqsp::client::systems::GalaxyRenderer;

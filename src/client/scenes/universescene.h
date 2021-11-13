@@ -27,7 +27,7 @@
 #include "common/components/organizations.h"
 #include "engine/scene.h"
 #include "engine/application.h"
-#include "engine/renderer/renderable.h"
+#include "engine/graphics/renderable.h"
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/renderer2d.h"
 #include "common/simulation.h"

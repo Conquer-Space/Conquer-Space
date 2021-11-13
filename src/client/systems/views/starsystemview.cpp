@@ -30,11 +30,11 @@
 
 #include "client/components/planetrendering.h"
 
-#include "engine/renderer/primitives/uvsphere.h"
+#include "engine/graphics/primitives/uvsphere.h"
 #include "engine/renderer/renderer.h"
-#include "engine/renderer/primitives/cube.h"
-#include "engine/renderer/primitives/polygon.h"
-#include "engine/renderer/primitives/pane.h"
+#include "engine/graphics/primitives/cube.h"
+#include "engine/graphics/primitives/polygon.h"
+#include "engine/graphics/primitives/pane.h"
 
 #include "common/components/bodies.h"
 #include "common/components/surface.h"

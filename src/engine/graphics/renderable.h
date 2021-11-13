@@ -16,12 +16,27 @@
 */
 #pragma once
 
-#include "engine/renderer/mesh.h"
+#include <vector>
+#include <string>
+
+#include "engine/graphics/shader.h"
+#include "engine/graphics/texture.h"
+#include "engine/graphics/mesh.h"
 
 namespace cqsp {
-namespace primitive {
-void CreateFilledCircle(cqsp::engine::Mesh& renderable, int segments = 64);
-void CreateFilledTriangle(cqsp::engine::Mesh& renderable);
-void CreateFilledSquare(cqsp::engine::Mesh& renderable);
-}  // namespace primitive
+namespace engine {
+class Renderable {
+ public:
+    Mesh* mesh;
+    glm::mat4 model;
+
+    cqsp::asset::ShaderProgram_t shaderProgram;
+    std::vector<asset::Texture*> textures;
+
+    void SetTexture(const std::string& name, int id, asset::Texture* texture);
+    void SetMVP(glm::mat4& model, glm::mat4& view, glm::mat4& projection);
+
+    int z = 0;
+};
+}  // namespace engine
 }  // namespace cqsp

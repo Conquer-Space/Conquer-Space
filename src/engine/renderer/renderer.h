@@ -20,7 +20,7 @@
 #include <vector>
 
 #include <glm/glm.hpp>
-#include "engine/renderer/renderable.h"
+#include "engine/graphics/renderable.h"
 
 namespace cqsp {
 namespace engine {

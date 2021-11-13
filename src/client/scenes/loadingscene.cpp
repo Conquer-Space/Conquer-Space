@@ -25,7 +25,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "engine/assetmanager.h"
+#include "engine/asset/assetmanager.h"
 #include "client/scenes/mainmenuscene.h"
 #include "client/scenes/universeloadingscene.h"
 #include "engine/gui.h"

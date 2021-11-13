@@ -14,7 +14,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "engine/renderer/mesh.h"
+#include "engine/graphics/mesh.h"
 
 #include <glad/glad.h>
 

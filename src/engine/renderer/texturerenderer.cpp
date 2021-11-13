@@ -21,7 +21,7 @@
 #include <spdlog/spdlog.h>
 
 #include "common/util/profiler.h"
-#include "engine/renderer/primitives/pane.h"
+#include "engine/graphics/primitives/pane.h"
 
 void cqsp::engine::TextureRenderer::Draw() {
     if (framebuffer == 0) {

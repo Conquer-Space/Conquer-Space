@@ -14,12 +14,21 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#pragma once
+#include "engine/graphics/renderable.h"
 
-#include "engine/renderer/mesh.h"
+void cqsp::engine::Renderable::SetTexture(const std::string& name,
+                                                  int id,
+                                                  asset::Texture* texture) {
+    shaderProgram->UseProgram();
+    shaderProgram->setInt(name, id);
 
-namespace cqsp {
-namespace primitive {
-void MakeCube(cqsp::engine::Mesh& mesh);
+    textures.push_back(texture);
 }
+
+void cqsp::engine::Renderable::SetMVP(glm::mat4& model, glm::mat4& view,
+                                              glm::mat4& projection) {
+    shaderProgram->UseProgram();
+    shaderProgram->setMat4("model", model);
+    shaderProgram->setMat4("view", view);
+    shaderProgram->setMat4("projection", projection);
 }

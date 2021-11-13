@@ -29,13 +29,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "engine/renderer/shader.h"
+#include "engine/graphics/shader.h"
 #include "engine/renderer/renderer.h"
 #include "client/scenes/universeloadingscene.h"
-#include "engine/asset.h"
+#include "engine/asset/asset.h"
 #include "engine/gui.h"
 #include "engine/cqspgui.h"
-#include "engine/renderer/text.h"
+#include "engine/graphics/text.h"
 #include "client/systems/sysoptionswindow.h"
 #include "common/version.h"
 

@@ -27,10 +27,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/polar_coordinates.hpp>
 
-#include "engine/renderer/primitives/uvsphere.h"
+#include "engine/graphics/primitives/uvsphere.h"
 #include "engine/renderer/renderer.h"
-#include "engine/renderer/primitives/cube.h"
-#include "engine/renderer/primitives/polygon.h"
+#include "engine/graphics/primitives/cube.h"
+#include "engine/graphics/primitives/polygon.h"
 #include "engine/gui.h"
 
 #include "common/components/bodies.h"

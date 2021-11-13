@@ -28,10 +28,10 @@
 
 #include "engine/engine.h"
 #include "engine/scene.h"
-#include "engine/assetmanager.h"
+#include "engine/asset/assetmanager.h"
 #include "common/universe.h"
 #include "engine/gui.h"
-#include "engine/renderer/text.h"
+#include "engine/graphics/text.h"
 #include "common/scripting/scripting.h"
 #include "engine/audio/iaudiointerface.h"
 #include "engine/window.h"
