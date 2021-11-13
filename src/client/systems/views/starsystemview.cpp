@@ -14,7 +14,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "client/systems/sysstarsystemrenderer.h"
+#include "client/systems/views/starsystemview.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>

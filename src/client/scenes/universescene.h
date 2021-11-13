@@ -20,8 +20,8 @@
 #include <memory>
 #include <utility>
 
-#include "client/systems/sysstarsystemrenderer.h"
-#include "client/systems/galaxyrenderer.h"
+#include "client/systems/views/starsystemview.h"
+#include "client/systems/views/galaxyview.h"
 #include "client/systems/sysgui.h"
 #include "common/components/bodies.h"
 #include "common/components/organizations.h"

@@ -19,7 +19,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "client/systems/sysstarsystemrenderer.h"
+#include "client/systems/views/starsystemview.h"
 #include "common/components/name.h"
 #include "common/util/profiler.h"
 

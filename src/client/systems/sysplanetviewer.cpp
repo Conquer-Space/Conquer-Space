@@ -25,7 +25,7 @@
 #include <map>
 #include <vector>
 
-#include "client/systems/sysstarsystemrenderer.h"
+#include "client/systems/views/starsystemview.h"
 #include "client/systems/gui/sysstockpileui.h"
 #include "client/scenes/universescene.h"
 #include "client/systems/gui/systooltips.h"
