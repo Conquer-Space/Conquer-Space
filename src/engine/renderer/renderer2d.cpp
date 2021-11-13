@@ -53,17 +53,12 @@ void cqsp::engine::Renderer2D::DrawTexturedSprite(cqsp::engine::Mesh* mesh,
     model = glm::scale(model, glm::vec3(size, 1.0f));
 
     texture_shader->Set("model", model);
-    // Render
+
+    // Set texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture.id);
 
-    glBindVertexArray(mesh->VAO);
-    if (mesh->buffer_type == 1) {
-        glDrawElements(mesh->mode, mesh->indicies, GL_UNSIGNED_INT, 0);
-    } else {
-        glDrawArrays(mesh->mode, 0, mesh->indicies);
-    }
-    glBindVertexArray(0);
+    mesh->Draw();
 }
 
 void cqsp::engine::Renderer2D::SetProjection(const glm::mat4 & projection) {
@@ -99,13 +94,7 @@ void cqsp::engine::Renderer2D::DrawColoredSprite(cqsp::engine::Mesh* mesh,
     color_shader->Set("model", model);
     color_shader->Set("color", glm::vec4(color, 1));
 
-    glBindVertexArray(mesh->VAO);
-    if (mesh->buffer_type == 1) {
-        glDrawElements(mesh->mode, mesh->indicies, GL_UNSIGNED_INT, 0);
-    } else {
-        glDrawArrays(mesh->mode, 0, mesh->indicies);
-    }
-    glBindVertexArray(0);
+    mesh->Draw();
 }
 
 bool cqsp::engine::Renderer2D::ColorEnabled() { return color_shader != nullptr; }

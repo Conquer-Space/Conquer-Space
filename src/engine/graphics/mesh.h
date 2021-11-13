@@ -38,8 +38,9 @@ class Mesh {
 
     unsigned int mode;
 
-    // 1 is draw elements, 0 is arrays
     DrawType buffer_type = DrawType::ELEMENTS;
+
+    void Draw();
 };
 }  // namespace engine
 }  // namespace cqsp

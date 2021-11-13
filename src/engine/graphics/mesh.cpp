@@ -27,3 +27,15 @@ cqsp::engine::Mesh::~Mesh() {
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
 }
+
+void cqsp::engine::Mesh::Draw() {
+    glBindVertexArray(VAO);
+    switch (buffer_type) {
+        case DrawType::ELEMENTS:
+            glDrawElements(mode, indicies, GL_UNSIGNED_INT, 0);
+            break;
+        case DrawType::ARRAYS:
+            glDrawArrays(mode, 0, indicies);
+    }
+    glBindVertexArray(0);
+}

@@ -64,14 +64,7 @@ void cqsp::engine::FramebufferRenderer::RenderBuffer() {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, colorbuffer);
 
-    glBindVertexArray(mesh_output.VAO);
-    if (mesh_output.buffer_type == 1) {
-        glDrawElements(mesh_output.mode, mesh_output.indicies, GL_UNSIGNED_INT, 0);
-    } else {
-        glDrawArrays(mesh_output.mode, 0, mesh_output.indicies);
-    }
-
-    glBindVertexArray(0);
+    mesh_output.Draw();
 
     // Reset active texture
     glActiveTexture(GL_TEXTURE0);
@@ -162,14 +155,7 @@ void cqsp::engine::AAFrameBufferRenderer::RenderBuffer() {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, screenTexture);
 
-    glBindVertexArray(mesh_output.VAO);
-    if (mesh_output.buffer_type == 1) {
-        glDrawElements(mesh_output.mode, mesh_output.indicies, GL_UNSIGNED_INT, 0);
-    } else {
-        glDrawArrays(mesh_output.mode, 0, mesh_output.indicies);
-    }
-
-    glBindVertexArray(0);
+    mesh_output.Draw();
 
     // Reset active texture
     glActiveTexture(GL_TEXTURE0);

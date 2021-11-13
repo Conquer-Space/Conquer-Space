@@ -42,17 +42,7 @@ void cqsp::engine::Draw(Renderable &renderable) {
         }
     }
 
-    glBindVertexArray(renderable.mesh->VAO);
-    if (renderable.mesh->buffer_type == 1) {
-        glDrawElements(renderable.mesh->mode, renderable.mesh->indicies, GL_UNSIGNED_INT, 0);
-    } else {
-        glDrawArrays(renderable.mesh->mode, 0, renderable.mesh->indicies);
-    }
-    GLenum error = glGetError();
-    if (error != GL_NO_ERROR) {
-        SPDLOG_ERROR("Error when rendering renderable, {}", error);
-    }
-    glBindVertexArray(0);
+    renderable.mesh->Draw();
 
     // Reset active texture
     glActiveTexture(GL_TEXTURE0);
@@ -80,14 +70,7 @@ void cqsp::engine::BasicRenderer::Draw() {
             i++;
         }
 
-        glBindVertexArray(renderable->mesh->VAO);
-        if (renderable->mesh->buffer_type == 1) {
-            glDrawElements(renderable->mesh->mode, renderable->mesh->indicies,
-                                                                        GL_UNSIGNED_INT, 0);
-        } else {
-            glDrawArrays(renderable->mesh->mode, 0, renderable->mesh->indicies);
-        }
-        glBindVertexArray(0);
+        renderable->mesh->Draw();
 
         // Reset active texture
         glActiveTexture(GL_TEXTURE0);

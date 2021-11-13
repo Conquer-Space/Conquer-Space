@@ -63,8 +63,7 @@ void cqsp::primitive::CreateFilledCircle(
                             GL_FALSE, stride * sizeof(float), reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 2, GL_FLOAT,
-                            GL_FALSE, stride * sizeof(float),
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float),
                             reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
     mesh.VAO = vao;

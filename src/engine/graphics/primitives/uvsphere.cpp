@@ -24,8 +24,8 @@
 
 void cqsp::primitive::ConstructSphereMesh(
     int x_segments, int y_segments, cqsp::engine::Mesh& mesh) {
-    GLuint VAO = 0;
-    glGenVertexArrays(1, &VAO);
+    GLuint vao = 0;
+    glGenVertexArrays(1, &vao);
 
     unsigned int vbo, ebo;
     glGenBuffers(1, &vbo);
@@ -81,7 +81,7 @@ void cqsp::primitive::ConstructSphereMesh(
         }
     }
 
-    glBindVertexArray(VAO);
+    glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
@@ -98,7 +98,7 @@ void cqsp::primitive::ConstructSphereMesh(
     glVertexAttribPointer(2, 3, GL_FLOAT,
                             GL_FALSE, stride, reinterpret_cast<void*>(5 * sizeof(float)));
 
-    mesh.VAO = VAO;
+    mesh.VAO = vao;
     mesh.VBO = vbo;
     mesh.EBO = ebo;
     mesh.mode = GL_TRIANGLE_STRIP;
