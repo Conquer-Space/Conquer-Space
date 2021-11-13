@@ -14,7 +14,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "engine/renderer/primitives/cube.h"
+#include "engine/graphics/primitives/cube.h"
 
 #include <glad/glad.h>
 
@@ -72,6 +72,6 @@ void cqsp::primitive::MakeCube(cqsp::engine::Mesh& mesh) {
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), reinterpret_cast<void*>(0));
     mesh.indicies = 36;
-    mesh.RenderType = GL_TRIANGLES;
-    mesh.buffer_type = 0;
+    mesh.mode = GL_TRIANGLES;
+    mesh.buffer_type = cqsp::engine::DrawType::ARRAYS;
 }

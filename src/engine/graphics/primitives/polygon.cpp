@@ -14,7 +14,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "engine/renderer/primitives/polygon.h"
+#include "engine/graphics/primitives/polygon.h"
 
 #include <glad/glad.h>
 
@@ -48,13 +48,13 @@ void cqsp::primitive::CreateFilledCircle(
         positions.push_back(0.5*-y + 0.5);
     }
 
-    GLuint VAO = 0;
-    glGenVertexArrays(1, &VAO);
+    GLuint vao = 0;
+    glGenVertexArrays(1, &vao);
 
     unsigned int vbo;
     glGenBuffers(1, &vbo);
 
-    glBindVertexArray(VAO);
+    glBindVertexArray(vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(float), &positions[0], GL_STATIC_DRAW);
@@ -67,11 +67,11 @@ void cqsp::primitive::CreateFilledCircle(
                             GL_FALSE, stride * sizeof(float),
                             reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    mesh.VAO = VAO;
+    mesh.VAO = vao;
     mesh.VBO = vbo;
-    mesh.RenderType = GL_TRIANGLE_FAN;
+    mesh.mode = GL_TRIANGLE_FAN;
     mesh.indicies = segments + 2;
-    mesh.buffer_type = 0;
+    mesh.buffer_type = cqsp::engine::DrawType::ARRAYS;
 }
 
 void cqsp::primitive::CreateFilledTriangle(cqsp::engine::Mesh& renderable) {

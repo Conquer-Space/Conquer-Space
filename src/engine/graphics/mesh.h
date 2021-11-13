@@ -20,6 +20,10 @@
 
 namespace cqsp {
 namespace engine {
+enum DrawType {
+    ARRAYS = 0,
+    ELEMENTS = 1
+};
 
 class Mesh {
  public:
@@ -32,10 +36,10 @@ class Mesh {
 
     unsigned int indicies;
 
-    unsigned int RenderType;
+    unsigned int mode;
 
-    // 1 is elements, 0 is arrays
-    unsigned int buffer_type = 1;
+    // 1 is draw elements, 0 is arrays
+    DrawType buffer_type = DrawType::ELEMENTS;
 };
 }  // namespace engine
 }  // namespace cqsp

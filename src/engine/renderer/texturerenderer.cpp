@@ -23,62 +23,6 @@
 #include "common/util/profiler.h"
 #include "engine/graphics/primitives/pane.h"
 
-void cqsp::engine::TextureRenderer::Draw() {
-    if (framebuffer == 0) {
-        glGenFramebuffers(1, &framebuffer);
-    }
-
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-    // make sure we clear the framebuffer's content
-    glClearColor(0.f, 0.f, 0.f, 0.f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    for (auto renderable : renderables) {
-        renderable->shaderProgram->UseProgram();
-        renderable->shaderProgram->setMat4("model", renderable->model);
-        renderable->shaderProgram->setMat4("view", view);
-        renderable->shaderProgram->setMat4("projection", projection);
-        int i = 0;
-        for (std::vector<cqsp::asset::Texture*>::iterator it = renderable->textures.begin();
-                                                    it != renderable->textures.end(); ++it) {
-            glActiveTexture(GL_TEXTURE0 + i);
-            glBindTexture((*it)->texture_type, (*it)->id);
-            i++;
-        }
-
-        glBindVertexArray(renderable->mesh->VAO);
-        if (renderable->mesh->buffer_type == 1) {
-            glDrawElements(renderable->mesh->RenderType, renderable->mesh->indicies,
-                                                                        GL_UNSIGNED_INT, 0);
-        } else {
-            glDrawArrays(renderable->mesh->RenderType, 0, renderable->mesh->indicies);
-        }
-        glBindVertexArray(0);
-
-        // Reset active texture
-        glActiveTexture(GL_TEXTURE0);
-    }
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void cqsp::engine::TextureRenderer::RenderBuffer() {
-    buffer_shader->UseProgram();
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, framebuffer);
-
-    glBindVertexArray(mesh_output->VAO);
-    if (mesh_output->buffer_type == 1) {
-        glDrawElements(mesh_output->RenderType, mesh_output->indicies, GL_UNSIGNED_INT, 0);
-    } else {
-        glDrawArrays(mesh_output->RenderType, 0, mesh_output->indicies);
-    }
-
-    glBindVertexArray(0);
-
-    // Reset active texture
-    glActiveTexture(GL_TEXTURE0);
-}
-
 void cqsp::engine::FramebufferRenderer::InitTexture(int width, int height) {
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -122,9 +66,9 @@ void cqsp::engine::FramebufferRenderer::RenderBuffer() {
 
     glBindVertexArray(mesh_output.VAO);
     if (mesh_output.buffer_type == 1) {
-        glDrawElements(mesh_output.RenderType, mesh_output.indicies, GL_UNSIGNED_INT, 0);
+        glDrawElements(mesh_output.mode, mesh_output.indicies, GL_UNSIGNED_INT, 0);
     } else {
-        glDrawArrays(mesh_output.RenderType, 0, mesh_output.indicies);
+        glDrawArrays(mesh_output.mode, 0, mesh_output.indicies);
     }
 
     glBindVertexArray(0);
@@ -171,8 +115,6 @@ void cqsp::engine::AAFrameBufferRenderer::InitTexture(int width, int height) {
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        SPDLOG_INFO("ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // configure second post-processing framebuffer
@@ -186,8 +128,6 @@ void cqsp::engine::AAFrameBufferRenderer::InitTexture(int width, int height) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture, 0);
 
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        SPDLOG_INFO("ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -224,9 +164,9 @@ void cqsp::engine::AAFrameBufferRenderer::RenderBuffer() {
 
     glBindVertexArray(mesh_output.VAO);
     if (mesh_output.buffer_type == 1) {
-        glDrawElements(mesh_output.RenderType, mesh_output.indicies, GL_UNSIGNED_INT, 0);
+        glDrawElements(mesh_output.mode, mesh_output.indicies, GL_UNSIGNED_INT, 0);
     } else {
-        glDrawArrays(mesh_output.RenderType, 0, mesh_output.indicies);
+        glDrawArrays(mesh_output.mode, 0, mesh_output.indicies);
     }
 
     glBindVertexArray(0);
@@ -268,7 +208,7 @@ void LayerRenderer::NewFrame(const cqsp::engine::Window& window) {
 
 int LayerRenderer::GetLayerCount() { return framebuffers.size(); }
 
-void LayerRenderer::InitFramebuffer(Framebuffer* buffer, cqsp::asset::ShaderProgram_t shader,
+void LayerRenderer::InitFramebuffer(IFramebuffer* buffer, cqsp::asset::ShaderProgram_t shader,
  const cqsp::engine::Window& window) {
     // Initialize pane
     buffer->InitTexture(window.GetWindowWidth(), window.GetWindowHeight());

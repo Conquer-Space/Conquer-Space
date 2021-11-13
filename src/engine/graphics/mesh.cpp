@@ -19,7 +19,7 @@
 #include <glad/glad.h>
 
 cqsp::engine::Mesh::Mesh() {
-    RenderType = GL_TRIANGLES;
+    mode = GL_TRIANGLES;
 }
 
 cqsp::engine::Mesh::~Mesh() {

@@ -36,7 +36,7 @@ void cqsp::engine::Renderer2D::DrawTexturedSprite(cqsp::engine::Mesh* mesh,
                                                   cqsp::asset::Texture& texture,
                                                  glm::vec2 position,
                                                  glm::vec2 size, float rotate) {
-    if (texture_shader == nullptr) {
+    if (!TextureEnabled()) {
         return;
     }
     texture_shader->UseProgram();
@@ -59,19 +59,19 @@ void cqsp::engine::Renderer2D::DrawTexturedSprite(cqsp::engine::Mesh* mesh,
 
     glBindVertexArray(mesh->VAO);
     if (mesh->buffer_type == 1) {
-        glDrawElements(mesh->RenderType, mesh->indicies, GL_UNSIGNED_INT, 0);
+        glDrawElements(mesh->mode, mesh->indicies, GL_UNSIGNED_INT, 0);
     } else {
-        glDrawArrays(mesh->RenderType, 0, mesh->indicies);
+        glDrawArrays(mesh->mode, 0, mesh->indicies);
     }
     glBindVertexArray(0);
 }
 
 void cqsp::engine::Renderer2D::SetProjection(const glm::mat4 & projection) {
-    if (texture_shader != nullptr) {
+    if (TextureEnabled()) {
         texture_shader->UseProgram();
         texture_shader->Set("projection", projection);
     }
-    if (color_shader != nullptr) {
+    if (ColorEnabled()) {
         color_shader->UseProgram();
         color_shader->Set("projection", projection);
     }
@@ -81,7 +81,7 @@ void cqsp::engine::Renderer2D::DrawColoredSprite(cqsp::engine::Mesh* mesh,
                                                  glm::vec3 color,
                                                  glm::vec2 position,
                                                  glm::vec2 size, float rotate) {
-    if (color_shader == nullptr) {
+    if (!ColorEnabled()) {
         return;
     }
     color_shader->UseProgram();
@@ -101,13 +101,12 @@ void cqsp::engine::Renderer2D::DrawColoredSprite(cqsp::engine::Mesh* mesh,
 
     glBindVertexArray(mesh->VAO);
     if (mesh->buffer_type == 1) {
-        glDrawElements(mesh->RenderType, mesh->indicies, GL_UNSIGNED_INT, 0);
+        glDrawElements(mesh->mode, mesh->indicies, GL_UNSIGNED_INT, 0);
     } else {
-        glDrawArrays(mesh->RenderType, 0, mesh->indicies);
+        glDrawArrays(mesh->mode, 0, mesh->indicies);
     }
     glBindVertexArray(0);
 }
-
 
 bool cqsp::engine::Renderer2D::ColorEnabled() { return color_shader != nullptr; }
 bool cqsp::engine::Renderer2D::TextureEnabled() { return texture_shader != nullptr; }

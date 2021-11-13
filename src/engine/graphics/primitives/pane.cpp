@@ -14,7 +14,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "engine/renderer/primitives/pane.h"
+#include "engine/graphics/primitives/pane.h"
 
 #include <glad/glad.h>
 
@@ -63,7 +63,7 @@ void cqsp::primitive::MakeTexturedPaneMesh(cqsp::engine::Mesh& mesh) {
     mesh.VBO = VBO;
     mesh.EBO = EBO;
     mesh.indicies = 6;
-    mesh.RenderType = GL_TRIANGLES;
+    mesh.mode = GL_TRIANGLES;
 }
 
 void cqsp::primitive::MakeTexturedPaneMesh(cqspe::Mesh& mesh, bool mirrored) {
@@ -105,5 +105,5 @@ void cqsp::primitive::MakeTexturedPaneMesh(cqspe::Mesh& mesh, bool mirrored) {
     mesh.VBO = VBO;
     mesh.EBO = EBO;
     mesh.indicies = 6;
-    mesh.RenderType = GL_TRIANGLES;
+    mesh.mode = GL_TRIANGLES;
 }

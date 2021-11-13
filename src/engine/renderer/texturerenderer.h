@@ -25,21 +25,10 @@
 
 namespace cqsp {
 namespace engine {
-
-// Warning: does not work, please don't use this
-class TextureRenderer {
- public:
-    glm::mat4 projection = glm::mat4(1.0);
-    glm::mat4 view = glm::mat4(1.0);
-    std::vector<BasicRendererObject> renderables;
-    cqsp::asset::ShaderProgram* buffer_shader;
-    cqsp::engine::Mesh* mesh_output;
-    unsigned int framebuffer = 0;
-    void Draw();
-    void RenderBuffer();
-};
-
-class Framebuffer {
+/// <summary>
+/// 
+/// </summary>
+class IFramebuffer {
  public:
     virtual void InitTexture(int width = 1280, int height = 720) = 0;
     virtual void Clear() = 0;
@@ -53,9 +42,9 @@ class Framebuffer {
     virtual void SetShader(cqsp::asset::ShaderProgram_t shader) = 0;
 };
 
-class FramebufferRenderer : public Framebuffer {
+class FramebufferRenderer : public IFramebuffer {
  public:
-    FramebufferRenderer() : Framebuffer() {}
+    FramebufferRenderer() : IFramebuffer() {}
 
     void InitTexture(int width  = 1280, int height = 720) override;
     void Clear() override;
@@ -76,9 +65,9 @@ class FramebufferRenderer : public Framebuffer {
     cqsp::engine::Mesh mesh_output;
 };
 
-class AAFrameBufferRenderer : public Framebuffer {
+class AAFrameBufferRenderer : public IFramebuffer {
  public:
-    AAFrameBufferRenderer() : Framebuffer() {}
+    AAFrameBufferRenderer() : IFramebuffer() {}
 
     void InitTexture(int width = 1280, int height = 720);
     void Clear() override;
@@ -123,8 +112,8 @@ class LayerRenderer {
     int GetLayerCount();
 
  private:
-    std::vector<std::unique_ptr<Framebuffer>> framebuffers;
-    void InitFramebuffer(Framebuffer* buffer, cqsp::asset::ShaderProgram_t shader,
+    std::vector<std::unique_ptr<IFramebuffer>> framebuffers;
+    void InitFramebuffer(IFramebuffer* buffer, cqsp::asset::ShaderProgram_t shader,
                             const cqsp::engine::Window& window);
 };
 }  // namespace engine

@@ -15,7 +15,7 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "engine/renderer/primitives/uvsphere.h"
+#include "engine/graphics/primitives/uvsphere.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -101,6 +101,6 @@ void cqsp::primitive::ConstructSphereMesh(
     mesh.VAO = VAO;
     mesh.VBO = vbo;
     mesh.EBO = ebo;
-    mesh.RenderType = GL_TRIANGLE_STRIP;
+    mesh.mode = GL_TRIANGLE_STRIP;
     mesh.indicies = indices.size();
 }
