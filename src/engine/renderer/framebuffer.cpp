@@ -32,6 +32,7 @@ cqsp::engine::FramebufferRenderer::~FramebufferRenderer() { Free(); }
 
 void cqsp::engine::FramebufferRenderer::InitTexture(int width, int height) {
     GenerateFrameBuffer(framebuffer);
+    SPDLOG_INFO("Framebuffer {}", framebuffer);
     // create a color attachment texture
     glGenTextures(1, &colorbuffer);
     glBindTexture(GL_TEXTURE_2D, colorbuffer);
@@ -49,6 +50,8 @@ void cqsp::engine::FramebufferRenderer::InitTexture(int width, int height) {
     // now actually attach it
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        SPDLOG_ERROR("Framebuffer is not complete!");
     // Reset framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -60,6 +63,7 @@ void cqsp::engine::FramebufferRenderer::Clear() {
 
 void cqsp::engine::FramebufferRenderer::BeginDraw() {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
 }
 
 void cqsp::engine::FramebufferRenderer::EndDraw() {
@@ -135,6 +139,7 @@ void cqsp::engine::AAFrameBufferRenderer::InitTexture(int width, int height) {
 }
 
 void cqsp::engine::AAFrameBufferRenderer::Clear() {
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     glClearColor(0.f, 0.f, 0.f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
@@ -176,7 +181,6 @@ void cqsp::engine::AAFrameBufferRenderer::NewFrame(const Window& window) {
     Clear();
     EndDraw();
 
-    // Remake frame
     // Check if window size changed, and then change the window size.
     if (window.WindowSizeChanged()) {
         // Then resize window
@@ -191,6 +195,9 @@ void LayerRenderer::BeginDraw(int layer) { framebuffers[layer]->BeginDraw(); }
 void LayerRenderer::EndDraw(int layer) { framebuffers[layer]->EndDraw(); }
 
 void LayerRenderer::DrawAllLayers() {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
     for (auto& frame : framebuffers) {
         frame->RenderBuffer();
     }

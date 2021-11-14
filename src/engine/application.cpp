@@ -552,6 +552,13 @@ void cqsp::engine::Application::DrawText(const std::string& text, float x, float
     }
 }
 
+void cqsp::engine::Application::DrawText(const std::string& text, float x, float y, float size) {
+    if (fontShader != nullptr && m_font != nullptr) {
+        // Render with size 16 white text
+        cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, size, glm::vec3(1.f, 1.f, 1.f));
+    }
+}
+
 void cqsp::engine::Application::DrawTextNormalized(const std::string& text, float x, float y) {
     if (fontShader != nullptr && m_font != nullptr) {
         cqsp::asset::RenderText(*fontShader, *m_font, text, (x + 1) * GetWindowWidth()/2,

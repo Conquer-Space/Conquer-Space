@@ -109,10 +109,10 @@ void SysStarSystemRenderer::Initialize() {
     sun.shaderProgram = m_app.GetAssetManager().MakeShader("core:objectvert", "core:sunshader");
 
     auto buffer_shader = m_app.GetAssetManager().MakeShader("core:framebuffervert", "core:framebufferfrag");
-    ship_icon_layer = renderer.AddLayer<engine::AAFrameBufferRenderer>(buffer_shader, *m_app.GetWindow());
-    physical_layer = renderer.AddLayer<engine::AAFrameBufferRenderer>(buffer_shader, *m_app.GetWindow());
-    planet_icon_layer = renderer.AddLayer<engine::AAFrameBufferRenderer>(buffer_shader, *m_app.GetWindow());
-    skybox_layer = renderer.AddLayer<engine::AAFrameBufferRenderer>(buffer_shader, *m_app.GetWindow());
+    ship_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
+    physical_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
+    planet_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
+    skybox_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
 }
 
 void SysStarSystemRenderer::OnTick() {
@@ -139,6 +139,7 @@ void SysStarSystemRenderer::Render(float deltaTime) {
 
     glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
     entt::entity current_planet = m_app.GetUniverse().view<RenderingPlanet>().front();
     if (current_planet != m_viewing_entity && current_planet != entt::null) {
         SPDLOG_INFO("Switched displaying planet, seeing {}", current_planet);
@@ -310,6 +311,8 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
     namespace cqsps = cqsp::common::components::ships;
     // Draw other bodies
     auto bodies = m_app.GetUniverse().view<ToRender, cqspb::Body>(entt::exclude<cqspb::LightEmitter>);
+
+    renderer.BeginDraw(planet_icon_layer);
     for (auto body_entity : bodies) {
         // Draw the planet circle
         glm::vec3 object_pos = CalculateCenteredObject(body_entity);
@@ -323,14 +326,23 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
             // Set planet circle color
             planet_circle.shaderProgram->UseProgram();
             planet_circle.shaderProgram->setVec4("color", 0, 0, 1, 1);
-            renderer.BeginDraw(planet_icon_layer);
             DrawEntityName(object_pos, body_entity);
             DrawPlanetIcon(object_pos);
-            renderer.EndDraw(planet_icon_layer);
             continue;
-        } else {
+        }
+    }
+    renderer.EndDraw(planet_icon_layer);
+
+    renderer.BeginDraw(physical_layer);
+    for (auto body_entity : bodies) {
+        glm::vec3 object_pos = CalculateCenteredObject(body_entity);
+
+        // Draw Ships
+        namespace cqspc = cqsp::common::components;
+        namespace cqspt = cqsp::common::components::types;
+
+        if (glm::distance(object_pos, cam_pos) <= 200) {
             // Check if planet has terrain or not
-            renderer.BeginDraw(physical_layer);
             if (m_app.GetUniverse().all_of<cqspb::Terrain>(body_entity)) {
                 // Do empty terrain
                 // Check if the planet has the thing
@@ -338,7 +350,15 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
             } else {
                 DrawTerrainlessPlanet(object_pos);
             }
-            renderer.EndDraw(physical_layer);
+            RenderCities(object_pos, body_entity);
+        }
+    }
+    renderer.EndDraw(physical_layer);
+
+
+    for (auto body_entity : bodies) {
+        glm::vec3 object_pos = CalculateCenteredObject(body_entity);
+        if (glm::distance(object_pos, cam_pos) <= 200) {
             RenderCities(object_pos, body_entity);
         }
     }
@@ -386,7 +406,7 @@ void SysStarSystemRenderer::DrawEntityName(glm::vec3 &object_pos,
     if (!(pos.z >= 1 || pos.z <= -1) &&
         (pos.x > 0 && pos.x < m_app.GetWindowWidth() &&
             pos.y > 0 && pos.y < m_app.GetWindowHeight())) {
-        m_app.DrawText(text, pos.x, pos.y);
+        m_app.DrawText(text, pos.x, pos.y, 20);
     }
 }
 

@@ -46,7 +46,8 @@ void cqsp::asset::LoadFont(Font &font, unsigned char *fontBuffer,
         return;
     }
 
-    font.initial_size = 48;
+    // Larger font initial size, so that larget text looks better.
+    font.initial_size = 72;
     // set size to load glyphs as
     FT_Set_Pixel_Sizes(face, 0, font.initial_size);
 

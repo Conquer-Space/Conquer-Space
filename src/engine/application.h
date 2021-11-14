@@ -158,6 +158,7 @@ class Application {
 
     cqsp::asset::Font*& GetFont() { return m_font; }
     void DrawText(const std::string& text, float x, float y);
+    void DrawText(const std::string& text, float x, float y, float size);
     // Draw text based on normalized device coordinates
     void DrawTextNormalized(const std::string& text, float x, float y);
 
