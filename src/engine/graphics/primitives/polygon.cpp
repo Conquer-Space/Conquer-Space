@@ -25,9 +25,10 @@
 #include "common/components/units.h"
 #include "common/components/coordinates.h"
 
-void cqsp::primitive::CreateFilledCircle(
-    cqsp::engine::Mesh& mesh, int segments) {
-    std::vector<float> positions;
+cqsp::engine::Mesh* cqsp::engine::primitive::CreateFilledCircle(int segments) {
+    cqsp::engine::Mesh* mesh = new cqsp::engine::Mesh();
+
+        std::vector<float> positions;
     positions.push_back(0);
     positions.push_back(0);
     positions.push_back(0);
@@ -66,16 +67,18 @@ void cqsp::primitive::CreateFilledCircle(
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float),
                             reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    mesh.VAO = vao;
-    mesh.VBO = vbo;
-    mesh.mode = GL_TRIANGLE_FAN;
-    mesh.indicies = segments + 2;
-    mesh.buffer_type = cqsp::engine::DrawType::ARRAYS;
+    mesh->VAO = vao;
+    mesh->VBO = vbo;
+    mesh->mode = GL_TRIANGLE_FAN;
+    mesh->indicies = segments + 2;
+    mesh->buffer_type = cqsp::engine::DrawType::ARRAYS;
+    return mesh;
 }
 
-void cqsp::primitive::CreateFilledTriangle(cqsp::engine::Mesh& renderable) {
-    cqsp::primitive::CreateFilledCircle(renderable, 3);
+cqsp::engine::Mesh* cqsp::engine::primitive::CreateFilledTriangle() {
+    return cqsp::engine::primitive::CreateFilledCircle(3);
 }
-void cqsp::primitive::CreateFilledSquare(cqsp::engine::Mesh& renderable) {
-    cqsp::primitive::CreateFilledCircle(renderable, 4);
+
+cqsp::engine::Mesh* cqsp::engine::primitive::CreateFilledSquare() {
+    return cqsp::engine::primitive::CreateFilledCircle(4);
 }

@@ -71,7 +71,7 @@ void cqsp::engine::FramebufferRenderer::RenderBuffer() {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, colorbuffer);
 
-    mesh_output.Draw();
+    mesh_output->Draw();
 
     // Reset active texture
     glActiveTexture(GL_TEXTURE0);
@@ -165,7 +165,7 @@ void cqsp::engine::AAFrameBufferRenderer::RenderBuffer() {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, screenTexture);
 
-    mesh_output.Draw();
+    mesh_output->Draw();
 
     // Reset active texture
     glActiveTexture(GL_TEXTURE0);
@@ -208,6 +208,6 @@ void LayerRenderer::InitFramebuffer(IFramebuffer* buffer, cqsp::asset::ShaderPro
  const cqsp::engine::Window& window) {
     // Initialize pane
     buffer->InitTexture(window.GetWindowWidth(), window.GetWindowHeight());
-    primitive::MakeTexturedPaneMesh(buffer->GetMeshOutput(), true);
+    buffer->SetMesh(engine::primitive::MakeTexturedPaneMesh(true));
     buffer->SetShader(shader);
 }

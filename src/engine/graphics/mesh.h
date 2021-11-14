@@ -28,8 +28,8 @@ enum DrawType {
 class Mesh {
  public:
     Mesh();
-
     ~Mesh();
+
     unsigned int VAO;
     unsigned int VBO;
     unsigned int EBO;
@@ -41,6 +41,8 @@ class Mesh {
     DrawType buffer_type = DrawType::ELEMENTS;
 
     void Draw();
+
+    static void Destroy(Mesh& mesh);
 };
 }  // namespace engine
 }  // namespace cqsp

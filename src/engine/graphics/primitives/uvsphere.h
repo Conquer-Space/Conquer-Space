@@ -20,7 +20,7 @@
 #include "engine/graphics/mesh.h"
 
 namespace cqsp {
-namespace primitive {
-void ConstructSphereMesh(int x_segments, int y_segments, cqsp::engine::Mesh& mesh);
-}  // namespace primitive
+namespace engine::primitive {
+cqsp::engine::Mesh* ConstructSphereMesh(int x_segments, int y_segments);
+}  // namespace engine::primitive
 }  // namespace cqsp

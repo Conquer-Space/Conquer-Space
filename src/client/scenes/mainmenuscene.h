@@ -50,7 +50,7 @@ class MainMenuScene : public cqsp::engine::Scene{
     float width, height;
 
     cqsp::engine::Renderer2D* object_renderer;
-    cqsp::engine::Mesh rectangle;
+    cqsp::engine::Mesh* rectangle;
 
     cqsp::asset::Texture* splash_screen;
     cqsp::asset::Texture* title_banner_texture;

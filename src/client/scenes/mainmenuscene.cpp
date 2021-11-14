@@ -59,7 +59,7 @@ void cqsp::scene::MainMenuScene::Init() {
     // Make the renderer
     object_renderer = new cqsp::engine::Renderer2D(shader);
 
-    cqsp::primitive::MakeTexturedPaneMesh(rectangle);
+    rectangle = cqsp::engine::primitive::MakeTexturedPaneMesh();
 
     shader->UseProgram();
     shader->Set("texture1", 0);
@@ -178,7 +178,7 @@ void cqsp::scene::MainMenuScene::Render(float deltaTime) {
         int height = static_cast<float>(splash_screen->height) /
                      static_cast<float>(splash_screen->width) *
                      GetApp().GetWindowWidth();
-        object_renderer->DrawTexturedSprite(&rectangle, *splash_screen,
+        object_renderer->DrawTexturedSprite(rectangle, *splash_screen,
                                             glm::vec2(width / 2, height / 2),
                                             glm::vec2(width, height), 0);
     }
@@ -187,7 +187,7 @@ void cqsp::scene::MainMenuScene::Render(float deltaTime) {
         // Draw title banner
         int banner_height = title_banner_texture->height;
         int banner_width = title_banner_texture->width;
-        object_renderer->DrawTexturedSprite(&rectangle, *title_banner_texture,
+        object_renderer->DrawTexturedSprite(rectangle, *title_banner_texture,
                                             glm::vec2(banner_width / 2 + 50,
                                             GetApp().GetWindowHeight() - banner_height - 25),
                                             glm::vec2(banner_width, banner_height), 0);

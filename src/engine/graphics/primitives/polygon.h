@@ -19,9 +19,9 @@
 #include "engine/graphics/mesh.h"
 
 namespace cqsp {
-namespace primitive {
-void CreateFilledCircle(cqsp::engine::Mesh& renderable, int segments = 64);
-void CreateFilledTriangle(cqsp::engine::Mesh& renderable);
-void CreateFilledSquare(cqsp::engine::Mesh& renderable);
-}  // namespace primitive
+namespace engine::primitive {
+cqsp::engine::Mesh* CreateFilledCircle(int segments = 64);
+cqsp::engine::Mesh* CreateFilledTriangle();
+cqsp::engine::Mesh* CreateFilledSquare();
+}  // namespace engine::primitive
 }  // namespace cqsp

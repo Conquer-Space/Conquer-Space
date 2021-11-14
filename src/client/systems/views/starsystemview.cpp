@@ -67,32 +67,27 @@ struct TerrainTextureData {
 
 void SysStarSystemRenderer::Initialize() {
     // Initialize meshes, etc
-    cqsp::engine::Mesh* sphere_mesh = new cqsp::engine::Mesh();
-    cqsp::primitive::ConstructSphereMesh(64, 64, *sphere_mesh);
+    cqsp::engine::Mesh* sphere_mesh = cqsp::engine::primitive::ConstructSphereMesh(64, 64);
 
     // Initialize sky box
     asset::Texture* sky_texture = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>("core:skycubemap");
 
     asset::ShaderProgram_t skybox_shader = m_app.GetAssetManager().MakeShader("core:skycubevert", "core:skycubefrag");
 
-    sky.mesh = new cqsp::engine::Mesh();
-    primitive::MakeCube(*sky.mesh);
+    sky.mesh = engine::primitive::MakeCube();
     sky.shaderProgram = skybox_shader;
     sky.SetTexture("texture0", 0, sky_texture);
 
     asset::ShaderProgram_t circle_shader = m_app.GetAssetManager().
                                             MakeShader("core:shader.pane.vert", "core:coloredcirclefrag");
 
-    planet_circle.mesh = new cqsp::engine::Mesh();
-    primitive::CreateFilledCircle(*planet_circle.mesh);
+    planet_circle.mesh = engine::primitive::CreateFilledCircle();
     planet_circle.shaderProgram = circle_shader;
 
-    ship_overlay.mesh = new cqsp::engine::Mesh();
-    primitive::CreateFilledTriangle(*ship_overlay.mesh);
+    ship_overlay.mesh = engine::primitive::CreateFilledTriangle();
     ship_overlay.shaderProgram = circle_shader;
 
-    city.mesh = new cqsp::engine::Mesh();
-    primitive::CreateFilledSquare(*city.mesh);
+    city.mesh = engine::primitive::MakeTexturedPaneMesh();
     city.shaderProgram = circle_shader;
 
     // Initialize shaders

@@ -44,3 +44,9 @@ void cqsp::engine::Mesh::Draw() {
     }
     glBindVertexArray(0);
 }
+
+void cqsp::engine::Mesh::Destroy(Mesh& mesh) {
+    glDeleteVertexArrays(1, &mesh.VAO);
+    glDeleteBuffers(1, &mesh.VBO);
+    glDeleteBuffers(1, &mesh.EBO);
+}
