@@ -72,8 +72,7 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
         } else if (std::find(GetApp().GetCmdLineArgs().begin(), GetApp().GetCmdLineArgs().end(), "-tt")
                                                             != GetApp().GetCmdLineArgs().end()) {
             GetApp().SetScene<cqsp::scene::TextTestScene>();
-        }
-        else {
+        } else {
             GetApp().SetScene<cqsp::scene::MainMenuScene>();
         }
     }

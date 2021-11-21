@@ -16,6 +16,11 @@
 */
 #pragma once
 
+
+#include <map>
+#include <string>
+#include <vector>
+
 #include "engine/scene.h"
 
 #include "engine/renderer/framebuffer.h"
@@ -28,8 +33,7 @@ namespace scene {
 /// <param name="app"></param>
 class TextTestScene : public cqsp::engine::Scene {
  public:
-    explicit TextTestScene(cqsp::engine::Application& app)
-        : cqsp::engine::Scene(app) {}
+    explicit TextTestScene(cqsp::engine::Application& app) : cqsp::engine::Scene(app) {}
     ~TextTestScene();
 
     void Init();

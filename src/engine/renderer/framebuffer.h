@@ -148,7 +148,7 @@ class LayerRenderer {
     void NewFrame(const cqsp::engine::Window& window);
     int GetLayerCount();
 
-    IFramebuffer* GetFrameBuffer(int layer) { return framebuffers[layer].get(); };
+    IFramebuffer* GetFrameBuffer(int layer) { return framebuffers[layer].get(); }
 
  private:
     std::vector<std::unique_ptr<IFramebuffer>> framebuffers;

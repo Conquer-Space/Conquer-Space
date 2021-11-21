@@ -19,7 +19,7 @@
 #include "engine/graphics/renderable.h"
 #include "engine/graphics/mesh.h"
 namespace cqsp {
-namespace engine::primitive {   
+namespace engine::primitive {
 cqsp::engine::Mesh* MakeTexturedPaneMesh();
 // In case you need a mirrored pane, like for framebuffers
 cqsp::engine::Mesh* MakeTexturedPaneMesh(bool);

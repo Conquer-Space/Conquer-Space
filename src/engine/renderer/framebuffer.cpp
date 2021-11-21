@@ -63,7 +63,6 @@ void cqsp::engine::FramebufferRenderer::Clear() {
 
 void cqsp::engine::FramebufferRenderer::BeginDraw() {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-
 }
 
 void cqsp::engine::FramebufferRenderer::EndDraw() {

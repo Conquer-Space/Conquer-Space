@@ -47,9 +47,9 @@ void cqsp::scene::TextTestScene::Init() {
     TX(GL_ONE_MINUS_SRC1_ALPHA);
 }
 
-void cqsp::scene::TextTestScene::Update(float deltaTime){
+void cqsp::scene::TextTestScene::Update(float deltaTime) {
     //delta_t += deltaTime;
-    if (delta_t > 0.1f){
+    if (delta_t > 0.1f) {
         src++;
         if (src >= names.size()) {
             src = 0;
@@ -67,41 +67,27 @@ void cqsp::scene::TextTestScene::Ui(float deltaTime) {
     ImGui::Begin("Text config");
     ImGui::TextFmt("{}", delta_t);
     ImGui::DragFloat("Font size", &font_size, 0, 255);
-    if (ImGui::BeginCombo("combo 1", names[src])) // The second parameter is the label previewed before opening the combo.
-        {
-            for (int n = 0; n < names.size(); n++)
-            {
+    if (ImGui::BeginCombo("combo 1", names[src])) {
+            for (int n = 0; n < names.size(); n++) {
                 bool is_selected = (src == n);
                 if (ImGui::Selectable(names[n], is_selected)) {
                     src = n;
                 }
                 if (is_selected) {
-                    ImGui::SetItemDefaultFocus();  // Set the initial focus when
-                                                   // opening the combo
-                                                   // (scrolling + for keyboard
-                                                   // navigation support in the
-                                                   // upcoming navigation
-                                                   // branch)
+                    ImGui::SetItemDefaultFocus();
                 }
             }
             ImGui::EndCombo();
         }
 
-        if (ImGui::BeginCombo("combo 2", names[post])) // The second parameter is the label previewed before opening the combo.
-        {
-            for (int n = 0; n < names.size(); n++)
-            {
+        if (ImGui::BeginCombo("combo 2", names[post])) {
+            for (int n = 0; n < names.size(); n++) {
                 bool is_selected = (post == n);
                 if (ImGui::Selectable(names[n], is_selected)) {
                     post = n;
                 }
                 if (is_selected) {
-                    ImGui::SetItemDefaultFocus();  // Set the initial focus when
-                                                   // opening the combo
-                                                   // (scrolling + for keyboard
-                                                   // navigation support in the
-                                                   // upcoming navigation
-                                                   // branch)
+                    ImGui::SetItemDefaultFocus();
                 }
             }
             ImGui::EndCombo();
