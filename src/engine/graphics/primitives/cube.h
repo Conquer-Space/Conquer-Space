@@ -16,11 +16,10 @@
 */
 #pragma once
 
-#include "engine/renderer/renderable.h"
-#include "engine/renderer/mesh.h"
+#include "engine/graphics/mesh.h"
 
 namespace cqsp {
-namespace primitive {
-void ConstructSphereMesh(int x_segments, int y_segments, cqsp::engine::Mesh& mesh);
-}  // namespace primitive
+namespace engine::primitive {
+cqsp::engine::Mesh* MakeCube();
+} // namespace engine::primitive
 }  // namespace cqsp

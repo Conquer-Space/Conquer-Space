@@ -25,9 +25,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "engine/assetmanager.h"
+#include "engine/asset/assetmanager.h"
 #include "client/scenes/mainmenuscene.h"
 #include "client/scenes/universeloadingscene.h"
+#include "client/scenes/texttestscene.h"
 #include "engine/gui.h"
 #include "common/scripting/scripting.h"
 #include "common/util/paths.h"
@@ -68,6 +69,9 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
         if (std::find(GetApp().GetCmdLineArgs().begin(), GetApp().GetCmdLineArgs().end(), "-i")
                                                             != GetApp().GetCmdLineArgs().end()) {
             GetApp().SetScene<cqsp::scene::UniverseLoadingScene>();
+        } else if (std::find(GetApp().GetCmdLineArgs().begin(), GetApp().GetCmdLineArgs().end(), "-tt")
+                                                            != GetApp().GetCmdLineArgs().end()) {
+            GetApp().SetScene<cqsp::scene::TextTestScene>();
         } else {
             GetApp().SetScene<cqsp::scene::MainMenuScene>();
         }

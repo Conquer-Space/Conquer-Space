@@ -21,7 +21,7 @@
 
 #include <glm/glm.hpp>
 
-#include "engine/renderer/shader.h"
+#include "engine/graphics/shader.h"
 
 namespace cqsp {
 namespace asset {

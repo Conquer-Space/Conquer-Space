@@ -16,14 +16,12 @@
 */
 #pragma once
 
-#include "engine/renderer/renderable.h"
-#include "engine/renderer/mesh.h"
+#include "engine/graphics/renderable.h"
+#include "engine/graphics/mesh.h"
 namespace cqsp {
-namespace primitive {
-void MakeTexturedPaneMesh(cqsp::engine::Renderable&);
-// Normal pane
-void MakeTexturedPaneMesh(cqsp::engine::Mesh&);
+namespace engine::primitive {
+cqsp::engine::Mesh* MakeTexturedPaneMesh();
 // In case you need a mirrored pane, like for framebuffers
-void MakeTexturedPaneMesh(cqsp::engine::Mesh&, bool);
-}
-}
+cqsp::engine::Mesh* MakeTexturedPaneMesh(bool);
+}  // namespace engine::primitive
+}  // namespace cqsp

@@ -14,7 +14,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "client/systems/galaxyrenderer.h"
+#include "client/systems/views/galaxyview.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -27,8 +27,8 @@
 #include "common/components/coordinates.h"
 #include "common/components/player.h"
 #include "common/components/organizations.h"
-#include "engine/renderer/primitives/polygon.h"
-#include "engine/renderer/primitives/uvsphere.h"
+#include "engine/graphics/primitives/polygon.h"
+#include "engine/graphics/primitives/uvsphere.h"
 #include "engine/renderer/renderer.h"
 
 using cqsp::client::systems::GalaxyRenderer;
@@ -40,10 +40,8 @@ void GalaxyRenderer::Initialize() {
     circle_shader = m_app.GetAssetManager().MakeShader("core:shader.pane.vert", "core:coloredcirclefrag");
     renderer = new cqsp::engine::Renderer2D(circle_shader, true);
 
-    star_system.mesh = new cqsp::engine::Mesh();
-    mesh = new cqsp::engine::Mesh();
-    primitive::CreateFilledCircle(*mesh);
-    primitive::CreateFilledCircle(*star_system.mesh);
+    mesh = engine::primitive::CreateFilledCircle();
+    star_system.mesh = engine::primitive::CreateFilledCircle();
     star_system.shaderProgram = circle_shader;
     previous_mouseX = m_app.GetMouseX();
     previous_mouseY = m_app.GetMouseY();

@@ -19,7 +19,7 @@
 #include "engine/renderer/renderer2d.h"
 #include "common/universe.h"
 #include "engine/application.h"
-#include "engine/renderer/renderable.h"
+#include "engine/graphics/renderable.h"
 
 namespace cqsp::client::systems {
 class GalaxyRenderer {

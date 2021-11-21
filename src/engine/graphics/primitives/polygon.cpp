@@ -14,7 +14,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "engine/renderer/primitives/polygon.h"
+#include "engine/graphics/primitives/polygon.h"
 
 #include <glad/glad.h>
 
@@ -25,9 +25,10 @@
 #include "common/components/units.h"
 #include "common/components/coordinates.h"
 
-void cqsp::primitive::CreateFilledCircle(
-    cqsp::engine::Mesh& mesh, int segments) {
-    std::vector<float> positions;
+cqsp::engine::Mesh* cqsp::engine::primitive::CreateFilledCircle(int segments) {
+    cqsp::engine::Mesh* mesh = new cqsp::engine::Mesh();
+
+        std::vector<float> positions;
     positions.push_back(0);
     positions.push_back(0);
     positions.push_back(0);
@@ -48,13 +49,13 @@ void cqsp::primitive::CreateFilledCircle(
         positions.push_back(0.5*-y + 0.5);
     }
 
-    GLuint VAO = 0;
-    glGenVertexArrays(1, &VAO);
+    GLuint vao = 0;
+    glGenVertexArrays(1, &vao);
 
     unsigned int vbo;
     glGenBuffers(1, &vbo);
 
-    glBindVertexArray(VAO);
+    glBindVertexArray(vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(float), &positions[0], GL_STATIC_DRAW);
@@ -63,20 +64,21 @@ void cqsp::primitive::CreateFilledCircle(
                             GL_FALSE, stride * sizeof(float), reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 2, GL_FLOAT,
-                            GL_FALSE, stride * sizeof(float),
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float),
                             reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    mesh.VAO = VAO;
-    mesh.VBO = vbo;
-    mesh.RenderType = GL_TRIANGLE_FAN;
-    mesh.indicies = segments + 2;
-    mesh.buffer_type = 0;
+    mesh->VAO = vao;
+    mesh->VBO = vbo;
+    mesh->mode = GL_TRIANGLE_FAN;
+    mesh->indicies = segments + 2;
+    mesh->buffer_type = cqsp::engine::DrawType::ARRAYS;
+    return mesh;
 }
 
-void cqsp::primitive::CreateFilledTriangle(cqsp::engine::Mesh& renderable) {
-    cqsp::primitive::CreateFilledCircle(renderable, 3);
+cqsp::engine::Mesh* cqsp::engine::primitive::CreateFilledTriangle() {
+    return cqsp::engine::primitive::CreateFilledCircle(3);
 }
-void cqsp::primitive::CreateFilledSquare(cqsp::engine::Mesh& renderable) {
-    cqsp::primitive::CreateFilledCircle(renderable, 4);
+
+cqsp::engine::Mesh* cqsp::engine::primitive::CreateFilledSquare() {
+    return cqsp::engine::primitive::CreateFilledCircle(4);
 }

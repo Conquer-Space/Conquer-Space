@@ -21,7 +21,7 @@
 #include <string>
 #include <map>
 
-#include "engine/asset.h"
+#include "engine/asset/asset.h"
 namespace cqsp::asset {
 class TextAsset : public Asset {
  public:

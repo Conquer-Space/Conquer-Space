@@ -41,7 +41,7 @@
 #include "common/systems/economy/markethelpers.h"
 #include "common/systems/actions/shiplaunchaction.h"
 #include "common/util/utilnumberdisplay.h"
-#include "engine/asset.h"
+#include "engine/asset/asset.h"
 
 // So that we can document in the future
 #define REGISTER_FUNCTION(name, lambda) \

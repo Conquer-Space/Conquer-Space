@@ -14,7 +14,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "engine/renderer/text.h"
+#include "engine/graphics/text.h"
 
 #include <spdlog/spdlog.h>
 
@@ -46,7 +46,8 @@ void cqsp::asset::LoadFont(Font &font, unsigned char *fontBuffer,
         return;
     }
 
-    font.initial_size = 48;
+    // Larger font initial size, so that larget text looks better.
+    font.initial_size = 72;
     // set size to load glyphs as
     FT_Set_Pixel_Sizes(face, 0, font.initial_size);
 

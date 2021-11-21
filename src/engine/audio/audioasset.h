@@ -16,7 +16,7 @@
 */
 #pragma once
 
-#include "engine/asset.h"
+#include "engine/asset/asset.h"
 
 namespace cqsp {
 namespace asset {

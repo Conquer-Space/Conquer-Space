@@ -14,17 +14,14 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "engine/renderer/primitives/pane.h"
+#include "engine/graphics/primitives/pane.h"
 
 #include <glad/glad.h>
 
 namespace cqspe = cqsp::engine;
-void cqsp::primitive::MakeTexturedPaneMesh(cqspe::Renderable& renderable) {
-    renderable.mesh = new cqspe::Mesh();
-    MakeTexturedPaneMesh(*renderable.mesh);
-}
 
-void cqsp::primitive::MakeTexturedPaneMesh(cqsp::engine::Mesh& mesh) {
+cqsp::engine::Mesh* cqsp::engine::primitive::MakeTexturedPaneMesh() {
+    cqsp::engine::Mesh* mesh = new cqsp::engine::Mesh();
     float vertices[] = {
         // positions // texture coords
         1.0f, -1.0f, 0.0f, 1.0f, 1.0f,  // top right
@@ -59,15 +56,18 @@ void cqsp::primitive::MakeTexturedPaneMesh(cqsp::engine::Mesh& mesh) {
         5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    mesh.VAO = VAO;
-    mesh.VBO = VBO;
-    mesh.EBO = EBO;
-    mesh.indicies = 6;
-    mesh.RenderType = GL_TRIANGLES;
+    mesh->VAO = VAO;
+    mesh->VBO = VBO;
+    mesh->EBO = EBO;
+    mesh->indicies = 6;
+    mesh->mode = GL_TRIANGLES;
+    return mesh;
 }
 
-void cqsp::primitive::MakeTexturedPaneMesh(cqspe::Mesh& mesh, bool mirrored) {
-        float vertices[] = {
+cqsp::engine::Mesh* cqsp::engine::primitive::MakeTexturedPaneMesh(bool mirrored) {
+    cqsp::engine::Mesh* mesh = new cqsp::engine::Mesh();
+
+    float vertices[] = {
         // positions // texture coords
         1.0f, -1.0f, 0.0f, 1.0f, 0.0f,  // top right
         1.0f, 1.0f, 0.0f, 1.0f, 1.0f,  // bottom right
@@ -101,9 +101,10 @@ void cqsp::primitive::MakeTexturedPaneMesh(cqspe::Mesh& mesh, bool mirrored) {
         5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    mesh.VAO = VAO;
-    mesh.VBO = VBO;
-    mesh.EBO = EBO;
-    mesh.indicies = 6;
-    mesh.RenderType = GL_TRIANGLES;
+    mesh->VAO = VAO;
+    mesh->VBO = VBO;
+    mesh->EBO = EBO;
+    mesh->indicies = 6;
+    mesh->mode = GL_TRIANGLES;
+    return mesh;
 }

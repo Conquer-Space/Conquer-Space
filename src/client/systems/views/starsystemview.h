@@ -27,8 +27,8 @@
 
 #include "client/systems/sysplanetterraingenerator.h"
 #include "common/universe.h"
-#include "engine/renderer/renderable.h"
-#include "engine/renderer/texturerenderer.h"
+#include "engine/graphics/renderable.h"
+#include "engine/renderer/framebuffer.h"
 #include "engine/renderer/renderer.h"
 #include "engine/application.h"
 

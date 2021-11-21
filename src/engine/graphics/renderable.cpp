@@ -14,28 +14,21 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#pragma once
+#include "engine/graphics/renderable.h"
 
-#include <vector>
+void cqsp::engine::Renderable::SetTexture(const std::string& name,
+                                                  int id,
+                                                  asset::Texture* texture) {
+    shaderProgram->UseProgram();
+    shaderProgram->setInt(name, id);
 
-namespace cqsp {
-namespace engine {
+    textures.push_back(texture);
+}
 
-class Mesh {
- public:
-    Mesh();
-
-    ~Mesh();
-    unsigned int VAO;
-    unsigned int VBO;
-    unsigned int EBO;
-
-    unsigned int indicies;
-
-    unsigned int RenderType;
-
-    // 1 is elements, 0 is arrays
-    unsigned int buffer_type = 1;
-};
-}  // namespace engine
-}  // namespace cqsp
+void cqsp::engine::Renderable::SetMVP(glm::mat4& model, glm::mat4& view,
+                                              glm::mat4& projection) {
+    shaderProgram->UseProgram();
+    shaderProgram->setMat4("model", model);
+    shaderProgram->setMat4("view", view);
+    shaderProgram->setMat4("projection", projection);
+}

@@ -28,10 +28,10 @@
 
 #include "engine/engine.h"
 #include "engine/scene.h"
-#include "engine/assetmanager.h"
+#include "engine/asset/assetmanager.h"
 #include "common/universe.h"
 #include "engine/gui.h"
-#include "engine/renderer/text.h"
+#include "engine/graphics/text.h"
 #include "common/scripting/scripting.h"
 #include "engine/audio/iaudiointerface.h"
 #include "engine/window.h"
@@ -158,6 +158,7 @@ class Application {
 
     cqsp::asset::Font*& GetFont() { return m_font; }
     void DrawText(const std::string& text, float x, float y);
+    void DrawText(const std::string& text, float x, float y, float size);
     // Draw text based on normalized device coordinates
     void DrawTextNormalized(const std::string& text, float x, float y);
 

@@ -14,11 +14,12 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "engine/renderer/primitives/cube.h"
+#include "engine/graphics/primitives/cube.h"
 
 #include <glad/glad.h>
 
-void cqsp::primitive::MakeCube(cqsp::engine::Mesh& mesh) {
+cqsp::engine::Mesh* cqsp::engine::primitive::MakeCube() {
+    cqsp::engine::Mesh* mesh = new cqsp::engine::Mesh();
     float verticies[] = {
         // positions
         -1.0f,  1.0f, -1.0f,
@@ -64,14 +65,15 @@ void cqsp::primitive::MakeCube(cqsp::engine::Mesh& mesh) {
         1.0f, -1.0f,  1.0f
     };
 
-    glGenVertexArrays(1, &mesh.VAO);
-    glGenBuffers(1, &mesh.VBO);
-    glBindVertexArray(mesh.VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
+    glGenVertexArrays(1, &mesh->VAO);
+    glGenBuffers(1, &mesh->VBO);
+    glBindVertexArray(mesh->VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(verticies), &verticies, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), reinterpret_cast<void*>(0));
-    mesh.indicies = 36;
-    mesh.RenderType = GL_TRIANGLES;
-    mesh.buffer_type = 0;
+    mesh->indicies = 36;
+    mesh->mode = GL_TRIANGLES;
+    mesh->buffer_type = cqsp::engine::DrawType::ARRAYS;
+    return mesh;
 }

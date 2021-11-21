@@ -20,14 +20,14 @@
 #include <memory>
 #include <utility>
 
-#include "client/systems/sysstarsystemrenderer.h"
-#include "client/systems/galaxyrenderer.h"
+#include "client/systems/views/starsystemview.h"
+#include "client/systems/views/galaxyview.h"
 #include "client/systems/sysgui.h"
 #include "common/components/bodies.h"
 #include "common/components/organizations.h"
 #include "engine/scene.h"
 #include "engine/application.h"
-#include "engine/renderer/renderable.h"
+#include "engine/graphics/renderable.h"
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/renderer2d.h"
 #include "common/simulation.h"

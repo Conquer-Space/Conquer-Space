@@ -14,7 +14,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "client/systems/sysstarsystemrenderer.h"
+#include "client/systems/views/starsystemview.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -30,11 +30,11 @@
 
 #include "client/components/planetrendering.h"
 
-#include "engine/renderer/primitives/uvsphere.h"
+#include "engine/graphics/primitives/uvsphere.h"
 #include "engine/renderer/renderer.h"
-#include "engine/renderer/primitives/cube.h"
-#include "engine/renderer/primitives/polygon.h"
-#include "engine/renderer/primitives/pane.h"
+#include "engine/graphics/primitives/cube.h"
+#include "engine/graphics/primitives/polygon.h"
+#include "engine/graphics/primitives/pane.h"
 
 #include "common/components/bodies.h"
 #include "common/components/surface.h"
@@ -67,32 +67,27 @@ struct TerrainTextureData {
 
 void SysStarSystemRenderer::Initialize() {
     // Initialize meshes, etc
-    cqsp::engine::Mesh* sphere_mesh = new cqsp::engine::Mesh();
-    cqsp::primitive::ConstructSphereMesh(64, 64, *sphere_mesh);
+    cqsp::engine::Mesh* sphere_mesh = cqsp::engine::primitive::ConstructSphereMesh(64, 64);
 
     // Initialize sky box
     asset::Texture* sky_texture = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>("core:skycubemap");
 
     asset::ShaderProgram_t skybox_shader = m_app.GetAssetManager().MakeShader("core:skycubevert", "core:skycubefrag");
 
-    sky.mesh = new cqsp::engine::Mesh();
-    primitive::MakeCube(*sky.mesh);
+    sky.mesh = engine::primitive::MakeCube();
     sky.shaderProgram = skybox_shader;
     sky.SetTexture("texture0", 0, sky_texture);
 
     asset::ShaderProgram_t circle_shader = m_app.GetAssetManager().
                                             MakeShader("core:shader.pane.vert", "core:coloredcirclefrag");
 
-    planet_circle.mesh = new cqsp::engine::Mesh();
-    primitive::CreateFilledCircle(*planet_circle.mesh);
+    planet_circle.mesh = engine::primitive::CreateFilledCircle();
     planet_circle.shaderProgram = circle_shader;
 
-    ship_overlay.mesh = new cqsp::engine::Mesh();
-    primitive::CreateFilledTriangle(*ship_overlay.mesh);
+    ship_overlay.mesh = engine::primitive::CreateFilledTriangle();
     ship_overlay.shaderProgram = circle_shader;
 
-    city.mesh = new cqsp::engine::Mesh();
-    primitive::CreateFilledSquare(*city.mesh);
+    city.mesh = engine::primitive::MakeTexturedPaneMesh();
     city.shaderProgram = circle_shader;
 
     // Initialize shaders
@@ -114,10 +109,10 @@ void SysStarSystemRenderer::Initialize() {
     sun.shaderProgram = m_app.GetAssetManager().MakeShader("core:objectvert", "core:sunshader");
 
     auto buffer_shader = m_app.GetAssetManager().MakeShader("core:framebuffervert", "core:framebufferfrag");
-    ship_icon_layer = renderer.AddLayer<engine::AAFrameBufferRenderer>(buffer_shader, *m_app.GetWindow());
-    physical_layer = renderer.AddLayer<engine::AAFrameBufferRenderer>(buffer_shader, *m_app.GetWindow());
-    planet_icon_layer = renderer.AddLayer<engine::AAFrameBufferRenderer>(buffer_shader, *m_app.GetWindow());
-    skybox_layer = renderer.AddLayer<engine::AAFrameBufferRenderer>(buffer_shader, *m_app.GetWindow());
+    ship_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
+    physical_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
+    planet_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
+    skybox_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
 }
 
 void SysStarSystemRenderer::OnTick() {
@@ -144,6 +139,7 @@ void SysStarSystemRenderer::Render(float deltaTime) {
 
     glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
     entt::entity current_planet = m_app.GetUniverse().view<RenderingPlanet>().front();
     if (current_planet != m_viewing_entity && current_planet != entt::null) {
         SPDLOG_INFO("Switched displaying planet, seeing {}", current_planet);
@@ -315,6 +311,8 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
     namespace cqsps = cqsp::common::components::ships;
     // Draw other bodies
     auto bodies = m_app.GetUniverse().view<ToRender, cqspb::Body>(entt::exclude<cqspb::LightEmitter>);
+
+    renderer.BeginDraw(planet_icon_layer);
     for (auto body_entity : bodies) {
         // Draw the planet circle
         glm::vec3 object_pos = CalculateCenteredObject(body_entity);
@@ -328,14 +326,23 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
             // Set planet circle color
             planet_circle.shaderProgram->UseProgram();
             planet_circle.shaderProgram->setVec4("color", 0, 0, 1, 1);
-            renderer.BeginDraw(planet_icon_layer);
             DrawEntityName(object_pos, body_entity);
             DrawPlanetIcon(object_pos);
-            renderer.EndDraw(planet_icon_layer);
             continue;
-        } else {
+        }
+    }
+    renderer.EndDraw(planet_icon_layer);
+
+    renderer.BeginDraw(physical_layer);
+    for (auto body_entity : bodies) {
+        glm::vec3 object_pos = CalculateCenteredObject(body_entity);
+
+        // Draw Ships
+        namespace cqspc = cqsp::common::components;
+        namespace cqspt = cqsp::common::components::types;
+
+        if (glm::distance(object_pos, cam_pos) <= 200) {
             // Check if planet has terrain or not
-            renderer.BeginDraw(physical_layer);
             if (m_app.GetUniverse().all_of<cqspb::Terrain>(body_entity)) {
                 // Do empty terrain
                 // Check if the planet has the thing
@@ -343,7 +350,15 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
             } else {
                 DrawTerrainlessPlanet(object_pos);
             }
-            renderer.EndDraw(physical_layer);
+            RenderCities(object_pos, body_entity);
+        }
+    }
+    renderer.EndDraw(physical_layer);
+
+
+    for (auto body_entity : bodies) {
+        glm::vec3 object_pos = CalculateCenteredObject(body_entity);
+        if (glm::distance(object_pos, cam_pos) <= 200) {
             RenderCities(object_pos, body_entity);
         }
     }
@@ -391,7 +406,7 @@ void SysStarSystemRenderer::DrawEntityName(glm::vec3 &object_pos,
     if (!(pos.z >= 1 || pos.z <= -1) &&
         (pos.x > 0 && pos.x < m_app.GetWindowWidth() &&
             pos.y > 0 && pos.y < m_app.GetWindowHeight())) {
-        m_app.DrawText(text, pos.x, pos.y);
+        m_app.DrawText(text, pos.x, pos.y, 20);
     }
 }
 

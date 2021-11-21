@@ -16,19 +16,25 @@
 */
 #pragma once
 
+
+#include <map>
+#include <string>
+#include <vector>
+
 #include "engine/scene.h"
-#include "engine/graphics/renderable.h"
-#include "engine/renderer/renderer.h"
-#include "engine/renderer/renderer2d.h"
-#include "engine/graphics/primitives/pane.h"
-#include "engine/graphics/text.h"
+
+#include "engine/renderer/framebuffer.h"
 
 namespace cqsp {
 namespace scene {
-class MainMenuScene : public cqsp::engine::Scene{
+/// <summary>
+/// Just a playground for various graphics stuff
+/// </summary>
+/// <param name="app"></param>
+class TextTestScene : public cqsp::engine::Scene {
  public:
-    explicit MainMenuScene(cqsp::engine::Application& app);
-    ~MainMenuScene();
+    explicit TextTestScene(cqsp::engine::Application& app) : cqsp::engine::Scene(app) {}
+    ~TextTestScene();
 
     void Init();
     void Update(float deltaTime);
@@ -36,25 +42,15 @@ class MainMenuScene : public cqsp::engine::Scene{
     void Render(float deltaTime);
 
  private:
-    void ModWindow();
-
-    cqsp::asset::TextAsset* m_credits;
-
-    bool m_credits_window = false;
-    bool m_save_game_window = false;
-    bool m_new_game_window = false;
-    bool m_options_window = false;
-    bool m_show_mods_window = false;
-
-    float ratio, ratio2;
-    float width, height;
-
-    cqsp::engine::Renderer2D* object_renderer;
-    cqsp::engine::Mesh* rectangle;
-
-    cqsp::asset::Texture* splash_screen;
-    cqsp::asset::Texture* title_banner_texture;
-    cqsp::asset::ShaderProgram_t shader;
+    cqsp::engine::LayerRenderer renderer;
+    float font_size = 40.f;
+    std::string text = "The quick brown fox jumps over the lazy dog";
+    int layer;
+    int src = 0;
+    int post = 0;
+    std::map<std::string, int> indices;
+    std::vector<const char*> names;
+    float delta_t = 0;
 };
 }  // namespace scene
 }  // namespace cqsp
