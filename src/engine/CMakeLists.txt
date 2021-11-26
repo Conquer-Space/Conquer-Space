@@ -59,5 +59,7 @@ target_link_libraries(cqsp-engine PUBLIC
     glad
     glfw
     sol2
+    RmlCore
+    RmlDebugger
     ${OPENAL_LIBRARY}
 )

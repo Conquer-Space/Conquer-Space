@@ -64,14 +64,6 @@ endif()
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/modules/" ${CMAKE_MODULE_PATH})
 include_directories(src)
 
-if (MSVC)
-  set(GLFW_ROOT_DIR lib/win64/glfw)
-  # Set type
-  if (TESTS)
-    set (GLFW_USE_STATIC true CACHE BOOL "" FORCE)
-  endif()
-endif()
-find_package(GLFW3 REQUIRED)
 find_package(OpenGL REQUIRED)
 
 find_package(Git)

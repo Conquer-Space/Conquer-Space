@@ -18,6 +18,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include <RmlUi/Core.h>
+
 #include <memory>
 #include <utility>
 #include <string>
@@ -130,6 +132,7 @@ class Application {
     }
 
     ImGui::MarkdownConfig markdownConfig;
+    Rml::Context* context;
 
     cqsp::common::Universe& GetUniverse() { return *m_universe; }
     cqsp::scripting::ScriptInterface& GetScriptInterface() {

@@ -16,10 +16,12 @@
 */
 #pragma once
 
-#include "engine/application.h"
+#include "common/universe.h"
+#include "common/scripting/scripting.h"
 
 namespace cqsp {
 namespace scripting {
-void LoadFunctions(cqsp::engine::Application& app);
+void LoadFunctions(cqsp::common::Universe& universe,
+                             cqsp::scripting::ScriptInterface& script_engine);
 }
 }

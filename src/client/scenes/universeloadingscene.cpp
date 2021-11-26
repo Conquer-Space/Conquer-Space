@@ -90,7 +90,7 @@ void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
 
     // Load scripts
     // Load lua functions
-    cqsp::scripting::LoadFunctions(GetApp());
+    cqsp::scripting::LoadFunctions(GetApp().GetUniverse(), GetApp().GetScriptInterface());
 
     // Load universe
     // Register data groups

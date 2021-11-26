@@ -74,6 +74,10 @@ endif()
 
 add_subdirectory(libnoise)
 
+# Because this complains about freetype for some reason
+set(NO_FONT_INTERFACE_DEFAULT ON CACHE BOOL "" FORCE)
+add_subdirectory(RmlUi)
+
 # Glad
 set(GLAD_API "gl=4.3" CACHE STRING "" FORCE)
 set(GLAD_EXPORT ON CACHE BOOL "" FORCE)
