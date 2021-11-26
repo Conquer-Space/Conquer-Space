@@ -49,3 +49,6 @@
 [submodule "lib/glfw"]
 	path = lib/glfw
 	url = https://github.com/glfw/glfw
+[submodule "lib/RmlUi"]
+	path = lib/RmlUi
+	url = https://github.com/mikke89/RmlUi
