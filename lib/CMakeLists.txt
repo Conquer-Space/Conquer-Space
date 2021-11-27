@@ -74,11 +74,6 @@ endif()
 
 add_subdirectory(libnoise)
 
-# Because this complains about freetype for some reason
-set(FREETYPE_INCLUDE_DIRS "freetype/include" CACHE STRING "" FORCE)
-set(FREETYPE_LIBRARY "freetype" CACHE STRING "" FORCE)
-set(FREETYPE_LIBRARIES "freetype" CACHE STRING "" FORCE)
-set(NO_FONT_INTERFACE_DEFAULT ON CACHE BOOL "" FORCE)
 add_subdirectory(RmlUi)
 
 # Glad
