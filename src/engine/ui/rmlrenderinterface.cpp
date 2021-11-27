@@ -4,12 +4,14 @@
 #include <gl/GL.h>
 
 #include "engine/graphics/mesh.h"
+#include "engine/graphics/renderable.h"
 
 cqsp::engine::CQSPRenderInterface::CQSPRenderInterface(Application& app) {}
 
 void cqsp::engine::CQSPRenderInterface::RenderGeometry(
     Rml::Vertex* vertices, int num_vertices, int* indices, int num_indices,
-    Rml::TextureHandle texture, const Rml::Vector2f& translation) {}
+    Rml::TextureHandle texture, const Rml::Vector2f& translation) {
+}
 
 Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(
     Rml::Vertex* vertices, int num_vertices, int* indices, int num_indices,
@@ -31,27 +33,32 @@ Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(
 
     // Set attributes
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
-                          reinterpret_cast<void*>(0));
+    int stride = sizeof(Rml::Vector2f) + sizeof(Rml::Colourb) + sizeof(Rml::Vector2f);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
 
-    // texture coord attribute
-    glVertexAttribPointer(1, 2, GL_BYTE, GL_FALSE, 5 * sizeof(float),
-                          reinterpret_cast<void*>(3 * sizeof(float)));
+    glVertexAttribPointer(1, 4, GL_BYTE, GL_FALSE, stride,
+                          reinterpret_cast<void*>(sizeof(Rml::Vector2f)));
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
-                          reinterpret_cast<void*>(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride,
+        reinterpret_cast<void*>(sizeof(Rml::Vector2f) + sizeof(Rml::Colourb)));
     glEnableVertexAttribArray(2);
 
+    // Make some sort of renderable, I guess
+    cqsp::engine::Renderable renderable;
+    renderable.mesh = m;
+    //renderable.textures.push_back(texture);
     return reinterpret_cast<Rml::CompiledGeometryHandle>(m);
 }
 
 void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(Rml::CompiledGeometryHandle geometry, const Rml::Vector2f& translation) {
     // A mesh
     // Set transformation too
+    //reinterpret_cast<cqsp::engine::Renderable>(geometry);
 }
 
-void cqsp::engine::CQSPRenderInterface::ReleaseCompiledGeometry(Rml::CompiledGeometryHandle geometry) {}
+void cqsp::engine::CQSPRenderInterface::ReleaseCompiledGeometry(Rml::CompiledGeometryHandle geometry) {
+}
 
 void cqsp::engine::CQSPRenderInterface::EnableScissorRegion(bool enable) {
     if (enable) {
@@ -81,8 +88,8 @@ bool cqsp::engine::CQSPRenderInterface::GenerateTexture(
     return false;
 }
 
-void cqsp::engine::CQSPRenderInterface::ReleaseTexture(
-    Rml::TextureHandle texture) {}
+void cqsp::engine::CQSPRenderInterface::ReleaseTexture(Rml::TextureHandle texture) {
+}
 
 void cqsp::engine::CQSPRenderInterface::SetTransform(
     const Rml::Matrix4f* transform) {}

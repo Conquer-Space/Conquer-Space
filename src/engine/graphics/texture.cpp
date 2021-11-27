@@ -17,7 +17,9 @@
 #include "engine/graphics/texture.h"
 
 #define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image.h>
+#include <stb_image_write.h>
 
 #include <glad/glad.h>
 
@@ -98,6 +100,13 @@ void cqsp::asset::LoadCubemap(Texture &texture, std::vector<unsigned char*>& fac
     texture.width = width;
     texture.height = height;
     texture.texture_type = GL_TEXTURE_CUBE_MAP;
+}
+
+void cqsp::asset::SaveImage(const char* path, int width, int height, int components, const unsigned char* data) {
+    // Flip because everybody can't agree on having one origin for the window.
+    stbi_flip_vertically_on_write(1);
+    stbi_write_png(path, width, height, components, data,
+                   width * components);
 }
 
 cqsp::asset::Texture::Texture() : width(-1), height(-1), id(0), texture_type(-1) {}

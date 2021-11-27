@@ -20,7 +20,6 @@
 
 #include <string>
 
-
 #include "client/scenes/universescene.h"
 #include "common/systems/sysuniversegenerator.h"
 #include "common/scripting/luafunctions.h"

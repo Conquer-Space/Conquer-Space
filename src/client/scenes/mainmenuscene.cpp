@@ -69,8 +69,14 @@ void cqsp::scene::MainMenuScene::Init() {
 void cqsp::scene::MainMenuScene::Update(float deltaTime) {
     if (GetApp().ButtonIsReleased(GLFW_KEY_SEMICOLON)) {
         m_asset_viewer_window = !m_asset_viewer_window;
-        SPDLOG_INFO("Assdf");
     }
+    if ((GetApp().ButtonIsReleased(GLFW_KEY_F1) &&
+            GetApp().ButtonIsHeld(GLFW_KEY_F10)) ||
+        (GetApp().ButtonIsHeld(GLFW_KEY_F1) &&
+            GetApp().ButtonIsReleased(GLFW_KEY_F10))) {
+        GetApp().Screenshot("test.png");
+    }
+
 }
 
 void cqsp::scene::MainMenuScene::Ui(float deltaTime) {

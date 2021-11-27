@@ -186,8 +186,9 @@ class Application {
 
     std::vector<std::string>& GetCmdLineArgs() { return cmd_line_args; }
 
+    bool Screenshot(const char* path);
  private:
-    void InitFonts();
+    void InitImguiFonts();
 
     void SetIcon();
 
@@ -233,8 +234,6 @@ class Application {
 
     cqsp::asset::Font* m_font = nullptr;
     cqsp::asset::ShaderProgram* fontShader = nullptr;
-
-    std::map<std::string, std::string> properties;
 
     std::unique_ptr<cqsp::scripting::ScriptInterface> m_script_interface;
     std::unique_ptr<Rml::SystemInterface> m_system_interface;

@@ -557,7 +557,33 @@ void cqsp::engine::Application::DrawTextNormalized(const std::string& text, floa
 
 double cqsp::engine::Application::GetTime() { return glfwGetTime(); }
 
-void cqsp::engine::Application::InitFonts() {
+bool cqsp::engine::Application::Screenshot(const char* path) {
+    const int components = 3;
+    const int byte_size = GetWindowWidth() * GetWindowHeight() * components;
+    unsigned char* data = new unsigned char[byte_size];
+
+    // Read data
+    glReadPixels(0, 0, GetWindowWidth(), GetWindowHeight(), GL_RGB, GL_UNSIGNED_BYTE, data);
+
+    // Make screenshot folder
+    std::filesystem::path screenshot_folder = std::filesystem::path(cqsp::common::util::GetCqspSavePath()) / "screenshots";
+    std::filesystem::create_directories(screenshot_folder);
+
+    auto time_now = std::chrono::system_clock::now();
+    std::time_t time_pt = std::chrono::system_clock::to_time_t(time_now);
+
+    // Why is put_time so annoyingly confusing??
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&time_pt) ,"%F_%H.%M.%S.png");
+    std::string screenshot_name = ss.str();
+    screenshot_name = (screenshot_folder / screenshot_name).string();
+
+    cqsp::asset::SaveImage(screenshot_name.c_str(), GetWindowWidth(), GetWindowHeight(), components, data);
+    delete[] data;
+    return true;
+}
+
+void cqsp::engine::Application::InitImguiFonts() {
     Hjson::Value fontDatabase;
     Hjson::DecoderOptions decOpt;
     decOpt.comments = false;
@@ -570,7 +596,7 @@ void cqsp::engine::Application::InitFonts() {
     ImFont* defaultFont = io.Fonts->AddFontFromFileTTF(
         (fontPath + fontDatabase["default"]["path"]).c_str(),
         fontDatabase["default"]["size"]);
-    io.FontDefault = defaultFont;
+    //io.FontDefault = defaultFont;
 
     ImFont* h1font = io.Fonts->AddFontFromFileTTF(
         (fontPath + fontDatabase["h1"]["path"]).c_str(),
@@ -615,7 +641,6 @@ void cqsp::engine::Application::GlInit() {
 
 void cqsp::engine::Application::LoggerInit() {
     // Get path
-    properties["data"] = common::util::GetCqspSavePath();
     logger = cqsp::common::util::make_logger("application", true);
     spdlog::set_default_logger(logger);
 }
@@ -650,7 +675,7 @@ void cqsp::engine::Application::InitImgui() {
     ImGui::StyleColorsDark();
     ImGui::GetIO().IniFilename = NULL;
     CQSPGui::SetApplication(this);
-    InitFonts();
+    InitImguiFonts();
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window(m_window), true);
@@ -668,14 +693,22 @@ void cqsp::engine::Application::InitRmlUi() {
     // Now we can initialize RmlUi.
     Rml::Initialise();
 
-    rml_context = Rml::CreateContext(
-        "main", Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
+    rml_context = Rml::CreateContext("main", Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
     if (!rml_context) {
         SPDLOG_CRITICAL("Unable to load rml context!");
         // Exit
     }
+
     // Load fonts
-    //Rml::LoadFontFace()
+    // Basic font face
+    Hjson::Value fontDatabase;
+    Hjson::DecoderOptions decOpt;
+    decOpt.comments = false;
+    std::fstream stream(cqsp::common::util::GetCqspDataPath() + "/core/gfx/fonts/fonts.hjson");
+    stream >> Hjson::StreamDecoder(fontDatabase, decOpt);
+    std::string fontPath = cqsp::common::util::GetCqspDataPath() + "/core/gfx/fonts/";
+
+    Rml::LoadFontFace((fontPath + fontDatabase["default"]["path"]).c_str());
 }
 
 void cqsp::engine::Application::SetWindowDimensions(int width, int height) {
