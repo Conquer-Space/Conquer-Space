@@ -75,17 +75,17 @@ class FontPrototype : public AssetPrototype {
 }  // namespace cqsp::asset
 
 bool cqsp::asset::Package::HasAsset(const char* asset) {
-    return assets.count(asset) != 0;
+    return count(asset) != 0;
 }
 bool cqsp::asset::Package::HasAsset(const std::string& asset) {
-    return assets.count(asset) != 0;
+    return count(asset) != 0;
 }
 
 void cqsp::asset::Package::ClearAssets() {
-    for (auto a = assets.begin(); a != assets.end(); a++) {
+    for (auto a = begin(); a != end(); a++) {
         a->second.reset();
     }
-    assets.clear();
+    clear();
 }
 
 using cqsp::asset::AssetLoader;
@@ -131,16 +131,6 @@ void cqsp::asset::AssetManager::SaveModList() {
 }
 
 cqsp::asset::AssetLoader::AssetLoader() : m_asset_queue() {
-    asset_type_map["none"] = AssetType::NONE;
-    asset_type_map["texture"] = AssetType::TEXTURE;
-    asset_type_map["shader"] = AssetType::SHADER;
-    asset_type_map["hjson"] = AssetType::HJSON;
-    asset_type_map["text"] = AssetType::TEXT;
-    asset_type_map["model"] = AssetType::MODEL;
-    asset_type_map["font"] = AssetType::FONT;
-    asset_type_map["cubemap"] = AssetType::CUBEMAP;
-    asset_type_map["directory"] = AssetType::TEXT_ARRAY;
-    asset_type_map["audio"] = AssetType::AUDIO;
 }
 
 namespace cqspa = cqsp::asset;
@@ -246,7 +236,8 @@ void cqsp::asset::AssetLoader::LoadHjsonDirectory(Package& package, std::string 
     if (std::filesystem::exists(std::filesystem::path(path)) &&
                 std::filesystem::is_directory(std::filesystem::path(path))) {
         LoadHjsonDir(path, asset->data, hints);
-        package.assets[key] = std::move(asset);
+        asset->original_path = path;
+        package[key] = std::move(asset);
     }
 }
 
@@ -270,10 +261,13 @@ std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std:
     // Load scripts
     if (std::filesystem::exists(script_path) && std::filesystem::is_directory(script_path)) {
         // Load base.lua for the base folder
-        auto base_stream = std::fstream(script_path / "base.lua");
+        std::string base_file_path = (script_path / "base.lua").string();
+        auto base_stream = std::fstream(base_file_path);
         auto base = LoadText(base_stream, Hjson::Value());
-        package->assets["base"] = std::move(base);
-        package->assets["scripts"] = LoadScriptDirectory((package_path / "scripts").string(), Hjson::Value());
+        base->original_path = base_file_path;
+
+        (*package)["base"] = std::move(base);
+        (*package)["scripts"] = LoadScriptDirectory((package_path / "scripts").string(), Hjson::Value());
     }
 
     // Load a few other hjson folders.
@@ -289,63 +283,79 @@ std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std:
 
 void cqsp::asset::AssetLoader::LoadAsset(Package& package, const std::string& type, const std::string& path,
                                         const std::string& key, const Hjson::Value& hints) {
-    switch (asset_type_map[type]) {
-        case AssetType::TEXTURE:
-        {
-        package.assets[key] = LoadTexture(key, path, hints);
-        break;
+    LoadAsset(package, FromString(type), path, key, hints);
+}
+
+void cqsp::asset::AssetLoader::LoadAsset(Package& package,
+                                         cqsp::asset::AssetType type,
+                                         const std::string& path,
+                                         const std::string& key,
+                                         const Hjson::Value& hints) {
+    switch (type) {
+        case AssetType::TEXTURE: {
+            auto texture = LoadTexture(key, path, hints);
+            texture->original_path = path;
+            package[key] = std::move(texture);
+            break;
         }
-        case AssetType::SHADER:
-        {
-        std::ifstream asset_stream(path, std::ios::binary);
-        package.assets[key] = LoadShader(key, asset_stream, hints);
-        break;
+        case AssetType::SHADER: {
+            std::ifstream asset_stream(path, std::ios::binary);
+            auto shader = LoadShader(key, asset_stream, hints);
+            shader->original_path = path;
+            package[key] = std::move(shader);
+            break;
         }
-        case AssetType::HJSON:
-        {
-        // Check for errors
-        auto p = LoadHjson(path, hints);
-        if (p != nullptr) {
-            package.assets[key] = std::move(p);
+        case AssetType::HJSON: {
+            // Check for errors
+            auto p = LoadHjson(path, hints);
+            if (p != nullptr) {
+                p->original_path = path;
+                package[key] = std::move(p);
+            } else {
+                SPDLOG_WARN("Failed to load asset {} due to hjson errors", key);
+            }
+            break;
         }
-        break;
+        case AssetType::TEXT: {
+            std::ifstream asset_stream(path);
+            auto text = LoadText(asset_stream, hints);
+            text->original_path = path;
+            package[key] = std::move(text);
+            break;
         }
-        case AssetType::TEXT:
-        {
-        std::ifstream asset_stream(path);
-        package.assets[key] = LoadText(asset_stream, hints);
-        break;
-        }
-        case AssetType::TEXT_ARRAY:
-        {
-        break;
-        // This is not really needed.
-        package.assets[key] = LoadTextDirectory(path, hints);
+        case AssetType::TEXT_ARRAY: {
+            break;
+            auto text = LoadTextDirectory(path, hints);
+            text->original_path = path;
+            package[key] = std::move(text);
         }
         case AssetType::MODEL:
-        break;
-        case AssetType::CUBEMAP:
-        {
-        std::ifstream asset_stream(path);
-        package.assets[key] = LoadCubemap(key, path, asset_stream, hints);
-        break;
+            break;
+        case AssetType::CUBEMAP: {
+            std::ifstream asset_stream(path);
+            auto cubemap = LoadCubemap(key, path, asset_stream, hints);
+            cubemap->original_path = path;
+            package[key] = std::move(cubemap);
+            break;
         }
-        case AssetType::FONT:
-        {
-        std::ifstream asset_stream(path, std::ios::binary);
-        package.assets[key] = LoadFont(key, asset_stream, hints);
-        break;
+        case AssetType::FONT: {
+            std::ifstream asset_stream(path, std::ios::binary);
+            auto font = LoadFont(key, asset_stream, hints);
+            font->original_path = path;
+            package[key] = std::move(font);
+            break;
         }
-        case AssetType::AUDIO:
-        {
-        std::ifstream asset_stream(path, std::ios::binary);
-        package.assets[key] = cqsp::asset::LoadOgg(asset_stream);
-        break;
-        }
-        break;
+        case AssetType::AUDIO: {
+            std::ifstream asset_stream(path, std::ios::binary);
+            auto audio = cqsp::asset::LoadOgg(asset_stream);
+            audio->original_path = path;
+            package[key] = std::move(audio);
+            break;
+        } break;
         case AssetType::NONE:
         default:
-        break;
+            // Don't load.
+            break;
     }
 }
 
@@ -521,6 +531,8 @@ AssetLoader::LoadScriptDirectory(const std::string& path, const Hjson::Value& hi
         asset->paths[asset_data.path] = asset_data;
     });
 
+    // Set script file base path
+    asset->original_path = path;
     return asset;
 }
 
@@ -540,6 +552,7 @@ cqsp::asset::AssetLoader::LoadTextDirectory(const std::string& path, const Hjson
 
         asset->paths[asset_data.path] = asset_data;
     });
+    asset->original_path = path;
     return asset;
 }
 
@@ -692,7 +705,9 @@ void cqsp::asset::AssetLoader::LoadResources(Package& package, std::string path)
 
                 // Load asset
                 std::string type = val["type"];
-                std::string path = (resource_file.path().parent_path() / val["path"].to_string()).string();
+                // absolute is so that it looks nice when displaying it
+                std::string path = std::filesystem::absolute(resource_file.path().parent_path() /
+                                    val["path"].to_string()).string();
 
                 if (!std::filesystem::exists(path)) {
                     SPDLOG_WARN("Cannot find asset {} at {}", key, path);

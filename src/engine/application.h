@@ -132,7 +132,7 @@ class Application {
     }
 
     ImGui::MarkdownConfig markdownConfig;
-    Rml::Context* context;
+    Rml::Context* rml_context;
 
     cqsp::common::Universe& GetUniverse() { return *m_universe; }
     cqsp::scripting::ScriptInterface& GetScriptInterface() {
@@ -171,7 +171,7 @@ class Application {
     }
 
     /// <summary>
-    /// Time in seconds
+    /// Time in seconds since start of application
     /// </summary>
     /// <returns></returns>
     double GetTime();
@@ -194,6 +194,10 @@ class Application {
     void GlInit();
     void LoggerInit();
     void LogInfo();
+    void InitAutioInterface();
+    void InitImgui();
+    void InitRmlUi();
+
     /*
      * Intializes glfw and imgui.
      */
@@ -233,6 +237,8 @@ class Application {
     std::map<std::string, std::string> properties;
 
     std::unique_ptr<cqsp::scripting::ScriptInterface> m_script_interface;
+    std::unique_ptr<Rml::SystemInterface> m_system_interface;
+    std::unique_ptr<Rml::RenderInterface> m_render_interface;
 
     cqsp::engine::audio::IAudioInterface *m_audio_interface;
 

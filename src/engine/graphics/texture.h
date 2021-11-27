@@ -39,6 +39,8 @@ class Texture : public Asset {
 
     Texture();
     ~Texture();
+
+    AssetType GetAssetType() { return AssetType::TEXTURE; }
 };
 
 unsigned int LoadTexture(unsigned char*& data,

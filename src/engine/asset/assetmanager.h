@@ -41,7 +41,6 @@
 namespace cqsp {
 namespace asset {
 
-enum class AssetType { NONE, TEXTURE, SHADER, HJSON, TEXT, MODEL, FONT, CUBEMAP, TEXT_ARRAY, AUDIO };
 enum PrototypeType { NONE = 0, TEXTURE, SHADER, FONT, CUBEMAP };
 
 /**
@@ -51,6 +50,8 @@ enum PrototypeType { NONE = 0, TEXTURE, SHADER, FONT, CUBEMAP };
 class AssetPrototype {
  public:
     std::string key;
+    std::string path;
+
     /// <summary>
     /// Store the asset here so that at least we have the promise of an asset to the thing
     /// </summary>
@@ -117,7 +118,8 @@ class ThreadsafeQueue {
 class AssetLoader;
 class AssetManager;
 
-class Package {
+typedef std::map<std::string, std::unique_ptr<Asset>> PackageStore;
+class Package : PackageStore {
  public:
     std::string name;
     std::string version;
@@ -129,14 +131,17 @@ class Package {
         if (!HasAsset(asset)) {
             SPDLOG_ERROR("Invalid key {}", asset);
         }
-        return dynamic_cast<T*>(assets[asset].get());
+        return dynamic_cast<T*>((*this)[asset].get());
     }
 
     bool HasAsset(const char* asset);
     bool HasAsset(const std::string& asset);
 
+    int GetAssetCount() { return size(); }
+    auto begin() { return PackageStore::begin(); }
+    auto end() { return PackageStore::end(); }
+
  private:
-    std::map<std::string, std::unique_ptr<Asset>> assets;
 
     void ClearAssets();
 
@@ -165,7 +170,7 @@ class AssetManager {
         int separation = key.find(":");
         std::string token = key.substr(0, separation);
         std::string pkg_key = key.substr(separation, key.length());
-        return packages[token]->assets[pkg_key];
+        return (*packages[token])[pkg_key];
     }
 
     [[deprecated]]
@@ -174,7 +179,7 @@ class AssetManager {
         int separation = str.find(":");
         std::string token = str.substr(0, separation);
         std::string pkg_key = str.substr(separation, str.length());
-        return packages[token]->assets[pkg_key];
+        return (*packages[token])[pkg_key];
     }
 
     ShaderProgram_t MakeShader(const std::string &vert, const std::string &frag);
@@ -205,6 +210,12 @@ class AssetManager {
 
     Package* GetPackage(const std::string& name) {
         return packages[name].get();
+    }
+
+    Package* GetPackage(int index) {
+        auto l = packages.begin();
+        std::advance(l, index);
+        return l->second.get();
     }
 
     int GetPackageCount() {
@@ -349,13 +360,15 @@ class AssetLoader {
     void LoadHjsonDirectory(Package& package, std::string path, std::string key);
 
     /// <summary>
-    /// Load singular asset
+    /// Load singular asset. This determines which type of asset this is, and determines the asset.
     /// </summary>
     /// <param name="package">package to load into</param>
     /// <param name="type">Type of asset the asset loader says it shoul dload</param>
     /// <param name="path">The real path where the asset is lcated</param>
     /// <param name="key">Key name of the asset</param>
     /// <param name="hints">Any extra information for the asset loader to take into account</param>
+    void LoadAsset(Package& package, cqsp::asset::AssetType type, const std::string& path, const std::string& key,
+                    const Hjson::Value& hints);
     void LoadAsset(Package& package, const std::string& type, const std::string& path, const std::string& key,
                     const Hjson::Value& hints);
 
@@ -435,7 +448,6 @@ class AssetLoader {
     /// <param name="path"></param>
     void LoadResources(Package& package, std::string path);
 
-    std::map<std::string, AssetType> asset_type_map;
     std::vector<std::string> missing_assets;
     ThreadsafeQueue<QueueHolder> m_asset_queue;
 

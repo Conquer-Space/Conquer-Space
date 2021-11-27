@@ -37,6 +37,7 @@ class MainMenuScene : public cqsp::engine::Scene{
 
  private:
     void ModWindow();
+    void AssetViewerWindow();
 
     cqsp::asset::TextAsset* m_credits;
 
@@ -45,6 +46,7 @@ class MainMenuScene : public cqsp::engine::Scene{
     bool m_new_game_window = false;
     bool m_options_window = false;
     bool m_show_mods_window = false;
+    bool m_asset_viewer_window = false;
 
     float ratio, ratio2;
     float width, height;

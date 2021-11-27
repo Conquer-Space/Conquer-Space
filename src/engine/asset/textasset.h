@@ -26,6 +26,12 @@ namespace cqsp::asset {
 class TextAsset : public Asset {
  public:
     std::string data;
+
+    AssetType GetAssetType() { return AssetType::TEXT; }
+
+    std::string& operator*() {
+        return data;
+    }
 };
 
 /// <summary>
@@ -45,10 +51,13 @@ class TextDirectoryAsset : public Asset {
  public:
     // Get the path of the assets
     std::map<std::string, PathedTextAsset> paths;
+
+    AssetType GetAssetType() { return AssetType::TEXT_ARRAY; }
 };
 
 class HjsonAsset : public Asset {
  public:
     Hjson::Value data;
+    AssetType GetAssetType() { return AssetType::HJSON; }
 };
 }  // namespace cqsp::asset

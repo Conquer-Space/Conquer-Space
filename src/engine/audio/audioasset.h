@@ -28,6 +28,8 @@ class AudioAsset : public cqsp::asset::Asset {
     virtual float Length() = 0;
 
     virtual ~AudioAsset() {}
+
+    AssetType GetAssetType() { return AssetType::AUDIO; }
 };
 }  // namespace asset
 }  // namespace cqsp

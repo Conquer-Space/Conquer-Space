@@ -44,6 +44,8 @@
 #include "common/util/paths.h"
 #include "common/util/logging.h"
 #include "engine/cqspgui.h"
+#include "engine/ui/rmlsysteminterface.h"
+#include "engine/ui/rmlrenderinterface.h"
 
 namespace cqsp::engine {
 void ParseType(GLenum type) {
@@ -358,27 +360,14 @@ int cqsp::engine::Application::init() {
     GlInit();
 
     manager.LoadDefaultTexture();
-    // Init audio
-    m_audio_interface = new cqsp::engine::audio::AudioInterface();
-    m_audio_interface->Initialize();
-    // Set option things
-    m_audio_interface->SetMusicVolume(m_client_options.GetOptions()["audio"]["music"]);
-    m_audio_interface->SetChannelVolume(1, m_client_options.GetOptions()["audio"]["ui"]);
 
+    InitAutioInterface();
+    InitImgui();
+
+    // Init the REAL ui
+    //InitRmlUi();
 
     SetIcon();
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImPlot::CreateContext();
-    ImGui::StyleColorsDark();
-    ImGui::GetIO().IniFilename = NULL;
-    CQSPGui::SetApplication(this);
-    InitFonts();
-
-    // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(window(m_window), true);
-    ImGui_ImplOpenGL3_Init("#version 130");
 
     if (full_screen) {
         SetFullScreen(true);
@@ -572,6 +561,7 @@ void cqsp::engine::Application::InitFonts() {
     Hjson::Value fontDatabase;
     Hjson::DecoderOptions decOpt;
     decOpt.comments = false;
+    // Get path of file
     std::fstream stream(cqsp::common::util::GetCqspDataPath() + "/core/gfx/fonts/fonts.hjson");
 
     stream >> Hjson::StreamDecoder(fontDatabase, decOpt);
@@ -641,6 +631,51 @@ void cqsp::engine::Application::LogInfo() {
     SPDLOG_INFO("Compiled {} {}", __DATE__, __TIME__);
     SPDLOG_INFO("Exe Path: {}", common::util::exe_path);
     SPDLOG_INFO("Data Path: {}", common::util::GetCqspDataPath());
+}
+
+void cqsp::engine::Application::InitAutioInterface() {
+    // Init audio
+    m_audio_interface = new cqsp::engine::audio::AudioInterface();
+    m_audio_interface->Initialize();
+    // Set option things
+    m_audio_interface->SetMusicVolume(m_client_options.GetOptions()["audio"]["music"]);
+    m_audio_interface->SetChannelVolume(1, m_client_options.GetOptions()["audio"]["ui"]);
+}
+
+void cqsp::engine::Application::InitImgui() {
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImPlot::CreateContext();
+    ImGui::StyleColorsDark();
+    ImGui::GetIO().IniFilename = NULL;
+    CQSPGui::SetApplication(this);
+    InitFonts();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForOpenGL(window(m_window), true);
+    ImGui_ImplOpenGL3_Init("#version 130");
+}
+
+void cqsp::engine::Application::InitRmlUi() {
+    // Begin by installing the custom interfaces.
+    m_system_interface = std::make_unique<cqsp::engine::CQSPSystemInterface>(*this);
+    m_render_interface = std::make_unique<cqsp::engine::CQSPRenderInterface>(*this);
+
+    Rml::SetSystemInterface(m_system_interface.get());
+    Rml::SetRenderInterface(m_render_interface.get());
+
+    // Now we can initialize RmlUi.
+    Rml::Initialise();
+
+    rml_context = Rml::CreateContext(
+        "main", Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
+    if (!rml_context) {
+        SPDLOG_CRITICAL("Unable to load rml context!");
+        // Exit
+    }
+    // Load fonts
+    //Rml::LoadFontFace()
 }
 
 void cqsp::engine::Application::SetWindowDimensions(int width, int height) {

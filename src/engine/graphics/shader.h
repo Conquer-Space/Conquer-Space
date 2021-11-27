@@ -26,11 +26,13 @@
 
 namespace cqsp {
 namespace asset {
-enum class ShaderType {VERT, FRAG, GEOM};
+enum class ShaderType { VERT, FRAG, GEOM };
 
 class Shader : public Asset {
  public:
     unsigned int id;
+
+    AssetType GetAssetType() override { return AssetType::SHADER; }
 };
 
 class ShaderProgram {

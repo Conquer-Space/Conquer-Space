@@ -17,6 +17,7 @@
 #include "client/scenes/mainmenuscene.h"
 
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #include <imgui_markdown.h>
 
@@ -65,7 +66,12 @@ void cqsp::scene::MainMenuScene::Init() {
     shader->Set("texture1", 0);
 }
 
-void cqsp::scene::MainMenuScene::Update(float deltaTime) {}
+void cqsp::scene::MainMenuScene::Update(float deltaTime) {
+    if (GetApp().ButtonIsReleased(GLFW_KEY_SEMICOLON)) {
+        m_asset_viewer_window = !m_asset_viewer_window;
+        SPDLOG_INFO("Assdf");
+    }
+}
 
 void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
     float winWidth = width;
@@ -162,6 +168,10 @@ void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
 
     if (m_show_mods_window) {
         ModWindow();
+    }
+
+    if (m_asset_viewer_window) {
+        AssetViewerWindow();
     }
 }
 
@@ -278,5 +288,57 @@ void cqsp::scene::MainMenuScene::ModWindow() {
         asset_manager.SaveModList();
     }
     ImGui::SameLine();
+    ImGui::End();
+}
+
+void cqsp::scene::MainMenuScene::AssetViewerWindow() {
+    ImGui::SetNextWindowSize(ImVec2(1050, 600), ImGuiCond_Once);
+    ImGui::Begin("Asset Debugger", &m_asset_viewer_window);
+    // List packages
+    ImGui::Text("Packages Loaded");
+    ImGui::BeginChild("package list", ImVec2(300, 0));
+    static int selected = 0;
+    int index = 0;
+    std::string selected_package_name = "";
+    for (auto it = GetAssetManager().GetPackageBegin();
+         it != GetAssetManager().GetPackageEnd(); it++, index++) {
+        const bool is_selected = (index == selected);
+        if (ImGui::Selectable(fmt::format("Package: {}", it->first).c_str(),
+                              is_selected)) {
+            selected = index;
+        }
+    }
+    ImGui::EndChild();
+    // Get package, and display package
+    ImGui::SameLine();
+    ImGui::BeginChild("package info", ImVec2(-1, 0));
+    cqsp::asset::Package* package = GetAssetManager().GetPackage(selected);
+    ImGui::TextFmt("Asset count: {}", package->GetAssetCount());;
+    if (ImGui::BeginTable("table", 3,
+                          ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg |
+                              ImGuiTableFlags_ScrollX |
+                              ImGuiTableFlags_ScrollY)) {
+        ImGui::TableSetupColumn("Key");
+        ImGui::TableSetupColumn("Path");
+        ImGui::TableSetupColumn("Type");
+        ImGui::TableHeadersRow();
+        for (auto it = package->begin(); it != package->end(); it++) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt("{}", it->first);
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextFmt("{}", it->second.get()->original_path);
+            ImGui::TableSetColumnIndex(2);
+
+            // Asset type should be set.
+            ImVec4 text_color = ImGui::GetStyle().Colors[ImGuiCol_Text];
+            if (it->second.get()->GetAssetType() == cqsp::asset::AssetType::NONE) {
+                text_color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f);
+            }
+            ImGui::TextColored(text_color, fmt::format("{}", cqsp::asset::ToString(it->second.get()->GetAssetType())).c_str());
+        }
+        ImGui::EndTable();
+    }
+    ImGui::EndChild();
     ImGui::End();
 }
