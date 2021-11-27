@@ -500,6 +500,8 @@ void cqsp::engine::Application::run() {
         ImGui::Render();
         END_TIMED_BLOCK(ImGui_Render);
 
+        rml_context->Update();
+
         // Clear screen
         glClearColor(0.f, 0.f, 0.f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -508,6 +510,13 @@ void cqsp::engine::Application::run() {
         BEGIN_TIMED_BLOCK(Scene_Render);
         m_scene_manager.Render(deltaTime);
         END_TIMED_BLOCK(Scene_Render);
+
+        // Render rml
+        m_render_interface->PrepareRenderBuffer();
+
+        // Render the user interface on top of the application.
+        rml_context->Render();
+        m_render_interface->PresentRenderBuffer();
 
         BEGIN_TIMED_BLOCK(ImGui_Render_Draw);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

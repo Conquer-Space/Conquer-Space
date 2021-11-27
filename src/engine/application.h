@@ -187,6 +187,7 @@ class Application {
     std::vector<std::string>& GetCmdLineArgs() { return cmd_line_args; }
 
     bool Screenshot(const char* path);
+
  private:
     void InitImguiFonts();
 
