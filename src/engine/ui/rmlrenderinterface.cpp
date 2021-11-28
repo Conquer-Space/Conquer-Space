@@ -1,7 +1,6 @@
 #include "rmlrenderinterface.h"
 
 #include <glad/glad.h>
-#include <gl/GL.h>
 
 #include <stb_image.h>
 
