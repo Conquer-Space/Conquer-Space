@@ -47,86 +47,66 @@
 #include "engine/ui/rmlsysteminterface.h"
 
 namespace cqsp::engine {
-void ParseType(GLenum type) {
+const char* ParseType(GLenum type) {
     switch (type) {
         case GL_DEBUG_TYPE_ERROR:
-            SPDLOG_ERROR("Type: Error");
-            break;
+            return "Error";
         case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
-            SPDLOG_ERROR("Type: Deprecated Behaviour");
-            break;
+            return ("Deprecated Behaviour");
         case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
-            SPDLOG_ERROR("Type: Undefined Behaviour");
-            break;
+            return ("Undefined Behaviour");
         case GL_DEBUG_TYPE_PORTABILITY:
-            SPDLOG_ERROR("Type: Portability");
-            break;
+            return ("Portability");
         case GL_DEBUG_TYPE_PERFORMANCE:
-            SPDLOG_ERROR("Type: Performance");
-            break;
+            return ("Performance");
         case GL_DEBUG_TYPE_MARKER:
-            SPDLOG_ERROR("Type: Marker");
-            break;
+            return ("Marker");
         case GL_DEBUG_TYPE_PUSH_GROUP:
-            SPDLOG_ERROR("Type: Push Group");
-            break;
+            return ("Push Group");
         case GL_DEBUG_TYPE_POP_GROUP:
-            SPDLOG_ERROR("Type: Pop Group");
-            break;
+            return ("Pop Group");
         case GL_DEBUG_TYPE_OTHER:
-            SPDLOG_ERROR("Type: Other");
-            break;
+            return ("Other");
     }
 }
 
-void ParseSeverity(GLenum severity) {
+const char* ParseSeverity(GLenum severity) {
     switch (severity) {
         case GL_DEBUG_SEVERITY_HIGH:
-            SPDLOG_ERROR("Severity: high");
-            break;
+            return ("high");
         case GL_DEBUG_SEVERITY_MEDIUM:
-            SPDLOG_ERROR("Severity: medium");
-            break;
+            return ("medium");
         case GL_DEBUG_SEVERITY_LOW:
-            SPDLOG_ERROR("Severity: low");
-            break;
+            return ("low");
         case GL_DEBUG_SEVERITY_NOTIFICATION:
-            SPDLOG_ERROR("Severity: notification");
-            break;
+            return ("notification");
     }
 }
+
+const char* ParseSource(GLenum source) {
+    switch (source) {
+    case GL_DEBUG_SOURCE_API:
+        return ("API");
+    case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
+        return ("Window System");
+    case GL_DEBUG_SOURCE_SHADER_COMPILER:
+        return ("Shader Compiler");
+    case GL_DEBUG_SOURCE_THIRD_PARTY:
+        return ("Third Party");
+    case GL_DEBUG_SOURCE_APPLICATION:
+        return ("Application");
+    case GL_DEBUG_SOURCE_OTHER:
+        return ("Other");
+    }
+}
+
 void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id,
                             GLenum severity, GLsizei length,
                             const char* message, const void* userParam) {
     if (id == 131169 || id == 131185 || id == 131218 || id == 131204)
         return;  // ignore these non-significant error codes
 
-    SPDLOG_ERROR("Debug message ({}): {}", id, message);
-
-    switch (source) {
-        case GL_DEBUG_SOURCE_API:
-            SPDLOG_ERROR("Source: API");
-            break;
-        case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
-            SPDLOG_ERROR("Source: Window System");
-            break;
-        case GL_DEBUG_SOURCE_SHADER_COMPILER:
-            SPDLOG_ERROR("Source: Shader Compiler");
-            break;
-        case GL_DEBUG_SOURCE_THIRD_PARTY:
-            SPDLOG_ERROR("Source: Third Party");
-            break;
-        case GL_DEBUG_SOURCE_APPLICATION:
-            SPDLOG_ERROR("Source: Application");
-            break;
-        case GL_DEBUG_SOURCE_OTHER:
-            SPDLOG_ERROR("Source: Other");
-            break;
-
-        ParseType(type);
-
-        ParseSeverity(severity);
-    }
+    SPDLOG_ERROR("{} message from {} ({}:{}): {}", ParseType(type), ParseSource(source), ParseSeverity(severity), id, message);
 }
 
 class GLWindow : public Window {

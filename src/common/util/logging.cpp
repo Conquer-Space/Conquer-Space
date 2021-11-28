@@ -17,6 +17,7 @@
 #include "common/util/logging.h"
 
 #include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/dup_filter_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <filesystem>
@@ -37,11 +38,12 @@ std::shared_ptr<spdlog::logger> cqsp::common::util::make_logger(std::string name
 
     // Initialize logger
     std::vector<spdlog::sink_ptr> sinks;
+    auto dup_filter = std::make_shared<spdlog::sinks::dup_filter_sink_st>(std::chrono::seconds(10));
     if (error) {
         std::string log_file_name = (log_folder / (name + ".error.txt")).string();
         auto error_log = std::make_shared<spdlog::sinks::basic_file_sink_mt>(log_file_name, true);
         error_log->set_level(spdlog::level::err);
-        sinks.push_back(error_log);
+        dup_filter->add_sink(error_log);
     }
 
 #ifdef NDEBUG
@@ -49,11 +51,13 @@ std::shared_ptr<spdlog::logger> cqsp::common::util::make_logger(std::string name
     spdlog::flush_every(std::chrono::seconds(3));
     std::string log_name = (log_folder / (name + ".txt")).string();
     auto basic_logger = std::make_shared<spdlog::sinks::basic_file_sink_mt>(log_name, true);
-    sinks.push_back(basic_logger);
+    dup_filter->add_sink(basic_logger);
 #else
     auto console_logger = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    sinks.push_back(console_logger);
+    dup_filter->add_sink(console_logger);
 #endif
+
+    sinks.push_back(dup_filter);
     logger = std::make_shared<spdlog::logger>(name, sinks.begin(), sinks.end());
 
     // Default pattern
