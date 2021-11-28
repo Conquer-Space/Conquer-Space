@@ -456,7 +456,7 @@ void cqsp::engine::Application::run() {
 
     m_audio_interface->StartWorker();
     // Make test document
-    Rml::ElementDocument* document = rml_context->LoadDocument("assets/demo.rml");
+    Rml::ElementDocument* document = rml_context->LoadDocument("document.rml");
     if (!document) {
         SPDLOG_ERROR("Failed to create document");
     }

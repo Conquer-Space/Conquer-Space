@@ -22,11 +22,13 @@ layout (location = 2) in vec2 iTexCoord;
 uniform mat4 model;
 uniform mat4 projection;
 
+out vec4 place_color;
 out vec2 TexCoord;
 
 void main()
 {
     gl_Position = projection * model * vec4(iPos, 0.0, 1.0);
+    place_color = color;
     TexCoord = vec2(iTexCoord.x, iTexCoord.y);
 }
 )r";
@@ -35,13 +37,16 @@ void main()
 #version 330 core
 out vec4 FragColor;
 
+in vec4 place_color;
 in vec2 TexCoord;
 
 uniform sampler2D texture1;
 
 void main()
 {
-    FragColor = texture(texture1, TexCoord);
+    //float alpha = texture(texture1, TexCoord).a;
+
+    FragColor = vec4(texture(texture1, TexCoord).rgb, 1);
 }
 )r";
     // Create shader
@@ -100,15 +105,16 @@ Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(
     glVertexAttribPointer(1, 4, GL_BYTE, GL_FALSE, stride,
                           reinterpret_cast<void*>(sizeof(Rml::Vector2f)));
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride,
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride,
         reinterpret_cast<void*>(sizeof(Rml::Vector2f) + sizeof(Rml::Colourb)));
     glEnableVertexAttribArray(2);
 
     // Need a new renderable for rmlui specifically because it doesn't contain a shader.
     cqsp::engine::Renderable* renderable = new cqsp::engine::Renderable();
     renderable->mesh = m;
-    renderable->textures.push_back(reinterpret_cast<cqsp::asset::Texture*>(texture));
-    SPDLOG_INFO("Made geometry {} {} {}", m->VAO, m->VBO, m->EBO);
+    if (texture != NULL) {
+        renderable->textures.push_back(reinterpret_cast<cqsp::asset::Texture*>(texture));
+    }
     return reinterpret_cast<Rml::CompiledGeometryHandle>(renderable);
 }
 
@@ -117,7 +123,6 @@ void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(Rml::CompiledGeom
     // Set transformation too
     auto renderable = reinterpret_cast<cqsp::engine::Renderable*>(geometry);
     renderer->DrawTexturedSprite(renderable, glm::vec2(translation.x, translation.y));
-    counter++;
 }
 
 void cqsp::engine::CQSPRenderInterface::ReleaseCompiledGeometry(Rml::CompiledGeometryHandle geometry) {
@@ -130,9 +135,16 @@ void cqsp::engine::CQSPRenderInterface::ReleaseCompiledGeometry(Rml::CompiledGeo
 
 void cqsp::engine::CQSPRenderInterface::EnableScissorRegion(bool enable) {
     if (enable) {
-        glEnable(GL_SCISSOR_TEST);
+        if (!m_transform_enabled) {
+            glEnable(GL_SCISSOR_TEST);
+            glDisable(GL_STENCIL_TEST);
+    } else {
+            glDisable(GL_SCISSOR_TEST);
+            glEnable(GL_STENCIL_TEST);
+        }
     } else {
         glDisable(GL_SCISSOR_TEST);
+        glDisable(GL_STENCIL_TEST);
     }
 }
 
@@ -187,6 +199,9 @@ bool cqsp::engine::CQSPRenderInterface::GenerateTexture(
     cqsp::asset::TextureLoadingOptions options;
     cqsp::asset::LoadTexture(*texture, reinterpret_cast<const unsigned char*>(source), source_dimensions.x, source_dimensions.y, 4, options);
     texture_handle = (Rml::TextureHandle) texture;
+    cqsp::asset::SaveImage(fmt::format("{}.png", counter).c_str(),
+                           source_dimensions.x, source_dimensions.y, 4, reinterpret_cast<const unsigned char*>(source));
+    counter++;
     SPDLOG_INFO("Generated texture");
     return true;
 }
@@ -202,6 +217,8 @@ void cqsp::engine::CQSPRenderInterface::SetTransform(const Rml::Matrix4f* transf
 void cqsp::engine::CQSPRenderInterface::PrepareRenderBuffer() {
     renderer->SetProjection(app.Get2DProj());
     glDisable(GL_DEPTH_TEST);
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 }
 

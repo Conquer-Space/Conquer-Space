@@ -9,6 +9,9 @@
 
 
 namespace cqsp::engine {
+class InterfaceRenderable {
+    // More limited renderable for convinience
+};
 class CQSPRenderInterface : public Rml::RenderInterface {
  public:
     CQSPRenderInterface(Application& app);
@@ -17,12 +20,11 @@ class CQSPRenderInterface : public Rml::RenderInterface {
                    int num_indices, Rml::TextureHandle texture,
                    const Rml::Vector2f& translation) override;
 
-    Rml::CompiledGeometryHandle CompileGeometry(
-        Rml::Vertex* vertices,
+    Rml::CompiledGeometryHandle CompileGeometry(Rml::Vertex* vertices,
                                                    int num_vertices,
                                                    int* indices,
                                                    int num_indices,
-        Rml::TextureHandle texture) override;
+                                                   Rml::TextureHandle texture) override;
 
     void RenderCompiledGeometry(Rml::CompiledGeometryHandle geometry,
         const Rml::Vector2f& translation) override;
@@ -47,17 +49,10 @@ class CQSPRenderInterface : public Rml::RenderInterface {
     void PrepareRenderBuffer();
     void PresentRenderBuffer();
 
-    struct Image {
-        int width = 0;
-        int height = 0;
-        int num_components = 0;
-        Rml::UniquePtr<Rml::byte[]> data;
-    };
-
  private:
     Application& app;
     std::unique_ptr<cqsp::engine::Renderer2D> renderer;
-    bool m_transform_enabled;
+    bool m_transform_enabled = false;
 
     int counter = 0;
 };

@@ -71,10 +71,12 @@ void cqsp::engine::Renderer2D::DrawTexturedSprite(cqsp::engine::Renderable* rend
     model = glm::translate(model, glm::vec3(position, 0.0f));
     texture_shader->Set("model", model);
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, renderable->textures[0]->id);
+    if (renderable->textures.size() > 1) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, renderable->textures[0]->id);
 
-    renderable->mesh->Draw();
+        renderable->mesh->Draw();
+    }
 }
 
 void cqsp::engine::Renderer2D::SetProjection(const glm::mat4 & projection) {
