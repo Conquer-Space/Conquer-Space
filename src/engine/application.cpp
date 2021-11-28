@@ -45,7 +45,6 @@
 #include "common/util/logging.h"
 #include "engine/cqspgui.h"
 #include "engine/ui/rmlsysteminterface.h"
-#include "engine/ui/rmlrenderinterface.h"
 
 namespace cqsp::engine {
 void ParseType(GLenum type) {
@@ -361,11 +360,10 @@ int cqsp::engine::Application::init() {
 
     manager.LoadDefaultTexture();
 
-    InitAutioInterface();
+    InitAudioInterface();
     InitImgui();
 
-    // Init the REAL ui
-    //InitRmlUi();
+    InitRmlUi();
 
     SetIcon();
 
@@ -391,37 +389,48 @@ int cqsp::engine::Application::destroy() {
     // Clear assets
     SPDLOG_INFO("Deleting universe");
     m_universe.reset();
-    SPDLOG_INFO("Done deleting universe");
+    SPDLOG_INFO("Deleted universe");
 
     SPDLOG_INFO("Deleting script interface");
     m_script_interface.reset();
-    SPDLOG_INFO("Done deleting script interface");
+    SPDLOG_INFO("Deleted script interface");
 
     SPDLOG_INFO("Deleting audio interface");
     m_audio_interface->Destruct();
-    SPDLOG_INFO("Done deleting audio interface");
+    SPDLOG_INFO("Deleted audio interface");
 
     SPDLOG_INFO("Clearing assets");
     manager.ClearAssets();
-    SPDLOG_INFO("Done clearing assets");
+    SPDLOG_INFO("Cleared assets");
 
     SPDLOG_INFO("Deleting audio interface");
     delete m_audio_interface;
-    SPDLOG_INFO("Done audio interface");
+    SPDLOG_INFO("Deleted audio interface");
 
+    SPDLOG_INFO("Deleting rmlui interface");
+    Rml::Shutdown();
+    SPDLOG_INFO("Deleted rmlui interface");
+
+    SPDLOG_INFO("Deleting imgui interface");
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImPlot::DestroyContext();
     ImGui::DestroyContext();
+    SPDLOG_INFO("Deleted imgui interface");
 
+    SPDLOG_INFO("Deleting glfw");
     glfwDestroyWindow(window(m_window));
     glfwTerminate();
 
     SPDLOG_INFO("Killed GLFW");
+
     // Save options
     std::ofstream config_path(m_client_options.GetDefaultLocation(),
                               std::ios::trunc);
     m_client_options.WriteOptions(config_path);
+    SPDLOG_INFO("Saved config");
+
+    SPDLOG_INFO("Goodbye, world");
     spdlog::shutdown();
     return 0;
 }
@@ -458,12 +467,21 @@ cqsp::engine::Application::Application() : Application(0, new char*[1]{"Conquer-
 void cqsp::engine::Application::run() {
     // Main loop
     int code = init();
-    fps = 0;
     if (code != 0) {
         // Fail
         return;
     }
+
+    fps = 0;
+
     m_audio_interface->StartWorker();
+    // Make test document
+    Rml::ElementDocument* document = rml_context->LoadDocument("document.rml");
+    if (!document) {
+        SPDLOG_ERROR("Failed to create document");
+    }
+    document->Show();
+
     while (ShouldExit()) {
         // Calculate FPS
         double currentFrame = GetTime();
@@ -496,6 +514,7 @@ void cqsp::engine::Application::run() {
         m_scene_manager.Ui(deltaTime);
         END_TIMED_BLOCK(UiCreation);
 
+        // Render UI
         BEGIN_TIMED_BLOCK(ImGui_Render);
         ImGui::Render();
         END_TIMED_BLOCK(ImGui_Render);
@@ -667,7 +686,7 @@ void cqsp::engine::Application::LogInfo() {
     SPDLOG_INFO("Data Path: {}", common::util::GetCqspDataPath());
 }
 
-void cqsp::engine::Application::InitAutioInterface() {
+void cqsp::engine::Application::InitAudioInterface() {
     // Init audio
     m_audio_interface = new cqsp::engine::audio::AudioInterface();
     m_audio_interface->Initialize();

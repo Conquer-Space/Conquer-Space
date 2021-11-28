@@ -61,6 +61,22 @@ void cqsp::engine::Renderer2D::DrawTexturedSprite(cqsp::engine::Mesh* mesh,
     mesh->Draw();
 }
 
+void cqsp::engine::Renderer2D::DrawTexturedSprite(cqsp::engine::Renderable* renderable, glm::vec2 position,
+    float rotate) {
+    if (!TextureEnabled()) {
+        return;
+    }
+    texture_shader->UseProgram();
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(position, 0.0f));
+    texture_shader->Set("model", model);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, renderable->textures[0]->id);
+
+    renderable->mesh->Draw();
+}
+
 void cqsp::engine::Renderer2D::SetProjection(const glm::mat4 & projection) {
     if (TextureEnabled()) {
         texture_shader->UseProgram();

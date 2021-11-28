@@ -30,6 +30,9 @@ enum class ShaderType { VERT, FRAG, GEOM };
 
 class Shader : public Asset {
  public:
+    Shader() : id(-1) {}
+    Shader(unsigned int _id) : id(_id) {}
+
     unsigned int id;
 
     AssetType GetAssetType() override { return AssetType::SHADER; }
@@ -77,9 +80,11 @@ class ShaderProgram {
 
 typedef std::shared_ptr<ShaderProgram> ShaderProgram_t;
 // Set of utility functions that load shaders
-unsigned int LoadShader(std::string& shader, int type);
+Shader LoadShader(std::string& shader, int type);
+Shader LoadShader(std::string& shader, ShaderType type);
 
 unsigned int MakeShaderProgram(int vertex, int fragment);
+ShaderProgram_t MakeShaderProgram(Shader& vertex, Shader& fragment);
 
 std::string GetErrorLog(unsigned int shader);
 }  // namespace asset

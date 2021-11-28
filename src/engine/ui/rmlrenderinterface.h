@@ -1,8 +1,12 @@
 #pragma once
 
 #include <RmlUi/Core.h>
+#include <spdlog/spdlog.h>
 
 #include "engine/engine.h"
+#include "engine/graphics/shader.h"
+#include "engine/renderer/renderer2d.h"
+
 
 namespace cqsp::engine {
 class CQSPRenderInterface : public Rml::RenderInterface {
@@ -40,5 +44,21 @@ class CQSPRenderInterface : public Rml::RenderInterface {
     void ReleaseTexture(Rml::TextureHandle texture) override;
 
     void SetTransform(const Rml::Matrix4f* transform) override;
+    void PrepareRenderBuffer();
+    void PresentRenderBuffer();
+
+    struct Image {
+        int width = 0;
+        int height = 0;
+        int num_components = 0;
+        Rml::UniquePtr<Rml::byte[]> data;
+    };
+
+ private:
+    Application& app;
+    std::unique_ptr<cqsp::engine::Renderer2D> renderer;
+    int m_width;
+    int m_height;
+    bool m_transform_enabled;
 };
 }  // namespace cqsp::engine

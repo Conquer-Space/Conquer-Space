@@ -20,7 +20,7 @@
 
 #include <vector>
 
-unsigned int cqsp::asset::LoadShader(std::string& shaderCode, int type) {
+cqsp::asset::Shader cqsp::asset::LoadShader(std::string& shaderCode, int type) {
     unsigned int shader;
 
     shader = glCreateShader(type);
@@ -38,7 +38,19 @@ unsigned int cqsp::asset::LoadShader(std::string& shaderCode, int type) {
         throw(std::runtime_error(error));
         glDeleteShader(shader);
     }
-    return shader;
+    return Shader(shader);
+}
+
+cqsp::asset::Shader cqsp::asset::LoadShader(std::string& shader, ShaderType type) {
+    int shader_type;
+    if (type == ShaderType::FRAG) {
+        shader_type = GL_FRAGMENT_SHADER;
+    } else if (type == ShaderType::GEOM) {
+        shader_type = GL_GEOMETRY_SHADER;
+    }  else if (type == ShaderType::VERT) {
+        shader_type = GL_VERTEX_SHADER;
+    }
+    return LoadShader(shader, shader_type);
 }
 
 unsigned int cqsp::asset::MakeShaderProgram(int vertex, int fragment) {
@@ -47,6 +59,10 @@ unsigned int cqsp::asset::MakeShaderProgram(int vertex, int fragment) {
     glAttachShader(ID, fragment);
     glLinkProgram(ID);
     return ID;
+}
+
+cqsp::asset::ShaderProgram_t cqsp::asset::MakeShaderProgram(Shader& vertex, Shader& fragment) {
+    return std::make_shared<ShaderProgram>(vertex, fragment);
 }
 
 std::string cqsp::asset::GetErrorLog(unsigned int shader) {
@@ -166,10 +182,7 @@ void ShaderProgram::UseProgram() {
 ShaderProgram::ShaderProgram() { program = -1; }
 
 ShaderProgram::ShaderProgram(Shader& vert, Shader& frag) {
-    program = glCreateProgram();
-    glAttachShader(program, vert.id);
-    glAttachShader(program, frag.id);
-    glLinkProgram(program);
+    program = MakeShaderProgram(vert.id, frag.id);
 }
 
 cqsp::asset::ShaderProgram::~ShaderProgram() {

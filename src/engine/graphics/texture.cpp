@@ -23,7 +23,7 @@
 
 #include <glad/glad.h>
 
-unsigned int cqsp::asset::LoadTexture(unsigned char*& data,
+unsigned int cqsp::asset::LoadTexture(const unsigned char* data,
                                         int components,
                                         int width,
                                         int height,
@@ -57,7 +57,7 @@ unsigned int cqsp::asset::LoadTexture(unsigned char*& data,
     return texid;
 }
 
-void cqsp::asset::LoadTexture(Texture& texture, unsigned char*& data, int components, int width,
+void cqsp::asset::LoadTexture(Texture& texture, const unsigned char* data, int components, int width,
     int height, TextureLoadingOptions& options) {
     texture.id = LoadTexture(data, components, width, height, options);
     texture.width = width;
@@ -109,12 +109,16 @@ void cqsp::asset::SaveImage(const char* path, int width, int height, int compone
                    width * components);
 }
 
-cqsp::asset::Texture::Texture() : width(-1), height(-1), id(0), texture_type(-1) {}
+void cqsp::asset::Texture::Delete() {}
+
+cqsp::asset::Texture::Texture()
+    : width(-1), height(-1), id(0), texture_type(-1) {}
 
 cqsp::asset::Texture::~Texture() {
     // Delete textures
     // If it's a null texture, then no need to destroy it
     if (texture_type != -1) {
         glDeleteTextures(1, &id);
+        texture_type = -1;
     }
 }

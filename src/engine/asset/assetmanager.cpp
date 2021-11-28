@@ -83,6 +83,7 @@ bool cqsp::asset::Package::HasAsset(const std::string& asset) {
 
 void cqsp::asset::Package::ClearAssets() {
     for (auto a = begin(); a != end(); a++) {
+        a->second->Delete();
         a->second.reset();
     }
     clear();
@@ -432,7 +433,7 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
         ShaderPrototype* shader = dynamic_cast<ShaderPrototype*>(temp.prototype);
         Shader* asset = dynamic_cast<Shader*>(shader->asset);
         try  {
-            int shaderId = asset::LoadShader(shader->data, shader->type);
+            int shaderId = asset::LoadShader(shader->data, shader->type).id;
             asset->id = shaderId;
         } catch (std::runtime_error &error) {
             SPDLOG_WARN("Exception in loading shader {}: {}", shader->key, error.what());

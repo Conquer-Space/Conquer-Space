@@ -37,6 +37,7 @@
 #include "common/scripting/scripting.h"
 #include "engine/audio/iaudiointerface.h"
 #include "engine/window.h"
+#include "engine/ui/rmlrenderinterface.h"
 
 namespace cqsp {
 namespace engine {
@@ -196,7 +197,7 @@ class Application {
     void GlInit();
     void LoggerInit();
     void LogInfo();
-    void InitAutioInterface();
+    void InitAudioInterface();
     void InitImgui();
     void InitRmlUi();
 
@@ -238,7 +239,7 @@ class Application {
 
     std::unique_ptr<cqsp::scripting::ScriptInterface> m_script_interface;
     std::unique_ptr<Rml::SystemInterface> m_system_interface;
-    std::unique_ptr<Rml::RenderInterface> m_render_interface;
+    std::unique_ptr<cqsp::engine::CQSPRenderInterface> m_render_interface;
 
     cqsp::engine::audio::IAudioInterface *m_audio_interface;
 

@@ -95,6 +95,8 @@ class Asset {
 
     std::string original_path;
 
+    // Delete the asset
+    virtual void Delete() {}
     virtual AssetType GetAssetType() { return AssetType::NONE; }
 };
 }  // namespace asset

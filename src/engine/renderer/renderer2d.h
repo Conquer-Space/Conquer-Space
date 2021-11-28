@@ -19,6 +19,7 @@
 #include "engine/graphics/shader.h"
 #include "engine/graphics/texture.h"
 #include "engine/graphics/mesh.h"
+#include "engine/graphics/renderable.h"
 
 namespace cqsp {
 namespace engine {
@@ -40,11 +41,22 @@ class Renderer2D {
     Renderer2D(cqsp::asset::ShaderProgram_t color, bool);
 
     void DrawTexturedSprite(cqsp::engine::Mesh* mesh, cqsp::asset::Texture &texture,
-                           glm::vec2 position, glm::vec2 size, float rotate);
+                           glm::vec2 position, glm::vec2 size, float rotate = 0);
+    void DrawTexturedSprite(cqsp::engine::Renderable* renderable,
+                           glm::vec2 position, float rotate = 0);
     void DrawColoredSprite(cqsp::engine::Mesh* mesh, glm::vec3 color, glm::vec2 position,
-                           glm::vec2 size, float rotate);
+                           glm::vec2 size, float rotate = 0);
 
     void SetProjection(const glm::mat4& projection);
+
+    // In case you want to set the variables
+    void SetTextureShader(cqsp::asset::ShaderProgram_t shader) {
+        texture_shader = shader;
+    }
+
+    void SetColorShader(cqsp::asset::ShaderProgram_t shader) {
+        color_shader = shader;
+    }
 
     bool TextureEnabled();
     bool ColorEnabled();

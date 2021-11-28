@@ -43,8 +43,9 @@ foreach(_source IN ITEMS ${SOURCE_FILES})
 endforeach()
 
 add_library(cqsp-engine ${SOURCE_FILES})
+
 # Compile rml as static
-add_compile_definitions(cqsp-engine PUBLIC RMLUI_STATIC_LIB)
+target_compile_definitions(cqsp-engine PUBLIC RMLUI_STATIC_LIB)
 target_link_libraries(cqsp-engine PUBLIC 
     cqsp-core
     OpenGL::GL

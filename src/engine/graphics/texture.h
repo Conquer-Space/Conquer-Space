@@ -37,19 +37,20 @@ class Texture : public Asset {
     unsigned int id;
     int texture_type;
 
+    void Delete() override;
     Texture();
     ~Texture();
 
     AssetType GetAssetType() { return AssetType::TEXTURE; }
 };
 
-unsigned int LoadTexture(unsigned char*& data,
+unsigned int LoadTexture(const unsigned char* data,
                     int components,
                     int width,
                     int height,
                     TextureLoadingOptions& options);
 
-void LoadTexture(Texture &texture, unsigned char*& data,
+void LoadTexture(Texture &texture, const unsigned char* data,
                     int components,
                     int width,
                     int height,
