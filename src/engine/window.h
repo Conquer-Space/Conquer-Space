@@ -49,6 +49,8 @@ class Window {
     virtual void InitWindow(int width, int height) = 0;
 
     virtual bool WindowSizeChanged() const = 0;
+
+    std::string window_name = "Conquer Space";
 };
 }  // namespace engine
 }  // namespace cqsp

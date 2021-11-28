@@ -50,10 +50,14 @@ unsigned int LoadTexture(const unsigned char* data,
                     int height,
                     TextureLoadingOptions& options);
 
-void LoadTexture(Texture &texture, const unsigned char* data,
-                    int components,
+void LoadTexture(Texture &texture,
+ const unsigned char* data,
+
                     int width,
+
                     int height,
+
+                    int components,
                     TextureLoadingOptions& options);
 
 void LoadCubemap(Texture &texture, std::vector<unsigned char*>& data,

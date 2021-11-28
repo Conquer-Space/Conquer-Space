@@ -261,7 +261,7 @@ class GLWindow : public Window {
         m_window_height = height;
 
         // Create window
-        window = glfwCreateWindow(width, height, "Conquer Space", NULL, NULL);
+        window = glfwCreateWindow(width, height, window_name.c_str(), NULL, NULL);
         if (window == NULL) {
             glfwTerminate();
             SPDLOG_CRITICAL("Cannot load glfw");
@@ -456,7 +456,7 @@ void cqsp::engine::Application::run() {
 
     m_audio_interface->StartWorker();
     // Make test document
-    Rml::ElementDocument* document = rml_context->LoadDocument("document.rml");
+    Rml::ElementDocument* document = rml_context->LoadDocument("assets/demo.rml");
     if (!document) {
         SPDLOG_ERROR("Failed to create document");
     }
@@ -482,7 +482,7 @@ void cqsp::engine::Application::run() {
         }
 
         // Update
-        m_scene_manager.Update(deltaTime);
+        //m_scene_manager.Update(deltaTime);
 
         // Init imgui
         ImGui_ImplOpenGL3_NewFrame();
@@ -494,6 +494,7 @@ void cqsp::engine::Application::run() {
         m_scene_manager.Ui(deltaTime);
         END_TIMED_BLOCK(UiCreation);
 
+        // 2 UI libraries is not advised
         // Render UI
         BEGIN_TIMED_BLOCK(ImGui_Render);
         ImGui::Render();
@@ -717,6 +718,11 @@ void cqsp::engine::Application::InitRmlUi() {
     std::string fontPath = cqsp::common::util::GetCqspDataPath() + "/core/gfx/fonts/";
 
     Rml::LoadFontFace((fontPath + fontDatabase["default"]["path"]).c_str());
+    Rml::LoadFontFace("assets/LatoLatin-Bold.ttf");
+    Rml::LoadFontFace("assets/LatoLatin-BoldItalic.ttf");
+    Rml::LoadFontFace("assets/LatoLatin-Italic.ttf");
+    Rml::LoadFontFace("assets/LatoLatin-Regular.ttf");
+    Rml::LoadFontFace("assets/NotoEmoji-Regular.ttf");
 }
 
 void cqsp::engine::Application::SetWindowDimensions(int width, int height) {

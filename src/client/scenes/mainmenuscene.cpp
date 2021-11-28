@@ -64,6 +64,7 @@ void cqsp::scene::MainMenuScene::Init() {
 
     shader->UseProgram();
     shader->Set("texture1", 0);
+    SPDLOG_INFO("Initialized main menu scene");
 }
 
 void cqsp::scene::MainMenuScene::Update(float deltaTime) {

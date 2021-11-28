@@ -3,13 +3,14 @@
 #include <glad/glad.h>
 #include <gl/GL.h>
 
+#include <stb_image.h>
+
 #include "engine/application.h"
 #include "engine/graphics/mesh.h"
 
 #include "common/util/logging.h"
 
 cqsp::engine::CQSPRenderInterface::CQSPRenderInterface(Application& _app) : app(_app) {
-    renderer = std::make_unique<cqsp::engine::Renderer2D>(nullptr);
     // Initialize shaders
     std::string pane = R"r(
 #version 330 core
@@ -46,20 +47,34 @@ void main()
     // Create shader
     cqsp::asset::Shader shader_pane = cqsp::asset::LoadShader(pane, cqsp::asset::ShaderType::VERT);
     cqsp::asset::Shader shader_frag = cqsp::asset::LoadShader(frag, cqsp::asset::ShaderType::FRAG);
-    cqsp::asset::MakeShaderProgram(shader_pane, shader_frag);
+    auto texture = cqsp::asset::MakeShaderProgram(shader_pane, shader_frag);
+    renderer = std::make_unique<cqsp::engine::Renderer2D>(texture);
+
 }
 
 void cqsp::engine::CQSPRenderInterface::RenderGeometry(
     Rml::Vertex* vertices, int num_vertices, int* indices, int num_indices,
     Rml::TextureHandle texture, const Rml::Vector2f& translation) {
     // Do some math and render
+    SPDLOG_INFO("render geometry, we don't support it");
 }
 
 Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(
     Rml::Vertex* vertices, int num_vertices, int* indices, int num_indices,
     Rml::TextureHandle texture) {
     // Return a pointer to a mesh
+    Rml::Vertex* vert = vertices;
+    /*
+    SPDLOG_INFO("{}", num_vertices);
+    for (int i = 0; i < num_vertices; i++) {
+        vert++;
+        SPDLOG_INFO("{} {} ({} {} {} {}), {} {}", vert->position.x,
+                    vert->position.y, vert->colour.red, vert->colour.green,
+                    vert->colour.blue, vert->colour.alpha, vert->tex_coord.x,
+                    vert->tex_coord.y);
+    }*/
     Mesh* m = new Mesh();
+    m->indicies = num_indices;
     glGenVertexArrays(1, &m->VAO);
     glGenBuffers(1, &m->VBO);
     glGenBuffers(1, &m->EBO);
@@ -87,11 +102,11 @@ Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(
     glEnableVertexAttribArray(2);
 
     // Make some sort of renderable, I guess
-    cqsp::engine::Renderable renderable;
-    renderable.mesh = m;
-    //renderable.textures.push_back(texture);
-    SPDLOG_INFO("Made geometry");
-    return reinterpret_cast<Rml::CompiledGeometryHandle>(m);
+    cqsp::engine::Renderable* renderable = new cqsp::engine::Renderable();
+    renderable->mesh = m;
+    renderable->textures.push_back(reinterpret_cast<cqsp::asset::Texture*>(texture));
+    SPDLOG_INFO("Made geometry {} {} {}", m->VAO, m->VBO, m->EBO);
+    return reinterpret_cast<Rml::CompiledGeometryHandle>(renderable);
 }
 
 void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(Rml::CompiledGeometryHandle geometry, const Rml::Vector2f& translation) {
@@ -104,16 +119,17 @@ void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(Rml::CompiledGeom
 void cqsp::engine::CQSPRenderInterface::ReleaseCompiledGeometry(Rml::CompiledGeometryHandle geometry) {
     // Delete the renderable
     auto renderable = reinterpret_cast<cqsp::engine::Renderable*>(geometry);
-    cqsp::engine::Mesh::Destroy(*renderable->mesh);
+    if (renderable->mesh != nullptr) {
+        cqsp::engine::Mesh::Destroy(*(renderable->mesh));
+    }
 }
 
 void cqsp::engine::CQSPRenderInterface::EnableScissorRegion(bool enable) {
-    /*
     if (enable) {
         glEnable(GL_SCISSOR_TEST);
     } else {
         glDisable(GL_SCISSOR_TEST);
-    }*/
+    }
 }
 
 void cqsp::engine::CQSPRenderInterface::SetScissorRegion(int x, int y,
@@ -121,14 +137,41 @@ void cqsp::engine::CQSPRenderInterface::SetScissorRegion(int x, int y,
                                                          int height) {
     // Broken because glscissor does this: window-space lower-left position of the scissor box, and width and height define the size of the rectangle.
     // And rmlui does this: The top-most pixel to be rendered. All pixels to the top of this should be clipped.
-    SPDLOG_INFO("Scissor");
-    //glScissor(x, y, width, height);
+    SPDLOG_INFO("Scissor {} {} {} {}", x, y, width, height);
+    glScissor(x, app.GetWindowHeight() - (y + height), width, height);
 }
 
-bool cqsp::engine::CQSPRenderInterface::LoadTexture(
-    Rml::TextureHandle& texture_handle, Rml::Vector2i& texture_dimensions,
+bool cqsp::engine::CQSPRenderInterface::LoadTexture(Rml::TextureHandle& texture_handle, Rml::Vector2i& texture_dimensions,
     const Rml::String& source) {
-    return false;
+    // Load the texture from the file
+    SPDLOG_INFO("Loading texture");
+    // Open file and do things
+    cqsp::asset::Texture* texture = new cqsp::asset::Texture();
+    // Read all the input
+    std::ifstream input(source, std::ios::binary);
+    if (!input.good()) {
+        return false;
+    }
+    input.seekg(0, std::ios::end);
+    // Get size
+    std::streamsize size = input.tellg();
+    input.seekg(0, std::ios::beg);
+    char* data = new char[size];
+    input.read(data, size);
+    unsigned char* d = (unsigned char *) data;
+    int width, height, components;
+    unsigned char *data2 = stbi_load_from_memory(d, size, &width, &height, &components, 0);
+    asset::TextureLoadingOptions options;
+        // Read file
+    cqsp::asset::LoadTexture(*texture, data2,
+                    width,
+                    height,
+                    components,
+                    options);
+    stbi_image_free(data2);
+    delete[] data;
+    texture_handle = (Rml::TextureHandle) texture;
+    return true;
 }
 
 bool cqsp::engine::CQSPRenderInterface::GenerateTexture(
@@ -138,10 +181,9 @@ bool cqsp::engine::CQSPRenderInterface::GenerateTexture(
     // Generate opengl texture
     // Cast the source to things
     cqsp::asset::TextureLoadingOptions options;
-    cqsp::asset::LoadTexture(*texture, reinterpret_cast<const unsigned char*>(source), 4, source_dimensions.x, source_dimensions.y, options);
-    texture_handle = (Rml::TextureHandle)texture;
-    cqsp::asset::SaveImage("test.png", source_dimensions.x, source_dimensions.y,
-                           4, reinterpret_cast<const unsigned char*>(source));
+    cqsp::asset::LoadTexture(*texture, reinterpret_cast<const unsigned char*>(source), source_dimensions.x, source_dimensions.y, 4, options);
+    texture_handle = (Rml::TextureHandle) texture;
+    SPDLOG_INFO("Generated texture");
     return true;
 }
 

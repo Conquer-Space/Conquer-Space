@@ -109,7 +109,7 @@ void cqsp::asset::AssetManager::LoadDefaultTexture() {
     unsigned char* buffer = &texture_bytes[0];
     asset::TextureLoadingOptions f;
     f.mag_filter = true;
-    asset::LoadTexture(empty_texture, buffer, 3, 2, 2, f);
+    asset::LoadTexture(empty_texture, buffer, 2, 2, 3, f);
 }
 
 void cqsp::asset::AssetManager::ClearAssets() {
@@ -420,11 +420,13 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
         {
         ImagePrototype* texture_prototype = dynamic_cast<ImagePrototype*>(temp.prototype);
         Texture* asset = dynamic_cast<Texture*>(texture_prototype->asset);
-        asset::LoadTexture(*asset, texture_prototype->data,
-            texture_prototype->components,
+        asset::LoadTexture(*asset,
+            texture_prototype->data,
             texture_prototype->width,
             texture_prototype->height,
+            texture_prototype->components,
             texture_prototype->options);
+
         stbi_image_free(texture_prototype->data);
         break;
         }
