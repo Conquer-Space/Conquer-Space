@@ -189,6 +189,9 @@ class Application {
 
     bool Screenshot(const char* path);
 
+    void SetRenderRmlUi(bool b) { render_rmlui = b; }
+    void SetRenderImGui(bool b) { render_imgui = b; }
+
  private:
     void InitImguiFonts();
 
@@ -246,6 +249,10 @@ class Application {
     glm::mat4 two_dim_projection;
     glm::mat4 three_dim_projection;
     bool to_halt;
+
+    // Some things to handle for debugging.
+    bool render_imgui = false;
+    bool render_rmlui = true;
 };
 }  // namespace engine
 }  // namespace cqsp

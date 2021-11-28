@@ -57,8 +57,8 @@ class CQSPRenderInterface : public Rml::RenderInterface {
  private:
     Application& app;
     std::unique_ptr<cqsp::engine::Renderer2D> renderer;
-    int m_width;
-    int m_height;
     bool m_transform_enabled;
+
+    int counter = 0;
 };
 }  // namespace cqsp::engine

@@ -511,16 +511,20 @@ void cqsp::engine::Application::run() {
         m_scene_manager.Render(deltaTime);
         END_TIMED_BLOCK(Scene_Render);
 
-        // Render rml
-        m_render_interface->PrepareRenderBuffer();
+        if (render_rmlui) {
+            // Render rml
+            m_render_interface->PrepareRenderBuffer();
 
-        // Render the user interface on top of the application.
-        rml_context->Render();
-        m_render_interface->PresentRenderBuffer();
+            // Render the user interface on top of the application.
+            rml_context->Render();
+            m_render_interface->PresentRenderBuffer();
+        }
 
-        BEGIN_TIMED_BLOCK(ImGui_Render_Draw);
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        END_TIMED_BLOCK(ImGui_Render_Draw);
+        if (render_imgui) {
+            BEGIN_TIMED_BLOCK(ImGui_Render_Draw);
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            END_TIMED_BLOCK(ImGui_Render_Draw);
+        }
 
         // FPS counter
         DrawText(fmt::format("FPS: {:.0f}", fps), GetWindowWidth() - 80,

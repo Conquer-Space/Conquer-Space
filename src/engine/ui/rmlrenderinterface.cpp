@@ -48,6 +48,8 @@ void main()
     cqsp::asset::Shader shader_pane = cqsp::asset::LoadShader(pane, cqsp::asset::ShaderType::VERT);
     cqsp::asset::Shader shader_frag = cqsp::asset::LoadShader(frag, cqsp::asset::ShaderType::FRAG);
     auto texture = cqsp::asset::MakeShaderProgram(shader_pane, shader_frag);
+    texture->UseProgram();
+    texture->Set("texture1", 0);
     renderer = std::make_unique<cqsp::engine::Renderer2D>(texture);
 
 }
@@ -75,13 +77,14 @@ Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(
     }*/
     Mesh* m = new Mesh();
     m->indicies = num_indices;
+    m->mode = GL_TRIANGLES;
     glGenVertexArrays(1, &m->VAO);
     glGenBuffers(1, &m->VBO);
     glGenBuffers(1, &m->EBO);
 
     glBindVertexArray(m->VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m->VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Rml::Vertex) * num_vertices, &vertices,
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Rml::Vertex) * num_vertices, vertices,
                  GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m->EBO);
@@ -101,7 +104,7 @@ Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(
         reinterpret_cast<void*>(sizeof(Rml::Vector2f) + sizeof(Rml::Colourb)));
     glEnableVertexAttribArray(2);
 
-    // Make some sort of renderable, I guess
+    // Need a new renderable for rmlui specifically because it doesn't contain a shader.
     cqsp::engine::Renderable* renderable = new cqsp::engine::Renderable();
     renderable->mesh = m;
     renderable->textures.push_back(reinterpret_cast<cqsp::asset::Texture*>(texture));
@@ -114,6 +117,7 @@ void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(Rml::CompiledGeom
     // Set transformation too
     auto renderable = reinterpret_cast<cqsp::engine::Renderable*>(geometry);
     renderer->DrawTexturedSprite(renderable, glm::vec2(translation.x, translation.y));
+    counter++;
 }
 
 void cqsp::engine::CQSPRenderInterface::ReleaseCompiledGeometry(Rml::CompiledGeometryHandle geometry) {
@@ -144,7 +148,7 @@ void cqsp::engine::CQSPRenderInterface::SetScissorRegion(int x, int y,
 bool cqsp::engine::CQSPRenderInterface::LoadTexture(Rml::TextureHandle& texture_handle, Rml::Vector2i& texture_dimensions,
     const Rml::String& source) {
     // Load the texture from the file
-    SPDLOG_INFO("Loading texture");
+    SPDLOG_INFO("Loading texture {}", source);
     // Open file and do things
     cqsp::asset::Texture* texture = new cqsp::asset::Texture();
     // Read all the input
@@ -162,7 +166,7 @@ bool cqsp::engine::CQSPRenderInterface::LoadTexture(Rml::TextureHandle& texture_
     int width, height, components;
     unsigned char *data2 = stbi_load_from_memory(d, size, &width, &height, &components, 0);
     asset::TextureLoadingOptions options;
-        // Read file
+    // Read file
     cqsp::asset::LoadTexture(*texture, data2,
                     width,
                     height,
@@ -197,6 +201,8 @@ void cqsp::engine::CQSPRenderInterface::SetTransform(const Rml::Matrix4f* transf
 
 void cqsp::engine::CQSPRenderInterface::PrepareRenderBuffer() {
     renderer->SetProjection(app.Get2DProj());
+    glDisable(GL_DEPTH_TEST);
+    //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 }
 
 void cqsp::engine::CQSPRenderInterface::PresentRenderBuffer() {
