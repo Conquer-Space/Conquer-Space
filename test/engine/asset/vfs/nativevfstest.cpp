@@ -105,3 +105,42 @@ TEST_F(NativeVfsTest, SeekTest) {
     ASSERT_EQ(ptr->Tell(), size - 10);
     nfs.Close(ptr);
 }
+
+TEST_F(NativeVfsTest, IsFileTest) {
+    ASSERT_TRUE(nfs.Exists(test_file.c_str()));
+    ASSERT_TRUE(nfs.IsFile(test_file.c_str()));
+    // File doesn't exist
+    ASSERT_FALSE(nfs.IsFile("dir"));
+    ASSERT_FALSE(nfs.Exists("dir"));
+
+    // Is directory
+    ASSERT_FALSE(nfs.IsFile("data"));
+    ASSERT_TRUE(nfs.IsDirectory("data"));
+
+    ASSERT_TRUE(nfs.Exists("data/goods"));
+    ASSERT_TRUE(nfs.IsDirectory("data/goods"));
+}
+
+TEST_F(NativeVfsTest, DirectoryStatTest) {
+    // Test a large data folder so that we can take into account of everything
+    const char* dir_name = "data";
+    auto dir = nfs.OpenDirectory(dir_name);
+
+    // Also get the file count
+    auto iterator = std::filesystem::recursive_directory_iterator(std::filesystem::path(package_root) / dir_name);
+    int count = 0;
+    for (const auto& dir_entry : iterator) {
+        if (dir_entry.is_regular_file()) {
+            count++;
+        }
+    }
+    ASSERT_EQ(dir->GetSize(), count);
+}
+
+TEST_F(NativeVfsTest, DirectoryOpenTest) {
+    // Get a file, and test that it works.
+    const char* dir_name = "data/goods";
+    auto dir = nfs.OpenDirectory(dir_name);
+    auto file = dir->GetFile(0);
+    ASSERT_NE(file, nullptr);
+}

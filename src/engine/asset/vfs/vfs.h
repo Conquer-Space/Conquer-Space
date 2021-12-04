@@ -32,6 +32,7 @@ enum class Offset {
 };
 
 class IVirtualFile;
+class IVirtualDirectory;
 
 /// <summary>
 /// The main functionality for this is to read files, so writing to files will
@@ -49,7 +50,40 @@ class IVirtualFileSystem {
     virtual std::shared_ptr<IVirtualFile> Open(const char* path, FileModes modes = None) = 0;
 
     virtual void Close(std::shared_ptr<IVirtualFile>&) = 0;
+
+    /// <summary>
+    /// Lists all the files in the directory.
+    /// Does not list directories in the list because for our purposes, we do not need
+    /// to traverse and process directories with this.
+    /// Returns nullptr if path does not exist or is not a directory.
+    /// </summary>
+    virtual std::shared_ptr<IVirtualDirectory> OpenDirectory(const char* path) = 0;
+
+    virtual bool IsFile(const char* path) = 0;
+    virtual bool IsDirectory(const char* path) = 0;
+    virtual bool Exists(const char* path) = 0;
  private:
+};
+
+/// <summary>
+/// Meant to list all the files and sub files in the directory.
+/// This is sort of a replacement for directory iterator.
+/// If you want to cd a directory, just access it from the initial file system, I guess.
+/// </summary>
+class IVirtualDirectory {
+ public:
+    IVirtualDirectory() {}
+    virtual ~IVirtualDirectory() {}
+
+    virtual uint64_t GetSize() = 0;
+
+    /// <summary>
+    /// The root directory, relative to the filesystem.
+    /// </summary>
+    /// <returns></returns>
+    virtual const char* GetRoot() = 0;
+    virtual std::shared_ptr<IVirtualFile> GetFile(int index, FileModes modes = None) = 0;
+    virtual IVirtualFileSystem* GetFileSystem() = 0;
 };
 
 class IVirtualFile {
@@ -70,7 +104,6 @@ class IVirtualFile {
     /// Get file path relative to the filesystem.
     /// </summary>
     virtual const char* Path() = 0;
-
 
     virtual IVirtualFileSystem* GetFileSystem() = 0;
  protected:

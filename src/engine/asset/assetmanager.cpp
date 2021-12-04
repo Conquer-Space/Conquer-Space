@@ -463,6 +463,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadText
     f->Read(buffer, size);
     asset->data = std::string(reinterpret_cast<char*>(buffer), size);
     delete[] buffer;
+    return asset;
 }
 
 std::unique_ptr<cqspa::TextAsset> cqsp::asset::AssetLoader::LoadText(std::istream& asset_stream,

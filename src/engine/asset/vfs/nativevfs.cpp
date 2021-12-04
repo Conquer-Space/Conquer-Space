@@ -25,7 +25,7 @@ cqsp::asset::NativeFileSystem::NativeFileSystem(const char* _root) : root(_root)
 
 std::shared_ptr<cqsp::asset::IVirtualFile> cqsp::asset::NativeFileSystem::Open(
     const char* file_path, FileModes modes) {
-    std::string path = std::filesystem::absolute(std::filesystem::path(root) / file_path).string();
+    std::string path = (std::filesystem::path(root) / file_path).string();
     std::shared_ptr<NativeFile> nfile = std::make_shared<NativeFile>(this, file_path);
     if (modes & FileModes::Binary) {
         // Open binary
@@ -50,6 +50,37 @@ void cqsp::asset::NativeFileSystem::Close(std::shared_ptr<IVirtualFile>& vf) {
     // Cast the pointer
     NativeFile* f = dynamic_cast<NativeFile*>(vf.get());
     f->file.close();
+}
+
+std::shared_ptr<cqsp::asset::IVirtualDirectory> cqsp::asset::NativeFileSystem::OpenDirectory(const char* dir) {
+    // get the directory
+    std::string path = std::filesystem::absolute(std::filesystem::path(root) / dir).string();
+    if (!std::filesystem::is_directory(path)) {
+        return nullptr;
+    }
+
+    std::shared_ptr<NativeDirectory> native_dir = std::make_shared<NativeDirectory>(this, dir);
+    for (const auto& dir_entry :
+         std::filesystem::recursive_directory_iterator(path)) {
+        // Add to the virtual directory
+        if (dir_entry.is_regular_file()) {
+            native_dir->paths.push_back(std::filesystem::relative(dir_entry.path(), std::filesystem::path(root) / path).string());
+        }
+    }
+    // Return the directory
+    return native_dir;
+}
+
+bool cqsp::asset::NativeFileSystem::IsFile(const char* path) {
+    return std::filesystem::is_regular_file(std::filesystem::path(root) / path);
+}
+
+bool cqsp::asset::NativeFileSystem::IsDirectory(const char* path) {
+    return std::filesystem::is_directory(std::filesystem::path(root) / path);
+}
+
+bool cqsp::asset::NativeFileSystem::Exists(const char* path) {
+    return std::filesystem::exists(std::filesystem::path(root) / path);
 }
 
 const char* cqsp::asset::NativeFile::Path() { return path; }
@@ -80,3 +111,18 @@ bool cqsp::asset::NativeFile::Seek(long offset, Offset origin) {
 }
 
 uint64_t cqsp::asset::NativeFile::Tell() { return file.tellg(); }
+
+uint64_t cqsp::asset::NativeDirectory::GetSize() { return paths.size(); }
+
+const char* cqsp::asset::NativeDirectory::GetRoot() { return root; }
+
+std::shared_ptr<cqsp::asset::IVirtualFile>
+cqsp::asset::NativeDirectory::GetFile(int index, FileModes modes) {
+    // Get the file
+    std::string path = (std::string(root) + "/" + paths[index]);
+    return nfs->Open(path.c_str(), modes);
+}
+
+cqsp::asset::IVirtualFileSystem* cqsp::asset::NativeDirectory::GetFileSystem() {
+    return nfs;
+}

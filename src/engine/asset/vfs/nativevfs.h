@@ -17,27 +17,29 @@
 #pragma once
 
 #include <fstream>
+#include <vector>
 
 #include "engine/asset/vfs/vfs.h"
 
 namespace cqsp {
 namespace asset {
 class NativeFileSystem;
+class NativeDirectory;
 
 class NativeFile : public IVirtualFile {
  public:
     NativeFile(NativeFileSystem* _nfs) : IVirtualFile(), nfs(_nfs), path("") {}
     NativeFile(NativeFileSystem* _nfs, const char* file) : IVirtualFile(), nfs(_nfs), path(file) {}
 
-    const char* Path();
-    uint64_t Size();
+    const char* Path()  override;
+    uint64_t Size()  override;
 
-    void Read(uint8_t* buffer, int bytes);
+    void Read(uint8_t* buffer, int bytes)  override;
 
     bool Seek(long offset, Offset origin);
-    uint64_t Tell();
+    uint64_t Tell()  override;
 
-    IVirtualFileSystem* GetFileSystem() {
+    IVirtualFileSystem* GetFileSystem() override {
         return (IVirtualFileSystem*) nfs;
     }
 
@@ -59,10 +61,31 @@ class NativeFileSystem : public IVirtualFileSystem {
     }
 
     std::shared_ptr<IVirtualFile> Open(const char* path, FileModes = None) override;
-    void Close(std::shared_ptr<IVirtualFile>&);
+    void Close(std::shared_ptr<IVirtualFile>&) override;
+    std::shared_ptr<IVirtualDirectory> OpenDirectory(const char* path) override;
+
+    bool IsFile(const char* path) override;
+    bool IsDirectory(const char* path) override;
+    bool Exists(const char* path) override;
 
  private:
     const char* root;
+    friend NativeDirectory;
+};
+
+class NativeDirectory : public IVirtualDirectory {
+ public:
+    NativeDirectory(NativeFileSystem* _nfs, const char* _root) : nfs(_nfs), root(_root) {}
+
+    virtual uint64_t GetSize() override;
+    const char* GetRoot() override;
+    std::shared_ptr<IVirtualFile> GetFile(int index, FileModes modes = None) override;
+    IVirtualFileSystem* GetFileSystem() override;
+ private:
+    friend NativeFileSystem;
+    std::vector<std::string> paths;
+    const char* root;
+    NativeFileSystem* nfs;
 };
 }
 }  // namespace cqsp
