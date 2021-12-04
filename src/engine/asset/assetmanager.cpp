@@ -455,6 +455,16 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
     delete temp.prototype;
 }
 
+std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadText
+        (cqsp::asset::IVirtualFile* f, const std::string& key, const Hjson::Value& hints) {
+    std::unique_ptr<cqspa::TextAsset> asset = std::make_unique<cqspa::TextAsset>();
+    int size = f->Size();
+    uint8_t* buffer = new uint8_t[size];
+    f->Read(buffer, size);
+    asset->data = std::string(reinterpret_cast<char*>(buffer), size);
+    delete[] buffer;
+}
+
 std::unique_ptr<cqspa::TextAsset> cqsp::asset::AssetLoader::LoadText(std::istream& asset_stream,
                                                                     const Hjson::Value& hints) {
     std::unique_ptr<cqspa::TextAsset> asset = std::make_unique<cqspa::TextAsset>();

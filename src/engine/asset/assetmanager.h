@@ -37,6 +37,7 @@
 #include "engine/graphics/shader.h"
 #include "engine/graphics/text.h"
 #include "engine/gui.h"
+#include "engine/asset/vfs/vfs.h"
 
 namespace cqsp {
 namespace asset {
@@ -303,9 +304,14 @@ class AssetLoader {
 
     AssetManager* manager;
 
+    typedef std::function<std::unique_ptr<Asset>
+        (IVirtualFile*, const std::string& key, const Hjson::Value& hints)> LoaderFunction;
  private:
     std::string LoadModPrototype(const std::string&);
 
+    std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadText(
+        cqsp::asset::IVirtualFile* f, const std::string& key,
+        const Hjson::Value& hints);
     std::unique_ptr<TextAsset> LoadText(std::istream &asset_stream, const Hjson::Value& hints);
     std::unique_ptr<TextDirectoryAsset> LoadTextDirectory(const std::string& name, const Hjson::Value& hints);
     /// <summary>
