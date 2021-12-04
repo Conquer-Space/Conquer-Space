@@ -350,11 +350,9 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
             } else {
                 DrawTerrainlessPlanet(object_pos);
             }
-            RenderCities(object_pos, body_entity);
         }
     }
     renderer.EndDraw(physical_layer);
-
 
     for (auto body_entity : bodies) {
         glm::vec3 object_pos = CalculateCenteredObject(body_entity);
