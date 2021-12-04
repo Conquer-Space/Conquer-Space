@@ -183,6 +183,14 @@ class Application {
 
     std::vector<std::string>& GetCmdLineArgs() { return cmd_line_args; }
 
+    /// <summary>
+    /// Screenshots the current framebuffer to the filename
+    ///
+    /// If it's null, it will put the screenshot into the default folder, with
+    /// </summary>
+    /// <param name="path"></param>
+    bool Screenshot(const char* path = NULL);
+
  private:
     void InitFonts();
 

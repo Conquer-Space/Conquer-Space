@@ -119,6 +119,8 @@ void cqsp::scene::UniverseScene::Update(float deltaTime) {
         }
     }
 
+    DoScreenshot();
+
     if (view_mode) {
         GetUniverse().clear<cqsp::client::systems::MouseOverEntity>();
         system_renderer->GetMouseOnObject(GetApp().GetMouseX(), GetApp().GetMouseY());
@@ -152,6 +154,16 @@ void cqsp::scene::UniverseScene::Render(float deltaTime) {
         system_renderer->Render(deltaTime);
     } else {
         galaxy_renderer->Render(deltaTime);
+    }
+}
+
+void cqsp::scene::UniverseScene::DoScreenshot() {
+    // Take screenshot
+    if ((GetApp().ButtonIsReleased(GLFW_KEY_F1) &&
+            GetApp().ButtonIsHeld(GLFW_KEY_F10)) ||
+        (GetApp().ButtonIsHeld(GLFW_KEY_F1) &&
+            GetApp().ButtonIsReleased(GLFW_KEY_F10))) {
+        GetApp().Screenshot();
     }
 }
 

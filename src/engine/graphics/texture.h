@@ -58,5 +58,8 @@ void LoadCubemap(Texture &texture, std::vector<unsigned char*>& data,
                     int width,
                     int height,
                     TextureLoadingOptions& options);
+
+bool SaveImage(const char* path, int width, int height,
+               int components, const unsigned char* data, bool flip = true);
 }  // namespace asset
 }  // namespace cqsp
