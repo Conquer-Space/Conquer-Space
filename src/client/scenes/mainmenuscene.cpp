@@ -17,6 +17,7 @@
 #include "client/scenes/mainmenuscene.h"
 
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #include <imgui_markdown.h>
 
@@ -65,7 +66,15 @@ void cqsp::scene::MainMenuScene::Init() {
     shader->Set("texture1", 0);
 }
 
-void cqsp::scene::MainMenuScene::Update(float deltaTime) {}
+void cqsp::scene::MainMenuScene::Update(float deltaTime) {
+    // Take screenshot test
+    if ((GetApp().ButtonIsReleased(GLFW_KEY_F1) &&
+            GetApp().ButtonIsHeld(GLFW_KEY_F10)) ||
+        (GetApp().ButtonIsHeld(GLFW_KEY_F1) &&
+            GetApp().ButtonIsReleased(GLFW_KEY_F10))) {
+        GetApp().Screenshot();
+    }
+}
 
 void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
     float winWidth = width;

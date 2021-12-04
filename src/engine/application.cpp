@@ -568,6 +568,40 @@ void cqsp::engine::Application::DrawTextNormalized(const std::string& text, floa
 
 double cqsp::engine::Application::GetTime() { return glfwGetTime(); }
 
+bool cqsp::engine::Application::Screenshot(const char* path) {
+    // Take screenshot
+    const int components = 3;
+    const int byte_size = GetWindowWidth() * GetWindowHeight() * components;
+    unsigned char* data = new unsigned char[byte_size];
+
+    // Read data
+    glReadPixels(0, 0, GetWindowWidth(), GetWindowHeight(), GL_RGB, GL_UNSIGNED_BYTE, data);
+
+    std::string screenshot_name;
+    if (path == NULL) {
+        // Make screenshot folder
+        std::filesystem::path screenshot_folder =
+                            std::filesystem::path(cqsp::common::util::GetCqspSavePath()) / "screenshots";
+        std::filesystem::create_directories(screenshot_folder);
+
+        // Default file name is YYYY-MM-DD_HH.MM.SS.png in the data folder.
+        auto time_now = std::chrono::system_clock::now();
+        std::time_t time_pt = std::chrono::system_clock::to_time_t(time_now);
+
+        // Why is put_time so annoyingly confusing??
+        std::stringstream ss;
+        ss << std::put_time(std::localtime(&time_pt), "%F_%H.%M.%S.png");
+        screenshot_name = (screenshot_folder / screenshot_name).string();
+    } else {
+        screenshot_name = path;
+    }
+
+    bool success = cqsp::asset::SaveImage(screenshot_name.c_str(),
+                                          GetWindowWidth(), GetWindowHeight(), components, data);
+    delete[] data;
+    return success;
+}
+
 void cqsp::engine::Application::InitFonts() {
     Hjson::Value fontDatabase;
     Hjson::DecoderOptions decOpt;
