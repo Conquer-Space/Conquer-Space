@@ -32,7 +32,6 @@ cqsp::engine::FramebufferRenderer::~FramebufferRenderer() { Free(); }
 
 void cqsp::engine::FramebufferRenderer::InitTexture(int width, int height) {
     GenerateFrameBuffer(framebuffer);
-    SPDLOG_INFO("Framebuffer {}", framebuffer);
     // create a color attachment texture
     glGenTextures(1, &colorbuffer);
     glBindTexture(GL_TEXTURE_2D, colorbuffer);

@@ -18,6 +18,7 @@
 
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/dup_filter_sink.h>
 
 #include <filesystem>
 #include <vector>
@@ -34,6 +35,8 @@ std::shared_ptr<spdlog::logger> cqsp::common::util::make_logger(std::string name
     // Get log folder
     std::string save_path = GetCqspSavePath();
     std::filesystem::path log_folder = std::filesystem::path(save_path) / "logs";
+
+    auto dup_filter = std::make_shared<spdlog::sinks::dup_filter_sink_st>(std::chrono::seconds(10));
 
     // Initialize logger
     std::vector<spdlog::sink_ptr> sinks;
@@ -54,7 +57,8 @@ std::shared_ptr<spdlog::logger> cqsp::common::util::make_logger(std::string name
     auto console_logger = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
     sinks.push_back(console_logger);
 #endif
-    logger = std::make_shared<spdlog::logger>(name, sinks.begin(), sinks.end());
+    dup_filter->set_sinks(sinks);
+    logger = std::make_shared<spdlog::logger>(name, dup_filter);
 
     // Default pattern
     logger->set_pattern(DEFAULT_PATTERN);
