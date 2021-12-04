@@ -59,6 +59,11 @@ class UniverseScene : public cqsp::engine::Scene {
     }
 
  private:
+    /// <summary>
+    /// Does the screenshot interface.
+    /// </summary>
+    void DoScreenshot();
+
     cqsp::engine::Renderable sphere;
     cqsp::engine::Renderable sky;
     cqsp::engine::Renderable planetDisp;
