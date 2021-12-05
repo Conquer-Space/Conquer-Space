@@ -24,10 +24,9 @@
 
 #include <glad/glad.h>
 
-unsigned int cqsp::asset::LoadTexture(unsigned char*& data,
-                                        int components,
-                                        int width,
+unsigned int cqsp::asset::CreateTexture(unsigned char*& data, int width,
                                         int height,
+                                        int components,
                                         TextureLoadingOptions& options) {
     unsigned int texid;
     glGenTextures(1, &texid);
@@ -58,20 +57,21 @@ unsigned int cqsp::asset::LoadTexture(unsigned char*& data,
     return texid;
 }
 
-void cqsp::asset::LoadTexture(Texture& texture, unsigned char*& data, int components, int width,
-    int height, TextureLoadingOptions& options) {
-    texture.id = LoadTexture(data, components, width, height, options);
+void cqsp::asset::CreateTexture(Texture& texture, unsigned char*& data, int width,
+                              int height, int components, TextureLoadingOptions& options) {
+    texture.id = CreateTexture(data, width, height, components, options);
     texture.width = width;
     texture.height = height;
     // It's a 2d texture, so
     texture.texture_type = GL_TEXTURE_2D;
 }
 
-void cqsp::asset::LoadCubemap(Texture &texture, std::vector<unsigned char*>& faces,
-                    int components,
-                    int width,
-                    int height,
-                    TextureLoadingOptions& options) {
+void cqsp::asset::LoadCubemap(Texture &texture,
+                                std::vector<unsigned char*>& faces,
+                                int width,
+                                int height,
+                                int components,
+                                TextureLoadingOptions& options) {
     glGenTextures(1, &texture.id);
     glBindTexture(GL_TEXTURE_CUBE_MAP, texture.id);
 

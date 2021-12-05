@@ -42,7 +42,6 @@
 namespace cqsp {
 namespace asset {
 
-enum class AssetType { NONE, TEXTURE, SHADER, HJSON, TEXT, MODEL, FONT, CUBEMAP, TEXT_ARRAY, AUDIO };
 enum PrototypeType { NONE = 0, TEXTURE, SHADER, FONT, CUBEMAP };
 
 /**
@@ -305,13 +304,23 @@ class AssetLoader {
     AssetManager* manager;
 
     typedef std::function<std::unique_ptr<Asset>
-        (IVirtualFile*, const std::string& key, const Hjson::Value& hints)> LoaderFunction;
+        (cqsp::asset::IVirtualFileSystem*, const std::string&, const std::string&, const Hjson::Value&)> LoaderFunction;
  private:
     std::string LoadModPrototype(const std::string&);
 
-    std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadText(
-        cqsp::asset::IVirtualFile* f, const std::string& key,
+    std::unique_ptr<cqsp::asset::Asset> LoadText(
+        cqsp::asset::IVirtualFileSystem* f, const std::string& path, const std::string& key,
         const Hjson::Value& hints);
+    std::unique_ptr<cqsp::asset::Asset> LoadTextDirectory(
+        cqsp::asset::IVirtualFileSystem* f, const std::string& path, const std::string& key,
+        const Hjson::Value& hints);
+    std::unique_ptr<cqsp::asset::Asset> LoadTexture(
+        cqsp::asset::IVirtualFileSystem* f, const std::string& path,
+        const std::string& key, const Hjson::Value& hints);
+    std::unique_ptr<cqsp::asset::Asset> LoadHjson(
+        cqsp::asset::IVirtualFileSystem* f, const std::string& path,
+        const std::string& key, const Hjson::Value& hints);
+
     std::unique_ptr<TextAsset> LoadText(std::istream &asset_stream, const Hjson::Value& hints);
     std::unique_ptr<TextDirectoryAsset> LoadTextDirectory(const std::string& name, const Hjson::Value& hints);
     /// <summary>
@@ -364,6 +373,9 @@ class AssetLoader {
     /// <param name="hints">Any extra information for the asset loader to take into account</param>
     void LoadAsset(Package& package, const std::string& type, const std::string& path, const std::string& key,
                     const Hjson::Value& hints);
+    void LoadAsset(Package& package, const AssetType& type,
+                   const std::string& path, const std::string& key,
+                   const Hjson::Value& hints);
 
     std::unique_ptr<Texture> LoadTexture(const std::string& key, const std::string& filePath,
                     const Hjson::Value& hints);
@@ -441,12 +453,12 @@ class AssetLoader {
     /// <param name="path"></param>
     void LoadResources(Package& package, std::string path);
 
-    std::map<std::string, AssetType> asset_type_map;
     std::vector<std::string> missing_assets;
     ThreadsafeQueue<QueueHolder> m_asset_queue;
 
     std::atomic_int max_loading;
     std::atomic_int currentloading;
+    std::map<AssetType, LoaderFunction> loading_functions;
 };
 }  // namespace asset
 }  // namespace cqsp
