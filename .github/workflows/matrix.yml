@@ -71,6 +71,7 @@ jobs:
         ctest -V --schedule-random --progress --output-on-failure --parallel --no-tests error --build-config ${{ matrix.config }} --test-dir build/test
 
     - uses: actions/upload-artifact@v2
+      continue-on-error: true
       with:
         name: Conquer-Space_${{ matrix.os }}${{ matrix.compiler }}_${{ matrix.config }}_b${{ github.run_number }}
         path: |
@@ -103,6 +104,7 @@ jobs:
       run: ctest -V --schedule-random --progress --output-on-failure --parallel --no-tests error --build-config ${{ matrix.config }} --test-dir build/test
 
     - uses: actions/upload-artifact@v2
+      continue-on-error: true
       with:
         name: Conquer-Space_Windows_${{ matrix.config }}_${{ github.run_number }}
         path: |
