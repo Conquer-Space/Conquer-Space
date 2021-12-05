@@ -450,8 +450,15 @@ class AssetLoader {
     /// <br>
     /// We don't have model support yet, but that will come soon.
     /// </summary>
-    /// <param name="path">Base path to the package</param>
+    /// <param name="path">Base virtual path to the package</param>
     void LoadResources(Package& package, std::string path);
+
+    /// <summary>
+    /// Creates a virtual file system for the path to load.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    IVirtualFileSystem* GetVfs(const std::string& path);
 
     std::vector<std::string> missing_assets;
     ThreadsafeQueue<QueueHolder> m_asset_queue;
@@ -459,6 +466,7 @@ class AssetLoader {
     std::atomic_int max_loading;
     std::atomic_int currentloading;
     std::map<AssetType, LoaderFunction> loading_functions;
+    VirtualMounter mounter;
 };
 }  // namespace asset
 }  // namespace cqsp

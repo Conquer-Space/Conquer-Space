@@ -19,6 +19,7 @@
 #include <filesystem>
 
 #include <iostream>
+#include <spdlog/spdlog.h>
 
 cqsp::asset::NativeFileSystem::NativeFileSystem(const char* _root) : root(_root){
 }
@@ -27,13 +28,10 @@ std::shared_ptr<cqsp::asset::IVirtualFile> cqsp::asset::NativeFileSystem::Open(
     const char* file_path, FileModes modes) {
     std::string path = (std::filesystem::path(root) / file_path).string();
     std::shared_ptr<NativeFile> nfile = std::make_shared<NativeFile>(this, file_path);
-    if (modes & FileModes::Binary) {
-        // Open binary
-        nfile->file.open(path, std::ios::binary);
-    } else {
-        nfile->file.open(path);
-    }
-    // Set the size
+    // Always open binary for carrige return purposes.
+    // TODO(EhWhoAmI): Make this able to read text without carrige return.
+    nfile->file.open(path, std::ios::binary);
+    // Get the size
     nfile->file.seekg(0, std::ios::end);
     nfile->size = nfile->file.tellg();
     nfile->file.seekg(0);
@@ -90,6 +88,7 @@ uint64_t cqsp::asset::NativeFile::Size() {
 }
 
 void cqsp::asset::NativeFile::Read(uint8_t* buffer, int num_bytes) {
+    // Text mode is mildly screwed up, because of carrige return on windows.
     file.read(reinterpret_cast<char*>(buffer), static_cast<std::streamsize>(num_bytes));
 }
 

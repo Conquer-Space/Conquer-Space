@@ -35,7 +35,8 @@ enum class Offset {
 
 class IVirtualFile;
 class IVirtualDirectory;
-
+typedef std::shared_ptr<IVirtualFile> IVirtualFilePtr;
+typedef std::shared_ptr<IVirtualDirectory> IVirtualDirectoryPtr;
 /// <summary>
 /// The main functionality for this is to read files, so writing to files will
 /// not really be supported.
@@ -123,5 +124,18 @@ class VirtualMounter {
  private:
     std::map<std::string, IVirtualFileSystem*> mount_points;
 };
+
+/// <summary>
+/// Reads all the data from the virtual file.
+/// </summary>
+/// <param name=""></param>
+/// <returns></returns>
+uint8_t* ReadAllFromVFile(IVirtualFile*);
+int ReadAllFromVFile(uint8_t* buf, IVirtualFile*);
+
+/// <summary>
+/// Don't really want this, but ah well, it cannot be helped.
+/// </summary>
+std::string ReadAllFromVFileToString(IVirtualFile* file);
 }  // namespace asset
 }  // namespace cqsp

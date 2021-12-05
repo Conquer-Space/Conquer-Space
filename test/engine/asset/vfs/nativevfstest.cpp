@@ -67,25 +67,18 @@ TEST_F(NativeVfsTest, FileReadTest) {
     int size = std::filesystem::file_size(full_name);
 
     auto ptr = nfs.Open(test_file.c_str());
-    uint8_t* test_buffer = new uint8_t[size];
-    ptr->Read(test_buffer, size);
+
+    std::string to_test = cqsp::asset::ReadAllFromVFileToString(ptr.get());
 
     // Read file for what the file actually says
     std::ifstream file(full_name);
-    file.seekg(0, std::ios::end);
-    file.seekg(0);
-    char *true_buffer = new char[size];
-    file.read(true_buffer, size);
-
-    std::string to_test(reinterpret_cast<char*>(test_buffer), size);
-    std::string truth(true_buffer, size);
+    std::string truth((std::istreambuf_iterator<char>(file)),
+                 std::istreambuf_iterator<char>());
 
     ASSERT_EQ(to_test, truth);
 
     // Close the file
     nfs.Close(ptr);
-    delete[] test_buffer;
-    delete[] true_buffer;
 }
 
 TEST_F(NativeVfsTest, SeekTest) {

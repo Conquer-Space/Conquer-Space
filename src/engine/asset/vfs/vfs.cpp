@@ -98,3 +98,34 @@ bool cqsp::asset::VirtualMounter::Exists(const char* path) {
     }
     return false;
 }
+
+uint8_t* cqsp::asset::ReadAllFromVFile(IVirtualFile* file) {
+    int size = file->Size();
+    uint8_t* buffer = new uint8_t[size];
+    file->Read(buffer, size);
+    return buffer;
+}
+
+int cqsp::asset::ReadAllFromVFile(uint8_t* buf, IVirtualFile* file) {
+    int size = file->Size();
+    buf = new uint8_t[size];
+    file->Read(buf, size);
+    return size;
+}
+
+std::string cqsp::asset::ReadAllFromVFileToString(IVirtualFile* file) {
+    int size = file->Size();
+    uint8_t* buf = new uint8_t[size];
+    file->Read(buf, size);
+    // Output to string
+    std::string str(reinterpret_cast<char*>(buf), size);
+    // Now convert to a proper string
+    size_t start_pos = 0;
+    // Replace carrige returns because it's text mode
+    while((start_pos = str.find("\r\n", start_pos)) != std::string::npos) {
+        str.replace(start_pos, strlen("\r\n"), "\n");
+        start_pos += 1; // In case 'to' contains 'from', like replacing 'x' with 'yx'
+    }
+    delete[] buf;
+    return str;
+}

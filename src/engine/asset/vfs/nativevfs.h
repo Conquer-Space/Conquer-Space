@@ -56,6 +56,7 @@ class NativeFile : public IVirtualFile {
 class NativeFileSystem : public IVirtualFileSystem {
  public:
     NativeFileSystem(const char* root);
+    NativeFileSystem(std::string _root) : root(_root) {}
     bool Initialize() override {
         return true;
     }
@@ -67,9 +68,10 @@ class NativeFileSystem : public IVirtualFileSystem {
     bool IsFile(const char* path) override;
     bool IsDirectory(const char* path) override;
     bool Exists(const char* path) override;
+    const char* GetRoot() { return root.c_str(); }
 
  private:
-    const char* root;
+    std::string root;
     friend NativeDirectory;
 };
 

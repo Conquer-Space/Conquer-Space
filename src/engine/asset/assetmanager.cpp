@@ -28,6 +28,7 @@
 #include <filesystem>
 
 #include "engine/audio/alaudioasset.h"
+#include "engine/asset/vfs/nativevfs.h"
 #include "common/util/paths.h"
 
 #define CREATE_ASSET_LAMBDA(FuncName) [this] (cqsp::asset::VirtualMounter* f,                   \
@@ -150,8 +151,8 @@ void cqsp::asset::AssetLoader::LoadAssets() {
     // Load core
     std::filesystem::path data_path(cqsp::common::util::GetCqspDataPath());
     std::filesystem::recursive_directory_iterator it(data_path);
-    manager->packages["core"] = LoadPackage((data_path/"core").string());
-    SPDLOG_INFO("Loaded core");
+    //manager->packages["core"] = LoadPackage((data_path/"core").string());
+    //SPDLOG_INFO("Loaded core");
 
     // Load mods from the document folders
     // Find documents folder and load the information about the files
@@ -165,8 +166,9 @@ void cqsp::asset::AssetLoader::LoadAssets() {
     };
 
     SPDLOG_INFO("Loading potential mods");
+
     // Load core
-    mod_load(LoadModPrototype((data_path/"core").string()));
+    LoadModPrototype((data_path/"core").string());
     // Enable core by default
     all_mods["core"] = true;
 
@@ -213,15 +215,17 @@ std::string cqsp::asset::AssetLoader::GetModFilePath() {
 }
 
 std::string cqsp::asset::AssetLoader::LoadModPrototype(const std::string& path_string) {
-    std::filesystem::path path(path_string);
     // Load the info.hjson
-    if (!std::filesystem::is_directory(path)) {
+    std::filesystem::path package_path(path_string);
+    IVirtualFileSystem* vfs = GetVfs(path_string);
+
+    if (!vfs->Exists("info.hjson")) {
         return "";
     }
-    if (!std::filesystem::exists(path/"info.hjson")) {
-        return "";
-    }
-    Hjson::Value mod_info = Hjson::UnmarshalFromFile((path/"info.hjson").string());
+    // Load the file
+    
+    Hjson::Value mod_info = Hjson::Unmarshal(
+        cqsp::asset::ReadAllFromVFileToString(vfs->Open("info.hjson").get()));
     // Get the info of the file
     // Add core
     PackagePrototype prototype;
@@ -230,12 +234,13 @@ std::string cqsp::asset::AssetLoader::LoadModPrototype(const std::string& path_s
         prototype.version = mod_info["version"].to_string();
         prototype.title = mod_info["title"].to_string();
         prototype.author = mod_info["author"].to_string();
-        prototype.path = path.string();
+        prototype.path = package_path.string();
         manager->potential_mods[prototype.name] = prototype;
     } catch (Hjson::index_out_of_bounds &ex) {
         // Don't load the mod
         SPDLOG_INFO("Hjson::index_out_of_bounds: {}", ex.what());
     }
+    delete vfs;
     return prototype.name;
 }
 
@@ -255,26 +260,43 @@ std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std:
     // Load the assets of a package specified by a path
     // First load info.hjson, the info path of the file.
     std::filesystem::path package_path(path);
-    SPDLOG_INFO("Loading package {}", package_path.string());
-    Hjson::Value info = Hjson::UnmarshalFromFile((package_path/"info.hjson").string());
-    // This will also serve as the namespace name, so no spaces, periods, semicolons please
+    // Mount the path
+    IVirtualFileSystem* vfs = GetVfs(package_path.string());
 
+    // Mount package path
+    SPDLOG_INFO("Loading package {}", package_path.string());
+    // Read info.hjson from package
+    auto info_file = vfs->Open("info.hjson");
+    if (info_file == nullptr) {
+        SPDLOG_INFO("Failed to load package {}", package_path.string());
+        // Fail :(
+    }
+
+    // Read the data
+    Hjson::Value info = Hjson::Unmarshal(ReadAllFromVFileToString(info_file.get()));
+
+    // Place into string
+    // This will also serve as the namespace name, so no spaces, periods, semicolons please
     std::unique_ptr<Package> package = std::make_unique<Package>();
     package->name = info["name"].to_string();
     package->version = info["version"].to_string();
     package->title = info["title"].to_string();
     package->author = info["author"].to_string();
+    // Mount to name
+    std::string mount_point = fmt::format("/{}", package->name);
+    mounter.AddMountPoint(mount_point.c_str(), vfs);
 
     // Load dependencies
     // Now load the 'important' folders
     std::filesystem::path script_path(package_path / "scripts");
+    // Check if files exist
     // Load scripts
-    if (std::filesystem::exists(script_path) && std::filesystem::is_directory(script_path)) {
+    if (mounter.IsFile((mount_point + "/scripts").c_str()) && mounter.IsFile((mount_point + "/scripts/base.lua").c_str())) {
         // Load base.lua for the base folder
-        auto base_stream = std::fstream(script_path / "base.lua");
-        auto base = LoadText(base_stream, Hjson::Value());
-        package->assets["base"] = std::move(base);
+        package->assets["base"] = LoadText(&mounter, mount_point + "/scripts/base.lua", "base", Hjson::Value());
         package->assets["scripts"] = LoadScriptDirectory((package_path / "scripts").string(), Hjson::Value());
+    } else {
+        SPDLOG_INFO("No script file");
     }
 
     // Load a few other hjson folders.
@@ -472,10 +494,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadText(cqsp::ass
     std::unique_ptr<cqspa::TextAsset> asset = std::make_unique<cqspa::TextAsset>();
     auto file = f->Open(path.c_str());
     int size = file->Size();
-    uint8_t* buffer = new uint8_t[size];
-    file->Read(buffer, size);
-    asset->data = std::string(reinterpret_cast<char*>(buffer), size);
-    delete[] buffer;
+    asset->data = ReadAllFromVFileToString(file.get());
     return asset;
 }
 
@@ -486,10 +505,9 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTextDirectory(
     auto dir = f->OpenDirectory(path.c_str());
     int size = dir->GetSize();
     for (int i = 0; i < size; i++) {
-        auto file = dir->GetFile(i);
+        auto file = dir->GetFile(i, FileModes::Binary);
         uint64_t file_size = file->Size();
-        uint8_t* buffer = new uint8_t[file_size];
-        file->Read(buffer, file_size);
+        uint8_t* buffer = ReadAllFromVFile(file.get());
         cqsp::asset::PathedTextAsset asset_data(reinterpret_cast<char*>(buffer), file_size);
         asset_data.path = path;
     }
@@ -517,8 +535,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTexture(
 
     auto file = f->Open(path.c_str(), FileModes::Binary);
     uint64_t file_size = file->Size();
-    uint8_t* buffer = new uint8_t[file_size];
-    file->Read(buffer, file_size);
+    uint8_t* buffer = ReadAllFromVFile(file.get());
     prototype->data = stbi_load_from_memory(buffer, file_size, &prototype->width, &prototype->height,
                            &prototype->components, 0);
 
@@ -772,7 +789,6 @@ void AssetLoader::LoadDirectory(std::string path, std::function<void(std::string
 
 void cqsp::asset::AssetLoader::LoadResources(Package& package, std::string path) {
     std::filesystem::recursive_directory_iterator it(path);
-    // Mount the package and load it.
     for (auto resource_file : it) {
         if (resource_file.path().filename() == "resource.hjson") {
             // Load the particular asset folder
@@ -821,4 +837,9 @@ void cqsp::asset::AssetLoader::LoadResources(Package& package, std::string path)
             }
         }
     }
+}
+
+cqsp::asset::IVirtualFileSystem* cqsp::asset::AssetLoader::GetVfs(const std::string& path) {
+    // Return native filesystem for now.
+    return new NativeFileSystem(path.c_str());
 }
