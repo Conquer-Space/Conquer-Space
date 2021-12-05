@@ -304,21 +304,21 @@ class AssetLoader {
     AssetManager* manager;
 
     typedef std::function<std::unique_ptr<Asset>
-        (cqsp::asset::IVirtualFileSystem*, const std::string&, const std::string&, const Hjson::Value&)> LoaderFunction;
+        (cqsp::asset::VirtualMounter*, const std::string&, const std::string&, const Hjson::Value&)> LoaderFunction;
  private:
     std::string LoadModPrototype(const std::string&);
 
     std::unique_ptr<cqsp::asset::Asset> LoadText(
-        cqsp::asset::IVirtualFileSystem* f, const std::string& path, const std::string& key,
+        cqsp::asset::VirtualMounter* f, const std::string& path, const std::string& key,
         const Hjson::Value& hints);
     std::unique_ptr<cqsp::asset::Asset> LoadTextDirectory(
-        cqsp::asset::IVirtualFileSystem* f, const std::string& path, const std::string& key,
+        cqsp::asset::VirtualMounter* f, const std::string& path, const std::string& key,
         const Hjson::Value& hints);
     std::unique_ptr<cqsp::asset::Asset> LoadTexture(
-        cqsp::asset::IVirtualFileSystem* f, const std::string& path,
+        cqsp::asset::VirtualMounter* f, const std::string& path,
         const std::string& key, const Hjson::Value& hints);
     std::unique_ptr<cqsp::asset::Asset> LoadHjson(
-        cqsp::asset::IVirtualFileSystem* f, const std::string& path,
+        cqsp::asset::VirtualMounter* f, const std::string& path,
         const std::string& key, const Hjson::Value& hints);
 
     std::unique_ptr<TextAsset> LoadText(std::istream &asset_stream, const Hjson::Value& hints);
@@ -450,7 +450,7 @@ class AssetLoader {
     /// <br>
     /// We don't have model support yet, but that will come soon.
     /// </summary>
-    /// <param name="path"></param>
+    /// <param name="path">Base path to the package</param>
     void LoadResources(Package& package, std::string path);
 
     std::vector<std::string> missing_assets;

@@ -30,7 +30,7 @@
 #include "engine/audio/alaudioasset.h"
 #include "common/util/paths.h"
 
-#define CREATE_ASSET_LAMBDA(FuncName) [this] (cqsp::asset::IVirtualFileSystem* f,                   \
+#define CREATE_ASSET_LAMBDA(FuncName) [this] (cqsp::asset::VirtualMounter* f,                   \
                                               const std::string& path, const std::string& key,      \
                                               const Hjson::Value& hints) {                          \
                                         return this->FuncName(f, path, key, hints);                 \
@@ -467,7 +467,7 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
     delete temp.prototype;
 }
 
-std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadText(cqsp::asset::IVirtualFileSystem* f, const std::string& path,
+std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadText(cqsp::asset::VirtualMounter* f, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
     std::unique_ptr<cqspa::TextAsset> asset = std::make_unique<cqspa::TextAsset>();
     auto file = f->Open(path.c_str());
@@ -480,7 +480,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadText(cqsp::ass
 }
 
 std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTextDirectory(
-    cqsp::asset::IVirtualFileSystem* f, const std::string& path,
+    cqsp::asset::VirtualMounter* f, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
     std::unique_ptr<cqspa::TextDirectoryAsset> asset = std::make_unique<cqspa::TextDirectoryAsset>();
     auto dir = f->OpenDirectory(path.c_str());
@@ -497,7 +497,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTextDirectory(
 }
 
 std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTexture(
-    cqsp::asset::IVirtualFileSystem* f, const std::string& path,
+    cqsp::asset::VirtualMounter* f, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
     std::unique_ptr<Texture> texture = std::make_unique<Texture>();
 
@@ -535,7 +535,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTexture(
 }
 
 std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadHjson(
-    cqsp::asset::IVirtualFileSystem* f, const std::string& path,
+    cqsp::asset::VirtualMounter* f, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
     std::unique_ptr<cqspa::HjsonAsset> asset = std::make_unique<cqspa::HjsonAsset>();
     // Load a directory if it's a directory
@@ -772,6 +772,7 @@ void AssetLoader::LoadDirectory(std::string path, std::function<void(std::string
 
 void cqsp::asset::AssetLoader::LoadResources(Package& package, std::string path) {
     std::filesystem::recursive_directory_iterator it(path);
+    // Mount the package and load it.
     for (auto resource_file : it) {
         if (resource_file.path().filename() == "resource.hjson") {
             // Load the particular asset folder
@@ -814,6 +815,7 @@ void cqsp::asset::AssetLoader::LoadResources(Package& package, std::string path)
                     continue;
                 }
                 // Put in core namespace, I guess
+                // Load package
                 LoadAsset(package, type, path, std::string(key), val["hints"]);
                 currentloading++;
             }

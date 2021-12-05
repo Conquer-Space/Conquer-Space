@@ -17,6 +17,8 @@
 #pragma once
 
 #include <memory>
+#include <map>
+#include <string>
 
 namespace cqsp {
 namespace asset {
@@ -107,6 +109,19 @@ class IVirtualFile {
 
     virtual IVirtualFileSystem* GetFileSystem() = 0;
  protected:
+};
+
+class VirtualMounter {
+ public:
+    ~VirtualMounter();
+    void AddMountPoint(const char* path, IVirtualFileSystem* fs);
+    std::shared_ptr<IVirtualFile> Open(const char* path, FileModes mode = FileModes::None);
+    std::shared_ptr<IVirtualDirectory> OpenDirectory(const char* path);
+    bool IsFile(const char* path);
+    bool IsDirectory(const char* path);
+    bool Exists(const char* path);
+ private:
+    std::map<std::string, IVirtualFileSystem*> mount_points;
 };
 }  // namespace asset
 }  // namespace cqsp
