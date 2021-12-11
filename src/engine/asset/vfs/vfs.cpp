@@ -79,7 +79,7 @@ bool cqsp::asset::VirtualMounter::IsFile(const std::string& path) {
             // Remove the path string and the path separator, and get the path
             // to get from the file system
             std::string mount_path = path.substr(it->first.size() + 1, path.size());
-            if(it->second->IsFile(mount_path.c_str())) {
+            if (it->second->IsFile(mount_path.c_str())) {
                 return true;
             }
         }
@@ -149,7 +149,7 @@ std::string cqsp::asset::ReadAllFromVFileToString(IVirtualFile* file) {
     // Now convert to a proper string
     size_t start_pos = 0;
     // Replace carrige returns because it's text mode
-    while((start_pos = str.find("\r\n", start_pos)) != std::string::npos) {
+    while ((start_pos = str.find("\r\n", start_pos)) != std::string::npos) {
         str.replace(start_pos, strlen("\r\n"), "\n");
         start_pos += 1; // In case 'to' contains 'from', like replacing 'x' with 'yx'
     }

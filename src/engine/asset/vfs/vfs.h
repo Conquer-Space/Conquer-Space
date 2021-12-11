@@ -43,7 +43,7 @@ typedef std::shared_ptr<IVirtualDirectory> IVirtualDirectoryPtr;
 /// not really be supported.
 /// </summary>
 class IVirtualFileSystem {
-   public:
+ public:
     IVirtualFileSystem() {}
     virtual ~IVirtualFileSystem() {}
 
@@ -116,7 +116,9 @@ class VirtualMounter {
     ~VirtualMounter();
     void AddMountPoint(const std::string& path, IVirtualFileSystem* fs);
     std::shared_ptr<IVirtualFile> Open(const std::string& path, FileModes mode = FileModes::None);
-    std::shared_ptr<IVirtualFile> Open(const std::string& mount, const std::string& path, FileModes mode = FileModes::None);
+    std::shared_ptr<IVirtualFile> Open(const std::string& mount,
+                                       const std::string& path,
+                                       FileModes mode = FileModes::None);
     std::shared_ptr<IVirtualDirectory> OpenDirectory(const std::string& path);
     std::shared_ptr<IVirtualDirectory> OpenDirectory(const std::string& mount, const std::string& path);
     bool IsFile(const std::string& path);
@@ -155,15 +157,16 @@ inline std::string GetFilename(const std::string& path) {
         // It's probably the whole thing
         return path;
     }
-    return path.substr(last + 1);;
+    return path.substr(last + 1);
 }
 
 inline std::string GetParentPath(const std::string& path) {
     size_t last = path.find_last_of("/\\");
+
     if (last == std::string::npos) {
         return "";
     }
-    return path.substr(0, last);;
+    return path.substr(0, last);
 }
 }  // namespace asset
 }  // namespace cqsp

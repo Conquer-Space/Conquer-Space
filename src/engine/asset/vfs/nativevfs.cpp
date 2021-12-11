@@ -17,11 +17,11 @@
 #include "engine/asset/vfs/nativevfs.h"
 
 #include <filesystem>
-
+#include <memory>
+#include <string>
 #include <iostream>
-#include <spdlog/spdlog.h>
 
-cqsp::asset::NativeFileSystem::NativeFileSystem(const std::string& _root) : root(_root){
+cqsp::asset::NativeFileSystem::NativeFileSystem(const std::string& _root) : root(_root) {
 }
 
 std::shared_ptr<cqsp::asset::IVirtualFile>

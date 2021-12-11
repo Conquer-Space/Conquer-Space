@@ -290,7 +290,7 @@ class AssetLoader {
             const std::string& path, const std::string& key, const Hjson::Value& hints)> LoaderFunction;
 
  private:
-    PackagePrototype LoadModPrototype(const std::string&);
+    std::optional<PackagePrototype> LoadModPrototype(const std::string&);
 
     std::unique_ptr<cqsp::asset::Asset> LoadText(
         cqsp::asset::VirtualMounter* mount, const std::string& path, const std::string& key,

@@ -34,8 +34,7 @@ enum class AssetType {
 inline AssetType FromString(const std::string& name) {
     if (name == "none") {
         return AssetType::NONE;
-    }
-    else if (name == "texture") {
+    } else if (name == "texture") {
         return AssetType::TEXTURE;
     } else if (name == "shader") {
         return AssetType::SHADER;

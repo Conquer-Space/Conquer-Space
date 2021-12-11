@@ -18,6 +18,8 @@
 
 #include <fstream>
 #include <vector>
+#include <memory>
+#include <string>
 
 #include "engine/asset/vfs/vfs.h"
 
@@ -28,7 +30,7 @@ class NativeDirectory;
 
 class NativeFile : public IVirtualFile {
  public:
-    NativeFile(NativeFileSystem* _nfs) : IVirtualFile(), nfs(_nfs), path("") {}
+    explicit NativeFile(NativeFileSystem* _nfs) : IVirtualFile(), nfs(_nfs), path("") {}
     NativeFile(NativeFileSystem* _nfs, const std::string& file) : IVirtualFile(), nfs(_nfs), path(file) {}
     ~NativeFile();
 
@@ -41,7 +43,7 @@ class NativeFile : public IVirtualFile {
     uint64_t Tell()  override;
 
     IVirtualFileSystem* GetFileSystem() override {
-        return (IVirtualFileSystem*) nfs;
+        return reinterpret_cast<IVirtualFileSystem*>(nfs);
     }
 
     friend NativeFileSystem;
@@ -56,7 +58,7 @@ class NativeFile : public IVirtualFile {
 
 class NativeFileSystem : public IVirtualFileSystem {
  public:
-    NativeFileSystem(const std::string& root);
+    explicit NativeFileSystem(const std::string& root);
 
     bool Initialize() override {
         return true;
@@ -80,7 +82,7 @@ class NativeDirectory : public IVirtualDirectory {
  public:
     NativeDirectory(NativeFileSystem* _nfs, const std::string& _root) : nfs(_nfs), root(_root) {}
 
-    virtual uint64_t GetSize() override;
+    uint64_t GetSize() override;
     const std::string& GetRoot() override;
     std::shared_ptr<IVirtualFile> GetFile(int index, FileModes modes = None) override;
     IVirtualFileSystem* GetFileSystem() override;
@@ -90,5 +92,5 @@ class NativeDirectory : public IVirtualDirectory {
     std::string root;
     NativeFileSystem* nfs;
 };
-}
+}  // namespace asset
 }  // namespace cqsp

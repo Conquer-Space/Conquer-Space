@@ -163,13 +163,15 @@ void cqsp::asset::AssetLoader::LoadMods() {
     Hjson::Value all_mods;
 
     // Some lambda things to keep things less cluttered and simpler
-    auto mod_load = [&](const PackagePrototype &package) {
+    auto mod_load = [&](const std::optional<PackagePrototype> &package) {
         // Add to package prototypes
-        if (!package.name.empty()) {
-            SPDLOG_INFO("Added mod prototype {}", package.name);
-            manager->m_package_prototype_list[package.name] = package;
-            all_mods[package.name] = false;
+        if (!package) {
+            SPDLOG_INFO("Invalid package!");
+            return;
         }
+        SPDLOG_INFO("Added mod prototype {}", package->name);
+        manager->m_package_prototype_list[package->name] = *package;
+        all_mods[package->name] = false;
     };
 
     SPDLOG_INFO("Loading potential mods");
@@ -227,21 +229,21 @@ std::string cqsp::asset::AssetLoader::GetModFilePath() {
     return (std::filesystem::path(cqsp::common::util::GetCqspSavePath())/"mod.hjson").string();
 }
 
-cqsp::asset::PackagePrototype cqsp::asset::AssetLoader::LoadModPrototype(const std::string& path_string) {
+std::optional<cqsp::asset::PackagePrototype>
+cqsp::asset::AssetLoader::LoadModPrototype(const std::string& path_string) {
     // Load the info.hjson
     std::filesystem::path package_path(path_string);
     IVirtualFileSystem* vfs = GetVfs(path_string);
 
     if (!vfs->IsFile("info.hjson")) {
         SPDLOG_INFO("Mod prototype unable to be loaded from {}", path_string);
-        return PackagePrototype();
+        return std::nullopt;
     }
-    // Load the file
-    
+    // Read mod info file.
     Hjson::Value mod_info = Hjson::Unmarshal(
         cqsp::asset::ReadAllFromVFileToString(vfs->Open("info.hjson").get()));
-    // Get the info of the file
-    // Add core
+
+    // Get the info from
     PackagePrototype prototype;
     try {
         prototype.name = mod_info["name"].to_string();
@@ -250,13 +252,14 @@ cqsp::asset::PackagePrototype cqsp::asset::AssetLoader::LoadModPrototype(const s
         prototype.author = mod_info["author"].to_string();
         prototype.path = package_path.string();
     } catch (Hjson::index_out_of_bounds &ex) {
-        // Don't load the mod
+        // Don't load the mod, because prototype is invalid
         SPDLOG_INFO("Hjson::index_out_of_bounds: {}", ex.what());
+        return std::nullopt;
     }
 
     // Free memory
     delete vfs;
-    return prototype;
+    return std::optional<cqsp::asset::PackagePrototype>(prototype);
 }
 
 void cqsp::asset::AssetLoader::LoadHjsonDirectory(Package& package, std::string path, std::string key) {
@@ -537,8 +540,9 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
     delete temp.prototype;
 }
 
-std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadText(cqsp::asset::VirtualMounter* mount, const std::string& path,
-    const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<cqsp::asset::Asset>
+cqsp::asset::AssetLoader::LoadText(cqsp::asset::VirtualMounter* mount, const std::string& path,
+                                   const std::string& key, const Hjson::Value& hints) {
     if (!mount->IsFile(path)) {
         return nullptr;
     }
@@ -624,15 +628,15 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadHjson(
             try {
                 result = Hjson::Unmarshal(ReadAllFromVFileToString(file.get()), dec_opt);
                 if (result.type() == Hjson::Type::Vector) {
-                    // Append everything
-                    for(int k = 0; k < result.size(); k++) {
+                    // Append all the values in place
+                    for (int k = 0; k < result.size(); k++) {
                         asset->data.push_back(result[k]);
                     }
                 } else {
-                    SPDLOG_ERROR("Failed to load hjson {}: it needs to be a array", file->Path());
+                    SPDLOG_ERROR("Failed to load hjson file {}: it needs to be a array", file->Path());
                 }
             } catch (Hjson::syntax_error& ex) {
-                SPDLOG_ERROR("Failed to load hjson {}: {}", file->Path(), ex.what());
+                SPDLOG_ERROR("Failed to load hjson file {}: {}", file->Path(), ex.what());
             }
         }
     } else {
@@ -753,8 +757,12 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadCubemap(
         }
         auto file = mount->Open(image_path);
         auto file_data = ReadAllFromVFile(file.get());
-        unsigned char* image_data = stbi_load_from_memory(file_data, file->Size(), &prototype->width, &prototype->height,
-                           &prototype->components, 0);
+        unsigned char* image_data = stbi_load_from_memory(file_data,
+                                                          file->Size(),
+                                                          &prototype->width,
+                                                          &prototype->height,
+                                                          &prototype->components,
+                                                          0);
 
         prototype->data.push_back(image_data);
     }

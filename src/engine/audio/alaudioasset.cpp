@@ -18,7 +18,7 @@
 
 #include <stb_vorbis.h>
 
-#include <spdlog/spdlog.h>
+#include <utility>
 
 namespace cqsp::asset {
 std::unique_ptr<AudioAsset> LoadOgg(std::ifstream& input) {
