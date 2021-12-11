@@ -143,8 +143,9 @@ cqsp::asset::AssetLoader::AssetLoader() {
     loading_functions[AssetType::TEXT_ARRAY] = CREATE_ASSET_LAMBDA(LoadTextDirectory);
     loading_functions[AssetType::HJSON] = CREATE_ASSET_LAMBDA(LoadHjson);
     loading_functions[AssetType::SHADER] = CREATE_ASSET_LAMBDA(LoadShader);
-    loading_functions[AssetType::AUDIO] = CREATE_ASSET_LAMBDA(LoadAudio);
-
+    //loading_functions[AssetType::AUDIO] = CREATE_ASSET_LAMBDA(LoadAudio);
+    loading_functions[AssetType::CUBEMAP] = CREATE_ASSET_LAMBDA(LoadCubemap);
+    loading_functions[AssetType::FONT] = CREATE_ASSET_LAMBDA(LoadFont);
 }
 
 namespace cqspa = cqsp::asset;
@@ -522,7 +523,6 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
         {
         CubemapPrototype* prototype = dynamic_cast<CubemapPrototype*>(temp.prototype);
         Texture* asset = dynamic_cast<Texture*>(prototype->asset);
-
         asset::LoadCubemap(*asset,
                             prototype->data,
                             prototype->width,
@@ -722,7 +722,47 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadAudio(
 std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadCubemap(
     cqsp::asset::VirtualMounter* mount, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
-    return std::unique_ptr<cqsp::asset::Asset>();
+    // Load cubemap data
+    std::unique_ptr<Texture> asset = std::make_unique<Texture>();
+
+    // Read file, which will be hjson, and load those files too
+    Hjson::Value images_hjson;
+    auto hjson_file = mount->Open(path);
+    images_hjson = Hjson::Unmarshal(ReadAllFromVFileToString(hjson_file.get()));
+
+    CubemapPrototype* prototype = new CubemapPrototype();
+
+    prototype->key = key;
+
+    std::string parent = GetParentPath(path);
+
+    if (images_hjson.size() != 6) {
+        SPDLOG_WARN("Cubemap {} does not have enough faces defined", key);
+        return nullptr;
+    }
+    for (int i = 0; i < images_hjson.size(); i++) {
+        std::string image_path = parent + "/" + images_hjson[i];
+        if (!mount->IsFile(image_path)) {
+            SPDLOG_WARN("Cubemap {} has missing faces!", key);
+            // Free memory
+            for (auto texture : prototype->data) {
+                // free the things
+                stbi_image_free(texture);
+            }
+            return nullptr;
+        }
+        auto file = mount->Open(image_path);
+        auto file_data = ReadAllFromVFile(file.get());
+        unsigned char* image_data = stbi_load_from_memory(file_data, file->Size(), &prototype->width, &prototype->height,
+                           &prototype->components, 0);
+
+        prototype->data.push_back(image_data);
+    }
+    prototype->asset = asset.get();
+
+    QueueHolder holder(prototype);
+    m_asset_queue.push(holder);
+    return asset;
 }
 
 std::unique_ptr<cqspa::TextAsset> cqsp::asset::AssetLoader::LoadText(std::istream& asset_stream,
