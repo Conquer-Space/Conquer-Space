@@ -19,6 +19,7 @@
 #include <stb_vorbis.h>
 
 #include <spdlog/spdlog.h>
+
 namespace cqsp::asset {
 std::unique_ptr<AudioAsset> LoadOgg(std::ifstream& input) {
     // Read file
@@ -44,5 +45,24 @@ std::unique_ptr<AudioAsset> LoadOgg(std::ifstream& input) {
     delete[] data;
     free(buffer);
     return audio_asset;
+}
+
+std::unique_ptr<AudioAsset> LoadOgg(uint8_t* buffer, int size) {
+    std::unique_ptr<ALAudioAsset> audio_asset = std::make_unique<ALAudioAsset>();
+    int16* output;
+    int channels;
+    int sample_rate;
+    int num_samples = stb_vorbis_decode_memory(buffer,
+                                size, &channels, &sample_rate, &output);
+    SPDLOG_INFO("{} {}", num_samples, sample_rate);
+    ALenum format = (channels == 1) ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
+    alBufferData(audio_asset->buffer, format, buffer,
+                                num_samples * channels * sizeof(int16), sample_rate);
+    audio_asset->length = static_cast<float>(num_samples) / static_cast<float>(sample_rate);
+
+    // Audio sounds messed up tho.
+    // Free memory
+    free(output);
+    return std::move(audio_asset);
 }
 } // namespace cqsp::asset

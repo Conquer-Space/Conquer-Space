@@ -143,6 +143,7 @@ cqsp::asset::AssetLoader::AssetLoader() {
     loading_functions[AssetType::TEXT_ARRAY] = CREATE_ASSET_LAMBDA(LoadTextDirectory);
     loading_functions[AssetType::HJSON] = CREATE_ASSET_LAMBDA(LoadHjson);
     loading_functions[AssetType::SHADER] = CREATE_ASSET_LAMBDA(LoadShader);
+    loading_functions[AssetType::AUDIO] = CREATE_ASSET_LAMBDA(LoadAudio);
 
 }
 
@@ -538,16 +539,22 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
 
 std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadText(cqsp::asset::VirtualMounter* mount, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
+    if (!mount->IsFile(path)) {
+        return nullptr;
+    }
     std::unique_ptr<cqspa::TextAsset> asset = std::make_unique<cqspa::TextAsset>();
     auto file = mount->Open(path.c_str());
     int size = file->Size();
     asset->data = ReadAllFromVFileToString(file.get());
-    return asset;
+    return std::move(asset);
 }
 
 std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTextDirectory(
     cqsp::asset::VirtualMounter* mount, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
+    if (!mount->IsDirectory(path)) {
+        return nullptr;
+    }
     std::unique_ptr<cqspa::TextDirectoryAsset> asset = std::make_unique<cqspa::TextDirectoryAsset>();
     auto dir = mount->OpenDirectory(path.c_str());
     int size = dir->GetSize();
@@ -558,7 +565,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTextDirectory(
         cqsp::asset::PathedTextAsset asset_data(reinterpret_cast<char*>(buffer), file_size);
         asset_data.path = path;
     }
-    return std::unique_ptr<cqsp::asset::Asset>();
+    return std::move(asset);
 }
 
 std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTexture(
@@ -595,7 +602,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTexture(
         delete prototype;
         return nullptr;
     }
-    return texture;
+    return std::move(texture);
 }
 
 std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadHjson(
@@ -656,7 +663,8 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadShader(
         shader_type = GL_VERTEX_SHADER;
     } else {
         // Abort, because this is a dud.
-        return shader;
+        SPDLOG_WARN("Unsupport shader type: {}", key);
+        return nullptr;
     }
 
     ShaderPrototype* prototype = new ShaderPrototype();
@@ -671,16 +679,17 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadShader(
     QueueHolder holder(prototype);
     m_asset_queue.push(holder);
 
-    return shader;
+    return std::move(shader);
 }
 
 std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadFont(
     cqsp::asset::VirtualMounter* mount, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
-    std::unique_ptr<Font> asset = std::make_unique<Font>();
     if (!mount->IsFile(path)) {
         return nullptr;
     }
+
+    std::unique_ptr<Font> asset = std::make_unique<Font>();
     auto file = mount->Open(path);
     uint8_t* bytes = ReadAllFromVFile(file.get());
 
@@ -693,13 +702,21 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadFont(
     QueueHolder holder(prototype);
     m_asset_queue.push(holder);
 
-    return asset;
+    return std::move(asset);
 }
 
 std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadAudio(
     cqsp::asset::VirtualMounter* mount, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
-    return std::unique_ptr<cqsp::asset::Asset>();
+    // Load audio asset
+    if (!mount->IsFile(path)) {
+        return nullptr;
+    }
+    auto file = mount->Open(path);
+    uint8_t* data = ReadAllFromVFile(file.get());
+    auto asset = LoadOgg(data, file->Size());
+
+    return std::move(asset);
 }
 
 std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadCubemap(
@@ -717,7 +734,7 @@ std::unique_ptr<cqspa::TextAsset> cqsp::asset::AssetLoader::LoadText(std::istrea
                             std::istreambuf_iterator<char>()};
 
     asset->data = asset_data;
-    return asset;
+    return std::move(asset);
 }
 
 std::unique_ptr<cqspa::HjsonAsset> cqspa::AssetLoader::LoadHjson(const std::string &path,
