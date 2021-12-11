@@ -143,7 +143,7 @@ cqsp::asset::AssetLoader::AssetLoader() {
     loading_functions[AssetType::TEXT_ARRAY] = CREATE_ASSET_LAMBDA(LoadTextDirectory);
     loading_functions[AssetType::HJSON] = CREATE_ASSET_LAMBDA(LoadHjson);
     loading_functions[AssetType::SHADER] = CREATE_ASSET_LAMBDA(LoadShader);
-    //loading_functions[AssetType::AUDIO] = CREATE_ASSET_LAMBDA(LoadAudio);
+    loading_functions[AssetType::AUDIO] = CREATE_ASSET_LAMBDA(LoadAudio);
     loading_functions[AssetType::CUBEMAP] = CREATE_ASSET_LAMBDA(LoadCubemap);
     loading_functions[AssetType::FONT] = CREATE_ASSET_LAMBDA(LoadFont);
 }
