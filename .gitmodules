@@ -45,10 +45,8 @@
 	url = https://github.com/kcat/openal-soft
 [submodule "lib/glad"]
 	path = lib/glad
-	url = ../../Dav1dde/glad
+	url = https://github.com/Dav1dde/glad
 [submodule "lib/glfw"]
 	path = lib/glfw
 	url = https://github.com/glfw/glfw
-[submodule "lib/libzip"]
-	path = lib/libzip
-	url = https://github.com/nih-at/libzip
+
