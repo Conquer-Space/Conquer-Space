@@ -233,7 +233,8 @@ void cqsp::scene::MainMenuScene::ModWindow() {
         ImGui::PushID(0);
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
         if (ImGui::Checkbox("##checkall", &enable_disable_all_mods)) {
-            for (auto it = asset_manager.potential_mods.begin(); it != asset_manager.potential_mods.end(); it++) {
+            for (auto it = asset_manager.m_package_prototype_list.begin();
+                      it != asset_manager.m_package_prototype_list.end(); it++) {
                 it->second.enabled = enable_disable_all_mods;
             }
         }
@@ -251,7 +252,8 @@ void cqsp::scene::MainMenuScene::ModWindow() {
         ImGui::PopID();
 
         enable_disable_all_mods = true;
-        for (auto it = asset_manager.potential_mods.begin(); it != asset_manager.potential_mods.end(); it++) {
+        for (auto it = asset_manager.m_package_prototype_list.begin();
+                  it != asset_manager.m_package_prototype_list.end(); it++) {
             // Search to ignore case
             if (std::search(it->second.title.begin(), it->second.title.end(),
                     search.begin(), search.end(), [](char ch1, char ch2) {

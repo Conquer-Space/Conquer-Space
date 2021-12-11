@@ -48,4 +48,5 @@ class ALAudioAsset : public AudioAsset {
 };
 
 std::unique_ptr<AudioAsset> LoadOgg(std::ifstream& input);
+std::unique_ptr<AudioAsset> LoadOgg(uint8_t* buffer, int size);
 }  // namespace cqsp::asset

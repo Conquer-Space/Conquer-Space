@@ -41,23 +41,25 @@ class Texture : public Asset {
     ~Texture();
 };
 
-unsigned int LoadTexture(unsigned char*& data,
-                    int components,
-                    int width,
-                    int height,
-                    TextureLoadingOptions& options);
+unsigned int CreateTexture(unsigned char*& data,
+                         int width,
+                         int height,
+                         int components,
+                         TextureLoadingOptions& options);
 
-void LoadTexture(Texture &texture, unsigned char*& data,
-                    int components,
-                    int width,
-                    int height,
-                    TextureLoadingOptions& options);
+void CreateTexture(Texture &texture,
+                 unsigned char*& data,
+                 int width,
+                 int height,
+                 int components,
+                 TextureLoadingOptions& options);
 
-void LoadCubemap(Texture &texture, std::vector<unsigned char*>& data,
-                    int components,
-                    int width,
-                    int height,
-                    TextureLoadingOptions& options);
+void LoadCubemapData(Texture &texture,
+                std::vector<unsigned char*>& data,
+                int width,
+                int height,
+                int components,
+                TextureLoadingOptions& options);
 
 bool SaveImage(const char* path, int width, int height,
                int components, const unsigned char* data, bool flip = true);
