@@ -676,8 +676,9 @@ AssetLoader::LoadScriptDirectory(VirtualMounter* mount, const std::string& path,
 
         // Remove file extension
         size_t lastdot = script_file_name.find_last_of(".");
-        if (lastdot != std::string::npos)
-            script_file_name = script_file_name.substr(0, lastdot); 
+        if (lastdot != std::string::npos) {
+            script_file_name = script_file_name.substr(0, lastdot);
+        }
 
         // Replace slashes with dots
         std::replace(script_file_name.begin(), script_file_name.end(), '/', '.');
@@ -685,7 +686,6 @@ AssetLoader::LoadScriptDirectory(VirtualMounter* mount, const std::string& path,
         asset_data.data = script;
         asset_data.path = script_file_name;
         asset->paths[script_file_name] = asset_data;
-
     }
     return asset;
 }
@@ -743,7 +743,7 @@ void cqsp::asset::AssetLoader::LoadResources(Package& package, const std::string
 void cqsp::asset::AssetLoader::LoadResourceHjsonFile(Package& package,
                                                      const std::string& package_mount_path,
                                                      const std::string& resource_file_path,
-                                                     const Hjson::Value& asset_value){
+                                                     const Hjson::Value& asset_value) {
     for (const auto [key, val] : asset_value) {
         SPDLOG_TRACE("Loading asset {}", key);
         std::string type = val["type"];

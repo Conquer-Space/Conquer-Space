@@ -187,6 +187,7 @@ class VirtualMounter {
     bool IsDirectory(const std::string& mount, const std::string& path);
     bool Exists(const std::string& path);
     bool Exists(const std::string& mount, const std::string& path);
+
  private:
     std::map<std::string, IVirtualFileSystem*> mount_points;
 };

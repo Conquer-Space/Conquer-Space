@@ -16,6 +16,8 @@
 */
 #include "engine/asset/vfs/vfs.h"
 
+#include <string.h>
+
 cqsp::asset::VirtualMounter::~VirtualMounter() {
     for (auto it = mount_points.begin(); it != mount_points.end(); it++) {
         delete it->second;

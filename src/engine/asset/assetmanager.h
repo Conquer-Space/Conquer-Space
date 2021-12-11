@@ -325,8 +325,8 @@ class AssetLoader {
     /// assumed to be an array of objects, and so will load all the arrays of hjson objects in each of the hjson
     /// files into one hjson object.
     ///
-    /// If it refers to directory, and a file that is loaded is not in a hjson array, it will not load that specific file,
-    /// but it will not fail.
+    /// If it refers to directory, and a file that is loaded is not in a hjson array, it will not load that specific
+    /// file, but it will not fail.
     /// </summary>
     std::unique_ptr<cqsp::asset::Asset> LoadHjson(cqsp::asset::VirtualMounter* mount,
                                                  const std::string& path,
@@ -387,7 +387,9 @@ class AssetLoader {
     /// <param name="path"></param>
     /// <param name="hints"></param>
     /// <returns></returns>
-    std::unique_ptr<TextDirectoryAsset> LoadScriptDirectory(VirtualMounter* mount, const std::string& path, const Hjson::Value& hints);
+    std::unique_ptr<TextDirectoryAsset> LoadScriptDirectory(VirtualMounter* mount,
+                                                            const std::string& path,
+                                                            const Hjson::Value& hints);
 
     /// <summary>
     /// Loads the asset specified in `path`

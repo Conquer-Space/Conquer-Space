@@ -18,8 +18,8 @@
 
 #include <filesystem>
 #include <memory>
+#include <algorithm>
 #include <string>
-#include <iostream>
 
 cqsp::asset::NativeFileSystem::NativeFileSystem(const std::string& _root) : root(_root) {
 }
