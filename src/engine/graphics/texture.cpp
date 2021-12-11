@@ -66,7 +66,7 @@ void cqsp::asset::CreateTexture(Texture& texture, unsigned char*& data, int widt
     texture.texture_type = GL_TEXTURE_2D;
 }
 
-void cqsp::asset::LoadCubemap(Texture &texture,
+void cqsp::asset::LoadCubemapData(Texture &texture,
                                 std::vector<unsigned char*>& faces,
                                 int width,
                                 int height,

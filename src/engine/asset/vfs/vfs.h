@@ -53,6 +53,10 @@ class IVirtualFileSystem {
     /// </summary>
     virtual IVirtualFilePtr Open(const std::string& path, FileModes modes = None) = 0;
 
+    /// <summary>
+    /// Closes the file.
+    /// </summary>
+    /// <param name=""></param>
     virtual void Close(IVirtualFilePtr&) = 0;
 
     /// <summary>
@@ -63,8 +67,19 @@ class IVirtualFileSystem {
     /// </summary>
     virtual IVirtualDirectoryPtr OpenDirectory(const std::string& path) = 0;
 
+    /// <summary>
+    /// Is the file a file
+    /// </summary>
     virtual bool IsFile(const std::string& path) = 0;
+
+    /// <summary>
+    /// Is the file a directory
+    /// </summary
     virtual bool IsDirectory(const std::string& path) = 0;
+
+    /// <summary>
+    /// Does the file exist
+    /// </summary>
     virtual bool Exists(const std::string& path) = 0;
 };
 
@@ -78,6 +93,9 @@ class IVirtualDirectory {
     IVirtualDirectory() {}
     virtual ~IVirtualDirectory() {}
 
+    /// <summary>
+    /// Get number of files in directory
+    /// </summary>
     virtual uint64_t GetSize() = 0;
 
     /// <summary>
@@ -85,7 +103,20 @@ class IVirtualDirectory {
     /// </summary>
     /// <returns></returns>
     virtual const std::string& GetRoot() = 0;
+
+    /// <summary>
+    /// Opens file of index.
+    /// </summary>
     virtual std::shared_ptr<IVirtualFile> GetFile(int index, FileModes modes = None) = 0;
+
+    /// <summary>
+    /// Get file name relative to this directory
+    /// </summary>
+    virtual const std::string& GetFilename(int index) = 0;
+
+    /// <summary>
+    /// Get the filesystem this refers to.
+    /// </summary>
     virtual IVirtualFileSystem* GetFileSystem() = 0;
 };
 
@@ -99,8 +130,21 @@ class IVirtualFile {
     /// </summary>
     virtual uint64_t Size() = 0;
 
+    /// <summary>
+    /// Reads `num_bytes` of bytes into `buffer`. Frees memory for the number
+    /// </summary>
+    /// <param name="buffer"></param>
+    /// <param name="num_bytes"></param>
     virtual void Read(uint8_t* buffer, int num_bytes) = 0;
+
+    /// <summary>
+    /// Goto position of file, `offset` away from `origin`
+    /// </summary>
     virtual bool Seek(long offset, Offset origin = Offset::Cur) = 0;
+
+    /// <summary>
+    /// Get current file position
+    /// </summary>
     virtual uint64_t Tell() = 0;
 
     /// <summary>
@@ -115,12 +159,28 @@ class VirtualMounter {
  public:
     ~VirtualMounter();
     void AddMountPoint(const std::string& path, IVirtualFileSystem* fs);
+    /// <summary>
+    /// Opens file.
+    /// </summary>
     std::shared_ptr<IVirtualFile> Open(const std::string& path, FileModes mode = FileModes::None);
+
+    /// <summary>
+    /// Opens file in mounted filesystem `mount`, with the mount path relative path `path`
+    /// </summary>
     std::shared_ptr<IVirtualFile> Open(const std::string& mount,
                                        const std::string& path,
                                        FileModes mode = FileModes::None);
+
+    /// <summary>
+    /// Opens directory
+    /// </summary>
     std::shared_ptr<IVirtualDirectory> OpenDirectory(const std::string& path);
+
+    /// <summary>
+    /// Opens directory in mounted filesystem `mount`, with the mount path relative path `path`
+    /// </summary>
     std::shared_ptr<IVirtualDirectory> OpenDirectory(const std::string& mount, const std::string& path);
+
     bool IsFile(const std::string& path);
     bool IsFile(const std::string& mount, const std::string& path);
     bool IsDirectory(const std::string& path);

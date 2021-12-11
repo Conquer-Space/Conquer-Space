@@ -28,7 +28,7 @@
 #include <string>
 #include <utility>
 
-void cqsp::asset::LoadFont(Font &font, unsigned char *fontBuffer,
+void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer,
                                    uint64_t size) {
     FT_Library ft;
     // All functions return a value different than 0 whenever an error occurred

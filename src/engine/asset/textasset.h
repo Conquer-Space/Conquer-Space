@@ -31,11 +31,15 @@ class TextAsset : public Asset {
 /// <summary>
 /// Text asset which remembers what it's path is.
 /// </summary>
-class PathedTextAsset : public std::string {
-    using std::string::basic_string;
+class PathedTextAsset {
  public:
     // Relative path for the asset compared to the resource.hjson
+    std::string data;
     std::string path;
+
+    operator std::string() {
+        return data;
+    }
 };
 
 /// <summary>

@@ -20,11 +20,9 @@
 #include <stb_image.h>
 #include <glad/glad.h>
 
-#include <fstream>
 #include <utility>
 #include <algorithm>
 #include <regex>
-#include <iostream>
 #include <filesystem>
 
 #include "engine/audio/alaudioasset.h"

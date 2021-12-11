@@ -54,7 +54,7 @@ void CreateTexture(Texture &texture,
                  int components,
                  TextureLoadingOptions& options);
 
-void LoadCubemap(Texture &texture,
+void LoadCubemapData(Texture &texture,
                 std::vector<unsigned char*>& data,
                 int width,
                 int height,

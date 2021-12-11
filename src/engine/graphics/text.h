@@ -40,7 +40,7 @@ class Font : public Asset {
     float initial_size;
 };
 
-void LoadFont(Font& font, unsigned char *fontBuffer, uint64_t size);
+void LoadFontData(Font& font, unsigned char *fontBuffer, uint64_t size);
 void RenderText(cqsp::asset::ShaderProgram &shader, Font& font,
                 std::string text, float x, float y, float scale, glm::vec3 color);
 }  // namespace asset
