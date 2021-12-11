@@ -292,30 +292,38 @@ class AssetLoader {
  private:
     std::optional<PackagePrototype> LoadModPrototype(const std::string&);
 
-    std::unique_ptr<cqsp::asset::Asset> LoadText(
-        cqsp::asset::VirtualMounter* mount, const std::string& path, const std::string& key,
-        const Hjson::Value& hints);
-    std::unique_ptr<cqsp::asset::Asset> LoadTextDirectory(
-        cqsp::asset::VirtualMounter* mount, const std::string& path, const std::string& key,
-        const Hjson::Value& hints);
-    std::unique_ptr<cqsp::asset::Asset> LoadTexture(
-        cqsp::asset::VirtualMounter* mount, const std::string& path,
-        const std::string& key, const Hjson::Value& hints);
-    std::unique_ptr<cqsp::asset::Asset> LoadHjson(
-        cqsp::asset::VirtualMounter* mount, const std::string& path,
-        const std::string& key, const Hjson::Value& hints);
-    std::unique_ptr<cqsp::asset::Asset> LoadShader(
-        cqsp::asset::VirtualMounter* mount, const std::string& path,
-        const std::string& key, const Hjson::Value& hints);
-    std::unique_ptr<cqsp::asset::Asset> LoadFont(
-        cqsp::asset::VirtualMounter* mount, const std::string& path,
-        const std::string& key, const Hjson::Value& hints);
-    std::unique_ptr<cqsp::asset::Asset> LoadAudio(
-        cqsp::asset::VirtualMounter* mount, const std::string& path,
-        const std::string& key, const Hjson::Value& hints);
-    std::unique_ptr<cqsp::asset::Asset> LoadCubemap(
-        cqsp::asset::VirtualMounter* mount, const std::string& path,
-        const std::string& key, const Hjson::Value& hints);
+    std::unique_ptr<cqsp::asset::Asset> LoadText(cqsp::asset::VirtualMounter* mount,
+                                                const std::string& path,
+                                                const std::string& key,
+                                                const Hjson::Value& hints);
+    std::unique_ptr<cqsp::asset::Asset> LoadTextDirectory(cqsp::asset::VirtualMounter* mount,
+                                                         const std::string& path,
+                                                         const std::string& key,
+                                                         const Hjson::Value& hints);
+    std::unique_ptr<cqsp::asset::Asset> LoadTexture(cqsp::asset::VirtualMounter* mount,
+                                                    const std::string& path,
+                                                    const std::string& key,
+                                                    const Hjson::Value& hints);
+    std::unique_ptr<cqsp::asset::Asset> LoadHjson(cqsp::asset::VirtualMounter* mount,
+                                                 const std::string& path,
+                                                 const std::string& key,
+                                                 const Hjson::Value& hints);
+    std::unique_ptr<cqsp::asset::Asset> LoadShader(cqsp::asset::VirtualMounter* mount,
+                                                  const std::string& path,
+                                                  const std::string& key,
+                                                  const Hjson::Value& hints);
+    std::unique_ptr<cqsp::asset::Asset> LoadFont(cqsp::asset::VirtualMounter* mount,
+                                                 const std::string& path,
+                                                 const std::string& key,
+                                                 const Hjson::Value& hints);
+    std::unique_ptr<cqsp::asset::Asset> LoadAudio(cqsp::asset::VirtualMounter* mount,
+                                                 const std::string& path,
+                                                 const std::string& key,
+                                                 const Hjson::Value& hints);
+    std::unique_ptr<cqsp::asset::Asset> LoadCubemap(cqsp::asset::VirtualMounter* mount,
+                                                    const std::string& path,
+                                                    const std::string& key,
+                                                    const Hjson::Value& hints);
 
     std::unique_ptr<TextAsset> LoadText(std::istream &asset_stream, const Hjson::Value& hints);
     std::unique_ptr<TextDirectoryAsset> LoadTextDirectory(const std::string& name, const Hjson::Value& hints);

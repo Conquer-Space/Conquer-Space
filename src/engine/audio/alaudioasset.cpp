@@ -59,7 +59,6 @@ std::unique_ptr<AudioAsset> LoadOgg(uint8_t* buffer, int size) {
                                 num_samples * channels * sizeof(int16), sample_rate);
     audio_asset->length = static_cast<float>(num_samples) / static_cast<float>(sample_rate);
 
-    // Audio sounds messed up tho.
     // Free memory
     free(output);
     return std::move(audio_asset);
