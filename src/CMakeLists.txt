@@ -49,6 +49,11 @@ add_subdirectory(client)
 
 add_executable(Conquer-Space main.cpp ${ICON_FILE})
 
+set_target_properties(Conquer-Space PROPERTIES EXPORT_COMPILE_COMMANDS TRUE)
+set_target_properties(cqsp-core PROPERTIES EXPORT_COMPILE_COMMANDS TRUE)
+set_target_properties(cqsp-client PROPERTIES EXPORT_COMPILE_COMMANDS TRUE)
+set_target_properties(cqsp-engine PROPERTIES EXPORT_COMPILE_COMMANDS TRUE)
+
 # Set some msvc convinence things
 
 target_link_libraries(Conquer-Space PRIVATE

@@ -1,0 +1,42 @@
+name: Analyzers
+
+on:
+  pull_request:
+  push:
+  release:
+    types: published
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        tool: [clang-analyzer]
+        config: [Release, Debug]
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt install -y libglfw3-dev libopenal-dev libglvnd-core-dev iwyu clang clang-tidy clang-tools
+
+    - name: Configure
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+
+    - name: Download Clang Analysis Driver Scripts
+      run: |
+        wget https://raw.githubusercontent.com/llvm/llvm-project/llvmorg-11.0.1/clang-tools-extra/clang-tidy/tool/run-clang-tidy.py
+        chmod +x run-clang-tidy.py
+
+    # Implicitly requires build/compile_commands.json to exist
+    - name: Run Clang Analyzer
+      if: ${{ matrix.tool == 'clang-analyzer' }}
+      run: |
+        ./run-clang-tidy.py -j $(nproc) -p build

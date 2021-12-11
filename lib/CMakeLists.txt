@@ -13,6 +13,9 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+set(CMAKE_CXX_CLANG_TIDY "")
+
 add_subdirectory(entt)
 
 add_subdirectory(hjson-cpp)
