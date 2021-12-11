@@ -292,95 +292,123 @@ class AssetLoader {
  private:
     std::optional<PackagePrototype> LoadModPrototype(const std::string&);
 
+    /// <summary>
+    /// Pretty straightforward, loads a text file into a string.
+    /// </summary>
     std::unique_ptr<cqsp::asset::Asset> LoadText(cqsp::asset::VirtualMounter* mount,
                                                 const std::string& path,
                                                 const std::string& key,
                                                 const Hjson::Value& hints);
+    /// <summary>
+    /// Loads a directory of text files into a map of strings keyed by their relative path to the
+    /// resource.hjson file.
+    /// </summary>
     std::unique_ptr<cqsp::asset::Asset> LoadTextDirectory(cqsp::asset::VirtualMounter* mount,
                                                          const std::string& path,
                                                          const std::string& key,
                                                          const Hjson::Value& hints);
+
+    /// <summary>
+    /// Textures have one hint, the `magfilter` hint. If it is present, and set to true, it will enable
+    /// closest magfilter, which will make the texture look pixellated.
+    /// If it is not present, then it will be linear mag.
+    /// </summary>
     std::unique_ptr<cqsp::asset::Asset> LoadTexture(cqsp::asset::VirtualMounter* mount,
                                                     const std::string& path,
                                                     const std::string& key,
                                                     const Hjson::Value& hints);
+    /// <summary>
+    /// Hjson is rather flexible, it can load a single file or a directory, with just the same option.
+    /// If the input path is a file, then it will load the hjson file into a `Hjson::Value`.
+    /// If the input path is a directory, then it will load all the hjson files in the directory into a hjson value.
+    /// This is for large amounts of data that would be better to be split up across files. The data in each file is
+    /// assumed to be an array of objects, and so will load all the arrays of hjson objects in each of the hjson
+    /// files into one hjson object.
+    ///
+    /// If it refers to directory, and a file that is loaded is not in a hjson array, it will not load that specific file,
+    /// but it will not fail.
+    /// </summary>
     std::unique_ptr<cqsp::asset::Asset> LoadHjson(cqsp::asset::VirtualMounter* mount,
                                                  const std::string& path,
                                                  const std::string& key,
                                                  const Hjson::Value& hints);
+
+    /// <summary>
+    /// Shaders have one option, the `type` hint, to specify what type of shader it is.
+    /// We have two so far, the `frag` option for a fragment shader, and `vert` for a vertex shader.
+    /// We do not have support for compute and geometry shaders, but we may add support for that in the future.
+    /// </summary>
     std::unique_ptr<cqsp::asset::Asset> LoadShader(cqsp::asset::VirtualMounter* mount,
                                                   const std::string& path,
                                                   const std::string& key,
                                                   const Hjson::Value& hints);
+    /// <summary>
+    /// Just specify a .ttf file, and it will load it into an opengl texture font object.
+    /// </summary>
     std::unique_ptr<cqsp::asset::Asset> LoadFont(cqsp::asset::VirtualMounter* mount,
                                                  const std::string& path,
                                                  const std::string& key,
                                                  const Hjson::Value& hints);
+    /// <summary>
+    /// Only ogg files are supported for now.
+    /// </summary>
     std::unique_ptr<cqsp::asset::Asset> LoadAudio(cqsp::asset::VirtualMounter* mount,
                                                  const std::string& path,
                                                  const std::string& key,
                                                  const Hjson::Value& hints);
+
+    /// <summary>
+    /// Cubemaps are a special type of texture that make up the skybox. They consist of 6 textures.
+    /// When loading it, you have to specify a hjson file that links the files of the asset.
+    /// The syntax of the hjson file will be a simple array of strings, specifing the relative paths
+    /// relative to that hjson file. You will have 6 images, specifying the left, right, top, bottom,
+    /// back, and front images respectively in that order.
+    /// Example:
+    /// ```
+    /// [
+    ///  left.png // The top left texture
+    ///  right.png // You get the gist
+    ///  top.png
+    ///  bottom.png
+    ///  back.png
+    ///  front.png // In total there will have 6 textures.
+    /// ]
+    ///```
+    /// This will not load the texture more or less than 6 textures are defined in the array.
+    /// </summary>
     std::unique_ptr<cqsp::asset::Asset> LoadCubemap(cqsp::asset::VirtualMounter* mount,
                                                     const std::string& path,
                                                     const std::string& key,
                                                     const Hjson::Value& hints);
 
-    std::unique_ptr<TextAsset> LoadText(std::istream &asset_stream, const Hjson::Value& hints);
-    std::unique_ptr<TextDirectoryAsset> LoadTextDirectory(const std::string& name, const Hjson::Value& hints);
     /// <summary>
     /// Loads a script directory.
     /// </summary>
     /// <param name="path"></param>
     /// <param name="hints"></param>
     /// <returns></returns>
-    std::unique_ptr<TextDirectoryAsset> LoadScriptDirectory(const std::string& path, const Hjson::Value& hints);
+    std::unique_ptr<TextDirectoryAsset> LoadScriptDirectory(VirtualMounter* mount, const std::string& path, const Hjson::Value& hints);
 
     /// <summary>
-    /// Loads a hjson asset that is assumed to be hjson array into the `value` parameter.
+    /// Loads the asset specified in `path`
     /// </summary>
-    /// <param name="path">The path of the hjson file</param>
-    /// <param name="value">The hjson array where the data in the asset will be placed into</param>
-    /// <param name="hints">A formality, is not used.</param>
-    void LoadHjsonFromArray(std::istream &asset_stream, Hjson::Value& value, const Hjson::Value& hints);
-
-    /// <summary>
-    /// Loads all the hjson in a directory into one hjson object. All the hjson has to be in an array.
-    /// </summary>
-    /// <param name="path"></param>
-    /// <param name="value"></param>
-    /// <param name="hints"></param>
-    void LoadHjsonDir(const std::string& path, Hjson::Value& value, const Hjson::Value& hints);
-
-    /// <summary>
-    /// Loads hjson asset from file. Does not matter if it's an array or an object.
-    /// </summary>
-    /// <param name="path"></param>
-    /// <param name="hints"></param>
+    /// <param name="type">Type of asset to load</param>
+    /// <param name="path">Full virtual path of the asset</param>
+    /// <param name="key">Key of the asset to be loaded</param>
+    /// <param name="hints">Any hints to give to the loader</param>
     /// <returns></returns>
-    std::unique_ptr<HjsonAsset> LoadHjson(const std::string &path, const Hjson::Value& hints);
-
-    /// <summary>
-    /// Load hjson asset from file into a package, and all the hjson needs to be arrays.
-    /// </summary>
-    /// <param name="package"></param>
-    /// <param name="path"></param>
-    /// <param name="key"></param>
-    void LoadHjsonDirectory(Package& package, std::string path, std::string key);
-
     std::unique_ptr<cqsp::asset::Asset> LoadAsset(const AssetType& type,
                    const std::string& path, const std::string& key,
                    const Hjson::Value& hints);
+
+    /// <summary>
+    /// Conducts checks to determine if the asset was loaded correctly. Wraps Load asset,
+    /// and contains the same parameters
+    /// </summary>
+    /// <param name="package">Package to load into</param>
     void PlaceAsset(Package& package, const AssetType& type,
                     const std::string& path, const std::string& key,
                     const Hjson::Value& hints);
-
-    std::unique_ptr<Texture> LoadTexture(const std::string& key, const std::string& filePath,
-                    const Hjson::Value& hints);
-    std::unique_ptr<Texture> LoadCubemap(const std::string& key, const std::string &path,
-                    std::istream &asset_stream, const Hjson::Value& hints);
-
-    std::unique_ptr<Shader> LoadShader(const std::string& key, std::istream &asset_stream, const Hjson::Value& hints);
-    std::unique_ptr<Font> LoadFont(const std::string& key, std::istream &asset_stream, const Hjson::Value& hints);
 
     /// <summary>
     /// Loads any type of directory, and executes the function for every single file.
@@ -394,6 +422,7 @@ class AssetLoader {
 
     /// <summary>
     /// Loads all the `resource.hjson` files in the specified directory.
+    /// It will look recursively and find all the resource.hjson files to load.
     /// <br>
     /// `resource.hjson` files consist of a hjson object.
     /// This is the syntax:
@@ -407,49 +436,21 @@ class AssetLoader {
     /// }
     /// ```
     /// <br>
-    /// The asset manager allows for a relatively wide variety of assets.
-    /// <br>
-    /// ### Images
-    /// Images are gonna be one of the most common things loaded from the asset manager.
-    /// Textures have one hint, the `magfilter` hint. If it is present, and set to true, it will enable
-    /// closest magfilter, which will make the texture look pixellated.
-    /// If it is not present, then it will be linear mag.
-    /// <br>
-    /// ### Cubemaps
-    /// Cubemaps are a special type of texture that make up the skybox. They consist of 6 textures.
-    /// But, when loading it, you have to specify a hjson file that links the files of the asset.
-    /// The syntax of the hjson file will be a simple array of strings, specifing the relative paths
-    /// relative to that hjson file. You will have 6 images, specifying the left, right, top, bottom,
-    /// back, and front images respectively in that order.
-    /// <br>
-    /// ### Fonts
-    /// Just specify a .ttf file, and it will load it. Pretty simple.
-    /// <br>
-    /// ### Shader
-    /// Shaders have one option, the `type` hint, to specify what type of shader it is.
-    /// We have two so far, the `frag` option for a fragment shader, and `vert` for a vertex shader.
-    /// We do not have support for compute and geometry shaders, but we may add support for that in the future.
-    /// <br>
-    /// ### Hjson
-    /// Hjson is rather flexable, it can load a single file or a directory, with just the same option.
-    /// If the input path is a file, then it will load the hjson file into a `Hjson::Value`.
-    /// If the input path is a directory, then it will load all the hjson files in the directory into a hjson value.
-    /// This is for large amounts of data that would be better to be split up across files. The data in each file is
-    /// assumed to be an array of objects, and so will load all the arrays of hjson objects in each of the hjson
-    /// files into one hjson object.
-    /// <br>
-    /// ### Text
-    /// Pretty straightforward, loads a text file.
-    /// <br>
-    /// The following assets do nothing, either because we don't have support for them yet, or some other
-    /// reason:
-    /// model, none, directory
-    /// <br>
-    /// We don't have model support yet, but that will come soon.
     /// </summary>
-    /// <param name="path">Base virtual path to the package</param>
     void LoadResources(Package& package, const std::string& path);
 
+    /// <summary>
+    /// Loads all the resources defined in the hjson `asset_value` in the hjson resource
+    /// loading format.
+    /// </summary>
+    /// <param name="package">Package to load into</param>
+    /// <param name="resource_mount_path">root path of the package</param>
+    /// <param name="resource_file_path">Resource file path</param>
+    /// <param name="asset_value">Hjson value to read from</param>
+    void LoadResourceHjsonFile(Package& package,
+                               const std::string& resource_mount_path,
+                               const std::string& resource_file_path,
+                               const Hjson::Value& asset_value);
     /// <summary>
     /// Defines a directory that contains hjson data.
     /// </summary>

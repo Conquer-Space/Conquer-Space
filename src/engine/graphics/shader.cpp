@@ -20,7 +20,7 @@
 
 #include <vector>
 
-unsigned int cqsp::asset::LoadShader(std::string& shaderCode, int type) {
+unsigned int cqsp::asset::LoadShaderData(std::string& shaderCode, int type) {
     unsigned int shader;
 
     shader = glCreateShader(type);
@@ -34,6 +34,8 @@ unsigned int cqsp::asset::LoadShader(std::string& shaderCode, int type) {
     if (isCompiled == GL_FALSE) {
         std::string error = GetErrorLog(shader);
         // Throw exception or something
+        // Bad idea, so:
+        // FIXME(EhWhoAmI): Don't use throw
         // Output
         throw(std::runtime_error(error));
         glDeleteShader(shader);

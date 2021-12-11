@@ -147,6 +147,10 @@ cqsp::asset::NativeDirectory::GetFile(int index, FileModes modes) {
     return nfs->Open(path.c_str(), modes);
 }
 
+const std::string& cqsp::asset::NativeDirectory::GetFilename(int index) {
+    return paths[index];
+}
+
 cqsp::asset::IVirtualFileSystem* cqsp::asset::NativeDirectory::GetFileSystem() {
     return nfs;
 }

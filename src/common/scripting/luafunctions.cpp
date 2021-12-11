@@ -330,7 +330,7 @@ void FunctionAssetManagement(cqsp::engine::Application& app) {
         cqsp::asset::TextDirectoryAsset* asset = app.GetAssetManager().GetAsset<TextDirectoryAsset>("core:scripts");
         // Get the thing
         if (asset->paths.find(script) != asset->paths.end()) {
-            return script_engine.require_script(script, asset->paths[script]);
+            return script_engine.require_script(script, asset->paths[script].data);
         } else {
             SPDLOG_INFO("Cannot find require {}", script);
             return sol::make_object(script_engine, sol::nil);

@@ -75,7 +75,7 @@ class ShaderProgram {
 
 typedef std::shared_ptr<ShaderProgram> ShaderProgram_t;
 // Set of utility functions that load shaders
-unsigned int LoadShader(std::string& shader, int type);
+unsigned int LoadShaderData(std::string& shader, int type);
 
 unsigned int MakeShaderProgram(int vertex, int fragment);
 

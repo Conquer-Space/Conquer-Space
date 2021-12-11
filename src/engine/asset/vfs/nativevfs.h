@@ -85,12 +85,13 @@ class NativeDirectory : public IVirtualDirectory {
     uint64_t GetSize() override;
     const std::string& GetRoot() override;
     std::shared_ptr<IVirtualFile> GetFile(int index, FileModes modes = None) override;
+    const std::string& GetFilename(int index) override;
     IVirtualFileSystem* GetFileSystem() override;
  private:
     friend NativeFileSystem;
     std::vector<std::string> paths;
     std::string root;
-    NativeFileSystem* nfs;
+    NativeFileSystem* const nfs;
 };
 }  // namespace asset
 }  // namespace cqsp
