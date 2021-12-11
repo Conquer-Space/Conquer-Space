@@ -21,13 +21,26 @@
 #include <iostream>
 #include <spdlog/spdlog.h>
 
-cqsp::asset::NativeFileSystem::NativeFileSystem(const char* _root) : root(_root){
+cqsp::asset::NativeFileSystem::NativeFileSystem(const std::string& _root) : root(_root){
 }
 
-std::shared_ptr<cqsp::asset::IVirtualFile> cqsp::asset::NativeFileSystem::Open(
-    const char* file_path, FileModes modes) {
-    std::string path = (std::filesystem::path(root) / file_path).string();
-    std::shared_ptr<NativeFile> nfile = std::make_shared<NativeFile>(this, file_path);
+std::shared_ptr<cqsp::asset::IVirtualFile>
+cqsp::asset::NativeFileSystem::Open(const std::string& file_path, FileModes modes) {
+    std::string file_pos = file_path;
+    // Remove initial '/' if it has it, or std::filesystem goes crazy and thinks that it's
+    // at the root directory of the drive, not the root directory of the filesystem
+    if (file_pos.size() > 0 && file_pos.at(0) == '/') {
+        file_pos = file_pos.erase(0, 1);
+    }
+
+    std::string path = (std::filesystem::path(root) / file_pos).string();
+
+    // Erase slash in front, just in case.
+    std::string file_name = file_path;
+    if (file_name.size() > 0 && file_name.at(0) == '/') {
+            file_name = file_name.erase(0, 1);
+    }
+    std::shared_ptr<NativeFile> nfile = std::make_shared<NativeFile>(this, file_name);
     // Always open binary for carrige return purposes.
     // TODO(EhWhoAmI): Make this able to read text without carrige return.
     nfile->file.open(path, std::ios::binary);
@@ -50,7 +63,7 @@ void cqsp::asset::NativeFileSystem::Close(std::shared_ptr<IVirtualFile>& vf) {
     f->file.close();
 }
 
-std::shared_ptr<cqsp::asset::IVirtualDirectory> cqsp::asset::NativeFileSystem::OpenDirectory(const char* dir) {
+std::shared_ptr<cqsp::asset::IVirtualDirectory> cqsp::asset::NativeFileSystem::OpenDirectory(const std::string& dir) {
     // get the directory
     std::string path = std::filesystem::absolute(std::filesystem::path(root) / dir).string();
     if (!std::filesystem::is_directory(path)) {
@@ -58,30 +71,42 @@ std::shared_ptr<cqsp::asset::IVirtualDirectory> cqsp::asset::NativeFileSystem::O
     }
 
     std::shared_ptr<NativeDirectory> native_dir = std::make_shared<NativeDirectory>(this, dir);
-    for (const auto& dir_entry :
-         std::filesystem::recursive_directory_iterator(path)) {
+    for (const auto& dir_entry : std::filesystem::recursive_directory_iterator(path)) {
         // Add to the virtual directory
-        if (dir_entry.is_regular_file()) {
-            native_dir->paths.push_back(std::filesystem::relative(dir_entry.path(), std::filesystem::path(root) / path).string());
+        if (!dir_entry.is_regular_file()) {
+            continue;
         }
+        // Replace the backslashes with forward slashes so that we keep it consistent
+        std::string vfile_path = std::filesystem::relative(dir_entry.path(), std::filesystem::path(root) / path)
+                .string();
+        std::replace(vfile_path.begin(), vfile_path.end(), '\\', '/');
+        // Remove initial '/' if it has it, or std::filesystem goes crazy and thinks that it's
+        // at the root directory of the drive, not the root directory of the filesystem
+        if (vfile_path.size() > 0 && vfile_path.at(0) == '/') {
+            vfile_path = vfile_path.erase(0, 1);
+        }
+
+        native_dir->paths.push_back(vfile_path);
     }
     // Return the directory
     return native_dir;
 }
 
-bool cqsp::asset::NativeFileSystem::IsFile(const char* path) {
+bool cqsp::asset::NativeFileSystem::IsFile(const std::string& path) {
     return std::filesystem::is_regular_file(std::filesystem::path(root) / path);
 }
 
-bool cqsp::asset::NativeFileSystem::IsDirectory(const char* path) {
+bool cqsp::asset::NativeFileSystem::IsDirectory(const std::string& path) {
     return std::filesystem::is_directory(std::filesystem::path(root) / path);
 }
 
-bool cqsp::asset::NativeFileSystem::Exists(const char* path) {
+bool cqsp::asset::NativeFileSystem::Exists(const std::string& path) {
     return std::filesystem::exists(std::filesystem::path(root) / path);
 }
 
-const char* cqsp::asset::NativeFile::Path() { return path; }
+cqsp::asset::NativeFile::~NativeFile() { file.close(); }
+
+const std::string& cqsp::asset::NativeFile::Path() { return path; }
 
 uint64_t cqsp::asset::NativeFile::Size() {
     return size;
@@ -113,7 +138,7 @@ uint64_t cqsp::asset::NativeFile::Tell() { return file.tellg(); }
 
 uint64_t cqsp::asset::NativeDirectory::GetSize() { return paths.size(); }
 
-const char* cqsp::asset::NativeDirectory::GetRoot() { return root; }
+const std::string& cqsp::asset::NativeDirectory::GetRoot() { return root; }
 
 std::shared_ptr<cqsp::asset::IVirtualFile>
 cqsp::asset::NativeDirectory::GetFile(int index, FileModes modes) {

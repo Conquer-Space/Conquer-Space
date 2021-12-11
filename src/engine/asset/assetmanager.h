@@ -159,24 +159,6 @@ class AssetManager {
  public:
     AssetManager();
 
-    [[deprecated]]
-    std::unique_ptr<Asset>& operator[](std::string& key) {
-        // Split the stuff
-        int separation = key.find(":");
-        std::string token = key.substr(0, separation);
-        std::string pkg_key = key.substr(separation, key.length());
-        return packages[token]->assets[pkg_key];
-    }
-
-    [[deprecated]]
-    std::unique_ptr<Asset>& operator[](const char* key) {
-        std::string str(key);
-        int separation = str.find(":");
-        std::string token = str.substr(0, separation);
-        std::string pkg_key = str.substr(separation, str.length());
-        return packages[token]->assets[pkg_key];
-    }
-
     ShaderProgram_t MakeShader(const std::string &vert, const std::string &frag);
 
     template <class T>
@@ -221,7 +203,7 @@ class AssetManager {
 
     void SaveModList();
 
-    std::map<std::string, PackagePrototype> potential_mods;
+    std::map<std::string, PackagePrototype> m_package_prototype_list;
 
  private:
     std::map<std::string, std::unique_ptr<Package>> packages;
@@ -238,7 +220,7 @@ class AssetLoader {
     ///
     /// It loads first, then loads the mod metadata, then it loads the mods that it needs to load.
     /// </summary>
-    void LoadAssets();
+    void LoadMods();
 
     /// <summary>
     /// Loads a package.
@@ -294,7 +276,7 @@ class AssetLoader {
     /// Get where the mod.hjson file is.
     /// </summary>
     /// <returns></returns>
-    std::string GetModFilePath();
+    static std::string GetModFilePath();
 
     std::atomic_int& getMaxLoading() { return max_loading; }
     std::atomic_int& getCurrentLoading() { return currentloading; }
@@ -304,21 +286,35 @@ class AssetLoader {
     AssetManager* manager;
 
     typedef std::function<std::unique_ptr<Asset>
-        (cqsp::asset::VirtualMounter*, const std::string&, const std::string&, const Hjson::Value&)> LoaderFunction;
+        (cqsp::asset::VirtualMounter* mount,
+            const std::string& path, const std::string& key, const Hjson::Value& hints)> LoaderFunction;
+
  private:
-    std::string LoadModPrototype(const std::string&);
+    PackagePrototype LoadModPrototype(const std::string&);
 
     std::unique_ptr<cqsp::asset::Asset> LoadText(
-        cqsp::asset::VirtualMounter* f, const std::string& path, const std::string& key,
+        cqsp::asset::VirtualMounter* mount, const std::string& path, const std::string& key,
         const Hjson::Value& hints);
     std::unique_ptr<cqsp::asset::Asset> LoadTextDirectory(
-        cqsp::asset::VirtualMounter* f, const std::string& path, const std::string& key,
+        cqsp::asset::VirtualMounter* mount, const std::string& path, const std::string& key,
         const Hjson::Value& hints);
     std::unique_ptr<cqsp::asset::Asset> LoadTexture(
-        cqsp::asset::VirtualMounter* f, const std::string& path,
+        cqsp::asset::VirtualMounter* mount, const std::string& path,
         const std::string& key, const Hjson::Value& hints);
     std::unique_ptr<cqsp::asset::Asset> LoadHjson(
-        cqsp::asset::VirtualMounter* f, const std::string& path,
+        cqsp::asset::VirtualMounter* mount, const std::string& path,
+        const std::string& key, const Hjson::Value& hints);
+    std::unique_ptr<cqsp::asset::Asset> LoadShader(
+        cqsp::asset::VirtualMounter* mount, const std::string& path,
+        const std::string& key, const Hjson::Value& hints);
+    std::unique_ptr<cqsp::asset::Asset> LoadFont(
+        cqsp::asset::VirtualMounter* mount, const std::string& path,
+        const std::string& key, const Hjson::Value& hints);
+    std::unique_ptr<cqsp::asset::Asset> LoadAudio(
+        cqsp::asset::VirtualMounter* mount, const std::string& path,
+        const std::string& key, const Hjson::Value& hints);
+    std::unique_ptr<cqsp::asset::Asset> LoadCubemap(
+        cqsp::asset::VirtualMounter* mount, const std::string& path,
         const std::string& key, const Hjson::Value& hints);
 
     std::unique_ptr<TextAsset> LoadText(std::istream &asset_stream, const Hjson::Value& hints);
@@ -376,6 +372,13 @@ class AssetLoader {
     void LoadAsset(Package& package, const AssetType& type,
                    const std::string& path, const std::string& key,
                    const Hjson::Value& hints);
+
+    std::unique_ptr<cqsp::asset::Asset> LoadAsset2(const AssetType& type,
+                   const std::string& path, const std::string& key,
+                   const Hjson::Value& hints);
+    void PlaceAsset(Package& package, const AssetType& type,
+                    const std::string& path, const std::string& key,
+                    const Hjson::Value& hints);
 
     std::unique_ptr<Texture> LoadTexture(const std::string& key, const std::string& filePath,
                     const Hjson::Value& hints);
@@ -451,7 +454,16 @@ class AssetLoader {
     /// We don't have model support yet, but that will come soon.
     /// </summary>
     /// <param name="path">Base virtual path to the package</param>
-    void LoadResources(Package& package, std::string path);
+    void LoadResources(Package& package, const std::string& path);
+
+    /// <summary>
+    /// Defines a directory that contains hjson data.
+    /// </summary>
+    /// <param name="package"></param>
+    /// <param name="path"></param>
+    /// <param name="name"></param>
+    /// <param name="mounter"></param>
+    bool HjsonPrototypeDirectory(Package& package, const std::string& path, const std::string& name);
 
     /// <summary>
     /// Creates a virtual file system for the path to load.

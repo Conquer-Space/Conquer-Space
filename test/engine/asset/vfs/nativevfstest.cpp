@@ -47,7 +47,7 @@ TEST_F(NativeVfsTest, OpenTest) {
 
     auto ptr = nfs.Open(test_file.c_str());
     ASSERT_NE(ptr, nullptr);
-    ASSERT_STREQ(ptr->Path(), test_file.c_str());
+    ASSERT_EQ(ptr->Path(), test_file);
     // Close the file
     nfs.Close(ptr);
 }

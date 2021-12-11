@@ -63,6 +63,10 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
         auto hjson = GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("core:ui_sounds");
         for (auto element : hjson->data) {
             auto audio_asset = GetAssetManager().GetAsset<cqsp::asset::AudioAsset>(element.second.to_string());
+            if (audio_asset == nullptr) {
+                SPDLOG_WARN("Cannot find audio asset {}", element.second.to_string());
+                continue;
+            }
             GetApp().GetAudioInterface().AddAudioClip(element.first, audio_asset);
         }
         // Set main menu scene
@@ -114,7 +118,7 @@ void cqsp::scene::LoadingScene::LoadResources() {
     // Loading goes here
     // Read core mod
     assetLoader.manager = &GetAssetManager();
-    assetLoader.LoadAssets();
+    assetLoader.LoadMods();
 
     SPDLOG_INFO("Done loading items");
     need_halt = !assetLoader.GetMissingAssets().empty();

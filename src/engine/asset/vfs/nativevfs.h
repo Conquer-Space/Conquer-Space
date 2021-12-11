@@ -29,9 +29,10 @@ class NativeDirectory;
 class NativeFile : public IVirtualFile {
  public:
     NativeFile(NativeFileSystem* _nfs) : IVirtualFile(), nfs(_nfs), path("") {}
-    NativeFile(NativeFileSystem* _nfs, const char* file) : IVirtualFile(), nfs(_nfs), path(file) {}
+    NativeFile(NativeFileSystem* _nfs, const std::string& file) : IVirtualFile(), nfs(_nfs), path(file) {}
+    ~NativeFile();
 
-    const char* Path()  override;
+    const std::string& Path() override;
     uint64_t Size()  override;
 
     void Read(uint8_t* buffer, int bytes)  override;
@@ -46,7 +47,7 @@ class NativeFile : public IVirtualFile {
     friend NativeFileSystem;
 
  private:
-    const char* path;
+    std::string path;
     std::ifstream file;
     int size;
 
@@ -55,20 +56,20 @@ class NativeFile : public IVirtualFile {
 
 class NativeFileSystem : public IVirtualFileSystem {
  public:
-    NativeFileSystem(const char* root);
-    NativeFileSystem(std::string _root) : root(_root) {}
+    NativeFileSystem(const std::string& root);
+
     bool Initialize() override {
         return true;
     }
 
-    std::shared_ptr<IVirtualFile> Open(const char* path, FileModes = None) override;
+    std::shared_ptr<IVirtualFile> Open(const std::string& path, FileModes = None) override;
     void Close(std::shared_ptr<IVirtualFile>&) override;
-    std::shared_ptr<IVirtualDirectory> OpenDirectory(const char* path) override;
+    std::shared_ptr<IVirtualDirectory> OpenDirectory(const std::string& path) override;
 
-    bool IsFile(const char* path) override;
-    bool IsDirectory(const char* path) override;
-    bool Exists(const char* path) override;
-    const char* GetRoot() { return root.c_str(); }
+    bool IsFile(const std::string& path) override;
+    bool IsDirectory(const std::string& path) override;
+    bool Exists(const std::string& path) override;
+    const std::string& GetRoot() { return root.c_str(); }
 
  private:
     std::string root;
@@ -77,16 +78,16 @@ class NativeFileSystem : public IVirtualFileSystem {
 
 class NativeDirectory : public IVirtualDirectory {
  public:
-    NativeDirectory(NativeFileSystem* _nfs, const char* _root) : nfs(_nfs), root(_root) {}
+    NativeDirectory(NativeFileSystem* _nfs, const std::string& _root) : nfs(_nfs), root(_root) {}
 
     virtual uint64_t GetSize() override;
-    const char* GetRoot() override;
+    const std::string& GetRoot() override;
     std::shared_ptr<IVirtualFile> GetFile(int index, FileModes modes = None) override;
     IVirtualFileSystem* GetFileSystem() override;
  private:
     friend NativeFileSystem;
     std::vector<std::string> paths;
-    const char* root;
+    std::string root;
     NativeFileSystem* nfs;
 };
 }

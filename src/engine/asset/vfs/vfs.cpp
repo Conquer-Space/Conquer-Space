@@ -22,49 +22,63 @@ cqsp::asset::VirtualMounter::~VirtualMounter() {
     }
 }
 
-void cqsp::asset::VirtualMounter::AddMountPoint(const char* point,
+void cqsp::asset::VirtualMounter::AddMountPoint(const std::string& point,
                                                 IVirtualFileSystem* fs) {
     mount_points[std::string(point)] = fs;
 }
 
-std::shared_ptr<cqsp::asset::IVirtualFile> cqsp::asset::VirtualMounter::Open(
-    const char* path, FileModes mode) {
-    std::string path_str = path;
+std::shared_ptr<cqsp::asset::IVirtualFile>
+cqsp::asset::VirtualMounter::Open(const std::string& path, FileModes mode) {
     for (auto it = mount_points.begin(); it != mount_points.end(); it++) {
-        if (path_str.rfind(it->first, 0) == 0) {
+        if (path.rfind(it->first, 0) == 0) {
             // Then it's the mount point
             // Remove the path string and the path separator, and get the path
             // to get from the file system
-            std::string mount_path = path_str.substr(it->first.size() + 1, path_str.size());
+            std::string mount_path = path.substr(it->first.size() + 1, path.size());
             return it->second->Open(mount_path.c_str(), mode);
         }
     }
     return nullptr;
 }
 
-std::shared_ptr<cqsp::asset::IVirtualDirectory> cqsp::asset::VirtualMounter::OpenDirectory(
-    const char* path) {
-    std::string path_str = path;
+std::shared_ptr<cqsp::asset::IVirtualFile>
+cqsp::asset::VirtualMounter::Open(const std::string& mount, const std::string& path, FileModes mode) {
+    return mount_points[mount]->Open(path, mode);
+}
+
+std::shared_ptr<cqsp::asset::IVirtualDirectory>
+cqsp::asset::VirtualMounter::OpenDirectory(const std::string& path) {
     for (auto it = mount_points.begin(); it != mount_points.end(); it++) {
-        if (path_str.rfind(it->first, 0) == 0) {
-            // Then it's the mount point
-            // Remove the path string and the path separator, and get the path
-            // to get from the file system
-            std::string mount_path = path_str.substr(it->first.size() + 1, path_str.size());
-            return it->second->OpenDirectory(mount_path.c_str());
+        if (path.rfind(it->first, 0) != 0) {
+            continue;
         }
+        // Then it's the mount point
+        // Remove the path string and the path separator, and get the path
+        // to get from the file system
+        std::string mount_path;
+        if (it->first.size() >= path.size()) {
+            mount_path = it->first;
+        } else {
+            mount_path = path.substr(it->first.size() + 1, path.size());
+        }
+
+        return it->second->OpenDirectory(mount_path.c_str());
     }
     return nullptr;
 }
 
-bool cqsp::asset::VirtualMounter::IsFile(const char* path) {
-    std::string path_str = path;
+std::shared_ptr<cqsp::asset::IVirtualDirectory>
+cqsp::asset::VirtualMounter::OpenDirectory(const std::string& mount, const std::string& path) {
+    return mount_points[mount]->OpenDirectory(path);
+}
+
+bool cqsp::asset::VirtualMounter::IsFile(const std::string& path) {
     for (auto it = mount_points.begin(); it != mount_points.end(); it++) {
-        if (path_str.rfind(it->first, 0) == 0) {
+        if (path.rfind(it->first, 0) == 0) {
             // Then it's the mount point
             // Remove the path string and the path separator, and get the path
             // to get from the file system
-            std::string mount_path = path_str.substr(it->first.size() + 1, path_str.size());
+            std::string mount_path = path.substr(it->first.size() + 1, path.size());
             if(it->second->IsFile(mount_path.c_str())) {
                 return true;
             }
@@ -73,11 +87,15 @@ bool cqsp::asset::VirtualMounter::IsFile(const char* path) {
     return false;
 }
 
-bool cqsp::asset::VirtualMounter::IsDirectory(const char* path) {
-    std::string path_str = path;
+bool cqsp::asset::VirtualMounter::IsFile(const std::string& mount,
+                                         const std::string& path) {
+    return mount_points[mount]->IsFile(path);
+}
+
+bool cqsp::asset::VirtualMounter::IsDirectory(const std::string& path) {
     for (auto it = mount_points.begin(); it != mount_points.end(); it++) {
-        if (path_str.rfind(it->first, 0) == 0) {
-            std::string mount_path = path_str.substr(it->first.size() + 1, path_str.size());
+        if (path.rfind(it->first, 0) == 0) {
+            std::string mount_path = path.substr(it->first.size() + 1, path.size());
             if (it->second->IsDirectory(mount_path.c_str())) {
                 return true;
             }
@@ -86,17 +104,26 @@ bool cqsp::asset::VirtualMounter::IsDirectory(const char* path) {
     return false;
 }
 
-bool cqsp::asset::VirtualMounter::Exists(const char* path) {
-    std::string path_str = path;
+bool cqsp::asset::VirtualMounter::IsDirectory(const std::string& mount,
+                                              const std::string& path) {
+    return mount_points[mount]->IsDirectory(path);
+}
+
+bool cqsp::asset::VirtualMounter::Exists(const std::string& path) {
     for (auto it = mount_points.begin(); it != mount_points.end(); it++) {
-        if (path_str.rfind(it->first, 0) == 0) {
-            std::string mount_path = path_str.substr(it->first.size() + 1, path_str.size());
+        if (path.rfind(it->first, 0) == 0) {
+            std::string mount_path = path.substr(it->first.size() + 1, path.size());
             if (it->second->Exists(mount_path.c_str())) {
                 return true;
             }
         }
     }
     return false;
+}
+
+bool cqsp::asset::VirtualMounter::Exists(const std::string& mount,
+                                         const std::string& path) {
+    return mount_points[mount]->Exists(path);
 }
 
 uint8_t* cqsp::asset::ReadAllFromVFile(IVirtualFile* file) {
