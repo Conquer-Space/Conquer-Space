@@ -53,7 +53,7 @@ class NativeFile : public IVirtualFile {
     std::ifstream file;
     int size;
 
-    const NativeFileSystem* nfs;
+    NativeFileSystem* const nfs;
 };
 
 class NativeFileSystem : public IVirtualFileSystem {

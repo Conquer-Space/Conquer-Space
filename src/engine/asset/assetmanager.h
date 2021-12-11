@@ -367,21 +367,7 @@ class AssetLoader {
     /// <param name="key"></param>
     void LoadHjsonDirectory(Package& package, std::string path, std::string key);
 
-    /// <summary>
-    /// Load singular asset
-    /// </summary>
-    /// <param name="package">package to load into</param>
-    /// <param name="type">Type of asset the asset loader says it shoul dload</param>
-    /// <param name="path">The real path where the asset is lcated</param>
-    /// <param name="key">Key name of the asset</param>
-    /// <param name="hints">Any extra information for the asset loader to take into account</param>
-    void LoadAsset(Package& package, const std::string& type, const std::string& path, const std::string& key,
-                    const Hjson::Value& hints);
-    void LoadAsset(Package& package, const AssetType& type,
-                   const std::string& path, const std::string& key,
-                   const Hjson::Value& hints);
-
-    std::unique_ptr<cqsp::asset::Asset> LoadAsset2(const AssetType& type,
+    std::unique_ptr<cqsp::asset::Asset> LoadAsset(const AssetType& type,
                    const std::string& path, const std::string& key,
                    const Hjson::Value& hints);
     void PlaceAsset(Package& package, const AssetType& type,

@@ -335,70 +335,7 @@ std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std:
     return package;
 }
 
-void cqsp::asset::AssetLoader::LoadAsset(Package& package, const AssetType& type, const std::string& path,
-                                        const std::string& key, const Hjson::Value& hints) {
-    switch (type) {
-        case AssetType::TEXTURE:
-        {
-        package.assets[key] = LoadTexture(key, path, hints);
-        break;
-        }
-        case AssetType::SHADER:
-        {
-        std::ifstream asset_stream(path, std::ios::binary);
-        package.assets[key] = LoadShader(key, asset_stream, hints);
-        break;
-        }
-        case AssetType::HJSON:
-        {
-        // Check for errors
-        auto p = LoadHjson(path, hints);
-        if (p != nullptr) {
-            package.assets[key] = std::move(p);
-        }
-        break;
-        }
-        case AssetType::TEXT:
-        {
-        std::ifstream asset_stream(path);
-        package.assets[key] = LoadText(asset_stream, hints);
-        break;
-        }
-        case AssetType::TEXT_ARRAY:
-        {
-        break;
-        // This is not really needed.
-        package.assets[key] = LoadTextDirectory(path, hints);
-        }
-        case AssetType::MODEL:
-        break;
-        case AssetType::CUBEMAP:
-        {
-        std::ifstream asset_stream(path);
-        package.assets[key] = LoadCubemap(key, path, asset_stream, hints);
-        break;
-        }
-        case AssetType::FONT:
-        {
-        std::ifstream asset_stream(path, std::ios::binary);
-        package.assets[key] = LoadFont(key, asset_stream, hints);
-        break;
-        }
-        case AssetType::AUDIO:
-        {
-        std::ifstream asset_stream(path, std::ios::binary);
-        package.assets[key] = cqsp::asset::LoadOgg(asset_stream);
-        break;
-        }
-        break;
-        case AssetType::NONE:
-        default:
-        break;
-    }
-}
-
-
-std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadAsset2(
+std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadAsset(
                                           const AssetType& type,
                                           const std::string& path,
                                           const std::string& key,
@@ -416,20 +353,12 @@ void cqsp::asset::AssetLoader::PlaceAsset(Package& package,
                                           const std::string& path,
                                           const std::string& key,
                                           const Hjson::Value& hints) {
-    auto asset = LoadAsset2(type, path, key, hints);
+    auto asset = LoadAsset(type, path, key, hints);
     if (asset == nullptr) {
         SPDLOG_WARN("Asset {} was not loaded properly", key);
         return;
     }
     package.assets[key] = std::move(asset);
-}
-
-void cqsp::asset::AssetLoader::LoadAsset(Package& package,
-                                         const std::string& type,
-                                         const std::string& path,
-                                         const std::string& key,
-                                         const Hjson::Value& hints) {
-    LoadAsset(package, FromString(type), path, key, hints);
 }
 
 std::unique_ptr<cqsp::asset::Texture> cqsp::asset::AssetLoader::LoadTexture(const std::string& key,
