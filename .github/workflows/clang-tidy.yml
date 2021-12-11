@@ -1,4 +1,4 @@
-name: Analyzers
+name: Clang Tidy
 
 on:
   pull_request:
@@ -7,13 +7,24 @@ on:
     types: published
 
 jobs:
-  build:
+  skip-duplicates:
+    continue-on-error: true
     runs-on: ubuntu-latest
+    # Map a step output to a job output
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@master
+        with:
+          cancel_others: 'true'
+          paths_ignore: '["README.md", "docs/**", "tools/**", "data/**"]'
 
-    strategy:
-      matrix:
-        tool: [clang-analyzer]
-        config: [Release, Debug]
+  build:
+    needs: skip-duplicates
+    # Skip tasks
+    if: ${{ needs.skip-duplicates.outputs.should_skip != 'true' }}
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -24,7 +35,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt install -y libglfw3-dev libopenal-dev libglvnd-core-dev iwyu clang clang-tidy clang-tools
+        sudo apt install -y libglfw3-dev libopenal-dev libglvnd-core-dev clang clang-tidy clang-tools
 
     - name: Configure
       run: |
@@ -37,6 +48,5 @@ jobs:
 
     # Implicitly requires build/compile_commands.json to exist
     - name: Run Clang Analyzer
-      if: ${{ matrix.tool == 'clang-analyzer' }}
       run: |
         ./run-clang-tidy.py -j $(nproc) -p build
