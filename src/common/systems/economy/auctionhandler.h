@@ -20,20 +20,32 @@
 
 #include "common/components/auction.h"
 
-// Handle buy and sell orders
 namespace cqsp {
 namespace common {
 namespace systems {
 /// <summary>
-/// 
+/// Buys a good from the market
 /// </summary>
-/// <param name="auction_house"></param>
-/// <param name="good"></param>
-/// <param name="price"></param>
-/// <param name="quantity"></param>
-/// <returns>True if the order is fufilled immediately, false if a buy order is placed.</returns>
-bool BuyGood(components::AuctionHouse& auction_house, entt::entity good, double price, double quantity);
-bool SellGood(components::AuctionHouse& auction_house, entt::entity good, double price, double quantity);
-}
-}
-}
+/// <param name="auction_house">Auction house to buy from</param>
+/// <param name="good">Good to buy</param>
+/// <param name="price">Price</param>
+/// <param name="quantity">Quantity</param>
+/// <returns>True if the order is fufilled immediately, false if a buy order is
+/// placed.</returns>
+bool BuyGood(components::AuctionHouse& auction_house, entt::entity good,
+             entt::entity agent, double price, double quantity);
+
+/// <summary>
+/// Sells a good to the market
+/// </summary>
+/// <param name="auction_house">Auction house to buy from</param>
+/// <param name="good">Good to buy</param>
+/// <param name="price">Price</param>
+/// <param name="quantity">Quantity</param>
+/// <returns>True if the order is fufilled immediately, false if a sell order is
+/// placed.</returns>
+bool SellGood(components::AuctionHouse& auction_house, entt::entity good,
+              entt::entity agent, double price, double quantity);
+}  // namespace systems
+}  // namespace common
+}  // namespace cqsp

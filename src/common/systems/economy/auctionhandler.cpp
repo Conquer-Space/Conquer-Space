@@ -17,7 +17,9 @@
 #include "common/systems/economy/auctionhandler.h"
 
 #include <spdlog/spdlog.h>
-bool cqsp::common::systems::BuyGood(components::AuctionHouse& auction_house, entt::entity good, double price, double quantity) {
+bool cqsp::common::systems::BuyGood(components::AuctionHouse& auction_house,
+                                    entt::entity agent, entt::entity good,
+                                    double price, double quantity) {
     // The orders we want to try and fufill
     auto& sell_order_list = auction_house.sell_orders[good];
     auto& buy_order_list = auction_house.buy_orders[good];
@@ -25,7 +27,7 @@ bool cqsp::common::systems::BuyGood(components::AuctionHouse& auction_house, ent
     // Check if goods are being sold
     if (sell_order_list.empty()) {
         // Then make new buy order
-        components::Order order(price, quantity);
+        components::Order order(price, quantity, agent);
         buy_order_list.put(order);
         return false;
     }
@@ -55,12 +57,13 @@ bool cqsp::common::systems::BuyGood(components::AuctionHouse& auction_house, ent
         return true;
     }
     // Then place a buy order because the order could not be fufulled.
-    components::Order order(price, quantity);
+    components::Order order(price, quantity, agent);
     buy_order_list.put(order);
     return false;
 }
 
 bool cqsp::common::systems::SellGood(components::AuctionHouse& auction_house,
+                                     entt::entity agent,
                                      entt::entity good, double price,
                                      double quantity) {
     // The place we will put our order if we cannot fufill it
@@ -72,7 +75,7 @@ bool cqsp::common::systems::SellGood(components::AuctionHouse& auction_house,
     // Check if goods are being sold
     if (buy_order_list.empty()) {
         // Then make new order
-        components::Order order(price, quantity);
+        components::Order order(price, quantity, agent);
         sell_order_list.put(order);
         return false;
     }
@@ -105,7 +108,7 @@ bool cqsp::common::systems::SellGood(components::AuctionHouse& auction_house,
         return true;
     }
     // Then place a sell order because the order could not be fufulled.
-    components::Order order(price, quantity);
+    components::Order order(price, quantity, agent);
     sell_order_list.put(order);
     return false;
 }

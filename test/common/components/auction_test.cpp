@@ -28,21 +28,24 @@ using cqsp::common::components::AscendingSortedOrderList;
 using cqsp::common::components::Order;
 using cqsp::common::components::AuctionHouse;
 
+entt::entity test_good = static_cast<entt::entity>(1);
+entt::entity test_agent = static_cast <entt::entity>(2);
+
 TEST(AuctionTest, DescendingSortedOrderListTest) {
     DescendingSortedOrderList sorted_list;
     // Add random elements, and sort
     // quantity should not matter
-    sorted_list.put(Order(40, 5));
-    sorted_list.put(Order(45, 5));
-    sorted_list.put(Order(14, 5));
-    sorted_list.put(Order(59, 5));
-    sorted_list.put(Order(12, 5));
-    sorted_list.put(Order(50, 5));
-    sorted_list.put(Order(20, 5));
-    sorted_list.put(Order(80, 5));
-    sorted_list.put(Order(10, 5));
-    sorted_list.put(Order(157, 5));
-    sorted_list.put(Order(45, 5));
+    sorted_list.put(Order(40, 5, test_agent));
+    sorted_list.put(Order(45, 5, test_agent));
+    sorted_list.put(Order(14, 5, test_agent));
+    sorted_list.put(Order(59, 5, test_agent));
+    sorted_list.put(Order(12, 5, test_agent));
+    sorted_list.put(Order(50, 5, test_agent));
+    sorted_list.put(Order(20, 5, test_agent));
+    sorted_list.put(Order(80, 5, test_agent));
+    sorted_list.put(Order(10, 5, test_agent));
+    sorted_list.put(Order(157, 5, test_agent));
+    sorted_list.put(Order(45, 5, test_agent));
 
     double previous = sorted_list[0].price;
     for (auto &i : sorted_list) {
@@ -55,17 +58,17 @@ TEST(AuctionTest, AscendingSortedOrderListTest) {
     AscendingSortedOrderList sorted_list;
     // Add random elements, and sort
     // quantity should not matter
-    sorted_list.put(Order(40, 5));
-    sorted_list.put(Order(45, 5));
-    sorted_list.put(Order(14, 5));
-    sorted_list.put(Order(59, 5));
-    sorted_list.put(Order(12, 5));
-    sorted_list.put(Order(50, 5));
-    sorted_list.put(Order(20, 5));
-    sorted_list.put(Order(80, 5));
-    sorted_list.put(Order(10, 5));
-    sorted_list.put(Order(157, 5));
-    sorted_list.put(Order(45, 5));
+    sorted_list.put(Order(40, 5, test_agent));
+    sorted_list.put(Order(45, 5, test_agent));
+    sorted_list.put(Order(14, 5, test_agent));
+    sorted_list.put(Order(59, 5, test_agent));
+    sorted_list.put(Order(12, 5, test_agent));
+    sorted_list.put(Order(50, 5, test_agent));
+    sorted_list.put(Order(20, 5, test_agent));
+    sorted_list.put(Order(80, 5, test_agent));
+    sorted_list.put(Order(10, 5, test_agent));
+    sorted_list.put(Order(157, 5, test_agent));
+    sorted_list.put(Order(45, 5, test_agent));
 
     double previous = sorted_list[0].price;
     for (auto &i : sorted_list) {
@@ -76,7 +79,6 @@ TEST(AuctionTest, AscendingSortedOrderListTest) {
 
 TEST(AuctionTest, DemandTest) {
     AuctionHouse auction_house;
-    entt::entity test_good = static_cast<entt::entity>(1);
     // Price is irrelevant
     static const int size = 10;
     double test_orders[size] = {
@@ -84,7 +86,7 @@ TEST(AuctionTest, DemandTest) {
     };
     double total_demand = 0;
     for (int i = 0; i < size; i++) {
-        auction_house.AddBuyOrder(test_good, Order(10, test_orders[i]));
+        auction_house.AddBuyOrder(test_good, Order(10, test_orders[i], test_agent));
         total_demand += test_orders[i];
     }
     EXPECT_EQ(total_demand, auction_house.GetDemand(test_good));
@@ -92,7 +94,6 @@ TEST(AuctionTest, DemandTest) {
 
 TEST(AuctionTest, SupplyTest) {
     AuctionHouse auction_house;
-    entt::entity test_good = static_cast<entt::entity>(1);
     // Price is irrelevant
     static const int size = 10;
     double test_orders[size] = {
@@ -100,7 +101,7 @@ TEST(AuctionTest, SupplyTest) {
     };
     double total_demand = 0;
     for (int i = 0; i < size; i++) {
-        auction_house.AddSellOrder(test_good, Order(10, test_orders[i]));
+        auction_house.AddSellOrder(test_good, Order(10, test_orders[i], test_agent));
         total_demand += test_orders[i];
     }
     EXPECT_EQ(total_demand, auction_house.GetSupply(test_good));
@@ -109,9 +110,8 @@ TEST(AuctionTest, SupplyTest) {
 TEST(AuctionTest, BasicBuyOrderTest) {
     AuctionHouse auction_house;
     // Add basic buy order
-    entt::entity test_good = static_cast<entt::entity>(1);
-    auction_house.AddSellOrder(test_good, Order(10, 50));
-    bool is_ordered = cqsp::common::systems::BuyGood(auction_house, test_good, 10, 50);
+    auction_house.AddSellOrder(test_good, Order(10, 50, test_agent));
+    bool is_ordered = cqsp::common::systems::BuyGood(auction_house, test_good, test_agent, 10, 50);
 
     // Ensure it's fufilled immediately
     EXPECT_TRUE(is_ordered);
@@ -125,9 +125,8 @@ TEST(AuctionTest, BasicBuyOrderTest) {
 TEST(AuctionTest, UnfufilledBuyOrderTest) {
     AuctionHouse auction_house;
     // Add basic buy order
-    entt::entity test_good = static_cast<entt::entity>(1);
-    auction_house.AddSellOrder(test_good, Order(10, 100));
-    bool is_ordered = cqsp::common::systems::BuyGood(auction_house, test_good, 10, 50);
+    auction_house.AddSellOrder(test_good, Order(10, 100, test_agent));
+    bool is_ordered = cqsp::common::systems::BuyGood(auction_house, test_good, test_agent, 10, 50);
 
     // It's fufilled immediately
     EXPECT_TRUE(is_ordered);
@@ -145,10 +144,9 @@ TEST(AuctionTest, UnfufilledBuyOrderTest) {
 // Demand is way higher
 TEST(AuctionTest, OverfufilledBuyOrderTest) {
     AuctionHouse auction_house;
-    entt::entity test_good = static_cast<entt::entity>(1);
-    auction_house.AddSellOrder(test_good, Order(10, 100));
+    auction_house.AddSellOrder(test_good, Order(10, 100, test_agent));
 
-    bool is_ordered = cqsp::common::systems::BuyGood(auction_house, test_good, 10, 1000);
+    bool is_ordered = cqsp::common::systems::BuyGood(auction_house, test_good, test_agent, 10, 1000);
 
     EXPECT_FALSE(is_ordered);
 
@@ -163,9 +161,8 @@ TEST(AuctionTest, OverfufilledBuyOrderTest) {
 TEST(AuctionTest, OverpricedBuyOrderTest) {
     AuctionHouse auction_house;
     // Add basic buy order
-    entt::entity test_good = static_cast<entt::entity>(1);
-    auction_house.AddSellOrder(test_good, Order(1000, 100));
-    bool is_ordered = cqsp::common::systems::BuyGood(auction_house, test_good, 10, 100);
+    auction_house.AddSellOrder(test_good, Order(1000, 100, test_agent));
+    bool is_ordered = cqsp::common::systems::BuyGood(auction_house, test_good, test_agent, 10, 100);
 
     // It's fufilled immediately
     EXPECT_FALSE(is_ordered);
@@ -185,9 +182,8 @@ TEST(AuctionTest, OverpricedBuyOrderTest) {
 TEST(AuctionTest, BasicSellOrderTest) {
     AuctionHouse auction_house;
     // Add basic buy order
-    entt::entity test_good = static_cast<entt::entity>(1);
-    auction_house.AddBuyOrder(test_good, Order(10, 50));
-    bool is_ordered = cqsp::common::systems::SellGood(auction_house, test_good, 10, 50);
+    auction_house.AddBuyOrder(test_good, Order(10, 50, test_agent));
+    bool is_ordered = cqsp::common::systems::SellGood(auction_house, test_good, test_agent, 10, 50);
 
     // Ensure it's fufilled immediately
     EXPECT_TRUE(is_ordered);
@@ -201,9 +197,8 @@ TEST(AuctionTest, BasicSellOrderTest) {
 TEST(AuctionTest, UnfufilledSellOrderTest) {
     AuctionHouse auction_house;
     // Add basic buy order
-    entt::entity test_good = static_cast<entt::entity>(1);
-    auction_house.AddBuyOrder(test_good, Order(10, 100));
-    bool is_ordered = cqsp::common::systems::SellGood(auction_house, test_good, 10, 50);
+    auction_house.AddBuyOrder(test_good, Order(10, 100, test_agent));
+    bool is_ordered = cqsp::common::systems::SellGood(auction_house, test_good, test_agent, 10, 50);
 
     // It's fufilled immediately
     EXPECT_TRUE(is_ordered);
@@ -221,10 +216,9 @@ TEST(AuctionTest, UnfufilledSellOrderTest) {
 // Supply is way higher
 TEST(AuctionTest, OverfufilledSellOrderTest) {
     AuctionHouse auction_house;
-    entt::entity test_good = static_cast<entt::entity>(1);
-    auction_house.AddBuyOrder(test_good, Order(10, 100));
+    auction_house.AddBuyOrder(test_good, Order(10, 100, test_agent));
 
-    bool is_ordered = cqsp::common::systems::SellGood(auction_house, test_good, 10, 1000);
+    bool is_ordered = cqsp::common::systems::SellGood(auction_house, test_good, test_agent, 10, 1000);
 
     EXPECT_FALSE(is_ordered);
 
@@ -240,9 +234,8 @@ TEST(AuctionTest, OverfufilledSellOrderTest) {
 TEST(AuctionTest, OverpricedSellOrderTest) {
     AuctionHouse auction_house;
     // Add basic buy order
-    entt::entity test_good = static_cast<entt::entity>(1);
-    auction_house.AddBuyOrder(test_good, Order(10, 100));
-    bool is_ordered = cqsp::common::systems::SellGood(auction_house, test_good, 1000, 100);
+    auction_house.AddBuyOrder(test_good, Order(10, 100, test_agent));
+    bool is_ordered = cqsp::common::systems::SellGood(auction_house, test_good, test_agent, 1000, 100);
 
     // It's not fufilled immediately
     EXPECT_FALSE(is_ordered);

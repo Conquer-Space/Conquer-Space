@@ -17,6 +17,8 @@
 #pragma once
 
 #include <vector>
+#include <functional>
+#include <map>
 
 #include <entt/entt.hpp>
 
@@ -25,13 +27,20 @@ namespace common {
 namespace components {
 struct Order {
     Order() : price(0), quantity(0) { }
-    Order(double price, double quantity) : price(price), quantity(quantity) { }
+    Order(double price, double quantity, entt::entity agent)
+        : price(price), quantity(quantity), agent(agent) {}
 
     /// <summary>
     /// Price per unit
     /// </summary>
     double price;
     double quantity;
+
+    /// <summary>
+    /// The agent that owns this order. Goods sold will go to the agent, money recieved will
+    /// also go to the agent. Needs a wallet component.
+    /// </summary>
+    entt::entity agent;
 };
 
 inline bool operator<(const Order& lhs, const Order& rhs) {
@@ -45,12 +54,12 @@ inline bool operator>(const Order& lhs, const Order& rhs) {
 template<class T>
 class SortedOrderList : public std::vector<Order> {
  public:
-     using std::vector<Order>::vector;
-     void put(const Order &order) {
-         DescendingSortedOrderList::iterator it =
-             std::lower_bound(begin(), end(), order, T());
-         insert(it, order); // insert before iterator it
-     }};
+    using std::vector<Order>::vector;
+    void put(const Order &order) {
+        DescendingSortedOrderList::iterator it =
+            std::lower_bound(begin(), end(), order, T());
+        insert(it, order);
+    }};
 /// <summary>
 /// Greatest to smallest
 /// </summary>
