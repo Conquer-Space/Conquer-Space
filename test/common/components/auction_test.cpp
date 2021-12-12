@@ -21,10 +21,12 @@
 #include <iostream>
 
 #include "common/components/auction.h"
+#include "common/systems/economy/auctionhandler.h"
 
 using cqsp::common::components::DescendingSortedOrderList;
 using cqsp::common::components::AscendingSortedOrderList;
 using cqsp::common::components::Order;
+using cqsp::common::components::AuctionHouse;
 
 TEST(AuctionTest, DescendingSortedOrderListTest) {
     DescendingSortedOrderList sorted_list;
@@ -44,7 +46,7 @@ TEST(AuctionTest, DescendingSortedOrderListTest) {
 
     double previous = sorted_list[0].price;
     for (auto &i : sorted_list) {
-        ASSERT_LE(i.price, previous);
+        EXPECT_LE(i.price, previous);
         previous = i.price;
     }
 }
@@ -67,7 +69,190 @@ TEST(AuctionTest, AscendingSortedOrderListTest) {
 
     double previous = sorted_list[0].price;
     for (auto &i : sorted_list) {
-        ASSERT_GE(i.price, previous);
+        EXPECT_GE(i.price, previous);
         previous = i.price;
     }
+}
+
+TEST(AuctionTest, DemandTest) {
+    AuctionHouse auction_house;
+    entt::entity test_good = static_cast<entt::entity>(1);
+    // Price is irrelevant
+    static const int size = 10;
+    double test_orders[size] = {
+        3, 56, 15, 75332, 784, 329, 43, 786, 2536, 19
+    };
+    double total_demand = 0;
+    for (int i = 0; i < size; i++) {
+        auction_house.AddBuyOrder(test_good, Order(10, test_orders[i]));
+        total_demand += test_orders[i];
+    }
+    EXPECT_EQ(total_demand, auction_house.GetDemand(test_good));
+}
+
+TEST(AuctionTest, SupplyTest) {
+    AuctionHouse auction_house;
+    entt::entity test_good = static_cast<entt::entity>(1);
+    // Price is irrelevant
+    static const int size = 10;
+    double test_orders[size] = {
+        3, 56, 15, 75332, 784, 329, 43, 786, 2536, 19
+    };
+    double total_demand = 0;
+    for (int i = 0; i < size; i++) {
+        auction_house.AddSellOrder(test_good, Order(10, test_orders[i]));
+        total_demand += test_orders[i];
+    }
+    EXPECT_EQ(total_demand, auction_house.GetSupply(test_good));
+}
+
+TEST(AuctionTest, BasicBuyOrderTest) {
+    AuctionHouse auction_house;
+    // Add basic buy order
+    entt::entity test_good = static_cast<entt::entity>(1);
+    auction_house.AddSellOrder(test_good, Order(10, 50));
+    bool is_ordered = cqsp::common::systems::BuyGood(auction_house, test_good, 10, 50);
+
+    // Ensure it's fufilled immediately
+    EXPECT_TRUE(is_ordered);
+
+    // Ensure the buy ordered is fufilled
+    EXPECT_TRUE(auction_house.buy_orders[test_good].empty());
+    EXPECT_TRUE(auction_house.sell_orders[test_good].empty());
+}
+
+// Test for buy orders that cannot be fully fufilled due to quantity
+TEST(AuctionTest, UnfufilledBuyOrderTest) {
+    AuctionHouse auction_house;
+    // Add basic buy order
+    entt::entity test_good = static_cast<entt::entity>(1);
+    auction_house.AddSellOrder(test_good, Order(10, 100));
+    bool is_ordered = cqsp::common::systems::BuyGood(auction_house, test_good, 10, 50);
+
+    // It's fufilled immediately
+    EXPECT_TRUE(is_ordered);
+
+    // ensure that sell order is not totally fufilled
+    EXPECT_FALSE(auction_house.sell_orders[test_good].empty());
+
+    // ensure no buy orders are sold
+    EXPECT_TRUE(auction_house.buy_orders[test_good].empty());
+
+    // They should have 50 test goods left
+    EXPECT_EQ(50, auction_house.GetSupply(test_good));
+}
+
+// Demand is way higher
+TEST(AuctionTest, OverfufilledBuyOrderTest) {
+    AuctionHouse auction_house;
+    entt::entity test_good = static_cast<entt::entity>(1);
+    auction_house.AddSellOrder(test_good, Order(10, 100));
+
+    bool is_ordered = cqsp::common::systems::BuyGood(auction_house, test_good, 10, 1000);
+
+    EXPECT_FALSE(is_ordered);
+
+    // Sell order is fufilled
+    EXPECT_TRUE(auction_house.sell_orders[test_good].empty());
+    EXPECT_FALSE(auction_house.buy_orders[test_good].empty());
+
+    EXPECT_EQ(900, auction_house.GetDemand(test_good));
+}
+
+// Good is overpriced, so they don't want to buy
+TEST(AuctionTest, OverpricedBuyOrderTest) {
+    AuctionHouse auction_house;
+    // Add basic buy order
+    entt::entity test_good = static_cast<entt::entity>(1);
+    auction_house.AddSellOrder(test_good, Order(1000, 100));
+    bool is_ordered = cqsp::common::systems::BuyGood(auction_house, test_good, 10, 100);
+
+    // It's fufilled immediately
+    EXPECT_FALSE(is_ordered);
+
+    // Ensure that sell order is not totally fufilled
+    EXPECT_FALSE(auction_house.sell_orders[test_good].empty());
+
+    // Ensure there's a buy order
+    EXPECT_FALSE(auction_house.buy_orders[test_good].empty());
+
+    // They should have 50 test goods left
+    EXPECT_EQ(100, auction_house.GetSupply(test_good));
+    EXPECT_EQ(100, auction_house.GetDemand(test_good));
+}
+
+// Sell orders are basically the same as buy orders, except they are now sell orders.
+TEST(AuctionTest, BasicSellOrderTest) {
+    AuctionHouse auction_house;
+    // Add basic buy order
+    entt::entity test_good = static_cast<entt::entity>(1);
+    auction_house.AddBuyOrder(test_good, Order(10, 50));
+    bool is_ordered = cqsp::common::systems::SellGood(auction_house, test_good, 10, 50);
+
+    // Ensure it's fufilled immediately
+    EXPECT_TRUE(is_ordered);
+
+    // Ensure the buy ordered is fufilled, and no sell order is added
+    EXPECT_TRUE(auction_house.buy_orders[test_good].empty());
+    EXPECT_TRUE(auction_house.sell_orders[test_good].empty());
+}
+
+// Test for buy orders that cannot be fully fufilled due to quantity
+TEST(AuctionTest, UnfufilledSellOrderTest) {
+    AuctionHouse auction_house;
+    // Add basic buy order
+    entt::entity test_good = static_cast<entt::entity>(1);
+    auction_house.AddBuyOrder(test_good, Order(10, 100));
+    bool is_ordered = cqsp::common::systems::SellGood(auction_house, test_good, 10, 50);
+
+    // It's fufilled immediately
+    EXPECT_TRUE(is_ordered);
+
+    // ensure that buy order is not totally fufilled
+    EXPECT_FALSE(auction_house.buy_orders[test_good].empty());
+
+    // ensure no sell orders are added
+    EXPECT_TRUE(auction_house.sell_orders[test_good].empty());
+
+    // They should have 50 test goods left
+    EXPECT_EQ(50, auction_house.GetDemand(test_good));
+}
+
+// Supply is way higher
+TEST(AuctionTest, OverfufilledSellOrderTest) {
+    AuctionHouse auction_house;
+    entt::entity test_good = static_cast<entt::entity>(1);
+    auction_house.AddBuyOrder(test_good, Order(10, 100));
+
+    bool is_ordered = cqsp::common::systems::SellGood(auction_house, test_good, 10, 1000);
+
+    EXPECT_FALSE(is_ordered);
+
+    // Sell order is fufilled
+    EXPECT_FALSE(auction_house.sell_orders[test_good].empty());
+    EXPECT_TRUE(auction_house.buy_orders[test_good].empty());
+
+    EXPECT_EQ(900, auction_house.GetSupply(test_good));
+    EXPECT_EQ(0, auction_house.GetDemand(test_good));
+}
+
+// Good is uunder, so they don't want to sell
+TEST(AuctionTest, OverpricedSellOrderTest) {
+    AuctionHouse auction_house;
+    // Add basic buy order
+    entt::entity test_good = static_cast<entt::entity>(1);
+    auction_house.AddBuyOrder(test_good, Order(10, 100));
+    bool is_ordered = cqsp::common::systems::SellGood(auction_house, test_good, 1000, 100);
+
+    // It's not fufilled immediately
+    EXPECT_FALSE(is_ordered);
+
+    // Ensure that sell order is not totally fufilled
+    EXPECT_FALSE(auction_house.sell_orders[test_good].empty());
+
+    // Ensure there's a buy order
+    EXPECT_FALSE(auction_house.buy_orders[test_good].empty());
+
+    EXPECT_EQ(100, auction_house.GetDemand(test_good));
+    EXPECT_EQ(100, auction_house.GetSupply(test_good));
 }

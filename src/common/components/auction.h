@@ -34,11 +34,11 @@ struct Order {
     double quantity;
 };
 
-bool operator<(const Order& lhs, const Order& rhs) {
+inline bool operator<(const Order& lhs, const Order& rhs) {
     return lhs.price < rhs.price;
 }
 
-bool operator>(const Order& lhs, const Order& rhs) {
+inline bool operator>(const Order& lhs, const Order& rhs) {
     return lhs.price > rhs.price;
 }
 
@@ -46,7 +46,7 @@ template<class T>
 class SortedOrderList : public std::vector<Order> {
  public:
      using std::vector<Order>::vector;
-     void put(Order &&order) {
+     void put(const Order &order) {
          DescendingSortedOrderList::iterator it =
              std::lower_bound(begin(), end(), order, T());
          insert(it, order); // insert before iterator it
@@ -61,9 +61,35 @@ typedef SortedOrderList<std::greater<Order>> DescendingSortedOrderList;
 /// </summary>
 typedef SortedOrderList<std::less<Order>> AscendingSortedOrderList;
 
-class AuctionHouse {
+struct AuctionHouse {
     std::map<entt::entity, DescendingSortedOrderList> sell_orders;
     std::map<entt::entity, AscendingSortedOrderList> buy_orders;
+
+    void AddSellOrder(entt::entity good, Order &&order) {
+        sell_orders[good].put(order);
+    }
+
+    void AddBuyOrder(entt::entity good, Order &&order) {
+        buy_orders[good].put(order);
+    }
+
+    double GetDemand(entt::entity good) {
+        const AscendingSortedOrderList& buy_list = buy_orders[good];
+        double demand = 0;
+        for (const Order& order : buy_list) {
+            demand += order.quantity;
+        }
+        return demand;
+    }
+
+    double GetSupply(entt::entity good) {
+        const DescendingSortedOrderList& sell_list = sell_orders[good];
+        double supply = 0;
+        for (const Order& order : sell_list) {
+            supply += order.quantity;
+        }
+        return supply;
+    }
 };
 }  // namespace components
 }  // namespace common
