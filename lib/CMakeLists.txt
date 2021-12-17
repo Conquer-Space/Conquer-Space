@@ -61,7 +61,7 @@ add_subdirectory(libnoise)
 set(GLAD_API "gl=4.3" CACHE STRING "" FORCE)
 set(GLAD_EXPORT ON CACHE BOOL "" FORCE)
 set(GLAD_EXTENSIONS "GL_AMD_debug_output" CACHE STRING "" FORCE)
-add_subdirectory(glad)
+
 # Set parent scope because this is not root directory
 set(GLAD_INCLUDE_DIRS ${GLAD_INCLUDE_DIRS} PARENT_SCOPE)
 
@@ -90,11 +90,11 @@ set(IMGUI ${IMGUI} ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_glfw.h
     ${CMAKE_SOURCE_DIR}/lib/imgui/misc/cpp/imgui_stdlib.cpp)
 
 add_library(ImGui ${IMGUI})
-target_link_libraries(ImGui PUBLIC ${GLFW_LIBRARIES} glad)
+target_link_libraries(ImGui PUBLIC ${GLFW_LIBRARIES} glad::glad)
 target_compile_definitions(ImGui PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD)
 set_target_properties(ImGui PROPERTIES FOLDER "Libs")
 
 # Copy stb_vorbis header file
 configure_file(${CMAKE_SOURCE_DIR}/lib/stb/stb_vorbis.c ${CMAKE_SOURCE_DIR}/lib/include/stb_vorbis.h COPYONLY)
 
-set_target_properties(aob fmt hjson libnoise spdlog uninstall glad glad-generate-files PROPERTIES FOLDER "Libs")
+set_target_properties(aob fmt hjson libnoise spdlog uninstall PROPERTIES FOLDER "Libs")

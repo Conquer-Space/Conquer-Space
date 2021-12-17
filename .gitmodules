@@ -40,12 +40,6 @@
 [submodule "lib/libnoise"]
 	path = lib/libnoise
 	url = https://github.com/EhWhoAmI/libnoise
-[submodule "lib/openal-soft"]
-	path = lib/openal-soft
-	url = https://github.com/kcat/openal-soft
-[submodule "lib/glad"]
-	path = lib/glad
-	url = https://github.com/Dav1dde/glad
 [submodule "lib/glfw"]
 	path = lib/glfw
 	url = https://github.com/glfw/glfw
