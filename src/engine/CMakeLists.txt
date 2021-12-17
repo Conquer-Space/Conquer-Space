@@ -56,8 +56,8 @@ target_link_libraries(cqsp-engine PUBLIC
     freetype
     fmt
     libnoise
-    glad
+    glad::glad
     glfw
     sol2
-    ${OPENAL_LIBRARY}
+    OpenAL::OpenAL
 )

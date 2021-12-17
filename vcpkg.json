@@ -1,0 +1,9 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+    "name": "cqsp",
+    "version": "0.0.0",
+    "dependencies": [
+      "openal-soft",
+      "glad"
+    ]
+}

@@ -25,7 +25,6 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/implot)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/cpp/)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/backends)
-include_directories(${GLAD_INCLUDE_DIRS})
 
 # Hide the console window in visual studio projects - Release
 if(MSVC)

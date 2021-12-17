@@ -26,23 +26,6 @@ add_subdirectory(spdlog)
 
 add_subdirectory(glm)
 
-if(USE_SYSTEM_OPENAL)
-  find_package(OpenAL)
-else()
-  set(ALSOFT_EXAMPLES OFF CACHE BOOL "" FORCE)
-  set(ALSOFT_UTILS OFF CACHE BOOL "" FORCE)
-  set(ALSOFT_INSTALL_UTILS OFF CACHE BOOL "" FORCE)
-  set(ALSOFT_INSTALL_CONFIG OFF CACHE BOOL "" FORCE)
-  set(ALSOFT_UPDATE_BUILD_VERSION OFF CACHE BOOL "" FORCE)
-  set(LIBTYPE "STATIC" CACHE BOOL "" FORCE)
-  set(OPENAL_LIBRARY "OpenAL" CACHE INTERNAL "" FORCE)
-  set(OPENAL_FOUND ON CACHE BOOL "" FORCE)
-  set(OPENAL_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/lib/openal-soft/include" CACHE INTERNAL "")
-  add_subdirectory(openal-soft)
-  # Things only the project has
-  set_target_properties(common ex-common OpenAL PROPERTIES FOLDER "Libs")
-endif()
-
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
