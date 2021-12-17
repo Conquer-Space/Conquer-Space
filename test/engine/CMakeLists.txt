@@ -23,8 +23,6 @@ file (GLOB_RECURSE H_FILES *.h)
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/stb)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
-include_directories(${CMAKE_SOURCE_DIR}/lib/freetype/include)
-include_directories(${CMAKE_SOURCE_DIR}/lib/fmt/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/include)
 # Lua
 include_directories(${CMAKE_SOURCE_DIR}/lib/lua/)
@@ -56,7 +54,7 @@ target_link_libraries(cqsp-engine-tests
     glm
     liblua-static
     freetype
-    fmt
+    fmt::fmt
     libnoise
     glad::glad
     glfw

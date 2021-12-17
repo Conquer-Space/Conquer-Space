@@ -5,6 +5,7 @@
     "dependencies": [
       "openal-soft",
       "glad",
-      "glfw3"
+      "glfw3",
+      "fmt"
     ]
 }

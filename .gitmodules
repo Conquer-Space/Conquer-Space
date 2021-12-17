@@ -34,9 +34,6 @@
 [submodule "lib/freetype"]
 	path = lib/freetype
 	url = https://github.com/freetype/freetype
-[submodule "lib/fmt"]
-	path = lib/fmt
-	url = https://github.com/fmtlib/fmt
 [submodule "lib/libnoise"]
 	path = lib/libnoise
 	url = https://github.com/EhWhoAmI/libnoise

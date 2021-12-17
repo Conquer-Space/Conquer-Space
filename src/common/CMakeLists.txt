@@ -17,7 +17,6 @@
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/stb)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
-include_directories(${CMAKE_SOURCE_DIR}/lib/freetype/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/examples)
 include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/include)
 
@@ -41,7 +40,7 @@ target_link_libraries(cqsp-core PUBLIC
     spdlog
     glm
     liblua-static
-    fmt
+    fmt::fmt
     libnoise
     sol2
 )
