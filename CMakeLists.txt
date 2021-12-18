@@ -78,11 +78,18 @@ find_package(imgui CONFIG REQUIRED)
 find_package(implot CONFIG REQUIRED)
 
 # Lua config
+if (UNIX)
+find_package(Lua REQUIRED)
+set(LUA_HEADERS ${LUA_INCLUDE_DIR} CACHE STRING "" FORCE)
+set(LUA_LIBRARY ${LUA_LIBRARIES} CACHE STRING "" FORCE)
+else()
 find_library(LUA_LIBRARY lua51)
 message(${LUA_LIBRARY})
 find_path(LUA_HEADERS_POS luajit/lua.h NO_CACHE)
 set(LUA_HEADERS ${LUA_HEADERS_POS}luajit CACHE STRING "" FORCE)
 message(${LUA_HEADERS})
+endif()
+
 find_package(Git)
 if(GIT_FOUND)
 execute_process(

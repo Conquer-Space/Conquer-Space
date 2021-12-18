@@ -28,6 +28,13 @@
         ]
       },
       "implot",
-      "luajit"
+      {
+        "name": "luajit",
+        "platform": "!linux"
+      },
+      {
+        "name": "lua",
+        "platform": "!windows"
+      }
     ]
 }
