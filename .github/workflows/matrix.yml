@@ -56,11 +56,12 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt install -y libglfw3 libglfw3-dev libopenal-dev
+        sudo apt install -y libglfw3 libglfw3-dev libopenal-dev libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev
 
     - name: Configure Build files
       run: |
-        cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+        chmod +x setup_env.sh
+        ./setup_env.sh
 
     - name: Build Conquer Space
       run: |
@@ -93,8 +94,9 @@ jobs:
         submodules: recursive
 
     - name: Configure Build Files
+      shell: cmd
       run: |
-        cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=x64-windows -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake
+        ".\setup_env.bat"
 
     - name: Build Conquer Space
       run: |

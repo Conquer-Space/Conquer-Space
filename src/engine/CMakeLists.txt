@@ -21,12 +21,8 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
 include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/examples)
 include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/include)
 
-include_directories(${CMAKE_SOURCE_DIR}/lib/implot)
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/cpp/)
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui)
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/backends)
 include_directories(${OPENAL_INCLUDE_DIR})
+include_directories(${LUA_HEADERS})
 
 file (GLOB_RECURSE CPP_FILES *.cpp)
 list(FILTER CPP_FILES EXCLUDE REGEX ".*main.cpp$")
@@ -47,14 +43,14 @@ add_library(cqsp-engine ${SOURCE_FILES})
 target_link_libraries(cqsp-engine PUBLIC 
     cqsp-core
     OpenGL::GL
-    ImGui
+    imgui::imgui
     EnTT::EnTT
     hjson
-    spdlog
-    glm
-    liblua-static
+    spdlog::spdlog
+    glm::glm
+    ${LUA_LIBRARY}
     freetype
-    fmt
+    fmt::fmt
     libnoise
     glad
     glfw

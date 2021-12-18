@@ -16,7 +16,7 @@
 */
 #include "engine/audio/alaudioasset.h"
 
-#include <stb_vorbis.h>
+#include <stb_vorbis.c>  // NOLINT
 
 #include <utility>
 

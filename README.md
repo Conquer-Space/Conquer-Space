@@ -9,22 +9,19 @@ Get the repo with `git clone --depth 1 --recursive --shallow-submodules https://
 #### Windows
 Open the repository `cd cqsp`
 
-Make the build folder `mkdir build && cd build`
+Make build files `setup_env`
 
-Create build files `cmake ..`
-
-Open the Visual Studio files, and compile.
+Compile: `cmake --build build --config Release`
+Or you can open the Visual Studio files, and compile.
 
 #### Linux (Ubuntu)
-You'll need glfw, so `sudo apt-get update`, and `sudo apt install -y libglfw3-dev`
+You'll need a few libraries, so `sudo apt-get update`, and `sudo apt install -y libglfw3 libglfw3-dev libopenal-dev libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev`
 
 Open the repository `cd cqsp`
 
-Make the build folder `mkdir build && cd build`
+Make the build folder `./setup_env.sh`
 
-Create build files `cmake ..`
-
-Compile `make`
+Create build files `cmake --build build`
 
 #### Mac
 Sorry, we don't have any mac developers, so if you are one, feel free to join us and the discord and help us!

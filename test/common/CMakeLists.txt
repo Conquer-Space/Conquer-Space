@@ -20,25 +20,24 @@ file (GLOB_RECURSE CPP_FILES *.cpp)
 file (GLOB_RECURSE H_FILES *.h)
 
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
-include_directories(${CMAKE_SOURCE_DIR}/lib/fmt/include)
 # Lua
-include_directories(${CMAKE_SOURCE_DIR}/lib/lua/)
 include_directories(${CMAKE_SOURCE_DIR}/lib/sol2/include)
+include_directories(${LUA_HEADERS})
 
 add_executable(cqsp-tests ${CPP_FILES} ${H_FILES})
 
 # Test libraries
-target_link_libraries(cqsp-tests gtest gtest_main)
+target_link_libraries(cqsp-tests GTest::gtest GTest::gtest_main)
+target_link_libraries(cqsp-tests GTest::gmock)
 target_link_libraries(cqsp-tests cqsp-core)
 
 # External libraries
 target_link_libraries(cqsp-tests
     EnTT::EnTT
     hjson
-    spdlog
-    liblua-static
-    spdlog
-    fmt
+    ${LUA_LIBRARY}
+    spdlog::spdlog
+    fmt::fmt
     libnoise
     )
 

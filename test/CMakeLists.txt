@@ -14,6 +14,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 enable_testing()
+
+find_package(GTest CONFIG REQUIRED)
+
 add_subdirectory(common)
 add_subdirectory(engine)
 

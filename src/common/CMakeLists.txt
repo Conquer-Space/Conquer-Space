@@ -16,10 +16,9 @@
 
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/stb)
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
-include_directories(${CMAKE_SOURCE_DIR}/lib/freetype/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/examples)
 include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/include)
+include_directories(${LUA_HEADERS})
 
 file (GLOB_RECURSE CPP_FILES *.cpp)
 file (GLOB_RECURSE H_FILES *.h)
@@ -38,10 +37,10 @@ add_library(cqsp-core ${SOURCE_FILES})
 target_link_libraries(cqsp-core PUBLIC 
     EnTT::EnTT
     hjson
-    spdlog
-    glm
-    liblua-static
-    fmt
+    spdlog::spdlog
+    glm::glm
+    ${LUA_LIBRARY}
+    fmt::fmt
     libnoise
     sol2
 )

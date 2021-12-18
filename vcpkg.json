@@ -1,0 +1,45 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+    "name": "cqsp",
+    "version": "0.0.0",
+    "builtin-baseline": "da94bc3ffc5a55a50a072c0683240353259b9386",
+    "dependencies": [
+      {
+        "name": "openal-soft",
+        "default-features": true,
+        "platform": "!linux"
+      },
+      "glfw3",
+      "fmt",
+      "spdlog",
+      "glm",
+      "entt",
+      {
+        "name": "freetype",
+        "default-features": false
+      },
+      "gtest",
+      {
+        "name": "imgui",
+        "default-features": false,
+        "features": [
+          "freetype",
+          "glfw-binding",
+          "opengl3-binding"
+        ]
+      },
+      "implot",
+      {
+        "name": "luajit",
+        "platform": "!linux"
+      },
+      {
+        "name": "lua",
+        "platform": "!windows"
+      }
+    ],
+    "overrides": [
+      { "name": "imgui", "version": "1.85"},
+      { "name": "freetype", "version": "2.11.0#2"}
+    ]
+}

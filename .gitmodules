@@ -1,21 +1,6 @@
-[submodule "lib/imgui"]
-	path = lib/imgui
-	url = https://github.com/ocornut/imgui
 [submodule "lib/hjson-cpp"]
 	path = lib/hjson-cpp
 	url = https://github.com/hjson/hjson-cpp
-[submodule "lib/entt"]
-	path = lib/entt
-	url = https://github.com/skypjack/entt
-[submodule "lib/spdlog"]
-	path = lib/spdlog
-	url = https://github.com/gabime/spdlog
-[submodule "lib/googletest"]
-	path = lib/googletest
-	url = https://github.com/google/googletest
-[submodule "lib/glm"]
-	path = lib/glm
-	url = https://github.com/g-truc/glm
 [submodule "lib/sol2"]
 	path = lib/sol2
 	url = https://github.com/ThePhD/sol2
@@ -25,28 +10,9 @@
 [submodule "lib/imgui_markdown"]
 	path = lib/imgui_markdown
 	url = https://github.com/juliettef/imgui_markdown
-[submodule "lib/LuaJIT-cmake"]
-	path = lib/LuaJIT-cmake
-	url = https://github.com/9chu/LuaJIT-cmake
-[submodule "lib/implot"]
-	path = lib/implot
-	url = https://github.com/epezent/implot
-[submodule "lib/freetype"]
-	path = lib/freetype
-	url = https://github.com/freetype/freetype
-[submodule "lib/fmt"]
-	path = lib/fmt
-	url = https://github.com/fmtlib/fmt
 [submodule "lib/libnoise"]
 	path = lib/libnoise
 	url = https://github.com/EhWhoAmI/libnoise
-[submodule "lib/openal-soft"]
-	path = lib/openal-soft
-	url = https://github.com/kcat/openal-soft
 [submodule "lib/glad"]
 	path = lib/glad
 	url = https://github.com/Dav1dde/glad
-[submodule "lib/glfw"]
-	path = lib/glfw
-	url = https://github.com/glfw/glfw
-

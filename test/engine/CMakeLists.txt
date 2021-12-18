@@ -23,40 +23,33 @@ file (GLOB_RECURSE H_FILES *.h)
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/stb)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
-include_directories(${CMAKE_SOURCE_DIR}/lib/freetype/include)
-include_directories(${CMAKE_SOURCE_DIR}/lib/fmt/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/include)
 # Lua
-include_directories(${CMAKE_SOURCE_DIR}/lib/lua/)
 include_directories(${CMAKE_SOURCE_DIR}/lib/sol2/include)
 
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui)
-include_directories(${CMAKE_SOURCE_DIR}/lib/implot)
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/cpp/)
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/backends)
 include_directories(${GLAD_INCLUDE_DIRS})
+include_directories(${LUA_HEADERS})
 
 add_executable(cqsp-engine-tests ${CPP_FILES} ${H_FILES})
 
 set_property(TARGET cqsp-engine-tests PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/binaries/bin")
 
 # Test libraries
-target_link_libraries(cqsp-engine-tests gtest gtest_main)
-target_link_libraries(cqsp-engine-tests gmock)
+target_link_libraries(cqsp-engine-tests GTest::gtest GTest::gtest_main)
+target_link_libraries(cqsp-engine-tests GTest::gmock)
 target_link_libraries(cqsp-engine-tests cqsp-core cqsp-engine)
-
 # External libraries
 target_link_libraries(cqsp-engine-tests
     OpenGL::GL
-    ImGui
+    imgui::imgui
+    implot::implot
     EnTT::EnTT
     hjson
-    spdlog
-    glm
-    liblua-static
+    spdlog::spdlog
+    glm::glm
+    ${LUA_LIBRARY}
     freetype
-    fmt
+    fmt::fmt
     libnoise
     glad
     glfw
