@@ -60,6 +60,7 @@ jobs:
 
     - name: Configure Build files
       run: |
+        chmod +x setup_env.sh
         ./setup_env.sh
 
     - name: Build Conquer Space
@@ -94,7 +95,7 @@ jobs:
 
     - name: Configure Build Files
       run: |
-        setup_env
+        call "./setup_env.bat"
 
     - name: Build Conquer Space
       run: |
