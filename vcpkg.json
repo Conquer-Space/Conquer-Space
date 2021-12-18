@@ -3,15 +3,24 @@
     "name": "cqsp",
     "version": "0.0.0",
     "dependencies": [
-      "openal-soft",
-      "glfw3",
+      {
+        "name": "openal-soft",
+        "default-features": true,
+        "platform": "!linux"
+      },
+      {
+        "name":"glfw3",
+        "default-features": true,
+        "platform": "!linux"
+      },
       "fmt",
       "spdlog",
       "glm",
       "entt",
       {
         "name": "freetype",
-        "default-features": false
+        "default-features": false,
+        "platform": "!linux"
       },
       "gtest"
     ]
