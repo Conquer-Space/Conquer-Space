@@ -2,6 +2,7 @@
     "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
     "name": "cqsp",
     "version": "0.0.0",
+    "builtin-baseline": "da94bc3ffc5a55a50a072c0683240353259b9386",
     "dependencies": [
       {
         "name": "openal-soft",
