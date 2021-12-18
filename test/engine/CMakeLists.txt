@@ -28,11 +28,7 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/lua/)
 include_directories(${CMAKE_SOURCE_DIR}/lib/sol2/include)
 
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui)
 include_directories(${CMAKE_SOURCE_DIR}/lib/implot)
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/cpp/)
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/backends)
 include_directories(${GLAD_INCLUDE_DIRS})
 
 add_executable(cqsp-engine-tests ${CPP_FILES} ${H_FILES})
@@ -47,7 +43,8 @@ target_link_libraries(cqsp-engine-tests cqsp-core cqsp-engine)
 # External libraries
 target_link_libraries(cqsp-engine-tests
     OpenGL::GL
-    ImGui
+    imgui::imgui
+    implot::implot
     EnTT::EnTT
     hjson
     spdlog::spdlog

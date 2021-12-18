@@ -213,7 +213,7 @@ void cqsp::scene::MainMenuScene::ModWindow() {
     auto& asset_manager = GetAssetManager();
 
     int height = ImGui::GetIO().DisplaySize.y * 0.8f - 75;
-    ImGui::BeginChild("modlist", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f -
+    ImGui::BeginChild("modlist", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
                                 ImGui::GetStyle().ItemSpacing.y, height));
     static cqsp::asset::PackagePrototype* package = nullptr;
     bool selected = false;
@@ -275,7 +275,7 @@ void cqsp::scene::MainMenuScene::ModWindow() {
     }
     ImGui::EndChild();
     ImGui::SameLine();
-    ImGui::BeginChild("PackageInfo", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f -
+    ImGui::BeginChild("PackageInfo", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
                                 ImGui::GetStyle().ItemSpacing.y, height));
     if (package != nullptr) {
         ImGui::TextFmt("{}", package->title);

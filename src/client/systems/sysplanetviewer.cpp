@@ -247,7 +247,7 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTab() {
 
     int height = 300;
     ImGui::TextFmt("Factories: {}", city_industry.industries.size());
-    ImGui::BeginChild("salepanel", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f -
+    ImGui::BeginChild("salepanel", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
                                  ImGui::GetStyle().ItemSpacing.y, height), true,
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
     IndustryTabServicesChild();
@@ -255,20 +255,20 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTab() {
 
     ImGui::SameLine();
 
-    ImGui::BeginChild("ManufacturingPanel", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f -
+    ImGui::BeginChild("ManufacturingPanel", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
                                  ImGui::GetStyle().ItemSpacing.y, height), true,
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
     IndustryTabManufacturingChild();
     ImGui::EndChild();
 
-    ImGui::BeginChild("MinePanel", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f -
+    ImGui::BeginChild("MinePanel", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
                                  ImGui::GetStyle().ItemSpacing.y, height), true,
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
     IndustryTabMiningChild();
     ImGui::EndChild();
     ImGui::SameLine();
 
-    ImGui::BeginChild("AgriPanel", ImVec2(ImGui::GetWindowContentRegionWidth() * 0.5f -
+    ImGui::BeginChild("AgriPanel", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
                                  ImGui::GetStyle().ItemSpacing.y, height), true,
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
     IndustryTabAgricultureChild();
