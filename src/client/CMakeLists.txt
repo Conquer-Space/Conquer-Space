@@ -44,7 +44,7 @@ target_link_libraries(cqsp-client PUBLIC
     cqsp-core
     cqsp-engine
     OpenGL::GL
-    imgui::imgui
+    ImGui
     EnTT::EnTT
     hjson
     spdlog::spdlog
