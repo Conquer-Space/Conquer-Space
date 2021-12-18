@@ -13,6 +13,15 @@
         "name": "freetype",
         "default-features": false
       },
-      "gtest"
+      "gtest",
+      {
+        "name": "imgui",
+        "default-features": false,
+        "features": [
+          "freetype",
+          "glfw-binding",
+          "opengl3-binding"
+        ]
+      }
     ]
 }

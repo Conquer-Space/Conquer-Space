@@ -46,7 +46,7 @@ target_link_libraries(cqsp-engine-tests cqsp-core cqsp-engine)
 # External libraries
 target_link_libraries(cqsp-engine-tests
     OpenGL::GL
-    ImGui
+    imgui::imgui
     EnTT::EnTT
     hjson
     spdlog::spdlog
