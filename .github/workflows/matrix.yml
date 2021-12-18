@@ -60,7 +60,7 @@ jobs:
 
     - name: Configure Build files
       run: |
-        cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+        ./setup_env.sh
 
     - name: Build Conquer Space
       run: |
@@ -94,7 +94,7 @@ jobs:
 
     - name: Configure Build Files
       run: |
-        cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_TOOLCHAIN_FILE=x64-windows -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake
+        setup_env
 
     - name: Build Conquer Space
       run: |
