@@ -94,8 +94,9 @@ jobs:
         submodules: recursive
 
     - name: Configure Build Files
+      shell: cmd
       run: |
-        call "./setup_env.bat"
+        ".\setup_env.bat"
 
     - name: Build Conquer Space
       run: |
