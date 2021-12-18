@@ -56,7 +56,7 @@ target_link_libraries(cqsp-engine-tests
     freetype
     fmt::fmt
     libnoise
-    glad::glad
+    glad
     glfw
     OpenAL::OpenAL
 )

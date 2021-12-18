@@ -66,7 +66,7 @@ set(IMGUI ${IMGUI} ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_glfw.h
     ${CMAKE_SOURCE_DIR}/lib/imgui/misc/cpp/imgui_stdlib.cpp)
 
 add_library(ImGui ${IMGUI})
-target_link_libraries(ImGui PUBLIC glfw glad::glad)
+target_link_libraries(ImGui PUBLIC glfw glad)
 target_compile_definitions(ImGui PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD)
 set_target_properties(ImGui PROPERTIES FOLDER "Libs")
 
