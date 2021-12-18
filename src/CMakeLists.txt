@@ -19,7 +19,7 @@ find_package(Threads)
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/stb)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
-
+include_directories(${LUA_HEADERS})
 include_directories(${CMAKE_SOURCE_DIR}/lib/implot)
 
 # Hide the console window in visual studio projects - Release

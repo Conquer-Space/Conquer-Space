@@ -16,13 +16,8 @@
 
 add_subdirectory(hjson-cpp)
 
-# Add lua
-add_subdirectory(LuaJIT-cmake)
-
+set(SOL2_LUA_VERSION "LuaJIT" CACHE STRING "" FORCE)
 add_subdirectory(sol2)
-
-# Set properties for lua projects
-set_target_properties(buildvm liblua-shared lua-static lua liblua-static minilua PROPERTIES FOLDER "Lua")
 
 add_subdirectory(libnoise)
 

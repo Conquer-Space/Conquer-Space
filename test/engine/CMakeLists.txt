@@ -25,11 +25,10 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/stb)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
 include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/include)
 # Lua
-include_directories(${CMAKE_SOURCE_DIR}/lib/lua/)
 include_directories(${CMAKE_SOURCE_DIR}/lib/sol2/include)
 
-include_directories(${CMAKE_SOURCE_DIR}/lib/implot)
 include_directories(${GLAD_INCLUDE_DIRS})
+include_directories(${LUA_HEADERS})
 
 add_executable(cqsp-engine-tests ${CPP_FILES} ${H_FILES})
 
@@ -39,7 +38,6 @@ set_property(TARGET cqsp-engine-tests PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${
 target_link_libraries(cqsp-engine-tests GTest::gtest GTest::gtest_main)
 target_link_libraries(cqsp-engine-tests GTest::gmock)
 target_link_libraries(cqsp-engine-tests cqsp-core cqsp-engine)
-
 # External libraries
 target_link_libraries(cqsp-engine-tests
     OpenGL::GL
@@ -49,7 +47,7 @@ target_link_libraries(cqsp-engine-tests
     hjson
     spdlog::spdlog
     glm::glm
-    liblua-static
+    ${LUA_LIBRARY}
     freetype
     fmt::fmt
     libnoise

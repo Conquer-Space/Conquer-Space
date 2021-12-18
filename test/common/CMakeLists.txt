@@ -21,8 +21,8 @@ file (GLOB_RECURSE H_FILES *.h)
 
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 # Lua
-include_directories(${CMAKE_SOURCE_DIR}/lib/lua/)
 include_directories(${CMAKE_SOURCE_DIR}/lib/sol2/include)
+include_directories(${LUA_HEADERS})
 
 add_executable(cqsp-tests ${CPP_FILES} ${H_FILES})
 
@@ -35,7 +35,7 @@ target_link_libraries(cqsp-tests cqsp-core)
 target_link_libraries(cqsp-tests
     EnTT::EnTT
     hjson
-    liblua-static
+    ${LUA_LIBRARY}
     spdlog::spdlog
     fmt::fmt
     libnoise

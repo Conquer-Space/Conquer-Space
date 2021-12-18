@@ -10,9 +10,6 @@
 [submodule "lib/imgui_markdown"]
 	path = lib/imgui_markdown
 	url = https://github.com/juliettef/imgui_markdown
-[submodule "lib/LuaJIT-cmake"]
-	path = lib/LuaJIT-cmake
-	url = https://github.com/9chu/LuaJIT-cmake
 [submodule "lib/libnoise"]
 	path = lib/libnoise
 	url = https://github.com/EhWhoAmI/libnoise

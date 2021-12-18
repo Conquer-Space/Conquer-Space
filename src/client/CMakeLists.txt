@@ -18,12 +18,7 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/stb)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
 include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/examples)
 include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/include)
-
-include_directories(${CMAKE_SOURCE_DIR}/lib/implot)
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/cpp/)
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui)
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
-include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/backends)
+include_directories(${LUA_HEADERS})
 
 # Set source files
 file (GLOB_RECURSE CPP_FILES *.cpp)
@@ -50,7 +45,7 @@ target_link_libraries(cqsp-client PUBLIC
     hjson
     spdlog::spdlog
     glm::glm
-    liblua-static
+    ${LUA_LIBRARY}
     freetype
     fmt::fmt
     libnoise
