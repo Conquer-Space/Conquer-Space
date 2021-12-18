@@ -38,7 +38,7 @@ target_link_libraries(cqsp-core PUBLIC
     EnTT::EnTT
     hjson
     spdlog::spdlog
-    glm
+    glm::glm
     liblua-static
     fmt::fmt
     libnoise

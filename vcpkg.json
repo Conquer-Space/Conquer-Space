@@ -7,6 +7,7 @@
       "glad",
       "glfw3",
       "fmt",
-      "spdlog"
+      "spdlog",
+      "glm"
     ]
 }

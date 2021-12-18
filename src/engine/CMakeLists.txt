@@ -51,7 +51,7 @@ target_link_libraries(cqsp-engine PUBLIC
     EnTT::EnTT
     hjson
     spdlog::spdlog
-    glm
+    glm::glm
     liblua-static
     freetype
     fmt::fmt
