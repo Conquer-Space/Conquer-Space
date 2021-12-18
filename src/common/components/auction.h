@@ -56,10 +56,12 @@ class SortedOrderList : public std::vector<Order> {
  public:
     using std::vector<Order>::vector;
     void put(const Order &order) {
-        DescendingSortedOrderList::iterator it =
+        SortedOrderList<T>::iterator it =
             std::lower_bound(begin(), end(), order, T());
         insert(it, order);
-    }};
+    }
+};
+
 /// <summary>
 /// Greatest to smallest
 /// </summary>
