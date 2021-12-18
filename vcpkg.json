@@ -19,7 +19,7 @@
       "entt",
       {
         "name": "freetype",
-        "default-features": false,
+        "default-features": false
       },
       "gtest"
     ]
