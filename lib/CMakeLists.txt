@@ -16,11 +16,6 @@
 
 add_subdirectory(hjson-cpp)
 
-if (TESTS)
-add_subdirectory(googletest)
-
-set_target_properties(gmock gmock_main gtest_main gtest PROPERTIES FOLDER "GoogleTest")
-endif()
 # Add lua
 add_subdirectory(LuaJIT-cmake)
 

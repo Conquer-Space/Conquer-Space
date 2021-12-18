@@ -9,6 +9,10 @@
       "spdlog",
       "glm",
       "entt",
-      "freetype"
+      {
+        "name": "freetype",
+        "default-features": false
+      },
+      "gtest"
     ]
 }

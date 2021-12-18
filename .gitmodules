@@ -4,12 +4,6 @@
 [submodule "lib/hjson-cpp"]
 	path = lib/hjson-cpp
 	url = https://github.com/hjson/hjson-cpp
-[submodule "lib/googletest"]
-	path = lib/googletest
-	url = https://github.com/google/googletest
-[submodule "lib/glm"]
-	path = lib/glm
-	url = https://github.com/g-truc/glm
 [submodule "lib/sol2"]
 	path = lib/sol2
 	url = https://github.com/ThePhD/sol2
