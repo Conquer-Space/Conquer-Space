@@ -56,5 +56,5 @@ target_link_libraries(cqsp-client PUBLIC
     glad
     glfw
     sol2
-    OpenAL::OpenAL
+    OpenAL
 )
