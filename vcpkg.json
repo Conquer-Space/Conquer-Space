@@ -8,11 +8,7 @@
         "default-features": true,
         "platform": "!linux"
       },
-      {
-        "name":"glfw3",
-        "default-features": true,
-        "platform": "!linux"
-      },
+      "glfw3",
       "fmt",
       "spdlog",
       "glm",
