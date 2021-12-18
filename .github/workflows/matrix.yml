@@ -56,7 +56,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt install -y libglfw3 libglfw3-dev libopenal-dev xinerama xcursor xorg libglu1-mesa
+        sudo apt install -y libglfw3 libglfw3-dev libopenal-dev libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev
 
     - name: Configure Build files
       run: |
