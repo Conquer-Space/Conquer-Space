@@ -4,7 +4,6 @@
     "version": "0.0.0",
     "dependencies": [
       "openal-soft",
-      "glad",
       "glfw3",
       "fmt",
       "spdlog",

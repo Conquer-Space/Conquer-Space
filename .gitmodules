@@ -34,3 +34,6 @@
 [submodule "lib/libnoise"]
 	path = lib/libnoise
 	url = https://github.com/EhWhoAmI/libnoise
+[submodule "lib/glad"]
+	path = lib/glad
+	url = https://github.com/Dav1dde/glad

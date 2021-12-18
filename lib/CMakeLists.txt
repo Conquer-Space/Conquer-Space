@@ -13,7 +13,6 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
-add_subdirectory(entt)
 
 add_subdirectory(hjson-cpp)
 
@@ -42,12 +41,10 @@ set(GLAD_API "gl=4.3" CACHE STRING "" FORCE)
 set(GLAD_EXPORT ON CACHE BOOL "" FORCE)
 set(GLAD_EXTENSIONS "GL_AMD_debug_output" CACHE STRING "" FORCE)
 
-# Set parent scope because this is not root directory
-set(GLAD_INCLUDE_DIRS ${GLAD_INCLUDE_DIRS} PARENT_SCOPE)
+add_subdirectory(glad)
 
 # Add imgui
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
-include_directories(${GLAD_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui)
 include_directories(${CMAKE_SOURCE_DIR}/lib/implot)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
@@ -76,4 +73,4 @@ set_target_properties(ImGui PROPERTIES FOLDER "Libs")
 # Copy stb_vorbis header file
 configure_file(${CMAKE_SOURCE_DIR}/lib/stb/stb_vorbis.c ${CMAKE_SOURCE_DIR}/lib/include/stb_vorbis.h COPYONLY)
 
-set_target_properties(aob hjson libnoise PROPERTIES FOLDER "Libs")
+set_target_properties(hjson libnoise PROPERTIES FOLDER "Libs")
