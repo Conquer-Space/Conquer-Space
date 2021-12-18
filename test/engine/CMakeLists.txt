@@ -57,7 +57,7 @@ target_link_libraries(cqsp-engine-tests
     libnoise
     glad
     glfw
-    OpenAL
+    openal
 )
 
 add_test(NAME cqsp-engine-test COMMAND cqsp-engine-tests WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/binaries/bin)
