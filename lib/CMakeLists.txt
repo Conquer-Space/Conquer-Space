@@ -33,7 +33,4 @@ set(GLAD_EXTENSIONS "GL_AMD_debug_output" CACHE STRING "" FORCE)
 
 add_subdirectory(glad)
 
-# Copy stb_vorbis header file
-configure_file(${CMAKE_SOURCE_DIR}/lib/stb/stb_vorbis.c ${CMAKE_SOURCE_DIR}/lib/include/stb_vorbis.h COPYONLY)
-
 set_target_properties(hjson libnoise glad glad-generate-files PROPERTIES FOLDER "Libs")
