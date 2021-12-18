@@ -29,11 +29,6 @@ add_subdirectory(sol2)
 # Set properties for lua projects
 set_target_properties(buildvm liblua-shared lua-static lua liblua-static minilua PROPERTIES FOLDER "Lua")
 
-if (NOT FREETYPE_FOUND)
-    add_subdirectory(freetype)
-    set_target_properties(freetype PROPERTIES FOLDER "Libs")
-endif()
-
 add_subdirectory(libnoise)
 
 # Glad
@@ -48,7 +43,6 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui)
 include_directories(${CMAKE_SOURCE_DIR}/lib/implot)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/freetype)
-include_directories(${CMAKE_SOURCE_DIR}/lib/freetype/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui/misc/cpp/)
 file (GLOB IMGUI ${CMAKE_SOURCE_DIR}/lib/imgui/*.cpp)
 set(IMGUI ${IMGUI} ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_glfw.h 
@@ -66,7 +60,7 @@ set(IMGUI ${IMGUI} ${CMAKE_SOURCE_DIR}/lib/imgui/backends/imgui_impl_glfw.h
     ${CMAKE_SOURCE_DIR}/lib/imgui/misc/cpp/imgui_stdlib.cpp)
 
 add_library(ImGui ${IMGUI})
-target_link_libraries(ImGui PUBLIC glfw glad)
+target_link_libraries(ImGui PUBLIC glfw glad freetype)
 target_compile_definitions(ImGui PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD)
 set_target_properties(ImGui PROPERTIES FOLDER "Libs")
 

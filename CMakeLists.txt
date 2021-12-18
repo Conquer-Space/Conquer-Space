@@ -72,6 +72,7 @@ find_package(fmt CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(entt CONFIG REQUIRED)
+find_package(freetype CONFIG REQUIRED)
 
 find_package(Git)
 if(GIT_FOUND)
