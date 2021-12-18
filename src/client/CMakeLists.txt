@@ -47,7 +47,7 @@ target_link_libraries(cqsp-client PUBLIC
     ImGui
     EnTT::EnTT
     hjson
-    spdlog
+    spdlog::spdlog
     glm
     liblua-static
     freetype

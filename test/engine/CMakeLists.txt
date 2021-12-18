@@ -50,7 +50,7 @@ target_link_libraries(cqsp-engine-tests
     ImGui
     EnTT::EnTT
     hjson
-    spdlog
+    spdlog::spdlog
     glm
     liblua-static
     freetype

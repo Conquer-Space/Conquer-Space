@@ -17,13 +17,6 @@ add_subdirectory(entt)
 
 add_subdirectory(hjson-cpp)
 
-add_subdirectory(fmt)
-
-# Tell spdlog to use another fmt to avoid compile conflicts.
-set(SPDLOG_FMT_EXTERNAL ON CACHE BOOL "" FORCE)
-
-add_subdirectory(spdlog)
-
 add_subdirectory(glm)
 
 if (TESTS)
@@ -85,4 +78,4 @@ set_target_properties(ImGui PROPERTIES FOLDER "Libs")
 # Copy stb_vorbis header file
 configure_file(${CMAKE_SOURCE_DIR}/lib/stb/stb_vorbis.c ${CMAKE_SOURCE_DIR}/lib/include/stb_vorbis.h COPYONLY)
 
-set_target_properties(aob fmt hjson libnoise spdlog uninstall PROPERTIES FOLDER "Libs")
+set_target_properties(aob hjson libnoise uninstall PROPERTIES FOLDER "Libs")

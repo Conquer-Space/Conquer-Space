@@ -7,9 +7,6 @@
 [submodule "lib/entt"]
 	path = lib/entt
 	url = https://github.com/skypjack/entt
-[submodule "lib/spdlog"]
-	path = lib/spdlog
-	url = https://github.com/gabime/spdlog
 [submodule "lib/googletest"]
 	path = lib/googletest
 	url = https://github.com/google/googletest

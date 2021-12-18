@@ -37,7 +37,7 @@ add_library(cqsp-core ${SOURCE_FILES})
 target_link_libraries(cqsp-core PUBLIC 
     EnTT::EnTT
     hjson
-    spdlog
+    spdlog::spdlog
     glm
     liblua-static
     fmt::fmt

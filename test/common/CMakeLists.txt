@@ -20,7 +20,6 @@ file (GLOB_RECURSE CPP_FILES *.cpp)
 file (GLOB_RECURSE H_FILES *.h)
 
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
-include_directories(${CMAKE_SOURCE_DIR}/lib/fmt/include)
 # Lua
 include_directories(${CMAKE_SOURCE_DIR}/lib/lua/)
 include_directories(${CMAKE_SOURCE_DIR}/lib/sol2/include)
@@ -35,10 +34,9 @@ target_link_libraries(cqsp-tests cqsp-core)
 target_link_libraries(cqsp-tests
     EnTT::EnTT
     hjson
-    spdlog
     liblua-static
-    spdlog
-    fmt
+    spdlog::spdlog
+    fmt::fmt
     libnoise
     )
 

@@ -69,6 +69,8 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(OpenAL CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
+find_package(fmt CONFIG REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
 
 find_package(Git)
 if(GIT_FOUND)

@@ -50,11 +50,11 @@ target_link_libraries(cqsp-engine PUBLIC
     ImGui
     EnTT::EnTT
     hjson
-    spdlog
+    spdlog::spdlog
     glm
     liblua-static
     freetype
-    fmt
+    fmt::fmt
     libnoise
     glad::glad
     glfw

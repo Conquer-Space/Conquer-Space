@@ -6,6 +6,7 @@
       "openal-soft",
       "glad",
       "glfw3",
-      "fmt"
+      "fmt",
+      "spdlog"
     ]
 }
