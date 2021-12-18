@@ -59,5 +59,5 @@ target_link_libraries(cqsp-engine PUBLIC
     glad
     glfw
     sol2
-    openal
+    ${OPENAL_LIBRARY}
 )
