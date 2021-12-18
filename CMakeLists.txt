@@ -15,6 +15,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 cmake_minimum_required(VERSION 3.13)
 
+if (MSVC)
+set(VCPKG_TARGET_TRIPLET x64-windows-static CACHE STRING "" FORCE)
+endif()
+
 # set the project name
 project(Conquer-Space VERSION 0.0.0)
 SET(CQSP_VERSION ${CMAKE_PROJECT_VERSION})

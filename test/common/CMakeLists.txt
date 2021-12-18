@@ -27,7 +27,8 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/sol2/include)
 add_executable(cqsp-tests ${CPP_FILES} ${H_FILES})
 
 # Test libraries
-target_link_libraries(cqsp-tests GTest::gmock GTest::gtest GTest::gmock_main GTest::gtest_main)
+target_link_libraries(cqsp-tests GTest::gtest GTest::gtest_main)
+target_link_libraries(cqsp-tests GTest::gmock)
 target_link_libraries(cqsp-tests cqsp-core)
 
 # External libraries
