@@ -56,7 +56,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt install -y libglfw3 libglfw3-dev libopenal-dev libfreetype-dev
+        sudo apt install -y libglfw3 libglfw3-dev libopenal-dev libfreetype6-dev
 
     - name: Configure Build files
       run: |
