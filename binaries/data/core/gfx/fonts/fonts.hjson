@@ -1,18 +1,18 @@
 {
     default: {
-        path: OpenSans-Regular.ttf
+        path: Roboto-Regular.ttf
         size: 18
     }
     h1: {
-        path: OpenSans-Regular.ttf
+        path: Roboto-Regular.ttf
         size: 32
     }
     h2: {
-        path: OpenSans-Bold.ttf
+        path: Roboto-Bold.ttf
         size: 24
     }
     h3: {
-        path: OpenSans-Bold.ttf
+        path: Roboto-Bold.ttf
         size: 18
     }
 }

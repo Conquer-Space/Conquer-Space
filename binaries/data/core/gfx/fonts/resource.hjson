@@ -1,6 +1,6 @@
 {
     defaultfont: {
-        path: OpenSans-Regular.ttf
+        path: Roboto-Regular.ttf
         type: font
         hints: {
         }

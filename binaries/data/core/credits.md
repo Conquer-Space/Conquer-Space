@@ -25,3 +25,7 @@ License: https://filmmusic.io/standard-license
 Our Story Begins by Kevin MacLeod
 Link: https://incompetech.filmmusic.io/song/4181-our-story-begins
 License: https://filmmusic.io/standard-license
+
+### Fonts
+Roboto: https://github.com/googlefonts/roboto
+License: Apache License, Version 2.0
