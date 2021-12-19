@@ -34,6 +34,11 @@ ScriptInterface::ScriptInterface() {
     ringbuffer_sink = std::make_shared<spdlog::sinks::ringbuffer_sink_mt>(128);
     ringbuffer_sink->set_pattern("%v");
     logger->sinks().push_back(ringbuffer_sink);
+
+    // Log information
+    std::string version = (*this)["_VERSION"];
+    SPDLOG_LOGGER_INFO(logger, "Lua version: {}", version);
+    SPDLOG_LOGGER_INFO(logger, "Sol version: {}.{}.{}", SOL_VERSION_MAJOR, SOL_VERSION_MINOR, SOL_VERSION_PATCH);
 }
 
 void ScriptInterface::ParseResult(const sol::protected_function_result& result) {
