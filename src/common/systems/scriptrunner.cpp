@@ -44,3 +44,14 @@ cqsp::common::systems::SysEventScriptRunner::~SysEventScriptRunner() {
     }
     events.clear();
 }
+
+cqsp::common::systems::SysScript::~SysScript() {
+    // So it doesn't crash when we delete this
+    for (auto& evet : events) {
+        evet.abandon();
+    }
+    events.clear();
+}
+
+void cqsp::common::systems::SysScript::DoSystem(Game &game) {
+}

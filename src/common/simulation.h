@@ -19,10 +19,8 @@
 #include <memory>
 #include <vector>
 
-#include "common/universe.h"
+#include "common/game.h"
 #include "common/systems/isimulationsystem.h"
-
-#include "common/systems/scriptrunner.h"
 
 namespace cqsp {
 namespace common {
@@ -35,7 +33,7 @@ namespace simulation {
 class Simulation {
  public:
     explicit
-    Simulation(cqsp::common::Universe &_universe, scripting::ScriptInterface &script_interface);
+    Simulation(cqsp::common::Game &game);
 
     void tick();
 
@@ -45,7 +43,8 @@ class Simulation {
     }
 
  private:
-    cqsp::common::systems::SysEventScriptRunner script_runner;
+    cqsp::common::Game &m_game;
+    //cqsp::common::systems::SysEventScriptRunner script_runner;
     std::vector<std::unique_ptr<cqsp::common::systems::ISimulationSystem>> system_list;
     cqsp::common::Universe &m_universe;
 };

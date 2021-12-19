@@ -63,7 +63,7 @@ void cqsp::scene::UniverseScene::Init() {
     namespace cqsps = cqsp::client::systems;
 
     using cqspco::systems::simulation::Simulation;
-    simulation = std::make_unique<Simulation>(GetUniverse(), GetApp().GetScriptInterface());
+    simulation = std::make_unique<Simulation>(GetApp().GetGame());
 
     system_renderer = new cqsps::SysStarSystemRenderer(GetUniverse(), GetApp());
     system_renderer->Initialize();

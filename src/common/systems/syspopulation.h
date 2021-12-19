@@ -21,12 +21,12 @@
 namespace cqsp::common::systems {
 class SysPopulationGrowth : public ISimulationSystem {
  public:
-    void DoSystem(Universe& universe);
+    void DoSystem(Game& game);
     int Interval() { return 625; }
 };
 
 class SysPopulationConsumption : public ISimulationSystem {
  public:
-    void DoSystem(Universe& universe);
+    void DoSystem(Game& game);
 };
 }  // namespace cqsp::common::systems

@@ -19,8 +19,9 @@
 #include "common/components/area.h"
 #include "common/components/infrastructure.h"
 
-void cqsp::common::systems::InfrastructureSim::DoSystem(Universe& universe) {
+void cqsp::common::systems::InfrastructureSim::DoSystem(Game& game) {
     namespace cqspc = cqsp::common::components;
+    Universe& universe = game.GetUniverse();
     // Get all cities with industry and infrastruture
     auto view = universe.view<cqspc::Industry>();
     for (entt::entity entity : view) {

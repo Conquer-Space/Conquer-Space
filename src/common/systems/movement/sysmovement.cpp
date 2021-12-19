@@ -22,10 +22,11 @@
 #include "common/components/coordinates.h"
 #include "common/components/units.h"
 
-void cqsp::common::systems::SysOrbit::DoSystem(Universe& universe) {
+void cqsp::common::systems::SysOrbit::DoSystem(Game& game) {
     namespace cqspc = cqsp::common::components;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspt = cqsp::common::components::types;
+    Universe& universe = game.GetUniverse();
 
     auto bodies = universe.view<cqspt::Orbit>();
     for (entt::entity body : bodies) {
@@ -37,10 +38,12 @@ void cqsp::common::systems::SysOrbit::DoSystem(Universe& universe) {
 
 int cqsp::common::systems::SysOrbit::Interval() { return 1; }
 
-void cqsp::common::systems::SysSurface::DoSystem(Universe& universe) {
+void cqsp::common::systems::SysSurface::DoSystem(Game& game) {
     namespace cqspc = cqsp::common::components;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspt = cqsp::common::components::types;
+
+    Universe& universe = game.GetUniverse();
 
     auto objects = universe.view<cqspt::SurfaceCoordinate>();
     for (entt::entity object : objects) {
@@ -60,10 +63,11 @@ int cqsp::common::systems::SysSurface::Interval() {
     return 1;
 }
 
-void cqsp::common::systems::SysPath::DoSystem(Universe& universe) {
+void cqsp::common::systems::SysPath::DoSystem(Game& game) {
     namespace cqspc = cqsp::common::components;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspt = cqsp::common::components::types;
+    Universe& universe = game.GetUniverse();
 
     auto bodies = universe.view<cqspt::MoveTarget, cqspt::Kinematics>(entt::exclude<cqspt::Orbit>);
     for (entt::entity body : bodies) {

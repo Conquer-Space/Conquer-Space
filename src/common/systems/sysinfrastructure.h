@@ -23,7 +23,7 @@ namespace common {
 namespace systems {
 class InfrastructureSim : public ISimulationSystem {
  public:
-    void DoSystem(Universe& universe);
+    void DoSystem(Game& game);
 };
 }  // namespace systems
 }  // namespace common

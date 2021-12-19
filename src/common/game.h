@@ -1,4 +1,4 @@
-/* Conquer Space
+/*
 * Copyright (C) 2021 Conquer Space
 *
 * This program is free software: you can redistribute it and/or modify
@@ -16,19 +16,29 @@
 */
 #pragma once
 
-#include <entt/entt.hpp>
-
 #include "common/universe.h"
-#include "common/game.h"
+#include "common/scripting/scripting.h"
 
 namespace cqsp {
 namespace common {
-namespace systems {
-class ISimulationSystem {
- public:
-    virtual void DoSystem(Game& game) = 0;
-    virtual int Interval() { return 25; }
+/// <summary>
+/// Wrapper class for all the components of the game, so that all the game stuff can be
+/// initialized in one place.
+/// </summary>
+class Game {
+   public:
+    Game();
+    ~Game();
+
+    Universe& GetUniverse() { return universe; }
+
+    scripting::ScriptInterface& GetScriptInterface() {
+        return script_interface;
+    }
+
+   private:
+    Universe universe;
+    scripting::ScriptInterface script_interface;
 };
-}  // namespace systems
 }  // namespace common
 }  // namespace cqsp

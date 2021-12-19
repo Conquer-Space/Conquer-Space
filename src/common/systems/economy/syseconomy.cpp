@@ -36,28 +36,28 @@
 //
 
 using cqsp::common::systems::SysEconomy;
-void SysEconomy::DoSystem(Universe& universe) {
+void SysEconomy::DoSystem(Game& game) {
     namespace cqspc = cqsp::common::components;
     BEGIN_TIMED_BLOCK(SysEconomy);
-    WalletReset(universe);
-    SysCommercialProcess(universe);
-    SysEmploymentHandler(universe);
+    WalletReset(game.GetUniverse());
+    SysCommercialProcess(game.GetUniverse());
+    SysEmploymentHandler(game.GetUniverse());
     // Produce resources
     BEGIN_TIMED_BLOCK(Resource_gen);
-    SysResourceGenerator(universe);
-    SysProduction(universe);
-    SysDemandCreator(universe);
-    SysFactoryDemandCreator(universe);
+    SysResourceGenerator(game.GetUniverse());
+    SysProduction(game.GetUniverse());
+    SysDemandCreator(game.GetUniverse());
+    SysFactoryDemandCreator(game.GetUniverse());
     END_TIMED_BLOCK(Resource_gen);
     BEGIN_TIMED_BLOCK(Market_sim);
-    SysGoodSeller(universe);
-    SysPriceDetermine(universe);
-    SysDemandResolver(universe);
+    SysGoodSeller(game.GetUniverse());
+    SysPriceDetermine(game.GetUniverse());
+    SysDemandResolver(game.GetUniverse());
     END_TIMED_BLOCK(Market_sim);
     BEGIN_TIMED_BLOCK(Production_sim);
     // TODO(EhWhoAmI): If we are to sim things properly, SysFactory should go here
-    SysConsumptionConsume(universe);
-    SysProductionStarter(universe);
+    SysConsumptionConsume(game.GetUniverse());
+    SysProductionStarter(game.GetUniverse());
     END_TIMED_BLOCK(Production_sim);
     END_TIMED_BLOCK(SysEconomy);
 }

@@ -42,8 +42,20 @@
 using cqsp::common::systems::simulation::Simulation;
 using cqsp::common::Universe;
 
-Simulation::Simulation(Universe &_universe, scripting::ScriptInterface &script_interface) :
-    m_universe(_universe), script_runner(_universe, script_interface) {
+/*Simulation::Simulation(Universe &_universe, scripting::ScriptInterface &script_interface) :
+    m_universe(_universe) {
+    namespace cqspcs = cqsp::common::systems;
+    AddSystem<cqspcs::InfrastructureSim>();
+    AddSystem<cqspcs::SysPopulationGrowth>();
+    AddSystem<cqspcs::SysPopulationConsumption>();
+    AddSystem<cqspcs::SysEconomy>();
+    AddSystem<cqspcs::SysFactory>();
+    //AddSystem<cqspcs::SysOrbit>();
+    AddSystem<cqspcs::SysPath>();
+}*/
+
+cqsp::common::systems::simulation::Simulation::Simulation(
+    cqsp::common::Game &game) : m_game(game), m_universe(game.GetUniverse()) {
     namespace cqspcs = cqsp::common::systems;
     AddSystem<cqspcs::InfrastructureSim>();
     AddSystem<cqspcs::SysPopulationGrowth>();
@@ -64,12 +76,12 @@ void cqsp::common::systems::simulation::Simulation::tick() {
     auto start = std::chrono::high_resolution_clock::now();
     BEGIN_TIMED_BLOCK(Game_Loop);
     BEGIN_TIMED_BLOCK(ScriptEngine);
-    this->script_runner.ScriptEngine();
+    //this->script_runner.ScriptEngine();
     END_TIMED_BLOCK(ScriptEngine);
 
     for (auto& sys : system_list) {
         if (m_universe.date.GetDate() % sys->Interval() == 0) {
-            sys->DoSystem(m_universe);
+            sys->DoSystem(m_game);
         }
     }
     END_TIMED_BLOCK(Game_Loop);
