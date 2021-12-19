@@ -81,7 +81,7 @@ void cqsp::common::systems::simulation::Simulation::tick() {
 
     for (auto& sys : system_list) {
         if (m_universe.date.GetDate() % sys->Interval() == 0) {
-            sys->DoSystem(m_game);
+            sys->DoSystem();
         }
     }
     END_TIMED_BLOCK(Game_Loop);

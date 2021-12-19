@@ -21,7 +21,8 @@
 namespace cqsp::common::systems {
 class SysEconomy : public ISimulationSystem {
  public:
-    void DoSystem(Game& game);
+    explicit SysEconomy(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
 
  private:
     void WalletReset(Universe& universe);

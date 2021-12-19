@@ -39,7 +39,7 @@ class Simulation {
 
     template <class T>
     void AddSystem() {
-        system_list.push_back(std::make_unique<T>());
+        system_list.push_back(std::make_unique<T>(m_game));
     }
 
  private:

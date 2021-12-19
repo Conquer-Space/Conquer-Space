@@ -24,8 +24,8 @@
 #include "common/components/name.h"
 #include "common/components/infrastructure.h"
 
-void cqsp::common::systems::SysFactory::DoSystem(Game& game) {
-    Universe& universe = game.GetUniverse();
+void cqsp::common::systems::SysFactory::DoSystem() {
+    Universe& universe = GetGame().GetUniverse();
 
     SysInfrastrutureChecker(universe);
     SysFactoryProduction(universe);

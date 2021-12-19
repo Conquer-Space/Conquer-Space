@@ -21,9 +21,9 @@
 #include "common/components/resource.h"
 #include "common/components/economy.h"
 
-void cqsp::common::systems::SysPopulationGrowth::DoSystem(Game& game) {
+void cqsp::common::systems::SysPopulationGrowth::DoSystem() {
     namespace cqspc = cqsp::common::components;
-    Universe& universe = game.GetUniverse();
+    Universe& universe = GetUniverse();
 
     auto view = universe.view<cqspc::PopulationSegment>();
     for (auto [entity, segment] : view.each()) {
@@ -56,9 +56,9 @@ void cqsp::common::systems::SysPopulationGrowth::DoSystem(Game& game) {
     }
 }
 
-void cqsp::common::systems::SysPopulationConsumption::DoSystem(Game& game) {
+void cqsp::common::systems::SysPopulationConsumption::DoSystem() {
     namespace cqspc = cqsp::common::components;
-    Universe& universe = game.GetUniverse();
+    Universe& universe = GetUniverse();
 
     auto view = universe.view<cqspc::PopulationSegment>();
     for (auto [entity, segment] : view.each()) {

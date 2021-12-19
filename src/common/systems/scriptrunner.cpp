@@ -53,5 +53,5 @@ cqsp::common::systems::SysScript::~SysScript() {
     events.clear();
 }
 
-void cqsp::common::systems::SysScript::DoSystem(Game &game) {
+void cqsp::common::systems::SysScript::DoSystem() {
 }

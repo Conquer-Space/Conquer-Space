@@ -26,8 +26,17 @@ namespace common {
 namespace systems {
 class ISimulationSystem {
  public:
-    virtual void DoSystem(Game& game) = 0;
+    ISimulationSystem(Game& game) : game(game) {}
+
+    virtual void DoSystem() = 0;
     virtual int Interval() { return 25; }
+
+ protected:
+    Game& GetGame() { return game; }
+    Universe& GetUniverse() { return game.GetUniverse(); }
+
+ private:
+    Game& game;
 };
 }  // namespace systems
 }  // namespace common

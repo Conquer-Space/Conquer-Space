@@ -77,7 +77,7 @@ TEST_F(SystemsMovementTest, ShipMovementTest) {
     cqsp::common::Universe& universe = m_game.GetUniverse();
 
     // Do it a couple of times and see if it arrives
-    cqsp::common::systems::SysPath system;
+    cqsp::common::systems::SysPath system(m_game);
 
     // Ensure system is the same
     EXPECT_TRUE(universe.valid(ship));
@@ -87,7 +87,7 @@ TEST_F(SystemsMovementTest, ShipMovementTest) {
 
     universe.emplace_or_replace<cqspt::MoveTarget>(ship, target);
     for (int i = 0; i < 1000; i++) {
-        system.DoSystem(m_game);
+        system.DoSystem();
     }
     auto& position = universe.get<cqspt::Kinematics>(ship);
     glm::vec3 vec = cqspt::toVec3(universe.get<cqspt::Orbit>(target));

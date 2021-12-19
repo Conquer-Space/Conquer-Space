@@ -27,8 +27,9 @@ namespace common {
 namespace systems {
 class SysScript : public cqsp::common::systems::ISimulationSystem {
  public:
+    explicit SysScript(Game& game) : ISimulationSystem(game) {}
     ~SysScript();
-    void DoSystem(Game& game);
+    void DoSystem();
     int Interval() { return 1; }
 
  private:
