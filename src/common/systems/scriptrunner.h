@@ -20,19 +20,19 @@
 
 #include "common/scripting/scripting.h"
 #include "common/universe.h"
+#include "common/systems/isimulationsystem.h"
 
 namespace cqsp {
 namespace common {
 namespace systems {
-class SysEventScriptRunner {
+class SysScript : public cqsp::common::systems::ISimulationSystem {
  public:
-    SysEventScriptRunner(cqsp::common::Universe& _universe,
-                         scripting::ScriptInterface& interface);
-    void ScriptEngine();
-    ~SysEventScriptRunner();
+    explicit SysScript(Game& game);
+    ~SysScript();
+    void DoSystem();
+    int Interval() { return 1; }
+
  private:
-    scripting::ScriptInterface &m_script_interface;
-    cqsp::common::Universe& universe;
     std::vector<sol::table> events;
 };
 }  // namespace systems

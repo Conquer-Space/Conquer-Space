@@ -26,7 +26,8 @@ namespace cqsp::common::systems {
 /// </summary>
 class SysFactory : public ISimulationSystem {
  public:
-    void DoSystem(Universe& universe);
+    explicit SysFactory(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
 
  private:
     void SysFactoryProduction(Universe& universe);

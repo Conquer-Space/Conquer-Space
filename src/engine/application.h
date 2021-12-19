@@ -29,10 +29,9 @@
 #include "engine/engine.h"
 #include "engine/scene.h"
 #include "engine/asset/assetmanager.h"
-#include "common/universe.h"
 #include "engine/gui.h"
 #include "engine/graphics/text.h"
-#include "common/scripting/scripting.h"
+#include "common/game.h"
 #include "engine/audio/iaudiointerface.h"
 #include "engine/window.h"
 
@@ -131,10 +130,14 @@ class Application {
 
     ImGui::MarkdownConfig markdownConfig;
 
-    cqsp::common::Universe& GetUniverse() { return *m_universe; }
+    cqsp::common::Universe& GetUniverse() { return m_game->GetUniverse(); }
+
+    cqsp::common::Game& GetGame() { return *m_game; }
+
     cqsp::scripting::ScriptInterface& GetScriptInterface() {
-        return *m_script_interface;
+        return m_game->GetScriptInterface();
     }
+
     cqsp::engine::audio::IAudioInterface& GetAudioInterface() {
         return *m_audio_interface;
     }
@@ -230,14 +233,12 @@ class Application {
 
     cqsp::asset::AssetManager manager;
 
-    std::unique_ptr<cqsp::common::Universe> m_universe;
+    std::unique_ptr<cqsp::common::Game> m_game;
 
     cqsp::asset::Font* m_font = nullptr;
     cqsp::asset::ShaderProgram* fontShader = nullptr;
 
     std::map<std::string, std::string> properties;
-
-    std::unique_ptr<cqsp::scripting::ScriptInterface> m_script_interface;
 
     cqsp::engine::audio::IAudioInterface *m_audio_interface;
 

@@ -19,10 +19,8 @@
 #include <memory>
 #include <vector>
 
-#include "common/universe.h"
+#include "common/game.h"
 #include "common/systems/isimulationsystem.h"
-
-#include "common/systems/scriptrunner.h"
 
 namespace cqsp {
 namespace common {
@@ -34,18 +32,18 @@ namespace simulation {
  */
 class Simulation {
  public:
-    explicit
-    Simulation(cqsp::common::Universe &_universe, scripting::ScriptInterface &script_interface);
+    explicit Simulation(cqsp::common::Game &game);
 
     void tick();
 
     template <class T>
     void AddSystem() {
-        system_list.push_back(std::make_unique<T>());
+        static_assert(std::is_base_of<cqsp::common::systems::ISimulationSystem, T>::value);
+        system_list.push_back(std::make_unique<T>(m_game));
     }
 
  private:
-    cqsp::common::systems::SysEventScriptRunner script_runner;
+    cqsp::common::Game &m_game;
     std::vector<std::unique_ptr<cqsp::common::systems::ISimulationSystem>> system_list;
     cqsp::common::Universe &m_universe;
 };
