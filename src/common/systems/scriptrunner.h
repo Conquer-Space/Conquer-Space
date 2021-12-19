@@ -27,24 +27,12 @@ namespace common {
 namespace systems {
 class SysScript : public cqsp::common::systems::ISimulationSystem {
  public:
-    explicit SysScript(Game& game) : ISimulationSystem(game) {}
+    explicit SysScript(Game& game);
     ~SysScript();
     void DoSystem();
     int Interval() { return 1; }
 
  private:
-    std::vector<sol::table> events;
-};
-
-class SysEventScriptRunner {
- public:
-    SysEventScriptRunner(cqsp::common::Universe& _universe,
-                         scripting::ScriptInterface& interface);
-    void ScriptEngine();
-    ~SysEventScriptRunner();
- private:
-    scripting::ScriptInterface &m_script_interface;
-    cqsp::common::Universe& universe;
     std::vector<sol::table> events;
 };
 }  // namespace systems

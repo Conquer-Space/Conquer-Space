@@ -39,12 +39,12 @@ class Simulation {
 
     template <class T>
     void AddSystem() {
+        static_assert(std::is_base_of<cqsp::common::systems::ISimulationSystem, T>::value);
         system_list.push_back(std::make_unique<T>(m_game));
     }
 
  private:
     cqsp::common::Game &m_game;
-    //cqsp::common::systems::SysEventScriptRunner script_runner;
     std::vector<std::unique_ptr<cqsp::common::systems::ISimulationSystem>> system_list;
     cqsp::common::Universe &m_universe;
 };
