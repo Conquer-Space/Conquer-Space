@@ -23,19 +23,22 @@ namespace common {
 namespace systems {
 class SysOrbit : public ISimulationSystem {
  public:
-     void DoSystem(Universe& universe);
-     int Interval();
+    explicit SysOrbit(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
+    int Interval();
 };
 
 class SysPath : public ISimulationSystem {
  public:
-     void DoSystem(Universe& universe);
-     int Interval();
+    explicit SysPath(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
+    int Interval();
 };
 
 class SysSurface : public ISimulationSystem {
  public:
-    void DoSystem(Universe& universe);
+    explicit SysSurface(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
     int Interval();
 };
 }  // namespace systems

@@ -21,8 +21,10 @@
 #include "common/components/resource.h"
 #include "common/components/economy.h"
 
-void cqsp::common::systems::SysPopulationGrowth::DoSystem(Universe& universe) {
+void cqsp::common::systems::SysPopulationGrowth::DoSystem() {
     namespace cqspc = cqsp::common::components;
+    Universe& universe = GetUniverse();
+
     auto view = universe.view<cqspc::PopulationSegment>();
     for (auto [entity, segment] : view.each()) {
         // If it's hungry, decay population
@@ -54,8 +56,10 @@ void cqsp::common::systems::SysPopulationGrowth::DoSystem(Universe& universe) {
     }
 }
 
-void cqsp::common::systems::SysPopulationConsumption::DoSystem(Universe& universe) {
+void cqsp::common::systems::SysPopulationConsumption::DoSystem() {
     namespace cqspc = cqsp::common::components;
+    Universe& universe = GetUniverse();
+
     auto view = universe.view<cqspc::PopulationSegment>();
     for (auto [entity, segment] : view.each()) {
         // The population will feed, I guess

@@ -26,6 +26,7 @@ namespace cqspt = cqsp::common::components::types;
 class SystemsMovementTest : public ::testing::Test {
  protected:
     static void SetUpTestSuite() {
+        cqsp::common::Universe& universe = m_game.GetUniverse();
         star_system = universe.create();
 
         universe.emplace<cqsp::common::components::bodies::StarSystem>(star_system);
@@ -47,16 +48,18 @@ class SystemsMovementTest : public ::testing::Test {
     static entt::entity planet;
     static entt::entity ship;
     static entt::entity target;
-    static cqsp::common::Universe universe;
+    static cqsp::common::Game m_game;
 };
 
-cqsp::common::Universe SystemsMovementTest::universe = cqsp::common::Universe();
+cqsp::common::Game SystemsMovementTest::m_game = cqsp::common::Game();
 entt::entity SystemsMovementTest::star_system = entt::null;
 entt::entity SystemsMovementTest::planet = entt::null;
 entt::entity SystemsMovementTest::ship = entt::null;
 entt::entity SystemsMovementTest::target = entt::null;
 
 TEST_F(SystemsMovementTest, ShipCreationTest) {
+    cqsp::common::Universe& universe = m_game.GetUniverse();
+
     // Test out if the ship is created
     ship = cqsp::common::systems::actions::CreateShip(universe, entt::null,
                                                        planet, star_system);
@@ -71,8 +74,10 @@ TEST_F(SystemsMovementTest, ShipCreationTest) {
 }
 
 TEST_F(SystemsMovementTest, ShipMovementTest) {
+    cqsp::common::Universe& universe = m_game.GetUniverse();
+
     // Do it a couple of times and see if it arrives
-    cqsp::common::systems::SysPath system;
+    cqsp::common::systems::SysPath system(m_game);
 
     // Ensure system is the same
     EXPECT_TRUE(universe.valid(ship));
@@ -82,7 +87,7 @@ TEST_F(SystemsMovementTest, ShipMovementTest) {
 
     universe.emplace_or_replace<cqspt::MoveTarget>(ship, target);
     for (int i = 0; i < 1000; i++) {
-        system.DoSystem(universe);
+        system.DoSystem();
     }
     auto& position = universe.get<cqspt::Kinematics>(ship);
     glm::vec3 vec = cqspt::toVec3(universe.get<cqspt::Orbit>(target));

@@ -368,9 +368,7 @@ int cqsp::engine::Application::init() {
     std::unique_ptr<Scene> initial_scene = std::make_unique<EmptyScene>(*this);
     m_scene_manager.SetInitialScene(std::move(initial_scene));
 
-    m_script_interface = std::make_unique<cqsp::scripting::ScriptInterface>();
-    m_universe = std::make_unique<cqsp::common::Universe>();
-    m_script_interface->Init();
+    m_game = std::make_unique<cqsp::common::Game>();
     return 0;
 }
 
@@ -381,30 +379,27 @@ int cqsp::engine::Application::destroy() {
     SPDLOG_INFO("Done Destroying scene");
 
     // Clear assets
-    SPDLOG_INFO("Deleting universe");
-    m_universe.reset();
-    SPDLOG_INFO("Done deleting universe");
-
-    SPDLOG_INFO("Deleting script interface");
-    m_script_interface.reset();
-    SPDLOG_INFO("Done deleting script interface");
+    SPDLOG_INFO("Deleting game");
+    m_game.reset();
+    SPDLOG_INFO("Deleted game");
 
     SPDLOG_INFO("Deleting audio interface");
     m_audio_interface->Destruct();
-    SPDLOG_INFO("Done deleting audio interface");
+    SPDLOG_INFO("Deleted audio interface");
 
     SPDLOG_INFO("Clearing assets");
     manager.ClearAssets();
-    SPDLOG_INFO("Done clearing assets");
+    SPDLOG_INFO("Cleared assets");
 
     SPDLOG_INFO("Deleting audio interface");
     delete m_audio_interface;
-    SPDLOG_INFO("Done audio interface");
+    SPDLOG_INFO("Deleted audio interface");
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImPlot::DestroyContext();
     ImGui::DestroyContext();
+    SPDLOG_INFO("Killed ImGui");
 
     glfwDestroyWindow(window(m_window));
     glfwTerminate();
@@ -414,6 +409,9 @@ int cqsp::engine::Application::destroy() {
     std::ofstream config_path(m_client_options.GetDefaultLocation(),
                               std::ios::trunc);
     m_client_options.WriteOptions(config_path);
+
+    SPDLOG_INFO("Saved config");
+    SPDLOG_INFO("Good bye");
     spdlog::shutdown();
     return 0;
 }
