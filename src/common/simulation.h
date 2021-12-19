@@ -32,8 +32,7 @@ namespace simulation {
  */
 class Simulation {
  public:
-    explicit
-    Simulation(cqsp::common::Game &game);
+    explicit Simulation(cqsp::common::Game &game);
 
     void tick();
 

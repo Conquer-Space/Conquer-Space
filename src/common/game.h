@@ -26,7 +26,7 @@ namespace common {
 /// initialized in one place.
 /// </summary>
 class Game {
-   public:
+ public:
     Game();
     ~Game();
 
@@ -36,7 +36,7 @@ class Game {
         return script_interface;
     }
 
-   private:
+ private:
     Universe universe;
     scripting::ScriptInterface script_interface;
 };

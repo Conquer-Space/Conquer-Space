@@ -26,7 +26,7 @@ namespace common {
 namespace systems {
 class ISimulationSystem {
  public:
-    ISimulationSystem(Game& game) : game(game) {}
+    explicit ISimulationSystem(Game& game) : game(game) {}
 
     virtual void DoSystem() = 0;
     virtual int Interval() { return 25; }
