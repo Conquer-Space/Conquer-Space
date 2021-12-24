@@ -133,6 +133,7 @@ void SysStarSystemRenderer::OnTick() {
 }
 
 void SysStarSystemRenderer::Render(float deltaTime) {
+    ZoneScoped;
     namespace cqspb = cqsp::common::components::bodies;
     // Check for resized window
     window_ratio = static_cast<float>(m_app.GetWindowWidth()) /
@@ -225,6 +226,7 @@ void SysStarSystemRenderer::SeeEntity() {
 }
 
 void SysStarSystemRenderer::Update(float deltaTime) {
+    ZoneScoped;
     double deltaX = previous_mouseX - m_app.GetMouseX();
     double deltaY = previous_mouseY - m_app.GetMouseY();
     if (!ImGui::GetIO().WantCaptureMouse) {
@@ -287,6 +289,7 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
 }
 
 void SysStarSystemRenderer::DrawStars() {
+    ZoneScoped;
     // Draw stars
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqsps = cqsp::common::components::ships;
@@ -309,6 +312,7 @@ void SysStarSystemRenderer::DrawStars() {
 }
 
 void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
+    ZoneScoped;
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqsps = cqsp::common::components::ships;
     // Draw other bodies
@@ -365,6 +369,7 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
 }
 
 void SysStarSystemRenderer::DrawShips() {
+    ZoneScoped;
     namespace cqsps = cqsp::common::components::ships;
     // Draw Ships
     auto ships = m_app.GetUniverse().view<ToRender, cqsps::Ship>();
@@ -380,6 +385,7 @@ void SysStarSystemRenderer::DrawShips() {
 }
 
 void SysStarSystemRenderer::DrawSkybox() {
+    ZoneScoped;
     // Draw sky box
     renderer.BeginDraw(skybox_layer);
     sky.shaderProgram->UseProgram();
@@ -530,6 +536,7 @@ void SysStarSystemRenderer::DrawTerrainlessPlanet(glm::vec3 &object_pos) {
 }
 
 void SysStarSystemRenderer::RenderCities(glm::vec3 &object_pos, const entt::entity &body_entity) {
+    ZoneScoped;
     // Draw Ships
     namespace cqspc = cqsp::common::components;
     namespace cqspt = cqsp::common::components::types;
@@ -704,6 +711,7 @@ unsigned int SysStarSystemRenderer::GeneratePlanetTexture(noise::utils::Image &i
 }
 
 void SysStarSystemRenderer::CheckPlanetTerrain() {
+    ZoneScoped;
     if (less_detailed_gen_complete) {
         SPDLOG_INFO("Done less detailed planet generation");
         intermediate_generator_thread.join();

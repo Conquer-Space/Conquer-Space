@@ -20,6 +20,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include <Tracy.hpp>
+
 #include "common/util/profiler.h"
 #include "engine/graphics/primitives/pane.h"
 
@@ -61,10 +63,12 @@ void cqsp::engine::FramebufferRenderer::Clear() {
 }
 
 void cqsp::engine::FramebufferRenderer::BeginDraw() {
+    ZoneScoped;
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 }
 
 void cqsp::engine::FramebufferRenderer::EndDraw() {
+    ZoneScoped;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -85,11 +89,13 @@ void cqsp::engine::FramebufferRenderer::Free() {
 }
 
 void cqsp::engine::FramebufferRenderer::NewFrame(const Window& window) {
+    ZoneScoped;
     BeginDraw();
     Clear();
     EndDraw();
     // Check if window size changed, and then change the window size.
     if (window.WindowSizeChanged()) {
+        ZoneScoped;
         // Then resize window
         Free();
         InitTexture(window.GetWindowWidth(), window.GetWindowHeight());
@@ -137,6 +143,7 @@ void cqsp::engine::AAFrameBufferRenderer::InitTexture(int width, int height) {
 }
 
 void cqsp::engine::AAFrameBufferRenderer::Clear() {
+    ZoneScoped;
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     glClearColor(0.f, 0.f, 0.f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -202,6 +209,7 @@ void LayerRenderer::DrawAllLayers() {
 }
 
 void LayerRenderer::NewFrame(const cqsp::engine::Window& window) {
+    ZoneScoped;
     for (auto& frame : framebuffers) {
         frame->NewFrame(window);
     }
