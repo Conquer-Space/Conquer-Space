@@ -42,6 +42,10 @@ add_subdirectory(common)
 add_subdirectory(engine)
 add_subdirectory(client)
 
+target_compile_definitions(cqsp-client PUBLIC "$<$<CONFIG:DEBUG>:TRACY_ENABLE>")
+target_compile_definitions(cqsp-core PUBLIC "$<$<CONFIG:DEBUG>:TRACY_ENABLE>")
+target_compile_definitions(cqsp-engine PUBLIC "$<$<CONFIG:DEBUG>:TRACY_ENABLE>")
+
 add_executable(Conquer-Space main.cpp ${ICON_FILE})
 
 # Set some msvc convinence things

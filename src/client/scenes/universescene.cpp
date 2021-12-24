@@ -24,6 +24,8 @@
 #include <cmath>
 #include <string>
 
+#include <Tracy.hpp>
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/polar_coordinates.hpp>
 
@@ -57,6 +59,7 @@ bool game_halted = false;
 cqsp::scene::UniverseScene::UniverseScene(cqsp::engine::Application& app) : Scene(app) {}
 
 void cqsp::scene::UniverseScene::Init() {
+    ZoneScoped;
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqspco = cqsp::common;
     namespace cqspc = cqsp::common::components;
@@ -96,6 +99,7 @@ void cqsp::scene::UniverseScene::Init() {
 }
 
 void cqsp::scene::UniverseScene::Update(float deltaTime) {
+    ZoneScoped;
     if (!game_halted) {
         if (GetApp().ButtonIsReleased(GLFW_KEY_M)) {
             view_mode = !view_mode;
@@ -149,6 +153,7 @@ void cqsp::scene::UniverseScene::Ui(float deltaTime) {
 }
 
 void cqsp::scene::UniverseScene::Render(float deltaTime) {
+    ZoneScoped;
     glEnable(GL_MULTISAMPLE);
     if (view_mode) {
         system_renderer->Render(deltaTime);

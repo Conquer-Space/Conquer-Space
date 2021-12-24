@@ -43,4 +43,5 @@ target_link_libraries(cqsp-core PUBLIC
     fmt::fmt
     libnoise
     sol2
+    Tracy
 )
