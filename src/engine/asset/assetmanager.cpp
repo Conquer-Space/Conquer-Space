@@ -25,6 +25,8 @@
 #include <regex>
 #include <filesystem>
 
+#include <Tracy.hpp>
+
 #include "engine/audio/alaudioasset.h"
 #include "engine/asset/vfs/nativevfs.h"
 #include "common/util/paths.h"
@@ -37,6 +39,12 @@
 
 // Definition for prototypes
 namespace cqsp::asset {
+
+#ifdef TRACY_ENABLE
+// Define asset count variable
+int Asset::asset_count = 0;
+#endif
+
 class ImagePrototype : public AssetPrototype {
  public:
     unsigned char* data;
@@ -117,6 +125,7 @@ void cqsp::asset::AssetManager::LoadDefaultTexture() {
 }
 
 void cqsp::asset::AssetManager::ClearAssets() {
+    ZoneScoped
     for (auto a = packages.begin(); a != packages.end(); a++) {
         a->second->ClearAssets();
     }
@@ -149,6 +158,7 @@ cqsp::asset::AssetLoader::AssetLoader() {
 namespace cqspa = cqsp::asset;
 
 void cqsp::asset::AssetLoader::LoadMods() {
+    ZoneScoped;
     // Load enabled mods
     // Load core
     std::filesystem::path data_path(cqsp::common::util::GetCqspDataPath());
@@ -229,6 +239,7 @@ std::string cqsp::asset::AssetLoader::GetModFilePath() {
 
 std::optional<cqsp::asset::PackagePrototype>
 cqsp::asset::AssetLoader::LoadModPrototype(const std::string& path_string) {
+    ZoneScoped;
     // Load the info.hjson
     std::filesystem::path package_path(path_string);
     IVirtualFileSystem* vfs = GetVfs(path_string);
@@ -261,6 +272,7 @@ cqsp::asset::AssetLoader::LoadModPrototype(const std::string& path_string) {
 }
 
 std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std::string path) {
+    ZoneScoped;
     // Load into filesystem
     // Load the assets of a package specified by a path
     // First load info.hjson, the info path of the file.
@@ -340,6 +352,8 @@ void cqsp::asset::AssetLoader::PlaceAsset(Package& package,
                                           const std::string& path,
                                           const std::string& key,
                                           const Hjson::Value& hints) {
+    ZoneScoped;
+    SPDLOG_TRACE("Loading asset {}", path);
     auto asset = LoadAsset(type, path, key, hints);
     if (asset == nullptr) {
         SPDLOG_WARN("Asset {} was not loaded properly", key);
@@ -349,6 +363,7 @@ void cqsp::asset::AssetLoader::PlaceAsset(Package& package,
 }
 
 void cqsp::asset::AssetLoader::BuildNextAsset() {
+    ZoneScoped;
     if (m_asset_queue.size() == 0) {
         return;
     }
@@ -411,6 +426,7 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
 std::unique_ptr<cqsp::asset::Asset>
 cqsp::asset::AssetLoader::LoadText(cqsp::asset::VirtualMounter* mount, const std::string& path,
                                    const std::string& key, const Hjson::Value& hints) {
+    ZoneScoped;
     if (!mount->IsFile(path)) {
         return nullptr;
     }
@@ -424,6 +440,7 @@ cqsp::asset::AssetLoader::LoadText(cqsp::asset::VirtualMounter* mount, const std
 std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTextDirectory(
     cqsp::asset::VirtualMounter* mount, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
+    ZoneScoped;
     if (!mount->IsDirectory(path)) {
         return nullptr;
     }
@@ -443,6 +460,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTextDirectory(
 std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTexture(
     cqsp::asset::VirtualMounter* mount, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
+    ZoneScoped;
     std::unique_ptr<Texture> texture = std::make_unique<Texture>();
 
     // Create prototype
@@ -480,6 +498,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTexture(
 std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadHjson(
     cqsp::asset::VirtualMounter* mount, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
+    ZoneScoped;
     std::unique_ptr<cqspa::HjsonAsset> asset = std::make_unique<cqspa::HjsonAsset>();
 
     Hjson::DecoderOptions dec_opt;
@@ -522,6 +541,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadHjson(
 std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadShader(
     cqsp::asset::VirtualMounter* mount, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
+    ZoneScoped;
     if (!mount->IsFile(path)) {
         return nullptr;
     }
@@ -557,6 +577,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadShader(
 std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadFont(
     cqsp::asset::VirtualMounter* mount, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
+    ZoneScoped;
     if (!mount->IsFile(path)) {
         return nullptr;
     }
@@ -580,6 +601,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadFont(
 std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadAudio(
     cqsp::asset::VirtualMounter* mount, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
+    ZoneScoped;
     // Load audio asset
     if (!mount->IsFile(path)) {
         return nullptr;
@@ -594,6 +616,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadAudio(
 std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadCubemap(
     cqsp::asset::VirtualMounter* mount, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
+    ZoneScoped;
     // Load cubemap data
     std::unique_ptr<Texture> asset = std::make_unique<Texture>();
 
@@ -623,8 +646,10 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadCubemap(
             }
             return nullptr;
         }
+        ZoneNamed(CubemapRead, true);
         auto file = mount->Open(image_path);
         auto file_data = ReadAllFromVFile(file.get());
+        ZoneNamed(CubemapLoad, true);
         unsigned char* image_data = stbi_load_from_memory(file_data,
                                                           file->Size(),
                                                           &prototype->width,
@@ -643,6 +668,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadCubemap(
 
 std::unique_ptr<cqsp::asset::TextDirectoryAsset>
 AssetLoader::LoadScriptDirectory(VirtualMounter* mount, const std::string& path, const Hjson::Value& hints) {
+    ZoneScoped;
     std::filesystem::path root(path);
     auto asset = std::make_unique<asset::TextDirectoryAsset>();
     if (!mount->IsDirectory(path)) {
@@ -702,6 +728,7 @@ void AssetLoader::LoadDirectory(std::string path, std::function<void(std::string
 }
 
 void cqsp::asset::AssetLoader::LoadResources(Package& package, const std::string& package_mount_path) {
+    ZoneScoped;
     // Load the package
     // Open the root directory
     auto directory = mounter.OpenDirectory(package_mount_path + "/");
@@ -744,6 +771,7 @@ void cqsp::asset::AssetLoader::LoadResourceHjsonFile(Package& package,
                                                      const std::string& package_mount_path,
                                                      const std::string& resource_file_path,
                                                      const Hjson::Value& asset_value) {
+    ZoneScoped;
     for (const auto [key, val] : asset_value) {
         SPDLOG_TRACE("Loading asset {}", key);
         std::string type = val["type"];
@@ -777,6 +805,7 @@ void cqsp::asset::AssetLoader::LoadResourceHjsonFile(Package& package,
 }
 bool cqsp::asset::AssetLoader::HjsonPrototypeDirectory(
     Package& package, const std::string& path, const std::string& name) {
+    ZoneScoped;
     if (!mounter.IsDirectory(path)) {
         return false;
     }

@@ -41,7 +41,6 @@
 
 namespace cqsp {
 namespace asset {
-
 enum PrototypeType { NONE = 0, TEXTURE, SHADER, FONT, CUBEMAP };
 
 /**

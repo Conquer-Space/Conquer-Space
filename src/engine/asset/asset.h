@@ -18,6 +18,9 @@
 
 #include <string>
 
+#include <spdlog/spdlog.h>
+#include <Tracy.hpp>
+
 namespace cqsp {
 namespace asset {
 enum class AssetType {
@@ -90,6 +93,24 @@ class Asset {
  public:
     // Virtual destructor to make class virtual
     virtual ~Asset(){}
+
+#ifdef TRACY_ENABLE
+    static int asset_count;
+    void* operator new(size_t size) {
+        asset_count++;
+        SPDLOG_INFO("Creating asset {}", asset_count);
+        auto ptr = malloc(size);
+        TracyAlloc(ptr , size);
+        return ptr;
+    }
+
+    void operator delete(void* ptr) noexcept {
+        TracyFree(ptr);
+        asset_count--;
+        SPDLOG_INFO("Asset count: {}", asset_count);
+        free(ptr);
+    }
+#endif  // TRACY_ENABLE
 };
 }  // namespace asset
 }  // namespace cqsp
