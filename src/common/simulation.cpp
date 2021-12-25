@@ -50,7 +50,28 @@ cqsp::common::systems::simulation::Simulation::Simulation(
     AddSystem<cqspcs::InfrastructureSim>();
     AddSystem<cqspcs::SysPopulationGrowth>();
     AddSystem<cqspcs::SysPopulationConsumption>();
-    AddSystem<cqspcs::SysEconomy>();
+
+    // Employment other stuff
+    AddSystem<cqspcs::SysWalletReset>();
+    AddSystem<cqspcs::SysCommercialProcess>();
+    AddSystem<cqspcs::SysEmploymentHandler>();
+
+    // Creqate Production
+    AddSystem<cqspcs::SysResourceGenerator>();
+    AddSystem<cqspcs::SysProduction>();
+    AddSystem<cqspcs::SysDemandCreator>();
+    AddSystem<cqspcs::SysFactoryDemandCreator>();
+
+    // Market simulation
+    AddSystem<cqspcs::SysGoodSeller>();
+    AddSystem<cqspcs::SysPriceDetermine>();
+    AddSystem<cqspcs::SysDemandResolver>();
+
+    AddSystem<cqspcs::SysFactory>();
+    // Create
+    AddSystem<cqspcs::SysConsumptionConsume>();
+    AddSystem<cqspcs::SysProductionStarter>();
+
     AddSystem<cqspcs::SysFactory>();
     //AddSystem<cqspcs::SysOrbit>();
     AddSystem<cqspcs::SysPath>();
