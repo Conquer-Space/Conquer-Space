@@ -128,7 +128,7 @@ void SysStarSystemRenderer::OnTick() {
     entt::entity system = m_app.GetUniverse().view<RenderingStarSystem>().front();
     auto &system_comp = m_app.GetUniverse().get<cqspb::StarSystem>(system);
     for (entt::entity ent : system_comp.bodies) {
-        m_app.GetUniverse().emplace_or_replace<ToRender>(ent);
+        m_app.GetUniverse().get_or_emplace<ToRender>(ent);
     }
 }
 
@@ -175,7 +175,7 @@ void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
     auto star_system_component = m_universe.get<cqspb::StarSystem>(m_star_system);
     for (auto body : star_system_component.bodies) {
         // Add a tag
-        m_universe.emplace_or_replace<ToRender>(body);
+        m_universe.get_or_emplace<ToRender>(body);
         if (!m_app.GetUniverse().all_of<cqspb::Terrain>(body)) {
             continue;
         }
@@ -185,7 +185,7 @@ void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
         generator.terrain = m_app.GetUniverse().get<cqspb::Terrain>(body);
         generator.GenerateTerrain(m_universe, 1, 2);
         // emplace
-        auto &data = m_universe.emplace_or_replace<TerrainTextureData>(body);
+        auto &data = m_universe.get_or_emplace<TerrainTextureData>(body);
         CreatePlanetTextures(generator, &data.terrain_albedo, &data.heightmap);
     }
 
@@ -713,31 +713,37 @@ unsigned int SysStarSystemRenderer::GeneratePlanetTexture(noise::utils::Image &i
 void SysStarSystemRenderer::CheckPlanetTerrain() {
     ZoneScoped;
     if (less_detailed_gen_complete) {
-        SPDLOG_INFO("Done less detailed planet generation");
+        SPDLOG_INFO("Completed less detailed planet generation");
         intermediate_generator_thread.join();
         // Generate planet terrain, free the things
         //SetPlanetTexture(intermediate_image_generator);
         // Go through the terrain and add the terrain for the body.
         for (auto it = intermediate_generators.begin(); it != intermediate_generators.end(); it++) {
-            auto &data = m_universe.emplace_or_replace<TerrainTextureData>(it->first);
+            auto &data = m_universe.get_or_emplace<TerrainTextureData>(it->first);
             delete data.terrain_albedo;
+            SPDLOG_INFO("{}", fmt::ptr(data.heightmap));
             delete data.heightmap;
+            SPDLOG_INFO("{}", fmt::ptr(data.heightmap));
             CreatePlanetTextures(it->second, &data.terrain_albedo, &data.heightmap);
+            SPDLOG_INFO("cim Terrain gen: {}", fmt::ptr(data.heightmap));
         }
         less_detailed_gen_complete = false;
     }
 
     if (terrain_gen_complete) {
-        SPDLOG_INFO("Done less detailed planet generation");
+        SPDLOG_INFO("Completed more detailed planet generation");
         generator_thread.join();
         // Generate planet terrain, free the things
         //SetPlanetTexture(intermediate_image_generator);
         // Go through the terrain and add the terrain for the body.
         for (auto it = final_generators.begin(); it != final_generators.end(); it++) {
-            auto &data = m_universe.emplace_or_replace<TerrainTextureData>(it->first);
+            auto &data = m_universe.get_or_emplace<TerrainTextureData>(it->first);
             delete data.terrain_albedo;
+            SPDLOG_INFO("Terrain gen: {}", fmt::ptr(data.heightmap));
             delete data.heightmap;
+            SPDLOG_INFO("Terrain gen: {}", fmt::ptr(data.heightmap));
             CreatePlanetTextures(it->second, &data.terrain_albedo, &data.heightmap);
+            SPDLOG_INFO("Terrain gen: {}", fmt::ptr(data.heightmap));
         }
         terrain_gen_complete = false;
         SPDLOG_INFO("Done terrain generation");
