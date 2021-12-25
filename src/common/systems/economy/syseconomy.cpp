@@ -278,7 +278,7 @@ void SysEconomy::SysDemandResolver(Universe& universe) {
         } else {
             // Failed due to not enough resources in the market,
             // TODO(EhWhoAmI): Try to get all the resources remaining in the stockpile
-            universe.emplace_or_replace<cqspc::FailedResourceTransfer>(entity);
+            universe.get_or_emplace<cqspc::FailedResourceTransfer>(entity);
         }
 
         universe.remove<cqspc::ResourceDemand>(entity);
@@ -302,7 +302,7 @@ void SysEconomy::SysProductionStarter(Universe& universe) {
             auto& employer = universe.get<cqspc::Employer>(entity);
             if (employer.population_needed > employer.population_fufilled) {
                 // Then not enough people, and then it cannot work
-                universe.emplace_or_replace<cqspc::FailedResourceProduction>(entity);
+                universe.get_or_emplace<cqspc::FailedResourceProduction>(entity);
                 continue;
             }
         }
@@ -319,7 +319,7 @@ void SysEconomy::SysProductionStarter(Universe& universe) {
             universe.remove_if_exists<cqspc::FailedResourceProduction>(entity);
         } else {
             // Or else notify people that nothing was produced
-            universe.emplace_or_replace<cqspc::FailedResourceProduction>(entity);
+            universe.get_or_emplace<cqspc::FailedResourceProduction>(entity);
         }
     }
 }

@@ -95,10 +95,7 @@ class Asset {
     virtual ~Asset(){}
 
 #ifdef TRACY_ENABLE
-    static int asset_count;
     void* operator new(size_t size) {
-        asset_count++;
-        SPDLOG_INFO("Creating asset {}", asset_count);
         auto ptr = malloc(size);
         TracyAlloc(ptr , size);
         return ptr;
@@ -106,8 +103,6 @@ class Asset {
 
     void operator delete(void* ptr) noexcept {
         TracyFree(ptr);
-        asset_count--;
-        SPDLOG_INFO("Asset count: {}", asset_count);
         free(ptr);
     }
 #endif  // TRACY_ENABLE

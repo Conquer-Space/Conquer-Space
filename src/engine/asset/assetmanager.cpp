@@ -39,12 +39,6 @@
 
 // Definition for prototypes
 namespace cqsp::asset {
-
-#ifdef TRACY_ENABLE
-// Define asset count variable
-int Asset::asset_count = 0;
-#endif
-
 class ImagePrototype : public AssetPrototype {
  public:
     unsigned char* data;
@@ -126,9 +120,6 @@ void cqsp::asset::AssetManager::LoadDefaultTexture() {
 
 void cqsp::asset::AssetManager::ClearAssets() {
     ZoneScoped
-    for (auto a = packages.begin(); a != packages.end(); a++) {
-        a->second->ClearAssets();
-    }
     packages.clear();
 }
 
@@ -331,6 +322,7 @@ std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std:
     // Then load all the other assets
     // Load resource.hjsons
     LoadResources(*package, package->name);
+    SPDLOG_INFO("Package {} has {} assets", package->name, package->assets.size());
     return package;
 }
 

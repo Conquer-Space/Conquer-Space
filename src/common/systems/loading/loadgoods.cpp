@@ -56,7 +56,7 @@ void cqsp::common::systems::loading::LoadGoods(cqsp::common::Universe& universe,
 
         for (int i = 0; i < val["tags"].size(); i++) {
             if (val["tags"][i] == "mineral") {
-                universe.emplace_or_replace<cqspc::Mineral>(good);
+                universe.get_or_emplace<cqspc::Mineral>(good);
             }
         }
 
