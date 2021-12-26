@@ -38,10 +38,10 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
     universe.emplace<cqspc::Factory>(factory);
 
     // Add capacity
-    universe.emplace<cqspc::FactoryCapacity>(factory, static_cast<float>(productivity));
     // Add producivity
     auto& prod = universe.emplace<cqspc::FactoryProductivity>(factory);
-    prod.productivity = productivity;
+    prod.current_production = productivity;
+    prod.max_production = static_cast<float>(productivity);
 
     universe.emplace<cqspc::ResourceStockpile>(factory);
     auto& employer = universe.emplace<cqspc::Employer>(factory);
@@ -77,9 +77,8 @@ entt::entity cqsp::common::systems::actions::CreateMine(cqsp::common::Universe& 
     gen.emplace(good, amount);
     universe.get<cqspc::Industry>(city).industries.push_back(mine);
 
-    universe.emplace<cqspc::FactoryCapacity>(mine, productivity);
     // Add productivity
-    universe.emplace<cqspc::FactoryProductivity>(mine, productivity);
+    universe.emplace<cqspc::FactoryProductivity>(mine, productivity, productivity);
 
     universe.emplace<cqspc::ResourceStockpile>(mine);
     universe.emplace<cqspc::Mine>(mine);

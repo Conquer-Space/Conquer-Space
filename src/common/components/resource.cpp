@@ -80,6 +80,14 @@ bool MergeCompare(const Map &m1, const Map &m2,  typename Map::mapped_type ident
 
 using cqsp::common::components::ResourceLedger;
 
+
+#ifdef TRACY_ENABLE
+int ResourceLedger::stockpile_additions = 0;
+#define STOCKPILE_ADDITION ++ResourceLedger::stockpile_additions;
+#else
+#define STOCKPILE_ADDITION
+#endif  // TRACY_ENABLE
+
 bool cqsp::common::components::ResourceLedger::EnoughToTransfer(const ResourceLedger &amount) {
     bool b = true;
     for (auto it = amount.begin(); it != amount.end(); it++) {
@@ -207,6 +215,7 @@ void ResourceLedger::TransferTo(ResourceLedger& ledger_to, const ResourceLedger 
 }
 
 void ResourceLedger::MultiplyAdd(const ResourceLedger & other, double value) {
+    STOCKPILE_ADDITION;
     for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
         (*this)[iterator->first] += iterator->second * value;
     }

@@ -106,7 +106,7 @@ void SysResourceGenerator::DoSystem() {
         // resources generated:
         float productivity = 1;
         if (GetUniverse().all_of<cqspc::FactoryProductivity>(entity)) {
-            productivity = GetUniverse().get<cqspc::FactoryProductivity>(entity).productivity;
+            productivity = GetUniverse().get<cqspc::FactoryProductivity>(entity).current_production;
         }
         stockpile.MultiplyAdd(production, productivity * Interval());
     }
@@ -123,7 +123,7 @@ void SysProduction::DoSystem() {
         // resources generated:
         float productivity = 1;
         if (GetUniverse().all_of<cqspc::FactoryProductivity>(entity)) {
-            productivity = GetUniverse().get<cqspc::FactoryProductivity>(entity).productivity;
+            productivity = GetUniverse().get<cqspc::FactoryProductivity>(entity).current_production;
         }
         stockpile.MultiplyAdd(recipe.output, productivity * Interval());
         // Produced, so remove the production
@@ -142,7 +142,7 @@ void SysDemandCreator::DoSystem() {
         auto& participant = GetUniverse().get<cqspc::MarketAgent>(entity);
         float productivity = 1;
         if (GetUniverse().all_of<cqspc::FactoryProductivity>(entity)) {
-            productivity = GetUniverse().get<cqspc::FactoryProductivity>(entity).productivity;
+            productivity = GetUniverse().get<cqspc::FactoryProductivity>(entity).current_production;
         }
         auto& demand = GetUniverse().emplace_or_replace<cqspc::ResourceDemand>(entity);
         demand.MultiplyAdd(consumption, productivity * Interval());
@@ -163,7 +163,7 @@ void SysFactoryDemandCreator::DoSystem() {
         float productivity = 1;
         if (GetUniverse().all_of<cqspc::FactoryProductivity>(entity)) {
             productivity =
-                GetUniverse().get<cqspc::FactoryProductivity>(entity).productivity;
+                GetUniverse().get<cqspc::FactoryProductivity>(entity).current_production;
         }
         auto& demand = GetUniverse().emplace<cqspc::ResourceDemand>(entity);
         demand.MultiplyAdd(recipe.input, productivity * Interval());
@@ -294,7 +294,7 @@ void SysProductionStarter::DoSystem() {
         // resources generated:
         float productivity = 1;
         if (GetUniverse().all_of<cqspc::FactoryProductivity>(entity)) {
-            productivity = GetUniverse().get<cqspc::FactoryProductivity>(entity).productivity;
+            productivity = GetUniverse().get<cqspc::FactoryProductivity>(entity).current_production;
         }
         // Check if there are enough people working
         if (GetUniverse().all_of<cqspc::Employer>(entity)) {
