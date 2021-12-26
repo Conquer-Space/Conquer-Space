@@ -47,28 +47,7 @@ class SysProduction : public ISimulationSystem {
  public:
     explicit SysProduction(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
-/// <summary>
-/// The multiplier of recipes the factory is generating right now. This is the amount of recipes the factory wants to
-/// generate, or the production target.
-/// </summary>
-struct FactoryProductivity {
-    // Amount generated per generation
-    float productivity;
 };
-
-/// <summary>
-/// Because factory productivity is confusing. This will be the physical limitations that the factory can generate.
-/// </summary>
-struct FactoryModifiers {
-    float production;
-};
-
-/// <summary>
-/// The maximum of multiples of recipes the factories can generate.
-/// </summary>
-struct FactoryCapacity {
-    float capacity;
-};};
 
 class SysDemandCreator : public ISimulationSystem {
  public:
