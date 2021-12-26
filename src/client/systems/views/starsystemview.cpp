@@ -26,6 +26,8 @@
 #include <memory>
 #include <vector>
 
+#include <Tracy.hpp>
+
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "client/components/planetrendering.h"
@@ -63,6 +65,11 @@ struct Offset  {
 struct TerrainTextureData {
     cqsp::asset::Texture* terrain_albedo = nullptr;
     cqsp::asset::Texture* heightmap = nullptr;
+
+    void DeleteData() {
+        delete terrain_albedo;
+        delete heightmap;
+    }
 };
 
 void SysStarSystemRenderer::Initialize() {
@@ -126,11 +133,12 @@ void SysStarSystemRenderer::OnTick() {
     entt::entity system = m_app.GetUniverse().view<RenderingStarSystem>().front();
     auto &system_comp = m_app.GetUniverse().get<cqspb::StarSystem>(system);
     for (entt::entity ent : system_comp.bodies) {
-        m_app.GetUniverse().emplace_or_replace<ToRender>(ent);
+        m_app.GetUniverse().get_or_emplace<ToRender>(ent);
     }
 }
 
 void SysStarSystemRenderer::Render(float deltaTime) {
+    ZoneScoped;
     namespace cqspb = cqsp::common::components::bodies;
     // Check for resized window
     window_ratio = static_cast<float>(m_app.GetWindowWidth()) /
@@ -170,9 +178,11 @@ void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
     seeds.clear();
 
     auto star_system_component = m_universe.get<cqspb::StarSystem>(m_star_system);
+    SPDLOG_INFO("Creating planet terrain");
+
     for (auto body : star_system_component.bodies) {
         // Add a tag
-        m_universe.emplace_or_replace<ToRender>(body);
+        m_universe.get_or_emplace<ToRender>(body);
         if (!m_app.GetUniverse().all_of<cqspb::Terrain>(body)) {
             continue;
         }
@@ -182,11 +192,15 @@ void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
         generator.terrain = m_app.GetUniverse().get<cqspb::Terrain>(body);
         generator.GenerateTerrain(m_universe, 1, 2);
         // emplace
-        auto &data = m_universe.emplace_or_replace<TerrainTextureData>(body);
+        auto &data = m_universe.get_or_emplace<TerrainTextureData>(body);
+        data.DeleteData();
         CreatePlanetTextures(generator, &data.terrain_albedo, &data.heightmap);
     }
 
+    SPDLOG_INFO("Creating planet terrain thread");
     generator_thread = std::thread([&]() {
+        ZoneScoped;
+        tracy::SetThreadName("Detailed terrain thread");
         for (auto body : seeds) {
             // Add a tag
             // Now generate terrain
@@ -200,6 +214,8 @@ void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
     });
 
     intermediate_generator_thread = std::thread([&]() {
+        ZoneScoped;
+        tracy::SetThreadName("Less detailed terrain thread");
         for (auto body : seeds) {
             // Add a tag
             // Now generate terrain
@@ -223,6 +239,7 @@ void SysStarSystemRenderer::SeeEntity() {
 }
 
 void SysStarSystemRenderer::Update(float deltaTime) {
+    ZoneScoped;
     double deltaX = previous_mouseX - m_app.GetMouseX();
     double deltaY = previous_mouseY - m_app.GetMouseY();
     if (!ImGui::GetIO().WantCaptureMouse) {
@@ -285,6 +302,7 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
 }
 
 void SysStarSystemRenderer::DrawStars() {
+    ZoneScoped;
     // Draw stars
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqsps = cqsp::common::components::ships;
@@ -307,6 +325,7 @@ void SysStarSystemRenderer::DrawStars() {
 }
 
 void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
+    ZoneScoped;
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqsps = cqsp::common::components::ships;
     // Draw other bodies
@@ -363,6 +382,7 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
 }
 
 void SysStarSystemRenderer::DrawShips() {
+    ZoneScoped;
     namespace cqsps = cqsp::common::components::ships;
     // Draw Ships
     auto ships = m_app.GetUniverse().view<ToRender, cqsps::Ship>();
@@ -378,6 +398,7 @@ void SysStarSystemRenderer::DrawShips() {
 }
 
 void SysStarSystemRenderer::DrawSkybox() {
+    ZoneScoped;
     // Draw sky box
     renderer.BeginDraw(skybox_layer);
     sky.shaderProgram->UseProgram();
@@ -528,6 +549,7 @@ void SysStarSystemRenderer::DrawTerrainlessPlanet(glm::vec3 &object_pos) {
 }
 
 void SysStarSystemRenderer::RenderCities(glm::vec3 &object_pos, const entt::entity &body_entity) {
+    ZoneScoped;
     // Draw Ships
     namespace cqspc = cqsp::common::components;
     namespace cqspt = cqsp::common::components::types;
@@ -641,6 +663,7 @@ void SysStarSystemRenderer::MoveCamera(double deltaTime) {
 }
 
 void SysStarSystemRenderer::CheckResourceDistRender() {
+    return;
     using cqsp::client::components::PlanetTerrainRender;
     // Then check if it's the same rendered object
     auto &rend = m_app.GetUniverse().get<PlanetTerrainRender>(m_viewing_entity);
@@ -702,31 +725,30 @@ unsigned int SysStarSystemRenderer::GeneratePlanetTexture(noise::utils::Image &i
 }
 
 void SysStarSystemRenderer::CheckPlanetTerrain() {
+    ZoneScoped;
     if (less_detailed_gen_complete) {
-        SPDLOG_INFO("Done less detailed planet generation");
+        SPDLOG_INFO("Completed less detailed planet generation");
         intermediate_generator_thread.join();
         // Generate planet terrain, free the things
         //SetPlanetTexture(intermediate_image_generator);
         // Go through the terrain and add the terrain for the body.
         for (auto it = intermediate_generators.begin(); it != intermediate_generators.end(); it++) {
-            auto &data = m_universe.emplace_or_replace<TerrainTextureData>(it->first);
-            delete data.terrain_albedo;
-            delete data.heightmap;
+            auto &data = m_universe.get_or_emplace<TerrainTextureData>(it->first);
+            data.DeleteData();
             CreatePlanetTextures(it->second, &data.terrain_albedo, &data.heightmap);
         }
         less_detailed_gen_complete = false;
     }
 
     if (terrain_gen_complete) {
-        SPDLOG_INFO("Done less detailed planet generation");
+        SPDLOG_INFO("Completed more detailed planet generation");
         generator_thread.join();
         // Generate planet terrain, free the things
         //SetPlanetTexture(intermediate_image_generator);
         // Go through the terrain and add the terrain for the body.
         for (auto it = final_generators.begin(); it != final_generators.end(); it++) {
-            auto &data = m_universe.emplace_or_replace<TerrainTextureData>(it->first);
-            delete data.terrain_albedo;
-            delete data.heightmap;
+            auto &data = m_universe.get_or_emplace<TerrainTextureData>(it->first);
+            data.DeleteData();
             CreatePlanetTextures(it->second, &data.terrain_albedo, &data.heightmap);
         }
         terrain_gen_complete = false;

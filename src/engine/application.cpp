@@ -35,6 +35,8 @@
 #include <string>
 #include <vector>
 
+#include <Tracy.hpp>
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -511,6 +513,7 @@ void cqsp::engine::Application::run() {
 
         m_window->OnFrame();
         glfwPollEvents();
+        FrameMark;
     }
 
     destroy();
@@ -654,6 +657,11 @@ void cqsp::engine::Application::LogInfo() {
     SPDLOG_INFO("Compiled {} {}", __DATE__, __TIME__);
     SPDLOG_INFO("Exe Path: {}", common::util::exe_path);
     SPDLOG_INFO("Data Path: {}", common::util::GetCqspDataPath());
+
+#ifdef TRACY_ENABLE
+    SPDLOG_INFO("Tracy protocol version: {}", tracy::ProtocolVersion);
+    SPDLOG_INFO("Tracy broadcast version: {}", tracy::BroadcastVersion);
+#endif  // TRACY_ENABLED
 }
 
 void cqsp::engine::Application::SetWindowDimensions(int width, int height) {

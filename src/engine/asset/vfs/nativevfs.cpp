@@ -21,8 +21,11 @@
 #include <algorithm>
 #include <string>
 
-cqsp::asset::NativeFileSystem::NativeFileSystem(const std::string& _root) : root(_root) {
-}
+#include <Tracy.hpp>
+
+cqsp::asset::NativeFileSystem::NativeFileSystem(const std::string& _root) : root(_root) {}
+
+cqsp::asset::NativeFileSystem::~NativeFileSystem() {}
 
 std::shared_ptr<cqsp::asset::IVirtualFile>
 cqsp::asset::NativeFileSystem::Open(const std::string& file_path, FileModes modes) {

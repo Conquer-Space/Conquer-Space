@@ -19,12 +19,14 @@
 #include <spdlog/spdlog.h>
 
 #include <cmath>
+#include <Tracy.hpp>
 
 #include "common/components/bodies.h"
 
 using cqsp::client::systems::TerrainImageGenerator;
 
 void TerrainImageGenerator::GenerateTerrain(cqsp::common::Universe& universe, int octaves, int size) {
+    ZoneScoped;
     noise::module::Perlin noise_module;
     noise_module.SetOctaveCount(octaves);
     noise_module.SetNoiseQuality(noise::QUALITY_FAST);

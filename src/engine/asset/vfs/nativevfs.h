@@ -32,6 +32,7 @@ class NativeFile : public IVirtualFile {
  public:
     explicit NativeFile(NativeFileSystem* _nfs) : IVirtualFile(), nfs(_nfs), path("") {}
     NativeFile(NativeFileSystem* _nfs, const std::string& file) : IVirtualFile(), nfs(_nfs), path(file) {}
+
     ~NativeFile();
 
     const std::string& Path() override;
@@ -59,6 +60,7 @@ class NativeFile : public IVirtualFile {
 class NativeFileSystem : public IVirtualFileSystem {
  public:
     explicit NativeFileSystem(const std::string& root);
+    ~NativeFileSystem();
 
     bool Initialize() override {
         return true;

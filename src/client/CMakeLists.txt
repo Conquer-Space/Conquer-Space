@@ -53,4 +53,5 @@ target_link_libraries(cqsp-client PUBLIC
     glfw
     sol2
     ${OPENAL_LIBRARY}
+    Tracy
 )

@@ -25,6 +25,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <Tracy.hpp>
+#include <common/TracySystem.hpp>
+
 #include "engine/asset/assetmanager.h"
 #include "client/scenes/mainmenuscene.h"
 #include "client/scenes/universeloadingscene.h"
@@ -41,10 +44,10 @@ cqsp::scene::LoadingScene::LoadingScene(cqsp::engine::Application& app)
 
 void cqsp::scene::LoadingScene::Init() {
     auto loading = [&]() {
+        tracy::SetThreadName("Resource Loading");
         SPDLOG_INFO("Loading resources");
         LoadResources();
         SPDLOG_INFO("Need halt: {}", need_halt);
-        std::this_thread::sleep_for(std::chrono::milliseconds(20000) );
     };
 
     thread = std::make_unique<std::thread>(loading);
@@ -115,6 +118,7 @@ void cqsp::scene::LoadingScene::Ui(float deltaTime) {
 void cqsp::scene::LoadingScene::Render(float deltaTime) { }
 
 void cqsp::scene::LoadingScene::LoadResources() {
+    ZoneScoped;
     // Loading goes here
     // Read core mod
     assetLoader.manager = &GetAssetManager();

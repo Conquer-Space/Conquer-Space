@@ -42,7 +42,7 @@ void cqsp::common::systems::InfrastructureSim::DoSystem() {
         if (power_production < power_consumption) {
             // Then city has no power. Next time, we'd allow transmitting power, or allowing emergency use power
             // but for now, the city will go under brownout.
-            universe.emplace_or_replace<cqspc::infrastructure::BrownOut>(entity);
+            universe.get_or_emplace<cqspc::infrastructure::BrownOut>(entity);
         } else {
             universe.remove_if_exists<cqspc::infrastructure::BrownOut>(entity);
         }

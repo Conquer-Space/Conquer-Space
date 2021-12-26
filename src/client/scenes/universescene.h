@@ -44,6 +44,7 @@ class UniverseScene : public cqsp::engine::Scene {
             it->reset();
         }
         delete system_renderer;
+        delete galaxy_renderer;
     }
 
     void Init();

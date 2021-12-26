@@ -36,7 +36,7 @@ void cqsp::common::systems::SysPopulationGrowth::DoSystem() {
 
         if (universe.all_of<cqspc::FailedResourceTransfer>(entity)) {
             // Then alert hunger.
-            universe.emplace_or_replace<cqspc::Hunger>(entity);
+            universe.get_or_emplace<cqspc::Hunger>(entity);
         } else {
             universe.remove_if_exists<cqspc::Hunger>(entity);
         }
