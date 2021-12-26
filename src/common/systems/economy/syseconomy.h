@@ -19,60 +19,80 @@
 #include "common/systems/isimulationsystem.h"
 
 namespace cqsp::common::systems {
-class SysEconomy : public ISimulationSystem {
+class SysWalletReset : public ISimulationSystem {
  public:
-    explicit SysEconomy(Game& game) : ISimulationSystem(game) {}
+    explicit SysWalletReset(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
+};
 
- private:
-    void WalletReset(Universe& universe);
-    void SysEmploymentHandler(Universe& universe);
-    void SysResourceGenerator(Universe& universe);
-    /// <summary>
-    /// Creates goods that factories generate
-    /// </summary>
-    /// <param name="universe"></param>
-    void SysProduction(Universe& universe);
+class SysEmploymentHandler : public ISimulationSystem {
+ public:
+    explicit SysEmploymentHandler(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
+};
 
-    /// <summary>
-    /// Creates demand for the system ResourceConsumption
-    /// </summary>
-    /// <param name="universe"></param>
-    void SysDemandCreator(Universe& universe);
+class SysResourceGenerator : public ISimulationSystem {
+ public:
+    explicit SysResourceGenerator(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
+};
 
-    /// <summary>
-    /// Creates demand for factories
-    /// </summary>
-    /// <param name="universe"></param>
-    void SysFactoryDemandCreator(Universe& universe);
+class SysProduction : public ISimulationSystem {
+ public:
+    explicit SysProduction(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
+};
 
-    /// <summary>
-    /// Sells all goods to the market
-    /// </summary>
-    /// <param name="universe"></param>
-    void SysGoodSeller(Universe& universe);
+class SysDemandCreator : public ISimulationSystem {
+ public:
+    explicit SysDemandCreator(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
+};
 
-    /// <summary>
-    /// Resolves demand to supply, delivers goods to demand. Essentially it sells the goods.
-    /// </summary>
-    /// <param name="universe"></param>
-    void SysDemandResolver(Universe& universe);
+class SysFactoryDemandCreator : public ISimulationSystem {
+ public:
+    explicit SysFactoryDemandCreator(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
+};
 
-    /// <summary>
-    /// Consumes resources for next production tick, and also verifies the conditions that this factory can
-    /// generate resources, such as working population.
-    /// </summary>
-    /// <param name="universe"></param>
-    void SysProductionStarter(Universe& universe);
+class SysGoodSeller : public ISimulationSystem {
+ public:
+    explicit SysGoodSeller(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
+};
 
-    void SysPriceDetermine(Universe& universe);
+class SysDemandResolver : public ISimulationSystem {
+ public:
+    explicit SysDemandResolver(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
+};
 
-    /// <summary>
-    /// Consumes resource consumption.
-    /// </summary>
-    /// <param name="universe"></param>
-    void SysConsumptionConsume(Universe& universe);
+class SysMarketResolver : public ISimulationSystem {
+ public:
+    explicit SysMarketResolver(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
+};
+class SysProductionStarter : public ISimulationSystem {
+ public:
+    explicit SysProductionStarter(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
+};
 
-    void SysCommercialProcess(Universe& universe);
+class SysPriceDetermine : public ISimulationSystem {
+ public:
+    explicit SysPriceDetermine(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
+};
+
+class SysConsumptionConsume : public ISimulationSystem {
+ public:
+    explicit SysConsumptionConsume(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
+};
+
+class SysCommercialProcess : public ISimulationSystem {
+ public:
+    explicit SysCommercialProcess(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
 };
 }  // namespace cqsp::common::systems
