@@ -18,6 +18,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include <Tracy.hpp>
+
 #include "common/components/resource.h"
 #include "common/components/economy.h"
 #include "common/components/area.h"
@@ -35,6 +37,7 @@
 
 namespace cqsp::common::systems {
 void SysWalletReset::DoSystem() {
+    ZoneScoped;
     namespace cqspc = cqsp::common::components;
     auto view = GetUniverse().view<cqspc::Wallet>();
     for (entt::entity entity : view) {
@@ -43,6 +46,7 @@ void SysWalletReset::DoSystem() {
 }
 
 void SysCommercialProcess::DoSystem() {
+    ZoneScoped;
     namespace cqspc = cqsp::common::components;
     auto view = GetUniverse().view<cqspc::Commercial>();
     for (entt::entity entity : view) {
@@ -65,6 +69,7 @@ void SysCommercialProcess::DoSystem() {
 }
 
 void SysEmploymentHandler::DoSystem() {
+    ZoneScoped;
     namespace cqspc = cqsp::common::components;
     auto view = GetUniverse().view<cqspc::Settlement, cqspc::Industry>();
     SPDLOG_TRACE("Organizing jobs for {} settlements", view.size_hint());
@@ -90,6 +95,7 @@ void SysEmploymentHandler::DoSystem() {
 }
 
 void SysResourceGenerator::DoSystem() {
+    ZoneScoped;
     namespace cqspc = cqsp::common::components;
     auto view = GetUniverse().view<cqspc::ResourceGenerator, cqspc::ResourceStockpile>();
     SPDLOG_TRACE("Creating resources for {} resource generators", view.size_hint());
@@ -107,6 +113,7 @@ void SysResourceGenerator::DoSystem() {
 }
 
 void SysProduction::DoSystem() {
+    ZoneScoped;
     namespace cqspc = cqsp::common::components;
     auto view = GetUniverse().view<cqspc::Production, cqspc::ResourceConverter, cqspc::ResourceStockpile>();
     SPDLOG_TRACE("Creating resources for {} factories", view.size_hint());
@@ -125,6 +132,7 @@ void SysProduction::DoSystem() {
 }
 
 void SysDemandCreator::DoSystem() {
+    ZoneScoped;
     namespace cqspc = cqsp::common::components;
     auto view = GetUniverse().view<cqspc::ResourceConsumption, cqspc::MarketAgent>();
     SPDLOG_TRACE("Creating {} resource consumption demands", view.size_hint());
@@ -142,6 +150,7 @@ void SysDemandCreator::DoSystem() {
 }
 
 void SysFactoryDemandCreator::DoSystem() {
+    ZoneScoped;
     namespace cqspc = cqsp::common::components;
     auto view = GetUniverse().view<cqspc::ResourceConverter, cqspc::MarketAgent>();
     SPDLOG_TRACE("Creating {} factory demands", view.size_hint());
@@ -162,6 +171,7 @@ void SysFactoryDemandCreator::DoSystem() {
 }
 
 void SysGoodSeller::DoSystem() {
+    ZoneScoped;
     namespace cqspc = cqsp::common::components;
 
     // Sell all goods
@@ -185,6 +195,7 @@ void SysGoodSeller::DoSystem() {
 }
 
 void SysPriceDetermine::DoSystem() {
+    ZoneScoped;
     namespace cqspc = cqsp::common::components;
     auto view = GetUniverse().view<cqspc::Market>();
     for (entt::entity entity : view) {
@@ -199,10 +210,10 @@ void SysPriceDetermine::DoSystem() {
 }
 
 void cqsp::common::systems::SysConsumptionConsume::DoSystem() {
+    ZoneScoped;
     namespace cqspc = cqsp::common::components;
 
-    auto view =
-        GetUniverse().view<cqspc::ResourceConsumption, cqspc::ResourceStockpile>();
+    auto view = GetUniverse().view<cqspc::ResourceConsumption, cqspc::ResourceStockpile>();
     SPDLOG_TRACE("Resolving consumption for {} entities", view.size_hint());
     for (entt::entity entity : view) {
         auto& stockpile = GetUniverse().get<cqspc::ResourceStockpile>(entity);
@@ -221,6 +232,7 @@ void cqsp::common::systems::SysConsumptionConsume::DoSystem() {
 }
 
 void SysDemandResolver::DoSystem() {
+    ZoneScoped;
     namespace cqspc = cqsp::common::components;
 
     // Process demand
@@ -272,6 +284,7 @@ void SysDemandResolver::DoSystem() {
 }
 
 void SysProductionStarter::DoSystem() {
+    ZoneScoped;
     namespace cqspc = cqsp::common::components;
     // Gather resources for the next run, and signify if they want to produce
     auto production_view = GetUniverse().view<cqspc::ResourceConverter, cqspc::ResourceStockpile>();
@@ -311,6 +324,7 @@ void SysProductionStarter::DoSystem() {
 }
 
 void SysMarketResolver::DoSystem() {
+    ZoneScoped;
     // Balances economy production and supply
     namespace cqspc = cqsp::common::components;
     auto view = GetUniverse().view<cqspc::ResourceGenerator, cqspc::MarketAgent>();
@@ -324,6 +338,7 @@ void SysMarketResolver::DoSystem() {
             // Reduce supply if it's too high
         }
     }
+    TracyPlot("Market Resolver", static_cast<int64_t>(view.size_hint()));
 }
 
 }  // namespace cqsp::common::systems
