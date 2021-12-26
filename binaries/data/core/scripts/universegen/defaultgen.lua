@@ -150,7 +150,7 @@ generators:insert({
 
             place_factory_on_market(market, city, "consumer_good_manufacturing", 62419056.651)
 
-            -- Steel neede
+            -- Steel needed
             place_factory_on_market(market, city, "steel_forging", 62419056.651)
             -- place_factory_on_market(market, city, "concrete_manufacturing", 300)
             attach_market(market, create_mine(city, goods["copper"], 1, 10000))
