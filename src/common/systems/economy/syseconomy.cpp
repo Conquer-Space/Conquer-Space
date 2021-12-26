@@ -91,10 +91,8 @@ void SysEmploymentHandler::DoSystem() {
 
 void SysResourceGenerator::DoSystem() {
     namespace cqspc = cqsp::common::components;
-    auto view =
-        GetUniverse().view<cqspc::ResourceGenerator, cqspc::ResourceStockpile>();
-    SPDLOG_TRACE("Creating resources for {} resource generators",
-                 view.size_hint());
+    auto view = GetUniverse().view<cqspc::ResourceGenerator, cqspc::ResourceStockpile>();
+    SPDLOG_TRACE("Creating resources for {} resource generators", view.size_hint());
     for (auto entity : view) {
         auto& production = GetUniverse().get<cqspc::ResourceGenerator>(entity);
         auto& stockpile = GetUniverse().get<cqspc::ResourceStockpile>(entity);
@@ -110,8 +108,7 @@ void SysResourceGenerator::DoSystem() {
 
 void SysProduction::DoSystem() {
     namespace cqspc = cqsp::common::components;
-    auto view = GetUniverse().view<cqspc::Production, cqspc::ResourceConverter,
-                              cqspc::ResourceStockpile>();
+    auto view = GetUniverse().view<cqspc::Production, cqspc::ResourceConverter, cqspc::ResourceStockpile>();
     SPDLOG_TRACE("Creating resources for {} factories", view.size_hint());
     for (auto [entity, production, converter, stockpile] : view.each()) {
         // Make the resources, and dump to market

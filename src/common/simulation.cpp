@@ -67,12 +67,13 @@ cqsp::common::systems::simulation::Simulation::Simulation(
     AddSystem<cqspcs::SysPriceDetermine>();
     AddSystem<cqspcs::SysDemandResolver>();
 
+    // Adjust price
     AddSystem<cqspcs::SysFactory>();
+
     // Create
     AddSystem<cqspcs::SysConsumptionConsume>();
     AddSystem<cqspcs::SysProductionStarter>();
 
-    AddSystem<cqspcs::SysFactory>();
     //AddSystem<cqspcs::SysOrbit>();
     AddSystem<cqspcs::SysPath>();
 }
