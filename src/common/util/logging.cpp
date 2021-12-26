@@ -35,7 +35,7 @@ static const char* DEFAULT_PATTERN = "[%T.%e] [%^%l%$] [%n] [%s:%#] %v";
 
 template<typename Mutex>
 class TracySink : public spdlog::sinks::base_sink <Mutex> {
-protected:
+ protected:
     void sink_it_(const spdlog::details::log_msg& msg) override {
         spdlog::memory_buf_t formatted;
         spdlog::sinks::base_sink<Mutex>::formatter_->format(msg, formatted);
@@ -43,8 +43,7 @@ protected:
         TracyMessage(tracy_msg.c_str(), tracy_msg.size());
     }
 
-    void flush_() override 
-    {
+    void flush_() override {
     }
 };
 
