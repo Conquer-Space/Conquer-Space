@@ -53,13 +53,13 @@ void cqsp::common::systems::SysFactory::SysFactoryProduction(Universe& universe)
                 // TODO(EhWhoAmI): Tweak this so that this would take into account competitors,
                 // and also take into account how large the S/D ratio is, so that they can
                 // drastically or minimally change the price of the good as needed.
-                universe.get<cqspc::FactoryProductivity>(entity).productivity *= 0.9;
+                universe.get<cqspc::FactoryProductivity>(entity).current_production *= 0.9;
             } else {
                 // Then increase production due to the high demand
-                float& prod = universe.get<cqspc::FactoryProductivity>(entity).productivity;
+                double& prod = universe.get<cqspc::FactoryProductivity>(entity).current_production;
                 // If productivity is close to zero, then multiply it by a factor of it's maximum capicity
                 if (prod >= -0.01 && prod <= 0.01) {
-                    prod = universe.get<cqspc::FactoryCapacity>(entity).capacity * 0.1;
+                    prod = universe.get<cqspc::FactoryProductivity>(entity).max_production * 0.1;
                 }
                 prod *= 1.1;
             }
@@ -79,19 +79,20 @@ void cqsp::common::systems::SysFactory::SysMineProduction(Universe& universe) {
         for (auto it = factory.begin(); it != factory.end(); it++) {
             // Get supply and demand of the good
             double sd_ratio = market.sd_ratio[it->first];
+            auto& produce = universe.get<cqspc::FactoryProductivity>(entity);
             if (sd_ratio > 1) {
                 // Decrease production due to low demand
                 // Reduce by 10%.
                 // TODO(EhWhoAmI): Tweak this so that this would take into account competitors,
                 // and also take into account how large the S/D ratio is, so that they can
                 // drastically or minimally change the price of the good as needed.
-                universe.get<cqspc::FactoryProductivity>(entity).productivity *= 0.9;
+                produce.current_production *= 0.9;
             } else if (sd_ratio < 1) {
                 // Then increase production due to the high demand
-                float& prod = universe.get<cqspc::FactoryProductivity>(entity).productivity;
+                double& prod = produce.current_production;
                 // If productivity is close to zero, then multiply it by a factor of it's maximum capicity
                 if (prod >= -0.01 && prod <= 0.01) {
-                    prod = universe.get<cqspc::FactoryCapacity>(entity).capacity * 0.1;
+                    prod = produce.max_production * 0.1;
                 }
                 prod *= 1.1;
             }
@@ -129,13 +130,5 @@ void cqsp::common::systems::SysFactory::SysPowerProcessor(Universe& universe) {
     for (entt::entity entity : view) {
         //universe.get<cqspc::FactoryProductivity>();
         auto& power_consumption = universe.get<cqspc::infrastructure::PowerConsumption>(entity);
-        auto& modifiers = universe.get_or_emplace<cqspc::FactoryModifiers>(entity);
-        if (power_consumption.current < power_consumption.min) {
-            modifiers.production = 0;
-        } else {
-            double prod = power_consumption.current / power_consumption.max;
-            // Modify production
-            modifiers.production = prod;
-        }
     }
 }

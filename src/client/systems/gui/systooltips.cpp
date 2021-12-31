@@ -116,11 +116,9 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
     if (universe.all_of<cqspc::Production>(entity)) {
         ImGui::Text("Producing next tick");
     }
+
     if (universe.all_of<cqspc::FactoryProductivity>(entity)) {
-        ImGui::TextFmt("Productivity: {}", universe.get<cqspc::FactoryProductivity>(entity).productivity);
-    }
-    if (universe.all_of<cqspc::FactoryModifiers>(entity)) {
-        ImGui::TextFmt("Extra Modifiers: {}", universe.get<cqspc::FactoryModifiers>(entity).production);
+        ImGui::TextFmt("Productivity: {}", universe.get<cqspc::FactoryProductivity>(entity).current_production);
     }
 
     if (universe.all_of<cqspc::ResourceGenerator>(entity)) {

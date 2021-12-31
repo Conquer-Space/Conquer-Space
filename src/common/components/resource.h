@@ -140,6 +140,11 @@ struct ResourceLedger : public std::map<entt::entity, double> {
     double MultiplyAndGetSum(ResourceLedger&);
 
     std::string to_string();
+
+#ifdef TRACY_ENABLE
+    // Debug value to determine how many stockpile operations are done in the tick
+    static int stockpile_additions;
+#endif  // TRACY_ENABLE
 };
 
 struct Recipe {
@@ -149,27 +154,22 @@ struct Recipe {
     float interval;
 };
 
+struct ProductionTraits {
+    double max_production;
+    double current_production;
+};
+
 /// <summary>
 /// The multiplier of recipes the factory is generating right now. This is the amount of recipes the factory wants to
 /// generate, or the production target.
 /// </summary>
 struct FactoryProductivity {
-    // Amount generated per generation
-    float productivity;
-};
-
-/// <summary>
-/// Because factory productivity is confusing. This will be the physical limitations that the factory can generate.
-/// </summary>
-struct FactoryModifiers {
-    float production;
-};
-
-/// <summary>
-/// The maximum of multiples of recipes the factories can generate.
-/// </summary>
-struct FactoryCapacity {
-    float capacity;
+    // The amount they want to make now
+    double current_production;
+    // The physical limitation the factory can produce
+    double max_production;
+    // Other modifiers go here, I guess
+    // Idk if i want a map, but that may not be a bad idea
 };
 
 struct FactoryTimer {

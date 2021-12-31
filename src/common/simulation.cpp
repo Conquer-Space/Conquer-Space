@@ -56,7 +56,7 @@ cqsp::common::systems::simulation::Simulation::Simulation(
     AddSystem<cqspcs::SysCommercialProcess>();
     AddSystem<cqspcs::SysEmploymentHandler>();
 
-    // Creqate Production
+    // Create Production
     AddSystem<cqspcs::SysResourceGenerator>();
     AddSystem<cqspcs::SysProduction>();
     AddSystem<cqspcs::SysDemandCreator>();
@@ -68,7 +68,7 @@ cqsp::common::systems::simulation::Simulation::Simulation(
     AddSystem<cqspcs::SysDemandResolver>();
 
     // Adjust price
-    AddSystem<cqspcs::SysFactory>();
+    //AddSystem<cqspcs::SysFactory>();
 
     // Create
     AddSystem<cqspcs::SysConsumptionConsume>();

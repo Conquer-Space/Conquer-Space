@@ -31,12 +31,18 @@ class SysEmploymentHandler : public ISimulationSystem {
     void DoSystem();
 };
 
+/// <summary>
+/// Generates resources and puts it in the stockpile
+/// </summary>
 class SysResourceGenerator : public ISimulationSystem {
  public:
     explicit SysResourceGenerator(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
 };
 
+/// <summary>
+/// Generates resources for factories for the recipe
+/// </summary>
 class SysProduction : public ISimulationSystem {
  public:
     explicit SysProduction(Game& game) : ISimulationSystem(game) {}
