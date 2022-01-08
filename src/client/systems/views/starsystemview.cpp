@@ -208,6 +208,9 @@ void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
             generator.terrain = body.second;
             generator.GenerateTerrain(m_universe, 6, 10);
             final_generators[body.first] = generator;
+            if (to_halt_terrain_generation) {
+                break;
+            }
         }
         terrain_gen_complete = true;
         SPDLOG_INFO("Generated terrain");
@@ -223,6 +226,9 @@ void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
             generator.terrain = body.second;
             generator.GenerateTerrain(m_universe, 4, 5);
             intermediate_generators[body.first] = generator;
+            if (to_halt_terrain_generation) {
+                break;
+            }
         }
         less_detailed_gen_complete = true;
         SPDLOG_INFO("Generated terrain");
@@ -839,10 +845,19 @@ entt::entity SysStarSystemRenderer::GetMouseOnObject(int mouse_x, int mouse_y) {
 }
 
 SysStarSystemRenderer::~SysStarSystemRenderer() {
+    to_halt_terrain_generation = true;
     if (generator_thread.joinable()) {
         generator_thread.join();
     }
     if (intermediate_generator_thread.joinable()) {
         intermediate_generator_thread.join();
     }
+
+    // Free images
+    auto &view = m_universe.view<TerrainTextureData>();
+    for (entt::entity ent : view) {
+        m_universe.get<TerrainTextureData>(ent).DeleteData();
+    }
+
+    // TODO(EhWhoAmI): free libnoise data
 }
