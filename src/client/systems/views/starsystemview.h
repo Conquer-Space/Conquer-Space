@@ -153,6 +153,7 @@ class SysStarSystemRenderer {
 
     std::atomic_bool terrain_gen_complete = false;
     std::atomic_bool less_detailed_gen_complete = false;
+    std::atomic_bool to_halt_terrain_generation = false;
     std::map<entt::entity, TerrainImageGenerator> final_generators;
     std::map<entt::entity, TerrainImageGenerator> intermediate_generators;
     std::map<entt::entity, cqsp::common::components::bodies::Terrain> seeds;

@@ -112,10 +112,7 @@ bool cqsp::asset::SaveImage(const char* path, int width, int height,
     return stbi_write_png(path, width, height, components, data, width * components);
 }
 
-static int num = 0;
-#include <iostream>
 cqsp::asset::Texture::Texture() : width(-1), height(-1), id(0), texture_type(-1) {
-    num++;
 }
 
 cqsp::asset::Texture::~Texture() {
@@ -124,6 +121,4 @@ cqsp::asset::Texture::~Texture() {
     if (texture_type != -1) {
         glDeleteTextures(1, &id);
     }
-    num--;
-    std::cout << "Items left: " << num << std::endl;
 }
