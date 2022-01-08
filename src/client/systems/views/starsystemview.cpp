@@ -854,7 +854,7 @@ SysStarSystemRenderer::~SysStarSystemRenderer() {
     }
 
     // Free images
-    auto &view = m_universe.view<TerrainTextureData>();
+    auto view = m_universe.view<TerrainTextureData>();
     for (entt::entity ent : view) {
         m_universe.get<TerrainTextureData>(ent).DeleteData();
     }
