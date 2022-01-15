@@ -14,14 +14,16 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#pragma once
+#include "common/systems/economy/sysfinance.h"
 
-#include "common/systems/isimulationsystem.h"
+#include "common/components/economy.h"
 
 namespace cqsp::common::systems {
-class SysMarket : public ISimulationSystem {
-   public:
-    explicit SysMarket(Game& game) : ISimulationSystem(game) {}
-    void DoSystem();
-};
+void SysWalletReset::DoSystem() {
+    namespace cqspc = cqsp::common::components;
+    auto view = GetUniverse().view<cqspc::Wallet>();
+    for (entt::entity entity : view) {
+        GetUniverse().get<cqspc::Wallet>(entity).Reset();
+    }
+}
 }  // namespace cqsp::common::systems

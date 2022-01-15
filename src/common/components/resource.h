@@ -132,12 +132,25 @@ struct ResourceLedger : public std::map<entt::entity, double> {
     /// <param name=""></param>
     void RemoveResourcesLimited(const ResourceLedger&);
 
+    /// <summary>
+    /// Same as RemoveResourcesLimited, except that it returns how much resources
+    /// it took out.
+    /// </summary>
+    ResourceLedger LimitedRemoveResources(const ResourceLedger&);
+
     bool HasGood(entt::entity good) {
         return (*this).find(good) != (*this).end();
     }
 
     double GetSum();
-    double MultiplyAndGetSum(ResourceLedger&);
+
+    /// <summary>
+    /// Multiplies the numbers stated in the resource ledger. Used for calculating the price, becuase
+    /// usually the resource ledger will be the price.
+    /// </summary>
+    /// <param name=""></param>
+    /// <returns></returns>
+    double MultiplyAndGetSum(ResourceLedger& ledger);
 
     std::string to_string();
 

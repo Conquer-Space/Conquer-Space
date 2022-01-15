@@ -27,7 +27,7 @@ include_directories(${LUA_HEADERS})
 add_executable(cqsp-tests ${CPP_FILES} ${H_FILES})
 
 # Test libraries
-target_link_libraries(cqsp-tests GTest::gtest GTest::gtest_main)
+target_link_libraries(cqsp-tests GTest::gtest)
 target_link_libraries(cqsp-tests GTest::gmock)
 target_link_libraries(cqsp-tests cqsp-core)
 

@@ -29,13 +29,24 @@ namespace cqsp {
 namespace common {
 namespace components {
 /// <summary>
-/// Market that records the resources
+/// Historical information about the market
 /// </summary>
-struct Market {
-    std::set<entt::entity> participants;
-    ResourceLedger prices;
+struct MarketInformation {
     ResourceLedger demand;
     ResourceLedger sd_ratio;
+    ResourceLedger supply;
+    ResourceLedger volume;
+};
+
+struct Market {
+    MarketInformation last_information;
+    ResourceLedger current_demand;
+    ResourceLedger prices;
+    // Volume that was traded hands last tick. The remaining in the resource ledger will mean
+    // that there is lots of resources left over, and we can take that into account
+    ResourceLedger volume;
+
+    std::set<entt::entity> participants;
 
     void AddParticipant(entt::entity participant) {
         participants.insert(participant);
@@ -100,6 +111,7 @@ struct Wallet {
     }
 
     double GetBalance() { return balance; }
+
     void Reset() {
         change = 0;
         GDP_change = 0;

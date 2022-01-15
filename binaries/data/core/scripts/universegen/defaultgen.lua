@@ -123,8 +123,8 @@ generators:insert({
         place_market(market, planet)
 
         -- Seed market resources
-        add_resource(market, goods["steel"], 50000)
-        add_resource(market, goods["copper"], 50000)
+        --add_resource(market, goods["steel"], 50000)
+        --add_resource(market, goods["copper"], 50000)
 
         set_resource(planet, goods["copper"], 10)
 
@@ -148,17 +148,17 @@ generators:insert({
             -- 95% of cities should have a population under 53919928, so we'd calculate for that
             -- 53919928 * 2.31525 / 2 (for the recipe) = 62419056.651
 
-            place_factory_on_market(market, city, "consumer_good_manufacturing", 62419056.651)
+            place_factory_on_market(market, city, "consumer_good_manufacturing", 100)
 
             -- Steel needed
-            place_factory_on_market(market, city, "steel_forging", 62419056.651)
+            place_factory_on_market(market, city, "steel_forging", 100)
             -- place_factory_on_market(market, city, "concrete_manufacturing", 300)
-            attach_market(market, create_mine(city, goods["copper"], 1, 10000))
-            attach_market(market, create_mine(city, goods["aluminium"], 1, 10000))
-            attach_market(market, create_mine(city, goods["stone"], 1, 10000))
-            attach_market(market, create_mine(city, goods["iron"], 1, 374514340))
-            attach_market(market, create_mine(city, goods["oil"], 1, 50000))
-            add_power_plant(city, 1000)
+            attach_market(market, create_mine(city, goods["copper"], 1, 200))
+            -- attach_market(market, create_mine(city, goods["aluminium"], 1, 10000))
+            -- attach_market(market, create_mine(city, goods["stone"], 1, 10000))
+            attach_market(market, create_mine(city, goods["iron"], 1, 300))
+            -- attach_market(market, create_mine(city, goods["oil"], 1, 50000))
+            -- add_power_plant(city, 1000)
         end
     end
 })

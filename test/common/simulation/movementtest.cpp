@@ -25,7 +25,7 @@
 namespace cqspt = cqsp::common::components::types;
 class SystemsMovementTest : public ::testing::Test {
  protected:
-    static void SetUpTestSuite() {
+    void SetUp() {
         cqsp::common::Universe& universe = m_game.GetUniverse();
         star_system = universe.create();
 
@@ -44,53 +44,52 @@ class SystemsMovementTest : public ::testing::Test {
         target_orb.theta = 180;
         target_orb.semiMajorAxis = 75;
     }
-    static entt::entity star_system;
-    static entt::entity planet;
-    static entt::entity ship;
-    static entt::entity target;
-    static cqsp::common::Game m_game;
+    entt::entity star_system = entt::null;;
+    entt::entity planet = entt::null;;
+    entt::entity ship = entt::null;;
+    entt::entity target = entt::null;;
+    cqsp::common::Game m_game;
 };
-
-cqsp::common::Game SystemsMovementTest::m_game = cqsp::common::Game();
-entt::entity SystemsMovementTest::star_system = entt::null;
-entt::entity SystemsMovementTest::planet = entt::null;
-entt::entity SystemsMovementTest::ship = entt::null;
-entt::entity SystemsMovementTest::target = entt::null;
-
-TEST_F(SystemsMovementTest, ShipCreationTest) {
-    cqsp::common::Universe& universe = m_game.GetUniverse();
-
-    // Test out if the ship is created
-    ship = cqsp::common::systems::actions::CreateShip(universe, entt::null,
-                                                       planet, star_system);
-    EXPECT_TRUE(universe.valid(ship));
-    bool all_of_pos_and_ship = universe.all_of<cqspt::Kinematics, cqsp::common::components::ships::Ship>(ship);
-    ASSERT_TRUE(all_of_pos_and_ship);
-    auto& position = universe.get<cqspt::Kinematics>(ship);
-    position.topspeed = 10;
-    glm::vec3 vec = cqspt::toVec3(universe.get<cqspt::Orbit>(planet));
-    EXPECT_NEAR(position.position.x, vec.x, 4);
-    EXPECT_NEAR(position.position.y, vec.y, 4);
-}
 
 TEST_F(SystemsMovementTest, ShipMovementTest) {
     cqsp::common::Universe& universe = m_game.GetUniverse();
-
-    // Do it a couple of times and see if it arrives
-    cqsp::common::systems::SysPath system(m_game);
-
-    // Ensure system is the same
-    EXPECT_TRUE(universe.valid(ship));
-    EXPECT_EQ(universe.size(), 4);
-
-    universe.emplace_or_replace<cqspt::Kinematics>(target, cqspt::toVec3(universe.get<cqspt::Orbit>(target)));
-
-    universe.emplace_or_replace<cqspt::MoveTarget>(ship, target);
-    for (int i = 0; i < 1000; i++) {
-        system.DoSystem();
+    {
+        // Test out if the ship is created
+        ship = cqsp::common::systems::actions::CreateShip(universe, entt::null,
+                                                          planet, star_system);
+        EXPECT_TRUE(universe.valid(ship));
+        bool all_of_pos_and_ship =
+            universe
+                .all_of<cqspt::Kinematics, cqsp::common::components::ships::Ship>(
+                    ship);
+        ASSERT_TRUE(all_of_pos_and_ship);
+        auto& position = universe.get<cqspt::Kinematics>(ship);
+        position.topspeed = 10;
+        glm::vec3 vec = cqspt::toVec3(universe.get<cqspt::Orbit>(planet));
+        EXPECT_NEAR(position.position.x, vec.x, 4);
+        EXPECT_NEAR(position.position.y, vec.y, 4);
     }
-    auto& position = universe.get<cqspt::Kinematics>(ship);
-    glm::vec3 vec = cqspt::toVec3(universe.get<cqspt::Orbit>(target));
-    EXPECT_NEAR(position.position.x, vec.x, 4);
-    EXPECT_NEAR(position.position.y, vec.y, 4);
+    // Test the path system
+    // Due to limitations with google test, we cannot use the previous test for another test, so we
+    // are putting it in the same test
+    {
+        // Do it a couple of times and see if it arrives
+        cqsp::common::systems::SysPath system(m_game);
+
+        // Ensure system is the same
+        EXPECT_TRUE(universe.valid(ship));
+        EXPECT_EQ(universe.size(), 4);
+
+        universe.emplace_or_replace<cqspt::Kinematics>(
+            target, cqspt::toVec3(universe.get<cqspt::Orbit>(target)));
+
+        universe.emplace_or_replace<cqspt::MoveTarget>(ship, target);
+        for (int i = 0; i < 1000; i++) {
+            system.DoSystem();
+        }
+        auto& position = universe.get<cqspt::Kinematics>(ship);
+        glm::vec3 vec = cqspt::toVec3(universe.get<cqspt::Orbit>(target));
+        EXPECT_NEAR(position.position.x, vec.x, 4);
+        EXPECT_NEAR(position.position.y, vec.y, 4);
+    }
 }

@@ -20,8 +20,8 @@
     {
         identifier: consumer_good_manufacturing
         input: {
-            iron: 3
             steel: 2
+            copper: 2
         }
         output: {
             consumer_good: 2

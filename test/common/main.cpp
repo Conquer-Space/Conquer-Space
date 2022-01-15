@@ -14,14 +14,19 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#pragma once
+#include <cstdio>
+#include <spdlog/spdlog.h>
+#include <gtest/gtest.h>
 
-#include "common/systems/isimulationsystem.h"
+/// <summary>
+/// Custom main function for tests so that tests don't print out things from the
+/// logger.
+/// </summary>
+GTEST_API_ int main(int argc, char **argv) {
+    printf("Running main() from %s\n", __FILE__);
+    // Disable all logging
+    spdlog::set_level(spdlog::level::off);
 
-namespace cqsp::common::systems {
-class SysMarket : public ISimulationSystem {
-   public:
-    explicit SysMarket(Game& game) : ISimulationSystem(game) {}
-    void DoSystem();
-};
-}  // namespace cqsp::common::systems
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}

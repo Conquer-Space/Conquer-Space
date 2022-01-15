@@ -84,6 +84,11 @@ std::shared_ptr<spdlog::logger> cqsp::common::util::make_logger(std::string name
     sinks.push_back(std::make_shared<TracySink_mt>());
 #endif  // TRACY_ENABLE
 
+    if (spdlog::get_level() == spdlog::level::off) {
+        for (auto& sink : sinks) {
+            sink->set_level(spdlog::level::off);
+        }
+    }
     dup_filter->set_sinks(sinks);
     logger = std::make_shared<spdlog::logger>(name, dup_filter);
 
