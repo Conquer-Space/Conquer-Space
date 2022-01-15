@@ -17,6 +17,8 @@
 #include "common/systems/economy/markethelpers.h"
 
 #include "common/components/economy.h"
+#include "common/components/history.h"
+
 void cqsp::common::systems::economy::AddParticipant(
                 cqsp::common::Universe& universe, entt::entity market_entity,
                 entt::entity entity) {
@@ -36,6 +38,7 @@ entt::entity cqsp::common::systems::economy::CreateMarket(Universe& universe) {
 void cqsp::common::systems::economy::CreateMarket(Universe& universe, entt::entity market) {
     universe.get_or_emplace<components::ResourceStockpile>(market);
     universe.get_or_emplace<components::Market>(market);
+    universe.get_or_emplace<components::MarketHistory>(market);
 }
 
 double cqsp::common::systems::economy::PurchaseGood(Universe& universe, entt::entity agent,
@@ -59,7 +62,7 @@ double cqsp::common::systems::economy::PurchaseGood(Universe& universe, entt::en
     // limitations.
     if (market_stockpile.EnoughToTransfer(purchase) || true) {
         // Then get the cost
-        if (wallet.GetBalance() >= cost) {
+        if (wallet.GetBalance() >= cost || true) {
             // Then agent has enough money to buy
             // Remove resources from market
             market_stockpile -= purchase;

@@ -33,6 +33,7 @@
 #include "common/systems/economy/sysmarket.h"
 #include "common/systems/economy/sysfinance.h"
 #include "common/systems/economy/sysagent.h"
+#include "common/systems/history/sysmarkethistory.h"
 
 #include "common/components/event.h"
 #include "common/components/organizations.h"
@@ -52,6 +53,7 @@ cqsp::common::systems::simulation::Simulation::Simulation(
 
     AddSystem<cqspcs::SysAgent>();
     AddSystem<cqspcs::SysMarket>();
+    AddSystem<cqspcs::history::SysMarketHistory>();
     //AddSystem<cqspcs::SysOrbit>();
     AddSystem<cqspcs::SysPath>();
 }

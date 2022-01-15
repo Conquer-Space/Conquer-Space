@@ -43,6 +43,7 @@
 #include "common/components/economy.h"
 #include "common/components/ships.h"
 #include "common/components/infrastructure.h"
+#include "common/components/history.h"
 
 #include "common/util/utilnumberdisplay.h"
 #include "common/systems/actions/factoryconstructaction.h"
@@ -89,6 +90,12 @@ void cqsp::client::systems::SysPlanetInformation::Init() {}
 
 void cqsp::client::systems::SysPlanetInformation::DoUI(int delta_time) {
     DisplayPlanet();
+
+    if (market_information_panel) {
+        ImGui::Begin("Market Information", &market_information_panel, window_flags);
+        MarketInformationTooltipContent();
+        ImGui::End();
+    }
 }
 
 void cqsp::client::systems::SysPlanetInformation::DoUpdate(int delta_time) {
@@ -173,7 +180,9 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
                                         window_flags);
     // Market
     if (GetUniverse().all_of<cqspc::MarketCenter>(selected_planet)) {
-        ImGui::Text("Is market center");
+        if (ImGui::Button("Is market center")) {
+            market_information_panel = true;
+        }
         if (ImGui::IsItemHovered()) {
             ImGui::BeginTooltip();
             MarketInformationTooltipContent();
@@ -667,12 +676,13 @@ void cqsp::client::systems::SysPlanetInformation::MarketInformationTooltipConten
 
     // Get resource stockpile
     auto& stockpile = GetUniverse().get<cqspc::ResourceStockpile>(center.market);
-    if (ImGui::BeginTable("marketinfotable", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+    if (ImGui::BeginTable("marketinfotable", 6, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Good");
         ImGui::TableSetupColumn("Price");
         ImGui::TableSetupColumn("Supply");
         ImGui::TableSetupColumn("Demand");
         ImGui::TableSetupColumn("S/D ratio");
+        ImGui::TableSetupColumn("Volume");
         ImGui::TableHeadersRow();
         for (auto& price : market.prices) {
             ImGui::TableNextRow();
@@ -694,7 +704,43 @@ void cqsp::client::systems::SysPlanetInformation::MarketInformationTooltipConten
                            market.last_information.demand[price.first];
             }
             ImGui::TextFmt("{}", sd_ratio);
+            ImGui::TableSetColumnIndex(5);
+            ImGui::TextFmt("{}", market.last_information.volume[price.first]);
         }
         ImGui::EndTable();
+    }
+    // Draw the charts
+    if (GetUniverse().all_of<cqspc::MarketHistory>(center.market)) {
+        auto& history = GetUniverse().get<cqspc::MarketHistory>(center.market);
+        if (ImPlot::BeginPlot("Price History", "Time", "Price", ImVec2(-1, 0),
+                              ImPlotFlags_NoMousePos | ImPlotFlags_NoChild,
+                              ImPlotAxisFlags_AutoFit,
+                              ImPlotAxisFlags_AutoFit)) {
+            for (auto& hist : history.price_history) {
+                ImPlot::PlotLine(
+                    systems::gui::GetName(GetUniverse(), hist.first).c_str(), hist.second.data(),
+                    hist.second.size());
+            }
+            ImPlot::EndPlot();
+        }
+        if (ImPlot::BeginPlot("Volume", "Time", "Volume", ImVec2(-1, 0),
+                              ImPlotFlags_NoMousePos | ImPlotFlags_NoChild,
+                              ImPlotAxisFlags_AutoFit,
+                              ImPlotAxisFlags_AutoFit)) {
+            for (auto& hist : history.volume) {
+                ImPlot::PlotLine(
+                    (systems::gui::GetName(GetUniverse(), hist.first) +
+                        " Volume").c_str(),
+                    hist.second.data(), hist.second.size());
+            }
+            ImPlot::EndPlot();
+        }
+        if (ImPlot::BeginPlot("GDP", "Time", "Value", ImVec2(-1, 0),
+                              ImPlotFlags_NoMousePos | ImPlotFlags_NoChild,
+                              ImPlotAxisFlags_AutoFit,
+                              ImPlotAxisFlags_AutoFit)) {
+            ImPlot::PlotLine("GDP", history.gdp.data(), history.gdp.size());
+            ImPlot::EndPlot();
+        }
     }
 }

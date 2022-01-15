@@ -63,6 +63,7 @@ class SysPlanetInformation : public SysUserInterface {
     bool mine_list_panel = false;
     bool factory_list_panel = false;
     bool power_plant_output_panel = false;
+    bool market_information_panel = true;
     entt::entity power_plant_changing;
 };
 }  // namespace systems
