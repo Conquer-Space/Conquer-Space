@@ -17,6 +17,7 @@
 #include "common/systems/economy/auctionhandler.h"
 
 #include <spdlog/spdlog.h>
+
 bool cqsp::common::systems::BuyGood(components::AuctionHouse& auction_house,
                                     entt::entity agent, entt::entity good,
                                     double price, double quantity) {
