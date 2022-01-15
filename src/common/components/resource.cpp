@@ -231,6 +231,21 @@ void ResourceLedger::RemoveResourcesLimited(const ResourceLedger & other) {
     }
 }
 
+ResourceLedger ResourceLedger::LimitedRemoveResources(const ResourceLedger& other) {
+    ResourceLedger removed;
+    for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
+        double &t = (*this)[iterator->first];
+        if (t > iterator-> second) {
+            removed[iterator->first] = iterator->second;
+            t -= iterator->second;
+        } else {
+            removed[iterator->first] = t;
+            t = 0;
+        }
+    }
+    return std::move(removed);
+}
+
 double ResourceLedger::GetSum() {
     double t = 0;
     for (auto it = this->begin(); it != this->end(); it++) {

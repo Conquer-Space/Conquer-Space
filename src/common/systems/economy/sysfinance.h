@@ -19,9 +19,9 @@
 #include "common/systems/isimulationsystem.h"
 
 namespace cqsp::common::systems {
-class SysMarket : public ISimulationSystem {
-   public:
-    explicit SysMarket(Game& game) : ISimulationSystem(game) {}
+class SysWalletReset : public ISimulationSystem {
+ public:
+    explicit SysWalletReset(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
 };
-}  // namespace cqsp::common::systems
+}

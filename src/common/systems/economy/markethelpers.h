@@ -19,11 +19,30 @@
 #include <entt/entt.hpp>
 
 #include "common/universe.h"
+#include "common/components/resource.h"
 
 namespace cqsp {
 namespace common {
 namespace systems {
 namespace economy {
+/// <summary>
+/// Creates a market two instance.
+/// </summary>
+entt::entity CreateMarket(Universe& universe);
+void CreateMarket(Universe& universe, entt::entity market);
+/// <summary>
+/// Note: This will only buy the maximum resources that are in the market.
+/// If there aren't enough resources on the market, then we buy all the
+/// remaining resources on the market.
+/// You'll have to calculate how much you want later on
+/// </summary>
+/// <param name="universe"></param>
+/// <param name="agent"></param>
+/// <param name="purchase"></param>
+/// <returns></returns>
+double PurchaseGood(Universe& universe, entt::entity agent, components::ResourceLedger purchase);
+double SellGood(Universe& universe, entt::entity agent, components::ResourceLedger selling);
+
 void AddParticipant(cqsp::common::Universe& universe, entt::entity market, entt::entity entity);
 }
 }

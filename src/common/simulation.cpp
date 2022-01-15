@@ -27,11 +27,12 @@
 #include "common/components/resource.h"
 #include "common/util/profiler.h"
 #include "common/systems/movement/sysmovement.h"
-#include "common/systems/economy/syseconomy.h"
 #include "common/systems/syspopulation.h"
-#include "common/systems/economy/sysfactory.h"
 #include "common/systems/sysinfrastructure.h"
 #include "common/systems/scriptrunner.h"
+#include "common/systems/economy/sysmarket.h"
+#include "common/systems/economy/sysfinance.h"
+#include "common/systems/economy/sysagent.h"
 
 #include "common/components/event.h"
 #include "common/components/organizations.h"
@@ -47,33 +48,10 @@ cqsp::common::systems::simulation::Simulation::Simulation(
     cqsp::common::Game &game) : m_game(game), m_universe(game.GetUniverse()) {
     namespace cqspcs = cqsp::common::systems;
     AddSystem<cqspcs::SysScript>();
-    AddSystem<cqspcs::InfrastructureSim>();
-    AddSystem<cqspcs::SysPopulationGrowth>();
-    AddSystem<cqspcs::SysPopulationConsumption>();
-
-    // Employment other stuff
     AddSystem<cqspcs::SysWalletReset>();
-    AddSystem<cqspcs::SysCommercialProcess>();
-    AddSystem<cqspcs::SysEmploymentHandler>();
 
-    // Create Production
-    AddSystem<cqspcs::SysResourceGenerator>();
-    AddSystem<cqspcs::SysProduction>();
-    AddSystem<cqspcs::SysDemandCreator>();
-    AddSystem<cqspcs::SysFactoryDemandCreator>();
-
-    // Market simulation
-    AddSystem<cqspcs::SysGoodSeller>();
-    AddSystem<cqspcs::SysPriceDetermine>();
-    AddSystem<cqspcs::SysDemandResolver>();
-
-    // Adjust price
-    //AddSystem<cqspcs::SysFactory>();
-
-    // Create
-    AddSystem<cqspcs::SysConsumptionConsume>();
-    AddSystem<cqspcs::SysProductionStarter>();
-
+    AddSystem<cqspcs::SysAgent>();
+    AddSystem<cqspcs::SysMarket>();
     //AddSystem<cqspcs::SysOrbit>();
     AddSystem<cqspcs::SysPath>();
 }

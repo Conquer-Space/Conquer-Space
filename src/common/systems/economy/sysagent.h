@@ -19,20 +19,10 @@
 #include "common/systems/isimulationsystem.h"
 
 namespace cqsp::common::systems {
-/// <summary>
-/// Determines how much resources the factory decides to generate the next tick so that they don't
-/// over produce when there is an insane excess of resources. This will create fluctuations
-/// between production in the economy.
-/// </summary>
-class SysFactory : public ISimulationSystem {
+class SysAgent : public ISimulationSystem {
  public:
-    explicit SysFactory(Game& game) : ISimulationSystem(game) {}
-    void DoSystem();
-
- private:
-    void SysFactoryProduction(Universe& universe);
-    void SysMineProduction(Universe& universe);
-    void SysInfrastrutureChecker(Universe& universe);
-    void SysPowerProcessor(Universe& universe);
+    explicit SysAgent(Game& game) : ISimulationSystem(game) {}
+    void DoSystem() override;
+    int Interval() override { return 1; }
 };
-}  // namespace cqsp::common::systems
+}

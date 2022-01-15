@@ -236,7 +236,7 @@ void FunctionEconomy(cqsp::engine::Application& app) {
 
     // TODO(EhWhoAmI): Will have to fix the documentation for this so that it looks neater
     auto lambda = [&]() {
-        entt::entity entity = universe.create();
+        /*entt::entity entity = universe.create();
         auto& market = universe.emplace<cqspc::Market>(entity);
         universe.emplace<cqspc::ResourceStockpile>(entity);
         // Set the market prices
@@ -246,8 +246,17 @@ void FunctionEconomy(cqsp::engine::Application& app) {
         for (entt::entity entity : view) {
             // Assign price to market
             market.prices[entity] = universe.get<cqspc::Price>(entity);
+        }*/
+        entt::entity market_entity = cqsp::common::systems::economy::CreateMarket(universe);
+        // Set prices of market
+        auto view = universe.view<cqspc::Good, cqspc::Price>();
+        auto& market = universe.get<cqsp::common::components::Market>(market_entity);
+        for (entt::entity entity : view) {
+            // Assign price to market
+            market.prices[entity] = universe.get<cqspc::Price>(entity);
         }
-        return entity;
+        return market_entity;
+        // return entity;
     };
     REGISTER_FUNCTION("create_market", lambda);
 

@@ -448,15 +448,15 @@ void cqsp::client::systems::SysPlanetInformation::FactoryConstruction() {
     if (CQSPGui::DefaultButton("Construct!")) {
         // Construct things
         SPDLOG_INFO("Constructing factory with recipe {}", selected_recipe);
-        // Add demand to the market for the amount of resources
+        entt::entity city_market = GetUniverse().get<cqspc::MarketCenter>(selected_planet).market;
+        // Add demand to the market for the amount of resources needed to construct the factory
         // When construction takes time in the future, then do the costs.
         // So first charge it to the market
-        entt::entity city_market = GetUniverse().get<cqspc::MarketCenter>(selected_planet).market;
-        auto cost = cqsp::common::systems::actions::GetFactoryCost(
+        /* auto cost = cqsp::common::systems::actions::GetFactoryCost(
             GetUniverse(), selected_city_entity, selected_recipe, prod);
-        GetUniverse().get<cqspc::Market>(city_market).demand += cost;
+        //GetUniverse().get<cqspc::Market>(city_market).demand += cost;
         GetUniverse().get<cqspc::ResourceStockpile>(city_market) -= cost;
-        // Buy things on the market
+        */
         entt::entity factory = cqsp::common::systems::actions::CreateFactory(
             GetUniverse(), selected_city_entity, selected_recipe, prod);
         cqsp::common::systems::economy::AddParticipant(GetUniverse(), city_market, factory);
@@ -508,10 +508,11 @@ void cqsp::client::systems::SysPlanetInformation::MineConstruction() {
         // When construction takes time in the future, then do the costs.
         // So first charge it to the market
         entt::entity city_market = GetUniverse().get<cqspc::MarketCenter>(selected_planet).market;
-        auto cost = cqsp::common::systems::actions::GetFactoryCost(
+        /*auto cost = cqsp::common::systems::actions::GetFactoryCost(
             GetUniverse(), selected_city_entity, selected_good, prod);
         GetUniverse().get<cqspc::Market>(city_market).demand += cost;
         GetUniverse().get<cqspc::ResourceStockpile>(city_market) -= cost;
+        */
         // Buy things on the market
         entt::entity factory = cqsp::common::systems::actions::CreateMine(
             GetUniverse(), selected_city_entity, selected_good, 1, prod);
@@ -656,45 +657,43 @@ void cqsp::client::systems::SysPlanetInformation::InfrastructureTab() {
 
 void cqsp::client::systems::SysPlanetInformation::MarketInformationTooltipContent() {
     namespace cqspc = cqsp::common::components;
+    if (!GetUniverse().any_of<cqspc::MarketCenter>(selected_planet)) {
+        ImGui::TextFmt("Market is not a market center");
+        return;
+    }
     auto& center = GetUniverse().get<cqspc::MarketCenter>(selected_planet);
     auto& market = GetUniverse().get<cqspc::Market>(center.market);
     ImGui::TextFmt("Has {} entities attached to it", market.participants.size());
 
-    // Market prices
-    ImGui::Text("Market prices");
-    if (ImGui::BeginTable("goodpricetable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+    // Get resource stockpile
+    auto& stockpile = GetUniverse().get<cqspc::ResourceStockpile>(center.market);
+    if (ImGui::BeginTable("marketinfotable", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Good");
-        ImGui::TableSetupColumn("Prices");
+        ImGui::TableSetupColumn("Price");
+        ImGui::TableSetupColumn("Supply");
+        ImGui::TableSetupColumn("Demand");
+        ImGui::TableSetupColumn("S/D ratio");
+        ImGui::TableHeadersRow();
         for (auto& price : market.prices) {
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::TextFmt("{}", GetUniverse().get<cqspc::Identifier>(price.first));
             ImGui::TableSetColumnIndex(1);
             ImGui::TextFmt("{}", price.second);
-        }
-        ImGui::EndTable();
-    }
-
-    ImGui::Separator();
-
-    // Get resource stockpile
-    auto& stockpile = GetUniverse().get<cqspc::ResourceStockpile>(center.market);
-    if (ImGui::BeginTable("marketinfotable", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
-        ImGui::TableSetupColumn("Good");
-        ImGui::TableSetupColumn("Supply");
-        ImGui::TableSetupColumn("Demand");
-        ImGui::TableSetupColumn("S/D ratio");
-        ImGui::TableHeadersRow();
-        for (auto& price : market.sd_ratio) {
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0);
-            ImGui::TextFmt("{}", GetUniverse().get<cqspc::Identifier>(price.first));
-            ImGui::TableSetColumnIndex(1);
-            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(stockpile[price.first]));
             ImGui::TableSetColumnIndex(2);
-            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.demand[price.first]));
+            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.last_information.supply[price.first]));
             ImGui::TableSetColumnIndex(3);
-            ImGui::TextFmt("{}", price.second);
+            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.last_information.demand[price.first]));
+            ImGui::TableSetColumnIndex(4);
+            // Check if demand is 0, then s/d ratio is infinite
+            double sd_ratio = 0;
+            if (market.last_information.demand[price.first] == 0) {
+                sd_ratio = std::numeric_limits<double>::infinity();
+            } else {
+                sd_ratio = market.last_information.supply[price.first] /
+                           market.last_information.demand[price.first];
+            }
+            ImGui::TextFmt("{}", sd_ratio);
         }
         ImGui::EndTable();
     }
