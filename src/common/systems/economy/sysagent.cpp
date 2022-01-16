@@ -23,10 +23,15 @@ void cqsp::common::systems::SysAgent::DoSystem() {
     auto view = GetUniverse().view<cqsp::common::components::MarketAgent>();
     for (entt::entity entity : view) {
         // Sell resources that agents produced
+        double production_multiplier = 1;
+        if (GetUniverse().any_of<components::FactoryProductivity>(entity)) {
+            auto& prod = GetUniverse().get<components::FactoryProductivity>(entity);
+            production_multiplier = prod.current_production;
+        }
         components::ResourceLedger selling;
         if (GetUniverse().all_of<components::ResourceGenerator>(entity)) {
             auto& gen = GetUniverse().get<components::ResourceGenerator>(entity);
-            selling += gen;
+            selling.MultiplyAdd(gen, production_multiplier);
         }
         // Recipe things
         auto resource_converter = GetUniverse().try_get<components::ResourceConverter>(entity);
@@ -34,7 +39,7 @@ void cqsp::common::systems::SysAgent::DoSystem() {
         if (resource_converter != nullptr) {
             recipe = GetUniverse().try_get<components::Recipe>(resource_converter->recipe);
             // Sell the recipe production
-            selling += recipe->output;
+            selling.MultiplyAdd(recipe->output, production_multiplier);
         }
         economy::SellGood(GetUniverse(), entity, selling);
 
@@ -42,12 +47,12 @@ void cqsp::common::systems::SysAgent::DoSystem() {
         components::ResourceLedger buying;
         if (GetUniverse().all_of<components::ResourceConsumption>(entity)) {
             auto& gen = GetUniverse().get<components::ResourceConsumption>(entity);
-            buying += gen;
+            buying.MultiplyAdd(gen, production_multiplier);
         }
 
         if (resource_converter != nullptr) {
             // Sell the recipe production
-            buying += recipe->input;
+            buying.MultiplyAdd(recipe->input, production_multiplier);
         }
         economy::PurchaseGood(GetUniverse(), entity, buying);
     }
