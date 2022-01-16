@@ -46,7 +46,7 @@ bool SellGood(Universe& universe, entt::entity agent,
               components::ResourceLedger selling);
 
 void AddParticipant(cqsp::common::Universe& universe, entt::entity market, entt::entity entity);
-}
-}
-}
-}
+}  // namespace economy
+}  // namespace systems
+}  // namespace common
+}  // namespace cqsp

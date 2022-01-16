@@ -16,6 +16,8 @@
 */
 #include "common/systems/economy/sysmarket.h"
 
+#include <limits>
+
 #include "common/components/economy.h"
 
 void cqsp::common::systems::SysMarket::DoSystem() {

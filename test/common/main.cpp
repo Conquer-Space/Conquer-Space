@@ -14,9 +14,10 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include <cstdio>
 #include <spdlog/spdlog.h>
 #include <gtest/gtest.h>
+
+#include <cstdio>
 
 /// <summary>
 /// Custom main function for tests so that tests don't print out things from the

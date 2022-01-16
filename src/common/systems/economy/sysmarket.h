@@ -20,7 +20,7 @@
 
 namespace cqsp::common::systems {
 class SysMarket : public ISimulationSystem {
-   public:
+ public:
     explicit SysMarket(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
 };
