@@ -675,41 +675,36 @@ void cqsp::client::systems::SysPlanetInformation::MarketInformationTooltipConten
     ImGui::TextFmt("Has {} entities attached to it", market.participants.size());
 
     // Get resource stockpile
-    auto& stockpile = GetUniverse().get<cqspc::ResourceStockpile>(center.market);
-    if (ImGui::BeginTable("marketinfotable", 6, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+    if (ImGui::BeginTable("marketinfotable", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Good");
         ImGui::TableSetupColumn("Price");
         ImGui::TableSetupColumn("Supply");
         ImGui::TableSetupColumn("Demand");
         ImGui::TableSetupColumn("S/D ratio");
-        ImGui::TableSetupColumn("Volume");
         ImGui::TableHeadersRow();
-        for (auto& price : market.prices) {
+        for (const auto& good_information : market) {
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
-            ImGui::TextFmt("{}", GetUniverse().get<cqspc::Identifier>(price.first));
+            ImGui::TextFmt("{}", GetUniverse().get<cqspc::Identifier>(good_information.first));
             ImGui::TableSetColumnIndex(1);
-            ImGui::TextFmt("{}", price.second);
+            ImGui::TextFmt("{}", good_information.second.price);
             ImGui::TableSetColumnIndex(2);
-            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.last_information.supply[price.first]));
+            auto& hist = market.last_market_information[good_information.first];
+            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(hist.supply));
             ImGui::TableSetColumnIndex(3);
-            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.last_information.demand[price.first]));
+            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(hist.demand));
             ImGui::TableSetColumnIndex(4);
-            // Check if demand is 0, then s/d ratio is infinite
-            double sd_ratio = 0;
-            if (market.last_information.demand[price.first] == 0) {
-                sd_ratio = std::numeric_limits<double>::infinity();
+            // Check if demand is 0, then supply is infinite, so
+            if (hist.demand == 0) {
+                ImGui::TextFmt("Infinite Supply");
             } else {
-                sd_ratio = market.last_information.supply[price.first] /
-                           market.last_information.demand[price.first];
+                ImGui::TextFmt("{}", hist.supply / hist.demand);
             }
-            ImGui::TextFmt("{}", sd_ratio);
-            ImGui::TableSetColumnIndex(5);
-            ImGui::TextFmt("{}", market.last_information.volume[price.first]);
         }
         ImGui::EndTable();
     }
-    // Draw the charts
+
+    // Draw market information charts
     if (GetUniverse().all_of<cqspc::MarketHistory>(center.market)) {
         auto& history = GetUniverse().get<cqspc::MarketHistory>(center.market);
         if (ImPlot::BeginPlot("Price History", "Time", "Price", ImVec2(-1, 0),

@@ -54,6 +54,11 @@ void cqsp::common::systems::SysAgent::DoSystem() {
             // Sell the recipe production
             buying.MultiplyAdd(recipe->input, production_multiplier);
         }
-        economy::PurchaseGood(GetUniverse(), entity, buying);
+        // Check if they buy or sell the goods, if they cannot achieve that,
+        // then deal with it.
+        bool success = economy::PurchaseGood(GetUniverse(), entity, buying);
+        if (!success) {
+            SPDLOG_INFO("Cannot buy stuff");
+        }
     }
 }

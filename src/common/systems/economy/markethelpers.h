@@ -40,8 +40,10 @@ void CreateMarket(Universe& universe, entt::entity market);
 /// <param name="agent"></param>
 /// <param name="purchase"></param>
 /// <returns></returns>
-double PurchaseGood(Universe& universe, entt::entity agent, components::ResourceLedger purchase);
-double SellGood(Universe& universe, entt::entity agent, components::ResourceLedger selling);
+bool PurchaseGood(Universe& universe, entt::entity agent,
+                  components::ResourceLedger purchase);
+bool SellGood(Universe& universe, entt::entity agent,
+              components::ResourceLedger selling);
 
 void AddParticipant(cqsp::common::Universe& universe, entt::entity market, entt::entity entity);
 }

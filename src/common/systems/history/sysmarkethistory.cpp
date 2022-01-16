@@ -25,9 +25,10 @@ void cqsp::common::systems::history::SysMarketHistory::DoSystem() {
         auto& history = GetUniverse().get<components::MarketHistory>(entity);
         auto& market_data = GetUniverse().get<components::Market>(entity);
         // Loop through the prices
-        for (auto resource : market_data.prices) {
-            history.price_history[resource.first].push_back(resource.second);
-            history.volume[resource.first].push_back(market_data.last_information.volume[resource.first]);
+        for (auto resource : market_data.market_information) {
+            history.price_history[resource.first].push_back(resource.second.price);
+            history.volume[resource.first].push_back(
+                market_data.last_market_information[resource.first].demand);
         }
         double val = 0;
         for (entt::entity ent : market_data.participants) {

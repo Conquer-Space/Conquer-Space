@@ -100,6 +100,5 @@ cqsp::common::systems::actions::CreateCommercialArea(cqsp::common::Universe& uni
     universe.emplace<cqspc::Commercial>(commercial, city, 0);
 
     universe.get<cqspc::Industry>(city).industries.push_back(commercial);
-
     return commercial;
 }
