@@ -38,18 +38,42 @@ struct MarketInformation {
     ResourceLedger volume;
 };
 
+struct MarketElementInformation {
+    // Sum of the resources traded last time.
+    double supply;
+    double demand;
+    double price;
+    double sd_ratio;
+};
+
 struct Market {
-    MarketInformation last_information;
-    ResourceLedger current_demand;
-    ResourceLedger prices;
-    // Volume that was traded hands last tick. The remaining in the resource ledger will mean
-    // that there is lots of resources left over, and we can take that into account
-    ResourceLedger volume;
+    std::map<entt::entity, MarketElementInformation> market_information;
+    std::map<entt::entity, MarketElementInformation> last_market_information;
 
     std::set<entt::entity> participants;
 
+    // Math
+    void AddSupply(const ResourceLedger& stockpile);
+    void AddSupply(const ResourceLedger& stockpile, double multiplier);
+    void AddDemand(const ResourceLedger& stockpile);
+    void AddDemand(const ResourceLedger& stockpile, double multiplier);
+
+    double GetPrice(const ResourceLedger& stockpile);
+
     void AddParticipant(entt::entity participant) {
         participants.insert(participant);
+    }
+
+    MarketElementInformation& operator[](entt::entity ent) {
+        return market_information[ent];
+    }
+
+    auto begin() {
+        return market_information.begin();
+    }
+
+    auto end() {
+        return market_information.end();
     }
 };
 

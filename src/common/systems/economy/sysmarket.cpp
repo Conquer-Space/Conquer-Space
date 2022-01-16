@@ -20,30 +20,28 @@
 
 void cqsp::common::systems::SysMarket::DoSystem() {
     // Get all the new and improved (tm) markets
-    auto view = GetUniverse().view<components::Market, components::ResourceStockpile>();
+    auto view = GetUniverse().view<components::Market>();
     // Calculate all the things
     for (entt::entity entity : view) {
         // Get the resources and process the price, then do things, I guess
         // Get demand
         auto& market = GetUniverse().get<components::Market>(entity);
-        auto& supply = GetUniverse().get<components::ResourceStockpile>(entity);
         // Calculate all the goods in the map
         // Our economy will be demand driven, which means we only calculate the resources in the demand part of themap
-        for (auto demand : market.current_demand) {
-            double supply_count = supply[demand.first] + market.volume[demand.first];
-            double sd_ratio = 1;
-            if (demand.second <= 0) {
-                // Negative or zero demand, then there is an infinite supply, so we don't process it?
+        // Get the resources that are traded, I guess
+        for (auto& info : market) {
+            auto& market_element = info.second;
+            if (market_element.supply == 0 && market_element.demand == 0) {
+                continue;
             }
-            sd_ratio = supply_count / demand.second;
-            // Then we adjust the price
+            double sd_ratio = market_element.supply / market_element.demand;
 
-            // TODO(EhWhoAmI): Determine the change in price based on the S/D ratio so that the value will
-            // be quicker to equalize
+            if (market_element.demand <= 0) {
+                // Then there is infinite supply, and the price will go down.
+                sd_ratio = std::numeric_limits<double>::infinity();
+            }
 
-            // This can be adjusted so that the tolerance for a 'balanced' S/D ration can be wider, so that
-            // prices won't fluctuate so much
-            double& price = market.prices[demand.first];
+            double& price = market_element.price;
             if (sd_ratio < 1) {
                 // Too much demand, so we will increase the price
                 price += (0.001 + price * 0.1f);
@@ -57,18 +55,14 @@ void cqsp::common::systems::SysMarket::DoSystem() {
             } else {
                 // Keep price approximately the same
             }
+            // Set last market information for documentation purposes
+            auto& el = market.last_market_information[info.first];
+            el = market_element;
+            market_element.supply = 0;
+            market_element.demand = 0;
+            market_element.sd_ratio = sd_ratio;
         }
         // Compile supply
-        market.last_information.supply.clear();
-        market.last_information.supply = market.volume + supply;
-        std::exchange(market.last_information.volume, market.volume);
-        // Clear supply, so resources at the end of the market cycle will be wasted.
-        // This is so that resources from the previous market cycle will not affect
-        // the market, and that the supply demand ratios will remain roughly similar.
-        supply.clear();
-        market.volume.clear();
-        // Clear the demand
-        std::exchange(market.last_information.demand, market.current_demand);
-        market.current_demand.clear();
+        //std::swap(market.last_market_information, market.market_information);
     }
 }

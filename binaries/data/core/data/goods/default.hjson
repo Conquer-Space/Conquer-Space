@@ -38,7 +38,7 @@
         identifier: consumer_good
         volume: 1
         mass: 6500
-        price: 5
+        price: 7
         tags: [
         ]
     }
@@ -57,7 +57,7 @@
         identifier: steel
         volume: 1
         mass: 7900
-        price: 3
+        price: 4
         tags: [
         ]
     }

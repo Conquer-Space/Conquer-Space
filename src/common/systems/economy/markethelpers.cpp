@@ -36,68 +36,56 @@ entt::entity cqsp::common::systems::economy::CreateMarket(Universe& universe) {
 }
 
 void cqsp::common::systems::economy::CreateMarket(Universe& universe, entt::entity market) {
-    universe.get_or_emplace<components::ResourceStockpile>(market);
     universe.get_or_emplace<components::Market>(market);
     universe.get_or_emplace<components::MarketHistory>(market);
 }
 
-double cqsp::common::systems::economy::PurchaseGood(Universe& universe, entt::entity agent,
+bool cqsp::common::systems::economy::PurchaseGood(
+    Universe& universe, entt::entity agent,
     components::ResourceLedger purchase) {
     // Calculating on how to buy from the market shouldn't be too hard, right?
     // Get the market connected to, and build the demand
     entt::entity market = universe.get<components::MarketAgent>(agent).market;
-    auto& market2 = universe.get<components::Market>(market);
-    double cost = purchase.MultiplyAndGetSum(market2.prices);
-    market2.current_demand += purchase;
+    auto& market_comp = universe.get<components::Market>(market);
+    // Prices
+    double cost = market_comp.GetPrice(purchase);
 
     // Then subtract the cash from the person, or something
     // Check if they have enough money and purchase, I guess
     auto& wallet = universe.get<components::Wallet>(agent);
 
-    auto& market_stockpile = universe.get<components::ResourceStockpile>(market);
     // TODO(EhWhoAmI):
     // Check if there are enough resources on the market, or else there will have a shortage
     // Then get the maximum resources that they allow
     // Just allow agents to take as many resources as they want because I'm too lazy to implement
     // limitations.
-    if (market_stockpile.EnoughToTransfer(purchase) || true) {
-        // Then get the cost
-        if (wallet.GetBalance() >= cost || true) {
-            // Then agent has enough money to buy
-            // Remove resources from market
-            market_stockpile -= purchase;
-            universe.get<components::ResourceStockpile>(agent) += purchase;
-            // Add value to volume, because we need the volume
-            market2.volume += purchase;
-            wallet -= cost;
-        }
-    } else {
-        // Get the resources remaining in the market
-        // Calculate the resources needed
-        // Get the volume and other things, somehow
-        components::ResourceLedger amount_purchased = market_stockpile.LimitedRemoveResources(purchase);
-        universe.get<components::ResourceStockpile>(agent) += amount_purchased;
-        market2.volume += amount_purchased;
+    if (wallet.GetBalance() < cost) {
+        return false;
     }
-    return cost;
+
+    // Then agent has enough money to buy
+    market_comp.AddDemand(purchase);
+    universe.get<components::ResourceStockpile>(agent) += purchase;
+    wallet -= cost;
+    return true;
 }
 
-double cqsp::common::systems::economy::SellGood(Universe& universe, entt::entity agent,
+bool cqsp::common::systems::economy::SellGood(Universe& universe, entt::entity agent,
                                        components::ResourceLedger selling) {
     // Calculating on how to buy from the market shouldn't be too hard, right?
     // Get the market connected to, and build the demand
     entt::entity market = universe.get<components::MarketAgent>(agent).market;
     auto& market_comp = universe.get<components::Market>(market);
-    auto& supply = universe.get<components::ResourceStockpile>(market);
     auto& agent_stockpile = universe.get<components::ResourceStockpile>(agent);
-    supply += selling;
+    market_comp.AddSupply(selling);
+
     // Remove from stockpile
     agent_stockpile -= selling;
 
     // Then subtract the cash from the person, or something
     // Check if they have enough money and purchase, I guess
-    double cost = selling.MultiplyAndGetSum(market_comp.prices);
+    double cost = market_comp.GetPrice(selling);
     auto& wallet = universe.get<components::Wallet>(agent);
     wallet += cost;
-    return cost;
+    return true;
 }
