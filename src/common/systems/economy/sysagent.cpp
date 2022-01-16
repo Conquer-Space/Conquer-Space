@@ -33,13 +33,15 @@ void cqsp::common::systems::SysAgent::DoSystem() {
             auto& gen = GetUniverse().get<components::ResourceGenerator>(entity);
             selling.MultiplyAdd(gen, production_multiplier);
         }
+
         // Recipe things
         auto resource_converter = GetUniverse().try_get<components::ResourceConverter>(entity);
         components::Recipe* recipe = nullptr;
-        if (resource_converter != nullptr) {
+        if (resource_converter != nullptr && GetUniverse().all_of<components::FactoryProducing>(entity)) {
             recipe = GetUniverse().try_get<components::Recipe>(resource_converter->recipe);
             // Sell the recipe production
             selling.MultiplyAdd(recipe->output, production_multiplier);
+            GetUniverse().remove<components::FactoryProducing>(entity);
         }
         economy::SellGood(GetUniverse(), entity, selling);
 
@@ -59,6 +61,7 @@ void cqsp::common::systems::SysAgent::DoSystem() {
         bool success = economy::PurchaseGood(GetUniverse(), entity, buying);
         if (!success) {
             SPDLOG_INFO("Cannot buy stuff");
+            GetUniverse().emplace<components::FactoryProducing>(entity);
         }
     }
 }

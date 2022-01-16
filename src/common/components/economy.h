@@ -194,6 +194,8 @@ struct Employee {
     /// </summary>
     int employed_population;
 };
+
+struct FactoryProducing {};
 }  // namespace components
 }  // namespace common
 }  // namespace cqsp
