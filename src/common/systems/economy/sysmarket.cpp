@@ -62,6 +62,10 @@ void cqsp::common::systems::SysMarket::DoSystem() {
         market.last_information.supply.clear();
         market.last_information.supply = market.volume + supply;
         std::exchange(market.last_information.volume, market.volume);
+        // Clear supply, so resources at the end of the market cycle will be wasted.
+        // This is so that resources from the previous market cycle will not affect
+        // the market, and that the supply demand ratios will remain roughly similar.
+        supply.clear();
         market.volume.clear();
         // Clear the demand
         std::exchange(market.last_information.demand, market.current_demand);
