@@ -44,10 +44,11 @@ class SystemsMovementTest : public ::testing::Test {
         target_orb.theta = 180;
         target_orb.semiMajorAxis = 75;
     }
-    entt::entity star_system = entt::null;;
-    entt::entity planet = entt::null;;
-    entt::entity ship = entt::null;;
-    entt::entity target = entt::null;;
+
+    entt::entity star_system = entt::null;
+    entt::entity planet = entt::null;
+    entt::entity ship = entt::null;
+    entt::entity target = entt::null;
     cqsp::common::Game m_game;
 };
 

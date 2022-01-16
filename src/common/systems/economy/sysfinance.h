@@ -20,7 +20,7 @@
 
 namespace cqsp::common::systems {
 class SysWalletReset : public ISimulationSystem {
-   public:
+ public:
     explicit SysWalletReset(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
 };

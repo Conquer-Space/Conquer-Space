@@ -16,14 +16,14 @@
 */
 #include <gtest/gtest.h>
 
+#include <iostream>
+
 #include "common/universe.h"
 #include "common/components/economy.h"
 #include "common/systems/economy/sysmarket.h"
 #include "common/systems/economy/markethelpers.h"
 
 namespace cqspc = cqsp::common::components;
-
-#include <iostream>
 
 class MarketTwoTest : public ::testing::Test {
  protected:
@@ -163,5 +163,4 @@ TEST_F(MarketTwoTest, BuySellOverSupplyTest) {
 
     // Check the price, lower price due to higher supply over demand
     EXPECT_LE(market_comp[good_1].price, good_1_default_price);
-
 }

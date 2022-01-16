@@ -25,4 +25,4 @@ class SysAgent : public ISimulationSystem {
     void DoSystem() override;
     int Interval() override { return 1; }
 };
-}
+}  // namespace cqsp::common::systems

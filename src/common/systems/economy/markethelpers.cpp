@@ -85,7 +85,7 @@ bool cqsp::common::systems::economy::SellGood(Universe& universe, entt::entity a
     // Then subtract the cash from the person, or something
     // Check if they have enough money and purchase, I guess
     double cost = market_comp.GetPrice(selling);
-    auto& wallet = universe.get<components::Wallet>(agent);
+    components::Wallet& wallet = universe.get<components::Wallet>(agent);
     wallet += cost;
     return true;
 }
