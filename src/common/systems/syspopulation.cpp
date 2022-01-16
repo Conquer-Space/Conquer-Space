@@ -64,13 +64,12 @@ void cqsp::common::systems::SysPopulationConsumption::DoSystem() {
     for (auto [entity, segment] : view.each()) {
         // The population will feed, I guess
         entt::entity good = universe.goods["consumer_good"];
-        // So a consumer good is a kilogram, and the mass of a unit of consumer good is 6500 kg.
-        // A person generated 4.9 pounds every day in the US according to the EPA.
-        // Some of it is food, some it is other resources, but we don't need to have the nuance about
-        // it yet. Since all things have to be thrown away, we'd have to assume that the generation of consumer
-        // goods is the same as the consumption of consumer goods.
-        // 4.9 pounds is roughly equal to 2.2226 kg, and divide it by 24 to get per tick, equals to 0.0926083333kg.
-        uint64_t consumption = segment.population * 0.09261;
+
+        // Reduce it to some unreasonably low level so that the economy can handle it
+        uint64_t consumption = segment.population/100000;
         universe.get_or_emplace<cqspc::ResourceConsumption>(entity)[good] = consumption;
+
+        // Inject some cash into the population segment, so that they don't run out of money to buy the stuff
+        universe.get_or_emplace<cqspc::Wallet>(entity) += segment.population / 1000;
     }
 }
