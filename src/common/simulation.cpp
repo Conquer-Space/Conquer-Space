@@ -51,6 +51,7 @@ cqsp::common::systems::simulation::Simulation::Simulation(
     AddSystem<cqspcs::SysScript>();
     AddSystem<cqspcs::SysWalletReset>();
 
+    AddSystem<cqspcs::SysPopulationConsumption>();
     AddSystem<cqspcs::SysAgent>();
     AddSystem<cqspcs::SysMarket>();
     AddSystem<cqspcs::history::SysMarketHistory>();

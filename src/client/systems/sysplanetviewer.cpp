@@ -707,6 +707,9 @@ void cqsp::client::systems::SysPlanetInformation::MarketInformationTooltipConten
     // Draw market information charts
     if (GetUniverse().all_of<cqspc::MarketHistory>(center.market)) {
         auto& history = GetUniverse().get<cqspc::MarketHistory>(center.market);
+        if (ImGui::Button("Clear information")) {
+            GetUniverse().replace<cqspc::MarketHistory>(center.market);
+        }
         if (ImPlot::BeginPlot("Price History", "Time", "Price", ImVec2(-1, 0),
                               ImPlotFlags_NoMousePos | ImPlotFlags_NoChild,
                               ImPlotAxisFlags_AutoFit,
