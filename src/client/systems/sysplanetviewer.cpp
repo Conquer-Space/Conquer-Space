@@ -88,7 +88,7 @@ void cqsp::client::systems::SysPlanetInformation::DisplayPlanet() {
 
 void cqsp::client::systems::SysPlanetInformation::Init() {}
 
-void cqsp::client::systems::SysPlanetInformation::DoUI(int delta_time) {
+void cqsp::client::systems::SysPlanetInformation::DoUI(float delta_time) {
     DisplayPlanet();
 
     if (market_information_panel) {
@@ -98,7 +98,7 @@ void cqsp::client::systems::SysPlanetInformation::DoUI(int delta_time) {
     }
 }
 
-void cqsp::client::systems::SysPlanetInformation::DoUpdate(int delta_time) {
+void cqsp::client::systems::SysPlanetInformation::DoUpdate(float delta_time) {
     // If clicked on a planet, go to the planet
     // Get the thing
     namespace cqspb = cqsp::common::components::bodies;
@@ -127,44 +127,52 @@ void cqsp::client::systems::SysPlanetInformation::CityInformationPanel() {
 
     ImGui::TextFmt("{}", GetUniverse().get<cqspc::Name>(selected_city_entity));
 
+    PopulationText();
+
+    if (GetUniverse().all_of<cqspc::Industry>(selected_city_entity)) {
+        CityTabs();
+    }
+}
+
+void cqsp::client::systems::SysPlanetInformation::PopulationText() {
+    namespace cqspc = cqsp::common::components;
     if (GetUniverse().all_of<cqspc::Settlement>(selected_city_entity)) {
-        int size = GetUniverse().get<cqspc::Settlement>(selected_city_entity).population.size();
         for (auto seg_entity : GetUniverse().get<cqspc::Settlement>(selected_city_entity).population) {
             auto& pop_segement = GetUniverse().get<cqspc::PopulationSegment>(seg_entity);
-            ImGui::TextFmt("Population: {}", cqsp::util::LongToHumanString(pop_segement.population));
+            ImGui::TextFmt("Population: {}", cqsp::util::LongToHumanString(static_cast<int>(pop_segement.population)));
         }
     } else {
         ImGui::TextFmt("No population");
     }
+}
 
-    if (GetUniverse().all_of<cqspc::Industry>(selected_city_entity)) {
-        if (ImGui::BeginTabBar("CityTabs", ImGuiTabBarFlags_None)) {
-            if (ImGui::BeginTabItem("Demographics")) {
-                DemographicsTab();
-                ImGui::EndTabItem();
-            }
-            if (ImGui::BeginTabItem("Industries")) {
-                IndustryTab();
-                ImGui::EndTabItem();
-            }
-            if (ImGui::BeginTabItem("Resources")) {
-                ResourcesTab();
-                ImGui::EndTabItem();
-            }
-            if (ImGui::BeginTabItem("Construction")) {
-                ConstructionTab();
-                ImGui::EndTabItem();
-            }
-            if (ImGui::BeginTabItem("Infrastructure")) {
-                InfrastructureTab();
-                ImGui::EndTabItem();
-            }
-            if (ImGui::BeginTabItem("Space Port")) {
-                SpacePortTab();
-                ImGui::EndTabItem();
-            }
-            ImGui::EndTabBar();
+void cqsp::client::systems::SysPlanetInformation::CityTabs() {
+    if (ImGui::BeginTabBar("CityTabs", ImGuiTabBarFlags_None)) {
+        if (ImGui::BeginTabItem("Demographics")) {
+            DemographicsTab();
+            ImGui::EndTabItem();
         }
+        if (ImGui::BeginTabItem("Industries")) {
+            IndustryTab();
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Resources")) {
+            ResourcesTab();
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Construction")) {
+            ConstructionTab();
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Infrastructure")) {
+            InfrastructureTab();
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Space Port")) {
+            SpacePortTab();
+            ImGui::EndTabItem();
+        }
+        ImGui::EndTabBar();
     }
 }
 
@@ -197,7 +205,7 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
             pop_size += GetUniverse().get<cqspc::PopulationSegment>(population).population;
         }
     }
-    ImGui::TextFmt("Population: {} ({})", cqsp::util::LongToHumanString(pop_size), pop_size);
+    ImGui::TextFmt("Population: {} ({})", cqsp::util::LongToHumanString(static_cast<int64_t>(pop_size)), pop_size);
     ImGui::Separator();
 
     // Show resources
@@ -207,13 +215,12 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
         // Show the resources on it
         ImGui::Text("Resources");
         if (ImGui::Button("Default")) {
-            GetUniverse().remove_if_exists<PlanetTerrainRender>(selected_planet);
+            GetUniverse().remove<PlanetTerrainRender>(selected_planet);
         }
-        for (auto it = dist.begin(); it != dist.end(); it++) {
-            if (ImGui::Button(cqsp::client::systems::gui::GetName(GetUniverse(), it->first).c_str())) {
+        for (auto& it : dist) {
+            if (ImGui::Button(cqsp::client::systems::gui::GetName(GetUniverse(), it.first).c_str())) {
                 // Set rendering thing
-                GetUniverse().emplace_or_replace<PlanetTerrainRender>(
-                        selected_planet, it->first);
+                GetUniverse().emplace_or_replace<PlanetTerrainRender>(selected_planet, it.first);
             }
         }
     }
@@ -257,7 +264,7 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTab() {
     int height = 300;
     ImGui::TextFmt("Factories: {}", city_industry.industries.size());
     ImGui::BeginChild("salepanel", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
-                                 ImGui::GetStyle().ItemSpacing.y, height), true,
+                                 ImGui::GetStyle().ItemSpacing.y, static_cast<float>(height)), true,
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
     IndustryTabServicesChild();
     ImGui::EndChild();
@@ -265,31 +272,33 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTab() {
     ImGui::SameLine();
 
     ImGui::BeginChild("ManufacturingPanel", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
-                                 ImGui::GetStyle().ItemSpacing.y, height), true,
+                                            ImGui::GetStyle().ItemSpacing.y, static_cast<float>(height)), true,
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
     IndustryTabManufacturingChild();
     ImGui::EndChild();
 
     ImGui::BeginChild("MinePanel", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
-                                 ImGui::GetStyle().ItemSpacing.y, height), true,
+                                   ImGui::GetStyle().ItemSpacing.y, static_cast<float>(height)), true,
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
     IndustryTabMiningChild();
     ImGui::EndChild();
     ImGui::SameLine();
 
     ImGui::BeginChild("AgriPanel", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
-                                 ImGui::GetStyle().ItemSpacing.y, height), true,
+                                   ImGui::GetStyle().ItemSpacing.y, static_cast<float>(height)), true,
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
     IndustryTabAgricultureChild();
     ImGui::EndChild();
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 void cqsp::client::systems::SysPlanetInformation::IndustryTabServicesChild() {
     ImGui::Text("Services Sector");
     // List all the stuff it produces
     ImGui::Text("GDP:");
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 void cqsp::client::systems::SysPlanetInformation::IndustryTabManufacturingChild() {
     namespace cqspc = cqsp::common::components;
     auto& city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
@@ -369,6 +378,7 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTabMiningChild() {
     DrawLedgerTable("mineproduction", GetUniverse(), resources);
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 void cqsp::client::systems::SysPlanetInformation::IndustryTabAgricultureChild() {
     ImGui::Text("Agriculture Sector");
     ImGui::Text("GDP:");
@@ -524,7 +534,7 @@ void cqsp::client::systems::SysPlanetInformation::MineConstruction() {
         */
         // Buy things on the market
         entt::entity factory = cqsp::common::systems::actions::CreateMine(
-            GetUniverse(), selected_city_entity, selected_good, 1, prod);
+            GetUniverse(), selected_city_entity, selected_good, 1, static_cast<float>(prod));
         cqsp::common::systems::economy::AddParticipant(GetUniverse(), city_market, factory);
     }
 
@@ -545,8 +555,7 @@ void cqsp::client::systems::SysPlanetInformation::MineInformationPanel() {
         // List mines
         static int selected_mine = 0;
         int mine_index = 0;
-        for (int i = 0; i < city_industry.industries.size(); i++) {
-            entt::entity e = city_industry.industries[i];
+        for (entt::entity e : city_industry.industries) {
             if (GetUniverse().all_of<cqspc::Mine>(e)) {
                 // Then do the things
                 mine_index++;
@@ -577,8 +586,7 @@ void cqsp::client::systems::SysPlanetInformation::FactoryInformationPanel() {
         // List mines
         static int selected_factory = 0;
         int factory_index = 0;
-        for (int i = 0; i < city_industry.industries.size(); i++) {
-            entt::entity e = city_industry.industries[i];
+        for (auto e : city_industry.industries) {
             if (GetUniverse().all_of<cqspc::Factory>(e)) {
                 // Then do the things
                 factory_index++;
@@ -621,7 +629,7 @@ void cqsp::client::systems::SysPlanetInformation::InfrastructureTab() {
         double& prod_d = GetUniverse().get<cqspc::infrastructure::PowerPlant>(power_plant_changing).production;
         float prod = static_cast<float>(prod_d);
         ImGui::PushItemWidth(-1);
-        CQSPGui::DragFloat("power_plant_supply", &prod, 1, 1, INT_MAX);
+        CQSPGui::DragFloat("power_plant_supply", &prod, 1, 1, static_cast<float>(INT_MAX));
         prod_d = prod;
         ImGui::PopItemWidth();
         ImGui::End();
@@ -639,8 +647,7 @@ void cqsp::client::systems::SysPlanetInformation::InfrastructureTab() {
         power_demand = power.total_power_consumption;
     }
     std::vector<entt::entity> power_plants;
-    for (int i = 0; i < city_industry.industries.size(); i++) {
-        entt::entity industry = city_industry.industries[i];
+    for (auto industry : city_industry.industries) {
         if (GetUniverse().any_of<cqspc::infrastructure::PowerPlant>(industry)) {
             power_plants.push_back(industry);
         }
@@ -715,9 +722,8 @@ void cqsp::client::systems::SysPlanetInformation::MarketInformationTooltipConten
                               ImPlotAxisFlags_AutoFit,
                               ImPlotAxisFlags_AutoFit)) {
             for (auto& hist : history.price_history) {
-                ImPlot::PlotLine(
-                    systems::gui::GetName(GetUniverse(), hist.first).c_str(), hist.second.data(),
-                    hist.second.size());
+                ImPlot::PlotLine(systems::gui::GetName(GetUniverse(), hist.first).c_str(), hist.second.data(),
+                                 static_cast<int>(hist.second.size()));
             }
             ImPlot::EndPlot();
         }
@@ -726,10 +732,8 @@ void cqsp::client::systems::SysPlanetInformation::MarketInformationTooltipConten
                               ImPlotAxisFlags_AutoFit,
                               ImPlotAxisFlags_AutoFit)) {
             for (auto& hist : history.volume) {
-                ImPlot::PlotLine(
-                    (systems::gui::GetName(GetUniverse(), hist.first) +
-                        " Volume").c_str(),
-                    hist.second.data(), hist.second.size());
+                ImPlot::PlotLine((systems::gui::GetName(GetUniverse(), hist.first) + " Volume").c_str(),
+                                 hist.second.data(), static_cast<int>(hist.second.size()));
             }
             ImPlot::EndPlot();
         }
@@ -737,7 +741,7 @@ void cqsp::client::systems::SysPlanetInformation::MarketInformationTooltipConten
                               ImPlotFlags_NoMousePos | ImPlotFlags_NoChild,
                               ImPlotAxisFlags_AutoFit,
                               ImPlotAxisFlags_AutoFit)) {
-            ImPlot::PlotLine("GDP", history.gdp.data(), history.gdp.size());
+            ImPlot::PlotLine("GDP", history.gdp.data(), static_cast<int>(history.gdp.size()));
             ImPlot::EndPlot();
         }
     }

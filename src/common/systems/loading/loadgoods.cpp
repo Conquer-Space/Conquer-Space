@@ -23,14 +23,14 @@
 #include "common/components/resource.h"
 #include "common/components/bodies.h"
 
-#define CHECK_DEFINED(x, entity) if (!x.defined()) {\
+#define CHECK_DEFINED(x, entity) if (!(x).defined()) {\
                                     universe.destroy(entity);\
                                     continue;\
                                  }
 
 void cqsp::common::systems::loading::LoadGoods(cqsp::common::Universe& universe, Hjson::Value& goods) {
     namespace cqspc = cqsp::common::components;
-    for (int i = 0; i < goods.size(); i++) {
+    for (int i = 0; i < goods.size(); i++) {  //NOLINT(modernize-loop-convert)
         Hjson::Value val = goods[i];
         // Create good
         entt::entity good = universe.create();
@@ -77,18 +77,18 @@ void cqsp::common::systems::loading::LoadGoods(cqsp::common::Universe& universe,
 
 void cqsp::common::systems::loading::LoadRecipes(cqsp::common::Universe& universe, Hjson::Value& recipes) {
     namespace cqspc = cqsp::common::components;
-    for (int i = 0; i < recipes.size(); i++) {
+    for (int i = 0; i < recipes.size(); i++) {  //NOLINT(modernize-loop-convert)
         Hjson::Value& val = recipes[i];
 
         entt::entity recipe = universe.create();
         auto& recipe_component = universe.emplace<cqspc::Recipe>(recipe);
         Hjson::Value input_value = val["input"];
-        for (auto input_good : input_value) {
+        for (const auto& input_good : input_value) {
             recipe_component.input[universe.goods[input_good.first]] = input_good.second;
         }
 
         Hjson::Value output_value = val["output"];
-        for (auto output_good : output_value) {
+        for (const auto& output_good : output_value) {
             recipe_component.output[universe.goods[output_good.first]] = output_good.second;
         }
 
@@ -99,14 +99,14 @@ void cqsp::common::systems::loading::LoadRecipes(cqsp::common::Universe& univers
 }
 
 void cqsp::common::systems::loading::LoadTerrainData(cqsp::common::Universe& universe, Hjson::Value& value) {
-    for (auto it = value.begin(); it != value.end(); it++) {
+    for (auto it : value) {
         entt::entity entity = universe.create();
 
         using cqsp::common::components::bodies::TerrainData;
         TerrainData& data = universe.get_or_emplace<TerrainData>(entity);
 
-        data.sea_level = it->second["sealevel"];
-        auto terrain_colors = it->second["terrain"];
+        data.sea_level = it.second["sealevel"];
+        auto terrain_colors = it.second["terrain"];
         for (int i = 0; i < terrain_colors.size(); i++) {
             float place = terrain_colors[i][0];
             Hjson::Value color = terrain_colors[i][1];
@@ -126,6 +126,6 @@ void cqsp::common::systems::loading::LoadTerrainData(cqsp::common::Universe& uni
                 data.data[place] = tuple;
             }
         }
-        universe.terrain_data[it->first] = entity;
+        universe.terrain_data[it.first] = entity;
     }
 }

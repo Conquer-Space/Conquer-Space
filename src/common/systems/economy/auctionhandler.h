@@ -32,8 +32,9 @@ namespace systems {
 /// <param name="quantity">Quantity</param>
 /// <returns>True if the order is fufilled immediately, false if a buy order is
 /// placed.</returns>
-bool BuyGood(components::AuctionHouse& auction_house, entt::entity good,
-             entt::entity agent, double price, double quantity);
+bool BuyGood(components::AuctionHouse& auction_house,
+             entt::entity agent, entt::entity good,
+             double price, double quantity);
 
 /// <summary>
 /// Sells a good to the market
@@ -44,8 +45,9 @@ bool BuyGood(components::AuctionHouse& auction_house, entt::entity good,
 /// <param name="quantity">Quantity</param>
 /// <returns>True if the order is fufilled immediately, false if a sell order is
 /// placed.</returns>
-bool SellGood(components::AuctionHouse& auction_house, entt::entity good,
-              entt::entity agent, double price, double quantity);
+bool SellGood(components::AuctionHouse& auction_house,
+              entt::entity agent, entt::entity good, double price,
+              double quantity);
 }  // namespace systems
 }  // namespace common
 }  // namespace cqsp

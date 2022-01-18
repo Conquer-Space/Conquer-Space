@@ -42,7 +42,6 @@ bool cqsp::common::systems::BuyGood(components::AuctionHouse& auction_house,
         // Buy good, and fufill demand
         if (first.quantity > quantity) {
             first.quantity -= quantity;
-            quantity = 0;
             // Also subtract wallet
             // Thing done!
             return true;
@@ -90,7 +89,6 @@ bool cqsp::common::systems::SellGood(components::AuctionHouse& auction_house,
         // Buy good, and fufill demand
         if (first.quantity > quantity) {
             first.quantity -= quantity;
-            quantity = 0;
             // Also subtract wallet
             // Thing done!
             return true;

@@ -31,9 +31,9 @@ class SysPlanetInformation : public SysUserInterface {
     void DisplayPlanet();
 
     entt::entity selected_city_entity = entt::null;
-    void Init();
-    void DoUI(int delta_time);
-    void DoUpdate(int delta_time);
+    void Init() override;
+    void DoUI(float delta_time) override;
+    void DoUpdate(float delta_time) override;
 
     int selected_city_index = 0;
     enum class ViewMode { PLANET_VIEW, CITY_VIEW };
@@ -58,6 +58,8 @@ class SysPlanetInformation : public SysUserInterface {
     void SpacePortTab();
     void InfrastructureTab();
     void MarketInformationTooltipContent();
+    void CityTabs();
+    void PopulationText();
 
     entt::entity selected_planet = entt::null;
     bool mine_list_panel = false;

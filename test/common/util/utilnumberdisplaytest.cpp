@@ -19,6 +19,7 @@
 
 #include "common/util/utilnumberdisplay.h"
 
+// NOLINTNEXTLINE(readability-function-cognitive-complexity)
 TEST(NumberDisplayTest, LongToHumanStringTest) {
     EXPECT_STREQ("1 thousand", cqsp::util::LongToHumanString(1000).c_str());
     EXPECT_STREQ("1 million", cqsp::util::LongToHumanString(1000000).c_str());

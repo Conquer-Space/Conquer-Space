@@ -30,14 +30,17 @@ void GenerateFrameBuffer(unsigned int &framebuffer) {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 }
 
-cqsp::engine::FramebufferRenderer::~FramebufferRenderer() { Free(); }
+cqsp::engine::FramebufferRenderer::~FramebufferRenderer() {
+    glDeleteFramebuffers(1, &framebuffer);
+    glDeleteBuffers(1, &colorbuffer);
+}
 
 void cqsp::engine::FramebufferRenderer::InitTexture(int width, int height) {
     GenerateFrameBuffer(framebuffer);
     // create a color attachment texture
     glGenTextures(1, &colorbuffer);
     glBindTexture(GL_TEXTURE_2D, colorbuffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorbuffer, 0);
@@ -51,8 +54,9 @@ void cqsp::engine::FramebufferRenderer::InitTexture(int width, int height) {
     // now actually attach it
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         SPDLOG_ERROR("Framebuffer is not complete!");
+    }
     // Reset framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -102,7 +106,12 @@ void cqsp::engine::FramebufferRenderer::NewFrame(const Window& window) {
     }
 }
 
-cqsp::engine::AAFrameBufferRenderer::~AAFrameBufferRenderer() { Free(); }
+cqsp::engine::AAFrameBufferRenderer::~AAFrameBufferRenderer() {
+    glDeleteFramebuffers(1, &framebuffer);
+    glDeleteFramebuffers(1, &intermediateFBO);
+    glDeleteBuffers(1, &screenTexture);
+    glDeleteFramebuffers(1, &mscat);
+}
 
 void cqsp::engine::AAFrameBufferRenderer::InitTexture(int width, int height) {
     this->width = width;
@@ -134,7 +143,7 @@ void cqsp::engine::AAFrameBufferRenderer::InitTexture(int width, int height) {
     // create a color attachment texture
     glGenTextures(1, &screenTexture);
     glBindTexture(GL_TEXTURE_2D, screenTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture, 0);
@@ -215,12 +224,12 @@ void LayerRenderer::NewFrame(const cqsp::engine::Window& window) {
     }
 }
 
-int LayerRenderer::GetLayerCount() { return framebuffers.size(); }
+int LayerRenderer::GetLayerCount() { return static_cast<int>(framebuffers.size()); }
 
 void LayerRenderer::InitFramebuffer(IFramebuffer* buffer, cqsp::asset::ShaderProgram_t shader,
  const cqsp::engine::Window& window) {
     // Initialize pane
     buffer->InitTexture(window.GetWindowWidth(), window.GetWindowHeight());
     buffer->SetMesh(engine::primitive::MakeTexturedPaneMesh(true));
-    buffer->SetShader(shader);
+    buffer->SetShader(std::move(shader));
 }

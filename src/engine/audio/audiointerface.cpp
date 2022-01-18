@@ -53,7 +53,7 @@ void AudioInterface::Pause(bool to_pause) {}
 void AudioInterface::PauseMusic(bool to_pause) {}
 
 std::string AudioInterface::GetAudioVersion() {
-    return std::string();
+    return {};
 }
 
 void AudioInterface::Destruct() {
@@ -61,7 +61,9 @@ void AudioInterface::Destruct() {
     worker_thread.join();
     SPDLOG_LOGGER_INFO(logger, "Killing OpenAL");
     // Clear sources and buffers
-    for (int i = 0; i < channels.size(); i++) channels[i].reset();
+    for (auto& channel : channels) {
+        channel.reset();
+    }
     music.reset();
 }
 
@@ -71,11 +73,12 @@ void AudioInterface::StartWorker() {
     worker_thread = std::thread([&]() {
         // Play music, handle playlist
         // Quickly inserted random algorithm to make linter happy.
-        int selected_track = (time(0) * 0x0000BC8F) % 0x7FFFFFFF % playlist.size();
+        int selected_track = 
+                        static_cast<int>((static_cast<int>(time(nullptr)) * 0x0000BC8F) % 0x7FFFFFFF % playlist.size());
         while (!to_quit) {
             // Choose random song from thing
             selected_track++;
-            selected_track %= playlist.size();
+            selected_track %= static_cast<int>(playlist.size());
             Hjson::Value track_info = playlist[selected_track];
             std::string track_file = cqsp::common::util::GetCqspDataPath() + "/core/music/" + track_info["file"];
             SPDLOG_LOGGER_INFO(logger, "Loading track \'{}\'", track_info["name"]);
@@ -137,24 +140,26 @@ void cqsp::engine::audio::AudioInterface::SetChannelVolume(int channel, float ga
 }
 
 cqsp::engine::audio::AudioInterface::~AudioInterface() {
-    alcMakeContextCurrent(NULL);
+    alcMakeContextCurrent(nullptr);
     alcDestroyContext(context);
     alcCloseDevice(device);
 }
 
 inline bool isBigEndian() {
     int a = 1;
-    return !(reinterpret_cast<char*>(&a))[0];
+    return (reinterpret_cast<char*>(&a))[0] == 0;
 }
 
-inline int convertToInt(char* buffer, int len) {
+inline int convertToInt(const char* buffer, int len) {
     int a = 0;
     if (!isBigEndian()) {
-        for (int i = 0; i < len; i++)
+        for (int i = 0; i < len; i++){
             (reinterpret_cast<char*>(&a))[i] = buffer[i];
+        }
     } else {
-        for (int i = 0; i < len; i++)
+        for (int i = 0; i < len; i++){
             (reinterpret_cast<char*>(&a))[3 - i] = buffer[i];
+        }
     }
     return a;
 }
@@ -172,7 +177,7 @@ inline ALenum to_al_format(int16_t channels, int16_t samples) {
     }
 }
 
-std::unique_ptr<AudioAsset> AudioInterface::LoadWav(std::ifstream &in) {
+std::unique_ptr<AudioAsset> AudioInterface::LoadWav(std::ifstream &in) {  // NOLINT(readability-convert-member-functions-to-static)
     auto audio_asset = std::make_unique<cqsp::asset::ALAudioAsset>();
     char buffer[4];
     in.read(buffer, 4);
@@ -198,7 +203,7 @@ std::unique_ptr<AudioAsset> AudioInterface::LoadWav(std::ifstream &in) {
     char* data = new char[size];
     in.read(data, size);
 
-    ALenum format = to_al_format(channels, frequency);
+    ALenum format = to_al_format(static_cast<int16_t>(channels), static_cast<int16_t>(frequency));
 
     // Copy buffer
     alBufferData(audio_asset->buffer, format, data, size, samplerate);
@@ -215,7 +220,7 @@ void AudioInterface::PrintInformation() {
     SPDLOG_LOGGER_INFO(logger, "OpenAL vendor: {}", alGetString(AL_VENDOR));
 }
 
-void AudioInterface::InitListener() {
+void AudioInterface::InitListener() {  // NOLINT(readability-convert-member-functions-to-static)
     // Set listener
     alListener3f(AL_POSITION, 0, 0, -0);
     alListener3f(AL_VELOCITY, 0, 0, 0);
@@ -225,24 +230,26 @@ void AudioInterface::InitListener() {
 
 void AudioInterface::InitALContext() {
     // Init devices
-    enumeration = alcIsExtensionPresent(NULL, "ALC_ENUMERATION_EXT");
+    enumeration = alcIsExtensionPresent(nullptr, "ALC_ENUMERATION_EXT");
     if (enumeration == AL_FALSE) {
         SPDLOG_LOGGER_ERROR(logger, "Enumeration extension not available");
     }
 
-    const ALCchar* defaultDeviceName = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
+    const ALCchar* defaultDeviceName = alcGetString(nullptr, ALC_DEFAULT_DEVICE_SPECIFIER);
 
     device = alcOpenDevice(defaultDeviceName);
-    if (!device) {
+    if (device == nullptr) {
         SPDLOG_LOGGER_ERROR(logger, "Unable to open default device");
     }
 
-    context = alcCreateContext(device, NULL);
-    if (!alcMakeContextCurrent(context)) {
+    context = alcCreateContext(device, nullptr);
+    if (alcMakeContextCurrent(context) == 0) {
         SPDLOG_LOGGER_ERROR(logger, "Failed to make default context");
     }
 }
 
+// NOLINTNEXTLINE(readability-make-member-function-const)
 void cqsp::engine::audio::AudioChannel::SetBuffer(cqsp::asset::AudioAsset* buffer) {
-    alSourcei(channel, AL_BUFFER, dynamic_cast<cqsp::asset::ALAudioAsset*>(buffer)->buffer);
+    cqsp::asset::ALAudioAsset* audio_asset = dynamic_cast<cqsp::asset::ALAudioAsset*>(buffer);
+    alSourcei(channel, AL_BUFFER, static_cast<ALint>(audio_asset->buffer));
 }

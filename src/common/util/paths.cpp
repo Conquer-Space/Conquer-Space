@@ -18,7 +18,7 @@
 
 #include <filesystem>
 
-char* cqsp::common::util::exe_path = "";
+std::string exe_path;
 
 #ifdef _WIN32
 #include <windows.h>
@@ -44,12 +44,12 @@ char* get_home_dir(uid_t uid) {
 #endif
 
 std::string cqsp::common::util::GetCqspSavePath() {
-    std::string directory = "";
+    std::string directory;
     std::string dirname = "cqsp";
 #ifdef _WIN32
     // Set log folder
     CHAR my_documents[MAX_PATH];
-    HRESULT result = SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, my_documents);
+    SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, SHGFP_TYPE_CURRENT, my_documents);
 
     directory = std::string(my_documents);
 #else
@@ -63,12 +63,19 @@ std::string cqsp::common::util::GetCqspSavePath() {
     auto filesystem = std::filesystem::path(directory);
     filesystem /= dirname;
     // Create dirs, and be done with it
-    if (!std::filesystem::exists(filesystem))
+    if (!std::filesystem::exists(filesystem)) {
         std::filesystem::create_directories(filesystem);
+    }
     return filesystem.string();
 }
 
-std::string cqsp::common::util::GetCqspExePath() {
+void cqsp::common::util::SetExePath(const std::string& path) {
+    exe_path = path;
+}
+
+std::string cqsp::common::util::GetCqspExePath() { return exe_path; }
+
+std::string cqsp::common::util::GetCqspExeDir() {
     // Get current path
     std::filesystem::path p(exe_path);
     p = p.remove_filename();
@@ -82,15 +89,15 @@ std::string cqsp::common::util::GetCqspDataPath() {
     // Because apparently linux doesn't build the debug version.
     // Not sure about other versions, but we'd probably have do deal with it in the future
     // Usually, the output is at build\src\Debug, so we need to access ../../../binaries/data
-    return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) /
+    return std::filesystem::canonical(std::filesystem::path(GetCqspExeDir()) /
                                       ".."/".."/".."/"binaries"/"data").string();
 #else
     // Then just search the default path
-    std::string path = GetCqspExePath();
+    std::string path = GetCqspExeDir();
     // The folder structure is
     // - binaries
     //   - bin
     //   - data <-- data is here, so it's ../data/
-    return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) / "../data").string();
+    return std::filesystem::canonical(std::filesystem::path(GetCqspExeDir()) / "../data").string();
 #endif
 }

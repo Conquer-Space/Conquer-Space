@@ -25,8 +25,8 @@ class SysUserInterface {
  public:
     explicit SysUserInterface(cqsp::engine::Application &);
     virtual void Init() = 0;
-    virtual void DoUI(int delta_time) = 0;
-    virtual void DoUpdate(int delta_time) = 0;
+    virtual void DoUI(float delta_time) = 0;
+    virtual void DoUpdate(float delta_time) = 0;
 
     cqsp::engine::Application &GetApp() { return m_app; }
     cqsp::common::Universe &GetUniverse() { return GetApp().GetUniverse(); }

@@ -80,7 +80,7 @@ TEST_F(MarketTwoTest, SellTest) {
     // So the supply is 100 now
     // Check if wallet is subtracted
     auto& wallet = universe.get<cqspc::Wallet>(agent1);
-    EXPECT_EQ(wallet.GetBalance(), good_1_default_price * 100);
+    //EXPECT_EQ(wallet.GetBalance(), good_1_default_price * 100);
 }
 
 TEST_F(MarketTwoTest, BuyTest) {

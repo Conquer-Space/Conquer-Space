@@ -28,10 +28,11 @@ class SysEvent : public SysUserInterface {
     explicit SysEvent(cqsp::engine::Application& app)
         : SysUserInterface(app) {}
 
-    void Init();
-    void DoUI(int delta_time);
-    void DoUpdate(int delta_time);
-    void FireEvent();
+    void Init() override;
+    void DoUI(float delta_time) override;
+    void DoUpdate(float delta_time) override;
+    void ProcessActionResult(const std::shared_ptr<cqsp::common::event::Event>&,
+                             cqsp::common::event::EventQueue& queue);
     bool to_show;
 };
 }  // namespace gui

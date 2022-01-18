@@ -26,19 +26,17 @@
 void cqsp::engine::Draw(Renderable &renderable) {
     renderable.shaderProgram->UseProgram();
     int i = -1;
-    for (std::vector<cqsp::asset::Texture*>::iterator it = renderable.textures.begin();
-                                                        it != renderable.textures.end(); ++it) {
+    for (auto& texture : renderable.textures) {
         i++;
-        if ((*it)->texture_type == -1) {
-            SPDLOG_WARN("Texture {} is not initialized properly", (*it)->id);
+        if (texture->texture_type == -1) {
+            SPDLOG_WARN("Texture {} is not initialized properly", texture->id);
             continue;
         }
         glActiveTexture(GL_TEXTURE0 + i);
-        glBindTexture((*it)->texture_type, (*it)->id);
+        glBindTexture(texture->texture_type, texture->id);
         GLenum error = glGetError();
         if (error != GL_NO_ERROR) {
-            SPDLOG_ERROR("Error when binding texture {}: {}", (*it)->id,
-                            error);
+            SPDLOG_ERROR("Error when binding texture {}: {}", texture->id, error);
         }
     }
 
@@ -52,21 +50,17 @@ cqsp::engine::BasicRendererObject cqsp::engine::MakeRenderable() {
     return std::make_shared<cqsp::engine::Renderable>();
 }
 
-cqsp::engine::BasicRenderer::~BasicRenderer() {
-}
-
 void cqsp::engine::BasicRenderer::Draw() {
     // Then iterate through them and render
-    for (auto renderable : renderables) {
+    for (const auto& renderable : renderables) {
         renderable->shaderProgram->UseProgram();
         renderable->shaderProgram->setMat4("model", renderable->model);
         renderable->shaderProgram->setMat4("view", view);
         renderable->shaderProgram->setMat4("projection", projection);
         int i = 0;
-        for (std::vector<cqsp::asset::Texture*>::iterator it = renderable->textures.begin();
-                                                    it != renderable->textures.end(); ++it) {
+        for (auto& texture : renderable->textures) {
             glActiveTexture(GL_TEXTURE0 + i);
-            glBindTexture((*it)->texture_type, (*it)->id);
+            glBindTexture(texture->texture_type, texture->id);
             i++;
         }
 

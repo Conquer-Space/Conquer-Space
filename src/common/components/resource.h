@@ -63,15 +63,15 @@ struct ResourceLedger : public std::map<entt::entity, double> {
     /// <returns></returns>
     bool EnoughToTransfer(const ResourceLedger& amount);
 
-    ResourceLedger operator-(const ResourceLedger&);
-    ResourceLedger operator+(const ResourceLedger&);
-    ResourceLedger operator*(double value);
+    ResourceLedger operator-(const ResourceLedger&) const;
+    ResourceLedger operator+(const ResourceLedger&) const;
+    ResourceLedger operator*(double value) const;
 
     /// <summary>
     /// Multiplies the resource with the resource value in other ledger
     /// </summary>
     /// <param name=""></param>
-    ResourceLedger operator*(ResourceLedger&);
+    ResourceLedger operator*(ResourceLedger&) const;
 
     void operator-=(const ResourceLedger&);
     void operator+=(const ResourceLedger&);
@@ -85,39 +85,39 @@ struct ResourceLedger : public std::map<entt::entity, double> {
     /// <summary>
     /// All resources in this ledger are smaller than than the other ledger
     /// </summary>
-    bool operator<(const ResourceLedger&);
+    bool operator<(const ResourceLedger&) const;
 
     /// <summary>
     /// All resources in this ledger are greater than the other ledger
     /// </summary>
-    bool operator>(const ResourceLedger&);
+    bool operator>(const ResourceLedger&) const;
 
     /// <summary>
     /// All resources in this ledger are smaller than or equal to than the other ledger
     /// </summary>
-    bool operator<=(const ResourceLedger&);
+    bool operator<=(const ResourceLedger&) const;
 
     /// <summary>
     /// All resources in this ledger are greater than or equal to the other ledger
     /// </summary>
-    bool operator>=(const ResourceLedger&);
+    bool operator>=(const ResourceLedger&) const;
 
-    bool operator==(const ResourceLedger&);
+    bool operator==(const ResourceLedger&) const;
 
     /// <summary>
     /// All resources in this ledger are greater than the number
     /// </summary>
-    bool operator>(const double&);
+    bool operator>(const double&) const;
 
     /// <summary>
     /// All resources in this ledger are less than than the number
     /// </summary>
-    bool operator<(const double&);
+    bool operator<(const double&) const;
 
-    bool operator==(const double&);
+    bool operator==(const double&) const;
 
-    bool operator<=(const double&);
-    bool operator>=(const double&);
+    bool operator<=(const double&) const;
+    bool operator>=(const double&) const;
 
     void AssignFrom(const ResourceLedger&);
 

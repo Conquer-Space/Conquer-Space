@@ -79,15 +79,15 @@ void cqsp::scene::MainMenuScene::Update(float deltaTime) {
 void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
     float winWidth = width;
     float winHeight = height;
-    ImGui::SetNextWindowPos(ImVec2(GetApp().GetWindowWidth() / 2 - winWidth / 2,
-               3 * GetApp().GetWindowHeight() / 3 - winHeight * 1.5f));
+    ImGui::SetNextWindowPos(ImVec2(static_cast<float>(GetApp().GetWindowWidth()) / 2.f - winWidth / 2.f,
+               3.f * static_cast<float>(GetApp().GetWindowHeight()) / 3.f - winHeight * 1.5f));
 
     ImGui::Begin("Conquer Space", nullptr,
                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
                      ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoBackground);
 
     float buttonHeight = 24;
-    float buttonWidth = GetApp().GetWindowWidth()/6 - 5 * 6;  // Subtract some space for padding
+    float buttonWidth = static_cast<float>(GetApp().GetWindowWidth())/6.f - 5.f * 6.f;  // Subtract some space for padding
 
     ImGui::BeginTable("table1", 6, ImGuiTableFlags_NoPadOuterX);
     ImGui::TableNextColumn();
@@ -101,7 +101,7 @@ void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(grey, grey, grey)));
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(grey, grey, grey)));
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(grey, grey, grey)));
-    if (CQSPGui::DefaultButton("Load Save", ImVec2(buttonWidth, buttonHeight)), ImGuiButtonFlags_None) {
+    if (CQSPGui::DefaultButton("Load Save", ImVec2(buttonWidth, buttonHeight))) {
         // Get save game
         m_save_game_window = true;
     }
@@ -182,11 +182,11 @@ void cqsp::scene::MainMenuScene::Render(float deltaTime) {
     object_renderer->SetProjection(GetApp().Get2DProj());
 
     {
-        int width = GetApp().GetWindowWidth();
+        float width = static_cast<float>(GetApp().GetWindowWidth());
         // Configure so that it matches the width
-        int height = static_cast<float>(splash_screen->height) /
-                     static_cast<float>(splash_screen->width) *
-                     GetApp().GetWindowWidth();
+        float height = static_cast<float>(splash_screen->height) /
+                       static_cast<float>(splash_screen->width) *
+                     static_cast<float>(GetApp().GetWindowWidth());
         object_renderer->DrawTexturedSprite(rectangle, *splash_screen,
                                             glm::vec2(width / 2, height / 2),
                                             glm::vec2(width, height), 0);
@@ -212,7 +212,7 @@ void cqsp::scene::MainMenuScene::ModWindow() {
     ImGui::Begin("Mods", &m_show_mods_window);
     auto& asset_manager = GetAssetManager();
 
-    int height = ImGui::GetIO().DisplaySize.y * 0.8f - 75;
+    float height = (ImGui::GetIO().DisplaySize.y * 0.8f - 75.f);
     ImGui::BeginChild("modlist", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
                                 ImGui::GetStyle().ItemSpacing.y, height));
     static cqsp::asset::PackagePrototype* package = nullptr;
@@ -233,9 +233,8 @@ void cqsp::scene::MainMenuScene::ModWindow() {
         ImGui::PushID(0);
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
         if (ImGui::Checkbox("##checkall", &enable_disable_all_mods)) {
-            for (auto it = asset_manager.m_package_prototype_list.begin();
-                      it != asset_manager.m_package_prototype_list.end(); it++) {
-                it->second.enabled = enable_disable_all_mods;
+            for(auto& it : asset_manager.m_package_prototype_list) {
+                it.second.enabled = enable_disable_all_mods;
             }
         }
         ImGui::PopStyleVar();
@@ -252,23 +251,22 @@ void cqsp::scene::MainMenuScene::ModWindow() {
         ImGui::PopID();
 
         enable_disable_all_mods = true;
-        for (auto it = asset_manager.m_package_prototype_list.begin();
-                  it != asset_manager.m_package_prototype_list.end(); it++) {
+        for (auto& it : asset_manager.m_package_prototype_list) {
             // Search to ignore case
-            if (std::search(it->second.title.begin(), it->second.title.end(),
+            if (std::search(it.second.title.begin(), it.second.title.end(),
                     search.begin(), search.end(), [](char ch1, char ch2) {
                         return std::toupper(ch1) == std::toupper(ch2);
-                    }) != it->second.title.end()) {
+                    }) != it.second.title.end()) {
                 ImGui::TableNextRow();
                 ImGui::TableNextColumn();
-                CQSPGui::DefaultCheckbox(fmt::format("###{}", it->second.name).c_str(), &it->second.enabled);
+                CQSPGui::DefaultCheckbox(fmt::format("###{}", it.second.name).c_str(), &it.second.enabled);
                 ImGui::TableNextColumn();
-                ImGui::Text(fmt::format("{}", it->second.title).c_str());
+                ImGui::TextFmt(fmt::format("{}", it.second.title).c_str());
                 ImGui::TableNextColumn();
-                if (ImGui::SmallButton(fmt::format("Information##{}", it->second.title).c_str())) {
-                    package = &it->second;
+                if (ImGui::SmallButton(fmt::format("Information##{}", it.second.title).c_str())) {
+                    package = &it.second;
                 }
-                enable_disable_all_mods &= it->second.enabled;
+                enable_disable_all_mods &= it.second.enabled;
             }
         }
         ImGui::EndTable();
@@ -276,7 +274,7 @@ void cqsp::scene::MainMenuScene::ModWindow() {
     ImGui::EndChild();
     ImGui::SameLine();
     ImGui::BeginChild("PackageInfo", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
-                                ImGui::GetStyle().ItemSpacing.y, height));
+                                ImGui::GetStyle().ItemSpacing.y, static_cast<float>(height)));
     if (package != nullptr) {
         ImGui::TextFmt("{}", package->title);
         ImGui::Separator();

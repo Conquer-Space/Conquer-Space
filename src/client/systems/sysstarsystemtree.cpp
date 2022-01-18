@@ -28,7 +28,7 @@
 
 void cqsp::client::systems::SysStarSystemTree::Init() {}
 
-void cqsp::client::systems::SysStarSystemTree::DoUI(int delta_time) {
+void cqsp::client::systems::SysStarSystemTree::DoUI(float delta_time) {
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqspcs = cqsp::client::systems;
     namespace cqspc = cqsp::common::components;
@@ -42,7 +42,7 @@ void cqsp::client::systems::SysStarSystemTree::DoUI(int delta_time) {
                             ImGuiCond_Always, ImVec2(0.f, 1.f));
     ImGui::SetNextWindowSize(ImVec2(200, 400), ImGuiCond_Always);
     ImGui::Begin("Star System (Will add name soon)",
-                NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | window_flags);
+                nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | window_flags);
     int index = 0;
     // Get selected planet
     entt::entity current_planet = cqsp::scene::GetCurrentViewingPlanet(GetApp());
@@ -68,4 +68,4 @@ void cqsp::client::systems::SysStarSystemTree::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void cqsp::client::systems::SysStarSystemTree::DoUpdate(int delta_time) {}
+void cqsp::client::systems::SysStarSystemTree::DoUpdate(float delta_time) {}

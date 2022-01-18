@@ -21,35 +21,6 @@
 #include <utility>
 
 template<class Map, class Function>
-Map merge_apply(const Map &m1, const Map &m2, typename Map::mapped_type identity, Function func) {
-    auto it1 = m1.begin();
-    auto it2 = m2.begin();
-
-    auto comp = m1.value_comp();
-    Map res;
-    while (true) {
-        bool end1 = it1 == m1.end();
-        bool end2 = it2 == m2.end();
-        if (end1 && end2) break;
-
-        if (end2 || (!end1 && comp(*it1, *it2))) {
-            res.emplace(it1->first, func(it1->second, identity));
-            ++it1;
-            continue;
-        }
-        if (end1 || comp(*it2, *it1)) {
-            res.emplace(it2->first, func(identity, it2->second));
-            ++it2;
-            continue;
-        }
-        res.emplace(it1->first, func(it1->second, it2->second));
-        ++it1;
-        ++it2;
-    }
-    return res;
-}
-
-template<class Map, class Function>
 bool MergeCompare(const Map &m1, const Map &m2,  typename Map::mapped_type identity, Function func) {
     auto it1 = m1.begin();
     auto it2 = m2.begin();
@@ -59,7 +30,9 @@ bool MergeCompare(const Map &m1, const Map &m2,  typename Map::mapped_type ident
     while (true) {
         bool end1 = it1 == m1.end();
         bool end2 = it2 == m2.end();
-        if (end1 && end2) break;
+        if (end1 && end2) {
+            break;
+        }
 
         if (end2 || (!end1 && comp(*it1, *it2))) {
             // Compare
@@ -92,35 +65,35 @@ int ResourceLedger::stockpile_additions = 0;
 
 bool cqsp::common::components::ResourceLedger::EnoughToTransfer(const ResourceLedger &amount) {
     bool b = true;
-    for (auto it = amount.begin(); it != amount.end(); it++) {
-        b &= (*this)[it->first] >= it->second;
+    for (auto it : amount) {
+        b &= (*this)[it.first] >= it.second;
     }
     return b;
 }
 
-ResourceLedger ResourceLedger::operator-(const ResourceLedger &other) {
+ResourceLedger ResourceLedger::operator-(const ResourceLedger &other) const {
     ResourceLedger ledger;
     ledger = *this;
     ledger -= other;
     return ledger;
 }
 
-ResourceLedger ResourceLedger::operator+(const ResourceLedger &other) {
+ResourceLedger ResourceLedger::operator+(const ResourceLedger &other) const {
     ResourceLedger ledger;
     ledger = *this;
     ledger += other;
     return ledger;
 }
 
-ResourceLedger ResourceLedger::operator*(double value) {
+ResourceLedger ResourceLedger::operator*(double value) const {
     ResourceLedger ledger;
-    for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
-        ledger[iterator->first] = iterator->second * value;
+    for (auto it : (*this)) {
+        ledger[it.first] = it.second * value;
     }
     return ledger;
 }
 
-ResourceLedger cqsp::common::components::ResourceLedger::operator*(ResourceLedger &other) {
+ResourceLedger cqsp::common::components::ResourceLedger::operator*(ResourceLedger &other) const {
     ResourceLedger ledger;
     ledger = *this;
     ledger *= other;
@@ -128,26 +101,26 @@ ResourceLedger cqsp::common::components::ResourceLedger::operator*(ResourceLedge
 }
 
 void ResourceLedger::operator-=(const ResourceLedger &other) {
-    for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
-        (*this)[iterator->first] -= iterator->second;
+    for (auto it : other) {
+        (*this)[it.first] -= it.second;
     }
 }
 
 void ResourceLedger::operator+=(const ResourceLedger &other) {
-    for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
-        (*this)[iterator->first] += iterator->second;
+    for (auto iterator : other) {
+        (*this)[iterator.first] += iterator.second;
     }
 }
 
 void ResourceLedger::operator*=(const double value) {
-    for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
-        (*this)[iterator->first] = iterator->second * value;
+    for (auto iterator : (*this)) {
+        (*this)[iterator.first] = iterator.second * value;
     }
 }
 
 void cqsp::common::components::ResourceLedger::operator*=(ResourceLedger &other) {
-    for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
-        (*this)[iterator->first] = iterator->second * other[iterator->first];
+    for (auto iterator : (*this)) {
+        (*this)[iterator.first] = iterator.second * other[iterator.first];
     }
 }
 
@@ -155,78 +128,78 @@ void cqsp::common::components::ResourceLedger::operator*=(ResourceLedger &other)
 // so here we go
 #define compare(map, compare_to, comparison) \
     bool op = true; \
-    if (map.size() == 0) { \
+    if ((map).empty()) { \
         return 0 comparison compare_to; \
     } \
-    for (auto iterator = map.begin(); iterator != map.end(); iterator++) { \
-        op &= iterator->second comparison compare_to; \
+    for (auto iterator : (map)) { \
+        op &= iterator.second comparison compare_to; \
     } \
     return op;
 
-bool ResourceLedger::operator>(const double &i) {
-    compare((*this), i, >)
+bool ResourceLedger::operator>(const double &i) const {
+    compare(*this, i, >)
 }
 
-bool ResourceLedger::operator<(const double & i) {
-    compare((*this), i, <)
+bool ResourceLedger::operator<(const double & i) const {
+    compare(*this, i, <)
 }
 
-bool ResourceLedger::operator==(const double &i) {
-    compare((*this), i, ==)
+bool ResourceLedger::operator==(const double &i) const {
+    compare(*this, i, ==)
 }
 
-bool ResourceLedger::operator<=(const double &i) {
-    compare((*this), i, <=)
+bool ResourceLedger::operator<=(const double &i) const {
+    compare(*this, i, <=)
 }
 
-bool ResourceLedger::operator>=(const double &i) {
-    compare((*this), i, >=)
+bool ResourceLedger::operator>=(const double &i) const {
+    compare(*this, i, >=)
 }
 
-bool ResourceLedger::operator>=(const ResourceLedger &ledger) {
+bool ResourceLedger::operator>=(const ResourceLedger &ledger) const {
     return MergeCompare(*this, ledger, 0, [](double a, double b) { return a >= b; });
 }
 
-bool ResourceLedger::operator==(const ResourceLedger &ledger) {
+bool ResourceLedger::operator==(const ResourceLedger &ledger) const {
     return MergeCompare(*this, ledger, 0, [](double a, double b) { return a == b; });
 }
 
-bool ResourceLedger::operator<(const ResourceLedger &ledger) {
+bool ResourceLedger::operator<(const ResourceLedger &ledger) const {
     return MergeCompare(*this, ledger, 0, [](double a, double b) { return a < b; });
 }
 
-bool ResourceLedger::operator>(const ResourceLedger &ledger) {
+bool ResourceLedger::operator>(const ResourceLedger &ledger) const {
     return MergeCompare(*this, ledger, 0, [](double a, double b) { return a > b; });
 }
 
-bool ResourceLedger::operator<=(const ResourceLedger &ledger) {
+bool ResourceLedger::operator<=(const ResourceLedger &ledger) const {
     return MergeCompare(*this, ledger, 0, [](double a, double b) { return a <= b; });
 }
 
 void ResourceLedger::AssignFrom(const ResourceLedger &ledger) {
-    for (auto iterator = ledger.begin(); iterator != ledger.end(); iterator++) {
-        (*this)[iterator->first] = iterator->second;
+    for (auto iterator : ledger) {
+        (*this)[iterator.first] = iterator.second;
     }
 }
 
-void ResourceLedger::TransferTo(ResourceLedger& ledger_to, const ResourceLedger & amount) {
-    for (auto iterator = amount.begin(); iterator != amount.end(); iterator++) {
-        (*this)[iterator->first] -= iterator->second;
-        ledger_to[iterator->first] += iterator->second;
+void ResourceLedger::TransferTo(ResourceLedger& ledger_to, const ResourceLedger &amount) {
+    for (auto iterator : amount) {
+        (*this)[iterator.first] -= iterator.second;
+        ledger_to[iterator.first] += iterator.second;
     }
 }
 
 void ResourceLedger::MultiplyAdd(const ResourceLedger & other, double value) {
     STOCKPILE_ADDITION;
-    for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
-        (*this)[iterator->first] += iterator->second * value;
+    for (auto iterator : other) {
+        (*this)[iterator.first] += iterator.second * value;
     }
 }
 
 void ResourceLedger::RemoveResourcesLimited(const ResourceLedger & other) {
-    for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
-        double &t = (*this)[iterator->first];
-         t -= iterator->second;
+    for (auto iterator : other) {
+        double &t = (*this)[iterator.first];
+         t -= iterator.second;
          if (t < 0) {
              t = 0;
          }
@@ -235,42 +208,42 @@ void ResourceLedger::RemoveResourcesLimited(const ResourceLedger & other) {
 
 ResourceLedger ResourceLedger::LimitedRemoveResources(const ResourceLedger& other) {
     ResourceLedger removed;
-    for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
-        double &t = (*this)[iterator->first];
-        if (t > iterator-> second) {
-            removed[iterator->first] = iterator->second;
-            t -= iterator->second;
+    for (auto iterator : other) {
+        double &t = (*this)[iterator.first];
+        if (t > iterator. second) {
+            removed[iterator.first] = iterator.second;
+            t -= iterator.second;
         } else {
-            removed[iterator->first] = t;
+            removed[iterator.first] = t;
             t = 0;
         }
     }
-    return std::move(removed);
+    return removed;
 }
 
 double ResourceLedger::GetSum() {
     double t = 0;
-    for (auto it = this->begin(); it != this->end(); it++) {
-        t += it->second;
+    for (auto it : (*this)) {
+        t += it.second;
     }
     return t;
 }
 
-double ResourceLedger::MultiplyAndGetSum(ResourceLedger &other) {
+double ResourceLedger::MultiplyAndGetSum(ResourceLedger &ledger) {
     double sum = 0;
-    for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
-        sum += iterator->second * other[iterator->first];
+    for (auto iterator : (*this)) {
+        sum += iterator.second * ledger[iterator.first];
     }
     return sum;
 }
 
 std::string ResourceLedger::to_string() {
     std::string str = "{";
-    for (auto it = this->begin(); it != this->end(); it++) {
+    for (auto it : (*this)) {
         str.append(" ");
-        str.append(std::to_string(static_cast<std::uint32_t>(it->first)));
+        str.append(std::to_string(static_cast<std::uint32_t>(it.first)));
         str.append(",");
-        str.append(std::to_string(it->second));
+        str.append(std::to_string(it.second));
     }
     str.append("}");
     return str;

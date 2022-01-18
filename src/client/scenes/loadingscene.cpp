@@ -63,9 +63,9 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
         LoadFont();
 
         // Load audio
-        auto hjson = GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("core:ui_sounds");
-        for (auto element : hjson->data) {
-            auto audio_asset = GetAssetManager().GetAsset<cqsp::asset::AudioAsset>(element.second.to_string());
+        auto* hjson = GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("core:ui_sounds");
+        for (const auto& element : hjson->data) {
+            auto* audio_asset = GetAssetManager().GetAsset<cqsp::asset::AudioAsset>(element.second.to_string());
             if (audio_asset == nullptr) {
                 SPDLOG_WARN("Cannot find audio asset {}", element.second.to_string());
                 continue;
@@ -105,7 +105,7 @@ void cqsp::scene::LoadingScene::Ui(float deltaTime) {
         ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f,
                                        ImGui::GetIO().DisplaySize.y * 0.5f),
                                 ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-        ImGui::Begin("Error", NULL, ImGuiWindowFlags_NoResize |ImGuiWindowFlags_NoCollapse);
+        ImGui::Begin("Error", nullptr, ImGuiWindowFlags_NoResize |ImGuiWindowFlags_NoCollapse);
         ImGui::Text("Found missing assets!");
 
         if (ImGui::Button("Exit", ImVec2(-FLT_MIN, 0))) {

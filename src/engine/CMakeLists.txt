@@ -57,4 +57,5 @@ target_link_libraries(cqsp-engine PUBLIC
     sol2
     ${OPENAL_LIBRARY}
     Tracy
+    Vorbis
 )

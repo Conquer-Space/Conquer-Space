@@ -47,10 +47,10 @@ class UniverseScene : public cqsp::engine::Scene {
         delete galaxy_renderer;
     }
 
-    void Init();
-    void Update(float deltaTime);
-    void Ui(float deltaTime);
-    void Render(float deltaTime);
+    void Init() override;
+    void Update(float deltaTime) override;
+    void Ui(float deltaTime) override;
+    void Render(float deltaTime) override;
 
     template <class T>
     void AddUISystem() {

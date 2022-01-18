@@ -23,13 +23,13 @@
 
 cqsp::engine::Renderer2D::Renderer2D(cqsp::asset::ShaderProgram_t tex,
                                      cqsp::asset::ShaderProgram_t color) :
-                                     texture_shader(tex), color_shader(color) { }
+                                     texture_shader(std::move(tex)), color_shader(std::move(color)) { }
 
 cqsp::engine::Renderer2D::Renderer2D(cqsp::asset::ShaderProgram_t tex) :
-                                        texture_shader(tex), color_shader(nullptr) { }
+                                        texture_shader(std::move(tex)), color_shader(nullptr) { }
 
-cqsp::engine::Renderer2D::Renderer2D(cqsp::asset::ShaderProgram_t color, bool) :
-                                        texture_shader(nullptr), color_shader(color) { }
+cqsp::engine::Renderer2D::Renderer2D(cqsp::asset::ShaderProgram_t color, bool /*unused*/) :
+                                        texture_shader(nullptr), color_shader(std::move(color)) { }
 
 
 void cqsp::engine::Renderer2D::DrawTexturedSprite(cqsp::engine::Mesh* mesh,

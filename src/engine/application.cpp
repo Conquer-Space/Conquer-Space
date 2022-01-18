@@ -50,6 +50,7 @@
 namespace cqsp::engine {
 const char* ParseType(GLenum type) {
     switch (type) {
+        default:
         case GL_DEBUG_TYPE_ERROR:
             return ("Error");
         case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
@@ -79,6 +80,7 @@ const char* ParseSeverity(GLenum severity) {
             return ("medium");
         case GL_DEBUG_SEVERITY_LOW:
             return ("low");
+        default:
         case GL_DEBUG_SEVERITY_NOTIFICATION:
             return ("notification");
     }
@@ -96,6 +98,7 @@ const char* ParseSource(GLenum source) {
         return ("Third Party");
     case GL_DEBUG_SOURCE_APPLICATION:
         return ("Application");
+    default:
     case GL_DEBUG_SOURCE_OTHER:
         return ("Other");
     }
@@ -104,8 +107,9 @@ const char* ParseSource(GLenum source) {
 void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id,
                             GLenum severity, GLsizei length,
                             const char* message, const void* userParam) {
-    if (id == 131169 || id == 131185 || id == 131218 || id == 131204)
+    if (id == 131169 || id == 131185 || id == 131218 || id == 131204) {
         return;  // ignore these non-significant error codes
+    }
 
     SPDLOG_ERROR("{} message from {} ({}:{}): {}", ParseType(type),
                     ParseSource(source), ParseSeverity(severity), id, message);
@@ -113,23 +117,22 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id,
 
 class GLWindow : public Window {
  public:
-    bool ButtonIsHeld(int btn) const { return m_keys_held[btn]; }
-    bool ButtonIsReleased(int btn) const { return m_keys_released[btn]; }
-    bool ButtonIsPressed(int btn) const { return m_keys_pressed[btn]; }
-    double GetMouseX() const { return m_mouse_x; }
-    double GetMouseY() const { return m_mouse_y; }
+    [[nodiscard]] bool ButtonIsHeld(int btn) const override { return m_keys_held[btn]; }
+    [[nodiscard]] bool ButtonIsReleased(int btn) const override { return m_keys_released[btn]; }
+    [[nodiscard]] bool ButtonIsPressed(int btn) const override { return m_keys_pressed[btn]; }
+    [[nodiscard]] double GetMouseX() const override { return m_mouse_x; }
+    [[nodiscard]] double GetMouseY() const override { return m_mouse_y; }
 
-    bool MouseButtonIsHeld(int btn) const { return m_mouse_keys_held[btn]; }
-    bool MouseButtonIsReleased(int btn) const { return m_mouse_keys_released[btn]; }
-    bool MouseButtonIsPressed(int btn) const { return m_mouse_keys_pressed[btn]; }
+    [[nodiscard]] bool MouseButtonIsHeld(int btn) const override { return m_mouse_keys_held[btn]; }
+    [[nodiscard]] bool MouseButtonIsReleased(int btn) const override { return m_mouse_keys_released[btn]; }
+    [[nodiscard]] bool MouseButtonIsPressed(int btn) const override { return m_mouse_keys_pressed[btn]; }
 
-    bool MouseDragged() const {
+    [[nodiscard]] bool MouseDragged() const override {
         return !(m_mouse_x == m_mouse_x_on_pressed &&
                  m_mouse_y == m_mouse_y_on_pressed);
     }
 
-    void KeyboardCallback(GLFWwindow* _w, int key, int scancode, int action,
-                          int mods) {
+    void KeyboardCallback(GLFWwindow* _w, int key, int scancode, int action, int mods) {
         if (action == GLFW_PRESS) {
             m_keys_held[key] = true;
             m_keys_pressed[key] = true;
@@ -174,7 +177,7 @@ class GLWindow : public Window {
         window_size_changed = true;
     }
 
-    void SetCallbacks() {
+    void SetCallbacks() override {
         // Set user pointer
         glfwSetWindowUserPointer(window, this);
 
@@ -226,35 +229,35 @@ class GLWindow : public Window {
         glfwSetFramebufferSizeCallback(window, frame_buffer_callback);
     }
 
-    void OnFrame() {
+    void OnFrame() override {
         // Before polling events, clear the buttons
-        std::memset(m_keys_pressed, false, sizeof(m_keys_pressed));
-        std::memset(m_keys_released, false, sizeof(m_keys_released));
-        std::memset(m_mouse_keys_pressed, false, sizeof(m_mouse_keys_pressed));
-        std::memset(m_mouse_keys_released, false, sizeof(m_mouse_keys_released));
+        std::memset(m_keys_pressed, 0, sizeof(m_keys_pressed));
+        std::memset(m_keys_released, 0, sizeof(m_keys_released));
+        std::memset(m_mouse_keys_pressed, 0, sizeof(m_mouse_keys_pressed));
+        std::memset(m_mouse_keys_released, 0, sizeof(m_mouse_keys_released));
         m_scroll_amount = 0;
         window_size_changed = false;
     }
 
-    void SetWindowSize(int width, int height) {
+    void SetWindowSize(int width, int height) override {
         m_window_width = width;
         m_window_height = height;
         glfwSetWindowSize(window, width, height);
     }
 
-    bool WindowSizeChanged() const { return window_size_changed; }
+    [[nodiscard]] bool WindowSizeChanged() const override { return window_size_changed; }
 
-    int GetScrollAmount() const { return m_scroll_amount; }
-    int GetWindowHeight() const { return m_window_height; }
-    int GetWindowWidth() const { return m_window_width; }
+    [[nodiscard]] int GetScrollAmount() const override { return static_cast<int>(m_scroll_amount); }
+    [[nodiscard]] int GetWindowHeight() const override { return m_window_height; }
+    [[nodiscard]] int GetWindowWidth() const override { return m_window_width; }
 
-    void InitWindow(int width, int height) {
+    void InitWindow(int width, int height) override {
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_SAMPLES, 4);
-        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, 1);
 
 #ifdef __APPLE__
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -263,8 +266,8 @@ class GLWindow : public Window {
         m_window_height = height;
 
         // Create window
-        window = glfwCreateWindow(width, height, "Conquer Space", NULL, NULL);
-        if (window == NULL) {
+        window = glfwCreateWindow(width, height, "Conquer Space", nullptr, nullptr);
+        if (window == nullptr) {
             glfwTerminate();
             SPDLOG_CRITICAL("Cannot load glfw");
         }
@@ -278,14 +281,14 @@ class GLWindow : public Window {
         SetCallbacks();
 
         // Init glad
-        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        if (gladLoadGLLoader((GLADloadproc)glfwGetProcAddress) == 0) {
             glfwTerminate();
             SPDLOG_CRITICAL("Cannot load glad");
         }
         int flags;
         glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
 
-        if (flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
+        if ((flags & GL_CONTEXT_FLAG_DEBUG_BIT) != 0) {
             glEnable(GL_DEBUG_OUTPUT);
             glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS); // makes sure errors are displayed synchronously
             glDebugMessageCallback(glDebugOutput, nullptr);
@@ -293,11 +296,11 @@ class GLWindow : public Window {
         }
     }
 
-    double MouseButtonLastReleased(int btn) const {
+    [[nodiscard]] double MouseButtonLastReleased(int btn) const override {
         return m_mouse_keys_last_pressed[btn];
     }
 
-    bool MouseButtonDoubleClicked(int btn) const {
+    [[nodiscard]] bool MouseButtonDoubleClicked(int btn) const override {
         bool is_pressed_long_enough = (m_mouse_pressed_time[btn]) <= 0.5f;
         return (MouseButtonIsPressed(btn) && is_pressed_long_enough);
     }
@@ -355,7 +358,7 @@ int cqsp::engine::Application::init() {
     ImGui::CreateContext();
     ImPlot::CreateContext();
     ImGui::StyleColorsDark();
-    ImGui::GetIO().IniFilename = NULL;
+    ImGui::GetIO().IniFilename = nullptr;
     CQSPGui::SetApplication(this);
     InitFonts();
 
@@ -408,7 +411,7 @@ int cqsp::engine::Application::destroy() {
 
     SPDLOG_INFO("Killed GLFW");
     // Save options
-    std::ofstream config_path(m_client_options.GetDefaultLocation(),
+    std::ofstream config_path(client::ClientOptions::GetDefaultLocation(),
                               std::ios::trunc);
     m_client_options.WriteOptions(config_path);
 
@@ -427,12 +430,12 @@ void cqsp::engine::Application::CalculateProjections() {
 }
 
 cqsp::engine::Application::Application(int _argc, char* _argv[]) {
-    cqsp::common::util::exe_path = _argv[0];
+    cqsp::common::util::SetExePath(_argv[0]);
     for (int i = 0; i < _argc; i++) {
-        cmd_line_args.push_back(_argv[i]);
+        cmd_line_args.emplace_back(_argv[i]);
     }
     // Get exe path
-    std::ifstream config_path(m_client_options.GetDefaultLocation());
+    std::ifstream config_path(client::ClientOptions::GetDefaultLocation());
     if (config_path.good()) {
         m_client_options.LoadOptions(config_path);
     } else {
@@ -444,8 +447,6 @@ cqsp::engine::Application::Application(int _argc, char* _argv[]) {
 
     full_screen = static_cast<bool>(m_client_options.GetOptions()["full_screen"]);
 }
-
-cqsp::engine::Application::Application() : Application(0, new char*[1]{"Conquer-Space"}) {}
 
 void cqsp::engine::Application::run() {
     // Main loop
@@ -476,7 +477,7 @@ void cqsp::engine::Application::run() {
         }
 
         // Update
-        m_scene_manager.Update(deltaTime);
+        m_scene_manager.Update(static_cast<float>(deltaTime));
 
         // Init imgui
         ImGui_ImplOpenGL3_NewFrame();
@@ -485,7 +486,7 @@ void cqsp::engine::Application::run() {
 
         // Gui
         BEGIN_TIMED_BLOCK(UiCreation);
-        m_scene_manager.Ui(deltaTime);
+        m_scene_manager.Ui(static_cast<float>(deltaTime));
         END_TIMED_BLOCK(UiCreation);
 
         BEGIN_TIMED_BLOCK(ImGui_Render);
@@ -498,7 +499,7 @@ void cqsp::engine::Application::run() {
 
         // Begin render
         BEGIN_TIMED_BLOCK(Scene_Render);
-        m_scene_manager.Render(deltaTime);
+        m_scene_manager.Render(static_cast<float>(deltaTime));
         END_TIMED_BLOCK(Scene_Render);
 
         BEGIN_TIMED_BLOCK(ImGui_Render_Draw);
@@ -506,8 +507,8 @@ void cqsp::engine::Application::run() {
         END_TIMED_BLOCK(ImGui_Render_Draw);
 
         // FPS counter
-        DrawText(fmt::format("FPS: {:.0f}", fps), GetWindowWidth() - 80,
-                 GetWindowHeight() - 24);
+        DrawText(fmt::format("FPS: {:.0f}", fps), static_cast<float>(GetWindowWidth() - 80),
+                                                  static_cast<float>(GetWindowHeight() - 24));
 
         glfwSwapBuffers(window(m_window));
 
@@ -520,11 +521,11 @@ void cqsp::engine::Application::run() {
 }
 
 bool cqsp::engine::Application::ShouldExit() {
-    return !glfwWindowShouldClose(window(m_window));
+    return glfwWindowShouldClose(window(m_window)) == 0;
 }
 
 void cqsp::engine::Application::ExitApplication() {
-    glfwSetWindowShouldClose(window(m_window), true);
+    glfwSetWindowShouldClose(window(m_window), static_cast<int>(true));
 }
 
 void cqsp::engine::Application::DrawText(const std::string& text, float x, float y) {
@@ -543,14 +544,15 @@ void cqsp::engine::Application::DrawText(const std::string& text, float x, float
 
 void cqsp::engine::Application::DrawTextNormalized(const std::string& text, float x, float y) {
     if (fontShader != nullptr && m_font != nullptr) {
-        cqsp::asset::RenderText(*fontShader, *m_font, text, (x + 1) * GetWindowWidth()/2,
-                                (y + 1) * GetWindowHeight() / 2, 16, glm::vec3(1.f, 1.f, 1.f));
+        cqsp::asset::RenderText(*fontShader, *m_font, text, (x + 1) * static_cast<float>(GetWindowWidth()) / 2.f,
+                                (y + 1) * static_cast<float>(GetWindowHeight()) / 2.f, 16, glm::vec3(1.f, 1.f, 1.f));
     }
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 double cqsp::engine::Application::GetTime() { return glfwGetTime(); }
 
-bool cqsp::engine::Application::Screenshot(const char* path) {
+bool cqsp::engine::Application::Screenshot(const char* path) const {
     // Take screenshot
     const int components = 3;
     const int byte_size = GetWindowWidth() * GetWindowHeight() * components;
@@ -560,7 +562,7 @@ bool cqsp::engine::Application::Screenshot(const char* path) {
     glReadPixels(0, 0, GetWindowWidth(), GetWindowHeight(), GL_RGB, GL_UNSIGNED_BYTE, data);
 
     std::string screenshot_name;
-    if (path == NULL) {
+    if (path == nullptr) {
         // Make screenshot folder
         std::filesystem::path screenshot_folder =
                             std::filesystem::path(cqsp::common::util::GetCqspSavePath()) / "screenshots";
@@ -572,14 +574,16 @@ bool cqsp::engine::Application::Screenshot(const char* path) {
 
         // Why is put_time so annoyingly confusing??
         std::stringstream ss;
-        ss << std::put_time(std::localtime(&time_pt), "%F_%H.%M.%S.png");
+        struct tm time_info;
+        localtime_s(&time_info, &time_pt);
+        ss << std::put_time(&time_info, "%F_%H.%M.%S.png");
         screenshot_name = (screenshot_folder / screenshot_name).string();
     } else {
         screenshot_name = path;
     }
 
-    bool success = cqsp::asset::SaveImage(screenshot_name.c_str(),
-                                          GetWindowWidth(), GetWindowHeight(), components, data);
+    bool success = cqsp::asset::SaveImage(screenshot_name.c_str(), GetWindowWidth(), GetWindowHeight(),
+                                          components, data);
     delete[] data;
     return success;
 }
@@ -620,7 +624,7 @@ void cqsp::engine::Application::InitFonts() {
 void cqsp::engine::Application::SetIcon() {
     GLFWimage images[1];
     images[0].pixels = stbi_load((cqsp::common::util::GetCqspDataPath() + "/" + icon_path).c_str(),
-                                 &images[0].width, &images[0].height, 0, 4);
+                                 &images[0].width, &images[0].height, nullptr, 4);
     glfwSetWindowIcon(window(m_window), 1, images);
     stbi_image_free(images[0].pixels);
 }
@@ -655,7 +659,7 @@ void cqsp::engine::Application::LogInfo() {
     SPDLOG_INFO("Conquer Space {} {}", CQSP_VERSION_STRING, GIT_INFO);
     SPDLOG_INFO("Platform: {}", PLATFORM_NAME);
     SPDLOG_INFO("Compiled {} {}", __DATE__, __TIME__);
-    SPDLOG_INFO("Exe Path: {}", common::util::exe_path);
+    SPDLOG_INFO("Exe Path: {}", common::util::GetCqspExePath());
     SPDLOG_INFO("Data Path: {}", common::util::GetCqspDataPath());
 
 #ifdef TRACY_ENABLE
@@ -675,11 +679,10 @@ void cqsp::engine::Application::SetFullScreen(bool screen) {
                              mode->width, mode->height, GLFW_DONT_CARE);
     } else {
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowMonitor(
-            window(m_window), NULL, 40, 40,
-            GetClientOptions().GetOptions()["window"]["width"],
-            GetClientOptions().GetOptions()["window"]["height"],
-            mode->refreshRate);
+        glfwSetWindowMonitor(window(m_window), nullptr, 40, 40,
+                             GetClientOptions().GetOptions()["window"]["width"],
+                             GetClientOptions().GetOptions()["window"]["height"],
+                             mode->refreshRate);
     }
 }
 

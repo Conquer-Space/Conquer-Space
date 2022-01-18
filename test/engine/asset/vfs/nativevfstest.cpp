@@ -23,10 +23,10 @@
 
 class NativeVfsTest : public ::testing::Test {
  protected:
-    NativeVfsTest() : nfs(package_root.c_str()) {
+    NativeVfsTest() : nfs(package_root) {
         full_name = (std::filesystem::path(package_root) / test_file).string();
     }
-    void SetUp() {
+    void SetUp() override {
         if (!std::filesystem::exists(full_name)) {
             FAIL() << "File " << full_name << ", which is needed for this test";
         }
@@ -45,7 +45,7 @@ class NativeVfsTest : public ::testing::Test {
 TEST_F(NativeVfsTest, OpenTest) {
     // Check if the test files exist, if they do, then complain
 
-    auto ptr = nfs.Open(test_file.c_str());
+    auto ptr = nfs.Open(test_file);
     ASSERT_NE(ptr, nullptr);
     ASSERT_EQ(ptr->Path(), test_file);
     // Close the file
@@ -55,7 +55,7 @@ TEST_F(NativeVfsTest, OpenTest) {
 TEST_F(NativeVfsTest, FileSizeTest) {
     int size = std::filesystem::file_size(full_name);
 
-    auto ptr = nfs.Open(test_file.c_str());
+    auto ptr = nfs.Open(test_file);
     ASSERT_EQ(ptr->Size(), size);
 
     // Close the file
@@ -64,9 +64,7 @@ TEST_F(NativeVfsTest, FileSizeTest) {
 
 TEST_F(NativeVfsTest, FileReadTest) {
     // Read the entire file and compare contents, I guess
-    int size = std::filesystem::file_size(full_name);
-
-    auto ptr = nfs.Open(test_file.c_str());
+    auto ptr = nfs.Open(test_file);
 
     std::string to_test = cqsp::asset::ReadAllFromVFileToString(ptr.get());
 
@@ -84,7 +82,7 @@ TEST_F(NativeVfsTest, FileReadTest) {
 TEST_F(NativeVfsTest, SeekTest) {
     int size = std::filesystem::file_size(full_name);
 
-    auto ptr = nfs.Open(test_file.c_str());
+    auto ptr = nfs.Open(test_file);
     ptr->Seek(10);
     ASSERT_EQ(ptr->Tell(), 10);
 
@@ -100,8 +98,8 @@ TEST_F(NativeVfsTest, SeekTest) {
 }
 
 TEST_F(NativeVfsTest, IsFileTest) {
-    ASSERT_TRUE(nfs.Exists(test_file.c_str()));
-    ASSERT_TRUE(nfs.IsFile(test_file.c_str()));
+    ASSERT_TRUE(nfs.Exists(test_file));
+    ASSERT_TRUE(nfs.IsFile(test_file));
     // File doesn't exist
     ASSERT_FALSE(nfs.IsFile("dir"));
     ASSERT_FALSE(nfs.Exists("dir"));

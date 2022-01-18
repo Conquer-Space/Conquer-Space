@@ -85,7 +85,6 @@ void GalaxyRenderer::Update(float deltaTime) {
     namespace cqspc = cqsp::common::components;
     // Check for zooming and clicking, and now we can view the star systems.
     if (!ImGui::GetIO().WantCaptureMouse) {
-        double scrollBefore = scroll;
         double newScale = (exp(m_app.GetScrollAmount() * 0.1) * scroll);
         //Limit scale
         if (newScale > 1e-16 && newScale < 10) {
@@ -102,11 +101,9 @@ void GalaxyRenderer::Update(float deltaTime) {
         if (m_app.MouseButtonDoubleClicked(GLFW_MOUSE_BUTTON_LEFT)) {
             mouse_over = entt::null;
             namespace cqspc = cqsp::common::components;
-            float window_ratio = static_cast<float>(m_app.GetWindowWidth()) /
-                                 static_cast<float>(m_app.GetWindowHeight());
             auto view = m_universe.view<cqspc::bodies::StarSystem, cqspc::types::GalacticCoordinate>();
-            float x = m_app.GetMouseX();
-            float y = m_app.GetWindowHeight() - m_app.GetMouseY();
+            float x = static_cast<float>(m_app.GetMouseX());
+            float y = static_cast<float>(m_app.GetWindowHeight() - m_app.GetMouseY());
             for (entt::entity entity : view) {
                 auto& coordinate = m_universe.get<cqspc::types::GalacticCoordinate>(entity);
                 glm::vec2 screen_pos = ConvertCoords(coordinate.x, coordinate.y);
@@ -133,6 +130,6 @@ void GalaxyRenderer::DoUI(float deltaTime) {
 }
 
 glm::vec2 GalaxyRenderer::ConvertCoords(double x, double y) {
-    return glm::vec2(((view_x + x) * scroll + m_app.GetWindowWidth()/2),
-        ((view_y + y)) * scroll + m_app.GetWindowHeight()/2);
+    return {(view_x + x) * scroll + static_cast<float>(m_app.GetWindowWidth()) * 0.5f,
+            (view_y + y) * scroll + static_cast<float>(m_app.GetWindowHeight()) * 0.5f };
 }

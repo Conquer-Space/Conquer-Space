@@ -34,7 +34,9 @@ cqsp::engine::Mesh* cqsp::engine::primitive::MakeTexturedPaneMesh() {
         0, 1, 3,  // first triangle
         1, 2, 3   // second triangle
     };
-    unsigned int VBO, VAO, EBO;
+    unsigned int VBO;
+    unsigned int VAO;
+    unsigned int EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -48,12 +50,13 @@ cqsp::engine::Mesh* cqsp::engine::primitive::MakeTexturedPaneMesh() {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // position attribute
+    // NOLINTNEXTLINE(performance-no-int-to-ptr)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
 
     // texture coord attribute
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,
-        5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
+        5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float))); // NOLINT(performance-no-int-to-ptr)
     glEnableVertexAttribArray(1);
 
     mesh->VAO = VAO;
@@ -79,7 +82,9 @@ cqsp::engine::Mesh* cqsp::engine::primitive::MakeTexturedPaneMesh(bool mirrored)
         0, 1, 3,  // first triangle
         1, 2, 3   // second triangle
     };
-    unsigned int VBO, VAO, EBO;
+    unsigned int VBO;
+    unsigned int VAO;
+    unsigned int EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -98,7 +103,7 @@ cqsp::engine::Mesh* cqsp::engine::primitive::MakeTexturedPaneMesh(bool mirrored)
 
     // texture coord attribute
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,
-        5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
+        5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));  // NOLINT(performance-no-int-to-ptr)
     glEnableVertexAttribArray(1);
 
     mesh->VAO = VAO;

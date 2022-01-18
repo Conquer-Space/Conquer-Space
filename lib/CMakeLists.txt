@@ -29,7 +29,11 @@ set(GLAD_EXTENSIONS "GL_AMD_debug_output, GL_EXT_framebuffer_multisample" CACHE 
 
 add_subdirectory(glad)
 
-set_target_properties(hjson libnoise glad glad-generate-files PROPERTIES FOLDER "Libs")
+include_directories(include)
+include_directories(stb)
+add_library(Vorbis STATIC stb/stb_vorbis.c include/stb_vorbis.h)
+
+set_target_properties(hjson libnoise glad glad-generate-files Vorbis PROPERTIES FOLDER "Libs")
 
 add_library(Tracy STATIC tracy/TracyClient.cpp)
 target_compile_definitions(Tracy PRIVATE TRACY_ENABLE)

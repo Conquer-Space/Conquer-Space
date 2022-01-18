@@ -20,6 +20,8 @@ namespace cqsp::common::util {
 class IRandom {
  public:
     explicit IRandom(int _seed) : seed(_seed) {}
+    virtual ~IRandom() = default;
+
     virtual int GetRandomInt(int, int) = 0;
     virtual int GetRandomNormal(double, double) = 0;
  protected:

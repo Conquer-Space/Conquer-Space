@@ -26,9 +26,9 @@ class SysStarSystemTree : public SysUserInterface {
     explicit SysStarSystemTree(cqsp::engine::Application& app)
         : SysUserInterface(app) {}
 
-    void Init();
-    void DoUI(int delta_time);
-    void DoUpdate(int delta_time);
+    void Init() override;
+    void DoUI(float delta_time) override;
+    void DoUpdate(float delta_time) override;
 
  private:
     int selected_index = 0;

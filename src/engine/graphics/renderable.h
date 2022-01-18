@@ -34,7 +34,7 @@ class Renderable {
     std::vector<asset::Texture*> textures;
 
     void SetTexture(const std::string& name, int id, asset::Texture* texture);
-    void SetMVP(glm::mat4& model, glm::mat4& view, glm::mat4& projection);
+    void SetMVP(glm::mat4& model, glm::mat4& view, glm::mat4& projection) const;
 
     int z = 0;
 };

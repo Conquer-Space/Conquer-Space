@@ -123,6 +123,9 @@ class Package {
     std::string title;
     std::string author;
 
+    Package() = default;
+    ~Package() = default;
+
     template<class T, typename V>
     T* GetAsset(const V asset) {
         if (!HasAsset(asset)) {
@@ -156,7 +159,7 @@ class PackagePrototype {
 
 class AssetManager {
  public:
-    AssetManager();
+    AssetManager() = default;
 
     ShaderProgram_t MakeShader(const std::string &vert, const std::string &frag);
 
@@ -249,9 +252,9 @@ class AssetLoader {
     /// the preloaded resources, but it is possible. If you really want to do so, it is strongly reccomended to keep
     /// type of asset the same for the key.
     /// </summary>
-    /// <param name="package">Path to package folder</param>
+    /// <param name="package_path">Path to package folder</param>
     /// <returns>The uniqueptr to the package that is created</returns>
-    std::unique_ptr<Package> LoadPackage(std::string package);
+    std::unique_ptr<Package> LoadPackage(const std::string& path);
 
     /// <summary>
     /// The assets that need to be on the main thread. Takes one asset from the queue and processes it
@@ -289,7 +292,7 @@ class AssetLoader {
             const std::string& path, const std::string& key, const Hjson::Value& hints)> LoaderFunction;
 
  private:
-    std::optional<PackagePrototype> LoadModPrototype(const std::string&);
+    static std::optional<PackagePrototype> LoadModPrototype(const std::string&);
 
     /// <summary>
     /// Pretty straightforward, loads a text file into a string.
@@ -419,7 +422,7 @@ class AssetLoader {
     /// <param name="path">Path of directory to read</param>
     /// <param name="file">Function pointer to do something with the path, and it takes the path of the
     /// asset as the parameter</param>
-    void LoadDirectory(std::string path, std::function<void(std::string)> file);
+    void LoadDirectory(const std::string& path, const std::function<void(std::string)>& file);
 
     /// <summary>
     /// Loads all the `resource.hjson` files in the specified directory.
@@ -445,11 +448,11 @@ class AssetLoader {
     /// loading format.
     /// </summary>
     /// <param name="package">Package to load into</param>
-    /// <param name="resource_mount_path">root path of the package</param>
-    /// <param name="resource_file_path">Resource file path</param>
+    /// <param name="package_mount_path">root path of the package</param>
+    /// <param name="resource_file_path">Resource file path relative to </param>
     /// <param name="asset_value">Hjson value to read from</param>
     void LoadResourceHjsonFile(Package& package,
-                               const std::string& resource_mount_path,
+                               const std::string& package_mount_path,
                                const std::string& resource_file_path,
                                const Hjson::Value& asset_value);
     /// <summary>
@@ -466,7 +469,7 @@ class AssetLoader {
     /// </summary>
     /// <param name="path"></param>
     /// <returns></returns>
-    IVirtualFileSystem* GetVfs(const std::string& path);
+    static IVirtualFileSystem* GetVfs(const std::string& path);
 
     std::vector<std::string> missing_assets;
     ThreadsafeQueue<QueueHolder> m_asset_queue;

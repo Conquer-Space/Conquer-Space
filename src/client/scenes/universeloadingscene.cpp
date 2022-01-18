@@ -60,8 +60,8 @@ void cqsp::scene::UniverseLoadingScene::Ui(float deltaTime) {
 
 void cqsp::scene::UniverseLoadingScene::Render(float deltaTime) {}
 
-void LoadResource(cqsp::engine::Application& app, std::string asset_name,
-                    void (*func)(cqsp::common::Universe& universe, Hjson::Value& recipes)) {
+void LoadResource(cqsp::engine::Application& app, const std::string &asset_name,
+                  void (*func)(cqsp::common::Universe& universe, Hjson::Value& recipes)) {
     namespace cqspc = cqsp::common::components;
     for (auto it = app.GetAssetManager().GetPackageBegin(); it != app.GetAssetManager().GetPackageEnd(); it++) {
         if (!it->second->HasAsset(asset_name)) {

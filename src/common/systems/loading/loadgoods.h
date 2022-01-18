@@ -21,7 +21,7 @@
 #include "common/universe.h"
 
 namespace cqsp::common::systems::loading {
-void LoadGoods(cqsp::common::Universe&, Hjson::Value&);
+void LoadGoods(cqsp::common::Universe&, Hjson::Value& goods);
 void LoadRecipes(cqsp::common::Universe&, Hjson::Value&);
 void LoadTerrainData(cqsp::common::Universe&, Hjson::Value&);
 }  // namespace cqsp::common::systems::loading

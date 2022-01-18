@@ -33,8 +33,8 @@ class SysDebugMenu : public SysUserInterface {
     explicit SysDebugMenu(cqsp::engine::Application& app);
 
     void Init();
-    void DoUI(int delta_time);
-    void DoUpdate(int delta_time);
+    void DoUI(float delta_time);
+    void DoUpdate(float delta_time);
 
  private:
     void CqspMetricsWindow();

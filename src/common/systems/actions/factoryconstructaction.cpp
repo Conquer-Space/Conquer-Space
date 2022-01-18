@@ -88,7 +88,7 @@ entt::entity cqsp::common::systems::actions::CreateMine(cqsp::common::Universe& 
 cqsp::common::components::ResourceLedger
 cqsp::common::systems::actions::GetMineCost(cqsp::common::Universe& universe, entt::entity city,
     entt::entity good, int amount) {
-    return cqsp::common::components::ResourceLedger();
+    return {};
 }
 
 entt::entity

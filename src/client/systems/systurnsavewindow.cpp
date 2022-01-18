@@ -26,7 +26,7 @@
 void cqsp::client::systems::SysTurnSaveWindow::Init() {
 }
 
-void cqsp::client::systems::SysTurnSaveWindow::DoUI(int delta_time) {
+void cqsp::client::systems::SysTurnSaveWindow::DoUI(float delta_time) {
         // Turn window
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x, 30),
                             ImGuiCond_Always, ImVec2(1.f, 0.f));
@@ -56,7 +56,7 @@ void cqsp::client::systems::SysTurnSaveWindow::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void cqsp::client::systems::SysTurnSaveWindow::DoUpdate(int delta_time) {
+void cqsp::client::systems::SysTurnSaveWindow::DoUpdate(float delta_time) {
     if (!ImGui::GetIO().WantCaptureKeyboard) {
         if (GetApp().ButtonIsReleased(GLFW_KEY_SPACE)) {
             TogglePlayState();

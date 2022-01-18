@@ -34,12 +34,12 @@ void TerrainImageGenerator::GenerateTerrain(cqsp::common::Universe& universe, in
     noise_module.SetFrequency(2);
 
     noise::utils::NoiseMap noise_map;
-    int textureWidth = std::pow(2, size);
-    int textureHeight = std::pow(2, size);
+    int texture_width = static_cast<int>(std::pow(2, size));
+    int texture_height = static_cast<int>(std::pow(2, size));
     utils::NoiseMapBuilderSphere heightMapBuilder;
     heightMapBuilder.SetSourceModule(noise_module);
     heightMapBuilder.SetDestNoiseMap(noise_map);
-    heightMapBuilder.SetDestSize(textureWidth, textureHeight);
+    heightMapBuilder.SetDestSize(texture_width, texture_height);
 
     heightMapBuilder.SetBounds(-90.0, 90.0, -180.0, 180.0);
 
@@ -55,10 +55,10 @@ void TerrainImageGenerator::GenerateTerrain(cqsp::common::Universe& universe, in
     renderer.ClearGradient();
 
     auto& terrain_data = universe.get<cqsp::common::components::bodies::TerrainData>(terrain.terrain_type);
-    for (auto it = terrain_data.data.begin(); it != terrain_data.data.end(); it++) {
-        renderer.AddGradientPoint(it->first, noise::utils::Color(
-                           std::get<0>(it->second), std::get<1>(it->second),
-                           std::get<2>(it->second), std::get<3>(it->second)));
+    for (auto& it : terrain_data.data) {
+        renderer.AddGradientPoint(it.first, noise::utils::Color(
+                           std::get<0>(it.second), std::get<1>(it.second),
+                           std::get<2>(it.second), std::get<3>(it.second)));
     }
     renderer.Render();
 }
@@ -71,12 +71,12 @@ void TerrainImageGenerator::GenerateHeightMap(int octaves, int size) {
     noise_module.SetFrequency(2);
 
     noise::utils::NoiseMap noise_map;
-    int textureWidth = std::pow(2, size);
-    int textureHeight = std::pow(2, size);
+    int texture_width = static_cast<int>(std::pow(2, size));
+    int texture_height = static_cast<int>(std::pow(2, size));
     utils::NoiseMapBuilderSphere heightMapBuilder;
     heightMapBuilder.SetSourceModule(noise_module);
     heightMapBuilder.SetDestNoiseMap(noise_map);
-    heightMapBuilder.SetDestSize(textureWidth, textureHeight);
+    heightMapBuilder.SetDestSize(texture_width, texture_height);
 
     heightMapBuilder.SetBounds(-90.0, 90.0, -180.0, 180.0);
 

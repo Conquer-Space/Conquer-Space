@@ -31,20 +31,20 @@ void cqsp::common::systems::SysPopulationGrowth::DoSystem() {
         if (universe.all_of<cqspc::Hunger>(entity)) {
             // Population decrease will be about 1 percent each year.
             float increase = 1.f - static_cast<float>(Interval()) * 0.00000114077116f;
-            segment.population *= increase;
+            segment.population *= increase;  // NOLINT(bugprone-narrowing-conversions): don't know how to fix it
         }
 
         if (universe.all_of<cqspc::FailedResourceTransfer>(entity)) {
             // Then alert hunger.
             universe.get_or_emplace<cqspc::Hunger>(entity);
         } else {
-            universe.remove_if_exists<cqspc::Hunger>(entity);
+            universe.remove<cqspc::Hunger>(entity);
         }
         // If not hungry, grow population
         if (!universe.all_of<cqspc::Hunger>(entity)) {
             // Population growth will be about 1 percent each year.
             float increase = static_cast<float>(Interval()) * 0.00000114077116f + 1;
-            segment.population *= increase;
+            segment.population *= increase; // NOLINT(bugprone-narrowing-conversions)
         }
 
         // Resolve jobs
@@ -67,9 +67,10 @@ void cqsp::common::systems::SysPopulationConsumption::DoSystem() {
 
         // Reduce it to some unreasonably low level so that the economy can handle it
         uint64_t consumption = segment.population/100000;
-        universe.get_or_emplace<cqspc::ResourceConsumption>(entity)[good] = consumption;
+        universe.get_or_emplace<cqspc::ResourceConsumption>(entity)[good] = static_cast<double>(consumption);
 
         // Inject some cash into the population segment, so that they don't run out of money to buy the stuff
-        universe.get_or_emplace<cqspc::Wallet>(entity) += segment.population / 1000;
+        auto& wallet = universe.get_or_emplace<cqspc::Wallet>(entity);
+        wallet += static_cast<double>(segment.population / 1000); // NOLINT(bugprone-integer-division)
     }
 }

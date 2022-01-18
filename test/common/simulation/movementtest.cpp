@@ -25,7 +25,7 @@
 namespace cqspt = cqsp::common::components::types;
 class SystemsMovementTest : public ::testing::Test {
  protected:
-    void SetUp() {
+    void SetUp() override {
         cqsp::common::Universe& universe = m_game.GetUniverse();
         star_system = universe.create();
 

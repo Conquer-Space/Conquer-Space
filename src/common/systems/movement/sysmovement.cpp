@@ -16,7 +16,7 @@
 */
 #include "common/systems/movement/sysmovement.h"
 
-#include <math.h>
+#include <cmath>
 
 #include "common/components/ships.h"
 #include "common/components/coordinates.h"

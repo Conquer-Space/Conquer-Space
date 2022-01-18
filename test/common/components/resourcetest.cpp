@@ -20,8 +20,10 @@
 
 using cqsp::common::components::ResourceLedger;
 
+// NOLINTNEXTLINE(readability-function-cognitive-complexity)
 TEST(Common_ResourceLedger, ResourceLedgerComparison) {
-    ResourceLedger first, second;
+    ResourceLedger first;
+    ResourceLedger second;
     // Set the stuff
     // Registry because it's demanding
     entt::registry reg;
@@ -73,6 +75,7 @@ TEST(Common_ResourceLedger, ResourceLedgerComparison) {
     first.clear();
 }
 
+// NOLINTNEXTLINE(readability-function-cognitive-complexity)
 TEST(Common_ResourceLedger, ResourceLedgerDoubleComparison) {
     ResourceLedger first;
 

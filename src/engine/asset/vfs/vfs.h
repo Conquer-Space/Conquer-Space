@@ -158,7 +158,7 @@ class IVirtualFile {
 class VirtualMounter {
  public:
     ~VirtualMounter();
-    void AddMountPoint(const std::string& path, IVirtualFileSystem* fs);
+    void AddMountPoint(const std::string& point, IVirtualFileSystem* fs);
     /// <summary>
     /// Opens file.
     /// </summary>

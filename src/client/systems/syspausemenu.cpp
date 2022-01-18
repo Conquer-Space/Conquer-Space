@@ -27,7 +27,7 @@
 
 void cqsp::client::systems::SysPauseMenu::Init() {}
 
-void cqsp::client::systems::SysPauseMenu::DoUI(int delta_time) {
+void cqsp::client::systems::SysPauseMenu::DoUI(float delta_time) {
     if (!to_show) {
         return;
     }
@@ -75,7 +75,7 @@ void cqsp::client::systems::SysPauseMenu::DoUI(int delta_time) {
     }
 }
 
-void cqsp::client::systems::SysPauseMenu::DoUpdate(int delta_time) {
+void cqsp::client::systems::SysPauseMenu::DoUpdate(float delta_time) {
     if (GetApp().ButtonIsReleased(GLFW_KEY_ESCAPE)) {
         // Then pause
         to_show = !to_show;

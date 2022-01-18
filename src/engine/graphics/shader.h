@@ -39,35 +39,35 @@ class ShaderProgram {
     ShaderProgram(Shader& vert, Shader& frag);
     ~ShaderProgram();
 
-    void setBool(const std::string& name, bool value);
-    void setInt(const std::string& name, int value);
-    void setFloat(const std::string& name, float value);
-    void setVec2(const std::string& name, const glm::vec2& value);
-    void setVec2(const std::string& name, float x, float y);
-    void setVec3(const std::string& name, const glm::vec3& value);
-    void setVec3(const std::string& name, float x, float y, float z);
-    void setVec4(const std::string& name, const glm::vec4& value);
-    void setVec4(const std::string& name, float x, float y, float z, float w);
-    void setMat2(const std::string& name, const glm::mat2& mat);
-    void setMat3(const std::string& name, const glm::mat3& mat);
-    void setMat4(const std::string& name, const glm::mat4& mat);
+    void setBool(const std::string& name, bool value) const;
+    void setInt(const std::string& name, int value) const;
+    void setFloat(const std::string& name, float value) const;
+    void setVec2(const std::string& name, const glm::vec2& value) const;
+    void setVec2(const std::string& name, float x, float y) const;
+    void setVec3(const std::string& name, const glm::vec3& value) const;
+    void setVec3(const std::string& name, float x, float y, float z) const;
+    void setVec4(const std::string& name, const glm::vec4& value) const;
+    void setVec4(const std::string& name, float x, float y, float z, float w) const;
+    void setMat2(const std::string& name, const glm::mat2& mat) const;
+    void setMat3(const std::string& name, const glm::mat3& mat) const;
+    void setMat4(const std::string& name, const glm::mat4& mat) const;
 
     // Simpler overloaded functions so that you can just say set xxx and change the type
     // as and when you like.
-    void Set(const std::string& name, bool value);
-    void Set(const std::string& name, int value);
-    void Set(const std::string& name, float value);
-    void Set(const std::string& name, const glm::vec2& value);
-    void Set(const std::string& name, float x, float y);
-    void Set(const std::string& name, const glm::vec3& value);
-    void Set(const std::string& name, float x, float y, float z);
-    void Set(const std::string& name, const glm::vec4& value);
-    void Set(const std::string& name, float x, float y, float z, float w);
-    void Set(const std::string& name, const glm::mat2& mat);
-    void Set(const std::string& name, const glm::mat3& mat);
-    void Set(const std::string& name, const glm::mat4& mat);
+    void Set(const std::string& name, bool value) const;
+    void Set(const std::string& name, int value) const;
+    void Set(const std::string& name, float value) const;
+    void Set(const std::string& name, const glm::vec2& value) const;
+    void Set(const std::string& name, float x, float y) const;
+    void Set(const std::string& name, const glm::vec3& value) const;
+    void Set(const std::string& name, float x, float y, float z) const;
+    void Set(const std::string& name, const glm::vec4& value) const;
+    void Set(const std::string& name, float x, float y, float z, float w) const;
+    void Set(const std::string& name, const glm::mat2& mat) const;
+    void Set(const std::string& name, const glm::mat3& mat) const;
+    void Set(const std::string& name, const glm::mat4& mat) const;
 
-    void UseProgram();
+    void UseProgram() const;
     unsigned int program;
 
     operator unsigned int() const { return program; }

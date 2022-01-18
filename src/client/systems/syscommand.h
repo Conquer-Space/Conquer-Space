@@ -26,9 +26,9 @@ class SysCommand : public SysUserInterface {
     explicit SysCommand(cqsp::engine::Application& app)
         : SysUserInterface(app) {}
 
-    void Init();
-    void DoUI(int delta_time);
-    void DoUpdate(int delta_time);
+    void Init() override;
+    void DoUI(float delta_time) override;
+    void DoUpdate(float delta_time) override;
 
     bool to_see = false;
  private:

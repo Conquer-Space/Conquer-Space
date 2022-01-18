@@ -22,15 +22,16 @@
 #include "common/components/player.h"
 #include "engine/cqspgui.h"
 
-void cqsp::client::systems::gui::SysEvent::Init() {
+using cqsp::client::systems::gui::SysEvent;
+void SysEvent::Init() {
     GetApp().markdownConfig.tooltipCallback = [](ImGui::MarkdownTooltipCallbackData conf) {
         ImGui::BeginTooltip();
-        ImGui::Text(std::string(conf.linkData.link, conf.linkData.linkLength).c_str());
+        ImGui::TextFmt(std::string(conf.linkData.link, conf.linkData.linkLength));
         ImGui::EndTooltip();
     };
 }
 
-void cqsp::client::systems::gui::SysEvent::DoUI(int delta_time) {
+void SysEvent::DoUI(float delta_time) {
     using cqsp::common::event::EventQueue;
     using cqsp::common::event::Event;
     auto events = GetApp().GetUniverse().view<cqsp::common::components::Player, EventQueue>();
@@ -44,15 +45,16 @@ void cqsp::client::systems::gui::SysEvent::DoUI(int delta_time) {
         ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f,
                                        ImGui::GetIO().DisplaySize.y * 0.5f),
                                 ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-        ImGui::Begin(env->title.c_str(), NULL,
+        ImGui::Begin(env->title.c_str(), nullptr,
                      ImGuiWindowFlags_NoCollapse | window_flags |
                          ImGuiWindowFlags_NoScrollbar |
                          ImGuiWindowFlags_AlwaysAutoResize);
 
         asset::Texture* texture = GetAssetManager().GetAsset<asset::Texture>(env->image);
-        float multiplier = 450.f / texture->width;
-        ImGui::Image(reinterpret_cast<void*>(texture->id), ImVec2(texture->width * multiplier,
-                                                                    texture->height * multiplier));
+        float multiplier = 450.f / static_cast<float>(texture->width);
+        // NOLINTNEXTLINE(performance-no-int-to-ptr)
+        ImGui::Image(reinterpret_cast<void*>(texture->id), ImVec2(static_cast<float>(texture->width) * multiplier,
+                     static_cast<float>(texture->height) * multiplier));
         ImGui::Separator();
         ImGui::BeginChild("eventchild", ImVec2(-FLT_MIN, 150), false,
                           window_flags);
@@ -63,32 +65,37 @@ void cqsp::client::systems::gui::SysEvent::DoUI(int delta_time) {
                 queue.events.clear();
             }
         } else {
-            int pressed = -1;
-            int i = 0;
-            for (auto& action_result : env->actions) {
-                i++;
-                if (CQSPGui::DefaultButton(action_result->name.c_str(), ImVec2(-FLT_MIN, 0))) {
-                    pressed = i;
-                    // Check if it has an event
-                    if (action_result->has_event) {
-                        sol::protected_function_result res = action_result->action(env->table);
-                        GetApp().GetScriptInterface().ParseResult(res);
-                    }
-                }
-                if (ImGui::IsItemHovered() && !action_result->tooltip.empty()) {
-                    ImGui::BeginTooltip();
-                    ImGui::Text(action_result->tooltip.c_str());
-                    ImGui::EndTooltip();
-                }
-            }
-            if (pressed >= 0) {
-                queue.events.clear();
-            }
+            ProcessActionResult(env, queue);
         }
         ImGui::End();
     }
 }
 
-void cqsp::client::systems::gui::SysEvent::DoUpdate(int delta_time) {}
 
-void cqsp::client::systems::gui::SysEvent::FireEvent() {}
+void SysEvent::DoUpdate(float delta_time) {}
+
+void SysEvent::ProcessActionResult(const std::shared_ptr<cqsp::common::event::Event>& env,
+                                   cqsp::common::event::EventQueue& queue) {
+    int pressed = -1;
+    int i = 0;
+    for (auto& action_result : env->actions) {
+        i++;
+        if (CQSPGui::DefaultButton(action_result->name.c_str(), ImVec2(-FLT_MIN, 0))) {
+            pressed = i;
+            // Check if it has an event
+            if (action_result->has_event) {
+                sol::protected_function_result res =
+                    action_result->action(env->table);
+                GetApp().GetScriptInterface().ParseResult(res);
+            }
+        }
+        if (ImGui::IsItemHovered() && !action_result->tooltip.empty()) {
+            ImGui::BeginTooltip();
+            ImGui::TextFmt(action_result->tooltip);
+            ImGui::EndTooltip();
+        }
+    }
+    if (pressed >= 0) {
+        queue.events.clear();
+    }
+}

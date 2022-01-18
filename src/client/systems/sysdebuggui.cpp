@@ -29,8 +29,8 @@ using cqsp::engine::Application;
 SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
     using std::string_view;
     auto help_command = [&](Application& app, const string_view& args, CommandOutput& input) {
-        for (auto it = commands.begin(); it != commands.end(); it++) {
-            input.push_back(fmt::format("{} - {}", it->first.c_str(), it->second.first));
+        for (auto& command : commands) {
+            input.push_back(fmt::format("{} - {}", command.first.c_str(), command.second.first));
         }
     };
 
@@ -96,7 +96,7 @@ void SysDebugMenu::CqspMetricsWindow() {
         if (ImPlot::BeginPlot("FPS", "Time (s)", "FPS", ImVec2(-1, 0), ImPlotFlags_NoChild,
                                             ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit)) {
             ImPlot::PlotLine("FPS", &fps_history[0].x, &fps_history[0].y,
-                             fps_history.size(), 0, sizeof(float) * 2);
+                             static_cast<int>(fps_history.size()), 0, sizeof(float) * 2);
             ImPlot::EndPlot();
         }
 
@@ -106,10 +106,9 @@ void SysDebugMenu::CqspMetricsWindow() {
                                     ImPlotFlags_NoMousePos | ImPlotFlags_NoChild,
                                     ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit)) {
             ImPlot::SetLegendLocation(ImPlotLocation_SouthEast);
-            for (auto it = history_maps.begin(); it != history_maps.end();
-                 it++) {
-                ImPlot::PlotLine(it->first.c_str(), &it->second[0].x, &it->second[0].y,
-                             it->second.size(), 0, sizeof(float) * 2);
+            for (auto& history_map : history_maps) {
+                ImPlot::PlotLine(history_map.first.c_str(), &history_map.second[0].x, &history_map.second[0].y,
+                             static_cast<int>(history_map.second.size()), 0, sizeof(float) * 2);
             }
             ImPlot::EndPlot();
         }
@@ -135,11 +134,11 @@ void cqsp::client::systems::SysDebugMenu::ShowWindows() {
 void cqsp::client::systems::SysDebugMenu::CreateMenuBar() {
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("Tools")) {
-            ImGui::MenuItem("Benckmarks", 0, &to_show_cqsp_metrics);
+            ImGui::MenuItem("Benckmarks", nullptr, &to_show_cqsp_metrics);
             if (ImGui::BeginMenu("ImGui")) {
-                ImGui::MenuItem("About ImGui", 0, &to_show_imgui_about);
-                ImGui::MenuItem("ImGui Debugger", 0, &to_show_metrics_window);
-                ImGui::MenuItem("ImPlot Debugger", 0, &to_show_implot_metrics);
+                ImGui::MenuItem("About ImGui", nullptr, &to_show_imgui_about);
+                ImGui::MenuItem("ImGui Debugger", nullptr, &to_show_metrics_window);
+                ImGui::MenuItem("ImPlot Debugger", nullptr, &to_show_implot_metrics);
                 ImGui::EndMenu();
             }
             ImGui::EndMenu();
@@ -184,17 +183,17 @@ void cqsp::client::systems::SysDebugMenu::ConsoleInput() {
                     [](unsigned char c){ return std::tolower(c); });
         if (!command_request.empty()) {
             bool no_command = true;
-            for (auto it = commands.begin(); it != commands.end(); it++) {
-                if (command_request.rfind(it->first, 0) != 0) {
+            for (auto& command : commands) {
+                if (command_request.rfind(command.first, 0) != 0) {
                     continue;
                 }
-                it->second.second(GetApp(), command.length() == it->first.length() ? "" :
-                                                command.substr(it->first.length()+1) , items);
+                command.second.second(GetApp(), command.first.length() == command.first.length() ?
+                                      "" : command.first.substr(command.first.length() + 1), items);
                 no_command = false;
                 break;
             }
             if (no_command) {
-                items.push_back("#Command does not exist!");
+                items.emplace_back("#Command does not exist!");
             }
 
             command = "";
@@ -211,7 +210,7 @@ void cqsp::client::systems::SysDebugMenu::ConsoleInput() {
     }
 }
 
-void SysDebugMenu::DoUI(int delta_time) {
+void SysDebugMenu::DoUI(float delta_time) {
     ShowWindows();
     if (!to_show_window) {
         return;
@@ -233,33 +232,33 @@ void SysDebugMenu::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void SysDebugMenu::DoUpdate(int delta_time) {
+void SysDebugMenu::DoUpdate(float delta_time) {
     if (!ImGui::GetIO().WantCaptureKeyboard && GetApp().ButtonIsReleased(GLFW_KEY_GRAVE_ACCENT)) {
         // Show window
         to_show_window = !to_show_window;
     }
 
-    float time = GetApp().GetTime();
-    float fps = GetApp().GetFps();
+    float time = static_cast<float>(GetApp().GetTime());
+    float fps = static_cast<float>(GetApp().GetFps());
     // Update metrics
     if (!fps_history.empty() && (fps_history.begin()->x + fps_history_len) < time) {
         fps_history.erase(fps_history.begin());
     }
-    fps_history.push_back(ImVec2(time, fps));
+    fps_history.emplace_back(ImVec2(time, fps));
 
-    for (auto it = profiler_information_map.begin(); it != profiler_information_map.end(); it++) {
-        if (!history_maps[it->first].empty() &&
-            (history_maps[it->first].begin()->x + fps_history_len) < time) {
-            history_maps[it->first].erase(history_maps[it->first].begin());
+    for (auto& it : profiler_information_map) {
+        if (!history_maps[it.first].empty() &&
+            (history_maps[it.first].begin()->x + fps_history_len) < time) {
+            history_maps[it.first].erase(history_maps[it.first].begin());
         }
 
-        history_maps[it->first].push_back(ImVec2(time, it->second));
+        history_maps[it.first].push_back(ImVec2(time, static_cast<float>(it.second)));
     }
 
     // Add lua logging information
     if (!GetApp().GetScriptInterface().values.empty()) {
         // Fill up the things
-        for (auto str : GetApp().GetScriptInterface().values) {
+        for (const auto& str : GetApp().GetScriptInterface().values) {
             items.push_back("[lua] " + str);
         }
         GetApp().GetScriptInterface().values.clear();

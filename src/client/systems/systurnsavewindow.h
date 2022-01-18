@@ -31,8 +31,8 @@ class SysTurnSaveWindow : public SysUserInterface {
         : SysUserInterface(app) {}
 
     void Init();
-    void DoUI(int delta_time);
-    void DoUpdate(int delta_time);
+    void DoUI(float delta_time) override;
+    void DoUpdate(float delta_time) override;
 
     void TogglePlayState();
 

@@ -28,7 +28,7 @@ namespace common {
 class Game {
  public:
     Game();
-    ~Game();
+    ~Game() = default;
 
     Universe& GetUniverse() { return universe; }
 

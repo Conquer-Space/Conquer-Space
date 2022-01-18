@@ -91,11 +91,6 @@ class SceneManager {
 class Application {
  public:
     Application(int _argc, char* _argv[]);
-    /// We assume application is run from directory. Unless it's a test,
-    /// Application is not really supposed to be used here.
-    [[deprecated("This constructor is supposed to be used for testing purposes,"
-                    "and is not recommended.")]]
-    Application();
 
     /*
     * Runs the entire application.
@@ -192,7 +187,7 @@ class Application {
     /// If it's null, it will put the screenshot into the default folder, with
     /// </summary>
     /// <param name="path"></param>
-    bool Screenshot(const char* path = NULL);
+    bool Screenshot(const char* path = NULL) const;
 
  private:
     void InitFonts();
@@ -201,7 +196,7 @@ class Application {
 
     void GlInit();
     void LoggerInit();
-    void LogInfo();
+    static void LogInfo();
     /*
      * Intializes glfw and imgui.
      */

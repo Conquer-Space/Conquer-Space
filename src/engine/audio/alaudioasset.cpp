@@ -16,7 +16,9 @@
 */
 #include "engine/audio/alaudioasset.h"
 
-#include <stb_vorbis.c>  // NOLINT
+// NOLINTBEGIN
+#include <stb_vorbis.h>
+// NOLINTEND
 
 #include <utility>
 
@@ -30,16 +32,16 @@ std::unique_ptr<AudioAsset> LoadOgg(std::ifstream& input) {
     input.read(data, size);
 
     std::unique_ptr<ALAudioAsset> audio_asset = std::make_unique<ALAudioAsset>();
-    int16* buffer;
-    int channels;
-    int sample_rate;
-    int numSamples = stb_vorbis_decode_memory((unsigned char*)(data),
-                                size, &channels, &sample_rate, &buffer);
+    int16_t* buffer = nullptr;
+    int channels = 1;
+    int sample_rate = 0;
+    int num_samples = stb_vorbis_decode_memory((unsigned char*)(data),
+                                static_cast<int>(size), &channels, &sample_rate, &buffer);
 
-    ALenum format = channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
+    ALenum format = (channels == 1) ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
     alBufferData(audio_asset->buffer, format, buffer,
-                                numSamples * channels * sizeof(int16), sample_rate);
-    audio_asset->length = static_cast<float>(numSamples) / static_cast<float>(sample_rate);
+                                num_samples * channels * static_cast<int>(sizeof(int16_t)), sample_rate);
+    audio_asset->length = static_cast<float>(num_samples) / static_cast<float>(sample_rate);
 
     // Free memory
     delete[] data;
@@ -49,14 +51,14 @@ std::unique_ptr<AudioAsset> LoadOgg(std::ifstream& input) {
 
 std::unique_ptr<AudioAsset> LoadOgg(uint8_t* buffer, int size) {
     std::unique_ptr<ALAudioAsset> audio_asset = std::make_unique<ALAudioAsset>();
-    int16* output;
-    int channels;
-    int sample_rate;
-    int num_samples = stb_vorbis_decode_memory(buffer,
-                                size, &channels, &sample_rate, &output);
+    int16_t* output = nullptr;
+    int channels = 1;
+    int sample_rate = 0;
+    int num_samples = stb_vorbis_decode_memory((unsigned char*)(buffer),
+                                static_cast<int>(size), &channels, &sample_rate, &output);
     ALenum format = (channels == 1) ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
     alBufferData(audio_asset->buffer, format, output,
-                                num_samples * channels * sizeof(int16), sample_rate);
+                    num_samples * channels * static_cast<int>(sizeof(int16_t)), sample_rate);
     audio_asset->length = static_cast<float>(num_samples) / static_cast<float>(sample_rate);
 
     // Free memory

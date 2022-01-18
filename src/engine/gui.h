@@ -40,6 +40,6 @@ IMPLOT_API void PlotPieChart(std::map<std::string, T>&, double x, double y,
 namespace ImGui {
 template<typename S, typename... Args>
 IMGUI_API void TextFmt(S fmt, Args&&...args) {
-    Text(fmt::format(fmt, std::forward<Args>(args)...).c_str());
+    Text("%s", fmt::format(fmt, std::forward<Args>(args)...).c_str());
 }
 }

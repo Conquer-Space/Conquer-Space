@@ -40,7 +40,7 @@ class Mesh {
 
     DrawType buffer_type = DrawType::ELEMENTS;
 
-    void Draw();
+    void Draw() const;
 
     static void Destroy(Mesh& mesh);
 };

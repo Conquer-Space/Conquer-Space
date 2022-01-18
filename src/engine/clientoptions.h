@@ -32,9 +32,9 @@ class ClientOptions {
 
      Hjson::Value& GetOptions() { return options; }
 
-     Hjson::Value GetDefaultOptions();
+     static Hjson::Value GetDefaultOptions();
 
-     std::string GetDefaultLocation();
+     static std::string GetDefaultLocation();
 
  private:
      Hjson::Value options;

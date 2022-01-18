@@ -28,7 +28,7 @@ cqsp::engine::Mesh::~Mesh() {
     glDeleteBuffers(1, &EBO);
 }
 
-void cqsp::engine::Mesh::Draw() {
+void cqsp::engine::Mesh::Draw() const {
     glBindVertexArray(VAO);
 
     // There is probably a more elegant way to do this, but for now, just differentiating between
@@ -37,10 +37,10 @@ void cqsp::engine::Mesh::Draw() {
     // mesh system.
     switch (buffer_type) {
         case DrawType::ELEMENTS:
-            glDrawElements(mode, indicies, GL_UNSIGNED_INT, 0);
+            glDrawElements(mode, static_cast<GLsizei>(indicies), GL_UNSIGNED_INT, nullptr);
             break;
         case DrawType::ARRAYS:
-            glDrawArrays(mode, 0, indicies);
+            glDrawArrays(mode, 0, static_cast<GLsizei>(indicies));
     }
     glBindVertexArray(0);
 }

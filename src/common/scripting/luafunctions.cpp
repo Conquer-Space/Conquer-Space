@@ -60,7 +60,7 @@ sol::object JsonToLuaObject(const Hjson::Value &j, const sol::this_state & s) {
             return sol::make_object(lua, j.to_int64());
         case Hjson::Type::Map: {
             std::map<std::string, sol::object> obj;
-            for (auto it = j.begin(); it != j.end(); ++it) {
+            for (auto it = j.begin(); it != j.end(); ++it) {  // NOLINT(modernize-loop-convert)
                 sol::object ob = JsonToLuaObject(it->second, s);
                 obj[it->first] = ob;
             }
@@ -68,7 +68,8 @@ sol::object JsonToLuaObject(const Hjson::Value &j, const sol::this_state & s) {
         }
         case Hjson::Type::Vector: {
             std::vector<sol::object> vec;
-            for (auto index = 0; index < static_cast<int>(j.size()); ++index) {
+            vec.reserve(static_cast<int>(j.size()));
+            for (auto index = 0; index < static_cast<int>(j.size()); ++index) {  // NOLINT(modernize-loop-convert)
                 vec.push_back(JsonToLuaObject(j[index], s));
             }
             return sol::make_object(lua, vec);
@@ -143,7 +144,7 @@ void FunctionUniverseBodyGen(cqsp::engine::Application& app) {
     });
 
     REGISTER_FUNCTION("set_system_position", [&](entt::entity orbital_ent, double x, double y) {
-        universe.get_or_emplace<cqspt::GalacticCoordinate>(orbital_ent, x, y);
+        universe.get_or_emplace<cqspt::GalacticCoordinate>(orbital_ent, x, y); // NOLINT(clang-diagnostic-unused-result)
     });
 
     REGISTER_FUNCTION("set_radius", [&] (entt::entity body, int radius) {
@@ -264,6 +265,7 @@ void FunctionEconomy(cqsp::engine::Application& app) {
         universe.emplace<cqspc::MarketCenter>(planet, market);
     });
 
+    // NOLINTNEXTLINE(readability-suspicious-call-argument)
     REGISTER_FUNCTION("attach_market", [&](entt::entity market_entity, entt::entity participant) {
         cqsp::common::systems::economy::AddParticipant(universe, market_entity, participant);
         auto& wallet = universe.get_or_emplace<cqspc::Wallet>(participant);

@@ -19,6 +19,7 @@
 #include "common/components/coordinates.h"
 
 // Tests for input from client options
+// NOLINTNEXTLINE(readability-function-cognitive-complexity)
 TEST(Common_OrbitTest, toVec2Test) {
     namespace cqspb = cqsp::common::components::types;
     cqspb::Orbit orbit1;

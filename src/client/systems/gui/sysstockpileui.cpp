@@ -36,13 +36,12 @@ void cqsp::client::systems::DrawLedgerTable(const std::string &name, const Unive
         ImGui::TableSetupColumn("Good");
         ImGui::TableSetupColumn("Amount");
         ImGui::TableHeadersRow();
-        for (auto iterator = ledger.begin();
-                                    iterator != ledger.end(); iterator++) {
+        for (const auto& iterator : ledger) {
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
-            ImGui::TextFmt("{}", universe.get<Identifier>(iterator->first));
+            ImGui::TextFmt("{}", universe.get<Identifier>(iterator.first));
             ImGui::TableSetColumnIndex(1);
-            ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(iterator->second)));
+            ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(iterator.second)));
         }
         ImGui::EndTable();
     }

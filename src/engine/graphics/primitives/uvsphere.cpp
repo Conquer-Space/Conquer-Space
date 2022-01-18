@@ -109,7 +109,8 @@ cqsp::engine::Mesh* cqsp::engine::primitive::ConstructSphereMesh(int x_segments,
     GLuint vao = 0;
     glGenVertexArrays(1, &vao);
 
-    unsigned int vbo, ebo;
+    unsigned int vbo;
+    unsigned int ebo;
     glGenBuffers(1, &vbo);
     glGenBuffers(1, &ebo);
 
@@ -121,64 +122,64 @@ cqsp::engine::Mesh* cqsp::engine::primitive::ConstructSphereMesh(int x_segments,
     const float PI = 3.14159265359;
     for (unsigned int y = 0; y <= y_segments; ++y) {
         for (unsigned int x = 0; x <= y_segments; ++x) {
-            float xSegment = static_cast<float>(x) / x_segments;
-            float ySegment = static_cast<float>(y) / y_segments;
+            float xSegment = static_cast<float>(x) / static_cast<float>(x_segments);
+            float ySegment = static_cast<float>(y) / static_cast<float>(y_segments);
             float xPos = std::cos(xSegment * PI * 2) * std::sin(ySegment * PI);
             float yPos = std::cos(ySegment * PI);
             float zPos = std::sin(xSegment * PI * 2) * std::sin(ySegment * PI);
 
-            positions.push_back(glm::vec3(xPos, yPos, zPos));
-            uv.push_back(glm::vec2(xSegment, ySegment));
-            normals.push_back(glm::vec3(xPos, yPos, zPos));
+            positions.emplace_back(glm::vec3(xPos, yPos, zPos));
+            uv.emplace_back(glm::vec2(xSegment, ySegment));
+            normals.emplace_back(glm::vec3(xPos, yPos, zPos));
         }
     }
 
     for (unsigned int y = 0; y < y_segments; ++y) {
         if (y % 2 == 0) {
             for (unsigned int x = 0; x <= x_segments; ++x) {
-                indices.push_back(y * (x_segments + 1) + x);
-                indices.push_back((y + 1) * (x_segments + 1) + x);
+                indices.emplace_back(y * (x_segments + 1) + x);
+                indices.emplace_back((y + 1) * (x_segments + 1) + x);
             }
         } else {
             for (int x = x_segments; x >= 0; --x) {
-                indices.push_back((y + 1) * (x_segments + 1) + x);
-                indices.push_back(y * (x_segments + 1) + x);
+                indices.emplace_back((y + 1) * (x_segments + 1) + x);
+                indices.emplace_back(y * (x_segments + 1) + x);
             }
         }
     }
 
     std::vector<float> vertices;
     for (unsigned int i = 0; i < positions.size(); ++i) {
-        vertices.push_back(positions[i].x);
-        vertices.push_back(positions[i].y);
-        vertices.push_back(positions[i].z);
-        if (uv.size() > 0) {
-            vertices.push_back(uv[i].x);
-            vertices.push_back(uv[i].y);
+        vertices.emplace_back(positions[i].x);
+        vertices.emplace_back(positions[i].y);
+        vertices.emplace_back(positions[i].z);
+        if (!uv.empty()) {
+            vertices.emplace_back(uv[i].x);
+            vertices.emplace_back(uv[i].y);
         }
-        if (normals.size() > 0) {
-            vertices.push_back(normals[i].x);
-            vertices.push_back(normals[i].y);
-            vertices.push_back(normals[i].z);
+        if (!normals.empty()) {
+            vertices.emplace_back(normals[i].x);
+            vertices.emplace_back(normals[i].y);
+            vertices.emplace_back(normals[i].z);
         }
     }
 
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(vertices.size() * sizeof(float)), &vertices[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                    indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
-    float stride = (3 + 2 + 3) * sizeof(float);
+                    static_cast<GLsizeiptr>(indices.size() * sizeof(unsigned int)), &indices[0], GL_STATIC_DRAW);
+    GLsizei stride = (3 + 2 + 3) * sizeof(float);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT,
                             GL_FALSE, stride, reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT,
-                            GL_FALSE, stride, reinterpret_cast<void*>(3 * sizeof(float)));
+    // NOLINTNEXTLINE(performance-no-int-to-ptr)
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 3, GL_FLOAT,
-                            GL_FALSE, stride, reinterpret_cast<void*>(5 * sizeof(float)));
+    // NOLINTNEXTLINE(performance-no-int-to-ptr)
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(5 * sizeof(float)));
 
     mesh->VAO = vao;
     mesh->VBO = vbo;

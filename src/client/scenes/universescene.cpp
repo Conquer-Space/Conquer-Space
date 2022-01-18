@@ -127,7 +127,8 @@ void cqsp::scene::UniverseScene::Update(float deltaTime) {
 
     if (view_mode) {
         GetUniverse().clear<cqsp::client::systems::MouseOverEntity>();
-        system_renderer->GetMouseOnObject(GetApp().GetMouseX(), GetApp().GetMouseY());
+        system_renderer->GetMouseOnObject(static_cast<int>(GetApp().GetMouseX()),
+                                          static_cast<int>(GetApp().GetMouseY()));
     }
 
     for (auto& ui : user_interfaces) {

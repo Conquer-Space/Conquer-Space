@@ -26,9 +26,15 @@ namespace common {
 namespace systems {
 namespace economy {
 /// <summary>
-/// Creates a market two instance.
+/// Creates a market instance.
 /// </summary>
+[[nodiscard]]
 entt::entity CreateMarket(Universe& universe);
+
+/// <summary>
+/// Makes the market entity a market instance.
+/// </summary>
+[[maybe_unused]]
 void CreateMarket(Universe& universe, entt::entity market);
 /// <summary>
 /// Note: This will only buy the maximum resources that are in the market.
@@ -41,9 +47,9 @@ void CreateMarket(Universe& universe, entt::entity market);
 /// <param name="purchase"></param>
 /// <returns></returns>
 bool PurchaseGood(Universe& universe, entt::entity agent,
-                  components::ResourceLedger purchase);
+                  const components::ResourceLedger & purchase);
 bool SellGood(Universe& universe, entt::entity agent,
-              components::ResourceLedger selling);
+              const components::ResourceLedger & selling);
 
 void AddParticipant(cqsp::common::Universe& universe, entt::entity market, entt::entity entity);
 }  // namespace economy

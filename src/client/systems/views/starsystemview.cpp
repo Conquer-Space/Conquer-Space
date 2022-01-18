@@ -420,7 +420,7 @@ void SysStarSystemRenderer::DrawSkybox() {
 void SysStarSystemRenderer::DrawEntityName(glm::vec3 &object_pos,
                                            entt::entity ent_id) {
     using cqsp::common::components::Name;
-    std::string text = "";
+    std::string text;
     if (m_app.GetUniverse().all_of<Name>(ent_id)) {
         text = m_app.GetUniverse().get<Name>(ent_id);
     } else {
@@ -612,7 +612,7 @@ glm::vec3 SysStarSystemRenderer::CalculateObjectPos(const entt::entity &ent) {
     if (m_universe.all_of<cqspt::Kinematics>(ent)) {
         return (m_universe.get<cqspt::Kinematics>(ent).position / 0.01f);
     }
-    return glm::vec3(0, 0, 0);
+    return {0, 0, 0};
 }
 
 glm::vec3 SysStarSystemRenderer::CalculateCenteredObject(const glm::vec3 &vec) {
@@ -620,8 +620,8 @@ glm::vec3 SysStarSystemRenderer::CalculateCenteredObject(const glm::vec3 &vec) {
 }
 
 glm::vec3 SysStarSystemRenderer::TranslateToNormalized(const glm::vec3 &pos) {
-    return glm::vec3((pos.x / m_app.GetWindowWidth() - 0.5) * 2,
-            (pos.y / m_app.GetWindowHeight() - 0.5) * 2, 0);
+    return { (pos.x / m_app.GetWindowWidth() - 0.5) * 2,
+             (pos.y / m_app.GetWindowHeight() - 0.5) * 2, 0 };
 }
 
 glm::vec3 SysStarSystemRenderer::CalculateCenteredObject(const entt::entity &ent) {
@@ -641,7 +641,6 @@ void SysStarSystemRenderer::CalculateCamera() {
 
 void SysStarSystemRenderer::MoveCamera(double deltaTime) {
     // Now navigation for changing the center
-    glm::vec3 dir = (view_center - cam_pos);
     float velocity = deltaTime * 30;
     // Remove y axis
     glm::vec3 forward = glm::normalize(glm::vec3(glm::sin(view_x), 0, glm::cos(view_x)));
@@ -703,7 +702,7 @@ void SysStarSystemRenderer::SetPlanetTexture(TerrainImageGenerator &generator) {
     generator.ClearData();
 
     // Free textures in texture
-    for (auto t : planet.textures) {
+    for (auto* t : planet.textures) {
         delete t;
     }
     planet.textures.clear();
@@ -786,8 +785,7 @@ float SysStarSystemRenderer::GetWindowRatio() {
     return window_ratio;
 }
 
-cqsp::asset::Texture* SysStarSystemRenderer::GenerateTexture(
-    unsigned int tex, noise::utils::Image &image) {
+cqsp::asset::Texture* SysStarSystemRenderer::GenerateTexture(unsigned int tex, noise::utils::Image &image) {
     cqsp::asset::Texture *texture = new cqsp::asset::Texture();
     texture->id = tex;
     texture->width = image.GetWidth();
@@ -845,19 +843,22 @@ entt::entity SysStarSystemRenderer::GetMouseOnObject(int mouse_x, int mouse_y) {
 }
 
 SysStarSystemRenderer::~SysStarSystemRenderer() {
-    to_halt_terrain_generation = true;
-    if (generator_thread.joinable()) {
-        generator_thread.join();
-    }
-    if (intermediate_generator_thread.joinable()) {
-        intermediate_generator_thread.join();
-    }
+    try {
+        to_halt_terrain_generation = true;
+        if (generator_thread.joinable()) {
+            generator_thread.join();
+        }
+        if (intermediate_generator_thread.joinable()) {
+            intermediate_generator_thread.join();
+        }
 
-    // Free images
-    auto view = m_universe.view<TerrainTextureData>();
-    for (entt::entity ent : view) {
-        m_universe.get<TerrainTextureData>(ent).DeleteData();
+        // Free images
+        auto view = m_universe.view<TerrainTextureData>();
+        for (entt::entity ent : view) {
+            m_universe.get<TerrainTextureData>(ent).DeleteData();
+        }
+    } catch (...) {
+        // Ignore, I guess
     }
-
     // TODO(EhWhoAmI): free libnoise data
 }

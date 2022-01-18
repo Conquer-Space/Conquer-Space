@@ -48,7 +48,7 @@ class ImagePrototype : public AssetPrototype {
 
     asset::TextureLoadingOptions options;
 
-    int GetPrototypeType() { return PrototypeType::TEXTURE; }
+    int GetPrototypeType() override { return PrototypeType::TEXTURE; }
 };
 
 class CubemapPrototype : public AssetPrototype {
@@ -60,7 +60,7 @@ class CubemapPrototype : public AssetPrototype {
 
     asset::TextureLoadingOptions options;
 
-    int GetPrototypeType() { return PrototypeType::CUBEMAP; }
+    int GetPrototypeType() override { return PrototypeType::CUBEMAP; }
 };
 
 class ShaderPrototype : public AssetPrototype {
@@ -69,7 +69,7 @@ class ShaderPrototype : public AssetPrototype {
     int type;
     Hjson::Value hints;
 
-    int GetPrototypeType() { return PrototypeType::SHADER; }
+    int GetPrototypeType() override { return PrototypeType::SHADER; }
 };
 
 class FontPrototype : public AssetPrototype {
@@ -77,7 +77,7 @@ class FontPrototype : public AssetPrototype {
     unsigned char* fontBuffer;
     int size;
 
-    int GetPrototypeType() { return PrototypeType::FONT; }
+    int GetPrototypeType() override { return PrototypeType::FONT; }
 };
 }  // namespace cqsp::asset
 
@@ -89,20 +89,18 @@ bool cqsp::asset::Package::HasAsset(const std::string& asset) {
 }
 
 void cqsp::asset::Package::ClearAssets() {
-    for (auto a = assets.begin(); a != assets.end(); a++) {
-        a->second.reset();
+    for (auto& a : assets) {
+        a.second.reset();
     }
     assets.clear();
 }
 
 using cqsp::asset::AssetLoader;
 
-cqsp::asset::AssetManager::AssetManager() {}
-
 cqsp::asset::ShaderProgram_t
 cqsp::asset::AssetManager::MakeShader(const std::string& vert, const std::string& frag) {
-    return std::make_shared<ShaderProgram>(*GetAsset<cqsp::asset::Shader>(vert.c_str()),
-                                    *GetAsset<cqsp::asset::Shader>(frag.c_str()));
+    return std::make_shared<ShaderProgram>(*GetAsset<cqsp::asset::Shader>(vert),
+                                    *GetAsset<cqsp::asset::Shader>(frag));
 }
 
 void cqsp::asset::AssetManager::LoadDefaultTexture() {
@@ -126,8 +124,8 @@ void cqsp::asset::AssetManager::ClearAssets() {
 void cqsp::asset::AssetManager::SaveModList() {
     Hjson::Value enabled_mods;
     // Load the enabled mods, and write to the file. then exit game.
-    for (auto it = m_package_prototype_list.begin(); it != m_package_prototype_list.end(); it++) {
-        enabled_mods[it->second.name] = it->second.enabled;
+    for (auto& it : m_package_prototype_list) {
+        enabled_mods[it.second.name] = it.second.enabled;
     }
     // Write to file
     std::string mods_path = (std::filesystem::path(common::util::GetCqspSavePath())/"mod.hjson").string();
@@ -190,7 +188,7 @@ void cqsp::asset::AssetLoader::LoadMods() {
 
     // Load all the mods
     std::filesystem::directory_iterator mods_folder_iterator(mods_folder);
-    for (auto mod_element : mods_folder_iterator) {
+    for (const auto& mod_element : mods_folder_iterator) {
         mod_load(LoadModPrototype(mod_element.path().string()));
     }
     SPDLOG_INFO("Loaded mods folder");
@@ -209,12 +207,12 @@ void cqsp::asset::AssetLoader::LoadMods() {
     mods = Hjson::Merge(all_mods, mods);
 
     // Load the mods that are to be loaded
-    for (auto it : mods) {
+    for (const auto& it : mods) {
         manager->m_package_prototype_list[it.first].enabled = static_cast<bool>(it.second);
     }
 
     // Load all the packages
-    for (auto it : manager->m_package_prototype_list) {
+    for (const auto& it : manager->m_package_prototype_list) {
         // Get the thing
         auto package = LoadPackage(it.second.path);
         if (package == nullptr) {
@@ -259,10 +257,10 @@ cqsp::asset::AssetLoader::LoadModPrototype(const std::string& path_string) {
 
     // Free memory
     delete vfs;
-    return std::optional<cqsp::asset::PackagePrototype>(prototype);
+    return { prototype };
 }
 
-std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std::string path) {
+std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(const std::string& path) {
     ZoneScoped;
     // Load into filesystem
     // Load the assets of a package specified by a path
@@ -294,7 +292,7 @@ std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std:
 
     // Mount to name
     std::string mount_point = package->name;
-    mounter.AddMountPoint(mount_point.c_str(), vfs);
+    mounter.AddMountPoint(mount_point, vfs);
 
     SPDLOG_INFO("Mounted package {}", package->name);
 
@@ -384,7 +382,7 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
         ShaderPrototype* shader = dynamic_cast<ShaderPrototype*>(temp.prototype);
         Shader* asset = dynamic_cast<Shader*>(shader->asset);
         try  {
-            int shaderId = asset::LoadShaderData(shader->data, shader->type);
+            unsigned int shaderId = asset::LoadShaderData(shader->data, shader->type);
             asset->id = shaderId;
         } catch (std::runtime_error &error) {
             SPDLOG_WARN("Exception in loading shader {}: {}", shader->key, error.what());
@@ -416,6 +414,7 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
 }
 
 std::unique_ptr<cqsp::asset::Asset>
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 cqsp::asset::AssetLoader::LoadText(cqsp::asset::VirtualMounter* mount, const std::string& path,
                                    const std::string& key, const Hjson::Value& hints) {
     ZoneScoped;
@@ -423,22 +422,22 @@ cqsp::asset::AssetLoader::LoadText(cqsp::asset::VirtualMounter* mount, const std
         return nullptr;
     }
     std::unique_ptr<cqspa::TextAsset> asset = std::make_unique<cqspa::TextAsset>();
-    auto file = mount->Open(path.c_str());
-    int size = file->Size();
+    auto file = mount->Open(path);
     asset->data = ReadAllFromVFileToString(file.get());
     return std::move(asset);
 }
 
-std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTextDirectory(
-    cqsp::asset::VirtualMounter* mount, const std::string& path,
-    const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<cqsp::asset::Asset>
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+cqsp::asset::AssetLoader::LoadTextDirectory(cqsp::asset::VirtualMounter* mount, const std::string& path,
+                                            const std::string& key, const Hjson::Value& hints) {
     ZoneScoped;
     if (!mount->IsDirectory(path)) {
         return nullptr;
     }
     std::unique_ptr<cqspa::TextDirectoryAsset> asset = std::make_unique<cqspa::TextDirectoryAsset>();
-    auto dir = mount->OpenDirectory(path.c_str());
-    int size = dir->GetSize();
+    auto dir = mount->OpenDirectory(path);
+    int size = static_cast<int>(dir->GetSize());
     for (int i = 0; i < size; i++) {
         auto file = dir->GetFile(i);
         std::string buffer = ReadAllFromVFileToString(file.get());
@@ -449,9 +448,10 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTextDirectory(
     return std::move(asset);
 }
 
-std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTexture(
-    cqsp::asset::VirtualMounter* mount, const std::string& path,
-    const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<cqsp::asset::Asset>
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+cqsp::asset::AssetLoader::LoadTexture(cqsp::asset::VirtualMounter* mount, const std::string& path,
+                                      const std::string& key, const Hjson::Value& hints) {
     ZoneScoped;
     std::unique_ptr<Texture> texture = std::make_unique<Texture>();
 
@@ -469,13 +469,13 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTexture(
         prototype->options.mag_filter = false;
     }
 
-    auto file = mount->Open(path.c_str(), FileModes::Binary);
-    uint64_t file_size = file->Size();
+    auto file = mount->Open(path, FileModes::Binary);
+    int file_size = static_cast<int>(file->Size());
     uint8_t* buffer = ReadAllFromVFile(file.get());
     prototype->data = stbi_load_from_memory(buffer, file_size, &prototype->width, &prototype->height,
                            &prototype->components, 0);
 
-    if (prototype->data) {
+    if (prototype->data != nullptr) {
         QueueHolder holder(prototype);
 
         m_asset_queue.push(holder);
@@ -487,9 +487,10 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTexture(
     return std::move(texture);
 }
 
-std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadHjson(
-    cqsp::asset::VirtualMounter* mount, const std::string& path,
-    const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<cqsp::asset::Asset>
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+cqsp::asset::AssetLoader::LoadHjson(cqsp::asset::VirtualMounter* mount, const std::string& path,
+                                    const std::string& key, const Hjson::Value& hints) {
     ZoneScoped;
     std::unique_ptr<cqspa::HjsonAsset> asset = std::make_unique<cqspa::HjsonAsset>();
 
@@ -508,7 +509,8 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadHjson(
                 result = Hjson::Unmarshal(ReadAllFromVFileToString(file.get()), dec_opt);
                 if (result.type() == Hjson::Type::Vector) {
                     // Append all the values in place
-                    for (int k = 0; k < result.size(); k++) {
+                    // Nolint because hjson is a bit weird
+                    for (int k = 0; k < result.size(); k++) { // NOLINT(modernize-loop-convert)
                         asset->data.push_back(result[k]);
                     }
                 } else {
@@ -519,7 +521,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadHjson(
             }
         }
     } else {
-        auto file = mount->Open(path.c_str());
+        auto file = mount->Open(path);
         // Read the file
         try {
             asset->data = Hjson::Unmarshal(ReadAllFromVFileToString(file.get()), dec_opt);
@@ -530,9 +532,10 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadHjson(
     return asset;
 }
 
-std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadShader(
-    cqsp::asset::VirtualMounter* mount, const std::string& path,
-    const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<cqsp::asset::Asset>
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+cqsp::asset::AssetLoader::LoadShader(cqsp::asset::VirtualMounter* mount, const std::string& path,
+                                     const std::string& key, const Hjson::Value& hints) {
     ZoneScoped;
     if (!mount->IsFile(path)) {
         return nullptr;
@@ -566,9 +569,10 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadShader(
     return std::move(shader);
 }
 
-std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadFont(
-    cqsp::asset::VirtualMounter* mount, const std::string& path,
-    const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<cqsp::asset::Asset>
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+cqsp::asset::AssetLoader::LoadFont(cqsp::asset::VirtualMounter* mount, const std::string& path,
+                                   const std::string& key, const Hjson::Value& hints) {
     ZoneScoped;
     if (!mount->IsFile(path)) {
         return nullptr;
@@ -580,7 +584,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadFont(
 
     FontPrototype* prototype = new FontPrototype();
     prototype->fontBuffer = bytes;
-    prototype->size = file->Size();
+    prototype->size = static_cast<int>(file->Size());
     prototype->key = key;
     prototype->asset = asset.get();
 
@@ -590,9 +594,10 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadFont(
     return std::move(asset);
 }
 
-std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadAudio(
-    cqsp::asset::VirtualMounter* mount, const std::string& path,
-    const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<cqsp::asset::Asset>
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+cqsp::asset::AssetLoader::LoadAudio(cqsp::asset::VirtualMounter* mount, const std::string& path,
+                                    const std::string& key, const Hjson::Value& hints) {
     ZoneScoped;
     // Load audio asset
     if (!mount->IsFile(path)) {
@@ -600,7 +605,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadAudio(
     }
     auto file = mount->Open(path);
     uint8_t* data = ReadAllFromVFile(file.get());
-    auto asset = LoadOgg(data, file->Size());
+    auto asset = LoadOgg(data, static_cast<int>(file->Size()));
 
     return std::move(asset);
 }
@@ -627,12 +632,13 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadCubemap(
         SPDLOG_WARN("Cubemap {} does not have enough faces defined", key);
         return nullptr;
     }
-    for (int i = 0; i < images_hjson.size(); i++) {
+
+    for (int i = 0; i < images_hjson.size(); i++) {  // NOLINT(modernize-loop-convert)
         std::string image_path = parent + "/" + images_hjson[i];
         if (!mount->IsFile(image_path)) {
             SPDLOG_WARN("Cubemap {} has missing faces!", key);
             // Free memory
-            for (auto texture : prototype->data) {
+            for (auto* texture : prototype->data) {
                 // free the things
                 stbi_image_free(texture);
             }
@@ -640,10 +646,10 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadCubemap(
         }
         ZoneNamed(CubemapRead, true);
         auto file = mount->Open(image_path);
-        auto file_data = ReadAllFromVFile(file.get());
+        auto* file_data = ReadAllFromVFile(file.get());
         ZoneNamed(CubemapLoad, true);
         unsigned char* image_data = stbi_load_from_memory(file_data,
-                                                          file->Size(),
+                                                          static_cast<int>(file->Size()),
                                                           &prototype->width,
                                                           &prototype->height,
                                                           &prototype->components,
@@ -659,6 +665,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadCubemap(
 }
 
 std::unique_ptr<cqsp::asset::TextDirectoryAsset>
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 AssetLoader::LoadScriptDirectory(VirtualMounter* mount, const std::string& path, const Hjson::Value& hints) {
     ZoneScoped;
     std::filesystem::path root(path);
@@ -674,7 +681,7 @@ AssetLoader::LoadScriptDirectory(VirtualMounter* mount, const std::string& path,
         std::string file_path = file->Path();
 
         // Ignore non lua files
-        if (file_path.substr(file_path.find_last_of(".") + 1) != "lua") {
+        if (file_path.substr(file_path.find_last_of('.') + 1) != "lua") {
             continue;
         }
         // Ignore base.lua file
@@ -693,7 +700,7 @@ AssetLoader::LoadScriptDirectory(VirtualMounter* mount, const std::string& path,
         // to require a file called test/abc.lua
 
         // Remove file extension
-        size_t lastdot = script_file_name.find_last_of(".");
+        size_t lastdot = script_file_name.find_last_of('.');
         if (lastdot != std::string::npos) {
             script_file_name = script_file_name.substr(0, lastdot);
         }
@@ -709,9 +716,9 @@ AssetLoader::LoadScriptDirectory(VirtualMounter* mount, const std::string& path,
 }
 
 
-void AssetLoader::LoadDirectory(std::string path, std::function<void(std::string)> file) {
+void AssetLoader::LoadDirectory(const std::string &path, const std::function<void(std::string)>& file) {
     auto iterator = std::filesystem::recursive_directory_iterator(path);
-    int count = std::distance(iterator, std::filesystem::recursive_directory_iterator());
+    int count = static_cast<int>(std::distance(iterator, std::filesystem::recursive_directory_iterator()));
     max_loading += count;
     for (const auto& dirEntry : std::filesystem::recursive_directory_iterator(path)) {
         file(dirEntry.path().string());
@@ -752,7 +759,7 @@ void cqsp::asset::AssetLoader::LoadResources(Package& package, const std::string
             asset_value = Hjson::Unmarshal(asset_data, dec_opt);
         }
 
-        max_loading += asset_value.size();
+        max_loading += static_cast<int>(asset_value.size());
         LoadResourceHjsonFile(package,
                               package_mount_path,
                               resource_file->Path(),
@@ -764,7 +771,7 @@ void cqsp::asset::AssetLoader::LoadResourceHjsonFile(Package& package,
                                                      const std::string& resource_file_path,
                                                      const Hjson::Value& asset_value) {
     ZoneScoped;
-    for (const auto [key, val] : asset_value) {
+    for (const auto& [key, val] : asset_value) {
         SPDLOG_TRACE("Loading asset {}", key);
         std::string type = val["type"];
 
@@ -807,5 +814,5 @@ bool cqsp::asset::AssetLoader::HjsonPrototypeDirectory(
 
 cqsp::asset::IVirtualFileSystem* cqsp::asset::AssetLoader::GetVfs(const std::string& path) {
     // Return native filesystem for now.
-    return new NativeFileSystem(path.c_str());
+    return new NativeFileSystem(path);
 }

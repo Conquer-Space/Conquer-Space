@@ -188,11 +188,11 @@ struct Employee {
     /// <summary>
     /// The population that is available to work
     /// </summary>
-    int working_population;
+    uint64_t working_population;
     /// <summary>
     /// The current population is currently working.
     /// </summary>
-    int employed_population;
+    uint64_t employed_population;
 };
 
 struct FactoryProducing {};

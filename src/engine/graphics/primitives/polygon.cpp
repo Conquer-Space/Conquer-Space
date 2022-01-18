@@ -28,25 +28,26 @@
 cqsp::engine::Mesh* cqsp::engine::primitive::CreateFilledCircle(int segments) {
     cqsp::engine::Mesh* mesh = new cqsp::engine::Mesh();
 
-        std::vector<float> positions;
-    positions.push_back(0);
-    positions.push_back(0);
-    positions.push_back(0);
-    positions.push_back(0.5);
-    positions.push_back(0.5);
+    std::vector<float> positions;
+    positions.push_back(0.f);
+    positions.push_back(0.f);
+    positions.push_back(0.f);
+    positions.push_back(0.5f);
+    positions.push_back(0.5f);
 
     // Add texture coords
     for (int i = 0; i <= segments; i++) {
-        double theta = i * cqsp::common::components::types::toRadian(360.f/segments);
-        double y = std::sin(theta);
-        double x = std::cos(theta);
+        float theta = static_cast<float>(i) *
+                      static_cast<float>(cqsp::common::components::types::toRadian(360.f/static_cast<float>(segments)));
+        float y = std::sin(theta);
+        float x = std::cos(theta);
 
         // Add positions
         positions.push_back(x);
         positions.push_back(y);
         positions.push_back(0);
-        positions.push_back(0.5*x + 0.5);
-        positions.push_back(0.5*-y + 0.5);
+        positions.push_back(0.5f*x + 0.5f);
+        positions.push_back(0.5f*-y + 0.5f);
     }
 
     GLuint vao = 0;
@@ -58,14 +59,14 @@ cqsp::engine::Mesh* cqsp::engine::primitive::CreateFilledCircle(int segments) {
     glBindVertexArray(vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(float), &positions[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizei>(positions.size() * sizeof(float)), &positions[0], GL_STATIC_DRAW);
     int stride = 5;
     glVertexAttribPointer(0, 3, GL_FLOAT,
-                            GL_FALSE, stride * sizeof(float), reinterpret_cast<void*>(0));
+                            GL_FALSE, static_cast<GLsizei>(stride * sizeof(float)), reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float),
-                            reinterpret_cast<void*>(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(stride * sizeof(float)),
+                            reinterpret_cast<void*>(3 * sizeof(float))); // NOLINT(performance-no-int-to-ptr)
     glEnableVertexAttribArray(1);
     mesh->VAO = vao;
     mesh->VBO = vbo;

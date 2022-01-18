@@ -32,7 +32,7 @@ void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer,
                                    uint64_t size) {
     FT_Library ft;
     // All functions return a value different than 0 whenever an error occurred
-    if (FT_Init_FreeType(&ft)) {
+    if (FT_Init_FreeType(&ft) != 0) {
         SPDLOG_INFO("Cannot load freetype library");
     }
 
@@ -41,7 +41,7 @@ void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer,
     // it directly.
     FT_Face face;
     int id = -12;
-    if ((id = FT_New_Memory_Face(ft, fontBuffer, size, 0, &face))) {
+    if ((id = FT_New_Memory_Face(ft, fontBuffer, static_cast<FT_Long>(size), 0, &face)) != 0) {
         SPDLOG_INFO("Cannot load font: {}", id);
         return;
     }
@@ -49,7 +49,7 @@ void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer,
     // Larger font initial size, so that larget text looks better.
     font.initial_size = 72;
     // set size to load glyphs as
-    FT_Set_Pixel_Sizes(face, 0, font.initial_size);
+    FT_Set_Pixel_Sizes(face, 0, static_cast<FT_Long>(font.initial_size));
 
     // disable byte-alignment restriction
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -57,7 +57,7 @@ void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer,
     // load first 128 characters of ASCII set
     for (unsigned char c = 0; c < 128; c++) {
         // Load character glyph
-        if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
+        if (FT_Load_Char(face, c, FT_LOAD_RENDER) != 0) {
             SPDLOG_WARN("Freetype does not have character {}", c);
             continue;
         }
@@ -69,8 +69,8 @@ void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer,
             GL_TEXTURE_2D,
             0,
             GL_RED,
-            face->glyph->bitmap.width,
-            face->glyph->bitmap.rows,
+            static_cast<GLsizei>(face->glyph->bitmap.width),
+            static_cast<GLsizei>(face->glyph->bitmap.rows),
             0,
             GL_RED,
             GL_UNSIGNED_BYTE,
@@ -99,9 +99,9 @@ void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer,
     glGenBuffers(1, &font.VBO);
     glBindVertexArray(font.VAO);
     glBindBuffer(GL_ARRAY_BUFFER, font.VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, nullptr, GL_DYNAMIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
@@ -122,10 +122,10 @@ void cqsp::asset::RenderText(cqsp::asset::ShaderProgram &shader, Font &font, std
     for (c = text.begin(); c != text.end(); c++) {
         Character ch = font.characters[*c];
 
-        float xpos = x + ch.Bearing.x * scale;
-        float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
-        float w = ch.Size.x * scale;
-        float h = ch.Size.y * scale;
+        float xpos = x + static_cast<float>(ch.Bearing.x) * scale;
+        float ypos = y - static_cast<float>(ch.Size.y - ch.Bearing.y) * scale;
+        float w = static_cast<float>(ch.Size.x) * scale;
+        float h = static_cast<float>(ch.Size.y) * scale;
         // update VBO for each character
         float vertices[6][4] = {
             { xpos,     ypos + h,   0.0f, 0.0f },
@@ -149,7 +149,7 @@ void cqsp::asset::RenderText(cqsp::asset::ShaderProgram &shader, Font &font, std
         // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
         // bitshift by 6 to get value in pixels
         // (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
-        x += (ch.Advance >> 6) * scale;
+        x += static_cast<float>(ch.Advance >> 6) * scale;
     }
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);

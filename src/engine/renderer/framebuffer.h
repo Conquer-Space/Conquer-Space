@@ -152,7 +152,7 @@ class LayerRenderer {
 
  private:
     std::vector<std::unique_ptr<IFramebuffer>> framebuffers;
-    void InitFramebuffer(IFramebuffer* buffer, cqsp::asset::ShaderProgram_t shader,
+    static void InitFramebuffer(IFramebuffer* buffer, cqsp::asset::ShaderProgram_t shader,
                             const cqsp::engine::Window& window);
 };
 }  // namespace engine

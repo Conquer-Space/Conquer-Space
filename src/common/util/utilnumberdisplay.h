@@ -23,18 +23,20 @@
 
 namespace cqsp {
 namespace util {
-inline std::string LongToHumanString(int64_t l) {
-    if (abs(l) < 1000) {
-        return fmt::format("{}", l);
+template<typename T>
+inline std::string LongToHumanString(T l) {
+    int64_t num = static_cast<int64_t>(l);
+    if (abs(num) < 1000) {
+        return fmt::format("{}", num);
     }
     static const std::string numbers[] = {
         "thousand",    "million",    "billion",    "trillion", "quadrillion",
         "quintillion", "sextillion", "septillion", "octillion"
     };
-    int exponent = static_cast<int>(log10(abs(l)) / 3);
+    int exponent = static_cast<int>(log10(abs(num)) / 3);
 
     // Now get the number
-    double d = static_cast<double>(l) / pow(10, exponent * 3);
+    double d = static_cast<double>(num) / pow(10, exponent * 3);
 
     // Round this to two decimal points
     const int precision = 100;

@@ -31,7 +31,7 @@
 
 void cqsp::client::systems::SysCommand::Init() {}
 
-void cqsp::client::systems::SysCommand::DoUI(int delta_time) {
+void cqsp::client::systems::SysCommand::DoUI(float delta_time) {
     ShipList();
     if (!to_see) {
         return;
@@ -81,7 +81,7 @@ void cqsp::client::systems::SysCommand::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void cqsp::client::systems::SysCommand::DoUpdate(int delta_time) {
+void cqsp::client::systems::SysCommand::DoUpdate(float delta_time) {
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqspt = cqsp::common::components::types;
     selected_planet = cqsp::scene::GetCurrentViewingPlanet(GetApp());

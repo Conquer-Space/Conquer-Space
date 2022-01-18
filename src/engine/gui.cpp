@@ -85,7 +85,7 @@ IMPLOT_API void PlotPieChart(std::map<std::string, T>& map, double x,
         }
         a0 = a1;
     }
-    if (fmt != NULL) {
+    if (fmt != nullptr) {
         a0 = angle0 * 2 * IM_PI / 360.0;
         a1 = angle0 * 2 * IM_PI / 360.0;
         char buffer[32];

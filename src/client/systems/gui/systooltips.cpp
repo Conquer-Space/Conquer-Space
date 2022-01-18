@@ -33,9 +33,9 @@ using cqsp::common::Universe;
 std::string cqsp::client::systems::gui::GetName(Universe& universe, entt::entity entity) {
     namespace cqspc = cqsp::common::components;
     if (universe.all_of<cqspc::Name>(entity)) {
-        return universe.get<cqspc::Name>(entity);
+        return universe.get<cqspc::Name>(entity); // NOLINT(modernize-return-braced-init-list)
     } else if (universe.all_of<cqspc::Identifier>(entity)) {
-        return universe.get<cqspc::Identifier>(entity);
+        return universe.get<cqspc::Identifier>(entity); // NOLINT(modernize-return-braced-init-list)
     } else {
         return fmt::format("{}", entity);
     }
@@ -53,10 +53,10 @@ void RenderEntityType(Universe& universe, entt::entity entity) {
         ImGui::TextFmt("City");
     } else if (universe.any_of<cqspc::Mine>(entity)) {
         ImGui::TextFmt("Mine");
-        std::string production = "";
+        std::string production;
         auto& generator = universe.get<cqspc::ResourceGenerator>(entity);
-        for (auto it = generator.begin(); it != generator.end(); ++it) {
-            production += universe.get<cqspc::Name>(it->first).name + ", ";
+        for (auto& it : generator) {
+            production += universe.get<cqspc::Name>(it.first).name + ", ";
         }
         // Remove last comma
         if (!production.empty()) {
@@ -65,7 +65,7 @@ void RenderEntityType(Universe& universe, entt::entity entity) {
         ImGui::TextFmt("{} Mine", production);
     } else if (universe.any_of<cqspc::Factory>(entity)) {
         ImGui::TextFmt("Factory");
-        std::string production = "";
+        std::string production;
         auto& generator = universe.get<cqspc::ResourceConverter>(entity);
         ImGui::TextFmt("{} Factory", GetName(universe, generator.recipe));
     } else {

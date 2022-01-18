@@ -51,7 +51,7 @@ using TracySink_mt = TracySink<std::mutex>;
 using TracySink_st = TracySink<spdlog::details::null_mutex>;
 
 
-std::shared_ptr<spdlog::logger> cqsp::common::util::make_logger(std::string name, bool error) {
+std::shared_ptr<spdlog::logger> cqsp::common::util::make_logger(const std::string& name, bool error) {
     std::shared_ptr<spdlog::logger> logger;
 
     // Get log folder
