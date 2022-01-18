@@ -60,3 +60,5 @@ add_test(NAME cqsp-engine-test COMMAND cqsp-engine-tests WORKING_DIRECTORY ${CMA
 
 # Disable logging
 target_compile_definitions(cqsp-engine-tests PRIVATE SPDLOG_ACTIVE_LEVEL=1000)
+
+set_target_properties(cqsp-engine-tests PROPERTIES EXPORT_COMPILE_COMMANDS TRUE)

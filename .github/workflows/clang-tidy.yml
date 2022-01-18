@@ -1,0 +1,62 @@
+name: Clang Tidy
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  skip-duplicates:
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    # Map a step output to a job output
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@master
+        with:
+          cancel_others: 'true'
+          paths_ignore: '["README.md", "docs/**", "tools/**", "data/**"]'
+
+  build:
+    needs: skip-duplicates
+    # Skip tasks
+    if: ${{ needs.skip-duplicates.outputs.should_skip != 'true' }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt install -y libglfw3-dev libopenal-dev libglvnd-core-dev clang clang-tidy clang-tools
+        sudo apt install -y libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev
+
+    - name: Set compiler
+      run: |
+        echo "CC=clang" >> $GITHUB_ENV
+        echo "CXX=clang++" >> $GITHUB_ENV
+
+    - name: Configure Build files
+      run: |
+        chmod +x setup_env.sh
+        ./setup_env.sh
+
+    - name: Download Clang Analysis Driver Scripts
+      run: |
+        wget https://raw.githubusercontent.com/llvm/llvm-project/llvmorg-11.0.1/clang-tools-extra/clang-tidy/tool/run-clang-tidy.py
+        chmod +x run-clang-tidy.py
+
+    - name: Build Glad
+      run: |
+        cd build
+        make glad
+
+    # Implicitly requires build/compile_commands.json to exist
+    - name: Run Clang Analyzer
+      run: |
+        ./run-clang-tidy.py -j $(nproc) -quiet -p build

@@ -20,7 +20,7 @@ jobs:
           skip_after_successful_duplicate: 'true'
           cancel_others: 'true'
           # Will ignore data because our checks don't use it yet
-          paths_ignore: '["README.md", "docs/**", "tools/**", "data/**"]'
+          paths_ignore: '["README.md", "docs/**", "tools/**", "data/**", ".clang-tidy", ".github/workflows/clang-tidy.yml", "*.lua", "*.md"]'
 
   linux-build:
     needs: skip-duplicates
