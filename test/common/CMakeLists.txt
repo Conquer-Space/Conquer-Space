@@ -47,3 +47,5 @@ add_test(NAME cqsp-test COMMAND cqsp-tests WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 
 # Disable logging
 target_compile_definitions(cqsp-tests PRIVATE SPDLOG_ACTIVE_LEVEL=1000)
+
+set_target_properties(cqsp-tests PROPERTIES EXPORT_COMPILE_COMMANDS TRUE)

@@ -70,3 +70,9 @@ set_property(TARGET Conquer-Space PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAK
 # -i enables universe loading immediatelt
 set_target_properties(Conquer-Space PROPERTIES
     VS_DEBUGGER_COMMAND_ARGUMENTS "-i")
+
+# Set cmake things
+set_target_properties(Conquer-Space PROPERTIES EXPORT_COMPILE_COMMANDS TRUE)
+set_target_properties(cqsp-core PROPERTIES EXPORT_COMPILE_COMMANDS TRUE)
+set_target_properties(cqsp-client PROPERTIES EXPORT_COMPILE_COMMANDS TRUE)
+set_target_properties(cqsp-engine PROPERTIES EXPORT_COMPILE_COMMANDS TRUE)

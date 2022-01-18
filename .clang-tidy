@@ -1,0 +1,42 @@
+# bugprone-lambda-function-name is removed because it complains about spdlog in lambdas,
+# which we don't really care about because spdlog reads the line and file anyway.
+#
+# modernize-avoid-c-arrays is removed because we use a lot of c style arrays for opengl
+# and it's common practice to do that.
+#
+# clang-analyzer-optin.portability.UnixAPI, warns on stb_write_image, is vauge, and the documentation
+# says nothing about what it does. It's opt in anyway, so we don't need it.
+---
+Checks: '-*,
+	,clang-diagnostic-*,
+	,clang-analyzer-*,
+	,bugprone-*,
+	,performance-*,
+	,readability-*,
+	,modernize-*,
+	,google-*,
+	,-modernize-use-trailing-return-type,
+	,-modernize-use-auto,
+	,-readability-else-after-return,
+	,-readability-magic-numbers,
+	,-clang-analyzer-cplusplus.InnerPointer,
+	,-cplusplus.InnerPointer,
+	,-readability-identifier-naming,
+	,-bugprone-easily-swappable-parameters,
+	,-bugprone-lambda-function-name,
+	,-readability-uppercase-literal-suffix,
+	,-modernize-avoid-c-arrays,
+	,-clang-analyzer-optin.portability.UnixAPI,
+	,-bugprone-narrowing-conversions,
+	,-readability-function-cognitive-complexity,
+	,-readability-convert-member-functions-to-static,
+	,-readability-braces-around-statements,
+	,-readability-make-member-function-const,
+	,-bugprone-reserved-identifier,
+	,-modernize-use-override,
+	,-clang-analyzer-deadcode.DeadStores,
+	,-modernize-return-braced-init-list,
+	,-google-readability-avoid-underscore-in-googletest-name,
+	,-google-runtime-int,
+	,readability-qualified-auto,
+'
