@@ -43,5 +43,3 @@ Checks: '-*,
 	,-modernize-use-default-member-init,
 	,-google-readability-casting,
 '
-
-WarningsAsErrors: '*'

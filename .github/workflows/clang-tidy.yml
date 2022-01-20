@@ -55,7 +55,7 @@ jobs:
     # Implicitly requires build/compile_commands.json to exist
     - name: Run Clang Analyzer
       run: |
-        ./tools/run-clang-tidy.py
+        chmod +x ./tools/run-clang-tidy.py
         ./tools/run-clang-tidy.py -j $(nproc) -quiet -p build > clang.txt
 
     - name: Run Codacy Analysis CLI
