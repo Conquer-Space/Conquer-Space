@@ -19,6 +19,7 @@ jobs:
           paths_ignore: '["README.md", "docs/**", "tools/**", "data/**"]'
 
   build:
+    name: Clang tidy analysis
     needs: skip-duplicates
     # Skip tasks
     if: ${{ needs.skip-duplicates.outputs.should_skip != 'true' }}
