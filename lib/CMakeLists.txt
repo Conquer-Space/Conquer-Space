@@ -29,7 +29,16 @@ set(GLAD_EXTENSIONS "GL_AMD_debug_output, GL_EXT_framebuffer_multisample" CACHE 
 
 add_subdirectory(glad)
 
-set_target_properties(hjson libnoise glad glad-generate-files PROPERTIES FOLDER "Libs")
+
+# Stb
+add_library(stb STATIC stb/stb_vorbis.c)
+target_include_directories(stb SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/stb)
+target_include_directories(stb SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set_target_properties(
+    stb PROPERTIES CXX_CLANG_TIDY ""
+)
+
+set_target_properties(hjson libnoise glad glad-generate-files stb PROPERTIES FOLDER "Libs")
 
 add_library(Tracy STATIC tracy/TracyClient.cpp)
 target_compile_definitions(Tracy PRIVATE TRACY_ENABLE)

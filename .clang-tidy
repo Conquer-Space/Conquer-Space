@@ -38,5 +38,10 @@ Checks: '-*,
 	,-modernize-return-braced-init-list,
 	,-google-readability-avoid-underscore-in-googletest-name,
 	,-google-runtime-int,
-	,readability-qualified-auto,
+	,-readability-qualified-auto,
+	,-readability-suspicious-call-argument,
+	,-modernize-use-default-member-init,
+	,-google-readability-casting,
 '
+
+WarningsAsErrors: '*'

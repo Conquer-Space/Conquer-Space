@@ -9,7 +9,6 @@
 
 /src/common/git-commit.h
 /src/common/version.h
-/lib/include/stb_vorbis.h
 
 # Packaging stuff
 *.aps

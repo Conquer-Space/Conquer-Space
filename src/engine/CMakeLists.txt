@@ -15,7 +15,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
-include_directories(${CMAKE_SOURCE_DIR}/lib/stb)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
 
 include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/examples)
@@ -27,9 +26,8 @@ include_directories(${LUA_HEADERS})
 file (GLOB_RECURSE CPP_FILES *.cpp)
 list(FILTER CPP_FILES EXCLUDE REGEX ".*main.cpp$")
 file (GLOB_RECURSE H_FILES *.h)
-file (GLOB_RECURSE LIB_FILES ${CMAKE_SOURCE_DIR}/lib/src/*.c)
 
-set (SOURCE_FILES ${CPP_FILES} ${H_FILES} ${LIB_FILES})
+set (SOURCE_FILES ${CPP_FILES} ${H_FILES})
 
 foreach(_source IN ITEMS ${SOURCE_FILES})
     get_filename_component(_source_path "${_source}" PATH)
@@ -57,4 +55,5 @@ target_link_libraries(cqsp-engine PUBLIC
     sol2
     ${OPENAL_LIBRARY}
     Tracy
+    stb
 )
