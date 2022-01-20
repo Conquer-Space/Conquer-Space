@@ -15,7 +15,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
-include_directories(${CMAKE_SOURCE_DIR}/lib/stb)
 include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/examples)
 include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/include)
 include_directories(${LUA_HEADERS})
@@ -23,7 +22,7 @@ include_directories(${LUA_HEADERS})
 file (GLOB_RECURSE CPP_FILES *.cpp)
 file (GLOB_RECURSE H_FILES *.h)
 
-set (SOURCE_FILES ${CPP_FILES} ${H_FILES} ${LIB_FILES})
+set (SOURCE_FILES ${CPP_FILES} ${H_FILES})
 
 foreach(_source IN ITEMS ${SOURCE_FILES})
     get_filename_component(_source_path "${_source}" PATH)
@@ -44,4 +43,5 @@ target_link_libraries(cqsp-core PUBLIC
     libnoise
     sol2
     Tracy
+    stb
 )
