@@ -57,12 +57,14 @@ jobs:
       run: |
         chmod +x ./tools/run-clang-tidy.py
         ./tools/run-clang-tidy.py -j $(nproc) -quiet -p build > clang.txt
+        echo ${{ secrets.CODACY_PROJECT_TOKEN }}
 
     - name: Run Codacy Analysis CLI
       uses: codacy/codacy-analysis-cli-action@master
       with:
         tool: clang-tidy
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        api-token:  ${{ secrets.CODACY_PROJECT_TOKEN }}
         clang-tidy-output: "clang.txt"
         upload: true
         max-allowed-issues: 2147483647
