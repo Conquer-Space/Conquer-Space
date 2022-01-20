@@ -24,7 +24,9 @@ jobs:
     # Skip tasks
     if: ${{ needs.skip-duplicates.outputs.should_skip != 'true' }}
     runs-on: ubuntu-latest
-
+    env:
+      SUPER_SECRET: ${{ secrets.TEST_SCRET }}
+      CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
     steps:
     - uses: actions/checkout@v2
       with:
@@ -41,7 +43,7 @@ jobs:
       run: |
         echo "CC=clang" >> $GITHUB_ENV
         echo "CXX=clang++" >> $GITHUB_ENV
-        echo ${{ secrets.TEST_SCRET }}
+        echo "Secret $SUPER_SECRET"
         exit 1
 
     - name: Configure Build files
@@ -64,7 +66,7 @@ jobs:
       uses: codacy/codacy-analysis-cli-action@master
       with:
         tool: clang-tidy
-        api-token:  ${{ secrets.CODACY_PROJECT_TOKEN }}
+        api-token: $CODACY_PROJECT_TOKEN
         clang-tidy-output: "clang.txt"
         upload: true
         max-allowed-issues: 2147483647
