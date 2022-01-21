@@ -31,7 +31,7 @@ TEST(NameGeneratorTest, Test) {
     val = Hjson::UnmarshalFromFile("../data/core/data/names/name_gen_test.hjson");
     gen.LoadNameGenerator(val);
     gen.SetRandom(&std_random);
-    
+
     std::vector<std::string> potential_names{"Aelash", "Ashash", "Aelburn", "Ashburn"};
 
     for (int i = 0; i < 100; i++) {
@@ -40,5 +40,4 @@ TEST(NameGeneratorTest, Test) {
             ASSERT_EQ(gen_text, "nope");
         }
     }
-    
 }

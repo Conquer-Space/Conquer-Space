@@ -16,10 +16,11 @@
 */
 #pragma once
 
+#include <hjson.h>
+
 #include <map>
 #include <vector>
 #include <string>
-#include <hjson.h>
 
 #include "common/util/random/random.h"
 
