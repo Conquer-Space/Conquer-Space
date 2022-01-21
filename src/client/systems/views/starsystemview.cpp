@@ -282,16 +282,18 @@ void SysStarSystemRenderer::Update(float deltaTime) {
     }
 
     using cqsp::client::components::PlanetTerrainRender;
+    /*
     // Check if it has terrain resource rendering, and make terrain thing
     if (m_viewing_entity != entt::null && m_app.GetUniverse().all_of<PlanetTerrainRender>(m_viewing_entity)) {
         CheckResourceDistRender();
     } else if (m_viewing_entity != entt::null) {
         // Reset to default
+        planet.textures.reserve(2);
         planet.textures[0] = planet_texture;
         terrain_displaying = entt::null;
         // Also change up the shader
         planet.shaderProgram = pbr_shader;
-    }
+    }*/
 }
 
 void SysStarSystemRenderer::SeePlanet(entt::entity ent) {
@@ -712,8 +714,9 @@ void SysStarSystemRenderer::SetPlanetTexture(TerrainImageGenerator &generator) {
     planet_heightmap = GenerateTexture(gl_planet_heightmap, generator.GetAlbedoMap());
 
     // Assign textures
-    planet.textures.push_back(planet_texture);
-    planet.textures.push_back(planet_heightmap);
+    planet.textures.reserve(2);
+    planet.textures[2] = (planet_texture);
+    planet.textures[2] = (planet_heightmap);
 }
 
 unsigned int SysStarSystemRenderer::GeneratePlanetTexture(noise::utils::Image &image) {
