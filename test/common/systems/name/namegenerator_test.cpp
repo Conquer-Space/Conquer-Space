@@ -46,7 +46,8 @@ TEST(NameGeneratorTest, BasicTest) {
         using testing::AllOf;
         using testing::StartsWith;
         using testing::EndsWith;
-        EXPECT_THAT(gen_text, AllOf(AnyOf(StartsWith("Ael"), StartsWith("Ash")), AnyOf(EndsWith("ash"), EndsWith("burn"))));
+        EXPECT_THAT(gen_text, AllOf(AnyOf(StartsWith("Ael"), StartsWith("Ash")),
+                              AnyOf(EndsWith("ash"), EndsWith("burn"))));
 #endif
     }
 }
