@@ -15,6 +15,8 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
+#include <gmock/gmock-more-matchers.h>
 
 #include <hjson.h>
 #include <algorithm>
@@ -36,9 +38,16 @@ TEST(NameGeneratorTest, BasicTest) {
 
     for (int i = 0; i < 100; i++) {
         std::string gen_text = gen.Generate("1");
-        if (std::find(potential_names.begin(), potential_names.end(), gen_text) == potential_names.end()) {
-            ASSERT_EQ(gen_text, "nope");
-        }
+        // Windows doesn't support union regex
+#ifndef WIN32
+        EXPECT_THAT(gen_text, testing::MatchesRegex("(Ael|Ash)(ash|burn)"));
+#else
+        using testing::AnyOf;
+        using testing::AllOf;
+        using testing::StartsWith;
+        using testing::EndsWith;
+        EXPECT_THAT(gen_text, AllOf(AnyOf(StartsWith("Ael"), StartsWith("Ash")), AnyOf(EndsWith("ash"), EndsWith("burn"))));
+#endif
     }
 }
 

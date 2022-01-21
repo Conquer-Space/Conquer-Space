@@ -26,8 +26,30 @@
 
 namespace cqsp::common::systems::names {
 /// <summary>
+/// Name generator is pretty straightforward
+/// Format:
+/// ```
+/// {
+///     name: [generator name]
+///     rules: {
+///         [rule name]: [format]
+///     }
+///     [syllable name]: [
+///         [Array of syllables]
+///     ]
+///     [syllable name]: [
+///     ]
+///     // more syllables
+/// }
+/// ```
+/// The format string is processed in fmt, so it would look like this:
+/// `{[syllable 1 name]}{[syllable 2 name]}`.
+///
+/// For each syllable, a random syllable will be selected from the array, according to the random generator
+/// that you provide, and formatted into the string.
+///
 /// In the future, I would like to have a more adaptable naming scheme capable of naming cities and other things
-/// after people and the like, but for now a simple name generator would do.
+/// after people and the events, but for now a simple name generator would do.
 /// </summary>
 class NameGenerator {
  public:
