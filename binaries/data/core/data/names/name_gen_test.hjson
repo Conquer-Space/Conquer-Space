@@ -1,0 +1,15 @@
+{
+  name: tester
+  rules: {
+      1: "{s1}{s2}"
+  }
+  s1: [
+    Ael
+    Ash
+  ]
+  s2:
+  [
+    ash
+    burn
+  ]
+}
