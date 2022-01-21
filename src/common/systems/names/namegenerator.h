@@ -31,7 +31,7 @@ namespace cqsp::common::systems::names {
 /// </summary>
 class NameGenerator {
  public:
-    std::string Generate(const std::string& rule_name);
+    std::string Generate(const std::string& rule_name) noexcept;
     void LoadNameGenerator(const Hjson::Value& value);
 
     void SetRandom(util::IRandom* rand) {

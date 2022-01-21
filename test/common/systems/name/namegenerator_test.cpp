@@ -24,7 +24,7 @@
 
 using cqsp::common::systems::names::NameGenerator;
 
-TEST(NameGeneratorTest, Test) {
+TEST(NameGeneratorTest, BasicTest) {
     NameGenerator gen;
     cqsp::common::util::StdRandom std_random(31415926535);
     Hjson::Value val;
@@ -40,4 +40,18 @@ TEST(NameGeneratorTest, Test) {
             ASSERT_EQ(gen_text, "nope");
         }
     }
+}
+
+TEST(NameGeneratorTest, IncorrectFormatTest) {
+    // Get a text with the incorrect format
+    NameGenerator gen;
+    cqsp::common::util::StdRandom std_random(31415926535);
+    Hjson::Value val;
+    val = Hjson::UnmarshalFromFile("../data/core/data/names/name_gen_test.hjson");
+    gen.LoadNameGenerator(val);
+    gen.SetRandom(&std_random);
+
+    std::vector<std::string> potential_names{"Aelash", "Ashash", "Aelburn", "Ashburn"};
+    std::string gen_text = gen.Generate("wrong");
+    ASSERT_EQ(gen_text, "");
 }

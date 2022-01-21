@@ -2,6 +2,7 @@
   name: tester
   rules: {
       1: "{s1}{s2}"
+      wrong: "{s1}{s2]{s3}"
   }
   s1: [
     Ael
