@@ -316,6 +316,7 @@ std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std:
     // So the folders we have to keep track off are the goods and recipes
     HjsonPrototypeDirectory(*package, fmt::format("{}/data/goods", mount_point), "goods");
     HjsonPrototypeDirectory(*package, fmt::format("{}/data/recipes", mount_point), "recipes");
+    HjsonPrototypeDirectory(*package, fmt::format("{}/data/names", mount_point), "names");
 
     SPDLOG_INFO("Loaded prototype directories");
 

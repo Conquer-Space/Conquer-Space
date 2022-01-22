@@ -1,4 +1,4 @@
-{
+[{
   name: tester
   rules: {
       1: "{s1}{s2}"
@@ -75,4 +75,4 @@
     town
     wick
   ]
-}
+}]

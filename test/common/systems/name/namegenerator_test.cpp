@@ -31,7 +31,7 @@ TEST(NameGeneratorTest, BasicTest) {
     cqsp::common::util::StdRandom std_random(31415926535);
     Hjson::Value val;
     val = Hjson::UnmarshalFromFile("../data/core/data/names/name_gen_test.hjson");
-    gen.LoadNameGenerator(val);
+    gen.LoadNameGenerator(val[0]);
     gen.SetRandom(&std_random);
 
     std::vector<std::string> potential_names{"Aelash", "Ashash", "Aelburn", "Ashburn"};
@@ -58,7 +58,7 @@ TEST(NameGeneratorTest, IncorrectFormatTest) {
     cqsp::common::util::StdRandom std_random(31415926535);
     Hjson::Value val;
     val = Hjson::UnmarshalFromFile("../data/core/data/names/name_gen_test.hjson");
-    gen.LoadNameGenerator(val);
+    gen.LoadNameGenerator(val[0]);
     gen.SetRandom(&std_random);
 
     std::vector<std::string> potential_names{"Aelash", "Ashash", "Aelburn", "Ashburn"};
