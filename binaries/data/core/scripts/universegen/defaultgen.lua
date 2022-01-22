@@ -134,7 +134,8 @@ generators:insert({
         local city_count = 1
         for index = 1, city_count, 1 do
             local city = add_planet_settlement(planet, random(-90, 90), random(-180, 180))
-            set_name(city, "City ".. index)
+            -- Get random city name
+            set_name(city, get_random_name("Town Names", "1"))
             local pop_unit = add_population_segment(city, random_normal_int(50000000, 2000000)) -- 100 million
             add_cash(pop_unit, 1000) -- 1 billion
             attach_market(market, pop_unit)

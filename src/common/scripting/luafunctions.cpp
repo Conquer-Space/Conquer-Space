@@ -297,6 +297,10 @@ void FunctionUser(cqsp::engine::Application& app) {
     REGISTER_FUNCTION("get_name", [&](entt::entity entity) {
         return universe.get<cqspc::Name>(entity).name;
     });
+
+    REGISTER_FUNCTION("get_random_name", [&](const std::string& name_gen, const std::string &rule) {
+        return universe.name_generators[name_gen].Generate(rule);
+    });
 }
 
 void FunctionPopulation(cqsp::engine::Application& app) {

@@ -59,6 +59,8 @@ class NameGenerator {
     void SetRandom(util::IRandom* rand) {
         random = rand;
     }
+
+    const std::string& GetName() { return name; }
  private:
     std::map<std::string, std::vector<std::string>> syllables_list;
     std::map<std::string, std::string> rule_list;

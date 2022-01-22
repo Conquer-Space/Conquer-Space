@@ -25,6 +25,7 @@
 #include "common/systems/sysuniversegenerator.h"
 #include "common/scripting/luafunctions.h"
 #include "common/systems/loading/loadgoods.h"
+#include "common/systems/loading/loadnames.h"
 
 cqsp::scene::UniverseLoadingScene::UniverseLoadingScene(cqsp::engine::Application& app) : Scene(app) {}
 
@@ -83,7 +84,7 @@ void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
 
     LoadResource(GetApp(), "goods", cqsp::common::systems::loading::LoadGoods);
     LoadResource(GetApp(), "recipes", cqsp::common::systems::loading::LoadRecipes);
-
+    LoadResource(GetApp(), "names", cqsp::common::systems::loading::LoadNameLists);
     // Initialize planet terrains
     cqsp::asset::HjsonAsset* asset = GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("core:terrain_colors");
     cqsp::common::systems::loading::LoadTerrainData(GetApp().GetUniverse(), asset->data);
