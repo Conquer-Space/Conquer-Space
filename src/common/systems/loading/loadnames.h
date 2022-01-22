@@ -22,4 +22,4 @@
 
 namespace cqsp::common::systems::loading {
 void LoadNameLists(cqsp::common::Universe&, Hjson::Value&);
-}
+}  // namespace cqsp::common::systems::loading
