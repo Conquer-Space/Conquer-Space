@@ -24,6 +24,7 @@
 
 #include "common/stardate.h"
 #include "common/util/random/random.h"
+#include "common/systems/names/namegenerator.h"
 
 namespace cqsp {
 namespace common {
@@ -35,6 +36,7 @@ class Universe : public entt::registry {
     std::map<std::string, entt::entity> goods;
     std::map<std::string, entt::entity> recipes;
     std::map<std::string, entt::entity> terrain_data;
+    std::map<std::string, systems::names::NameGenerator> name_generators;
 
     void EnableTick() { to_tick = true; }
     void DisableTick() { to_tick = false; }
