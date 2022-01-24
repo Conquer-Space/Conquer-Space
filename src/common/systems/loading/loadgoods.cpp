@@ -83,19 +83,36 @@ void cqsp::common::systems::loading::LoadRecipes(cqsp::common::Universe& univers
         entt::entity recipe = universe.create();
         auto& recipe_component = universe.emplace<cqspc::Recipe>(recipe);
         Hjson::Value input_value = val["input"];
-        for (auto input_good : input_value) {
-            recipe_component.input[universe.goods[input_good.first]] = input_good.second;
-        }
+        recipe_component.input = HjsonToLedger(universe, input_value);
+
 
         Hjson::Value output_value = val["output"];
-        for (auto output_good : output_value) {
-            recipe_component.output[universe.goods[output_good.first]] = output_good.second;
-        }
+        recipe_component.output = HjsonToLedger(universe, output_value);
 
         auto &name_object = universe.emplace<cqspc::Identifier>(recipe);
         name_object.identifier = val["identifier"].to_string();
         universe.recipes[name_object] = recipe;
+
+        // Check if it has cost
+        if (val["cost"].defined()) {
+            Hjson::Value cost_map = val["cost"];
+            auto& recipe_cost = universe.emplace<cqspc::RecipeCost>(recipe);
+
+            Hjson::Value fixed = cost_map["fixed"];
+            recipe_cost.fixed = HjsonToLedger(universe, fixed);
+            Hjson::Value scaling = cost_map["scaling"];
+            recipe_cost.scaling = HjsonToLedger(universe, scaling);
+        }
     }
+}
+
+cqsp::common::components::ResourceStockpile cqsp::common::systems::loading::HjsonToLedger(
+    cqsp::common::Universe& universe, Hjson::Value& hjson) {
+    components::ResourceStockpile stockpile;
+    for (auto input_good : hjson) {
+        stockpile[universe.goods[input_good.first]] = input_good.second;
+    }
+    return stockpile;
 }
 
 void cqsp::common::systems::loading::LoadTerrainData(cqsp::common::Universe& universe, Hjson::Value& value) {

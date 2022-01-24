@@ -452,8 +452,15 @@ void cqsp::client::systems::SysPlanetInformation::FactoryConstruction() {
 
     static int prod = 1;
     ImGui::PushItemWidth(-1);
+    ImGui::Text("Production");
+    ImGui::SameLine();
     CQSPGui::DragInt("label", &prod, 1, 1, INT_MAX);
     ImGui::PopItemWidth();
+    // Cost table
+    auto cost = cqsp::common::systems::actions::GetFactoryCost(
+        GetUniverse(), selected_city_entity, selected_recipe, prod);
+    DrawLedgerTable("factory_cost", GetUniverse(), cost);
+
     if (CQSPGui::DefaultButton("Construct!")) {
         // Construct things
         SPDLOG_INFO("Constructing factory with recipe {}", selected_recipe);
