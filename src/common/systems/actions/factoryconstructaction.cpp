@@ -57,9 +57,14 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
 
 cqsp::common::components::ResourceLedger
 cqsp::common::systems::actions::GetFactoryCost(cqsp::common::Universe& universe, entt::entity city,
-    entt::entity recipe, int productivity) {
+    entt::entity recipe, int capacity) {
     cqsp::common::components::ResourceLedger ledger;
     ledger[universe.goods["concrete"]] = 1000;
+    // Get the recipe and things
+    if (universe.any_of<components::RecipeCost>(recipe)) {
+        auto& cost = universe.get<components::RecipeCost>(recipe);
+        ledger.MultiplyAdd(cost.scaling, capacity);
+    }
     return ledger;
 }
 
