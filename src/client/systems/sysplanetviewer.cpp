@@ -96,6 +96,7 @@ void cqsp::client::systems::SysPlanetInformation::DoUI(int delta_time) {
         MarketInformationTooltipContent();
         ImGui::End();
     }
+    ConstructionConfirmationPanel();
 }
 
 void cqsp::client::systems::SysPlanetInformation::DoUpdate(int delta_time) {
@@ -457,7 +458,8 @@ void cqsp::client::systems::SysPlanetInformation::FactoryConstruction() {
     CQSPGui::DragInt("label", &prod, 1, 1, INT_MAX);
     ImGui::PopItemWidth();
     // Cost table
-    auto cost = cqsp::common::systems::actions::GetFactoryCost(
+    ImGui::Text("Factory Cost");
+    auto cost = common::systems::actions::GetFactoryCost(
         GetUniverse(), selected_city_entity, selected_recipe, prod);
     DrawLedgerTable("factory_cost", GetUniverse(), cost);
 
@@ -473,17 +475,20 @@ void cqsp::client::systems::SysPlanetInformation::FactoryConstruction() {
         //GetUniverse().get<cqspc::Market>(city_market).demand += cost;
         GetUniverse().get<cqspc::ResourceStockpile>(city_market) -= cost;
         */
-        entt::entity factory = cqsp::common::systems::actions::CreateFactory(
+        // Create construction site and do the cost
+        // Buy the factory
+        entt::entity factory = common::systems::actions::CreateFactory(
             GetUniverse(), selected_city_entity, selected_recipe, prod);
         cqsp::common::systems::economy::AddParticipant(GetUniverse(), city_market, factory);
+        GetUniverse().get<cqspc::Wallet>(factory) += 1000000000000;
+        common::systems::economy::PurchaseGood(GetUniverse(), factory, cost);
         // Enable confirmation window
+        enable_construction_confirmation_panel = true;
     }
 
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
-        DrawLedgerTable("building_cost_tooltip", GetUniverse(),
-                    cqsp::common::systems::actions::GetFactoryCost(
-                            GetUniverse(), selected_city_entity, selected_recipe, prod));
+        DrawLedgerTable("building_cost_tooltip", GetUniverse(), cost);
         ImGui::EndTooltip();
     }
 }
@@ -748,4 +753,19 @@ void cqsp::client::systems::SysPlanetInformation::MarketInformationTooltipConten
             ImPlot::EndPlot();
         }
     }
+}
+
+void cqsp::client::systems::SysPlanetInformation::ConstructionConfirmationPanel() {
+    if (!enable_construction_confirmation_panel) {
+        return;
+    }
+    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f,
+                                   ImGui::GetIO().DisplaySize.y * 0.5f),
+                            ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+    ImGui::Begin("Construction Complete", &enable_construction_confirmation_panel, ImGuiWindowFlags_NoDecoration);
+    ImGui::Text("Constructed factory");
+    if (ImGui::Button("Ok", ImVec2(-1, 0))) {
+        enable_construction_confirmation_panel = false;
+    }
+    ImGui::End();
 }

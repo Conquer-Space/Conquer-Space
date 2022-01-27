@@ -26,6 +26,7 @@ void cqsp::common::systems::economy::AddParticipant(
     auto& market = universe.get<cqspc::Market>(market_entity);
     market.participants.insert(entity);
     universe.emplace<cqspc::MarketAgent>(entity, market_entity);
+    universe.get_or_emplace<cqspc::Wallet>(entity);
 }
 
 
