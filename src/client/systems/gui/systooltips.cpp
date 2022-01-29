@@ -113,7 +113,7 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
         cqsp::client::systems::DrawLedgerTable(
             "resourcesstockpiletooltip", universe, universe.get<cqspc::ResourceStockpile>(entity));
     }
-    if (universe.all_of<cqspc::Production>(entity)) {
+    if (universe.all_of<cqspc::FactoryProducing>(entity)) {
         ImGui::Text("Producing next tick");
     }
 

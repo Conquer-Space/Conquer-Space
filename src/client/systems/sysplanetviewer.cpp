@@ -457,29 +457,27 @@ void cqsp::client::systems::SysPlanetInformation::FactoryConstruction() {
     ImGui::SameLine();
     CQSPGui::DragInt("label", &prod, 1, 1, INT_MAX);
     ImGui::PopItemWidth();
+    entt::entity city_market = GetUniverse().get<cqspc::MarketCenter>(selected_planet).market;
+    auto cost = common::systems::actions::GetFactoryCost(GetUniverse(), selected_city_entity, selected_recipe, prod);
     // Cost table
-    ImGui::Text("Factory Cost");
-    auto cost = common::systems::actions::GetFactoryCost(
-        GetUniverse(), selected_city_entity, selected_recipe, prod);
-    DrawLedgerTable("factory_cost", GetUniverse(), cost);
+    ImGui::TextFmt("Estimated Cost: {}", common::systems::economy::GetCost(
+                                        GetUniverse(), city_market, cost));
+    CQSPGui::SimpleTextTooltip("Estimated cost at current market prices");
 
+    ImGui::Text("Resources Needed");
+    DrawLedgerTable("factory_cost", GetUniverse(), cost);
+    // Get the cost, and display it
+    // Calculate the cost
     if (CQSPGui::DefaultButton("Construct!")) {
         // Construct things
         SPDLOG_INFO("Constructing factory with recipe {}", selected_recipe);
-        entt::entity city_market = GetUniverse().get<cqspc::MarketCenter>(selected_planet).market;
-        // Add demand to the market for the amount of resources needed to construct the factory
-        // When construction takes time in the future, then do the costs.
-        // So first charge it to the market
-        /* auto cost = cqsp::common::systems::actions::GetFactoryCost(
-            GetUniverse(), selected_city_entity, selected_recipe, prod);
-        //GetUniverse().get<cqspc::Market>(city_market).demand += cost;
-        GetUniverse().get<cqspc::ResourceStockpile>(city_market) -= cost;
-        */
         // Create construction site and do the cost
         // Buy the factory
         entt::entity factory = common::systems::actions::CreateFactory(
             GetUniverse(), selected_city_entity, selected_recipe, prod);
         cqsp::common::systems::economy::AddParticipant(GetUniverse(), city_market, factory);
+        // Charge the builder
+        // So presumeably it would be the civilization
         GetUniverse().get<cqspc::Wallet>(factory) += 1000000000000;
         common::systems::economy::PurchaseGood(GetUniverse(), factory, cost);
         // Enable confirmation window

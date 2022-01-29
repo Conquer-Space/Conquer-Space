@@ -29,6 +29,15 @@ void cqsp::common::systems::economy::AddParticipant(
     universe.get_or_emplace<cqspc::Wallet>(entity);
 }
 
+double cqsp::common::systems::economy::GetCost(
+    cqsp::common::Universe& universe, entt::entity market,
+    components::ResourceLedger ledger) {
+    if (!universe.any_of<components::Market>(market)) {
+        return 0.0;
+    }
+    return universe.get<components::Market>(market).GetPrice(ledger);
+}
+
 
 entt::entity cqsp::common::systems::economy::CreateMarket(Universe& universe) {
     entt::entity market = universe.create();

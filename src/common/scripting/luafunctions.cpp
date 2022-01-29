@@ -203,9 +203,12 @@ void FunctionEconomy(cqsp::engine::Application& app) {
 
     REGISTER_FUNCTION("create_factory", [&](entt::entity city, entt::entity recipe, float productivity) {
         entt::entity factory = cqspa::CreateFactory(universe, city, recipe, productivity);
-        // Factory will produce in the first tick
-        universe.emplace<cqspc::Production>(factory);
         return factory;
+    });
+
+    REGISTER_FUNCTION("add_production", [&](entt::entity factory) {
+            // Factory will produce in the first tick
+            universe.emplace<cqspc::FactoryProducing>(factory);
     });
 
     REGISTER_FUNCTION("set_power_consumption", [&](entt::entity factory, double max, double min) {
