@@ -124,6 +124,8 @@ generators:insert({
         local market = create_market()
         place_market(market, planet)
 
+        attach_market(market, civ_id)
+
         -- Seed market resources
         --add_resource(market, goods["steel"], 50000)
         --add_resource(market, goods["copper"], 50000)

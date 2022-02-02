@@ -75,7 +75,9 @@ bool cqsp::common::systems::economy::PurchaseGood(
 
     // Then agent has enough money to buy
     market_comp.AddDemand(purchase);
-    universe.get<components::ResourceStockpile>(agent) += purchase;
+    if (universe.all_of<components::ResourceStockpile>(agent)) {
+        universe.get<components::ResourceStockpile>(agent) += purchase;
+    }
     wallet -= cost;
     return true;
 }

@@ -53,6 +53,8 @@ void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::Generate
     auto player = universe.create();
     universe.emplace<cqspc::Civilization>(player);
     universe.emplace<cqspc::Player>(player);
+    // Add wallet to civilization
+    universe.emplace<cqspc::Wallet>(player, entt::null, 10000000);
 
     //for (int i = 0; i < 9; i++) {
         //auto civ = universe.create();

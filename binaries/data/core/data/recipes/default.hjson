@@ -10,11 +10,15 @@
         output: {
             steel: 2
         }
-        # Factories will have 2 resource stockpiles
+        # Cost of factory for every recipe we dump on it
+        # In the future, it would be nice to add a maximum to how much this will be able to add
+        # So that we can have a cap on how much a factory can work with.
         cost: {
-            fixed: {}
+            fixed: {
+                concrete: 1000
+            }
             scaling: {
-                iron: 100
+                steel: 1
             }
         }
         tags: [
@@ -31,7 +35,13 @@
         output: {
             consumer_good: 2
         }
-        catalyst: {
+        cost: {
+            fixed: {
+                concrete: 1000
+            }
+            scaling: {
+                iron: 1
+            }
         }
         tags: [
             ratio

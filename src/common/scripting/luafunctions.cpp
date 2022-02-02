@@ -269,7 +269,6 @@ void FunctionEconomy(cqsp::engine::Application& app) {
 
     REGISTER_FUNCTION("attach_market", [&](entt::entity market_entity, entt::entity participant) {
         cqsp::common::systems::economy::AddParticipant(universe, market_entity, participant);
-        auto& wallet = universe.get_or_emplace<cqspc::Wallet>(participant);
     });
 
     REGISTER_FUNCTION("add_cash", [&](entt::entity participant, double balance) {
