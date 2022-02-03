@@ -57,7 +57,7 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
     auto& employer = universe.emplace<cqspc::Employer>(factory);
     employer.population_fufilled = 1000000;
     employer.population_needed = 1000000;
-    employer.segment = entt::null; 
+    employer.segment = entt::null;
 
     // Add recipes and stuff
     factory_converter.recipe = recipe;
