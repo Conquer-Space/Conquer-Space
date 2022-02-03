@@ -167,6 +167,11 @@ struct Recipe {
     float interval;
 };
 
+struct RecipeCost {
+    ResourceLedger fixed;
+    ResourceLedger scaling;
+};
+
 struct ProductionTraits {
     double max_production;
     double current_production;

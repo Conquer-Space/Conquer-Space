@@ -16,6 +16,7 @@
 */
 #pragma once
 
+#include <utility>
 #include "engine/application.h"
 #include "engine/gui.h"
 
@@ -41,4 +42,12 @@ bool DragFloat(const char* label, float* v, float v_speed = 1.0f, float v_min = 
                         const char* format = "%.3f", ImGuiSliderFlags flags = 0);
 bool DragInt(const char* label, int* v, float v_speed = 1.0f, int v_min = 0, int v_max = 0,
                         const char* format = "%d", ImGuiSliderFlags flags = 0);
+template <typename S, typename... Args>
+void SimpleTextTooltip(S fmt, Args&&... args) {
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::Text(fmt::format(fmt, std::forward<Args>(args)...).c_str());
+        ImGui::EndTooltip();
+    }
+}
 }  // namespace CQSPGui

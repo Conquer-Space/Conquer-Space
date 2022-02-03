@@ -21,12 +21,22 @@
 #include "common/components/resource.h"
 #include "common/components/area.h"
 #include "common/components/economy.h"
+#include "common/systems/economy/markethelpers.h"
 
 using cqsp::common::Universe;
-entt::entity cqsp::common::systems::actions::OrderConstructionFactory(
-    cqsp::common::Universe& universe, entt::entity city,
-    entt::entity recipe, int productivity, entt::entity builder) {
-    return entt::entity();
+entt::entity cqsp::common::systems::actions::OrderConstructionFactory(cqsp::common::Universe& universe,
+    entt::entity city, entt::entity market, entt::entity recipe, int productivity, entt::entity builder) {
+    entt::entity factory = common::systems::actions::CreateFactory(
+        universe, city, recipe, productivity);
+    if (factory == entt::null) {
+        return entt::null;
+    }
+    cqsp::common::systems::economy::AddParticipant(universe, market, factory);
+    auto cost = common::systems::actions::GetFactoryCost(universe, city, recipe, productivity);
+
+    // Buy the goods on the market
+    common::systems::economy::PurchaseGood(universe, builder, cost);
+    return factory;
 }
 
 entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, entt::entity city,
@@ -57,9 +67,14 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
 
 cqsp::common::components::ResourceLedger
 cqsp::common::systems::actions::GetFactoryCost(cqsp::common::Universe& universe, entt::entity city,
-    entt::entity recipe, int productivity) {
+    entt::entity recipe, int capacity) {
     cqsp::common::components::ResourceLedger ledger;
-    ledger[universe.goods["concrete"]] = 1000;
+    // Get the recipe and things
+    if (universe.any_of<components::RecipeCost>(recipe)) {
+        auto& cost = universe.get<components::RecipeCost>(recipe);
+        ledger.MultiplyAdd(cost.scaling, capacity);
+        ledger += cost.fixed;
+    }
     return ledger;
 }
 

@@ -203,9 +203,12 @@ void FunctionEconomy(cqsp::engine::Application& app) {
 
     REGISTER_FUNCTION("create_factory", [&](entt::entity city, entt::entity recipe, float productivity) {
         entt::entity factory = cqspa::CreateFactory(universe, city, recipe, productivity);
-        // Factory will produce in the first tick
-        universe.emplace<cqspc::Production>(factory);
         return factory;
+    });
+
+    REGISTER_FUNCTION("add_production", [&](entt::entity factory) {
+            // Factory will produce in the first tick
+            universe.emplace<cqspc::FactoryProducing>(factory);
     });
 
     REGISTER_FUNCTION("set_power_consumption", [&](entt::entity factory, double max, double min) {
@@ -266,7 +269,6 @@ void FunctionEconomy(cqsp::engine::Application& app) {
 
     REGISTER_FUNCTION("attach_market", [&](entt::entity market_entity, entt::entity participant) {
         cqsp::common::systems::economy::AddParticipant(universe, market_entity, participant);
-        auto& wallet = universe.get_or_emplace<cqspc::Wallet>(participant);
     });
 
     REGISTER_FUNCTION("add_cash", [&](entt::entity participant, double balance) {

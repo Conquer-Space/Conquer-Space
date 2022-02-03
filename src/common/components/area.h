@@ -25,10 +25,6 @@ struct Industry {
     std::vector<entt::entity> industries;
 };
 
-struct Production {
-    float amount;
-};
-
 struct Factory {};
 
 struct Mine {};

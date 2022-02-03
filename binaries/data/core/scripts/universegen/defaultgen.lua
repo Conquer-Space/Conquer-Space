@@ -24,6 +24,8 @@ local function place_factory_on_market(market, city, resource, amount)
     local factory = create_factory(city, recipes[resource], amount)
     attach_market(market, factory)
     set_power_consumption(factory, 1000, 60)
+    -- Enable production next
+    add_production(factory)
     return factory
 end
 
@@ -121,6 +123,8 @@ generators:insert({
         add_planet_habitation(planet)
         local market = create_market()
         place_market(market, planet)
+
+        attach_market(market, civ_id)
 
         -- Seed market resources
         --add_resource(market, goods["steel"], 50000)

@@ -26,6 +26,16 @@ void cqsp::common::systems::economy::AddParticipant(
     auto& market = universe.get<cqspc::Market>(market_entity);
     market.participants.insert(entity);
     universe.emplace<cqspc::MarketAgent>(entity, market_entity);
+    universe.get_or_emplace<cqspc::Wallet>(entity);
+}
+
+double cqsp::common::systems::economy::GetCost(
+    cqsp::common::Universe& universe, entt::entity market,
+    components::ResourceLedger ledger) {
+    if (!universe.any_of<components::Market>(market)) {
+        return 0.0;
+    }
+    return universe.get<components::Market>(market).GetPrice(ledger);
 }
 
 
@@ -65,7 +75,9 @@ bool cqsp::common::systems::economy::PurchaseGood(
 
     // Then agent has enough money to buy
     market_comp.AddDemand(purchase);
-    universe.get<components::ResourceStockpile>(agent) += purchase;
+    if (universe.all_of<components::ResourceStockpile>(agent)) {
+        universe.get<components::ResourceStockpile>(agent) += purchase;
+    }
     wallet -= cost;
     return true;
 }

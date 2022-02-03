@@ -35,9 +35,8 @@ namespace actions {
 /// <param name="productivity"></param>
 /// <param name="builder"></param>
 /// <returns>The factory entity created, entt::null if it's not possible.</returns>
-entt::entity OrderConstructionFactory(
-    cqsp::common::Universe& universe, entt::entity city,
-    entt::entity recipe, int productivity, entt::entity builder);
+entt::entity OrderConstructionFactory(cqsp::common::Universe& universe, entt::entity city, entt::entity market,
+                                      entt::entity recipe, int productivity, entt::entity builder);
 
 /// <summary>
 /// Creates a factory from thin air

@@ -58,12 +58,14 @@ class SysPlanetInformation : public SysUserInterface {
     void SpacePortTab();
     void InfrastructureTab();
     void MarketInformationTooltipContent();
+    void ConstructionConfirmationPanel();
 
     entt::entity selected_planet = entt::null;
     bool mine_list_panel = false;
     bool factory_list_panel = false;
     bool power_plant_output_panel = false;
     bool market_information_panel = true;
+    bool enable_construction_confirmation_panel = false;
     entt::entity power_plant_changing;
 };
 }  // namespace systems
