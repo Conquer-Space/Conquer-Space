@@ -415,6 +415,12 @@ void cqsp::engine::Application::InitRmlUi() {
         cqsp::common::util::GetCqspDataPath() + "/core/gfx/fonts/";
 
     Rml::LoadFontFace((fontPath + fontDatabase["default"]["path"]).c_str());
+    // Add fonts
+    Rml::LoadFontFace("assets/LatoLatin-Bold.ttf");
+    Rml::LoadFontFace("assets/LatoLatin-BoldItalic.ttf");
+    Rml::LoadFontFace("assets/LatoLatin-Italic.ttf");
+    Rml::LoadFontFace("assets/LatoLatin-Regular.ttf");
+    Rml::LoadFontFace("assets/NotoEmoji-Regular.ttf");
 }
 
 int cqsp::engine::Application::destroy() {
@@ -468,7 +474,7 @@ void cqsp::engine::Application::CalculateProjections() {
                     static_cast<float>(GetWindowHeight());
     three_dim_projection = glm::infinitePerspective(glm::radians(45.f), window_ratio, 0.1f);
     two_dim_projection = glm::ortho(0.0f, static_cast<float>(GetWindowWidth()), 0.0f,
-                    static_cast<float>(GetWindowHeight()));
+                    static_cast<float>(GetWindowHeight()), -1.f, 1.f);
 }
 
 cqsp::engine::Application::Application(int _argc, char* _argv[]) {
@@ -501,6 +507,14 @@ void cqsp::engine::Application::run() {
         return;
     }
     m_audio_interface->StartWorker();
+
+    // Load documents
+    Rml::ElementDocument* document = rml_context->LoadDocument("test/document.rml");
+    if (!document) {
+        SPDLOG_ERROR("Failed to create document");
+    }
+    document->Show();
+
     while (ShouldExit()) {
         // Calculate FPS
         double currentFrame = GetTime();
@@ -537,6 +551,7 @@ void cqsp::engine::Application::run() {
         ImGui::Render();
         END_TIMED_BLOCK(ImGui_Render);
 
+        rml_context->SetDimensions(Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
         rml_context->Update();
 
         // Clear screen

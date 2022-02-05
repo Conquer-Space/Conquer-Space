@@ -112,10 +112,9 @@ void cqsp::asset::AssetManager::LoadDefaultTexture() {
         255, 0, 255, 0, 0, 0
     };
 
-    unsigned char* buffer = &texture_bytes[0];
     asset::TextureLoadingOptions f;
     f.mag_filter = true;
-    asset::CreateTexture(empty_texture, buffer, 2, 2, 3, f);
+    asset::CreateTexture(empty_texture, texture_bytes, 2, 2, 3, f);
 }
 
 void cqsp::asset::AssetManager::ClearAssets() {

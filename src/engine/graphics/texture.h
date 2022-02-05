@@ -41,14 +41,14 @@ class Texture : public Asset {
     ~Texture();
 };
 
-unsigned int CreateTexture(unsigned char*& data,
+unsigned int CreateTexture(unsigned char* data,
                          int width,
                          int height,
                          int components,
                          TextureLoadingOptions& options);
 
 void CreateTexture(Texture &texture,
-                 unsigned char*& data,
+                 unsigned char* data,
                  int width,
                  int height,
                  int components,
