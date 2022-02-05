@@ -36,10 +36,10 @@
       {
         "name": "lua",
         "platform": "!windows"
-      }
+      },
+      "rmlui"
     ],
     "overrides": [
-      { "name": "imgui", "version": "1.85"},
-      { "name": "freetype", "version": "2.11.0#2"}
+      { "name": "imgui", "version": "1.85"}
     ]
 }

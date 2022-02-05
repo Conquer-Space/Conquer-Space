@@ -42,6 +42,7 @@ target_link_libraries(cqsp-engine PUBLIC
     cqsp-core
     OpenGL::GL
     imgui::imgui
+    implot::implot
     EnTT::EnTT
     hjson
     spdlog::spdlog
@@ -56,4 +57,6 @@ target_link_libraries(cqsp-engine PUBLIC
     ${OPENAL_LIBRARY}
     Tracy
     stb
+    RmlCore
+    RmlDebugger
 )

@@ -31,16 +31,6 @@ target_link_libraries(cqsp-tests GTest::gtest)
 target_link_libraries(cqsp-tests GTest::gmock)
 target_link_libraries(cqsp-tests cqsp-core)
 
-# External libraries
-target_link_libraries(cqsp-tests
-    EnTT::EnTT
-    hjson
-    ${LUA_LIBRARY}
-    spdlog::spdlog
-    fmt::fmt
-    libnoise
-    )
-
 set_property(TARGET cqsp-tests PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/binaries/bin")
 
 add_test(NAME cqsp-test COMMAND cqsp-tests WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/binaries/bin)
