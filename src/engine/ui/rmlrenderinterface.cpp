@@ -2,36 +2,171 @@
 
 #include <glad/glad.h>
 #include <stb_image.h>
+#include <glm/gtx/transform.hpp>
 
 #include "common/util/logging.h"
 #include "engine/application.h"
 #include "engine/graphics/mesh.h"
 
-cqsp::engine::CQSPRenderInterface::CQSPRenderInterface(Application& _app)
-    : app(_app) {
+class RmlUiRendererGeometryHandler {
+   public:
+    GLuint VAO, VBO, EBO;
+    int num_vertices;
+    int num_indices;
+    Rml::TextureHandle texture;
 
+    RmlUiRendererGeometryHandler()
+        : VAO(0), VBO(0), EBO(0), num_vertices(0), num_indices(0), texture(0) {}
+
+    ~RmlUiRendererGeometryHandler() {
+        if (VAO) {
+            glDeleteVertexArrays(1, &VAO);
+        }
+
+        if (VBO) {
+            glDeleteBuffers(1, &VBO);
+        }
+
+        if (EBO) {
+            glDeleteBuffers(1, &EBO);
+        }
+        VAO = VBO = EBO = 0;
+    }
+};
+
+class Vertex {
+    glm::vec2 pos;
+    glm::vec2 tex_coord;
+    glm::vec4 color;
+};
+
+cqsp::engine::CQSPRenderInterface::CQSPRenderInterface(Application& _app) : app(_app) {
+    try {
+    vert_shader = cqsp::asset::Shader(R"(
+#version 330 core
+layout (location = 0) in vec2 iPos;
+layout (location = 1) in vec4 color;
+layout (location = 2) in vec2 iTexCoord;
+
+uniform mat4 model;
+uniform mat4 projection;
+out vec4 place_color;
+out vec2 TexCoord;
+void main() {
+    gl_Position = projection * model * vec4(iPos, 0.0, 1.0);
+    place_color = color;
+    TexCoord = vec2(iTexCoord.x, iTexCoord.y);
+}
+    )", cqsp::asset::ShaderType::VERT);
+        SPDLOG_INFO("Frag shader");
+    frag_shader = cqsp::asset::Shader(R"(
+#version 330 core
+out vec4 FragColor;
+in vec4 place_color;
+in vec2 TexCoord;
+void main()
+{
+    FragColor = vec4(1, 0, 0, 1);//vec4(texture(texture1, TexCoord).rgb, 1);
+}
+    )", cqsp::asset::ShaderType::FRAG);
+        texture_frag_shader =
+            cqsp::asset::Shader(R"(
+#version 330 core
+out vec4 FragColor;
+in vec4 place_color;
+in vec2 TexCoord;
+uniform sampler2D texture1;
+void main()
+{
+    FragColor = vec4(texture(texture1, TexCoord).rgba);
+}
+    )", cqsp::asset::ShaderType::FRAG);
+
+    color_shader = asset::MakeShaderProgram(vert_shader, frag_shader);
+    texture_shader = asset::MakeShaderProgram(vert_shader, texture_frag_shader);
+    texture_shader->UseProgram();
+    texture_shader->setInt("texture1", 0);
+    } catch (const std::runtime_error& ex) {
+        SPDLOG_WARN("{}", ex.what());
+    }
 }
 
 void cqsp::engine::CQSPRenderInterface::RenderGeometry(
     Rml::Vertex* vertices, int num_vertices, int* indices, int num_indices,
     Rml::TextureHandle texture, const Rml::Vector2f& translation) {
-    // Do some math and render
-    SPDLOG_INFO("render geometry, we don't support it");
+    SPDLOG_INFO("Rendering geom");
 }
 
 Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(
     Rml::Vertex* vertices, int num_vertices, int* indices, int num_indices,
     Rml::TextureHandle texture) {
-    return (Rml::CompiledGeometryHandle) nullptr;
+    RmlUiRendererGeometryHandler* geom = new RmlUiRendererGeometryHandler();
+    // Create the vertex
+    geom->num_vertices = num_vertices;
+    geom->num_indices = num_indices;
+    geom->texture = texture;
+    glGenVertexArrays(1, &geom->VAO);
+    glGenBuffers(1, &geom->VBO);
+    glGenBuffers(1, &geom->EBO);
+
+    glBindVertexArray(geom->VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, geom->VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Rml::Vertex) * num_vertices, vertices,
+                 GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geom->EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, indices,
+                 GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Rml::Vertex),
+                          reinterpret_cast<void*>(0));
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Rml::Vertex),
+                          reinterpret_cast<void*>(sizeof(Rml::Vector2f)));
+    glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Rml::Vertex),
+        reinterpret_cast<void*>(sizeof(Rml::Vector2f) + sizeof(Rml::Colourb)));
+    glEnableVertexAttribArray(2);
+
+    return (Rml::CompiledGeometryHandle) geom;
 }
 
 void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(
     Rml::CompiledGeometryHandle geometry, const Rml::Vector2f& translation) {
+    RmlUiRendererGeometryHandler* geom = (RmlUiRendererGeometryHandler*)geometry;
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    asset::ShaderProgram* shader = nullptr;
+    // Draw the geometry
+    if (geom->texture) {
+        texture_shader->UseProgram();
+        shader = texture_shader.get();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, ((cqsp::asset::Texture*)geom->texture)->id);
+    } else {
+        color_shader->UseProgram();
+        shader = color_shader.get();
+    }
+    // Use a different shader because it's color shader
+    glm::mat4 model = glm::mat4(1.0f);
+    SPDLOG_INFO("{} {}", translation.x, translation.y);
+    model = glm::translate(model, glm::vec3(translation.x, translation.y, 0.0f));
+    //model = glm::scale(model, glm::vec3(1, -1, 1));
+    // Have to mirror it
+    shader->Set("projection", app.Get2DProj());
+    shader->Set("model", model);
+
+    glBindVertexArray(geom->VAO);
+    glDrawElements(GL_TRIANGLES, geom->num_indices, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
 }
 
 void cqsp::engine::CQSPRenderInterface::ReleaseCompiledGeometry(
     Rml::CompiledGeometryHandle geometry) {
+    delete (Rml::CompiledGeometryHandle*) geometry;
 }
 
 void cqsp::engine::CQSPRenderInterface::EnableScissorRegion(bool enable) {
@@ -44,24 +179,58 @@ void cqsp::engine::CQSPRenderInterface::EnableScissorRegion(bool enable) {
 void cqsp::engine::CQSPRenderInterface::SetScissorRegion(int x, int y,
                                                          int width,
                                                          int height) {
-    // Broken because glscissor does this: window-space lower-left position of
-    // the scissor box, and width and height define the size of the rectangle.
-    // And rmlui does this: The top-most pixel to be rendered. All pixels to the
-    // top of this should be clipped.
-    glScissor(x, app.GetWindowWidth() - (y + height), width, height);
+    glScissor(x, app.GetWindowHeight() - (y + height), width, height);
 }
 
 bool cqsp::engine::CQSPRenderInterface::LoadTexture(Rml::TextureHandle& texture_handle, Rml::Vector2i& texture_dimensions,
     const Rml::String& source) {
-    return false;
+    // Load the texture from the file
+    SPDLOG_INFO("Loading texture {}", source);
+    // Open file and do things
+    cqsp::asset::Texture* texture = new cqsp::asset::Texture();
+    // Read all the input
+    std::ifstream input(source, std::ios::binary);
+    if (!input.good()) {
+        return false;
+    }
+    input.seekg(0, std::ios::end);
+    // Get size
+    std::streamsize size = input.tellg();
+    input.seekg(0, std::ios::beg);
+    char* data = new char[size];
+    input.read(data, size);
+    unsigned char* d = (unsigned char*)data;
+    int width, height, components;
+    unsigned char* data2 =
+        stbi_load_from_memory(d, size, &width, &height, &components, 0);
+    asset::TextureLoadingOptions options;
+    // Read file
+    cqsp::asset::CreateTexture(*texture, data2, width, height, components, options);
+    stbi_image_free(data2);
+    delete[] data;
+    texture_handle = (Rml::TextureHandle)texture;
+    return true;
 }
 
 bool cqsp::engine::CQSPRenderInterface::GenerateTexture(Rml::TextureHandle& texture_handle, const Rml::byte* source,
     const Rml::Vector2i& source_dimensions) {
-    return false;
+    cqsp::asset::Texture* texture = new cqsp::asset::Texture();
+    // Generate opengl texture
+    // Cast the source to things
+    cqsp::asset::TextureLoadingOptions options;
+    cqsp::asset::CreateTexture(*texture, (unsigned char*) (source),
+        source_dimensions.x, source_dimensions.y, 4, options);
+    texture_handle = (Rml::TextureHandle)texture;
+    cqsp::asset::SaveImage(fmt::format("{}.png", counter).c_str(),
+                           source_dimensions.x, source_dimensions.y, 4,
+                           reinterpret_cast<const unsigned char*>(source));
+    counter++;
+    SPDLOG_INFO("Generated texture");
+    return true;
 }
 
 void cqsp::engine::CQSPRenderInterface::ReleaseTexture(Rml::TextureHandle texture) {
+    delete (cqsp::asset::Texture*) texture;
 }
 
 // Ignore for now

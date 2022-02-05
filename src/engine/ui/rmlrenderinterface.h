@@ -5,13 +5,8 @@
 
 #include "engine/engine.h"
 #include "engine/graphics/shader.h"
-#include "engine/renderer/renderer2d.h"
-
 
 namespace cqsp::engine {
-class InterfaceRenderable {
-    // More limited renderable for convinience
-};
 class CQSPRenderInterface : public Rml::RenderInterface {
  public:
     CQSPRenderInterface(Application& app);
@@ -51,7 +46,13 @@ class CQSPRenderInterface : public Rml::RenderInterface {
 
  private:
     Application& app;
-    std::unique_ptr<cqsp::engine::Renderer2D> renderer;
+    asset::Shader vert_shader;
+    asset::Shader frag_shader;
+    asset::Shader texture_frag_shader;
+
+    // Shaders
+    cqsp::asset::ShaderProgram_t color_shader;
+    cqsp::asset::ShaderProgram_t texture_shader;
     bool m_transform_enabled = false;
 
     int counter = 0;

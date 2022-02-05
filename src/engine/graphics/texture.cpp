@@ -24,7 +24,7 @@
 
 #include <glad/glad.h>
 
-unsigned int cqsp::asset::CreateTexture(unsigned char*& data, int width,
+unsigned int cqsp::asset::CreateTexture(unsigned char* data, int width,
                                         int height,
                                         int components,
                                         TextureLoadingOptions& options) {
@@ -57,7 +57,7 @@ unsigned int cqsp::asset::CreateTexture(unsigned char*& data, int width,
     return texid;
 }
 
-void cqsp::asset::CreateTexture(Texture& texture, unsigned char*& data, int width,
+void cqsp::asset::CreateTexture(Texture& texture, unsigned char* data, int width,
                               int height, int components, TextureLoadingOptions& options) {
     texture.id = CreateTexture(data, width, height, components, options);
     texture.width = width;

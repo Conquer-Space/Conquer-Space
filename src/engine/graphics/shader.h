@@ -30,6 +30,8 @@ enum class ShaderType {VERT, FRAG, GEOM};
 
 class Shader : public Asset {
  public:
+    Shader() = default;
+    Shader(const std::string& code, ShaderType type);
     unsigned int id;
 };
 
@@ -74,9 +76,13 @@ class ShaderProgram {
 };
 
 typedef std::shared_ptr<ShaderProgram> ShaderProgram_t;
-// Set of utility functions that load shaders
-unsigned int LoadShaderData(std::string& shader, int type);
 
+inline ShaderProgram_t MakeShaderProgram(Shader& vert, Shader& frag) {
+    return std::make_shared<ShaderProgram>(vert, frag);
+}
+
+// Set of utility functions that load shaders
+unsigned int LoadShaderData(const std::string& code, int type);
 unsigned int MakeShaderProgram(int vertex, int fragment);
 
 std::string GetErrorLog(unsigned int shader);
