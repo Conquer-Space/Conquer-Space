@@ -66,7 +66,7 @@ in vec4 place_color;
 in vec2 TexCoord;
 void main()
 {
-    FragColor = vec4(1, 0, 0, 1);//vec4(texture(texture1, TexCoord).rgb, 1);
+    FragColor = place_color;//vec4(texture(texture1, TexCoord).rgb, 1);
 }
     )", cqsp::asset::ShaderType::FRAG);
         texture_frag_shader =
@@ -78,7 +78,7 @@ in vec2 TexCoord;
 uniform sampler2D texture1;
 void main()
 {
-    FragColor = vec4(texture(texture1, TexCoord).rgba);
+    FragColor = vec4(texture(texture1, TexCoord).rgba) * vec4(place_color.rgb, 1);
 }
     )", cqsp::asset::ShaderType::FRAG);
 
@@ -152,7 +152,6 @@ void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(
     }
     // Use a different shader because it's color shader
     glm::mat4 model = glm::mat4(1.0f);
-    SPDLOG_INFO("{} {}", translation.x, translation.y);
     model = glm::translate(model, glm::vec3(translation.x, translation.y, 0.0f));
     //model = glm::scale(model, glm::vec3(1, -1, 1));
     // Have to mirror it
@@ -185,7 +184,6 @@ void cqsp::engine::CQSPRenderInterface::SetScissorRegion(int x, int y,
 bool cqsp::engine::CQSPRenderInterface::LoadTexture(Rml::TextureHandle& texture_handle, Rml::Vector2i& texture_dimensions,
     const Rml::String& source) {
     // Load the texture from the file
-    SPDLOG_INFO("Loading texture {}", source);
     // Open file and do things
     cqsp::asset::Texture* texture = new cqsp::asset::Texture();
     // Read all the input
@@ -221,11 +219,6 @@ bool cqsp::engine::CQSPRenderInterface::GenerateTexture(Rml::TextureHandle& text
     cqsp::asset::CreateTexture(*texture, (unsigned char*) (source),
         source_dimensions.x, source_dimensions.y, 4, options);
     texture_handle = (Rml::TextureHandle)texture;
-    cqsp::asset::SaveImage(fmt::format("{}.png", counter).c_str(),
-                           source_dimensions.x, source_dimensions.y, 4,
-                           reinterpret_cast<const unsigned char*>(source));
-    counter++;
-    SPDLOG_INFO("Generated texture");
     return true;
 }
 
