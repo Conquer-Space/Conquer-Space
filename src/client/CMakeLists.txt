@@ -37,21 +37,4 @@ add_library(cqsp-client ${SOURCE_FILES})
 target_link_libraries(cqsp-client PUBLIC
     cqsp-core
     cqsp-engine
-    OpenGL::GL
-    imgui::imgui
-    implot::implot
-    EnTT::EnTT
-    hjson
-    spdlog::spdlog
-    glm::glm
-    ${LUA_LIBRARY}
-    freetype
-    fmt::fmt
-    libnoise
-    glad
-    glfw
-    sol2
-    ${OPENAL_LIBRARY}
-    Tracy
-    stb
 )

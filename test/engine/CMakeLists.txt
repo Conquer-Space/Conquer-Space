@@ -38,23 +38,6 @@ set_property(TARGET cqsp-engine-tests PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${
 target_link_libraries(cqsp-engine-tests GTest::gtest GTest::gtest_main)
 target_link_libraries(cqsp-engine-tests GTest::gmock)
 target_link_libraries(cqsp-engine-tests cqsp-core cqsp-engine)
-# External libraries
-target_link_libraries(cqsp-engine-tests
-    OpenGL::GL
-    imgui::imgui
-    implot::implot
-    EnTT::EnTT
-    hjson
-    spdlog::spdlog
-    glm::glm
-    ${LUA_LIBRARY}
-    freetype
-    fmt::fmt
-    libnoise
-    glad
-    glfw
-    ${OPENAL_LIBRARY}
-)
 
 add_test(NAME cqsp-engine-test COMMAND cqsp-engine-tests WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/binaries/bin)
 
