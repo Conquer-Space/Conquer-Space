@@ -20,6 +20,7 @@
 #include <GLFW/glfw3.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <RmlUi/Core.h>
 
 #include <fmt/core.h>
 #include <hjson.h>
@@ -46,6 +47,8 @@
 #include "common/util/paths.h"
 #include "common/util/logging.h"
 #include "engine/cqspgui.h"
+#include "engine/ui/rmlrenderinterface.h"
+#include "engine/ui/rmlsysteminterface.h"
 
 namespace cqsp::engine {
 const char* ParseType(GLenum type) {
@@ -350,6 +353,24 @@ int cqsp::engine::Application::init() {
 
 
     SetIcon();
+
+    InitImgui();
+    InitRmlUi();
+
+
+    if (full_screen) {
+        SetFullScreen(true);
+    }
+
+    std::unique_ptr<Scene> initial_scene = std::make_unique<EmptyScene>(*this);
+    m_scene_manager.SetInitialScene(std::move(initial_scene));
+
+    m_game = std::make_unique<cqsp::common::Game>();
+    return 0;
+}
+
+
+void cqsp::engine::Application::InitImgui() {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -362,16 +383,38 @@ int cqsp::engine::Application::init() {
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window(m_window), true);
     ImGui_ImplOpenGL3_Init("#version 130");
+}
 
-    if (full_screen) {
-        SetFullScreen(true);
+void cqsp::engine::Application::InitRmlUi() {
+    // Begin by installing the custom interfaces.
+    m_system_interface = std::make_unique<cqsp::engine::CQSPSystemInterface>(*this);
+    m_render_interface = std::make_unique<cqsp::engine::CQSPRenderInterface>(*this);
+
+    Rml::SetSystemInterface(m_system_interface.get());
+    Rml::SetRenderInterface(m_render_interface.get());
+
+    // Now we can initialize RmlUi.
+    Rml::Initialise();
+
+    rml_context = Rml::CreateContext(
+        "main", Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
+    if (!rml_context) {
+        SPDLOG_CRITICAL("Unable to load rml context!");
+        // Exit
     }
 
-    std::unique_ptr<Scene> initial_scene = std::make_unique<EmptyScene>(*this);
-    m_scene_manager.SetInitialScene(std::move(initial_scene));
+    // Load fonts
+    // Basic font face
+    Hjson::Value fontDatabase;
+    Hjson::DecoderOptions decOpt;
+    decOpt.comments = false;
+    std::fstream stream(cqsp::common::util::GetCqspDataPath() +
+                        "/core/gfx/fonts/fonts.hjson");
+    stream >> Hjson::StreamDecoder(fontDatabase, decOpt);
+    std::string fontPath =
+        cqsp::common::util::GetCqspDataPath() + "/core/gfx/fonts/";
 
-    m_game = std::make_unique<cqsp::common::Game>();
-    return 0;
+    Rml::LoadFontFace((fontPath + fontDatabase["default"]["path"]).c_str());
 }
 
 int cqsp::engine::Application::destroy() {
@@ -402,6 +445,8 @@ int cqsp::engine::Application::destroy() {
     ImPlot::DestroyContext();
     ImGui::DestroyContext();
     SPDLOG_INFO("Killed ImGui");
+
+    Rml::Shutdown();
 
     glfwDestroyWindow(window(m_window));
     glfwTerminate();
@@ -492,6 +537,8 @@ void cqsp::engine::Application::run() {
         ImGui::Render();
         END_TIMED_BLOCK(ImGui_Render);
 
+        rml_context->Update();
+
         // Clear screen
         glClearColor(0.f, 0.f, 0.f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -500,6 +547,8 @@ void cqsp::engine::Application::run() {
         BEGIN_TIMED_BLOCK(Scene_Render);
         m_scene_manager.Render(deltaTime);
         END_TIMED_BLOCK(Scene_Render);
+
+        rml_context->Render();
 
         BEGIN_TIMED_BLOCK(ImGui_Render_Draw);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

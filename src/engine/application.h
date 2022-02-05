@@ -23,6 +23,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <RmlUi/Core.h>
 
 #include "engine/clientoptions.h"
 
@@ -33,6 +34,7 @@
 #include "engine/graphics/text.h"
 #include "common/game.h"
 #include "engine/audio/iaudiointerface.h"
+#include "engine/ui/rmlrenderinterface.h"
 #include "engine/window.h"
 
 namespace cqsp {
@@ -128,8 +130,6 @@ class Application {
         m_scene_manager.SetScene(std::move(ptr));
     }
 
-    ImGui::MarkdownConfig markdownConfig;
-
     cqsp::common::Universe& GetUniverse() { return m_game->GetUniverse(); }
 
     cqsp::common::Game& GetGame() { return *m_game; }
@@ -194,6 +194,8 @@ class Application {
     /// <param name="path"></param>
     bool Screenshot(const char* path = NULL);
 
+    ImGui::MarkdownConfig markdownConfig;
+
  private:
     void InitFonts();
 
@@ -202,6 +204,10 @@ class Application {
     void GlInit();
     void LoggerInit();
     void LogInfo();
+
+    void InitRmlUi();
+    void InitImgui();
+
     /*
      * Intializes glfw and imgui.
      */
@@ -218,6 +224,10 @@ class Application {
     bool full_screen;
     Window* m_window;
     std::string icon_path;
+
+    Rml::Context* rml_context;
+    std::unique_ptr<Rml::SystemInterface> m_system_interface;
+    std::unique_ptr<cqsp::engine::CQSPRenderInterface> m_render_interface;
 
     cqsp::engine::SceneManager m_scene_manager;
 
