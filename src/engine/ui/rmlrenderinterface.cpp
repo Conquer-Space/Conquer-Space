@@ -60,7 +60,7 @@ out vec2 TexCoord;
 void main() {
     gl_Position = projection * model * vec4(iPos, 0.0, 1.0);
     // Convert color because rmlui gives it in bytes, while opengl needs it to be in floats
-    // This is probabluy slow because division is slow, but this is easy.
+    // This is probably slow because division is slow, but this is easy.
     place_color = vec4(color/255.0);
     TexCoord = vec2(iTexCoord.x, iTexCoord.y);
 }
@@ -102,6 +102,7 @@ void cqsp::engine::CQSPRenderInterface::RenderGeometry(
     Rml::Vertex* vertices, int num_vertices, int* indices, int num_indices,
     Rml::TextureHandle texture, const Rml::Vector2f& translation) {
     SPDLOG_INFO("Rendering geom");
+    // Render the geometry
 }
 
 Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(
@@ -161,6 +162,7 @@ void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(
     }
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(translation.x, translation.y, 0.0f));
+    // Translate
     shader->Set("projection", app.Get2DProj());
     shader->Set("model", model);
 
@@ -195,7 +197,7 @@ bool cqsp::engine::CQSPRenderInterface::LoadTexture(Rml::TextureHandle& texture_
     cqsp::asset::Texture* texture = new cqsp::asset::Texture();
 
     int width, height, components;
-    stbi_set_flip_vertically_on_load(true);
+    //stbi_set_flip_vertically_on_load(true);
     unsigned char* data2 = stbi_load(source.c_str(), &width, &height, &components, 0);
     if (!data2) {
         return false;
@@ -203,6 +205,8 @@ bool cqsp::engine::CQSPRenderInterface::LoadTexture(Rml::TextureHandle& texture_
     asset::TextureLoadingOptions options;
     // Read file
     cqsp::asset::CreateTexture(*texture, data2, width, height, components, options);
+    texture_dimensions.x = width;
+    texture_dimensions.y = height;
     // Dump image
     stbi_image_free(data2);
     texture_handle = (Rml::TextureHandle)texture;
