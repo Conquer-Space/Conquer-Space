@@ -594,9 +594,9 @@ void cqsp::engine::Application::run() {
     }
     m_audio_interface->StartWorker();
 
-    // Load documents
+    // Load RML documents
     Rml::ElementDocument* document = nullptr;
-    int choice = 1;
+    int choice = 0;
     switch (choice) {
     default:
     case 0:
@@ -660,7 +660,7 @@ void cqsp::engine::Application::run() {
 
         // Clear screen
         glClearColor(0.f, 0.f, 0.f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         // Begin render
         BEGIN_TIMED_BLOCK(Scene_Render);
