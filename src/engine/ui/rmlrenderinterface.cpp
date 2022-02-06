@@ -238,8 +238,20 @@ void cqsp::engine::CQSPRenderInterface::ReleaseTexture(Rml::TextureHandle textur
     delete (cqsp::asset::Texture*) texture;
 }
 
-void cqsp::engine::CQSPRenderInterface::SetTransform(const Rml::Matrix4f* transform) {
-    //memcpy(glm::value_ptr(m_transform_matrix), transform->data(), sizeof(float) * 16);
+void cqsp::engine::CQSPRenderInterface::SetTransform(
+    const Rml::Matrix4f* transform){
+    // memcpy(glm::value_ptr(m_transform_matrix), transform->data(),
+    // sizeof(float) * 16);
+    if (transform == nullptr) {
+        m_transform_matrix = glm::mat4(1.0);
+        return;
+    }
+    m_transform_matrix = glm::mat4{
+        (*transform)[0][0], (*transform)[0][1], (*transform)[0][2], (*transform)[0][3],
+        (*transform)[1][0], (*transform)[1][1], (*transform)[1][2], (*transform)[1][3],
+        (*transform)[2][0], (*transform)[2][1], (*transform)[2][2], (*transform)[2][3],
+        (*transform)[3][0], (*transform)[3][1], (*transform)[3][2], (*transform)[3][3]
+    };
 }
 
 void cqsp::engine::CQSPRenderInterface::PrepareRenderBuffer() {
