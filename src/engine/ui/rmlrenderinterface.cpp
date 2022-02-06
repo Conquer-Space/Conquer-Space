@@ -9,14 +9,19 @@
 #include "engine/graphics/mesh.h"
 
 class RmlUiRendererGeometryHandler {
-   public:
+ public:
     GLuint VAO, VBO, EBO;
     int num_vertices;
     int num_indices;
-    Rml::TextureHandle texture;
+    cqsp::asset::Texture* texture;
 
     RmlUiRendererGeometryHandler()
-        : VAO(0), VBO(0), EBO(0), num_vertices(0), num_indices(0), texture(0) {}
+        : VAO(0),
+          VBO(0),
+          EBO(0),
+          num_vertices(0),
+          num_indices(0),
+          texture(0) {}
 
     ~RmlUiRendererGeometryHandler() {
         if (VAO) {
@@ -101,10 +106,11 @@ Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(
     Rml::Vertex* vertices, int num_vertices, int* indices, int num_indices,
     Rml::TextureHandle texture) {
     RmlUiRendererGeometryHandler* geom = new RmlUiRendererGeometryHandler();
+
     // Create the vertex
     geom->num_vertices = num_vertices;
     geom->num_indices = num_indices;
-    geom->texture = texture;
+    geom->texture = (cqsp::asset::Texture*) texture;
     glGenVertexArrays(1, &geom->VAO);
     glGenBuffers(1, &geom->VBO);
     glGenBuffers(1, &geom->EBO);
@@ -138,6 +144,7 @@ void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(
     RmlUiRendererGeometryHandler* geom = (RmlUiRendererGeometryHandler*)geometry;
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     asset::ShaderProgram* shader = nullptr;
     // Draw the geometry
@@ -145,16 +152,13 @@ void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(
         texture_shader->UseProgram();
         shader = texture_shader.get();
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, ((cqsp::asset::Texture*)geom->texture)->id);
+        glBindTexture(GL_TEXTURE_2D, geom->texture->id);
     } else {
         color_shader->UseProgram();
         shader = color_shader.get();
     }
-    // Use a different shader because it's color shader
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(translation.x, translation.y, 0.0f));
-    //model = glm::scale(model, glm::vec3(1, -1, 1));
-    // Have to mirror it
     shader->Set("projection", app.Get2DProj());
     shader->Set("model", model);
 
@@ -184,28 +188,21 @@ void cqsp::engine::CQSPRenderInterface::SetScissorRegion(int x, int y,
 bool cqsp::engine::CQSPRenderInterface::LoadTexture(Rml::TextureHandle& texture_handle, Rml::Vector2i& texture_dimensions,
     const Rml::String& source) {
     // Load the texture from the file
+    SPDLOG_INFO("Loading image {}", source);
     // Open file and do things
     cqsp::asset::Texture* texture = new cqsp::asset::Texture();
-    // Read all the input
-    std::ifstream input(source, std::ios::binary);
-    if (!input.good()) {
+
+    int width, height, components;
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char* data2 = stbi_load(source.c_str(), &width, &height, &components, 0);
+    if (!data2) {
         return false;
     }
-    input.seekg(0, std::ios::end);
-    // Get size
-    std::streamsize size = input.tellg();
-    input.seekg(0, std::ios::beg);
-    char* data = new char[size];
-    input.read(data, size);
-    unsigned char* d = (unsigned char*)data;
-    int width, height, components;
-    unsigned char* data2 =
-        stbi_load_from_memory(d, size, &width, &height, &components, 0);
     asset::TextureLoadingOptions options;
     // Read file
     cqsp::asset::CreateTexture(*texture, data2, width, height, components, options);
+    // Dump image
     stbi_image_free(data2);
-    delete[] data;
     texture_handle = (Rml::TextureHandle)texture;
     return true;
 }

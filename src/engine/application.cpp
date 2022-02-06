@@ -21,6 +21,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <RmlUi/Core.h>
+#include <RmlUi/Debugger.h>
 
 #include <fmt/core.h>
 #include <hjson.h>
@@ -351,12 +352,10 @@ int cqsp::engine::Application::init() {
     m_audio_interface->SetMusicVolume(m_client_options.GetOptions()["audio"]["music"]);
     m_audio_interface->SetChannelVolume(1, m_client_options.GetOptions()["audio"]["ui"]);
 
-
     SetIcon();
 
     InitImgui();
     InitRmlUi();
-
 
     if (full_screen) {
         SetFullScreen(true);
@@ -385,6 +384,38 @@ void cqsp::engine::Application::InitImgui() {
     ImGui_ImplOpenGL3_Init("#version 130");
 }
 
+void cqsp::engine::Application::ProcessRmluiUserInput() {
+    int key_modifier = 0;
+    // Check if all the buttons are pressed
+    key_modifier |=
+        ButtonIsHeld(GLFW_MOD_CONTROL) ? 0 : Rml::Input::KeyModifier::KM_CTRL;
+    key_modifier |=
+        ButtonIsHeld(GLFW_MOD_SHIFT) ? 0 : Rml::Input::KeyModifier::KM_SHIFT;
+    key_modifier |=
+        ButtonIsHeld(GLFW_MOD_ALT) ? 0 : Rml::Input::KeyModifier::KM_ALT;
+    key_modifier |= ButtonIsHeld(GLFW_MOD_CAPS_LOCK)
+                        ? 0
+                        : Rml::Input::KeyModifier::KM_CAPSLOCK;
+    key_modifier |= ButtonIsHeld(GLFW_MOD_NUM_LOCK)
+                        ? 0
+                        : Rml::Input::KeyModifier::KM_NUMLOCK;
+    rml_context->ProcessMouseMove(GetMouseX(), GetMouseY(), key_modifier);
+
+    // Mouse down
+    if (MouseButtonIsPressed(GLFW_MOUSE_BUTTON_LEFT)) {
+        rml_context->ProcessMouseButtonDown(1, key_modifier);
+    }
+    if (MouseButtonIsPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
+        rml_context->ProcessMouseButtonDown(2, key_modifier);
+    }
+    if (MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT)) {
+        rml_context->ProcessMouseButtonUp(1, key_modifier);
+    }
+    if (MouseButtonIsReleased(GLFW_MOUSE_BUTTON_RIGHT)) {
+        rml_context->ProcessMouseButtonUp(2, key_modifier);
+    }
+}
+
 void cqsp::engine::Application::InitRmlUi() {
     // Begin by installing the custom interfaces.
     m_system_interface = std::make_unique<cqsp::engine::CQSPSystemInterface>(*this);
@@ -396,15 +427,15 @@ void cqsp::engine::Application::InitRmlUi() {
     // Now we can initialize RmlUi.
     Rml::Initialise();
 
-    rml_context = Rml::CreateContext(
-        "main", Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
+    rml_context = Rml::CreateContext("main", Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
     if (!rml_context) {
         SPDLOG_CRITICAL("Unable to load rml context!");
-        // Exit
     }
 
+    Rml::Debugger::Initialise(rml_context);
+    Rml::Debugger::SetVisible(true);
+
     // Load fonts
-    // Basic font face
     Hjson::Value fontDatabase;
     Hjson::DecoderOptions decOpt;
     decOpt.comments = false;
@@ -473,8 +504,11 @@ void cqsp::engine::Application::CalculateProjections() {
     float window_ratio = static_cast<float>(GetWindowWidth()) /
                     static_cast<float>(GetWindowHeight());
     three_dim_projection = glm::infinitePerspective(glm::radians(45.f), window_ratio, 0.1f);
-    two_dim_projection = glm::ortho(0.0f, static_cast<float>(GetWindowWidth()), 0.0f,
-                    static_cast<float>(GetWindowHeight()), -1.f, 1.f);
+    two_dim_projection =
+        glm::ortho(0.0f,
+                   static_cast<float>(GetWindowWidth()),
+                   static_cast<float>(GetWindowHeight()), 0.0f,
+                   -1.f, 1.f);
 }
 
 cqsp::engine::Application::Application(int _argc, char* _argv[]) {
@@ -509,7 +543,7 @@ void cqsp::engine::Application::run() {
     m_audio_interface->StartWorker();
 
     // Load documents
-    Rml::ElementDocument* document = rml_context->LoadDocument("test/document.rml");
+    Rml::ElementDocument* document = rml_context->LoadDocument("assets/demo.rml");
     if (!document) {
         SPDLOG_ERROR("Failed to create document");
     }
@@ -551,6 +585,7 @@ void cqsp::engine::Application::run() {
         ImGui::Render();
         END_TIMED_BLOCK(ImGui_Render);
 
+        //ProcessRmluiUserInput();
         rml_context->SetDimensions(Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
         rml_context->Update();
 
