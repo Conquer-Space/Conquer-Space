@@ -276,6 +276,4 @@ int cqsp::engine::GetRmlUiKey(int glfw_key) {
     return Rml::Input::KI_UNKNOWN;
 }
 
-int cqsp::engine::GetAsciiKey(int glfw_key) {
-
-}
+int cqsp::engine::GetAsciiKey(int glfw_key) { return 0; }

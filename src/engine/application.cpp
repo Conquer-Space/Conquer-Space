@@ -408,7 +408,7 @@ void cqsp::engine::Application::InitImgui() {
     ImGui_ImplOpenGL3_Init("#version 130");
 }
 
-void cqsp::engine::Application::ProcessRmluiUserInput() {
+void cqsp::engine::Application::ProcessRmlUiUserInput() {
     rml_context->SetDimensions(Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
 
     int mods = ((GLWindow*)m_window)->m_mods;
@@ -462,6 +462,9 @@ void cqsp::engine::Application::ProcessRmluiUserInput() {
 
     for (unsigned int key : ((GLWindow*)m_window)->code_input) {
         rml_context->ProcessTextInput(key);
+    }
+    if (ButtonIsPressed(GLFW_KEY_ENTER)) {
+        rml_context->ProcessTextInput('\n');
     }
 }
 
@@ -592,8 +595,17 @@ void cqsp::engine::Application::run() {
     m_audio_interface->StartWorker();
 
     // Load documents
-    Rml::ElementDocument* document = rml_context->LoadDocument(
-        "basic/demo/data/demo.rml");  // rml_context->LoadDocument("basic/animation/data/animation.rml");
+    Rml::ElementDocument* document = nullptr;
+    int choice = 1;
+    switch (choice) {
+    default:
+    case 0:
+        document = rml_context->LoadDocument("basic/demo/data/demo.rml");
+        break;
+    case 1:
+        document = rml_context->LoadDocument("basic/animation/data/animation.rml");
+        break;
+    }
     if (!document) {
         SPDLOG_ERROR("Failed to create document");
     } else {
@@ -621,7 +633,7 @@ void cqsp::engine::Application::run() {
 
         // Update
         m_scene_manager.Update(deltaTime);
-        ProcessRmluiUserInput();
+        ProcessRmlUiUserInput();
 
         // Init imgui
         ImGui_ImplOpenGL3_NewFrame();
