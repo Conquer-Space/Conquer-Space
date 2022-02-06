@@ -59,7 +59,9 @@ out vec4 place_color;
 out vec2 TexCoord;
 void main() {
     gl_Position = projection * model * vec4(iPos, 0.0, 1.0);
-    place_color = color;
+    // Convert color because rmlui gives it in bytes, while opengl needs it to be in floats
+    // This is probabluy slow because division is slow, but this is easy.
+    place_color = vec4(color/255.0);
     TexCoord = vec2(iTexCoord.x, iTexCoord.y);
 }
     )", cqsp::asset::ShaderType::VERT);
