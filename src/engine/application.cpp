@@ -385,6 +385,8 @@ void cqsp::engine::Application::InitImgui() {
 }
 
 void cqsp::engine::Application::ProcessRmluiUserInput() {
+    rml_context->SetDimensions(Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
+
     int key_modifier = 0;
     // Check if all the buttons are pressed
     key_modifier |=
@@ -393,12 +395,9 @@ void cqsp::engine::Application::ProcessRmluiUserInput() {
         ButtonIsHeld(GLFW_MOD_SHIFT) ? 0 : Rml::Input::KeyModifier::KM_SHIFT;
     key_modifier |=
         ButtonIsHeld(GLFW_MOD_ALT) ? 0 : Rml::Input::KeyModifier::KM_ALT;
-    key_modifier |= ButtonIsHeld(GLFW_MOD_CAPS_LOCK)
-                        ? 0
-                        : Rml::Input::KeyModifier::KM_CAPSLOCK;
-    key_modifier |= ButtonIsHeld(GLFW_MOD_NUM_LOCK)
-                        ? 0
-                        : Rml::Input::KeyModifier::KM_NUMLOCK;
+    key_modifier |= ButtonIsHeld(GLFW_MOD_CAPS_LOCK) ? 0 : Rml::Input::KeyModifier::KM_CAPSLOCK;
+    key_modifier |= ButtonIsHeld(GLFW_MOD_NUM_LOCK) ? 0 : Rml::Input::KeyModifier::KM_NUMLOCK;
+    key_modifier = 0;
     rml_context->ProcessMouseMove(GetMouseX(), GetMouseY(), key_modifier);
 
     // Mouse down
@@ -570,6 +569,7 @@ void cqsp::engine::Application::run() {
 
         // Update
         m_scene_manager.Update(deltaTime);
+        ProcessRmluiUserInput();
 
         // Init imgui
         ImGui_ImplOpenGL3_NewFrame();
@@ -581,12 +581,13 @@ void cqsp::engine::Application::run() {
         m_scene_manager.Ui(deltaTime);
         END_TIMED_BLOCK(UiCreation);
 
+        ImGui::Begin("Mouse Information");
+        ImGui::TextFmt("{} {}", GetMouseX(), GetMouseY());
+        ImGui::End();
         BEGIN_TIMED_BLOCK(ImGui_Render);
         ImGui::Render();
         END_TIMED_BLOCK(ImGui_Render);
 
-        //ProcessRmluiUserInput();
-        rml_context->SetDimensions(Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
         rml_context->Update();
 
         // Clear screen
