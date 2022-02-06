@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <stb_image.h>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "common/util/logging.h"
 #include "engine/application.h"
@@ -46,8 +47,12 @@ class Vertex {
 };
 
 cqsp::engine::CQSPRenderInterface::CQSPRenderInterface(Application& _app) : app(_app) {
+    logger = spdlog::get("RmlUi");
+    if (logger == nullptr) {
+        logger = spdlog::default_logger();
+    }
     try {
-    vert_shader = cqsp::asset::Shader(R"(
+        vert_shader = cqsp::asset::Shader(R"(
 #version 330 core
 layout (location = 0) in vec2 iPos;
 layout (location = 1) in vec4 color;
@@ -65,19 +70,18 @@ void main() {
     TexCoord = vec2(iTexCoord.x, iTexCoord.y);
 }
     )", cqsp::asset::ShaderType::VERT);
-        SPDLOG_INFO("Frag shader");
-    frag_shader = cqsp::asset::Shader(R"(
+        SPDLOG_LOGGER_INFO(logger, "Loaded rmlui vert shader");
+        frag_shader = cqsp::asset::Shader(R"(
 #version 330 core
 out vec4 FragColor;
 in vec4 place_color;
 in vec2 TexCoord;
 void main()
 {
-    FragColor = place_color;//vec4(texture(texture1, TexCoord).rgb, 1);
-}
-    )", cqsp::asset::ShaderType::FRAG);
-        texture_frag_shader =
-            cqsp::asset::Shader(R"(
+    FragColor = place_color;
+})", cqsp::asset::ShaderType::FRAG);
+        SPDLOG_LOGGER_INFO(logger, "Loaded rmlui frag shader");
+        texture_frag_shader = cqsp::asset::Shader(R"(
 #version 330 core
 out vec4 FragColor;
 in vec4 place_color;
@@ -85,24 +89,28 @@ in vec2 TexCoord;
 uniform sampler2D texture1;
 void main()
 {
-    FragColor = vec4(texture(texture1, TexCoord).rgba) * vec4(place_color.rgb, 1);
-}
-    )", cqsp::asset::ShaderType::FRAG);
+    FragColor = vec4(texture(texture1, TexCoord).rgba) * vec4(place_color.rgba);
+})", cqsp::asset::ShaderType::FRAG);
 
-    color_shader = asset::MakeShaderProgram(vert_shader, frag_shader);
-    texture_shader = asset::MakeShaderProgram(vert_shader, texture_frag_shader);
-    texture_shader->UseProgram();
-    texture_shader->setInt("texture1", 0);
+        color_shader = asset::MakeShaderProgram(vert_shader, frag_shader);
+        texture_shader = asset::MakeShaderProgram(vert_shader, texture_frag_shader);
+        texture_shader->UseProgram();
+        texture_shader->setInt("texture1", 0);
     } catch (const std::runtime_error& ex) {
-        SPDLOG_WARN("{}", ex.what());
+        SPDLOG_LOGGER_WARN(logger, "{}", ex.what());
     }
 }
 
 void cqsp::engine::CQSPRenderInterface::RenderGeometry(
     Rml::Vertex* vertices, int num_vertices, int* indices, int num_indices,
     Rml::TextureHandle texture, const Rml::Vector2f& translation) {
-    SPDLOG_INFO("Rendering geom");
     // Render the geometry
+    Rml::CompiledGeometryHandle compiled =
+        CompileGeometry(vertices, num_vertices, indices, num_indices, texture);
+    if (compiled != NULL) {
+        RenderCompiledGeometry(compiled, translation);
+        ReleaseCompiledGeometry(compiled);
+    }
 }
 
 Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(
@@ -161,10 +169,11 @@ void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(
         shader = color_shader.get();
     }
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(translation.x, translation.y, 0.0f));
+    model = m_transform_matrix * glm::translate(model, glm::vec3(translation.x, translation.y, 0.0f));
     // Translate
     shader->Set("projection", app.Get2DProj());
     shader->Set("model", model);
+    // Set translation matrix
 
     glBindVertexArray(geom->VAO);
     glDrawElements(GL_TRIANGLES, geom->num_indices, GL_UNSIGNED_INT, 0);
@@ -229,9 +238,8 @@ void cqsp::engine::CQSPRenderInterface::ReleaseTexture(Rml::TextureHandle textur
     delete (cqsp::asset::Texture*) texture;
 }
 
-// Ignore for now
 void cqsp::engine::CQSPRenderInterface::SetTransform(const Rml::Matrix4f* transform) {
-
+    //memcpy(glm::value_ptr(m_transform_matrix), transform->data(), sizeof(float) * 16);
 }
 
 void cqsp::engine::CQSPRenderInterface::PrepareRenderBuffer() {

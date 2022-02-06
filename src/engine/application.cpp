@@ -50,6 +50,7 @@
 #include "engine/cqspgui.h"
 #include "engine/ui/rmlrenderinterface.h"
 #include "engine/ui/rmlsysteminterface.h"
+#include "engine/userinput.h"
 
 namespace cqsp::engine {
 const char* ParseType(GLenum type) {
@@ -137,9 +138,12 @@ class GLWindow : public Window {
         if (action == GLFW_PRESS) {
             m_keys_held[key] = true;
             m_keys_pressed[key] = true;
+            keys_pressed_last.push_back(key);
+            m_mods = mods;
         } else if (action == GLFW_RELEASE) {
             m_keys_held[key] = false;
             m_keys_released[key] = true;
+            keys_released_last.push_back(key);
         }
     }
 
@@ -166,6 +170,11 @@ class GLWindow : public Window {
 
     void ScrollCallback(GLFWwindow* _w, double xoffset, double yoffset) {
         m_scroll_amount = yoffset;
+    }
+
+    void CharacterCallback(GLFWwindow* window, unsigned int codepoint) {
+        // Callback
+        code_input.push_back(codepoint);
     }
 
     void DropCallback(GLFWwindow* _w, int count, const char** paths) {}
@@ -221,6 +230,11 @@ class GLWindow : public Window {
                 ->FrameBufferSizeCallback(_w, width, height);
         };
 
+        auto character_callback = [](GLFWwindow* _w, unsigned int codepoint) {
+            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))
+                ->CharacterCallback(_w, codepoint);
+        };
+
         glfwSetKeyCallback(window, key_callback);
         glfwSetCursorPosCallback(window, cursor_position_callback);
         glfwSetCursorEnterCallback(window, cursor_enter_callback);
@@ -228,6 +242,7 @@ class GLWindow : public Window {
         glfwSetScrollCallback(window, scroll_callback);
         glfwSetDropCallback(window, drop_callback);
         glfwSetFramebufferSizeCallback(window, frame_buffer_callback);
+        glfwSetCharCallback(window, character_callback);
     }
 
     void OnFrame() {
@@ -237,6 +252,9 @@ class GLWindow : public Window {
         std::memset(m_mouse_keys_pressed, false, sizeof(m_mouse_keys_pressed));
         std::memset(m_mouse_keys_released, false, sizeof(m_mouse_keys_released));
         m_scroll_amount = 0;
+        keys_pressed_last.clear();
+        keys_released_last.clear();
+        code_input.clear();
         window_size_changed = false;
     }
 
@@ -329,9 +347,15 @@ class GLWindow : public Window {
 
     double m_scroll_amount;
 
-    int m_mods;
 
     int m_window_width, m_window_height;
+
+ public:
+    std::vector<int> keys_pressed_last;
+    std::vector<int> keys_released_last;
+    std::vector<unsigned int> code_input;
+
+    int m_mods;
 };
 
 GLFWwindow* window(Window* window) {
@@ -387,17 +411,24 @@ void cqsp::engine::Application::InitImgui() {
 void cqsp::engine::Application::ProcessRmluiUserInput() {
     rml_context->SetDimensions(Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
 
+    int mods = ((GLWindow*)m_window)->m_mods;
     int key_modifier = 0;
     // Check if all the buttons are pressed
-    key_modifier |=
-        ButtonIsHeld(GLFW_MOD_CONTROL) ? 0 : Rml::Input::KeyModifier::KM_CTRL;
-    key_modifier |=
-        ButtonIsHeld(GLFW_MOD_SHIFT) ? 0 : Rml::Input::KeyModifier::KM_SHIFT;
-    key_modifier |=
-        ButtonIsHeld(GLFW_MOD_ALT) ? 0 : Rml::Input::KeyModifier::KM_ALT;
-    key_modifier |= ButtonIsHeld(GLFW_MOD_CAPS_LOCK) ? 0 : Rml::Input::KeyModifier::KM_CAPSLOCK;
-    key_modifier |= ButtonIsHeld(GLFW_MOD_NUM_LOCK) ? 0 : Rml::Input::KeyModifier::KM_NUMLOCK;
-    key_modifier = 0;
+    if ((mods & GLFW_MOD_CONTROL) == GLFW_MOD_CONTROL) {
+        key_modifier |= Rml::Input::KeyModifier::KM_CTRL;
+    }
+    if ((mods & GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT) {
+        key_modifier |= Rml::Input::KeyModifier::KM_SHIFT;
+    }
+    if ((mods & GLFW_MOD_ALT) == GLFW_MOD_ALT) {
+        key_modifier |= Rml::Input::KeyModifier::KM_ALT;
+    }
+    if ((mods & GLFW_MOD_CAPS_LOCK) == GLFW_MOD_CAPS_LOCK) {
+        key_modifier |= Rml::Input::KeyModifier::KM_CAPSLOCK;
+    }
+    if ((mods & GLFW_MOD_NUM_LOCK) == GLFW_MOD_NUM_LOCK) {
+        Rml::Input::KeyModifier::KM_NUMLOCK;
+    }
     rml_context->ProcessMouseMove(GetMouseX(), GetMouseY(), key_modifier);
 
     // Mouse down
@@ -412,6 +443,25 @@ void cqsp::engine::Application::ProcessRmluiUserInput() {
     }
     if (MouseButtonIsReleased(GLFW_MOUSE_BUTTON_RIGHT)) {
         rml_context->ProcessMouseButtonUp(1, key_modifier);
+    }
+    rml_context->ProcessMouseWheel(-GetScrollAmount(), key_modifier);
+    // Key presses
+    // Check for any key up
+    // Go through all the keys and check if they're doing things...
+    // Check the button
+    // Probably need an event queue in the future to make this more efficient
+    for (int key : ((GLWindow*)m_window)->keys_pressed_last) {
+        rml_context->ProcessKeyDown((Rml::Input::KeyIdentifier)GetRmlUiKey(key),
+                                    key_modifier);
+    }
+
+    for (int key : ((GLWindow*)m_window)->keys_released_last) {
+        rml_context->ProcessKeyUp((Rml::Input::KeyIdentifier)GetRmlUiKey(key),
+                                    key_modifier);
+    }
+
+    for (unsigned int key : ((GLWindow*)m_window)->code_input) {
+        rml_context->ProcessTextInput(key);
     }
 }
 
@@ -542,7 +592,8 @@ void cqsp::engine::Application::run() {
     m_audio_interface->StartWorker();
 
     // Load documents
-    Rml::ElementDocument* document = rml_context->LoadDocument("basic/animation/data/animation.rml");
+    Rml::ElementDocument* document = rml_context->LoadDocument(
+        "basic/demo/data/demo.rml");  // rml_context->LoadDocument("basic/animation/data/animation.rml");
     if (!document) {
         SPDLOG_ERROR("Failed to create document");
     } else {
@@ -583,7 +634,11 @@ void cqsp::engine::Application::run() {
         END_TIMED_BLOCK(UiCreation);
 
         ImGui::Begin("Mouse Information");
+        ImGui::TextFmt("{}", fps);
         ImGui::TextFmt("{} {}", GetMouseX(), GetMouseY());
+        ImGui::TextFmt("{} {}",
+                       ((GLWindow*)m_window)->keys_released_last.size(),
+                       ((GLWindow*)m_window)->keys_pressed_last.size());
         ImGui::End();
         BEGIN_TIMED_BLOCK(ImGui_Render);
         ImGui::Render();
