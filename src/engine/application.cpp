@@ -402,16 +402,16 @@ void cqsp::engine::Application::ProcessRmluiUserInput() {
 
     // Mouse down
     if (MouseButtonIsPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-        rml_context->ProcessMouseButtonDown(1, key_modifier);
+        rml_context->ProcessMouseButtonDown(0, key_modifier);
     }
     if (MouseButtonIsPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
-        rml_context->ProcessMouseButtonDown(2, key_modifier);
+        rml_context->ProcessMouseButtonDown(1, key_modifier);
     }
     if (MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT)) {
-        rml_context->ProcessMouseButtonUp(1, key_modifier);
+        rml_context->ProcessMouseButtonUp(0, key_modifier);
     }
     if (MouseButtonIsReleased(GLFW_MOUSE_BUTTON_RIGHT)) {
-        rml_context->ProcessMouseButtonUp(2, key_modifier);
+        rml_context->ProcessMouseButtonUp(1, key_modifier);
     }
 }
 
@@ -542,11 +542,12 @@ void cqsp::engine::Application::run() {
     m_audio_interface->StartWorker();
 
     // Load documents
-    Rml::ElementDocument* document = rml_context->LoadDocument("assets/demo.rml");
+    Rml::ElementDocument* document = rml_context->LoadDocument("basic/animation/data/animation.rml");
     if (!document) {
         SPDLOG_ERROR("Failed to create document");
+    } else {
+        document->Show();
     }
-    document->Show();
 
     while (ShouldExit()) {
         // Calculate FPS
