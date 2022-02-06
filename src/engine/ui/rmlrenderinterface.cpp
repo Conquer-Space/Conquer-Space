@@ -186,16 +186,60 @@ void cqsp::engine::CQSPRenderInterface::ReleaseCompiledGeometry(
 }
 
 void cqsp::engine::CQSPRenderInterface::EnableScissorRegion(bool enable) {
-    if (enable)
-        glEnable(GL_SCISSOR_TEST);
-    else
+    if (enable) {
+        if (!m_transform_enabled) {
+            glEnable(GL_SCISSOR_TEST);
+            glDisable(GL_STENCIL_TEST);
+        } else {
+            glDisable(GL_SCISSOR_TEST);
+            glEnable(GL_STENCIL_TEST);
+        }
+    } else {
         glDisable(GL_SCISSOR_TEST);
+        glDisable(GL_STENCIL_TEST);
+    }
 }
 
 void cqsp::engine::CQSPRenderInterface::SetScissorRegion(int x, int y,
                                                          int width,
                                                          int height) {
-    glScissor(x, app.GetWindowHeight() - (y + height), width, height);
+    if (!m_transform_enabled) {
+        glScissor(x, app.GetWindowHeight() - (y + height), width, height);
+    } else {
+        // clear the stencil buffer
+        glStencilMask(GLuint(-1));
+        glClear(GL_STENCIL_BUFFER_BIT);
+
+        // fill the stencil buffer
+        glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+        glDepthMask(GL_FALSE);
+        glStencilFunc(GL_NEVER, 1, GLuint(-1));
+        glStencilOp(GL_REPLACE, GL_KEEP, GL_KEEP);
+
+        float fx = (float)x;
+        float fy = (float)y;
+        float fwidth = (float)width;
+        float fheight = (float)height;
+
+        // draw transformed quad
+        GLfloat vertices[] = {
+            fx,          fy,           0, fx,          fy + fheight, 0,
+            fx + fwidth, fy + fheight, 0, fx + fwidth, fy,           0};
+        glDisableClientState(GL_COLOR_ARRAY);
+        glVertexPointer(3, GL_FLOAT, 0, vertices);
+        GLushort indices[] = {1, 2, 0, 3};
+        glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, indices);
+        glEnableClientState(GL_COLOR_ARRAY);
+
+        // prepare for drawing the real thing
+        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+        glDepthMask(GL_TRUE);
+        glStencilMask(0);
+        glStencilFunc(GL_EQUAL, 1, GLuint(-1));
+    }
+    // TODO(EhWhoAmI): Add stencil buffer rendering
+    // Reference:
+    // https://github.com/mikke89/RmlUi/blob/master/Samples/shell/src/ShellRenderInterfaceOpenGL.cpp#L120
 }
 
 bool cqsp::engine::CQSPRenderInterface::LoadTexture(Rml::TextureHandle& texture_handle, Rml::Vector2i& texture_dimensions,
@@ -242,6 +286,8 @@ void cqsp::engine::CQSPRenderInterface::SetTransform(
     const Rml::Matrix4f* transform){
     // memcpy(glm::value_ptr(m_transform_matrix), transform->data(),
     // sizeof(float) * 16);
+    m_transform_enabled = (bool)transform;
+
     if (transform == nullptr) {
         m_transform_matrix = glm::mat4(1.0);
         return;
