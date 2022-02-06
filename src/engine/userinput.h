@@ -18,7 +18,8 @@
 
 namespace cqsp {
 namespace engine {
-class UserInput {
-};
-}
-}
+class UserInput {};
+int GetRmlUiKey(int glfw_key);
+int GetAsciiKey(int glfw_key);
+}  // namespace engine
+}  // namespace cqsp

@@ -2,6 +2,7 @@
 
 #include <RmlUi/Core.h>
 #include <spdlog/spdlog.h>
+#include <glm/glm.hpp>
 
 #include "engine/engine.h"
 #include "engine/graphics/shader.h"
@@ -54,7 +55,9 @@ class CQSPRenderInterface : public Rml::RenderInterface {
     cqsp::asset::ShaderProgram_t color_shader;
     cqsp::asset::ShaderProgram_t texture_shader;
     bool m_transform_enabled = false;
+    glm::mat4 m_transform_matrix = glm::mat4(1.0);
 
     int counter = 0;
+    std::shared_ptr<spdlog::logger> logger;
 };
 }  // namespace cqsp::engine
