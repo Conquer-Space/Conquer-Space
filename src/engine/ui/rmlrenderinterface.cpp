@@ -1,4 +1,20 @@
-#include "rmlrenderinterface.h"
+/* Conquer Space
+* Copyright (C) 2021 Conquer Space
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+#include "engine/ui/rmlrenderinterface.h"
 
 #include <glad/glad.h>
 #include <stb_image.h>
@@ -40,17 +56,15 @@ class RmlUiRendererGeometryHandler {
     }
 };
 
-class Vertex {
-    glm::vec2 pos;
-    glm::vec2 tex_coord;
-    glm::vec4 color;
-};
-
 cqsp::engine::CQSPRenderInterface::CQSPRenderInterface(Application& _app) : app(_app) {
     logger = spdlog::get("RmlUi");
     if (logger == nullptr) {
         logger = spdlog::default_logger();
     }
+
+    // Semi sketchy code to load the shaders. It will be preferable to load it from a file, but
+    // since this is rather crucial to the running the game,
+    // this will likely be here until we find an alternative solution.
     try {
         vert_shader = cqsp::asset::Shader(R"(
 #version 330 core
@@ -80,6 +94,7 @@ void main()
 {
     FragColor = place_color;
 })", cqsp::asset::ShaderType::FRAG);
+
         SPDLOG_LOGGER_INFO(logger, "Loaded rmlui frag shader");
         texture_frag_shader = cqsp::asset::Shader(R"(
 #version 330 core
@@ -87,6 +102,7 @@ out vec4 FragColor;
 in vec4 place_color;
 in vec2 TexCoord;
 uniform sampler2D texture1;
+
 void main()
 {
     FragColor = vec4(texture(texture1, TexCoord).rgba) * vec4(place_color.rgba);
@@ -97,6 +113,8 @@ void main()
         texture_shader->UseProgram();
         texture_shader->setInt("texture1", 0);
     } catch (const std::runtime_error& ex) {
+        // Need something better than throwing an exception
+        // TODO(EhWhoAmI): Also need to disable the game from displaying ui if this fails
         SPDLOG_LOGGER_WARN(logger, "{}", ex.what());
     }
 }
@@ -135,8 +153,7 @@ Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, indices,
                  GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Rml::Vertex),
-                          reinterpret_cast<void*>(0));
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Rml::Vertex), reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
 
     glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Rml::Vertex),
@@ -147,12 +164,12 @@ Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(
         reinterpret_cast<void*>(sizeof(Rml::Vector2f) + sizeof(Rml::Colourb)));
     glEnableVertexAttribArray(2);
 
-    return (Rml::CompiledGeometryHandle) geom;
+    return reinterpret_cast<Rml::CompiledGeometryHandle>(geom);
 }
 
 void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(
     Rml::CompiledGeometryHandle geometry, const Rml::Vector2f& translation) {
-    RmlUiRendererGeometryHandler* geom = (RmlUiRendererGeometryHandler*)geometry;
+    RmlUiRendererGeometryHandler* geom = reinterpret_cast<RmlUiRendererGeometryHandler*>(geometry);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -171,7 +188,7 @@ void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(
     glm::mat4 model = glm::mat4(1.0f);
     model = m_transform_matrix * glm::translate(model, glm::vec3(translation.x, translation.y, 0.0f));
     // Translate
-    shader->Set("projection", app.Get2DProj());
+    shader->Set("projection", app.GetRmlUiProj());
     shader->Set("model", model);
     // Set translation matrix
 
@@ -216,10 +233,10 @@ void cqsp::engine::CQSPRenderInterface::SetScissorRegion(int x, int y,
         glStencilFunc(GL_NEVER, 1, GLuint(-1));
         glStencilOp(GL_REPLACE, GL_KEEP, GL_KEEP);
 
-        float fx = (float)x;
-        float fy = (float)y;
-        float fwidth = (float)width;
-        float fheight = (float)height;
+        float fx = static_cast<float>(x);
+        float fy = static_cast<float>(y);
+        float fwidth = static_cast<float>(width);
+        float fheight = static_cast<float>(height);
 
         // draw transformed quad
         GLfloat vertices[] = {
@@ -242,10 +259,10 @@ void cqsp::engine::CQSPRenderInterface::SetScissorRegion(int x, int y,
     // https://github.com/mikke89/RmlUi/blob/master/Samples/shell/src/ShellRenderInterfaceOpenGL.cpp#L120
 }
 
-bool cqsp::engine::CQSPRenderInterface::LoadTexture(Rml::TextureHandle& texture_handle, Rml::Vector2i& texture_dimensions,
-    const Rml::String& source) {
+bool cqsp::engine::CQSPRenderInterface::LoadTexture(Rml::TextureHandle& texture_handle,
+                                                    Rml::Vector2i& texture_dimensions, const Rml::String& source) {
     // Load the texture from the file
-    SPDLOG_INFO("Loading image {}", source);
+    SPDLOG_LOGGER_INFO(logger, "Loading image {}", source);
     // Open file and do things
     cqsp::asset::Texture* texture = new cqsp::asset::Texture();
 
@@ -282,16 +299,14 @@ void cqsp::engine::CQSPRenderInterface::ReleaseTexture(Rml::TextureHandle textur
     delete (cqsp::asset::Texture*) texture;
 }
 
-void cqsp::engine::CQSPRenderInterface::SetTransform(
-    const Rml::Matrix4f* transform){
-    // memcpy(glm::value_ptr(m_transform_matrix), transform->data(),
-    // sizeof(float) * 16);
-    m_transform_enabled = (bool)transform;
+void cqsp::engine::CQSPRenderInterface::SetTransform(const Rml::Matrix4f* transform) {
+    m_transform_enabled = static_cast<bool>(transform);
 
     if (transform == nullptr) {
         m_transform_matrix = glm::mat4(1.0);
         return;
     }
+    // Super sketchy code to convert, please help, change this
     m_transform_matrix = glm::mat4{
         (*transform)[0][0], (*transform)[0][1], (*transform)[0][2], (*transform)[0][3],
         (*transform)[1][0], (*transform)[1][1], (*transform)[1][2], (*transform)[1][3],
@@ -301,11 +316,6 @@ void cqsp::engine::CQSPRenderInterface::SetTransform(
 }
 
 void cqsp::engine::CQSPRenderInterface::PrepareRenderBuffer() {
-  //  renderer->SetProjection(app.Get2DProj());
-//glDisable(GL_DEPTH_TEST);
-    // glEnable(GL_BLEND);
-    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 }
 
 void cqsp::engine::CQSPRenderInterface::PresentRenderBuffer() {}

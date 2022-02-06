@@ -28,5 +28,6 @@ namespace cqsp::common::util {
 /// <param name="name"></param>
 /// <param name="error">If it wants an error output file, then it will output it as "{name}.error.txt</param>
 /// <returns></returns>
-std::shared_ptr<spdlog::logger> make_logger(std::string name, bool error = false);
+std::shared_ptr<spdlog::logger> make_logger(const std::string& name, bool error = false);
+std::shared_ptr<spdlog::logger> make_registered_logger(const std::string& name, bool error = false);
 }  // namespace cqsp::common::util

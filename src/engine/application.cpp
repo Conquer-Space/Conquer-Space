@@ -392,7 +392,6 @@ int cqsp::engine::Application::init() {
     return 0;
 }
 
-
 void cqsp::engine::Application::InitImgui() {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -411,9 +410,10 @@ void cqsp::engine::Application::InitImgui() {
 void cqsp::engine::Application::ProcessRmlUiUserInput() {
     rml_context->SetDimensions(Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
 
-    int mods = ((GLWindow*)m_window)->m_mods;
+    GLWindow* gl_window = reinterpret_cast<GLWindow*>(m_window);
+    int mods = gl_window->m_mods;
     int key_modifier = 0;
-    // Check if all the buttons are pressed
+    // Check for key mods
     if ((mods & GLFW_MOD_CONTROL) == GLFW_MOD_CONTROL) {
         key_modifier |= Rml::Input::KeyModifier::KM_CTRL;
     }
@@ -444,25 +444,25 @@ void cqsp::engine::Application::ProcessRmlUiUserInput() {
     if (MouseButtonIsReleased(GLFW_MOUSE_BUTTON_RIGHT)) {
         rml_context->ProcessMouseButtonUp(1, key_modifier);
     }
+    // Scroll wheel is flipped for some reason
     rml_context->ProcessMouseWheel(-GetScrollAmount(), key_modifier);
-    // Key presses
-    // Check for any key up
-    // Go through all the keys and check if they're doing things...
-    // Check the button
-    // Probably need an event queue in the future to make this more efficient
-    for (int key : ((GLWindow*)m_window)->keys_pressed_last) {
+
+    // Process key inputs
+    for (int key : gl_window->keys_pressed_last) {
         rml_context->ProcessKeyDown((Rml::Input::KeyIdentifier)GetRmlUiKey(key),
                                     key_modifier);
     }
 
-    for (int key : ((GLWindow*)m_window)->keys_released_last) {
+    for (int key : gl_window->keys_released_last) {
         rml_context->ProcessKeyUp((Rml::Input::KeyIdentifier)GetRmlUiKey(key),
                                     key_modifier);
     }
 
-    for (unsigned int key : ((GLWindow*)m_window)->code_input) {
+    for (unsigned int key : gl_window->code_input) {
         rml_context->ProcessTextInput(key);
     }
+
+    // Because the glfw's char callback does not register new line.
     if (ButtonIsPressed(GLFW_KEY_ENTER)) {
         rml_context->ProcessTextInput('\n');
     }
@@ -484,10 +484,14 @@ void cqsp::engine::Application::InitRmlUi() {
         SPDLOG_CRITICAL("Unable to load rml context!");
     }
 
+    // Disable debugger ui for now
+#if 0
     Rml::Debugger::Initialise(rml_context);
     Rml::Debugger::SetVisible(true);
+#endif
 
-    // Load fonts
+    // Load rmlui fonts
+    // TODO(EhWhoAmI): Load this somewhere else
     Hjson::Value fontDatabase;
     Hjson::DecoderOptions decOpt;
     decOpt.comments = false;
@@ -498,12 +502,6 @@ void cqsp::engine::Application::InitRmlUi() {
         cqsp::common::util::GetCqspDataPath() + "/core/gfx/fonts/";
 
     Rml::LoadFontFace((fontPath + fontDatabase["default"]["path"]).c_str());
-    // Add fonts
-    Rml::LoadFontFace("assets/LatoLatin-Bold.ttf");
-    Rml::LoadFontFace("assets/LatoLatin-BoldItalic.ttf");
-    Rml::LoadFontFace("assets/LatoLatin-Italic.ttf");
-    Rml::LoadFontFace("assets/LatoLatin-Regular.ttf");
-    Rml::LoadFontFace("assets/NotoEmoji-Regular.ttf");
 }
 
 int cqsp::engine::Application::destroy() {
@@ -536,6 +534,7 @@ int cqsp::engine::Application::destroy() {
     SPDLOG_INFO("Killed ImGui");
 
     Rml::Shutdown();
+    SPDLOG_INFO("Killed RmlUi");
 
     glfwDestroyWindow(window(m_window));
     glfwTerminate();
@@ -556,7 +555,13 @@ void cqsp::engine::Application::CalculateProjections() {
     float window_ratio = static_cast<float>(GetWindowWidth()) /
                     static_cast<float>(GetWindowHeight());
     three_dim_projection = glm::infinitePerspective(glm::radians(45.f), window_ratio, 0.1f);
+    // For normal rendering
     two_dim_projection =
+        glm::ortho(0.0f,
+                   static_cast<float>(GetWindowWidth()), 0.0f,
+                   static_cast<float>(GetWindowHeight()));
+    // For rmlui
+    rmlui_projection =
         glm::ortho(0.0f,
                    static_cast<float>(GetWindowWidth()),
                    static_cast<float>(GetWindowHeight()), 0.0f,
@@ -594,24 +599,6 @@ void cqsp::engine::Application::run() {
     }
     m_audio_interface->StartWorker();
 
-    // Load RML documents
-    Rml::ElementDocument* document = nullptr;
-    int choice = 0;
-    switch (choice) {
-    default:
-    case 0:
-        document = rml_context->LoadDocument("basic/demo/data/demo.rml");
-        break;
-    case 1:
-        document = rml_context->LoadDocument("basic/animation/data/animation.rml");
-        break;
-    }
-    if (!document) {
-        SPDLOG_ERROR("Failed to create document");
-    } else {
-        document->Show();
-    }
-
     while (ShouldExit()) {
         // Calculate FPS
         double currentFrame = GetTime();
@@ -645,13 +632,6 @@ void cqsp::engine::Application::run() {
         m_scene_manager.Ui(deltaTime);
         END_TIMED_BLOCK(UiCreation);
 
-        ImGui::Begin("Mouse Information");
-        ImGui::TextFmt("{}", fps);
-        ImGui::TextFmt("{} {}", GetMouseX(), GetMouseY());
-        ImGui::TextFmt("{} {}",
-                       ((GLWindow*)m_window)->keys_released_last.size(),
-                       ((GLWindow*)m_window)->keys_pressed_last.size());
-        ImGui::End();
         BEGIN_TIMED_BLOCK(ImGui_Render);
         ImGui::Render();
         END_TIMED_BLOCK(ImGui_Render);
@@ -662,11 +642,12 @@ void cqsp::engine::Application::run() {
         glClearColor(0.f, 0.f, 0.f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-        // Begin render
+        // Render scene
         BEGIN_TIMED_BLOCK(Scene_Render);
         m_scene_manager.Render(deltaTime);
         END_TIMED_BLOCK(Scene_Render);
 
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         rml_context->Render();
 
         BEGIN_TIMED_BLOCK(ImGui_Render_Draw);
