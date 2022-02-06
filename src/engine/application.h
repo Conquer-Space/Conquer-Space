@@ -207,6 +207,7 @@ class Application {
 
     void InitRmlUi();
     void InitImgui();
+    void ProcessRmluiUserInput();
 
     /*
      * Intializes glfw and imgui.

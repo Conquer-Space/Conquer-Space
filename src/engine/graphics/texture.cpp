@@ -62,7 +62,6 @@ void cqsp::asset::CreateTexture(Texture& texture, unsigned char* data, int width
     texture.id = CreateTexture(data, width, height, components, options);
     texture.width = width;
     texture.height = height;
-    // It's a 2d texture, so
     texture.texture_type = GL_TEXTURE_2D;
 }
 
