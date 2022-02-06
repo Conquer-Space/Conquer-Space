@@ -17,13 +17,13 @@
 #pragma once
 
 #include <spdlog/spdlog.h>
+#include <RmlUi/Core.h>
 
 #include <memory>
 #include <utility>
 #include <string>
 #include <map>
 #include <vector>
-#include <RmlUi/Core.h>
 
 #include "engine/clientoptions.h"
 
@@ -183,6 +183,7 @@ class Application {
 
     glm::mat4 Get2DProj() { return two_dim_projection; }
     glm::mat4 Get3DProj() { return three_dim_projection; }
+    glm::mat4 GetRmlUiProj() { return rmlui_projection; }
 
     std::vector<std::string>& GetCmdLineArgs() { return cmd_line_args; }
 
@@ -255,6 +256,7 @@ class Application {
 
     glm::mat4 two_dim_projection;
     glm::mat4 three_dim_projection;
+    glm::mat4 rmlui_projection;
     bool to_halt;
 };
 }  // namespace engine

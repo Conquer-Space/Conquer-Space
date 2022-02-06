@@ -58,7 +58,7 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
     while (assetLoader.QueueHasItems()) {
         assetLoader.BuildNextAsset();
     }
-    if (m_done_loading && !assetLoader.QueueHasItems() && !need_halt && false) {
+    if (m_done_loading && !assetLoader.QueueHasItems() && !need_halt) {
         // Load font after all the shaders are done
         LoadFont();
 
@@ -86,7 +86,6 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
 }
 
 void cqsp::scene::LoadingScene::Ui(float deltaTime) {
-    /*
     ImGui::SetNextWindowPos(
             ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
             ImGuiCond_Always, ImVec2(0.5f, 0.5f));
@@ -113,7 +112,7 @@ void cqsp::scene::LoadingScene::Ui(float deltaTime) {
             GetApp().ExitApplication();
         }
         ImGui::End();
-    }*/
+    }
 }
 
 void cqsp::scene::LoadingScene::Render(float deltaTime) { }
