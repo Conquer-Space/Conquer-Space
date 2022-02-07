@@ -59,4 +59,5 @@ target_link_libraries(cqsp-engine PUBLIC
     stb
     RmlCore
     RmlDebugger
+    lunasvg
 )

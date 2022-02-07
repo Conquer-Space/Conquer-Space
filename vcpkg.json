@@ -36,8 +36,7 @@
       {
         "name": "lua",
         "platform": "!windows"
-      },
-      "rmlui"
+      }
     ],
     "overrides": [
       { "name": "imgui", "version": "1.85"}
