@@ -43,3 +43,9 @@ set_target_properties(hjson libnoise glad glad-generate-files stb PROPERTIES FOL
 add_library(Tracy STATIC tracy/TracyClient.cpp)
 target_compile_definitions(Tracy PRIVATE TRACY_ENABLE)
 target_include_directories(Tracy PUBLIC tracy)
+
+add_subdirectory(lunasvg)
+
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+set(ENABLE_SVG_PLUGIN ON CACHE BOOL "" FORCE)
+add_subdirectory(RmlUi)

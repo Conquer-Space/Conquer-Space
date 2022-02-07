@@ -77,7 +77,6 @@ find_package(EnTT CONFIG REQUIRED)
 find_package(freetype CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(implot CONFIG REQUIRED)
-find_package(RmlUi CONFIG REQUIRED)
 
 # Lua config
 if (UNIX)
