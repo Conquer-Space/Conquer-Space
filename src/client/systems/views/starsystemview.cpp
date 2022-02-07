@@ -146,6 +146,7 @@ void SysStarSystemRenderer::Render(float deltaTime) {
     renderer.NewFrame(*m_app.GetWindow());
 
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
     entt::entity current_planet = m_app.GetUniverse().view<RenderingPlanet>().front();
