@@ -100,6 +100,7 @@ void cqsp::scene::UniverseScene::Init() {
 
 void cqsp::scene::UniverseScene::Update(float deltaTime) {
     ZoneScoped;
+
     if (!game_halted) {
         if (GetApp().ButtonIsReleased(GLFW_KEY_M)) {
             view_mode = !view_mode;

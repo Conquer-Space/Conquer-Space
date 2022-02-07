@@ -77,7 +77,7 @@ uniform mat4 projection;
 out vec4 place_color;
 out vec2 TexCoord;
 void main() {
-    gl_Position = projection * model * vec4(iPos, 0.0, 1.0);
+    gl_Position = projection * model * vec4(iPos, 1.0, 1.0);
     // Convert color because rmlui gives it in bytes, while opengl needs it to be in floats
     // This is probably slow because division is slow, but this is easy.
     place_color = vec4(color/255.0);
@@ -172,6 +172,7 @@ void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(
     RmlUiRendererGeometryHandler* geom = reinterpret_cast<RmlUiRendererGeometryHandler*>(geometry);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDepthFunc(GL_ALWAYS);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     asset::ShaderProgram* shader = nullptr;
