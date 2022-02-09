@@ -620,7 +620,6 @@ void cqsp::engine::Application::run() {
 
         // Update
         m_scene_manager.Update(deltaTime);
-        ProcessRmlUiUserInput();
 
         // Init imgui
         ImGui_ImplOpenGL3_NewFrame();
@@ -636,6 +635,7 @@ void cqsp::engine::Application::run() {
         ImGui::Render();
         END_TIMED_BLOCK(ImGui_Render);
 
+        ProcessRmlUiUserInput();
         rml_context->Update();
 
         // Clear screen
@@ -801,7 +801,6 @@ void cqsp::engine::Application::LogInfo() {
 #else
     SPDLOG_INFO("Conquer Space {} {}", CQSP_VERSION_STRING, GIT_INFO);
 #endif
-    SPDLOG_INFO("Conquer Space {} {}", CQSP_VERSION_STRING, GIT_INFO);
     SPDLOG_INFO("Platform: {}", PLATFORM_NAME);
     SPDLOG_INFO("Compiled {} {}", __DATE__, __TIME__);
     SPDLOG_INFO("Exe Path: {}", common::util::exe_path);

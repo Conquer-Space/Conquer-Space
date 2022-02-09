@@ -759,6 +759,7 @@ void cqsp::asset::AssetLoader::LoadResources(Package& package, const std::string
                               asset_value);
     }
 }
+
 void cqsp::asset::AssetLoader::LoadResourceHjsonFile(Package& package,
                                                      const std::string& package_mount_path,
                                                      const std::string& resource_file_path,

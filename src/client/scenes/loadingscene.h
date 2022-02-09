@@ -51,8 +51,17 @@ class LoadingScene : public cqsp::engine::Scene {
 
     cqsp::asset::AssetLoader assetLoader;
 
+    Rml::ElementDocument* document;
+
     void LoadFont();
     bool need_halt = false;
+
+    struct LoadingDataModel {
+        int current = 0;
+        int max = 0;
+    } loading_data;
+
+    Rml::DataModelHandle model_handle;
 };
 }  // namespace scene
 }  // namespace cqsp
