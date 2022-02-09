@@ -52,6 +52,16 @@ void cqsp::scene::LoadingScene::Init() {
 
     thread = std::make_unique<std::thread>(loading);
     thread->detach();
+
+    Rml::DataModelConstructor constructor =
+        GetApp().GetRmlUiContext()->CreateDataModel("loading");
+    constructor.Bind("current", &loading_data.current);
+    model_handle = constructor.GetModelHandle();
+    constructor.Bind("max", &loading_data.max);
+    document = GetApp().GetRmlUiContext()->LoadDocument("../data/core/gui/screens/loading_screen.rml");
+    if (document) {
+        document->Show();
+    }
 }
 
 void cqsp::scene::LoadingScene::Update(float deltaTime) {
@@ -72,6 +82,10 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
             }
             GetApp().GetAudioInterface().AddAudioClip(element.first, audio_asset);
         }
+
+        // Remove data model
+        GetApp().GetRmlUiContext()->RemoveDataModel("loading");
+        document->Close();
         // Set main menu scene
         if (std::find(GetApp().GetCmdLineArgs().begin(), GetApp().GetCmdLineArgs().end(), "-i")
                                                             != GetApp().GetCmdLineArgs().end()) {
@@ -86,33 +100,18 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
 }
 
 void cqsp::scene::LoadingScene::Ui(float deltaTime) {
-    ImGui::SetNextWindowPos(
-            ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
-            ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, 0), ImGuiCond_Always);
-    ImGui::Begin("Conquer Space", nullptr,
-                ImGuiWindowFlags_NoTitleBar |
-                ImGuiWindowFlags_NoResize |
-                ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::Text("Loading %c", "|/-\\"[static_cast<int>(ImGui::GetTime() / 0.75f) & 3]);
+    // Load rmlui ui
+    if (m_done_loading) {
+        return;
+    }
     float current = static_cast<float>(assetLoader.getCurrentLoading());
     float max = static_cast<float>(assetLoader.getMaxLoading());
-    std::string progress = fmt::format("{}/{}", current, max);
-    ImGui::ProgressBar(current/max, ImVec2(-FLT_MIN, 0), progress.c_str());
-    ImGui::End();
-
-    if (m_done_loading && need_halt) {
-        ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f,
-                                       ImGui::GetIO().DisplaySize.y * 0.5f),
-                                ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-        ImGui::Begin("Error", NULL, ImGuiWindowFlags_NoResize |ImGuiWindowFlags_NoCollapse);
-        ImGui::Text("Found missing assets!");
-
-        if (ImGui::Button("Exit", ImVec2(-FLT_MIN, 0))) {
-            GetApp().ExitApplication();
-        }
-        ImGui::End();
-    }
+    loading_data.max = static_cast<int>(max);
+    loading_data.current = static_cast<int>(current);
+    model_handle.DirtyVariable("max");
+    model_handle.DirtyVariable("current");
+    document->GetElementById("loading_bar")->SetAttribute("value", current);
+    document->GetElementById("loading_bar")->SetAttribute("max", max);
 }
 
 void cqsp::scene::LoadingScene::Render(float deltaTime) { }

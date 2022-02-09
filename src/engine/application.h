@@ -197,6 +197,8 @@ class Application {
 
     ImGui::MarkdownConfig markdownConfig;
 
+    Rml::Context* GetRmlUiContext() { return rml_context; }
+
  private:
     void InitFonts();
 
