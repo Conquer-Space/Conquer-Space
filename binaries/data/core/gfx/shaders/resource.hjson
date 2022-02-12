@@ -97,4 +97,18 @@
             type: frag
         }
     }
+    line.frag: {
+        path: line.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
+    line.vert: {
+        path: line.vert
+        type: shader
+        hints: {
+            type: vert
+        }
+    }
 }

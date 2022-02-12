@@ -206,6 +206,8 @@ void LayerRenderer::DrawAllLayers() {
     for (auto& frame : framebuffers) {
         frame->RenderBuffer();
     }
+    // Reset render buffer
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void LayerRenderer::NewFrame(const cqsp::engine::Window& window) {
