@@ -16,8 +16,8 @@
 */
 #pragma once
 
-#include "engine/graphics/renderable.h"
 #include "engine/graphics/mesh.h"
+
 namespace cqsp {
 namespace engine::primitive {
 cqsp::engine::Mesh* MakeTexturedPaneMesh();

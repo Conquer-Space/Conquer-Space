@@ -90,7 +90,6 @@ void cqsp::client::systems::SysPlanetInformation::Init() {}
 
 void cqsp::client::systems::SysPlanetInformation::DoUI(int delta_time) {
     DisplayPlanet();
-
     if (market_information_panel) {
         ImGui::Begin("Market Information", &market_information_panel, window_flags);
         MarketInformationTooltipContent();
@@ -673,6 +672,9 @@ void cqsp::client::systems::SysPlanetInformation::InfrastructureTab() {
 
 void cqsp::client::systems::SysPlanetInformation::MarketInformationTooltipContent() {
     namespace cqspc = cqsp::common::components;
+    if (!GetUniverse().valid(selected_planet)) {
+        return;
+    }
     if (!GetUniverse().any_of<cqspc::MarketCenter>(selected_planet)) {
         ImGui::TextFmt("Market is not a market center");
         return;
