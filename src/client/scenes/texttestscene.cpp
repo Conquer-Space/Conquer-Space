@@ -105,6 +105,8 @@ void cqsp::scene::TextTestScene::Render(float deltaTime) {
     glEnable(GL_DEPTH_TEST);
     renderer.BeginDraw(layer);
     GetApp().DrawText(text, 20, GetApp().GetWindowHeight()/2, font_size);
-    GetApp().DrawText(text, 20, GetApp().GetWindowHeight()/2 - 50, font_size);
     renderer.DrawAllLayers();
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    GetApp().DrawText(fmt::format("2: {}", text), 20, GetApp().GetWindowHeight() / 2 - 50, font_size);
 }

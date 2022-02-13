@@ -8,8 +8,5 @@ uniform vec3 textColor;
 void main()
 {
     float tex = texture(text, TexCoords).r;
-    if(tex == 0) {
-        discard;
-    }
     color = vec4(textColor, tex);
 }

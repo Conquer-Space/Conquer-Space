@@ -655,6 +655,8 @@ void cqsp::engine::Application::run() {
         END_TIMED_BLOCK(ImGui_Render_Draw);
 
         // FPS counter
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         DrawText(fmt::format("FPS: {:.0f}", fps), GetWindowWidth() - 80,
                  GetWindowHeight() - 24);
 

@@ -341,6 +341,7 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
     auto bodies = m_app.GetUniverse().view<ToRender, cqspb::Body>(entt::exclude<cqspb::LightEmitter>);
 
     renderer.BeginDraw(planet_icon_layer);
+    glDepthFunc(GL_ALWAYS);
     for (auto body_entity : bodies) {
         // Draw the planet circle
         glm::vec3 object_pos = CalculateCenteredObject(body_entity);
@@ -348,19 +349,18 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
         // Draw Ships
         namespace cqspc = cqsp::common::components;
         namespace cqspt = cqsp::common::components::types;
-
         if (glm::distance(object_pos, cam_pos) > 200) {
             // Check if it's obscured by a planet, but eh, we can deal with it later
             // Set planet circle color
             planet_circle.shaderProgram->UseProgram();
             planet_circle.shaderProgram->setVec4("color", 0, 0, 1, 1);
-            DrawEntityName(object_pos, body_entity);
             DrawPlanetIcon(object_pos);
+            DrawEntityName(object_pos, body_entity);
             continue;
         }
     }
     renderer.EndDraw(planet_icon_layer);
-
+    glDepthFunc(GL_LESS);
     renderer.BeginDraw(physical_layer);
     for (auto body_entity : bodies) {
         glm::vec3 object_pos = CalculateCenteredObject(body_entity);

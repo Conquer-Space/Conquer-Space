@@ -111,7 +111,6 @@ void cqsp::asset::RenderText(cqsp::asset::ShaderProgram &shader, Font &font, std
     // activate corresponding render state
     shader.UseProgram();
     shader.setVec3("textColor", color);
-
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(font.VAO);
 
