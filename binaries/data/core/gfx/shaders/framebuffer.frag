@@ -10,7 +10,7 @@ const float offset = 1.0 / 300.0;
 void main()
 {
     vec4 col = texture(screenTexture, TexCoords);
-    if (col.a < 0.1) {
+    if (col.a <= 0) {
         discard;
     }
     FragColor = col;

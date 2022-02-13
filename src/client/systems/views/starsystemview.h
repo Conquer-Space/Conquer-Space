@@ -106,6 +106,8 @@ class SysStarSystemRenderer {
     glm::mat4 projection;
     glm::vec4 viewport;
 
+    asset::ShaderProgram_t line_mesh_shader;
+    cqsp::engine::Mesh *line_mesh;
     float circle_size = 0.01f;
 
     void DrawStars();

@@ -37,6 +37,7 @@
 #include "engine/graphics/primitives/cube.h"
 #include "engine/graphics/primitives/polygon.h"
 #include "engine/graphics/primitives/pane.h"
+#include "engine/graphics/primitives/line.h"
 
 #include "common/components/bodies.h"
 #include "common/components/surface.h"
@@ -116,6 +117,9 @@ void SysStarSystemRenderer::Initialize() {
     sun.shaderProgram = m_app.GetAssetManager().MakeShader("core:objectvert", "core:sunshader");
 
     auto buffer_shader = m_app.GetAssetManager().MakeShader("core:framebuffervert", "core:framebufferfrag");
+    line_mesh_shader = m_app.GetAssetManager().MakeShader("core:line.vert", "core:line.frag");
+    line_mesh = engine::primitive::MakeLine({{0, 0, 0}, {100, 100, 100}});
+
     ship_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
     physical_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
     planet_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
@@ -168,6 +172,14 @@ void SysStarSystemRenderer::Render(float deltaTime) {
     DrawSkybox();
 
     renderer.DrawAllLayers();
+
+    // Draw the line
+    line_mesh_shader->UseProgram();
+    line_mesh_shader->Set("color", 1, 0, 0, 1);
+    line_mesh_shader->Set("projecion", m_app.Get3DProj());
+    line_mesh_shader->Set("view", glm::mat4(glm::mat3(camera_matrix)));
+    line_mesh_shader->Set("model", glm::mat4(1.0));
+    line_mesh->Draw();
 }
 
 void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
@@ -251,7 +263,7 @@ void SysStarSystemRenderer::Update(float deltaTime) {
     double deltaY = previous_mouseY - m_app.GetMouseY();
     if (!ImGui::GetIO().WantCaptureMouse) {
         if (scroll - m_app.GetScrollAmount() * 3 > 1.5) {
-            scroll -= m_app.GetScrollAmount() * 3;
+            scroll -= m_app.GetScrollAmount() * 3 * scroll/33;
         }
 
         if (m_app.MouseButtonIsHeld(GLFW_MOUSE_BUTTON_LEFT)) {
@@ -645,7 +657,8 @@ void SysStarSystemRenderer::CalculateCamera() {
 void SysStarSystemRenderer::MoveCamera(double deltaTime) {
     // Now navigation for changing the center
     glm::vec3 dir = (view_center - cam_pos);
-    float velocity = deltaTime * 30;
+    float velocity = deltaTime * 30 * scroll/40;
+    // Get distance from the pane
     // Remove y axis
     glm::vec3 forward = glm::normalize(glm::vec3(glm::sin(view_x), 0, glm::cos(view_x)));
     glm::vec3 right = glm::normalize(glm::cross(forward, cam_up));
