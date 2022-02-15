@@ -43,10 +43,13 @@ unsigned int cqsp::asset::LoadShaderData(const std::string& code, int type) {
     return shader;
 }
 
-unsigned int cqsp::asset::MakeShaderProgram(int vertex, int fragment) {
+unsigned int cqsp::asset::MakeShaderProgram(int vertex, int fragment, int geometry) {
     unsigned int ID = glCreateProgram();
     glAttachShader(ID, vertex);
     glAttachShader(ID, fragment);
+    if (geometry != -1) {
+        glAttachShader(ID, geometry);
+    }
     glLinkProgram(ID);
     return ID;
 }
@@ -167,11 +170,15 @@ void ShaderProgram::UseProgram() {
 
 ShaderProgram::ShaderProgram() { program = -1; }
 
-ShaderProgram::ShaderProgram(Shader& vert, Shader& frag) {
-    program = glCreateProgram();
-    glAttachShader(program, vert.id);
-    glAttachShader(program, frag.id);
-    glLinkProgram(program);
+ShaderProgram::ShaderProgram(const Shader& vert, const Shader& frag) {
+    program = MakeShaderProgram(vert.id, frag.id);
+}
+
+cqsp::asset::ShaderProgram::ShaderProgram(const Shader& vert,
+                                          const Shader& frag,
+                                          const Shader& geom) {
+    program = MakeShaderProgram(vert.id, frag.id, geom.id);
+
 }
 
 cqsp::asset::ShaderProgram::~ShaderProgram() {
