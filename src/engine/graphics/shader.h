@@ -38,7 +38,8 @@ class Shader : public Asset {
 class ShaderProgram {
  public:
     ShaderProgram();
-    ShaderProgram(Shader& vert, Shader& frag);
+    ShaderProgram(const Shader& vert, const Shader& frag);
+    ShaderProgram(const Shader& vert, const Shader& frag, const Shader& geom);
     ~ShaderProgram();
 
     void setBool(const std::string& name, bool value);
@@ -83,7 +84,7 @@ inline ShaderProgram_t MakeShaderProgram(Shader& vert, Shader& frag) {
 
 // Set of utility functions that load shaders
 unsigned int LoadShaderData(const std::string& code, int type);
-unsigned int MakeShaderProgram(int vertex, int fragment);
+unsigned int MakeShaderProgram(int vertex, int fragment, int geometry = -1);
 
 std::string GetErrorLog(unsigned int shader);
 }  // namespace asset

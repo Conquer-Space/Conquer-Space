@@ -105,6 +105,16 @@ cqsp::asset::AssetManager::MakeShader(const std::string& vert, const std::string
                                     *GetAsset<cqsp::asset::Shader>(frag.c_str()));
 }
 
+cqsp::asset::ShaderProgram_t
+cqsp::asset::AssetManager::MakeShader(const std::string& vert,
+                                      const std::string& frag,
+                                      const std::string& geom) {
+    return std::make_shared<ShaderProgram>(
+        *GetAsset<cqsp::asset::Shader>(vert.c_str()),
+        *GetAsset<cqsp::asset::Shader>(frag.c_str()),
+        *GetAsset<cqsp::asset::Shader>(geom.c_str()));
+}
+
 void cqsp::asset::AssetManager::LoadDefaultTexture() {
     unsigned char texture_bytes[] = {
         0, 0, 0, 255, 0, 255,
@@ -545,6 +555,8 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadShader(
         shader_type = GL_FRAGMENT_SHADER;
     } else if (type == "vert") {
         shader_type = GL_VERTEX_SHADER;
+    } else if (type == "geom") {
+        shader_type = GL_GEOMETRY_SHADER;
     } else {
         // Abort, because this is a dud.
         SPDLOG_WARN("Unsupport shader type: {}", key);

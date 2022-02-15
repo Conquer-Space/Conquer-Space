@@ -159,6 +159,7 @@ class AssetManager {
     AssetManager();
 
     ShaderProgram_t MakeShader(const std::string &vert, const std::string &frag);
+    ShaderProgram_t MakeShader(const std::string& vert, const std::string& frag, const std::string& geom);
 
     template <class T>
     T* GetAsset(const std::string& key) {
