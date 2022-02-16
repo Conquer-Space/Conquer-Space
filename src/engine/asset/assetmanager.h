@@ -403,6 +403,8 @@ class AssetLoader {
                    const std::string& path, const std::string& key,
                    const Hjson::Value& hints);
 
+    ShaderProgram_t MakeShader(const std::string& key);
+
     /// <summary>
     /// Conducts checks to determine if the asset was loaded correctly. Wraps Load asset,
     /// and contains the same parameters

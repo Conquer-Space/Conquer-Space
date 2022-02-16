@@ -26,12 +26,15 @@
 
 namespace cqsp {
 namespace asset {
-enum class ShaderType {VERT, FRAG, GEOM};
+enum class ShaderType {NONE, VERT, FRAG, GEOM};
 
 class Shader : public Asset {
  public:
     Shader() = default;
     Shader(const std::string& code, ShaderType type);
+    ~Shader();
+
+    ShaderType shader_type = ShaderType::NONE;
     unsigned int id;
 };
 
