@@ -90,6 +90,7 @@ class Asset {
  public:
     // Virtual destructor to make class virtual
     virtual ~Asset(){}
+    std::string path;
 };
 }  // namespace asset
 }  // namespace cqsp

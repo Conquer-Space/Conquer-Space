@@ -1,0 +1,7 @@
+{
+    vert: pane.vert
+    frag: textured_pane.frag
+    initial: {
+        texture1: 0
+    }
+}

@@ -171,12 +171,17 @@ void ShaderProgram::UseProgram() {
 ShaderProgram::ShaderProgram() { program = -1; }
 
 ShaderProgram::ShaderProgram(const Shader& vert, const Shader& frag) {
+    assert(vert.shader_type == ShaderType::VERT);
+    assert(frag.shader_type == ShaderType::FRAG);
     program = MakeShaderProgram(vert.id, frag.id);
 }
 
 cqsp::asset::ShaderProgram::ShaderProgram(const Shader& vert,
                                           const Shader& frag,
                                           const Shader& geom) {
+    assert(vert.shader_type == ShaderType::VERT);
+    assert(frag.shader_type == ShaderType::FRAG);
+    assert(geom.shader_type == ShaderType::GEOM);
     program = MakeShaderProgram(vert.id, frag.id, geom.id);
 
 }
@@ -184,25 +189,26 @@ cqsp::asset::ShaderProgram::ShaderProgram(const Shader& vert,
 cqsp::asset::ShaderProgram::~ShaderProgram() {
     glDeleteProgram(program);
 }
-
-cqsp::asset::Shader::Shader(const std::string& code, ShaderType type) : id(0) {
-    int shader_type = GL_FRAGMENT_SHADER;
-    switch (type) {
+#include <spdlog/spdlog.h>
+cqsp::asset::Shader::Shader(const std::string& code, ShaderType type)
+    : id(0), shader_type(type) {
+    int gl_shader_type = GL_FRAGMENT_SHADER;
+    switch (shader_type) {
         case ShaderType::FRAG:
-            shader_type = GL_FRAGMENT_SHADER;
+            gl_shader_type = GL_FRAGMENT_SHADER;
             break;
         case ShaderType::VERT:
-            shader_type = GL_VERTEX_SHADER;
+            gl_shader_type = GL_VERTEX_SHADER;
             break;
         case ShaderType::GEOM:
-            shader_type = GL_GEOMETRY_SHADER;
+            gl_shader_type = GL_GEOMETRY_SHADER;
             break;
     }
-    id = glCreateShader(shader_type);
+    id = glCreateShader(gl_shader_type);
     const char* shader_char = code.c_str();
     glShaderSource(id, 1, &shader_char, NULL);
     glCompileShader(id);
-
+    SPDLOG_INFO("number {}", id);
     // Check compile suceess
     GLint isCompiled = 0;
     glGetShaderiv(id, GL_COMPILE_STATUS, &isCompiled);
@@ -215,4 +221,8 @@ cqsp::asset::Shader::Shader(const std::string& code, ShaderType type) : id(0) {
         glDeleteShader(id);
         throw(std::runtime_error(error));
     }
+}
+
+cqsp::asset::Shader::~Shader() {
+    //glDeleteShader(id);
 }

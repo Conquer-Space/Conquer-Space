@@ -48,7 +48,7 @@
             type: frag
         }
     }
-        skycubefrag: {
+    skycubefrag: {
         path: skybox.frag
         type: shader
         hints: {
@@ -109,6 +109,12 @@
         type: shader
         hints: {
             type: vert
+        }
+    }
+    pane_shader: {
+        path: texture_pane.hjson
+        type: shader_def
+        hints: {
         }
     }
 }

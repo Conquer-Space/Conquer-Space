@@ -115,6 +115,57 @@ cqsp::asset::AssetManager::MakeShader(const std::string& vert,
         *GetAsset<cqsp::asset::Shader>(geom.c_str()));
 }
 
+std::string GetShaderCode(const std::string& identifier) {
+    return std::string();
+}
+
+void MakeShader(const Hjson::Value& hjson) {
+    // Load the shader values
+    std::string vert = hjson["vert"].to_string();
+    std::string frag = hjson["frag"].to_string();
+    // Get the shader code somehow, but idk how
+
+    cqsp::asset::Shader vert_shader(GetShaderCode(vert), cqsp::asset::ShaderType::VERT);
+    cqsp::asset::Shader frag_shader(GetShaderCode(frag), cqsp::asset::ShaderType::FRAG);
+    // Create the shader
+    cqsp::asset::ShaderProgram_t shader = cqsp::asset::MakeShaderProgram(vert_shader, frag_shader);
+    // Initial values
+    Hjson::Value initial = hjson["initial"];
+    for (auto value : initial) {
+        switch (value.second.type()) {
+            case Hjson::Type::Int64:
+            case Hjson::Type::Double: {
+                shader->Set(value.first, (float)value.second.to_double());
+                break;
+            }
+            case Hjson::Type::Vector: {
+                // Check if matrix or vector
+                switch (value.second.size()) {
+                    case 2:
+                        shader->Set(value.first,
+                                    (float)value.second[0].to_double(),
+                                    (float) value.second[1].to_double());
+                        break;
+                    case 3:
+                        shader->Set(value.first,
+                                    (float) value.second[0].to_double(),
+                                    (float) value.second[1].to_double(),
+                                    (float) value.second[2].to_double());
+                        break;
+                    case 4:
+                        shader->Set(value.first,
+                                    (float) value.second[0].to_double(),
+                                    (float) value.second[1].to_double(),
+                                    (float) value.second[2].to_double(),
+                                    (float) value.second[3].to_double());
+                        break;
+                }
+                break;
+            }
+        }
+    }
+}
+
 void cqsp::asset::AssetManager::LoadDefaultTexture() {
     unsigned char texture_bytes[] = {
         0, 0, 0, 255, 0, 255,
@@ -349,6 +400,58 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadAsset(
     return std::move(loading_functions[type](&mounter, path, key, hints));
 }
 
+cqsp::asset::ShaderProgram_t cqsp::asset::AssetLoader::MakeShader(const std::string& key) {
+    // Get the hjson
+    // Load the shader values
+    /* std::string vert = hjson["vert"].to_string();
+    std::string frag = hjson["frag"].to_string();
+    // Get the shader code somehow, but idk how
+
+    cqsp::asset::Shader vert_shader(GetShaderCode(vert),
+                                    cqsp::asset::ShaderType::VERT);
+    cqsp::asset::Shader frag_shader(GetShaderCode(frag),
+                                    cqsp::asset::ShaderType::FRAG);
+    // Create the shader
+    cqsp::asset::ShaderProgram_t shader =
+        cqsp::asset::MakeShaderProgram(vert_shader, frag_shader);
+    // Initial values
+    Hjson::Value initial = hjson["initial"];
+    for (auto value : initial) {
+        switch (value.second.type()) {
+            case Hjson::Type::Int64:
+            case Hjson::Type::Double: {
+                shader->Set(value.first, (float)value.second.to_double());
+                break;
+            }
+            case Hjson::Type::Vector: {
+                // Check if matrix or vector
+                switch (value.second.size()) {
+                    case 2:
+                        shader->Set(value.first,
+                                    (float)value.second[0].to_double(),
+                                    (float)value.second[1].to_double());
+                        break;
+                    case 3:
+                        shader->Set(value.first,
+                                    (float)value.second[0].to_double(),
+                                    (float)value.second[1].to_double(),
+                                    (float)value.second[2].to_double());
+                        break;
+                    case 4:
+                        shader->Set(value.first,
+                                    (float)value.second[0].to_double(),
+                                    (float)value.second[1].to_double(),
+                                    (float)value.second[2].to_double(),
+                                    (float)value.second[3].to_double());
+                        break;
+                }
+                break;
+            }
+        }
+    }*/
+    return nullptr;
+}
+
 void cqsp::asset::AssetLoader::PlaceAsset(Package& package,
                                           const AssetType& type,
                                           const std::string& path,
@@ -357,6 +460,7 @@ void cqsp::asset::AssetLoader::PlaceAsset(Package& package,
     ZoneScoped;
     SPDLOG_TRACE("Loading asset {}", path);
     auto asset = LoadAsset(type, path, key, hints);
+    asset->path = path;
     if (asset == nullptr) {
         SPDLOG_WARN("Asset {} was not loaded properly", key);
         return;
@@ -553,10 +657,13 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadShader(
     int shader_type = -1;
     if (type == "frag") {
         shader_type = GL_FRAGMENT_SHADER;
+        shader->shader_type = cqsp::asset::ShaderType::FRAG;
     } else if (type == "vert") {
         shader_type = GL_VERTEX_SHADER;
+        shader->shader_type = cqsp::asset::ShaderType::VERT;
     } else if (type == "geom") {
         shader_type = GL_GEOMETRY_SHADER;
+        shader->shader_type = cqsp::asset::ShaderType::GEOM;
     } else {
         // Abort, because this is a dud.
         SPDLOG_WARN("Unsupport shader type: {}", key);
@@ -578,9 +685,9 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadShader(
     return std::move(shader);
 }
 
-std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadFont(
-    cqsp::asset::VirtualMounter* mount, const std::string& path,
-    const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<cqsp::asset::Asset>
+cqsp::asset::AssetLoader::LoadFont(cqsp::asset::VirtualMounter* mount, const std::string& path,
+                                   const std::string& key, const Hjson::Value& hints) {
     ZoneScoped;
     if (!mount->IsFile(path)) {
         return nullptr;
@@ -808,8 +915,9 @@ void cqsp::asset::AssetLoader::LoadResourceHjsonFile(Package& package,
         currentloading++;
     }
 }
-bool cqsp::asset::AssetLoader::HjsonPrototypeDirectory(
-    Package& package, const std::string& path, const std::string& name) {
+bool cqsp::asset::AssetLoader::HjsonPrototypeDirectory(Package& package,
+                                                       const std::string& path,
+                                                       const std::string& name) {
     ZoneScoped;
     if (!mounter.IsDirectory(path)) {
         return false;
