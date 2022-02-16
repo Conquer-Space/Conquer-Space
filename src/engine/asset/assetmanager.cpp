@@ -460,11 +460,11 @@ void cqsp::asset::AssetLoader::PlaceAsset(Package& package,
     ZoneScoped;
     SPDLOG_TRACE("Loading asset {}", path);
     auto asset = LoadAsset(type, path, key, hints);
-    asset->path = path;
     if (asset == nullptr) {
         SPDLOG_WARN("Asset {} was not loaded properly", key);
         return;
     }
+    asset->path = path;
     package.assets[key] = std::move(asset);
 }
 

@@ -112,7 +112,7 @@
         }
     }
     pane_shader: {
-        path: texture_pane.hjson
+        path: textured_pane.hjson
         type: shader_def
         hints: {
         }

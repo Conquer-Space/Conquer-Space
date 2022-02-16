@@ -189,7 +189,7 @@ cqsp::asset::ShaderProgram::ShaderProgram(const Shader& vert,
 cqsp::asset::ShaderProgram::~ShaderProgram() {
     glDeleteProgram(program);
 }
-#include <spdlog/spdlog.h>
+
 cqsp::asset::Shader::Shader(const std::string& code, ShaderType type)
     : id(0), shader_type(type) {
     int gl_shader_type = GL_FRAGMENT_SHADER;
@@ -208,7 +208,38 @@ cqsp::asset::Shader::Shader(const std::string& code, ShaderType type)
     const char* shader_char = code.c_str();
     glShaderSource(id, 1, &shader_char, NULL);
     glCompileShader(id);
-    SPDLOG_INFO("number {}", id);
+    // Check compile suceess
+    GLint isCompiled = 0;
+    glGetShaderiv(id, GL_COMPILE_STATUS, &isCompiled);
+    if (isCompiled == GL_FALSE) {
+        std::string error = GetErrorLog(id);
+        // Throw exception or something
+        // Bad idea, so:
+        // FIXME(EhWhoAmI): Don't use throw
+        // Output
+        glDeleteShader(id);
+        throw(std::runtime_error(error));
+    }
+}
+
+void cqsp::asset::Shader::operator()(const std::string& code, ShaderType type) {
+    shader_type = type;
+    int gl_shader_type = GL_FRAGMENT_SHADER;
+    switch (shader_type) {
+        case ShaderType::FRAG:
+            gl_shader_type = GL_FRAGMENT_SHADER;
+            break;
+        case ShaderType::VERT:
+            gl_shader_type = GL_VERTEX_SHADER;
+            break;
+        case ShaderType::GEOM:
+            gl_shader_type = GL_GEOMETRY_SHADER;
+            break;
+    }
+    id = glCreateShader(gl_shader_type);
+    const char* shader_char = code.c_str();
+    glShaderSource(id, 1, &shader_char, NULL);
+    glCompileShader(id);
     // Check compile suceess
     GLint isCompiled = 0;
     glGetShaderiv(id, GL_COMPILE_STATUS, &isCompiled);
@@ -224,5 +255,7 @@ cqsp::asset::Shader::Shader(const std::string& code, ShaderType type)
 }
 
 cqsp::asset::Shader::~Shader() {
-    //glDeleteShader(id);
+    if (id != 0) {
+        glDeleteShader(id);
+    }
 }

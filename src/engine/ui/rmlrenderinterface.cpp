@@ -66,7 +66,7 @@ cqsp::engine::CQSPRenderInterface::CQSPRenderInterface(Application& _app) : app(
     // since this is rather crucial to the running the game,
     // this will likely be here until we find an alternative solution.
     try {
-        vert_shader = cqsp::asset::Shader(R"(
+        vert_shader(R"(
 #version 330 core
 layout (location = 0) in vec2 iPos;
 layout (location = 1) in vec4 color;
@@ -85,7 +85,7 @@ void main() {
 }
     )", cqsp::asset::ShaderType::VERT);
         SPDLOG_LOGGER_INFO(logger, "Loaded rmlui vert shader");
-        frag_shader = cqsp::asset::Shader(R"(
+        frag_shader(R"(
 #version 330 core
 out vec4 FragColor;
 in vec4 place_color;
@@ -96,7 +96,7 @@ void main()
 })", cqsp::asset::ShaderType::FRAG);
 
         SPDLOG_LOGGER_INFO(logger, "Loaded rmlui frag shader");
-        texture_frag_shader = cqsp::asset::Shader(R"(
+        texture_frag_shader(R"(
 #version 330 core
 out vec4 FragColor;
 in vec4 place_color;
