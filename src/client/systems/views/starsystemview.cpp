@@ -172,14 +172,6 @@ void SysStarSystemRenderer::Render(float deltaTime) {
     DrawSkybox();
 
     renderer.DrawAllLayers();
-
-    // Draw the line
-    line_mesh_shader->UseProgram();
-    line_mesh_shader->Set("color", 1, 0, 0, 1);
-    line_mesh_shader->Set("projecion", m_app.Get3DProj());
-    line_mesh_shader->Set("view", glm::mat4(glm::mat3(camera_matrix)));
-    line_mesh_shader->Set("model", glm::mat4(1.0));
-    line_mesh->Draw();
 }
 
 void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {

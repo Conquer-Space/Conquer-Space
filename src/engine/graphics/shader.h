@@ -20,6 +20,7 @@
 #include <string>
 #include <memory>
 
+#include <hjson.h>
 #include <glm/glm.hpp>
 
 #include "engine/asset/asset.h"
@@ -89,6 +90,17 @@ typedef std::shared_ptr<ShaderProgram> ShaderProgram_t;
 inline ShaderProgram_t MakeShaderProgram(Shader& vert, Shader& frag) {
     return std::make_shared<ShaderProgram>(vert, frag);
 }
+
+class ShaderDefinition : public Asset {
+ public:
+    // Code for vert and frags
+    std::string vert;
+    std::string frag;
+
+    Hjson::Value uniforms;
+
+    ShaderProgram_t MakeShader();
+};
 
 // Set of utility functions that load shaders
 unsigned int LoadShaderData(const std::string& code, int type);

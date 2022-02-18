@@ -21,7 +21,7 @@
 namespace cqsp {
 namespace asset {
 enum class AssetType {
-    NONE, TEXTURE, SHADER, HJSON, TEXT, MODEL, FONT, CUBEMAP, TEXT_ARRAY, AUDIO
+    NONE, TEXTURE, SHADER, HJSON, TEXT, MODEL, FONT, CUBEMAP, TEXT_ARRAY, AUDIO, SHADER_DEFINITION
 };
 
 // This will be hell to maintain
@@ -52,6 +52,8 @@ inline AssetType FromString(const std::string& name) {
         return AssetType::TEXT_ARRAY;
     } else if (name == "audio") {
         return AssetType::AUDIO;
+    } else if (name == "shader_def") {
+        return AssetType::SHADER_DEFINITION;
     }
     return AssetType::NONE;
 }

@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <regex>
 #include <filesystem>
+#include <iostream>
 
 #include <Tracy.hpp>
 
@@ -204,6 +205,7 @@ cqsp::asset::AssetLoader::AssetLoader() {
     loading_functions[AssetType::AUDIO] = CREATE_ASSET_LAMBDA(LoadAudio);
     loading_functions[AssetType::CUBEMAP] = CREATE_ASSET_LAMBDA(LoadCubemap);
     loading_functions[AssetType::FONT] = CREATE_ASSET_LAMBDA(LoadFont);
+    loading_functions[AssetType::SHADER_DEFINITION] = CREATE_ASSET_LAMBDA(LoadShaderDefinition);
 }
 
 namespace cqspa = cqsp::asset;
@@ -399,59 +401,6 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadAsset(
     }
     return std::move(loading_functions[type](&mounter, path, key, hints));
 }
-
-cqsp::asset::ShaderProgram_t cqsp::asset::AssetLoader::MakeShader(const std::string& key) {
-    // Get the hjson
-    // Load the shader values
-    /* std::string vert = hjson["vert"].to_string();
-    std::string frag = hjson["frag"].to_string();
-    // Get the shader code somehow, but idk how
-
-    cqsp::asset::Shader vert_shader(GetShaderCode(vert),
-                                    cqsp::asset::ShaderType::VERT);
-    cqsp::asset::Shader frag_shader(GetShaderCode(frag),
-                                    cqsp::asset::ShaderType::FRAG);
-    // Create the shader
-    cqsp::asset::ShaderProgram_t shader =
-        cqsp::asset::MakeShaderProgram(vert_shader, frag_shader);
-    // Initial values
-    Hjson::Value initial = hjson["initial"];
-    for (auto value : initial) {
-        switch (value.second.type()) {
-            case Hjson::Type::Int64:
-            case Hjson::Type::Double: {
-                shader->Set(value.first, (float)value.second.to_double());
-                break;
-            }
-            case Hjson::Type::Vector: {
-                // Check if matrix or vector
-                switch (value.second.size()) {
-                    case 2:
-                        shader->Set(value.first,
-                                    (float)value.second[0].to_double(),
-                                    (float)value.second[1].to_double());
-                        break;
-                    case 3:
-                        shader->Set(value.first,
-                                    (float)value.second[0].to_double(),
-                                    (float)value.second[1].to_double(),
-                                    (float)value.second[2].to_double());
-                        break;
-                    case 4:
-                        shader->Set(value.first,
-                                    (float)value.second[0].to_double(),
-                                    (float)value.second[1].to_double(),
-                                    (float)value.second[2].to_double(),
-                                    (float)value.second[3].to_double());
-                        break;
-                }
-                break;
-            }
-        }
-    }*/
-    return nullptr;
-}
-
 void cqsp::asset::AssetLoader::PlaceAsset(Package& package,
                                           const AssetType& type,
                                           const std::string& path,
@@ -775,6 +724,34 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadCubemap(
     QueueHolder holder(prototype);
     m_asset_queue.push(holder);
     return asset;
+}
+
+std::unique_ptr<cqsp::asset::ShaderDefinition>
+cqsp::asset::AssetLoader::LoadShaderDefinition(cqsp::asset::VirtualMounter* mount, const std::string& path,
+    const std::string& key, const Hjson::Value& hints) {
+    std::string parent = GetParentPath(path);
+    auto root = mount->Open(path);
+    std::string shader_def = cqsp::asset::ReadAllFromVFileToString(root.get());
+    // Load shader def
+    auto hjson = Hjson::Unmarshal(shader_def);
+    // Load the files
+    std::string vert_filename = parent + "/" + hjson["vert"];
+    std::string frag_filename = parent + "/" + hjson["frag"];
+
+    // Load the files
+    auto vert_file = mount->Open(vert_filename);
+    std::string vert_code = cqsp::asset::ReadAllFromVFileToString(vert_file.get());
+
+    auto frag_file = mount->Open(frag_filename);
+    std::string frag_code = cqsp::asset::ReadAllFromVFileToString(frag_file.get());
+
+    Hjson::Value uniforms = hjson["uniforms"];
+    std::unique_ptr<ShaderDefinition> shader_def_ptr = std::make_unique<ShaderDefinition>();
+    shader_def_ptr->uniforms = uniforms;
+    shader_def_ptr->vert = vert_code;
+    shader_def_ptr->frag = frag_code;
+    // Get uniforms, and then complain, I guess
+    return shader_def_ptr;
 }
 
 std::unique_ptr<cqsp::asset::TextDirectoryAsset>

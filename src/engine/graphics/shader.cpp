@@ -170,10 +170,13 @@ void ShaderProgram::UseProgram() {
 
 ShaderProgram::ShaderProgram() { program = -1; }
 
+#include <spdlog/spdlog.h>
+
 ShaderProgram::ShaderProgram(const Shader& vert, const Shader& frag) {
     assert(vert.shader_type == ShaderType::VERT);
     assert(frag.shader_type == ShaderType::FRAG);
     program = MakeShaderProgram(vert.id, frag.id);
+    
 }
 
 cqsp::asset::ShaderProgram::ShaderProgram(const Shader& vert,
@@ -258,4 +261,66 @@ cqsp::asset::Shader::~Shader() {
     if (id != 0) {
         glDeleteShader(id);
     }
+}
+
+GLenum GetUniformType(int program, const char* name) {
+    int location = glGetUniformLocation(program, name);
+    if (location != -1) {
+        GLint size;
+        GLenum type;
+        GLsizei length;
+        glGetActiveUniform(program, location, 0, &length, &size, &type, NULL);
+        return type;
+    } else {
+        return GL_INVALID_ENUM;
+    }
+}
+
+cqsp::asset::ShaderProgram_t cqsp::asset::ShaderDefinition::MakeShader() {
+    cqsp::asset::Shader vert_shader(vert, cqsp::asset::ShaderType::VERT);
+    cqsp::asset::Shader frag_shader(frag, cqsp::asset::ShaderType::FRAG);
+    // Create the shader
+    cqsp::asset::ShaderProgram_t shader =
+        cqsp::asset::MakeShaderProgram(vert_shader, frag_shader);
+    // Initial values
+    shader->UseProgram();
+    for (auto value : uniforms) {
+        int type = GetUniformType(shader->program, value.first.c_str());
+        switch (type) {
+            case GL_SAMPLER_1D:
+            case GL_SAMPLER_2D:
+            case GL_SAMPLER_3D:
+            case GL_SAMPLER_CUBE:
+            case GL_SAMPLER_1D_SHADOW:
+            case GL_SAMPLER_2D_SHADOW:
+                shader->Set(value.first, (int)value.second.to_int64());
+                break;
+            case GL_FLOAT_VEC2:
+                shader->Set(value.first, (float)value.second[0].to_double(),
+                            (float)value.second[1].to_double());
+                break;
+            case GL_FLOAT_VEC3:
+                shader->Set(value.first, (float)value.second[0].to_double(),
+                            (float)value.second[1].to_double(),
+                            (float)value.second[2].to_double());
+                break;
+            case GL_FLOAT_VEC4:
+                shader->Set(value.first, (float)value.second[0].to_double(),
+                            (float)value.second[1].to_double(),
+                            (float)value.second[2].to_double(),
+                            (float)value.second[3].to_double());
+                break;
+            case GL_FLOAT:
+                shader->Set(value.first, (float)value.second.to_double());
+                break;
+            case GL_INT:
+                shader->Set(value.first, (int)value.second.to_int64());
+                break;
+            case GL_BOOL:
+                shader->Set(value.first, (bool)value.second);
+                break;
+            // We don't support matrices
+        }
+    }
+    return shader;
 }
