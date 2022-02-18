@@ -16,9 +16,9 @@
  */
 #pragma once
 
-#include <glm/vec3.hpp>
-
 #include <vector>
+
+#include <glm/vec3.hpp>
 
 #include "engine/graphics/mesh.h"
 

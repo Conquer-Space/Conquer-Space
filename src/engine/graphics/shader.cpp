@@ -170,13 +170,10 @@ void ShaderProgram::UseProgram() {
 
 ShaderProgram::ShaderProgram() { program = -1; }
 
-#include <spdlog/spdlog.h>
-
 ShaderProgram::ShaderProgram(const Shader& vert, const Shader& frag) {
     assert(vert.shader_type == ShaderType::VERT);
     assert(frag.shader_type == ShaderType::FRAG);
     program = MakeShaderProgram(vert.id, frag.id);
-    
 }
 
 cqsp::asset::ShaderProgram::ShaderProgram(const Shader& vert,
@@ -186,7 +183,6 @@ cqsp::asset::ShaderProgram::ShaderProgram(const Shader& vert,
     assert(frag.shader_type == ShaderType::FRAG);
     assert(geom.shader_type == ShaderType::GEOM);
     program = MakeShaderProgram(vert.id, frag.id, geom.id);
-
 }
 
 cqsp::asset::ShaderProgram::~ShaderProgram() {
