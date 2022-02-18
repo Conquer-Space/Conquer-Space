@@ -55,7 +55,8 @@ void cqsp::scene::MainMenuScene::Init() {
     title_banner_texture = GetAssetManager().GetAsset<Texture>("core:title");
 
     // Create new shader program
-    shader = GetAssetManager().MakeShader("core:shader.pane.vert", "core:shader.texturedpane.frag");
+    shader = GetAssetManager().GetAsset<cqsp::asset::ShaderDefinition>("core:pane_shader")
+                 ->MakeShader();
 
     // Make the renderer
     object_renderer = new cqsp::engine::Renderer2D(shader);

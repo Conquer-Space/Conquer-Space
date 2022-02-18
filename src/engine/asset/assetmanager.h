@@ -381,6 +381,10 @@ class AssetLoader {
                                                     const std::string& key,
                                                     const Hjson::Value& hints);
 
+    std::unique_ptr<ShaderDefinition> LoadShaderDefinition(
+        cqsp::asset::VirtualMounter* mount, const std::string& path,
+        const std::string& key, const Hjson::Value& hints);
+
     /// <summary>
     /// Loads a script directory.
     /// </summary>
