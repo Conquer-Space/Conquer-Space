@@ -16,11 +16,12 @@
 */
 #pragma once
 
+#include <hjson.h>
+
 #include <istream>
 #include <string>
 #include <memory>
 
-#include <hjson.h>
 #include <glm/glm.hpp>
 
 #include "engine/asset/asset.h"
