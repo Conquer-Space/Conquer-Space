@@ -275,9 +275,17 @@ GLenum GetUniformType(int program, const char* name) {
 cqsp::asset::ShaderProgram_t cqsp::asset::ShaderDefinition::MakeShader() {
     cqsp::asset::Shader vert_shader(vert, cqsp::asset::ShaderType::VERT);
     cqsp::asset::Shader frag_shader(frag, cqsp::asset::ShaderType::FRAG);
+
     // Create the shader
-    cqsp::asset::ShaderProgram_t shader =
-        cqsp::asset::MakeShaderProgram(vert_shader, frag_shader);
+    cqsp::asset::ShaderProgram_t shader = nullptr;
+    if (!geometry.empty()) {
+        cqsp::asset::Shader geom_shader(geometry,
+                                        cqsp::asset::ShaderType::GEOM);
+        // Add to the shader
+        shader = cqsp::asset::MakeShaderProgram(vert_shader, frag_shader, geom_shader);
+    } else {
+        shader = cqsp::asset::MakeShaderProgram(vert_shader, frag_shader);
+    }
     // Initial values
     shader->UseProgram();
     for (auto value : uniforms) {
