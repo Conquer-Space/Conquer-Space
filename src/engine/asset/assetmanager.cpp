@@ -750,6 +750,16 @@ cqsp::asset::AssetLoader::LoadShaderDefinition(cqsp::asset::VirtualMounter* moun
     shader_def_ptr->uniforms = uniforms;
     shader_def_ptr->vert = vert_code;
     shader_def_ptr->frag = frag_code;
+
+    // Load geometry file
+    if (hjson["geom"].defined()) {
+        std::string geom_filename = parent + "/" + hjson["geom"];
+
+        // Then get the geometric matrix thing
+        auto geom_file = mount->Open(geom_filename);
+        std::string geom_code = cqsp::asset::ReadAllFromVFileToString(geom_file.get());
+        shader_def_ptr->geometry = geom_code;
+    }
     // Get uniforms, and then complain, I guess
     return shader_def_ptr;
 }

@@ -92,11 +92,16 @@ inline ShaderProgram_t MakeShaderProgram(Shader& vert, Shader& frag) {
     return std::make_shared<ShaderProgram>(vert, frag);
 }
 
+inline ShaderProgram_t MakeShaderProgram(Shader& vert, Shader& frag, Shader& geom) {
+    return std::make_shared<ShaderProgram>(vert, frag, geom);
+}
+
 class ShaderDefinition : public Asset {
  public:
     // Code for vert and frags
     std::string vert;
     std::string frag;
+    std::string geometry;
 
     Hjson::Value uniforms;
 
