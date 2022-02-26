@@ -122,8 +122,6 @@ void cqsp::client::systems::SysPlanetInformation::CityInformationPanel() {
         view_mode = ViewMode::PLANET_VIEW;
     }
     ImGui::SameLine();
-    static bool thing = true;
-    CQSPGui::DefaultCheckbox("Macroeconomic/Ownership mode", &thing);
 
     ImGui::TextFmt("{}", GetUniverse().get<cqspc::Name>(selected_city_entity));
 
@@ -184,9 +182,7 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
             market_information_panel = true;
         }
         if (ImGui::IsItemHovered()) {
-            ImGui::BeginTooltip();
-            MarketInformationTooltipContent();
-            ImGui::EndTooltip();
+            CQSPGui::SimpleTextTooltip("Click for detailed market information");
         }
     }
 
@@ -201,6 +197,7 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
     ImGui::Separator();
 
     // Show resources
+    /*
     if (GetUniverse().all_of<cqspc::ResourceDistribution>(selected_planet)) {
         auto& dist = GetUniverse().get<cqspc::ResourceDistribution>(selected_planet);
         using cqsp::client::components::PlanetTerrainRender;
@@ -216,7 +213,7 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
                         selected_planet, it->first);
             }
         }
-    }
+    }*/
     // List cities
     for (int i = 0; i < habit.settlements.size(); i++) {
         const bool is_selected = (selected_city_index == i);

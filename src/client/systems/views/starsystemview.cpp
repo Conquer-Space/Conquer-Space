@@ -307,7 +307,6 @@ void SysStarSystemRenderer::SeePlanet(entt::entity ent) {
 }
 
 void SysStarSystemRenderer::DoUI(float deltaTime) {
-    // UI for debug in the future.
     ImGui::Begin("Debug ui window");
     ImGui::TextFmt("{} {} {}", cam_pos.x, cam_pos.y, cam_pos.z);
     ImGui::TextFmt("{} {} {}", view_center.x, view_center.y, view_center.z);
