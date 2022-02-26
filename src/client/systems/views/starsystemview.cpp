@@ -31,6 +31,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "client/components/planetrendering.h"
+#include "client/components/clientctx.h"
 
 #include "engine/graphics/primitives/uvsphere.h"
 #include "engine/renderer/renderer.h"
@@ -307,10 +308,13 @@ void SysStarSystemRenderer::SeePlanet(entt::entity ent) {
 }
 
 void SysStarSystemRenderer::DoUI(float deltaTime) {
-    ImGui::Begin("Debug ui window");
-    ImGui::TextFmt("{} {} {}", cam_pos.x, cam_pos.y, cam_pos.z);
-    ImGui::TextFmt("{} {} {}", view_center.x, view_center.y, view_center.z);
-    ImGui::End();
+    auto &debug_info = m_app.GetUniverse().ctx_or_set<ctx::StarSystemViewDebug>();
+    if (debug_info.to_show) {
+        ImGui::Begin("Debug ui window", &debug_info.to_show);
+        ImGui::TextFmt("{} {} {}", cam_pos.x, cam_pos.y, cam_pos.z);
+        ImGui::TextFmt("{} {} {}", view_center.x, view_center.y, view_center.z);
+        ImGui::End();
+    }
 }
 
 void SysStarSystemRenderer::DrawStars() {
