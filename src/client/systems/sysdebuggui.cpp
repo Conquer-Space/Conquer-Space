@@ -20,6 +20,7 @@
 #include <GLFW/glfw3.h>
 
 #include "client/systems/views/starsystemview.h"
+#include "client/components/clientctx.h"
 #include "common/components/name.h"
 #include "common/util/profiler.h"
 
@@ -135,12 +136,19 @@ void cqsp::client::systems::SysDebugMenu::ShowWindows() {
 void cqsp::client::systems::SysDebugMenu::CreateMenuBar() {
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("Tools")) {
-            ImGui::MenuItem("Benckmarks", 0, &to_show_cqsp_metrics);
+            ImGui::MenuItem("Benchmarks", 0, &to_show_cqsp_metrics);
             if (ImGui::BeginMenu("ImGui")) {
                 ImGui::MenuItem("About ImGui", 0, &to_show_imgui_about);
                 ImGui::MenuItem("ImGui Debugger", 0, &to_show_metrics_window);
                 ImGui::MenuItem("ImPlot Debugger", 0, &to_show_implot_metrics);
                 ImGui::EndMenu();
+            }
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Extra UI Indicators")) {
+            if (ImGui::MenuItem("Star System Viewer Debug")) {
+                auto& debug_info = GetApp().GetUniverse().ctx_or_set<ctx::StarSystemViewDebug>();
+                debug_info.to_show = !debug_info.to_show;
             }
             ImGui::EndMenu();
         }
