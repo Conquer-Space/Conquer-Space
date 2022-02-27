@@ -44,7 +44,7 @@ struct MouseOverEntity {};
 
 struct RenderingStarSystem {};
 
-struct RenderingPlanet {};
+struct FocusedPlanet {};
 struct FocusPlanet {};
 /*
  * Main renderer for the universe
