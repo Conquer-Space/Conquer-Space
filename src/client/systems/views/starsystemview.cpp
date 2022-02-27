@@ -146,6 +146,20 @@ void SysStarSystemRenderer::OnTick() {
 void SysStarSystemRenderer::Render(float deltaTime) {
     ZoneScoped;
     namespace cqspb = cqsp::common::components::bodies;
+
+    // Seeing new planet
+    entt::entity current_planet = m_app.GetUniverse().view<FocusedPlanet>().front();
+    if (current_planet != m_viewing_entity && current_planet != entt::null) {
+        SPDLOG_INFO("Switched displaying planet, seeing {}", current_planet);
+        m_viewing_entity = current_planet;
+        // Do terrain
+        SeeEntity();
+    }
+
+    FocusCityView();
+
+    m_star_system  = m_app.GetUniverse().view<RenderingStarSystem>().front();
+
     // Check for resized window
     window_ratio = static_cast<float>(m_app.GetWindowWidth()) /
                    static_cast<float>(m_app.GetWindowHeight());
@@ -155,15 +169,6 @@ void SysStarSystemRenderer::Render(float deltaTime) {
     glDepthFunc(GL_LESS);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
-    entt::entity current_planet = m_app.GetUniverse().view<FocusedPlanet>().front();
-    if (current_planet != m_viewing_entity && current_planet != entt::null) {
-        SPDLOG_INFO("Switched displaying planet, seeing {}", current_planet);
-        m_viewing_entity = current_planet;
-        // Do terrain
-        SeeEntity();
-    }
-
-    m_star_system  = m_app.GetUniverse().view<RenderingStarSystem>().front();
 
     CalculateCamera();
     CheckPlanetTerrain();
@@ -248,6 +253,8 @@ void SysStarSystemRenderer::SeeEntity() {
     // See the object
     view_center = CalculateObjectPos(m_viewing_entity);
 
+    // Set the variable
+    scroll = 5;
     CalculateCityPositions();
 }
 
@@ -256,9 +263,7 @@ void SysStarSystemRenderer::Update(float deltaTime) {
     double deltaX = previous_mouseX - m_app.GetMouseX();
     double deltaY = previous_mouseY - m_app.GetMouseY();
     if (!ImGui::GetIO().WantCaptureMouse) {
-        if (scroll - m_app.GetScrollAmount() * 3 > 1.5) {
-            scroll -= m_app.GetScrollAmount() * 3 * scroll/33;
-        }
+        scroll -= m_app.GetScrollAmount() * 3 * scroll/33;
 
         if (m_app.MouseButtonIsHeld(GLFW_MOUSE_BUTTON_LEFT)) {
             view_x += deltaX/m_app.GetWindowWidth()*3.1415*4;
@@ -314,6 +319,7 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
         ImGui::Begin("Debug ui window", &debug_info.to_show);
         ImGui::TextFmt("{} {} {}", cam_pos.x, cam_pos.y, cam_pos.z);
         ImGui::TextFmt("{} {} {}", view_center.x, view_center.y, view_center.z);
+        ImGui::TextFmt("{}", scroll);
         ImGui::TextFmt("Focused planets: {}",
             m_universe.view<cqsp::client::systems::FocusedPlanet>().size());
         ImGui::End();
@@ -631,6 +637,29 @@ void SysStarSystemRenderer::CalculateCityPositions() {
         m_app.GetUniverse().emplace_or_replace<Offset>(city_entity, cqspt::toVec3(coord,  1));
     }
     SPDLOG_INFO("Calculated offset");
+}
+
+void cqsp::client::systems::SysStarSystemRenderer::FocusCityView() {
+    namespace cqspt = cqsp::common::components::types;
+    auto focused_city_view = m_app.GetUniverse().view<FocusedCity>();
+    entt::entity city_entity = focused_city_view.front();
+
+    // City to focus view on
+    if (focused_city_view.empty()) {
+        return;
+    }
+    m_universe.clear<FocusedCity>();
+
+    // Then select the city
+    // Focus view on city
+    // Calculate the vector we can get to see the city, then see it
+    if (!m_universe.any_of<cqspt::SurfaceCoordinate>(city_entity)) {
+        return;
+    }
+    auto& surf = m_universe.get<cqspt::SurfaceCoordinate>(city_entity);
+    view_x = surf.longitude;
+    view_y = surf.latitude;
+    scroll = 1.5;
 }
 
 glm::vec3 SysStarSystemRenderer::CalculateObjectPos(const entt::entity &ent) {

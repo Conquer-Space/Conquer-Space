@@ -125,6 +125,12 @@ void cqsp::client::systems::SysPlanetInformation::CityInformationPanel() {
 
     ImGui::TextFmt("{}", GetUniverse().get<cqspc::Name>(selected_city_entity));
 
+    ImGui::SameLine();
+    if (ImGui::Button("Focus on city")) {
+        // Focus city
+        GetApp().GetUniverse().emplace_or_replace<FocusedCity>(selected_city_entity);
+    }
+
     if (GetUniverse().all_of<cqspc::Settlement>(selected_city_entity)) {
         int size = GetUniverse().get<cqspc::Settlement>(selected_city_entity).population.size();
         for (auto seg_entity : GetUniverse().get<cqspc::Settlement>(selected_city_entity).population) {
