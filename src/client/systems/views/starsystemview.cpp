@@ -29,6 +29,7 @@
 #include <Tracy.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "client/components/planetrendering.h"
 #include "client/components/clientctx.h"
@@ -481,6 +482,7 @@ void SysStarSystemRenderer::DrawCityIcon(glm::vec3 &object_pos) {
     planetDispMat = glm::scale(planetDispMat, glm::vec3(1, window_ratio, 1));
     glm::mat4 twodimproj = glm::mat4(1.0f);
     city.shaderProgram->UseProgram();
+    city.shaderProgram->Set("color", 1, 0, 1, 1);
     city.shaderProgram->setMat4("model", planetDispMat);
     city.shaderProgram->setMat4("projection", twodimproj);
 
@@ -566,7 +568,7 @@ void SysStarSystemRenderer::DrawTerrainlessPlanet(glm::vec3 &object_pos) {
 
 void SysStarSystemRenderer::RenderCities(glm::vec3 &object_pos, const entt::entity &body_entity) {
     ZoneScoped;
-    // Draw Ships
+    // Draw Cities
     namespace cqspc = cqsp::common::components;
     namespace cqspt = cqsp::common::components::types;
     if (!m_app.GetUniverse().all_of<cqspc::Habitation>(body_entity)) {
@@ -577,22 +579,36 @@ void SysStarSystemRenderer::RenderCities(glm::vec3 &object_pos, const entt::enti
         return;
     }
 
+    // Put in same layer as ships
     renderer.BeginDraw(ship_icon_layer);
     city.shaderProgram->UseProgram();
     city.shaderProgram->setVec4("color", 0.5, 0.5, 0.5, 1);
     for (auto city_entity : cities) {
         // Calculate position to render
         glm::vec3 city_pos = m_app.GetUniverse().get<Offset>(city_entity).offset;
-        if (glm::length(city_pos - cam_pos) < (scroll - 0.2)) {
+        // Check if line of sight and city position intersects the sphere that is the planet
+        // 1 is the radius of the planet, so 
+
+        glm::vec3 city_world_pos = city_pos + object_pos;
+        if (CityIsVisible(city_world_pos, object_pos, cam_pos)) {
             // If it's reasonably close, then we can show city names
-            glm::vec3 pos = city_pos + object_pos;
             if (scroll < 3) {
-                DrawEntityName(pos, city_entity);
+                DrawEntityName(city_world_pos, city_entity);
             }
-            DrawCityIcon(pos);
+            DrawCityIcon(city_world_pos);
         }
     }
     renderer.EndDraw(ship_icon_layer);
+}
+
+bool SysStarSystemRenderer::CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos) {
+    float d = glm::distance(cam_pos, city_pos);
+    float D = glm::distance(cam_pos, planet_pos);
+    const float radius = 1;
+
+    float discriminant = sqrt(D * D + radius * radius);
+    // If the discriminant is greater than d, then it's hidden by the sphere
+    return (d+1e-5 < discriminant);
 }
 
 void SysStarSystemRenderer::CalculateCityPositions() {

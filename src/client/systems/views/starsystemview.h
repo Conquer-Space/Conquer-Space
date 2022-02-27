@@ -123,12 +123,14 @@ class SysStarSystemRenderer {
     void DrawStar(glm::vec3 &object_pos);
     void DrawTerrainlessPlanet(glm::vec3 &object_pos);
     void RenderCities(glm::vec3 &object_pos, const entt::entity &body_entity);
+    bool CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos);
     void CalculateCityPositions();
 
     glm::vec3 CalculateObjectPos(const entt::entity &);
     glm::vec3 CalculateCenteredObject(const entt::entity &);
     glm::vec3 CalculateCenteredObject(const glm::vec3 &);
     glm::vec3 TranslateToNormalized(const glm::vec3 &);
+
     void CalculateCamera();
     void MoveCamera(double deltaTime);
 
