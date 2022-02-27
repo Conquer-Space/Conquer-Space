@@ -35,6 +35,7 @@
 namespace cqsp {
 namespace client {
 namespace systems {
+// TODO(EhWhoAmI): Would be helpful to move the following structs to a header file.
 /*
  * Tag class for bodies to render.
  */
@@ -44,8 +45,11 @@ struct MouseOverEntity {};
 
 struct RenderingStarSystem {};
 
+// Planet that the camera center is at
 struct FocusedPlanet {};
-struct FocusPlanet {};
+// City to look at
+struct FocusedCity {};
+
 /*
  * Main renderer for the universe
  */
@@ -125,6 +129,8 @@ class SysStarSystemRenderer {
     void RenderCities(glm::vec3 &object_pos, const entt::entity &body_entity);
     bool CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos);
     void CalculateCityPositions();
+
+    void FocusCityView();
 
     glm::vec3 CalculateObjectPos(const entt::entity &);
     glm::vec3 CalculateCenteredObject(const entt::entity &);
