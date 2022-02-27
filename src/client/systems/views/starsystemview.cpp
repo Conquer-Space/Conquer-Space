@@ -314,6 +314,8 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
         ImGui::Begin("Debug ui window", &debug_info.to_show);
         ImGui::TextFmt("{} {} {}", cam_pos.x, cam_pos.y, cam_pos.z);
         ImGui::TextFmt("{} {} {}", view_center.x, view_center.y, view_center.z);
+        ImGui::TextFmt("Focused planets: {}",
+            m_universe.view<cqsp::client::systems::FocusedPlanet>().size());
         ImGui::End();
     }
 }
@@ -675,6 +677,7 @@ void SysStarSystemRenderer::MoveCamera(double deltaTime) {
     glm::vec3 right = glm::normalize(glm::cross(forward, cam_up));
     auto post_move = [&]() {
         m_universe.clear<cqsp::client::systems::FocusedPlanet>();
+        m_viewing_entity = entt::null;
     };
     if (m_app.ButtonIsHeld(GLFW_KEY_W)) {
         // Get direction
