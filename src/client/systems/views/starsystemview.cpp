@@ -129,7 +129,7 @@ void SysStarSystemRenderer::Initialize() {
 }
 
 void SysStarSystemRenderer::OnTick() {
-    entt::entity current_planet = m_app.GetUniverse().view<RenderingPlanet>().front();
+    entt::entity current_planet = m_app.GetUniverse().view<FocusedPlanet>().front();
     if (current_planet != entt::null) {
         //view_center = CalculateObjectPos(m_viewing_entity);
     }
@@ -155,7 +155,7 @@ void SysStarSystemRenderer::Render(float deltaTime) {
     glDepthFunc(GL_LESS);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
-    entt::entity current_planet = m_app.GetUniverse().view<RenderingPlanet>().front();
+    entt::entity current_planet = m_app.GetUniverse().view<FocusedPlanet>().front();
     if (current_planet != m_viewing_entity && current_planet != entt::null) {
         SPDLOG_INFO("Switched displaying planet, seeing {}", current_planet);
         m_viewing_entity = current_planet;
@@ -304,8 +304,8 @@ void SysStarSystemRenderer::Update(float deltaTime) {
 }
 
 void SysStarSystemRenderer::SeePlanet(entt::entity ent) {
-    m_app.GetUniverse().clear<RenderingPlanet>();
-    m_app.GetUniverse().emplace<RenderingPlanet>(ent);
+    m_app.GetUniverse().clear<FocusedPlanet>();
+    m_app.GetUniverse().emplace<FocusedPlanet>(ent);
 }
 
 void SysStarSystemRenderer::DoUI(float deltaTime) {
@@ -674,7 +674,7 @@ void SysStarSystemRenderer::MoveCamera(double deltaTime) {
     glm::vec3 forward = glm::normalize(glm::vec3(glm::sin(view_x), 0, glm::cos(view_x)));
     glm::vec3 right = glm::normalize(glm::cross(forward, cam_up));
     auto post_move = [&]() {
-        m_universe.clear<cqsp::client::systems::RenderingPlanet>();
+        m_universe.clear<cqsp::client::systems::FocusedPlanet>();
     };
     if (m_app.ButtonIsHeld(GLFW_KEY_W)) {
         // Get direction

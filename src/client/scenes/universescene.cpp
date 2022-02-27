@@ -179,12 +179,12 @@ void cqsp::scene::SeeStarSystem(cqsp::engine::Application& app, entt::entity ent
 }
 
 entt::entity cqsp::scene::GetCurrentViewingPlanet(cqsp::engine::Application& app) {
-    return app.GetUniverse().view<cqsp::client::systems::RenderingPlanet>().front();
+    return app.GetUniverse().view<cqsp::client::systems::FocusedPlanet>().front();
 }
 
 void cqsp::scene::SeePlanet(cqsp::engine::Application& app, entt::entity ent) {
-    app.GetUniverse().clear<cqsp::client::systems::RenderingPlanet>();
-    app.GetUniverse().emplace<cqsp::client::systems::RenderingPlanet>(ent);
+    app.GetUniverse().clear<cqsp::client::systems::FocusedPlanet>();
+    app.GetUniverse().emplace<cqsp::client::systems::FocusedPlanet>(ent);
 }
 
 void cqsp::scene::SetGameHalted(bool b) { game_halted = b; }
