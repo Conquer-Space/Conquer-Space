@@ -50,6 +50,7 @@ void cqsp::scene::UniverseLoadingScene::Ui(float deltaTime) {
     ImGui::SetNextWindowPos(
             ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
             ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x * 0.8, -1), ImGuiCond_Always);
     ImGui::Begin("Conquer Space", nullptr,
                 ImGuiWindowFlags_NoTitleBar |
                 ImGuiWindowFlags_NoResize |
