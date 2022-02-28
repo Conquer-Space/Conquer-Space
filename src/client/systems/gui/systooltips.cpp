@@ -27,6 +27,7 @@
 #include "common/components/economy.h"
 #include "common/components/infrastructure.h"
 #include "common/components/organizations.h"
+#include "common/components/player.h"
 #include "client/systems/gui/sysstockpileui.h"
 #include "engine/gui.h"
 
@@ -69,41 +70,20 @@ void RenderEntityType(Universe& universe, entt::entity entity) {
         std::string production = "";
         auto& generator = universe.get<cqspc::ResourceConverter>(entity);
         ImGui::TextFmt("{} Factory", GetName(universe, generator.recipe));
+    } else if (universe.any_of<cqspc::Player>(entity)) {
+        ImGui::TextColored(ImColor(252, 186, 3), "Player");
+    } else if (universe.any_of<cqspc::Civilization>(entity)) {
+        ImGui::TextFmt("Civilization");
+    } else if (universe.any_of<cqspc::Organization>(entity)) {
+        ImGui::TextFmt("Organization");
     } else {
         ImGui::TextFmt("Unknown");
     }
 }
 }  // namespace cqsp::client::systems::gui
 
-// TODO(EhWhoAmI): Organize this so that it makes logical sense and order.
-void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity entity) {
-    if (!ImGui::IsItemHovered()) {
-        return;
-    }
+void ResourceTooltipSection(Universe &universe, entt::entity entity) {
     namespace cqspc = cqsp::common::components;
-    ImGui::BeginTooltip();
-    ImGui::TextFmt("{}", GetName(universe, entity));
-
-    RenderEntityType(universe, entity);
-
-    if (universe.all_of<cqspc::Wallet>(entity)) {
-        auto& balance = universe.get<cqsp::common::components::Wallet>(entity);
-        ImGui::TextFmt("Wallet: {}", balance.GetBalance());
-    }
-
-    if (universe.all_of<cqspc::MarketAgent>(entity)) {
-        ImGui::TextFmt("Is Market Participant");
-    }
-    if (universe.all_of<cqspc::types::Kinematics>(entity)) {
-        auto& a = universe.get<cqsp::common::components::types::Kinematics>(entity);
-        ImGui::TextFmt("Position: {} {} {}", a.position.x, a.position.y, a.position.z);
-    }
-
-    if (universe.all_of<cqspc::Governed>(entity)) {
-        auto& governed = universe.get<cqspc::Governed>(entity);
-        ImGui::TextFmt("Owned by: {}", GetName(universe, governed.governor));
-    }
-
     //TODO(EhWhoAmI): Set these text red, but too lazy to do it for now
     if (universe.all_of<cqspc::FailedResourceTransfer>(entity)) {
         ImGui::TextFmt("Failed resource transfer last tick");
@@ -142,5 +122,43 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
         ImGui::TextFmt("Max Power: {}", consumption.max);
         ImGui::TextFmt("Min Power: {}", consumption.min);
     }
+}
+
+// TODO(EhWhoAmI): Organize this so that it makes logical sense and order.
+void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity entity) {
+    if (!ImGui::IsItemHovered()) {
+        return;
+    }
+    namespace cqspc = cqsp::common::components;
+    ImGui::BeginTooltip();
+    ImGui::TextFmt("{}", GetName(universe, entity));
+
+    if (entity == entt::null) {
+        ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Null entity!");
+    }
+    RenderEntityType(universe, entity);
+
+    if (universe.all_of<cqspc::Wallet>(entity)) {
+        auto& balance = universe.get<cqsp::common::components::Wallet>(entity);
+        ImGui::TextFmt("Wallet: {}", balance.GetBalance());
+    }
+
+    if (universe.all_of<cqspc::MarketAgent>(entity)) {
+        ImGui::TextFmt("Is Market Participant");
+    }
+    if (universe.all_of<cqspc::types::Kinematics>(entity)) {
+        auto& a = universe.get<cqsp::common::components::types::Kinematics>(entity);
+        ImGui::TextFmt("Position: {} {} {}", a.position.x, a.position.y, a.position.z);
+    }
+
+    if (universe.all_of<cqspc::Governed>(entity)) {
+        auto& governed = universe.get<cqspc::Governed>(entity);
+        ImGui::TextFmt("Owned by: {}", GetName(universe, governed.governor));
+    }
+
+
+    // Resource stuff
+    //TODO(EhWhoAmI): Set these text red, but too lazy to do it for now
+    ResourceTooltipSection(universe, entity);
     ImGui::EndTooltip();
 }

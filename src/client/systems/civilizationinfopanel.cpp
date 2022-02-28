@@ -21,6 +21,8 @@
 #include "common/components/economy.h"
 #include "common/util/utilnumberdisplay.h"
 
+#include "client/systems/gui/systooltips.h"
+
 void cqsp::client::systems::CivilizationInfoPanel::Init() {}
 
 void cqsp::client::systems::CivilizationInfoPanel::DoUI(int delta_time) {
@@ -55,6 +57,8 @@ void cqsp::client::systems::CivilizationInfoPanel::CivInfoPanel() {
     if (player == entt::null) {
         return;
     }
+    // Make hoverable
+    gui::EntityTooltip(GetUniverse(), player);
     if (GetUniverse().any_of<common::components::Wallet>(player)) {
         auto& wallet = GetUniverse().get<common::components::Wallet>(player);
         ImGui::TextFmt("Reserves: {}", util::LongToHumanString(wallet.GetBalance()));
