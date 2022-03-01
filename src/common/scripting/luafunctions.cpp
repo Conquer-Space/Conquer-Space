@@ -166,6 +166,11 @@ void FunctionCivilizationGen(cqsp::engine::Application& app) {
         return civ;
     });
 
+    REGISTER_FUNCTION("set_owner", [&] (entt::entity entity, entt::entity owner) {
+        auto& gov = universe.get_or_emplace<cqspc::Governed>(entity);
+        gov.governor = owner;
+    });
+
     REGISTER_FUNCTION("set_civilization_planet", [&] (entt::entity civ, entt::entity planet) {
         universe.get_or_emplace<cqspc::Civilization>(civ).starting_planet = planet;
     });

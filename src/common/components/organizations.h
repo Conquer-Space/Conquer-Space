@@ -21,6 +21,13 @@
 namespace cqsp {
 namespace common {
 namespace components {
+/// <summary>
+/// The civilization or organization that owns or governs the city
+/// </summary>
+struct Governed {
+    entt::entity governor;
+};
+
 struct Organization {};
 
 struct Civilization {

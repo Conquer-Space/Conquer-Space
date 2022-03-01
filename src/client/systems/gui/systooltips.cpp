@@ -26,6 +26,7 @@
 #include "common/components/coordinates.h"
 #include "common/components/economy.h"
 #include "common/components/infrastructure.h"
+#include "common/components/organizations.h"
 #include "client/systems/gui/sysstockpileui.h"
 #include "engine/gui.h"
 
@@ -96,6 +97,11 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
     if (universe.all_of<cqspc::types::Kinematics>(entity)) {
         auto& a = universe.get<cqsp::common::components::types::Kinematics>(entity);
         ImGui::TextFmt("Position: {} {} {}", a.position.x, a.position.y, a.position.z);
+    }
+
+    if (universe.all_of<cqspc::Governed>(entity)) {
+        auto& governed = universe.get<cqspc::Governed>(entity);
+        ImGui::TextFmt("Owned by: {}", GetName(universe, governed.governor));
     }
 
     //TODO(EhWhoAmI): Set these text red, but too lazy to do it for now
