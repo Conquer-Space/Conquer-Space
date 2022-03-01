@@ -117,6 +117,7 @@ generators:insert({
         local planet = get_civilization_planet(civ_id)
         if is_player(civ_id) then
             print("Initializing player")
+            set_name(civ_id, "Player Civilization")
         end
 
         -- Add cities

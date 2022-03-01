@@ -63,4 +63,18 @@ void cqsp::client::systems::CivilizationInfoPanel::CivInfoPanel() {
         auto& wallet = GetUniverse().get<common::components::Wallet>(player);
         ImGui::TextFmt("Reserves: {}", util::LongToHumanString(wallet.GetBalance()));
     }
+
+    // Collate all the owned stuff
+    auto view = GetUniverse().view<common::components::Governed>();
+    ImGui::Separator();
+    ImGui::Text("Owned Cities");
+
+    ImGui::BeginChild("ownedcitiespanel");
+    for (auto entity : view) {
+        if (GetUniverse().get<common::components::Governed>(entity).governor == player) {
+            ImGui::TextFmt("{}", client::systems::gui::GetName(GetUniverse(), entity));
+            gui::EntityTooltip(GetUniverse(), entity);
+        }
+    }
+    ImGui::EndChild();
 }

@@ -28,6 +28,10 @@
 #include "common/components/infrastructure.h"
 #include "common/components/organizations.h"
 #include "common/components/player.h"
+
+#include "common/systems/population/cityinformation.h"
+#include "common/util/utilnumberdisplay.h"
+
 #include "client/systems/gui/sysstockpileui.h"
 #include "engine/gui.h"
 
@@ -156,6 +160,13 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
         ImGui::TextFmt("Owned by: {}", GetName(universe, governed.governor));
     }
 
+    // If it's a city do population
+    if (universe.all_of<cqspc::Settlement>(entity)) {
+        ImGui::TextFmt("Population: {}",
+            cqsp::util::LongToHumanString(
+                cqsp::common::systems::GetCityPopulation(universe, entity)
+            ));
+    }
 
     // Resource stuff
     //TODO(EhWhoAmI): Set these text red, but too lazy to do it for now
