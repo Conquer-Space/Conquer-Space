@@ -157,6 +157,22 @@ class Application {
     bool MouseButtonIsReleased(int btn) { return m_window->MouseButtonIsReleased(btn); }
     bool MouseButtonIsPressed(int btn) { return m_window->MouseButtonIsPressed(btn); }
 
+    Rml::ElementDocument* LoadDocument(const std::string& path);
+    void CloseDocument(const std::string& path);
+
+    /// <summary>
+    /// Reloads the document from the file
+    /// How to hotload the a document.
+    ///
+    /// Approximately how to use it
+    /// After loading it with `app.LoadDocument()`, you can reload it, and
+    /// remember to set the document variable that you may have, or it will be
+    /// pointing to something empty.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    Rml::ElementDocument* ReloadDocument(const std::string& path);
+
     Window* GetWindow() { return m_window; }
 
     cqsp::asset::Font*& GetFont() { return m_font; }
@@ -255,6 +271,8 @@ class Application {
     std::map<std::string, std::string> properties;
 
     cqsp::engine::audio::IAudioInterface *m_audio_interface;
+
+    std::map<std::string, Rml::ElementDocument*> loaded_documents;
 
     glm::mat4 two_dim_projection;
     glm::mat4 three_dim_projection;
