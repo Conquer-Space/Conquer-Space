@@ -36,6 +36,8 @@
 #include "common/scripting/scripting.h"
 #include "common/util/paths.h"
 
+#define LOADING_ID "../data/core/gui/screens/loading_screen.rml"
+
 cqsp::scene::LoadingScene::LoadingScene(cqsp::engine::Application& app)
     : cqsp::engine::Scene(app) {
     m_done_loading = false;
@@ -58,7 +60,8 @@ void cqsp::scene::LoadingScene::Init() {
     constructor.Bind("current", &loading_data.current);
     model_handle = constructor.GetModelHandle();
     constructor.Bind("max", &loading_data.max);
-    document = GetApp().GetRmlUiContext()->LoadDocument("../data/core/gui/screens/loading_screen.rml");
+
+    document = GetApp().LoadDocument(LOADING_ID);
     if (document) {
         document->Show();
     }
@@ -85,7 +88,8 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
 
         // Remove data model
         GetApp().GetRmlUiContext()->RemoveDataModel("loading");
-        document->Close();
+        GetApp().CloseDocument(LOADING_ID);
+
         // Set main menu scene
         if (std::find(GetApp().GetCmdLineArgs().begin(), GetApp().GetCmdLineArgs().end(), "-i")
                                                             != GetApp().GetCmdLineArgs().end()) {
@@ -110,8 +114,9 @@ void cqsp::scene::LoadingScene::Ui(float deltaTime) {
     loading_data.current = static_cast<int>(current);
     model_handle.DirtyVariable("max");
     model_handle.DirtyVariable("current");
-    document->GetElementById("loading_bar")->SetAttribute("value", current);
-    document->GetElementById("loading_bar")->SetAttribute("max", max);
+    Rml::ElementProgress* progress = ((Rml::ElementProgress*)document->GetElementById("loading_bar"));
+    progress->SetValue(current);
+    progress->SetMax(max);
 }
 
 void cqsp::scene::LoadingScene::Render(float deltaTime) { }

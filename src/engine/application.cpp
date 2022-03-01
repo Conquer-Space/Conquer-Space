@@ -678,7 +678,36 @@ void cqsp::engine::Application::ExitApplication() {
     glfwSetWindowShouldClose(window(m_window), true);
 }
 
-void cqsp::engine::Application::DrawText(const std::string& text, float x, float y) {
+Rml::ElementDocument* cqsp::engine::Application::LoadDocument(const std::string& path) {
+    auto document = rml_context->LoadDocument(path);
+    if (!document) {
+        SPDLOG_WARN("Unable to load document {}", path);
+    }
+    loaded_documents[path] = document;
+    return document;
+}
+
+void cqsp::engine::Application::CloseDocument(const std::string& path) {
+    loaded_documents[path]->Close();
+    loaded_documents.erase(path);
+}
+
+Rml::ElementDocument* cqsp::engine::Application::ReloadDocument(const std::string& path) {
+    if (loaded_documents.find(path) == loaded_documents.end()) {
+        return nullptr;
+    }
+    bool visible = loaded_documents[path]->IsVisible();
+    loaded_documents[path]->Close();
+    auto document = rml_context->LoadDocument(path);
+    loaded_documents[path] = document;
+    if (visible) {
+        document->Show();
+    }
+    return document;
+}
+
+void cqsp::engine::Application::DrawText(const std::string& text, float x,
+                                         float y) {
     if (fontShader != nullptr && m_font != nullptr) {
         // Render with size 16 white text
         cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, 16, glm::vec3(1.f, 1.f, 1.f));
