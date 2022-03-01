@@ -21,7 +21,7 @@
 
 namespace cqsp::client::systems {
 class CivilizationInfoPanel : public SysUserInterface {
-   public:
+ public:
     explicit CivilizationInfoPanel(cqsp::engine::Application& app)
         : SysUserInterface(app) {}
 

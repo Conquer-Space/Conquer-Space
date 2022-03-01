@@ -164,8 +164,7 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
     if (universe.all_of<cqspc::Settlement>(entity)) {
         ImGui::TextFmt("Population: {}",
             cqsp::util::LongToHumanString(
-                cqsp::common::systems::GetCityPopulation(universe, entity)
-            ));
+                cqsp::common::systems::GetCityPopulation(universe, entity)));
     }
 
     // Resource stuff
