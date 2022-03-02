@@ -46,6 +46,8 @@ cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app) : cqsp
 
 cqsp::scene::MainMenuScene::~MainMenuScene() {
     delete object_renderer;
+    main_menu->RemoveEventListener("click", &listener);
+    main_menu->Close();
 }
 
 void cqsp::scene::MainMenuScene::Init() {
@@ -65,19 +67,22 @@ void cqsp::scene::MainMenuScene::Init() {
 
     shader->UseProgram();
     shader->Set("texture1", 0);
+
+    listener.app = &GetApp();
+    main_menu = GetApp().LoadDocument("../data/core/gui/mainmenu.rml");
+    main_menu->Show();
+    main_menu->AddEventListener("click", &listener);
 }
 
 void cqsp::scene::MainMenuScene::Update(float deltaTime) {
     // Take screenshot test
-    if ((GetApp().ButtonIsReleased(GLFW_KEY_F1) &&
-            GetApp().ButtonIsHeld(GLFW_KEY_F10)) ||
-        (GetApp().ButtonIsHeld(GLFW_KEY_F1) &&
-            GetApp().ButtonIsReleased(GLFW_KEY_F10))) {
-        GetApp().Screenshot();
+    if (GetApp().ButtonIsPressed(GLFW_KEY_F5)) {
+        main_menu = GetApp().ReloadDocument("../data/core/gui/mainmenu.rml");
     }
 }
 
 void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
+    return;
     float winWidth = width;
     float winHeight = height;
     ImGui::SetNextWindowPos(ImVec2(GetApp().GetWindowWidth() / 2 - winWidth / 2,
@@ -188,19 +193,20 @@ void cqsp::scene::MainMenuScene::Render(float deltaTime) {
         int height = static_cast<float>(splash_screen->height) /
                      static_cast<float>(splash_screen->width) *
                      GetApp().GetWindowWidth();
-        object_renderer->DrawTexturedSprite(rectangle, *splash_screen,
+        /* object_renderer->DrawTexturedSprite(rectangle, *splash_screen,
                                             glm::vec2(width / 2, height / 2),
-                                            glm::vec2(width, height), 0);
+                                            glm::vec2(width, height), 0);*/
     }
 
     {
         // Draw title banner
         int banner_height = title_banner_texture->height;
         int banner_width = title_banner_texture->width;
-        object_renderer->DrawTexturedSprite(rectangle, *title_banner_texture,
+        /*object_renderer->DrawTexturedSprite(
+            rectangle, *title_banner_texture,
                                             glm::vec2(banner_width / 2 + 50,
                                             GetApp().GetWindowHeight() - banner_height - 25),
-                                            glm::vec2(banner_width, banner_height), 0);
+                                            glm::vec2(banner_width, banner_height), 0);*/
     }
     GetApp().DrawText(fmt::format("Version: {}", CQSP_VERSION_STRING), 8, 8);
 }
@@ -291,4 +297,12 @@ void cqsp::scene::MainMenuScene::ModWindow() {
     }
     ImGui::SameLine();
     ImGui::End();
+}
+
+void cqsp::scene::MainMenuScene::EventListener::ProcessEvent(Rml::Event& event) {
+    std::string id_pressed = event.GetTargetElement()->GetId();
+
+    if (id_pressed == "quit") {
+        app->ExitApplication();
+    }
 }

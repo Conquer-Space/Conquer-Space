@@ -1,0 +1,82 @@
+<rml>
+    <head>
+        <title></title>
+        <style>
+            body {
+                width: 100%;
+                height: 100%;
+                font-family: Roboto;
+                margin: auto;
+                padding-bottom: 300px;
+                decorator: image(../gfx/img/earthrise.png none cover center bottom);
+            }
+
+            div#title_bar div#icon {
+                display: none;
+            }
+
+            div#content {
+                text-align: left;
+            }
+
+            .horizontal {
+                width: 100%;
+                height: 5px;
+                background-color: #1F1F1F;
+                align-self: center;
+            }
+
+            .horizontal fill {
+                background-color: #1700E2;
+            }
+
+            .button {
+                font-size: 40px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+
+            .active_button {
+                transition: padding-left color 0.4s back-out;
+            }
+
+            .inactive_button {
+                color: rgb(175, 175, 175);
+            }
+
+            .active_button:hover {
+                padding-left: 30px;
+                color: yellow;
+            }
+
+            .button_menu {
+                margin-left: 50px;
+                position: absolute;
+                bottom: 200px;
+                left: 0;
+                width: 230px;
+                padding: 10px 60px 20px 20px;
+                padding-right: 60px;
+                padding-left: 20px;
+                background-color: rgba(30, 30, 30, 200);
+            }
+
+            .banner_image {
+                position: absolute;
+                top: 225px;
+                left: 30px;
+            }
+        </style>
+    </head>
+    <body>
+    <img class="banner_image" src="../gfx/img/mainbanner2.png"/>
+    <div class="button_menu">
+        <button id="new_game" class="button active_button">New Game</button><br/>
+        <button id="save_game" class="button inactive_button">Load Save</button><br/>
+        <button id="options" class="button active_button">Options</button><br/>
+        <button id="credits" class="button active_button">Credits</button><br/>
+        <button id="mods" class="button active_button">Mods</button><br/>
+        <button id="quit" class="button active_button">Quit</button><br/>
+    </div>
+    </body>
+</rml>

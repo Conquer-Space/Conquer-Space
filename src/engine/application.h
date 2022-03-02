@@ -90,6 +90,8 @@ class SceneManager {
     bool m_switch;
 };
 
+class ActionListener {
+};
 class Application {
  public:
     Application(int _argc, char* _argv[]);
@@ -215,6 +217,25 @@ class Application {
 
     Rml::Context* GetRmlUiContext() { return rml_context; }
 
+    class CqspEventInstancer : public Rml::EventListenerInstancer {
+     public:
+        CqspEventInstancer();
+        virtual ~CqspEventInstancer();
+
+        /// Instances a new event handle for Invaders.
+        Rml::EventListener* InstanceEventListener(const Rml::String& value, Rml::Element* element) override;
+    };
+
+    typedef void(*EventListener)(Rml::Event&);
+
+    class CqspEventListener : public Rml::EventListener {
+     public:
+        CqspEventListener(const std::string& name) : name(name) {}
+        ~CqspEventListener();
+        void ProcessEvent(Rml::Event& event);
+        std::string name;
+    };
+
  private:
     void InitFonts();
 
@@ -248,6 +269,8 @@ class Application {
     Rml::Context* rml_context;
     std::unique_ptr<Rml::SystemInterface> m_system_interface;
     std::unique_ptr<cqsp::engine::CQSPRenderInterface> m_render_interface;
+
+    std::unique_ptr<CqspEventInstancer> m_event_instancer;
 
     cqsp::engine::SceneManager m_scene_manager;
 
