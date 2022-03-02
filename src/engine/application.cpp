@@ -501,7 +501,11 @@ void cqsp::engine::Application::InitRmlUi() {
     std::string fontPath =
         cqsp::common::util::GetCqspDataPath() + "/core/gfx/fonts/";
 
+    // Load rmlui fonts
     Rml::LoadFontFace((fontPath + fontDatabase["default"]["path"]).c_str());
+    Rml::LoadFontFace((fontPath + fontDatabase["h2"]["path"]).c_str());
+    //m_event_instancer = std::make_unique<CqspEventInstancer>();
+    //Rml::Factory::RegisterEventListenerInstancer(m_event_instancer.get());
 }
 
 int cqsp::engine::Application::destroy() {
@@ -890,3 +894,18 @@ void cqsp::engine::SceneManager::Update(float deltaTime) { m_scene->Update(delta
 void cqsp::engine::SceneManager::Ui(float deltaTime) { m_scene->Ui(deltaTime); }
 
 void cqsp::engine::SceneManager::Render(float deltaTime) { m_scene->Render(deltaTime); }
+
+cqsp::engine::Application::CqspEventInstancer::CqspEventInstancer() {}
+
+cqsp::engine::Application::CqspEventInstancer::~CqspEventInstancer() {}
+
+Rml::EventListener* cqsp::engine::Application::CqspEventInstancer::InstanceEventListener(const Rml::String & value, Rml::Element * element) {
+    // Add event activation, I guess
+    return new CqspEventListener(value);
+}
+
+cqsp::engine::Application::CqspEventListener::~CqspEventListener() {
+}
+
+void cqsp::engine::Application::CqspEventListener::ProcessEvent(
+    Rml::Event& event) {}

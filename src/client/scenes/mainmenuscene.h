@@ -55,6 +55,14 @@ class MainMenuScene : public cqsp::engine::Scene{
     cqsp::asset::Texture* splash_screen;
     cqsp::asset::Texture* title_banner_texture;
     cqsp::asset::ShaderProgram_t shader;
+
+    Rml::ElementDocument* main_menu;
+    class EventListener : public Rml::EventListener {
+     public:
+        EventListener() = default;
+        void ProcessEvent(Rml::Event& event);
+        cqsp::engine::Application* app;
+    } listener;
 };
 }  // namespace scene
 }  // namespace cqsp
