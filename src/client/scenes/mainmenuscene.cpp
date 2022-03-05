@@ -19,6 +19,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <RmlUi/Debugger.h>
+
 #include <imgui_markdown.h>
 
 #include <utility>
@@ -42,49 +44,50 @@
 
 #include "common/util/paths.h"
 
-cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app) : cqsp::engine::Scene(app) { }
+cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app)
+    : cqsp::engine::Scene(app), settings_window(app) {}
 
 cqsp::scene::MainMenuScene::~MainMenuScene() {
-    delete object_renderer;
-    main_menu->RemoveEventListener("click", &listener);
+    GetApp().GetRmlUiContext()->RemoveDataModel("settings");
+
+    main_menu->RemoveEventListener(Rml::EventId::Click, &listener);
     main_menu->Close();
+
+    settings_window.Close();
 }
 
 void cqsp::scene::MainMenuScene::Init() {
-    using cqsp::asset::Texture;
-    m_credits = GetAssetManager().GetAsset<cqsp::asset::TextAsset>("core:credits");
-    splash_screen = GetAssetManager().GetAsset<Texture>("core:earthrise");
-    title_banner_texture = GetAssetManager().GetAsset<Texture>("core:title");
-
-    // Create new shader program
-    shader = GetAssetManager().GetAsset<cqsp::asset::ShaderDefinition>("core:pane_shader")
-                 ->MakeShader();
-
-    // Make the renderer
-    object_renderer = new cqsp::engine::Renderer2D(shader);
-
-    rectangle = cqsp::engine::primitive::MakeTexturedPaneMesh();
-
-    shader->UseProgram();
-    shader->Set("texture1", 0);
-
     listener.app = &GetApp();
+    listener.m_scene = this;
+
     main_menu = GetApp().LoadDocument("../data/core/gui/mainmenu.rml");
     main_menu->Show();
-    main_menu->AddEventListener("click", &listener);
+    main_menu->AddEventListener(Rml::EventId::Click, &listener);
+
+    settings_window.LoadDocument();
 }
 
 void cqsp::scene::MainMenuScene::Update(float deltaTime) {
-    // Take screenshot test
     if (GetApp().ButtonIsPressed(GLFW_KEY_F5)) {
+        Rml::Factory::ClearStyleSheetCache();
         main_menu = GetApp().ReloadDocument("../data/core/gui/mainmenu.rml");
+        main_menu->AddEventListener(Rml::EventId::Click, &listener);
+
+        settings_window.ReloadDocument();
     }
+    if (is_options_visible && last_options_visible == false) {
+        auto opacity = settings_window.GetOpacity();
+        if (opacity <= 0) {
+            is_options_visible = false;
+            settings_window.PushToBack();
+        }
+    }
+    last_options_visible = false;
 }
 
 void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
     return;
-    float winWidth = width;
-    float winHeight = height;
+    /*
     ImGui::SetNextWindowPos(ImVec2(GetApp().GetWindowWidth() / 2 - winWidth / 2,
                3 * GetApp().GetWindowHeight() / 3 - winHeight * 1.5f));
 
@@ -177,37 +180,10 @@ void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
 
     if (m_show_mods_window) {
         ModWindow();
-    }
+    }*/
 }
 
 void cqsp::scene::MainMenuScene::Render(float deltaTime) {
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    // Update projection
-    object_renderer->SetProjection(GetApp().Get2DProj());
-
-    {
-        int width = GetApp().GetWindowWidth();
-        // Configure so that it matches the width
-        int height = static_cast<float>(splash_screen->height) /
-                     static_cast<float>(splash_screen->width) *
-                     GetApp().GetWindowWidth();
-        /* object_renderer->DrawTexturedSprite(rectangle, *splash_screen,
-                                            glm::vec2(width / 2, height / 2),
-                                            glm::vec2(width, height), 0);*/
-    }
-
-    {
-        // Draw title banner
-        int banner_height = title_banner_texture->height;
-        int banner_width = title_banner_texture->width;
-        /*object_renderer->DrawTexturedSprite(
-            rectangle, *title_banner_texture,
-                                            glm::vec2(banner_width / 2 + 50,
-                                            GetApp().GetWindowHeight() - banner_height - 25),
-                                            glm::vec2(banner_width, banner_height), 0);*/
-    }
     GetApp().DrawText(fmt::format("Version: {}", CQSP_VERSION_STRING), 8, 8);
 }
 
@@ -301,8 +277,12 @@ void cqsp::scene::MainMenuScene::ModWindow() {
 
 void cqsp::scene::MainMenuScene::EventListener::ProcessEvent(Rml::Event& event) {
     std::string id_pressed = event.GetTargetElement()->GetId();
-
-    if (id_pressed == "quit") {
+    if (id_pressed == "options") {
+        m_scene->settings_window.Show();
+        m_scene->is_options_visible = true;
+        m_scene->last_options_visible = true;
+        // Activate animation
+    } else if (id_pressed == "quit") {
         app->ExitApplication();
     }
 }

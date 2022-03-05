@@ -485,7 +485,7 @@ void cqsp::engine::Application::InitRmlUi() {
     }
 
     // Disable debugger ui for now
-#if 0
+#if true
     Rml::Debugger::Initialise(rml_context);
     Rml::Debugger::SetVisible(true);
 #endif
@@ -542,14 +542,8 @@ int cqsp::engine::Application::destroy() {
 
     glfwDestroyWindow(window(m_window));
     glfwTerminate();
-
     SPDLOG_INFO("Killed GLFW");
-    // Save options
-    std::ofstream config_path(m_client_options.GetDefaultLocation(),
-                              std::ios::trunc);
-    m_client_options.WriteOptions(config_path);
 
-    SPDLOG_INFO("Saved config");
     SPDLOG_INFO("Good bye");
     spdlog::shutdown();
     return 0;
@@ -899,7 +893,8 @@ cqsp::engine::Application::CqspEventInstancer::CqspEventInstancer() {}
 
 cqsp::engine::Application::CqspEventInstancer::~CqspEventInstancer() {}
 
-Rml::EventListener* cqsp::engine::Application::CqspEventInstancer::InstanceEventListener(const Rml::String & value, Rml::Element * element) {
+Rml::EventListener* cqsp::engine::Application::CqspEventInstancer::
+                    InstanceEventListener(const Rml::String & value, Rml::Element * element) {
     // Add event activation, I guess
     return new CqspEventListener(value);
 }

@@ -23,6 +23,8 @@
 #include "engine/graphics/primitives/pane.h"
 #include "engine/graphics/text.h"
 
+#include "client/systems/settingswindow.h"
+
 namespace cqsp {
 namespace scene {
 class MainMenuScene : public cqsp::engine::Scene{
@@ -38,31 +40,25 @@ class MainMenuScene : public cqsp::engine::Scene{
  private:
     void ModWindow();
 
-    cqsp::asset::TextAsset* m_credits;
-
     bool m_credits_window = false;
     bool m_save_game_window = false;
     bool m_new_game_window = false;
     bool m_options_window = false;
     bool m_show_mods_window = false;
 
-    float ratio, ratio2;
-    float width, height;
-
-    cqsp::engine::Renderer2D* object_renderer;
-    cqsp::engine::Mesh* rectangle;
-
-    cqsp::asset::Texture* splash_screen;
-    cqsp::asset::Texture* title_banner_texture;
-    cqsp::asset::ShaderProgram_t shader;
-
     Rml::ElementDocument* main_menu;
+    client::SettingsWindow settings_window;
+
     class EventListener : public Rml::EventListener {
      public:
         EventListener() = default;
         void ProcessEvent(Rml::Event& event);
         cqsp::engine::Application* app;
+        MainMenuScene* m_scene;
     } listener;
+
+    bool is_options_visible = false;
+    bool last_options_visible = false;
 };
 }  // namespace scene
 }  // namespace cqsp

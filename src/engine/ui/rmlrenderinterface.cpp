@@ -221,6 +221,8 @@ void cqsp::engine::CQSPRenderInterface::EnableScissorRegion(bool enable) {
 void cqsp::engine::CQSPRenderInterface::SetScissorRegion(int x, int y,
                                                          int width,
                                                          int height) {
+    glScissor(x, app.GetWindowHeight() - (y + height), width, height);
+    return;
     if (!m_transform_enabled) {
         glScissor(x, app.GetWindowHeight() - (y + height), width, height);
     } else {

@@ -58,8 +58,8 @@ void cqsp::scene::LoadingScene::Init() {
     Rml::DataModelConstructor constructor =
         GetApp().GetRmlUiContext()->CreateDataModel("loading");
     constructor.Bind("current", &loading_data.current);
-    model_handle = constructor.GetModelHandle();
     constructor.Bind("max", &loading_data.max);
+    model_handle = constructor.GetModelHandle();
 
     document = GetApp().LoadDocument(LOADING_ID);
     if (document) {
