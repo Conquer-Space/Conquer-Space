@@ -1,25 +1,4 @@
 {
-    cqspbanner: {
-        path: cqspbanner1.png
-        type: texture
-
-        # Loading hints
-        hints: {}
-    }
-    earthrise: {
-        path: earthrise.png
-        type: texture
-        hints: {
-            magfilter: false
-        }
-    }
-    title: {
-        path: mainbanner2.png
-        type: texture
-        hints: {
-            magfilter: true
-        }
-    }
     skycubemap: {
         path: skybox/skybox.hjson
         type: cubemap

@@ -1,0 +1,111 @@
+<rml>
+    <head>
+        <title>Options</title>
+        <link type="text/rcss" href="default.rcss"/>
+        <style>
+            @keyframes fadein {
+                from { opacity: 0; }
+                to   { opacity: 1; }
+            }
+
+            #options_body {
+                transform: translateX(-100vw);
+                transition: opacity transform 0.3s cubic-in-out;
+            }
+
+            #options_body.visible {
+                transform: translateX(0px);
+            }
+
+            body {
+                width: 100%;
+                height: 100%;
+                background-color: rgba(14, 0, 54, 240);
+            }
+
+            .button {
+                font-size: 32px;
+                background-color: red;
+                height: auto;
+            }
+
+            .active_button {
+                transition: color 0.4s back-out;
+            }
+
+            .active_button:hover {
+                color: yellow;
+            }
+
+            .left_button_div {
+                position: absolute;
+                bottom: 100px;
+                left: 200px;
+            }
+
+            .right_button_div {
+                position: absolute;
+                bottom: 100px;
+                right: 200px;
+            }
+
+            .title_banner {
+                margin-top: 50px;
+                position: absolute;
+                text-align: center;
+                width: 100%;
+            }
+
+            .settings_content {
+                padding: 30px 30px 100px 30px;
+                position: absolute;
+                text-align: left;
+                width: 100%;
+            }
+
+            .title_text {
+                font-size: 72px;
+            }
+
+            .options {
+                font-size: 32px;
+            }
+        </style>
+    </head>
+    <body id="options_body">
+        <div class="title_banner">
+            <h1 class="title_text">Settings</h1>
+        </div>
+        <form data-model="settings">
+            <tabset id="menu">
+                <tab>Display</tab>
+                <panel id="welcome">
+                    <div class="settings_content options">
+                        <label>Window Size</label>
+                        <select id="window_size_select">
+                            <option data-for="window_size : window_sizes">{{window_size.x}} x {{window_size.y}}</option>
+                        </select>
+                        <br/>
+                        <label class="options">Full Screen <input type="checkbox" id="fullscreen" data-value="fullscreen"/></label>
+                    </div>
+                </panel>
+                <tab>Audio</tab>
+                <panel>
+                    <div class="settings_content">
+                    <label class="options">Music Volume</label>
+                    <input class="scrollbarhorizontal" id="music_volume" type="range" min="0" max="1" step="0.01" data-value="music_volume"></input>
+                    <br/>
+                    <label class="options">UI Volume</label>
+                    <input class="scrollbarhorizontal" type="range" min="0" max="1" step="0.01" data-value="ui_volume"></input>
+                    </div>
+                </panel>
+            </tabset>
+            <div class="left_button_div">
+                <button id="close" class="button active_button">Close (Esc)</button>
+            </div>
+            <div class="right_button_div">
+                <input type="submit" id="apply" class="button active_button">Apply</input>
+            </div>
+        </form>
+    </body>
+</rml>

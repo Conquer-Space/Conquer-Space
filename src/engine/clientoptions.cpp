@@ -29,6 +29,11 @@ void cqsp::client::ClientOptions::WriteOptions(std::ostream& output_stream) {
     output_stream << Hjson::StreamEncoder(options, decOpt);
 }
 
+void cqsp::client::ClientOptions::WriteOptions() {
+    std::ofstream config_path(GetDefaultLocation(), std::ios::trunc);
+    WriteOptions(config_path);
+}
+
 void cqsp::client::ClientOptions::LoadDefaultOptions() {
     options = Hjson::Merge(GetDefaultOptions(), options);
 }

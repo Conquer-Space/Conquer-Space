@@ -1,33 +1,13 @@
 <rml>
     <head>
         <title></title>
+        <link type="text/rcss" href="default.rcss"/>
         <style>
             body {
                 width: 100%;
                 height: 100%;
-                font-family: Roboto;
-                margin: auto;
                 padding-bottom: 300px;
                 decorator: image(../gfx/img/earthrise.png none cover center bottom);
-            }
-
-            div#title_bar div#icon {
-                display: none;
-            }
-
-            div#content {
-                text-align: left;
-            }
-
-            .horizontal {
-                width: 100%;
-                height: 5px;
-                background-color: #1F1F1F;
-                align-self: center;
-            }
-
-            .horizontal fill {
-                background-color: #1700E2;
             }
 
             .button {

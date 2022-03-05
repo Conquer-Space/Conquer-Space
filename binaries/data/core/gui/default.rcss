@@ -1,0 +1,150 @@
+body {
+    font-family: Roboto;
+    margin: auto;
+    font-size: 24px;
+}
+
+@spritesheet main_ui_spritesheet
+{
+	/* Path: D:/Code/cqsp/binaries/data/core/gui/menuitems.png */
+	src: menuitems.png;
+	resolution: 4.0x;
+
+	checkbox-unchecked: 3px 3px 45px 45px;
+	checkbox-checked: 55px 3px 45px 45px;
+	selector: 3px 53px 199px 36px;
+	selector-tl: 3px 53px 3px 3px;
+	selector-top: 10px 53px 155px 3px;
+	selector-tr: 165px 53px 37px 4px;
+	selector-cl: 4px 57px 3px 28px;
+	selector-center: 8px 57px 156px 29px;
+	selector-cr: 165px 57px 37px 28px;
+	selector-bl: 4px 85px 3px 3px;
+	selector-bottom: 8px 85px 155px 3px;
+	selector-br: 165px 86px 37px 3px;
+	selectbox: 3px 53px 162px 37px;
+	selectarrow: 165px 52px 38px 37px;
+	sliderbar: 18px 98px 16px 49px;
+	slidertrack: 46px 101px 214px 5px;
+}
+
+input.checkbox
+{
+    width: 24px;
+    decorator: image(checkbox-unchecked);
+}
+
+input.checkbox:checked
+{
+    decorator: image(checkbox-checked);
+}
+
+select {
+	width: 500px;
+	padding-top: 1px;
+	margin-top: 10px;
+	height: 40px;
+}
+
+select selectvalue {
+    /*padding-left: 10px;*/
+	width: 500px;
+	margin-right: 30dp;
+	
+	height: 30px;
+	padding-top: 1px;
+	padding-bottom: 2px;
+	padding-left: 4px;
+	border: 4px rgb(160, 160, 160);
+	color: rgb(255, 255, 255);
+	font-size: 25px;
+}
+
+select:hover selectvalue {
+	border: 4px rgb(255, 255, 255);
+}
+
+option:hover {
+	background-color: rgb(22, 22, 22);
+}
+
+option:checked {
+	background-color: rgb(78, 78, 78);
+}
+
+option {
+	font-size: 25px;
+}
+.dropdown, option, select selectbox{
+    background-color: black;
+    width: 500px;
+}
+
+.dropdown:hover {
+    background-color: rgb(10%, 10%, 10%);
+}
+
+tabset {
+	display: block;
+	width: 80%;
+	height: 60%;
+	position: absolute;
+	top: 200px;
+	left: 10%;
+}
+
+tabset tabs
+{
+	align-self: center;
+	display: block;
+	height: 20px;
+	padding-bottom: 10px;
+}
+
+tabset tab
+{
+	margin-right: 30px;
+}
+
+/* Force each tab to only take up 50 pixels across the tabs element. */
+tabset tab:hover
+{
+
+	color: yellow;
+}
+
+tabset tab:selected {
+	border-bottom: 2px rgb(0%, 23%, 80%);
+}
+/* Display the panel container as a block element 180 pixels high; it will
+   be positioned below the tab container and take up the rest of the space
+   in the tabset. */
+tabset panels
+{
+	display: block;
+}
+
+/* Fix each panel to take up exactly the panelled space. */
+tabset panels panel
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.scrollbarhorizontal {
+	margin-top: -6px;
+	margin-bottom: -6px;
+	margin-right: -11px;
+	width: 300px;
+}
+.scrollbarhorizontal sliderbar {
+	decorator: image(sliderbar);
+	width: 10px;
+}
+
+.scrollbarhorizontal slidertrack {
+	decorator: image(slidertrack);
+	margin: 5px;
+	height: 5px;
+}

@@ -17,7 +17,8 @@
 #pragma once
 
 #include <spdlog/spdlog.h>
-#include <RmlUi/Core.h>
+#include <RmlUi/Core/ElementDocument.h>
+#include <RmlUi/Core/Context.h>
 
 #include <memory>
 #include <utility>
@@ -230,7 +231,7 @@ class Application {
 
     class CqspEventListener : public Rml::EventListener {
      public:
-        CqspEventListener(const std::string& name) : name(name) {}
+        explicit CqspEventListener(const std::string& name) : name(name) {}
         ~CqspEventListener();
         void ProcessEvent(Rml::Event& event);
         std::string name;

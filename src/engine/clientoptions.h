@@ -27,6 +27,7 @@ class ClientOptions {
  public:
      void LoadOptions(std::istream& stream);
      void WriteOptions(std::ostream& stream);
+     void WriteOptions();
 
      void LoadDefaultOptions();
 
