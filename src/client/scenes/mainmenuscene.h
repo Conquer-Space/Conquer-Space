@@ -24,6 +24,7 @@
 #include "engine/graphics/text.h"
 
 #include "client/systems/settingswindow.h"
+#include "client/systems/creditswindow.h"
 
 namespace cqsp {
 namespace scene {
@@ -40,14 +41,10 @@ class MainMenuScene : public cqsp::engine::Scene{
  private:
     void ModWindow();
 
-    bool m_credits_window = false;
-    bool m_save_game_window = false;
-    bool m_new_game_window = false;
-    bool m_options_window = false;
-    bool m_show_mods_window = false;
-
     Rml::ElementDocument* main_menu;
+
     client::SettingsWindow settings_window;
+    client::CreditsWindow credits_window;
 
     class EventListener : public Rml::EventListener {
      public:

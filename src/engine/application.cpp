@@ -485,7 +485,7 @@ void cqsp::engine::Application::InitRmlUi() {
     }
 
     // Disable debugger ui for now
-#if true
+#if 0
     Rml::Debugger::Initialise(rml_context);
     Rml::Debugger::SetVisible(true);
 #endif

@@ -3,14 +3,9 @@
         <title>Options</title>
         <link type="text/rcss" href="default.rcss"/>
         <style>
-            @keyframes fadein {
-                from { opacity: 0; }
-                to   { opacity: 1; }
-            }
-
             #options_body {
                 transform: translateX(-100vw);
-                transition: opacity transform 0.3s cubic-in-out;
+                transition: transform 0.3s cubic-in-out;
             }
 
             #options_body.visible {
@@ -25,7 +20,6 @@
 
             .button {
                 font-size: 32px;
-                background-color: red;
                 height: auto;
             }
 
