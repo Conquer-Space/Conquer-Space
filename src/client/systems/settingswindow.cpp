@@ -85,7 +85,7 @@ void cqsp::client::SettingsWindow::InitializeOptionVariables() {
         options_menu->GetElementById("fullscreen")->SetAttribute("checked", true);
     }
     // Mark all as dirty
-    model_handle.MarkAllDirty();
+    model_handle.DirtyAllVariables();
 }
 
 void cqsp::client::SettingsWindow::RemoveEventListeners() {
@@ -111,6 +111,7 @@ void cqsp::client::SettingsWindow::InitializeDataModel() {
 }
 
 void cqsp::client::SettingsWindow::Show() {
+    options_menu->Show();
     options_menu->PullToFront();
     options_menu->Focus();
     options_menu->SetClass("visible", true);
@@ -132,7 +133,6 @@ void cqsp::client::SettingsWindow::LoadDocument() {
     options_menu = GetApp().LoadDocument(document_name);
     AddEventListeners();
     InitializeOptionVariables();
-    options_menu->Show();
     options_menu->PushToBack();
 }
 

@@ -45,7 +45,7 @@
 #include "common/util/paths.h"
 
 cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app)
-    : cqsp::engine::Scene(app), settings_window(app) {}
+    : cqsp::engine::Scene(app), settings_window(app), credits_window(app) {}
 
 cqsp::scene::MainMenuScene::~MainMenuScene() {
     GetApp().GetRmlUiContext()->RemoveDataModel("settings");
@@ -65,6 +65,8 @@ void cqsp::scene::MainMenuScene::Init() {
     main_menu->AddEventListener(Rml::EventId::Click, &listener);
 
     settings_window.LoadDocument();
+
+    credits_window.OpenDocument();
 }
 
 void cqsp::scene::MainMenuScene::Update(float deltaTime) {
@@ -83,104 +85,10 @@ void cqsp::scene::MainMenuScene::Update(float deltaTime) {
         }
     }
     last_options_visible = false;
+    credits_window.Update(deltaTime);
 }
 
 void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
-    return;
-    /*
-    ImGui::SetNextWindowPos(ImVec2(GetApp().GetWindowWidth() / 2 - winWidth / 2,
-               3 * GetApp().GetWindowHeight() / 3 - winHeight * 1.5f));
-
-    ImGui::Begin("Conquer Space", nullptr,
-                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
-                     ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoBackground);
-
-    float buttonHeight = 24;
-    float buttonWidth = GetApp().GetWindowWidth()/6 - 5 * 6;  // Subtract some space for padding
-
-    ImGui::BeginTable("table1", 6, ImGuiTableFlags_NoPadOuterX);
-    ImGui::TableNextColumn();
-    if (CQSPGui::DefaultButton("New Game", ImVec2(buttonWidth, buttonHeight))) {
-        // Switch scene to new game menu
-        m_new_game_window = true;
-    }
-    ImGui::TableNextColumn();
-
-    int grey = 75;
-    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(grey, grey, grey)));
-    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(grey, grey, grey)));
-    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(grey, grey, grey)));
-    if (CQSPGui::DefaultButton("Load Save", ImVec2(buttonWidth, buttonHeight)), ImGuiButtonFlags_None) {
-        // Get save game
-        m_save_game_window = true;
-    }
-    ImGui::PopStyleColor(3);
-
-    ImGui::TableNextColumn();
-    if (CQSPGui::DefaultButton("Options", ImVec2(buttonWidth, buttonHeight))) {
-        m_options_window = true;
-    }
-    ImGui::TableNextColumn();
-
-    if (CQSPGui::DefaultButton("Credits", ImVec2(buttonWidth, buttonHeight))) {
-        // Then show credits window
-        m_credits_window = true;
-    }
-
-    ImGui::TableNextColumn();
-    if (CQSPGui::DefaultButton("Mods", ImVec2(buttonWidth, buttonHeight))) {
-        // Then load the mods
-        m_show_mods_window = true;
-    }
-
-    ImGui::TableNextColumn();
-    if (CQSPGui::DefaultButton("Quit", ImVec2(buttonWidth, buttonHeight))) {
-        GetApp().ExitApplication();
-    }
-    ImGui::EndTable();
-
-    width = ImGui::GetWindowWidth();
-    height = ImGui::GetWindowHeight();
-    ImGui::End();
-
-    if (m_new_game_window) {
-        ImGui::SetNextWindowPos(
-            ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
-            ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-        ImGui::Begin("New Game", &m_new_game_window,
-            ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
-        if (CQSPGui::DefaultButton("New Game")) {
-            // Switch scene
-            GetApp().SetScene<cqsp::scene::UniverseLoadingScene>();
-        }
-        ImGui::End();
-    }
-
-    if (m_save_game_window) {
-        ImGui::Begin("Load Game", &m_credits_window, ImGuiWindowFlags_NoCollapse);
-        ImGui::End();
-    }
-
-    if (m_credits_window) {
-        ImGui::SetNextWindowSize(
-            ImVec2(ImGui::GetIO().DisplaySize.x * 0.8f, ImGui::GetIO().DisplaySize.y * 0.8f),
-            ImGuiCond_Always);
-        ImGui::SetNextWindowPos(
-            ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
-            ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-        ImGui::Begin("Credits", &m_credits_window, ImGuiWindowFlags_NoCollapse);
-        ImGui::Markdown(m_credits->data.c_str(), m_credits->data.length(),
-            GetApp().markdownConfig);
-        ImGui::End();
-    }
-
-    if (m_options_window) {
-        cqsp::client::systems::ShowOptionsWindow(&m_options_window, GetApp());
-    }
-
-    if (m_show_mods_window) {
-        ModWindow();
-    }*/
 }
 
 void cqsp::scene::MainMenuScene::Render(float deltaTime) {
@@ -188,6 +96,7 @@ void cqsp::scene::MainMenuScene::Render(float deltaTime) {
 }
 
 void cqsp::scene::MainMenuScene::ModWindow() {
+    /*
     ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x * 0.8f, ImGui::GetIO().DisplaySize.y * 0.8f),
         ImGuiCond_Always);
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
@@ -272,16 +181,25 @@ void cqsp::scene::MainMenuScene::ModWindow() {
         asset_manager.SaveModList();
     }
     ImGui::SameLine();
-    ImGui::End();
+    ImGui::End();*/
 }
 
 void cqsp::scene::MainMenuScene::EventListener::ProcessEvent(Rml::Event& event) {
     std::string id_pressed = event.GetTargetElement()->GetId();
-    if (id_pressed == "options") {
+    if (id_pressed == "new_game") {
+        // New game!
+        // Confirm window, then new game
+        m_scene->GetApp().SetScene<cqsp::scene::UniverseLoadingScene>();
+    } else if (id_pressed == "save_game") {
+    } else if (id_pressed == "options") {
         m_scene->settings_window.Show();
         m_scene->is_options_visible = true;
         m_scene->last_options_visible = true;
         // Activate animation
+    } else if (id_pressed == "credits") {
+        // Show credits window
+        m_scene->credits_window.Show();
+    } else if (id_pressed == "mods") {
     } else if (id_pressed == "quit") {
         app->ExitApplication();
     }
