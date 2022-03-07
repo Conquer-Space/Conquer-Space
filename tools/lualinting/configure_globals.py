@@ -26,37 +26,37 @@ sys.path.append(os.path.dirname(pathlib.Path(__file__).parent.resolve()))
 from common.cqsproot import GetCqspRoot
 
 cqsp_root = GetCqspRoot()
-with open(cqsp_root + "src/common/scripting/luafunctions.cpp", "r") as f:
-    data = f.read()
-    # Parse data, look for 'REGISTER_FUNCTION' in the file
-    # The register function marco looks like this:
-    # REGISTER_FUNCTION(name, lambda)
-    # But will probably need more arguments in the future for documentation and other things
-    func_name = "REGISTER_FUNCTION"
-    indexes = [m.start() for m in re.finditer(func_name, data)]
-    # Then read the next few characters for the name
-    variables = []
-    for ind in indexes:
-        # Check if it's the macro definiton
-        if data[ind + len(func_name) + 1] == "\"":
-            # Skip forward 2 characters for the bracket and open
-            k = 2
-            var_name = ""
-            while data[ind + len(func_name) + k] != "\"":
-                # Read the content
-                var_name += data[ind + len(func_name) + k]
-                k += 1
-            variables.append(var_name)
-    # Write to file
-    # Add other variables that are not functions. We will probably have to have a system in the
-    # future to better and automatically determine these
-    variables.append("goods")
-    variables.append("recipes")
-    variables.append("generators")
-    variables.append("events")
-    variables.append("civilizations")
-    variables.append("date")
-    variables.append("terrain_colors")
+variables = ["goods", "recipes", "generators", "events", "civilizations", "date", "terrain_colors"]
+REGISTER_FUNC_NAME = "REGISTER_FUNCTION"
+
+def ParseFile(filename):
+    global variables
+    global cqsp_root
+    global REGISTER_FUNC_NAME
+    with open(cqsp_root + filename, "r") as f:
+        data = f.read()
+        # Parse data, look for 'REGISTER_FUNCTION' in the file
+        # The register function marco looks like this:
+        # REGISTER_FUNCTION(name, lambda)
+        # But will probably need more arguments in the future for documentation and other things
+        indexes = [m.start() for m in re.finditer(REGISTER_FUNC_NAME, data)]
+        # Then read the next few characters for the name
+
+        for ind in indexes:
+            # Check if it's the macro definiton
+            if data[ind + len(REGISTER_FUNC_NAME) + 1] == "\"":
+                # Skip forward 2 characters for the bracket and open
+                k = 2
+                var_name = ""
+                while data[ind + len(REGISTER_FUNC_NAME) + k] != "\"":
+                    # Read the content
+                    var_name += data[ind + len(REGISTER_FUNC_NAME) + k]
+                    k += 1
+                variables.append(var_name)
+
+def WriteConfigFile():
+    global variables
+    global cqsp_root
 
     if not os.path.exists("temp"):
         os.makedirs("temp")
@@ -67,4 +67,14 @@ with open(cqsp_root + "src/common/scripting/luafunctions.cpp", "r") as f:
         output.write(", ".join(variables))
         output.write("}")
         # Close file
-        output.close()
+    output.close()
+
+def main():
+    file_parse_list = ["src/common/scripting/luafunctions.cpp", "src/client/systems/clientscripting.cpp"]
+    for file in file_parse_list:
+        ParseFile(file)
+
+    WriteConfigFile()
+
+if __name__ == '__main__':
+    main()

@@ -16,6 +16,10 @@
 */
 #include "client/systems/clientscripting.h"
 
+#include <map>
+#include <vector>
+#include <string>
+
 #include "common/scripting/scripting.h"
 
 // So that we can document in the future
