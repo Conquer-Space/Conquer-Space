@@ -41,44 +41,10 @@
 #include "common/systems/economy/markethelpers.h"
 #include "common/systems/actions/shiplaunchaction.h"
 #include "common/util/utilnumberdisplay.h"
-#include "engine/asset/asset.h"
 
 // So that we can document in the future
 #define REGISTER_FUNCTION(name, lambda) \
         script_engine.set_function(name, lambda)
-
-sol::object JsonToLuaObject(const Hjson::Value &j, const sol::this_state & s) {
-    sol::state_view lua(s);
-    switch (j.type()) {
-        case Hjson::Type::String:
-            return sol::make_object(lua, j.to_string());
-        case Hjson::Type::Bool:
-            return sol::make_object(lua, j.operator bool());
-        case Hjson::Type::Double:
-            return sol::make_object(lua, j.to_double());
-        case Hjson::Type::Int64:
-            return sol::make_object(lua, j.to_int64());
-        case Hjson::Type::Map: {
-            std::map<std::string, sol::object> obj;
-            for (auto it = j.begin(); it != j.end(); ++it) {
-                sol::object ob = JsonToLuaObject(it->second, s);
-                obj[it->first] = ob;
-            }
-            return sol::make_object(lua, obj);
-        }
-        case Hjson::Type::Vector: {
-            std::vector<sol::object> vec;
-            for (auto index = 0; index < static_cast<int>(j.size()); ++index) {
-                vec.push_back(JsonToLuaObject(j[index], s));
-            }
-            return sol::make_object(lua, vec);
-        }
-        default:
-        case Hjson::Type::Null:
-            return sol::make_object(lua, sol::nil);
-    }
-}
-
 
 namespace cqspb = cqsp::common::components::bodies;
 namespace cqsps = cqsp::common::components::ships;
@@ -89,10 +55,7 @@ namespace cqspc = cqsp::common::components;
 /// Initializes functions for RNG
 /// </summary>
 /// <param name="app"></param>
-void FunctionRandom(cqsp::engine::Application& app) {
-    cqsp::common::Universe& universe = app.GetUniverse();
-    cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
-
+void FunctionRandom(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
     // RNG
     REGISTER_FUNCTION("random", [&] (int low, int high) {
         return universe.random->GetRandomInt(low, high);
@@ -103,10 +66,7 @@ void FunctionRandom(cqsp::engine::Application& app) {
     });
 }
 
-void FunctionUniverseBodyGen(cqsp::engine::Application& app) {
-    cqsp::common::Universe& universe = app.GetUniverse();
-    cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
-
+void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
     // Init civilization script
     REGISTER_FUNCTION("create_star_system", [&] () {
         entt::entity ent = universe.create();
@@ -156,10 +116,7 @@ void FunctionUniverseBodyGen(cqsp::engine::Application& app) {
     });
 }
 
-void FunctionCivilizationGen(cqsp::engine::Application& app) {
-    cqsp::common::Universe& universe = app.GetUniverse();
-    cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
-
+void FunctionCivilizationGen(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
     REGISTER_FUNCTION("add_civilization", [&] () {
         entt::entity civ = universe.create();
         universe.emplace<cqspc::Organization>(civ);
@@ -198,9 +155,7 @@ void FunctionCivilizationGen(cqsp::engine::Application& app) {
     });
 }
 
-void FunctionEconomy(cqsp::engine::Application& app) {
-    cqsp::common::Universe& universe = app.GetUniverse();
-    cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
+void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
     namespace cqspa = cqsp::common::systems::actions;
     REGISTER_FUNCTION("create_industries", [&](entt::entity city) {
         universe.emplace<cqspc::Industry>(city);
@@ -285,14 +240,7 @@ void FunctionEconomy(cqsp::engine::Application& app) {
     });
 }
 
-void FunctionUser(cqsp::engine::Application& app) {
-    cqsp::common::Universe& universe = app.GetUniverse();
-    cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
-
-    namespace cqspb = cqsp::common::components::bodies;
-    namespace cqsps = cqsp::common::components::ships;
-    namespace cqspt = cqsp::common::components::types;
-    namespace cqspc = cqsp::common::components;
+void FunctionUser(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
     REGISTER_FUNCTION("set_name", [&](entt::entity entity, std::string name) {
         universe.emplace_or_replace<cqspc::Name>(entity, name);
     });
@@ -310,10 +258,7 @@ void FunctionUser(cqsp::engine::Application& app) {
     });
 }
 
-void FunctionPopulation(cqsp::engine::Application& app) {
-    cqsp::common::Universe& universe = app.GetUniverse();
-    cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
-
+void FunctionPopulation(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
     REGISTER_FUNCTION("add_population_segment", [&](entt::entity settlement, uint64_t popsize) {
         entt::entity population = universe.create();
         universe.emplace<cqspc::PopulationSegment>(population, popsize);
@@ -340,58 +285,13 @@ void FunctionPopulation(cqsp::engine::Application& app) {
     });
 }
 
-void FunctionAssetManagement(cqsp::engine::Application& app) {
-    cqsp::common::Universe& universe = app.GetUniverse();
-    cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
-
-    REGISTER_FUNCTION("require", [&](const char* script) {
-        using cqsp::asset::TextDirectoryAsset;
-        // Get script from asset loader
-        cqsp::asset::TextDirectoryAsset* asset = app.GetAssetManager().GetAsset<TextDirectoryAsset>("core:scripts");
-        // Get the thing
-        if (asset->paths.find(script) != asset->paths.end()) {
-            return script_engine.require_script(script, asset->paths[script].data);
-        } else {
-            SPDLOG_INFO("Cannot find require {}", script);
-            return sol::make_object(script_engine, sol::nil);
-        }
-    });
-
-    REGISTER_FUNCTION("get_text_asset", [&](const char* id) {
-        cqsp::asset::TextAsset* asset = app.GetAssetManager().GetAsset<cqsp::asset::TextAsset>(id);
-        return sol::make_object<std::string>(script_engine, asset->data);
-    });
-
-    REGISTER_FUNCTION("get_hjson_asset", [&](const char* string, sol::this_state s) -> sol::table {
-        cqsp::asset::HjsonAsset* as = app.GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>(string);
-        // Create json object.
-        return JsonToLuaObject(as->data, s).as<sol::table>();
-    });
-
-    // In the future, we can create namespaces from this, such as when we have too many functions,
-    // or need to have core functions or something like that.
-    /*
-    REGISTER_FUNCTION("get_thingy", [&](sol::this_state s) -> sol::table {
-        sol::state_view lua(s);
-        auto ns = lua.create_table();
-        ns.set_function("testf", []() { return 100; });
-        return ns;
-    });*/
-}
-
-void FunctionShips(cqsp::engine::Application& app) {
-    cqsp::common::Universe& universe = app.GetUniverse();
-    cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
-
+void FunctionShips(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
     REGISTER_FUNCTION("create_ship", [&](entt::entity civ, entt::entity orbit, entt::entity starsystem) {
         return cqsp::common::systems::actions::CreateShip(universe, civ, orbit, starsystem);
     });
 }
 
-void FunctionEvent(cqsp::engine::Application& app) {
-    cqsp::common::Universe& universe = app.GetUniverse();
-    cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
-
+void FunctionEvent(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
     REGISTER_FUNCTION("push_event", [&](entt::entity entity, sol::table event_table) {
         auto& queue = universe.get_or_emplace<cqsp::common::event::EventQueue>(entity);
         auto event = std::make_shared<cqsp::common::event::Event>();
@@ -425,10 +325,7 @@ void FunctionEvent(cqsp::engine::Application& app) {
     });
 }
 
-void FunctionResource(cqsp::engine::Application& app) {
-    cqsp::common::Universe& universe = app.GetUniverse();
-    cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
-
+void FunctionResource(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
     REGISTER_FUNCTION("add_resource", [&](entt::entity storage, entt::entity resource, int amount) {
         // Add resources to the resource stockpile
         universe.get<cqspc::ResourceStockpile>(storage)[resource] += amount;
@@ -439,10 +336,7 @@ void FunctionResource(cqsp::engine::Application& app) {
     });
 }
 
-void FunctionCivilizations(cqsp::engine::Application& app) {
-    cqsp::common::Universe& universe = app.GetUniverse();
-    cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
-
+void FunctionCivilizations(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
     REGISTER_FUNCTION("get_player", [&]() {
         return universe.view<cqspc::Player>().front();
     });
@@ -452,19 +346,15 @@ void FunctionCivilizations(cqsp::engine::Application& app) {
     });
 }
 
-void cqsp::scripting::LoadFunctions(cqsp::engine::Application& app) {
-    cqsp::common::Universe& universe = app.GetUniverse();
-    cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
-
-    FunctionAssetManagement(app);
-    FunctionCivilizationGen(app);
-    FunctionCivilizations(app);
-    FunctionEconomy(app);
-    FunctionPopulation(app);
-    FunctionRandom(app);
-    FunctionUniverseBodyGen(app);
-    FunctionUser(app);
-    FunctionEvent(app);
-    FunctionShips(app);
-    FunctionResource(app);
+void cqsp::scripting::LoadFunctions(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
+    FunctionCivilizationGen(universe, script_engine);
+    FunctionCivilizations(universe, script_engine);
+    FunctionEconomy(universe, script_engine);
+    FunctionPopulation(universe, script_engine);
+    FunctionRandom(universe, script_engine);
+    FunctionUniverseBodyGen(universe, script_engine);
+    FunctionUser(universe, script_engine);
+    FunctionEvent(universe, script_engine);
+    FunctionShips(universe, script_engine);
+    FunctionResource(universe, script_engine);
 }
