@@ -20,10 +20,11 @@
 
 #include <string>
 
-
 #include "client/scenes/universescene.h"
+#include "client/systems/clientscripting.h"
 #include "common/systems/sysuniversegenerator.h"
 #include "common/scripting/luafunctions.h"
+
 #include "common/systems/loading/loadgoods.h"
 #include "common/systems/loading/loadnames.h"
 
@@ -92,7 +93,9 @@ void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
 
     // Load scripts
     // Load lua functions
-    cqsp::scripting::LoadFunctions(GetApp());
+    cqsp::scripting::LoadFunctions(GetApp().GetUniverse(),
+                                   GetApp().GetScriptInterface());
+    cqsp::client::scripting::ClientFunctions(GetApp());
 
     // Load universe
     // Register data groups
