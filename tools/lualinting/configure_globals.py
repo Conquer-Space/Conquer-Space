@@ -26,7 +26,14 @@ sys.path.append(os.path.dirname(pathlib.Path(__file__).parent.resolve()))
 from common.cqsproot import GetCqspRoot
 
 cqsp_root = GetCqspRoot()
-variables = ["goods", "recipes", "generators", "events", "civilizations", "date", "terrain_colors"]
+variables = ["goods",
+            "core",
+            "recipes",
+            "generators",
+            "events",
+            "civilizations",
+            "date",
+            "terrain_colors"]
 REGISTER_FUNC_NAME = "REGISTER_FUNCTION"
 
 def ParseFile(filename):

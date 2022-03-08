@@ -4,7 +4,7 @@ local starting_event = {
 
 function starting_event:on_tick()
     if date == 0 then
-        local home_name = core.get_name(get_civilization_planet(get_player()))
+        local home_name = core.get_name(core.get_civilization_planet(core.get_player()))
         core.push_event(core.get_player(), {
             id = "rocket-event",
             image = "core:rocket-event",
