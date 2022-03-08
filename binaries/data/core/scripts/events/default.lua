@@ -4,8 +4,8 @@ local starting_event = {
 
 function starting_event:on_tick()
     if date == 0 then
-        local home_name = get_name(get_civilization_planet(get_player()))
-        push_event(get_player(), {
+        local home_name = core.get_name(core.get_civilization_planet(core.get_player()))
+        core.push_event(core.get_player(), {
             id = "rocket-event",
             image = "core:rocket-event",
             title = "Our Future is in the Stars",
@@ -25,7 +25,7 @@ function starting_event:on_tick()
         })
     end
     if self.chain == 1 and date > 100 then
-        push_event(get_player(), {
+        core.push_event(core.get_player(), {
             id = "rocket-event",
             image = "core:rocket-event",
             title = "Conquer The Stars 1",
