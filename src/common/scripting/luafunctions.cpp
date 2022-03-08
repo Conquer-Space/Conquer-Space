@@ -23,6 +23,8 @@
 
 #include "common/util/random/stdrandom.h"
 
+#include "common/scripting/functionreg.h"
+
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
 #include "common/components/organizations.h"
@@ -42,10 +44,6 @@
 #include "common/systems/actions/shiplaunchaction.h"
 #include "common/util/utilnumberdisplay.h"
 
-// So that we can document in the future
-#define REGISTER_FUNCTION(name, lambda) \
-        script_engine.set_function(name, lambda)
-
 namespace cqspb = cqsp::common::components::bodies;
 namespace cqsps = cqsp::common::components::ships;
 namespace cqspt = cqsp::common::components::types;
@@ -57,7 +55,11 @@ namespace cqspc = cqsp::common::components;
 /// <param name="app"></param>
 void FunctionRandom(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
     // RNG
+    // Make namespace
+    CREATE_NAMESPACE(core);
+
     REGISTER_FUNCTION("random", [&] (int low, int high) {
+        SPDLOG_INFO("Your mom");
         return universe.random->GetRandomInt(low, high);
     });
 
@@ -67,6 +69,8 @@ void FunctionRandom(cqsp::common::Universe& universe, cqsp::scripting::ScriptInt
 }
 
 void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
+    CREATE_NAMESPACE(core);
+
     // Init civilization script
     REGISTER_FUNCTION("create_star_system", [&] () {
         entt::entity ent = universe.create();
@@ -117,6 +121,8 @@ void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::
 }
 
 void FunctionCivilizationGen(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
+    CREATE_NAMESPACE(core);
+
     REGISTER_FUNCTION("add_civilization", [&] () {
         entt::entity civ = universe.create();
         universe.emplace<cqspc::Organization>(civ);
@@ -157,6 +163,8 @@ void FunctionCivilizationGen(cqsp::common::Universe& universe, cqsp::scripting::
 
 void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
     namespace cqspa = cqsp::common::systems::actions;
+    CREATE_NAMESPACE(core);
+
     REGISTER_FUNCTION("create_industries", [&](entt::entity city) {
         universe.emplace<cqspc::Industry>(city);
     });
@@ -241,6 +249,8 @@ void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
 }
 
 void FunctionUser(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
+    CREATE_NAMESPACE(core);
+
     REGISTER_FUNCTION("set_name", [&](entt::entity entity, std::string name) {
         universe.emplace_or_replace<cqspc::Name>(entity, name);
     });
@@ -259,6 +269,8 @@ void FunctionUser(cqsp::common::Universe& universe, cqsp::scripting::ScriptInter
 }
 
 void FunctionPopulation(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
+    CREATE_NAMESPACE(core);
+
     REGISTER_FUNCTION("add_population_segment", [&](entt::entity settlement, uint64_t popsize) {
         entt::entity population = universe.create();
         universe.emplace<cqspc::PopulationSegment>(population, popsize);
@@ -286,12 +298,16 @@ void FunctionPopulation(cqsp::common::Universe& universe, cqsp::scripting::Scrip
 }
 
 void FunctionShips(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
+    CREATE_NAMESPACE(core);
+
     REGISTER_FUNCTION("create_ship", [&](entt::entity civ, entt::entity orbit, entt::entity starsystem) {
         return cqsp::common::systems::actions::CreateShip(universe, civ, orbit, starsystem);
     });
 }
 
 void FunctionEvent(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
+    CREATE_NAMESPACE(core);
+
     REGISTER_FUNCTION("push_event", [&](entt::entity entity, sol::table event_table) {
         auto& queue = universe.get_or_emplace<cqsp::common::event::EventQueue>(entity);
         auto event = std::make_shared<cqsp::common::event::Event>();
@@ -326,6 +342,8 @@ void FunctionEvent(cqsp::common::Universe& universe, cqsp::scripting::ScriptInte
 }
 
 void FunctionResource(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
+    CREATE_NAMESPACE(core);
+
     REGISTER_FUNCTION("add_resource", [&](entt::entity storage, entt::entity resource, int amount) {
         // Add resources to the resource stockpile
         universe.get<cqspc::ResourceStockpile>(storage)[resource] += amount;
@@ -337,6 +355,8 @@ void FunctionResource(cqsp::common::Universe& universe, cqsp::scripting::ScriptI
 }
 
 void FunctionCivilizations(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
+    CREATE_NAMESPACE(core);
+
     REGISTER_FUNCTION("get_player", [&]() {
         return universe.view<cqspc::Player>().front();
     });
