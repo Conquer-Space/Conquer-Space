@@ -16,10 +16,11 @@
 */
 #include "client/systems/clientscripting.h"
 
+#include <imgui.h>
+
 #include <map>
 #include <vector>
 #include <string>
-#include <imgui.h>
 
 #include "common/scripting/functionreg.h"
 
