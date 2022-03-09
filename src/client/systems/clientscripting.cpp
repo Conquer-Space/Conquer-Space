@@ -19,12 +19,9 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <imgui.h>
 
-#include "common/scripting/scripting.h"
-
-// So that we can document in the future
-#define REGISTER_FUNCTION(name, lambda) \
-        script_engine.set_function(name, lambda)
+#include "common/scripting/functionreg.h"
 
 namespace cqsp::client::scripting {
 sol::object JsonToLuaObject(const Hjson::Value &j, const sol::this_state & s) {
@@ -61,6 +58,9 @@ sol::object JsonToLuaObject(const Hjson::Value &j, const sol::this_state & s) {
 
 void AssetManagerInterfaces(engine::Application& app) {
     cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
+
+    CREATE_NAMESPACE(client);
+
     REGISTER_FUNCTION("require", [&](const char* script) {
         using cqsp::asset::TextDirectoryAsset;
         // Get script from asset loader
@@ -92,7 +92,37 @@ void AssetManagerInterfaces(engine::Application& app) {
         });
 }
 
+void UiInterfaces(engine::Application& app) {
+    cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
+
+    CREATE_NAMESPACE(ImGui);
+
+    REGISTER_FUNCTION("Begin", [](const char* name) {
+        ImGui::Begin(name);
+    });
+
+    REGISTER_FUNCTION("End", [](const char* name) {
+        ImGui::End();
+    });
+
+    REGISTER_FUNCTION("Text", [](const char* name) {
+        ImGui::Text(name);
+    });
+
+    REGISTER_FUNCTION("Separator", [](const char* name) {
+        ImGui::Separator();
+    });
+
+    REGISTER_FUNCTION("SameLine", [](const char* name) {
+        ImGui::SameLine();
+    });
+
+    REGISTER_FUNCTION("Button", [](const char* label) {
+        return ImGui::Button(label);
+    });
+}
 void ClientFunctions(engine::Application& app) {
     AssetManagerInterfaces(app);
+    UiInterfaces(app);
 }
 }; // namespace cqsp::client::scripting
