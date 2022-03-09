@@ -20,7 +20,7 @@
 
 #include <spdlog/spdlog.h>
 
-#include <Tracy.hpp>
+#include <tracy/Tracy.hpp>
 
 #include "common/util/profiler.h"
 #include "engine/graphics/primitives/pane.h"

@@ -17,7 +17,7 @@
 	path = lib/glad
 	url = https://github.com/Dav1dde/glad
 [submodule "lib/tracy"]
-	path = lib/tracy
+	path = lib/tracy/tracy
 	url = https://github.com/wolfpld/tracy
 [submodule "lib/lunasvg"]
 	path = lib/lunasvg
