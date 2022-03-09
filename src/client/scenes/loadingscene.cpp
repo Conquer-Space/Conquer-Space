@@ -25,8 +25,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <Tracy.hpp>
-#include <common/TracySystem.hpp>
+#include <tracy/Tracy.hpp>
+#include <tracy/common/TracySystem.hpp>
 
 #include "engine/asset/assetmanager.h"
 #include "client/scenes/mainmenuscene.h"

@@ -26,7 +26,7 @@
 #include <filesystem>
 #include <iostream>
 
-#include <Tracy.hpp>
+#include <tracy/Tracy.hpp>
 
 #include "engine/audio/alaudioasset.h"
 #include "engine/asset/vfs/nativevfs.h"

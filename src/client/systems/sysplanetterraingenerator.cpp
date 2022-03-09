@@ -19,7 +19,7 @@
 #include <spdlog/spdlog.h>
 
 #include <cmath>
-#include <Tracy.hpp>
+#include <tracy/Tracy.hpp>
 
 #include "common/components/bodies.h"
 

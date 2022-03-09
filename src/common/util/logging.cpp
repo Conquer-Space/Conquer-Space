@@ -26,7 +26,7 @@
 #include <filesystem>
 #include <vector>
 #include <string>
-#include <Tracy.hpp>
+#include <tracy/Tracy.hpp>
 
 #include "common/util/paths.h"
 
