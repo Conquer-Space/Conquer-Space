@@ -24,7 +24,7 @@
 #include <cmath>
 #include <string>
 
-#include <Tracy.hpp>
+#include <tracy/Tracy.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/polar_coordinates.hpp>

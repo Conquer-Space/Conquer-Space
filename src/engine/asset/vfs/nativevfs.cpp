@@ -21,7 +21,7 @@
 #include <algorithm>
 #include <string>
 
-#include <Tracy.hpp>
+#include <tracy/Tracy.hpp>
 
 cqsp::asset::NativeFileSystem::NativeFileSystem(const std::string& _root) : root(_root) {}
 

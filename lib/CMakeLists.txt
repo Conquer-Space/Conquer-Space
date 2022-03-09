@@ -40,7 +40,7 @@ set_target_properties(
 
 set_target_properties(hjson libnoise glad glad-generate-files stb PROPERTIES FOLDER "Libs")
 
-add_library(Tracy STATIC tracy/TracyClient.cpp)
+add_library(Tracy STATIC tracy/tracy/TracyClient.cpp)
 target_compile_definitions(Tracy PRIVATE TRACY_ENABLE)
 target_include_directories(Tracy PUBLIC tracy)
 
