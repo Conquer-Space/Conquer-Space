@@ -501,9 +501,11 @@ void cqsp::engine::Application::InitRmlUi() {
     std::string fontPath =
         cqsp::common::util::GetCqspDataPath() + "/core/gfx/fonts/";
 
-    // Load rmlui fonts
-    Rml::LoadFontFace((fontPath + fontDatabase["default"]["path"]).c_str());
-    Rml::LoadFontFace((fontPath + fontDatabase["h2"]["path"]).c_str());
+    // Load the fonts
+    for (int index = 0; index < fontDatabase["rmlui"].size(); index++) {
+        Rml::LoadFontFace((fontPath + fontDatabase["rmlui"][index]).c_str());
+    }
+    // Load fonts
     //m_event_instancer = std::make_unique<CqspEventInstancer>();
     //Rml::Factory::RegisterEventListenerInstancer(m_event_instancer.get());
 }
