@@ -15,4 +15,9 @@
         path: Roboto-Bold.ttf
         size: 18
     }
+    rmlui: [
+        Roboto-Regular.ttf
+        Roboto-Bold.ttf
+        Comfortaa.ttf
+    ]
 }

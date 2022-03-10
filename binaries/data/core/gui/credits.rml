@@ -30,11 +30,13 @@
 
         h1 {
             font-size: 64px;
+            font-family: Comfortaa;
         }
 
         h2 {
             font-weight: bold;
             font-size: 32px;
+            font-family: Comfortaa;
         }
         </style>
     </head>

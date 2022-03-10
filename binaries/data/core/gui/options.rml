@@ -59,6 +59,7 @@
 
             .title_text {
                 font-size: 72px;
+                font-family: Comfortaa;
             }
 
             .options {
@@ -75,7 +76,7 @@
                 <tab>Display</tab>
                 <panel id="welcome">
                     <div class="settings_content options">
-                        <label>Window Size</label>
+                        <label>Window Size </label>
                         <select id="window_size_select">
                             <option data-for="window_size : window_sizes">{{window_size.x}} x {{window_size.y}}</option>
                         </select>
