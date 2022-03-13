@@ -57,7 +57,7 @@ TEST_F(SystemsMovementTest, ShipMovementTest) {
     {
         // Test out if the ship is created
         ship = cqsp::common::systems::actions::CreateShip(universe, entt::null,
-                                                          planet, star_system);
+                        cqspt::toVec3(universe.get<cqspt::Orbit>(planet)), star_system);
         EXPECT_TRUE(universe.valid(ship));
         bool all_of_pos_and_ship =
             universe
