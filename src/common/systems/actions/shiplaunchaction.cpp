@@ -16,12 +16,15 @@
 */
 #include "common/systems/actions/shiplaunchaction.h"
 
+#include <fmt/format.h>
+
 #include "common/components/coordinates.h"
 #include "common/components/ships.h"
 #include "common/components/bodies.h"
+#include "common/components/name.h"
 
 entt::entity cqsp::common::systems::actions::CreateShip(
-    cqsp::common::Universe& universe, entt::entity civ, entt::entity orbit,
+    cqsp::common::Universe& universe, entt::entity civ, const glm::vec3& orbit,
     entt::entity starsystem) {
     namespace cqspt = cqsp::common::components::types;
     namespace cqsps = cqsp::common::components::ships;
@@ -32,8 +35,16 @@ entt::entity cqsp::common::systems::actions::CreateShip(
     auto &position = universe.emplace<cqspt::Kinematics>(ship);
 
     // Get planet position
-    position.position = cqspt::toVec3(universe.get<cqspt::Orbit>(orbit));
+    position.position = orbit;
     universe.get<cqspb::StarSystem>(starsystem).bodies.push_back(ship);
+    // Set name
+    universe.emplace<components::Name>(ship, fmt::format("Ship {}", ship));
     return ship;
-    return entt::entity();
+}
+
+entt::entity cqsp::common::systems::actions::CreateShip(
+    cqsp::common::Universe& universe, entt::entity civ, entt::entity orbit,
+    entt::entity starsystem) {
+    namespace cqspt = cqsp::common::components::types;
+    return CreateShip(universe, civ, cqspt::toVec3(universe.get<cqspt::Orbit>(orbit)), starsystem);
 }

@@ -17,6 +17,7 @@
 #pragma once
 
 #include <entt/entt.hpp>
+#include <glm/vec3.hpp>
 
 #include "common/universe.h"
 
@@ -24,6 +25,8 @@ namespace cqsp {
 namespace common {
 namespace systems {
 namespace actions {
+entt::entity CreateShip(cqsp::common::Universe &universe, entt::entity civ,
+                        const glm::vec3& orbit, entt::entity starsystem);
 entt::entity CreateShip(cqsp::common::Universe &universe, entt::entity civ,
                         entt::entity orbit, entt::entity starsystem);
 }

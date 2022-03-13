@@ -105,7 +105,6 @@ void cqsp::client::systems::SysCommand::ShipList() {
     ImGui::Begin("Ships");
     auto& star_system = GetUniverse().get<cqspb::StarSystem>(ent);
     // Show ship list
-    //ImGui::Begin
     int index = 0;
     static int selected = 0;
 
@@ -117,7 +116,8 @@ void cqsp::client::systems::SysCommand::ShipList() {
             continue;
         }
         const bool is_selected = (selected == index);
-        if (CQSPGui::DefaultSelectable(fmt::format("{}", enti).c_str(), is_selected)) {
+        std::string entity_name = cqsp::client::systems::gui ::GetName(GetUniverse(), enti);
+        if (CQSPGui::DefaultSelectable(entity_name.c_str(), is_selected)) {
             selected = index;
             to_see = true;
             selected_ship = enti;
