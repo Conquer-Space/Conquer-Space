@@ -20,34 +20,38 @@ using cqsp::common::components::Market;
 using cqsp::common::components::ResourceStockpile;
 
 void Market::AddSupply(const ResourceLedger& stockpile) {
-    for (auto stockpile_element : stockpile) {
+    for (const auto& stockpile_element : stockpile) {
         market_information[stockpile_element.first].supply += stockpile_element.second;
     }
 }
 
 void cqsp::common::components::Market::AddSupply(const ResourceLedger& stockpile, double multiplier) {
-    for (auto stockpile_element : stockpile) {
+    for (const auto& stockpile_element : stockpile) {
         market_information[stockpile_element.first].supply +=
             stockpile_element.second * multiplier;
     }
 }
 
 void Market::AddDemand(const ResourceLedger& stockpile) {
-    for (auto stockpile_element : stockpile) {
+    for (const auto& stockpile_element : stockpile) {
         market_information[stockpile_element.first].demand += stockpile_element.second;
     }
 }
 
 void Market::AddDemand(const ResourceLedger& stockpile, double multiplier) {
-    for (auto stockpile_element : stockpile) {
+    for (const auto& stockpile_element : stockpile) {
         market_information[stockpile_element.first].demand += stockpile_element.second * multiplier;
     }
 }
 
 double Market::GetPrice(const ResourceLedger& stockpile) {
     double price = 0;
-    for (auto element : stockpile) {
+    for (const auto& element : stockpile) {
         price += market_information[element.first].price * element.second;
     }
     return price;
+}
+
+double Market::GetPrice(const entt::entity good) {
+    return market_information[good].price;
 }

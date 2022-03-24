@@ -59,7 +59,6 @@ void FunctionRandom(cqsp::common::Universe& universe, cqsp::scripting::ScriptInt
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("random", [&] (int low, int high) {
-        SPDLOG_INFO("Your mom");
         return universe.random->GetRandomInt(low, high);
     });
 

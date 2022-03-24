@@ -101,4 +101,14 @@
         unit: kWh
         tags: []
     }
+    {
+        name: Food
+        identifier: food
+        volume: 1
+        mass: 1000
+        price: 1
+        tags: [
+            food
+        ]
+    }
 ]
