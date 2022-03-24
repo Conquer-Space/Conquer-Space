@@ -59,6 +59,7 @@ struct Market {
     void AddDemand(const ResourceLedger& stockpile, double multiplier);
 
     double GetPrice(const ResourceLedger& stockpile);
+    double GetPrice(const entt::entity good);
 
     void AddParticipant(entt::entity participant) {
         participants.insert(participant);

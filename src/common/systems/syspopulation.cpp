@@ -17,6 +17,7 @@
 #include "common/systems/syspopulation.h"
 
 #include <spdlog/spdlog.h>
+
 #include "common/components/population.h"
 #include "common/components/resource.h"
 #include "common/components/economy.h"
@@ -60,16 +61,62 @@ void cqsp::common::systems::SysPopulationConsumption::DoSystem() {
     namespace cqspc = cqsp::common::components;
     Universe& universe = GetUniverse();
 
+    const entt::entity good = universe.goods["consumer_good"];
+    const entt::entity food = universe.goods["food"];
     auto view = universe.view<cqspc::PopulationSegment>();
     for (auto [entity, segment] : view.each()) {
-        // The population will feed, I guess
-        entt::entity good = universe.goods["consumer_good"];
-
+        // The population will get at least an amount of resources, and
         // Reduce it to some unreasonably low level so that the economy can handle it
         uint64_t consumption = segment.population/100000;
-        universe.get_or_emplace<cqspc::ResourceConsumption>(entity)[good] = consumption;
+        // Get the cost of food in the market, and then get the amount of food based
+        // Essentially population units have a certain amount of food that they need,
+        // and that's based on the population count.
+
+        // They will buy all the food from the market, and the remaining will be
+        // spent on consumer goods.
+
+        // Other spendings we may want to think about:
+        //  - Housing
+        //  - Transport
+        //  - Healthcare
+        //  - Insurance
+        //  - Entertainment
+        //  - Education
+        //  - Utilities
+        auto& wallet = universe.get_or_emplace<cqspc::Wallet>(entity);
+        // In the future, we may want to think about population wanting to save cash,
+        // so to simulate consumer spending
+
+        // Get the cost of the goods
+        // Searching market is gonna be expensive, so we may need to reorganize the market
+        // to maintain the cost
+        if (universe.any_of<cqspc::MarketAgent>(entity)) {
+            // Trade the goods
+            auto& market_agent = universe.get<cqspc::MarketAgent>(entity);
+            auto& market = universe.get<cqspc::Market>(market_agent.market);
+            // Check if they have enough money to buy all they can, then
+            double food_price = market.GetPrice(food);
+            if (consumption * food_price > wallet.GetBalance()) {
+                // Then not enough cash and pivot everything to buying food
+                universe.get_or_emplace<cqspc::ResourceConsumption>(entity)[food] = wallet.GetBalance() / food_price;
+            } else {
+                universe.get_or_emplace<cqspc::ResourceConsumption>(entity)[food] = consumption;
+                // Then waste it all on consumer goods
+                double amount_consumer = wallet.GetBalance() - food_price * consumption;
+                // If the price is too high, then don't buy, it's not worth it, we'll wait for the price to crash
+                double good_price = market.GetPrice(good);
+                if (amount_consumer / good_price > segment.population / 20000) {
+                    universe.get_or_emplace<cqspc::ResourceConsumption>(entity)[good] =
+                                                        amount_consumer / good_price;
+                }
+                // Based on how much they spend on consumer goods, we can rate their social strata
+                // becasue those that consume more will have a higher standard of living.
+            }
+        } else {
+            universe.get_or_emplace<cqspc::ResourceConsumption>(entity)[food] = consumption;
+        }
 
         // Inject some cash into the population segment, so that they don't run out of money to buy the stuff
-        universe.get_or_emplace<cqspc::Wallet>(entity) += segment.population / 1000;
+        wallet += segment.population / 1000;
     }
 }

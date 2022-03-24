@@ -170,6 +170,8 @@ generators:insert({
             core.attach_market(market, core.create_mine(city, goods["iron"], 1, 300))
             -- attach_market(market, create_mine(city, goods["oil"], 1, 50000))
             -- add_power_plant(city, 1000)
+            -- Add farms
+            core.attach_market(market, core.create_mine(city, goods["food"], 1, 300))
         end
     end
 })
