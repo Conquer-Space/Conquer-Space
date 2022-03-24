@@ -14,7 +14,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "common/systems/syspopulation.h"
+#include "common/systems/economy/syspopulation.h"
 
 #include <spdlog/spdlog.h>
 
