@@ -52,6 +52,18 @@ double Market::GetPrice(const ResourceLedger& stockpile) {
     return price;
 }
 
-double Market::GetPrice(const entt::entity good) {
+double cqsp::common::components::Market::GetSDRatio(const entt::entity& good) {
+    return market_information[good].sd_ratio;
+}
+
+double cqsp::common::components::Market::GetSupply(const entt::entity& good) {
+    return market_information[good].supply;
+}
+
+double cqsp::common::components::Market::GetDemand(const entt::entity& good) {
+    return market_information[good].demand;
+}
+
+double Market::GetPrice(const entt::entity& good) {
     return market_information[good].price;
 }
