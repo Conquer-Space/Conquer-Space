@@ -245,6 +245,10 @@ void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
     REGISTER_FUNCTION("create_mine", [&](entt::entity city, entt::entity resource, int amount, float productivity) {
         return cqspa::CreateMine(universe, city, resource, amount, productivity);
     });
+
+    REGISTER_FUNCTION("create_farm", [&](entt::entity city, entt::entity resource, int amount, float productivity) {
+        return cqspa::CreateFarm(universe, city, resource, amount, productivity);
+    });
 }
 
 void FunctionUser(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {

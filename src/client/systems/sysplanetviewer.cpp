@@ -267,8 +267,7 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTab() {
 
     ImGui::SameLine();
 
-    ImGui::BeginChild("ManufacturingPanel", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
-                                 ImGui::GetStyle().ItemSpacing.y, height), true,
+    ImGui::BeginChild("ManufacturingPanel", ImVec2(-1, height), true,
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
     IndustryTabManufacturingChild();
     ImGui::EndChild();
@@ -280,8 +279,7 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTab() {
     ImGui::EndChild();
     ImGui::SameLine();
 
-    ImGui::BeginChild("AgriPanel", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
-                                 ImGui::GetStyle().ItemSpacing.y, height), true,
+    ImGui::BeginChild("AgriPanel", ImVec2(-1, height), true,
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
     IndustryTabAgricultureChild();
     ImGui::EndChild();
@@ -373,8 +371,38 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTabMiningChild() {
 }
 
 void cqsp::client::systems::SysPlanetInformation::IndustryTabAgricultureChild() {
+    namespace cqspc = cqsp::common::components;
+    auto& city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
     ImGui::Text("Agriculture Sector");
-    ImGui::Text("GDP:");
+    // Get what resources they are making
+    cqspc::ResourceLedger resources;
+    double GDP_calculation = 0;
+    int mine_count = 0;
+    for (auto mine : city_industry.industries) {
+        if (GetUniverse().all_of<cqspc::ResourceGenerator, cqspc::Farm>(mine)) {
+            auto& generator = GetUniverse().get<cqspc::ResourceGenerator>(mine);
+            double productivity = 1;
+            if (GetUniverse().any_of<cqspc::FactoryProductivity>(mine)) {
+                productivity = GetUniverse().get<cqspc::FactoryProductivity>(mine).current_production;
+            }
+
+            resources.MultiplyAdd(generator, productivity);
+            mine_count++;
+            if (GetUniverse().all_of<cqspc::Wallet>(mine)) {
+                GDP_calculation += GetUniverse().get<cqspc::Wallet>(mine).GetGDPChange();
+            }
+        }
+    }
+    ImGui::TextFmt("GDP: {}", cqsp::util::LongToHumanString(GDP_calculation));
+    ImGui::TextFmt("Farms: {}", mine_count);
+
+    ImGui::SameLine();
+    if (CQSPGui::SmallDefaultButton("Farm List")) {
+        mine_list_panel = true;
+    }
+
+    // Draw on table
+    DrawLedgerTable("farmproduction", GetUniverse(), resources);
 }
 
 void cqsp::client::systems::SysPlanetInformation::DemographicsTab() {

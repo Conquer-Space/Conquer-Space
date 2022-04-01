@@ -97,6 +97,7 @@ entt::entity cqsp::common::systems::actions::CreateMine(cqsp::common::Universe& 
 
     universe.emplace<cqspc::ResourceStockpile>(mine);
     universe.emplace<cqspc::Mine>(mine);
+    universe.emplace<cqspc::RawResourceGen>(mine);
     return mine;
 }
 
@@ -116,4 +117,28 @@ cqsp::common::systems::actions::CreateCommercialArea(cqsp::common::Universe& uni
 
     universe.get<cqspc::Industry>(city).industries.push_back(commercial);
     return commercial;
+}
+
+entt::entity cqsp::common::systems::actions::CreateFarm(
+    cqsp::common::Universe& universe, entt::entity city, entt::entity good,
+    int amount, float productivity) {
+    namespace cqspc = cqsp::common::components;
+    entt::entity farm = universe.create();
+    auto& gen = universe.emplace<cqspc::ResourceGenerator>(farm);
+
+    auto& employer = universe.emplace<cqspc::Employer>(farm);
+    employer.population_fufilled = 1000000;
+    employer.population_needed = 1000000;
+    employer.segment = entt::null;
+
+    gen.emplace(good, amount);
+    universe.get<cqspc::Industry>(city).industries.push_back(farm);
+
+    // Add productivity
+    universe.emplace<cqspc::FactoryProductivity>(farm, productivity, productivity);
+
+    universe.emplace<cqspc::ResourceStockpile>(farm);
+    universe.emplace<cqspc::Farm>(farm);
+    universe.emplace<cqspc::RawResourceGen>(farm);
+    return farm;
 }

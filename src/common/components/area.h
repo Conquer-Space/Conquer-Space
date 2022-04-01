@@ -35,6 +35,7 @@ struct Farm {
     // Also add food good
 };
 
+struct RawResourceGen {};
 }  // namespace components
 }  // namespace common
 }  // namespace cqsp
