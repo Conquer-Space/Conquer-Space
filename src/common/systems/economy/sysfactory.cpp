@@ -20,7 +20,8 @@
 #include "common/components/economy.h"
 
 void cqsp::common::systems::SysMine::DoSystem() {
-    auto view = GetUniverse().view<components::Mine, components::ResourceGenerator, components::MarketAgent>();
+    auto view = GetUniverse().view<components::RawResourceGen,
+                                components::ResourceGenerator, components::MarketAgent>();
     for (const entt::entity& entity : view) {
         // Get market attached, get sd ratio for the goods it produces, then adjust production.
         //
