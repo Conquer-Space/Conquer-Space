@@ -19,7 +19,6 @@
 namespace cqsp {
 namespace common {
 namespace components {
-class SpacePort {};
 }
 }  // namespace common
 }  // namespace cqsp
