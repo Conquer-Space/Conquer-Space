@@ -163,9 +163,11 @@ void cqsp::client::systems::SysPlanetInformation::CityInformationPanel() {
                 InfrastructureTab();
                 ImGui::EndTabItem();
             }
-            if (ImGui::BeginTabItem("Space Port")) {
-                SpacePortTab();
-                ImGui::EndTabItem();
+            if (GetUniverse().any_of<cqspc::infrastructure::SpacePort>(selected_city_entity)) {
+                if (ImGui::BeginTabItem("Space Port")) {
+                    SpacePortTab();
+                    ImGui::EndTabItem();
+                }
             }
             ImGui::EndTabBar();
         }
@@ -452,6 +454,14 @@ void cqsp::client::systems::SysPlanetInformation::ConstructionTab() {
         }
         if (ImGui::BeginTabItem("Power Plant")) {
             ImGui::EndTabItem();
+        }
+        if (!GetUniverse().any_of<cqspc::infrastructure::SpacePort>(selected_city_entity)) {
+            if (ImGui::BeginTabItem("Space Port##Construction")) {
+                if (ImGui::Button("Construct Spaceport")) {
+                    GetUniverse().emplace<cqspc::infrastructure::SpacePort>(selected_city_entity);
+                }
+                ImGui::EndTabItem();
+            }
         }
         // TODO(EhWhoAmI): Add other things like labs, infrastructure, etc.
         ImGui::EndTabBar();

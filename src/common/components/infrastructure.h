@@ -46,6 +46,8 @@ struct CityPower {
 };
 
 struct BrownOut {};
+
+class SpacePort {};
 }  // namespace infrastructure
 }  // namespace components
 }  // namespace common
