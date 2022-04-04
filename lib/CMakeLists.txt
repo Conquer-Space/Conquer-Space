@@ -23,10 +23,6 @@ add_subdirectory(sol2)
 add_subdirectory(libnoise)
 
 # Glad
-set(GLAD_API "gl=4.3" CACHE STRING "" FORCE)
-set(GLAD_EXPORT ON CACHE BOOL "" FORCE)
-set(GLAD_EXTENSIONS "GL_AMD_debug_output, GL_EXT_framebuffer_multisample" CACHE STRING "" FORCE)
-
 add_subdirectory(glad)
 
 
