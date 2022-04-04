@@ -23,7 +23,7 @@ add_subdirectory(sol2)
 add_subdirectory(libnoise)
 
 # Glad
-add_subdirectory(glad)
+add_subdirectory(cqsp-glad)
 
 
 # Stb
@@ -34,7 +34,7 @@ set_target_properties(
     stb PROPERTIES CXX_CLANG_TIDY ""
 )
 
-set_target_properties(hjson libnoise glad glad-generate-files stb PROPERTIES FOLDER "Libs")
+set_target_properties(hjson libnoise glad stb PROPERTIES FOLDER "Libs")
 
 add_library(Tracy STATIC tracy/tracy/TracyClient.cpp)
 target_compile_definitions(Tracy PRIVATE TRACY_ENABLE)

@@ -223,40 +223,6 @@ void cqsp::engine::CQSPRenderInterface::SetScissorRegion(int x, int y,
                                                          int height) {
     glScissor(x, app.GetWindowHeight() - (y + height), width, height);
     return;
-    if (!m_transform_enabled) {
-        glScissor(x, app.GetWindowHeight() - (y + height), width, height);
-    } else {
-        // clear the stencil buffer
-        glStencilMask(GLuint(-1));
-        glClear(GL_STENCIL_BUFFER_BIT);
-
-        // fill the stencil buffer
-        glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-        glDepthMask(GL_FALSE);
-        glStencilFunc(GL_NEVER, 1, GLuint(-1));
-        glStencilOp(GL_REPLACE, GL_KEEP, GL_KEEP);
-
-        float fx = static_cast<float>(x);
-        float fy = static_cast<float>(y);
-        float fwidth = static_cast<float>(width);
-        float fheight = static_cast<float>(height);
-
-        // draw transformed quad
-        GLfloat vertices[] = {
-            fx,          fy,           0, fx,          fy + fheight, 0,
-            fx + fwidth, fy + fheight, 0, fx + fwidth, fy,           0};
-        glDisableClientState(GL_COLOR_ARRAY);
-        glVertexPointer(3, GL_FLOAT, 0, vertices);
-        GLushort indices[] = {1, 2, 0, 3};
-        glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, indices);
-        glEnableClientState(GL_COLOR_ARRAY);
-
-        // prepare for drawing the real thing
-        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-        glDepthMask(GL_TRUE);
-        glStencilMask(0);
-        glStencilFunc(GL_EQUAL, 1, GLuint(-1));
-    }
     // TODO(EhWhoAmI): Add stencil buffer rendering
     // Reference:
     // https://github.com/mikke89/RmlUi/blob/master/Samples/shell/src/ShellRenderInterfaceOpenGL.cpp#L120

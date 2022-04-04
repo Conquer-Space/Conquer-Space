@@ -22,3 +22,6 @@
 [submodule "lib/RmlUi"]
 	path = lib/RmlUi
 	url = https://github.com/mikke89/RmlUi
+[submodule "lib/cqsp-glad"]
+	path = lib/cqsp-glad
+	url = https://github.com/Conquer-Space/glad
