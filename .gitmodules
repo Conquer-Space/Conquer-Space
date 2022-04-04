@@ -13,9 +13,6 @@
 [submodule "lib/libnoise"]
 	path = lib/libnoise
 	url = https://github.com/EhWhoAmI/libnoise
-[submodule "lib/glad"]
-	path = lib/glad
-	url = https://github.com/Dav1dde/glad
 [submodule "lib/tracy"]
 	path = lib/tracy/tracy
 	url = https://github.com/wolfpld/tracy
@@ -25,3 +22,6 @@
 [submodule "lib/RmlUi"]
 	path = lib/RmlUi
 	url = https://github.com/mikke89/RmlUi
+[submodule "lib/cqsp-glad"]
+	path = lib/cqsp-glad
+	url = https://github.com/Conquer-Space/glad

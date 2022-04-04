@@ -23,11 +23,7 @@ add_subdirectory(sol2)
 add_subdirectory(libnoise)
 
 # Glad
-set(GLAD_API "gl=4.3" CACHE STRING "" FORCE)
-set(GLAD_EXPORT ON CACHE BOOL "" FORCE)
-set(GLAD_EXTENSIONS "GL_AMD_debug_output, GL_EXT_framebuffer_multisample" CACHE STRING "" FORCE)
-
-add_subdirectory(glad)
+add_subdirectory(cqsp-glad)
 
 
 # Stb
@@ -38,7 +34,7 @@ set_target_properties(
     stb PROPERTIES CXX_CLANG_TIDY ""
 )
 
-set_target_properties(hjson libnoise glad glad-generate-files stb PROPERTIES FOLDER "Libs")
+set_target_properties(hjson libnoise glad stb PROPERTIES FOLDER "Libs")
 
 add_library(Tracy STATIC tracy/tracy/TracyClient.cpp)
 target_compile_definitions(Tracy PRIVATE TRACY_ENABLE)
