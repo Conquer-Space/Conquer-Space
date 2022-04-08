@@ -16,9 +16,13 @@
 */
 #include "client/systems/syscommand.h"
 
-#include <GLFW/glfw3.h>
+#include <sstream>
 #include <vector>
 #include <string>
+
+#include <GLFW/glfw3.h>
+
+
 
 #include "client/systems/views/starsystemview.h"
 #include "client/systems/gui/systooltips.h"
@@ -95,7 +99,6 @@ void cqsp::client::systems::SysCommand::DoUpdate(int delta_time) {
     }*/
 }
 
-#include <sstream>
 
 void cqsp::client::systems::SysCommand::ShipList() {
     namespace cqspcs = cqsp::client::systems;

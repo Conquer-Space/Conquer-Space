@@ -16,9 +16,10 @@
 */
 #include "common/systems/actions/shiplaunchaction.h"
 
+#include <fmt/format.h>
 #include <string>
 
-#include <fmt/format.h>
+
 
 #include "common/components/coordinates.h"
 #include "common/components/ships.h"
