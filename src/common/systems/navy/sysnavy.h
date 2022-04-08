@@ -22,7 +22,7 @@ namespace cqsp {
 namespace common {
 namespace systems {
 class SysNavyControl : public ISimulationSystem {
-    public:
+ public:
     explicit SysNavyControl(Game& game) : ISimulationSystem(game) {}
     void DoSystem()override;
     int Interval() override

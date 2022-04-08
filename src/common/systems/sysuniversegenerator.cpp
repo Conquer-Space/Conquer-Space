@@ -81,8 +81,8 @@ void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::
             (*generator)["planets"](ent);
         }
     }
-   // add first ship(could be deferred to some script)
-   //has to be deferred until after the galaxy and systems are populated in the scripts
+    // add first ship(could be deferred to some script)
+    //has to be deferred until after the galaxy and systems are populated in the scripts
     auto starting_planet =
         universe.get<cqspc::Civilization>(player).starting_planet;
     cqsp::common::systems::actions::CreateShip(

@@ -16,6 +16,8 @@
 */
 #include "common/systems/actions/shiplaunchaction.h"
 
+#include <string>
+
 #include <fmt/format.h>
 
 #include "common/components/coordinates.h"
@@ -24,7 +26,7 @@
 #include "common/components/name.h"
 #include "common/components/organizations.h"
 
-#include <string>
+
 
 entt::entity cqsp::common::systems::actions::CreateShip(
     cqsp::common::Universe& universe, entt::entity civEnt, const glm::vec3& orbit,

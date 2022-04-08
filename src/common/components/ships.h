@@ -16,8 +16,10 @@
 */
 #pragma once
 
-#include <entt/entt.hpp>
 #include <vector>
+
+#include <entt/entt.hpp>
+
 #include "common/components/units.h"
 
 namespace cqsp {
