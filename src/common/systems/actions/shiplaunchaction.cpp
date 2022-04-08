@@ -24,6 +24,8 @@
 #include "common/components/name.h"
 #include "common/components/organizations.h"
 
+#include <string>
+
 entt::entity cqsp::common::systems::actions::CreateShip(
     cqsp::common::Universe& universe, entt::entity civEnt, const glm::vec3& orbit,
     entt::entity starsystem) {
@@ -67,7 +69,6 @@ entt::entity cqsp::common::systems::actions::CreateShip(
     universe.get<cqspb::StarSystem>(starsystemEnt).bodies.push_back(ship);
     // Set name
     universe.emplace<components::Name>(ship, shipName);
-    
     // Set in fleet
     universe.get<components::ships::Fleet>(fleetEnt).ships.push_back(ship);
 

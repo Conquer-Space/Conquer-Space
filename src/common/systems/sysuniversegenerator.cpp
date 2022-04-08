@@ -49,9 +49,6 @@ void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::
     script_engine["goods"] = universe.goods;
     script_engine["recipes"] = universe.recipes;
     script_engine["terrain_colors"] = universe.terrain_data;
-
-    
-    
     // Create player
     auto player = universe.create();
     universe.emplace<cqspc::Civilization>(player);
@@ -64,17 +61,16 @@ void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::
     universe.emplace<cqspc::Name>(playerFleet, "navy");
     universe.emplace<cqspc::ships::Fleet>(playerFleet, player);
     universe.get<cqspc::Civilization>(player).topLevelFleet = playerFleet;
-
+    // Add a subfleet
     auto playerSubFleet = universe.create();
     universe.emplace<cqspc::Name>(playerSubFleet, "vice-navy");
     universe.emplace<cqspc::ships::Fleet>(playerSubFleet, playerFleet, player, 1);
-    universe.get<cqsps::Fleet>(universe.get<cqspc::Civilization>(player).topLevelFleet).subFleets.push_back(playerSubFleet);
-
+    universe.get<cqsps::Fleet>(universe.get<cqspc::Civilization>(player).topLevelFleet)
+        .subFleets.push_back(playerSubFleet);
     //for (int i = 0; i < 9; i++) {
         //auto civ = universe.create();
         //universe.emplace<cqspc::Civilization>(civ);
     //}
-
     sol::optional<sol::table> generator = script_engine["generators"]["data"][1];
     if (generator) {
         (*generator)["civ_init"]();
@@ -85,16 +81,10 @@ void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::
             (*generator)["planets"](ent);
         }
     }
-
-
-
    // add first ship(could be deferred to some script)
    //has to be deferred until after the galaxy and systems are populated in the scripts
-    
     auto starting_planet =
         universe.get<cqspc::Civilization>(player).starting_planet;
-    
-    
     cqsp::common::systems::actions::CreateShip(
         universe, playerFleet,
         universe.get<cqspc::bodies::Body>(starting_planet).star_system,
@@ -105,5 +95,4 @@ void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::
         universe.get<cqspc::bodies::Body>(starting_planet).star_system,
         starting_planet,
         "pioneer2");
-    
 }

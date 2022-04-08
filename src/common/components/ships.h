@@ -17,36 +17,33 @@
 #pragma once
 
 #include <entt/entt.hpp>
-
+#include <vector>
 #include "common/components/units.h"
 
 namespace cqsp {
 namespace common {
 namespace components {
 namespace ships {
-    struct Ship {
-    };
+struct Ship {};
 
-    struct Fleet {
-        unsigned int echelon = 0;
-        std::vector<entt::entity> subFleets;
-        std::vector<entt::entity> ships;
-        entt::entity parentFleet = entt::null;
-        entt::entity owner;
-        Fleet(entt::entity _parentFleet, entt::entity _owner, unsigned int _echelon);
-        // creates top level fleet
-        Fleet(entt::entity _owner);
-                    
-    };
-    //commands for fleets and ships
-    struct Command {
-        /*
-            * Radius of the body
-            */
-        types::astronomical_unit radius;
-
-        entt::entity target;
-    };
+struct Fleet {
+    unsigned int echelon = 0;
+    std::vector<entt::entity> subFleets;
+    std::vector<entt::entity> ships;
+    entt::entity parentFleet = entt::null;
+    entt::entity owner;
+    Fleet(entt::entity _parentFleet, entt::entity _owner, unsigned int _echelon);
+    // creates top level fleet
+    explicit Fleet(entt::entity _owner);
+};
+//commands for fleets and ships
+struct Command {
+    /*
+        * Radius of the body
+        */
+    types::astronomical_unit radius;
+    entt::entity target;
+};
 }  // namespace ships
 }  // namespace components
 }  // namespace common

@@ -21,12 +21,13 @@
 namespace cqsp {
 namespace common {
 namespace systems {
-    class SysNavyControl : public ISimulationSystem {
+class SysNavyControl : public ISimulationSystem {
     public:
-        explicit SysNavyControl(Game& game) : ISimulationSystem(game) {}
-        void DoSystem()override;
-        int Interval() override { return 1;};
-    };
+    explicit SysNavyControl(Game& game) : ISimulationSystem(game) {}
+    void DoSystem()override;
+    int Interval() override
+    { return 1;};
+};
 }  // namespace systems
 }  // namespace common
 }  // namespace cqsp

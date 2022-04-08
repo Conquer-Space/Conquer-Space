@@ -16,8 +16,11 @@
 */
 #pragma once
 
+#include <string>
+
 #include <entt/entt.hpp>
 #include <glm/vec3.hpp>
+
 
 #include "common/universe.h"
 
@@ -46,7 +49,7 @@ entt::entity CreateShip(cqsp::common::Universe &universe, entt::entity fleetEnt,
                         entt::entity starsystemEnt, entt::entity orbitEnt,
                         const std::string &shipName);
 
-}
+}  // namespace actions
 }  // namespace systems
 }  // namespace common
 }  // namespace cqsp

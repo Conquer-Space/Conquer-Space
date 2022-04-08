@@ -17,15 +17,16 @@
 
 #include "common/systems/navy/sysnavy.h"
 
-#include "common/systems/movement/sysmovement.h"
 
 #include <math.h>
+
+#include "common/systems/movement/sysmovement.h"
+
 
 #include "common/components/ships.h"
 #include "common/components/coordinates.h"
 #include "common/components/units.h"
-
 void cqsp::common::systems::SysNavyControl::DoSystem() { 
-	cqsp::common::Universe &universe = GetUniverse();
+    cqsp::common::Universe &universe = GetUniverse();
 }
 

@@ -17,7 +17,7 @@
 #include "client/systems/syscommand.h"
 
 #include <GLFW/glfw3.h>
-
+#include <vector>
 #include <string>
 
 #include "client/systems/views/starsystemview.h"

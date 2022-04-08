@@ -21,9 +21,7 @@
 namespace cqsp {
 namespace common {
 namespace components {
-struct Player {
-
-};
+struct Player {};
 }  // namespace components
 }  // namespace common
 }  // namespace cqsp

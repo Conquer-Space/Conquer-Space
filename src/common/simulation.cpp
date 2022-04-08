@@ -35,7 +35,6 @@
 #include "common/systems/economy/sysagent.h"
 #include "common/systems/economy/sysfactory.h"
 #include "common/systems/history/sysmarkethistory.h"
-#include "common/systems/navy/sysnavy.h"
 
 #include "common/components/event.h"
 #include "common/components/organizations.h"
