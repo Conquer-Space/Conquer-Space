@@ -656,6 +656,7 @@ void cqsp::client::systems::SysPlanetInformation::SpacePortTab() {
 
 if (ImGui::Button("Launch!")) {
         entt::entity star_system = GetUniverse().get<cqspc::bodies::Body>(selected_planet).star_system;
+       
         cqsp::common::systems::actions::CreateShip(
         GetUniverse(), entt::null, selected_planet, star_system);
     }

@@ -22,9 +22,10 @@
 #include "common/components/ships.h"
 #include "common/components/bodies.h"
 #include "common/components/name.h"
+#include "common/components/organizations.h"
 
 entt::entity cqsp::common::systems::actions::CreateShip(
-    cqsp::common::Universe& universe, entt::entity civ, const glm::vec3& orbit,
+    cqsp::common::Universe& universe, entt::entity civEnt, const glm::vec3& orbit,
     entt::entity starsystem) {
     namespace cqspt = cqsp::common::components::types;
     namespace cqsps = cqsp::common::components::ships;
@@ -48,3 +49,38 @@ entt::entity cqsp::common::systems::actions::CreateShip(
     namespace cqspt = cqsp::common::components::types;
     return CreateShip(universe, civ, cqspt::toVec3(universe.get<cqspt::Orbit>(orbit)), starsystem);
 }
+
+entt::entity cqsp::common::systems::actions::CreateShip(
+    cqsp::common::Universe& universe, entt::entity fleetEnt,
+    entt::entity starsystemEnt, const glm::vec3& orbit,
+    const std::string& shipName) {
+
+    namespace cqspt = cqsp::common::components::types;
+    namespace cqsps = cqsp::common::components::ships;
+    namespace cqspb = cqsp::common::components::bodies;
+    entt::entity ship = universe.create();
+    universe.emplace<cqsps::Ship>(ship);
+
+    auto& position = universe.emplace<cqspt::Kinematics>(ship);
+    // Get planet position
+    position.position = orbit;
+    universe.get<cqspb::StarSystem>(starsystemEnt).bodies.push_back(ship);
+    // Set name
+    universe.emplace<components::Name>(ship, shipName);
+    
+    // Set in fleet
+    universe.get<components::ships::Fleet>(fleetEnt).ships.push_back(ship);
+
+
+    return ship;
+}
+
+entt::entity cqsp::common::systems::actions::CreateShip(
+    cqsp::common::Universe& universe, entt::entity fleetEnt,
+    entt::entity starsystemEnt, entt::entity orbitEnt,
+    const std::string& shipName) {
+    namespace cqspt = cqsp::common::components::types;
+    return CreateShip(universe, fleetEnt, starsystemEnt,
+               cqspt::toVec3(universe.get<cqspt::Orbit>(orbitEnt)), shipName);
+}
+
