@@ -35,7 +35,7 @@
 #include "common/systems/economy/sysagent.h"
 #include "common/systems/economy/sysfactory.h"
 #include "common/systems/history/sysmarkethistory.h"
-#include "common/systems//navy/sysnavy.h"
+#include "common/systems/navy/sysnavy.h"
 
 #include "common/components/event.h"
 #include "common/components/organizations.h"
@@ -59,7 +59,6 @@ cqsp::common::systems::simulation::Simulation::Simulation(
     AddSystem<cqspcs::SysPopulationConsumption>();
     AddSystem<cqspcs::SysMine>();
     AddSystem<cqspcs::SysAgent>();
-    AddSystem<cqspcs::SysNavyControl>();
     AddSystem<cqspcs::SysMarket>();
     AddSystem<cqspcs::history::SysMarketHistory>();
     //AddSystem<cqspcs::SysOrbit>();

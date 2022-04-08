@@ -27,9 +27,6 @@ namespace components {
 struct Name {
     std::string name;
     operator std::string&() { return name; }
-
-    Name();
-    Name(const std::string&);
 };
 
 struct Identifier {
