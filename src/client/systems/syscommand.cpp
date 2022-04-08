@@ -16,11 +16,12 @@
 */
 #include "client/systems/syscommand.h"
 
+#include <GLFW/glfw3.h>
+
 #include <sstream>
 #include <vector>
 #include <string>
 
-#include <GLFW/glfw3.h>
 
 
 
