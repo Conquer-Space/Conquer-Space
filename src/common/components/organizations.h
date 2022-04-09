@@ -32,6 +32,7 @@ struct Organization {};
 
 struct Civilization {
     entt::entity starting_planet;
+    entt::entity top_level_fleet;
 };
 }  // namespace components
 }  // namespace common

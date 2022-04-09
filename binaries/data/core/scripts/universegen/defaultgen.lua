@@ -104,7 +104,7 @@ generators:insert({
                     -- Set as civ home planet
                     core.set_civilization_planet(civ, planet_entity)
                     core.set_name(planet_entity, "Earth")
-                    core.set_name(core.create_ship(civ, planet_entity, sys), "Bubbles")
+                    --core.set_name(core.create_ship(civ, planet_entity, sys), "Bubbles")
                     core.create_terrain(planet_entity, core.random(0, 10000000), terrain_colors["earth"])
                 else
                     -- Choose a random terrain
