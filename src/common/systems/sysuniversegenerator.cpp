@@ -66,7 +66,7 @@ void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::
     universe.emplace<cqspc::Name>(playerSubFleet, "vice-navy");
     universe.emplace<cqspc::ships::Fleet>(playerSubFleet, playerFleet, player, 1);
     universe.get<cqsps::Fleet>(universe.get<cqspc::Civilization>(player).top_level_fleet)
-        .subFleets.push_back(playerSubFleet);
+        .subfleets.push_back(playerSubFleet);
     //for (int i = 0; i < 9; i++) {
         //auto civ = universe.create();
         //universe.emplace<cqspc::Civilization>(civ);
