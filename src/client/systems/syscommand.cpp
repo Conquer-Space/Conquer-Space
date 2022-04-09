@@ -22,9 +22,6 @@
 #include <vector>
 #include <string>
 
-
-
-
 #include "client/systems/views/starsystemview.h"
 #include "client/systems/gui/systooltips.h"
 #include "client/scenes/universescene.h"
@@ -100,7 +97,6 @@ void cqsp::client::systems::SysCommand::DoUpdate(int delta_time) {
     }*/
 }
 
-
 void cqsp::client::systems::SysCommand::ShipList() {
     namespace cqspcs = cqsp::client::systems;
     namespace cqspb = cqsp::common::components::bodies;
@@ -122,7 +118,7 @@ void cqsp::client::systems::SysCommand::ShipList() {
     for (size_t i = 0; i < selectedFleet.echelon; i++) {
         finalSelectedFleetName << GetUniverse()
                                       .get<cqsp::common::components::Name>(
-                                          selectedFleet.parentFleet)
+                                          selectedFleet.parent_fleet)
                                       .name
                                << "/";
     }
@@ -130,12 +126,6 @@ void cqsp::client::systems::SysCommand::ShipList() {
 
     ImGui::SetNextWindowSize(ImVec2(200, 400), ImGuiCond_Always);
     ImGui::Begin(finalSelectedFleetName.str().c_str());
-
-
-    //show fleet list
-    //we get the player
-
-
 
     // Show ship list
     int index = 0;
@@ -151,12 +141,14 @@ void cqsp::client::systems::SysCommand::ShipList() {
             selected_ship = enti;
         }
     }
-    std::vector<entt::entity> subfleetsAndLast = selectedFleet.subFleets;
+
+    std::vector<entt::entity> subfleetsAndLast = selectedFleet.subfleets;
     bool has_parent = false;
-    if (selectedFleet.parentFleet != entt::null) {
-        subfleetsAndLast.push_back(selectedFleet.parentFleet);
+    if (selectedFleet.parent_fleet != entt::null) {
+        subfleetsAndLast.push_back(selectedFleet.parent_fleet);
         has_parent = true;
     }
+
     for (size_t i = 0; i < subfleetsAndLast.size(); i++) {
         index++;
 

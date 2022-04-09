@@ -79,15 +79,10 @@ void LoadResource(cqsp::engine::Application& app, std::string asset_name,
         }
     }
 }
-#include "common/components/organizations.h"
-#include "common/components/player.h"
-#include "common/components/economy.h"
-#include "common/components/name.h"
-#include "common/components/ships.h"
+
 void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
     namespace cqspa = cqsp::asset;
     namespace cqspc = cqsp::common::components;
-
 
     LoadResource(GetApp(), "goods", cqsp::common::systems::loading::LoadGoods);
     LoadResource(GetApp(), "recipes", cqsp::common::systems::loading::LoadRecipes);
@@ -109,7 +104,7 @@ void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
     script_interface.RegisterDataGroup("events");
 
     using cqsp::asset::TextAsset;
-    // Process scripts for cores(loading the scripts?)
+    // Process scripts for core
     TextAsset* script_list = GetAssetManager().GetAsset<TextAsset>("core:base");
     script_interface.RunScript(script_list->data);
 

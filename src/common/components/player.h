@@ -16,8 +16,6 @@
 */
 #pragma once
 
-#include <entt/entt.hpp>
-
 namespace cqsp {
 namespace common {
 namespace components {
