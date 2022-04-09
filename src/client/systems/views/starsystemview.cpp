@@ -17,7 +17,6 @@
 #include "client/systems/views/starsystemview.h"
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 #include <noise/noise.h>
 
@@ -265,7 +264,7 @@ void SysStarSystemRenderer::Update(float deltaTime) {
     if (!ImGui::GetIO().WantCaptureMouse) {
         scroll -= m_app.GetScrollAmount() * 3 * scroll/33;
 
-        if (m_app.MouseButtonIsHeld(GLFW_MOUSE_BUTTON_LEFT)) {
+        if (m_app.MouseButtonIsHeld(engine::MouseInput::LEFT)) {
             view_x += deltaX/m_app.GetWindowWidth()*3.1415*4;
             view_y -= deltaY/m_app.GetWindowHeight()*3.1415*4;
 
@@ -282,7 +281,7 @@ void SysStarSystemRenderer::Update(float deltaTime) {
 
         // If clicks on object, go to the planet
         entt::entity ent = m_app.GetUniverse().view<MouseOverEntity>().front();
-        if (m_app.MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) && ent != entt::null && !m_app.MouseDragged()) {
+        if (m_app.MouseButtonIsReleased(engine::MouseInput::LEFT) && ent != entt::null && !m_app.MouseDragged()) {
             // Then go to the object
             SeePlanet(ent);
             // Discern between showing UI and other things
@@ -707,20 +706,20 @@ void SysStarSystemRenderer::MoveCamera(double deltaTime) {
         m_universe.clear<cqsp::client::systems::FocusedPlanet>();
         m_viewing_entity = entt::null;
     };
-    if (m_app.ButtonIsHeld(GLFW_KEY_W)) {
+    if (m_app.ButtonIsHeld(engine::KeyInput::KEY_W)) {
         // Get direction
         view_center -= forward * velocity;
         post_move();
     }
-    if (m_app.ButtonIsHeld(GLFW_KEY_S)) {
+    if (m_app.ButtonIsHeld(engine::KeyInput::KEY_S)) {
         view_center += forward * velocity;
         post_move();
     }
-    if (m_app.ButtonIsHeld(GLFW_KEY_A)) {
+    if (m_app.ButtonIsHeld(engine::KeyInput::KEY_A)) {
         view_center += right * velocity;
         post_move();
     }
-    if (m_app.ButtonIsHeld(GLFW_KEY_D)) {
+    if (m_app.ButtonIsHeld(engine::KeyInput::KEY_D)) {
         view_center -= right * velocity;
         post_move();
     }

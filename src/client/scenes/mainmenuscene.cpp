@@ -17,7 +17,6 @@
 #include "client/scenes/mainmenuscene.h"
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 #include <RmlUi/Debugger.h>
 
@@ -70,7 +69,7 @@ void cqsp::scene::MainMenuScene::Init() {
 }
 
 void cqsp::scene::MainMenuScene::Update(float deltaTime) {
-    if (GetApp().ButtonIsPressed(GLFW_KEY_F5)) {
+    if (GetApp().ButtonIsPressed(engine::KeyInput::KEY_F5)) {
         Rml::Factory::ClearStyleSheetCache();
         main_menu = GetApp().ReloadDocument("../data/core/gui/mainmenu.rml");
         main_menu->AddEventListener(Rml::EventId::Click, &listener);

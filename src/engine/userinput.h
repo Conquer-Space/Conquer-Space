@@ -149,5 +149,7 @@ enum KeyInput {
 
 KeyInput GetKey(int key);
 int GetGlfwKey(KeyInput key);
+
+enum MouseInput { LEFT = 0, RIGHT = 1, MIDDLE = 2 };
 }  // namespace engine
 }  // namespace cqsp

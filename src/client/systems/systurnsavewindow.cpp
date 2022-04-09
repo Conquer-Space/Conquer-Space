@@ -16,9 +16,7 @@
 */
 #include "client/systems/systurnsavewindow.h"
 
-
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 #include "engine/gui.h"
 #include "engine/cqspgui.h"
@@ -58,7 +56,7 @@ void cqsp::client::systems::SysTurnSaveWindow::DoUI(int delta_time) {
 
 void cqsp::client::systems::SysTurnSaveWindow::DoUpdate(int delta_time) {
     if (!ImGui::GetIO().WantCaptureKeyboard) {
-        if (GetApp().ButtonIsReleased(GLFW_KEY_SPACE)) {
+        if (GetApp().ButtonIsReleased(engine::KeyInput::KEY_SPACE)) {
             TogglePlayState();
         }
     }
