@@ -19,15 +19,11 @@
 #include <fmt/format.h>
 #include <string>
 
-
-
 #include "common/components/coordinates.h"
 #include "common/components/ships.h"
 #include "common/components/bodies.h"
 #include "common/components/name.h"
 #include "common/components/organizations.h"
-
-
 
 entt::entity cqsp::common::systems::actions::CreateShip(
     cqsp::common::Universe& universe, entt::entity civEnt, const glm::vec3& orbit,

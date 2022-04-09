@@ -107,7 +107,7 @@ void cqsp::client::systems::SysCommand::ShipList() {
     static entt::entity selectedFleetEnt = GetUniverse()
                            .get<cqspc::Civilization>(GetUniverse()
                            .view<cqspc::Player>()
-                           .front()).topLevelFleet;
+                           .front()).top_level_fleet;
 
     auto& selectedFleet = GetUniverse().get<cqsps::Fleet>(selectedFleetEnt);
     auto& selectedFleetName = GetUniverse().get<cqspc::Name>(selectedFleetEnt);
