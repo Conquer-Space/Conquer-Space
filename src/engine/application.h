@@ -28,6 +28,7 @@
 
 #include "engine/clientoptions.h"
 
+#include "engine/userinput.h"
 #include "engine/engine.h"
 #include "engine/scene.h"
 #include "engine/asset/assetmanager.h"
@@ -146,8 +147,14 @@ class Application {
     }
 
     bool ButtonIsHeld(int btn) { return m_window->ButtonIsHeld(btn); }
+    bool ButtonIsHeld(KeyInput btn) { return ButtonIsHeld(GetGlfwKey(btn)); }
+
     bool ButtonIsReleased(int btn) { return m_window->ButtonIsReleased(btn); }
+    bool ButtonIsReleased(KeyInput btn) { return ButtonIsReleased(GetGlfwKey(btn)); }
+
     bool ButtonIsPressed(int btn) { return m_window->ButtonIsPressed(btn); }
+    bool ButtonIsPressed(KeyInput btn) { return ButtonIsPressed(GetGlfwKey(btn)); }
+
     double MouseButtonLastReleased(int btn) { return m_window->MouseButtonLastReleased(btn); }
     bool MouseButtonDoubleClicked(int btn) { return m_window->MouseButtonDoubleClicked(btn); }
 

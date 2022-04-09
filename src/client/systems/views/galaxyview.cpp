@@ -17,7 +17,6 @@
 #include "client/systems/views/galaxyview.h"
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -93,13 +92,13 @@ void GalaxyRenderer::Update(float deltaTime) {
         }
 
         // Check for mouse drag
-        if (m_app.MouseButtonIsHeld(GLFW_MOUSE_BUTTON_LEFT)) {
+        if (m_app.MouseButtonIsHeld(engine::MouseInput::LEFT)) {
             view_x += (m_app.GetMouseX() - previous_mouseX) / scroll;
             view_y += (previous_mouseY - m_app.GetMouseY()) / scroll;
         }
 
         // Click on the star system
-        if (m_app.MouseButtonDoubleClicked(GLFW_MOUSE_BUTTON_LEFT)) {
+        if (m_app.MouseButtonDoubleClicked(engine::MouseInput::LEFT)) {
             mouse_over = entt::null;
             namespace cqspc = cqsp::common::components;
             float window_ratio = static_cast<float>(m_app.GetWindowWidth()) /

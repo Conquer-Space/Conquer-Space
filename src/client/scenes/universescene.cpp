@@ -17,7 +17,6 @@
 #include "client/scenes/universescene.h"
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 #include <fmt/format.h>
 
@@ -104,7 +103,7 @@ void cqsp::scene::UniverseScene::Update(float deltaTime) {
     ZoneScoped;
 
     if (!game_halted) {
-        if (GetApp().ButtonIsReleased(GLFW_KEY_M)) {
+        if (GetApp().ButtonIsReleased(engine::KeyInput::KEY_M)) {
             view_mode = !view_mode;
         }
         if (view_mode) {
@@ -167,10 +166,10 @@ void cqsp::scene::UniverseScene::Render(float deltaTime) {
 
 void cqsp::scene::UniverseScene::DoScreenshot() {
     // Take screenshot
-    if ((GetApp().ButtonIsReleased(GLFW_KEY_F1) &&
-            GetApp().ButtonIsHeld(GLFW_KEY_F10)) ||
-        (GetApp().ButtonIsHeld(GLFW_KEY_F1) &&
-            GetApp().ButtonIsReleased(GLFW_KEY_F10))) {
+    if ((GetApp().ButtonIsReleased(engine::KeyInput::KEY_F1) &&
+            GetApp().ButtonIsHeld(engine::KeyInput::KEY_F10)) ||
+        (GetApp().ButtonIsHeld(engine::KeyInput::KEY_F1) &&
+            GetApp().ButtonIsReleased(engine::KeyInput::KEY_F10))) {
         GetApp().Screenshot();
     }
 }
