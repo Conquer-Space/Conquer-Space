@@ -16,8 +16,11 @@
 */
 #pragma once
 
+#include <string>
+
 #include <entt/entt.hpp>
 #include <glm/vec3.hpp>
+
 
 #include "common/universe.h"
 
@@ -25,11 +28,28 @@ namespace cqsp {
 namespace common {
 namespace systems {
 namespace actions {
+//deprecated
 entt::entity CreateShip(cqsp::common::Universe &universe, entt::entity civ,
                         const glm::vec3& orbit, entt::entity starsystem);
+//deprecated
 entt::entity CreateShip(cqsp::common::Universe &universe, entt::entity civ,
                         entt::entity orbit, entt::entity starsystem);
-}
+/**
+ *@brief creates a ship with a name and assigns it to a fleet and solar system
+ *@param universe The registry for the entities
+ *@param fleetEnt The fleet to be used
+ *@param starsystemEnt The star system where the ship is created in
+ *@return The ship that is created
+ */
+entt::entity CreateShip(cqsp::common::Universe &universe, entt::entity fleetEnt,
+                        entt::entity starsystemEnt, const glm::vec3 &orbit,
+                        const std::string &shipName);
+//@brief just like createShip with fleets but uses an orbit entity instead
+entt::entity CreateShip(cqsp::common::Universe &universe, entt::entity fleetEnt,
+                        entt::entity starsystemEnt, entt::entity orbitEnt,
+                        const std::string &shipName);
+
+}  // namespace actions
 }  // namespace systems
 }  // namespace common
 }  // namespace cqsp

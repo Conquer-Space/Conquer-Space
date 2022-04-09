@@ -79,7 +79,7 @@ void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::
 
     REGISTER_FUNCTION("add_planet", [&] (entt::entity system) {
         entt::entity planet = universe.create();
-        auto& body = universe.emplace<cqspb::Body>(planet);
+        auto& body = universe.emplace<cqspb::Body>(planet, 0.0f, system);
         body.star_system = system;
         universe.emplace<cqspb::Planet>(planet);
         universe.get<cqspb::StarSystem>(system).bodies.push_back(planet);

@@ -18,6 +18,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include <sstream>
+#include <vector>
 #include <string>
 
 #include "client/systems/views/starsystemview.h"
@@ -28,6 +30,7 @@
 #include "common/components/coordinates.h"
 #include "common/components/ships.h"
 #include "engine/cqspgui.h"
+#include "common/components/player.h"
 
 void cqsp::client::systems::SysCommand::Init() {}
 
@@ -98,30 +101,70 @@ void cqsp::client::systems::SysCommand::ShipList() {
     namespace cqspcs = cqsp::client::systems;
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqsps = cqsp::common::components::ships;
-    entt::entity ent = GetUniverse().view<cqspcs::RenderingStarSystem>().front();
-    if (ent == entt::null) {
-        return;
+    namespace cqspc = cqsp::common::components;
+
+
+    static entt::entity selectedFleetEnt = GetUniverse()
+                           .get<cqspc::Civilization>(GetUniverse()
+                           .view<cqspc::Player>()
+                           .front()).top_level_fleet;
+
+    auto& selectedFleet = GetUniverse().get<cqsps::Fleet>(selectedFleetEnt);
+    auto& selectedFleetName = GetUniverse().get<cqspc::Name>(selectedFleetEnt);
+
+
+
+    std::stringstream finalSelectedFleetName;
+    for (size_t i = 0; i < selectedFleet.echelon; i++) {
+        finalSelectedFleetName << GetUniverse()
+                                      .get<cqsp::common::components::Name>(
+                                          selectedFleet.parent_fleet)
+                                      .name
+                               << "/";
     }
-    ImGui::Begin("Ships");
-    auto& star_system = GetUniverse().get<cqspb::StarSystem>(ent);
+    finalSelectedFleetName << selectedFleetName.name.c_str();
+
+    ImGui::SetNextWindowSize(ImVec2(200, 400), ImGuiCond_Always);
+    ImGui::Begin(finalSelectedFleetName.str().c_str());
+
     // Show ship list
     int index = 0;
     static int selected = 0;
 
-    for (entt::entity enti : star_system.bodies) {
-        if (GetUniverse().all_of<cqsps::Ship>(enti)) {
-            // Then do the things
-            index++;
-        } else {
-            continue;
-        }
+    for (entt::entity enti : selectedFleet.ships) {
+        index++;
         const bool is_selected = (selected == index);
-        std::string entity_name = cqsp::client::systems::gui ::GetName(GetUniverse(), enti);
+        std::string entity_name = cqsp::client::systems::gui::GetName(GetUniverse(), enti);
         if (CQSPGui::DefaultSelectable(entity_name.c_str(), is_selected)) {
             selected = index;
             to_see = true;
             selected_ship = enti;
         }
     }
+
+    std::vector<entt::entity> subfleetsAndLast = selectedFleet.subfleets;
+    bool has_parent = false;
+    if (selectedFleet.parent_fleet != entt::null) {
+        subfleetsAndLast.push_back(selectedFleet.parent_fleet);
+        has_parent = true;
+    }
+
+    for (size_t i = 0; i < subfleetsAndLast.size(); i++) {
+        index++;
+
+        const bool is_selected = (selected == index);
+        std::stringstream entity_name;
+        entity_name << (i == (subfleetsAndLast.size() - 1) && has_parent
+            ? "<-"
+            : "->")
+                    << cqsp::client::systems::gui::GetName(GetUniverse(),
+                                                           subfleetsAndLast[i]);
+        if (CQSPGui::DefaultSelectable(entity_name.str().c_str(),
+                                       is_selected)) {
+            selected = index;
+            selectedFleetEnt = subfleetsAndLast[i];
+        }
+    }
+
     ImGui::End();
 }

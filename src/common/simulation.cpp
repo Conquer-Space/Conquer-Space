@@ -42,6 +42,7 @@
 #include "common/components/ships.h"
 #include "common/components/coordinates.h"
 #include "common/components/units.h"
+#include "common/systems/navy/sysnavy.h"
 
 using cqsp::common::systems::simulation::Simulation;
 using cqsp::common::Universe;
@@ -51,6 +52,8 @@ cqsp::common::systems::simulation::Simulation::Simulation(
     namespace cqspcs = cqsp::common::systems;
     AddSystem<cqspcs::SysScript>();
     AddSystem<cqspcs::SysWalletReset>();
+
+    AddSystem<cqspcs::SysNavyControl>();
 
     AddSystem<cqspcs::SysPopulationConsumption>();
     AddSystem<cqspcs::SysMine>();

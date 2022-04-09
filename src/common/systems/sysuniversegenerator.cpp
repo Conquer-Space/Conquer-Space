@@ -36,10 +36,11 @@
 
 #include "common/systems/actions/factoryconstructaction.h"
 #include "common/systems/economy/markethelpers.h"
+#include "actions/shiplaunchaction.h"
+#include "client/systems/views/starsystemview.h"
 
-
-void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::Generate(
-    cqsp::common::Universe& universe) {
+void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::
+    Generate(cqsp::common::Universe& universe) {
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspt = cqsp::common::components::types;
@@ -48,7 +49,6 @@ void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::Generate
     script_engine["goods"] = universe.goods;
     script_engine["recipes"] = universe.recipes;
     script_engine["terrain_colors"] = universe.terrain_data;
-
     // Create player
     auto player = universe.create();
     universe.emplace<cqspc::Civilization>(player);
@@ -56,11 +56,21 @@ void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::Generate
     // Add wallet to civilization
     universe.emplace<cqspc::Wallet>(player, entt::null, 10000000);
 
+    // Add top level fleet
+    auto playerFleet = universe.create();
+    universe.emplace<cqspc::Name>(playerFleet, "navy");
+    universe.emplace<cqspc::ships::Fleet>(playerFleet, player);
+    universe.get<cqspc::Civilization>(player).top_level_fleet = playerFleet;
+    // Add a subfleet
+    auto playerSubFleet = universe.create();
+    universe.emplace<cqspc::Name>(playerSubFleet, "vice-navy");
+    universe.emplace<cqspc::ships::Fleet>(playerSubFleet, playerFleet, player, 1);
+    universe.get<cqsps::Fleet>(universe.get<cqspc::Civilization>(player).top_level_fleet)
+        .subfleets.push_back(playerSubFleet);
     //for (int i = 0; i < 9; i++) {
         //auto civ = universe.create();
         //universe.emplace<cqspc::Civilization>(civ);
     //}
-
     sol::optional<sol::table> generator = script_engine["generators"]["data"][1];
     if (generator) {
         (*generator)["civ_init"]();
@@ -71,4 +81,18 @@ void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::Generate
             (*generator)["planets"](ent);
         }
     }
+    // add first ship(could be deferred to some script)
+    //has to be deferred until after the galaxy and systems are populated in the scripts
+    auto starting_planet =
+        universe.get<cqspc::Civilization>(player).starting_planet;
+    cqsp::common::systems::actions::CreateShip(
+        universe, playerFleet,
+        universe.get<cqspc::bodies::Body>(starting_planet).star_system,
+        starting_planet,
+        "pioneer");
+      cqsp::common::systems::actions::CreateShip(
+        universe, playerSubFleet,
+        universe.get<cqspc::bodies::Body>(starting_planet).star_system,
+        starting_planet,
+        "pioneer2");
 }
