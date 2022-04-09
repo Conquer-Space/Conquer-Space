@@ -35,7 +35,7 @@ struct Fleet {
     entt::entity parent_fleet = entt::null;
     entt::entity owner;
     Fleet(entt::entity parent_fleet, entt::entity _owner, unsigned int _echelon) :
-        parent_fleet(parent_fleet), owner(_owner), echelon(_echelon) {};
+        parent_fleet(parent_fleet), owner(_owner), echelon(_echelon) {}
     // creates top level fleet
     explicit Fleet(entt::entity _owner) : Fleet(entt::null, _owner, 0) {}
 };
