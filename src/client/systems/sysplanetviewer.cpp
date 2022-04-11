@@ -114,6 +114,11 @@ void cqsp::client::systems::SysPlanetInformation::DoUpdate(int delta_time) {
     if (!GetUniverse().valid(selected_planet) || !GetUniverse().all_of<cqspb::Body>(selected_planet)) {
         to_see = false;
     }
+
+    if (is_founding_city) {
+        // Get the position and render rectangle
+        // Draw temp city
+    }
 }
 
 void cqsp::client::systems::SysPlanetInformation::CityInformationPanel() {
@@ -194,6 +199,15 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
         }
     }
 
+    if (ImGui::Button("Found City")) {
+        // Enable city founding
+        is_founding_city = true;
+    }
+
+    if (ImGui::Button("Delete everything")) {
+        habit.settlements.clear();
+    }
+
     // Get population
     uint64_t pop_size = 0;
     for (entt::entity settlement : habit.settlements) {
@@ -227,7 +241,10 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
         const bool is_selected = (selected_city_index == i);
 
         entt::entity e = habit.settlements[i];
-        std::string name = GetUniverse().get<cqspc::Name>(e);
+        std::string name = "No name";
+        if (GetUniverse().any_of<cqspc::Name>(e)) {
+            name = GetUniverse().get<cqspc::Name>(e);
+        }
         if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
             // Load city
             selected_city_index = i;

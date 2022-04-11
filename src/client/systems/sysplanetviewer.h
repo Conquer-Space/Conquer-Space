@@ -67,6 +67,8 @@ class SysPlanetInformation : public SysUserInterface {
     bool market_information_panel = false;
     bool enable_construction_confirmation_panel = false;
     entt::entity power_plant_changing;
+    bool is_founding_city = false;
+    glm::vec3 city_founding_position;
 };
 }  // namespace systems
 }  // namespace client

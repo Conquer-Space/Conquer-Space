@@ -285,7 +285,27 @@ void SysStarSystemRenderer::Update(float deltaTime) {
             // Then go to the object
             SeePlanet(ent);
             // Discern between showing UI and other things
+
+            // Found city
+            glm::vec3 p = city_founding_position - CalculateCenteredObject(on_planet);
+            namespace cqspt = cqsp::common::components::types;
+            namespace cqspc = cqsp::common::components;
+
+            double latitude = asin(p.y);
+            double longitude = atan2(p.x, p.z);
+
+            // Found city
+            SPDLOG_INFO("{} {} {}", latitude, longitude, glm::length(p));
+            entt::entity settlement = m_app.GetUniverse().create();
+            m_app.GetUniverse().emplace<cqspc::Settlement>(settlement);
+            auto& coord = m_app.GetUniverse().emplace<cqspt::SurfaceCoordinate>(settlement);
+            coord.latitude = latitude;
+            coord.longitude = longitude;
+
+            // Add to planet list
+            m_app.GetUniverse().get<cqspc::Habitation>(on_planet).settlements.push_back(settlement);
         }
+        CalculateCityPositions();
     }
 
     if (!ImGui::GetIO().WantCaptureKeyboard) {
@@ -293,6 +313,11 @@ void SysStarSystemRenderer::Update(float deltaTime) {
     }
 
     using cqsp::client::components::PlanetTerrainRender;
+    city_founding_position = GetMouseIntersectionOnObject(m_app.GetMouseX(), m_app.GetMouseY());
+    // If clicked, order a city at the place
+
+    // Some way to communicate between the two about the information
+
     /*
     // Check if it has terrain resource rendering, and make terrain thing
     if (m_viewing_entity != entt::null && m_app.GetUniverse().all_of<PlanetTerrainRender>(m_viewing_entity)) {
@@ -592,6 +617,9 @@ void SysStarSystemRenderer::RenderCities(glm::vec3 &object_pos, const entt::enti
     city.shaderProgram->setVec4("color", 0.5, 0.5, 0.5, 1);
     for (auto city_entity : cities) {
         // Calculate position to render
+        if (!m_app.GetUniverse().any_of<Offset>(city_entity)) {
+            // Calculate offset
+        }
         glm::vec3 city_pos = m_app.GetUniverse().get<Offset>(city_entity).offset;
         // Check if line of sight and city position intersects the sphere that is the planet
 
@@ -603,6 +631,10 @@ void SysStarSystemRenderer::RenderCities(glm::vec3 &object_pos, const entt::enti
             }
             DrawCityIcon(city_world_pos);
         }
+    }
+
+    if (is_founding_city) {
+        DrawCityIcon(city_founding_position);
     }
     renderer.EndDraw(ship_icon_layer);
 }
@@ -621,6 +653,9 @@ void SysStarSystemRenderer::CalculateCityPositions() {
     namespace cqspc = cqsp::common::components;
     namespace cqspt = cqsp::common::components::types;
     // Calculate offset for all cities on planet if they exist
+    if (!m_app.GetUniverse().valid(m_viewing_entity)) {
+        return;
+    }
     if (!m_app.GetUniverse().all_of<cqspc::Habitation>(m_viewing_entity)) {
         return;
     }
@@ -854,6 +889,40 @@ cqsp::asset::Texture* SysStarSystemRenderer::GenerateTexture(
     return texture;
 }
 
+glm::vec3 SysStarSystemRenderer::GetMouseIntersectionOnObject(int mouse_x, int mouse_y) {
+    // Normalize 3d device coordinates
+    namespace cqspb = cqsp::common::components::bodies;
+    auto bodies = m_app.GetUniverse().view<ToRender, cqspb::Body>();
+    for (entt::entity ent_id : bodies) {
+        glm::vec3 object_pos = CalculateCenteredObject(ent_id);
+        float x = (2.0f * mouse_x) / m_app.GetWindowWidth() - 1.0f;
+        float y = 1.0f - (2.0f * mouse_y) / m_app.GetWindowHeight();
+        float z = 1.0f;
+
+        glm::vec3 ray_wor = CalculateMouseRay(glm::vec3(x, y, z));
+
+        float radius = 1;
+        if (m_app.GetUniverse().all_of<cqspb::LightEmitter>(ent_id)) {
+            radius = 10;
+        }
+
+        // Check for intersection for sphere
+        glm::vec3 sub = cam_pos - object_pos;
+        float b = glm::dot(ray_wor, sub);
+        float c = glm::dot(sub, sub) - radius * radius;
+
+        glm::vec3 closest_hit = cam_pos + (-b - sqrt(b * b - c)) * ray_wor;
+        // Get the closer value
+        if ((b * b - c) >= 0) {
+            is_founding_city = true;
+            on_planet = ent_id;
+            return closest_hit;
+        }
+    }
+    is_founding_city = false;
+    return glm::vec3(0, 0, 0);
+}
+
 entt::entity SysStarSystemRenderer::GetMouseOnObject(int mouse_x, int mouse_y) {
     namespace cqspb = cqsp::common::components::bodies;
 
@@ -893,6 +962,8 @@ entt::entity SysStarSystemRenderer::GetMouseOnObject(int mouse_x, int mouse_y) {
             glm::vec3 sub = cam_pos - object_pos;
             float b = glm::dot(ray_wor, sub);
             float c = glm::dot(sub, sub) - radius * radius;
+
+            // Get the closer value
             if ((b * b - c) >= 0) {
                 m_app.GetUniverse().emplace<MouseOverEntity>(ent_id);
                 return ent_id;

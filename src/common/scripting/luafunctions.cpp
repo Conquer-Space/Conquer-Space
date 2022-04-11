@@ -42,6 +42,7 @@
 #include "common/systems/actions/factoryconstructaction.h"
 #include "common/systems/economy/markethelpers.h"
 #include "common/systems/actions/shiplaunchaction.h"
+#include "common/systems/actions/cityactions.h"
 #include "common/util/utilnumberdisplay.h"
 
 namespace cqspb = cqsp::common::components::bodies;
@@ -150,13 +151,7 @@ void FunctionCivilizationGen(cqsp::common::Universe& universe, cqsp::scripting::
     });
 
     REGISTER_FUNCTION("add_planet_settlement", [&](entt::entity planet, double lat, double longi) {
-        entt::entity settlement = universe.create();
-        universe.emplace<cqspc::Settlement>(settlement);
-        universe.emplace<cqspt::SurfaceCoordinate>(settlement, lat, longi);
-
-        // Add to planet list
-        universe.get<cqspc::Habitation>(planet).settlements.push_back(settlement);
-        return settlement;
+        return cqsp::common::actions::CreateCity(universe, planet, lat, longi);
     });
 }
 
