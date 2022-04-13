@@ -50,6 +50,8 @@ struct FocusedPlanet {};
 // City to look at
 struct FocusedCity {};
 
+struct CityFounding {};
+
 /*
  * Main renderer for the universe
  */
@@ -66,6 +68,8 @@ class SysStarSystemRenderer {
     void SeePlanet(entt::entity);
     void DoUI(float deltaTime);
 
+    glm::vec3 GetMouseIntersectionOnObject(int mouse_x, int mouse_y);
+
     float view_x;
     float view_y;
 
@@ -79,6 +83,8 @@ class SysStarSystemRenderer {
     double GetDivider() { return divider; }
 
     entt::entity GetMouseOnObject(int mouse_x, int mouse_y);
+
+    static bool IsFoundingCity(common::Universe& universe);
 
     ~SysStarSystemRenderer();
 
@@ -174,6 +180,11 @@ class SysStarSystemRenderer {
     int planet_icon_layer;
     int physical_layer;
     int skybox_layer;
+
+    bool is_founding_city = false;
+    bool is_rendering_founding_city = false;
+    glm::vec3 city_founding_position;
+    entt::entity on_planet;
 };
 }  // namespace systems
 }  // namespace client
