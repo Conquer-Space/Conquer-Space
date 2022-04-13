@@ -4,7 +4,7 @@ Conquer Space
 Discord: https://discord.gg/h5r77Sa
 
 ### Compiling
-Get the repo with `git clone --depth 1 --recursive --shallow-submodules https://github.com/EhWhoAmI/cqsp`
+Get the repo with `git clone --depth 1 --recursive --shallow-submodules https://github.com/Conquer-Space/Conquer-Space`
 
 #### Windows
 Open the repository `cd cqsp`
