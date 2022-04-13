@@ -16,6 +16,8 @@
 */
 #pragma once
 
+#include <string>
+
 #include <entt/entt.hpp>
 
 #include "client/systems/sysgui.h"
@@ -71,7 +73,7 @@ class SysPlanetInformation : public SysUserInterface {
     glm::vec3 city_founding_position;
 
     bool renaming_city = false;
-    std::string text;
+    std::string city_founding_name;
 };
 }  // namespace systems
 }  // namespace client

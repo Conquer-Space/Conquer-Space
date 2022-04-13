@@ -65,6 +65,11 @@ void cqsp::client::systems::SysPlanetInformation::DisplayPlanet() {
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.79f,
                                    ImGui::GetIO().DisplaySize.y * 0.55f),
                             ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+    if (SysStarSystemRenderer::IsFoundingCity(GetUniverse())) {
+        ImGui::SetNextWindowCollapsed(true, ImGuiCond_Always);
+    } else {
+        ImGui::SetNextWindowCollapsed(false, ImGuiCond_Always);
+    }
     std::string planet_name = "Planet";
     if (selected_planet == entt::null) {
         return;
@@ -72,7 +77,7 @@ void cqsp::client::systems::SysPlanetInformation::DisplayPlanet() {
     if (GetUniverse().all_of<cqspc::Name>(selected_planet)) {
         planet_name = GetUniverse().get<cqspc::Name>(selected_planet);
     }
-    ImGui::Begin(planet_name.c_str(), &to_see, window_flags);
+    ImGui::Begin(planet_name.c_str(), &to_see, window_flags | ImGuiWindowFlags_NoCollapse);
     switch (view_mode) {
         case ViewMode::PLANET_VIEW:
             PlanetInformationPanel();
@@ -102,13 +107,12 @@ void cqsp::client::systems::SysPlanetInformation::DoUI(int delta_time) {
         ImGui::Begin("Rename City", &renaming_city);
 
         ImGui::PushItemWidth(-1);
-        ImGui::InputText("Test", &text);
+        ImGui::InputText("Rename City", &city_founding_name);
         ImGui::PopItemWidth();
         if (ImGui::Button("Rename")) {
             renaming_city = false;
             using cqsp::common::components::Name;
-            GetUniverse().get<Name>(selected_city_entity).name = text;
-
+            GetUniverse().get<Name>(selected_city_entity).name = city_founding_name;
         }
         ImGui::End();
     }
@@ -130,11 +134,6 @@ void cqsp::client::systems::SysPlanetInformation::DoUpdate(int delta_time) {
     if (!GetUniverse().valid(selected_planet) || !GetUniverse().all_of<cqspb::Body>(selected_planet)) {
         to_see = false;
     }
-
-    if (is_founding_city) {
-        // Get the position and render rectangle
-        // Draw temp city
-    }
 }
 
 void cqsp::client::systems::SysPlanetInformation::CityInformationPanel() {
@@ -148,7 +147,7 @@ void cqsp::client::systems::SysPlanetInformation::CityInformationPanel() {
     if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
         // Then rename the city
         renaming_city = true;
-        text = GetUniverse().get<cqspc::Name>(selected_city_entity).name;
+        city_founding_name = GetUniverse().get<cqspc::Name>(selected_city_entity).name;
     }
     ImGui::SameLine();
     if (ImGui::Button("Focus on city")) {
@@ -221,6 +220,8 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
 
     if (ImGui::Button("Found City")) {
         // Enable city founding
+        entt::entity ent = GetUniverse().create();
+        GetUniverse().emplace<CityFounding>(ent);
         is_founding_city = true;
     }
 

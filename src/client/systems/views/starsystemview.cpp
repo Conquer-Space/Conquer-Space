@@ -263,6 +263,9 @@ void SysStarSystemRenderer::Update(float deltaTime) {
     ZoneScoped;
     double deltaX = previous_mouseX - m_app.GetMouseX();
     double deltaY = previous_mouseY - m_app.GetMouseY();
+
+    is_founding_city = IsFoundingCity(m_universe);
+
     if (!ImGui::GetIO().WantCaptureMouse) {
         scroll -= m_app.GetScrollAmount() * 3 * scroll/33;
 
@@ -288,23 +291,29 @@ void SysStarSystemRenderer::Update(float deltaTime) {
             SeePlanet(ent);
             // Discern between showing UI and other things
 
-            // Found city
-            glm::vec3 p = city_founding_position - CalculateCenteredObject(on_planet);
-            namespace cqspt = cqsp::common::components::types;
-            namespace cqspc = cqsp::common::components;
+            if (is_founding_city) {
+                // Found city
+                glm::vec3 p = city_founding_position - CalculateCenteredObject(on_planet);
+                namespace cqspt = cqsp::common::components::types;
+                namespace cqspc = cqsp::common::components;
 
-            double latitude = cqspt::toDegree(asin(p.y));
-            double longitude = cqspt::toDegree(atan2(p.x, p.z));
-            SPDLOG_INFO("Founding city at {} {} {}", latitude, longitude, glm::length(p));
+                double latitude = cqspt::toDegree(asin(p.y));
+                double longitude = cqspt::toDegree(atan2(p.x, p.z));
+                SPDLOG_INFO("Founding city at {} {} {}", latitude, longitude, glm::length(p));
 
-            entt::entity settlement = cqsp::common::actions::CreateCity(m_app.GetUniverse(), on_planet, latitude, longitude);
-            // Set the name of the city
-            cqspc::Name& name = m_app.GetUniverse().emplace<cqspc::Name>(settlement);
-            name.name = m_app.GetUniverse().name_generators["Town Names"].Generate("1");
-            // Add population and economy
-            m_app.GetUniverse().emplace<cqspc::Industry>(settlement);
+                entt::entity settlement =
+                    cqsp::common::actions::CreateCity(m_app.GetUniverse(),
+                                                        on_planet, latitude, longitude);
+                // Set the name of the city
+                cqspc::Name& name = m_app.GetUniverse().emplace<cqspc::Name>(settlement);
+                name.name = m_app.GetUniverse().name_generators["Town Names"].Generate("1");
+                // Add population and economy
+                m_app.GetUniverse().emplace<cqspc::Industry>(settlement);
 
-            CalculateCityPositions();
+                m_app.GetUniverse().clear<CityFounding>();
+
+                CalculateCityPositions();
+            }
         }
     }
 
@@ -633,7 +642,7 @@ void SysStarSystemRenderer::RenderCities(glm::vec3 &object_pos, const entt::enti
         }
     }
 
-    if (is_founding_city) {
+    if (is_founding_city && is_rendering_founding_city) {
         DrawCityIcon(city_founding_position);
     }
     renderer.EndDraw(ship_icon_layer);
@@ -914,12 +923,12 @@ glm::vec3 SysStarSystemRenderer::GetMouseIntersectionOnObject(int mouse_x, int m
         glm::vec3 closest_hit = cam_pos + (-b - sqrt(b * b - c)) * ray_wor;
         // Get the closer value
         if ((b * b - c) >= 0) {
-            is_founding_city = true;
+            is_rendering_founding_city = true;
             on_planet = ent_id;
             return closest_hit;
         }
     }
-    is_founding_city = false;
+    is_rendering_founding_city = false;
     return glm::vec3(0, 0, 0);
 }
 
@@ -971,6 +980,10 @@ entt::entity SysStarSystemRenderer::GetMouseOnObject(int mouse_x, int mouse_y) {
         }
     }
     return entt::null;
+}
+
+bool cqsp::client::systems::SysStarSystemRenderer::IsFoundingCity(common::Universe& universe) {
+    return universe.view<CityFounding>().size() >= 1;
 }
 
 SysStarSystemRenderer::~SysStarSystemRenderer() {
