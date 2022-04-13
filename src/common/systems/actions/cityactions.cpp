@@ -18,6 +18,7 @@
 
 #include "common/components/surface.h"
 #include "common/components/coordinates.h"
+#include "common/components/name.h"
 
 entt::entity cqsp::common::actions::CreateCity(Universe& universe,  entt::entity planet, double lat,
                                                double longi) {

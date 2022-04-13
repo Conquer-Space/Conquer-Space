@@ -103,7 +103,7 @@ void cqsp::scene::UniverseScene::Update(float deltaTime) {
     ZoneScoped;
 
     if (!game_halted) {
-        if (GetApp().ButtonIsReleased(engine::KeyInput::KEY_M)) {
+        if (!ImGui::GetIO().WantCaptureKeyboard && GetApp().ButtonIsReleased(engine::KeyInput::KEY_M)) {
             view_mode = !view_mode;
         }
         if (view_mode) {

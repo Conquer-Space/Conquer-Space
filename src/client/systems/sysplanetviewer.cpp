@@ -96,6 +96,22 @@ void cqsp::client::systems::SysPlanetInformation::DoUI(int delta_time) {
         ImGui::End();
     }
     ConstructionConfirmationPanel();
+
+    if (renaming_city) {
+        ImGui::SetNextWindowSize(ImVec2(300, -1));
+        ImGui::Begin("Rename City", &renaming_city);
+
+        ImGui::PushItemWidth(-1);
+        ImGui::InputText("Test", &text);
+        ImGui::PopItemWidth();
+        if (ImGui::Button("Rename")) {
+            renaming_city = false;
+            using cqsp::common::components::Name;
+            GetUniverse().get<Name>(selected_city_entity).name = text;
+
+        }
+        ImGui::End();
+    }
 }
 
 void cqsp::client::systems::SysPlanetInformation::DoUpdate(int delta_time) {
@@ -129,7 +145,11 @@ void cqsp::client::systems::SysPlanetInformation::CityInformationPanel() {
     ImGui::SameLine();
 
     ImGui::TextFmt("{}", GetUniverse().get<cqspc::Name>(selected_city_entity));
-
+    if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
+        // Then rename the city
+        renaming_city = true;
+        text = GetUniverse().get<cqspc::Name>(selected_city_entity).name;
+    }
     ImGui::SameLine();
     if (ImGui::Button("Focus on city")) {
         // Focus city
@@ -202,10 +222,6 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
     if (ImGui::Button("Found City")) {
         // Enable city founding
         is_founding_city = true;
-    }
-
-    if (ImGui::Button("Delete everything")) {
-        habit.settlements.clear();
     }
 
     // Get population

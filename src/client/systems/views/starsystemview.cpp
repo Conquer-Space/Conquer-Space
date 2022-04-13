@@ -49,7 +49,9 @@
 #include "common/components/name.h"
 #include "common/components/ships.h"
 #include "common/components/units.h"
+#include "common/components/area.h"
 #include "common/util/profiler.h"
+#include "common/systems/actions/cityactions.h"
 
 using cqsp::client::systems::SysStarSystemRenderer;
 SysStarSystemRenderer::SysStarSystemRenderer(cqsp::common::Universe &_u,
@@ -291,21 +293,19 @@ void SysStarSystemRenderer::Update(float deltaTime) {
             namespace cqspt = cqsp::common::components::types;
             namespace cqspc = cqsp::common::components;
 
-            double latitude = asin(p.y);
-            double longitude = atan2(p.x, p.z);
+            double latitude = cqspt::toDegree(asin(p.y));
+            double longitude = cqspt::toDegree(atan2(p.x, p.z));
+            SPDLOG_INFO("Founding city at {} {} {}", latitude, longitude, glm::length(p));
 
-            // Found city
-            SPDLOG_INFO("{} {} {}", latitude, longitude, glm::length(p));
-            entt::entity settlement = m_app.GetUniverse().create();
-            m_app.GetUniverse().emplace<cqspc::Settlement>(settlement);
-            auto& coord = m_app.GetUniverse().emplace<cqspt::SurfaceCoordinate>(settlement);
-            coord.latitude = latitude;
-            coord.longitude = longitude;
+            entt::entity settlement = cqsp::common::actions::CreateCity(m_app.GetUniverse(), on_planet, latitude, longitude);
+            // Set the name of the city
+            cqspc::Name& name = m_app.GetUniverse().emplace<cqspc::Name>(settlement);
+            name.name = m_app.GetUniverse().name_generators["Town Names"].Generate("1");
+            // Add population and economy
+            m_app.GetUniverse().emplace<cqspc::Industry>(settlement);
 
-            // Add to planet list
-            m_app.GetUniverse().get<cqspc::Habitation>(on_planet).settlements.push_back(settlement);
+            CalculateCityPositions();
         }
-        CalculateCityPositions();
     }
 
     if (!ImGui::GetIO().WantCaptureKeyboard) {

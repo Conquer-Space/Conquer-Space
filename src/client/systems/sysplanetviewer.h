@@ -69,6 +69,9 @@ class SysPlanetInformation : public SysUserInterface {
     entt::entity power_plant_changing;
     bool is_founding_city = false;
     glm::vec3 city_founding_position;
+
+    bool renaming_city = false;
+    std::string text;
 };
 }  // namespace systems
 }  // namespace client
