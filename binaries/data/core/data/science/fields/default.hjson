@@ -1,0 +1,47 @@
+[
+    {
+        name: Science
+    }
+    {
+        name: Physics
+        parent: [
+            Science
+        ]
+        adjacent: [
+            Mathematics
+            Algebra
+        ]
+    }
+    {
+        name: Nuclear Physics
+        parent: [
+            Physics
+        ]
+        adjacent: []
+    }
+    {
+        name: Mathematics
+        parent: []
+    }
+    {
+        name: Algebra
+        parent: [
+            Mathematics
+        ]
+    }
+    {
+        name: Calculus
+        parent: [
+            Algebra
+        ]
+    }
+    {
+        name: Geometry
+        parent: [
+            Mathematics
+        ]
+        adjacent: [
+            Calculus
+        ]
+    }
+]
