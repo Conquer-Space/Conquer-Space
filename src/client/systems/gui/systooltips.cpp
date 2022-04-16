@@ -137,6 +137,13 @@ void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity 
     ImGui::BeginTooltip();
     ImGui::TextFmt("{}", GetName(universe, entity));
 
+    if (universe.any_of<common::components::Description>(entity)) {
+        auto& desc = universe.get<common::components::Description>(entity);
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7, 0.7, 0.7, 1));
+        ImGui::TextWrapped(desc.description.c_str());
+        ImGui::PopStyleColor();
+    }
+
     if (entity == entt::null) {
         ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Null entity!");
     }

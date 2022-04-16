@@ -67,6 +67,11 @@ void cqsp::common::systems::science::LoadFields(Universe& universe,
         if (universe.science.find(name) != universe.science.end()) {
             SPDLOG_WARN("Field {} already exists, overwriting", name);
         }
+
+        // Description
+        if (val["description"].type() == Hjson::Type::String) {
+            universe.emplace<components::Description>(field, val["description"].to_string());
+        }
         universe.science[name] = field;
     }
 

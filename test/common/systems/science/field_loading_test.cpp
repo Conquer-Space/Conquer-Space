@@ -37,6 +37,7 @@ TEST(Science_FieldTest, FieldLoadingTest) {
         }
         {
             name: Chemistry
+            description: Testing
             parent: [
                 Science
             ]
@@ -64,4 +65,5 @@ TEST(Science_FieldTest, FieldLoadingTest) {
     // Check adjacents
     ASSERT_EQ(universe.get<cqspc::Name>(field_comp.adjacent[0]).name, "Physics");
 
+    ASSERT_EQ(universe.get<cqspc::Description>(chemistry).description, "Testing");
 }

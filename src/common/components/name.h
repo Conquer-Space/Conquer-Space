@@ -33,6 +33,11 @@ struct Identifier {
     std::string identifier;
     operator std::string&() { return identifier; }
 };
+
+
+struct Description {
+    std::string description;
+};
 }  // namespace components
 }  // namespace common
 }  // namespace cqsp
