@@ -23,4 +23,18 @@ struct Field {
     std::vector<entt::entity> parents;
     std::vector<entt::entity> adjacent;
 };
+
+// A scientific research
+struct Science {
+    int difficulty;
+    std::vector<entt::entity> fields;
+};
+
+struct Lab {
+    std::map<entt::entity, double> science_contribution;
+};
+
+struct ScientificProgress {
+    std::map<entt::entity, double> science_progress;
+};
 }  // namespace cqsp::common::components::science

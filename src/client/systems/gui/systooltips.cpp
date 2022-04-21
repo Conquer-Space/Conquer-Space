@@ -28,6 +28,7 @@
 #include "common/components/infrastructure.h"
 #include "common/components/organizations.h"
 #include "common/components/player.h"
+#include "common/components/science.h"
 
 #include "common/systems/population/cityinformation.h"
 #include "common/util/utilnumberdisplay.h"
@@ -49,16 +50,25 @@ std::string cqsp::client::systems::gui::GetName(Universe& universe, entt::entity
 
 namespace cqsp::client::systems::gui {
 void RenderEntityType(Universe& universe, entt::entity entity) {
+    std::string text = GetEntityType(universe, entity);
+    if (text == "Player") {
+        ImGui::TextColored(ImColor(252, 186, 3), "Player");
+        return;
+    } else {
+        ImGui::TextFmt(text);
+    }
+}
+
+std::string GetEntityType(cqsp::common::Universe& universe, entt::entity entity) {
     namespace cqspc = cqsp::common::components;
     // Then get type of entity
     if (universe.all_of<cqspc::bodies::Star>(entity)) {
-        ImGui::TextFmt("Star");
+        return "Star";
     } else if (universe.all_of<cqspc::bodies::Planet>(entity)) {
-        ImGui::TextFmt("Planet");
+        return  "Planet";
     } else if (universe.any_of<cqspc::Settlement, cqspc::Habitation>(entity)) {
-        ImGui::TextFmt("City");
+        return  "City";
     } else if (universe.any_of<cqspc::Mine>(entity)) {
-        ImGui::TextFmt("Mine");
         std::string production = "";
         auto& generator = universe.get<cqspc::ResourceGenerator>(entity);
         for (auto it = generator.begin(); it != generator.end(); ++it) {
@@ -68,20 +78,21 @@ void RenderEntityType(Universe& universe, entt::entity entity) {
         if (!production.empty()) {
             production = production.substr(0, production.size() - 2);
         }
-        ImGui::TextFmt("{} Mine", production);
+        return fmt::format("{} Mine", production);
     } else if (universe.any_of<cqspc::Factory>(entity)) {
-        ImGui::TextFmt("Factory");
         std::string production = "";
         auto& generator = universe.get<cqspc::ResourceConverter>(entity);
-        ImGui::TextFmt("{} Factory", GetName(universe, generator.recipe));
+        return fmt::format("{} Factory", GetName(universe, generator.recipe));
     } else if (universe.any_of<cqspc::Player>(entity)) {
-        ImGui::TextColored(ImColor(252, 186, 3), "Player");
+        return "Player";
     } else if (universe.any_of<cqspc::Civilization>(entity)) {
-        ImGui::TextFmt("Civilization");
+        return "Civilization";
     } else if (universe.any_of<cqspc::Organization>(entity)) {
-        ImGui::TextFmt("Organization");
+        return "Organization";
+    } else if (universe.any_of<cqspc::science::Lab>(entity)) {
+        return "Science Lab";
     } else {
-        ImGui::TextFmt("Unknown");
+        return "Unknown";
     }
 }
 }  // namespace cqsp::client::systems::gui

@@ -1,0 +1,9 @@
+[
+    {
+        name: Farming
+        fields: [
+        ]
+        difficulty: 10
+        // Unlocks stuff
+    }
+]

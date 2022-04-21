@@ -38,6 +38,7 @@
 #include "common/components/resource.h"
 #include "common/components/ships.h"
 #include "common/components/event.h"
+#include "common/systems/science/labs.h"
 
 #include "common/systems/actions/factoryconstructaction.h"
 #include "common/systems/economy/markethelpers.h"
@@ -161,6 +162,10 @@ void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
 
     REGISTER_FUNCTION("create_industries", [&](entt::entity city) {
         universe.emplace<cqspc::Industry>(city);
+    });
+
+    REGISTER_FUNCTION("add_industry", [&](entt::entity city, entt::entity entity) {
+        universe.get<cqspc::Industry>(city).industries.push_back(entity);
     });
 
     REGISTER_FUNCTION("create_factory", [&](entt::entity city, entt::entity recipe, float productivity) {
@@ -364,6 +369,18 @@ void FunctionCivilizations(cqsp::common::Universe& universe, cqsp::scripting::Sc
     });
 }
 
+void FunctionScience(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
+    CREATE_NAMESPACE(core);
+
+    REGISTER_FUNCTION("create_lab", [&]() {
+        return cqsp::common::systems::science::CreateLab(universe);
+    });
+
+    REGISTER_FUNCTION("add_science", [&](entt::entity lab, entt::entity research, double progress) {
+            cqsp::common::systems::science::AddScienceResearch(universe, lab, research, progress);
+    });
+}
+
 void cqsp::scripting::LoadFunctions(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
     FunctionCivilizationGen(universe, script_engine);
     FunctionCivilizations(universe, script_engine);
@@ -375,4 +392,5 @@ void cqsp::scripting::LoadFunctions(cqsp::common::Universe& universe, cqsp::scri
     FunctionEvent(universe, script_engine);
     FunctionShips(universe, script_engine);
     FunctionResource(universe, script_engine);
+    FunctionScience(universe, script_engine);
 }

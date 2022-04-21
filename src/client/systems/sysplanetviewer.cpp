@@ -295,6 +295,13 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTab() {
 
     int height = 300;
     ImGui::TextFmt("Factories: {}", city_industry.industries.size());
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        for (auto& at : city_industry.industries) {
+            ImGui::TextFmt("{}", gui::GetEntityType(GetUniverse(), at));
+        }
+        ImGui::EndTooltip();
+    }
     ImGui::BeginChild("salepanel", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
                                  ImGui::GetStyle().ItemSpacing.y, height), true,
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);

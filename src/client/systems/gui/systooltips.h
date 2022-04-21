@@ -28,6 +28,7 @@ namespace systems {
 namespace gui {
 std::string GetName(cqsp::common::Universe &universe, entt::entity entity);
 void EntityTooltip(cqsp::common::Universe&, entt::entity);
+std::string GetEntityType(cqsp::common::Universe&, entt::entity);
 }
 }
 }
