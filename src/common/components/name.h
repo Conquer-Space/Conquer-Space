@@ -25,16 +25,19 @@ namespace cqsp {
 namespace common {
 namespace components {
 struct Name {
+    Name(const std::string& name) : name{name} {}
     std::string name;
     operator const std::string&() const { return name; }
 };
 
 struct Identifier {
+    Identifier(const std::string& identifier) : identifier{identifier} {}
     std::string identifier;
     operator const std::string&() const { return identifier; }
 };
 
 struct Description {
+    Description(const std::string& identifier) : description{description} {}
     std::string description;
 };
 }  // namespace components
