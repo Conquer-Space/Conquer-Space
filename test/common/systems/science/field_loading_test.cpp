@@ -28,21 +28,24 @@ TEST(Science_FieldTest, FieldLoadingTest) {
     [
         {
             name: Science
+            identifier: science
         }
         {
             name: Physics
+            identifier: physics
             parent: [
-                Science
+                science
             ]
         }
         {
             name: Chemistry
             description: Testing
+            identifier: chemistry
             parent: [
-                Science
+                science
             ]
             adjacent: [
-                Physics
+                physics
             ]
         }
     ]
@@ -54,16 +57,21 @@ TEST(Science_FieldTest, FieldLoadingTest) {
     namespace cqspc = cqsp::common::components;
     cqsp::common::systems::science::LoadFields(universe, hjson);
     // Look for parents
-    entt::entity chemistry = universe.fields["Chemistry"];
+    ASSERT_EQ(universe.fields.size(), 3);
+    ASSERT_NE(universe.fields.find("chemistry"), universe.fields.end());
+
+    entt::entity chemistry = universe.fields["chemistry"];
     auto& field_comp = universe.get<cqspc::science::Field>(chemistry);
 
     ASSERT_EQ(field_comp.parents.size(), 1);
 
     // Ensure the name is science
-    ASSERT_EQ(universe.get<cqspc::Name>(field_comp.parents[0]).name, "Science");
+    ASSERT_TRUE(universe.any_of<cqspc::Name>(field_comp.parents[0]));
+    EXPECT_EQ(universe.get<cqspc::Name>(field_comp.parents[0]).name, "Science");
 
     // Check adjacents
-    ASSERT_EQ(universe.get<cqspc::Name>(field_comp.adjacent[0]).name, "Physics");
+    ASSERT_TRUE(universe.any_of<cqspc::Name>(field_comp.adjacent[0]));
+    EXPECT_EQ(universe.get<cqspc::Name>(field_comp.adjacent[0]).name, "Physics");
 
-    ASSERT_EQ(universe.get<cqspc::Description>(chemistry).description, "Testing");
+    EXPECT_EQ(universe.get<cqspc::Description>(chemistry).description, "Testing");
 }
