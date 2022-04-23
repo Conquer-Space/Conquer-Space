@@ -26,9 +26,9 @@ namespace cqsp {
 namespace client {
 namespace systems {
 namespace gui {
-std::string GetName(cqsp::common::Universe &universe, entt::entity entity);
-void EntityTooltip(cqsp::common::Universe&, entt::entity);
-std::string GetEntityType(cqsp::common::Universe&, entt::entity);
+std::string GetName(const cqsp::common::Universe &universe, entt::entity entity);
+void EntityTooltip(const cqsp::common::Universe&, entt::entity);
+std::string GetEntityType(const cqsp::common::Universe&, entt::entity);
 }
 }
 }

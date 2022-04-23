@@ -28,8 +28,6 @@ void cqsp::common::systems::SysScienceLab::DoSystem() {
         // Get the science progress, and add to it, somehow
         auto& science_progress = GetUniverse().get_or_emplace<components::science::ScientificProgress>(entity);
         // Progress science
-        for (const auto& field : lab.science_contribution) {
-            science_progress.science_progress[field.first] += field.second * Interval();
-        }
+        science_progress.science_progress.MultiplyAdd(lab.science_contribution, Interval());
     }
 }

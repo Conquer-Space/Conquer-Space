@@ -23,6 +23,7 @@
 
 #include "common/components/name.h"
 #include "common/components/science.h"
+#include "common/systems/loading/loadutil.h"
 
 struct FieldTemplate {
     std::vector<std::string> parent;
@@ -39,15 +40,22 @@ void cqsp::common::systems::science::LoadFields(Universe& universe,
         // Get the name
         entt::entity field = universe.create();
         auto &field_comp = universe.emplace<components::science::Field>(field);
-        std::string name = val["name"].to_string();
-        universe.emplace<components::Name>(field, name);
+        loading::LoadName(universe, field, val);
+        if (!loading::LoadIdentifier(universe, field, val)) {
+            universe.destroy(field);
+            SPDLOG_INFO("No field with {}", Hjson::Marshal(val));
+            continue;
+        }
+
+        std::string identifier = universe.get<components::Identifier>(field);
+
         auto& field_template = universe.emplace<FieldTemplate>(field);
 
         if (val["parent"].type() == Hjson::Type::Vector) {
             for (int j = 0; j < val["parent"].size(); j++) {
                 std::string parent_name = val["parent"][j];
-                if (parent_name == name) {
-                    SPDLOG_WARN("Parent for {} cannot be itself!", name);
+                if (parent_name == identifier) {
+                    SPDLOG_WARN("Parent for {} cannot be itself!", identifier);
                     continue;
                 }
                 field_template.parent.push_back(parent_name);
@@ -57,22 +65,22 @@ void cqsp::common::systems::science::LoadFields(Universe& universe,
             for (int j = 0; j < val["adjacent"].size(); j++) {
                 std::string parent_name = val["adjacent"][j];
                 // Adjacent cannot be itself
-                if (parent_name == name) {
-                    SPDLOG_WARN("Adjacent for {} cannot be itself!", name);
+                if (parent_name == identifier) {
+                    SPDLOG_WARN("Adjacent for {} cannot be itself!", identifier);
                     continue;
                 }
                 field_template.adjacent.push_back(parent_name);
            }
         }
-        if (universe.science.find(name) != universe.science.end()) {
-            SPDLOG_WARN("Field {} already exists, overwriting", name);
+        if (universe.fields.find(identifier) != universe.fields.end()) {
+            SPDLOG_WARN("Field {} already exists, overwriting", identifier);
         }
 
         // Description
         if (val["description"].type() == Hjson::Type::String) {
             universe.emplace<components::Description>(field, val["description"].to_string());
         }
-        universe.science[name] = field;
+        universe.fields[identifier] = field;
     }
 
     auto view = universe.view<FieldTemplate>();
@@ -81,18 +89,18 @@ void cqsp::common::systems::science::LoadFields(Universe& universe,
         auto& field = universe.get<components::science::Field>(entity);
         for (const auto& parent_name : field_template.parent) {
             // If it does not contain, warn
-            if (universe.science.find(parent_name) == universe.science.end()) {
+            if (universe.fields.find(parent_name) == universe.fields.end()) {
                 SPDLOG_WARN("No field {} exists", parent_name);
                 continue;
             }
-            field.parents.push_back(universe.science[parent_name]);
+            field.parents.push_back(universe.fields[parent_name]);
         }
         for (const auto& parent_name : field_template.adjacent) {
-            if (universe.science.find(parent_name) == universe.science.end()) {
+            if (universe.fields.find(parent_name) == universe.fields.end()) {
                 SPDLOG_WARN("No field {} exists", parent_name);
                 continue;
             }
-            field.adjacent.push_back(universe.science[parent_name]);
+            field.adjacent.push_back(universe.fields[parent_name]);
         }
     }
     universe.clear<FieldTemplate>();

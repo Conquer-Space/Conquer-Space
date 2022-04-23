@@ -21,5 +21,6 @@
 
 namespace cqsp::common::systems::science {
 entt::entity CreateLab(Universe& universe);
-void AddScienceResearch(Universe& universe, entt::entity lab, entt::entity research, double progress);
-}
+void AddScienceResearch(Universe& universe, entt::entity lab,
+                        entt::entity research, double progress);
+}  // namespace cqsp::common::systems::science

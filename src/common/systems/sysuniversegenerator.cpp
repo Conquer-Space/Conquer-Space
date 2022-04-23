@@ -49,6 +49,8 @@ void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::
     script_engine["goods"] = universe.goods;
     script_engine["recipes"] = universe.recipes;
     script_engine["terrain_colors"] = universe.terrain_data;
+    script_engine["fields"] = universe.fields;
+
     // Create player
     auto player = universe.create();
     universe.emplace<cqspc::Civilization>(player);

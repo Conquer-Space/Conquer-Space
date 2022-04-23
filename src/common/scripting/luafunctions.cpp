@@ -377,7 +377,7 @@ void FunctionScience(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
     });
 
     REGISTER_FUNCTION("add_science", [&](entt::entity lab, entt::entity research, double progress) {
-            cqsp::common::systems::science::AddScienceResearch(universe, lab, research, progress);
+         cqsp::common::systems::science::AddScienceResearch(universe, lab, research, progress);
     });
 }
 

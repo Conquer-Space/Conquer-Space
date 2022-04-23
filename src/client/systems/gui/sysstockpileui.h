@@ -26,7 +26,7 @@
 namespace cqsp {
 namespace client {
 namespace systems {
-void DrawLedgerTable(const std::string &name, const cqsp::common::Universe&,
+bool DrawLedgerTable(const std::string &name, const cqsp::common::Universe&,
                         const cqsp::common::components::ResourceLedger& ledger);
 }  // namespace systems
 }  // namespace client

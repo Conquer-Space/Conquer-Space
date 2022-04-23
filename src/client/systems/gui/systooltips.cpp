@@ -37,7 +37,7 @@
 #include "engine/gui.h"
 
 using cqsp::common::Universe;
-std::string cqsp::client::systems::gui::GetName(Universe& universe, entt::entity entity) {
+std::string cqsp::client::systems::gui::GetName(const Universe& universe, entt::entity entity) {
     namespace cqspc = cqsp::common::components;
     if (universe.all_of<cqspc::Name>(entity)) {
         return universe.get<cqspc::Name>(entity);
@@ -49,7 +49,7 @@ std::string cqsp::client::systems::gui::GetName(Universe& universe, entt::entity
 }
 
 namespace cqsp::client::systems::gui {
-void RenderEntityType(Universe& universe, entt::entity entity) {
+void RenderEntityType(const Universe& universe, entt::entity entity) {
     std::string text = GetEntityType(universe, entity);
     if (text == "Player") {
         ImGui::TextColored(ImColor(252, 186, 3), "Player");
@@ -59,7 +59,7 @@ void RenderEntityType(Universe& universe, entt::entity entity) {
     }
 }
 
-std::string GetEntityType(cqsp::common::Universe& universe, entt::entity entity) {
+std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity entity) {
     namespace cqspc = cqsp::common::components;
     // Then get type of entity
     if (universe.all_of<cqspc::bodies::Star>(entity)) {
@@ -97,7 +97,7 @@ std::string GetEntityType(cqsp::common::Universe& universe, entt::entity entity)
 }
 }  // namespace cqsp::client::systems::gui
 
-void ResourceTooltipSection(Universe &universe, entt::entity entity) {
+void ResourceTooltipSection(const Universe &universe, entt::entity entity) {
     namespace cqspc = cqsp::common::components;
     //TODO(EhWhoAmI): Set these text red, but too lazy to do it for now
     if (universe.all_of<cqspc::FailedResourceTransfer>(entity)) {
@@ -140,7 +140,7 @@ void ResourceTooltipSection(Universe &universe, entt::entity entity) {
 }
 
 // TODO(EhWhoAmI): Organize this so that it makes logical sense and order.
-void cqsp::client::systems::gui::EntityTooltip(Universe &universe, entt::entity entity) {
+void cqsp::client::systems::gui::EntityTooltip(const Universe &universe, entt::entity entity) {
     if (!ImGui::IsItemHovered()) {
         return;
     }

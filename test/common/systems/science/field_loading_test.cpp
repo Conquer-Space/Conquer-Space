@@ -54,7 +54,7 @@ TEST(Science_FieldTest, FieldLoadingTest) {
     namespace cqspc = cqsp::common::components;
     cqsp::common::systems::science::LoadFields(universe, hjson);
     // Look for parents
-    entt::entity chemistry = universe.science["Chemistry"];
+    entt::entity chemistry = universe.fields["Chemistry"];
     auto& field_comp = universe.get<cqspc::science::Field>(chemistry);
 
     ASSERT_EQ(field_comp.parents.size(), 1);

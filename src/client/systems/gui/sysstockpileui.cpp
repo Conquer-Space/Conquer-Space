@@ -22,15 +22,17 @@
 #include "common/util/utilnumberdisplay.h"
 #include "engine/gui.h"
 
+#include "client/systems/gui/systooltips.h"
+
 using cqsp::common::Universe;
 using cqsp::common::components::Identifier;
 using cqsp::util::LongToHumanString;
 using cqsp::common::components::ResourceLedger;
-void cqsp::client::systems::DrawLedgerTable(const std::string &name, const Universe &universe,
+bool cqsp::client::systems::DrawLedgerTable(const std::string &name, const Universe &universe,
                                                                         const ResourceLedger& ledger) {
     if (ledger.empty()) {
         ImGui::Text("Empty ledger");
-        return;
+        return false;
     }
     if (ImGui::BeginTable(name.c_str(), 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Good");
@@ -40,10 +42,11 @@ void cqsp::client::systems::DrawLedgerTable(const std::string &name, const Unive
                                     iterator != ledger.end(); iterator++) {
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
-            ImGui::TextFmt("{}", universe.get<Identifier>(iterator->first));
+            ImGui::TextFmt("{}", gui::GetName(universe, iterator->first));
             ImGui::TableSetColumnIndex(1);
             ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(iterator->second)));
         }
         ImGui::EndTable();
     }
+    return true;
 }

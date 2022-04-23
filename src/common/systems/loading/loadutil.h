@@ -16,28 +16,16 @@
 */
 #pragma once
 
-#include <vector>
-#include <entt/entt.hpp>
+#include <hjson.h>
+#include <string>
 
-#include "common/components/resource.h"
+#include "common/universe.h"
 
-namespace cqsp::common::components::science {
-struct Field {
-    std::vector<entt::entity> parents;
-    std::vector<entt::entity> adjacent;
-};
-
-// A scientific research
-struct Science {
-    int difficulty;
-    std::vector<entt::entity> fields;
-};
-
-struct Lab {
-    ResourceLedger science_contribution;
-};
-
-struct ScientificProgress {
-    ResourceLedger science_progress;
-};
-}  // namespace cqsp::common::components::science
+namespace cqsp::common::systems::loading {
+/// <summary>
+/// Returns true if name exists
+/// </summary>
+/// <returns></returns>
+bool LoadName(Universe& universe, const entt::entity &entity, Hjson::Value& value);
+bool LoadIdentifier(Universe& universe, const entt::entity &entity, Hjson::Value& value);
+}

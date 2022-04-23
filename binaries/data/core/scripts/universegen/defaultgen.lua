@@ -160,11 +160,7 @@ generators:insert({
 
             place_factory_on_market(market, city, "consumer_good_manufacturing", 100)
 
-            print("add lab")
             -- Steel needed
-            core.add_industry(city, core.create_lab())
-            print("add lab")
-
             place_factory_on_market(market, city, "steel_forging", 100)
             -- place_factory_on_market(market, city, "concrete_manufacturing", 300)
             core.attach_market(market, core.create_mine(city, goods["copper"], 1, 200))
@@ -175,6 +171,10 @@ generators:insert({
             -- add_power_plant(city, 1000)
             -- Add farms
             core.attach_market(market, core.create_farm(city, goods["food"], 1, 300))
+            local lab = core.create_lab()
+            print(fields["geometry"])
+            core.add_science(lab, fields["geometry"], 10)
+            core.add_industry(city, lab)
         end
     end
 })
