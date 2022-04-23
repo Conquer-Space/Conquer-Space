@@ -18,6 +18,8 @@
 
 #include <hjson.h>
 
+#include <iostream>
+
 #include "common/systems/science/fields.h"
 #include "common/components/science.h"
 #include "common/components/name.h"
@@ -54,6 +56,7 @@ TEST(Science_FieldTest, FieldLoadingTest) {
     // Load into hjson
     Hjson::Value hjson = Hjson::Unmarshal(val);
     cqsp::common::Universe universe;
+    std::cout << val << std::endl;
     namespace cqspc = cqsp::common::components;
     cqsp::common::systems::science::LoadFields(universe, hjson);
     // Look for parents
