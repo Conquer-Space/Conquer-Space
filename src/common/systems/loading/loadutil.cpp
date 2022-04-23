@@ -16,21 +16,23 @@
 */
 #include "common/systems/loading/loadutil.h"
 
+#include <iostream>
 #include "common/components/name.h"
 
 bool cqsp::common::systems::loading::LoadName(Universe& universe,
                                               const entt::entity &entity,
-                                              Hjson::Value& value) {
+                                              const Hjson::Value& value) {
     if (value["name"].type() != Hjson::Type::String) {
         return false;
     }
+    std::cout << "Loading name" << std::endl;
     std::string identifier = value["name"].to_string();
     universe.emplace_or_replace<components::Name>(entity, identifier);
 }
 
 bool cqsp::common::systems::loading::LoadIdentifier(Universe& universe,
                                                     const entt::entity &entity,
-                                                    Hjson::Value& value) {
+                                                    const Hjson::Value& value) {
        if (value["identifier"].type() != Hjson::Type::String) {
         return false;
     }

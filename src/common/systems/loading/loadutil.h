@@ -26,6 +26,6 @@ namespace cqsp::common::systems::loading {
 /// Returns true if name exists
 /// </summary>
 /// <returns></returns>
-bool LoadName(Universe& universe, const entt::entity &entity, Hjson::Value& value);
-bool LoadIdentifier(Universe& universe, const entt::entity &entity, Hjson::Value& value);
+bool LoadName(Universe& universe, const entt::entity &entity, const Hjson::Value& value);
+bool LoadIdentifier(Universe& universe, const entt::entity &entity, const Hjson::Value& value);
 }  // namespace cqsp::common::systems::loading
