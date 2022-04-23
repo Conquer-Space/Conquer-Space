@@ -64,7 +64,7 @@ jobs:
 
     - name: Build Conquer Space
       run: |
-        cmake --build build --parallel --config ${{ matrix.config }} -DTRACY_DISABLED=TRUE
+        cmake --build build --parallel --config ${{ matrix.config }}
 
     - name: Tests
       run: |
@@ -99,7 +99,7 @@ jobs:
 
     - name: Build Conquer Space
       run: |
-        cmake --build build --parallel --config ${{ matrix.config }} -DTRACY_DISABLED=TRUE
+        cmake --build build --parallel --config ${{ matrix.config }}
 
     - name: Run Tests
       run: ctest -V --schedule-random --progress --output-on-failure --parallel --no-tests error --build-config ${{ matrix.config }} --test-dir build/test
