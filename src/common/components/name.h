@@ -25,22 +25,17 @@ namespace cqsp {
 namespace common {
 namespace components {
 struct Name {
-    Name() = default;
-    Name(const std::string& name) : name{name} {}
     std::string name;
-    operator const std::string&() const { return name; }
+    operator std::string&() { return name; }
 };
 
 struct Identifier {
-    Identifier() = default;
-    Identifier(const std::string& identifier) : identifier{identifier} {}
     std::string identifier;
-    operator const std::string&() const { return identifier; }
+    operator std::string&() { return identifier; }
 };
 
+
 struct Description {
-    Description() = default;
-    Description(const std::string& identifier) : description{description} {}
     std::string description;
 };
 }  // namespace components
@@ -50,6 +45,8 @@ struct Description {
 // Various formatters
 template <>
 struct fmt::formatter<cqsp::common::components::Name> {
+    char presentation = 'q';
+
     constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin()) {
         auto it = ctx.begin(), end = ctx.end();
         return it;
@@ -63,6 +60,8 @@ struct fmt::formatter<cqsp::common::components::Name> {
 
 template <>
 struct fmt::formatter<cqsp::common::components::Identifier> {
+    char presentation = 'q';
+
     constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin()) {
         auto it = ctx.begin(), end = ctx.end();
         return it;
