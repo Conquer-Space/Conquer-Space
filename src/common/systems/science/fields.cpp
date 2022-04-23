@@ -31,7 +31,7 @@ struct FieldTemplate {
     std::vector<std::string> parent;
     std::vector<std::string> adjacent;
 };
-
+#include <iostream>
 void cqsp::common::systems::science::LoadFields(Universe& universe,
                                                 Hjson::Value& hjson) {
     for (int i = 0; i < hjson.size(); i++) {
@@ -42,15 +42,17 @@ void cqsp::common::systems::science::LoadFields(Universe& universe,
         // Get the name
         entt::entity field = universe.create();
         auto &field_comp = universe.emplace<components::science::Field>(field);
+        std::cout << "load make field" << std::endl;
         loading::LoadName(universe, field, val);
         if (!loading::LoadIdentifier(universe, field, val)) {
+            std::cout << "load identifier" << std::endl;
             universe.destroy(field);
             SPDLOG_INFO("No field with {}", Hjson::Marshal(val));
             continue;
         }
 
         std::string identifier = universe.get<components::Identifier>(field);
-
+        std::cout << "Get identifier" << std::endl;
         auto& field_template = universe.emplace<FieldTemplate>(field);
 
         if (val["parent"].type() == Hjson::Type::Vector) {
