@@ -37,7 +37,10 @@ set_target_properties(
 set_target_properties(hjson libnoise glad stb PROPERTIES FOLDER "Libs")
 
 add_library(Tracy STATIC tracy/tracy/TracyClient.cpp)
-target_compile_definitions(Tracy PRIVATE TRACY_ENABLE)
+if (NOT $ENV{TRACY_DISABLED})
+    message(" -- Enabling Tracy")
+    target_compile_definitions(Tracy PRIVATE TRACY_ENABLE)
+endif()
 target_include_directories(Tracy PUBLIC tracy)
 
 add_subdirectory(lunasvg)
