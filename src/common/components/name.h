@@ -26,12 +26,12 @@ namespace common {
 namespace components {
 struct Name {
     std::string name;
-    operator std::string&() { return name; }
+    operator const std::string&() const { return name; }
 };
 
 struct Identifier {
     std::string identifier;
-    operator std::string&() { return identifier; }
+    operator const std::string&() const { return identifier; }
 };
 
 
