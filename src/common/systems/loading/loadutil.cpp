@@ -28,7 +28,8 @@ bool cqsp::common::systems::loading::LoadName(Universe& universe,
     std::cout << "Loading name" << std::endl;
     std::string identifier = value["name"].to_string();
     std::cout << "Loading name2" << std::endl;
-
+    std::cout << identifier << std::endl;
+    std::cout << "emnd id" << std::endl;
     universe.emplace_or_replace<components::Name>(entity, identifier);
 }
 
