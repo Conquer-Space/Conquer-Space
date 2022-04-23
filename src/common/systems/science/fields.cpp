@@ -44,6 +44,7 @@ void cqsp::common::systems::science::LoadFields(Universe& universe,
         auto &field_comp = universe.emplace<components::science::Field>(field);
         std::cout << "load make field" << std::endl;
         loading::LoadName(universe, field, val);
+        std::cout << "Loaded name" << std::endl;
         if (!loading::LoadIdentifier(universe, field, val)) {
             std::cout << "load identifier" << std::endl;
             universe.destroy(field);
