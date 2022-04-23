@@ -16,10 +16,12 @@
 */
 #include "common/systems/science/fields.h"
 
+#include <spdlog/spdlog.h>
+
 #include <map>
 #include <iostream>
-
-#include <spdlog/spdlog.h>
+#include <string>
+#include <vector>
 
 #include "common/components/name.h"
 #include "common/components/science.h"

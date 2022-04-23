@@ -33,8 +33,7 @@ void cqsp::client::systems::SysFieldViewer::DoUI(int delta_time) {
     for (entt::entity entity : view) {
         if (ImGui::Selectable(GetUniverse()
                                   .get<common::components::Name>(entity)
-                                  .name.c_str(),
-                              selected_tech == entity)) {   
+                                  .name.c_str(), selected_tech == entity)) {
             selected_tech = entity;
         }
     }

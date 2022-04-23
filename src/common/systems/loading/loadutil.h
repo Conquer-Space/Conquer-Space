@@ -28,4 +28,4 @@ namespace cqsp::common::systems::loading {
 /// <returns></returns>
 bool LoadName(Universe& universe, const entt::entity &entity, Hjson::Value& value);
 bool LoadIdentifier(Universe& universe, const entt::entity &entity, Hjson::Value& value);
-}
+}  // namespace cqsp::common::systems::loading

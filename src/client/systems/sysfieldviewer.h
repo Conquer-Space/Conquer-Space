@@ -34,7 +34,6 @@ class SysFieldViewer : public SysUserInterface {
     void DoUpdate(int delta_time);
 
  private:
-
     void FieldInformationWindow();
     entt::entity selected_tech;
 };

@@ -21,7 +21,7 @@
 void cqsp::common::systems::SysScienceLab::DoSystem() {
     auto view = GetUniverse().view<components::science::Lab>();
     // Add to the science
-    for (entt::entity entity : view){
+    for (entt::entity entity : view) {
         // Add to the scientific progress of the area, I guess
         auto& lab = GetUniverse().get<components::science::Lab>(entity);
         // Progress the science, I guess
