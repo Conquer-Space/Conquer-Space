@@ -16,7 +16,6 @@
 */
 #include "common/systems/loading/loadutil.h"
 
-#include <iostream>
 #include "common/components/name.h"
 
 bool cqsp::common::systems::loading::LoadName(Universe& universe,
