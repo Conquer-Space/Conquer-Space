@@ -30,7 +30,9 @@ bool cqsp::common::systems::loading::LoadName(Universe& universe,
     std::cout << "Loading name2" << std::endl;
     std::cout << identifier << std::endl;
     std::cout << "emnd id" << std::endl;
-    universe.emplace<components::Name>(entity, identifier);
+    auto& name = universe.emplace<components::Name>(entity);
+    name.name = identifier;
+    std::cout << "EMplaced name" << std::endl;
 }
 
 bool cqsp::common::systems::loading::LoadIdentifier(Universe& universe,
@@ -40,5 +42,6 @@ bool cqsp::common::systems::loading::LoadIdentifier(Universe& universe,
         return false;
     }
     std::string identifier = value["identifier"].to_string();
-    universe.emplace_or_replace<components::Identifier>(entity, identifier);
+    auto& identifier_comp = universe.emplace<components::Identifier>(entity);
+    identifier_comp.identifier = identifier;
 }

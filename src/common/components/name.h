@@ -34,7 +34,6 @@ struct Identifier {
     operator const std::string&() const { return identifier; }
 };
 
-
 struct Description {
     std::string description;
 };
