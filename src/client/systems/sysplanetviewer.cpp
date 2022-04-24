@@ -44,6 +44,7 @@
 #include "common/components/ships.h"
 #include "common/components/infrastructure.h"
 #include "common/components/history.h"
+#include "common/components/science.h"
 
 #include "common/util/utilnumberdisplay.h"
 #include "common/systems/actions/factoryconstructaction.h"
@@ -187,6 +188,10 @@ void cqsp::client::systems::SysPlanetInformation::CityInformationPanel() {
                 InfrastructureTab();
                 ImGui::EndTabItem();
             }
+            if (ImGui::BeginTabItem("Science")) {
+                ScienceTab();
+                ImGui::EndTabItem();
+            }
             if (GetUniverse().any_of<cqspc::infrastructure::SpacePort>(selected_city_entity)) {
                 if (ImGui::BeginTabItem("Space Port")) {
                     SpacePortTab();
@@ -295,6 +300,13 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTab() {
 
     int height = 300;
     ImGui::TextFmt("Factories: {}", city_industry.industries.size());
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        for (auto& at : city_industry.industries) {
+            ImGui::TextFmt("{}", gui::GetEntityType(GetUniverse(), at));
+        }
+        ImGui::EndTooltip();
+    }
     ImGui::BeginChild("salepanel", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
                                  ImGui::GetStyle().ItemSpacing.y, height), true,
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
@@ -743,6 +755,28 @@ void cqsp::client::systems::SysPlanetInformation::InfrastructureTab() {
             power_plant_changing = plant;
         }
     }
+}
+
+void cqsp::client::systems::SysPlanetInformation::ScienceTab() {
+    namespace cqspc = cqsp::common::components;
+    if (!GetUniverse().valid(selected_planet)) {
+        return;
+    }
+    auto &city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
+    ImGui::Text("Science");
+    // Get the science labs
+    cqspc::ResourceLedger led;
+    for (int i = 0; i < city_industry.industries.size(); i++) {
+        entt::entity industry = city_industry.industries[i];
+        if (GetUniverse().any_of<cqspc::science::Lab>(industry)) {
+            ImGui::Text("Lab %d", i);
+            auto& lab = GetUniverse().get<cqspc::science::Lab>(industry);
+            led += lab.science_contribution;
+        }
+    }
+    // Get all the combined science
+    ImGui::Text("Science Contribution");
+    systems::DrawLedgerTable("science_contrib_table", GetUniverse(), led);
 }
 
 void cqsp::client::systems::SysPlanetInformation::MarketInformationTooltipContent() {

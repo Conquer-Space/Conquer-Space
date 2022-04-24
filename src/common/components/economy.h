@@ -127,7 +127,7 @@ struct Wallet {
         return *this;
     }
 
-    operator double() { return balance; }
+    operator double() const { return balance; }
 
     Wallet& operator=(double _balance) {
         change += (_balance - balance);
@@ -138,7 +138,7 @@ struct Wallet {
         return *this;
     }
 
-    double GetBalance() { return balance; }
+    double GetBalance() const { return balance; }
 
     void Reset() {
         change = 0;

@@ -171,6 +171,10 @@ generators:insert({
             -- add_power_plant(city, 1000)
             -- Add farms
             core.attach_market(market, core.create_farm(city, goods["food"], 1, 300))
+            local lab = core.create_lab()
+            print(fields["geometry"])
+            core.add_science(lab, fields["geometry"], 10)
+            core.add_industry(city, lab)
         end
     end
 })

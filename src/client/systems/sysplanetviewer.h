@@ -59,6 +59,7 @@ class SysPlanetInformation : public SysUserInterface {
     void FactoryInformationPanel();
     void SpacePortTab();
     void InfrastructureTab();
+    void ScienceTab();
     void MarketInformationTooltipContent();
     void ConstructionConfirmationPanel();
 

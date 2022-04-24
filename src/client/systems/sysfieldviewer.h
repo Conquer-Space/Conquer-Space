@@ -16,36 +16,27 @@
 */
 #pragma once
 
-#include <map>
-#include <string>
-#include <memory>
-
 #include <entt/entt.hpp>
 
-#include "common/stardate.h"
-#include "common/util/random/random.h"
-#include "common/systems/names/namegenerator.h"
+#include "client/systems/sysgui.h"
+#include "engine/application.h"
 
 namespace cqsp {
-namespace common {
-class Universe : public entt::registry {
+namespace client {
+namespace systems {
+class SysFieldViewer : public SysUserInterface {
  public:
-    Universe();
-    components::StarDate date;
+    explicit SysFieldViewer(cqsp::engine::Application& app)
+        : SysUserInterface(app) {}
 
-    std::map<std::string, entt::entity> goods;
-    std::map<std::string, entt::entity> recipes;
-    std::map<std::string, entt::entity> terrain_data;
-    std::map<std::string, systems::names::NameGenerator> name_generators;
-    std::map<std::string, entt::entity> fields;
+    void Init();
+    void DoUI(int delta_time);
+    void DoUpdate(int delta_time);
 
-    void EnableTick() { to_tick = true; }
-    void DisableTick() { to_tick = false; }
-    bool ToTick() { return to_tick; }
-
-    std::unique_ptr<cqsp::common::util::IRandom> random;
  private:
-    bool to_tick = false;
+    void FieldInformationWindow();
+    entt::entity selected_tech;
 };
-}  // namespace common
+}  // namespace systems
+}  // namespace client
 }  // namespace cqsp

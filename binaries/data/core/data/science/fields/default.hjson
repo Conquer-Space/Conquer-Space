@@ -1,0 +1,56 @@
+[
+    {
+        name: Science
+        identifier: science
+        description: Science is a systematic enterprise that builds and organizes knowledge in the form of testable explanations and predictions about the universe
+    }
+    {
+        name: Physics
+        identifier: physics
+        description: Physics is the study of matter, its motion, and its behavior through space and time.
+        parent: [
+            science
+        ]
+        adjacent: [
+            mathematics
+            algebra
+        ]
+    }
+    {
+        name: Nuclear Physics
+        identifier: nuke_physics
+        parent: [
+            physics
+        ]
+        adjacent: []
+    }
+    {
+        name: Mathematics
+        identifier: mathematics
+        parent: []
+    }
+    {
+        name: Algebra
+        identifier: algebra
+        parent: [
+            mathematics
+        ]
+    }
+    {
+        name: Calculus
+        identifier: calculus
+        parent: [
+            algebra
+        ]
+    }
+    {
+        name: Geometry
+        identifier: geometry
+        parent: [
+            mathematics
+        ]
+        adjacent: [
+            calculus
+        ]
+    }
+]

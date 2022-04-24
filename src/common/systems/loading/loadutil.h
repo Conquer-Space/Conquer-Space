@@ -16,21 +16,16 @@
 */
 #pragma once
 
+#include <hjson.h>
 #include <string>
-
-#include <entt/entt.hpp>
 
 #include "common/universe.h"
 
-namespace cqsp {
-namespace client {
-namespace systems {
-namespace gui {
-std::string GetName(const cqsp::common::Universe &universe,
-                    entt::entity entity);
-void EntityTooltip(const cqsp::common::Universe &, entt::entity);
-std::string GetEntityType(const cqsp::common::Universe &, entt::entity);
-}  // namespace gui
-}  // namespace systems
-}  // namespace client
-}  // namespace cqsp
+namespace cqsp::common::systems::loading {
+/// <summary>
+/// Returns true if name exists
+/// </summary>
+/// <returns></returns>
+bool LoadName(Universe& universe, const entt::entity &entity, const Hjson::Value& value);
+bool LoadIdentifier(Universe& universe, const entt::entity &entity, const Hjson::Value& value);
+}  // namespace cqsp::common::systems::loading

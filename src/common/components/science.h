@@ -16,21 +16,28 @@
 */
 #pragma once
 
-#include <string>
-
+#include <vector>
 #include <entt/entt.hpp>
 
-#include "common/universe.h"
+#include "common/components/resource.h"
 
-namespace cqsp {
-namespace client {
-namespace systems {
-namespace gui {
-std::string GetName(const cqsp::common::Universe &universe,
-                    entt::entity entity);
-void EntityTooltip(const cqsp::common::Universe &, entt::entity);
-std::string GetEntityType(const cqsp::common::Universe &, entt::entity);
-}  // namespace gui
-}  // namespace systems
-}  // namespace client
-}  // namespace cqsp
+namespace cqsp::common::components::science {
+struct Field {
+    std::vector<entt::entity> parents;
+    std::vector<entt::entity> adjacent;
+};
+
+// A scientific research
+struct Science {
+    int difficulty;
+    std::vector<entt::entity> fields;
+};
+
+struct Lab {
+    ResourceLedger science_contribution;
+};
+
+struct ScientificProgress {
+    ResourceLedger science_progress;
+};
+}  // namespace cqsp::common::components::science
