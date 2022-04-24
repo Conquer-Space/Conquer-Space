@@ -25,14 +25,10 @@ bool cqsp::common::systems::loading::LoadName(Universe& universe,
     if (value["name"].type() != Hjson::Type::String) {
         return false;
     }
-    std::cout << "Loading name" << std::endl;
     std::string identifier = value["name"].to_string();
-    std::cout << "Loading name2" << std::endl;
-    std::cout << identifier << std::endl;
-    std::cout << "emnd id" << std::endl;
     auto& name = universe.emplace<components::Name>(entity);
     name.name = identifier;
-    std::cout << "EMplaced name" << std::endl;
+    return true;
 }
 
 bool cqsp::common::systems::loading::LoadIdentifier(Universe& universe,
@@ -44,4 +40,5 @@ bool cqsp::common::systems::loading::LoadIdentifier(Universe& universe,
     std::string identifier = value["identifier"].to_string();
     auto& identifier_comp = universe.emplace<components::Identifier>(entity);
     identifier_comp.identifier = identifier;
+    return true;
 }
