@@ -37,4 +37,5 @@ add_library(cqsp-client ${SOURCE_FILES})
 target_link_libraries(cqsp-client PUBLIC
     cqsp-core
     cqsp-engine
+    imgui_node_editor
 )

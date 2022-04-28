@@ -25,7 +25,6 @@ add_subdirectory(libnoise)
 # Glad
 add_subdirectory(cqsp-glad)
 
-
 # Stb
 add_library(stb STATIC stb/stb_vorbis.c)
 target_include_directories(stb SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/stb)
@@ -33,8 +32,6 @@ target_include_directories(stb SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
 set_target_properties(
     stb PROPERTIES CXX_CLANG_TIDY ""
 )
-
-set_target_properties(hjson libnoise glad stb PROPERTIES FOLDER "Libs")
 
 add_library(Tracy STATIC tracy/tracy/TracyClient.cpp)
 target_compile_definitions(Tracy PRIVATE TRACY_ENABLE)
@@ -45,3 +42,5 @@ add_subdirectory(lunasvg)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 set(ENABLE_SVG_PLUGIN ON CACHE BOOL "" FORCE)
 add_subdirectory(RmlUi)
+
+set_target_properties(hjson libnoise glad stb RmlCore RmlDebugger Tracy lunasvg imgui_node_editor PROPERTIES FOLDER "Libs")
