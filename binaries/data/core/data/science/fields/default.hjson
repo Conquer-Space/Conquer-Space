@@ -53,4 +53,19 @@
             calculus
         ]
     }
+    {
+        name: Engineering
+        identifier: engineering
+        adjacent: [
+            physics
+            mathematics
+        ]
+    }
+    {
+        name: Number Theory
+        identifier: number_theory
+        parent: [
+            mathematics
+        ]
+    }
 ]
