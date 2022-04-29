@@ -18,6 +18,7 @@
 
 #include "common/components/science.h"
 #include "common/components/name.h"
+#include "client/systems/gui/systooltips.h"
 
 void cqsp::client::systems::SysFieldViewer::Init() {}
 
@@ -76,3 +77,55 @@ void cqsp::client::systems::SysFieldViewer::FieldInformationWindow() {
         ImGui::Text(GetUniverse().get<common::components::Name>(f).name.c_str());
     }
 }
+
+void cqsp::client::systems::SysFieldNodeViewer::Init() {}
+
+void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
+    // View Fields
+    ed::Begin("Field Viewer");
+    int uniqueId = 1;
+    std::map<entt::entity, std::tuple<int, int, int>> map;
+
+    auto fields = GetUniverse().view<common::components::science::Field>();
+    // Start drawing nodes
+    for (const entt::entity& entity : fields) {
+        ed::BeginNode(uniqueId++);
+        ImGui::Text(gui::GetName(GetUniverse(), entity).c_str());
+        int a = uniqueId++;
+        ed::BeginPin(a, ed::PinKind::Input);
+        ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Child of");
+        ed::EndPin();
+
+        int b = uniqueId++;
+        ed::BeginPin(b, ed::PinKind::Output);
+            ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Adjacent");
+        ed::EndPin();
+
+        int c = uniqueId++;
+        ImGui::SameLine();
+        ed::BeginPin(c, ed::PinKind::Output);
+            ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Parent of");
+        ed::EndPin();
+        map[entity] = std::make_tuple(a, b, c);
+        ed::EndNode();
+    }
+    // Draw more nodes
+    for (const entt::entity& entity : fields) {
+        auto& field = GetUniverse().get<common::components::science::Field>(entity);
+        const auto& current_tup = map[entity];
+        for (const auto& parent : field.parents) {
+            const auto& other_tup = map[parent];
+            ed::Link(uniqueId++, std::get<0>(current_tup),
+                     std::get<2>(other_tup));
+        }
+
+        for (const auto& parent : field.adjacent) {
+            const auto& other_tup = map[parent];
+            ed::Link(uniqueId++, std::get<1>(current_tup),
+                     std::get<1>(other_tup), ImVec4(1, 0, 0, 1));
+        }
+    }
+    ed::End();
+}
+
+void cqsp::client::systems::SysFieldNodeViewer::DoUpdate(int delta_time) {}

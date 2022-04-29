@@ -277,6 +277,7 @@ class Application {
     Rml::Context* rml_context;
     std::unique_ptr<Rml::SystemInterface> m_system_interface;
     std::unique_ptr<cqsp::engine::CQSPRenderInterface> m_render_interface;
+    ax::NodeEditor::EditorContext* m_ne_context = nullptr;
 
     std::unique_ptr<CqspEventInstancer> m_event_instancer;
 

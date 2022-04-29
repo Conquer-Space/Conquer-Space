@@ -37,6 +37,18 @@ class SysFieldViewer : public SysUserInterface {
     void FieldInformationWindow();
     entt::entity selected_tech;
 };
+
+class SysFieldNodeViewer : public SysUserInterface {
+ public:
+    explicit SysFieldNodeViewer(cqsp::engine::Application& app)
+        : SysUserInterface(app) {}
+
+    void Init();
+    void DoUI(int delta_time);
+    void DoUpdate(int delta_time);
+
+ private:
+};
 }  // namespace systems
 }  // namespace client
 }  // namespace cqsp

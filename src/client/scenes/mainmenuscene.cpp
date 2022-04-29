@@ -20,8 +20,6 @@
 
 #include <RmlUi/Debugger.h>
 
-#include <imgui_markdown.h>
-
 #include <utility>
 #include <algorithm>
 #include <filesystem>
@@ -86,6 +84,7 @@ void cqsp::scene::MainMenuScene::Update(float deltaTime) {
     last_options_visible = false;
     credits_window.Update(deltaTime);
 }
+
 
 void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
 }
