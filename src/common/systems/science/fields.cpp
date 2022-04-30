@@ -105,3 +105,38 @@ void cqsp::common::systems::science::LoadFields(Universe& universe,
     }
     universe.clear<FieldTemplate>();
 }
+
+Hjson::Value cqsp::common::systems::science::WriteFields(Universe& universe) {
+    auto view = universe.view<components::science::Field>();
+    Hjson::Value all_fields;
+    for (entt::entity entity : view) {
+        Hjson::Value field_hjson;
+        field_hjson["name"] = universe.get<components::Name>(entity).name;
+        field_hjson["identifier"] = universe.get<components::Identifier>(entity).identifier;
+        if (universe.any_of<components::Description>(entity)) {
+            field_hjson["description"] = universe.get<components::Description>(entity).description;
+        }
+
+        auto& field = universe.get<components::science::Field>(entity);
+        if (!field.adjacent.empty()) {
+            // Add all the entities
+            Hjson::Value adj_list;
+            for (entt::entity adj : field.adjacent) {
+                auto& identifier = universe.get<components::Identifier>(adj);
+                adj_list.push_back(identifier.identifier);
+            }
+            field_hjson["adjacent"] = adj_list;
+        }
+        if (!field.parents.empty()) {
+            // Add all the entities
+            Hjson::Value adj_list;
+            for (entt::entity adj : field.parents) {
+                auto& identifier = universe.get<components::Identifier>(adj);
+                adj_list.push_back(identifier.identifier);
+            }
+            field_hjson["parent"] = adj_list;
+        }
+        all_fields.push_back(field_hjson);
+    }
+    return all_fields;
+}

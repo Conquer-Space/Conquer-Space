@@ -22,6 +22,7 @@
 #include "common/components/science.h"
 #include "common/components/name.h"
 #include "client/systems/gui/systooltips.h"
+#include "common/systems/science/fields.h"
 
 void cqsp::client::systems::SysFieldViewer::Init() {}
 
@@ -275,11 +276,23 @@ void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
     ed::EndCreate();
 
     if (ed::BeginDelete()) {
-        HandleDeleteRelationship();
+        HandleDeleteRelationship(map, GetUniverse());
     }
     ed::EndDelete();
 
     ed::End();
+
+    ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_Appearing);
+    ImGui::Begin("Field Hjson viewer");
+    if (ImGui::Button("Make Fields to Hjson")) {
+        // Make the hjson
+        auto fields = common::systems::science::WriteFields(GetUniverse());
+        Hjson::EncoderOptions eo;
+        eo.indentBy = "    "; // 4 spaces
+        hjson_content = Hjson::Marshal(fields, eo);
+    }
+    ImGui::InputTextMultiline("field_hjson_viewer", &hjson_content, ImVec2(-1, -1));
+    ImGui::End();
 }
 
 void cqsp::client::systems::SysFieldNodeViewer::DoUpdate(int delta_time) {}

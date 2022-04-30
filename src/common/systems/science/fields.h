@@ -22,4 +22,5 @@
 
 namespace cqsp::common::systems::science {
 void LoadFields(Universe& universe, Hjson::Value& hjson);
-}
+Hjson::Value WriteFields(Universe& universe);
+}  // namespace cqsp::common::systems::science
