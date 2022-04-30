@@ -46,3 +46,17 @@ IMGUI_API void TextFmt(S fmt, Args&&...args) {
     Text(fmt::format(fmt, std::forward<Args>(args)...).c_str());
 }
 }
+
+namespace ax::Drawing {
+enum class IconType : ImU32 {
+    Flow,
+    Circle,
+    Square,
+    Grid,
+    RoundSquare,
+    Diamond
+};
+
+void DrawIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& b,
+              IconType type, bool filled, ImU32 color, ImU32 innerColor);
+}  // namespace ax::Drawing

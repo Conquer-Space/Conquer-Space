@@ -16,6 +16,9 @@
 */
 #include "client/systems/sysfieldviewer.h"
 
+#include <map>
+#include <tuple>
+
 #include "common/components/science.h"
 #include "common/components/name.h"
 #include "client/systems/gui/systooltips.h"
@@ -80,11 +83,34 @@ void cqsp::client::systems::SysFieldViewer::FieldInformationWindow() {
 
 void cqsp::client::systems::SysFieldNodeViewer::Init() {}
 
+typedef std::map<entt::entity, std::tuple<int, int, int>> FieldNodeInformation;
+
+entt::entity CalculateInputPair(const FieldNodeInformation& map, int pin_value) {
+    entt::entity field = entt::null;
+    int pv = (pin_value  - 1) / 4 * 4 + 2;
+    for (auto it = map.begin(); it != map.end(); ++it) {
+        if (std::get<0>(it->second) == pv) {
+            field = it->first;
+            break;
+        }
+    }
+    return field;
+}
+
+bool VerifyFieldNode(int input_id, int output_id) {
+    // 1 is child
+    // 2 is adjacent
+    // 3 is parent
+    return (2 == input_id && input_id == output_id) ||
+            (input_id == 1 && output_id == 3) ||
+            (input_id == 3 && output_id == 1);
+}
+
 void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
     // View Fields
     ed::Begin("Field Viewer");
     int uniqueId = 1;
-    std::map<entt::entity, std::tuple<int, int, int>> map;
+    FieldNodeInformation map;
 
     auto fields = GetUniverse().view<common::components::science::Field>();
     // Start drawing nodes
@@ -95,7 +121,6 @@ void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
         ed::BeginPin(a, ed::PinKind::Input);
         ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Child of");
         ed::EndPin();
-
         int b = uniqueId++;
         ed::BeginPin(b, ed::PinKind::Output);
             ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Adjacent");
@@ -109,6 +134,7 @@ void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
         map[entity] = std::make_tuple(a, b, c);
         ed::EndNode();
     }
+
     // Draw more nodes
     for (const entt::entity& entity : fields) {
         auto& field = GetUniverse().get<common::components::science::Field>(entity);
@@ -125,6 +151,56 @@ void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
                      std::get<1>(other_tup), ImVec4(1, 0, 0, 1));
         }
     }
+
+    if (ed::BeginCreate()) {
+        ed::PinId inputPinId, outputPinId;
+        if (ed::QueryNewLink(&inputPinId, &outputPinId)) {
+            int input_type = (inputPinId.Get() - 1) % 4;
+            int output_type = (outputPinId.Get() - 1) % 4;
+            if (inputPinId && outputPinId && VerifyFieldNode(input_type, output_type)) {
+                entt::entity input_entity = CalculateInputPair(map, inputPinId.Get());
+                entt::entity output_entity = CalculateInputPair(map, outputPinId.Get());
+                if (input_entity != entt::null && output_entity != entt::null) {
+                if (ed::AcceptNewItem()) {
+                    // Look for the link, then connect back
+                    // The initial pins should be in multiples of 4 because we make 4
+                    // Then connect the pins
+                    // Add to the input pin
+                    if (input_type == 2) {
+                        auto& field = GetUniverse().get<cqsp::common::components::science::Field>(input_entity);
+                        if (std::find(field.adjacent.begin(), field.adjacent.end(),
+                                      output_entity) == field.adjacent.end()) {
+                            field.adjacent.push_back(output_entity);
+                        }
+                    }
+                    if (input_type == 1) {
+                        // Then they want to be a child ofthe output entity
+                        auto& field = GetUniverse().get<cqsp::common::components::science::Field>(input_entity);
+                        if (std::find(field.parents.begin(), field.parents.end(),
+                                      output_entity) == field.parents.end()) {
+                            field.parents.push_back(output_entity);
+                        }
+                    }
+                    if (input_type == 3) {
+                        // Then they want to be a child ofthe output entity
+                        auto& field = GetUniverse().get<cqsp::common::components::science::Field>(output_entity);
+                        if (std::find(field.parents.begin(), field.parents.end(),
+                                      input_entity) == field.parents.end()) {
+                            field.parents.push_back(input_entity);
+                        }
+                    }
+                }
+                }
+
+                // You may choose to reject connection between these nodes
+                // by calling ed::RejectNewItem(). This will allow editor to give
+                // visual feedback by changing link thickness and color.
+            } else {
+                ed::RejectNewItem();
+            }
+        }
+    }
+    ed::EndCreate();
     ed::End();
 }
 

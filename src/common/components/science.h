@@ -42,6 +42,5 @@ struct ScientificProgress {
 };
 
 struct ScienceProject {
-
 };
 }  // namespace cqsp::common::components::science
