@@ -106,6 +106,63 @@ bool VerifyFieldNode(int input_id, int output_id) {
             (input_id == 3 && output_id == 1);
 }
 
+void AcceptNewItem(cqsp::common::Universe& universe, int input_type, entt::entity input_entity, entt::entity output_entity) {
+    // Look for the link, then connect back
+    // The initial pins should be in multiples of 4 because we make 4
+    // Then connect the pins
+    // Add to the input pin
+    switch (input_type) {
+    case 1: {
+        // Then they want to be a child ofthe output entity
+        auto& field = universe.get<cqsp::common::components::science::Field>(input_entity);
+        if (std::find(field.parents.begin(), field.parents.end(),
+                        output_entity) == field.parents.end()) {
+            field.parents.push_back(output_entity);
+        }
+        break;
+    }
+    case 2: {
+        auto& field = universe.get<cqsp::common::components::science::Field>(input_entity);
+        if (std::find(field.adjacent.begin(), field.adjacent.end(),
+                        output_entity) == field.adjacent.end()) {
+            field.adjacent.push_back(output_entity);
+        }
+        break;
+    }
+    case 3: {
+        // Then they want to be a child ofthe output entity
+        auto& field = universe.get<cqsp::common::components::science::Field>(output_entity);
+        if (std::find(field.parents.begin(), field.parents.end(),
+                        input_entity) == field.parents.end()) {
+            field.parents.push_back(input_entity);
+        }
+        break;
+    }
+    }
+}
+
+void CreateNewNode(cqsp::common::Universe& universe, FieldNodeInformation& map) {
+    ed::PinId inputPinId, outputPinId;
+    if (!ed::QueryNewLink(&inputPinId, &outputPinId)) {
+        return;
+    }
+    int input_type = (inputPinId.Get() - 1) % 4;
+    int output_type = (outputPinId.Get() - 1) % 4;
+    if (inputPinId && outputPinId && VerifyFieldNode(input_type, output_type)) {
+        entt::entity input_entity = CalculateInputPair(map, inputPinId.Get());
+        entt::entity output_entity = CalculateInputPair(map, outputPinId.Get());
+        if (input_entity != entt::null && output_entity != entt::null && ed::AcceptNewItem()) {
+            AcceptNewItem(universe, input_type, input_entity, output_entity);
+        }
+
+        // You may choose to reject connection between these nodes
+        // by calling ed::RejectNewItem(). This will allow editor to give
+        // visual feedback by changing link thickness and color.
+    } else {
+        ed::RejectNewItem();
+    }
+}
+
 void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
     // View Fields
     ed::Begin("Field Viewer");
@@ -129,7 +186,11 @@ void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
         int c = uniqueId++;
         ImGui::SameLine();
         ed::BeginPin(c, ed::PinKind::Output);
+         ed::PinPivotAlignment(ImVec2(1.0f, 0.5f));
+
             ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Parent of");
+        ax::Drawing::Icon(ImVec2(16, 16), ax::Drawing::IconType::Diamond, true,
+                          ImColor(255, 0, 0, 1), ImColor(32, 32, 32, 255));
         ed::EndPin();
         map[entity] = std::make_tuple(a, b, c);
         ed::EndNode();
@@ -153,54 +214,14 @@ void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
     }
 
     if (ed::BeginCreate()) {
-        ed::PinId inputPinId, outputPinId;
-        if (ed::QueryNewLink(&inputPinId, &outputPinId)) {
-            int input_type = (inputPinId.Get() - 1) % 4;
-            int output_type = (outputPinId.Get() - 1) % 4;
-            if (inputPinId && outputPinId && VerifyFieldNode(input_type, output_type)) {
-                entt::entity input_entity = CalculateInputPair(map, inputPinId.Get());
-                entt::entity output_entity = CalculateInputPair(map, outputPinId.Get());
-                if (input_entity != entt::null && output_entity != entt::null) {
-                if (ed::AcceptNewItem()) {
-                    // Look for the link, then connect back
-                    // The initial pins should be in multiples of 4 because we make 4
-                    // Then connect the pins
-                    // Add to the input pin
-                    if (input_type == 2) {
-                        auto& field = GetUniverse().get<cqsp::common::components::science::Field>(input_entity);
-                        if (std::find(field.adjacent.begin(), field.adjacent.end(),
-                                      output_entity) == field.adjacent.end()) {
-                            field.adjacent.push_back(output_entity);
-                        }
-                    }
-                    if (input_type == 1) {
-                        // Then they want to be a child ofthe output entity
-                        auto& field = GetUniverse().get<cqsp::common::components::science::Field>(input_entity);
-                        if (std::find(field.parents.begin(), field.parents.end(),
-                                      output_entity) == field.parents.end()) {
-                            field.parents.push_back(output_entity);
-                        }
-                    }
-                    if (input_type == 3) {
-                        // Then they want to be a child ofthe output entity
-                        auto& field = GetUniverse().get<cqsp::common::components::science::Field>(output_entity);
-                        if (std::find(field.parents.begin(), field.parents.end(),
-                                      input_entity) == field.parents.end()) {
-                            field.parents.push_back(input_entity);
-                        }
-                    }
-                }
-                }
-
-                // You may choose to reject connection between these nodes
-                // by calling ed::RejectNewItem(). This will allow editor to give
-                // visual feedback by changing link thickness and color.
-            } else {
-                ed::RejectNewItem();
-            }
-        }
+        CreateNewNode(GetUniverse(), map);
     }
     ed::EndCreate();
+
+    if (ed::BeginDelete()) {
+        
+    }
+    ed::EndDelete();
     ed::End();
 }
 
