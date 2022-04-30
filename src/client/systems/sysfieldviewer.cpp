@@ -163,6 +163,58 @@ void CreateNewNode(cqsp::common::Universe& universe, FieldNodeInformation& map) 
     }
 }
 
+void RemoveRelationship(cqsp::common::Universe& universe, int input_type, entt::entity input_entity, entt::entity output_entity) {
+    switch (input_type) {
+    case 1: {
+        // Then they want to be a child ofthe output entity
+        auto& field = universe.get<cqsp::common::components::science::Field>(input_entity);
+        if (std::find(field.parents.begin(), field.parents.end(),
+                        output_entity) != field.parents.end()) {
+            field.parents.erase(std::remove(field.parents.begin(), field.parents.end(), output_entity), field.parents.end());
+        }
+        break;
+    }
+    case 2: {
+        auto& field = universe.get<cqsp::common::components::science::Field>(input_entity);
+        if (std::find(field.adjacent.begin(), field.adjacent.end(),
+                        output_entity) != field.adjacent.end()) {
+            field.adjacent.erase(std::remove(field.adjacent.begin(), field.adjacent.end(), output_entity), field.adjacent.end());
+        }
+        break;
+    }
+    case 3: {
+        // Then they want to be a child ofthe output entity
+        auto& field = universe.get<cqsp::common::components::science::Field>(output_entity);
+        if (std::find(field.parents.begin(), field.parents.end(),
+                        input_entity) != field.parents.end()) {
+            field.parents.erase(std::remove(field.parents.begin(), field.parents.end(), input_entity), field.parents.end());
+        }
+        break;
+    }
+    }
+}
+
+void HandleDeleteRelationship(FieldNodeInformation& map, cqsp::common::Universe& universe) {
+    ed::LinkId linkId = 0;
+    while (ed::QueryDeletedLink(&linkId)) {
+        if (!ed::AcceptDeletedItem()) { // We ignore deleted nodes for now, this is just to manage the relationships
+            continue;
+        }
+        // Get the entity and delete
+        ed::PinId input_pin;
+        ed::PinId output_pin;
+        if (!ed::GetLinkPins(linkId, &input_pin, &output_pin)) {
+            continue;
+        }
+        // Then set the values
+        entt::entity input_entity = CalculateInputPair(map, input_pin.Get());
+        entt::entity output_entity = CalculateInputPair(map, output_pin.Get());
+        // Remove the relationship
+        int input_type = (input_pin.Get() - 1) % 4;
+        RemoveRelationship(universe, input_type, input_entity, output_entity);
+    }
+}
+
 void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
     // View Fields
     ed::Begin("Field Viewer");
@@ -176,21 +228,27 @@ void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
         ImGui::Text(gui::GetName(GetUniverse(), entity).c_str());
         int a = uniqueId++;
         ed::BeginPin(a, ed::PinKind::Input);
+        ax::Drawing::Icon(ImVec2(16, 16), ax::Drawing::IconType::Circle, true,
+                    ImColor(0, 0, 255, 255), ImColor(32, 32, 32, 255));
+        ImGui::SameLine();
         ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Child of");
         ed::EndPin();
         int b = uniqueId++;
         ed::BeginPin(b, ed::PinKind::Output);
-            ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Adjacent");
+        ax::Drawing::Icon(ImVec2(16, 16), ax::Drawing::IconType::Diamond, true,
+                    ImColor(255, 0, 0, 255), ImColor(32, 32, 32, 255));
+        ImGui::SameLine();
+        ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Adjacent");
+
         ed::EndPin();
 
         int c = uniqueId++;
         ImGui::SameLine();
         ed::BeginPin(c, ed::PinKind::Output);
-         ed::PinPivotAlignment(ImVec2(1.0f, 0.5f));
-
-            ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Parent of");
-        ax::Drawing::Icon(ImVec2(16, 16), ax::Drawing::IconType::Diamond, true,
-                          ImColor(255, 0, 0, 1), ImColor(32, 32, 32, 255));
+        ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Parent of");
+        ImGui::SameLine();
+                ax::Drawing::Icon(ImVec2(16, 16), ax::Drawing::IconType::Circle, true,
+                          ImColor(0, 0, 255, 255), ImColor(32, 32, 32, 255));
         ed::EndPin();
         map[entity] = std::make_tuple(a, b, c);
         ed::EndNode();
@@ -202,14 +260,12 @@ void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
         const auto& current_tup = map[entity];
         for (const auto& parent : field.parents) {
             const auto& other_tup = map[parent];
-            ed::Link(uniqueId++, std::get<0>(current_tup),
-                     std::get<2>(other_tup));
+            ed::Link(uniqueId++, std::get<0>(current_tup), std::get<2>(other_tup));
         }
 
         for (const auto& parent : field.adjacent) {
             const auto& other_tup = map[parent];
-            ed::Link(uniqueId++, std::get<1>(current_tup),
-                     std::get<1>(other_tup), ImVec4(1, 0, 0, 1));
+            ed::Link(uniqueId++, std::get<1>(current_tup), std::get<1>(other_tup), ImVec4(1, 0, 0, 1));
         }
     }
 
@@ -219,9 +275,10 @@ void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
     ed::EndCreate();
 
     if (ed::BeginDelete()) {
-        
+        HandleDeleteRelationship();
     }
     ed::EndDelete();
+
     ed::End();
 }
 
