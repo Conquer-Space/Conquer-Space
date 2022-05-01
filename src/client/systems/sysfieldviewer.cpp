@@ -23,6 +23,7 @@
 #include "common/components/name.h"
 #include "client/systems/gui/systooltips.h"
 #include "common/systems/science/fields.h"
+#include "engine/cqspgui.h"
 
 void cqsp::client::systems::SysFieldViewer::Init() {}
 
@@ -219,6 +220,7 @@ void HandleDeleteRelationship(FieldNodeInformation& map, cqsp::common::Universe&
 void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
     // View Fields
     ed::Begin("Field Viewer");
+    ImGui::SetWindowSize(ImVec2(1000, 900), ImGuiCond_Appearing);
     int uniqueId = 1;
     FieldNodeInformation map;
 
@@ -233,8 +235,10 @@ void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
         if (GetUniverse().all_of<common::components::Description>(entity)) {
             // Description text
             ImGui::SetNextItemWidth(200);
+            std::string& description =GetUniverse().get<common::components::Description>(entity).description;
             ImGui::InputText(fmt::format("##ne_description{}", entity).c_str(),
-                         &(GetUniverse().get<common::components::Description>(entity).description));
+                         &description);
+            CQSPGui::SimpleTextTooltip(description);
         } else {
             if (ImGui::Button("+ Add Description")) {
                 GetUniverse().emplace<common::components::Description>(entity);
