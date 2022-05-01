@@ -227,6 +227,19 @@ void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
     for (const entt::entity& entity : fields) {
         ed::BeginNode(uniqueId++);
         ImGui::Text(gui::GetName(GetUniverse(), entity).c_str());
+        ImGui::SetNextItemWidth(200);
+        ImGui::InputText(fmt::format("##ne_identifier{}", entity).c_str(),
+                         &(GetUniverse().get<common::components::Identifier>(entity).identifier));
+        if (GetUniverse().all_of<common::components::Description>(entity)) {
+            // Description text
+            ImGui::SetNextItemWidth(200);
+            ImGui::InputText(fmt::format("##ne_description{}", entity).c_str(),
+                         &(GetUniverse().get<common::components::Description>(entity).description));
+        } else {
+            if (ImGui::Button("+ Add Description")) {
+                GetUniverse().emplace<common::components::Description>(entity);
+            }
+        }
         int a = uniqueId++;
         ed::BeginPin(a, ed::PinKind::Input);
         ax::Drawing::Icon(ImVec2(16, 16), ax::Drawing::IconType::Circle, true,
@@ -291,6 +304,8 @@ void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
         eo.indentBy = "    "; // 4 spaces
         hjson_content = Hjson::Marshal(fields, eo);
     }
+    ImGui::SameLine();
+    ImGui::Button("Save to file");
     ImGui::InputTextMultiline("field_hjson_viewer", &hjson_content, ImVec2(-1, -1));
     ImGui::End();
 }
