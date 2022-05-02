@@ -83,7 +83,7 @@ TEST(Science_FieldTest, FieldLoadingTest) {
     // Save the hjson
     Hjson::Value written_hjson =
         cqsp::common::systems::science::WriteFields(universe);
-    EXPECT_TRUE(written_hjson.size(), hjson.size());
+    EXPECT_EQ(written_hjson.size(), hjson.size());
 
     // Reorder the things
     // Sort the list
