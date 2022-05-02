@@ -1,9 +1,14 @@
 [
     {
-        name: Farming
+        name: Steel Forging
+        identifier: steel_forging
+        description: Steel forging is essential to complex and modern industry
         fields: [
         ]
         difficulty: 10
         // Unlocks stuff
+        actions: [
+            recipe:steel_forging
+        ]
     }
 ]

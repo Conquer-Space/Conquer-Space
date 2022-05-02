@@ -18,9 +18,8 @@
 
 #include "common/components/name.h"
 
-bool cqsp::common::systems::loading::LoadName(Universe& universe,
-                                              const entt::entity &entity,
-                                              const Hjson::Value& value) {
+namespace cqsp::common::systems::loading {
+bool LoadName(Universe& universe, const entt::entity &entity, const Hjson::Value& value) {
     if (value["name"].type() != Hjson::Type::String) {
         return false;
     }
@@ -30,10 +29,8 @@ bool cqsp::common::systems::loading::LoadName(Universe& universe,
     return true;
 }
 
-bool cqsp::common::systems::loading::LoadIdentifier(Universe& universe,
-                                                    const entt::entity &entity,
-                                                    const Hjson::Value& value) {
-       if (value["identifier"].type() != Hjson::Type::String) {
+bool LoadIdentifier(Universe& universe, const entt::entity &entity, const Hjson::Value& value) {
+    if (value["identifier"].type() != Hjson::Type::String) {
         return false;
     }
     std::string identifier = value["identifier"].to_string();
@@ -41,3 +38,21 @@ bool cqsp::common::systems::loading::LoadIdentifier(Universe& universe,
     identifier_comp.identifier = identifier;
     return true;
 }
+
+bool LoadDescription(Universe& universe, const entt::entity& entity, const Hjson::Value& value) {
+    if (value["description"].type() != Hjson::Type::String) {
+        return false;
+    }
+    std::string identifier = value["description"].to_string();
+    auto& identifier_comp = universe.emplace<components::Identifier>(entity);
+    identifier_comp.identifier = identifier;
+    return true;
+}
+void LoadInitialValues(Universe& universe,
+                                     const entt::entity& entity,
+                                     const Hjson::Value& value) {
+    LoadName(universe, entity, value);
+    LoadIdentifier(universe, entity, value);
+    LoadDescription(universe, entity, value);
+}
+}  // namespace cqsp::common::systems::loading
