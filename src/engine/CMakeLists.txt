@@ -60,4 +60,5 @@ target_link_libraries(cqsp-engine PUBLIC
     RmlCore
     RmlDebugger
     lunasvg
+    imgui_node_editor
 )

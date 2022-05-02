@@ -16,52 +16,34 @@
 */
 #pragma once
 
+#include <utility>
 #include <memory>
-
-#include <atomic>
-#include <thread>
+#include <vector>
 
 #include "engine/scene.h"
+#include "client/systems/sysgui.h"
 
 namespace cqsp {
 namespace scene {
-class LoadingScene : public cqsp::engine::Scene {
+class ObjectEditorScene : public cqsp::engine::Scene {
  public:
-    explicit LoadingScene(cqsp::engine::Application& app);
-    ~LoadingScene();
+    explicit ObjectEditorScene(cqsp::engine::Application& app);
+    ~ObjectEditorScene();
 
     void Init();
     void Update(float deltaTime);
     void Ui(float deltaTime);
     void Render(float deltaTime);
 
-    /*
-    * Function to load in a thread.
-    */
-    void LoadResources();
+    template <class T>
+    void AddUISystem() {
+        auto ui = std::make_unique<T>(GetApp());
+        ui->Init();
+        user_interfaces.push_back(std::move(ui));
+    }
 
  private:
-    float windowWidth, windowHeight;
-
-    std::atomic<bool> m_done_loading;
-
-    std::unique_ptr<std::thread> thread;
-
-    std::atomic<float> percentage;
-
-    cqsp::asset::AssetLoader assetLoader;
-
-    Rml::ElementDocument* document;
-
-    void LoadFont();
-    bool need_halt = false;
-
-    struct LoadingDataModel {
-        int current = 0;
-        int max = 0;
-    } loading_data;
-
-    Rml::DataModelHandle model_handle;
+    std::vector<std::unique_ptr<cqsp::client::systems::SysUserInterface>> user_interfaces;
 };
 }  // namespace scene
-}  // namespace cqsp
+};  // namespace cqsp

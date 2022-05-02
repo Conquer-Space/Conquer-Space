@@ -400,6 +400,8 @@ void cqsp::engine::Application::InitImgui() {
     ImGui::StyleColorsDark();
     ImGui::GetIO().IniFilename = NULL;
     CQSPGui::SetApplication(this);
+    m_ne_context = ax::NodeEditor::CreateEditor();
+    ax::NodeEditor::SetCurrentEditor(m_ne_context);
     InitFonts();
 
     // Setup Platform/Renderer backends
@@ -533,6 +535,7 @@ int cqsp::engine::Application::destroy() {
     delete m_audio_interface;
     SPDLOG_INFO("Deleted audio interface");
 
+    ax::NodeEditor::DestroyEditor(m_ne_context);
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImPlot::DestroyContext();

@@ -16,8 +16,18 @@
 */
 #include "client/systems/sysfieldviewer.h"
 
+#include <map>
+#include <tuple>
+#include <vector>
+#include <filesystem>
+#include <string>
+
 #include "common/components/science.h"
 #include "common/components/name.h"
+#include "client/systems/gui/systooltips.h"
+#include "common/util/paths.h"
+#include "common/systems/science/fields.h"
+#include "engine/cqspgui.h"
 
 void cqsp::client::systems::SysFieldViewer::Init() {}
 
@@ -75,4 +85,315 @@ void cqsp::client::systems::SysFieldViewer::FieldInformationWindow() {
     for (auto& f : field.adjacent) {
         ImGui::Text(GetUniverse().get<common::components::Name>(f).name.c_str());
     }
+}
+
+void cqsp::client::systems::SysFieldNodeViewer::Init() {}
+
+typedef std::map<entt::entity, std::tuple<int, int, int>> FieldNodeInformation;
+
+namespace cqsp::client::systems {
+entt::entity CalculateInputPair(const FieldNodeInformation& map, int pin_value) {
+    entt::entity field = entt::null;
+    int pv = (pin_value  - 1) / 4 * 4 + 2;
+    for (auto it = map.begin(); it != map.end(); ++it) {
+        if (std::get<0>(it->second) == pv) {
+            field = it->first;
+            break;
+        }
+    }
+    return field;
+}
+
+bool VerifyFieldNode(int input_id, int output_id) {
+    // 1 is child
+    // 2 is adjacent
+    // 3 is parent
+    return (2 == input_id && input_id == output_id) ||
+            (input_id == 1 && output_id == 3) ||
+            (input_id == 3 && output_id == 1);
+}
+
+void RemoveFieldConnection(std::vector<entt::entity>& vec, entt::entity ent) {
+    if (std::find(vec.begin(), vec.end(), ent) != vec.end()) {
+    vec.erase(std::remove(vec.begin(), vec.end(), ent), vec.end());
+    }
+}
+
+void AcceptNewItem(cqsp::common::Universe& universe, int input_type,
+                   entt::entity input_entity, entt::entity output_entity) {
+    // Look for the link, then connect back
+    // The initial pins should be in multiples of 4 because we make 4
+    // Then connect the pins
+    // Add to the input pin
+    switch (input_type) {
+    case 1: {
+        // Then they want to be a child ofthe output entity
+        auto& field = universe.get<cqsp::common::components::science::Field>(input_entity);
+        if (std::find(field.parents.begin(), field.parents.end(),
+                        output_entity) == field.parents.end()) {
+            field.parents.push_back(output_entity);
+        }
+        break;
+    }
+    case 2: {
+        auto& field = universe.get<cqsp::common::components::science::Field>(input_entity);
+        if (std::find(field.adjacent.begin(), field.adjacent.end(),
+                        output_entity) == field.adjacent.end()) {
+            field.adjacent.push_back(output_entity);
+        }
+        break;
+    }
+    case 3: {
+        // Then they want to be a child ofthe output entity
+        auto& field = universe.get<cqsp::common::components::science::Field>(output_entity);
+        if (std::find(field.parents.begin(), field.parents.end(),
+                        input_entity) == field.parents.end()) {
+            field.parents.push_back(input_entity);
+        }
+        break;
+    }
+    }
+}
+
+void CreateNewNode(cqsp::common::Universe& universe, FieldNodeInformation& map) {
+    ed::PinId inputPinId, outputPinId;
+    if (!ed::QueryNewLink(&inputPinId, &outputPinId)) {
+        return;
+    }
+    int input_type = (inputPinId.Get() - 1) % 4;
+    int output_type = (outputPinId.Get() - 1) % 4;
+    if (inputPinId && outputPinId && VerifyFieldNode(input_type, output_type)) {
+        entt::entity input_entity = CalculateInputPair(map, inputPinId.Get());
+        entt::entity output_entity = CalculateInputPair(map, outputPinId.Get());
+        if (input_entity != entt::null && output_entity != entt::null && ed::AcceptNewItem()) {
+            AcceptNewItem(universe, input_type, input_entity, output_entity);
+        }
+
+        // You may choose to reject connection between these nodes
+        // by calling ed::RejectNewItem(). This will allow editor to give
+        // visual feedback by changing link thickness and color.
+    } else {
+        ed::RejectNewItem();
+    }
+}
+
+void RemoveRelationship(cqsp::common::Universe& universe, int input_type,
+                        entt::entity input_entity, entt::entity output_entity) {
+    switch (input_type) {
+    case 1: {
+        // Then they want to be a child ofthe output entity
+        auto& field = universe.get<cqsp::common::components::science::Field>(input_entity);
+        RemoveFieldConnection(field.parents, output_entity);
+        break;
+    }
+    case 2: {
+        auto& field = universe.get<cqsp::common::components::science::Field>(input_entity);
+        RemoveFieldConnection(field.adjacent, output_entity);
+        break;
+    }
+    case 3: {
+        // Then they want to be a child ofthe output entity
+        auto& field = universe.get<cqsp::common::components::science::Field>(output_entity);
+        RemoveFieldConnection(field.adjacent, input_entity);
+        break;
+    }
+    }
+}
+
+void HandleDeletedRelationship(const ed::LinkId& linkId, FieldNodeInformation& map,
+                              cqsp::common::Universe& universe) {
+    if (!ed::AcceptDeletedItem()) {
+        return;
+    }
+    // Get the entity and delete
+    ed::PinId input_pin;
+    ed::PinId output_pin;
+    if (!ed::GetLinkPins(linkId, &input_pin, &output_pin)) {
+        return;
+    }
+    // Then set the values
+    entt::entity input_entity = CalculateInputPair(map, input_pin.Get());
+    entt::entity output_entity = CalculateInputPair(map, output_pin.Get());
+    // Remove the relationship
+    int input_type = (input_pin.Get() - 1) % 4;
+    RemoveRelationship(universe, input_type, input_entity, output_entity);
+}
+
+void HandleDeletedNode(const ed::NodeId& nodeId, FieldNodeInformation& map,
+                       cqsp::common::Universe& universe) {
+    if (!ed::AcceptDeletedItem()) {
+        return;
+    }
+
+    // Delete entities
+    entt::entity ent = CalculateInputPair(map, nodeId.Get());
+    //universe.get<
+    auto fields = universe.view<cqsp::common::components::science::Field>();
+    for (entt::entity pot : fields) {
+        auto& field_comp = universe.get<cqsp::common::components::science::Field>(pot);
+        RemoveFieldConnection(field_comp.adjacent, ent);
+        RemoveFieldConnection(field_comp.parents, ent);
+    }
+    universe.destroy(ent);
+}
+
+void HandleNodeDelete(FieldNodeInformation& map,
+                              cqsp::common::Universe& universe) {
+    ed::LinkId linkId = 0;
+    while (ed::QueryDeletedLink(&linkId)) {
+        HandleDeletedRelationship(linkId, map, universe);
+    }
+    ed::NodeId node_id = 0;
+    while (ed::QueryDeletedNode(&node_id)) {
+        HandleDeletedNode(node_id, map, universe);
+    }
+}
+} // namespace cqsp::client::systems
+
+void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
+    FieldNodeViewerWindow();
+    FieldHjsonViewerWindow();
+}
+
+void cqsp::client::systems::SysFieldNodeViewer::DoUpdate(int delta_time) {}
+
+void cqsp::client::systems::SysFieldNodeViewer::FieldNodeViewerWindow() {
+    using common::components::science::Field;
+    using common::components::Name;
+    using common::components::Identifier;
+    using common::components::Description;
+    // View Fields
+    ImGui::SetNextWindowSize(ImVec2(1400, 900), ImGuiCond_Appearing);
+    ImGui::Begin("Field Node Viewer Window");
+    if (ImGui::Button("Add New Node")) {
+        entt::entity field = GetUniverse().create();
+        GetUniverse().emplace<Field>(field);
+        GetUniverse().emplace<Name>(field);
+        GetUniverse().emplace<Identifier>(field);
+    }
+    ed::Begin("Field Viewer");
+    int uniqueId = 1;
+    FieldNodeInformation map;
+
+    auto fields = GetUniverse().view<Field>();
+    // Start drawing nodes
+    for (const entt::entity& entity : fields) {
+        int node_id = uniqueId++;
+        if (ed::GetHoveredNode().Get() != node_id) {
+            // Then make it light
+            ed::PushStyleColor(ax::NodeEditor::StyleColor_Bg,
+                               ImVec4(ImColor(255, 0, 0, 255)));
+        }
+        ed::BeginNode(node_id);
+        ImGui::SetNextItemWidth(200);
+        ImGui::InputText(fmt::format("##ne_name_{}", entity).c_str(),
+                         &(GetUniverse().get <Name> (entity).name));
+        ImGui::SetNextItemWidth(200);
+        ImGui::InputText(fmt::format("##ne_identifier{}", entity).c_str(),
+                         &(GetUniverse().get<Identifier>(entity).identifier));
+        if (GetUniverse().all_of<Description>(entity)) {
+            // Description text
+            ImGui::SetNextItemWidth(200);
+            std::string& description = GetUniverse().get<Description>(entity).description;
+            ImGui::InputText(fmt::format("##ne_description{}", entity).c_str(),
+                         &description);
+        } else {
+            if (ImGui::Button("+ Add Description")) {
+                GetUniverse().emplace<Description>(entity);
+            }
+        }
+        ImGui::TextFmt("Entity Id: {}", entity);
+        int a = uniqueId++;
+        ed::BeginPin(a, ed::PinKind::Input);
+        ed::PinPivotAlignment(ImVec2(0.1, 0.5f));
+        ed::PinPivotSize(ImVec2(0, 0));
+        ax::Drawing::Icon(ImVec2(16, 16), ax::Drawing::IconType::Circle, true,
+                    ImColor(0, 0, 255, 255), ImColor(32, 32, 32, 255));
+        ImGui::SameLine();
+        ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Child of");
+        ed::EndPin();
+        int b = uniqueId++;
+        ed::BeginPin(b, ed::PinKind::Output);
+        ed::PinPivotAlignment(ImVec2(0.1, 0.5f));
+        ed::PinPivotSize(ImVec2(0, 0));
+        ax::Drawing::Icon(ImVec2(16, 16), ax::Drawing::IconType::Diamond, true,
+                    ImColor(255, 0, 0, 255), ImColor(32, 32, 32, 255));
+        ImGui::SameLine();
+        ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Adjacent");
+        ed::EndPin();
+
+        int c = uniqueId++;
+        ImGui::SameLine();
+        ImGui::Dummy(ImVec2(15, 0));
+        ImGui::SameLine();
+        ed::BeginPin(c, ed::PinKind::Output);
+        ed::PinPivotAlignment(ImVec2(0.9, 0.5f));
+        ed::PinPivotSize(ImVec2(0, 0));
+        ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Parent of");
+        ImGui::SameLine();
+                ax::Drawing::Icon(ImVec2(16, 16), ax::Drawing::IconType::Circle, true,
+                          ImColor(0, 0, 255, 255), ImColor(32, 32, 32, 255));
+        ed::EndPin();
+        map[entity] = std::make_tuple(a, b, c);
+        ed::EndNode();
+        if (ed::GetHoveredNode().Get() != node_id) {
+            // Then make it light
+            ed::PopStyleColor();
+        }
+    }
+
+    // Draw more nodes
+    for (const entt::entity& entity : fields) {
+        auto& field = GetUniverse().get<Field>(entity);
+        const auto& current_tup = map[entity];
+        for (const auto& parent : field.parents) {
+            const auto& other_tup = map[parent];
+            ed::Link(uniqueId++, std::get<0>(current_tup), std::get<2>(other_tup));
+        }
+
+        for (const auto& parent : field.adjacent) {
+            const auto& other_tup = map[parent];
+            ed::Link(uniqueId++, std::get<1>(current_tup), std::get<1>(other_tup), ImVec4(1, 0, 0, 1));
+        }
+    }
+
+    if (ed::BeginCreate()) {
+        CreateNewNode(GetUniverse(), map);
+    }
+    ed::EndCreate();
+
+    if (ed::BeginDelete()) {
+        HandleNodeDelete(map, GetUniverse());
+    }
+    ed::EndDelete();
+
+    ed::End();
+    ImGui::End();
+}
+
+void cqsp::client::systems::SysFieldNodeViewer::FieldHjsonViewerWindow() {
+    ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_Appearing);
+    ImGui::Begin("Field Hjson viewer");
+    if (ImGui::Button("Make Fields to Hjson")) {
+        // Make the hjson
+        auto fields = common::systems::science::WriteFields(GetUniverse());
+    Hjson::EncoderOptions eo;
+    eo.indentBy = "    "; // 4 spaces
+    hjson_content = Hjson::Marshal(fields, eo);
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Save to file")) {
+        // Write to the hjson file, which should remain the same
+        std::filesystem::path p = cqsp::common::util::GetCqspDataPath();
+        std::filesystem::path default_path =
+            p / "core" / "data" / "science" / "fields" / "default.hjson";
+        // Update content
+        std::ofstream output(default_path, std::ios::trunc);
+        Hjson::EncoderOptions eo;
+        eo.indentBy = "    "; // 4 spaces
+        auto fields = common::systems::science::WriteFields(GetUniverse());
+        Hjson::MarshalToFile(fields, default_path.string(), eo);
+    }
+    ImGui::InputTextMultiline("field_hjson_viewer", &hjson_content, ImVec2(-1, -1));
+    ImGui::End();
 }

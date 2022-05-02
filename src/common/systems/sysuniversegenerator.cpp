@@ -37,7 +37,6 @@
 #include "common/systems/actions/factoryconstructaction.h"
 #include "common/systems/economy/markethelpers.h"
 #include "actions/shiplaunchaction.h"
-#include "client/systems/views/starsystemview.h"
 
 void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::
     Generate(cqsp::common::Universe& universe) {

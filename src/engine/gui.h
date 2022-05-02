@@ -21,6 +21,7 @@
 #include <imgui.h>
 #include <imgui_stdlib.h>
 #include <imgui_markdown.h>
+#include <imgui_node_editor.h>
 
 #include <fmt/format.h>
 
@@ -28,6 +29,8 @@
 #include <map>
 #include <string>
 #include <utility>
+
+namespace ed = ax::NodeEditor;
 
 namespace ImPlot {
 template <typename T>
@@ -43,3 +46,21 @@ IMGUI_API void TextFmt(S fmt, Args&&...args) {
     Text(fmt::format(fmt, std::forward<Args>(args)...).c_str());
 }
 }
+
+namespace ax::Drawing {
+enum class IconType : ImU32 {
+    Flow,
+    Circle,
+    Square,
+    Grid,
+    RoundSquare,
+    Diamond
+};
+
+void DrawIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& b,
+              IconType type, bool filled, ImU32 color, ImU32 innerColor);
+
+void Icon(const ImVec2& size, IconType type, bool filled,
+            const ImVec4& color = ImVec4(1, 1, 1, 1),
+            const ImVec4& innerColor = ImVec4(0, 0, 0, 0));
+}  // namespace ax::Drawing

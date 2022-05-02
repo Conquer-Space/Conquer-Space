@@ -40,4 +40,7 @@ struct Lab {
 struct ScientificProgress {
     ResourceLedger science_progress;
 };
+
+struct ScienceProject {
+};
 }  // namespace cqsp::common::components::science

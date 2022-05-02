@@ -16,6 +16,8 @@
 */
 #pragma once
 
+#include <string>
+
 #include <entt/entt.hpp>
 
 #include "client/systems/sysgui.h"
@@ -36,6 +38,21 @@ class SysFieldViewer : public SysUserInterface {
  private:
     void FieldInformationWindow();
     entt::entity selected_tech;
+};
+
+class SysFieldNodeViewer : public SysUserInterface {
+ public:
+    explicit SysFieldNodeViewer(cqsp::engine::Application& app)
+        : SysUserInterface(app) {}
+
+    void Init();
+    void DoUI(int delta_time);
+    void DoUpdate(int delta_time);
+
+ private:
+    void FieldNodeViewerWindow();
+    void FieldHjsonViewerWindow();
+    std::string hjson_content;
 };
 }  // namespace systems
 }  // namespace client

@@ -16,11 +16,9 @@
 */
 #pragma once
 
-#include <hjson.h>
+#include "engine/application.h"
 
-#include "common/universe.h"
-
-namespace cqsp::common::systems::science {
-void LoadFields(Universe& universe, Hjson::Value& hjson);
-Hjson::Value WriteFields(Universe& universe);
-}  // namespace cqsp::common::systems::science
+namespace cqsp::client::systems {
+// Loads all the goods and the like into the game.
+void LoadAllResources(cqsp::engine::Application& app);
+}

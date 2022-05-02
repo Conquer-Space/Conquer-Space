@@ -62,6 +62,9 @@ void RenderEntityType(const Universe& universe, entt::entity entity) {
 std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity entity) {
     namespace cqspc = cqsp::common::components;
     // Then get type of entity
+    if (entity == entt::null) {
+        return "Null Entity";
+    }
     if (universe.all_of<cqspc::bodies::Star>(entity)) {
         return "Star";
     } else if (universe.all_of<cqspc::bodies::Planet>(entity)) {

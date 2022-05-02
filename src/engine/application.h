@@ -213,6 +213,10 @@ class Application {
 
     std::vector<std::string>& GetCmdLineArgs() { return cmd_line_args; }
 
+    bool HasCmdLineArgs(const std::string& arg) {
+        return (std::find(GetCmdLineArgs().begin(), GetCmdLineArgs().end(),
+                          arg) != GetCmdLineArgs().end());
+    }
     /// <summary>
     /// Screenshots the current framebuffer to the filename
     ///
@@ -277,6 +281,7 @@ class Application {
     Rml::Context* rml_context;
     std::unique_ptr<Rml::SystemInterface> m_system_interface;
     std::unique_ptr<cqsp::engine::CQSPRenderInterface> m_render_interface;
+    ax::NodeEditor::EditorContext* m_ne_context = nullptr;
 
     std::unique_ptr<CqspEventInstancer> m_event_instancer;
 

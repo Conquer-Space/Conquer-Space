@@ -21,13 +21,9 @@
 #include <string>
 
 #include "client/scenes/universescene.h"
-#include "client/systems/clientscripting.h"
 #include "common/systems/sysuniversegenerator.h"
-#include "common/scripting/luafunctions.h"
 
-#include "common/systems/loading/loadgoods.h"
-#include "common/systems/loading/loadnames.h"
-#include "common/systems/science/fields.h"
+#include "client/systems/assetloading.h"
 
 cqsp::scene::UniverseLoadingScene::UniverseLoadingScene(cqsp::engine::Application& app) : Scene(app) {}
 
@@ -64,55 +60,17 @@ void cqsp::scene::UniverseLoadingScene::Ui(float deltaTime) {
 
 void cqsp::scene::UniverseLoadingScene::Render(float deltaTime) {}
 
-void LoadResource(cqsp::engine::Application& app, std::string asset_name,
-                    void (*func)(cqsp::common::Universe& universe, Hjson::Value& recipes)) {
-    namespace cqspc = cqsp::common::components;
-    for (auto it = app.GetAssetManager().GetPackageBegin(); it != app.GetAssetManager().GetPackageEnd(); it++) {
-        if (!it->second->HasAsset(asset_name)) {
-            continue;
-        }
-        cqsp::asset::HjsonAsset* good_assets = it->second->GetAsset<cqsp::asset::HjsonAsset>(asset_name);
-        try {
-            func(app.GetUniverse(), good_assets->data);
-        } catch (std::runtime_error& error) {
-            SPDLOG_INFO("Failed to load hjson asset {}: {}", asset_name, error.what());
-        } catch (Hjson::index_out_of_bounds &) {
-        }
-    }
-}
-
 void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
-    namespace cqspa = cqsp::asset;
-    namespace cqspc = cqsp::common::components;
-
-    LoadResource(GetApp(), "goods", cqsp::common::systems::loading::LoadGoods);
-    LoadResource(GetApp(), "recipes", cqsp::common::systems::loading::LoadRecipes);
-    LoadResource(GetApp(), "names", cqsp::common::systems::loading::LoadNameLists);
-    LoadResource(GetApp(), "tech_fields", cqsp::common::systems::science::LoadFields);
-    // Initialize planet terrains
-    cqsp::asset::HjsonAsset* asset = GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("core:terrain_colors");
-    cqsp::common::systems::loading::LoadTerrainData(GetApp().GetUniverse(), asset->data);
-
-    // Load scripts
-    // Load lua functions
-    cqsp::scripting::LoadFunctions(GetApp().GetUniverse(),
-                                   GetApp().GetScriptInterface());
-    cqsp::client::scripting::ClientFunctions(GetApp());
-
-    // Load universe
-    // Register data groups
-    auto& script_interface = GetApp().GetScriptInterface();
-    script_interface.RegisterDataGroup("generators");
-    script_interface.RegisterDataGroup("events");
+    cqsp::client::systems::LoadAllResources(GetApp());
 
     using cqsp::asset::TextAsset;
     // Process scripts for core
     TextAsset* script_list = GetAssetManager().GetAsset<TextAsset>("core:base");
-    script_interface.RunScript(script_list->data);
+    GetApp().GetScriptInterface().RunScript(script_list->data);
 
     using cqsp::common::systems::universegenerator::ScriptUniverseGenerator;
     // Load universe
-    ScriptUniverseGenerator script_generator(script_interface);
+    ScriptUniverseGenerator script_generator(GetApp().GetScriptInterface());
 
     script_generator.Generate(GetUniverse());
     m_completed_loading = true;
