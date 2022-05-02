@@ -32,7 +32,7 @@
 #include "engine/asset/vfs/nativevfs.h"
 #include "common/util/paths.h"
 
-#define CREATE_ASSET_LAMBDA(FuncName) [this] (cqsp::asset::VirtualMounter* mount,                   \
+#define CREATE_ASSET_LAMBDA(FuncName) [this] (VirtualMounter* mount,                   \
                                               const std::string& path, const std::string& key,      \
                                               const Hjson::Value& hints) {                          \
                                         return this->FuncName(mount, path, key, hints);                 \
@@ -40,6 +40,7 @@
 
 // Definition for prototypes
 namespace cqsp::asset {
+namespace {
 class ImagePrototype : public AssetPrototype {
  public:
     unsigned char* data;
@@ -80,40 +81,39 @@ class FontPrototype : public AssetPrototype {
 
     int GetPrototypeType() { return PrototypeType::FONT; }
 };
-}  // namespace cqsp::asset
+}  // namespace
 
-bool cqsp::asset::Package::HasAsset(const char* asset) {
+
+bool Package::HasAsset(const char* asset) {
     return assets.count(asset) != 0;
 }
-bool cqsp::asset::Package::HasAsset(const std::string& asset) {
+bool Package::HasAsset(const std::string& asset) {
     return assets.count(asset) != 0;
 }
 
-void cqsp::asset::Package::ClearAssets() {
+void Package::ClearAssets() {
     for (auto a = assets.begin(); a != assets.end(); a++) {
         a->second.reset();
     }
     assets.clear();
 }
 
-using cqsp::asset::AssetLoader;
+AssetManager::AssetManager() {}
 
-cqsp::asset::AssetManager::AssetManager() {}
-
-cqsp::asset::ShaderProgram_t
-cqsp::asset::AssetManager::MakeShader(const std::string& vert, const std::string& frag) {
-    return std::make_shared<ShaderProgram>(*GetAsset<cqsp::asset::Shader>(vert.c_str()),
-                                    *GetAsset<cqsp::asset::Shader>(frag.c_str()));
+ShaderProgram_t
+AssetManager::MakeShader(const std::string& vert, const std::string& frag) {
+    return std::make_shared<ShaderProgram>(*GetAsset<Shader>(vert.c_str()),
+                                    *GetAsset<Shader>(frag.c_str()));
 }
 
-cqsp::asset::ShaderProgram_t
-cqsp::asset::AssetManager::MakeShader(const std::string& vert,
+ShaderProgram_t
+AssetManager::MakeShader(const std::string& vert,
                                       const std::string& frag,
                                       const std::string& geom) {
     return std::make_shared<ShaderProgram>(
-        *GetAsset<cqsp::asset::Shader>(vert.c_str()),
-        *GetAsset<cqsp::asset::Shader>(frag.c_str()),
-        *GetAsset<cqsp::asset::Shader>(geom.c_str()));
+        *GetAsset<Shader>(vert.c_str()),
+        *GetAsset<Shader>(frag.c_str()),
+        *GetAsset<Shader>(geom.c_str()));
 }
 
 std::string GetShaderCode(const std::string& identifier) {
@@ -126,10 +126,10 @@ void MakeShader(const Hjson::Value& hjson) {
     std::string frag = hjson["frag"].to_string();
     // Get the shader code somehow, but idk how
 
-    cqsp::asset::Shader vert_shader(GetShaderCode(vert), cqsp::asset::ShaderType::VERT);
-    cqsp::asset::Shader frag_shader(GetShaderCode(frag), cqsp::asset::ShaderType::FRAG);
+    Shader vert_shader(GetShaderCode(vert), ShaderType::VERT);
+    Shader frag_shader(GetShaderCode(frag), ShaderType::FRAG);
     // Create the shader
-    cqsp::asset::ShaderProgram_t shader = cqsp::asset::MakeShaderProgram(vert_shader, frag_shader);
+    ShaderProgram_t shader = MakeShaderProgram(vert_shader, frag_shader);
     // Initial values
     Hjson::Value initial = hjson["initial"];
     for (auto value : initial) {
@@ -167,7 +167,7 @@ void MakeShader(const Hjson::Value& hjson) {
     }
 }
 
-void cqsp::asset::AssetManager::LoadDefaultTexture() {
+void AssetManager::LoadDefaultTexture() {
     unsigned char texture_bytes[] = {
         0, 0, 0, 255, 0, 255,
         0, 0, // These two padding bytes are needed for some reason. Opengl doesn't like 2x2 images
@@ -179,12 +179,12 @@ void cqsp::asset::AssetManager::LoadDefaultTexture() {
     asset::CreateTexture(empty_texture, texture_bytes, 2, 2, 3, f);
 }
 
-void cqsp::asset::AssetManager::ClearAssets() {
+void AssetManager::ClearAssets() {
     ZoneScoped
     packages.clear();
 }
 
-void cqsp::asset::AssetManager::SaveModList() {
+void AssetManager::SaveModList() {
     Hjson::Value enabled_mods;
     // Load the enabled mods, and write to the file. then exit game.
     for (auto it = m_package_prototype_list.begin(); it != m_package_prototype_list.end(); it++) {
@@ -196,7 +196,7 @@ void cqsp::asset::AssetManager::SaveModList() {
     SPDLOG_INFO("Writing mods");
 }
 
-cqsp::asset::AssetLoader::AssetLoader() {
+AssetLoader::AssetLoader() {
     loading_functions[AssetType::TEXT] = CREATE_ASSET_LAMBDA(LoadText);
     loading_functions[AssetType::TEXTURE] = CREATE_ASSET_LAMBDA(LoadTexture);
     loading_functions[AssetType::TEXT_ARRAY] = CREATE_ASSET_LAMBDA(LoadTextDirectory);
@@ -210,7 +210,7 @@ cqsp::asset::AssetLoader::AssetLoader() {
 
 namespace cqspa = cqsp::asset;
 
-void cqsp::asset::AssetLoader::LoadMods() {
+void AssetLoader::LoadMods() {
     ZoneScoped;
     // Load enabled mods
     // Load core
@@ -286,12 +286,12 @@ void cqsp::asset::AssetLoader::LoadMods() {
     }
 }
 
-std::string cqsp::asset::AssetLoader::GetModFilePath() {
+std::string AssetLoader::GetModFilePath() {
     return (std::filesystem::path(cqsp::common::util::GetCqspSavePath())/"mod.hjson").string();
 }
 
-std::optional<cqsp::asset::PackagePrototype>
-cqsp::asset::AssetLoader::LoadModPrototype(const std::string& path_string) {
+std::optional<PackagePrototype>
+AssetLoader::LoadModPrototype(const std::string& path_string) {
     ZoneScoped;
     // Load the info.hjson
     std::filesystem::path package_path(path_string);
@@ -303,7 +303,7 @@ cqsp::asset::AssetLoader::LoadModPrototype(const std::string& path_string) {
     }
     // Read mod info file.
     Hjson::Value mod_info = Hjson::Unmarshal(
-        cqsp::asset::ReadAllFromVFileToString(vfs->Open("info.hjson").get()));
+        ReadAllFromVFileToString(vfs->Open("info.hjson").get()));
 
     // Get the info from
     PackagePrototype prototype;
@@ -321,10 +321,10 @@ cqsp::asset::AssetLoader::LoadModPrototype(const std::string& path_string) {
 
     // Free memory
     delete vfs;
-    return std::optional<cqsp::asset::PackagePrototype>(prototype);
+    return std::optional<PackagePrototype>(prototype);
 }
 
-std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std::string path) {
+std::unique_ptr<Package> AssetLoader::LoadPackage(std::string path) {
     ZoneScoped;
     // Load into filesystem
     // Load the assets of a package specified by a path
@@ -389,7 +389,7 @@ std::unique_ptr<cqsp::asset::Package> cqsp::asset::AssetLoader::LoadPackage(std:
     return package;
 }
 
-std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadAsset(
+std::unique_ptr<Asset> AssetLoader::LoadAsset(
                                           const AssetType& type,
                                           const std::string& path,
                                           const std::string& key,
@@ -401,7 +401,7 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadAsset(
     }
     return std::move(loading_functions[type](&mounter, path, key, hints));
 }
-void cqsp::asset::AssetLoader::PlaceAsset(Package& package,
+void AssetLoader::PlaceAsset(Package& package,
                                           const AssetType& type,
                                           const std::string& path,
                                           const std::string& key,
@@ -417,7 +417,7 @@ void cqsp::asset::AssetLoader::PlaceAsset(Package& package,
     package.assets[key] = std::move(asset);
 }
 
-void cqsp::asset::AssetLoader::BuildNextAsset() {
+void AssetLoader::BuildNextAsset() {
     ZoneScoped;
     if (m_asset_queue.size() == 0) {
         return;
@@ -478,8 +478,8 @@ void cqsp::asset::AssetLoader::BuildNextAsset() {
     delete temp.prototype;
 }
 
-std::unique_ptr<cqsp::asset::Asset>
-cqsp::asset::AssetLoader::LoadText(cqsp::asset::VirtualMounter* mount, const std::string& path,
+std::unique_ptr<Asset>
+AssetLoader::LoadText(VirtualMounter* mount, const std::string& path,
                                    const std::string& key, const Hjson::Value& hints) {
     ZoneScoped;
     if (!mount->IsFile(path)) {
@@ -492,8 +492,8 @@ cqsp::asset::AssetLoader::LoadText(cqsp::asset::VirtualMounter* mount, const std
     return std::move(asset);
 }
 
-std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTextDirectory(
-    cqsp::asset::VirtualMounter* mount, const std::string& path,
+std::unique_ptr<Asset> AssetLoader::LoadTextDirectory(
+    VirtualMounter* mount, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
     ZoneScoped;
     if (!mount->IsDirectory(path)) {
@@ -505,15 +505,15 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTextDirectory(
     for (int i = 0; i < size; i++) {
         auto file = dir->GetFile(i);
         std::string buffer = ReadAllFromVFileToString(file.get());
-        cqsp::asset::PathedTextAsset asset_data;
+        PathedTextAsset asset_data;
         asset_data.data = buffer;
         asset_data.path = path;
     }
     return std::move(asset);
 }
 
-std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTexture(
-    cqsp::asset::VirtualMounter* mount, const std::string& path,
+std::unique_ptr<Asset> AssetLoader::LoadTexture(
+    VirtualMounter* mount, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
     ZoneScoped;
     std::unique_ptr<Texture> texture = std::make_unique<Texture>();
@@ -550,8 +550,8 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadTexture(
     return std::move(texture);
 }
 
-std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadHjson(
-    cqsp::asset::VirtualMounter* mount, const std::string& path,
+std::unique_ptr<Asset> AssetLoader::LoadHjson(
+    VirtualMounter* mount, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
     ZoneScoped;
     std::unique_ptr<cqspa::HjsonAsset> asset = std::make_unique<cqspa::HjsonAsset>();
@@ -593,8 +593,8 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadHjson(
     return asset;
 }
 
-std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadShader(
-    cqsp::asset::VirtualMounter* mount, const std::string& path,
+std::unique_ptr<Asset> AssetLoader::LoadShader(
+    VirtualMounter* mount, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
     ZoneScoped;
     if (!mount->IsFile(path)) {
@@ -606,13 +606,13 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadShader(
     int shader_type = -1;
     if (type == "frag") {
         shader_type = GL_FRAGMENT_SHADER;
-        shader->shader_type = cqsp::asset::ShaderType::FRAG;
+        shader->shader_type = ShaderType::FRAG;
     } else if (type == "vert") {
         shader_type = GL_VERTEX_SHADER;
-        shader->shader_type = cqsp::asset::ShaderType::VERT;
+        shader->shader_type = ShaderType::VERT;
     } else if (type == "geom") {
         shader_type = GL_GEOMETRY_SHADER;
-        shader->shader_type = cqsp::asset::ShaderType::GEOM;
+        shader->shader_type = ShaderType::GEOM;
     } else {
         // Abort, because this is a dud.
         SPDLOG_WARN("Unsupport shader type: {}", key);
@@ -634,8 +634,8 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadShader(
     return std::move(shader);
 }
 
-std::unique_ptr<cqsp::asset::Asset>
-cqsp::asset::AssetLoader::LoadFont(cqsp::asset::VirtualMounter* mount, const std::string& path,
+std::unique_ptr<Asset>
+AssetLoader::LoadFont(VirtualMounter* mount, const std::string& path,
                                    const std::string& key, const Hjson::Value& hints) {
     ZoneScoped;
     if (!mount->IsFile(path)) {
@@ -658,8 +658,8 @@ cqsp::asset::AssetLoader::LoadFont(cqsp::asset::VirtualMounter* mount, const std
     return std::move(asset);
 }
 
-std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadAudio(
-    cqsp::asset::VirtualMounter* mount, const std::string& path,
+std::unique_ptr<Asset> AssetLoader::LoadAudio(
+    VirtualMounter* mount, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
     ZoneScoped;
     // Load audio asset
@@ -673,8 +673,8 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadAudio(
     return std::move(asset);
 }
 
-std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadCubemap(
-    cqsp::asset::VirtualMounter* mount, const std::string& path,
+std::unique_ptr<Asset> AssetLoader::LoadCubemap(
+    VirtualMounter* mount, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
     ZoneScoped;
     // Load cubemap data
@@ -726,12 +726,12 @@ std::unique_ptr<cqsp::asset::Asset> cqsp::asset::AssetLoader::LoadCubemap(
     return asset;
 }
 
-std::unique_ptr<cqsp::asset::ShaderDefinition>
-cqsp::asset::AssetLoader::LoadShaderDefinition(cqsp::asset::VirtualMounter* mount, const std::string& path,
+std::unique_ptr<ShaderDefinition>
+AssetLoader::LoadShaderDefinition(VirtualMounter* mount, const std::string& path,
     const std::string& key, const Hjson::Value& hints) {
     std::string parent = GetParentPath(path);
     auto root = mount->Open(path);
-    std::string shader_def = cqsp::asset::ReadAllFromVFileToString(root.get());
+    std::string shader_def = ReadAllFromVFileToString(root.get());
     // Load shader def
     auto hjson = Hjson::Unmarshal(shader_def);
     // Load the files
@@ -740,10 +740,10 @@ cqsp::asset::AssetLoader::LoadShaderDefinition(cqsp::asset::VirtualMounter* moun
 
     // Load the files
     auto vert_file = mount->Open(vert_filename);
-    std::string vert_code = cqsp::asset::ReadAllFromVFileToString(vert_file.get());
+    std::string vert_code = ReadAllFromVFileToString(vert_file.get());
 
     auto frag_file = mount->Open(frag_filename);
-    std::string frag_code = cqsp::asset::ReadAllFromVFileToString(frag_file.get());
+    std::string frag_code = ReadAllFromVFileToString(frag_file.get());
 
     Hjson::Value uniforms = hjson["uniforms"];
     std::unique_ptr<ShaderDefinition> shader_def_ptr = std::make_unique<ShaderDefinition>();
@@ -757,14 +757,14 @@ cqsp::asset::AssetLoader::LoadShaderDefinition(cqsp::asset::VirtualMounter* moun
 
         // Then get the geometric matrix thing
         auto geom_file = mount->Open(geom_filename);
-        std::string geom_code = cqsp::asset::ReadAllFromVFileToString(geom_file.get());
+        std::string geom_code = ReadAllFromVFileToString(geom_file.get());
         shader_def_ptr->geometry = geom_code;
     }
     // Get uniforms, and then complain, I guess
     return shader_def_ptr;
 }
 
-std::unique_ptr<cqsp::asset::TextDirectoryAsset>
+std::unique_ptr<TextDirectoryAsset>
 AssetLoader::LoadScriptDirectory(VirtualMounter* mount, const std::string& path, const Hjson::Value& hints) {
     ZoneScoped;
     std::filesystem::path root(path);
@@ -825,7 +825,7 @@ void AssetLoader::LoadDirectory(std::string path, std::function<void(std::string
     }
 }
 
-void cqsp::asset::AssetLoader::LoadResources(Package& package, const std::string& package_mount_path) {
+void AssetLoader::LoadResources(Package& package, const std::string& package_mount_path) {
     ZoneScoped;
     // Load the package
     // Open the root directory
@@ -866,7 +866,7 @@ void cqsp::asset::AssetLoader::LoadResources(Package& package, const std::string
     }
 }
 
-void cqsp::asset::AssetLoader::LoadResourceHjsonFile(Package& package,
+void AssetLoader::LoadResourceHjsonFile(Package& package,
                                                      const std::string& package_mount_path,
                                                      const std::string& resource_file_path,
                                                      const Hjson::Value& asset_value) {
@@ -902,7 +902,7 @@ void cqsp::asset::AssetLoader::LoadResourceHjsonFile(Package& package,
         currentloading++;
     }
 }
-bool cqsp::asset::AssetLoader::HjsonPrototypeDirectory(Package& package,
+bool AssetLoader::HjsonPrototypeDirectory(Package& package,
                                                        const std::string& path,
                                                        const std::string& name) {
     ZoneScoped;
@@ -913,7 +913,8 @@ bool cqsp::asset::AssetLoader::HjsonPrototypeDirectory(Package& package,
     return true;
 }
 
-cqsp::asset::IVirtualFileSystem* cqsp::asset::AssetLoader::GetVfs(const std::string& path) {
+IVirtualFileSystem* AssetLoader::GetVfs(const std::string& path) {
     // Return native filesystem for now.
     return new NativeFileSystem(path.c_str());
 }
+}  // namespace cqsp::asset

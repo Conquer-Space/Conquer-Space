@@ -51,6 +51,7 @@ namespace cqsps = cqsp::common::components::ships;
 namespace cqspt = cqsp::common::components::types;
 namespace cqspc = cqsp::common::components;
 
+namespace {
 /// <summary>
 /// Initializes functions for RNG
 /// </summary>
@@ -380,6 +381,7 @@ void FunctionScience(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
          cqsp::common::systems::science::AddScienceResearch(universe, lab, research, progress);
     });
 }
+}  // namespace
 
 void cqsp::scripting::LoadFunctions(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
     FunctionCivilizationGen(universe, script_engine);

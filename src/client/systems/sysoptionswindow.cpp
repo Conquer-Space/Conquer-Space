@@ -19,8 +19,8 @@
 #include "common/version.h"
 #include "engine/cqspgui.h"
 
-void cqsp::client::systems::ShowOptionsWindow(
-    bool* open, cqsp::engine::Application& app) {
+namespace cqsp::client::systems {
+void ShowOptionsWindow(bool* open, cqsp::engine::Application& app) {
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f,
                                    ImGui::GetIO().DisplaySize.y * 0.5f),
                             ImGuiCond_Always, ImVec2(0.5f, 0.5f));
@@ -118,3 +118,4 @@ void cqsp::client::systems::ShowOptionsWindow(
 
     ImGui::End();
 }
+}  // namespace cqsp::client::systems

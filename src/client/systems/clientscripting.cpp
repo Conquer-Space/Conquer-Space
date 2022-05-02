@@ -25,6 +25,7 @@
 #include "common/scripting/functionreg.h"
 
 namespace cqsp::client::scripting {
+namespace {
 sol::object JsonToLuaObject(const Hjson::Value &j, const sol::this_state & s) {
     sol::state_view lua(s);
     switch (j.type()) {
@@ -83,9 +84,7 @@ void AssetManagerInterfaces(engine::Application& app) {
         return sol::make_object<std::string>(script_engine, asset->data);
     });
 
-    REGISTER_FUNCTION(
-        "get_hjson_asset",
-        [&](const char* string, sol::this_state s) -> sol::table {
+    REGISTER_FUNCTION("get_hjson_asset", [&](const char* string, sol::this_state s) -> sol::table {
             cqsp::asset::HjsonAsset* as =
                 app.GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>(string);
             // Create json object.
@@ -122,6 +121,8 @@ void UiInterfaces(engine::Application& app) {
         return ImGui::Button(label);
     });
 }
+}  // namespace
+
 void ClientFunctions(engine::Application& app) {
     AssetManagerInterfaces(app);
     UiInterfaces(app);

@@ -25,9 +25,11 @@
 #include "common/util/profiler.h"
 #include "engine/graphics/primitives/pane.h"
 
+namespace {
 void GenerateFrameBuffer(unsigned int &framebuffer) {
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+}
 }
 
 cqsp::engine::FramebufferRenderer::~FramebufferRenderer() { Free(); }

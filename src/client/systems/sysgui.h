@@ -23,7 +23,7 @@ namespace client {
 namespace systems {
 class SysUserInterface {
  public:
-    explicit SysUserInterface(cqsp::engine::Application &);
+    explicit SysUserInterface(cqsp::engine::Application &_app) : m_app(_app) {}
     virtual void Init() = 0;
     virtual void DoUI(int delta_time) = 0;
     virtual void DoUpdate(int delta_time) = 0;

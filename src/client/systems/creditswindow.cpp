@@ -22,6 +22,7 @@
 
 #include "common/util/paths.h"
 
+namespace {
 std::string strip(const std::string &inpt) {
     if (inpt.empty()) {
         return "";
@@ -34,6 +35,7 @@ std::string strip(const std::string &inpt) {
         ++end_it;
     return std::string(start_it, end_it.base());
 }
+}  // namespace
 
 cqsp::client::CreditsWindow::CreditsWindow(cqsp::engine::Application& app)
     : m_app(app) {}

@@ -113,6 +113,7 @@ IMPLOT_API void PlotPieChart(std::map<std::string, T>& map, double x,
 }
 }  // namespace ImPlot
 
+namespace {
 void DrawFlowIcon(ImDrawList* drawList, const ImVec2& a,
                            const ImVec2& b, ax::Drawing::IconType type, bool filled,
                            ImU32 color, ImU32 innerColor) {
@@ -177,6 +178,7 @@ void DrawFlowIcon(ImDrawList* drawList, const ImVec2& a,
         drawList->PathFillConvex(color);
     }
 }
+}  // namespace
 
 void ax::Drawing::DrawIcon(ImDrawList* drawList, const ImVec2& a,
                            const ImVec2& b, IconType type, bool filled,

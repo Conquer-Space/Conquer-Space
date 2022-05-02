@@ -29,9 +29,10 @@
 #include "common/systems/science/fields.h"
 #include "engine/cqspgui.h"
 
-void cqsp::client::systems::SysFieldViewer::Init() {}
+namespace cqsp::client::systems {
+void SysFieldViewer::Init() {}
 
-void cqsp::client::systems::SysFieldViewer::DoUI(int delta_time) {
+void SysFieldViewer::DoUI(int delta_time) {
     ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_Appearing);
     ImGui::Begin("Field Viewer");
     // Loop through fields
@@ -56,9 +57,9 @@ void cqsp::client::systems::SysFieldViewer::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void cqsp::client::systems::SysFieldViewer::DoUpdate(int delta_time) {}
+void SysFieldViewer::DoUpdate(int delta_time) {}
 
-void cqsp::client::systems::SysFieldViewer::FieldInformationWindow() {
+void SysFieldViewer::FieldInformationWindow() {
     if (!GetUniverse().valid(selected_tech)) {
         return;
     }
@@ -87,11 +88,11 @@ void cqsp::client::systems::SysFieldViewer::FieldInformationWindow() {
     }
 }
 
-void cqsp::client::systems::SysFieldNodeViewer::Init() {}
+void SysFieldNodeViewer::Init() {}
 
+namespace {
 typedef std::map<entt::entity, std::tuple<int, int, int>> FieldNodeInformation;
 
-namespace cqsp::client::systems {
 entt::entity CalculateInputPair(const FieldNodeInformation& map, int pin_value) {
     entt::entity field = entt::null;
     int pv = (pin_value  - 1) / 4 * 4 + 2;
@@ -248,16 +249,16 @@ void HandleNodeDelete(FieldNodeInformation& map,
         HandleDeletedNode(node_id, map, universe);
     }
 }
-} // namespace cqsp::client::systems
+}  // namespace
 
-void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
+void SysFieldNodeViewer::DoUI(int delta_time) {
     FieldNodeViewerWindow();
     FieldHjsonViewerWindow();
 }
 
-void cqsp::client::systems::SysFieldNodeViewer::DoUpdate(int delta_time) {}
+void SysFieldNodeViewer::DoUpdate(int delta_time) {}
 
-void cqsp::client::systems::SysFieldNodeViewer::FieldNodeViewerWindow() {
+void SysFieldNodeViewer::FieldNodeViewerWindow() {
     using common::components::science::Field;
     using common::components::Name;
     using common::components::Identifier;
@@ -371,7 +372,7 @@ void cqsp::client::systems::SysFieldNodeViewer::FieldNodeViewerWindow() {
     ImGui::End();
 }
 
-void cqsp::client::systems::SysFieldNodeViewer::FieldHjsonViewerWindow() {
+void SysFieldNodeViewer::FieldHjsonViewerWindow() {
     ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_Appearing);
     ImGui::Begin("Field Hjson viewer");
     if (ImGui::Button("Make Fields to Hjson")) {
@@ -397,3 +398,4 @@ void cqsp::client::systems::SysFieldNodeViewer::FieldHjsonViewerWindow() {
     ImGui::InputTextMultiline("field_hjson_viewer", &hjson_content, ImVec2(-1, -1));
     ImGui::End();
 }
+}  // namespace cqsp::client::systems

@@ -18,17 +18,19 @@
 
 #include "common/components/science.h"
 
-entt::entity cqsp::common::systems::science::CreateLab(Universe& universe) {
+namespace cqsp::common::systems::science {
+entt::entity CreateLab(Universe& universe) {
     entt::entity entity = universe.create();
     // Create labs
     universe.emplace<components::science::Lab>(entity);
     return entity;
 }
 
-void cqsp::common::systems::science::AddScienceResearch(Universe& universe,
-                                               entt::entity lab,
-                                               entt::entity research,
-                                               double progress) {
+void AddScienceResearch(Universe& universe,
+                        entt::entity lab,
+                        entt::entity research,
+                        double progress) {
     // Add the things
     universe.get<components::science::Lab>(lab).science_contribution[research] += progress;
 }
+}  // namespace cqsp::common::systems::science

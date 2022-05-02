@@ -30,11 +30,12 @@
 
 #include "common/util/paths.h"
 
+namespace {
 // Change this if you need
 static const char* DEFAULT_PATTERN = "[%T.%e] [%^%l%$] [%n] [%s:%#] %v";
 
-template<typename Mutex>
-class TracySink : public spdlog::sinks::base_sink <Mutex> {
+template <typename Mutex>
+class TracySink : public spdlog::sinks::base_sink<Mutex> {
  protected:
     void sink_it_(const spdlog::details::log_msg& msg) override {
         spdlog::memory_buf_t formatted;
@@ -43,14 +44,15 @@ class TracySink : public spdlog::sinks::base_sink <Mutex> {
         TracyMessage(tracy_msg.c_str(), tracy_msg.size());
     }
 
-    void flush_() override {
-    }
+    void flush_() override {}
 };
 
 using TracySink_mt = TracySink<std::mutex>;
 using TracySink_st = TracySink<spdlog::details::null_mutex>;
+}  // namespace
 
-std::shared_ptr<spdlog::logger> cqsp::common::util::make_logger(const std::string& name, bool error) {
+namespace cqsp::common::util {
+std::shared_ptr<spdlog::logger> make_logger(const std::string& name, bool error) {
     std::shared_ptr<spdlog::logger> logger;
 
     // Get log folder
@@ -96,8 +98,9 @@ std::shared_ptr<spdlog::logger> cqsp::common::util::make_logger(const std::strin
     return logger;
 }
 
-std::shared_ptr<spdlog::logger> cqsp::common::util::make_registered_logger(const std::string& name, bool error) {
+std::shared_ptr<spdlog::logger> make_registered_logger(const std::string& name, bool error) {
     auto logger = make_logger(name, error);
     spdlog::register_logger(logger);
     return logger;
 }
+}  // namespace cqsp::common::util

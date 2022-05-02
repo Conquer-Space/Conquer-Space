@@ -28,7 +28,8 @@
                                     continue;\
                                  }
 
-void cqsp::common::systems::loading::LoadGoods(cqsp::common::Universe& universe, Hjson::Value& goods) {
+namespace cqsp::common::systems::loading {
+void LoadGoods(cqsp::common::Universe& universe, Hjson::Value& goods) {
     namespace cqspc = cqsp::common::components;
     for (int i = 0; i < goods.size(); i++) {
         Hjson::Value val = goods[i];
@@ -75,7 +76,7 @@ void cqsp::common::systems::loading::LoadGoods(cqsp::common::Universe& universe,
     }
 }
 
-void cqsp::common::systems::loading::LoadRecipes(cqsp::common::Universe& universe, Hjson::Value& recipes) {
+void LoadRecipes(cqsp::common::Universe& universe, Hjson::Value& recipes) {
     namespace cqspc = cqsp::common::components;
     for (int i = 0; i < recipes.size(); i++) {
         Hjson::Value& val = recipes[i];
@@ -106,8 +107,7 @@ void cqsp::common::systems::loading::LoadRecipes(cqsp::common::Universe& univers
     }
 }
 
-cqsp::common::components::ResourceStockpile cqsp::common::systems::loading::HjsonToLedger(
-    cqsp::common::Universe& universe, Hjson::Value& hjson) {
+cqsp::common::components::ResourceStockpile HjsonToLedger(cqsp::common::Universe& universe, Hjson::Value& hjson) {
     components::ResourceStockpile stockpile;
     for (auto input_good : hjson) {
         stockpile[universe.goods[input_good.first]] = input_good.second;
@@ -115,7 +115,7 @@ cqsp::common::components::ResourceStockpile cqsp::common::systems::loading::Hjso
     return stockpile;
 }
 
-void cqsp::common::systems::loading::LoadTerrainData(cqsp::common::Universe& universe, Hjson::Value& value) {
+void LoadTerrainData(cqsp::common::Universe& universe, Hjson::Value& value) {
     for (auto it = value.begin(); it != value.end(); it++) {
         entt::entity entity = universe.create();
 
@@ -146,3 +146,4 @@ void cqsp::common::systems::loading::LoadTerrainData(cqsp::common::Universe& uni
         universe.terrain_data[it->first] = entity;
     }
 }
+}  // namespace cqsp::common::systems::loading

@@ -37,20 +37,10 @@
 #include "engine/gui.h"
 
 using cqsp::common::Universe;
-std::string cqsp::client::systems::gui::GetName(const Universe& universe, entt::entity entity) {
-    namespace cqspc = cqsp::common::components;
-    if (universe.all_of<cqspc::Name>(entity)) {
-        return universe.get<cqspc::Name>(entity);
-    } else if (universe.all_of<cqspc::Identifier>(entity)) {
-        return universe.get<cqspc::Identifier>(entity);
-    } else {
-        return fmt::format("{}", entity);
-    }
-}
 
-namespace cqsp::client::systems::gui {
+namespace {
 void RenderEntityType(const Universe& universe, entt::entity entity) {
-    std::string text = GetEntityType(universe, entity);
+    std::string text = cqsp::client::systems::gui::GetEntityType(universe, entity);
     if (text == "Player") {
         ImGui::TextColored(ImColor(252, 186, 3), "Player");
         return;
@@ -58,47 +48,6 @@ void RenderEntityType(const Universe& universe, entt::entity entity) {
         ImGui::TextFmt(text);
     }
 }
-
-std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity entity) {
-    namespace cqspc = cqsp::common::components;
-    // Then get type of entity
-    if (entity == entt::null) {
-        return "Null Entity";
-    }
-    if (universe.all_of<cqspc::bodies::Star>(entity)) {
-        return "Star";
-    } else if (universe.all_of<cqspc::bodies::Planet>(entity)) {
-        return  "Planet";
-    } else if (universe.any_of<cqspc::Settlement, cqspc::Habitation>(entity)) {
-        return  "City";
-    } else if (universe.any_of<cqspc::Mine>(entity)) {
-        std::string production = "";
-        auto& generator = universe.get<cqspc::ResourceGenerator>(entity);
-        for (auto it = generator.begin(); it != generator.end(); ++it) {
-            production += universe.get<cqspc::Name>(it->first).name + ", ";
-        }
-        // Remove last comma
-        if (!production.empty()) {
-            production = production.substr(0, production.size() - 2);
-        }
-        return fmt::format("{} Mine", production);
-    } else if (universe.any_of<cqspc::Factory>(entity)) {
-        std::string production = "";
-        auto& generator = universe.get<cqspc::ResourceConverter>(entity);
-        return fmt::format("{} Factory", GetName(universe, generator.recipe));
-    } else if (universe.any_of<cqspc::Player>(entity)) {
-        return "Player";
-    } else if (universe.any_of<cqspc::Civilization>(entity)) {
-        return "Civilization";
-    } else if (universe.any_of<cqspc::Organization>(entity)) {
-        return "Organization";
-    } else if (universe.any_of<cqspc::science::Lab>(entity)) {
-        return "Science Lab";
-    } else {
-        return "Unknown";
-    }
-}
-}  // namespace cqsp::client::systems::gui
 
 void ResourceTooltipSection(const Universe &universe, entt::entity entity) {
     namespace cqspc = cqsp::common::components;
@@ -141,9 +90,62 @@ void ResourceTooltipSection(const Universe &universe, entt::entity entity) {
         ImGui::TextFmt("Min Power: {}", consumption.min);
     }
 }
+}  // namespace
+
+namespace cqsp::client::systems::gui {
+std::string GetName(const Universe& universe, entt::entity entity) {
+    namespace cqspc = cqsp::common::components;
+    if (universe.all_of<cqspc::Name>(entity)) {
+        return universe.get<cqspc::Name>(entity);
+    } else if (universe.all_of<cqspc::Identifier>(entity)) {
+        return universe.get<cqspc::Identifier>(entity);
+    } else {
+        return fmt::format("{}", entity);
+    }
+}
+
+std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity entity) {
+    namespace cqspc = cqsp::common::components;
+    // Then get type of entity
+    if (entity == entt::null) {
+        return "Null Entity";
+    }
+    if (universe.all_of<cqspc::bodies::Star>(entity)) {
+        return "Star";
+    } else if (universe.all_of<cqspc::bodies::Planet>(entity)) {
+        return  "Planet";
+    } else if (universe.any_of<cqspc::Settlement, cqspc::Habitation>(entity)) {
+        return  "City";
+    } else if (universe.any_of<cqspc::Mine>(entity)) {
+        std::string production = "";
+        auto& generator = universe.get<cqspc::ResourceGenerator>(entity);
+        for (auto it = generator.begin(); it != generator.end(); ++it) {
+            production += universe.get<cqspc::Name>(it->first).name + ", ";
+        }
+        // Remove last comma
+        if (!production.empty()) {
+            production = production.substr(0, production.size() - 2);
+        }
+        return fmt::format("{} Mine", production);
+    } else if (universe.any_of<cqspc::Factory>(entity)) {
+        std::string production = "";
+        auto& generator = universe.get<cqspc::ResourceConverter>(entity);
+        return fmt::format("{} Factory", cqsp::client::systems::gui::GetName(universe, generator.recipe));
+    } else if (universe.any_of<cqspc::Player>(entity)) {
+        return "Player";
+    } else if (universe.any_of<cqspc::Civilization>(entity)) {
+        return "Civilization";
+    } else if (universe.any_of<cqspc::Organization>(entity)) {
+        return "Organization";
+    } else if (universe.any_of<cqspc::science::Lab>(entity)) {
+        return "Science Lab";
+    } else {
+        return "Unknown";
+    }
+}
 
 // TODO(EhWhoAmI): Organize this so that it makes logical sense and order.
-void cqsp::client::systems::gui::EntityTooltip(const Universe &universe, entt::entity entity) {
+void EntityTooltip(const Universe &universe, entt::entity entity) {
     if (!ImGui::IsItemHovered()) {
         return;
     }
@@ -183,9 +185,8 @@ void cqsp::client::systems::gui::EntityTooltip(const Universe &universe, entt::e
 
     // If it's a city do population
     if (universe.all_of<cqspc::Settlement>(entity)) {
-        ImGui::TextFmt("Population: {}",
-            cqsp::util::LongToHumanString(
-                cqsp::common::systems::GetCityPopulation(universe, entity)));
+        ImGui::TextFmt("Population: {}", util::LongToHumanString(
+                            common::systems::GetCityPopulation(universe, entity)));
     }
 
     // Resource stuff
@@ -193,3 +194,4 @@ void cqsp::client::systems::gui::EntityTooltip(const Universe &universe, entt::e
     ResourceTooltipSection(universe, entity);
     ImGui::EndTooltip();
 }
+}  // namespace cqsp::client::systems::gui

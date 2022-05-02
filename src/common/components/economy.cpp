@@ -25,7 +25,7 @@ void Market::AddSupply(const ResourceLedger& stockpile) {
     }
 }
 
-void cqsp::common::components::Market::AddSupply(const ResourceLedger& stockpile, double multiplier) {
+void Market::AddSupply(const ResourceLedger& stockpile, double multiplier) {
     for (const auto& stockpile_element : stockpile) {
         market_information[stockpile_element.first].supply +=
             stockpile_element.second * multiplier;
@@ -52,15 +52,15 @@ double Market::GetPrice(const ResourceLedger& stockpile) {
     return price;
 }
 
-double cqsp::common::components::Market::GetSDRatio(const entt::entity& good) {
+double Market::GetSDRatio(const entt::entity& good) {
     return market_information[good].sd_ratio;
 }
 
-double cqsp::common::components::Market::GetSupply(const entt::entity& good) {
+double Market::GetSupply(const entt::entity& good) {
     return market_information[good].supply;
 }
 
-double cqsp::common::components::Market::GetDemand(const entt::entity& good) {
+double Market::GetDemand(const entt::entity& good) {
     return market_information[good].demand;
 }
 

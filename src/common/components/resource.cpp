@@ -20,6 +20,7 @@
 
 #include <utility>
 
+namespace {
 template<class Map, class Function>
 Map merge_apply(const Map &m1, const Map &m2, typename Map::mapped_type identity, Function func) {
     auto it1 = m1.begin();
@@ -79,6 +80,7 @@ bool MergeCompare(const Map &m1, const Map &m2,  typename Map::mapped_type ident
     }
     return op;
 }
+}  // namespace
 
 using cqsp::common::components::ResourceLedger;
 
@@ -90,7 +92,7 @@ int ResourceLedger::stockpile_additions = 0;
 #define STOCKPILE_ADDITION
 #endif  // TRACY_ENABLE
 
-bool cqsp::common::components::ResourceLedger::EnoughToTransfer(const ResourceLedger &amount) {
+bool ResourceLedger::EnoughToTransfer(const ResourceLedger &amount) {
     bool b = true;
     for (auto it = amount.begin(); it != amount.end(); it++) {
         b &= (*this)[it->first] >= it->second;
@@ -120,7 +122,7 @@ ResourceLedger ResourceLedger::operator*(double value) {
     return ledger;
 }
 
-ResourceLedger cqsp::common::components::ResourceLedger::operator*(ResourceLedger &other) {
+ResourceLedger ResourceLedger::operator*(ResourceLedger &other) {
     ResourceLedger ledger;
     ledger = *this;
     ledger *= other;
@@ -145,7 +147,7 @@ void ResourceLedger::operator*=(const double value) {
     }
 }
 
-void cqsp::common::components::ResourceLedger::operator*=(ResourceLedger &other) {
+void ResourceLedger::operator*=(ResourceLedger &other) {
     for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
         (*this)[iterator->first] = iterator->second * other[iterator->first];
     }

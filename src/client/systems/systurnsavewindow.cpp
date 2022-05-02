@@ -21,11 +21,11 @@
 #include "engine/gui.h"
 #include "engine/cqspgui.h"
 
-void cqsp::client::systems::SysTurnSaveWindow::Init() {
-}
+namespace cqsp::client::systems {
+void SysTurnSaveWindow::Init() {}
 
-void cqsp::client::systems::SysTurnSaveWindow::DoUI(int delta_time) {
-        // Turn window
+void SysTurnSaveWindow::DoUI(int delta_time) {
+    // Turn window
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x, 30),
                             ImGuiCond_Always, ImVec2(1.f, 0.f));
     ImGui::SetNextWindowSize(ImVec2(150, 65), ImGuiCond_Always);
@@ -54,20 +54,20 @@ void cqsp::client::systems::SysTurnSaveWindow::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void cqsp::client::systems::SysTurnSaveWindow::DoUpdate(int delta_time) {
+void SysTurnSaveWindow::DoUpdate(int delta_time) {
     if (!ImGui::GetIO().WantCaptureKeyboard) {
         if (GetApp().ButtonIsReleased(engine::KeyInput::KEY_SPACE)) {
             TogglePlayState();
         }
     }
     // Update tick
-    if (to_tick && GetApp().GetTime() - last_tick > static_cast<float>(tick_speeds[tick_speed])/1000.f) {
+    if (to_tick && GetApp().GetTime() - last_tick > static_cast<float>(tick_speeds[tick_speed]) / 1000.f) {
         GetUniverse().EnableTick();
         last_tick = GetApp().GetTime();
     }
 }
 
-
-void cqsp::client::systems::SysTurnSaveWindow::TogglePlayState() {
+void SysTurnSaveWindow::TogglePlayState() {
     to_tick = !to_tick;
 }
+}  // namespace cqsp::client::systems

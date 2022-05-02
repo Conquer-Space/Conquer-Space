@@ -26,13 +26,15 @@
 #include "common/components/science.h"
 #include "common/systems/loading/loadutil.h"
 
+namespace {
 struct FieldTemplate {
     std::vector<std::string> parent;
     std::vector<std::string> adjacent;
 };
+}
 
-void cqsp::common::systems::science::LoadFields(Universe& universe,
-                                                Hjson::Value& hjson) {
+namespace cqsp::common::systems::science {
+void LoadFields(Universe& universe, Hjson::Value& hjson) {
     for (int i = 0; i < hjson.size(); i++) {
         Hjson::Value val = hjson[i];
         if (val["name"].type() != Hjson::Type::String) {
@@ -106,7 +108,7 @@ void cqsp::common::systems::science::LoadFields(Universe& universe,
     universe.clear<FieldTemplate>();
 }
 
-Hjson::Value cqsp::common::systems::science::WriteFields(Universe& universe) {
+Hjson::Value WriteFields(Universe& universe) {
     auto view = universe.view<components::science::Field>();
     Hjson::Value all_fields;
     for (entt::entity entity : view) {
@@ -140,3 +142,4 @@ Hjson::Value cqsp::common::systems::science::WriteFields(Universe& universe) {
     }
     return all_fields;
 }
+}  // namespace cqsp::common::systems::science

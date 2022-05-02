@@ -26,7 +26,7 @@
 #include "common/systems/loading/loadnames.h"
 #include "common/systems/science/fields.h"
 
-namespace cqsp::client::systems {
+namespace {
 void LoadResource(cqsp::engine::Application& app, std::string asset_name,
                     void (*func)(cqsp::common::Universe& universe, Hjson::Value& recipes)) {
     namespace cqspc = cqsp::common::components;
@@ -43,9 +43,10 @@ void LoadResource(cqsp::engine::Application& app, std::string asset_name,
         }
     }
 }
-}  // namespace cqsp::client::systems
+}  // namespace
 
-void cqsp::client::systems::LoadAllResources(cqsp::engine::Application& app) {
+namespace cqsp::client::systems {
+void LoadAllResources(cqsp::engine::Application& app) {
     using namespace cqsp::common::systems::loading;  // NOLINT
     LoadResource(app, "goods", LoadGoods);
     LoadResource(app, "recipes", LoadRecipes);
@@ -53,13 +54,14 @@ void cqsp::client::systems::LoadAllResources(cqsp::engine::Application& app) {
     LoadResource(app, "tech_fields", common::systems::science::LoadFields);
 
     // Initialize planet terrains
-    asset::HjsonAsset* asset = app.GetAssetManager().GetAsset<asset::HjsonAsset>("core:terrain_colors");
+    asset::HjsonAsset* asset =
+        app.GetAssetManager().GetAsset<asset::HjsonAsset>(
+            "core:terrain_colors");
     common::systems::loading::LoadTerrainData(app.GetUniverse(), asset->data);
 
     // Load scripts
     // Load lua functions
-    cqsp::scripting::LoadFunctions(app.GetUniverse(),
-                                   app.GetScriptInterface());
+    cqsp::scripting::LoadFunctions(app.GetUniverse(), app.GetScriptInterface());
     scripting::ClientFunctions(app);
 
     // Load universe
@@ -68,3 +70,4 @@ void cqsp::client::systems::LoadAllResources(cqsp::engine::Application& app) {
     script_interface.RegisterDataGroup("generators");
     script_interface.RegisterDataGroup("events");
 }
+}  // namespace cqsp::client::systems

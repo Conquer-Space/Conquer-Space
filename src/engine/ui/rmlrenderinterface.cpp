@@ -25,6 +25,7 @@
 #include "engine/application.h"
 #include "engine/graphics/mesh.h"
 
+namespace {
 class RmlUiRendererGeometryHandler {
  public:
     GLuint VAO, VBO, EBO;
@@ -32,13 +33,7 @@ class RmlUiRendererGeometryHandler {
     int num_indices;
     cqsp::asset::Texture* texture;
 
-    RmlUiRendererGeometryHandler()
-        : VAO(0),
-          VBO(0),
-          EBO(0),
-          num_vertices(0),
-          num_indices(0),
-          texture(0) {}
+    RmlUiRendererGeometryHandler()  : VAO(0), VBO(0), EBO(0), num_vertices(0), num_indices(0), texture(0) {}
 
     ~RmlUiRendererGeometryHandler() {
         if (VAO) {
@@ -55,6 +50,7 @@ class RmlUiRendererGeometryHandler {
         VAO = VBO = EBO = 0;
     }
 };
+}  // namespace
 
 cqsp::engine::CQSPRenderInterface::CQSPRenderInterface(Application& _app) : app(_app) {
     logger = spdlog::get("RmlUi");

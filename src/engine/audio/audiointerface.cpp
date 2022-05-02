@@ -142,6 +142,7 @@ cqsp::engine::audio::AudioInterface::~AudioInterface() {
     alcCloseDevice(device);
 }
 
+namespace {
 inline bool isBigEndian() {
     int a = 1;
     return !(reinterpret_cast<char*>(&a))[0];
@@ -171,6 +172,7 @@ inline ALenum to_al_format(int16_t channels, int16_t samples) {
         return -1;
     }
 }
+}  // namespace
 
 std::unique_ptr<AudioAsset> AudioInterface::LoadWav(std::ifstream &in) {
     auto audio_asset = std::make_unique<cqsp::asset::ALAudioAsset>();

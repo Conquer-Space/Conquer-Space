@@ -53,6 +53,7 @@
 #include "engine/userinput.h"
 
 namespace cqsp::engine {
+namespace {
 const char* ParseType(GLenum type) {
     switch (type) {
         case GL_DEBUG_TYPE_ERROR:
@@ -116,7 +117,7 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id,
                     ParseSource(source), ParseSeverity(severity), id, message);
 }
 
-class GLWindow : public Window {
+class GLWindow : public cqsp::engine::Window {
  public:
     bool ButtonIsHeld(int btn) const { return m_keys_held[btn]; }
     bool ButtonIsReleased(int btn) const { return m_keys_released[btn]; }
@@ -358,19 +359,19 @@ class GLWindow : public Window {
     int m_mods;
 };
 
-GLFWwindow* window(Window* window) {
+GLFWwindow* window(cqsp::engine::Window* window) {
     return reinterpret_cast<GLWindow*>(window)->window;
 }
-}  // namespace cqsp::engine
+}  // namespace
 
-int cqsp::engine::Application::init() {
+int Application::init() {
     LoggerInit();
     LogInfo();
     GlInit();
 
     manager.LoadDefaultTexture();
     // Init audio
-    m_audio_interface = new cqsp::engine::audio::AudioInterface();
+    m_audio_interface = new audio::AudioInterface();
     m_audio_interface->Initialize();
     // Set option things
     m_audio_interface->SetMusicVolume(m_client_options.GetOptions()["audio"]["music"]);
@@ -392,7 +393,7 @@ int cqsp::engine::Application::init() {
     return 0;
 }
 
-void cqsp::engine::Application::InitImgui() {
+void Application::InitImgui() {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -409,7 +410,7 @@ void cqsp::engine::Application::InitImgui() {
     ImGui_ImplOpenGL3_Init("#version 130");
 }
 
-void cqsp::engine::Application::ProcessRmlUiUserInput() {
+void Application::ProcessRmlUiUserInput() {
     rml_context->SetDimensions(Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
 
     GLWindow* gl_window = reinterpret_cast<GLWindow*>(m_window);
@@ -470,10 +471,10 @@ void cqsp::engine::Application::ProcessRmlUiUserInput() {
     }
 }
 
-void cqsp::engine::Application::InitRmlUi() {
+void Application::InitRmlUi() {
     // Begin by installing the custom interfaces.
-    m_system_interface = std::make_unique<cqsp::engine::CQSPSystemInterface>(*this);
-    m_render_interface = std::make_unique<cqsp::engine::CQSPRenderInterface>(*this);
+    m_system_interface = std::make_unique<CQSPSystemInterface>(*this);
+    m_render_interface = std::make_unique<CQSPRenderInterface>(*this);
 
     Rml::SetSystemInterface(m_system_interface.get());
     Rml::SetRenderInterface(m_render_interface.get());
@@ -512,7 +513,7 @@ void cqsp::engine::Application::InitRmlUi() {
     //Rml::Factory::RegisterEventListenerInstancer(m_event_instancer.get());
 }
 
-int cqsp::engine::Application::destroy() {
+int Application::destroy() {
     // Delete scene
     SPDLOG_INFO("Destroying scene");
     m_scene_manager.DeleteCurrentScene();
@@ -554,7 +555,7 @@ int cqsp::engine::Application::destroy() {
     return 0;
 }
 
-void cqsp::engine::Application::CalculateProjections() {
+void Application::CalculateProjections() {
     float window_ratio = static_cast<float>(GetWindowWidth()) /
                     static_cast<float>(GetWindowHeight());
     three_dim_projection = glm::infinitePerspective(glm::radians(45.f), window_ratio, 0.1f);
@@ -571,7 +572,7 @@ void cqsp::engine::Application::CalculateProjections() {
                    -1.f, 1.f);
 }
 
-cqsp::engine::Application::Application(int _argc, char* _argv[]) {
+Application::Application(int _argc, char* _argv[]) {
     cqsp::common::util::exe_path = _argv[0];
     for (int i = 0; i < _argc; i++) {
         cmd_line_args.push_back(_argv[i]);
@@ -590,9 +591,9 @@ cqsp::engine::Application::Application(int _argc, char* _argv[]) {
     full_screen = static_cast<bool>(m_client_options.GetOptions()["full_screen"]);
 }
 
-cqsp::engine::Application::Application() : Application(0, new char*[1]{"Conquer-Space"}) {}
+Application::Application() : Application(0, new char*[1]{"Conquer-Space"}) {}
 
-void cqsp::engine::Application::run() {
+void Application::run() {
     // Main loop
     int code = init();
     fps = 0;
@@ -673,15 +674,15 @@ void cqsp::engine::Application::run() {
     destroy();
 }
 
-bool cqsp::engine::Application::ShouldExit() {
+bool Application::ShouldExit() {
     return !glfwWindowShouldClose(window(m_window));
 }
 
-void cqsp::engine::Application::ExitApplication() {
+void Application::ExitApplication() {
     glfwSetWindowShouldClose(window(m_window), true);
 }
 
-Rml::ElementDocument* cqsp::engine::Application::LoadDocument(const std::string& path) {
+Rml::ElementDocument* Application::LoadDocument(const std::string& path) {
     auto document = rml_context->LoadDocument(path);
     if (!document) {
         SPDLOG_WARN("Unable to load document {}", path);
@@ -690,12 +691,12 @@ Rml::ElementDocument* cqsp::engine::Application::LoadDocument(const std::string&
     return document;
 }
 
-void cqsp::engine::Application::CloseDocument(const std::string& path) {
+void Application::CloseDocument(const std::string& path) {
     loaded_documents[path]->Close();
     loaded_documents.erase(path);
 }
 
-Rml::ElementDocument* cqsp::engine::Application::ReloadDocument(const std::string& path) {
+Rml::ElementDocument* Application::ReloadDocument(const std::string& path) {
     if (loaded_documents.find(path) == loaded_documents.end()) {
         return nullptr;
     }
@@ -709,7 +710,7 @@ Rml::ElementDocument* cqsp::engine::Application::ReloadDocument(const std::strin
     return document;
 }
 
-void cqsp::engine::Application::DrawText(const std::string& text, float x,
+void Application::DrawText(const std::string& text, float x,
                                          float y) {
     if (fontShader != nullptr && m_font != nullptr) {
         // Render with size 16 white text
@@ -717,23 +718,23 @@ void cqsp::engine::Application::DrawText(const std::string& text, float x,
     }
 }
 
-void cqsp::engine::Application::DrawText(const std::string& text, float x, float y, float size) {
+void Application::DrawText(const std::string& text, float x, float y, float size) {
     if (fontShader != nullptr && m_font != nullptr) {
         // Render with size 16 white text
         cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, size, glm::vec3(1.f, 1.f, 1.f));
     }
 }
 
-void cqsp::engine::Application::DrawTextNormalized(const std::string& text, float x, float y) {
+void Application::DrawTextNormalized(const std::string& text, float x, float y) {
     if (fontShader != nullptr && m_font != nullptr) {
         cqsp::asset::RenderText(*fontShader, *m_font, text, (x + 1) * GetWindowWidth()/2,
                                 (y + 1) * GetWindowHeight() / 2, 16, glm::vec3(1.f, 1.f, 1.f));
     }
 }
 
-double cqsp::engine::Application::GetTime() { return glfwGetTime(); }
+double Application::GetTime() { return glfwGetTime(); }
 
-bool cqsp::engine::Application::Screenshot(const char* path) {
+bool Application::Screenshot(const char* path) {
     // Take screenshot
     const int components = 3;
     const int byte_size = GetWindowWidth() * GetWindowHeight() * components;
@@ -767,7 +768,7 @@ bool cqsp::engine::Application::Screenshot(const char* path) {
     return success;
 }
 
-void cqsp::engine::Application::InitFonts() {
+void Application::InitFonts() {
     Hjson::Value fontDatabase;
     Hjson::DecoderOptions decOpt;
     decOpt.comments = false;
@@ -800,7 +801,7 @@ void cqsp::engine::Application::InitFonts() {
     markdownConfig.headingFormats[2] = {h3font, true};
 }
 
-void cqsp::engine::Application::SetIcon() {
+void Application::SetIcon() {
     GLFWimage images[1];
     images[0].pixels = stbi_load((cqsp::common::util::GetCqspDataPath() + "/" + icon_path).c_str(),
                                  &images[0].width, &images[0].height, 0, 4);
@@ -808,7 +809,7 @@ void cqsp::engine::Application::SetIcon() {
     stbi_image_free(images[0].pixels);
 }
 
-void cqsp::engine::Application::GlInit() {
+void Application::GlInit() {
     m_window = new GLWindow();
     m_window->InitWindow(m_client_options.GetOptions()["window"]["width"],
                             m_client_options.GetOptions()["window"]["height"]);
@@ -822,14 +823,14 @@ void cqsp::engine::Application::GlInit() {
     SPDLOG_INFO(" --- End of GL information ---");
 }
 
-void cqsp::engine::Application::LoggerInit() {
+void Application::LoggerInit() {
     // Get path
     properties["data"] = common::util::GetCqspSavePath();
     logger = cqsp::common::util::make_logger("application", true);
     spdlog::set_default_logger(logger);
 }
 
-void cqsp::engine::Application::LogInfo() {
+void Application::LogInfo() {
 #ifndef NDEBUG
     SPDLOG_INFO("Conquer Space Debug {} {}", CQSP_VERSION_STRING, GIT_INFO);
 #else
@@ -846,11 +847,11 @@ void cqsp::engine::Application::LogInfo() {
 #endif  // TRACY_ENABLED
 }
 
-void cqsp::engine::Application::SetWindowDimensions(int width, int height) {
+void Application::SetWindowDimensions(int width, int height) {
     m_window->SetWindowSize(width, height);
 }
 
-void cqsp::engine::Application::SetFullScreen(bool screen) {
+void Application::SetFullScreen(bool screen) {
     if (screen) {
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowMonitor(window(m_window), glfwGetPrimaryMonitor(), 0, 0,
@@ -865,16 +866,16 @@ void cqsp::engine::Application::SetFullScreen(bool screen) {
     }
 }
 
-void cqsp::engine::SceneManager::SetInitialScene(std::unique_ptr<Scene> scene) {
+void SceneManager::SetInitialScene(std::unique_ptr<Scene> scene) {
     m_scene = std::move(scene);
 }
 
-void cqsp::engine::SceneManager::SetScene(std::unique_ptr<Scene> scene) {
+void SceneManager::SetScene(std::unique_ptr<Scene> scene) {
     m_next_scene = std::move(scene);
     m_switch = true;
 }
 
-void cqsp::engine::SceneManager::SwitchScene() {
+void SceneManager::SwitchScene() {
     m_scene = std::move(m_next_scene);
     SPDLOG_TRACE("Initializing scene");
     m_scene->Init();
@@ -882,30 +883,31 @@ void cqsp::engine::SceneManager::SwitchScene() {
     m_switch = false;
 }
 
-cqsp::engine::Scene* cqsp::engine::SceneManager::GetScene() {
+Scene* SceneManager::GetScene() {
     return m_scene.get();
 }
 
-void cqsp::engine::SceneManager::DeleteCurrentScene() { m_scene.reset(); }
+void SceneManager::DeleteCurrentScene() { m_scene.reset(); }
 
-void cqsp::engine::SceneManager::Update(float deltaTime) { m_scene->Update(deltaTime); }
+void SceneManager::Update(float deltaTime) { m_scene->Update(deltaTime); }
 
-void cqsp::engine::SceneManager::Ui(float deltaTime) { m_scene->Ui(deltaTime); }
+void SceneManager::Ui(float deltaTime) { m_scene->Ui(deltaTime); }
 
-void cqsp::engine::SceneManager::Render(float deltaTime) { m_scene->Render(deltaTime); }
+void SceneManager::Render(float deltaTime) { m_scene->Render(deltaTime); }
 
-cqsp::engine::Application::CqspEventInstancer::CqspEventInstancer() {}
+Application::CqspEventInstancer::CqspEventInstancer() {}
 
-cqsp::engine::Application::CqspEventInstancer::~CqspEventInstancer() {}
+Application::CqspEventInstancer::~CqspEventInstancer() {}
 
-Rml::EventListener* cqsp::engine::Application::CqspEventInstancer::
+Rml::EventListener* Application::CqspEventInstancer::
                     InstanceEventListener(const Rml::String & value, Rml::Element * element) {
     // Add event activation, I guess
     return new CqspEventListener(value);
 }
 
-cqsp::engine::Application::CqspEventListener::~CqspEventListener() {
+Application::CqspEventListener::~CqspEventListener() {
 }
 
-void cqsp::engine::Application::CqspEventListener::ProcessEvent(
+void Application::CqspEventListener::ProcessEvent(
     Rml::Event& event) {}
+}  // namespace cqsp::engine

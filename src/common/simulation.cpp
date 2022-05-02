@@ -48,8 +48,7 @@
 using cqsp::common::systems::simulation::Simulation;
 using cqsp::common::Universe;
 
-cqsp::common::systems::simulation::Simulation::Simulation(
-    cqsp::common::Game &game) : m_game(game), m_universe(game.GetUniverse()) {
+Simulation::Simulation(cqsp::common::Game &game) : m_game(game), m_universe(game.GetUniverse()) {
     namespace cqspcs = cqsp::common::systems;
     AddSystem<cqspcs::SysScript>();
     AddSystem<cqspcs::SysWalletReset>();
@@ -66,7 +65,7 @@ cqsp::common::systems::simulation::Simulation::Simulation(
     AddSystem<cqspcs::SysPath>();
 }
 
-void cqsp::common::systems::simulation::Simulation::tick() {
+void Simulation::tick() {
     m_universe.DisableTick();
     m_universe.date.IncrementDate();
     // Get previous tick spacing

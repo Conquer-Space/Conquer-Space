@@ -18,8 +18,6 @@
 
 #include <filesystem>
 
-char* cqsp::common::util::exe_path = "";
-
 #ifdef _WIN32
 #include <windows.h>
 #include <shlobj.h>
@@ -29,7 +27,7 @@ char* cqsp::common::util::exe_path = "";
 #include <unistd.h>
 #include <sys/types.h>
 #include <pwd.h>
-
+namespace {
 char* get_home_dir(uid_t uid) {
     struct passwd pwent;
     struct passwd *pwentp;
@@ -41,20 +39,25 @@ char* get_home_dir(uid_t uid) {
         return pwent.pw_dir;
     }
 }
+}  // namespace
 #endif
 
-std::string cqsp::common::util::GetCqspSavePath() {
+namespace cqsp::common::util {
+char* exe_path = "";
+
+std::string GetCqspSavePath() {
     std::string directory = "";
     std::string dirname = "cqsp";
 #ifdef _WIN32
     // Set log folder
     CHAR my_documents[MAX_PATH];
-    HRESULT result = SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, my_documents);
+    HRESULT result = SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL,
+                                     SHGFP_TYPE_CURRENT, my_documents);
 
     directory = std::string(my_documents);
 #else
     // Get home directory to put the save data, and other data
-    const char *homedir = get_home_dir(getuid());
+    const char* homedir = get_home_dir(getuid());
     directory = std::string(homedir);
     dirname = "." + dirname;
 #endif
@@ -68,22 +71,24 @@ std::string cqsp::common::util::GetCqspSavePath() {
     return filesystem.string();
 }
 
-std::string cqsp::common::util::GetCqspExePath() {
+std::string GetCqspExePath() {
     // Get current path
     std::filesystem::path p(exe_path);
     p = p.remove_filename();
     return std::filesystem::canonical(p).string();
 }
 
-std::string cqsp::common::util::GetCqspDataPath() {
+std::string GetCqspDataPath() {
     // If it's cmake, then the directory may be different
 #if defined(_DEBUG) && defined(_MSC_VER)
-    // so if it's debug, we'd automatically assume we're running from the local windows debugger
-    // Because apparently linux doesn't build the debug version.
-    // Not sure about other versions, but we'd probably have do deal with it in the future
-    // Usually, the output is at build\src\Debug, so we need to access ../../../binaries/data
+    // so if it's debug, we'd automatically assume we're running from the local
+    // windows debugger Because apparently linux doesn't build the debug
+    // version. Not sure about other versions, but we'd probably have do deal
+    // with it in the future Usually, the output is at build\src\Debug, so we
+    // need to access ../../../binaries/data
     return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) /
-                                      ".."/".."/".."/"binaries"/"data").string();
+                                      ".." / ".." / ".." / "binaries" / "data")
+        .string();
 #else
     // Then just search the default path
     std::string path = GetCqspExePath();
@@ -91,6 +96,9 @@ std::string cqsp::common::util::GetCqspDataPath() {
     // - binaries
     //   - bin
     //   - data <-- data is here, so it's ../data/
-    return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) / "../data").string();
+    return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) /
+                                      "../data")
+        .string();
 #endif
 }
+}  // namespace cqsp::common::util
