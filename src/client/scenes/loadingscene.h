@@ -28,7 +28,7 @@ namespace scene {
 class LoadingScene : public cqsp::engine::Scene {
  public:
     explicit LoadingScene(cqsp::engine::Application& app);
-   ~LoadingScene();
+    ~LoadingScene();
 
     void Init();
     void Update(float deltaTime);

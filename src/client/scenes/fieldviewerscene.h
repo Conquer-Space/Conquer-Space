@@ -16,6 +16,10 @@
 */
 #pragma once
 
+#include <utility>
+#include <memory>
+#include <vector>
+
 #include "engine/scene.h"
 #include "client/systems/sysgui.h"
 
@@ -40,7 +44,6 @@ class ObjectEditorScene : public cqsp::engine::Scene {
 
  private:
     std::vector<std::unique_ptr<cqsp::client::systems::SysUserInterface>> user_interfaces;
-
 };
 }  // namespace scene
 };  // namespace cqsp

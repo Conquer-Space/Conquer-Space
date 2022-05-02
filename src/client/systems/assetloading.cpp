@@ -16,6 +16,8 @@
  */
 #include "client/systems/assetloading.h"
 
+#include <string>
+
 #include "client/systems/clientscripting.h"
 #include "common/systems/sysuniversegenerator.h"
 #include "common/scripting/luafunctions.h"
@@ -41,7 +43,7 @@ void LoadResource(cqsp::engine::Application& app, std::string asset_name,
         }
     }
 }
-}
+}  // namespace cqsp::client::systems
 
 void cqsp::client::systems::LoadAllResources(cqsp::engine::Application& app) {
     using namespace cqsp::common::systems::loading;  // NOLINT

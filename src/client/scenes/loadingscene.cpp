@@ -46,7 +46,7 @@ cqsp::scene::LoadingScene::LoadingScene(cqsp::engine::Application& app)
     percentage = 0;
 }
 
-cqsp::scene::LoadingScene::~LoadingScene() { 
+cqsp::scene::LoadingScene::~LoadingScene() {
     if (thread->joinable()) {
         thread->join();
     }

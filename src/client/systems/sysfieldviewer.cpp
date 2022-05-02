@@ -18,7 +18,9 @@
 
 #include <map>
 #include <tuple>
+#include <vector>
 #include <filesystem>
+#include <string>
 
 #include "common/components/science.h"
 #include "common/components/name.h"
@@ -111,7 +113,14 @@ bool VerifyFieldNode(int input_id, int output_id) {
             (input_id == 3 && output_id == 1);
 }
 
-void AcceptNewItem(cqsp::common::Universe& universe, int input_type, entt::entity input_entity, entt::entity output_entity) {
+void RemoveFieldConnection(std::vector<entt::entity>& vec, entt::entity ent) {
+    if (std::find(vec.begin(), vec.end(), ent) != vec.end()) {
+    vec.erase(std::remove(vec.begin(), vec.end(), ent), vec.end());
+    }
+}
+
+void AcceptNewItem(cqsp::common::Universe& universe, int input_type,
+                   entt::entity input_entity, entt::entity output_entity) {
     // Look for the link, then connect back
     // The initial pins should be in multiples of 4 because we make 4
     // Then connect the pins
@@ -168,32 +177,24 @@ void CreateNewNode(cqsp::common::Universe& universe, FieldNodeInformation& map) 
     }
 }
 
-void RemoveRelationship(cqsp::common::Universe& universe, int input_type, entt::entity input_entity, entt::entity output_entity) {
+void RemoveRelationship(cqsp::common::Universe& universe, int input_type,
+                        entt::entity input_entity, entt::entity output_entity) {
     switch (input_type) {
     case 1: {
         // Then they want to be a child ofthe output entity
         auto& field = universe.get<cqsp::common::components::science::Field>(input_entity);
-        if (std::find(field.parents.begin(), field.parents.end(),
-                        output_entity) != field.parents.end()) {
-            field.parents.erase(std::remove(field.parents.begin(), field.parents.end(), output_entity), field.parents.end());
-        }
+        RemoveFieldConnection(field.parents, output_entity);
         break;
     }
     case 2: {
         auto& field = universe.get<cqsp::common::components::science::Field>(input_entity);
-        if (std::find(field.adjacent.begin(), field.adjacent.end(),
-                        output_entity) != field.adjacent.end()) {
-            field.adjacent.erase(std::remove(field.adjacent.begin(), field.adjacent.end(), output_entity), field.adjacent.end());
-        }
+        RemoveFieldConnection(field.adjacent, output_entity);
         break;
     }
     case 3: {
         // Then they want to be a child ofthe output entity
         auto& field = universe.get<cqsp::common::components::science::Field>(output_entity);
-        if (std::find(field.parents.begin(), field.parents.end(),
-                        input_entity) != field.parents.end()) {
-            field.parents.erase(std::remove(field.parents.begin(), field.parents.end(), input_entity), field.parents.end());
-        }
+        RemoveFieldConnection(field.adjacent, input_entity);
         break;
     }
     }
@@ -216,10 +217,6 @@ void HandleDeletedRelationship(const ed::LinkId& linkId, FieldNodeInformation& m
     // Remove the relationship
     int input_type = (input_pin.Get() - 1) % 4;
     RemoveRelationship(universe, input_type, input_entity, output_entity);
-}
-
-void RemoveFieldConnection(std::vector<entt::entity>& vec, entt::entity ent) {
-    vec.erase(std::remove(vec.begin(), vec.end(), ent), vec.end());
 }
 
 void HandleDeletedNode(const ed::NodeId& nodeId, FieldNodeInformation& map,
@@ -251,7 +248,7 @@ void HandleNodeDelete(FieldNodeInformation& map,
         HandleDeletedNode(node_id, map, universe);
     }
 }
-}
+} // namespace cqsp::client::systems
 
 void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
     FieldNodeViewerWindow();
@@ -262,14 +259,17 @@ void cqsp::client::systems::SysFieldNodeViewer::DoUpdate(int delta_time) {}
 
 void cqsp::client::systems::SysFieldNodeViewer::FieldNodeViewerWindow() {
     using common::components::science::Field;
+    using common::components::Name;
+    using common::components::Identifier;
+    using common::components::Description;
     // View Fields
     ImGui::SetNextWindowSize(ImVec2(1400, 900), ImGuiCond_Appearing);
     ImGui::Begin("Field Node Viewer Window");
     if (ImGui::Button("Add New Node")) {
         entt::entity field = GetUniverse().create();
         GetUniverse().emplace<Field>(field);
-        GetUniverse().emplace<common::components::Name>(field);
-        GetUniverse().emplace<common::components::Identifier>(field);
+        GetUniverse().emplace<Name>(field);
+        GetUniverse().emplace<Identifier>(field);
     }
     ed::Begin("Field Viewer");
     int uniqueId = 1;
@@ -287,19 +287,19 @@ void cqsp::client::systems::SysFieldNodeViewer::FieldNodeViewerWindow() {
         ed::BeginNode(node_id);
         ImGui::SetNextItemWidth(200);
         ImGui::InputText(fmt::format("##ne_name_{}", entity).c_str(),
-                         &(GetUniverse().get <common::components::Name> (entity).name));
+                         &(GetUniverse().get <Name> (entity).name));
         ImGui::SetNextItemWidth(200);
         ImGui::InputText(fmt::format("##ne_identifier{}", entity).c_str(),
-                         &(GetUniverse().get<common::components::Identifier>(entity).identifier));
-        if (GetUniverse().all_of<common::components::Description>(entity)) {
+                         &(GetUniverse().get<Identifier>(entity).identifier));
+        if (GetUniverse().all_of<Description>(entity)) {
             // Description text
             ImGui::SetNextItemWidth(200);
-            std::string& description =GetUniverse().get<common::components::Description>(entity).description;
+            std::string& description = GetUniverse().get<Description>(entity).description;
             ImGui::InputText(fmt::format("##ne_description{}", entity).c_str(),
                          &description);
         } else {
             if (ImGui::Button("+ Add Description")) {
-                GetUniverse().emplace<common::components::Description>(entity);
+                GetUniverse().emplace<Description>(entity);
             }
         }
         ImGui::TextFmt("Entity Id: {}", entity);
@@ -344,7 +344,7 @@ void cqsp::client::systems::SysFieldNodeViewer::FieldNodeViewerWindow() {
 
     // Draw more nodes
     for (const entt::entity& entity : fields) {
-        auto& field = GetUniverse().get<common::components::science::Field>(entity);
+        auto& field = GetUniverse().get<Field>(entity);
         const auto& current_tup = map[entity];
         for (const auto& parent : field.parents) {
             const auto& other_tup = map[parent];
