@@ -97,7 +97,6 @@ void cqsp::scene::UniverseScene::Init() {
     AddUISystem<cqsps::SysCommand>();
     AddUISystem<cqsps::CivilizationInfoPanel>();
     AddUISystem<cqsps::SysFieldViewer>();
-    AddUISystem<cqsps::SysFieldNodeViewer>();
 
     AddUISystem<cqsps::gui::SysEvent>();
     simulation->tick();
