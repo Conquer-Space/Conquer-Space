@@ -218,17 +218,33 @@ void HandleDeleteRelationship(FieldNodeInformation& map, cqsp::common::Universe&
 }
 
 void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
+    using common::components::science::Field;
     // View Fields
+    ImGui::SetNextWindowSize(ImVec2(1400, 900), ImGuiCond_Appearing);
+    ImGui::Begin("Field Node Viewer Window");
+    if (ImGui::Button("Add New Node")) {
+        entt::entity field = GetUniverse().create();
+        GetUniverse().emplace<Field>(field);
+        GetUniverse().emplace<common::components::Name>(field);
+        GetUniverse().emplace<common::components::Identifier>(field);
+    }
     ed::Begin("Field Viewer");
-    ImGui::SetWindowSize(ImVec2(1000, 900), ImGuiCond_Appearing);
     int uniqueId = 1;
     FieldNodeInformation map;
 
-    auto fields = GetUniverse().view<common::components::science::Field>();
+    auto fields = GetUniverse().view<Field>();
     // Start drawing nodes
     for (const entt::entity& entity : fields) {
-        ed::BeginNode(uniqueId++);
-        ImGui::Text(gui::GetName(GetUniverse(), entity).c_str());
+        int node_id = uniqueId++;
+        if (ed::GetHoveredNode().Get() != node_id) {
+            // Then make it light
+            ed::PushStyleColor(ax::NodeEditor::StyleColor_Bg,
+                               ImVec4(ImColor(255, 0, 0, 255)));
+        }
+        ed::BeginNode(node_id);
+        ImGui::SetNextItemWidth(200);
+        ImGui::InputText(fmt::format("##ne_name_{}", entity).c_str(),
+                         &(GetUniverse().get <common::components::Name> (entity).name));
         ImGui::SetNextItemWidth(200);
         ImGui::InputText(fmt::format("##ne_identifier{}", entity).c_str(),
                          &(GetUniverse().get<common::components::Identifier>(entity).identifier));
@@ -246,6 +262,8 @@ void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
         }
         int a = uniqueId++;
         ed::BeginPin(a, ed::PinKind::Input);
+        ed::PinPivotAlignment(ImVec2(0.1, 0.5f));
+        ed::PinPivotSize(ImVec2(0, 0));
         ax::Drawing::Icon(ImVec2(16, 16), ax::Drawing::IconType::Circle, true,
                     ImColor(0, 0, 255, 255), ImColor(32, 32, 32, 255));
         ImGui::SameLine();
@@ -253,16 +271,21 @@ void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
         ed::EndPin();
         int b = uniqueId++;
         ed::BeginPin(b, ed::PinKind::Output);
+        ed::PinPivotAlignment(ImVec2(0.1, 0.5f));
+        ed::PinPivotSize(ImVec2(0, 0));
         ax::Drawing::Icon(ImVec2(16, 16), ax::Drawing::IconType::Diamond, true,
                     ImColor(255, 0, 0, 255), ImColor(32, 32, 32, 255));
         ImGui::SameLine();
         ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Adjacent");
-
         ed::EndPin();
 
         int c = uniqueId++;
         ImGui::SameLine();
+        ImGui::Dummy(ImVec2(15, 0));
+        ImGui::SameLine();
         ed::BeginPin(c, ed::PinKind::Output);
+        ed::PinPivotAlignment(ImVec2(0.9, 0.5f));
+        ed::PinPivotSize(ImVec2(0, 0));
         ImGui::TextColored(ImVec4(1, 1, 1, 0.8), "Parent of");
         ImGui::SameLine();
                 ax::Drawing::Icon(ImVec2(16, 16), ax::Drawing::IconType::Circle, true,
@@ -270,6 +293,10 @@ void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
         ed::EndPin();
         map[entity] = std::make_tuple(a, b, c);
         ed::EndNode();
+        if (ed::GetHoveredNode().Get() != node_id) {
+            // Then make it light
+            ed::PopStyleColor();
+        }
     }
 
     // Draw more nodes
@@ -298,7 +325,7 @@ void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
     ed::EndDelete();
 
     ed::End();
-
+    ImGui::End();
     ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_Appearing);
     ImGui::Begin("Field Hjson viewer");
     if (ImGui::Button("Make Fields to Hjson")) {
