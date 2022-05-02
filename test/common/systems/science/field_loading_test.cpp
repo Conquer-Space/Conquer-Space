@@ -26,7 +26,7 @@
 
 TEST(Science_FieldTest, FieldLoadingTest) {
     std::string val =
-    R"(
+        R"(
     [
         {
             name: Science
@@ -56,7 +56,6 @@ TEST(Science_FieldTest, FieldLoadingTest) {
     // Load into hjson
     Hjson::Value hjson = Hjson::Unmarshal(val);
     cqsp::common::Universe universe;
-    std::cout << val << std::endl;
     namespace cqspc = cqsp::common::components;
     cqsp::common::systems::science::LoadFields(universe, hjson);
     // Look for parents
@@ -74,7 +73,45 @@ TEST(Science_FieldTest, FieldLoadingTest) {
 
     // Check adjacents
     ASSERT_TRUE(universe.any_of<cqspc::Name>(field_comp.adjacent[0]));
-    EXPECT_EQ(universe.get<cqspc::Name>(field_comp.adjacent[0]).name, "Physics");
+    EXPECT_EQ(universe.get<cqspc::Name>(field_comp.adjacent[0]).name,
+              "Physics");
 
-    EXPECT_EQ(universe.get<cqspc::Description>(chemistry).description, "Testing");
+    EXPECT_EQ(universe.get<cqspc::Description>(chemistry).description,
+              "Testing");
+
+    // Test loading
+    // Save the hjson
+    Hjson::Value written_hjson =
+        cqsp::common::systems::science::WriteFields(universe);
+    EXPECT_TRUE(written_hjson.size(), hjson.size());
+
+    // Reorder the things
+    // Sort the list
+    // written_hjson[0]
+    std::vector<Hjson::Value> written_hjson_vector;
+    for (int i = 0; i < written_hjson.size(); i++) {
+        // Add the vector
+        written_hjson_vector.push_back(written_hjson[i]);
+    }
+
+    std::vector<Hjson::Value> original_hjson_vector;
+    for (int i = 0; i < hjson.size(); i++) {
+        // Add the vector
+        original_hjson_vector.push_back(hjson[i]);
+    }
+
+    // Sort the things
+    std::sort(original_hjson_vector.begin(), original_hjson_vector.end(),
+              [](const Hjson::Value& a, const Hjson::Value& b) {
+                  return a["identifier"].to_string().compare(b["identifier"].to_string()) > 0;
+              });
+    std::sort(written_hjson_vector.begin(), written_hjson_vector.end(),
+              [](const Hjson::Value& a, const Hjson::Value& b) {
+                  return a["identifier"].to_string().compare(
+                      b["identifier"].to_string()) > 0;
+              });
+    for (int i = 0; i < original_hjson_vector.size(); i++) {
+        // Add the vector
+        EXPECT_TRUE(original_hjson_vector[i].deep_equal(written_hjson_vector[i]));
+    }
 }
