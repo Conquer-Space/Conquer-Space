@@ -50,7 +50,6 @@ class SysFieldNodeViewer : public SysUserInterface {
  private:
     void FieldNodeViewerWindow();
     void FieldHjsonViewerWindow();
-    void FieldToString();
     std::string hjson_content;
 };
 }  // namespace systems

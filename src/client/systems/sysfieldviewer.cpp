@@ -89,6 +89,7 @@ void cqsp::client::systems::SysFieldNodeViewer::Init() {}
 
 typedef std::map<entt::entity, std::tuple<int, int, int>> FieldNodeInformation;
 
+namespace cqsp::client::systems {
 entt::entity CalculateInputPair(const FieldNodeInformation& map, int pin_value) {
     entt::entity field = entt::null;
     int pv = (pin_value  - 1) / 4 * 4 + 2;
@@ -198,25 +199,58 @@ void RemoveRelationship(cqsp::common::Universe& universe, int input_type, entt::
     }
 }
 
-void HandleDeleteRelationship(FieldNodeInformation& map, cqsp::common::Universe& universe) {
+void HandleDeletedRelationship(const ed::LinkId& linkId, FieldNodeInformation& map,
+                              cqsp::common::Universe& universe) {
+    if (!ed::AcceptDeletedItem()) {
+        return;
+    }
+    // Get the entity and delete
+    ed::PinId input_pin;
+    ed::PinId output_pin;
+    if (!ed::GetLinkPins(linkId, &input_pin, &output_pin)) {
+        return;
+    }
+    // Then set the values
+    entt::entity input_entity = CalculateInputPair(map, input_pin.Get());
+    entt::entity output_entity = CalculateInputPair(map, output_pin.Get());
+    // Remove the relationship
+    int input_type = (input_pin.Get() - 1) % 4;
+    RemoveRelationship(universe, input_type, input_entity, output_entity);
+}
+
+void RemoveFieldConnection(std::vector<entt::entity>& vec, entt::entity ent) {
+    vec.erase(std::remove(vec.begin(), vec.end(), ent), vec.end());
+}
+
+void HandleDeletedNode(const ed::NodeId& nodeId, FieldNodeInformation& map,
+                       cqsp::common::Universe& universe) {
+    if (!ed::AcceptDeletedItem()) {
+        return;
+    }
+
+    // Delete entities
+    entt::entity ent = CalculateInputPair(map, nodeId.Get());
+    //universe.get<
+    auto fields = universe.view<cqsp::common::components::science::Field>();
+    for (entt::entity pot : fields) {
+        auto& field_comp = universe.get<cqsp::common::components::science::Field>(pot);
+        RemoveFieldConnection(field_comp.adjacent, ent);
+        RemoveFieldConnection(field_comp.parents, ent);
+    }
+    universe.destroy(ent);
+}
+
+void HandleNodeDelete(FieldNodeInformation& map,
+                              cqsp::common::Universe& universe) {
     ed::LinkId linkId = 0;
     while (ed::QueryDeletedLink(&linkId)) {
-        if (!ed::AcceptDeletedItem()) { // We ignore deleted nodes for now, this is just to manage the relationships
-            continue;
-        }
-        // Get the entity and delete
-        ed::PinId input_pin;
-        ed::PinId output_pin;
-        if (!ed::GetLinkPins(linkId, &input_pin, &output_pin)) {
-            continue;
-        }
-        // Then set the values
-        entt::entity input_entity = CalculateInputPair(map, input_pin.Get());
-        entt::entity output_entity = CalculateInputPair(map, output_pin.Get());
-        // Remove the relationship
-        int input_type = (input_pin.Get() - 1) % 4;
-        RemoveRelationship(universe, input_type, input_entity, output_entity);
+        HandleDeletedRelationship(linkId, map, universe);
     }
+    ed::NodeId node_id = 0;
+    while (ed::QueryDeletedNode(&node_id)) {
+        HandleDeletedNode(node_id, map, universe);
+    }
+}
 }
 
 void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
@@ -263,12 +297,12 @@ void cqsp::client::systems::SysFieldNodeViewer::FieldNodeViewerWindow() {
             std::string& description =GetUniverse().get<common::components::Description>(entity).description;
             ImGui::InputText(fmt::format("##ne_description{}", entity).c_str(),
                          &description);
-            CQSPGui::SimpleTextTooltip(description);
         } else {
             if (ImGui::Button("+ Add Description")) {
                 GetUniverse().emplace<common::components::Description>(entity);
             }
         }
+        ImGui::TextFmt("Entity Id: {}", entity);
         int a = uniqueId++;
         ed::BeginPin(a, ed::PinKind::Input);
         ed::PinPivotAlignment(ImVec2(0.1, 0.5f));
@@ -329,7 +363,7 @@ void cqsp::client::systems::SysFieldNodeViewer::FieldNodeViewerWindow() {
     ed::EndCreate();
 
     if (ed::BeginDelete()) {
-        HandleDeleteRelationship(map, GetUniverse());
+        HandleNodeDelete(map, GetUniverse());
     }
     ed::EndDelete();
 
@@ -352,7 +386,7 @@ void cqsp::client::systems::SysFieldNodeViewer::FieldHjsonViewerWindow() {
         // Write to the hjson file, which should remain the same
         std::filesystem::path p = cqsp::common::util::GetCqspDataPath();
         std::filesystem::path default_path =
-            p / "data" / "science" / "fields" / "default.txt";
+            p / "core" / "data" / "science" / "fields" / "default.hjson";
         // Update content
         std::ofstream output(default_path, std::ios::trunc);
         Hjson::EncoderOptions eo;
