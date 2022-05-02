@@ -16,31 +16,9 @@
 */
 #pragma once
 
-#include "engine/scene.h"
-#include "client/systems/sysgui.h"
+#include "engine/application.h"
 
-namespace cqsp {
-namespace scene {
-class ObjectEditorScene : public cqsp::engine::Scene {
- public:
-    explicit ObjectEditorScene(cqsp::engine::Application& app);
-    ~ObjectEditorScene();
-
-    void Init();
-    void Update(float deltaTime);
-    void Ui(float deltaTime);
-    void Render(float deltaTime);
-
-    template <class T>
-    void AddUISystem() {
-        auto ui = std::make_unique<T>(GetApp());
-        ui->Init();
-        user_interfaces.push_back(std::move(ui));
-    }
-
- private:
-    std::vector<std::unique_ptr<cqsp::client::systems::SysUserInterface>> user_interfaces;
-
-};
-}  // namespace scene
-};  // namespace cqsp
+namespace cqsp::client::systems {
+// Loads all the goods and the like into the game.
+void LoadAllResources(cqsp::engine::Application& app);
+}

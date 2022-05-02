@@ -18,10 +18,12 @@
 
 #include <map>
 #include <tuple>
+#include <filesystem>
 
 #include "common/components/science.h"
 #include "common/components/name.h"
 #include "client/systems/gui/systooltips.h"
+#include "common/util/paths.h"
 #include "common/systems/science/fields.h"
 #include "engine/cqspgui.h"
 
@@ -218,6 +220,13 @@ void HandleDeleteRelationship(FieldNodeInformation& map, cqsp::common::Universe&
 }
 
 void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
+    FieldNodeViewerWindow();
+    FieldHjsonViewerWindow();
+}
+
+void cqsp::client::systems::SysFieldNodeViewer::DoUpdate(int delta_time) {}
+
+void cqsp::client::systems::SysFieldNodeViewer::FieldNodeViewerWindow() {
     using common::components::science::Field;
     // View Fields
     ImGui::SetNextWindowSize(ImVec2(1400, 900), ImGuiCond_Appearing);
@@ -326,19 +335,31 @@ void cqsp::client::systems::SysFieldNodeViewer::DoUI(int delta_time) {
 
     ed::End();
     ImGui::End();
+}
+
+void cqsp::client::systems::SysFieldNodeViewer::FieldHjsonViewerWindow() {
     ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_Appearing);
     ImGui::Begin("Field Hjson viewer");
     if (ImGui::Button("Make Fields to Hjson")) {
         // Make the hjson
         auto fields = common::systems::science::WriteFields(GetUniverse());
-        Hjson::EncoderOptions eo;
-        eo.indentBy = "    "; // 4 spaces
-        hjson_content = Hjson::Marshal(fields, eo);
+    Hjson::EncoderOptions eo;
+    eo.indentBy = "    "; // 4 spaces
+    hjson_content = Hjson::Marshal(fields, eo);
     }
     ImGui::SameLine();
-    ImGui::Button("Save to file");
+    if (ImGui::Button("Save to file")) {
+        // Write to the hjson file, which should remain the same
+        std::filesystem::path p = cqsp::common::util::GetCqspDataPath();
+        std::filesystem::path default_path =
+            p / "data" / "science" / "fields" / "default.txt";
+        // Update content
+        std::ofstream output(default_path, std::ios::trunc);
+        Hjson::EncoderOptions eo;
+        eo.indentBy = "    "; // 4 spaces
+        auto fields = common::systems::science::WriteFields(GetUniverse());
+        Hjson::MarshalToFile(fields, default_path.string(), eo);
+    }
     ImGui::InputTextMultiline("field_hjson_viewer", &hjson_content, ImVec2(-1, -1));
     ImGui::End();
 }
-
-void cqsp::client::systems::SysFieldNodeViewer::DoUpdate(int delta_time) {}

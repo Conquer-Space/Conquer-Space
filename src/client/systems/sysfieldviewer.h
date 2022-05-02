@@ -48,6 +48,9 @@ class SysFieldNodeViewer : public SysUserInterface {
     void DoUpdate(int delta_time);
 
  private:
+    void FieldNodeViewerWindow();
+    void FieldHjsonViewerWindow();
+    void FieldToString();
     std::string hjson_content;
 };
 }  // namespace systems

@@ -14,4 +14,30 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+#include "client/scenes/fieldviewerscene.h"
 
+#include "client/systems/sysfieldviewer.h"
+#include "client/systems/assetloading.h"
+
+cqsp::scene::ObjectEditorScene::ObjectEditorScene(
+    cqsp::engine::Application& app)
+    : cqsp::engine::Scene(app) {
+    AddUISystem<cqsp::client::systems::SysFieldNodeViewer>();
+}
+
+cqsp::scene::ObjectEditorScene::~ObjectEditorScene() {}
+
+void cqsp::scene::ObjectEditorScene::Init() {
+    // Sorta need to initialize everything
+    cqsp::client::systems::LoadAllResources(GetApp());
+}
+
+void cqsp::scene::ObjectEditorScene::Update(float deltaTime) {}
+
+void cqsp::scene::ObjectEditorScene::Ui(float deltaTime) {
+    for (auto& ui : user_interfaces) {
+        ui->DoUI(deltaTime);
+    }
+}
+
+void cqsp::scene::ObjectEditorScene::Render(float deltaTime) {}

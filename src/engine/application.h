@@ -213,6 +213,10 @@ class Application {
 
     std::vector<std::string>& GetCmdLineArgs() { return cmd_line_args; }
 
+    bool HasCmdLineArgs(const std::string& arg) {
+        return (std::find(GetCmdLineArgs().begin(), GetCmdLineArgs().end(),
+                          arg) != GetCmdLineArgs().end());
+    }
     /// <summary>
     /// Screenshots the current framebuffer to the filename
     ///

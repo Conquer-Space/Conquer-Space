@@ -32,6 +32,8 @@
 #include "client/scenes/mainmenuscene.h"
 #include "client/scenes/universeloadingscene.h"
 #include "client/scenes/texttestscene.h"
+#include "client/scenes/fieldviewerscene.h"
+
 #include "engine/gui.h"
 #include "common/scripting/scripting.h"
 #include "common/util/paths.h"
@@ -42,6 +44,12 @@ cqsp::scene::LoadingScene::LoadingScene(cqsp::engine::Application& app)
     : cqsp::engine::Scene(app) {
     m_done_loading = false;
     percentage = 0;
+}
+
+cqsp::scene::LoadingScene::~LoadingScene() { 
+    if (thread->joinable()) {
+        thread->join();
+    }
 }
 
 void cqsp::scene::LoadingScene::Init() {
@@ -91,12 +99,12 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
         GetApp().CloseDocument(LOADING_ID);
 
         // Set main menu scene
-        if (std::find(GetApp().GetCmdLineArgs().begin(), GetApp().GetCmdLineArgs().end(), "-i")
-                                                            != GetApp().GetCmdLineArgs().end()) {
+        if (GetApp().HasCmdLineArgs("-i")) {
             GetApp().SetScene<cqsp::scene::UniverseLoadingScene>();
-        } else if (std::find(GetApp().GetCmdLineArgs().begin(), GetApp().GetCmdLineArgs().end(), "-tt")
-                                                            != GetApp().GetCmdLineArgs().end()) {
+        } else if (GetApp().HasCmdLineArgs("-tt")) {
             GetApp().SetScene<cqsp::scene::TextTestScene>();
+        } else if (GetApp().HasCmdLineArgs("-ov")) {
+            GetApp().SetScene<cqsp::scene::ObjectEditorScene>();
         } else {
             GetApp().SetScene<cqsp::scene::MainMenuScene>();
         }

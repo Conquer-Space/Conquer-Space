@@ -32,6 +32,7 @@
 #include "engine/graphics/shader.h"
 #include "engine/renderer/renderer.h"
 #include "client/scenes/universeloadingscene.h"
+
 #include "engine/asset/asset.h"
 #include "engine/gui.h"
 #include "engine/cqspgui.h"
