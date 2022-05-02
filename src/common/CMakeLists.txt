@@ -44,5 +44,4 @@ target_link_libraries(cqsp-core PUBLIC
     sol2
     Tracy
     stb
-    RmlCore # Remove this when we can successfully detatch the application from the universe
 )
