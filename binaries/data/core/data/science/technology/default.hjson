@@ -33,4 +33,27 @@
             recipe:concrete_manufacturing
         ]
     }
+    {
+        name: Iron Mining
+        identifier: iron_mining
+        fields: [
+        ]
+        actions: [
+            mine:iron
+        ]
+    }
+    {
+        name: Basic Mining
+        identifier: basic_mining
+        description: All these resources are necessary for basic civilization
+        fields: [
+        ]
+        actions: [
+            mine:iron
+            mine:aluminium
+            mine:copper
+            mine:stone
+            mine:oil
+        ]
+    }
 ]

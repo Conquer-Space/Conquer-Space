@@ -514,7 +514,6 @@ void SysPlanetInformation::FactoryConstruction() {
     int index = 0;
 
     entt::entity player = GetUniverse().view<common::components::Player>().front();
-
     auto& tech_progress =
         GetUniverse().get<common::components::science::TechnologicalProgress>(player);
 
@@ -564,14 +563,17 @@ void SysPlanetInformation::MineConstruction() {
     static int selected_good_index = -1;
     static entt::entity selected_good = entt::null;
     int index = 0;
-    for (entt::entity entity : recipes) {
+    entt::entity player = GetUniverse().view<common::components::Player>().front();
+    auto& tech_progress =
+        GetUniverse().get<common::components::science::TechnologicalProgress>(player);
+
+    for (entt::entity entity : tech_progress.researched_mining) {
         if (selected_good_index == -1) {
             selected_good_index = 0;
             selected_good = entity;
         }
         const bool selected = selected_good_index == index;
-        std::string name = GetUniverse().all_of<cqspc::Identifier>(entity) ?
-            GetUniverse().get<cqspc::Identifier>(entity) : fmt::format("{}", entity);
+        std::string name = gui::GetName(GetUniverse(), entity);
         if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), selected)) {
             selected_good_index = index;
             selected_good = entity;
@@ -586,30 +588,32 @@ void SysPlanetInformation::MineConstruction() {
     ImGui::SameLine();
     CQSPGui::DragInt("label", &prod, 1, 1, INT_MAX);
     ImGui::PopItemWidth();
-    if (CQSPGui::DefaultButton("Construct!")) {
-        // Construct things
-        SPDLOG_INFO("Constructing mine with good {}", selected_good);
-        // Add demand to the market for the amount of resources
-        // When construction takes time in the future, then do the costs.
-        // So first charge it to the market
-        entt::entity city_market = GetUniverse().get<cqspc::MarketCenter>(selected_planet).market;
-        /*auto cost = cqsp::common::systems::actions::GetFactoryCost(
-            GetUniverse(), selected_city_entity, selected_good, prod);
-        GetUniverse().get<cqspc::Market>(city_market).demand += cost;
-        GetUniverse().get<cqspc::ResourceStockpile>(city_market) -= cost;
-        */
-        // Buy things on the market
-        entt::entity factory = cqsp::common::systems::actions::CreateMine(
-            GetUniverse(), selected_city_entity, selected_good, 1, prod);
-        cqsp::common::systems::economy::AddParticipant(GetUniverse(), city_market, factory);
-    }
+    if (tech_progress.researched_mining.size() > 0) {
+        if (CQSPGui::DefaultButton("Construct!")) {
+            // Construct things
+            SPDLOG_INFO("Constructing mine with good {}", selected_good);
+            // Add demand to the market for the amount of resources
+            // When construction takes time in the future, then do the costs.
+            // So first charge it to the market
+            entt::entity city_market = GetUniverse().get<cqspc::MarketCenter>(selected_planet).market;
+            /*auto cost = cqsp::common::systems::actions::GetFactoryCost(
+                GetUniverse(), selected_city_entity, selected_good, prod);
+            GetUniverse().get<cqspc::Market>(city_market).demand += cost;
+            GetUniverse().get<cqspc::ResourceStockpile>(city_market) -= cost;
+            */
+            // Buy things on the market
+            entt::entity factory = cqsp::common::systems::actions::CreateMine(
+                GetUniverse(), selected_city_entity, selected_good, 1, prod);
+            cqsp::common::systems::economy::AddParticipant(GetUniverse(), city_market, factory);
+        }
 
-    if (ImGui::IsItemHovered()) {
-        ImGui::BeginTooltip();
-        DrawLedgerTable("building_cost_tooltip", GetUniverse(),
-                    cqsp::common::systems::actions::GetMineCost(
-                            GetUniverse(), selected_city_entity, selected_good, prod));
-        ImGui::EndTooltip();
+        if (ImGui::IsItemHovered()) {
+            ImGui::BeginTooltip();
+            DrawLedgerTable("building_cost_tooltip", GetUniverse(),
+                        cqsp::common::systems::actions::GetMineCost(
+                                GetUniverse(), selected_city_entity, selected_good, prod));
+            ImGui::EndTooltip();
+        }
     }
 }
 
