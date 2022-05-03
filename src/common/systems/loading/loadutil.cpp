@@ -49,9 +49,9 @@ bool LoadDescription(Universe& universe, const entt::entity& entity, const Hjson
     return true;
 }
 
-void LoadInitialValues(Universe& universe, const entt::entity& entity, const Hjson::Value& value) {
+bool LoadInitialValues(Universe& universe, const entt::entity& entity, const Hjson::Value& value) {
     LoadName(universe, entity, value);
-    LoadIdentifier(universe, entity, value);
     LoadDescription(universe, entity, value);
+    return LoadIdentifier(universe, entity, value);
 }
 }  // namespace cqsp::common::systems::loading

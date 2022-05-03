@@ -24,6 +24,6 @@
 namespace cqsp::common::systems::loading {
 void LoadGoods(cqsp::common::Universe&, Hjson::Value&);
 void LoadRecipes(cqsp::common::Universe&, Hjson::Value&);
-components::ResourceStockpile HjsonToLedger(cqsp::common::Universe&, Hjson::Value&);
+components::ResourceLedger HjsonToLedger(cqsp::common::Universe&, Hjson::Value&);
 void LoadTerrainData(cqsp::common::Universe&, Hjson::Value&);
 }  // namespace cqsp::common::systems::loading

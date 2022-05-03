@@ -22,6 +22,7 @@
 #include "common/components/economy.h"
 #include "common/components/resource.h"
 #include "common/components/bodies.h"
+#include "common/systems/loading/loadutil.h"
 
 #define CHECK_DEFINED(x, entity) if (!x.defined()) {\
                                     universe.destroy(entity);\
@@ -37,11 +38,10 @@ void LoadGoods(cqsp::common::Universe& universe, Hjson::Value& goods) {
         entt::entity good = universe.create();
         universe.emplace<cqspc::Good>(good);
 
-        CHECK_DEFINED(val["identifier"], good);
-        CHECK_DEFINED(val["name"], good);
-
-        universe.emplace<cqspc::Name>(good, val["name"].to_string());
-        universe.emplace<cqspc::Identifier>(good, val["identifier"].to_string());
+        if (!LoadInitialValues(universe, good, val)) {
+            universe.destroy(good);
+            continue;
+        }
 
         if (val["mass"].defined() && val["volume"].defined()) {
             // Then it's matter and physical
@@ -83,15 +83,16 @@ void LoadRecipes(cqsp::common::Universe& universe, Hjson::Value& recipes) {
 
         entt::entity recipe = universe.create();
         auto& recipe_component = universe.emplace<cqspc::Recipe>(recipe);
+
+        LoadInitialValues(universe, recipe, val);
+
         Hjson::Value input_value = val["input"];
         recipe_component.input = HjsonToLedger(universe, input_value);
-
 
         Hjson::Value output_value = val["output"];
         recipe_component.output = HjsonToLedger(universe, output_value);
 
-        auto &name_object = universe.emplace<cqspc::Identifier>(recipe);
-        name_object.identifier = val["identifier"].to_string();
+        auto &name_object = universe.get<cqspc::Identifier>(recipe);
         universe.recipes[name_object] = recipe;
 
         // Check if it has cost
@@ -107,8 +108,8 @@ void LoadRecipes(cqsp::common::Universe& universe, Hjson::Value& recipes) {
     }
 }
 
-cqsp::common::components::ResourceStockpile HjsonToLedger(cqsp::common::Universe& universe, Hjson::Value& hjson) {
-    components::ResourceStockpile stockpile;
+cqsp::common::components::ResourceLedger HjsonToLedger(cqsp::common::Universe& universe, Hjson::Value& hjson) {
+    components::ResourceLedger stockpile;
     for (auto input_good : hjson) {
         stockpile[universe.goods[input_good.first]] = input_good.second;
     }
