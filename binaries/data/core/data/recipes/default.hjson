@@ -3,6 +3,7 @@
 # This is the default file for recipes, and also serves as a demonstration for stuff
 [
     {
+        name: Steel Forging
         identifier: steel_forging
         input: {
             iron: 3
@@ -27,6 +28,7 @@
         ]
     }
     {
+        name: Consumer Good Manufacturing
         identifier: consumer_good_manufacturing
         input: {
             steel: 2
@@ -48,6 +50,7 @@
         ]
     }
     {
+        name: Concrete Manufacturing
         identifier: concrete_manufacturing
         input: {
             steel: 1

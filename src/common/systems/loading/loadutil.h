@@ -32,6 +32,7 @@ bool LoadDescription(Universe& universe, const entt::entity& entity, const Hjson
 
 /// <summary>
 /// Loads all the values that should be on every single data type
+/// Returns true if an identifier exists
 /// </summary>
-void LoadInitialValues(Universe& universe, const entt::entity& entity, const Hjson::Value& value);
+bool LoadInitialValues(Universe& universe, const entt::entity& entity, const Hjson::Value& value);
 }  // namespace cqsp::common::systems::loading
