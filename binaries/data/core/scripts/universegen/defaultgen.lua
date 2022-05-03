@@ -122,6 +122,11 @@ generators:insert({
             core.set_name(civ_id, "Player Civilization")
         end
 
+        -- Add tech
+        core.add_tech_progress(civ_id)
+
+        core.research_technology(civ_id, technologies["steel_forging"])
+
         -- Add cities
         core.add_planet_habitation(planet)
         local market = core.create_market()

@@ -1,0 +1,35 @@
+src: zero sized file
+src/CMakeLists.txt: --exclude-lang=CMake
+src/client: zero sized file
+src/client/CMakeLists.txt: --exclude-lang=CMake
+src/client/components: zero sized file
+src/client/scenes: zero sized file
+src/client/systems: zero sized file
+src/client/systems/gui: zero sized file
+src/client/systems/views: zero sized file
+src/common: zero sized file
+src/common/CMakeLists.txt: --exclude-lang=CMake
+src/common/components: zero sized file
+src/common/scripting: zero sized file
+src/common/systems: zero sized file
+src/common/systems/actions: zero sized file
+src/common/systems/economy: zero sized file
+src/common/systems/history: zero sized file
+src/common/systems/loading: zero sized file
+src/common/systems/movement: zero sized file
+src/common/systems/names: zero sized file
+src/common/systems/navy: zero sized file
+src/common/systems/population: zero sized file
+src/common/systems/science: zero sized file
+src/common/util: zero sized file
+src/common/util/random: zero sized file
+src/common/version.h.in: listed in $Not_Code_Extension{in}
+src/engine: zero sized file
+src/engine/CMakeLists.txt: --exclude-lang=CMake
+src/engine/asset: zero sized file
+src/engine/asset/vfs: zero sized file
+src/engine/audio: zero sized file
+src/engine/graphics: zero sized file
+src/engine/graphics/primitives: zero sized file
+src/engine/renderer: zero sized file
+src/engine/ui: zero sized file

@@ -44,13 +44,12 @@ bool LoadDescription(Universe& universe, const entt::entity& entity, const Hjson
         return false;
     }
     std::string identifier = value["description"].to_string();
-    auto& identifier_comp = universe.emplace<components::Identifier>(entity);
-    identifier_comp.identifier = identifier;
+    auto& identifier_comp = universe.emplace<components::Description>(entity);
+    identifier_comp.description = identifier;
     return true;
 }
-void LoadInitialValues(Universe& universe,
-                                     const entt::entity& entity,
-                                     const Hjson::Value& value) {
+
+void LoadInitialValues(Universe& universe, const entt::entity& entity, const Hjson::Value& value) {
     LoadName(universe, entity, value);
     LoadIdentifier(universe, entity, value);
     LoadDescription(universe, entity, value);

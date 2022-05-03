@@ -13,14 +13,19 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 #pragma once
 
-#include <hjson.h>
+#include "client/systems/sysgui.h"
 
-#include "common/universe.h"
+namespace cqsp::client::systems {
+class SysTechnologyViewer : public SysUserInterface {
+ public:
+    explicit SysTechnologyViewer(cqsp::engine::Application& app)
+        : SysUserInterface(app) {}
 
-namespace cqsp::common::systems::science {
-void LoadTechnologies(Universe &universe, Hjson::Value &value);
-void ResearchTech(Universe &universe, entt::entity civilization, entt::entity tech);
-}  // namespace cqsp::common::systems::science
+    void Init() override;
+    void DoUI(int delta_time) override;
+    void DoUpdate(int delta_time) override;
+};
+}  // namespace cqsp::client::systems

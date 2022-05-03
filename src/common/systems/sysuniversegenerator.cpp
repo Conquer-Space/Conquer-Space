@@ -38,8 +38,8 @@
 #include "common/systems/economy/markethelpers.h"
 #include "actions/shiplaunchaction.h"
 
-void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::
-    Generate(cqsp::common::Universe& universe) {
+namespace cqsp::common::systems::universegenerator {
+void ScriptUniverseGenerator::Generate(cqsp::common::Universe& universe) {
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspt = cqsp::common::components::types;
@@ -49,6 +49,7 @@ void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::
     script_engine["recipes"] = universe.recipes;
     script_engine["terrain_colors"] = universe.terrain_data;
     script_engine["fields"] = universe.fields;
+    script_engine["technologies"] = universe.technologies;
 
     // Create player
     auto player = universe.create();
@@ -97,3 +98,4 @@ void cqsp::common::systems::universegenerator::ScriptUniverseGenerator::
         starting_planet,
         "pioneer2");
 }
+}  // namespace cqsp::common::systems::universegenerator

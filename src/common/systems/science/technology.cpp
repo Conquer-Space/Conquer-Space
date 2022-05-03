@@ -17,6 +17,7 @@
 #include "common/systems/science/technology.h"
 
 #include "common/components/science.h"
+#include "common/components/name.h"
 #include "common/systems/loading/loadutil.h"
 
 namespace cqsp::common::systems::science {
@@ -27,7 +28,26 @@ void LoadTechnologies(Universe& universe, Hjson::Value& value) {
         entt::entity entity = universe.create();
         loading::LoadInitialValues(universe, entity, element);
         auto& tech = universe.emplace<components::science::Technology>(entity);
-        // Tech data todo
+        // Add tech data
+        Hjson::Value& val = element["actions"];
+        for (int i = 0; i < val.size(); i++) {
+            tech.actions.push_back(val[i].to_string());
+        }
+
+        Hjson::Value& fieldlist = element["fields"];
+        for (int i = 0; i < fieldlist.size(); i++) {
+            entt::entity field_entity = universe.fields[fieldlist[i].to_string()];
+            tech.fields.insert(field_entity);
+        }
+        universe.technologies[universe.get<components::Identifier>(entity)] = entity;
     }
+}
+
+void ResearchTech(Universe& universe, entt::entity civilization, entt::entity tech) {
+    // Research technology somehow
+
+    // Ensure it's a tech or something
+    auto& tech_progress = universe.get_or_emplace<components::science::TechnologicalProgress>( civilization);
+    tech_progress.researched_techs.insert(tech);
 }
 }  // namespace cqsp::common::components::science
