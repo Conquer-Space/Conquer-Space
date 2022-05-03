@@ -128,6 +128,7 @@ generators:insert({
         core.research_technology(civ_id, technologies["steel_forging"])
         core.research_technology(civ_id, technologies["consumer_good_manufacturing"])
         core.research_technology(civ_id, technologies["concrete_manufacturing"])
+        core.research_technology(civ_id, technologies["basic_mining"])
 
         -- Add cities
         core.add_planet_habitation(planet)
