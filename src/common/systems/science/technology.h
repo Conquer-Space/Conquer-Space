@@ -18,6 +18,8 @@
 
 #include <hjson.h>
 
+#include <string>
+
 #include "common/universe.h"
 
 namespace cqsp::common::systems::science {

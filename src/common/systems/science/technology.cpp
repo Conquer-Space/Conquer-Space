@@ -47,7 +47,7 @@ void LoadTechnologies(Universe& universe, Hjson::Value& value) {
 
 void ResearchTech(Universe& universe, entt::entity civilization, entt::entity tech) {
     // Ensure it's a tech or something
-    auto& tech_progress = universe.get_or_emplace<components::science::TechnologicalProgress>( civilization);
+    auto& tech_progress = universe.get_or_emplace<components::science::TechnologicalProgress>(civilization);
     tech_progress.researched_techs.insert(tech);
 
     // Research technology somehow
@@ -71,4 +71,4 @@ void ProcessAction(Universe& universe, entt::entity civilization, const std::str
         tech_progress.researched_recipes.insert(universe.recipes[name]);
     }
 }
-}  // namespace cqsp::common::components::science
+}  // namespace cqsp::common::systems::science

@@ -17,8 +17,10 @@
 #pragma once
 
 #include <vector>
-#include <entt/entt.hpp>
 #include <set>
+#include <string>
+
+#include <entt/entt.hpp>
 
 #include "common/components/resource.h"
 

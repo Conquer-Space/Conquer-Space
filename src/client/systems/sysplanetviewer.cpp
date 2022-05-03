@@ -279,7 +279,6 @@ void SysPlanetInformation::PlanetInformationPanel() {
 }
 
 void SysPlanetInformation::ResourcesTab() {
-
     // Consolidate resources
     auto &city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
     cqspc::ResourceLedger resources;
@@ -545,7 +544,8 @@ void SysPlanetInformation::FactoryConstruction() {
     CQSPGui::DragInt("label", &prod, 1, 1, INT_MAX);
     ImGui::PopItemWidth();
     if (tech_progress.researched_recipes.size() > 0) {
-        auto cost = common::systems::actions::GetFactoryCost(GetUniverse(), selected_city_entity, selected_recipe, prod);
+        auto cost =
+                common::systems::actions::GetFactoryCost(GetUniverse(), selected_city_entity, selected_recipe, prod);
 
         RecipeConstructionCostPanel(selected_recipe, prod, cost);
         RecipeConstructionConstructButton(selected_recipe, prod, cost);
@@ -853,7 +853,8 @@ void SysPlanetInformation::ConstructionConfirmationPanel() {
     ImGui::End();
 }
 
-void SysPlanetInformation::RecipeConstructionCostPanel(entt::entity selected_recipe, double prod, const common::components::ResourceLedger& cost) {
+void SysPlanetInformation::RecipeConstructionCostPanel(entt::entity selected_recipe, double prod,
+                                                       const common::components::ResourceLedger& cost) {
     entt::entity city_market = GetUniverse().get<cqspc::MarketCenter>(selected_planet).market;
     // Cost table
     ImGui::TextFmt("Estimated Cost: {}", common::systems::economy::GetCost(GetUniverse(), city_market, cost));
