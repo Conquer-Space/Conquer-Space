@@ -17,21 +17,13 @@
 #pragma once
 
 #include <hjson.h>
+
 #include <string>
 
 #include "common/universe.h"
 
-namespace cqsp::common::systems::loading {
-/// <summary>
-/// Returns true if name exists
-/// </summary>
-/// <returns></returns>
-bool LoadName(Universe& universe, const entt::entity &entity, const Hjson::Value& value);
-bool LoadIdentifier(Universe& universe, const entt::entity &entity, const Hjson::Value& value);
-bool LoadDescription(Universe& universe, const entt::entity& entity, const Hjson::Value& value);
-
-/// <summary>
-/// Loads all the values that should be on every single data type
-/// </summary>
-void LoadInitialValues(Universe& universe, const entt::entity& entity, const Hjson::Value& value);
-}  // namespace cqsp::common::systems::loading
+namespace cqsp::common::systems::science {
+void LoadTechnologies(Universe &universe, Hjson::Value &value);
+void ResearchTech(Universe &universe, entt::entity civilization, entt::entity tech);
+void ProcessAction(Universe &universe, entt::entity civilization, const std::string &action);
+}  // namespace cqsp::common::systems::science

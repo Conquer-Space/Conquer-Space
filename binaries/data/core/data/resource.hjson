@@ -10,4 +10,9 @@
         type: hjson
         hints: {}
     }
+    tech_list: {
+        path: science/technology
+        type: hjson
+        hints: {}
+    }
 }

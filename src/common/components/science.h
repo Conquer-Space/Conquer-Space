@@ -17,14 +17,17 @@
 #pragma once
 
 #include <vector>
+#include <set>
+#include <string>
+
 #include <entt/entt.hpp>
 
 #include "common/components/resource.h"
 
 namespace cqsp::common::components::science {
 struct Field {
-    std::vector<entt::entity> parents;
-    std::vector<entt::entity> adjacent;
+    std::vector<entt::entity> parents; // Should probably changed to a set
+    std::vector<entt::entity> adjacent; // same
 };
 
 // A scientific research
@@ -42,5 +45,16 @@ struct ScientificProgress {
 };
 
 struct ScienceProject {
+};
+
+struct TechnologicalProgress {
+    std::set<entt::entity> researched_techs;
+    // A recipe that has been unlocked? Idk how this should work
+    std::set<entt::entity> researched_recipes;
+};
+
+struct Technology {
+    std::set<entt::entity> fields;
+    std::vector<std::string> actions;
 };
 }  // namespace cqsp::common::components::science

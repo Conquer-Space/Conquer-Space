@@ -53,6 +53,7 @@
 #include "client/systems/gui/sysevent.h"
 #include "client/systems/civilizationinfopanel.h"
 #include "client/systems/sysfieldviewer.h"
+#include "client/systems/systechviewer.h"
 
 // If the game is paused or not, like when escape is pressed
 bool game_halted = false;
@@ -97,6 +98,7 @@ void cqsp::scene::UniverseScene::Init() {
     AddUISystem<cqsps::SysCommand>();
     AddUISystem<cqsps::CivilizationInfoPanel>();
     AddUISystem<cqsps::SysFieldViewer>();
+    AddUISystem<cqsps::SysTechnologyViewer>();
 
     AddUISystem<cqsps::gui::SysEvent>();
     simulation->tick();

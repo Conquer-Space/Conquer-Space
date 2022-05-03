@@ -22,6 +22,7 @@
 
 #include "client/systems/sysgui.h"
 #include "engine/application.h"
+#include "common/components/resource.h"
 
 namespace cqsp {
 namespace client {
@@ -62,6 +63,10 @@ class SysPlanetInformation : public SysUserInterface {
     void ScienceTab();
     void MarketInformationTooltipContent();
     void ConstructionConfirmationPanel();
+    void RecipeConstructionCostPanel(entt::entity selected_recipe, double prod,
+                                     const common::components::ResourceLedger& cost);
+    void RecipeConstructionConstructButton(entt::entity selected_recipe, double prod,
+                                     const common::components::ResourceLedger& cost);
 
     entt::entity selected_planet = entt::null;
     bool mine_list_panel = false;

@@ -24,6 +24,7 @@
 
 #include "common/systems/loading/loadgoods.h"
 #include "common/systems/loading/loadnames.h"
+#include "common/systems/science/technology.h"
 #include "common/systems/science/fields.h"
 
 namespace {
@@ -52,11 +53,11 @@ void LoadAllResources(cqsp::engine::Application& app) {
     LoadResource(app, "recipes", LoadRecipes);
     LoadResource(app, "names", LoadNameLists);
     LoadResource(app, "tech_fields", common::systems::science::LoadFields);
+    LoadResource(app, "tech_list", common::systems::science::LoadTechnologies);
 
     // Initialize planet terrains
-    asset::HjsonAsset* asset =
-        app.GetAssetManager().GetAsset<asset::HjsonAsset>(
-            "core:terrain_colors");
+    asset::HjsonAsset* asset = app.GetAssetManager().GetAsset<asset::HjsonAsset>(
+                                "core:terrain_colors");
     common::systems::loading::LoadTerrainData(app.GetUniverse(), asset->data);
 
     // Load scripts

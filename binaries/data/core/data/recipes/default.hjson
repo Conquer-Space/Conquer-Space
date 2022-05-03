@@ -58,6 +58,14 @@
         }
         catalyst: {
         }
+        cost: {
+            fixed: {
+                concrete: 1000
+            }
+            scaling: {
+                iron: 2
+            }
+        }
         tags: [
             ratio
         ]

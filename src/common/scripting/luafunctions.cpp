@@ -38,12 +38,15 @@
 #include "common/components/resource.h"
 #include "common/components/ships.h"
 #include "common/components/event.h"
-#include "common/systems/science/labs.h"
+#include "common/components/science.h"
 
 #include "common/systems/actions/factoryconstructaction.h"
 #include "common/systems/economy/markethelpers.h"
 #include "common/systems/actions/shiplaunchaction.h"
 #include "common/systems/actions/cityactions.h"
+#include "common/systems/science/labs.h"
+#include "common/systems/science/technology.h"
+
 #include "common/util/utilnumberdisplay.h"
 
 namespace cqspb = cqsp::common::components::bodies;
@@ -379,6 +382,14 @@ void FunctionScience(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
 
     REGISTER_FUNCTION("add_science", [&](entt::entity lab, entt::entity research, double progress) {
          cqsp::common::systems::science::AddScienceResearch(universe, lab, research, progress);
+    });
+
+    REGISTER_FUNCTION("add_tech_progress", [&](entt::entity entity) {
+        universe.emplace<cqsp::common::components::science::TechnologicalProgress>(entity);
+    });
+
+    REGISTER_FUNCTION("research_technology", [&](entt::entity entity, entt::entity tech) {
+        cqsp::common::systems::science::ResearchTech(universe, entity, tech);
     });
 }
 }  // namespace
