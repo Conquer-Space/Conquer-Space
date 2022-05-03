@@ -27,16 +27,17 @@ void LoadTechnologies(Universe& universe, Hjson::Value& value) {
     // Load the technologies
     for (int i = 0; i < value.size(); i++) {
         Hjson::Value &element = value[i];
+
         entt::entity entity = universe.create();
         loading::LoadInitialValues(universe, entity, element);
         auto& tech = universe.emplace<components::science::Technology>(entity);
         // Add tech data
-        Hjson::Value& val = element["actions"];
+        Hjson::Value val = element["actions"];
         for (int i = 0; i < val.size(); i++) {
             tech.actions.push_back(val[i].to_string());
         }
 
-        Hjson::Value& fieldlist = element["fields"];
+        Hjson::Value fieldlist = element["fields"];
         for (int i = 0; i < fieldlist.size(); i++) {
             entt::entity field_entity = universe.fields[fieldlist[i].to_string()];
             tech.fields.insert(field_entity);
