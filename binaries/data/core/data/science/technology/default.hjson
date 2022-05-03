@@ -11,4 +11,26 @@
             recipe:steel_forging
         ]
     }
+    {
+        name: Consumer Good Manufacturing
+        identifier: consumer_good_manufacturing
+        fields: [
+        ]
+        difficulty: 10
+        // Unlocks stuff
+        actions: [
+            recipe:consumer_good_manufacturing
+        ]
+    }
+    {
+        name: Concrete Production
+        identifier: concrete_manufacturing
+        fields: [
+        ]
+        difficulty: 10
+        // Unlocks stuff
+        actions: [
+            recipe:concrete_manufacturing
+        ]
+    }
 ]
