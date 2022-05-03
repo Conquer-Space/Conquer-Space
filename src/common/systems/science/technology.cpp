@@ -16,6 +16,8 @@
 */
 #include "common/systems/science/technology.h"
 
+#include <spdlog/spdlog.h>
+
 #include "common/components/science.h"
 #include "common/components/name.h"
 #include "common/systems/loading/loadutil.h"
@@ -44,10 +46,29 @@ void LoadTechnologies(Universe& universe, Hjson::Value& value) {
 }
 
 void ResearchTech(Universe& universe, entt::entity civilization, entt::entity tech) {
-    // Research technology somehow
-
     // Ensure it's a tech or something
     auto& tech_progress = universe.get_or_emplace<components::science::TechnologicalProgress>( civilization);
     tech_progress.researched_techs.insert(tech);
+
+    // Research technology somehow
+    auto& tech_comp = universe.get<components::science::Technology>(tech);
+    for (const std::string& act : tech_comp.actions) {
+        ProcessAction(universe, civilization, act);
+    }
+}
+
+void ProcessAction(Universe& universe, entt::entity civilization, const std::string& action) {
+    // Process the tech
+    // Split by the colon
+    auto& tech_progress = universe.get_or_emplace<components::science::TechnologicalProgress>(civilization);
+
+    std::string action_name = action.substr(0, action.find(":"));
+    if (action_name == "recipe") {
+        // Get the text
+        std::string name = action.substr(action.find(":") + 1, action.size());
+        // Now load recipe
+        // Add to civilization
+        tech_progress.researched_recipes.insert(universe.recipes[name]);
+    }
 }
 }  // namespace cqsp::common::components::science
