@@ -64,12 +64,16 @@ void ProcessAction(Universe& universe, entt::entity civilization, const std::str
     auto& tech_progress = universe.get_or_emplace<components::science::TechnologicalProgress>(civilization);
 
     std::string action_name = action.substr(0, action.find(":"));
+    std::string outcome_name = action.substr(action.find(":") + 1, action.size());
     if (action_name == "recipe") {
         // Get the text
-        std::string name = action.substr(action.find(":") + 1, action.size());
         // Now load recipe
         // Add to civilization
-        tech_progress.researched_recipes.insert(universe.recipes[name]);
+        tech_progress.researched_recipes.insert(universe.recipes[outcome_name]);
+    } else if (action_name == "mine") {
+        // Now load recipe
+        // Add to civilization
+        tech_progress.researched_mining.insert(universe.goods[outcome_name]);
     }
 }
 }  // namespace cqsp::common::systems::science
