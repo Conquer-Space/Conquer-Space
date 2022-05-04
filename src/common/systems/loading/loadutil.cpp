@@ -54,4 +54,12 @@ bool LoadInitialValues(Universe& universe, const entt::entity& entity, const Hjs
     LoadDescription(universe, entity, value);
     return LoadIdentifier(universe, entity, value);
 }
+
+cqsp::common::components::ResourceLedger HjsonToLedger(cqsp::common::Universe& universe, Hjson::Value& hjson) {
+    components::ResourceLedger stockpile;
+    for (auto input_good : hjson) {
+        stockpile[universe.goods[input_good.first]] = input_good.second;
+    }
+    return stockpile;
+}
 }  // namespace cqsp::common::systems::loading

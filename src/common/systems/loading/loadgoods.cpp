@@ -108,14 +108,6 @@ void LoadRecipes(cqsp::common::Universe& universe, Hjson::Value& recipes) {
     }
 }
 
-cqsp::common::components::ResourceLedger HjsonToLedger(cqsp::common::Universe& universe, Hjson::Value& hjson) {
-    components::ResourceLedger stockpile;
-    for (auto input_good : hjson) {
-        stockpile[universe.goods[input_good.first]] = input_good.second;
-    }
-    return stockpile;
-}
-
 void LoadTerrainData(cqsp::common::Universe& universe, Hjson::Value& value) {
     for (auto it = value.begin(); it != value.end(); it++) {
         entt::entity entity = universe.create();
@@ -146,5 +138,43 @@ void LoadTerrainData(cqsp::common::Universe& universe, Hjson::Value& value) {
         }
         universe.terrain_data[it->first] = entity;
     }
+}
+
+GoodLoader::GoodLoader() {
+    default_val["price"] = 1.f;
+    default_val["tags"] = Hjson::Type::Vector;
+}
+
+bool GoodLoader::LoadValue(const Hjson::Value& values, Universe& universe,
+                           entt::entity entity) {
+    namespace cqspc = cqsp::common::components;
+
+    if (values["mass"].defined() && values["volume"].defined()) {
+        // Then it's matter and physical
+        auto& matter = universe.emplace<cqspc::Matter>(entity);
+        matter.mass = values["mass"];
+        matter.volume = values["volume"];
+    }
+
+    if (values["energy"].defined()) {
+        double t = values["energy"];
+        universe.emplace<cqspc::Energy>(entity, t);
+    }
+
+    for (int i = 0; i < values["tags"].size(); i++) {
+        if (values["tags"][i] == "mineral") {
+            universe.get_or_emplace<cqspc::Mineral>(entity);
+        }
+    }
+
+    universe.emplace<cqspc::Price>(entity, values["price"].to_double());
+
+    if (values["unit"].type() == Hjson::Type::String) {
+        universe.emplace<cqspc::Unit>(entity, values["unit"].to_string());
+    }
+
+    // Basically if it fails at any point, we'll remove the component
+    universe.goods[values["identifier"].to_string()] = entity;
+    return true;
 }
 }  // namespace cqsp::common::systems::loading

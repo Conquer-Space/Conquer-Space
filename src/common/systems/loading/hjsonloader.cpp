@@ -14,27 +14,28 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#pragma once
-
-#include <hjson.h>
-
-#include "common/universe.h"
-#include "common/components/resource.h"
 #include "common/systems/loading/hjsonloader.h"
 
-namespace cqsp::common::systems::loading {
-void LoadGoods(cqsp::common::Universe&, Hjson::Value&);
-void LoadRecipes(cqsp::common::Universe&, Hjson::Value&);
-void LoadTerrainData(cqsp::common::Universe&, Hjson::Value&);
+#include "common/systems/loading/loadutil.h"
 
-class GoodLoader : public HjsonLoader {
- public:
-    GoodLoader();
-    const Hjson::Value& GetDefaultValues() override { return default_val; }
-    bool LoadValue(const Hjson::Value& values, Universe& universe,
-                   entt::entity entity) override;
+int cqsp::common::systems::loading::HjsonLoader::LoadHjson(
+    const Hjson::Value& values, Universe& universe) {
+    int assets = 0;
+    for (int i = 0; i < values.size(); i++) {
+        Hjson::Value value = values[i];
 
- private:
-    Hjson::Value default_val;
-};
-}  // namespace cqsp::common::systems::loading
+        entt::entity entity = universe.create();
+        if (!LoadInitialValues(universe, entity, value)) {
+            universe.destroy(entity);
+            continue;
+        }
+
+        value = Hjson::Merge(GetDefaultValues(), value);
+        if (!LoadValue(value, universe, entity)) {
+            universe.destroy(entity);
+            continue;
+        }
+        assets++;
+    }
+    return assets;
+}
