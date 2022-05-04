@@ -29,5 +29,7 @@ void cqsp::common::systems::SysScienceLab::DoSystem() {
         auto& science_progress = GetUniverse().get_or_emplace<components::science::ScientificProgress>(entity);
         // Progress science
         science_progress.science_progress.MultiplyAdd(lab.science_contribution, Interval());
+
+        // If the research is done, then research tech
     }
 }

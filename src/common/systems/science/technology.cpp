@@ -25,11 +25,19 @@
 namespace cqsp::common::systems::science {
 void LoadTechnologies(Universe& universe, Hjson::Value& value) {
     // Load the technologies
+    Hjson::Value base;
+    base["actions"] = Hjson::Type::Vector;
+    base["fields"] = Hjson::Type::Vector;
+    base["difficulty"] = 10.;
+
     for (int i = 0; i < value.size(); i++) {
-        Hjson::Value &element = value[i];
+        Hjson::Value element = Hjson::Merge(base, value[i]);
 
         entt::entity entity = universe.create();
-        loading::LoadInitialValues(universe, entity, element);
+        if (!loading::LoadInitialValues(universe, entity, element)) {
+            // Then kill the loading because you need an identifier
+        }
+
         auto& tech = universe.emplace<components::science::Technology>(entity);
         // Add tech data
         Hjson::Value val = element["actions"];
@@ -42,6 +50,10 @@ void LoadTechnologies(Universe& universe, Hjson::Value& value) {
             entt::entity field_entity = universe.fields[fieldlist[i].to_string()];
             tech.fields.insert(field_entity);
         }
+
+        // Verify if the tags exist
+        tech.difficulty = element["difficulty"];
+
         universe.technologies[universe.get<components::Identifier>(entity)] = entity;
     }
 }

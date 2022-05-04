@@ -125,10 +125,11 @@ generators:insert({
         -- Add tech
         core.add_tech_progress(civ_id)
 
-        core.research_technology(civ_id, technologies["steel_forging"])
-        core.research_technology(civ_id, technologies["consumer_good_manufacturing"])
-        core.research_technology(civ_id, technologies["concrete_manufacturing"])
-        core.research_technology(civ_id, technologies["basic_mining"])
+        core.complete_technology(civ_id, technologies["steel_forging"])
+        core.complete_technology(civ_id, technologies["consumer_good_manufacturing"])
+        core.complete_technology(civ_id, technologies["concrete_manufacturing"])
+        core.complete_technology(civ_id, technologies["basic_mining"])
+        core.research_technology(civ_id, technologies["blank_research"])
 
         -- Add cities
         core.add_planet_habitation(planet)

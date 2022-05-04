@@ -18,6 +18,7 @@
 
 #include <hjson.h>
 #include <string>
+#include <map>
 
 #include "common/universe.h"
 #include "common/components/resource.h"
@@ -39,4 +40,10 @@ bool LoadInitialValues(Universe& universe, const entt::entity& entity, const Hjs
 
 components::ResourceLedger HjsonToLedger(cqsp::common::Universe&, Hjson::Value&);
 
+bool VerifyHjsonValueExists(const Hjson::Value& value, const std::string& name, Hjson::Type type);
+/// <summary>
+/// For the values that *need* to exist
+/// </summary>
+/// <returns></returns>
+bool VerifyInitialValues(const Hjson::Value& value, const std::map<std::string, Hjson::Type>& map);
 }  // namespace cqsp::common::systems::loading

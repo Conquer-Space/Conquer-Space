@@ -62,4 +62,12 @@ cqsp::common::components::ResourceLedger HjsonToLedger(cqsp::common::Universe& u
     }
     return stockpile;
 }
+
+bool VerifyHjsonValueExists(const Hjson::Value& value, const std::string& name, Hjson::Type type) {
+    return value[name].type() == type;
+}
+
+bool VerifyInitialValues(const Hjson::Value& value, const std::map<std::string, Hjson::Type>& map) {
+    return false;
+}
 }  // namespace cqsp::common::systems::loading

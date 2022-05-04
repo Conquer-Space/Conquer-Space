@@ -98,6 +98,7 @@ void cqsp::scene::UniverseScene::Init() {
     AddUISystem<cqsps::SysCommand>();
     AddUISystem<cqsps::CivilizationInfoPanel>();
     AddUISystem<cqsps::SysFieldViewer>();
+    AddUISystem<cqsps::SysTechnologyProjectViewer>();
     AddUISystem<cqsps::SysTechnologyViewer>();
 
     AddUISystem<cqsps::gui::SysEvent>();
