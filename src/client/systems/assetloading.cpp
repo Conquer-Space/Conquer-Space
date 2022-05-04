@@ -73,7 +73,7 @@ namespace cqsp::client::systems {
 void LoadAllResources(cqsp::engine::Application& app) {
     using namespace cqsp::common::systems::loading;  // NOLINT
     LoadResource<GoodLoader>(app, "goods");
-    LoadResource(app, "recipes", LoadRecipes);
+    LoadResource<RecipeLoader>(app, "recipes");
     LoadResource(app, "names", LoadNameLists);
     LoadResource(app, "tech_fields", common::systems::science::LoadFields);
     LoadResource(app, "tech_list", common::systems::science::LoadTechnologies);

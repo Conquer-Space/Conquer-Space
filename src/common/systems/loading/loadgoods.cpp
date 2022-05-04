@@ -30,84 +30,6 @@
                                  }
 
 namespace cqsp::common::systems::loading {
-void LoadGoods(cqsp::common::Universe& universe, Hjson::Value& goods) {
-    namespace cqspc = cqsp::common::components;
-    for (int i = 0; i < goods.size(); i++) {
-        Hjson::Value val = goods[i];
-        // Create good
-        entt::entity good = universe.create();
-        universe.emplace<cqspc::Good>(good);
-
-        if (!LoadInitialValues(universe, good, val)) {
-            universe.destroy(good);
-            continue;
-        }
-
-        if (val["mass"].defined() && val["volume"].defined()) {
-            // Then it's matter and physical
-            auto& matter = universe.emplace<cqspc::Matter>(good);
-            matter.mass = val["mass"];
-            matter.volume = val["volume"];
-        }
-
-        if (val["energy"].defined()) {
-            double t = val["energy"];
-            universe.emplace<cqspc::Energy>(good, t);
-        }
-
-        for (int i = 0; i < val["tags"].size(); i++) {
-            if (val["tags"][i] == "mineral") {
-                universe.get_or_emplace<cqspc::Mineral>(good);
-            }
-        }
-
-        if (val["price"].defined()) {
-            universe.emplace<cqspc::Price>(good, val["price"].to_double());
-        } else {
-            universe.emplace<cqspc::Price>(good, 1.f);
-        }
-
-        if (val["unit"].defined()) {
-            universe.emplace<cqspc::Unit>(good, val["unit"].to_string());
-        }
-
-        // Basically if it fails at any point, we'll remove the component
-        universe.goods[val["identifier"].to_string()] = good;
-    }
-}
-
-void LoadRecipes(cqsp::common::Universe& universe, Hjson::Value& recipes) {
-    namespace cqspc = cqsp::common::components;
-    for (int i = 0; i < recipes.size(); i++) {
-        Hjson::Value& val = recipes[i];
-
-        entt::entity recipe = universe.create();
-        auto& recipe_component = universe.emplace<cqspc::Recipe>(recipe);
-
-        LoadInitialValues(universe, recipe, val);
-
-        Hjson::Value input_value = val["input"];
-        recipe_component.input = HjsonToLedger(universe, input_value);
-
-        Hjson::Value output_value = val["output"];
-        recipe_component.output = HjsonToLedger(universe, output_value);
-
-        auto &name_object = universe.get<cqspc::Identifier>(recipe);
-        universe.recipes[name_object] = recipe;
-
-        // Check if it has cost
-        if (val["cost"].defined()) {
-            Hjson::Value cost_map = val["cost"];
-            auto& recipe_cost = universe.emplace<cqspc::RecipeCost>(recipe);
-
-            Hjson::Value fixed = cost_map["fixed"];
-            recipe_cost.fixed = HjsonToLedger(universe, fixed);
-            Hjson::Value scaling = cost_map["scaling"];
-            recipe_cost.scaling = HjsonToLedger(universe, scaling);
-        }
-    }
-}
-
 void LoadTerrainData(cqsp::common::Universe& universe, Hjson::Value& value) {
     for (auto it = value.begin(); it != value.end(); it++) {
         entt::entity entity = universe.create();
@@ -175,6 +97,44 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, Universe& universe,
 
     // Basically if it fails at any point, we'll remove the component
     universe.goods[values["identifier"].to_string()] = entity;
+    return true;
+}
+
+RecipeLoader::RecipeLoader() {
+    default_val["input"] = Hjson::Type::Vector;
+    default_val["output"] = Hjson::Type::Vector;
+}
+
+bool RecipeLoader::LoadValue(const Hjson::Value& values, Universe& universe,
+                             entt::entity entity) {
+    namespace cqspc = cqsp::common::components;
+
+    auto& recipe_component = universe.emplace<cqspc::Recipe>(entity);
+
+    Hjson::Value input_value = values["input"];
+    recipe_component.input = HjsonToLedger(universe, input_value);
+
+    Hjson::Value output_value = values["output"];
+    recipe_component.output = HjsonToLedger(universe, output_value);
+
+    // Check if it has cost
+    if (values["cost"].defined()) {
+        Hjson::Value cost_map = values["cost"];
+        auto& recipe_cost = universe.emplace<cqspc::RecipeCost>(entity);
+
+        if (cost_map["fixed"].defined()) {
+            Hjson::Value fixed = cost_map["fixed"];
+            recipe_cost.fixed = HjsonToLedger(universe, fixed);
+        }
+
+        if (cost_map["scaling"].defined()) {
+            Hjson::Value scaling = cost_map["scaling"];
+            recipe_cost.scaling = HjsonToLedger(universe, scaling);
+        }
+    }
+
+    auto &name_object = universe.get<cqspc::Identifier>(entity);
+    universe.recipes[name_object] = entity;
     return true;
 }
 }  // namespace cqsp::common::systems::loading

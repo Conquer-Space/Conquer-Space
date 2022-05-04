@@ -16,6 +16,9 @@
 */
 #include "common/systems/loading/hjsonloader.h"
 
+#include <spdlog/spdlog.h>
+
+#include "common/components/name.h"
 #include "common/systems/loading/loadutil.h"
 
 int cqsp::common::systems::loading::HjsonLoader::LoadHjson(
@@ -26,12 +29,26 @@ int cqsp::common::systems::loading::HjsonLoader::LoadHjson(
 
         entt::entity entity = universe.create();
         if (!LoadInitialValues(universe, entity, value)) {
+            SPDLOG_INFO("No identifier");
             universe.destroy(entity);
             continue;
         }
 
         value = Hjson::Merge(GetDefaultValues(), value);
-        if (!LoadValue(value, universe, entity)) {
+
+        // Catch errors
+        bool success = false;
+        try {
+            success = LoadValue(value, universe, entity);
+        } catch (Hjson::index_out_of_bounds& ioob) {
+            auto& id = universe.get<components::Identifier>(entity).identifier;
+            SPDLOG_WARN("Index out of bounds for {}: {}", id, ioob.what());
+        } catch (Hjson::type_mismatch& tm) {
+            auto& id = universe.get<components::Identifier>(entity).identifier;
+            SPDLOG_WARN("Type mismatch for {}: {}", id, tm.what());
+        }
+
+        if (!success) {
             universe.destroy(entity);
             continue;
         }

@@ -37,4 +37,15 @@ class GoodLoader : public HjsonLoader {
  private:
     Hjson::Value default_val;
 };
+
+class RecipeLoader : public HjsonLoader {
+ public:
+    RecipeLoader();
+    const Hjson::Value& GetDefaultValues() override { return default_val; }
+    bool LoadValue(const Hjson::Value& values, Universe& universe,
+                   entt::entity entity) override;
+
+ private:
+    Hjson::Value default_val;
+};
 }  // namespace cqsp::common::systems::loading
