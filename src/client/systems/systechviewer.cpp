@@ -44,4 +44,27 @@ void SysTechnologyViewer::DoUI(int delta_time) {
 
 void SysTechnologyViewer::DoUpdate(int delta_time) {
 }
+
+void SysTechnologyProjectViewer::Init() {
+}
+
+void SysTechnologyProjectViewer::DoUI(int delta_time) {
+    using common::components::science::ScientificResearch;
+    // Display UI
+    auto view = GetUniverse().view<common::components::Player>();
+    entt::entity player = view.front();
+    ImGui::Begin("Technology Research");
+    if (GetUniverse().any_of<ScientificResearch>(player)) {
+        auto& progress = GetUniverse().get<ScientificResearch>(player);
+        for (auto& researched : progress.current_research) {
+            ImGui::TextFmt("{} {}", gui::GetName(GetUniverse(), researched.first), researched.second);
+        }
+    } else {
+        ImGui::Text("No Tech Research");
+    }
+    ImGui::End();
+}
+
+void SysTechnologyProjectViewer::DoUpdate(int delta_time) {
+}
 }  // namespace cqsp::client::systems

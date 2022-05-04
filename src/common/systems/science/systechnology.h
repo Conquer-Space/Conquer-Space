@@ -13,29 +13,16 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
+*/
 #pragma once
 
-#include "client/systems/sysgui.h"
+#include "common/systems/isimulationsystem.h"
 
-namespace cqsp::client::systems {
-class SysTechnologyViewer : public SysUserInterface {
+namespace cqsp::common::systems {
+class SysTechProgress : public ISimulationSystem {
  public:
-    explicit SysTechnologyViewer(cqsp::engine::Application& app)
-        : SysUserInterface(app) {}
-
-    void Init() override;
-    void DoUI(int delta_time) override;
-    void DoUpdate(int delta_time) override;
+    explicit SysTechProgress(Game& game) : ISimulationSystem(game) {}
+    void DoSystem() override;
+    int Interval() override { return 25; }
 };
-
-class SysTechnologyProjectViewer : public SysUserInterface {
- public:
-    explicit SysTechnologyProjectViewer(cqsp::engine::Application& app)
-        : SysUserInterface(app) {}
-
-    void Init() override;
-    void DoUI(int delta_time) override;
-    void DoUpdate(int delta_time) override;
-};
-}  // namespace cqsp::client::systems
+}  // namespace cqsp::common::systems

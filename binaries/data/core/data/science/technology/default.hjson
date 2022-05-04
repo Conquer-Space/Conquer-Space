@@ -36,6 +36,7 @@
     {
         name: Iron Mining
         identifier: iron_mining
+        difficulty: 10
         fields: [
         ]
         actions: [
@@ -46,6 +47,7 @@
         name: Basic Mining
         identifier: basic_mining
         description: All these resources are necessary for basic civilization
+        difficulty: 10
         fields: [
         ]
         actions: [
@@ -54,6 +56,16 @@
             mine:copper
             mine:stone
             mine:oil
+        ]
+    }
+    {
+        name: Blank Research
+        identifier: blank_research
+        description: Test research
+        difficulty: 10
+        fields: [
+        ]
+        actions: [
         ]
     }
 ]

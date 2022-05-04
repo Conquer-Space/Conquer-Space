@@ -36,6 +36,7 @@
 #include "common/systems/economy/sysfactory.h"
 #include "common/systems/history/sysmarkethistory.h"
 #include "common/systems/science/syssciencelab.h"
+#include "common/systems/science/systechnology.h"
 
 #include "common/components/event.h"
 #include "common/components/organizations.h"
@@ -59,6 +60,7 @@ Simulation::Simulation(cqsp::common::Game &game) : m_game(game), m_universe(game
     AddSystem<cqspcs::SysMine>();
     AddSystem<cqspcs::SysAgent>();
     AddSystem<cqspcs::SysScienceLab>();
+    AddSystem<cqspcs::SysTechProgress>();
     AddSystem<cqspcs::SysMarket>();
     AddSystem<cqspcs::history::SysMarketHistory>();
     //AddSystem<cqspcs::SysOrbit>();

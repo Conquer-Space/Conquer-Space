@@ -386,10 +386,17 @@ void FunctionScience(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
 
     REGISTER_FUNCTION("add_tech_progress", [&](entt::entity entity) {
         universe.emplace<cqsp::common::components::science::TechnologicalProgress>(entity);
+        universe.emplace<cqsp::common::components::science::ScientificResearch>(entity);
     });
 
-    REGISTER_FUNCTION("research_technology", [&](entt::entity entity, entt::entity tech) {
+    REGISTER_FUNCTION("complete_technology", [&](entt::entity entity, entt::entity tech) {
         cqsp::common::systems::science::ResearchTech(universe, entity, tech);
+    });
+
+    REGISTER_FUNCTION("research_technology", [&](entt::entity entity,
+                                                 entt::entity tech) {
+        auto& res = universe.get<cqsp::common::components::science::ScientificResearch>(entity);
+        res.current_research[tech] = 0;
     });
 }
 }  // namespace

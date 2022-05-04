@@ -47,6 +47,11 @@ struct ScientificProgress {
 struct ScienceProject {
 };
 
+struct ScientificResearch {
+    // the int is the number of ticks left
+    std::map<entt::entity, int> current_research;
+};
+
 struct TechnologicalProgress {
     std::set<entt::entity> researched_techs;
     // A recipe that has been unlocked? Idk how this should work
@@ -57,5 +62,7 @@ struct TechnologicalProgress {
 struct Technology {
     std::set<entt::entity> fields;
     std::vector<std::string> actions;
+
+    int difficulty;
 };
 }  // namespace cqsp::common::components::science
