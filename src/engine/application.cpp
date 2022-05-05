@@ -573,7 +573,7 @@ void Application::CalculateProjections() {
 }
 
 Application::Application(int _argc, char* _argv[]) {
-    cqsp::common::util::exe_path = _argv[0];
+    cqsp::common::util::ExePath::exe_path = _argv[0];
     for (int i = 0; i < _argc; i++) {
         cmd_line_args.push_back(_argv[i]);
     }
@@ -836,7 +836,7 @@ void Application::LogInfo() {
 #endif
     SPDLOG_INFO("Platform: {}", PLATFORM_NAME);
     SPDLOG_INFO("Compiled {} {}", __DATE__, __TIME__);
-    SPDLOG_INFO("Exe Path: {}", common::util::exe_path);
+    SPDLOG_INFO("Exe Path: {}", common::util::ExePath::exe_path);
     SPDLOG_INFO("Data Path: {}", common::util::GetCqspDataPath());
 
 #ifdef TRACY_ENABLE

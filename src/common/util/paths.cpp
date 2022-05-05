@@ -43,7 +43,7 @@ char* get_home_dir(uid_t uid) {
 #endif
 
 namespace cqsp::common::util {
-std::string exe_path = "";
+std::string ExePath::exe_path = std::string();  // NOLINT
 
 std::string GetCqspSavePath() {
     std::string directory = "";
@@ -73,7 +73,7 @@ std::string GetCqspSavePath() {
 
 std::string GetCqspExePath() {
     // Get current path
-    std::filesystem::path p(exe_path);
+    std::filesystem::path p(ExePath::exe_path);
     p = p.remove_filename();
     return std::filesystem::canonical(p).string();
 }
