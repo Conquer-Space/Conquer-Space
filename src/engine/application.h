@@ -101,7 +101,6 @@ class Application {
     /// Application is not really supposed to be used here.
     [[deprecated("This constructor is supposed to be used for testing purposes,"
                     "and is not recommended.")]]
-    Application();
 
     /*
     * Runs the entire application.

@@ -43,7 +43,7 @@ char* get_home_dir(uid_t uid) {
 #endif
 
 namespace cqsp::common::util {
-char* exe_path = "";
+std::string exe_path = "";
 
 std::string GetCqspSavePath() {
     std::string directory = "";
