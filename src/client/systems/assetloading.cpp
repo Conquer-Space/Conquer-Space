@@ -17,6 +17,7 @@
 #include "client/systems/assetloading.h"
 
 #include <string>
+#include <memory>
 
 #include "client/systems/clientscripting.h"
 #include "common/systems/sysuniversegenerator.h"
@@ -26,6 +27,8 @@
 #include "common/systems/loading/loadnames.h"
 #include "common/systems/science/technology.h"
 #include "common/systems/science/fields.h"
+
+#include "common/systems/loading/hjsonloader.h"
 
 namespace {
 void LoadResource(cqsp::engine::Application& app, std::string asset_name,
@@ -44,13 +47,34 @@ void LoadResource(cqsp::engine::Application& app, std::string asset_name,
         }
     }
 }
+
+template<class T>
+void LoadResource(cqsp::engine::Application& app, std::string asset_name) {
+    using cqsp::common::systems::loading::HjsonLoader;
+    static_assert(std::is_base_of<HjsonLoader, T>::value, "Class is not child of");
+    std::unique_ptr<HjsonLoader> ptr = std::make_unique<T>();
+
+    namespace cqspc = cqsp::common::components;
+    for (auto it = app.GetAssetManager().GetPackageBegin(); it != app.GetAssetManager().GetPackageEnd(); it++) {
+        if (!it->second->HasAsset(asset_name)) {
+            continue;
+        }
+        cqsp::asset::HjsonAsset* good_assets = it->second->GetAsset<cqsp::asset::HjsonAsset>(asset_name);
+        try {
+            ptr->LoadHjson(good_assets->data, app.GetUniverse());
+        } catch (std::runtime_error& error) {
+            SPDLOG_INFO("Failed to load hjson asset {}: {}", asset_name, error.what());
+        } catch (Hjson::index_out_of_bounds &) {
+        }
+    }
+}
 }  // namespace
 
 namespace cqsp::client::systems {
 void LoadAllResources(cqsp::engine::Application& app) {
     using namespace cqsp::common::systems::loading;  // NOLINT
-    LoadResource(app, "goods", LoadGoods);
-    LoadResource(app, "recipes", LoadRecipes);
+    LoadResource<GoodLoader>(app, "goods");
+    LoadResource<RecipeLoader>(app, "recipes");
     LoadResource(app, "names", LoadNameLists);
     LoadResource(app, "tech_fields", common::systems::science::LoadFields);
     LoadResource(app, "tech_list", common::systems::science::LoadTechnologies);

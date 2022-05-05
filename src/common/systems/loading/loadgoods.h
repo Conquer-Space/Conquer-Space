@@ -20,10 +20,32 @@
 
 #include "common/universe.h"
 #include "common/components/resource.h"
+#include "common/systems/loading/hjsonloader.h"
 
 namespace cqsp::common::systems::loading {
 void LoadGoods(cqsp::common::Universe&, Hjson::Value&);
 void LoadRecipes(cqsp::common::Universe&, Hjson::Value&);
-components::ResourceLedger HjsonToLedger(cqsp::common::Universe&, Hjson::Value&);
 void LoadTerrainData(cqsp::common::Universe&, Hjson::Value&);
+
+class GoodLoader : public HjsonLoader {
+ public:
+    GoodLoader();
+    const Hjson::Value& GetDefaultValues() override { return default_val; }
+    bool LoadValue(const Hjson::Value& values, Universe& universe,
+                   entt::entity entity) override;
+
+ private:
+    Hjson::Value default_val;
+};
+
+class RecipeLoader : public HjsonLoader {
+ public:
+    RecipeLoader();
+    const Hjson::Value& GetDefaultValues() override { return default_val; }
+    bool LoadValue(const Hjson::Value& values, Universe& universe,
+                   entt::entity entity) override;
+
+ private:
+    Hjson::Value default_val;
+};
 }  // namespace cqsp::common::systems::loading

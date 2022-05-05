@@ -17,26 +17,15 @@
 #pragma once
 
 #include <hjson.h>
-#include <string>
 
 #include "common/universe.h"
-#include "common/components/resource.h"
 
 namespace cqsp::common::systems::loading {
-/// <summary>
-/// Returns true if name exists
-/// </summary>
-/// <returns></returns>
-bool LoadName(Universe& universe, const entt::entity &entity, const Hjson::Value& value);
-bool LoadIdentifier(Universe& universe, const entt::entity &entity, const Hjson::Value& value);
-bool LoadDescription(Universe& universe, const entt::entity& entity, const Hjson::Value& value);
-
-/// <summary>
-/// Loads all the values that should be on every single data type
-/// Returns true if an identifier exists
-/// </summary>
-bool LoadInitialValues(Universe& universe, const entt::entity& entity, const Hjson::Value& value);
-
-components::ResourceLedger HjsonToLedger(cqsp::common::Universe&, Hjson::Value&);
-
+class HjsonLoader {
+ public:
+    HjsonLoader() = default;
+    virtual const Hjson::Value& GetDefaultValues() = 0;
+    int LoadHjson(const Hjson::Value& values, Universe& universe);
+    virtual bool LoadValue(const Hjson::Value& values, Universe& universe, entt::entity entity) = 0;
+};
 }  // namespace cqsp::common::systems::loading
