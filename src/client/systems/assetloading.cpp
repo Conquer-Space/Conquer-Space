@@ -17,6 +17,7 @@
 #include "client/systems/assetloading.h"
 
 #include <string>
+#include <memory>
 
 #include "client/systems/clientscripting.h"
 #include "common/systems/sysuniversegenerator.h"

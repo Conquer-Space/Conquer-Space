@@ -25,7 +25,7 @@ class HjsonLoader {
  public:
     HjsonLoader() = default;
     virtual const Hjson::Value& GetDefaultValues() = 0;
-    virtual int LoadHjson(const Hjson::Value& values, Universe& universe) final;
+    int LoadHjson(const Hjson::Value& values, Universe& universe);
     virtual bool LoadValue(const Hjson::Value& values, Universe& universe, entt::entity entity) = 0;
 };
 }  // namespace cqsp::common::systems::loading
