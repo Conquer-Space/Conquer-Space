@@ -19,7 +19,7 @@
 #include <string>
 
 namespace cqsp::common::util {
-extern char* exe_path;
+extern std::string exe_path;
 std::string GetCqspSavePath();
 std::string GetCqspExePath();
 std::string GetCqspDataPath();
