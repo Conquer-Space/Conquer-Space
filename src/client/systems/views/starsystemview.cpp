@@ -347,8 +347,9 @@ void SysStarSystemRenderer::SeePlanet(entt::entity ent) {
 }
 
 void SysStarSystemRenderer::DoUI(float deltaTime) {
-    auto &debug_info = m_app.GetUniverse().ctx_or_set<ctx::StarSystemViewDebug>();
-    if (debug_info.to_show) {
+    // FIXME(EhWhoamI)
+    //auto &debug_info = m_app.GetUniverse().ctx().emplace<ctx::StarSystemViewDebug>();
+    /* if (debug_info.to_show) {
         ImGui::Begin("Debug ui window", &debug_info.to_show);
         ImGui::TextFmt("{} {} {}", cam_pos.x, cam_pos.y, cam_pos.z);
         ImGui::TextFmt("{} {} {}", view_center.x, view_center.y, view_center.z);
@@ -356,7 +357,7 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
         ImGui::TextFmt("Focused planets: {}",
             m_universe.view<cqsp::client::systems::FocusedPlanet>().size());
         ImGui::End();
-    }
+    }*/
 }
 
 void SysStarSystemRenderer::DrawStars() {
@@ -786,7 +787,7 @@ void SysStarSystemRenderer::CheckResourceDistRender() {
 
     auto &dist = m_app.GetUniverse().get<ResourceDistribution>(m_viewing_entity);
     TerrainImageGenerator gen;
-    gen.terrain.seed = dist[rend.resource];
+    gen.terrain.seed = dist.dist[rend.resource];
     gen.GenerateHeightMap(3, 9);
     // Make the UI
     unsigned int a = GeneratePlanetTexture(gen.GetHeightMap());

@@ -44,7 +44,7 @@ void cqsp::common::systems::InfrastructureSim::DoSystem() {
             // but for now, the city will go under brownout.
             universe.get_or_emplace<cqspc::infrastructure::BrownOut>(entity);
         } else {
-            universe.remove_if_exists<cqspc::infrastructure::BrownOut>(entity);
+            universe.remove<cqspc::infrastructure::BrownOut>(entity);
         }
     }
 }

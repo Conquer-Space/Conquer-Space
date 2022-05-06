@@ -147,8 +147,9 @@ void cqsp::client::systems::SysDebugMenu::CreateMenuBar() {
         }
         if (ImGui::BeginMenu("Extra UI Indicators")) {
             if (ImGui::MenuItem("Star System Viewer Debug")) {
-                auto& debug_info = GetApp().GetUniverse().ctx_or_set<ctx::StarSystemViewDebug>();
-                debug_info.to_show = !debug_info.to_show;
+                // FIXME(EhWhoamI)
+                //auto& debug_info = GetApp().GetUniverse().ctx().emplace<ctx::StarSystemViewDebug>();
+                //debug_info.to_show = !debug_info.to_show;
             }
             ImGui::EndMenu();
         }
