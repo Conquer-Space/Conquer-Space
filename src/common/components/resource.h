@@ -52,7 +52,10 @@ struct Good {};
 
 struct Mineral {};
 
-struct ResourceLedger : public std::map<entt::entity, double> {
+typedef std::map<entt::entity, double> LedgerMap;
+
+class ResourceLedger : private LedgerMap {
+ public:
     ResourceLedger() = default;
     ~ResourceLedger() = default;
 
@@ -76,6 +79,7 @@ struct ResourceLedger : public std::map<entt::entity, double> {
     void operator-=(const ResourceLedger&);
     void operator+=(const ResourceLedger&);
     void operator*=(const double value);
+
     /// <summary>
     /// Multiplies the resource with the resource value in other ledger
     /// </summary>
@@ -154,6 +158,22 @@ struct ResourceLedger : public std::map<entt::entity, double> {
 
     std::string to_string();
 
+    // All the things that we get from map
+    using LedgerMap::operator[];
+    using LedgerMap::begin;
+    using LedgerMap::end;
+    using LedgerMap::cbegin;
+    using LedgerMap::cend;
+    using LedgerMap::crbegin;
+    using LedgerMap::crend;
+    using LedgerMap::rbegin;
+    using LedgerMap::rend;
+    using LedgerMap::clear;
+    using LedgerMap::empty;
+    using LedgerMap::emplace;
+    using LedgerMap::value_comp;
+    using LedgerMap::mapped_type;
+
 #ifdef TRACY_ENABLE
     // Debug value to determine how many stockpile operations are done in the tick
     static int stockpile_additions;
@@ -203,9 +223,9 @@ struct ResourceConverter {
     entt::entity recipe;
 };
 
-struct ResourceStockpile : public ResourceLedger {};
+struct ResourceStockpile : public ResourceLedger { };
 
-struct ResourceDemand : public ResourceLedger {};
+struct ResourceDemand : public ResourceLedger { };
 
 struct FailedResourceTransfer {
     // Ledgers later to show how much
@@ -215,7 +235,9 @@ struct FailedResourceProduction {};
 
 struct FailedResourceConsumption {};
 
-struct ResourceDistribution : public std::map<entt::entity, double> {};
+struct ResourceDistribution {
+    std::map<entt::entity, double> dist;
+};
 }  // namespace components
 }  // namespace common
 }  // namespace cqsp

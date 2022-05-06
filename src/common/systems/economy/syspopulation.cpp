@@ -39,7 +39,7 @@ void cqsp::common::systems::SysPopulationGrowth::DoSystem() {
             // Then alert hunger.
             universe.get_or_emplace<cqspc::Hunger>(entity);
         } else {
-            universe.remove_if_exists<cqspc::Hunger>(entity);
+            universe.remove<cqspc::Hunger>(entity);
         }
         // If not hungry, grow population
         if (!universe.all_of<cqspc::Hunger>(entity)) {

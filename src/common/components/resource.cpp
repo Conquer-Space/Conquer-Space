@@ -21,13 +21,15 @@
 #include <utility>
 
 namespace {
-template<class Map, class Function>
-Map merge_apply(const Map &m1, const Map &m2, typename Map::mapped_type identity, Function func) {
+using cqsp::common::components::ResourceLedger;
+template<class Function>
+ResourceLedger merge_apply(const ResourceLedger &m1, const ResourceLedger &m2,
+                           ResourceLedger::mapped_type identity, Function func) {
     auto it1 = m1.begin();
     auto it2 = m2.begin();
 
     auto comp = m1.value_comp();
-    Map res;
+    ResourceLedger res;
     while (true) {
         bool end1 = it1 == m1.end();
         bool end2 = it2 == m2.end();
@@ -50,8 +52,9 @@ Map merge_apply(const Map &m1, const Map &m2, typename Map::mapped_type identity
     return res;
 }
 
-template<class Map, class Function>
-bool MergeCompare(const Map &m1, const Map &m2,  typename Map::mapped_type identity, Function func) {
+template<class Function>
+bool MergeCompare(const ResourceLedger &m1, const ResourceLedger&m2,
+                  ResourceLedger::mapped_type identity, Function func) {
     auto it1 = m1.begin();
     auto it2 = m2.begin();
 

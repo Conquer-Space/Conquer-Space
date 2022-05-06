@@ -205,7 +205,7 @@ void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
 
     REGISTER_FUNCTION("set_resource", [&](entt::entity planet, entt::entity resource, int seed) {
         auto& dist = universe.get_or_emplace<cqspc::ResourceDistribution>(planet);
-        dist[resource] = seed;
+        dist.dist[resource] = seed;
     });
 
     // TODO(EhWhoAmI): Will have to fix the documentation for this so that it looks neater
