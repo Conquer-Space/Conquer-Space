@@ -16,6 +16,8 @@
  */
 #include "client/systems/systechviewer.h"
 
+#include <vector>
+
 #include "common/components/player.h"
 #include "common/components/science.h"
 
