@@ -16,6 +16,8 @@
 */
 #include "common/systems/science/systechnology.h"
 
+#include <vector>
+
 #include "common/components/science.h"
 #include "common/systems/science/technology.h"
 
@@ -30,7 +32,7 @@ void cqsp::common::systems::SysTechProgress::DoSystem() {
             // Get the research amount
             auto& tech = GetUniverse().get<components::science::Technology>(res.first);
             if (res.second > tech.difficulty) {
-                // Add the researched 
+                // Add the researched
                 completed_techs.push_back(res.first);
             }
         }
@@ -38,6 +40,5 @@ void cqsp::common::systems::SysTechProgress::DoSystem() {
             cqsp::common::systems::science::ResearchTech(GetUniverse(), entity, r);
             research.current_research.erase(r);
         }
-
     }
 }
