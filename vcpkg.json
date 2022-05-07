@@ -39,6 +39,7 @@
       }
     ],
     "overrides": [
-      { "name": "imgui", "version": "1.85"}
+      { "name": "imgui", "version": "1.85" },
+      { "name": "entt", "version": "3.10.1" }
     ]
 }
