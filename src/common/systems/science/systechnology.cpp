@@ -17,14 +17,27 @@
 #include "common/systems/science/systechnology.h"
 
 #include "common/components/science.h"
+#include "common/systems/science/technology.h"
 
 void cqsp::common::systems::SysTechProgress::DoSystem() {
     auto field = GetUniverse().view<components::science::ScientificResearch>();
 
     for (entt::entity entity : field) {
         auto& research = GetUniverse().get<components::science::ScientificResearch>(entity);
+        std::vector<entt::entity> completed_techs;
         for (auto& res : research.current_research) {
             res.second += Interval();
+            // Get the research amount
+            auto& tech = GetUniverse().get<components::science::Technology>(res.first);
+            if (res.second > tech.difficulty) {
+                // Add the researched 
+                completed_techs.push_back(res.first);
+            }
         }
+        for (entt::entity r : completed_techs) {
+            cqsp::common::systems::science::ResearchTech(GetUniverse(), entity, r);
+            research.current_research.erase(r);
+        }
+
     }
 }

@@ -5,7 +5,7 @@
         description: Steel forging is essential to complex and modern industry
         fields: [
         ]
-        difficulty: 10
+        difficulty: 5000
         // Unlocks stuff
         actions: [
             recipe:steel_forging
@@ -16,7 +16,7 @@
         identifier: consumer_good_manufacturing
         fields: [
         ]
-        difficulty: 10
+        difficulty: 5000
         // Unlocks stuff
         actions: [
             recipe:consumer_good_manufacturing
@@ -27,7 +27,7 @@
         identifier: concrete_manufacturing
         fields: [
         ]
-        difficulty: 10
+        difficulty: 5000
         // Unlocks stuff
         actions: [
             recipe:concrete_manufacturing
@@ -36,7 +36,7 @@
     {
         name: Iron Mining
         identifier: iron_mining
-        difficulty: 10
+        difficulty: 5000
         fields: [
         ]
         actions: [
@@ -47,7 +47,7 @@
         name: Basic Mining
         identifier: basic_mining
         description: All these resources are necessary for basic civilization
-        difficulty: 10
+        difficulty: 5000
         fields: [
         ]
         actions: [
@@ -62,7 +62,7 @@
         name: Blank Research
         identifier: blank_research
         description: Test research
-        difficulty: 10
+        difficulty: 5000
         fields: [
         ]
         actions: [
@@ -72,7 +72,7 @@
         name: Temp research
         identifier: temp_research
         description: Test research no 2
-        difficulty: 10
+        difficulty: 5000
         fields: [
         ]
         actions: [
