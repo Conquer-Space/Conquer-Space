@@ -68,4 +68,14 @@
         actions: [
         ]
     }
+    {
+        name: Temp research
+        identifier: temp_research
+        description: Test research no 2
+        difficulty: 10
+        fields: [
+        ]
+        actions: [
+        ]
+    }
 ]

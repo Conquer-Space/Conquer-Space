@@ -59,6 +59,23 @@ void SysTechnologyProjectViewer::DoUI(int delta_time) {
         for (auto& researched : progress.current_research) {
             ImGui::TextFmt("{} {}", gui::GetName(GetUniverse(), researched.first), researched.second);
         }
+
+        ImGui::Separator();
+        ImGui::Text("Potential Research");
+
+        std::vector<entt::entity> potential_research;
+        for (const entt::entity& researched : progress.potential_research) {
+            ImGui::TextFmt("{}", gui::GetName(GetUniverse(), researched));
+            ImGui::SameLine();
+            if (ImGui::Button(fmt::format("Queue Research##{}", researched).c_str())) {
+                // Add to tech queue
+                potential_research.push_back(researched);
+            }
+        }
+        for (entt::entity res : potential_research) {
+            progress.potential_research.erase(res);
+            progress.current_research[res] = 0;
+        }
     } else {
         ImGui::Text("No Tech Research");
     }

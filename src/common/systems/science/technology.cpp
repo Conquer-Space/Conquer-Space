@@ -61,7 +61,7 @@ void LoadTechnologies(Universe& universe, Hjson::Value& value) {
 void ResearchTech(Universe& universe, entt::entity civilization, entt::entity tech) {
     // Ensure it's a tech or something
     auto& tech_progress = universe.get_or_emplace<components::science::TechnologicalProgress>(civilization);
-    tech_progress.researched_techs.insert(tech);
+    tech_progress.researched_techs.emplace(tech);
 
     // Research technology somehow
     auto& tech_comp = universe.get<components::science::Technology>(tech);
@@ -81,11 +81,11 @@ void ProcessAction(Universe& universe, entt::entity civilization, const std::str
         // Get the text
         // Now load recipe
         // Add to civilization
-        tech_progress.researched_recipes.insert(universe.recipes[outcome_name]);
+        tech_progress.researched_recipes.emplace(universe.recipes[outcome_name]);
     } else if (action_name == "mine") {
         // Now load recipe
         // Add to civilization
-        tech_progress.researched_mining.insert(universe.goods[outcome_name]);
+        tech_progress.researched_mining.emplace(universe.goods[outcome_name]);
     }
 }
 }  // namespace cqsp::common::systems::science

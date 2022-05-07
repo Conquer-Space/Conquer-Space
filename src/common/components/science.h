@@ -50,6 +50,8 @@ struct ScienceProject {
 struct ScientificResearch {
     // the int is the number of ticks left
     std::map<entt::entity, int> current_research;
+
+    std::set<entt::entity> potential_research;
 };
 
 struct TechnologicalProgress {
