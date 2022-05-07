@@ -130,6 +130,7 @@ generators:insert({
         core.complete_technology(civ_id, technologies["concrete_manufacturing"])
         core.complete_technology(civ_id, technologies["basic_mining"])
         core.research_technology(civ_id, technologies["blank_research"])
+        core.add_potential_tech(civ_id, technologies["temp_research"])
 
         -- Add cities
         core.add_planet_habitation(planet)

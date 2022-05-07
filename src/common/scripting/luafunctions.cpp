@@ -398,6 +398,12 @@ void FunctionScience(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
         auto& res = universe.get<cqsp::common::components::science::ScientificResearch>(entity);
         res.current_research[tech] = 0;
     });
+
+    REGISTER_FUNCTION("add_potential_tech", [&](entt::entity entity,
+                                                 entt::entity tech) {
+        auto& res = universe.get<cqsp::common::components::science::ScientificResearch>(entity);
+        res.potential_research.insert(tech);
+    });
 }
 }  // namespace
 
