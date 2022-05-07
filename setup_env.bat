@@ -3,6 +3,10 @@ REM This file gets vcpkg, setups the cmake build system after that
 SET has_vcpkg=NOT exist vcpkg/
 if %has_vcpkg% (
     git clone https://github.com/Microsoft/vcpkg.git && call .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
+) else (
+    cd vcpkg
+    git pull
+    cd ..
 )
 
 REM Build in static mode because it's cooler, also because google test doesn't support it
