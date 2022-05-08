@@ -110,8 +110,7 @@ void SysStarSystemRenderer::Initialize() {
 
     // Initialize sun
     sun.mesh = sphere_mesh;
-    sun.shaderProgram = //m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:sunshader")->MakeShader();
-        m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:texturedobject")->MakeShader();
+    sun.shaderProgram = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:sunshader")->MakeShader();
     sun.textures.push_back(m_app.GetAssetManager().GetAsset<asset::Texture>("core:earthmap"));
     auto buffer_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:framebuffer")->MakeShader();
 
@@ -119,6 +118,9 @@ void SysStarSystemRenderer::Initialize() {
     physical_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
     planet_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
     skybox_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
+
+    test_orbit.mesh = engine::primitive::CreateLineCircle(60, 20);
+    test_orbit.shaderProgram = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:sunshader")->MakeShader();
 }
 
 void SysStarSystemRenderer::OnTick() {
@@ -420,6 +422,15 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
                 // Do empty terrain
                 // Check if the planet has the thing
                 DrawPlanet(object_pos, body_entity);
+                // Draw an orbit
+                test_orbit.shaderProgram->UseProgram();
+                test_orbit.shaderProgram->Set("color", glm::vec4(1, 1, 0, 1));
+                glm::mat4 test = glm::mat4(1.0);
+                glm::mat4 transform = glm::mat4(1.f);
+                test = glm::translate(test, object_pos);
+                test = test * transform;
+                test_orbit.SetMVP(test, camera_matrix, m_app.Get3DProj());
+                engine::Draw(test_orbit);
             } else {
                 DrawTerrainlessPlanet(object_pos);
             }
@@ -427,12 +438,15 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
     }
     renderer.EndDraw(physical_layer);
 
+    renderer.BeginDraw(ship_icon_layer);
     for (auto body_entity : bodies) {
         glm::vec3 object_pos = CalculateCenteredObject(body_entity);
         if (glm::distance(object_pos, cam_pos) <= 200) {
             RenderCities(object_pos, body_entity);
         }
     }
+    renderer.EndDraw(ship_icon_layer);
+
 }
 
 void SysStarSystemRenderer::DrawShips() {
@@ -559,7 +573,6 @@ void SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_pos, entt::entity entit
 
     glm::mat4 transform = glm::mat4(1.f);
     // For some reason, the sphere we make needs to be inverted
-    transform = glm::scale(transform, glm::vec3(1, 1, 1));
 
     position = position * transform;
 
@@ -595,11 +608,6 @@ void SysStarSystemRenderer::DrawStar(glm::vec3 &object_pos) {
     if (wireframe) {
     glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
     }
-    line_shader->UseProgram();
-    line_shader->setMat4("projection", projection);
-    line_shader->setMat4("view", camera_matrix);
-    line_shader->setMat4("model", position);
-    sun.mesh->Draw();
 }
 
 void SysStarSystemRenderer::DrawTerrainlessPlanet(glm::vec3 &object_pos) {
@@ -628,7 +636,6 @@ void SysStarSystemRenderer::RenderCities(glm::vec3 &object_pos, const entt::enti
     }
 
     // Put in same layer as ships
-    renderer.BeginDraw(ship_icon_layer);
     city.shaderProgram->UseProgram();
     city.shaderProgram->setVec4("color", 0.5, 0.5, 0.5, 1);
     for (auto city_entity : cities) {
@@ -652,7 +659,6 @@ void SysStarSystemRenderer::RenderCities(glm::vec3 &object_pos, const entt::enti
     if (is_founding_city && is_rendering_founding_city) {
         DrawCityIcon(city_founding_position);
     }
-    renderer.EndDraw(ship_icon_layer);
 }
 
 bool SysStarSystemRenderer::CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos) {

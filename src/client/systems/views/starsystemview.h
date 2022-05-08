@@ -104,6 +104,7 @@ class SysStarSystemRenderer {
     cqsp::engine::Renderable ship_overlay;
     cqsp::engine::Renderable city;
     cqsp::engine::Renderable sun;
+    cqsp::engine::Renderable test_orbit;
 
 #if FALSE
     // Disabled for now

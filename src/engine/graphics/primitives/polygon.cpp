@@ -28,7 +28,7 @@
 cqsp::engine::Mesh* cqsp::engine::primitive::CreateFilledCircle(int segments) {
     cqsp::engine::Mesh* mesh = new cqsp::engine::Mesh();
 
-        std::vector<float> positions;
+    std::vector<float> positions;
     positions.push_back(0);
     positions.push_back(0);
     positions.push_back(0);
@@ -45,6 +45,8 @@ cqsp::engine::Mesh* cqsp::engine::primitive::CreateFilledCircle(int segments) {
         positions.push_back(x);
         positions.push_back(y);
         positions.push_back(0);
+
+        // Texture coordinates
         positions.push_back(0.5*x + 0.5);
         positions.push_back(0.5*-y + 0.5);
     }
@@ -81,4 +83,38 @@ cqsp::engine::Mesh* cqsp::engine::primitive::CreateFilledTriangle() {
 
 cqsp::engine::Mesh* cqsp::engine::primitive::CreateFilledSquare() {
     return cqsp::engine::primitive::CreateFilledCircle(4);
+}
+
+cqsp::engine::Mesh* cqsp::engine::primitive::CreateLineCircle(int segments, float size) {
+    cqsp::engine::Mesh* mesh = new cqsp::engine::Mesh();
+    std::vector<float> positions;
+    for (int i = 0; i <= segments + 1; i++) {
+        double theta = i * cqsp::common::components::types::toRadian(360.f/segments);
+        double y = std::sin(theta) * size;
+        double x = std::cos(theta) * size;
+        positions.push_back(x);
+        positions.push_back(0);
+        positions.push_back(y);
+    }
+
+    GLuint vao = 0;
+    glGenVertexArrays(1, &vao);
+
+    unsigned int vbo;
+    glGenBuffers(1, &vbo);
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(float), positions.data(), GL_STATIC_DRAW);
+    int stride = 3;
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), reinterpret_cast<void*>(0));
+
+    mesh->VAO = vao;
+    mesh->VBO = vbo;
+    mesh->mode = GL_LINE_STRIP;
+    mesh->indicies = segments + 1;
+    mesh->buffer_type = cqsp::engine::DrawType::ARRAYS;
+    return mesh;
 }

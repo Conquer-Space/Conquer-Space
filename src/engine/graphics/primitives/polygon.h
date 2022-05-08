@@ -23,5 +23,6 @@ namespace engine::primitive {
 cqsp::engine::Mesh* CreateFilledCircle(int segments = 64);
 cqsp::engine::Mesh* CreateFilledTriangle();
 cqsp::engine::Mesh* CreateFilledSquare();
+cqsp::engine::Mesh* CreateLineCircle(int segments = 64, float size = 1.0f);
 }  // namespace engine::primitive
 }  // namespace cqsp
