@@ -16,6 +16,9 @@
 */
 #pragma once
 
+#include <vector>
+#include <glm/vec3.hpp>
+
 #include "engine/graphics/mesh.h"
 
 namespace cqsp {
@@ -24,5 +27,6 @@ cqsp::engine::Mesh* CreateFilledCircle(int segments = 64);
 cqsp::engine::Mesh* CreateFilledTriangle();
 cqsp::engine::Mesh* CreateFilledSquare();
 cqsp::engine::Mesh* CreateLineCircle(int segments = 64, float size = 1.0f);
+cqsp::engine::Mesh* CreateLineSequence(const std::vector<glm::vec3>& sequence);
 }  // namespace engine::primitive
 }  // namespace cqsp

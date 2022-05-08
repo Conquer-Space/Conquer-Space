@@ -564,7 +564,6 @@ void SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_pos, entt::entity entit
     position = glm::translate(position, object_pos);
 
     glm::mat4 transform = glm::mat4(1.f);
-    // For some reason, the sphere we make needs to be inverted
 
     position = position * transform;
 
