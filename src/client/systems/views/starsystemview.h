@@ -105,8 +105,10 @@ class SysStarSystemRenderer {
     cqsp::engine::Renderable city;
     cqsp::engine::Renderable sun;
 
-    asset::ShaderProgram_t pbr_shader;
+#if FALSE
+    // Disabled for now
     asset::ShaderProgram_t no_light_shader;
+#endif
 
     cqsp::asset::Texture* planet_texture;
     cqsp::asset::Texture* planet_heightmap;

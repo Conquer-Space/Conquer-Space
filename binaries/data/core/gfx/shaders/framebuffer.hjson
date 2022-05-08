@@ -1,0 +1,6 @@
+{
+    vert: framebuffer.vert
+    frag: framebuffer.frag
+    uniforms: {
+    }
+}

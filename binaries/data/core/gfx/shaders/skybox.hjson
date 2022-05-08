@@ -1,0 +1,7 @@
+{
+    vert: skybox.vert
+    frag: skybox.frag
+    uniforms: {
+        texture0: 0
+    }
+}

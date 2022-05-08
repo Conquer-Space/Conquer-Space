@@ -21,7 +21,7 @@
         }
     }
     planetfrag: {
-        path: pbr_directional_textured.frag
+        path: planet_pbrshader.frag
         type: shader
         hints: {
             type: frag
@@ -60,13 +60,6 @@
         type: shader
         hints: {
             type: vert
-        }
-    }
-    sunshader: {
-        path: color_shader.frag
-        type: shader
-        hints: {
-            type: frag
         }
     }
     coloredcirclefrag: {
@@ -111,10 +104,41 @@
             type: vert
         }
     }
-    pane_shader: {
-        path: textured_pane.hjson
+    2dtexturedshader: {
+        path: 2dtexturedshader.hjson
         type: shader_def
         hints: {
         }
+    }
+    2dcolorshader: {
+        path: 2dcolorshader.hjson
+        type: shader_def
+        hints: {
+        }
+    }
+    vertex_vis: {
+        path: vertex_vis.hjson
+        type: shader_def
+        hints: {}
+    }
+    skybox: {
+        path: skybox.hjson
+        type: shader_def
+        hints: {}
+    }
+    framebuffer: {
+        path: framebuffer.hjson
+        type: shader_def
+        hints: {}
+    }
+    planetshader: {
+        path: planetshader.hjson
+        type: shader_def
+        hints: {}
+    }
+    sunshader: {
+        path: sunshader.hjson
+        type: shader_def
+        hints: {}
     }
 }
