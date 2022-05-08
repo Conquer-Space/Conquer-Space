@@ -25,8 +25,8 @@ void cqsp::engine::Renderable::SetTexture(const std::string& name,
     textures.push_back(texture);
 }
 
-void cqsp::engine::Renderable::SetMVP(glm::mat4& model, glm::mat4& view,
-                                              glm::mat4& projection) {
+void cqsp::engine::Renderable::SetMVP(const glm::mat4& model, const glm::mat4& view,
+                                              const glm::mat4& projection) {
     shaderProgram->UseProgram();
     shaderProgram->setMat4("model", model);
     shaderProgram->setMat4("view", view);

@@ -5,4 +5,10 @@
         hints: {
         }
     }
+    earthmap: {
+        path: earth8k.jpg
+        type: texture
+        hints: {
+        }
+    }
 }

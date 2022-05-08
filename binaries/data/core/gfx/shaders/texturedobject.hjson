@@ -1,0 +1,7 @@
+{
+    vert: object.vert
+    frag: normalshader.frag
+    uniforms: {
+        texture0: 0
+    }
+}

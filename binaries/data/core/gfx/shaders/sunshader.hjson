@@ -1,0 +1,6 @@
+{
+    vert: object.vert
+    frag: color_shader.frag
+    uniforms: {
+    }
+}

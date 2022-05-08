@@ -70,7 +70,9 @@ class SysStarSystemRenderer {
 
     glm::vec3 GetMouseIntersectionOnObject(int mouse_x, int mouse_y);
 
+    // The angle the camera is looking from
     float view_x;
+    // The angle the camera is looking away from
     float view_y;
 
     double previous_mouseX;
@@ -85,6 +87,8 @@ class SysStarSystemRenderer {
     entt::entity GetMouseOnObject(int mouse_x, int mouse_y);
 
     static bool IsFoundingCity(common::Universe& universe);
+
+    void DrawOrbit(const entt::entity& entity);
 
     ~SysStarSystemRenderer();
 
@@ -102,9 +106,12 @@ class SysStarSystemRenderer {
     cqsp::engine::Renderable ship_overlay;
     cqsp::engine::Renderable city;
     cqsp::engine::Renderable sun;
+    cqsp::engine::Renderable orbit_line;
 
-    asset::ShaderProgram_t pbr_shader;
+#if FALSE
+    // Disabled for now
     asset::ShaderProgram_t no_light_shader;
+#endif
 
     cqsp::asset::Texture* planet_texture;
     cqsp::asset::Texture* planet_heightmap;
@@ -116,8 +123,6 @@ class SysStarSystemRenderer {
     glm::mat4 projection;
     glm::vec4 viewport;
 
-    asset::ShaderProgram_t line_mesh_shader;
-    cqsp::engine::Mesh *line_mesh;
     float circle_size = 0.01f;
 
     void DrawStars();

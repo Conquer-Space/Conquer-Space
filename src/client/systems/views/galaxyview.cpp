@@ -36,7 +36,7 @@ GalaxyRenderer::GalaxyRenderer(cqsp::common::Universe &_u, cqsp::engine::Applica
                                                 m_universe(_u), m_app(_a) {}
 
 void GalaxyRenderer::Initialize() {
-    circle_shader = m_app.GetAssetManager().MakeShader("core:shader.pane.vert", "core:coloredcirclefrag");
+    circle_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:2dcolorshader")->MakeShader();
     renderer = new cqsp::engine::Renderer2D(circle_shader, true);
 
     mesh = engine::primitive::CreateFilledCircle();

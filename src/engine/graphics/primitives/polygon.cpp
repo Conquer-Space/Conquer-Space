@@ -25,10 +25,11 @@
 #include "common/components/units.h"
 #include "common/components/coordinates.h"
 
-cqsp::engine::Mesh* cqsp::engine::primitive::CreateFilledCircle(int segments) {
-    cqsp::engine::Mesh* mesh = new cqsp::engine::Mesh();
+namespace cqsp::engine::primitive {
+Mesh* CreateFilledCircle(int segments) {
+    Mesh* mesh = new Mesh();
 
-        std::vector<float> positions;
+    std::vector<float> positions;
     positions.push_back(0);
     positions.push_back(0);
     positions.push_back(0);
@@ -45,6 +46,8 @@ cqsp::engine::Mesh* cqsp::engine::primitive::CreateFilledCircle(int segments) {
         positions.push_back(x);
         positions.push_back(y);
         positions.push_back(0);
+
+        // Texture coordinates
         positions.push_back(0.5*x + 0.5);
         positions.push_back(0.5*-y + 0.5);
     }
@@ -71,14 +74,59 @@ cqsp::engine::Mesh* cqsp::engine::primitive::CreateFilledCircle(int segments) {
     mesh->VBO = vbo;
     mesh->mode = GL_TRIANGLE_FAN;
     mesh->indicies = segments + 2;
-    mesh->buffer_type = cqsp::engine::DrawType::ARRAYS;
+    mesh->buffer_type = DrawType::ARRAYS;
     return mesh;
 }
 
-cqsp::engine::Mesh* cqsp::engine::primitive::CreateFilledTriangle() {
-    return cqsp::engine::primitive::CreateFilledCircle(3);
+Mesh* CreateFilledTriangle() {
+    return CreateFilledCircle(3);
 }
 
-cqsp::engine::Mesh* cqsp::engine::primitive::CreateFilledSquare() {
-    return cqsp::engine::primitive::CreateFilledCircle(4);
+Mesh* CreateFilledSquare() {
+    return CreateFilledCircle(4);
 }
+
+Mesh* CreateLineCircle(int segments, float size) {
+    Mesh* mesh = new Mesh();
+    std::vector<glm::vec3> positions;
+    for (int i = 0; i <= segments + 1; i++) {
+        double theta = i * cqsp::common::components::types::toRadian(360.f/segments);
+        double y = std::sin(theta) * size;
+        double x = std::cos(theta) * size;
+        positions.push_back({x, 0, y});
+    }
+
+    return CreateLineSequence(positions);
+}
+
+Mesh* CreateLineSequence(const std::vector<glm::vec3>& sequence) {
+    Mesh* mesh = new Mesh();
+    std::vector<float> positions;
+    for (int i = 0; i < sequence.size(); i++) {
+        positions.push_back(sequence[i].x);
+        positions.push_back(sequence[i].y);
+        positions.push_back(sequence[i].z);
+    }
+
+    GLuint vao = 0;
+    glGenVertexArrays(1, &vao);
+
+    unsigned int vbo;
+    glGenBuffers(1, &vbo);
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(float), positions.data(), GL_STATIC_DRAW);
+    int stride = 3;
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), reinterpret_cast<void*>(0));
+
+    mesh->VAO = vao;
+    mesh->VBO = vbo;
+    mesh->mode = GL_LINE_STRIP;
+    mesh->indicies = sequence.size();
+    mesh->buffer_type = DrawType::ARRAYS;
+    return mesh;
+}
+}  // namespace cqsp::engine::primitive
