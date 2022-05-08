@@ -62,6 +62,7 @@ SysStarSystemRenderer::SysStarSystemRenderer(cqsp::common::Universe &_u,
                                                 sun_color(glm::vec3(10, 10, 10)) {
 }
 
+namespace {
 struct Offset  {
     glm::vec3 offset;
 };
@@ -75,6 +76,7 @@ struct TerrainTextureData {
         delete heightmap;
     }
 };
+}  // namespace
 
 void SysStarSystemRenderer::Initialize() {
     // Initialize meshes, etc
