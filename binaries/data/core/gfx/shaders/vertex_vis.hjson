@@ -1,0 +1,8 @@
+{
+    vert: vertex_vis.vert
+    frag: vertex_vis.frag
+    geom: vertex_vis.geom
+    uniforms: {
+        texture1: 0
+    }
+}
