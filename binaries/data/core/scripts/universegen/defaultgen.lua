@@ -36,7 +36,7 @@ generators:insert({
     civ_init = function()
     end,
     universe_gen = function()
-        local star_system_count = 1000
+        local star_system_count = 0
         for _ = 1, star_system_count, 1 do
             local sys = core.create_star_system()
             core.set_system_position(sys, core.random(star_system_min, star_system_max),

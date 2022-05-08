@@ -102,7 +102,7 @@ inline double FindAngularVelocity(const Orbit& orb) {
 }
 
 inline void UpdateOrbit(Orbit& orb) {
-    orb.theta += FindAngularVelocity(orb);
+    orb.theta += 0.1;  // FindAngularVelocity(orb);
 }
 
 inline types::radian toRadian(types::degree theta) {

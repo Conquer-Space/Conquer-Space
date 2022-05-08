@@ -32,11 +32,10 @@ void cqsp::common::systems::SysOrbit::DoSystem() {
     for (entt::entity body : bodies) {
         auto& orb = universe.get<cqspt::Orbit>(body);
         cqspt::UpdateOrbit(orb);
-        cqspt::UpdatePos(universe.get<cqspt::Kinematics>(body), orb);
+        auto& pos = universe.get<cqspt::Kinematics>(body);
+        cqspt::UpdatePos(pos, orb);
     }
 }
-
-int cqsp::common::systems::SysOrbit::Interval() { return 1; }
 
 void cqsp::common::systems::SysSurface::DoSystem() {
     namespace cqspc = cqsp::common::components;
