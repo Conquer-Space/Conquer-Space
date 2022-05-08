@@ -163,23 +163,29 @@ class AssetManager {
 
     template <class T>
     T* GetAsset(const std::string& key) {
-        int separation = key.find(":");
-        std::string token = key.substr(0, separation);
+        std::size_t separation = key.find(":");
+        // Default name is core
+        std::string package_name = "core";
+        if (separation != std::string::npos) {
+            package_name = key.substr(0, separation);
+        }
+
         // Check if package exists
-        if (packages.count(token) == 0) {
-            SPDLOG_ERROR("Cannot find package {}", token);
+        if (packages.count(package_name) == 0) {
+            SPDLOG_ERROR("Cannot find package {}", package_name);
         }
         std::string pkg_key = key.substr(separation+1, key.length());
+        auto& package = packages[package_name];
         // Probably a better way to do this, to be honest
         // Load default texture
-        if (!packages[token]->HasAsset(pkg_key)) {
+        if (!package->HasAsset(pkg_key)) {
             SPDLOG_ERROR("Cannot find asset {}", pkg_key);
             if constexpr (std::is_same<T, asset::Texture>::value) {
                 return &empty_texture;
             }
         }
         // Check if asset exists
-        return packages[token]->GetAsset<T>(pkg_key);
+        return package->GetAsset<T>(pkg_key);
     }
 
     void LoadDefaultTexture();

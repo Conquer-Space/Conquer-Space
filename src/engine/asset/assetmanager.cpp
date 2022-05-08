@@ -399,6 +399,10 @@ std::unique_ptr<Asset> AssetLoader::LoadAsset(
         SPDLOG_WARN("{} asset loading not support yet", ToString(type));
         return nullptr;
     }
+    // Ensure path exists
+    if (!mounter.Exists(path)) {
+        SPDLOG_WARN("{} at {} does not exist, errors may ensue", key, path);
+    }
     return std::move(loading_functions[type](&mounter, path, key, hints));
 }
 void AssetLoader::PlaceAsset(Package& package,
@@ -739,9 +743,18 @@ AssetLoader::LoadShaderDefinition(VirtualMounter* mount, const std::string& path
     std::string frag_filename = parent + "/" + hjson["frag"];
 
     // Load the files
+    if (!mount->Exists(vert_filename)) {
+        SPDLOG_INFO("Fragment file {} does not exist!", frag_filename);
+        return nullptr;
+    }
     auto vert_file = mount->Open(vert_filename);
     std::string vert_code = ReadAllFromVFileToString(vert_file.get());
 
+    // Check if all the files exists
+    if (!mount->Exists(frag_filename)) {
+        SPDLOG_INFO("Fragment file {} does not exist!", frag_filename);
+        return nullptr;
+    }
     auto frag_file = mount->Open(frag_filename);
     std::string frag_code = ReadAllFromVFileToString(frag_file.get());
 
