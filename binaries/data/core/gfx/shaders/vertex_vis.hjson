@@ -3,6 +3,5 @@
     frag: vertex_vis.frag
     geom: vertex_vis.geom
     uniforms: {
-        texture1: 0
     }
 }

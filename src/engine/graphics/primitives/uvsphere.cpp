@@ -20,6 +20,8 @@
 #include <glad/glad.h>
 
 #include <vector>
+
+#include <spdlog/spdlog.h>
 /*
 void cqsp::engine::primitive::ConstructSphereMesh(int x_segments, int y_segments, cqsp::engine::Mesh& mesh) {
     GLuint vao = 0;
@@ -115,20 +117,24 @@ cqsp::engine::Mesh* cqsp::engine::primitive::ConstructSphereMesh(int x_segments,
     std::vector<glm::vec3> positions;
     std::vector<glm::vec2> uv;
     std::vector<glm::vec3> normals;
+    std::vector<glm::vec4> tangents;
     std::vector<unsigned int> indices;
 
     const float PI = 3.14159265359;
     for (unsigned int y = 0; y <= y_segments; ++y) {
-        for (unsigned int x = 0; x <= y_segments; ++x) {
-            float xSegment = static_cast<float>(x) / x_segments;
-            float ySegment = static_cast<float>(y) / y_segments;
-            float xPos = std::cos(xSegment * PI * 2) * std::sin(ySegment * PI);
-            float yPos = std::cos(ySegment * PI);
-            float zPos = std::sin(xSegment * PI * 2) * std::sin(ySegment * PI);
-
-            positions.push_back(glm::vec3(xPos, yPos, zPos));
-            uv.push_back(glm::vec2(xSegment, ySegment));
-            normals.push_back(glm::vec3(xPos, yPos, zPos));
+        for (unsigned int x = 0; x <= x_segments; ++x) {
+            const float xSegment = static_cast<float>(x) / x_segments;
+            const float ySegment = static_cast<float>(y) / y_segments;
+            const float xTheta = xSegment * PI  * 2;
+            const float yTheta = ySegment * PI  * 2;
+            float xPos = std::cos(xTheta) * std::sin(yTheta/2);
+            float yPos = std::cos(yTheta/2);
+            float zPos = std::sin(xTheta) * std::sin(yTheta/2);
+            positions.push_back({xPos, yPos, zPos});
+            // Invert x segments so that the texture shows up properly.
+            uv.push_back({x_segments - xSegment, ySegment});
+            normals.push_back({xPos, yPos, zPos});
+            //tangents.push_back({std::cos(xTheta - PI / 2), 0.0f, std::sin(xTheta - PI / 2), 1.0f});
         }
     }
 
@@ -160,6 +166,12 @@ cqsp::engine::Mesh* cqsp::engine::primitive::ConstructSphereMesh(int x_segments,
             vertices.push_back(normals[i].y);
             vertices.push_back(normals[i].z);
         }
+        if (tangents.size() > 0) {
+            vertices.push_back(tangents[i].x);
+            vertices.push_back(tangents[i].y);
+            vertices.push_back(tangents[i].z);
+            vertices.push_back(tangents[i].w);
+        }
     }
 
     glBindVertexArray(vao);
@@ -168,7 +180,11 @@ cqsp::engine::Mesh* cqsp::engine::primitive::ConstructSphereMesh(int x_segments,
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                     indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
-    float stride = (3 + 2 + 3) * sizeof(float);
+    float stride = (3 + 2 + 3);
+    if (tangents.size() > 0) {
+        stride += 4;
+    }
+    stride *= sizeof(float);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT,
                             GL_FALSE, stride, reinterpret_cast<void*>(0));
@@ -178,6 +194,11 @@ cqsp::engine::Mesh* cqsp::engine::primitive::ConstructSphereMesh(int x_segments,
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 3, GL_FLOAT,
                             GL_FALSE, stride, reinterpret_cast<void*>(5 * sizeof(float)));
+    if (tangents.size() > 0) {
+        glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 4, GL_FLOAT,
+                            GL_FALSE, stride, reinterpret_cast<void*>(8 * sizeof(float)));
+    }
 
     mesh->VAO = vao;
     mesh->VBO = vbo;

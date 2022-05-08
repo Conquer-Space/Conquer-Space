@@ -99,6 +99,8 @@ void SysStarSystemRenderer::Initialize() {
     city.mesh = engine::primitive::MakeTexturedPaneMesh();
     city.shaderProgram = circle_shader;
 
+    line_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:vertex_vis")->MakeShader();
+
     // Initialize shaders
     asset::ShaderProgram_t planet_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:planetshader")->MakeShader();
 
@@ -108,8 +110,9 @@ void SysStarSystemRenderer::Initialize() {
 
     // Initialize sun
     sun.mesh = sphere_mesh;
-    sun.shaderProgram = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:sunshader")->MakeShader();
-
+    sun.shaderProgram = //m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:sunshader")->MakeShader();
+        m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:texturedobject")->MakeShader();
+    sun.textures.push_back(m_app.GetAssetManager().GetAsset<asset::Texture>("core:earthmap"));
     auto buffer_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:framebuffer")->MakeShader();
 
     ship_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
@@ -308,6 +311,9 @@ void SysStarSystemRenderer::Update(float deltaTime) {
 
     if (!ImGui::GetIO().WantCaptureKeyboard) {
         MoveCamera(deltaTime);
+        if (m_app.ButtonIsReleased(engine::KeyInput::KEY_SEMICOLON)) {
+            wireframe = !wireframe;
+        }
     }
 
     using cqsp::client::components::PlanetTerrainRender;
@@ -582,9 +588,18 @@ void SysStarSystemRenderer::DrawStar(glm::vec3 &object_pos) {
 
     sun.SetMVP(position, camera_matrix, projection);
     sun.shaderProgram->setVec4("color", 1, 1, 1, 1);
-    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    if (wireframe) {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
     engine::Draw(sun);
-    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+    if (wireframe) {
+    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
+    }
+    line_shader->UseProgram();
+    line_shader->setMat4("projection", projection);
+    line_shader->setMat4("view", camera_matrix);
+    line_shader->setMat4("model", position);
+    sun.mesh->Draw();
 }
 
 void SysStarSystemRenderer::DrawTerrainlessPlanet(glm::vec3 &object_pos) {

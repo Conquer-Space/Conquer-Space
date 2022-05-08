@@ -121,6 +121,7 @@ class SysStarSystemRenderer {
     glm::vec4 viewport;
 
     asset::ShaderProgram_t line_mesh_shader;
+    asset::ShaderProgram_t line_shader;
     cqsp::engine::Mesh *line_mesh;
     float circle_size = 0.01f;
 
@@ -184,6 +185,7 @@ class SysStarSystemRenderer {
     int planet_icon_layer;
     int physical_layer;
     int skybox_layer;
+    bool wireframe = false;
 
     bool is_founding_city = false;
     bool is_rendering_founding_city = false;

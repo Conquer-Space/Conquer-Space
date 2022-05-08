@@ -21,7 +21,7 @@
         }
     }
     planetfrag: {
-        path: planet_pbrshader.frag
+        path: planet_pbr.frag
         type: shader
         hints: {
             type: frag
@@ -138,6 +138,11 @@
     }
     sunshader: {
         path: sunshader.hjson
+        type: shader_def
+        hints: {}
+    }
+    texturedobject: {
+        path: texturedobject.hjson
         type: shader_def
         hints: {}
     }
