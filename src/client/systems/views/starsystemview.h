@@ -88,6 +88,8 @@ class SysStarSystemRenderer {
 
     static bool IsFoundingCity(common::Universe& universe);
 
+    void DrawOrbit(const entt::entity& entity);
+
     ~SysStarSystemRenderer();
 
  private:

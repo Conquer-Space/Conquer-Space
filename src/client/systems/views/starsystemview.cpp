@@ -119,7 +119,7 @@ void SysStarSystemRenderer::Initialize() {
     planet_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
     skybox_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
 
-    test_orbit.mesh = engine::primitive::CreateLineCircle(60, 20);
+    test_orbit.mesh = engine::primitive::CreateLineCircle(60, 1);
     test_orbit.shaderProgram = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:sunshader")->MakeShader();
 }
 
@@ -409,7 +409,7 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
     renderer.EndDraw(planet_icon_layer);
     glDepthFunc(GL_LESS);
     renderer.BeginDraw(physical_layer);
-    for (auto body_entity : bodies) {
+    for (entt::entity body_entity : bodies) {
         glm::vec3 object_pos = CalculateCenteredObject(body_entity);
 
         // Draw Ships
@@ -422,19 +422,11 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
                 // Do empty terrain
                 // Check if the planet has the thing
                 DrawPlanet(object_pos, body_entity);
-                // Draw an orbit
-                test_orbit.shaderProgram->UseProgram();
-                test_orbit.shaderProgram->Set("color", glm::vec4(1, 1, 0, 1));
-                glm::mat4 test = glm::mat4(1.0);
-                glm::mat4 transform = glm::mat4(1.f);
-                test = glm::translate(test, object_pos);
-                test = test * transform;
-                test_orbit.SetMVP(test, camera_matrix, m_app.Get3DProj());
-                engine::Draw(test_orbit);
             } else {
                 DrawTerrainlessPlanet(object_pos);
             }
         }
+        DrawOrbit(body_entity);
     }
     renderer.EndDraw(physical_layer);
 
@@ -998,6 +990,18 @@ entt::entity SysStarSystemRenderer::GetMouseOnObject(int mouse_x, int mouse_y) {
 
 bool cqsp::client::systems::SysStarSystemRenderer::IsFoundingCity(common::Universe& universe) {
     return universe.view<CityFounding>().size() >= 1;
+}
+
+void SysStarSystemRenderer::DrawOrbit(const entt::entity &entity) {
+    glm::mat4 transform = glm::mat4(1.f);
+    double v = glm::length(CalculateObjectPos(entity));
+    transform = glm::translate(transform, CalculateCenteredObject(glm::vec3(0, 0, 0)));
+    transform = glm::scale(transform, glm::vec3(v, v, v));
+    // Draw orbit
+    test_orbit.SetMVP(transform, camera_matrix, m_app.Get3DProj());
+    test_orbit.shaderProgram->Set("color", glm::vec4(1, 1, 1, 1));
+    // Set to the center of the universe
+    engine::Draw(test_orbit);
 }
 
 SysStarSystemRenderer::~SysStarSystemRenderer() {
