@@ -106,7 +106,7 @@ class SysStarSystemRenderer {
     cqsp::engine::Renderable ship_overlay;
     cqsp::engine::Renderable city;
     cqsp::engine::Renderable sun;
-    cqsp::engine::Renderable test_orbit;
+    cqsp::engine::Renderable orbit_line;
 
 #if FALSE
     // Disabled for now
@@ -123,9 +123,6 @@ class SysStarSystemRenderer {
     glm::mat4 projection;
     glm::vec4 viewport;
 
-    asset::ShaderProgram_t line_mesh_shader;
-    asset::ShaderProgram_t line_shader;
-    cqsp::engine::Mesh *line_mesh;
     float circle_size = 0.01f;
 
     void DrawStars();
@@ -188,7 +185,6 @@ class SysStarSystemRenderer {
     int planet_icon_layer;
     int physical_layer;
     int skybox_layer;
-    bool wireframe = false;
 
     bool is_founding_city = false;
     bool is_rendering_founding_city = false;

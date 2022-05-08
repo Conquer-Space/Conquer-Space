@@ -21,7 +21,6 @@
 
 #include <vector>
 
-#include <spdlog/spdlog.h>
 /*
 void cqsp::engine::primitive::ConstructSphereMesh(int x_segments, int y_segments, cqsp::engine::Mesh& mesh) {
     GLuint vao = 0;

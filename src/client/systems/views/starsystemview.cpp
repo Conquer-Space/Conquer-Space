@@ -88,7 +88,8 @@ void SysStarSystemRenderer::Initialize() {
     sky.mesh = engine::primitive::MakeCube();
     sky.shaderProgram = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:skybox")->MakeShader();
 
-    asset::ShaderProgram_t circle_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:2dcolorshader")->MakeShader();
+    asset::ShaderProgram_t circle_shader =
+            m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:2dcolorshader")->MakeShader();
 
     planet_circle.mesh = engine::primitive::CreateFilledCircle();
     planet_circle.shaderProgram = circle_shader;
@@ -99,10 +100,9 @@ void SysStarSystemRenderer::Initialize() {
     city.mesh = engine::primitive::MakeTexturedPaneMesh();
     city.shaderProgram = circle_shader;
 
-    line_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:vertex_vis")->MakeShader();
-
     // Initialize shaders
-    asset::ShaderProgram_t planet_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:planetshader")->MakeShader();
+    asset::ShaderProgram_t planet_shader =
+        m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:planetshader")->MakeShader();
 
     // Planet spheres
     planet.mesh = sphere_mesh;
@@ -119,8 +119,9 @@ void SysStarSystemRenderer::Initialize() {
     planet_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
     skybox_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
 
-    test_orbit.mesh = engine::primitive::CreateLineCircle(60, 1);
-    test_orbit.shaderProgram = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:sunshader")->MakeShader();
+    orbit_line.mesh = engine::primitive::CreateLineCircle(256, 1);
+    orbit_line.shaderProgram =
+        m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:sunshader")->MakeShader();
 }
 
 void SysStarSystemRenderer::OnTick() {
@@ -313,9 +314,6 @@ void SysStarSystemRenderer::Update(float deltaTime) {
 
     if (!ImGui::GetIO().WantCaptureKeyboard) {
         MoveCamera(deltaTime);
-        if (m_app.ButtonIsReleased(engine::KeyInput::KEY_SEMICOLON)) {
-            wireframe = !wireframe;
-        }
     }
 
     using cqsp::client::components::PlanetTerrainRender;
@@ -438,7 +436,6 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
         }
     }
     renderer.EndDraw(ship_icon_layer);
-
 }
 
 void SysStarSystemRenderer::DrawShips() {
@@ -592,13 +589,7 @@ void SysStarSystemRenderer::DrawStar(glm::vec3 &object_pos) {
 
     sun.SetMVP(position, camera_matrix, projection);
     sun.shaderProgram->setVec4("color", 1, 1, 1, 1);
-    if (wireframe) {
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    }
     engine::Draw(sun);
-    if (wireframe) {
-    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
-    }
 }
 
 void SysStarSystemRenderer::DrawTerrainlessPlanet(glm::vec3 &object_pos) {
@@ -997,10 +988,10 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity &entity) {
     transform = glm::translate(transform, CalculateCenteredObject(glm::vec3(0, 0, 0)));
     transform = glm::scale(transform, glm::vec3(v, v, v));
     // Draw orbit
-    test_orbit.SetMVP(transform, camera_matrix, m_app.Get3DProj());
-    test_orbit.shaderProgram->Set("color", glm::vec4(1, 1, 1, 1));
+    orbit_line.SetMVP(transform, camera_matrix, m_app.Get3DProj());
+    orbit_line.shaderProgram->Set("color", glm::vec4(1, 1, 1, 1));
     // Set to the center of the universe
-    engine::Draw(test_orbit);
+    engine::Draw(orbit_line);
 }
 
 SysStarSystemRenderer::~SysStarSystemRenderer() {
