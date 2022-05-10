@@ -127,7 +127,7 @@ void SysStarSystemRenderer::Initialize() {
 void SysStarSystemRenderer::OnTick() {
     entt::entity current_planet = m_app.GetUniverse().view<FocusedPlanet>().front();
     if (current_planet != entt::null) {
-        //view_center = CalculateObjectPos(m_viewing_entity);
+        view_center = CalculateObjectPos(m_viewing_entity);
     }
 
     namespace cqspb = cqsp::common::components::bodies;
@@ -704,7 +704,7 @@ glm::vec3 SysStarSystemRenderer::CalculateObjectPos(const entt::entity &ent) {
     namespace cqspt = cqsp::common::components::types;
     // Get the position
     if (m_universe.all_of<cqspt::Kinematics>(ent)) {
-        return (m_universe.get<cqspt::Kinematics>(ent).position * 100.f);
+        return (m_universe.get<cqspt::Kinematics>(ent).position * 10.f);
     }
     return glm::vec3(0, 0, 0);
 }

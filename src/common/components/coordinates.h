@@ -163,6 +163,9 @@ inline PolarCoordinate toPolarCoordinate(const Orbit& orb) {
 
 const static double KmInAu = 1.49597870700e8f;
 inline glm::vec3 toVec3(const Orbit& orb) {
+    if (orb.semi_major_axis == 0) {
+        return glm::vec3(0, 0, 0);
+    }
     // Convert the orbit
     double mu = SunMu;
     double Mt;

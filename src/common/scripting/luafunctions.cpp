@@ -110,9 +110,11 @@ void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::
         orb.eccentricity = eccentricity;
         orb.semi_major_axis = semi_major_axis;
         orb.inclination = inclination;
+        orb.ascending_node = ascending_node;
         orb.argument = argument;
         orb.anomaly = anomaly;
-        orb.epoch = 0;
+        orb.epoch = 1;
+        orb.T = orb.CalculatePeriod();
         auto& kinematics = universe.emplace<cqspt::Kinematics>(orbital_entity);
         cqspt::UpdatePos(kinematics, orb);
     });
