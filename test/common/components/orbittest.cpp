@@ -15,50 +15,36 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 #include "common/components/coordinates.h"
 
+using ::testing::AllOf;
+using ::testing::Ge;
+using ::testing::Le;
+
 // Tests for input from client options
 TEST(Common_OrbitTest, toVec2Test) {
-    namespace cqspb = cqsp::common::components::types;
-    cqspb::Orbit orbit1;
-    orbit1.semiMajorAxis = 100;
-    orbit1.eccentricity = 0;
-    orbit1.argument = 0;
-    orbit1.theta = 0;
-    glm::vec3 vec1 = cqspb::toVec3(orbit1);
-
-    orbit1.theta = 360;
-    glm::vec3 vec2 = cqspb::toVec3(orbit1);
-    EXPECT_EQ(vec1.x, vec2.x);
-    EXPECT_EQ(vec1.z, vec2.z);
-
-    orbit1.semiMajorAxis = 120;
-    orbit1.eccentricity = 0.5;
-    orbit1.argument = 50;
-    orbit1.theta = 0;
-    vec1 = cqspb::toVec3(orbit1);
-
-    orbit1.theta = 360;
-    vec2 = cqspb::toVec3(orbit1);
-    EXPECT_EQ(vec1.x, vec2.x);
-    EXPECT_EQ(vec1.z, vec2.z);
-
-    orbit1.theta = 50;
-    vec1 = cqspb::toVec3(orbit1);
-
-    orbit1.theta = 360 + 50;
-    vec2 = cqspb::toVec3(orbit1);
-    EXPECT_EQ(vec1.x, vec2.x);
-    EXPECT_EQ(vec1.z, vec2.z);
-
-    orbit1.theta = 10;
-    vec1 = cqspb::toVec3(orbit1);
-
-    orbit1.theta = 360 + 10;
-    vec2 = cqspb::toVec3(orbit1);
-    EXPECT_EQ(vec1.x, vec2.x);
-    EXPECT_EQ(vec1.z, vec2.z);
+    // Do the test
+    namespace cqspt = cqsp::common::components::types;
+    cqspt::Orbit orb;
+    orb.semi_major_axis = 149598023;
+    orb.eccentricity = 0.0167086;
+    orb.inclination = cqspt::toRadian(1.57869);
+    orb.ascending_node = cqspt::toRadian(-11.26064);
+    orb.argument = cqspt::toRadian(114.20783);
+    orb.anomaly = cqspt::toRadian(358.617);
+    orb.T = orb.CalculatePeriod();
+    for (int i = 0; i < 86400 * 365; i += 86400) {
+        orb.epoch = i;
+        std::cout << orb.epoch << std::endl;
+        auto vec = cqspt::toVec3(orb);
+        std::cout.precision(17);
+        std::cout << vec.x << " " << vec.y << " " << vec.z << std::endl;
+        std::cout << glm::length(vec) << std::endl;
+        EXPECT_THAT(glm::length(vec), AllOf(Ge(147095000),Le(149598023)));
+    }
+    EXPECT_NEAR(orb.T/86400, 365.256363004, 0.01);
 }
 
 TEST(Common_OrbitTest, ToRadianTest) {

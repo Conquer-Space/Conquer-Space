@@ -35,14 +35,14 @@ class SystemsMovementTest : public ::testing::Test {
 
         auto& orbit = universe.emplace<cqspt::Orbit>(planet);
         universe.emplace<cqspt::Kinematics>(planet);
-        orbit.theta = 90;
-        orbit.semiMajorAxis = 75;
+        //orbit.theta = 90;
+        //orbit.semiMajorAxis = 75;
 
         target = universe.create();
         auto& target_orb = universe.emplace<cqspt::Orbit>(target);
         universe.emplace<cqspt::Kinematics>(target);
-        target_orb.theta = 180;
-        target_orb.semiMajorAxis = 75;
+        //target_orb.theta = 180;
+        //target_orb.semiMajorAxis = 75;
     }
 
     entt::entity star_system = entt::null;

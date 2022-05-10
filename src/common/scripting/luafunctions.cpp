@@ -106,7 +106,7 @@ void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::
 
     REGISTER_FUNCTION("set_orbit", [&] (entt::entity orbital_entity, double distance, double theta,
                                             double eccentricity, double argument) {
-        cqspt::Orbit &orb = universe.emplace<cqspt::Orbit>(orbital_entity, theta, distance, eccentricity, argument, 40);
+        cqspt::Orbit &orb = universe.emplace<cqspt::Orbit>(orbital_entity);
         auto& kinematics = universe.emplace<cqspt::Kinematics>(orbital_entity);
         cqspt::UpdatePos(kinematics, orb);
     });

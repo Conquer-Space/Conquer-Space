@@ -16,7 +16,7 @@
 */
 #pragma once
 
-#include <spdlog/spdlog.h>
+#include <spdlog/spdlog.h>  // remove 
 #include <math.h>
 
 #include <entt/entt.hpp>
@@ -24,7 +24,7 @@
 
 #include "common/components/bodies.h"
 #include "common/components/units.h"
-
+#include <iostream> // remove 
 namespace cqsp {
 namespace common {
 namespace components {
@@ -33,31 +33,43 @@ namespace types {
 struct Orbit;
 inline double FindAngularVelocity(const Orbit& orb);
 
+const static double G = 6.6743015e-11;
+const static double SunMu = 1.32712400188e11;
+
 /**
  * Orbit of a body
  */
 struct Orbit {
-    double gravitationalparameter;
-    degree theta;
-    astronomical_unit semiMajorAxis;
-    double eccentricity;
-    degree argument;
-    double angular_velocity;
+    double eccentricity; // e
+    double semi_major_axis; // a
+    double inclination; // i
+    double ascending_node; // capital Omega (Longitude of the ascending node)
+    double argument; // lower case omega
+    double anomaly; // theta
+    double epoch; // t0
 
-    glm::vec3 rotation = glm::vec3(0, 1, 0);
+    double T;
 
     // So we can prepare for moons and stuff
     entt::entity referenceBody = entt::null;
 
     Orbit() = default;
-    Orbit(types::degree _trueAnomaly, types::astronomical_unit _semiMajorAxis,
-          double _eccentricity, types::degree _argument, double _gravparam):
-          theta(_trueAnomaly),
-          semiMajorAxis(_semiMajorAxis),
-          eccentricity(_eccentricity),
-          argument(_argument),
-          gravitationalparameter(_gravparam) {
-        angular_velocity = FindAngularVelocity(*this);
+    Orbit(double eccentricity, double semi_major_axis, double inclination, double ascending_node, double argument, double anomaly, double epoch):
+            eccentricity(eccentricity),
+            semi_major_axis(semi_major_axis),
+            inclination(inclination),
+            ascending_node(ascending_node),
+            argument(argument),
+            anomaly(anomaly),
+            epoch(epoch) {
+        // Assume it's orbiting the sun
+        T = CalculatePeriod();
+    }
+
+    double CalculatePeriod() {
+        return 2 * PI *
+            std::sqrt(semi_major_axis * semi_major_axis *
+                      semi_major_axis / SunMu);
     }
 };
 
@@ -93,7 +105,8 @@ struct MoveTarget {
 // Period in hours
 inline int FindPeriod(const Orbit& orb) {
     // Period in seconds
-    return TWOPI * std::sqrt(std::pow(orb.semiMajorAxis, 3) / orb.gravitationalparameter)/3600.f;
+    return 0;  // TWOPI * std::sqrt(std::pow(orb.semiMajorAxis, 3) /
+               // orb.gravitationalparameter)/3600.f;
 }
 
 // Angular velocity in radians per hour
@@ -102,7 +115,7 @@ inline double FindAngularVelocity(const Orbit& orb) {
 }
 
 inline void UpdateOrbit(Orbit& orb) {
-    orb.theta += 0.1;  // FindAngularVelocity(orb);
+    orb.anomaly += 0.1;  // FindAngularVelocity(orb);
 }
 
 inline types::radian toRadian(types::degree theta) {
@@ -141,14 +154,54 @@ inline glm::vec3 toVec3(const PolarCoordinate& coordinate) {
 }
 
 inline PolarCoordinate toPolarCoordinate(const Orbit& orb) {
-    double r = orb.semiMajorAxis * (1 - orb.eccentricity * orb.eccentricity) /
+    /*double r = orb.semiMajorAxis *
+                  (1 - orb.eccentricity * orb.eccentricity) /
                (1 - orb.eccentricity *
-                        cos(toRadian(fmod(orb.theta, 360) + orb.argument)));
-    return PolarCoordinate{(types::astronomical_unit)r, fmod(orb.theta, 360)};
+                        cos(toRadian(fmod(orb.theta, 360) + orb.argument)));*/
+    return PolarCoordinate{1, 1};
 }
 
 inline glm::vec3 toVec3(const Orbit& orb) {
-    return toVec3(toPolarCoordinate(orb));
+    // Convert the orbit
+    double mu = SunMu;
+    double Mt; // mean anomaly at t
+    // Orbital period
+    if (orb.anomaly == orb.epoch) {
+        Mt = orb.anomaly;
+    } else {
+        double deltaT = (orb.T) * (orb.anomaly - orb.epoch); //divide time increments into 1/60th of the orbital period
+        std::cout << deltaT << std::endl;
+        Mt = deltaT * std::sqrt(mu / (orb.semi_major_axis * orb.semi_major_axis * orb.semi_major_axis));
+    }
+
+    double E = Mt;
+    double F = E - orb.eccentricity * std::sin(E) - Mt;
+    int j = 0, maxIter = 30;
+    double delta = 0.000001f;
+    while (std::abs(F) > delta && j < maxIter) {
+        E = E - F / (1 - orb.eccentricity * std::cos(E));
+        F = E - orb.eccentricity * sin(E) - Mt;
+        j++;
+    }
+
+    double nu = 2 * std::atan2(sqrt(1 + orb.eccentricity) *
+                                  sin(orb.eccentricity / 2), sqrt (1 - orb.eccentricity) * cos(E / 2));
+    double rc = orb.semi_major_axis * (1 - orb.eccentricity * cos(E));
+    glm::dvec3 o{rc * cos(nu), rc * sin(nu), 0};
+    glm::dvec3 odot{sin(E), sqrt(1 - orb.eccentricity * orb.eccentricity) * cos(E), 0};
+    odot *= (sqrt(mu * orb.semi_major_axis) / rc);
+
+    double rx, ry, rz;
+    rx = o.x;
+    ry = o.y;
+    rz = o.z;
+
+    rx = ( o.x * (cos(orb.argument) * cos(orb.ascending_node) - sin(orb.argument) * cos(orb.inclination) * sin(orb.ascending_node)) -
+            o.y * (sin(orb.argument) * cos(orb.ascending_node) + cos(orb.argument) * cos(orb.inclination) * sin(orb.ascending_node)));
+    ry = (o.x * (cos (orb.argument) * sin(orb.ascending_node) + sin(orb.argument) * cos(orb.inclination) * cos(orb.ascending_node)) +
+        o.y * (cos(orb.argument) * cos(orb.inclination) * cos(orb.ascending_node) - sin(orb.argument) * sin(orb.ascending_node)));
+    rz = (o.x * (sin(orb.argument) * sin(orb.inclination)) + o.y * (cos(orb.argument) * sin(orb.inclination)));
+    return glm::vec3(rx, ry, rz);
 }
 
 inline void UpdatePos(Kinematics& kin, const Orbit& orb) {

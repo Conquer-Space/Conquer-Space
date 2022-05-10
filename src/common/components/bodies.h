@@ -35,6 +35,8 @@ struct Body {
     types::kilometer radius;
 
     entt::entity star_system;
+
+    double mass;
 };
 
 struct Terrain {
