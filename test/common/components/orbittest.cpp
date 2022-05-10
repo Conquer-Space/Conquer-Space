@@ -17,6 +17,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
+#include <fstream>
 #include "common/components/coordinates.h"
 
 using ::testing::AllOf;
@@ -24,26 +25,27 @@ using ::testing::Ge;
 using ::testing::Le;
 
 // Tests for input from client options
-TEST(Common_OrbitTest, toVec2Test) {
+TEST(Common_OrbitTest, toVec3Test) {
     // Do the test
     namespace cqspt = cqsp::common::components::types;
     cqspt::Orbit orb;
     orb.semi_major_axis = 149598023;
     orb.eccentricity = 0.0167086;
-    orb.inclination = cqspt::toRadian(1.57869);
-    orb.ascending_node = cqspt::toRadian(-11.26064);
-    orb.argument = cqspt::toRadian(114.20783);
-    orb.anomaly = cqspt::toRadian(358.617);
+    orb.inclination = 0.124878;
+    orb.ascending_node = 6.08665;
+    orb.argument = 1.9933;
+    orb.anomaly = 6.259047404;
+    orb.epoch = 1;
     orb.T = orb.CalculatePeriod();
+    std::ofstream file("data.txt");
     for (int i = 0; i < 86400 * 365; i += 86400) {
         orb.epoch = i;
-        std::cout << orb.epoch << std::endl;
-        auto vec = cqspt::toVec3(orb);
+        glm::vec3 vec = cqspt::toVec3(orb);
         std::cout.precision(17);
-        std::cout << vec.x << " " << vec.y << " " << vec.z << std::endl;
-        std::cout << glm::length(vec) << std::endl;
-        //EXPECT_THAT(glm::length(vec), AllOf(Ge(147095000),Le(149598023)));
+        file << vec.x << " " << vec.y << " " << vec.z << std::endl;
+        EXPECT_THAT(glm::length(vec), AllOf(Ge(0.98326934275),Le(1.0167257013)));
     }
+    file.close();
     EXPECT_NEAR(orb.T/86400, 365.256363004, 0.01);
 }
 

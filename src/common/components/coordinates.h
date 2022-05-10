@@ -172,8 +172,9 @@ inline glm::vec3 toVec3(const Orbit& orb) {
     if (orb.epoch == 0) {
         Mt = orb.anomaly;
     } else {
-         Mt = orb.anomaly + orb.T * orb.epoch * std::sqrt(mu / (orb.semi_major_axis * orb.semi_major_axis * orb.semi_major_axis));
+        Mt = orb.anomaly + orb.epoch * std::sqrt(mu / (orb.semi_major_axis * orb.semi_major_axis * orb.semi_major_axis));
     }
+    Mt = std::fmod(Mt, PI * 2);
 
     // Solve for eccentric anomaly with newton's method
     double E = Mt;
