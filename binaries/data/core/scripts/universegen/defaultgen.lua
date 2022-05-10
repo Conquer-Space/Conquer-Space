@@ -36,37 +36,6 @@ generators:insert({
     civ_init = function()
     end,
     universe_gen = function()
-        local star_system_count = 0
-        for _ = 1, star_system_count, 1 do
-            local sys = core.create_star_system()
-            core.set_system_position(sys, core.random(star_system_min, star_system_max),
-                                            core.random(star_system_min, star_system_max))
-
-            -- Add star
-            local star = core.add_star(sys)
-            core.set_orbit(star, 0.001, 0, 0, 0)
-            core.set_radius(star, core.random(1500000, 3000000))
-
-            local planet_count = get_planet_count()
-            local distance = core.random(1, 100)/100
-            local first = core.random(1, 100)/100
-
-            for planet_id = 0, planet_count, 1 do
-                -- Create planets
-                local planet_entity = core.add_planet(sys)
-                -- Set orbits
-                -- Distance can be modeled after a log graph, then convert to km because our regression was based off AU
-                set_planet_orbit(planet_entity, planet_id, distance, first)
-
-                local radius = core.random(1000, 30000)
-                core.set_radius(planet_entity, radius)
-                -- Set planet type
-                -- Set planet terrain
-                -- Esh, we'll deal with that later
-                -- As you go further from the center, make it more likely that it is a gas planet
-            end
-        end
-
         for _, civ in pairs(civilizations) do
             print("Making civilization "..civ)
             -- Set planets
@@ -76,7 +45,7 @@ generators:insert({
 
             -- Add star
             local star = core.add_star(sys)
-            core.set_orbit(star, 0.001, 0, 0, 0)
+            core.set_orbit(star, 0, 0, 0, 0, 0, 0)
             core.set_radius(star, core.random(1500000, 3000000))
 
             local planet_count = core.random_normal_int(7, 2)
