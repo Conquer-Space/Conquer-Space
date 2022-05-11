@@ -17,6 +17,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
+#include <hjson.h>
 #include <fstream>
 #include "common/components/coordinates.h"
 
@@ -26,24 +27,28 @@ using ::testing::Le;
 
 // Tests for input from client options
 TEST(Common_OrbitTest, toVec3Test) {
+    // Read hjson file and set values
+    Hjson::Value data = Hjson::UnmarshalFromFile("data_file.hjson");
     // Do the test
     namespace cqspt = cqsp::common::components::types;
     cqspt::Orbit orb;
-    orb.semi_major_axis = 149598023;
-    orb.eccentricity = 0.0167086;
-    orb.inclination = 0.124878;
-    orb.ascending_node = 6.08665;
-    orb.argument = 1.9933;
-    orb.anomaly = 6.259047404;
-    orb.epoch = 1;
+    orb.semi_major_axis = data["semi_major_axis"];
+    orb.eccentricity = data["eccentricity"];
+    orb.inclination = data["inclination"];
+    orb.ascending_node = data["ascending_node"];
+    orb.argument = data["argument"];
+    orb.anomaly = data["anomaly"];
     orb.T = orb.CalculatePeriod();
+    std::cout << orb.T << std::endl;
+    int resolution = 5000;
     std::ofstream file("data.txt");
-    for (int i = 0; i < 86400 * 365; i += 86400) {
-        orb.epoch = i;
+    for (int i = 0; i < resolution + 1; i++) {
+        orb.epoch = (orb.T/resolution) * i;
         glm::vec3 vec = cqspt::toVec3(orb);
         std::cout.precision(17);
-        file << vec.x << " " << vec.y << " " << vec.z << std::endl;
-        EXPECT_THAT(glm::length(vec), AllOf(Ge(0.98326934275),Le(1.0167257013)));
+        file << orb.epoch << " " << vec.x << " " << vec.y << " " << vec.z
+             << std::endl;
+        //EXPECT_THAT(glm::length(vec), AllOf(Ge(0.98326934275),Le(1.0167257013)));
     }
     file.close();
     EXPECT_NEAR(orb.T/86400, 365.256363004, 0.01);
