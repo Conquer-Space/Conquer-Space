@@ -105,14 +105,14 @@ void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::
     });
 
     REGISTER_FUNCTION("set_orbit", [&] (entt::entity orbital_entity, double eccentricity, double semi_major_axis,
-                                            double inclination, double ascending_node, double argument, double anomaly) {
+                                            double inclination, double LAN, double w, double M0) {
         cqspt::Orbit &orb = universe.emplace<cqspt::Orbit>(orbital_entity);
         orb.eccentricity = eccentricity;
         orb.semi_major_axis = semi_major_axis;
         orb.inclination = inclination;
-        orb.ascending_node = ascending_node;
-        orb.argument = argument;
-        orb.anomaly = anomaly;
+        orb.LAN = LAN;
+        orb.w = w;
+        orb.M0 = M0;
         orb.epoch = 1;
         orb.T = orb.CalculatePeriod();
         auto& kinematics = universe.emplace<cqspt::Kinematics>(orbital_entity);

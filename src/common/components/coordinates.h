@@ -21,10 +21,12 @@
 
 #include <entt/entt.hpp>
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 #include "common/components/bodies.h"
 #include "common/components/units.h"
 #include <iostream> // remove 
+
 namespace cqsp {
 namespace common {
 namespace components {
@@ -43,9 +45,9 @@ struct Orbit {
     double eccentricity; // e
     double semi_major_axis; // a
     double inclination; // i
-    double ascending_node; // capital Omega (Longitude of the ascending node)
-    double argument; // lower case omega
-    double anomaly; // theta
+    double LAN; // capital Omega (Longitude of the ascending node)
+    double w; // lower case omega
+    double M0; // theta
     double epoch; // t
 
     double T;
@@ -54,13 +56,13 @@ struct Orbit {
     entt::entity referenceBody = entt::null;
 
     Orbit() = default;
-    Orbit(double eccentricity, double semi_major_axis, double inclination, double ascending_node, double argument, double anomaly, double epoch):
+    Orbit(double eccentricity, double semi_major_axis, double inclination, double LAN, double w, double M0, double epoch):
             eccentricity(eccentricity),
             semi_major_axis(semi_major_axis),
             inclination(inclination),
-            ascending_node(ascending_node),
-            argument(argument),
-            anomaly(anomaly),
+            LAN(LAN),
+            w(w),
+            M0(M0),
             epoch(epoch) {
         // Assume it's orbiting the sun
         T = CalculatePeriod();
@@ -73,6 +75,21 @@ struct Orbit {
     }
 };
 
+inline glm::vec3 OrbitToVec3(double a, double e, double i, double LAN, double w, double v) {
+    // Calculate the things for now
+    double r = (a) / (1 - e * cos(v)); //  - w
+    double Et = 1; // eccentric anomaly
+    double x = r * cos(v);
+    double y = r * sin(v);
+    double z = 0;
+    glm::dvec3 j{x, y, z};
+    glm::dvec3 b = glm::dvec3(1, 0, 0) * sin(i / 2);
+    glm::dquat q{cos(i/2), b};
+
+    glm::vec3 vprime = q * j; // Glm does the q prime for us
+
+    return vprime;
+}
 struct Kinematics {
     glm::vec3 position = glm::vec3(0, 0, 0);
     glm::vec3 velocity = glm::vec3(0, 0, 0);
@@ -115,7 +132,7 @@ inline double FindAngularVelocity(const Orbit& orb) {
 }
 
 inline void UpdateOrbit(Orbit& orb) {
-    orb.anomaly += 0.1;  // FindAngularVelocity(orb);
+    orb.M0 += 0.1;  // FindAngularVelocity(orb);
 }
 
 inline types::radian toRadian(types::degree theta) {
@@ -170,9 +187,9 @@ inline glm::vec3 toVec3(const Orbit& orb) {
     double mu = SunMu;
     double Mt;
     if (orb.epoch == 0) {
-        Mt = orb.anomaly;
+        Mt = orb.M0;
     } else {
-        Mt = orb.anomaly + orb.epoch * std::sqrt(mu / (orb.semi_major_axis * orb.semi_major_axis * orb.semi_major_axis));
+        Mt = orb.M0 + orb.epoch * std::sqrt(mu / (orb.semi_major_axis * orb.semi_major_axis * orb.semi_major_axis));
     }
     Mt = std::fmod(Mt, PI * 2);
     if (Mt < 0) {
@@ -190,19 +207,18 @@ inline glm::vec3 toVec3(const Orbit& orb) {
         j++;
     }
 
-    double nu = 2 * std::atan2(sqrt(1 + orb.eccentricity) *
-                                  sin(orb.eccentricity / 2), sqrt (1 - orb.eccentricity) * cos(E / 2));
-
+    double nu = Mt;  // 2 * std::atan2(sqrt(1 + orb.eccentricity) *
+                //                  sin(orb.eccentricity / 2), sqrt (1 - orb.eccentricity) * cos(E / 2));
     double rc = orb.semi_major_axis * (1 - orb.eccentricity * cos(E));
     glm::dvec3 o{rc * cos(nu), rc * sin(nu), 0};
     glm::dvec3 odot{sin(E), sqrt(1 - orb.eccentricity * orb.eccentricity) * cos(E), 0};
     odot *= (sqrt(mu * orb.semi_major_axis) / rc);
 
-    double rx = ( o.x * (cos(orb.argument) * cos(orb.ascending_node) - sin(orb.argument) * cos(orb.inclination) * sin(orb.ascending_node)) -
-            o.y * (sin(orb.argument) * cos(orb.ascending_node) + cos(orb.argument) * cos(orb.inclination) * sin(orb.ascending_node)));
-    double ry = (o.x * (cos (orb.argument) * sin(orb.ascending_node) + sin(orb.argument) * cos(orb.inclination) * cos(orb.ascending_node)) +
-        o.y * (cos(orb.argument) * cos(orb.inclination) * cos(orb.ascending_node) - sin(orb.argument) * sin(orb.ascending_node)));
-    double rz = (o.x * (sin(orb.argument) * sin(orb.inclination)) + o.y * (cos(orb.argument) * sin(orb.inclination)));
+    double rx = ( o.x * (cos(orb.w) * cos(orb.LAN) - sin(orb.w) * cos(orb.inclination) * sin(orb.LAN)) -
+            o.y * (sin(orb.w) * cos(orb.LAN) + cos(orb.w) * cos(orb.inclination) * sin(orb.LAN)));
+    double ry = (o.x * (cos (orb.w) * sin(orb.LAN) + sin(orb.w) * cos(orb.inclination) * cos(orb.LAN)) +
+        o.y * (cos(orb.w) * cos(orb.inclination) * cos(orb.LAN) - sin(orb.w) * sin(orb.LAN)));
+    double rz = (o.x * (sin(orb.w) * sin(orb.inclination)) + o.y * (cos(orb.w) * sin(orb.inclination)));
 
     return glm::vec3(rx/KmInAu, ry/KmInAu, rz/KmInAu); // convert to AU
 }

@@ -32,19 +32,19 @@ TEST(Common_OrbitTest, toVec3Test) {
     // Do the test
     namespace cqspt = cqsp::common::components::types;
     cqspt::Orbit orb;
-    orb.semi_major_axis = data["semi_major_axis"];
-    orb.eccentricity = data["eccentricity"];
-    orb.inclination = data["inclination"];
-    orb.ascending_node = data["ascending_node"];
-    orb.argument = data["argument"];
-    orb.anomaly = data["anomaly"];
+    double a = orb.semi_major_axis = data["semi_major_axis"];
+    double e = orb.eccentricity = data["eccentricity"];
+    double i = orb.inclination = data["inclination"];
+    double LAN = orb.LAN = data["ascending_node"];
+    double w = orb.w = data["argument"];
+    double M0 = orb.M0 = data["anomaly"];
     orb.T = orb.CalculatePeriod();
     std::cout << orb.T << std::endl;
+    double T = 3.1415926535 * 2;
     int resolution = 5000;
     std::ofstream file("data.txt");
     for (int i = 0; i < resolution + 1; i++) {
-        orb.epoch = (orb.T/resolution) * i;
-        glm::vec3 vec = cqspt::toVec3(orb);
+        glm::vec3 vec = cqspt::OrbitToVec3(a, e, i, LAN, w, T/resolution * i);
         std::cout.precision(17);
         file << orb.epoch << " " << vec.x << " " << vec.y << " " << vec.z
              << std::endl;
