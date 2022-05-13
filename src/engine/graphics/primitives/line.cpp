@@ -18,7 +18,8 @@
 
 #include <glad/glad.h>
 
-cqsp::engine::Mesh* cqsp::engine::primitive::MakeLine(const std::vector<glm::vec3>& vertices) {
+namespace cqsp::engine::primitive {
+cqsp::engine::Mesh* MakeLine(const std::vector<glm::vec3>& vertices) {
     cqsp::engine::Mesh* mesh = new cqsp::engine::Mesh();
     mesh->mode = GL_LINES;
     mesh->indicies = vertices.size();
@@ -42,3 +43,4 @@ cqsp::engine::Mesh* cqsp::engine::primitive::MakeLine(const std::vector<glm::vec
     glBindVertexArray(0);
     return mesh;
 }
+}  // namespace cqsp::engine::primitive

@@ -78,13 +78,12 @@ struct Orbit {
 inline glm::vec3 OrbitToVec3(double a, double e, double i, double LAN, double w, double v) {
     // Calculate the things for now
     double r = (a) / (1 - e * cos(v)); //  - w
-    double Et = 1; // eccentric anomaly
     double x = r * cos(v);
     double y = r * sin(v);
     double z = 0;
-    glm::dvec3 j{x, y, z};
-    glm::dvec3 b = glm::dvec3(1, 0, 0) * sin(i / 2);
-    glm::dquat q{cos(i/2), b};
+    glm::dvec3 j{x, z, y};
+    glm::dquat q{glm::dvec3(i, w, LAN)};
+    // Then rotate based off the other angle
 
     glm::vec3 vprime = q * j; // Glm does the q prime for us
 

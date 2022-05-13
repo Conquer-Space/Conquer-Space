@@ -122,6 +122,11 @@ void SysStarSystemRenderer::Initialize() {
     orbit_line.mesh = engine::primitive::CreateLineCircle(256, 1);
     orbit_line.shaderProgram =
         m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:sunshader")->MakeShader();
+    orb.semi_major_axis = 4;
+    orb.eccentricity = 0;
+    orb.inclination = 1;
+    orb.LAN = 0;
+    orb.w = 1;
 }
 
 void SysStarSystemRenderer::OnTick() {
@@ -152,6 +157,7 @@ void SysStarSystemRenderer::Render(float deltaTime) {
         SeeEntity();
     }
 
+    GenerateOrbitLine();
     FocusCityView();
 
     m_star_system  = m_app.GetUniverse().view<RenderingStarSystem>().front();
@@ -353,6 +359,40 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
             m_universe.view<cqsp::client::systems::FocusedPlanet>().size());
         ImGui::End();
     }*/
+    ImGui::Begin("debug");
+    /*orb.semi_major_axis = 4;
+    orb.eccentricity = 0.7;
+    orb.inclination = 0.7;
+    orb.LAN = 0.7;
+    orb.w = 0.7;*/
+    {
+    float t = orb.semi_major_axis;
+    ImGui::DragFloat("semi_major_axis", &t, 0.1, 0.f, 20.f);
+    orb.semi_major_axis = t;
+    }
+    {
+    float e = orb.eccentricity;
+    ImGui::DragFloat("eccentricity", &e, 0.05f, 0.f, 1.f);
+    orb.eccentricity = e;
+    }
+    {
+    float t = orb.inclination;
+    ImGui::DragFloat("inclination", &t, 0.1, 0.f, common::components::types::PI * 2);
+    orb.inclination = t;
+    }
+
+    {
+    float w = orb.w;
+    ImGui::DragFloat("w", &w, 0.1, 0.f, common::components::types::PI * 2);
+    orb.w = w;
+    }
+
+    {
+    float w = orb.LAN;
+    ImGui::DragFloat("LAN", &w, 0.1, 0.f, common::components::types::PI * 2);
+    orb.LAN = w;
+    }
+    ImGui::End();
 }
 
 void SysStarSystemRenderer::DrawStars() {
@@ -373,7 +413,7 @@ void SysStarSystemRenderer::DrawStars() {
             continue;
         }
         renderer.BeginDraw(physical_layer);
-        DrawStar(object_pos);
+        //DrawStar(object_pos);
         renderer.EndDraw(physical_layer);
     }
 }
@@ -884,7 +924,23 @@ float SysStarSystemRenderer::GetWindowRatio() {
     return window_ratio;
 }
 
-cqsp::asset::Texture* SysStarSystemRenderer::GenerateTexture(
+void SysStarSystemRenderer::GenerateOrbitLine() {
+    // Set the points
+    std::vector<glm::vec3> l;
+    int res = 500;
+    for (int i = 0; i <= res; i++) {
+        double theta = 3.1415926535 * 2 / res * i;
+        glm::vec3 vec = common::components::types::OrbitToVec3(
+            orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN,
+            orb.w, theta);
+        l.push_back(vec);
+    }
+    // Do the points
+    delete orbit_line.mesh;
+    orbit_line.mesh = engine::primitive::CreateLineSequence(l);
+}
+
+cqsp::asset::Texture *SysStarSystemRenderer::GenerateTexture(
     unsigned int tex, noise::utils::Image &image) {
     cqsp::asset::Texture *texture = new cqsp::asset::Texture();
     texture->id = tex;
@@ -986,7 +1042,7 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity &entity) {
     glm::mat4 transform = glm::mat4(1.f);
     double v = glm::length(CalculateObjectPos(entity));
     transform = glm::translate(transform, CalculateCenteredObject(glm::vec3(0, 0, 0)));
-    transform = glm::scale(transform, glm::vec3(v, v, v));
+    //transform = glm::scale(transform, glm::vec3(v, v, v));
     // Draw orbit
     orbit_line.SetMVP(transform, camera_matrix, m_app.Get3DProj());
     orbit_line.shaderProgram->Set("color", glm::vec4(1, 1, 1, 1));
