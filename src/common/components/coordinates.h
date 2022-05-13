@@ -82,9 +82,16 @@ inline glm::vec3 OrbitToVec3(double a, double e, double i, double LAN, double w,
     double y = r * sin(v);
     double z = 0;
     glm::dvec3 j{x, z, y};
-    glm::dquat q{glm::dvec3(i, w, LAN)};
+    //-w
+    glm::dquat q{glm::dvec3(i, LAN + cos(LAN) * w, sin(LAN) * w)};
     // Then rotate based off the other angle
-
+    /*
+    double rx = ( o.x * (cos(orb.w) * cos(orb.LAN) - sin(orb.w) * cos(orb.inclination) * sin(orb.LAN)) -
+            o.y * (sin(orb.w) * cos(orb.LAN) + cos(orb.w) * cos(orb.inclination) * sin(orb.LAN)));
+    double ry = (o.x * (cos (orb.w) * sin(orb.LAN) + sin(orb.w) * cos(orb.inclination) * cos(orb.LAN)) +
+        o.y * (cos(orb.w) * cos(orb.inclination) * cos(orb.LAN) - sin(orb.w) * sin(orb.LAN)));
+    double rz = (o.x * (sin(orb.w) * sin(orb.inclination)) + o.y * (cos(orb.w) * sin(orb.inclination)));
+    */
     glm::vec3 vprime = q * j; // Glm does the q prime for us
 
     return vprime;

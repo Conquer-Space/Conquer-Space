@@ -367,31 +367,32 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
     orb.w = 0.7;*/
     {
     float t = orb.semi_major_axis;
-    ImGui::DragFloat("semi_major_axis", &t, 0.1, 0.f, 20.f);
+    ImGui::SliderFloat("semi_major_axis", &t, 0.f, 20.f);
     orb.semi_major_axis = t;
     }
     {
     float e = orb.eccentricity;
-    ImGui::DragFloat("eccentricity", &e, 0.05f, 0.f, 1.f);
+    ImGui::SliderFloat("eccentricity", &e, 0.f, 1.f);
     orb.eccentricity = e;
     }
     {
-    float t = orb.inclination;
-    ImGui::DragFloat("inclination", &t, 0.1, 0.f, common::components::types::PI * 2);
-    orb.inclination = t;
+        float t = common::components::types::toDegree(orb.inclination);
+        ImGui::SliderFloat("inclination", &t, 0.f, 180.f);
+        orb.inclination = common::components::types::toRadian(t);
     }
 
     {
-    float w = orb.w;
-    ImGui::DragFloat("w", &w, 0.1, 0.f, common::components::types::PI * 2);
-    orb.w = w;
+    float w = common::components::types::toDegree(orb.w);
+    ImGui::SliderFloat("w", &w, 0.f, 360.f);
+    orb.w = common::components::types::toRadian(w);
     }
 
     {
-    float w = orb.LAN;
-    ImGui::DragFloat("LAN", &w, 0.1, 0.f, common::components::types::PI * 2);
-    orb.LAN = w;
+    float w = common::components::types::toDegree(orb.LAN);
+    ImGui::SliderFloat("LAN", &w, 0.f, 360);
+    orb.LAN = common::components::types::toRadian(w);;
     }
+
     ImGui::End();
 }
 
@@ -413,7 +414,7 @@ void SysStarSystemRenderer::DrawStars() {
             continue;
         }
         renderer.BeginDraw(physical_layer);
-        //DrawStar(object_pos);
+        DrawStar(object_pos);
         renderer.EndDraw(physical_layer);
     }
 }
@@ -624,7 +625,7 @@ void SysStarSystemRenderer::DrawStar(glm::vec3 &object_pos) {
     position = glm::translate(position, object_pos);
 
     glm::mat4 transform = glm::mat4(1.f);
-    transform = glm::scale(transform, glm::vec3(5, 5, 5));
+    transform = glm::scale(transform, glm::vec3(0.1, 0.1, 0.1));
     position = position * transform;
 
     sun.SetMVP(position, camera_matrix, projection);
