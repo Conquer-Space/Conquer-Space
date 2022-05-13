@@ -81,20 +81,18 @@ inline glm::vec3 OrbitToVec3(double a, double e, double i, double LAN, double w,
     double x = r * cos(v);
     double y = r * sin(v);
     double z = 0;
-    glm::dvec3 j{x, z, y};
+    glm::dvec3 o{x, y, z};
     //-w
     glm::dquat q{glm::dvec3(i, LAN + cos(LAN) * w, sin(LAN) * w)};
     // Then rotate based off the other angle
-    /*
-    double rx = ( o.x * (cos(orb.w) * cos(orb.LAN) - sin(orb.w) * cos(orb.inclination) * sin(orb.LAN)) -
-            o.y * (sin(orb.w) * cos(orb.LAN) + cos(orb.w) * cos(orb.inclination) * sin(orb.LAN)));
-    double ry = (o.x * (cos (orb.w) * sin(orb.LAN) + sin(orb.w) * cos(orb.inclination) * cos(orb.LAN)) +
-        o.y * (cos(orb.w) * cos(orb.inclination) * cos(orb.LAN) - sin(orb.w) * sin(orb.LAN)));
-    double rz = (o.x * (sin(orb.w) * sin(orb.inclination)) + o.y * (cos(orb.w) * sin(orb.inclination)));
-    */
-    glm::vec3 vprime = q * j; // Glm does the q prime for us
+    double rx = ( o.x * (cos(w) * cos(LAN) - sin(w) * cos(i) * sin(LAN)) -
+            o.y * (sin(w) * cos(LAN) + cos(w) * cos(i) * sin(LAN)));
+    double ry = (o.x * (cos (w) * sin(LAN) + sin(w) * cos(i) * cos(LAN)) +
+        o.y * (cos(w) * cos(i) * cos(LAN) - sin(w) * sin(LAN)));
+    double rz = (o.x * (sin(w) * sin(i)) + o.y * (cos(w) * sin(i)));
+    //glm::vec3 vprime = q * j; // Glm does the q prime for us
 
-    return vprime;
+    return glm::vec3{rx, -rz, ry};
 }
 struct Kinematics {
     glm::vec3 position = glm::vec3(0, 0, 0);
