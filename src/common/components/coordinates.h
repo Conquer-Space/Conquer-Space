@@ -77,21 +77,19 @@ struct Orbit {
 
 inline glm::vec3 OrbitToVec3(double a, double e, double i, double LAN, double w, double v) {
     // Calculate the things for now
-    double r = (a) / (1 - e * cos(v)); //  - w
+    double r = (a) / (1 - e * cos(v));
     double x = r * cos(v);
     double y = r * sin(v);
     double z = 0;
     glm::dvec3 o{x, y, z};
-    //-w
-    glm::dquat q{glm::dvec3(i, LAN + cos(LAN) * w, sin(LAN) * w)};
-    // Then rotate based off the other angle
+
     double rx = ( o.x * (cos(w) * cos(LAN) - sin(w) * cos(i) * sin(LAN)) -
             o.y * (sin(w) * cos(LAN) + cos(w) * cos(i) * sin(LAN)));
     double ry = (o.x * (cos (w) * sin(LAN) + sin(w) * cos(i) * cos(LAN)) +
         o.y * (cos(w) * cos(i) * cos(LAN) - sin(w) * sin(LAN)));
     double rz = (o.x * (sin(w) * sin(i)) + o.y * (cos(w) * sin(i)));
-    //glm::vec3 vprime = q * j; // Glm does the q prime for us
 
+    // Convert to opengl coords
     return glm::vec3{rx, -rz, ry};
 }
 struct Kinematics {
@@ -182,53 +180,22 @@ inline PolarCoordinate toPolarCoordinate(const Orbit& orb) {
     return PolarCoordinate{1, 1};
 }
 
+/// <summary>
+/// Converts an epoch to the true anomaly
+/// </summary>
+inline double EpochToTheta(double G_const, double epoch) { return 0; }
+
 const static double KmInAu = 1.49597870700e8f;
-inline glm::vec3 toVec3(const Orbit& orb) {
-    if (orb.semi_major_axis == 0) {
-        return glm::vec3(0, 0, 0);
-    }
-    // Convert the orbit
-    double mu = SunMu;
-    double Mt;
-    if (orb.epoch == 0) {
-        Mt = orb.M0;
-    } else {
-        Mt = orb.M0 + orb.epoch * std::sqrt(mu / (orb.semi_major_axis * orb.semi_major_axis * orb.semi_major_axis));
-    }
-    Mt = std::fmod(Mt, PI * 2);
-    if (Mt < 0) {
-        Mt += PI * 2;
-    }
-
-    // Solve for eccentric anomaly with newton's method
-    double E = Mt;
-    double F = E - orb.eccentricity * std::sin(E) - Mt;
-    int j = 0, maxIter = 30;
-    double delta = 0.000001f;
-    while (std::abs(F) > delta && j < maxIter) {
-        E = E - F / (1 - orb.eccentricity * std::cos(E));
-        F = E - orb.eccentricity * sin(E) - Mt;
-        j++;
-    }
-
-    double nu = Mt;  // 2 * std::atan2(sqrt(1 + orb.eccentricity) *
-                //                  sin(orb.eccentricity / 2), sqrt (1 - orb.eccentricity) * cos(E / 2));
-    double rc = orb.semi_major_axis * (1 - orb.eccentricity * cos(E));
-    glm::dvec3 o{rc * cos(nu), rc * sin(nu), 0};
-    glm::dvec3 odot{sin(E), sqrt(1 - orb.eccentricity * orb.eccentricity) * cos(E), 0};
-    odot *= (sqrt(mu * orb.semi_major_axis) / rc);
-
-    double rx = ( o.x * (cos(orb.w) * cos(orb.LAN) - sin(orb.w) * cos(orb.inclination) * sin(orb.LAN)) -
-            o.y * (sin(orb.w) * cos(orb.LAN) + cos(orb.w) * cos(orb.inclination) * sin(orb.LAN)));
-    double ry = (o.x * (cos (orb.w) * sin(orb.LAN) + sin(orb.w) * cos(orb.inclination) * cos(orb.LAN)) +
-        o.y * (cos(orb.w) * cos(orb.inclination) * cos(orb.LAN) - sin(orb.w) * sin(orb.LAN)));
-    double rz = (o.x * (sin(orb.w) * sin(orb.inclination)) + o.y * (cos(orb.w) * sin(orb.inclination)));
-
-    return glm::vec3(rx/KmInAu, ry/KmInAu, rz/KmInAu); // convert to AU
+inline glm::vec3 toVec3(const Orbit& orb, double epoch) {
+    // Get the current time
+    // convert epoch
+    glm::vec3 vec = OrbitToVec3(orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN,
+                orb.w, epoch);
+    return vec/1.49597870700e8f;
 }
 
 inline void UpdatePos(Kinematics& kin, const Orbit& orb) {
-    kin.position = toVec3(orb);
+    kin.position = toVec3(orb, 0);
 }
 }  // namespace types
 }  // namespace components
