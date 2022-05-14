@@ -113,7 +113,6 @@ void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::
         orb.LAN = LAN;
         orb.w = w;
         orb.M0 = M0;
-        orb.epoch = 1;
         orb.T = orb.CalculatePeriod();
         auto& kinematics = universe.emplace<cqspt::Kinematics>(orbital_entity);
         cqspt::UpdatePos(kinematics, orb);

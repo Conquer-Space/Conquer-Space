@@ -76,6 +76,10 @@ struct TerrainTextureData {
         delete heightmap;
     }
 };
+
+struct PlanetOrbit {
+    cqsp::engine::Mesh *orbit_mesh;
+};
 }  // namespace
 
 void SysStarSystemRenderer::Initialize() {
@@ -192,6 +196,32 @@ void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
     seeds.clear();
 
     auto star_system_component = m_universe.get<cqspb::StarSystem>(m_star_system);
+    SPDLOG_INFO("Creating planet orbits");
+
+    // Initialize all the orbits and stuff
+    for (auto body : star_system_component.bodies) {
+        // Generate the orbit
+        if (!m_universe.any_of<common::components::types::Orbit>(body)) {
+            SPDLOG_INFO("Entity has no orbit {}", body);
+            continue;
+        }
+
+        auto& orb = m_universe.get<common::components::types::Orbit>(body);
+        if (orb.semi_major_axis == 0) {
+            continue;
+        }
+        std::vector<glm::vec3> orbit_points;
+        int res = 500;
+        for (int i = 0; i <= res; i++) {
+            double theta = 3.1415926535 * 2 / res * i;
+            glm::vec3 vec = common::components::types::toVec3(orb, theta);
+            orbit_points.push_back(vec);
+        }
+        auto& line = m_universe.emplace<PlanetOrbit>(body);
+        // Get the orbit line
+        // Do the points
+        line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);
+    }
     SPDLOG_INFO("Creating planet terrain");
 
     for (auto body : star_system_component.bodies) {
@@ -1040,15 +1070,18 @@ bool cqsp::client::systems::SysStarSystemRenderer::IsFoundingCity(common::Univer
 }
 
 void SysStarSystemRenderer::DrawOrbit(const entt::entity &entity) {
+    if (!m_universe.any_of<PlanetOrbit>(entity)) {
+        return;
+    }
     glm::mat4 transform = glm::mat4(1.f);
-    double v = glm::length(CalculateObjectPos(entity));
     transform = glm::translate(transform, CalculateCenteredObject(glm::vec3(0, 0, 0)));
-    //transform = glm::scale(transform, glm::vec3(v, v, v));
+    transform = glm::scale(transform, glm::vec3(10, 10, 10));
     // Draw orbit
     orbit_line.SetMVP(transform, camera_matrix, m_app.Get3DProj());
     orbit_line.shaderProgram->Set("color", glm::vec4(1, 1, 1, 1));
     // Set to the center of the universe
-    engine::Draw(orbit_line);
+    auto& orbit = m_universe.get<PlanetOrbit>(entity);
+    orbit.orbit_mesh->Draw();
 }
 
 SysStarSystemRenderer::~SysStarSystemRenderer() {

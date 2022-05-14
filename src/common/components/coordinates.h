@@ -195,7 +195,7 @@ inline glm::vec3 toVec3(const Orbit& orb, double epoch) {
 }
 
 inline void UpdatePos(Kinematics& kin, const Orbit& orb) {
-    kin.position = toVec3(orb, 0);
+    kin.position = toVec3(orb, orb.M0);
 }
 }  // namespace types
 }  // namespace components
