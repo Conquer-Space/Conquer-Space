@@ -161,7 +161,6 @@ void SysStarSystemRenderer::Render(float deltaTime) {
         SeeEntity();
     }
 
-    GenerateOrbitLine();
     FocusCityView();
 
     m_star_system  = m_app.GetUniverse().view<RenderingStarSystem>().front();
@@ -195,33 +194,10 @@ void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
 
     seeds.clear();
 
+    GenerateOrbitLines();
+
     auto star_system_component = m_universe.get<cqspb::StarSystem>(m_star_system);
-    SPDLOG_INFO("Creating planet orbits");
 
-    // Initialize all the orbits and stuff
-    for (auto body : star_system_component.bodies) {
-        // Generate the orbit
-        if (!m_universe.any_of<common::components::types::Orbit>(body)) {
-            SPDLOG_INFO("Entity has no orbit {}", body);
-            continue;
-        }
-
-        auto& orb = m_universe.get<common::components::types::Orbit>(body);
-        if (orb.semi_major_axis == 0) {
-            continue;
-        }
-        std::vector<glm::vec3> orbit_points;
-        int res = 500;
-        for (int i = 0; i <= res; i++) {
-            double theta = 3.1415926535 * 2 / res * i;
-            glm::vec3 vec = common::components::types::toVec3(orb, theta);
-            orbit_points.push_back(vec);
-        }
-        auto& line = m_universe.emplace<PlanetOrbit>(body);
-        // Get the orbit line
-        // Do the points
-        line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);
-    }
     SPDLOG_INFO("Creating planet terrain");
 
     for (auto body : star_system_component.bodies) {
@@ -389,41 +365,6 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
             m_universe.view<cqsp::client::systems::FocusedPlanet>().size());
         ImGui::End();
     }*/
-    ImGui::Begin("debug");
-    /*orb.semi_major_axis = 4;
-    orb.eccentricity = 0.7;
-    orb.inclination = 0.7;
-    orb.LAN = 0.7;
-    orb.w = 0.7;*/
-    {
-    float t = orb.semi_major_axis;
-    ImGui::SliderFloat("semi_major_axis", &t, 0.f, 20.f);
-    orb.semi_major_axis = t;
-    }
-    {
-    float e = orb.eccentricity;
-    ImGui::SliderFloat("eccentricity", &e, 0.f, 1.f);
-    orb.eccentricity = e;
-    }
-    {
-        float t = common::components::types::toDegree(orb.inclination);
-        ImGui::SliderFloat("inclination", &t, 0.f, 180.f);
-        orb.inclination = common::components::types::toRadian(t);
-    }
-
-    {
-    float w = common::components::types::toDegree(orb.w);
-    ImGui::SliderFloat("w", &w, 0.f, 360.f);
-    orb.w = common::components::types::toRadian(w);
-    }
-
-    {
-    float w = common::components::types::toDegree(orb.LAN);
-    ImGui::SliderFloat("LAN", &w, 0.f, 360);
-    orb.LAN = common::components::types::toRadian(w);;
-    }
-
-    ImGui::End();
 }
 
 void SysStarSystemRenderer::DrawStars() {
@@ -955,20 +896,34 @@ float SysStarSystemRenderer::GetWindowRatio() {
     return window_ratio;
 }
 
-void SysStarSystemRenderer::GenerateOrbitLine() {
-    // Set the points
-    std::vector<glm::vec3> l;
-    int res = 500;
-    for (int i = 0; i <= res; i++) {
-        double theta = 3.1415926535 * 2 / res * i;
-        glm::vec3 vec = common::components::types::OrbitToVec3(
-            orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN,
-            orb.w, theta);
-        l.push_back(vec);
+void SysStarSystemRenderer::GenerateOrbitLines() {
+    auto star_system_component = m_universe.get<common::components::bodies::StarSystem>(m_star_system);
+    SPDLOG_INFO("Creating planet orbits");
+
+    // Initialize all the orbits and stuff
+    for (auto body : star_system_component.bodies) {
+        // Generate the orbit
+        if (!m_universe.any_of<common::components::types::Orbit>(body)) {
+            SPDLOG_INFO("Entity has no orbit {}", body);
+            continue;
+        }
+
+        auto& orb = m_universe.get<common::components::types::Orbit>(body);
+        if (orb.semi_major_axis == 0) {
+            continue;
+        }
+        std::vector<glm::vec3> orbit_points;
+        int res = 500;
+        for (int i = 0; i <= res; i++) {
+            double theta = 3.1415926535 * 2 / res * i;
+            glm::vec3 vec = common::components::types::toVec3(orb, theta);
+            orbit_points.push_back(vec);
+        }
+        auto& line = m_universe.emplace<PlanetOrbit>(body);
+        // Get the orbit line
+        // Do the points
+        line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);
     }
-    // Do the points
-    delete orbit_line.mesh;
-    orbit_line.mesh = engine::primitive::CreateLineSequence(l);
 }
 
 cqsp::asset::Texture *SysStarSystemRenderer::GenerateTexture(

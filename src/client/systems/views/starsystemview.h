@@ -162,7 +162,8 @@ class SysStarSystemRenderer {
     glm::vec3 CalculateMouseRay(const glm::vec3 &ray_nds);
     float GetWindowRatio();
 
-    void GenerateOrbitLine();
+    void GenerateOrbitLines();
+
     cqsp::asset::Texture* GenerateTexture(unsigned int, noise::utils::Image&);
     // How much to scale the the star system.
     const double divider = 0.01;

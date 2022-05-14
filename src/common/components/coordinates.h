@@ -16,7 +16,6 @@
 */
 #pragma once
 
-#include <spdlog/spdlog.h>  // remove 
 #include <math.h>
 
 #include <entt/entt.hpp>
@@ -25,18 +24,14 @@
 
 #include "common/components/bodies.h"
 #include "common/components/units.h"
-#include <iostream> // remove 
 
-namespace cqsp {
-namespace common {
-namespace components {
-namespace types {
+namespace cqsp::common::components::types {
 
 struct Orbit;
 inline double FindAngularVelocity(const Orbit& orb);
 
-const static double G = 6.6743015e-11;
-const static double SunMu = 1.32712400188e11;
+static const double G = 6.6743015e-11;
+static const double SunMu = 1.32712400188e11;
 
 /**
  * Orbit of a body
@@ -56,7 +51,9 @@ struct Orbit {
     entt::entity referenceBody = entt::null;
 
     Orbit() = default;
-    Orbit(double eccentricity, double semi_major_axis, double inclination, double LAN, double w, double M0, double epoch):
+    Orbit(double eccentricity, double semi_major_axis,
+            double inclination, double LAN,
+            double w, double M0, double epoch):
             eccentricity(eccentricity),
             semi_major_axis(semi_major_axis),
             inclination(inclination),
@@ -83,9 +80,9 @@ inline glm::vec3 OrbitToVec3(double a, double e, double i, double LAN, double w,
     double z = 0;
     glm::dvec3 o{x, y, z};
 
-    double rx = ( o.x * (cos(w) * cos(LAN) - sin(w) * cos(i) * sin(LAN)) -
+    double rx = (o.x * (cos(w) * cos(LAN) - sin(w) * cos(i) * sin(LAN)) -
             o.y * (sin(w) * cos(LAN) + cos(w) * cos(i) * sin(LAN)));
-    double ry = (o.x * (cos (w) * sin(LAN) + sin(w) * cos(i) * cos(LAN)) +
+    double ry = (o.x * (cos(w) * sin(LAN) + sin(w) * cos(i) * cos(LAN)) +
         o.y * (cos(w) * cos(i) * cos(LAN) - sin(w) * sin(LAN)));
     double rz = (o.x * (sin(w) * sin(i)) + o.y * (cos(w) * sin(i)));
 
@@ -185,7 +182,7 @@ inline PolarCoordinate toPolarCoordinate(const Orbit& orb) {
 /// </summary>
 inline double EpochToTheta(double G_const, double epoch) { return 0; }
 
-const static double KmInAu = 1.49597870700e8f;
+static const double KmInAu = 1.49597870700e8f;
 inline glm::vec3 toVec3(const Orbit& orb, double epoch) {
     // Get the current time
     // convert epoch
@@ -197,7 +194,4 @@ inline glm::vec3 toVec3(const Orbit& orb, double epoch) {
 inline void UpdatePos(Kinematics& kin, const Orbit& orb) {
     kin.position = toVec3(orb, orb.M0);
 }
-}  // namespace types
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::components::types
