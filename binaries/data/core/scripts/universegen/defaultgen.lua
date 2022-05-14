@@ -1,25 +1,3 @@
-local function get_planet_count()
-    local planet_count = core.random_normal_int(6, 5)
-    if planet_count < 0 then
-        planet_count = 0
-    end
-    return planet_count
-end
-
-local function set_planet_orbit(planet, index, m, b)
-    local distance = m * index + b
-
-    -- Then add some variance to the value
-    local variance = core.random_normal_int(-15, 15)
-    distance = distance * (1 - variance/100)
-
-    -- Set theta
-    local degrees = core.random(0, 360)
-    local ecc = 0
-
-    core.set_orbit(planet, distance, degrees, ecc, 0)
-end
-
 local function place_factory_on_market(market, city, resource, amount)
     local factory = core.create_factory(city, recipes[resource], amount)
     core.attach_market(market, factory)
@@ -59,8 +37,6 @@ generators:insert({
                 {},
                 {},
             }
-            local distance = core.random(1, 100)/100
-            local first = core.random(1, 100)/100
             for planet_id = 0, planet_count, 1 do
                 -- Create planets
                 local planet_entity = core.add_planet(sys)

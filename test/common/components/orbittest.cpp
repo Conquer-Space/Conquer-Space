@@ -26,7 +26,7 @@ using ::testing::Ge;
 using ::testing::Le;
 
 // Tests for input from client options
-TEST(Common_OrbitTest, toVec3Test) {
+TEST(Common_OrbitTest, DISABLED_toVec3Test) {
     // Read hjson file and set values
     Hjson::Value data = Hjson::UnmarshalFromFile("data_file.hjson");
     // Do the test
