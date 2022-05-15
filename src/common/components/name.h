@@ -40,34 +40,3 @@ struct Description {
 }  // namespace components
 }  // namespace common
 }  // namespace cqsp
-
-// Various formatters
-template <>
-struct fmt::formatter<cqsp::common::components::Name> {
-    char presentation = 'q';
-
-    constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin()) {
-        auto it = ctx.begin(), end = ctx.end();
-        return it;
-    }
-
-    template <typename FormatContext>
-    auto format(const cqsp::common::components::Name& p, FormatContext& ctx) -> decltype(ctx.out()) {
-        return format_to(ctx.out(), p.name);
-    }
-};
-
-template <>
-struct fmt::formatter<cqsp::common::components::Identifier> {
-    char presentation = 'q';
-
-    constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin()) {
-        auto it = ctx.begin(), end = ctx.end();
-        return it;
-    }
-
-    template <typename FormatContext>
-    auto format(const cqsp::common::components::Identifier& p, FormatContext& ctx) -> decltype(ctx.out()) {
-        return format_to(ctx.out(), p.identifier);
-    }
-};

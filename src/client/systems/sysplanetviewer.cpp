@@ -145,7 +145,7 @@ void SysPlanetInformation::CityInformationPanel() {
     }
     ImGui::SameLine();
 
-    ImGui::TextFmt("{}", GetUniverse().get<cqspc::Name>(selected_city_entity));
+    ImGui::TextFmt("{}", GetUniverse().get<cqspc::Name>(selected_city_entity).name);
     if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
         // Then rename the city
         renaming_city = true;
@@ -784,7 +784,7 @@ void SysPlanetInformation::MarketInformationTooltipContent() {
         for (const auto& good_information : market) {
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
-            ImGui::TextFmt("{}", GetUniverse().get<cqspc::Identifier>(good_information.first));
+            ImGui::TextFmt("{}", GetUniverse().get<cqspc::Identifier>(good_information.first).identifier);
             ImGui::TableSetColumnIndex(1);
             ImGui::TextFmt("{}", good_information.second.price);
             ImGui::TableSetColumnIndex(2);
