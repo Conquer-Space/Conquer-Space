@@ -48,6 +48,8 @@ class StarDate {
 
     int GetDate() { return date; }
 
+    double ToSecond() { return date * 3600; }
+
  private:
     // The maximum length will be about a hundred and thirty thousand years.
     unsigned int date = -1;

@@ -31,7 +31,7 @@ void cqsp::common::systems::SysOrbit::DoSystem() {
     auto bodies = universe.view<cqspt::Orbit>();
     for (entt::entity body : bodies) {
         auto& orb = universe.get<cqspt::Orbit>(body);
-        cqspt::UpdateOrbit(orb);
+        cqspt::UpdateOrbit(orb, universe.date.ToSecond());
         auto& pos = universe.get<cqspt::Kinematics>(body);
         cqspt::UpdatePos(pos, orb);
     }
