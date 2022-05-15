@@ -43,7 +43,7 @@ generators:insert({
                 local orb = orbits[planet_id + 1]
                 -- Set orbits
                 -- Distance can be modeled after a log graph, then convert to km because our regression was based off AU
-                core.set_orbit(planet_entity, orb[1], orb[2], orb[3], orb[4], orb[5], orb[6])
+                core.set_orbit(planet_entity, orb[2], orb[1], orb[3], orb[4], orb[5], orb[6])
                 core.set_name(planet_entity, ""..planet_entity)
                 local radius = core.random(1000, 30000)
                 core.set_radius(planet_entity, radius)

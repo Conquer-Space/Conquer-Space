@@ -104,7 +104,7 @@ void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::
         return star;
     });
 
-    REGISTER_FUNCTION("set_orbit", [&] (entt::entity orbital_entity, double eccentricity, double semi_major_axis,
+    REGISTER_FUNCTION("set_orbit", [&] (entt::entity orbital_entity, double semi_major_axis, double eccentricity,
                                             double inclination, double LAN, double w, double M0) {
         cqspt::Orbit &orb = universe.emplace<cqspt::Orbit>(orbital_entity);
         orb.eccentricity = eccentricity;
@@ -113,7 +113,7 @@ void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::
         orb.LAN = LAN;
         orb.w = w;
         orb.M0 = M0;
-        orb.T = orb.CalculatePeriod();
+        orb.CalculatePeriod();
         auto& kinematics = universe.emplace<cqspt::Kinematics>(orbital_entity);
         cqspt::UpdatePos(kinematics, orb);
     });
