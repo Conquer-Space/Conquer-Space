@@ -65,7 +65,7 @@ void cqsp::client::systems::SysCommand::DoUI(int delta_time) {
         bool is_selected = (entity == current_planet);
         std::string planet_name = fmt::format("{}", entity);
         if (GetUniverse().all_of<Name>(entity)) {
-            planet_name = fmt::format("{}", GetUniverse().get<Name>(entity));
+            planet_name = fmt::format("{}", GetUniverse().get<Name>(entity).name);
         }
 
         if (CQSPGui::DefaultSelectable(planet_name.c_str(),
