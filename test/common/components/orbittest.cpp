@@ -37,8 +37,7 @@ TEST(Common_OrbitTest, DISABLED_toVec3Test) {
     double i = orb.inclination = data["inclination"];
     double LAN = orb.LAN = data["ascending_node"];
     double w = orb.w = data["argument"];
-    double M0 = orb.M0 = data["anomaly"];
-    orb.T = orb.CalculatePeriod();
+    orb.CalculatePeriod();
     std::cout << orb.T << std::endl;
     double T = 3.1415926535 * 2;
     int resolution = 5000;
@@ -46,7 +45,7 @@ TEST(Common_OrbitTest, DISABLED_toVec3Test) {
     for (int i = 0; i < resolution + 1; i++) {
         glm::vec3 vec = cqspt::OrbitToVec3(a, e, i, LAN, w, T/resolution * i);
         std::cout.precision(17);
-        file << orb.epoch << " " << vec.x << " " << vec.y << " " << vec.z
+        file << vec.x << " " << vec.y << " " << vec.z
              << std::endl;
         //EXPECT_THAT(glm::length(vec), AllOf(Ge(0.98326934275),Le(1.0167257013)));
     }

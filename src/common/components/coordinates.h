@@ -27,52 +27,106 @@
 
 namespace cqsp::common::components::types {
 
-struct Orbit;
-inline double FindAngularVelocity(const Orbit& orb);
-
+// Gravitional constant in m^3 * kg^-1 * s^-2
 static const double G = 6.6743015e-11;
+
+// Sun gravitational constant in km^3 * s^-2
 static const double SunMu = 1.32712400188e11;
+
+/// <summary>
+/// A vector3 where the units are astronomical units
+/// </summary>
+typedef glm::vec3 Vec3AU;
 
 /**
  * Orbit of a body
  */
 struct Orbit {
-    double eccentricity; // e
-    double semi_major_axis; // a
-    double inclination; // i
-    double LAN; // capital Omega (Longitude of the ascending node)
-    double w; // lower case omega
-    double M0; // theta
-    double epoch; // t
+    /// eccentricity
+    /// Dimensionless
+    /// e
+    double eccentricity;
 
+    /// Semi major axis
+    /// Kilometers
+    /// a
+    kilometer semi_major_axis; // a
+
+    /// inclination
+    /// Radians
+    /// i
+    radian inclination;
+
+    /// Longitude of the ascending node
+    /// Radians
+    /// Capital Omega
+    radian LAN;
+
+
+    /// Argument of perapsis
+    /// Radians
+    /// lower case omega (w)
+    radian w;
+
+    // Mean anomaly at epoch (J2000)
+    // Radians
+    // M sub 0
+    radian M0;
+
+    /// <summary>
+    /// True anomaly
+    /// v
+    /// Radians
+    /// </summary>
+    double v;
+
+    /// <summary>
+    /// Orbital period
+    /// Seconds
+    /// </summary>
     double T;
+
+    /// <summary>
+    /// Graviational constant * mass of orbiting body
+    /// km^3 * s^-2
+    /// </summary>
+    double Mu;
 
     // So we can prepare for moons and stuff
     entt::entity referenceBody = entt::null;
 
     Orbit() = default;
-    Orbit(double eccentricity, double semi_major_axis,
-            double inclination, double LAN,
-            double w, double M0, double epoch):
+    Orbit(kilometer semi_major_axis, double eccentricity,
+            radian inclination, radian LAN,
+            radian w, radian M0):
             eccentricity(eccentricity),
             semi_major_axis(semi_major_axis),
             inclination(inclination),
             LAN(LAN),
             w(w),
             M0(M0),
-            epoch(epoch) {
-        // Assume it's orbiting the sun
-        T = CalculatePeriod();
+            v(M0),
+            T(0) {
+        CalculatePeriod();
     }
 
-    double CalculatePeriod() {
-        return 2 * PI *
-            std::sqrt(semi_major_axis * semi_major_axis *
-                      semi_major_axis / SunMu);
+    void CalculatePeriod() {
+        T =  2 * PI * std::sqrt(semi_major_axis * semi_major_axis * semi_major_axis / Mu);
     }
 };
 
-inline glm::vec3 OrbitToVec3(double a, double e, double i, double LAN, double w, double v) {
+/// <summary>
+/// Converts an orbit to a vec3.
+/// </summary>
+/// <param name="a">Semi major axis (unit doesn't matter)</param>
+/// <param name="e">Eccentricity (Dimensionless)</param>
+/// <param name="i">Inclinations (radians)</param>
+/// <param name="LAN">Longitude of ascending node (radians)</param>
+/// <param name="w">Argument of periapsis (radians)</param>
+/// <param name="v">True anomaly (radians)</param>
+/// <returns>The vec3, in whatever unit a was.</returns>
+inline glm::vec3 OrbitToVec3(const double& a, const double& e, const radian& i,
+                             const radian& LAN, const radian& w, const radian& v) {
     // Calculate the things for now
     double r = (a) / (1 - e * cos(v));
     double x = r * cos(v);
@@ -89,6 +143,12 @@ inline glm::vec3 OrbitToVec3(double a, double e, double i, double LAN, double w,
     // Convert to opengl coords
     return glm::vec3{rx, -rz, ry};
 }
+
+/// <param name="orbit">Orbit to compute</param>
+/// <param name="time">Current time (seconds)</param>
+/// <returns>True anomaly in radians</returns>
+static radian TrueAnomaly(const Orbit& orbit, second time) { return 0; }
+
 struct Kinematics {
     glm::vec3 position = glm::vec3(0, 0, 0);
     glm::vec3 velocity = glm::vec3(0, 0, 0);
@@ -109,7 +169,7 @@ struct PolarCoordinate_tp {
     degree theta;
 
     PolarCoordinate_tp() = default;
-    PolarCoordinate_tp(T _r, types::degree _theta) : r(_r), theta(_theta) {}
+    PolarCoordinate_tp(T _r, degree _theta) : r(_r), theta(_theta) {}
 };
 typedef PolarCoordinate_tp<types::astronomical_unit> PolarCoordinate;
 
@@ -118,26 +178,17 @@ struct MoveTarget {
     explicit MoveTarget(entt::entity _targetent) : target(_targetent) {}
 };
 
-// Period in hours
-inline int FindPeriod(const Orbit& orb) {
-    // Period in seconds
-    return 0;  // TWOPI * std::sqrt(std::pow(orb.semiMajorAxis, 3) /
-               // orb.gravitationalparameter)/3600.f;
-}
-
-// Angular velocity in radians per hour
-inline double FindAngularVelocity(const Orbit& orb) {
-    return 360.0 * (1.0 / FindPeriod(orb));
-}
-
 inline void UpdateOrbit(Orbit& orb) {
-    orb.M0 += 0.1;  // FindAngularVelocity(orb);
 }
 
-inline types::radian toRadian(types::degree theta) {
-    return theta * (cqsp::common::components::types::PI / 180.f);
+inline radian toRadian(degree theta) {
+    return theta * (PI / 180.f);
 }
 
+/// <summary>
+/// Longitude and lattitude.
+/// Planet coordinates.
+/// </summary>
 struct SurfaceCoordinate {
     radian latitude;
     radian longitude;
@@ -153,45 +204,60 @@ struct SurfaceCoordinate {
         : latitude(toRadian(_lat)), longitude(toRadian(_long)) {}
 };
 
+/// <summary>
+/// Converts surface coordinate to vector3, shown in opengl.
+/// </summary>
 inline glm::vec3 toVec3(SurfaceCoordinate coord, float radius) {
     return glm::vec3(cos(coord.latitude) * sin(coord.longitude),
                      sin(coord.latitude),
                      cos(coord.latitude) * cos(coord.longitude)) * radius;
 }
 
-inline types::degree toDegree(types::radian theta) {
+inline degree toDegree(radian theta) {
     return theta * (180 / cqsp::common::components::types::PI);
 }
 
+/// <summary>
+/// 2D polar coordinate to opengl 3d coordinate
+/// </summary>
+/// <param name="coordinate"></param>
+/// <returns></returns>
 inline glm::vec3 toVec3(const PolarCoordinate& coordinate) {
     return glm::vec3(coordinate.r * cos(toRadian(coordinate.theta)),
                      0,
                      coordinate.r * sin(toRadian(coordinate.theta)));
 }
 
-inline PolarCoordinate toPolarCoordinate(const Orbit& orb) {
-    /*double r = orb.semiMajorAxis *
-                  (1 - orb.eccentricity * orb.eccentricity) /
-               (1 - orb.eccentricity *
-                        cos(toRadian(fmod(orb.theta, 360) + orb.argument)));*/
-    return PolarCoordinate{1, 1};
-}
+static const double KmInAu = 1.49597870700e8f;
 
 /// <summary>
-/// Converts an epoch to the true anomaly
+/// Convert orbit to AU coordinates
 /// </summary>
-inline double EpochToTheta(double G_const, double epoch) { return 0; }
-
-static const double KmInAu = 1.49597870700e8f;
-inline glm::vec3 toVec3(const Orbit& orb, double epoch) {
-    // Get the current time
-    // convert epoch
-    glm::vec3 vec = OrbitToVec3(orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN,
-                orb.w, epoch);
+/// <param name="orb">Orbit</param>
+/// <param name="theta">Theta to compute</param>
+/// <returns>Vector 3 in orbit, in AU, configured for opengl</returns>
+inline Vec3AU toVec3AU(const Orbit& orb, radian theta) {
+    glm::vec3 vec = OrbitToVec3(orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN, orb.w, theta);
     return vec/1.49597870700e8f;
 }
 
+/// <summary>
+/// Converts orbit to AU coorrdinates.
+/// </summary>
+/// <param name="orb">[in] orbit of the object to convert</param>
+/// <returns>Vector 3 in orbit, in AU, configured for opengl</returns>
+inline Vec3AU toVec3AU(const Orbit& orb) {
+    return toVec3AU(orb, orb.v);
+}
+
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="kin">[out] the kinematics of the orbit</param>
+/// <param name="orb">[in] the orbit of the orbit</param>
 inline void UpdatePos(Kinematics& kin, const Orbit& orb) {
-    kin.position = toVec3(orb, orb.M0);
+    // Calculate time
+    //kin.position = toVec3(orb, orb.M0);
 }
 }  // namespace cqsp::common::components::types

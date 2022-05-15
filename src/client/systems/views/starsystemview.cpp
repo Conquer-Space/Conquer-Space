@@ -916,7 +916,7 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
         int res = 500;
         for (int i = 0; i <= res; i++) {
             double theta = 3.1415926535 * 2 / res * i;
-            glm::vec3 vec = common::components::types::toVec3(orb, theta);
+            glm::vec3 vec = common::components::types::toVec3AU(orb, theta);
             orbit_points.push_back(vec);
         }
         auto& line = m_universe.emplace<PlanetOrbit>(body);
