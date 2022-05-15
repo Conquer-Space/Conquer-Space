@@ -50,7 +50,7 @@ void cqsp::client::systems::SysStarSystemTree::DoUI(int delta_time) {
         bool is_selected = (entity == current_planet);
         std::string planet_name = fmt::format("{}", entity);
         if (GetUniverse().all_of<cqspc::Name>(entity)) {
-            planet_name = fmt::format("{}", GetUniverse().get<cqspc::Name>(entity));
+            planet_name = fmt::format("{}", GetUniverse().get<cqspc::Name>(entity).name);
         }
 
         if (CQSPGui::DefaultSelectable(planet_name.c_str(), is_selected,
