@@ -175,7 +175,7 @@ void EntityTooltip(const Universe &universe, entt::entity entity) {
     }
     if (universe.all_of<cqspc::types::Kinematics>(entity)) {
         auto& a = universe.get<cqsp::common::components::types::Kinematics>(entity);
-        ImGui::TextFmt("Position: {} {} {}", a.position.x, a.position.y, a.position.z);
+        ImGui::TextFmt("Position: {} {} {} ({})", a.position.x, a.position.y, a.position.z, glm::length(a.position));
     }
 
     if (universe.all_of<cqspc::Governed>(entity)) {
