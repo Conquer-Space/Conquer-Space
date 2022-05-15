@@ -31,6 +31,7 @@
 #include "engine/renderer/framebuffer.h"
 #include "engine/renderer/renderer.h"
 #include "engine/application.h"
+#include "common/components/coordinates.h"
 
 namespace cqsp {
 namespace client {
@@ -161,6 +162,8 @@ class SysStarSystemRenderer {
     glm::vec3 CalculateMouseRay(const glm::vec3 &ray_nds);
     float GetWindowRatio();
 
+    void GenerateOrbitLines();
+
     cqsp::asset::Texture* GenerateTexture(unsigned int, noise::utils::Image&);
     // How much to scale the the star system.
     const double divider = 0.01;
@@ -180,6 +183,8 @@ class SysStarSystemRenderer {
     std::map<entt::entity, cqsp::common::components::bodies::Terrain> seeds;
 
     engine::LayerRenderer renderer;
+
+    cqsp::common::components::types::Orbit orb;
 
     int ship_icon_layer;
     int planet_icon_layer;

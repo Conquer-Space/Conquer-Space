@@ -76,6 +76,10 @@ struct TerrainTextureData {
         delete heightmap;
     }
 };
+
+struct PlanetOrbit {
+    cqsp::engine::Mesh *orbit_mesh;
+};
 }  // namespace
 
 void SysStarSystemRenderer::Initialize() {
@@ -122,12 +126,17 @@ void SysStarSystemRenderer::Initialize() {
     orbit_line.mesh = engine::primitive::CreateLineCircle(256, 1);
     orbit_line.shaderProgram =
         m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:sunshader")->MakeShader();
+    orb.semi_major_axis = 4;
+    orb.eccentricity = 0;
+    orb.inclination = 1;
+    orb.LAN = 0;
+    orb.w = 1;
 }
 
 void SysStarSystemRenderer::OnTick() {
     entt::entity current_planet = m_app.GetUniverse().view<FocusedPlanet>().front();
     if (current_planet != entt::null) {
-        //view_center = CalculateObjectPos(m_viewing_entity);
+        view_center = CalculateObjectPos(m_viewing_entity);
     }
 
     namespace cqspb = cqsp::common::components::bodies;
@@ -185,7 +194,10 @@ void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
 
     seeds.clear();
 
+    GenerateOrbitLines();
+
     auto star_system_component = m_universe.get<cqspb::StarSystem>(m_star_system);
+
     SPDLOG_INFO("Creating planet terrain");
 
     for (auto body : star_system_component.bodies) {
@@ -584,7 +596,7 @@ void SysStarSystemRenderer::DrawStar(glm::vec3 &object_pos) {
     position = glm::translate(position, object_pos);
 
     glm::mat4 transform = glm::mat4(1.f);
-    transform = glm::scale(transform, glm::vec3(5, 5, 5));
+    transform = glm::scale(transform, glm::vec3(0.1, 0.1, 0.1));
     position = position * transform;
 
     sun.SetMVP(position, camera_matrix, projection);
@@ -704,7 +716,7 @@ glm::vec3 SysStarSystemRenderer::CalculateObjectPos(const entt::entity &ent) {
     namespace cqspt = cqsp::common::components::types;
     // Get the position
     if (m_universe.all_of<cqspt::Kinematics>(ent)) {
-        return (m_universe.get<cqspt::Kinematics>(ent).position / 0.01f);
+        return (m_universe.get<cqspt::Kinematics>(ent).position * 10.f);
     }
     return glm::vec3(0, 0, 0);
 }
@@ -884,7 +896,37 @@ float SysStarSystemRenderer::GetWindowRatio() {
     return window_ratio;
 }
 
-cqsp::asset::Texture* SysStarSystemRenderer::GenerateTexture(
+void SysStarSystemRenderer::GenerateOrbitLines() {
+    auto star_system_component = m_universe.get<common::components::bodies::StarSystem>(m_star_system);
+    SPDLOG_INFO("Creating planet orbits");
+
+    // Initialize all the orbits and stuff
+    for (auto body : star_system_component.bodies) {
+        // Generate the orbit
+        if (!m_universe.any_of<common::components::types::Orbit>(body)) {
+            SPDLOG_INFO("Entity has no orbit {}", body);
+            continue;
+        }
+
+        auto& orb = m_universe.get<common::components::types::Orbit>(body);
+        if (orb.semi_major_axis == 0) {
+            continue;
+        }
+        std::vector<glm::vec3> orbit_points;
+        int res = 500;
+        for (int i = 0; i <= res; i++) {
+            double theta = 3.1415926535 * 2 / res * i;
+            glm::vec3 vec = common::components::types::toVec3(orb, theta);
+            orbit_points.push_back(vec);
+        }
+        auto& line = m_universe.emplace<PlanetOrbit>(body);
+        // Get the orbit line
+        // Do the points
+        line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);
+    }
+}
+
+cqsp::asset::Texture *SysStarSystemRenderer::GenerateTexture(
     unsigned int tex, noise::utils::Image &image) {
     cqsp::asset::Texture *texture = new cqsp::asset::Texture();
     texture->id = tex;
@@ -983,15 +1025,18 @@ bool cqsp::client::systems::SysStarSystemRenderer::IsFoundingCity(common::Univer
 }
 
 void SysStarSystemRenderer::DrawOrbit(const entt::entity &entity) {
+    if (!m_universe.any_of<PlanetOrbit>(entity)) {
+        return;
+    }
     glm::mat4 transform = glm::mat4(1.f);
-    double v = glm::length(CalculateObjectPos(entity));
     transform = glm::translate(transform, CalculateCenteredObject(glm::vec3(0, 0, 0)));
-    transform = glm::scale(transform, glm::vec3(v, v, v));
+    transform = glm::scale(transform, glm::vec3(10, 10, 10));
     // Draw orbit
     orbit_line.SetMVP(transform, camera_matrix, m_app.Get3DProj());
     orbit_line.shaderProgram->Set("color", glm::vec4(1, 1, 1, 1));
     // Set to the center of the universe
-    engine::Draw(orbit_line);
+    auto& orbit = m_universe.get<PlanetOrbit>(entity);
+    orbit.orbit_mesh->Draw();
 }
 
 SysStarSystemRenderer::~SysStarSystemRenderer() {

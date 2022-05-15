@@ -15,50 +15,43 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
+#include <hjson.h>
+#include <fstream>
 #include "common/components/coordinates.h"
 
+using ::testing::AllOf;
+using ::testing::Ge;
+using ::testing::Le;
+
 // Tests for input from client options
-TEST(Common_OrbitTest, toVec2Test) {
-    namespace cqspb = cqsp::common::components::types;
-    cqspb::Orbit orbit1;
-    orbit1.semiMajorAxis = 100;
-    orbit1.eccentricity = 0;
-    orbit1.argument = 0;
-    orbit1.theta = 0;
-    glm::vec3 vec1 = cqspb::toVec3(orbit1);
-
-    orbit1.theta = 360;
-    glm::vec3 vec2 = cqspb::toVec3(orbit1);
-    EXPECT_EQ(vec1.x, vec2.x);
-    EXPECT_EQ(vec1.z, vec2.z);
-
-    orbit1.semiMajorAxis = 120;
-    orbit1.eccentricity = 0.5;
-    orbit1.argument = 50;
-    orbit1.theta = 0;
-    vec1 = cqspb::toVec3(orbit1);
-
-    orbit1.theta = 360;
-    vec2 = cqspb::toVec3(orbit1);
-    EXPECT_EQ(vec1.x, vec2.x);
-    EXPECT_EQ(vec1.z, vec2.z);
-
-    orbit1.theta = 50;
-    vec1 = cqspb::toVec3(orbit1);
-
-    orbit1.theta = 360 + 50;
-    vec2 = cqspb::toVec3(orbit1);
-    EXPECT_EQ(vec1.x, vec2.x);
-    EXPECT_EQ(vec1.z, vec2.z);
-
-    orbit1.theta = 10;
-    vec1 = cqspb::toVec3(orbit1);
-
-    orbit1.theta = 360 + 10;
-    vec2 = cqspb::toVec3(orbit1);
-    EXPECT_EQ(vec1.x, vec2.x);
-    EXPECT_EQ(vec1.z, vec2.z);
+TEST(Common_OrbitTest, DISABLED_toVec3Test) {
+    // Read hjson file and set values
+    Hjson::Value data = Hjson::UnmarshalFromFile("data_file.hjson");
+    // Do the test
+    namespace cqspt = cqsp::common::components::types;
+    cqspt::Orbit orb;
+    double a = orb.semi_major_axis = data["semi_major_axis"];
+    double e = orb.eccentricity = data["eccentricity"];
+    double i = orb.inclination = data["inclination"];
+    double LAN = orb.LAN = data["ascending_node"];
+    double w = orb.w = data["argument"];
+    double M0 = orb.M0 = data["anomaly"];
+    orb.T = orb.CalculatePeriod();
+    std::cout << orb.T << std::endl;
+    double T = 3.1415926535 * 2;
+    int resolution = 5000;
+    std::ofstream file("data.txt");
+    for (int i = 0; i < resolution + 1; i++) {
+        glm::vec3 vec = cqspt::OrbitToVec3(a, e, i, LAN, w, T/resolution * i);
+        std::cout.precision(17);
+        file << orb.epoch << " " << vec.x << " " << vec.y << " " << vec.z
+             << std::endl;
+        //EXPECT_THAT(glm::length(vec), AllOf(Ge(0.98326934275),Le(1.0167257013)));
+    }
+    file.close();
+    EXPECT_NEAR(orb.T/86400, 365.256363004, 0.01);
 }
 
 TEST(Common_OrbitTest, ToRadianTest) {

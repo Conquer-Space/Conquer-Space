@@ -24,6 +24,6 @@
 
 namespace cqsp {
 namespace engine::primitive {
-engine::Mesh* MakeLine(const std::vector<glm::vec3>&);
+//engine::Mesh* MakeLine(const std::vector<glm::vec3>&);
 }
 }  // namespace cqsp

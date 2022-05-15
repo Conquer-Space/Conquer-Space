@@ -48,7 +48,7 @@ entt::entity cqsp::common::systems::actions::CreateShip(
     cqsp::common::Universe& universe, entt::entity civ, entt::entity orbit,
     entt::entity starsystem) {
     namespace cqspt = cqsp::common::components::types;
-    return CreateShip(universe, civ, cqspt::toVec3(universe.get<cqspt::Orbit>(orbit)), starsystem);
+    return CreateShip(universe, civ, cqspt::toVec3(universe.get<cqspt::Orbit>(orbit), 0), starsystem);
 }
 
 entt::entity cqsp::common::systems::actions::CreateShip(
@@ -81,6 +81,6 @@ entt::entity cqsp::common::systems::actions::CreateShip(
     const std::string& shipName) {
     namespace cqspt = cqsp::common::components::types;
     return CreateShip(universe, fleetEnt, starsystemEnt,
-               cqspt::toVec3(universe.get<cqspt::Orbit>(orbitEnt)), shipName);
+               cqspt::toVec3(universe.get<cqspt::Orbit>(orbitEnt), 0), shipName);
 }
 

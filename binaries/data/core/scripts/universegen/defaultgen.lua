@@ -1,25 +1,3 @@
-local function get_planet_count()
-    local planet_count = core.random_normal_int(6, 5)
-    if planet_count < 0 then
-        planet_count = 0
-    end
-    return planet_count
-end
-
-local function set_planet_orbit(planet, index, m, b)
-    local distance = m * index + b
-
-    -- Then add some variance to the value
-    local variance = core.random_normal_int(-15, 15)
-    distance = distance * (1 - variance/100)
-
-    -- Set theta
-    local degrees = core.random(0, 360)
-    local ecc = 0
-
-    core.set_orbit(planet, distance, degrees, ecc, 0)
-end
-
 local function place_factory_on_market(market, city, resource, amount)
     local factory = core.create_factory(city, recipes[resource], amount)
     core.attach_market(market, factory)
@@ -36,37 +14,6 @@ generators:insert({
     civ_init = function()
     end,
     universe_gen = function()
-        local star_system_count = 1000
-        for _ = 1, star_system_count, 1 do
-            local sys = core.create_star_system()
-            core.set_system_position(sys, core.random(star_system_min, star_system_max),
-                                            core.random(star_system_min, star_system_max))
-
-            -- Add star
-            local star = core.add_star(sys)
-            core.set_orbit(star, 0.001, 0, 0, 0)
-            core.set_radius(star, core.random(1500000, 3000000))
-
-            local planet_count = get_planet_count()
-            local distance = core.random(1, 100)/100
-            local first = core.random(1, 100)/100
-
-            for planet_id = 0, planet_count, 1 do
-                -- Create planets
-                local planet_entity = core.add_planet(sys)
-                -- Set orbits
-                -- Distance can be modeled after a log graph, then convert to km because our regression was based off AU
-                set_planet_orbit(planet_entity, planet_id, distance, first)
-
-                local radius = core.random(1000, 30000)
-                core.set_radius(planet_entity, radius)
-                -- Set planet type
-                -- Set planet terrain
-                -- Esh, we'll deal with that later
-                -- As you go further from the center, make it more likely that it is a gas planet
-            end
-        end
-
         for _, civ in pairs(civilizations) do
             print("Making civilization "..civ)
             -- Set planets
@@ -76,22 +23,27 @@ generators:insert({
 
             -- Add star
             local star = core.add_star(sys)
-            core.set_orbit(star, 0.001, 0, 0, 0)
+            core.set_orbit(star, 0, 0, 0, 0, 0, 0)
             core.set_radius(star, core.random(1500000, 3000000))
 
-            local planet_count = core.random_normal_int(7, 2)
-            if planet_count < 0 then
-                planet_count = 0
-            end
-            local distance = core.random(1, 100)/100
-            local first = core.random(1, 100)/100
+            local planet_count = 5
+            -- Ideally we will read from hjson, but we'll procrastinate for now
+            local orbits = {
+                {0.205630, 69816900, 0.12226031, 0.843535081, 0.508309691, 0},
+                {0.0068, 108.210e6, 0.05924659772, 1.33831847, 0.957906507, 0},
+                {0.0167086, 149598023, 0.124878, 6.08665, 1.9933, 0},
+                {0.0934, 227939366, 0.0322885912, 0.865308761, 5.0003683, 0},
+                {0.0489, 778479000, 0.0227416402, 1.75342758, 4, 0},
+                {},
+                {},
+            }
             for planet_id = 0, planet_count, 1 do
                 -- Create planets
                 local planet_entity = core.add_planet(sys)
-
+                local orb = orbits[planet_id + 1]
                 -- Set orbits
                 -- Distance can be modeled after a log graph, then convert to km because our regression was based off AU
-                set_planet_orbit(planet_entity, planet_id, distance, first)
+                core.set_orbit(planet_entity, orb[1], orb[2], orb[3], orb[4], orb[5], orb[6])
                 core.set_name(planet_entity, ""..planet_entity)
                 local radius = core.random(1000, 30000)
                 core.set_radius(planet_entity, radius)
@@ -99,7 +51,7 @@ generators:insert({
                 -- Set planet terrain
                 -- Esh, we'll deal with that later
                 -- As you go further from the center, make it more likely that it is a gas planet
-                if planet_id == 2 then
+                if planet_id == 1 then
                     -- Set as civ home planet
                     core.set_civilization_planet(civ, planet_entity)
                     core.set_name(planet_entity, "Earth")
