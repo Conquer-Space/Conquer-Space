@@ -45,7 +45,7 @@ void RenderEntityType(const Universe& universe, entt::entity entity) {
         ImGui::TextColored(ImColor(252, 186, 3), "Player");
         return;
     } else {
-        ImGui::TextFmt(text);
+        ImGui::TextFmt("{}", text);
     }
 }
 
