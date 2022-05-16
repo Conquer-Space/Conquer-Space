@@ -4,8 +4,8 @@
     {
         name: Iron
         identifier: iron
-        volume: 1
-        mass: 7874
+        volume: 1 m3
+        mass: 7874 kg
         # Initial price
         price: 1
         tags: [
@@ -16,8 +16,8 @@
     {
         name: Copper
         identifier: copper
-        volume: 1
-        mass: 8960
+        volume: 1 m3
+        mass: 8960 kg
         price: 1
         tags: [
             mineral
@@ -26,8 +26,8 @@
     {
         name: Aluminium
         identifier: aluminium
-        volume: 1
-        mass: 2700
+        volume: 1 m3
+        mass: 2700 kg
         price: 1.5
         tags: [
             mineral
@@ -36,8 +36,8 @@
     {
         name: Consumer Good
         identifier: consumer_good
-        volume: 1
-        mass: 6500
+        volume: 1 m3
+        mass: 6500 kg
         price: 7
         tags: [
         ]
@@ -45,8 +45,8 @@
     {
         name: Water
         identifier: water
-        volume: 1
-        mass: 1000
+        volume: 1 m3
+        mass: 1000 kg
         price: 0.5
         tags: [
             mineral
@@ -55,8 +55,8 @@
     {
         name: Steel
         identifier: steel
-        volume: 1
-        mass: 7900
+        volume: 1 m3
+        mass: 7900 kg
         price: 4
         tags: [
         ]
@@ -64,8 +64,8 @@
     {
         name: Concrete
         identifier: concrete
-        volume: 1
-        mass: 2400
+        volume: 1 m3
+        mass: 2400 kg
         price: 2
         tags: [
         ]
@@ -73,8 +73,8 @@
     {
         name: Stone
         identifier: stone
-        volume: 1
-        mass: 2500
+        volume: 1 kg
+        mass: 2500 kg
         price: 0.75
         tags: [
             mineral

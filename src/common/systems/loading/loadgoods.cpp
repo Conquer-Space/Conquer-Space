@@ -16,6 +16,9 @@
  */
 #include "common/systems/loading/loadgoods.h"
 
+#include <spdlog/spdlog.h>
+
+#include <string>
 #include <tuple>
 
 #include "common/components/name.h"
@@ -70,12 +73,25 @@ GoodLoader::GoodLoader() {
 bool GoodLoader::LoadValue(const Hjson::Value& values, Universe& universe,
                            entt::entity entity) {
     namespace cqspc = cqsp::common::components;
+    namespace cqspt = cqsp::common::components::types;
 
+    std::string identifier = values["identifier"].to_string();
     if (values["mass"].defined() && values["volume"].defined()) {
         // Then it's matter and physical
         auto& matter = universe.emplace<cqspc::Matter>(entity);
-        matter.mass = values["mass"];
-        matter.volume = values["volume"];
+        bool mass_correct;
+        matter.mass = ReadUnit(values["mass"].to_string(), cqspt::Mass, &mass_correct);
+        if (!mass_correct) {
+            SPDLOG_WARN("Mass is formatted incorrectly for {}: {}", identifier, values["mass"].to_string());
+            return false;
+        }
+
+        bool volume_correct;
+        matter.volume = ReadUnit(values["volume"].to_string(), cqspt::Volume, &volume_correct);
+        if (!volume_correct) {
+            SPDLOG_WARN("Volume is formatted incorrectly for {}: {}", identifier, values["volume"].to_string());
+            return false;
+        }
     }
 
     if (values["energy"].defined()) {
@@ -96,7 +112,7 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, Universe& universe,
     }
 
     // Basically if it fails at any point, we'll remove the component
-    universe.goods[values["identifier"].to_string()] = entity;
+    universe.goods[identifier] = entity;
     return true;
 }
 
