@@ -17,7 +17,7 @@
 #pragma once
 
 namespace cqsp::common::components::types {
-enum UnitTypes {
+enum UnitType {
     Distance,  // Default distance: kilometer
     Angle,  // Default distance: degree
     Mass,  // Default distance: kilogram

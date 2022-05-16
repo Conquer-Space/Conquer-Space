@@ -16,6 +16,8 @@
 */
 #include "common/systems/loading/loadutil.h"
 
+#include <spdlog/spdlog.h>
+
 #include "common/components/name.h"
 
 namespace cqsp::common::systems::loading {
@@ -69,5 +71,125 @@ bool VerifyHjsonValueExists(const Hjson::Value& value, const std::string& name, 
 
 bool VerifyInitialValues(const Hjson::Value& value, const std::map<std::string, Hjson::Type>& map) {
     return false;
+}
+
+namespace {
+std::string trim(const std::string& str,
+                 const std::string& whitespace = " \t") {
+    const auto strBegin = str.find_first_not_of(whitespace);
+    if (strBegin == std::string::npos)
+        return ""; // no content
+
+    const auto strEnd = str.find_last_not_of(whitespace);
+    const auto strRange = strEnd - strBegin + 1;
+
+    return str.substr(strBegin, strRange);
+}
+
+bool is_number(std::string_view s) {
+    char* end = nullptr;
+    double val = strtod(s.data(), &end);
+    return end != s.data() && *end == '\0' && val != HUGE_VAL;
+}
+}  // namespace
+
+double ReadUnit(std::string_view value, components::types::UnitType unit_type, bool* correct) {
+    using common::components::types::UnitType;
+    namespace cqspt = common::components::types;
+    // Find the letters
+    if (correct != nullptr) { (*correct) = true; }
+
+    auto mark_wrong = [&]() {
+        if (correct != nullptr) {
+            (*correct) = false;
+        }
+    };
+
+    std::string content(value);
+    content = trim(content);
+
+    std::size_t index = content.find_last_of(' ');
+    if (index == std::string::npos) {
+        for (index = content.size(); index > 0; index--) {
+            if (!isalpha(content.at(index - 1))) {
+                break;
+            }
+        }
+    }
+
+    // Get the value in front
+
+    // If it ends with a digit and there's a space, then kill it
+    std::string value_string(content.substr(0, index));
+    std::string unit_string(content.substr(index, content.size()));
+
+    if (is_number(unit_string)) {
+        // Complain
+        mark_wrong();
+        return 0;
+    }
+
+    if (value_string.find(' ') != std::string::npos) {
+        mark_wrong();
+        return 0;
+    }
+    unit_string = trim(unit_string);
+
+    double read_value = 0.0;
+    try {
+        read_value = std::stod(value_string);
+    } catch (const std::exception& err) {
+        mark_wrong();
+        return 0.0;
+    }
+
+    // The number
+    switch (unit_type) {
+    case UnitType::Distance:
+        // Lots of distances
+        if (unit_string == "km" || unit_string.empty()) {
+            // remain as it is
+        } else if (unit_string == "AU" || unit_string == "au") {
+            read_value = cqspt::toKm(read_value);
+        } else if (unit_string == "m") {
+            read_value /= 1000.f;
+        } else {
+            // then it's invalid
+            mark_wrong();
+        }
+        break;
+    case UnitType::Angle:
+        if (unit_string == "rad") {
+            // Remain as it is
+        } else if (unit_string.empty() || unit_string == "deg") {
+            read_value = cqspt::toRadian(read_value);
+        } else {
+            // then it's invalid
+            mark_wrong();
+        }
+        break;
+    case UnitType::Mass:
+        if (unit_string == "kg" || unit_string.empty()) {
+            // Remain as it is
+        } else if (unit_string == "t") {
+            read_value *= 1000;
+        } else if (unit_string == "g") {
+            read_value /= 1000;
+        } else {
+            mark_wrong();
+        }
+        break;
+    case UnitType::Volume:
+        if (unit_string == "m3" || unit_string.empty()) {
+            // Remain as it is
+        } else {
+            // then it's invalid
+            mark_wrong();
+        }
+        break;
+    case UnitType::Time:
+        break;
+    }
+    return read_value;
 }
 }  // namespace cqsp::common::systems::loading

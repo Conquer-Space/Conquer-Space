@@ -22,6 +22,7 @@
 
 #include "common/universe.h"
 #include "common/components/resource.h"
+#include "common/components/units.h"
 
 namespace cqsp::common::systems::loading {
 /// <summary>
@@ -46,4 +47,13 @@ bool VerifyHjsonValueExists(const Hjson::Value& value, const std::string& name, 
 /// </summary>
 /// <returns></returns>
 bool VerifyInitialValues(const Hjson::Value& value, const std::map<std::string, Hjson::Type>& map);
+
+/// <summary>
+/// Gets the unit from the value from expected unit type.
+/// </summary>
+/// <param name="value"></param>
+/// <param name="unit"></param>
+/// <param name="correct">[out] if the unit is of the correct type</param>
+/// <returns></returns>
+double ReadUnit(std::string_view value, components::types::UnitType unit_type, bool* correct = nullptr);
 }  // namespace cqsp::common::systems::loading
