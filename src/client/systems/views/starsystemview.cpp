@@ -707,8 +707,8 @@ void cqsp::client::systems::SysStarSystemRenderer::FocusCityView() {
         return;
     }
     auto& surf = m_universe.get<cqspt::SurfaceCoordinate>(city_entity);
-    view_x = surf.longitude;
-    view_y = surf.latitude;
+    view_x = surf.r_longitude();
+    view_y = surf.r_latitude();
     scroll = 1.5;
 }
 

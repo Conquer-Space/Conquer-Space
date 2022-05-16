@@ -16,10 +16,24 @@
 */
 #pragma once
 
-namespace cqsp {
-namespace common {
-namespace components {
-namespace types {
+namespace cqsp::common::components::types {
+enum UnitTypes {
+    Distance,  // Default distance: kilometer
+    Angle,  // Default distance: degree
+    Mass,  // Default distance: kilogram
+    Volume,  // Default distance: m^3
+    Time  // Default distance: second
+};
+
+enum Distance {
+    LightYear,
+    AstronomicalUnit,
+    Kilometer,
+    Meter,
+    Centimeter,
+    Millimeter
+};
+
 typedef double astronomical_unit;
 typedef double light_year;
 typedef double kilometer;
@@ -34,12 +48,29 @@ typedef double second;
 const double PI = 3.14159265358979323846;
 const double TWOPI = PI * 2;
 
+const double KmInAu = 149597870.700;
+
+inline radian normalize_radian(const radian& radian) {
+    double x = std::fmod(radian, TWOPI);
+    if (x < 0) {
+        x += TWOPI;
+    }
+    return x;
+}
+
+inline degree normalize_degree(const degree& radian) {
+    double x = std::fmod(radian, 360);
+    if (x < 0) {
+        x += 360;
+    }
+    return x;
+}
+
 // Conversions
-inline astronomical_unit toAU(kilometer km) { return km / 149597870.700; }
+inline astronomical_unit toAU(kilometer km) { return km / KmInAu; }
 inline light_year toLightYear(astronomical_unit au) { return au / 63241; }
 inline astronomical_unit LtyrtoAU(light_year ltyr) { return ltyr * 63241; }
-inline kilometer toKm(astronomical_unit au) { return au * 149597870.700; }
-}  // namespace types
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+inline kilometer toKm(astronomical_unit au) { return au * KmInAu; }
+inline radian toRadian(degree theta) { return theta * (PI / 180.f); }
+inline degree toDegree(radian theta) { return theta * (180 / PI); }
+}  // namespace cqsp::common::components::types
