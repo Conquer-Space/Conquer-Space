@@ -49,10 +49,7 @@ void cqsp::common::systems::SysSurface::DoSystem() {
         cqspt::SurfaceCoordinate& surface = universe.get<cqspt::SurfaceCoordinate>(object);
         //cqspt::Kinematics& surfacekin = universe.get_or_emplace<cqspt::Kinematics>(object);
         //cqspt::Kinematics& center = universe.get<cqspt::Kinematics>(surface.planet);
-        glm::vec3 anglevec =
-            glm::vec3(cos(surface.latitude) * cos(surface.longitude),
-                      cos(surface.latitude) * sin(surface.longitude),
-                      sin(surface.latitude));
+        glm::vec3 anglevec = cqspt::toVec3(surface);
         // Get planet radius
         //surfacekin.position = (anglevec * surface.radius + center.position);
     }

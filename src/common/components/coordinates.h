@@ -186,10 +186,8 @@ static double SolveKepler(const double& mean_anomaly, const double& ecc, const i
 /// <returns>True anomaly in radians</returns>
 static radian TrueAnomaly(const Orbit& orbit, const second& time) {
     // Calculate
-    double Mt = std::fmod(orbit.M0 + time * orbit.nu, PI * 2);
-    if (Mt < 0) {
-        Mt += PI * 2;
-    }
+    double Mt = orbit.M0 + time * orbit.nu;
+    normalize_radian(Mt);
     double E = SolveKepler(Mt, orbit.eccentricity);
     return 2 * atan2 (sqrt(1 + orbit.eccentricity) * sin (E / 2), sqrt(1 - orbit.eccentricity) * cos (E / 2));
 }
@@ -232,18 +230,16 @@ inline void UpdateOrbit(Orbit& orb, const second& time) {
     orb.v = TrueAnomaly(orb, time);
 }
 
-inline radian toRadian(degree theta) {
-    return theta * (PI / 180.f);
-}
-
 /// <summary>
 /// Longitude and lattitude.
 /// Planet coordinates.
 /// </summary>
 struct SurfaceCoordinate {
-    radian latitude;
-    radian longitude;
+ private:
+    radian _latitude;
+    radian _longitude;
 
+ public:
     SurfaceCoordinate() = default;
 
     /// <summary>
@@ -252,20 +248,31 @@ struct SurfaceCoordinate {
     /// <param name="_lat">Latitude in degrees</param>
     /// <param name="_long">Longtitude in degrees</param>
     SurfaceCoordinate(degree _lat, degree _long)
-        : latitude(toRadian(_lat)), longitude(toRadian(_long)) {}
+        : _latitude(toRadian(_lat)), _longitude(toRadian(_long)) {
+        _lat = normalize_radian(_lat);
+        _longitude = normalize_radian(_longitude);
+    }
+
+    degree latitude() const {
+        return toDegree(_latitude);
+    }
+
+    degree longitude() const {
+        return toDegree(_longitude);
+    }
+
+    radian r_longitude() const { return _longitude; }
+
+    radian r_latitude() const { return _latitude; }
 };
 
 /// <summary>
 /// Converts surface coordinate to vector3, shown in opengl.
 /// </summary>
-inline glm::vec3 toVec3(SurfaceCoordinate coord, float radius) {
-    return glm::vec3(cos(coord.latitude) * sin(coord.longitude),
-                     sin(coord.latitude),
-                     cos(coord.latitude) * cos(coord.longitude)) * radius;
-}
-
-inline degree toDegree(radian theta) {
-    return theta * (180 / cqsp::common::components::types::PI);
+inline glm::vec3 toVec3(const SurfaceCoordinate& coord, const float& radius = 1) {
+    return glm::vec3(cos(coord.r_latitude()) * sin(coord.r_longitude()),
+                     sin(coord.r_latitude()),
+                     cos(coord.r_latitude()) * cos(coord.r_longitude())) * radius;
 }
 
 /// <summary>
@@ -279,8 +286,6 @@ inline glm::vec3 toVec3(const PolarCoordinate& coordinate) {
                      coordinate.r * sin(toRadian(coordinate.theta)));
 }
 
-static const double KmInAu = 1.49597870700e8f;
-
 /// <summary>
 /// Convert orbit to AU coordinates
 /// </summary>
@@ -289,7 +294,7 @@ static const double KmInAu = 1.49597870700e8f;
 /// <returns>Vector 3 in orbit, in AU, configured for opengl</returns>
 inline Vec3AU toVec3AU(const Orbit& orb, radian theta) {
     glm::vec3 vec = OrbitToVec3(orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN, orb.w, theta);
-    return vec/1.49597870700e8f;
+    return vec/(float) KmInAu;
 }
 
 /// <summary>
