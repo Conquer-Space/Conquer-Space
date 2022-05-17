@@ -1,0 +1,59 @@
+// https://ssd.jpl.nasa.gov/sats/elem/
+// https://ssd.jpl.nasa.gov/planets/orbits.html
+[
+    {
+        identifier: sun
+        oribt: {
+            semi_major_axis: 0
+            eccentricity: 0
+            inclination: 0
+            arg_periapsis: 0
+            LAN: 0
+            M0: 0
+        }
+    }
+    {
+        identifier: mercury
+        orbit: {
+            semi_major_axis: 0.3870993 AU
+            eccentricity: 0.20564
+            inclination: 7.005 deg
+            arg_periapsis: 29.13 deg
+            LAN: 48.3 deg
+            M0: 174.796 deg
+        }
+    }
+    {
+        identifier: venus
+        orbit: {
+            semi_major_axis: 0.723332 AU
+            eccentricity: 0.006773
+            inclination: 3.39458 deg
+            arg_periapsis: 54.884 deg
+            LAN: 76.680 deg
+            M0: 50.115 deg
+        }
+    }
+    {
+        identifier: earth
+        orbit: {
+            semi_major_axis: 149598023 km
+            eccentricity: 0.0167086
+            inclination: 0.00005 deg
+            arg_periapsis: 114.20783 deg
+            LAN: −11.26064 deg
+            M0: 358.617 deg
+        }
+    }
+    {
+        identifier: mars
+        orbit: {
+            semi_major_axis: 1.52368055 AU
+            eccentricity: 0.0934
+            inclination: 1.850 deg
+            arg_periapsis: 286.5 deg
+            LAN: 49.57854 deg
+            M0: 19.412 deg
+        }
+    }
+]
