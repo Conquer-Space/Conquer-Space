@@ -81,14 +81,12 @@ void cqsp::scene::UniverseScene::Init() {
         player = entity;
         player_civ = &civ;
     }
-    cqspb::Body body = GetUniverse().get<cqspb::Body>(player_civ->starting_planet);
-    system_renderer->SeeStarSystem(body.star_system);
-    star_system = &GetUniverse().get<cqspb::StarSystem>(body.star_system);
+    //cqspb::Body body = GetUniverse().get<cqspb::Body>(player_civ->starting_planet);
+    system_renderer->SeeStarSystem(entt::null);
 
-    SeeStarSystem(GetApp(), body.star_system);
-    SeePlanet(GetApp(), player_civ->starting_planet);
-
-    selected_planet = player_civ->starting_planet;
+    //SeeStarSystem(GetApp(), body.star_system);
+    //SeePlanet(GetApp(), player_civ->starting_planet);
+    //selected_planet = player_civ->starting_planet;
 
     AddUISystem<cqsps::SysPlanetInformation>();
     AddUISystem<cqsps::SysTurnSaveWindow>();

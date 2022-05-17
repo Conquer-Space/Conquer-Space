@@ -34,6 +34,12 @@ TEST_F(UnitLoadingTest, AngleDegreeReadTest) {
     EXPECT_DOUBLE_EQ(value, cqsp::common::components::types::toRadian(135));
 }
 
+TEST_F(UnitLoadingTest, ZeroReadTest) {
+    value = cqsp::common::systems::loading::ReadUnit("0", UnitType::Angle, &correct);
+    EXPECT_TRUE(correct);
+    EXPECT_DOUBLE_EQ(value, 0);
+}
+
 TEST_F(UnitLoadingTest, AllLetterReadTest) {
     value = cqsp::common::systems::loading::ReadUnit("asdoi", UnitType::Angle, &correct);
     EXPECT_FALSE(correct);

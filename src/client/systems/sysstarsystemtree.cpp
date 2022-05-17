@@ -33,11 +33,7 @@ void cqsp::client::systems::SysStarSystemTree::DoUI(int delta_time) {
     namespace cqspcs = cqsp::client::systems;
     namespace cqspc = cqsp::common::components;
     // Get star system
-    entt::entity ent = GetUniverse().view<cqspcs::RenderingStarSystem>().front();
-    if (ent == entt::null) {
-        return;
-    }
-    auto& star_system = GetUniverse().get<cqspb::StarSystem>(ent);
+
     ImGui::SetNextWindowPos(ImVec2(30, ImGui::GetIO().DisplaySize.y - 30),
                             ImGuiCond_Always, ImVec2(0.f, 1.f));
     ImGui::SetNextWindowSize(ImVec2(200, 400), ImGuiCond_Always);
@@ -45,8 +41,10 @@ void cqsp::client::systems::SysStarSystemTree::DoUI(int delta_time) {
                 NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | window_flags);
     int index = 0;
     // Get selected planet
+    auto view = GetUniverse().view<cqspc::types::Orbit>();
     entt::entity current_planet = cqsp::scene::GetCurrentViewingPlanet(GetApp());
-    for (auto entity : star_system.bodies) {
+    ImGui::TextFmt("Planets: {}", view.size());
+    for (auto entity : view) {
         bool is_selected = (entity == current_planet);
         std::string planet_name = fmt::format("{}", entity);
         if (GetUniverse().all_of<cqspc::Name>(entity)) {

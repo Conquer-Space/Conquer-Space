@@ -141,9 +141,8 @@ void SysStarSystemRenderer::OnTick() {
 
     namespace cqspb = cqsp::common::components::bodies;
 
-    entt::entity system = m_app.GetUniverse().view<RenderingStarSystem>().front();
-    auto &system_comp = m_app.GetUniverse().get<cqspb::StarSystem>(system);
-    for (entt::entity ent : system_comp.bodies) {
+    auto system = m_app.GetUniverse().view<common::components::types::Orbit>();
+    for (entt::entity ent : system) {
         m_app.GetUniverse().get_or_emplace<ToRender>(ent);
     }
 }
@@ -196,11 +195,11 @@ void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
 
     GenerateOrbitLines();
 
-    auto star_system_component = m_universe.get<cqspb::StarSystem>(m_star_system);
+    auto orbits = m_app.GetUniverse().view<common::components::types::Orbit>();
 
     SPDLOG_INFO("Creating planet terrain");
 
-    for (auto body : star_system_component.bodies) {
+    for (auto body : orbits) {
         // Add a tag
         m_universe.get_or_emplace<ToRender>(body);
         if (!m_app.GetUniverse().all_of<cqspb::Terrain>(body)) {
@@ -897,17 +896,11 @@ float SysStarSystemRenderer::GetWindowRatio() {
 }
 
 void SysStarSystemRenderer::GenerateOrbitLines() {
-    auto star_system_component = m_universe.get<common::components::bodies::StarSystem>(m_star_system);
     SPDLOG_INFO("Creating planet orbits");
-
+    auto system = m_app.GetUniverse().view<common::components::types::Orbit>();
     // Initialize all the orbits and stuff
-    for (auto body : star_system_component.bodies) {
+    for (auto body : system) {
         // Generate the orbit
-        if (!m_universe.any_of<common::components::types::Orbit>(body)) {
-            SPDLOG_INFO("Entity has no orbit {}", body);
-            continue;
-        }
-
         auto& orb = m_universe.get<common::components::types::Orbit>(body);
         if (orb.semi_major_axis == 0) {
             continue;

@@ -79,7 +79,6 @@ class UniverseScene : public cqsp::engine::Scene {
     entt::entity selected_planet = entt::null;
 
     cqsp::common::components::Civilization* player_civ;
-    cqsp::common::components::bodies::StarSystem* star_system;
 
     cqsp::client::systems::SysStarSystemRenderer* system_renderer;
     cqsp::client::systems::GalaxyRenderer* galaxy_renderer;

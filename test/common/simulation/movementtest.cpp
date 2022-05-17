@@ -29,7 +29,6 @@ class SystemsMovementTest : public ::testing::Test {
         cqsp::common::Universe& universe = m_game.GetUniverse();
         star_system = universe.create();
 
-        universe.emplace<cqsp::common::components::bodies::StarSystem>(star_system);
 
         planet = universe.create();
 
