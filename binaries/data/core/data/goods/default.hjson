@@ -73,7 +73,7 @@
     {
         name: Stone
         identifier: stone
-        volume: 1 kg
+        volume: 1 m3
         mass: 2500 kg
         price: 0.75
         tags: [

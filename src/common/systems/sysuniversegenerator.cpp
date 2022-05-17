@@ -85,6 +85,7 @@ void ScriptUniverseGenerator::Generate(cqsp::common::Universe& universe) {
     }
     // add first ship(could be deferred to some script)
     //has to be deferred until after the galaxy and systems are populated in the scripts
+    /*
     auto starting_planet =
         universe.get<cqspc::Civilization>(player).starting_planet;
     cqsp::common::systems::actions::CreateShip(
@@ -96,6 +97,6 @@ void ScriptUniverseGenerator::Generate(cqsp::common::Universe& universe) {
         universe, playerSubFleet,
         universe.get<cqspc::bodies::Body>(starting_planet).star_system,
         starting_planet,
-        "pioneer2");
+        "pioneer2");*/
 }
 }  // namespace cqsp::common::systems::universegenerator

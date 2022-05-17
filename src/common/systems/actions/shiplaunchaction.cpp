@@ -38,7 +38,7 @@ entt::entity cqsp::common::systems::actions::CreateShip(
 
     // Get planet position
     position.position = orbit;
-    universe.get<cqspb::StarSystem>(starsystem).bodies.push_back(ship);
+    //universe.get<cqspb::StarSystem>(starsystem).bodies.push_back(ship);
     // Set name
     universe.emplace<components::Name>(ship, fmt::format("Ship {}", ship));
     return ship;
@@ -65,7 +65,7 @@ entt::entity cqsp::common::systems::actions::CreateShip(
     auto& position = universe.emplace<cqspt::Kinematics>(ship);
     // Get planet position
     position.position = orbit;
-    universe.get<cqspb::StarSystem>(starsystemEnt).bodies.push_back(ship);
+    //universe.get<cqspb::StarSystem>(starsystemEnt).bodies.push_back(ship);
     // Set name
     universe.emplace<components::Name>(ship, shipName);
     // Set in fleet

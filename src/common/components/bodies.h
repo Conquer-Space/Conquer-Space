@@ -24,10 +24,7 @@
 
 #include "common/components/units.h"
 
-namespace cqsp {
-namespace common {
-namespace components {
-namespace bodies {
+namespace cqsp::common::components::bodies {
 struct Body {
     /*
      * Radius of the body
@@ -54,13 +51,4 @@ struct Star {};
 struct Planet {};
 
 struct LightEmitter {};
-/*
- * A collection of stuff
- */
-struct StarSystem {
-    std::vector<entt::entity> bodies;
-};
-}  // namespace bodies
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::components::bodies

@@ -49,6 +49,7 @@ void GalaxyRenderer::Initialize() {
 void GalaxyRenderer::OnTick() {}
 
 void GalaxyRenderer::Render(float deltaTime) {
+    #if FALSE
     namespace cqspc = cqsp::common::components;
     entt::entity player = m_universe.view<cqspc::Player>().front();
     entt::entity starting_planet = m_universe.get<cqspc::Civilization>(player).starting_planet;
@@ -78,9 +79,11 @@ void GalaxyRenderer::Render(float deltaTime) {
         glm::vec2 v = ConvertCoords(coordinate.x, coordinate.y);
         m_app.DrawText(fmt::format("{}", entity), v.x, v.y);
     }
+    #endif
 }
 
 void GalaxyRenderer::Update(float deltaTime) {
+    #if FALSE
     namespace cqspc = cqsp::common::components;
     // Check for zooming and clicking, and now we can view the star systems.
     if (!ImGui::GetIO().WantCaptureMouse) {
@@ -122,6 +125,7 @@ void GalaxyRenderer::Update(float deltaTime) {
         previous_mouseX = m_app.GetMouseX();
         previous_mouseY = m_app.GetMouseY();
     }
+    #endif
 }
 
 void GalaxyRenderer::DoUI(float deltaTime) {

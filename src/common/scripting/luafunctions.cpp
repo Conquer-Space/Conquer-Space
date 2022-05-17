@@ -76,31 +76,18 @@ void FunctionRandom(cqsp::common::Universe& universe, cqsp::scripting::ScriptInt
 void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {
     CREATE_NAMESPACE(core);
 
-    // Init civilization script
-    REGISTER_FUNCTION("create_star_system", [&] () {
-        entt::entity ent = universe.create();
-        universe.emplace<cqspb::StarSystem>(ent);
-        return ent;
-     });
-
-    REGISTER_FUNCTION("add_planet", [&] (entt::entity system) {
+    REGISTER_FUNCTION("add_planet", [&] () {
         entt::entity planet = universe.create();
-        auto& body = universe.emplace<cqspb::Body>(planet, 0.0f, system);
-        body.star_system = system;
+        auto& body = universe.emplace<cqspb::Body>(planet);
         universe.emplace<cqspb::Planet>(planet);
-        universe.get<cqspb::StarSystem>(system).bodies.push_back(planet);
         return planet;
     });
 
-    REGISTER_FUNCTION("add_star", [&] (entt::entity system) {
+    REGISTER_FUNCTION("add_star", [&] () {
         entt::entity star = universe.create();
         universe.emplace<cqspb::Star>(star);
         auto& body = universe.emplace<cqspb::Body>(star);
-        body.star_system = system;
-
         universe.emplace<cqspb::LightEmitter>(star);
-
-        universe.get<cqspb::StarSystem>(system).bodies.push_back(star);
         return star;
     });
 
