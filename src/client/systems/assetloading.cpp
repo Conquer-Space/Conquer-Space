@@ -27,6 +27,7 @@
 #include "common/systems/loading/loadnames.h"
 #include "common/systems/science/technology.h"
 #include "common/systems/science/fields.h"
+#include "common/systems/loading/loadplanets.h"
 
 #include "common/systems/loading/hjsonloader.h"
 
@@ -75,6 +76,7 @@ void LoadAllResources(cqsp::engine::Application& app) {
     using namespace cqsp::common::systems::loading;  // NOLINT
     LoadResource<GoodLoader>(app, "goods");
     LoadResource<RecipeLoader>(app, "recipes");
+    LoadResource<PlanetLoader>(app, "planets");
     LoadResource(app, "names", LoadNameLists);
     LoadResource(app, "tech_fields", common::systems::science::LoadFields);
     LoadResource(app, "tech_list", common::systems::science::LoadTechnologies);

@@ -15,4 +15,9 @@
         type: hjson
         hints: {}
     }
+    planets: {
+        path: planets
+        type: hjson
+        hints: {}
+    }
 }
