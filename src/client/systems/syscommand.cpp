@@ -46,11 +46,6 @@ void cqsp::client::systems::SysCommand::DoUI(int delta_time) {
     namespace cqspcs = cqsp::client::systems;
 
     using cqsp::common::components::Name;
-    // Get star system
-    entt::entity ent = GetUniverse().view<cqspcs::RenderingStarSystem>().front();
-    if (ent == entt::null) {
-        return;
-    }
 
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.79f,
                                    ImGui::GetIO().DisplaySize.y * 0.55f),

@@ -21,7 +21,6 @@
 #include <utility>
 
 #include "client/systems/views/starsystemview.h"
-#include "client/systems/views/galaxyview.h"
 #include "client/systems/sysgui.h"
 #include "common/components/bodies.h"
 #include "common/components/organizations.h"
@@ -44,7 +43,6 @@ class UniverseScene : public cqsp::engine::Scene {
             it->reset();
         }
         delete system_renderer;
-        delete galaxy_renderer;
     }
 
     void Init();
@@ -81,7 +79,6 @@ class UniverseScene : public cqsp::engine::Scene {
     cqsp::common::components::Civilization* player_civ;
 
     cqsp::client::systems::SysStarSystemRenderer* system_renderer;
-    cqsp::client::systems::GalaxyRenderer* galaxy_renderer;
 
     std::unique_ptr<cqsp::common::systems::simulation::Simulation> simulation;
 
@@ -94,7 +91,6 @@ class UniverseScene : public cqsp::engine::Scene {
 };
 
 void SeePlanet(cqsp::engine::Application&, entt::entity);
-void SeeStarSystem(cqsp::engine::Application&, entt::entity);
 entt::entity GetCurrentViewingPlanet(cqsp::engine::Application&);
 // Halts all other things
 void SetGameHalted(bool b);

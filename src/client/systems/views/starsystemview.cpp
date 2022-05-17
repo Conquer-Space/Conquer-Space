@@ -162,8 +162,6 @@ void SysStarSystemRenderer::Render(float deltaTime) {
 
     FocusCityView();
 
-    m_star_system  = m_app.GetUniverse().view<RenderingStarSystem>().front();
-
     // Check for resized window
     window_ratio = static_cast<float>(m_app.GetWindowWidth()) /
                    static_cast<float>(m_app.GetWindowHeight());
@@ -185,11 +183,9 @@ void SysStarSystemRenderer::Render(float deltaTime) {
     renderer.DrawAllLayers();
 }
 
-void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
+void SysStarSystemRenderer::SeeStarSystem() {
     namespace cqspb = cqsp::common::components::bodies;
     m_universe.clear<ToRender>();
-
-    m_star_system = system;
 
     seeds.clear();
 
@@ -198,7 +194,6 @@ void SysStarSystemRenderer::SeeStarSystem(entt::entity system) {
     auto orbits = m_app.GetUniverse().view<common::components::types::Orbit>();
 
     SPDLOG_INFO("Creating planet terrain");
-
     for (auto body : orbits) {
         // Add a tag
         m_universe.get_or_emplace<ToRender>(body);

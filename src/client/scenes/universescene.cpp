@@ -73,16 +73,13 @@ void cqsp::scene::UniverseScene::Init() {
     system_renderer = new cqsps::SysStarSystemRenderer(GetUniverse(), GetApp());
     system_renderer->Initialize();
 
-    galaxy_renderer = new cqsps::GalaxyRenderer(GetUniverse(), GetApp());
-    galaxy_renderer->Initialize();
-
     auto civilizationView = GetUniverse().view<cqspc::Civilization, cqspc::Player>();
     for (auto [entity, civ] : civilizationView.each()) {
         player = entity;
         player_civ = &civ;
     }
     //cqspb::Body body = GetUniverse().get<cqspb::Body>(player_civ->starting_planet);
-    system_renderer->SeeStarSystem(entt::null);
+    system_renderer->SeeStarSystem();
 
     //SeeStarSystem(GetApp(), body.star_system);
     //SeePlanet(GetApp(), player_civ->starting_planet);
@@ -110,11 +107,7 @@ void cqsp::scene::UniverseScene::Update(float deltaTime) {
         if (!ImGui::GetIO().WantCaptureKeyboard && GetApp().ButtonIsReleased(engine::KeyInput::KEY_M)) {
             view_mode = !view_mode;
         }
-        if (view_mode) {
-            system_renderer->Update(deltaTime);
-        } else {
-            galaxy_renderer->Update(deltaTime);
-        }
+        system_renderer->Update(deltaTime);
         // Check to see if you have to switch
     }
 
@@ -122,11 +115,7 @@ void cqsp::scene::UniverseScene::Update(float deltaTime) {
     if (GetUniverse().ToTick() && !game_halted) {
         // Game tick
         simulation->tick();
-        if (view_mode) {
-            system_renderer->OnTick();
-        } else {
-            galaxy_renderer->OnTick();
-        }
+        system_renderer->OnTick();
     }
 
     DoScreenshot();
@@ -151,21 +140,13 @@ void cqsp::scene::UniverseScene::Ui(float deltaTime) {
         ui->DoUI(deltaTime);
     }
     // Render star system renderer ui
-    if (view_mode) {
-        system_renderer->DoUI(deltaTime);
-    } else {
-        galaxy_renderer->DoUI(deltaTime);
-    }
+    system_renderer->DoUI(deltaTime);
 }
 
 void cqsp::scene::UniverseScene::Render(float deltaTime) {
     ZoneScoped;
     glEnable(GL_MULTISAMPLE);
-    if (view_mode) {
-        system_renderer->Render(deltaTime);
-    } else {
-        galaxy_renderer->Render(deltaTime);
-    }
+    system_renderer->Render(deltaTime);
 }
 
 void cqsp::scene::UniverseScene::DoScreenshot() {
@@ -176,11 +157,6 @@ void cqsp::scene::UniverseScene::DoScreenshot() {
             GetApp().ButtonIsReleased(engine::KeyInput::KEY_F10))) {
         GetApp().Screenshot();
     }
-}
-
-void cqsp::scene::SeeStarSystem(cqsp::engine::Application& app, entt::entity ent) {
-    app.GetUniverse().clear<cqsp::client::systems::RenderingStarSystem>();
-    app.GetUniverse().emplace<cqsp::client::systems::RenderingStarSystem>(ent);
 }
 
 entt::entity cqsp::scene::GetCurrentViewingPlanet(cqsp::engine::Application& app) {

@@ -44,8 +44,6 @@ struct ToRender {};
 
 struct MouseOverEntity {};
 
-struct RenderingStarSystem {};
-
 // Planet that the camera center is at
 struct FocusedPlanet {};
 // City to look at
@@ -63,7 +61,7 @@ class SysStarSystemRenderer {
     void Initialize();
     void OnTick();
     void Render(float deltaTime);
-    void SeeStarSystem(entt::entity);
+    void SeeStarSystem();
     void SeeEntity();
     void Update(float deltaTime);
     void SeePlanet(entt::entity);
@@ -94,7 +92,6 @@ class SysStarSystemRenderer {
     ~SysStarSystemRenderer();
 
  private:
-    entt::entity m_star_system = entt::null;
     entt::entity m_viewing_entity = entt::null;
     entt::entity terrain_displaying = entt::null;
 
