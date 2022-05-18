@@ -16,9 +16,9 @@
 */
 #pragma once
 
-namespace cqsp {
-namespace common {
-namespace components {
+#include <string>
+
+namespace cqsp::common::components {
 /// <summary>
 /// Holds and calculates the tick that is on going. Date is the number of hours that has been
 /// ongoing since the start of the day. Here is some rough thinking for what interval things
@@ -48,12 +48,19 @@ class StarDate {
 
     int GetDate() { return date; }
 
-    double ToSecond() { return date * 3600; }
+    double ToSecond() { return date * 3600.f; }
+    double ToDay() { return date/24.f; }
+
+    std::string ToString();
+
+    int GetYear();
+    int GetMonth();
+    int GetDay();
 
  private:
     // The maximum length will be about a hundred and thirty thousand years.
     unsigned int date = -1;
+
+    static const int start_date = 2000;
 };
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::components
