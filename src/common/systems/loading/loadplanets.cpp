@@ -18,6 +18,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include <string>
+
 #include "common/systems/loading/loadutil.h"
 #include "common/components/coordinates.h"
 #include "common/components/bodies.h"

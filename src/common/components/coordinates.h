@@ -149,7 +149,7 @@ inline glm::vec3 OrbitToVec3(const double& a, const double& e, const radian& i,
     double rz = (o.x * (sin(w) * sin(i)) + o.y * (cos(w) * sin(i)));
 
     // Convert to opengl coords
-    return glm::vec3{rx, -rz, ry};
+    return glm::vec3{-rx, -rz, ry};
 }
 
 /// <summary>
