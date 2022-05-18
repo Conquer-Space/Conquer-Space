@@ -18,31 +18,36 @@
 
 #include <fmt/format.h>
 
-#include <chrono>
+#include "date/date.h"
 
-std::string cqsp::common::components::StarDate::ToString() {
-    // Parse the date
-    auto date = std::chrono::year(start_date) / 1 / 1;
+namespace cqsp::common::components {
+namespace {
+auto GetDateObject(int start_date, int day) {
+    auto date = date::year(start_date) / 1 / 1;
     // Add hours to the date and then output
     // Add days to the date
-    date = std::chrono::sys_days{date} + std::chrono::days{(int) ToDay()};
+    date = std::chrono::sys_days{date} + std::chrono::days{day};
+    return date;
+}
+}  // namespace
+std::string StarDate::ToString() {
+    // Parse the date
+    auto date = GetDateObject(start_date, (int)ToDay());
     return fmt::format("{}-{}-{}", (int) date.year(), (unsigned int) date.month(), (unsigned int) date.day());
 }
 
-int cqsp::common::components::StarDate::GetYear() {
-    auto date = std::chrono::year(start_date) / 1 / 1;
-    date = std::chrono::sys_days{date} + std::chrono::days{(int) ToDay()};
+int StarDate::GetYear() {
+    auto date = GetDateObject(start_date, (int)ToDay());
     return (int) date.year();
 }
 
-int cqsp::common::components::StarDate::GetMonth() {
-    auto date = std::chrono::year(start_date) / 1 / 1;
-    date = std::chrono::sys_days{date} + std::chrono::days{(int) ToDay()};
+int StarDate::GetMonth() {
+    auto date = GetDateObject(start_date, (int)ToDay());
     return (unsigned int) date.month();
 }
 
-int cqsp::common::components::StarDate::GetDay() {
-    auto date = std::chrono::year(start_date) / 1 / 1;
-    date = std::chrono::sys_days{date} + std::chrono::days{(int) ToDay()};
+int StarDate::GetDay() {
+    auto date = GetDateObject(start_date, (int)ToDay());
     return (unsigned int) date.day();
 }
+}  // namespace cqsp::common::components
