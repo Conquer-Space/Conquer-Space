@@ -28,12 +28,15 @@ void SysTurnSaveWindow::DoUI(int delta_time) {
     // Turn window
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x, 30),
                             ImGuiCond_Always, ImVec2(1.f, 0.f));
-    ImGui::SetNextWindowSize(ImVec2(150, 65), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(170, 80), ImGuiCond_Always);
     bool to_show = true;
     ImGui::Begin("TS window", &to_show, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
                                      ImGuiWindowFlags_AlwaysAutoResize | window_flags);
     // Show date
-    ImGui::TextFmt("Date: {} Speed: {}", GetUniverse().date.GetDate(), tick_speed);
+    ImGui::TextFmt("Date: {} {}:00", GetUniverse().date.ToString(),
+                   GetUniverse().date.GetDate() % 24);
+    ImGui::TextFmt("Speed: {}", tick_speed);
+    // Get time
     if (CQSPGui::DefaultButton("<<")) {
         // Slower
         if (tick_speed > 0) {
