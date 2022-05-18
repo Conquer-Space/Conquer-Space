@@ -56,4 +56,59 @@
             M0: 19.412 deg
         }
     }
+    {
+        identifier: jupiter
+        orbit: {
+            semi_major_axis: 5.2038 AU
+            eccentricity: 0.0489
+            inclination: 1.303 deg
+            arg_periapsis: 273.867 deg
+            LAN: 100.464 deg
+            M0: 20.020 deg
+        }
+    }
+    {
+        identifier: saturn
+        orbit: {
+            semi_major_axis: 9.5826 AU
+            eccentricity: 0.0565
+            inclination: 2.485 deg
+            arg_periapsis: 339.392 deg
+            LAN: 113.665 deg
+            M0: 317.020 deg
+        }
+    }
+    {
+        identifier: uranus
+        orbit: {
+            semi_major_axis: 19.19126 AU
+            eccentricity: 0.04717
+            inclination: 0.773 deg
+            arg_periapsis: 96.998857 deg
+            LAN: 74.006 deg
+            M0: 142.238600 deg
+        }
+    }
+    {
+        identifier: neptune
+        orbit: {
+            semi_major_axis: 30.07 AU
+            eccentricity: 0.008678
+            inclination: 1.770 deg
+            arg_periapsis: 273.187 deg
+            LAN: 131.783 deg
+            M0: 256.228 deg
+        }
+    }
+    {
+        identifier: pluto
+        orbit: {
+            semi_major_axis: 39.482 AU
+            eccentricity: 0.2488
+            inclination: 17.16 deg
+            arg_periapsis: 113.834 deg
+            LAN: 110.299 deg
+            M0: 14.53 deg
+        }
+    }
 ]
