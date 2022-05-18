@@ -26,7 +26,7 @@ auto GetDateObject(int start_date, int day) {
     auto date = date::year(start_date) / 1 / 1;
     // Add hours to the date and then output
     // Add days to the date
-    date = std::chrono::sys_days{date} + std::chrono::days{day};
+    date = date::sys_days{date} + date::days{day};
     return date;
 }
 }  // namespace
