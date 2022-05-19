@@ -28,6 +28,7 @@ void cqsp::common::systems::SysOrbit::DoSystem() {
     namespace cqspt = cqsp::common::components::types;
     Universe& universe = GetGame().GetUniverse();
 
+    // Build the tree
     auto bodies = universe.view<cqspt::Orbit>();
     for (entt::entity body : bodies) {
         auto& orb = universe.get<cqspt::Orbit>(body);
@@ -45,6 +46,8 @@ void cqsp::common::systems::SysSurface::DoSystem() {
     Universe& universe = GetGame().GetUniverse();
 
     auto objects = universe.view<cqspt::SurfaceCoordinate>();
+    // First put them in a tree
+    // Find all the entities
     for (entt::entity object : objects) {
         cqspt::SurfaceCoordinate& surface = universe.get<cqspt::SurfaceCoordinate>(object);
         //cqspt::Kinematics& surfacekin = universe.get_or_emplace<cqspt::Kinematics>(object);

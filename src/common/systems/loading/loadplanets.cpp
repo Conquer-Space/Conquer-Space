@@ -25,6 +25,12 @@
 #include "common/components/bodies.h"
 
 namespace cqsp::common::systems::loading {
+namespace {
+struct ParentTemp {
+    std::string parent;
+};
+}  // namespace
+
 bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
                              entt::entity entity) {
     using components::types::UnitType;
@@ -108,8 +114,28 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
         SPDLOG_WARN("Issue with mean anomaly of {}: {}", identifier, orbit["M0"].to_string());
         return false;
     }
+
+    if (orbit["reference"].defined()) {
+        auto parent_name = orbit["reference"];
+        universe.emplace<ParentTemp>(entity, parent_name);
+    }
+
     orbit_comp.CalculatePeriod();
 
+    universe.planets[identifier] = entity;
     return true;
+}
+
+void PlanetLoader::PostLoad(Universe& universe, entt::entity entity) {
+    // Set the parent
+    if (!universe.any_of<ParentTemp>(entity)) {
+        return;
+    }
+    auto& parent_temp = universe.get<ParentTemp>(entity);
+    auto& orbit = universe.get<components::types::Orbit>(entity);
+    if (universe.planets.find(parent_temp.parent) == universe.planets.end()) {
+        return;
+    }
+    orbit.reference_body = universe.planets[parent_temp.parent];
 }
 }  // namespace cqsp::common::systems::loading

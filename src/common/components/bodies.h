@@ -34,7 +34,15 @@ struct Body {
 
     entt::entity star_system;
 
-    double mass;
+    /// <summary>
+    /// Radius of sphere of influence
+    /// rsoi = a(m/M)^2/5
+    /// </summary>
+    types::kilometer SOI;
+    types::kilogram mass;
+
+    // gravitational constant in km^3 * s^-2
+    double GM;
 };
 
 struct TexturedTerrain {

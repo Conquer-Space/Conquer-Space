@@ -16,14 +16,18 @@
 */
 #include "common/systems/loading/hjsonloader.h"
 
+#include <vector>
+
 #include <spdlog/spdlog.h>
 
 #include "common/components/name.h"
 #include "common/systems/loading/loadutil.h"
 
+namespace cqsp::common::systems::loading {
 int cqsp::common::systems::loading::HjsonLoader::LoadHjson(
     const Hjson::Value& values, Universe& universe) {
     int assets = 0;
+    std::vector<entt::entity> entity_list;
     for (int i = 0; i < values.size(); i++) {
         Hjson::Value value = values[i];
 
@@ -52,7 +56,14 @@ int cqsp::common::systems::loading::HjsonLoader::LoadHjson(
             universe.destroy(entity);
             continue;
         }
+        entity_list.push_back(entity);
         assets++;
     }
+    // Load all the assets again to parse?
+    for (entt::entity entity : entity_list) {
+        PostLoad(universe, entity);
+    }
+
     return assets;
 }
+}  // namespace cqsp::common::systems::loading

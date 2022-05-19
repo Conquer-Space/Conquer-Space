@@ -5,7 +5,8 @@
         identifier: sun
         type: star
         radius: 695508 km
-        oribit: {
+        gm: 1.327124400189e11
+        orbit: {
             semi_major_axis: 0
             eccentricity: 0
             inclination: 0
@@ -17,6 +18,8 @@
     {
         identifier: mercury
         radius: 2440 km
+        reference: sun
+        gm: 2.20329e4
         orbit: {
             semi_major_axis: 0.3870993 AU
             eccentricity: 0.20564
@@ -32,6 +35,8 @@
     {
         identifier: venus
         radius: 6052 km
+        reference: sun
+        gm: 3.248599e5
         orbit: {
             semi_major_axis: 0.723332 AU
             eccentricity: 0.006773
@@ -47,6 +52,8 @@
     {
         identifier: earth
         radius: 6371 km
+        reference: sun
+        gm: 3.9860044188e5
         orbit: {
             semi_major_axis: 149598023 km
             eccentricity: 0.0167086
@@ -61,8 +68,23 @@
         }
     }
     {
+        identifier: moon
+        reference: earth
+        gm: 0
+        orbit: {
+            semi_major_axis: 384308437.7707066 km
+            eccentricity: 0.05328149353682574
+            inclination: 5.145 deg
+            arg_periapsis: 199.7640930160823 deg
+            LAN: 2.296616161126016 deg
+            M0: 222.7012350930954 deg
+        }
+    }
+    {
         identifier: mars
         radius: 3390 km
+        reference: sun
+        gm: 4.2828372e4
         orbit: {
             semi_major_axis: 1.52368055 AU
             eccentricity: 0.0934
@@ -78,6 +100,8 @@
     {
         identifier: jupiter
         radius: 69911 km
+        reference: sun
+        gm: 1.266865349e8
         orbit: {
             semi_major_axis: 5.2038 AU
             eccentricity: 0.0489
@@ -93,6 +117,8 @@
     {
         identifier: saturn
         radius: 58232 km
+        reference: sun
+        gm: 3.79311879e7
         orbit: {
             semi_major_axis: 9.5826 AU
             eccentricity: 0.0565
@@ -108,6 +134,8 @@
     {
         identifier: uranus
         radius: 25362 km
+        reference: sun
+        gm: 5.7939399e6
         orbit: {
             semi_major_axis: 19.19126 AU
             eccentricity: 0.04717
@@ -123,6 +151,8 @@
     {
         identifier: neptune
         radius: 24622 km
+        reference: sun
+        gm: 6.8365299e6
         orbit: {
             semi_major_axis: 30.07 AU
             eccentricity: 0.008678
@@ -138,6 +168,8 @@
     {
         identifier: pluto
         radius: 1188.3 km
+        reference: sun
+        gm: 8.719e2
         orbit: {
             semi_major_axis: 39.482 AU
             eccentricity: 0.2488
