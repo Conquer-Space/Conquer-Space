@@ -1,0 +1,8 @@
+{
+    vert: object.vert
+    frag: planet_texture.frag
+    uniforms: {
+        terrain_tex: 0
+        normal_tex: 1
+    }
+}

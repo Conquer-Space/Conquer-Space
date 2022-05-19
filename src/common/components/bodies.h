@@ -19,6 +19,7 @@
 #include <vector>
 #include <map>
 #include <tuple>
+#include <string>
 
 #include <entt/entt.hpp>
 
@@ -34,6 +35,11 @@ struct Body {
     entt::entity star_system;
 
     double mass;
+};
+
+struct TexturedTerrain {
+    std::string terrain_name;
+    std::string normal_name;
 };
 
 struct Terrain {

@@ -27,6 +27,13 @@
             type: frag
         }
     }
+    planet_texture_frag: {
+        path: planet_texure.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
     skyboxfrag: {
         path: textured_sphere.frag
         type: shader
@@ -133,6 +140,11 @@
     }
     planetshader: {
         path: planetshader.hjson
+        type: shader_def
+        hints: {}
+    }
+    planet_textureshader: {
+        path: planet_textureshader.hjson
         type: shader_def
         hints: {}
     }

@@ -34,7 +34,44 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
     auto& orbit_comp = universe.emplace<components::types::Orbit>(entity);
 
     universe.emplace<components::bodies::Planet>(entity);
-    universe.emplace<components::bodies::Body>(entity);
+    auto& body_comp = universe.emplace<components::bodies::Body>(entity);
+
+    if (values["type"].type() != Hjson::Type::Undefined) {
+        if (values["type"].type() != Hjson::Type::String) {
+            SPDLOG_INFO("Planet type of {} is in incorrect format", identifier);
+            return true;
+        }
+        if (values["type"].to_string() == "star") {
+            universe.emplace<components::bodies::LightEmitter>(entity);
+        }
+    }
+
+    if (values["texture"].type() != Hjson::Type::Undefined) {
+        const Hjson::Value& texture = values["texture"];
+        auto& texture_comp = universe.emplace<components::bodies::TexturedTerrain>(entity);
+
+        if (texture["terrain"].type() != Hjson::Type::String) {
+            SPDLOG_INFO("Terrain texture of {} is in incorrect format", identifier);
+            return true;
+        }
+        texture_comp.terrain_name = texture["terrain"].to_string();
+
+        if (texture["normal"].type() == Hjson::Type::String) {
+            texture_comp.normal_name = texture["normal"].to_string();
+        }
+    }
+
+    if (values["radius"].type() != Hjson::Type::String && values["radius"].to_double() == 0) {
+        SPDLOG_INFO("Radius of {} is zero", identifier);
+        return true;
+    }
+
+    bool radius_correct;
+    body_comp.radius = ReadUnit(values["radius"].to_string(), UnitType::Distance, &radius_correct);
+    if (!radius_correct) {
+        SPDLOG_WARN("Issue with radius of {}: {}", identifier, values["radius"].to_string());
+        return false;
+    }
 
     if (orbit["semi_major_axis"].type() != Hjson::Type::String && orbit["semi_major_axis"].to_double() == 0) {
         SPDLOG_INFO("Semi major axis of {} is zero", identifier);
