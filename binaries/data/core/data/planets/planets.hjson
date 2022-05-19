@@ -3,7 +3,9 @@
 [
     {
         identifier: sun
-        oribt: {
+        type: star
+        radius: 695508 km
+        oribit: {
             semi_major_axis: 0
             eccentricity: 0
             inclination: 0
@@ -14,6 +16,7 @@
     }
     {
         identifier: mercury
+        radius: 2440 km
         orbit: {
             semi_major_axis: 0.3870993 AU
             eccentricity: 0.20564
@@ -22,9 +25,13 @@
             LAN: 48.3 deg
             M0: 174.796 deg
         }
+        texture: {
+            terrain: mercurymap
+        }
     }
     {
         identifier: venus
+        radius: 6052 km
         orbit: {
             semi_major_axis: 0.723332 AU
             eccentricity: 0.006773
@@ -33,9 +40,13 @@
             LAN: 76.680 deg
             M0: 50.115 deg
         }
+        texture: {
+            terrain: venusmap
+        }
     }
     {
         identifier: earth
+        radius: 6371 km
         orbit: {
             semi_major_axis: 149598023 km
             eccentricity: 0.0167086
@@ -44,9 +55,14 @@
             LAN: -11.26064 deg
             M0: 358.617 deg
         }
+        texture: {
+            terrain: earthmap
+            normal: earthnormal
+        }
     }
     {
         identifier: mars
+        radius: 3390 km
         orbit: {
             semi_major_axis: 1.52368055 AU
             eccentricity: 0.0934
@@ -55,9 +71,13 @@
             LAN: 49.57854 deg
             M0: 19.412 deg
         }
+        texture: {
+            terrain: marsmap
+        }
     }
     {
         identifier: jupiter
+        radius: 69911 km
         orbit: {
             semi_major_axis: 5.2038 AU
             eccentricity: 0.0489
@@ -66,9 +86,13 @@
             LAN: 100.464 deg
             M0: 20.020 deg
         }
+        texture: {
+            terrain: jupitermap
+        }
     }
     {
         identifier: saturn
+        radius: 58232 km
         orbit: {
             semi_major_axis: 9.5826 AU
             eccentricity: 0.0565
@@ -77,9 +101,13 @@
             LAN: 113.665 deg
             M0: 317.020 deg
         }
+        texture: {
+            terrain: saturnmap
+        }
     }
     {
         identifier: uranus
+        radius: 25362 km
         orbit: {
             semi_major_axis: 19.19126 AU
             eccentricity: 0.04717
@@ -88,9 +116,13 @@
             LAN: 74.006 deg
             M0: 142.238600 deg
         }
+        texture: {
+            terrain: uranusmap
+        }
     }
     {
         identifier: neptune
+        radius: 24622 km
         orbit: {
             semi_major_axis: 30.07 AU
             eccentricity: 0.008678
@@ -98,6 +130,9 @@
             arg_periapsis: 273.187 deg
             LAN: 131.783 deg
             M0: 256.228 deg
+        }
+        texture: {
+            terrain: neptunemap
         }
     }
     {

@@ -77,6 +77,11 @@ struct TerrainTextureData {
     }
 };
 
+struct PlanetTexture {
+    cqsp::asset::Texture* terrain = nullptr;
+    cqsp::asset::Texture* normal = nullptr;
+};
+
 struct PlanetOrbit {
     cqsp::engine::Mesh *orbit_mesh;
 };
@@ -111,6 +116,13 @@ void SysStarSystemRenderer::Initialize() {
     // Planet spheres
     planet.mesh = sphere_mesh;
     planet.shaderProgram = planet_shader;
+
+    // Initialize shaders
+    asset::ShaderProgram_t textured_planet_shader =
+        m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:planet_textureshader")->MakeShader();
+    
+    textured_planet.mesh = sphere_mesh;
+    textured_planet.shaderProgram = textured_planet_shader;
 
     // Initialize sun
     sun.mesh = sphere_mesh;
@@ -193,10 +205,26 @@ void SysStarSystemRenderer::SeeStarSystem() {
 
     auto orbits = m_app.GetUniverse().view<common::components::types::Orbit>();
 
-    SPDLOG_INFO("Creating planet terrain");
     for (auto body : orbits) {
         // Add a tag
         m_universe.get_or_emplace<ToRender>(body);
+    }
+
+    SPDLOG_INFO("Loading planet textures");
+    for (auto body : orbits) {
+        if (!m_app.GetUniverse().all_of<cqspb::TexturedTerrain>(body)) {
+            continue;
+        }
+        auto textures = m_app.GetUniverse().get<cqspb::TexturedTerrain>(body);
+        auto &data = m_universe.get_or_emplace<PlanetTexture>(body);
+        data.terrain = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>("core:"+textures.terrain_name);
+        if (textures.normal_name != "") {
+            data.normal = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>("core:"+textures.normal_name);
+        }
+    }
+
+    SPDLOG_INFO("Creating planet terrain");
+    for (auto body : orbits) {
         if (!m_app.GetUniverse().all_of<cqspb::Terrain>(body)) {
             continue;
         }
@@ -426,6 +454,8 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
                 // Do empty terrain
                 // Check if the planet has the thing
                 DrawPlanet(object_pos, body_entity);
+            } else if (m_app.GetUniverse().all_of<cqspb::TexturedTerrain>(body_entity)) {
+                DrawTexturedPlanet(object_pos, body_entity);
             } else {
                 DrawTerrainlessPlanet(object_pos);
             }
@@ -554,6 +584,42 @@ void SysStarSystemRenderer::DrawShipIcon(glm::vec3 &object_pos) {
     ship_overlay.shaderProgram->setMat4("projection", twodimproj);
 
     engine::Draw(ship_overlay);
+}
+
+void SysStarSystemRenderer::DrawTexturedPlanet(glm::vec3 &object_pos, entt::entity entity) {
+    bool have_normal = false;
+    if (m_universe.all_of<PlanetTexture>(entity)) {
+        auto& terrain_data = m_universe.get<PlanetTexture>(entity);
+        textured_planet.textures.clear();
+        textured_planet.textures.push_back(terrain_data.terrain);
+        if (terrain_data.normal) {
+            have_normal = true;
+            textured_planet.textures.push_back(terrain_data.normal);
+        }
+    }
+    glm::mat4 position = glm::mat4(1.f);
+    position = glm::translate(position, object_pos);
+
+    namespace cqspb = cqsp::common::components::bodies;
+    auto& body = m_universe.get<cqspb::Body>(entity);
+    float scale = body.radius / 5000;
+    position = glm::scale(position, glm::vec3(scale));
+
+    textured_planet.SetMVP(position, camera_matrix, projection);
+    textured_planet.shaderProgram->UseProgram();
+
+    // Maybe a seperate shader for planets without normal maps would be better
+    textured_planet.shaderProgram->setBool("haveNormal", have_normal);
+
+    textured_planet.shaderProgram->setVec3("lightDir", glm::normalize(sun_position - object_pos));
+
+    textured_planet.shaderProgram->setVec3("lightDir", glm::normalize(sun_position - object_pos));
+    textured_planet.shaderProgram->setVec3("lightPosition", sun_position);
+
+    textured_planet.shaderProgram->setVec3("lightColor", sun_color);
+    textured_planet.shaderProgram->setVec3("viewPos", cam_pos);
+
+    engine::Draw(textured_planet);
 }
 
 void SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_pos, entt::entity entity) {

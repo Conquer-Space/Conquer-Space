@@ -99,6 +99,7 @@ class SysStarSystemRenderer {
     cqsp::engine::Application &m_app;
 
     cqsp::engine::Renderable planet;
+    cqsp::engine::Renderable textured_planet;
     cqsp::engine::Renderable sky;
     cqsp::engine::Renderable planet_circle;
     cqsp::engine::Renderable ship_overlay;
@@ -133,6 +134,7 @@ class SysStarSystemRenderer {
     void DrawShipIcon(glm::vec3 &object_pos);
     void DrawCityIcon(glm::vec3 &object_pos);
     void DrawPlanet(glm::vec3 &object_pos, entt::entity entity);
+    void DrawTexturedPlanet(glm::vec3 &object_pos, entt::entity entity);
     void DrawStar(glm::vec3 &object_pos);
     void DrawTerrainlessPlanet(glm::vec3 &object_pos);
     void RenderCities(glm::vec3 &object_pos, const entt::entity &body_entity);
