@@ -137,6 +137,7 @@
     }
     {
         identifier: pluto
+        radius: 1188.3 km
         orbit: {
             semi_major_axis: 39.482 AU
             eccentricity: 0.2488

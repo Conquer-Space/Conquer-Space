@@ -52,18 +52,12 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
 
         if (texture["terrain"].type() != Hjson::Type::String) {
             SPDLOG_INFO("Terrain texture of {} is in incorrect format", identifier);
-            return true;
         }
         texture_comp.terrain_name = texture["terrain"].to_string();
 
         if (texture["normal"].type() == Hjson::Type::String) {
             texture_comp.normal_name = texture["normal"].to_string();
         }
-    }
-
-    if (values["radius"].type() != Hjson::Type::String && values["radius"].to_double() == 0) {
-        SPDLOG_INFO("Radius of {} is zero", identifier);
-        return true;
     }
 
     bool radius_correct;
