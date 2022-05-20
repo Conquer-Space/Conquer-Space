@@ -120,14 +120,13 @@ void SysStarSystemRenderer::Initialize() {
     // Initialize shaders
     asset::ShaderProgram_t textured_planet_shader =
         m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:planet_textureshader")->MakeShader();
-    
+
     textured_planet.mesh = sphere_mesh;
     textured_planet.shaderProgram = textured_planet_shader;
 
     // Initialize sun
     sun.mesh = sphere_mesh;
     sun.shaderProgram = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:sunshader")->MakeShader();
-    sun.textures.push_back(m_app.GetAssetManager().GetAsset<asset::Texture>("core:earthmap"));
     auto buffer_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:framebuffer")->MakeShader();
 
     ship_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
@@ -602,7 +601,7 @@ void SysStarSystemRenderer::DrawTexturedPlanet(glm::vec3 &object_pos, entt::enti
 
     namespace cqspb = cqsp::common::components::bodies;
     auto& body = m_universe.get<cqspb::Body>(entity);
-    float scale = body.radius / 5000;
+    float scale = body.radius / 50000;
     position = glm::scale(position, glm::vec3(scale));
 
     textured_planet.SetMVP(position, camera_matrix, projection);
