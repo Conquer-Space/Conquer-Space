@@ -23,10 +23,13 @@
 namespace cqsp::common::systems::loading {
 class HjsonLoader {
  public:
-    HjsonLoader() = default;
+    HjsonLoader(Universe& universe) : universe(universe) {}
     virtual const Hjson::Value& GetDefaultValues() = 0;
-    int LoadHjson(const Hjson::Value& values, Universe& universe);
-    virtual bool LoadValue(const Hjson::Value& values, Universe& universe, entt::entity entity) = 0;
-    virtual void PostLoad(Universe& universe, const entt::entity& entity) {}
+    int LoadHjson(const Hjson::Value& values);
+    virtual bool LoadValue(const Hjson::Value& values, entt::entity entity) = 0;
+    virtual void PostLoad(const entt::entity& entity) {}
+
+ protected:
+    Universe& universe;
 };
 }  // namespace cqsp::common::systems::loading

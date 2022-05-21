@@ -24,8 +24,7 @@
 #include "common/systems/loading/loadutil.h"
 
 namespace cqsp::common::systems::loading {
-int HjsonLoader::LoadHjson(
-    const Hjson::Value& values, Universe& universe) {
+int HjsonLoader::LoadHjson(const Hjson::Value& values) {
     int assets = 0;
     std::vector<entt::entity> entity_list;
     for (int i = 0; i < values.size(); i++) {
@@ -43,7 +42,7 @@ int HjsonLoader::LoadHjson(
         // Catch errors
         bool success = false;
         try {
-            success = LoadValue(value, universe, entity);
+            success = LoadValue(value, entity);
         } catch (Hjson::index_out_of_bounds& ioob) {
             auto& id = universe.get<components::Identifier>(entity).identifier;
             SPDLOG_WARN("Index out of bounds for {}: {}", id, ioob.what());
@@ -62,7 +61,7 @@ int HjsonLoader::LoadHjson(
 
     // Load all the assets again to parse?
     for (entt::entity entity : entity_list) {
-        PostLoad(universe, entity);
+        PostLoad(entity);
     }
 
     return assets;

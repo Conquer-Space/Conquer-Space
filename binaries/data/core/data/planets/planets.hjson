@@ -2,6 +2,7 @@
 // https://ssd.jpl.nasa.gov/planets/orbits.html
 [
     {
+        name: The Sun
         identifier: sun
         type: star
         radius: 695508 km
@@ -14,8 +15,10 @@
             LAN: 0
             M0: 0
         }
+        tags: []
     }
     {
+        name: Mercury
         identifier: mercury
         radius: 2440 km
         reference: sun
@@ -31,8 +34,10 @@
         texture: {
             terrain: mercurymap
         }
+        tags: []
     }
     {
+        name: Venus
         identifier: venus
         radius: 6052 km
         reference: sun
@@ -48,8 +53,10 @@
         texture: {
             terrain: venusmap
         }
+        tags: []
     }
     {
+        name: Earth
         identifier: earth
         radius: 6371 km
         reference: sun
@@ -66,8 +73,10 @@
             terrain: earthmap
             normal: earthnormal
         }
+        tags: []
     }
     {
+        name: Moon
         identifier: moon
         reference: earth
         radius: 1000 km
@@ -80,9 +89,12 @@
             LAN: 2.296616161126016 deg
             M0: 222.7012350930954 deg
         }
+        tags: []
     }
     {
+        name: Mars
         identifier: mars
+        adjective: Martian
         radius: 3390 km
         reference: sun
         gm: 4.2828372e4
@@ -97,9 +109,12 @@
         texture: {
             terrain: marsmap
         }
+        tags: []
     }
     {
+        name: Jupiter
         identifier: jupiter
+        adjective: jovian
         radius: 69911 km
         reference: sun
         gm: 1.266865349e8
@@ -114,8 +129,10 @@
         texture: {
             terrain: jupitermap
         }
+        tags: []
     }
     {
+        name: Saturn
         identifier: saturn
         radius: 58232 km
         reference: sun
@@ -131,8 +148,10 @@
         texture: {
             terrain: saturnmap
         }
+        tags: []
     }
     {
+        name: Uranus
         identifier: uranus
         radius: 25362 km
         reference: sun
@@ -148,8 +167,10 @@
         texture: {
             terrain: uranusmap
         }
+        tags: []
     }
     {
+        name: Neptune
         identifier: neptune
         radius: 24622 km
         reference: sun
@@ -165,8 +186,10 @@
         texture: {
             terrain: neptunemap
         }
+        tags: []
     }
     {
+        name: Pluto
         identifier: pluto
         radius: 1188.3 km
         reference: sun
@@ -179,5 +202,6 @@
             LAN: 110.299 deg
             M0: 14.53 deg
         }
+        tags: []
     }
 ]

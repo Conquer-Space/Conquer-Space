@@ -23,6 +23,13 @@
 #include "common/universe.h"
 
 namespace cqsp::client::systems::gui {
+/// <summary>
+/// Gets the name of the entity. If that isn't there, then the identifier.
+/// If you somehow mess even that up, it returns the identifier in string form.
+/// </summary>
+/// <param name="universe"></param>
+/// <param name="entity"></param>
+/// <returns></returns>
 std::string GetName(const cqsp::common::Universe &universe,
                     entt::entity entity);
 void EntityTooltip(const cqsp::common::Universe &, entt::entity);

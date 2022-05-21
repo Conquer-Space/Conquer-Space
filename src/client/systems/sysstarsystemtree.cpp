@@ -22,11 +22,24 @@
 #include "client/systems/gui/systooltips.h"
 #include "client/scenes/universescene.h"
 #include "common/components/bodies.h"
+#include "common/components/coordinates.h"
 #include "common/components/name.h"
 
 #include "engine/cqspgui.h"
 
-void cqsp::client::systems::SysStarSystemTree::Init() {}
+void cqsp::client::systems::SysStarSystemTree::Init() {
+    // Sort all the planets in order
+    namespace cqspb = cqsp::common::components::bodies;
+    namespace cqspt = cqsp::common::components::types;
+    auto& orbital_system = GetUniverse().get<cqspb::OrbitalSystem>(GetUniverse().sun);
+    planets.emplace(GetUniverse().sun);
+    planets.insert(orbital_system.children.begin(),
+                   orbital_system.children.end());
+    planets.sort([&](const entt::entity lhs, const entt::entity rhs) {
+        return (GetUniverse().get<cqspt::Orbit>(lhs).semi_major_axis <
+                GetUniverse().get<cqspt::Orbit>(rhs).semi_major_axis);
+    });
+}
 
 void cqsp::client::systems::SysStarSystemTree::DoUI(int delta_time) {
     namespace cqspb = cqsp::common::components::bodies;
@@ -37,19 +50,14 @@ void cqsp::client::systems::SysStarSystemTree::DoUI(int delta_time) {
     ImGui::SetNextWindowPos(ImVec2(30, ImGui::GetIO().DisplaySize.y - 30),
                             ImGuiCond_Always, ImVec2(0.f, 1.f));
     ImGui::SetNextWindowSize(ImVec2(200, 400), ImGuiCond_Always);
-    ImGui::Begin("Star System (Will add name soon)",
-                NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | window_flags);
+    ImGui::Begin("Star System", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | window_flags);
     int index = 0;
     // Get selected planet
-    auto view = GetUniverse().view<cqspc::types::Orbit>();
+    // Sort by sma
     entt::entity current_planet = cqsp::scene::GetCurrentViewingPlanet(GetApp());
-    ImGui::TextFmt("Planets: {}", view.size());
-    for (auto entity : view) {
+    for (auto entity : planets) {
         bool is_selected = (entity == current_planet);
-        std::string planet_name = fmt::format("{}", entity);
-        if (GetUniverse().all_of<cqspc::Name>(entity)) {
-            planet_name = fmt::format("{}", GetUniverse().get<cqspc::Name>(entity).name);
-        }
+        std::string planet_name = gui::GetName(GetUniverse(), entity);
 
         if (CQSPGui::DefaultSelectable(planet_name.c_str(), is_selected,
                                 ImGuiSelectableFlags_AllowDoubleClick)) {

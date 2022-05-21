@@ -65,13 +65,12 @@ void LoadTerrainData(cqsp::common::Universe& universe, Hjson::Value& value) {
     }
 }
 
-GoodLoader::GoodLoader() {
+GoodLoader::GoodLoader(Universe& universe) : HjsonLoader(universe) {
     default_val["price"] = 1.f;
     default_val["tags"] = Hjson::Type::Vector;
 }
 
-bool GoodLoader::LoadValue(const Hjson::Value& values, Universe& universe,
-                           entt::entity entity) {
+bool GoodLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     namespace cqspc = cqsp::common::components;
     namespace cqspt = cqsp::common::components::types;
 
@@ -116,13 +115,12 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, Universe& universe,
     return true;
 }
 
-RecipeLoader::RecipeLoader() {
+RecipeLoader::RecipeLoader(Universe& universe) : HjsonLoader(universe) {
     default_val["input"] = Hjson::Type::Vector;
     default_val["output"] = Hjson::Type::Vector;
 }
 
-bool RecipeLoader::LoadValue(const Hjson::Value& values, Universe& universe,
-                             entt::entity entity) {
+bool RecipeLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     namespace cqspc = cqsp::common::components;
 
     auto& recipe_component = universe.emplace<cqspc::Recipe>(entity);

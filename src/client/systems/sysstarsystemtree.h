@@ -32,6 +32,7 @@ class SysStarSystemTree : public SysUserInterface {
 
  private:
     int selected_index = 0;
+    entt::sparse_set planets;
 };
 }  // namespace systems
 }  // namespace client
