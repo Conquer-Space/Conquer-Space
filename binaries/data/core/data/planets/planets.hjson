@@ -70,6 +70,7 @@
     {
         identifier: moon
         reference: earth
+        radius: 1000 km
         gm: 0
         orbit: {
             semi_major_axis: 384308.4377707066 km

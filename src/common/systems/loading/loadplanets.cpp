@@ -39,7 +39,6 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
     std::string identifier = values["identifier"];
     const Hjson::Value& orbit = values["orbit"];
     auto& orbit_comp = universe.emplace<components::types::Orbit>(entity);
-
     universe.emplace<components::bodies::Planet>(entity);
     auto& body_comp = universe.emplace<components::bodies::Body>(entity);
 
@@ -66,6 +65,8 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
             texture_comp.normal_name = texture["normal"].to_string();
         }
     }
+
+    body_comp.GM = values["gm"].to_double();
 
     bool radius_correct;
     body_comp.radius = ReadUnit(values["radius"].to_string(), UnitType::Distance, &radius_correct);
@@ -122,8 +123,6 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
         SPDLOG_WARN("Issue with mean anomaly of {}: {}", identifier, orbit["M0"].to_string());
         return false;
     }
-
-    orbit_comp.CalculatePeriod();
     return true;
 }
 
@@ -136,12 +135,18 @@ void PlanetLoader::PostLoad(Universe& universe, entt::entity entity) {
     auto& orbit = universe.get<components::types::Orbit>(entity);
     if (universe.planets.find(parent_temp.parent) == universe.planets.end()) {
         SPDLOG_INFO("{} parent is not found: {}", universe.get<components::Identifier>(entity).identifier, parent_temp.parent);
+        orbit.CalculatePeriod();
         universe.remove<ParentTemp>(entity);
         return;
     }
     SPDLOG_INFO("{}'s parent is {}", universe.get<components::Identifier>(entity).identifier,
                 parent_temp.parent);
     orbit.reference_body = universe.planets[parent_temp.parent];
+    // Set mu
+    orbit.Mu = universe.get<components::bodies::Body>(universe.planets[parent_temp.parent]).GM;
+
+    orbit.CalculatePeriod();
+
     universe.remove<ParentTemp>(entity);
 }
 }  // namespace cqsp::common::systems::loading

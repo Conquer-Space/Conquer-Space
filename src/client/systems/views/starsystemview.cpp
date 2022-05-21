@@ -664,9 +664,12 @@ void SysStarSystemRenderer::DrawStar(glm::vec3 &object_pos) {
 }
 
 void SysStarSystemRenderer::DrawTerrainlessPlanet(glm::vec3 &object_pos) {
+    namespace cqspb = cqsp::common::components::bodies;
+
     glm::mat4 position = glm::mat4(1.f);
     position = glm::translate(position, object_pos);
-
+    float scale = 1000 / 50000;
+    position = glm::scale(position, glm::vec3(scale));
     glm::mat4 transform = glm::mat4(1.f);
     position = position * transform;
 
