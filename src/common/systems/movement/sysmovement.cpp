@@ -24,30 +24,8 @@
 
 namespace cqsp::common::systems {
 void SysOrbit::DoSystem() {
-    namespace cqspc = cqsp::common::components;
-    namespace cqsps = cqsp::common::components::ships;
-    namespace cqspt = cqsp::common::components::types;
     Universe& universe = GetGame().GetUniverse();
-
-    // Build the tree
-    // Find the orbit without a parent
-    universe.clear<OrbitTree>();
-    auto bodies = universe.view<cqspt::Orbit>();
-
-    entt::entity root = entt::null;
-    for (entt::entity body : bodies) {
-        auto& orb = universe.get<cqspt::Orbit>(body);
-        // Calculate the entity
-        if (orb.reference_body == entt::null) {
-            // Set the root
-            root = body;
-            continue;
-        }
-        universe.get_or_emplace<OrbitTree>(orb.reference_body).bodies.push_back(body);
-    }
-    // Set the thing
-    ParseOrbitTree(entt::null, root);
-    // Then build the tree, somehow
+    ParseOrbitTree(entt::null, universe.sun);
 }
 
 void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
@@ -66,10 +44,10 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
         pos.position += p_pos.position;
     }
 
-    if (!universe.any_of<OrbitTree>(body)) {
+    if (!universe.any_of<cqspc::bodies::OrbitalSystem>(body)) {
         return;
     }
-    for (entt::entity entity : universe.get<OrbitTree>(body).bodies) {
+    for (entt::entity entity : universe.get<cqspc::bodies::OrbitalSystem>(body).children) {
         // Calculate position
         ParseOrbitTree(body, entity);
     }

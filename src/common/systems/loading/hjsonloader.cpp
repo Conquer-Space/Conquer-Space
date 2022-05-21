@@ -24,7 +24,7 @@
 #include "common/systems/loading/loadutil.h"
 
 namespace cqsp::common::systems::loading {
-int cqsp::common::systems::loading::HjsonLoader::LoadHjson(
+int HjsonLoader::LoadHjson(
     const Hjson::Value& values, Universe& universe) {
     int assets = 0;
     std::vector<entt::entity> entity_list;

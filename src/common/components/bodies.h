@@ -50,9 +50,15 @@ struct TexturedTerrain {
     std::string normal_name;
 };
 
-struct OrbitTree {
+/// <summary>
+/// An object for the children of an orbital object.
+/// </summary>
+struct OrbitalSystem {
     // Set the tree
     std::vector<entt::entity> children;
+    void push_back(const entt::entity& entity) {
+        children.push_back(entity);
+    }
 };
 
 struct Terrain {

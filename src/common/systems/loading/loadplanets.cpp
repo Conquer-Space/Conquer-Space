@@ -78,6 +78,9 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
     if (values["reference"].defined()) {
         auto parent_name = values["reference"];
         universe.emplace<ParentTemp>(entity, parent_name);
+    } else {
+        // It's the sun
+        universe.sun = entity;
     }
 
     universe.planets[identifier] = entity;
@@ -126,7 +129,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
     return true;
 }
 
-void PlanetLoader::PostLoad(Universe& universe, entt::entity entity) {
+void PlanetLoader::PostLoad(Universe& universe, const entt::entity& entity) {
     // Set the parent
     if (!universe.any_of<ParentTemp>(entity)) {
         return;
@@ -139,14 +142,15 @@ void PlanetLoader::PostLoad(Universe& universe, entt::entity entity) {
         universe.remove<ParentTemp>(entity);
         return;
     }
+    entt::entity parent = universe.planets[parent_temp.parent];
     SPDLOG_INFO("{}'s parent is {}", universe.get<components::Identifier>(entity).identifier,
                 parent_temp.parent);
-    orbit.reference_body = universe.planets[parent_temp.parent];
+    orbit.reference_body = parent;
     // Set mu
-    orbit.Mu = universe.get<components::bodies::Body>(universe.planets[parent_temp.parent]).GM;
+    orbit.Mu = universe.get<components::bodies::Body>(parent).GM;
 
     orbit.CalculatePeriod();
-
+    universe.get_or_emplace<components::bodies::OrbitalSystem>(parent).push_back(entity);
     universe.remove<ParentTemp>(entity);
 }
 }  // namespace cqsp::common::systems::loading

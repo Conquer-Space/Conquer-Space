@@ -41,6 +41,8 @@ class Universe : public entt::registry {
     std::map<std::string, entt::entity> technologies;
     std::map<std::string, entt::entity> planets;
 
+    entt::entity sun;
+
     void EnableTick() { to_tick = true; }
     void DisableTick() { to_tick = false; }
     bool ToTick() { return to_tick; }

@@ -26,7 +26,7 @@ class PlanetLoader : public HjsonLoader {
     const Hjson::Value& GetDefaultValues() override { return default_val; }
     bool LoadValue(const Hjson::Value& values, Universe& universe,
                    entt::entity entity) override;
-    void PostLoad(Universe& universe, entt::entity entity) override;
+    void PostLoad(Universe& universe, const entt::entity& entity) override;
 
  private:
     Hjson::Value default_val;

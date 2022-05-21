@@ -23,10 +23,6 @@
 namespace cqsp {
 namespace common {
 namespace systems {
-struct OrbitTree {
-    std::vector<entt::entity> bodies;
-};
-
 class SysOrbit : public ISimulationSystem {
  public:
     explicit SysOrbit(Game& game) : ISimulationSystem(game) {}
@@ -34,9 +30,6 @@ class SysOrbit : public ISimulationSystem {
     int Interval() override { return 1; }
 
     void ParseOrbitTree(entt::entity parent, entt::entity body);
-
- private:
-    OrbitTree tree;
 };
 
 class SysPath : public ISimulationSystem {
