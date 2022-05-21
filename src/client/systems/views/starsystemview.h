@@ -16,10 +16,6 @@
 */
 #pragma once
 
-#include <noiseutils.h>
-
-#include <thread>
-#include <atomic>
 #include <map>
 
 #include <entt/entt.hpp>
@@ -155,11 +151,6 @@ class SysStarSystemRenderer {
 
     void CheckResourceDistRender();
 
-    void SetPlanetTexture(TerrainImageGenerator &);
-    unsigned int GeneratePlanetTexture(noise::utils::Image& image);
-    void CheckPlanetTerrain();
-    void CreatePlanetTextures(TerrainImageGenerator&, cqsp::asset::Texture** albedo,
-                              cqsp::asset::Texture** heightmap);
     glm::vec3 CalculateMouseRay(const glm::vec3 &ray_nds);
     float GetWindowRatio();
 
@@ -172,16 +163,6 @@ class SysStarSystemRenderer {
 
     glm::vec3 sun_position;
     glm::vec3 sun_color;
-
-    std::thread generator_thread;
-    std::thread intermediate_generator_thread;
-
-    std::atomic_bool terrain_gen_complete = false;
-    std::atomic_bool less_detailed_gen_complete = false;
-    std::atomic_bool to_halt_terrain_generation = false;
-    std::map<entt::entity, TerrainImageGenerator> final_generators;
-    std::map<entt::entity, TerrainImageGenerator> intermediate_generators;
-    std::map<entt::entity, cqsp::common::components::bodies::Terrain> seeds;
 
     engine::LayerRenderer renderer;
 

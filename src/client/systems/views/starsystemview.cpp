@@ -184,7 +184,6 @@ void SysStarSystemRenderer::Render(float deltaTime) {
     glEnable(GL_BLEND);
 
     CalculateCamera();
-    CheckPlanetTerrain();
 
     DrawStars();
     DrawBodies();
@@ -197,8 +196,6 @@ void SysStarSystemRenderer::Render(float deltaTime) {
 void SysStarSystemRenderer::SeeStarSystem() {
     namespace cqspb = cqsp::common::components::bodies;
     m_universe.clear<ToRender>();
-
-    seeds.clear();
 
     GenerateOrbitLines();
 
@@ -216,64 +213,11 @@ void SysStarSystemRenderer::SeeStarSystem() {
         }
         auto textures = m_app.GetUniverse().get<cqspb::TexturedTerrain>(body);
         auto &data = m_universe.get_or_emplace<PlanetTexture>(body);
-        data.terrain = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>("core:"+textures.terrain_name);
+        data.terrain = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>("core:" + textures.terrain_name);
         if (textures.normal_name != "") {
-            data.normal = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>("core:"+textures.normal_name);
+            data.normal = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>("core:" + textures.normal_name);
         }
     }
-
-    SPDLOG_INFO("Creating planet terrain");
-    for (auto body : orbits) {
-        if (!m_app.GetUniverse().all_of<cqspb::Terrain>(body)) {
-            continue;
-        }
-        seeds[body] = m_app.GetUniverse().get<cqspb::Terrain>(body);
-        // Now generate terrain
-        cqsp::client::systems::TerrainImageGenerator generator;
-        generator.terrain = m_app.GetUniverse().get<cqspb::Terrain>(body);
-        generator.GenerateTerrain(m_universe, 1, 2);
-        // emplace
-        auto &data = m_universe.get_or_emplace<TerrainTextureData>(body);
-        data.DeleteData();
-        CreatePlanetTextures(generator, &data.terrain_albedo, &data.heightmap);
-    }
-
-    SPDLOG_INFO("Creating planet terrain thread");
-    generator_thread = std::thread([&]() {
-        ZoneScoped;
-        tracy::SetThreadName("Detailed terrain thread");
-        for (auto body : seeds) {
-            // Add a tag
-            // Now generate terrain
-            cqsp::client::systems::TerrainImageGenerator generator;
-            generator.terrain = body.second;
-            generator.GenerateTerrain(m_universe, 6, 10);
-            final_generators[body.first] = generator;
-            if (to_halt_terrain_generation) {
-                break;
-            }
-        }
-        terrain_gen_complete = true;
-        SPDLOG_INFO("Generated terrain");
-    });
-
-    intermediate_generator_thread = std::thread([&]() {
-        ZoneScoped;
-        tracy::SetThreadName("Less detailed terrain thread");
-        for (auto body : seeds) {
-            // Add a tag
-            // Now generate terrain
-            cqsp::client::systems::TerrainImageGenerator generator;
-            generator.terrain = body.second;
-            generator.GenerateTerrain(m_universe, 4, 5);
-            intermediate_generators[body.first] = generator;
-            if (to_halt_terrain_generation) {
-                break;
-            }
-        }
-        less_detailed_gen_complete = true;
-        SPDLOG_INFO("Generated terrain");
-    });
 }
 
 void SysStarSystemRenderer::SeeEntity() {
@@ -867,83 +811,6 @@ void SysStarSystemRenderer::CheckResourceDistRender() {
 #endif
 }
 
-void SysStarSystemRenderer::SetPlanetTexture(TerrainImageGenerator &generator) {
-    SPDLOG_INFO("Set terrain");
-    unsigned int gl_planet_texture = GeneratePlanetTexture(generator.GetAlbedoMap());
-    unsigned int gl_planet_heightmap  = GeneratePlanetTexture(generator.GetHeightMap());
-    generator.ClearData();
-
-    // Free textures in texture
-    for (auto t : planet.textures) {
-        delete t;
-    }
-    planet.textures.clear();
-
-    planet_texture = GenerateTexture(gl_planet_texture, generator.GetAlbedoMap());
-    planet_heightmap = GenerateTexture(gl_planet_heightmap, generator.GetAlbedoMap());
-
-    // Assign textures
-    planet.textures.reserve(2);
-    planet.textures[2] = (planet_texture);
-    planet.textures[2] = (planet_heightmap);
-}
-
-unsigned int SysStarSystemRenderer::GeneratePlanetTexture(noise::utils::Image &image) {
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.GetWidth(), image.GetHeight(), 0, GL_RGBA,
-                          GL_UNSIGNED_INT_8_8_8_8, image.GetConstSlabPtr());
-    glGenerateMipmap(GL_TEXTURE_2D);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    return texture;
-}
-
-void SysStarSystemRenderer::CheckPlanetTerrain() {
-    ZoneScoped;
-    if (less_detailed_gen_complete) {
-        SPDLOG_INFO("Completed less detailed planet generation");
-        intermediate_generator_thread.join();
-        // Generate planet terrain, free the things
-        //SetPlanetTexture(intermediate_image_generator);
-        // Go through the terrain and add the terrain for the body.
-        for (auto it = intermediate_generators.begin(); it != intermediate_generators.end(); it++) {
-            auto &data = m_universe.get_or_emplace<TerrainTextureData>(it->first);
-            data.DeleteData();
-            CreatePlanetTextures(it->second, &data.terrain_albedo, &data.heightmap);
-        }
-        less_detailed_gen_complete = false;
-    }
-
-    if (terrain_gen_complete) {
-        SPDLOG_INFO("Completed more detailed planet generation");
-        generator_thread.join();
-        // Generate planet terrain, free the things
-        //SetPlanetTexture(intermediate_image_generator);
-        // Go through the terrain and add the terrain for the body.
-        for (auto it = final_generators.begin(); it != final_generators.end(); it++) {
-            auto &data = m_universe.get_or_emplace<TerrainTextureData>(it->first);
-            data.DeleteData();
-            CreatePlanetTextures(it->second, &data.terrain_albedo, &data.heightmap);
-        }
-        terrain_gen_complete = false;
-        SPDLOG_INFO("Done terrain generation");
-    }
-}
-
-void SysStarSystemRenderer::CreatePlanetTextures(TerrainImageGenerator &generator,
-                                                 cqsp::asset::Texture** albedo, cqsp::asset::Texture** heightmap) {
-    unsigned int gl_planet_texture = GeneratePlanetTexture(generator.GetAlbedoMap());
-    unsigned int gl_planet_heightmap  = GeneratePlanetTexture(generator.GetHeightMap());
-    generator.ClearData();
-
-    *albedo = GenerateTexture(gl_planet_texture, generator.GetAlbedoMap());
-    *heightmap = GenerateTexture(gl_planet_heightmap, generator.GetAlbedoMap());
-}
-
 glm::vec3 SysStarSystemRenderer::CalculateMouseRay(const glm::vec3 &ray_nds) {
     glm::vec4 ray_clip = glm::vec4(ray_nds.x, ray_nds.y, -1.0, 1.0);
     glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
@@ -980,16 +847,6 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
         // Do the points
         line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);
     }
-}
-
-cqsp::asset::Texture *SysStarSystemRenderer::GenerateTexture(
-    unsigned int tex, noise::utils::Image &image) {
-    cqsp::asset::Texture *texture = new cqsp::asset::Texture();
-    texture->id = tex;
-    texture->width = image.GetWidth();
-    texture->height = image.GetHeight();
-    texture->texture_type = GL_TEXTURE_2D;
-    return texture;
 }
 
 glm::vec3 SysStarSystemRenderer::GetMouseIntersectionOnObject(int mouse_x, int mouse_y) {
@@ -1102,19 +959,4 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity &entity) {
 }
 
 SysStarSystemRenderer::~SysStarSystemRenderer() {
-    to_halt_terrain_generation = true;
-    if (generator_thread.joinable()) {
-        generator_thread.join();
-    }
-    if (intermediate_generator_thread.joinable()) {
-        intermediate_generator_thread.join();
-    }
-
-    // Free images
-    auto view = m_universe.view<TerrainTextureData>();
-    for (entt::entity ent : view) {
-        m_universe.get<TerrainTextureData>(ent).DeleteData();
-    }
-
-    // TODO(EhWhoAmI): free libnoise data
 }
