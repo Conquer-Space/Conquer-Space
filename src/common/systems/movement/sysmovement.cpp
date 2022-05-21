@@ -97,5 +97,4 @@ void SysPath::DoSystem() {
 }
 
 int SysPath::Interval() { return 1; }
-
-}
+}  // namespace cqsp::common::systems

@@ -137,7 +137,8 @@ void PlanetLoader::PostLoad(Universe& universe, const entt::entity& entity) {
     auto& parent_temp = universe.get<ParentTemp>(entity);
     auto& orbit = universe.get<components::types::Orbit>(entity);
     if (universe.planets.find(parent_temp.parent) == universe.planets.end()) {
-        SPDLOG_INFO("{} parent is not found: {}", universe.get<components::Identifier>(entity).identifier, parent_temp.parent);
+        SPDLOG_INFO("{} parent is not found: {}",
+                universe.get<components::Identifier>(entity).identifier, parent_temp.parent);
         orbit.CalculatePeriod();
         universe.remove<ParentTemp>(entity);
         return;

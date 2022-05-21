@@ -16,9 +16,9 @@
 */
 #include "common/systems/loading/hjsonloader.h"
 
-#include <vector>
-
 #include <spdlog/spdlog.h>
+
+#include <vector>
 
 #include "common/components/name.h"
 #include "common/systems/loading/loadutil.h"
