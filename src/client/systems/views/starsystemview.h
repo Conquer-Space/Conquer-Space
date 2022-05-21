@@ -91,6 +91,8 @@ class SysStarSystemRenderer {
 
     ~SysStarSystemRenderer();
 
+    const float scale_size = 10.f;
+
  private:
     entt::entity m_viewing_entity = entt::null;
     entt::entity terrain_displaying = entt::null;

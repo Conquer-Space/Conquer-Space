@@ -16,6 +16,8 @@
 */
 #pragma once
 
+#include <vector>
+
 #include "common/systems/isimulationsystem.h"
 
 namespace cqsp {
@@ -26,6 +28,8 @@ class SysOrbit : public ISimulationSystem {
     explicit SysOrbit(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
     int Interval() override { return 1; }
+
+    void ParseOrbitTree(entt::entity parent, entt::entity body);
 };
 
 class SysPath : public ISimulationSystem {

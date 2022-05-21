@@ -98,7 +98,7 @@ struct Orbit {
     double Mu = SunMu;
 
     // So we can prepare for moons and stuff
-    entt::entity referenceBody = entt::null;
+    entt::entity reference_body = entt::null;
 
     Orbit() = default;
     Orbit(kilometer semi_major_axis, double eccentricity,

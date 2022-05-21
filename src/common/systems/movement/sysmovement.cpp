@@ -22,22 +22,38 @@
 #include "common/components/coordinates.h"
 #include "common/components/units.h"
 
-void cqsp::common::systems::SysOrbit::DoSystem() {
+namespace cqsp::common::systems {
+void SysOrbit::DoSystem() {
+    Universe& universe = GetGame().GetUniverse();
+    ParseOrbitTree(entt::null, universe.sun);
+}
+
+void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     namespace cqspc = cqsp::common::components;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspt = cqsp::common::components::types;
     Universe& universe = GetGame().GetUniverse();
+    // Calculate the position
+    auto& orb = universe.get<cqspt::Orbit>(body);
+    cqspt::UpdateOrbit(orb, universe.date.ToSecond());
+    auto& pos = universe.get_or_emplace<cqspt::Kinematics>(body);
+    cqspt::UpdatePos(pos, orb);
 
-    auto bodies = universe.view<cqspt::Orbit>();
-    for (entt::entity body : bodies) {
-        auto& orb = universe.get<cqspt::Orbit>(body);
-        cqspt::UpdateOrbit(orb, universe.date.ToSecond());
-        auto& pos = universe.get_or_emplace<cqspt::Kinematics>(body);
-        cqspt::UpdatePos(pos, orb);
+    if (parent != entt::null) {
+        auto& p_pos = universe.get_or_emplace<cqspt::Kinematics>(parent);
+        pos.position += p_pos.position;
+    }
+
+    if (!universe.any_of<cqspc::bodies::OrbitalSystem>(body)) {
+        return;
+    }
+    for (entt::entity entity : universe.get<cqspc::bodies::OrbitalSystem>(body).children) {
+        // Calculate position
+        ParseOrbitTree(body, entity);
     }
 }
 
-void cqsp::common::systems::SysSurface::DoSystem() {
+void SysSurface::DoSystem() {
     namespace cqspc = cqsp::common::components;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspt = cqsp::common::components::types;
@@ -45,6 +61,8 @@ void cqsp::common::systems::SysSurface::DoSystem() {
     Universe& universe = GetGame().GetUniverse();
 
     auto objects = universe.view<cqspt::SurfaceCoordinate>();
+    // First put them in a tree
+    // Find all the entities
     for (entt::entity object : objects) {
         cqspt::SurfaceCoordinate& surface = universe.get<cqspt::SurfaceCoordinate>(object);
         //cqspt::Kinematics& surfacekin = universe.get_or_emplace<cqspt::Kinematics>(object);
@@ -55,11 +73,11 @@ void cqsp::common::systems::SysSurface::DoSystem() {
     }
 }
 
-int cqsp::common::systems::SysSurface::Interval() {
+int SysSurface::Interval() {
     return 1;
 }
 
-void cqsp::common::systems::SysPath::DoSystem() {
+void SysPath::DoSystem() {
     namespace cqspc = cqsp::common::components;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspt = cqsp::common::components::types;
@@ -78,4 +96,5 @@ void cqsp::common::systems::SysPath::DoSystem() {
     }
 }
 
-int cqsp::common::systems::SysPath::Interval() { return 1; }
+int SysPath::Interval() { return 1; }
+}  // namespace cqsp::common::systems

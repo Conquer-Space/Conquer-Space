@@ -34,12 +34,31 @@ struct Body {
 
     entt::entity star_system;
 
-    double mass;
+    /// <summary>
+    /// Radius of sphere of influence
+    /// rsoi = a(m/M)^2/5
+    /// </summary>
+    types::kilometer SOI;
+    types::kilogram mass;
+
+    // gravitational constant in km^3 * s^-2
+    double GM;
 };
 
 struct TexturedTerrain {
     std::string terrain_name;
     std::string normal_name;
+};
+
+/// <summary>
+/// An object for the children of an orbital object.
+/// </summary>
+struct OrbitalSystem {
+    // Set the tree
+    std::vector<entt::entity> children;
+    void push_back(const entt::entity& entity) {
+        children.push_back(entity);
+    }
 };
 
 struct Terrain {

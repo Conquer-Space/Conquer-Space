@@ -42,6 +42,7 @@ typedef double degree;
 typedef double radian;
 typedef double meter_cube;
 typedef double kilogram;
+typedef double earth_masses;
 typedef double joule;
 typedef double second;
 

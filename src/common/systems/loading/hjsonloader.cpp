@@ -18,18 +18,22 @@
 
 #include <spdlog/spdlog.h>
 
+#include <vector>
+
 #include "common/components/name.h"
 #include "common/systems/loading/loadutil.h"
 
-int cqsp::common::systems::loading::HjsonLoader::LoadHjson(
+namespace cqsp::common::systems::loading {
+int HjsonLoader::LoadHjson(
     const Hjson::Value& values, Universe& universe) {
     int assets = 0;
+    std::vector<entt::entity> entity_list;
     for (int i = 0; i < values.size(); i++) {
         Hjson::Value value = values[i];
 
         entt::entity entity = universe.create();
         if (!LoadInitialValues(universe, entity, value)) {
-            SPDLOG_INFO("No identifier");
+            SPDLOG_WARN("No identifier");
             universe.destroy(entity);
             continue;
         }
@@ -52,7 +56,15 @@ int cqsp::common::systems::loading::HjsonLoader::LoadHjson(
             universe.destroy(entity);
             continue;
         }
+        entity_list.push_back(entity);
         assets++;
     }
+
+    // Load all the assets again to parse?
+    for (entt::entity entity : entity_list) {
+        PostLoad(universe, entity);
+    }
+
     return assets;
 }
+}  // namespace cqsp::common::systems::loading

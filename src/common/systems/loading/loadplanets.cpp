@@ -23,8 +23,15 @@
 #include "common/systems/loading/loadutil.h"
 #include "common/components/coordinates.h"
 #include "common/components/bodies.h"
+#include "common/components/name.h"
 
 namespace cqsp::common::systems::loading {
+namespace {
+struct ParentTemp {
+    std::string parent;
+};
+}  // namespace
+
 bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
                              entt::entity entity) {
     using components::types::UnitType;
@@ -32,7 +39,6 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
     std::string identifier = values["identifier"];
     const Hjson::Value& orbit = values["orbit"];
     auto& orbit_comp = universe.emplace<components::types::Orbit>(entity);
-
     universe.emplace<components::bodies::Planet>(entity);
     auto& body_comp = universe.emplace<components::bodies::Body>(entity);
 
@@ -60,12 +66,24 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
         }
     }
 
+    body_comp.GM = values["gm"].to_double();
+
     bool radius_correct;
     body_comp.radius = ReadUnit(values["radius"].to_string(), UnitType::Distance, &radius_correct);
     if (!radius_correct) {
         SPDLOG_WARN("Issue with radius of {}: {}", identifier, values["radius"].to_string());
         return false;
     }
+
+    if (values["reference"].defined()) {
+        auto parent_name = values["reference"];
+        universe.emplace<ParentTemp>(entity, parent_name);
+    } else {
+        // It's the sun
+        universe.sun = entity;
+    }
+
+    universe.planets[identifier] = entity;
 
     if (orbit["semi_major_axis"].type() != Hjson::Type::String && orbit["semi_major_axis"].to_double() == 0) {
         SPDLOG_INFO("Semi major axis of {} is zero", identifier);
@@ -108,8 +126,32 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
         SPDLOG_WARN("Issue with mean anomaly of {}: {}", identifier, orbit["M0"].to_string());
         return false;
     }
-    orbit_comp.CalculatePeriod();
-
     return true;
+}
+
+void PlanetLoader::PostLoad(Universe& universe, const entt::entity& entity) {
+    // Set the parent
+    if (!universe.any_of<ParentTemp>(entity)) {
+        return;
+    }
+    auto& parent_temp = universe.get<ParentTemp>(entity);
+    auto& orbit = universe.get<components::types::Orbit>(entity);
+    if (universe.planets.find(parent_temp.parent) == universe.planets.end()) {
+        SPDLOG_INFO("{} parent is not found: {}",
+                universe.get<components::Identifier>(entity).identifier, parent_temp.parent);
+        orbit.CalculatePeriod();
+        universe.remove<ParentTemp>(entity);
+        return;
+    }
+    entt::entity parent = universe.planets[parent_temp.parent];
+    SPDLOG_INFO("{}'s parent is {}", universe.get<components::Identifier>(entity).identifier,
+                parent_temp.parent);
+    orbit.reference_body = parent;
+    // Set mu
+    orbit.Mu = universe.get<components::bodies::Body>(parent).GM;
+
+    orbit.CalculatePeriod();
+    universe.get_or_emplace<components::bodies::OrbitalSystem>(parent).push_back(entity);
+    universe.remove<ParentTemp>(entity);
 }
 }  // namespace cqsp::common::systems::loading

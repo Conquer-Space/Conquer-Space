@@ -664,9 +664,12 @@ void SysStarSystemRenderer::DrawStar(glm::vec3 &object_pos) {
 }
 
 void SysStarSystemRenderer::DrawTerrainlessPlanet(glm::vec3 &object_pos) {
+    namespace cqspb = cqsp::common::components::bodies;
+
     glm::mat4 position = glm::mat4(1.f);
     position = glm::translate(position, object_pos);
-
+    float scale = 1000 / 50000;
+    position = glm::scale(position, glm::vec3(scale));
     glm::mat4 transform = glm::mat4(1.f);
     position = position * transform;
 
@@ -1081,9 +1084,15 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity &entity) {
     if (!m_universe.any_of<PlanetOrbit>(entity)) {
         return;
     }
+    glm::vec3 center = glm::vec3(0, 0, 0);
+    // If it has a parent, draw around the parent
+    entt::entity ref;
+    if ((ref = m_universe.get<common::components::types::Orbit>(entity).reference_body) != entt::null) {
+        center = m_universe.get<common::components::types::Kinematics>(ref).position * scale_size;
+    }
     glm::mat4 transform = glm::mat4(1.f);
-    transform = glm::translate(transform, CalculateCenteredObject(glm::vec3(0, 0, 0)));
-    transform = glm::scale(transform, glm::vec3(10, 10, 10));
+    transform = glm::translate(transform, CalculateCenteredObject(center));
+    transform = glm::scale(transform, glm::vec3(scale_size, scale_size, scale_size));
     // Draw orbit
     orbit_line.SetMVP(transform, camera_matrix, m_app.Get3DProj());
     orbit_line.shaderProgram->Set("color", glm::vec4(1, 1, 1, 1));
