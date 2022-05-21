@@ -72,7 +72,7 @@
         reference: earth
         gm: 0
         orbit: {
-            semi_major_axis: 384308437.7707066 km
+            semi_major_axis: 384308.4377707066 km
             eccentricity: 0.05328149353682574
             inclination: 5.145 deg
             arg_periapsis: 199.7640930160823 deg

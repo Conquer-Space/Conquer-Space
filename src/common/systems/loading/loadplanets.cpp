@@ -23,6 +23,7 @@
 #include "common/systems/loading/loadutil.h"
 #include "common/components/coordinates.h"
 #include "common/components/bodies.h"
+#include "common/components/name.h"
 
 namespace cqsp::common::systems::loading {
 namespace {
@@ -73,6 +74,13 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
         return false;
     }
 
+    if (values["reference"].defined()) {
+        auto parent_name = values["reference"];
+        universe.emplace<ParentTemp>(entity, parent_name);
+    }
+
+    universe.planets[identifier] = entity;
+
     if (orbit["semi_major_axis"].type() != Hjson::Type::String && orbit["semi_major_axis"].to_double() == 0) {
         SPDLOG_INFO("Semi major axis of {} is zero", identifier);
         return true;
@@ -115,14 +123,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
         return false;
     }
 
-    if (orbit["reference"].defined()) {
-        auto parent_name = orbit["reference"];
-        universe.emplace<ParentTemp>(entity, parent_name);
-    }
-
     orbit_comp.CalculatePeriod();
-
-    universe.planets[identifier] = entity;
     return true;
 }
 
@@ -134,8 +135,13 @@ void PlanetLoader::PostLoad(Universe& universe, entt::entity entity) {
     auto& parent_temp = universe.get<ParentTemp>(entity);
     auto& orbit = universe.get<components::types::Orbit>(entity);
     if (universe.planets.find(parent_temp.parent) == universe.planets.end()) {
+        SPDLOG_INFO("{} parent is not found: {}", universe.get<components::Identifier>(entity).identifier, parent_temp.parent);
+        universe.remove<ParentTemp>(entity);
         return;
     }
+    SPDLOG_INFO("{}'s parent is {}", universe.get<components::Identifier>(entity).identifier,
+                parent_temp.parent);
     orbit.reference_body = universe.planets[parent_temp.parent];
+    universe.remove<ParentTemp>(entity);
 }
 }  // namespace cqsp::common::systems::loading

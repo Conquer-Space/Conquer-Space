@@ -26,11 +26,14 @@ namespace systems {
 struct OrbitTree {
     std::vector<entt::entity> bodies;
 };
+
 class SysOrbit : public ISimulationSystem {
  public:
     explicit SysOrbit(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
     int Interval() override { return 1; }
+
+    void ParseOrbitTree(entt::entity parent, entt::entity body);
 
  private:
     OrbitTree tree;

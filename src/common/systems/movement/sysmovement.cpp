@@ -22,23 +22,60 @@
 #include "common/components/coordinates.h"
 #include "common/components/units.h"
 
-void cqsp::common::systems::SysOrbit::DoSystem() {
+namespace cqsp::common::systems {
+void SysOrbit::DoSystem() {
     namespace cqspc = cqsp::common::components;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspt = cqsp::common::components::types;
     Universe& universe = GetGame().GetUniverse();
 
     // Build the tree
+    // Find the orbit without a parent
+    universe.clear<OrbitTree>();
     auto bodies = universe.view<cqspt::Orbit>();
+
+    entt::entity root = entt::null;
     for (entt::entity body : bodies) {
         auto& orb = universe.get<cqspt::Orbit>(body);
-        cqspt::UpdateOrbit(orb, universe.date.ToSecond());
-        auto& pos = universe.get_or_emplace<cqspt::Kinematics>(body);
-        cqspt::UpdatePos(pos, orb);
+        // Calculate the entity
+        if (orb.reference_body == entt::null) {
+            // Set the root
+            root = body;
+            continue;
+        }
+        universe.get_or_emplace<OrbitTree>(orb.reference_body).bodies.push_back(body);
+    }
+    // Set the thing
+    ParseOrbitTree(entt::null, root);
+    // Then build the tree, somehow
+}
+
+void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
+    namespace cqspc = cqsp::common::components;
+    namespace cqsps = cqsp::common::components::ships;
+    namespace cqspt = cqsp::common::components::types;
+    Universe& universe = GetGame().GetUniverse();
+    // Calculate the position
+    auto& orb = universe.get<cqspt::Orbit>(body);
+    cqspt::UpdateOrbit(orb, universe.date.ToSecond());
+    auto& pos = universe.get_or_emplace<cqspt::Kinematics>(body);
+    cqspt::UpdatePos(pos, orb);
+
+    if (parent != entt::null) {
+        auto& p_pos = universe.get_or_emplace<cqspt::Kinematics>(parent);
+        pos.position += p_pos.position;
+    }
+
+    if (!universe.any_of<OrbitTree>(body)) {
+        return;
+    }
+    for (entt::entity entity : universe.get<OrbitTree>(body).bodies) {
+        // Calculate position
+        ParseOrbitTree(body, entity);
     }
 }
 
-void cqsp::common::systems::SysSurface::DoSystem() {
+void SysSurface::DoSystem() {
     namespace cqspc = cqsp::common::components;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspt = cqsp::common::components::types;
@@ -58,11 +95,11 @@ void cqsp::common::systems::SysSurface::DoSystem() {
     }
 }
 
-int cqsp::common::systems::SysSurface::Interval() {
+int SysSurface::Interval() {
     return 1;
 }
 
-void cqsp::common::systems::SysPath::DoSystem() {
+void SysPath::DoSystem() {
     namespace cqspc = cqsp::common::components;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspt = cqsp::common::components::types;
@@ -81,4 +118,6 @@ void cqsp::common::systems::SysPath::DoSystem() {
     }
 }
 
-int cqsp::common::systems::SysPath::Interval() { return 1; }
+int SysPath::Interval() { return 1; }
+
+}

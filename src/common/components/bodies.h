@@ -50,6 +50,11 @@ struct TexturedTerrain {
     std::string normal_name;
 };
 
+struct OrbitTree {
+    // Set the tree
+    std::vector<entt::entity> children;
+};
+
 struct Terrain {
     int seed;
     entt::entity terrain_type;

@@ -33,7 +33,7 @@ int cqsp::common::systems::loading::HjsonLoader::LoadHjson(
 
         entt::entity entity = universe.create();
         if (!LoadInitialValues(universe, entity, value)) {
-            SPDLOG_INFO("No identifier");
+            SPDLOG_WARN("No identifier");
             universe.destroy(entity);
             continue;
         }
@@ -59,6 +59,7 @@ int cqsp::common::systems::loading::HjsonLoader::LoadHjson(
         entity_list.push_back(entity);
         assets++;
     }
+
     // Load all the assets again to parse?
     for (entt::entity entity : entity_list) {
         PostLoad(universe, entity);
