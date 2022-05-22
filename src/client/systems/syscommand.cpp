@@ -56,7 +56,7 @@ void cqsp::client::systems::SysCommand::DoUI(int delta_time) {
     int index = 0;
     // Get selected planet
     auto system = GetApp().GetUniverse().view<common::components::types::Orbit>();
-    entt::entity current_planet = cqsp::scene::GetCurrentViewingPlanet(GetApp());
+    entt::entity current_planet = cqsp::scene::GetCurrentViewingPlanet(GetUniverse());
     for (auto entity : system) {
         bool is_selected = (entity == current_planet);
         std::string planet_name = fmt::format("{}", entity);
@@ -83,7 +83,7 @@ void cqsp::client::systems::SysCommand::DoUI(int delta_time) {
 void cqsp::client::systems::SysCommand::DoUpdate(int delta_time) {
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqspt = cqsp::common::components::types;
-    selected_planet = cqsp::scene::GetCurrentViewingPlanet(GetApp());
+    selected_planet = cqsp::scene::GetCurrentViewingPlanet(GetUniverse());
     /*entt::entity mouse_over = GetUniverse()
             .view<cqsp::client::systems::MouseOverEntity, cqspt::Kinematics>().front();
     if (!ImGui::GetIO().WantCaptureMouse &&

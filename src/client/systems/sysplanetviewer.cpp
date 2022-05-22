@@ -125,7 +125,7 @@ void SysPlanetInformation::DoUpdate(int delta_time) {
     // If clicked on a planet, go to the planet
     // Get the thing
     namespace cqspb = cqsp::common::components::bodies;
-    selected_planet = cqsp::scene::GetCurrentViewingPlanet(GetApp());
+    selected_planet = cqsp::scene::GetCurrentViewingPlanet(GetUniverse());
     entt::entity mouse_over = GetUniverse().view<MouseOverEntity>().front();
     if (!ImGui::GetIO().WantCaptureMouse &&
                 GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) &&
