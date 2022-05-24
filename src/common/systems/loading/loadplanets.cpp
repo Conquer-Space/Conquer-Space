@@ -20,10 +20,20 @@
 
 #include <string>
 
+
 #include "common/systems/loading/loadutil.h"
 #include "common/components/coordinates.h"
 #include "common/components/bodies.h"
 #include "common/components/name.h"
+#include "common/components/surface.h"
+#include "common/components/area.h"
+#include "common/components/infrastructure.h"
+#include "common/components/population.h"
+#include "common/components/coordinates.h"
+#include "common/components/economy.h"
+
+namespace cqspt = cqsp::common::components::types;
+namespace cqspc = cqsp::common::components;
 
 namespace cqsp::common::systems::loading {
 namespace {
@@ -74,6 +84,37 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
         SPDLOG_WARN("Issue with radius of {}: {}", identifier, values["radius"].to_string());
         return false;
     }
+
+    if (values["habitation"].type() == Hjson::Type::Bool) {
+        SPDLOG_INFO("{} is Habitable", identifier);
+        auto& habitats = universe.emplace<cqspc::Habitation>(entity);
+        universe.emplace<cqspc::MarketCenter>(entity);
+        if (values["settlements"].type() == Hjson::Type::Int64) {
+            int cities = values["settlements"].to_int64();
+            for (int i = 0; i < cities; i++) 
+            {
+                
+                entt::entity newpopulation = universe.create();
+                universe.emplace<cqspc::PopulationSegment>(newpopulation)
+                    .population = values["population"].to_int64();
+                ;
+                entt::entity newcity = universe.create();
+                universe.emplace<cqspc::Settlement>(newcity)
+                    .population.push_back(newpopulation);
+                universe.emplace<cqspc::Industry>(newcity);
+                universe.emplace<cqspt::SurfaceCoordinate>(newcity, 0 ,0 );
+                universe.emplace<cqspc::Name>(newcity).name =
+                    "City " + std::to_string(i);
+                
+                
+                
+                universe.emplace<cqspc::infrastructure::SpacePort>(newcity);
+                habitats.settlements.push_back(newcity);
+            }
+        }
+    }
+
+
 
     if (values["reference"].defined()) {
         auto parent_name = values["reference"];

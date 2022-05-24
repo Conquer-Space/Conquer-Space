@@ -698,7 +698,9 @@ void SysStarSystemRenderer::RenderCities(glm::vec3 &object_pos, const entt::enti
         // Calculate position to render
         if (!m_app.GetUniverse().any_of<Offset>(city_entity)) {
             // Calculate offset
+            return;
         }
+        Offset doffset = m_app.GetUniverse().get<Offset>(city_entity);
         glm::vec3 city_pos = m_app.GetUniverse().get<Offset>(city_entity).offset;
         // Check if line of sight and city position intersects the sphere that is the planet
 
