@@ -73,12 +73,15 @@ void SysPlanetInformation::DisplayPlanet() {
     } else {
         ImGui::SetNextWindowCollapsed(false, ImGuiCond_Always);
     }
-    std::string planet_name = "Planet";
+    std::string planet_name = "NULL";
     if (selected_planet == entt::null) {
         return;
     }
-    if (GetUniverse().all_of<cqspc::Name>(selected_planet)) {
-        planet_name = GetUniverse().get<cqspc::Name>(selected_planet);
+
+    if (GetUniverse().all_of<cqspc::Identifier>(selected_planet)) {
+        if (view_mode == ViewMode::PLANET_VIEW)
+            planet_name =
+                "Viewing Planet: " + GetUniverse().get<cqspc::Identifier>(selected_planet).identifier;
     }
     ImGui::Begin(planet_name.c_str(), &to_see, window_flags | ImGuiWindowFlags_NoCollapse);
     switch (view_mode) {
@@ -132,7 +135,8 @@ void SysPlanetInformation::DoUpdate(int delta_time) {
                 mouse_over == selected_planet && !cqsp::scene::IsGameHalted() &&
         !GetApp().MouseDragged()) {
         to_see = true;
-        SPDLOG_INFO("Switched entity");
+        SPDLOG_INFO("Switched entity: {}",
+                    GetUniverse().get<cqspc::Identifier>(selected_planet).identifier);
     }
     if (!GetUniverse().valid(selected_planet) || !GetUniverse().all_of<cqspb::Body>(selected_planet)) {
         to_see = false;
@@ -206,6 +210,7 @@ void SysPlanetInformation::CityInformationPanel() {
 
 void SysPlanetInformation::PlanetInformationPanel() {
     if (!GetUniverse().all_of<cqspc::Habitation>(selected_planet)) {
+        ImGui::TextFmt("Planet is uninhabited");
         return;
     }
     auto& habit = GetUniverse().get<cqspc::Habitation>(selected_planet);
