@@ -21,7 +21,6 @@
 #include <entt/entt.hpp>
 #include <glm/glm.hpp>
 
-#include "client/systems/sysplanetterraingenerator.h"
 #include "common/universe.h"
 #include "engine/graphics/renderable.h"
 #include "engine/renderer/framebuffer.h"
@@ -103,8 +102,8 @@ class SysStarSystemRenderer {
     cqsp::engine::Renderable ship_overlay;
     cqsp::engine::Renderable city;
     cqsp::engine::Renderable sun;
-    cqsp::engine::Renderable orbit_line;
 
+    cqsp::asset::ShaderProgram_t orbit_shader;
 #if FALSE
     // Disabled for now
     asset::ShaderProgram_t no_light_shader;
@@ -156,7 +155,6 @@ class SysStarSystemRenderer {
 
     void GenerateOrbitLines();
 
-    cqsp::asset::Texture* GenerateTexture(unsigned int, noise::utils::Image&);
     // How much to scale the the star system.
     const double divider = 0.01;
     float window_ratio;
@@ -165,8 +163,6 @@ class SysStarSystemRenderer {
     glm::vec3 sun_color;
 
     engine::LayerRenderer renderer;
-
-    cqsp::common::components::types::Orbit orb;
 
     int ship_icon_layer;
     int planet_icon_layer;

@@ -297,6 +297,10 @@ inline Vec3AU toVec3AU(const Orbit& orb, radian theta) {
     return vec/(float) KmInAu;
 }
 
+inline glm::vec3 toVec3(const Orbit& orb, radian theta) {
+    return OrbitToVec3(orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN, orb.w, theta);
+}
+
 /// <summary>
 /// Converts orbit to AU coorrdinates.
 /// </summary>

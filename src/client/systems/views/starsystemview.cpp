@@ -127,21 +127,15 @@ void SysStarSystemRenderer::Initialize() {
     // Initialize sun
     sun.mesh = sphere_mesh;
     sun.shaderProgram = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:sunshader")->MakeShader();
+
+    orbit_shader = sun.shaderProgram;
+
     auto buffer_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:framebuffer")->MakeShader();
 
     ship_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
     physical_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
     planet_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
     skybox_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
-
-    orbit_line.mesh = engine::primitive::CreateLineCircle(256, 1);
-    orbit_line.shaderProgram =
-        m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:sunshader")->MakeShader();
-    orb.semi_major_axis = 4;
-    orb.eccentricity = 0;
-    orb.inclination = 1;
-    orb.LAN = 0;
-    orb.w = 1;
 }
 
 void SysStarSystemRenderer::OnTick() {
@@ -361,7 +355,7 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
     namespace cqsps = cqsp::common::components::ships;
     // Draw other bodies
     auto bodies = m_app.GetUniverse().view<ToRender, cqspb::Body>(entt::exclude<cqspb::LightEmitter>);
-
+    const double dist = 0.4;
     renderer.BeginDraw(planet_icon_layer);
     glDepthFunc(GL_ALWAYS);
     for (auto body_entity : bodies) {
@@ -371,7 +365,7 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
         // Draw Ships
         namespace cqspc = cqsp::common::components;
         namespace cqspt = cqsp::common::components::types;
-        if (glm::distance(object_pos, cam_pos) > 200) {
+        if (glm::distance(object_pos, cam_pos) > dist) {
             // Check if it's obscured by a planet, but eh, we can deal with it later
             // Set planet circle color
             planet_circle.shaderProgram->UseProgram();
@@ -391,7 +385,9 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
         namespace cqspc = cqsp::common::components;
         namespace cqspt = cqsp::common::components::types;
 
-        if (glm::distance(object_pos, cam_pos) <= 200) {
+        // This can probably switched to some log system based off the mass of
+        // a planet.
+        if (glm::distance(object_pos, cam_pos) <= dist) {
             // Check if planet has terrain or not
             if (m_app.GetUniverse().all_of<cqspb::Terrain>(body_entity)) {
                 // Do empty terrain
@@ -410,7 +406,7 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
     renderer.BeginDraw(ship_icon_layer);
     for (auto body_entity : bodies) {
         glm::vec3 object_pos = CalculateCenteredObject(body_entity);
-        if (glm::distance(object_pos, cam_pos) <= 200) {
+        if (glm::distance(object_pos, cam_pos) <= dist) {
             RenderCities(object_pos, body_entity);
         }
     }
@@ -479,7 +475,6 @@ void SysStarSystemRenderer::DrawPlanetIcon(glm::vec3 &object_pos) {
     planetDispMat = glm::scale(planetDispMat, glm::vec3(1, window_ratio, 1));
     glm::mat4 twodimproj =  glm::mat4(1.0f);
 
-    planet_circle.shaderProgram->UseProgram();
     planet_circle.shaderProgram->setMat4("model", planetDispMat);
     planet_circle.shaderProgram->setMat4("projection", twodimproj);
 
@@ -827,9 +822,11 @@ float SysStarSystemRenderer::GetWindowRatio() {
 
 void SysStarSystemRenderer::GenerateOrbitLines() {
     SPDLOG_INFO("Creating planet orbits");
-    auto system = m_app.GetUniverse().view<common::components::types::Orbit>();
+    auto system = m_app.GetUniverse().get<common::components::bodies::OrbitalSystem>(
+        m_app.GetUniverse().sun);
     // Initialize all the orbits and stuff
-    for (auto body : system) {
+    // Get sun orbits
+    for (auto body : system.children) {
         // Generate the orbit
         auto& orb = m_universe.get<common::components::types::Orbit>(body);
         if (orb.semi_major_axis == 0) {
@@ -921,6 +918,7 @@ entt::entity SysStarSystemRenderer::GetMouseOnObject(int mouse_x, int mouse_y) {
             // Check for intersection for sphere
             glm::vec3 sub = cam_pos - object_pos;
             float b = glm::dot(ray_wor, sub);
+            // Object radius
             float c = glm::dot(sub, sub) - radius * radius;
 
             // Get the closer value
@@ -951,8 +949,8 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity &entity) {
     transform = glm::translate(transform, CalculateCenteredObject(center));
     transform = glm::scale(transform, glm::vec3(scale_size, scale_size, scale_size));
     // Draw orbit
-    orbit_line.SetMVP(transform, camera_matrix, m_app.Get3DProj());
-    orbit_line.shaderProgram->Set("color", glm::vec4(1, 1, 1, 1));
+    orbit_shader->SetMVP(transform, camera_matrix, m_app.Get3DProj());
+    orbit_shader->Set("color", glm::vec4(1, 1, 1, 1));
     // Set to the center of the universe
     auto& orbit = m_universe.get<PlanetOrbit>(entity);
     orbit.orbit_mesh->Draw();
