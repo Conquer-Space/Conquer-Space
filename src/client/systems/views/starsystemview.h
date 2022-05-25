@@ -86,8 +86,6 @@ class SysStarSystemRenderer {
 
     ~SysStarSystemRenderer();
 
-    const float scale_size = 10.f;
-
  private:
     entt::entity m_viewing_entity = entt::null;
     entt::entity terrain_displaying = entt::null;
@@ -132,7 +130,7 @@ class SysStarSystemRenderer {
     void DrawCityIcon(glm::vec3 &object_pos);
     void DrawPlanet(glm::vec3 &object_pos, entt::entity entity);
     void DrawTexturedPlanet(glm::vec3 &object_pos, entt::entity entity);
-    void DrawStar(glm::vec3 &object_pos);
+    void DrawStar(const entt::entity& entity, glm::vec3 &object_pos);
     void DrawTerrainlessPlanet(glm::vec3 &object_pos);
     void RenderCities(glm::vec3 &object_pos, const entt::entity &body_entity);
     bool CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos);
@@ -173,6 +171,9 @@ class SysStarSystemRenderer {
     bool is_rendering_founding_city = false;
     glm::vec3 city_founding_position;
     entt::entity on_planet;
+
+    float view_scale = 10.f;
+    // There are 2 scales, the AU scale and the 
 };
 }  // namespace systems
 }  // namespace client
