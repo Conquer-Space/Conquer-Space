@@ -54,6 +54,9 @@
 #include "common/systems/actions/cityactions.h"
 
 using cqsp::client::systems::SysStarSystemRenderer;
+
+namespace cqspb = cqsp::common::components::bodies;
+
 SysStarSystemRenderer::SysStarSystemRenderer(cqsp::common::Universe &_u,
                                                 cqsp::engine::Application &_a) :
                                                 m_universe(_u), m_app(_a),
@@ -748,7 +751,9 @@ void SysStarSystemRenderer::CalculateCityPositions() {
             continue;
         }
         auto& coord = m_app.GetUniverse().get<cqspt::SurfaceCoordinate>(city_entity);
-        m_app.GetUniverse().emplace_or_replace<Offset>(city_entity, cqspt::toVec3(coord,  1));
+        cqspb::Body parent = m_app.GetUniverse().get<cqspb::Body>(m_viewing_entity);
+        m_app.GetUniverse().emplace_or_replace<Offset>(
+            city_entity, cqspt::toVec3(coord, parent.radius/50000));
     }
     SPDLOG_INFO("Calculated offset");
 }
