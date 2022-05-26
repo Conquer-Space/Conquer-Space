@@ -31,9 +31,11 @@
 #include "common/components/population.h"
 #include "common/components/coordinates.h"
 #include "common/components/economy.h"
+#include "common/systems/actions/factoryconstructaction.h"
 
 namespace cqspt = cqsp::common::components::types;
 namespace cqspc = cqsp::common::components;
+namespace cqspa = cqsp::common::systems::actions;
 
 namespace cqsp::common::systems::loading {
 namespace {
@@ -88,7 +90,8 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
     if (values["habitation"].type() == Hjson::Type::Bool) {
         SPDLOG_INFO("{} is Habitable", identifier);
         auto& habitats = universe.emplace<cqspc::Habitation>(entity);
-        universe.emplace<cqspc::MarketCenter>(entity);
+        universe.emplace<cqspc::MarketCenter>(entity).market = entity;
+        universe.emplace<cqspc::Market>(entity);
         if (values["settlements"].type() == Hjson::Type::Int64) {
             int cities = values["settlements"].to_int64();
             for (int i = 0; i < cities; i++) 
@@ -96,18 +99,41 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
                 
                 entt::entity newpopulation = universe.create();
                 universe.emplace<cqspc::PopulationSegment>(newpopulation)
-                    .population = values["population"].to_int64();
-                ;
+                    .population = values["population"].to_int64() * 1000000;
+
                 entt::entity newcity = universe.create();
+                entt::entity commercial = universe.create();
+
+                universe.emplace<cqspc::Employer>(commercial);
+                universe.emplace<cqspc::Commercial>(commercial, newcity, 0);
+                universe.emplace<cqspc::Industry>(newcity);
+                universe.get<cqspc::Industry>(newcity).industries.push_back(
+                    commercial);
                 universe.emplace<cqspc::Settlement>(newcity)
                     .population.push_back(newpopulation);
-                universe.emplace<cqspc::Industry>(newcity);
-                universe.emplace<cqspt::SurfaceCoordinate>(newcity, 0 ,0 );
+
+                universe.emplace<cqspt::SurfaceCoordinate>(
+                    newcity, (rand() % 180) - 90, (rand() % 360) - 180);
                 universe.emplace<cqspc::Name>(newcity).name =
                     "City " + std::to_string(i);
-                
-                
-                
+                cqspc::ResourceLedger goods =
+                    universe.emplace<cqspc::ResourceLedger>(newcity);
+                 
+
+                for (entt::entity entity :
+                                 universe.view<cqspc::Matter>()) {
+                    goods[entity] = -1;
+
+                }
+                SPDLOG_INFO("Making city");
+                universe.emplace<cqspc::Employee>(newpopulation);
+                for (entt::entity entity : universe.view<cqspc::Recipe>()) {
+                    entt::entity factory =
+                        cqspa::CreateFactory(universe, newcity, entity, 1);
+
+                }
+
+
                 universe.emplace<cqspc::infrastructure::SpacePort>(newcity);
                 habitats.settlements.push_back(newcity);
             }
