@@ -17,7 +17,7 @@
 #include "common/systems/actions/factoryconstructaction.h"
 
 #include <spdlog/spdlog.h>
-
+#include <map>
 #include "common/components/resource.h"
 #include "common/components/area.h"
 #include "common/components/economy.h"
@@ -53,7 +53,19 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
     prod.current_production = productivity;
     prod.max_production = static_cast<float>(productivity);
 
-    universe.emplace<cqspc::ResourceStockpile>(factory);
+    ;
+    cqspc::ResourceLedger& factorystock =
+        universe.emplace<cqspc::ResourceStockpile>(factory);
+    for (std::pair<const entt::entity, double> entity: universe.get<cqspc::Recipe>(recipe).input) {
+        factorystock[entity.first] = 1;
+    }
+    for (std::pair<const entt::entity, double> entity :
+         universe.get<cqspc::Recipe>(recipe).output) {
+        factorystock[entity.first] = 1;
+    }
+    //for (entt::entity entity : universe.view<cqspc::Matter>()) {
+    //    factorystock.setlocal(entity, 1);
+    //}
     auto& employer = universe.emplace<cqspc::Employer>(factory);
     employer.population_fufilled = 1000000;
     employer.population_needed = 1000000;
