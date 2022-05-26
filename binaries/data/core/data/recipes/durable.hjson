@@ -1,0 +1,154 @@
+# This file is part of Conquer Space
+#
+# This is the default file for recipes, and also serves as a demonstration for stuff
+[
+    {
+        name: Computer Manufacturing
+        identifier: computer_man
+        input: {
+            nmetal: 1
+            remetal: 1
+        }
+        elasticity: {
+            nmetal: 1
+            remetal: 1
+        }
+        output: {
+            computer: 1
+        }
+        # Cost of factory for every recipe we dump on it
+        # In the future, it would be nice to add a maximum to how much this will be able to add
+        # So that we can have a cap on how much a factory can work with.
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            # This is a ratio, which means that fractions of this recipe can be used
+            ratio
+        ]
+    }
+    {
+        name: Recreational Goods Manufacturing
+        identifier: recgoods_man
+        input: {
+            fmetal: 1
+            plastic: 1
+            computer: 1
+        }
+        elasticity: {
+            fmetal: 1
+            plastic: 1
+            computer: 1
+        }
+        output: {
+            recgoods: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name: Household Goods Manufacturing
+        identifier: housegoods_man
+        input: {
+            plastic: 1
+        }
+        elasticity: {
+            plastic: 1
+        }
+        output: {
+            housegoods: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name: Equipment Manufacturing
+        identifier: egoods_man
+        input: {
+            fmetal: 1
+            computer: 1
+        }
+        elasticity: {
+            fmetal: 1
+            computer: 1
+        }
+        output: {
+            egoods: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name: Car Manufacturing
+        identifier: motorvehicles_man
+        input: {
+            fmetal: 1
+            computer: 1
+        }
+        elasticity: {
+            fmetal: 1
+            computer: 1
+        }
+        output: {
+            motorvehicles: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+]

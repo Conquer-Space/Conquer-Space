@@ -1,0 +1,55 @@
+# This file is part of Conquer Space
+#
+[
+    {
+        name: Ferrous Metal
+        identifier: fmetal
+        volume: 1 m3
+        mass: 7874 kg
+        # Initial price
+        price: 1
+        tags: [
+            raw
+        ]
+    }
+    {
+        name: Noble Metal
+        identifier: nmetal
+        volume: 1 m3
+        mass: 8960 kg
+        price: 1
+        tags: [
+            raw
+        ]
+    }
+    {
+        name: Rare Earth Metal
+        identifier: remetal
+        volume: 1 m3
+        mass: 2700 kg
+        price: 1.5
+        tags: [
+            raw
+        ]
+    }
+    {
+        name: Plastic
+        identifier: plastic
+        volume: 1 m3
+        mass: 6500 kg
+        price: 7
+        tags: [
+            raw
+        ]
+    }
+    {
+        name: Masonary
+        identifier: bricks
+        volume: 1 m3
+        mass: 6500 kg
+        price: 7
+        tags: [
+            raw
+        ]
+    }
+]

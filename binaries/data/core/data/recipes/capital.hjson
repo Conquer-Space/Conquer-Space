@@ -1,0 +1,119 @@
+# This file is part of Conquer Space
+#
+# This is the default file for recipes, and also serves as a demonstration for stuff
+[
+    {
+        name:Transports
+        identifier: transport_cap
+        input: {
+            motorvehicles: 1
+        }
+        elasticity: {
+            motorvehicles: 1
+        }
+        output: {
+            transport: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name:Construction Sector
+        identifier: structures_cap
+        input: {
+            bricks: 1
+            fmetal: 1
+            housegoods: 1
+        }
+        elasticity: {
+            bricks: 1
+            fmetal: 1
+            housegoods: 1
+        }
+        output: {
+            transport: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name:Industrial Equipment Manufacturing
+        identifier: structures_cap
+        input: {
+            motorvehicles: 1
+            egoods: 1
+        }
+        elasticity: {
+            motorvehicles: 1
+            egoods: 1
+        }
+        output: {
+            industrial: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name:System Integration
+        identifier: structures_cap
+        input: {
+            computer: 1
+        }
+        elasticity: {
+            computer: 1
+        }
+        output: {
+            computersystems: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+]

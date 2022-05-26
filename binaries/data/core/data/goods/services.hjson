@@ -1,0 +1,64 @@
+# This file is part of Conquer Space
+#
+[
+    {
+        name: Power
+        identifier: power
+        volume: 1 m3
+        mass: 2500 kg
+        price: 0.75
+        tags: [
+            service
+        ]
+    }
+    {
+        name: Recreation
+        identifier: recreation
+        volume: 1 m3
+        mass: 2500 kg
+        price: 0.75
+        tags: [
+            service
+        ]
+    }
+    {
+        name: Housing
+        identifier: housing
+        volume: 1 m3
+        mass: 2500 kg
+        price: 0.75
+        tags: [
+            service
+        ]
+    }
+    {
+        name: Medical
+        identifier: medical
+        volume: 1 m3
+        mass: 2500 kg
+        price: 0.75
+        tags: [
+            service
+        ]
+    }
+    {
+        name: Public Transport
+        identifier: ptransport
+        volume: 1 m3
+        mass: 2500 kg
+        price: 0.75
+        tags: [
+            service
+        ]
+    }
+    {
+        name: Finance
+        identifier: finance
+        volume: 1 m3
+        mass: 2500 kg
+        price: 0.75
+        tags: [
+            service
+        ]
+    }
+]

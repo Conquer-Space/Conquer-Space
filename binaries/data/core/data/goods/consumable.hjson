@@ -1,0 +1,64 @@
+# This file is part of Conquer Space
+#
+[
+    {
+        name: Fuel
+        identifier: fuel
+        volume: 1 m3
+        mass: 2500 kg
+        price: 0.75
+        tags: [
+            consumable
+        ]
+    }
+    {
+        name: Potable Water
+        identifier: potwater
+        volume: 1 m3
+        mass: 2500 kg
+        price: 0.75
+        tags: [
+            consumable
+        ]
+    }
+    {
+        name: Crops
+        identifier: crops
+        volume: 1 m3
+        mass: 2500 kg
+        price: 0.75
+        tags: [
+            consumable
+        ]
+    }
+    {
+        name: ASF
+        identifier: animals
+        volume: 1 m3
+        mass: 2500 kg
+        price: 0.75
+        tags: [
+            consumable
+        ]
+    }
+    {
+        name: Garments
+        identifier: garments
+        volume: 1 m3
+        mass: 2500 kg
+        price: 0.75
+        tags: [
+            consumable
+        ]
+    }
+        {
+        name: Food
+        identifier: food
+        volume: 1 m3
+        mass: 2500 kg
+        price: 0.75
+        tags: [
+            consumable
+        ]
+    }
+]
