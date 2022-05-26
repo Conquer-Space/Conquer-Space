@@ -29,6 +29,17 @@ entt::entity cqsp::common::actions::CreateCity(Universe& universe,  entt::entity
     universe.emplace<cqspt::SurfaceCoordinate>(settlement, lat, longi);
 
     // Add to planet list
-    universe.get<cqspc::Habitation>(planet).settlements.push_back(settlement);
+
+    if (universe.all_of<cqspc::Habitation>(planet))
+        universe.get<cqspc::Habitation>(planet).settlements.push_back(
+            settlement);
+    else
+    {
+        universe.emplace<cqspc::Habitation>(planet);
+        universe.get<cqspc::Habitation>(planet).settlements.push_back(
+            settlement);
+    }
+        
+    
     return settlement;
 }
