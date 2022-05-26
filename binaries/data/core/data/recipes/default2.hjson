@@ -1,0 +1,523 @@
+# This file is part of Conquer Space
+#
+# This is the default file for recipes, and also serves as a demonstration for stuff
+[
+    {
+        name: Computer Manufacturing
+        identifier: computer_man
+        input: {
+            nmetal: 1
+            remetal: 1
+        }
+        elasticity: {
+            nmetal: 1
+            remetal: 1
+        }
+        output: {
+            computer: 1
+        }
+        # Cost of factory for every recipe we dump on it
+        # In the future, it would be nice to add a maximum to how much this will be able to add
+        # So that we can have a cap on how much a factory can work with.
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            # This is a ratio, which means that fractions of this recipe can be used
+            ratio
+        ]
+    }
+    {
+        name: Recreational Goods Manufacturing
+        identifier: recgoods_man
+        input: {
+            fmetal: 1
+            plastic: 1
+            computer: 1
+        }
+        elasticity: {
+            fmetal: 1
+            plastic: 1
+            computer: 1
+        }
+        output: {
+            recgoods: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name: Household Goods Manufacturing
+        identifier: housegoods_man
+        input: {
+            plastic: 1
+        }
+        elasticity: {
+            plastic: 1
+        }
+        output: {
+            housegoods: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name: Equipment Manufacturing
+        identifier: egoods_man
+        input: {
+            fmetal: 1
+            computer: 1
+        }
+        elasticity: {
+            fmetal: 1
+            computer: 1
+        }
+        output: {
+            egoods: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name: Car Manufacturing
+        identifier: motorvehicles_man
+        input: {
+            fmetal: 1
+            computer: 1
+        }
+        elasticity: {
+            fmetal: 1
+            computer: 1
+        }
+        output: {
+            motorvehicles: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name: Fuel Burning
+        identifier: power_man
+        input: {
+            fuel: 1
+        }
+        elasticity: {
+            fuel: 1
+        }
+        output: {
+            power: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name: Water purification
+        identifier: potwater_man
+        input: {
+            power: 1
+        }
+        elasticity: {
+            power: 1
+        }
+        output: {
+            potwater: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name: Farming
+        identifier: crops_man
+        input: {
+            potwater: 1
+        }
+        elasticity: {
+            potwater: 1
+        }
+        output: {
+            crops: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name: Garment Fab
+        identifier: garments_man
+        input: {
+            potwater: 1
+            crops: 1
+        }
+        elasticity: {
+            potwater: 1
+            crops: 1
+        }
+        output: {
+            garments: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name: Animal Husbandary
+        identifier: animals_man
+        input: {
+            potwater: 1
+            crops: 1
+        }
+        elasticity: {
+            potwater: 1
+            crops: 1
+        }
+        output: {
+            animals: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name: Restaraunts
+        identifier: food_serv
+        input: {
+            potwater: 1
+            crops: 1
+            animals: 1
+        }
+        elasticity: {
+            potwater: 1
+            crops: 1
+            animals: 1
+        }
+        output: {
+            food: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name: Entertainment Industry
+        identifier: recreation_serv
+        input: {
+            food: 1
+            recgoods: 1
+        }
+        elasticity: {
+            food: 1
+            recgoods: 1
+        }
+        output: {
+            recreation: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name:Health Services
+        identifier: medical_serv
+        input: {
+            housegoods: 1
+            egoods: 1
+        }
+        elasticity: {
+            housegoods: 1
+            egoods: 1
+        }
+        output: {
+            medical: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name:Public Transit
+        identifier: transport_ser
+        input: {
+            fuel: 1
+        }
+        elasticity: {
+            fuel: 1
+        }
+        output: {
+            transport: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name:Transports
+        identifier: transport_cap
+        input: {
+            motorvehicles: 1
+        }
+        elasticity: {
+            motorvehicles: 1
+        }
+        output: {
+            transport: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name:Construction Sector
+        identifier: structures_cap
+        input: {
+            bricks: 1
+            fmetal: 1
+            housegoods: 1
+        }
+        elasticity: {
+            bricks: 1
+            fmetal: 1
+            housegoods: 1
+        }
+        output: {
+            transport: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name:Industrial Equipment Manufacturing
+        identifier: structures_cap
+        input: {
+            motorvehicles: 1
+            egoods: 1
+        }
+        elasticity: {
+            motorvehicles: 1
+            egoods: 1
+        }
+        output: {
+            industrial: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name:System Integration
+        identifier: structures_cap
+        input: {
+            computer: 1
+        }
+        elasticity: {
+            computer: 1
+        }
+        output: {
+            computersystems: 1
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+]
