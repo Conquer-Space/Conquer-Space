@@ -27,6 +27,7 @@
         }
         tags: [
             ratio
+			factory
         ]
     }
     {
@@ -54,6 +55,7 @@
         }
         tags: [
             ratio
+			factory
         ]
     }
     {
@@ -83,6 +85,7 @@
         }
         tags: [
             ratio
+			factory
         ]
     }
     {
@@ -112,6 +115,7 @@
         }
         tags: [
             ratio
+			factory
         ]
     }
     {
@@ -143,6 +147,7 @@
         }
         tags: [
             ratio
+			factory
         ]
     }
 ]

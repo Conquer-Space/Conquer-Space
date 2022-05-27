@@ -26,6 +26,7 @@
 #include "common/components/resource.h"
 #include "common/components/bodies.h"
 #include "common/systems/loading/loadutil.h"
+#include "common/components/area.h"
 
 #define CHECK_DEFINED(x, entity) if (!x.defined()) {\
                                     universe.destroy(entity);\
@@ -146,6 +147,18 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, Universe& universe,
         if (cost_map["scaling"].defined()) {
             Hjson::Value scaling = cost_map["scaling"];
             recipe_cost.scaling = HjsonToLedger(universe, scaling);
+        }
+    }
+
+    for (int i = 0; i < values["tags"].size(); i++) {
+        if (values["tags"][i] == "raw") {
+            recipe_component.type = cqspc::mine;
+        }
+        else if (values["tags"][i] == "service") {
+            recipe_component.type = cqspc::service;
+        } 
+        else if (values["tags"][i] == "service") {
+            recipe_component.type = cqspc::factory;
         }
     }
 

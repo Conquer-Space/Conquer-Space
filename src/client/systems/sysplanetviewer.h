@@ -48,10 +48,10 @@ class SysPlanetInformation : public SysUserInterface {
     void PlanetInformationPanel();
     void ResourcesTab();
     void IndustryTab();
-    void IndustryTabServicesChild();
-    void IndustryTabManufacturingChild();
-    void IndustryTabMiningChild();
-    void IndustryTabAgricultureChild();
+    template <typename>
+    void IndustryTabGenericChild(const std::string&, const std::string&,
+                                 const ImVec2&);
+    void IndustryTabFinanceChild(const ImVec2&);
     void DemographicsTab();
     void ConstructionTab();
     void FactoryConstruction();

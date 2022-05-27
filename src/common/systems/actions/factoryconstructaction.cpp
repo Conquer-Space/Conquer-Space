@@ -45,7 +45,7 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
     // Make the factory
     entt::entity factory = universe.create();
     auto& factory_converter = universe.emplace<cqspc::ResourceConverter>(factory);
-    universe.emplace<cqspc::Factory>(factory);
+    universe.emplace<cqspc::Production>(factory);
 
     // Add capacity
     // Add producivity
@@ -57,12 +57,23 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
     cqspc::ResourceLedger& factorystock =
         universe.emplace<cqspc::ResourceStockpile>(factory);
     for (std::pair<const entt::entity, double> entity: universe.get<cqspc::Recipe>(recipe).input) {
-        factorystock[entity.first] = 1;
+        factorystock[entity.first] = 0;
     }
     for (std::pair<const entt::entity, double> entity :
          universe.get<cqspc::Recipe>(recipe).output) {
-        factorystock[entity.first] = 1;
+        factorystock[entity.first] = 0;
     }
+    switch (universe.get<cqspc::Recipe>(recipe).type) {
+        case cqspc::mine:
+            universe.emplace<cqspc::Mine>(factory);
+            break;
+        case cqspc::service:
+            universe.emplace<cqspc::Service>(factory);
+            break;
+        default:
+            universe.emplace<cqspc::Factory>(factory);
+    }
+
     //for (entt::entity entity : universe.view<cqspc::Matter>()) {
     //    factorystock.setlocal(entity, 1);
     //}

@@ -25,9 +25,20 @@ struct Industry {
     std::vector<entt::entity> industries;
 };
 
+enum ProductionType { factory, mine, service };
+
+struct Production 
+{
+    ProductionType type;
+};
+
+
+
 struct Factory {};
 
 struct Mine {};
+
+struct Service {};
 
 struct Farm {
     // Farms have a harvest period?

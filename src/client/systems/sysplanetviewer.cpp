@@ -310,41 +310,39 @@ void SysPlanetInformation::IndustryTab() {
         }
         ImGui::EndTooltip();
     }
-    ImGui::BeginChild("salepanel", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
-                                 ImGui::GetStyle().ItemSpacing.y, height), true,
-                      ImGuiWindowFlags_HorizontalScrollbar | window_flags);
-    IndustryTabServicesChild();
-    ImGui::EndChild();
+
+    IndustryTabGenericChild<cqspc::Service>(
+        "Service Sector", "Company",
+        ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
+                   ImGui::GetStyle().ItemSpacing.y,
+               height));
 
     ImGui::SameLine();
 
-    ImGui::BeginChild("ManufacturingPanel", ImVec2(-1, height), true,
-                      ImGuiWindowFlags_HorizontalScrollbar | window_flags);
-    IndustryTabManufacturingChild();
-    ImGui::EndChild();
 
-    ImGui::BeginChild("MinePanel", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
-                                 ImGui::GetStyle().ItemSpacing.y, height), true,
-                      ImGuiWindowFlags_HorizontalScrollbar | window_flags);
-    IndustryTabMiningChild();
-    ImGui::EndChild();
+    IndustryTabGenericChild<cqspc::Factory>("Manufacturing Sector", "Factories",
+                                            ImVec2(-1, height));
+    IndustryTabGenericChild<cqspc::Mine>("Mining Sector", "Mines",
+                                            ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
+                                 ImGui::GetStyle().ItemSpacing.y, height));
+
+
     ImGui::SameLine();
 
-    ImGui::BeginChild("AgriPanel", ImVec2(-1, height), true,
+
+    IndustryTabFinanceChild(ImVec2(-1, height));
+
+}
+
+template <typename inddustrytype>
+void SysPlanetInformation::IndustryTabGenericChild(
+    const std::string& tabname, const std::string & industryname,
+                                                  const ImVec2 & size) {
+    ImGui::BeginChild(tabname.c_str(), size, true,
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
-    IndustryTabAgricultureChild();
-    ImGui::EndChild();
-}
-
-void SysPlanetInformation::IndustryTabServicesChild() {
-    ImGui::Text("Services Sector");
-    // List all the stuff it produces
-    ImGui::Text("GDP:");
-}
-
-void SysPlanetInformation::IndustryTabManufacturingChild() {
-    auto& city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
-    ImGui::Text("Manufactuing Sector");
+    auto& city_industry =
+        GetUniverse().get<cqspc::Industry>(selected_city_entity);
+    ImGui::TextFmt(tabname);
     // List all the stuff it produces
 
     cqspc::ResourceLedger input_resources;
@@ -352,105 +350,56 @@ void SysPlanetInformation::IndustryTabManufacturingChild() {
     double GDP_calculation = 0;
     int count = 0;
     for (auto industry : city_industry.industries) {
-        if (GetUniverse().all_of<cqspc::ResourceConverter, cqspc::Factory>(industry)) {
+        if (GetUniverse()
+                .all_of<cqspc::ResourceConverter, inddustrytype>(
+                industry)) {
             count++;
-            auto& generator = GetUniverse().get<cqspc::ResourceConverter>(industry);
+            auto& generator =
+                GetUniverse().get<cqspc::ResourceConverter>(industry);
             auto& recipe = GetUniverse().get<cqspc::Recipe>(generator.recipe);
 
             double productivity = 1;
             if (GetUniverse().any_of<cqspc::FactoryProductivity>(industry)) {
-                productivity = GetUniverse().get<cqspc::FactoryProductivity>(industry).current_production;
+                productivity = GetUniverse()
+                                   .get<cqspc::FactoryProductivity>(industry)
+                                   .current_production;
             }
 
             input_resources.MultiplyAdd(recipe.input, productivity);
             output_resources.MultiplyAdd(recipe.output, productivity);
             if (GetUniverse().all_of<cqspc::Wallet>(industry)) {
-                GDP_calculation += GetUniverse().get<cqspc::Wallet>(industry).GetGDPChange();
+                GDP_calculation +=
+                    GetUniverse().get<cqspc::Wallet>(industry).GetGDPChange();
             }
         }
     }
     ImGui::TextFmt("GDP: {}", cqsp::util::LongToHumanString(GDP_calculation));
-    ImGui::TextFmt("Factories: {}", count);
+    ImGui::TextFmt("{} Count: {}", industryname, count);
 
     ImGui::SameLine();
-    if (CQSPGui::SmallDefaultButton("Factory List")) {
+    if (CQSPGui::SmallDefaultButton("List")) {
         factory_list_panel = true;
     }
 
     ImGui::Text("Output");
     // Output table
-    DrawLedgerTable("industryoutput", GetUniverse(), output_resources);
+    DrawLedgerTable(tabname + "output", GetUniverse(), output_resources);
 
     ImGui::Text("Input");
-    DrawLedgerTable("industryinput", GetUniverse(), input_resources);
+    DrawLedgerTable(tabname + "input", GetUniverse(), input_resources);
+    ImGui::EndChild();
 }
 
-void SysPlanetInformation::IndustryTabMiningChild() {
-    auto& city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
-    ImGui::Text("Mining Sector");
-    // Get what resources they are making
-    cqspc::ResourceLedger resources;
-    double GDP_calculation = 0;
-    int mine_count = 0;
-    for (auto mine : city_industry.industries) {
-        if (GetUniverse().all_of<cqspc::ResourceGenerator, cqspc::Mine>(mine)) {
-            auto& generator = GetUniverse().get<cqspc::ResourceGenerator>(mine);
-            double productivity = 1;
-            if (GetUniverse().any_of<cqspc::FactoryProductivity>(mine)) {
-                productivity = GetUniverse().get<cqspc::FactoryProductivity>(mine).current_production;
-            }
 
-            resources.MultiplyAdd(generator, productivity);
-            mine_count++;
-            if (GetUniverse().all_of<cqspc::Wallet>(mine)) {
-                GDP_calculation += GetUniverse().get<cqspc::Wallet>(mine).GetGDPChange();
-            }
-        }
-    }
-    ImGui::TextFmt("GDP: {}", cqsp::util::LongToHumanString(GDP_calculation));
-    ImGui::TextFmt("Mines: {}", mine_count);
 
-    ImGui::SameLine();
-    if (CQSPGui::SmallDefaultButton("Mine List")) {
-        mine_list_panel = true;
-    }
+void SysPlanetInformation::IndustryTabFinanceChild(const ImVec2& size) {
+    ImGui::BeginChild("FinancePan", size, true,
+                      ImGuiWindowFlags_HorizontalScrollbar | window_flags);
 
-    // Draw on table
-    DrawLedgerTable("mineproduction", GetUniverse(), resources);
-}
-
-void SysPlanetInformation::IndustryTabAgricultureChild() {
-    auto& city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
-    ImGui::Text("Agriculture Sector");
-    // Get what resources they are making
-    cqspc::ResourceLedger resources;
-    double GDP_calculation = 0;
-    int mine_count = 0;
-    for (auto mine : city_industry.industries) {
-        if (GetUniverse().all_of<cqspc::ResourceGenerator, cqspc::Farm>(mine)) {
-            auto& generator = GetUniverse().get<cqspc::ResourceGenerator>(mine);
-            double productivity = 1;
-            if (GetUniverse().any_of<cqspc::FactoryProductivity>(mine)) {
-                productivity = GetUniverse().get<cqspc::FactoryProductivity>(mine).current_production;
-            }
-
-            resources.MultiplyAdd(generator, productivity);
-            mine_count++;
-            if (GetUniverse().all_of<cqspc::Wallet>(mine)) {
-                GDP_calculation += GetUniverse().get<cqspc::Wallet>(mine).GetGDPChange();
-            }
-        }
-    }
-    ImGui::TextFmt("GDP: {}", cqsp::util::LongToHumanString(GDP_calculation));
-    ImGui::TextFmt("Farms: {}", mine_count);
-
-    ImGui::SameLine();
-    if (CQSPGui::SmallDefaultButton("Farm List")) {
-        mine_list_panel = true;
-    }
-
-    // Draw on table
-    DrawLedgerTable("farmproduction", GetUniverse(), resources);
+    ImGui::Text("Finance Sector");
+    // List all the stuff it produces
+    ImGui::Text("GDP:");
+    ImGui::EndChild();
 }
 
 void SysPlanetInformation::DemographicsTab() {

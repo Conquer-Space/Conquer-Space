@@ -24,6 +24,7 @@
 #include <entt/entt.hpp>
 
 #include "common/components/units.h"
+#include "common/components/area.h"
 
 namespace cqsp {
 namespace common {
@@ -183,6 +184,8 @@ class ResourceLedger : private LedgerMap {
 struct Recipe {
     ResourceLedger input;
     ResourceLedger output;
+
+    ProductionType type;
 
     float interval;
 };
