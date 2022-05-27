@@ -56,8 +56,7 @@ class SysPlanetInformation : public SysUserInterface {
     void ConstructionTab();
     void FactoryConstruction();
     void MineConstruction();
-    void MineInformationPanel();
-    void FactoryInformationPanel();
+    void DetailedProductionPanel();
     void SpacePortTab();
     void InfrastructureTab();
     void ScienceTab();
@@ -69,7 +68,8 @@ class SysPlanetInformation : public SysUserInterface {
                                      const common::components::ResourceLedger& cost);
 
     entt::entity selected_planet = entt::null;
-    bool mine_list_panel = false;
+    entt::entity selected_factory = entt::null;
+    std::vector<entt::entity> industrylist;
     bool factory_list_panel = false;
     bool power_plant_output_panel = false;
     bool market_information_panel = false;

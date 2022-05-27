@@ -90,8 +90,7 @@ void SysPlanetInformation::DisplayPlanet() {
             break;
         case ViewMode::CITY_VIEW:
             CityInformationPanel();
-            MineInformationPanel();
-            FactoryInformationPanel();
+            DetailedProductionPanel();
             break;
     }
     ImGui::End();
@@ -379,6 +378,12 @@ void SysPlanetInformation::IndustryTabGenericChild(
     ImGui::SameLine();
     if (CQSPGui::SmallDefaultButton("List")) {
         factory_list_panel = true;
+        industrylist.resize(0);
+        auto& city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity).industries;
+        for (entt::entity production : city_industry) {
+            if (GetUniverse().all_of<inddustrytype>(production))
+                industrylist.push_back(production);
+        }
     }
 
     ImGui::Text("Output");
@@ -390,7 +395,29 @@ void SysPlanetInformation::IndustryTabGenericChild(
     ImGui::EndChild();
 }
 
+void SysPlanetInformation::DetailedProductionPanel() {
+    if (factory_list_panel && industrylist.size() > 0) {
 
+        ImGui::Begin(
+            fmt::format("Factories of {}", selected_city_entity).c_str(),
+            &factory_list_panel);
+
+        for (entt::entity e : industrylist) {
+            const bool is_selected = (selected_factory == e);
+            std::string name = fmt::format("{}", e);
+            if (GetUniverse().all_of<cqspc::Name>(e)) {
+                name = GetUniverse().get<cqspc::Name>(e);
+            }
+            if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(),
+                                           is_selected)) {
+                // Load
+                e = selected_factory;
+            }
+            gui::EntityTooltip(GetUniverse(), e);
+        }
+        ImGui::End();
+    }
+}
 
 void SysPlanetInformation::IndustryTabFinanceChild(const ImVec2& size) {
     ImGui::BeginChild("FinancePan", size, true,
@@ -571,67 +598,9 @@ void SysPlanetInformation::MineConstruction() {
     }
 }
 
-void SysPlanetInformation::MineInformationPanel() {
-    if (mine_list_panel) {
-        auto &city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
-        ImGui::Begin(fmt::format("Mines of {}", selected_city_entity).c_str(), &mine_list_panel);
-        // List mines
-        static int selected_mine = 0;
-        int mine_index = 0;
-        for (int i = 0; i < city_industry.industries.size(); i++) {
-            entt::entity e = city_industry.industries[i];
-            if (GetUniverse().all_of<cqspc::Mine>(e)) {
-                // Then do the things
-                mine_index++;
-            } else {
-                continue;
-            }
 
-            const bool is_selected = (selected_mine == mine_index);
-            std::string name = fmt::format("{}", e);
-            if (GetUniverse().all_of<cqspc::Name>(e)) {
-                name = GetUniverse().get<cqspc::Name>(e);
-            }
-            if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
-                // Load
-                selected_mine = mine_index;
-            }
-            gui::EntityTooltip(GetUniverse(), e);
-        }
-        ImGui::End();
-    }
-}
 
-void SysPlanetInformation::FactoryInformationPanel() {
-    if (factory_list_panel) {
-        auto &city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
-        ImGui::Begin(fmt::format("Factories of {}", selected_city_entity).c_str(), &factory_list_panel);
-        // List mines
-        static int selected_factory = 0;
-        int factory_index = 0;
-        for (int i = 0; i < city_industry.industries.size(); i++) {
-            entt::entity e = city_industry.industries[i];
-            if (GetUniverse().all_of<cqspc::Factory>(e)) {
-                // Then do the things
-                factory_index++;
-            } else {
-                continue;
-            }
 
-            const bool is_selected = (selected_factory == factory_index);
-            std::string name = fmt::format("{}", e);
-            if (GetUniverse().all_of<cqspc::Name>(e)) {
-                name = GetUniverse().get<cqspc::Name>(e);
-            }
-            if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
-                // Load
-                selected_factory = factory_index;
-            }
-            gui::EntityTooltip(GetUniverse(), e);
-        }
-        ImGui::End();
-    }
-}
 
 void SysPlanetInformation::SpacePortTab() {
     namespace cqspt = cqsp::common::components::types;
