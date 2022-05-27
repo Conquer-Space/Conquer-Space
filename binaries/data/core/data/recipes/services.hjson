@@ -132,7 +132,7 @@
             fuel: 1
         }
         output: {
-            transport: 1
+            ptransport: 1
         }
         cost: {
             capital: {
@@ -140,6 +140,32 @@
                 industrial: 1
                 transport: 1
                 computersystems: 1
+            }
+            labor: {
+                worker: 1
+            }
+        }
+        tags: [
+            ratio
+			service
+        ]
+    }
+	{
+        name:Housing Market
+        identifier: transport_ser
+        input: {
+			housegoods: 1
+        }
+        elasticity: {
+			housegoods: 1
+        }
+        output: {
+            housing: 1
+        }
+        cost: {
+            capital: {
+                structures: 2
+                industrial: 2
             }
             labor: {
                 worker: 1
