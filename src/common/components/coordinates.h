@@ -301,6 +301,9 @@ inline glm::vec3 toVec3(const Orbit& orb, radian theta) {
     return OrbitToVec3(orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN, orb.w, theta);
 }
 
+inline glm::vec3 toVec3(const Orbit& orb) {
+    return toVec3(orb, orb.v);
+}
 /// <summary>
 /// Converts orbit to AU coorrdinates.
 /// </summary>

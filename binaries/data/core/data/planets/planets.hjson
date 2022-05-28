@@ -76,6 +76,26 @@
         tags: []
     }
     {
+        name: ISS
+        identifier: iss
+        radius: 10 km
+        reference: earth
+        gm: 3.9860044188e5
+        orbit: {
+            semi_major_axis: 6785 km
+            eccentricity: .0006703
+            inclination: 51.6416 deg
+            arg_periapsis: 130.5360 deg
+            LAN: 247.4627 deg
+            M0: 325.0288 deg
+        }
+        texture: {
+            terrain: earthmap
+            normal: earthnormal
+        }
+        tags: []
+    }
+    {
         name: Moon
         identifier: moon
         reference: earth
@@ -88,6 +108,22 @@
             arg_periapsis: 199.7640930160823 deg
             LAN: 2.296616161126016 deg
             M0: 222.7012350930954 deg
+        }
+        tags: []
+    }
+    {
+        name: Moon moon
+        identifier: moon2
+        reference: moon
+        radius: 10 km
+        gm: 1.327124400189e11
+        orbit: {
+            semi_major_axis: 3000
+            eccentricity: 0.6
+            inclination: 75 deg
+            arg_periapsis: 0
+            LAN: 0
+            M0: 0
         }
         tags: []
     }

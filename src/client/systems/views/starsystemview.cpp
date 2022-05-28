@@ -21,6 +21,7 @@
 #include <noise/noise.h>
 
 #include <cmath>
+#include <numbers>
 #include <string>
 #include <memory>
 #include <vector>
@@ -234,8 +235,9 @@ void SysStarSystemRenderer::Update(float deltaTime) {
 
     if (!ImGui::GetIO().WantCaptureMouse) {
         //if (scroll - m_app.GetScrollAmount() * 3 * scroll / 33 > 0.1) {
-            scroll -= m_app.GetScrollAmount() * 3 * scroll / 33;
+        scroll -= m_app.GetScrollAmount() * 3 * scroll / 33;
         //}
+
 
         if (m_app.MouseButtonIsHeld(engine::MouseInput::LEFT)) {
             view_x += deltaX/m_app.GetWindowWidth()*3.1415*4;
@@ -317,15 +319,13 @@ void SysStarSystemRenderer::SeePlanet(entt::entity ent) {
 void SysStarSystemRenderer::DoUI(float deltaTime) {
     // FIXME(EhWhoamI)
     //auto &debug_info = m_app.GetUniverse().ctx().emplace<ctx::StarSystemViewDebug>();
-    /* if (debug_info.to_show) {
-        ImGui::Begin("Debug ui window", &debug_info.to_show);
-        ImGui::TextFmt("{} {} {}", cam_pos.x, cam_pos.y, cam_pos.z);
-        ImGui::TextFmt("{} {} {}", view_center.x, view_center.y, view_center.z);
-        ImGui::TextFmt("{}", scroll);
-        ImGui::TextFmt("Focused planets: {}",
-            m_universe.view<cqsp::client::systems::FocusedPlanet>().size());
-        ImGui::End();
-    }*/
+    ImGui::Begin("Debug ui window");
+    ImGui::TextFmt("{} {} {}", cam_pos.x, cam_pos.y, cam_pos.z);
+    ImGui::TextFmt("{} {} {}", view_center.x, view_center.y, view_center.z);
+    ImGui::TextFmt("{}", scroll);
+    ImGui::TextFmt("Focused planets: {}",
+        m_universe.view<cqsp::client::systems::FocusedPlanet>().size());
+    ImGui::End();
 }
 
 void SysStarSystemRenderer::DrawStars() {
@@ -367,7 +367,7 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
         // Draw Ships
         namespace cqspc = cqsp::common::components;
         namespace cqspt = cqsp::common::components::types;
-        if (glm::distance(object_pos, cam_pos) > dist) {
+        if (glm::distance(object_pos, cam_pos) > dist || true) {
             // Check if it's obscured by a planet, but eh, we can deal with it later
             // Set planet circle color
             planet_circle.shaderProgram->UseProgram();
@@ -389,7 +389,7 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
 
         // This can probably switched to some log system based off the mass of
         // a planet.
-        if (glm::distance(object_pos, cam_pos) <= dist) {
+        if (glm::distance(object_pos, cam_pos) <= dist || true) {
             // Check if planet has terrain or not
             // Don't actually use proc-gen terrain for now
             //if (m_app.GetUniverse().all_of<cqspb::Terrain>(body_entity)) {
@@ -543,7 +543,8 @@ void SysStarSystemRenderer::DrawTexturedPlanet(glm::vec3 &object_pos, entt::enti
 
     namespace cqspb = cqsp::common::components::bodies;
     auto& body = m_universe.get<cqspb::Body>(entity);
-    float scale = cqsp::common::components::types::toAU(body.radius) * view_scale;
+    float scale = body.radius;  // cqsp::common::components::types::toAU(body.radius)
+                                // * view_scale;
     position = glm::scale(position, glm::vec3(scale));
 
     textured_planet.SetMVP(position, camera_matrix, projection);
@@ -613,7 +614,7 @@ void SysStarSystemRenderer::DrawTerrainlessPlanet(glm::vec3 &object_pos) {
 
     glm::mat4 position = glm::mat4(1.f);
     position = glm::translate(position, object_pos);
-    float scale = 1000 / 50000;
+    float scale = 1737.4; // Moon radius
     position = glm::scale(position, glm::vec3(scale));
     glm::mat4 transform = glm::mat4(1.f);
     position = position * transform;
@@ -696,6 +697,15 @@ void SysStarSystemRenderer::CalculateCityPositions() {
     SPDLOG_INFO("Calculated offset");
 }
 
+void cqsp::client::systems::SysStarSystemRenderer::NewRender() {
+    namespace cqspb = cqsp::common::components::bodies;
+    auto view = m_universe.view<cqspb::Body>();
+    for (const entt::entity &entity : view) {
+        // Draw everything based on scale
+    }
+
+}
+
 void cqsp::client::systems::SysStarSystemRenderer::FocusCityView() {
     namespace cqspt = cqsp::common::components::types;
     auto focused_city_view = m_app.GetUniverse().view<FocusedCity>();
@@ -723,7 +733,7 @@ glm::vec3 SysStarSystemRenderer::CalculateObjectPos(const entt::entity &ent) {
     namespace cqspt = cqsp::common::components::types;
     // Get the position
     if (m_universe.all_of<cqspt::Kinematics>(ent)) {
-        return (m_universe.get<cqspt::Kinematics>(ent).position * view_scale);
+        return (m_universe.get<cqspt::Kinematics>(ent).position);
     }
     return glm::vec3(0, 0, 0);
 }
@@ -745,7 +755,7 @@ void SysStarSystemRenderer::CalculateCamera() {
     cam_pos = glm::vec3(
                 cos(view_y) * sin(view_x),
                 sin(view_y),
-                cos(view_y) * cos(view_x)) * scroll;
+                cos(view_y) * cos(view_x)) * (float) scroll;
     cam_up = glm::vec3(0.0f, 1.0f, 0.0f);
     camera_matrix = glm::lookAt(cam_pos, glm::vec3(0.f, 0.f, 0.f), cam_up);
     projection = glm::infinitePerspective(glm::radians(45.f), GetWindowRatio(), 0.1f);
@@ -755,7 +765,7 @@ void SysStarSystemRenderer::CalculateCamera() {
 void SysStarSystemRenderer::MoveCamera(double deltaTime) {
     // Now navigation for changing the center
     glm::vec3 dir = (view_center - cam_pos);
-    float velocity = deltaTime * 30 * scroll / 40;
+    float velocity = deltaTime * 30.f * scroll / 40;
     // Get distance from the pane
     // Remove y axis
     glm::vec3 forward = glm::normalize(glm::vec3(glm::sin(view_x), 0, glm::cos(view_x)));
@@ -828,11 +838,13 @@ float SysStarSystemRenderer::GetWindowRatio() {
 
 void SysStarSystemRenderer::GenerateOrbitLines() {
     SPDLOG_INFO("Creating planet orbits");
+    
+    auto orbits = m_app.GetUniverse().view<common::components::types::Orbit>();
     auto system = m_app.GetUniverse().get<common::components::bodies::OrbitalSystem>(
         m_app.GetUniverse().sun);
     // Initialize all the orbits and stuff
     // Get sun orbits
-    for (auto body : system.children) {
+    for (auto body : orbits) {
         // Generate the orbit
         auto& orb = m_universe.get<common::components::types::Orbit>(body);
         if (orb.semi_major_axis == 0) {
@@ -842,8 +854,8 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
         int res = 500;
         for (int i = 0; i <= res; i++) {
             double theta = 3.1415926535 * 2 / res * i;
-            glm::vec3 vec = common::components::types::toVec3AU(orb, theta);
-            orbit_points.push_back(vec * view_scale);
+            glm::vec3 vec = common::components::types::toVec3(orb, theta);
+            orbit_points.push_back(vec);
         }
         auto& line = m_universe.emplace<PlanetOrbit>(body);
         // Get the orbit line

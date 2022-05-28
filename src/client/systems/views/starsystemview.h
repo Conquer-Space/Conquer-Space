@@ -72,7 +72,10 @@ class SysStarSystemRenderer {
     double previous_mouseX;
     double previous_mouseY;
 
-    float scroll = 10;
+    double scroll = 10;
+    double min_zoom = 1;
+    // Light year sized
+    double max_zoom = 9.4605284e15;
 
     glm::vec3 view_center;
 
@@ -136,6 +139,7 @@ class SysStarSystemRenderer {
     bool CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos);
     void CalculateCityPositions();
 
+    void NewRender();
     void FocusCityView();
 
     glm::vec3 CalculateObjectPos(const entt::entity &);
