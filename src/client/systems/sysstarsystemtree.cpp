@@ -62,12 +62,21 @@ void SysStarSystemTree::DoUI(int delta_time) {
         } else {
             std::string planet_name = gui::GetName(GetUniverse(), entity);
             if (ImGui::TreeNodeEx(planet_name.c_str(), ImGuiTreeNodeFlags_OpenOnArrow)) {
+                // If it's double clicked
+                if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+                    // Go to the planet
+                    cqsp::scene::SeePlanet(GetApp(), entity);
+                }
                 // Get children
                 gui::EntityTooltip(GetUniverse(), entity);
                 DoChildTree(entity);
                 ImGui::TreePop();
             } else {
                 gui::EntityTooltip(GetUniverse(), entity);
+                if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+                    // Go to the planet
+                    cqsp::scene::SeePlanet(GetApp(), entity);
+                }
             }
         }
     }
