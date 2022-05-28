@@ -222,7 +222,12 @@ void SysStarSystemRenderer::SeeEntity() {
     view_center = CalculateObjectPos(m_viewing_entity);
 
     // Set the variable
-    scroll = 5;
+    if (m_app.GetUniverse().all_of<cqspb::Body>(m_viewing_entity)) {
+        scroll =
+            m_app.GetUniverse().get<cqspb::Body>(m_viewing_entity).radius * 2.5;
+    } else {
+        scroll = 5;
+    }
     CalculateCityPositions();
 }
 
@@ -399,7 +404,7 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
             if (m_app.GetUniverse().all_of<cqspb::TexturedTerrain>(body_entity)) {
                 DrawTexturedPlanet(object_pos, body_entity);
             } else {
-                DrawTerrainlessPlanet(object_pos);
+                DrawTerrainlessPlanet(body_entity, object_pos);
             }
         }
         DrawOrbit(body_entity);
@@ -609,12 +614,16 @@ void SysStarSystemRenderer::DrawStar(const entt::entity& entity, glm::vec3 &obje
     engine::Draw(sun);
 }
 
-void SysStarSystemRenderer::DrawTerrainlessPlanet(glm::vec3 &object_pos) {
+void SysStarSystemRenderer::DrawTerrainlessPlanet(const entt::entity& entity, glm::vec3 &object_pos) {
     namespace cqspb = cqsp::common::components::bodies;
 
     glm::mat4 position = glm::mat4(1.f);
     position = glm::translate(position, object_pos);
-    float scale = 1737.4; // Moon radius
+    float scale = 300;
+    if (m_universe.any_of<cqspb::Body>(entity)) {
+        scale = m_universe.get<cqspb::Body>(entity).radius;
+    }
+
     position = glm::scale(position, glm::vec3(scale));
     glm::mat4 transform = glm::mat4(1.f);
     position = position * transform;
@@ -697,15 +706,6 @@ void SysStarSystemRenderer::CalculateCityPositions() {
     SPDLOG_INFO("Calculated offset");
 }
 
-void cqsp::client::systems::SysStarSystemRenderer::NewRender() {
-    namespace cqspb = cqsp::common::components::bodies;
-    auto view = m_universe.view<cqspb::Body>();
-    for (const entt::entity &entity : view) {
-        // Draw everything based on scale
-    }
-
-}
-
 void cqsp::client::systems::SysStarSystemRenderer::FocusCityView() {
     namespace cqspt = cqsp::common::components::types;
     auto focused_city_view = m_app.GetUniverse().view<FocusedCity>();
@@ -726,6 +726,7 @@ void cqsp::client::systems::SysStarSystemRenderer::FocusCityView() {
     auto& surf = m_universe.get<cqspt::SurfaceCoordinate>(city_entity);
     view_x = surf.r_longitude();
     view_y = surf.r_latitude();
+    // Get size, and get outside
     scroll = 1.5;
 }
 
