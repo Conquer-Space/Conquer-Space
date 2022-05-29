@@ -44,8 +44,7 @@ struct ParentTemp {
 };
 }  // namespace
 
-bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
-                             entt::entity entity) {
+bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     using components::types::UnitType;
     // Load orbit
     std::string identifier = values["identifier"];
@@ -54,6 +53,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
     universe.emplace<components::bodies::Planet>(entity);
     auto& body_comp = universe.emplace<components::bodies::Body>(entity);
 
+    universe.emplace<components::bodies::NautralObject>(entity);
     if (values["type"].type() != Hjson::Type::Undefined) {
         if (values["type"].type() != Hjson::Type::String) {
             SPDLOG_INFO("Planet type of {} is in incorrect format", identifier);
@@ -196,7 +196,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Universe& universe,
     return true;
 }
 
-void PlanetLoader::PostLoad(Universe& universe, const entt::entity& entity) {
+void PlanetLoader::PostLoad(const entt::entity& entity) {
     // Set the parent
     if (!universe.any_of<ParentTemp>(entity)) {
         return;

@@ -21,4 +21,9 @@ void main()
     Normal = mat3(model) * aNormal;
 
     gl_Position = projection * view * vec4(FragPos, 1.0);
+    float C = 0.0001;
+    float far = 9.461e12;
+    gl_Position.z = 2.0*log(gl_Position.w*C + 1)/log(far*C + 1) - 1;
+
+    gl_Position.z *= gl_Position.w;
 }

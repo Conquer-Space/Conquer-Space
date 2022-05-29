@@ -50,6 +50,7 @@ struct TexturedTerrain {
     std::string normal_name;
 };
 
+struct NautralObject {};
 /// <summary>
 /// An object for the children of an orbital object.
 /// </summary>

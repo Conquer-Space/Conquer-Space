@@ -558,7 +558,7 @@ int Application::destroy() {
 void Application::CalculateProjections() {
     float window_ratio = static_cast<float>(GetWindowWidth()) /
                     static_cast<float>(GetWindowHeight());
-    three_dim_projection = glm::infinitePerspective(glm::radians(45.f), window_ratio, 0.1f);
+    three_dim_projection = glm::infinitePerspective(glm::radians(45.f), window_ratio, 0.0001f);
     // For normal rendering
     two_dim_projection =
         glm::ortho(0.0f,
@@ -716,10 +716,26 @@ void Application::DrawText(const std::string& text, float x,
     }
 }
 
+void Application::DrawText(const std::string& text, const glm::vec3& color,
+                           float x, float y) {
+    if (fontShader != nullptr && m_font != nullptr) {
+        // Render with size 16 white text
+        cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, 16, color);
+    }
+}
+
 void Application::DrawText(const std::string& text, float x, float y, float size) {
     if (fontShader != nullptr && m_font != nullptr) {
         // Render with size 16 white text
         cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, size, glm::vec3(1.f, 1.f, 1.f));
+    }
+}
+
+void Application::DrawText(const std::string& text, const glm::vec3& color,
+                           float x, float y, float size) {
+    if (fontShader != nullptr && m_font != nullptr) {
+        // Render with size 16 white text
+        cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, size, color);
     }
 }
 
