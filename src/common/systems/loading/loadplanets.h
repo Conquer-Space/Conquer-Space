@@ -21,7 +21,7 @@
 namespace cqsp::common::systems::loading {
 class PlanetLoader : public HjsonLoader {
  public:
-    PlanetLoader(Universe& universe) : HjsonLoader(universe) {}
+    explicit PlanetLoader(Universe& universe) : HjsonLoader(universe) {}
 
     const Hjson::Value& GetDefaultValues() override { return default_val; }
     bool LoadValue(const Hjson::Value& values, entt::entity entity) override;

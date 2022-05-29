@@ -129,6 +129,7 @@ class SysStarSystemRenderer {
 
     void DrawEntityName(glm::vec3 &object_pos, entt::entity ent_id);
     void DrawPlanetIcon(glm::vec3 &object_pos);
+    void DrawPlanetBillboards(const entt::entity& ent_id, const glm::vec3& object_pos);
     void DrawShipIcon(glm::vec3 &object_pos);
     void DrawCityIcon(glm::vec3 &object_pos);
     void DrawPlanet(glm::vec3 &object_pos, entt::entity entity);
@@ -176,7 +177,6 @@ class SysStarSystemRenderer {
     entt::entity on_planet;
 
     float view_scale = 10.f;
-    // There are 2 scales, the AU scale and the 
 };
 }  // namespace systems
 }  // namespace client

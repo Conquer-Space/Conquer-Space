@@ -29,7 +29,7 @@ void LoadTerrainData(cqsp::common::Universe&, Hjson::Value&);
 
 class GoodLoader : public HjsonLoader {
  public:
-    GoodLoader(Universe& universe);
+    explicit GoodLoader(Universe& universe);
     const Hjson::Value& GetDefaultValues() override { return default_val; }
     bool LoadValue(const Hjson::Value& values, entt::entity entity) override;
 
@@ -39,7 +39,7 @@ class GoodLoader : public HjsonLoader {
 
 class RecipeLoader : public HjsonLoader {
  public:
-    RecipeLoader(Universe& universe);
+    explicit RecipeLoader(Universe& universe);
     const Hjson::Value& GetDefaultValues() override { return default_val; }
     bool LoadValue(const Hjson::Value& values, entt::entity entity) override;
 

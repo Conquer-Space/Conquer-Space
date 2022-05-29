@@ -17,11 +17,10 @@
 #include "client/systems/views/starsystemview.h"
 
 #include <glad/glad.h>
-
 #include <noise/noise.h>
+#include <numbers>
 
 #include <cmath>
-#include <numbers>
 #include <string>
 #include <memory>
 #include <vector>
@@ -180,6 +179,11 @@ void SysStarSystemRenderer::Render(float deltaTime) {
 
     CalculateCamera();
 
+    // FIXME(EhWhoAmI): Fix log renderer so that objects that are close are rendered with a
+    // "normal" depth buffer, and objects far away will be rendered with a log buffer.
+    // FIXME(EhWhoAmI): Unify all the rendering of planets and stars into one single loop
+    // FIXME(EhWhoAmI): Orbit lines dissapear based on distance away from the planet.
+    // make them dissapear if you're focused on the planet.
     DrawStars();
     DrawBodies();
     DrawShips();
@@ -344,13 +348,6 @@ void SysStarSystemRenderer::DrawStars() {
         // Draw the star circle
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
         sun_position = object_pos;
-        if (glm::distance(object_pos, cam_pos) > 900) {
-            // Check if it's obscured by a planet, but eh, we can deal with it later
-            planet_circle.shaderProgram->UseProgram();
-            planet_circle.shaderProgram->setVec4("color", 1, 1, 0, 1);
-            DrawPlanetIcon(object_pos);
-            continue;
-        }
         DrawStar(ent_id, object_pos);
     }
     renderer.EndDraw(physical_layer);
@@ -377,8 +374,9 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawBodies() {
             // Set planet circle color
             planet_circle.shaderProgram->UseProgram();
             planet_circle.shaderProgram->setVec4("color", 0, 0, 1, 1);
-            DrawPlanetIcon(object_pos);
-            DrawEntityName(object_pos, body_entity);
+            //DrawPlanetIcon(object_pos);
+            //DrawEntityName(object_pos, body_entity);
+            DrawPlanetBillboards(body_entity, object_pos);
             continue;
         }
     }
@@ -461,6 +459,8 @@ void SysStarSystemRenderer::DrawEntityName(glm::vec3 &object_pos,
         text = fmt::format("{}", ent_id);
     }
     glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
+    text = fmt::format("{} {}", text, pos.z);
+    m_app.DrawText(text, pos.x, pos.y, 20);
     // Check if the position on screen is within bounds
     if (!(pos.z >= 1 || pos.z <= -1) &&
         (pos.x > 0 && pos.x < m_app.GetWindowWidth() &&
@@ -471,18 +471,65 @@ void SysStarSystemRenderer::DrawEntityName(glm::vec3 &object_pos,
 
 void SysStarSystemRenderer::DrawPlanetIcon(glm::vec3 &object_pos) {
     glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
+    // Shrink everything, I guess
     glm::mat4 planetDispMat = glm::mat4(1.0f);
-    if (pos.z >= 1 || pos.z <= -1) {
-        return;
-    }
+
+    // Calculate camera direction and position
+    // The two directions
+    // Get angle between 2 things
+
+    // Check if it's in front of camera or behind
 
     planetDispMat = glm::translate(planetDispMat, TranslateToNormalized(pos));
     planetDispMat = glm::scale(planetDispMat, glm::vec3(circle_size, circle_size, circle_size));
 
     float window_ratio = GetWindowRatio();
     planetDispMat = glm::scale(planetDispMat, glm::vec3(1, window_ratio, 1));
-    glm::mat4 twodimproj =  glm::mat4(1.0f);
+    glm::mat4 twodimproj = glm::mat4(1.0f);
 
+    planet_circle.shaderProgram->setMat4("model", planetDispMat);
+    planet_circle.shaderProgram->setMat4("projection", twodimproj);
+
+    engine::Draw(planet_circle);
+}
+
+void cqsp::client::systems::SysStarSystemRenderer::DrawPlanetBillboards(const entt::entity& ent_id,
+                                                                        const glm::vec3& object_pos) {
+    using cqsp::common::components::Name;
+    std::string text = "";
+    if (m_app.GetUniverse().all_of<Name>(ent_id)) {
+        text = m_app.GetUniverse().get<Name>(ent_id);
+    } else {
+        text = fmt::format("{}", ent_id);
+    }
+    // Camera looking direction is
+    // textured_planet.SetMVP(position, camera_matrix, projection);
+    glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
+    glm::vec4  gl_Position = projection * camera_matrix * glm::vec4(object_pos, 1.0);
+    float C = 0.0001;
+    float far = 9.461e12;
+    gl_Position.z = 2.0* log(gl_Position.w*C + 1)/log(far*C + 1) - 1;
+
+    gl_Position.z *= gl_Position.w;
+    text = fmt::format("{}", text);
+
+    // Check if the position on screen is within bounds
+    if (!(isnan(gl_Position.z)) &&
+        (pos.x > 0 && pos.x < m_app.GetWindowWidth() &&
+            pos.y > 0 && pos.y < m_app.GetWindowHeight())) {
+        m_app.DrawText(text, pos.x, pos.y, 20);
+        // Also draw circle
+    } else {
+        return;
+    }
+
+    auto planetDispMat = glm::translate(glm::mat4(1.0f), TranslateToNormalized(pos));
+    planetDispMat = glm::scale(planetDispMat, glm::vec3(circle_size, circle_size, circle_size));
+
+    planetDispMat = glm::scale(planetDispMat, glm::vec3(1, GetWindowRatio(), 1));
+    glm::mat4 twodimproj = glm::mat4(1.0f);
+
+    planet_circle.shaderProgram->UseProgram();
     planet_circle.shaderProgram->setMat4("model", planetDispMat);
     planet_circle.shaderProgram->setMat4("projection", twodimproj);
 
@@ -605,7 +652,7 @@ void SysStarSystemRenderer::DrawStar(const entt::entity& entity, glm::vec3 &obje
     glm::mat4 transform = glm::mat4(1.f);
     // Scale it by radius
     const double& radius = m_universe.get<common::components::bodies::Body>(entity).radius;
-    double scale = common::components::types::toAU(radius) * view_scale;
+    double scale = radius;
     transform = glm::scale(transform, glm::vec3(scale, scale, scale));
     position = position * transform;
 
@@ -839,10 +886,10 @@ float SysStarSystemRenderer::GetWindowRatio() {
 
 void SysStarSystemRenderer::GenerateOrbitLines() {
     SPDLOG_INFO("Creating planet orbits");
-    
     auto orbits = m_app.GetUniverse().view<common::components::types::Orbit>();
-    auto system = m_app.GetUniverse().get<common::components::bodies::OrbitalSystem>(
-        m_app.GetUniverse().sun);
+    /* auto system =
+        m_app.GetUniverse().get<common::components::bodies::OrbitalSystem>(
+        m_app.GetUniverse().sun);*/
     // Initialize all the orbits and stuff
     // Get sun orbits
     for (auto body : orbits) {

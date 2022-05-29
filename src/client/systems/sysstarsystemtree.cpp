@@ -58,7 +58,7 @@ void SysStarSystemTree::DoUI(int delta_time) {
     entt::entity current_planet = cqsp::scene::GetCurrentViewingPlanet(GetUniverse());
     for (auto entity : planets) {
         if (!GetUniverse().any_of<cqspb::OrbitalSystem>(entity) || entity == GetUniverse().sun) {
-            SeePlanetSelectable(entity); 
+            SeePlanetSelectable(entity);
         } else {
             std::string planet_name = gui::GetName(GetUniverse(), entity);
             if (ImGui::TreeNodeEx(planet_name.c_str(), ImGuiTreeNodeFlags_OpenOnArrow)) {
@@ -73,10 +73,10 @@ void SysStarSystemTree::DoUI(int delta_time) {
                 ImGui::TreePop();
             } else {
                 gui::EntityTooltip(GetUniverse(), entity);
-                if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+                //if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
                     // Go to the planet
-                    cqsp::scene::SeePlanet(GetApp(), entity);
-                }
+                    //cqsp::scene::SeePlanet(GetApp(), entity);
+                //}
             }
         }
     }
@@ -113,5 +113,6 @@ void SysStarSystemTree::DoChildTree(entt::entity entity) {
             }
         }
         gui::EntityTooltip(GetUniverse(), child);
-    }}
+    }
 }
+}  // namespace cqsp::client::systems

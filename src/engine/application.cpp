@@ -716,10 +716,26 @@ void Application::DrawText(const std::string& text, float x,
     }
 }
 
+void Application::DrawText(const std::string& text, const glm::vec3& color,
+                           float x, float y) {
+    if (fontShader != nullptr && m_font != nullptr) {
+        // Render with size 16 white text
+        cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, 16, color);
+    }
+}
+
 void Application::DrawText(const std::string& text, float x, float y, float size) {
     if (fontShader != nullptr && m_font != nullptr) {
         // Render with size 16 white text
         cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, size, glm::vec3(1.f, 1.f, 1.f));
+    }
+}
+
+void Application::DrawText(const std::string& text, const glm::vec3& color,
+                           float x, float y, float size) {
+    if (fontShader != nullptr && m_font != nullptr) {
+        // Render with size 16 white text
+        cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, size, color);
     }
 }
 

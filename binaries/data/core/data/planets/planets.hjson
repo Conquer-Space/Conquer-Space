@@ -78,7 +78,7 @@
     {
         name: ISS
         identifier: iss
-        radius: 10 km
+        radius: 10 m
         reference: earth
         gm: 3.9860044188e5
         orbit: {
