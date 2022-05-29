@@ -18,7 +18,6 @@
 
 #include <glad/glad.h>
 #include <noise/noise.h>
-#include <numbers>
 
 #include <cmath>
 #include <string>
