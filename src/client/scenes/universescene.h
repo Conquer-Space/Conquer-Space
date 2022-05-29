@@ -91,7 +91,7 @@ class UniverseScene : public cqsp::engine::Scene {
 };
 
 void SeePlanet(cqsp::engine::Application&, entt::entity);
-entt::entity GetCurrentViewingPlanet(cqsp::engine::Application&);
+entt::entity GetCurrentViewingPlanet(cqsp::common::Universe&);
 // Halts all other things
 void SetGameHalted(bool b);
 bool IsGameHalted();

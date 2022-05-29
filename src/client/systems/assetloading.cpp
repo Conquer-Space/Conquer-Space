@@ -53,7 +53,7 @@ template<class T>
 void LoadResource(cqsp::engine::Application& app, std::string asset_name) {
     using cqsp::common::systems::loading::HjsonLoader;
     static_assert(std::is_base_of<HjsonLoader, T>::value, "Class is not child of");
-    std::unique_ptr<HjsonLoader> ptr = std::make_unique<T>();
+    std::unique_ptr<HjsonLoader> ptr = std::make_unique<T>(app.GetUniverse());
 
     namespace cqspc = cqsp::common::components;
     for (auto it = app.GetAssetManager().GetPackageBegin(); it != app.GetAssetManager().GetPackageEnd(); it++) {
@@ -62,7 +62,7 @@ void LoadResource(cqsp::engine::Application& app, std::string asset_name) {
         }
         cqsp::asset::HjsonAsset* good_assets = it->second->GetAsset<cqsp::asset::HjsonAsset>(asset_name);
         try {
-            ptr->LoadHjson(good_assets->data, app.GetUniverse());
+            ptr->LoadHjson(good_assets->data);
         } catch (std::runtime_error& error) {
             SPDLOG_INFO("Failed to load hjson asset {}: {}", asset_name, error.what());
         } catch (Hjson::index_out_of_bounds &) {

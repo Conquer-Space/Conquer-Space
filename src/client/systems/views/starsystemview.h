@@ -16,16 +16,11 @@
 */
 #pragma once
 
-#include <noiseutils.h>
-
-#include <thread>
-#include <atomic>
 #include <map>
 
 #include <entt/entt.hpp>
 #include <glm/glm.hpp>
 
-#include "client/systems/sysplanetterraingenerator.h"
 #include "common/universe.h"
 #include "engine/graphics/renderable.h"
 #include "engine/renderer/framebuffer.h"
@@ -77,7 +72,10 @@ class SysStarSystemRenderer {
     double previous_mouseX;
     double previous_mouseY;
 
-    float scroll = 10;
+    double scroll = 10;
+    double min_zoom = 1;
+    // Light year sized
+    double max_zoom = 9.4605284e15;
 
     glm::vec3 view_center;
 
@@ -90,8 +88,6 @@ class SysStarSystemRenderer {
     void DrawOrbit(const entt::entity& entity);
 
     ~SysStarSystemRenderer();
-
-    const float scale_size = 10.f;
 
  private:
     entt::entity m_viewing_entity = entt::null;
@@ -107,8 +103,8 @@ class SysStarSystemRenderer {
     cqsp::engine::Renderable ship_overlay;
     cqsp::engine::Renderable city;
     cqsp::engine::Renderable sun;
-    cqsp::engine::Renderable orbit_line;
 
+    cqsp::asset::ShaderProgram_t orbit_shader;
 #if FALSE
     // Disabled for now
     asset::ShaderProgram_t no_light_shader;
@@ -133,12 +129,13 @@ class SysStarSystemRenderer {
 
     void DrawEntityName(glm::vec3 &object_pos, entt::entity ent_id);
     void DrawPlanetIcon(glm::vec3 &object_pos);
+    void DrawPlanetBillboards(const entt::entity& ent_id, const glm::vec3& object_pos);
     void DrawShipIcon(glm::vec3 &object_pos);
     void DrawCityIcon(glm::vec3 &object_pos);
     void DrawPlanet(glm::vec3 &object_pos, entt::entity entity);
     void DrawTexturedPlanet(glm::vec3 &object_pos, entt::entity entity);
-    void DrawStar(glm::vec3 &object_pos);
-    void DrawTerrainlessPlanet(glm::vec3 &object_pos);
+    void DrawStar(const entt::entity& entity, glm::vec3 &object_pos);
+    void DrawTerrainlessPlanet(const entt::entity& entity, glm::vec3 &object_pos);
     void RenderCities(glm::vec3 &object_pos, const entt::entity &body_entity);
     bool CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos);
     void CalculateCityPositions();
@@ -155,17 +152,11 @@ class SysStarSystemRenderer {
 
     void CheckResourceDistRender();
 
-    void SetPlanetTexture(TerrainImageGenerator &);
-    unsigned int GeneratePlanetTexture(noise::utils::Image& image);
-    void CheckPlanetTerrain();
-    void CreatePlanetTextures(TerrainImageGenerator&, cqsp::asset::Texture** albedo,
-                              cqsp::asset::Texture** heightmap);
     glm::vec3 CalculateMouseRay(const glm::vec3 &ray_nds);
     float GetWindowRatio();
 
     void GenerateOrbitLines();
 
-    cqsp::asset::Texture* GenerateTexture(unsigned int, noise::utils::Image&);
     // How much to scale the the star system.
     const double divider = 0.01;
     float window_ratio;
@@ -173,19 +164,7 @@ class SysStarSystemRenderer {
     glm::vec3 sun_position;
     glm::vec3 sun_color;
 
-    std::thread generator_thread;
-    std::thread intermediate_generator_thread;
-
-    std::atomic_bool terrain_gen_complete = false;
-    std::atomic_bool less_detailed_gen_complete = false;
-    std::atomic_bool to_halt_terrain_generation = false;
-    std::map<entt::entity, TerrainImageGenerator> final_generators;
-    std::map<entt::entity, TerrainImageGenerator> intermediate_generators;
-    std::map<entt::entity, cqsp::common::components::bodies::Terrain> seeds;
-
     engine::LayerRenderer renderer;
-
-    cqsp::common::components::types::Orbit orb;
 
     int ship_icon_layer;
     int planet_icon_layer;
@@ -196,6 +175,8 @@ class SysStarSystemRenderer {
     bool is_rendering_founding_city = false;
     glm::vec3 city_founding_position;
     entt::entity on_planet;
+
+    float view_scale = 10.f;
 };
 }  // namespace systems
 }  // namespace client
