@@ -83,6 +83,8 @@ class ShaderProgram {
     void UseProgram();
     unsigned int program;
 
+    void SetMVP(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection);
+
     operator unsigned int() const { return program; }
 };
 

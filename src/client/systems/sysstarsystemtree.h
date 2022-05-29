@@ -30,8 +30,12 @@ class SysStarSystemTree : public SysUserInterface {
     void DoUI(int delta_time);
     void DoUpdate(int delta_time);
 
+    void SeePlanetSelectable(entt::entity entity);
+    void DoChildTree(entt::entity entity);
  private:
     int selected_index = 0;
+    entt::entity selected_planet;
+    entt::sparse_set planets;
 };
 }  // namespace systems
 }  // namespace client

@@ -159,8 +159,8 @@ void cqsp::scene::UniverseScene::DoScreenshot() {
     }
 }
 
-entt::entity cqsp::scene::GetCurrentViewingPlanet(cqsp::engine::Application& app) {
-    return app.GetUniverse().view<cqsp::client::systems::FocusedPlanet>().front();
+entt::entity cqsp::scene::GetCurrentViewingPlanet(cqsp::common::Universe& universe) {
+    return universe.view<cqsp::client::systems::FocusedPlanet>().front();
 }
 
 void cqsp::scene::SeePlanet(cqsp::engine::Application& app, entt::entity ent) {

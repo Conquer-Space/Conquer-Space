@@ -168,6 +168,13 @@ void ShaderProgram::UseProgram() {
     glUseProgram(program);
 }
 
+void ShaderProgram::SetMVP(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection) {
+    UseProgram();
+    setMat4("model", model);
+    setMat4("view", view);
+    setMat4("projection", projection);
+}
+
 ShaderProgram::ShaderProgram() { program = -1; }
 
 ShaderProgram::ShaderProgram(const Shader& vert, const Shader& frag) {
