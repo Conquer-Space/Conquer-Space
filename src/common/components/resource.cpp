@@ -150,9 +150,9 @@ void ResourceLedger::operator*=(const double value) {
     }
 }
 
-void ResourceLedger::operator*=(ResourceLedger &other) {
-    for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
-        (*this)[iterator->first] = iterator->second * other[iterator->first];
+void ResourceLedger::operator*=(const ResourceLedger &other) {
+    for (auto iterator = other.begin(); iterator != other.begin(); iterator++) {
+        (*this)[iterator->first] = iterator->second * (*this)[iterator->first];
     }
 }
 

@@ -85,7 +85,7 @@ class ResourceLedger : private LedgerMap {
     /// Multiplies the resource with the resource value in other ledger
     /// </summary>
     /// <param name=""></param>
-    void operator*=(ResourceLedger&);
+    void operator*=(const ResourceLedger&);
 
     /// <summary>
     /// All resources in this ledger are smaller than than the other ledger
