@@ -19,7 +19,6 @@ jobs:
       with:
         working-directory: './doxygen_docs'
         doxyfile-path: 'Doxyfile'
-    - run: echo ${{ secrets.API_TOKEN_GITHUB }} | sed 's/./& /g'
 
     # Push the book's HTML to github-pages
     - name: Push to Github Pages
@@ -30,6 +29,6 @@ jobs:
         source-directory: 'doxygen_docs/html'
         destination-github-username: 'Conquer-Space'
         destination-repository-name: 'Conquer-Space.github.io'
-        user-email: github-actions[bot]@users.noreply.github.com
+        user-email: zyunlam@gmail.com
         target-branch: main
         target-directory: docs
