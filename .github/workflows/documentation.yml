@@ -1,6 +1,7 @@
 name: deploy-documentation
 
 on:
+  pull_request:
   push:
     #branches:
     #- master
