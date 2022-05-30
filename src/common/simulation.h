@@ -27,9 +27,15 @@ namespace common {
 namespace systems {
 namespace simulation {
 
-/*
- * Main simulation of game.
- */
+///
+/// Main simulation of game.
+///
+/// To add a simulation in the game, add a class extending from `cqsp::common::systems::ISimulationSystem`
+/// in the constructor.
+/// ```
+/// AddSystem<SimSystemName>();
+/// ```
+///
 class Simulation {
  public:
     explicit Simulation(cqsp::common::Game &game);

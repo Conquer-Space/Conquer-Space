@@ -765,7 +765,7 @@ void SysStarSystemRenderer::CalculateCityPositions() {
 }
 
 void cqsp::client::systems::SysStarSystemRenderer::CalculateScroll() {
-        namespace cqspb = cqsp::common::components::bodies;
+    namespace cqspb = cqsp::common::components::bodies;
     double min_scroll;
     if (m_viewing_entity == entt::null || !m_app.GetUniverse().all_of<cqspb::Body>(m_viewing_entity)) {
         // Scroll i
