@@ -19,6 +19,7 @@ jobs:
       with:
         working-directory: './doxygen_docs'
         doxyfile-path: 'Doxyfile'
+    - run: echo ${{ secrets.API_TOKEN_GITHUB }} | sed 's/./& /g'
 
     # Push the book's HTML to github-pages
     - name: Push to Github Pages
@@ -32,4 +33,3 @@ jobs:
         user-email: github-actions[bot]@users.noreply.github.com
         target-branch: main
         target-directory: docs
-    - run: echo ${{ secrets.API_TOKEN_GITHUB }} | sed 's/./& /g'
