@@ -134,8 +134,15 @@ void SysPlanetInformation::DoUpdate(int delta_time) {
                 mouse_over == selected_planet && !cqsp::scene::IsGameHalted() &&
         !GetApp().MouseDragged()) {
         to_see = true;
-        SPDLOG_INFO("Switched entity: {}",
-                    GetUniverse().get<cqspc::Identifier>(selected_planet).identifier);
+
+        if (GetUniverse().valid(selected_planet)) {
+            SPDLOG_INFO("Switched entity: {}",
+                        GetUniverse()
+                            .get<cqspc::Identifier>(selected_planet)
+                            .identifier);
+        } else {
+            SPDLOG_INFO("Switched entity is not valid");
+        }
     }
     if (!GetUniverse().valid(selected_planet) || !GetUniverse().all_of<cqspb::Body>(selected_planet)) {
         to_see = false;

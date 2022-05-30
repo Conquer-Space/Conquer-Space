@@ -74,14 +74,6 @@ void ResourceTooltipSection(const Universe &universe, entt::entity entity) {
         ImGui::TextFmt("Productivity: {}", universe.get<cqspc::FactoryProductivity>(entity).current_production);
     }
 
-    if (universe.all_of<cqspc::ResourceGenerator>(entity)) {
-        ImGui::Separator();
-        ImGui::TextFmt("Generating");
-        // Then do demand
-        cqsp::client::systems::DrawLedgerTable(
-            "factorygentooltip", universe, universe.get<cqspc::ResourceGenerator>(entity));
-    }
-
     if (universe.all_of<cqspc::infrastructure::PowerConsumption>(entity)) {
         ImGui::Separator();
         auto& consumption = universe.get<cqspc::infrastructure::PowerConsumption>(entity);
@@ -121,6 +113,7 @@ std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity e
         auto& generator = universe.get<cqspc::ResourceConverter>(entity);
         return fmt::format("{} Factory", cqsp::client::systems::gui::GetName(universe, generator.recipe));
     }  else if (universe.any_of<cqspc::Mine>(entity)) {
+        /*
         std::string production = "";
         auto& generator = universe.get<cqspc::ResourceGenerator>(entity);
         for (auto it = generator.begin(); it != generator.end(); ++it) {
@@ -131,6 +124,7 @@ std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity e
             production = production.substr(0, production.size() - 2);
         }
         return fmt::format("{} Mine", production);
+        */
     } else if (universe.any_of<cqspc::Player>(entity)) {
         return "Player";
     } else if (universe.any_of<cqspc::Civilization>(entity)) {
@@ -145,6 +139,7 @@ std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity e
 }
 
 // TODO(EhWhoAmI): Organize this so that it makes logical sense and order.
+// TODO(AGM): Support new production system
 void EntityTooltip(const Universe &universe, entt::entity entity) {
     if (!ImGui::IsItemHovered()) {
         return;

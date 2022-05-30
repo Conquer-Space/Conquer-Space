@@ -19,35 +19,7 @@
 #include "common/components/area.h"
 #include "common/components/economy.h"
 
+// TODO(AGM): Remove
 void cqsp::common::systems::SysMine::DoSystem() {
-    auto view = GetUniverse().view<components::RawResourceGen,
-                                components::ResourceGenerator, components::MarketAgent>();
-    for (const entt::entity& entity : view) {
-        // Get market attached, get sd ratio for the goods it produces, then adjust production.
-        //
-        auto& gen = GetUniverse().get<components::ResourceGenerator>(entity);
-        entt::entity generated = entt::null;
-        double amount_generated = 0;
-        auto gen_it = gen.begin();
-        generated = gen_it->first;
-        amount_generated = gen_it->second;
-        auto& market = GetUniverse().get<components::Market>(
-            GetUniverse().get<components::MarketAgent>(entity).market);
 
-        // Reduce production because costs
-        const double sd_ratio = market.GetSDRatio(generated);
-        if (sd_ratio > 1) {
-            // Reduce production
-            auto& prod = GetUniverse().get_or_emplace<components::FactoryProductivity>(entity);
-            // Inject some randomness to adjust the price
-            prod.current_production *= 0.95;
-        }
-
-        if (sd_ratio < 1) {
-            // Reduce production
-            auto& prod = GetUniverse().get_or_emplace<components::FactoryProductivity>(entity);
-            // Inject some randomness?
-            prod.current_production *= 1.05;
-        }
-    }
 }
