@@ -1,8 +1,11 @@
 {
-    vert: object.vert
+    vert: object_log.vert
     frag: planet_texture.frag
     uniforms: {
         terrain_tex: 0
         normal_tex: 1
+        C: 1
+        far: 1e13
+        offset: 1.0
     }
 }

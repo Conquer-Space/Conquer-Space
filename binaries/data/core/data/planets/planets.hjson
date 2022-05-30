@@ -112,6 +112,9 @@
             LAN: 2.296616161126016 deg
             M0: 222.7012350930954 deg
         }
+        texture: {
+            terrain: moonmap
+        }
         tags: []
     }
     {

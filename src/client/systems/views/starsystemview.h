@@ -105,6 +105,7 @@ class SysStarSystemRenderer {
     cqsp::engine::Renderable sun;
 
     cqsp::asset::ShaderProgram_t orbit_shader;
+    cqsp::asset::ShaderProgram_t near_shader;
 #if FALSE
     // Disabled for now
     asset::ShaderProgram_t no_light_shader;
@@ -139,6 +140,7 @@ class SysStarSystemRenderer {
     void RenderCities(glm::vec3 &object_pos, const entt::entity &body_entity);
     bool CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos);
     void CalculateCityPositions();
+    void CalculateScroll();
 
     void FocusCityView();
 

@@ -558,7 +558,7 @@ int Application::destroy() {
 void Application::CalculateProjections() {
     float window_ratio = static_cast<float>(GetWindowWidth()) /
                     static_cast<float>(GetWindowHeight());
-    three_dim_projection = glm::infinitePerspective(glm::radians(45.f), window_ratio, 0.0001f);
+    three_dim_projection = glm::infinitePerspective(glm::radians(45.f), window_ratio, 0.000001f);
     // For normal rendering
     two_dim_projection =
         glm::ortho(0.0f,
