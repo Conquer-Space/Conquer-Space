@@ -117,7 +117,7 @@ ResourceLedger ResourceLedger::operator+(const ResourceLedger &other) {
     return ledger;
 }
 
-ResourceLedger ResourceLedger::operator*(double value) {
+ResourceLedger ResourceLedger::operator*(const double value) {
     ResourceLedger ledger;
     for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
         ledger[iterator->first] = iterator->second * value;
@@ -125,10 +125,25 @@ ResourceLedger ResourceLedger::operator*(double value) {
     return ledger;
 }
 
-ResourceLedger ResourceLedger::operator*(ResourceLedger &other) {
+ResourceLedger ResourceLedger::operator/(const double value) {
+    ResourceLedger ledger;
+    for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
+        ledger[iterator->first] = iterator->second / value;
+    }
+    return ledger;
+}
+
+ResourceLedger ResourceLedger::operator*(const ResourceLedger &other) {
     ResourceLedger ledger;
     ledger = *this;
     ledger *= other;
+    return ledger;
+}
+
+ResourceLedger ResourceLedger::operator/(const ResourceLedger &other) {
+    ResourceLedger ledger;
+    ledger = *this;
+    ledger /= other;
     return ledger;
 }
 
@@ -150,9 +165,21 @@ void ResourceLedger::operator*=(const double value) {
     }
 }
 
+void ResourceLedger::operator/=(const double value) {
+    for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
+        (*this)[iterator->first] = iterator->second / value;
+    }
+}
+
 void ResourceLedger::operator*=(const ResourceLedger &other) {
     for (auto iterator = other.begin(); iterator != other.begin(); iterator++) {
         (*this)[iterator->first] = iterator->second * (*this)[iterator->first];
+    }
+}
+
+void ResourceLedger::operator/=(const ResourceLedger &other) {
+    for (auto iterator = other.begin(); iterator != other.begin(); iterator++) {
+        (*this)[iterator->first] = (*this)[iterator->first] / iterator->second;
     }
 }
 

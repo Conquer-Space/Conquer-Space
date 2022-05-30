@@ -51,6 +51,12 @@ struct Unit {
 
 struct Good {};
 
+//See SysPopulationConsumption for an explanation of these values
+struct ConsumerGood {
+    float autonomous_consumption;
+    float marginal_propensity;
+};
+
 struct Mineral {};
 
 typedef std::map<entt::entity, double> LedgerMap;
@@ -69,23 +75,18 @@ class ResourceLedger : private LedgerMap {
 
     ResourceLedger operator-(const ResourceLedger&);
     ResourceLedger operator+(const ResourceLedger&);
-    ResourceLedger operator*(double value);
-
-    /// <summary>
-    /// Multiplies the resource with the resource value in other ledger
-    /// </summary>
-    /// <param name=""></param>
-    ResourceLedger operator*(ResourceLedger&);
-
+    ResourceLedger operator*(const ResourceLedger&);
+    ResourceLedger operator/(const ResourceLedger&);
+    
     void operator-=(const ResourceLedger&);
     void operator+=(const ResourceLedger&);
-    void operator*=(const double value);
-
-    /// <summary>
-    /// Multiplies the resource with the resource value in other ledger
-    /// </summary>
-    /// <param name=""></param>
     void operator*=(const ResourceLedger&);
+    void operator/=(const ResourceLedger&);
+
+    void operator*=(const double value);
+    void operator/=(const double value);
+    ResourceLedger operator*(const double value);
+    ResourceLedger operator/(const double value);
 
     /// <summary>
     /// All resources in this ledger are smaller than than the other ledger
@@ -218,9 +219,10 @@ struct FactoryTimer {
     float time_left;
 };
 
-struct ResourceGenerator : public ResourceLedger {};
+//Resource generator 
 
 struct ResourceConsumption : public ResourceLedger {};
+struct ResourceProduction : public ResourceLedger {};
 
 struct ResourceConverter {
     entt::entity recipe;
@@ -228,7 +230,7 @@ struct ResourceConverter {
 
 struct ResourceStockpile : public ResourceLedger { };
 
-struct ResourceDemand : public ResourceLedger { };
+
 
 struct FailedResourceTransfer {
     // Ledgers later to show how much
