@@ -23,6 +23,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <algorithm>
 
 #include <tracy/Tracy.hpp>
 
