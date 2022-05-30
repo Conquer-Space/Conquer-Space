@@ -29,7 +29,7 @@ jobs:
         fi
 
     - name: Pushes to another repository
-      uses: cpina/github-action-push-to-another-repository@main
+      uses: EhWhoAmI/github-action-push-to-another-repository@main
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
