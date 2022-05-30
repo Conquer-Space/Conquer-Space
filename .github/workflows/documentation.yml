@@ -14,7 +14,7 @@ jobs:
       with:
         fetch-depth: 1
 
-    - name: Doxygen create
+    - name: Create Doxygen
       uses: mattnotmitt/doxygen-action@v1.9.2
       with:
         working-directory: './doxygen_docs'
