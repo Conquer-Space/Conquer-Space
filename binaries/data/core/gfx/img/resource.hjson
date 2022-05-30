@@ -35,6 +35,12 @@
         hints: {
         }
     }
+    moonmap: {
+        path: 2k_moon.jpg
+        type: texture
+        hints: {
+        }
+    }
     neptunemap: {
         path: 2k_neptune.jpg
         type: texture

@@ -1,6 +1,9 @@
 {
-    vert: object.vert
-    frag: color_shader.frag
+    vert: object_log.vert
+    frag: color_shader_log.frag
     uniforms: {
+        C: 1
+        far: 1e13
+        offset: 1.0
     }
 }
