@@ -1,0 +1,10 @@
+{
+    vert: object.vert
+    frag: color_shader.frag
+    //planet_near.frag
+    uniforms: {
+        terrain_tex: 0
+        normal_tex: 1
+        color: [1, 0, 0, 1]
+    }
+}
