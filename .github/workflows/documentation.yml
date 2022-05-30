@@ -10,9 +10,9 @@ jobs:
   deploy-book:
     runs-on: ubuntu-latest
     steps:
-    - name: Test
-      run: |
-        ls
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
 
     - name: Doxygen create
       uses: mattnotmitt/doxygen-action@v1.9.2
