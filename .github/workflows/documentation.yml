@@ -20,8 +20,7 @@ jobs:
         working-directory: './doxygen_docs'
         doxyfile-path: 'Doxyfile'
 
-    # Push the book's HTML to github-pages
-    - name: Push to Github Pages
+    - name: Pushes to another repository
       uses: cpina/github-action-push-to-another-repository@main
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
@@ -29,6 +28,6 @@ jobs:
         source-directory: 'doxygen_docs/html'
         destination-github-username: 'Conquer-Space'
         destination-repository-name: 'Conquer-Space.github.io'
-        user-email: zyunlam@gmail.com
+        user-email: carles3@pina.cat
         target-branch: main
         target-directory: docs
