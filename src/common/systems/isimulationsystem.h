@@ -29,6 +29,10 @@ class ISimulationSystem {
     explicit ISimulationSystem(Game& game) : game(game) {}
 
     virtual void DoSystem() = 0;
+
+    /// How often is `DoSystem` is run. It will be run every
+    /// n number of ticks when the tick becomes a multiple of the number below.
+    /// The default is 25, which is slightly longer than the time of day.
     virtual int Interval() { return 25; }
 
  protected:
