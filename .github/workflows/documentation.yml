@@ -25,7 +25,7 @@ jobs:
       run: |
         if [ -z "$WHO_TO_TRUST" ]
         then
-          echo "Trustable"
+          echo "Pls work pls"
         fi
 
     - name: Pushes to another repository
