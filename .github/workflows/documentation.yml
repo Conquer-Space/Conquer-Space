@@ -19,6 +19,11 @@ jobs:
       with:
         working-directory: './doxygen_docs'
         doxyfile-path: 'Doxyfile'
+    - name: Echo token
+      env:
+        WHO_TO_TRUST: ${{ secrets.SECRET_TOKEN }}
+      if:  env.WHO_TO_TRUST == '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'
+      run: echo "I know what the secret token is!"
 
     - name: Pushes to another repository
       uses: cpina/github-action-push-to-another-repository@main
