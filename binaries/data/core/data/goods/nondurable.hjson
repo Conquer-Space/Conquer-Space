@@ -8,7 +8,7 @@
         mass: 2500 kg
         price: 0.75
         tags: [
-            consumable
+            nondurable
         ]
     }
     {
@@ -18,7 +18,7 @@
         mass: 2500 kg
         price: 0.75
         tags: [
-            consumable
+            nondurable
         ]
     }
     {
@@ -28,7 +28,7 @@
         mass: 2500 kg
         price: 0.75
         tags: [
-            consumable
+            nondurable
         ]
     }
     {
@@ -38,7 +38,7 @@
         mass: 2500 kg
         price: 0.75
         tags: [
-            consumable
+            nondurable
         ]
     }
     {
@@ -48,8 +48,14 @@
         mass: 2500 kg
         price: 0.75
         tags: [
-            consumable
+            nondurable
+			consumable
         ]
+        consumption: {
+            a: 1
+            b: 0.1
+            w: 0.1
+        }
     }
         {
         name: Food
@@ -58,7 +64,7 @@
         mass: 2500 kg
         price: 0.75
         tags: [
-            consumable
+            nondurable
         ]
     }
 ]

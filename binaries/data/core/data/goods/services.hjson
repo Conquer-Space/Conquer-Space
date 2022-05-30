@@ -7,9 +7,16 @@
         volume: 1 m3
         mass: 2500 kg
         price: 0.75
+        
         tags: [
             service
+			consumable
         ]
+        consumption: {
+            a: 1
+            b: 0.1
+            w: 0.1
+        }
     }
     {
         name: Recreation
@@ -19,7 +26,13 @@
         price: 0.75
         tags: [
             service
+			consumable
         ]
+        consumption: {
+            a: 1
+            b: 0.1
+            w: 0.1
+        }
     }
     {
         name: Housing
@@ -29,7 +42,13 @@
         price: 0.75
         tags: [
             service
+			consumable
         ]
+        consumption: {
+            a: 1
+            b: 0.1
+            w: 0.1
+        }
     }
     {
         name: Medical
@@ -39,7 +58,13 @@
         price: 0.75
         tags: [
             service
+			consumable
         ]
+        consumption: {
+            a: 1
+            b: 0.1
+            w: 0.1
+        }
     }
     {
         name: Public Transport
@@ -49,7 +74,13 @@
         price: 0.75
         tags: [
             service
+			consumable
         ]
+        consumption: {
+            a: 1
+            b: 0.1
+            w: 0.1
+        }
     }
     {
         name: Finance
@@ -59,6 +90,12 @@
         price: 0.75
         tags: [
             service
+			consumable
         ]
+        consumption: {
+            a: 1
+            b: 0.1
+            w: 0.1
+        }
     }
 ]
