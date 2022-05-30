@@ -22,8 +22,11 @@ jobs:
     - name: Echo token
       env:
         WHO_TO_TRUST: ${{ secrets.API_TOKEN_GITHUB }}
-      if:  env.WHO_TO_TRUST
-      run: echo "I know what the secret token is!"
+      run: |
+        if [ -z "$WHO_TO_TRUST" ]
+        then
+          echo "Trustable"
+        fi
 
     - name: Pushes to another repository
       uses: cpina/github-action-push-to-another-repository@main
