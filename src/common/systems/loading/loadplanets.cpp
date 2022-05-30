@@ -122,7 +122,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
                 for (entt::entity entity :
                                  universe.view<cqspc::Matter>()) {
-                    goods[entity] = -1;
+                    goods[entity];
 
                 }
                 SPDLOG_INFO("Making city");

@@ -34,6 +34,7 @@ class Universe : public entt::registry {
     components::StarDate date;
 
     std::map<std::string, entt::entity> goods;
+    std::vector<entt::entity> consumergoods;
     std::map<std::string, entt::entity> recipes;
     std::map<std::string, entt::entity> terrain_data;
     std::map<std::string, systems::names::NameGenerator> name_generators;
