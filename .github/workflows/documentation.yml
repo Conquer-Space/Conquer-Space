@@ -27,8 +27,7 @@ jobs:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
         source-directory: 'doxygen_docs/html'
-        destination-github-username: 'EhWhoAmI'
-        destination-repository-username: 'Conquer-Space'
+        destination-github-username: 'Conquer-Space'
         destination-repository-name: 'Conquer-Space.github.io'
         user-email: github-actions[bot]@users.noreply.github.com
         target-branch: main
