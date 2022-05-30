@@ -4,12 +4,6 @@ in vec2 TexCoords;
 in vec3 FragPos;
 in vec3 Normal;
 
-in vec4 frag_pos;
-
-uniform float C;
-uniform float far;
-uniform float offset;
-
 out vec4 FragColor;
 
 // lights
@@ -148,6 +142,4 @@ void main() {
     color = pow(color, vec3(1.0/2.5));
 
     FragColor = vec4(color, 1.0);
-
-    gl_FragDepth = (log(C * frag_pos.z + offset) / log(C * far + offset));
 }

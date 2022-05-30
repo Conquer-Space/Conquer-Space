@@ -158,4 +158,9 @@
         type: shader_def
         hints: {}
     }
+    neartexturedobject: {
+        path: planet_near.hjson
+        type: shader_def
+        hints: {}
+    }
 }

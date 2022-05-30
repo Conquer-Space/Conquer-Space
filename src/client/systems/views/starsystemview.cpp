@@ -23,6 +23,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <algorithm>
 
 #include <tracy/Tracy.hpp>
 
@@ -119,7 +120,8 @@ void SysStarSystemRenderer::Initialize() {
     // Initialize shaders
     asset::ShaderProgram_t textured_planet_shader =
         m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:planet_textureshader")->MakeShader();
-
+    near_shader =
+        m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:neartexturedobject")->MakeShader();
     textured_planet.mesh = sphere_mesh;
     textured_planet.shaderProgram = textured_planet_shader;
 
@@ -216,6 +218,11 @@ void SysStarSystemRenderer::SeeStarSystem() {
             data.normal = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>("core:" + textures.normal_name);
         }
     }
+
+    // Set scroll to radius of sun
+    if (m_universe.sun != entt::null && m_universe.any_of<cqspb::Body>(m_universe.sun)) {
+        scroll = m_universe.get<cqspb::Body>(m_universe.sun).radius * 5;
+    }
 }
 
 void SysStarSystemRenderer::SeeEntity() {
@@ -228,6 +235,7 @@ void SysStarSystemRenderer::SeeEntity() {
     if (m_app.GetUniverse().all_of<cqspb::Body>(m_viewing_entity)) {
         scroll =
             m_app.GetUniverse().get<cqspb::Body>(m_viewing_entity).radius * 2.5;
+        if (scroll < 0.1) scroll = 0.1;
     } else {
         scroll = 5;
     }
@@ -242,10 +250,7 @@ void SysStarSystemRenderer::Update(float deltaTime) {
     is_founding_city = IsFoundingCity(m_universe);
 
     if (!ImGui::GetIO().WantCaptureMouse) {
-        //if (scroll - m_app.GetScrollAmount() * 3 * scroll / 33 > 0.1) {
-        scroll -= m_app.GetScrollAmount() * 3 * scroll / 33;
-        //}
-
+        CalculateScroll();
 
         if (m_app.MouseButtonIsHeld(engine::MouseInput::LEFT)) {
             view_x += deltaX/m_app.GetWindowWidth()*3.1415*4;
@@ -513,12 +518,9 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawPlanetBillboards(const en
     text = fmt::format("{}", text);
 
     // Check if the position on screen is within bounds
-    if (!(isnan(gl_Position.z)) &&
+    if (!(!(isnan(gl_Position.z)) &&
         (pos.x > 0 && pos.x < m_app.GetWindowWidth() &&
-            pos.y > 0 && pos.y < m_app.GetWindowHeight())) {
-        m_app.DrawText(text, pos.x, pos.y, 20);
-        // Also draw circle
-    } else {
+            pos.y > 0 && pos.y < m_app.GetWindowHeight()))) {
         return;
     }
 
@@ -533,6 +535,8 @@ void cqsp::client::systems::SysStarSystemRenderer::DrawPlanetBillboards(const en
     planet_circle.shaderProgram->setMat4("projection", twodimproj);
 
     engine::Draw(planet_circle);
+
+    m_app.DrawText(text, pos.x, pos.y, 20);
 }
 
 void SysStarSystemRenderer::DrawCityIcon(glm::vec3 &object_pos) {
@@ -597,22 +601,30 @@ void SysStarSystemRenderer::DrawTexturedPlanet(glm::vec3 &object_pos, entt::enti
     float scale = body.radius;  // cqsp::common::components::types::toAU(body.radius)
                                 // * view_scale;
     position = glm::scale(position, glm::vec3(scale));
+    cqsp::asset::ShaderProgram_t* shader = &textured_planet.shaderProgram;
+    if (scale < 10.f) {
+        // then use different shader if it's close enough
+        // This is relatively hacky, so try not to do it
+        shader = &near_shader;
+        glDepthFunc(GL_ALWAYS);
+    }
 
-    textured_planet.SetMVP(position, camera_matrix, projection);
-    textured_planet.shaderProgram->UseProgram();
+    shader->get()->SetMVP(position, camera_matrix, projection);
+    shader->get()->UseProgram();
 
     // Maybe a seperate shader for planets without normal maps would be better
-    textured_planet.shaderProgram->setBool("haveNormal", have_normal);
+    shader->get()->setBool("haveNormal", have_normal);
 
-    textured_planet.shaderProgram->setVec3("lightDir", glm::normalize(sun_position - object_pos));
+    shader->get()->setVec3("lightDir", glm::normalize(sun_position - object_pos));
 
-    textured_planet.shaderProgram->setVec3("lightDir", glm::normalize(sun_position - object_pos));
-    textured_planet.shaderProgram->setVec3("lightPosition", sun_position);
+    shader->get()->setVec3("lightDir", glm::normalize(sun_position - object_pos));
+    shader->get()->setVec3("lightPosition", sun_position);
 
-    textured_planet.shaderProgram->setVec3("lightColor", sun_color);
-    textured_planet.shaderProgram->setVec3("viewPos", cam_pos);
+    shader->get()->setVec3("lightColor", sun_color);
+    shader->get()->setVec3("viewPos", cam_pos);
 
-    engine::Draw(textured_planet);
+    engine::Draw(textured_planet, *shader);
+    glDepthFunc(GL_LESS);
 }
 
 void SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_pos, entt::entity entity) {
@@ -750,6 +762,21 @@ void SysStarSystemRenderer::CalculateCityPositions() {
         m_app.GetUniverse().emplace_or_replace<Offset>(city_entity, cqspt::toVec3(coord,  1));
     }
     SPDLOG_INFO("Calculated offset");
+}
+
+void cqsp::client::systems::SysStarSystemRenderer::CalculateScroll() {
+        namespace cqspb = cqsp::common::components::bodies;
+    double min_scroll;
+    if (m_viewing_entity == entt::null || !m_app.GetUniverse().all_of<cqspb::Body>(m_viewing_entity)) {
+        // Scroll i
+        min_scroll = 0.1;
+    } else {
+        min_scroll = std::max(m_app.GetUniverse().get<cqspb::Body>(m_viewing_entity).radius * 1.1, 0.1);
+    }
+    if (scroll - m_app.GetScrollAmount() * 3 * scroll / 33 <= min_scroll) {
+        return;
+    }
+    scroll -= m_app.GetScrollAmount() * 3 * scroll / 33;
 }
 
 void cqsp::client::systems::SysStarSystemRenderer::FocusCityView() {
