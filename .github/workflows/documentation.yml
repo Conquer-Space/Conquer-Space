@@ -21,8 +21,8 @@ jobs:
         doxyfile-path: 'Doxyfile'
     - name: Echo token
       env:
-        WHO_TO_TRUST: ${{ secrets.SECRET_TOKEN }}
-      if:  env.WHO_TO_TRUST == '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'
+        WHO_TO_TRUST: ${{ secrets.API_TOKEN_GITHUB }}
+      if:  env.WHO_TO_TRUST
       run: echo "I know what the secret token is!"
 
     - name: Pushes to another repository
@@ -37,4 +37,3 @@ jobs:
         user-email: carles3@pina.cat
         target-branch: main
         target-directory: docs
-        
