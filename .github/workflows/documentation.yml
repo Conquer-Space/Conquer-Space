@@ -36,4 +36,5 @@ jobs:
         destination-repository-name: 'Conquer-Space.github.io'
         user-email: carles3@pina.cat
         target-branch: main
+        user-name: EhWhoAmI
         target-directory: docs
