@@ -22,17 +22,16 @@ jobs:
     - name: Echo token
       env:
         WHO_TO_TRUST: ${{ secrets.API_TOKEN_GITHUB }}
+        TEST2: ${{ secrets.NON_EXST }}
       run: |
         if [ -z "$WHO_TO_TRUST" ]
         then
           echo "idk if this will works"
         fi
-        touch foo.bar
-        git config --global user.email "you@example.com"
-        git config --global user.name "Your Name"
-        git add .
-        git commit -m "Test 2"
-        git push https://EhWhoAmI:$WHO_TO_TRUST@github.com/EhWhoAmI/cqsp HEAD:test2
+        if [ -z "$TEST2" ]
+        then
+          echo "idkkkk if this will works2"
+        fi
 
     - name: Pushes to another repository
       uses: EhWhoAmI/github-action-push-to-another-repository@main
