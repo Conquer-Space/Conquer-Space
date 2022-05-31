@@ -1,3 +1,5 @@
+Music is a little different.
+
 To add a song, just add to the end of the hjson:
 {
     name: Stars

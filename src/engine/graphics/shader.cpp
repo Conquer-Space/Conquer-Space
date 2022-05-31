@@ -295,6 +295,8 @@ cqsp::asset::ShaderProgram_t cqsp::asset::ShaderDefinition::MakeShader() {
     }
     // Initial values
     shader->UseProgram();
+    // FIXME(EhWhoAmI): Error handling and verification if the variablesis greatly needed
+    // are the right type is greatly needed.
     for (auto value : uniforms) {
         int type = GetUniformType(shader->program, value.first.c_str());
         switch (type) {

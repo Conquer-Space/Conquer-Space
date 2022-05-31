@@ -8,9 +8,9 @@ This is the documentation for Conquer Space.
 [Architecture](@ref architecture) shows the a bird's eye view of the project.
 
 #### Links
-Website: <http://cqsp.ehwhoami.com/>
-Github: <https://github.com/Conquer-Space/Conquer-Space>
-Discord: <https://discord.gg/h5r77Sa>
+ - Website: <http://cqsp.ehwhoami.com/>
+ - Github: <https://github.com/Conquer-Space/Conquer-Space>
+ - Discord: <https://discord.gg/h5r77Sa>
 
 ### Conquer Space License
 ```

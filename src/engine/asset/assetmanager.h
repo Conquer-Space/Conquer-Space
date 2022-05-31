@@ -41,12 +41,18 @@
 
 namespace cqsp {
 namespace asset {
-enum PrototypeType { NONE = 0, TEXTURE, SHADER, FONT, CUBEMAP };
+enum PrototypeType {
+    NONE = 0,
+    TEXTURE, //!< texture prototype
+    SHADER, //!< shader prototype
+    FONT, //!< Font prototype
+    CUBEMAP //!< cubemap prototype
+};
 
-/**
-* Asset Prototypes are for assets that need additional processing
-* in the main thread, such as images.
-*/
+///
+/// Asset Prototypes are for assets that need additional processing
+/// in the main thread, such as images.
+///
 class AssetPrototype {
  public:
     std::string key;
@@ -161,8 +167,19 @@ class AssetManager {
     ShaderProgram_t MakeShader(const std::string &vert, const std::string &frag);
     ShaderProgram_t MakeShader(const std::string& vert, const std::string& frag, const std::string& geom);
 
+    /// <summary>
+    /// Gets an asset.
+    /// </summary>
+    /// To get an asset, it defaults finding the asset in `core` if you do not specify a package,
+    /// or else if the asset is from another asset pack, you can specify
+    /// `mod_name:asset_name`, the separator between the two being a colon.
+    /// <typeparam name="T">The type class</typeparam>
+    /// <param name="key"></param>
+    /// <returns></returns>
     template <class T>
     T* GetAsset(const std::string& key) {
+        static_assert(std::is_base_of<Asset, T>::value,
+                      "Class is not child of cqsp::asset::Asset");
         std::size_t separation = key.find(":");
         // Default name is core
         std::string package_name = "core";
@@ -300,6 +317,8 @@ class AssetLoader {
 
     /// <summary>
     /// Pretty straightforward, loads a text file into a string.
+    ///
+    /// This has no hints
     /// </summary>
     std::unique_ptr<cqsp::asset::Asset> LoadText(cqsp::asset::VirtualMounter* mount,
                                                 const std::string& path,
@@ -351,6 +370,11 @@ class AssetLoader {
     /// <summary>
     /// Just specify a .ttf file, and it will load it into an opengl texture font object.
     /// </summary>
+    /// This is for opengl rendering.
+    ///
+    /// Because each UI library has their differing implementation of fonts, to add
+    /// fonts to the UI, do not use a `resource.hjson`. You need to go to `binaries/data/core/gfx/fonts.hjson`
+    /// to alter and add fonts for the UI.
     std::unique_ptr<cqsp::asset::Asset> LoadFont(cqsp::asset::VirtualMounter* mount,
                                                  const std::string& path,
                                                  const std::string& key,
@@ -358,17 +382,24 @@ class AssetLoader {
     /// <summary>
     /// Only ogg files are supported for now.
     /// </summary>
+    /// If you're looking to add a music file, do not add it by the 'normal' way. This is for performance
+    /// reasons.
+    /// Go to `binaries/data/core/music/readme.txt` for further reading.
     std::unique_ptr<cqsp::asset::Asset> LoadAudio(cqsp::asset::VirtualMounter* mount,
                                                  const std::string& path,
                                                  const std::string& key,
                                                  const Hjson::Value& hints);
 
     /// <summary>
-    /// Cubemaps are a special type of texture that make up the skybox. They consist of 6 textures.
+    /// Cubemaps are a special type of texture that make up the skybox. Although they are specified differently in the
+    /// `resource.hjson`, they become textures when they are loaded.
+    ///
+    /// They consist of 6 textures.
     /// When loading it, you have to specify a hjson file that links the files of the asset.
     /// The syntax of the hjson file will be a simple array of strings, specifing the relative paths
     /// relative to that hjson file. You will have 6 images, specifying the left, right, top, bottom,
     /// back, and front images respectively in that order.
+    ///
     /// Example:
     /// ```
     /// [
@@ -387,6 +418,30 @@ class AssetLoader {
                                                     const std::string& key,
                                                     const Hjson::Value& hints);
 
+    /// <summary>
+    /// A shader definiton file.
+    /// <br />
+    /// A shader defintion is a way to simplify the creation of shader objects.
+    /// <br />
+    /// A shader definiton file is loaded in hjson, and follows this format:
+    /// ```
+    /// {
+    ///     vert: (vertex shader name)
+    ///     frag: (fragment shader name)
+    ///     uniforms: {
+    ///         test_vec3: [1, 3, 5]
+    ///         test_float: 19.5
+    ///         test_int: 15
+    ///         test_texture_name: (texture id)
+    ///     }
+    /// }
+    /// ```
+    /// For uniforms, the shader will read the types of uniforms in the shader, and
+    /// use them.
+    ///
+    /// Matrices are not supported yet
+    /// </summary>
+    /// \see @ref cqsp::asset::ShaderDefinition for a most up to date version
     std::unique_ptr<ShaderDefinition> LoadShaderDefinition(
         cqsp::asset::VirtualMounter* mount, const std::string& path,
         const std::string& key, const Hjson::Value& hints);
@@ -442,11 +497,12 @@ class AssetLoader {
     /// This is the syntax:
     /// ```
     /// {
-    ///     test_asset: { # Asset name
+    ///     test_asset: { # Asset key
     ///         path: # Path relative to the current resource.hjson file.
     ///         type: # Type of asset: &lt;none|texture|shader|hjson|text|model|font|cubemap|directory|audio&rt;
     ///         hints: {} # Object of whatever information you want when loading the asset.
     ///     }
+    ///     // .. more assets can be specified, as long as they have a different key
     /// }
     /// ```
     /// <br>

@@ -18,10 +18,64 @@
 
 #include <string>
 
+/// <summary>
+/// When adding assets, it is extremely crucial that you read
+/// @ref cqsp::asset::AssetLoader::LoadResources to find out how to
+/// add a resource to the game.
+///
+/// When loading an asset from the game, read
+/// @ref cqsp::asset::AssetLoader::GetAsset
+/// </summary>
 namespace cqsp {
 namespace asset {
 enum class AssetType {
-    NONE, TEXTURE, SHADER, HJSON, TEXT, MODEL, FONT, CUBEMAP, TEXT_ARRAY, AUDIO, SHADER_DEFINITION
+    NONE,
+    /// \see @ref cqsp::asset::AssetLoader::LoadTexture for implementation
+    /// <summary>
+    /// `texture` as the `type` parameter in `resource.hjson`
+    /// </summary>
+    TEXTURE,
+    /// \see @ref cqsp::asset::AssetLoader::LoadShader for implementation
+    /// <summary>
+    /// `shader` as the `type` parameter in `resource.hjson`
+    /// </summary>
+    SHADER,
+    /// \see @ref cqsp::asset::AssetLoader::LoadHjson for implementation
+    /// <summary>
+    /// `hjson` as the `type` parameter in `resource.hjson`
+    /// </summary>
+    HJSON,
+    /// <summary>
+    /// `text` as the `type` parameter in `resource.hjson`
+    /// </summary>
+    /// \see @ref cqsp::asset::AssetLoader::LoadText for implementation
+    TEXT,
+    /// <summary>
+    /// Not supported yet.
+    /// </summary>
+    MODEL,
+    /// <summary>
+    /// `cubemap` as the `type` parameter in `resource.hjson`
+    /// </summary>
+    /// \see @ref cqsp::asset::AssetLoader::LoadFont for implementation
+    FONT,
+    /// <summary>
+    /// `cubemap` as the `type` parameter in `resource.hjson`
+    /// </summary>
+    /// \see @ref cqsp::asset::AssetLoader::LoadCubemap for implementation
+    CUBEMAP,
+    /// \see @ref cqsp::asset::AssetLoader::LoadTextDirectory for implementation
+    TEXT_ARRAY,
+    /// <summary>
+    /// `audio` as the `type` parameter in `resource.hjson`
+    /// </summary>
+    /// \see @ref cqsp::asset::AssetLoader::LoadAudio for implementation
+    AUDIO,
+    /// <summary>
+    /// `shader_def` as the `type` parameter in `resource.hjson`
+    /// </summary>
+    /// \see @ref cqsp::asset::AssetLoader::LoadShaderDefinition for implementation
+    SHADER_DEFINITION
 };
 
 // This will be hell to maintain
