@@ -19,19 +19,6 @@ jobs:
       with:
         working-directory: './docs'
         doxyfile-path: 'Doxyfile'
-    - name: Echo token
-      env:
-        WHO_TO_TRUST: ${{ secrets.API_TOKEN_GITHUB }}
-        TEST2: ${{ secrets.NON_EXST }}
-      run: |
-        if [ -z "$WHO_TO_TRUST" ]
-        then
-          echo "idk if this will worksh"
-        fi
-        if [ -z "$TEST2" ]
-        then
-          echo "idkkkk if this will works2t"
-        fi
 
     - name: Pushes to another repository
       uses: EhWhoAmI/github-action-push-to-another-repository@main
@@ -42,7 +29,7 @@ jobs:
         destination-github-username: EhWhoAmI
         destination-repository-username: Conquer-Space
         destination-repository-name: Conquer-Space.github.io
-        user-email: carles3@pina.cat
+        user-email: action@github.com
         target-branch: main
         user-name: EhWhoAmI
         target-directory: docs
