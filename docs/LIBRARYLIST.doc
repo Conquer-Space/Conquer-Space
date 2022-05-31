@@ -1,0 +1,33 @@
+/*! \page lib_list Library List
+### Libraries used
+Here is a list of libraries used. Most of the time libraries are added with [vcpkg](https://github.com/microsoft/vcpkg), but when
+they are not on vcpkg, or they need some customization, then they are added via git submodule.
+
+<https://vcpkg.info> is a useful library to use to check if the library exists on vcpkg.
+
+Library Name | Link | Description
+-------- | --- | -------
+EnTT | <https://github.com/skypjack/entt/> | Powerful library for ECS, which manages our entire universe.
+glfw | <https://www.glfw.org/> | Window and input management
+glad | <https://glad.dav1d.de/> | OpenGL loader
+spdlog | <https://github.com/gabime/spdlog> | Fast logger
+fmt | <https://fmt.dev> | Text formatting library
+OpenAL Soft | <https://openal-soft.org/> | Audio Management
+OpenGL Mathematics (GLM) | <https://github.com/g-truc/glm> | Graphics mathematics management
+GoogleTest | <https://github.com/google/googletest> | Unit testing library
+Dear Imgui | <https://github.com/ocornut/imgui> | Immediate mode GUI for debugging and rapid prototyping
+FreeType | <https://freetype.org/> | Font management
+ImPlot | <https://github.com/epezent/implot> | Plotting library for ImGui
+LuaJIT | <https://luajit.org/> | Scripting
+Date | <https://github.com/HowardHinnant/date> | Date management
+hjson-cpp | <https://github.com/hjson/hjson-cpp> | Human readable data files
+imgui_markdown | <https://github.com/juliettef/imgui_markdown> | Markdown rendering with imgui
+imgui-node-editor | <https://github.com/thedmd/imgui-node-editor> | Node editor for ImGui
+libnoise | <http://libnoise.sourceforge.net/> | Coherent noise-generating library
+LunaSVG | <https://github.com/sammycage/lunasvg> | SVG Rendering for RmlUi
+RmlUi | <https://github.com/mikke89/RmlUi> | Elegant UI and animations
+sol2 | <https://github.com/ThePhD/sol2> | Lua bindings
+stb | <https://github.com/nothings/stb> | Single-file public domain libraries
+
+Being an open source game, we only use open source libraries, and wish to continue doing so.
+*/
