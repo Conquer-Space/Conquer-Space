@@ -17,7 +17,7 @@ jobs:
     - name: Create Doxygen
       uses: mattnotmitt/doxygen-action@v1.9.2
       with:
-        working-directory: './doxygen_docs'
+        working-directory: './docs'
         doxyfile-path: 'Doxyfile'
     - name: Echo token
       env:
@@ -38,7 +38,7 @@ jobs:
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
-        source-directory: 'doxygen_docs/html'
+        source-directory: 'docs/html'
         destination-github-username: EhWhoAmI
         destination-repository-username: Conquer-Space
         destination-repository-name: Conquer-Space.github.io
