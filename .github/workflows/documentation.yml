@@ -1,9 +1,9 @@
-name: deploy-documentation
+name: Deploy documentation
 
 on:
   push:
     branches:
-    - master
+    - main
 
 jobs:
   deploy-book:
