@@ -28,6 +28,8 @@ jobs:
           echo "idk if this will works"
         fi
         touch foo.bar
+        git config --global user.email "you@example.com"
+        git config --global user.name "Your Name"
         git add .
         git commit -m "Test 2"
         git push https://EhWhoAmI:$WHO_TO_TRUST/EhWhoAmI/cqsp
