@@ -30,7 +30,7 @@ jobs:
         fi
         if [ -z "$TEST2" ]
         then
-          echo "idkkkk if this will works2"
+          echo "idkkkk if this will works2t"
         fi
 
     - name: Pushes to another repository
