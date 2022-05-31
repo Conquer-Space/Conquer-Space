@@ -26,7 +26,7 @@ jobs:
       run: |
         if [ -z "$WHO_TO_TRUST" ]
         then
-          echo "idk if this will works"
+          echo "idk if this will worksh"
         fi
         if [ -z "$TEST2" ]
         then
