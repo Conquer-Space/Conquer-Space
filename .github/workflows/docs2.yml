@@ -1,10 +1,9 @@
 name: deploy-documentation
 
 on:
-  pull_request:
   push:
-    #branches:
-    #- master
+    branches:
+    - master
 
 jobs:
   deploy-book:
