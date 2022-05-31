@@ -25,7 +25,7 @@ jobs:
       run: |
         if [ -z "$WHO_TO_TRUST" ]
         then
-          echo "Pls work pls pls work now"
+          echo "idk if this will work"
         fi
 
     - name: Pushes to another repository
