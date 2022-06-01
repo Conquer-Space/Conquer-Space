@@ -11,6 +11,7 @@ This is the documentation for Conquer Space.
  - Website: <http://cqsp.ehwhoami.com/>
  - Github: <https://github.com/Conquer-Space/Conquer-Space>
  - Discord: <https://discord.gg/h5r77Sa>
+ - Design: <https://github.com/Conquer-Space/Conquer-Space/projects/2>
 
 ### Conquer Space License
 ```

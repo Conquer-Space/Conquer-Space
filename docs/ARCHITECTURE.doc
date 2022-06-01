@@ -4,7 +4,13 @@ Architecture
 Conquer Space's core is in [ECS](https://github.com/SanderMertens/ecs-faq), and runs on [entt](https://github.com/skypjack/entt/).
 
 ## Project Architecture
-Conquer Space consists of 3 libraries and 1 project.
+Conquer Space consists of 3 libraries and 1 executable.
+
+All the libraries have these 2 directories, components, and systems.
+
+We try to keep components simple, and try not to add methods to components.
+
+Most of the behavior and the creation of entities take place in systems, and there is the preferred place to implement behavior.
 
 ### cqsp-core
 This is where the universe, and all of the game components are. In theory, this library should be standalone and should not need the other 2 libraries to compile.

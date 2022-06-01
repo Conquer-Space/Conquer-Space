@@ -26,10 +26,9 @@ namespace cqsp {
 namespace common {
 namespace systems {
 namespace simulation {
-
-///
+/// <summary>
 /// Main simulation of game.
-///
+///</summary>
 /// To add a simulation in the game, add a class extending from `cqsp::common::systems::ISimulationSystem`
 /// in the constructor.
 /// ```
@@ -40,6 +39,9 @@ class Simulation {
  public:
     explicit Simulation(cqsp::common::Game &game);
 
+    /// <summary>
+    /// 1 game tick, runs every single system that is added.
+    /// </summary>
     void tick();
 
     template <class T>
@@ -50,6 +52,9 @@ class Simulation {
 
  private:
     cqsp::common::Game &m_game;
+    /// <summary>
+    /// Holds all the systems.
+    /// </summary>
     std::vector<std::unique_ptr<cqsp::common::systems::ISimulationSystem>> system_list;
     cqsp::common::Universe &m_universe;
 };

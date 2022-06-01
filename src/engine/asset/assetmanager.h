@@ -522,7 +522,7 @@ class AssetLoader {
                                const std::string& resource_file_path,
                                const Hjson::Value& asset_value);
     /// <summary>
-    /// Defines a directory that contains hjson data.
+    /// Defines a directory that contains hjson asset data.
     /// </summary>
     /// <param name="package"></param>
     /// <param name="path"></param>
@@ -531,17 +531,32 @@ class AssetLoader {
     bool HjsonPrototypeDirectory(Package& package, const std::string& path, const std::string& name);
 
     /// <summary>
-    /// Creates a virtual file system for the path to load.
+    /// Creates a virtual file system starting in path
     /// </summary>
     /// <param name="path"></param>
     /// <returns></returns>
     IVirtualFileSystem* GetVfs(const std::string& path);
 
+    /// <summary>
+    /// List of all assets that are missing
+    /// </summary>
     std::vector<std::string> missing_assets;
+    /// <summary>
+    /// Queue for @ref AssetPrototype when loading in frame.
+    /// </summary>
     ThreadsafeQueue<QueueHolder> m_asset_queue;
 
+    // All the assets that are to be loaded
     std::atomic_int max_loading;
+
+    /// <summary>
+    /// All the assets that have already been loaded
+    /// </summary>
     std::atomic_int currentloading;
+    /// <summary>
+    /// The list of functions that are loading.
+    /// </summary>
+    /// \see @ref LoadScriptDirectory LoadCubemap LoadAudio LoadText LoadTexture LoadHjson LoadShader LoadFont
     std::map<AssetType, LoaderFunction> loading_functions;
     VirtualMounter mounter;
 };

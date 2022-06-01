@@ -142,6 +142,10 @@ inline std::string ToString(AssetType type) {
             return "audio";
     }
 }
+
+/// <summary>
+/// The base class for assets.
+/// </summary>
 class Asset {
  public:
     // Virtual destructor to make class virtual
