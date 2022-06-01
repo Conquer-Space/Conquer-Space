@@ -89,7 +89,26 @@
         name: Moon
         identifier: moon
         reference: earth
-        radius: 1000 km
+        radius: 1737.4 km
+        gm: 4.90486959e3
+        orbit: {
+            semi_major_axis: 384308.4377707066 km
+            eccentricity: 0.05328149353682574
+            inclination: 5.145 deg
+            arg_periapsis: 199.7640930160823 deg
+            LAN: 2.296616161126016 deg
+            M0: 222.7012350930954 deg
+        }
+        texture: {
+            terrain: moonmap
+        }
+        tags: []
+    }
+    {
+        name: 2ncmoon
+        identifier: moon2
+        reference: moon
+        radius: 10 km
         gm: 4.90486959e3
         orbit: {
             semi_major_axis: 384308.4377707066 km

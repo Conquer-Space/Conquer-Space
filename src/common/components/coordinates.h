@@ -148,7 +148,11 @@ inline glm::vec3 OrbitToVec3(const double& a, const double& e, const radian& i,
     return glm::vec3{-rx, -rz, ry};
 }
 
-/// <summary>
+inline glm::vec3 OrbitVelocityToVec3(const double& a, const double& e, const radian& i,
+                             const radian& LAN, const radian& w, const radian& v) {
+
+}
+    /// <summary>
 /// Computes eccentric anomaly in radians given mean anomaly and eccentricity
 /// </summary>
 /// <param name="mean_anomaly"></param>

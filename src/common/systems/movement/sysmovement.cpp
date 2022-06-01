@@ -21,6 +21,7 @@
 #include "common/components/ships.h"
 #include "common/components/coordinates.h"
 #include "common/components/units.h"
+#include <spdlog/spdlog.h>
 
 namespace cqsp::common::systems {
 void SysOrbit::DoSystem() {
@@ -34,13 +35,29 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     namespace cqspt = cqsp::common::components::types;
     Universe& universe = GetGame().GetUniverse();
     // Calculate the position
-    auto& orb = universe.get<cqspt::Orbit>(body);
+    auto [orb, body_comp] = universe.get<cqspt::Orbit, cqspc::bodies::Body>(body);
     cqspt::UpdateOrbit(orb, universe.date.ToSecond());
     auto& pos = universe.get_or_emplace<cqspt::Kinematics>(body);
     pos.position = cqspt::toVec3(orb);
 
     if (parent != entt::null) {
         auto& p_pos = universe.get_or_emplace<cqspt::Kinematics>(parent);
+        // If distance is above SOI, then be annoyed
+        auto& p_bod = universe.get<cqspc::bodies::Body>(parent);
+        if (glm::length(pos.position) > p_bod.SOI) {
+            // Then change parent, then set the orbit
+            auto& p_orb = universe.get<cqspt::Orbit>(parent);
+            if (p_orb.reference_body != entt::null) {
+                // Then add to orbital system
+                universe.get<cqspc::bodies::OrbitalSystem>(p_orb.reference_body)
+                    .push_back(body);
+                // Remove from parent
+                auto& pt = universe.get<cqspc::bodies::OrbitalSystem>(parent);
+                std::erase(pt.children, body);
+                // Get velocity and change posiiton
+                SPDLOG_INFO("Removed object");
+            }
+        }
         pos.position += p_pos.position;
     }
 
