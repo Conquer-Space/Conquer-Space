@@ -40,9 +40,7 @@ inline std::string LongToHumanString(int64_t l) {
     const int precision = 100;
     d = round(d * precision) / precision;
 
-    std::string s = fmt::format("{} {}", d, numbers[exponent - 1]);
-
-    return s;
+    return fmt::format("{} {}", d, numbers[exponent - 1]);
 }
 }  // namespace util
 }  // namespace cqsp

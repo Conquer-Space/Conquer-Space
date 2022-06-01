@@ -193,6 +193,13 @@ void EntityTooltip(const Universe &universe, entt::entity entity) {
         ImGui::TextFmt("Population: {}", util::LongToHumanString(
                             common::systems::GetCityPopulation(universe, entity)));
     }
+    if (universe.all_of<common::components::bodies::Body>(entity)) {
+        auto& body = universe.get<common::components::bodies::Body>(entity);
+        ImGui::Separator();
+        ImGui::TextFmt("Radius: {:.3g} km", body.radius);
+        ImGui::TextFmt("Mass: {:.3g} kg", body.mass);
+        ImGui::TextFmt("SOI: {:.3g} km", body.SOI);
+    }
 
     // Resource stuff
     //TODO(EhWhoAmI): Set these text red, but too lazy to do it for now

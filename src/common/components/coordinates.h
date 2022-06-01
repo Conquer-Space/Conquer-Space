@@ -26,13 +26,6 @@
 #include "common/components/units.h"
 
 namespace cqsp::common::components::types {
-
-// Gravitional constant in m^3 * kg^-1 * s^-2
-static const double G = 6.6743015e-11;
-
-// Sun gravitational constant in km^3 * s^-2
-static const double SunMu = 1.32712400188e11;
-
 /// <summary>
 /// A vector3 where the units are astronomical units
 /// </summary>
@@ -115,6 +108,9 @@ struct Orbit {
         CalculatePeriod();
     }
 
+    /// <summary>
+    /// Calculates period and mean motion
+    /// </summary>
     void CalculatePeriod() {
         T =  2 * PI * std::sqrt(semi_major_axis * semi_major_axis * semi_major_axis / Mu);
         nu = std::sqrt(Mu / (semi_major_axis * semi_major_axis * semi_major_axis));

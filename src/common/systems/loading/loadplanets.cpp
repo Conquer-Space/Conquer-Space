@@ -66,6 +66,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         }
     }
 
+    // For loading,     
     body_comp.GM = values["gm"].to_double();
 
     bool rotation_correct;
@@ -153,11 +154,14 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
 void PlanetLoader::PostLoad(const entt::entity& entity) {
     // Set the parent
+    auto& orbit = universe.get<components::types::Orbit>(entity);
+    auto& body =  universe.get<components::bodies::Body>(entity);
+    body.mass = components::bodies::CalculateMass(body.GM);
     if (!universe.any_of<ParentTemp>(entity)) {
         return;
     }
     auto& parent_temp = universe.get<ParentTemp>(entity);
-    auto& orbit = universe.get<components::types::Orbit>(entity);
+
     if (universe.planets.find(parent_temp.parent) == universe.planets.end()) {
         SPDLOG_INFO("{} parent is not found: {}",
                 universe.get<components::Identifier>(entity).identifier, parent_temp.parent);
@@ -171,7 +175,8 @@ void PlanetLoader::PostLoad(const entt::entity& entity) {
     orbit.reference_body = parent;
     // Set mu
     orbit.Mu = universe.get<components::bodies::Body>(parent).GM;
-
+    body.SOI = components::bodies::CalculateSOI(body.GM, orbit.Mu, orbit.semi_major_axis);
+    body.mass = components::bodies::CalculateMass(body.GM);
     orbit.CalculatePeriod();
     universe.get_or_emplace<components::bodies::OrbitalSystem>(parent).push_back(entity);
     universe.remove<ParentTemp>(entity);

@@ -6,6 +6,7 @@
         identifier: sun
         type: star
         radius: 695508 km
+        // GM is in km^3 * kg^-1 * s^-2
         gm: 1.327124400189e11
         orbit: {
             semi_major_axis: 0
@@ -85,31 +86,11 @@
         tags: []
     }
     {
-        name: ISS
-        identifier: iss
-        radius: 10 m
-        reference: earth
-        gm: 3.9860044188e5
-        orbit: {
-            semi_major_axis: 6785 km
-            eccentricity: .0006703
-            inclination: 51.6416 deg
-            arg_periapsis: 130.5360 deg
-            LAN: 247.4627 deg
-            M0: 325.0288 deg
-        }
-        texture: {
-            terrain: earthmap
-            normal: earthnormal
-        }
-        tags: []
-    }
-    {
         name: Moon
         identifier: moon
         reference: earth
         radius: 1000 km
-        gm: 0
+        gm: 4.90486959e3
         orbit: {
             semi_major_axis: 384308.4377707066 km
             eccentricity: 0.05328149353682574
@@ -122,22 +103,6 @@
         axial: 1.5424 deg
         texture: {
             terrain: moonmap
-        }
-        tags: []
-    }
-    {
-        name: Moon moon
-        identifier: moon2
-        reference: moon
-        radius: 10 km
-        gm: 1.327124400189e11
-        orbit: {
-            semi_major_axis: 3000
-            eccentricity: 0.6
-            inclination: 75 deg
-            arg_periapsis: 0
-            LAN: 0
-            M0: 0
         }
         tags: []
     }
