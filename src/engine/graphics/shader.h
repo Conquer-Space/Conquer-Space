@@ -28,16 +28,30 @@
 
 namespace cqsp {
 namespace asset {
-enum class ShaderType {NONE, VERT, FRAG, GEOM};
+enum class ShaderType {
+    NONE,  //!< Invalid shader
+    VERT,  //!< Vertex shader
+    FRAG,  //!< Fragment shader
+    GEOM   //!< Geometry shader
+};
 
+/// An opengl shader.
+///
+/// Do note that this is distinct from a shader program, and this has to be combined with either a vertex
+/// or fragmenet shader counterpart to be used in @ref ShaderProgram
 class Shader : public Asset {
  public:
     Shader() = default;
+    /// Constructs a shader from the code provided.
     Shader(const std::string& code, ShaderType type);
+
+    /// Constructs a shader from the code provided.
     void operator()(const std::string& code, ShaderType type);
     ~Shader();
 
     ShaderType shader_type = ShaderType::NONE;
+
+    /// Id of the shader
     unsigned int id;
 
  private:
@@ -45,6 +59,12 @@ class Shader : public Asset {
   explicit Shader(const Shader&) = default;
 };
 
+/// <summary>A shader program.</summary>
+///
+/// Do note that using this as a direct object is not the preferred usage of the class, and
+/// @ref ShaderProgram_t is the preferred way of using it.
+///
+/// Using @ref ShaderDefinition to load and initialize a shader is also the preferred way of using this class.
 class ShaderProgram {
  public:
     ShaderProgram();
@@ -88,23 +108,52 @@ class ShaderProgram {
     operator unsigned int() const { return program; }
 };
 
+/// The preferred way of using a shader program
 typedef std::shared_ptr<ShaderProgram> ShaderProgram_t;
 
+/// Helper function to create a shader program
 inline ShaderProgram_t MakeShaderProgram(Shader& vert, Shader& frag) {
     return std::make_shared<ShaderProgram>(vert, frag);
 }
 
+/// Helper function to create a shader program with a geometry shader
 inline ShaderProgram_t MakeShaderProgram(Shader& vert, Shader& frag, Shader& geom) {
     return std::make_shared<ShaderProgram>(vert, frag, geom);
 }
 
+/// A shader definiton file.
+/// <br />
+/// A shader defintion is a way to simplify the creation of shader objects.
+/// <br />
+/// A shader definiton file is loaded in hjson, and follows this format:
+/// ```
+/// {
+///     vert: (vertex shader name)
+///     frag: (fragment shader name)
+///     uniforms: {
+///         test_vec3: [1, 3, 5]
+///         test_float: 19.5
+///         test_int: 15
+///         test_texture_name: (texture id)
+///     }
+/// }
+/// ```
+/// For uniforms, the shader will read the types of uniforms in the shader, and
+/// use them.
+///
+/// Matrices are not supported yet
 class ShaderDefinition : public Asset {
  public:
-    // Code for vert and frags
+    /// Code for vertex shader
     std::string vert;
+
+    /// Code for fragment shader
     std::string frag;
+
+    /// Code for geometry file
     std::string geometry;
 
+    // All the uniforms
     Hjson::Value uniforms;
 
     ShaderProgram_t MakeShader();
@@ -114,6 +163,11 @@ class ShaderDefinition : public Asset {
 unsigned int LoadShaderData(const std::string& code, int type);
 unsigned int MakeShaderProgram(int vertex, int fragment, int geometry = -1);
 
+/// <summary>
+/// Get the issues of the shader, up to 1024 characters of it.
+/// </summary>
+/// <param name="shader">shader id</param>
+/// <returns>the error text of the shader</returns>
 std::string GetErrorLog(unsigned int shader);
 }  // namespace asset
 }  // namespace cqsp
