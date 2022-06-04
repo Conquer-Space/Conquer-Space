@@ -132,20 +132,14 @@ inline glm::vec3 OrbitToVec3(const double& a, const double& e, const radian& i,
     if (a == 0) {
         return glm::vec3(0, 0, 0);
     }
-    double r = (a * (1 - e * e)) / (1 + e * cos(v));
-    double x = r * cos(v);
-    double y = r * sin(v);
-    double z = 0;
-    glm::dvec3 o{x, y, z};
+    double r = (a * (1 - e * e)) / (1 + e * cos(v));;
 
-    double rx = (o.x * (cos(w) * cos(LAN) - sin(w) * cos(i) * sin(LAN)) -
-            o.y * (sin(w) * cos(LAN) + cos(w) * cos(i) * sin(LAN)));
-    double ry = (o.x * (cos(w) * sin(LAN) + sin(w) * cos(i) * cos(LAN)) +
-        o.y * (cos(w) * cos(i) * cos(LAN) - sin(w) * sin(LAN)));
-    double rz = (o.x * (sin(w) * sin(i)) + o.y * (cos(w) * sin(i)));
-
-    // Convert to opengl coords
-    return glm::vec3{-rx, -rz, ry};
+    glm::quat q_LAN{glm::vec3(0, 0, -LAN)};
+    glm::quat q_i{glm::vec3(-i, 0, 0)};
+    glm::quat q_w{glm::vec3(0, 0, -w)};
+    glm::quat q_v{glm::vec3(0, 0, -v)};
+    glm::vec3 vec = q_LAN* q_i* q_w * q_v * glm::vec3(r, 0, 0);
+    return glm::vec3(vec.x, vec.z, vec.y);
 }
 
 inline glm::vec3 OrbitVelocityToVec3(const double& a, const double& e, const radian& i,
