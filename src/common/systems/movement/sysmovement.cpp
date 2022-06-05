@@ -39,7 +39,7 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     cqspt::UpdateOrbit(orb, universe.date.ToSecond());
     auto& pos = universe.get_or_emplace<cqspt::Kinematics>(body);
     pos.position = cqspt::toVec3(orb);
-
+    pos.velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
     if (parent != entt::null) {
         auto& p_pos = universe.get_or_emplace<cqspt::Kinematics>(parent);
         // If distance is above SOI, then be annoyed
@@ -105,11 +105,6 @@ void SysPath::DoSystem() {
         cqspt::Kinematics& bodykin = universe.get<cqspt::Kinematics>(body);
         cqspt::Kinematics& targetkin = universe.get<cqspt::Kinematics>(universe.get<cqspt::MoveTarget>(body).target);
         glm::vec3 path = targetkin.position - bodykin.position;
-        if (glm::length(path) < bodykin.topspeed) {
-            bodykin.position = targetkin.position;
-        } else {
-            bodykin.position += (targetkin.topspeed * glm::normalize(path));
-        }
     }
 }
 

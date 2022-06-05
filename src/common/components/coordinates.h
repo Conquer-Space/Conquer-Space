@@ -93,6 +93,11 @@ struct Orbit {
     // So we can prepare for moons and stuff
     entt::entity reference_body = entt::null;
 
+    /// <summary>
+    /// Eccentric anomaly
+    /// </summary>
+    double E;
+
     Orbit() = default;
     Orbit(kilometer semi_major_axis, double eccentricity,
             radian inclination, radian LAN,
@@ -117,6 +122,9 @@ struct Orbit {
     }
 };
 
+glm::vec3 ConvertOrbParams(const double LAN, const double i,
+                                  const double w, const glm::vec3& vec);
+
 /// <summary>
 /// Converts an orbit to a vec3.
 /// </summary>
@@ -127,69 +135,44 @@ struct Orbit {
 /// <param name="w">Argument of periapsis (radians)</param>
 /// <param name="v">True anomaly (radians)</param>
 /// <returns>The vec3, in whatever unit a was.</returns>
-inline glm::vec3 OrbitToVec3(const double& a, const double& e, const radian& i,
-                             const radian& LAN, const radian& w, const radian& v) {
-    if (a == 0) {
-        return glm::vec3(0, 0, 0);
-    }
-    double r = (a * (1 - e * e)) / (1 + e * cos(v));;
+glm::vec3 OrbitToVec3(const double& a, const double& e, const radian& i,
+                             const radian& LAN, const radian& w,
+                             const radian& v);
 
-    glm::quat q_LAN{glm::vec3(0, 0, -LAN)};
-    glm::quat q_i{glm::vec3(-i, 0, 0)};
-    glm::quat q_w{glm::vec3(0, 0, -w)};
-    glm::quat q_v{glm::vec3(0, 0, -v)};
-    glm::vec3 vec = q_LAN* q_i* q_w * q_v * glm::vec3(r, 0, 0);
-    return glm::vec3(vec.x, vec.z, vec.y);
-}
+glm::vec3 OrbitVelocityToVec3(const Orbit& orb, double v);
 
-inline glm::vec3 OrbitVelocityToVec3(const double& a, const double& e, const radian& i,
-                             const radian& LAN, const radian& w, const radian& v) {
-
-}
-    /// <summary>
+/// <summary>
 /// Computes eccentric anomaly in radians given mean anomaly and eccentricity
 /// </summary>
 /// <param name="mean_anomaly"></param>
 /// <param name="ecc"></param>
 /// <returns></returns>
-static double SolveKepler(const double& mean_anomaly, const double& ecc, const int steps = 200) {
-    // Because math is hard, we need to solve it iteratively
-    const int size = 10;
-    if (abs(ecc) < 1.0E-9) {
-            return mean_anomaly;
-    }
-    int maxit = steps;
-    int it = 0;
+static double SolveKepler(const double& mean_anomaly, const double& ecc,
+                          const int steps = 200);
 
-    double de = 1000.0;
+/// <summary>
+/// Calculates true anomaly from eccentricity and eccentric anomaly
+/// </summary>
+/// \param[in] ecc The eccentricity of the orbit
+/// \param[in] E The eccentric anomaly of the orbit
+static double CalculateTrueAnomaly(const double& ecc, const double& E);
 
-    double ea = mean_anomaly;
-    double old_m = mean_anomaly;
-
-    while ((it < maxit) && (abs(de) > 1.0E-5)) { // normal accuracy is 1.0e-10
-        double new_m = ea - ecc * sin(ea);
-        de = (old_m - new_m) / (1.0 - ecc * cos(ea));
-        ea = ea + de;
-        it = it + 1;
-    }
-    return ea;
-}
-
+/// <summary>
+/// Gets the Mean anomaly from the time
+/// </summary>
+/// <param name="M0">Mean anomaly at t=0</param>
+/// <param name="nu">G*M of orbiting body</param>
+/// <param name="time">Current time</param>
+/// <returns></returns>
+static double GetMt(const double& M0, const double& nu, const double& time);
 /// <param name="orbit">Orbit to compute</param>
 /// <param name="time">Current time (seconds)</param>
 /// <returns>True anomaly in radians</returns>
-static radian TrueAnomaly(const Orbit& orbit, const second& time) {
-    // Calculate
-    double Mt = orbit.M0 + time * orbit.nu;
-    normalize_radian(Mt);
-    double E = SolveKepler(Mt, orbit.eccentricity);
-    return 2 * atan2 (sqrt(1 + orbit.eccentricity) * sin (E / 2), sqrt(1 - orbit.eccentricity) * cos (E / 2));
-}
+static radian TrueAnomaly(const Orbit& orbit, const second& time);
 
 struct Kinematics {
     glm::vec3 position = glm::vec3(0, 0, 0);
     glm::vec3 velocity = glm::vec3(0, 0, 0);
-    float topspeed = 0.1;
 };
 
 /// <summary>
@@ -220,9 +203,18 @@ struct MoveTarget {
 /// </summary>
 /// <param name="orb"></param>
 /// <param name="time"></param>
-inline void UpdateOrbit(Orbit& orb, const second& time) {
-    orb.v = TrueAnomaly(orb, time);
-}
+void UpdateOrbit(Orbit& orb, const second& time);
+
+/// Calculates the vector velocity of the orbit
+///
+/// \param[in] E Eccentric anomaly
+/// \param[in] r Orbiting radius
+/// \param[in] Mu G*M of orbiting body
+/// \param[in] a Semi major axis
+/// \param[in] e eccentricity
+glm::vec3 CalculateVelocity(const double& E, const double& r,
+                                   const double& Mu, const double& a,
+                                   const double& e);
 
 /// <summary>
 /// Longitude and lattitude.
@@ -263,11 +255,8 @@ struct SurfaceCoordinate {
 /// <summary>
 /// Converts surface coordinate to vector3, shown in opengl.
 /// </summary>
-inline glm::vec3 toVec3(const SurfaceCoordinate& coord, const float& radius = 1) {
-    return glm::vec3(cos(coord.r_latitude()) * sin(coord.r_longitude()),
-                     sin(coord.r_latitude()),
-                     cos(coord.r_latitude()) * cos(coord.r_longitude())) * radius;
-}
+glm::vec3 toVec3(const SurfaceCoordinate& coord,
+                        const float& radius = 1);
 
 /// <summary>
 /// 2D polar coordinate to opengl 3d coordinate

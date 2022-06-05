@@ -176,6 +176,8 @@ void EntityTooltip(const Universe &universe, entt::entity entity) {
     if (universe.all_of<cqspc::types::Kinematics>(entity)) {
         auto& a = universe.get<cqsp::common::components::types::Kinematics>(entity);
         ImGui::TextFmt("Position: {} {} {} ({})", a.position.x, a.position.y, a.position.z, glm::length(a.position));
+        ImGui::TextFmt("Velocity: {} {} {} ({})", a.velocity.x, a.velocity.y,
+                       a.velocity.z, glm::length(a.velocity));
     }
 
     if (universe.all_of<cqspc::bodies::Body>(entity)) {
@@ -199,6 +201,11 @@ void EntityTooltip(const Universe &universe, entt::entity entity) {
         ImGui::TextFmt("Radius: {:.3g} km", body.radius);
         ImGui::TextFmt("Mass: {:.3g} kg", body.mass);
         ImGui::TextFmt("SOI: {:.3g} km", body.SOI);
+    }
+
+    if (universe.all_of<common::components::types::Orbit>(entity)) {
+        auto& orbit = universe.get<common::components::types::Orbit>(entity);
+        ImGui::Separator();
     }
 
     // Resource stuff

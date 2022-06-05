@@ -60,6 +60,10 @@ static const double G_km = 6.6743015e-20;
 // Sun gravitational constant in km^3 * s^-2
 static const double SunMu = 1.32712400188e11;
 
+/// <summary>
+/// Normalizes a radian to [0, PI*2)
+/// </summary>
+/// \param[in] Radian to normalizes
 inline radian normalize_radian(const radian& radian) {
     double x = std::fmod(radian, TWOPI);
     if (x < 0) {
