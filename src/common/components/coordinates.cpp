@@ -24,6 +24,52 @@ glm::vec3 ConvertOrbParams(const double LAN, const double i, const double w,
     return glm::quat{glm::vec3(0, 0, -LAN)} * glm::quat{glm::vec3(-i, 0, 0)} *
            glm::quat{glm::vec3(0, 0, -w)} * vec;
 }
+
+// https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
+Orbit Vec3ToOrbit(const glm::vec3& position, const glm::vec3& velocity,
+                 const double& Mu) {
+    // Orbital momentum vector
+    auto h = glm::cross(position, velocity);
+    // Eccentricity vector
+    auto ecc_v =
+        glm::cross(velocity, h) / (float)Mu - (glm::normalize(position));
+
+    // Eccentricity
+    double e = glm::length(ecc_v);
+
+    // Vector pointing towards the ascending node
+    auto n = glm::vec3(-h.y, -h.x, 0);
+    // True anomaly
+    double v = acos(glm::dot(ecc_v, position) / (e * glm::length(position)));
+    if (glm::dot(position, velocity) < 0) v = PI * 2 - v;
+
+    // Inclination
+    double i = std::acos(h.z / glm::length(h));
+
+    // Eccentric anomaly
+    double E = 2 * atan(tan(v / 2) / sqrt((1 + e) / (1 - e)));
+    double M0 = E - e * sin(E);
+    double LAN = (n.x / glm::length(n));
+    if (n.y < 0) LAN = PI * 2 - LAN;
+
+    double w = acos(glm::dot(n, ecc_v) / (e * glm::length(n)));
+    if (w < 0) w = PI * 2 - w;
+
+    double velocity_mag = glm::length(velocity);
+    double sma = 1 / (2 / glm::length(position) - velocity_mag * velocity_mag / Mu);
+
+    Orbit orb;
+    orb.semi_major_axis = sma;
+    orb.eccentricity = e;
+    orb.LAN = LAN;
+    orb.w = w;
+    orb.inclination = i;
+    orb.M0 = M0;
+    orb.v = v;
+    orb.E = E;
+    return orb;
+}
+
 glm::vec3 OrbitToVec3(const double& a, const double& e, const radian& i,
                        const radian& LAN, const radian& w, const radian& v) {
     if (a == 0) {

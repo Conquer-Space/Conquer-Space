@@ -122,8 +122,25 @@ struct Orbit {
     }
 };
 
+/// <summary>
+/// Converts the orbital params with the inclination, longitude of ascending node, and argument or periapsis
+/// </summary>
+/// All units are in radians
+/// <param name="LAN">Longitude of the ascending node</param>
+/// <param name="i">Inclination</param>
+/// <param name="w">Argument of periapsis</param>
+/// <param name="vec">Vector to convert</param>
 glm::vec3 ConvertOrbParams(const double LAN, const double i,
                                   const double w, const glm::vec3& vec);
+
+/// <summary>
+/// Converts position and velocity to orbit.
+/// </summary>
+/// <param name="position">Position of the body</param>
+/// <param name="velocity">Velocity of the body</param>
+/// <param name="Mu">G*M of the orbiting body</param>
+Orbit Vec3ToOrbit(const glm::vec3& position, const glm::vec3& velocity,
+                 const double& Mu);
 
 /// <summary>
 /// Converts an orbit to a vec3.

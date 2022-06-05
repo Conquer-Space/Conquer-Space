@@ -85,6 +85,10 @@ struct PlanetTexture {
 
 struct PlanetOrbit {
     cqsp::engine::Mesh *orbit_mesh;
+
+    ~PlanetOrbit() {
+        delete orbit_mesh;
+    }
 };
 }  // namespace
 
@@ -172,6 +176,9 @@ void SysStarSystemRenderer::Render(float deltaTime) {
     // Check for resized window
     window_ratio = static_cast<float>(m_app.GetWindowWidth()) /
                    static_cast<float>(m_app.GetWindowHeight());
+
+    GenerateOrbitLines();
+
     renderer.NewFrame(*m_app.GetWindow());
 
     glEnable(GL_DEPTH_TEST);
@@ -945,7 +952,7 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
             glm::vec3 vec = common::components::types::toVec3(orb, theta);
             orbit_points.push_back(vec);
         }
-        auto& line = m_universe.emplace<PlanetOrbit>(body);
+        auto& line = m_universe.emplace_or_replace<PlanetOrbit>(body);
         // Get the orbit line
         // Do the points
         line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);

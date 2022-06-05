@@ -51,11 +51,15 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
                 // Then add to orbital system
                 universe.get<cqspc::bodies::OrbitalSystem>(p_orb.reference_body)
                     .push_back(body);
+                auto& parent_parent_orb = universe.get<cqspc::bodies::Body>(p_orb.reference_body);
                 // Remove from parent
                 auto& pt = universe.get<cqspc::bodies::OrbitalSystem>(parent);
                 std::erase(pt.children, body);
                 // Get velocity and change posiiton
-                SPDLOG_INFO("Removed object");
+                // Convert orbit
+                orb = cqspt::Vec3ToOrbit(pos.position, pos.velocity,
+                                         parent_parent_orb.GM);
+                orb.reference_body = p_orb.reference_body;
             }
         }
         pos.position += p_pos.position;
