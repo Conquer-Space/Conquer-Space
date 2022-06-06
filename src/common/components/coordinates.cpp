@@ -67,6 +67,7 @@ Orbit Vec3ToOrbit(const glm::vec3& position, const glm::vec3& velocity,
     orb.M0 = M0;
     orb.v = v;
     orb.E = E;
+    orb.Mu = Mu;
     return orb;
 }
 

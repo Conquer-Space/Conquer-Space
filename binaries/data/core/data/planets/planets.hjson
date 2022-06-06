@@ -111,7 +111,7 @@
         radius: 10 km
         gm: 4.90486959e3
         orbit: {
-            semi_major_axis: 384308.4377707066 km
+            semi_major_axis: 100438.4377707066 km
             eccentricity: 0.05328149353682574
             inclination: 5.145 deg
             arg_periapsis: 199.7640930160823 deg

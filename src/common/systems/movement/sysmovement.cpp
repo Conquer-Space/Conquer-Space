@@ -34,6 +34,9 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspt = cqsp::common::components::types;
     Universe& universe = GetGame().GetUniverse();
+    if (!universe.valid(body)) {
+        return;
+    }
     // Calculate the position
     auto [orb, body_comp] = universe.get<cqspt::Orbit, cqspc::bodies::Body>(body);
     cqspt::UpdateOrbit(orb, universe.date.ToSecond());
@@ -51,15 +54,23 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
                 // Then add to orbital system
                 universe.get<cqspc::bodies::OrbitalSystem>(p_orb.reference_body)
                     .push_back(body);
+
                 auto& parent_parent_orb = universe.get<cqspc::bodies::Body>(p_orb.reference_body);
+                if (p_orb.reference_body != entt::null) {
+                    // Some stuff
+                }
+                auto& pp_pos =
+                    universe.get<cqspt::Kinematics>(p_orb.reference_body);
                 // Remove from parent
                 auto& pt = universe.get<cqspc::bodies::OrbitalSystem>(parent);
                 std::erase(pt.children, body);
                 // Get velocity and change posiiton
                 // Convert orbit
-                orb = cqspt::Vec3ToOrbit(pos.position, pos.velocity,
+                orb = cqspt::Vec3ToOrbit(pos.position + p_pos.position - pp_pos.position,
+                                         pos.velocity + p_pos.velocity,
                                          parent_parent_orb.GM);
                 orb.reference_body = p_orb.reference_body;
+                orb.CalculatePeriod();
             }
         }
         pos.position += p_pos.position;
