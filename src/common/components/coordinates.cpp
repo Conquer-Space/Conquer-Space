@@ -38,7 +38,7 @@ Orbit Vec3ToOrbit(const glm::vec3& position, const glm::vec3& velocity,
     double e = glm::length(ecc_v);
 
     // Vector pointing towards the ascending node
-    auto n = glm::vec3(-h.y, -h.x, 0);
+    auto n = glm::vec3(-h.y, h.x, 0);
     // True anomaly
     double v = acos(glm::dot(ecc_v, position) / (e * glm::length(position)));
     if (glm::dot(position, velocity) < 0) v = PI * 2 - v;
@@ -77,9 +77,7 @@ glm::vec3 OrbitToVec3(const double& a, const double& e, const radian& i,
         return glm::vec3(0, 0, 0);
     }
     double r = (a * (1 - e * e)) / (1 + e * cos(v));
-    glm::vec3 vec =
-        ConvertOrbParams(-LAN, -i, -w, glm::vec3(r * cos(v), r * sin(v), 0));
-    return glm::vec3(vec.x, vec.z, vec.y);
+    return ConvertOrbParams(-LAN, -i, -w, glm::vec3(r * cos(v), r * sin(v), 0));
 }
 
 glm::vec3 OrbitVelocityToVec3(const Orbit& orb, double v) {

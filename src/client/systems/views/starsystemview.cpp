@@ -828,7 +828,8 @@ glm::vec3 SysStarSystemRenderer::CalculateObjectPos(const entt::entity &ent) {
     namespace cqspt = cqsp::common::components::types;
     // Get the position
     if (m_universe.all_of<cqspt::Kinematics>(ent)) {
-        return (m_universe.get<cqspt::Kinematics>(ent).position);
+        const auto& pos = m_universe.get<cqspt::Kinematics>(ent).position;
+        return glm::vec3(pos.x, pos.z, pos.y);
     }
     return glm::vec3(0, 0, 0);
 }
@@ -950,7 +951,8 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
         for (int i = 0; i <= res; i++) {
             double theta = 3.1415926535 * 2 / res * i;
             glm::vec3 vec = common::components::types::toVec3(orb, theta);
-            orbit_points.push_back(vec);
+            // Convert to opengl
+            orbit_points.push_back(glm::vec3(vec.x, vec.z, vec.y));
         }
         auto& line = m_universe.emplace_or_replace<PlanetOrbit>(body);
         // Get the orbit line

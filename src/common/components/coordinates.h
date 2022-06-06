@@ -291,7 +291,7 @@ inline glm::vec3 toVec3(const PolarCoordinate& coordinate) {
 /// </summary>
 /// <param name="orb">Orbit</param>
 /// <param name="theta">Theta to compute</param>
-/// <returns>Vector 3 in orbit, in AU, configured for opengl</returns>
+/// <returns>Vector 3 in orbit, in AU</returns>
 inline Vec3AU toVec3AU(const Orbit& orb, radian theta) {
     glm::vec3 vec = OrbitToVec3(orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN, orb.w, theta);
     return vec/(float) KmInAu;
@@ -308,7 +308,7 @@ inline glm::vec3 toVec3(const Orbit& orb) {
 /// Converts orbit to AU coorrdinates.
 /// </summary>
 /// <param name="orb">[in] orbit of the object to convert</param>
-/// <returns>Vector 3 in orbit, in AU, configured for opengl</returns>
+/// <returns>Vector 3 in orbit, in AU</returns>
 inline Vec3AU toVec3AU(const Orbit& orb) {
     return toVec3AU(orb, orb.v);
 }

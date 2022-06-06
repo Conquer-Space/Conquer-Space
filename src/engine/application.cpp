@@ -854,6 +854,7 @@ void Application::LogInfo() {
     SPDLOG_INFO("Compiled {} {}", __DATE__, __TIME__);
     SPDLOG_INFO("Exe Path: {}", common::util::ExePath::exe_path);
     SPDLOG_INFO("Data Path: {}", common::util::GetCqspDataPath());
+    SPDLOG_INFO("Save Path: {}", common::util::GetCqspSavePath());
 
 #ifdef TRACY_ENABLE
     SPDLOG_INFO("Tracy protocol version: {}", tracy::ProtocolVersion);
