@@ -36,56 +36,72 @@ typedef glm::vec3 Vec3AU;
  */
 struct Orbit {
     /// eccentricity
+    /// <br />
     /// Dimensionless
+    /// <br />
     /// e
-    double eccentricity;
+    double eccentricity = 0;
 
     /// Semi major axis
+    /// <br />
     /// Kilometers
+    /// <br />
     /// a
-    kilometer semi_major_axis; // a
+    kilometer semi_major_axis = 0;
 
     /// inclination
+    /// <br />
     /// Radians
+    /// <br />
     /// i
-    radian inclination;
+    radian inclination = 0;
 
     /// Longitude of the ascending node
+    /// <br />
     /// Radians
+    /// <br />
     /// Capital Omega
-    radian LAN;
+    radian LAN = 0;
 
 
     /// Argument of perapsis
+    /// <br />
     /// Radians
+    /// <br />
     /// lower case omega (w)
-    radian w;
+    radian w = 0;
 
-    // Mean anomaly at epoch (J2000)
-    // Radians
-    // M sub 0
-    radian M0;
+    /// Mean anomaly at epoch (J2000)
+    /// <br />
+    /// Radians
+    /// <br />
+    /// M sub 0
+    radian M0 = 0;
 
     /// <summary>
     /// True anomaly
+    /// <br />
     /// v
+    /// <br />
     /// Radians
     /// </summary>
-    double v;
+    double v = 0;
 
     /// <summary>
     /// Orbital period
+    /// <br />
     /// Seconds
     /// </summary>
-    double T;
+    double T = 0;
 
     /// <summary>
     /// Average motion
     /// </summary>
-    double nu;
+    double nu = 0;
 
     /// <summary>
     /// Graviational constant * mass of orbiting body
+    /// <br />
     /// km^3 * s^-2
     /// </summary>
     double Mu = SunMu;
@@ -96,7 +112,7 @@ struct Orbit {
     /// <summary>
     /// Eccentric anomaly
     /// </summary>
-    double E;
+    double E = 0;
 
     Orbit() = default;
     Orbit(kilometer semi_major_axis, double eccentricity,
@@ -131,9 +147,12 @@ struct Orbit {
 /// <param name="w">Argument of periapsis</param>
 /// <param name="vec">Vector to convert</param>
 glm::vec3 ConvertOrbParams(const double LAN, const double i,
-                                  const double w, const glm::vec3& vec);
+                                  const double w, const glm::dvec3& vec);
 
-/// <summary>
+double GetOrbitingRadius(const double& e, const double& a,
+                         const double& v);
+
+    /// <summary>
 /// Converts position and velocity to orbit.
 /// </summary>
 /// <param name="position">Position of the body</param>
@@ -156,6 +175,8 @@ glm::vec3 OrbitToVec3(const double& a, const double& e, const radian& i,
                              const radian& LAN, const radian& w,
                              const radian& v);
 
+double AvgOrbitalVelocity(const Orbit& orb);
+
 glm::vec3 OrbitVelocityToVec3(const Orbit& orb, double v);
 
 /// <summary>
@@ -164,7 +185,7 @@ glm::vec3 OrbitVelocityToVec3(const Orbit& orb, double v);
 /// <param name="mean_anomaly"></param>
 /// <param name="ecc"></param>
 /// <returns></returns>
-static double SolveKepler(const double& mean_anomaly, const double& ecc,
+double SolveKepler(const double& mean_anomaly, const double& ecc,
                           const int steps = 200);
 
 /// <summary>
@@ -172,7 +193,7 @@ static double SolveKepler(const double& mean_anomaly, const double& ecc,
 /// </summary>
 /// \param[in] ecc The eccentricity of the orbit
 /// \param[in] E The eccentric anomaly of the orbit
-static double CalculateTrueAnomaly(const double& ecc, const double& E);
+double CalculateTrueAnomaly(const double& ecc, const double& E);
 
 /// <summary>
 /// Gets the Mean anomaly from the time
@@ -181,11 +202,11 @@ static double CalculateTrueAnomaly(const double& ecc, const double& E);
 /// <param name="nu">G*M of orbiting body</param>
 /// <param name="time">Current time</param>
 /// <returns></returns>
-static double GetMt(const double& M0, const double& nu, const double& time);
+double GetMt(const double& M0, const double& nu, const double& time);
 /// <param name="orbit">Orbit to compute</param>
 /// <param name="time">Current time (seconds)</param>
 /// <returns>True anomaly in radians</returns>
-static radian TrueAnomaly(const Orbit& orbit, const second& time);
+radian TrueAnomaly(const Orbit& orbit, const second& time);
 
 struct Kinematics {
     glm::vec3 position = glm::vec3(0, 0, 0);
@@ -216,8 +237,9 @@ struct MoveTarget {
 };
 
 /// <summary>
-/// Updates the orbit's true anomaly
+/// Updates the orbit's true anomaly.
 /// </summary>
+/// You need to call it before calculating anything to do with the orbit
 /// <param name="orb"></param>
 /// <param name="time"></param>
 void UpdateOrbit(Orbit& orb, const second& time);

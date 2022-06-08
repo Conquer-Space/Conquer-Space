@@ -72,6 +72,7 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
                 orb.reference_body = p_orb.reference_body;
                 orb.CalculatePeriod();
             }
+        } else {
         }
         pos.position += p_pos.position;
     }
