@@ -46,6 +46,9 @@ struct Body {
 
     // Rotation period in seconds
     double rotation;
+
+    // Axial rotation
+    double axial = 0.0;
 };
 
 struct TexturedTerrain {

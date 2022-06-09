@@ -602,14 +602,13 @@ void SysStarSystemRenderer::DrawTexturedPlanet(glm::vec3 &object_pos, entt::enti
     glm::mat4 position = glm::mat4(1.f);
     position = glm::translate(position, object_pos);
     // Time
-    float rot =
-        (float)(m_universe.date.ToSecond() / body.rotation * cqspt::TWOPI);
+    float rot = (float)(m_universe.date.ToSecond() / body.rotation * cqspt::TWOPI);
     if (body.rotation == 0) {
         rot = 0;
     }
     position *= glm::mat4(
-        glm::quat{{ 0.f, 0.f, 2.f }} *
-        glm::quat{{0.f, (float)fmod(rot, cqspt::TWOPI), 0.f}});
+        glm::quat {{ 0.f, 0.f, (float) body.axial }} *
+        glm::quat {{0.f, (float)fmod(rot, cqspt::TWOPI), 0.f}});
 
     // Rotate
     float scale = body.radius;  // cqsp::common::components::types::toAU(body.radius)
