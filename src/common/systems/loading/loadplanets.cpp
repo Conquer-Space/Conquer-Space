@@ -68,6 +68,17 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
     body_comp.GM = values["gm"].to_double();
 
+    bool time_correct;
+    if (values["rotation"].type() != Hjson::Type::Null) {
+        body_comp.rotation = ReadUnit(values["rotation"].to_string(),
+                                      UnitType::Time, &time_correct);
+        if (!time_correct) {
+            body_comp.rotation = 0;
+        }
+    } else {
+        body_comp.rotation = 0;
+    }
+
     bool radius_correct;
     body_comp.radius = ReadUnit(values["radius"].to_string(), UnitType::Distance, &radius_correct);
     if (!radius_correct) {
