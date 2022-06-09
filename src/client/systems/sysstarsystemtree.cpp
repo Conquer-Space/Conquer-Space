@@ -63,7 +63,7 @@ void SysStarSystemTree::DoUI(int delta_time) {
             std::string planet_name = gui::GetName(GetUniverse(), entity);
             if (ImGui::TreeNodeEx(planet_name.c_str(), ImGuiTreeNodeFlags_OpenOnArrow)) {
                 // If it's double clicked
-                if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
                     // Go to the planet
                     cqsp::scene::SeePlanet(GetApp(), entity);
                 }
@@ -72,11 +72,11 @@ void SysStarSystemTree::DoUI(int delta_time) {
                 DoChildTree(entity);
                 ImGui::TreePop();
             } else {
+                if (ImGui::IsItemHovered() &&
+                    ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+                    cqsp::scene::SeePlanet(GetApp(), entity);
+                }
                 gui::EntityTooltip(GetUniverse(), entity);
-                //if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-                    // Go to the planet
-                    //cqsp::scene::SeePlanet(GetApp(), entity);
-                //}
             }
         }
     }
