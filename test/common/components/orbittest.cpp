@@ -37,7 +37,7 @@ TEST(Common_OrbitTest, DISABLED_toVec3Test) {
     double i = orb.inclination = data["inclination"];
     double LAN = orb.LAN = data["ascending_node"];
     double w = orb.w = data["argument"];
-    orb.CalculatePeriod();
+    orb.CalculateVariables();
     std::cout << orb.T << std::endl;
     double T = 3.1415926535 * 2;
     int resolution = 5000;
@@ -63,10 +63,10 @@ TEST(Common_OrbitTest, OrbitConversionTest) {
     orb.LAN = 0;
     orb.w = 0;
 
-    orb.CalculatePeriod();
+    orb.CalculateVariables();
     cqspt::UpdateOrbit(orb, 0);
     // Expect the true anomaly to be 0
-    EXPECT_EQ(cqspt::GetMt(orb.M0, orb.Mu, 0, orb.epoch), 0);
+    EXPECT_EQ(orb.GetMt(0), 0);
     EXPECT_EQ(orb.v, 0);
     EXPECT_EQ(orb.E, 0);
     EXPECT_EQ(orb.M0, 0);
@@ -97,10 +97,10 @@ TEST(Common_OrbitTest, NewOrbitConversionTest) {
     orb.LAN = 0;
     orb.w = 0;
 
-    orb.CalculatePeriod();
+    orb.CalculateVariables();
     cqspt::UpdateOrbit(orb, 0);
     // Expect the true anomaly to be 0
-    EXPECT_EQ(cqspt::GetMt(orb.M0, orb.Mu, 0, orb.epoch), 0);
+    EXPECT_EQ(orb.GetMt(0), 0);
     EXPECT_EQ(orb.v, 0);
     EXPECT_EQ(orb.E, 0);
     auto position = cqspt::toVec3(orb);
@@ -131,10 +131,10 @@ TEST(Common_OrbitTest, NewOrbitConversionTest2) {
     orb.w = 0;
     orb.M0 = 0.8;
 
-    orb.CalculatePeriod();
+    orb.CalculateVariables();
     cqspt::UpdateOrbit(orb, 0);
-    // Expect the true anomaly to be 0
-    EXPECT_EQ(cqspt::GetMt(orb.M0, orb.Mu, 0, orb.epoch), 0.8);
+    // Expect the true anomaly to be 0.8
+    EXPECT_EQ(orb.GetMt(0), 0.8);
     //EXPECT_EQ(orb.v, 0);
     //EXPECT_EQ(orb.E, 0);
     auto position = cqspt::toVec3(orb);
@@ -155,22 +155,21 @@ TEST(Common_OrbitTest, NewOrbitConversionTest2) {
     EXPECT_NEAR(new_orbit.eccentricity, orb.eccentricity, 0.001);
 }
 
-
 TEST(Common_OrbitTest, NewOrbitConversionTest3) {
     // Expect the orbit is similar
     namespace cqspt = cqsp::common::components::types;
     cqspt::Orbit orb;
     orb.semi_major_axis = 57.91e7;
-    orb.eccentricity = 0.9;
+    orb.eccentricity = 0;
     orb.inclination = 1;
     orb.LAN = 0;
     orb.w = 0;
-    orb.M0 = 0.8;
+    orb.M0 = 0;
 
-    orb.CalculatePeriod();
+    orb.CalculateVariables();
     cqspt::UpdateOrbit(orb, 0);
     // Expect the true anomaly to be 0
-    EXPECT_EQ(cqspt::GetMt(orb.M0, orb.Mu, 0, orb.epoch), 0.8);
+    EXPECT_EQ(orb.GetMt(0), 0.8);
     // EXPECT_EQ(orb.v, 0);
     // EXPECT_EQ(orb.E, 0);
     auto position = cqspt::toVec3(orb);

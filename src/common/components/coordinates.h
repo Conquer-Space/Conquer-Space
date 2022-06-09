@@ -29,7 +29,7 @@ namespace cqsp::common::components::types {
 /// <summary>
 /// A vector3 where the units are astronomical units
 /// </summary>
-typedef glm::vec3 Vec3AU;
+typedef glm::dvec3 Vec3AU;
 
 /**
  * Orbit of a body
@@ -63,7 +63,6 @@ struct Orbit {
     /// Capital Omega
     radian LAN = 0;
 
-
     /// Argument of perapsis
     /// <br />
     /// Radians
@@ -71,7 +70,7 @@ struct Orbit {
     /// lower case omega (w)
     radian w = 0;
 
-    /// Mean anomaly at epoch (J2000)
+    /// Mean anomaly at epoch
     /// <br />
     /// Radians
     /// <br />
@@ -128,15 +127,19 @@ struct Orbit {
             M0(M0),
             v(M0),
             T(0) {
-        CalculatePeriod();
+        CalculateVariables();
     }
 
     /// <summary>
     /// Calculates period and mean motion
     /// </summary>
-    void CalculatePeriod() {
+    void CalculateVariables() {
         T =  2 * PI * std::sqrt(semi_major_axis * semi_major_axis * semi_major_axis / Mu);
         nu = std::sqrt(Mu / (semi_major_axis * semi_major_axis * semi_major_axis));
+    }
+
+    double GetMt(double time) {
+        return normalize_radian(M0 + (time - epoch) * nu);
     }
 };
 
@@ -148,7 +151,7 @@ struct Orbit {
 /// <param name="i">Inclination</param>
 /// <param name="w">Argument of periapsis</param>
 /// <param name="vec">Vector to convert</param>
-glm::vec3 ConvertOrbParams(const double LAN, const double i,
+glm::dvec3 ConvertOrbParams(const double LAN, const double i,
                                   const double w, const glm::dvec3& vec);
 
 double GetOrbitingRadius(const double& e, const double& a,
@@ -160,7 +163,7 @@ double GetOrbitingRadius(const double& e, const double& a,
 /// <param name="position">Position of the body</param>
 /// <param name="velocity">Velocity of the body</param>
 /// <param name="Mu">G*M of the orbiting body</param>
-Orbit Vec3ToOrbit(const glm::vec3& position, const glm::vec3& velocity,
+Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity,
                  const double& Mu, const double& time);
 
 /// <summary>
@@ -173,13 +176,13 @@ Orbit Vec3ToOrbit(const glm::vec3& position, const glm::vec3& velocity,
 /// <param name="w">Argument of periapsis (radians)</param>
 /// <param name="v">True anomaly (radians)</param>
 /// <returns>The vec3, in whatever unit a was.</returns>
-glm::vec3 OrbitToVec3(const double& a, const double& e, const radian& i,
+glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i,
                              const radian& LAN, const radian& w,
                              const radian& v);
 
 double AvgOrbitalVelocity(const Orbit& orb);
 
-glm::vec3 OrbitVelocityToVec3(const Orbit& orb, double v);
+glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v);
 
 /// <summary>
 /// Computes eccentric anomaly in radians given mean anomaly and eccentricity
@@ -213,8 +216,8 @@ double GetMt(const double& M0, const double& nu, const double& time,
 radian TrueAnomaly(const Orbit& orbit, const second& time);
 
 struct Kinematics {
-    glm::vec3 position = glm::vec3(0, 0, 0);
-    glm::vec3 velocity = glm::vec3(0, 0, 0);
+    glm::dvec3 position = glm::vec3(0, 0, 0);
+    glm::dvec3 velocity = glm::vec3(0, 0, 0);
 };
 
 /// <summary>
@@ -319,15 +322,15 @@ inline glm::vec3 toVec3(const PolarCoordinate& coordinate) {
 /// <param name="theta">Theta to compute</param>
 /// <returns>Vector 3 in orbit, in AU</returns>
 inline Vec3AU toVec3AU(const Orbit& orb, radian theta) {
-    glm::vec3 vec = OrbitToVec3(orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN, orb.w, theta);
-    return vec/(float) KmInAu;
+    glm::dvec3 vec = OrbitToVec3(orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN, orb.w, theta);
+    return vec/KmInAu;
 }
 
-inline glm::vec3 toVec3(const Orbit& orb, radian theta) {
+inline glm::dvec3 toVec3(const Orbit& orb, radian theta) {
     return OrbitToVec3(orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN, orb.w, theta);
 }
 
-inline glm::vec3 toVec3(const Orbit& orb) {
+inline glm::dvec3 toVec3(const Orbit& orb) {
     return toVec3(orb, orb.v);
 }
 /// <summary>

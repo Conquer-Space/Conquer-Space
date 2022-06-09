@@ -21,7 +21,7 @@
 #include <iomanip>
 
 namespace cqsp::common::components::types {
-glm::vec3 ConvertOrbParams(const double LAN, const double i, const double w,
+glm::dvec3 ConvertOrbParams(const double LAN, const double i, const double w,
                            const glm::dvec3& vec) {
     return glm::dquat{glm::dvec3(0, 0, -LAN)} * glm::dquat{glm::dvec3(-i, 0, 0)} *
            glm::dquat{glm::dvec3(0, 0, -w)} * vec;
@@ -33,10 +33,8 @@ double GetOrbitingRadius(const double& e, const double& a, const double& v) {
 }
 
 // https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
-Orbit Vec3ToOrbit(const glm::vec3& position_t, const glm::vec3& velocity_t,
+Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity,
                  const double& Mu, const double& time) {
-    glm::dvec3 position{position_t};
-    glm::dvec3 velocity{velocity_t};
     // Orbital momentum vector
     const auto h = glm::cross(position, velocity);
     // Eccentricity vector
@@ -85,7 +83,7 @@ Orbit Vec3ToOrbit(const glm::vec3& position_t, const glm::vec3& velocity_t,
 }
 
 // https://downloads.rene-schwarz.com/download/M001-Keplerian_Orbit_Elements_to_Cartesian_State_Vectors.pdf
-glm::vec3 OrbitToVec3(const double& a, const double& e, const radian& i,
+glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i,
                        const radian& LAN, const radian& w, const radian& v) {
     if (a == 0) {
         return glm::vec3(0, 0, 0);
@@ -96,7 +94,7 @@ glm::vec3 OrbitToVec3(const double& a, const double& e, const radian& i,
 
 double AvgOrbitalVelocity(const Orbit& orb) { return (PI * 2 * orb.semi_major_axis) / orb.T; }
 
-glm::vec3 OrbitVelocityToVec3(const Orbit& orb, double v) {
+glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v) {
     // Convert the values
     if (orb.semi_major_axis == 0) {
         return glm::vec3(0, 0, 0);
