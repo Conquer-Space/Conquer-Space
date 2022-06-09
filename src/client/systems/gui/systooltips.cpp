@@ -178,6 +178,11 @@ void EntityTooltip(const Universe &universe, entt::entity entity) {
         ImGui::TextFmt("Position: {} {} {} ({})", a.position.x, a.position.y, a.position.z, glm::length(a.position));
     }
 
+    if (universe.all_of<cqspc::bodies::Body>(entity)) {
+        auto& body = universe.get<cqspc::bodies::Body>(entity);
+        ImGui::TextFmt("Rotation: {} days", body.rotation / 86400);
+    }
+
     if (universe.all_of<cqspc::Governed>(entity)) {
         auto& governed = universe.get<cqspc::Governed>(entity);
         ImGui::TextFmt("Owned by: {}", GetName(universe, governed.governor));

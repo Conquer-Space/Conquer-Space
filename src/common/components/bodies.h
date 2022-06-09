@@ -43,6 +43,9 @@ struct Body {
 
     // gravitational constant in km^3 * s^-2
     double GM;
+
+    // Rotation period in seconds
+    double rotation;
 };
 
 struct TexturedTerrain {

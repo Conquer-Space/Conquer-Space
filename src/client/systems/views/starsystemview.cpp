@@ -29,6 +29,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/string_cast.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include "client/components/planetrendering.h"
 #include "client/components/clientctx.h"
@@ -593,14 +594,28 @@ void SysStarSystemRenderer::DrawTexturedPlanet(glm::vec3 &object_pos, entt::enti
             textured_planet.textures.push_back(terrain_data.normal);
         }
     }
-    glm::mat4 position = glm::mat4(1.f);
-    position = glm::translate(position, object_pos);
 
     namespace cqspb = cqsp::common::components::bodies;
+    namespace cqspt = cqsp::common::components::types;
     auto& body = m_universe.get<cqspb::Body>(entity);
+
+    glm::mat4 position = glm::mat4(1.f);
+    position = glm::translate(position, object_pos);
+    // Time
+    float rot =
+        (float)(m_universe.date.ToSecond() / body.rotation * cqspt::TWOPI);
+    if (body.rotation == 0) {
+        rot = 0;
+    }
+    position *= glm::mat4(
+        glm::quat{{ 0.f, 0.f, 2.f }} *
+        glm::quat{{0.f, (float)fmod(rot, cqspt::TWOPI), 0.f}});
+
+    // Rotate
     float scale = body.radius;  // cqsp::common::components::types::toAU(body.radius)
                                 // * view_scale;
     position = glm::scale(position, glm::vec3(scale));
+
     cqsp::asset::ShaderProgram_t* shader = &textured_planet.shaderProgram;
     if (scale < 10.f) {
         // then use different shader if it's close enough
