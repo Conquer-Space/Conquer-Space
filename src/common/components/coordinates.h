@@ -78,6 +78,8 @@ struct Orbit {
     /// M sub 0
     radian M0 = 0;
 
+    double epoch = 0;
+
     /// <summary>
     /// True anomaly
     /// <br />
@@ -159,7 +161,7 @@ double GetOrbitingRadius(const double& e, const double& a,
 /// <param name="velocity">Velocity of the body</param>
 /// <param name="Mu">G*M of the orbiting body</param>
 Orbit Vec3ToOrbit(const glm::vec3& position, const glm::vec3& velocity,
-                 const double& Mu);
+                 const double& Mu, const double& time);
 
 /// <summary>
 /// Converts an orbit to a vec3.
@@ -202,7 +204,9 @@ double CalculateTrueAnomaly(const double& ecc, const double& E);
 /// <param name="nu">G*M of orbiting body</param>
 /// <param name="time">Current time</param>
 /// <returns></returns>
-double GetMt(const double& M0, const double& nu, const double& time);
+double GetMt(const double& M0, const double& nu, const double& time,
+             const double& epoch);
+
 /// <param name="orbit">Orbit to compute</param>
 /// <param name="time">Current time (seconds)</param>
 /// <returns>True anomaly in radians</returns>

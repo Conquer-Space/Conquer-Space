@@ -68,7 +68,7 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
                 // Convert orbit
                 orb = cqspt::Vec3ToOrbit(pos.position + p_pos.position - pp_pos.position,
                                          pos.velocity + p_pos.velocity,
-                                         parent_parent_orb.GM);
+                                         parent_parent_orb.GM, GetUniverse().date.ToSecond());
                 orb.reference_body = p_orb.reference_body;
                 orb.CalculatePeriod();
             }

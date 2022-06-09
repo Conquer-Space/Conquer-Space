@@ -18,6 +18,7 @@
 
 #include "common/components/units.h"
 #include <iostream>
+#include <iomanip>
 
 namespace cqsp::common::components::types {
 glm::vec3 ConvertOrbParams(const double LAN, const double i, const double w,
@@ -32,21 +33,25 @@ double GetOrbitingRadius(const double& e, const double& a, const double& v) {
 }
 
 // https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
-Orbit Vec3ToOrbit(const glm::vec3& position, const glm::vec3& velocity,
-                 const double& Mu) {
+Orbit Vec3ToOrbit(const glm::vec3& position_t, const glm::vec3& velocity_t,
+                 const double& Mu, const double& time) {
+    glm::dvec3 position{position_t};
+    glm::dvec3 velocity{velocity_t};
     // Orbital momentum vector
     const auto h = glm::cross(position, velocity);
     // Eccentricity vector
-    const auto ecc_v = glm::cross(velocity, h) / (float)Mu - glm::normalize(position);
-    
+    const auto ecc_v = glm::cross(velocity, h) / Mu - glm::normalize(position);
+
     // Eccentricity
     double e = glm::length(ecc_v);
 
     // Vector pointing towards the ascending node
-    const auto n = glm::cross(glm::vec3(0, 0, 1), h);
+    const auto n = glm::dvec3(-h.y, h.x, 0);
     // True anomaly
-    double v = acos(glm::dot(ecc_v, position) / (e * glm::length(position)));
+    double m = glm::dot(ecc_v, position) / (e * glm::length(position));
+    double v = acos(std::clamp(m, -1., 1.));
     if (glm::dot(position, velocity) < 0) v = PI * 2 - v;
+    if (m >= 1) v = 0;
 
     // Inclination
     const double i = std::acos(h.z / glm::length(h));
@@ -72,6 +77,7 @@ Orbit Vec3ToOrbit(const glm::vec3& position, const glm::vec3& velocity,
     orb.w = w;
     orb.inclination = i;
     orb.M0 = M0;
+    orb.epoch = time;
     orb.v = v;
     orb.E = E;
     orb.Mu = Mu;
@@ -127,20 +133,20 @@ double CalculateTrueAnomaly(const double& ecc, const double& E) {
     return 2 * atan2(sqrt(1 + ecc) * sin(E / 2), sqrt(1 - ecc) * cos(E / 2));
 }
 
-double GetMt(const double& M0, const double& nu, const double& time) {
+double GetMt(const double& M0, const double& nu, const double& time, const double &epoch) {
     // Calculate
-    double Mt = M0 + time * nu;
+    double Mt = M0 + (time - epoch) * nu;
     return normalize_radian(Mt);
 }
 
 radian TrueAnomaly(const Orbit& orbit, const second& time) {
-    double Mt = GetMt(orbit.M0, time, orbit.nu);
+    double Mt = GetMt(orbit.M0, time, orbit.nu, orbit.epoch);
     double E = SolveKepler(Mt, orbit.eccentricity);
     return CalculateTrueAnomaly(orbit.eccentricity, E);
 }
 
 void UpdateOrbit(Orbit& orb, const second& time) {
-    double Mt = GetMt(orb.M0, time, orb.nu);
+    double Mt = GetMt(orb.M0, time, orb.nu, orb.epoch);
     double E = SolveKepler(Mt, orb.eccentricity);
     orb.v = CalculateTrueAnomaly(orb.eccentricity, E);
     orb.E = E;
