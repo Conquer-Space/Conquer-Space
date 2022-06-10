@@ -215,9 +215,11 @@ double GetMt(const double& M0, const double& nu, const double& time,
 /// <returns>True anomaly in radians</returns>
 radian TrueAnomaly(const Orbit& orbit, const second& time);
 
+/// Relative position from the parent orbiting object
 struct Kinematics {
-    glm::dvec3 position = glm::vec3(0, 0, 0);
-    glm::dvec3 velocity = glm::vec3(0, 0, 0);
+    glm::dvec3 position{0, 0, 0};
+    glm::dvec3 velocity{0, 0, 0};
+    glm::dvec3 center{0, 0, 0};
 };
 
 /// <summary>

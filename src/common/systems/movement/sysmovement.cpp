@@ -74,7 +74,7 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
             }
         } else {
         }
-        pos.position += p_pos.position;
+        pos.center = p_pos.center + p_pos.position;
     }
 
     if (!universe.any_of<cqspc::bodies::OrbitalSystem>(body)) {
@@ -125,4 +125,23 @@ void SysPath::DoSystem() {
 }
 
 int SysPath::Interval() { return 1; }
+
+void LeaveSOI(Universe& universe, const entt::entity& body) {
+    namespace cqspc = cqsp::common::components;
+    namespace cqsps = cqsp::common::components::ships;
+    namespace cqspt = cqsp::common::components::types;
+    // There are 2 bodies that are orbiting that matter, the currently orbiting object,
+    // and the object that the current body is orbiting.
+    auto& current_orbit = universe.get<cqspt::Orbit>(body);
+    entt::entity parent = current_orbit.reference_body;
+    auto& parent_orbit = universe.get<cqspt::Orbit>(body);
+    entt::entity greater_parent = parent_orbit.reference_body;
+
+    // Set reference body
+    current_orbit.reference_body = greater_parent;
+
+    // Remove children
+    // Set the orbit
+
+}
 }  // namespace cqsp::common::systems

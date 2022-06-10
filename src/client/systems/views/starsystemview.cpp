@@ -828,7 +828,8 @@ glm::vec3 SysStarSystemRenderer::CalculateObjectPos(const entt::entity &ent) {
     namespace cqspt = cqsp::common::components::types;
     // Get the position
     if (m_universe.all_of<cqspt::Kinematics>(ent)) {
-        const auto& pos = m_universe.get<cqspt::Kinematics>(ent).position;
+        auto& kin = m_universe.get<cqspt::Kinematics>(ent);
+        const auto& pos = kin.position + kin.center;
         return glm::vec3(pos.x, pos.z, pos.y);
     }
     return glm::vec3(0, 0, 0);
