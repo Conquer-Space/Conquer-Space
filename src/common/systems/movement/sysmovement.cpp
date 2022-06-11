@@ -128,20 +128,40 @@ int SysPath::Interval() { return 1; }
 
 void LeaveSOI(Universe& universe, const entt::entity& body) {
     namespace cqspc = cqsp::common::components;
-    namespace cqsps = cqsp::common::components::ships;
+    namespace cqspb = cqsp::common::components::bodies;
     namespace cqspt = cqsp::common::components::types;
     // There are 2 bodies that are orbiting that matter, the currently orbiting object,
     // and the object that the current body is orbiting.
     auto& current_orbit = universe.get<cqspt::Orbit>(body);
     entt::entity parent = current_orbit.reference_body;
-    auto& parent_orbit = universe.get<cqspt::Orbit>(body);
+    if (parent == entt::null) {
+        return;
+    }
+    auto& parent_orbit = universe.get<cqspt::Orbit>(parent);
     entt::entity greater_parent = parent_orbit.reference_body;
+    if (greater_parent == entt::null) {
+        return;
+    }
 
     // Set reference body
     current_orbit.reference_body = greater_parent;
 
-    // Remove children
-    // Set the orbit
+    // Current pos
+    auto& pos = universe.get<cqspt::Kinematics>(body);
+    auto& p_pos = universe.get<cqspt::Kinematics>(parent);
 
+    auto& greater_body = universe.get<cqspb::Body>(greater_parent);
+    // Calculate new orbit
+    auto orb = cqspt::Vec3ToOrbit(pos.position + p_pos.position,
+                                  pos.velocity + p_pos.velocity,
+                                  greater_body.GM,
+                           universe.date.ToSecond());
+    orb.reference_body = greater_parent;
+    orb.CalculateVariables();
+    // Remove children
+    auto& parent_orbital_system = universe.get<cqspb::OrbitalSystem>(parent);
+    std::erase(parent_orbital_system.children, body);
+    auto& greater_orbital_system = universe.get<cqspb::OrbitalSystem>(greater_parent);
+    greater_orbital_system.push_back(body);
 }
 }  // namespace cqsp::common::systems
