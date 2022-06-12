@@ -57,7 +57,8 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity,
     // Eccentric anomaly
     const double E = 2 * atan(tan(v / 2) / sqrt((1 + e) / (1 - e)));
     double M0 = E - e * sin(E);
-    double LAN = (n.x / glm::length(n));
+    double T = n.x / glm::length(n);
+    double LAN = acos(T);
     if (n.y < 0) LAN = PI * 2 - LAN;
     if (glm::length(n) == 0) LAN = 0;
 
@@ -99,9 +100,10 @@ glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v) {
     if (orb.semi_major_axis == 0) {
         return glm::vec3(0, 0, 0);
     }
-    double r = (orb.semi_major_axis * (1 - orb.eccentricity * orb.eccentricity)) /
-                    (1 + orb.eccentricity * cos(v));
-    return CalculateVelocity(orb.E, r, orb.Mu, orb.semi_major_axis, orb.eccentricity);
+    double r = GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, v);
+    glm::vec3 velocity = CalculateVelocity(
+        orb.E, r, orb.Mu, orb.semi_major_axis, orb.eccentricity);
+    return ConvertOrbParams(orb.LAN, orb.inclination, orb.w, velocity);
 }
 
 double SolveKepler(const double& mean_anomaly, const double& ecc, const int steps) {

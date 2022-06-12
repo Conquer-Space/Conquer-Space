@@ -261,8 +261,8 @@ void UpdateOrbit(Orbit& orb, const second& time);
 /// \param[in] a Semi major axis
 /// \param[in] e eccentricity
 glm::vec3 CalculateVelocity(const double& E, const double& r,
-                                   const double& Mu, const double& a,
-                                   const double& e);
+                            const double& Mu, const double& a,
+                            const double& e);
 
 /// <summary>
 /// Longitude and lattitude.

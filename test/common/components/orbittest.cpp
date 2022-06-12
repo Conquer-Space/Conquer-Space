@@ -166,16 +166,18 @@ TEST(Common_OrbitTest, NewOrbitConversionTest3) {
     orb.inclination = 1;
     orb.LAN = 0;
     orb.w = 0;
-    orb.M0 = 0;
+    double M0 = 0;
+    orb.M0 = M0;
 
     orb.CalculateVariables();
     cqspt::UpdateOrbit(orb, 0);
-    // Expect the true anomaly to be 0
-    EXPECT_EQ(orb.GetMt(0), 0.8);
+    // Expect the true anomaly to be M0
+    EXPECT_EQ(orb.GetMt(0), M0);
     // EXPECT_EQ(orb.v, 0);
     // EXPECT_EQ(orb.E, 0);
     auto position = cqspt::toVec3(orb);
     auto velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
+    EXPECT_EQ(acos(1), 0);
     EXPECT_NEAR(
         glm::length(position),
         cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v),
@@ -186,10 +188,61 @@ TEST(Common_OrbitTest, NewOrbitConversionTest3) {
     EXPECT_NEAR(new_orbit.M0, orb.M0, 0.001);
     EXPECT_NEAR(new_orbit.semi_major_axis, orb.semi_major_axis,
                 orb.semi_major_axis * 0.01);  // 1% error cause doubles are bad
-    EXPECT_NEAR(new_orbit.LAN, orb.LAN, 0.001);
+    EXPECT_NEAR(new_orbit.LAN + new_orbit.w, 2 * cqspt::PI, 0.001); // It's fine if it's 2 pi for this test, because it's a full circle
     EXPECT_NEAR(new_orbit.inclination, orb.inclination, 0.001);
-    EXPECT_NEAR(new_orbit.w, orb.w, 0.001);
     EXPECT_NEAR(new_orbit.eccentricity, orb.eccentricity, 0.001);
+    new_orbit.CalculateVariables();
+    auto new_pos = cqspt::toVec3(new_orbit);
+    EXPECT_DOUBLE_EQ(new_pos.x, position.x);
+    EXPECT_DOUBLE_EQ(new_pos.y, position.y);
+    EXPECT_DOUBLE_EQ(new_pos.z, position.z);
+}
+
+TEST(Common_OrbitTest, NewOrbitConversionTest4) {
+    // Expect the orbit is similar
+    namespace cqspt = cqsp::common::components::types;
+    cqspt::Orbit orb;
+    orb.semi_major_axis = 57.91e7;
+    orb.eccentricity = 0;
+    orb.inclination = 1;
+    orb.LAN = 0;
+    orb.w = 0;
+    double M0 = 0.8;
+    orb.M0 = M0;
+
+    orb.CalculateVariables();
+    cqspt::UpdateOrbit(orb, 0);
+    // Expect the true anomaly to be M0
+    EXPECT_EQ(orb.GetMt(0), M0);
+    // EXPECT_EQ(orb.v, 0);
+    // EXPECT_EQ(orb.E, 0);
+    auto position = cqspt::toVec3(orb);
+    std::cout << position.x << " " << position.y << " " << position.z
+              << std::endl;
+    auto velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
+    std::cout << velocity.x << " " << velocity.y << " " << velocity.z
+              << std::endl;
+    EXPECT_EQ(acos(1), 0);
+    EXPECT_NEAR(
+        glm::length(position),
+        cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v),
+        orb.semi_major_axis * 0.01);
+    auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.Mu, 0);
+    EXPECT_NEAR(new_orbit.v, orb.v, 0.001);
+    EXPECT_NEAR(new_orbit.E, orb.E, 0.001);
+    EXPECT_NEAR(new_orbit.M0, orb.M0, 0.001);
+    EXPECT_NEAR(new_orbit.semi_major_axis, orb.semi_major_axis,
+                orb.semi_major_axis * 0.01);  // 1% error cause doubles are bad
+    EXPECT_NEAR(new_orbit.LAN + new_orbit.w, 2 * cqspt::PI,
+                0.001);  // It's fine if it's 2 pi for this test, because it's a
+                         // full circle
+    EXPECT_NEAR(new_orbit.inclination, orb.inclination, 0.001);
+    EXPECT_NEAR(new_orbit.eccentricity, orb.eccentricity, 0.001);
+    new_orbit.CalculateVariables();
+    auto new_pos = cqspt::toVec3(new_orbit);
+    EXPECT_NEAR(new_pos.x, position.x, 1);
+    EXPECT_NEAR(new_pos.y, position.y, 1);
+    EXPECT_NEAR(new_pos.z, position.z, 1);
 }
 
 TEST(Common_OrbitTest, ToRadianTest) {
