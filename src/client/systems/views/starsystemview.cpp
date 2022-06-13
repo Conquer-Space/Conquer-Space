@@ -85,6 +85,10 @@ struct PlanetTexture {
 
 struct PlanetOrbit {
     cqsp::engine::Mesh *orbit_mesh;
+
+    ~PlanetOrbit() {
+        delete orbit_mesh;
+    }
 };
 }  // namespace
 
@@ -172,6 +176,9 @@ void SysStarSystemRenderer::Render(float deltaTime) {
     // Check for resized window
     window_ratio = static_cast<float>(m_app.GetWindowWidth()) /
                    static_cast<float>(m_app.GetWindowHeight());
+
+    GenerateOrbitLines();
+
     renderer.NewFrame(*m_app.GetWindow());
 
     glEnable(GL_DEPTH_TEST);
@@ -821,7 +828,9 @@ glm::vec3 SysStarSystemRenderer::CalculateObjectPos(const entt::entity &ent) {
     namespace cqspt = cqsp::common::components::types;
     // Get the position
     if (m_universe.all_of<cqspt::Kinematics>(ent)) {
-        return (m_universe.get<cqspt::Kinematics>(ent).position);
+        auto& kin = m_universe.get<cqspt::Kinematics>(ent);
+        const auto& pos = kin.position + kin.center;
+        return glm::vec3(pos.x, pos.z, pos.y);
     }
     return glm::vec3(0, 0, 0);
 }
@@ -925,7 +934,7 @@ float SysStarSystemRenderer::GetWindowRatio() {
 }
 
 void SysStarSystemRenderer::GenerateOrbitLines() {
-    SPDLOG_INFO("Creating planet orbits");
+    SPDLOG_TRACE("Creating planet orbits");
     auto orbits = m_app.GetUniverse().view<common::components::types::Orbit>();
     /* auto system =
         m_app.GetUniverse().get<common::components::bodies::OrbitalSystem>(
@@ -943,9 +952,10 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
         for (int i = 0; i <= res; i++) {
             double theta = 3.1415926535 * 2 / res * i;
             glm::vec3 vec = common::components::types::toVec3(orb, theta);
-            orbit_points.push_back(vec);
+            // Convert to opengl
+            orbit_points.push_back(glm::vec3(vec.x, vec.z, vec.y));
         }
-        auto& line = m_universe.emplace<PlanetOrbit>(body);
+        auto& line = m_universe.emplace_or_replace<PlanetOrbit>(body);
         // Get the orbit line
         // Do the points
         line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);

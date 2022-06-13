@@ -176,6 +176,8 @@ void EntityTooltip(const Universe &universe, entt::entity entity) {
     if (universe.all_of<cqspc::types::Kinematics>(entity)) {
         auto& a = universe.get<cqsp::common::components::types::Kinematics>(entity);
         ImGui::TextFmt("Position: {} {} {} ({})", a.position.x, a.position.y, a.position.z, glm::length(a.position));
+        ImGui::TextFmt("Velocity: {} {} {} ({})", a.velocity.x, a.velocity.y,
+                       a.velocity.z, glm::length(a.velocity));
     }
 
     if (universe.all_of<cqspc::bodies::Body>(entity)) {
@@ -192,6 +194,24 @@ void EntityTooltip(const Universe &universe, entt::entity entity) {
     if (universe.all_of<cqspc::Settlement>(entity)) {
         ImGui::TextFmt("Population: {}", util::LongToHumanString(
                             common::systems::GetCityPopulation(universe, entity)));
+    }
+    if (universe.all_of<common::components::bodies::Body>(entity)) {
+        auto& body = universe.get<common::components::bodies::Body>(entity);
+        ImGui::Separator();
+        ImGui::TextFmt("Radius: {:.3g} km", body.radius);
+        ImGui::TextFmt("Mass: {:.3g} kg", body.mass);
+        ImGui::TextFmt("SOI: {:.3g} km", body.SOI);
+    }
+
+    if (universe.all_of<common::components::types::Orbit>(entity)) {
+        auto& orbit = universe.get<common::components::types::Orbit>(entity);
+        ImGui::Separator();
+        ImGui::TextFmt("Semi Major Axis: {}", orbit.semi_major_axis);
+        ImGui::TextFmt("Inclination: {}", orbit.inclination);
+        ImGui::TextFmt("Eccentricity: {}", orbit.eccentricity);
+        ImGui::TextFmt("Longitude of Linear Node: {}", orbit.LAN);
+        ImGui::TextFmt("Argument of Periapsis: {}", orbit.w);
+        ImGui::TextFmt("True Anomaly: {}", orbit.v);
     }
 
     // Resource stuff

@@ -26,79 +26,94 @@
 #include "common/components/units.h"
 
 namespace cqsp::common::components::types {
-
-// Gravitional constant in m^3 * kg^-1 * s^-2
-static const double G = 6.6743015e-11;
-
-// Sun gravitational constant in km^3 * s^-2
-static const double SunMu = 1.32712400188e11;
-
 /// <summary>
 /// A vector3 where the units are astronomical units
 /// </summary>
-typedef glm::vec3 Vec3AU;
+typedef glm::dvec3 Vec3AU;
 
 /**
  * Orbit of a body
  */
 struct Orbit {
     /// eccentricity
+    /// <br />
     /// Dimensionless
+    /// <br />
     /// e
-    double eccentricity;
+    double eccentricity = 0;
 
     /// Semi major axis
+    /// <br />
     /// Kilometers
+    /// <br />
     /// a
-    kilometer semi_major_axis; // a
+    kilometer semi_major_axis = 0;
 
     /// inclination
+    /// <br />
     /// Radians
+    /// <br />
     /// i
-    radian inclination;
+    radian inclination = 0;
 
     /// Longitude of the ascending node
+    /// <br />
     /// Radians
+    /// <br />
     /// Capital Omega
-    radian LAN;
-
+    radian LAN = 0;
 
     /// Argument of perapsis
+    /// <br />
     /// Radians
+    /// <br />
     /// lower case omega (w)
-    radian w;
+    radian w = 0;
 
-    // Mean anomaly at epoch (J2000)
-    // Radians
-    // M sub 0
-    radian M0;
+    /// Mean anomaly at epoch
+    /// <br />
+    /// Radians
+    /// <br />
+    /// M sub 0
+    radian M0 = 0;
+
+    double epoch = 0;
 
     /// <summary>
     /// True anomaly
+    /// <br />
     /// v
+    /// <br />
     /// Radians
     /// </summary>
-    double v;
+    double v = 0;
 
     /// <summary>
     /// Orbital period
+    /// <br />
     /// Seconds
     /// </summary>
-    double T;
+    double T = 0;
 
     /// <summary>
     /// Average motion
     /// </summary>
-    double nu;
+    double nu = 0;
 
     /// <summary>
     /// Graviational constant * mass of orbiting body
+    /// <br />
     /// km^3 * s^-2
     /// </summary>
     double Mu = SunMu;
 
     // So we can prepare for moons and stuff
     entt::entity reference_body = entt::null;
+
+    /// <summary>
+    /// Eccentric anomaly
+    /// </summary>
+    double E = 0;
 
     Orbit() = default;
     Orbit(kilometer semi_major_axis, double eccentricity,
@@ -112,14 +127,44 @@ struct Orbit {
             M0(M0),
             v(M0),
             T(0) {
-        CalculatePeriod();
+        CalculateVariables();
     }
 
-    void CalculatePeriod() {
+    /// <summary>
+    /// Calculates period and mean motion
+    /// </summary>
+    void CalculateVariables() {
         T =  2 * PI * std::sqrt(semi_major_axis * semi_major_axis * semi_major_axis / Mu);
         nu = std::sqrt(Mu / (semi_major_axis * semi_major_axis * semi_major_axis));
     }
+
+    double GetMt(double time) {
+        return normalize_radian(M0 + (time - epoch) * nu);
+    }
 };
+
+/// <summary>
+/// Converts the orbital params with the inclination, longitude of ascending node, and argument or periapsis
+/// </summary>
+/// All units are in radians
+/// <param name="LAN">Longitude of the ascending node</param>
+/// <param name="i">Inclination</param>
+/// <param name="w">Argument of periapsis</param>
+/// <param name="vec">Vector to convert</param>
+glm::dvec3 ConvertOrbParams(const double LAN, const double i,
+                                  const double w, const glm::dvec3& vec);
+
+double GetOrbitingRadius(const double& e, const double& a,
+                         const double& v);
+
+    /// <summary>
+/// Converts position and velocity to orbit.
+/// </summary>
+/// <param name="position">Position of the body</param>
+/// <param name="velocity">Velocity of the body</param>
+/// <param name="Mu">G*M of the orbiting body</param>
+Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity,
+                 const double& Mu, const double& time);
 
 /// <summary>
 /// Converts an orbit to a vec3.
@@ -131,26 +176,13 @@ struct Orbit {
 /// <param name="w">Argument of periapsis (radians)</param>
 /// <param name="v">True anomaly (radians)</param>
 /// <returns>The vec3, in whatever unit a was.</returns>
-inline glm::vec3 OrbitToVec3(const double& a, const double& e, const radian& i,
-                             const radian& LAN, const radian& w, const radian& v) {
-    if (a == 0) {
-        return glm::vec3(0, 0, 0);
-    }
-    double r = (a * (1 - e * e)) / (1 + e * cos(v));
-    double x = r * cos(v);
-    double y = r * sin(v);
-    double z = 0;
-    glm::dvec3 o{x, y, z};
+glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i,
+                             const radian& LAN, const radian& w,
+                             const radian& v);
 
-    double rx = (o.x * (cos(w) * cos(LAN) - sin(w) * cos(i) * sin(LAN)) -
-            o.y * (sin(w) * cos(LAN) + cos(w) * cos(i) * sin(LAN)));
-    double ry = (o.x * (cos(w) * sin(LAN) + sin(w) * cos(i) * cos(LAN)) +
-        o.y * (cos(w) * cos(i) * cos(LAN) - sin(w) * sin(LAN)));
-    double rz = (o.x * (sin(w) * sin(i)) + o.y * (cos(w) * sin(i)));
+double AvgOrbitalVelocity(const Orbit& orb);
 
-    // Convert to opengl coords
-    return glm::vec3{-rx, -rz, ry};
-}
+glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v);
 
 /// <summary>
 /// Computes eccentric anomaly in radians given mean anomaly and eccentricity
@@ -158,44 +190,36 @@ inline glm::vec3 OrbitToVec3(const double& a, const double& e, const radian& i,
 /// <param name="mean_anomaly"></param>
 /// <param name="ecc"></param>
 /// <returns></returns>
-static double SolveKepler(const double& mean_anomaly, const double& ecc, const int steps = 200) {
-    // Because math is hard, we need to solve it iteratively
-    const int size = 10;
-    if (abs(ecc) < 1.0E-9) {
-            return mean_anomaly;
-    }
-    int maxit = steps;
-    int it = 0;
+double SolveKepler(const double& mean_anomaly, const double& ecc,
+                          const int steps = 200);
 
-    double de = 1000.0;
+/// <summary>
+/// Calculates true anomaly from eccentricity and eccentric anomaly
+/// </summary>
+/// \param[in] ecc The eccentricity of the orbit
+/// \param[in] E The eccentric anomaly of the orbit
+double CalculateTrueAnomaly(const double& ecc, const double& E);
 
-    double ea = mean_anomaly;
-    double old_m = mean_anomaly;
-
-    while ((it < maxit) && (abs(de) > 1.0E-5)) { // normal accuracy is 1.0e-10
-        double new_m = ea - ecc * sin(ea);
-        de = (old_m - new_m) / (1.0 - ecc * cos(ea));
-        ea = ea + de;
-        it = it + 1;
-    }
-    return ea;
-}
+/// <summary>
+/// Gets the Mean anomaly from the time
+/// </summary>
+/// <param name="M0">Mean anomaly at t=0</param>
+/// <param name="nu">G*M of orbiting body</param>
+/// <param name="time">Current time</param>
+/// <returns></returns>
+double GetMt(const double& M0, const double& nu, const double& time,
+             const double& epoch);
 
 /// <param name="orbit">Orbit to compute</param>
 /// <param name="time">Current time (seconds)</param>
 /// <returns>True anomaly in radians</returns>
-static radian TrueAnomaly(const Orbit& orbit, const second& time) {
-    // Calculate
-    double Mt = orbit.M0 + time * orbit.nu;
-    normalize_radian(Mt);
-    double E = SolveKepler(Mt, orbit.eccentricity);
-    return 2 * atan2 (sqrt(1 + orbit.eccentricity) * sin (E / 2), sqrt(1 - orbit.eccentricity) * cos (E / 2));
-}
+radian TrueAnomaly(const Orbit& orbit, const second& time);
 
+/// Relative position from the parent orbiting object
 struct Kinematics {
-    glm::vec3 position = glm::vec3(0, 0, 0);
-    glm::vec3 velocity = glm::vec3(0, 0, 0);
-    float topspeed = 0.1;
+    glm::dvec3 position{0, 0, 0};
+    glm::dvec3 velocity{0, 0, 0};
+    glm::dvec3 center{0, 0, 0};
 };
 
 /// <summary>
@@ -222,13 +246,23 @@ struct MoveTarget {
 };
 
 /// <summary>
-/// Updates the orbit's true anomaly
+/// Updates the orbit's true anomaly.
 /// </summary>
+/// You need to call it before calculating anything to do with the orbit
 /// <param name="orb"></param>
 /// <param name="time"></param>
-inline void UpdateOrbit(Orbit& orb, const second& time) {
-    orb.v = TrueAnomaly(orb, time);
-}
+void UpdateOrbit(Orbit& orb, const second& time);
+
+/// Calculates the vector velocity of the orbit
+///
+/// \param[in] E Eccentric anomaly
+/// \param[in] r Orbiting radius
+/// \param[in] Mu G*M of orbiting body
+/// \param[in] a Semi major axis
+/// \param[in] e eccentricity
+glm::vec3 CalculateVelocity(const double& E, const double& r,
+                            const double& Mu, const double& a,
+                            const double& e);
 
 /// <summary>
 /// Longitude and lattitude.
@@ -269,11 +303,8 @@ struct SurfaceCoordinate {
 /// <summary>
 /// Converts surface coordinate to vector3, shown in opengl.
 /// </summary>
-inline glm::vec3 toVec3(const SurfaceCoordinate& coord, const float& radius = 1) {
-    return glm::vec3(cos(coord.r_latitude()) * sin(coord.r_longitude()),
-                     sin(coord.r_latitude()),
-                     cos(coord.r_latitude()) * cos(coord.r_longitude())) * radius;
-}
+glm::vec3 toVec3(const SurfaceCoordinate& coord,
+                        const float& radius = 1);
 
 /// <summary>
 /// 2D polar coordinate to opengl 3d coordinate
@@ -291,24 +322,24 @@ inline glm::vec3 toVec3(const PolarCoordinate& coordinate) {
 /// </summary>
 /// <param name="orb">Orbit</param>
 /// <param name="theta">Theta to compute</param>
-/// <returns>Vector 3 in orbit, in AU, configured for opengl</returns>
+/// <returns>Vector 3 in orbit, in AU</returns>
 inline Vec3AU toVec3AU(const Orbit& orb, radian theta) {
-    glm::vec3 vec = OrbitToVec3(orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN, orb.w, theta);
-    return vec/(float) KmInAu;
+    glm::dvec3 vec = OrbitToVec3(orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN, orb.w, theta);
+    return vec/KmInAu;
 }
 
-inline glm::vec3 toVec3(const Orbit& orb, radian theta) {
+inline glm::dvec3 toVec3(const Orbit& orb, radian theta) {
     return OrbitToVec3(orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN, orb.w, theta);
 }
 
-inline glm::vec3 toVec3(const Orbit& orb) {
+inline glm::dvec3 toVec3(const Orbit& orb) {
     return toVec3(orb, orb.v);
 }
 /// <summary>
 /// Converts orbit to AU coorrdinates.
 /// </summary>
 /// <param name="orb">[in] orbit of the object to convert</param>
-/// <returns>Vector 3 in orbit, in AU, configured for opengl</returns>
+/// <returns>Vector 3 in orbit, in AU</returns>
 inline Vec3AU toVec3AU(const Orbit& orb) {
     return toVec3AU(orb, orb.v);
 }

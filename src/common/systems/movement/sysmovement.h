@@ -32,6 +32,13 @@ class SysOrbit : public ISimulationSystem {
     void ParseOrbitTree(entt::entity parent, entt::entity body);
 };
 
+/// <summary>
+/// Set's the SOI of the entity to the parent
+/// </summary>
+/// <param name="universe"></param>
+/// <param name="body">Needs to have a Body and Orbit parameter</param>
+void LeaveSOI(Universe& universe, const entt::entity& body);
+
 class SysPath : public ISimulationSystem {
  public:
     explicit SysPath(Game& game) : ISimulationSystem(game) {}
