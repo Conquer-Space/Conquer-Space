@@ -29,7 +29,9 @@ enum ProductionType { factory, mine, service };
 
 struct Production 
 {
+    //TODO(AGM) This is a hardcoded enum, move to a hjson
     ProductionType type;
+    entt::entity recipe;
 };
 
 
