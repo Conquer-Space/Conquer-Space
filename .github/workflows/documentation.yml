@@ -1,0 +1,34 @@
+name: Deploy documentation
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  deploy-book:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+
+    - name: Create Doxygen
+      uses: mattnotmitt/doxygen-action@v1.9.2
+      with:
+        working-directory: './docs'
+        doxyfile-path: 'Doxyfile'
+
+    - name: Pushes to another repository
+      uses: EhWhoAmI/github-action-push-to-another-repository@main
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      with:
+        source-directory: 'docs/html'
+        destination-github-username: EhWhoAmI
+        destination-repository-username: Conquer-Space
+        destination-repository-name: Conquer-Space.github.io
+        user-email: action@github.com
+        target-branch: main
+        user-name: EhWhoAmI
+        target-directory: docs

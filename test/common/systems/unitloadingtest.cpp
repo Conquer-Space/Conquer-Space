@@ -122,3 +122,44 @@ TEST_F(UnitLoadingTest, VolumeTest) {
     EXPECT_DOUBLE_EQ(value, 15e5);
 }
 
+TEST_F(UnitLoadingTest, NegativeTest) {
+    value = cqsp::common::systems::loading::ReadUnit("-15 rad", UnitType::Angle,
+                                                     &correct);
+    EXPECT_TRUE(correct);
+    EXPECT_DOUBLE_EQ(value, -15);
+}
+
+TEST_F(UnitLoadingTest, NegativeTestChanges) {
+    value = cqsp::common::systems::loading::ReadUnit("-45000 m", UnitType::Distance,
+                                                     &correct);
+    EXPECT_TRUE(correct);
+    EXPECT_DOUBLE_EQ(value, -45);
+}
+
+TEST_F(UnitLoadingTest, MinuteTesting) {
+    value = cqsp::common::systems::loading::ReadUnit(
+        "10 m", UnitType::Time, &correct);
+    EXPECT_TRUE(correct);
+    EXPECT_DOUBLE_EQ(value, 10 * 60);
+}
+
+TEST_F(UnitLoadingTest, HourTesting) {
+    value = cqsp::common::systems::loading::ReadUnit("10 h", UnitType::Time,
+                                                     &correct);
+    EXPECT_TRUE(correct);
+    EXPECT_DOUBLE_EQ(value, 10 * 60 * 60);
+}
+
+TEST_F(UnitLoadingTest, DayTesting) {
+    value = cqsp::common::systems::loading::ReadUnit("10 d", UnitType::Time,
+                                                     &correct);
+    EXPECT_TRUE(correct);
+    EXPECT_DOUBLE_EQ(value, 10 * 60 * 60 * 24);
+}
+
+TEST_F(UnitLoadingTest, SecondTesting) {
+    value = cqsp::common::systems::loading::ReadUnit("10 s", UnitType::Time,
+                                                     &correct);
+    EXPECT_TRUE(correct);
+    EXPECT_DOUBLE_EQ(value, 10);
+}

@@ -1,0 +1,17 @@
+/*! \page scripting Scripting
+Scripting in Conquer Space is not very extensive yet, but it is intended to be
+well featured so that many different scenarios can be simulated.
+
+To add a basic script, you have to find the `base.lua` script, and import all the necessary
+files into the game with `require`.
+
+`require`'s argument is the path of the script file, separated by periods, and without the `.lua` extension.
+
+Then the script file will be imported into the game.
+
+There are loads of script functions that can be accessed with the `core` table.
+
+They are not well documented, but can be found in `common/scripting/luafunctions.cpp` and `client/systems/clientscripting.h`
+
+A tool to document and collate all the functions will be written in the future.
+*/

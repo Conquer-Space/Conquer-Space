@@ -20,6 +20,7 @@
 #include <map>
 #include <tuple>
 #include <string>
+#include <limits>
 
 #include <entt/entt.hpp>
 
@@ -38,12 +39,38 @@ struct Body {
     /// Radius of sphere of influence
     /// rsoi = a(m/M)^2/5
     /// </summary>
-    types::kilometer SOI;
+    types::kilometer SOI = std::numeric_limits<double>::infinity();
     types::kilogram mass;
 
     // gravitational constant in km^3 * s^-2
     double GM;
+
+    // Rotation period in seconds
+    double rotation;
+
+    // Axial rotation
+    double axial = 0.0;
 };
+
+/// <summary>
+/// Calculates SOI
+/// </summary>
+/// Make sure the units match up
+/// <param name="mass">Mass of planet/body to calculate</param>
+/// <param name="reference_mass">Mass of sun/reference body</param>
+/// <param name="sma">Semi major axis of the planet</param>
+/// <returns>SOI of planet</returns>
+inline double CalculateSOI(const double& mass, const double& reference_mass, const double& sma) {
+    return sma * std::pow(mass / reference_mass, 0.4);
+}
+
+/// <summary>
+/// Calculates mass from gravitational constant
+/// </summary>
+/// Masses of bodies are described in gravitational constant because it's more accurate to describe like that
+/// <param name="GM"></param>
+/// <returns></returns>
+inline double CalculateMass(const double& GM) { return GM/types::G_km; }
 
 struct TexturedTerrain {
     std::string terrain_name;
@@ -51,6 +78,7 @@ struct TexturedTerrain {
 };
 
 struct NautralObject {};
+
 /// <summary>
 /// An object for the children of an orbital object.
 /// </summary>

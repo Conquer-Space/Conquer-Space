@@ -188,6 +188,17 @@ double ReadUnit(std::string_view value, components::types::UnitType unit_type, b
         }
         break;
     case UnitType::Time:
+        if (unit_string == "s") {
+            // Leave empty
+        } else if (unit_string == "m") {
+            read_value *= 60;
+        } else if (unit_string == "h") {
+            read_value *= (60 * 60);
+        } else if (unit_string == "d") {
+            read_value *= (60 * 60 * 24);
+        } else {
+            mark_wrong();
+        }
         break;
     }
     return read_value;

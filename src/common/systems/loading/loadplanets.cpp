@@ -80,6 +80,28 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
     body_comp.GM = values["gm"].to_double();
 
+    bool rotation_correct;
+    if (values["rotation"].type() != Hjson::Type::Null) {
+        body_comp.rotation = ReadUnit(values["rotation"].to_string(),
+                                      UnitType::Time, &rotation_correct);
+        if (!rotation_correct) {
+            body_comp.rotation = 0;
+        }
+    } else {
+        body_comp.rotation = 0;
+    }
+
+     bool axial_correct;
+    if (values["axial"].type() != Hjson::Type::Null) {
+        body_comp.rotation = ReadUnit(values["axial"].to_string(),
+                                      UnitType::Time, &axial_correct);
+        if (!axial_correct) {
+            body_comp.axial = 0;
+        }
+    } else {
+        body_comp.axial = 0;
+    }
+
     bool radius_correct;
     body_comp.radius = ReadUnit(values["radius"].to_string(), UnitType::Distance, &radius_correct);
     if (!radius_correct) {
@@ -197,15 +219,18 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
 void PlanetLoader::PostLoad(const entt::entity& entity) {
     // Set the parent
+    auto& orbit = universe.get<components::types::Orbit>(entity);
+    auto& body =  universe.get<components::bodies::Body>(entity);
+    body.mass = components::bodies::CalculateMass(body.GM);
     if (!universe.any_of<ParentTemp>(entity)) {
         return;
     }
     auto& parent_temp = universe.get<ParentTemp>(entity);
-    auto& orbit = universe.get<components::types::Orbit>(entity);
+
     if (universe.planets.find(parent_temp.parent) == universe.planets.end()) {
         SPDLOG_INFO("{} parent is not found: {}",
                 universe.get<components::Identifier>(entity).identifier, parent_temp.parent);
-        orbit.CalculatePeriod();
+        orbit.CalculateVariables();
         universe.remove<ParentTemp>(entity);
         return;
     }
@@ -215,8 +240,9 @@ void PlanetLoader::PostLoad(const entt::entity& entity) {
     orbit.reference_body = parent;
     // Set mu
     orbit.Mu = universe.get<components::bodies::Body>(parent).GM;
-
-    orbit.CalculatePeriod();
+    body.SOI = components::bodies::CalculateSOI(body.GM, orbit.Mu, orbit.semi_major_axis);
+    body.mass = components::bodies::CalculateMass(body.GM);
+    orbit.CalculateVariables();
     universe.get_or_emplace<components::bodies::OrbitalSystem>(parent).push_back(entity);
     universe.remove<ParentTemp>(entity);
 }

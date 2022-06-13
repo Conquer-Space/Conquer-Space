@@ -64,7 +64,6 @@ TEST_F(SystemsMovementTest, ShipMovementTest) {
                     ship);
         ASSERT_TRUE(all_of_pos_and_ship);
         auto& position = universe.get<cqspt::Kinematics>(ship);
-        position.topspeed = 10;
         glm::vec3 vec = cqspt::toVec3AU(universe.get<cqspt::Orbit>(planet));
         EXPECT_NEAR(position.position.x, vec.x, 4);
         EXPECT_NEAR(position.position.y, vec.y, 4);

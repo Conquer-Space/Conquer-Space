@@ -25,6 +25,26 @@
 namespace cqsp {
 namespace common {
 namespace systems {
+/// <summary>
+/// Runs scripts that are added to the game
+/// </summary>
+///
+/// To run a script every single tick, you have to do this:
+/// ```lua
+/// local test_event = {
+///     -- you can define all sorts of variables needed here
+/// }
+///
+/// local test_event:on_tick()
+///     -- All sorts of events take place here
+/// end
+///
+/// -- then add it to the event queue.
+/// events:insert(test_event)
+/// ```
+///
+/// This is likely to be unoptimized because it runs all the scripts every
+/// single tick.
 class SysScript : public cqsp::common::systems::ISimulationSystem {
  public:
     explicit SysScript(Game& game);

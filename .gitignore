@@ -20,3 +20,5 @@
 
 # Vcpkg dir
 /vcpkg/
+/doxygen_docs/html
+/doxygen_docs/latex

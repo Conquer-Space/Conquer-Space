@@ -6,6 +6,7 @@
         identifier: sun
         type: star
         radius: 695508 km
+        // GM is in km^3 * kg^-1 * s^-2
         gm: 1.327124400189e11
         orbit: {
             semi_major_axis: 0
@@ -31,6 +32,8 @@
             LAN: 48.3 deg
             M0: 174.796 deg
         }
+        rotation: 58.646 d
+        axial: 2.04 deg
         texture: {
             terrain: mercurymap
         }
@@ -50,6 +53,9 @@
             LAN: 76.680 deg
             M0: 50.115 deg
         }
+        // Venus rotates backward
+        rotation: -243.0226 d
+        axial: 2.64 deg
         texture: {
             terrain: venusmap
         }
@@ -72,26 +78,10 @@
             LAN: -11.26064 deg
             M0: 358.617 deg
         }
-        texture: {
-            terrain: earthmap
-            normal: earthnormal
-        }
-        tags: []
-    }
-    {
-        name: ISS
-        identifier: iss
-        radius: 10 m
-        reference: earth
-        gm: 3.9860044188e5
-        orbit: {
-            semi_major_axis: 6785 km
-            eccentricity: .0006703
-            inclination: 51.6416 deg
-            arg_periapsis: 130.5360 deg
-            LAN: 247.4627 deg
-            M0: 325.0288 deg
-        }
+        // Sidereal 
+        rotation: 0.99726968 d
+        // Axial tilt
+        axial: 23.4392811 deg
         texture: {
             terrain: earthmap
             normal: earthnormal
@@ -102,8 +92,8 @@
         name: Moon
         identifier: moon
         reference: earth
-        radius: 1000 km
-        gm: 0
+        radius: 1737.4 km
+        gm: 4.90486959e3
         orbit: {
             semi_major_axis: 384308.4377707066 km
             eccentricity: 0.05328149353682574
@@ -118,18 +108,23 @@
         tags: []
     }
     {
-        name: Moon moon
+        name: 2ncmoon
         identifier: moon2
         reference: moon
         radius: 10 km
-        gm: 1.327124400189e11
+        gm: 4.90486959e3
         orbit: {
-            semi_major_axis: 3000
+            semi_major_axis: 68100.4377707066 km
             eccentricity: 0.6
-            inclination: 75 deg
-            arg_periapsis: 0
-            LAN: 0
-            M0: 0
+            inclination: 5.145 deg
+            arg_periapsis: 199.7640930160823 deg
+            LAN: 2.296616161126016 deg
+            M0: 132.7012350930954 deg
+        }
+        rotation: 27.321661 d
+        axial: 1.5424 deg
+        texture: {
+            terrain: moonmap
         }
         tags: []
     }
@@ -148,6 +143,8 @@
             LAN: 49.57854 deg
             M0: 19.412 deg
         }
+        rotation: 1.025957 d
+        axial: 25.19 deg
         texture: {
             terrain: marsmap
         }
@@ -168,6 +165,8 @@
             LAN: 100.464 deg
             M0: 20.020 deg
         }
+        rotation: 9.9250 h
+        axial: 3.13 deg
         texture: {
             terrain: jupitermap
         }
@@ -187,6 +186,8 @@
             LAN: 113.665 deg
             M0: 317.020 deg
         }
+        rotation: 633 m
+        axial: 26.73 deg
         texture: {
             terrain: saturnmap
         }
@@ -206,6 +207,8 @@
             LAN: 74.006 deg
             M0: 142.238600 deg
         }
+        rotation: -0.71833 d
+        axial: 28.32
         texture: {
             terrain: uranusmap
         }
@@ -225,6 +228,8 @@
             LAN: 131.783 deg
             M0: 256.228 deg
         }
+        rotation: 0.6713 d
+        axial: 97.77 deg
         texture: {
             terrain: neptunemap
         }
@@ -236,6 +241,8 @@
         radius: 1188.3 km
         reference: sun
         gm: 8.719e2
+        rotation: -6.387230 d
+        axial: 122.53 deg
         orbit: {
             semi_major_axis: 39.482 AU
             eccentricity: 0.2488
