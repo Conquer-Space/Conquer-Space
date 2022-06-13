@@ -12,17 +12,16 @@
             motorvehicles: 1
         }
         output: {
-            transport: 1
+            transport: 2
         }
         cost: {
             capital: {
-                structures: 1
-                industrial: 1
+                structures: 2
+                industrial: 2
                 transport: 1
-                computersystems: 1
             }
             labor: {
-                worker: 1
+                worker: 1000
             }
         }
         tags: [
@@ -34,9 +33,9 @@
         name:Construction Sector
         identifier: structures_cap
         input: {
-            bricks: 1
-            fmetal: 1
-            housegoods: 1
+            bricks: 100
+            fmetal: 50
+            housegoods: 50
         }
         elasticity: {
             bricks: 1
@@ -44,17 +43,16 @@
             housegoods: 1
         }
         output: {
-            transport: 1
+            structures: 1
         }
         cost: {
             capital: {
                 structures: 1
                 industrial: 1
-                transport: 1
-                computersystems: 1
+                transport: 3
             }
             labor: {
-                worker: 1
+                worker: 1000
             }
         }
         tags: [
@@ -66,11 +64,11 @@
         name:Industrial Equipment Manufacturing
         identifier: structures_cap
         input: {
-            motorvehicles: 1
+            fmetal: 5
             egoods: 1
         }
         elasticity: {
-            motorvehicles: 1
+            fmetal: 5
             egoods: 1
         }
         output: {
@@ -78,13 +76,11 @@
         }
         cost: {
             capital: {
-                structures: 1
-                industrial: 1
-                transport: 1
-                computersystems: 1
+                structures: 2
+                industrial: 2
             }
             labor: {
-                worker: 1
+                worker: 1000
             }
         }
         tags: [
@@ -108,11 +104,10 @@
             capital: {
                 structures: 1
                 industrial: 1
-                transport: 1
                 computersystems: 1
             }
             labor: {
-                worker: 1
+                worker: 1000
             }
         }
         tags: [

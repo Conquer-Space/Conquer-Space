@@ -5,9 +5,9 @@
         name: Ferrous Metal
         identifier: fmetal
         volume: 1 m3
-        mass: 7874 kg
+        mass: 7500 kg
         # Initial price
-        price: 1
+        price: 1500
         tags: [
             raw
         ]
@@ -16,8 +16,8 @@
         name: Noble Metal
         identifier: nmetal
         volume: 1 m3
-        mass: 8960 kg
-        price: 1
+        mass: 7500 kg
+        price: 4500
         tags: [
             raw
         ]
@@ -26,8 +26,8 @@
         name: Rare Earth Metal
         identifier: remetal
         volume: 1 m3
-        mass: 2700 kg
-        price: 1.5
+        mass: 7500 kg
+        price: 100000
         tags: [
             raw
         ]
@@ -36,8 +36,8 @@
         name: Plastic
         identifier: plastic
         volume: 1 m3
-        mass: 6500 kg
-        price: 7
+        mass: 100 kg
+        price: 100
         tags: [
             raw
         ]
@@ -46,8 +46,8 @@
         name: Masonary
         identifier: bricks
         volume: 1 m3
-        mass: 6500 kg
-        price: 7
+        mass: 2500 kg
+        price: 200
         tags: [
             raw
         ]

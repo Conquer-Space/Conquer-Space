@@ -98,6 +98,20 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         double t = values["energy"];
         universe.emplace<cqspc::Energy>(entity, t);
     }
+    if (values["consumption"].defined()) {
+        const Hjson::Value& consumption = values["consumption"];
+        double a = consumption["a"].to_double();
+        double b = consumption["b"].to_double();
+
+        cqspc::ConsumerGood& cg = universe.get_or_emplace<cqspc::ConsumerGood>(entity);
+        cg.autonomous_consumption = a;
+        cg.marginal_propensity = b;
+        SPDLOG_INFO("Creating consuumer good {} with values: {} {}", identifier,
+                    cg.autonomous_consumption, cg.marginal_propensity);
+        universe.consumergoods.push_back(entity);
+
+    }
+
 
     for (int i = 0; i < values["tags"].size(); i++) {
         if (values["tags"][i] == "mineral") {
@@ -136,6 +150,17 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     if (values["cost"].defined()) {
         Hjson::Value cost_map = values["cost"];
         auto& recipe_cost = universe.emplace<cqspc::RecipeCost>(entity);
+
+        if (cost_map["capital"].defined()) {
+            Hjson::Value capital = cost_map["capital"];
+            recipe_component.capitalcost = HjsonToLedger(universe, capital);
+        }
+
+        if (cost_map["labor"].defined()) {
+            Hjson::Value labor = cost_map["labor"];
+            //recipe_component.capitalcost = HjsonToLedger(universe, labor);
+            recipe_component.workers = labor["worker"].to_double();
+        }
 
         if (cost_map["fixed"].defined()) {
             Hjson::Value fixed = cost_map["fixed"];

@@ -5,8 +5,8 @@
         name: Computer
         identifier: computer
         volume: 1 m3
-        mass: 1000 kg
-        price: 0.5
+        mass: 500 kg
+        price: 1000
         tags: [
             durable
         ]
@@ -14,9 +14,9 @@
     {
         name: Recreational Goods
         identifier: recgoods
-        volume: 1 m3
-        mass: 7900 kg
-        price: 4
+        volume: 2 m3
+        mass: 500 kg
+        price: 5000
         tags: [
             durable
         ]
@@ -25,8 +25,8 @@
         name: Household Goods
         identifier: housegoods
         volume: 1 m3
-        mass: 2400 kg
-        price: 2
+        mass: 750 kg
+        price: 750
         tags: [
             durable
         ]
@@ -34,9 +34,9 @@
     {
         name: Equipment
         identifier: egoods
-        volume: 1 m3
-        mass: 2500 kg
-        price: 0.75
+        volume: 100 m3
+        mass: 25000 kg
+        price: 50000
         tags: [
             durable
         ]
@@ -44,9 +44,9 @@
     {
         name: Motor Vehicles
         identifier: motorvehicles
-        volume: 1 m3
-        mass: 2500 kg
-        price: 0.75
+        volume: 50 m3
+        mass: 5000 kg
+        price: 100000
         tags: [
             durable
         ]

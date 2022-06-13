@@ -6,23 +6,21 @@
         name: Water purification
         identifier: potwater_man
         input: {
-            power: 1
+            power: 10000
         }
         elasticity: {
-            power: 1
+            power: 10000
         }
         output: {
-            potwater: 1
+            potwater: 100000
         }
         cost: {
             capital: {
-                structures: 1
-                industrial: 1
-                transport: 1
-                computersystems: 1
+                structures: 3
+                industrial: 2
             }
             labor: {
-                worker: 1
+                worker: 1000
             }
         }
         tags: [
@@ -34,23 +32,22 @@
         name: Farming
         identifier: crops_man
         input: {
-            potwater: 1
+            potwater: 5000
         }
         elasticity: {
             potwater: 1
         }
         output: {
-            crops: 1
+            crops: 1000
         }
         cost: {
             capital: {
                 structures: 1
                 industrial: 1
                 transport: 1
-                computersystems: 1
             }
             labor: {
-                worker: 1
+                worker: 1000
             }
         }
         tags: [
@@ -62,25 +59,23 @@
         name: Garment Fab
         identifier: garments_man
         input: {
-            potwater: 1
-            crops: 1
+            potwater: 1000
+            crops: 1000
         }
         elasticity: {
             potwater: 1
             crops: 1
         }
         output: {
-            garments: 1
+            garments: 1000
         }
         cost: {
             capital: {
-                structures: 1
-                industrial: 1
-                transport: 1
-                computersystems: 1
+                structures: 2
+                industrial: 2
             }
             labor: {
-                worker: 1
+                worker: 1000
             }
         }
         tags: [
@@ -92,25 +87,23 @@
         name: Animal Husbandary
         identifier: animals_man
         input: {
-            potwater: 1
-            crops: 1
+            potwater: 1000
+            crops: 1000
         }
         elasticity: {
             potwater: 1
             crops: 1
         }
         output: {
-            animals: 1
+            animals: 1000
         }
         cost: {
             capital: {
-                structures: 1
+                structures: 2
                 industrial: 1
-                transport: 1
-                computersystems: 1
             }
             labor: {
-                worker: 1
+                worker: 1000
             }
         }
         tags: [
@@ -122,9 +115,9 @@
         name: Restaraunts
         identifier: food_serv
         input: {
-            potwater: 1
-            crops: 1
-            animals: 1
+            potwater: 1000
+            crops: 1000
+            animals: 1000
         }
         elasticity: {
             potwater: 1
@@ -132,17 +125,15 @@
             animals: 1
         }
         output: {
-            food: 1
+            food: 3000
         }
         cost: {
             capital: {
-                structures: 1
+                structures: 3
                 industrial: 1
-                transport: 1
-                computersystems: 1
             }
             labor: {
-                worker: 1
+                worker: 1000
             }
         }
         tags: [

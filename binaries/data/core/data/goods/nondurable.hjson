@@ -5,8 +5,8 @@
         name: Fuel
         identifier: fuel
         volume: 1 m3
-        mass: 2500 kg
-        price: 0.75
+        mass: 1000 kg
+        price: 1000
         tags: [
             nondurable
         ]
@@ -15,8 +15,8 @@
         name: Potable Water
         identifier: potwater
         volume: 1 m3
-        mass: 2500 kg
-        price: 0.75
+        mass: 1000 kg
+        price: 100
         tags: [
             nondurable
         ]
@@ -25,8 +25,8 @@
         name: Crops
         identifier: crops
         volume: 1 m3
-        mass: 2500 kg
-        price: 0.75
+        mass: 750 kg
+        price: 250
         tags: [
             nondurable
         ]
@@ -35,8 +35,8 @@
         name: ASF
         identifier: animals
         volume: 1 m3
-        mass: 2500 kg
-        price: 0.75
+        mass: 1000 kg
+        price: 2000
         tags: [
             nondurable
         ]
@@ -44,9 +44,9 @@
     {
         name: Garments
         identifier: garments
-        volume: 1 m3
-        mass: 2500 kg
-        price: 0.75
+        volume: 0.5 m3
+        mass: 250 kg
+        price: 2500
         tags: [
             nondurable
 			consumable
@@ -61,8 +61,8 @@
         name: Food
         identifier: food
         volume: 1 m3
-        mass: 2500 kg
-        price: 0.75
+        mass: 1000 kg
+        price: 5000
         tags: [
             nondurable
         ]

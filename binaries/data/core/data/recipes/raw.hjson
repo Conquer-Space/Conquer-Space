@@ -12,17 +12,16 @@
 
         }
         output: {
-            egoods: 1
+            fmetal: 500
         }
         cost: {
             capital: {
                 structures: 1
-                industrial: 1
-                transport: 1
-                computersystems: 1
+                industrial: 3
+                transport: 2
             }
             labor: {
-                worker: 1
+                worker: 1000
             }
         }
         tags: [
@@ -40,17 +39,16 @@
 
         }
         output: {
-            nmetal: 1
+            nmetal: 100
         }
         cost: {
             capital: {
                 structures: 1
-                industrial: 1
-                transport: 1
-                computersystems: 1
+                industrial: 3
+                transport: 2
             }
             labor: {
-                worker: 1
+                worker: 1000
             }
         }
         tags: [
@@ -68,17 +66,16 @@
 
         }
         output: {
-            remetal: 1
+            remetal: 10
         }
         cost: {
             capital: {
                 structures: 1
-                industrial: 1
-                transport: 1
-                computersystems: 1
+                industrial: 3
+                transport: 2
             }
             labor: {
-                worker: 1
+                worker: 1000
             }
         }
         tags: [
@@ -96,17 +93,43 @@
 
         }
         output: {
-            plastic: 1
+            plastic: 10000
         }
         cost: {
             capital: {
-                structures: 1
-                industrial: 1
+                structures: 2
+                industrial: 2
                 transport: 1
-                computersystems: 1
             }
             labor: {
-                worker: 1
+                worker: 1000
+            }
+        }
+        tags: [
+            ratio
+			raw
+        ]
+    }
+    {
+        name: Fuel Refining
+        identifier: plastic_mine
+        input: {
+
+        }
+        elasticity: {
+
+        }
+        output: {
+            fuel: 10000
+        }
+        cost: {
+            capital: {
+                structures: 2
+                industrial: 2
+                transport: 1
+            }
+            labor: {
+                worker: 1000
             }
         }
         tags: [
@@ -124,17 +147,16 @@
 
         }
         output: {
-            bricks: 1
+            bricks: 200
         }
         cost: {
             capital: {
-                structures: 1
-                industrial: 1
-                transport: 1
-                computersystems: 1
+                structures: 2
+                industrial: 2
+                transport: 2
             }
             labor: {
-                worker: 1
+                worker: 1000
             }
         }
         tags: [

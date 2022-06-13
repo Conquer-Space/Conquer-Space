@@ -2,11 +2,11 @@
 #
 [
     {
-        name: Structures
+        name: Large Structures
         identifier: structures
-        volume: 1 m3
-        mass: 6500 kg
-        price: 7
+        volume: 10000 m3
+        mass: 500000 kg
+        price: 500000
         tags: [
             captialgood
         ]
@@ -14,9 +14,9 @@
     {
         name: Industrial Equipment
         identifier: industrial
-        volume: 1 m3
-        mass: 6500 kg
-        price: 7
+        volume: 200 m3
+        mass: 50000 kg
+        price: 100000
         tags: [
             captialgood
         ]
@@ -24,15 +24,15 @@
     {
         name: Transport
         identifier: transport
-        volume: 1 m3
-        mass: 6500 kg
-        price: 7
+        volume: 100 m3
+        mass: 10000 kg
+        price: 200000
         tags: [
             captialgood
         ]
     }
     {
-        name: IT
+        name: Mainframes
         identifier: computersystems
         volume: 1 m3
         mass: 6500 kg
