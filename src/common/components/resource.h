@@ -53,8 +53,8 @@ struct Good {};
 
 //See SysPopulationConsumption for an explanation of these values
 struct ConsumerGood {
-    float autonomous_consumption;
-    float marginal_propensity;
+    double autonomous_consumption;
+    double marginal_propensity;
 };
 
 struct Mineral {};
@@ -73,20 +73,23 @@ class ResourceLedger : private LedgerMap {
     /// <returns></returns>
     bool EnoughToTransfer(const ResourceLedger& amount);
 
-    ResourceLedger operator-(const ResourceLedger&);
-    ResourceLedger operator+(const ResourceLedger&);
-    ResourceLedger operator*(const ResourceLedger&);
-    ResourceLedger operator/(const ResourceLedger&);
-    
     void operator-=(const ResourceLedger&);
     void operator+=(const ResourceLedger&);
     void operator*=(const ResourceLedger&);
     void operator/=(const ResourceLedger&);
-
+    void operator-=(const double value);
+    void operator+=(const double value);
     void operator*=(const double value);
     void operator/=(const double value);
-    ResourceLedger operator*(const double value);
-    ResourceLedger operator/(const double value);
+
+    ResourceLedger operator-(const ResourceLedger&) const;
+    ResourceLedger operator+(const ResourceLedger&) const;
+    ResourceLedger operator*(const ResourceLedger&) const;
+    ResourceLedger operator/(const ResourceLedger&) const;
+    ResourceLedger operator-(const double value) const;
+    ResourceLedger operator+(const double value) const;
+    ResourceLedger operator*(const double value) const;
+    ResourceLedger operator/(const double value) const;
 
     /// <summary>
     /// All resources in this ledger are smaller than than the other ledger
@@ -144,6 +147,28 @@ class ResourceLedger : private LedgerMap {
     /// </summary>
     ResourceLedger LimitedRemoveResources(const ResourceLedger&);
 
+    /// <summary>
+    /// Returns a copy of the vector with the values set to indicated value
+    /// </summary>
+    ResourceLedger UnitLeger(const double);
+
+    /// <summary>
+    /// Returns a copy of the vector with the values clamped between the min and max indicated
+    /// </summary>
+    ResourceLedger Clamp(const double, const double);
+
+    /// <summary>
+    /// Returns a copy of the vector divided by the indicated vector, with division by zero resulting in infiniy
+    /// </summary>
+    ResourceLedger SafeDivision(const ResourceLedger&);
+
+    /// <summary>
+    /// Returns a copy of the vector divided by the indicated vector, with
+    /// division by zero resulting in infiniy
+    /// </summary>
+    double Average();
+
+
     bool HasGood(entt::entity good) {
         return (*this).find(good) != (*this).end();
     }
@@ -174,13 +199,13 @@ class ResourceLedger : private LedgerMap {
     using LedgerMap::empty;
     using LedgerMap::emplace;
     using LedgerMap::value_comp;
+    using LedgerMap::size;
     using LedgerMap::mapped_type;
 
-#ifdef TRACY_ENABLE
-    // Debug value to determine how many stockpile operations are done in the tick
-    static int stockpile_additions;
-#endif  // TRACY_ENABLE
+
 };
+ResourceLedger ResourceLedgerZip(const ResourceLedger& key,const ResourceLedger& value);
+
 
 struct Recipe {
     ResourceLedger input;
@@ -189,6 +214,9 @@ struct Recipe {
     ProductionType type;
 
     float interval;
+    double workers;
+
+    ResourceLedger capitalcost;
 };
 
 struct RecipeCost {
@@ -196,6 +224,7 @@ struct RecipeCost {
     ResourceLedger scaling;
 };
 
+//TODO(AGM): Remove ProductionTraits and FactoryProductivity
 struct ProductionTraits {
     double max_production;
     double current_production;
@@ -214,6 +243,33 @@ struct FactoryProductivity {
     // Idk if i want a map, but that may not be a bad idea
 };
 
+// Factory size
+struct FactorySize {
+    double size;
+};
+
+struct CostBreakdown {
+    double profit;
+    double materialcosts;
+    double maintaince;
+    double wages;
+    double net;
+};
+
+
+//Multplier on prouduction
+struct ProductionRatio {
+    ResourceLedger input;
+    ResourceLedger output;
+};
+
+//Essentially resource consumption + production
+struct ResourceIO {
+    ResourceLedger input;
+    ResourceLedger output;
+};
+
+// TODO(AGM): Remove
 struct FactoryTimer {
     float interval;
     float time_left;
