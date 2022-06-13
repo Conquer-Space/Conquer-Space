@@ -17,14 +17,12 @@
 #include "common/components/coordinates.h"
 
 #include "common/components/units.h"
-#include <iostream>
-#include <iomanip>
 
 namespace cqsp::common::components::types {
 glm::dvec3 ConvertOrbParams(const double LAN, const double i, const double w,
-                           const glm::dvec3& vec) {
-    return glm::dquat{glm::dvec3(0, 0, LAN)} * glm::dquat{glm::dvec3(i, 0, 0)} *
-           glm::dquat{glm::dvec3(0, 0, w)} * vec;
+                            const glm::dvec3& vec) {
+    return glm::dquat {glm::dvec3(0, 0, LAN)} * glm::dquat {glm::dvec3(i, 0, 0)} *
+           glm::dquat {glm::dvec3(0, 0, w)} * vec;
 }
 
 double GetOrbitingRadius(const double& e, const double& a, const double& v) {
@@ -163,7 +161,6 @@ glm::vec3 CalculateVelocity(const double& E, const double& r,
 glm::vec3 toVec3(const SurfaceCoordinate& coord, const float& radius) {
     return glm::vec3(cos(coord.r_latitude()) * sin(coord.r_longitude()),
                      sin(coord.r_latitude()),
-                     cos(coord.r_latitude()) * cos(coord.r_longitude())) *
-           radius;
+                     cos(coord.r_latitude()) * cos(coord.r_longitude())) * radius;
 }
-}  // namespace qsp::common::components::types
+}  // namespace cqsp::common::components::types

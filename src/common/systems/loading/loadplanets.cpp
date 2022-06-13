@@ -66,7 +66,6 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         }
     }
 
-    // For loading,     
     body_comp.GM = values["gm"].to_double();
 
     bool rotation_correct;

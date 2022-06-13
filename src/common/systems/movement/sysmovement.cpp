@@ -21,7 +21,6 @@
 #include "common/components/ships.h"
 #include "common/components/coordinates.h"
 #include "common/components/units.h"
-#include <spdlog/spdlog.h>
 
 namespace cqsp::common::systems {
 void SysOrbit::DoSystem() {

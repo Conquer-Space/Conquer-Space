@@ -67,7 +67,7 @@ inline double CalculateSOI(const double& mass, const double& reference_mass, con
 /// <summary>
 /// Calculates mass from gravitational constant
 /// </summary>
-/// Masses of bodies are described in gravitational constant because 
+/// Masses of bodies are described in gravitational constant because it's more accurate to describe like that
 /// <param name="GM"></param>
 /// <returns></returns>
 inline double CalculateMass(const double& GM) { return GM/types::G_km; }

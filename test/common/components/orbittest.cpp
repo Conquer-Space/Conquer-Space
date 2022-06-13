@@ -195,7 +195,9 @@ TEST(Common_OrbitTest, NewOrbitConversionTest3) {
     EXPECT_NEAR(new_orbit.M0, orb.M0, 0.001);
     EXPECT_NEAR(new_orbit.semi_major_axis, orb.semi_major_axis,
                 orb.semi_major_axis * 0.01);  // 1% error cause doubles are bad
-    EXPECT_NEAR(std::fmod(new_orbit.LAN + new_orbit.w, 2 * cqspt::PI), 0, 0.001); // It's fine if it's 2 pi for this test, because it's a full circle
+
+    // It's fine if it's 2 pi for this test, because it's a full circle
+    EXPECT_NEAR(std::fmod(new_orbit.LAN + new_orbit.w, 2 * cqspt::PI), 0, 0.001);
     EXPECT_NEAR(new_orbit.inclination, orb.inclination, 0.001);
     EXPECT_NEAR(new_orbit.eccentricity, orb.eccentricity, 0.001);
     for (int i = 0; i < 360; i++) {

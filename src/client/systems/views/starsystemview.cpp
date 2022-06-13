@@ -934,7 +934,7 @@ float SysStarSystemRenderer::GetWindowRatio() {
 }
 
 void SysStarSystemRenderer::GenerateOrbitLines() {
-    SPDLOG_INFO("Creating planet orbits");
+    SPDLOG_TRACE("Creating planet orbits");
     auto orbits = m_app.GetUniverse().view<common::components::types::Orbit>();
     /* auto system =
         m_app.GetUniverse().get<common::components::bodies::OrbitalSystem>(
