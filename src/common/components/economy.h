@@ -34,9 +34,11 @@ namespace components {
 struct MarketInformation {
     ResourceLedger demand;
     ResourceLedger sd_ratio;
+    ResourceLedger ds_ratio;
     ResourceLedger supply;
     ResourceLedger volume;
     ResourceLedger price;
+    
 };
 
 struct MarketElementInformation {
@@ -44,7 +46,9 @@ struct MarketElementInformation {
     double supply;
     double demand;
     double price;
+    double price_ratio;
     double sd_ratio;
+    
 };
 
 struct Market : MarketInformation {

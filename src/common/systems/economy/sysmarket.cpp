@@ -22,48 +22,62 @@
 
 void cqsp::common::systems::SysMarket::DoSystem() {
     // Get all the new and improved (tm) markets
-    auto view = GetUniverse().view<components::Market>();
+    auto marketview = GetUniverse().view<components::Market>();
+    auto goodsview = GetUniverse().view<components::Price>();
+    Universe& universe = GetUniverse();
     // Calculate all the things
-    for (entt::entity entity : view) {
+    for (entt::entity entity : marketview) {
         // Get the resources and process the price, then do things, I guess
         // Get demand
-        auto& market = GetUniverse().get<components::Market>(entity);
+        components::Market& market = universe.get<components::Market>(entity);
+        components::ResourceStockpile& stockpile =
+            universe.get_or_emplace<components::ResourceStockpile>(entity);
         // Calculate all the goods in the map
         // Our economy will be demand driven, which means we only calculate the resources in the demand part of themap
         // Get the resources that are traded, I guess
-        for (auto& info : market) {
-            auto& market_element = info.second;
-            if (market_element.supply == 0 && market_element.demand == 0) {
-                continue;
+        market.sd_ratio = market.supply.SafeDivision(market.demand);
+        market.ds_ratio = market.demand.SafeDivision(market.supply);
+        //market.ds_ratio = market.ds_ratio.Clamp(0, 2);
+        if (market.history.size() == 0) 
+        {
+            for (entt::entity goodenity : goodsview) {
+                market.price[goodenity] =
+                    universe.get<components::Price>(goodenity);
             }
-            double sd_ratio = market_element.supply / market_element.demand;
+        }
 
-            if (market_element.demand <= 0) {
-                // Then there is infinite supply, and the price will go down.
-                sd_ratio = std::numeric_limits<double>::infinity();
-            }
+        for (entt::entity goodenity : goodsview) 
+        {
+            const double sd_ratio = market.sd_ratio[goodenity];
+            double price = market.price[goodenity];
 
-            double& price = market_element.price;
             if (sd_ratio < 1) {
                 // Too much demand, so we will increase the price
-                price += (0.001 + price * 0.1f);
-            } else if (sd_ratio > 1) {
+                price += (0.02 + price * 0.01f);
+                //price = 0.5;
+            } else if (sd_ratio > 1 ||
+                       sd_ratio == std::numeric_limits<double>::infinity()) {
                 // Too much supply, so we will decrease the price
-                price += (-0.001 + price * -0.1f);
+                price += (-0.01 + price * -0.01f);
                 // Limit price to a minimum of 0.001
-                if (price < 0.001) {
-                    price = 0.001;
+                if (price < 0.00001) {
+                    price = 0.00001;
+                    
                 }
+                //price = 2;
             } else {
                 // Keep price approximately the same
             }
-            // Set last market information for documentation purposes
-            auto& el = market.last_market_information[info.first];
-            el = market_element;
-            market_element.supply = 0;
-            market_element.demand = 0;
-            market_element.sd_ratio = sd_ratio;
+            market.price[goodenity] = price;
         }
+        components::MarketInformation current = market;
+        market.history.push_back(current);
+
+        stockpile += market.supply;
+        market.supply.clear();
+        stockpile -= market.demand;
+        market.demand.clear();
+
         // Compile supply
         //std::swap(market.last_market_information, market.market_information);
     }
