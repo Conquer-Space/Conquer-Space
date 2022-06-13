@@ -6,11 +6,11 @@ in vec3 Normal;
 
 in vec4 frag_pos;
 
+out vec4 FragColor;
+
 uniform float C;
 uniform float far;
 uniform float offset;
-
-out vec4 FragColor;
 
 // lights
 uniform vec3 lightPosition;
