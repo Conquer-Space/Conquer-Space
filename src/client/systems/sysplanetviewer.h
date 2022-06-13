@@ -60,7 +60,7 @@ class SysPlanetInformation : public SysUserInterface {
     void SpacePortTab();
     void InfrastructureTab();
     void ScienceTab();
-    void MarketInformationTooltipContent();
+    void MarketInformationTooltipContent(const entt::entity market);
     void ConstructionConfirmationPanel();
     void RecipeConstructionCostPanel(entt::entity selected_recipe, double prod,
                                      const common::components::ResourceLedger& cost);
