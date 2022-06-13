@@ -23,13 +23,19 @@
 namespace cqsp::common::components::types {
 glm::dvec3 ConvertOrbParams(const double LAN, const double i, const double w,
                            const glm::dvec3& vec) {
-    return glm::dquat{glm::dvec3(0, 0, -LAN)} * glm::dquat{glm::dvec3(-i, 0, 0)} *
-           glm::dquat{glm::dvec3(0, 0, -w)} * vec;
+    return glm::dquat{glm::dvec3(0, 0, LAN)} * glm::dquat{glm::dvec3(i, 0, 0)} *
+           glm::dquat{glm::dvec3(0, 0, w)} * vec;
 }
 
 double GetOrbitingRadius(const double& e, const double& a, const double& v) {
     // Calculate the math
     return (a * (1 - e * e)) / (1 + e * cos(v));
+}
+
+float angle(glm::vec3 a, glm::vec3 b) {
+    glm::vec3 da = glm::normalize(a);
+    glm::vec3 db = glm::normalize(b);
+    return glm::acos(glm::dot(da, db));
 }
 
 // https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
@@ -48,22 +54,25 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity,
     // True anomaly
     double m = glm::dot(ecc_v, position) / (e * glm::length(position));
     double v = acos(std::clamp(m, -1., 1.));
-    if (glm::dot(position, velocity) < 0) v = PI * 2 - v;
+    if (glm::dot(position, velocity) < 0) v = TWOPI - v;
     if (m >= 1) v = 0;
 
     // Inclination
-    const double i = std::acos(h.z / glm::length(h));
+    const double i = angle(h, glm::vec3(0, 0, 1)); // std::acos(h.z / glm::length(h));
+
+
 
     // Eccentric anomaly
     const double E = 2 * atan(tan(v / 2) / sqrt((1 + e) / (1 - e)));
     double M0 = E - e * sin(E);
     double T = n.x / glm::length(n);
-    double LAN = acos(T);
-    if (n.y < 0) LAN = PI * 2 - LAN;
+
+    double LAN = acos(glm::clamp(T, -1., 1.));
+    if (n.y < 0) LAN = TWOPI - LAN;
     if (glm::length(n) == 0) LAN = 0;
 
     double w = acos(glm::dot(n, ecc_v) / (e * glm::length(n)));
-    if (ecc_v.z < 0) w = PI * 2 - w;
+    if (ecc_v.z < 0) w = TWOPI - w;
     if (glm::length(n) == 0) w = 0;
 
     double velocity_mag = glm::length(velocity);
