@@ -90,8 +90,8 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     if (values["habitation"].type() == Hjson::Type::Bool) {
         SPDLOG_INFO("{} is Habitable", identifier);
         auto& habitats = universe.emplace<cqspc::Habitation>(entity);
-        universe.emplace<cqspc::MarketCenter>(entity).market = entity;
-        universe.emplace<cqspc::Market>(entity);
+        //universe.emplace<cqspc::MarketCenter>(entity).market = entity;
+        //universe.emplace<cqspc::Market>(entity);
         if (values["settlements"].type() == Hjson::Type::Int64) {
             int cities = values["settlements"].to_int64();
             for (int i = 0; i < cities; i++) 
@@ -100,7 +100,6 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
                 entt::entity newpopulation = universe.create();
                 universe.emplace<cqspc::PopulationSegment>(newpopulation)
                     .population = values["population"].to_int64() * 1000000;
-
                 entt::entity newcity = universe.create();
                 entt::entity commercial = universe.create();
 
