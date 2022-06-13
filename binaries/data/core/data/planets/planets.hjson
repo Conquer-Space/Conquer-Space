@@ -112,11 +112,11 @@
         gm: 4.90486959e3
         orbit: {
             semi_major_axis: 68100.4377707066 km
-            eccentricity: 0.05328149353682574
+            eccentricity: 0.6
             inclination: 5.145 deg
             arg_periapsis: 199.7640930160823 deg
             LAN: 2.296616161126016 deg
-            M0: 42.7012350930954 deg
+            M0: 132.7012350930954 deg
         }
         rotation: 27.321661 d
         axial: 1.5424 deg

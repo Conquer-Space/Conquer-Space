@@ -65,7 +65,7 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
                 std::erase(pt.children, body);
                 // Get velocity and change posiiton
                 // Convert orbit
-                orb = cqspt::Vec3ToOrbit(pos.position + p_pos.position - pp_pos.position,
+                orb = cqspt::Vec3ToOrbit(pos.position + p_pos.position,
                                          pos.velocity + p_pos.velocity,
                                          parent_parent_orb.GM, GetUniverse().date.ToSecond());
                 orb.reference_body = p_orb.reference_body;
