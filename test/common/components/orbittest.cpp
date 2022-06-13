@@ -195,7 +195,7 @@ TEST(Common_OrbitTest, NewOrbitConversionTest3) {
     EXPECT_NEAR(new_orbit.M0, orb.M0, 0.001);
     EXPECT_NEAR(new_orbit.semi_major_axis, orb.semi_major_axis,
                 orb.semi_major_axis * 0.01);  // 1% error cause doubles are bad
-    EXPECT_NEAR(new_orbit.LAN + new_orbit.w, 2 * cqspt::PI, 0.001); // It's fine if it's 2 pi for this test, because it's a full circle
+    EXPECT_NEAR(std::fmod(new_orbit.LAN + new_orbit.w, 2 * cqspt::PI), 0, 0.001); // It's fine if it's 2 pi for this test, because it's a full circle
     EXPECT_NEAR(new_orbit.inclination, orb.inclination, 0.001);
     EXPECT_NEAR(new_orbit.eccentricity, orb.eccentricity, 0.001);
     for (int i = 0; i < 360; i++) {
@@ -226,12 +226,7 @@ TEST(Common_OrbitTest, NewOrbitConversionTest4) {
     // EXPECT_EQ(orb.v, 0);
     // EXPECT_EQ(orb.E, 0);
     auto position = cqspt::toVec3(orb);
-    std::cout << position.x << " " << position.y << " " << position.z
-              << std::endl;
     auto velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
-    std::cout << velocity.x << " " << velocity.y << " " << velocity.z
-              << std::endl;
-    std::cout << glm::dot(position, velocity) << std::endl;
 
     EXPECT_EQ(acos(1), 0);
     EXPECT_NEAR(
@@ -268,7 +263,7 @@ TEST(Common_OrbitTest, NewOrbitConversionTest5) {
     cqspt::Orbit orb;
     orb.semi_major_axis = 57.91e7;
     orb.eccentricity = 0.9;
-    orb.inclination = 5;
+    orb.inclination = 3.14;
     orb.LAN = 0.29;
     orb.w = 0.68;
     double M0 = 2.8;
@@ -281,12 +276,7 @@ TEST(Common_OrbitTest, NewOrbitConversionTest5) {
     // EXPECT_EQ(orb.v, 0);
     // EXPECT_EQ(orb.E, 0);
     auto position = cqspt::toVec3(orb);
-    std::cout << position.x << " " << position.y << " " << position.z
-              << std::endl;
     auto velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
-    std::cout << velocity.x << " " << velocity.y << " " << velocity.z
-              << std::endl;
-    std::cout << glm::dot(position, velocity) << std::endl;
 
     EXPECT_EQ(acos(1), 0);
     EXPECT_NEAR(

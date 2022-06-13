@@ -32,12 +32,6 @@ double GetOrbitingRadius(const double& e, const double& a, const double& v) {
     return (a * (1 - e * e)) / (1 + e * cos(v));
 }
 
-float angle(glm::vec3 a, glm::vec3 b) {
-    glm::vec3 da = glm::normalize(a);
-    glm::vec3 db = glm::normalize(b);
-    return glm::acos(glm::dot(da, db));
-}
-
 // https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
 Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity,
                  const double& Mu, const double& time) {
@@ -58,9 +52,7 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity,
     if (m >= 1) v = 0;
 
     // Inclination
-    const double i = angle(h, glm::vec3(0, 0, 1)); // std::acos(h.z / glm::length(h));
-
-
+    const double i = std::acos(h.z / glm::length(h));
 
     // Eccentric anomaly
     const double E = 2 * atan(tan(v / 2) / sqrt((1 + e) / (1 - e)));
