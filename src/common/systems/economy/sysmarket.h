@@ -23,5 +23,6 @@ class SysMarket : public ISimulationSystem {
  public:
     explicit SysMarket(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
+    int Interval() override { return 24; }
 };
 }  // namespace cqsp::common::systems

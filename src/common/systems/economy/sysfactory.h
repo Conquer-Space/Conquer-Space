@@ -22,10 +22,10 @@ namespace cqsp::common::systems {
 // System for mines to reduce production so that production will stay stable if the price
 // dips too low
 // Main goal is to maintain stable pricing
-class SysMine : public ISimulationSystem {
+class SysProduction : public ISimulationSystem {
  public:
-    explicit SysMine(Game& game) : ISimulationSystem(game) {}
+    explicit SysProduction(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
-    int Interval() override { return 1; }
+    int Interval() override { return 24; }
 };
 }  // namespace cqsp::common::systems
