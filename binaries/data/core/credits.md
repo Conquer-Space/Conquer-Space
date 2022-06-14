@@ -6,8 +6,6 @@ AGM-114
 coderguy57
 EhWhoAmI
 quartuxz
-
-##Technically contributed
 Somebody1212
 
 
