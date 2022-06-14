@@ -20,19 +20,19 @@
 #include "common/util/utilnumberdisplay.h"
 
 TEST(NumberDisplayTest, LongToHumanStringTest) {
-    EXPECT_STREQ("1 thousand", cqsp::util::LongToHumanString(1000).c_str());
-    EXPECT_STREQ("1 million", cqsp::util::LongToHumanString(1000000).c_str());
-    EXPECT_STREQ("1 billion", cqsp::util::LongToHumanString(1000000000).c_str());
-    EXPECT_STREQ("1 trillion", cqsp::util::LongToHumanString(1000000000000).c_str());
-    EXPECT_STREQ("1 quadrillion",
+    EXPECT_STREQ("1 k", cqsp::util::LongToHumanString(1000).c_str());
+    EXPECT_STREQ("1 M", cqsp::util::LongToHumanString(1000000).c_str());
+    EXPECT_STREQ("1 B", cqsp::util::LongToHumanString(1000000000).c_str());
+    EXPECT_STREQ("1 T", cqsp::util::LongToHumanString(1000000000000).c_str());
+    EXPECT_STREQ("1 Qa",
                                 cqsp::util::LongToHumanString(1000000000000000).c_str());
-    EXPECT_STREQ("1 quintillion",
+    EXPECT_STREQ("1 Qn",
                                 cqsp::util::LongToHumanString(1000000000000000000).c_str());
-    EXPECT_STREQ("2.6 million", cqsp::util::LongToHumanString(2600000).c_str());
-    EXPECT_STREQ("2.6 billion", cqsp::util::LongToHumanString(2600000000).c_str());
+    EXPECT_STREQ("2.6 M", cqsp::util::LongToHumanString(2600000).c_str());
+    EXPECT_STREQ("2.6 B", cqsp::util::LongToHumanString(2600000000).c_str());
     EXPECT_STREQ("420", cqsp::util::LongToHumanString(420).c_str());
-    EXPECT_STREQ("9.22 quintillion",
+    EXPECT_STREQ("9.22 Qn",
                                 cqsp::util::LongToHumanString(9223372036854775806).c_str());
-    EXPECT_STREQ("-3.15 million", cqsp::util::LongToHumanString(-3150000).c_str());
+    EXPECT_STREQ("-3.15 M", cqsp::util::LongToHumanString(-3150000).c_str());
     EXPECT_STREQ("3.15 million", cqsp::util::LongToHumanString(3145000).c_str());
 }
