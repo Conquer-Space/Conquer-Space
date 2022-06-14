@@ -28,8 +28,9 @@ inline std::string LongToHumanString(int64_t l) {
         return fmt::format("{}", l);
     }
     static const std::string numbers[] = {
-        "thousand",    "million",    "billion",    "trillion", "quadrillion",
-        "quintillion", "sextillion", "septillion", "octillion"
+        "k",    "M",    "B",    "T", "Qa",
+        "Qn", "Sx", "Sp", "O", "N", "De",
+        "Ud", "Dd", "Td", "Qd", "Qi", "Sd"
     };
     int exponent = static_cast<int>(log10(abs(l)) / 3);
 
