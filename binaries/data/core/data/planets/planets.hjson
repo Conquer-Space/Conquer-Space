@@ -102,6 +102,8 @@
         texture: {
             terrain: moonmap
         }
+        axial: 1.5424 deg
+        rotation: 27.321661 d
         tags: []
     }
     {

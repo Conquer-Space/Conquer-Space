@@ -73,6 +73,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         body_comp.rotation = ReadUnit(values["rotation"].to_string(),
                                       UnitType::Time, &rotation_correct);
         if (!rotation_correct) {
+            SPDLOG_WARN("Rotation for {} incorrect", identifier);
             body_comp.rotation = 0;
         }
     } else {
@@ -81,9 +82,10 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
      bool axial_correct;
     if (values["axial"].type() != Hjson::Type::Null) {
-        body_comp.rotation = ReadUnit(values["axial"].to_string(),
-                                      UnitType::Time, &axial_correct);
+        body_comp.axial = ReadUnit(values["axial"].to_string(),
+                                      UnitType::Angle, &axial_correct);
         if (!axial_correct) {
+            SPDLOG_WARN("Axial for {} incorrect", identifier);
             body_comp.axial = 0;
         }
     } else {
