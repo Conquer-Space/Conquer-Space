@@ -28,9 +28,9 @@ inline std::string LongToHumanString(int64_t l) {
         return fmt::format("{}", l);
     }
     static const std::string numbers[] = {
-        "k",    "M",    "kM",    "B", "kB",
-        "T", "kT", "Qd", "kQd", "Qn", "kQn",
-        "Sx", "kSx", "Sp", "kSp", "O", "kO"
+        "k",    "M",    "B",    "T", "Qa",
+        "Qn", "Sx", "Sp", "O", "N", "De",
+        "Ud", "Dd", "Td", "Qd", "Qi", "Sd"
     };
     int exponent = static_cast<int>(log10(abs(l)) / 3);
 
