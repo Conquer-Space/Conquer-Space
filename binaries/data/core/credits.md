@@ -7,6 +7,9 @@ coderguy57
 EhWhoAmI
 quartuxz
 
+##Technically contributed
+Somebody1212
+
 
 ## Music
 Starlight by Nirekin Inc.
