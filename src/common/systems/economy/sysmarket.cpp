@@ -38,16 +38,13 @@ void cqsp::common::systems::SysMarket::DoSystem() {
         market.sd_ratio = market.supply.SafeDivision(market.demand);
         market.ds_ratio = market.demand.SafeDivision(market.supply);
         //market.ds_ratio = market.ds_ratio.Clamp(0, 2);
-        if (market.history.size() == 0) 
-        {
+        if (market.history.size() == 0) {
             for (entt::entity goodenity : goodsview) {
-                market.price[goodenity] =
-                    universe.get<components::Price>(goodenity);
+                market.price[goodenity] = universe.get<components::Price>(goodenity);
             }
         }
 
-        for (entt::entity goodenity : goodsview) 
-        {
+        for (entt::entity goodenity : goodsview) {
             const double sd_ratio = market.sd_ratio[goodenity];
             double price = market.price[goodenity];
 
@@ -62,7 +59,6 @@ void cqsp::common::systems::SysMarket::DoSystem() {
                 // Limit price to a minimum of 0.001
                 if (price < 0.00001) {
                     price = 0.00001;
-                    
                 }
                 //price = 2;
             } else {

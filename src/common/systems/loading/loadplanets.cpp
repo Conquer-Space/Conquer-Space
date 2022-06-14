@@ -14,15 +14,17 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "common/systems/loading/loadplanets.h"
 
 #include <spdlog/spdlog.h>
+#include <stdlib.h>
 
+#include <random>
 #include <string>
 
-
+#include "common/systems/loading/loadplanets.h"
 #include "common/systems/loading/loadutil.h"
-#include "common/components/coordinates.h"
+#include "common/systems/actions/factoryconstructaction.h"
+//#include "common/components/coordinates.h"
 #include "common/components/bodies.h"
 #include "common/components/name.h"
 #include "common/components/surface.h"
@@ -31,7 +33,7 @@
 #include "common/components/population.h"
 #include "common/components/coordinates.h"
 #include "common/components/economy.h"
-#include "common/systems/actions/factoryconstructaction.h"
+#include "common/util/random/random.h"
 
 namespace cqspt = cqsp::common::components::types;
 namespace cqspc = cqsp::common::components;
@@ -108,7 +110,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         SPDLOG_WARN("Issue with radius of {}: {}", identifier, values["radius"].to_string());
         return false;
     }
-
+    util::IRandom* random = universe.random.get();
     if (values["habitation"].type() == Hjson::Type::Bool) {
         SPDLOG_INFO("{} is Habitable", identifier);
         auto& habitats = universe.emplace<cqspc::Habitation>(entity);
@@ -116,9 +118,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         //universe.emplace<cqspc::Market>(entity);
         if (values["settlements"].type() == Hjson::Type::Int64) {
             int cities = values["settlements"].to_int64();
-            for (int i = 0; i < cities; i++) 
-            {
-                
+            for (int i = 0; i < cities; i++) {
                 entt::entity newpopulation = universe.create();
                 universe.emplace<cqspc::PopulationSegment>(newpopulation)
                     .population = values["population"].to_int64() * 1000000;
@@ -132,26 +132,23 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
                     commercial);
                 universe.emplace<cqspc::Settlement>(newcity)
                     .population.push_back(newpopulation);
-
                 universe.emplace<cqspt::SurfaceCoordinate>(
-                    newcity, (rand() % 180) - 90, (rand() % 360) - 180);
+                    newcity, random->GetRandomInt(-90, 90), random->GetRandomInt(-180, 180));
                 universe.emplace<cqspc::Name>(newcity).name =
                     "City " + std::to_string(i);
                 cqspc::ResourceLedger goods =
                     universe.emplace<cqspc::ResourceLedger>(newcity);
-                 
-
+                /*
                 for (entt::entity entity :
                                  universe.view<cqspc::Matter>()) {
-                    goods[entity];
-
+                    goods[entity] = 0;
                 }
+                */
                 SPDLOG_INFO("Making city");
                 universe.emplace<cqspc::Employee>(newpopulation);
                 for (entt::entity entity : universe.view<cqspc::Recipe>()) {
                     entt::entity factory =
                         cqspa::CreateFactory(universe, newcity, entity, 1);
-
                 }
 
 

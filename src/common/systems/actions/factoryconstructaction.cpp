@@ -14,14 +14,16 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "common/systems/actions/factoryconstructaction.h"
-
 #include <spdlog/spdlog.h>
+
 #include <map>
+#include <limits>
+
 #include "common/components/resource.h"
 #include "common/components/area.h"
 #include "common/components/economy.h"
 #include "common/systems/economy/markethelpers.h"
+#include "common/systems/actions/factoryconstructaction.h"
 
 using cqsp::common::Universe;
 entt::entity cqsp::common::systems::actions::OrderConstructionFactory(cqsp::common::Universe& universe,
@@ -57,12 +59,11 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
     prod.current_production = productivity;
     prod.max_production = static_cast<float>(productivity);
 
-    ;
     //cqspc::ResourceLedger& factorystock =
     //universe.emplace<cqspc::ResourceStockpile>(factory);
     //universe.emplace<cqspc::ResourceConsumption>(factory);
     //universe.emplace<cqspc::ResourceProduction>(factory);
-    for (std::pair<const entt::entity, double> entity: universe.get<cqspc::Recipe>(recipe).input) {
+    for (std::pair<const entt::entity, double> entity : universe.get<cqspc::Recipe>(recipe).input) {
         //factorystock[entity.first] = 0;
     }
     for (std::pair<const entt::entity, double> entity :
@@ -87,7 +88,6 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
     employer.population_fufilled = 1000000;
     employer.population_needed = 1000000;
     employer.segment = entt::null;
-
 
     return factory;
 }

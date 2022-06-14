@@ -17,7 +17,6 @@
 #pragma once
 #include "common/components/resource.h"
 
-
 namespace cqsp {
 namespace common {
 namespace components {

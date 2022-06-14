@@ -30,16 +30,14 @@ entt::entity cqsp::common::actions::CreateCity(Universe& universe,  entt::entity
 
     // Add to planet list
 
-    if (universe.all_of<cqspc::Habitation>(planet))
+    if (universe.all_of<cqspc::Habitation>(planet)) {
         universe.get<cqspc::Habitation>(planet).settlements.push_back(
             settlement);
-    else
-    {
+    } else {
         universe.emplace<cqspc::Habitation>(planet);
         universe.get<cqspc::Habitation>(planet).settlements.push_back(
             settlement);
     }
-        
-    
+
     return settlement;
 }

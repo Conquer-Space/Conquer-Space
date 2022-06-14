@@ -24,6 +24,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <limits>
 
 #include "client/systems/views/starsystemview.h"
 #include "client/systems/gui/sysstockpileui.h"
@@ -106,7 +107,7 @@ void SysPlanetInformation::Init() {}
 void SysPlanetInformation::DoUI(int delta_time) {
     DisplayPlanet();
 
-    ConstructionConfirmationPanel();
+    //ConstructionConfirmationPanel();
 
     if (renaming_city) {
         ImGui::SetNextWindowSize(ImVec2(300, -1));
@@ -198,10 +199,12 @@ void SysPlanetInformation::CityInformationPanel() {
                 ResourcesTab();
                 ImGui::EndTabItem();
             }
+            /*
             if (ImGui::BeginTabItem("Construction")) {
                 ConstructionTab();
                 ImGui::EndTabItem();
             }
+            */
             if (ImGui::BeginTabItem("Infrastructure")) {
                 InfrastructureTab();
                 ImGui::EndTabItem();
@@ -326,19 +329,15 @@ void SysPlanetInformation::IndustryTab() {
 
     ImGui::SameLine();
 
-
     IndustryTabGenericChild<cqspc::Factory>("Manufacturing Sector", "Factories",
                                             ImVec2(-1, height));
     IndustryTabGenericChild<cqspc::Mine>("Mining Sector", "Mines",
                                             ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
                                  ImGui::GetStyle().ItemSpacing.y, height));
 
-
     ImGui::SameLine();
 
-
     IndustryTabFinanceChild(ImVec2(-1, height));
-
 }
 
 template <typename inddustrytype>
@@ -402,7 +401,6 @@ void SysPlanetInformation::IndustryTabGenericChild(
 
 void SysPlanetInformation::DetailedProductionPanel() {
     if (factory_list_panel && industrylist.size() > 0) {
-
         ImGui::Begin(
             fmt::format("Factories of {}", selected_city_entity).c_str(),
             &factory_list_panel);
@@ -470,7 +468,6 @@ void SysPlanetInformation::DemographicsTab() {
                     "Click for detailed market information");
             }
         }
-
     }
     // Then do demand and other things.
 }

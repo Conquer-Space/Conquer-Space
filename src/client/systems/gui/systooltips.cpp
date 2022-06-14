@@ -84,7 +84,6 @@ void ResourceTooltipSection(const Universe &universe, entt::entity entity) {
         cqsp::client::systems::DrawLedgerTable("output", universe,
                                                ratio.output);
     }
-    
 
     if (universe.all_of<cqspc::infrastructure::PowerConsumption>(entity)) {
         ImGui::Separator();

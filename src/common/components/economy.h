@@ -38,7 +38,6 @@ struct MarketInformation {
     ResourceLedger supply;
     ResourceLedger volume;
     ResourceLedger price;
-    
 };
 
 struct MarketElementInformation {
@@ -48,11 +47,9 @@ struct MarketElementInformation {
     double price;
     double price_ratio;
     double sd_ratio;
-    
 };
 
 struct Market : MarketInformation {
-    
     std::vector<MarketInformation> history;
 
     std::map<entt::entity, MarketElementInformation> market_information;

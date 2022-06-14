@@ -19,6 +19,7 @@
 #include <spdlog/spdlog.h>
 
 #include <utility>
+#include <limits>
 
 namespace {
 using cqsp::common::components::ResourceLedger;
@@ -158,7 +159,7 @@ ResourceLedger ResourceLedger::operator-(const ResourceLedger &other) const {
     ResourceLedger ledger = *this;
     ledger -= other;
     return ledger;
-} 
+}
 
 ResourceLedger ResourceLedger::operator*(const ResourceLedger &other) const {
     ResourceLedger ledger = *this;
@@ -344,9 +345,9 @@ ResourceLedger ResourceLedger::SafeDivision(const ResourceLedger &other) {
         }
     }
     return ledger;
-};
+}
 
-double ResourceLedger::Average() { 
+double ResourceLedger::Average() {
     return this->GetSum() / this->size();
 }
 

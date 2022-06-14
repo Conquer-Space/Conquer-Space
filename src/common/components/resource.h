@@ -51,7 +51,17 @@ struct Unit {
 
 struct Good {};
 
-//See SysPopulationConsumption for an explanation of these values
+/// <summary>
+/// See SysPopulationConsumption for an explanation of these values
+///   autonomous consumption is independent of disposable income
+///   or when income levels are zero
+///   if income levels cannot pay for this level of maintaince they are drawn
+///   from the population's savings or debt
+/// marginal propensity (demand) represents how
+///   much of their surplus income they will spend on that consumer good
+///   Based on how many consumer goods they consume from this segment, we can
+///   find their economic strata.
+/// </summary>
 struct ConsumerGood {
     double autonomous_consumption;
     double marginal_propensity;
@@ -168,7 +178,6 @@ class ResourceLedger : private LedgerMap {
     /// </summary>
     double Average();
 
-
     bool HasGood(entt::entity good) {
         return (*this).find(good) != (*this).end();
     }
@@ -201,11 +210,8 @@ class ResourceLedger : private LedgerMap {
     using LedgerMap::value_comp;
     using LedgerMap::size;
     using LedgerMap::mapped_type;
-
-
 };
-ResourceLedger ResourceLedgerZip(const ResourceLedger& key,const ResourceLedger& value);
-
+ResourceLedger ResourceLedgerZip(const ResourceLedger& key, const ResourceLedger& value);
 
 struct Recipe {
     ResourceLedger input;
@@ -275,7 +281,7 @@ struct FactoryTimer {
     float time_left;
 };
 
-//Resource generator 
+//Resource generator
 
 struct ResourceConsumption : public ResourceLedger {};
 struct ResourceProduction : public ResourceLedger {};

@@ -100,16 +100,15 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     }
     if (values["consumption"].defined()) {
         const Hjson::Value& consumption = values["consumption"];
-        double a = consumption["a"].to_double();
-        double b = consumption["b"].to_double();
+        double autonomous_consumption = consumption["a"].to_double();
+        double marginal_propensity = consumption["b"].to_double();
 
         cqspc::ConsumerGood& cg = universe.get_or_emplace<cqspc::ConsumerGood>(entity);
-        cg.autonomous_consumption = a;
-        cg.marginal_propensity = b;
+        cg.autonomous_consumption = autonomous_consumption;
+        cg.marginal_propensity = marginal_propensity;
         SPDLOG_INFO("Creating consuumer good {} with values: {} {}", identifier,
                     cg.autonomous_consumption, cg.marginal_propensity);
         universe.consumergoods.push_back(entity);
-
     }
 
 
@@ -176,11 +175,9 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     for (int i = 0; i < values["tags"].size(); i++) {
         if (values["tags"][i] == "raw") {
             recipe_component.type = cqspc::mine;
-        }
-        else if (values["tags"][i] == "service") {
+        } else if (values["tags"][i] == "service") {
             recipe_component.type = cqspc::service;
-        } 
-        else if (values["tags"][i] == "service") {
+        } else if (values["tags"][i] == "service") {
             recipe_component.type = cqspc::factory;
         }
     }

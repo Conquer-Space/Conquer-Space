@@ -70,7 +70,8 @@ void cqsp::common::systems::SysPopulationGrowth::DoSystem() {
 //C represents consumption of the consumer good
 //a represents autonomous consumption that is independent of disposable income or when income levels are zero
 //  if income levels cannot pay for this level of maintaince they are drawn from the population's savings or debt
-//b represents the marginal propensity (demand) to consume or how much of their surplus income they will spend on that consumer good
+//b represents the marginal propensity (demand) to consume or how
+//  much of their surplus income they will spend on that consumer good
 //  Based on how many consumer goods they consume from this segment, we can find their economic strata.
 //Y represents their disposable income (funds left over from last tick)
 //  Population savings can be ensured by keeping the sum of all b values below 1
@@ -93,51 +94,41 @@ void cqsp::common::systems::SysPopulationConsumption::DoSystem() {
     cqspc::ResourceConsumption autonomous_consumption_base;
     float savings = 1; //We calculate how much is saved since it is simpler than calculating spending
     for (entt::entity cgentity : universe.consumergoods) {
-        const cqspc::ConsumerGood& good =
-            universe.get<cqspc::ConsumerGood>(cgentity);
-        marginal_propensity_base[cgentity] =
-            good.marginal_propensity;
+        const cqspc::ConsumerGood& good = universe.get<cqspc::ConsumerGood>(cgentity);
+        marginal_propensity_base[cgentity] = good.marginal_propensity;
         autonomous_consumption_base[cgentity] = good.autonomous_consumption;
         savings -= good.marginal_propensity;
-    }// These tables technically never need to be recalculated
-    
+    } // These tables technically never need to be recalculated
     auto settlementview = universe.view<cqspc::Settlement>();
     for (auto [settlemententity, settlement] : settlementview.each()) {
         cqspc::Market& market =
             universe.get_or_emplace<cqspc::Market>(settlemententity);
         for (entt::entity segmententity : settlement.population) {
             cqspc::PopulationSegment& segment =
-                universe.get_or_emplace<cqspc::PopulationSegment>(
-                    segmententity);
+                universe.get_or_emplace<cqspc::PopulationSegment>(segmententity);
             cqspc::ResourceConsumption& consumption =
-                universe.get_or_emplace<cqspc::ResourceConsumption>(
-                    segmententity);
-            const uint64_t population =
-                segment.population /
-                10;  // Reduce pop to some unreasonably low level so that
-                         // the economy can handle it
+                universe.get_or_emplace<cqspc::ResourceConsumption>(segmententity);
+            // Reduce pop to some unreasonably low level so that the economy can handle it
+            const uint64_t population = segment.population / 10;
 
             consumption = autonomous_consumption_base;
 
-            consumption *=
-                population;  // This value only changes when pop changes and
-                             // should be calculated in SysPopulationGrowth
+            // This value only changes when pop changes and
+            // should be calculated in SysPopulationGrowth
+            consumption *=  population;
 
-            cqspc::Wallet& wallet =
-                universe.get_or_emplace<cqspc::Wallet>(segmententity);
+            cqspc::Wallet& wallet = universe.get_or_emplace<cqspc::Wallet>(segmententity);
             const double cost = (consumption * market.price).GetSum();
             wallet -= cost;  // Spend, even if it puts the pop into debt
-            if (wallet > 0)  // If the pop has cash left over spend it
-            {
-                cqspc::ResourceConsumption extraconsumption =
-                    marginal_propensity_base;
+            if (wallet > 0) { // If the pop has cash left over spend it
+                cqspc::ResourceConsumption extraconsumption = marginal_propensity_base;
                 extraconsumption *= wallet;  // Distribute wallet amongst goods
-                extraconsumption /=
-                    market.price;  // Find out how much of each good you can buy
-                consumption +=
-                    extraconsumption;  // Remove purchased goods from the market
+                extraconsumption /= market.price;  // Find out how much of each good you can buy
+                consumption += extraconsumption;  // Remove purchased goods from the market
                 wallet *= savings;     // Update savings
             }
+
+            // TODO(EhWhoAmI): Don't inject cash, take the money from the government
             wallet += segment.population * 50000;  // Inject cash
 
             market.demand += consumption;
