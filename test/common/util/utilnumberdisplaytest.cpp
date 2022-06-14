@@ -34,5 +34,5 @@ TEST(NumberDisplayTest, LongToHumanStringTest) {
     EXPECT_STREQ("9.22 Qn",
                                 cqsp::util::LongToHumanString(9223372036854775806).c_str());
     EXPECT_STREQ("-3.15 M", cqsp::util::LongToHumanString(-3150000).c_str());
-    EXPECT_STREQ("3.15 million", cqsp::util::LongToHumanString(3145000).c_str());
+    EXPECT_STREQ("3.15 M", cqsp::util::LongToHumanString(3145000).c_str());
 }
