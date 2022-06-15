@@ -14,14 +14,16 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "common/systems/actions/factoryconstructaction.h"
-
 #include <spdlog/spdlog.h>
+
+#include <map>
+#include <limits>
 
 #include "common/components/resource.h"
 #include "common/components/area.h"
 #include "common/components/economy.h"
 #include "common/systems/economy/markethelpers.h"
+#include "common/systems/actions/factoryconstructaction.h"
 
 using cqsp::common::Universe;
 entt::entity cqsp::common::systems::actions::OrderConstructionFactory(cqsp::common::Universe& universe,
@@ -44,8 +46,12 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
     namespace cqspc = cqsp::common::components;
     // Make the factory
     entt::entity factory = universe.create();
-    auto& factory_converter = universe.emplace<cqspc::ResourceConverter>(factory);
-    universe.emplace<cqspc::Factory>(factory);
+    //auto& factory_converter = universe.emplace<cqspc::ResourceConverter>(factory);
+    auto& production = universe.emplace<cqspc::Production>(factory);
+    // Add recipes and stuff
+    production.recipe = recipe;
+    universe.get<cqspc::Industry>(city).industries.push_back(factory);
+
 
     // Add capacity
     // Add producivity
@@ -53,15 +59,36 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
     prod.current_production = productivity;
     prod.max_production = static_cast<float>(productivity);
 
-    universe.emplace<cqspc::ResourceStockpile>(factory);
+    //cqspc::ResourceLedger& factorystock =
+    //universe.emplace<cqspc::ResourceStockpile>(factory);
+    //universe.emplace<cqspc::ResourceConsumption>(factory);
+    //universe.emplace<cqspc::ResourceProduction>(factory);
+    for (std::pair<const entt::entity, double> entity : universe.get<cqspc::Recipe>(recipe).input) {
+        //factorystock[entity.first] = 0;
+    }
+    for (std::pair<const entt::entity, double> entity :
+         universe.get<cqspc::Recipe>(recipe).output) {
+        //factorystock[entity.first] = 0;
+    }
+    switch (universe.get<cqspc::Recipe>(recipe).type) {
+        case cqspc::mine:
+            universe.emplace<cqspc::Mine>(factory);
+            break;
+        case cqspc::service:
+            universe.emplace<cqspc::Service>(factory);
+            break;
+        default:
+            universe.emplace<cqspc::Factory>(factory);
+    }
+
+    //for (entt::entity entity : universe.view<cqspc::Matter>()) {
+    //    factorystock.setlocal(entity, 1);
+    //}
     auto& employer = universe.emplace<cqspc::Employer>(factory);
     employer.population_fufilled = 1000000;
     employer.population_needed = 1000000;
     employer.segment = entt::null;
 
-    // Add recipes and stuff
-    factory_converter.recipe = recipe;
-    universe.get<cqspc::Industry>(city).industries.push_back(factory);
     return factory;
 }
 
@@ -78,18 +105,19 @@ cqsp::common::systems::actions::GetFactoryCost(cqsp::common::Universe& universe,
     return ledger;
 }
 
+// TODO(AGM): Remove this
 entt::entity cqsp::common::systems::actions::CreateMine(cqsp::common::Universe& universe,
     entt::entity city, entt::entity good, int amount, float productivity) {
     namespace cqspc = cqsp::common::components;
     entt::entity mine = universe.create();
-    auto& gen = universe.emplace<cqspc::ResourceGenerator>(mine);
+    //auto& gen = universe.emplace<cqspc::ResourceGenerator>(mine);
 
     auto& employer = universe.emplace<cqspc::Employer>(mine);
     employer.population_fufilled = 1000000;
     employer.population_needed = 1000000;
     employer.segment = entt::null;
 
-    gen.emplace(good, amount);
+    //gen.emplace(good, amount);
     universe.get<cqspc::Industry>(city).industries.push_back(mine);
 
     // Add productivity
@@ -101,6 +129,7 @@ entt::entity cqsp::common::systems::actions::CreateMine(cqsp::common::Universe& 
     return mine;
 }
 
+// TODO(AGM): Remove this
 cqsp::common::components::ResourceLedger
 cqsp::common::systems::actions::GetMineCost(cqsp::common::Universe& universe, entt::entity city,
     entt::entity good, int amount) {
@@ -119,19 +148,20 @@ cqsp::common::systems::actions::CreateCommercialArea(cqsp::common::Universe& uni
     return commercial;
 }
 
+//TODO(AGM): Remove this
 entt::entity cqsp::common::systems::actions::CreateFarm(
     cqsp::common::Universe& universe, entt::entity city, entt::entity good,
     int amount, float productivity) {
     namespace cqspc = cqsp::common::components;
     entt::entity farm = universe.create();
-    auto& gen = universe.emplace<cqspc::ResourceGenerator>(farm);
+    //auto& gen = universe.emplace<cqspc::ResourceGenerator>(farm);
 
     auto& employer = universe.emplace<cqspc::Employer>(farm);
     employer.population_fufilled = 1000000;
     employer.population_needed = 1000000;
     employer.segment = entt::null;
 
-    gen.emplace(good, amount);
+    //gen.emplace(good, amount);
     universe.get<cqspc::Industry>(city).industries.push_back(farm);
 
     // Add productivity

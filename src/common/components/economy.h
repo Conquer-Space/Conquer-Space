@@ -34,8 +34,10 @@ namespace components {
 struct MarketInformation {
     ResourceLedger demand;
     ResourceLedger sd_ratio;
+    ResourceLedger ds_ratio;
     ResourceLedger supply;
     ResourceLedger volume;
+    ResourceLedger price;
 };
 
 struct MarketElementInformation {
@@ -43,10 +45,13 @@ struct MarketElementInformation {
     double supply;
     double demand;
     double price;
+    double price_ratio;
     double sd_ratio;
 };
 
-struct Market {
+struct Market : MarketInformation {
+    std::vector<MarketInformation> history;
+
     std::map<entt::entity, MarketElementInformation> market_information;
     std::map<entt::entity, MarketElementInformation> last_market_information;
 
@@ -114,16 +119,28 @@ struct Wallet {
     Wallet() = default;
     Wallet(entt::entity _currency, double _balance) : balance(_balance), currency(_currency) {}
 
-    Wallet& operator+=(double amount) {
+    Wallet& operator+=(const double amount) {
         this->balance += amount;
         change += amount;
         return *this;
     }
-    Wallet& operator-=(double amount) {
+    Wallet& operator-=(const double amount) {
         this->balance -= amount;
         change -= amount;
         GDP_change += amount;
         // Record the money delta since last reset
+        return *this;
+    }
+
+    // TODO(EhWhoAmI): Make sure this is correct
+    Wallet& operator*=(const double coefficent) {
+        float newbalance = this->balance * coefficent;
+        float change = newbalance - this->balance;
+        if (change > 0) {
+            *this += change;
+        } else if (change < 0) {
+            *this -= change * -1;
+        }
         return *this;
     }
 

@@ -16,6 +16,8 @@
 */
 #pragma once
 
+#include <utility>
+
 #include <entt/entt.hpp>
 
 #include "common/components/resource.h"

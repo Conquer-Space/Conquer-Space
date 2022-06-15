@@ -20,6 +20,7 @@
 #include "common/systems/economy/markethelpers.h"
 
 void cqsp::common::systems::SysAgent::DoSystem() {
+    /*
     auto view = GetUniverse().view<cqsp::common::components::MarketAgent>();
     for (entt::entity entity : view) {
         // Sell resources that agents produced
@@ -29,10 +30,12 @@ void cqsp::common::systems::SysAgent::DoSystem() {
             production_multiplier = prod.current_production;
         }
         components::ResourceLedger selling;
+        
         if (GetUniverse().all_of<components::ResourceGenerator>(entity)) {
             auto& gen = GetUniverse().get<components::ResourceGenerator>(entity);
             selling.MultiplyAdd(gen, production_multiplier);
         }
+        
 
         // Recipe things
         auto resource_converter = GetUniverse().try_get<components::ResourceConverter>(entity);
@@ -68,4 +71,5 @@ void cqsp::common::systems::SysAgent::DoSystem() {
             GetUniverse().emplace_or_replace<components::FactoryProducing>(entity);
         }
     }
+    */
 }

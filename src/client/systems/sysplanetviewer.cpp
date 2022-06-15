@@ -24,6 +24,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <limits>
 
 #include "client/systems/views/starsystemview.h"
 #include "client/systems/gui/sysstockpileui.h"
@@ -73,22 +74,29 @@ void SysPlanetInformation::DisplayPlanet() {
     } else {
         ImGui::SetNextWindowCollapsed(false, ImGuiCond_Always);
     }
-    std::string planet_name = "Planet";
+    std::string viewname;
     if (selected_planet == entt::null) {
         return;
     }
-    if (GetUniverse().all_of<cqspc::Name>(selected_planet)) {
-        planet_name = GetUniverse().get<cqspc::Name>(selected_planet);
+    switch (view_mode) {
+        case ViewMode::PLANET_VIEW:
+            viewname = gui::GetName(GetUniverse(), selected_planet);
+            break;
+        case ViewMode::CITY_VIEW:
+            viewname = gui::GetName(GetUniverse(), selected_city_entity);
+            break;
     }
-    ImGui::Begin(planet_name.c_str(), &to_see, window_flags | ImGuiWindowFlags_NoCollapse);
+
+    std::string windowname = "Economic data: " + viewname;
+    ImGui::Begin(windowname.c_str(), &to_see,
+                 window_flags | ImGuiWindowFlags_NoCollapse);
     switch (view_mode) {
         case ViewMode::PLANET_VIEW:
             PlanetInformationPanel();
             break;
         case ViewMode::CITY_VIEW:
             CityInformationPanel();
-            MineInformationPanel();
-            FactoryInformationPanel();
+            DetailedProductionPanel();
             break;
     }
     ImGui::End();
@@ -98,12 +106,8 @@ void SysPlanetInformation::Init() {}
 
 void SysPlanetInformation::DoUI(int delta_time) {
     DisplayPlanet();
-    if (market_information_panel) {
-        ImGui::Begin("Market Information", &market_information_panel, window_flags);
-        MarketInformationTooltipContent();
-        ImGui::End();
-    }
-    ConstructionConfirmationPanel();
+
+    //ConstructionConfirmationPanel();
 
     if (renaming_city) {
         ImGui::SetNextWindowSize(ImVec2(300, -1));
@@ -132,7 +136,15 @@ void SysPlanetInformation::DoUpdate(int delta_time) {
                 mouse_over == selected_planet && !cqsp::scene::IsGameHalted() &&
         !GetApp().MouseDragged()) {
         to_see = true;
-        SPDLOG_INFO("Switched entity");
+
+        if (GetUniverse().valid(selected_planet)) {
+            SPDLOG_INFO("Switched entity: {}",
+                        GetUniverse()
+                            .get<cqspc::Identifier>(selected_planet)
+                            .identifier);
+        } else {
+            SPDLOG_INFO("Switched entity is not valid");
+        }
     }
     if (!GetUniverse().valid(selected_planet) || !GetUniverse().all_of<cqspb::Body>(selected_planet)) {
         to_see = false;
@@ -155,6 +167,12 @@ void SysPlanetInformation::CityInformationPanel() {
     if (ImGui::Button("Focus on city")) {
         // Focus city
         GetApp().GetUniverse().emplace_or_replace<FocusedCity>(selected_city_entity);
+    }
+    if (market_information_panel) {
+        ImGui::Begin("Market Information", &market_information_panel,
+                     window_flags);
+        MarketInformationTooltipContent(selected_city_entity);
+        ImGui::End();
     }
 
     if (GetUniverse().all_of<cqspc::Settlement>(selected_city_entity)) {
@@ -181,10 +199,12 @@ void SysPlanetInformation::CityInformationPanel() {
                 ResourcesTab();
                 ImGui::EndTabItem();
             }
+            /*
             if (ImGui::BeginTabItem("Construction")) {
                 ConstructionTab();
                 ImGui::EndTabItem();
             }
+            */
             if (ImGui::BeginTabItem("Infrastructure")) {
                 InfrastructureTab();
                 ImGui::EndTabItem();
@@ -206,6 +226,7 @@ void SysPlanetInformation::CityInformationPanel() {
 
 void SysPlanetInformation::PlanetInformationPanel() {
     if (!GetUniverse().all_of<cqspc::Habitation>(selected_planet)) {
+        ImGui::TextFmt("Planet is uninhabited");
         return;
     }
     auto& habit = GetUniverse().get<cqspc::Habitation>(selected_planet);
@@ -213,15 +234,7 @@ void SysPlanetInformation::PlanetInformationPanel() {
 
     ImGui::BeginChild("citylist", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar |
                                         window_flags);
-    // Market
-    if (GetUniverse().all_of<cqspc::MarketCenter>(selected_planet)) {
-        if (ImGui::Button("Is market center")) {
-            market_information_panel = true;
-        }
-        if (ImGui::IsItemHovered()) {
-            CQSPGui::SimpleTextTooltip("Click for detailed market information");
-        }
-    }
+
 
     if (ImGui::Button("Found City")) {
         // Enable city founding
@@ -281,7 +294,9 @@ void SysPlanetInformation::PlanetInformationPanel() {
 void SysPlanetInformation::ResourcesTab() {
     // Consolidate resources
     auto &city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
-    cqspc::ResourceLedger resources;
+    cqspc::ResourceLedger resources =
+        GetUniverse().get<cqspc::ResourceStockpile>(selected_city_entity);
+    DrawLedgerTable("cityresources", GetUniverse(), resources);
     for (auto area : city_industry.industries) {
         if (GetUniverse().all_of<cqspc::ResourceStockpile>(area)) {
             // Add resources
@@ -290,7 +305,7 @@ void SysPlanetInformation::ResourcesTab() {
         }
     }
 
-    DrawLedgerTable("cityresources", GetUniverse(), resources);
+    DrawLedgerTable("cityresources2", GetUniverse(), resources);
 }
 
 void SysPlanetInformation::IndustryTab() {
@@ -305,41 +320,35 @@ void SysPlanetInformation::IndustryTab() {
         }
         ImGui::EndTooltip();
     }
-    ImGui::BeginChild("salepanel", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
-                                 ImGui::GetStyle().ItemSpacing.y, height), true,
-                      ImGuiWindowFlags_HorizontalScrollbar | window_flags);
-    IndustryTabServicesChild();
-    ImGui::EndChild();
+
+    IndustryTabGenericChild<cqspc::Service>(
+        "Service Sector", "Company",
+        ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
+                   ImGui::GetStyle().ItemSpacing.y,
+               height));
 
     ImGui::SameLine();
 
-    ImGui::BeginChild("ManufacturingPanel", ImVec2(-1, height), true,
-                      ImGuiWindowFlags_HorizontalScrollbar | window_flags);
-    IndustryTabManufacturingChild();
-    ImGui::EndChild();
+    IndustryTabGenericChild<cqspc::Factory>("Manufacturing Sector", "Factories",
+                                            ImVec2(-1, height));
+    IndustryTabGenericChild<cqspc::Mine>("Mining Sector", "Mines",
+                                            ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
+                                 ImGui::GetStyle().ItemSpacing.y, height));
 
-    ImGui::BeginChild("MinePanel", ImVec2(ImGui::GetContentRegionAvail().x * 0.5f -
-                                 ImGui::GetStyle().ItemSpacing.y, height), true,
-                      ImGuiWindowFlags_HorizontalScrollbar | window_flags);
-    IndustryTabMiningChild();
-    ImGui::EndChild();
     ImGui::SameLine();
 
-    ImGui::BeginChild("AgriPanel", ImVec2(-1, height), true,
+    IndustryTabFinanceChild(ImVec2(-1, height));
+}
+
+template <typename inddustrytype>
+void SysPlanetInformation::IndustryTabGenericChild(
+    const std::string& tabname, const std::string & industryname,
+                                                  const ImVec2 & size) {
+    ImGui::BeginChild(tabname.c_str(), size, true,
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
-    IndustryTabAgricultureChild();
-    ImGui::EndChild();
-}
-
-void SysPlanetInformation::IndustryTabServicesChild() {
-    ImGui::Text("Services Sector");
-    // List all the stuff it produces
-    ImGui::Text("GDP:");
-}
-
-void SysPlanetInformation::IndustryTabManufacturingChild() {
-    auto& city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
-    ImGui::Text("Manufactuing Sector");
+    auto& city_industry =
+        GetUniverse().get<cqspc::Industry>(selected_city_entity);
+    ImGui::TextFmt(tabname);
     // List all the stuff it produces
 
     cqspc::ResourceLedger input_resources;
@@ -347,105 +356,80 @@ void SysPlanetInformation::IndustryTabManufacturingChild() {
     double GDP_calculation = 0;
     int count = 0;
     for (auto industry : city_industry.industries) {
-        if (GetUniverse().all_of<cqspc::ResourceConverter, cqspc::Factory>(industry)) {
+        if (GetUniverse()
+                .all_of<cqspc::Production, inddustrytype>(
+                industry)) {
             count++;
-            auto& generator = GetUniverse().get<cqspc::ResourceConverter>(industry);
-            auto& recipe = GetUniverse().get<cqspc::Recipe>(generator.recipe);
+            const cqspc::Production& generator =
+                GetUniverse().get<cqspc::Production>(industry);
+            const cqspc::Recipe& recipe =
+                GetUniverse().get<cqspc::Recipe>(generator.recipe);
+            const cqspc::ProductionRatio& ratio =
+                GetUniverse().get<cqspc::ProductionRatio>(industry);
 
-            double productivity = 1;
-            if (GetUniverse().any_of<cqspc::FactoryProductivity>(industry)) {
-                productivity = GetUniverse().get<cqspc::FactoryProductivity>(industry).current_production;
-            }
+            input_resources  += (recipe.input * ratio.input);
+            output_resources += (recipe.output * ratio.output);
 
-            input_resources.MultiplyAdd(recipe.input, productivity);
-            output_resources.MultiplyAdd(recipe.output, productivity);
             if (GetUniverse().all_of<cqspc::Wallet>(industry)) {
-                GDP_calculation += GetUniverse().get<cqspc::Wallet>(industry).GetGDPChange();
+                GDP_calculation +=
+                    GetUniverse().get<cqspc::Wallet>(industry).GetGDPChange();
             }
         }
     }
     ImGui::TextFmt("GDP: {}", cqsp::util::LongToHumanString(GDP_calculation));
-    ImGui::TextFmt("Factories: {}", count);
+    ImGui::TextFmt("{} Count: {}", industryname, count);
 
     ImGui::SameLine();
-    if (CQSPGui::SmallDefaultButton("Factory List")) {
+    if (CQSPGui::SmallDefaultButton("List")) {
         factory_list_panel = true;
+        industrylist.resize(0);
+        auto& city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity).industries;
+        for (entt::entity production : city_industry) {
+            if (GetUniverse().all_of<inddustrytype>(production))
+                industrylist.push_back(production);
+        }
     }
 
     ImGui::Text("Output");
     // Output table
-    DrawLedgerTable("industryoutput", GetUniverse(), output_resources);
+    DrawLedgerTable(tabname + "output", GetUniverse(), output_resources);
 
     ImGui::Text("Input");
-    DrawLedgerTable("industryinput", GetUniverse(), input_resources);
+    DrawLedgerTable(tabname + "input", GetUniverse(), input_resources);
+    ImGui::EndChild();
 }
 
-void SysPlanetInformation::IndustryTabMiningChild() {
-    auto& city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
-    ImGui::Text("Mining Sector");
-    // Get what resources they are making
-    cqspc::ResourceLedger resources;
-    double GDP_calculation = 0;
-    int mine_count = 0;
-    for (auto mine : city_industry.industries) {
-        if (GetUniverse().all_of<cqspc::ResourceGenerator, cqspc::Mine>(mine)) {
-            auto& generator = GetUniverse().get<cqspc::ResourceGenerator>(mine);
-            double productivity = 1;
-            if (GetUniverse().any_of<cqspc::FactoryProductivity>(mine)) {
-                productivity = GetUniverse().get<cqspc::FactoryProductivity>(mine).current_production;
-            }
+void SysPlanetInformation::DetailedProductionPanel() {
+    if (factory_list_panel && industrylist.size() > 0) {
+        ImGui::Begin(
+            fmt::format("Factories of {}", selected_city_entity).c_str(),
+            &factory_list_panel);
 
-            resources.MultiplyAdd(generator, productivity);
-            mine_count++;
-            if (GetUniverse().all_of<cqspc::Wallet>(mine)) {
-                GDP_calculation += GetUniverse().get<cqspc::Wallet>(mine).GetGDPChange();
+        for (entt::entity e : industrylist) {
+            const bool is_selected = (selected_factory == e);
+            std::string name = fmt::format("{}", e);
+            if (GetUniverse().all_of<cqspc::Name>(e)) {
+                name = GetUniverse().get<cqspc::Name>(e);
             }
+            if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(),
+                                           is_selected)) {
+                // Load
+                e = selected_factory;
+            }
+            gui::EntityTooltip(GetUniverse(), e);
         }
+        ImGui::End();
     }
-    ImGui::TextFmt("GDP: {}", cqsp::util::LongToHumanString(GDP_calculation));
-    ImGui::TextFmt("Mines: {}", mine_count);
-
-    ImGui::SameLine();
-    if (CQSPGui::SmallDefaultButton("Mine List")) {
-        mine_list_panel = true;
-    }
-
-    // Draw on table
-    DrawLedgerTable("mineproduction", GetUniverse(), resources);
 }
 
-void SysPlanetInformation::IndustryTabAgricultureChild() {
-    auto& city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
-    ImGui::Text("Agriculture Sector");
-    // Get what resources they are making
-    cqspc::ResourceLedger resources;
-    double GDP_calculation = 0;
-    int mine_count = 0;
-    for (auto mine : city_industry.industries) {
-        if (GetUniverse().all_of<cqspc::ResourceGenerator, cqspc::Farm>(mine)) {
-            auto& generator = GetUniverse().get<cqspc::ResourceGenerator>(mine);
-            double productivity = 1;
-            if (GetUniverse().any_of<cqspc::FactoryProductivity>(mine)) {
-                productivity = GetUniverse().get<cqspc::FactoryProductivity>(mine).current_production;
-            }
+void SysPlanetInformation::IndustryTabFinanceChild(const ImVec2& size) {
+    ImGui::BeginChild("FinancePan", size, true,
+                      ImGuiWindowFlags_HorizontalScrollbar | window_flags);
 
-            resources.MultiplyAdd(generator, productivity);
-            mine_count++;
-            if (GetUniverse().all_of<cqspc::Wallet>(mine)) {
-                GDP_calculation += GetUniverse().get<cqspc::Wallet>(mine).GetGDPChange();
-            }
-        }
-    }
-    ImGui::TextFmt("GDP: {}", cqsp::util::LongToHumanString(GDP_calculation));
-    ImGui::TextFmt("Farms: {}", mine_count);
-
-    ImGui::SameLine();
-    if (CQSPGui::SmallDefaultButton("Farm List")) {
-        mine_list_panel = true;
-    }
-
-    // Draw on table
-    DrawLedgerTable("farmproduction", GetUniverse(), resources);
+    ImGui::Text("Finance Sector");
+    // List all the stuff it produces
+    ImGui::Text("GDP:");
+    ImGui::EndChild();
 }
 
 void SysPlanetInformation::DemographicsTab() {
@@ -473,6 +457,16 @@ void SysPlanetInformation::DemographicsTab() {
         if (GetUniverse().all_of<cqspc::Wallet>(seg_entity)) {
             auto& wallet = GetUniverse().get<cqspc::Wallet>(seg_entity);
             ImGui::TextFmt("Spending: {}", cqsp::util::LongToHumanString(wallet.GetGDPChange()));
+        }
+        // Market
+        if (GetUniverse().all_of<cqspc::Market>(selected_city_entity)) {
+            if (ImGui::Button("Market Data")) {
+                market_information_panel = true;
+            }
+            if (ImGui::IsItemHovered()) {
+                CQSPGui::SimpleTextTooltip(
+                    "Click for detailed market information");
+            }
         }
     }
     // Then do demand and other things.
@@ -617,67 +611,9 @@ void SysPlanetInformation::MineConstruction() {
     }
 }
 
-void SysPlanetInformation::MineInformationPanel() {
-    if (mine_list_panel) {
-        auto &city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
-        ImGui::Begin(fmt::format("Mines of {}", selected_city_entity).c_str(), &mine_list_panel);
-        // List mines
-        static int selected_mine = 0;
-        int mine_index = 0;
-        for (int i = 0; i < city_industry.industries.size(); i++) {
-            entt::entity e = city_industry.industries[i];
-            if (GetUniverse().all_of<cqspc::Mine>(e)) {
-                // Then do the things
-                mine_index++;
-            } else {
-                continue;
-            }
 
-            const bool is_selected = (selected_mine == mine_index);
-            std::string name = fmt::format("{}", e);
-            if (GetUniverse().all_of<cqspc::Name>(e)) {
-                name = GetUniverse().get<cqspc::Name>(e);
-            }
-            if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
-                // Load
-                selected_mine = mine_index;
-            }
-            gui::EntityTooltip(GetUniverse(), e);
-        }
-        ImGui::End();
-    }
-}
 
-void SysPlanetInformation::FactoryInformationPanel() {
-    if (factory_list_panel) {
-        auto &city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
-        ImGui::Begin(fmt::format("Factories of {}", selected_city_entity).c_str(), &factory_list_panel);
-        // List mines
-        static int selected_factory = 0;
-        int factory_index = 0;
-        for (int i = 0; i < city_industry.industries.size(); i++) {
-            entt::entity e = city_industry.industries[i];
-            if (GetUniverse().all_of<cqspc::Factory>(e)) {
-                // Then do the things
-                factory_index++;
-            } else {
-                continue;
-            }
 
-            const bool is_selected = (selected_factory == factory_index);
-            std::string name = fmt::format("{}", e);
-            if (GetUniverse().all_of<cqspc::Name>(e)) {
-                name = GetUniverse().get<cqspc::Name>(e);
-            }
-            if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), is_selected)) {
-                // Load
-                selected_factory = factory_index;
-            }
-            gui::EntityTooltip(GetUniverse(), e);
-        }
-        ImGui::End();
-    }
-}
 
 void SysPlanetInformation::SpacePortTab() {
     namespace cqspt = cqsp::common::components::types;
@@ -761,48 +697,59 @@ void SysPlanetInformation::ScienceTab() {
     systems::DrawLedgerTable("science_contrib_table", GetUniverse(), led);
 }
 
-void SysPlanetInformation::MarketInformationTooltipContent() {
-    if (!GetUniverse().valid(selected_planet)) {
+void SysPlanetInformation::MarketInformationTooltipContent(
+    const entt::entity marketentity) {
+    if (!GetUniverse().valid(marketentity)) {
         return;
     }
-    if (!GetUniverse().any_of<cqspc::MarketCenter>(selected_planet)) {
+    if (!GetUniverse().any_of<cqspc::MarketCenter>(marketentity)) {
         ImGui::TextFmt("Market is not a market center");
-        return;
+        //return;
     }
-    auto& center = GetUniverse().get<cqspc::MarketCenter>(selected_planet);
-    auto& market = GetUniverse().get<cqspc::Market>(center.market);
+    //auto& center = GetUniverse().get<cqspc::MarketCenter>(marketentity);
+    cqspc::Market& market = GetUniverse().get<cqspc::Market>(marketentity);
     ImGui::TextFmt("Has {} entities attached to it", market.participants.size());
 
     // Get resource stockpile
-    if (ImGui::BeginTable("marketinfotable", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+    if (ImGui::BeginTable("marketinfotable", 6, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Good");
         ImGui::TableSetupColumn("Price");
         ImGui::TableSetupColumn("Supply");
         ImGui::TableSetupColumn("Demand");
         ImGui::TableSetupColumn("S/D ratio");
+        ImGui::TableSetupColumn("D/S ratio");
         ImGui::TableHeadersRow();
-        for (const auto& good_information : market) {
+        auto goodsview = GetUniverse().view<cqspc::Price>();
+        cqspc::MarketInformation lastmarket = market.history.back();
+        for (entt::entity goodenity : goodsview) {
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
-            ImGui::TextFmt("{}", GetUniverse().get<cqspc::Identifier>(good_information.first).identifier);
+            ImGui::TextFmt(
+                "{}",
+                GetUniverse().get<cqspc::Identifier>(goodenity).identifier);
             ImGui::TableSetColumnIndex(1);
-            ImGui::TextFmt("{}", good_information.second.price);
+            ImGui::TextFmt("{}", lastmarket.price[goodenity]);
             ImGui::TableSetColumnIndex(2);
-            auto& hist = market.last_market_information[good_information.first];
-            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(hist.supply));
+            //auto& hist = market.last_market_information[good_information.first];
+            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(
+                                     lastmarket.supply[goodenity]));
             ImGui::TableSetColumnIndex(3);
-            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(hist.demand));
+            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(
+                                     lastmarket.demand[goodenity]));
             ImGui::TableSetColumnIndex(4);
+            double sd_ratio = lastmarket.sd_ratio[goodenity];
+            if (sd_ratio == std::numeric_limits<double>::infinity())
+                ImGui::TextFmt("inf");
+            else
+                ImGui::TextFmt("{}", sd_ratio);
+            ImGui::TableSetColumnIndex(5);
+            ImGui::TextFmt("{}", lastmarket.ds_ratio[goodenity]);
             // Check if demand is 0, then supply is infinite, so
-            if (hist.demand == 0) {
-                ImGui::TextFmt("Infinite Supply");
-            } else {
-                ImGui::TextFmt("{}", hist.supply / hist.demand);
-            }
         }
         ImGui::EndTable();
     }
 
+    /*
     // Draw market information charts
     if (GetUniverse().all_of<cqspc::MarketHistory>(center.market)) {
         auto& history = GetUniverse().get<cqspc::MarketHistory>(center.market);
@@ -840,6 +787,7 @@ void SysPlanetInformation::MarketInformationTooltipContent() {
             ImPlot::EndPlot();
         }
     }
+    */
 }
 
 void SysPlanetInformation::ConstructionConfirmationPanel() {

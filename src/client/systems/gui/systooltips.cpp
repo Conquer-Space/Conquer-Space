@@ -70,16 +70,19 @@ void ResourceTooltipSection(const Universe &universe, entt::entity entity) {
         ImGui::Text("Producing next tick");
     }
 
-    if (universe.all_of<cqspc::FactoryProductivity>(entity)) {
-        ImGui::TextFmt("Productivity: {}", universe.get<cqspc::FactoryProductivity>(entity).current_production);
+    if (universe.all_of<cqspc::FactorySize>(entity)) {
+        ImGui::TextFmt(
+            "Size: {}",
+            universe.get<cqspc::FactorySize>(entity).size);
     }
 
-    if (universe.all_of<cqspc::ResourceGenerator>(entity)) {
-        ImGui::Separator();
-        ImGui::TextFmt("Generating");
-        // Then do demand
-        cqsp::client::systems::DrawLedgerTable(
-            "factorygentooltip", universe, universe.get<cqspc::ResourceGenerator>(entity));
+    if (universe.all_of<cqspc::ProductionRatio>(entity)) {
+        cqspc::ProductionRatio ratio =
+            universe.get<cqspc::ProductionRatio>(entity);
+        ImGui::TextFmt("IO Scaling");
+        cqsp::client::systems::DrawLedgerTable("input", universe, ratio.input);
+        cqsp::client::systems::DrawLedgerTable("output", universe,
+                                               ratio.output);
     }
 
     if (universe.all_of<cqspc::infrastructure::PowerConsumption>(entity)) {
@@ -88,6 +91,14 @@ void ResourceTooltipSection(const Universe &universe, entt::entity entity) {
         ImGui::TextFmt("Power: {}", consumption.current);
         ImGui::TextFmt("Max Power: {}", consumption.max);
         ImGui::TextFmt("Min Power: {}", consumption.min);
+    }
+    if (universe.all_of<cqspc::CostBreakdown>(entity)) {
+        cqspc::CostBreakdown costs = universe.get<cqspc::CostBreakdown>(entity);
+        ImGui::TextFmt("Material Cost: {}", costs.materialcosts * -1);
+        ImGui::TextFmt("Wage Cost: {}", costs.wages * -1);
+        ImGui::TextFmt("Maint Cost: {}", costs.maintaince * -1);
+        ImGui::TextFmt("Gross Revnue Cost: {}", costs.profit);
+        ImGui::TextFmt("Net Revnue Cost: {}", costs.net);
     }
 }
 }  // namespace
@@ -116,7 +127,12 @@ std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity e
         return  "Planet";
     } else if (universe.any_of<cqspc::Settlement, cqspc::Habitation>(entity)) {
         return  "City";
-    } else if (universe.any_of<cqspc::Mine>(entity)) {
+    }  else if (universe.any_of<cqspc::Production>(entity)) {
+        std::string production = "";
+        auto& generator = universe.get<cqspc::Production>(entity);
+        return fmt::format("{} Factory", cqsp::client::systems::gui::GetName(universe, generator.recipe));
+    }  else if (universe.any_of<cqspc::Mine>(entity)) {
+        /*
         std::string production = "";
         auto& generator = universe.get<cqspc::ResourceGenerator>(entity);
         for (auto it = generator.begin(); it != generator.end(); ++it) {
@@ -127,10 +143,7 @@ std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity e
             production = production.substr(0, production.size() - 2);
         }
         return fmt::format("{} Mine", production);
-    } else if (universe.any_of<cqspc::Factory>(entity)) {
-        std::string production = "";
-        auto& generator = universe.get<cqspc::ResourceConverter>(entity);
-        return fmt::format("{} Factory", cqsp::client::systems::gui::GetName(universe, generator.recipe));
+        */
     } else if (universe.any_of<cqspc::Player>(entity)) {
         return "Player";
     } else if (universe.any_of<cqspc::Civilization>(entity)) {
@@ -145,6 +158,7 @@ std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity e
 }
 
 // TODO(EhWhoAmI): Organize this so that it makes logical sense and order.
+// TODO(AGM): Support new production system
 void EntityTooltip(const Universe &universe, entt::entity entity) {
     if (!ImGui::IsItemHovered()) {
         return;
@@ -213,6 +227,8 @@ void EntityTooltip(const Universe &universe, entt::entity entity) {
         ImGui::TextFmt("Argument of Periapsis: {}", orbit.w);
         ImGui::TextFmt("True Anomaly: {}", orbit.v);
     }
+
+
 
     // Resource stuff
     //TODO(EhWhoAmI): Set these text red, but too lazy to do it for now

@@ -55,6 +55,9 @@
 #include "common/systems/actions/cityactions.h"
 
 using cqsp::client::systems::SysStarSystemRenderer;
+
+namespace cqspb = cqsp::common::components::bodies;
+
 SysStarSystemRenderer::SysStarSystemRenderer(cqsp::common::Universe &_u,
                                                 cqsp::engine::Application &_a) :
                                                 m_universe(_u), m_app(_a),
@@ -732,7 +735,9 @@ void SysStarSystemRenderer::RenderCities(glm::vec3 &object_pos, const entt::enti
         // Calculate position to render
         if (!m_app.GetUniverse().any_of<Offset>(city_entity)) {
             // Calculate offset
+            return;
         }
+        Offset doffset = m_app.GetUniverse().get<Offset>(city_entity);
         glm::vec3 city_pos = m_app.GetUniverse().get<Offset>(city_entity).offset;
         // Check if line of sight and city position intersects the sphere that is the planet
 
@@ -780,7 +785,9 @@ void SysStarSystemRenderer::CalculateCityPositions() {
             continue;
         }
         auto& coord = m_app.GetUniverse().get<cqspt::SurfaceCoordinate>(city_entity);
-        m_app.GetUniverse().emplace_or_replace<Offset>(city_entity, cqspt::toVec3(coord,  1));
+        cqspb::Body parent = m_app.GetUniverse().get<cqspb::Body>(m_viewing_entity);
+        m_app.GetUniverse().emplace_or_replace<Offset>(
+            city_entity, cqspt::toVec3(coord, parent.radius/50000));
     }
     SPDLOG_INFO("Calculated offset");
 }

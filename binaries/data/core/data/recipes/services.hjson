@@ -1,0 +1,199 @@
+# This file is part of Conquer Space
+#
+# This is the default file for recipes, and also serves as a demonstration for stuff
+[
+    {
+        name: Fuel Burning
+        identifier: power_man
+        input: {
+            fuel: 50
+        }
+        elasticity: {
+            fuel: 50
+        }
+        output: {
+            power: 1000
+        }
+        cost: {
+            capital: {
+                structures: 2
+                industrial: 2
+            }
+            labor: {
+                worker: 1000
+            }
+        }
+        tags: [
+            ratio
+			service
+        ]
+    }
+    {
+        name: Restaraunts
+        identifier: food_serv
+        input: {
+            potwater: 200
+            crops: 200
+            animals: 200
+        }
+        elasticity: {
+            potwater: 1
+            crops: 1
+            animals: 1
+        }
+        output: {
+            food: 1000
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+            }
+            labor: {
+                worker: 1000
+            }
+        }
+        tags: [
+            ratio
+			service
+        ]
+    }
+    {
+        name: Entertainment Industry
+        identifier: recreation_serv
+        input: {
+            food: 500
+            recgoods: 500
+        }
+        elasticity: {
+            food: 1
+            recgoods: 1
+        }
+        output: {
+            recreation: 20000
+        }
+        cost: {
+            capital: {
+                structures: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1000
+            }
+        }
+        tags: [
+            ratio
+			service
+        ]
+    }
+    {
+        name: Finance Sector
+        identifier: finance_serv
+        input: {
+
+        }
+        elasticity: {
+
+        }
+        output: {
+            finance: 20000
+        }
+        cost: {
+            capital: {
+                structures: 1
+                transport: 1
+                computersystems: 1
+            }
+            labor: {
+                worker: 1000
+            }
+        }
+        tags: [
+            ratio
+			service
+        ]
+    }
+    {
+        name:Health Services
+        identifier: medical_serv
+        input: {
+            housegoods: 200
+            egoods: 10
+        }
+        elasticity: {
+            housegoods: 1
+            egoods: 1
+        }
+        output: {
+            medical: 200
+        }
+        cost: {
+            capital: {
+                structures: 4
+                industrial: 1
+                transport: 1
+            }
+            labor: {
+                worker: 1000
+            }
+        }
+        tags: [
+            ratio
+			service
+        ]
+    }
+    {
+        name:Public Transit
+        identifier: transport_ser
+        input: {
+            fuel: 100
+        }
+        elasticity: {
+            fuel: 100
+        }
+        output: {
+            ptransport: 500000
+        }
+        cost: {
+            capital: {
+                structures: 1
+                industrial: 1
+                transport: 4
+            }
+            labor: {
+                worker: 1000
+            }
+        }
+        tags: [
+            ratio
+			service
+        ]
+    }
+	{
+        name:Housing Market
+        identifier: transport_ser
+        input: {
+			housegoods: 1
+        }
+        elasticity: {
+			housegoods: 1
+        }
+        output: {
+            housing: 20
+        }
+        cost: {
+            capital: {
+                structures: 6
+                industrial: 1
+            }
+            labor: {
+                worker: 1000
+            }
+        }
+        tags: [
+            ratio
+			service
+        ]
+    }
+]

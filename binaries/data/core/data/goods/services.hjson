@@ -1,0 +1,125 @@
+# This file is part of Conquer Space
+#
+[
+    {
+        name: Power
+        identifier: power
+        volume: 0.002 m3
+        mass: 4 kg
+        price: 1
+        
+        tags: [
+            service
+			consumable
+        ]
+        consumption: {
+            a: 9125
+            b: 0.1
+        }
+        description:
+        '''
+        One unit of power is a KWH 
+        '''
+    }
+    {
+        name: Recreation
+        identifier: recreation
+        volume: 0.5 m3
+        mass: 1000 kg
+        price: 50
+        tags: [
+            service
+			consumable
+        ]
+        consumption: {
+            a: 50
+            b: 0.1
+        }
+        description:
+        '''
+        One unit of recreation represents 1 day spent on recreation.
+        Greater usage represents more resource intensive recreation or more time spent on it.
+        '''
+    }
+    {
+        name: Housing
+        identifier: housing
+        volume: 25 m3
+        unpackedvolume: 100 m3
+        mass: 30000 kg
+        
+        price: 0.75
+        tags: [
+            service
+			consumable
+        ]
+        consumption: {
+            a: 1
+            b: 0.01
+        }
+        description:
+        '''
+        One unit of housing is the living space required for one person.
+        It is assumed the housing is densely packed in transit.
+        '''
+    }
+    {
+        name: Medical Services
+        identifier: medical
+        volume: 1 m3
+        mass: 2500 kg
+        price: 12500
+        tags: [
+            service
+			consumable
+        ]
+        consumption: {
+            a: 0.5
+            b: 0.1
+        }
+        description:
+        '''
+        One unit of medical care required to maintain health.
+        Base consumption is below on.
+        Consumption above 1 represents better medical care, or cosmetic medical services.
+        '''
+    }
+    {
+        name: Public Transport
+        identifier: ptransport
+        volume: 1 m3
+        mass: 500 kg
+        price: 400
+        tags: [
+            service
+			consumable
+        ]
+        consumption: {
+            a: 500
+            b: 0.1
+        }
+        description:
+        '''
+        One unit of public transport respresents a commuter hour..
+        Higher consumption represent personal vehicles. For example a 5 seat car 
+        could in theory provide 120 commuter hours per day but will only generaly provide
+        2-4
+        '''
+    }
+    {
+        name: Finance Sector
+        identifier: finance
+        volume: 1 m3
+        mass: 2500 kg
+        price: 0.75
+        tags: [
+            service
+			consumable
+        ]
+        consumption: {
+            a: 0
+            b: 0.01
+            w: 0.01
+        }
+    }
+]

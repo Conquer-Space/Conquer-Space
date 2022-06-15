@@ -17,6 +17,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include <entt/entt.hpp>
 
@@ -48,20 +49,19 @@ class SysPlanetInformation : public SysUserInterface {
     void PlanetInformationPanel();
     void ResourcesTab();
     void IndustryTab();
-    void IndustryTabServicesChild();
-    void IndustryTabManufacturingChild();
-    void IndustryTabMiningChild();
-    void IndustryTabAgricultureChild();
+    template <typename>
+    void IndustryTabGenericChild(const std::string&, const std::string&,
+                                 const ImVec2&);
+    void IndustryTabFinanceChild(const ImVec2&);
     void DemographicsTab();
     void ConstructionTab();
     void FactoryConstruction();
     void MineConstruction();
-    void MineInformationPanel();
-    void FactoryInformationPanel();
+    void DetailedProductionPanel();
     void SpacePortTab();
     void InfrastructureTab();
     void ScienceTab();
-    void MarketInformationTooltipContent();
+    void MarketInformationTooltipContent(const entt::entity market);
     void ConstructionConfirmationPanel();
     void RecipeConstructionCostPanel(entt::entity selected_recipe, double prod,
                                      const common::components::ResourceLedger& cost);
@@ -69,7 +69,8 @@ class SysPlanetInformation : public SysUserInterface {
                                      const common::components::ResourceLedger& cost);
 
     entt::entity selected_planet = entt::null;
-    bool mine_list_panel = false;
+    entt::entity selected_factory = entt::null;
+    std::vector<entt::entity> industrylist;
     bool factory_list_panel = false;
     bool power_plant_output_panel = false;
     bool market_information_panel = false;

@@ -30,5 +30,6 @@ class SysPopulationConsumption : public ISimulationSystem {
  public:
     explicit SysPopulationConsumption(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
+    int Interval() override { return  24; }
 };
 }  // namespace cqsp::common::systems

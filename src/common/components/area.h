@@ -25,9 +25,19 @@ struct Industry {
     std::vector<entt::entity> industries;
 };
 
+enum ProductionType { factory, mine, service };
+
+struct Production {
+    //TODO(AGM) This is a hardcoded enum, move to a hjson
+    ProductionType type;
+    entt::entity recipe;
+};
+
 struct Factory {};
 
 struct Mine {};
+
+struct Service {};
 
 struct Farm {
     // Farms have a harvest period?

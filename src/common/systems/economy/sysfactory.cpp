@@ -12,42 +12,63 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-#include "common/systems/economy/sysfactory.h"
+    * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    */
+#include <spdlog/spdlog.h>
 
+#include "common/systems/economy/sysfactory.h"
 #include "common/components/area.h"
 #include "common/components/economy.h"
+#include "common/util/profiler.h"
 
-void cqsp::common::systems::SysMine::DoSystem() {
-    auto view = GetUniverse().view<components::RawResourceGen,
-                                components::ResourceGenerator, components::MarketAgent>();
-    for (const entt::entity& entity : view) {
-        // Get market attached, get sd ratio for the goods it produces, then adjust production.
-        //
-        auto& gen = GetUniverse().get<components::ResourceGenerator>(entity);
-        entt::entity generated = entt::null;
-        double amount_generated = 0;
-        auto gen_it = gen.begin();
-        generated = gen_it->first;
-        amount_generated = gen_it->second;
-        auto& market = GetUniverse().get<components::Market>(
-            GetUniverse().get<components::MarketAgent>(entity).market);
+void cqsp::common::systems::SysProduction::DoSystem() {
+    Universe& universe = GetUniverse();
+    auto view = universe.view<components::Industry>();
+    BEGIN_TIMED_BLOCK(INDUSTRY);
+    int factories = 0;
+    for (auto [industryentity, industry] : view.each()) {
+        // Get market attached, get sd ratio for the goods it produces, then
+        // adjust production.
 
-        // Reduce production because costs
-        const double sd_ratio = market.GetSDRatio(generated);
-        if (sd_ratio > 1) {
-            // Reduce production
-            auto& prod = GetUniverse().get_or_emplace<components::FactoryProductivity>(entity);
-            // Inject some randomness to adjust the price
-            prod.current_production *= 0.95;
-        }
+        components::Market& market =
+            universe.get_or_emplace<components::Market>(industryentity);
+        for (entt::entity productionentity : industry.industries) {
+            //Industries MUST have production and a linked recipe
+            if (!universe.all_of<components::Production>(productionentity))
+                continue;
+            components::Recipe recipe =
+                universe.get_or_emplace<components::Recipe>(universe
+                    .get<components::Production>(productionentity).recipe);
+            components::FactorySize& size =
+                universe.get_or_emplace<components::FactorySize>(productionentity, 1000.0);
+            components::ProductionRatio& ratio =
+                universe.get_or_emplace<components::ProductionRatio>(productionentity);
 
-        if (sd_ratio < 1) {
-            // Reduce production
-            auto& prod = GetUniverse().get_or_emplace<components::FactoryProductivity>(entity);
-            // Inject some randomness?
-            prod.current_production *= 1.05;
+            components::ResourceLedger input = (recipe.input * ratio.input) +
+                (recipe.capitalcost * (0.01 * size.size));
+            components::ResourceLedger output = recipe.output * ratio.output;
+            market.demand += input;
+            market.supply += output;
+
+            components::CostBreakdown& costs =
+                universe.get_or_emplace<components::CostBreakdown>(productionentity);
+            costs.maintaince = (recipe.capitalcost * market.price).GetSum() * 0.01 * size.size;
+            costs.materialcosts = (recipe.input * ratio.input * market.price).GetSum();
+            costs.profit = (recipe.output * ratio.output * market.price).GetSum();
+            costs.wages = size.size * 1000 * 50000;
+            costs.net = costs.profit - costs.maintaince - costs.materialcosts - costs.wages;
+            if (costs.net > 0) {
+                size.size *= 1.02;
+            } else {
+                size.size *= 0.99;
+            }
+
+            ratio.input = recipe.input.UnitLeger(size.size);
+            ratio.output = recipe.output.UnitLeger(size.size);
+
+            factories += 1;
         }
     }
+    END_TIMED_BLOCK(INDUSTRY);
+    //SPDLOG_INFO("Updating {} factories", factories);
 }
