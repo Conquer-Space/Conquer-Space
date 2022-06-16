@@ -980,11 +980,8 @@ glm::vec3 SysStarSystemRenderer::GetMouseIntersectionOnObject(int mouse_x, int m
         float z = 1.0f;
 
         glm::vec3 ray_wor = CalculateMouseRay(glm::vec3(x, y, z));
-
-        float radius = 1;
-        if (m_app.GetUniverse().all_of<cqspb::LightEmitter>(ent_id)) {
-            radius = 10;
-        }
+        auto& body = m_app.GetUniverse().get<cqspb::Body>(ent_id);
+        float radius = body.radius;
 
         // Check for intersection for sphere
         glm::vec3 sub = cam_pos - object_pos;
@@ -1011,44 +1008,25 @@ entt::entity SysStarSystemRenderer::GetMouseOnObject(int mouse_x, int mouse_y) {
     for (entt::entity ent_id : bodies) {
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
         // Check if the sphere is rendered or not
-        if (glm::distance(object_pos, cam_pos) > 100) {
-            // Calculate circle
-            glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
-            if (pos.z >= 1) {
-                continue;
-            }
+        // Normalize 3d device coordinates
+        float x = (2.0f * mouse_x) / m_app.GetWindowWidth() - 1.0f;
+        float y = 1.0f - (2.0f * mouse_y) / m_app.GetWindowHeight();
+        float z = 1.0f;
 
-            // Check if it's intersecting
-            float dim = circle_size * m_app.GetWindowHeight();
-            if (glm::distance(glm::vec2(pos.x, m_app.GetWindowHeight() - pos.y),
-                    glm::vec2(mouse_x, mouse_y)) <= dim) {
-                m_app.GetUniverse().emplace<MouseOverEntity>(ent_id);
-                return ent_id;
-            }
-        } else {
-            // Normalize 3d device coordinates
-            float x = (2.0f * mouse_x) / m_app.GetWindowWidth() - 1.0f;
-            float y = 1.0f - (2.0f * mouse_y) / m_app.GetWindowHeight();
-            float z = 1.0f;
+        glm::vec3 ray_wor = CalculateMouseRay(glm::vec3(x, y, z));
+        auto& body = m_app.GetUniverse().get<cqspb::Body>(ent_id);
+        float radius = body.radius;
 
-            glm::vec3 ray_wor = CalculateMouseRay(glm::vec3(x, y, z));
+        // Check for intersection for sphere
+        glm::vec3 sub = cam_pos - object_pos;
+        float b = glm::dot(ray_wor, sub);
+        // Object radius
+        float c = glm::dot(sub, sub) - radius * radius;
 
-            float radius = 1;
-            if (m_app.GetUniverse().all_of<cqspb::LightEmitter>(ent_id)) {
-                radius = 10;
-            }
-
-            // Check for intersection for sphere
-            glm::vec3 sub = cam_pos - object_pos;
-            float b = glm::dot(ray_wor, sub);
-            // Object radius
-            float c = glm::dot(sub, sub) - radius * radius;
-
-            // Get the closer value
-            if ((b * b - c) >= 0) {
-                m_app.GetUniverse().emplace<MouseOverEntity>(ent_id);
-                return ent_id;
-            }
+        // Get the closer value
+        if ((b * b - c) >= 0) {
+            m_app.GetUniverse().emplace<MouseOverEntity>(ent_id);
+            return ent_id;
         }
     }
     return entt::null;
