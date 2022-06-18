@@ -24,14 +24,14 @@ namespace cqsp::common::systems::loading {
 /// respectve planets
 /// </summary>
 class CityLoader : public HjsonLoader {
-   public:
+ public:
     explicit CityLoader(Universe& universe) : HjsonLoader(universe) {}
 
     const Hjson::Value& GetDefaultValues() override { return default_val; }
     bool LoadValue(const Hjson::Value& values, entt::entity entity) override;
     void PostLoad(const entt::entity& entity) override;
 
-   private:
+ private:
     Hjson::Value default_val;
 };
 }  // namespace cqsp::common::systems::loading

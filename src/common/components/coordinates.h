@@ -306,7 +306,7 @@ struct SurfaceCoordinate {
 
     SurfaceCoordinate universe_view() const {
         return SurfaceCoordinate(_latitude, _longitude - PI/2, true);
-    };
+    }
 };
 
 /// <summary>
