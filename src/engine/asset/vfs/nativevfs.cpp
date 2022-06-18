@@ -117,6 +117,7 @@ uint64_t cqsp::asset::NativeFile::Size() {
 
 void cqsp::asset::NativeFile::Read(uint8_t* buffer, int num_bytes) {
     // Text mode is mildly screwed up, because of carrige return on windows.
+    // Flawfinder: ignore
     file.read(reinterpret_cast<char*>(buffer), static_cast<std::streamsize>(num_bytes));
 }
 

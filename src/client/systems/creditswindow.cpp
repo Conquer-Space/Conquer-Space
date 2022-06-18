@@ -65,6 +65,9 @@ void cqsp::client::CreditsWindow::Show() {
 }
 
 void cqsp::client::CreditsWindow::Update(double delta_time) {
+    if (!document->IsVisible()) {
+        return;
+    }
     scroll_percentage -= (scroll_speed * delta_time);
     if (fast_scroll) {
         scroll_percentage -= (scroll_speed * delta_time * 5);
