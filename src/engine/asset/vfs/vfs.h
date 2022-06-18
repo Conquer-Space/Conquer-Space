@@ -20,6 +20,8 @@
 #include <map>
 #include <string>
 
+#include <vector>
+
 namespace cqsp {
 namespace asset {
 enum FileModes {
@@ -199,8 +201,7 @@ class VirtualMounter {
 /// </summary>
 /// <param name=""></param>
 /// <returns></returns>
-uint8_t* ReadAllFromVFile(IVirtualFile*);
-int ReadAllFromVFile(uint8_t* buf, IVirtualFile*);
+std::vector<uint8_t> ReadAllFromVFile(IVirtualFile*);
 
 /// <summary>
 /// Don't really want this, but ah well, it cannot be helped.

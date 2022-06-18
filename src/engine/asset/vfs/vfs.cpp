@@ -124,23 +124,16 @@ bool VirtualMounter::Exists(const std::string& path) {
     return false;
 }
 
-bool VirtualMounter::Exists(const std::string& mount,
-                                         const std::string& path) {
+bool VirtualMounter::Exists(const std::string& mount, const std::string& path) {
     return mount_points[mount]->Exists(path);
 }
 
-uint8_t* ReadAllFromVFile(IVirtualFile* file) {
+std::vector<uint8_t> ReadAllFromVFile(IVirtualFile* file) {
     int size = file->Size();
-    uint8_t* buffer = new uint8_t[size];
-    file->Read(buffer, size);
+    std::vector<uint8_t> buffer;
+    buffer.reserve(size);
+    file->Read(buffer.data(), size);
     return buffer;
-}
-
-int ReadAllFromVFile(uint8_t* buf, IVirtualFile* file) {
-    int size = file->Size();
-    buf = new uint8_t[size];
-    file->Read(buf, size);
-    return size;
 }
 
 std::string ReadAllFromVFileToString(IVirtualFile* file) {
