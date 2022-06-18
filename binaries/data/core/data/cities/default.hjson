@@ -1,11 +1,102 @@
+// In the future, we probably have to add economies to cities,
+// so it will probably helpful to add the economic data to the cites here.
+// It will probably be necessary to put the cities in separate files
 [
     {
         name: New York City
         coordinates: {
-            longitude: 40.712778
-            latitude: -74.006111
+            latitude: 40.712778
+            longitude: -74.006111
         }
         identifier: nyc
+        planet: earth
+    }
+    {
+        name: London
+        coordinates: {
+            latitude: 51.5072
+            longitude: -0.1275
+        }
+        identifier: london
+        planet: earth
+    }
+    {
+        name: Paris
+        identifier: paris
+        coordinates: {
+            latitude: 48.8566
+            longitude: 2.3522
+
+        }
+        planet: earth
+    }
+    {
+        name: Tokyo
+        identifier: tokyo
+        coordinates: {
+            latitude: 35.6839
+            longitude: 139.7744
+
+        }
+        planet: earth
+    }
+    {
+        name: Los Angeles
+        identifier: los_angeles
+        coordinates: {
+            latitude: 34.1139
+            longitude: -118.4068
+
+        }
+        planet: earth
+    }
+    {
+        name: Beijing
+        identifier: beijing
+        coordinates: {
+            latitude: 39.904
+            longitude: 116.4075
+
+        }
+        planet: earth
+    }
+    {
+        name: Hong Kong
+        identifier: hong_kong
+        coordinates: {
+            latitude: 22.3069
+            longitude: 114.1831
+
+        }
+        planet: earth
+    }
+    {
+        name: Chicago
+        identifier: chicago
+        coordinates: {
+            latitude: 41.8373
+            longitude: -87.6862
+
+        }
+        planet: earth
+    }
+    {
+        name: Singapore
+        identifier: singapore
+        coordinates: {
+            latitude: 1.3521
+            longitude: 103.8198
+        }
+        planet: earth
+    }
+    {
+        name: Shanghai
+        identifier: shanghai
+        coordinates: {
+            latitude: 31.1667
+            longitude: 121.4667
+
+        }
         planet: earth
     }
 ]

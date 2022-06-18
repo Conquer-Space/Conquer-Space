@@ -10,7 +10,7 @@ bool CityLoader::LoadValue(
     std::string planet = values["planet"].to_string();
     double longi = values["coordinates"]["longitude"].to_double();
     double lat = values["coordinates"]["latitude"].to_double();
-    universe.emplace<components::types::SurfaceCoordinate>(entity, longi, lat);
+    universe.emplace<components::types::SurfaceCoordinate>(entity, lat, longi);
     universe.emplace<components::Settlement>(entity);
     universe.get<components::Habitation>(universe.planets[planet])
         .settlements.push_back(entity);
