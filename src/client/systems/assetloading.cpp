@@ -28,7 +28,7 @@
 #include "common/systems/science/technology.h"
 #include "common/systems/science/fields.h"
 #include "common/systems/loading/loadplanets.h"
-
+#include "common/systems/loading/loadcities.h"
 #include "common/systems/loading/hjsonloader.h"
 
 namespace {
@@ -77,6 +77,7 @@ void LoadAllResources(cqsp::engine::Application& app) {
     LoadResource<GoodLoader>(app, "goods");
     LoadResource<RecipeLoader>(app, "recipes");
     LoadResource<PlanetLoader>(app, "planets");
+    LoadResource<CityLoader>(app, "cities");
     LoadResource(app, "names", LoadNameLists);
     LoadResource(app, "tech_fields", common::systems::science::LoadFields);
     LoadResource(app, "tech_list", common::systems::science::LoadTechnologies);

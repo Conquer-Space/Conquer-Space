@@ -20,4 +20,9 @@
         type: hjson
         hints: {}
     }
+    cities: {
+        path: cities
+        type: hjson
+        hints: {}
+    }
 }

@@ -1,0 +1,11 @@
+[
+    {
+        name: New York City
+        coordinates: {
+            longitude: 40.712778
+            latitude: -74.006111
+        }
+        identifier: nyc
+        planet: earth
+    }
+]

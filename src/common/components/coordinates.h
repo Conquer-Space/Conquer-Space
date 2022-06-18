@@ -287,6 +287,11 @@ struct SurfaceCoordinate {
         _longitude = normalize_radian(_longitude);
     }
 
+    SurfaceCoordinate(radian _lat, radian _long, bool radian)
+        : _latitude(normalize_radian(_lat)),
+          _longitude(normalize_radian(_long)) {
+    }
+
     degree latitude() const {
         return toDegree(_latitude);
     }
@@ -298,6 +303,10 @@ struct SurfaceCoordinate {
     radian r_longitude() const { return _longitude; }
 
     radian r_latitude() const { return _latitude; }
+
+    SurfaceCoordinate universe_view() const {
+        return SurfaceCoordinate(_latitude, _longitude - PI/2, true);
+    };
 };
 
 /// <summary>
