@@ -145,8 +145,10 @@ std::string ReadAllFromVFileToString(IVirtualFile* file) {
     // Now convert to a proper string
     size_t start_pos = 0;
     // Replace carrige returns because it's text mode
+    // Carrige return is 2 characters long, and findflaws is stupid and complaining about strlen.
+    const int return_length = 2;
     while ((start_pos = str.find("\r\n", start_pos)) != std::string::npos) {
-        str.replace(start_pos, strlen("\r\n\0"), "\n");
+        str.replace(start_pos, return_length, "\n");
         start_pos += 1; // In case 'to' contains 'from', like replacing 'x' with 'yx'
     }
     delete[] buf;
