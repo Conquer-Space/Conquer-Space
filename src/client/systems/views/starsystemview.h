@@ -138,10 +138,16 @@ class SysStarSystemRenderer {
     void DrawStar(const entt::entity& entity, glm::vec3 &object_pos);
     void DrawTerrainlessPlanet(const entt::entity& entity, glm::vec3 &object_pos);
     void RenderCities(glm::vec3 &object_pos, const entt::entity &body_entity);
-    bool CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos);
+    bool CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos, double radius);
     void CalculateCityPositions();
     void CalculateScroll();
-
+    /// <summary>
+    /// Gets the quaternion to calculate the planet's rotation from the axial rotation
+    /// and the rotation period
+    /// </summary>
+    /// <param name="axial">Axial rotation in radians</param>
+    /// <param name="rotation">Rotation period in seconds</param>
+    glm::quat GetBodyRotation(double axial, double rotation);
     void FocusCityView();
 
     glm::vec3 CalculateObjectPos(const entt::entity &);
