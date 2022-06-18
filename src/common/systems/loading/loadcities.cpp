@@ -12,7 +12,7 @@ bool CityLoader::LoadValue(
     double lat = values["coordinates"]["latitude"].to_double();
     universe.emplace<components::types::SurfaceCoordinate>(entity, lat, longi);
     universe.emplace<components::Settlement>(entity);
-    universe.get<components::Habitation>(universe.planets[planet])
+    universe.get_or_emplace<components::Habitation>(universe.planets[planet])
         .settlements.push_back(entity);
     // Add to city
     return true;

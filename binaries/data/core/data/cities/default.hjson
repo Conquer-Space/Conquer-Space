@@ -95,7 +95,105 @@
         coordinates: {
             latitude: 31.1667
             longitude: 121.4667
-
+        }
+        planet: earth
+    }
+    {
+        name: Sydney
+        identifier: sydney
+        coordinates: {
+            latitude: -33.865
+            longitude: 151.2094
+        }
+        planet: earth
+    }
+    {
+        name: Rio de Janeiro
+        identifier: rio_de_janeiro
+        coordinates: {
+            latitude: -22.9083
+            longitude: -43.1964
+        }
+        planet: earth
+    }
+    {
+        name: Addis Ababa
+        identifier: addis_ababa
+        coordinates: {
+            latitude: 9.0272
+            longitude: 38.7369
+        }
+        planet: earth
+    }
+    {
+        name: Moscow
+        identifier: moscow
+        coordinates: {
+            latitude: 55.7558
+            longitude: 37.6178
+        }
+        planet: earth
+    }
+    {
+        name: New Delhi
+        identifier: new_delhi
+        coordinates: {
+            latitude: 28.6139
+            longitude: 77.209
+        }
+        planet: earth
+    }
+    {
+        name: Cairo
+        identifier: cairo
+        coordinates: {
+            latitude: 30.0444
+            longitude: 31.2358
+        }
+        planet: earth
+    }
+    {
+        name: Toronto
+        identifier: toronto
+        coordinates: {
+            latitude: 43.7417
+            longitude: -79.3733
+        }
+        planet: earth
+    }
+    {
+        name: Seattle
+        identifier: seattle
+        coordinates: {
+            latitude: 47.6211
+            longitude: -122.3244
+        }
+        planet: earth
+    }
+    {
+        name: Mexico City
+        identifier: mexico_city
+        coordinates: {
+            latitude: 19.4333
+            longitude: -99.1333
+        }
+        planet: earth
+    }
+    {
+        name: Phoenix
+        identifier: phoenix
+        coordinates: {
+            latitude: 33.5722
+            longitude: -112.0891
+        }
+        planet: earth
+    }
+    {
+        name: Jakarta
+        identifier: jakarta
+        coordinates: {
+            latitude: -6.2146
+            longitude: 106.8451
         }
         planet: earth
     }
