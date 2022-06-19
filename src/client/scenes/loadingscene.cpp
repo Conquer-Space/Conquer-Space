@@ -100,12 +100,14 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
 
         // Set main menu scene
         if (GetApp().HasCmdLineArgs("-i")) {
+            SPDLOG_INFO("Loading universe scene, skipping the main menu scene");
             GetApp().SetScene<cqsp::scene::UniverseLoadingScene>();
         } else if (GetApp().HasCmdLineArgs("-tt")) {
             GetApp().SetScene<cqsp::scene::TextTestScene>();
         } else if (GetApp().HasCmdLineArgs("-ov")) {
             GetApp().SetScene<cqsp::scene::ObjectEditorScene>();
         } else {
+            SPDLOG_INFO("Loading main menu");
             GetApp().SetScene<cqsp::scene::MainMenuScene>();
         }
     }
