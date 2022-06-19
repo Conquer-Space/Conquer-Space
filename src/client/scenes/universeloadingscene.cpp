@@ -34,12 +34,12 @@ void cqsp::scene::UniverseLoadingScene::Init() {
 
     m_completed_loading = false;
     thread = std::make_unique<std::thread>(loading);
-    thread->detach();
 }
 
 void cqsp::scene::UniverseLoadingScene::Update(float deltaTime) {
-    if (m_completed_loading) {
+    if (m_completed_loading && thread->joinable()) {
         // Switch scene
+        thread->join();
         GetApp().SetScene<cqsp::scene::UniverseScene>();
     }
 }
@@ -62,16 +62,18 @@ void cqsp::scene::UniverseLoadingScene::Render(float deltaTime) {}
 
 void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
     cqsp::client::systems::LoadAllResources(GetApp());
-
+    SPDLOG_INFO("Made all game resources into game objects");
     using cqsp::asset::TextAsset;
     // Process scripts for core
     TextAsset* script_list = GetAssetManager().GetAsset<TextAsset>("core:base");
+    SPDLOG_INFO("{}", script_list->data);
     GetApp().GetScriptInterface().RunScript(script_list->data);
-
+    SPDLOG_INFO("Done loading scripts");
     using cqsp::common::systems::universegenerator::ScriptUniverseGenerator;
     // Load universe
     ScriptUniverseGenerator script_generator(GetApp().GetScriptInterface());
 
     script_generator.Generate(GetUniverse());
+    SPDLOG_INFO("Done loading the universe, entering game");
     m_completed_loading = true;
 }

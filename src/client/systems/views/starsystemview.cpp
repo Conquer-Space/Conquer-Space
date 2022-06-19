@@ -772,7 +772,7 @@ void SysStarSystemRenderer::CalculateCityPositions() {
     if (cities.empty()) {
         return;
     }
-    for (auto city_entity : cities) {
+    for (auto& city_entity : cities) {
         if (!m_app.GetUniverse().all_of<cqspt::SurfaceCoordinate>(city_entity)) {
             continue;
         }
@@ -955,17 +955,19 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
         if (orb.semi_major_axis == 0) {
             continue;
         }
+        const int res = 500;
         std::vector<glm::vec3> orbit_points;
-        int res = 500;
+        orbit_points.reserve(res);
         for (int i = 0; i <= res; i++) {
             double theta = 3.1415926535 * 2 / res * i;
             glm::vec3 vec = common::components::types::toVec3(orb, theta);
             // Convert to opengl
             orbit_points.push_back(glm::vec3(vec.x, vec.z, vec.y));
         }
-        auto& line = m_universe.emplace_or_replace<PlanetOrbit>(body);
+        auto& line = m_universe.get_or_emplace<PlanetOrbit>(body);
         // Get the orbit line
         // Do the points
+        delete line.orbit_mesh;
         line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);
     }
 }

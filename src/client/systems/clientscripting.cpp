@@ -63,20 +63,19 @@ void AssetManagerInterfaces(engine::Application& app) {
 
     CREATE_NAMESPACE(client);
 
-    script_engine["require"] = [&](const char* script) {
+    script_engine.set_function("require", [&](const char* script) {
         using cqsp::asset::TextDirectoryAsset;
         // Get script from asset loader
         cqsp::asset::TextDirectoryAsset* asset =
             app.GetAssetManager().GetAsset<TextDirectoryAsset>("core:scripts");
         // Get the thing
         if (asset->paths.find(script) != asset->paths.end()) {
-            return script_engine.require_script(script,
-                                                asset->paths[script].data);
+            return script_engine.require_script(script, asset->paths[script].data);
         } else {
             SPDLOG_INFO("Cannot find require {}", script);
             return sol::make_object(script_engine, sol::nil);
         }
-    };
+    });
 
     REGISTER_FUNCTION("get_text_asset", [&](const char* id) {
         cqsp::asset::TextAsset* asset =

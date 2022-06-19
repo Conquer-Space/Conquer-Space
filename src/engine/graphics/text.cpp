@@ -118,7 +118,7 @@ void cqsp::asset::RenderText(cqsp::asset::ShaderProgram &shader, Font &font, std
     scale /= font.initial_size;
     // iterate through all characters
     std::string::const_iterator c;
-    for (c = text.begin(); c != text.end(); c++) {
+    for (c = text.begin(); c != text.end(); ++c) {
         Character ch = font.characters[*c];
 
         float xpos = x + ch.Bearing.x * scale;

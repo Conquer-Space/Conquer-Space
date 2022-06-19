@@ -50,7 +50,7 @@ void ScriptUniverseGenerator::Generate(cqsp::common::Universe& universe) {
     script_engine["terrain_colors"] = universe.terrain_data;
     script_engine["fields"] = universe.fields;
     script_engine["technologies"] = universe.technologies;
-
+    SPDLOG_INFO("Set goods");
     // Create player
     auto player = universe.create();
     universe.emplace<cqspc::Civilization>(player);
@@ -79,24 +79,13 @@ void ScriptUniverseGenerator::Generate(cqsp::common::Universe& universe) {
         script_engine["civilizations"] = sol::as_table(universe.view<cqspc::Civilization>());
         (*generator)["universe_gen"]();
         auto view = universe.view<cqspc::Civilization>();
+        SPDLOG_INFO("Initing planets");
         for (auto ent : view) {
             (*generator)["planets"](ent);
         }
+    } else {
+        SPDLOG_ERROR("No generator");
     }
-    // add first ship(could be deferred to some script)
-    //has to be deferred until after the galaxy and systems are populated in the scripts
-    /*
-    auto starting_planet =
-        universe.get<cqspc::Civilization>(player).starting_planet;
-    cqsp::common::systems::actions::CreateShip(
-        universe, playerFleet,
-        universe.get<cqspc::bodies::Body>(starting_planet).star_system,
-        starting_planet,
-        "pioneer");
-      cqsp::common::systems::actions::CreateShip(
-        universe, playerSubFleet,
-        universe.get<cqspc::bodies::Body>(starting_planet).star_system,
-        starting_planet,
-        "pioneer2");*/
+    SPDLOG_INFO("Done generating");
 }
 }  // namespace cqsp::common::systems::universegenerator

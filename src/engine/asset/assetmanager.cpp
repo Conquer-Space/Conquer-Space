@@ -25,6 +25,7 @@
 #include <regex>
 #include <filesystem>
 #include <iostream>
+#include <vector>
 
 #include <tracy/Tracy.hpp>
 
@@ -76,7 +77,7 @@ class ShaderPrototype : public AssetPrototype {
 
 class FontPrototype : public AssetPrototype {
  public:
-    unsigned char* fontBuffer;
+    std::vector<uint8_t> fontBuffer;
     int size;
 
     int GetPrototypeType() { return PrototypeType::FONT; }
@@ -462,7 +463,7 @@ void AssetLoader::BuildNextAsset() {
         FontPrototype* prototype = dynamic_cast<FontPrototype*>(temp.prototype);
         Font* asset = dynamic_cast<Font*>(prototype->asset);
 
-        asset::LoadFontData(*asset, prototype->fontBuffer, prototype->size);
+        asset::LoadFontData(*asset, prototype->fontBuffer.data(), prototype->size);
         }
         break;
         case PrototypeType::CUBEMAP: {
@@ -538,10 +539,9 @@ std::unique_ptr<Asset> AssetLoader::LoadTexture(
 
     auto file = mount->Open(path.c_str(), FileModes::Binary);
     uint64_t file_size = file->Size();
-    uint8_t* buffer = ReadAllFromVFile(file.get());
-    prototype->data = stbi_load_from_memory(buffer, file_size, &prototype->width, &prototype->height,
+    auto buffer = ReadAllFromVFile(file.get());
+    prototype->data = stbi_load_from_memory(buffer.data(), file_size, &prototype->width, &prototype->height,
                            &prototype->components, 0);
-
     if (prototype->data) {
         QueueHolder holder(prototype);
 
@@ -648,10 +648,10 @@ AssetLoader::LoadFont(VirtualMounter* mount, const std::string& path,
 
     std::unique_ptr<Font> asset = std::make_unique<Font>();
     auto file = mount->Open(path);
-    uint8_t* bytes = ReadAllFromVFile(file.get());
+    auto bytes = ReadAllFromVFile(file.get());
 
     FontPrototype* prototype = new FontPrototype();
-    prototype->fontBuffer = bytes;
+    prototype->fontBuffer = std::move(bytes);
     prototype->size = file->Size();
     prototype->key = key;
     prototype->asset = asset.get();
@@ -671,9 +671,8 @@ std::unique_ptr<Asset> AssetLoader::LoadAudio(
         return nullptr;
     }
     auto file = mount->Open(path);
-    uint8_t* data = ReadAllFromVFile(file.get());
-    auto asset = LoadOgg(data, file->Size());
-
+    auto data = ReadAllFromVFile(file.get());
+    auto asset = LoadOgg(data.data(), file->Size());
     return std::move(asset);
 }
 
@@ -714,13 +713,12 @@ std::unique_ptr<Asset> AssetLoader::LoadCubemap(
         auto file = mount->Open(image_path);
         auto file_data = ReadAllFromVFile(file.get());
         ZoneNamed(CubemapLoad, true);
-        unsigned char* image_data = stbi_load_from_memory(file_data,
+        unsigned char* image_data = stbi_load_from_memory(file_data.data(),
                                                           file->Size(),
                                                           &prototype->width,
                                                           &prototype->height,
                                                           &prototype->components,
                                                           0);
-
         prototype->data.push_back(image_data);
     }
     prototype->asset = asset.get();

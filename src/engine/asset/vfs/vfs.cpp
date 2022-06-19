@@ -124,23 +124,16 @@ bool VirtualMounter::Exists(const std::string& path) {
     return false;
 }
 
-bool VirtualMounter::Exists(const std::string& mount,
-                                         const std::string& path) {
+bool VirtualMounter::Exists(const std::string& mount, const std::string& path) {
     return mount_points[mount]->Exists(path);
 }
 
-uint8_t* ReadAllFromVFile(IVirtualFile* file) {
+std::vector<uint8_t> ReadAllFromVFile(IVirtualFile* file) {
     int size = file->Size();
-    uint8_t* buffer = new uint8_t[size];
-    file->Read(buffer, size);
+    std::vector<uint8_t> buffer;
+    buffer.reserve(size);
+    file->Read(buffer.data(), size);
     return buffer;
-}
-
-int ReadAllFromVFile(uint8_t* buf, IVirtualFile* file) {
-    int size = file->Size();
-    buf = new uint8_t[size];
-    file->Read(buf, size);
-    return size;
 }
 
 std::string ReadAllFromVFileToString(IVirtualFile* file) {
@@ -152,8 +145,10 @@ std::string ReadAllFromVFileToString(IVirtualFile* file) {
     // Now convert to a proper string
     size_t start_pos = 0;
     // Replace carrige returns because it's text mode
+    // Carrige return is 2 characters long, and findflaws is stupid and complaining about strlen.
+    const int return_length = 2;
     while ((start_pos = str.find("\r\n", start_pos)) != std::string::npos) {
-        str.replace(start_pos, strlen("\r\n"), "\n");
+        str.replace(start_pos, return_length, "\n");
         start_pos += 1; // In case 'to' contains 'from', like replacing 'x' with 'yx'
     }
     delete[] buf;

@@ -74,7 +74,8 @@ def WriteConfigFile():
         # Write the varable list
         variables = ["\"" + element + "\"" for element in variables]
         output.write(", ".join(variables))
-        output.write("}")
+        output.write("}\n")
+        output.write("unused = false")
         # Close file
     output.close()
 
