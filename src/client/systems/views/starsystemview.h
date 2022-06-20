@@ -147,7 +147,7 @@ class SysStarSystemRenderer {
     /// </summary>
     /// <param name="axial">Axial rotation in radians</param>
     /// <param name="rotation">Rotation period in seconds</param>
-    glm::quat GetBodyRotation(double axial, double rotation);
+    glm::quat GetBodyRotation(double axial, double rotation, double day_offset);
     void FocusCityView();
 
     glm::vec3 CalculateObjectPos(const entt::entity &);

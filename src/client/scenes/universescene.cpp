@@ -82,7 +82,7 @@ void cqsp::scene::UniverseScene::Init() {
     system_renderer->SeeStarSystem();
 
     //SeeStarSystem(GetApp(), body.star_system);
-    //SeePlanet(GetApp(), player_civ->starting_planet);
+    SeePlanet(GetApp(), GetUniverse().planets["earth"]);
     //selected_planet = player_civ->starting_planet;
 
     AddUISystem<cqsps::SysPlanetInformation>();

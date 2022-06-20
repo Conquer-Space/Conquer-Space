@@ -83,8 +83,8 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     body_comp.GM = values["gm"].to_double();
 
     bool rotation_correct;
-    if (values["rotation"].type() != Hjson::Type::Null) {
-        body_comp.rotation = ReadUnit(values["rotation"].to_string(),
+    if (values["day_length"].type() != Hjson::Type::Null) {
+        body_comp.rotation = ReadUnit(values["day_length"].to_string(),
                                       UnitType::Time, &rotation_correct);
         if (!rotation_correct) {
             SPDLOG_WARN("Rotation for {} incorrect", identifier);
@@ -92,6 +92,12 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         }
     } else {
         body_comp.rotation = 0;
+    }
+
+    if (values["day_offset"].type() == Hjson::Type::Double) {
+        body_comp.rotation_offset = values["day_offset"].to_double();
+    } else {
+        body_comp.rotation_offset = 0.;
     }
 
      bool axial_correct;

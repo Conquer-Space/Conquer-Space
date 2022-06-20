@@ -611,7 +611,7 @@ void SysStarSystemRenderer::DrawTexturedPlanet(glm::vec3 &object_pos, entt::enti
 
     glm::mat4 position = glm::mat4(1.f);
     position = glm::translate(position, object_pos);
-    position *= glm::mat4(GetBodyRotation(body.axial, body.rotation));
+    position *= glm::mat4(GetBodyRotation(body.axial, body.rotation, body.rotation_offset));
 
     // Rotate
     float scale = body.radius;  // cqsp::common::components::types::toAU(body.radius)
@@ -722,7 +722,7 @@ void SysStarSystemRenderer::RenderCities(glm::vec3 &object_pos, const entt::enti
     }
 
     auto& body = m_app.GetUniverse().get<cqspc::bodies::Body>(body_entity);
-    auto quat = GetBodyRotation(body.axial, body.rotation);
+    auto quat = GetBodyRotation(body.axial, body.rotation, body.rotation_offset);
 
     // Rotate the body
     // Put in same layer as ships
@@ -803,9 +803,10 @@ void SysStarSystemRenderer::CalculateScroll() {
     scroll -= m_app.GetScrollAmount() * 3 * scroll / 33;
 }
 
-glm::quat SysStarSystemRenderer::GetBodyRotation(double axial, double rotation) {
+glm::quat SysStarSystemRenderer::GetBodyRotation(double axial, double rotation, double day_offset) {
     namespace cqspt = cqsp::common::components::types;
-    float rot = (float)(m_universe.date.ToSecond() / rotation * cqspt::TWOPI);
+    float rot = (float)common::components::bodies::GetPlanetRotationAngle(
+        m_universe.date.ToSecond(), rotation, day_offset);
     if (rotation == 0) {
         rot = 0;
     }
@@ -865,7 +866,8 @@ void SysStarSystemRenderer::CenterCameraOnCity() {
     // solved with a basic formula.
     entt::entity planet = m_app.GetUniverse().view<FocusedPlanet>().front();
     auto& body = m_universe.get<cqsp::common::components::bodies::Body>(planet);
-    double rot = (m_universe.date.ToSecond() / body.rotation * cqspt::TWOPI);
+    double rot = common::components::bodies::GetPlanetRotationAngle(
+        m_universe.date.ToSecond(), body.rotation, body.rotation_offset);
     if (body.rotation == 0) {
         rot = 0;
     }
