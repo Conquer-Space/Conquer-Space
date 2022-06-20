@@ -155,6 +155,8 @@ class SysStarSystemRenderer {
     glm::vec3 CalculateCenteredObject(const glm::vec3 &);
     glm::vec3 TranslateToNormalized(const glm::vec3 &);
 
+    void CenterCameraOnCity();
+
     void CalculateCamera();
     void MoveCamera(double deltaTime);
 
@@ -185,6 +187,8 @@ class SysStarSystemRenderer {
     entt::entity on_planet;
 
     float view_scale = 10.f;
+
+    entt::entity selected_city = entt::null;
 };
 }  // namespace systems
 }  // namespace client

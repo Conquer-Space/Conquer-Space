@@ -66,7 +66,6 @@ void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
     using cqsp::asset::TextAsset;
     // Process scripts for core
     TextAsset* script_list = GetAssetManager().GetAsset<TextAsset>("core:base");
-    SPDLOG_INFO("{}", script_list->data);
     GetApp().GetScriptInterface().RunScript(script_list->data);
     SPDLOG_INFO("Done loading scripts");
     using cqsp::common::systems::universegenerator::ScriptUniverseGenerator;

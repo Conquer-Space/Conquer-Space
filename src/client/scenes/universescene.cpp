@@ -103,19 +103,19 @@ void cqsp::scene::UniverseScene::Init() {
 void cqsp::scene::UniverseScene::Update(float deltaTime) {
     ZoneScoped;
 
+    // Check for last tick
+    if (GetUniverse().ToTick() && !game_halted) {
+        // Game tick
+        simulation->tick();
+        system_renderer->OnTick();
+    }
+
     if (!game_halted) {
         if (!ImGui::GetIO().WantCaptureKeyboard && GetApp().ButtonIsReleased(engine::KeyInput::KEY_M)) {
             view_mode = !view_mode;
         }
         system_renderer->Update(deltaTime);
         // Check to see if you have to switch
-    }
-
-    // Check for last tick
-    if (GetUniverse().ToTick() && !game_halted) {
-        // Game tick
-        simulation->tick();
-        system_renderer->OnTick();
     }
 
     DoScreenshot();
