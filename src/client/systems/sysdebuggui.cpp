@@ -91,9 +91,9 @@ void SysDebugMenu::Init() {}
 void SysDebugMenu::CqspMetricsWindow() {
             ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_Appearing);
         ImGui::Begin("Conquer Space benchmarking", &to_show_cqsp_metrics);
-        ImPlot::SetNextPlotLimitsX(GetApp().GetTime() - fps_history_len,
-                                            GetApp().GetTime(), ImGuiCond_Always);
-        ImPlot::SetNextPlotLimitsY(0, 300, ImGuiCond_Always);
+            ImPlot::SetNextAxesLimits(GetApp().GetTime() - fps_history_len,
+                                      GetApp().GetTime(), 0, 300,
+                                      ImGuiCond_Always);
         if (ImPlot::BeginPlot("FPS", "Time (s)", "FPS", ImVec2(-1, 0), ImPlotFlags_NoChild,
                                             ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit)) {
             ImPlot::PlotLine("FPS", &fps_history[0].x, &fps_history[0].y,
@@ -101,12 +101,12 @@ void SysDebugMenu::CqspMetricsWindow() {
             ImPlot::EndPlot();
         }
 
-        ImPlot::SetNextPlotLimitsX(GetApp().GetTime() - fps_history_len, GetApp().GetTime(),
-                                                                            ImGuiCond_Always);
+        ImPlot::SetNextAxisLimits(ImAxis_X1, GetApp().GetTime() - fps_history_len,
+                          GetApp().GetTime(), ImGuiCond_Always);
         if (ImPlot::BeginPlot("Profiler", "Time (s)", "Run time (us)", ImVec2(-1, 0),
-                                    ImPlotFlags_NoMousePos | ImPlotFlags_NoChild,
+                                    ImPlotFlags_NoMouseText | ImPlotFlags_NoChild,
                                     ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit)) {
-            ImPlot::SetLegendLocation(ImPlotLocation_SouthEast);
+            ImPlot::SetupLegend(ImPlotLocation_SouthEast);
             for (auto it = history_maps.begin(); it != history_maps.end();
                  it++) {
                 ImPlot::PlotLine(it->first.c_str(), &it->second[0].x, &it->second[0].y,
