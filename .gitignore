@@ -18,7 +18,5 @@
 /__pycache__/
 *.pyc
 
-# Vcpkg dir
-/vcpkg/
 /doxygen_docs/html
 /doxygen_docs/latex
