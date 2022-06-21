@@ -18,6 +18,7 @@
             longitude: -0.1275
         }
         identifier: london
+        timezone: GMT
         planet: earth
     }
     {
