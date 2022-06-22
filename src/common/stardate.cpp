@@ -36,6 +36,22 @@ std::string StarDate::ToString() {
     return fmt::format("{}-{}-{}", (int) date.year(), (unsigned int) date.month(), (unsigned int) date.day());
 }
 
+std::string StarDate::ToString(double offset) {
+    int day = this->date / 24;
+
+    double diff =
+        floor(this->date / 24.f) - floor((this->date + offset) / 24.f);
+    if (diff > 0) {
+        day--;
+    } else if (diff < 0) {
+        day++;
+    }
+
+    auto date = GetDateObject(start_date, day);
+    return fmt::format("{}-{}-{}", (int)date.year(), (unsigned int)date.month(),
+                       (unsigned int)date.day());
+}
+
 int StarDate::GetYear() {
     auto date = GetDateObject(start_date, (int)ToDay());
     return (int) date.year();

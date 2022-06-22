@@ -151,7 +151,6 @@ void SysStarSystemRenderer::OnTick() {
     if (current_planet != entt::null) {
         view_center = CalculateObjectPos(m_viewing_entity);
     }
-
     namespace cqspb = cqsp::common::components::bodies;
 
     auto system = m_app.GetUniverse().view<common::components::types::Orbit>();
@@ -272,6 +271,7 @@ void SysStarSystemRenderer::Update(float deltaTime) {
             if (glm::degrees(view_y) < -89.f) {
                 view_y = glm::radians(-89.f);
             }
+            selected_city = entt::null;
         }
 
         previous_mouseX = m_app.GetMouseX();
@@ -332,6 +332,8 @@ void SysStarSystemRenderer::Update(float deltaTime) {
         // Also change up the shader
         planet.shaderProgram = pbr_shader;
     }*/
+    // Calculate camera
+    CenterCameraOnCity();
 }
 
 void SysStarSystemRenderer::SeePlanet(entt::entity ent) {
@@ -346,6 +348,7 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
     ImGui::TextFmt("{} {} {}", cam_pos.x, cam_pos.y, cam_pos.z);
     ImGui::TextFmt("{} {} {}", view_center.x, view_center.y, view_center.z);
     ImGui::TextFmt("{}", scroll);
+    ImGui::TextFmt("{} {}", view_x, view_y);
     ImGui::TextFmt("Focused planets: {}",
         m_universe.view<FocusedPlanet>().size());
     ImGui::End();
@@ -608,7 +611,7 @@ void SysStarSystemRenderer::DrawTexturedPlanet(glm::vec3 &object_pos, entt::enti
 
     glm::mat4 position = glm::mat4(1.f);
     position = glm::translate(position, object_pos);
-    position *= glm::mat4(GetBodyRotation(body.axial, body.rotation));
+    position *= glm::mat4(GetBodyRotation(body.axial, body.rotation, body.rotation_offset));
 
     // Rotate
     float scale = body.radius;  // cqsp::common::components::types::toAU(body.radius)
@@ -719,7 +722,8 @@ void SysStarSystemRenderer::RenderCities(glm::vec3 &object_pos, const entt::enti
     }
 
     auto& body = m_app.GetUniverse().get<cqspc::bodies::Body>(body_entity);
-    auto quat = GetBodyRotation(body.axial, body.rotation);
+    auto quat = GetBodyRotation(body.axial, body.rotation, body.rotation_offset);
+
     // Rotate the body
     // Put in same layer as ships
     city.shaderProgram->UseProgram();
@@ -799,37 +803,30 @@ void SysStarSystemRenderer::CalculateScroll() {
     scroll -= m_app.GetScrollAmount() * 3 * scroll / 33;
 }
 
-glm::quat SysStarSystemRenderer::GetBodyRotation(double axial, double rotation) {
+glm::quat SysStarSystemRenderer::GetBodyRotation(double axial, double rotation, double day_offset) {
     namespace cqspt = cqsp::common::components::types;
-    float rot = (float)(m_universe.date.ToSecond() / rotation * cqspt::TWOPI);
+    float rot = (float)common::components::bodies::GetPlanetRotationAngle(
+        m_universe.date.ToSecond(), rotation, day_offset);
     if (rotation == 0) {
         rot = 0;
     }
-    return glm::quat{{0.f, 0.f, (float)axial}} * glm::quat{{0.f, (float)fmod(rot, cqspt::TWOPI), 0.f}};
+    return glm::quat{{0.f, (float)fmod(rot, cqspt::TWOPI), (float)axial}};
 }
 
 void SysStarSystemRenderer::FocusCityView() {
-    namespace cqspt = cqsp::common::components::types;
     auto focused_city_view = m_app.GetUniverse().view<FocusedCity>();
-    entt::entity city_entity = focused_city_view.front();
-
     // City to focus view on
     if (focused_city_view.empty()) {
         return;
     }
+    selected_city = focused_city_view.front();
     m_universe.clear<FocusedCity>();
 
-    // Then select the city
-    // Focus view on city
-    // Calculate the vector we can get to see the city, then see it
-    if (!m_universe.any_of<cqspt::SurfaceCoordinate>(city_entity)) {
-        return;
-    }
-    auto& surf = m_universe.get<cqspt::SurfaceCoordinate>(city_entity);
-    view_x = surf.r_longitude();
-    view_y = surf.r_latitude();
-    // Get size, and get outside
-    scroll = 1.5;
+    CenterCameraOnCity();
+    entt::entity planet = m_app.GetUniverse().view<FocusedPlanet>().front();
+    auto& body = m_universe.get<cqsp::common::components::bodies::Body>(planet);
+    // 100 km above the city
+    scroll = body.radius + 100;
 }
 
 glm::vec3 SysStarSystemRenderer::CalculateObjectPos(const entt::entity &ent) {
@@ -850,6 +847,40 @@ glm::vec3 SysStarSystemRenderer::CalculateCenteredObject(const glm::vec3 &vec) {
 glm::vec3 SysStarSystemRenderer::TranslateToNormalized(const glm::vec3 &pos) {
     return glm::vec3((pos.x / m_app.GetWindowWidth() - 0.5) * 2,
             (pos.y / m_app.GetWindowHeight() - 0.5) * 2, 0);
+}
+
+void SysStarSystemRenderer::CenterCameraOnCity() {
+    namespace cqspt = common::components::types;
+    if (selected_city == entt::null) {
+        return;
+    }
+
+    if (!m_universe.any_of<cqspt::SurfaceCoordinate>(selected_city)) {
+        return;
+    }
+
+    auto& surf = m_universe.get<cqspt::SurfaceCoordinate>(selected_city);
+    // TODO(EhWhoAmI): Change this so that it doesn't have to change the
+    // coordinate system multiple times. Currently this changes from surface
+    // coordinates to 3d coordinates to surface coordinates. I think it can be
+    // solved with a basic formula.
+    entt::entity planet = m_app.GetUniverse().view<FocusedPlanet>().front();
+    auto& body = m_universe.get<cqsp::common::components::bodies::Body>(planet);
+    double rot = common::components::bodies::GetPlanetRotationAngle(
+        m_universe.date.ToSecond(), body.rotation, body.rotation_offset);
+    if (body.rotation == 0) {
+        rot = 0;
+    }
+    glm::quat quat =
+        glm::quat{{0.f, (float)fmod(rot - cqspt::PI / 2, cqspt::TWOPI),
+                   (float)body.axial}};
+
+    glm::vec3 vec = cqspt::toVec3(surf, 1);
+    auto s = quat * vec;
+    glm::vec3 pos = glm::normalize(s);
+    rot = common::components::types::normalize_radian(rot);
+    view_x = atan2(s.x, s.z);
+    view_y = -acos(s.y) + cqspt::PI / 2;
 }
 
 glm::vec3 SysStarSystemRenderer::CalculateCenteredObject(const entt::entity &ent) {

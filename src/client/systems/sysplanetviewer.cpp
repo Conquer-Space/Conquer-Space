@@ -185,6 +185,21 @@ void SysPlanetInformation::CityInformationPanel() {
         ImGui::TextFmt("No population");
     }
 
+    if (GetUniverse().all_of<cqspc::CityTimeZone>(selected_city_entity)) {
+        // Set time zone
+        auto& tz = GetUniverse().get<cqspc::CityTimeZone>(selected_city_entity);
+        auto& tz_def = GetUniverse().get<cqspc::TimeZone>(tz.time_zone);
+        int time = (int) (GetUniverse().date.GetDate() + tz_def.time_diff) % 24;
+        if (time < 0) {
+            time = time + 24;
+        }
+        const std::string& tz_name =
+            GetUniverse().get<cqspc::Identifier>(tz.time_zone).identifier;
+        ImGui::TextFmt(
+            "{} {}:00 ({})", GetUniverse().date.ToString(tz_def.time_diff),
+            time, tz_name);
+    }
+
     if (GetUniverse().all_of<cqspc::Industry>(selected_city_entity)) {
         if (ImGui::BeginTabBar("CityTabs", ImGuiTabBarFlags_None)) {
             if (ImGui::BeginTabItem("Demographics")) {

@@ -52,6 +52,7 @@ class StarDate {
     double ToDay() { return date/24.f; }
 
     std::string ToString();
+    std::string ToString(double offset);
 
     int GetYear();
     int GetMonth();

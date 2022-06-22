@@ -32,7 +32,7 @@
             LAN: 48.3 deg
             M0: 174.796 deg
         }
-        rotation: 58.646 d
+        day_length: 58.646 d
         axial: 2.04 deg
         texture: {
             terrain: mercurymap
@@ -54,7 +54,7 @@
             M0: 50.115 deg
         }
         // Venus rotates backward
-        rotation: -243.0226 d
+        day_length: -243.0226 d
         axial: 2.64 deg
         texture: {
             terrain: venusmap
@@ -79,7 +79,8 @@
             M0: 358.617 deg
         }
         // Sidereal 
-        rotation: 0.99726968 d
+        day_length: 0.99726968 d
+        day_offset: 0.7790572732640
         // Axial tilt
         axial: 23.4392811 deg
         texture: {
@@ -106,7 +107,7 @@
             terrain: moonmap
         }
         axial: 1.5424 deg
-        rotation: 27.321661 d
+        day_length: 27.321661 d
         tags: []
     }
     {
@@ -123,7 +124,7 @@
             LAN: 2.296616161126016 deg
             M0: 132.7012350930954 deg
         }
-        rotation: 27.321661 d
+        day_length: 27.321661 d
         axial: 1.5424 deg
         texture: {
             terrain: moonmap
@@ -145,7 +146,7 @@
             LAN: 49.57854 deg
             M0: 19.412 deg
         }
-        rotation: 1.025957 d
+        day_length: 1.025957 d
         axial: 25.19 deg
         texture: {
             terrain: marsmap
@@ -167,7 +168,7 @@
             LAN: 100.464 deg
             M0: 20.020 deg
         }
-        rotation: 9.9250 h
+        day_length: 9.9250 h
         axial: 3.13 deg
         texture: {
             terrain: jupitermap
@@ -188,7 +189,7 @@
             LAN: 113.665 deg
             M0: 317.020 deg
         }
-        rotation: 633 m
+        day_length: 633 m
         axial: 26.73 deg
         texture: {
             terrain: saturnmap
@@ -209,7 +210,7 @@
             LAN: 74.006 deg
             M0: 142.238600 deg
         }
-        rotation: -0.71833 d
+        day_length: -0.71833 d
         axial: 28.32
         texture: {
             terrain: uranusmap
@@ -230,7 +231,7 @@
             LAN: 131.783 deg
             M0: 256.228 deg
         }
-        rotation: 0.6713 d
+        day_length: 0.6713 d
         axial: 97.77 deg
         texture: {
             terrain: neptunemap
@@ -243,7 +244,7 @@
         radius: 1188.3 km
         reference: sun
         gm: 8.719e2
-        rotation: -6.387230 d
+        day_length: -6.387230 d
         axial: 122.53 deg
         orbit: {
             semi_major_axis: 39.482 AU

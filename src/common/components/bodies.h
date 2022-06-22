@@ -50,6 +50,8 @@ struct Body {
 
     // Axial rotation
     double axial = 0.0;
+
+    double rotation_offset = 0.0;
 };
 
 /// <summary>
@@ -71,6 +73,17 @@ inline double CalculateSOI(const double& mass, const double& reference_mass, con
 /// <param name="GM"></param>
 /// <returns></returns>
 inline double CalculateMass(const double& GM) { return GM/types::G_km; }
+
+/// <summary>
+/// Calculates the current planet rotation angle
+/// </summary>
+/// <param name="time">current time in seconds</param>
+/// <param name="day_length">length of day in seconds</param>
+/// <param name="offset">offset of day</param>
+/// <returns>Angle the planet should be in radians</returns>
+inline double GetPlanetRotationAngle(const double& time, const double& day_length, const double& offset) {
+    return (time / day_length - offset) * types::TWOPI;
+}
 
 struct TexturedTerrain {
     std::string terrain_name;

@@ -86,5 +86,5 @@ inline light_year toLightYear(astronomical_unit au) { return au / 63241; }
 inline astronomical_unit LtyrtoAU(light_year ltyr) { return ltyr * 63241; }
 inline kilometer toKm(astronomical_unit au) { return au * KmInAu; }
 inline radian toRadian(degree theta) { return theta * (PI / 180.f); }
-inline degree toDegree(radian theta) { return theta * (180 / PI); }
+inline degree toDegree(radian theta) { return theta * (180.f / PI); }
 }  // namespace cqsp::common::components::types

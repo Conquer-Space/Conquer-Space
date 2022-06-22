@@ -147,13 +147,15 @@ class SysStarSystemRenderer {
     /// </summary>
     /// <param name="axial">Axial rotation in radians</param>
     /// <param name="rotation">Rotation period in seconds</param>
-    glm::quat GetBodyRotation(double axial, double rotation);
+    glm::quat GetBodyRotation(double axial, double rotation, double day_offset);
     void FocusCityView();
 
     glm::vec3 CalculateObjectPos(const entt::entity &);
     glm::vec3 CalculateCenteredObject(const entt::entity &);
     glm::vec3 CalculateCenteredObject(const glm::vec3 &);
     glm::vec3 TranslateToNormalized(const glm::vec3 &);
+
+    void CenterCameraOnCity();
 
     void CalculateCamera();
     void MoveCamera(double deltaTime);
@@ -185,6 +187,8 @@ class SysStarSystemRenderer {
     entt::entity on_planet;
 
     float view_scale = 10.f;
+
+    entt::entity selected_city = entt::null;
 };
 }  // namespace systems
 }  // namespace client
