@@ -19,7 +19,7 @@
 #include <fmt/format.h>
 
 #include "date/date.h"
-
+#include <spdlog/spdlog.h>
 namespace cqsp::common::components {
 namespace {
 auto GetDateObject(int start_date, int day) {
@@ -34,6 +34,22 @@ std::string StarDate::ToString() {
     // Parse the date
     auto date = GetDateObject(start_date, (int)ToDay());
     return fmt::format("{}-{}-{}", (int) date.year(), (unsigned int) date.month(), (unsigned int) date.day());
+}
+
+std::string StarDate::ToString(double offset) {
+    int day = this->date / 24;
+
+    double diff =
+        floor(this->date / 24.f) - floor((this->date + offset) / 24.f);
+    if (diff > 0) {
+        day--;
+    } else if (diff < 0) {
+        day++;
+    }
+
+    auto date = GetDateObject(start_date, day);
+    return fmt::format("{}-{}-{}", (int)date.year(), (unsigned int)date.month(),
+                       (unsigned int)date.day());
 }
 
 int StarDate::GetYear() {

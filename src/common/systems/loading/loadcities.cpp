@@ -32,6 +32,11 @@ bool CityLoader::LoadValue(
     universe.emplace<components::Settlement>(entity);
     universe.get_or_emplace<components::Habitation>(universe.planets[planet])
         .settlements.push_back(entity);
+
+    if (!values["timezone"].empty()) {
+        entt::entity tz = universe.time_zones[values["timezone"].to_string()];
+        universe.emplace<components::CityTimeZone>(entity, tz);
+    }
     // Add to city
     return true;
 }

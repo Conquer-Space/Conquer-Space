@@ -10,6 +10,7 @@
         }
         identifier: nyc
         planet: earth
+        timezone: EDT
     }
     {
         name: London
@@ -30,6 +31,7 @@
 
         }
         planet: earth
+        timezone: RDT
     }
     {
         name: Tokyo
@@ -40,6 +42,7 @@
 
         }
         planet: earth
+        timezone: JST
     }
     {
         name: Los Angeles
@@ -50,6 +53,7 @@
 
         }
         planet: earth
+        timezone: PDT
     }
     {
         name: Beijing
@@ -60,6 +64,7 @@
 
         }
         planet: earth
+        timezone: CST
     }
     {
         name: Hong Kong
@@ -70,6 +75,7 @@
 
         }
         planet: earth
+        timezone: CST
     }
     {
         name: Chicago
@@ -80,6 +86,7 @@
 
         }
         planet: earth
+        timezone: CDT
     }
     {
         name: Singapore
@@ -89,6 +96,7 @@
             longitude: 103.8198
         }
         planet: earth
+        timezone: MPST
     }
     {
         name: Shanghai
@@ -98,6 +106,7 @@
             longitude: 121.4667
         }
         planet: earth
+        timezone: CST
     }
     {
         name: Sydney
@@ -107,6 +116,7 @@
             longitude: 151.2094
         }
         planet: earth
+        timezone: CST
     }
     {
         name: Rio de Janeiro
@@ -116,6 +126,7 @@
             longitude: -43.1964
         }
         planet: earth
+        timezone: ESAST
     }
     {
         name: Addis Ababa
@@ -125,6 +136,7 @@
             longitude: 38.7369
         }
         planet: earth
+        timezone: EAST
     }
     {
         name: Moscow
@@ -134,6 +146,7 @@
             longitude: 37.6178
         }
         planet: earth
+        timezone: MSK
     }
     {
         name: New Delhi
@@ -143,6 +156,7 @@
             longitude: 77.209
         }
         planet: earth
+        timezone: IST
     }
     {
         name: Cairo
@@ -152,6 +166,7 @@
             longitude: 31.2358
         }
         planet: earth
+        timezone: EST
     }
     {
         name: Toronto
@@ -161,6 +176,7 @@
             longitude: -79.3733
         }
         planet: earth
+        timezone: EST
     }
     {
         name: Seattle
@@ -170,6 +186,7 @@
             longitude: -122.3244
         }
         planet: earth
+        timezone: PST
     }
     {
         name: Mexico City
@@ -179,6 +196,7 @@
             longitude: -99.1333
         }
         planet: earth
+        timezone: CDT
     }
     {
         name: Phoenix
@@ -188,6 +206,7 @@
             longitude: -112.0891
         }
         planet: earth
+        timezone: UMST
     }
     {
         name: Jakarta
@@ -197,5 +216,6 @@
             longitude: 106.8451
         }
         planet: earth
+        timezone: SAST
     }
 ]

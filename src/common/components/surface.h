@@ -40,6 +40,14 @@ struct Habitation {
 struct Settlement {
     std::vector<entt::entity> population;
 };
+
+struct TimeZone {
+    double time_diff;
+};
+
+struct CityTimeZone {
+    entt::entity time_zone;
+};
 }  // namespace components
 }  // namespace common
 }  // namespace cqsp

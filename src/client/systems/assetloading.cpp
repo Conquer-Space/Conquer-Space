@@ -30,6 +30,7 @@
 #include "common/systems/loading/loadplanets.h"
 #include "common/systems/loading/loadcities.h"
 #include "common/systems/loading/hjsonloader.h"
+#include "common/systems/loading/timezoneloader.h"
 
 namespace {
 void LoadResource(cqsp::engine::Application& app, std::string asset_name,
@@ -77,6 +78,7 @@ void LoadAllResources(cqsp::engine::Application& app) {
     LoadResource<GoodLoader>(app, "goods");
     LoadResource<RecipeLoader>(app, "recipes");
     LoadResource<PlanetLoader>(app, "planets");
+    LoadResource<TimezoneLoader>(app, "timezones");
     LoadResource<CityLoader>(app, "cities");
     LoadResource(app, "names", LoadNameLists);
     LoadResource(app, "tech_fields", common::systems::science::LoadFields);

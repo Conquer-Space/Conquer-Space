@@ -25,4 +25,9 @@
         type: hjson
         hints: {}
     }
+    timezones: {
+        path: timezones.hjson
+        type: hjson
+        hints: {}
+    }
 }

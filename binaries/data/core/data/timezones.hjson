@@ -1,7 +1,7 @@
 [
   {
-    value: Dateline Standard Time
-    abbr: DST
+    name: Dateline Standard Time
+    identifier: DST
     offset: -12
     isdst: false
     text: (UTC-12:00) International Date Line West
@@ -11,8 +11,8 @@
     ]
   }
   {
-    value: UTC-11
-    abbr: U
+    name: UTC-11
+    identifier: U
     offset: -11
     isdst: false
     text: (UTC-11:00) Coordinated Universal Time-11
@@ -25,8 +25,8 @@
     ]
   }
   {
-    value: Hawaiian Standard Time
-    abbr: HST
+    name: Hawaiian Standard Time
+    identifier: HST
     offset: -10
     isdst: false
     text: (UTC-10:00) Hawaii
@@ -40,8 +40,8 @@
     ]
   }
   {
-    value: Alaskan Standard Time
-    abbr: AKDT
+    name: Alaskan Standard Time
+    identifier: AKDT
     offset: -8
     isdst: true
     text: (UTC-09:00) Alaska
@@ -55,8 +55,8 @@
     ]
   }
   {
-    value: Pacific Standard Time (Mexico)
-    abbr: PDT
+    name: Pacific Standard Time (Mexico)
+    identifier: PDT
     offset: -7
     isdst: true
     text: (UTC-08:00) Baja California
@@ -66,8 +66,8 @@
     ]
   }
   {
-    value: Pacific Daylight Time
-    abbr: PDT
+    name: Pacific Daylight Time
+    identifier: PDT
     offset: -7
     isdst: true
     text: (UTC-07:00) Pacific Daylight Time (US & Canada)
@@ -79,8 +79,8 @@
     ]
   }
   {
-    value: Pacific Standard Time
-    abbr: PST
+    name: Pacific Standard Time
+    identifier: PST
     offset: -8
     isdst: false
     text: (UTC-08:00) Pacific Standard Time (US & Canada)
@@ -93,8 +93,8 @@
     ]
   }
   {
-    value: US Mountain Standard Time
-    abbr: UMST
+    name: US Mountain Standard Time
+    identifier: UMST
     offset: -7
     isdst: false
     text: (UTC-07:00) Arizona
@@ -110,8 +110,8 @@
     ]
   }
   {
-    value: Mountain Standard Time (Mexico)
-    abbr: MDT
+    name: Mountain Standard Time (Mexico)
+    identifier: MDT
     offset: -6
     isdst: true
     text: (UTC-07:00) Chihuahua, La Paz, Mazatlan
@@ -122,8 +122,8 @@
     ]
   }
   {
-    value: Mountain Standard Time
-    abbr: MDT
+    name: Mountain Standard Time
+    identifier: MDT
     offset: -6
     isdst: true
     text: (UTC-07:00) Mountain Time (US & Canada)
@@ -140,8 +140,8 @@
     ]
   }
   {
-    value: Central America Standard Time
-    abbr: CAST
+    name: Central America Standard Time
+    identifier: CAST
     offset: -6
     isdst: false
     text: (UTC-06:00) Central America
@@ -158,8 +158,8 @@
     ]
   }
   {
-    value: Central Standard Time
-    abbr: CDT
+    name: Central Standard Time
+    identifier: CDT
     offset: -5
     isdst: true
     text: (UTC-06:00) Central Time (US & Canada)
@@ -181,8 +181,8 @@
     ]
   }
   {
-    value: Central Standard Time (Mexico)
-    abbr: CDT
+    name: Central Standard Time (Mexico)
+    identifier: CDT
     offset: -5
     isdst: true
     text: (UTC-06:00) Guadalajara, Mexico City, Monterrey
@@ -196,8 +196,8 @@
     ]
   }
   {
-    value: Canada Central Standard Time
-    abbr: CCST
+    name: Canada Central Standard Time
+    identifier: CCST
     offset: -6
     isdst: false
     text: (UTC-06:00) Saskatchewan
@@ -208,8 +208,8 @@
     ]
   }
   {
-    value: SA Pacific Standard Time
-    abbr: SPST
+    name: SA Pacific Standard Time
+    identifier: SPST
     offset: -5
     isdst: false
     text: (UTC-05:00) Bogota, Lima, Quito
@@ -228,8 +228,8 @@
     ]
   }
   {
-    value: Eastern Standard Time
-    abbr: EST
+    name: Eastern Standard Time
+    identifier: EST
     offset: -5
     isdst: false
     text: (UTC-05:00) Eastern Time (US & Canada)
@@ -254,8 +254,8 @@
     ]
   }
   {
-    value: Eastern Daylight Time
-    abbr: EDT
+    name: Eastern Daylight Time
+    identifier: EDT
     offset: -4
     isdst: true
     text: (UTC-04:00) Eastern Daylight Time (US & Canada)
@@ -280,8 +280,8 @@
     ]
   }
   {
-    value: US Eastern Standard Time
-    abbr: UEDT
+    name: US Eastern Standard Time
+    identifier: UEDT
     offset: -5
     isdst: false
     text: (UTC-05:00) Indiana (East)
@@ -293,8 +293,8 @@
     ]
   }
   {
-    value: Venezuela Standard Time
-    abbr: VST
+    name: Venezuela Standard Time
+    identifier: VST
     offset: -4.5
     isdst: false
     text: (UTC-04:30) Caracas
@@ -304,8 +304,8 @@
     ]
   }
   {
-    value: Paraguay Standard Time
-    abbr: PYT
+    name: Paraguay Standard Time
+    identifier: PYT
     offset: -4
     isdst: false
     text: (UTC-04:00) Asuncion
@@ -315,8 +315,8 @@
     ]
   }
   {
-    value: Atlantic Standard Time
-    abbr: ADT
+    name: Atlantic Standard Time
+    identifier: ADT
     offset: -3
     isdst: true
     text: (UTC-04:00) Atlantic Time (Canada)
@@ -331,8 +331,8 @@
     ]
   }
   {
-    value: Central Brazilian Standard Time
-    abbr: CBST
+    name: Central Brazilian Standard Time
+    identifier: CBST
     offset: -4
     isdst: false
     text: (UTC-04:00) Cuiaba
@@ -343,8 +343,8 @@
     ]
   }
   {
-    value: SA Western Standard Time
-    abbr: SWST
+    name: SA Western Standard Time
+    identifier: SWST
     offset: -4
     isdst: false
     text: (UTC-04:00) Georgetown, La Paz, Manaus, San Juan
@@ -383,8 +383,8 @@
     ]
   }
   {
-    value: Pacific SA Standard Time
-    abbr: PSST
+    name: Pacific SA Standard Time
+    identifier: PSST
     offset: -4
     isdst: false
     text: (UTC-04:00) Santiago
@@ -395,8 +395,8 @@
     ]
   }
   {
-    value: Newfoundland Standard Time
-    abbr: NDT
+    name: Newfoundland Standard Time
+    identifier: NDT
     offset: -2.5
     isdst: true
     text: (UTC-03:30) Newfoundland
@@ -406,8 +406,8 @@
     ]
   }
   {
-    value: E. South America Standard Time
-    abbr: ESAST
+    name: E. South America Standard Time
+    identifier: ESAST
     offset: -3
     isdst: false
     text: (UTC-03:00) Brasilia
@@ -417,8 +417,8 @@
     ]
   }
   {
-    value: Argentina Standard Time
-    abbr: AST
+    name: Argentina Standard Time
+    identifier: AST
     offset: -3
     isdst: false
     text: (UTC-03:00) Buenos Aires
@@ -439,8 +439,8 @@
     ]
   }
   {
-    value: SA Eastern Standard Time
-    abbr: SEST
+    name: SA Eastern Standard Time
+    identifier: SEST
     offset: -3
     isdst: false
     text: (UTC-03:00) Cayenne, Fortaleza
@@ -460,8 +460,8 @@
     ]
   }
   {
-    value: Greenland Standard Time
-    abbr: GDT
+    name: Greenland Standard Time
+    identifier: GDT
     offset: -3
     isdst: true
     text: (UTC-03:00) Greenland
@@ -471,8 +471,8 @@
     ]
   }
   {
-    value: Montevideo Standard Time
-    abbr: MST
+    name: Montevideo Standard Time
+    identifier: MST
     offset: -3
     isdst: false
     text: (UTC-03:00) Montevideo
@@ -482,8 +482,8 @@
     ]
   }
   {
-    value: Bahia Standard Time
-    abbr: BST
+    name: Bahia Standard Time
+    identifier: BST
     offset: -3
     isdst: false
     text: (UTC-03:00) Salvador
@@ -493,8 +493,8 @@
     ]
   }
   {
-    value: UTC-02
-    abbr: U
+    name: UTC-02
+    identifier: U
     offset: -2
     isdst: false
     text: (UTC-02:00) Coordinated Universal Time-02
@@ -506,16 +506,16 @@
     ]
   }
   {
-    value: Mid-Atlantic Standard Time
-    abbr: MDT
+    name: Mid-Atlantic Standard Time
+    identifier: MDT
     offset: -1
     isdst: true
     text: (UTC-02:00) Mid-Atlantic - Old
     utc: []
   }
   {
-    value: Azores Standard Time
-    abbr: ADT
+    name: Azores Standard Time
+    identifier: ADT
     offset: 0
     isdst: true
     text: (UTC-01:00) Azores
@@ -526,8 +526,8 @@
     ]
   }
   {
-    value: Cape Verde Standard Time
-    abbr: CVST
+    name: Cape Verde Standard Time
+    identifier: CVST
     offset: -1
     isdst: false
     text: (UTC-01:00) Cape Verde Is.
@@ -538,8 +538,8 @@
     ]
   }
   {
-    value: Morocco Standard Time
-    abbr: MDT
+    name: Morocco Standard Time
+    identifier: MDT
     offset: 1
     isdst: true
     text: (UTC) Casablanca
@@ -550,8 +550,8 @@
     ]
   }
   {
-    value: UTC
-    abbr: UTC
+    name: UTC
+    identifier: UTC
     offset: 0
     isdst: false
     text: (UTC) Coordinated Universal Time
@@ -562,8 +562,8 @@
     ]
   }
   {
-    value: GMT Standard Time
-    abbr: GMT
+    name: GMT Standard Time
+    identifier: GMT
     offset: 0
     isdst: false
     text: (UTC) Edinburgh, London
@@ -576,8 +576,8 @@
     ]
   }
   {
-    value: British Summer Time
-    abbr: BST
+    name: British Summer Time
+    identifier: BST
     offset: 1
     isdst: true
     text: (UTC+01:00) Edinburgh, London
@@ -590,8 +590,8 @@
     ]
   }
   {
-    value: GMT Standard Time
-    abbr: GDT
+    name: GMT Standard Time
+    identifier: GDT
     offset: 1
     isdst: true
     text: (UTC) Dublin, Lisbon
@@ -605,8 +605,8 @@
     ]
   }
   {
-    value: Greenwich Standard Time
-    abbr: GST
+    name: Greenwich Standard Time
+    identifier: GST
     offset: 0
     isdst: false
     text: (UTC) Monrovia, Reykjavik
@@ -630,8 +630,8 @@
     ]
   }
   {
-    value: W. Europe Standard Time
-    abbr: WEDT
+    name: W. Europe Standard Time
+    identifier: WEDT
     offset: 2
     isdst: true
     text: (UTC+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna
@@ -657,8 +657,8 @@
     ]
   }
   {
-    value: Central Europe Standard Time
-    abbr: CEDT
+    name: Central Europe Standard Time
+    identifier: CEDT
     offset: 2
     isdst: true
     text: (UTC+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague
@@ -674,8 +674,8 @@
     ]
   }
   {
-    value: Romance Standard Time
-    abbr: RDT
+    name: Romance Standard Time
+    identifier: RDT
     offset: 2
     isdst: true
     text: (UTC+01:00) Brussels, Copenhagen, Madrid, Paris
@@ -689,8 +689,8 @@
     ]
   }
   {
-    value: Central European Standard Time
-    abbr: CEDT
+    name: Central European Standard Time
+    identifier: CEDT
     offset: 2
     isdst: true
     text: (UTC+01:00) Sarajevo, Skopje, Warsaw, Zagreb
@@ -703,8 +703,8 @@
     ]
   }
   {
-    value: W. Central Africa Standard Time
-    abbr: WCAST
+    name: W. Central Africa Standard Time
+    identifier: WCAST
     offset: 1
     isdst: false
     text: (UTC+01:00) West Central Africa
@@ -727,8 +727,8 @@
     ]
   }
   {
-    value: Namibia Standard Time
-    abbr: NST
+    name: Namibia Standard Time
+    identifier: NST
     offset: 1
     isdst: false
     text: (UTC+01:00) Windhoek
@@ -738,8 +738,8 @@
     ]
   }
   {
-    value: GTB Standard Time
-    abbr: GDT
+    name: GTB Standard Time
+    identifier: GDT
     offset: 3
     isdst: true
     text: (UTC+02:00) Athens, Bucharest
@@ -752,8 +752,8 @@
     ]
   }
   {
-    value: Middle East Standard Time
-    abbr: MEDT
+    name: Middle East Standard Time
+    identifier: MEDT
     offset: 3
     isdst: true
     text: (UTC+02:00) Beirut
@@ -763,8 +763,8 @@
     ]
   }
   {
-    value: Egypt Standard Time
-    abbr: EST
+    name: Egypt Standard Time
+    identifier: EST
     offset: 2
     isdst: false
     text: (UTC+02:00) Cairo
@@ -774,8 +774,8 @@
     ]
   }
   {
-    value: Syria Standard Time
-    abbr: SDT
+    name: Syria Standard Time
+    identifier: SDT
     offset: 3
     isdst: true
     text: (UTC+02:00) Damascus
@@ -785,8 +785,8 @@
     ]
   }
   {
-    value: E. Europe Standard Time
-    abbr: EEDT
+    name: E. Europe Standard Time
+    identifier: EEDT
     offset: 3
     isdst: true
     text: (UTC+02:00) E. Europe
@@ -809,8 +809,8 @@
     ]
   }
   {
-    value: South Africa Standard Time
-    abbr: SAST
+    name: South Africa Standard Time
+    identifier: SAST
     offset: 2
     isdst: false
     text: (UTC+02:00) Harare, Pretoria
@@ -831,8 +831,8 @@
     ]
   }
   {
-    value: FLE Standard Time
-    abbr: FDT
+    name: FLE Standard Time
+    identifier: FDT
     offset: 3
     isdst: true
     text: (UTC+02:00) Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius
@@ -850,8 +850,8 @@
     ]
   }
   {
-    value: Turkey Standard Time
-    abbr: TDT
+    name: Turkey Standard Time
+    identifier: TDT
     offset: 3
     isdst: false
     text: (UTC+03:00) Istanbul
@@ -861,8 +861,8 @@
     ]
   }
   {
-    value: Israel Standard Time
-    abbr: JDT
+    name: Israel Standard Time
+    identifier: JDT
     offset: 3
     isdst: true
     text: (UTC+02:00) Jerusalem
@@ -872,8 +872,8 @@
     ]
   }
   {
-    value: Libya Standard Time
-    abbr: LST
+    name: Libya Standard Time
+    identifier: LST
     offset: 2
     isdst: false
     text: (UTC+02:00) Tripoli
@@ -883,8 +883,8 @@
     ]
   }
   {
-    value: Jordan Standard Time
-    abbr: JST
+    name: Jordan Standard Time
+    identifier: JST
     offset: 3
     isdst: false
     text: (UTC+03:00) Amman
@@ -894,8 +894,8 @@
     ]
   }
   {
-    value: Arabic Standard Time
-    abbr: AST
+    name: Arabic Standard Time
+    identifier: AST
     offset: 3
     isdst: false
     text: (UTC+03:00) Baghdad
@@ -905,8 +905,8 @@
     ]
   }
   {
-    value: Kaliningrad Standard Time
-    abbr: KST
+    name: Kaliningrad Standard Time
+    identifier: KST
     offset: 3
     isdst: false
     text: (UTC+02:00) Kaliningrad
@@ -916,8 +916,8 @@
     ]
   }
   {
-    value: Arab Standard Time
-    abbr: AST
+    name: Arab Standard Time
+    identifier: AST
     offset: 3
     isdst: false
     text: (UTC+03:00) Kuwait, Riyadh
@@ -931,8 +931,8 @@
     ]
   }
   {
-    value: E. Africa Standard Time
-    abbr: EAST
+    name: E. Africa Standard Time
+    identifier: EAST
     offset: 3
     isdst: false
     text: (UTC+03:00) Nairobi
@@ -955,8 +955,8 @@
     ]
   }
   {
-    value: Moscow Standard Time
-    abbr: MSK
+    name: Moscow Standard Time
+    identifier: MSK
     offset: 3
     isdst: false
     text: (UTC+03:00) Moscow, St. Petersburg, Volgograd, Minsk
@@ -970,8 +970,8 @@
     ]
   }
   {
-    value: Samara Time
-    abbr: SAMT
+    name: Samara Time
+    identifier: SAMT
     offset: 4
     isdst: false
     text: (UTC+04:00) Samara, Ulyanovsk, Saratov
@@ -983,8 +983,8 @@
     ]
   }
   {
-    value: Iran Standard Time
-    abbr: IDT
+    name: Iran Standard Time
+    identifier: IDT
     offset: 4.5
     isdst: true
     text: (UTC+03:30) Tehran
@@ -994,8 +994,8 @@
     ]
   }
   {
-    value: Arabian Standard Time
-    abbr: AST
+    name: Arabian Standard Time
+    identifier: AST
     offset: 4
     isdst: false
     text: (UTC+04:00) Abu Dhabi, Muscat
@@ -1007,8 +1007,8 @@
     ]
   }
   {
-    value: Azerbaijan Standard Time
-    abbr: ADT
+    name: Azerbaijan Standard Time
+    identifier: ADT
     offset: 5
     isdst: true
     text: (UTC+04:00) Baku
@@ -1018,8 +1018,8 @@
     ]
   }
   {
-    value: Mauritius Standard Time
-    abbr: MST
+    name: Mauritius Standard Time
+    identifier: MST
     offset: 4
     isdst: false
     text: (UTC+04:00) Port Louis
@@ -1031,8 +1031,8 @@
     ]
   }
   {
-    value: Georgian Standard Time
-    abbr: GET
+    name: Georgian Standard Time
+    identifier: GET
     offset: 4
     isdst: false
     text: (UTC+04:00) Tbilisi
@@ -1042,8 +1042,8 @@
     ]
   }
   {
-    value: Caucasus Standard Time
-    abbr: CST
+    name: Caucasus Standard Time
+    identifier: CST
     offset: 4
     isdst: false
     text: (UTC+04:00) Yerevan
@@ -1053,8 +1053,8 @@
     ]
   }
   {
-    value: Afghanistan Standard Time
-    abbr: AST
+    name: Afghanistan Standard Time
+    identifier: AST
     offset: 4.5
     isdst: false
     text: (UTC+04:30) Kabul
@@ -1064,8 +1064,8 @@
     ]
   }
   {
-    value: West Asia Standard Time
-    abbr: WAST
+    name: West Asia Standard Time
+    identifier: WAST
     offset: 5
     isdst: false
     text: (UTC+05:00) Ashgabat, Tashkent
@@ -1085,8 +1085,8 @@
     ]
   }
   {
-    value: Yekaterinburg Time
-    abbr: YEKT
+    name: Yekaterinburg Time
+    identifier: YEKT
     offset: 5
     isdst: false
     text: (UTC+05:00) Yekaterinburg
@@ -1096,8 +1096,8 @@
     ]
   }
   {
-    value: Pakistan Standard Time
-    abbr: PKT
+    name: Pakistan Standard Time
+    identifier: PKT
     offset: 5
     isdst: false
     text: (UTC+05:00) Islamabad, Karachi
@@ -1107,8 +1107,8 @@
     ]
   }
   {
-    value: India Standard Time
-    abbr: IST
+    name: India Standard Time
+    identifier: IST
     offset: 5.5
     isdst: false
     text: (UTC+05:30) Chennai, Kolkata, Mumbai, New Delhi
@@ -1119,8 +1119,8 @@
     ]
   }
   {
-    value: Sri Lanka Standard Time
-    abbr: SLST
+    name: Sri Lanka Standard Time
+    identifier: SLST
     offset: 5.5
     isdst: false
     text: (UTC+05:30) Sri Jayawardenepura
@@ -1130,8 +1130,8 @@
     ]
   }
   {
-    value: Nepal Standard Time
-    abbr: NST
+    name: Nepal Standard Time
+    identifier: NST
     offset: 5.75
     isdst: false
     text: (UTC+05:45) Kathmandu
@@ -1141,8 +1141,8 @@
     ]
   }
   {
-    value: Central Asia Standard Time
-    abbr: CAST
+    name: Central Asia Standard Time
+    identifier: CAST
     offset: 6
     isdst: false
     text: (UTC+06:00) Nur-Sultan (Astana)
@@ -1158,8 +1158,8 @@
     ]
   }
   {
-    value: Bangladesh Standard Time
-    abbr: BST
+    name: Bangladesh Standard Time
+    identifier: BST
     offset: 6
     isdst: false
     text: (UTC+06:00) Dhaka
@@ -1170,8 +1170,8 @@
     ]
   }
   {
-    value: Myanmar Standard Time
-    abbr: MST
+    name: Myanmar Standard Time
+    identifier: MST
     offset: 6.5
     isdst: false
     text: (UTC+06:30) Yangon (Rangoon)
@@ -1182,8 +1182,8 @@
     ]
   }
   {
-    value: SE Asia Standard Time
-    abbr: SAST
+    name: SE Asia Standard Time
+    identifier: SAST
     offset: 7
     isdst: false
     text: (UTC+07:00) Bangkok, Hanoi, Jakarta
@@ -1202,8 +1202,8 @@
     ]
   }
   {
-    value: N. Central Asia Standard Time
-    abbr: NCAST
+    name: N. Central Asia Standard Time
+    identifier: NCAST
     offset: 7
     isdst: false
     text: (UTC+07:00) Novosibirsk
@@ -1215,8 +1215,8 @@
     ]
   }
   {
-    value: China Standard Time
-    abbr: CST
+    name: China Standard Time
+    identifier: CST
     offset: 8
     isdst: false
     text: (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
@@ -1228,8 +1228,8 @@
     ]
   }
   {
-    value: North Asia Standard Time
-    abbr: NAST
+    name: North Asia Standard Time
+    identifier: NAST
     offset: 8
     isdst: false
     text: (UTC+08:00) Krasnoyarsk
@@ -1239,8 +1239,8 @@
     ]
   }
   {
-    value: Singapore Standard Time
-    abbr: MPST
+    name: Singapore Standard Time
+    identifier: MPST
     offset: 8
     isdst: false
     text: (UTC+08:00) Kuala Lumpur, Singapore
@@ -1256,8 +1256,8 @@
     ]
   }
   {
-    value: W. Australia Standard Time
-    abbr: WAST
+    name: W. Australia Standard Time
+    identifier: WAST
     offset: 8
     isdst: false
     text: (UTC+08:00) Perth
@@ -1268,8 +1268,8 @@
     ]
   }
   {
-    value: Taipei Standard Time
-    abbr: TST
+    name: Taipei Standard Time
+    identifier: TST
     offset: 8
     isdst: false
     text: (UTC+08:00) Taipei
@@ -1279,8 +1279,8 @@
     ]
   }
   {
-    value: Ulaanbaatar Standard Time
-    abbr: UST
+    name: Ulaanbaatar Standard Time
+    identifier: UST
     offset: 8
     isdst: false
     text: (UTC+08:00) Ulaanbaatar
@@ -1291,8 +1291,8 @@
     ]
   }
   {
-    value: North Asia East Standard Time
-    abbr: NAEST
+    name: North Asia East Standard Time
+    identifier: NAEST
     offset: 8
     isdst: false
     text: (UTC+08:00) Irkutsk
@@ -1302,8 +1302,8 @@
     ]
   }
   {
-    value: Japan Standard Time
-    abbr: JST
+    name: Japan Standard Time
+    identifier: JST
     offset: 9
     isdst: false
     text: (UTC+09:00) Osaka, Sapporo, Tokyo
@@ -1317,8 +1317,8 @@
     ]
   }
   {
-    value: Korea Standard Time
-    abbr: KST
+    name: Korea Standard Time
+    identifier: KST
     offset: 9
     isdst: false
     text: (UTC+09:00) Seoul
@@ -1329,8 +1329,8 @@
     ]
   }
   {
-    value: Cen. Australia Standard Time
-    abbr: CAST
+    name: Cen. Australia Standard Time
+    identifier: CAST
     offset: 9.5
     isdst: false
     text: (UTC+09:30) Adelaide
@@ -1341,8 +1341,8 @@
     ]
   }
   {
-    value: AUS Central Standard Time
-    abbr: ACST
+    name: AUS Central Standard Time
+    identifier: ACST
     offset: 9.5
     isdst: false
     text: (UTC+09:30) Darwin
@@ -1352,8 +1352,8 @@
     ]
   }
   {
-    value: E. Australia Standard Time
-    abbr: EAST
+    name: E. Australia Standard Time
+    identifier: EAST
     offset: 10
     isdst: false
     text: (UTC+10:00) Brisbane
@@ -1364,8 +1364,8 @@
     ]
   }
   {
-    value: AUS Eastern Standard Time
-    abbr: AEST
+    name: AUS Eastern Standard Time
+    identifier: AEST
     offset: 10
     isdst: false
     text: (UTC+10:00) Canberra, Melbourne, Sydney
@@ -1376,8 +1376,8 @@
     ]
   }
   {
-    value: West Pacific Standard Time
-    abbr: WPST
+    name: West Pacific Standard Time
+    identifier: WPST
     offset: 10
     isdst: false
     text: (UTC+10:00) Guam, Port Moresby
@@ -1392,8 +1392,8 @@
     ]
   }
   {
-    value: Tasmania Standard Time
-    abbr: TST
+    name: Tasmania Standard Time
+    identifier: TST
     offset: 10
     isdst: false
     text: (UTC+10:00) Hobart
@@ -1404,8 +1404,8 @@
     ]
   }
   {
-    value: Yakutsk Standard Time
-    abbr: YST
+    name: Yakutsk Standard Time
+    identifier: YST
     offset: 9
     isdst: false
     text: (UTC+09:00) Yakutsk
@@ -1417,8 +1417,8 @@
     ]
   }
   {
-    value: Central Pacific Standard Time
-    abbr: CPST
+    name: Central Pacific Standard Time
+    identifier: CPST
     offset: 11
     isdst: false
     text: (UTC+11:00) Solomon Is., New Caledonia
@@ -1434,8 +1434,8 @@
     ]
   }
   {
-    value: Vladivostok Standard Time
-    abbr: VST
+    name: Vladivostok Standard Time
+    identifier: VST
     offset: 11
     isdst: false
     text: (UTC+11:00) Vladivostok
@@ -1447,8 +1447,8 @@
     ]
   }
   {
-    value: New Zealand Standard Time
-    abbr: NZST
+    name: New Zealand Standard Time
+    identifier: NZST
     offset: 12
     isdst: false
     text: (UTC+12:00) Auckland, Wellington
@@ -1459,8 +1459,8 @@
     ]
   }
   {
-    value: UTC+12
-    abbr: U
+    name: UTC+12
+    identifier: U
     offset: 12
     isdst: false
     text: (UTC+12:00) Coordinated Universal Time+12
@@ -1477,8 +1477,8 @@
     ]
   }
   {
-    value: Fiji Standard Time
-    abbr: FST
+    name: Fiji Standard Time
+    identifier: FST
     offset: 12
     isdst: false
     text: (UTC+12:00) Fiji
@@ -1488,8 +1488,8 @@
     ]
   }
   {
-    value: Magadan Standard Time
-    abbr: MST
+    name: Magadan Standard Time
+    identifier: MST
     offset: 12
     isdst: false
     text: (UTC+12:00) Magadan
@@ -1502,8 +1502,8 @@
     ]
   }
   {
-    value: Kamchatka Standard Time
-    abbr: KDT
+    name: Kamchatka Standard Time
+    identifier: KDT
     offset: 13
     isdst: true
     text: (UTC+12:00) Petropavlovsk-Kamchatsky - Old
@@ -1513,8 +1513,8 @@
     ]
   }
   {
-    value: Tonga Standard Time
-    abbr: TST
+    name: Tonga Standard Time
+    identifier: TST
     offset: 13
     isdst: false
     text: (UTC+13:00) Nuku'alofa
@@ -1527,8 +1527,8 @@
     ]
   }
   {
-    value: Samoa Standard Time
-    abbr: SST
+    name: Samoa Standard Time
+    identifier: SST
     offset: 13
     isdst: false
     text: (UTC+13:00) Samoa
