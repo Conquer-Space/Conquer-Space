@@ -19,7 +19,7 @@
 #include <fmt/format.h>
 
 #include "date/date.h"
-#include <spdlog/spdlog.h>
+
 namespace cqsp::common::components {
 namespace {
 auto GetDateObject(int start_date, int day) {
