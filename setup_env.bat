@@ -1,6 +1,10 @@
 @echo off
 REM This file gets vcpkg, setups the cmake build system after that
 SET has_vcpkg=NOT exist vcpkg/vcpkg.exe
+git -C vcpkg fetch --unshallow
+git -C vcpkg describe --tags
+git -C vcpkg rev-parse --short HEAD
+
 if %has_vcpkg% (
     call .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
 )
