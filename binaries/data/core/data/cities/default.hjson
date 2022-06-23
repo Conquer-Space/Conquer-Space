@@ -11,6 +11,8 @@
         identifier: london
         timezone: GMT
         planet: earth
+        industry: [
+        ]
     }
     {
         name: Paris
@@ -167,6 +169,23 @@
         }
         planet: earth
         timezone: EST
+        population: [
+            {
+                size: 4607000
+            }
+        ]
+        industry: [
+            {
+                type: Mining
+                recipe: fmetal_mine
+                productivity: 1
+            }
+            {
+                type: Mining
+                recipe: nmetal_mine
+                productivity: 0.2
+            }
+        ]
     }
     {
         name: Seattle

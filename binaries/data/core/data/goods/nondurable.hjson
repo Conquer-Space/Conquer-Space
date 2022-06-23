@@ -49,7 +49,7 @@
         price: 2500
         tags: [
             nondurable
-			consumable
+            consumable
         ]
         consumption: {
             a: 1

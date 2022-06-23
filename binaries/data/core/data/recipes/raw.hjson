@@ -26,10 +26,10 @@
         }
         tags: [
             ratio
-			raw
+            raw
         ]
     }
-	{
+    {
         name: Noble Metal Mining
         identifier: nmetal_mine
         input: {
@@ -53,10 +53,10 @@
         }
         tags: [
             ratio
-			raw
+            raw
         ]
     }
-	{
+    {
         name: Rare Earth Mining
         identifier: remetal_mine
         input: {
@@ -80,10 +80,10 @@
         }
         tags: [
             ratio
-			raw
+            raw
         ]
     }
-	{
+    {
         name: Oil Refining
         identifier: plastic_mine
         input: {
@@ -107,7 +107,7 @@
         }
         tags: [
             ratio
-			raw
+            raw
         ]
     }
     {
@@ -134,10 +134,10 @@
         }
         tags: [
             ratio
-			raw
+            raw
         ]
     }
-	{
+    {
         name: Masonary Production
         identifier: bricks_mine
         input: {

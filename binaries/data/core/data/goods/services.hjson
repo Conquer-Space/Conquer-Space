@@ -10,7 +10,7 @@
         
         tags: [
             service
-			consumable
+            consumable
         ]
         consumption: {
             a: 9125
@@ -29,7 +29,7 @@
         price: 50
         tags: [
             service
-			consumable
+            consumable
         ]
         consumption: {
             a: 50
@@ -42,8 +42,8 @@
         '''
     }
     {
-        name: Housing
-        identifier: housing
+        name: Real Estate
+        identifier: real_estate
         volume: 25 m3
         unpackedvolume: 100 m3
         mass: 30000 kg
@@ -51,7 +51,7 @@
         price: 0.75
         tags: [
             service
-			consumable
+            consumable
         ]
         consumption: {
             a: 1
@@ -71,7 +71,7 @@
         price: 12500
         tags: [
             service
-			consumable
+            consumable
         ]
         consumption: {
             a: 0.5
@@ -92,7 +92,7 @@
         price: 400
         tags: [
             service
-			consumable
+            consumable
         ]
         consumption: {
             a: 500
@@ -114,7 +114,7 @@
         price: 0.75
         tags: [
             service
-			consumable
+            consumable
         ]
         consumption: {
             a: 0
