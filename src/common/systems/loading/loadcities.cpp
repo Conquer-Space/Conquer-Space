@@ -20,6 +20,10 @@
 
 #include "common/components/coordinates.h"
 #include "common/components/surface.h"
+#include "common/components/population.h"
+#include "common/components/economy.h"
+#include "common/components/area.h"
+#include "common/systems/actions/factoryconstructaction.h"
 
 namespace cqsp::common::systems::loading {
 bool CityLoader::LoadValue(
@@ -29,7 +33,6 @@ bool CityLoader::LoadValue(
     double longi = values["coordinates"]["longitude"].to_double();
     double lat = values["coordinates"]["latitude"].to_double();
     universe.emplace<components::types::SurfaceCoordinate>(entity, lat, longi);
-    universe.emplace<components::Settlement>(entity);
     universe.get_or_emplace<components::Habitation>(universe.planets[planet])
         .settlements.push_back(entity);
 
@@ -37,7 +40,46 @@ bool CityLoader::LoadValue(
         entt::entity tz = universe.time_zones[values["timezone"].to_string()];
         universe.emplace<components::CityTimeZone>(entity, tz);
     }
-    // Add to city
+
+    auto& settlement = universe.emplace<components::Settlement>(entity);
+    // Load population
+    if (!values["population"].empty()) {
+        Hjson::Value population = values["population"];
+        for (int i = 0; i < population.size(); i++) {
+            Hjson::Value population_seg = population[i];
+            entt::entity pop_ent = universe.create();
+
+            auto size = population_seg["size"].to_int64();
+            universe.emplace<components::PopulationSegment>(pop_ent).population = size;
+            universe.emplace<components::Employee>(pop_ent);
+            settlement.population.push_back(pop_ent);
+        }
+    }
+
+    universe.emplace<components::ResourceLedger>(entity);
+
+    // Industry and economy
+    auto& industry = universe.emplace<components::Industry>(entity);
+
+    // Commercial area
+    entt::entity commercial = universe.create();
+
+    universe.emplace<components::Employer>(commercial);
+    universe.emplace<components::Commercial>(commercial, entity, 0);
+
+    industry.industries.push_back(commercial);
+
+    if (!values["industry"].empty()) {
+        Hjson::Value industry_hjson = values["industry"];
+        for (int i = 0; i < industry_hjson.size(); i++) {
+            Hjson::Value ind_val = industry_hjson[i];
+            auto recipe = ind_val["recipe"].to_string();
+            auto productivity = ind_val["productivity"].to_double();
+            entt::entity rec_ent = universe.recipes[recipe];
+
+            actions::CreateFactory(universe, entity, rec_ent, productivity);
+        }
+    }
     return true;
 }
 
