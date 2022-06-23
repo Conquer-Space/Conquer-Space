@@ -16,9 +16,9 @@
 */
 #include "common/systems/loading/loadcities.h"
 
-#include <string>
-
 #include <spdlog/spdlog.h>
+
+#include <string>
 
 #include "common/components/coordinates.h"
 #include "common/components/surface.h"
