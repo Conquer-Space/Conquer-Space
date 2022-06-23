@@ -18,12 +18,15 @@
 
 #include <string>
 
+#include <spdlog/spdlog.h>
+
 #include "common/components/coordinates.h"
 #include "common/components/surface.h"
 #include "common/components/population.h"
 #include "common/components/economy.h"
 #include "common/components/area.h"
 #include "common/systems/actions/factoryconstructaction.h"
+#include "common/components/name.h"
 
 namespace cqsp::common::systems::loading {
 bool CityLoader::LoadValue(
@@ -54,6 +57,9 @@ bool CityLoader::LoadValue(
             universe.emplace<components::Employee>(pop_ent);
             settlement.population.push_back(pop_ent);
         }
+    } else {
+        SPDLOG_WARN("City {} does not have any population",
+                    universe.get<components::Identifier>(entity).identifier);
     }
 
     universe.emplace<components::ResourceLedger>(entity);

@@ -30,7 +30,7 @@
     }
     {
         name: Farming
-        identifier: crops_man
+        identifier: crop_cultivation
         input: {
             potwater: 5000
         }
