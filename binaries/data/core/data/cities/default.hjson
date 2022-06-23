@@ -3,16 +3,6 @@
 // It will probably be necessary to put the cities in separate files
 [
     {
-        name: New York City
-        coordinates: {
-            latitude: 40.712778
-            longitude: -74.006111
-        }
-        identifier: nyc
-        planet: earth
-        timezone: EDT
-    }
-    {
         name: London
         coordinates: {
             latitude: 51.5072
@@ -21,6 +11,13 @@
         identifier: london
         timezone: GMT
         planet: earth
+        industry: [
+        ]
+        population: [
+            {
+                size: 7195000
+            }
+        ]
     }
     {
         name: Paris
@@ -32,6 +29,11 @@
         }
         planet: earth
         timezone: RDT
+        population: [
+            {
+                size: 2130000
+            }
+        ]
     }
     {
         name: Tokyo
@@ -43,6 +45,11 @@
         }
         planet: earth
         timezone: JST
+        population: [
+            {
+                size: 34450000
+            }
+        ]
     }
     {
         name: Los Angeles
@@ -54,6 +61,11 @@
         }
         planet: earth
         timezone: PDT
+        population: [
+            {
+                size: 3694820
+            }
+        ]
     }
     {
         name: Beijing
@@ -65,6 +77,11 @@
         }
         planet: earth
         timezone: CST
+        population: [
+            {
+                size: 13569194
+            }
+        ]
     }
     {
         name: Hong Kong
@@ -76,6 +93,11 @@
         }
         planet: earth
         timezone: CST
+        population: [
+            {
+                size: 6665000
+            }
+        ]
     }
     {
         name: Chicago
@@ -87,6 +109,11 @@
         }
         planet: earth
         timezone: CDT
+        population: [
+            {
+                size: 2896016
+            }
+        ]
     }
     {
         name: Singapore
@@ -97,6 +124,11 @@
         }
         planet: earth
         timezone: MPST
+        population: [
+            {
+                size: 4028000
+            }
+        ]
     }
     {
         name: Shanghai
@@ -107,6 +139,11 @@
         }
         planet: earth
         timezone: CST
+        population: [
+            {
+                size: 14460678
+            }
+        ]
     }
     {
         name: Sydney
@@ -117,6 +154,11 @@
         }
         planet: earth
         timezone: CST
+        population: [
+            {
+                size: 3780000
+            }
+        ]
     }
     {
         name: Rio de Janeiro
@@ -127,6 +169,11 @@
         }
         planet: earth
         timezone: ESAST
+        population: [
+            {
+                size: 13300000
+            }
+        ]
     }
     {
         name: Addis Ababa
@@ -137,6 +184,11 @@
         }
         planet: earth
         timezone: EAST
+        population: [
+            {
+                size: 2377000
+            }
+        ]
     }
     {
         name: Moscow
@@ -147,6 +199,11 @@
         }
         planet: earth
         timezone: MSK
+        population: [
+            {
+                size: 10000000
+            }
+        ]
     }
     {
         name: New Delhi
@@ -157,6 +214,12 @@
         }
         planet: earth
         timezone: IST
+
+        population: [
+            {
+                size: 32066000
+            }
+        ]
     }
     {
         name: Cairo
@@ -165,8 +228,24 @@
             latitude: 30.0444
             longitude: 31.2358
         }
+        population: [
+            {
+                size: 13626000
+            }
+        ]
         planet: earth
         timezone: EST
+        industry: [
+            {
+                type: Farms
+                recipe: crop_cultivation
+                productivity: 3
+            }
+            {
+                recipe: transport_cap
+                productivity: 1
+            }
+        ]
     }
     {
         name: Toronto
@@ -177,6 +256,23 @@
         }
         planet: earth
         timezone: EST
+        population: [
+            {
+                size: 4607000
+            }
+        ]
+        industry: [
+            {
+                type: Mining
+                recipe: fmetal_mine
+                productivity: 1
+            }
+            {
+                type: Mining
+                recipe: nmetal_mine
+                productivity: 0.2
+            }
+        ]
     }
     {
         name: Seattle
@@ -187,6 +283,22 @@
         }
         planet: earth
         timezone: PST
+        population: [
+            {
+                // Seattle is small lol
+                size: 563374
+            }
+        ]
+        industry: [
+            {
+                recipe: public_transport
+                productivity: 1
+            }
+            {
+                recipe: medical_serv
+                productivity: 1
+            }
+        ]
     }
     {
         name: Mexico City
@@ -197,6 +309,11 @@
         }
         planet: earth
         timezone: CDT
+        population: [
+            {
+                size: 18457027
+            }
+        ]
     }
     {
         name: Phoenix
@@ -207,6 +324,25 @@
         }
         planet: earth
         timezone: UMST
+        population: [
+            {
+                size: 3251876
+            }
+        ]
+        industry: [
+            {
+                recipe: computer_man
+                productivity: 1
+            }
+            {
+                recipe: industrial_equipment_cap
+                productivity: 1
+            }
+            {
+                recipe: construction_cap
+                productivity: 1
+            }
+        ]
     }
     {
         name: Jakarta
@@ -217,5 +353,22 @@
         }
         planet: earth
         timezone: SAST
+        population: [
+            {
+                size: 8390000
+            }
+        ]
+        industry: [
+            {
+                type: Farms
+                recipe: crop_cultivation
+                productivity: 3
+            }
+            {
+                type: Clothes Making
+                recipe: garments_man
+                productivity: 1
+            }
+        ]
     }
 ]

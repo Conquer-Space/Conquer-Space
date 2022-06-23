@@ -3,7 +3,7 @@
 # This is the default file for recipes, and also serves as a demonstration for stuff
 [
     {
-        name:Transports
+        name: Transports
         identifier: transport_cap
         input: {
             motorvehicles: 1
@@ -26,12 +26,12 @@
         }
         tags: [
             ratio
-			factory
+            factory
         ]
     }
     {
-        name:Construction Sector
-        identifier: structures_cap
+        name: Construction Sector
+        identifier: construction_cap
         input: {
             bricks: 100
             fmetal: 50
@@ -57,12 +57,12 @@
         }
         tags: [
             ratio
-			factory
+            factory
         ]
     }
     {
-        name:Industrial Equipment Manufacturing
-        identifier: structures_cap
+        name: Industrial Equipment Manufacturing
+        identifier: industrial_equipment_cap
         input: {
             fmetal: 5
             egoods: 1
@@ -85,12 +85,12 @@
         }
         tags: [
             ratio
-			factory
+            factory
         ]
     }
     {
-        name:System Integration
-        identifier: structures_cap
+        name: System Integration
+        identifier: systems_cap
         input: {
             computer: 1
         }
@@ -112,7 +112,7 @@
         }
         tags: [
             ratio
-			factory
+            factory
         ]
     }
 ]

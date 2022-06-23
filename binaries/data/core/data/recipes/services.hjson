@@ -25,7 +25,8 @@
         }
         tags: [
             ratio
-			service
+            service
+            power
         ]
     }
     {
@@ -55,12 +56,12 @@
         }
         tags: [
             ratio
-			service
+            service
         ]
     }
     {
         name: Entertainment Industry
-        identifier: recreation_serv
+        identifier: entertainment_industry
         input: {
             food: 500
             recgoods: 500
@@ -84,12 +85,12 @@
         }
         tags: [
             ratio
-			service
+            service
         ]
     }
     {
         name: Finance Sector
-        identifier: finance_serv
+        identifier: finance
         input: {
 
         }
@@ -111,11 +112,11 @@
         }
         tags: [
             ratio
-			service
+            service
         ]
     }
     {
-        name:Health Services
+        name: Health Services
         identifier: medical_serv
         input: {
             housegoods: 200
@@ -140,12 +141,12 @@
         }
         tags: [
             ratio
-			service
+            service
         ]
     }
     {
-        name:Public Transit
-        identifier: transport_ser
+        name: Public Transit
+        identifier: public_transport
         input: {
             fuel: 100
         }
@@ -167,20 +168,20 @@
         }
         tags: [
             ratio
-			service
+            service
         ]
     }
-	{
-        name:Housing Market
-        identifier: transport_ser
+    {
+        name: Real Estate Market
+        identifier: real_estate
         input: {
-			housegoods: 1
+            housegoods: 1
         }
         elasticity: {
-			housegoods: 1
+            housegoods: 1
         }
         output: {
-            housing: 20
+            real_estate: 20
         }
         cost: {
             capital: {
@@ -193,7 +194,7 @@
         }
         tags: [
             ratio
-			service
+            service
         ]
     }
 ]

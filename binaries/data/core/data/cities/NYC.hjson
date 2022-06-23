@@ -1,0 +1,44 @@
+[
+    {
+        name: New York City
+        coordinates: {
+            latitude: 40.712778
+            longitude: -74.006111
+        }
+        identifier: nyc
+        planet: earth
+        timezone: EDT
+        population: [
+            {
+                size: 8000000
+            }
+        ]
+        industry: [
+            {
+                type: factory
+                recipe: plastic_mine
+                productivity: 1
+            }
+            {
+                type: healthcare
+                recipe: medical_serv
+                productivity: 1
+            }
+            {
+                type: power plant
+                recipe: power_man
+                productivity: 2
+            }
+            {
+                type: Broadway
+                recipe: entertainment_industry
+                productivity: 1
+            }
+            {
+                type: Wall Street
+                recipe: finance
+                productivity: 1
+            }
+        ]
+    }
+]
