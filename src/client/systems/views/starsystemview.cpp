@@ -374,6 +374,8 @@ void SysStarSystemRenderer::DrawBodies() {
     ZoneScoped;
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqsps = cqsp::common::components::ships;
+    namespace cqspt = cqsp::common::components::types;
+
     // Draw other bodies
     auto bodies = m_app.GetUniverse().view<ToRender, cqspb::Body>(entt::exclude<cqspb::LightEmitter>);
     const double dist = 0.4;
@@ -385,7 +387,6 @@ void SysStarSystemRenderer::DrawBodies() {
 
         // Draw Ships
         namespace cqspc = cqsp::common::components;
-        namespace cqspt = cqsp::common::components::types;
         if (glm::distance(object_pos, cam_pos) > dist || true) {
             // Check if it's obscured by a planet, but eh, we can deal with it later
             // Set planet circle color
@@ -405,7 +406,6 @@ void SysStarSystemRenderer::DrawBodies() {
 
         // Draw Ships
         namespace cqspc = cqsp::common::components;
-        namespace cqspt = cqsp::common::components::types;
 
         // This can probably switched to some log system based off the mass of
         // a planet.
@@ -422,7 +422,12 @@ void SysStarSystemRenderer::DrawBodies() {
                 DrawTerrainlessPlanet(body_entity, object_pos);
             }
         }
-        DrawOrbit(body_entity);
+    }
+
+    auto orbits = m_universe.view<cqspt::Orbit>();
+
+    for (entt::entity orbit_entity : orbits) {
+        DrawOrbit(orbit_entity);
     }
     renderer.EndDraw(physical_layer);
 
@@ -975,9 +980,7 @@ float SysStarSystemRenderer::GetWindowRatio() {
 void SysStarSystemRenderer::GenerateOrbitLines() {
     SPDLOG_TRACE("Creating planet orbits");
     auto orbits = m_app.GetUniverse().view<common::components::types::Orbit>();
-    /* auto system =
-        m_app.GetUniverse().get<common::components::bodies::OrbitalSystem>(
-        m_app.GetUniverse().sun);*/
+
     // Initialize all the orbits and stuff
     // Get sun orbits
     for (auto body : orbits) {

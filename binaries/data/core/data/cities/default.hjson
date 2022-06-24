@@ -371,4 +371,17 @@
             }
         ]
     }
+    {
+        name: Cape Canaveral
+        identifier: cape_canaveral
+        timezone: EDT
+        planet: earth
+        coordinates: {
+            latitude: 28.46
+            longitude: -80.53
+        }
+        space-port: {
+            launch: 0
+        }
+    }
 ]

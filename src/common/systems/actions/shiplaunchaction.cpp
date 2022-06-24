@@ -84,3 +84,18 @@ entt::entity cqsp::common::systems::actions::CreateShip(
                cqspt::toVec3AU(universe.get<cqspt::Orbit>(orbitEnt)), shipName);
 }
 
+entt::entity cqsp::common::systems::actions::LaunchShip(Universe& universe, components::types::Orbit& orbit) {
+    // Set the orbit
+    namespace cqspt = cqsp::common::components::types;
+    namespace cqsps = cqsp::common::components::ships;
+    namespace cqspb = cqsp::common::components::bodies;
+    entt::entity ship = universe.create();
+    universe.emplace<cqsps::Ship>(ship);
+    // Now do things
+    auto& o = universe.emplace<cqspt::Orbit>(ship, orbit);
+    universe.emplace<cqspt::Kinematics>(ship);
+    o.CalculateVariables();
+    universe.get<cqspb::OrbitalSystem>(orbit.reference_body).push_back(ship);
+    return ship;
+}
+

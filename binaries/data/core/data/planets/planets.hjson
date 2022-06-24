@@ -113,15 +113,15 @@
     {
         name: 2ncmoon
         identifier: moon2
-        reference: moon
+        reference: earth
         radius: 10 km
         gm: 4.90486959e3
         orbit: {
-            semi_major_axis: 68100.4377707066 km
-            eccentricity: 0.6
-            inclination: 5.145 deg
+            semi_major_axis: 8413.4377707066 km
+            eccentricity: 0
+            inclination: 23 deg
             arg_periapsis: 199.7640930160823 deg
-            LAN: 2.296616161126016 deg
+            LAN: 4.89496121282 rad
             M0: 132.7012350930954 deg
         }
         day_length: 27.321661 d

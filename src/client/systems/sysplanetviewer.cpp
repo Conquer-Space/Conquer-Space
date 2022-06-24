@@ -626,19 +626,30 @@ void SysPlanetInformation::MineConstruction() {
     }
 }
 
-
-
-
-
 void SysPlanetInformation::SpacePortTab() {
     namespace cqspt = cqsp::common::components::types;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspb = cqsp::common::components::bodies;
 
-if (ImGui::Button("Launch!")) {
-        entt::entity star_system = GetUniverse().get<cqspc::bodies::Body>(selected_planet).star_system;
-        cqsp::common::systems::actions::CreateShip(
-        GetUniverse(), entt::null, selected_planet, star_system);
+    if (ImGui::Button("Launch!")) {
+        // Get reference body
+        entt::entity reference_body = selected_planet;
+        // Launch inclination will be the inclination of the thing
+        double axial = GetUniverse().get<cqspc::bodies::Body>(selected_planet).axial;
+        double inc = GetUniverse().get<cqspc::types::SurfaceCoordinate>(selected_city_entity)
+                .r_latitude();
+        inc += axial;
+        double sma = 0;
+        // Currently selected city
+        //entt::entity star_system = GetUniverse().get<cqspc::bodies::Body>(selected_planet);
+        // Launch
+        cqspc::types::Orbit orb;
+        orb.reference_body = selected_planet;
+        orb.inclination = inc;
+        orb.semi_major_axis = 8300;
+        cqsp::common::systems::actions::LaunchShip(GetUniverse(), orb);
+        //cqsp::common::systems::actions::CreateShip(
+        //GetUniverse(), entt::null, selected_planet, star_system);
     }
 }
 

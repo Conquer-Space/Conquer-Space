@@ -36,8 +36,9 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     if (!universe.valid(body)) {
         return;
     }
+
     // Calculate the position
-    auto [orb, body_comp] = universe.get<cqspt::Orbit, cqspc::bodies::Body>(body);
+    auto& orb = universe.get<cqspt::Orbit>(body);
     cqspt::UpdateOrbit(orb, universe.date.ToSecond());
     auto& pos = universe.get_or_emplace<cqspt::Kinematics>(body);
     pos.position = cqspt::toVec3(orb);
