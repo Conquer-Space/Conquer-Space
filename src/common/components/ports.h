@@ -21,4 +21,4 @@ namespace cqsp::common::components {
 struct LaunchVehicle {
     double delta_v;
 };
-}  // namespace cqsp::common::componentsx
+}  // namespace cqsp::common::components
