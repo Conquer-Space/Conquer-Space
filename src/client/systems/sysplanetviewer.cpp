@@ -631,6 +631,17 @@ void SysPlanetInformation::SpacePortTab() {
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspb = cqsp::common::components::bodies;
 
+    // Set the things
+    static float semi_major_axis = 8000;
+    static float inclination = 0;
+    static float eccentricity = 0;
+    static float arg_of_perapsis = 0;
+    static float LAN = 0;
+    ImGui::SliderFloat("Semi Major Axis", &semi_major_axis, 8000, 300000);
+    ImGui::SliderFloat("Eccentricity", &eccentricity, 0, 0.9999);
+    ImGui::SliderAngle("Inclination", &inclination, 0, 180);
+    ImGui::SliderAngle("Argument of perapsis", &arg_of_perapsis, 0, 360);
+    ImGui::SliderAngle("Longitude of the ascending node", &LAN, 0, 360);
     if (ImGui::Button("Launch!")) {
         // Get reference body
         entt::entity reference_body = selected_planet;
@@ -645,8 +656,11 @@ void SysPlanetInformation::SpacePortTab() {
         // Launch
         cqspc::types::Orbit orb;
         orb.reference_body = selected_planet;
-        orb.inclination = inc;
-        orb.semi_major_axis = 8300;
+        orb.inclination = inclination;
+        orb.semi_major_axis = semi_major_axis;
+        orb.eccentricity = eccentricity;
+        orb.w = arg_of_perapsis;
+        orb.LAN = LAN;
         cqsp::common::systems::actions::LaunchShip(GetUniverse(), orb);
         //cqsp::common::systems::actions::CreateShip(
         //GetUniverse(), entt::null, selected_planet, star_system);

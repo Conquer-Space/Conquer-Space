@@ -1,6 +1,14 @@
+// All types of potential orbits
 [
     {
         identifier: LEO
         semi_major_axis: 8413 km
+        eccentricity: 0
+    }
+    {
+        identifier: GEO
+        semi_major_axis: 42164 km
+        eccentricity: 0
+        inclination: 0
     }
 ]
