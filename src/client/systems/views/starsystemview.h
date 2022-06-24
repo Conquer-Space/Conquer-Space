@@ -65,9 +65,9 @@ class SysStarSystemRenderer {
     glm::vec3 GetMouseIntersectionOnObject(int mouse_x, int mouse_y);
 
     // The angle the camera is looking from
-    float view_x;
+    float view_x = 0;
     // The angle the camera is looking away from
-    float view_y;
+    float view_y = 0;
 
     double previous_mouseX;
     double previous_mouseY;

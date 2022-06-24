@@ -27,6 +27,7 @@
 #include "common/components/area.h"
 #include "common/systems/actions/factoryconstructaction.h"
 #include "common/components/name.h"
+#include "common/components/infrastructure.h"
 
 namespace cqsp::common::systems::loading {
 bool CityLoader::LoadValue(
@@ -85,6 +86,11 @@ bool CityLoader::LoadValue(
 
             actions::CreateFactory(universe, entity, rec_ent, productivity);
         }
+    }
+
+    if (!values["space-port"].empty()) {
+        // Add space port
+        universe.emplace<components::infrastructure::SpacePort>(entity);
     }
     return true;
 }

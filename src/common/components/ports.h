@@ -16,9 +16,9 @@
 */
 #pragma once
 
-namespace cqsp {
-namespace common {
-namespace components {
-}
-}  // namespace common
-}  // namespace cqsp
+namespace cqsp::common::components {
+// https://forum.kerbalspaceprogram.com/index.php?/topic/84752-how-do-i-calculate-payload-mass-to-orbit/
+struct LaunchVehicle {
+    double delta_v;
+};
+}  // namespace cqsp::common::components
