@@ -30,4 +30,9 @@
         type: hjson
         hints: {}
     }
+    countries: {
+        path: countries
+        type: hjson
+        hints: {}
+    }
 }

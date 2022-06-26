@@ -70,6 +70,7 @@
     {
         name: Beijing
         identifier: beijing
+        country: china
         coordinates: {
             latitude: 39.904
             longitude: 116.4075
@@ -86,6 +87,7 @@
     {
         name: Hong Kong
         identifier: hong_kong
+        country: china
         coordinates: {
             latitude: 22.3069
             longitude: 114.1831
@@ -133,6 +135,7 @@
     {
         name: Shanghai
         identifier: shanghai
+        country: china
         coordinates: {
             latitude: 31.1667
             longitude: 121.4667

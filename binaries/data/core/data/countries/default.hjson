@@ -1,0 +1,9 @@
+[
+    {
+        // The real china
+        name: People's Republic of China
+        identifier: china
+        common: China
+        adjective: chinese
+    }
+]
