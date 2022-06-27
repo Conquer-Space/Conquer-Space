@@ -59,7 +59,7 @@ std::shared_ptr<spdlog::logger> make_logger(const std::string& name, bool error)
     std::string save_path = GetCqspSavePath();
     std::filesystem::path log_folder = std::filesystem::path(save_path) / "logs";
 
-    auto dup_filter = std::make_shared<spdlog::sinks::dup_filter_sink_st>(std::chrono::seconds(10));
+    auto dup_filter = std::make_shared<spdlog::sinks::dup_filter_sink_mt>(std::chrono::seconds(10));
 
     // Initialize logger
     std::vector<spdlog::sink_ptr> sinks;

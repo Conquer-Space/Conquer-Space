@@ -23,6 +23,8 @@
 #include <algorithm>
 #include <vector>
 
+#include "engine/enginelogger.h"
+
 void cqsp::engine::Draw(Renderable &renderable) {
     renderable.shaderProgram->UseProgram();
     int i = -1;
@@ -30,14 +32,14 @@ void cqsp::engine::Draw(Renderable &renderable) {
                                                         it != renderable.textures.end(); ++it) {
         i++;
         if ((*it)->texture_type == -1) {
-            SPDLOG_WARN("Texture {} is not initialized properly", (*it)->id);
+            ENGINE_LOG_WARN("Texture {} is not initialized properly", (*it)->id);
             continue;
         }
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture((*it)->texture_type, (*it)->id);
         GLenum error = glGetError();
         if (error != GL_NO_ERROR) {
-            SPDLOG_ERROR("Error when binding texture {}: {}", (*it)->id,
+            ENGINE_LOG_ERROR("Error when binding texture {}: {}", (*it)->id,
                             error);
         }
     }
@@ -55,14 +57,14 @@ void cqsp::engine::Draw(Renderable & renderable, asset::ShaderProgram_t &shader)
                                                         it != renderable.textures.end(); ++it) {
         i++;
         if ((*it)->texture_type == -1) {
-            SPDLOG_WARN("Texture {} is not initialized properly", (*it)->id);
+            ENGINE_LOG_WARN("Texture {} is not initialized properly", (*it)->id);
             continue;
         }
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture((*it)->texture_type, (*it)->id);
         GLenum error = glGetError();
         if (error != GL_NO_ERROR) {
-            SPDLOG_ERROR("Error when binding texture {}: {}", (*it)->id,
+            ENGINE_LOG_ERROR("Error when binding texture {}: {}", (*it)->id,
                             error);
         }
     }

@@ -28,12 +28,14 @@
 #include <string>
 #include <utility>
 
+#include "engine/enginelogger.h"
+
 void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer,
                                    uint64_t size) {
     FT_Library ft;
     // All functions return a value different than 0 whenever an error occurred
     if (FT_Init_FreeType(&ft)) {
-        SPDLOG_INFO("Cannot load freetype library");
+        ENGINE_LOG_INFO("Cannot load freetype library");
     }
 
     // Create a face from a memory buffer.  Be sure not to delete the memory
@@ -42,7 +44,7 @@ void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer,
     FT_Face face;
     int id = -12;
     if ((id = FT_New_Memory_Face(ft, fontBuffer, size, 0, &face))) {
-        SPDLOG_INFO("Cannot load font: {}", id);
+        ENGINE_LOG_INFO("Cannot load font: {}", id);
         return;
     }
 
@@ -58,7 +60,7 @@ void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer,
     for (unsigned char c = 0; c < 128; c++) {
         // Load character glyph
         if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
-            SPDLOG_WARN("Freetype does not have character {}", c);
+            ENGINE_LOG_WARN("Freetype does not have character {}", c);
             continue;
         }
         // generate texture

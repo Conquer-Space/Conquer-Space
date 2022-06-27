@@ -22,6 +22,8 @@
 #include <vector>
 #include <map>
 
+#include "engine/enginelogger.h"
+
 unsigned int cqsp::asset::LoadShaderData(const std::string& code, int type) {
     unsigned int shader;
 
@@ -275,14 +277,14 @@ GLenum GetUniformType(GLuint program, const char* name) {
         return GL_INVALID_ENUM;
     }
     GLint location = *in;
-    SPDLOG_TRACE("Program {}: {} is {}", program, name, location);
+    ENGINE_LOG_TRACE("Program {}: {} is {}", program, name, location);
     if (location != -1) {
         GLint size;
         GLenum type;
         GLsizei length;
         GLchar name[256];
         glGetActiveUniform(program, *in, 255, &length, &size, &type, name);
-        SPDLOG_TRACE("{} {}", location, name);
+        ENGINE_LOG_TRACE("{} {}", location, name);
         return type;
     } else {
         return GL_INVALID_ENUM;
@@ -417,11 +419,10 @@ void eTB_GLSL__print_uniforms(GLuint program) {
         auto& type_name = type_set[type];
 
         if (size > 1) {
-            SPDLOG_INFO("Uniform {} (loc={}):\t{} {} <Size: {}>", i,
+            ENGINE_LOG_INFO("Uniform {} (loc={}):\t{} {} <Size: {}>", i,
                     location, type_name, name, size);
         } else {
-            SPDLOG_INFO("Uniform {} (loc={}):\t{} {}", i, location, type_name,
-                   name);
+            ENGINE_LOG_INFO("Uniform {} (loc={}):\t{} {}", i, location, type_name, name);
         }
     }
 }
@@ -472,7 +473,7 @@ cqsp::asset::ShaderProgram_t cqsp::asset::ShaderDefinition::MakeShader() {
             case GL_INT:
                 // Type has to be int
                 if (value.second.type() != Hjson::Type::Int64) {
-                    SPDLOG_WARN("Uniform {} is not type int, it is {}",
+                    ENGINE_LOG_WARN("Uniform {} is not type int, it is {}",
                                 value.first,
                                 hjson_type_set[value.second.type()]);
                     break;
@@ -482,7 +483,7 @@ cqsp::asset::ShaderProgram_t cqsp::asset::ShaderDefinition::MakeShader() {
             case GL_FLOAT_VEC2:
                 if (value.second.type() != Hjson::Type::Vector &&
                     value.second.size() != 2) {
-                    SPDLOG_WARN("Uniform {} is not type vec2, it is {}",
+                    ENGINE_LOG_WARN("Uniform {} is not type vec2, it is {}",
                                 value.first,
                                 hjson_type_set[value.second.type()]);
                     break;
@@ -493,7 +494,7 @@ cqsp::asset::ShaderProgram_t cqsp::asset::ShaderDefinition::MakeShader() {
             case GL_FLOAT_VEC3:
                 if (value.second.type() != Hjson::Type::Vector &&
                     value.second.size() != 3) {
-                    SPDLOG_WARN("Uniform {} is not type vec3, it is {}",
+                    ENGINE_LOG_WARN("Uniform {} is not type vec3, it is {}",
                                 value.first,
                                 hjson_type_set[value.second.type()]);
                     break;
@@ -505,7 +506,7 @@ cqsp::asset::ShaderProgram_t cqsp::asset::ShaderDefinition::MakeShader() {
             case GL_FLOAT_VEC4:
                 if (value.second.type() != Hjson::Type::Vector &&
                     value.second.size() != 4) {
-                    SPDLOG_WARN("Uniform {} is not type vec4, it is {}",
+                    ENGINE_LOG_WARN("Uniform {} is not type vec4, it is {}",
                                 value.first,
                                 hjson_type_set[value.second.type()]);
                     break;
@@ -518,15 +519,15 @@ cqsp::asset::ShaderProgram_t cqsp::asset::ShaderDefinition::MakeShader() {
             case GL_FLOAT:
                 if (!(value.second.type() == Hjson::Type::Double ||
                     value.second.type() == Hjson::Type::Int64)) {
-                    SPDLOG_WARN("Uniform {} is not type float, it is {}",
-                        value.first, hjson_type_set[value.second.type()]);
+                    ENGINE_LOG_WARN("Uniform {} is not type float, it is {}",
+                                    value.first, hjson_type_set[value.second.type()]);
                     break;
                 }
                 shader->Set(value.first, (float)value.second.to_double());
                 break;
             case GL_BOOL:
                 if (value.second.type() != Hjson::Type::Bool) {
-                    SPDLOG_WARN("Uniform {} is not type bool, it is {}",
+                    ENGINE_LOG_WARN("Uniform {} is not type bool, it is {}",
                                 value.first,
                                 hjson_type_set[value.second.type()]);
                     break;

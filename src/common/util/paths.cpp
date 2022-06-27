@@ -97,8 +97,7 @@ std::string GetCqspDataPath() {
     //   - bin
     //   - data <-- data is here, so it's ../data/
     return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) /
-                                      "../data")
-        .string();
+                                      "../data").string();
 #endif
 }
 }  // namespace cqsp::common::util
