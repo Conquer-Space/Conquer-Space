@@ -96,6 +96,9 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     if (!values["country"].empty()) {
         entt::entity country = universe.countries[values["country"]];
         universe.emplace<components::Governed>(entity, country);
+    } else {
+        SPDLOG_WARN("City {} has no country",
+                    universe.get<components::Identifier>(entity).identifier);
     }
     return true;
 }

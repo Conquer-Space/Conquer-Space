@@ -11,6 +11,7 @@
         identifier: london
         timezone: GMT
         planet: earth
+        country: UK
         industry: [
         ]
         population: [
@@ -29,6 +30,7 @@
         }
         planet: earth
         timezone: RDT
+        country: france
         population: [
             {
                 size: 2130000
@@ -45,6 +47,7 @@
         }
         planet: earth
         timezone: JST
+        country: japan
         population: [
             {
                 size: 34450000
@@ -61,6 +64,7 @@
         }
         planet: earth
         timezone: PDT
+        country: USA
         population: [
             {
                 size: 3694820
@@ -110,6 +114,7 @@
 
         }
         planet: earth
+        country: USA
         timezone: CDT
         population: [
             {
@@ -125,6 +130,7 @@
             longitude: 103.8198
         }
         planet: earth
+        country: singapore
         timezone: MPST
         population: [
             {
@@ -156,6 +162,7 @@
             longitude: 151.2094
         }
         planet: earth
+        country: australia
         timezone: CST
         population: [
             {
@@ -172,6 +179,7 @@
         }
         planet: earth
         timezone: ESAST
+        country: brazil
         population: [
             {
                 size: 13300000
@@ -187,6 +195,7 @@
         }
         planet: earth
         timezone: EAST
+        country: ethiopia
         population: [
             {
                 size: 2377000
@@ -202,6 +211,7 @@
         }
         planet: earth
         timezone: MSK
+        country: russia
         population: [
             {
                 size: 10000000
@@ -217,7 +227,7 @@
         }
         planet: earth
         timezone: IST
-
+        country: india
         population: [
             {
                 size: 32066000
@@ -237,6 +247,7 @@
             }
         ]
         planet: earth
+        country: egypt
         timezone: EST
         industry: [
             {
@@ -259,6 +270,7 @@
         }
         planet: earth
         timezone: EST
+        country: canada
         population: [
             {
                 size: 4607000
@@ -286,6 +298,7 @@
         }
         planet: earth
         timezone: PST
+        country: USA
         population: [
             {
                 // Seattle is small lol
@@ -311,6 +324,7 @@
             longitude: -99.1333
         }
         planet: earth
+        country: mexico
         timezone: CDT
         population: [
             {
@@ -327,6 +341,7 @@
         }
         planet: earth
         timezone: UMST
+        country: USA
         population: [
             {
                 size: 3251876
@@ -356,6 +371,7 @@
         }
         planet: earth
         timezone: SAST
+        country: indonesia
         population: [
             {
                 size: 8390000

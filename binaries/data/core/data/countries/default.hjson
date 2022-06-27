@@ -1,9 +1,92 @@
 [
     {
-        // The real china
+        name: Republic of India
+        identifier: india
+        common: India
+        adjective: indian
+    }
+    {
         name: People's Republic of China
         identifier: china
         common: China
         adjective: chinese
+    }
+    {
+        name: United States of America
+        identifier: USA
+        common: USA
+        adjective: american
+    }
+    {
+        name: United Kingdom of Great Britain and Northern Ireland
+        identifier: UK
+        common: UK
+        adjective: british
+    }
+    {
+        name: French Republic
+        identifier: france
+        common: France
+        adjective: french
+    }
+    {
+        name: Japan
+        identifier: japan
+        common: Japan
+        adjective: japanese
+    }
+    {
+        name: Commonwealth of Australia
+        identifier: australia
+        common: Australia
+        adjective: australian
+    }
+    {
+        name: Federal Democratic Republic of Ethiopia
+        identifier: ethiopia
+        common: Ethiopia
+        adjective: ethiopian
+    }
+    {
+        name: Russian Federation
+        identifier: russia
+        common: Russia
+        adjective: russian
+    }
+    {
+        name: Canada
+        identifier: canada
+        common: Canada
+        adjective: canadian
+    }
+    {
+        name: Republic of Singapore
+        identifier: singapore
+        common: Singapore
+        adjective: singaporean
+    }
+    {
+        name: United Mexican States
+        identifier: mexico
+        common: Mexico
+        adjective: mexican
+    }
+    {
+        name: Arab Republic of Egypt
+        identifier: egypt
+        common: Egypt
+        adjective: egyptian
+    }
+    {
+        name: Federative Republic of Brazil
+        identifier: brazil
+        common: Brazil
+        adjective: brazillian
+    }
+    {
+        name: Republic of Indonesia
+        identifier: indonesia
+        common: Indonesia
+        adjective: indonesian
     }
 ]

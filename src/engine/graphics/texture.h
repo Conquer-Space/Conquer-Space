@@ -45,14 +45,14 @@ unsigned int CreateTexture(unsigned char* data,
                          int width,
                          int height,
                          int components,
-                         TextureLoadingOptions& options);
+                         const TextureLoadingOptions& options);
 
 void CreateTexture(Texture &texture,
                  unsigned char* data,
                  int width,
                  int height,
                  int components,
-                 TextureLoadingOptions& options);
+                 const TextureLoadingOptions& options = TextureLoadingOptions());
 
 void LoadCubemapData(Texture &texture,
                 std::vector<unsigned char*>& data,

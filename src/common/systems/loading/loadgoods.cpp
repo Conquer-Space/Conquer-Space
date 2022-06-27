@@ -106,7 +106,7 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         cqspc::ConsumerGood& cg = universe.get_or_emplace<cqspc::ConsumerGood>(entity);
         cg.autonomous_consumption = autonomous_consumption;
         cg.marginal_propensity = marginal_propensity;
-        SPDLOG_INFO("Creating consuumer good {} with values: {} {}", identifier,
+        SPDLOG_INFO("Creating consumer good {} with values: {} {}", identifier,
                     cg.autonomous_consumption, cg.marginal_propensity);
         universe.consumergoods.push_back(entity);
     }
