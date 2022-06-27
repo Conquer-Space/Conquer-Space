@@ -32,6 +32,7 @@
 #include "engine/audio/alaudioasset.h"
 #include "engine/asset/vfs/nativevfs.h"
 #include "common/util/paths.h"
+#include "engine/enginelogger.h"
 
 #define CREATE_ASSET_LAMBDA(FuncName) [this] (VirtualMounter* mount,                   \
                                               const std::string& path, const std::string& key,      \
@@ -194,7 +195,7 @@ void AssetManager::SaveModList() {
     // Write to file
     std::string mods_path = (std::filesystem::path(common::util::GetCqspSavePath())/"mod.hjson").string();
     Hjson::MarshalToFile(enabled_mods, mods_path);
-    SPDLOG_INFO("Writing mods");
+    ENGINE_LOG_INFO("Writing mods");
 }
 
 AssetLoader::AssetLoader() {
@@ -224,19 +225,21 @@ void AssetLoader::LoadMods() {
     // Keep track of all mods so that we can ensure that all are loaded
     Hjson::Value all_mods;
 
+    ENGINE_LOG_INFO("{}", engine::engine_logger->name());
+
     // Some lambda things to keep things less cluttered and simpler
     auto mod_load = [&](const std::optional<PackagePrototype> &package) {
         // Add to package prototypes
         if (!package) {
-            SPDLOG_INFO("Invalid package!");
+            ENGINE_LOG_INFO("Invalid package!");
             return;
         }
-        SPDLOG_INFO("Added mod prototype {}", package->name);
+        ENGINE_LOG_INFO("Added mod prototype {}", package->name);
         manager->m_package_prototype_list[package->name] = *package;
         all_mods[package->name] = false;
     };
 
-    SPDLOG_INFO("Loading potential mods");
+    ENGINE_LOG_INFO("Loading potential mods");
 
     // Load core
     mod_load(LoadModPrototype((data_path/"core").string()));
@@ -256,7 +259,7 @@ void AssetLoader::LoadMods() {
     for (auto mod_element : mods_folder_iterator) {
         mod_load(LoadModPrototype(mod_element.path().string()));
     }
-    SPDLOG_INFO("Loaded mods folder");
+    ENGINE_LOG_INFO("Loaded mods folder");
 
     // Get loaded mods
     // If it doesn't exist, then create it
@@ -299,7 +302,7 @@ AssetLoader::LoadModPrototype(const std::string& path_string) {
     IVirtualFileSystem* vfs = GetVfs(path_string);
 
     if (!vfs->IsFile("info.hjson")) {
-        SPDLOG_INFO("Mod prototype unable to be loaded from {}", path_string);
+        ENGINE_LOG_INFO("Mod prototype unable to be loaded from {}", path_string);
         return std::nullopt;
     }
     // Read mod info file.
@@ -316,7 +319,7 @@ AssetLoader::LoadModPrototype(const std::string& path_string) {
         prototype.path = package_path.string();
     } catch (Hjson::index_out_of_bounds &ex) {
         // Don't load the mod, because prototype is invalid
-        SPDLOG_INFO("Hjson::index_out_of_bounds: {}", ex.what());
+        ENGINE_LOG_INFO("Hjson::index_out_of_bounds: {}", ex.what());
         return std::nullopt;
     }
 
@@ -336,11 +339,11 @@ std::unique_ptr<Package> AssetLoader::LoadPackage(std::string path) {
     IVirtualFileSystem* vfs = GetVfs(package_path.string());
 
     // Mount package path
-    SPDLOG_INFO("Loading package {}", package_path.string());
+    ENGINE_LOG_INFO("Loading package {}", package_path.string());
     // Read info.hjson from package
     auto info_file = vfs->Open("info.hjson");
     if (info_file == nullptr) {
-        SPDLOG_ERROR("Failed to load package {}", package_path.string());
+        ENGINE_LOG_ERROR("Failed to load package {}", package_path.string());
         return nullptr;
     }
 
@@ -359,7 +362,7 @@ std::unique_ptr<Package> AssetLoader::LoadPackage(std::string path) {
     std::string mount_point = package->name;
     mounter.AddMountPoint(mount_point.c_str(), vfs);
 
-    SPDLOG_INFO("Mounted package {}", package->name);
+    ENGINE_LOG_INFO("Mounted package {}", package->name);
 
     // Load dependencies
     // Now load the 'important' folders
@@ -370,9 +373,9 @@ std::unique_ptr<Package> AssetLoader::LoadPackage(std::string path) {
         // Load base.lua for the base folder
         package->assets["base"] = LoadText(&mounter, mount_point + "/scripts/base.lua", "base", Hjson::Value());
         package->assets["scripts"] = LoadScriptDirectory(&mounter, mount_point + "/scripts", Hjson::Value());
-        SPDLOG_INFO("Loaded scripts");
+        ENGINE_LOG_INFO("Loaded scripts");
     } else {
-        SPDLOG_INFO("No script file for package {}", package->name);
+        ENGINE_LOG_INFO("No script file for package {}", package->name);
     }
 
     // Load a few other hjson folders.
@@ -381,12 +384,12 @@ std::unique_ptr<Package> AssetLoader::LoadPackage(std::string path) {
     HjsonPrototypeDirectory(*package, fmt::format("{}/data/recipes", mount_point), "recipes");
     HjsonPrototypeDirectory(*package, fmt::format("{}/data/names", mount_point), "names");
 
-    SPDLOG_INFO("Loaded prototype directories");
+    ENGINE_LOG_INFO("Loaded prototype directories");
 
     // Then load all the other assets
     // Load resource.hjsons
     LoadResources(*package, package->name);
-    SPDLOG_INFO("Package {} has {} assets", package->name, package->assets.size());
+    ENGINE_LOG_INFO("Package {} has {} assets", package->name, package->assets.size());
     return package;
 }
 
@@ -397,12 +400,12 @@ std::unique_ptr<Asset> AssetLoader::LoadAsset(
                                           const Hjson::Value& hints) {
     // Load asset
     if (loading_functions.find(type) == loading_functions.end()) {
-        SPDLOG_WARN("{} asset loading not support yet", ToString(type));
+        ENGINE_LOG_WARN("{} asset loading not supported yet", ToString(type));
         return nullptr;
     }
     // Ensure path exists
     if (!mounter.Exists(path)) {
-        SPDLOG_WARN("{} at {} does not exist, errors may ensue", key, path);
+        ENGINE_LOG_WARN("{} at {} does not exist, errors may ensue", key, path);
     }
     return std::move(loading_functions[type](&mounter, path, key, hints));
 }
@@ -412,10 +415,10 @@ void AssetLoader::PlaceAsset(Package& package,
                                           const std::string& key,
                                           const Hjson::Value& hints) {
     ZoneScoped;
-    SPDLOG_TRACE("Loading asset {}", path);
+    ENGINE_LOG_TRACE("Loading asset {}", path);
     auto asset = LoadAsset(type, path, key, hints);
     if (asset == nullptr) {
-        SPDLOG_WARN("Asset {} was not loaded properly", key);
+        ENGINE_LOG_WARN("Asset {} was not loaded properly", key);
         return;
     }
     asset->path = path;
@@ -455,7 +458,8 @@ void AssetLoader::BuildNextAsset() {
             int shaderId = asset::LoadShaderData(shader->data, shader->type);
             asset->id = shaderId;
         } catch (std::runtime_error &error) {
-            SPDLOG_WARN("Exception in loading shader {}: {}", shader->key, error.what());
+            ENGINE_LOG_WARN("Exception in loading shader {}: {}", shader->key,
+                            error.what());
         }
         break;
         }
@@ -547,7 +551,7 @@ std::unique_ptr<Asset> AssetLoader::LoadTexture(
 
         m_asset_queue.push(holder);
     } else {
-        SPDLOG_ERROR("Failed to load image {}", key);
+        ENGINE_LOG_ERROR("Failed to load image {}", key);
         delete prototype;
         return nullptr;
     }
@@ -579,10 +583,11 @@ std::unique_ptr<Asset> AssetLoader::LoadHjson(
                         asset->data.push_back(result[k]);
                     }
                 } else {
-                    SPDLOG_ERROR("Failed to load hjson file {}: it needs to be a array", file->Path());
+                    ENGINE_LOG_ERROR("Failed to load hjson file {}: it needs to be a array", file->Path());
                 }
             } catch (Hjson::syntax_error& ex) {
-                SPDLOG_ERROR("Failed to load hjson file {}: {}", file->Path(), ex.what());
+                ENGINE_LOG_ERROR("Failed to load hjson file {}: {}",
+                                 file->Path(), ex.what());
             }
         }
     } else {
@@ -591,7 +596,7 @@ std::unique_ptr<Asset> AssetLoader::LoadHjson(
         try {
             asset->data = Hjson::Unmarshal(ReadAllFromVFileToString(file.get()), dec_opt);
         } catch (Hjson::syntax_error& ex) {
-            SPDLOG_ERROR("Failed to load hjson {}: {}", path, ex.what());
+            ENGINE_LOG_ERROR("Failed to load hjson {}: {}", path, ex.what());
         }
     }
     return asset;
@@ -619,7 +624,7 @@ std::unique_ptr<Asset> AssetLoader::LoadShader(
         shader->shader_type = ShaderType::GEOM;
     } else {
         // Abort, because this is a dud.
-        SPDLOG_WARN("Unsupport shader type: {}", key);
+        ENGINE_LOG_WARN("Unsupport shader type: {}", key);
         return nullptr;
     }
 
@@ -695,13 +700,13 @@ std::unique_ptr<Asset> AssetLoader::LoadCubemap(
     std::string parent = GetParentPath(path);
 
     if (images_hjson.size() != 6) {
-        SPDLOG_WARN("Cubemap {} does not have enough faces defined", key);
+        ENGINE_LOG_WARN("Cubemap {} does not have enough faces defined", key);
         return nullptr;
     }
     for (int i = 0; i < images_hjson.size(); i++) {
         std::string image_path = parent + "/" + images_hjson[i];
         if (!mount->IsFile(image_path)) {
-            SPDLOG_WARN("Cubemap {} has missing faces!", key);
+            ENGINE_LOG_WARN("Cubemap {} has missing faces!", key);
             // Free memory
             for (auto texture : prototype->data) {
                 // free the things
@@ -742,7 +747,7 @@ AssetLoader::LoadShaderDefinition(VirtualMounter* mount, const std::string& path
 
     // Load the files
     if (!mount->Exists(vert_filename)) {
-        SPDLOG_INFO("Fragment file {} does not exist!", frag_filename);
+        ENGINE_LOG_INFO("Fragment file {} does not exist!", frag_filename);
         return nullptr;
     }
     auto vert_file = mount->Open(vert_filename);
@@ -750,7 +755,7 @@ AssetLoader::LoadShaderDefinition(VirtualMounter* mount, const std::string& path
 
     // Check if all the files exists
     if (!mount->Exists(frag_filename)) {
-        SPDLOG_INFO("Fragment file {} does not exist!", frag_filename);
+        ENGINE_LOG_INFO("Fragment file {} does not exist!", frag_filename);
         return nullptr;
     }
     auto frag_file = mount->Open(frag_filename);
@@ -781,7 +786,7 @@ AssetLoader::LoadScriptDirectory(VirtualMounter* mount, const std::string& path,
     std::filesystem::path root(path);
     auto asset = std::make_unique<asset::TextDirectoryAsset>();
     if (!mount->IsDirectory(path)) {
-        SPDLOG_WARN("Script directory {} is not a script directory!", path);
+        ENGINE_LOG_WARN("Script directory {} is not a script directory!", path);
         return nullptr;
     }
     auto directory = mount->OpenDirectory(path);
@@ -841,7 +846,7 @@ void AssetLoader::LoadResources(Package& package, const std::string& package_mou
     // Load the package
     // Open the root directory
     auto directory = mounter.OpenDirectory(package_mount_path + "/");
-    SPDLOG_INFO("Loading {}", package_mount_path);
+    ENGINE_LOG_INFO("Loading {}", package_mount_path);
     for (int i = 0; i < directory->GetSize(); i++) {
         auto resource_file = directory->GetFile(i);
         // Get the path
@@ -863,7 +868,7 @@ void AssetLoader::LoadResources(Package& package, const std::string& package_mou
         try {
             asset_value = Hjson::Unmarshal(asset_data, dec_opt);
         } catch (Hjson::syntax_error &se) {
-            SPDLOG_WARN(se.what());
+            ENGINE_LOG_WARN(se.what());
             // Then try again without the options
             dec_opt.duplicateKeyException = false;
             asset_value = Hjson::Unmarshal(asset_data, dec_opt);
@@ -883,7 +888,7 @@ void AssetLoader::LoadResourceHjsonFile(Package& package,
                                                      const Hjson::Value& asset_value) {
     ZoneScoped;
     for (const auto [key, val] : asset_value) {
-        SPDLOG_TRACE("Loading asset {}", key);
+        ENGINE_LOG_TRACE("Loading asset {}", key);
         std::string type = val["type"];
 
         // Get the file
@@ -895,15 +900,15 @@ void AssetLoader::LoadResourceHjsonFile(Package& package,
         } else {
             path = package_mount_path + "/" + GetParentPath(resource_file_path) + "/" + val["path"].to_string();
         }
-        SPDLOG_TRACE("Loading path {}", path);
+        ENGINE_LOG_TRACE("Loading path {}", path);
 
         // Check if the file exists, just in case
         if (!mounter.Exists(path)) {
-            SPDLOG_WARN("Cannot find asset {} at {}", key, path);
+            ENGINE_LOG_WARN("Cannot find asset {} at {}", key, path);
             // Check if it's required
             if (!val["required"].empty() && val["required"]) {
                 // Then required
-                SPDLOG_CRITICAL("Cannot find critical resource {}, exiting", key);
+                ENGINE_LOG_CRITICAL("Cannot find critical resource {}, exiting", key);
                 missing_assets.push_back(key);
             }
             continue;

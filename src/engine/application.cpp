@@ -51,6 +51,7 @@
 #include "engine/ui/rmlrenderinterface.h"
 #include "engine/ui/rmlsysteminterface.h"
 #include "engine/userinput.h"
+#include "engine/enginelogger.h"
 
 namespace cqsp::engine {
 namespace {
@@ -113,7 +114,7 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id,
     if (id == 131169 || id == 131185 || id == 131218 || id == 131204)
         return;  // ignore these non-significant error codes
 
-    SPDLOG_ERROR("{} message from {} ({}:{}): {}", ParseType(type),
+    ENGINE_LOG_INFO("{} message from {} ({}:{}): {}", ParseType(type),
                     ParseSource(source), ParseSeverity(severity), id, message);
 }
 
@@ -289,7 +290,7 @@ class GLWindow : public cqsp::engine::Window {
         window = glfwCreateWindow(width, height, "Conquer Space", NULL, NULL);
         if (window == NULL) {
             glfwTerminate();
-            SPDLOG_CRITICAL("Cannot load glfw");
+            ENGINE_LOG_INFO("Cannot load glfw");
         }
 
         glfwMakeContextCurrent(window);
@@ -303,7 +304,7 @@ class GLWindow : public cqsp::engine::Window {
         // Init glad
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
             glfwTerminate();
-            SPDLOG_CRITICAL("Cannot load glad");
+            ENGINE_LOG_CRITICAL("Cannot load glad");
         }
         int flags;
         glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
@@ -326,6 +327,8 @@ class GLWindow : public cqsp::engine::Window {
     }
 
     GLFWwindow* window;
+
+    Application* app;
 
  private:
     bool window_size_changed;
@@ -484,7 +487,7 @@ void Application::InitRmlUi() {
 
     rml_context = Rml::CreateContext("main", Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
     if (!rml_context) {
-        SPDLOG_CRITICAL("Unable to load rml context!");
+        ENGINE_LOG_CRITICAL("Unable to load rml context!");
     }
 
     // Disable debugger ui for now
@@ -515,42 +518,42 @@ void Application::InitRmlUi() {
 
 int Application::destroy() {
     // Delete scene
-    SPDLOG_INFO("Destroying scene");
+    ENGINE_LOG_INFO("Destroying scene");
     m_scene_manager.DeleteCurrentScene();
-    SPDLOG_INFO("Done Destroying scene");
+    ENGINE_LOG_INFO("Done Destroying scene");
 
     // Clear assets
-    SPDLOG_INFO("Deleting game");
+    ENGINE_LOG_INFO("Deleting game");
     m_game.reset();
-    SPDLOG_INFO("Deleted game");
+    ENGINE_LOG_INFO("Deleted game");
 
-    SPDLOG_INFO("Deleting audio interface");
+    ENGINE_LOG_INFO("Deleting audio interface");
     m_audio_interface->Destruct();
-    SPDLOG_INFO("Deleted audio interface");
+    ENGINE_LOG_INFO("Deleted audio interface");
 
-    SPDLOG_INFO("Clearing assets");
+    ENGINE_LOG_INFO("Clearing assets");
     manager.ClearAssets();
-    SPDLOG_INFO("Cleared assets");
+    ENGINE_LOG_INFO("Cleared assets");
 
-    SPDLOG_INFO("Deleting audio interface");
+    ENGINE_LOG_INFO("Deleting audio interface");
     delete m_audio_interface;
-    SPDLOG_INFO("Deleted audio interface");
+    ENGINE_LOG_INFO("Deleted audio interface");
 
     ax::NodeEditor::DestroyEditor(m_ne_context);
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImPlot::DestroyContext();
     ImGui::DestroyContext();
-    SPDLOG_INFO("Killed ImGui");
+    ENGINE_LOG_INFO("Killed ImGui");
 
     Rml::Shutdown();
-    SPDLOG_INFO("Killed RmlUi");
+    ENGINE_LOG_INFO("Killed RmlUi");
 
     glfwDestroyWindow(window(m_window));
     glfwTerminate();
-    SPDLOG_INFO("Killed GLFW");
+    ENGINE_LOG_INFO("Killed GLFW");
 
-    SPDLOG_INFO("Good bye");
+    ENGINE_LOG_INFO("Good bye");
     spdlog::shutdown();
     return 0;
 }
@@ -683,7 +686,7 @@ void Application::ExitApplication() {
 Rml::ElementDocument* Application::LoadDocument(const std::string& path) {
     auto document = rml_context->LoadDocument(path);
     if (!document) {
-        SPDLOG_WARN("Unable to load document {}", path);
+        ENGINE_LOG_WARN("Unable to load document {}", path);
     }
     loaded_documents[path] = document;
     return document;
@@ -825,40 +828,45 @@ void Application::SetIcon() {
 
 void Application::GlInit() {
     m_window = new GLWindow();
+    ((GLWindow*)m_window)->app = this;
     m_window->InitWindow(m_client_options.GetOptions()["window"]["width"],
                             m_client_options.GetOptions()["window"]["height"]);
 
     // Print gl information
-    SPDLOG_INFO(" --- Begin GL information ---");
-    SPDLOG_INFO("GL version: {}", glGetString(GL_VERSION));
-    SPDLOG_INFO("GL vendor: {}", glGetString(GL_VENDOR));
-    SPDLOG_INFO("GL Renderer: {}", glGetString(GL_RENDERER));
-    SPDLOG_INFO("GL shading language: {}", glGetString(GL_SHADING_LANGUAGE_VERSION));
-    SPDLOG_INFO(" --- End of GL information ---");
+    ENGINE_LOG_INFO(" --- Begin GL information ---");
+    ENGINE_LOG_INFO("GL version: {}", glGetString(GL_VERSION));
+    ENGINE_LOG_INFO("GL vendor: {}", glGetString(GL_VENDOR));
+    ENGINE_LOG_INFO("GL Renderer: {}", glGetString(GL_RENDERER));
+    ENGINE_LOG_INFO("GL shading language: {}",
+                       glGetString(GL_SHADING_LANGUAGE_VERSION));
+    ENGINE_LOG_INFO(" --- End of GL information ---");
 }
 
 void Application::LoggerInit() {
     // Get path
     properties["data"] = common::util::GetCqspSavePath();
-    logger = cqsp::common::util::make_logger("application", true);
-    spdlog::set_default_logger(logger);
+    cqsp::engine::engine_logger = cqsp::common::util::make_logger("app", true);
+    auto g_logger = cqsp::common::util::make_logger("game", true);
+    spdlog::set_default_logger(g_logger);
 }
 
 void Application::LogInfo() {
 #ifndef NDEBUG
-    SPDLOG_INFO("Conquer Space Debug {} {}", CQSP_VERSION_STRING, GIT_INFO);
+    ENGINE_LOG_INFO("Conquer Space Debug {} {}", CQSP_VERSION_STRING,
+                       GIT_INFO);
 #else
-    SPDLOG_INFO("Conquer Space {} {}", CQSP_VERSION_STRING, GIT_INFO);
+    ENGINE_LOG("Conquer Space {} {}", CQSP_VERSION_STRING,
+                       GIT_INFO);
 #endif
-    SPDLOG_INFO("Platform: {}", PLATFORM_NAME);
-    SPDLOG_INFO("Compiled {} {}", __DATE__, __TIME__);
-    SPDLOG_INFO("Exe Path: {}", common::util::ExePath::exe_path);
-    SPDLOG_INFO("Data Path: {}", common::util::GetCqspDataPath());
-    SPDLOG_INFO("Save Path: {}", common::util::GetCqspSavePath());
+    ENGINE_LOG_INFO("Platform: {}", PLATFORM_NAME);
+    ENGINE_LOG_INFO("Compiled {} {}", __DATE__, __TIME__);
+    ENGINE_LOG_INFO("Exe Path: {}", common::util::ExePath::exe_path);
+    ENGINE_LOG_INFO("Data Path: {}", common::util::GetCqspDataPath());
+    ENGINE_LOG_INFO("Save Path: {}", common::util::GetCqspSavePath());
 
 #ifdef TRACY_ENABLE
-    SPDLOG_INFO("Tracy protocol version: {}", tracy::ProtocolVersion);
-    SPDLOG_INFO("Tracy broadcast version: {}", tracy::BroadcastVersion);
+    ENGINE_LOG_INFO("Tracy protocol version: {}", tracy::ProtocolVersion);
+    ENGINE_LOG_INFO("Tracy broadcast version: {}", tracy::BroadcastVersion);
 #endif  // TRACY_ENABLED
 }
 
@@ -892,9 +900,9 @@ void SceneManager::SetScene(std::unique_ptr<Scene> scene) {
 
 void SceneManager::SwitchScene() {
     m_scene = std::move(m_next_scene);
-    SPDLOG_TRACE("Initializing scene");
+    ENGINE_LOG_TRACE("Initializing scene");
     m_scene->Init();
-    SPDLOG_TRACE("Done Initializing scene");
+    ENGINE_LOG_TRACE("Done Initializing scene");
     m_switch = false;
 }
 

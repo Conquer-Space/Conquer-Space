@@ -24,6 +24,7 @@
 
 #include "common/util/profiler.h"
 #include "engine/graphics/primitives/pane.h"
+#include "engine/enginelogger.h"
 
 namespace {
 void GenerateFrameBuffer(unsigned int &framebuffer) {
@@ -54,7 +55,7 @@ void cqsp::engine::FramebufferRenderer::InitTexture(int width, int height) {
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        SPDLOG_ERROR("Framebuffer is not complete!");
+        ENGINE_LOG_ERROR("Framebuffer is not complete!");
     // Reset framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

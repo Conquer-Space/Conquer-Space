@@ -38,6 +38,7 @@
 #include "engine/graphics/text.h"
 #include "engine/gui.h"
 #include "engine/asset/vfs/vfs.h"
+#include "engine/enginelogger.h"
 
 namespace cqsp {
 namespace asset {
@@ -132,7 +133,7 @@ class Package {
     template<class T, typename V>
     T* GetAsset(const V asset) {
         if (!HasAsset(asset)) {
-            SPDLOG_ERROR("Invalid key {}", asset);
+            ENGINE_LOG_ERROR("Invalid key {}", asset);
         }
         return dynamic_cast<T*>(assets[asset].get());
     }
@@ -189,14 +190,14 @@ class AssetManager {
 
         // Check if package exists
         if (packages.count(package_name) == 0) {
-            SPDLOG_ERROR("Cannot find package {}", package_name);
+            ENGINE_LOG_ERROR("Cannot find package {}", package_name);
         }
         std::string pkg_key = key.substr(separation+1, key.length());
         auto& package = packages[package_name];
         // Probably a better way to do this, to be honest
         // Load default texture
         if (!package->HasAsset(pkg_key)) {
-            SPDLOG_ERROR("Cannot find asset {}", pkg_key);
+            ENGINE_LOG_ERROR("Cannot find asset {}", pkg_key);
             if constexpr (std::is_same<T, asset::Texture>::value) {
                 return &empty_texture;
             }

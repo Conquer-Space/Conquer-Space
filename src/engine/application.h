@@ -92,15 +92,9 @@ class SceneManager {
     bool m_switch;
 };
 
-class ActionListener {
-};
 class Application {
  public:
     Application(int _argc, char* _argv[]);
-    /// We assume application is run from directory. Unless it's a test,
-    /// Application is not really supposed to be used here.
-    [[deprecated("This constructor is supposed to be used for testing purposes,"
-                    "and is not recommended.")]]
 
     /*
     * Runs the entire application.
@@ -295,8 +289,6 @@ class Application {
     double deltaTime, lastFrame;
 
     std::string locale;
-
-    std::shared_ptr<spdlog::logger> logger;
 
     cqsp::asset::AssetManager manager;
 
