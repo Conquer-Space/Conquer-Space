@@ -36,7 +36,6 @@ struct Civilization {
 };
 
 struct Country {
-
 };
 }  // namespace components
 }  // namespace common

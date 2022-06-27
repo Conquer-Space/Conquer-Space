@@ -51,6 +51,7 @@ class Universe : public entt::registry {
     bool ToTick() { return to_tick; }
 
     std::unique_ptr<cqsp::common::util::IRandom> random;
+
  private:
     bool to_tick = false;
 };
