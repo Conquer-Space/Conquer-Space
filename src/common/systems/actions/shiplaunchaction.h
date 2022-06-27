@@ -21,17 +21,14 @@
 #include <entt/entt.hpp>
 #include <glm/vec3.hpp>
 
-
 #include "common/universe.h"
+#include "common/components/coordinates.h"
 
-namespace cqsp {
-namespace common {
-namespace systems {
-namespace actions {
-//deprecated
+namespace cqsp::common::systems::actions {
+// deprecated
 entt::entity CreateShip(cqsp::common::Universe &universe, entt::entity civ,
-                        const glm::vec3& orbit, entt::entity starsystem);
-//deprecated
+                        const glm::vec3 &orbit, entt::entity starsystem);
+// deprecated
 entt::entity CreateShip(cqsp::common::Universe &universe, entt::entity civ,
                         entt::entity orbit, entt::entity starsystem);
 /**
@@ -49,7 +46,5 @@ entt::entity CreateShip(cqsp::common::Universe &universe, entt::entity fleetEnt,
                         entt::entity starsystemEnt, entt::entity orbitEnt,
                         const std::string &shipName);
 
-}  // namespace actions
-}  // namespace systems
-}  // namespace common
-}  // namespace cqsp
+entt::entity LaunchShip(Universe &universe, components::types::Orbit &orbit);
+}  // namespace cqsp::common::systems::actions

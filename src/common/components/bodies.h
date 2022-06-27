@@ -33,8 +33,6 @@ struct Body {
      */
     types::kilometer radius;
 
-    entt::entity star_system;
-
     /// <summary>
     /// Radius of sphere of influence
     /// rsoi = a(m/M)^2/5
