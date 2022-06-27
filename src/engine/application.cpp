@@ -855,7 +855,7 @@ void Application::LogInfo() {
     ENGINE_LOG_INFO("Conquer Space Debug {} {}", CQSP_VERSION_STRING,
                        GIT_INFO);
 #else
-    ENGINE_LOG("Conquer Space {} {}", CQSP_VERSION_STRING,
+    ENGINE_LOG_INFO("Conquer Space {} {}", CQSP_VERSION_STRING,
                        GIT_INFO);
 #endif
     ENGINE_LOG_INFO("Platform: {}", PLATFORM_NAME);
