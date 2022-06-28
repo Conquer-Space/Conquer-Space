@@ -16,27 +16,17 @@
 */
 #pragma once
 
-#include <entt/entt.hpp>
+#include "common/systems/loading/hjsonloader.h"
 
-namespace cqsp {
-namespace common {
-namespace components {
-/// <summary>
-/// The civilization or organization that owns or governs the city
-/// </summary>
-struct Governed {
-    entt::entity governor;
+namespace cqsp::common::systems::loading {
+class CountryLoader : public HjsonLoader {
+ public:
+    explicit CountryLoader(Universe& universe) : HjsonLoader(universe) {}
+
+    const Hjson::Value& GetDefaultValues() override { return default_val; }
+    bool LoadValue(const Hjson::Value& values, entt::entity entity) override;
+
+ private:
+    Hjson::Value default_val;
 };
-
-struct Organization {};
-
-struct Civilization {
-    entt::entity starting_planet;
-    entt::entity top_level_fleet;
-};
-
-struct Country {
-};
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::systems::loading

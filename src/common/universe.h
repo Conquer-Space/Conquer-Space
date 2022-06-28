@@ -42,6 +42,7 @@ class Universe : public entt::registry {
     std::map<std::string, entt::entity> technologies;
     std::map<std::string, entt::entity> planets;
     std::map<std::string, entt::entity> time_zones;
+    std::map<std::string, entt::entity> countries;
 
     entt::entity sun;
 
@@ -50,6 +51,7 @@ class Universe : public entt::registry {
     bool ToTick() { return to_tick; }
 
     std::unique_ptr<cqsp::common::util::IRandom> random;
+
  private:
     bool to_tick = false;
 };

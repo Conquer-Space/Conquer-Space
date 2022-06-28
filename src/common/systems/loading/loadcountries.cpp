@@ -14,29 +14,16 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#pragma once
+#include "common/systems/loading/loadcountries.h"
 
-#include <entt/entt.hpp>
+#include "common/components/organizations.h"
+#include "common/components/name.h"
 
-namespace cqsp {
-namespace common {
-namespace components {
-/// <summary>
-/// The civilization or organization that owns or governs the city
-/// </summary>
-struct Governed {
-    entt::entity governor;
-};
-
-struct Organization {};
-
-struct Civilization {
-    entt::entity starting_planet;
-    entt::entity top_level_fleet;
-};
-
-struct Country {
-};
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+namespace cqsp::common::systems::loading {
+bool CountryLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
+    // Just make the country
+    universe.emplace<components::Country>(entity);
+    universe.countries[universe.get<components::Identifier>(entity).identifier] = entity;
+    return true;
+}
+}  // namespace cqsp::common::systems::loading

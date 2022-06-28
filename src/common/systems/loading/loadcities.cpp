@@ -28,10 +28,10 @@
 #include "common/systems/actions/factoryconstructaction.h"
 #include "common/components/name.h"
 #include "common/components/infrastructure.h"
+#include "common/components/organizations.h"
 
 namespace cqsp::common::systems::loading {
-bool CityLoader::LoadValue(
-    const Hjson::Value& values, entt::entity entity) {
+bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     // Load the city
     std::string planet = values["planet"].to_string();
     double longi = values["coordinates"]["longitude"].to_double();
@@ -91,6 +91,14 @@ bool CityLoader::LoadValue(
     if (!values["space-port"].empty()) {
         // Add space port
         universe.emplace<components::infrastructure::SpacePort>(entity);
+    }
+
+    if (!values["country"].empty()) {
+        entt::entity country = universe.countries[values["country"]];
+        universe.emplace<components::Governed>(entity, country);
+    } else {
+        SPDLOG_WARN("City {} has no country",
+                    universe.get<components::Identifier>(entity).identifier);
     }
     return true;
 }
