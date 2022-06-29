@@ -1,0 +1,11 @@
+{
+    earth_map: {
+        path: earth.png
+        // IDK how to parse this
+    }
+    earth_colors: {
+        path: earth_color_list.hjson
+        type: hjson
+        hints: {}
+    }
+}

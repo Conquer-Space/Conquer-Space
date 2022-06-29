@@ -287,13 +287,14 @@ void SysStarSystemRenderer::Update(float deltaTime) {
             if (is_founding_city) {
                 // Found city
                 glm::vec3 p = city_founding_position - CalculateCenteredObject(on_planet);
+                p = glm::normalize(p);
                 namespace cqspt = cqsp::common::components::types;
                 namespace cqspc = cqsp::common::components;
 
                 double latitude = cqspt::toDegree(asin(p.y));
                 double longitude = cqspt::toDegree(atan2(p.x, p.z));
                 SPDLOG_INFO("Founding city at {} {} {}", latitude, longitude, glm::length(p));
-
+                // Rotate based on the axial tilt and roation
                 entt::entity settlement =
                     cqsp::common::actions::CreateCity(m_app.GetUniverse(),
                                                         on_planet, latitude, longitude);
