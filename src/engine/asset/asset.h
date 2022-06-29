@@ -75,7 +75,8 @@ enum class AssetType {
     /// `shader_def` as the `type` parameter in `resource.hjson`
     /// </summary>
     /// \see @ref cqsp::asset::AssetLoader::LoadShaderDefinition for implementation
-    SHADER_DEFINITION
+    SHADER_DEFINITION,
+    BINARY
 };
 
 // This will be hell to maintain
@@ -108,6 +109,8 @@ inline AssetType FromString(const std::string& name) {
         return AssetType::AUDIO;
     } else if (name == "shader_def") {
         return AssetType::SHADER_DEFINITION;
+    } else if (name == "binary") {
+        return AssetType::BINARY;
     }
     return AssetType::NONE;
 }
@@ -140,6 +143,8 @@ inline std::string ToString(AssetType type) {
             return "directory";
         case AssetType::AUDIO:
             return "audio";
+        case AssetType::BINARY:
+            return "binary";
     }
 }
 

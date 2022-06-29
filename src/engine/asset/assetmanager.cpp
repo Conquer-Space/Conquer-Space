@@ -208,6 +208,7 @@ AssetLoader::AssetLoader() {
     loading_functions[AssetType::CUBEMAP] = CREATE_ASSET_LAMBDA(LoadCubemap);
     loading_functions[AssetType::FONT] = CREATE_ASSET_LAMBDA(LoadFont);
     loading_functions[AssetType::SHADER_DEFINITION] = CREATE_ASSET_LAMBDA(LoadShaderDefinition);
+    loading_functions[AssetType::BINARY] = CREATE_ASSET_LAMBDA(LoadBinaryAsset);
 }
 
 namespace cqspa = cqsp::asset;
@@ -224,8 +225,6 @@ void AssetLoader::LoadMods() {
 
     // Keep track of all mods so that we can ensure that all are loaded
     Hjson::Value all_mods;
-
-    ENGINE_LOG_INFO("{}", engine::engine_logger->name());
 
     // Some lambda things to keep things less cluttered and simpler
     auto mod_load = [&](const std::optional<PackagePrototype> &package) {
@@ -556,6 +555,15 @@ std::unique_ptr<Asset> AssetLoader::LoadTexture(
         return nullptr;
     }
     return std::move(texture);
+}
+
+std::unique_ptr<cqsp::asset::Asset> AssetLoader::LoadBinaryAsset(
+    cqsp::asset::VirtualMounter* mount, const std::string& path,
+    const std::string& key, const Hjson::Value& hints) {
+    std::unique_ptr<BinaryAsset> asset = std::make_unique<BinaryAsset>();
+    auto file = mount->Open(path);
+    asset->data = ReadAllFromVFile(file.get());
+    return asset;
 }
 
 std::unique_ptr<Asset> AssetLoader::LoadHjson(
@@ -913,8 +921,11 @@ void AssetLoader::LoadResourceHjsonFile(Package& package,
             }
             continue;
         }
-
-        PlaceAsset(package, FromString(type), path, std::string(key), val["hints"]);
+        Hjson::Value hints;
+        if (val["hints"].defined()) {
+            hints = val["hints"];
+        }
+        PlaceAsset(package, FromString(type), path, std::string(key), hints);
         currentloading++;
     }
 }

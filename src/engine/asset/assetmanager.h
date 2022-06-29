@@ -343,6 +343,15 @@ class AssetLoader {
                                                     const std::string& path,
                                                     const std::string& key,
                                                     const Hjson::Value& hints);
+
+    /// <summary>
+    /// Loads binary data straight from the file.
+    /// </summary>
+    std::unique_ptr<cqsp::asset::Asset> LoadBinaryAsset(cqsp::asset::VirtualMounter* mount,
+                                                        const std::string& path,
+                                                        const std::string& key,
+                                                        const Hjson::Value& hints);
+
     /// <summary>
     /// Hjson is rather flexible, it can load a single file or a directory, with just the same option.
     /// If the input path is a file, then it will load the hjson file into a `Hjson::Value`.

@@ -1,7 +1,8 @@
 {
     earth_map: {
         path: earth.png
-        // IDK how to parse this
+        type: binary
+        hints: {}
     }
     earth_colors: {
         path: earth_color_list.hjson

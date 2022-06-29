@@ -20,6 +20,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 
 #include "engine/asset/asset.h"
 namespace cqsp::asset {
@@ -54,5 +55,10 @@ class TextDirectoryAsset : public Asset {
 class HjsonAsset : public Asset {
  public:
     Hjson::Value data;
+};
+
+class BinaryAsset : public Asset {
+ public:
+    std::vector<uint8_t> data;
 };
 }  // namespace cqsp::asset
