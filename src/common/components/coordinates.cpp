@@ -163,4 +163,9 @@ glm::vec3 toVec3(const SurfaceCoordinate& coord, const float& radius) {
                      sin(coord.r_latitude()),
                      cos(coord.r_latitude()) * cos(coord.r_longitude())) * radius;
 }
+SurfaceCoordinate ToSurfaceCoordinate(const glm::vec3& vec) {
+    double latitude = (asin(vec.y));
+    double longitude = (atan2(vec.x, vec.z));
+    return SurfaceCoordinate(latitude, longitude, true);
+}
 }  // namespace cqsp::common::components::types

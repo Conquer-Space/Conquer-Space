@@ -363,4 +363,6 @@ inline void UpdatePos(Kinematics& kin, const Orbit& orb) {
     // Calculate time
     kin.position = toVec3AU(orb);
 }
+
+SurfaceCoordinate ToSurfaceCoordinate(const glm::vec3& vec);
 }  // namespace cqsp::common::components::types

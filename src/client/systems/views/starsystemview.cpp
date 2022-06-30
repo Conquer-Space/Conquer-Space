@@ -290,14 +290,20 @@ void SysStarSystemRenderer::Update(float deltaTime) {
                 p = glm::normalize(p);
                 namespace cqspt = cqsp::common::components::types;
                 namespace cqspc = cqsp::common::components;
-
-                double latitude = cqspt::toDegree(asin(p.y));
-                double longitude = cqspt::toDegree(atan2(p.x, p.z));
-                SPDLOG_INFO("Founding city at {} {} {}", latitude, longitude, glm::length(p));
+                auto& planet_comp =
+                    m_app.GetUniverse().get<cqspc::bodies::Body>(on_planet);
+                auto quat =
+                    GetBodyRotation(planet_comp.axial, planet_comp.rotation,
+                                    planet_comp.rotation_offset);
+                // Rotate the vector based on the axial tilt and rotation.
+                p = glm::inverse(quat) * p;
+                cqspt::SurfaceCoordinate s = cqspt::ToSurfaceCoordinate(p);
+                SPDLOG_INFO("Founding city at {} {}", s.latitude(),
+                            s.longitude() + 90);
+                // Get the country
                 // Rotate based on the axial tilt and roation
                 entt::entity settlement =
-                    cqsp::common::actions::CreateCity(m_app.GetUniverse(),
-                                                        on_planet, latitude, longitude);
+                    cqsp::common::actions::CreateCity(m_app.GetUniverse(), on_planet, s.latitude(), s.longitude() + 90);
                 // Set the name of the city
                 cqspc::Name& name = m_app.GetUniverse().emplace<cqspc::Name>(settlement);
                 name.name = m_app.GetUniverse().name_generators["Town Names"].Generate("1");
