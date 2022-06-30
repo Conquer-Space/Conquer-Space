@@ -189,6 +189,14 @@ class SysStarSystemRenderer {
     float view_scale = 10.f;
 
     entt::entity selected_city = entt::null;
+    std::string city_name;
+    int tex_x;
+    int tex_y;
+    int tex_r;
+    int tex_g;
+    int tex_b;
+
+    void CityDetection();
 };
 }  // namespace systems
 }  // namespace client

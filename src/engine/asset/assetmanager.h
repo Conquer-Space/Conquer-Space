@@ -203,7 +203,11 @@ class AssetManager {
             }
         }
         // Check if asset exists
-        return package->GetAsset<T>(pkg_key);
+        T* ptr = package->GetAsset<T>(pkg_key);
+        if (ptr == nullptr) {
+            SPDLOG_WARN("Asset {} is wrong type", key);
+        }
+        return ptr;
     }
 
     void LoadDefaultTexture();

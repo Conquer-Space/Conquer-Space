@@ -6,7 +6,7 @@
         }
     }
     earthmap: {
-        path: earth8k.jpg
+        path: ../../map/earth.png
         type: texture
         hints: {
         }
