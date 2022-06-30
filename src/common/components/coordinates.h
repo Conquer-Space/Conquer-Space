@@ -283,13 +283,13 @@ struct SurfaceCoordinate {
     /// <param name="_long">Longtitude in degrees</param>
     SurfaceCoordinate(degree _lat, degree _long)
         : _latitude(toRadian(_lat)), _longitude(toRadian(_long)) {
-        _lat = normalize_radian(_lat);
-        _longitude = normalize_radian(_longitude);
+        _lat = normalize_radian_coord(_lat);
+        _longitude = normalize_radian_coord(_longitude);
     }
 
     SurfaceCoordinate(radian _lat, radian _long, bool radian)
-        : _latitude(normalize_radian(_lat)),
-          _longitude(normalize_radian(_long)) {
+        : _latitude(normalize_radian_coord(_lat)),
+          _longitude(normalize_radian_coord(_long)) {
     }
 
     degree latitude() const {

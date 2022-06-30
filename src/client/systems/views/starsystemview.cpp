@@ -298,12 +298,36 @@ void SysStarSystemRenderer::Update(float deltaTime) {
                 // Rotate the vector based on the axial tilt and rotation.
                 p = glm::inverse(quat) * p;
                 cqspt::SurfaceCoordinate s = cqspt::ToSurfaceCoordinate(p);
+                s = cqspt::SurfaceCoordinate(s.latitude(), s.longitude() + 90);
                 SPDLOG_INFO("Founding city at {} {}", s.latitude(),
-                            s.longitude() + 90);
+                            s.longitude());
+
                 // Get the country
+                auto asset = m_app.GetAssetManager().GetAsset<asset::BinaryAsset>("earth_map");
+                auto asset_hjson =
+                    m_app.GetAssetManager().GetAsset<asset::HjsonAsset>(
+                        "earth_map");
+                // Look for the vector
                 // Rotate based on the axial tilt and roation
                 entt::entity settlement =
-                    cqsp::common::actions::CreateCity(m_app.GetUniverse(), on_planet, s.latitude(), s.longitude() + 90);
+                    cqsp::common::actions::CreateCity(m_app.GetUniverse(), on_planet, s.latitude(), s.longitude());
+                int width = 2048;
+                int height = 1024;
+                int pos =
+                    ((-1 * (s.latitude() * 2 - 180)) / 360 * height * width +
+                     fmod(s.longitude() + 180, 360) / 360. * width) *
+                    4;
+                SPDLOG_INFO("{} {} ({} {} {} {})", pos, asset->data.size(),
+                            asset->data[pos], asset->data[pos + 1],
+                            asset->data[pos + 2], asset->data[pos + 3]);
+                std::tuple<int, int, int, int> t =
+                    std::make_tuple(asset->data[pos], asset->data[pos + 1],
+                                    asset->data[pos + 2], asset->data[pos + 3]);
+                for (auto& b : asset_hjson->data) {
+                    auto val = b.second["color"];
+                }
+                SPDLOG_INFO("Texture pos: {} {}", (-1 * (s.latitude() * 2 - 180))/360 * 4096, fmod(s.longitude() + 180, 360)/360. * 8192);
+                //asset->data.at();
                 // Set the name of the city
                 cqspc::Name& name = m_app.GetUniverse().emplace<cqspc::Name>(settlement);
                 name.name = m_app.GetUniverse().name_generators["Town Names"].Generate("1");
