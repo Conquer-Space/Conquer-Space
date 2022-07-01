@@ -196,6 +196,7 @@ class SysStarSystemRenderer {
     int tex_g;
     int tex_b;
 
+    common::components::types::SurfaceCoordinate GetCitySurfaceCoordinate();
     void CityDetection();
 };
 }  // namespace systems
