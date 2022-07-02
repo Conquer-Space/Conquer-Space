@@ -562,14 +562,7 @@ std::unique_ptr<cqsp::asset::Asset> AssetLoader::LoadBinaryAsset(
     const std::string& key, const Hjson::Value& hints) {
     std::unique_ptr<BinaryAsset> asset = std::make_unique<BinaryAsset>();
     auto file = mount->Open(path);
-    uint64_t file_size = file->Size();
-    auto buffer = ReadAllFromVFile(file.get());
-    int width, height, comp;
-    auto d =
-        stbi_load_from_memory(buffer.data(), file_size, &width,
-                                        &height, &comp, 0);
-
-    std::copy(&d[0], &d[width * height * comp], std::back_inserter(asset->data));
+    asset->data = ReadAllFromVFile(file.get());
     return asset;
 }
 

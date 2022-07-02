@@ -18,12 +18,14 @@
 
 #include <glad/glad.h>
 #include <noise/noise.h>
+#include <stb_image.h>
 
 #include <cmath>
 #include <string>
 #include <memory>
 #include <vector>
 #include <algorithm>
+#include <tuple>
 
 #include <tracy/Tracy.hpp>
 
@@ -144,6 +146,19 @@ void SysStarSystemRenderer::Initialize() {
     physical_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
     planet_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
     skybox_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
+
+
+        // Get the country
+    auto bin_asset =
+        m_app.GetAssetManager().GetAsset<asset::BinaryAsset>("earth_map");
+    uint64_t file_size = bin_asset->data.size();
+    int width, height, comp;
+    auto d = stbi_load_from_memory(bin_asset->data.data(), file_size, &width,
+                                   &height,
+                                   &comp, 0);
+
+    std::copy(&d[0], &d[width * height * comp],
+              std::back_inserter(country_map));
 }
 
 void SysStarSystemRenderer::OnTick() {
@@ -1037,9 +1052,6 @@ void SysStarSystemRenderer::CityDetection() {
     }
     auto s = GetCitySurfaceCoordinate();
 
-    // Get the country
-    auto asset =
-        m_app.GetAssetManager().GetAsset<asset::BinaryAsset>("earth_map");
     auto asset_hjson =
         m_app.GetAssetManager().GetAsset<asset::HjsonAsset>("earth_colors");
     // Look for the vector
@@ -1053,8 +1065,8 @@ void SysStarSystemRenderer::CityDetection() {
     tex_x = x;
     tex_y = y;
     std::tuple<int, int, int, int> t =
-        std::make_tuple(asset->data[pos], asset->data[pos + 1],
-                        asset->data[pos + 2], asset->data[pos + 3]);
+        std::make_tuple(country_map[pos], country_map[pos + 1],
+                        country_map[pos + 2], country_map[pos + 3]);
     tex_r = std::get<0>(t);
     tex_g = std::get<1>(t);
     tex_b = std::get<2>(t);
