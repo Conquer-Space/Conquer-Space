@@ -20,7 +20,6 @@
 
 #include <imgui.h>
 #include <imgui_stdlib.h>
-#include <imgui_markdown.h>
 #include <imgui_node_editor.h>
 
 #include <fmt/format.h>

@@ -220,8 +220,6 @@ class Application {
     /// <param name="path"></param>
     bool Screenshot(const char* path = NULL);
 
-    ImGui::MarkdownConfig markdownConfig;
-
     Rml::Context* GetRmlUiContext() { return rml_context; }
 
     class CqspEventInstancer : public Rml::EventListenerInstancer {
