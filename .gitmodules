@@ -7,9 +7,6 @@
 [submodule "lib/stb"]
 	path = lib/stb
 	url = https://github.com/nothings/stb/
-[submodule "lib/imgui_markdown"]
-	path = lib/imgui_markdown
-	url = https://github.com/juliettef/imgui_markdown
 [submodule "lib/libnoise"]
 	path = lib/libnoise
 	url = https://github.com/EhWhoAmI/libnoise

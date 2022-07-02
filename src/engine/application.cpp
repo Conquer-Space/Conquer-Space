@@ -798,24 +798,6 @@ void Application::InitFonts() {
         (fontPath + fontDatabase["default"]["path"]).c_str(),
         fontDatabase["default"]["size"]);
     io.FontDefault = defaultFont;
-
-    ImFont* h1font = io.Fonts->AddFontFromFileTTF(
-        (fontPath + fontDatabase["h1"]["path"]).c_str(),
-        fontDatabase["h1"]["size"]);
-
-    markdownConfig.headingFormats[0] = {h1font, true};
-
-    ImFont* h2font = io.Fonts->AddFontFromFileTTF(
-        (fontPath + fontDatabase["h2"]["path"]).c_str(),
-        fontDatabase["h2"]["size"]);
-
-    markdownConfig.headingFormats[1] = {h2font, true};
-
-    ImFont* h3font = io.Fonts->AddFontFromFileTTF(
-        (fontPath + fontDatabase["h3"]["path"]).c_str(),
-        fontDatabase["h3"]["size"]);
-
-    markdownConfig.headingFormats[2] = {h3font, true};
 }
 
 void Application::SetIcon() {

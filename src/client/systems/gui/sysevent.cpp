@@ -23,11 +23,14 @@
 #include "engine/cqspgui.h"
 
 void cqsp::client::systems::gui::SysEvent::Init() {
-    GetApp().markdownConfig.tooltipCallback = [](ImGui::MarkdownTooltipCallbackData conf) {
+#if false
+    GetApp().markdownConfig.tooltipCallback = []( \
+    ImGui::MarkdownTooltipCallbackData conf) {
         ImGui::BeginTooltip();
         ImGui::Text(std::string(conf.linkData.link, conf.linkData.linkLength).c_str());
         ImGui::EndTooltip();
     };
+#endif
 }
 
 void cqsp::client::systems::gui::SysEvent::DoUI(int delta_time) {
@@ -56,7 +59,7 @@ void cqsp::client::systems::gui::SysEvent::DoUI(int delta_time) {
         ImGui::Separator();
         ImGui::BeginChild("eventchild", ImVec2(-FLT_MIN, 150), false,
                           window_flags);
-        ImGui::Markdown(env->content.c_str(), env->content.length(), GetApp().markdownConfig);
+        ImGui::Text(env->content.c_str());
         ImGui::EndChild();
         if (env->actions.empty()) {
             if (CQSPGui::DefaultButton("Ok", ImVec2(-FLT_MIN, 0))) {
