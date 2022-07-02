@@ -1,0 +1,12 @@
+{
+    earth_map: {
+        path: earth.png
+        type: binary
+        hints: {}
+    }
+    earth_colors: {
+        path: earth_color_list.hjson
+        type: hjson
+        hints: {}
+    }
+}

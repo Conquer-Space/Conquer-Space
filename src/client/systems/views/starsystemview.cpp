@@ -18,12 +18,14 @@
 
 #include <glad/glad.h>
 #include <noise/noise.h>
+#include <stb_image.h>
 
 #include <cmath>
 #include <string>
 #include <memory>
 #include <vector>
 #include <algorithm>
+#include <tuple>
 
 #include <tracy/Tracy.hpp>
 
@@ -144,6 +146,19 @@ void SysStarSystemRenderer::Initialize() {
     physical_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
     planet_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
     skybox_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
+
+
+        // Get the country
+    auto bin_asset =
+        m_app.GetAssetManager().GetAsset<asset::BinaryAsset>("earth_map");
+    uint64_t file_size = bin_asset->data.size();
+    int width, height, comp;
+    auto d = stbi_load_from_memory(bin_asset->data.data(), file_size, &width,
+                                   &height,
+                                   &comp, 0);
+
+    std::copy(&d[0], &d[width * height * comp],
+              std::back_inserter(country_map));
 }
 
 void SysStarSystemRenderer::OnTick() {
@@ -258,6 +273,9 @@ void SysStarSystemRenderer::Update(float deltaTime) {
 
     is_founding_city = IsFoundingCity(m_universe);
 
+    // Discern between showing UI and other things
+    CityDetection();
+
     if (!ImGui::GetIO().WantCaptureMouse) {
         CalculateScroll();
 
@@ -282,24 +300,25 @@ void SysStarSystemRenderer::Update(float deltaTime) {
         if (m_app.MouseButtonIsReleased(engine::MouseInput::LEFT) && ent != entt::null && !m_app.MouseDragged()) {
             // Then go to the object
             SeePlanet(ent);
-            // Discern between showing UI and other things
-
             if (is_founding_city) {
-                // Found city
-                glm::vec3 p = city_founding_position - CalculateCenteredObject(on_planet);
                 namespace cqspt = cqsp::common::components::types;
                 namespace cqspc = cqsp::common::components;
 
-                double latitude = cqspt::toDegree(asin(p.y));
-                double longitude = cqspt::toDegree(atan2(p.x, p.z));
-                SPDLOG_INFO("Founding city at {} {} {}", latitude, longitude, glm::length(p));
+                auto s = GetCitySurfaceCoordinate();
+                SPDLOG_INFO("Founding city at {} {}", s.latitude(), s.longitude());
 
                 entt::entity settlement =
-                    cqsp::common::actions::CreateCity(m_app.GetUniverse(),
-                                                        on_planet, latitude, longitude);
+                    cqsp::common::actions::CreateCity(m_app.GetUniverse(), on_planet, s.latitude(), s.longitude());
                 // Set the name of the city
                 cqspc::Name& name = m_app.GetUniverse().emplace<cqspc::Name>(settlement);
                 name.name = m_app.GetUniverse().name_generators["Town Names"].Generate("1");
+
+                // Set country
+                entt::entity country = m_app.GetUniverse().countries[city_name];
+                if (m_app.GetUniverse().valid(country)) {
+                    // Set country
+                    m_app.GetUniverse().emplace<cqspc::Governed>(settlement, country);
+                }
                 // Add population and economy
                 m_app.GetUniverse().emplace<cqspc::Industry>(settlement);
 
@@ -349,6 +368,9 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
     ImGui::TextFmt("{} {} {}", view_center.x, view_center.y, view_center.z);
     ImGui::TextFmt("{}", scroll);
     ImGui::TextFmt("{} {}", view_x, view_y);
+    ImGui::TextFmt("{}", city_name);
+    ImGui::TextFmt("{} {}", tex_x, tex_y);
+    ImGui::TextFmt("{} {} {}", tex_r, tex_g, tex_b);
     ImGui::TextFmt("Focused planets: {}",
         m_universe.view<FocusedPlanet>().size());
     ImGui::End();
@@ -1003,6 +1025,62 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
         // Do the points
         delete line.orbit_mesh;
         line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);
+    }
+}
+
+common::components::types::SurfaceCoordinate
+SysStarSystemRenderer::GetCitySurfaceCoordinate() {
+    namespace cqspt = cqsp::common::components::types;
+    namespace cqspc = cqsp::common::components;
+
+    glm::vec3 p = city_founding_position - CalculateCenteredObject(on_planet);
+    p = glm::normalize(p);
+
+    auto& planet_comp = m_app.GetUniverse().get<cqspc::bodies::Body>(on_planet);
+    auto quat = GetBodyRotation(planet_comp.axial, planet_comp.rotation,
+                                planet_comp.rotation_offset);
+    // Rotate the vector based on the axial tilt and rotation.
+    p = glm::inverse(quat) * p;
+    cqspt::SurfaceCoordinate s = cqspt::ToSurfaceCoordinate(p);
+    s = cqspt::SurfaceCoordinate(s.latitude(), s.longitude() + 90);
+    return s;
+}
+
+void SysStarSystemRenderer::CityDetection() {
+    if (on_planet == entt::null || !m_universe.valid(on_planet)) {
+        return;
+    }
+    auto s = GetCitySurfaceCoordinate();
+
+    auto asset_hjson =
+        m_app.GetAssetManager().GetAsset<asset::HjsonAsset>("earth_colors");
+    // Look for the vector
+    // Rotate based on the axial tilt and roation
+
+    int width = 2048;
+    int height = 1024;
+    int x = (-1 * (s.latitude() * 2 - 180)) / 360 * height;
+    int y = fmod(s.longitude() + 180, 360) / 360. * width;
+    int pos = (x * width + y) * 4;
+    tex_x = x;
+    tex_y = y;
+    std::tuple<int, int, int, int> t =
+        std::make_tuple(country_map[pos], country_map[pos + 1],
+                        country_map[pos + 2], country_map[pos + 3]);
+    tex_r = std::get<0>(t);
+    tex_g = std::get<1>(t);
+    tex_b = std::get<2>(t);
+    city_name = "";
+    for (auto& b : asset_hjson->data) {
+        auto val = b.second["color"];
+        bool ist = true;
+        ist &= val[0] == std::get<0>(t);
+        ist &= val[1] == std::get<1>(t);
+        ist &= val[2] == std::get<2>(t);
+        if (ist) {
+            // Get city
+            city_name = b.first;
+        }
     }
 }
 

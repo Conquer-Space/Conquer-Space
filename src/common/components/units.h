@@ -49,6 +49,7 @@ typedef double second;
 // Constants
 const double PI = 3.14159265358979323846;
 const double TWOPI = PI * 2;
+const double HALFPI = PI / 2;
 
 const double KmInAu = 149597870.700;
 
@@ -70,6 +71,12 @@ inline radian normalize_radian(const radian& radian) {
         x += TWOPI;
     }
     return x;
+}
+
+inline double normalize_radian_coord(const radian& radian) {
+    double r = fmod(radian + PI, TWOPI);
+    if (r < 0) r += TWOPI;
+    return r - PI;
 }
 
 inline degree normalize_degree(const degree& radian) {

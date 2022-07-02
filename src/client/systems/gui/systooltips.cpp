@@ -228,7 +228,10 @@ void EntityTooltip(const Universe &universe, entt::entity entity) {
         ImGui::TextFmt("True Anomaly: {}", orbit.v);
     }
 
-
+    if (universe.all_of<common::components::types::SurfaceCoordinate>(entity)) {
+        auto& pos = universe.get<common::components::types::SurfaceCoordinate>(entity);
+        ImGui::TextFmt("Coordinates: {}, {}", pos.latitude(), pos.longitude());
+    }
 
     // Resource stuff
     //TODO(EhWhoAmI): Set these text red, but too lazy to do it for now

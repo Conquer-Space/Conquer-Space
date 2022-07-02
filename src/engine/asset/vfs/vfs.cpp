@@ -131,7 +131,7 @@ bool VirtualMounter::Exists(const std::string& mount, const std::string& path) {
 std::vector<uint8_t> ReadAllFromVFile(IVirtualFile* file) {
     int size = file->Size();
     std::vector<uint8_t> buffer;
-    buffer.reserve(size);
+    buffer.resize(size);
     file->Read(buffer.data(), size);
     return buffer;
 }
