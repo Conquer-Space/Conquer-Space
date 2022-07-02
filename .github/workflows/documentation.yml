@@ -20,7 +20,7 @@ jobs:
         doxyfile-path: 'Doxyfile'
 
     - name: Pushes to another repository
-      uses: EhWhoAmI/github-action-push-to-another-repository@main
+      uses: cpina/github-action-push-to-another-repository@main
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
