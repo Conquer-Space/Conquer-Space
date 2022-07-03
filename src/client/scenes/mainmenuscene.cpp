@@ -199,7 +199,6 @@ void cqsp::scene::MainMenuScene::ShuffleFileList() {
 
     for (auto entry : std::filesystem::directory_iterator(splash_dir)) {
         std::string extension = entry.path().extension().string();
-        SPDLOG_INFO("{}", extension);
         std::transform(extension.begin(), extension.end(), extension.begin(),
                        [](unsigned char c) { return std::tolower(c); });
         if (!(extension == ".png" || extension == ".jpg")) {

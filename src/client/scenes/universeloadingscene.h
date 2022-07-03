@@ -28,7 +28,7 @@ namespace scene {
 class UniverseLoadingScene : public cqsp::engine::Scene {
  public:
     explicit UniverseLoadingScene(cqsp::engine::Application& app);
-    ~UniverseLoadingScene() {}
+    ~UniverseLoadingScene();
 
     void Init();
     void Update(float deltaTime);
@@ -42,6 +42,8 @@ class UniverseLoadingScene : public cqsp::engine::Scene {
     void LoadUniverse();
 
     bool m_completed_loading;
+
+    Rml::ElementDocument* document;
 };
 }  // namespace scene
 }  // namespace cqsp

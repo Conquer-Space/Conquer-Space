@@ -27,13 +27,12 @@
             .horizontal fill {
                 background-color: #1700E2;
             }
-
         </style>
     </head>
     <body>
         <img src="../../gfx/img/mainbanner2.png"/>
         <br/>
         <p style="font-size: 16dp;" id="loading_percentage" data-model="loading">{{current}}/{{max}}</p>
-        <progress id="loading_bar" style="margin: auto;" class="horizontal" value="75" max="100"></progress>
+        <progress id="loading_bar" style="margin: auto;" class="horizontal" value="0" max="100"></progress>
     </body>
 </rml>
