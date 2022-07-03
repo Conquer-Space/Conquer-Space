@@ -305,6 +305,8 @@ class Application {
     glm::mat4 three_dim_projection;
     glm::mat4 rmlui_projection;
     bool to_halt;
+
+    bool draw_fps = false;
 };
 }  // namespace engine
 }  // namespace cqsp

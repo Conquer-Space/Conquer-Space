@@ -57,6 +57,7 @@ cqsp::engine::CQSPRenderInterface::CQSPRenderInterface(Application& _app) : app(
     if (logger == nullptr) {
         logger = spdlog::default_logger();
     }
+    SPDLOG_LOGGER_INFO(logger, "Initializing RmlUi version {}", Rml::GetVersion());
 
     // Semi sketchy code to load the shaders. It will be preferable to load it from a file, but
     // since this is rather crucial to the running the game,
@@ -113,6 +114,7 @@ void main()
         // TODO(EhWhoAmI): Also need to disable the game from displaying ui if this fails
         SPDLOG_LOGGER_WARN(logger, "{}", ex.what());
     }
+    SPDLOG_LOGGER_INFO(logger, "Initialized RmlUi renderer");
 }
 
 void cqsp::engine::CQSPRenderInterface::RenderGeometry(

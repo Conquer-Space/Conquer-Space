@@ -411,6 +411,8 @@ void Application::InitImgui() {
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window(m_window), true);
     ImGui_ImplOpenGL3_Init("#version 130");
+
+    SPDLOG_INFO("ImGui Version: {}", ImGui::GetVersion());
 }
 
 void Application::ProcessRmlUiUserInput() {
@@ -660,10 +662,12 @@ void Application::run() {
         END_TIMED_BLOCK(ImGui_Render_Draw);
 
         // FPS counter
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        DrawText(fmt::format("FPS: {:.0f}", fps), GetWindowWidth() - 80,
-                 GetWindowHeight() - 24);
+        if (draw_fps) {
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            DrawText(fmt::format("FPS: {:.0f}", fps), GetWindowWidth() - 80,
+                     GetWindowHeight() - 24);
+        }
 
         glfwSwapBuffers(window(m_window));
 
