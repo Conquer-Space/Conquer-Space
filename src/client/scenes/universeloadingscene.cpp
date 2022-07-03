@@ -25,7 +25,14 @@
 
 #include "client/systems/assetloading.h"
 
-cqsp::scene::UniverseLoadingScene::UniverseLoadingScene(cqsp::engine::Application& app) : Scene(app) {}
+cqsp::scene::UniverseLoadingScene::UniverseLoadingScene(
+    cqsp::engine::Application& app)
+    : Scene(app) {}
+
+cqsp::scene::UniverseLoadingScene::~UniverseLoadingScene() {
+    GetApp().CloseDocument(
+        "../data/core/gui/screens/universe_loading_screen.rml");
+}
 
 void cqsp::scene::UniverseLoadingScene::Init() {
     auto loading = [&]() {
@@ -34,6 +41,10 @@ void cqsp::scene::UniverseLoadingScene::Init() {
 
     m_completed_loading = false;
     thread = std::make_unique<std::thread>(loading);
+    document = GetApp().LoadDocument("../data/core/gui/screens/universe_loading_screen.rml");
+    if (document) {
+        document->Show();
+    }
 }
 
 void cqsp::scene::UniverseLoadingScene::Update(float deltaTime) {
@@ -45,17 +56,6 @@ void cqsp::scene::UniverseLoadingScene::Update(float deltaTime) {
 }
 
 void cqsp::scene::UniverseLoadingScene::Ui(float deltaTime) {
-    ImGui::SetNextWindowPos(
-            ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
-            ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x * 0.8, -1), ImGuiCond_Always);
-    ImGui::Begin("Conquer Space", nullptr,
-                ImGuiWindowFlags_NoTitleBar |
-                ImGuiWindowFlags_NoResize |
-                ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::Text("Loading...");
-    ImGui::ProgressBar(0 / 100.f);
-    ImGui::End();
 }
 
 void cqsp::scene::UniverseLoadingScene::Render(float deltaTime) {}

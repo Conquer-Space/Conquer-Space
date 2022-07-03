@@ -1,0 +1,48 @@
+<rml>
+    <head>
+        <title></title>
+        <style>
+            body {
+                width: 100%;
+                height: 100%;
+            }
+
+            .loading_container {
+                position: absolute;
+                top: 45%;
+                padding-left: 60px;
+            }
+
+            .image {
+                margin: auto;
+            }
+
+            @keyframes rotation_frame
+            {
+                0% {
+                    transform: rotate(0deg);
+                }
+                50% {
+                    transform: rotate(180deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+            #orbital_rotation
+            {
+                transform: rotate(0);
+                animation: 10s linear infinite rotation_frame;
+                position: absolute;
+                bottom: 30px;
+                right: 30px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="loading_container">
+            <img src="../../gfx/img/mainbanner2.png" class="image"/>
+        </div>
+        <svg src="../loading_orbital.svg" id="orbital_rotation" width="64" height="64"/>
+    </body>
+</rml>
