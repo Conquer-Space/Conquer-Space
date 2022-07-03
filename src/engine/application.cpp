@@ -315,6 +315,9 @@ class GLWindow : public cqsp::engine::Window {
             glDebugMessageCallback(glDebugOutput, nullptr);
             glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
         }
+
+        // Fix the weird black bar we have on top of windows
+        glViewport(0, 0, width, height);
     }
 
     double MouseButtonLastReleased(int btn) const {
