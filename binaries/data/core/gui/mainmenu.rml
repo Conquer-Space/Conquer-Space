@@ -3,11 +3,10 @@
         <title></title>
         <link type="text/rcss" href="default.rcss"/>
         <style>
-            body {
+            #main_window {
                 width: 100%;
                 height: 100%;
                 padding-bottom: 300px;
-                decorator: image(../gfx/img/earthrise.png none cover center bottom);
             }
 
             .button {
@@ -48,7 +47,7 @@
             }
         </style>
     </head>
-    <body>
+    <body id="main_window">
     <img class="banner_image" src="../gfx/img/mainbanner2.png"/>
     <div class="button_menu">
         <button id="new_game" class="button active_button">New Game</button><br/>
