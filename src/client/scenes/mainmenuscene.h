@@ -16,6 +16,9 @@
 */
 #pragma once
 
+#include <vector>
+#include <string>
+
 #include "engine/scene.h"
 #include "engine/graphics/renderable.h"
 #include "engine/renderer/renderer.h"
@@ -56,6 +59,17 @@ class MainMenuScene : public cqsp::engine::Scene{
 
     bool is_options_visible = false;
     bool last_options_visible = false;
+
+    std::vector<std::string> file_list;
+    int index;
+
+    void ShuffleFileList();
+    void SetMainMenuImage(const std::string& file);
+    void NextImage();
+
+    double last_switch = 0;
+    // Change every minute
+    const float switch_time = 60;
 };
 }  // namespace scene
 }  // namespace cqsp

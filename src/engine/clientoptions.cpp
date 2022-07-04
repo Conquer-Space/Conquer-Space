@@ -46,6 +46,7 @@ Hjson::Value cqsp::client::ClientOptions::GetDefaultOptions() {
     default_options["icon"] = "icon.png";
     default_options["audio"]["music"] = 1.0f;
     default_options["audio"]["ui"] = 0.80f;
+    default_options["splashscreens"] = "../data/core/gui/splashscreens";
     return default_options;
 }
 

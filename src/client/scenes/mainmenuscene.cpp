@@ -65,6 +65,9 @@ void cqsp::scene::MainMenuScene::Init() {
     settings_window.LoadDocument();
 
     credits_window.OpenDocument();
+
+    ShuffleFileList();
+    NextImage();
 }
 
 void cqsp::scene::MainMenuScene::Update(float deltaTime) {
@@ -72,8 +75,12 @@ void cqsp::scene::MainMenuScene::Update(float deltaTime) {
         Rml::Factory::ClearStyleSheetCache();
         main_menu = GetApp().ReloadDocument("../data/core/gui/mainmenu.rml");
         main_menu->AddEventListener(Rml::EventId::Click, &listener);
-
         settings_window.ReloadDocument();
+    }
+
+    // List all images in the folder
+    if (GetApp().GetTime() - last_switch > switch_time) {
+        NextImage();
     }
     if (is_options_visible && last_options_visible == false) {
         auto opacity = settings_window.GetOpacity();
@@ -181,6 +188,47 @@ void cqsp::scene::MainMenuScene::ModWindow() {
     }
     ImGui::SameLine();
     ImGui::End();*/
+}
+
+void cqsp::scene::MainMenuScene::ShuffleFileList() {
+    // Random number
+    std::string splash_dir =
+        GetApp().GetClientOptions().GetOptions()["splashscreens"].to_string();
+    auto s =
+        std::filesystem::canonical(std::filesystem::path(splash_dir)).string();
+
+    for (auto entry : std::filesystem::directory_iterator(splash_dir)) {
+        std::string extension = entry.path().extension().string();
+        SPDLOG_INFO("{}", extension);
+        std::transform(extension.begin(), extension.end(), extension.begin(),
+                       [](unsigned char c) { return std::tolower(c); });
+        if (!(extension == ".png" || extension == ".jpg")) {
+            continue;
+        }
+        // Or else load the image
+        file_list.push_back(std::filesystem::canonical(entry.path()).string());
+    }
+    // Now choose a random selection
+    for (int i = 0; i < file_list.size(); i++) {
+        int index = rand() % file_list.size();
+        std::string tmp = file_list[index];
+        file_list[index] = file_list[i];
+        file_list[i] = tmp;
+    }
+    index = 0;
+}
+
+void cqsp::scene::MainMenuScene::SetMainMenuImage(const std::string& file) {
+    main_menu->GetElementById("main_window")
+        ->SetProperty("decorator",
+                      fmt::format("image({} none cover center bottom)", file));
+}
+
+void cqsp::scene::MainMenuScene::NextImage() {
+    SetMainMenuImage(file_list[index]);
+    index++;
+    index %= file_list.size();
+    last_switch = GetApp().GetTime();
 }
 
 void cqsp::scene::MainMenuScene::EventListener::ProcessEvent(Rml::Event& event) {
