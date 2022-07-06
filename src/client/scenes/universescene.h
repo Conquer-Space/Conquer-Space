@@ -19,6 +19,7 @@
 #include <vector>
 #include <memory>
 #include <utility>
+#include <array>
 
 #include "client/systems/views/starsystemview.h"
 #include "client/systems/sysgui.h"
@@ -42,6 +43,9 @@ class UniverseScene : public cqsp::engine::Scene {
         for (auto it = user_interfaces.begin(); it != user_interfaces.end(); it++) {
             it->reset();
         }
+        for (auto& it : documents) {
+            it.reset();
+        }
         delete system_renderer;
     }
 
@@ -55,6 +59,13 @@ class UniverseScene : public cqsp::engine::Scene {
         auto ui = std::make_unique<T>(GetApp());
         ui->Init();
         user_interfaces.push_back(std::move(ui));
+    }
+
+    template <class T>
+    void AddRmlUiSystem() {
+        auto ui = std::make_unique<T>(GetApp());
+        ui->OpenDocument();
+        documents.push_back(std::move(ui));
     }
 
  private:
@@ -88,6 +99,13 @@ class UniverseScene : public cqsp::engine::Scene {
     bool view_mode = true;
 
     std::vector<std::unique_ptr<cqsp::client::systems::SysUserInterface>> user_interfaces;
+
+    std::vector<std::unique_ptr<client::systems::SysRmlUiInterface>> documents;
+
+    double last_tick = 0;
+
+    std::array<int, 7> tick_speeds{1000, 500, 333, 100, 50, 10, 1};
+    void ToggleTick();
 };
 
 void SeePlanet(cqsp::engine::Application&, entt::entity);

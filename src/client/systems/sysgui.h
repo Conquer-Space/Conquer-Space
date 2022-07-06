@@ -38,6 +38,24 @@ class SysUserInterface {
  private:
     cqsp::engine::Application &m_app;
 };
+
+class SysRmlUiInterface {
+ public:
+    explicit SysRmlUiInterface(cqsp::engine::Application& app) : m_app(app) {}
+    virtual ~SysRmlUiInterface() {}
+    virtual void Update(double delta_time) = 0;
+    virtual void OpenDocument() = 0;
+
+ protected:
+    cqsp::engine::Application &GetApp() { return m_app; }
+    cqsp::common::Universe &GetUniverse() { return GetApp().GetUniverse(); }
+    cqsp::asset::AssetManager &GetAssetManager() {
+        return GetApp().GetAssetManager();
+    }
+
+ private:
+    cqsp::engine::Application &m_app;
+};
 }  // namespace systems
 }  // namespace client
 }  // namespace cqsp

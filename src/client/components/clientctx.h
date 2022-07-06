@@ -20,4 +20,9 @@ namespace cqsp::client::ctx {
 struct StarSystemViewDebug {
     bool to_show = false;
 };
+
+struct PauseOptions {
+    bool to_tick = false;
+    int tick_speed = 3;
+};
 }
