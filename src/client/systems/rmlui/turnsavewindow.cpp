@@ -17,7 +17,6 @@
 #include "client/systems/rmlui/turnsavewindow.h"
 
 #include "client/components/clientctx.h"
-#include <RmlUi/SVG/ElementSVG.h>
 
 namespace cqsp::client::systems::rmlui {
 TurnSaveWindow::~TurnSaveWindow() {

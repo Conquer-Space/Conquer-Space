@@ -209,7 +209,7 @@ void cqsp::scene::MainMenuScene::ShuffleFileList() {
     }
     // Now choose a random selection
     for (int i = 0; i < file_list.size(); i++) {
-        int index = rand() % file_list.size();
+        int index = rand() % file_list.size(); // NOLINT
         std::string tmp = file_list[index];
         file_list[index] = file_list[i];
         file_list[i] = tmp;
