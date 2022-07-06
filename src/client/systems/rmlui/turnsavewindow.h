@@ -33,8 +33,8 @@ class TurnSaveWindow : public SysRmlUiInterface {
     Rml::ElementDocument* document;
 
     class EventListener : public Rml::EventListener {
-       public:
-        EventListener(common::Universe* universe) : universe(universe){};
+     public:
+        explicit EventListener(common::Universe* universe) : universe(universe) {}
         void ProcessEvent(Rml::Event& event);
         common::Universe* universe;
     } listener{&GetUniverse()};
