@@ -54,6 +54,8 @@
 #include "client/systems/civilizationinfopanel.h"
 #include "client/systems/sysfieldviewer.h"
 #include "client/systems/systechviewer.h"
+#include "client/systems/rmlui/turnsavewindow.h"
+#include "client/components/clientctx.h"
 
 // If the game is paused or not, like when escape is pressed
 bool game_halted = false;
@@ -78,7 +80,8 @@ void cqsp::scene::UniverseScene::Init() {
         player = entity;
         player_civ = &civ;
     }
-    //cqspb::Body body = GetUniverse().get<cqspb::Body>(player_civ->starting_planet);
+    GetUniverse().ctx().emplace<client::ctx::PauseOptions>();
+
     system_renderer->SeeStarSystem();
 
     //SeeStarSystem(GetApp(), body.star_system);
@@ -86,7 +89,7 @@ void cqsp::scene::UniverseScene::Init() {
     //selected_planet = player_civ->starting_planet;
 
     AddUISystem<cqsps::SysPlanetInformation>();
-    AddUISystem<cqsps::SysTurnSaveWindow>();
+    //AddUISystem<cqsps::SysTurnSaveWindow>();
     AddUISystem<cqsps::SysStarSystemTree>();
     AddUISystem<cqsps::SysPauseMenu>();
     AddUISystem<cqsps::SysDebugMenu>();
@@ -98,10 +101,25 @@ void cqsp::scene::UniverseScene::Init() {
 
     AddUISystem<cqsps::gui::SysEvent>();
     simulation->tick();
+
+    AddRmlUiSystem<cqsps::rmlui::TurnSaveWindow>();
 }
 
 void cqsp::scene::UniverseScene::Update(float deltaTime) {
     ZoneScoped;
+
+    auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
+    if (!ImGui::GetIO().WantCaptureKeyboard) {
+        if (GetApp().ButtonIsReleased(engine::KeyInput::KEY_SPACE)) {
+            ToggleTick();
+        }
+    }
+
+    if (pause_opt.to_tick && GetApp().GetTime() - last_tick >
+            static_cast<float>(tick_speeds[pause_opt.tick_speed]) / 1000.f) {
+        GetUniverse().EnableTick();
+        last_tick = GetApp().GetTime();
+    }
 
     // Check for last tick
     if (GetUniverse().ToTick() && !game_halted) {
@@ -123,6 +141,10 @@ void cqsp::scene::UniverseScene::Update(float deltaTime) {
     if (view_mode) {
         GetUniverse().clear<cqsp::client::systems::MouseOverEntity>();
         system_renderer->GetMouseOnObject(GetApp().GetMouseX(), GetApp().GetMouseY());
+    }
+
+    for (auto& ui : documents) {
+        ui->Update(deltaTime);
     }
 
     for (auto& ui : user_interfaces) {
@@ -157,6 +179,11 @@ void cqsp::scene::UniverseScene::DoScreenshot() {
             GetApp().ButtonIsReleased(engine::KeyInput::KEY_F10))) {
         GetApp().Screenshot();
     }
+}
+
+void cqsp::scene::UniverseScene::ToggleTick() {
+    auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
+    pause_opt.to_tick = !pause_opt.to_tick;
 }
 
 entt::entity cqsp::scene::GetCurrentViewingPlanet(cqsp::common::Universe& universe) {

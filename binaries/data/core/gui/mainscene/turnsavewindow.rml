@@ -1,0 +1,85 @@
+<rml>
+    <head>
+        <title></title>
+        <style>
+        body {
+            width: 180px;
+            background-color: #20005c;
+            height: auto;
+            font-family: Roboto;
+            position: absolute;
+            right: 0px;
+            font-size: 18px;
+        }
+
+        #credits_body {
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            transition: opacity 1s linear-in;
+        }
+
+        #credits_body.visible {
+            opacity: 1;
+        }
+
+        #credits_text {
+            position: absolute;
+            width: 60%;
+            left: 20%;
+            text-align: center;
+            margin-bottom: 30px;
+            opacity: 1;
+        }
+
+        h1 {
+            font-size: 64px;
+            font-family: Comfortaa;
+        }
+
+        h2 {
+            font-weight: bold;
+            font-size: 32px;
+            font-family: Comfortaa;
+        }
+
+        .turnimage:hover {
+            image-color: yellow;
+        }
+
+        .turnimage {
+            border: 2px green;
+            padding-left: 3px;
+        }
+
+        #time {
+            padding: 20px;
+        }
+
+        #speed {
+            padding: 20px;
+        }
+
+        #button_holder {
+            display: block;
+            padding: 30dp;
+            margin-left: auto;
+            margin-right: auto;
+            padding-top: 0px;
+            padding-bottom: 0px;
+        }
+        </style>
+    </head>
+    <body>
+        <p id="time">Time</p>
+        <br/>
+        <p id="speed"></p>
+        <br/>
+        <div id="button_holder" style="padding-top: 5px">
+        <svg class="turnimage" src="fast-backward-button.svg" width="32" height="32" id="slow_down"></svg>
+        <!-- This has to be img because for some reason, img is not very good with changing source.-->
+        <img class="turnimage" src="play-button.png" width="32" height="32" id="pause_button"></img>
+        <svg class="turnimage" src="fast-forward-button.svg" width="32" height="32" id="fast_forward"></svg>
+        </div>
+    </body>
+</rml>

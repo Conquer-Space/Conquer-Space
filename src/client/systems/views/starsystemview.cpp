@@ -276,7 +276,7 @@ void SysStarSystemRenderer::Update(float deltaTime) {
     // Discern between showing UI and other things
     CityDetection();
 
-    if (!ImGui::GetIO().WantCaptureMouse) {
+    if (!ImGui::GetIO().WantCaptureMouse && !m_app.GetRmlUiContext()->IsMouseInteracting()) {
         CalculateScroll();
 
         if (m_app.MouseButtonIsHeld(engine::MouseInput::LEFT)) {
