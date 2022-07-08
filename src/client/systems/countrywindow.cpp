@@ -14,35 +14,26 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#pragma once
+#include "client/systems/countrywindow.h"
 
-#include <vector>
+#include "client/components/clientctx.h"
+#include "client/systems/gui/systooltips.h"
 
-#include <entt/entt.hpp>
+namespace cqsp::client::systems {
+void SysCountryInformation::Init() {}
 
-namespace cqsp {
-namespace common {
-namespace components {
-/// <summary>
-/// The civilization or organization that owns or governs the city
-/// </summary>
-struct Governed {
-    entt::entity governor;
-};
+void SysCountryInformation::DoUI(int delta_time) {
+    // Get selected country
+    entt::entity v =
+        GetUniverse().view<cqsp::client::ctx::SelectedCountry>().front();
+    if (v == entt::null) {
+        return;
+    }
+    ImGui::Begin("Country Information");
+    // Then do all countries and compile gdp data
+    ImGui::TextFmt("{}", gui::GetName(GetUniverse(), v));
+    ImGui::End();
+}
 
-struct Organization {};
-
-struct Civilization {
-    entt::entity starting_planet;
-    entt::entity top_level_fleet;
-};
-
-struct Country {
-};
-
-struct CountryCityList {
-    std::vector<entt::entity> city_list;
-};
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+void SysCountryInformation::DoUpdate(int delta_time) {}
+}  // namespace cqsp::client::systems

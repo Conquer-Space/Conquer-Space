@@ -25,4 +25,6 @@ struct PauseOptions {
     bool to_tick = false;
     int tick_speed = 3;
 };
-}
+
+struct SelectedCountry {};
+}  // namespace cqsp::client::ctx

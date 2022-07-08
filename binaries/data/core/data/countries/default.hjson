@@ -13,13 +13,13 @@
     }
     {
         name: United States of America
-        identifier: USA
+        identifier: usa
         common: USA
         adjective: american
     }
     {
         name: United Kingdom of Great Britain and Northern Ireland
-        identifier: UK
+        identifier: uk
         common: UK
         adjective: british
     }

@@ -55,6 +55,7 @@
 #include "common/components/area.h"
 #include "common/util/profiler.h"
 #include "common/systems/actions/cityactions.h"
+#include "client/systems/gui/systooltips.h"
 
 namespace cqspb = cqsp::common::components::bodies;
 
@@ -299,7 +300,38 @@ void SysStarSystemRenderer::Update(float deltaTime) {
         entt::entity ent = m_app.GetUniverse().view<MouseOverEntity>().front();
         if (m_app.MouseButtonIsReleased(engine::MouseInput::LEFT) && ent != entt::null && !m_app.MouseDragged()) {
             // Then go to the object
-            SeePlanet(ent);
+            // See if you're seeing planet
+            // Check the focused planet
+            entt::entity focused_planet =
+                m_app.GetUniverse().view<FocusedPlanet>().front();
+            
+            // if the focused planet is the current planet, then check if it's close enough, and then do the things
+            if (ent == focused_planet) {
+                auto& body = m_universe.get<cqsp::common::components::bodies::Body>(focused_planet);
+                // 100 km above the city
+                // Then select city
+                // Get distance
+                auto& kin =
+                    m_universe.get<cqsp::common::components::types::Kinematics>(
+                        focused_planet);
+
+                if (scroll > body.radius * 10) {
+                    // Planet selection
+                    SeePlanet(ent);
+                } else {
+                    // Country selection
+                    // Then select planet and tell the state
+                    if (m_universe.countries.find(country_name) !=
+                        m_universe.countries.end()) {
+                        entt::entity country = m_universe.countries[country_name];
+                        m_universe.clear<cqsp::client::ctx::SelectedCountry>();
+                        m_universe.emplace<cqsp::client::ctx::SelectedCountry>(country);
+                    }
+                }
+            } else {
+                SeePlanet(ent);
+            }
+
             if (is_founding_city) {
                 namespace cqspt = cqsp::common::components::types;
                 namespace cqspc = cqsp::common::components;
@@ -314,7 +346,7 @@ void SysStarSystemRenderer::Update(float deltaTime) {
                 name.name = m_app.GetUniverse().name_generators["Town Names"].Generate("1");
 
                 // Set country
-                entt::entity country = m_app.GetUniverse().countries[city_name];
+                entt::entity country = m_app.GetUniverse().countries[country_name];
                 if (m_app.GetUniverse().valid(country)) {
                     // Set country
                     m_app.GetUniverse().emplace<cqspc::Governed>(settlement, country);
@@ -327,6 +359,7 @@ void SysStarSystemRenderer::Update(float deltaTime) {
                 CalculateCityPositions();
             }
         }
+        // Some math if you're close enough you select the city instead of the planet
     }
 
     if (!ImGui::GetIO().WantCaptureKeyboard) {
@@ -368,11 +401,21 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
     ImGui::TextFmt("{} {} {}", view_center.x, view_center.y, view_center.z);
     ImGui::TextFmt("{}", scroll);
     ImGui::TextFmt("{} {}", view_x, view_y);
-    ImGui::TextFmt("{}", city_name);
+    ImGui::TextFmt("{}", country_name);
     ImGui::TextFmt("{} {}", tex_x, tex_y);
     ImGui::TextFmt("{} {} {}", tex_r, tex_g, tex_b);
     ImGui::TextFmt("Focused planets: {}",
         m_universe.view<FocusedPlanet>().size());
+    if (m_universe.countries.find(country_name) != m_universe.countries.end()) {
+        entt::entity c = m_universe.countries[country_name];
+        if (m_universe.any_of<common::components::CountryCityList>(c)) {
+            auto& s = m_universe.get<common::components::CountryCityList>(c);
+            ImGui::TextFmt("{}", s.city_list.size());
+            for (auto& city_ent : s.city_list) {
+                ImGui::TextFmt("{}", client::systems::gui::GetName(m_universe, city_ent));
+            }
+        }
+    }
     ImGui::End();
 }
 
@@ -1070,7 +1113,7 @@ void SysStarSystemRenderer::CityDetection() {
     tex_r = std::get<0>(t);
     tex_g = std::get<1>(t);
     tex_b = std::get<2>(t);
-    city_name = "";
+    country_name = "";
     for (auto& b : asset_hjson->data) {
         auto val = b.second["color"];
         bool ist = true;
@@ -1079,7 +1122,7 @@ void SysStarSystemRenderer::CityDetection() {
         ist &= val[2] == std::get<2>(t);
         if (ist) {
             // Get city
-            city_name = b.first;
+            country_name = b.first;
         }
     }
 }

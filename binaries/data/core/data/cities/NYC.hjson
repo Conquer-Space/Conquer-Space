@@ -7,7 +7,7 @@
         }
         identifier: nyc
         planet: earth
-        country: USA
+        country: usa
         timezone: EDT
         population: [
             {

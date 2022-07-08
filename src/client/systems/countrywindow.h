@@ -16,33 +16,15 @@
 */
 #pragma once
 
-#include <vector>
+#include "client/systems/sysgui.h"
 
-#include <entt/entt.hpp>
-
-namespace cqsp {
-namespace common {
-namespace components {
-/// <summary>
-/// The civilization or organization that owns or governs the city
-/// </summary>
-struct Governed {
-    entt::entity governor;
+namespace cqsp::client::systems {
+class SysCountryInformation : public SysUserInterface {
+   public:
+    explicit SysCountryInformation(cqsp::engine::Application& app)
+        : SysUserInterface(app) {}
+    void Init();
+    void DoUI(int delta_time);
+    void DoUpdate(int delta_time);
 };
-
-struct Organization {};
-
-struct Civilization {
-    entt::entity starting_planet;
-    entt::entity top_level_fleet;
-};
-
-struct Country {
-};
-
-struct CountryCityList {
-    std::vector<entt::entity> city_list;
-};
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::client::systems
