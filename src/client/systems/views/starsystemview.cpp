@@ -148,7 +148,8 @@ void SysStarSystemRenderer::Initialize() {
     planet_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
     skybox_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
 
-
+    earth_map_texture =
+        m_app.GetAssetManager().GetAsset<asset::Texture>("earth_map_texture");
         // Get the country
     auto bin_asset =
         m_app.GetAssetManager().GetAsset<asset::BinaryAsset>("earth_map");
@@ -672,7 +673,10 @@ void SysStarSystemRenderer::DrawTexturedPlanet(glm::vec3 &object_pos, entt::enti
         if (terrain_data.normal) {
             have_normal = true;
             textured_planet.textures.push_back(terrain_data.normal);
+        } else {
+            textured_planet.textures.push_back(terrain_data.terrain);
         }
+        textured_planet.textures.push_back(earth_map_texture);
     }
 
     namespace cqspb = cqsp::common::components::bodies;
@@ -688,33 +692,35 @@ void SysStarSystemRenderer::DrawTexturedPlanet(glm::vec3 &object_pos, entt::enti
                                 // * view_scale;
     position = glm::scale(position, glm::vec3(scale));
 
-    cqsp::asset::ShaderProgram_t* shader = &textured_planet.shaderProgram;
+    auto shader = textured_planet.shaderProgram.get();
     if (scale < 10.f) {
         // then use different shader if it's close enough
         // This is relatively hacky, so try not to do it
-        shader = &near_shader;
+        shader = near_shader.get();
         glDepthFunc(GL_ALWAYS);
     }
 
-    shader->get()->SetMVP(position, camera_matrix, projection);
-    shader->get()->UseProgram();
+    shader->SetMVP(position, camera_matrix, projection);
+    shader->UseProgram();
 
     // Maybe a seperate shader for planets without normal maps would be better
-    shader->get()->setBool("haveNormal", have_normal);
+    shader->setBool("haveNormal", have_normal);
 
-    shader->get()->setVec3("lightDir", glm::normalize(sun_position - object_pos));
+    shader->setVec3("lightDir", glm::normalize(sun_position - object_pos));
 
-    shader->get()->setVec3("lightDir", glm::normalize(sun_position - object_pos));
-    shader->get()->setVec3("lightPosition", sun_position);
+    shader->setVec3("lightDir", glm::normalize(sun_position - object_pos));
+    shader->setVec3("lightPosition", sun_position);
 
-    shader->get()->setVec3("lightColor", sun_color);
-    shader->get()->setVec3("viewPos", cam_pos);
-
-    engine::Draw(textured_planet, *shader);
+    shader->setVec3("lightColor", sun_color);
+    shader->setVec3("viewPos", cam_pos);
+    shader->setVec4("country_color", glm::vec4(country_color, 1));
+    shader->setBool("country", true);
+    engine::Draw(textured_planet, textured_planet.shaderProgram);
     glDepthFunc(GL_LESS);
 }
 
 void SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_pos, entt::entity entity) {
+    // TODO(EhWhoAmI): Maybe don't reload the textures all the time
     if (m_universe.all_of<TerrainTextureData>(entity)) {
         auto& terrain_data = m_universe.get<TerrainTextureData>(entity);
         planet.textures.clear();
@@ -736,7 +742,8 @@ void SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_pos, entt::entity entit
 
     planet.shaderProgram->setVec3("lightColor", sun_color);
     planet.shaderProgram->setVec3("viewPos", cam_pos);
-
+    planet.shaderProgram->setVec4("country_color", glm::vec4(country_color, 1));
+    planet.shaderProgram->setBool("country", true);
     using cqsp::common::components::bodies::TerrainData;
     entt::entity terrain = m_universe.get<cqsp::common::components::bodies::Terrain>(entity).terrain_type;
     planet.shaderProgram->Set("seaLevel", m_universe.get<TerrainData>(terrain).sea_level);
@@ -1120,6 +1127,9 @@ void SysStarSystemRenderer::CityDetection() {
         ist &= val[0] == std::get<0>(t);
         ist &= val[1] == std::get<1>(t);
         ist &= val[2] == std::get<2>(t);
+
+        country_color =
+            (glm::vec3(std::get<0>(t), std::get<1>(t), std::get<2>(t)) / 255.f);
         if (ist) {
             // Get city
             country_name = b.first;

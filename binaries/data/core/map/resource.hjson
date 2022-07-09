@@ -2,6 +2,13 @@
     earth_map: {
         path: earth.png
         type: binary
+        hints: {
+            magfilter: true
+        }
+    }
+    earth_map_texture: {
+        path: earth.png
+        type: texture
         hints: {}
     }
     earth_colors: {

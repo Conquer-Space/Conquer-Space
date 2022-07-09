@@ -115,7 +115,7 @@ class SysStarSystemRenderer {
 
     cqsp::asset::Texture* planet_texture;
     cqsp::asset::Texture* planet_heightmap;
-    cqsp::asset::Texture* planet_resource;
+    cqsp::asset::Texture *earth_map_texture;
 
     glm::vec3 cam_pos;
     glm::vec3 cam_up = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -202,6 +202,8 @@ class SysStarSystemRenderer {
 
     common::components::types::SurfaceCoordinate GetCitySurfaceCoordinate();
     void CityDetection();
+
+    glm::vec3 country_color;
 };
 }  // namespace systems
 }  // namespace client
