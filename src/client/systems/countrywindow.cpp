@@ -43,10 +43,14 @@ void SysCountryInformation::DoUI(int delta_time) {
     if (country != current_country) {
         current_country = country;
         view_mode = ViewMode::COUNTRY_VIEW;
+        visible = true;
     }
     if (current_country == entt::null ||
         !GetUniverse().any_of<common::components::CountryCityList>(
             current_country)) {
+        return;
+    }
+    if (!visible) {
         return;
     }
     // Get selected country
@@ -56,7 +60,7 @@ void SysCountryInformation::DoUI(int delta_time) {
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.79f,
                                    ImGui::GetIO().DisplaySize.y * 0.55f),
                             ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-    ImGui::Begin("Country Information");
+    ImGui::Begin("Country Information", &visible);
     // Then do all countries and compile gdp data
     switch (view_mode) {
         case ViewMode::COUNTRY_VIEW:

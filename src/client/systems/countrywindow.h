@@ -44,6 +44,8 @@ class SysCountryInformation : public SysUserInterface {
     entt::entity current_city;
     entt::entity current_country;
 
+    bool visible = false;
+
     enum ViewMode {
         COUNTRY_VIEW,
         CITY_VIEW
