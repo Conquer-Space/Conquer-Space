@@ -11,7 +11,7 @@
         identifier: london
         timezone: GMT
         planet: earth
-        country: usa
+        country: uk
         industry: [
         ]
         population: [
@@ -395,6 +395,7 @@
         identifier: cape_canaveral
         timezone: EDT
         planet: earth
+        country: usa
         coordinates: {
             latitude: 28.46
             longitude: -80.53

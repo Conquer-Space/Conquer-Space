@@ -36,7 +36,8 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     std::string planet = values["planet"].to_string();
     double longi = values["coordinates"]["longitude"].to_double();
     double lat = values["coordinates"]["latitude"].to_double();
-    universe.emplace<components::types::SurfaceCoordinate>(entity, lat, longi);
+    auto& sc = universe.emplace<components::types::SurfaceCoordinate>(entity, lat, longi);
+    sc.planet = universe.planets[planet];
     universe.get_or_emplace<components::Habitation>(universe.planets[planet])
         .settlements.push_back(entity);
 

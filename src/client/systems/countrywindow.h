@@ -20,11 +20,34 @@
 
 namespace cqsp::client::systems {
 class SysCountryInformation : public SysUserInterface {
-   public:
+ public:
     explicit SysCountryInformation(cqsp::engine::Application& app)
         : SysUserInterface(app) {}
     void Init();
     void DoUI(int delta_time);
     void DoUpdate(int delta_time);
+
+ private:
+    void CountryView();
+    void CityView();
+
+    void CityIndustryTabs();
+    void DemographicsTab();
+    void IndustryTab();
+    void SpacePortTab();
+
+    template <typename T>
+    void IndustryTabGenericChild(const std::string& tabname,
+                                 const std::string& industryname,
+                                 const ImVec2& size);
+
+    entt::entity current_city;
+    entt::entity current_country;
+
+    enum ViewMode {
+        COUNTRY_VIEW,
+        CITY_VIEW
+    } view_mode = ViewMode::COUNTRY_VIEW;
 };
+
 }  // namespace cqsp::client::systems

@@ -3,7 +3,7 @@
         path: earth.png
         type: binary
         hints: {
-            magfilter: true
+            magfilter: false
         }
     }
     earth_map_texture: {

@@ -59,6 +59,7 @@ namespace cqspc = cqsp::common::components;
 
 namespace cqsp::client::systems {
 void SysPlanetInformation::DisplayPlanet() {
+    to_see = false;
     if (!to_see) {
         return;
     }
@@ -128,6 +129,7 @@ void SysPlanetInformation::DoUI(int delta_time) {
 void SysPlanetInformation::DoUpdate(int delta_time) {
     // If clicked on a planet, go to the planet
     // Get the thing
+    to_see = true;
     namespace cqspb = cqsp::common::components::bodies;
     selected_planet = cqsp::scene::GetCurrentViewingPlanet(GetUniverse());
     entt::entity mouse_over = GetUniverse().view<MouseOverEntity>().front();
@@ -172,7 +174,7 @@ void SysPlanetInformation::CityInformationPanel() {
         ImGui::Begin("Market Information", &market_information_panel,
                      window_flags);
         MarketInformationTooltipContent(selected_city_entity);
-        ImGui::End();
+        ImGui::End(); 
     }
 
     if (GetUniverse().all_of<cqspc::Settlement>(selected_city_entity)) {
