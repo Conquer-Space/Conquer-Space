@@ -89,4 +89,29 @@
         common: Indonesia
         adjective: indonesian
     }
+    {
+        name: Republic of Zimbabwe
+        identifier: zimbabwe
+        common: Zimbabwe
+    }
+    {
+        name: Bolivarian Republic of Venezuela
+        identifier: venezuela
+        common: Venezuela
+    }
+    {
+        name: Vatican City State
+        identifier: vatican
+        common: Vatican City
+    }
+    {
+        name: Republic of Vanuatu
+        identifier: vanuatu
+        common: Vanuatu
+    }
+    {
+        name: Republic of Uzbekistan
+        identifier: uzbekistan
+        common: Uzbekistan
+    }
 ]

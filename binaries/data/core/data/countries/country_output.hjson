@@ -1,0 +1,815 @@
+[
+  {
+    name: Republic of Zimbabwe
+    common: Zimbabwe
+    identifier: zimbabwe
+  }
+  {
+    name: Republic of Zambia
+    common: Zambia
+    identifier: zambia
+  }
+  {
+    name: Republic of Yemen
+    common: Yemen
+    identifier: yemen
+  }
+  {
+    name: Socialist Republic of Vietnam
+    common: Vietnam
+    identifier: vietnam
+  }
+  {
+    name: Bolivarian Republic of Venezuela
+    common: Venezuela
+    identifier: venezuela
+  }
+  {
+    name: Republic of Vanuatu
+    common: Vanuatu
+    identifier: vanuatu
+  }
+  {
+    name: Republic of Uzbekistan
+    common: Uzbekistan
+    identifier: uzbekistan
+  }
+  {
+    name: Oriental Republic of Uruguay
+    common: Uruguay
+    identifier: uruguay
+  }
+  {
+    name: Ukraine
+    common: Ukraine
+    identifier: ukraine
+  }
+  {
+    name: Fourth Republic of Uganda
+    common: Uganda
+    identifier: uganda
+  }
+  {
+    name: Turkmenistan
+    common: Turkmenistan
+    identifier: turkmenistan
+  }
+  {
+    name: Republic of Turkiye
+    common: Turkey
+    identifier: turkey
+  }
+  {
+    name: Republic of Tunisia
+    common: Tunisia
+    identifier: tunisia
+  }
+  {
+    name: Kingdom of Tonga
+    common: Tonga
+    identifier: tonga
+  }
+  {
+    name: Togolese Republic
+    common: Togo
+    identifier: togo
+  }
+  {
+    name: Kingdom of Thailand
+    common: Thailand
+    identifier: thailand
+  }
+  {
+    name: United Republic of Tanzania
+    common: Tanzania
+    identifier: tanzania
+  }
+  {
+    name: Republic of Tajikistan
+    common: Tajikistan
+    identifier: tajikistan
+  }
+  {
+    name: Republic of China
+    common: Taiwan
+    identifier: taiwan
+  }
+  {
+    name: Syrian Arab Republic
+    common: Syria
+    identifier: syria
+  }
+  {
+    name: Swiss Confederation
+    common: Switzerland
+    identifier: switzerland
+  }
+  {
+    name: Kingdom of Sweden
+    common: Sweden
+    identifier: sweden
+  }
+  {
+    name: Kingdom of Eswatini
+    common: Eswatini
+    identifier: eswatini
+  }
+  {
+    name: Republic of Suriname
+    common: Suriname
+    identifier: suriname
+  }
+  {
+    name: Republic of the Sudan
+    common: Sudan
+    identifier: sudan
+  }
+  {
+    name: Kingdom of Spain
+    common: Spain
+    identifier: spain
+  }
+  {
+    name: Federal Republic of Somalia
+    common: Somalia
+    identifier: somalia
+  }
+  {
+    name: Republic of Somaliland
+    common: Somaliland
+    identifier: somaliland
+  }
+  {
+    name: Slovak Republic
+    common: Slovakia
+    identifier: slovakia
+  }
+  {
+    name: Republic of Slovenia
+    common: Slovenia
+    identifier: slovenia
+  }
+  {
+    name: Republic of Singapore
+    common: Singapore
+    identifier: singapore
+  }
+  {
+    name: Republic of Seychelles
+    common: Seychelles
+    identifier: seychelles
+  }
+  {
+    name: Republic of Serbia
+    common: Serbia
+    identifier: serbia
+  }
+  {
+    name: Republic of Senegal
+    common: Senegal
+    identifier: senegal
+  }
+  {
+    name: Independent State of Samoa
+    common: Samoa
+    identifier: samoa
+  }
+  {
+    name: Kingdom of Saudi Arabia
+    common: Saudi Arabia
+    identifier: saudi_arabia
+  }
+  {
+    name: Republic of Rwanda
+    common: Rwanda
+    identifier: rwanda
+  }
+  {
+    name: Russian Federation
+    common: Russia
+    identifier: russia
+  }
+  {
+    name: Romania
+    common: Romania
+    identifier: romania
+  }
+  {
+    name: State of Qatar
+    common: Qatar
+    identifier: qatar
+  }
+  {
+    name: Portuguese Republic
+    common: Portugal
+    identifier: portugal
+  }
+  {
+    name: Republic of Poland
+    common: Poland
+    identifier: poland
+  }
+  {
+    name: Republic of the Philippines
+    common: Philippines
+    identifier: philippines
+  }
+  {
+    name: Republic of Peru
+    common: Peru
+    identifier: peru
+  }
+  {
+    name: Republic of Paraguay
+    common: Paraguay
+    identifier: paraguay
+  }
+  {
+    name: Republic of Panama
+    common: Panama
+    identifier: panama
+  }
+  {
+    name: Republic of Palau
+    common: Palau
+    identifier: palau
+  }
+  {
+    name: Islamic Republic of Pakistan
+    common: Pakistan
+    identifier: pakistan
+  }
+  {
+    name: Sultanate of Oman
+    common: Oman
+    identifier: oman
+  }
+  {
+    name: Kingdom of Norway
+    common: Norway
+    identifier: norway
+  }
+  {
+    name: Federal Republic of Nigeria
+    common: Nigeria
+    identifier: nigeria
+  }
+  {
+    name: Republic of the Niger
+    common: Niger
+    identifier: niger
+  }
+  {
+    name: Republic of Nicaragua
+    common: Nicaragua
+    identifier: nicaragua
+  }
+  {
+    name: Niue
+    common: Niue
+    identifier: niue
+  }
+  {
+    name: Netherlands
+    common: Netherlands
+    identifier: netherlands
+  }
+  {
+    name: Nepal
+    common: Nepal
+    identifier: nepal
+  }
+  {
+    name: Republic of Nauru
+    common: Nauru
+    identifier: nauru
+  }
+  {
+    name: Republic of Namibia
+    common: Namibia
+    identifier: namibia
+  }
+  {
+    name: Republic of Mozambique
+    common: Mozambique
+    identifier: mozambique
+  }
+  {
+    name: Kingdom of Morocco
+    common: Morocco
+    identifier: morocco
+  }
+  {
+    name: Montenegro
+    common: Montenegro
+    identifier: montenegro
+  }
+  {
+    name: Mongolia
+    common: Mongolia
+    identifier: mongolia
+  }
+  {
+    name: Republic of Moldova
+    common: Moldova
+    identifier: moldova
+  }
+  {
+    name: Principality of Monaco
+    common: Monaco
+    identifier: monaco
+  }
+  {
+    name: United Mexican States
+    common: Mexico
+    identifier: mexico
+  }
+  {
+    name: Republic of Mauritius
+    common: Mauritius
+    identifier: mauritius
+  }
+  {
+    name: Islamic Republic of Mauritania
+    common: Mauritania
+    identifier: mauritania
+  }
+  {
+    name: Republic of Malta
+    common: Malta
+    identifier: malta
+  }
+  {
+    name: Republic of Mali
+    common: Mali
+    identifier: mali
+  }
+  {
+    name: Republic of Maldives
+    common: Maldives
+    identifier: maldives
+  }
+  {
+    name: Malaysia
+    common: Malaysia
+    identifier: malaysia
+  }
+  {
+    name: Republic of Malawi
+    common: Malawi
+    identifier: malawi
+  }
+  {
+    name: Republic of Madagascar
+    common: Madagascar
+    identifier: madagascar
+  }
+  {
+    name: Grand Duchy of Luxembourg
+    common: Luxembourg
+    identifier: luxembourg
+  }
+  {
+    name: Republic of Lithuania
+    common: Lithuania
+    identifier: lithuania
+  }
+  {
+    name: Principality of Liechtenstein
+    common: Liechtenstein
+    identifier: liechtenstein
+  }
+  {
+    name: State of Libya
+    common: Libya
+    identifier: libya
+  }
+  {
+    name: Republic of Liberia
+    common: Liberia
+    identifier: liberia
+  }
+  {
+    name: Kingdom of Lesotho
+    common: Lesotho
+    identifier: lesotho
+  }
+  {
+    name: Republic of Lebanon
+    common: Lebanon
+    identifier: lebanon
+  }
+  {
+    name: Republic of Latvia
+    common: Latvia
+    identifier: latvia
+  }
+  {
+    name: Lao People's Democratic Republic
+    common: Laos
+    identifier: laos
+  }
+  {
+    name: Kyrgyz Republic
+    common: Kyrgyzstan
+    identifier: kyrgyzstan
+  }
+  {
+    name: State of Kuwait
+    common: Kuwait
+    identifier: kuwait
+  }
+  {
+    name: Republic of Kosovo
+    common: Kosovo
+    identifier: kosovo
+  }
+  {
+    name: Republic of Korea
+    common: South Korea
+    identifier: south_korea
+  }
+  {
+    name: Democratic People's Republic of Korea
+    common: North Korea
+    identifier: north_korea
+  }
+  {
+    name: Republic of Kiribati
+    common: Kiribati
+    identifier: kiribati
+  }
+  {
+    name: Republic of Kenya
+    common: Kenya
+    identifier: kenya
+  }
+  {
+    name: Republic of Kazakhstan
+    common: Kazakhstan
+    identifier: kazakhstan
+  }
+  {
+    name: Hashemite Kingdom of Jordan
+    common: Jordan
+    identifier: jordan
+  }
+  {
+    name: Japan
+    common: Japan
+    identifier: japan
+  }
+  {
+    name: Jamaica
+    common: Jamaica
+    identifier: jamaica
+  }
+  {
+    name: Italian Republic
+    common: Italy
+    identifier: italy
+  }
+  {
+    name: State of Israel
+    common: Israel
+    identifier: israel
+  }
+  {
+    name: Republic of Iraq
+    common: Iraq
+    identifier: iraq
+  }
+  {
+    name: Islamic Republic of Iran
+    common: Iran
+    identifier: iran
+  }
+  {
+    name: Republic of Indonesia
+    common: Indonesia
+    identifier: indonesia
+  }
+  {
+    name: Republic of India
+    common: India
+    identifier: india
+  }
+  {
+    name: Iceland
+    common: Iceland
+    identifier: iceland
+  }
+  {
+    name: Hungary
+    common: Hungary
+    identifier: hungary
+  }
+  {
+    name: Republic of Honduras
+    common: Honduras
+    identifier: honduras
+  }
+  {
+    name: Republic of Haiti
+    common: Haiti
+    identifier: haiti
+  }
+  {
+    name: Co-operative Republic of Guyana
+    common: Guyana
+    identifier: guyana
+  }
+  {
+    name: Republic of Guinea
+    common: Guinea
+    identifier: guinea
+  }
+  {
+    name: Republic of Guatemala
+    common: Guatemala
+    identifier: guatemala
+  }
+  {
+    name: Grenada
+    common: Grenada
+    identifier: grenada
+  }
+  {
+    name: Hellenic Republic
+    common: Greece
+    identifier: greece
+  }
+  {
+    name: Republic of Ghana
+    common: Ghana
+    identifier: ghana
+  }
+  {
+    name: Federal Republic of Germany
+    common: Germany
+    identifier: germany
+  }
+  {
+    name: Gabonese Republic
+    common: Gabon
+    identifier: gabon
+  }
+  {
+    name: French Republic
+    common: France
+    identifier: france
+  }
+  {
+    name: Republic of Finland
+    common: Finland
+    identifier: finland
+  }
+  {
+    name: Republic of Fiji
+    common: Fiji
+    identifier: fiji
+  }
+  {
+    name: Federal Democratic Republic of Ethiopia
+    common: Ethiopia
+    identifier: ethiopia
+  }
+  {
+    name: Republic of Estonia
+    common: Estonia
+    identifier: estonia
+  }
+  {
+    name: State of Eritrea
+    common: Eritrea
+    identifier: eritrea
+  }
+  {
+    name: Arab Republic of Egypt
+    common: Egypt
+    identifier: egypt
+  }
+  {
+    name: Republic of Ecuador
+    common: Ecuador
+    identifier: ecuador
+  }
+  {
+    name: Commonwealth of Dominica
+    common: Dominica
+    identifier: dominica
+  }
+  {
+    name: Republic of Djibouti
+    common: Djibouti
+    identifier: djibouti
+  }
+  {
+    name: Denmark
+    common: Denmark
+    identifier: denmark
+  }
+  {
+    name: Republic of Cyprus
+    common: Cyprus
+    identifier: cyprus
+  }
+  {
+    name: Republic of Cuba
+    common: Cuba
+    identifier: cuba
+  }
+  {
+    name: Republic of Croatia
+    common: Croatia
+    identifier: croatia
+  }
+  {
+    name: Union of the Comoros
+    common: Comoros
+    identifier: comoros
+  }
+  {
+    name: Republic of Colombia
+    common: Colombia
+    identifier: colombia
+  }
+  {
+    name: People's Republic of China
+    common: China
+    identifier: china
+  }
+  {
+    name: Republic of Chile
+    common: Chile
+    identifier: chile
+  }
+  {
+    name: Republic of Chad
+    common: Chad
+    identifier: chad
+  }
+  {
+    name: Canada
+    common: Canada
+    identifier: canada
+  }
+  {
+    name: Republic of Cameroon
+    common: Cameroon
+    identifier: cameroon
+  }
+  {
+    name: Kingdom of Cambodia
+    common: Cambodia
+    identifier: cambodia
+  }
+  {
+    name: Republic of the Union of Myanmar
+    common: Myanmar
+    identifier: myanmar
+  }
+  {
+    name: Republic of Burundi
+    common: Burundi
+    identifier: burundi
+  }
+  {
+    name: Republic of Bulgaria
+    common: Bulgaria
+    identifier: bulgaria
+  }
+  {
+    name: Brunei Darussalam
+    common: Brunei
+    identifier: brunei
+  }
+  {
+    name: Federative Republic of Brazil
+    common: Brazil
+    identifier: brazil
+  }
+  {
+    name: Republic of Botswana
+    common: Botswana
+    identifier: botswana
+  }
+  {
+    name: Plurinational State of Bolivia
+    common: Bolivia
+    identifier: bolivia
+  }
+  {
+    name: Kingdom of Bhutan
+    common: Bhutan
+    identifier: bhutan
+  }
+  {
+    name: Republic of Benin
+    common: Benin
+    identifier: benin
+  }
+  {
+    name: Belize
+    common: Belize
+    identifier: belize
+  }
+  {
+    name: Kingdom of Belgium
+    common: Belgium
+    identifier: belgium
+  }
+  {
+    name: Republic of Belarus
+    common: Belarus
+    identifier: belarus
+  }
+  {
+    name: Barbados
+    common: Barbados
+    identifier: barbados
+  }
+  {
+    name: People's Republic of Bangladesh
+    common: Bangladesh
+    identifier: bangladesh
+  }
+  {
+    name: Kingdom of Bahrain
+    common: Bahrain
+    identifier: bahrain
+  }
+  {
+    name: Republic of Azerbaijan
+    common: Azerbaijan
+    identifier: azerbaijan
+  }
+  {
+    name: Republic of Austria
+    common: Austria
+    identifier: austria
+  }
+  {
+    name: Commonwealth of Australia
+    common: Australia
+    identifier: australia
+  }
+  {
+    name: Republic of Armenia
+    common: Armenia
+    identifier: armenia
+  }
+  {
+    name: Argentine Republic
+    common: Argentina
+    identifier: argentina
+  }
+  {
+    name: Republic of Angola
+    common: Angola
+    identifier: angola
+  }
+  {
+    name: Principality of Andorra
+    common: Andorra
+    identifier: andorra
+  }
+  {
+    name: People's Democratic Republic of Algeria
+    common: Algeria
+    identifier: algeria
+  }
+  {
+    name: Republic of Albania
+    common: Albania
+    identifier: albania
+  }
+  {
+    name: Islamic Emirate of Afghanistan
+    common: Afghanistan
+    identifier: afghanistan
+  }
+  {
+    name: Tuvalu
+    common: Tuvalu
+    identifier: tuvalu
+  }
+  {
+    name: United States of America
+    identifier: usa
+    common: USA
+    adjective: american
+  }
+  {
+    name: United Kingdom of Great Britain and Northern Ireland
+    identifier: uk
+    common: UK
+    adjective: british
+  }
+  {
+    name: Republic of Ireland
+    identifier: ireland
+    common: Ireland
+    adjective: irish
+  }
+]

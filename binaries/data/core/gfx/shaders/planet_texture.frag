@@ -93,9 +93,9 @@ void main() {
     if (country) {
         // Then check if the color is the country color
         vec4 color1 = texture(country_tex, TexCoords);
-        if(abs (color1.r-country_color.r)<.05f){
-        if(abs (color1.b-country_color.b)<.05f){
-        if(abs (color1.g-country_color.g)<.05f){
+        if(abs (color1.r-country_color.r)<.01f){
+        if(abs (color1.b-country_color.b)<.01f){
+        if(abs (color1.g-country_color.g)<.01f){
                         FragColor = vec4(1.0, 0, 0.0, 1.0);
                     return;
         }
