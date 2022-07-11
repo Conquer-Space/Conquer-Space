@@ -204,6 +204,8 @@ class SysStarSystemRenderer {
     void CityDetection();
 
     glm::vec3 country_color;
+    glm::vec3 selected_country_color;
+    bool countries = false;
 };
 }  // namespace systems
 }  // namespace client

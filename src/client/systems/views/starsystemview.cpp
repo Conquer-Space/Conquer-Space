@@ -327,6 +327,8 @@ void SysStarSystemRenderer::Update(float deltaTime) {
                         entt::entity country = m_universe.countries[country_name];
                         m_universe.clear<cqsp::client::ctx::SelectedCountry>();
                         m_universe.emplace<cqsp::client::ctx::SelectedCountry>(country);
+                        selected_country_color = country_color;
+                        countries = true;
                     }
                 }
             } else {
@@ -713,9 +715,10 @@ void SysStarSystemRenderer::DrawTexturedPlanet(glm::vec3 &object_pos, entt::enti
 
     shader->setVec3("lightColor", sun_color);
     shader->setVec3("viewPos", cam_pos);
-    shader->setVec4("country_color", glm::vec4(country_color, 1));
-    shader->setBool("country", true);
-    engine::Draw(textured_planet, textured_planet.shaderProgram);
+    // If a country is clicked on...
+    shader->setVec4("country_color", glm::vec4(selected_country_color, 1));
+    shader->setBool("country", countries);
+    engine::Draw(textured_planet, shader);
     glDepthFunc(GL_LESS);
 }
 

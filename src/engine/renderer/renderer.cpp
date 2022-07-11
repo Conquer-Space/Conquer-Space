@@ -51,13 +51,19 @@ void cqsp::engine::Draw(Renderable &renderable) {
 }
 
 void cqsp::engine::Draw(Renderable & renderable, asset::ShaderProgram_t &shader) {
+    Draw(renderable, shader.get());
+}
+
+void cqsp::engine::Draw(Renderable &renderable, asset::ShaderProgram *shader) {
     shader->UseProgram();
     int i = -1;
-    for (std::vector<cqsp::asset::Texture*>::iterator it = renderable.textures.begin();
-                                                        it != renderable.textures.end(); ++it) {
+    for (std::vector<cqsp::asset::Texture *>::iterator it =
+             renderable.textures.begin();
+         it != renderable.textures.end(); ++it) {
         i++;
         if ((*it)->texture_type == -1) {
-            ENGINE_LOG_WARN("Texture {} is not initialized properly", (*it)->id);
+            ENGINE_LOG_WARN("Texture {} is not initialized properly",
+                            (*it)->id);
             continue;
         }
         glActiveTexture(GL_TEXTURE0 + i);
@@ -65,7 +71,7 @@ void cqsp::engine::Draw(Renderable & renderable, asset::ShaderProgram_t &shader)
         GLenum error = glGetError();
         if (error != GL_NO_ERROR) {
             ENGINE_LOG_ERROR("Error when binding texture {}: {}", (*it)->id,
-                            error);
+                             error);
         }
     }
 

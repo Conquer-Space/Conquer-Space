@@ -7,7 +7,7 @@
         }
     }
     earth_map_texture: {
-        path: earth.png
+        path: earth2.png
         type: texture
         hints: {}
     }
