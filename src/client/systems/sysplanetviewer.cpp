@@ -174,7 +174,7 @@ void SysPlanetInformation::CityInformationPanel() {
         ImGui::Begin("Market Information", &market_information_panel,
                      window_flags);
         MarketInformationTooltipContent(selected_city_entity);
-        ImGui::End(); 
+        ImGui::End();
     }
 
     if (GetUniverse().all_of<cqspc::Settlement>(selected_city_entity)) {

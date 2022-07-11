@@ -305,7 +305,7 @@ void SysStarSystemRenderer::Update(float deltaTime) {
             // Check the focused planet
             entt::entity focused_planet =
                 m_app.GetUniverse().view<FocusedPlanet>().front();
-            
+
             // if the focused planet is the current planet, then check if it's close enough, and then do the things
             if (ent == focused_planet) {
                 auto& body = m_universe.get<cqsp::common::components::bodies::Body>(focused_planet);

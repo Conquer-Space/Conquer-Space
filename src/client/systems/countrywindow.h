@@ -16,6 +16,8 @@
 */
 #pragma once
 
+#include <string>
+
 #include "client/systems/sysgui.h"
 
 namespace cqsp::client::systems {

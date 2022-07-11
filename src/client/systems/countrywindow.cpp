@@ -16,6 +16,8 @@
 */
 #include "client/systems/countrywindow.h"
 
+#include <string>
+
 #include "engine/cqspgui.h"
 
 #include "common/components/organizations.h"
