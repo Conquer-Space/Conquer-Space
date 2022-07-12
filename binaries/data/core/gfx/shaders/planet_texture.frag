@@ -27,6 +27,10 @@ uniform bool have_normal;
 
 uniform sampler2D terrain_tex;
 uniform sampler2D normal_tex;
+uniform sampler2D country_tex;
+
+uniform bool country;
+uniform vec4 country_color;
 
 const float PI = 3.14159265359;
 vec3 getNormalFromMap() {
@@ -85,6 +89,19 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0) {
 }
 
 void main() {
+    gl_FragDepth = (log(C * frag_pos.z + offset) / log(C * far + offset));
+    if (country) {
+        // Then check if the color is the country color
+        vec4 color1 = texture(country_tex, TexCoords);
+        if(abs (color1.r-country_color.r)<.01f){
+        if(abs (color1.b-country_color.b)<.01f){
+        if(abs (color1.g-country_color.g)<.01f){
+                        FragColor = vec4(1.0, 0, 0.0, 1.0);
+                    return;
+        }
+        }
+        }
+    }
     vec3 albedo = texture(terrain_tex, TexCoords).rgb;
 
     float roughness = 1;
@@ -148,6 +165,4 @@ void main() {
     color = pow(color, vec3(1.0/2.5));
 
     FragColor = vec4(color, 1.0);
-
-    gl_FragDepth = (log(C * frag_pos.z + offset) / log(C * far + offset));
 }

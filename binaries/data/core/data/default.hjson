@@ -13,13 +13,13 @@
     }
     {
         name: United States of America
-        identifier: USA
+        identifier: usa
         common: USA
         adjective: american
     }
     {
         name: United Kingdom of Great Britain and Northern Ireland
-        identifier: UK
+        identifier: uk
         common: UK
         adjective: british
     }
@@ -88,5 +88,30 @@
         identifier: indonesia
         common: Indonesia
         adjective: indonesian
+    }
+    {
+        name: Republic of Zimbabwe
+        identifier: zimbabwe
+        common: Zimbabwe
+    }
+    {
+        name: Bolivarian Republic of Venezuela
+        identifier: venezuela
+        common: Venezuela
+    }
+    {
+        name: Vatican City State
+        identifier: vatican
+        common: Vatican City
+    }
+    {
+        name: Republic of Vanuatu
+        identifier: vanuatu
+        common: Vanuatu
+    }
+    {
+        name: Republic of Uzbekistan
+        identifier: uzbekistan
+        common: Uzbekistan
     }
 ]

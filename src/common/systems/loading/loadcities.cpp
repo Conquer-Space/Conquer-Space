@@ -36,7 +36,8 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     std::string planet = values["planet"].to_string();
     double longi = values["coordinates"]["longitude"].to_double();
     double lat = values["coordinates"]["latitude"].to_double();
-    universe.emplace<components::types::SurfaceCoordinate>(entity, lat, longi);
+    auto& sc = universe.emplace<components::types::SurfaceCoordinate>(entity, lat, longi);
+    sc.planet = universe.planets[planet];
     universe.get_or_emplace<components::Habitation>(universe.planets[planet])
         .settlements.push_back(entity);
 
@@ -96,6 +97,9 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     if (!values["country"].empty()) {
         entt::entity country = universe.countries[values["country"]];
         universe.emplace<components::Governed>(entity, country);
+        // Add self to country?
+        universe.get_or_emplace<components::CountryCityList>(country)
+            .city_list.push_back(entity);
     } else {
         SPDLOG_WARN("City {} has no country",
                     universe.get<components::Identifier>(entity).identifier);

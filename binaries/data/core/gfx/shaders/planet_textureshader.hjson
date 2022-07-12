@@ -4,8 +4,11 @@
     uniforms: {
         terrain_tex: 0
         normal_tex: 1
+        country_tex: 2
         C: 1
         far: 1e13
         offset: 1.0
+        country: false
+        country_color: [0, 0, 0, 0]
     }
 }

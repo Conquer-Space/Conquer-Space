@@ -16,6 +16,8 @@
 */
 #pragma once
 
+#include <vector>
+
 #include <entt/entt.hpp>
 
 namespace cqsp {
@@ -36,6 +38,10 @@ struct Civilization {
 };
 
 struct Country {
+};
+
+struct CountryCityList {
+    std::vector<entt::entity> city_list;
 };
 }  // namespace components
 }  // namespace common

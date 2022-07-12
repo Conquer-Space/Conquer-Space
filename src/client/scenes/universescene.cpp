@@ -56,6 +56,7 @@
 #include "client/systems/systechviewer.h"
 #include "client/systems/rmlui/turnsavewindow.h"
 #include "client/components/clientctx.h"
+#include "client/systems/countrywindow.h"
 
 // If the game is paused or not, like when escape is pressed
 bool game_halted = false;
@@ -98,6 +99,7 @@ void cqsp::scene::UniverseScene::Init() {
     AddUISystem<cqsps::SysFieldViewer>();
     AddUISystem<cqsps::SysTechnologyProjectViewer>();
     AddUISystem<cqsps::SysTechnologyViewer>();
+    AddUISystem<cqsps::SysCountryInformation>();
 
     AddUISystem<cqsps::gui::SysEvent>();
     simulation->tick();

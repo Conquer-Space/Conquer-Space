@@ -11,7 +11,7 @@
         identifier: london
         timezone: GMT
         planet: earth
-        country: UK
+        country: uk
         industry: [
         ]
         population: [
@@ -64,7 +64,7 @@
         }
         planet: earth
         timezone: PDT
-        country: USA
+        country: usa
         population: [
             {
                 size: 3694820
@@ -114,7 +114,7 @@
 
         }
         planet: earth
-        country: USA
+        country: usa
         timezone: CDT
         population: [
             {
@@ -298,7 +298,7 @@
         }
         planet: earth
         timezone: PST
-        country: USA
+        country: usa
         population: [
             {
                 // Seattle is small lol
@@ -341,7 +341,7 @@
         }
         planet: earth
         timezone: UMST
-        country: USA
+        country: usa
         population: [
             {
                 size: 3251876
@@ -395,6 +395,7 @@
         identifier: cape_canaveral
         timezone: EDT
         planet: earth
+        country: usa
         coordinates: {
             latitude: 28.46
             longitude: -80.53

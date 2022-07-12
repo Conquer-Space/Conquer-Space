@@ -55,6 +55,7 @@
 #include "common/components/area.h"
 #include "common/util/profiler.h"
 #include "common/systems/actions/cityactions.h"
+#include "client/systems/gui/systooltips.h"
 
 namespace cqspb = cqsp::common::components::bodies;
 
@@ -147,7 +148,8 @@ void SysStarSystemRenderer::Initialize() {
     planet_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
     skybox_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
 
-
+    earth_map_texture =
+        m_app.GetAssetManager().GetAsset<asset::Texture>("earth_map_texture");
         // Get the country
     auto bin_asset =
         m_app.GetAssetManager().GetAsset<asset::BinaryAsset>("earth_map");
@@ -299,7 +301,40 @@ void SysStarSystemRenderer::Update(float deltaTime) {
         entt::entity ent = m_app.GetUniverse().view<MouseOverEntity>().front();
         if (m_app.MouseButtonIsReleased(engine::MouseInput::LEFT) && ent != entt::null && !m_app.MouseDragged()) {
             // Then go to the object
-            SeePlanet(ent);
+            // See if you're seeing planet
+            // Check the focused planet
+            entt::entity focused_planet =
+                m_app.GetUniverse().view<FocusedPlanet>().front();
+
+            // if the focused planet is the current planet, then check if it's close enough, and then do the things
+            if (ent == focused_planet) {
+                auto& body = m_universe.get<cqsp::common::components::bodies::Body>(focused_planet);
+                // 100 km above the city
+                // Then select city
+                // Get distance
+                auto& kin =
+                    m_universe.get<cqsp::common::components::types::Kinematics>(
+                        focused_planet);
+
+                if (scroll > body.radius * 10) {
+                    // Planet selection
+                    SeePlanet(ent);
+                } else {
+                    // Country selection
+                    // Then select planet and tell the state
+                    if (m_universe.countries.find(country_name) !=
+                        m_universe.countries.end()) {
+                        entt::entity country = m_universe.countries[country_name];
+                        m_universe.clear<cqsp::client::ctx::SelectedCountry>();
+                        m_universe.emplace<cqsp::client::ctx::SelectedCountry>(country);
+                        selected_country_color = country_color;
+                        countries = true;
+                    }
+                }
+            } else {
+                SeePlanet(ent);
+            }
+
             if (is_founding_city) {
                 namespace cqspt = cqsp::common::components::types;
                 namespace cqspc = cqsp::common::components;
@@ -314,7 +349,7 @@ void SysStarSystemRenderer::Update(float deltaTime) {
                 name.name = m_app.GetUniverse().name_generators["Town Names"].Generate("1");
 
                 // Set country
-                entt::entity country = m_app.GetUniverse().countries[city_name];
+                entt::entity country = m_app.GetUniverse().countries[country_name];
                 if (m_app.GetUniverse().valid(country)) {
                     // Set country
                     m_app.GetUniverse().emplace<cqspc::Governed>(settlement, country);
@@ -327,6 +362,7 @@ void SysStarSystemRenderer::Update(float deltaTime) {
                 CalculateCityPositions();
             }
         }
+        // Some math if you're close enough you select the city instead of the planet
     }
 
     if (!ImGui::GetIO().WantCaptureKeyboard) {
@@ -368,11 +404,21 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
     ImGui::TextFmt("{} {} {}", view_center.x, view_center.y, view_center.z);
     ImGui::TextFmt("{}", scroll);
     ImGui::TextFmt("{} {}", view_x, view_y);
-    ImGui::TextFmt("{}", city_name);
+    ImGui::TextFmt("{}", country_name);
     ImGui::TextFmt("{} {}", tex_x, tex_y);
     ImGui::TextFmt("{} {} {}", tex_r, tex_g, tex_b);
     ImGui::TextFmt("Focused planets: {}",
         m_universe.view<FocusedPlanet>().size());
+    if (m_universe.countries.find(country_name) != m_universe.countries.end()) {
+        entt::entity c = m_universe.countries[country_name];
+        if (m_universe.any_of<common::components::CountryCityList>(c)) {
+            auto& s = m_universe.get<common::components::CountryCityList>(c);
+            ImGui::TextFmt("{}", s.city_list.size());
+            for (auto& city_ent : s.city_list) {
+                ImGui::TextFmt("{}", client::systems::gui::GetName(m_universe, city_ent));
+            }
+        }
+    }
     ImGui::End();
 }
 
@@ -629,7 +675,10 @@ void SysStarSystemRenderer::DrawTexturedPlanet(glm::vec3 &object_pos, entt::enti
         if (terrain_data.normal) {
             have_normal = true;
             textured_planet.textures.push_back(terrain_data.normal);
+        } else {
+            textured_planet.textures.push_back(terrain_data.terrain);
         }
+        textured_planet.textures.push_back(earth_map_texture);
     }
 
     namespace cqspb = cqsp::common::components::bodies;
@@ -645,33 +694,36 @@ void SysStarSystemRenderer::DrawTexturedPlanet(glm::vec3 &object_pos, entt::enti
                                 // * view_scale;
     position = glm::scale(position, glm::vec3(scale));
 
-    cqsp::asset::ShaderProgram_t* shader = &textured_planet.shaderProgram;
+    auto shader = textured_planet.shaderProgram.get();
     if (scale < 10.f) {
         // then use different shader if it's close enough
         // This is relatively hacky, so try not to do it
-        shader = &near_shader;
+        shader = near_shader.get();
         glDepthFunc(GL_ALWAYS);
     }
 
-    shader->get()->SetMVP(position, camera_matrix, projection);
-    shader->get()->UseProgram();
+    shader->SetMVP(position, camera_matrix, projection);
+    shader->UseProgram();
 
     // Maybe a seperate shader for planets without normal maps would be better
-    shader->get()->setBool("haveNormal", have_normal);
+    shader->setBool("haveNormal", have_normal);
 
-    shader->get()->setVec3("lightDir", glm::normalize(sun_position - object_pos));
+    shader->setVec3("lightDir", glm::normalize(sun_position - object_pos));
 
-    shader->get()->setVec3("lightDir", glm::normalize(sun_position - object_pos));
-    shader->get()->setVec3("lightPosition", sun_position);
+    shader->setVec3("lightDir", glm::normalize(sun_position - object_pos));
+    shader->setVec3("lightPosition", sun_position);
 
-    shader->get()->setVec3("lightColor", sun_color);
-    shader->get()->setVec3("viewPos", cam_pos);
-
-    engine::Draw(textured_planet, *shader);
+    shader->setVec3("lightColor", sun_color);
+    shader->setVec3("viewPos", cam_pos);
+    // If a country is clicked on...
+    shader->setVec4("country_color", glm::vec4(selected_country_color, 1));
+    shader->setBool("country", countries);
+    engine::Draw(textured_planet, shader);
     glDepthFunc(GL_LESS);
 }
 
 void SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_pos, entt::entity entity) {
+    // TODO(EhWhoAmI): Maybe don't reload the textures all the time
     if (m_universe.all_of<TerrainTextureData>(entity)) {
         auto& terrain_data = m_universe.get<TerrainTextureData>(entity);
         planet.textures.clear();
@@ -693,7 +745,8 @@ void SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_pos, entt::entity entit
 
     planet.shaderProgram->setVec3("lightColor", sun_color);
     planet.shaderProgram->setVec3("viewPos", cam_pos);
-
+    planet.shaderProgram->setVec4("country_color", glm::vec4(country_color, 1));
+    planet.shaderProgram->setBool("country", true);
     using cqsp::common::components::bodies::TerrainData;
     entt::entity terrain = m_universe.get<cqsp::common::components::bodies::Terrain>(entity).terrain_type;
     planet.shaderProgram->Set("seaLevel", m_universe.get<TerrainData>(terrain).sea_level);
@@ -1070,16 +1123,19 @@ void SysStarSystemRenderer::CityDetection() {
     tex_r = std::get<0>(t);
     tex_g = std::get<1>(t);
     tex_b = std::get<2>(t);
-    city_name = "";
+    country_name = "";
     for (auto& b : asset_hjson->data) {
         auto val = b.second["color"];
         bool ist = true;
         ist &= val[0] == std::get<0>(t);
         ist &= val[1] == std::get<1>(t);
         ist &= val[2] == std::get<2>(t);
+
+        country_color =
+            (glm::vec3(std::get<0>(t), std::get<1>(t), std::get<2>(t)) / 255.f);
         if (ist) {
             // Get city
-            city_name = b.first;
+            country_name = b.first;
         }
     }
 }
