@@ -17,6 +17,12 @@
         hints: {
         }
     }
+    earthroughness: {
+        path: earthroughness8k.jpg
+        type: texture
+        hints: {
+        }
+    }
     jupitermap: {
         path: 2k_jupiter.jpg
         type: texture

@@ -24,9 +24,11 @@ uniform float roughness;
 uniform float metallic;
 
 uniform bool have_normal;
+uniform bool is_roughness;
 
 uniform sampler2D terrain_tex;
 uniform sampler2D normal_tex;
+uniform sampler2D roughness_map;
 uniform sampler2D country_tex;
 
 uniform bool country;
@@ -105,6 +107,9 @@ void main() {
     vec3 albedo = texture(terrain_tex, TexCoords).rgb;
 
     float roughness = 1;
+    if (is_roughness) {
+        roughness = clamp(texture(roughness_map, TexCoords).r, 0.1, 1);
+    }
     vec3 N = getNormalFromMap();
     float metallic = 0.99;
 

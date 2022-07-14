@@ -86,6 +86,7 @@
         texture: {
             terrain: earthmap
             normal: earthnormal
+            roughness: earthroughness
         }
         tags: []
     }

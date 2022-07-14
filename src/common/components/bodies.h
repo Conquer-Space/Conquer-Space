@@ -86,6 +86,7 @@ inline double GetPlanetRotationAngle(const double& time, const double& day_lengt
 struct TexturedTerrain {
     std::string terrain_name;
     std::string normal_name;
+    std::string roughness_name;
 };
 
 struct NautralObject {};

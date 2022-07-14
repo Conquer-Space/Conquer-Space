@@ -78,6 +78,10 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         if (texture["normal"].type() == Hjson::Type::String) {
             texture_comp.normal_name = texture["normal"].to_string();
         }
+
+        if (texture["roughness"].type() == Hjson::Type::String) {
+            texture_comp.roughness_name = texture["roughness"].to_string();
+        }
     }
 
     body_comp.GM = values["gm"].to_double();

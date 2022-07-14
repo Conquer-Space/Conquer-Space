@@ -86,6 +86,7 @@ struct TerrainTextureData {
 struct PlanetTexture {
     cqsp::asset::Texture* terrain = nullptr;
     cqsp::asset::Texture* normal = nullptr;
+    cqsp::asset::Texture* roughness = nullptr;
 };
 
 struct PlanetOrbit {
@@ -242,6 +243,9 @@ void SysStarSystemRenderer::SeeStarSystem() {
         data.terrain = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>("core:" + textures.terrain_name);
         if (textures.normal_name != "") {
             data.normal = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>("core:" + textures.normal_name);
+        }
+        if (textures.roughness_name != "") {
+            data.roughness = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>("core:" + textures.roughness_name);
         }
     }
 
@@ -668,6 +672,7 @@ void SysStarSystemRenderer::DrawShipIcon(glm::vec3 &object_pos) {
 
 void SysStarSystemRenderer::DrawTexturedPlanet(glm::vec3 &object_pos, entt::entity entity) {
     bool have_normal = false;
+    bool have_roughness = false;
     if (m_universe.all_of<PlanetTexture>(entity)) {
         auto& terrain_data = m_universe.get<PlanetTexture>(entity);
         textured_planet.textures.clear();
@@ -679,6 +684,10 @@ void SysStarSystemRenderer::DrawTexturedPlanet(glm::vec3 &object_pos, entt::enti
             textured_planet.textures.push_back(terrain_data.terrain);
         }
         textured_planet.textures.push_back(earth_map_texture);
+        if (terrain_data.roughness) {
+            have_roughness = true;
+            textured_planet.textures.push_back(terrain_data.roughness);
+        }
     }
 
     namespace cqspb = cqsp::common::components::bodies;
@@ -718,6 +727,8 @@ void SysStarSystemRenderer::DrawTexturedPlanet(glm::vec3 &object_pos, entt::enti
     // If a country is clicked on...
     shader->setVec4("country_color", glm::vec4(selected_country_color, 1));
     shader->setBool("country", countries);
+    shader->setBool("is_roughness", have_roughness);
+
     engine::Draw(textured_planet, shader);
     glDepthFunc(GL_LESS);
 }
