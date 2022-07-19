@@ -50,9 +50,12 @@ void ScriptUniverseGenerator::Generate(cqsp::common::Universe& universe) {
     script_engine["terrain_colors"] = universe.terrain_data;
     script_engine["fields"] = universe.fields;
     script_engine["technologies"] = universe.technologies;
+    script_engine["countries"] = universe.countries;
     SPDLOG_INFO("Set goods");
     // Create player
-    auto player = universe.create();
+    // Set player
+    // Set to country
+    auto player = universe.countries["france"];
     universe.emplace<cqspc::Civilization>(player);
     universe.emplace<cqspc::Player>(player);
     // Add wallet to civilization
@@ -69,10 +72,7 @@ void ScriptUniverseGenerator::Generate(cqsp::common::Universe& universe) {
     universe.emplace<cqspc::ships::Fleet>(playerSubFleet, playerFleet, player, 1);
     universe.get<cqsps::Fleet>(universe.get<cqspc::Civilization>(player).top_level_fleet)
         .subfleets.push_back(playerSubFleet);
-    //for (int i = 0; i < 9; i++) {
-        //auto civ = universe.create();
-        //universe.emplace<cqspc::Civilization>(civ);
-    //}
+
     sol::optional<sol::table> generator = script_engine["generators"]["data"][1];
     if (generator) {
         (*generator)["civ_init"]();

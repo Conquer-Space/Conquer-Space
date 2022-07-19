@@ -53,7 +53,7 @@ void cqsp::client::systems::CivilizationInfoPanel::CivInfoPanel() {
                               .view<common::components::Civilization,
                                     common::components::Player>()
                               .front();
-    ImGui::TextFmt("{}", player);
+    ImGui::TextFmt("{}", gui::GetName(GetUniverse(), player));
     if (player == entt::null) {
         return;
     }
