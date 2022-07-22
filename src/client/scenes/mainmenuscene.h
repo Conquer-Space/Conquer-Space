@@ -31,7 +31,7 @@
 
 namespace cqsp {
 namespace scene {
-class MainMenuScene : public cqsp::engine::Scene{
+class MainMenuScene : public cqsp::engine::Scene {
  public:
     explicit MainMenuScene(cqsp::engine::Application& app);
     ~MainMenuScene();

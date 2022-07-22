@@ -17,6 +17,7 @@
 #include "client/systems/countrywindow.h"
 
 #include <string>
+#include <limits>
 
 #include "engine/cqspgui.h"
 
@@ -40,6 +41,12 @@ namespace cqspc = cqsp::common::components;
 void SysCountryInformation::Init() {}
 
 void SysCountryInformation::DoUI(int delta_time) {
+    // Check the market
+    if (market_information_panel) {
+        ImGui::Begin("Market", &market_information_panel);
+        MarketInformationTooltipContent(current_city);
+        ImGui::End();
+    }
     entt::entity country =
         GetUniverse().view<cqsp::client::ctx::SelectedCountry>().front();
     if (country != current_country) {
@@ -76,6 +83,7 @@ void SysCountryInformation::DoUI(int delta_time) {
 }
 
 void SysCountryInformation::DoUpdate(int delta_time) {}
+
 void SysCountryInformation::CountryView() {
     ImGui::TextFmt("{}", gui::GetName(GetUniverse(), current_country));
     // List the cities
@@ -177,6 +185,7 @@ void SysCountryInformation::CityIndustryTabs() {
         ImGui::EndTabBar();
     }
 }
+
 void SysCountryInformation::DemographicsTab() {
     using cqsp::common::components::PopulationSegment;
     using cqsp::common::components::Settlement;
@@ -213,7 +222,8 @@ void SysCountryInformation::DemographicsTab() {
         // Market
         if (GetUniverse().all_of<cqspc::Market>(current_city)) {
             if (ImGui::Button("Market Data")) {
-                //market_information_panel = true;
+                market_information_panel = true;
+                // Set market
             }
             if (ImGui::IsItemHovered()) {
                 CQSPGui::SimpleTextTooltip(
@@ -353,5 +363,61 @@ void SysCountryInformation::IndustryTabGenericChild(const std::string& tabname,
         ImGui::Text("Input");
         DrawLedgerTable(tabname + "input", GetUniverse(), input_resources);
         ImGui::EndChild();
+}
+
+void SysCountryInformation::MarketInformationTooltipContent(
+    const entt::entity marketentity) {
+    if (!GetUniverse().valid(marketentity)) {
+        return;
     }
+    if (!GetUniverse().any_of<cqspc::MarketCenter>(marketentity)) {
+        ImGui::TextFmt("Market is not a market center");
+        // return;
+    }
+    // auto& center = GetUniverse().get<cqspc::MarketCenter>(marketentity);
+    cqspc::Market& market = GetUniverse().get<cqspc::Market>(marketentity);
+    ImGui::TextFmt("Has {} entities attached to it",
+                   market.participants.size());
+
+    // Get resource stockpile
+    if (ImGui::BeginTable("marketinfotable", 6,
+                          ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Good");
+        ImGui::TableSetupColumn("Price");
+        ImGui::TableSetupColumn("Supply");
+        ImGui::TableSetupColumn("Demand");
+        ImGui::TableSetupColumn("S/D ratio");
+        ImGui::TableSetupColumn("D/S ratio");
+        ImGui::TableHeadersRow();
+        auto goodsview = GetUniverse().view<cqspc::Price>();
+        cqspc::MarketInformation lastmarket = market.history.back();
+        for (entt::entity good_entity : goodsview) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt(
+                "{}",
+                GetUniverse().get<cqspc::Identifier>(good_entity).identifier);
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextFmt("{}", lastmarket.price[good_entity]);
+            ImGui::TableSetColumnIndex(2);
+            // auto& hist =
+            // market.last_market_information[good_information.first];
+            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(
+                                     lastmarket.supply[good_entity]));
+            ImGui::TableSetColumnIndex(3);
+            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(
+                                     lastmarket.demand[good_entity]));
+            ImGui::TableSetColumnIndex(4);
+            double sd_ratio = lastmarket.sd_ratio[good_entity];
+            if (sd_ratio == std::numeric_limits<double>::infinity())
+                ImGui::TextFmt("inf");
+            else
+                ImGui::TextFmt("{}", sd_ratio);
+            ImGui::TableSetColumnIndex(5);
+            ImGui::TextFmt("{}", lastmarket.ds_ratio[good_entity]);
+            // Check if demand is 0, then supply is infinite, so
+        }
+        ImGui::EndTable();
+    }
+}
 }  // namespace cqsp::client::systems

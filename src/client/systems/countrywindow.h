@@ -38,6 +38,7 @@ class SysCountryInformation : public SysUserInterface {
     void IndustryTab();
     void SpacePortTab();
 
+    void MarketInformationTooltipContent(const entt::entity marketentity);
     template <typename T>
     void IndustryTabGenericChild(const std::string& tabname,
                                  const std::string& industryname,
@@ -45,8 +46,10 @@ class SysCountryInformation : public SysUserInterface {
 
     entt::entity current_city;
     entt::entity current_country;
+    bool market_information_panel = false;
 
     bool visible = false;
+    entt::entity current_market;
 
     enum ViewMode {
         COUNTRY_VIEW,
