@@ -901,7 +901,7 @@ glm::quat SysStarSystemRenderer::GetBodyRotation(double axial, double rotation, 
     if (rotation == 0) {
         rot = 0;
     }
-    return glm::quat{{0.f, (float)fmod(rot, cqspt::TWOPI), (float)axial}};
+    return glm::quat{{0.f, (float)-fmod(rot, cqspt::TWOPI), (float)axial}};
 }
 
 void SysStarSystemRenderer::FocusCityView() {
@@ -957,19 +957,13 @@ void SysStarSystemRenderer::CenterCameraOnCity() {
     // solved with a basic formula.
     entt::entity planet = m_app.GetUniverse().view<FocusedPlanet>().front();
     auto& body = m_universe.get<cqsp::common::components::bodies::Body>(planet);
-    double rot = common::components::bodies::GetPlanetRotationAngle(
-        m_universe.date.ToSecond(), body.rotation, body.rotation_offset);
-    if (body.rotation == 0) {
-        rot = 0;
-    }
+
     glm::quat quat =
-        glm::quat{{0.f, (float)fmod(rot - cqspt::PI / 2, cqspt::TWOPI),
-                   (float)body.axial}};
+        GetBodyRotation(body.axial, body.rotation, body.rotation_offset);
 
     glm::vec3 vec = cqspt::toVec3(surf, 1);
     auto s = quat * vec;
     glm::vec3 pos = glm::normalize(s);
-    rot = common::components::types::normalize_radian(rot);
     view_x = atan2(s.x, s.z);
     view_y = -acos(s.y) + cqspt::PI / 2;
 }

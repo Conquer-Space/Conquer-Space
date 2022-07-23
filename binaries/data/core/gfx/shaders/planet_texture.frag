@@ -162,9 +162,9 @@ void main() {
         // Then check if the color is the country color
         
         vec4 color1 = texture(country_tex, TexCoords);
-        if(abs (color1.r-country_color.r)<.01f){
-        if(abs (color1.b-country_color.b)<.01f){
-        if(abs (color1.g-country_color.g)<.01f){
+        if(color1.r == country_color.r){
+        if(color1.b == country_color.b){
+        if(color1.g == country_color.g){
             FragColor = mix(vec4(1.0, 0, 0.0, 1.0), FragColor, 0.65);
             return;
         }
