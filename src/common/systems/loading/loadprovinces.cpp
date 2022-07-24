@@ -44,5 +44,6 @@ void cqsp::common::systems::loading::LoadProvinces(common::Universe& universe,
         universe.emplace<components::Identifier>(entity, identifier);
         universe.emplace<components::ProvinceColor>(entity, std::stoi(r),
                                                     std::stoi(g), std::stoi(b));
+        universe.provinces[identifier] = entity;
     }
 }
