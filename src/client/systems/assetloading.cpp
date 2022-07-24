@@ -32,6 +32,7 @@
 #include "common/systems/loading/hjsonloader.h"
 #include "common/systems/loading/timezoneloader.h"
 #include "common/systems/loading/loadcountries.h"
+#include "common/systems/loading/loadprovinces.h"
 
 namespace {
 void LoadResource(cqsp::engine::Application& app, std::string asset_name,
@@ -86,6 +87,7 @@ void LoadAllResources(cqsp::engine::Application& app) {
     LoadResource(app, "tech_fields", common::systems::science::LoadFields);
     LoadResource(app, "tech_list", common::systems::science::LoadTechnologies);
 
+    LoadProvinces(app.GetUniverse(), app.GetAssetManager().GetAsset<asset::TextAsset>("province_defs")->data);
     // Initialize planet terrains
     asset::HjsonAsset* asset = app.GetAssetManager().GetAsset<asset::HjsonAsset>(
                                 "core:terrain_colors");
