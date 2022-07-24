@@ -48,6 +48,18 @@ struct TimeZone {
 struct CityTimeZone {
     entt::entity time_zone;
 };
+
+struct Province {};
+
+struct ProvinceColor {
+    int r;
+    int g;
+    int b;
+
+    bool operator==(const ProvinceColor& other) const {
+        return (other.r == r && other.g == g && other.b == b);
+    }
+};
 }  // namespace components
 }  // namespace common
 }  // namespace cqsp

@@ -16,4 +16,14 @@
         type: hjson
         hints: {}
     }
+    province_defs: {
+        path: definitions.csv
+        type: text
+        hints: {}
+    }
+    province_map_texture: {
+        path: countryprovinces.png
+        type: texture
+        hints: {}
+    }
 }
