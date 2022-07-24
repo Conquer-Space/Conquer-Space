@@ -150,17 +150,17 @@ void SysStarSystemRenderer::Initialize() {
     skybox_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
 
     earth_map_texture =
-        m_app.GetAssetManager().GetAsset<asset::Texture>("earth_map_texture");
+        m_app.GetAssetManager().GetAsset<asset::Texture>("province_map_texture");
         // Get the country
+
     auto bin_asset =
-        m_app.GetAssetManager().GetAsset<asset::BinaryAsset>("earth_map");
+        m_app.GetAssetManager().GetAsset<asset::BinaryAsset>("province_map");
     uint64_t file_size = bin_asset->data.size();
-    int width, height, comp;
-    auto d = stbi_load_from_memory(bin_asset->data.data(), file_size, &width,
-                                   &height,
+    int comp = 0;
+    auto d = stbi_load_from_memory(bin_asset->data.data(), file_size, &province_width, &province_height,
                                    &comp, 0);
 
-    std::copy(&d[0], &d[width * height * comp],
+    std::copy(&d[0], &d[province_width * province_height * comp],
               std::back_inserter(country_map));
 }
 
@@ -326,11 +326,14 @@ void SysStarSystemRenderer::Update(float deltaTime) {
                 } else {
                     // Country selection
                     // Then select planet and tell the state
-                    if (m_universe.countries.find(country_name) !=
-                        m_universe.countries.end()) {
-                        entt::entity country = m_universe.countries[country_name];
-                        m_universe.clear<cqsp::client::ctx::SelectedCountry>();
-                        m_universe.emplace<cqsp::client::ctx::SelectedCountry>(country);
+                    selected_country_color = country_color;
+                    countries = true;
+                    if (m_universe.provinces.find(country_name) !=
+                        m_universe.provinces.end()) {
+                        entt::entity country = m_universe.provinces[country_name];
+                        SPDLOG_INFO("{}", country_name);
+                        //m_universe.clear<cqsp::client::ctx::SelectedCountry>();
+                        //m_universe.emplace<cqsp::client::ctx::SelectedCountry>(country);
                         selected_country_color = country_color;
                         countries = true;
                     }
@@ -411,6 +414,7 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
     ImGui::TextFmt("{}", country_name);
     ImGui::TextFmt("{} {}", tex_x, tex_y);
     ImGui::TextFmt("{} {} {}", tex_r, tex_g, tex_b);
+    ImGui::TextFmt("{} {} {}", selected_country_color.x, selected_country_color.y, selected_country_color.z);
     ImGui::TextFmt("Focused planets: {}",
         m_universe.view<FocusedPlanet>().size());
     if (m_universe.countries.find(country_name) != m_universe.countries.end()) {
@@ -1110,13 +1114,11 @@ void SysStarSystemRenderer::CityDetection() {
     }
     auto s = GetCitySurfaceCoordinate();
 
-    auto asset_hjson =
-        m_app.GetAssetManager().GetAsset<asset::HjsonAsset>("earth_colors");
     // Look for the vector
     // Rotate based on the axial tilt and roation
 
-    int width = 2048;
-    int height = 1024;
+    int width = province_width;
+    int height = province_height;
     int x = (-1 * (s.latitude() * 2 - 180)) / 360 * height;
     int y = fmod(s.longitude() + 180, 360) / 360. * width;
     int pos = (x * width + y) * 4;
@@ -1128,21 +1130,18 @@ void SysStarSystemRenderer::CityDetection() {
     tex_r = std::get<0>(t);
     tex_g = std::get<1>(t);
     tex_b = std::get<2>(t);
+    country_color =
+        (glm::vec3(std::get<0>(t), std::get<1>(t), std::get<2>(t)) / 255.f);
     country_name = "";
-    for (auto& b : asset_hjson->data) {
-        auto val = b.second["color"];
-        bool ist = true;
-        ist &= val[0] == std::get<0>(t);
-        ist &= val[1] == std::get<1>(t);
-        ist &= val[2] == std::get<2>(t);
-
-        country_color =
-            (glm::vec3(std::get<0>(t), std::get<1>(t), std::get<2>(t)) / 255.f);
-        if (ist) {
-            // Get city
-            country_name = b.first;
+    auto view = m_universe.view<common::components::ProvinceColor>();
+    for (entt::entity entity : view) {
+        auto& color = m_universe.get<common::components::ProvinceColor>(entity);
+        if (color.r == tex_r && color.g == tex_g && color.b == tex_b) {
+            country_name =
+                m_universe.get<common::components::Identifier>(entity);
         }
     }
+
 }
 
 glm::vec3 SysStarSystemRenderer::GetMouseIntersectionOnObject(int mouse_x, int mouse_y) {

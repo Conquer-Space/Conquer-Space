@@ -43,6 +43,7 @@ class Universe : public entt::registry {
     std::map<std::string, entt::entity> planets;
     std::map<std::string, entt::entity> time_zones;
     std::map<std::string, entt::entity> countries;
+    std::map<std::string, entt::entity> provinces;
 
     entt::entity sun;
 
