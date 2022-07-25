@@ -208,6 +208,8 @@ class SysStarSystemRenderer {
 
     glm::vec3 country_color;
     glm::vec3 selected_country_color;
+    entt::entity hovering_province;
+    entt::entity selected_province;
     bool countries = false;
 };
 }  // namespace systems

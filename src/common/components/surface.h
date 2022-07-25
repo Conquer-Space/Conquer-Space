@@ -49,7 +49,9 @@ struct CityTimeZone {
     entt::entity time_zone;
 };
 
-struct Province {};
+struct Province {
+    entt::entity country;
+};
 
 struct ProvinceColor {
     int r;

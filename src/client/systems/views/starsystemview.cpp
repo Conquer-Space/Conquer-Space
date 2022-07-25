@@ -327,6 +327,7 @@ void SysStarSystemRenderer::Update(float deltaTime) {
                     // Country selection
                     // Then select planet and tell the state
                     selected_country_color = country_color;
+                    selected_province = hovering_province;
                     countries = true;
                     if (m_universe.provinces.find(country_name) !=
                         m_universe.provinces.end()) {
@@ -411,7 +412,13 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
     ImGui::TextFmt("{} {} {}", view_center.x, view_center.y, view_center.z);
     ImGui::TextFmt("{}", scroll);
     ImGui::TextFmt("{} {}", view_x, view_y);
-    ImGui::TextFmt("{}", country_name);
+    // Get the province name
+    std::string country_name_t = "";
+    if (m_universe.valid(selected_province) && m_universe.any_of<common::components::Province>(selected_province)) {
+        country_name_t =
+            systems::gui::GetName(m_universe, m_universe.get<common::components::Province>(selected_province).country);
+    }
+    ImGui::TextFmt("{} {}", country_name, country_name_t);
     ImGui::TextFmt("{} {}", tex_x, tex_y);
     ImGui::TextFmt("{} {} {}", tex_r, tex_g, tex_b);
     ImGui::TextFmt("{} {} {}", selected_country_color.x, selected_country_color.y, selected_country_color.z);
@@ -1139,9 +1146,9 @@ void SysStarSystemRenderer::CityDetection() {
         if (color.r == tex_r && color.g == tex_g && color.b == tex_b) {
             country_name =
                 m_universe.get<common::components::Identifier>(entity);
+            hovering_province = entity;
         }
     }
-
 }
 
 glm::vec3 SysStarSystemRenderer::GetMouseIntersectionOnObject(int mouse_x, int mouse_y) {
