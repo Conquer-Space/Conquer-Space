@@ -1,4 +1,3 @@
-#include "loadprovinces.h"
 /* Conquer Space
 * Copyright (C) 2021 Conquer Space
 *
@@ -15,6 +14,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+#include "common/systems/loading/loadprovinces.h"
 
 #include <sstream>
 
@@ -38,9 +38,11 @@ void cqsp::common::systems::loading::LoadProvinces(common::Universe& universe,
         std::string g = token;
         std::getline(f2, token, ',');
         std::string b = token;
+        std::getline(f2, token, ',');
+        std::string country = token;
         // Create
         entt::entity entity = universe.create();
-        universe.emplace<components::Province>(entity);
+        universe.emplace<components::Province>(entity, universe.countries[country]);
         universe.emplace<components::Identifier>(entity, identifier);
         universe.emplace<components::ProvinceColor>(entity, std::stoi(r),
                                                     std::stoi(g), std::stoi(b));
