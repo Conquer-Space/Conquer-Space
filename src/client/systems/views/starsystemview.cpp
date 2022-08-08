@@ -162,6 +162,13 @@ void SysStarSystemRenderer::Initialize() {
 
     std::copy(&d[0], &d[province_width * province_height * comp],
               std::back_inserter(country_map));
+
+    namespace cqspt = cqsp::common::components::types;
+    auto orbits = m_app.GetUniverse().view<cqspt::Orbit>();
+
+    for (entt::entity entity : orbits) {
+        m_app.GetUniverse().emplace_or_replace<cqspt::OrbitDirty>(entity);
+    }
 }
 
 void SysStarSystemRenderer::OnTick() {
@@ -464,61 +471,69 @@ void SysStarSystemRenderer::DrawBodies() {
     const double dist = 0.4;
     renderer.BeginDraw(planet_icon_layer);
     glDepthFunc(GL_ALWAYS);
-    for (auto body_entity : bodies) {
-        // Draw the planet circle
-        glm::vec3 object_pos = CalculateCenteredObject(body_entity);
+    {
+        ZoneScopedN("PlanetBillboards");
+        for (auto body_entity : bodies) {
+            // Draw the planet circle
+            glm::vec3 object_pos = CalculateCenteredObject(body_entity);
 
-        // Draw Ships
-        namespace cqspc = cqsp::common::components;
-        if (glm::distance(object_pos, cam_pos) > dist || true) {
-            // Check if it's obscured by a planet, but eh, we can deal with it later
-            // Set planet circle color
-            planet_circle.shaderProgram->UseProgram();
-            planet_circle.shaderProgram->setVec4("color", 0, 0, 1, 1);
-            //DrawPlanetIcon(object_pos);
-            //DrawEntityName(object_pos, body_entity);
-            DrawPlanetBillboards(body_entity, object_pos);
-            continue;
+            // Draw Ships
+            namespace cqspc = cqsp::common::components;
+            if (glm::distance(object_pos, cam_pos) > dist || true) {
+                // Check if it's obscured by a planet, but eh, we can deal with
+                // it later Set planet circle color
+                planet_circle.shaderProgram->UseProgram();
+                planet_circle.shaderProgram->setVec4("color", 0, 0, 1, 1);
+                // DrawPlanetIcon(object_pos);
+                // DrawEntityName(object_pos, body_entity);
+                DrawPlanetBillboards(body_entity, object_pos);
+                continue;
+            }
         }
     }
     renderer.EndDraw(planet_icon_layer);
     glDepthFunc(GL_LESS);
     renderer.BeginDraw(physical_layer);
-    for (entt::entity body_entity : bodies) {
-        glm::vec3 object_pos = CalculateCenteredObject(body_entity);
+    {
+        ZoneScopedN("Planets");
+        for (entt::entity body_entity : bodies) {
+            glm::vec3 object_pos = CalculateCenteredObject(body_entity);
 
-        // Draw Ships
-        namespace cqspc = cqsp::common::components;
+            namespace cqspc = cqsp::common::components;
 
-        // This can probably switched to some log system based off the mass of
-        // a planet.
-        if (glm::distance(object_pos, cam_pos) <= dist || true) {
-            // Check if planet has terrain or not
-            // Don't actually use proc-gen terrain for now
-            //if (m_app.GetUniverse().all_of<cqspb::Terrain>(body_entity)) {
-                // Do empty terrain
-                // Check if the planet has the thing
-                //DrawPlanet(object_pos, body_entity);
-            if (m_app.GetUniverse().all_of<cqspb::TexturedTerrain>(body_entity)) {
-                DrawTexturedPlanet(object_pos, body_entity);
-            } else {
-                DrawTerrainlessPlanet(body_entity, object_pos);
+            // This can probably switched to some log system based off the mass of
+            // a planet.
+            if (glm::distance(object_pos, cam_pos) <= dist || true) {
+                // Check if planet has terrain or not
+                // Don't actually use proc-gen terrain for now
+                //if (m_app.GetUniverse().all_of<cqspb::Terrain>(body_entity)) {
+                    // Do empty terrain
+                    // Check if the planet has the thing
+                    //DrawPlanet(object_pos, body_entity);
+                if (m_app.GetUniverse().all_of<cqspb::TexturedTerrain>(body_entity)) {
+                    DrawTexturedPlanet(object_pos, body_entity);
+                } else {
+                    DrawTerrainlessPlanet(body_entity, object_pos);
+                }
             }
         }
     }
 
     auto orbits = m_universe.view<cqspt::Orbit>();
 
-    for (entt::entity orbit_entity : orbits) {
-        DrawOrbit(orbit_entity);
+    {
+        ZoneScopedN("Orbits")
+        for (entt::entity orbit_entity : orbits) {
+            DrawOrbit(orbit_entity);
+        }
     }
     renderer.EndDraw(physical_layer);
 
     renderer.BeginDraw(ship_icon_layer);
     for (auto body_entity : bodies) {
         glm::vec3 object_pos = CalculateCenteredObject(body_entity);
-        //if (glm::distance(object_pos, cam_pos) <= dist) {
-            RenderCities(object_pos, body_entity);
+        // if (glm::distance(object_pos, cam_pos) <= dist) {
+        RenderCities(object_pos, body_entity);
         //}
     }
     renderer.EndDraw(ship_icon_layer);
@@ -916,6 +931,7 @@ glm::quat SysStarSystemRenderer::GetBodyRotation(double axial, double rotation, 
 }
 
 void SysStarSystemRenderer::FocusCityView() {
+    ZoneScoped;
     auto focused_city_view = m_app.GetUniverse().view<FocusedCity>();
     // City to focus view on
     if (focused_city_view.empty()) {
@@ -1069,12 +1085,15 @@ float SysStarSystemRenderer::GetWindowRatio() {
 }
 
 void SysStarSystemRenderer::GenerateOrbitLines() {
+    ZoneScoped;
     SPDLOG_TRACE("Creating planet orbits");
-    auto orbits = m_app.GetUniverse().view<common::components::types::Orbit>();
+    namespace cqspt = common::components::types;
+    auto orbits = m_app.GetUniverse().view<cqspt::Orbit, cqspt::OrbitDirty>();
 
     // Initialize all the orbits and stuff
     // Get sun orbits
     for (auto body : orbits) {
+        ZoneScoped;
         // Generate the orbit
         auto& orb = m_universe.get<common::components::types::Orbit>(body);
         if (orb.semi_major_axis == 0) {
@@ -1084,11 +1103,13 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
         std::vector<glm::vec3> orbit_points;
         orbit_points.reserve(res);
         for (int i = 0; i <= res; i++) {
+            ZoneScoped;
             double theta = 3.1415926535 * 2 / res * i;
             glm::vec3 vec = common::components::types::toVec3(orb, theta);
             // Convert to opengl
             orbit_points.push_back(glm::vec3(vec.x, vec.z, vec.y));
         }
+        m_universe.remove<cqspt::OrbitDirty>(body);
         auto& line = m_universe.get_or_emplace<PlanetOrbit>(body);
         // Get the orbit line
         // Do the points
@@ -1116,6 +1137,7 @@ SysStarSystemRenderer::GetCitySurfaceCoordinate() {
 }
 
 void SysStarSystemRenderer::CityDetection() {
+    ZoneScoped;
     if (on_planet == entt::null || !m_universe.valid(on_planet)) {
         return;
     }
@@ -1141,17 +1163,21 @@ void SysStarSystemRenderer::CityDetection() {
         (glm::vec3(std::get<0>(t), std::get<1>(t), std::get<2>(t)) / 255.f);
     country_name = "";
     auto view = m_universe.view<common::components::ProvinceColor>();
-    for (entt::entity entity : view) {
-        auto& color = m_universe.get<common::components::ProvinceColor>(entity);
-        if (color.r == tex_r && color.g == tex_g && color.b == tex_b) {
+    ZoneNamed(LookforProvince, true);
+    {
+        int i = common::components::ProvinceColor::toInt(
+            country_color.r, country_color.g, country_color.b);
+        entt::entity province = m_universe.province_colors[i];
+        if (m_universe.valid(province)) {
             country_name =
-                m_universe.get<common::components::Identifier>(entity);
-            hovering_province = entity;
+                m_universe.get<common::components::Identifier>(province);
+            hovering_province = province;
         }
     }
 }
 
 glm::vec3 SysStarSystemRenderer::GetMouseIntersectionOnObject(int mouse_x, int mouse_y) {
+    ZoneScoped;
     // Normalize 3d device coordinates
     namespace cqspb = cqsp::common::components::bodies;
     auto bodies = m_app.GetUniverse().view<ToRender, cqspb::Body>();

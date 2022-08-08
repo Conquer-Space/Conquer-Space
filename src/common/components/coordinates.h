@@ -143,6 +143,8 @@ struct Orbit {
     }
 };
 
+struct OrbitDirty {};
+
 /// <summary>
 /// Converts the orbital params with the inclination, longitude of ascending node, and argument or periapsis
 /// </summary>

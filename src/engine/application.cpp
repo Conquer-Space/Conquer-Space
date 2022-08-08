@@ -248,6 +248,8 @@ class GLWindow : public cqsp::engine::Window {
     }
 
     void OnFrame() {
+        ZoneScoped;
+        glfwSwapBuffers(window);
         // Before polling events, clear the buttons
         std::memset(m_keys_pressed, false, sizeof(m_keys_pressed));
         std::memset(m_keys_released, false, sizeof(m_keys_released));
@@ -258,6 +260,7 @@ class GLWindow : public cqsp::engine::Window {
         keys_released_last.clear();
         code_input.clear();
         window_size_changed = false;
+        glfwPollEvents();
     }
 
     void SetWindowSize(int width, int height) {
@@ -419,6 +422,7 @@ void Application::InitImgui() {
 }
 
 void Application::ProcessRmlUiUserInput() {
+    ZoneScoped;
     rml_context->SetDimensions(Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
 
     GLWindow* gl_window = reinterpret_cast<GLWindow*>(m_window);
@@ -642,7 +646,10 @@ void Application::run() {
         END_TIMED_BLOCK(UiCreation);
 
         BEGIN_TIMED_BLOCK(ImGui_Render);
-        ImGui::Render();
+        {
+            ZoneScopedN("ImGui::Render");
+            ImGui::Render();
+        }
         END_TIMED_BLOCK(ImGui_Render);
 
         ProcessRmlUiUserInput();
@@ -672,10 +679,7 @@ void Application::run() {
                      GetWindowHeight() - 24);
         }
 
-        glfwSwapBuffers(window(m_window));
-
         m_window->OnFrame();
-        glfwPollEvents();
         FrameMark;
     }
 
@@ -901,11 +905,20 @@ Scene* SceneManager::GetScene() {
 
 void SceneManager::DeleteCurrentScene() { m_scene.reset(); }
 
-void SceneManager::Update(float deltaTime) { m_scene->Update(deltaTime); }
+void SceneManager::Update(float deltaTime) {
+    ZoneScoped;
+    m_scene->Update(deltaTime);
+}
 
-void SceneManager::Ui(float deltaTime) { m_scene->Ui(deltaTime); }
+void SceneManager::Ui(float deltaTime) {
+    ZoneScoped;
+    m_scene->Ui(deltaTime);
+}
 
-void SceneManager::Render(float deltaTime) { m_scene->Render(deltaTime); }
+void SceneManager::Render(float deltaTime) {
+    ZoneScoped;
+    m_scene->Render(deltaTime);
+}
 
 Application::CqspEventInstancer::CqspEventInstancer() {}
 
@@ -920,6 +933,5 @@ Rml::EventListener* Application::CqspEventInstancer::
 Application::CqspEventListener::~CqspEventListener() {
 }
 
-void Application::CqspEventListener::ProcessEvent(
-    Rml::Event& event) {}
+void Application::CqspEventListener::ProcessEvent(Rml::Event& event) {}
 }  // namespace cqsp::engine

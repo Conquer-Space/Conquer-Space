@@ -61,6 +61,15 @@ struct ProvinceColor {
     bool operator==(const ProvinceColor& other) const {
         return (other.r == r && other.g == g && other.b == b);
     }
+
+    operator int() const { return toInt(r, g, b); }
+
+    static int toInt(int r, int g, int b) {
+        int rgb = r;
+        rgb = (rgb << 8) + g;
+        rgb = (rgb << 8) + b;
+        return rgb;
+    }
 };
 }  // namespace components
 }  // namespace common
