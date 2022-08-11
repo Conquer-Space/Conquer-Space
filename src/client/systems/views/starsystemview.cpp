@@ -333,16 +333,16 @@ void SysStarSystemRenderer::Update(float deltaTime) {
                 } else {
                     // Country selection
                     // Then select planet and tell the state
-                    selected_country_color = country_color;
+                    selected_country_color = selected_province_color;
                     selected_province = hovering_province;
                     countries = true;
-                    if (m_universe.provinces.find(country_name) !=
+                    if (m_universe.provinces.find(selected_province_name) !=
                         m_universe.provinces.end()) {
-                        entt::entity country = m_universe.provinces[country_name];
-                        SPDLOG_INFO("{}", country_name);
+                        entt::entity country = m_universe.provinces[selected_province_name];
+                        SPDLOG_INFO("{}", selected_province_name);
                         //m_universe.clear<cqsp::client::ctx::SelectedCountry>();
                         //m_universe.emplace<cqsp::client::ctx::SelectedCountry>(country);
-                        selected_country_color = country_color;
+                        selected_country_color = selected_province_color;
                         countries = true;
                     }
                 }
@@ -364,7 +364,7 @@ void SysStarSystemRenderer::Update(float deltaTime) {
                 name.name = m_app.GetUniverse().name_generators["Town Names"].Generate("1");
 
                 // Set country
-                entt::entity country = m_app.GetUniverse().countries[country_name];
+                entt::entity country = m_app.GetUniverse().countries[selected_province_name];
                 if (m_app.GetUniverse().valid(country)) {
                     // Set country
                     m_app.GetUniverse().emplace<cqspc::Governed>(settlement, country);
@@ -425,14 +425,14 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
         country_name_t =
             systems::gui::GetName(m_universe, m_universe.get<common::components::Province>(selected_province).country);
     }
-    ImGui::TextFmt("{} {}", country_name, country_name_t);
+    ImGui::TextFmt("{} {}", selected_province_name, country_name_t);
     ImGui::TextFmt("{} {}", tex_x, tex_y);
     ImGui::TextFmt("{} {} {}", tex_r, tex_g, tex_b);
     ImGui::TextFmt("{} {} {}", selected_country_color.x, selected_country_color.y, selected_country_color.z);
     ImGui::TextFmt("Focused planets: {}",
         m_universe.view<FocusedPlanet>().size());
-    if (m_universe.countries.find(country_name) != m_universe.countries.end()) {
-        entt::entity c = m_universe.countries[country_name];
+    if (m_universe.countries.find(selected_province_name) != m_universe.countries.end()) {
+        entt::entity c = m_universe.countries[selected_province_name];
         if (m_universe.any_of<common::components::CountryCityList>(c)) {
             auto& s = m_universe.get<common::components::CountryCityList>(c);
             ImGui::TextFmt("{}", s.city_list.size());
@@ -782,7 +782,7 @@ void SysStarSystemRenderer::DrawPlanet(glm::vec3 &object_pos, entt::entity entit
 
     planet.shaderProgram->setVec3("lightColor", sun_color);
     planet.shaderProgram->setVec3("viewPos", cam_pos);
-    planet.shaderProgram->setVec4("country_color", glm::vec4(country_color, 1));
+    planet.shaderProgram->setVec4("country_color", glm::vec4(selected_province_color, 1));
     planet.shaderProgram->setBool("country", true);
     using cqsp::common::components::bodies::TerrainData;
     entt::entity terrain = m_universe.get<cqsp::common::components::bodies::Terrain>(entity).terrain_type;
@@ -1145,12 +1145,9 @@ void SysStarSystemRenderer::CityDetection() {
 
     // Look for the vector
     // Rotate based on the axial tilt and roation
-
-    int width = province_width;
-    int height = province_height;
-    int x = (-1 * (s.latitude() * 2 - 180)) / 360 * height;
-    int y = fmod(s.longitude() + 180, 360) / 360. * width;
-    int pos = (x * width + y) * 4;
+    int x = (-1 * (s.latitude() * 2 - 180)) / 360 * province_height;
+    int y = fmod(s.longitude() + 180, 360) / 360. * province_width;
+    int pos = (x * province_width + y) * 4;
     tex_x = x;
     tex_y = y;
     std::tuple<int, int, int, int> t =
@@ -1159,19 +1156,24 @@ void SysStarSystemRenderer::CityDetection() {
     tex_r = std::get<0>(t);
     tex_g = std::get<1>(t);
     tex_b = std::get<2>(t);
-    country_color =
-        (glm::vec3(std::get<0>(t), std::get<1>(t), std::get<2>(t)) / 255.f);
-    country_name = "";
-    auto view = m_universe.view<common::components::ProvinceColor>();
+    selected_province_name = "";
+
+    if (std::get<3>(t) == 0) {
+        // Then ignore because it is ocean
+        return;
+    }
     ZoneNamed(LookforProvince, true);
     {
-        int i = common::components::ProvinceColor::toInt(
-            country_color.r, country_color.g, country_color.b);
+        selected_province_color =
+            (glm::vec3(std::get<0>(t), std::get<1>(t), std::get<2>(t)) / 255.f);
+        int i = common::components::ProvinceColor::toInt(tex_r, tex_g, tex_b);
         entt::entity province = m_universe.province_colors[i];
-        if (m_universe.valid(province)) {
-            country_name =
+        if (m_universe.province_colors.find(i) !=
+            m_universe.province_colors.end()) {
+            selected_province_name =
                 m_universe.get<common::components::Identifier>(province);
             hovering_province = province;
+        } else {
         }
     }
 }
