@@ -795,12 +795,6 @@
     identifier: tuvalu
   }
   {
-    name: United States of America
-    identifier: usa
-    common: USA
-    adjective: american
-  }
-  {
     name: United Kingdom of Great Britain and Northern Ireland
     identifier: uk
     common: UK
