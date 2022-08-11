@@ -4,9 +4,5 @@
     identifier: usa
     common: USA
     adjective: american
-    provinces: [
-      texas
-      colorado
-    ]
   }
 ]
