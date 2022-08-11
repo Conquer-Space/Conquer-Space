@@ -191,9 +191,21 @@ class SysStarSystemRenderer {
     float view_scale = 10.f;
 
     entt::entity selected_city = entt::null;
-    std::string country_name;
+    std::string selected_province_name;
+
+    /// <summary>
+    /// For debugging, the x position of the mouse on the texture
+    /// </summary>
     int tex_x;
+
+    /// <summary>
+    /// For debugging, the y position of the mouse on the texture
+    /// </summary>
     int tex_y;
+
+    /// <summary>
+    /// Debugging colors
+    /// </summary>
     int tex_r;
     int tex_g;
     int tex_b;
@@ -206,7 +218,7 @@ class SysStarSystemRenderer {
     common::components::types::SurfaceCoordinate GetCitySurfaceCoordinate();
     void CityDetection();
 
-    glm::vec3 country_color;
+    glm::vec3 selected_province_color;
     glm::vec3 selected_country_color;
     entt::entity hovering_province;
     entt::entity selected_province;

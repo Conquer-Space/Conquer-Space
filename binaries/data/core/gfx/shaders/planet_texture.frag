@@ -160,7 +160,7 @@ void main() {
     FragColor = vec4(color, 1.0);
     if (country) {
         // Then check if the color is the country color
-        
+
         vec4 color1 = texture(country_tex, TexCoords);
         if(color1.r == country_color.r){
         if(color1.b == country_color.b){
