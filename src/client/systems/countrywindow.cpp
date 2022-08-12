@@ -48,14 +48,14 @@ void SysCountryInformation::DoUI(int delta_time) {
         ImGui::End();
     }
     entt::entity country =
-        GetUniverse().view<cqsp::client::ctx::SelectedCountry>().front();
+        GetUniverse().view<cqsp::client::ctx::SelectedProvince>().front();
     if (country != current_country) {
         current_country = country;
         view_mode = ViewMode::COUNTRY_VIEW;
         visible = true;
     }
     if (current_country == entt::null ||
-        !GetUniverse().any_of<common::components::CountryCityList>(
+        !GetUniverse().any_of<common::components::Province>(
             current_country)) {
         return;
     }
@@ -88,9 +88,9 @@ void SysCountryInformation::CountryView() {
     ImGui::TextFmt("{}", gui::GetName(GetUniverse(), current_country));
     // List the cities
     auto& city_list =
-        GetUniverse().get<common::components::CountryCityList>(current_country);
+        GetUniverse().get<common::components::Province>(current_country);
     int population = 0;
-    for (entt::entity entity : city_list.city_list) {
+    for (entt::entity entity : city_list.cities) {
         using cqsp::common::components::PopulationSegment;
         using cqsp::common::components::Settlement;
         // Get city population
@@ -102,7 +102,7 @@ void SysCountryInformation::CountryView() {
     }
     ImGui::TextFmt("Population: {}", util::LongToHumanString(population));
     ImGui::Separator();
-    for (entt::entity entity : city_list.city_list) {
+    for (entt::entity entity : city_list.cities) {
         if (CQSPGui::DefaultSelectable(
                 fmt::format("{}", gui::GetName(GetUniverse(), entity))
                     .c_str())) {

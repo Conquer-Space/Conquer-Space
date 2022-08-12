@@ -191,7 +191,6 @@ class SysStarSystemRenderer {
     float view_scale = 10.f;
 
     entt::entity selected_city = entt::null;
-    std::string selected_province_name;
 
     /// <summary>
     /// For debugging, the x position of the mouse on the texture

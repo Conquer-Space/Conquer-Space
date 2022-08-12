@@ -16,6 +16,8 @@
 */
 #include "common/systems/loading/loadprovinces.h"
 
+#include <spdlog/spdlog.h>
+
 #include <sstream>
 
 #include "common/components/surface.h"
@@ -46,7 +48,13 @@ void cqsp::common::systems::loading::LoadProvinces(common::Universe& universe,
         universe.emplace<components::Identifier>(entity, identifier);
         auto& color = universe.emplace<components::ProvinceColor>(entity, std::stoi(r),
                                                     std::stoi(g), std::stoi(b));
-        universe.provinces[identifier] = entity;
+        if (universe.provinces.find(identifier) == universe.provinces.end()) {
+            universe.provinces[identifier] = entity;
+        } else {
+            SPDLOG_WARN(
+                "Province {} conflicts with an already preexisting province",
+                identifier);
+        }
         universe.province_colors[color] = entity;
     }
 }
