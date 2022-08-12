@@ -56,6 +56,7 @@ Simulation::Simulation(cqsp::common::Game &game) : m_game(game), m_universe(game
 
     AddSystem<cqspcs::SysNavyControl>();
 
+    AddSystem<cqspcs::InfrastructureSim>();
     AddSystem<cqspcs::SysPopulationConsumption>();
     AddSystem<cqspcs::SysProduction>();
     //AddSystem<cqspcs::SysAgent>();

@@ -100,6 +100,8 @@ void cqsp::common::systems::SysPopulationConsumption::DoSystem() {
         savings -= good.marginal_propensity;
     } // These tables technically never need to be recalculated
     auto settlementview = universe.view<cqspc::Settlement>();
+
+    // Calculate the cost of thing
     for (auto [settlemententity, settlement] : settlementview.each()) {
         cqspc::Market& market =
             universe.get_or_emplace<cqspc::Market>(settlemententity);

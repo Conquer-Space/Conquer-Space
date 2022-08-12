@@ -37,6 +37,7 @@ class SysCountryInformation : public SysUserInterface {
     void DemographicsTab();
     void IndustryTab();
     void SpacePortTab();
+    void InfrastructureTab();
 
     void MarketInformationTooltipContent(const entt::entity marketentity);
     template <typename T>
