@@ -125,6 +125,26 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
                         values["province"]);
         }
     }
+
+    // Add infrastructure to city
+    auto& infrastructure =
+        universe.emplace<components::infrastructure::CityInfrastructure>(entity);
+    if (!values["transport"].empty()) {
+        infrastructure.default_purchase_cost = values["transport"].to_double();
+    } else {
+        infrastructure.default_purchase_cost = 100;
+    }
+    if (!values["infrastructure"].empty()) {
+        SPDLOG_INFO("Has Infrastructure");
+        // Load infrastructure
+        if (!values["infrastructure"]["highway"].empty()) {
+            SPDLOG_INFO("Has highway");
+            // Set the stuff
+            auto& highway = universe.emplace<components::infrastructure::Highway>(
+                entity);
+            highway.extent = values["infrastructure"]["highway"].to_double();
+        }
+    }
     return true;
 }
 

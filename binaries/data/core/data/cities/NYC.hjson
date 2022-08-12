@@ -42,5 +42,10 @@
                 productivity: 1
             }
         ]
+        // Default transport costs
+        transport: 120
+        infrastructure: {
+            highway: 20
+        }
     }
 ]

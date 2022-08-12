@@ -28,7 +28,10 @@ struct Infrastructure {
     // Different types of infrastructure w
 };
 
-struct CityInfrastructure {};
+struct CityInfrastructure {
+    double default_purchase_cost;
+    double improvement;
+};
 
 struct PowerPlant {
     double production;
@@ -48,6 +51,11 @@ struct CityPower {
 struct BrownOut {};
 
 class SpacePort {};
+
+// The city has a highway that boosts costs?
+struct Highway {
+    int extent;
+};
 }  // namespace infrastructure
 }  // namespace components
 }  // namespace common

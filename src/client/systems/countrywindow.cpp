@@ -175,6 +175,10 @@ void SysCountryInformation::CityIndustryTabs() {
             IndustryTab();
             ImGui::EndTabItem();
         }
+        if (ImGui::BeginTabItem("Infrastructure")) {
+            InfrastructureTab();
+            ImGui::EndTabItem();
+        }
         if (GetUniverse().any_of<cqspc::infrastructure::SpacePort>(
                 current_city)) {
             if (ImGui::BeginTabItem("Space Port")) {
@@ -297,6 +301,21 @@ void SysCountryInformation::SpacePortTab() {
         orb.w = arg_of_perapsis;
         orb.LAN = LAN;
         cqsp::common::systems::actions::LaunchShip(GetUniverse(), orb);
+    }
+}
+
+void SysCountryInformation::InfrastructureTab() {
+    namespace infrastructure = common::components::infrastructure;
+    auto& infras =
+        GetUniverse().get<infrastructure::CityInfrastructure>(
+        current_city);
+    ImGui::TextFmt("Default transport cost per m3: {}", infras.default_purchase_cost);
+    ImGui::TextFmt("Improvement per m3: {}", infras.improvement);
+    // List all the stuff
+    // Compile the highway to get the total cost reduction
+    if (GetUniverse().any_of<infrastructure::Highway>(current_city)) {
+        ImGui::TextFmt("Highway: {}", GetUniverse().get<infrastructure::Highway>(
+                                      current_city).extent);
     }
 }
 
