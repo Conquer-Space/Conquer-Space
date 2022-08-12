@@ -65,6 +65,7 @@
         planet: earth
         timezone: PDT
         country: usa
+        province: california
         population: [
             {
                 size: 3694820
@@ -271,6 +272,7 @@
         planet: earth
         timezone: EST
         country: canada
+        province: ontario
         population: [
             {
                 size: 4607000
@@ -296,6 +298,7 @@
             latitude: 47.6211
             longitude: -122.3244
         }
+        province: washington
         planet: earth
         timezone: PST
         country: usa
@@ -341,6 +344,7 @@
         }
         planet: earth
         timezone: UMST
+        province: arizona
         country: usa
         population: [
             {
@@ -377,6 +381,7 @@
                 size: 8390000
             }
         ]
+        province: jakarta_raya
         industry: [
             {
                 type: Farms
@@ -403,5 +408,6 @@
         space-port: {
             launch: 0
         }
+        province: florida
     }
 ]

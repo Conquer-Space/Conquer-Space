@@ -27,4 +27,6 @@ struct PauseOptions {
 };
 
 struct SelectedCountry {};
+
+struct SelectedProvince {};
 }  // namespace cqsp::client::ctx

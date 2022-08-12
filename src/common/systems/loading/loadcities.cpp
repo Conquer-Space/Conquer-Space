@@ -111,6 +111,20 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         SPDLOG_WARN("City {} has no country",
                     universe.get<components::Identifier>(entity).identifier);
     }
+
+    if (!values["province"].empty()) {
+        if (universe.provinces[values["province"]] !=
+            universe.provinces.end()) {
+            entt::entity province = universe.provinces[values["province"]];
+            // Now add self to province
+            universe.get<components::Province>(province).cities.push_back(entity);
+        } else {
+            SPDLOG_WARN(
+                "City {} has province {}, but it's undefined",
+                        universe.get<components::Identifier>(entity).identifier,
+                        values["province"]);
+        }
+    }
     return true;
 }
 

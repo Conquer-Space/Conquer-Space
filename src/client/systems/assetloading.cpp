@@ -82,12 +82,13 @@ void LoadAllResources(cqsp::engine::Application& app) {
     LoadResource<PlanetLoader>(app, "planets");
     LoadResource<TimezoneLoader>(app, "timezones");
     LoadResource<CountryLoader>(app, "countries");
+    LoadProvinces(app.GetUniverse(),
+                  app.GetAssetManager().GetAsset<asset::TextAsset>("province_defs")->data);
     LoadResource<CityLoader>(app, "cities");
     LoadResource(app, "names", LoadNameLists);
     LoadResource(app, "tech_fields", common::systems::science::LoadFields);
     LoadResource(app, "tech_list", common::systems::science::LoadTechnologies);
 
-    LoadProvinces(app.GetUniverse(), app.GetAssetManager().GetAsset<asset::TextAsset>("province_defs")->data);
     // Initialize planet terrains
     asset::HjsonAsset* asset = app.GetAssetManager().GetAsset<asset::HjsonAsset>(
                                 "core:terrain_colors");
