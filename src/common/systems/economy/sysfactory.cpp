@@ -70,5 +70,5 @@ void cqsp::common::systems::SysProduction::DoSystem() {
         }
     }
     END_TIMED_BLOCK(INDUSTRY);
-    //SPDLOG_INFO("Updating {} factories", factories);
+    SPDLOG_INFO("Updated {} factories, {} industries", factories, view.size());
 }

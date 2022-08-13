@@ -18,11 +18,16 @@
 
 #include <limits>
 
+#include <tracy/Tracy.hpp>
+
 #include "common/components/economy.h"
 
 void cqsp::common::systems::SysMarket::DoSystem() {
+    ZoneScoped;
     // Get all the new and improved (tm) markets
     auto marketview = GetUniverse().view<components::Market>();
+    SPDLOG_INFO("Processing {} market(s)", marketview.size());
+    TracyPlot("Market Count", (int64_t) marketview.size());
     auto goodsview = GetUniverse().view<components::Price>();
     Universe& universe = GetUniverse();
     // Calculate all the things

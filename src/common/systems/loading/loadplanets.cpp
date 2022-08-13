@@ -18,6 +18,7 @@
 #include <spdlog/spdlog.h>
 #include <stdlib.h>
 
+#include <vector>
 #include <random>
 #include <string>
 
@@ -173,6 +174,18 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     if (!M0_correct) {
         SPDLOG_WARN("Issue with mean anomaly of {}: {}", identifier, orbit["M0"].to_string());
         return false;
+    }
+
+    std::vector<std::string> tags;
+    if (values["tags"].defined()) {
+        // Add the tags
+        for (int i = 0; i < values["tags"].size(); i++) {
+            tags.push_back(values["tags"][i].to_string());
+        }
+    }
+    if (std::find(tags.begin(), tags.end(), "market") != tags.end()) {
+        SPDLOG_INFO("Found market");
+        universe.emplace<cqspc::Market>(entity);
     }
     return true;
 }
