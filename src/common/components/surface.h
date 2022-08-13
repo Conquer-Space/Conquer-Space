@@ -28,7 +28,7 @@ struct Surface {
 };
 
 /*
- * If people are living in the place or not
+ * If people are living on a body or not
  */
 struct Habitation {
     std::vector<entt::entity> settlements;

@@ -53,17 +53,17 @@ struct Good {};
 
 /// <summary>
 /// See SysPopulationConsumption for an explanation of these values
-///   autonomous consumption is independent of disposable income
-///   or when income levels are zero
-///   if income levels cannot pay for this level of maintaince they are drawn
-///   from the population's savings or debt
-/// marginal propensity (demand) represents how
-///   much of their surplus income they will spend on that consumer good
-///   Based on how many consumer goods they consume from this segment, we can
-///   find their economic strata.
 /// </summary>
 struct ConsumerGood {
+    ///   autonomous consumption is independent of disposable income
+    ///   or when income levels are zero
+    ///   if income levels cannot pay for this level of maintaince they are
+    ///   drawn from the population's savings or debt
     double autonomous_consumption;
+    /// marginal propensity (demand) represents how
+    ///   much of their surplus income they will spend on that consumer good
+    ///   Based on how many consumer goods they consume from this segment, we
+    ///   can find their economic strata.
     double marginal_propensity;
 };
 

@@ -68,8 +68,6 @@
         reference: sun
         gm: 3.9860044188e5
         habitation: true
-        settlements: 10
-        population: 10
         orbit: {
             semi_major_axis: 149598023 km
             eccentricity: 0.0167086
@@ -88,7 +86,10 @@
             normal: earthnormal
             roughness: earthroughness
         }
-        tags: []
+        // Each individual planet has a separate market
+        tags: [
+            market
+        ]
     }
     {
         name: Moon

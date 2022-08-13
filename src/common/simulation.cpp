@@ -54,16 +54,18 @@ Simulation::Simulation(cqsp::common::Game &game) : m_game(game), m_universe(game
     AddSystem<cqspcs::SysScript>();
     AddSystem<cqspcs::SysWalletReset>();
 
-    AddSystem<cqspcs::SysNavyControl>();
+    // AddSystem<cqspcs::SysNavyControl>();
+
+    AddSystem<cqspcs::SysScienceLab>();
+    AddSystem<cqspcs::SysTechProgress>();
 
     AddSystem<cqspcs::InfrastructureSim>();
     AddSystem<cqspcs::SysPopulationConsumption>();
     AddSystem<cqspcs::SysProduction>();
-    //AddSystem<cqspcs::SysAgent>();
-    AddSystem<cqspcs::SysScienceLab>();
-    AddSystem<cqspcs::SysTechProgress>();
+
+    // AddSystem<cqspcs::SysAgent>();
     AddSystem<cqspcs::SysMarket>();
-    //AddSystem<cqspcs::history::SysMarketHistory>();
+    // AddSystem<cqspcs::history::SysMarketHistory>();
     AddSystem<cqspcs::SysOrbit>();
     AddSystem<cqspcs::SysPath>();
 }

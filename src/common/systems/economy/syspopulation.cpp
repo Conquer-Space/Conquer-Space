@@ -101,6 +101,14 @@ void cqsp::common::systems::SysPopulationConsumption::DoSystem() {
     } // These tables technically never need to be recalculated
     auto settlementview = universe.view<cqspc::Settlement>();
 
+    // Loop through the settlements on a planet, then process the market?
+    auto market_view = universe.view<cqspc::Habitation>();
+    for (entt::entity entity : market_view) {
+        // Get the children, because reasons
+        // All planets with a habitation WILL have a market
+        auto& market = universe.get_or_emplace<cqspc::Market>(entity);
+        // Se the market data
+    }
     // Calculate the cost of thing
     for (auto [settlemententity, settlement] : settlementview.each()) {
         cqspc::Market& market =
