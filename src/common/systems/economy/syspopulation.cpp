@@ -23,10 +23,13 @@
 #include "common/components/economy.h"
 #include "common/components/surface.h"
 
+namespace cqspc = cqsp::common::components;
 
-//Must be run after SysPopulationConsumption
-//This is because population growht is dependent on if consumption was satisfied.
-void cqsp::common::systems::SysPopulationGrowth::DoSystem() {
+namespace cqsp::common::systems {
+// Must be run after SysPopulationConsumption
+// This is because population growth is dependent on if consumption was
+// satisfied.
+void SysPopulationGrowth::DoSystem() {
     namespace cqspc = cqsp::common::components;
     Universe& universe = GetUniverse();
 
@@ -35,7 +38,8 @@ void cqsp::common::systems::SysPopulationGrowth::DoSystem() {
         // If it's hungry, decay population
         if (universe.all_of<cqspc::Hunger>(entity)) {
             // Population decrease will be about 1 percent each year.
-            float increase = 1.f - static_cast<float>(Interval()) * 0.00000114077116f;
+            float increase =
+                1.f - static_cast<float>(Interval()) * 0.00000114077116f;
             segment.population *= increase;
         }
 
@@ -48,34 +52,84 @@ void cqsp::common::systems::SysPopulationGrowth::DoSystem() {
         // If not hungry, grow population
         if (!universe.all_of<cqspc::Hunger>(entity)) {
             // Population growth will be about 1 percent each year.
-            float increase = static_cast<float>(Interval()) * 0.00000114077116f + 1;
+            float increase =
+                static_cast<float>(Interval()) * 0.00000114077116f + 1;
             segment.population *= increase;
         }
 
         // Resolve jobs
         // TODO(EhWhoAmI)
-        // For now, we would have 100% of the population working, because we haven't got to social simulation
-        // yet. But in the future, this will probably have to change.
+        // For now, we would have 100% of the population working, because we
+        // haven't got to social simulation yet. But in the future, this will
+        // probably have to change.
         auto& employee = universe.get_or_emplace<cqspc::Employee>(entity);
         employee.working_population = segment.population;
     }
 }
 
+namespace {
+void ProcessSettlement(cqsp::common::Universe& universe,
+                       entt::entity settlement, cqspc::Market& market,
+                       cqspc::ResourceConsumption& marginal_propensity_base,
+                       cqspc::ResourceConsumption& autonomous_consumption_base,
+                       float savings) {
+    // Loop through the population segments through the settlements
+    auto& settlement_comp = universe.get<cqspc::Settlement>(settlement);
+    for (entt::entity segmententity : settlement_comp.population) {
+        // Compute things
+        cqspc::PopulationSegment& segment =
+            universe.get_or_emplace<cqspc::PopulationSegment>(segmententity);
+        cqspc::ResourceConsumption& consumption =
+            universe.get_or_emplace<cqspc::ResourceConsumption>(segmententity);
+        // Reduce pop to some unreasonably low level so that the economy can
+        // handle it
+        const uint64_t population = segment.population / 10;
 
+        consumption = autonomous_consumption_base;
 
-// In economics, the consumption function describes a relationship between consumption and disposable income.
-//Its simplest form is the linear consumption function used frequently in simple Keynesian models
-//For each consumer good consumption is modeled as follows
-//C = a + b * Y
-//C represents consumption of the consumer good
-//a represents autonomous consumption that is independent of disposable income or when income levels are zero
-//  if income levels cannot pay for this level of maintaince they are drawn from the population's savings or debt
-//b represents the marginal propensity (demand) to consume or how
+        // This value only changes when pop changes and
+        // should be calculated in SysPopulationGrowth
+        consumption *= population;
+
+        cqspc::Wallet& wallet =
+            universe.get_or_emplace<cqspc::Wallet>(segmententity);
+        const double cost = (consumption * market.price).GetSum();
+        wallet -= cost;    // Spend, even if it puts the pop into debt
+        if (wallet > 0) {  // If the pop has cash left over spend it
+            cqspc::ResourceConsumption extraconsumption =
+                marginal_propensity_base;
+            extraconsumption *= wallet;  // Distribute wallet amongst goods
+            extraconsumption /=
+                market.price;  // Find out how much of each good you can buy
+            consumption +=
+                extraconsumption;  // Remove purchased goods from the market
+            wallet *= savings;     // Update savings
+        }
+
+        // TODO(EhWhoAmI): Don't inject cash, take the money from the government
+        wallet += segment.population * 50000;  // Inject cash
+
+        market.demand += consumption;
+    }
+}
+}  // namespace
+
+// In economics, the consumption function describes a relationship between
+// consumption and disposable income.
+// Its simplest form is the linear consumption function used frequently in
+// simple Keynesian models For each consumer good consumption is modeled as
+// follows C = a + b * Y C represents consumption of the consumer good a
+// represents autonomous consumption that is independent of disposable income or
+// when income levels are zero
+//  if income levels cannot pay for this level of maintenance they are drawn from
+//  the population's savings or debt
+// b represents the marginal propensity (demand) to consume or how
 //  much of their surplus income they will spend on that consumer good
-//  Based on how many consumer goods they consume from this segment, we can find their economic strata.
-//Y represents their disposable income (funds left over from last tick)
+//  Based on how many consumer goods they consume from this segment, we can find
+//  their economic strata.
+// Y represents their disposable income (funds left over from last tick)
 //  Population savings can be ensured by keeping the sum of all b values below 1
-//Consumer Goods Include
+// Consumer Goods Include
 //  - Housing
 //  - Transport
 //  - Healthcare
@@ -86,62 +140,38 @@ void cqsp::common::systems::SysPopulationGrowth::DoSystem() {
 // Cash from money printing is directly injected into the population
 // This represents basic subsdies and providing an injection point for new cash.
 // Eventually this should be moved to two seperate and unique systems
-void cqsp::common::systems::SysPopulationConsumption::DoSystem() {
-    namespace cqspc = cqsp::common::components;
+void SysPopulationConsumption::DoSystem() {
     Universe& universe = GetUniverse();
 
     cqspc::ResourceConsumption marginal_propensity_base;
     cqspc::ResourceConsumption autonomous_consumption_base;
-    float savings = 1; //We calculate how much is saved since it is simpler than calculating spending
+    float savings = 1;  // We calculate how much is saved since it is simpler
+                        // than calculating spending
     for (entt::entity cgentity : universe.consumergoods) {
-        const cqspc::ConsumerGood& good = universe.get<cqspc::ConsumerGood>(cgentity);
+        const cqspc::ConsumerGood& good =
+            universe.get<cqspc::ConsumerGood>(cgentity);
         marginal_propensity_base[cgentity] = good.marginal_propensity;
         autonomous_consumption_base[cgentity] = good.autonomous_consumption;
         savings -= good.marginal_propensity;
-    } // These tables technically never need to be recalculated
+    }  // These tables technically never need to be recalculated
     auto settlementview = universe.view<cqspc::Settlement>();
 
     // Loop through the settlements on a planet, then process the market?
     auto market_view = universe.view<cqspc::Habitation>();
+    int settlement_count = 0;
     for (entt::entity entity : market_view) {
         // Get the children, because reasons
         // All planets with a habitation WILL have a market
         auto& market = universe.get_or_emplace<cqspc::Market>(entity);
-        // Se the market data
-    }
-    // Calculate the cost of thing
-    for (auto [settlemententity, settlement] : settlementview.each()) {
-        cqspc::Market& market =
-            universe.get_or_emplace<cqspc::Market>(settlemententity);
-        for (entt::entity segmententity : settlement.population) {
-            cqspc::PopulationSegment& segment =
-                universe.get_or_emplace<cqspc::PopulationSegment>(segmententity);
-            cqspc::ResourceConsumption& consumption =
-                universe.get_or_emplace<cqspc::ResourceConsumption>(segmententity);
-            // Reduce pop to some unreasonably low level so that the economy can handle it
-            const uint64_t population = segment.population / 10;
-
-            consumption = autonomous_consumption_base;
-
-            // This value only changes when pop changes and
-            // should be calculated in SysPopulationGrowth
-            consumption *=  population;
-
-            cqspc::Wallet& wallet = universe.get_or_emplace<cqspc::Wallet>(segmententity);
-            const double cost = (consumption * market.price).GetSum();
-            wallet -= cost;  // Spend, even if it puts the pop into debt
-            if (wallet > 0) { // If the pop has cash left over spend it
-                cqspc::ResourceConsumption extraconsumption = marginal_propensity_base;
-                extraconsumption *= wallet;  // Distribute wallet amongst goods
-                extraconsumption /= market.price;  // Find out how much of each good you can buy
-                consumption += extraconsumption;  // Remove purchased goods from the market
-                wallet *= savings;     // Update savings
-            }
-
-            // TODO(EhWhoAmI): Don't inject cash, take the money from the government
-            wallet += segment.population * 50000;  // Inject cash
-
-            market.demand += consumption;
+        // Read the segment information
+        auto& habit = universe.get<cqspc::Habitation>(entity);
+        for (entt::entity settlement : habit.settlements) {
+            ProcessSettlement(universe, settlement, market, marginal_propensity_base,
+                                autonomous_consumption_base, savings);
+            settlement_count++;
         }
     }
+    SPDLOG_TRACE("Processing {} settlements in {} markets", settlement_count,
+                market_view.size());
 }
+}  // namespace cqsp::common::systems

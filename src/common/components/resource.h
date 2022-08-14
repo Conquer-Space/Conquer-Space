@@ -57,7 +57,7 @@ struct Good {};
 struct ConsumerGood {
     ///   autonomous consumption is independent of disposable income
     ///   or when income levels are zero
-    ///   if income levels cannot pay for this level of maintaince they are
+    ///   if income levels cannot pay for this level of maintenance they are
     ///   drawn from the population's savings or debt
     double autonomous_consumption;
     /// marginal propensity (demand) represents how
@@ -257,7 +257,7 @@ struct FactorySize {
 struct CostBreakdown {
     double profit;
     double materialcosts;
-    double maintaince;
+    double maintenance;
     double wages;
     double net;
 };
