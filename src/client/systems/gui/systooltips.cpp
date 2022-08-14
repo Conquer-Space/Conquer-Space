@@ -96,7 +96,7 @@ void ResourceTooltipSection(const Universe &universe, entt::entity entity) {
         cqspc::CostBreakdown costs = universe.get<cqspc::CostBreakdown>(entity);
         ImGui::TextFmt("Material Cost: {}", costs.materialcosts * -1);
         ImGui::TextFmt("Wage Cost: {}", costs.wages * -1);
-        ImGui::TextFmt("Maint Cost: {}", costs.maintaince * -1);
+        ImGui::TextFmt("Maint Cost: {}", costs.maintenance * -1);
         ImGui::TextFmt("Gross Revnue Cost: {}", costs.profit);
         ImGui::TextFmt("Net Revnue Cost: {}", costs.net);
     }
