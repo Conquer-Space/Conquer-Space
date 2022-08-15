@@ -55,6 +55,8 @@
 #include "client/systems/sysfieldviewer.h"
 #include "client/systems/systechviewer.h"
 #include "client/systems/rmlui/turnsavewindow.h"
+#include "client/systems/marketwindow.h"
+
 #include "client/components/clientctx.h"
 #include "client/systems/countrywindow.h"
 
@@ -100,6 +102,7 @@ void cqsp::scene::UniverseScene::Init() {
     AddUISystem<cqsps::SysTechnologyProjectViewer>();
     AddUISystem<cqsps::SysTechnologyViewer>();
     AddUISystem<cqsps::SysCountryInformation>();
+    AddUISystem<cqsps::SysPlanetMarketInformation>();
 
     AddUISystem<cqsps::gui::SysEvent>();
     simulation->tick();

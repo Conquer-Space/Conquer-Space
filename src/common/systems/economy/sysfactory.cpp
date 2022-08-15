@@ -21,6 +21,7 @@
 #include "common/components/economy.h"
 #include "common/util/profiler.h"
 #include "common/components/surface.h"
+
 namespace cqsp::common::systems {
 namespace cqspc = cqsp::common::components;
 namespace {
