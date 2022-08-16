@@ -22,6 +22,7 @@
 #include "common/components/resource.h"
 #include "common/components/economy.h"
 #include "common/components/surface.h"
+#include "common/components/infrastructure.h"
 
 namespace cqspc = cqsp::common::components;
 
@@ -73,6 +74,11 @@ void ProcessSettlement(cqsp::common::Universe& universe,
                        cqspc::ResourceConsumption& marginal_propensity_base,
                        cqspc::ResourceConsumption& autonomous_consumption_base,
                        float savings) {
+    // Get the transport cost
+    auto& infrastructure = universe.get<cqspc::infrastructure::CityInfrastructure>(settlement);
+    // Calculate the infrastructure cost
+    double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
+
     // Loop through the population segments through the settlements
     auto& settlement_comp = universe.get<cqspc::Settlement>(settlement);
     for (entt::entity segmententity : settlement_comp.population) {
@@ -96,6 +102,7 @@ void ProcessSettlement(cqsp::common::Universe& universe,
         const double cost = (consumption * market.price).GetSum();
         wallet -= cost;    // Spend, even if it puts the pop into debt
         if (wallet > 0) {  // If the pop has cash left over spend it
+            // Add to the cost of price of transport
             cqspc::ResourceConsumption extraconsumption =
                 marginal_propensity_base;
             extraconsumption *= wallet;  // Distribute wallet amongst goods

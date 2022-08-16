@@ -13,8 +13,8 @@
             consumable
         ]
         consumption: {
-            a: 9125
-            b: 0.1
+            autonomous_consumption: 9125
+            marginal_propensity: 0.1
         }
         description:
         '''
@@ -32,8 +32,8 @@
             consumable
         ]
         consumption: {
-            a: 50
-            b: 0.1
+            autonomous_consumption: 50
+            marginal_propensity: 0.1
         }
         description:
         '''
@@ -54,8 +54,8 @@
             consumable
         ]
         consumption: {
-            a: 1
-            b: 0.01
+            autonomous_consumption: 1
+            marginal_propensity: 0.01
         }
         description:
         '''
@@ -74,8 +74,8 @@
             consumable
         ]
         consumption: {
-            a: 0.5
-            b: 0.1
+            autonomous_consumption: 0.5
+            marginal_propensity: 0.1
         }
         description:
         '''
@@ -95,8 +95,8 @@
             consumable
         ]
         consumption: {
-            a: 500
-            b: 0.1
+            autonomous_consumption: 500
+            marginal_propensity: 0.1
         }
         description:
         '''
@@ -117,8 +117,8 @@
             consumable
         ]
         consumption: {
-            a: 0
-            b: 0.01
+            autonomous_consumption: 0
+            marginal_propensity: 0.01
             w: 0.01
         }
     }
