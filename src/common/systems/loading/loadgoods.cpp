@@ -100,8 +100,8 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     }
     if (values["consumption"].defined()) {
         const Hjson::Value& consumption = values["consumption"];
-        double autonomous_consumption = consumption["a"].to_double();
-        double marginal_propensity = consumption["b"].to_double();
+        double autonomous_consumption = consumption["autonomous_consumption"].to_double();
+        double marginal_propensity = consumption["marginal_propensity"].to_double();
 
         cqspc::ConsumerGood& cg = universe.get_or_emplace<cqspc::ConsumerGood>(entity);
         cg.autonomous_consumption = autonomous_consumption;
