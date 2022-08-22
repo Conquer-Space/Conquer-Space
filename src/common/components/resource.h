@@ -260,6 +260,7 @@ struct CostBreakdown {
     double maintenance;
     double wages;
     double net;
+    double transport;
 };
 
 

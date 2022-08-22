@@ -19,14 +19,23 @@
 #include "common/systems/economy/sysfactory.h"
 #include "common/components/area.h"
 #include "common/components/economy.h"
+#include "common/components/infrastructure.h"
 #include "common/util/profiler.h"
 #include "common/components/surface.h"
+#include "common/components/name.h"
 
 namespace cqsp::common::systems {
 namespace cqspc = cqsp::common::components;
 namespace {
 void ProcessIndustries(common::Universe& universe, entt::entity entity,
                        cqspc::Market& market) {
+    // Get the transport cost
+    auto& infrastructure =
+        universe.get<cqspc::infrastructure::CityInfrastructure>(entity);
+    // Calculate the infrastructure cost
+    double infra_cost =
+        infrastructure.default_purchase_cost - infrastructure.improvement;
+
     auto& industries = universe.get<cqspc::Industry>(entity);
     for (entt::entity productionentity : industries.industries) {
         // Process imdustries
@@ -45,13 +54,21 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
         components::ResourceLedger input =
             (recipe.input * ratio.input) +
             (recipe.capitalcost * (0.01 * size.size));
+        // Input
+        double input_transport_cost = input.GetSum() * infra_cost;
+
         components::ResourceLedger output = recipe.output * ratio.output;
+        double output_transport_cost = output.GetSum() * infra_cost;
+
+        // Get the number of items, and subtract from the wallet
         market.demand += input;
         market.supply += output;
 
+        // Next time need to compute the costs along with input and output so that the
+        // factory doesn't overspend. We sorta need a balanced economy
         components::CostBreakdown& costs =
-            universe.get_or_emplace<components::CostBreakdown>(
-                productionentity);
+            universe.get_or_emplace<components::CostBreakdown>(productionentity);
+
         costs.maintenance =
             (recipe.capitalcost * market.price).GetSum() * 0.01 * size.size;
         costs.materialcosts =
@@ -60,6 +77,7 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
         costs.wages = size.size * 1000 * 50000;
         costs.net = costs.profit - costs.maintenance - costs.materialcosts -
                     costs.wages;
+        costs.transport = output_transport_cost + input_transport_cost;
         if (costs.net > 0) {
             size.size *= 1.02;
         } else {

@@ -43,9 +43,9 @@
             }
         ]
         // Default transport costs
-        transport: 120
+        transport: 0.05
         infrastructure: {
-            highway: 20
+            highway: 0.02
         }
     }
 ]
