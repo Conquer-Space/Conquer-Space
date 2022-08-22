@@ -97,8 +97,9 @@ void ResourceTooltipSection(const Universe &universe, entt::entity entity) {
         ImGui::TextFmt("Material Cost: {}", costs.materialcosts * -1);
         ImGui::TextFmt("Wage Cost: {}", costs.wages * -1);
         ImGui::TextFmt("Maint Cost: {}", costs.maintenance * -1);
-        ImGui::TextFmt("Gross Revnue Cost: {}", costs.profit);
-        ImGui::TextFmt("Net Revnue Cost: {}", costs.net);
+        ImGui::TextFmt("Gross Revenue Cost: {}", costs.profit);
+        ImGui::TextFmt("Net Revenue Cost: {}", costs.net);
+        ImGui::TextFmt("Transport Costs: {}", costs.transport);
     }
 }
 }  // namespace

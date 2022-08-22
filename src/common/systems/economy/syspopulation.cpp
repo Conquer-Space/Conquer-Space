@@ -105,12 +105,18 @@ void ProcessSettlement(cqsp::common::Universe& universe,
             // Add to the cost of price of transport
             cqspc::ResourceConsumption extraconsumption =
                 marginal_propensity_base;
+            // the total consumption
+            // Add to the cost
+            // They can buy less because of things
+            //extraconsumption *= infra_cost;
             extraconsumption *= wallet;  // Distribute wallet amongst goods
             extraconsumption /=
                 market.price;  // Find out how much of each good you can buy
-            consumption +=
-                extraconsumption;  // Remove purchased goods from the market
+            consumption += extraconsumption;  // Remove purchased goods from the market
+            // Add the transport costs, and because they're importing it, we only account this
+            double cost = consumption.GetSum() * infra_cost;
             wallet *= savings;     // Update savings
+            wallet -= cost;
         }
 
         // TODO(EhWhoAmI): Don't inject cash, take the money from the government

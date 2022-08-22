@@ -132,6 +132,7 @@ struct Wallet {
         return *this;
     }
 
+    // Basic multiplication that logs the change
     // TODO(EhWhoAmI): Make sure this is correct
     Wallet& operator*=(const double coefficent) {
         float newbalance = this->balance * coefficent;
