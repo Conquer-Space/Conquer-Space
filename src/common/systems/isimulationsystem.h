@@ -32,8 +32,8 @@ class ISimulationSystem {
 
     /// How often is `DoSystem` is run. It will be run every
     /// n number of ticks when the tick becomes a multiple of the number below.
-    /// The default is 25, which is slightly longer than the time of day.
-    virtual int Interval() { return 25; }
+    /// The default is 24
+    virtual int Interval() { return 24; }
 
  protected:
     Game& GetGame() { return game; }
