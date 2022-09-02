@@ -30,14 +30,19 @@ namespace common {
 namespace components {
 /// <summary>
 /// Historical information about the market
+/// Might change this to a different type of resource ledger so that we don't have so many lookups
 /// </summary>
 struct MarketInformation {
     ResourceLedger demand;
     ResourceLedger sd_ratio;
+
+    // Might not need this in the future.
     ResourceLedger ds_ratio;
     ResourceLedger supply;
     ResourceLedger volume;
     ResourceLedger price;
+    ResourceLedger previous_demand;
+    ResourceLedger previous_supply;
 };
 
 struct MarketElementInformation {
@@ -50,7 +55,7 @@ struct MarketElementInformation {
 };
 
 struct Market : MarketInformation {
-    std::vector<MarketInformation> history;
+    //std::vector<MarketInformation> history;
 
     std::map<entt::entity, MarketElementInformation> market_information;
     std::map<entt::entity, MarketElementInformation> last_market_information;

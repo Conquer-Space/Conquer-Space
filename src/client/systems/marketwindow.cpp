@@ -71,7 +71,7 @@ void SysPlanetMarketInformation::MarketInformationTooltipContent(
         ImGui::TableSetupColumn("D/S ratio");
         ImGui::TableHeadersRow();
         auto goodsview = GetUniverse().view<cqspc::Price>();
-        cqspc::MarketInformation lastmarket = market.history.back();
+
         for (entt::entity good_entity : goodsview) {
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
@@ -79,23 +79,21 @@ void SysPlanetMarketInformation::MarketInformationTooltipContent(
                 "{}",
                 GetUniverse().get<cqspc::Identifier>(good_entity).identifier);
             ImGui::TableSetColumnIndex(1);
-            ImGui::TextFmt("{}", lastmarket.price[good_entity]);
+            ImGui::TextFmt("{}", market.price[good_entity]);
             ImGui::TableSetColumnIndex(2);
-            // auto& hist =
-            // market.last_market_information[good_information.first];
             ImGui::TextFmt("{}", cqsp::util::LongToHumanString(
-                                     lastmarket.supply[good_entity]));
+                                     market.previous_supply[good_entity]));
             ImGui::TableSetColumnIndex(3);
             ImGui::TextFmt("{}", cqsp::util::LongToHumanString(
-                                     lastmarket.demand[good_entity]));
+                                     market.previous_demand[good_entity]));
             ImGui::TableSetColumnIndex(4);
-            double sd_ratio = lastmarket.sd_ratio[good_entity];
+            double sd_ratio = market.sd_ratio[good_entity];
             if (sd_ratio == std::numeric_limits<double>::infinity())
                 ImGui::TextFmt("inf");
             else
                 ImGui::TextFmt("{}", sd_ratio);
             ImGui::TableSetColumnIndex(5);
-            ImGui::TextFmt("{}", lastmarket.ds_ratio[good_entity]);
+            ImGui::TextFmt("{}", market.ds_ratio[good_entity]);
             // Check if demand is 0, then supply is infinite, so
         }
         ImGui::EndTable();

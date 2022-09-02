@@ -315,6 +315,15 @@ ResourceLedger ResourceLedger::Clamp(const double minclamp,
     return newleg;
 }
 
+bool ResourceLedger::HasAllResources(const ResourceLedger & ledger) {
+    for (auto led : ledger) {
+        if ((* this)[led.first] <= 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
 double ResourceLedger::GetSum() {
     double t = 0;
     for (auto it = this->begin(); it != this->end(); it++) {
