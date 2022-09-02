@@ -17,6 +17,7 @@
 #include "common/systems/economy/sysmarket.h"
 
 #include <limits>
+#include <utility>
 
 #include <tracy/Tracy.hpp>
 
@@ -37,21 +38,14 @@ void cqsp::common::systems::SysMarket::DoSystem() {
         components::Market& market = universe.get<components::Market>(entity);
         components::ResourceStockpile& stockpile =
             universe.get_or_emplace<components::ResourceStockpile>(entity);
-        // Calculate all the goods in the map
-        // Our economy will be demand driven, which means we only calculate the resources in the demand part of themap
-        // Get the resources that are traded, I guess
-        market.sd_ratio = market.supply.SafeDivision(market.demand);
-        market.ds_ratio = market.demand.SafeDivision(market.supply);
-        //market.ds_ratio = market.ds_ratio.Clamp(0, 2);
-        if (market.history.size() == 0) {
-            for (entt::entity goodenity : goodsview) {
-                market.price[goodenity] = universe.get<components::Price>(goodenity);
-            }
-        }
 
-        for (entt::entity goodenity : goodsview) {
-            const double sd_ratio = market.sd_ratio[goodenity];
-            double price = market.price[goodenity];
+        market.sd_ratio = market.supply.SafeDivision(market.demand);
+        //market.ds_ratio = market.previous_demand.SafeDivision(market.supply);
+        //market.ds_ratio = market.ds_ratio.Clamp(0, 2);
+
+        for (entt::entity good_entity : goodsview) {
+            const double sd_ratio = market.sd_ratio[good_entity];
+            double& price = market.price[good_entity];
 
             if (sd_ratio < 1) {
                 // Too much demand, so we will increase the price
@@ -65,21 +59,19 @@ void cqsp::common::systems::SysMarket::DoSystem() {
                 if (price < 0.00001) {
                     price = 0.00001;
                 }
-                //price = 2;
             } else {
                 // Keep price approximately the same
             }
-            market.price[goodenity] = price;
         }
-        components::MarketInformation current = market;
-        market.history.push_back(current);
+        // Set the previous supply and demand
+        //components::MarketInformation current = market;
+        //market.history.push_back(current);
 
-        stockpile += market.supply;
+        // Swap and clear?
+        std::swap(market.supply, market.previous_supply);
+        std::swap(market.demand, market.previous_demand);
+
         market.supply.clear();
-        stockpile -= market.demand;
         market.demand.clear();
-
-        // Compile supply
-        //std::swap(market.last_market_information, market.market_information);
     }
 }

@@ -178,6 +178,13 @@ class ResourceLedger : private LedgerMap {
     /// </summary>
     double Average();
 
+    /// <summary>
+    /// Checks if this current resource ledger has any resources in this list
+    /// </summary>
+    /// <param name=""></param>
+    /// <returns></returns>
+    bool HasAllResources(const ResourceLedger&);
+
     bool HasGood(entt::entity good) {
         return (*this).find(good) != (*this).end();
     }

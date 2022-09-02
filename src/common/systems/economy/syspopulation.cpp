@@ -23,6 +23,7 @@
 #include "common/components/economy.h"
 #include "common/components/surface.h"
 #include "common/components/infrastructure.h"
+#include "common/components/name.h"
 
 namespace cqspc = cqsp::common::components;
 
@@ -103,8 +104,10 @@ void ProcessSettlement(cqsp::common::Universe& universe,
         wallet -= cost;    // Spend, even if it puts the pop into debt
         if (wallet > 0) {  // If the pop has cash left over spend it
             // Add to the cost of price of transport
-            cqspc::ResourceConsumption extraconsumption =
-                marginal_propensity_base;
+            cqspc::ResourceConsumption extraconsumption = marginal_propensity_base;
+            // Loop through all the things, if there isn't enough resources for a
+            // If the market supply has all of the goods, then they can buy the goods
+            // Get previous market supply
             // the total consumption
             // Add to the cost
             // They can buy less because of things
@@ -113,6 +116,14 @@ void ProcessSettlement(cqsp::common::Universe& universe,
             extraconsumption /=
                 market.price;  // Find out how much of each good you can buy
             consumption += extraconsumption;  // Remove purchased goods from the market
+            for (auto& t : consumption) {
+                // Look for in the market, and then if supply is zero, then deny them buying
+                if (market.previous_supply[t.first] <= 0) {
+                    SPDLOG_INFO("Cannot buy {}", universe.get<cqspc::Identifier>(t.first).identifier);
+                }
+            }
+            // Consumption
+            // Check if there's enough on the market
             // Add the transport costs, and because they're importing it, we only account this
             double cost = consumption.GetSum() * infra_cost;
             wallet *= savings;     // Update savings
