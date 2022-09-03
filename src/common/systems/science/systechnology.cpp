@@ -17,11 +17,13 @@
 #include "common/systems/science/systechnology.h"
 
 #include <vector>
+#include <tracy/Tracy.hpp>
 
 #include "common/components/science.h"
 #include "common/systems/science/technology.h"
 
 void cqsp::common::systems::SysTechProgress::DoSystem() {
+    ZoneScoped;
     auto field = GetUniverse().view<components::science::ScientificResearch>();
 
     for (entt::entity entity : field) {

@@ -53,6 +53,7 @@ class Universe : public entt::registry {
     bool ToTick() { return to_tick; }
     void ToggleTick() { to_tick = !to_tick; }
 
+    int GetDate() { return date.GetDate(); }
     std::unique_ptr<cqsp::common::util::IRandom> random;
 
  private:

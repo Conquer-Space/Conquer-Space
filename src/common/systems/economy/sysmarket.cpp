@@ -43,12 +43,21 @@ void cqsp::common::systems::SysMarket::DoSystem() {
         //market.ds_ratio = market.previous_demand.SafeDivision(market.supply);
         //market.ds_ratio = market.ds_ratio.Clamp(0, 2);
 
+        // Initialize the price
+        if (universe.GetDate() == 0) {
+            for (entt::entity goodenity : goodsview) {
+                market.price[goodenity] =
+                    universe.get<components::Price>(goodenity);
+            }
+        }
         for (entt::entity good_entity : goodsview) {
             const double sd_ratio = market.sd_ratio[good_entity];
             double& price = market.price[good_entity];
 
+            // If supply and demand = 0, then it will be undefined
             if (sd_ratio < 1) {
                 // Too much demand, so we will increase the price
+                // Later increase it based on SD ratio
                 price += (0.02 + price * 0.01f);
                 //price = 0.5;
             } else if (sd_ratio > 1 ||

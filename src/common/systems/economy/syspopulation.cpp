@@ -18,6 +18,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include <tracy/Tracy.hpp>
+
 #include "common/components/population.h"
 #include "common/components/resource.h"
 #include "common/components/economy.h"
@@ -32,11 +34,14 @@ namespace cqsp::common::systems {
 // This is because population growth is dependent on if consumption was
 // satisfied.
 void SysPopulationGrowth::DoSystem() {
+    ZoneScoped;
+
     namespace cqspc = cqsp::common::components;
     Universe& universe = GetUniverse();
 
     auto view = universe.view<cqspc::PopulationSegment>();
-    for (auto [entity, segment] : view.each()) {
+    for (entt::entity entity : view) {
+        auto& segment = universe.get<cqspc::PopulationSegment>(entity);
         // If it's hungry, decay population
         if (universe.all_of<cqspc::Hunger>(entity)) {
             // Population decrease will be about 1 percent each year.
@@ -119,7 +124,9 @@ void ProcessSettlement(cqsp::common::Universe& universe,
             for (auto& t : consumption) {
                 // Look for in the market, and then if supply is zero, then deny them buying
                 if (market.previous_supply[t.first] <= 0) {
-                    SPDLOG_INFO("Cannot buy {}", universe.get<cqspc::Identifier>(t.first).identifier);
+                    // Then they cannot buy the stuff
+                    // Then do the consumption
+                    t.second = 0;
                 }
             }
             // Consumption
@@ -165,6 +172,7 @@ void ProcessSettlement(cqsp::common::Universe& universe,
 // This represents basic subsdies and providing an injection point for new cash.
 // Eventually this should be moved to two seperate and unique systems
 void SysPopulationConsumption::DoSystem() {
+    ZoneScoped;
     Universe& universe = GetUniverse();
 
     cqspc::ResourceConsumption marginal_propensity_base;

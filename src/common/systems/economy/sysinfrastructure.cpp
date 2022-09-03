@@ -16,10 +16,13 @@
 */
 #include "common/systems/economy/sysinfrastructure.h"
 
+#include <tracy/Tracy.hpp>
+
 #include "common/components/area.h"
 #include "common/components/infrastructure.h"
 
 void cqsp::common::systems::InfrastructureSim::DoSystem() {
+    ZoneScoped;
     namespace cqspc = cqsp::common::components;
     Universe& universe = GetUniverse();
     // Get all cities with industry and infrastruture
