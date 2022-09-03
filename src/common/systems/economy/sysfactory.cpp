@@ -66,20 +66,19 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
 
         // Get the number of items, and subtract from the wallet
         // Check supply if they can buy, or else they cannot boy
-        if (market.supply.HasAllResources(input)) {
+        if (market.previous_supply.HasAllResources(input)) {
             // Then they actually buy it
             market.demand += input;
         } else {
-            // Then they cannot produce
-            // Say they cannot produce next round
-            universe.remove<components::Production>(productionentity);
+            // Then they cannot produce for the next round
             continue;
         }
 
         // Check demand if there is demand
-        if (market.demand.HasAllResources(output)) {
+        if (market.previous_demand.HasAllResources(output)) {
             // Then they can sell it
             market.supply += output;
+        } else {
         }
 
         // Next time need to compute the costs along with input and output so that the

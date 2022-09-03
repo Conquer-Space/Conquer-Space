@@ -73,14 +73,10 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
             universe.emplace<cqspc::Factory>(factory);
     }
 
-    //for (entt::entity entity : universe.view<cqspc::Matter>()) {
-    //    factorystock.setlocal(entity, 1);
-    //}
     auto& employer = universe.emplace<cqspc::Employer>(factory);
     employer.population_fufilled = 1000000;
     employer.population_needed = 1000000;
     employer.segment = entt::null;
-
     return factory;
 }
 

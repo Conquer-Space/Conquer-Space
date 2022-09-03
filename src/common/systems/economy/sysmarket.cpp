@@ -48,6 +48,9 @@ void cqsp::common::systems::SysMarket::DoSystem() {
             for (entt::entity goodenity : goodsview) {
                 market.price[goodenity] =
                     universe.get<components::Price>(goodenity);
+                // Set the supply and demand things as 1 so that they sell for now
+                market.supply[goodenity] = 1;
+                market.demand[goodenity] = 1;
             }
         }
         for (entt::entity good_entity : goodsview) {
