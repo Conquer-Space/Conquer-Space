@@ -104,3 +104,32 @@ TEST(Common_ResourceLedger, ResourceLedgerDoubleComparison) {
     EXPECT_FALSE(first >= 0);
     EXPECT_FALSE(first <= 0);
 }
+
+TEST(Common_ResourceLedger, HasAllResoourcesTest) {
+    ResourceLedger first;
+    ResourceLedger second;
+
+    entt::registry reg;
+    entt::entity good_one = reg.create();
+    entt::entity good_two = reg.create();
+    entt::entity good_three = reg.create();
+
+    // Initialize the information
+    first[good_one] = 10;
+    first[good_two] = 0;
+
+    second[good_one] = 10;
+    second[good_three] = 8;
+
+    EXPECT_FALSE(first.HasAllResources(second));
+    EXPECT_FALSE(second.HasAllResources(first));
+
+    // Initialize the information
+    first[good_one] = 10;
+    first[good_two] = 5;
+
+    second[good_one] = 10;
+    second[good_two] = 20;
+    second[good_three] = 8;
+    EXPECT_TRUE(second.HasAllResources(second));
+}

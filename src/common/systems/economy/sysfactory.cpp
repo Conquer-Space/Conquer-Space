@@ -12,11 +12,14 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-    * along with this program.  If not, see <https://www.gnu.org/licenses/>.
-    */
+* along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+#include "common/systems/economy/sysfactory.h"
+
 #include <spdlog/spdlog.h>
 
-#include "common/systems/economy/sysfactory.h"
+#include <tracy/Tracy.hpp>
+
 #include "common/components/area.h"
 #include "common/components/economy.h"
 #include "common/components/infrastructure.h"
@@ -54,6 +57,7 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
         components::ResourceLedger input =
             (recipe.input * ratio.input) +
             (recipe.capitalcost * (0.01 * size.size));
+        // If there is not enough input goods, then restrict the trades
         // Input
         double input_transport_cost = input.GetSum() * infra_cost;
 
@@ -61,14 +65,30 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
         double output_transport_cost = output.GetSum() * infra_cost;
 
         // Get the number of items, and subtract from the wallet
-        market.demand += input;
-        market.supply += output;
+        // Check supply if they can buy, or else they cannot boy
+        if (market.supply.HasAllResources(input)) {
+            // Then they actually buy it
+            market.demand += input;
+        } else {
+            // Then they cannot produce
+            // Say they cannot produce next round
+            universe.remove<components::Production>(productionentity);
+            continue;
+        }
+
+        // Check demand if there is demand
+        if (market.demand.HasAllResources(output)) {
+            // Then they can sell it
+            market.supply += output;
+        }
 
         // Next time need to compute the costs along with input and output so that the
         // factory doesn't overspend. We sorta need a balanced economy
         components::CostBreakdown& costs =
             universe.get_or_emplace<components::CostBreakdown>(productionentity);
 
+        // Maintainence costs will still have to be upkept, so if there isnt any resources
+        // to upkeep the place, then stop the production
         costs.maintenance =
             (recipe.capitalcost * market.price).GetSum() * 0.01 * size.size;
         costs.materialcosts =
@@ -91,6 +111,7 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
 }  // namespace
 
 void SysProduction::DoSystem() {
+    ZoneScoped;
     Universe& universe = GetUniverse();
     auto view = universe.view<components::Industry>();
     BEGIN_TIMED_BLOCK(INDUSTRY);

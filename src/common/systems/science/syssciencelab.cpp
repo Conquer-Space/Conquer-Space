@@ -16,9 +16,12 @@
  */
 #include "common/systems/science/syssciencelab.h"
 
+#include <tracy/Tracy.hpp>
+
 #include "common/components/science.h"
 
 void cqsp::common::systems::SysScienceLab::DoSystem() {
+    ZoneScoped;
     auto view = GetUniverse().view<components::science::Lab>();
     // Add to the science
     for (entt::entity entity : view) {

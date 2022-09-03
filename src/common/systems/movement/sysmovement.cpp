@@ -18,12 +18,15 @@
 
 #include <math.h>
 
+#include <tracy/Tracy.hpp>
+
 #include "common/components/ships.h"
 #include "common/components/coordinates.h"
 #include "common/components/units.h"
 
 namespace cqsp::common::systems {
 void SysOrbit::DoSystem() {
+    ZoneScoped;
     Universe& universe = GetGame().GetUniverse();
     ParseOrbitTree(entt::null, universe.sun);
 }
@@ -111,6 +114,7 @@ int SysSurface::Interval() {
 }
 
 void SysPath::DoSystem() {
+    ZoneScoped;
     namespace cqspc = cqsp::common::components;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspt = cqsp::common::components::types;
