@@ -36,27 +36,18 @@ void cqsp::common::systems::SysMarket::DoSystem() {
         // Get the resources and process the price, then do things, I guess
         // Get demand
         components::Market& market = universe.get<components::Market>(entity);
-        components::ResourceStockpile& stockpile =
-            universe.get_or_emplace<components::ResourceStockpile>(entity);
 
+        // TODO(EhWhoAmI): GDP Calculations
+        // market.gdp = market.volume* market.price;
+
+        // Calculate Supply and demand
         market.sd_ratio = market.supply.SafeDivision(market.demand);
-        //market.ds_ratio = market.previous_demand.SafeDivision(market.supply);
-        //market.ds_ratio = market.ds_ratio.Clamp(0, 2);
+        // market.ds_ratio = market.previous_demand.SafeDivision(market.supply);
+        // market.ds_ratio = market.ds_ratio.Clamp(0, 2);
 
-        // Initialize the price
-        if (universe.GetDate() == 0) {
-            for (entt::entity goodenity : goodsview) {
-                market.price[goodenity] =
-                    universe.get<components::Price>(goodenity);
-                // Set the supply and demand things as 1 so that they sell for now
-                market.supply[goodenity] = 1;
-                market.demand[goodenity] = 1;
-            }
-        }
         for (entt::entity good_entity : goodsview) {
             const double sd_ratio = market.sd_ratio[good_entity];
             double& price = market.price[good_entity];
-
             // If supply and demand = 0, then it will be undefined
             if (sd_ratio < 1) {
                 // Too much demand, so we will increase the price
@@ -67,6 +58,7 @@ void cqsp::common::systems::SysMarket::DoSystem() {
                        sd_ratio == std::numeric_limits<double>::infinity()) {
                 // Too much supply, so we will decrease the price
                 price += (-0.01 + price * -0.01f);
+
                 // Limit price to a minimum of 0.001
                 if (price < 0.00001) {
                     price = 0.00001;
@@ -85,5 +77,33 @@ void cqsp::common::systems::SysMarket::DoSystem() {
 
         market.supply.clear();
         market.demand.clear();
+        market.latent_supply.clear();
+        market.latent_demand.clear();
+    }
+}
+
+void cqsp::common::systems::SysMarket::InitializeMarket(Game& game) {
+    auto marketview = game.GetUniverse().view<components::Market>();
+    auto goodsview = game.GetUniverse().view<components::Price>();
+
+    Universe& universe = game.GetUniverse();
+    // Calculate all the things
+    for (entt::entity entity : marketview) {
+        // Get the resources and process the price, then do things, I guess
+        // Get demand
+        components::Market& market = universe.get<components::Market>(entity);
+
+        // Initialize the price
+        for (entt::entity goodenity : goodsview) {
+            market.price[goodenity] =
+                universe.get<components::Price>(goodenity);
+            // Set the supply and demand things as 1 so that they sell for
+            // now
+            market.previous_demand[goodenity] = 1;
+            market.previous_supply[goodenity] = 1;
+            market.supply[goodenity] = 1;
+            market.demand[goodenity] = 1;
+        }
+        market.sd_ratio = market.supply.SafeDivision(market.demand);
     }
 }

@@ -331,16 +331,18 @@ void SysStarSystemRenderer::Update(float deltaTime) {
                     // Planet selection
                     SeePlanet(ent);
                 } else {
-                    // Country selection
-                    // Then select planet and tell the state
-                    selected_country_color = selected_province_color;
-                    selected_province = hovering_province;
-                    // Set the selected province
-                    m_universe.clear<cqsp::client::ctx::SelectedProvince>();
-                    m_universe
-                        .emplace_or_replace<cqsp::client::ctx::SelectedProvince>(
+                        // Country selection
+                        // Then select planet and tell the state
+                        selected_country_color = selected_province_color;
+                        selected_province = hovering_province;
+                        // Set the selected province
+                        if (m_universe.valid(selected_province)) {
+                        m_universe.clear<cqsp::client::ctx::SelectedProvince>();
+                        m_universe.emplace_or_replace<
+                            cqsp::client::ctx::SelectedProvince>(
                             selected_province);
-                    countries = true;
+                        countries = true;
+                        }
                 }
             } else {
                 SeePlanet(ent);

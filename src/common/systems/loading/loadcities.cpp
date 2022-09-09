@@ -84,6 +84,12 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
             Hjson::Value ind_val = industry_hjson[i];
             auto recipe = ind_val["recipe"].to_string();
             auto productivity = ind_val["productivity"].to_double();
+            if (universe.recipes.find(recipe) == universe.recipes.end()) {
+                SPDLOG_INFO(
+                    "Recipe {} not found in city {}", recipe,
+                    universe.get<components::Identifier>(entity).identifier);
+                continue;
+            }
             entt::entity rec_ent = universe.recipes[recipe];
 
             actions::CreateFactory(universe, entity, rec_ent, productivity);

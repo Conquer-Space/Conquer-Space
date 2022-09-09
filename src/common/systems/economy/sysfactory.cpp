@@ -71,6 +71,11 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
             market.demand += input;
         } else {
             // Then they cannot produce for the next round
+            // Reset the capital costs
+            components::CostBreakdown& costs =
+                universe.get_or_emplace<components::CostBreakdown>(
+                    productionentity);
+            costs.Reset();
             continue;
         }
 
@@ -79,6 +84,7 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
             // Then they can sell it
             market.supply += output;
         } else {
+            // IDK what to do
         }
 
         // Next time need to compute the costs along with input and output so that the

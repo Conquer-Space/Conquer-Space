@@ -38,6 +38,7 @@ class SysCountryInformation : public SysUserInterface {
     void IndustryTab();
     void SpacePortTab();
     void InfrastructureTab();
+    void IndustryListWindow();
 
     void MarketInformationTooltipContent(const entt::entity marketentity);
     template <typename T>
@@ -51,6 +52,7 @@ class SysCountryInformation : public SysUserInterface {
 
     bool visible = false;
     entt::entity current_market;
+    bool city_factory_info = false;
 
     enum ViewMode {
         COUNTRY_VIEW,

@@ -39,10 +39,20 @@ struct MarketInformation {
     // Might not need this in the future.
     ResourceLedger ds_ratio;
     ResourceLedger supply;
+
+    /// <summary>
+    /// The amount of goods that changed hands. We can use this to calculate the
+    /// GDP
+    /// </summary>
     ResourceLedger volume;
     ResourceLedger price;
     ResourceLedger previous_demand;
     ResourceLedger previous_supply;
+
+    // Supply that existed, but not fufilled last time
+    ResourceLedger latent_supply;
+    // Demand that existed, but was not fufilled the last time
+    ResourceLedger latent_demand;
 };
 
 struct MarketElementInformation {
@@ -61,6 +71,8 @@ struct Market : MarketInformation {
     std::map<entt::entity, MarketElementInformation> last_market_information;
 
     std::set<entt::entity> participants;
+
+    double GDP = 0;
 
     // Math
     void AddSupply(const ResourceLedger& stockpile);
