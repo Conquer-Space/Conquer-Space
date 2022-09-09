@@ -24,5 +24,11 @@ class SysMarket : public ISimulationSystem {
     explicit SysMarket(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
     int Interval() override { return 24; }
+
+    /// <summary>
+    /// To be called before the game starts
+    /// </summary>
+    /// <param name="game"></param>
+    static void InitializeMarket(Game& game);
 };
 }  // namespace cqsp::common::systems

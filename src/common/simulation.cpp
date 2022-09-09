@@ -68,6 +68,8 @@ Simulation::Simulation(cqsp::common::Game &game) : m_game(game), m_universe(game
     // AddSystem<cqspcs::history::SysMarketHistory>();
     AddSystem<cqspcs::SysOrbit>();
     AddSystem<cqspcs::SysPath>();
+
+    cqspcs::SysMarket::InitializeMarket(game);
 }
 
 void Simulation::tick() {

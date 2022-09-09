@@ -29,6 +29,7 @@
             power
         ]
     }
+    /*
     {
         name: Restaraunts
         identifier: food_serv
@@ -196,5 +197,5 @@
             ratio
             service
         ]
-    }
+    }*/
 ]

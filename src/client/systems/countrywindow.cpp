@@ -238,10 +238,14 @@ void SysCountryInformation::DemographicsTab() {
 }
 
 void SysCountryInformation::IndustryTab() {
+    IndustryListWindow();
     auto& city_industry = GetUniverse().get<cqspc::Industry>(current_city);
-
     int height = 300;
     ImGui::TextFmt("Factories: {}", city_industry.industries.size());
+    if (ImGui::SmallButton("Economy info")) {
+        // Put all the economy window information
+        city_factory_info = true;
+    }
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
         for (auto& at : city_industry.industries) {
@@ -319,6 +323,24 @@ void SysCountryInformation::InfrastructureTab() {
     }
 }
 
+void SysCountryInformation::IndustryListWindow() {
+    if (!city_factory_info) {
+        return;
+    }
+    ImGui::Begin("Name", &city_factory_info);
+    // Loop through market industry
+    auto& city_industry = GetUniverse().get<cqspc::Industry>(current_city);
+
+    for (entt::entity industry : city_industry.industries) {
+        ImGui::TextFmt("{}",
+                       cqsp::client::systems::gui::GetName(GetUniverse(), industry));
+        if (ImGui::IsItemHovered()) {
+            systems::gui::EntityTooltip(GetUniverse(), industry);
+        }
+    }
+    ImGui::End();
+}
+
 template <typename T>
 void SysCountryInformation::IndustryTabGenericChild(const std::string& tabname,
                                                     const std::string& industryname,
@@ -336,8 +358,7 @@ void SysCountryInformation::IndustryTabGenericChild(const std::string& tabname,
         double GDP_calculation = 0;
         int count = 0;
         for (auto industry : city_industry.industries) {
-            if (GetUniverse().all_of<cqspc::Production, T>(
-                    industry)) {
+            if (GetUniverse().all_of<cqspc::Production, T>(industry)) {
                 count++;
                 const cqspc::Production& generator =
                     GetUniverse().get<cqspc::Production>(industry);

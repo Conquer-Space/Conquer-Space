@@ -1,6 +1,7 @@
 # This file is part of Conquer Space
 #
 [
+    /*
     {
         name: Power
         identifier: power
@@ -121,5 +122,5 @@
             marginal_propensity: 0.01
             w: 0.01
         }
-    }
+    }*/
 ]

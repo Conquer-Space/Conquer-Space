@@ -37,10 +37,16 @@
                 productivity: 1
             }
             {
+                type: Brick Production
+                recipe: bricks_mine
+                productivity: 1
+            }
+            /*
+            {
                 type: Wall Street
                 recipe: finance
                 productivity: 1
-            }
+            }*/
         ]
         // Default transport costs
         transport: 0.05

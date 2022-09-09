@@ -268,6 +268,15 @@ struct CostBreakdown {
     double wages;
     double net;
     double transport;
+
+    void Reset() {
+        profit = 0;
+        materialcosts = 0;
+        maintenance = 0;
+        wages = 0;
+        net = 0;
+        transport = 0;
+    }
 };
 
 
