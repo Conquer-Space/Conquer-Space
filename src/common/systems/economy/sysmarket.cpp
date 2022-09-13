@@ -18,10 +18,12 @@
 
 #include <limits>
 #include <utility>
+#include <fstream>
 
 #include <tracy/Tracy.hpp>
 
 #include "common/components/economy.h"
+#include "common/components/name.h"
 
 void cqsp::common::systems::SysMarket::DoSystem() {
     ZoneScoped;
@@ -74,11 +76,31 @@ void cqsp::common::systems::SysMarket::DoSystem() {
         // Swap and clear?
         std::swap(market.supply, market.previous_supply);
         std::swap(market.demand, market.previous_demand);
+        std::swap(market.latent_demand, market.last_latent_demand);
 
         market.supply.clear();
         market.demand.clear();
         market.latent_supply.clear();
         market.latent_demand.clear();
+
+        // Every tick, dump the data
+        auto goodsview = GetUniverse().view<components::Price>();
+
+        // Output to file, I guess
+        std::ofstream data;
+        data.open(fmt::format("{}.txt", universe.GetDate()));
+        data << "Good, Price, Supply, Demand, S/D Ratio, Latent Demand"
+             << std::endl;
+        for (entt::entity good_entity : goodsview) {
+            data << GetUniverse()
+                        .get<components::Identifier>(good_entity)
+                        .identifier
+                 << ", " << market.price[good_entity]
+                 << ", " << market.previous_supply[good_entity] << ", "
+                 << market.previous_demand[good_entity] << ","
+                 << market.sd_ratio[good_entity] << ", "
+                 << market.last_latent_demand[good_entity] << std::endl;
+        }
     }
 }
 

@@ -80,6 +80,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
     if (!values["industry"].empty()) {
         Hjson::Value industry_hjson = values["industry"];
+
         for (int i = 0; i < industry_hjson.size(); i++) {
             Hjson::Value ind_val = industry_hjson[i];
             auto recipe = ind_val["recipe"].to_string();

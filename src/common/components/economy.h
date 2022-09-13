@@ -52,6 +52,7 @@ struct MarketInformation {
     // Supply that existed, but not fufilled last time
     ResourceLedger latent_supply;
     // Demand that existed, but was not fufilled the last time
+    ResourceLedger last_latent_demand;
     ResourceLedger latent_demand;
 };
 
