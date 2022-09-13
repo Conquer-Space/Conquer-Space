@@ -126,6 +126,8 @@ void ProcessSettlement(cqsp::common::Universe& universe,
                 if (market.previous_supply[t.first] <= 0) {
                     // Then they cannot buy the stuff
                     // Then do the consumption
+                    // Add to latent demand
+                    market.latent_demand[t.first] += t.second;
                     t.second = 0;
                 }
             }

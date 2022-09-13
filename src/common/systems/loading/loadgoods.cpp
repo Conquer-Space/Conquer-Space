@@ -115,6 +115,8 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     for (int i = 0; i < values["tags"].size(); i++) {
         if (values["tags"][i] == "mineral") {
             universe.get_or_emplace<cqspc::Mineral>(entity);
+        } else if (values["tags"][i] == "captialgood") {
+            universe.get_or_emplace<cqspc::Capital>(entity);
         }
     }
 
@@ -177,7 +179,7 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
             recipe_component.type = cqspc::mine;
         } else if (values["tags"][i] == "service") {
             recipe_component.type = cqspc::service;
-        } else if (values["tags"][i] == "service") {
+        } else if (values["tags"][i] == "factory") {
             recipe_component.type = cqspc::factory;
         }
     }

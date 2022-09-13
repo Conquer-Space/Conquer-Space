@@ -19,7 +19,12 @@
             {
                 type: factory
                 recipe: plastic_mine
-                productivity: 1
+                productivity: 100
+            }
+            {
+                type: factory
+                recipe: fuel_mine
+                productivity: 100
             }
             {
                 type: healthcare
@@ -40,6 +45,61 @@
                 type: Brick Production
                 recipe: bricks_mine
                 productivity: 1
+            }
+            {
+                type: Water
+                recipe: potwater_man
+                productivity: 70
+            }
+            {
+                type: ReMetal
+                recipe: remetal_mine
+                productivity: 10
+            }
+            {
+                type: Farms
+                recipe: animals_man
+                productivity: 10
+            }
+            {
+                type: food
+                recipe: food_serv
+                productivity: 300
+            }
+            {
+                type: industrial_equipment_cap
+                recipe: industrial_equipment_cap
+                productivity: 200
+            }
+            {
+                type: systems_cap
+                recipe: systems_cap
+                productivity: 200
+            }
+            {
+                type: systems_cap
+                recipe: systems_cap
+                productivity: 200
+            }
+            {
+                type: transport_cap
+                recipe: transport_cap
+                productivity: 100
+            }
+            {
+                type: motorvehicles_man
+                recipe: motorvehicles_man
+                productivity: 200
+            }
+            {
+                type: egoods_man
+                recipe: egoods_man
+                productivity: 200
+            }
+            {
+                type: housegoods_man
+                recipe: housegoods_man
+                productivity: 200
             }
             /*
             {

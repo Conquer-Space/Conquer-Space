@@ -112,7 +112,7 @@
     }
     {
         name: Fuel Refining
-        identifier: plastic_mine
+        identifier: fuel_mine
         input: {
 
         }

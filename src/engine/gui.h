@@ -45,7 +45,13 @@ IMGUI_API void TextFmt(fmt::format_string<Args...> fmt, Args&&... args) {
     auto s = fmt::format(fmt, std::forward<Args>(args)...);
     Text(s.c_str());
 }
+
+template <typename... Args>
+IMGUI_API void TextFmtColored(const ImVec4& color, fmt::format_string<Args...> fmt, Args&&... args) {
+    auto s = fmt::format(fmt, std::forward<Args>(args)...);
+    TextColored(color, s.c_str());
 }
+}  // namespace ImGui
 
 namespace ax::Drawing {
 enum class IconType : ImU32 {

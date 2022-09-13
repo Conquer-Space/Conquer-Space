@@ -32,7 +32,7 @@
         ]
     }
     {
-        name: ASF
+        name: Livestock
         identifier: animals
         volume: 1 m3
         mass: 1000 kg
@@ -65,5 +65,9 @@
         tags: [
             nondurable
         ]
+        consumption: {
+            autonomous_consumption: 1
+            marginal_propensity: 0.1
+        }
     }
 ]

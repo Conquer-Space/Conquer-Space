@@ -61,7 +61,7 @@ void SysPlanetMarketInformation::MarketInformationTooltipContent(
                    market.participants.size());
 
     // Get resource stockpile
-    if (ImGui::BeginTable("marketinfotable", 6,
+    if (ImGui::BeginTable("marketinfotable", 7,
                           ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Good");
         ImGui::TableSetupColumn("Price");
@@ -69,16 +69,26 @@ void SysPlanetMarketInformation::MarketInformationTooltipContent(
         ImGui::TableSetupColumn("Demand");
         ImGui::TableSetupColumn("S/D ratio");
         ImGui::TableSetupColumn("D/S ratio");
+        ImGui::TableSetupColumn("Latent Demand");
         ImGui::TableHeadersRow();
         auto goodsview = GetUniverse().view<cqspc::Price>();
 
         for (entt::entity good_entity : goodsview) {
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
-            ImGui::TextFmt(
-                "{}",
-                GetUniverse().get<cqspc::Identifier>(good_entity).identifier);
+            if (GetUniverse().any_of<cqspc::Capital>(good_entity)) {
+                ImGui::TextFmtColored(ImColor(1.f, 1.f, 0.f), "{}",
+                                      GetUniverse()
+                                          .get<cqspc::Identifier>(good_entity)
+                                          .identifier);
+            } else {
+                ImGui::TextFmt("{}",
+                                      GetUniverse()
+                                          .get<cqspc::Identifier>(good_entity)
+                                          .identifier);
+            }
             ImGui::TableSetColumnIndex(1);
+            // Mark the cell as red if the thing is not valid
             ImGui::TextFmt("{}", market.price[good_entity]);
             ImGui::TableSetColumnIndex(2);
             ImGui::TextFmt("{}", cqsp::util::LongToHumanString(
@@ -94,7 +104,8 @@ void SysPlanetMarketInformation::MarketInformationTooltipContent(
                 ImGui::TextFmt("{}", sd_ratio);
             ImGui::TableSetColumnIndex(5);
             ImGui::TextFmt("{}", market.ds_ratio[good_entity]);
-            // Check if demand is 0, then supply is infinite, so
+            ImGui::TableSetColumnIndex(6);
+            ImGui::TextFmt("{}", market.last_latent_demand[good_entity]);
         }
         ImGui::EndTable();
     }

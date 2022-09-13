@@ -72,10 +72,13 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
         } else {
             // Then they cannot produce for the next round
             // Reset the capital costs
+            market.latent_demand += input;
+
             components::CostBreakdown& costs =
                 universe.get_or_emplace<components::CostBreakdown>(
                     productionentity);
             costs.Reset();
+            // Add to latent demand
             continue;
         }
 
