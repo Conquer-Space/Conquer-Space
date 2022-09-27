@@ -222,9 +222,16 @@ class ResourceLedger : private LedgerMap {
 };
 ResourceLedger ResourceLedgerZip(const ResourceLedger& key, const ResourceLedger& value);
 
+struct RecipeOutput {
+    entt::entity entity;
+    double amount;
+    ResourceLedger operator*(const double value) const;
+    ResourceLedger operator*(ResourceLedger&) const;
+};
+
 struct Recipe {
     ResourceLedger input;
-    ResourceLedger output;
+    RecipeOutput output;
 
     ProductionType type;
 
@@ -284,8 +291,7 @@ struct CostBreakdown {
 
 //Multplier on prouduction
 struct ProductionRatio {
-    ResourceLedger input;
-    ResourceLedger output;
+    double ratio;
 };
 
 //Essentially resource consumption + production

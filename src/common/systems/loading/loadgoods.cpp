@@ -145,7 +145,16 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     recipe_component.input = HjsonToLedger(universe, input_value);
 
     Hjson::Value output_value = values["output"];
-    recipe_component.output = HjsonToLedger(universe, output_value);
+    // Just get the first value
+    if (output_value.size() == 1) {
+        // Get the values
+        auto beg = output_value.begin();
+        recipe_component.output.entity = universe.goods[beg->first];
+        recipe_component.output.amount = beg->second.to_double();
+
+    } else {
+        SPDLOG_WARN("Output({}) is not equal to 1, so there will have some issues", output_value.size());
+    }
 
     // Check if it has cost
     if (values["cost"].defined()) {

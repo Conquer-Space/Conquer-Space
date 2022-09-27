@@ -21,6 +21,7 @@
 #include <utility>
 #include <limits>
 
+namespace cqsp::common::components {
 namespace {
 using cqsp::common::components::ResourceLedger;
 template<class Function>
@@ -371,3 +372,16 @@ std::string ResourceLedger::to_string() {
     str.append("}");
     return str;
 }
+
+ResourceLedger RecipeOutput::operator*(
+    const double value) const {
+    ResourceLedger ledger;
+    ledger[entity] = value * amount;
+    return ledger;
+}
+ResourceLedger RecipeOutput::operator*(ResourceLedger & ledger) const {
+    ResourceLedger ret;
+    ret[entity] = ledger[entity] * amount;
+    return ret;
+}
+}  // namespace cqsp::common::components
