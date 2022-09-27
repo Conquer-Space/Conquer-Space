@@ -52,16 +52,17 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
                                                              1000.0);
         components::ProductionRatio& ratio =
             universe.get_or_emplace<components::ProductionRatio>(
-                productionentity);
+                productionentity, 1.);
 
         components::ResourceLedger input =
-            (recipe.input * ratio.input) +
+            (recipe.input * ratio.ratio) +
             (recipe.capitalcost * (0.01 * size.size));
         // If there is not enough input goods, then restrict the trades
         // Input
         double input_transport_cost = input.GetSum() * infra_cost;
 
-        components::ResourceLedger output = recipe.output * ratio.output;
+        components::ResourceLedger output;  // * ratio.output;
+        output[recipe.output.entity] = recipe.output.amount * ratio.ratio;
         double output_transport_cost = output.GetSum() * infra_cost;
 
         // Get the number of items, and subtract from the wallet
@@ -82,10 +83,11 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
             continue;
         }
 
+        SPDLOG_INFO("{} {}", output.size(), output[recipe.output.entity]);
         // Check demand if there is demand
-        if (market.previous_demand.HasAllResources(output)) {
+        if (market.previous_demand[recipe.output.entity] > 0) {
             // Then they can sell it
-            market.supply += output;
+            market.supply[recipe.output.entity] += recipe.output.amount;
         } else {
             // IDK what to do
         }
@@ -100,8 +102,8 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
         costs.maintenance =
             (recipe.capitalcost * market.price).GetSum() * 0.01 * size.size;
         costs.materialcosts =
-            (recipe.input * ratio.input * market.price).GetSum();
-        costs.profit = (recipe.output * ratio.output * market.price).GetSum();
+            (recipe.input * ratio.ratio * market.price).GetSum();
+        costs.profit = (recipe.output * market.price).GetSum();
         costs.wages = size.size * 1000 * 50000;
         costs.net = costs.profit - costs.maintenance - costs.materialcosts -
                     costs.wages;
@@ -112,8 +114,8 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
             size.size *= 0.99;
         }
 
-        ratio.input = recipe.input.UnitLeger(size.size);
-        ratio.output = recipe.output.UnitLeger(size.size);
+        //ratio.ratio = recipe.input.UnitLeger(size.size);
+        //ratio.output = recipe.output.UnitLeger(size.size);
     }
 }
 }  // namespace

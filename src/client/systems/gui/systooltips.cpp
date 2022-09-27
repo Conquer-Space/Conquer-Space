@@ -80,9 +80,6 @@ void ResourceTooltipSection(const Universe &universe, entt::entity entity) {
         cqspc::ProductionRatio ratio =
             universe.get<cqspc::ProductionRatio>(entity);
         ImGui::TextFmt("IO Scaling");
-        cqsp::client::systems::DrawLedgerTable("input", universe, ratio.input);
-        cqsp::client::systems::DrawLedgerTable("output", universe,
-                                               ratio.output);
     }
 
     if (universe.all_of<cqspc::infrastructure::PowerConsumption>(entity)) {
@@ -90,7 +87,7 @@ void ResourceTooltipSection(const Universe &universe, entt::entity entity) {
         auto& consumption = universe.get<cqspc::infrastructure::PowerConsumption>(entity);
         ImGui::TextFmt("Power: {}", consumption.current);
         ImGui::TextFmt("Max Power: {}", consumption.max);
-        ImGui::TextFmt("Min Power: {}", consumption.min);
+           ImGui::TextFmt("Min Power: {}", consumption.min);
     }
     if (universe.all_of<cqspc::CostBreakdown>(entity)) {
         cqspc::CostBreakdown costs = universe.get<cqspc::CostBreakdown>(entity);

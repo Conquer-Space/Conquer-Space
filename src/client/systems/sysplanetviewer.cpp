@@ -384,8 +384,8 @@ void SysPlanetInformation::IndustryTabGenericChild(
             const cqspc::ProductionRatio& ratio =
                 GetUniverse().get<cqspc::ProductionRatio>(industry);
 
-            input_resources  += (recipe.input * ratio.input);
-            output_resources += (recipe.output * ratio.output);
+            input_resources  += (recipe.input * ratio.ratio);
+            output_resources[recipe.output.entity] += recipe.output.amount;
 
             if (GetUniverse().all_of<cqspc::Wallet>(industry)) {
                 GDP_calculation +=
