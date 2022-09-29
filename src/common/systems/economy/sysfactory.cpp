@@ -65,11 +65,30 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
         output[recipe.output.entity] = recipe.output.amount * ratio.ratio;
         double output_transport_cost = output.GetSum() * infra_cost;
 
+        // Check demand if there is demand
+        if (market.previous_demand[recipe.output.entity] > 0) {
+            // Then they can sell it
+            market.supply[recipe.output.entity] += recipe.output.amount * ratio.ratio;
+        } else {
+            // IDK what to do
+        }
+
+        // Then check the S/D ratio and change it
+
         // Get the number of items, and subtract from the wallet
         // Check supply if they can buy, or else they cannot boy
         if (market.previous_supply.HasAllResources(input)) {
             // Then they actually buy it
+            if (market.sd_ratio[recipe.output.entity] > 1) {
+                // then decrease supply
+                // Reduce ratio
+                ratio.ratio *= 0.99;
+            } else if (market.sd_ratio[recipe.output.entity] < 1) {
+                // Then increase supply
+                ratio.ratio *= 1.01;
+            }
             market.demand += input;
+            // Then adjust the input
         } else {
             // Then they cannot produce for the next round
             // Reset the capital costs
@@ -81,15 +100,6 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
             costs.Reset();
             // Add to latent demand
             continue;
-        }
-
-        SPDLOG_INFO("{} {}", output.size(), output[recipe.output.entity]);
-        // Check demand if there is demand
-        if (market.previous_demand[recipe.output.entity] > 0) {
-            // Then they can sell it
-            market.supply[recipe.output.entity] += recipe.output.amount;
-        } else {
-            // IDK what to do
         }
 
         // Next time need to compute the costs along with input and output so that the
