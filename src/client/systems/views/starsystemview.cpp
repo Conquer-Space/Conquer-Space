@@ -1074,6 +1074,7 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
 
     // Initialize all the orbits and stuff
     // Get sun orbits
+    /*
     for (auto body : orbits) {
         ZoneScoped;
         // Generate the orbit
@@ -1097,6 +1098,38 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
         // Do the points
         delete line.orbit_mesh;
         line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);
+    }*/
+
+    auto orbit2 = m_universe.view<cqspt::Orbit>(entt::exclude<PlanetOrbit>);
+    int i = 0;
+    for (auto body : orbit2) {
+        // Then produce orbits
+        ZoneScoped;
+        // Generate the orbit
+        auto& orb = m_universe.get<common::components::types::Orbit>(body);
+        if (orb.semi_major_axis == 0) {
+            continue;
+        }
+        const int res = 500;
+        std::vector<glm::vec3> orbit_points;
+        orbit_points.reserve(res);
+        for (int i = 0; i <= res; i++) {
+            ZoneScoped;
+            double theta = 3.1415926535 * 2 / res * i;
+            glm::vec3 vec = common::components::types::toVec3(orb, theta);
+            // Convert to opengl
+            orbit_points.push_back(glm::vec3(vec.x, vec.z, vec.y));
+        }
+        //m_universe.remove<cqspt::OrbitDirty>(body);
+        auto& line = m_universe.get_or_emplace<PlanetOrbit>(body);
+        // Get the orbit line
+        // Do the points
+        delete line.orbit_mesh;
+        line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);
+        i++;
+    }
+    if (i > 0) {
+        SPDLOG_INFO("Created planet orbits {}", i);
     }
 }
 
