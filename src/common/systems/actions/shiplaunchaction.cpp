@@ -17,6 +17,8 @@
 #include "common/systems/actions/shiplaunchaction.h"
 
 #include <fmt/format.h>
+#include <spdlog/spdlog.h>
+
 #include <string>
 
 #include "common/components/coordinates.h"
@@ -95,9 +97,8 @@ entt::entity cqsp::common::systems::actions::LaunchShip(Universe& universe, comp
     auto& o = universe.emplace<cqspt::Orbit>(ship, orbit);
     universe.emplace<cqspt::Kinematics>(ship);
     auto& body = universe.get<cqspb::Body>(orbit.reference_body);
-    o.nu = body.GM;
+    o.Mu = body.GM;
     o.CalculateVariables();
     universe.get<cqspb::OrbitalSystem>(orbit.reference_body).push_back(ship);
     return ship;
 }
-
