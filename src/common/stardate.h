@@ -57,6 +57,8 @@ class StarDate {
     int GetYear();
     int GetMonth();
     int GetDay();
+    int GetHour();
+    int GetMinute();
 
  private:
     // The maximum length will be about a hundred and thirty thousand years.

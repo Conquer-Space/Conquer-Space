@@ -66,4 +66,7 @@ int StarDate::GetDay() {
     auto date = GetDateObject(start_date, (int)ToDay());
     return (unsigned int) date.day();
 }
+
+int StarDate::GetHour() { return date % 24; }
+int StarDate::GetMinute() { return 0; }
 }  // namespace cqsp::common::components
