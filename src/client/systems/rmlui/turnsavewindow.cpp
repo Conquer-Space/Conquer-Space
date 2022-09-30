@@ -28,8 +28,8 @@ void TurnSaveWindow::Update(double delta_time) {
     auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
 
     time_element->SetInnerRML(
-        fmt::format("{} {:02d}:00", GetUniverse().date.ToString(),
-                    GetUniverse().date.GetDate() % 24));
+        fmt::format("{} {:02d}:{:02d}", GetUniverse().date.ToString(),
+        GetUniverse().date.GetHour(), GetUniverse().date.GetMinute()));
     speed_element->SetInnerRML(fmt::format("Speed: {}", pause_opt.tick_speed));
     // Set the pause and play thingy if the game is halted or not
     if (pause_opt.to_tick != is_paused) {
