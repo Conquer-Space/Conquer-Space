@@ -109,10 +109,6 @@ void SysSurface::DoSystem() {
     }
 }
 
-int SysSurface::Interval() {
-    return 1;
-}
-
 void SysPath::DoSystem() {
     ZoneScoped;
     namespace cqspc = cqsp::common::components;
@@ -127,8 +123,6 @@ void SysPath::DoSystem() {
         glm::vec3 path = targetkin.position - bodykin.position;
     }
 }
-
-int SysPath::Interval() { return 1; }
 
 void LeaveSOI(Universe& universe, const entt::entity& body) {
     namespace cqspc = cqsp::common::components;

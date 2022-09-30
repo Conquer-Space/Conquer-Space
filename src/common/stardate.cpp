@@ -67,6 +67,6 @@ int StarDate::GetDay() {
     return (unsigned int) date.day();
 }
 
-int StarDate::GetHour() { return date % 24; }
+int StarDate::GetHour() { return date % DAY; }
 int StarDate::GetMinute() { return 0; }
 }  // namespace cqsp::common::components

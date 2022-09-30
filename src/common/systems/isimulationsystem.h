@@ -33,7 +33,7 @@ class ISimulationSystem {
     /// How often is `DoSystem` is run. It will be run every
     /// n number of ticks when the tick becomes a multiple of the number below.
     /// The default is 24
-    virtual int Interval() { return 24; }
+    virtual int Interval() { return components::StarDate::DAY; }
 
  protected:
     Game& GetGame() { return game; }

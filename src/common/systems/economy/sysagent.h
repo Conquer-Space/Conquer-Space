@@ -23,6 +23,6 @@ class SysAgent : public ISimulationSystem {
  public:
     explicit SysAgent(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
-    int Interval() override { return 1; }
+    int Interval() override { return components::StarDate::HOUR; }
 };
 }  // namespace cqsp::common::systems

@@ -44,12 +44,16 @@ namespace cqsp::common::components {
 /// </summary>
 class StarDate {
  public:
+    static const int HOUR = 1;
+    static const int DAY = 24;
+    static const int WEEK = DAY * 7;
+
     void IncrementDate() { date++; }
 
     int GetDate() { return date; }
 
     double ToSecond() { return date * 3600.f; }
-    double ToDay() { return date/24.f; }
+    double ToDay() { return date / (float) DAY; }
 
     std::string ToString();
     std::string ToString(double offset);

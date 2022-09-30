@@ -43,14 +43,14 @@ class SysPath : public ISimulationSystem {
  public:
     explicit SysPath(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
-    int Interval();
+    int Interval() { return 1; }
 };
 
 class SysSurface : public ISimulationSystem {
  public:
     explicit SysSurface(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
-    int Interval();
+    int Interval() { return 1; }
 };
 }  // namespace systems
 }  // namespace common
