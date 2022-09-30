@@ -26,6 +26,6 @@ class SysProduction : public ISimulationSystem {
  public:
     explicit SysProduction(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
-    int Interval() override { return 24; }
+    int Interval() override { return components::StarDate::DAY; }
 };
 }  // namespace cqsp::common::systems

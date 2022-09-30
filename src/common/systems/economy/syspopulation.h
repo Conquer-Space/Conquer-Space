@@ -23,13 +23,13 @@ class SysPopulationGrowth : public ISimulationSystem {
  public:
     explicit SysPopulationGrowth(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
-    int Interval() { return 625; }
+    int Interval() { return components::StarDate::WEEK * 4; }
 };
 
 class SysPopulationConsumption : public ISimulationSystem {
  public:
     explicit SysPopulationConsumption(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
-    int Interval() override { return  24; }
+    int Interval() override { return components::StarDate::DAY; }
 };
 }  // namespace cqsp::common::systems

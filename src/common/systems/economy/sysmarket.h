@@ -23,7 +23,7 @@ class SysMarket : public ISimulationSystem {
  public:
     explicit SysMarket(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
-    int Interval() override { return 24; }
+    int Interval() override { return components::StarDate::DAY; }
 
     /// <summary>
     /// To be called before the game starts

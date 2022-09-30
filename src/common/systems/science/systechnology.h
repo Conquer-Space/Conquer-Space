@@ -23,6 +23,6 @@ class SysTechProgress : public ISimulationSystem {
  public:
     explicit SysTechProgress(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
-    int Interval() override { return 25; }
+    int Interval() override { return components::StarDate::DAY; }
 };
 }  // namespace cqsp::common::systems

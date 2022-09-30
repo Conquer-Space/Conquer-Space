@@ -25,7 +25,7 @@ class SysScienceLab : public ISimulationSystem {
  public:
     explicit SysScienceLab(Game& game) : ISimulationSystem(game) {}
     void DoSystem()override;
-    int Interval() override { return 25; }
+    int Interval() override { return components::StarDate::DAY; }
 };
 }  // namespace systems
 }  // namespace common

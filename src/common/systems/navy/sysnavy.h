@@ -25,7 +25,7 @@ class SysNavyControl : public ISimulationSystem {
  public:
     explicit SysNavyControl(Game& game) : ISimulationSystem(game) {}
     void DoSystem()override;
-    int Interval() override { return 1; }
+    int Interval() override { return components::StarDate::HOUR; }
 };
 }  // namespace systems
 }  // namespace common
