@@ -23,6 +23,7 @@
 #include <cmath>
 #include <string>
 #include <memory>
+#include <limits>
 #include <vector>
 #include <algorithm>
 #include <tuple>
@@ -1134,15 +1135,63 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
         }
         const int res = 500;
         std::vector<glm::vec3> orbit_points;
+        double SOI = std::numeric_limits<double>::infinity();
+        if (m_universe.valid(orb.reference_body)) {
+            SOI = m_universe.get<common::components::bodies::Body>(orb.reference_body)
+                .SOI;
+        }
+
         orbit_points.reserve(res);
         for (int i = 0; i <= res; i++) {
             ZoneScoped;
             double theta = 3.1415926535 * 2 / res * i;
             glm::vec3 vec = common::components::types::toVec3(orb, theta);
-            // Convert to opengl
-            orbit_points.push_back(glm::vec3(vec.x, vec.z, vec.y));
+            // If the length is greater than the sphere of influence, then remove it
+            if (glm::length(vec) < SOI) {
+                // Convert to opengl
+                orbit_points.push_back(glm::vec3(vec.x, vec.z, vec.y));
+            }
         }
         //m_universe.remove<cqspt::OrbitDirty>(body);
+        auto& line = m_universe.get_or_emplace<PlanetOrbit>(body);
+        // Get the orbit line
+        // Do the points
+        delete line.orbit_mesh;
+        line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);
+        i++;
+    }
+
+    auto orbit4 = m_universe.view<cqspt::Orbit, cqspb::DirtyOrbit>();
+    for (auto body : orbit4) {
+        // Then produce orbits
+        ZoneScoped;
+        // Generate the orbit
+        auto& orb = m_universe.get<common::components::types::Orbit>(body);
+        if (orb.semi_major_axis == 0) {
+            continue;
+        }
+        const int res = 500;
+        std::vector<glm::vec3> orbit_points;
+        double SOI = std::numeric_limits<double>::infinity();
+        if (m_universe.valid(orb.reference_body)) {
+            SOI = m_universe
+                      .get<common::components::bodies::Body>(orb.reference_body)
+                      .SOI;
+        }
+
+        orbit_points.reserve(res);
+        for (int i = 0; i <= res; i++) {
+            ZoneScoped;
+            double theta = 3.1415926535 * 2 / res * i;
+            glm::vec3 vec = common::components::types::toVec3(orb, theta);
+            // If the length is greater than the sphere of influence, then
+            // remove it
+            if (glm::length(vec) < SOI) {
+                // Convert to opengl
+                orbit_points.push_back(glm::vec3(vec.x, vec.z, vec.y));
+            }
+        }
+        // m_universe.remove<cqspt::OrbitDirty>(body);
         auto& line = m_universe.get_or_emplace<PlanetOrbit>(body);
         // Get the orbit line
         // Do the points

@@ -74,6 +74,9 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
                                          parent_parent_orb.GM, GetUniverse().date.ToSecond());
                 orb.reference_body = p_orb.reference_body;
                 orb.CalculateVariables();
+
+                // Update dirty orbit
+                universe.emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
             }
         } else {
         }
