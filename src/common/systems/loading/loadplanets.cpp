@@ -212,8 +212,8 @@ void PlanetLoader::PostLoad(const entt::entity& entity) {
                 parent_temp.parent);
     orbit.reference_body = parent;
     // Set mu
-    orbit.Mu = universe.get<components::bodies::Body>(parent).GM;
-    body.SOI = components::bodies::CalculateSOI(body.GM, orbit.Mu, orbit.semi_major_axis);
+    orbit.GM = universe.get<components::bodies::Body>(parent).GM;
+    body.SOI = components::bodies::CalculateSOI(body.GM, orbit.GM, orbit.semi_major_axis);
     body.mass = components::bodies::CalculateMass(body.GM);
     orbit.CalculateVariables();
     universe.get_or_emplace<components::bodies::OrbitalSystem>(parent).push_back(entity);

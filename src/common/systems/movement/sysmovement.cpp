@@ -155,7 +155,7 @@ void LeaveSOI(Universe& universe, const entt::entity& body) {
                                   greater_body.GM,
                            universe.date.ToSecond());
     orb.reference_body = greater_parent;
-    orb.nu = greater_body.GM;
+    orb.GM = greater_body.GM;
     orb.CalculateVariables();
     // Remove children
     auto& parent_orbital_system = universe.get<cqspb::OrbitalSystem>(parent);

@@ -96,7 +96,7 @@ entt::entity cqsp::common::systems::actions::LaunchShip(Universe& universe, comp
     auto& o = universe.emplace<cqspt::Orbit>(ship, orbit);
     universe.emplace<cqspt::Kinematics>(ship);
     auto& body = universe.get<cqspb::Body>(orbit.reference_body);
-    o.Mu = body.GM;
+    o.GM = body.GM;
     o.CalculateVariables();
     universe.get<cqspb::OrbitalSystem>(orbit.reference_body).push_back(ship);
     return ship;

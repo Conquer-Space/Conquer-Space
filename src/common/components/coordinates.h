@@ -105,7 +105,7 @@ struct Orbit {
     /// <br />
     /// km^3 * s^-2
     /// </summary>
-    double Mu = SunMu;
+    double GM = SunMu;
 
     // So we can prepare for moons and stuff
     entt::entity reference_body = entt::null;
@@ -134,8 +134,8 @@ struct Orbit {
     /// Calculates period and mean motion
     /// </summary>
     void CalculateVariables() {
-        T =  2 * PI * std::sqrt(semi_major_axis * semi_major_axis * semi_major_axis / Mu);
-        nu = std::sqrt(Mu / (semi_major_axis * semi_major_axis * semi_major_axis));
+        T =  2 * PI * std::sqrt(semi_major_axis * semi_major_axis * semi_major_axis / GM);
+        nu = std::sqrt(GM / (semi_major_axis * semi_major_axis * semi_major_axis));
     }
 
     double GetMt(double time) {
@@ -164,9 +164,9 @@ double GetOrbitingRadius(const double& e, const double& a,
 /// </summary>
 /// <param name="position">Position of the body</param>
 /// <param name="velocity">Velocity of the body</param>
-/// <param name="Mu">G*M of the orbiting body</param>
+/// <param name="GM">G*M of the orbiting body</param>
 Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity,
-                 const double& Mu, const double& time);
+                 const double& GM, const double& time);
 
 /// <summary>
 /// Converts an orbit to a vec3.
@@ -259,11 +259,11 @@ void UpdateOrbit(Orbit& orb, const second& time);
 ///
 /// \param[in] E Eccentric anomaly
 /// \param[in] r Orbiting radius
-/// \param[in] Mu G*M of orbiting body
+/// \param[in] GM G*M of orbiting body
 /// \param[in] a Semi major axis
 /// \param[in] e eccentricity
 glm::vec3 CalculateVelocity(const double& E, const double& r,
-                            const double& Mu, const double& a,
+                            const double& GM, const double& a,
                             const double& e);
 
 /// <summary>
