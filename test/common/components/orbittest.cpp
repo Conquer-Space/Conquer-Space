@@ -77,7 +77,7 @@ TEST(Common_OrbitTest, OrbitConversionTest) {
     EXPECT_NEAR(glm::length(velocity), cqspt::AvgOrbitalVelocity(orb),
                 cqspt::AvgOrbitalVelocity(orb) * 0.0001);
     EXPECT_NEAR(glm::length(position), orb.semi_major_axis, orb.semi_major_axis * 0.001);
-    auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.Mu, 0);
+    auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.GM, 0);
     EXPECT_DOUBLE_EQ(new_orbit.v, orb.v);
     EXPECT_DOUBLE_EQ(new_orbit.E, orb.E);
     EXPECT_DOUBLE_EQ(new_orbit.M0, orb.M0);
@@ -110,7 +110,7 @@ TEST(Common_OrbitTest, NewOrbitConversionTest) {
     EXPECT_DOUBLE_EQ(
         glm::length(position),
         cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v));
-    auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.Mu, 0);
+    auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.GM, 0);
     EXPECT_DOUBLE_EQ(new_orbit.v, orb.v);
     EXPECT_DOUBLE_EQ(new_orbit.E, orb.E);
     EXPECT_DOUBLE_EQ(new_orbit.M0, orb.M0);
@@ -145,7 +145,7 @@ TEST(Common_OrbitTest, NewOrbitConversionTest2) {
         glm::length(position),
         cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v),
         orb.semi_major_axis * 0.01);
-    auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.Mu, 0);
+    auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.GM, 0);
     EXPECT_NEAR(new_orbit.v, orb.v, 0.001);
     EXPECT_NEAR(new_orbit.E, orb.E, 0.001);
     EXPECT_NEAR(new_orbit.M0, orb.M0, 0.001);
@@ -189,7 +189,7 @@ TEST(Common_OrbitTest, NewOrbitConversionTest3) {
         glm::length(position),
         cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v),
         orb.semi_major_axis * 0.01);
-    auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.Mu, 0);
+    auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.GM, 0);
     EXPECT_NEAR(new_orbit.v, orb.v, 0.001);
     EXPECT_NEAR(new_orbit.E, orb.E, 0.001);
     EXPECT_NEAR(new_orbit.M0, orb.M0, 0.001);
@@ -235,7 +235,7 @@ TEST(Common_OrbitTest, NewOrbitConversionTest4) {
         glm::length(position),
         cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v),
         orb.semi_major_axis * 0.01);
-    auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.Mu, 0);
+    auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.GM, 0);
     EXPECT_NEAR(new_orbit.v, orb.v, 0.001);
     EXPECT_NEAR(new_orbit.E, orb.E, 0.001);
     EXPECT_NEAR(new_orbit.M0, orb.M0, 0.001);
@@ -285,7 +285,7 @@ TEST(Common_OrbitTest, NewOrbitConversionTest5) {
         glm::length(position),
         cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v),
         orb.semi_major_axis * 0.01);
-    auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.Mu, 0);
+    auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.GM, 0);
     EXPECT_NEAR(new_orbit.v, orb.v, 0.001);
     EXPECT_NEAR(new_orbit.E, orb.E, 0.001);
     EXPECT_NEAR(new_orbit.M0, orb.M0, 0.001);

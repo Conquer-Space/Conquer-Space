@@ -32,11 +32,11 @@ double GetOrbitingRadius(const double& e, const double& a, const double& v) {
 
 // https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
 Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity,
-                 const double& Mu, const double& time) {
+                 const double& GM, const double& time) {
     // Orbital momentum vector
     const auto h = glm::cross(position, velocity);
     // Eccentricity vector
-    const auto ecc_v = glm::cross(velocity, h) / Mu - glm::normalize(position);
+    const auto ecc_v = glm::cross(velocity, h) / GM - glm::normalize(position);
 
     // Eccentricity
     double e = glm::length(ecc_v);
@@ -66,7 +66,7 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity,
     if (glm::length(n) == 0) w = 0;
 
     double velocity_mag = glm::length(velocity);
-    double sma = 1 / (2 / glm::length(position) - velocity_mag * velocity_mag / Mu);
+    double sma = 1 / (2 / glm::length(position) - velocity_mag * velocity_mag / GM);
 
     Orbit orb;
     orb.semi_major_axis = sma;
@@ -78,7 +78,7 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity,
     orb.epoch = time;
     orb.v = v;
     orb.E = E;
-    orb.Mu = Mu;
+    orb.GM = GM;
     return orb;
 }
 
@@ -101,7 +101,7 @@ glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v) {
     }
     double r = GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, v);
     glm::vec3 velocity = CalculateVelocity(
-        orb.E, r, orb.Mu, orb.semi_major_axis, orb.eccentricity);
+        orb.E, r, orb.GM, orb.semi_major_axis, orb.eccentricity);
     return ConvertOrbParams(orb.LAN, orb.inclination, orb.w, velocity);
 }
 
@@ -152,9 +152,9 @@ void UpdateOrbit(Orbit& orb, const second& time) {
 }
 
 glm::vec3 CalculateVelocity(const double& E, const double& r,
-                            const double& Mu, const double& a,
+                            const double& GM, const double& a,
                             const double& e) {
-    return ((float)(sqrt(Mu * a) / r) *
+    return ((float)(sqrt(GM * a) / r) *
             glm::vec3(-sin(E), sqrt(1 - e * e) * cos(E), 0));
 }
 
