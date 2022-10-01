@@ -405,6 +405,9 @@ void SysStarSystemRenderer::SeePlanet(entt::entity ent) {
 }
 
 void SysStarSystemRenderer::DoUI(float deltaTime) {
+#ifdef NDEBUG
+    return;
+#endif
     // FIXME(EhWhoamI)
     //auto &debug_info = m_app.GetUniverse().ctx().emplace<ctx::StarSystemViewDebug>();
     ImGui::Begin("Debug ui window");
@@ -423,6 +426,14 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
     ImGui::TextFmt("{} {} {}", selected_country_color.x, selected_country_color.y, selected_country_color.z);
     ImGui::TextFmt("Focused planets: {}",
         m_universe.view<FocusedPlanet>().size());
+    ImGui::End();
+
+    // Get the focused object, and display their information
+    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x - 200,
+                                   ImGui::GetIO().DisplaySize.y - 300), ImGuiCond_Appearing);
+    ImGui::Begin("Focused Object");
+    cqsp::client::systems::gui::EntityTooltipContent(m_universe,
+                                                     m_viewing_entity);
     ImGui::End();
 }
 

@@ -113,7 +113,99 @@ std::string GetName(const Universe& universe, entt::entity entity) {
     }
 }
 
-std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity entity) {
+namespace cqspc = cqsp::common::components;
+void EntityTooltipContent(const Universe& universe, entt::entity entity) {
+    if (entity == entt::null) {
+        ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Null entity!");
+        return;
+    }
+    if (!universe.valid(entity)) {
+        ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Invalid entity!");
+        return;
+    }
+
+    ImGui::TextFmt("{}", GetName(universe, entity));
+
+    if (universe.any_of<common::components::Description>(entity)) {
+        auto& desc = universe.get<common::components::Description>(entity);
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7, 0.7, 0.7, 1));
+        ImGui::TextWrapped(desc.description.c_str());
+        ImGui::PopStyleColor();
+    }
+
+    RenderEntityType(universe, entity);
+
+    if (universe.all_of<cqspc::Wallet>(entity)) {
+        auto& balance = universe.get<cqsp::common::components::Wallet>(entity);
+        ImGui::TextFmt("Wallet: {}", balance.GetBalance());
+    }
+
+    if (universe.all_of<cqspc::MarketAgent>(entity)) {
+        ImGui::TextFmt("Is Market Participant");
+    }
+    if (universe.all_of<cqspc::types::Kinematics>(entity)) {
+        auto& a =
+            universe.get<cqsp::common::components::types::Kinematics>(entity);
+        ImGui::TextFmt("Position: {} {} {} ({})", a.position.x, a.position.y,
+                       a.position.z, glm::length(a.position));
+        ImGui::TextFmt("Velocity: {} {} {} ({})", a.velocity.x, a.velocity.y,
+                       a.velocity.z, glm::length(a.velocity));
+    }
+
+    if (universe.all_of<cqspc::bodies::Body>(entity)) {
+        auto& body = universe.get<cqspc::bodies::Body>(entity);
+        ImGui::TextFmt("Rotation: {} days", body.rotation / 86400);
+    }
+
+    if (universe.all_of<cqspc::Governed>(entity)) {
+        auto& governed = universe.get<cqspc::Governed>(entity);
+        ImGui::TextFmt("Owned by: {}", GetName(universe, governed.governor));
+    }
+
+    // If it's a city do population
+    if (universe.all_of<cqspc::Settlement>(entity)) {
+        ImGui::TextFmt("Population: {}", util::LongToHumanString(
+                                             common::systems::GetCityPopulation(
+                                                 universe, entity)));
+    }
+    if (universe.all_of<common::components::bodies::Body>(entity)) {
+        auto& body = universe.get<common::components::bodies::Body>(entity);
+        ImGui::Separator();
+        ImGui::TextFmt("Radius: {:.3g} km", body.radius);
+        ImGui::TextFmt("Mass: {:.3g} kg", body.mass);
+        ImGui::TextFmt("SOI: {:.3g} km", body.SOI);
+    }
+
+    if (universe.all_of<common::components::types::Orbit>(entity)) {
+        auto& orbit = universe.get<common::components::types::Orbit>(entity);
+        ImGui::Separator();
+        ImGui::TextFmt("Semi Major Axis: {}", orbit.semi_major_axis);
+        ImGui::TextFmt("Inclination: {}", orbit.inclination);
+        ImGui::TextFmt("Eccentricity: {}", orbit.eccentricity);
+        ImGui::TextFmt("Longitude of Linear Node: {}", orbit.LAN);
+        ImGui::TextFmt("Argument of Periapsis: {}", orbit.w);
+        ImGui::TextFmt("True Anomaly: {}", orbit.v);
+        ImGui::TextFmt("Orbital Period: {} y {} d {} h {} m {} s",
+                       (int) (orbit.T / (60 * 60 * 24 * 365)),
+                       (int) std::fmod(orbit.T / (60 * 60 * 24), 24),
+                       (int) std::fmod(orbit.T / (60 * 60), 60),
+                       (int) std::fmod(orbit.T / 60, 60),
+                       std::fmod(orbit.T, 60));
+    }
+
+    if (universe.all_of<common::components::types::SurfaceCoordinate>(entity)) {
+        auto& pos =
+            universe.get<common::components::types::SurfaceCoordinate>(entity);
+        ImGui::TextFmt("Coordinates: {}, {}", pos.latitude(), pos.longitude());
+    }
+
+    // Resource stuff
+    // TODO(EhWhoAmI): Set these text red, but too lazy to do it for now
+    ResourceTooltipSection(universe, entity);
+}
+
+std::string GetEntityType(const cqsp::common::Universe& universe,
+                          entt::entity entity) {
     namespace cqspc = cqsp::common::components;
     // Then get type of entity
     if (entity == entt::null) {
@@ -163,79 +255,10 @@ void EntityTooltip(const Universe &universe, entt::entity entity) {
     if (!ImGui::IsItemHovered()) {
         return;
     }
+
     namespace cqspc = cqsp::common::components;
     ImGui::BeginTooltip();
-    ImGui::TextFmt("{}", GetName(universe, entity));
-
-    if (universe.any_of<common::components::Description>(entity)) {
-        auto& desc = universe.get<common::components::Description>(entity);
-        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7, 0.7, 0.7, 1));
-        ImGui::TextWrapped(desc.description.c_str());
-        ImGui::PopStyleColor();
-    }
-
-    if (entity == entt::null) {
-        ImGui::TextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Null entity!");
-    }
-    RenderEntityType(universe, entity);
-
-    if (universe.all_of<cqspc::Wallet>(entity)) {
-        auto& balance = universe.get<cqsp::common::components::Wallet>(entity);
-        ImGui::TextFmt("Wallet: {}", balance.GetBalance());
-    }
-
-    if (universe.all_of<cqspc::MarketAgent>(entity)) {
-        ImGui::TextFmt("Is Market Participant");
-    }
-    if (universe.all_of<cqspc::types::Kinematics>(entity)) {
-        auto& a = universe.get<cqsp::common::components::types::Kinematics>(entity);
-        ImGui::TextFmt("Position: {} {} {} ({})", a.position.x, a.position.y, a.position.z, glm::length(a.position));
-        ImGui::TextFmt("Velocity: {} {} {} ({})", a.velocity.x, a.velocity.y,
-                       a.velocity.z, glm::length(a.velocity));
-    }
-
-    if (universe.all_of<cqspc::bodies::Body>(entity)) {
-        auto& body = universe.get<cqspc::bodies::Body>(entity);
-        ImGui::TextFmt("Rotation: {} days", body.rotation / 86400);
-    }
-
-    if (universe.all_of<cqspc::Governed>(entity)) {
-        auto& governed = universe.get<cqspc::Governed>(entity);
-        ImGui::TextFmt("Owned by: {}", GetName(universe, governed.governor));
-    }
-
-    // If it's a city do population
-    if (universe.all_of<cqspc::Settlement>(entity)) {
-        ImGui::TextFmt("Population: {}", util::LongToHumanString(
-                            common::systems::GetCityPopulation(universe, entity)));
-    }
-    if (universe.all_of<common::components::bodies::Body>(entity)) {
-        auto& body = universe.get<common::components::bodies::Body>(entity);
-        ImGui::Separator();
-        ImGui::TextFmt("Radius: {:.3g} km", body.radius);
-        ImGui::TextFmt("Mass: {:.3g} kg", body.mass);
-        ImGui::TextFmt("SOI: {:.3g} km", body.SOI);
-    }
-
-    if (universe.all_of<common::components::types::Orbit>(entity)) {
-        auto& orbit = universe.get<common::components::types::Orbit>(entity);
-        ImGui::Separator();
-        ImGui::TextFmt("Semi Major Axis: {}", orbit.semi_major_axis);
-        ImGui::TextFmt("Inclination: {}", orbit.inclination);
-        ImGui::TextFmt("Eccentricity: {}", orbit.eccentricity);
-        ImGui::TextFmt("Longitude of Linear Node: {}", orbit.LAN);
-        ImGui::TextFmt("Argument of Periapsis: {}", orbit.w);
-        ImGui::TextFmt("True Anomaly: {}", orbit.v);
-    }
-
-    if (universe.all_of<common::components::types::SurfaceCoordinate>(entity)) {
-        auto& pos = universe.get<common::components::types::SurfaceCoordinate>(entity);
-        ImGui::TextFmt("Coordinates: {}, {}", pos.latitude(), pos.longitude());
-    }
-
-    // Resource stuff
-    //TODO(EhWhoAmI): Set these text red, but too lazy to do it for now
-    ResourceTooltipSection(universe, entity);
+    EntityTooltipContent(universe, entity);
     ImGui::EndTooltip();
 }
 }  // namespace cqsp::client::systems::gui
