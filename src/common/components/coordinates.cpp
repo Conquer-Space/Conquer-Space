@@ -79,6 +79,7 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity,
     orb.v = v;
     orb.E = E;
     orb.GM = GM;
+    orb.CalculateVariables();
     return orb;
 }
 
@@ -145,7 +146,7 @@ radian TrueAnomaly(const Orbit& orbit, const second& time) {
 }
 
 void UpdateOrbit(Orbit& orb, const second& time) {
-    double Mt = GetMt(orb.M0, time, orb.nu, orb.epoch);
+    double Mt = GetMt(orb.M0, orb.nu, time, orb.epoch);
     double E = SolveKepler(Mt, orb.eccentricity);
     orb.v = CalculateTrueAnomaly(orb.eccentricity, E);
     orb.E = E;
