@@ -102,6 +102,8 @@ struct OrbitalSystem {
     }
 };
 
+struct DirtyOrbit {};
+
 struct Terrain {
     int seed;
     entt::entity terrain_type;
