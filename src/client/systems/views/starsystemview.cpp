@@ -459,7 +459,6 @@ void SysStarSystemRenderer::DrawBodies() {
             // Draw the planet circle
             glm::vec3 object_pos = CalculateCenteredObject(body_entity);
 
-            // Draw Ships
             namespace cqspc = cqsp::common::components;
             if (glm::distance(object_pos, cam_pos) > dist || true) {
                 // Check if it's obscured by a planet, but eh, we can deal with
@@ -660,15 +659,27 @@ void SysStarSystemRenderer::DrawCityIcon(glm::vec3 &object_pos) {
 void SysStarSystemRenderer::DrawShipIcon(glm::vec3 &object_pos) {
     glm::vec3 pos = glm::project(object_pos, camera_matrix, projection, viewport);
     glm::mat4 shipDispMat = glm::mat4(1.0f);
-    if (pos.z >= 1 || pos.z <= -1) {
-        return;
-    }
 
     shipDispMat = glm::translate(shipDispMat, TranslateToNormalized(pos));
 
     shipDispMat = glm::scale(shipDispMat, glm::vec3(circle_size, circle_size, circle_size));
 
     float window_ratio = GetWindowRatio();
+    glm::vec4 gl_Position =
+        projection * camera_matrix * glm::vec4(object_pos, 1.0);
+    float C = 0.0001;
+    float far = 9.461e12;
+    gl_Position.z = 2.0 * log(gl_Position.w * C + 1) / log(far * C + 1) - 1;
+
+    gl_Position.z *= gl_Position.w;
+
+    // Check if the position on screen is within bounds
+    if (!(!(isnan(gl_Position.z)) &&
+          (pos.x > 0 && pos.x < m_app.GetWindowWidth() && pos.y > 0 &&
+           pos.y < m_app.GetWindowHeight()))) {
+        return;
+    }
+
     shipDispMat = glm::scale(shipDispMat, glm::vec3(1, window_ratio, 1));
     glm::mat4 twodimproj = glm::mat4(1.0f);
     ship_overlay.shaderProgram->UseProgram();
