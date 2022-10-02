@@ -21,6 +21,10 @@
 namespace cqsp {
 namespace client {
 namespace systems {
+/// <summary>
+/// Menu when the key escape is pressed, pauses all interaction with the background,
+///     displays exit game, options, and other things.
+/// </summary>
 class SysPauseMenu : public SysUserInterface {
  public:
     explicit SysPauseMenu(cqsp::engine::Application& app)

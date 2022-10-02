@@ -46,6 +46,9 @@ void SysStarSystemTree::DoUI(int delta_time) {
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqspcs = cqsp::client::systems;
     namespace cqspc = cqsp::common::components;
+#ifdef NDEBUG
+    return;
+#endif
     // Get star system
     selected_planet = cqsp::scene::GetCurrentViewingPlanet(GetUniverse());
     ImGui::SetNextWindowPos(ImVec2(30, ImGui::GetIO().DisplaySize.y - 30),

@@ -639,7 +639,7 @@ void SysPlanetInformation::SpacePortTab() {
     static float eccentricity = 0;
     static float arg_of_perapsis = 0;
     static float LAN = 0;
-    ImGui::SliderFloat("Semi Major Axis", &semi_major_axis, 8000, 300000);
+    ImGui::SliderFloat("Semi Major Axis", &semi_major_axis, 6000, 5000000);
     ImGui::SliderFloat("Eccentricity", &eccentricity, 0, 0.9999);
     ImGui::SliderAngle("Inclination", &inclination, 0, 180);
     ImGui::SliderAngle("Argument of perapsis", &arg_of_perapsis, 0, 360);

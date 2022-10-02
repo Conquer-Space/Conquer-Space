@@ -73,7 +73,6 @@ entt::entity cqsp::common::systems::actions::CreateShip(
     // Set in fleet
     universe.get<components::ships::Fleet>(fleetEnt).ships.push_back(ship);
 
-
     return ship;
 }
 

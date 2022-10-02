@@ -21,6 +21,9 @@
 namespace cqsp {
 namespace client {
 namespace systems {
+/// <summary>
+/// Displays the star system tree to show all the planets and moons
+/// </summary>
 class SysStarSystemTree : public SysUserInterface {
  public:
     explicit SysStarSystemTree(cqsp::engine::Application& app)
