@@ -96,13 +96,13 @@ void cqsp::scene::UniverseScene::Init() {
     AddUISystem<cqsps::SysStarSystemTree>();
     AddUISystem<cqsps::SysPauseMenu>();
     AddUISystem<cqsps::SysDebugMenu>();
-    AddUISystem<cqsps::SysCommand>();
-    AddUISystem<cqsps::CivilizationInfoPanel>();
-    AddUISystem<cqsps::SysFieldViewer>();
-    AddUISystem<cqsps::SysTechnologyProjectViewer>();
-    AddUISystem<cqsps::SysTechnologyViewer>();
+    //AddUISystem<cqsps::SysCommand>();
+    //AddUISystem<cqsps::CivilizationInfoPanel>();
+    //AddUISystem<cqsps::SysFieldViewer>();
+    //AddUISystem<cqsps::SysTechnologyProjectViewer>();
+    //AddUISystem<cqsps::SysTechnologyViewer>();
     AddUISystem<cqsps::SysCountryInformation>();
-    AddUISystem<cqsps::SysPlanetMarketInformation>();
+    //AddUISystem<cqsps::SysPlanetMarketInformation>();
 
     AddUISystem<cqsps::gui::SysEvent>();
     simulation->tick();
