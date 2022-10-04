@@ -44,9 +44,9 @@ components::types::Orbit GetOrbit(const std::string& line_one,
                                   const std::string& line_two, const double& GM) {
     // Epoch year
     double epoch_year = std::stoi(line_one.substr(18, 2));
-    double epoch_time = std::stoi(line_one.substr(20, 12));
+    double epoch_time = std::stod(line_one.substr(20, 12));
 
-    double epoch = GetEpoch(GetEpochYear(epoch_year), epoch_time);
+    double epoch = GetEpoch(epoch_year, epoch_time);
 
     // If the epoch year is less than 57, then it's the 20th century
     std::stringstream ss(line_two);
@@ -58,8 +58,9 @@ components::types::Orbit GetOrbit(const std::string& line_one,
 
     // https://en.wikipedia.org/wiki/Two-line_element_set
 
-    double inclination = std::stod(vstrings[2]);
     using components::types::toRadian;
+
+    double inclination = toRadian(std::stod(vstrings[2]));
     double LAN = toRadian(std::stod(vstrings[3]));  // Longitude of the ascending node
     double e = std::stod("0." + vstrings[4]);  // eccentricity
     double w = toRadian(std::stod(vstrings[5]));  // Argument of perapsis
@@ -93,9 +94,9 @@ int GetEpochYear(int year) {
     return epoch + year;
 }
 
-double GetEpoch(int year, int time) {
+double GetEpoch(double year, double time) {
     int year_diff = GetEpochYear(year) - 2000;
-    return time * 86400. + year_diff * 31557600;
+    return time * 86400. + year_diff * 31557600.;
 }
 
 void LoadSatellites(Universe& universe, std::string& string) {
