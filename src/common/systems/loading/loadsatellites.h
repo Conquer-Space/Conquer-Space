@@ -25,6 +25,6 @@ namespace cqsp::common::systems::loading {
 components::types::Orbit GetOrbit(const std::string& line_one, const std::string& line_two,
                                   const double& GM);
 int GetEpochYear(int year);
-double GetEpoch(int year, int time);
+double GetEpoch(double year, double time);
 void LoadSatellites(Universe& universe, std::string& string);
 }
