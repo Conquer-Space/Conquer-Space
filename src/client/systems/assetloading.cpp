@@ -33,6 +33,7 @@
 #include "common/systems/loading/timezoneloader.h"
 #include "common/systems/loading/loadcountries.h"
 #include "common/systems/loading/loadprovinces.h"
+#include "common/systems/loading/loadsatellites.h"
 
 namespace {
 void LoadResource(cqsp::engine::Application& app, std::string asset_name,
@@ -88,6 +89,9 @@ void LoadAllResources(cqsp::engine::Application& app) {
     LoadResource(app, "names", LoadNameLists);
     LoadResource(app, "tech_fields", common::systems::science::LoadFields);
     LoadResource(app, "tech_list", common::systems::science::LoadTechnologies);
+    common::systems::loading::LoadSatellites(
+        app.GetUniverse(),
+        app.GetAssetManager().GetAsset<asset::TextAsset>("satellites")->data);
 
     // Initialize planet terrains
     asset::HjsonAsset* asset = app.GetAssetManager().GetAsset<asset::HjsonAsset>(
