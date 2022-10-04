@@ -219,7 +219,6 @@ void cqsp::engine::CQSPRenderInterface::EnableScissorRegion(bool enable) {
 void cqsp::engine::CQSPRenderInterface::SetScissorRegion(int x, int y,
                                                          int width,
                                                          int height) {
-    SPDLOG_INFO("Scissor {} {} {} {}", x, y, width, height);
     glScissor(x, app.GetWindowHeight() - (y + height), width, height);
     return;
     // TODO(EhWhoAmI): Add stencil buffer rendering
