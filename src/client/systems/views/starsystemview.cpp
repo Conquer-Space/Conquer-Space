@@ -932,7 +932,7 @@ glm::quat SysStarSystemRenderer::GetBodyRotation(double axial, double rotation, 
     if (rotation == 0) {
         rot = 0;
     }
-    return glm::quat{{0.f, (float)-fmod(rot, cqspt::TWOPI), (float)axial}};
+    return glm::quat{{0.f, (float)fmod(rot, cqspt::TWOPI), (float)axial}};
 }
 
 void SysStarSystemRenderer::FocusCityView() {
@@ -958,7 +958,7 @@ glm::vec3 SysStarSystemRenderer::CalculateObjectPos(const entt::entity &ent) {
     if (m_universe.all_of<cqspt::Kinematics>(ent)) {
         auto& kin = m_universe.get<cqspt::Kinematics>(ent);
         const auto& pos = kin.position + kin.center;
-        return glm::vec3(pos.x, pos.z, pos.y);
+        return ConvertPoint(pos);
     }
     return glm::vec3(0, 0, 0);
 }
@@ -970,6 +970,10 @@ glm::vec3 SysStarSystemRenderer::CalculateCenteredObject(const glm::vec3 &vec) {
 glm::vec3 SysStarSystemRenderer::TranslateToNormalized(const glm::vec3 &pos) {
     return glm::vec3((pos.x / m_app.GetWindowWidth() - 0.5) * 2,
             (pos.y / m_app.GetWindowHeight() - 0.5) * 2, 0);
+}
+
+glm::vec3 SysStarSystemRenderer::ConvertPoint(const glm::vec3& pos) {
+    return glm::vec3(pos.y, pos.z, pos.x);
 }
 
 void SysStarSystemRenderer::CenterCameraOnCity() {
@@ -1149,7 +1153,7 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
             // If the length is greater than the sphere of influence, then remove it
             if (glm::length(vec) < SOI) {
                 // Convert to opengl
-                orbit_points.push_back(glm::vec3(vec.x, vec.z, vec.y));
+                orbit_points.push_back(ConvertPoint(vec));
             }
         }
         //m_universe.remove<cqspt::OrbitDirty>(body);
@@ -1188,7 +1192,7 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
             // remove it
             if (glm::length(vec) < SOI) {
                 // Convert to opengl
-                orbit_points.push_back(glm::vec3(vec.x, vec.z, vec.y));
+                orbit_points.push_back(ConvertPoint(vec));
             }
         }
         // m_universe.remove<cqspt::OrbitDirty>(body);
