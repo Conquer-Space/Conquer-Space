@@ -156,6 +156,7 @@ class SysStarSystemRenderer {
     glm::vec3 CalculateCenteredObject(const entt::entity &);
     glm::vec3 CalculateCenteredObject(const glm::vec3 &);
     glm::vec3 TranslateToNormalized(const glm::vec3 &);
+    glm::vec3 ConvertPoint(const glm::vec3 &);
 
     void CenterCameraOnCity();
 
