@@ -12,7 +12,7 @@
         }
     }
     satellites: {
-        path: satellites.txt
+        path: sat_temp.txt
         type: text
         hints: {
         }
