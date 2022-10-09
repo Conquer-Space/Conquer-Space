@@ -21,7 +21,7 @@
 namespace cqsp::common::components::types {
 glm::dvec3 ConvertOrbParams(const double LAN, const double i, const double w,
                             const glm::dvec3& vec) {
-    return glm::dquat {glm::dvec3(0, 0, LAN)} * glm::dquat {glm::dvec3(i, 0, 0)} *
+    return glm::dquat {glm::dvec3(0, 0, LAN)} * glm::dquat {glm::dvec3(0, i, 0)} *
            glm::dquat {glm::dvec3(0, 0, w)} * vec;
 }
 
