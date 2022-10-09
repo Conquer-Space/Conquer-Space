@@ -89,6 +89,8 @@ class SysStarSystemRenderer {
 
     void DrawOrbit(const entt::entity& entity);
 
+    void OrbitEditor();
+
     ~SysStarSystemRenderer();
 
  private:

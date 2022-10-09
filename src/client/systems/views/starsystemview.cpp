@@ -435,6 +435,8 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
     ImGui::Begin("Focused Object");
     cqsp::client::systems::gui::EntityTooltipContent(m_universe,
                                                      m_viewing_entity);
+    // Edit the orbit if there is an issue
+
     ImGui::End();
 }
 
@@ -932,7 +934,8 @@ glm::quat SysStarSystemRenderer::GetBodyRotation(double axial, double rotation, 
     if (rotation == 0) {
         rot = 0;
     }
-    return glm::quat{{0.f, (float)fmod(rot, cqspt::TWOPI), (float)axial}};
+    return glm::quat {{(float)-axial, 0, 0}} *
+           glm::quat {{0, (float)std::fmod(rot, cqspt::TWOPI), 0}};
 }
 
 void SysStarSystemRenderer::FocusCityView() {
@@ -973,7 +976,7 @@ glm::vec3 SysStarSystemRenderer::TranslateToNormalized(const glm::vec3 &pos) {
 }
 
 glm::vec3 SysStarSystemRenderer::ConvertPoint(const glm::vec3& pos) {
-    return glm::vec3(pos.y, pos.z, pos.x);
+    return glm::vec3(pos.x, pos.z, -pos.y);
 }
 
 void SysStarSystemRenderer::CenterCameraOnCity() {
@@ -1344,6 +1347,10 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity &entity) {
     }
     glm::mat4 transform = glm::mat4(1.f);
     transform = glm::translate(transform, CalculateCenteredObject(center));
+    // Actually you just need to rotate the orbit
+    auto body = m_universe.get<common::components::bodies::Body>(ref);
+    //transform *= glm::mat4(
+    //    glm::quat{{0.f, 0, (float)body.axial}});
     // Draw orbit
     orbit_shader->SetMVP(transform, camera_matrix, m_app.Get3DProj());
     orbit_shader->Set("color", glm::vec4(1, 1, 1, 1));
@@ -1352,6 +1359,43 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity &entity) {
     orbit.orbit_mesh->Draw();
 }
 
-SysStarSystemRenderer::~SysStarSystemRenderer() {
+void SysStarSystemRenderer::OrbitEditor() {
+    /*
+    static float semi_major_axis = 8000;
+    static float inclination = 0;
+    static float eccentricity = 0;
+    static float arg_of_perapsis = 0;
+    static float LAN = 0;
+    ImGui::SliderFloat("Semi Major Axis", &semi_major_axis, 6000, 5000000);
+    ImGui::SliderFloat("Eccentricity", &eccentricity, 0, 0.9999);
+    ImGui::SliderAngle("Inclination", &inclination, 0, 180);
+    ImGui::SliderAngle("Argument of perapsis", &arg_of_perapsis, 0, 360);
+    ImGui::SliderAngle("Longitude of the ascending node", &LAN, 0, 360);
+    if (ImGui::Button("Launch!")) {
+        // Get reference body
+        entt::entity reference_body = selected_planet;
+        // Launch inclination will be the inclination of the thing
+        double axial =
+            GetUniverse().get<cqspc::bodies::Body>(selected_planet).axial;
+        double inc =
+            GetUniverse()
+                .get<cqspc::types::SurfaceCoordinate>(selected_city_entity)
+                .r_latitude();
+        inc += axial;
+        double sma = 0;
+        // Currently selected city
+        // entt::entity star_system =
+        // GetUniverse().get<cqspc::bodies::Body>(selected_planet);
+        // Launch
+        cqspc::types::Orbit orb;
+        orb.reference_body = selected_planet;
+        orb.inclination = inclination;
+        orb.semi_major_axis = semi_major_axis;
+        orb.eccentricity = eccentricity;
+        orb.w = arg_of_perapsis;
+        orb.LAN = LAN;
+    }*/
 }
+
+SysStarSystemRenderer::~SysStarSystemRenderer() {}
 }  // namespace cqsp::client::systems
