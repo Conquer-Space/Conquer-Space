@@ -427,6 +427,11 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
     ImGui::TextFmt("{} {} {}", selected_country_color.x, selected_country_color.y, selected_country_color.z);
     ImGui::TextFmt("Focused planets: {}",
         m_universe.view<FocusedPlanet>().size());
+    entt::entity earth = m_universe.planets["earth"];
+    auto& b = m_universe.get<cqspb::Body>(earth);
+    float offset = (float) b.rotation_offset;
+    ImGui::SliderAngle("asdf", &offset);
+    b.rotation_offset = (float) offset;
     ImGui::End();
 
     // Get the focused object, and display their information

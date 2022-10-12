@@ -64,7 +64,8 @@ components::types::Orbit GetOrbit(const std::string& line_one,
     double LAN = toRadian(std::stod(vstrings[3]));  // Longitude of the ascending node
     double e = std::stod("0." + vstrings[4]);  // eccentricity
     double w = toRadian(std::stod(vstrings[5]));  // Argument of perapsis
-    double m0 = toRadian(std::stod(vstrings[6]));
+    double m0 = toRadian(std::stod(vstrings[6]) + 120); // Add 180 because orbits are messed up.
+                                                                  // Gotta fix that somehow, but idk how
 
     double mean_motion = std::stod(vstrings[7]);
 
