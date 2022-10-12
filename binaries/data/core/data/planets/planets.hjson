@@ -72,13 +72,13 @@
             semi_major_axis: 149598023 km
             eccentricity: 0.0167086
             inclination: 0.00005 deg
-            arg_periapsis: 114.20783 deg
+            arg_periapsis: 359.9965004168758 deg
             LAN: -11.26064 deg
             M0: 358.617 deg
         }
         // Sidereal 
         day_length: 0.99726968 d
-        day_offset: 0.7790572732640
+        day_offset: 100.1833 deg
         // Axial tilt
         axial: 23.4392811 deg
         texture: {
