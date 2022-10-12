@@ -53,7 +53,7 @@ class StarDate {
     int GetDate() { return date; }
 
     double ToSecond() { return date * 60; }
-    double ToDay() { return date / (float) 1440.; }
+    double ToDay() { return date / (float) 1440. + 720.; }
 
     std::string ToString();
     std::string ToString(double offset);

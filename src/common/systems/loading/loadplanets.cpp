@@ -100,12 +100,17 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     }
 
     if (values["day_offset"].type() == Hjson::Type::Double) {
-        body_comp.rotation_offset = values["day_offset"].to_double();
+        bool offset_correct;
+        body_comp.rotation_offset = ReadUnit(values["day_offset"].to_string(), UnitType::Angle, &offset_correct);
+        if (!offset_correct) {
+            SPDLOG_WARN("Axial for {} incorrect", identifier);
+            body_comp.rotation_offset = 0;
+        }
     } else {
         body_comp.rotation_offset = 0.;
     }
 
-     bool axial_correct;
+    bool axial_correct;
     if (values["axial"].type() != Hjson::Type::Null) {
         body_comp.axial = ReadUnit(values["axial"].to_string(),
                                       UnitType::Angle, &axial_correct);
