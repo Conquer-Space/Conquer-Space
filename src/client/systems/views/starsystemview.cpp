@@ -441,7 +441,24 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
     cqsp::client::systems::gui::EntityTooltipContent(m_universe,
                                                      m_viewing_entity);
     // Edit the orbit if there is an issue
-
+    // Get normalized vector
+    if (m_universe.valid(m_viewing_entity) &&
+            m_universe
+            .any_of<common::components::types::Kinematics>(
+            m_viewing_entity)) {
+        auto& kin = m_universe.get<common::components::types::Kinematics>(
+            m_viewing_entity);
+        auto norm = glm::normalize(kin.velocity);
+        ImGui::TextFmt("Prograde vector: {} {} {}", norm.x, norm.y, norm.z);
+        if (ImGui::Button("Burn prograde")) {
+            // Add 10m/s prograde or something
+            auto& impulse =
+                m_universe.get_or_emplace<common::components::types::Impulse>(
+                    m_viewing_entity);
+            norm *= 0.01;
+            impulse.impulse += norm;
+        }
+    }
     ImGui::End();
 }
 
@@ -1349,6 +1366,8 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity &entity) {
     entt::entity ref;
     if ((ref = m_universe.get<common::components::types::Orbit>(entity).reference_body) != entt::null) {
         center = CalculateObjectPos(ref);
+    } else {
+        return;
     }
     glm::mat4 transform = glm::mat4(1.f);
     transform = glm::translate(transform, CalculateCenteredObject(center));

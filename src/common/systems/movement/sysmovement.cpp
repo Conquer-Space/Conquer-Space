@@ -25,10 +25,48 @@
 #include "common/components/units.h"
 
 namespace cqsp::common::systems {
+namespace cqspc = cqsp::common::components;
+namespace cqsps = cqsp::common::components::ships;
+namespace cqspt = cqsp::common::components::types;
+
 void SysOrbit::DoSystem() {
     ZoneScoped;
     Universe& universe = GetGame().GetUniverse();
     ParseOrbitTree(entt::null, universe.sun);
+}
+
+void LeaveSOI(Universe& universe, const entt::entity& body,
+              entt::entity& parent,
+              cqspt::Orbit& orb,
+              cqspt::Kinematics& pos, cqspt::Kinematics& p_pos) {
+    // Then change parent, then set the orbit
+    auto& p_orb = universe.get<cqspt::Orbit>(parent);
+    if (p_orb.reference_body != entt::null) {
+        // Then add to orbital system
+        universe.get<cqspc::bodies::OrbitalSystem>(p_orb.reference_body)
+            .push_back(body);
+
+        auto& parent_parent_orb =
+            universe.get<cqspc::bodies::Body>(p_orb.reference_body);
+        if (p_orb.reference_body != entt::null) {
+            // Some stuff
+        }
+        auto& pp_pos =
+            universe.get<cqspt::Kinematics>(p_orb.reference_body);
+        // Remove from parent
+        auto& pt = universe.get<cqspc::bodies::OrbitalSystem>(parent);
+        std::erase(pt.children, body);
+        // Get velocity and change posiiton
+        // Convert orbit
+        orb = cqspt::Vec3ToOrbit(
+            pos.position + p_pos.position, pos.velocity + p_pos.velocity,
+            parent_parent_orb.GM, universe.date.ToSecond());
+        orb.reference_body = p_orb.reference_body;
+        orb.CalculateVariables();
+
+        // Update dirty orbit
+        universe.emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
+    }
 }
 
 void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
@@ -51,34 +89,21 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
         // If distance is above SOI, then be annoyed
         auto& p_bod = universe.get<cqspc::bodies::Body>(parent);
         if (glm::length(pos.position) > p_bod.SOI) {
-            // Then change parent, then set the orbit
-            auto& p_orb = universe.get<cqspt::Orbit>(parent);
-            if (p_orb.reference_body != entt::null) {
-                // Then add to orbital system
-                universe.get<cqspc::bodies::OrbitalSystem>(p_orb.reference_body)
-                    .push_back(body);
-
-                auto& parent_parent_orb = universe.get<cqspc::bodies::Body>(p_orb.reference_body);
-                if (p_orb.reference_body != entt::null) {
-                    // Some stuff
-                }
-                auto& pp_pos =
-                    universe.get<cqspt::Kinematics>(p_orb.reference_body);
-                // Remove from parent
-                auto& pt = universe.get<cqspc::bodies::OrbitalSystem>(parent);
-                std::erase(pt.children, body);
-                // Get velocity and change posiiton
-                // Convert orbit
-                orb = cqspt::Vec3ToOrbit(pos.position + p_pos.position,
-                                         pos.velocity + p_pos.velocity,
-                                         parent_parent_orb.GM, GetUniverse().date.ToSecond());
-                orb.reference_body = p_orb.reference_body;
-                orb.CalculateVariables();
-
-                // Update dirty orbit
-                universe.emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
-            }
-        } else {
+            LeaveSOI(universe, body, parent, orb, pos, p_pos);
+        }
+        if (universe.any_of<cqspc::types::Impulse>(body)) {
+            // Then add to the orbit the speed.
+            // Then also convert the velocity
+            auto& impulse = universe.get<cqspc::types::Impulse>(body);
+            auto reference = orb.reference_body;
+            orb = cqspt::Vec3ToOrbit(
+                pos.position, pos.velocity + impulse.impulse,
+                                   p_bod.GM, universe.date.ToSecond());
+            orb.reference_body = reference;
+            orb.CalculateVariables();
+            universe.emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
+            // Remove impulse
+            universe.remove<cqspc::types::Impulse>(body);
         }
         pos.center = p_pos.center + p_pos.position;
     }
@@ -93,10 +118,6 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
 }
 
 void SysSurface::DoSystem() {
-    namespace cqspc = cqsp::common::components;
-    namespace cqsps = cqsp::common::components::ships;
-    namespace cqspt = cqsp::common::components::types;
-
     Universe& universe = GetGame().GetUniverse();
 
     auto objects = universe.view<cqspt::SurfaceCoordinate>();
@@ -125,45 +146,5 @@ void SysPath::DoSystem() {
         cqspt::Kinematics& targetkin = universe.get<cqspt::Kinematics>(universe.get<cqspt::MoveTarget>(body).target);
         glm::vec3 path = targetkin.position - bodykin.position;
     }
-}
-
-void LeaveSOI(Universe& universe, const entt::entity& body) {
-    namespace cqspc = cqsp::common::components;
-    namespace cqspb = cqsp::common::components::bodies;
-    namespace cqspt = cqsp::common::components::types;
-    // There are 2 bodies that are orbiting that matter, the currently orbiting object,
-    // and the object that the current body is orbiting.
-    auto& current_orbit = universe.get<cqspt::Orbit>(body);
-    entt::entity parent = current_orbit.reference_body;
-    if (parent == entt::null) {
-        return;
-    }
-    auto& parent_orbit = universe.get<cqspt::Orbit>(parent);
-    entt::entity greater_parent = parent_orbit.reference_body;
-    if (greater_parent == entt::null) {
-        return;
-    }
-
-    // Set reference body
-    current_orbit.reference_body = greater_parent;
-
-    // Current pos
-    auto& pos = universe.get<cqspt::Kinematics>(body);
-    auto& p_pos = universe.get<cqspt::Kinematics>(parent);
-
-    auto& greater_body = universe.get<cqspb::Body>(greater_parent);
-    // Calculate new orbit
-    auto orb = cqspt::Vec3ToOrbit(pos.position + p_pos.position,
-                                  pos.velocity + p_pos.velocity,
-                                  greater_body.GM,
-                           universe.date.ToSecond());
-    orb.reference_body = greater_parent;
-    orb.GM = greater_body.GM;
-    orb.CalculateVariables();
-    // Remove children
-    auto& parent_orbital_system = universe.get<cqspb::OrbitalSystem>(parent);
-    std::erase(parent_orbital_system.children, body);
-    auto& greater_orbital_system = universe.get<cqspb::OrbitalSystem>(greater_parent);
-    greater_orbital_system.push_back(body);
 }
 }  // namespace cqsp::common::systems
