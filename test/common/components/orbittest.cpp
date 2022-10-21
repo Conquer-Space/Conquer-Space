@@ -333,6 +333,7 @@ TEST(Common_OrbitTest, ToDegreeTest) {
     EXPECT_DOUBLE_EQ(360, cqspt::toDegree(cqspt::PI*2));
 }
 
+/*
 TEST(Common_SOITest, SOIExitTest) {
     namespace cqspc = cqsp::common::components;
     namespace cqspt = cqsp::common::components::types;
@@ -362,3 +363,4 @@ TEST(Common_SOITest, SOIExitTest) {
     EXPECT_EQ(body1_orb.children[1], satellite);
     EXPECT_EQ(body2_orb.children.size(), 0);
 }
+*/
