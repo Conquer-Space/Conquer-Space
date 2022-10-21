@@ -224,6 +224,11 @@ struct Kinematics {
     glm::dvec3 center{0, 0, 0};
 };
 
+// A one tick impulse in the vector
+struct Impulse {
+    glm::dvec3 impulse;
+};
+
 /// <summary>
 /// Way to position star systems on the universe.
 /// </summary>
