@@ -166,10 +166,6 @@ void SysStarSystemRenderer::Initialize() {
 
     namespace cqspt = cqsp::common::components::types;
     auto orbits = m_app.GetUniverse().view<cqspt::Orbit>();
-
-    for (entt::entity entity : orbits) {
-        m_app.GetUniverse().emplace_or_replace<cqspt::OrbitDirty>(entity);
-    }
 }
 
 void SysStarSystemRenderer::OnTick() {
@@ -450,14 +446,21 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
             m_viewing_entity);
         auto norm = glm::normalize(kin.velocity);
         ImGui::TextFmt("Prograde vector: {} {} {}", norm.x, norm.y, norm.z);
+
+        static float delta_v = 0.01;
+        norm *= delta_v;
+        glm::vec3 final_velocity = kin.velocity + norm;
+        ImGui::TextFmt("Velocity vector: {} {} {}", final_velocity.x,
+                       final_velocity.y, final_velocity.z);
+
         if (ImGui::Button("Burn prograde")) {
             // Add 10m/s prograde or something
             auto& impulse =
                 m_universe.get_or_emplace<common::components::types::Impulse>(
                     m_viewing_entity);
-            norm *= 0.01;
             impulse.impulse += norm;
         }
+        ImGui::SliderFloat("Text", &delta_v, -1, 1);
     }
     ImGui::End();
 }
@@ -1155,81 +1158,14 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
     auto orbit2 = m_universe.view<cqspt::Orbit>(entt::exclude<PlanetOrbit>);
     int i = 0;
     for (auto body : orbit2) {
-        // Then produce orbits
-        ZoneScoped;
-        // Generate the orbit
-        auto& orb = m_universe.get<common::components::types::Orbit>(body);
-        if (orb.semi_major_axis == 0) {
-            continue;
-        }
-        const int res = 500;
-        std::vector<glm::vec3> orbit_points;
-        double SOI = std::numeric_limits<double>::infinity();
-        if (m_universe.valid(orb.reference_body)) {
-            SOI = m_universe.get<common::components::bodies::Body>(orb.reference_body)
-                .SOI;
-        }
-
-        orbit_points.reserve(res);
-        for (int i = 0; i <= res; i++) {
-            ZoneScoped;
-            double theta = 3.1415926535 * 2 / res * i;
-            glm::vec3 vec = common::components::types::toVec3(orb, theta);
-            // If the length is greater than the sphere of influence, then remove it
-            if (glm::length(vec) < SOI) {
-                // Convert to opengl
-                orbit_points.push_back(ConvertPoint(vec));
-            }
-        }
-        //m_universe.remove<cqspt::OrbitDirty>(body);
-        auto& line = m_universe.get_or_emplace<PlanetOrbit>(body);
-        // Get the orbit line
-        // Do the points
-        delete line.orbit_mesh;
-        line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);
+        GenerateOrbit(body);
         i++;
     }
 
     auto orbit4 = m_universe.view<cqspt::Orbit, cqspb::DirtyOrbit>();
     for (auto body : orbit4) {
-        // Then produce orbits
-        ZoneScoped;
-        // Generate the orbit
-        auto& orb = m_universe.get<common::components::types::Orbit>(body);
-        if (orb.semi_major_axis == 0) {
-            continue;
-        }
-        const int res = 500;
-        std::vector<glm::vec3> orbit_points;
-        double SOI = std::numeric_limits<double>::infinity();
-        if (m_universe.valid(orb.reference_body)) {
-            SOI = m_universe
-                      .get<common::components::bodies::Body>(orb.reference_body)
-                      .SOI;
-        }
-
-        orbit_points.reserve(res);
-        for (int i = 0; i <= res; i++) {
-            ZoneScoped;
-            double theta = 3.1415926535 * 2 / res * i;
-            glm::vec3 vec = common::components::types::toVec3(orb, theta);
-            // If the length is greater than the sphere of influence, then
-            // remove it
-            if (glm::length(vec) < SOI) {
-                // Convert to opengl
-                orbit_points.push_back(ConvertPoint(vec));
-            }
-        }
-        // m_universe.remove<cqspt::OrbitDirty>(body);
-        auto& line = m_universe.get_or_emplace<PlanetOrbit>(body);
-        // Get the orbit line
-        // Do the points
-        delete line.orbit_mesh;
-        line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);
-        i++;
-    }
-    if (i > 0) {
-        SPDLOG_INFO("Created planet orbits {}", i);
+        GenerateOrbit(body);
+        m_universe.remove<cqspb::DirtyOrbit>(body);
     }
 }
 
@@ -1237,15 +1173,14 @@ common::components::types::SurfaceCoordinate
 SysStarSystemRenderer::GetCitySurfaceCoordinate() {
     namespace cqspt = cqsp::common::components::types;
     namespace cqspc = cqsp::common::components;
-    SPDLOG_INFO("{}", on_planet);
+
     if (on_planet == entt::null || !m_universe.valid(on_planet)) {
         return cqspt::SurfaceCoordinate(0, 0);
     }
-    SPDLOG_INFO("{}", on_planet);
+
     glm::vec3 p = city_founding_position - CalculateCenteredObject(on_planet);
     p = glm::normalize(p);
 
-    SPDLOG_INFO("{} {} {}", p.x, p.y, p.z);
     auto& planet_comp = m_app.GetUniverse().get<cqspc::bodies::Body>(on_planet);
     auto quat = GetBodyRotation(planet_comp.axial, planet_comp.rotation,
                                 planet_comp.rotation_offset);
@@ -1324,6 +1259,42 @@ glm::vec3 SysStarSystemRenderer::GetMouseIntersectionOnObject(int mouse_x, int m
     }
     is_rendering_founding_city = false;
     return glm::vec3(0, 0, 0);
+}
+
+void SysStarSystemRenderer::GenerateOrbit(entt::entity body) {
+    // Then produce orbits
+    ZoneScoped;
+    // Generate the orbit
+    auto& orb = m_universe.get<common::components::types::Orbit>(body);
+    if (orb.semi_major_axis == 0) {
+        return;
+    }
+    const int res = 500;
+    std::vector<glm::vec3> orbit_points;
+    double SOI = std::numeric_limits<double>::infinity();
+    if (m_universe.valid(orb.reference_body)) {
+        SOI =
+            m_universe.get<common::components::bodies::Body>(orb.reference_body)
+                .SOI;
+    }
+
+    orbit_points.reserve(res);
+    for (int i = 0; i <= res; i++) {
+        ZoneScoped;
+        double theta = 3.1415926535 * 2 / res * i;
+        glm::vec3 vec = common::components::types::toVec3(orb, theta);
+        // If the length is greater than the sphere of influence, then remove it
+        if (glm::length(vec) < SOI) {
+            // Convert to opengl
+            orbit_points.push_back(ConvertPoint(vec));
+        }
+    }
+    // m_universe.remove<cqspt::OrbitDirty>(body);
+    auto& line = m_universe.get_or_emplace<PlanetOrbit>(body);
+    // Get the orbit line
+    // Do the points
+    delete line.orbit_mesh;
+    line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);
 }
 
 entt::entity SysStarSystemRenderer::GetMouseOnObject(int mouse_x, int mouse_y) {

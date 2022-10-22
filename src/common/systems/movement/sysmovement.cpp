@@ -96,11 +96,14 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
             // Then also convert the velocity
             auto& impulse = universe.get<cqspc::types::Impulse>(body);
             auto reference = orb.reference_body;
+
             orb = cqspt::Vec3ToOrbit(
                 pos.position, pos.velocity + impulse.impulse,
                                    p_bod.GM, universe.date.ToSecond());
             orb.reference_body = reference;
             orb.CalculateVariables();
+            pos.position = cqspt::toVec3(orb);
+            pos.velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
             universe.emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
             // Remove impulse
             universe.remove<cqspc::types::Impulse>(body);

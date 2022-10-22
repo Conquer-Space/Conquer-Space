@@ -145,6 +145,9 @@ class SysStarSystemRenderer {
     bool CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos, double radius);
     void CalculateCityPositions();
     void CalculateScroll();
+
+    void GenerateOrbit(entt::entity entity);
+
     /// <summary>
     /// Gets the quaternion to calculate the planet's rotation from the axial rotation
     /// and the rotation period
