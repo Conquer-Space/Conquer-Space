@@ -446,7 +446,7 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
             m_universe
             .any_of<common::components::types::Kinematics>(
             m_viewing_entity)) {
-        auto& kin = m_universe.get<common::components::types::Kinematics>(
+        const auto& kin = m_universe.get<common::components::types::Kinematics>(
             m_viewing_entity);
         auto norm = glm::normalize(kin.velocity);
         ImGui::TextFmt("Prograde vector: {} {} {}", norm.x, norm.y, norm.z);
@@ -1237,10 +1237,15 @@ common::components::types::SurfaceCoordinate
 SysStarSystemRenderer::GetCitySurfaceCoordinate() {
     namespace cqspt = cqsp::common::components::types;
     namespace cqspc = cqsp::common::components;
-
+    SPDLOG_INFO("{}", on_planet);
+    if (on_planet == entt::null || !m_universe.valid(on_planet)) {
+        return cqspt::SurfaceCoordinate(0, 0);
+    }
+    SPDLOG_INFO("{}", on_planet);
     glm::vec3 p = city_founding_position - CalculateCenteredObject(on_planet);
     p = glm::normalize(p);
 
+    SPDLOG_INFO("{} {} {}", p.x, p.y, p.z);
     auto& planet_comp = m_app.GetUniverse().get<cqspc::bodies::Body>(on_planet);
     auto quat = GetBodyRotation(planet_comp.axial, planet_comp.rotation,
                                 planet_comp.rotation_offset);
