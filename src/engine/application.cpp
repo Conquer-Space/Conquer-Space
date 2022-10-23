@@ -52,6 +52,7 @@
 #include "engine/ui/rmlsysteminterface.h"
 #include "engine/userinput.h"
 #include "engine/enginelogger.h"
+#include "engine/ui/RmlUi_Renderer_GL3.h"
 
 namespace cqsp::engine {
 namespace {
@@ -147,14 +148,18 @@ class GLWindow : public cqsp::engine::Window {
             m_keys_released[key] = true;
             keys_released_last.push_back(key);
         }
+        RmlGLFW::ProcessKeyCallback(app->GetRmlUiContext(), key, action, mods);
     }
 
     void MousePositionCallback(GLFWwindow* _w, double xpos, double ypos) {
         m_mouse_x = xpos;
         m_mouse_y = ypos;
+        RmlGLFW::ProcessCursorPosCallback(app->GetRmlUiContext(), xpos, ypos, 0);
     }
 
-    void MouseEnterCallback(GLFWwindow* _w, int entered) {}
+    void MouseEnterCallback(GLFWwindow* _w, int entered) {
+        RmlGLFW::ProcessCursorEnterCallback(app->GetRmlUiContext(), entered);
+    }
 
     void MouseButtonCallback(GLFWwindow* _w, int button, int action, int mods) {
         if (action == GLFW_PRESS) {
@@ -168,15 +173,18 @@ class GLWindow : public cqsp::engine::Window {
             m_mouse_keys_held[button] = false;
             m_mouse_keys_released[button] = true;
         }
+        RmlGLFW::ProcessMouseButtonCallback(app->GetRmlUiContext(), button, action, mods);
     }
 
     void ScrollCallback(GLFWwindow* _w, double xoffset, double yoffset) {
         m_scroll_amount = yoffset;
+        RmlGLFW::ProcessScrollCallback(app->GetRmlUiContext(), yoffset, 0);
     }
 
     void CharacterCallback(GLFWwindow* window, unsigned int codepoint) {
         // Callback
         code_input.push_back(codepoint);
+        RmlGLFW::ProcessCharCallback(app->GetRmlUiContext(), codepoint);
     }
 
     void DropCallback(GLFWwindow* _w, int count, const char** paths) {}
@@ -187,6 +195,8 @@ class GLWindow : public cqsp::engine::Window {
         m_window_width = width;
         m_window_height = height;
         window_size_changed = true;
+        RmlGLFW::ProcessFramebufferSizeCallback(app->GetRmlUiContext(), width,
+                                              height);
     }
 
     void SetCallbacks() {
@@ -487,7 +497,8 @@ void Application::ProcessRmlUiUserInput() {
 
 void Application::InitRmlUi() {
     // Begin by installing the custom interfaces.
-    m_system_interface = std::make_unique<CQSPSystemInterface>(*this);
+    m_system_interface = std::make_unique<SystemInterface_GLFW>();
+    m_system_interface->SetWindow((static_cast<GLWindow*>(GetWindow())->window));
     m_render_interface = std::make_unique<CQSPRenderInterface>(*this);
 
     Rml::SetSystemInterface(m_system_interface.get());
@@ -654,7 +665,7 @@ void Application::run() {
         }
         END_TIMED_BLOCK(ImGui_Render);
 
-        ProcessRmlUiUserInput();
+        //ProcessRmlUiUserInput();
         rml_context->Update();
 
         // Clear screen
