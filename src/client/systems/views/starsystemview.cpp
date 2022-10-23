@@ -163,9 +163,7 @@ void SysStarSystemRenderer::Initialize() {
 
     std::copy(&d[0], &d[province_width * province_height * comp],
               std::back_inserter(country_map));
-
-    namespace cqspt = cqsp::common::components::types;
-    auto orbits = m_app.GetUniverse().view<cqspt::Orbit>();
+    delete d;
 }
 
 void SysStarSystemRenderer::OnTick() {

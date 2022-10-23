@@ -82,25 +82,6 @@ void cqsp::common::systems::SysMarket::DoSystem() {
         market.demand.clear();
         market.latent_supply.clear();
         market.latent_demand.clear();
-
-        // Every tick, dump the data
-        auto goodsview = GetUniverse().view<components::Price>();
-
-        // Output to file, I guess
-        std::ofstream data;
-        data.open(fmt::format("{}.txt", universe.GetDate()));
-        data << "Good, Price, Supply, Demand, S/D Ratio, Latent Demand"
-             << std::endl;
-        for (entt::entity good_entity : goodsview) {
-            data << GetUniverse()
-                        .get<components::Identifier>(good_entity)
-                        .identifier
-                 << ", " << market.price[good_entity]
-                 << ", " << market.previous_supply[good_entity] << ", "
-                 << market.previous_demand[good_entity] << ","
-                 << market.sd_ratio[good_entity] << ", "
-                 << market.last_latent_demand[good_entity] << std::endl;
-        }
     }
 }
 
