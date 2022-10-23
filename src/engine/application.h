@@ -19,6 +19,7 @@
 #include <spdlog/spdlog.h>
 #include <RmlUi/Core/ElementDocument.h>
 #include <RmlUi/Core/Context.h>
+#include <glad/glad.h>
 
 #include <memory>
 #include <utility>
@@ -38,6 +39,7 @@
 #include "engine/audio/iaudiointerface.h"
 #include "engine/ui/rmlrenderinterface.h"
 #include "engine/window.h"
+#include "engine/ui/RmlUi_Platform_GLFW.h"
 
 namespace cqsp {
 namespace engine {
@@ -272,8 +274,8 @@ class Application {
     std::string icon_path;
 
     Rml::Context* rml_context;
-    std::unique_ptr<Rml::SystemInterface> m_system_interface;
-    std::unique_ptr<cqsp::engine::CQSPRenderInterface> m_render_interface;
+    std::unique_ptr<SystemInterface_GLFW> m_system_interface;
+    std::unique_ptr<Rml::RenderInterface> m_render_interface;
     ax::NodeEditor::EditorContext* m_ne_context = nullptr;
 
     std::unique_ptr<CqspEventInstancer> m_event_instancer;
