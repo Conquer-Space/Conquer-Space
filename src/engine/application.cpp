@@ -293,7 +293,7 @@ class GLWindow : public cqsp::engine::Window {
         glfwWindowHint(GLFW_SAMPLES, 4);
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
         glfwWindowHint(GLFW_DOUBLEBUFFER, true);
-        glfwWindowHint(GLFW_DECORATED, false);
+        glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
 
 #ifdef __APPLE__
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
