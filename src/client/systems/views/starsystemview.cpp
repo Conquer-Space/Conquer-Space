@@ -957,7 +957,7 @@ glm::quat SysStarSystemRenderer::GetBodyRotation(double axial, double rotation, 
     if (rotation == 0) {
         rot = 0;
     }
-    return glm::quat {{(float)-axial, 0, 0}} *
+    return glm::quat {{0, 0, (float)-axial}} *
            glm::quat {{0, (float)std::fmod(rot, cqspt::TWOPI), 0}};
 }
 
