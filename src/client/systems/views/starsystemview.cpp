@@ -168,7 +168,7 @@ void SysStarSystemRenderer::Initialize() {
 
 void SysStarSystemRenderer::OnTick() {
     entt::entity current_planet = m_app.GetUniverse().view<FocusedPlanet>().front();
-    if (current_planet != entt::null) {
+    if (m_viewing_entity != entt::null) {
         view_center = CalculateObjectPos(m_viewing_entity);
     }
     namespace cqspb = cqsp::common::components::bodies;

@@ -499,7 +499,7 @@ void Application::InitRmlUi() {
     // Begin by installing the custom interfaces.
     m_system_interface = std::make_unique<SystemInterface_GLFW>();
     m_system_interface->SetWindow((static_cast<GLWindow*>(GetWindow())->window));
-    m_render_interface = std::make_unique<CQSPRenderInterface>(*this);
+    m_render_interface = std::make_unique<RenderInterface_GL3>();
 
     Rml::SetSystemInterface(m_system_interface.get());
     Rml::SetRenderInterface(m_render_interface.get());
@@ -640,6 +640,8 @@ void Application::run() {
             fontShader->setMat4("projection", two_dim_projection);
         }
 
+        m_render_interface->SetViewport(GetWindowWidth(), GetWindowHeight());
+
         // Switch scene
         if (m_scene_manager.ToSwitchScene()) {
             m_scene_manager.SwitchScene();
@@ -678,7 +680,9 @@ void Application::run() {
         END_TIMED_BLOCK(Scene_Render);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        m_render_interface->BeginFrame();
         rml_context->Render();
+        m_render_interface->EndFrame();
 
         BEGIN_TIMED_BLOCK(ImGui_Render_Draw);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

@@ -31,6 +31,9 @@
 #include <RmlUi/Core/SystemInterface.h>
 #include <RmlUi/Core/Types.h>
 #include <GLFW/glfw3.h>
+#include <spdlog/spdlog.h>
+
+#include <memory>
 
 class SystemInterface_GLFW : public Rml::SystemInterface {
  public:
@@ -48,6 +51,7 @@ class SystemInterface_GLFW : public Rml::SystemInterface {
 
     void SetClipboardText(const Rml::String& text) override;
     void GetClipboardText(Rml::String& text) override;
+    bool LogMessage(Rml::Log::Type type, const Rml::String& message) override;
 
  private:
     GLFWwindow* window = nullptr;
@@ -55,6 +59,8 @@ class SystemInterface_GLFW : public Rml::SystemInterface {
     GLFWcursor* cursor_pointer = nullptr;
     GLFWcursor* cursor_cross = nullptr;
     GLFWcursor* cursor_text = nullptr;
+
+    std::shared_ptr<spdlog::logger> logger;
 };
 
 /**

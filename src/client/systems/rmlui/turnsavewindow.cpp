@@ -25,6 +25,9 @@ TurnSaveWindow::~TurnSaveWindow() {
 }
 
 void TurnSaveWindow::Update(double delta_time) {
+    SPDLOG_INFO("Window {} {} {} {}", document->GetBox().GetPosition().x,
+                document->GetBox().GetPosition().y,
+                document->GetBox().GetSize().x, document->GetBox().GetSize().y);
     auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
 
     // This is to avoid a memory leak in RmlUi's SetInnerRML.
@@ -32,7 +35,7 @@ void TurnSaveWindow::Update(double delta_time) {
     // So, gotta do this or else it'll leak about 30MB a minute.
     // If you can figure it out, send a PR to RmlUi.
     static auto date = GetUniverse().date.GetDate();
-    static bool tr = true;
+    bool tr = true;
     if (date != GetUniverse().date.GetDate() || (date == 0 && tr)) {
         // Then do the rest
         // Check if it changed, or something

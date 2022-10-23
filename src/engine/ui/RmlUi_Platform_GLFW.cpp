@@ -33,10 +33,14 @@
 #include <RmlUi/Core/SystemInterface.h>
 #include <GLFW/glfw3.h>
 
+#include "common/util/logging.h"
+
 SystemInterface_GLFW::SystemInterface_GLFW() {
     cursor_pointer = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
     cursor_cross = glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR);
     cursor_text = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
+
+    logger = cqsp::common::util::make_registered_logger("RmlUi", true);
 }
 
 SystemInterface_GLFW::~SystemInterface_GLFW() {
@@ -83,6 +87,36 @@ void SystemInterface_GLFW::SetClipboardText(const Rml::String& text_utf8) {
 void SystemInterface_GLFW::GetClipboardText(Rml::String& text) {
     if (window)
         text = Rml::String(glfwGetClipboardString(window));
+}
+
+bool SystemInterface_GLFW::LogMessage(Rml::Log::Type type,
+                                      const Rml::String& message) {
+    spdlog::level::level_enum level;
+    switch (type) {
+        case Rml::Log::Type::LT_MAX:
+            level = spdlog::level::level_enum::trace;
+            break;
+        case Rml::Log::Type::LT_INFO:
+            level = spdlog::level::level_enum::info;
+            break;
+        case Rml::Log::Type::LT_DEBUG:
+            level = spdlog::level::level_enum::debug;
+            break;
+        case Rml::Log::Type::LT_WARNING:
+            level = spdlog::level::level_enum::warn;
+            break;
+        case Rml::Log::Type::LT_ASSERT:
+            level = spdlog::level::level_enum::warn;
+            break;
+        case Rml::Log::Type::LT_ERROR:
+            level = spdlog::level::level_enum::err;
+            break;
+        case Rml::Log::Type::LT_ALWAYS:
+            level = spdlog::level::level_enum::critical;
+            break;
+    }
+    SPDLOG_LOGGER_CALL(logger, level, "RML: {}", message);
+    return true;
 }
 
 bool RmlGLFW::ProcessKeyCallback(Rml::Context* context, int key, int action, int mods) {

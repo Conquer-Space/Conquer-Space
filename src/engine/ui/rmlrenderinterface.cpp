@@ -198,7 +198,7 @@ void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(
 
 void cqsp::engine::CQSPRenderInterface::ReleaseCompiledGeometry(
     Rml::CompiledGeometryHandle geometry) {
-    delete (Rml::CompiledGeometryHandle*) geometry;
+    delete (RmlUiRendererGeometryHandler*) geometry;
 }
 
 void cqsp::engine::CQSPRenderInterface::EnableScissorRegion(bool enable) {

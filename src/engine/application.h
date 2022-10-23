@@ -40,6 +40,7 @@
 #include "engine/ui/rmlrenderinterface.h"
 #include "engine/window.h"
 #include "engine/ui/RmlUi_Platform_GLFW.h"
+#include "engine/ui/RmlUi_Renderer_GL3.h";
 
 namespace cqsp {
 namespace engine {
@@ -275,7 +276,7 @@ class Application {
 
     Rml::Context* rml_context;
     std::unique_ptr<SystemInterface_GLFW> m_system_interface;
-    std::unique_ptr<Rml::RenderInterface> m_render_interface;
+    std::unique_ptr<RenderInterface_GL3> m_render_interface;
     ax::NodeEditor::EditorContext* m_ne_context = nullptr;
 
     std::unique_ptr<CqspEventInstancer> m_event_instancer;

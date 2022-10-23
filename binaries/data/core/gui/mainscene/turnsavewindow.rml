@@ -71,9 +71,9 @@
         </style>
     </head>
     <body>
-        <p id="time">Time</p>
+        <div id="time">Time</div>
         <br/>
-        <p id="speed"></p>
+        <div id="speed">Speed</div>
         <br/>
         <div id="button_holder" style="padding-top: 5px">
         <svg class="turnimage" src="fast-backward-button.svg" width="32" height="32" id="slow_down"></svg>
