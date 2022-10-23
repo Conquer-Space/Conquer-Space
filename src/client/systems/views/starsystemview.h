@@ -218,7 +218,7 @@ class SysStarSystemRenderer {
     int province_height = 0;
     int province_width = 0;
 
-    std::vector<uint64_t> country_map;
+    std::vector<unsigned char> country_map;
 
     common::components::types::SurfaceCoordinate GetCitySurfaceCoordinate();
     void CityDetection();

@@ -1175,15 +1175,19 @@ SysStarSystemRenderer::GetCitySurfaceCoordinate() {
     if (on_planet == entt::null || !m_universe.valid(on_planet)) {
         return cqspt::SurfaceCoordinate(0, 0);
     }
+    if (!m_universe.any_of<cqspc::bodies::Body>(on_planet)) {
+        return cqspt::SurfaceCoordinate(0, 0);
+    }
 
     glm::vec3 p = city_founding_position - CalculateCenteredObject(on_planet);
     p = glm::normalize(p);
 
     auto& planet_comp = m_app.GetUniverse().get<cqspc::bodies::Body>(on_planet);
-    auto quat = GetBodyRotation(planet_comp.axial, planet_comp.rotation,
+    glm::quat quat = GetBodyRotation(planet_comp.axial, planet_comp.rotation,
                                 planet_comp.rotation_offset);
     // Rotate the vector based on the axial tilt and rotation.
     p = glm::inverse(quat) * p;
+
     cqspt::SurfaceCoordinate s = cqspt::ToSurfaceCoordinate(p);
     s = cqspt::SurfaceCoordinate(s.latitude(), s.longitude() + 90);
     return s;
