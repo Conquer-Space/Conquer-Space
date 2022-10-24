@@ -1,0 +1,8 @@
+{
+    satellites: {
+        path: satellites.txt
+        type: text
+        hints: {
+        }
+    }
+}

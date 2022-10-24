@@ -1,0 +1,17 @@
+// NAVSTAR is the GPS system
+[
+    {
+        identifier: NAVSTAR 43 (USA 132)
+        name: USA-132
+        constellation: GPS
+        type: navigation
+        owner: USA
+    }
+    {
+        identifier: NAVSTAR 44 (USA 135)
+        name: USA-135
+        constellation: GPS
+        type: navigation
+        owner: USA
+    }
+]
