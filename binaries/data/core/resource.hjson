@@ -11,10 +11,4 @@
         hints: {
         }
     }
-    satellites: {
-        path: sat_temp.txt
-        type: text
-        hints: {
-        }
-    }
 }

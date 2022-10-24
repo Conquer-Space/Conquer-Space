@@ -177,12 +177,12 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
     if (universe.all_of<common::components::types::Orbit>(entity)) {
         auto& orbit = universe.get<common::components::types::Orbit>(entity);
         ImGui::Separator();
-        ImGui::TextFmt("Semi Major Axis: {}", orbit.semi_major_axis);
-        ImGui::TextFmt("Inclination: {}", orbit.inclination);
+        ImGui::TextFmt("Semi Major Axis: {} km", orbit.semi_major_axis);
+        ImGui::TextFmt("Inclination: {} deg", common::components::types::toDegree(orbit.inclination));
         ImGui::TextFmt("Eccentricity: {}", orbit.eccentricity);
-        ImGui::TextFmt("Longitude of Linear Node: {}", orbit.LAN);
-        ImGui::TextFmt("Argument of Periapsis: {}", orbit.w);
-        ImGui::TextFmt("True Anomaly: {}", orbit.v);
+        ImGui::TextFmt("Longitude of Linear Node: {} deg", common::components::types::toDegree(orbit.LAN));
+        ImGui::TextFmt("Argument of Periapsis: {} deg", common::components::types::toDegree(orbit.w));
+        ImGui::TextFmt("True Anomaly: {} deg", common::components::types::toDegree(orbit.v));
         ImGui::TextFmt("Orbital Period: {} y {} d {} h {} m {} s",
                        (int) (orbit.T / (60 * 60 * 24 * 365)),
                        (int) std::fmod(orbit.T / (60 * 60 * 24), 24),
