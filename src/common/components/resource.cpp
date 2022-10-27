@@ -356,6 +356,22 @@ ResourceLedger ResourceLedger::SafeDivision(const ResourceLedger &other) {
     }
     return ledger;
 }
+double ResourceLedger::Min() {
+    double Minimum = this->begin()->second;
+    for (auto iterator = this->begin(); iterator != this->end(); iterator++)
+        if (iterator->second < Minimum) Minimum = iterator->second;
+    return Minimum;
+}
+
+double ResourceLedger::Max() {
+    double Maximum = this->begin()->second;
+    for (auto iterator = this->begin(); iterator != this->end(); iterator++)
+        if (iterator->second > Maximum) Maximum = iterator->second;
+    return Maximum;
+}
+
+
+
 
 double ResourceLedger::Average() {
     return this->GetSum() / this->size();
@@ -384,4 +400,20 @@ ResourceLedger RecipeOutput::operator*(ResourceLedger & ledger) const {
     ret[entity] = ledger[entity] * amount;
     return ret;
 }
+
+/// <summary>
+/// Creates a new resource ledger using the keys from one resource ledger, and the values from annother
+/// </summary>
+ResourceLedger CopyVals(const ResourceLedger &keys,
+                        const ResourceLedger &values)
+{
+    ResourceLedger tkeys = keys;
+    ResourceLedger tvals = values;
+    for (auto iterator = keys.begin(); iterator != keys.end();
+         iterator++) {
+        tkeys[iterator->first] = tvals[iterator->first];
+    }
+    return tkeys;
+}
+
 }  // namespace cqsp::common::components
