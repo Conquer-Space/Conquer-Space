@@ -158,7 +158,7 @@ void SysCountryInformation::CityView() {
     }
 
     // Other industry information
-    if (GetUniverse().all_of<cqspc::Industry>(current_city)) {
+    if (GetUniverse().all_of<cqspc::IndustrialZone>(current_city)) {
         CityIndustryTabs();
     } else {
         ImGui::Text("City has no Industry");
@@ -239,7 +239,8 @@ void SysCountryInformation::DemographicsTab() {
 
 void SysCountryInformation::IndustryTab() {
     IndustryListWindow();
-    auto& city_industry = GetUniverse().get<cqspc::Industry>(current_city);
+    auto& city_industry =
+        GetUniverse().get<cqspc::IndustrialZone>(current_city);
     int height = 300;
     ImGui::TextFmt("Factories: {}", city_industry.industries.size());
     if (ImGui::SmallButton("Economy info")) {
@@ -329,7 +330,8 @@ void SysCountryInformation::IndustryListWindow() {
     }
     ImGui::Begin("Name", &city_factory_info);
     // Loop through market industry
-    auto& city_industry = GetUniverse().get<cqspc::Industry>(current_city);
+    auto& city_industry =
+        GetUniverse().get<cqspc::IndustrialZone>(current_city);
 
     for (entt::entity industry : city_industry.industries) {
         ImGui::TextFmt("{}",
@@ -349,7 +351,7 @@ void SysCountryInformation::IndustryTabGenericChild(const std::string& tabname,
             tabname.c_str(), size, true,
             ImGuiWindowFlags_HorizontalScrollbar | window_flags);
         auto& city_industry =
-            GetUniverse().get<cqspc::Industry>(current_city);
+            GetUniverse().get<cqspc::IndustrialZone>(current_city);
         ImGui::TextFmt(tabname);
         // List all the stuff it produces
 
@@ -364,10 +366,10 @@ void SysCountryInformation::IndustryTabGenericChild(const std::string& tabname,
                     GetUniverse().get<cqspc::Production>(industry);
                 const cqspc::Recipe& recipe =
                     GetUniverse().get<cqspc::Recipe>(generator.recipe);
-                const cqspc::ProductionRatio& ratio =
-                    GetUniverse().get<cqspc::ProductionRatio>(industry);
+                const cqspc::IndustrySize& ratio =
+                    GetUniverse().get<cqspc::IndustrySize>(industry);
 
-                input_resources += (recipe.input * ratio.ratio);
+                input_resources += (recipe.input * ratio.size);
                 output_resources[recipe.output.entity] += recipe.output.amount;
 
                 if (GetUniverse().all_of<cqspc::Wallet>(industry)) {

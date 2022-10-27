@@ -61,7 +61,7 @@ void SysPlanetMarketInformation::MarketInformationTooltipContent(
                    market.participants.size());
 
     // Get resource stockpile
-    if (ImGui::BeginTable("marketinfotable", 7,
+    if (ImGui::BeginTable("marketinfotable", 8,
                           ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Good");
         ImGui::TableSetupColumn("Price");
@@ -70,6 +70,7 @@ void SysPlanetMarketInformation::MarketInformationTooltipContent(
         ImGui::TableSetupColumn("S/D ratio");
         ImGui::TableSetupColumn("D/S ratio");
         ImGui::TableSetupColumn("Latent Demand");
+        ImGui::TableSetupColumn("Input Ratio");
         ImGui::TableHeadersRow();
         auto goodsview = GetUniverse().view<cqspc::Price>();
 
@@ -81,7 +82,7 @@ void SysPlanetMarketInformation::MarketInformationTooltipContent(
                                       GetUniverse()
                                           .get<cqspc::Identifier>(good_entity)
                                           .identifier);
-            } else {
+            } else {   
                 ImGui::TextFmt("{}",
                                       GetUniverse()
                                           .get<cqspc::Identifier>(good_entity)
@@ -97,7 +98,7 @@ void SysPlanetMarketInformation::MarketInformationTooltipContent(
             ImGui::TextFmt("{}", cqsp::util::LongToHumanString(
                                      market.previous_demand[good_entity]));
             ImGui::TableSetColumnIndex(4);
-            double sd_ratio = market.sd_ratio[good_entity];
+            double sd_ratio = market.history.back().sd_ratio[good_entity];
             if (sd_ratio == std::numeric_limits<double>::infinity())
                 ImGui::TextFmt("inf");
             else
@@ -106,6 +107,9 @@ void SysPlanetMarketInformation::MarketInformationTooltipContent(
             ImGui::TextFmt("{}", market.ds_ratio[good_entity]);
             ImGui::TableSetColumnIndex(6);
             ImGui::TextFmt("{}", market.last_latent_demand[good_entity]);
+            ImGui::TableSetColumnIndex(7);
+            ImGui::TextFmt("{}", market[good_entity].inputratio);
+
         }
         ImGui::EndTable();
     }

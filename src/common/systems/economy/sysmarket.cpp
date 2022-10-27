@@ -127,5 +127,6 @@ void cqsp::common::systems::SysMarket::InitializeMarket(Game& game) {
             market.demand[goodenity] = 1;
         }
         market.sd_ratio = market.supply.SafeDivision(market.demand);
+        market.history.push_back(market);
     }
 }
