@@ -152,7 +152,7 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
 
     if (universe.all_of<cqspc::bodies::Body>(entity)) {
         auto& body = universe.get<cqspc::bodies::Body>(entity);
-        ImGui::TextFmt("Rotation: {} days", body.rotation / 86400);
+        ImGui::TextFmt("Day length: {} days (offset {})", body.rotation / 86400, body.rotation_offset);
     }
 
     if (universe.all_of<cqspc::Governed>(entity)) {

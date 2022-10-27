@@ -99,7 +99,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         body_comp.rotation = 0;
     }
 
-    if (values["day_offset"].type() == Hjson::Type::Double) {
+    if (values["day_offset"].type() != Hjson::Type::Null) {
         bool offset_correct;
         body_comp.rotation_offset = ReadUnit(values["day_offset"].to_string(), UnitType::Angle, &offset_correct);
         if (!offset_correct) {
