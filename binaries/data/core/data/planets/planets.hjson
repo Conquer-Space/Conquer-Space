@@ -78,7 +78,7 @@
         }
         // Sidereal 
         day_length: 0.99726968 d
-        day_offset: 100.1833 deg
+        day_offset: 3 deg
         // Axial tilt
         axial: 23.4392811 deg
         texture: {

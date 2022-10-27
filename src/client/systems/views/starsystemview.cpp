@@ -423,9 +423,9 @@ void SysStarSystemRenderer::DoUI(float deltaTime) {
         m_universe.view<FocusedPlanet>().size());
     entt::entity earth = m_universe.planets["earth"];
     auto& b = m_universe.get<cqspb::Body>(earth);
-    float offset = (float) b.rotation_offset;
-    ImGui::SliderAngle("asdf", &offset);
-    b.rotation_offset = (float) offset;
+    //float offset = (float) b.rotation_offset;
+    //ImGui::SliderAngle("asdf", &offset);
+    //b.rotation_offset = (float) offset;
     ImGui::End();
 
     // Get the focused object, and display their information
@@ -1358,7 +1358,19 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity &entity) {
     orbit_shader->Set("color", glm::vec4(1, 1, 1, 1));
     // Set to the center of the universe
     auto& orbit = m_universe.get<PlanetOrbit>(entity);
+
     orbit.orbit_mesh->Draw();
+
+    // Get parent
+    glm::vec3 object_pos = CalculateCenteredObject(entity);
+    transform = glm::mat4(1.f);
+    //transform = glm::translate(transform, object_pos);
+    auto mesh = engine::primitive::CreateLineSequence(
+        {object_pos, CalculateCenteredObject(glm::vec3(0, 0, 0))});
+    orbit_shader->SetMVP(transform, camera_matrix, m_app.Get3DProj());
+
+    mesh->Draw();
+    delete mesh;
 }
 
 void SysStarSystemRenderer::OrbitEditor() {
