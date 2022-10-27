@@ -102,7 +102,7 @@ void cqsp::scene::UniverseScene::Init() {
     //AddUISystem<cqsps::SysTechnologyProjectViewer>();
     //AddUISystem<cqsps::SysTechnologyViewer>();
     AddUISystem<cqsps::SysCountryInformation>();
-    //AddUISystem<cqsps::SysPlanetMarketInformation>();
+    AddUISystem<cqsps::SysPlanetMarketInformation>();
 
     AddUISystem<cqsps::gui::SysEvent>();
     simulation->tick();

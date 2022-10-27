@@ -65,7 +65,7 @@ Simulation::Simulation(cqsp::common::Game &game) : m_game(game), m_universe(game
 
     // AddSystem<cqspcs::SysAgent>();
     AddSystem<cqspcs::SysMarket>();
-    // AddSystem<cqspcs::history::SysMarketHistory>();
+    AddSystem<cqspcs::history::SysMarketHistory>();
     AddSystem<cqspcs::SysOrbit>();
     AddSystem<cqspcs::SysPath>();
 
