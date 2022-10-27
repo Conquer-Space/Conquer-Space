@@ -19,32 +19,32 @@
             {
                 type: factory
                 recipe: plastic_mine
-                productivity: 100
+                productivity: 1000
             }
             {
                 type: factory
                 recipe: fuel_mine
-                productivity: 100
+                productivity: 1000
             }
             {
                 type: healthcare
                 recipe: medical_serv
-                productivity: 1
+                productivity: 10
             }
             {
                 type: power plant
                 recipe: power_man
-                productivity: 2
+                productivity: 200
             }
             {
                 type: Broadway
                 recipe: entertainment_industry
-                productivity: 1
+                productivity: 100
             }
             {
                 type: Brick Production
                 recipe: bricks_mine
-                productivity: 1
+                productivity: 100000
             }
             {
                 type: Water
@@ -54,12 +54,12 @@
             {
                 type: ReMetal
                 recipe: remetal_mine
-                productivity: 10
+                productivity: 1000
             }
             {
                 type: Farms
                 recipe: animals_man
-                productivity: 10
+                productivity: 100
             }
             {
                 type: food
@@ -69,7 +69,7 @@
             {
                 type: industrial_equipment_cap
                 recipe: industrial_equipment_cap
-                productivity: 200
+                productivity: 2000
             }
             {
                 type: systems_cap
@@ -77,29 +77,59 @@
                 productivity: 200
             }
             {
-                type: systems_cap
-                recipe: systems_cap
-                productivity: 200
+                type: construction_cap
+                recipe: construction_cap
+                productivity: 600000
             }
             {
                 type: transport_cap
                 recipe: transport_cap
-                productivity: 100
+                productivity: 1000
             }
             {
                 type: motorvehicles_man
                 recipe: motorvehicles_man
-                productivity: 200
+                productivity: 2000
             }
             {
                 type: egoods_man
                 recipe: egoods_man
-                productivity: 200
+                productivity: 2000
             }
             {
                 type: housegoods_man
                 recipe: housegoods_man
-                productivity: 200
+                productivity: 2000
+            }
+			{
+                type: recgoods_man
+                recipe: recgoods_man
+                productivity: 2000
+            }
+			{
+                type: crop_cultivation
+                recipe: crop_cultivation
+                productivity: 2000
+            }
+			{
+                type: fmetal_mine
+                recipe: fmetal_mine
+                productivity: 4000
+            }
+			{
+                type: nmetal_mine
+                recipe: nmetal_mine
+                productivity: 2000
+            }
+			{
+                type: garments_man
+                recipe: garments_man
+                productivity: 2000
+            }
+			{
+                type: computer_man
+                recipe: computer_man
+                productivity: 2000
             }
             /*
             {
