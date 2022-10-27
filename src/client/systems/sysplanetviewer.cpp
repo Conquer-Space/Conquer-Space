@@ -202,7 +202,7 @@ void SysPlanetInformation::CityInformationPanel() {
             time, tz_name);
     }
 
-    if (GetUniverse().all_of<cqspc::Industry>(selected_city_entity)) {
+    if (GetUniverse().all_of<cqspc::IndustrialZone>(selected_city_entity)) {
         if (ImGui::BeginTabBar("CityTabs", ImGuiTabBarFlags_None)) {
             if (ImGui::BeginTabItem("Demographics")) {
                 DemographicsTab();
@@ -310,7 +310,8 @@ void SysPlanetInformation::PlanetInformationPanel() {
 
 void SysPlanetInformation::ResourcesTab() {
     // Consolidate resources
-    auto &city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
+    auto& city_industry =
+        GetUniverse().get<cqspc::IndustrialZone>(selected_city_entity);
     cqspc::ResourceLedger resources =
         GetUniverse().get<cqspc::ResourceStockpile>(selected_city_entity);
     DrawLedgerTable("cityresources", GetUniverse(), resources);
@@ -326,7 +327,8 @@ void SysPlanetInformation::ResourcesTab() {
 }
 
 void SysPlanetInformation::IndustryTab() {
-    auto& city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
+    auto& city_industry =
+        GetUniverse().get<cqspc::IndustrialZone>(selected_city_entity);
 
     int height = 300;
     ImGui::TextFmt("Factories: {}", city_industry.industries.size());
@@ -364,7 +366,7 @@ void SysPlanetInformation::IndustryTabGenericChild(
     ImGui::BeginChild(tabname.c_str(), size, true,
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
     auto& city_industry =
-        GetUniverse().get<cqspc::Industry>(selected_city_entity);
+        GetUniverse().get<cqspc::IndustrialZone>(selected_city_entity);
     ImGui::TextFmt(tabname);
     // List all the stuff it produces
 
@@ -381,10 +383,10 @@ void SysPlanetInformation::IndustryTabGenericChild(
                 GetUniverse().get<cqspc::Production>(industry);
             const cqspc::Recipe& recipe =
                 GetUniverse().get<cqspc::Recipe>(generator.recipe);
-            const cqspc::ProductionRatio& ratio =
-                GetUniverse().get<cqspc::ProductionRatio>(industry);
+            const cqspc::IndustrySize& ratio =
+                GetUniverse().get<cqspc::IndustrySize>(industry);
 
-            input_resources  += (recipe.input * ratio.ratio);
+            input_resources  += (recipe.input * ratio.size);
             output_resources[recipe.output.entity] += recipe.output.amount;
 
             if (GetUniverse().all_of<cqspc::Wallet>(industry)) {
@@ -400,7 +402,10 @@ void SysPlanetInformation::IndustryTabGenericChild(
     if (CQSPGui::SmallDefaultButton("List")) {
         factory_list_panel = true;
         industrylist.resize(0);
-        auto& city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity).industries;
+        auto& city_industry =
+            GetUniverse()
+                .get<cqspc::IndustrialZone>(selected_city_entity)
+                .industries;
         for (entt::entity production : city_industry) {
             if (GetUniverse().all_of<inddustrytype>(production))
                 industrylist.push_back(production);
@@ -613,15 +618,15 @@ void SysPlanetInformation::MineConstruction() {
             GetUniverse().get<cqspc::ResourceStockpile>(city_market) -= cost;
             */
             // Buy things on the market
-            entt::entity factory = cqsp::common::systems::actions::CreateMine(
-                GetUniverse(), selected_city_entity, selected_good, 1, prod);
-            cqsp::common::systems::economy::AddParticipant(GetUniverse(), city_market, factory);
+            //entt::entity factory = cqsp::common::systems::actions::CreateMine(
+            //    GetUniverse(), selected_city_entity, selected_good, 1, prod);
+            //cqsp::common::systems::economy::AddParticipant(GetUniverse(), city_market, factory);
         }
 
         if (ImGui::IsItemHovered()) {
             ImGui::BeginTooltip();
             DrawLedgerTable("building_cost_tooltip", GetUniverse(),
-                        cqsp::common::systems::actions::GetMineCost(
+                        cqsp::common::systems::actions::GetFactoryCost(
                                 GetUniverse(), selected_city_entity, selected_good, prod));
             ImGui::EndTooltip();
         }
@@ -684,7 +689,8 @@ void SysPlanetInformation::InfrastructureTab() {
     // Get the areas that generate power
     ImGui::Separator();
     ImGui::Text("Power");
-    auto &city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
+    auto& city_industry =
+        GetUniverse().get<cqspc::IndustrialZone>(selected_city_entity);
     double power_production = 0;
     double power_demand = 0;
     if (GetUniverse().any_of<cqspc::infrastructure::CityPower>(selected_city_entity)) {
@@ -722,7 +728,8 @@ void SysPlanetInformation::ScienceTab() {
     if (!GetUniverse().valid(selected_planet)) {
         return;
     }
-    auto &city_industry = GetUniverse().get<cqspc::Industry>(selected_city_entity);
+    auto& city_industry =
+        GetUniverse().get<cqspc::IndustrialZone>(selected_city_entity);
     ImGui::Text("Science");
     // Get the science labs
     cqspc::ResourceLedger led;

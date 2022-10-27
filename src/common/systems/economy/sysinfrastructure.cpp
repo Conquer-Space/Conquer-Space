@@ -26,9 +26,9 @@ void cqsp::common::systems::InfrastructureSim::DoSystem() {
     namespace cqspc = cqsp::common::components;
     Universe& universe = GetUniverse();
     // Get all cities with industry and infrastruture
-    auto view = universe.view<cqspc::Industry>();
+    auto view = universe.view<cqspc::IndustrialZone>();
     for (entt::entity entity : view) {
-        auto& industry = universe.get<cqspc::Industry>(entity);
+        auto& industry = universe.get<cqspc::IndustrialZone>(entity);
         double power_production = 0;
         double power_consumption = 0;
         for (entt::entity industrial_site : industry.industries) {

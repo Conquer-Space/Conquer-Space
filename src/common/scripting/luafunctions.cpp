@@ -159,11 +159,11 @@ void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("create_industries", [&](entt::entity city) {
-        universe.emplace<cqspc::Industry>(city);
+        universe.emplace<cqspc::IndustrialZone>(city);
     });
 
     REGISTER_FUNCTION("add_industry", [&](entt::entity city, entt::entity entity) {
-        universe.get<cqspc::Industry>(city).industries.push_back(entity);
+        universe.get<cqspc::IndustrialZone>(city).industries.push_back(entity);
     });
 
     REGISTER_FUNCTION("create_factory", [&](entt::entity city, entt::entity recipe, float productivity) {
@@ -184,7 +184,7 @@ void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
     REGISTER_FUNCTION("add_power_plant", [&](entt::entity city, double productivity) {
         entt::entity entity = universe.create();
         universe.emplace<cqspc::infrastructure::PowerPlant>(entity, productivity);
-        universe.get<cqspc::Industry>(city).industries.push_back(entity);
+        universe.get<cqspc::IndustrialZone>(city).industries.push_back(entity);
         return entity;
     });
 
@@ -239,14 +239,8 @@ void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
     REGISTER_FUNCTION("add_cash", [&](entt::entity participant, double balance) {
         universe.get_or_emplace<cqspc::Wallet>(participant) += balance;
     });
+    
 
-    REGISTER_FUNCTION("create_mine", [&](entt::entity city, entt::entity resource, int amount, float productivity) {
-        return cqspa::CreateMine(universe, city, resource, amount, productivity);
-    });
-
-    REGISTER_FUNCTION("create_farm", [&](entt::entity city, entt::entity resource, int amount, float productivity) {
-        return cqspa::CreateFarm(universe, city, resource, amount, productivity);
-    });
 }
 
 void FunctionUser(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {

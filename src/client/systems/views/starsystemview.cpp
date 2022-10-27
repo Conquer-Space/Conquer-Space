@@ -360,7 +360,7 @@ void SysStarSystemRenderer::Update(float deltaTime) {
 
                 // Set country
                 // Add population and economy
-                m_app.GetUniverse().emplace<cqspc::Industry>(settlement);
+                m_app.GetUniverse().emplace<cqspc::IndustrialZone>(settlement);
 
                 m_app.GetUniverse().clear<CityFounding>();
 
