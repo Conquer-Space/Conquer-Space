@@ -63,10 +63,11 @@ struct MarketElementInformation {
     double price;
     double price_ratio;
     double sd_ratio;
+    double inputratio;
 };
 
 struct Market : MarketInformation {
-    //std::vector<MarketInformation> history;
+    std::vector<MarketInformation> history;
 
     std::map<entt::entity, MarketElementInformation> market_information;
     std::map<entt::entity, MarketElementInformation> last_market_information;

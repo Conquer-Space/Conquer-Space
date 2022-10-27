@@ -70,17 +70,15 @@ void ResourceTooltipSection(const Universe &universe, entt::entity entity) {
         ImGui::Text("Producing next tick");
     }
 
-    if (universe.all_of<cqspc::FactorySize>(entity)) {
+    if (universe.all_of<cqspc::IndustrySize>(entity)) {
         ImGui::TextFmt(
             "Size: {}",
-            universe.get<cqspc::FactorySize>(entity).size);
+                       universe.get<cqspc::IndustrySize>(entity).size);
+        ImGui::TextFmt("Utilization: {}",
+                       universe.get<cqspc::IndustrySize>(entity).utilization);
     }
 
-    if (universe.all_of<cqspc::ProductionRatio>(entity)) {
-        cqspc::ProductionRatio ratio =
-            universe.get<cqspc::ProductionRatio>(entity);
-        ImGui::TextFmt("IO Scaling");
-    }
+
 
     if (universe.all_of<cqspc::infrastructure::PowerConsumption>(entity)) {
         ImGui::Separator();

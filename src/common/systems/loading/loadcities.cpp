@@ -68,7 +68,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     universe.emplace<components::ResourceLedger>(entity);
 
     // Industry and economy
-    auto& industry = universe.emplace<components::Industry>(entity);
+    auto& industry = universe.emplace<components::IndustrialZone>(entity);
 
     // Commercial area
     entt::entity commercial = universe.create();

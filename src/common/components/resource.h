@@ -174,11 +174,16 @@ class ResourceLedger : private LedgerMap {
     /// </summary>
     ResourceLedger SafeDivision(const ResourceLedger&);
 
+    
+
     /// <summary>
     /// Returns a copy of the vector divided by the indicated vector, with
     /// division by zero resulting in infiniy
     /// </summary>
     double Average();
+
+    double Min();
+    double Max();
 
     /// <summary>
     /// Checks if this current resource ledger has any resources in this list
@@ -220,6 +225,8 @@ class ResourceLedger : private LedgerMap {
     using LedgerMap::size;
     using LedgerMap::mapped_type;
 };
+
+ResourceLedger CopyVals(const ResourceLedger& keys, const ResourceLedger& values);
 ResourceLedger ResourceLedgerZip(const ResourceLedger& key, const ResourceLedger& value);
 
 struct RecipeOutput {
@@ -246,28 +253,12 @@ struct RecipeCost {
     ResourceLedger scaling;
 };
 
-//TODO(AGM): Remove ProductionTraits and FactoryProductivity
-struct ProductionTraits {
-    double max_production;
-    double current_production;
-};
 
-/// <summary>
-/// The multiplier of recipes the factory is generating right now. This is the amount of recipes the factory wants to
-/// generate, or the production target.
-/// </summary>
-struct FactoryProductivity {
-    // The amount they want to make now
-    double current_production;
-    // The physical limitation the factory can produce
-    double max_production;
-    // Other modifiers go here, I guess
-    // Idk if i want a map, but that may not be a bad idea
-};
 
 // Factory size
-struct FactorySize {
+struct IndustrySize {
     double size;
+    double utilization;
 };
 
 struct CostBreakdown {
@@ -288,11 +279,6 @@ struct CostBreakdown {
     }
 };
 
-
-//Multplier on prouduction
-struct ProductionRatio {
-    double ratio;
-};
 
 //Essentially resource consumption + production
 struct ResourceIO {

@@ -21,7 +21,7 @@
 namespace cqsp {
 namespace common {
 namespace components {
-struct Industry {
+struct IndustrialZone {
     std::vector<entt::entity> industries;
 };
 

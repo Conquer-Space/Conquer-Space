@@ -54,16 +54,8 @@ entt::entity CreateFactory(cqsp::common::Universe& universe, entt::entity city,
 cqsp::common::components::ResourceLedger GetFactoryCost(cqsp::common::Universe& universe,
                             entt::entity city, entt::entity recipe, int productivity);
 
-entt::entity CreateMine(cqsp::common::Universe& universe,
-                        entt::entity city, entt::entity good, int amount, float productivity);
-
-cqsp::common::components::ResourceLedger GetMineCost(cqsp::common::Universe& universe,
-                        entt::entity city, entt::entity good, int amount);
-
 entt::entity CreateCommercialArea(cqsp::common::Universe& universe, entt::entity city);
 
-entt::entity CreateFarm(cqsp::common::Universe& universe, entt::entity city,
-                        entt::entity good, int amount, float productivity);
 }  // namespace actions
 }  // namespace systems
 }  // namespace common
