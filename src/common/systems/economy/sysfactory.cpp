@@ -30,8 +30,15 @@
 namespace cqsp::common::systems {
 namespace cqspc = cqsp::common::components;
 namespace {
+/// <summary>
+/// Runs the production cycle
+/// Consumes material from the market based on supply and then sells the manufactured goods on the market.
+/// </summary>
+/// <param name="universe">Registry used for searching for components</param>
+/// <param name="entity">Entity containing an Inudstries that need to be processed</param>
+/// <param name="market">The market the industry uses.</param>
 void ProcessIndustries(common::Universe& universe, entt::entity entity,
-                       cqspc::Market& market) {
+                    cqspc::Market& market) {
     // Get the transport cost
     auto& infrastructure =
         universe.get<cqspc::infrastructure::CityInfrastructure>(entity);
@@ -39,105 +46,106 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
     double infra_cost =
         infrastructure.default_purchase_cost - infrastructure.improvement;
 
-    auto& industries = universe.get<cqspc::Industry>(entity);
+    auto& industries = universe.get<cqspc::IndustrialZone>(entity);
     for (entt::entity productionentity : industries.industries) {
         // Process imdustries
         // Industries MUST have production and a linked recipe
         if (!universe.all_of<components::Production>(productionentity))
             continue;
-        components::Recipe recipe = universe.get_or_emplace<components::Recipe>(
-            universe.get<components::Production>(productionentity).recipe);
-        components::FactorySize& size =
-            universe.get_or_emplace<components::FactorySize>(productionentity,
-                                                             1000.0);
-        components::ProductionRatio& ratio =
-            universe.get_or_emplace<components::ProductionRatio>(
-                productionentity, 1.);
-
+        components::Recipe recipe =
+            universe.get_or_emplace<components::Recipe>(
+                universe.get<components::Production>(productionentity)
+                    .recipe);
+        components::IndustrySize& size =
+            universe.get_or_emplace<components::IndustrySize>(
+                productionentity, 1000.0);
+        // Calculate resource consumption
+        components::ResourceLedger capitalinput =
+            recipe.capitalcost * (0.01 * size.size);
         components::ResourceLedger input =
-            (recipe.input * ratio.ratio) +
-            (recipe.capitalcost * (0.01 * size.size));
-        // If there is not enough input goods, then restrict the trades
-        // Input
-        double input_transport_cost = input.GetSum() * infra_cost;
+            (recipe.input + size.size) + capitalinput;
 
+        // Calculate the greatest possible production
         components::ResourceLedger output;  // * ratio.output;
-        output[recipe.output.entity] = recipe.output.amount * ratio.ratio;
-        double output_transport_cost = output.GetSum() * infra_cost;
+        output[recipe.output.entity] =
+            recipe.output.amount * size.size * 10;
 
-        // Check demand if there is demand
-        if (market.previous_demand[recipe.output.entity] > 0) {
-            // Then they can sell it
-            market.supply[recipe.output.entity] += recipe.output.amount * ratio.ratio;
-        } else {
-            // IDK what to do
-        }
+        // Figure out what's throttling production and maintaince
+        double limitedinput =
+            CopyVals(input, market.history.back().sd_ratio).Min();
+        double limitedcapitalinput =
+            CopyVals(capitalinput, market.history.back().sd_ratio)
+                .Min();
 
-        // Then check the S/D ratio and change it
+        // Log how much manufacturing is being throttled by input
+        market[recipe.output.entity].inputratio = limitedinput;
 
-        // Get the number of items, and subtract from the wallet
-        // Check supply if they can buy, or else they cannot boy
-        if (market.previous_supply.HasAllResources(input)) {
-            // Then they actually buy it
-            if (market.sd_ratio[recipe.output.entity] > 1) {
-                // then decrease supply
-                // Reduce ratio
-                ratio.ratio *= 0.99;
-            } else if (market.sd_ratio[recipe.output.entity] < 1) {
-                // Then increase supply
-                ratio.ratio *= 1.01;
+        if (limitedinput < 1) {  // If an input good is undersupplied on
+                                    // the market, throttle production
+
+            input *= limitedinput;
+            output *= limitedinput;
+            // Industry
+            if (market.history.back().sd_ratio[recipe.output.entity] >
+                1.1) {
+                size.size *= 0.99;
+            } else {  // Scale production
+
+                if (limitedcapitalinput > 1) limitedcapitalinput = 1;
+                if (market.history.back()
+                        .sd_ratio[recipe.output.entity] > 1.1)
+                    size.size *= 0.99;
+                else
+                    size.size *=
+                        1 + (0.01) * std::fmin(limitedcapitalinput, 1);
             }
             market.demand += input;
-            // Then adjust the input
-        } else {
-            // Then they cannot produce for the next round
-            // Reset the capital costs
-            market.latent_demand += input;
+            market.supply += output;
 
+            double output_transport_cost = output.GetSum() * infra_cost;
+            double input_transport_cost = input.GetSum() * infra_cost;
+            // Next time need to compute the costs along with input and
+            // output so that the factory doesn't overspend. We sorta
+            // need a balanced economy
             components::CostBreakdown& costs =
                 universe.get_or_emplace<components::CostBreakdown>(
                     productionentity);
-            costs.Reset();
-            // Add to latent demand
-            continue;
+
+            // Maintainence costs will still have to be upkept, so if
+            // there isnt any resources to upkeep the place, then stop
+            // the production
+            costs.maintenance =
+                (recipe.capitalcost * market.price).GetSum() * 0.01 *
+                size.size;
+            costs.materialcosts =
+                (recipe.input * size.size * market.price).GetSum();
+            costs.profit = (recipe.output * market.price).GetSum();
+            costs.wages = size.size * 1000 * 50000;
+            costs.net = costs.profit - costs.maintenance -
+                        costs.materialcosts - costs.wages;
+            costs.transport =
+                output_transport_cost + input_transport_cost;
+            if (costs.net > 0) {
+                // size.size *= 1.02;
+            } else {
+                // size.size *= 0.99;
+            }
+
+            // ratio.ratio = recipe.input.UnitLeger(size.size);
+            // ratio.output = recipe.output.UnitLeger(size.size);
         }
-
-        // Next time need to compute the costs along with input and output so that the
-        // factory doesn't overspend. We sorta need a balanced economy
-        components::CostBreakdown& costs =
-            universe.get_or_emplace<components::CostBreakdown>(productionentity);
-
-        // Maintainence costs will still have to be upkept, so if there isnt any resources
-        // to upkeep the place, then stop the production
-        costs.maintenance =
-            (recipe.capitalcost * market.price).GetSum() * 0.01 * size.size;
-        costs.materialcosts =
-            (recipe.input * ratio.ratio * market.price).GetSum();
-        costs.profit = (recipe.output * market.price).GetSum();
-        costs.wages = size.size * 1000 * 50000;
-        costs.net = costs.profit - costs.maintenance - costs.materialcosts -
-                    costs.wages;
-        costs.transport = output_transport_cost + input_transport_cost;
-        if (costs.net > 0) {
-            size.size *= 1.02;
-        } else {
-            size.size *= 0.99;
-        }
-
-        //ratio.ratio = recipe.input.UnitLeger(size.size);
-        //ratio.output = recipe.output.UnitLeger(size.size);
     }
-}
-}  // namespace
-
+} 
+}// namespace cqspc
+            
 void SysProduction::DoSystem() {
     ZoneScoped;
     Universe& universe = GetUniverse();
-    auto view = universe.view<components::Industry>();
+    auto view = universe.view<components::IndustrialZone>();
     BEGIN_TIMED_BLOCK(INDUSTRY);
     int factories = 0;
-// Loop through the markets
-    auto market_view = universe.view<cqspc::Habitation> ();
+    // Loop through the markets
+    auto market_view = universe.view<cqspc::Habitation>();
     int settlement_count = 0;
     for (entt::entity entity : market_view) {
         auto& market = universe.get_or_emplace<cqspc::Market>(entity);
@@ -149,6 +157,8 @@ void SysProduction::DoSystem() {
         }
     }
     END_TIMED_BLOCK(INDUSTRY);
-    SPDLOG_TRACE("Updated {} factories, {} industries", factories, view.size());
+    SPDLOG_TRACE("Updated {} factories, {} industries", factories,
+                    view.size());
+
 }
 }  // namespace cqsp::common::systems
