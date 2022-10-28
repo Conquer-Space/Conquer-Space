@@ -106,13 +106,10 @@ glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v) {
     return ConvertOrbParams(orb.LAN, orb.inclination, orb.w, velocity);
 }
 
-double SolveKepler(const double& mean_anomaly, const double& ecc, const int steps) {
-    // Because math is hard, we need to solve it iteratively
-    const int size = 10;
+double SolveKeplerElliptic(const double& mean_anomaly, const double& ecc, const int steps) {
     if (abs(ecc) < 1.0E-9) {
         return mean_anomaly;
     }
-    int maxit = steps;
     int it = 0;
 
     double de = 1000.0;
@@ -120,41 +117,107 @@ double SolveKepler(const double& mean_anomaly, const double& ecc, const int step
     double ea = mean_anomaly;
     double old_m = mean_anomaly;
 
-    while ((it < maxit) && (abs(de) > 1.0E-5)) {  // normal accuracy is 1.0e-10
+    while ((it < steps) && (abs(de) > 1.0E-5)) {  // normal accuracy is 1.0e-10
         double new_m = ea - ecc * sin(ea);
         de = (old_m - new_m) / (1.0 - ecc * cos(ea));
-        ea = ea + de;
-        it = it + 1;
+        ea += de;
+        it++;
     }
     return ea;
 }
 
-double CalculateTrueAnomaly(const double& ecc, const double& E) {
+double SolveKeplerHyperbolic(const double& mean_anomaly, const double& ecc,
+                             const int steps) {
+    if (abs(ecc) < 1.0E-9) {
+        return mean_anomaly;
+    }
+    int it = 0;
+
+    double de = 1000.0;
+
+    double ea = mean_anomaly;
+    double old_m = mean_anomaly;
+
+    while ((it < steps) &&
+            (abs(de) > 1.0E-5)) {  // normal accuracy is 1.0e-10
+        double new_m = ecc * sinh(ea) - ea;
+        de = (old_m - new_m) / (ecc * cosh(ea) - 1.0);
+        ea += de;
+        it++;
+    }
+    return ea;
+}
+
+double EccentricAnomalyToTrueAnomaly(const double& ecc, const double& E) {
     return 2 * atan2(sqrt(1 + ecc) * sin(E / 2), sqrt(1 - ecc) * cos(E / 2));
 }
 
-double GetMt(const double& M0, const double& nu, const double& time, const double &epoch) {
+double HyperbolicAnomalyToTrueAnomaly(const double& ecc, const double& H) {
+    return 2 * atan(sqrt((ecc + 1.) / (ecc - 1.)) * tanh(H / 2));
+}
+
+double GetMtElliptic(const double& M0, const double& nu, const double& time, const double &epoch) {
     // Calculate
     double Mt = M0 + (time - epoch) * nu;
     return normalize_radian(Mt);
 }
 
-radian TrueAnomaly(const Orbit& orbit, const second& time) {
-    double Mt = GetMt(orbit.M0, time, orbit.nu, orbit.epoch);
-    double E = SolveKepler(Mt, orbit.eccentricity);
-    return CalculateTrueAnomaly(orbit.eccentricity, E);
+double GetMtHyperbolic(const double& Mu, const double& a, const double& d_t) {
+    return sqrt(Mu / (-a * a * a)) * d_t;
+}
+
+radian TrueAnomalyElliptic(const Orbit& orbit, const second& time) {
+    double Mt = GetMtElliptic(orbit.M0, orbit.nu, time, orbit.epoch);
+    double E = SolveKeplerElliptic(Mt, orbit.eccentricity);
+    return EccentricAnomalyToTrueAnomaly(orbit.eccentricity, E);
+}
+
+radian TrueAnomalyElliptic(const Orbit& orbit, const second& time,
+                           double& E_out) {
+    double Mt = GetMtElliptic(orbit.M0, orbit.nu, time, orbit.epoch);
+    double E = SolveKeplerElliptic(Mt, orbit.eccentricity);
+    E_out = E;
+    return EccentricAnomalyToTrueAnomaly(orbit.eccentricity, E);
+}
+
+radian TrueAnomalyHyperbolic(const Orbit& orbit, const second& time) {
+    // Get the time
+    double Mt = GetMtHyperbolic(orbit.GM, orbit.semi_major_axis, time - orbit.epoch);
+    double H = SolveKeplerHyperbolic(Mt, orbit.eccentricity);
+    return HyperbolicAnomalyToTrueAnomaly(orbit.eccentricity, H);
 }
 
 void UpdateOrbit(Orbit& orb, const second& time) {
-    double Mt = GetMt(orb.M0, orb.nu, time, orb.epoch);
-    double E = SolveKepler(Mt, orb.eccentricity);
-    orb.v = CalculateTrueAnomaly(orb.eccentricity, E);
+    // Get the thingy
+    double E = 0;
+    if (orb.eccentricity < 1) {
+        orb.v = TrueAnomalyElliptic(orb, time, E);
+    } else {
+        orb.v = TrueAnomalyHyperbolic(orb, time);
+    }
     orb.E = E;
 }
 
 glm::vec3 CalculateVelocity(const double& E, const double& r,
                             const double& GM, const double& a,
                             const double& e) {
+    // Elliptic orbit
+    if (e < 1) {
+        return CalculateVelocityElliptic(E, r, GM, a, e);
+    }
+    return CalculateVelocityHyperbolic(E, r, GM, a, e);
+}
+
+glm::vec3 CalculateVelocityHyperbolic(const double& E, const double& r,
+                                      const double& GM, const double& a,
+                                      const double& e) {
+    return (float)(sqrt(-GM * a) / r) *
+           glm::vec3(sinh(E), -sqrt(e * e - 1) * cosh(E), 0);
+}
+
+glm::vec3 CalculateVelocityElliptic(const double& E, const double& r,
+                                    const double& GM, const double& a,
+                                    const double& e) {
     return ((float)(sqrt(GM * a) / r) *
             glm::vec3(-sin(E), sqrt(1 - e * e) * cos(E), 0));
 }

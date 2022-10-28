@@ -28,7 +28,7 @@ using ::testing::Ge;
 using ::testing::Le;
 
 // Tests for input from client options
-TEST(Common_OrbitTest, DISABLED_toVec3Test) {
+TEST(OrbitTest, DISABLED_toVec3Test) {
     // Read hjson file and set values
     Hjson::Value data = Hjson::UnmarshalFromFile("data_file.hjson");
     // Do the test
@@ -55,7 +55,7 @@ TEST(Common_OrbitTest, DISABLED_toVec3Test) {
     EXPECT_NEAR(orb.T/86400, 365.256363004, 0.01);
 }
 
-TEST(Common_OrbitTest, OrbitConversionTest) {
+TEST(OrbitTest, OrbitConversionTest) {
     // Expect the orbit is similar
     namespace cqspt = cqsp::common::components::types;
     cqspt::Orbit orb;
@@ -68,7 +68,7 @@ TEST(Common_OrbitTest, OrbitConversionTest) {
     orb.CalculateVariables();
     cqspt::UpdateOrbit(orb, 0);
     // Expect the true anomaly to be 0
-    EXPECT_EQ(orb.GetMt(0), 0);
+    EXPECT_EQ(orb.GetMtElliptic(0), 0);
     EXPECT_EQ(orb.v, 0);
     EXPECT_EQ(orb.E, 0);
     EXPECT_EQ(orb.M0, 0);
@@ -89,7 +89,7 @@ TEST(Common_OrbitTest, OrbitConversionTest) {
     EXPECT_NEAR(new_orbit.eccentricity, orb.eccentricity, 0.001);
 }
 
-TEST(Common_OrbitTest, NewOrbitConversionTest) {
+TEST(OrbitTest, NewOrbitConversionTest) {
     // Expect the orbit is similar
     namespace cqspt = cqsp::common::components::types;
     cqspt::Orbit orb;
@@ -102,7 +102,7 @@ TEST(Common_OrbitTest, NewOrbitConversionTest) {
     orb.CalculateVariables();
     cqspt::UpdateOrbit(orb, 0);
     // Expect the true anomaly to be 0
-    EXPECT_EQ(orb.GetMt(0), 0);
+    EXPECT_EQ(orb.GetMtElliptic(0), 0);
     EXPECT_EQ(orb.v, 0);
     EXPECT_EQ(orb.E, 0);
     auto position = cqspt::toVec3(orb);
@@ -122,7 +122,7 @@ TEST(Common_OrbitTest, NewOrbitConversionTest) {
     EXPECT_NEAR(new_orbit.eccentricity, orb.eccentricity, 0.001);
 }
 
-TEST(Common_OrbitTest, NewOrbitConversionTest2) {
+TEST(OrbitTest, NewOrbitConversionTest2) {
     // Expect the orbit is similar
     namespace cqspt = cqsp::common::components::types;
     cqspt::Orbit orb;
@@ -136,7 +136,7 @@ TEST(Common_OrbitTest, NewOrbitConversionTest2) {
     orb.CalculateVariables();
     cqspt::UpdateOrbit(orb, 0);
     // Expect the true anomaly to be 0.8
-    EXPECT_EQ(orb.GetMt(0), 0.8);
+    EXPECT_EQ(orb.GetMtElliptic(0), 0.8);
     //EXPECT_EQ(orb.v, 0);
     //EXPECT_EQ(orb.E, 0);
     auto position = cqspt::toVec3(orb);
@@ -164,7 +164,7 @@ TEST(Common_OrbitTest, NewOrbitConversionTest2) {
     }
 }
 
-TEST(Common_OrbitTest, NewOrbitConversionTest3) {
+TEST(OrbitTest, NewOrbitConversionTest3) {
     // Expect the orbit is similar
     namespace cqspt = cqsp::common::components::types;
     cqspt::Orbit orb;
@@ -179,7 +179,7 @@ TEST(Common_OrbitTest, NewOrbitConversionTest3) {
     orb.CalculateVariables();
     cqspt::UpdateOrbit(orb, 0);
     // Expect the true anomaly to be M0
-    EXPECT_EQ(orb.GetMt(0), M0);
+    EXPECT_EQ(orb.GetMtElliptic(0), M0);
     // EXPECT_EQ(orb.v, 0);
     // EXPECT_EQ(orb.E, 0);
     auto position = cqspt::toVec3(orb);
@@ -209,7 +209,7 @@ TEST(Common_OrbitTest, NewOrbitConversionTest3) {
     }
 }
 
-TEST(Common_OrbitTest, NewOrbitConversionTest4) {
+TEST(OrbitTest, NewOrbitConversionTest4) {
     // Expect the orbit is similar
     namespace cqspt = cqsp::common::components::types;
     cqspt::Orbit orb;
@@ -224,7 +224,7 @@ TEST(Common_OrbitTest, NewOrbitConversionTest4) {
     orb.CalculateVariables();
     cqspt::UpdateOrbit(orb, 0);
     // Expect the true anomaly to be M0
-    EXPECT_EQ(orb.GetMt(0), M0);
+    EXPECT_EQ(orb.GetMtElliptic(0), M0);
     // EXPECT_EQ(orb.v, 0);
     // EXPECT_EQ(orb.E, 0);
     auto position = cqspt::toVec3(orb);
@@ -259,7 +259,7 @@ TEST(Common_OrbitTest, NewOrbitConversionTest4) {
     }
 }
 
-TEST(Common_OrbitTest, NewOrbitConversionTest5) {
+TEST(OrbitTest, NewOrbitConversionTest5) {
     // Expect the orbit is similar
     namespace cqspt = cqsp::common::components::types;
     cqspt::Orbit orb;
@@ -274,7 +274,7 @@ TEST(Common_OrbitTest, NewOrbitConversionTest5) {
     orb.CalculateVariables();
     cqspt::UpdateOrbit(orb, 0);
     // Expect the true anomaly to be M0
-    EXPECT_EQ(orb.GetMt(0), M0);
+    EXPECT_EQ(orb.GetMtElliptic(0), M0);
     // EXPECT_EQ(orb.v, 0);
     // EXPECT_EQ(orb.E, 0);
     auto position = cqspt::toVec3(orb);
@@ -313,7 +313,7 @@ TEST(Common_OrbitTest, NewOrbitConversionTest5) {
     }
 }
 
-TEST(Common_OrbitTest, ToRadianTest) {
+TEST(OrbitTest, ToRadianTest) {
     namespace cqspt = cqsp::common::components::types;
     EXPECT_DOUBLE_EQ(cqspt::PI/2, cqspt::toRadian(90));
     EXPECT_DOUBLE_EQ(cqspt::PI, cqspt::toRadian(180));
@@ -323,7 +323,7 @@ TEST(Common_OrbitTest, ToRadianTest) {
     EXPECT_DOUBLE_EQ(cqspt::PI/4, cqspt::toRadian(45));
 }
 
-TEST(Common_OrbitTest, ToDegreeTest) {
+TEST(OrbitTest, ToDegreeTest) {
     namespace cqspt = cqsp::common::components::types;
     EXPECT_DOUBLE_EQ(30, cqspt::toDegree(cqspt::PI/6));
     EXPECT_DOUBLE_EQ(45, cqspt::toDegree(cqspt::PI/4));
@@ -333,6 +333,33 @@ TEST(Common_OrbitTest, ToDegreeTest) {
     EXPECT_DOUBLE_EQ(360, cqspt::toDegree(cqspt::PI*2));
 }
 
+TEST(OrbitTest, SolveKeplerHyperbolic) {
+    // https://www.fxsolver.com/browse/formulas/Hyperbolic+Kepler+equation
+    std::vector<std::tuple<double, double, double>> data = {
+        {10, 1.5, 2.84394720242},
+        {2, 1.5, 1.61268580976},
+        {6, 2.5, 1.86344302689}};
+    for (auto &line : data) {
+        EXPECT_NEAR(cqsp::common::components::types::SolveKeplerHyperbolic(
+                        std::get<0>(line), std::get<1>(line)),
+                        std::get<2>(line), 1e-6);
+    }
+}
+
+
+TEST(OrbitTest, SolveKeplerElliptic) {
+    // https://www.fxsolver.com/browse/formulas/Kepler%27s+equation
+    std::vector<std::tuple<double, double, double>> data = {
+        {2, 0.3, 2.23603149517},
+        {1.5, 0.8, 2.16353230394},
+        {0.5, 0.01, 0.504836644695}
+    };
+    for (auto &line : data) {
+        EXPECT_NEAR(cqsp::common::components::types::SolveKeplerElliptic(
+                        std::get<0>(line), std::get<1>(line)),
+                    std::get<2>(line), 1e-6);
+    }
+}
 /*
 TEST(Common_SOITest, SOIExitTest) {
     namespace cqspc = cqsp::common::components;
