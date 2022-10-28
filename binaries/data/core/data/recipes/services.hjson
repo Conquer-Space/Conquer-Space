@@ -135,6 +135,7 @@
                 structures: 4
                 industrial: 1
                 transport: 1
+				computersystems: 1
             }
             labor: {
                 worker: 1000

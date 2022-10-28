@@ -46,7 +46,7 @@
         identifier: garments
         volume: 0.5 m3
         mass: 250 kg
-        price: 2500
+        price: 5000
         tags: [
             nondurable
             consumable

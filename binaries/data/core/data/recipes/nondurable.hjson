@@ -60,7 +60,7 @@
         identifier: garments_man
         input: {
             potwater: 1000
-            crops: 1000
+            crops: 2000
         }
         elasticity: {
             potwater: 1
@@ -116,7 +116,7 @@
         identifier: food_serv
         input: {
             potwater: 1000
-            crops: 1000
+            crops: 2000
             animals: 1000
         }
         elasticity: {
