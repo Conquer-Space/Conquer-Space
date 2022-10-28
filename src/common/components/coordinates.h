@@ -138,7 +138,7 @@ struct Orbit {
         nu = std::sqrt(GM / (semi_major_axis * semi_major_axis * semi_major_axis));
     }
 
-    double GetMt(double time) {
+    double GetMtElliptic(double time) {
         return normalize_radian(M0 + (time - epoch) * nu);
     }
 };
@@ -187,20 +187,35 @@ double AvgOrbitalVelocity(const Orbit& orb);
 glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v);
 
 /// <summary>
-/// Computes eccentric anomaly in radians given mean anomaly and eccentricity
+/// Computes eccentric anomaly for a elliptic or circular orbit (e < 1) in radians given
+/// mean anomaly and eccentricity
 /// </summary>
 /// <param name="mean_anomaly"></param>
 /// <param name="ecc"></param>
+/// <param name="steps">Number of steps for the Newton-Raphson. More steps means more precision but less speed</param>
+/// <returns>Eccentric anomaly</returns>
+double SolveKeplerElliptic(const double& mean_anomaly, const double& ecc,
+                           const int steps = 200);
+
+/// <summary>
+/// Computes eccentric anomaly for a hyperbolic or parabolic orbit (e > 1)
+/// in radians given mean anomaly and eccentricity
+/// </summary>
+/// <param name="mean_anomaly"></param>
+/// <param name="ecc"></param>
+/// <param name="steps">Number of steps for the Newton-Raphson. More steps means more precision but less speed</param>
 /// <returns></returns>
-double SolveKepler(const double& mean_anomaly, const double& ecc,
-                          const int steps = 200);
+double SolveKeplerHyperbolic(const double& mean_anomaly, const double& ecc,
+                             const int steps = 200);
 
 /// <summary>
 /// Calculates true anomaly from eccentricity and eccentric anomaly
 /// </summary>
 /// \param[in] ecc The eccentricity of the orbit
 /// \param[in] E The eccentric anomaly of the orbit
-double CalculateTrueAnomaly(const double& ecc, const double& E);
+double EccentricAnomalyToTrueAnomaly(const double& ecc, const double& E);
+
+double HyperbolicAnomalyToTrueAnomaly(const double& ecc, const double& H);
 
 /// <summary>
 /// Gets the Mean anomaly from the time
@@ -209,13 +224,26 @@ double CalculateTrueAnomaly(const double& ecc, const double& E);
 /// <param name="nu">G*M of orbiting body</param>
 /// <param name="time">Current time</param>
 /// <returns></returns>
-double GetMt(const double& M0, const double& nu, const double& time,
+double GetMtElliptic(const double& M0, const double& nu, const double& time,
              const double& epoch);
 
-/// <param name="orbit">Orbit to compute</param>
-/// <param name="time">Current time (seconds)</param>
+/// <summary>
+/// Calculate mean anomaly from time for a hyperbolic object
+/// </summary>
+/// <param name="Mu">G*M of orbiting body</param>
+/// <param name="a">Semi-major axis</param>
+/// <param name="d+t">Time from periapsis</param>
+/// <returns></returns>
+double GetMtHyperbolic(const double& Mu, const double& a, const double& d_t);
+
+/// <param name="orbit">[in]  Orbit to compute</param>
+/// <param name="time">[in]  Current time (seconds)</param>
+/// <param name="E_put">[out] Eccentric anomaly</param>
 /// <returns>True anomaly in radians</returns>
-radian TrueAnomaly(const Orbit& orbit, const second& time);
+radian TrueAnomalyElliptic(const Orbit& orbit, const second& time);
+radian TrueAnomalyElliptic(const Orbit& orbit, const second& time, double& E_out);
+
+radian TrueAnomalyHyperbolic(const Orbit& orbit, const second& time);
 
 /// Relative position from the parent orbiting object
 struct Kinematics {
@@ -270,6 +298,14 @@ void UpdateOrbit(Orbit& orb, const second& time);
 glm::vec3 CalculateVelocity(const double& E, const double& r,
                             const double& GM, const double& a,
                             const double& e);
+
+glm::vec3 CalculateVelocityElliptic(const double& E, const double& r,
+                                    const double& GM, const double& a,
+                                    const double& e);
+
+glm::vec3 CalculateVelocityHyperbolic(const double& E, const double& r,
+                                      const double& GM, const double& a,
+                                      const double& e);
 
 /// <summary>
 /// Longitude and lattitude.
