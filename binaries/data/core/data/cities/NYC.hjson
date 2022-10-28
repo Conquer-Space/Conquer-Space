@@ -44,7 +44,7 @@
             {
                 type: Brick Production
                 recipe: bricks_mine
-                productivity: 100000
+                productivity: 10000
             }
             {
                 type: Water

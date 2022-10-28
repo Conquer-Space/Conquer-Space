@@ -68,7 +68,7 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
         // Calculate the greatest possible production
         components::ResourceLedger output;  // * ratio.output;
         output[recipe.output.entity] =
-            recipe.output.amount * size.size * 10;
+            recipe.output.amount * size.size;
 
         // Figure out what's throttling production and maintaince
         double limitedinput =
@@ -80,60 +80,58 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
         // Log how much manufacturing is being throttled by input
         market[recipe.output.entity].inputratio = limitedinput;
 
+        
+        if (market.history.back().sd_ratio[recipe.output.entity] < 1.1) {
+            if (limitedcapitalinput > 1) limitedcapitalinput = 1;
+            size.size *= 1 + (0.01) * std::fmin(limitedcapitalinput, 1);
+        } 
+        else 
+        {
+            size.size *= 0.99;
+        }
         if (limitedinput < 1) {  // If an input good is undersupplied on
                                     // the market, throttle production
 
             input *= limitedinput;
             output *= limitedinput;
             // Industry
-            if (market.history.back().sd_ratio[recipe.output.entity] >
-                1.1) {
-                size.size *= 0.99;
-            } else {  // Scale production
-
-                if (limitedcapitalinput > 1) limitedcapitalinput = 1;
-                if (market.history.back()
-                        .sd_ratio[recipe.output.entity] > 1.1)
-                    size.size *= 0.99;
-                else
-                    size.size *=
-                        1 + (0.01) * std::fmin(limitedcapitalinput, 1);
-            }
-            market.demand += input;
-            market.supply += output;
-
-            double output_transport_cost = output.GetSum() * infra_cost;
-            double input_transport_cost = input.GetSum() * infra_cost;
-            // Next time need to compute the costs along with input and
-            // output so that the factory doesn't overspend. We sorta
-            // need a balanced economy
-            components::CostBreakdown& costs =
-                universe.get_or_emplace<components::CostBreakdown>(
-                    productionentity);
-
-            // Maintainence costs will still have to be upkept, so if
-            // there isnt any resources to upkeep the place, then stop
-            // the production
-            costs.maintenance =
-                (recipe.capitalcost * market.price).GetSum() * 0.01 *
-                size.size;
-            costs.materialcosts =
-                (recipe.input * size.size * market.price).GetSum();
-            costs.profit = (recipe.output * market.price).GetSum();
-            costs.wages = size.size * 1000 * 50000;
-            costs.net = costs.profit - costs.maintenance -
-                        costs.materialcosts - costs.wages;
-            costs.transport =
-                output_transport_cost + input_transport_cost;
-            if (costs.net > 0) {
-                // size.size *= 1.02;
-            } else {
-                // size.size *= 0.99;
-            }
-
-            // ratio.ratio = recipe.input.UnitLeger(size.size);
-            // ratio.output = recipe.output.UnitLeger(size.size);
         }
+        
+        market.demand += input;
+        market.supply += output;
+
+        double output_transport_cost = output.GetSum() * infra_cost;
+        double input_transport_cost = input.GetSum() * infra_cost;
+        // Next time need to compute the costs along with input and
+        // output so that the factory doesn't overspend. We sorta
+        // need a balanced economy
+        components::CostBreakdown& costs =
+            universe.get_or_emplace<components::CostBreakdown>(
+                productionentity);
+
+        // Maintainence costs will still have to be upkept, so if
+        // there isnt any resources to upkeep the place, then stop
+        // the production
+        costs.materialcosts =
+            (recipe.input * size.size * market.price).GetSum();
+        costs.profit = (recipe.output * market.price).GetSum();
+        if (market.sd_ratio[recipe.output.entity] > 1) 
+        {
+            costs.profit /= market.sd_ratio[recipe.output.entity];
+        }
+        costs.wages = size.size * recipe.workers * 50000;
+        costs.net = costs.profit - costs.maintenance - costs.materialcosts -
+                    costs.wages;
+        costs.transport = output_transport_cost + input_transport_cost;
+        double& price = market.price[recipe.output.entity];
+        if (costs.net > 0) {
+            price += (-0.1 + price * -0.01f);
+        } else {
+            price += (0.2 + price * 0.01f);
+        }
+
+        // ratio.ratio = recipe.input.UnitLeger(size.size);
+        // ratio.output = recipe.output.UnitLeger(size.size);
     }
 } 
 }// namespace cqspc
