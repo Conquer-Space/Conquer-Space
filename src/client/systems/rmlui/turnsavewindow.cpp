@@ -27,10 +27,29 @@ TurnSaveWindow::~TurnSaveWindow() {
 void TurnSaveWindow::Update(double delta_time) {
     auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
 
-    time_element->SetInnerRML(
-        fmt::format("{} {:02d}:{:02d}", GetUniverse().date.ToString(),
-        GetUniverse().date.GetHour(), GetUniverse().date.GetMinute()));
-    speed_element->SetInnerRML(fmt::format("Speed: {}", pause_opt.tick_speed));
+    // This is to avoid a memory leak in RmlUi's SetInnerRML.
+    // I think it's because SetRML doesn't free their resources when they change the RML.
+    // So, gotta do this or else it'll leak about 30MB a minute.
+    // If you can figure it out, send a PR to RmlUi.
+    static auto date = GetUniverse().date.GetDate();
+    static bool tr = true;
+    if (date != GetUniverse().date.GetDate() || (date == 0 && tr)) {
+        // Then do the rest
+        // Check if it changed, or something
+        const std::string date_text = fmt::format(
+            "{} {:02d}:{:02d}", GetUniverse().date.ToString(),
+            GetUniverse().date.GetHour(), GetUniverse().date.GetMinute());
+        time_element->SetInnerRML(date_text);
+        date = GetUniverse().date.GetDate();
+        tr = false;
+    }
+    static auto tick_speed = pause_opt.tick_speed;
+    if (tick_speed != pause_opt.tick_speed) {
+        speed_element->SetInnerRML(
+            fmt::format("Speed: {}", pause_opt.tick_speed));
+        tick_speed = pause_opt.tick_speed;
+    }
+
     // Set the pause and play thingy if the game is halted or not
     if (pause_opt.to_tick != is_paused) {
         if (pause_opt.to_tick) {
@@ -52,13 +71,15 @@ void TurnSaveWindow::OpenDocument() {
     time_element = document->GetElementById("time");
     speed_element = document->GetElementById("speed");
     pause_element = document->GetElementById("pause_button");
+
+    auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
+    speed_element->SetInnerRML(fmt::format("Speed: {}", pause_opt.tick_speed));
 }
 
 void TurnSaveWindow::EventListener::ProcessEvent(Rml::Event& event) {
     // Clicked on button?
     auto& pause_opt = universe->ctx().at<client::ctx::PauseOptions>();
     std::string id_pressed = event.GetTargetElement()->GetId();
-    SPDLOG_INFO("{}", id_pressed);
 
     if (id_pressed == "stop_time" || id_pressed == "pause_button") {
         pause_opt.to_tick = !pause_opt.to_tick;
