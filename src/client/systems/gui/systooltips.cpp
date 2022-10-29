@@ -191,6 +191,16 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
                        std::fmod(orbit.T, 60));
     }
 
+    if (universe.all_of<common::components::types::Orbit,
+                        cqspc::types::Kinematics>(entity)) {
+        auto ref = universe.get<common::components::types::Orbit>(entity).reference_body;
+        if (universe.valid(ref) && universe.any_of<cqspc::bodies::Body>(ref)) {
+            const double radius = universe.get<cqspc::bodies::Body>(ref).radius;
+            double distance = glm::length(universe.get<cqspc::types::Kinematics>(entity).position);
+            ImGui::TextFmt("Altitude: {}", distance - radius);
+        }
+    }
+
     if (universe.all_of<common::components::types::SurfaceCoordinate>(entity)) {
         auto& pos =
             universe.get<common::components::types::SurfaceCoordinate>(entity);

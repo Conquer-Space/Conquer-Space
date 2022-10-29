@@ -1281,16 +1281,33 @@ void SysStarSystemRenderer::GenerateOrbit(entt::entity body) {
     }
 
     orbit_points.reserve(res);
-    for (int i = 0; i <= res; i++) {
-        ZoneScoped;
-        double theta = 3.1415926535 * 2 / res * i;
-        glm::vec3 vec = common::components::types::toVec3(orb, theta);
-        // If the length is greater than the sphere of influence, then remove it
-        if (glm::length(vec) < SOI) {
-            // Convert to opengl
+    if (orb.eccentricity > 1) {
+        for (int i = 0; i <= res; i++) {
+            ZoneScoped;
+            double theta = (common::components::types::PI / res * 1.5 * i) -
+                           common::components::types::PI / 2 - 1.5/2;
+
+            glm::vec3 vec = common::components::types::toVec3(orb, theta);
+
+            // If the length is greater than the sphere of influence, then
+            // remove it
             orbit_points.push_back(ConvertPoint(vec));
         }
+    } else {
+        for (int i = 0; i <= res; i++) {
+            ZoneScoped;
+            double theta = 3.1415926535 * 2 / res * i;
+
+            glm::vec3 vec = common::components::types::toVec3(orb, theta);
+
+            // If the length is greater than the sphere of influence, then
+            // remove it
+            if (glm::length(vec) < SOI) {
+                orbit_points.push_back(ConvertPoint(vec));
+            }
+        }
     }
+
     // m_universe.remove<cqspt::OrbitDirty>(body);
     auto& line = m_universe.get_or_emplace<PlanetOrbit>(body);
     // Get the orbit line
@@ -1361,6 +1378,7 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity &entity) {
 
     orbit.orbit_mesh->Draw();
 
+#if false
     // Get parent
     glm::vec3 object_pos = CalculateCenteredObject(entity);
     transform = glm::mat4(1.f);
@@ -1371,6 +1389,7 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity &entity) {
 
     mesh->Draw();
     delete mesh;
+#endif
 }
 
 void SysStarSystemRenderer::OrbitEditor() {
