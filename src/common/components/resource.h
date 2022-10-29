@@ -78,6 +78,9 @@ class ResourceLedger : private LedgerMap {
     ResourceLedger() = default;
     ~ResourceLedger() = default;
 
+    const double operator[](const entt::entity) const;
+
+
     /// <summary>
     /// This resource ledger has enough resources inside to transfer "amount" amount of resources away
     /// </summary>

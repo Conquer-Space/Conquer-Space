@@ -89,6 +89,19 @@ bool MergeCompare(const ResourceLedger &m1, const ResourceLedger&m2,
 
 using cqsp::common::components::ResourceLedger;
 
+const double ResourceLedger::operator[](const entt::entity entity) const 
+{
+    
+    cqsp::common::components::LedgerMap::const_iterator location =
+        this->find(entity); 
+    if (location == this->end()) 
+    {
+        return 0;
+    } else {
+        return location->second;
+    }
+}
+
 bool ResourceLedger::EnoughToTransfer(const ResourceLedger &amount) {
     bool b = true;
     for (auto it = amount.begin(); it != amount.end(); it++) {
@@ -356,6 +369,10 @@ ResourceLedger ResourceLedger::SafeDivision(const ResourceLedger &other) {
     }
     return ledger;
 }
+/// <summary>
+/// Finds the smallest value in the Ledger.
+/// </summary>
+/// <returns>The smallest value in the ledger</returns>
 double ResourceLedger::Min() {
     double Minimum = this->begin()->second;
     for (auto iterator = this->begin(); iterator != this->end(); iterator++)
@@ -363,6 +380,10 @@ double ResourceLedger::Min() {
     return Minimum;
 }
 
+/// <summary>
+/// Finds the largest value in the Ledger.
+/// </summary>
+/// <returns>The largest value in the ledger</returns>
 double ResourceLedger::Max() {
     double Maximum = this->begin()->second;
     for (auto iterator = this->begin(); iterator != this->end(); iterator++)
@@ -408,10 +429,9 @@ ResourceLedger CopyVals(const ResourceLedger &keys,
                         const ResourceLedger &values)
 {
     ResourceLedger tkeys = keys;
-    ResourceLedger tvals = values;
     for (auto iterator = keys.begin(); iterator != keys.end();
          iterator++) {
-        tkeys[iterator->first] = tvals[iterator->first];
+        tkeys[iterator->first] = values[iterator->first];
     }
     return tkeys;
 }
