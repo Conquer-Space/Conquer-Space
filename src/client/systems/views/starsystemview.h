@@ -87,6 +87,7 @@ class SysStarSystemRenderer {
 
     static bool IsFoundingCity(common::Universe& universe);
 
+    void DrawAllOrbits();
     void DrawOrbit(const entt::entity& entity);
 
     void OrbitEditor();
@@ -137,14 +138,27 @@ class SysStarSystemRenderer {
     void DrawPlanetBillboards(const entt::entity& ent_id, const glm::vec3& object_pos);
     void DrawShipIcon(glm::vec3 &object_pos);
     void DrawCityIcon(glm::vec3 &object_pos);
+
+    void DrawAllCities(auto& bodies);
+
+    void DrawAllPlanets(auto& bodies);
+    void DrawAllPlanetBillboards(auto &bodies);
     void DrawPlanet(glm::vec3 &object_pos, entt::entity entity);
+
     void DrawTexturedPlanet(glm::vec3 &object_pos, entt::entity entity);
+    void GetPlanetTexture(entt::entity entity, bool& have_normal, bool& have_roughness);
+    void DrawTerrainlessPlanet(const entt::entity &entity,
+                               glm::vec3 &object_pos);
+
     void DrawStar(const entt::entity& entity, glm::vec3 &object_pos);
-    void DrawTerrainlessPlanet(const entt::entity& entity, glm::vec3 &object_pos);
     void RenderCities(glm::vec3 &object_pos, const entt::entity &body_entity);
     bool CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos, double radius);
     void CalculateCityPositions();
     void CalculateScroll();
+
+    void LoadPlanetTextures();
+    void InitializeFramebuffers();
+    void LoadProvinceMap();
 
     void GenerateOrbit(entt::entity entity);
 
@@ -163,6 +177,18 @@ class SysStarSystemRenderer {
     glm::vec3 TranslateToNormalized(const glm::vec3 &);
     glm::vec3 ConvertPoint(const glm::vec3 &);
 
+    /// <summary>
+    /// Calculates the GL position for a log renderbuffer.
+    /// </summary>
+    glm::vec4 CalculateGLPosition(const glm::vec3& object_pos);
+    /// <summary>
+    /// Check if the GL position is within the window
+    /// </summary>
+    bool GLPositionNotInBounds(const glm::vec4& gl_Position, const glm::vec3& pos);
+    glm::mat4 GetBillboardMatrix(const glm::vec3& pos);
+    glm::vec3 GetBillboardPosition(const glm::vec3& object_pos);
+    void SetBillboardProjection(cqsp::asset::ShaderProgram_t &shader,
+                                glm::mat4 mat);
     void CenterCameraOnCity();
 
     void CalculateCamera();
@@ -171,9 +197,18 @@ class SysStarSystemRenderer {
     void CheckResourceDistRender();
 
     glm::vec3 CalculateMouseRay(const glm::vec3 &ray_nds);
+
+    void CalculateViewChange(double deltaX, double deltaY);
+    void FoundCity();
+    void SelectCountry();
+    void FocusOnEntity(entt::entity ent);
+
     float GetWindowRatio();
 
     void GenerateOrbitLines();
+
+    void RenderInformationWindow(double deltaTime);
+    void RenderSelectedObjectInformation();
 
     // How much to scale the the star system.
     const double divider = 0.01;
@@ -228,6 +263,12 @@ class SysStarSystemRenderer {
     entt::entity hovering_province;
     entt::entity selected_province;
     bool countries = false;
+
+    const double object_distance = 0.4;
+
+    int orbits_generated = 0;
+
+    const int sphere_resolution = 64;
 };
 }  // namespace systems
 }  // namespace client
