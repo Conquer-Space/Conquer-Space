@@ -177,8 +177,6 @@ class ResourceLedger : private LedgerMap {
     /// </summary>
     ResourceLedger SafeDivision(const ResourceLedger&);
 
-    
-
     /// <summary>
     /// Returns a copy of the vector divided by the indicated vector, with
     /// division by zero resulting in infiniy
@@ -242,9 +240,7 @@ struct RecipeOutput {
 struct Recipe {
     ResourceLedger input;
     RecipeOutput output;
-
     ProductionType type;
-
     float interval;
     double workers;
 

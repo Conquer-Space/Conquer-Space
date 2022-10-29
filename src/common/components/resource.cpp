@@ -89,13 +89,9 @@ bool MergeCompare(const ResourceLedger &m1, const ResourceLedger&m2,
 
 using cqsp::common::components::ResourceLedger;
 
-const double ResourceLedger::operator[](const entt::entity entity) const 
-{
-    
-    cqsp::common::components::LedgerMap::const_iterator location =
-        this->find(entity); 
-    if (location == this->end()) 
-    {
+const double ResourceLedger::operator[](const entt::entity entity) const {
+    cqsp::common::components::LedgerMap::const_iterator location = this->find(entity);
+    if (location == this->end()) {
         return 0;
     } else {
         return location->second;
@@ -426,8 +422,7 @@ ResourceLedger RecipeOutput::operator*(ResourceLedger & ledger) const {
 /// Creates a new resource ledger using the keys from one resource ledger, and the values from annother
 /// </summary>
 ResourceLedger CopyVals(const ResourceLedger &keys,
-                        const ResourceLedger &values)
-{
+                        const ResourceLedger &values) {
     ResourceLedger tkeys = keys;
     for (auto iterator = keys.begin(); iterator != keys.end();
          iterator++) {
