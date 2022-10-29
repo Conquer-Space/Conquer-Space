@@ -82,9 +82,8 @@ void SysPlanetMarketInformation::MarketInformationTooltipContent(
                                       GetUniverse()
                                           .get<cqspc::Identifier>(good_entity)
                                           .identifier);
-            } else {   
-                ImGui::TextFmt("{}",
-                                      GetUniverse()
+            } else {
+                ImGui::TextFmt("{}", GetUniverse()
                                           .get<cqspc::Identifier>(good_entity)
                                           .identifier);
             }
@@ -109,7 +108,6 @@ void SysPlanetMarketInformation::MarketInformationTooltipContent(
             ImGui::TextFmt("{}", market.last_latent_demand[good_entity]);
             ImGui::TableSetColumnIndex(7);
             ImGui::TextFmt("{}", market[good_entity].inputratio);
-
         }
         ImGui::EndTable();
     }

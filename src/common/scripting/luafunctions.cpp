@@ -239,8 +239,6 @@ void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
     REGISTER_FUNCTION("add_cash", [&](entt::entity participant, double balance) {
         universe.get_or_emplace<cqspc::Wallet>(participant) += balance;
     });
-    
-
 }
 
 void FunctionUser(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface &script_engine) {

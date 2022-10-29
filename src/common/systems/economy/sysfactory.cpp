@@ -80,23 +80,19 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
         // Log how much manufacturing is being throttled by input
         market[recipe.output.entity].inputratio = limitedinput;
 
-        
         if (market.history.back().sd_ratio[recipe.output.entity] < 1.1) {
             if (limitedcapitalinput > 1) limitedcapitalinput = 1;
             size.size *= 1 + (0.01) * std::fmin(limitedcapitalinput, 1);
-        } 
-        else 
-        {
+        } else {
             size.size *= 0.99;
         }
         if (limitedinput < 1) {  // If an input good is undersupplied on
                                     // the market, throttle production
-
             input *= limitedinput;
             output *= limitedinput;
             // Industry
         }
-        
+
         market.demand += input;
         market.supply += output;
 
@@ -115,8 +111,7 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
         costs.materialcosts =
             (recipe.input * size.size * market.price).GetSum();
         costs.profit = (recipe.output * market.price).GetSum();
-        if (market.sd_ratio[recipe.output.entity] > 1) 
-        {
+        if (market.sd_ratio[recipe.output.entity] > 1) {
             costs.profit /= market.sd_ratio[recipe.output.entity];
         }
         costs.wages = size.size * recipe.workers * 50000;
@@ -133,9 +128,9 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
         // ratio.ratio = recipe.input.UnitLeger(size.size);
         // ratio.output = recipe.output.UnitLeger(size.size);
     }
-} 
-}// namespace cqspc
-            
+}
+}// namespace
+
 void SysProduction::DoSystem() {
     ZoneScoped;
     Universe& universe = GetUniverse();
@@ -157,6 +152,5 @@ void SysProduction::DoSystem() {
     END_TIMED_BLOCK(INDUSTRY);
     SPDLOG_TRACE("Updated {} factories, {} industries", factories,
                     view.size());
-
 }
 }  // namespace cqsp::common::systems

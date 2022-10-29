@@ -20,7 +20,6 @@
 #include "common/components/history.h"
 
 void cqsp::common::systems::history::SysMarketHistory::DoSystem() {
-
     for (entt::entity marketentity : GetUniverse().view<components::Market>()) {
         components::Market& market_data =
             GetUniverse().get<components::Market>(marketentity);
@@ -32,7 +31,6 @@ void cqsp::common::systems::history::SysMarketHistory::DoSystem() {
         components::Market& market_data =
             GetUniverse().get<components::Market>(entity);
         // Loop through the prices
-        
         for (auto resource : market_data.market_information) {
             history.price_history[resource.first].push_back(resource.second.price);
             history.volume[resource.first].push_back(
