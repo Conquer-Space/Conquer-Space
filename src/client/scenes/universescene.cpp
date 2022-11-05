@@ -91,7 +91,7 @@ void cqsp::scene::UniverseScene::Init() {
     SeePlanet(GetApp(), GetUniverse().planets["earth"]);
     //selected_planet = player_civ->starting_planet;
 
-    AddUISystem<cqsps::SysPlanetInformation>();
+    //AddUISystem<cqsps::SysPlanetInformation>();
     //AddUISystem<cqsps::SysTurnSaveWindow>();
     AddUISystem<cqsps::SysStarSystemTree>();
     AddUISystem<cqsps::SysPauseMenu>();
@@ -101,7 +101,7 @@ void cqsp::scene::UniverseScene::Init() {
     //AddUISystem<cqsps::SysFieldViewer>();
     //AddUISystem<cqsps::SysTechnologyProjectViewer>();
     //AddUISystem<cqsps::SysTechnologyViewer>();
-    AddUISystem<cqsps::SysCountryInformation>();
+    AddUISystem<cqsps::SysProvinceInformation>();
     AddUISystem<cqsps::SysPlanetMarketInformation>();
 
     AddUISystem<cqsps::gui::SysEvent>();

@@ -55,6 +55,7 @@ void cqsp::common::systems::loading::LoadProvinces(common::Universe& universe,
                 "Province {} conflicts with an already preexisting province",
                 identifier);
         }
+        // Add province to country or something like that
         universe.province_colors[color] = entity;
     }
 }
