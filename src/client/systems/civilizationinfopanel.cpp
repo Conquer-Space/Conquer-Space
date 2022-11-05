@@ -16,10 +16,13 @@
  */
 #include "client/systems/civilizationinfopanel.h"
 
+#include <limits>
+
 #include "common/components/player.h"
 #include "common/components/organizations.h"
 #include "common/components/economy.h"
 #include "common/util/utilnumberdisplay.h"
+#include "common/components/bodies.h"
 
 #include "client/systems/gui/systooltips.h"
 
@@ -47,16 +50,15 @@ void cqsp::client::systems::CivilizationInfoPanel::DoUI(int delta_time) {
 void cqsp::client::systems::CivilizationInfoPanel::DoUpdate(int delta_time) {}
 
 void cqsp::client::systems::CivilizationInfoPanel::CivInfoPanel() {
-    ImGui::Text("Information");
     // Get player
     entt::entity player = GetUniverse()
-                              .view<common::components::Civilization,
-                                    common::components::Player>()
+                              .view<common::components::Player>()
                               .front();
-    ImGui::TextFmt("{}", gui::GetName(GetUniverse(), player));
     if (player == entt::null) {
         return;
     }
+    ImGui::TextFmt("{}", gui::GetName(GetUniverse(), player));
+
     // Make hoverable
     gui::EntityTooltip(GetUniverse(), player);
     if (GetUniverse().any_of<common::components::Wallet>(player)) {
@@ -64,17 +66,95 @@ void cqsp::client::systems::CivilizationInfoPanel::CivInfoPanel() {
         ImGui::TextFmt("Reserves: {}", util::LongToHumanString(wallet.GetBalance()));
     }
 
-    // Collate all the owned stuff
-    auto view = GetUniverse().view<common::components::Governed>();
-    ImGui::Separator();
-    ImGui::Text("Owned Cities");
+    if (ImGui::BeginTabBar("civ_info_window")) {
+        if (ImGui::BeginTabItem("City Information")) {
+            // Collate all the owned stuff
+            auto view = GetUniverse().view<common::components::Governed>();
+            ImGui::Separator();
+            ImGui::Text("Owned Cities");
 
-    ImGui::BeginChild("ownedcitiespanel");
-    for (auto entity : view) {
-        if (GetUniverse().get<common::components::Governed>(entity).governor == player) {
-            ImGui::TextFmt("{}", client::systems::gui::GetName(GetUniverse(), entity));
-            gui::EntityTooltip(GetUniverse(), entity);
+            ImGui::BeginChild("ownedcitiespanel");
+            for (auto entity : view) {
+                if (GetUniverse()
+                        .get<common::components::Governed>(entity)
+                        .governor == player) {
+                    ImGui::TextFmt("{}", client::systems::gui::GetName(
+                                             GetUniverse(), entity));
+                    gui::EntityTooltip(GetUniverse(), entity);
+                }
+            }
+            ImGui::EndChild();
+            ImGui::EndTabItem();
         }
+        if (ImGui::BeginTabItem("Market Information")) {
+            MarketInformationTooltipContent(GetUniverse().planets["earth"]);
+            ImGui::EndTabItem();
+        }
+        ImGui::EndTabBar();
     }
-    ImGui::EndChild();
+}
+
+namespace cqspb = cqsp::common::components::bodies;
+namespace cqspc = cqsp::common::components;
+
+void cqsp::client::systems::CivilizationInfoPanel::
+    MarketInformationTooltipContent(const entt::entity marketentity) {
+    if (!GetUniverse().any_of<cqspc::Market>(marketentity)) {
+        ImGui::TextFmt("Market is not a market");
+        return;
+    }
+    // auto& center = GetUniverse().get<cqspc::MarketCenter>(marketentity);
+    cqspc::Market& market = GetUniverse().get<cqspc::Market>(marketentity);
+    ImGui::TextFmt("Has {} entities attached to it",
+                   market.participants.size());
+
+    // Get resource stockpile
+    if (ImGui::BeginTable("marketinfotable", 8,
+                          ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Good");
+        ImGui::TableSetupColumn("Price");
+        ImGui::TableSetupColumn("Supply");
+        ImGui::TableSetupColumn("Demand");
+        ImGui::TableSetupColumn("S/D ratio");
+        ImGui::TableSetupColumn("D/S ratio");
+        ImGui::TableSetupColumn("Latent Demand");
+        ImGui::TableSetupColumn("Input Ratio");
+        ImGui::TableHeadersRow();
+        auto goodsview = GetUniverse().view<cqspc::Price>();
+
+        for (entt::entity good_entity : goodsview) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            if (GetUniverse().any_of<cqspc::Capital>(good_entity)) {
+                ImGui::TextFmtColored(ImColor(1.f, 1.f, 0.f), "{}",
+                                      client::systems::gui::GetName(
+                                             GetUniverse(), good_entity));
+            } else {
+                ImGui::TextFmt("{}", client::systems::gui::GetName(
+                                             GetUniverse(), good_entity));
+            }
+            ImGui::TableSetColumnIndex(1);
+            // Mark the cell as red if the thing is not valid
+            ImGui::TextFmt("{}", market.price[good_entity]);
+            ImGui::TableSetColumnIndex(2);
+            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(
+                                     market.previous_supply[good_entity]));
+            ImGui::TableSetColumnIndex(3);
+            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(
+                                     market.previous_demand[good_entity]));
+            ImGui::TableSetColumnIndex(4);
+            double sd_ratio = market.history.back().sd_ratio[good_entity];
+            if (sd_ratio == std::numeric_limits<double>::infinity())
+                ImGui::TextFmt("inf");
+            else
+                ImGui::TextFmt("{}", sd_ratio);
+            ImGui::TableSetColumnIndex(5);
+            ImGui::TextFmt("{}", market.ds_ratio[good_entity]);
+            ImGui::TableSetColumnIndex(6);
+            ImGui::TextFmt("{}", market.last_latent_demand[good_entity]);
+            ImGui::TableSetColumnIndex(7);
+            ImGui::TextFmt("{}", market[good_entity].inputratio);
+        }
+        ImGui::EndTable();
+    }
 }

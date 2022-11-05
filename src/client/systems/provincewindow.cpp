@@ -14,7 +14,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "client/systems/countrywindow.h"
+#include "client/systems/provincewindow.h"
 
 #include <string>
 #include <limits>
