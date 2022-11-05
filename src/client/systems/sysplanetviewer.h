@@ -28,7 +28,9 @@
 namespace cqsp {
 namespace client {
 namespace systems {
-
+/// <summary>
+/// Displays planet information, depreciated
+/// </summary>
 class SysPlanetInformation : public SysUserInterface {
  public:
     explicit SysPlanetInformation(cqsp::engine::Application& app) : SysUserInterface(app) {}

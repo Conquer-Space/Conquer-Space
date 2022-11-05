@@ -38,9 +38,9 @@
 
 namespace cqsp::client::systems {
 namespace cqspc = cqsp::common::components;
-void SysCountryInformation::Init() {}
+void SysProvinceInformation::Init() {}
 
-void SysCountryInformation::DoUI(int delta_time) {
+void SysProvinceInformation::DoUI(int delta_time) {
     // Check the market
     if (market_information_panel) {
         ImGui::Begin("Market", &market_information_panel);
@@ -69,11 +69,11 @@ void SysCountryInformation::DoUI(int delta_time) {
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.79f,
                                    ImGui::GetIO().DisplaySize.y * 0.55f),
                             ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-    ImGui::Begin("Country Information", &visible);
+    ImGui::Begin("Province Information", &visible);
     // Then do all countries and compile gdp data
     switch (view_mode) {
         case ViewMode::COUNTRY_VIEW:
-            CountryView();
+            ProvinceView();
             break;
         case ViewMode::CITY_VIEW:
             CityView();
@@ -82,9 +82,9 @@ void SysCountryInformation::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void SysCountryInformation::DoUpdate(int delta_time) {}
+void SysProvinceInformation::DoUpdate(int delta_time) {}
 
-void SysCountryInformation::CountryView() {
+void SysProvinceInformation::ProvinceView() {
     ImGui::TextFmt("{}", gui::GetName(GetUniverse(), current_country));
     // List the cities
     auto& city_list =
@@ -100,6 +100,7 @@ void SysCountryInformation::CountryView() {
             population += segment.population;
         }
     }
+    ImGui::TextFmt("Part of {}", gui::GetName(GetUniverse(), city_list.country));
     ImGui::TextFmt("Population: {}", util::LongToHumanString(population));
     ImGui::Separator();
     for (entt::entity entity : city_list.cities) {
@@ -112,7 +113,7 @@ void SysCountryInformation::CountryView() {
     }
 }
 
-void SysCountryInformation::CityView() {
+void SysProvinceInformation::CityView() {
     // Get city information
     if (CQSPGui::ArrowButton("cityinformationpanelback", ImGuiDir_Left)) {
         view_mode = ViewMode::COUNTRY_VIEW;
@@ -165,7 +166,7 @@ void SysCountryInformation::CityView() {
     }
 }
 
-void SysCountryInformation::CityIndustryTabs() {
+void SysProvinceInformation::CityIndustryTabs() {
     if (ImGui::BeginTabBar("CityTabs", ImGuiTabBarFlags_None)) {
         if (ImGui::BeginTabItem("Demographics")) {
             DemographicsTab();
@@ -190,7 +191,7 @@ void SysCountryInformation::CityIndustryTabs() {
     }
 }
 
-void SysCountryInformation::DemographicsTab() {
+void SysProvinceInformation::DemographicsTab() {
     using cqsp::common::components::PopulationSegment;
     using cqsp::common::components::Settlement;
 
@@ -237,7 +238,7 @@ void SysCountryInformation::DemographicsTab() {
     }
 }
 
-void SysCountryInformation::IndustryTab() {
+void SysProvinceInformation::IndustryTab() {
     IndustryListWindow();
     auto& city_industry =
         GetUniverse().get<cqspc::IndustrialZone>(current_city);
@@ -271,7 +272,7 @@ void SysCountryInformation::IndustryTab() {
     ImGui::SameLine();
 }
 
-void SysCountryInformation::SpacePortTab() {
+void SysProvinceInformation::SpacePortTab() {
     namespace cqspt = cqsp::common::components::types;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspb = cqsp::common::components::bodies;
@@ -309,7 +310,7 @@ void SysCountryInformation::SpacePortTab() {
     }
 }
 
-void SysCountryInformation::InfrastructureTab() {
+void SysProvinceInformation::InfrastructureTab() {
     namespace infrastructure = common::components::infrastructure;
     auto& infras =
         GetUniverse().get<infrastructure::CityInfrastructure>(
@@ -324,7 +325,7 @@ void SysCountryInformation::InfrastructureTab() {
     }
 }
 
-void SysCountryInformation::IndustryListWindow() {
+void SysProvinceInformation::IndustryListWindow() {
     if (!city_factory_info) {
         return;
     }
@@ -344,7 +345,7 @@ void SysCountryInformation::IndustryListWindow() {
 }
 
 template <typename T>
-void SysCountryInformation::IndustryTabGenericChild(const std::string& tabname,
+void SysProvinceInformation::IndustryTabGenericChild(const std::string& tabname,
                                                     const std::string& industryname,
                                                     const ImVec2& size) {
         ImGui::BeginChild(
@@ -407,6 +408,6 @@ void SysCountryInformation::IndustryTabGenericChild(const std::string& tabname,
         ImGui::EndChild();
 }
 
-void SysCountryInformation::MarketInformationTooltipContent(const entt::entity marketentity) {
+void SysProvinceInformation::MarketInformationTooltipContent(const entt::entity marketentity) {
 }
 }  // namespace cqsp::client::systems

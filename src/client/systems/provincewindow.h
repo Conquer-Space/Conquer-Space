@@ -21,16 +21,16 @@
 #include "client/systems/sysgui.h"
 
 namespace cqsp::client::systems {
-class SysCountryInformation : public SysUserInterface {
+class SysProvinceInformation : public SysUserInterface {
  public:
-    explicit SysCountryInformation(cqsp::engine::Application& app)
+    explicit SysProvinceInformation(cqsp::engine::Application& app)
         : SysUserInterface(app) {}
     void Init();
     void DoUI(int delta_time);
     void DoUpdate(int delta_time);
 
  private:
-    void CountryView();
+    void ProvinceView();
     void CityView();
 
     void CityIndustryTabs();
