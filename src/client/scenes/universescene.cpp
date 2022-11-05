@@ -58,7 +58,7 @@
 #include "client/systems/marketwindow.h"
 
 #include "client/components/clientctx.h"
-#include "client/systems/countrywindow.h"
+#include "client/systems/provincewindow.h"
 
 // If the game is paused or not, like when escape is pressed
 bool game_halted = false;
@@ -97,12 +97,12 @@ void cqsp::scene::UniverseScene::Init() {
     AddUISystem<cqsps::SysPauseMenu>();
     AddUISystem<cqsps::SysDebugMenu>();
     //AddUISystem<cqsps::SysCommand>();
-    //AddUISystem<cqsps::CivilizationInfoPanel>();
+    AddUISystem<cqsps::CivilizationInfoPanel>();
     //AddUISystem<cqsps::SysFieldViewer>();
     //AddUISystem<cqsps::SysTechnologyProjectViewer>();
     //AddUISystem<cqsps::SysTechnologyViewer>();
     AddUISystem<cqsps::SysProvinceInformation>();
-    AddUISystem<cqsps::SysPlanetMarketInformation>();
+    //AddUISystem<cqsps::SysPlanetMarketInformation>();
 
     AddUISystem<cqsps::gui::SysEvent>();
     simulation->tick();

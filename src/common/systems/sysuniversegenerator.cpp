@@ -55,13 +55,14 @@ void ScriptUniverseGenerator::Generate(cqsp::common::Universe& universe) {
     // Create player
     // Set player
     // Set to country
-    auto player = universe.countries["france"];
-    universe.emplace<cqspc::Civilization>(player);
+    auto player = universe.countries["usa"];
+    //universe.emplace<cqspc::Civilization>(player);
     universe.emplace<cqspc::Player>(player);
     // Add wallet to civilization
     universe.emplace<cqspc::Wallet>(player, entt::null, 10000000);
 
     // Add top level fleet
+    /*
     auto playerFleet = universe.create();
     universe.emplace<cqspc::Name>(playerFleet, "navy");
     universe.emplace<cqspc::ships::Fleet>(playerFleet, player);
@@ -72,7 +73,7 @@ void ScriptUniverseGenerator::Generate(cqsp::common::Universe& universe) {
     universe.emplace<cqspc::ships::Fleet>(playerSubFleet, playerFleet, player, 1);
     universe.get<cqsps::Fleet>(universe.get<cqspc::Civilization>(player).top_level_fleet)
         .subfleets.push_back(playerSubFleet);
-
+        */
     sol::optional<sol::table> generator = script_engine["generators"]["data"][1];
     if (generator) {
         (*generator)["civ_init"]();
