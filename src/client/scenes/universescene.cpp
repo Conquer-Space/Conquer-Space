@@ -78,18 +78,11 @@ void cqsp::scene::UniverseScene::Init() {
     system_renderer = new cqsps::SysStarSystemRenderer(GetUniverse(), GetApp());
     system_renderer->Initialize();
 
-    auto civilizationView = GetUniverse().view<cqspc::Civilization, cqspc::Player>();
-    for (auto [entity, civ] : civilizationView.each()) {
-        player = entity;
-        player_civ = &civ;
-    }
     GetUniverse().ctx().emplace<client::ctx::PauseOptions>();
 
     system_renderer->SeeStarSystem();
 
-    //SeeStarSystem(GetApp(), body.star_system);
     SeePlanet(GetApp(), GetUniverse().planets["earth"]);
-    //selected_planet = player_civ->starting_planet;
 
     //AddUISystem<cqsps::SysPlanetInformation>();
     //AddUISystem<cqsps::SysTurnSaveWindow>();

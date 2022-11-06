@@ -107,7 +107,7 @@ std::string GetName(const Universe& universe, entt::entity entity) {
     } else if (universe.all_of<cqspc::Identifier>(entity)) {
         return universe.get<cqspc::Identifier>(entity);
     } else {
-        return fmt::format("{}", entity);
+        return fmt::format("{}", GetEntityType(universe, entity));
     }
 }
 
@@ -244,8 +244,8 @@ std::string GetEntityType(const cqsp::common::Universe& universe,
         */
     } else if (universe.any_of<cqspc::Player>(entity)) {
         return "Player";
-    } else if (universe.any_of<cqspc::Civilization>(entity)) {
-        return "Civilization";
+    } else if (universe.any_of<cqspc::Country>(entity)) {
+        return "Country";
     } else if (universe.any_of<cqspc::Organization>(entity)) {
         return "Organization";
     } else if (universe.any_of<cqspc::science::Lab>(entity)) {

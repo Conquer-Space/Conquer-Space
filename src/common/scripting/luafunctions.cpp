@@ -133,14 +133,6 @@ void FunctionCivilizationGen(cqsp::common::Universe& universe, cqsp::scripting::
         gov.governor = owner;
     });
 
-    REGISTER_FUNCTION("set_civilization_planet", [&] (entt::entity civ, entt::entity planet) {
-        universe.get_or_emplace<cqspc::Civilization>(civ).starting_planet = planet;
-    });
-
-    REGISTER_FUNCTION("get_civilization_planet", [&] (entt::entity civ) {
-        return universe.get<cqspc::Civilization>(civ).starting_planet;
-    });
-
     REGISTER_FUNCTION("is_player", [&] (entt::entity civ) {
         return static_cast<bool>(universe.all_of<cqspc::Player>(civ));
     });
@@ -352,10 +344,6 @@ void FunctionCivilizations(cqsp::common::Universe& universe, cqsp::scripting::Sc
 
     REGISTER_FUNCTION("get_player", [&]() {
         return universe.view<cqspc::Player>().front();
-    });
-
-    REGISTER_FUNCTION("get_all_civs", [&]() {
-        return sol::as_table(universe.view<cqspc::Civilization>());
     });
 }
 

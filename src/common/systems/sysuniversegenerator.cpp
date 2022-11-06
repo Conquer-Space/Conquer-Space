@@ -74,10 +74,11 @@ void ScriptUniverseGenerator::Generate(cqsp::common::Universe& universe) {
     universe.get<cqsps::Fleet>(universe.get<cqspc::Civilization>(player).top_level_fleet)
         .subfleets.push_back(playerSubFleet);
         */
+    /*
     sol::optional<sol::table> generator = script_engine["generators"]["data"][1];
     if (generator) {
         (*generator)["civ_init"]();
-        script_engine["civilizations"] = sol::as_table(universe.view<cqspc::Civilization>());
+        //script_engine["civilizations"] = sol::as_table(universe.view<cqspc::Civilization>());
         (*generator)["universe_gen"]();
         auto view = universe.view<cqspc::Civilization>();
         SPDLOG_INFO("Initing planets");
@@ -86,7 +87,7 @@ void ScriptUniverseGenerator::Generate(cqsp::common::Universe& universe) {
         }
     } else {
         SPDLOG_ERROR("No generator");
-    }
+    }*/
     SPDLOG_INFO("Done generating");
 }
 }  // namespace cqsp::common::systems::universegenerator
