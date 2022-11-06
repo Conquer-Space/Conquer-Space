@@ -87,8 +87,6 @@ class UniverseScene : public cqsp::engine::Scene {
     entt::entity player;
     entt::entity selected_planet = entt::null;
 
-    cqsp::common::components::Civilization* player_civ;
-
     cqsp::client::systems::SysStarSystemRenderer* system_renderer;
 
     std::unique_ptr<cqsp::common::systems::simulation::Simulation> simulation;

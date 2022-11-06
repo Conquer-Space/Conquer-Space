@@ -99,7 +99,7 @@ void cqsp::client::systems::SysCommand::ShipList() {
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspc = cqsp::common::components;
 
-
+    /*
     static entt::entity selectedFleetEnt = GetUniverse()
                            .get<cqspc::Civilization>(GetUniverse()
                            .view<cqspc::Player>()
@@ -107,8 +107,6 @@ void cqsp::client::systems::SysCommand::ShipList() {
 
     auto& selectedFleet = GetUniverse().get<cqsps::Fleet>(selectedFleetEnt);
     auto& selectedFleetName = GetUniverse().get<cqspc::Name>(selectedFleetEnt);
-
-
 
     std::stringstream finalSelectedFleetName;
     for (size_t i = 0; i < selectedFleet.echelon; i++) {
@@ -162,5 +160,5 @@ void cqsp::client::systems::SysCommand::ShipList() {
         }
     }
 
-    ImGui::End();
+    ImGui::End();*/
 }

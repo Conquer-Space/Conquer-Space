@@ -32,16 +32,12 @@ struct Governed {
 
 struct Organization {};
 
-struct Civilization {
-    entt::entity starting_planet;
-    entt::entity top_level_fleet;
-};
-
 struct Country {
 };
 
 struct CountryCityList {
     std::vector<entt::entity> city_list;
+    std::vector<entt::entity> province_list;
 };
 }  // namespace components
 }  // namespace common
