@@ -24,6 +24,7 @@
 #include "common/util/utilnumberdisplay.h"
 #include "common/components/bodies.h"
 
+#include "client/components/clientctx.h"
 #include "client/systems/gui/systooltips.h"
 
 void cqsp::client::systems::CivilizationInfoPanel::Init() {}
@@ -84,6 +85,30 @@ void cqsp::client::systems::CivilizationInfoPanel::CivInfoPanel() {
                 }
             }
             ImGui::EndChild();
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Province Information")) {
+            if (GetUniverse().any_of<common::components::CountryCityList>(
+                    player)) {
+                for (entt::entity entity :
+                     GetUniverse().get<common::components::CountryCityList>(
+                         player).province_list) {
+                    bool selected =
+                        GetUniverse()
+                            .view<ctx::SelectedProvince>()
+                            .front() == entity;
+                    if (ImGui::SelectableFmt("{}", &selected,
+                        client::systems::gui::GetName(GetUniverse(), entity))) {
+                        entt::entity ent = GetUniverse().view<ctx::SelectedProvince>().front();
+                        if (ent != entt::null) {
+                            GetUniverse().remove<ctx::SelectedProvince>(ent);
+                        }
+                        // Set the entity
+                        GetUniverse().emplace<ctx::SelectedProvince>(entity);
+                    }
+                    gui::EntityTooltip(GetUniverse(), entity);
+                }
+            }
             ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Market Information")) {

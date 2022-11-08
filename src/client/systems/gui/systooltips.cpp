@@ -246,6 +246,8 @@ std::string GetEntityType(const cqsp::common::Universe& universe,
         return "Player";
     } else if (universe.any_of<cqspc::Country>(entity)) {
         return "Country";
+    } else if (universe.any_of<cqspc::Province>(entity)) {
+        return "Province";
     } else if (universe.any_of<cqspc::Organization>(entity)) {
         return "Organization";
     } else if (universe.any_of<cqspc::science::Lab>(entity)) {

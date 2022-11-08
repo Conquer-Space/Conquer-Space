@@ -51,6 +51,29 @@ IMGUI_API void TextFmtColored(const ImVec4& color, fmt::format_string<Args...> f
     auto s = fmt::format(fmt, std::forward<Args>(args)...);
     TextColored(color, s.c_str());
 }
+
+template <typename... Args>
+IMGUI_API bool SelectableFmt(fmt::format_string<Args...> fmt, bool* p_selected,
+                             ImGuiSelectableFlags flags, const ImVec2& size,
+                             Args&&... args) {
+    auto s = fmt::format(fmt, std::forward<Args>(args)...);
+    return Selectable(s.c_str(), p_selected, flags, size);
+}
+
+template <typename... Args>
+IMGUI_API bool SelectableFmt(fmt::format_string<Args...> fmt, bool* p_selected,
+                             ImGuiSelectableFlags flags,
+                             Args&&... args) {
+    auto s = fmt::format(fmt, std::forward<Args>(args)...);
+    return Selectable(s.c_str(), p_selected, flags, ImVec2(0, 0));
+}
+
+template <typename... Args>
+IMGUI_API bool SelectableFmt(fmt::format_string<Args...> fmt, bool* p_selected,
+                             Args&&... args) {
+    auto s = fmt::format(fmt, std::forward<Args>(args)...);
+    return Selectable(s.c_str(), p_selected, 0, ImVec2(0, 0));
+}
 }  // namespace ImGui
 
 namespace ax::Drawing {
