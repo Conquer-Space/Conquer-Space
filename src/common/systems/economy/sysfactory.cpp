@@ -26,6 +26,7 @@
 #include "common/util/profiler.h"
 #include "common/components/surface.h"
 #include "common/components/name.h"
+#include "common/components/organizations.h"
 
 namespace cqsp::common::systems {
 namespace cqspc = cqsp::common::components;
@@ -138,14 +139,17 @@ void SysProduction::DoSystem() {
     BEGIN_TIMED_BLOCK(INDUSTRY);
     int factories = 0;
     // Loop through the markets
-    auto market_view = universe.view<cqspc::Habitation>();
+    auto market_view = universe.view<cqspc::Country>();
     int settlement_count = 0;
     for (entt::entity entity : market_view) {
         auto& market = universe.get_or_emplace<cqspc::Market>(entity);
         // Read the segment information
         // Get the children of the market
-        auto& habitation = universe.get<cqspc::Habitation>(entity);
-        for (entt::entity settlement : habitation.settlements) {
+        if (!universe.any_of<cqspc::CountryCityList>(entity)) {
+            return;
+        }
+        auto& habitation = universe.get<cqspc::CountryCityList>(entity);
+        for (entt::entity settlement : habitation.city_list) {
             ProcessIndustries(universe, settlement, market);
         }
     }
