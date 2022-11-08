@@ -18,12 +18,17 @@
 
 #include "common/components/organizations.h"
 #include "common/components/name.h"
+#include "common/components/economy.h"
 
 namespace cqsp::common::systems::loading {
 bool CountryLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     // Just make the country
     universe.emplace<components::Country>(entity);
     universe.countries[universe.get<components::Identifier>(entity).identifier] = entity;
+
+    // A country will be it's own market
+    universe.emplace<components::Market>(entity);
+
     return true;
 }
 }  // namespace cqsp::common::systems::loading

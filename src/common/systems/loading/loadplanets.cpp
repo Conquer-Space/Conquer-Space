@@ -188,10 +188,6 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
             tags.push_back(values["tags"][i].to_string());
         }
     }
-    if (std::find(tags.begin(), tags.end(), "market") != tags.end()) {
-        SPDLOG_INFO("Found market");
-        universe.emplace<cqspc::Market>(entity);
-    }
     return true;
 }
 

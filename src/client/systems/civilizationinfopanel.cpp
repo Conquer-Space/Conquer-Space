@@ -34,7 +34,7 @@ void cqsp::client::systems::CivilizationInfoPanel::DoUI(int delta_time) {
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
     if (to_display) {
         ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x * 0.2,
-            ImGui::GetIO().DisplaySize.y * 0.4));
+            ImGui::GetIO().DisplaySize.y * 0.4), ImGuiCond_Appearing);
     } else {
         ImGui::SetNextWindowSize(ImVec2(-1, -1));
     }
@@ -112,7 +112,7 @@ void cqsp::client::systems::CivilizationInfoPanel::CivInfoPanel() {
             ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Market Information")) {
-            MarketInformationTooltipContent(GetUniverse().planets["earth"]);
+            MarketInformationTooltipContent(player);
             ImGui::EndTabItem();
         }
         ImGui::EndTabBar();
