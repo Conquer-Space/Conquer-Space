@@ -22,6 +22,7 @@
 
 #include "common/components/surface.h"
 #include "common/components/name.h"
+#include "common/components/organizations.h"
 
 void cqsp::common::systems::loading::LoadProvinces(common::Universe& universe,
                                                    const std::string& text) {
@@ -56,6 +57,8 @@ void cqsp::common::systems::loading::LoadProvinces(common::Universe& universe,
                 identifier);
         }
         // Add province to country
+        universe.get_or_emplace<components::CountryCityList>(universe.countries[country])
+            .province_list.push_back(entity);
 
         universe.province_colors[color] = entity;
     }
