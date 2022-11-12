@@ -290,10 +290,13 @@ class GLWindow : public cqsp::engine::Window {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_SAMPLES, 4);
+        glfwWindowHint(GLFW_SAMPLES, app->GetClientOptions()
+                .GetOptions()["samples"].to_int64());
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
         glfwWindowHint(GLFW_DOUBLEBUFFER, true);
-        glfwWindowHint(GLFW_DECORATED, false);
+        glfwWindowHint(GLFW_DECORATED,
+            ((bool)app->GetClientOptions()
+                .GetOptions()["window"]["decorated"]) ? GLFW_TRUE : GLFW_FALSE);
 
 #ifdef __APPLE__
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -574,6 +577,10 @@ int Application::destroy() {
     glfwDestroyWindow(window(m_window));
     glfwTerminate();
     ENGINE_LOG_INFO("Killed GLFW");
+
+    // Save options
+    m_client_options.WriteOptions();
+    ENGINE_LOG_INFO("Saved Options");
 
     ENGINE_LOG_INFO("Good bye");
     spdlog::shutdown();
