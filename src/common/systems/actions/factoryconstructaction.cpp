@@ -61,8 +61,8 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
     auto& prod = universe.emplace<cqspc::IndustrySize>(factory);
     prod.size = productivity;
     prod.utilization = 1;
-
-    switch (universe.get<cqspc::Recipe>(recipe).type) {
+    const auto& recipe_comp = universe.get<cqspc::Recipe>(recipe);
+    switch (recipe_comp.type) {
         case cqspc::mine:
             universe.emplace<cqspc::Mine>(factory);
             break;
@@ -74,8 +74,9 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
     }
 
     auto& employer = universe.emplace<cqspc::Employer>(factory);
-    employer.population_fufilled = 1000000;
-    employer.population_needed = 1000000;
+    // Set the employment amount, next time we can add other services like HR, tech, etc.
+    employer.population_fufilled = 0;
+    employer.population_needed = recipe_comp.workers * productivity;
     employer.segment = entt::null;
     return factory;
 }

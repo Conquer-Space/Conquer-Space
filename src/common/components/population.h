@@ -22,6 +22,11 @@ namespace common {
 namespace components {
 struct PopulationSegment {
     uint64_t population;
+    /// The total potential workers
+    /// Everyone from the minimum working age (18) to the maximum age (65)
+    /// The labor force must always be less than the population
+    /// population - labor_force = dependents
+    uint64_t labor_force;
 };
 
 struct Hunger {};
