@@ -19,6 +19,8 @@
 #include "client/systems/sysgui.h"
 
 namespace cqsp::client::systems {
+void MarketInformationTable(common::Universe& universe, const entt::entity& market_entity);
+
 class SysPlanetMarketInformation : public SysUserInterface {
  public:
     explicit SysPlanetMarketInformation(cqsp::engine::Application& app)
@@ -28,7 +30,6 @@ class SysPlanetMarketInformation : public SysUserInterface {
     void DoUpdate(int delta_time);
 
  private:
-    void MarketInformationTooltipContent(const entt::entity marketentity);
     bool to_see = true;
     entt::entity selected_planet;
 };

@@ -41,12 +41,6 @@ namespace cqspc = cqsp::common::components;
 void SysProvinceInformation::Init() {}
 
 void SysProvinceInformation::DoUI(int delta_time) {
-    // Check the market
-    if (market_information_panel) {
-        ImGui::Begin("Market", &market_information_panel);
-        MarketInformationTooltipContent(current_city);
-        ImGui::End();
-    }
     entt::entity country =
         GetUniverse().view<cqsp::client::ctx::SelectedProvince>().front();
     if (country != current_country) {
@@ -226,10 +220,6 @@ void SysProvinceInformation::DemographicsTab() {
         }
         // Market
         if (GetUniverse().all_of<cqspc::Market>(current_city)) {
-            if (ImGui::Button("Market Data")) {
-                market_information_panel = true;
-                // Set market
-            }
             if (ImGui::IsItemHovered()) {
                 CQSPGui::SimpleTextTooltip(
                     "Click for detailed market information");
@@ -406,8 +396,5 @@ void SysProvinceInformation::IndustryTabGenericChild(const std::string& tabname,
         ImGui::Text("Input");
         DrawLedgerTable(tabname + "input", GetUniverse(), input_resources);
         ImGui::EndChild();
-}
-
-void SysProvinceInformation::MarketInformationTooltipContent(const entt::entity marketentity) {
 }
 }  // namespace cqsp::client::systems
