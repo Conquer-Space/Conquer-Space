@@ -42,11 +42,13 @@ Hjson::Value cqsp::client::ClientOptions::GetDefaultOptions() {
     Hjson::Value default_options;
     default_options["window"]["width"] = 1280;
     default_options["window"]["height"] = 720;
+    default_options["window"]["decorated"] = true;
     default_options["full_screen"] = false;
     default_options["icon"] = "icon.png";
     default_options["audio"]["music"] = 1.0f;
     default_options["audio"]["ui"] = 0.80f;
     default_options["splashscreens"] = "../data/core/gui/splashscreens";
+    default_options["samples"] = 4;
     return default_options;
 }
 
