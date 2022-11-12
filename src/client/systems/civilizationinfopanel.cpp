@@ -26,6 +26,7 @@
 
 #include "client/components/clientctx.h"
 #include "client/systems/gui/systooltips.h"
+#include "client/systems/marketwindow.h"
 
 void cqsp::client::systems::CivilizationInfoPanel::Init() {}
 
@@ -112,74 +113,9 @@ void cqsp::client::systems::CivilizationInfoPanel::CivInfoPanel() {
             ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Market Information")) {
-            MarketInformationTooltipContent(player);
+            MarketInformationTable(GetUniverse(), player);
             ImGui::EndTabItem();
         }
         ImGui::EndTabBar();
-    }
-}
-
-namespace cqspb = cqsp::common::components::bodies;
-namespace cqspc = cqsp::common::components;
-
-void cqsp::client::systems::CivilizationInfoPanel::
-    MarketInformationTooltipContent(const entt::entity marketentity) {
-    if (!GetUniverse().any_of<cqspc::Market>(marketentity)) {
-        ImGui::TextFmt("Market is not a market");
-        return;
-    }
-    // auto& center = GetUniverse().get<cqspc::MarketCenter>(marketentity);
-    cqspc::Market& market = GetUniverse().get<cqspc::Market>(marketentity);
-    ImGui::TextFmt("Has {} entities attached to it",
-                   market.participants.size());
-
-    // Get resource stockpile
-    if (ImGui::BeginTable("marketinfotable", 8,
-                          ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
-        ImGui::TableSetupColumn("Good");
-        ImGui::TableSetupColumn("Price");
-        ImGui::TableSetupColumn("Supply");
-        ImGui::TableSetupColumn("Demand");
-        ImGui::TableSetupColumn("S/D ratio");
-        ImGui::TableSetupColumn("D/S ratio");
-        ImGui::TableSetupColumn("Latent Demand");
-        ImGui::TableSetupColumn("Input Ratio");
-        ImGui::TableHeadersRow();
-        auto goodsview = GetUniverse().view<cqspc::Price>();
-
-        for (entt::entity good_entity : goodsview) {
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0);
-            if (GetUniverse().any_of<cqspc::Capital>(good_entity)) {
-                ImGui::TextFmtColored(ImColor(1.f, 1.f, 0.f), "{}",
-                                      client::systems::gui::GetName(
-                                             GetUniverse(), good_entity));
-            } else {
-                ImGui::TextFmt("{}", client::systems::gui::GetName(
-                                             GetUniverse(), good_entity));
-            }
-            ImGui::TableSetColumnIndex(1);
-            // Mark the cell as red if the thing is not valid
-            ImGui::TextFmt("{}", market.price[good_entity]);
-            ImGui::TableSetColumnIndex(2);
-            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(
-                                     market.previous_supply[good_entity]));
-            ImGui::TableSetColumnIndex(3);
-            ImGui::TextFmt("{}", cqsp::util::LongToHumanString(
-                                     market.previous_demand[good_entity]));
-            ImGui::TableSetColumnIndex(4);
-            double sd_ratio = market.history.back().sd_ratio[good_entity];
-            if (sd_ratio == std::numeric_limits<double>::infinity())
-                ImGui::TextFmt("inf");
-            else
-                ImGui::TextFmt("{}", sd_ratio);
-            ImGui::TableSetColumnIndex(5);
-            ImGui::TextFmt("{}", market.ds_ratio[good_entity]);
-            ImGui::TableSetColumnIndex(6);
-            ImGui::TextFmt("{}", market.last_latent_demand[good_entity]);
-            ImGui::TableSetColumnIndex(7);
-            ImGui::TextFmt("{}", market[good_entity].inputratio);
-        }
-        ImGui::EndTable();
     }
 }

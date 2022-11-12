@@ -32,8 +32,5 @@ class CivilizationInfoPanel : public SysUserInterface {
     void CivInfoPanel();
 
     bool to_display = false;
-
- private:
-    void MarketInformationTooltipContent(const entt::entity marketentity);
 };
 }  // namespace cqsp::client::systems
