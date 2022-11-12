@@ -56,8 +56,15 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
             entt::entity pop_ent = universe.create();
 
             auto size = population_seg["size"].to_int64();
-            universe.emplace<components::PopulationSegment>(pop_ent).population = size;
-            universe.emplace<components::Employee>(pop_ent);
+            int64_t labor_force = size / 2;
+            if (!population_seg["labor_force"].empty()) {
+                labor_force = population_seg["labor_force"].to_int64();
+            }
+
+            auto& segment = universe.emplace<components::PopulationSegment>(pop_ent);
+            segment.population = size;
+            segment.labor_force = labor_force;
+            universe.emplace<components::LaborInformation>(pop_ent);
             settlement.population.push_back(pop_ent);
         }
     } else {

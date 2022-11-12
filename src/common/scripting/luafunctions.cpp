@@ -260,7 +260,7 @@ void FunctionPopulation(cqsp::common::Universe& universe, cqsp::scripting::Scrip
         entt::entity population = universe.create();
         universe.emplace<cqspc::PopulationSegment>(population, popsize);
         universe.emplace<cqspc::ResourceStockpile>(population);
-        universe.emplace<cqspc::Employee>(population);
+        universe.emplace<cqspc::LaborInformation>(population);
         // Add to planet list
         universe.get<cqspc::Settlement>(settlement).population.push_back(population);
 

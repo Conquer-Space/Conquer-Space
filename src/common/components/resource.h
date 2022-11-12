@@ -242,6 +242,7 @@ struct Recipe {
     RecipeOutput output;
     ProductionType type;
     float interval;
+    // The actual factory worker amount is workers * productivity
     double workers;
 
     ResourceLedger capitalcost;

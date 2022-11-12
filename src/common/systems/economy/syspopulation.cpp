@@ -69,7 +69,7 @@ void SysPopulationGrowth::DoSystem() {
         // For now, we would have 100% of the population working, because we
         // haven't got to social simulation yet. But in the future, this will
         // probably have to change.
-        auto& employee = universe.get_or_emplace<cqspc::Employee>(entity);
+        auto& employee = universe.get_or_emplace<cqspc::LaborInformation>(entity);
         employee.working_population = segment.population;
     }
 }

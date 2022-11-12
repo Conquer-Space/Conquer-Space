@@ -12,6 +12,7 @@
         population: [
             {
                 size: 8000000
+                labor_force: 4000000
             }
         ]
         province: new_york

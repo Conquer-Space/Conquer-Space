@@ -199,19 +199,11 @@ void SysProvinceInformation::DemographicsTab() {
         if (GetUniverse().all_of<cqspc::Hunger>(seg_entity)) {
             ImGui::TextFmt("Hungry");
         }
-        if (GetUniverse().any_of<cqspc::Employee>(
-                seg_entity)) {
-            auto& employee = GetUniverse().get<cqspc::Employee>(seg_entity);
-            ImGui::TextFmt(
-                "Working Population: {}/{}",
-                cqsp::util::LongToHumanString(employee.employed_population),
-                cqsp::util::LongToHumanString(employee.working_population));
-            if (employee.working_population > 0) {
-                ImGui::ProgressBar(
-                    static_cast<float>(employee.employed_population) /
-                    static_cast<float>(employee.working_population));
-            }
-        }
+        ImGui::TextFmt(
+            "Labor Force: {}",
+            cqsp::util::LongToHumanString(GetUniverse().get<PopulationSegment>(seg_entity).labor_force));
+        // Then other labor information
+
         // Get spending for population
         if (GetUniverse().all_of<cqspc::Wallet>(seg_entity)) {
             auto& wallet = GetUniverse().get<cqspc::Wallet>(seg_entity);
@@ -234,7 +226,7 @@ void SysProvinceInformation::IndustryTab() {
         GetUniverse().get<cqspc::IndustrialZone>(current_city);
     int height = 300;
     ImGui::TextFmt("Factories: {}", city_industry.industries.size());
-    if (ImGui::SmallButton("Economy info")) {
+    if (ImGui::SmallButton("Factory list")) {
         // Put all the economy window information
         city_factory_info = true;
     }
@@ -245,6 +237,19 @@ void SysProvinceInformation::IndustryTab() {
         }
         ImGui::EndTooltip();
     }
+
+    // Calculate the number of stuff
+    uint64_t labor_demand = 0;
+    uint64_t labor_fufillment = 0;
+    for (auto& factory : city_industry.industries) {
+        const auto& employ = GetUniverse().get<cqspc::Employer>(factory);
+        labor_demand += employ.population_needed;
+        labor_fufillment += employ.population_fufilled;
+    }
+    double percentag = (double) labor_fufillment / (double) labor_demand * 100.;
+    ImGui::TextFmt("Labor fufillment: {}/{} ({}%%)",
+        cqsp::util::LongToHumanString(labor_fufillment),
+        cqsp::util::LongToHumanString(labor_demand), percentag);
 
     IndustryTabGenericChild<cqspc::Service>("Service Sector", "Company",
         ImVec2(ImGui::GetContentRegionAvail().x * 0.5f - ImGui::GetStyle().ItemSpacing.y,

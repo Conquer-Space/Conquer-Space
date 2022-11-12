@@ -466,8 +466,8 @@ void SysPlanetInformation::DemographicsTab() {
         if (GetUniverse().all_of<cqspc::Hunger>(seg_entity)) {
             ImGui::TextFmt("Hungry");
         }
-        if (GetUniverse().any_of<cqsp::common::components::Employee>(seg_entity)) {
-            auto& employee = GetUniverse().get<cqspc::Employee>(seg_entity);
+        if (GetUniverse().any_of<cqsp::common::components::LaborInformation>(seg_entity)) {
+            auto& employee = GetUniverse().get<cqspc::LaborInformation>(seg_entity);
             ImGui::TextFmt("Working Population: {}/{}", cqsp::util::LongToHumanString(employee.employed_population),
                                                         cqsp::util::LongToHumanString(employee.working_population));
             if (employee.working_population > 0) {

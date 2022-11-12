@@ -225,7 +225,7 @@ struct Employer {
 /// <summary>
 /// Population segment that is employed
 /// </summary>
-struct Employee {
+struct LaborInformation {
     /// <summary>
     /// The population that is available to work
     /// </summary>
