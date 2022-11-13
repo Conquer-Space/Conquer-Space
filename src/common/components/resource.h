@@ -253,8 +253,6 @@ struct RecipeCost {
     ResourceLedger scaling;
 };
 
-
-
 // Factory size
 struct IndustrySize {
     double size;

@@ -45,10 +45,24 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
     entt::entity recipe, int productivity) {
     namespace cqspc = cqsp::common::components;
     // Make the factory
+    if (city == entt::null || recipe == entt::null) {
+        SPDLOG_WARN("City or recipe is null");
+        return entt::null;
+    }
+    if (!universe.valid(city) || !universe.valid(recipe)) {
+        SPDLOG_WARN("City or recipe is invalid");
+        return entt::null;
+    }
     if (!universe.any_of<cqspc::IndustrialZone>(city)) {
         SPDLOG_WARN("City {} has no industry", city);
         return entt::null;
     }
+
+    if (!universe.any_of<cqspc::Recipe>(recipe)) {
+        SPDLOG_WARN("Recipe {} has no recipe", recipe);
+        return entt::null;
+    }
+
     entt::entity factory = universe.create();
     //auto& factory_converter = universe.emplace<cqspc::ResourceConverter>(factory);
     auto& production = universe.emplace<cqspc::Production>(factory);
