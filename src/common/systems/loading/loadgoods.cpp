@@ -76,6 +76,8 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     namespace cqspc = cqsp::common::components;
     namespace cqspt = cqsp::common::components::types;
 
+    universe.emplace<cqspc::Good>(entity);
+
     std::string identifier = values["identifier"].to_string();
     if (values["mass"].defined() && values["volume"].defined()) {
         // Then it's matter and physical

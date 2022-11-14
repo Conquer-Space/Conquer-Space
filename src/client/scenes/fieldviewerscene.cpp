@@ -17,10 +17,12 @@
 #include "client/scenes/fieldviewerscene.h"
 
 #include "client/systems/assetloading.h"
+#include "client/systems/editor/goodviewer.h"
 #include "client/systems/sysfieldviewer.h"
 
 cqsp::scene::ObjectEditorScene::ObjectEditorScene(cqsp::engine::Application& app) : cqsp::engine::Scene(app) {
     AddUISystem<cqsp::client::systems::SysFieldNodeViewer>();
+    AddUISystem<cqsp::client::systems::SysGoodViewer>();
 }
 
 cqsp::scene::ObjectEditorScene::~ObjectEditorScene() {}
