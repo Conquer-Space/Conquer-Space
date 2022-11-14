@@ -16,9 +16,10 @@
 */
 #pragma once
 
+#include <map>
 #include <memory>
+#include <string>
 #include <utility>
-#include <vector>
 
 #include "client/systems/sysgui.h"
 #include "engine/scene.h"
@@ -36,14 +37,14 @@ class ObjectEditorScene : public cqsp::engine::Scene {
     void Render(float deltaTime);
 
     template <class T>
-    void AddUISystem() {
+    void AddUISystem(const std::string& name) {
         auto ui = std::make_unique<T>(GetApp());
         ui->Init();
-        user_interfaces.push_back(std::move(ui));
+        user_interfaces[name] = std::make_pair(false, std::move(ui));
     }
 
  private:
-    std::vector<std::unique_ptr<cqsp::client::systems::SysUserInterface>> user_interfaces;
+    std::map<std::string, std::pair<bool, std::unique_ptr<cqsp::client::systems::SysUserInterface>>> user_interfaces;
 };
 }  // namespace scene
 };  // namespace cqsp
