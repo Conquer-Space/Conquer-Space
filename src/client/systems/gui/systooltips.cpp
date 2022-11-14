@@ -16,6 +16,7 @@
 */
 #include "client/systems/gui/systooltips.h"
 
+#include <cmath>
 #include <string>
 
 #include "client/systems/gui/sysstockpileui.h"

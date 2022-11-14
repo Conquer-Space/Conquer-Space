@@ -16,6 +16,8 @@
 */
 #pragma once
 
+#include <cmath>
+
 namespace cqsp::common::components::types {
 enum UnitType {
     Distance,  // Default distance: kilometer
