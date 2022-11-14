@@ -18,11 +18,13 @@
 
 #include "client/systems/assetloading.h"
 #include "client/systems/editor/goodviewer.h"
+#include "client/systems/editor/recipeviewer.h"
 #include "client/systems/sysfieldviewer.h"
 
 cqsp::scene::ObjectEditorScene::ObjectEditorScene(cqsp::engine::Application& app) : cqsp::engine::Scene(app) {
     AddUISystem<cqsp::client::systems::SysFieldNodeViewer>("Node Viewer");
     AddUISystem<cqsp::client::systems::SysGoodViewer>("Good Viewer");
+    AddUISystem<cqsp::client::systems::SysRecipeViewer>("Recipe Viewer");
 }
 
 cqsp::scene::ObjectEditorScene::~ObjectEditorScene() {}
