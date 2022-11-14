@@ -16,18 +16,17 @@
 */
 #pragma once
 
-#include <vector>
 #include <string>
+#include <vector>
 
-#include "engine/scene.h"
+#include "client/systems/creditswindow.h"
+#include "client/systems/settingswindow.h"
+#include "engine/graphics/primitives/pane.h"
 #include "engine/graphics/renderable.h"
+#include "engine/graphics/text.h"
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/renderer2d.h"
-#include "engine/graphics/primitives/pane.h"
-#include "engine/graphics/text.h"
-
-#include "client/systems/settingswindow.h"
-#include "client/systems/creditswindow.h"
+#include "engine/scene.h"
 
 namespace cqsp {
 namespace scene {

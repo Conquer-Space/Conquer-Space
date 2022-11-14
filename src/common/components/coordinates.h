@@ -116,17 +116,15 @@ struct Orbit {
     double E = 0;
 
     Orbit() = default;
-    Orbit(kilometer semi_major_axis, double eccentricity,
-            radian inclination, radian LAN,
-            radian w, radian M0):
-            eccentricity(eccentricity),
-            semi_major_axis(semi_major_axis),
-            inclination(inclination),
-            LAN(LAN),
-            w(w),
-            M0(M0),
-            v(M0),
-            T(0) {
+    Orbit(kilometer semi_major_axis, double eccentricity, radian inclination, radian LAN, radian w, radian M0)
+        : eccentricity(eccentricity),
+          semi_major_axis(semi_major_axis),
+          inclination(inclination),
+          LAN(LAN),
+          w(w),
+          M0(M0),
+          v(M0),
+          T(0) {
         CalculateVariables();
     }
 
@@ -134,13 +132,11 @@ struct Orbit {
     /// Calculates period and mean motion
     /// </summary>
     void CalculateVariables() {
-        T =  2 * PI * std::sqrt(semi_major_axis * semi_major_axis * semi_major_axis / GM);
+        T = 2 * PI * std::sqrt(semi_major_axis * semi_major_axis * semi_major_axis / GM);
         nu = std::sqrt(GM / (semi_major_axis * semi_major_axis * semi_major_axis));
     }
 
-    double GetMtElliptic(double time) {
-        return normalize_radian(M0 + (time - epoch) * nu);
-    }
+    double GetMtElliptic(double time) { return normalize_radian(M0 + (time - epoch) * nu); }
 };
 
 struct OrbitDirty {};
@@ -153,20 +149,17 @@ struct OrbitDirty {};
 /// <param name="i">Inclination</param>
 /// <param name="w">Argument of periapsis</param>
 /// <param name="vec">Vector to convert</param>
-glm::dvec3 ConvertOrbParams(const double LAN, const double i,
-                                  const double w, const glm::dvec3& vec);
+glm::dvec3 ConvertOrbParams(const double LAN, const double i, const double w, const glm::dvec3& vec);
 
-double GetOrbitingRadius(const double& e, const double& a,
-                         const double& v);
+double GetOrbitingRadius(const double& e, const double& a, const double& v);
 
-    /// <summary>
+/// <summary>
 /// Converts position and velocity to orbit.
 /// </summary>
 /// <param name="position">Position of the body</param>
 /// <param name="velocity">Velocity of the body</param>
 /// <param name="GM">G*M of the orbiting body</param>
-Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity,
-                 const double& GM, const double& time);
+Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const double& GM, const double& time);
 
 /// <summary>
 /// Converts an orbit to a vec3.
@@ -178,9 +171,8 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity,
 /// <param name="w">Argument of periapsis (radians)</param>
 /// <param name="v">True anomaly (radians)</param>
 /// <returns>The vec3, in whatever unit a was.</returns>
-glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i,
-                             const radian& LAN, const radian& w,
-                             const radian& v);
+glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i, const radian& LAN, const radian& w,
+                       const radian& v);
 
 double AvgOrbitalVelocity(const Orbit& orb);
 
@@ -194,8 +186,7 @@ glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v);
 /// <param name="ecc"></param>
 /// <param name="steps">Number of steps for the Newton-Raphson. More steps means more precision but less speed</param>
 /// <returns>Eccentric anomaly</returns>
-double SolveKeplerElliptic(const double& mean_anomaly, const double& ecc,
-                           const int steps = 200);
+double SolveKeplerElliptic(const double& mean_anomaly, const double& ecc, const int steps = 200);
 
 /// <summary>
 /// Computes eccentric anomaly for a hyperbolic or parabolic orbit (e > 1)
@@ -205,8 +196,7 @@ double SolveKeplerElliptic(const double& mean_anomaly, const double& ecc,
 /// <param name="ecc"></param>
 /// <param name="steps">Number of steps for the Newton-Raphson. More steps means more precision but less speed</param>
 /// <returns></returns>
-double SolveKeplerHyperbolic(const double& mean_anomaly, const double& ecc,
-                             const int steps = 200);
+double SolveKeplerHyperbolic(const double& mean_anomaly, const double& ecc, const int steps = 200);
 
 /// <summary>
 /// Calculates true anomaly from eccentricity and eccentric anomaly
@@ -224,8 +214,7 @@ double HyperbolicAnomalyToTrueAnomaly(const double& ecc, const double& H);
 /// <param name="nu">G*M of orbiting body</param>
 /// <param name="time">Current time</param>
 /// <returns></returns>
-double GetMtElliptic(const double& M0, const double& nu, const double& time,
-             const double& epoch);
+double GetMtElliptic(const double& M0, const double& nu, const double& time, const double& epoch);
 
 /// <summary>
 /// Calculate mean anomaly from time for a hyperbolic object
@@ -247,9 +236,9 @@ radian TrueAnomalyHyperbolic(const Orbit& orbit, const second& time);
 
 /// Relative position from the parent orbiting object
 struct Kinematics {
-    glm::dvec3 position{0, 0, 0};
-    glm::dvec3 velocity{0, 0, 0};
-    glm::dvec3 center{0, 0, 0};
+    glm::dvec3 position {0, 0, 0};
+    glm::dvec3 velocity {0, 0, 0};
+    glm::dvec3 center {0, 0, 0};
 };
 
 // A one tick impulse in the vector
@@ -265,7 +254,7 @@ struct GalacticCoordinate {
     types::light_year y;
 };
 
-template<typename T>
+template <typename T>
 struct PolarCoordinate_tp {
     T r;
     degree theta;
@@ -295,16 +284,12 @@ void UpdateOrbit(Orbit& orb, const second& time);
 /// \param[in] GM G*M of orbiting body
 /// \param[in] a Semi major axis
 /// \param[in] e eccentricity
-glm::vec3 CalculateVelocity(const double& E, const double& r,
-                            const double& GM, const double& a,
-                            const double& e);
+glm::vec3 CalculateVelocity(const double& E, const double& r, const double& GM, const double& a, const double& e);
 
-glm::vec3 CalculateVelocityElliptic(const double& E, const double& r,
-                                    const double& GM, const double& a,
+glm::vec3 CalculateVelocityElliptic(const double& E, const double& r, const double& GM, const double& a,
                                     const double& e);
 
-glm::vec3 CalculateVelocityHyperbolic(const double& E, const double& r,
-                                      const double& GM, const double& a,
+glm::vec3 CalculateVelocityHyperbolic(const double& E, const double& r, const double& GM, const double& a,
                                       const double& e);
 
 /// <summary>
@@ -324,32 +309,23 @@ struct SurfaceCoordinate {
     /// </summary>
     /// <param name="_lat">Latitude in degrees</param>
     /// <param name="_long">Longtitude in degrees</param>
-    SurfaceCoordinate(degree _lat, degree _long)
-        : _latitude(toRadian(_lat)), _longitude(toRadian(_long)) {
+    SurfaceCoordinate(degree _lat, degree _long) : _latitude(toRadian(_lat)), _longitude(toRadian(_long)) {
         _lat = normalize_radian_coord(_lat);
         _longitude = normalize_radian_coord(_longitude);
     }
 
     SurfaceCoordinate(radian _lat, radian _long, bool radian)
-        : _latitude(normalize_radian_coord(_lat)),
-          _longitude(normalize_radian_coord(_long)) {
-    }
+        : _latitude(normalize_radian_coord(_lat)), _longitude(normalize_radian_coord(_long)) {}
 
-    degree latitude() const {
-        return toDegree(_latitude);
-    }
+    degree latitude() const { return toDegree(_latitude); }
 
-    degree longitude() const {
-        return toDegree(_longitude);
-    }
+    degree longitude() const { return toDegree(_longitude); }
 
     radian r_longitude() const { return _longitude; }
 
     radian r_latitude() const { return _latitude; }
 
-    SurfaceCoordinate universe_view() const {
-        return SurfaceCoordinate(_latitude, _longitude - PI/2, true);
-    }
+    SurfaceCoordinate universe_view() const { return SurfaceCoordinate(_latitude, _longitude - PI / 2, true); }
 
     entt::entity planet = entt::null;
 };
@@ -357,8 +333,7 @@ struct SurfaceCoordinate {
 /// <summary>
 /// Converts surface coordinate to vector3, shown in opengl.
 /// </summary>
-glm::vec3 toVec3(const SurfaceCoordinate& coord,
-                        const float& radius = 1);
+glm::vec3 toVec3(const SurfaceCoordinate& coord, const float& radius = 1);
 
 /// <summary>
 /// 2D polar coordinate to opengl 3d coordinate
@@ -366,9 +341,7 @@ glm::vec3 toVec3(const SurfaceCoordinate& coord,
 /// <param name="coordinate"></param>
 /// <returns></returns>
 inline glm::vec3 toVec3(const PolarCoordinate& coordinate) {
-    return glm::vec3(coordinate.r * cos(toRadian(coordinate.theta)),
-                     0,
-                     coordinate.r * sin(toRadian(coordinate.theta)));
+    return glm::vec3(coordinate.r * cos(toRadian(coordinate.theta)), 0, coordinate.r * sin(toRadian(coordinate.theta)));
 }
 
 /// <summary>
@@ -379,25 +352,20 @@ inline glm::vec3 toVec3(const PolarCoordinate& coordinate) {
 /// <returns>Vector 3 in orbit, in AU</returns>
 inline Vec3AU toVec3AU(const Orbit& orb, radian theta) {
     glm::dvec3 vec = OrbitToVec3(orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN, orb.w, theta);
-    return vec/KmInAu;
+    return vec / KmInAu;
 }
 
 inline glm::dvec3 toVec3(const Orbit& orb, radian theta) {
     return OrbitToVec3(orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN, orb.w, theta);
 }
 
-inline glm::dvec3 toVec3(const Orbit& orb) {
-    return toVec3(orb, orb.v);
-}
+inline glm::dvec3 toVec3(const Orbit& orb) { return toVec3(orb, orb.v); }
 /// <summary>
 /// Converts orbit to AU coorrdinates.
 /// </summary>
 /// <param name="orb">[in] orbit of the object to convert</param>
 /// <returns>Vector 3 in orbit, in AU</returns>
-inline Vec3AU toVec3AU(const Orbit& orb) {
-    return toVec3AU(orb, orb.v);
-}
-
+inline Vec3AU toVec3AU(const Orbit& orb) { return toVec3AU(orb, orb.v); }
 
 /// <summary>
 /// Updates the position of an orbit, in AU.

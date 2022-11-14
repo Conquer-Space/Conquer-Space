@@ -16,11 +16,10 @@
 */
 #include "common/systems/population/cityinformation.h"
 
-#include "common/components/surface.h"
 #include "common/components/population.h"
+#include "common/components/surface.h"
 
-uint64_t cqsp::common::systems::GetCityPopulation(const Universe& universe,
-                                                entt::entity city) {
+uint64_t cqsp::common::systems::GetCityPopulation(const Universe& universe, entt::entity city) {
     namespace cqspc = common::components;
     if (!universe.any_of<cqspc::Settlement>(city)) {
         return 0;

@@ -18,8 +18,8 @@
 
 #include <hjson.h>
 
-#include <string>
 #include <map>
+#include <string>
 #include <vector>
 
 #include "engine/asset/asset.h"
@@ -38,9 +38,7 @@ class PathedTextAsset {
     std::string data;
     std::string path;
 
-    operator std::string() {
-        return data;
-    }
+    operator std::string() { return data; }
 };
 
 /// <summary>

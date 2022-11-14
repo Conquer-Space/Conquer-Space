@@ -16,8 +16,8 @@
  */
 #include "common/systems/names/namegenerator.h"
 
-#include <fmt/format.h>
 #include <fmt/args.h>
+#include <fmt/format.h>
 
 using cqsp::common::systems::names::NameGenerator;
 std::string NameGenerator::Generate(const std::string& rule_name) noexcept {

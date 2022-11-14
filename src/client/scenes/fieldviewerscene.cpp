@@ -16,12 +16,10 @@
 */
 #include "client/scenes/fieldviewerscene.h"
 
-#include "client/systems/sysfieldviewer.h"
 #include "client/systems/assetloading.h"
+#include "client/systems/sysfieldviewer.h"
 
-cqsp::scene::ObjectEditorScene::ObjectEditorScene(
-    cqsp::engine::Application& app)
-    : cqsp::engine::Scene(app) {
+cqsp::scene::ObjectEditorScene::ObjectEditorScene(cqsp::engine::Application& app) : cqsp::engine::Scene(app) {
     AddUISystem<cqsp::client::systems::SysFieldNodeViewer>();
 }
 

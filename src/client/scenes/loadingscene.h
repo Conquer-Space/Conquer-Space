@@ -16,9 +16,8 @@
 */
 #pragma once
 
-#include <memory>
-
 #include <atomic>
+#include <memory>
 #include <thread>
 
 #include "engine/scene.h"

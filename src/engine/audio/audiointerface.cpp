@@ -19,16 +19,14 @@
 #include <chrono>
 #include <string>
 
-#include "engine/audio/alaudioasset.h"
 #include "common/util/logging.h"
 #include "common/util/paths.h"
+#include "engine/audio/alaudioasset.h"
 
-using cqsp::engine::audio::AudioInterface;
 using cqsp::asset::AudioAsset;
+using cqsp::engine::audio::AudioInterface;
 
-AudioInterface::AudioInterface() {
-    logger = cqsp::common::util::make_logger("audio");
-}
+AudioInterface::AudioInterface() { logger = cqsp::common::util::make_logger("audio"); }
 
 void AudioInterface::Initialize() {
     SPDLOG_LOGGER_INFO(logger, "Intializing OpenAL");
@@ -52,9 +50,7 @@ void AudioInterface::Pause(bool to_pause) {}
 
 void AudioInterface::PauseMusic(bool to_pause) {}
 
-std::string AudioInterface::GetAudioVersion() {
-    return std::string();
-}
+std::string AudioInterface::GetAudioVersion() { return std::string(); }
 
 void AudioInterface::Destruct() {
     to_quit = true;
@@ -129,8 +125,7 @@ void cqsp::engine::audio::AudioInterface::PlayAudioClip(const std::string& key) 
     }
 }
 
-void cqsp::engine::audio::AudioInterface::PlayAudioClip(
-    cqsp::asset::AudioAsset* asset, int channel) {}
+void cqsp::engine::audio::AudioInterface::PlayAudioClip(cqsp::asset::AudioAsset* asset, int channel) {}
 
 void cqsp::engine::audio::AudioInterface::SetChannelVolume(int channel, float gain) {
     channels[channel]->SetGain(gain);
@@ -151,11 +146,9 @@ inline bool isBigEndian() {
 inline int convertToInt(char* buffer, int len) {
     int a = 0;
     if (!isBigEndian()) {
-        for (int i = 0; i < len; i++)
-            (reinterpret_cast<char*>(&a))[i] = buffer[i];
+        for (int i = 0; i < len; i++) (reinterpret_cast<char*>(&a))[i] = buffer[i];
     } else {
-        for (int i = 0; i < len; i++)
-            (reinterpret_cast<char*>(&a))[3 - i] = buffer[i];
+        for (int i = 0; i < len; i++) (reinterpret_cast<char*>(&a))[3 - i] = buffer[i];
     }
     return a;
 }
@@ -164,46 +157,46 @@ inline ALenum to_al_format(int16_t channels, int16_t samples) {
     bool stereo = (channels > 1);
 
     switch (samples) {
-    case 16:
-        return (stereo) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
-    case 8:
-        return (stereo) ? AL_FORMAT_STEREO8 : AL_FORMAT_MONO8;
-    default:
-        return -1;
+        case 16:
+            return (stereo) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
+        case 8:
+            return (stereo) ? AL_FORMAT_STEREO8 : AL_FORMAT_MONO8;
+        default:
+            return -1;
     }
 }
 }  // namespace
 
-std::unique_ptr<AudioAsset> AudioInterface::LoadWav(std::ifstream &in) {
+std::unique_ptr<AudioAsset> AudioInterface::LoadWav(std::ifstream& in) {
     auto audio_asset = std::make_unique<cqsp::asset::ALAudioAsset>();
     char buffer[4];
     in.read(buffer, 4);
     if (strncmp(buffer, "RIFF", 4) != 0) {
         // Not a valid file
     }
-    in.read(buffer, 4); // Flawfinder: ignore
+    in.read(buffer, 4);  // Flawfinder: ignore
     // Flawfinder: ignore
-    in.read(buffer, 4);      // WAVE
+    in.read(buffer, 4);  // WAVE
     // Flawfinder: ignore
-    in.read(buffer, 4);      // fmt
+    in.read(buffer, 4);  // fmt
     // Flawfinder: ignore
-    in.read(buffer, 4);      // 16
+    in.read(buffer, 4);  // 16
     // Flawfinder: ignore
-    in.read(buffer, 2);      // 1
-    in.read(buffer, 2); // Flawfinder: ignore
+    in.read(buffer, 2);  // 1
+    in.read(buffer, 2);  // Flawfinder: ignore
     int channels = convertToInt(buffer, 2);
-    in.read(buffer, 4); // Flawfinder: ignore
+    in.read(buffer, 4);  // Flawfinder: ignore
     int samplerate = convertToInt(buffer, 4);
-    in.read(buffer, 4); // Flawfinder: ignore
-    in.read(buffer, 2); // Flawfinder: ignore
-    in.read(buffer, 2); // Flawfinder: ignore
+    in.read(buffer, 4);  // Flawfinder: ignore
+    in.read(buffer, 2);  // Flawfinder: ignore
+    in.read(buffer, 2);  // Flawfinder: ignore
     int frequency = convertToInt(buffer, 2);
     // Flawfinder: ignore
-    in.read(buffer, 4);      // data
-    in.read(buffer, 4); // Flawfinder: ignore
+    in.read(buffer, 4);  // data
+    in.read(buffer, 4);  // Flawfinder: ignore
     int size = convertToInt(buffer, 4);
     char* data = new char[size];
-    in.read(data, size); // Flawfinder: ignore
+    in.read(data, size);  // Flawfinder: ignore
 
     ALenum format = to_al_format(channels, frequency);
 
@@ -226,7 +219,7 @@ void AudioInterface::InitListener() {
     // Set listener
     alListener3f(AL_POSITION, 0, 0, -0);
     alListener3f(AL_VELOCITY, 0, 0, 0);
-    ALfloat listenerOri[] = { 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f };
+    ALfloat listenerOri[] = {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f};
     alListenerfv(AL_ORIENTATION, listenerOri);
 }
 

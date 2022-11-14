@@ -18,7 +18,7 @@
 
 #include <glad/glad.h>
 
-#define TX(x) \
+#define TX(x)        \
     indices[#x] = x; \
     names.push_back(#x);
 cqsp::scene::TextTestScene::~TextTestScene() {}
@@ -68,30 +68,30 @@ void cqsp::scene::TextTestScene::Ui(float deltaTime) {
     ImGui::TextFmt("{}", delta_t);
     ImGui::DragFloat("Font size", &font_size, 0, 255);
     if (ImGui::BeginCombo("combo 1", names[src])) {
-            for (int n = 0; n < names.size(); n++) {
-                bool is_selected = (src == n);
-                if (ImGui::Selectable(names[n], is_selected)) {
-                    src = n;
-                }
-                if (is_selected) {
-                    ImGui::SetItemDefaultFocus();
-                }
+        for (int n = 0; n < names.size(); n++) {
+            bool is_selected = (src == n);
+            if (ImGui::Selectable(names[n], is_selected)) {
+                src = n;
             }
-            ImGui::EndCombo();
+            if (is_selected) {
+                ImGui::SetItemDefaultFocus();
+            }
         }
+        ImGui::EndCombo();
+    }
 
-        if (ImGui::BeginCombo("combo 2", names[post])) {
-            for (int n = 0; n < names.size(); n++) {
-                bool is_selected = (post == n);
-                if (ImGui::Selectable(names[n], is_selected)) {
-                    post = n;
-                }
-                if (is_selected) {
-                    ImGui::SetItemDefaultFocus();
-                }
+    if (ImGui::BeginCombo("combo 2", names[post])) {
+        for (int n = 0; n < names.size(); n++) {
+            bool is_selected = (post == n);
+            if (ImGui::Selectable(names[n], is_selected)) {
+                post = n;
             }
-            ImGui::EndCombo();
+            if (is_selected) {
+                ImGui::SetItemDefaultFocus();
+            }
         }
+        ImGui::EndCombo();
+    }
     ImGui::End();
 }
 
@@ -104,7 +104,7 @@ void cqsp::scene::TextTestScene::Render(float deltaTime) {
     glEnable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
     renderer.BeginDraw(layer);
-    GetApp().DrawText(text, 20, GetApp().GetWindowHeight()/2, font_size);
+    GetApp().DrawText(text, 20, GetApp().GetWindowHeight() / 2, font_size);
     renderer.DrawAllLayers();
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

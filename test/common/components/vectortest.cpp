@@ -19,7 +19,6 @@
 #include "common/components/coordinates.h"
 #include "glm/glm.hpp"
 
-
 TEST(Common_vector2test, vec_len_test) {
     namespace cqspt = cqsp::common::components::types;
     glm::vec3 vec3(3, 0, 4);

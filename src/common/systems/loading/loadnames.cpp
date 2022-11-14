@@ -18,8 +18,7 @@
 
 #include "common/systems/names/namegenerator.h"
 
-void cqsp::common::systems::loading::LoadNameLists(cqsp::common::Universe &universe,
-                                                   Hjson::Value &value) {
+void cqsp::common::systems::loading::LoadNameLists(cqsp::common::Universe &universe, Hjson::Value &value) {
     for (int i = 0; i < value.size(); i++) {
         Hjson::Value &name_list = value[i];
         cqsp::common::systems::names::NameGenerator name_gen;

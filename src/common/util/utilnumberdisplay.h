@@ -27,11 +27,8 @@ inline std::string LongToHumanString(int64_t l) {
     if (abs(l) < 1000) {
         return fmt::format("{}", l);
     }
-    static const std::string numbers[] = {
-        "k",    "M",    "B",    "T", "Qa",
-        "Qn", "Sx", "Sp", "O", "N", "De",
-        "Ud", "Dd", "Td", "Qd", "Qi", "Sd"
-    };
+    static const std::string numbers[] = {"k", "M",  "B",  "T",  "Qa", "Qn", "Sx", "Sp", "O",
+                                          "N", "De", "Ud", "Dd", "Td", "Qd", "Qi", "Sd"};
     int exponent = static_cast<int>(log10(abs(l)) / 3);
 
     // Now get the number

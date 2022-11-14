@@ -21,20 +21,17 @@
 
 void cqsp::common::systems::history::SysMarketHistory::DoSystem() {
     for (entt::entity marketentity : GetUniverse().view<components::Market>()) {
-        components::Market& market_data =
-            GetUniverse().get<components::Market>(marketentity);
+        components::Market& market_data = GetUniverse().get<components::Market>(marketentity);
         market_data.history.push_back(market_data);
     }
     auto view = GetUniverse().view<components::Market, components::MarketHistory>();
     for (entt::entity entity : view) {
         auto& history = GetUniverse().get<components::MarketHistory>(entity);
-        components::Market& market_data =
-            GetUniverse().get<components::Market>(entity);
+        components::Market& market_data = GetUniverse().get<components::Market>(entity);
         // Loop through the prices
         for (auto resource : market_data.market_information) {
             history.price_history[resource.first].push_back(resource.second.price);
-            history.volume[resource.first].push_back(
-                market_data.last_market_information[resource.first].demand);
+            history.volume[resource.first].push_back(market_data.last_market_information[resource.first].demand);
         }
         double val = 0;
         for (entt::entity ent : market_data.participants) {

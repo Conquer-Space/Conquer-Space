@@ -16,8 +16,9 @@
 */
 #pragma once
 
-#include <vector>
 #include <map>
+#include <vector>
+
 #include <entt/entt.hpp>
 
 namespace cqsp {

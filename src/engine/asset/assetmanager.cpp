@@ -16,29 +16,28 @@
 */
 #include "engine/asset/assetmanager.h"
 
+#include <glad/glad.h>
 #include <spdlog/spdlog.h>
 #include <stb_image.h>
-#include <glad/glad.h>
 
-#include <utility>
 #include <algorithm>
-#include <regex>
 #include <filesystem>
 #include <iostream>
+#include <regex>
+#include <utility>
 #include <vector>
 
 #include <tracy/Tracy.hpp>
 
-#include "engine/audio/alaudioasset.h"
-#include "engine/asset/vfs/nativevfs.h"
 #include "common/util/paths.h"
+#include "engine/asset/vfs/nativevfs.h"
+#include "engine/audio/alaudioasset.h"
 #include "engine/enginelogger.h"
 
-#define CREATE_ASSET_LAMBDA(FuncName) [this] (VirtualMounter* mount,                   \
-                                              const std::string& path, const std::string& key,      \
-                                              const Hjson::Value& hints) {                          \
-                                        return this->FuncName(mount, path, key, hints);                 \
-                                      };
+#define CREATE_ASSET_LAMBDA(FuncName)                                                                           \
+    [this](VirtualMounter* mount, const std::string& path, const std::string& key, const Hjson::Value& hints) { \
+        return this->FuncName(mount, path, key, hints);                                                         \
+    };
 
 // Definition for prototypes
 namespace cqsp::asset {
@@ -85,13 +84,8 @@ class FontPrototype : public AssetPrototype {
 };
 }  // namespace
 
-
-bool Package::HasAsset(const char* asset) {
-    return assets.count(asset) != 0;
-}
-bool Package::HasAsset(const std::string& asset) {
-    return assets.count(asset) != 0;
-}
+bool Package::HasAsset(const char* asset) { return assets.count(asset) != 0; }
+bool Package::HasAsset(const std::string& asset) { return assets.count(asset) != 0; }
 
 void Package::ClearAssets() {
     for (auto a = assets.begin(); a != assets.end(); a++) {
@@ -102,25 +96,16 @@ void Package::ClearAssets() {
 
 AssetManager::AssetManager() {}
 
-ShaderProgram_t
-AssetManager::MakeShader(const std::string& vert, const std::string& frag) {
-    return std::make_shared<ShaderProgram>(*GetAsset<Shader>(vert.c_str()),
-                                    *GetAsset<Shader>(frag.c_str()));
+ShaderProgram_t AssetManager::MakeShader(const std::string& vert, const std::string& frag) {
+    return std::make_shared<ShaderProgram>(*GetAsset<Shader>(vert.c_str()), *GetAsset<Shader>(frag.c_str()));
 }
 
-ShaderProgram_t
-AssetManager::MakeShader(const std::string& vert,
-                                      const std::string& frag,
-                                      const std::string& geom) {
-    return std::make_shared<ShaderProgram>(
-        *GetAsset<Shader>(vert.c_str()),
-        *GetAsset<Shader>(frag.c_str()),
-        *GetAsset<Shader>(geom.c_str()));
+ShaderProgram_t AssetManager::MakeShader(const std::string& vert, const std::string& frag, const std::string& geom) {
+    return std::make_shared<ShaderProgram>(*GetAsset<Shader>(vert.c_str()), *GetAsset<Shader>(frag.c_str()),
+                                           *GetAsset<Shader>(geom.c_str()));
 }
 
-std::string GetShaderCode(const std::string& identifier) {
-    return std::string();
-}
+std::string GetShaderCode(const std::string& identifier) { return std::string(); }
 
 void MakeShader(const Hjson::Value& hjson) {
     // Load the shader values
@@ -145,22 +130,16 @@ void MakeShader(const Hjson::Value& hjson) {
                 // Check if matrix or vector
                 switch (value.second.size()) {
                     case 2:
-                        shader->Set(value.first,
-                                    (float)value.second[0].to_double(),
-                                    (float) value.second[1].to_double());
+                        shader->Set(value.first, (float)value.second[0].to_double(),
+                                    (float)value.second[1].to_double());
                         break;
                     case 3:
-                        shader->Set(value.first,
-                                    (float) value.second[0].to_double(),
-                                    (float) value.second[1].to_double(),
-                                    (float) value.second[2].to_double());
+                        shader->Set(value.first, (float)value.second[0].to_double(), (float)value.second[1].to_double(),
+                                    (float)value.second[2].to_double());
                         break;
                     case 4:
-                        shader->Set(value.first,
-                                    (float) value.second[0].to_double(),
-                                    (float) value.second[1].to_double(),
-                                    (float) value.second[2].to_double(),
-                                    (float) value.second[3].to_double());
+                        shader->Set(value.first, (float)value.second[0].to_double(), (float)value.second[1].to_double(),
+                                    (float)value.second[2].to_double(), (float)value.second[3].to_double());
                         break;
                 }
                 break;
@@ -171,20 +150,16 @@ void MakeShader(const Hjson::Value& hjson) {
 
 void AssetManager::LoadDefaultTexture() {
     unsigned char texture_bytes[] = {
-        0, 0, 0, 255, 0, 255,
-        0, 0, // These two padding bytes are needed for some reason. Opengl doesn't like 2x2 images
-        255, 0, 255, 0, 0, 0
-    };
+        0,   0, 0,   255, 0, 255,
+        0,   0,  // These two padding bytes are needed for some reason. Opengl doesn't like 2x2 images
+        255, 0, 255, 0,   0, 0};
 
     asset::TextureLoadingOptions f;
     f.mag_filter = true;
     asset::CreateTexture(empty_texture, texture_bytes, 2, 2, 3, f);
 }
 
-void AssetManager::ClearAssets() {
-    ZoneScoped
-    packages.clear();
-}
+void AssetManager::ClearAssets() { ZoneScoped packages.clear(); }
 
 void AssetManager::SaveModList() {
     Hjson::Value enabled_mods;
@@ -193,7 +168,7 @@ void AssetManager::SaveModList() {
         enabled_mods[it->second.name] = it->second.enabled;
     }
     // Write to file
-    std::string mods_path = (std::filesystem::path(common::util::GetCqspSavePath())/"mod.hjson").string();
+    std::string mods_path = (std::filesystem::path(common::util::GetCqspSavePath()) / "mod.hjson").string();
     Hjson::MarshalToFile(enabled_mods, mods_path);
     ENGINE_LOG_INFO("Writing mods");
 }
@@ -227,7 +202,7 @@ void AssetLoader::LoadMods() {
     Hjson::Value all_mods;
 
     // Some lambda things to keep things less cluttered and simpler
-    auto mod_load = [&](const std::optional<PackagePrototype> &package) {
+    auto mod_load = [&](const std::optional<PackagePrototype>& package) {
         // Add to package prototypes
         if (!package) {
             ENGINE_LOG_INFO("Invalid package!");
@@ -241,7 +216,7 @@ void AssetLoader::LoadMods() {
     ENGINE_LOG_INFO("Loading potential mods");
 
     // Load core
-    mod_load(LoadModPrototype((data_path/"core").string()));
+    mod_load(LoadModPrototype((data_path / "core").string()));
 
     // Enable core by default
     all_mods["core"] = true;
@@ -290,11 +265,10 @@ void AssetLoader::LoadMods() {
 }
 
 std::string AssetLoader::GetModFilePath() {
-    return (std::filesystem::path(cqsp::common::util::GetCqspSavePath())/"mod.hjson").string();
+    return (std::filesystem::path(cqsp::common::util::GetCqspSavePath()) / "mod.hjson").string();
 }
 
-std::optional<PackagePrototype>
-AssetLoader::LoadModPrototype(const std::string& path_string) {
+std::optional<PackagePrototype> AssetLoader::LoadModPrototype(const std::string& path_string) {
     ZoneScoped;
     // Load the info.hjson
     std::filesystem::path package_path(path_string);
@@ -305,8 +279,7 @@ AssetLoader::LoadModPrototype(const std::string& path_string) {
         return std::nullopt;
     }
     // Read mod info file.
-    Hjson::Value mod_info = Hjson::Unmarshal(
-        ReadAllFromVFileToString(vfs->Open("info.hjson").get()));
+    Hjson::Value mod_info = Hjson::Unmarshal(ReadAllFromVFileToString(vfs->Open("info.hjson").get()));
 
     // Get the info from
     PackagePrototype prototype;
@@ -316,7 +289,7 @@ AssetLoader::LoadModPrototype(const std::string& path_string) {
         prototype.title = mod_info["title"].to_string();
         prototype.author = mod_info["author"].to_string();
         prototype.path = package_path.string();
-    } catch (Hjson::index_out_of_bounds &ex) {
+    } catch (Hjson::index_out_of_bounds& ex) {
         // Don't load the mod, because prototype is invalid
         ENGINE_LOG_INFO("Hjson::index_out_of_bounds: {}", ex.what());
         return std::nullopt;
@@ -392,11 +365,8 @@ std::unique_ptr<Package> AssetLoader::LoadPackage(std::string path) {
     return package;
 }
 
-std::unique_ptr<Asset> AssetLoader::LoadAsset(
-                                          const AssetType& type,
-                                          const std::string& path,
-                                          const std::string& key,
-                                          const Hjson::Value& hints) {
+std::unique_ptr<Asset> AssetLoader::LoadAsset(const AssetType& type, const std::string& path, const std::string& key,
+                                              const Hjson::Value& hints) {
     // Load asset
     if (loading_functions.find(type) == loading_functions.end()) {
         ENGINE_LOG_WARN("{} asset loading not supported yet", ToString(type));
@@ -408,11 +378,8 @@ std::unique_ptr<Asset> AssetLoader::LoadAsset(
     }
     return std::move(loading_functions[type](&mounter, path, key, hints));
 }
-void AssetLoader::PlaceAsset(Package& package,
-                                          const AssetType& type,
-                                          const std::string& path,
-                                          const std::string& key,
-                                          const Hjson::Value& hints) {
+void AssetLoader::PlaceAsset(Package& package, const AssetType& type, const std::string& path, const std::string& key,
+                             const Hjson::Value& hints) {
     ZoneScoped;
     ENGINE_LOG_TRACE("Loading asset {}", path);
     auto asset = LoadAsset(type, path, key, hints);
@@ -438,57 +405,45 @@ void AssetLoader::BuildNextAsset() {
     std::string key = temp.prototype->key;
     switch (temp.prototype->GetPrototypeType()) {
         case PrototypeType::TEXTURE: {
-        ImagePrototype* texture_prototype = dynamic_cast<ImagePrototype*>(temp.prototype);
-        Texture* asset = dynamic_cast<Texture*>(texture_prototype->asset);
-        asset::CreateTexture(*asset,
-                            texture_prototype->data,
-                            texture_prototype->width,
-                            texture_prototype->height,
-                            texture_prototype->components,
-                            texture_prototype->options);
+            ImagePrototype* texture_prototype = dynamic_cast<ImagePrototype*>(temp.prototype);
+            Texture* asset = dynamic_cast<Texture*>(texture_prototype->asset);
+            asset::CreateTexture(*asset, texture_prototype->data, texture_prototype->width, texture_prototype->height,
+                                 texture_prototype->components, texture_prototype->options);
 
-        stbi_image_free(texture_prototype->data);
-        break;
+            stbi_image_free(texture_prototype->data);
+            break;
         }
         case PrototypeType::SHADER: {
-        ShaderPrototype* shader = dynamic_cast<ShaderPrototype*>(temp.prototype);
-        Shader* asset = dynamic_cast<Shader*>(shader->asset);
-        try  {
-            int shaderId = asset::LoadShaderData(shader->data, shader->type);
-            asset->id = shaderId;
-        } catch (std::runtime_error &error) {
-            ENGINE_LOG_WARN("Exception in loading shader {}: {}", shader->key,
-                            error.what());
-        }
-        break;
+            ShaderPrototype* shader = dynamic_cast<ShaderPrototype*>(temp.prototype);
+            Shader* asset = dynamic_cast<Shader*>(shader->asset);
+            try {
+                int shaderId = asset::LoadShaderData(shader->data, shader->type);
+                asset->id = shaderId;
+            } catch (std::runtime_error& error) {
+                ENGINE_LOG_WARN("Exception in loading shader {}: {}", shader->key, error.what());
+            }
+            break;
         }
         case PrototypeType::FONT: {
-        FontPrototype* prototype = dynamic_cast<FontPrototype*>(temp.prototype);
-        Font* asset = dynamic_cast<Font*>(prototype->asset);
+            FontPrototype* prototype = dynamic_cast<FontPrototype*>(temp.prototype);
+            Font* asset = dynamic_cast<Font*>(prototype->asset);
 
-        asset::LoadFontData(*asset, prototype->fontBuffer.data(), prototype->size);
-        }
-        break;
+            asset::LoadFontData(*asset, prototype->fontBuffer.data(), prototype->size);
+        } break;
         case PrototypeType::CUBEMAP: {
-        CubemapPrototype* prototype = dynamic_cast<CubemapPrototype*>(temp.prototype);
-        Texture* asset = dynamic_cast<Texture*>(prototype->asset);
-        asset::LoadCubemapData(*asset,
-                            prototype->data,
-                            prototype->width,
-                            prototype->height,
-                            prototype->components,
-                            prototype->options);
-        }
-        break;
+            CubemapPrototype* prototype = dynamic_cast<CubemapPrototype*>(temp.prototype);
+            Texture* asset = dynamic_cast<Texture*>(prototype->asset);
+            asset::LoadCubemapData(*asset, prototype->data, prototype->width, prototype->height, prototype->components,
+                                   prototype->options);
+        } break;
     }
 
     // Free memory
     delete temp.prototype;
 }
 
-std::unique_ptr<Asset>
-AssetLoader::LoadText(VirtualMounter* mount, const std::string& path,
-                                   const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<Asset> AssetLoader::LoadText(VirtualMounter* mount, const std::string& path, const std::string& key,
+                                             const Hjson::Value& hints) {
     ZoneScoped;
     if (!mount->IsFile(path)) {
         return nullptr;
@@ -500,9 +455,8 @@ AssetLoader::LoadText(VirtualMounter* mount, const std::string& path,
     return std::move(asset);
 }
 
-std::unique_ptr<Asset> AssetLoader::LoadTextDirectory(
-    VirtualMounter* mount, const std::string& path,
-    const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<Asset> AssetLoader::LoadTextDirectory(VirtualMounter* mount, const std::string& path,
+                                                      const std::string& key, const Hjson::Value& hints) {
     ZoneScoped;
     if (!mount->IsDirectory(path)) {
         return nullptr;
@@ -520,9 +474,8 @@ std::unique_ptr<Asset> AssetLoader::LoadTextDirectory(
     return std::move(asset);
 }
 
-std::unique_ptr<Asset> AssetLoader::LoadTexture(
-    VirtualMounter* mount, const std::string& path,
-    const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<Asset> AssetLoader::LoadTexture(VirtualMounter* mount, const std::string& path, const std::string& key,
+                                                const Hjson::Value& hints) {
     ZoneScoped;
     std::unique_ptr<Texture> texture = std::make_unique<Texture>();
 
@@ -544,7 +497,7 @@ std::unique_ptr<Asset> AssetLoader::LoadTexture(
     uint64_t file_size = file->Size();
     auto buffer = ReadAllFromVFile(file.get());
     prototype->data = stbi_load_from_memory(buffer.data(), file_size, &prototype->width, &prototype->height,
-                           &prototype->components, 0);
+                                            &prototype->components, 0);
     if (prototype->data) {
         QueueHolder holder(prototype);
 
@@ -557,18 +510,17 @@ std::unique_ptr<Asset> AssetLoader::LoadTexture(
     return std::move(texture);
 }
 
-std::unique_ptr<cqsp::asset::Asset> AssetLoader::LoadBinaryAsset(
-    cqsp::asset::VirtualMounter* mount, const std::string& path,
-    const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<cqsp::asset::Asset> AssetLoader::LoadBinaryAsset(cqsp::asset::VirtualMounter* mount,
+                                                                 const std::string& path, const std::string& key,
+                                                                 const Hjson::Value& hints) {
     std::unique_ptr<BinaryAsset> asset = std::make_unique<BinaryAsset>();
     auto file = mount->Open(path);
     asset->data = ReadAllFromVFile(file.get());
     return asset;
 }
 
-std::unique_ptr<Asset> AssetLoader::LoadHjson(
-    VirtualMounter* mount, const std::string& path,
-    const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<Asset> AssetLoader::LoadHjson(VirtualMounter* mount, const std::string& path, const std::string& key,
+                                              const Hjson::Value& hints) {
     ZoneScoped;
     std::unique_ptr<cqspa::HjsonAsset> asset = std::make_unique<cqspa::HjsonAsset>();
 
@@ -594,8 +546,7 @@ std::unique_ptr<Asset> AssetLoader::LoadHjson(
                     ENGINE_LOG_ERROR("Failed to load hjson file {}: it needs to be a array", file->Path());
                 }
             } catch (Hjson::syntax_error& ex) {
-                ENGINE_LOG_ERROR("Failed to load hjson file {}: {}",
-                                 file->Path(), ex.what());
+                ENGINE_LOG_ERROR("Failed to load hjson file {}: {}", file->Path(), ex.what());
             }
         }
     } else {
@@ -610,9 +561,8 @@ std::unique_ptr<Asset> AssetLoader::LoadHjson(
     return asset;
 }
 
-std::unique_ptr<Asset> AssetLoader::LoadShader(
-    VirtualMounter* mount, const std::string& path,
-    const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<Asset> AssetLoader::LoadShader(VirtualMounter* mount, const std::string& path, const std::string& key,
+                                               const Hjson::Value& hints) {
     ZoneScoped;
     if (!mount->IsFile(path)) {
         return nullptr;
@@ -651,9 +601,8 @@ std::unique_ptr<Asset> AssetLoader::LoadShader(
     return std::move(shader);
 }
 
-std::unique_ptr<Asset>
-AssetLoader::LoadFont(VirtualMounter* mount, const std::string& path,
-                                   const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<Asset> AssetLoader::LoadFont(VirtualMounter* mount, const std::string& path, const std::string& key,
+                                             const Hjson::Value& hints) {
     ZoneScoped;
     if (!mount->IsFile(path)) {
         return nullptr;
@@ -675,9 +624,8 @@ AssetLoader::LoadFont(VirtualMounter* mount, const std::string& path,
     return std::move(asset);
 }
 
-std::unique_ptr<Asset> AssetLoader::LoadAudio(
-    VirtualMounter* mount, const std::string& path,
-    const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<Asset> AssetLoader::LoadAudio(VirtualMounter* mount, const std::string& path, const std::string& key,
+                                              const Hjson::Value& hints) {
     ZoneScoped;
     // Load audio asset
     if (!mount->IsFile(path)) {
@@ -689,9 +637,8 @@ std::unique_ptr<Asset> AssetLoader::LoadAudio(
     return std::move(asset);
 }
 
-std::unique_ptr<Asset> AssetLoader::LoadCubemap(
-    VirtualMounter* mount, const std::string& path,
-    const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<Asset> AssetLoader::LoadCubemap(VirtualMounter* mount, const std::string& path, const std::string& key,
+                                                const Hjson::Value& hints) {
     ZoneScoped;
     // Load cubemap data
     std::unique_ptr<Texture> asset = std::make_unique<Texture>();
@@ -726,12 +673,8 @@ std::unique_ptr<Asset> AssetLoader::LoadCubemap(
         auto file = mount->Open(image_path);
         auto file_data = ReadAllFromVFile(file.get());
         ZoneNamed(CubemapLoad, true);
-        unsigned char* image_data = stbi_load_from_memory(file_data.data(),
-                                                          file->Size(),
-                                                          &prototype->width,
-                                                          &prototype->height,
-                                                          &prototype->components,
-                                                          0);
+        unsigned char* image_data = stbi_load_from_memory(file_data.data(), file->Size(), &prototype->width,
+                                                          &prototype->height, &prototype->components, 0);
         prototype->data.push_back(image_data);
     }
     prototype->asset = asset.get();
@@ -741,9 +684,8 @@ std::unique_ptr<Asset> AssetLoader::LoadCubemap(
     return asset;
 }
 
-std::unique_ptr<ShaderDefinition>
-AssetLoader::LoadShaderDefinition(VirtualMounter* mount, const std::string& path,
-    const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<ShaderDefinition> AssetLoader::LoadShaderDefinition(VirtualMounter* mount, const std::string& path,
+                                                                    const std::string& key, const Hjson::Value& hints) {
     std::string parent = GetParentPath(path);
     auto root = mount->Open(path);
     std::string shader_def = ReadAllFromVFileToString(root.get());
@@ -788,8 +730,8 @@ AssetLoader::LoadShaderDefinition(VirtualMounter* mount, const std::string& path
     return shader_def_ptr;
 }
 
-std::unique_ptr<TextDirectoryAsset>
-AssetLoader::LoadScriptDirectory(VirtualMounter* mount, const std::string& path, const Hjson::Value& hints) {
+std::unique_ptr<TextDirectoryAsset> AssetLoader::LoadScriptDirectory(VirtualMounter* mount, const std::string& path,
+                                                                     const Hjson::Value& hints) {
     ZoneScoped;
     std::filesystem::path root(path);
     auto asset = std::make_unique<asset::TextDirectoryAsset>();
@@ -838,7 +780,6 @@ AssetLoader::LoadScriptDirectory(VirtualMounter* mount, const std::string& path,
     return asset;
 }
 
-
 void AssetLoader::LoadDirectory(std::string path, std::function<void(std::string)> file) {
     auto iterator = std::filesystem::recursive_directory_iterator(path);
     int count = std::distance(iterator, std::filesystem::recursive_directory_iterator());
@@ -875,7 +816,7 @@ void AssetLoader::LoadResources(Package& package, const std::string& package_mou
         // to do this as a hack for now
         try {
             asset_value = Hjson::Unmarshal(asset_data, dec_opt);
-        } catch (Hjson::syntax_error &se) {
+        } catch (Hjson::syntax_error& se) {
             ENGINE_LOG_WARN(se.what());
             // Then try again without the options
             dec_opt.duplicateKeyException = false;
@@ -883,17 +824,12 @@ void AssetLoader::LoadResources(Package& package, const std::string& package_mou
         }
 
         max_loading += asset_value.size();
-        LoadResourceHjsonFile(package,
-                              package_mount_path,
-                              resource_file->Path(),
-                              asset_value);
+        LoadResourceHjsonFile(package, package_mount_path, resource_file->Path(), asset_value);
     }
 }
 
-void AssetLoader::LoadResourceHjsonFile(Package& package,
-                                                     const std::string& package_mount_path,
-                                                     const std::string& resource_file_path,
-                                                     const Hjson::Value& asset_value) {
+void AssetLoader::LoadResourceHjsonFile(Package& package, const std::string& package_mount_path,
+                                        const std::string& resource_file_path, const Hjson::Value& asset_value) {
     ZoneScoped;
     for (const auto [key, val] : asset_value) {
         ENGINE_LOG_TRACE("Loading asset {}", key);
@@ -929,9 +865,7 @@ void AssetLoader::LoadResourceHjsonFile(Package& package,
         currentloading++;
     }
 }
-bool AssetLoader::HjsonPrototypeDirectory(Package& package,
-                                                       const std::string& path,
-                                                       const std::string& name) {
+bool AssetLoader::HjsonPrototypeDirectory(Package& package, const std::string& path, const std::string& name) {
     ZoneScoped;
     if (!mounter.IsDirectory(path)) {
         return false;

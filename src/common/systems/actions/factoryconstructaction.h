@@ -48,11 +48,10 @@ entt::entity OrderConstructionFactory(cqsp::common::Universe& universe, entt::en
 /// <param name="recipe"></param>
 /// <param name="productivity"></param>
 /// <returns>The factory entity created</returns>
-entt::entity CreateFactory(cqsp::common::Universe& universe, entt::entity city,
-                            entt::entity recipe, int productivity);
+entt::entity CreateFactory(cqsp::common::Universe& universe, entt::entity city, entt::entity recipe, int productivity);
 
-cqsp::common::components::ResourceLedger GetFactoryCost(cqsp::common::Universe& universe,
-                            entt::entity city, entt::entity recipe, int productivity);
+cqsp::common::components::ResourceLedger GetFactoryCost(cqsp::common::Universe& universe, entt::entity city,
+                                                        entt::entity recipe, int productivity);
 
 entt::entity CreateCommercialArea(cqsp::common::Universe& universe, entt::entity city);
 

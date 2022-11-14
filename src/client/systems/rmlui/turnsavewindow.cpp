@@ -36,17 +36,15 @@ void TurnSaveWindow::Update(double delta_time) {
     if (date != GetUniverse().date.GetDate() || (date == 0 && tr)) {
         // Then do the rest
         // Check if it changed, or something
-        const std::string date_text = fmt::format(
-            "{} {:02d}:{:02d}", GetUniverse().date.ToString(),
-            GetUniverse().date.GetHour(), GetUniverse().date.GetMinute());
+        const std::string date_text = fmt::format("{} {:02d}:{:02d}", GetUniverse().date.ToString(),
+                                                  GetUniverse().date.GetHour(), GetUniverse().date.GetMinute());
         time_element->SetInnerRML(date_text);
         date = GetUniverse().date.GetDate();
         tr = false;
     }
     static auto tick_speed = pause_opt.tick_speed;
     if (tick_speed != pause_opt.tick_speed) {
-        speed_element->SetInnerRML(
-            fmt::format("Speed: {}", pause_opt.tick_speed));
+        speed_element->SetInnerRML(fmt::format("Speed: {}", pause_opt.tick_speed));
         tick_speed = pause_opt.tick_speed;
     }
 
@@ -84,8 +82,7 @@ void TurnSaveWindow::EventListener::ProcessEvent(Rml::Event& event) {
     if (id_pressed == "stop_time" || id_pressed == "pause_button") {
         pause_opt.to_tick = !pause_opt.to_tick;
     } else if (id_pressed == "slow_down") {
-        if (pause_opt.tick_speed > 0)
-            pause_opt.tick_speed--;
+        if (pause_opt.tick_speed > 0) pause_opt.tick_speed--;
     } else if (id_pressed == "speed_up" || id_pressed == "fast_forward") {
         if (pause_opt.tick_speed < 6) {
             pause_opt.tick_speed++;
@@ -93,4 +90,3 @@ void TurnSaveWindow::EventListener::ProcessEvent(Rml::Event& event) {
     }
 }
 }  // namespace cqsp::client::systems::rmlui
-

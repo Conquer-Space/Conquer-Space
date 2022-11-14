@@ -14,14 +14,14 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
-#include "common/universe.h"
 #include "common/components/area.h"
-#include "common/components/resource.h"
 #include "common/components/economy.h"
+#include "common/components/resource.h"
 #include "common/systems/actions/factoryconstructaction.h"
+#include "common/universe.h"
 
 TEST(FactoryConstuctTest, ConstructTest) {
     // Create universe and recipe to generate
@@ -40,10 +40,7 @@ TEST(FactoryConstuctTest, ConstructTest) {
 
 TEST(FactoryConstuctTest, ConstructExpectNoCrash) {
     cqsp::common::Universe universe;
-    cqsp::common::systems::actions::CreateFactory(universe, entt::null,
-                                                    entt::null, 0);
-    cqsp::common::systems::actions::CreateFactory(universe, universe.create(),
-                                                  entt::null, 0);
-    cqsp::common::systems::actions::CreateFactory(universe, entt::null,
-                                                  universe.create(), 0);
+    cqsp::common::systems::actions::CreateFactory(universe, entt::null, entt::null, 0);
+    cqsp::common::systems::actions::CreateFactory(universe, universe.create(), entt::null, 0);
+    cqsp::common::systems::actions::CreateFactory(universe, entt::null, universe.create(), 0);
 }

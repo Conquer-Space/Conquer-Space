@@ -16,9 +16,9 @@
 */
 #pragma once
 
-#include <vector>
-#include <utility>
 #include <memory>
+#include <utility>
+#include <vector>
 
 #include "engine/renderer/renderer.h"
 #include "engine/window.h"
@@ -50,7 +50,7 @@ class FramebufferRenderer : public IFramebuffer {
     FramebufferRenderer() : IFramebuffer() {}
     ~FramebufferRenderer();
 
-    void InitTexture(int width  = 1280, int height = 720) override;
+    void InitTexture(int width = 1280, int height = 720) override;
     void Clear() override;
     void BeginDraw() override;
     void EndDraw() override;
@@ -59,9 +59,7 @@ class FramebufferRenderer : public IFramebuffer {
     void NewFrame(const Window& window) override;
     void SetMesh(cqsp::engine::Mesh* mesh) override { mesh_output = mesh; }
     cqsp::engine::Mesh& GetMeshOutput() override { return *mesh_output; }
-    void SetShader(cqsp::asset::ShaderProgram_t shader) override {
-        buffer_shader = shader;
-    }
+    void SetShader(cqsp::asset::ShaderProgram_t shader) override { buffer_shader = shader; }
 
  private:
     unsigned int framebuffer;
@@ -85,9 +83,7 @@ class AAFrameBufferRenderer : public IFramebuffer {
 
     cqsp::engine::Mesh& GetMeshOutput() override { return *mesh_output; }
     void SetMesh(cqsp::engine::Mesh* mesh) override { mesh_output = mesh; }
-    void SetShader(cqsp::asset::ShaderProgram_t shader) override {
-        buffer_shader = shader;
-    }
+    void SetShader(cqsp::asset::ShaderProgram_t shader) override { buffer_shader = shader; }
 
  private:
     int width;
@@ -134,7 +130,7 @@ class AAFrameBufferRenderer : public IFramebuffer {
 /// </summary>
 class LayerRenderer {
  public:
-    template<class T>
+    template <class T>
     int AddLayer(asset::ShaderProgram_t shader, const engine::Window& window) {
         std::unique_ptr<T> fb = std::make_unique<T>();
         InitFramebuffer(fb.get(), shader, window);
@@ -152,8 +148,7 @@ class LayerRenderer {
 
  private:
     std::vector<std::unique_ptr<IFramebuffer>> framebuffers;
-    void InitFramebuffer(IFramebuffer* buffer, cqsp::asset::ShaderProgram_t shader,
-                            const cqsp::engine::Window& window);
+    void InitFramebuffer(IFramebuffer* buffer, cqsp::asset::ShaderProgram_t shader, const cqsp::engine::Window& window);
 };
 }  // namespace engine
 }  // namespace cqsp

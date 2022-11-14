@@ -16,16 +16,17 @@
 */
 #include "common/util/logging.h"
 
-#include <spdlog/sinks/basic_file_sink.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
-#include <spdlog/sinks/dup_filter_sink.h>
-#include <spdlog/sinks/base_sink.h>
 #include <spdlog/details/null_mutex.h>
+#include <spdlog/sinks/base_sink.h>
+#include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/dup_filter_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 
-#include <mutex>
 #include <filesystem>
-#include <vector>
+#include <mutex>
 #include <string>
+#include <vector>
+
 #include <tracy/Tracy.hpp>
 
 #include "common/util/paths.h"

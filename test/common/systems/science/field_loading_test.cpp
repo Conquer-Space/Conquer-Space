@@ -15,14 +15,13 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #include <gtest/gtest.h>
-
 #include <hjson.h>
 
 #include <iostream>
 
-#include "common/systems/science/fields.h"
-#include "common/components/science.h"
 #include "common/components/name.h"
+#include "common/components/science.h"
+#include "common/systems/science/fields.h"
 
 TEST(Science_FieldTest, FieldLoadingTest) {
     std::string val =
@@ -73,16 +72,13 @@ TEST(Science_FieldTest, FieldLoadingTest) {
 
     // Check adjacents
     ASSERT_TRUE(universe.any_of<cqspc::Name>(field_comp.adjacent[0]));
-    EXPECT_EQ(universe.get<cqspc::Name>(field_comp.adjacent[0]).name,
-              "Physics");
+    EXPECT_EQ(universe.get<cqspc::Name>(field_comp.adjacent[0]).name, "Physics");
 
-    EXPECT_EQ(universe.get<cqspc::Description>(chemistry).description,
-              "Testing");
+    EXPECT_EQ(universe.get<cqspc::Description>(chemistry).description, "Testing");
 
     // Test loading
     // Save the hjson
-    Hjson::Value written_hjson =
-        cqsp::common::systems::science::WriteFields(universe);
+    Hjson::Value written_hjson = cqsp::common::systems::science::WriteFields(universe);
     EXPECT_EQ(written_hjson.size(), hjson.size());
 
     // Reorder the things
@@ -107,8 +103,7 @@ TEST(Science_FieldTest, FieldLoadingTest) {
               });
     std::sort(written_hjson_vector.begin(), written_hjson_vector.end(),
               [](const Hjson::Value& a, const Hjson::Value& b) {
-                  return a["identifier"].to_string().compare(
-                      b["identifier"].to_string()) > 0;
+                  return a["identifier"].to_string().compare(b["identifier"].to_string()) > 0;
               });
     for (int i = 0; i < original_hjson_vector.size(); i++) {
         // Add the vector

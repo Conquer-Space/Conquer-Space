@@ -18,14 +18,12 @@
 
 #include <vector>
 
+#include "client/systems/gui/systooltips.h"
 #include "common/components/player.h"
 #include "common/components/science.h"
 
-#include "client/systems/gui/systooltips.h"
-
 namespace cqsp::client::systems {
-void SysTechnologyViewer::Init() {
-}
+void SysTechnologyViewer::Init() {}
 
 void SysTechnologyViewer::DoUI(int delta_time) {
     using common::components::science::TechnologicalProgress;
@@ -44,11 +42,9 @@ void SysTechnologyViewer::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void SysTechnologyViewer::DoUpdate(int delta_time) {
-}
+void SysTechnologyViewer::DoUpdate(int delta_time) {}
 
-void SysTechnologyProjectViewer::Init() {
-}
+void SysTechnologyProjectViewer::Init() {}
 
 void SysTechnologyProjectViewer::DoUI(int delta_time) {
     using common::components::science::ScientificResearch;
@@ -84,6 +80,5 @@ void SysTechnologyProjectViewer::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void SysTechnologyProjectViewer::DoUpdate(int delta_time) {
-}
+void SysTechnologyProjectViewer::DoUpdate(int delta_time) {}
 }  // namespace cqsp::client::systems

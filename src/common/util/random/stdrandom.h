@@ -31,7 +31,7 @@ class StdRandom : public IRandom {
     }
 
     int GetRandomNormal(double mean, double sd) {
-        std::normal_distribution<> norm{mean, sd};
+        std::normal_distribution<> norm {mean, sd};
         return static_cast<int>(round(norm(random_gen)));
     }
 

@@ -22,8 +22,7 @@
 namespace cqsp::client::systems {
 class CivilizationInfoPanel : public SysUserInterface {
  public:
-    explicit CivilizationInfoPanel(cqsp::engine::Application& app)
-        : SysUserInterface(app) {}
+    explicit CivilizationInfoPanel(cqsp::engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
     void DoUI(int delta_time);

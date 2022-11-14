@@ -16,9 +16,9 @@
 */
 #include "common/systems/loading/loadcountries.h"
 
-#include "common/components/organizations.h"
-#include "common/components/name.h"
 #include "common/components/economy.h"
+#include "common/components/name.h"
+#include "common/components/organizations.h"
 
 namespace cqsp::common::systems::loading {
 bool CountryLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {

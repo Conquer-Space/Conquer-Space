@@ -21,17 +21,18 @@
 #include <string>
 #include <tuple>
 
-#include "common/components/name.h"
-#include "common/components/economy.h"
-#include "common/components/resource.h"
-#include "common/components/bodies.h"
-#include "common/systems/loading/loadutil.h"
 #include "common/components/area.h"
+#include "common/components/bodies.h"
+#include "common/components/economy.h"
+#include "common/components/name.h"
+#include "common/components/resource.h"
+#include "common/systems/loading/loadutil.h"
 
-#define CHECK_DEFINED(x, entity) if (!x.defined()) {\
-                                    universe.destroy(entity);\
-                                    continue;\
-                                 }
+#define CHECK_DEFINED(x, entity)  \
+    if (!x.defined()) {           \
+        universe.destroy(entity); \
+        continue;                 \
+    }
 
 namespace cqsp::common::systems::loading {
 void LoadTerrainData(cqsp::common::Universe& universe, Hjson::Value& value) {
@@ -106,11 +107,10 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         cqspc::ConsumerGood& cg = universe.get_or_emplace<cqspc::ConsumerGood>(entity);
         cg.autonomous_consumption = autonomous_consumption;
         cg.marginal_propensity = marginal_propensity;
-        SPDLOG_INFO("Creating consumer good {} with values: {} {}", identifier,
-                    cg.autonomous_consumption, cg.marginal_propensity);
+        SPDLOG_INFO("Creating consumer good {} with values: {} {}", identifier, cg.autonomous_consumption,
+                    cg.marginal_propensity);
         universe.consumergoods.push_back(entity);
     }
-
 
     for (int i = 0; i < values["tags"].size(); i++) {
         if (values["tags"][i] == "mineral") {
@@ -193,7 +193,7 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         }
     }
 
-    auto &name_object = universe.get<cqspc::Identifier>(entity);
+    auto& name_object = universe.get<cqspc::Identifier>(entity);
     universe.recipes[name_object] = entity;
     return true;
 }

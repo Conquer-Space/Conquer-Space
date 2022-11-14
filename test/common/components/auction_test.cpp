@@ -14,22 +14,22 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+#include "common/components/auction.h"
+
 #include <gtest/gtest.h>
 
 #include <algorithm>
-
 #include <iostream>
 
-#include "common/components/auction.h"
 #include "common/systems/economy/auctionhandler.h"
 
-using cqsp::common::components::DescendingSortedOrderList;
 using cqsp::common::components::AscendingSortedOrderList;
-using cqsp::common::components::Order;
 using cqsp::common::components::AuctionHouse;
+using cqsp::common::components::DescendingSortedOrderList;
+using cqsp::common::components::Order;
 
 entt::entity test_good = static_cast<entt::entity>(1);
-entt::entity test_agent = static_cast <entt::entity>(2);
+entt::entity test_agent = static_cast<entt::entity>(2);
 
 TEST(AuctionTest, DescendingSortedOrderListTest) {
     DescendingSortedOrderList sorted_list;
@@ -81,9 +81,7 @@ TEST(AuctionTest, DemandTest) {
     AuctionHouse auction_house;
     // Price is irrelevant
     static const int size = 10;
-    double test_orders[size] = {
-        3, 56, 15, 75332, 784, 329, 43, 786, 2536, 19
-    };
+    double test_orders[size] = {3, 56, 15, 75332, 784, 329, 43, 786, 2536, 19};
     double total_demand = 0;
     for (int i = 0; i < size; i++) {
         auction_house.AddBuyOrder(test_good, Order(10, test_orders[i], test_agent));
@@ -96,9 +94,7 @@ TEST(AuctionTest, SupplyTest) {
     AuctionHouse auction_house;
     // Price is irrelevant
     static const int size = 10;
-    double test_orders[size] = {
-        3, 56, 15, 75332, 784, 329, 43, 786, 2536, 19
-    };
+    double test_orders[size] = {3, 56, 15, 75332, 784, 329, 43, 786, 2536, 19};
     double total_demand = 0;
     for (int i = 0; i < size; i++) {
         auction_house.AddSellOrder(test_good, Order(10, test_orders[i], test_agent));

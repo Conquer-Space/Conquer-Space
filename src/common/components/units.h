@@ -19,20 +19,13 @@
 namespace cqsp::common::components::types {
 enum UnitType {
     Distance,  // Default distance: kilometer
-    Angle,  // Default distance: degree
-    Mass,  // Default distance: kilogram
-    Volume,  // Default distance: m^3
-    Time  // Default distance: second
+    Angle,     // Default distance: degree
+    Mass,      // Default distance: kilogram
+    Volume,    // Default distance: m^3
+    Time       // Default distance: second
 };
 
-enum Distance {
-    LightYear,
-    AstronomicalUnit,
-    Kilometer,
-    Meter,
-    Centimeter,
-    Millimeter
-};
+enum Distance { LightYear, AstronomicalUnit, Kilometer, Meter, Centimeter, Millimeter };
 
 typedef double astronomical_unit;
 typedef double light_year;

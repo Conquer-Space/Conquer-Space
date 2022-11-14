@@ -24,10 +24,10 @@ cqsp::engine::Mesh* cqsp::engine::primitive::MakeTexturedPaneMesh() {
     cqsp::engine::Mesh* mesh = new cqsp::engine::Mesh();
     float vertices[] = {
         // positions // texture coords
-        1.0f, -1.0f, 0.0f, 1.0f, 1.0f,  // top right
-        1.0f, 1.0f, 0.0f, 1.0f, 0.0f,  // bottom right
-       -1.0f, 1.0f, 0.0f, 0.0f, 0.0f,  // bottom left
-       -1.0f, -1.0f, 0.0f, 0.0f, 1.0f   // top left
+        1.0f,  -1.0f, 0.0f, 1.0f, 1.0f,  // top right
+        1.0f,  1.0f,  0.0f, 1.0f, 0.0f,  // bottom right
+        -1.0f, 1.0f,  0.0f, 0.0f, 0.0f,  // bottom left
+        -1.0f, -1.0f, 0.0f, 0.0f, 1.0f   // top left
     };
 
     unsigned int indices[] = {
@@ -52,8 +52,7 @@ cqsp::engine::Mesh* cqsp::engine::primitive::MakeTexturedPaneMesh() {
     glEnableVertexAttribArray(0);
 
     // texture coord attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,
-        5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
     mesh->VAO = VAO;
@@ -69,10 +68,10 @@ cqsp::engine::Mesh* cqsp::engine::primitive::MakeTexturedPaneMesh(bool mirrored)
 
     float vertices[] = {
         // positions // texture coords
-        1.0f, -1.0f, 0.0f, 1.0f, 0.0f,  // top right
-        1.0f, 1.0f, 0.0f, 1.0f, 1.0f,  // bottom right
-       -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,  // bottom left
-       -1.0f, -1.0f, 0.0f, 0.0f, 0.0f   // top left
+        1.0f,  -1.0f, 0.0f, 1.0f, 0.0f,  // top right
+        1.0f,  1.0f,  0.0f, 1.0f, 1.0f,  // bottom right
+        -1.0f, 1.0f,  0.0f, 0.0f, 1.0f,  // bottom left
+        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f   // top left
     };
 
     unsigned int indices[] = {
@@ -97,8 +96,7 @@ cqsp::engine::Mesh* cqsp::engine::primitive::MakeTexturedPaneMesh(bool mirrored)
     glEnableVertexAttribArray(0);
 
     // texture coord attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,
-        5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
     mesh->VAO = VAO;

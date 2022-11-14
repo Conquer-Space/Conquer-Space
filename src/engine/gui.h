@@ -18,13 +18,12 @@
 
 #define IMGUI_USER_CONFIG "engine/imconfig.h"
 
-#include <imgui.h>
-#include <imgui_stdlib.h>
-#include <imgui_node_editor.h>
-
 #include <fmt/format.h>
-
+#include <imgui.h>
+#include <imgui_node_editor.h>
+#include <imgui_stdlib.h>
 #include <implot.h>
+
 #include <map>
 #include <string>
 #include <utility>
@@ -33,14 +32,12 @@ namespace ed = ax::NodeEditor;
 
 namespace ImPlot {
 template <typename T>
-IMPLOT_API void PlotPieChart(std::map<std::string, T>&, double x, double y,
-                             double radius, bool normalize = false,
-                             const char* label_fmt = "%.1f",
-                             double angle0 = 90);
+IMPLOT_API void PlotPieChart(std::map<std::string, T>&, double x, double y, double radius, bool normalize = false,
+                             const char* label_fmt = "%.1f", double angle0 = 90);
 }  // namespace ImPlot
 
 namespace ImGui {
-template<typename... Args>
+template <typename... Args>
 IMGUI_API void TextFmt(fmt::format_string<Args...> fmt, Args&&... args) {
     auto s = fmt::format(fmt, std::forward<Args>(args)...);
     Text(s.c_str());
@@ -53,43 +50,32 @@ IMGUI_API void TextFmtColored(const ImVec4& color, fmt::format_string<Args...> f
 }
 
 template <typename... Args>
-IMGUI_API bool SelectableFmt(fmt::format_string<Args...> fmt, bool* p_selected,
-                             ImGuiSelectableFlags flags, const ImVec2& size,
-                             Args&&... args) {
+IMGUI_API bool SelectableFmt(fmt::format_string<Args...> fmt, bool* p_selected, ImGuiSelectableFlags flags,
+                             const ImVec2& size, Args&&... args) {
     auto s = fmt::format(fmt, std::forward<Args>(args)...);
     return Selectable(s.c_str(), p_selected, flags, size);
 }
 
 template <typename... Args>
-IMGUI_API bool SelectableFmt(fmt::format_string<Args...> fmt, bool* p_selected,
-                             ImGuiSelectableFlags flags,
+IMGUI_API bool SelectableFmt(fmt::format_string<Args...> fmt, bool* p_selected, ImGuiSelectableFlags flags,
                              Args&&... args) {
     auto s = fmt::format(fmt, std::forward<Args>(args)...);
     return Selectable(s.c_str(), p_selected, flags, ImVec2(0, 0));
 }
 
 template <typename... Args>
-IMGUI_API bool SelectableFmt(fmt::format_string<Args...> fmt, bool* p_selected,
-                             Args&&... args) {
+IMGUI_API bool SelectableFmt(fmt::format_string<Args...> fmt, bool* p_selected, Args&&... args) {
     auto s = fmt::format(fmt, std::forward<Args>(args)...);
     return Selectable(s.c_str(), p_selected, 0, ImVec2(0, 0));
 }
 }  // namespace ImGui
 
 namespace ax::Drawing {
-enum class IconType : ImU32 {
-    Flow,
-    Circle,
-    Square,
-    Grid,
-    RoundSquare,
-    Diamond
-};
+enum class IconType : ImU32 { Flow, Circle, Square, Grid, RoundSquare, Diamond };
 
-void DrawIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& b,
-              IconType type, bool filled, ImU32 color, ImU32 innerColor);
+void DrawIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& b, IconType type, bool filled, ImU32 color,
+              ImU32 innerColor);
 
-void Icon(const ImVec2& size, IconType type, bool filled,
-            const ImVec4& color = ImVec4(1, 1, 1, 1),
-            const ImVec4& innerColor = ImVec4(0, 0, 0, 0));
+void Icon(const ImVec2& size, IconType type, bool filled, const ImVec4& color = ImVec4(1, 1, 1, 1),
+          const ImVec4& innerColor = ImVec4(0, 0, 0, 0));
 }  // namespace ax::Drawing

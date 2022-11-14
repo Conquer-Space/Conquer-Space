@@ -16,9 +16,9 @@
 */
 #include "common/systems/economy/sysmarket.h"
 
+#include <fstream>
 #include <limits>
 #include <utility>
-#include <fstream>
 
 #include <tracy/Tracy.hpp>
 
@@ -30,7 +30,7 @@ void cqsp::common::systems::SysMarket::DoSystem() {
     // Get all the new and improved (tm) markets
     auto marketview = GetUniverse().view<components::Market>();
     SPDLOG_INFO("Processing {} market(s)", marketview.size());
-    TracyPlot("Market Count", (int64_t) marketview.size());
+    TracyPlot("Market Count", (int64_t)marketview.size());
     auto goodsview = GetUniverse().view<components::Price>();
     Universe& universe = GetUniverse();
     // Calculate all the things
@@ -56,8 +56,7 @@ void cqsp::common::systems::SysMarket::DoSystem() {
                 // Later increase it based on SD ratio
                 price += (0.02 + price * 0.01f);
                 //price = 0.5;
-            } else if (sd_ratio > 1 ||
-                       sd_ratio == std::numeric_limits<double>::infinity()) {
+            } else if (sd_ratio > 1 || sd_ratio == std::numeric_limits<double>::infinity()) {
                 // Too much supply, so we will decrease the price
                 price += (-0.01 + price * -0.01f);
 
@@ -98,8 +97,7 @@ void cqsp::common::systems::SysMarket::InitializeMarket(Game& game) {
 
         // Initialize the price
         for (entt::entity goodenity : goodsview) {
-            market.price[goodenity] =
-                universe.get<components::Price>(goodenity);
+            market.price[goodenity] = universe.get<components::Price>(goodenity);
             // Set the supply and demand things as 1 so that they sell for
             // now
             market.previous_demand[goodenity] = 1;

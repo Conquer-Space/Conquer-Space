@@ -18,9 +18,9 @@
 
 #include <fmt/format.h>
 
-#include <string>
 #include <iostream>
 #include <memory>
+#include <string>
 
 #include "common/util/logging.h"
 
@@ -50,9 +50,7 @@ void ScriptInterface::ParseResult(const sol::protected_function_result& result) 
     }
 }
 
-void ScriptInterface::RunScript(std::string_view str) {
-    ParseResult(safe_script(str));
-}
+void ScriptInterface::RunScript(std::string_view str) { ParseResult(safe_script(str)); }
 
 void ScriptInterface::RegisterDataGroup(std::string_view name) {
     script(fmt::format(R"({} = {{
@@ -63,27 +61,18 @@ void ScriptInterface::RegisterDataGroup(std::string_view name) {
             self.len = self.len + 1
         end
         }}
-    )", name).c_str());
+    )",
+                       name)
+               .c_str());
 }
 
 void ScriptInterface::Init() {
     // Set print functions
-    set_function("print", sol::overload(
-        [&] (const char * y) {
-            SPDLOG_LOGGER_INFO(logger, "{}", y);
-        },
-        [&](int y) {
-            SPDLOG_LOGGER_INFO(logger, "{}", y);
-        },
-        [&](double y) {
-            SPDLOG_LOGGER_INFO(logger, "{}", y);
-    }));
+    set_function("print", sol::overload([&](const char* y) { SPDLOG_LOGGER_INFO(logger, "{}", y); },
+                                        [&](int y) { SPDLOG_LOGGER_INFO(logger, "{}", y); },
+                                        [&](double y) { SPDLOG_LOGGER_INFO(logger, "{}", y); }));
 }
 
-int ScriptInterface::GetLength(std::string_view a) {
-    return static_cast<int>((*this)[a]["len"]);
-}
+int ScriptInterface::GetLength(std::string_view a) { return static_cast<int>((*this)[a]["len"]); }
 
-std::vector<std::string> cqsp::scripting::ScriptInterface::GetLogs() {
-    return ringbuffer_sink->last_formatted();
-}
+std::vector<std::string> cqsp::scripting::ScriptInterface::GetLogs() { return ringbuffer_sink->last_formatted(); }

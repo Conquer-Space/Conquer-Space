@@ -18,9 +18,7 @@
 
 cqsp::engine::Application* AppContext = nullptr;
 namespace CQSPGui {
-void SetApplication(cqsp::engine::Application* context) {
-    AppContext = context;
-}
+void SetApplication(cqsp::engine::Application* context) { AppContext = context; }
 
 bool DefaultButton(const char* name, const ImVec2& size) {
     if (ImGui::Button(name, size)) {
@@ -38,8 +36,7 @@ bool SmallDefaultButton(const char* label) {
     return false;
 }
 
-bool DefaultSelectable(const char* label,
-                                bool selected, ImGuiSelectableFlags flags, const ImVec2& size) {
+bool DefaultSelectable(const char* label, bool selected, ImGuiSelectableFlags flags, const ImVec2& size) {
     if (ImGui::Selectable(label, selected, flags, size)) {
         AppContext->GetAudioInterface().PlayAudioClip("button.press");
         return true;
@@ -47,8 +44,7 @@ bool DefaultSelectable(const char* label,
     return false;
 }
 
-bool DefaultSelectable(const char* label,
-                            bool* p_selected, ImGuiSelectableFlags flags, const ImVec2& size) {
+bool DefaultSelectable(const char* label, bool* p_selected, ImGuiSelectableFlags flags, const ImVec2& size) {
     if (ImGui::Selectable(label, p_selected, flags, size)) {
         AppContext->GetAudioInterface().PlayAudioClip("button.press");
         return true;
@@ -72,8 +68,7 @@ bool ArrowButton(const char* label, ImGuiDir dir) {
     return false;
 }
 
-bool SliderFloat(const char* label, float* v, float v_min, float v_max,
-                          const char* format, ImGuiSliderFlags flags) {
+bool SliderFloat(const char* label, float* v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) {
     if (ImGui::SliderFloat(label, v, v_min, v_max, format, flags)) {
         AppContext->GetAudioInterface().PlayAudioClip("scroll.tick");
         return true;
@@ -81,8 +76,7 @@ bool SliderFloat(const char* label, float* v, float v_min, float v_max,
     return false;
 }
 
-bool SliderInt(const char* label, int* v, int v_min, int v_max,
-                        const char* format, ImGuiSliderFlags flags) {
+bool SliderInt(const char* label, int* v, int v_min, int v_max, const char* format, ImGuiSliderFlags flags) {
     if (ImGui::SliderInt(label, v, v_min, v_max, format, flags)) {
         AppContext->GetAudioInterface().PlayAudioClip("scroll.tick");
         return true;
@@ -90,9 +84,8 @@ bool SliderInt(const char* label, int* v, int v_min, int v_max,
     return false;
 }
 
-bool DragFloat(const char* label, float* v, float v_speed, float v_min,
-                        float v_max, const char* format,
-                        ImGuiSliderFlags flags) {
+bool DragFloat(const char* label, float* v, float v_speed, float v_min, float v_max, const char* format,
+               ImGuiSliderFlags flags) {
     if (ImGui::DragFloat(label, v, v_speed, v_min, v_max, format, flags)) {
         AppContext->GetAudioInterface().PlayAudioClip("scroll.tick");
         return true;
@@ -100,8 +93,8 @@ bool DragFloat(const char* label, float* v, float v_speed, float v_min,
     return false;
 }
 
-bool DragInt(const char* label, int* v, float v_speed, int v_min,
-                      int v_max, const char* format, ImGuiSliderFlags flags) {
+bool DragInt(const char* label, int* v, float v_speed, int v_min, int v_max, const char* format,
+             ImGuiSliderFlags flags) {
     if (ImGui::DragInt(label, v, v_speed, v_min, v_max, format, flags)) {
         AppContext->GetAudioInterface().PlayAudioClip("scroll.tick");
         return true;

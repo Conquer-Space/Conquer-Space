@@ -17,21 +17,20 @@
 #include "engine/renderer/framebuffer.h"
 
 #include <glad/glad.h>
-
 #include <spdlog/spdlog.h>
 
 #include <tracy/Tracy.hpp>
 
 #include "common/util/profiler.h"
-#include "engine/graphics/primitives/pane.h"
 #include "engine/enginelogger.h"
+#include "engine/graphics/primitives/pane.h"
 
 namespace {
-void GenerateFrameBuffer(unsigned int &framebuffer) {
+void GenerateFrameBuffer(unsigned int& framebuffer) {
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 }
-}
+}  // namespace
 
 cqsp::engine::FramebufferRenderer::~FramebufferRenderer() { Free(); }
 
@@ -118,8 +117,7 @@ void cqsp::engine::AAFrameBufferRenderer::InitTexture(int width, int height) {
 
     glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA, width, height, GL_TRUE);
     glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                            GL_TEXTURE_2D_MULTISAMPLE, mscat, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, mscat, 0);
 
     // create a (also multisampled) renderbuffer object for depth and stencil attachments
     unsigned int rbo;
@@ -152,13 +150,9 @@ void cqsp::engine::AAFrameBufferRenderer::Clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void cqsp::engine::AAFrameBufferRenderer::BeginDraw() {
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-}
+void cqsp::engine::AAFrameBufferRenderer::BeginDraw() { glBindFramebuffer(GL_FRAMEBUFFER, framebuffer); }
 
-void cqsp::engine::AAFrameBufferRenderer::EndDraw() {
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
+void cqsp::engine::AAFrameBufferRenderer::EndDraw() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 
 void cqsp::engine::AAFrameBufferRenderer::Free() {
     glDeleteFramebuffers(1, &framebuffer);
@@ -223,7 +217,7 @@ void LayerRenderer::NewFrame(const cqsp::engine::Window& window) {
 int LayerRenderer::GetLayerCount() { return framebuffers.size(); }
 
 void LayerRenderer::InitFramebuffer(IFramebuffer* buffer, cqsp::asset::ShaderProgram_t shader,
- const cqsp::engine::Window& window) {
+                                    const cqsp::engine::Window& window) {
     // Initialize pane
     buffer->InitTexture(window.GetWindowWidth(), window.GetWindowHeight());
     buffer->SetMesh(engine::primitive::MakeTexturedPaneMesh(true));

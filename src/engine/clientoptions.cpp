@@ -34,9 +34,7 @@ void cqsp::client::ClientOptions::WriteOptions() {
     WriteOptions(config_path);
 }
 
-void cqsp::client::ClientOptions::LoadDefaultOptions() {
-    options = Hjson::Merge(GetDefaultOptions(), options);
-}
+void cqsp::client::ClientOptions::LoadDefaultOptions() { options = Hjson::Merge(GetDefaultOptions(), options); }
 
 Hjson::Value cqsp::client::ClientOptions::GetDefaultOptions() {
     Hjson::Value default_options;

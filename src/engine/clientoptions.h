@@ -17,28 +17,29 @@
 #pragma once
 
 #include <hjson.h>
-#include <istream>
+
 #include <fstream>
+#include <istream>
 #include <string>
 
 namespace cqsp {
 namespace client {
 class ClientOptions {
  public:
-     void LoadOptions(std::istream& stream);
-     void WriteOptions(std::ostream& stream);
-     void WriteOptions();
+    void LoadOptions(std::istream& stream);
+    void WriteOptions(std::ostream& stream);
+    void WriteOptions();
 
-     void LoadDefaultOptions();
+    void LoadDefaultOptions();
 
-     Hjson::Value& GetOptions() { return options; }
+    Hjson::Value& GetOptions() { return options; }
 
-     Hjson::Value GetDefaultOptions();
+    Hjson::Value GetDefaultOptions();
 
-     std::string GetDefaultLocation();
+    std::string GetDefaultLocation();
 
  private:
-     Hjson::Value options;
+    Hjson::Value options;
 };
 }  // namespace client
 }  // namespace cqsp

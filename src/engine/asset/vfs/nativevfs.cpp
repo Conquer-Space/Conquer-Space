@@ -16,9 +16,9 @@
 */
 #include "engine/asset/vfs/nativevfs.h"
 
+#include <algorithm>
 #include <filesystem>
 #include <memory>
-#include <algorithm>
 #include <string>
 
 #include <tracy/Tracy.hpp>
@@ -27,8 +27,8 @@ cqsp::asset::NativeFileSystem::NativeFileSystem(const std::string& _root) : root
 
 cqsp::asset::NativeFileSystem::~NativeFileSystem() {}
 
-std::shared_ptr<cqsp::asset::IVirtualFile>
-cqsp::asset::NativeFileSystem::Open(const std::string& file_path, FileModes modes) {
+std::shared_ptr<cqsp::asset::IVirtualFile> cqsp::asset::NativeFileSystem::Open(const std::string& file_path,
+                                                                               FileModes modes) {
     std::string file_pos = file_path;
     // Remove initial '/' if it has it, or std::filesystem goes crazy and thinks that it's
     // at the root directory of the drive, not the root directory of the filesystem
@@ -41,7 +41,7 @@ cqsp::asset::NativeFileSystem::Open(const std::string& file_path, FileModes mode
     // Erase slash in front, just in case.
     std::string file_name = file_path;
     if (file_name.size() > 0 && file_name.at(0) == '/') {
-            file_name = file_name.erase(0, 1);
+        file_name = file_name.erase(0, 1);
     }
     std::shared_ptr<NativeFile> nfile = std::make_shared<NativeFile>(this, file_name);
     // Always open binary for carrige return purposes.
@@ -80,8 +80,8 @@ std::shared_ptr<cqsp::asset::IVirtualDirectory> cqsp::asset::NativeFileSystem::O
             continue;
         }
         // Replace the backslashes with forward slashes so that we keep it consistent
-        std::string vfile_path = std::filesystem::relative(dir_entry.path(), std::filesystem::path(root) / path)
-                .string();
+        std::string vfile_path =
+            std::filesystem::relative(dir_entry.path(), std::filesystem::path(root) / path).string();
         std::replace(vfile_path.begin(), vfile_path.end(), '\\', '/');
         // Remove initial '/' if it has it, or std::filesystem goes crazy and thinks that it's
         // at the root directory of the drive, not the root directory of the filesystem
@@ -111,9 +111,7 @@ cqsp::asset::NativeFile::~NativeFile() { file.close(); }
 
 const std::string& cqsp::asset::NativeFile::Path() { return path; }
 
-uint64_t cqsp::asset::NativeFile::Size() {
-    return size;
-}
+uint64_t cqsp::asset::NativeFile::Size() { return size; }
 
 void cqsp::asset::NativeFile::Read(uint8_t* buffer, int num_bytes) {
     // Text mode is mildly screwed up, because of carrige return on windows.
@@ -144,17 +142,12 @@ uint64_t cqsp::asset::NativeDirectory::GetSize() { return paths.size(); }
 
 const std::string& cqsp::asset::NativeDirectory::GetRoot() { return root; }
 
-std::shared_ptr<cqsp::asset::IVirtualFile>
-cqsp::asset::NativeDirectory::GetFile(int index, FileModes modes) {
+std::shared_ptr<cqsp::asset::IVirtualFile> cqsp::asset::NativeDirectory::GetFile(int index, FileModes modes) {
     // Get the file
     std::string path = (std::string(root) + "/" + paths[index]);
     return nfs->Open(path.c_str(), modes);
 }
 
-const std::string& cqsp::asset::NativeDirectory::GetFilename(int index) {
-    return paths[index];
-}
+const std::string& cqsp::asset::NativeDirectory::GetFilename(int index) { return paths[index]; }
 
-cqsp::asset::IVirtualFileSystem* cqsp::asset::NativeDirectory::GetFileSystem() {
-    return nfs;
-}
+cqsp::asset::IVirtualFileSystem* cqsp::asset::NativeDirectory::GetFileSystem() { return nfs; }

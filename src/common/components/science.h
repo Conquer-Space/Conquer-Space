@@ -16,10 +16,10 @@
 */
 #pragma once
 
-#include <vector>
+#include <map>
 #include <set>
 #include <string>
-#include <map>
+#include <vector>
 
 #include <entt/entt.hpp>
 
@@ -27,8 +27,8 @@
 
 namespace cqsp::common::components::science {
 struct Field {
-    std::vector<entt::entity> parents; // Should probably changed to a set
-    std::vector<entt::entity> adjacent; // same
+    std::vector<entt::entity> parents;   // Should probably changed to a set
+    std::vector<entt::entity> adjacent;  // same
 };
 
 // A scientific research
@@ -45,8 +45,7 @@ struct ScientificProgress {
     ResourceLedger science_progress;
 };
 
-struct ScienceProject {
-};
+struct ScienceProject {};
 
 struct ScientificResearch {
     // the int is the number of ticks left

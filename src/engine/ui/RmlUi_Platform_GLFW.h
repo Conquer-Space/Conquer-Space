@@ -27,10 +27,10 @@
  */
 #pragma once
 
+#include <GLFW/glfw3.h>
 #include <RmlUi/Core/Input.h>
 #include <RmlUi/Core/SystemInterface.h>
 #include <RmlUi/Core/Types.h>
-#include <GLFW/glfw3.h>
 
 class SystemInterface_GLFW : public Rml::SystemInterface {
  public:
@@ -81,4 +81,4 @@ Rml::Input::KeyIdentifier ConvertKey(int glfw_key);
 // Converts the GLFW key modifiers to RmlUi key modifiers.
 int ConvertKeyModifiers(int glfw_mods);
 
-} // namespace RmlGLFW
+}  // namespace RmlGLFW

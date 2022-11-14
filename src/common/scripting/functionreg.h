@@ -20,8 +20,6 @@
 
 // Definitions for the namespaces and functions
 // So that we can document in the future
-#define REGISTER_FUNCTION(name, lambda) \
-        lua_namespace.set_function(name, lambda)
+#define REGISTER_FUNCTION(name, lambda) lua_namespace.set_function(name, lambda)
 
-#define CREATE_NAMESPACE(name) \
-    auto lua_namespace = script_engine[#name].get_or_create<sol::table>()
+#define CREATE_NAMESPACE(name) auto lua_namespace = script_engine[#name].get_or_create<sol::table>()

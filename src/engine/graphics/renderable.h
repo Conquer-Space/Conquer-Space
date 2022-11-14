@@ -16,12 +16,12 @@
 */
 #pragma once
 
-#include <vector>
 #include <string>
+#include <vector>
 
+#include "engine/graphics/mesh.h"
 #include "engine/graphics/shader.h"
 #include "engine/graphics/texture.h"
-#include "engine/graphics/mesh.h"
 
 namespace cqsp {
 namespace engine {

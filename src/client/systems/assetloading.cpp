@@ -16,28 +16,27 @@
  */
 #include "client/systems/assetloading.h"
 
-#include <string>
 #include <memory>
+#include <string>
 
 #include "client/systems/clientscripting.h"
-#include "common/systems/sysuniversegenerator.h"
 #include "common/scripting/luafunctions.h"
-
+#include "common/systems/loading/hjsonloader.h"
+#include "common/systems/loading/loadcities.h"
+#include "common/systems/loading/loadcountries.h"
 #include "common/systems/loading/loadgoods.h"
 #include "common/systems/loading/loadnames.h"
-#include "common/systems/science/technology.h"
-#include "common/systems/science/fields.h"
 #include "common/systems/loading/loadplanets.h"
-#include "common/systems/loading/loadcities.h"
-#include "common/systems/loading/hjsonloader.h"
-#include "common/systems/loading/timezoneloader.h"
-#include "common/systems/loading/loadcountries.h"
 #include "common/systems/loading/loadprovinces.h"
 #include "common/systems/loading/loadsatellites.h"
+#include "common/systems/loading/timezoneloader.h"
+#include "common/systems/science/fields.h"
+#include "common/systems/science/technology.h"
+#include "common/systems/sysuniversegenerator.h"
 
 namespace {
 void LoadResource(cqsp::engine::Application& app, std::string asset_name,
-                    void (*func)(cqsp::common::Universe& universe, Hjson::Value& recipes)) {
+                  void (*func)(cqsp::common::Universe& universe, Hjson::Value& recipes)) {
     namespace cqspc = cqsp::common::components;
     for (auto it = app.GetAssetManager().GetPackageBegin(); it != app.GetAssetManager().GetPackageEnd(); it++) {
         if (!it->second->HasAsset(asset_name)) {
@@ -48,12 +47,12 @@ void LoadResource(cqsp::engine::Application& app, std::string asset_name,
             func(app.GetUniverse(), good_assets->data);
         } catch (std::runtime_error& error) {
             SPDLOG_INFO("Failed to load hjson asset {}: {}", asset_name, error.what());
-        } catch (Hjson::index_out_of_bounds &) {
+        } catch (Hjson::index_out_of_bounds&) {
         }
     }
 }
 
-template<class T>
+template <class T>
 void LoadResource(cqsp::engine::Application& app, std::string asset_name) {
     using cqsp::common::systems::loading::HjsonLoader;
     static_assert(std::is_base_of<HjsonLoader, T>::value, "Class is not child of");
@@ -69,7 +68,7 @@ void LoadResource(cqsp::engine::Application& app, std::string asset_name) {
             ptr->LoadHjson(good_assets->data);
         } catch (std::runtime_error& error) {
             SPDLOG_INFO("Failed to load hjson asset {}: {}", asset_name, error.what());
-        } catch (Hjson::index_out_of_bounds &) {
+        } catch (Hjson::index_out_of_bounds&) {
         }
     }
 }
@@ -83,19 +82,16 @@ void LoadAllResources(cqsp::engine::Application& app) {
     LoadResource<PlanetLoader>(app, "planets");
     LoadResource<TimezoneLoader>(app, "timezones");
     LoadResource<CountryLoader>(app, "countries");
-    LoadProvinces(app.GetUniverse(),
-                  app.GetAssetManager().GetAsset<asset::TextAsset>("province_defs")->data);
+    LoadProvinces(app.GetUniverse(), app.GetAssetManager().GetAsset<asset::TextAsset>("province_defs")->data);
     LoadResource<CityLoader>(app, "cities");
     LoadResource(app, "names", LoadNameLists);
     LoadResource(app, "tech_fields", common::systems::science::LoadFields);
     LoadResource(app, "tech_list", common::systems::science::LoadTechnologies);
-    common::systems::loading::LoadSatellites(
-        app.GetUniverse(),
-        app.GetAssetManager().GetAsset<asset::TextAsset>("satellites")->data);
+    common::systems::loading::LoadSatellites(app.GetUniverse(),
+                                             app.GetAssetManager().GetAsset<asset::TextAsset>("satellites")->data);
 
     // Initialize planet terrains
-    asset::HjsonAsset* asset = app.GetAssetManager().GetAsset<asset::HjsonAsset>(
-                                "core:terrain_colors");
+    asset::HjsonAsset* asset = app.GetAssetManager().GetAsset<asset::HjsonAsset>("core:terrain_colors");
     common::systems::loading::LoadTerrainData(app.GetUniverse(), asset->data);
 
     // Load scripts

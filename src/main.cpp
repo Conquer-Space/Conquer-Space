@@ -15,9 +15,9 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include <fstream>
 #include <iostream>
 #include <memory>
-#include <fstream>
 
 #include "client/scenes/loadingscene.h"
 #include "engine/application.h"

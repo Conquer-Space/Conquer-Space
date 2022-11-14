@@ -35,16 +35,12 @@ class ALAudioAsset : public AudioAsset {
     /**
      * Length in seconds.
      */
-    float Length() {
-        return length;
-    }
+    float Length() { return length; }
 
     ALuint buffer;
     float length = 0;
 
-    ~ALAudioAsset() {
-        alDeleteBuffers(1, &buffer);
-    }
+    ~ALAudioAsset() { alDeleteBuffers(1, &buffer); }
 };
 
 std::unique_ptr<AudioAsset> LoadOgg(std::ifstream& input);

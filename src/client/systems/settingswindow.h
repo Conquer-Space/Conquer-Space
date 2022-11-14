@@ -16,12 +16,12 @@
 */
 #pragma once
 
-#include <engine/application.h>
-#include <RmlUi/Core/Types.h>
 #include <RmlUi/Core/EventListener.h>
+#include <RmlUi/Core/Types.h>
+#include <engine/application.h>
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace cqsp::client {
 class SettingsWindow : public Rml::EventListener {
@@ -56,10 +56,9 @@ class SettingsWindow : public Rml::EventListener {
     float music_volume;
     bool full_screen;
 
-    std::vector<Rml::Vector2i> window_sizes = {
-        {1024, 768},  {1280, 1024}, {1280, 720},  {1280, 800},  {1360, 768},
-        {1366, 768},  {1440, 900},  {1600, 900},  {1680, 1050}, {1920, 1200},
-        {1920, 1080}, {2560, 1440}, {2560, 1080}, {3440, 1440}, {3840, 2160}};
+    std::vector<Rml::Vector2i> window_sizes = {{1024, 768},  {1280, 1024}, {1280, 720},  {1280, 800},  {1360, 768},
+                                               {1366, 768},  {1440, 900},  {1600, 900},  {1680, 1050}, {1920, 1200},
+                                               {1920, 1080}, {2560, 1440}, {2560, 1080}, {3440, 1440}, {3840, 2160}};
 
     Rml::ElementDocument* options_menu;
     Rml::DataModelHandle model_handle;

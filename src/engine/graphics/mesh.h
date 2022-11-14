@@ -20,10 +20,7 @@
 
 namespace cqsp {
 namespace engine {
-enum DrawType {
-    ARRAYS = 0,
-    ELEMENTS = 1
-};
+enum DrawType { ARRAYS = 0, ELEMENTS = 1 };
 
 class Mesh {
  public:

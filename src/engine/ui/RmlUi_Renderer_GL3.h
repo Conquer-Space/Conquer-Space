@@ -55,10 +55,10 @@ class RenderInterface_GL3 : public Rml::RenderInterface {
     // -- Inherited from Rml::RenderInterface --
 
     void RenderGeometry(Rml::Vertex* vertices, int num_vertices, int* indices, int num_indices,
-        Rml::TextureHandle texture, const Rml::Vector2f& translation) override;
+                        Rml::TextureHandle texture, const Rml::Vector2f& translation) override;
 
     Rml::CompiledGeometryHandle CompileGeometry(Rml::Vertex* vertices, int num_vertices, int* indices, int num_indices,
-        Rml::TextureHandle texture) override;
+                                                Rml::TextureHandle texture) override;
     void RenderCompiledGeometry(Rml::CompiledGeometryHandle geometry, const Rml::Vector2f& translation) override;
     void ReleaseCompiledGeometry(Rml::CompiledGeometryHandle geometry) override;
 
@@ -66,9 +66,9 @@ class RenderInterface_GL3 : public Rml::RenderInterface {
     void SetScissorRegion(int x, int y, int width, int height) override;
 
     bool LoadTexture(Rml::TextureHandle& texture_handle, Rml::Vector2i& texture_dimensions,
-        const Rml::String& source) override;
+                     const Rml::String& source) override;
     bool GenerateTexture(Rml::TextureHandle& texture_handle, const Rml::byte* source,
-        const Rml::Vector2i& source_dimensions) override;
+                         const Rml::Vector2i& source_dimensions) override;
     void ReleaseTexture(Rml::TextureHandle texture_handle) override;
 
     void SetTransform(const Rml::Matrix4f* transform) override;
@@ -104,4 +104,4 @@ bool Initialize(Rml::String* out_message = nullptr);
 // Unloads OpenGL functions.
 void Shutdown();
 
-} // namespace RmlGL3
+}  // namespace RmlGL3

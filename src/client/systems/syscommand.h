@@ -23,14 +23,14 @@ namespace client {
 namespace systems {
 class SysCommand : public SysUserInterface {
  public:
-    explicit SysCommand(cqsp::engine::Application& app)
-        : SysUserInterface(app) {}
+    explicit SysCommand(cqsp::engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
     void DoUI(int delta_time);
     void DoUpdate(int delta_time);
 
     bool to_see = false;
+
  private:
     int selected_index = 0;
     entt::entity selected_planet = entt::null;

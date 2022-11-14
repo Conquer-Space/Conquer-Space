@@ -16,9 +16,9 @@
 */
 #pragma once
 
-#include <vector>
 #include <functional>
 #include <map>
+#include <vector>
 
 #include <entt/entt.hpp>
 
@@ -26,9 +26,8 @@ namespace cqsp {
 namespace common {
 namespace components {
 struct Order {
-    Order() : price(0), quantity(0) { }
-    Order(double price, double quantity, entt::entity agent)
-        : price(price), quantity(quantity), agent(agent) {}
+    Order() : price(0), quantity(0) {}
+    Order(double price, double quantity, entt::entity agent) : price(price), quantity(quantity), agent(agent) {}
 
     /// <summary>
     /// Price per unit
@@ -43,21 +42,16 @@ struct Order {
     entt::entity agent;
 };
 
-inline bool operator<(const Order& lhs, const Order& rhs) {
-    return lhs.price < rhs.price;
-}
+inline bool operator<(const Order& lhs, const Order& rhs) { return lhs.price < rhs.price; }
 
-inline bool operator>(const Order& lhs, const Order& rhs) {
-    return lhs.price > rhs.price;
-}
+inline bool operator>(const Order& lhs, const Order& rhs) { return lhs.price > rhs.price; }
 
-template<class T>
+template <class T>
 class SortedOrderList : public std::vector<Order> {
  public:
     using std::vector<Order>::vector;
-    void put(const Order &order) {
-        SortedOrderList<T>::iterator it =
-            std::lower_bound(begin(), end(), order, T());
+    void put(const Order& order) {
+        SortedOrderList<T>::iterator it = std::lower_bound(begin(), end(), order, T());
         insert(it, order);
     }
 };
@@ -76,13 +70,9 @@ struct AuctionHouse {
     std::map<entt::entity, DescendingSortedOrderList> sell_orders;
     std::map<entt::entity, AscendingSortedOrderList> buy_orders;
 
-    void AddSellOrder(entt::entity good, Order &&order) {
-        sell_orders[good].put(order);
-    }
+    void AddSellOrder(entt::entity good, Order&& order) { sell_orders[good].put(order); }
 
-    void AddBuyOrder(entt::entity good, Order &&order) {
-        buy_orders[good].put(order);
-    }
+    void AddBuyOrder(entt::entity good, Order&& order) { buy_orders[good].put(order); }
 
     double GetDemand(entt::entity good) {
         const AscendingSortedOrderList& buy_list = buy_orders[good];

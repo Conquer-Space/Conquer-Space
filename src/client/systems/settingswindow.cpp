@@ -16,15 +16,13 @@
 */
 #include "client/systems/settingswindow.h"
 
-cqsp::client::SettingsWindow::SettingsWindow(cqsp::engine::Application& app) : app(app) {
-    InitializeDataModel();
-}
+cqsp::client::SettingsWindow::SettingsWindow(cqsp::engine::Application& app) : app(app) { InitializeDataModel(); }
 
 void cqsp::client::SettingsWindow::ProcessEvent(Rml::Event& event) {
     std::string id_pressed = event.GetTargetElement()->GetId();
     if (event.GetId() == Rml::EventId::Keydown) {
         Rml::Input::KeyIdentifier key_identifier =
-                    (Rml::Input::KeyIdentifier) event.GetParameter<int>("key_identifier", 0);
+            (Rml::Input::KeyIdentifier)event.GetParameter<int>("key_identifier", 0);
         if (key_identifier == Rml::Input::KI_ESCAPE) {
             Hide();
         }
@@ -41,8 +39,7 @@ void cqsp::client::SettingsWindow::ProcessEvent(Rml::Event& event) {
         // Get selected index
         // Set all the options
         int selection =
-                ((Rml::ElementFormControlSelect*)options_menu->GetElementById("window_size_select"))
-                    ->GetSelection();
+            ((Rml::ElementFormControlSelect*)options_menu->GetElementById("window_size_select"))->GetSelection();
 
         const Rml::Vector2i& size = window_sizes[selection];
         GetApp().SetWindowDimensions(size.x, size.y);
@@ -70,14 +67,14 @@ void cqsp::client::SettingsWindow::InitializeOptionVariables() {
     // Refresh page, I guess
     // Set selected thing
     const int height = GetApp().GetClientOptions().GetOptions()["window"]["height"];
-    const int width =  GetApp().GetClientOptions().GetOptions()["window"]["width"];
+    const int width = GetApp().GetClientOptions().GetOptions()["window"]["width"];
     // find the width and height that fits it
     int selected_index = 0;
     for (auto size : window_sizes) {
         if (size.x == width && size.y == height) {
             // Set the value
             ((Rml::ElementFormControlSelect*)options_menu->GetElementById("window_size_select"))
-                                                ->SetSelection(selected_index);
+                ->SetSelection(selected_index);
         }
         selected_index++;
     }
@@ -118,9 +115,7 @@ void cqsp::client::SettingsWindow::Show() {
     InitializeOptionVariables();
 }
 
-void cqsp::client::SettingsWindow::Hide() {
-     options_menu->SetClass("visible", false);
-}
+void cqsp::client::SettingsWindow::Hide() { options_menu->SetClass("visible", false); }
 
 void cqsp::client::SettingsWindow::Close() {
     options_menu->RemoveEventListener(Rml::EventId::Click, this);

@@ -16,14 +16,13 @@
 */
 #include "client/systems/syspausemenu.h"
 
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 #include "client/scenes/universescene.h"
 #include "client/systems/sysoptionswindow.h"
 #include "common/version.h"
 #include "engine/cqspgui.h"
-
 
 void cqsp::client::systems::SysPauseMenu::Init() {}
 
@@ -34,12 +33,10 @@ void cqsp::client::systems::SysPauseMenu::DoUI(int delta_time) {
 
     if (!to_show_options_window) {
         ImGui::SetNextWindowSize(ImVec2(200, -FLT_MIN), ImGuiCond_Always);
-        ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f,
-                                       ImGui::GetIO().DisplaySize.y * 0.5f),
+        ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
                                 ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
-        ImGui::Begin("Pause menu", &to_show,
-            ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration);
+        ImGui::Begin("Pause menu", &to_show, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration);
 
         ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.5f, 0.5f));
 

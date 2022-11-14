@@ -16,24 +16,19 @@
 */
 #pragma once
 
-#include <memory>
 #include <map>
+#include <memory>
 #include <string>
-
 #include <vector>
 
 namespace cqsp {
 namespace asset {
 enum FileModes {
     None = 0,
-    Binary = 1 << 0 // If true, file is opened in binary mode, if false, file is opened in text mode
+    Binary = 1 << 0  // If true, file is opened in binary mode, if false, file is opened in text mode
 };
 
-enum class Offset {
-    Beg,
-    End,
-    Cur
-};
+enum class Offset { Beg, End, Cur };
 
 class IVirtualFile;
 class IVirtualDirectory;
@@ -169,8 +164,7 @@ class VirtualMounter {
     /// <summary>
     /// Opens file in mounted filesystem `mount`, with the mount path relative path `path`
     /// </summary>
-    std::shared_ptr<IVirtualFile> Open(const std::string& mount,
-                                       const std::string& path,
+    std::shared_ptr<IVirtualFile> Open(const std::string& mount, const std::string& path,
                                        FileModes mode = FileModes::None);
 
     /// <summary>

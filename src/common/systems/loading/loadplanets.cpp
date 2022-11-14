@@ -15,25 +15,26 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "common/systems/loading/loadplanets.h"
+
 #include <spdlog/spdlog.h>
 #include <stdlib.h>
 
-#include <vector>
 #include <random>
 #include <string>
+#include <vector>
 
-#include "common/systems/loading/loadplanets.h"
-#include "common/systems/loading/loadutil.h"
 #include "common/systems/actions/factoryconstructaction.h"
+#include "common/systems/loading/loadutil.h"
 //#include "common/components/coordinates.h"
-#include "common/components/bodies.h"
-#include "common/components/name.h"
-#include "common/components/surface.h"
 #include "common/components/area.h"
-#include "common/components/infrastructure.h"
-#include "common/components/population.h"
+#include "common/components/bodies.h"
 #include "common/components/coordinates.h"
 #include "common/components/economy.h"
+#include "common/components/infrastructure.h"
+#include "common/components/name.h"
+#include "common/components/population.h"
+#include "common/components/surface.h"
 #include "common/util/random/random.h"
 
 namespace cqspt = cqsp::common::components::types;
@@ -89,8 +90,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
     bool rotation_correct;
     if (values["day_length"].type() != Hjson::Type::Null) {
-        body_comp.rotation = ReadUnit(values["day_length"].to_string(),
-                                      UnitType::Time, &rotation_correct);
+        body_comp.rotation = ReadUnit(values["day_length"].to_string(), UnitType::Time, &rotation_correct);
         if (!rotation_correct) {
             SPDLOG_WARN("Rotation for {} incorrect", identifier);
             body_comp.rotation = 0;
@@ -112,8 +112,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
     bool axial_correct;
     if (values["axial"].type() != Hjson::Type::Null) {
-        body_comp.axial = ReadUnit(values["axial"].to_string(),
-                                      UnitType::Angle, &axial_correct);
+        body_comp.axial = ReadUnit(values["axial"].to_string(), UnitType::Angle, &axial_correct);
         if (!axial_correct) {
             SPDLOG_WARN("Axial for {} incorrect", identifier);
             body_comp.axial = 0;
@@ -194,7 +193,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 void PlanetLoader::PostLoad(const entt::entity& entity) {
     // Set the parent
     auto& orbit = universe.get<components::types::Orbit>(entity);
-    auto& body =  universe.get<components::bodies::Body>(entity);
+    auto& body = universe.get<components::bodies::Body>(entity);
     body.mass = components::bodies::CalculateMass(body.GM);
     if (!universe.any_of<ParentTemp>(entity)) {
         return;
@@ -202,15 +201,14 @@ void PlanetLoader::PostLoad(const entt::entity& entity) {
     auto& parent_temp = universe.get<ParentTemp>(entity);
 
     if (universe.planets.find(parent_temp.parent) == universe.planets.end()) {
-        SPDLOG_INFO("{} parent is not found: {}",
-                universe.get<components::Identifier>(entity).identifier, parent_temp.parent);
+        SPDLOG_INFO("{} parent is not found: {}", universe.get<components::Identifier>(entity).identifier,
+                    parent_temp.parent);
         orbit.CalculateVariables();
         universe.remove<ParentTemp>(entity);
         return;
     }
     entt::entity parent = universe.planets[parent_temp.parent];
-    SPDLOG_INFO("{}'s parent is {}", universe.get<components::Identifier>(entity).identifier,
-                parent_temp.parent);
+    SPDLOG_INFO("{}'s parent is {}", universe.get<components::Identifier>(entity).identifier, parent_temp.parent);
     orbit.reference_body = parent;
     // Set mu
     orbit.GM = universe.get<components::bodies::Body>(parent).GM;

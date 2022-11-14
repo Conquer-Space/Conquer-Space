@@ -25,13 +25,14 @@
  * THE SOFTWARE.
  *
  */
-#include "RmlUi_Backend.h"
-#include "RmlUi_Platform_GLFW.h"
-#include "RmlUi_Renderer_GL3.h"
+#include <GLFW/glfw3.h>
 #include <RmlUi/Core/Context.h>
 #include <RmlUi/Core/Input.h>
 #include <RmlUi/Core/Profiling.h>
-#include <GLFW/glfw3.h>
+
+#include "RmlUi_Backend.h"
+#include "RmlUi_Platform_GLFW.h"
+#include "RmlUi_Renderer_GL3.h"
 
 static void SetupCallbacks(GLFWwindow* window);
 
@@ -62,8 +63,7 @@ bool Backend::Initialize(const char* name, int width, int height, bool allow_res
 
     glfwSetErrorCallback(LogErrorFromGLFW);
 
-    if (!glfwInit())
-        return false;
+    if (!glfwInit()) return false;
 
     // Set window hints for OpenGL 3.3 Core context creation.
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -82,22 +82,19 @@ bool Backend::Initialize(const char* name, int width, int height, bool allow_res
     glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
 
     GLFWwindow* window = glfwCreateWindow(width, height, name, nullptr, nullptr);
-    if (!window)
-        return false;
+    if (!window) return false;
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
     // Load the OpenGL functions.
     Rml::String renderer_message;
-    if (!RmlGL3::Initialize(&renderer_message))
-        return false;
+    if (!RmlGL3::Initialize(&renderer_message)) return false;
 
     // Construct the system and render interface, this includes compiling all the shaders.
     // If this fails, it is likely an error in the shader code.
     data = Rml::MakeUnique<BackendData>();
-    if (!data || !data->render_interface)
-        return false;
+    if (!data || !data->render_interface) return false;
 
     data->window = window;
     data->system_interface.SetWindow(window);
@@ -185,44 +182,38 @@ static void SetupCallbacks(GLFWwindow* window) {
     RMLUI_ASSERT(data);
 
     // Key input
-    glfwSetKeyCallback(window, [](GLFWwindow* /*window*/, int glfw_key, int /*scancode*/,
-        int glfw_action, int glfw_mods) {
-        if (!data->context)
-            return;
+    glfwSetKeyCallback(
+        window, [](GLFWwindow* /*window*/, int glfw_key, int /*scancode*/, int glfw_action, int glfw_mods) {
+            if (!data->context) return;
 
-        // Store the active modifiers for later because GLFW doesn't provide them in the callbacks to the
-        // mouse input events.
-        data->glfw_active_modifiers = glfw_mods;
+            // Store the active modifiers for later because GLFW doesn't provide them in the callbacks to the
+            // mouse input events.
+            data->glfw_active_modifiers = glfw_mods;
 
-        // Override the default key event callback to add global shortcuts for the samples.
-        Rml::Context* context = data->context;
-        KeyDownCallback key_down_callback = data->key_down_callback;
+            // Override the default key event callback to add global shortcuts for the samples.
+            Rml::Context* context = data->context;
+            KeyDownCallback key_down_callback = data->key_down_callback;
 
-        switch (glfw_action) {
-        case GLFW_PRESS:
-        case GLFW_REPEAT:
-        {
-            const Rml::Input::KeyIdentifier key = RmlGLFW::ConvertKey(glfw_key);
-            const int key_modifier = RmlGLFW::ConvertKeyModifiers(glfw_mods);
-            float dp_ratio = 1.f;
-            glfwGetWindowContentScale(data->window, &dp_ratio, nullptr);
+            switch (glfw_action) {
+                case GLFW_PRESS:
+                case GLFW_REPEAT: {
+                    const Rml::Input::KeyIdentifier key = RmlGLFW::ConvertKey(glfw_key);
+                    const int key_modifier = RmlGLFW::ConvertKeyModifiers(glfw_mods);
+                    float dp_ratio = 1.f;
+                    glfwGetWindowContentScale(data->window, &dp_ratio, nullptr);
 
-            // See if we have any global shortcuts that take priority over the context.
-            if (key_down_callback && !key_down_callback(context, key, key_modifier, dp_ratio, true))
-                break;
-            // Otherwise, hand the event over to the context by calling the input handler as normal.
-            if (!RmlGLFW::ProcessKeyCallback(context, glfw_key, glfw_action, glfw_mods))
-                break;
-            // The key was not consumed by the context either, try keyboard shortcuts of lower priority.
-            if (key_down_callback && !key_down_callback(context, key, key_modifier, dp_ratio, false))
-                break;
-        }
-        break;
-        case GLFW_RELEASE:
-            RmlGLFW::ProcessKeyCallback(context, glfw_key, glfw_action, glfw_mods);
-            break;
-        }
-    });
+                    // See if we have any global shortcuts that take priority over the context.
+                    if (key_down_callback && !key_down_callback(context, key, key_modifier, dp_ratio, true)) break;
+                    // Otherwise, hand the event over to the context by calling the input handler as normal.
+                    if (!RmlGLFW::ProcessKeyCallback(context, glfw_key, glfw_action, glfw_mods)) break;
+                    // The key was not consumed by the context either, try keyboard shortcuts of lower priority.
+                    if (key_down_callback && !key_down_callback(context, key, key_modifier, dp_ratio, false)) break;
+                } break;
+                case GLFW_RELEASE:
+                    RmlGLFW::ProcessKeyCallback(context, glfw_key, glfw_action, glfw_mods);
+                    break;
+            }
+        });
 
     glfwSetCharCallback(window, [](GLFWwindow* /*window*/, unsigned int codepoint) {
         RmlGLFW::ProcessCharCallback(data->context, codepoint);
@@ -252,8 +243,7 @@ static void SetupCallbacks(GLFWwindow* window) {
         RmlGLFW::ProcessFramebufferSizeCallback(data->context, width, height);
     });
 
-    glfwSetWindowContentScaleCallback(window,
-        [](GLFWwindow* /*window*/, float xscale, float /*yscale*/) {
-            RmlGLFW::ProcessContentScaleCallback(data->context, xscale);
+    glfwSetWindowContentScaleCallback(window, [](GLFWwindow* /*window*/, float xscale, float /*yscale*/) {
+        RmlGLFW::ProcessContentScaleCallback(data->context, xscale);
     });
 }

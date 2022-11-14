@@ -14,14 +14,15 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include <gtest/gtest.h>
 #include <gmock/gmock.h>
-
+#include <gtest/gtest.h>
 #include <hjson.h>
+
 #include <fstream>
+
 #include "common/components/coordinates.h"
-#include "common/universe.h"
 #include "common/systems/movement/sysmovement.h"
+#include "common/universe.h"
 
 using ::testing::AllOf;
 using ::testing::Ge;
@@ -45,14 +46,13 @@ TEST(OrbitTest, DISABLED_toVec3Test) {
     int resolution = 5000;
     std::ofstream file("data.txt");
     for (int i = 0; i < resolution + 1; i++) {
-        glm::vec3 vec = cqspt::OrbitToVec3(a, e, i, LAN, w, T/resolution * i);
+        glm::vec3 vec = cqspt::OrbitToVec3(a, e, i, LAN, w, T / resolution * i);
         std::cout.precision(17);
-        file << vec.x << " " << vec.y << " " << vec.z
-             << std::endl;
+        file << vec.x << " " << vec.y << " " << vec.z << std::endl;
         //EXPECT_THAT(glm::length(vec), AllOf(Ge(0.98326934275),Le(1.0167257013)));
     }
     file.close();
-    EXPECT_NEAR(orb.T/86400, 365.256363004, 0.01);
+    EXPECT_NEAR(orb.T / 86400, 365.256363004, 0.01);
 }
 
 TEST(OrbitTest, OrbitConversionTest) {
@@ -74,15 +74,13 @@ TEST(OrbitTest, OrbitConversionTest) {
     EXPECT_EQ(orb.M0, 0);
     auto position = cqspt::toVec3(orb);
     auto velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
-    EXPECT_NEAR(glm::length(velocity), cqspt::AvgOrbitalVelocity(orb),
-                cqspt::AvgOrbitalVelocity(orb) * 0.0001);
+    EXPECT_NEAR(glm::length(velocity), cqspt::AvgOrbitalVelocity(orb), cqspt::AvgOrbitalVelocity(orb) * 0.0001);
     EXPECT_NEAR(glm::length(position), orb.semi_major_axis, orb.semi_major_axis * 0.001);
     auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.GM, 0);
     EXPECT_DOUBLE_EQ(new_orbit.v, orb.v);
     EXPECT_DOUBLE_EQ(new_orbit.E, orb.E);
     EXPECT_DOUBLE_EQ(new_orbit.M0, orb.M0);
-    EXPECT_NEAR(new_orbit.semi_major_axis, orb.semi_major_axis,
-                orb.semi_major_axis * 0.01);
+    EXPECT_NEAR(new_orbit.semi_major_axis, orb.semi_major_axis, orb.semi_major_axis * 0.01);
     EXPECT_DOUBLE_EQ(new_orbit.LAN, orb.LAN);
     EXPECT_DOUBLE_EQ(new_orbit.inclination, orb.inclination);
     EXPECT_DOUBLE_EQ(new_orbit.w, orb.w);
@@ -107,15 +105,12 @@ TEST(OrbitTest, NewOrbitConversionTest) {
     EXPECT_EQ(orb.E, 0);
     auto position = cqspt::toVec3(orb);
     auto velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
-    EXPECT_DOUBLE_EQ(
-        glm::length(position),
-        cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v));
+    EXPECT_DOUBLE_EQ(glm::length(position), cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v));
     auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.GM, 0);
     EXPECT_DOUBLE_EQ(new_orbit.v, orb.v);
     EXPECT_DOUBLE_EQ(new_orbit.E, orb.E);
     EXPECT_DOUBLE_EQ(new_orbit.M0, orb.M0);
-    EXPECT_NEAR(new_orbit.semi_major_axis, orb.semi_major_axis,
-                orb.semi_major_axis * 0.01);
+    EXPECT_NEAR(new_orbit.semi_major_axis, orb.semi_major_axis, orb.semi_major_axis * 0.01);
     EXPECT_DOUBLE_EQ(new_orbit.LAN, orb.LAN);
     EXPECT_DOUBLE_EQ(new_orbit.inclination, orb.inclination);
     EXPECT_DOUBLE_EQ(new_orbit.w, orb.w);
@@ -141,16 +136,14 @@ TEST(OrbitTest, NewOrbitConversionTest2) {
     //EXPECT_EQ(orb.E, 0);
     auto position = cqspt::toVec3(orb);
     auto velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
-    EXPECT_NEAR(
-        glm::length(position),
-        cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v),
-        orb.semi_major_axis * 0.01);
+    EXPECT_NEAR(glm::length(position), cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v),
+                orb.semi_major_axis * 0.01);
     auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.GM, 0);
     EXPECT_NEAR(new_orbit.v, orb.v, 0.001);
     EXPECT_NEAR(new_orbit.E, orb.E, 0.001);
     EXPECT_NEAR(new_orbit.M0, orb.M0, 0.001);
     EXPECT_NEAR(new_orbit.semi_major_axis, orb.semi_major_axis,
-                orb.semi_major_axis * 0.01); // 1 % cause doubles are bad
+                orb.semi_major_axis * 0.01);  // 1 % cause doubles are bad
     EXPECT_NEAR(new_orbit.LAN, orb.LAN, 0.001);
     EXPECT_NEAR(new_orbit.inclination, orb.inclination, 0.001);
     EXPECT_NEAR(new_orbit.w, orb.w, 0.001);
@@ -185,10 +178,8 @@ TEST(OrbitTest, NewOrbitConversionTest3) {
     auto position = cqspt::toVec3(orb);
     auto velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
     EXPECT_EQ(acos(1), 0);
-    EXPECT_NEAR(
-        glm::length(position),
-        cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v),
-        orb.semi_major_axis * 0.01);
+    EXPECT_NEAR(glm::length(position), cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v),
+                orb.semi_major_axis * 0.01);
     auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.GM, 0);
     EXPECT_NEAR(new_orbit.v, orb.v, 0.001);
     EXPECT_NEAR(new_orbit.E, orb.E, 0.001);
@@ -218,7 +209,7 @@ TEST(OrbitTest, NewOrbitConversionTest4) {
     orb.inclination = 0.1;
     orb.LAN = 0.2;
     orb.w = 0.7;
-    double M0 = cqspt::PI/4;
+    double M0 = cqspt::PI / 4;
     orb.M0 = M0;
 
     orb.CalculateVariables();
@@ -231,10 +222,8 @@ TEST(OrbitTest, NewOrbitConversionTest4) {
     auto velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
 
     EXPECT_EQ(acos(1), 0);
-    EXPECT_NEAR(
-        glm::length(position),
-        cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v),
-        orb.semi_major_axis * 0.01);
+    EXPECT_NEAR(glm::length(position), cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v),
+                orb.semi_major_axis * 0.01);
     auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.GM, 0);
     EXPECT_NEAR(new_orbit.v, orb.v, 0.001);
     EXPECT_NEAR(new_orbit.E, orb.E, 0.001);
@@ -281,10 +270,8 @@ TEST(OrbitTest, NewOrbitConversionTest5) {
     auto velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
 
     EXPECT_EQ(acos(1), 0);
-    EXPECT_NEAR(
-        glm::length(position),
-        cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v),
-        orb.semi_major_axis * 0.01);
+    EXPECT_NEAR(glm::length(position), cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v),
+                orb.semi_major_axis * 0.01);
     auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.GM, 0);
     EXPECT_NEAR(new_orbit.v, orb.v, 0.001);
     EXPECT_NEAR(new_orbit.E, orb.E, 0.001);
@@ -315,48 +302,40 @@ TEST(OrbitTest, NewOrbitConversionTest5) {
 
 TEST(OrbitTest, ToRadianTest) {
     namespace cqspt = cqsp::common::components::types;
-    EXPECT_DOUBLE_EQ(cqspt::PI/2, cqspt::toRadian(90));
+    EXPECT_DOUBLE_EQ(cqspt::PI / 2, cqspt::toRadian(90));
     EXPECT_DOUBLE_EQ(cqspt::PI, cqspt::toRadian(180));
     EXPECT_DOUBLE_EQ(cqspt::PI * 2.f, cqspt::toRadian(360));
-    EXPECT_DOUBLE_EQ(cqspt::PI/6, cqspt::toRadian(30));
-    EXPECT_DOUBLE_EQ(cqspt::PI/3, cqspt::toRadian(60));
-    EXPECT_DOUBLE_EQ(cqspt::PI/4, cqspt::toRadian(45));
+    EXPECT_DOUBLE_EQ(cqspt::PI / 6, cqspt::toRadian(30));
+    EXPECT_DOUBLE_EQ(cqspt::PI / 3, cqspt::toRadian(60));
+    EXPECT_DOUBLE_EQ(cqspt::PI / 4, cqspt::toRadian(45));
 }
 
 TEST(OrbitTest, ToDegreeTest) {
     namespace cqspt = cqsp::common::components::types;
-    EXPECT_DOUBLE_EQ(30, cqspt::toDegree(cqspt::PI/6));
-    EXPECT_DOUBLE_EQ(45, cqspt::toDegree(cqspt::PI/4));
-    EXPECT_DOUBLE_EQ(60, cqspt::toDegree(cqspt::PI/3));
-    EXPECT_DOUBLE_EQ(90, cqspt::toDegree(cqspt::PI/2));
+    EXPECT_DOUBLE_EQ(30, cqspt::toDegree(cqspt::PI / 6));
+    EXPECT_DOUBLE_EQ(45, cqspt::toDegree(cqspt::PI / 4));
+    EXPECT_DOUBLE_EQ(60, cqspt::toDegree(cqspt::PI / 3));
+    EXPECT_DOUBLE_EQ(90, cqspt::toDegree(cqspt::PI / 2));
     EXPECT_DOUBLE_EQ(180, cqspt::toDegree(cqspt::PI));
-    EXPECT_DOUBLE_EQ(360, cqspt::toDegree(cqspt::PI*2));
+    EXPECT_DOUBLE_EQ(360, cqspt::toDegree(cqspt::PI * 2));
 }
 
 TEST(OrbitTest, SolveKeplerHyperbolic) {
     // https://www.fxsolver.com/browse/formulas/Hyperbolic+Kepler+equation
     std::vector<std::tuple<double, double, double>> data = {
-        {10, 1.5, 2.84394720242},
-        {2, 1.5, 1.61268580976},
-        {6, 2.5, 1.86344302689}};
+        {10, 1.5, 2.84394720242}, {2, 1.5, 1.61268580976}, {6, 2.5, 1.86344302689}};
     for (auto &line : data) {
-        EXPECT_NEAR(cqsp::common::components::types::SolveKeplerHyperbolic(
-                        std::get<0>(line), std::get<1>(line)),
-                        std::get<2>(line), 1e-6);
+        EXPECT_NEAR(cqsp::common::components::types::SolveKeplerHyperbolic(std::get<0>(line), std::get<1>(line)),
+                    std::get<2>(line), 1e-6);
     }
 }
-
 
 TEST(OrbitTest, SolveKeplerElliptic) {
     // https://www.fxsolver.com/browse/formulas/Kepler%27s+equation
     std::vector<std::tuple<double, double, double>> data = {
-        {2, 0.3, 2.23603149517},
-        {1.5, 0.8, 2.16353230394},
-        {0.5, 0.01, 0.504836644695}
-    };
+        {2, 0.3, 2.23603149517}, {1.5, 0.8, 2.16353230394}, {0.5, 0.01, 0.504836644695}};
     for (auto &line : data) {
-        EXPECT_NEAR(cqsp::common::components::types::SolveKeplerElliptic(
-                        std::get<0>(line), std::get<1>(line)),
+        EXPECT_NEAR(cqsp::common::components::types::SolveKeplerElliptic(std::get<0>(line), std::get<1>(line)),
                     std::get<2>(line), 1e-6);
     }
 }

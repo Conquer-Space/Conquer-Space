@@ -17,6 +17,7 @@
 #include "common/systems/science/systechnology.h"
 
 #include <vector>
+
 #include <tracy/Tracy.hpp>
 
 #include "common/components/science.h"

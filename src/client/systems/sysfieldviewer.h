@@ -28,8 +28,7 @@ namespace client {
 namespace systems {
 class SysFieldViewer : public SysUserInterface {
  public:
-    explicit SysFieldViewer(cqsp::engine::Application& app)
-        : SysUserInterface(app) {}
+    explicit SysFieldViewer(cqsp::engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
     void DoUI(int delta_time);
@@ -42,8 +41,7 @@ class SysFieldViewer : public SysUserInterface {
 
 class SysFieldNodeViewer : public SysUserInterface {
  public:
-    explicit SysFieldNodeViewer(cqsp::engine::Application& app)
-        : SysUserInterface(app) {}
+    explicit SysFieldNodeViewer(cqsp::engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
     void DoUI(int delta_time);

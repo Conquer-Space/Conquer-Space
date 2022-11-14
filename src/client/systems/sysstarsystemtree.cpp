@@ -18,13 +18,12 @@
 
 #include <string>
 
-#include "client/systems/views/starsystemview.h"
-#include "client/systems/gui/systooltips.h"
 #include "client/scenes/universescene.h"
+#include "client/systems/gui/systooltips.h"
+#include "client/systems/views/starsystemview.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
 #include "common/components/name.h"
-
 #include "engine/cqspgui.h"
 
 namespace cqsp::client::systems {
@@ -34,8 +33,7 @@ void SysStarSystemTree::Init() {
     namespace cqspt = cqsp::common::components::types;
     auto& orbital_system = GetUniverse().get<cqspb::OrbitalSystem>(GetUniverse().sun);
     planets.emplace(GetUniverse().sun);
-    planets.insert(orbital_system.children.begin(),
-                   orbital_system.children.end());
+    planets.insert(orbital_system.children.begin(), orbital_system.children.end());
     planets.sort([&](const entt::entity lhs, const entt::entity rhs) {
         return (GetUniverse().get<cqspt::Orbit>(lhs).semi_major_axis <
                 GetUniverse().get<cqspt::Orbit>(rhs).semi_major_axis);
@@ -49,8 +47,7 @@ void SysStarSystemTree::DoUI(int delta_time) {
 
     // Get star system
     selected_planet = cqsp::scene::GetCurrentViewingPlanet(GetUniverse());
-    ImGui::SetNextWindowPos(ImVec2(30, ImGui::GetIO().DisplaySize.y - 30),
-                            ImGuiCond_Always, ImVec2(0.f, 1.f));
+    ImGui::SetNextWindowPos(ImVec2(30, ImGui::GetIO().DisplaySize.y - 30), ImGuiCond_Always, ImVec2(0.f, 1.f));
     ImGui::SetNextWindowSize(ImVec2(200, 400), ImGuiCond_Always);
     ImGui::Begin("Star System", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | window_flags);
     int index = 0;
@@ -73,8 +70,7 @@ void SysStarSystemTree::DoUI(int delta_time) {
                 DoChildTree(entity);
                 ImGui::TreePop();
             } else {
-                if (ImGui::IsItemHovered() &&
-                    ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
                     cqsp::scene::SeePlanet(GetApp(), entity);
                 }
                 gui::EntityTooltip(GetUniverse(), entity);
@@ -91,15 +87,14 @@ void SysStarSystemTree::SeePlanetSelectable(entt::entity entity) {
     bool is_selected = (entity == selected_planet);
     ImGui::Dummy(ImVec2(20, 16));
     ImGui::SameLine();
-    if (CQSPGui::DefaultSelectable(planet_name.c_str(), is_selected,
-                                    ImGuiSelectableFlags_AllowDoubleClick)) {
+    if (CQSPGui::DefaultSelectable(planet_name.c_str(), is_selected, ImGuiSelectableFlags_AllowDoubleClick)) {
         // Selected object
         if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
             // Go to the planet
             cqsp::scene::SeePlanet(GetApp(), entity);
         }
     }
-     gui::EntityTooltip(GetUniverse(), entity);
+    gui::EntityTooltip(GetUniverse(), entity);
 }
 
 void SysStarSystemTree::DoChildTree(entt::entity entity) {

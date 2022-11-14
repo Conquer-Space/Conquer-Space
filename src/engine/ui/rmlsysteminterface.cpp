@@ -18,19 +18,15 @@
 
 #include "common/util/logging.h"
 
-cqsp::engine::CQSPSystemInterface::CQSPSystemInterface(Application& app)
-    : m_app(app) {
+cqsp::engine::CQSPSystemInterface::CQSPSystemInterface(Application& app) : m_app(app) {
     logger = cqsp::common::util::make_registered_logger("RmlUi", true);
 }
 
 cqsp::engine::CQSPSystemInterface::~CQSPSystemInterface() {}
 
-double cqsp::engine::CQSPSystemInterface::GetElapsedTime() {
-    return m_app.GetTime();
-}
+double cqsp::engine::CQSPSystemInterface::GetElapsedTime() { return m_app.GetTime(); }
 
-bool cqsp::engine::CQSPSystemInterface::LogMessage(Rml::Log::Type type,
-                                                   const Rml::String& message) {
+bool cqsp::engine::CQSPSystemInterface::LogMessage(Rml::Log::Type type, const Rml::String& message) {
     spdlog::level::level_enum level;
     switch (type) {
         case Rml::Log::Type::LT_MAX:

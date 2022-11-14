@@ -17,14 +17,15 @@
 #pragma once
 
 #include <map>
-#include <string>
 #include <memory>
+#include <string>
 #include <vector>
+
 #include <entt/entt.hpp>
 
 #include "common/stardate.h"
-#include "common/util/random/random.h"
 #include "common/systems/names/namegenerator.h"
+#include "common/util/random/random.h"
 
 namespace cqsp {
 namespace common {

@@ -19,8 +19,8 @@
 #include <hjson.h>
 
 #include <istream>
-#include <string>
 #include <memory>
+#include <string>
 
 #include <glm/glm.hpp>
 
@@ -56,7 +56,7 @@ class Shader : public Asset {
 
  private:
     const Shader& operator=(const Shader&) {}
-  explicit Shader(const Shader&) = default;
+    explicit Shader(const Shader&) = default;
 };
 
 /// <summary>A shader program.</summary>

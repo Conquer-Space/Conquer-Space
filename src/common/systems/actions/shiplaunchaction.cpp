@@ -21,22 +21,21 @@
 
 #include <string>
 
-#include "common/components/coordinates.h"
-#include "common/components/ships.h"
 #include "common/components/bodies.h"
+#include "common/components/coordinates.h"
 #include "common/components/name.h"
 #include "common/components/organizations.h"
+#include "common/components/ships.h"
 
-entt::entity cqsp::common::systems::actions::CreateShip(
-    cqsp::common::Universe& universe, entt::entity civEnt, const glm::vec3& orbit,
-    entt::entity starsystem) {
+entt::entity cqsp::common::systems::actions::CreateShip(cqsp::common::Universe& universe, entt::entity civEnt,
+                                                        const glm::vec3& orbit, entt::entity starsystem) {
     namespace cqspt = cqsp::common::components::types;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspb = cqsp::common::components::bodies;
     entt::entity ship = universe.create();
     universe.emplace<cqsps::Ship>(ship);
 
-    auto &position = universe.emplace<cqspt::Kinematics>(ship);
+    auto& position = universe.emplace<cqspt::Kinematics>(ship);
 
     // Get planet position
     position.position = orbit;
@@ -46,18 +45,15 @@ entt::entity cqsp::common::systems::actions::CreateShip(
     return ship;
 }
 
-entt::entity cqsp::common::systems::actions::CreateShip(
-    cqsp::common::Universe& universe, entt::entity civ, entt::entity orbit,
-    entt::entity starsystem) {
+entt::entity cqsp::common::systems::actions::CreateShip(cqsp::common::Universe& universe, entt::entity civ,
+                                                        entt::entity orbit, entt::entity starsystem) {
     namespace cqspt = cqsp::common::components::types;
     return CreateShip(universe, civ, cqspt::toVec3AU(universe.get<cqspt::Orbit>(orbit)), starsystem);
 }
 
-entt::entity cqsp::common::systems::actions::CreateShip(
-    cqsp::common::Universe& universe, entt::entity fleetEnt,
-    entt::entity starsystemEnt, const glm::vec3& orbit,
-    const std::string& shipName) {
-
+entt::entity cqsp::common::systems::actions::CreateShip(cqsp::common::Universe& universe, entt::entity fleetEnt,
+                                                        entt::entity starsystemEnt, const glm::vec3& orbit,
+                                                        const std::string& shipName) {
     namespace cqspt = cqsp::common::components::types;
     namespace cqsps = cqsp::common::components::ships;
     namespace cqspb = cqsp::common::components::bodies;
@@ -76,13 +72,12 @@ entt::entity cqsp::common::systems::actions::CreateShip(
     return ship;
 }
 
-entt::entity cqsp::common::systems::actions::CreateShip(
-    cqsp::common::Universe& universe, entt::entity fleetEnt,
-    entt::entity starsystemEnt, entt::entity orbitEnt,
-    const std::string& shipName) {
+entt::entity cqsp::common::systems::actions::CreateShip(cqsp::common::Universe& universe, entt::entity fleetEnt,
+                                                        entt::entity starsystemEnt, entt::entity orbitEnt,
+                                                        const std::string& shipName) {
     namespace cqspt = cqsp::common::components::types;
-    return CreateShip(universe, fleetEnt, starsystemEnt,
-               cqspt::toVec3AU(universe.get<cqspt::Orbit>(orbitEnt)), shipName);
+    return CreateShip(universe, fleetEnt, starsystemEnt, cqspt::toVec3AU(universe.get<cqspt::Orbit>(orbitEnt)),
+                      shipName);
 }
 
 entt::entity cqsp::common::systems::actions::LaunchShip(Universe& universe, components::types::Orbit& orbit) {

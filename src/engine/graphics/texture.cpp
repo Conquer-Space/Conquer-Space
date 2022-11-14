@@ -20,13 +20,10 @@
 #include <stb_image.h>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <glad/glad.h>
 #include <stb_image_write.h>
 
-#include <glad/glad.h>
-
-unsigned int cqsp::asset::CreateTexture(unsigned char* data, int width,
-                                        int height,
-                                        int components,
+unsigned int cqsp::asset::CreateTexture(unsigned char* data, int width, int height, int components,
                                         const TextureLoadingOptions& options) {
     unsigned int texid;
     glGenTextures(1, &texid);
@@ -39,14 +36,12 @@ unsigned int cqsp::asset::CreateTexture(unsigned char* data, int width,
         format = GL_RGBA;
 
     glBindTexture(GL_TEXTURE_2D, texid);
-    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,
-                    format, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                    GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
     if (options.mag_filter) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -65,12 +60,8 @@ void cqsp::asset::CreateTexture(Texture& texture, unsigned char* data, int width
     texture.texture_type = GL_TEXTURE_2D;
 }
 
-void cqsp::asset::LoadCubemapData(Texture &texture,
-                                std::vector<unsigned char*>& faces,
-                                int width,
-                                int height,
-                                int components,
-                                TextureLoadingOptions& options) {
+void cqsp::asset::LoadCubemapData(Texture& texture, std::vector<unsigned char*>& faces, int width, int height,
+                                  int components, TextureLoadingOptions& options) {
     glGenTextures(1, &texture.id);
     glBindTexture(GL_TEXTURE_CUBE_MAP, texture.id);
 
@@ -84,8 +75,8 @@ void cqsp::asset::LoadCubemapData(Texture &texture,
 
     for (unsigned int i = 0; i < faces.size(); i++) {
         if (faces[i]) {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                         0, format, width, height, 0, format, GL_UNSIGNED_BYTE, faces[i]);
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE,
+                         faces[i]);
             stbi_image_free(faces[i]);
         } else {
             stbi_image_free(faces[i]);
@@ -102,8 +93,8 @@ void cqsp::asset::LoadCubemapData(Texture &texture,
     texture.texture_type = GL_TEXTURE_CUBE_MAP;
 }
 
-bool cqsp::asset::SaveImage(const char* path, int width, int height,
-                            int components, const unsigned char* data, bool flip) {
+bool cqsp::asset::SaveImage(const char* path, int width, int height, int components, const unsigned char* data,
+                            bool flip) {
     if (flip) {
         // Flip because everybody can't agree on having one origin for the window.
         stbi_flip_vertically_on_write(1);
@@ -111,8 +102,7 @@ bool cqsp::asset::SaveImage(const char* path, int width, int height,
     return stbi_write_png(path, width, height, components, data, width * components);
 }
 
-cqsp::asset::Texture::Texture() : width(-1), height(-1), id(0), texture_type(-1) {
-}
+cqsp::asset::Texture::Texture() : width(-1), height(-1), id(0), texture_type(-1) {}
 
 cqsp::asset::Texture::~Texture() {
     // Delete textures

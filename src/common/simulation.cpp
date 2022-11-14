@@ -18,38 +18,37 @@
 
 #include <spdlog/spdlog.h>
 
-#include <vector>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "common/components/area.h"
-#include "common/components/name.h"
-#include "common/components/resource.h"
-#include "common/util/profiler.h"
-#include "common/systems/movement/sysmovement.h"
-#include "common/systems/economy/syspopulation.h"
-#include "common/systems/economy/sysinfrastructure.h"
-#include "common/systems/scriptrunner.h"
-#include "common/systems/economy/sysmarket.h"
-#include "common/systems/economy/sysfinance.h"
-#include "common/systems/economy/sysagent.h"
-#include "common/systems/economy/sysfactory.h"
-#include "common/systems/history/sysmarkethistory.h"
-#include "common/systems/science/syssciencelab.h"
-#include "common/systems/science/systechnology.h"
-
+#include "common/components/coordinates.h"
 #include "common/components/event.h"
+#include "common/components/name.h"
 #include "common/components/organizations.h"
 #include "common/components/player.h"
+#include "common/components/resource.h"
 #include "common/components/ships.h"
-#include "common/components/coordinates.h"
 #include "common/components/units.h"
+#include "common/systems/economy/sysagent.h"
+#include "common/systems/economy/sysfactory.h"
+#include "common/systems/economy/sysfinance.h"
+#include "common/systems/economy/sysinfrastructure.h"
+#include "common/systems/economy/sysmarket.h"
+#include "common/systems/economy/syspopulation.h"
+#include "common/systems/history/sysmarkethistory.h"
+#include "common/systems/movement/sysmovement.h"
 #include "common/systems/navy/sysnavy.h"
+#include "common/systems/science/syssciencelab.h"
+#include "common/systems/science/systechnology.h"
+#include "common/systems/scriptrunner.h"
+#include "common/util/profiler.h"
 
-using cqsp::common::systems::simulation::Simulation;
 using cqsp::common::Universe;
+using cqsp::common::systems::simulation::Simulation;
 
-Simulation::Simulation(cqsp::common::Game &game) : m_game(game), m_universe(game.GetUniverse()) {
+Simulation::Simulation(cqsp::common::Game& game) : m_game(game), m_universe(game.GetUniverse()) {
     namespace cqspcs = cqsp::common::systems;
     AddSystem<cqspcs::SysScript>();
     AddSystem<cqspcs::SysWalletReset>();

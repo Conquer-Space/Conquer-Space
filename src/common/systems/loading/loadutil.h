@@ -17,20 +17,21 @@
 #pragma once
 
 #include <hjson.h>
-#include <string>
-#include <map>
 
-#include "common/universe.h"
+#include <map>
+#include <string>
+
 #include "common/components/resource.h"
 #include "common/components/units.h"
+#include "common/universe.h"
 
 namespace cqsp::common::systems::loading {
 /// <summary>
 /// Returns true if name exists
 /// </summary>
 /// <returns></returns>
-bool LoadName(Universe& universe, const entt::entity &entity, const Hjson::Value& value);
-bool LoadIdentifier(Universe& universe, const entt::entity &entity, const Hjson::Value& value);
+bool LoadName(Universe& universe, const entt::entity& entity, const Hjson::Value& value);
+bool LoadIdentifier(Universe& universe, const entt::entity& entity, const Hjson::Value& value);
 bool LoadDescription(Universe& universe, const entt::entity& entity, const Hjson::Value& value);
 
 /// <summary>

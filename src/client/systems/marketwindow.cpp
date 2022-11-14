@@ -20,33 +20,29 @@
 
 #include <limits>
 
-#include "common/components/bodies.h"
-#include "common/components/name.h"
-#include "common/components/economy.h"
-
-#include "client/systems/views/starsystemview.h"
 #include "client/scenes/universescene.h"
 #include "client/systems/gui/systooltips.h"
+#include "client/systems/views/starsystemview.h"
+#include "common/components/bodies.h"
+#include "common/components/economy.h"
+#include "common/components/name.h"
 #include "common/util/utilnumberdisplay.h"
 
 namespace cqsp::client::systems {
 namespace cqspb = cqsp::common::components::bodies;
 namespace cqspc = cqsp::common::components;
 
-void MarketInformationTable(common::Universe& universe,
-                            const entt::entity& market_entity) {
+void MarketInformationTable(common::Universe& universe, const entt::entity& market_entity) {
     if (!universe.any_of<cqspc::Market>(market_entity)) {
         ImGui::TextFmt("Market is not a market");
         return;
     }
     // auto& center = GetUniverse().get<cqspc::MarketCenter>(marketentity);
     cqspc::Market& market = universe.get<cqspc::Market>(market_entity);
-    ImGui::TextFmt("Has {} entities attached to it",
-                   market.participants.size());
+    ImGui::TextFmt("Has {} entities attached to it", market.participants.size());
 
     // Get resource stockpile
-    if (!ImGui::BeginTable("marketinfotable", 8,
-                           ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+    if (!ImGui::BeginTable("marketinfotable", 8, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         return;
     }
     ImGui::TableSetupColumn("Good");
@@ -64,22 +60,17 @@ void MarketInformationTable(common::Universe& universe,
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         if (universe.any_of<cqspc::Capital>(good_entity)) {
-            ImGui::TextFmtColored(
-                ImColor(1.f, 1.f, 0.f), "{}",
-                client::systems::gui::GetName(universe, good_entity));
+            ImGui::TextFmtColored(ImColor(1.f, 1.f, 0.f), "{}", client::systems::gui::GetName(universe, good_entity));
         } else {
-            ImGui::TextFmt(
-                "{}", client::systems::gui::GetName(universe, good_entity));
+            ImGui::TextFmt("{}", client::systems::gui::GetName(universe, good_entity));
         }
         ImGui::TableSetColumnIndex(1);
         // Mark the cell as red if the thing is not valid
         ImGui::TextFmt("{}", market.price[good_entity]);
         ImGui::TableSetColumnIndex(2);
-        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(
-                                    market.previous_supply[good_entity]));
+        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.previous_supply[good_entity]));
         ImGui::TableSetColumnIndex(3);
-        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(
-                                    market.previous_demand[good_entity]));
+        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.previous_demand[good_entity]));
         ImGui::TableSetColumnIndex(4);
         double sd_ratio = market.history.back().sd_ratio[good_entity];
         if (sd_ratio == std::numeric_limits<double>::infinity())
@@ -116,23 +107,17 @@ void SysPlanetMarketInformation::DoUpdate(int delta_time) {
 
     selected_planet = cqsp::scene::GetCurrentViewingPlanet(GetUniverse());
     entt::entity mouse_over = GetUniverse().view<MouseOverEntity>().front();
-    if (!ImGui::GetIO().WantCaptureMouse &&
-        GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) &&
-        mouse_over == selected_planet && !cqsp::scene::IsGameHalted() &&
-        !GetApp().MouseDragged()) {
+    if (!ImGui::GetIO().WantCaptureMouse && GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) &&
+        mouse_over == selected_planet && !cqsp::scene::IsGameHalted() && !GetApp().MouseDragged()) {
         to_see = true;
 
         if (GetUniverse().valid(selected_planet)) {
-            SPDLOG_INFO("Switched entity: {}",
-                        GetUniverse()
-                            .get<cqspc::Identifier>(selected_planet)
-                            .identifier);
+            SPDLOG_INFO("Switched entity: {}", GetUniverse().get<cqspc::Identifier>(selected_planet).identifier);
         } else {
             SPDLOG_INFO("Switched entity is not valid");
         }
     }
-    if (!GetUniverse().valid(selected_planet) ||
-        !GetUniverse().all_of<cqspb::Body>(selected_planet)) {
+    if (!GetUniverse().valid(selected_planet) || !GetUniverse().all_of<cqspb::Body>(selected_planet)) {
         to_see = false;
     }
 }

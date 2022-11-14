@@ -124,11 +124,11 @@ cqsp::engine::Mesh* cqsp::engine::primitive::ConstructSphereMesh(int x_segments,
         for (unsigned int x = 0; x <= x_segments; ++x) {
             const float xSegment = static_cast<float>(x) / x_segments;
             const float ySegment = static_cast<float>(y) / y_segments;
-            const float xTheta = xSegment * PI  * 2;
-            const float yTheta = ySegment * PI  * 2;
-            float xPos = std::cos(xTheta) * std::sin(yTheta/2);
-            float yPos = std::cos(yTheta/2);
-            float zPos = std::sin(xTheta) * std::sin(yTheta/2);
+            const float xTheta = xSegment * PI * 2;
+            const float yTheta = ySegment * PI * 2;
+            float xPos = std::cos(xTheta) * std::sin(yTheta / 2);
+            float yPos = std::cos(yTheta / 2);
+            float zPos = std::sin(xTheta) * std::sin(yTheta / 2);
             positions.push_back({xPos, yPos, zPos});
             // Invert x segments so that the texture shows up properly.
             uv.push_back({x_segments - xSegment, ySegment});
@@ -184,18 +184,14 @@ cqsp::engine::Mesh* cqsp::engine::primitive::ConstructSphereMesh(int x_segments,
     }
     stride *= sizeof(float);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT,
-                            GL_FALSE, stride, reinterpret_cast<void*>(0));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT,
-                            GL_FALSE, stride, reinterpret_cast<void*>(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 3, GL_FLOAT,
-                            GL_FALSE, stride, reinterpret_cast<void*>(5 * sizeof(float)));
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(5 * sizeof(float)));
     if (tangents.size() > 0) {
         glEnableVertexAttribArray(3);
-    glVertexAttribPointer(3, 4, GL_FLOAT,
-                            GL_FALSE, stride, reinterpret_cast<void*>(8 * sizeof(float)));
+        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(8 * sizeof(float)));
     }
 
     mesh->VAO = vao;

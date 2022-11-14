@@ -14,8 +14,8 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include <spdlog/spdlog.h>
 #include <gtest/gtest.h>
+#include <spdlog/spdlog.h>
 
 #include <cstdio>
 

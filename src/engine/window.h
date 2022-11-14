@@ -36,7 +36,7 @@ class Window {
     virtual int GetScrollAmount() const = 0;
 
     virtual void SetWindowSize(int width, int height) = 0;
-    virtual int GetWindowHeight() const  = 0;
+    virtual int GetWindowHeight() const = 0;
     virtual int GetWindowWidth() const = 0;
 
     virtual void SetCallbacks() = 0;

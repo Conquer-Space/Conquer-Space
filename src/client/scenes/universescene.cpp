@@ -16,49 +16,44 @@
 */
 #include "client/scenes/universescene.h"
 
-#include <glad/glad.h>
-
 #include <fmt/format.h>
+#include <glad/glad.h>
 
 #include <cmath>
 #include <string>
 
-#include <tracy/Tracy.hpp>
-
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/polar_coordinates.hpp>
-
-#include "engine/graphics/primitives/uvsphere.h"
-#include "engine/renderer/renderer.h"
-#include "engine/graphics/primitives/cube.h"
-#include "engine/graphics/primitives/polygon.h"
-#include "engine/gui.h"
-
-#include "common/components/bodies.h"
-#include "common/components/organizations.h"
-#include "common/components/player.h"
-#include "common/components/coordinates.h"
-#include "common/components/population.h"
-#include "common/components/area.h"
-#include "common/components/surface.h"
-#include "common/components/name.h"
-#include "common/components/resource.h"
-
-#include "client/systems/sysplanetviewer.h"
-#include "client/systems/systurnsavewindow.h"
-#include "client/systems/sysstarsystemtree.h"
-#include "client/systems/syspausemenu.h"
-#include "client/systems/sysdebuggui.h"
-#include "client/systems/syscommand.h"
-#include "client/systems/gui/sysevent.h"
-#include "client/systems/civilizationinfopanel.h"
-#include "client/systems/sysfieldviewer.h"
-#include "client/systems/systechviewer.h"
-#include "client/systems/rmlui/turnsavewindow.h"
-#include "client/systems/marketwindow.h"
+#include <tracy/Tracy.hpp>
 
 #include "client/components/clientctx.h"
+#include "client/systems/civilizationinfopanel.h"
+#include "client/systems/gui/sysevent.h"
+#include "client/systems/marketwindow.h"
 #include "client/systems/provincewindow.h"
+#include "client/systems/rmlui/turnsavewindow.h"
+#include "client/systems/syscommand.h"
+#include "client/systems/sysdebuggui.h"
+#include "client/systems/sysfieldviewer.h"
+#include "client/systems/syspausemenu.h"
+#include "client/systems/sysplanetviewer.h"
+#include "client/systems/sysstarsystemtree.h"
+#include "client/systems/systechviewer.h"
+#include "client/systems/systurnsavewindow.h"
+#include "common/components/area.h"
+#include "common/components/bodies.h"
+#include "common/components/coordinates.h"
+#include "common/components/name.h"
+#include "common/components/organizations.h"
+#include "common/components/player.h"
+#include "common/components/population.h"
+#include "common/components/resource.h"
+#include "common/components/surface.h"
+#include "engine/graphics/primitives/cube.h"
+#include "engine/graphics/primitives/polygon.h"
+#include "engine/graphics/primitives/uvsphere.h"
+#include "engine/gui.h"
+#include "engine/renderer/renderer.h"
 
 // If the game is paused or not, like when escape is pressed
 bool game_halted = false;
@@ -113,8 +108,8 @@ void cqsp::scene::UniverseScene::Update(float deltaTime) {
         }
     }
 
-    if (pause_opt.to_tick && GetApp().GetTime() - last_tick >
-            static_cast<float>(tick_speeds[pause_opt.tick_speed]) / 1000.f) {
+    if (pause_opt.to_tick &&
+        GetApp().GetTime() - last_tick > static_cast<float>(tick_speeds[pause_opt.tick_speed]) / 1000.f) {
         GetUniverse().EnableTick();
         last_tick = GetApp().GetTime();
     }
@@ -171,10 +166,8 @@ void cqsp::scene::UniverseScene::Render(float deltaTime) {
 
 void cqsp::scene::UniverseScene::DoScreenshot() {
     // Take screenshot
-    if ((GetApp().ButtonIsReleased(engine::KeyInput::KEY_F1) &&
-            GetApp().ButtonIsHeld(engine::KeyInput::KEY_F10)) ||
-        (GetApp().ButtonIsHeld(engine::KeyInput::KEY_F1) &&
-            GetApp().ButtonIsReleased(engine::KeyInput::KEY_F10))) {
+    if ((GetApp().ButtonIsReleased(engine::KeyInput::KEY_F1) && GetApp().ButtonIsHeld(engine::KeyInput::KEY_F10)) ||
+        (GetApp().ButtonIsHeld(engine::KeyInput::KEY_F1) && GetApp().ButtonIsReleased(engine::KeyInput::KEY_F10))) {
         GetApp().Screenshot();
     }
 }

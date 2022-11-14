@@ -19,18 +19,18 @@
 #include <GLFW/glfw3.h>
 
 #include <sstream>
-#include <vector>
 #include <string>
+#include <vector>
 
-#include "client/systems/views/starsystemview.h"
-#include "client/systems/gui/systooltips.h"
 #include "client/scenes/universescene.h"
+#include "client/systems/gui/systooltips.h"
+#include "client/systems/views/starsystemview.h"
 #include "common/components/bodies.h"
-#include "common/components/name.h"
 #include "common/components/coordinates.h"
+#include "common/components/name.h"
+#include "common/components/player.h"
 #include "common/components/ships.h"
 #include "engine/cqspgui.h"
-#include "common/components/player.h"
 
 void cqsp::client::systems::SysCommand::Init() {}
 
@@ -47,12 +47,10 @@ void cqsp::client::systems::SysCommand::DoUI(int delta_time) {
 
     using cqsp::common::components::Name;
 
-    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.79f,
-                                   ImGui::GetIO().DisplaySize.y * 0.55f),
+    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.79f, ImGui::GetIO().DisplaySize.y * 0.55f),
                             ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
     ImGui::SetNextWindowSize(ImVec2(200, 400), ImGuiCond_Always);
-    ImGui::Begin("Order Target", &to_see,
-                 ImGuiWindowFlags_NoResize | window_flags);
+    ImGui::Begin("Order Target", &to_see, ImGuiWindowFlags_NoResize | window_flags);
     int index = 0;
     // Get selected planet
     auto system = GetApp().GetUniverse().view<common::components::types::Orbit>();
@@ -64,11 +62,10 @@ void cqsp::client::systems::SysCommand::DoUI(int delta_time) {
             planet_name = fmt::format("{}", GetUniverse().get<Name>(entity).name);
         }
 
-        if (CQSPGui::DefaultSelectable(planet_name.c_str(),
-                        is_selected, ImGuiSelectableFlags_AllowDoubleClick)) {
+        if (CQSPGui::DefaultSelectable(planet_name.c_str(), is_selected, ImGuiSelectableFlags_AllowDoubleClick)) {
             // Selected object
             selected_index = index;
-            if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && selected_ship!= entt::null) {
+            if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && selected_ship != entt::null) {
                 // Go to the planet
                 GetUniverse().emplace_or_replace<cqspt::MoveTarget>(selected_ship, entity);
                 SPDLOG_INFO("Move Ordered");

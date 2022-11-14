@@ -22,8 +22,8 @@
 #include <entt/entt.hpp>
 
 #include "client/systems/sysgui.h"
-#include "engine/application.h"
 #include "common/components/resource.h"
+#include "engine/application.h"
 
 namespace cqsp {
 namespace client {
@@ -52,8 +52,7 @@ class SysPlanetInformation : public SysUserInterface {
     void ResourcesTab();
     void IndustryTab();
     template <typename>
-    void IndustryTabGenericChild(const std::string&, const std::string&,
-                                 const ImVec2&);
+    void IndustryTabGenericChild(const std::string&, const std::string&, const ImVec2&);
     void IndustryTabFinanceChild(const ImVec2&);
     void DemographicsTab();
     void ConstructionTab();
@@ -68,7 +67,7 @@ class SysPlanetInformation : public SysUserInterface {
     void RecipeConstructionCostPanel(entt::entity selected_recipe, double prod,
                                      const common::components::ResourceLedger& cost);
     void RecipeConstructionConstructButton(entt::entity selected_recipe, double prod,
-                                     const common::components::ResourceLedger& cost);
+                                           const common::components::ResourceLedger& cost);
 
     entt::entity selected_planet = entt::null;
     entt::entity selected_factory = entt::null;

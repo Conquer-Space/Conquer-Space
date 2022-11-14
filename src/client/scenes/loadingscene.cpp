@@ -18,30 +18,27 @@
 
 #include <spdlog/spdlog.h>
 
+#include <chrono>
 #include <fstream>
 #include <string>
-#include <chrono>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 #include <tracy/Tracy.hpp>
 #include <tracy/common/TracySystem.hpp>
 
-#include "engine/asset/assetmanager.h"
-#include "client/scenes/mainmenuscene.h"
-#include "client/scenes/universeloadingscene.h"
-#include "client/scenes/texttestscene.h"
 #include "client/scenes/fieldviewerscene.h"
-
-#include "engine/gui.h"
+#include "client/scenes/mainmenuscene.h"
+#include "client/scenes/texttestscene.h"
+#include "client/scenes/universeloadingscene.h"
 #include "common/scripting/scripting.h"
 #include "common/util/paths.h"
+#include "engine/asset/assetmanager.h"
+#include "engine/gui.h"
 
 #define LOADING_ID "../data/core/gui/screens/loading_screen.rml"
 
-cqsp::scene::LoadingScene::LoadingScene(cqsp::engine::Application& app)
-    : cqsp::engine::Scene(app) {
+cqsp::scene::LoadingScene::LoadingScene(cqsp::engine::Application& app) : cqsp::engine::Scene(app) {
     m_done_loading = false;
     percentage = 0;
 }
@@ -63,8 +60,7 @@ void cqsp::scene::LoadingScene::Init() {
     thread = std::make_unique<std::thread>(loading);
     thread->detach();
 
-    Rml::DataModelConstructor constructor =
-        GetApp().GetRmlUiContext()->CreateDataModel("loading");
+    Rml::DataModelConstructor constructor = GetApp().GetRmlUiContext()->CreateDataModel("loading");
     constructor.Bind("current", &loading_data.current);
     constructor.Bind("max", &loading_data.max);
     model_handle = constructor.GetModelHandle();
@@ -129,7 +125,7 @@ void cqsp::scene::LoadingScene::Ui(float deltaTime) {
     progress->SetMax(max);
 }
 
-void cqsp::scene::LoadingScene::Render(float deltaTime) { }
+void cqsp::scene::LoadingScene::Render(float deltaTime) {}
 
 void cqsp::scene::LoadingScene::LoadResources() {
     ZoneScoped;
@@ -144,14 +140,11 @@ void cqsp::scene::LoadingScene::LoadResources() {
 }
 
 void cqsp::scene::LoadingScene::LoadFont() {
-    cqsp::asset::ShaderProgram* fontshader = new asset::ShaderProgram(*GetAssetManager()
-        .GetAsset<cqsp::asset::Shader>("core:fontvertexshader"),
-        *GetApp()
-        .GetAssetManager()
-        .GetAsset<cqsp::asset::Shader>("core:fontfragshader"));
+    cqsp::asset::ShaderProgram* fontshader =
+        new asset::ShaderProgram(*GetAssetManager().GetAsset<cqsp::asset::Shader>("core:fontvertexshader"),
+                                 *GetApp().GetAssetManager().GetAsset<cqsp::asset::Shader>("core:fontfragshader"));
 
-    cqsp::asset::Font* font =
-        GetApp().GetAssetManager().GetAsset<cqsp::asset::Font>("core:defaultfont");
+    cqsp::asset::Font* font = GetApp().GetAssetManager().GetAsset<cqsp::asset::Font>("core:defaultfont");
 
     GetApp().SetFont(font);
     GetApp().SetFontShader(fontshader);

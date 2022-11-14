@@ -26,21 +26,20 @@ auto GetDateObject(int start_date, int day) {
     auto date = date::year(start_date) / 1 / 1;
     // Add hours to the date and then output
     // Add days to the date
-    date = date::sys_days{date} + date::days{day};
+    date = date::sys_days {date} + date::days {day};
     return date;
 }
 }  // namespace
 std::string StarDate::ToString() {
     // Parse the date
     auto date = GetDateObject(start_date, (int)ToDay());
-    return fmt::format("{}-{}-{}", (int) date.year(), (unsigned int) date.month(), (unsigned int) date.day());
+    return fmt::format("{}-{}-{}", (int)date.year(), (unsigned int)date.month(), (unsigned int)date.day());
 }
 
 std::string StarDate::ToString(double offset) {
     int day = this->date / 24;
 
-    double diff =
-        floor(this->date / 24.f) - floor((this->date + offset) / 24.f);
+    double diff = floor(this->date / 24.f) - floor((this->date + offset) / 24.f);
     if (diff > 0) {
         day--;
     } else if (diff < 0) {
@@ -48,25 +47,24 @@ std::string StarDate::ToString(double offset) {
     }
 
     auto date = GetDateObject(start_date, day);
-    return fmt::format("{}-{}-{}", (int)date.year(), (unsigned int)date.month(),
-                       (unsigned int)date.day());
+    return fmt::format("{}-{}-{}", (int)date.year(), (unsigned int)date.month(), (unsigned int)date.day());
 }
 
 int StarDate::GetYear() {
     auto date = GetDateObject(start_date, (int)ToDay());
-    return (int) date.year();
+    return (int)date.year();
 }
 
 int StarDate::GetMonth() {
     auto date = GetDateObject(start_date, (int)ToDay());
-    return (unsigned int) date.month();
+    return (unsigned int)date.month();
 }
 
 int StarDate::GetDay() {
     auto date = GetDateObject(start_date, (int)ToDay());
-    return (unsigned int) date.day();
+    return (unsigned int)date.day();
 }
 
-int StarDate::GetHour() { return (date/60) % DAY; }
+int StarDate::GetHour() { return (date / 60) % DAY; }
 int StarDate::GetMinute() { return date % 60; }
 }  // namespace cqsp::common::components

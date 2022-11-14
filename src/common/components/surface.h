@@ -59,9 +59,7 @@ struct ProvinceColor {
     int g;
     int b;
 
-    bool operator==(const ProvinceColor& other) const {
-        return (other.r == r && other.g == g && other.b == b);
-    }
+    bool operator==(const ProvinceColor& other) const { return (other.r == r && other.g == g && other.b == b); }
 
     operator int() const { return toInt(r, g, b); }
 

@@ -20,15 +20,15 @@
 
 #include <string>
 
-#include "common/components/coordinates.h"
-#include "common/components/surface.h"
-#include "common/components/population.h"
-#include "common/components/economy.h"
 #include "common/components/area.h"
-#include "common/systems/actions/factoryconstructaction.h"
-#include "common/components/name.h"
+#include "common/components/coordinates.h"
+#include "common/components/economy.h"
 #include "common/components/infrastructure.h"
+#include "common/components/name.h"
 #include "common/components/organizations.h"
+#include "common/components/population.h"
+#include "common/components/surface.h"
+#include "common/systems/actions/factoryconstructaction.h"
 
 namespace cqsp::common::systems::loading {
 bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
@@ -39,8 +39,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     auto& sc = universe.emplace<components::types::SurfaceCoordinate>(entity, lat, longi);
     sc.planet = universe.planets[planet];
 
-    universe.get_or_emplace<components::Habitation>(universe.planets[planet])
-        .settlements.push_back(entity);
+    universe.get_or_emplace<components::Habitation>(universe.planets[planet]).settlements.push_back(entity);
 
     if (!values["timezone"].empty()) {
         entt::entity tz = universe.time_zones[values["timezone"].to_string()];
@@ -68,8 +67,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
             settlement.population.push_back(pop_ent);
         }
     } else {
-        SPDLOG_WARN("City {} does not have any population",
-                    universe.get<components::Identifier>(entity).identifier);
+        SPDLOG_WARN("City {} does not have any population", universe.get<components::Identifier>(entity).identifier);
     }
 
     universe.emplace<components::ResourceLedger>(entity);
@@ -93,9 +91,8 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
             auto recipe = ind_val["recipe"].to_string();
             auto productivity = ind_val["productivity"].to_double();
             if (universe.recipes.find(recipe) == universe.recipes.end()) {
-                SPDLOG_INFO(
-                    "Recipe {} not found in city {}", recipe,
-                    universe.get<components::Identifier>(entity).identifier);
+                SPDLOG_INFO("Recipe {} not found in city {}", recipe,
+                            universe.get<components::Identifier>(entity).identifier);
                 continue;
             }
             entt::entity rec_ent = universe.recipes[recipe];
@@ -110,40 +107,32 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     }
 
     if (!values["country"].empty()) {
-        if (universe.countries.find(values["country"]) !=
-            universe.countries.end()) {
+        if (universe.countries.find(values["country"]) != universe.countries.end()) {
             entt::entity country = universe.countries[values["country"]];
             universe.emplace<components::Governed>(entity, country);
             // Add self to country?
-            universe.get_or_emplace<components::CountryCityList>(country)
-                .city_list.push_back(entity);
+            universe.get_or_emplace<components::CountryCityList>(country).city_list.push_back(entity);
         } else {
             SPDLOG_INFO("City {} has country {}, but it's undefined",
-                        universe.get<components::Identifier>(entity).identifier,
-                        values["country"]);
+                        universe.get<components::Identifier>(entity).identifier, values["country"]);
         }
     } else {
-        SPDLOG_WARN("City {} has no country",
-                    universe.get<components::Identifier>(entity).identifier);
+        SPDLOG_WARN("City {} has no country", universe.get<components::Identifier>(entity).identifier);
     }
 
     if (!values["province"].empty()) {
-        if (universe.provinces[values["province"]] !=
-            universe.provinces.end()) {
+        if (universe.provinces[values["province"]] != universe.provinces.end()) {
             entt::entity province = universe.provinces[values["province"]];
             // Now add self to province
             universe.get<components::Province>(province).cities.push_back(entity);
         } else {
-            SPDLOG_WARN(
-                "City {} has province {}, but it's undefined",
-                        universe.get<components::Identifier>(entity).identifier,
-                        values["province"]);
+            SPDLOG_WARN("City {} has province {}, but it's undefined",
+                        universe.get<components::Identifier>(entity).identifier, values["province"]);
         }
     }
 
     // Add infrastructure to city
-    auto& infrastructure =
-        universe.emplace<components::infrastructure::CityInfrastructure>(entity);
+    auto& infrastructure = universe.emplace<components::infrastructure::CityInfrastructure>(entity);
     if (!values["transport"].empty()) {
         infrastructure.default_purchase_cost = values["transport"].to_double();
     } else {
@@ -155,8 +144,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         if (!values["infrastructure"]["highway"].empty()) {
             SPDLOG_INFO("Has highway");
             // Set the stuff
-            auto& highway = universe.emplace<components::infrastructure::Highway>(
-                entity);
+            auto& highway = universe.emplace<components::infrastructure::Highway>(entity);
             highway.extent = values["infrastructure"]["highway"].to_double();
         }
     }

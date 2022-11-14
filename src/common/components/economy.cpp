@@ -27,8 +27,7 @@ void Market::AddSupply(const ResourceLedger& stockpile) {
 
 void Market::AddSupply(const ResourceLedger& stockpile, double multiplier) {
     for (const auto& stockpile_element : stockpile) {
-        market_information[stockpile_element.first].supply +=
-            stockpile_element.second * multiplier;
+        market_information[stockpile_element.first].supply += stockpile_element.second * multiplier;
     }
 }
 
@@ -52,18 +51,10 @@ double Market::GetPrice(const ResourceLedger& stockpile) {
     return price;
 }
 
-double Market::GetSDRatio(const entt::entity& good) {
-    return market_information[good].sd_ratio;
-}
+double Market::GetSDRatio(const entt::entity& good) { return market_information[good].sd_ratio; }
 
-double Market::GetSupply(const entt::entity& good) {
-    return market_information[good].supply;
-}
+double Market::GetSupply(const entt::entity& good) { return market_information[good].supply; }
 
-double Market::GetDemand(const entt::entity& good) {
-    return market_information[good].demand;
-}
+double Market::GetDemand(const entt::entity& good) { return market_information[good].demand; }
 
-double Market::GetPrice(const entt::entity& good) {
-    return market_information[good].price;
-}
+double Market::GetPrice(const entt::entity& good) { return market_information[good].price; }
