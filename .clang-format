@@ -3,3 +3,19 @@
 BasedOnStyle: Google
 
 IndentWidth: 4
+AccessModifierOffset: -3
+ReflowComments: false
+ColumnLimit: 120
+
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '<*\.h>'
+    Priority: 3000
+  - Regex: '<[[:alnum:]_]+>'
+    Priority: 4000
+  - Regex: '<*\.hpp>'
+    Priority: 4500
+  - Regex: '".+"'
+    Priority: 5000
+
+SpaceBeforeCpp11BracedList: true
