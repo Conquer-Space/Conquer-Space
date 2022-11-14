@@ -19,18 +19,19 @@
 #include <filesystem>
 
 #ifdef _WIN32
-#include <windows.h>
 #include <shlobj.h>
+#include <windows.h>
+
 #include <iostream>
 #endif
 #ifdef __linux__
-#include <unistd.h>
-#include <sys/types.h>
 #include <pwd.h>
+#include <sys/types.h>
+#include <unistd.h>
 namespace {
 char* get_home_dir(uid_t uid) {
     struct passwd pwent;
-    struct passwd *pwentp;
+    struct passwd* pwentp;
     char buf[1024];
 
     if (getpwuid_r(uid, &pwent, buf, sizeof buf, &pwentp)) {
@@ -51,8 +52,7 @@ std::string GetCqspSavePath() {
 #ifdef _WIN32
     // Set log folder
     CHAR my_documents[MAX_PATH];
-    HRESULT result = SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL,
-                                     SHGFP_TYPE_CURRENT, my_documents);
+    HRESULT result = SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, my_documents);
 
     directory = std::string(my_documents);
 #else
@@ -66,8 +66,7 @@ std::string GetCqspSavePath() {
     auto filesystem = std::filesystem::path(directory);
     filesystem /= dirname;
     // Create dirs, and be done with it
-    if (!std::filesystem::exists(filesystem))
-        std::filesystem::create_directories(filesystem);
+    if (!std::filesystem::exists(filesystem)) std::filesystem::create_directories(filesystem);
     return filesystem.string();
 }
 
@@ -86,8 +85,8 @@ std::string GetCqspDataPath() {
     // version. Not sure about other versions, but we'd probably have do deal
     // with it in the future Usually, the output is at build\src\Debug, so we
     // need to access ../../../binaries/data
-    return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) /
-                                      ".." / ".." / ".." / "binaries" / "data")
+    return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) / ".." / ".." / ".." / "binaries" /
+                                      "data")
         .string();
 #else
     // Then just search the default path
@@ -96,8 +95,7 @@ std::string GetCqspDataPath() {
     // - binaries
     //   - bin
     //   - data <-- data is here, so it's ../data/
-    return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) /
-                                      "../data").string();
+    return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) / "../data").string();
 #endif
 }
 }  // namespace cqsp::common::util

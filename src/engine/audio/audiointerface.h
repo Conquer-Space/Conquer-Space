@@ -20,13 +20,13 @@
 #include <AL/alc.h>
 #include <spdlog/spdlog.h>
 
-#include <fstream>
-#include <thread>
 #include <atomic>
+#include <fstream>
+#include <map>
 #include <memory>
 #include <string>
+#include <thread>
 #include <vector>
-#include <map>
 
 #include "engine/audio/audioasset.h"
 #include "engine/audio/iaudiointerface.h"
@@ -47,37 +47,21 @@ struct AudioChannel {
         alSourcei(channel, AL_LOOPING, AL_FALSE);
     }
 
-    void SetGain(float gain) {
-        alSourcef(channel, AL_GAIN, gain);
-    }
+    void SetGain(float gain) { alSourcef(channel, AL_GAIN, gain); }
 
-    void SetPitch(float pitch) {
-        alSourcef(channel, AL_PITCH, pitch);
-    }
+    void SetPitch(float pitch) { alSourcef(channel, AL_PITCH, pitch); }
 
-    void SetLooping(bool looping) {
-        alSourcei(channel, AL_LOOPING, looping ? AL_TRUE : AL_FALSE);
-    }
+    void SetLooping(bool looping) { alSourcei(channel, AL_LOOPING, looping ? AL_TRUE : AL_FALSE); }
 
-    void Play() {
-        alSourcePlay(channel);
-    }
+    void Play() { alSourcePlay(channel); }
 
-    void Stop() {
-        alSourceStop(channel);
-    }
+    void Stop() { alSourceStop(channel); }
 
-    void Resume() {
-        alSourcePlay(channel);
-    }
+    void Resume() { alSourcePlay(channel); }
 
-    void Pause() {
-        alSourcePause(channel);
-    }
+    void Pause() { alSourcePause(channel); }
 
-    void Rewind() {
-        alSourceRewind(channel);
-    }
+    void Rewind() { alSourceRewind(channel); }
 
     bool IsPlaying() {
         ALint source_state;
@@ -91,9 +75,7 @@ struct AudioChannel {
         return length;
     }
 
-    void EmptyBuffer() {
-        alSourcei(channel, AL_BUFFER, NULL);
-    }
+    void EmptyBuffer() { alSourcei(channel, AL_BUFFER, NULL); }
 
     void SetBuffer(cqsp::asset::AudioAsset *buffer);
     float length = 0;
@@ -113,8 +95,8 @@ struct AudioChannel {
 class AudioInterface : public IAudioInterface {
  public:
     AudioInterface();
-    ALCdevice* device;
-    ALCcontext* context;
+    ALCdevice *device;
+    ALCcontext *context;
     ALboolean enumeration;
 
     void Initialize();

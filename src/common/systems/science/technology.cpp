@@ -18,8 +18,8 @@
 
 #include <spdlog/spdlog.h>
 
-#include "common/components/science.h"
 #include "common/components/name.h"
+#include "common/components/science.h"
 #include "common/systems/loading/loadutil.h"
 
 namespace cqsp::common::systems::science {

@@ -22,8 +22,8 @@
 
 #include <glm/glm.hpp>
 
-#include "common/components/units.h"
 #include "common/components/coordinates.h"
+#include "common/components/units.h"
 
 namespace cqsp::engine::primitive {
 Mesh* CreateFilledCircle(int segments) {
@@ -38,7 +38,7 @@ Mesh* CreateFilledCircle(int segments) {
 
     // Add texture coords
     for (int i = 0; i <= segments; i++) {
-        double theta = i * cqsp::common::components::types::toRadian(360.f/segments);
+        double theta = i * cqsp::common::components::types::toRadian(360.f / segments);
         double y = std::sin(theta);
         double x = std::cos(theta);
 
@@ -48,8 +48,8 @@ Mesh* CreateFilledCircle(int segments) {
         positions.push_back(0);
 
         // Texture coordinates
-        positions.push_back(0.5*x + 0.5);
-        positions.push_back(0.5*-y + 0.5);
+        positions.push_back(0.5 * x + 0.5);
+        positions.push_back(0.5 * -y + 0.5);
     }
 
     GLuint vao = 0;
@@ -63,12 +63,10 @@ Mesh* CreateFilledCircle(int segments) {
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(float), &positions[0], GL_STATIC_DRAW);
     int stride = 5;
-    glVertexAttribPointer(0, 3, GL_FLOAT,
-                            GL_FALSE, stride * sizeof(float), reinterpret_cast<void*>(0));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float),
-                            reinterpret_cast<void*>(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
     mesh->VAO = vao;
     mesh->VBO = vbo;
@@ -78,19 +76,15 @@ Mesh* CreateFilledCircle(int segments) {
     return mesh;
 }
 
-Mesh* CreateFilledTriangle() {
-    return CreateFilledCircle(3);
-}
+Mesh* CreateFilledTriangle() { return CreateFilledCircle(3); }
 
-Mesh* CreateFilledSquare() {
-    return CreateFilledCircle(4);
-}
+Mesh* CreateFilledSquare() { return CreateFilledCircle(4); }
 
 Mesh* CreateLineCircle(int segments, float size) {
     Mesh* mesh = new Mesh();
     std::vector<glm::vec3> positions;
     for (int i = 0; i <= segments + 1; i++) {
-        double theta = i * cqsp::common::components::types::toRadian(360.f/segments);
+        double theta = i * cqsp::common::components::types::toRadian(360.f / segments);
         double y = std::sin(theta) * size;
         double x = std::cos(theta) * size;
         positions.push_back({x, 0, y});

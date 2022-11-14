@@ -21,5 +21,5 @@
 namespace cqsp {
 namespace engine::primitive {
 cqsp::engine::Mesh* MakeCube();
-} // namespace engine::primitive
+}  // namespace engine::primitive
 }  // namespace cqsp

@@ -16,11 +16,11 @@
 */
 #include "client/systems/sysdebuggui.h"
 
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
-#include "client/systems/views/starsystemview.h"
 #include "client/components/clientctx.h"
+#include "client/systems/views/starsystemview.h"
 #include "common/components/name.h"
 #include "common/util/profiler.h"
 
@@ -45,13 +45,11 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
         }
     };
 
-    auto screen_clear = [](Application& app, const string_view& args, CommandOutput& input) {
-        input.clear();
-    };
+    auto screen_clear = [](Application& app, const string_view& args, CommandOutput& input) { input.clear(); };
 
     auto entitycount = [](Application& app, const string_view& args, CommandOutput& input) {
-        input.push_back(fmt::format("Total entities: {}, Alive: {}",
-                        app.GetUniverse().size(), app.GetUniverse().alive()));
+        input.push_back(
+            fmt::format("Total entities: {}, Alive: {}", app.GetUniverse().size(), app.GetUniverse().alive()));
     };
 
     auto entity_name = [](Application& app, const string_view& args, CommandOutput& input) {
@@ -74,48 +72,39 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
         app.GetScriptInterface().RunScript(args);
     };
 
-
-    commands = {
-        {"help", {"Shows this help menu", help_command}},
-        {"mouseon", {"Get the entitiy the mouse is over", entity_command}},
-        {"clear", {"Clears screen", screen_clear}},
-        {"entitycount", {"Gets number of entities", entitycount}},
-        {"name", {"Gets name and identifier of entity", entity_name}},
-        {"lua", {"Executes lua script", lua}
-}
-    };
+    commands = {{"help", {"Shows this help menu", help_command}},
+                {"mouseon", {"Get the entitiy the mouse is over", entity_command}},
+                {"clear", {"Clears screen", screen_clear}},
+                {"entitycount", {"Gets number of entities", entitycount}},
+                {"name", {"Gets name and identifier of entity", entity_name}},
+                {"lua", {"Executes lua script", lua}}};
 }
 
 void SysDebugMenu::Init() {}
 
 void SysDebugMenu::CqspMetricsWindow() {
-            ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_Appearing);
-        ImGui::Begin("Conquer Space benchmarking", &to_show_cqsp_metrics);
-            ImPlot::SetNextAxesLimits(GetApp().GetTime() - fps_history_len,
-                                      GetApp().GetTime(), 0, 300,
-                                      ImGuiCond_Always);
-        if (ImPlot::BeginPlot("FPS", "Time (s)", "FPS", ImVec2(-1, 0), ImPlotFlags_NoChild,
-                                            ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit)) {
-            ImPlot::PlotLine("FPS", &fps_history[0].x, &fps_history[0].y,
-                             fps_history.size(), 0, sizeof(float) * 2);
-            ImPlot::EndPlot();
-        }
+    ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_Appearing);
+    ImGui::Begin("Conquer Space benchmarking", &to_show_cqsp_metrics);
+    ImPlot::SetNextAxesLimits(GetApp().GetTime() - fps_history_len, GetApp().GetTime(), 0, 300, ImGuiCond_Always);
+    if (ImPlot::BeginPlot("FPS", "Time (s)", "FPS", ImVec2(-1, 0), ImPlotFlags_NoChild, ImPlotAxisFlags_AutoFit,
+                          ImPlotAxisFlags_AutoFit)) {
+        ImPlot::PlotLine("FPS", &fps_history[0].x, &fps_history[0].y, fps_history.size(), 0, sizeof(float) * 2);
+        ImPlot::EndPlot();
+    }
 
-        ImPlot::SetNextAxisLimits(ImAxis_X1, GetApp().GetTime() - fps_history_len,
-                          GetApp().GetTime(), ImGuiCond_Always);
-        if (ImPlot::BeginPlot("Profiler", "Time (s)", "Run time (us)", ImVec2(-1, 0),
-                                    ImPlotFlags_NoMouseText | ImPlotFlags_NoChild,
-                                    ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit)) {
-            ImPlot::SetupLegend(ImPlotLocation_SouthEast);
-            for (auto it = history_maps.begin(); it != history_maps.end();
-                 it++) {
-                ImPlot::PlotLine(it->first.c_str(), &it->second[0].x, &it->second[0].y,
-                             it->second.size(), 0, sizeof(float) * 2);
-            }
-            ImPlot::EndPlot();
+    ImPlot::SetNextAxisLimits(ImAxis_X1, GetApp().GetTime() - fps_history_len, GetApp().GetTime(), ImGuiCond_Always);
+    if (ImPlot::BeginPlot("Profiler", "Time (s)", "Run time (us)", ImVec2(-1, 0),
+                          ImPlotFlags_NoMouseText | ImPlotFlags_NoChild, ImPlotAxisFlags_AutoFit,
+                          ImPlotAxisFlags_AutoFit)) {
+        ImPlot::SetupLegend(ImPlotLocation_SouthEast);
+        for (auto it = history_maps.begin(); it != history_maps.end(); it++) {
+            ImPlot::PlotLine(it->first.c_str(), &it->second[0].x, &it->second[0].y, it->second.size(), 0,
+                             sizeof(float) * 2);
         }
-        profiler_information_map.clear();
-        ImGui::End();
+        ImPlot::EndPlot();
+    }
+    profiler_information_map.clear();
+    ImGui::End();
 }
 
 void cqsp::client::systems::SysDebugMenu::ShowWindows() {
@@ -158,8 +147,7 @@ void cqsp::client::systems::SysDebugMenu::CreateMenuBar() {
 }
 
 void cqsp::client::systems::SysDebugMenu::DrawConsole() {
-    const float footer_height_to_reserve =
-        ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
+    const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
     ImGui::BeginChild("consolearea", ImVec2(0, -footer_height_to_reserve), false,
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
     for (auto b : items) {
@@ -185,20 +173,21 @@ void cqsp::client::systems::SysDebugMenu::DrawConsole() {
 
 void cqsp::client::systems::SysDebugMenu::ConsoleInput() {
     ImGui::PushItemWidth(-1);
-    if (ImGui::InputText("DebugInput", &command, ImGuiInputTextFlags_EnterReturnsTrue |
-                             ImGuiInputTextFlags_CallbackCompletion |
+    if (ImGui::InputText("DebugInput", &command,
+                         ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackCompletion |
                              ImGuiInputTextFlags_CallbackHistory)) {
         std::string command_request = std::string(command);
         std::transform(command_request.begin(), command_request.end(), command_request.begin(),
-                    [](unsigned char c){ return std::tolower(c); });
+                       [](unsigned char c) { return std::tolower(c); });
         if (!command_request.empty()) {
             bool no_command = true;
             for (auto it = commands.begin(); it != commands.end(); it++) {
                 if (command_request.rfind(it->first, 0) != 0) {
                     continue;
                 }
-                it->second.second(GetApp(), command.length() == it->first.length() ? "" :
-                                                command.substr(it->first.length()+1) , items);
+                it->second.second(GetApp(),
+                                  command.length() == it->first.length() ? "" : command.substr(it->first.length() + 1),
+                                  items);
                 no_command = false;
                 break;
             }
@@ -226,12 +215,10 @@ void SysDebugMenu::DoUI(int delta_time) {
         return;
     }
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x*.5f,
-                                ImGui::GetIO().DisplaySize.y * 0.75f), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x * .5f, ImGui::GetIO().DisplaySize.y * 0.75f),
+                             ImGuiCond_Always);
     ImGui::SetNextWindowBgAlpha(0.6f);
-    ImGui::Begin("Debug Gui", &to_show_window,
-                 ImGuiWindowFlags_MenuBar | window_flags |
-                     ImGuiWindowFlags_NoDecoration);
+    ImGui::Begin("Debug Gui", &to_show_window, ImGuiWindowFlags_MenuBar | window_flags | ImGuiWindowFlags_NoDecoration);
     CreateMenuBar();
     DrawConsole();
 
@@ -257,8 +244,7 @@ void SysDebugMenu::DoUpdate(int delta_time) {
     fps_history.push_back(ImVec2(time, fps));
 
     for (auto it = profiler_information_map.begin(); it != profiler_information_map.end(); it++) {
-        if (!history_maps[it->first].empty() &&
-            (history_maps[it->first].begin()->x + fps_history_len) < time) {
+        if (!history_maps[it->first].empty() && (history_maps[it->first].begin()->x + fps_history_len) < time) {
             history_maps[it->first].erase(history_maps[it->first].begin());
         }
 

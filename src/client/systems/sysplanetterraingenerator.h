@@ -16,14 +16,12 @@
 */
 #pragma once
 
+#include <hjson.h>
 #include <noise/noise.h>
-
 #include <noiseutils.h>
 
-#include <hjson.h>
-
-#include "common/universe.h"
 #include "common/components/bodies.h"
+#include "common/universe.h"
 
 namespace cqsp {
 namespace client {
@@ -38,6 +36,7 @@ class TerrainImageGenerator {
     noise::utils::Image& GetAlbedoMap() { return albedo_map; }
 
     cqsp::common::components::bodies::Terrain terrain;
+
  private:
     noise::utils::Image height_map;
     noise::utils::Image albedo_map;

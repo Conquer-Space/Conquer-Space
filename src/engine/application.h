@@ -16,30 +16,29 @@
 */
 #pragma once
 
-#include <spdlog/spdlog.h>
-#include <RmlUi/Core/ElementDocument.h>
 #include <RmlUi/Core/Context.h>
+#include <RmlUi/Core/ElementDocument.h>
 #include <glad/glad.h>
+#include <spdlog/spdlog.h>
 
-#include <memory>
-#include <utility>
-#include <string>
 #include <map>
+#include <memory>
+#include <string>
+#include <utility>
 #include <vector>
 
-#include "engine/clientoptions.h"
-
-#include "engine/userinput.h"
-#include "engine/engine.h"
-#include "engine/scene.h"
-#include "engine/asset/assetmanager.h"
-#include "engine/gui.h"
-#include "engine/graphics/text.h"
 #include "common/game.h"
+#include "engine/asset/assetmanager.h"
 #include "engine/audio/iaudiointerface.h"
-#include "engine/ui/rmlrenderinterface.h"
-#include "engine/window.h"
+#include "engine/clientoptions.h"
+#include "engine/engine.h"
+#include "engine/graphics/text.h"
+#include "engine/gui.h"
+#include "engine/scene.h"
 #include "engine/ui/RmlUi_Platform_GLFW.h"
+#include "engine/ui/rmlrenderinterface.h"
+#include "engine/userinput.h"
+#include "engine/window.h"
 
 namespace cqsp {
 namespace engine {
@@ -103,9 +102,7 @@ class Application {
     */
     void run();
 
-    client::ClientOptions& GetClientOptions() {
-        return m_client_options;
-    }
+    client::ClientOptions& GetClientOptions() { return m_client_options; }
 
     int GetWindowHeight() const { return m_window->GetWindowHeight(); }
 
@@ -133,13 +130,9 @@ class Application {
 
     cqsp::common::Game& GetGame() { return *m_game; }
 
-    cqsp::scripting::ScriptInterface& GetScriptInterface() {
-        return m_game->GetScriptInterface();
-    }
+    cqsp::scripting::ScriptInterface& GetScriptInterface() { return m_game->GetScriptInterface(); }
 
-    cqsp::engine::audio::IAudioInterface& GetAudioInterface() {
-        return *m_audio_interface;
-    }
+    cqsp::engine::audio::IAudioInterface& GetAudioInterface() { return *m_audio_interface; }
 
     bool ButtonIsHeld(int btn) { return m_window->ButtonIsHeld(btn); }
     bool ButtonIsHeld(KeyInput btn) { return ButtonIsHeld(GetGlfwKey(btn)); }
@@ -158,7 +151,7 @@ class Application {
     double GetMouseX() { return m_window->GetMouseX(); }
     double GetMouseY() { return m_window->GetMouseY(); }
 
-    bool MouseButtonIsHeld(int btn) { return  m_window->MouseButtonIsHeld(btn); }
+    bool MouseButtonIsHeld(int btn) { return m_window->MouseButtonIsHeld(btn); }
     bool MouseButtonIsReleased(int btn) { return m_window->MouseButtonIsReleased(btn); }
     bool MouseButtonIsPressed(int btn) { return m_window->MouseButtonIsPressed(btn); }
 
@@ -189,9 +182,7 @@ class Application {
     void DrawTextNormalized(const std::string& text, float x, float y);
 
     void SetFont(cqsp::asset::Font* font) { m_font = font; }
-    void SetFontShader(cqsp::asset::ShaderProgram* shader) {
-        fontShader = shader;
-    }
+    void SetFontShader(cqsp::asset::ShaderProgram* shader) { fontShader = shader; }
 
     /// <summary>
     /// Time in seconds
@@ -211,8 +202,7 @@ class Application {
     std::vector<std::string>& GetCmdLineArgs() { return cmd_line_args; }
 
     bool HasCmdLineArgs(const std::string& arg) {
-        return (std::find(GetCmdLineArgs().begin(), GetCmdLineArgs().end(),
-                          arg) != GetCmdLineArgs().end());
+        return (std::find(GetCmdLineArgs().begin(), GetCmdLineArgs().end(), arg) != GetCmdLineArgs().end());
     }
     /// <summary>
     /// Screenshots the current framebuffer to the filename
@@ -233,7 +223,7 @@ class Application {
         Rml::EventListener* InstanceEventListener(const Rml::String& value, Rml::Element* element) override;
     };
 
-    typedef void(*EventListener)(Rml::Event&);
+    typedef void (*EventListener)(Rml::Event&);
 
     class CqspEventListener : public Rml::EventListener {
      public:
@@ -299,7 +289,7 @@ class Application {
 
     std::map<std::string, std::string> properties;
 
-    cqsp::engine::audio::IAudioInterface *m_audio_interface;
+    cqsp::engine::audio::IAudioInterface* m_audio_interface;
 
     std::map<std::string, Rml::ElementDocument*> loaded_documents;
 

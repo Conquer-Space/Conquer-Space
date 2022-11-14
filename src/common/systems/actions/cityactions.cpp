@@ -16,12 +16,11 @@
 */
 #include "common/systems/actions/cityactions.h"
 
-#include "common/components/surface.h"
 #include "common/components/coordinates.h"
 #include "common/components/name.h"
+#include "common/components/surface.h"
 
-entt::entity cqsp::common::actions::CreateCity(Universe& universe,  entt::entity planet, double lat,
-                                               double longi) {
+entt::entity cqsp::common::actions::CreateCity(Universe& universe, entt::entity planet, double lat, double longi) {
     namespace cqspt = cqsp::common::components::types;
     namespace cqspc = cqsp::common::components;
     entt::entity settlement = universe.create();
@@ -31,12 +30,10 @@ entt::entity cqsp::common::actions::CreateCity(Universe& universe,  entt::entity
     // Add to planet list
 
     if (universe.all_of<cqspc::Habitation>(planet)) {
-        universe.get<cqspc::Habitation>(planet).settlements.push_back(
-            settlement);
+        universe.get<cqspc::Habitation>(planet).settlements.push_back(settlement);
     } else {
         universe.emplace<cqspc::Habitation>(planet);
-        universe.get<cqspc::Habitation>(planet).settlements.push_back(
-            settlement);
+        universe.get<cqspc::Habitation>(planet).settlements.push_back(settlement);
     }
 
     return settlement;

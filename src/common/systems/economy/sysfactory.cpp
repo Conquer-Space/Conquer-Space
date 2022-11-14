@@ -23,10 +23,10 @@
 #include "common/components/area.h"
 #include "common/components/economy.h"
 #include "common/components/infrastructure.h"
-#include "common/util/profiler.h"
-#include "common/components/surface.h"
 #include "common/components/name.h"
 #include "common/components/organizations.h"
+#include "common/components/surface.h"
+#include "common/util/profiler.h"
 
 namespace cqsp::common::systems {
 namespace cqspc = cqsp::common::components;
@@ -38,45 +38,31 @@ namespace {
 /// <param name="universe">Registry used for searching for components</param>
 /// <param name="entity">Entity containing an Inudstries that need to be processed</param>
 /// <param name="market">The market the industry uses.</param>
-void ProcessIndustries(common::Universe& universe, entt::entity entity,
-                    cqspc::Market& market) {
+void ProcessIndustries(common::Universe& universe, entt::entity entity, cqspc::Market& market) {
     // Get the transport cost
-    auto& infrastructure =
-        universe.get<cqspc::infrastructure::CityInfrastructure>(entity);
+    auto& infrastructure = universe.get<cqspc::infrastructure::CityInfrastructure>(entity);
     // Calculate the infrastructure cost
-    double infra_cost =
-        infrastructure.default_purchase_cost - infrastructure.improvement;
+    double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
 
     auto& industries = universe.get<cqspc::IndustrialZone>(entity);
     for (entt::entity productionentity : industries.industries) {
         // Process imdustries
         // Industries MUST have production and a linked recipe
-        if (!universe.all_of<components::Production>(productionentity))
-            continue;
+        if (!universe.all_of<components::Production>(productionentity)) continue;
         components::Recipe recipe =
-            universe.get_or_emplace<components::Recipe>(
-                universe.get<components::Production>(productionentity)
-                    .recipe);
-        components::IndustrySize& size =
-            universe.get_or_emplace<components::IndustrySize>(
-                productionentity, 1000.0);
+            universe.get_or_emplace<components::Recipe>(universe.get<components::Production>(productionentity).recipe);
+        components::IndustrySize& size = universe.get_or_emplace<components::IndustrySize>(productionentity, 1000.0);
         // Calculate resource consumption
-        components::ResourceLedger capitalinput =
-            recipe.capitalcost * (0.01 * size.size);
-        components::ResourceLedger input =
-            (recipe.input + size.size) + capitalinput;
+        components::ResourceLedger capitalinput = recipe.capitalcost * (0.01 * size.size);
+        components::ResourceLedger input = (recipe.input + size.size) + capitalinput;
 
         // Calculate the greatest possible production
         components::ResourceLedger output;  // * ratio.output;
-        output[recipe.output.entity] =
-            recipe.output.amount * size.size;
+        output[recipe.output.entity] = recipe.output.amount * size.size;
 
         // Figure out what's throttling production and maintaince
-        double limitedinput =
-            CopyVals(input, market.history.back().sd_ratio).Min();
-        double limitedcapitalinput =
-            CopyVals(capitalinput, market.history.back().sd_ratio)
-                .Min();
+        double limitedinput = CopyVals(input, market.history.back().sd_ratio).Min();
+        double limitedcapitalinput = CopyVals(capitalinput, market.history.back().sd_ratio).Min();
 
         // Log how much manufacturing is being throttled by input
         market[recipe.output.entity].inputratio = limitedinput;
@@ -88,7 +74,7 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
             size.size *= 0.99;
         }
         if (limitedinput < 1) {  // If an input good is undersupplied on
-                                    // the market, throttle production
+                                 // the market, throttle production
             input *= limitedinput;
             output *= limitedinput;
             // Industry
@@ -102,22 +88,18 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
         // Next time need to compute the costs along with input and
         // output so that the factory doesn't overspend. We sorta
         // need a balanced economy
-        components::CostBreakdown& costs =
-            universe.get_or_emplace<components::CostBreakdown>(
-                productionentity);
+        components::CostBreakdown& costs = universe.get_or_emplace<components::CostBreakdown>(productionentity);
 
         // Maintainence costs will still have to be upkept, so if
         // there isnt any resources to upkeep the place, then stop
         // the production
-        costs.materialcosts =
-            (recipe.input * size.size * market.price).GetSum();
+        costs.materialcosts = (recipe.input * size.size * market.price).GetSum();
         costs.profit = (recipe.output * market.price).GetSum();
         if (market.sd_ratio[recipe.output.entity] > 1) {
             costs.profit /= market.sd_ratio[recipe.output.entity];
         }
         costs.wages = size.size * recipe.workers * 50000;
-        costs.net = costs.profit - costs.maintenance - costs.materialcosts -
-                    costs.wages;
+        costs.net = costs.profit - costs.maintenance - costs.materialcosts - costs.wages;
         costs.transport = output_transport_cost + input_transport_cost;
         double& price = market.price[recipe.output.entity];
         if (costs.net > 0) {
@@ -130,7 +112,7 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity,
         // ratio.output = recipe.output.UnitLeger(size.size);
     }
 }
-}// namespace
+}  // namespace
 
 void SysProduction::DoSystem() {
     ZoneScoped;
@@ -154,7 +136,6 @@ void SysProduction::DoSystem() {
         }
     }
     END_TIMED_BLOCK(INDUSTRY);
-    SPDLOG_TRACE("Updated {} factories, {} industries", factories,
-                    view.size());
+    SPDLOG_TRACE("Updated {} factories, {} industries", factories, view.size());
 }
 }  // namespace cqsp::common::systems

@@ -18,18 +18,17 @@
 
 #include <fmt/format.h>
 
+#include "client/systems/gui/systooltips.h"
 #include "common/components/name.h"
 #include "common/util/utilnumberdisplay.h"
 #include "engine/gui.h"
 
-#include "client/systems/gui/systooltips.h"
-
 using cqsp::common::Universe;
 using cqsp::common::components::Identifier;
-using cqsp::util::LongToHumanString;
 using cqsp::common::components::ResourceLedger;
+using cqsp::util::LongToHumanString;
 bool cqsp::client::systems::DrawLedgerTable(const std::string &name, const Universe &universe,
-                                                                        const ResourceLedger& ledger) {
+                                            const ResourceLedger &ledger) {
     if (ledger.empty()) {
         ImGui::Text("Empty ledger");
         return false;
@@ -38,8 +37,7 @@ bool cqsp::client::systems::DrawLedgerTable(const std::string &name, const Unive
         ImGui::TableSetupColumn("Good");
         ImGui::TableSetupColumn("Amount");
         ImGui::TableHeadersRow();
-        for (auto iterator = ledger.begin();
-                                    iterator != ledger.end(); iterator++) {
+        for (auto iterator = ledger.begin(); iterator != ledger.end(); iterator++) {
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::TextFmt("{}", gui::GetName(universe, iterator->first));

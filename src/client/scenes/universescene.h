@@ -16,21 +16,21 @@
 */
 #pragma once
 
-#include <vector>
+#include <array>
 #include <memory>
 #include <utility>
-#include <array>
+#include <vector>
 
-#include "client/systems/views/starsystemview.h"
 #include "client/systems/sysgui.h"
+#include "client/systems/views/starsystemview.h"
 #include "common/components/bodies.h"
 #include "common/components/organizations.h"
-#include "engine/scene.h"
+#include "common/simulation.h"
 #include "engine/application.h"
 #include "engine/graphics/renderable.h"
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/renderer2d.h"
-#include "common/simulation.h"
+#include "engine/scene.h"
 
 namespace cqsp {
 namespace scene {
@@ -102,7 +102,7 @@ class UniverseScene : public cqsp::engine::Scene {
 
     double last_tick = 0;
 
-    std::array<int, 7> tick_speeds{1000, 500, 333, 100, 50, 10, 1};
+    std::array<int, 7> tick_speeds {1000, 500, 333, 100, 50, 10, 1};
     void ToggleTick();
 };
 

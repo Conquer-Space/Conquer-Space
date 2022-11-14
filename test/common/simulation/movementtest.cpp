@@ -16,11 +16,11 @@
 */
 #include <gtest/gtest.h>
 
-#include "common/systems/movement/sysmovement.h"
-#include "common/systems/actions/shiplaunchaction.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
 #include "common/components/ships.h"
+#include "common/systems/actions/shiplaunchaction.h"
+#include "common/systems/movement/sysmovement.h"
 
 namespace cqspt = cqsp::common::components::types;
 class SystemsMovementTest : public ::testing::Test {
@@ -28,7 +28,6 @@ class SystemsMovementTest : public ::testing::Test {
     void SetUp() {
         cqsp::common::Universe& universe = m_game.GetUniverse();
         star_system = universe.create();
-
 
         planet = universe.create();
 
@@ -55,13 +54,10 @@ TEST_F(SystemsMovementTest, ShipMovementTest) {
     cqsp::common::Universe& universe = m_game.GetUniverse();
     {
         // Test out if the ship is created
-        ship = cqsp::common::systems::actions::CreateShip(universe, entt::null,
-                        cqspt::toVec3AU(universe.get<cqspt::Orbit>(planet)), star_system);
+        ship = cqsp::common::systems::actions::CreateShip(
+            universe, entt::null, cqspt::toVec3AU(universe.get<cqspt::Orbit>(planet)), star_system);
         EXPECT_TRUE(universe.valid(ship));
-        bool all_of_pos_and_ship =
-            universe
-                .all_of<cqspt::Kinematics, cqsp::common::components::ships::Ship>(
-                    ship);
+        bool all_of_pos_and_ship = universe.all_of<cqspt::Kinematics, cqsp::common::components::ships::Ship>(ship);
         ASSERT_TRUE(all_of_pos_and_ship);
         auto& position = universe.get<cqspt::Kinematics>(ship);
         glm::vec3 vec = cqspt::toVec3AU(universe.get<cqspt::Orbit>(planet));
@@ -79,8 +75,7 @@ TEST_F(SystemsMovementTest, ShipMovementTest) {
         EXPECT_TRUE(universe.valid(ship));
         EXPECT_EQ(universe.size(), 4);
 
-        universe.emplace_or_replace<cqspt::Kinematics>(
-            target, cqspt::toVec3AU(universe.get<cqspt::Orbit>(target)));
+        universe.emplace_or_replace<cqspt::Kinematics>(target, cqspt::toVec3AU(universe.get<cqspt::Orbit>(target)));
 
         universe.emplace_or_replace<cqspt::MoveTarget>(ship, target);
         for (int i = 0; i < 1000; i++) {

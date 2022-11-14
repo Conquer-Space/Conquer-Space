@@ -16,31 +16,27 @@
 */
 #include "client/scenes/mainmenuscene.h"
 
+#include <RmlUi/Debugger.h>
 #include <glad/glad.h>
 
-#include <RmlUi/Debugger.h>
-
-#include <utility>
 #include <algorithm>
 #include <filesystem>
-
 #include <string>
+#include <utility>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "engine/graphics/shader.h"
-#include "engine/renderer/renderer.h"
 #include "client/scenes/universeloadingscene.h"
-
-#include "engine/asset/asset.h"
-#include "engine/gui.h"
-#include "engine/cqspgui.h"
-#include "engine/graphics/text.h"
 #include "client/systems/sysoptionswindow.h"
-#include "common/version.h"
-
 #include "common/util/paths.h"
+#include "common/version.h"
+#include "engine/asset/asset.h"
+#include "engine/cqspgui.h"
+#include "engine/graphics/shader.h"
+#include "engine/graphics/text.h"
+#include "engine/gui.h"
+#include "engine/renderer/renderer.h"
 
 cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app)
     : cqsp::engine::Scene(app), settings_window(app), credits_window(app) {}
@@ -93,9 +89,7 @@ void cqsp::scene::MainMenuScene::Update(float deltaTime) {
     credits_window.Update(deltaTime);
 }
 
-
-void cqsp::scene::MainMenuScene::Ui(float deltaTime) {
-}
+void cqsp::scene::MainMenuScene::Ui(float deltaTime) {}
 
 void cqsp::scene::MainMenuScene::Render(float deltaTime) {
     GetApp().DrawText(fmt::format("Version: {}", CQSP_VERSION_STRING), 8, 8);
@@ -192,10 +186,8 @@ void cqsp::scene::MainMenuScene::ModWindow() {
 
 void cqsp::scene::MainMenuScene::ShuffleFileList() {
     // Random number
-    std::string splash_dir =
-        GetApp().GetClientOptions().GetOptions()["splashscreens"].to_string();
-    auto s =
-        std::filesystem::canonical(std::filesystem::path(splash_dir)).string();
+    std::string splash_dir = GetApp().GetClientOptions().GetOptions()["splashscreens"].to_string();
+    auto s = std::filesystem::canonical(std::filesystem::path(splash_dir)).string();
 
     for (auto entry : std::filesystem::directory_iterator(splash_dir)) {
         std::string extension = entry.path().extension().string();
@@ -209,7 +201,7 @@ void cqsp::scene::MainMenuScene::ShuffleFileList() {
     }
     // Now choose a random selection
     for (int i = 0; i < file_list.size(); i++) {
-        int index = rand() % file_list.size(); // NOLINT
+        int index = rand() % file_list.size();  // NOLINT
         std::string tmp = file_list[index];
         file_list[index] = file_list[i];
         file_list[i] = tmp;
@@ -219,8 +211,7 @@ void cqsp::scene::MainMenuScene::ShuffleFileList() {
 
 void cqsp::scene::MainMenuScene::SetMainMenuImage(const std::string& file) {
     main_menu->GetElementById("main_window")
-        ->SetProperty("decorator",
-                      fmt::format("image({} none cover center bottom)", file));
+        ->SetProperty("decorator", fmt::format("image({} none cover center bottom)", file));
 }
 
 void cqsp::scene::MainMenuScene::NextImage() {

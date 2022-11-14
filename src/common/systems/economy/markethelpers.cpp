@@ -19,9 +19,8 @@
 #include "common/components/economy.h"
 #include "common/components/history.h"
 
-void cqsp::common::systems::economy::AddParticipant(
-                cqsp::common::Universe& universe, entt::entity market_entity,
-                entt::entity entity) {
+void cqsp::common::systems::economy::AddParticipant(cqsp::common::Universe& universe, entt::entity market_entity,
+                                                    entt::entity entity) {
     namespace cqspc = cqsp::common::components;
     auto& market = universe.get<cqspc::Market>(market_entity);
     market.participants.insert(entity);
@@ -29,15 +28,13 @@ void cqsp::common::systems::economy::AddParticipant(
     universe.get_or_emplace<cqspc::Wallet>(entity);
 }
 
-double cqsp::common::systems::economy::GetCost(
-    cqsp::common::Universe& universe, entt::entity market,
-    components::ResourceLedger ledger) {
+double cqsp::common::systems::economy::GetCost(cqsp::common::Universe& universe, entt::entity market,
+                                               components::ResourceLedger ledger) {
     if (!universe.any_of<components::Market>(market)) {
         return 0.0;
     }
     return universe.get<components::Market>(market).GetPrice(ledger);
 }
-
 
 entt::entity cqsp::common::systems::economy::CreateMarket(Universe& universe) {
     entt::entity market = universe.create();
@@ -50,9 +47,8 @@ void cqsp::common::systems::economy::CreateMarket(Universe& universe, entt::enti
     universe.get_or_emplace<components::MarketHistory>(market);
 }
 
-bool cqsp::common::systems::economy::PurchaseGood(
-    Universe& universe, entt::entity agent,
-    components::ResourceLedger purchase) {
+bool cqsp::common::systems::economy::PurchaseGood(Universe& universe, entt::entity agent,
+                                                  components::ResourceLedger purchase) {
     // Calculating on how to buy from the market shouldn't be too hard, right?
     // Get the market connected to, and build the demand
     entt::entity market = universe.get<components::MarketAgent>(agent).market;
@@ -83,7 +79,7 @@ bool cqsp::common::systems::economy::PurchaseGood(
 }
 
 bool cqsp::common::systems::economy::SellGood(Universe& universe, entt::entity agent,
-                                       components::ResourceLedger selling) {
+                                              components::ResourceLedger selling) {
     // Calculating on how to buy from the market shouldn't be too hard, right?
     // Get the market connected to, and build the demand
     entt::entity market = universe.get<components::MarketAgent>(agent).market;

@@ -27,8 +27,7 @@ namespace systems {
 
 class SysTurnSaveWindow : public SysUserInterface {
  public:
-    explicit SysTurnSaveWindow(cqsp::engine::Application& app)
-        : SysUserInterface(app) {}
+    explicit SysTurnSaveWindow(cqsp::engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
     void DoUI(int delta_time);
@@ -39,7 +38,7 @@ class SysTurnSaveWindow : public SysUserInterface {
  private:
     double last_tick = 0;
     bool to_tick = false;
-    std::vector<int> tick_speeds{1000, 500, 333, 100, 50, 10, 1};
+    std::vector<int> tick_speeds {1000, 500, 333, 100, 50, 10, 1};
     int tick_speed = tick_speeds.size() / 2;
 };
 }  // namespace systems

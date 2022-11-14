@@ -20,12 +20,11 @@
 
 #include <sstream>
 
-#include "common/components/surface.h"
 #include "common/components/name.h"
 #include "common/components/organizations.h"
+#include "common/components/surface.h"
 
-void cqsp::common::systems::loading::LoadProvinces(common::Universe& universe,
-                                                   const std::string& text) {
+void cqsp::common::systems::loading::LoadProvinces(common::Universe& universe, const std::string& text) {
     // The text has to be csv, so treat it is csv
     std::istringstream f(text);
     std::string line;
@@ -47,14 +46,11 @@ void cqsp::common::systems::loading::LoadProvinces(common::Universe& universe,
         entt::entity entity = universe.create();
         universe.emplace<components::Province>(entity, universe.countries[country]);
         universe.emplace<components::Identifier>(entity, identifier);
-        auto& color = universe.emplace<components::ProvinceColor>(entity, std::stoi(r),
-                                                    std::stoi(g), std::stoi(b));
+        auto& color = universe.emplace<components::ProvinceColor>(entity, std::stoi(r), std::stoi(g), std::stoi(b));
         if (universe.provinces.find(identifier) == universe.provinces.end()) {
             universe.provinces[identifier] = entity;
         } else {
-            SPDLOG_WARN(
-                "Province {} conflicts with an already preexisting province",
-                identifier);
+            SPDLOG_WARN("Province {} conflicts with an already preexisting province", identifier);
         }
         // Add province to country
         universe.get_or_emplace<components::CountryCityList>(universe.countries[country])

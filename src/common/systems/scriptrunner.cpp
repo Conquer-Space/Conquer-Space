@@ -18,19 +18,19 @@
 
 #include <spdlog/spdlog.h>
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "common/util/profiler.h"
 
-cqsp::common::systems::SysScript::SysScript(Game &game)  : ISimulationSystem(game) {
+cqsp::common::systems::SysScript::SysScript(Game &game) : ISimulationSystem(game) {
     sol::optional<std::vector<sol::table>> optional = game.GetScriptInterface()["events"]["data"];
     events = *optional;
 }
 
 cqsp::common::systems::SysScript::~SysScript() {
     // So it doesn't crash when we delete this
-    for (auto& evet : events) {
+    for (auto &evet : events) {
         evet.abandon();
     }
     events.clear();

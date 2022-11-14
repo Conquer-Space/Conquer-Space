@@ -16,16 +16,14 @@
 */
 #include "engine/application.h"
 
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
 #include <RmlUi/Core.h>
 #include <RmlUi/Debugger.h>
-
 #include <fmt/core.h>
+#include <glad/glad.h>
 #include <hjson.h>
-
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
@@ -37,22 +35,21 @@
 #include <string>
 #include <vector>
 
-#include <tracy/Tracy.hpp>
-
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <tracy/Tracy.hpp>
 
+#include "common/util/logging.h"
+#include "common/util/paths.h"
 #include "common/util/profiler.h"
 #include "common/version.h"
 #include "engine/audio/audiointerface.h"
-#include "common/util/paths.h"
-#include "common/util/logging.h"
 #include "engine/cqspgui.h"
+#include "engine/enginelogger.h"
+#include "engine/ui/RmlUi_Renderer_GL3.h"
 #include "engine/ui/rmlrenderinterface.h"
 #include "engine/ui/rmlsysteminterface.h"
 #include "engine/userinput.h"
-#include "engine/enginelogger.h"
-#include "engine/ui/RmlUi_Renderer_GL3.h"
 
 namespace cqsp::engine {
 namespace {
@@ -94,29 +91,28 @@ const char* ParseSeverity(GLenum severity) {
 
 const char* ParseSource(GLenum source) {
     switch (source) {
-    case GL_DEBUG_SOURCE_API:
-        return ("API");
-    case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
-        return ("Window System");
-    case GL_DEBUG_SOURCE_SHADER_COMPILER:
-        return ("Shader Compiler");
-    case GL_DEBUG_SOURCE_THIRD_PARTY:
-        return ("Third Party");
-    case GL_DEBUG_SOURCE_APPLICATION:
-        return ("Application");
-    case GL_DEBUG_SOURCE_OTHER:
-        return ("Other");
+        case GL_DEBUG_SOURCE_API:
+            return ("API");
+        case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
+            return ("Window System");
+        case GL_DEBUG_SOURCE_SHADER_COMPILER:
+            return ("Shader Compiler");
+        case GL_DEBUG_SOURCE_THIRD_PARTY:
+            return ("Third Party");
+        case GL_DEBUG_SOURCE_APPLICATION:
+            return ("Application");
+        case GL_DEBUG_SOURCE_OTHER:
+            return ("Other");
     }
 }
 
-void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id,
-                            GLenum severity, GLsizei length,
+void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum severity, GLsizei length,
                             const char* message, const void* userParam) {
     if (id == 131169 || id == 131185 || id == 131218 || id == 131204)
         return;  // ignore these non-significant error codes
 
-    ENGINE_LOG_INFO("{} message from {} ({}:{}): {}", ParseType(type),
-                    ParseSource(source), ParseSeverity(severity), id, message);
+    ENGINE_LOG_INFO("{} message from {} ({}:{}): {}", ParseType(type), ParseSource(source), ParseSeverity(severity), id,
+                    message);
 }
 
 class GLWindow : public cqsp::engine::Window {
@@ -131,13 +127,9 @@ class GLWindow : public cqsp::engine::Window {
     bool MouseButtonIsReleased(int btn) const { return m_mouse_keys_released[btn]; }
     bool MouseButtonIsPressed(int btn) const { return m_mouse_keys_pressed[btn]; }
 
-    bool MouseDragged() const {
-        return !(m_mouse_x == m_mouse_x_on_pressed &&
-                 m_mouse_y == m_mouse_y_on_pressed);
-    }
+    bool MouseDragged() const { return !(m_mouse_x == m_mouse_x_on_pressed && m_mouse_y == m_mouse_y_on_pressed); }
 
-    void KeyboardCallback(GLFWwindow* _w, int key, int scancode, int action,
-                          int mods) {
+    void KeyboardCallback(GLFWwindow* _w, int key, int scancode, int action, int mods) {
         if (action == GLFW_PRESS) {
             m_keys_held[key] = true;
             m_keys_pressed[key] = true;
@@ -195,56 +187,43 @@ class GLWindow : public cqsp::engine::Window {
         m_window_width = width;
         m_window_height = height;
         window_size_changed = true;
-        RmlGLFW::ProcessFramebufferSizeCallback(app->GetRmlUiContext(), width,
-                                              height);
+        RmlGLFW::ProcessFramebufferSizeCallback(app->GetRmlUiContext(), width, height);
     }
 
     void SetCallbacks() {
         // Set user pointer
         glfwSetWindowUserPointer(window, this);
 
-        auto key_callback = [](GLFWwindow* _w, int key, int scancode,
-                               int action, int mods) {
-            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))
-                ->KeyboardCallback(_w, key, scancode, action, mods);
+        auto key_callback = [](GLFWwindow* _w, int key, int scancode, int action, int mods) {
+            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))->KeyboardCallback(_w, key, scancode, action, mods);
         };
 
-        auto cursor_position_callback = [](GLFWwindow* _w, double xpos,
-                                           double ypos) {
-            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))
-                ->MousePositionCallback(_w, xpos, ypos);
+        auto cursor_position_callback = [](GLFWwindow* _w, double xpos, double ypos) {
+            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))->MousePositionCallback(_w, xpos, ypos);
         };
 
         auto cursor_enter_callback = [](GLFWwindow* _w, int entered) {
-            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))
-                ->MouseEnterCallback(_w, entered);
+            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))->MouseEnterCallback(_w, entered);
         };
 
-        auto mouse_button_callback = [](GLFWwindow* _w, int button, int action,
-                                        int mods) {
-            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))
-                ->MouseButtonCallback(_w, button, action, mods);
+        auto mouse_button_callback = [](GLFWwindow* _w, int button, int action, int mods) {
+            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))->MouseButtonCallback(_w, button, action, mods);
         };
 
-        auto scroll_callback = [](GLFWwindow* _w, double xoffset,
-                                  double yoffset) {
-            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))
-                ->ScrollCallback(_w, xoffset, yoffset);
+        auto scroll_callback = [](GLFWwindow* _w, double xoffset, double yoffset) {
+            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))->ScrollCallback(_w, xoffset, yoffset);
         };
 
         auto drop_callback = [](GLFWwindow* _w, int count, const char** paths) {
-            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))
-                ->DropCallback(_w, count, paths);
+            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))->DropCallback(_w, count, paths);
         };
 
         auto frame_buffer_callback = [](GLFWwindow* _w, int width, int height) {
-            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))
-                ->FrameBufferSizeCallback(_w, width, height);
+            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))->FrameBufferSizeCallback(_w, width, height);
         };
 
         auto character_callback = [](GLFWwindow* _w, unsigned int codepoint) {
-            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))
-                ->CharacterCallback(_w, codepoint);
+            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))->CharacterCallback(_w, codepoint);
         };
 
         glfwSetKeyCallback(window, key_callback);
@@ -290,13 +269,11 @@ class GLWindow : public cqsp::engine::Window {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_SAMPLES, app->GetClientOptions()
-                .GetOptions()["samples"].to_int64());
+        glfwWindowHint(GLFW_SAMPLES, app->GetClientOptions().GetOptions()["samples"].to_int64());
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
         glfwWindowHint(GLFW_DOUBLEBUFFER, true);
         glfwWindowHint(GLFW_DECORATED,
-            ((bool)app->GetClientOptions()
-                .GetOptions()["window"]["decorated"]) ? GLFW_TRUE : GLFW_FALSE);
+                       ((bool)app->GetClientOptions().GetOptions()["window"]["decorated"]) ? GLFW_TRUE : GLFW_FALSE);
 
 #ifdef __APPLE__
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -329,7 +306,7 @@ class GLWindow : public cqsp::engine::Window {
 
         if (flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
             glEnable(GL_DEBUG_OUTPUT);
-            glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS); // makes sure errors are displayed synchronously
+            glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);  // makes sure errors are displayed synchronously
             glDebugMessageCallback(glDebugOutput, nullptr);
             glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
         }
@@ -338,9 +315,7 @@ class GLWindow : public cqsp::engine::Window {
         glViewport(0, 0, width, height);
     }
 
-    double MouseButtonLastReleased(int btn) const {
-        return m_mouse_keys_last_pressed[btn];
-    }
+    double MouseButtonLastReleased(int btn) const { return m_mouse_keys_last_pressed[btn]; }
 
     bool MouseButtonDoubleClicked(int btn) const {
         bool is_pressed_long_enough = (m_mouse_pressed_time[btn]) <= 0.5f;
@@ -363,15 +338,14 @@ class GLWindow : public cqsp::engine::Window {
     bool m_mouse_keys_released[GLFW_MOUSE_BUTTON_LAST] = {false};
     bool m_mouse_keys_pressed[GLFW_MOUSE_BUTTON_LAST] = {false};
 
-    double m_mouse_keys_last_pressed[GLFW_MOUSE_BUTTON_LAST] = { 0.0 };
-    double m_mouse_pressed_time[GLFW_MOUSE_BUTTON_LAST] = { 0.0 };
+    double m_mouse_keys_last_pressed[GLFW_MOUSE_BUTTON_LAST] = {0.0};
+    double m_mouse_pressed_time[GLFW_MOUSE_BUTTON_LAST] = {0.0};
 
     bool m_keys_held[GLFW_KEY_LAST] = {false};
     bool m_keys_released[GLFW_KEY_LAST] = {false};
     bool m_keys_pressed[GLFW_KEY_LAST] = {false};
 
     double m_scroll_amount;
-
 
     int m_window_width, m_window_height;
 
@@ -383,9 +357,7 @@ class GLWindow : public cqsp::engine::Window {
     int m_mods;
 };
 
-GLFWwindow* window(cqsp::engine::Window* window) {
-    return reinterpret_cast<GLWindow*>(window)->window;
-}
+GLFWwindow* window(cqsp::engine::Window* window) { return reinterpret_cast<GLWindow*>(window)->window; }
 }  // namespace
 
 int Application::init() {
@@ -479,13 +451,11 @@ void Application::ProcessRmlUiUserInput() {
 
     // Process key inputs
     for (int key : gl_window->keys_pressed_last) {
-        rml_context->ProcessKeyDown((Rml::Input::KeyIdentifier)GetRmlUiKey(key),
-                                    key_modifier);
+        rml_context->ProcessKeyDown((Rml::Input::KeyIdentifier)GetRmlUiKey(key), key_modifier);
     }
 
     for (int key : gl_window->keys_released_last) {
-        rml_context->ProcessKeyUp((Rml::Input::KeyIdentifier)GetRmlUiKey(key),
-                                    key_modifier);
+        rml_context->ProcessKeyUp((Rml::Input::KeyIdentifier)GetRmlUiKey(key), key_modifier);
     }
 
     for (unsigned int key : gl_window->code_input) {
@@ -526,11 +496,9 @@ void Application::InitRmlUi() {
     Hjson::Value fontDatabase;
     Hjson::DecoderOptions decOpt;
     decOpt.comments = false;
-    std::fstream stream(cqsp::common::util::GetCqspDataPath() +
-                        "/core/gfx/fonts/fonts.hjson");
+    std::fstream stream(cqsp::common::util::GetCqspDataPath() + "/core/gfx/fonts/fonts.hjson");
     stream >> Hjson::StreamDecoder(fontDatabase, decOpt);
-    std::string fontPath =
-        cqsp::common::util::GetCqspDataPath() + "/core/gfx/fonts/";
+    std::string fontPath = cqsp::common::util::GetCqspDataPath() + "/core/gfx/fonts/";
 
     // Load the fonts
     for (int index = 0; index < fontDatabase["rmlui"].size(); index++) {
@@ -588,20 +556,14 @@ int Application::destroy() {
 }
 
 void Application::CalculateProjections() {
-    float window_ratio = static_cast<float>(GetWindowWidth()) /
-                    static_cast<float>(GetWindowHeight());
+    float window_ratio = static_cast<float>(GetWindowWidth()) / static_cast<float>(GetWindowHeight());
     three_dim_projection = glm::infinitePerspective(glm::radians(45.f), window_ratio, 0.000001f);
     // For normal rendering
     two_dim_projection =
-        glm::ortho(0.0f,
-                   static_cast<float>(GetWindowWidth()), 0.0f,
-                   static_cast<float>(GetWindowHeight()));
+        glm::ortho(0.0f, static_cast<float>(GetWindowWidth()), 0.0f, static_cast<float>(GetWindowHeight()));
     // For rmlui
     rmlui_projection =
-        glm::ortho(0.0f,
-                   static_cast<float>(GetWindowWidth()),
-                   static_cast<float>(GetWindowHeight()), 0.0f,
-                   -1.f, 1.f);
+        glm::ortho(0.0f, static_cast<float>(GetWindowWidth()), static_cast<float>(GetWindowHeight()), 0.0f, -1.f, 1.f);
 }
 
 Application::Application(int _argc, char* _argv[]) {
@@ -695,8 +657,7 @@ void Application::run() {
         if (draw_fps) {
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            DrawText(fmt::format("FPS: {:.0f}", fps), GetWindowWidth() - 80,
-                     GetWindowHeight() - 24);
+            DrawText(fmt::format("FPS: {:.0f}", fps), GetWindowWidth() - 80, GetWindowHeight() - 24);
         }
 
         m_window->OnFrame();
@@ -706,13 +667,9 @@ void Application::run() {
     destroy();
 }
 
-bool Application::ShouldExit() {
-    return !glfwWindowShouldClose(window(m_window));
-}
+bool Application::ShouldExit() { return !glfwWindowShouldClose(window(m_window)); }
 
-void Application::ExitApplication() {
-    glfwSetWindowShouldClose(window(m_window), true);
-}
+void Application::ExitApplication() { glfwSetWindowShouldClose(window(m_window), true); }
 
 Rml::ElementDocument* Application::LoadDocument(const std::string& path) {
     auto document = rml_context->LoadDocument(path);
@@ -742,16 +699,14 @@ Rml::ElementDocument* Application::ReloadDocument(const std::string& path) {
     return document;
 }
 
-void Application::DrawText(const std::string& text, float x,
-                                         float y) {
+void Application::DrawText(const std::string& text, float x, float y) {
     if (fontShader != nullptr && m_font != nullptr) {
         // Render with size 16 white text
         cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, 16, glm::vec3(1.f, 1.f, 1.f));
     }
 }
 
-void Application::DrawText(const std::string& text, const glm::vec3& color,
-                           float x, float y) {
+void Application::DrawText(const std::string& text, const glm::vec3& color, float x, float y) {
     if (fontShader != nullptr && m_font != nullptr) {
         // Render with size 16 white text
         cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, 16, color);
@@ -765,8 +720,7 @@ void Application::DrawText(const std::string& text, float x, float y, float size
     }
 }
 
-void Application::DrawText(const std::string& text, const glm::vec3& color,
-                           float x, float y, float size) {
+void Application::DrawText(const std::string& text, const glm::vec3& color, float x, float y, float size) {
     if (fontShader != nullptr && m_font != nullptr) {
         // Render with size 16 white text
         cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, size, color);
@@ -775,7 +729,7 @@ void Application::DrawText(const std::string& text, const glm::vec3& color,
 
 void Application::DrawTextNormalized(const std::string& text, float x, float y) {
     if (fontShader != nullptr && m_font != nullptr) {
-        cqsp::asset::RenderText(*fontShader, *m_font, text, (x + 1) * GetWindowWidth()/2,
+        cqsp::asset::RenderText(*fontShader, *m_font, text, (x + 1) * GetWindowWidth() / 2,
                                 (y + 1) * GetWindowHeight() / 2, 16, glm::vec3(1.f, 1.f, 1.f));
     }
 }
@@ -795,7 +749,7 @@ bool Application::Screenshot(const char* path) {
     if (path == NULL) {
         // Make screenshot folder
         std::filesystem::path screenshot_folder =
-                            std::filesystem::path(cqsp::common::util::GetCqspSavePath()) / "screenshots";
+            std::filesystem::path(cqsp::common::util::GetCqspSavePath()) / "screenshots";
         std::filesystem::create_directories(screenshot_folder);
 
         // Default file name is YYYY-MM-DD_HH.MM.SS.png in the data folder.
@@ -810,8 +764,8 @@ bool Application::Screenshot(const char* path) {
         screenshot_name = path;
     }
 
-    bool success = cqsp::asset::SaveImage(screenshot_name.c_str(),
-                                          GetWindowWidth(), GetWindowHeight(), components, data);
+    bool success =
+        cqsp::asset::SaveImage(screenshot_name.c_str(), GetWindowWidth(), GetWindowHeight(), components, data);
     delete[] data;
     return success;
 }
@@ -825,16 +779,15 @@ void Application::InitFonts() {
     stream >> Hjson::StreamDecoder(fontDatabase, decOpt);
     std::string fontPath = cqsp::common::util::GetCqspDataPath() + "/core/gfx/fonts/";
     ImGuiIO io = ImGui::GetIO();
-    ImFont* defaultFont = io.Fonts->AddFontFromFileTTF(
-        (fontPath + fontDatabase["default"]["path"]).c_str(),
-        fontDatabase["default"]["size"]);
+    ImFont* defaultFont = io.Fonts->AddFontFromFileTTF((fontPath + fontDatabase["default"]["path"]).c_str(),
+                                                       fontDatabase["default"]["size"]);
     io.FontDefault = defaultFont;
 }
 
 void Application::SetIcon() {
     GLFWimage images[1];
-    images[0].pixels = stbi_load((cqsp::common::util::GetCqspDataPath() + "/" + icon_path).c_str(),
-                                 &images[0].width, &images[0].height, 0, 4);
+    images[0].pixels = stbi_load((cqsp::common::util::GetCqspDataPath() + "/" + icon_path).c_str(), &images[0].width,
+                                 &images[0].height, 0, 4);
     glfwSetWindowIcon(window(m_window), 1, images);
     stbi_image_free(images[0].pixels);
 }
@@ -843,15 +796,14 @@ void Application::GlInit() {
     m_window = new GLWindow();
     ((GLWindow*)m_window)->app = this;
     m_window->InitWindow(m_client_options.GetOptions()["window"]["width"],
-                            m_client_options.GetOptions()["window"]["height"]);
+                         m_client_options.GetOptions()["window"]["height"]);
 
     // Print gl information
     ENGINE_LOG_INFO(" --- Begin GL information ---");
     ENGINE_LOG_INFO("GL version: {}", glGetString(GL_VERSION));
     ENGINE_LOG_INFO("GL vendor: {}", glGetString(GL_VENDOR));
     ENGINE_LOG_INFO("GL Renderer: {}", glGetString(GL_RENDERER));
-    ENGINE_LOG_INFO("GL shading language: {}",
-                       glGetString(GL_SHADING_LANGUAGE_VERSION));
+    ENGINE_LOG_INFO("GL shading language: {}", glGetString(GL_SHADING_LANGUAGE_VERSION));
     ENGINE_LOG_INFO(" --- End of GL information ---");
 }
 
@@ -865,11 +817,9 @@ void Application::LoggerInit() {
 
 void Application::LogInfo() {
 #ifndef NDEBUG
-    ENGINE_LOG_INFO("Conquer Space Debug {} {}", CQSP_VERSION_STRING,
-                       GIT_INFO);
+    ENGINE_LOG_INFO("Conquer Space Debug {} {}", CQSP_VERSION_STRING, GIT_INFO);
 #else
-    ENGINE_LOG_INFO("Conquer Space {} {}", CQSP_VERSION_STRING,
-                       GIT_INFO);
+    ENGINE_LOG_INFO("Conquer Space {} {}", CQSP_VERSION_STRING, GIT_INFO);
 #endif
     ENGINE_LOG_INFO("Platform: {}", PLATFORM_NAME);
     ENGINE_LOG_INFO("Compiled {} {}", __DATE__, __TIME__);
@@ -883,28 +833,21 @@ void Application::LogInfo() {
 #endif  // TRACY_ENABLED
 }
 
-void Application::SetWindowDimensions(int width, int height) {
-    m_window->SetWindowSize(width, height);
-}
+void Application::SetWindowDimensions(int width, int height) { m_window->SetWindowSize(width, height); }
 
 void Application::SetFullScreen(bool screen) {
     if (screen) {
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowMonitor(window(m_window), glfwGetPrimaryMonitor(), 0, 0,
-                             mode->width, mode->height, GLFW_DONT_CARE);
+        glfwSetWindowMonitor(window(m_window), glfwGetPrimaryMonitor(), 0, 0, mode->width, mode->height,
+                             GLFW_DONT_CARE);
     } else {
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowMonitor(
-            window(m_window), NULL, 40, 40,
-            GetClientOptions().GetOptions()["window"]["width"],
-            GetClientOptions().GetOptions()["window"]["height"],
-            mode->refreshRate);
+        glfwSetWindowMonitor(window(m_window), NULL, 40, 40, GetClientOptions().GetOptions()["window"]["width"],
+                             GetClientOptions().GetOptions()["window"]["height"], mode->refreshRate);
     }
 }
 
-void SceneManager::SetInitialScene(std::unique_ptr<Scene> scene) {
-    m_scene = std::move(scene);
-}
+void SceneManager::SetInitialScene(std::unique_ptr<Scene> scene) { m_scene = std::move(scene); }
 
 void SceneManager::SetScene(std::unique_ptr<Scene> scene) {
     m_next_scene = std::move(scene);
@@ -919,9 +862,7 @@ void SceneManager::SwitchScene() {
     m_switch = false;
 }
 
-Scene* SceneManager::GetScene() {
-    return m_scene.get();
-}
+Scene* SceneManager::GetScene() { return m_scene.get(); }
 
 void SceneManager::DeleteCurrentScene() { m_scene.reset(); }
 
@@ -944,14 +885,13 @@ Application::CqspEventInstancer::CqspEventInstancer() {}
 
 Application::CqspEventInstancer::~CqspEventInstancer() {}
 
-Rml::EventListener* Application::CqspEventInstancer::
-                    InstanceEventListener(const Rml::String & value, Rml::Element * element) {
+Rml::EventListener* Application::CqspEventInstancer::InstanceEventListener(const Rml::String& value,
+                                                                           Rml::Element* element) {
     // Add event activation, I guess
     return new CqspEventListener(value);
 }
 
-Application::CqspEventListener::~CqspEventListener() {
-}
+Application::CqspEventListener::~CqspEventListener() {}
 
 void Application::CqspEventListener::ProcessEvent(Rml::Event& event) {}
 }  // namespace cqsp::engine

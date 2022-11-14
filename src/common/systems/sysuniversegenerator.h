@@ -19,8 +19,8 @@
 #include <string>
 #include <vector>
 
-#include "common/universe.h"
 #include "common/scripting/scripting.h"
+#include "common/universe.h"
 
 namespace cqsp {
 namespace common {
@@ -34,8 +34,7 @@ class ISysUniverseGenerator {
 
 class ScriptUniverseGenerator : public ISysUniverseGenerator {
  public:
-    explicit ScriptUniverseGenerator(cqsp::scripting::ScriptInterface& _interface) :
-                                                                  script_engine(_interface) {}
+    explicit ScriptUniverseGenerator(cqsp::scripting::ScriptInterface& _interface) : script_engine(_interface) {}
     void Generate(cqsp::common::Universe& universe);
 
  private:

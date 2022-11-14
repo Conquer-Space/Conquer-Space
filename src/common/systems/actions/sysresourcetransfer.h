@@ -31,8 +31,7 @@ namespace resource {
 /// <param name="good">good to transfer</param>
 /// <param name="amount">amount of resources to transfer</param>
 /// <returns>If transfering resources failed.</returns>
-bool TransferResources(entt::registry &registry, entt::entity from, entt::entity to,
-                                                        entt::entity good, double amount);
+bool TransferResources(entt::registry &registry, entt::entity from, entt::entity to, entt::entity good, double amount);
 }  // namespace resource
 }  // namespace systems
 }  // namespace common

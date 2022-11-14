@@ -32,8 +32,7 @@ struct Governed {
 
 struct Organization {};
 
-struct Country {
-};
+struct Country {};
 
 struct CountryCityList {
     std::vector<entt::entity> city_list;

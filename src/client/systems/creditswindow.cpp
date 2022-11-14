@@ -16,29 +16,26 @@
 */
 #include "client/systems/creditswindow.h"
 
+#include <fstream>
 #include <sstream>
 #include <string>
-#include <fstream>
 
 #include "common/util/paths.h"
 
 namespace {
-std::string strip(const std::string &inpt) {
+std::string strip(const std::string& inpt) {
     if (inpt.empty()) {
         return "";
     }
     auto start_it = inpt.begin();
     auto end_it = inpt.rbegin();
-    while (std::isspace(*start_it))
-        ++start_it;
-    while (std::isspace(*end_it))
-        ++end_it;
+    while (std::isspace(*start_it)) ++start_it;
+    while (std::isspace(*end_it)) ++end_it;
     return std::string(start_it, end_it.base());
 }
 }  // namespace
 
-cqsp::client::CreditsWindow::CreditsWindow(cqsp::engine::Application& app)
-    : m_app(app) {}
+cqsp::client::CreditsWindow::CreditsWindow(cqsp::engine::Application& app) : m_app(app) {}
 
 cqsp::client::CreditsWindow::~CreditsWindow() {
     document->RemoveEventListener(Rml::EventId::Click, this);
@@ -83,18 +80,16 @@ void cqsp::client::CreditsWindow::Update(double delta_time) {
     }
 }
 
-void cqsp::client::CreditsWindow::Hide() {
-    document->SetClass("visible", false);
-}
+void cqsp::client::CreditsWindow::Hide() { document->SetClass("visible", false); }
 
 std::string cqsp::client::CreditsWindow::GetDocumentName() {
-    return  cqsp::common::util::GetCqspDataPath() + "/core/gui/credits.rml";
+    return cqsp::common::util::GetCqspDataPath() + "/core/gui/credits.rml";
 }
 
 void cqsp::client::CreditsWindow::ProcessEvent(Rml::Event& event) {
     if (event.GetId() == Rml::EventId::Keydown) {
         Rml::Input::KeyIdentifier key_identifier =
-                    (Rml::Input::KeyIdentifier) event.GetParameter<int>("key_identifier", 0);
+            (Rml::Input::KeyIdentifier)event.GetParameter<int>("key_identifier", 0);
         if (key_identifier == Rml::Input::KI_DOWN) {
             fast_scroll = true;
             return;
@@ -102,7 +97,7 @@ void cqsp::client::CreditsWindow::ProcessEvent(Rml::Event& event) {
     }
     if (event.GetId() == Rml::EventId::Keyup) {
         Rml::Input::KeyIdentifier key_identifier =
-                    (Rml::Input::KeyIdentifier) event.GetParameter<int>("key_identifier", 0);
+            (Rml::Input::KeyIdentifier)event.GetParameter<int>("key_identifier", 0);
         if (key_identifier == Rml::Input::KI_DOWN) {
             fast_scroll = false;
             return;

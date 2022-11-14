@@ -16,24 +16,23 @@
 */
 #include "client/systems/gui/systooltips.h"
 
+#include <cmath>
 #include <string>
 
-#include "common/components/name.h"
-#include "common/components/surface.h"
-#include "common/components/bodies.h"
+#include "client/systems/gui/sysstockpileui.h"
 #include "common/components/area.h"
-#include "common/components/resource.h"
+#include "common/components/bodies.h"
 #include "common/components/coordinates.h"
 #include "common/components/economy.h"
 #include "common/components/infrastructure.h"
+#include "common/components/name.h"
 #include "common/components/organizations.h"
 #include "common/components/player.h"
+#include "common/components/resource.h"
 #include "common/components/science.h"
-
+#include "common/components/surface.h"
 #include "common/systems/population/cityinformation.h"
 #include "common/util/utilnumberdisplay.h"
-
-#include "client/systems/gui/sysstockpileui.h"
 #include "engine/gui.h"
 
 using cqsp::common::Universe;
@@ -49,7 +48,7 @@ void RenderEntityType(const Universe& universe, entt::entity entity) {
     }
 }
 
-void ResourceTooltipSection(const Universe &universe, entt::entity entity) {
+void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
     namespace cqspc = cqsp::common::components;
     //TODO(EhWhoAmI): Set these text red, but too lazy to do it for now
     if (universe.all_of<cqspc::FailedResourceTransfer>(entity)) {
@@ -63,29 +62,24 @@ void ResourceTooltipSection(const Universe &universe, entt::entity entity) {
         ImGui::Separator();
         ImGui::TextFmt("Resources");
         // Then do demand
-        cqsp::client::systems::DrawLedgerTable(
-            "resourcesstockpiletooltip", universe, universe.get<cqspc::ResourceStockpile>(entity));
+        cqsp::client::systems::DrawLedgerTable("resourcesstockpiletooltip", universe,
+                                               universe.get<cqspc::ResourceStockpile>(entity));
     }
     if (universe.all_of<cqspc::FactoryProducing>(entity)) {
         ImGui::Text("Producing next tick");
     }
 
     if (universe.all_of<cqspc::IndustrySize>(entity)) {
-        ImGui::TextFmt(
-            "Size: {}",
-                       universe.get<cqspc::IndustrySize>(entity).size);
-        ImGui::TextFmt("Utilization: {}",
-                       universe.get<cqspc::IndustrySize>(entity).utilization);
+        ImGui::TextFmt("Size: {}", universe.get<cqspc::IndustrySize>(entity).size);
+        ImGui::TextFmt("Utilization: {}", universe.get<cqspc::IndustrySize>(entity).utilization);
     }
-
-
 
     if (universe.all_of<cqspc::infrastructure::PowerConsumption>(entity)) {
         ImGui::Separator();
         auto& consumption = universe.get<cqspc::infrastructure::PowerConsumption>(entity);
         ImGui::TextFmt("Power: {}", consumption.current);
         ImGui::TextFmt("Max Power: {}", consumption.max);
-           ImGui::TextFmt("Min Power: {}", consumption.min);
+        ImGui::TextFmt("Min Power: {}", consumption.min);
     }
     if (universe.all_of<cqspc::CostBreakdown>(entity)) {
         cqspc::CostBreakdown costs = universe.get<cqspc::CostBreakdown>(entity);
@@ -142,12 +136,9 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
         ImGui::TextFmt("Is Market Participant");
     }
     if (universe.all_of<cqspc::types::Kinematics>(entity)) {
-        auto& a =
-            universe.get<cqsp::common::components::types::Kinematics>(entity);
-        ImGui::TextFmt("Position: {} {} {} ({})", a.position.x, a.position.y,
-                       a.position.z, glm::length(a.position));
-        ImGui::TextFmt("Velocity: {} {} {} ({})", a.velocity.x, a.velocity.y,
-                       a.velocity.z, glm::length(a.velocity));
+        auto& a = universe.get<cqsp::common::components::types::Kinematics>(entity);
+        ImGui::TextFmt("Position: {} {} {} ({})", a.position.x, a.position.y, a.position.z, glm::length(a.position));
+        ImGui::TextFmt("Velocity: {} {} {} ({})", a.velocity.x, a.velocity.y, a.velocity.z, glm::length(a.velocity));
     }
 
     if (universe.all_of<cqspc::bodies::Body>(entity)) {
@@ -162,9 +153,7 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
 
     // If it's a city do population
     if (universe.all_of<cqspc::Settlement>(entity)) {
-        ImGui::TextFmt("Population: {}", util::LongToHumanString(
-                                             common::systems::GetCityPopulation(
-                                                 universe, entity)));
+        ImGui::TextFmt("Population: {}", util::LongToHumanString(common::systems::GetCityPopulation(universe, entity)));
     }
     if (universe.all_of<common::components::bodies::Body>(entity)) {
         auto& body = universe.get<common::components::bodies::Body>(entity);
@@ -183,16 +172,12 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
         ImGui::TextFmt("Longitude of Linear Node: {} deg", common::components::types::toDegree(orbit.LAN));
         ImGui::TextFmt("Argument of Periapsis: {} deg", common::components::types::toDegree(orbit.w));
         ImGui::TextFmt("True Anomaly: {} deg", common::components::types::toDegree(orbit.v));
-        ImGui::TextFmt("Orbital Period: {} y {} d {} h {} m {} s",
-                       (int) (orbit.T / (60 * 60 * 24 * 365)),
-                       (int) std::fmod(orbit.T / (60 * 60 * 24), 24),
-                       (int) std::fmod(orbit.T / (60 * 60), 60),
-                       (int) std::fmod(orbit.T / 60, 60),
-                       std::fmod(orbit.T, 60));
+        ImGui::TextFmt("Orbital Period: {} y {} d {} h {} m {} s", (int)(orbit.T / (60 * 60 * 24 * 365)),
+                       (int)std::fmod(orbit.T / (60 * 60 * 24), 24), (int)std::fmod(orbit.T / (60 * 60), 60),
+                       (int)std::fmod(orbit.T / 60, 60), std::fmod(orbit.T, 60));
     }
 
-    if (universe.all_of<common::components::types::Orbit,
-                        cqspc::types::Kinematics>(entity)) {
+    if (universe.all_of<common::components::types::Orbit, cqspc::types::Kinematics>(entity)) {
         auto ref = universe.get<common::components::types::Orbit>(entity).reference_body;
         if (universe.valid(ref) && universe.any_of<cqspc::bodies::Body>(ref)) {
             const double radius = universe.get<cqspc::bodies::Body>(ref).radius;
@@ -202,8 +187,7 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
     }
 
     if (universe.all_of<common::components::types::SurfaceCoordinate>(entity)) {
-        auto& pos =
-            universe.get<common::components::types::SurfaceCoordinate>(entity);
+        auto& pos = universe.get<common::components::types::SurfaceCoordinate>(entity);
         ImGui::TextFmt("Coordinates: {}, {}", pos.latitude(), pos.longitude());
     }
 
@@ -212,8 +196,7 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
     ResourceTooltipSection(universe, entity);
 }
 
-std::string GetEntityType(const cqsp::common::Universe& universe,
-                          entt::entity entity) {
+std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity entity) {
     namespace cqspc = cqsp::common::components;
     // Then get type of entity
     if (entity == entt::null) {
@@ -222,14 +205,14 @@ std::string GetEntityType(const cqsp::common::Universe& universe,
     if (universe.all_of<cqspc::bodies::Star>(entity)) {
         return "Star";
     } else if (universe.all_of<cqspc::bodies::Planet>(entity)) {
-        return  "Planet";
+        return "Planet";
     } else if (universe.any_of<cqspc::Settlement, cqspc::Habitation>(entity)) {
-        return  "City";
-    }  else if (universe.any_of<cqspc::Production>(entity)) {
+        return "City";
+    } else if (universe.any_of<cqspc::Production>(entity)) {
         std::string production = "";
         auto& generator = universe.get<cqspc::Production>(entity);
         return fmt::format("{} Factory", cqsp::client::systems::gui::GetName(universe, generator.recipe));
-    }  else if (universe.any_of<cqspc::Mine>(entity)) {
+    } else if (universe.any_of<cqspc::Mine>(entity)) {
         /*
         std::string production = "";
         auto& generator = universe.get<cqspc::ResourceGenerator>(entity);
@@ -261,7 +244,7 @@ std::string GetEntityType(const cqsp::common::Universe& universe,
 
 // TODO(EhWhoAmI): Organize this so that it makes logical sense and order.
 // TODO(AGM): Support new production system
-void EntityTooltip(const Universe &universe, entt::entity entity) {
+void EntityTooltip(const Universe& universe, entt::entity entity) {
     if (!ImGui::IsItemHovered()) {
         return;
     }

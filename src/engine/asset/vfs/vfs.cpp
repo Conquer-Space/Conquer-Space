@@ -25,8 +25,7 @@ VirtualMounter::~VirtualMounter() {
     }
 }
 
-void VirtualMounter::AddMountPoint(const std::string& point,
-                                                IVirtualFileSystem* fs) {
+void VirtualMounter::AddMountPoint(const std::string& point, IVirtualFileSystem* fs) {
     mount_points[std::string(point)] = fs;
 }
 
@@ -43,14 +42,11 @@ std::shared_ptr<IVirtualFile> VirtualMounter::Open(const std::string& path, File
     return nullptr;
 }
 
-std::shared_ptr<IVirtualFile> VirtualMounter::Open(const std::string& mount,
-                                                   const std::string& path,
-                                                   FileModes mode) {
+std::shared_ptr<IVirtualFile> VirtualMounter::Open(const std::string& mount, const std::string& path, FileModes mode) {
     return mount_points[mount]->Open(path, mode);
 }
 
-std::shared_ptr<IVirtualDirectory>
-VirtualMounter::OpenDirectory(const std::string& path) {
+std::shared_ptr<IVirtualDirectory> VirtualMounter::OpenDirectory(const std::string& path) {
     for (auto it = mount_points.begin(); it != mount_points.end(); it++) {
         if (path.rfind(it->first, 0) != 0) {
             continue;
@@ -70,8 +66,7 @@ VirtualMounter::OpenDirectory(const std::string& path) {
     return nullptr;
 }
 
-std::shared_ptr<IVirtualDirectory>
-VirtualMounter::OpenDirectory(const std::string& mount, const std::string& path) {
+std::shared_ptr<IVirtualDirectory> VirtualMounter::OpenDirectory(const std::string& mount, const std::string& path) {
     return mount_points[mount]->OpenDirectory(path);
 }
 
@@ -90,8 +85,7 @@ bool VirtualMounter::IsFile(const std::string& path) {
     return false;
 }
 
-bool VirtualMounter::IsFile(const std::string& mount,
-                                         const std::string& path) {
+bool VirtualMounter::IsFile(const std::string& mount, const std::string& path) {
     return mount_points[mount]->IsFile(path);
 }
 
@@ -107,8 +101,7 @@ bool VirtualMounter::IsDirectory(const std::string& path) {
     return false;
 }
 
-bool VirtualMounter::IsDirectory(const std::string& mount,
-                                              const std::string& path) {
+bool VirtualMounter::IsDirectory(const std::string& mount, const std::string& path) {
     return mount_points[mount]->IsDirectory(path);
 }
 
@@ -149,7 +142,7 @@ std::string ReadAllFromVFileToString(IVirtualFile* file) {
     const int return_length = 2;
     while ((start_pos = str.find("\r\n", start_pos)) != std::string::npos) {
         str.replace(start_pos, return_length, "\n");
-        start_pos += 1; // In case 'to' contains 'from', like replacing 'x' with 'yx'
+        start_pos += 1;  // In case 'to' contains 'from', like replacing 'x' with 'yx'
     }
     delete[] buf;
     return str;

@@ -18,9 +18,7 @@
 
 #include <glad/glad.h>
 
-cqsp::engine::Mesh::Mesh() {
-    mode = GL_TRIANGLES;
-}
+cqsp::engine::Mesh::Mesh() { mode = GL_TRIANGLES; }
 
 cqsp::engine::Mesh::~Mesh() {
     glDeleteVertexArrays(1, &VAO);

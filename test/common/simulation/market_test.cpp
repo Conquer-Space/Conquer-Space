@@ -18,17 +18,16 @@
 
 #include <iostream>
 
-#include "common/universe.h"
 #include "common/components/economy.h"
-#include "common/systems/economy/sysmarket.h"
 #include "common/systems/economy/markethelpers.h"
+#include "common/systems/economy/sysmarket.h"
+#include "common/universe.h"
 
 namespace cqspc = cqsp::common::components;
 
 class MarketTwoTest : public ::testing::Test {
  protected:
-    MarketTwoTest() : universe(game.GetUniverse()) {
-    }
+    MarketTwoTest() : universe(game.GetUniverse()) {}
 
     void SetUp() override {
         good_1 = universe.create();

@@ -19,8 +19,8 @@
 #include <hjson.h>
 
 #include <map>
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "common/util/random/random.h"
 
@@ -56,11 +56,10 @@ class NameGenerator {
     std::string Generate(const std::string& rule_name) noexcept;
     void LoadNameGenerator(const Hjson::Value& value);
 
-    void SetRandom(util::IRandom* rand) {
-        random = rand;
-    }
+    void SetRandom(util::IRandom* rand) { random = rand; }
 
     const std::string& GetName() { return name; }
+
  private:
     std::map<std::string, std::vector<std::string>> syllables_list;
     std::map<std::string, std::string> rule_list;

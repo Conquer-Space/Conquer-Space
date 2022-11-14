@@ -18,6 +18,8 @@
 
 #include <vector>
 
+#include <entt/entt.hpp>
+
 namespace cqsp {
 namespace common {
 namespace components {

@@ -16,14 +16,12 @@
 */
 #pragma once
 
-
 #include <map>
 #include <string>
 #include <vector>
 
-#include "engine/scene.h"
-
 #include "engine/renderer/framebuffer.h"
+#include "engine/scene.h"
 
 namespace cqsp {
 namespace scene {

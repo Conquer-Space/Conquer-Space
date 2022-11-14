@@ -18,23 +18,22 @@
 
 #include <glad/glad.h>
 
-#include "engine/gui.h"
 #include "engine/cqspgui.h"
+#include "engine/gui.h"
 
 namespace cqsp::client::systems {
 void SysTurnSaveWindow::Init() {}
 
 void SysTurnSaveWindow::DoUI(int delta_time) {
     // Turn window
-    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x, 30),
-                            ImGuiCond_Always, ImVec2(1.f, 0.f));
+    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x, 30), ImGuiCond_Always, ImVec2(1.f, 0.f));
     ImGui::SetNextWindowSize(ImVec2(170, 80), ImGuiCond_Always);
     bool to_show = true;
-    ImGui::Begin("TS window", &to_show, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
-                                     ImGuiWindowFlags_AlwaysAutoResize | window_flags);
+    ImGui::Begin(
+        "TS window", &to_show,
+        ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | window_flags);
     // Show date
-    ImGui::TextFmt("Date: {} {}:00", GetUniverse().date.ToString(),
-                   GetUniverse().date.GetDate() % 24);
+    ImGui::TextFmt("Date: {} {}:00", GetUniverse().date.ToString(), GetUniverse().date.GetDate() % 24);
     ImGui::TextFmt("Speed: {}", tick_speed);
     // Get time
     if (CQSPGui::DefaultButton("<<")) {
@@ -70,7 +69,5 @@ void SysTurnSaveWindow::DoUpdate(int delta_time) {
     }
 }
 
-void SysTurnSaveWindow::TogglePlayState() {
-    to_tick = !to_tick;
-}
+void SysTurnSaveWindow::TogglePlayState() { to_tick = !to_tick; }
 }  // namespace cqsp::client::systems

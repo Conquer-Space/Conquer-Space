@@ -30,8 +30,7 @@ namespace cqsp::client::systems::gui {
 /// <param name="universe"></param>
 /// <param name="entity"></param>
 /// <returns></returns>
-std::string GetName(const cqsp::common::Universe &universe,
-                    entt::entity entity);
+std::string GetName(const cqsp::common::Universe &universe, entt::entity entity);
 /// <summary>
 /// This actually creates the tooltip for the entity
 /// </summary>

@@ -33,7 +33,7 @@
 #include <RmlUi/Core/Types.h>
 
 using KeyDownCallback = bool (*)(Rml::Context* context, Rml::Input::KeyIdentifier key, int key_modifier,
-                                float native_dp_ratio, bool priority);
+                                 float native_dp_ratio, bool priority);
 
 /**
     This interface serves as a basic abstraction over the various backends included with RmlUi.
@@ -70,4 +70,4 @@ void BeginFrame();
 // Presents the rendered frame to the screen, call after rendering the RmlUi context.
 void PresentFrame();
 
-} // namespace Backend
+}  // namespace Backend

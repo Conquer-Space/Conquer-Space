@@ -53,7 +53,7 @@ class StarDate {
     int GetDate() { return date; }
 
     double ToSecond() { return date * 60; }
-    double ToDay() { return date / (float) 1440.; }
+    double ToDay() { return date / (float)1440.; }
 
     std::string ToString();
     std::string ToString(double offset);
@@ -65,7 +65,7 @@ class StarDate {
     int GetMinute();
 
  private:
-     // The date is in minutes
+    // The date is in minutes
     unsigned int date = -1;
 
     static const int start_date = 2000;

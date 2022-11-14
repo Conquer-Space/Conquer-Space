@@ -16,9 +16,6 @@
 */
 #include "common/game.h"
 
-cqsp::common::Game::Game() {
-    script_interface.Init();
-}
+cqsp::common::Game::Game() { script_interface.Init(); }
 
-cqsp::common::Game::~Game() {
-}
+cqsp::common::Game::~Game() {}

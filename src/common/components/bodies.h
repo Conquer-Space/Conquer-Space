@@ -16,11 +16,11 @@
 */
 #pragma once
 
-#include <vector>
-#include <map>
-#include <tuple>
-#include <string>
 #include <limits>
+#include <map>
+#include <string>
+#include <tuple>
+#include <vector>
 
 #include <entt/entt.hpp>
 
@@ -70,7 +70,7 @@ inline double CalculateSOI(const double& mass, const double& reference_mass, con
 /// Masses of bodies are described in gravitational constant because it's more accurate to describe like that
 /// <param name="GM"></param>
 /// <returns></returns>
-inline double CalculateMass(const double& GM) { return GM/types::G_km; }
+inline double CalculateMass(const double& GM) { return GM / types::G_km; }
 
 /// <summary>
 /// Calculates the current planet rotation angle
@@ -97,9 +97,7 @@ struct NautralObject {};
 struct OrbitalSystem {
     // Set the tree
     std::vector<entt::entity> children;
-    void push_back(const entt::entity& entity) {
-        children.push_back(entity);
-    }
+    void push_back(const entt::entity& entity) { children.push_back(entity); }
 };
 
 struct DirtyOrbit {};

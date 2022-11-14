@@ -23,8 +23,7 @@
 namespace cqsp::client::systems {
 class SysProvinceInformation : public SysUserInterface {
  public:
-    explicit SysProvinceInformation(cqsp::engine::Application& app)
-        : SysUserInterface(app) {}
+    explicit SysProvinceInformation(cqsp::engine::Application& app) : SysUserInterface(app) {}
     void Init();
     void DoUI(int delta_time);
     void DoUpdate(int delta_time);
@@ -42,9 +41,7 @@ class SysProvinceInformation : public SysUserInterface {
 
     void MarketInformationTooltipContent(const entt::entity marketentity);
     template <typename T>
-    void IndustryTabGenericChild(const std::string& tabname,
-                                 const std::string& industryname,
-                                 const ImVec2& size);
+    void IndustryTabGenericChild(const std::string& tabname, const std::string& industryname, const ImVec2& size);
 
     entt::entity current_city;
     entt::entity current_country;
@@ -54,10 +51,7 @@ class SysProvinceInformation : public SysUserInterface {
     entt::entity current_market;
     bool city_factory_info = false;
 
-    enum ViewMode {
-        COUNTRY_VIEW,
-        CITY_VIEW
-    } view_mode = ViewMode::COUNTRY_VIEW;
+    enum ViewMode { COUNTRY_VIEW, CITY_VIEW } view_mode = ViewMode::COUNTRY_VIEW;
 };
 
 }  // namespace cqsp::client::systems

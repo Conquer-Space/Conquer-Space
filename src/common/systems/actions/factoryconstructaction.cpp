@@ -14,22 +14,24 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+#include "common/systems/actions/factoryconstructaction.h"
+
 #include <spdlog/spdlog.h>
 
-#include <map>
 #include <limits>
+#include <map>
 
-#include "common/components/resource.h"
 #include "common/components/area.h"
 #include "common/components/economy.h"
+#include "common/components/resource.h"
 #include "common/systems/economy/markethelpers.h"
-#include "common/systems/actions/factoryconstructaction.h"
 
 using cqsp::common::Universe;
 entt::entity cqsp::common::systems::actions::OrderConstructionFactory(cqsp::common::Universe& universe,
-    entt::entity city, entt::entity market, entt::entity recipe, int productivity, entt::entity builder) {
-    entt::entity factory = common::systems::actions::CreateFactory(
-        universe, city, recipe, productivity);
+                                                                      entt::entity city, entt::entity market,
+                                                                      entt::entity recipe, int productivity,
+                                                                      entt::entity builder) {
+    entt::entity factory = common::systems::actions::CreateFactory(universe, city, recipe, productivity);
     if (factory == entt::null) {
         return entt::null;
     }
@@ -41,8 +43,8 @@ entt::entity cqsp::common::systems::actions::OrderConstructionFactory(cqsp::comm
     return factory;
 }
 
-entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, entt::entity city,
-    entt::entity recipe, int productivity) {
+entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, entt::entity city, entt::entity recipe,
+                                                           int productivity) {
     namespace cqspc = cqsp::common::components;
     // Make the factory
     if (city == entt::null || recipe == entt::null) {
@@ -95,9 +97,8 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
     return factory;
 }
 
-cqsp::common::components::ResourceLedger
-cqsp::common::systems::actions::GetFactoryCost(cqsp::common::Universe& universe, entt::entity city,
-    entt::entity recipe, int capacity) {
+cqsp::common::components::ResourceLedger cqsp::common::systems::actions::GetFactoryCost(
+    cqsp::common::Universe& universe, entt::entity city, entt::entity recipe, int capacity) {
     cqsp::common::components::ResourceLedger ledger;
     // Get the recipe and things
     if (universe.any_of<components::RecipeCost>(recipe)) {
@@ -108,9 +109,7 @@ cqsp::common::systems::actions::GetFactoryCost(cqsp::common::Universe& universe,
     return ledger;
 }
 
-
-entt::entity
-cqsp::common::systems::actions::CreateCommercialArea(cqsp::common::Universe& universe, entt::entity city) {
+entt::entity cqsp::common::systems::actions::CreateCommercialArea(cqsp::common::Universe& universe, entt::entity city) {
     namespace cqspc = cqsp::common::components;
     entt::entity commercial = universe.create();
 
@@ -120,4 +119,3 @@ cqsp::common::systems::actions::CreateCommercialArea(cqsp::common::Universe& uni
     universe.get<cqspc::IndustrialZone>(city).industries.push_back(commercial);
     return commercial;
 }
-

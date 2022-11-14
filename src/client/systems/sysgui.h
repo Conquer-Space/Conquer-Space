@@ -30,9 +30,7 @@ class SysUserInterface {
 
     cqsp::engine::Application &GetApp() { return m_app; }
     cqsp::common::Universe &GetUniverse() { return GetApp().GetUniverse(); }
-    cqsp::asset::AssetManager &GetAssetManager() {
-        return GetApp().GetAssetManager();
-    }
+    cqsp::asset::AssetManager &GetAssetManager() { return GetApp().GetAssetManager(); }
     ImGuiWindowFlags window_flags = 0;
 
  private:
@@ -41,7 +39,7 @@ class SysUserInterface {
 
 class SysRmlUiInterface {
  public:
-    explicit SysRmlUiInterface(cqsp::engine::Application& app) : m_app(app) {}
+    explicit SysRmlUiInterface(cqsp::engine::Application &app) : m_app(app) {}
     virtual ~SysRmlUiInterface() {}
     virtual void Update(double delta_time) = 0;
     virtual void OpenDocument() = 0;
@@ -49,9 +47,7 @@ class SysRmlUiInterface {
  protected:
     cqsp::engine::Application &GetApp() { return m_app; }
     cqsp::common::Universe &GetUniverse() { return GetApp().GetUniverse(); }
-    cqsp::asset::AssetManager &GetAssetManager() {
-        return GetApp().GetAssetManager();
-    }
+    cqsp::asset::AssetManager &GetAssetManager() { return GetApp().GetAssetManager(); }
 
  private:
     cqsp::engine::Application &m_app;

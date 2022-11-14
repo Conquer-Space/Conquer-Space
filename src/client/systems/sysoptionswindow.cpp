@@ -21,23 +21,17 @@
 
 namespace cqsp::client::systems {
 void ShowOptionsWindow(bool* open, cqsp::engine::Application& app) {
-    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f,
-                                   ImGui::GetIO().DisplaySize.y * 0.5f),
+    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
                             ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x * 0.8f,
-                                   ImGui::GetIO().DisplaySize.y * 0.8f),
-                            ImGuiCond_Always);
-    ImGui::Begin(
-        "Options", open,
-        ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x * 0.8f, ImGui::GetIO().DisplaySize.y * 0.8f),
+                             ImGuiCond_Always);
+    ImGui::Begin("Options", open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
     if (ImGui::BeginTabBar("settingstabs")) {
         if (ImGui::BeginTabItem("Graphics")) {
             const ImVec2 common_resolutions[] = {
-                ImVec2(1024, 768),  ImVec2(1280, 1024), ImVec2(1280, 720),
-                ImVec2(1280, 800),  ImVec2(1360, 768),  ImVec2(1366, 768),
-                ImVec2(1440, 900),  ImVec2(1600, 900),  ImVec2(1680, 1050),
-                ImVec2(1920, 1200), ImVec2(1920, 1080), ImVec2(2560, 1440),
-                ImVec2(2560, 1080), ImVec2(3440, 1440), ImVec2(3840, 2160)};
+                ImVec2(1024, 768),  ImVec2(1280, 1024), ImVec2(1280, 720),  ImVec2(1280, 800),  ImVec2(1360, 768),
+                ImVec2(1366, 768),  ImVec2(1440, 900),  ImVec2(1600, 900),  ImVec2(1680, 1050), ImVec2(1920, 1200),
+                ImVec2(1920, 1080), ImVec2(2560, 1440), ImVec2(2560, 1080), ImVec2(3440, 1440), ImVec2(3840, 2160)};
             static int item_current_idx = 0;
             for (int n = 0; n < IM_ARRAYSIZE(common_resolutions); n++) {
                 if (app.GetClientOptions().GetOptions()["window"]["width"] ==
@@ -50,28 +44,26 @@ void ShowOptionsWindow(bool* open, cqsp::engine::Application& app) {
 
             ImGui::Text("Window Dimensions");
             ImGui::SameLine();
-            if (ImGui::BeginCombo("##window size combo box",
-                    fmt::format("{}x{}", common_resolutions[item_current_idx].x,
-                                common_resolutions[item_current_idx].y)
+            if (ImGui::BeginCombo(
+                    "##window size combo box",
+                    fmt::format("{}x{}", common_resolutions[item_current_idx].x, common_resolutions[item_current_idx].y)
                         .c_str())) {
                 for (int n = 0; n < IM_ARRAYSIZE(common_resolutions); n++) {
                     const bool is_selected = (item_current_idx == n);
-                    if (CQSPGui::DefaultSelectable(fmt::format("{}x{}", common_resolutions[n].x,
-                            common_resolutions[n].y).c_str(), is_selected)) {
+                    if (CQSPGui::DefaultSelectable(
+                            fmt::format("{}x{}", common_resolutions[n].x, common_resolutions[n].y).c_str(),
+                            is_selected)) {
                         item_current_idx = n;
 
                         // Change options
                         app.GetClientOptions().GetOptions()["window"]["width"] =
                             static_cast<int>(common_resolutions[n].x);
-                        app.GetClientOptions()
-                            .GetOptions()["window"]["height"] =
+                        app.GetClientOptions().GetOptions()["window"]["height"] =
                             static_cast<int>(common_resolutions[n].y);
 
-                        if (!static_cast<bool>(app.GetClientOptions()
-                                    .GetOptions()["full_screen"])) {
+                        if (!static_cast<bool>(app.GetClientOptions().GetOptions()["full_screen"])) {
                             // Set resolution
-                            app.SetWindowDimensions(common_resolutions[n].x,
-                                                    common_resolutions[n].y);
+                            app.SetWindowDimensions(common_resolutions[n].x, common_resolutions[n].y);
                         }
                     }
 
@@ -80,15 +72,13 @@ void ShowOptionsWindow(bool* open, cqsp::engine::Application& app) {
                 ImGui::EndCombo();
             }
 
-            static bool full_screen_checkbox = static_cast<bool>(
-                app.GetClientOptions().GetOptions()["full_screen"]);
+            static bool full_screen_checkbox = static_cast<bool>(app.GetClientOptions().GetOptions()["full_screen"]);
             ImGui::Text("Full Screen");
             ImGui::SameLine();
             if (CQSPGui::DefaultCheckbox("##Full Screen", &full_screen_checkbox)) {
                 // Switch screen
                 app.SetFullScreen(full_screen_checkbox);
-                app.GetClientOptions().GetOptions()["full_screen"] =
-                    full_screen_checkbox;
+                app.GetClientOptions().GetOptions()["full_screen"] = full_screen_checkbox;
             }
             ImGui::EndTabItem();
         }

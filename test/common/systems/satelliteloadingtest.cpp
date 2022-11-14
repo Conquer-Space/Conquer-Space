@@ -16,10 +16,10 @@
 */
 #include <gtest/gtest.h>
 
-#include "common/systems/loading/loadsatellites.h"
 #include "common/components/units.h"
+#include "common/systems/loading/loadsatellites.h"
 
-using namespace cqsp::common::systems::loading; // NOLINT
+using namespace cqsp::common::systems::loading;   // NOLINT
 using namespace cqsp::common::components::types;  // NOLINT
 
 TEST(Common_Loading_Satellites, GetEpochYearTest) {
@@ -31,7 +31,7 @@ TEST(Common_Loading_Satellites, GetEpochYearTest) {
 
 TEST(Common_Loading_Satellites, GetOrbitTest) {
     auto orbit = GetOrbit("1 25544U 98067A   22275.23091245  .00058352  00000+0  10342-2 0  9998",
-        "2 25544  51.6417 166.2459 0003022 250.0408 254.8118 15.49684437361780", 3.9860044188e5);
+                          "2 25544  51.6417 166.2459 0003022 250.0408 254.8118 15.49684437361780", 3.9860044188e5);
     orbit.CalculateVariables();
 
     // Orbital time should be roughly equal, which indicates the semi major axis is correct

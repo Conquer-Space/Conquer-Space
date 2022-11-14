@@ -18,8 +18,9 @@
 
 #include <glad/glad.h>
 #include <stb_image.h>
-#include <glm/gtx/transform.hpp>
+
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/transform.hpp>
 
 #include "common/util/logging.h"
 #include "engine/application.h"
@@ -33,7 +34,7 @@ class RmlUiRendererGeometryHandler {
     int num_indices;
     cqsp::asset::Texture* texture;
 
-    RmlUiRendererGeometryHandler()  : VAO(0), VBO(0), EBO(0), num_vertices(0), num_indices(0), texture(0) {}
+    RmlUiRendererGeometryHandler() : VAO(0), VBO(0), EBO(0), num_vertices(0), num_indices(0), texture(0) {}
 
     ~RmlUiRendererGeometryHandler() {
         if (VAO) {
@@ -80,7 +81,8 @@ void main() {
     place_color = vec4(color/255.0);
     TexCoord = vec2(iTexCoord.x, iTexCoord.y);
 }
-    )", cqsp::asset::ShaderType::VERT);
+    )",
+                    cqsp::asset::ShaderType::VERT);
         SPDLOG_LOGGER_INFO(logger, "Loaded rmlui vert shader");
         frag_shader(R"(
 #version 330 core
@@ -90,7 +92,8 @@ in vec2 TexCoord;
 void main()
 {
     FragColor = place_color;
-})", cqsp::asset::ShaderType::FRAG);
+})",
+                    cqsp::asset::ShaderType::FRAG);
 
         SPDLOG_LOGGER_INFO(logger, "Loaded rmlui frag shader");
         texture_frag_shader(R"(
@@ -103,7 +106,8 @@ uniform sampler2D texture1;
 void main()
 {
     FragColor = vec4(texture(texture1, TexCoord).rgba) * vec4(place_color.rgba);
-})", cqsp::asset::ShaderType::FRAG);
+})",
+                            cqsp::asset::ShaderType::FRAG);
 
         color_shader = asset::MakeShaderProgram(vert_shader, frag_shader);
         texture_shader = asset::MakeShaderProgram(vert_shader, texture_frag_shader);
@@ -117,39 +121,36 @@ void main()
     SPDLOG_LOGGER_INFO(logger, "Initialized RmlUi renderer");
 }
 
-void cqsp::engine::CQSPRenderInterface::RenderGeometry(
-    Rml::Vertex* vertices, int num_vertices, int* indices, int num_indices,
-    Rml::TextureHandle texture, const Rml::Vector2f& translation) {
+void cqsp::engine::CQSPRenderInterface::RenderGeometry(Rml::Vertex* vertices, int num_vertices, int* indices,
+                                                       int num_indices, Rml::TextureHandle texture,
+                                                       const Rml::Vector2f& translation) {
     // Render the geometry
-    Rml::CompiledGeometryHandle compiled =
-        CompileGeometry(vertices, num_vertices, indices, num_indices, texture);
+    Rml::CompiledGeometryHandle compiled = CompileGeometry(vertices, num_vertices, indices, num_indices, texture);
     if (compiled != NULL) {
         RenderCompiledGeometry(compiled, translation);
         ReleaseCompiledGeometry(compiled);
     }
 }
 
-Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(
-    Rml::Vertex* vertices, int num_vertices, int* indices, int num_indices,
-    Rml::TextureHandle texture) {
+Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(Rml::Vertex* vertices, int num_vertices,
+                                                                               int* indices, int num_indices,
+                                                                               Rml::TextureHandle texture) {
     RmlUiRendererGeometryHandler* geom = new RmlUiRendererGeometryHandler();
 
     // Create the vertex
     geom->num_vertices = num_vertices;
     geom->num_indices = num_indices;
-    geom->texture = (cqsp::asset::Texture*) texture;
+    geom->texture = (cqsp::asset::Texture*)texture;
     glGenVertexArrays(1, &geom->VAO);
     glGenBuffers(1, &geom->VBO);
     glGenBuffers(1, &geom->EBO);
 
     glBindVertexArray(geom->VAO);
     glBindBuffer(GL_ARRAY_BUFFER, geom->VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Rml::Vertex) * num_vertices, vertices,
-                 GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Rml::Vertex) * num_vertices, vertices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, geom->EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, indices,
-                 GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * num_indices, indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Rml::Vertex), reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
@@ -159,14 +160,14 @@ Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(
     glEnableVertexAttribArray(1);
 
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Rml::Vertex),
-        reinterpret_cast<void*>(sizeof(Rml::Vector2f) + sizeof(Rml::Colourb)));
+                          reinterpret_cast<void*>(sizeof(Rml::Vector2f) + sizeof(Rml::Colourb)));
     glEnableVertexAttribArray(2);
 
     return reinterpret_cast<Rml::CompiledGeometryHandle>(geom);
 }
 
-void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(
-    Rml::CompiledGeometryHandle geometry, const Rml::Vector2f& translation) {
+void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(Rml::CompiledGeometryHandle geometry,
+                                                               const Rml::Vector2f& translation) {
     RmlUiRendererGeometryHandler* geom = reinterpret_cast<RmlUiRendererGeometryHandler*>(geometry);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -196,8 +197,7 @@ void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(
     glBindVertexArray(0);
 }
 
-void cqsp::engine::CQSPRenderInterface::ReleaseCompiledGeometry(
-    Rml::CompiledGeometryHandle geometry) {
+void cqsp::engine::CQSPRenderInterface::ReleaseCompiledGeometry(Rml::CompiledGeometryHandle geometry) {
     delete (RmlUiRendererGeometryHandler*)geometry;
 }
 
@@ -216,9 +216,7 @@ void cqsp::engine::CQSPRenderInterface::EnableScissorRegion(bool enable) {
     }
 }
 
-void cqsp::engine::CQSPRenderInterface::SetScissorRegion(int x, int y,
-                                                         int width,
-                                                         int height) {
+void cqsp::engine::CQSPRenderInterface::SetScissorRegion(int x, int y, int width, int height) {
     glScissor(x, app.GetWindowHeight() - (y + height), width, height);
     return;
     // TODO(EhWhoAmI): Add stencil buffer rendering
@@ -251,19 +249,19 @@ bool cqsp::engine::CQSPRenderInterface::LoadTexture(Rml::TextureHandle& texture_
 }
 
 bool cqsp::engine::CQSPRenderInterface::GenerateTexture(Rml::TextureHandle& texture_handle, const Rml::byte* source,
-    const Rml::Vector2i& source_dimensions) {
+                                                        const Rml::Vector2i& source_dimensions) {
     cqsp::asset::Texture* texture = new cqsp::asset::Texture();
     // Generate opengl texture
     // Cast the source to things
     cqsp::asset::TextureLoadingOptions options;
-    cqsp::asset::CreateTexture(*texture, (unsigned char*) (source),
-        source_dimensions.x, source_dimensions.y, 4, options);
+    cqsp::asset::CreateTexture(*texture, (unsigned char*)(source), source_dimensions.x, source_dimensions.y, 4,
+                               options);
     texture_handle = (Rml::TextureHandle)texture;
     return true;
 }
 
 void cqsp::engine::CQSPRenderInterface::ReleaseTexture(Rml::TextureHandle texture) {
-    delete (cqsp::asset::Texture*) texture;
+    delete (cqsp::asset::Texture*)texture;
 }
 
 void cqsp::engine::CQSPRenderInterface::SetTransform(const Rml::Matrix4f* transform) {
@@ -274,15 +272,12 @@ void cqsp::engine::CQSPRenderInterface::SetTransform(const Rml::Matrix4f* transf
         return;
     }
     // Super sketchy code to convert, please help, change this
-    m_transform_matrix = glm::mat4{
-        (*transform)[0][0], (*transform)[0][1], (*transform)[0][2], (*transform)[0][3],
-        (*transform)[1][0], (*transform)[1][1], (*transform)[1][2], (*transform)[1][3],
-        (*transform)[2][0], (*transform)[2][1], (*transform)[2][2], (*transform)[2][3],
-        (*transform)[3][0], (*transform)[3][1], (*transform)[3][2], (*transform)[3][3]
-    };
+    m_transform_matrix = glm::mat4 {(*transform)[0][0], (*transform)[0][1], (*transform)[0][2], (*transform)[0][3],
+                                    (*transform)[1][0], (*transform)[1][1], (*transform)[1][2], (*transform)[1][3],
+                                    (*transform)[2][0], (*transform)[2][1], (*transform)[2][2], (*transform)[2][3],
+                                    (*transform)[3][0], (*transform)[3][1], (*transform)[3][2], (*transform)[3][3]};
 }
 
-void cqsp::engine::CQSPRenderInterface::PrepareRenderBuffer() {
-}
+void cqsp::engine::CQSPRenderInterface::PrepareRenderBuffer() {}
 
 void cqsp::engine::CQSPRenderInterface::PresentRenderBuffer() {}

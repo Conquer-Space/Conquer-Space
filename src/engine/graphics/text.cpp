@@ -16,9 +16,8 @@
 */
 #include "engine/graphics/text.h"
 
-#include <spdlog/spdlog.h>
-
 #include <ft2build.h>
+#include <spdlog/spdlog.h>
 #include FT_FREETYPE_H
 #include FT_STROKER_H
 
@@ -30,8 +29,7 @@
 
 #include "engine/enginelogger.h"
 
-void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer,
-                                   uint64_t size) {
+void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer, uint64_t size) {
     FT_Library ft;
     // All functions return a value different than 0 whenever an error occurred
     if (FT_Init_FreeType(&ft)) {
@@ -67,16 +65,8 @@ void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer,
         unsigned int texture;
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
-        glTexImage2D(
-            GL_TEXTURE_2D,
-            0,
-            GL_RED,
-            face->glyph->bitmap.width,
-            face->glyph->bitmap.rows,
-            0,
-            GL_RED,
-            GL_UNSIGNED_BYTE,
-            face->glyph->bitmap.buffer);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, face->glyph->bitmap.width, face->glyph->bitmap.rows, 0, GL_RED,
+                     GL_UNSIGNED_BYTE, face->glyph->bitmap.buffer);
 
         // set texture options
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -84,12 +74,9 @@ void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer,
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         // now store character for later use
-        Character character = {
-            texture,
-            glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
-            glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-            static_cast<unsigned int>(face->glyph->advance.x)
-        };
+        Character character = {texture, glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+                               glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+                               static_cast<unsigned int>(face->glyph->advance.x)};
         font.characters.insert(std::pair<char, Character>(c, character));
     }
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -108,8 +95,8 @@ void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer,
     glBindVertexArray(0);
 }
 
-void cqsp::asset::RenderText(cqsp::asset::ShaderProgram &shader, Font &font, std::string text,
-                                        float x, float y, float scale, glm::vec3 color) {
+void cqsp::asset::RenderText(cqsp::asset::ShaderProgram &shader, Font &font, std::string text, float x, float y,
+                             float scale, glm::vec3 color) {
     // activate corresponding render state
     shader.UseProgram();
     shader.setVec3("textColor", color);
@@ -129,14 +116,9 @@ void cqsp::asset::RenderText(cqsp::asset::ShaderProgram &shader, Font &font, std
         float h = ch.Size.y * scale;
         // update VBO for each character
         float vertices[6][4] = {
-            { xpos,     ypos + h,   0.0f, 0.0f },
-            { xpos,     ypos,       0.0f, 1.0f },
-            { xpos + w, ypos,       1.0f, 1.0f },
+            {xpos, ypos + h, 0.0f, 0.0f}, {xpos, ypos, 0.0f, 1.0f},     {xpos + w, ypos, 1.0f, 1.0f},
 
-            { xpos,     ypos + h,   0.0f, 0.0f },
-            { xpos + w, ypos,       1.0f, 1.0f },
-            { xpos + w, ypos + h,   1.0f, 0.0f }
-        };
+            {xpos, ypos + h, 0.0f, 0.0f}, {xpos + w, ypos, 1.0f, 1.0f}, {xpos + w, ypos + h, 1.0f, 0.0f}};
         // render glyph texture over quad
         glBindTexture(GL_TEXTURE_2D, ch.TextureID);
         // update content of VBO memory

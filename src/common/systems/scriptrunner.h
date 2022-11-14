@@ -19,8 +19,8 @@
 #include <vector>
 
 #include "common/scripting/scripting.h"
-#include "common/universe.h"
 #include "common/systems/isimulationsystem.h"
+#include "common/universe.h"
 
 namespace cqsp {
 namespace common {

@@ -20,14 +20,14 @@
 
 #include <entt/entt.hpp>
 
-#include "common/universe.h"
 #include "common/components/resource.h"
+#include "common/universe.h"
 
 namespace cqsp {
 namespace client {
 namespace systems {
-bool DrawLedgerTable(const std::string &name, const cqsp::common::Universe&,
-                        const cqsp::common::components::ResourceLedger& ledger);
+bool DrawLedgerTable(const std::string& name, const cqsp::common::Universe&,
+                     const cqsp::common::components::ResourceLedger& ledger);
 }  // namespace systems
 }  // namespace client
 }  // namespace cqsp

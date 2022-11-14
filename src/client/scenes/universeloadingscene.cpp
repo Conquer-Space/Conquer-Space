@@ -21,23 +21,17 @@
 #include <string>
 
 #include "client/scenes/universescene.h"
+#include "client/systems/assetloading.h"
 #include "common/systems/sysuniversegenerator.h"
 
-#include "client/systems/assetloading.h"
-
-cqsp::scene::UniverseLoadingScene::UniverseLoadingScene(
-    cqsp::engine::Application& app)
-    : Scene(app) {}
+cqsp::scene::UniverseLoadingScene::UniverseLoadingScene(cqsp::engine::Application& app) : Scene(app) {}
 
 cqsp::scene::UniverseLoadingScene::~UniverseLoadingScene() {
-    GetApp().CloseDocument(
-        "../data/core/gui/screens/universe_loading_screen.rml");
+    GetApp().CloseDocument("../data/core/gui/screens/universe_loading_screen.rml");
 }
 
 void cqsp::scene::UniverseLoadingScene::Init() {
-    auto loading = [&]() {
-        LoadUniverse();
-    };
+    auto loading = [&]() { LoadUniverse(); };
 
     m_completed_loading = false;
     thread = std::make_unique<std::thread>(loading);
@@ -55,8 +49,7 @@ void cqsp::scene::UniverseLoadingScene::Update(float deltaTime) {
     }
 }
 
-void cqsp::scene::UniverseLoadingScene::Ui(float deltaTime) {
-}
+void cqsp::scene::UniverseLoadingScene::Ui(float deltaTime) {}
 
 void cqsp::scene::UniverseLoadingScene::Render(float deltaTime) {}
 

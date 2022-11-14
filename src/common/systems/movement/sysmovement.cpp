@@ -20,8 +20,8 @@
 
 #include <tracy/Tracy.hpp>
 
-#include "common/components/ships.h"
 #include "common/components/coordinates.h"
+#include "common/components/ships.h"
 #include "common/components/units.h"
 
 namespace cqsp::common::systems {
@@ -35,32 +35,26 @@ void SysOrbit::DoSystem() {
     ParseOrbitTree(entt::null, universe.sun);
 }
 
-void LeaveSOI(Universe& universe, const entt::entity& body,
-              entt::entity& parent,
-              cqspt::Orbit& orb,
+void LeaveSOI(Universe& universe, const entt::entity& body, entt::entity& parent, cqspt::Orbit& orb,
               cqspt::Kinematics& pos, cqspt::Kinematics& p_pos) {
     // Then change parent, then set the orbit
     auto& p_orb = universe.get<cqspt::Orbit>(parent);
     if (p_orb.reference_body != entt::null) {
         // Then add to orbital system
-        universe.get<cqspc::bodies::OrbitalSystem>(p_orb.reference_body)
-            .push_back(body);
+        universe.get<cqspc::bodies::OrbitalSystem>(p_orb.reference_body).push_back(body);
 
-        auto& parent_parent_orb =
-            universe.get<cqspc::bodies::Body>(p_orb.reference_body);
+        auto& parent_parent_orb = universe.get<cqspc::bodies::Body>(p_orb.reference_body);
         if (p_orb.reference_body != entt::null) {
             // Some stuff
         }
-        auto& pp_pos =
-            universe.get<cqspt::Kinematics>(p_orb.reference_body);
+        auto& pp_pos = universe.get<cqspt::Kinematics>(p_orb.reference_body);
         // Remove from parent
         auto& pt = universe.get<cqspc::bodies::OrbitalSystem>(parent);
         std::erase(pt.children, body);
         // Get velocity and change posiiton
         // Convert orbit
-        orb = cqspt::Vec3ToOrbit(
-            pos.position + p_pos.position, pos.velocity + p_pos.velocity,
-            parent_parent_orb.GM, universe.date.ToSecond());
+        orb = cqspt::Vec3ToOrbit(pos.position + p_pos.position, pos.velocity + p_pos.velocity, parent_parent_orb.GM,
+                                 universe.date.ToSecond());
         orb.reference_body = p_orb.reference_body;
         orb.CalculateVariables();
 
@@ -97,9 +91,7 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
             auto& impulse = universe.get<cqspc::types::Impulse>(body);
             auto reference = orb.reference_body;
 
-            orb = cqspt::Vec3ToOrbit(
-                pos.position, pos.velocity + impulse.impulse,
-                                   p_bod.GM, universe.date.ToSecond());
+            orb = cqspt::Vec3ToOrbit(pos.position, pos.velocity + impulse.impulse, p_bod.GM, universe.date.ToSecond());
             orb.reference_body = reference;
             orb.CalculateVariables();
             pos.position = cqspt::toVec3(orb);

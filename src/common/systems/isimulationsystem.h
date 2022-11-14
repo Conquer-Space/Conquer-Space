@@ -18,8 +18,8 @@
 
 #include <entt/entt.hpp>
 
-#include "common/universe.h"
 #include "common/game.h"
+#include "common/universe.h"
 
 namespace cqsp {
 namespace common {

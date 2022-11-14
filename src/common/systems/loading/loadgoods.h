@@ -18,9 +18,9 @@
 
 #include <hjson.h>
 
-#include "common/universe.h"
 #include "common/components/resource.h"
 #include "common/systems/loading/hjsonloader.h"
+#include "common/universe.h"
 
 namespace cqsp::common::systems::loading {
 void LoadGoods(cqsp::common::Universe&, Hjson::Value&);

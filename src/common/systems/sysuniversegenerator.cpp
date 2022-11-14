@@ -16,27 +16,26 @@
 */
 #include "common/systems/sysuniversegenerator.h"
 
-#include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/spdlog.h>
+
 #include <string>
 
-#include "common/util/random/stdrandom.h"
-
+#include "actions/shiplaunchaction.h"
+#include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
-#include "common/components/organizations.h"
-#include "common/components/player.h"
-#include "common/components/surface.h"
 #include "common/components/economy.h"
 #include "common/components/name.h"
+#include "common/components/organizations.h"
+#include "common/components/player.h"
 #include "common/components/population.h"
-#include "common/components/area.h"
 #include "common/components/resource.h"
 #include "common/components/ships.h"
-
+#include "common/components/surface.h"
 #include "common/systems/actions/factoryconstructaction.h"
 #include "common/systems/economy/markethelpers.h"
-#include "actions/shiplaunchaction.h"
+#include "common/util/random/stdrandom.h"
 
 namespace cqsp::common::systems::universegenerator {
 void ScriptUniverseGenerator::Generate(cqsp::common::Universe& universe) {

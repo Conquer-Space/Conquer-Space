@@ -26,10 +26,7 @@ entt::entity CreateLab(Universe& universe) {
     return entity;
 }
 
-void AddScienceResearch(Universe& universe,
-                        entt::entity lab,
-                        entt::entity research,
-                        double progress) {
+void AddScienceResearch(Universe& universe, entt::entity lab, entt::entity research, double progress) {
     // Add the things
     universe.get<components::science::Lab>(lab).science_contribution[research] += progress;
 }

@@ -19,6 +19,7 @@
 #include <spdlog/spdlog.h>
 
 #include <cmath>
+
 #include <tracy/Tracy.hpp>
 
 #include "common/components/bodies.h"
@@ -56,9 +57,8 @@ void TerrainImageGenerator::GenerateTerrain(cqsp::common::Universe& universe, in
 
     auto& terrain_data = universe.get<cqsp::common::components::bodies::TerrainData>(terrain.terrain_type);
     for (auto it = terrain_data.data.begin(); it != terrain_data.data.end(); it++) {
-        renderer.AddGradientPoint(it->first, noise::utils::Color(
-                           std::get<0>(it->second), std::get<1>(it->second),
-                           std::get<2>(it->second), std::get<3>(it->second)));
+        renderer.AddGradientPoint(it->first, noise::utils::Color(std::get<0>(it->second), std::get<1>(it->second),
+                                                                 std::get<2>(it->second), std::get<3>(it->second)));
     }
     renderer.Render();
 }

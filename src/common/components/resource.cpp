@@ -18,15 +18,15 @@
 
 #include <spdlog/spdlog.h>
 
-#include <utility>
 #include <limits>
+#include <utility>
 
 namespace cqsp::common::components {
 namespace {
 using cqsp::common::components::ResourceLedger;
-template<class Function>
-ResourceLedger merge_apply(const ResourceLedger &m1, const ResourceLedger &m2,
-                           ResourceLedger::mapped_type identity, Function func) {
+template <class Function>
+ResourceLedger merge_apply(const ResourceLedger &m1, const ResourceLedger &m2, ResourceLedger::mapped_type identity,
+                           Function func) {
     auto it1 = m1.begin();
     auto it2 = m2.begin();
 
@@ -54,9 +54,9 @@ ResourceLedger merge_apply(const ResourceLedger &m1, const ResourceLedger &m2,
     return res;
 }
 
-template<class Function>
-bool MergeCompare(const ResourceLedger &m1, const ResourceLedger&m2,
-                  ResourceLedger::mapped_type identity, Function func) {
+template <class Function>
+bool MergeCompare(const ResourceLedger &m1, const ResourceLedger &m2, ResourceLedger::mapped_type identity,
+                  Function func) {
     auto it1 = m1.begin();
     auto it2 = m2.begin();
 
@@ -142,7 +142,6 @@ void ResourceLedger::operator+=(const double value) {
     }
 }
 
-
 void ResourceLedger::operator*=(const double value) {
     for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
         (*this)[iterator->first] *= value;
@@ -205,35 +204,25 @@ ResourceLedger ResourceLedger::operator/(const double value) const {
 
 // Not sure if this is faster than a function, but wanted to have fun with the preprocessor,
 // so here we go
-#define compare(map, compare_to, comparison) \
-    bool op = true; \
-    if (map.size() == 0) { \
-        return 0 comparison compare_to; \
-    } \
+#define compare(map, compare_to, comparison)                               \
+    bool op = true;                                                        \
+    if (map.size() == 0) {                                                 \
+        return 0 comparison compare_to;                                    \
+    }                                                                      \
     for (auto iterator = map.begin(); iterator != map.end(); iterator++) { \
-        op &= iterator->second comparison compare_to; \
-    } \
+        op &= iterator->second comparison compare_to;                      \
+    }                                                                      \
     return op;
 
-bool ResourceLedger::operator>(const double &i) {
-    compare((*this), i, >)
-}
+bool ResourceLedger::operator>(const double &i) { compare((*this), i, >) }
 
-bool ResourceLedger::operator<(const double & i) {
-    compare((*this), i, <)
-}
+bool ResourceLedger::operator<(const double &i) { compare((*this), i, <) }
 
-bool ResourceLedger::operator==(const double &i) {
-    compare((*this), i, ==)
-}
+bool ResourceLedger::operator==(const double &i) { compare((*this), i, ==) }
 
-bool ResourceLedger::operator<=(const double &i) {
-    compare((*this), i, <=)
-}
+bool ResourceLedger::operator<=(const double &i) { compare((*this), i, <=) }
 
-bool ResourceLedger::operator>=(const double &i) {
-    compare((*this), i, >=)
-}
+bool ResourceLedger::operator>=(const double &i) { compare((*this), i, >=) }
 
 bool ResourceLedger::operator>=(const ResourceLedger &ledger) {
     return MergeCompare(*this, ledger, 0, [](double a, double b) { return a >= b; });
@@ -261,34 +250,34 @@ void ResourceLedger::AssignFrom(const ResourceLedger &ledger) {
     }
 }
 
-void ResourceLedger::TransferTo(ResourceLedger& ledger_to, const ResourceLedger & amount) {
+void ResourceLedger::TransferTo(ResourceLedger &ledger_to, const ResourceLedger &amount) {
     for (auto iterator = amount.begin(); iterator != amount.end(); iterator++) {
         (*this)[iterator->first] -= iterator->second;
         ledger_to[iterator->first] += iterator->second;
     }
 }
 
-void ResourceLedger::MultiplyAdd(const ResourceLedger & other, double value) {
+void ResourceLedger::MultiplyAdd(const ResourceLedger &other, double value) {
     for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
         (*this)[iterator->first] += iterator->second * value;
     }
 }
 
-void ResourceLedger::RemoveResourcesLimited(const ResourceLedger & other) {
+void ResourceLedger::RemoveResourcesLimited(const ResourceLedger &other) {
     for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
         double &t = (*this)[iterator->first];
-         t -= iterator->second;
-         if (t < 0) {
-             t = 0;
-         }
+        t -= iterator->second;
+        if (t < 0) {
+            t = 0;
+        }
     }
 }
 
-ResourceLedger ResourceLedger::LimitedRemoveResources(const ResourceLedger& other) {
+ResourceLedger ResourceLedger::LimitedRemoveResources(const ResourceLedger &other) {
     ResourceLedger removed;
     for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
         double &t = (*this)[iterator->first];
-        if (t > iterator-> second) {
+        if (t > iterator->second) {
             removed[iterator->first] = iterator->second;
             t -= iterator->second;
         } else {
@@ -307,8 +296,7 @@ ResourceLedger ResourceLedger::UnitLeger(const double val) {
     return newleg;
 }
 
-ResourceLedger ResourceLedger::Clamp(const double minclamp,
-                                     const double maxclamp) {
+ResourceLedger ResourceLedger::Clamp(const double minclamp, const double maxclamp) {
     ResourceLedger newleg;
     for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
         double val = newleg[iterator->first];
@@ -321,9 +309,9 @@ ResourceLedger ResourceLedger::Clamp(const double minclamp,
     return newleg;
 }
 
-bool ResourceLedger::HasAllResources(const ResourceLedger & ledger) {
+bool ResourceLedger::HasAllResources(const ResourceLedger &ledger) {
     for (auto led : ledger) {
-        if ((* this)[led.first] <= 0) {
+        if ((*this)[led.first] <= 0) {
             return false;
         }
     }
@@ -355,8 +343,7 @@ ResourceLedger ResourceLedger::SafeDivision(const ResourceLedger &other) {
         } else if (ledger[iterator->first] == 0) {
             ledger[iterator->first] = 0;
         } else {
-            ledger[iterator->first] =
-                ledger[iterator->first] / iterator->second;
+            ledger[iterator->first] = ledger[iterator->first] / iterator->second;
         }
     }
     return ledger;
@@ -383,12 +370,7 @@ double ResourceLedger::Max() {
     return Maximum;
 }
 
-
-
-
-double ResourceLedger::Average() {
-    return this->GetSum() / this->size();
-}
+double ResourceLedger::Average() { return this->GetSum() / this->size(); }
 
 std::string ResourceLedger::to_string() {
     std::string str = "{";
@@ -402,13 +384,12 @@ std::string ResourceLedger::to_string() {
     return str;
 }
 
-ResourceLedger RecipeOutput::operator*(
-    const double value) const {
+ResourceLedger RecipeOutput::operator*(const double value) const {
     ResourceLedger ledger;
     ledger[entity] = value * amount;
     return ledger;
 }
-ResourceLedger RecipeOutput::operator*(ResourceLedger & ledger) const {
+ResourceLedger RecipeOutput::operator*(ResourceLedger &ledger) const {
     ResourceLedger ret;
     ret[entity] = ledger[entity] * amount;
     return ret;
@@ -417,11 +398,9 @@ ResourceLedger RecipeOutput::operator*(ResourceLedger & ledger) const {
 /// <summary>
 /// Creates a new resource ledger using the keys from one resource ledger, and the values from annother
 /// </summary>
-ResourceLedger CopyVals(const ResourceLedger &keys,
-                        const ResourceLedger &values) {
+ResourceLedger CopyVals(const ResourceLedger &keys, const ResourceLedger &values) {
     ResourceLedger tkeys = keys;
-    for (auto iterator = keys.begin(); iterator != keys.end();
-         iterator++) {
+    for (auto iterator = keys.begin(); iterator != keys.end(); iterator++) {
         tkeys[iterator->first] = values[iterator->first];
     }
     return tkeys;

@@ -22,7 +22,8 @@ class IRandom {
     explicit IRandom(int _seed) : seed(_seed) {}
     virtual int GetRandomInt(int, int) = 0;
     virtual int GetRandomNormal(double, double) = 0;
+
  protected:
     int seed;
 };
-}
+}  // namespace cqsp::common::util

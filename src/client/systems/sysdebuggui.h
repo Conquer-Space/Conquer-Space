@@ -16,12 +16,12 @@
 */
 #pragma once
 
-#include <string>
-#include <functional>
-#include <vector>
 #include <algorithm>
+#include <functional>
 #include <map>
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "client/systems/sysgui.h"
 
@@ -54,9 +54,8 @@ class SysDebugMenu : public SysUserInterface {
     std::vector<std::string> items;
 
     typedef std::vector<std::string> CommandOutput;
-    typedef std::function<void(cqsp::engine::Application& app,
-                           const std::string_view& args,
-                           CommandOutput& input)> DebugCommand_t;
+    typedef std::function<void(cqsp::engine::Application& app, const std::string_view& args, CommandOutput& input)>
+        DebugCommand_t;
     std::map<std::string, std::pair<std::string, DebugCommand_t>, std::less<>> commands;
     std::vector<ImVec2> fps_history;
     float fps_history_len = 10;

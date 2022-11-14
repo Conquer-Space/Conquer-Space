@@ -16,8 +16,8 @@
 */
 #pragma once
 
-#include "common/universe.h"
 #include "common/scripting/scripting.h"
+#include "common/universe.h"
 
 namespace cqsp {
 namespace common {
@@ -32,9 +32,7 @@ class Game {
 
     Universe& GetUniverse() { return universe; }
 
-    scripting::ScriptInterface& GetScriptInterface() {
-        return script_interface;
-    }
+    scripting::ScriptInterface& GetScriptInterface() { return script_interface; }
 
  private:
     Universe universe;

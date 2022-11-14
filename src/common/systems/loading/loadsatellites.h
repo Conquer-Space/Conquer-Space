@@ -18,13 +18,12 @@
 
 #include <string>
 
-#include "common/universe.h"
 #include "common/components/coordinates.h"
+#include "common/universe.h"
 
 namespace cqsp::common::systems::loading {
-components::types::Orbit GetOrbit(const std::string& line_one, const std::string& line_two,
-                                  const double& GM);
+components::types::Orbit GetOrbit(const std::string& line_one, const std::string& line_two, const double& GM);
 int GetEpochYear(int year);
 double GetEpoch(double year, double time);
 void LoadSatellites(Universe& universe, std::string& string);
-}
+}  // namespace cqsp::common::systems::loading

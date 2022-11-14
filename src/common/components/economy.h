@@ -16,10 +16,10 @@
 */
 #pragma once
 
+#include <map>
+#include <set>
 #include <string>
 #include <vector>
-#include <set>
-#include <map>
 
 #include <entt/entt.hpp>
 
@@ -88,21 +88,13 @@ struct Market : MarketInformation {
     double GetSupply(const entt::entity& good);
     double GetDemand(const entt::entity& good);
 
-    void AddParticipant(entt::entity participant) {
-        participants.insert(participant);
-    }
+    void AddParticipant(entt::entity participant) { participants.insert(participant); }
 
-    MarketElementInformation& operator[](entt::entity ent) {
-        return market_information[ent];
-    }
+    MarketElementInformation& operator[](entt::entity ent) { return market_information[ent]; }
 
-    auto begin() {
-        return market_information.begin();
-    }
+    auto begin() { return market_information.begin(); }
 
-    auto end() {
-        return market_information.end();
-    }
+    auto end() { return market_information.end(); }
 };
 
 /// <summary>

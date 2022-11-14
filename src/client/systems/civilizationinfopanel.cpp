@@ -18,15 +18,14 @@
 
 #include <limits>
 
-#include "common/components/player.h"
-#include "common/components/organizations.h"
-#include "common/components/economy.h"
-#include "common/util/utilnumberdisplay.h"
-#include "common/components/bodies.h"
-
 #include "client/components/clientctx.h"
 #include "client/systems/gui/systooltips.h"
 #include "client/systems/marketwindow.h"
+#include "common/components/bodies.h"
+#include "common/components/economy.h"
+#include "common/components/organizations.h"
+#include "common/components/player.h"
+#include "common/util/utilnumberdisplay.h"
 
 void cqsp::client::systems::CivilizationInfoPanel::Init() {}
 
@@ -34,8 +33,8 @@ void cqsp::client::systems::CivilizationInfoPanel::DoUI(int delta_time) {
     // Get the ui
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
     if (to_display) {
-        ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x * 0.2,
-            ImGui::GetIO().DisplaySize.y * 0.4), ImGuiCond_Appearing);
+        ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x * 0.2, ImGui::GetIO().DisplaySize.y * 0.4),
+                                 ImGuiCond_Appearing);
     } else {
         ImGui::SetNextWindowSize(ImVec2(-1, -1));
     }
@@ -53,9 +52,7 @@ void cqsp::client::systems::CivilizationInfoPanel::DoUpdate(int delta_time) {}
 
 void cqsp::client::systems::CivilizationInfoPanel::CivInfoPanel() {
     // Get player
-    entt::entity player = GetUniverse()
-                              .view<common::components::Player>()
-                              .front();
+    entt::entity player = GetUniverse().view<common::components::Player>().front();
     if (player == entt::null) {
         return;
     }
@@ -77,11 +74,8 @@ void cqsp::client::systems::CivilizationInfoPanel::CivInfoPanel() {
 
             ImGui::BeginChild("ownedcitiespanel");
             for (auto entity : view) {
-                if (GetUniverse()
-                        .get<common::components::Governed>(entity)
-                        .governor == player) {
-                    ImGui::TextFmt("{}", client::systems::gui::GetName(
-                                             GetUniverse(), entity));
+                if (GetUniverse().get<common::components::Governed>(entity).governor == player) {
+                    ImGui::TextFmt("{}", client::systems::gui::GetName(GetUniverse(), entity));
                     gui::EntityTooltip(GetUniverse(), entity);
                 }
             }
@@ -89,17 +83,11 @@ void cqsp::client::systems::CivilizationInfoPanel::CivInfoPanel() {
             ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Province Information")) {
-            if (GetUniverse().any_of<common::components::CountryCityList>(
-                    player)) {
+            if (GetUniverse().any_of<common::components::CountryCityList>(player)) {
                 for (entt::entity entity :
-                     GetUniverse().get<common::components::CountryCityList>(
-                         player).province_list) {
-                    bool selected =
-                        GetUniverse()
-                            .view<ctx::SelectedProvince>()
-                            .front() == entity;
-                    if (ImGui::SelectableFmt("{}", &selected,
-                        client::systems::gui::GetName(GetUniverse(), entity))) {
+                     GetUniverse().get<common::components::CountryCityList>(player).province_list) {
+                    bool selected = GetUniverse().view<ctx::SelectedProvince>().front() == entity;
+                    if (ImGui::SelectableFmt("{}", &selected, client::systems::gui::GetName(GetUniverse(), entity))) {
                         entt::entity ent = GetUniverse().view<ctx::SelectedProvince>().front();
                         if (ent != entt::null) {
                             GetUniverse().remove<ctx::SelectedProvince>(ent);

@@ -41,27 +41,15 @@ class Texture : public Asset {
     ~Texture();
 };
 
-unsigned int CreateTexture(unsigned char* data,
-                         int width,
-                         int height,
-                         int components,
-                         const TextureLoadingOptions& options);
+unsigned int CreateTexture(unsigned char* data, int width, int height, int components,
+                           const TextureLoadingOptions& options);
 
-void CreateTexture(Texture &texture,
-                 unsigned char* data,
-                 int width,
-                 int height,
-                 int components,
-                 const TextureLoadingOptions& options = TextureLoadingOptions());
+void CreateTexture(Texture& texture, unsigned char* data, int width, int height, int components,
+                   const TextureLoadingOptions& options = TextureLoadingOptions());
 
-void LoadCubemapData(Texture &texture,
-                std::vector<unsigned char*>& data,
-                int width,
-                int height,
-                int components,
-                TextureLoadingOptions& options);
+void LoadCubemapData(Texture& texture, std::vector<unsigned char*>& data, int width, int height, int components,
+                     TextureLoadingOptions& options);
 
-bool SaveImage(const char* path, int width, int height,
-               int components, const unsigned char* data, bool flip = true);
+bool SaveImage(const char* path, int width, int height, int components, const unsigned char* data, bool flip = true);
 }  // namespace asset
 }  // namespace cqsp

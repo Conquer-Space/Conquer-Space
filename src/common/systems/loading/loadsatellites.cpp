@@ -18,8 +18,8 @@
 
 #include <fmt/format.h>
 
-#include <sstream>
 #include <iostream>
+#include <sstream>
 #include <vector>
 
 #include "common/components/coordinates.h"
@@ -28,8 +28,7 @@
 
 namespace cqsp::common::systems::loading {
 namespace {
-std::string trim(const std::string& str,
-                 const std::string& whitespace = " \t") {
+std::string trim(const std::string& str, const std::string& whitespace = " \t") {
     const auto strBegin = str.find_first_not_of(whitespace);
     if (strBegin == std::string::npos) return "";  // no content
 
@@ -40,8 +39,7 @@ std::string trim(const std::string& str,
 }
 }  // namespace
 
-components::types::Orbit GetOrbit(const std::string& line_one,
-                                  const std::string& line_two, const double& GM) {
+components::types::Orbit GetOrbit(const std::string& line_one, const std::string& line_two, const double& GM) {
     // Epoch year
     double epoch_year = std::stoi(line_one.substr(18, 2));
     double epoch_time = std::stod(line_one.substr(20, 12));
@@ -61,18 +59,17 @@ components::types::Orbit GetOrbit(const std::string& line_one,
     using components::types::toRadian;
 
     double inclination = toRadian(std::stod(vstrings[2]));
-    double LAN = toRadian(std::stod(vstrings[3]));  // Longitude of the ascending node
-    double e = std::stod("0." + vstrings[4]);  // eccentricity
-    double w = toRadian(std::stod(vstrings[5]));  // Argument of perapsis
-    double m0 = toRadian(std::stod(vstrings[6]) + 120); // Add 180 because orbits are messed up.
-                                                                  // Gotta fix that somehow, but idk how
+    double LAN = toRadian(std::stod(vstrings[3]));       // Longitude of the ascending node
+    double e = std::stod("0." + vstrings[4]);            // eccentricity
+    double w = toRadian(std::stod(vstrings[5]));         // Argument of perapsis
+    double m0 = toRadian(std::stod(vstrings[6]) + 120);  // Add 180 because orbits are messed up.
+                                                         // Gotta fix that somehow, but idk how
 
     double mean_motion = std::stod(vstrings[7]);
 
     double T = (24 * 3600) / mean_motion;
-    double a =
-        pow(T * T * GM / (4.0 * components::types::PI * components::types::PI),
-            1. / 3.0);  // semi_major_axis
+    double a = pow(T * T * GM / (4.0 * components::types::PI * components::types::PI),
+                   1. / 3.0);  // semi_major_axis
 
     orbit.eccentricity = e;
     orbit.semi_major_axis = a;
@@ -125,9 +122,7 @@ void LoadSatellites(Universe& universe, std::string& string) {
         // Add to earth
         // Calculate the thingies
         auto orbit = GetOrbit(line_one, line_two, GM);
-        orbit.inclination +=
-            universe.get<components::bodies::Body>(earth).axial *
-            cos(orbit.inclination);
+        orbit.inclination += universe.get<components::bodies::Body>(earth).axial * cos(orbit.inclination);
         // orbit.M0 += universe.get<components::bodies::Body>(earth).axial;
         orbit.CalculateVariables();
         orbit.reference_body = earth;

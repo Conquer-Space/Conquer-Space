@@ -24,15 +24,9 @@ namespace cqsp::engine {
 extern std::shared_ptr<spdlog::logger> engine_logger;
 }  // namespace cqsp::engine
 
-#define ENGINE_LOG_TRACE(...) \
-    SPDLOG_LOGGER_TRACE(cqsp::engine::engine_logger, __VA_ARGS__)
-#define ENGINE_LOG_DEBUG(...) \
-    SPDLOG_LOGGER_DEBUG(cqsp::engine::engine_logger, __VA_ARGS__)
-#define ENGINE_LOG_INFO(...) \
-    SPDLOG_LOGGER_INFO(cqsp::engine::engine_logger, __VA_ARGS__)
-#define ENGINE_LOG_WARN(...) \
-    SPDLOG_LOGGER_TRACE(cqsp::engine::engine_logger, __VA_ARGS__)
-#define ENGINE_LOG_ERROR(...) \
-    SPDLOG_LOGGER_TRACE(cqsp::engine::engine_logger, __VA_ARGS__)
-#define ENGINE_LOG_CRITICAL(...) \
-    SPDLOG_LOGGER_TRACE(cqsp::engine::engine_logger, __VA_ARGS__)
+#define ENGINE_LOG_TRACE(...) SPDLOG_LOGGER_TRACE(cqsp::engine::engine_logger, __VA_ARGS__)
+#define ENGINE_LOG_DEBUG(...) SPDLOG_LOGGER_DEBUG(cqsp::engine::engine_logger, __VA_ARGS__)
+#define ENGINE_LOG_INFO(...) SPDLOG_LOGGER_INFO(cqsp::engine::engine_logger, __VA_ARGS__)
+#define ENGINE_LOG_WARN(...) SPDLOG_LOGGER_TRACE(cqsp::engine::engine_logger, __VA_ARGS__)
+#define ENGINE_LOG_ERROR(...) SPDLOG_LOGGER_TRACE(cqsp::engine::engine_logger, __VA_ARGS__)
+#define ENGINE_LOG_CRITICAL(...) SPDLOG_LOGGER_TRACE(cqsp::engine::engine_logger, __VA_ARGS__)

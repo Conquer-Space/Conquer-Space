@@ -26,8 +26,7 @@ namespace systems {
 /// </summary>
 class SysStarSystemTree : public SysUserInterface {
  public:
-    explicit SysStarSystemTree(cqsp::engine::Application& app)
-        : SysUserInterface(app) {}
+    explicit SysStarSystemTree(cqsp::engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
     void DoUI(int delta_time);
@@ -35,6 +34,7 @@ class SysStarSystemTree : public SysUserInterface {
 
     void SeePlanetSelectable(entt::entity entity);
     void DoChildTree(entt::entity entity);
+
  private:
     int selected_index = 0;
     entt::entity selected_planet;

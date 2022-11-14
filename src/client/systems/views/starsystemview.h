@@ -23,12 +23,12 @@
 #include <entt/entt.hpp>
 #include <glm/glm.hpp>
 
+#include "common/components/coordinates.h"
 #include "common/universe.h"
+#include "engine/application.h"
 #include "engine/graphics/renderable.h"
 #include "engine/renderer/framebuffer.h"
 #include "engine/renderer/renderer.h"
-#include "engine/application.h"
-#include "common/components/coordinates.h"
 
 namespace cqsp {
 namespace client {
@@ -53,8 +53,7 @@ struct CityFounding {};
  */
 class SysStarSystemRenderer {
  public:
-    SysStarSystemRenderer(cqsp::common::Universe &,
-                          cqsp::engine::Application &);
+    SysStarSystemRenderer(cqsp::common::Universe &, cqsp::engine::Application &);
     void Initialize();
     void OnTick();
     void Render(float deltaTime);
@@ -85,10 +84,10 @@ class SysStarSystemRenderer {
 
     entt::entity GetMouseOnObject(int mouse_x, int mouse_y);
 
-    static bool IsFoundingCity(common::Universe& universe);
+    static bool IsFoundingCity(common::Universe &universe);
 
     void DrawAllOrbits();
-    void DrawOrbit(const entt::entity& entity);
+    void DrawOrbit(const entt::entity &entity);
 
     void OrbitEditor();
 
@@ -116,8 +115,8 @@ class SysStarSystemRenderer {
     asset::ShaderProgram_t no_light_shader;
 #endif
 
-    cqsp::asset::Texture* planet_texture;
-    cqsp::asset::Texture* planet_heightmap;
+    cqsp::asset::Texture *planet_texture;
+    cqsp::asset::Texture *planet_heightmap;
     cqsp::asset::Texture *earth_map_texture;
 
     glm::vec3 cam_pos;
@@ -135,22 +134,21 @@ class SysStarSystemRenderer {
 
     void DrawEntityName(glm::vec3 &object_pos, entt::entity ent_id);
     void DrawPlanetIcon(glm::vec3 &object_pos);
-    void DrawPlanetBillboards(const entt::entity& ent_id, const glm::vec3& object_pos);
+    void DrawPlanetBillboards(const entt::entity &ent_id, const glm::vec3 &object_pos);
     void DrawShipIcon(glm::vec3 &object_pos);
     void DrawCityIcon(glm::vec3 &object_pos);
 
-    void DrawAllCities(auto& bodies);
+    void DrawAllCities(auto &bodies);
 
-    void DrawAllPlanets(auto& bodies);
+    void DrawAllPlanets(auto &bodies);
     void DrawAllPlanetBillboards(auto &bodies);
     void DrawPlanet(glm::vec3 &object_pos, entt::entity entity);
 
     void DrawTexturedPlanet(glm::vec3 &object_pos, entt::entity entity);
-    void GetPlanetTexture(entt::entity entity, bool& have_normal, bool& have_roughness);
-    void DrawTerrainlessPlanet(const entt::entity &entity,
-                               glm::vec3 &object_pos);
+    void GetPlanetTexture(entt::entity entity, bool &have_normal, bool &have_roughness);
+    void DrawTerrainlessPlanet(const entt::entity &entity, glm::vec3 &object_pos);
 
-    void DrawStar(const entt::entity& entity, glm::vec3 &object_pos);
+    void DrawStar(const entt::entity &entity, glm::vec3 &object_pos);
     void RenderCities(glm::vec3 &object_pos, const entt::entity &body_entity);
     bool CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos, double radius);
     void CalculateCityPositions();
@@ -180,15 +178,14 @@ class SysStarSystemRenderer {
     /// <summary>
     /// Calculates the GL position for a log renderbuffer.
     /// </summary>
-    glm::vec4 CalculateGLPosition(const glm::vec3& object_pos);
+    glm::vec4 CalculateGLPosition(const glm::vec3 &object_pos);
     /// <summary>
     /// Check if the GL position is within the window
     /// </summary>
-    bool GLPositionNotInBounds(const glm::vec4& gl_Position, const glm::vec3& pos);
-    glm::mat4 GetBillboardMatrix(const glm::vec3& pos);
-    glm::vec3 GetBillboardPosition(const glm::vec3& object_pos);
-    void SetBillboardProjection(cqsp::asset::ShaderProgram_t &shader,
-                                glm::mat4 mat);
+    bool GLPositionNotInBounds(const glm::vec4 &gl_Position, const glm::vec3 &pos);
+    glm::mat4 GetBillboardMatrix(const glm::vec3 &pos);
+    glm::vec3 GetBillboardPosition(const glm::vec3 &object_pos);
+    void SetBillboardProjection(cqsp::asset::ShaderProgram_t &shader, glm::mat4 mat);
     void CenterCameraOnCity();
 
     void CalculateCamera();

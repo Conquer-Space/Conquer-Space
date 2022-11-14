@@ -21,21 +21,16 @@
 
 #include <glm/gtx/transform.hpp>
 
-cqsp::engine::Renderer2D::Renderer2D(cqsp::asset::ShaderProgram_t tex,
-                                     cqsp::asset::ShaderProgram_t color) :
-                                     texture_shader(tex), color_shader(color) { }
+cqsp::engine::Renderer2D::Renderer2D(cqsp::asset::ShaderProgram_t tex, cqsp::asset::ShaderProgram_t color)
+    : texture_shader(tex), color_shader(color) {}
 
-cqsp::engine::Renderer2D::Renderer2D(cqsp::asset::ShaderProgram_t tex) :
-                                        texture_shader(tex), color_shader(nullptr) { }
+cqsp::engine::Renderer2D::Renderer2D(cqsp::asset::ShaderProgram_t tex) : texture_shader(tex), color_shader(nullptr) {}
 
-cqsp::engine::Renderer2D::Renderer2D(cqsp::asset::ShaderProgram_t color, bool) :
-                                        texture_shader(nullptr), color_shader(color) { }
+cqsp::engine::Renderer2D::Renderer2D(cqsp::asset::ShaderProgram_t color, bool)
+    : texture_shader(nullptr), color_shader(color) {}
 
-
-void cqsp::engine::Renderer2D::DrawTexturedSprite(cqsp::engine::Mesh* mesh,
-                                                  cqsp::asset::Texture& texture,
-                                                 glm::vec2 position,
-                                                 glm::vec2 size, float rotate) {
+void cqsp::engine::Renderer2D::DrawTexturedSprite(cqsp::engine::Mesh* mesh, cqsp::asset::Texture& texture,
+                                                  glm::vec2 position, glm::vec2 size, float rotate) {
     if (!TextureEnabled()) {
         return;
     }
@@ -61,7 +56,7 @@ void cqsp::engine::Renderer2D::DrawTexturedSprite(cqsp::engine::Mesh* mesh,
     mesh->Draw();
 }
 
-void cqsp::engine::Renderer2D::SetProjection(const glm::mat4 & projection) {
+void cqsp::engine::Renderer2D::SetProjection(const glm::mat4& projection) {
     if (TextureEnabled()) {
         texture_shader->UseProgram();
         texture_shader->Set("projection", projection);
@@ -72,9 +67,7 @@ void cqsp::engine::Renderer2D::SetProjection(const glm::mat4 & projection) {
     }
 }
 
-void cqsp::engine::Renderer2D::DrawColoredSprite(cqsp::engine::Mesh* mesh,
-                                                 glm::vec3 color,
-                                                 glm::vec2 position,
+void cqsp::engine::Renderer2D::DrawColoredSprite(cqsp::engine::Mesh* mesh, glm::vec3 color, glm::vec2 position,
                                                  glm::vec2 size, float rotate) {
     if (!ColorEnabled()) {
         return;

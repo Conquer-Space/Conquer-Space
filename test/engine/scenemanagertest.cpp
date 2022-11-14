@@ -14,12 +14,13 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <gtest/gtest.h>
+
 #include <iomanip>
 
-#include "engine/engine.h"
 #include "engine/application.h"
+#include "engine/engine.h"
 #include "engine/scene.h"
 
 namespace cqspe = cqsp::engine;
@@ -39,7 +40,7 @@ TEST(SceneManagerTest, SceneChangeTest) {
     cqspe::SceneManager scene_manager;
 
     std::unique_ptr<MockScene> initial = std::make_unique<MockScene>();
-    std::unique_ptr<MockScene> new_scene =  std::make_unique<MockScene>();
+    std::unique_ptr<MockScene> new_scene = std::make_unique<MockScene>();
 
     // Initial scene is not initialized, because it will be an empty scene.
     EXPECT_CALL(*new_scene, Init()).Times(1);

@@ -14,14 +14,15 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
-#include <gmock/gmock-more-matchers.h>
+#include "common/systems/names/namegenerator.h"
 
+#include <gmock/gmock-more-matchers.h>
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 #include <hjson.h>
+
 #include <algorithm>
 
-#include "common/systems/names/namegenerator.h"
 #include "common/util/random/stdrandom.h"
 
 using cqsp::common::systems::names::NameGenerator;
@@ -34,7 +35,7 @@ TEST(NameGeneratorTest, BasicTest) {
     gen.LoadNameGenerator(val[0]);
     gen.SetRandom(&std_random);
 
-    std::vector<std::string> potential_names{"Aelash", "Ashash", "Aelburn", "Ashburn"};
+    std::vector<std::string> potential_names {"Aelash", "Ashash", "Aelburn", "Ashburn"};
 
     for (int i = 0; i < 100; i++) {
         std::string gen_text = gen.Generate("1");
@@ -42,12 +43,12 @@ TEST(NameGeneratorTest, BasicTest) {
 #ifndef WIN32
         EXPECT_THAT(gen_text, testing::MatchesRegex("(Ael|Ash)(ash|burn)"));
 #else
-        using testing::AnyOf;
         using testing::AllOf;
-        using testing::StartsWith;
+        using testing::AnyOf;
         using testing::EndsWith;
-        EXPECT_THAT(gen_text, AllOf(AnyOf(StartsWith("Ael"), StartsWith("Ash")),
-                              AnyOf(EndsWith("ash"), EndsWith("burn"))));
+        using testing::StartsWith;
+        EXPECT_THAT(gen_text,
+                    AllOf(AnyOf(StartsWith("Ael"), StartsWith("Ash")), AnyOf(EndsWith("ash"), EndsWith("burn"))));
 #endif
     }
 }
@@ -61,7 +62,7 @@ TEST(NameGeneratorTest, IncorrectFormatTest) {
     gen.LoadNameGenerator(val[0]);
     gen.SetRandom(&std_random);
 
-    std::vector<std::string> potential_names{"Aelash", "Ashash", "Aelburn", "Ashburn"};
+    std::vector<std::string> potential_names {"Aelash", "Ashash", "Aelburn", "Ashburn"};
     std::string gen_text = gen.Generate("wrong");
     ASSERT_EQ(gen_text, "");
 }

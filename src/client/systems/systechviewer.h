@@ -21,8 +21,7 @@
 namespace cqsp::client::systems {
 class SysTechnologyViewer : public SysUserInterface {
  public:
-    explicit SysTechnologyViewer(cqsp::engine::Application& app)
-        : SysUserInterface(app) {}
+    explicit SysTechnologyViewer(cqsp::engine::Application& app) : SysUserInterface(app) {}
 
     void Init() override;
     void DoUI(int delta_time) override;
@@ -31,8 +30,7 @@ class SysTechnologyViewer : public SysUserInterface {
 
 class SysTechnologyProjectViewer : public SysUserInterface {
  public:
-    explicit SysTechnologyProjectViewer(cqsp::engine::Application& app)
-        : SysUserInterface(app) {}
+    explicit SysTechnologyProjectViewer(cqsp::engine::Application& app) : SysUserInterface(app) {}
 
     void Init() override;
     void DoUI(int delta_time) override;

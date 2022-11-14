@@ -34,8 +34,8 @@ void cqsp::client::systems::gui::SysEvent::Init() {
 }
 
 void cqsp::client::systems::gui::SysEvent::DoUI(int delta_time) {
-    using cqsp::common::event::EventQueue;
     using cqsp::common::event::Event;
+    using cqsp::common::event::EventQueue;
     auto events = GetApp().GetUniverse().view<cqsp::common::components::Player, EventQueue>();
     for (auto [ent, queue] : events.each()) {
         if (queue.events.empty()) {
@@ -44,21 +44,18 @@ void cqsp::client::systems::gui::SysEvent::DoUI(int delta_time) {
         // Halt the game
         GetUniverse().DisableTick();
         std::shared_ptr<Event> env = queue.events.front();
-        ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f,
-                                       ImGui::GetIO().DisplaySize.y * 0.5f),
+        ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
                                 ImGuiCond_Always, ImVec2(0.5f, 0.5f));
         ImGui::Begin(env->title.c_str(), NULL,
-                     ImGuiWindowFlags_NoCollapse | window_flags |
-                         ImGuiWindowFlags_NoScrollbar |
+                     ImGuiWindowFlags_NoCollapse | window_flags | ImGuiWindowFlags_NoScrollbar |
                          ImGuiWindowFlags_AlwaysAutoResize);
 
         asset::Texture* texture = GetAssetManager().GetAsset<asset::Texture>(env->image);
         float multiplier = 450.f / texture->width;
-        ImGui::Image(reinterpret_cast<void*>(texture->id), ImVec2(texture->width * multiplier,
-                                                                    texture->height * multiplier));
+        ImGui::Image(reinterpret_cast<void*>(texture->id),
+                     ImVec2(texture->width * multiplier, texture->height * multiplier));
         ImGui::Separator();
-        ImGui::BeginChild("eventchild", ImVec2(-FLT_MIN, 150), false,
-                          window_flags);
+        ImGui::BeginChild("eventchild", ImVec2(-FLT_MIN, 150), false, window_flags);
         ImGui::Text(env->content.c_str());
         ImGui::EndChild();
         if (env->actions.empty()) {

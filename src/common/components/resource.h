@@ -16,15 +16,15 @@
 */
 #pragma once
 
+#include <iostream>
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
-#include <iostream>
 
 #include <entt/entt.hpp>
 
-#include "common/components/units.h"
 #include "common/components/area.h"
+#include "common/components/units.h"
 
 namespace cqsp {
 namespace common {
@@ -79,7 +79,6 @@ class ResourceLedger : private LedgerMap {
     ~ResourceLedger() = default;
 
     const double operator[](const entt::entity) const;
-
 
     /// <summary>
     /// This resource ledger has enough resources inside to transfer "amount" amount of resources away
@@ -193,9 +192,7 @@ class ResourceLedger : private LedgerMap {
     /// <returns></returns>
     bool HasAllResources(const ResourceLedger&);
 
-    bool HasGood(entt::entity good) {
-        return (*this).find(good) != (*this).end();
-    }
+    bool HasGood(entt::entity good) { return (*this).find(good) != (*this).end(); }
 
     double GetSum();
 
@@ -212,19 +209,19 @@ class ResourceLedger : private LedgerMap {
     // All the things that we get from map
     using LedgerMap::operator[];
     using LedgerMap::begin;
-    using LedgerMap::end;
     using LedgerMap::cbegin;
     using LedgerMap::cend;
+    using LedgerMap::clear;
     using LedgerMap::crbegin;
     using LedgerMap::crend;
+    using LedgerMap::emplace;
+    using LedgerMap::empty;
+    using LedgerMap::end;
+    using LedgerMap::mapped_type;
     using LedgerMap::rbegin;
     using LedgerMap::rend;
-    using LedgerMap::clear;
-    using LedgerMap::empty;
-    using LedgerMap::emplace;
-    using LedgerMap::value_comp;
     using LedgerMap::size;
-    using LedgerMap::mapped_type;
+    using LedgerMap::value_comp;
 };
 
 ResourceLedger CopyVals(const ResourceLedger& keys, const ResourceLedger& values);
@@ -277,7 +274,6 @@ struct CostBreakdown {
     }
 };
 
-
 //Essentially resource consumption + production
 struct ResourceIO {
     ResourceLedger input;
@@ -299,9 +295,7 @@ struct ResourceConverter {
     entt::entity recipe;
 };
 
-struct ResourceStockpile : public ResourceLedger { };
-
-
+struct ResourceStockpile : public ResourceLedger {};
 
 struct FailedResourceTransfer {
     // Ledgers later to show how much

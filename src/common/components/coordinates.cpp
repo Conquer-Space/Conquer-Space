@@ -19,10 +19,9 @@
 #include "common/components/units.h"
 
 namespace cqsp::common::components::types {
-glm::dvec3 ConvertOrbParams(const double LAN, const double i, const double w,
-                            const glm::dvec3& vec) {
-    return glm::dquat {glm::dvec3(0, 0, LAN)} * glm::dquat {glm::dvec3(i, 0, 0)} *
-           glm::dquat {glm::dvec3(0, 0, w)} * vec;
+glm::dvec3 ConvertOrbParams(const double LAN, const double i, const double w, const glm::dvec3& vec) {
+    return glm::dquat {glm::dvec3(0, 0, LAN)} * glm::dquat {glm::dvec3(i, 0, 0)} * glm::dquat {glm::dvec3(0, 0, w)} *
+           vec;
 }
 
 double GetOrbitingRadius(const double& e, const double& a, const double& v) {
@@ -31,8 +30,7 @@ double GetOrbitingRadius(const double& e, const double& a, const double& v) {
 }
 
 // https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
-Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity,
-                 const double& GM, const double& time) {
+Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const double& GM, const double& time) {
     // Orbital momentum vector
     const auto h = glm::cross(position, velocity);
     // Eccentricity vector
@@ -84,8 +82,8 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity,
 }
 
 // https://downloads.rene-schwarz.com/download/M001-Keplerian_Orbit_Elements_to_Cartesian_State_Vectors.pdf
-glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i,
-                       const radian& LAN, const radian& w, const radian& v) {
+glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i, const radian& LAN, const radian& w,
+                       const radian& v) {
     if (a == 0) {
         return glm::vec3(0, 0, 0);
     }
@@ -101,8 +99,7 @@ glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v) {
         return glm::vec3(0, 0, 0);
     }
     double r = GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, v);
-    glm::vec3 velocity = CalculateVelocity(
-        orb.E, r, orb.GM, orb.semi_major_axis, orb.eccentricity);
+    glm::vec3 velocity = CalculateVelocity(orb.E, r, orb.GM, orb.semi_major_axis, orb.eccentricity);
     return ConvertOrbParams(orb.LAN, orb.inclination, orb.w, velocity);
 }
 
@@ -126,8 +123,7 @@ double SolveKeplerElliptic(const double& mean_anomaly, const double& ecc, const 
     return ea;
 }
 
-double SolveKeplerHyperbolic(const double& mean_anomaly, const double& ecc,
-                             const int steps) {
+double SolveKeplerHyperbolic(const double& mean_anomaly, const double& ecc, const int steps) {
     if (abs(ecc) < 1.0E-9) {
         return mean_anomaly;
     }
@@ -138,8 +134,7 @@ double SolveKeplerHyperbolic(const double& mean_anomaly, const double& ecc,
     double ea = mean_anomaly;
     double old_m = mean_anomaly;
 
-    while ((it < steps) &&
-            (abs(de) > 1.0E-5)) {  // normal accuracy is 1.0e-10
+    while ((it < steps) && (abs(de) > 1.0E-5)) {  // normal accuracy is 1.0e-10
         double new_m = ecc * sinh(ea) - ea;
         de = (old_m - new_m) / (ecc * cosh(ea) - 1.0);
         ea += de;
@@ -156,15 +151,13 @@ double HyperbolicAnomalyToTrueAnomaly(const double& ecc, const double& H) {
     return 2 * atan(sqrt((ecc + 1.) / (ecc - 1.)) * tanh(H / 2));
 }
 
-double GetMtElliptic(const double& M0, const double& nu, const double& time, const double &epoch) {
+double GetMtElliptic(const double& M0, const double& nu, const double& time, const double& epoch) {
     // Calculate
     double Mt = M0 + (time - epoch) * nu;
     return normalize_radian(Mt);
 }
 
-double GetMtHyperbolic(const double& Mu, const double& a, const double& d_t) {
-    return sqrt(Mu / (-a * a * a)) * d_t;
-}
+double GetMtHyperbolic(const double& Mu, const double& a, const double& d_t) { return sqrt(Mu / (-a * a * a)) * d_t; }
 
 radian TrueAnomalyElliptic(const Orbit& orbit, const second& time) {
     double Mt = GetMtElliptic(orbit.M0, orbit.nu, time, orbit.epoch);
@@ -172,8 +165,7 @@ radian TrueAnomalyElliptic(const Orbit& orbit, const second& time) {
     return EccentricAnomalyToTrueAnomaly(orbit.eccentricity, E);
 }
 
-radian TrueAnomalyElliptic(const Orbit& orbit, const second& time,
-                           double& E_out) {
+radian TrueAnomalyElliptic(const Orbit& orbit, const second& time, double& E_out) {
     double Mt = GetMtElliptic(orbit.M0, orbit.nu, time, orbit.epoch);
     double E = SolveKeplerElliptic(Mt, orbit.eccentricity);
     E_out = E;
@@ -198,9 +190,7 @@ void UpdateOrbit(Orbit& orb, const second& time) {
     orb.E = E;
 }
 
-glm::vec3 CalculateVelocity(const double& E, const double& r,
-                            const double& GM, const double& a,
-                            const double& e) {
+glm::vec3 CalculateVelocity(const double& E, const double& r, const double& GM, const double& a, const double& e) {
     // Elliptic orbit
     if (e < 1) {
         return CalculateVelocityElliptic(E, r, GM, a, e);
@@ -208,24 +198,20 @@ glm::vec3 CalculateVelocity(const double& E, const double& r,
     return CalculateVelocityHyperbolic(E, r, GM, a, e);
 }
 
-glm::vec3 CalculateVelocityHyperbolic(const double& E, const double& r,
-                                      const double& GM, const double& a,
+glm::vec3 CalculateVelocityHyperbolic(const double& E, const double& r, const double& GM, const double& a,
                                       const double& e) {
-    return (float)(sqrt(-GM * a) / r) *
-           glm::vec3(sinh(E), -sqrt(e * e - 1) * cosh(E), 0);
+    return (float)(sqrt(-GM * a) / r) * glm::vec3(sinh(E), -sqrt(e * e - 1) * cosh(E), 0);
 }
 
-glm::vec3 CalculateVelocityElliptic(const double& E, const double& r,
-                                    const double& GM, const double& a,
+glm::vec3 CalculateVelocityElliptic(const double& E, const double& r, const double& GM, const double& a,
                                     const double& e) {
-    return ((float)(sqrt(GM * a) / r) *
-            glm::vec3(-sin(E), sqrt(1 - e * e) * cos(E), 0));
+    return ((float)(sqrt(GM * a) / r) * glm::vec3(-sin(E), sqrt(1 - e * e) * cos(E), 0));
 }
 
 glm::vec3 toVec3(const SurfaceCoordinate& coord, const float& radius) {
-    return glm::vec3(cos(coord.r_latitude()) * sin(coord.r_longitude()),
-                     sin(coord.r_latitude()),
-                     cos(coord.r_latitude()) * cos(coord.r_longitude())) * radius;
+    return glm::vec3(cos(coord.r_latitude()) * sin(coord.r_longitude()), sin(coord.r_latitude()),
+                     cos(coord.r_latitude()) * cos(coord.r_longitude())) *
+           radius;
 }
 SurfaceCoordinate ToSurfaceCoordinate(const glm::vec3& vec) {
     double latitude = (asin(vec.y));

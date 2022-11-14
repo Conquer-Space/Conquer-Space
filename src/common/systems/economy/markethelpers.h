@@ -18,8 +18,8 @@
 
 #include <entt/entt.hpp>
 
-#include "common/universe.h"
 #include "common/components/resource.h"
+#include "common/universe.h"
 
 namespace cqsp {
 namespace common {
@@ -40,15 +40,12 @@ void CreateMarket(Universe& universe, entt::entity market);
 /// <param name="agent"></param>
 /// <param name="purchase"></param>
 /// <returns></returns>
-bool PurchaseGood(Universe& universe, entt::entity agent,
-                  components::ResourceLedger purchase);
-bool SellGood(Universe& universe, entt::entity agent,
-              components::ResourceLedger selling);
+bool PurchaseGood(Universe& universe, entt::entity agent, components::ResourceLedger purchase);
+bool SellGood(Universe& universe, entt::entity agent, components::ResourceLedger selling);
 
 void AddParticipant(cqsp::common::Universe& universe, entt::entity market, entt::entity entity);
 
-double GetCost(cqsp::common::Universe& universe, entt::entity market,
-               components::ResourceLedger ledger);
+double GetCost(cqsp::common::Universe& universe, entt::entity market, components::ResourceLedger ledger);
 }  // namespace economy
 }  // namespace systems
 }  // namespace common

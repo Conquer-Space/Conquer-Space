@@ -31,6 +31,7 @@ class CQSPSystemInterface : public Rml::SystemInterface {
 
     double GetElapsedTime();
     bool LogMessage(Rml::Log::Type type, const Rml::String& message) override;
+
  private:
     Application& m_app;
     std::shared_ptr<spdlog::logger> logger;

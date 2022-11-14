@@ -53,8 +53,7 @@ void cqsp::common::systems::InfrastructureSim::DoSystem() {
         infra.improvement = 0;
         // Add highway things I guess
         if (GetUniverse().any_of<cqspc::infrastructure::Highway>(entity)) {
-            infra.improvement +=
-                GetUniverse().get<cqspc::infrastructure::Highway>(entity).extent;
+            infra.improvement += GetUniverse().get<cqspc::infrastructure::Highway>(entity).extent;
         }
     }
 }

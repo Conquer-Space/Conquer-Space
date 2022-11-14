@@ -23,7 +23,7 @@
 namespace cqsp::client::systems::rmlui {
 class TurnSaveWindow : public SysRmlUiInterface {
  public:
-    explicit TurnSaveWindow(cqsp::engine::Application &_app) : SysRmlUiInterface(_app) {}
+    explicit TurnSaveWindow(cqsp::engine::Application& _app) : SysRmlUiInterface(_app) {}
     ~TurnSaveWindow();
     void Update(double delta_time) override;
     void OpenDocument() override;
@@ -37,7 +37,7 @@ class TurnSaveWindow : public SysRmlUiInterface {
         explicit EventListener(common::Universe* universe) : universe(universe) {}
         void ProcessEvent(Rml::Event& event);
         common::Universe* universe;
-    } listener{&GetUniverse()};
+    } listener {&GetUniverse()};
 
     bool is_paused;
 

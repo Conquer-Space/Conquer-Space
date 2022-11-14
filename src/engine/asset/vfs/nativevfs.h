@@ -17,9 +17,9 @@
 #pragma once
 
 #include <fstream>
-#include <vector>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "engine/asset/vfs/vfs.h"
 
@@ -36,16 +36,14 @@ class NativeFile : public IVirtualFile {
     ~NativeFile();
 
     const std::string& Path() override;
-    uint64_t Size()  override;
+    uint64_t Size() override;
 
-    void Read(uint8_t* buffer, int bytes)  override;
+    void Read(uint8_t* buffer, int bytes) override;
 
     bool Seek(long offset, Offset origin);
-    uint64_t Tell()  override;
+    uint64_t Tell() override;
 
-    IVirtualFileSystem* GetFileSystem() override {
-        return reinterpret_cast<IVirtualFileSystem*>(nfs);
-    }
+    IVirtualFileSystem* GetFileSystem() override { return reinterpret_cast<IVirtualFileSystem*>(nfs); }
 
     friend NativeFileSystem;
 
@@ -62,9 +60,7 @@ class NativeFileSystem : public IVirtualFileSystem {
     explicit NativeFileSystem(const std::string& root);
     ~NativeFileSystem();
 
-    bool Initialize() override {
-        return true;
-    }
+    bool Initialize() override { return true; }
 
     std::shared_ptr<IVirtualFile> Open(const std::string& path, FileModes = None) override;
     void Close(std::shared_ptr<IVirtualFile>&) override;
@@ -89,6 +85,7 @@ class NativeDirectory : public IVirtualDirectory {
     std::shared_ptr<IVirtualFile> GetFile(int index, FileModes modes = None) override;
     const std::string& GetFilename(int index) override;
     IVirtualFileSystem* GetFileSystem() override;
+
  private:
     friend NativeFileSystem;
     std::vector<std::string> paths;

@@ -31,7 +31,7 @@ struct FieldTemplate {
     std::vector<std::string> parent;
     std::vector<std::string> adjacent;
 };
-}
+}  // namespace
 
 namespace cqsp::common::systems::science {
 void LoadFields(Universe& universe, Hjson::Value& hjson) {
@@ -42,7 +42,7 @@ void LoadFields(Universe& universe, Hjson::Value& hjson) {
         }
         // Get the name
         entt::entity field = universe.create();
-        auto &field_comp = universe.emplace<components::science::Field>(field);
+        auto& field_comp = universe.emplace<components::science::Field>(field);
         loading::LoadName(universe, field, val);
         if (!loading::LoadIdentifier(universe, field, val)) {
             universe.destroy(field);
@@ -61,7 +61,7 @@ void LoadFields(Universe& universe, Hjson::Value& hjson) {
                     continue;
                 }
                 field_template.parent.push_back(parent_name);
-           }
+            }
         }
         if (val["adjacent"].type() == Hjson::Type::Vector) {
             for (int j = 0; j < val["adjacent"].size(); j++) {
@@ -72,7 +72,7 @@ void LoadFields(Universe& universe, Hjson::Value& hjson) {
                     continue;
                 }
                 field_template.adjacent.push_back(parent_name);
-           }
+            }
         }
         if (universe.fields.find(identifier) != universe.fields.end()) {
             SPDLOG_WARN("Field {} already exists, overwriting", identifier);

@@ -14,8 +14,8 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
 #include <filesystem>
 
@@ -72,8 +72,7 @@ TEST_F(NativeVfsTest, FileReadTest) {
 
     // Read file for what the file actually says
     std::ifstream file(full_name);
-    std::string truth((std::istreambuf_iterator<char>(file)),
-                 std::istreambuf_iterator<char>());
+    std::string truth((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
     ASSERT_EQ(to_test, truth);
 
