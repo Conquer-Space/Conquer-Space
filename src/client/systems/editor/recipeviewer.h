@@ -13,38 +13,22 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 #pragma once
 
-#include <map>
-#include <memory>
-#include <string>
-#include <utility>
-
 #include "client/systems/sysgui.h"
-#include "engine/scene.h"
 
-namespace cqsp {
-namespace scene {
-class ObjectEditorScene : public cqsp::engine::Scene {
+namespace cqsp::client::systems {
+class SysRecipeViewer : public SysUserInterface {
  public:
-    explicit ObjectEditorScene(cqsp::engine::Application& app);
-    ~ObjectEditorScene();
+    explicit SysRecipeViewer(cqsp::engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
-    void Update(float deltaTime);
-    void Ui(float deltaTime);
-    void Render(float deltaTime);
-
-    template <class T>
-    void AddUISystem(const std::string& name) {
-        auto ui = std::make_unique<T>(GetApp());
-        ui->Init();
-        user_interfaces[name] = std::make_pair(false, std::move(ui));
-    }
+    void DoUI(int delta_time);
+    void DoUpdate(int delta_time);
 
  private:
-    std::map<std::string, std::pair<bool, std::unique_ptr<cqsp::client::systems::SysUserInterface>>> user_interfaces;
+    void RecipeViewerRight();
+    entt::entity selected_recipe = entt::null;
 };
-}  // namespace scene
-};  // namespace cqsp
+}  // namespace cqsp::client::systems

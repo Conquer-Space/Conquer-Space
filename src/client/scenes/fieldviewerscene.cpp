@@ -17,10 +17,14 @@
 #include "client/scenes/fieldviewerscene.h"
 
 #include "client/systems/assetloading.h"
+#include "client/systems/editor/goodviewer.h"
+#include "client/systems/editor/recipeviewer.h"
 #include "client/systems/sysfieldviewer.h"
 
 cqsp::scene::ObjectEditorScene::ObjectEditorScene(cqsp::engine::Application& app) : cqsp::engine::Scene(app) {
-    AddUISystem<cqsp::client::systems::SysFieldNodeViewer>();
+    AddUISystem<cqsp::client::systems::SysFieldNodeViewer>("Node Viewer");
+    AddUISystem<cqsp::client::systems::SysGoodViewer>("Good Viewer");
+    AddUISystem<cqsp::client::systems::SysRecipeViewer>("Recipe Viewer");
 }
 
 cqsp::scene::ObjectEditorScene::~ObjectEditorScene() {}
@@ -33,8 +37,21 @@ void cqsp::scene::ObjectEditorScene::Init() {
 void cqsp::scene::ObjectEditorScene::Update(float deltaTime) {}
 
 void cqsp::scene::ObjectEditorScene::Ui(float deltaTime) {
+    // Do information UI
+    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+    ImGui::Begin("UI to Show");
+    if (ImGui::Button("Exit")) {
+        // Exit app
+        GetApp().ExitApplication();
+    }
     for (auto& ui : user_interfaces) {
-        ui->DoUI(deltaTime);
+        ImGui::Checkbox(fmt::format("{}", ui.first).c_str(), &ui.second.first);
+    }
+    ImGui::End();
+    for (auto& ui : user_interfaces) {
+        if (ui.second.first) {
+            ui.second.second->DoUI(deltaTime);
+        }
     }
 }
 
