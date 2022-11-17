@@ -33,21 +33,10 @@ namespace components {
 /// Might change this to a different type of resource ledger so that we don't have so many lookups
 /// </summary>
 struct MarketInformation {
-    ResourceLedger demand;
-    ResourceLedger sd_ratio;
-
-    // Might not need this in the future.
-    ResourceLedger ds_ratio;
-    ResourceLedger supply;
-
     /// <summary>
     /// The amount of goods that changed hands. We can use this to calculate the
     /// GDP
     /// </summary>
-    ResourceLedger volume;
-    ResourceLedger price;
-    ResourceLedger previous_demand;
-    ResourceLedger previous_supply;
 
     // Supply that existed, but not fufilled last time
     ResourceLedger latent_supply;
@@ -62,8 +51,10 @@ struct MarketElementInformation {
     double demand;
     double price;
     double price_ratio;
-    double sd_ratio;
     double inputratio;
+    double volume;
+
+    double sd_ratio();
 };
 
 struct Market : MarketInformation {
@@ -88,6 +79,11 @@ struct Market : MarketInformation {
     double GetSupply(const entt::entity& good);
     double GetDemand(const entt::entity& good);
 
+    double GetAndMultiplyPrice(const ResourceLedger& ledger);
+    double GetAndMultiplyPrice(const RecipeOutput& ledger);
+
+    void DividePriceLedger(ResourceLedger& ledger);
+
     void AddParticipant(entt::entity participant) { participants.insert(participant); }
 
     MarketElementInformation& operator[](entt::entity ent) { return market_information[ent]; }
@@ -95,6 +91,8 @@ struct Market : MarketInformation {
     auto begin() { return market_information.begin(); }
 
     auto end() { return market_information.end(); }
+
+    double GetLowestSDRatio(ResourceLedger& ledger);
 };
 
 /// <summary>

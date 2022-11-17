@@ -43,13 +43,13 @@ void cqsp::common::systems::SysMarket::DoSystem() {
         // market.gdp = market.volume* market.price;
 
         // Calculate Supply and demand
-        market.sd_ratio = market.supply.SafeDivision(market.demand);
         // market.ds_ratio = market.previous_demand.SafeDivision(market.supply);
         // market.ds_ratio = market.ds_ratio.Clamp(0, 2);
 
-        for (entt::entity good_entity : goodsview) {
-            const double sd_ratio = market.sd_ratio[good_entity];
-            double& price = market.price[good_entity];
+        for (auto& market_info : market) {
+            auto& info = market_info.second;
+            const double sd_ratio = info.sd_ratio();
+            double& price = info.price;
             // If supply and demand = 0, then it will be undefined
             if (sd_ratio < 1) {
                 // Too much demand, so we will increase the price
@@ -69,10 +69,10 @@ void cqsp::common::systems::SysMarket::DoSystem() {
             }
         }
         // Set the previous supply and demand
-        //components::MarketInformation current = market;
-        //market.history.push_back(current);
 
+        market.last_market_information = market.market_information;
         // Swap and clear?
+        /*
         std::swap(market.supply, market.previous_supply);
         std::swap(market.demand, market.previous_demand);
         std::swap(market.latent_demand, market.last_latent_demand);
@@ -81,6 +81,7 @@ void cqsp::common::systems::SysMarket::DoSystem() {
         market.demand.clear();
         market.latent_supply.clear();
         market.latent_demand.clear();
+        */
     }
 }
 
@@ -97,15 +98,18 @@ void cqsp::common::systems::SysMarket::InitializeMarket(Game& game) {
 
         // Initialize the price
         for (entt::entity goodenity : goodsview) {
-            market.price[goodenity] = universe.get<components::Price>(goodenity);
+            auto& mk_i = market[goodenity];
+            mk_i.price = universe.get<components::Price>(goodenity);
             // Set the supply and demand things as 1 so that they sell for
             // now
-            market.previous_demand[goodenity] = 1;
-            market.previous_supply[goodenity] = 1;
-            market.supply[goodenity] = 1;
-            market.demand[goodenity] = 1;
+            //mk_i.pre
+            //market.previous_demand[goodenity] = 1;
+            //market.previous_supply[goodenity] = 1;
+            mk_i.supply = 1;
+            mk_i.demand = 1;
+            // Set previous information
+            market.last_market_information[goodenity] = mk_i;
         }
-        market.sd_ratio = market.supply.SafeDivision(market.demand);
-        market.history.push_back(market);
+        //market.history.push_back(market);
     }
 }

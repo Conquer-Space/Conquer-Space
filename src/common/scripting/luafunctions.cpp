@@ -201,7 +201,7 @@ void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
         auto& market = universe.get<cqsp::common::components::Market>(market_entity);
         for (entt::entity entity : view) {
             // Assign price to market
-            market.market_information[entity].price = universe.get<cqspc::Price>(entity);
+            market[entity].price = universe.get<cqspc::Price>(entity);
         }
         return market_entity;
         // return entity;

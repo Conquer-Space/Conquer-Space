@@ -98,7 +98,7 @@ void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement
         consumption *= population;
 
         cqspc::Wallet& wallet = universe.get_or_emplace<cqspc::Wallet>(segmententity);
-        const double cost = (consumption * market.price).GetSum();
+        const double cost = market.GetAndMultiplyPrice(consumption);
         wallet -= cost;    // Spend, even if it puts the pop into debt
         if (wallet > 0) {  // If the pop has cash left over spend it
             // Add to the cost of price of transport
@@ -110,12 +110,12 @@ void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement
             // Add to the cost
             // They can buy less because of things
             //extraconsumption *= infra_cost;
-            extraconsumption *= wallet;        // Distribute wallet amongst goods
-            extraconsumption /= market.price;  // Find out how much of each good you can buy
-            consumption += extraconsumption;   // Remove purchased goods from the market
+            extraconsumption *= wallet;                  // Distribute wallet amongst goods
+            market.DividePriceLedger(extraconsumption);  // Find out how much of each good you can buy
+            consumption += extraconsumption;             // Remove purchased goods from the market
             for (auto& t : consumption) {
                 // Look for in the market, and then if supply is zero, then deny them buying
-                if (market.previous_supply[t.first] <= 0) {
+                if (market.last_market_information[t.first].supply <= 0) {
                     // Then they cannot buy the stuff
                     // Then do the consumption
                     // Add to latent demand
@@ -134,7 +134,7 @@ void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement
         // TODO(EhWhoAmI): Don't inject cash, take the money from the government
         wallet += segment.population * 50000;  // Inject cash
 
-        market.demand += consumption;
+        market.AddDemand(consumption);
     }
 }
 }  // namespace

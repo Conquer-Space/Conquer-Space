@@ -16,6 +16,8 @@
  */
 #include "common/components/economy.h"
 
+#include <limits>
+
 using cqsp::common::components::Market;
 using cqsp::common::components::ResourceStockpile;
 
@@ -51,10 +53,49 @@ double Market::GetPrice(const ResourceLedger& stockpile) {
     return price;
 }
 
-double Market::GetSDRatio(const entt::entity& good) { return market_information[good].sd_ratio; }
+double Market::GetSDRatio(const entt::entity& good) { return market_information[good].sd_ratio(); }
 
 double Market::GetSupply(const entt::entity& good) { return market_information[good].supply; }
 
 double Market::GetDemand(const entt::entity& good) { return market_information[good].demand; }
 
+double Market::GetAndMultiplyPrice(const ResourceLedger& ledger) {
+    double price = 0;
+    for (const auto& led : ledger) {
+        price += market_information[led.first].price * led.second;
+    }
+    return price;
+}
+
+double Market::GetAndMultiplyPrice(const RecipeOutput& ledger) {
+    return ledger.amount * market_information[ledger.entity].price;
+}
+
+void Market::DividePriceLedger(ResourceLedger& ledger) {
+    for (auto& val : ledger) {
+        val.second /= market_information[val.first].price;
+    }
+}
+
+double Market::GetLowestSDRatio(ResourceLedger& ledger) {
+    double lowest = std::numeric_limits<double>::infinity();
+    for (auto& in : ledger) {
+        double val = last_market_information[in.first].sd_ratio();
+        if (lowest < val) {
+            lowest = val;
+        }
+    }
+    return lowest;
+}
+
 double Market::GetPrice(const entt::entity& good) { return market_information[good].price; }
+
+double cqsp::common::components::MarketElementInformation::sd_ratio() {
+    if (supply == 0) {
+        return std::numeric_limits<double>::infinity();
+    } else if (demand == 0) {
+        return 0;
+    } else {
+        return supply / demand;
+    }
+}
