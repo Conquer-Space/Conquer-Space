@@ -40,27 +40,26 @@ void LeaveSOI(Universe& universe, const entt::entity& body, entt::entity& parent
     // Then change parent, then set the orbit
     auto& p_orb = universe.get<cqspt::Orbit>(parent);
     if (p_orb.reference_body != entt::null) {
-        // Then add to orbital system
-        universe.get<cqspc::bodies::OrbitalSystem>(p_orb.reference_body).push_back(body);
-
-        auto& parent_parent_orb = universe.get<cqspc::bodies::Body>(p_orb.reference_body);
-        if (p_orb.reference_body != entt::null) {
-            // Some stuff
-        }
-        auto& pp_pos = universe.get<cqspt::Kinematics>(p_orb.reference_body);
-        // Remove from parent
-        auto& pt = universe.get<cqspc::bodies::OrbitalSystem>(parent);
-        std::erase(pt.children, body);
-        // Get velocity and change posiiton
-        // Convert orbit
-        orb = cqspt::Vec3ToOrbit(pos.position + p_pos.position, pos.velocity + p_pos.velocity, parent_parent_orb.GM,
-                                 universe.date.ToSecond());
-        orb.reference_body = p_orb.reference_body;
-        orb.CalculateVariables();
-
-        // Update dirty orbit
-        universe.emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
+        return;
     }
+    // Then add to orbital system
+    universe.get<cqspc::bodies::OrbitalSystem>(p_orb.reference_body).push_back(body);
+
+    auto& parent_parent_orb = universe.get<cqspc::bodies::Body>(p_orb.reference_body);
+
+    auto& pp_pos = universe.get<cqspt::Kinematics>(p_orb.reference_body);
+    // Remove from parent
+    auto& pt = universe.get<cqspc::bodies::OrbitalSystem>(parent);
+    std::erase(pt.children, body);
+    // Get velocity and change posiiton
+    // Convert orbit
+    orb = cqspt::Vec3ToOrbit(pos.position + p_pos.position, pos.velocity + p_pos.velocity, parent_parent_orb.GM,
+                             universe.date.ToSecond());
+    orb.reference_body = p_orb.reference_body;
+    orb.CalculateVariables();
+
+    // Update dirty orbit
+    universe.emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
 }
 
 void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
@@ -85,6 +84,20 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
         if (glm::length(pos.position) > p_bod.SOI) {
             LeaveSOI(universe, body, parent, orb, pos, p_pos);
         }
+
+        if (universe.any_of<cqsps::Crash>(body)) {
+            pos.position = glm::vec3(0);
+        }
+        // Next time we need to account for the atmosphere
+        if (glm::length(pos.position) <= p_bod.radius) {
+            // Crash
+            SPDLOG_INFO("Object {} collided with the ground", body);
+            // Then remove from the tree or something like that
+            universe.get_or_emplace<cqsps::Crash>(body);
+            pos.position = glm::vec3(0);
+            orb.semi_major_axis = 0;
+        }
+
         if (universe.any_of<cqspc::types::Impulse>(body)) {
             // Then add to the orbit the speed.
             // Then also convert the velocity

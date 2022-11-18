@@ -272,6 +272,7 @@ void SysProvinceInformation::SpacePortTab() {
         orb.eccentricity = eccentricity;
         orb.w = arg_of_perapsis;
         orb.LAN = LAN;
+        orb.epoch = GetUniverse().date.ToSecond();
         cqsp::common::systems::actions::LaunchShip(GetUniverse(), orb);
     }
 }

@@ -30,6 +30,7 @@
 #include "common/components/player.h"
 #include "common/components/resource.h"
 #include "common/components/science.h"
+#include "common/components/ships.h"
 #include "common/components/surface.h"
 #include "common/systems/population/cityinformation.h"
 #include "common/util/utilnumberdisplay.h"
@@ -175,6 +176,10 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
         ImGui::TextFmt("Orbital Period: {} y {} d {} h {} m {} s", (int)(orbit.T / (60 * 60 * 24 * 365)),
                        (int)std::fmod(orbit.T / (60 * 60 * 24), 24), (int)std::fmod(orbit.T / (60 * 60), 60),
                        (int)std::fmod(orbit.T / 60, 60), std::fmod(orbit.T, 60));
+    }
+
+    if (universe.all_of<common::components::ships::Crash>(entity)) {
+        ImGui::TextFmt("Crashed");
     }
 
     if (universe.all_of<common::components::types::Orbit, cqspc::types::Kinematics>(entity)) {
