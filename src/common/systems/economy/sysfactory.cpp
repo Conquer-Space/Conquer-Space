@@ -45,6 +45,8 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity, cqspc::M
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
 
     auto& industries = universe.get<cqspc::IndustrialZone>(entity);
+    auto& population_wallet =
+        universe.get_or_emplace<cqspc::Wallet>(universe.get<cqspc::Settlement>(entity).population.front());
     for (entt::entity productionentity : industries.industries) {
         // Process imdustries
         // Industries MUST have production and a linked recipe
@@ -54,11 +56,11 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity, cqspc::M
         components::IndustrySize& size = universe.get_or_emplace<components::IndustrySize>(productionentity, 1000.0);
         // Calculate resource consumption
         components::ResourceLedger capitalinput = recipe.capitalcost * (0.01 * size.size);
-        components::ResourceLedger input = (recipe.input + size.size) + capitalinput;
+        components::ResourceLedger input = (recipe.input + size.utilization) + capitalinput;
 
         // Calculate the greatest possible production
         components::ResourceLedger output;  // * ratio.output;
-        output[recipe.output.entity] = recipe.output.amount * size.size;
+        output[recipe.output.entity] = recipe.output.amount * size.utilization;
 
         // Figure out what's throttling production and maintaince
         double limitedinput = CopyVals(input, market.history.back().sd_ratio).Min();
@@ -69,10 +71,12 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity, cqspc::M
 
         if (market.history.back().sd_ratio[recipe.output.entity] < 1.1) {
             if (limitedcapitalinput > 1) limitedcapitalinput = 1;
-            size.size *= 1 + (0.01) * std::fmin(limitedcapitalinput, 1);
+            size.utilization *= 1 + (0.01) * std::fmin(limitedcapitalinput, 1);
         } else {
-            size.size *= 0.99;
+            size.utilization *= 0.99;
         }
+        size.utilization = std::clamp(size.utilization, 0., size.size);
+
         if (limitedinput < 1) {  // If an input good is undersupplied on
                                  // the market, throttle production
             input *= limitedinput;
@@ -93,23 +97,23 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity, cqspc::M
         // Maintainence costs will still have to be upkept, so if
         // there isnt any resources to upkeep the place, then stop
         // the production
-        costs.materialcosts = (recipe.input * size.size * market.price).GetSum();
-        costs.profit = (recipe.output * market.price).GetSum();
+        costs.materialcosts = (recipe.input * size.utilization * market.price).GetSum();
+        costs.revenue = (recipe.output * market.price).GetSum();
         if (market.sd_ratio[recipe.output.entity] > 1) {
-            costs.profit /= market.sd_ratio[recipe.output.entity];
+            costs.revenue /= market.sd_ratio[recipe.output.entity];
         }
-        costs.wages = size.size * recipe.workers * 50000;
-        costs.net = costs.profit - costs.maintenance - costs.materialcosts - costs.wages;
+        costs.wages = size.size * recipe.workers * size.wages;
+        costs.profit = costs.revenue - costs.maintenance - costs.materialcosts - costs.wages;
         costs.transport = output_transport_cost + input_transport_cost;
         double& price = market.price[recipe.output.entity];
-        if (costs.net > 0) {
+        if (costs.profit > 0) {
             price += (-0.1 + price * -0.01f);
         } else {
             price += (0.2 + price * 0.01f);
         }
 
-        // ratio.ratio = recipe.input.UnitLeger(size.size);
-        // ratio.output = recipe.output.UnitLeger(size.size);
+        // Pay the workers
+        population_wallet += costs.wages;
     }
 }
 }  // namespace

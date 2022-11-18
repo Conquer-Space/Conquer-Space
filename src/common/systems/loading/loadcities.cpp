@@ -67,6 +67,16 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
             settlement.population.push_back(pop_ent);
         }
     } else {
+        entt::entity pop_ent = universe.create();
+
+        auto size = 50000;
+        int64_t labor_force = size / 2;
+
+        auto& segment = universe.emplace<components::PopulationSegment>(pop_ent);
+        segment.population = size;
+        segment.labor_force = labor_force;
+        universe.emplace<components::LaborInformation>(pop_ent);
+        settlement.population.push_back(pop_ent);
         SPDLOG_WARN("City {} does not have any population", universe.get<components::Identifier>(entity).identifier);
     }
 
