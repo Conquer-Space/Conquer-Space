@@ -251,14 +251,15 @@ void SysProvinceInformation::SpacePortTab() {
     static float eccentricity = 0;
     static float arg_of_perapsis = 0;
     static float LAN = 0;
+    auto& city_coord = GetUniverse().get<cqspc::types::SurfaceCoordinate>(current_city);
+
     ImGui::SliderFloat("Semi Major Axis", &semi_major_axis, 6000, 100000000);
     ImGui::SliderFloat("Eccentricity", &eccentricity, 0, 0.9999);
-    ImGui::SliderAngle("Inclination", &inclination, 0, 180);
+    ImGui::SliderAngle("Inclination", &inclination, city_coord.latitude(), 180);
     ImGui::SliderAngle("Argument of perapsis", &arg_of_perapsis, 0, 360);
     ImGui::SliderAngle("Longitude of the ascending node", &LAN, 0, 360);
     if (ImGui::Button("Launch!")) {
         // Get reference body
-        auto& city_coord = GetUniverse().get<cqspc::types::SurfaceCoordinate>(current_city);
         entt::entity reference_body = city_coord.planet;
         // Launch inclination will be the inclination of the thing
         double axial = GetUniverse().get<cqspc::bodies::Body>(reference_body).axial;
@@ -274,6 +275,11 @@ void SysProvinceInformation::SpacePortTab() {
         orb.LAN = LAN;
         orb.epoch = GetUniverse().date.ToSecond();
         cqsp::common::systems::actions::LaunchShip(GetUniverse(), orb);
+    }
+    double periapsis = semi_major_axis * (1 - eccentricity);
+    if (GetUniverse().get<cqspc::bodies::Body>(city_coord.planet).radius > periapsis) {
+        ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f),
+                           "Orbit's periapsis is below the planet radius (%f), so it will crash", periapsis);
     }
 }
 
