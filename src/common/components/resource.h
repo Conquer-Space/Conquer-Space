@@ -254,22 +254,23 @@ struct RecipeCost {
 struct IndustrySize {
     double size;
     double utilization;
+    double wages = 100;
 };
 
 struct CostBreakdown {
-    double profit;
+    double revenue;
     double materialcosts;
     double maintenance;
     double wages;
-    double net;
+    double profit;
     double transport;
 
     void Reset() {
-        profit = 0;
+        revenue = 0;
         materialcosts = 0;
         maintenance = 0;
         wages = 0;
-        net = 0;
+        profit = 0;
         transport = 0;
     }
 };

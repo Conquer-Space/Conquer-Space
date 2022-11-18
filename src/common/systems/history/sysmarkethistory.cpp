@@ -24,6 +24,7 @@ void cqsp::common::systems::history::SysMarketHistory::DoSystem() {
         components::Market& market_data = GetUniverse().get<components::Market>(marketentity);
         market_data.history.push_back(market_data);
     }
+    return;
     auto view = GetUniverse().view<components::Market, components::MarketHistory>();
     for (entt::entity entity : view) {
         auto& history = GetUniverse().get<components::MarketHistory>(entity);
