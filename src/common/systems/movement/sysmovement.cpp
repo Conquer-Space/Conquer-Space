@@ -77,6 +77,7 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     auto& pos = universe.get_or_emplace<cqspt::Kinematics>(body);
     pos.position = cqspt::toVec3(orb);
     pos.velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
+
     if (parent != entt::null) {
         auto& p_pos = universe.get_or_emplace<cqspt::Kinematics>(parent);
         // If distance is above SOI, then be annoyed
@@ -114,6 +115,7 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
             universe.remove<cqspc::types::Impulse>(body);
         }
         pos.center = p_pos.center + p_pos.position;
+        EnterSOI(universe, parent, body);
     }
 
     if (!universe.any_of<cqspc::bodies::OrbitalSystem>(body)) {
@@ -153,6 +155,39 @@ void SysPath::DoSystem() {
         cqspt::Kinematics& bodykin = universe.get<cqspt::Kinematics>(body);
         cqspt::Kinematics& targetkin = universe.get<cqspt::Kinematics>(universe.get<cqspt::MoveTarget>(body).target);
         glm::vec3 path = targetkin.position - bodykin.position;
+    }
+}
+
+void EnterSOI(Universe& universe, const entt::entity& parent, const entt::entity& body) {
+    auto& pos = universe.get<cqspc::types::Kinematics>(body);
+    auto& orb = universe.get<cqspc::types::Orbit>(body);
+    // Check parents for SOI if we're intersecting with anything
+    for (entt::entity entity : universe.get<cqspc::bodies::OrbitalSystem>(parent).children) {
+        // Get the stuff
+        if (entity == body) {
+            continue;
+        }
+        // Check the distance
+        if (!universe.any_of<cqspc::bodies::Body>(entity)) {
+            continue;
+        }
+        const auto& body_comp = universe.get<cqspc::bodies::Body>(entity);
+        const auto& kinematics = universe.get<cqspc::types::Kinematics>(entity);
+        if (glm::distance(kinematics.position, pos.position) <= body_comp.radius) {
+            // Calculate position
+            orb = cqspt::Vec3ToOrbit(pos.position - kinematics.position, pos.velocity - kinematics.velocity,
+                                     body_comp.GM, universe.date.ToSecond());
+            orb.reference_body = entity;
+            orb.CalculateVariables();
+            // Calculate position, and change the thing
+            pos.position = cqspt::toVec3(orb);
+            pos.velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
+            // Then change SOI
+            universe.get_or_emplace<cqspc::bodies::OrbitalSystem>(entity).push_back(body);
+            auto& vec = universe.get<cqspc::bodies::OrbitalSystem>(parent).children;
+            vec.erase(std::remove(vec.begin(), vec.end(), body), vec.end());
+            break;
+        }
     }
 }
 }  // namespace cqsp::common::systems
