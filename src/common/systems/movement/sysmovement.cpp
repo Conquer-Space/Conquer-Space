@@ -168,7 +168,7 @@ void EnterSOI(Universe& universe, const entt::entity& parent, const entt::entity
             continue;
         }
         // Check the distance
-        if (!universe.any_of<cqspc::bodies::Body>(entity)) {
+        if (!universe.all_of<cqspc::bodies::Body, cqspc::types::Kinematics>(entity)) {
             continue;
         }
         const auto& body_comp = universe.get<cqspc::bodies::Body>(entity);
