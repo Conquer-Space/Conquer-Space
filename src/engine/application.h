@@ -195,12 +195,15 @@ class Application {
     void InitRmlUi();
     void InitImgui();
     void ProcessRmlUiUserInput();
+    void InitAudio();
 
     /*
      * Intializes glfw and imgui.
      */
     int init();
 
+    void ResetGame() { m_game.reset(); }
+    void InitGame() { m_game = std::make_unique<cqsp::common::Game>(); }
     /*
      * Releases all data.
      */

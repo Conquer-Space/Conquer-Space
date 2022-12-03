@@ -62,14 +62,9 @@ int Application::init() {
     GlInit();
 
     manager.LoadDefaultTexture();
-    // Init audio
-    m_audio_interface = new audio::AudioInterface();
-    m_audio_interface->Initialize();
-    // Set option things
-    m_audio_interface->SetMusicVolume(m_client_options.GetOptions()["audio"]["music"]);
-    m_audio_interface->SetChannelVolume(1, m_client_options.GetOptions()["audio"]["ui"]);
-
     SetIcon();
+
+    InitAudio();
 
     InitImgui();
     InitRmlUi();
@@ -81,7 +76,7 @@ int Application::init() {
     std::unique_ptr<Scene> initial_scene = std::make_unique<EmptyScene>(*this);
     m_scene_manager.SetInitialScene(std::move(initial_scene));
 
-    m_game = std::make_unique<cqsp::common::Game>();
+    InitGame();
     return 0;
 }
 
@@ -164,6 +159,15 @@ void Application::ProcessRmlUiUserInput() {
     }
 }
 
+void Application::InitAudio() {
+    // Init audio
+    m_audio_interface = new audio::AudioInterface();
+    m_audio_interface->Initialize();
+    // Set option things
+    m_audio_interface->SetMusicVolume(m_client_options.GetOptions()["audio"]["music"]);
+    m_audio_interface->SetChannelVolume(1, m_client_options.GetOptions()["audio"]["ui"]);
+}
+
 void Application::InitRmlUi() {
     // Begin by installing the custom interfaces.
     m_system_interface = std::make_unique<SystemInterface_GLFW>();
@@ -213,7 +217,7 @@ int Application::destroy() {
 
     // Clear assets
     ENGINE_LOG_INFO("Deleting game");
-    m_game.reset();
+    ResetGame();
     ENGINE_LOG_INFO("Deleted game");
 
     ENGINE_LOG_INFO("Deleting audio interface");
