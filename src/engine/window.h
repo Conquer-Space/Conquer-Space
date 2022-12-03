@@ -18,6 +18,10 @@
 
 namespace cqsp {
 namespace engine {
+/// <summary>
+/// The window handles the initialization of the callbacks, and all the input and output.
+/// It also manages all the pointers for the windows.
+/// </summary>
 class Window {
  public:
     virtual bool ButtonIsHeld(int btn) const = 0;
