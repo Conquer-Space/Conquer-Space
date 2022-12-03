@@ -76,7 +76,7 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
     // Add producivity
     auto& prod = universe.emplace<cqspc::IndustrySize>(factory);
     prod.size = productivity;
-    prod.utilization = 1;
+    prod.utilization = productivity;
     const auto& recipe_comp = universe.get<cqspc::Recipe>(recipe);
     switch (recipe_comp.type) {
         case cqspc::mine:
