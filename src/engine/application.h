@@ -35,6 +35,7 @@
 #include "engine/graphics/text.h"
 #include "engine/gui.h"
 #include "engine/scene.h"
+#include "engine/scenemanager.h"
 #include "engine/ui/RmlUi_Platform_GLFW.h"
 #include "engine/ui/rmlrenderinterface.h"
 #include "engine/userinput.h"
@@ -42,57 +43,6 @@
 
 namespace cqsp {
 namespace engine {
-/// <summary>
-/// Manages scenes for the application.
-/// </summary>
-class SceneManager {
- public:
-    /// <summary>
-    /// Sets the current scene.
-    /// </summary>
-    /// <param name="scene"></param>
-    void SetInitialScene(std::unique_ptr<Scene> scene);
-
-    /// <summary>
-    /// Sets the next scene, and the scene will be switched when <code>SwitchScene</code> is executed.
-    /// </summary>
-    void SetScene(std::unique_ptr<Scene> scene);
-
-    /// <summary>
-    /// Sets the next scene to the current.
-    /// </summary>
-    void SwitchScene();
-
-    /// <summary>
-    /// Gets current running scene.
-    /// </summary>
-    /// <returns></returns>
-    Scene* GetScene();
-
-    /// <summary>
-    /// Verifies if it is appropiate to switch scenes.
-    /// </summary>
-    /// <returns></returns>
-    bool ToSwitchScene() { return (m_switch && m_next_scene != nullptr); }
-
-    void Update(float deltaTime);
-
-    void Ui(float deltaTime);
-
-    void Render(float deltaTime);
-
-    void DeleteCurrentScene();
-
- private:
-    std::unique_ptr<Scene> m_scene;
-    std::unique_ptr<Scene> m_next_scene;
-
-    /// <summary>
-    /// If the next scene has been set.
-    /// </summary>
-    bool m_switch;
-};
-
 class Application {
  public:
     Application(int _argc, char* _argv[]);

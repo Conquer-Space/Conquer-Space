@@ -847,40 +847,6 @@ void Application::SetFullScreen(bool screen) {
     }
 }
 
-void SceneManager::SetInitialScene(std::unique_ptr<Scene> scene) { m_scene = std::move(scene); }
-
-void SceneManager::SetScene(std::unique_ptr<Scene> scene) {
-    m_next_scene = std::move(scene);
-    m_switch = true;
-}
-
-void SceneManager::SwitchScene() {
-    m_scene = std::move(m_next_scene);
-    ENGINE_LOG_TRACE("Initializing scene");
-    m_scene->Init();
-    ENGINE_LOG_TRACE("Done Initializing scene");
-    m_switch = false;
-}
-
-Scene* SceneManager::GetScene() { return m_scene.get(); }
-
-void SceneManager::DeleteCurrentScene() { m_scene.reset(); }
-
-void SceneManager::Update(float deltaTime) {
-    ZoneScoped;
-    m_scene->Update(deltaTime);
-}
-
-void SceneManager::Ui(float deltaTime) {
-    ZoneScoped;
-    m_scene->Ui(deltaTime);
-}
-
-void SceneManager::Render(float deltaTime) {
-    ZoneScoped;
-    m_scene->Render(deltaTime);
-}
-
 Application::CqspEventInstancer::CqspEventInstancer() {}
 
 Application::CqspEventInstancer::~CqspEventInstancer() {}
