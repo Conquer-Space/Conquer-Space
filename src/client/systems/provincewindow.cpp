@@ -247,18 +247,19 @@ void SysProvinceInformation::SpacePortTab() {
 
     // Set the things
     static float semi_major_axis = 8000;
-    static float inclination = 0;
+    static float azimuth = 0;
     static float eccentricity = 0;
     static float arg_of_perapsis = 0;
     static float LAN = 0;
+    auto& city_coord = GetUniverse().get<cqspc::types::SurfaceCoordinate>(current_city);
+
     ImGui::SliderFloat("Semi Major Axis", &semi_major_axis, 6000, 100000000);
     ImGui::SliderFloat("Eccentricity", &eccentricity, 0, 0.9999);
-    ImGui::SliderAngle("Inclination", &inclination, 0, 180);
+    ImGui::SliderAngle("Launch Azimuth", &azimuth, 0, 360);
     ImGui::SliderAngle("Argument of perapsis", &arg_of_perapsis, 0, 360);
     ImGui::SliderAngle("Longitude of the ascending node", &LAN, 0, 360);
     if (ImGui::Button("Launch!")) {
         // Get reference body
-        auto& city_coord = GetUniverse().get<cqspc::types::SurfaceCoordinate>(current_city);
         entt::entity reference_body = city_coord.planet;
         // Launch inclination will be the inclination of the thing
         double axial = GetUniverse().get<cqspc::bodies::Body>(reference_body).axial;
@@ -267,13 +268,21 @@ void SysProvinceInformation::SpacePortTab() {
 
         cqspc::types::Orbit orb;
         orb.reference_body = reference_body;
-        orb.inclination = inclination;
+        orb.inclination = cqspc::types::GetLaunchInclination(city_coord.r_latitude(), azimuth);
         orb.semi_major_axis = semi_major_axis;
         orb.eccentricity = eccentricity;
         orb.w = arg_of_perapsis;
         orb.LAN = LAN;
+        orb.epoch = GetUniverse().date.ToSecond();
         cqsp::common::systems::actions::LaunchShip(GetUniverse(), orb);
     }
+    double periapsis = semi_major_axis * (1 - eccentricity);
+    if (GetUniverse().get<cqspc::bodies::Body>(city_coord.planet).radius > periapsis) {
+        ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f),
+                           "Orbit's periapsis is below the planet radius (%f), so it will crash", periapsis);
+    }
+    ImGui::TextFmt("Launch Inclination: {}",
+                   cqspc::types::toDegree(cqspc::types::GetLaunchInclination(city_coord.r_latitude(), azimuth)));
 }
 
 void SysProvinceInformation::InfrastructureTab() {

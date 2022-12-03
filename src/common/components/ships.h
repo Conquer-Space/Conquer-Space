@@ -28,6 +28,8 @@ namespace components {
 namespace ships {
 struct Ship {};
 
+struct Crash {};
+
 struct Fleet {
     unsigned int echelon = 0;
     std::vector<entt::entity> subfleets;

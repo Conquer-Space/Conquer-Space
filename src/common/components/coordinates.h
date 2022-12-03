@@ -377,5 +377,21 @@ inline void UpdatePos(Kinematics& kin, const Orbit& orb) {
     kin.position = toVec3AU(orb);
 }
 
+/// <summary>
+/// Calculates the azimuth of the orbit based on the latitude and inclination
+/// </summary>
+/// <param name="latitude">Latitude in radians</param>
+/// <param name="inclination">Launch inclination in radians</param>
+/// <returns></returns>
+double GetLaunchAzimuth(double latitude, double inclination);
+
+/// <summary>
+/// Calculates the inclination of the orbit based on the latitude and azimuth
+/// </summary>
+/// <param name="latitude">Latitude in radians</param>
+/// <param name="azimuth">Launch azimuth in radians</param>
+/// <returns></returns>
+double GetLaunchInclination(double latitude, double azimuth);
+
 SurfaceCoordinate ToSurfaceCoordinate(const glm::vec3& vec);
 }  // namespace cqsp::common::components::types

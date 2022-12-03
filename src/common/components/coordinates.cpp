@@ -213,6 +213,14 @@ glm::vec3 toVec3(const SurfaceCoordinate& coord, const float& radius) {
                      cos(coord.r_latitude()) * cos(coord.r_longitude())) *
            radius;
 }
+
+double GetLaunchAzimuth(double latitude, double inclination) {
+    // https://www.orbiterwiki.org/wiki/Launch_Azimuth
+    return asin(cos(inclination) / cos(latitude));
+}
+
+double GetLaunchInclination(double latitude, double azimuth) { return acos(cos(latitude) * sin(azimuth)); }
+
 SurfaceCoordinate ToSurfaceCoordinate(const glm::vec3& vec) {
     double latitude = (asin(vec.y));
     double longitude = (atan2(vec.x, vec.z));

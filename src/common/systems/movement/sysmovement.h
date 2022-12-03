@@ -33,11 +33,19 @@ class SysOrbit : public ISimulationSystem {
 };
 
 /// <summary>
-/// Set's the SOI of the entity to the parent
+/// Sets the SOI of the entity to the parent
 /// </summary>
 /// <param name="universe"></param>
 /// <param name="body">Needs to have a Body and Orbit parameter</param>
 void LeaveSOI(Universe& universe, const entt::entity& body);
+
+/// <summary>
+/// Change the SOI into something in the same SOI, like changing orbits from earth to the moon
+/// </summary>
+/// <param name="universe"></param>
+/// <param name="parent"></param>
+/// <param name="body"></param>
+void EnterSOI(Universe& universe, const entt::entity& parent, const entt::entity& body);
 
 class SysPath : public ISimulationSystem {
  public:
