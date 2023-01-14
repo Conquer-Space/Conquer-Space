@@ -17,10 +17,13 @@
 #include "client/systems/syspausemenu.h"
 
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
+
+#include <fstream>
+#include <string>
 
 #include "client/scenes/universescene.h"
 #include "client/systems/sysoptionswindow.h"
+#include "common/util/paths.h"
 #include "common/version.h"
 #include "engine/cqspgui.h"
 
@@ -45,7 +48,16 @@ void cqsp::client::systems::SysPauseMenu::DoUI(int delta_time) {
             to_show = false;
             cqsp::scene::SetGameHalted(false);
         }
-        CQSPGui::DefaultButton("Save Game", ImVec2(-FLT_MIN, button_height));
+        if (CQSPGui::DefaultButton("Save Game", ImVec2(-FLT_MIN, button_height))) {
+            // Then create the save file and stuff like that
+            // Make it in a thread?
+            std::string save_path = common::util::GetCqspSavePath();
+            // Then add a file that details the current save?
+            std::ofstream file(save_path + "/test.txt");
+            file << "date: " << GetUniverse().date.GetDate() << std::endl;
+            file.close();
+            //GetUniverse().date();
+        }
         CQSPGui::DefaultButton("Load Game", ImVec2(-FLT_MIN, button_height));
         ImGui::Separator();
 
@@ -73,7 +85,7 @@ void cqsp::client::systems::SysPauseMenu::DoUI(int delta_time) {
 }
 
 void cqsp::client::systems::SysPauseMenu::DoUpdate(int delta_time) {
-    if (GetApp().ButtonIsReleased(GLFW_KEY_ESCAPE)) {
+    if (GetApp().ButtonIsReleased(cqsp::engine::KEY_ESCAPE)) {
         // Then pause
         to_show = !to_show;
         to_show_options_window = false;
