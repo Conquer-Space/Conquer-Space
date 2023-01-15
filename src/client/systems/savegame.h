@@ -14,15 +14,10 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+#pragma once
+
 #include "common/universe.h"
 
-#include <memory>
-
-#include "common/util/random/stdrandom.h"
-#include "common/util/uuid.h"
-
-cqsp::common::Universe::Universe() : Universe(util::random_id()) {}
-
-cqsp::common::Universe::Universe(std::string uuid) : uuid(uuid) {
-    random = std::make_unique<cqsp::common::util::StdRandom>(42);
+namespace cqsp::client::save {
+void save_game(common::Universe& universe);
 }

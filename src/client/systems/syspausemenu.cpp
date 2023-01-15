@@ -22,6 +22,7 @@
 #include <string>
 
 #include "client/scenes/universescene.h"
+#include "client/systems/savegame.h"
 #include "client/systems/sysoptionswindow.h"
 #include "common/util/paths.h"
 #include "common/version.h"
@@ -49,14 +50,7 @@ void cqsp::client::systems::SysPauseMenu::DoUI(int delta_time) {
             cqsp::scene::SetGameHalted(false);
         }
         if (CQSPGui::DefaultButton("Save Game", ImVec2(-FLT_MIN, button_height))) {
-            // Then create the save file and stuff like that
-            // Make it in a thread?
-            std::string save_path = common::util::GetCqspSavePath();
-            // Then add a file that details the current save?
-            std::ofstream file(save_path + "/test.txt");
-            file << "date: " << GetUniverse().date.GetDate() << std::endl;
-            file.close();
-            //GetUniverse().date();
+            client::save::save_game(GetUniverse());
         }
         CQSPGui::DefaultButton("Load Game", ImVec2(-FLT_MIN, button_height));
         ImGui::Separator();

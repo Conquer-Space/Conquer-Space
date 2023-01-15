@@ -39,7 +39,7 @@
 #include "engine/renderer/renderer.h"
 
 cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app)
-    : cqsp::engine::Scene(app), settings_window(app), credits_window(app) {}
+    : cqsp::engine::Scene(app), settings_window(app), credits_window(app), load_game_window(app) {}
 
 cqsp::scene::MainMenuScene::~MainMenuScene() {
     GetApp().GetRmlUiContext()->RemoveDataModel("settings");
@@ -48,6 +48,7 @@ cqsp::scene::MainMenuScene::~MainMenuScene() {
     main_menu->Close();
 
     settings_window.Close();
+    load_game_window.Close();
 }
 
 void cqsp::scene::MainMenuScene::Init() {
@@ -61,6 +62,8 @@ void cqsp::scene::MainMenuScene::Init() {
     settings_window.LoadDocument();
 
     credits_window.OpenDocument();
+
+    load_game_window.LoadDocument();
 
     ShuffleFileList();
     NextImage();
@@ -228,6 +231,7 @@ void cqsp::scene::MainMenuScene::EventListener::ProcessEvent(Rml::Event& event) 
         // Confirm window, then new game
         m_scene->GetApp().SetScene<cqsp::scene::UniverseLoadingScene>();
     } else if (id_pressed == "save_game") {
+        m_scene->load_game_window.Show();
     } else if (id_pressed == "options") {
         m_scene->settings_window.Show();
         m_scene->is_options_visible = true;

@@ -14,15 +14,17 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "common/universe.h"
+#include "common/util/save/save.h"
 
-#include <memory>
+#include <hjson.h>
 
-#include "common/util/random/stdrandom.h"
-#include "common/util/uuid.h"
+#include "common/version.h"
 
-cqsp::common::Universe::Universe() : Universe(util::random_id()) {}
-
-cqsp::common::Universe::Universe(std::string uuid) : uuid(uuid) {
-    random = std::make_unique<cqsp::common::util::StdRandom>(42);
+Hjson::Value cqsp::common::save::Save::GetMetadata() {
+    // This generates the basic information of the save
+    Hjson::Value value;
+    value["date"] = universe.date.GetDate();
+    value["uuid"] = universe.uuid;
+    value["version"] = CQSP_VERSION;
+    return value;
 }

@@ -46,7 +46,7 @@ char* get_home_dir(uid_t uid) {
 namespace cqsp::common::util {
 std::string ExePath::exe_path = std::string();  // NOLINT
 
-std::string GetCqspSavePath() {
+std::string GetCqspAppDataPath() {
     std::string directory = "";
     std::string dirname = "cqsp";
 #ifdef _WIN32
@@ -83,7 +83,7 @@ std::string GetCqspDataPath() {
     // so if it's debug, we'd automatically assume we're running from the local
     // windows debugger Because apparently linux doesn't build the debug
     // version. Not sure about other versions, but we'd probably have do deal
-    // with it in the future Usually, the output is at build\src\Debug, so we
+    // with it in the future. Usually, the output is at build\src\Debug, so we
     // need to access ../../../binaries/data
     return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) / ".." / ".." / ".." / "binaries" /
                                       "data")
@@ -97,5 +97,9 @@ std::string GetCqspDataPath() {
     //   - data <-- data is here, so it's ../data/
     return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) / "../data").string();
 #endif
+}
+std::string GetCqspSavePath() {
+    std::filesystem::path path = GetCqspAppDataPath();
+    return (path / "saves").string();
 }
 }  // namespace cqsp::common::util

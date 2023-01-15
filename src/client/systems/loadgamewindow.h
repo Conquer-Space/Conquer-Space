@@ -31,7 +31,6 @@ class LoadGameWindow : public Rml::EventListener {
     void ProcessEvent(Rml::Event& event);
 
     void AddEventListeners();
-    void InitializeOptionVariables();
     void RemoveEventListeners();
     void InitializeDataModel();
 
@@ -46,6 +45,8 @@ class LoadGameWindow : public Rml::EventListener {
     // Various functions for hiding the window.
     float GetOpacity();
     void PushToBack();
+
+    void GetAllGames();
 
  private:
     const std::string document_name = "../data/core/gui/loadsave.rml";

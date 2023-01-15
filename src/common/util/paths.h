@@ -19,9 +19,14 @@
 #include <string>
 
 namespace cqsp::common::util {
-std::string GetCqspSavePath();
+/// <summary>
+/// The path for where all the data of the game is stored, including logs, and other things
+/// </summary>
+/// <returns></returns>
+std::string GetCqspAppDataPath();
 std::string GetCqspExePath();
 std::string GetCqspDataPath();
+std::string GetCqspSavePath();
 
 struct ExePath {
     static std::string exe_path;

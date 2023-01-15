@@ -14,15 +14,25 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "common/universe.h"
+#pragma once
 
-#include <memory>
+#include <random>
+#include <string>
 
-#include "common/util/random/stdrandom.h"
-#include "common/util/uuid.h"
+namespace cqsp::common::util {
+// Generates 6 digit hexidecimal id
+inline std::string random_id() {
+    int len = 6;
+    static const char* alpha_num = "0123456789abcdef";
+    thread_local static std::mt19937 rg {std::random_device {}()};
+    thread_local static std::uniform_int_distribution<std::string::size_type> pick(0, 15);
+    std::string s;
 
-cqsp::common::Universe::Universe() : Universe(util::random_id()) {}
+    s.reserve(len);
 
-cqsp::common::Universe::Universe(std::string uuid) : uuid(uuid) {
-    random = std::make_unique<cqsp::common::util::StdRandom>(42);
+    while (len--) {
+        s += alpha_num[pick(rg)];
+    }
+    return s;
 }
+}  // namespace cqsp::common::util
