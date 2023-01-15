@@ -28,3 +28,14 @@ Hjson::Value cqsp::common::save::Save::GetMetadata() {
     value["version"] = CQSP_VERSION;
     return value;
 }
+
+Hjson::Value cqsp::common::save::Save::SaveGame() {
+    // Save all the game information
+    return Hjson::Value();
+}
+
+void cqsp::common::save::Load::LoadMetadata(Hjson::Value& data) {
+    universe.date.SetDate((int)data["date"]);
+    // Verify version, but screw that
+    universe.uuid = data["uuid"].to_string();
+}

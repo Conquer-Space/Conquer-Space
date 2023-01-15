@@ -30,6 +30,7 @@
 #include "client/scenes/universeloadingscene.h"
 #include "client/systems/sysoptionswindow.h"
 #include "common/util/paths.h"
+#include "common/util/save/save.h"
 #include "common/version.h"
 #include "engine/asset/asset.h"
 #include "engine/cqspgui.h"
@@ -90,6 +91,10 @@ void cqsp::scene::MainMenuScene::Update(float deltaTime) {
     }
     last_options_visible = false;
     credits_window.Update(deltaTime);
+    if (load_game_window.Update()) {
+        // Load game
+        common::save::Load(GetUniverse());
+    }
 }
 
 void cqsp::scene::MainMenuScene::Ui(float deltaTime) {}

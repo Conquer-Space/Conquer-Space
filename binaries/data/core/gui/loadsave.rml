@@ -24,6 +24,7 @@
                         <p>{{ save.country }} </p>
                         <br/>
                         <p>Date: {{ save.date }}</p>
+                        <button data-event-click="LoadGame(save.path)">Load Save</button>
                         <br/>
                     </div>
                 </tr>

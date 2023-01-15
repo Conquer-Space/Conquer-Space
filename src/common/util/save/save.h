@@ -26,5 +26,15 @@ class Save {
     Universe& universe;
 
     Hjson::Value GetMetadata();
+    Hjson::Value SaveGame();
+};
+
+class Load {
+ public:
+    explicit Load(Universe& universe) : universe(universe) {}
+
+    void LoadMetadata(Hjson::Value& data);
+
+    Universe& universe;
 };
 }  // namespace cqsp::common::save

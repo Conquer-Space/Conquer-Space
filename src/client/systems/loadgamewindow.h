@@ -41,6 +41,7 @@ class LoadGameWindow : public Rml::EventListener {
 
     void LoadDocument();
     void ReloadDocument();
+    bool Update();
 
     // Various functions for hiding the window.
     float GetOpacity();

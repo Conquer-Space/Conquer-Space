@@ -17,17 +17,36 @@
 #include "client/systems/loadgamewindow.h"
 
 #include <filesystem>
+#include <string>
 
 #include "common/util/paths.h"
 #include "common/util/uuid.h"
 
+namespace {
 struct SaveGame {
     SaveGame(std::string country, int date) : country(country), date(date) {}
     std::string country;
+    std::string path;
     int date;
 };
 
+static bool to_load = false;
+static std::string load_path;
 static std::vector<SaveGame> saves;
+
+static void LoadGame(Rml::DataModelHandle handle, Rml::Event& /*ev*/, const Rml::VariantList& parameters) {
+    // Load the save file information and load into game
+    if (parameters.empty()) return;
+
+    auto name = (std::string)parameters[0].Get<std::string>();
+    SPDLOG_INFO("Loading save {}", name);
+    load_path = name;
+    to_load = true;
+    // Load the game and do some math
+    // How exactly to do so is a mystery
+    handle.DirtyAllVariables();
+}
+}  // namespace
 
 cqsp::client::LoadGameWindow::LoadGameWindow(cqsp::engine::Application& app) : app(app) { InitializeDataModel(); }
 
@@ -72,6 +91,7 @@ void cqsp::client::LoadGameWindow::InitializeDataModel() {
         def["date"] = -1;
         value = Hjson::Merge(def, value);
         SaveGame save(entry.path().filename().string(), value["date"]);
+        save.path = (entry.path().string());
         saves.push_back(save);
     }
     // Process all other information
@@ -79,9 +99,12 @@ void cqsp::client::LoadGameWindow::InitializeDataModel() {
     if (auto save_handle = constructor.RegisterStruct<SaveGame>()) {
         save_handle.RegisterMember("country", &SaveGame::country);
         save_handle.RegisterMember("date", &SaveGame::date);
+        save_handle.RegisterMember("path", &SaveGame::path);
     }
     constructor.RegisterArray<decltype(saves)>();
     constructor.Bind("save_list", &saves);
+
+    constructor.BindEventCallback("LoadGame", &LoadGame);
 }
 
 void cqsp::client::LoadGameWindow::Show() {
@@ -91,6 +114,8 @@ void cqsp::client::LoadGameWindow::Show() {
     options_menu->SetClass("visible", true);
     options_menu->RemoveProperty("display");
 }
+
+bool cqsp::client::LoadGameWindow::Update() { return to_load; }
 
 void cqsp::client::LoadGameWindow::Hide() { options_menu->SetProperty("display", "none"); }
 
