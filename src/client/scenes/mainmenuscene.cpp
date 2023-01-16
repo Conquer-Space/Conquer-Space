@@ -27,6 +27,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "client/components/clientctx.h"
 #include "client/scenes/universeloadingscene.h"
 #include "client/systems/sysoptionswindow.h"
 #include "common/util/paths.h"
@@ -93,7 +94,8 @@ void cqsp::scene::MainMenuScene::Update(float deltaTime) {
     credits_window.Update(deltaTime);
     if (load_game_window.Update()) {
         // Load game
-        common::save::Load(GetUniverse());
+        GetUniverse().ctx().emplace<client::ctx::GameLoad>(load_game_window.GetSaveDir());
+        GetApp().SetScene<cqsp::scene::UniverseLoadingScene>();
     }
 }
 

@@ -16,8 +16,11 @@
 */
 #pragma once
 
+#include <string_view>
+
 #include "common/universe.h"
 
 namespace cqsp::client::save {
 void save_game(common::Universe& universe);
-}
+void load_game(common::Universe& universe, std::string_view directory);
+}  // namespace cqsp::client::save

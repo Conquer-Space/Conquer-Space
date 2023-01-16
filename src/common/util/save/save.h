@@ -16,6 +16,10 @@
 */
 #pragma once
 
+#include <hjson.h>
+
+#include <string>
+
 #include "common/universe.h"
 
 namespace cqsp::common::save {
@@ -37,4 +41,6 @@ class Load {
 
     Universe& universe;
 };
+
+std::string GetMetaPath(std::string_view folder);
 }  // namespace cqsp::common::save

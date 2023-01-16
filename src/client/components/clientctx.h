@@ -16,6 +16,8 @@
 */
 #pragma once
 
+#include <string>
+
 namespace cqsp::client::ctx {
 struct StarSystemViewDebug {
     bool to_show = false;
@@ -29,4 +31,8 @@ struct PauseOptions {
 struct SelectedCountry {};
 
 struct SelectedProvince {};
+
+struct GameLoad {
+    std::string load_dir;
+};
 }  // namespace cqsp::client::ctx

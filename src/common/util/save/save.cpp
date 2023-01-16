@@ -18,6 +18,9 @@
 
 #include <hjson.h>
 
+#include <filesystem>
+#include <string>
+
 #include "common/version.h"
 
 Hjson::Value cqsp::common::save::Save::GetMetadata() {
@@ -38,4 +41,8 @@ void cqsp::common::save::Load::LoadMetadata(Hjson::Value& data) {
     universe.date.SetDate((int)data["date"]);
     // Verify version, but screw that
     universe.uuid = data["uuid"].to_string();
+}
+
+std::string cqsp::common::save::GetMetaPath(std::string_view folder) {
+    return (std::filesystem::path(folder) / "meta.hjson").string();
 }

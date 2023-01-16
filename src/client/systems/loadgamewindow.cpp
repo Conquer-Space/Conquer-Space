@@ -22,32 +22,6 @@
 #include "common/util/paths.h"
 #include "common/util/uuid.h"
 
-namespace {
-struct SaveGame {
-    SaveGame(std::string country, int date) : country(country), date(date) {}
-    std::string country;
-    std::string path;
-    int date;
-};
-
-static bool to_load = false;
-static std::string load_path;
-static std::vector<SaveGame> saves;
-
-static void LoadGame(Rml::DataModelHandle handle, Rml::Event& /*ev*/, const Rml::VariantList& parameters) {
-    // Load the save file information and load into game
-    if (parameters.empty()) return;
-
-    auto name = (std::string)parameters[0].Get<std::string>();
-    SPDLOG_INFO("Loading save {}", name);
-    load_path = name;
-    to_load = true;
-    // Load the game and do some math
-    // How exactly to do so is a mystery
-    handle.DirtyAllVariables();
-}
-}  // namespace
-
 cqsp::client::LoadGameWindow::LoadGameWindow(cqsp::engine::Application& app) : app(app) { InitializeDataModel(); }
 
 void cqsp::client::LoadGameWindow::ProcessEvent(Rml::Event& event) {
@@ -103,8 +77,20 @@ void cqsp::client::LoadGameWindow::InitializeDataModel() {
     }
     constructor.RegisterArray<decltype(saves)>();
     constructor.Bind("save_list", &saves);
+    //&LoadGame
+    constructor.BindEventCallback(
+        "LoadGame", [&](Rml::DataModelHandle handle, Rml::Event& /*ev*/, const Rml::VariantList& parameters) {
+            // Load the save file information and load into game
+            if (parameters.empty()) return;
 
-    constructor.BindEventCallback("LoadGame", &LoadGame);
+            auto name = (std::string)parameters[0].Get<std::string>();
+            SPDLOG_INFO("Loading save {}", name);
+            load_path = name;
+            to_load = true;
+            // Load the game and do some math
+            // How exactly to do so is a mystery
+            handle.DirtyAllVariables();
+        });
 }
 
 void cqsp::client::LoadGameWindow::Show() {
@@ -142,3 +128,5 @@ float cqsp::client::LoadGameWindow::GetOpacity() { return 0.0f; }
 void cqsp::client::LoadGameWindow::PushToBack() {}
 
 void cqsp::client::LoadGameWindow::GetAllGames() {}
+
+std::string cqsp::client::LoadGameWindow::GetSaveDir() { return load_path; }

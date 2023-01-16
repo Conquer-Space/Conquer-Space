@@ -40,7 +40,14 @@ void cqsp::client::save::save_game(common::Universe& universe) {
     std::filesystem::create_directories(path);
 
     // Generate the file
-    Hjson::MarshalToFile(save.GetMetadata(), (path / "meta.hjson").string());
+    Hjson::MarshalToFile(save.GetMetadata(), common::save::GetMetaPath(path.string()));
 
     // Then write other game information, however we do that.
+}
+
+void cqsp::client::save::load_game(common::Universe& universe, std::string_view directory) {
+    common::save::Load load(universe);
+    // Load meta file
+    Hjson::Value metadata = Hjson::UnmarshalFromFile(common::save::GetMetaPath(directory));
+    load.LoadMetadata(metadata);
 }
