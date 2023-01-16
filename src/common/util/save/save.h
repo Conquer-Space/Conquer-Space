@@ -16,23 +16,31 @@
 */
 #pragma once
 
+#include <hjson.h>
+
 #include <string>
 
-namespace cqsp::client::ctx {
-struct StarSystemViewDebug {
-    bool to_show = false;
+#include "common/universe.h"
+
+namespace cqsp::common::save {
+class Save {
+ public:
+    // Get the savegame?
+    explicit Save(Universe& universe) : universe(universe) {}
+    Universe& universe;
+
+    Hjson::Value GetMetadata();
+    Hjson::Value SaveGame();
 };
 
-struct PauseOptions {
-    bool to_tick = false;
-    int tick_speed = 3;
+class Load {
+ public:
+    explicit Load(Universe& universe) : universe(universe) {}
+
+    void LoadMetadata(Hjson::Value& data);
+
+    Universe& universe;
 };
 
-struct SelectedCountry {};
-
-struct SelectedProvince {};
-
-struct GameLoad {
-    std::string load_dir;
-};
-}  // namespace cqsp::client::ctx
+std::string GetMetaPath(std::string_view folder);
+}  // namespace cqsp::common::save

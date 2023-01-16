@@ -16,23 +16,11 @@
 */
 #pragma once
 
-#include <string>
+#include <string_view>
 
-namespace cqsp::client::ctx {
-struct StarSystemViewDebug {
-    bool to_show = false;
-};
+#include "common/universe.h"
 
-struct PauseOptions {
-    bool to_tick = false;
-    int tick_speed = 3;
-};
-
-struct SelectedCountry {};
-
-struct SelectedProvince {};
-
-struct GameLoad {
-    std::string load_dir;
-};
-}  // namespace cqsp::client::ctx
+namespace cqsp::client::save {
+void save_game(common::Universe& universe);
+void load_game(common::Universe& universe, std::string_view directory);
+}  // namespace cqsp::client::save

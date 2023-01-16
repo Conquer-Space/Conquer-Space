@@ -168,7 +168,7 @@ void AssetManager::SaveModList() {
         enabled_mods[it->second.name] = it->second.enabled;
     }
     // Write to file
-    std::string mods_path = (std::filesystem::path(common::util::GetCqspSavePath()) / "mod.hjson").string();
+    std::string mods_path = (std::filesystem::path(common::util::GetCqspAppDataPath()) / "mod.hjson").string();
     Hjson::MarshalToFile(enabled_mods, mods_path);
     ENGINE_LOG_INFO("Writing mods");
 }
@@ -222,7 +222,7 @@ void AssetLoader::LoadMods() {
     all_mods["core"] = true;
 
     // Load other packages
-    std::filesystem::path save_path(cqsp::common::util::GetCqspSavePath());
+    std::filesystem::path save_path(cqsp::common::util::GetCqspAppDataPath());
     std::filesystem::path mods_folder = save_path / "mods";
     if (!std::filesystem::exists(mods_folder)) {
         std::filesystem::create_directories(mods_folder);
@@ -265,7 +265,7 @@ void AssetLoader::LoadMods() {
 }
 
 std::string AssetLoader::GetModFilePath() {
-    return (std::filesystem::path(cqsp::common::util::GetCqspSavePath()) / "mod.hjson").string();
+    return (std::filesystem::path(cqsp::common::util::GetCqspAppDataPath()) / "mod.hjson").string();
 }
 
 std::optional<PackagePrototype> AssetLoader::LoadModPrototype(const std::string& path_string) {

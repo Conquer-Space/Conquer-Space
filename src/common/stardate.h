@@ -64,6 +64,8 @@ class StarDate {
     int GetHour();
     int GetMinute();
 
+    void SetDate(unsigned int _date) { date = _date; }
+
  private:
     // The date is in minutes
     unsigned int date = -1;

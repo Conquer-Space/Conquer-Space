@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "client/systems/creditswindow.h"
+#include "client/systems/loadgamewindow.h"
 #include "client/systems/settingswindow.h"
 #include "engine/graphics/primitives/pane.h"
 #include "engine/graphics/renderable.h"
@@ -47,6 +48,7 @@ class MainMenuScene : public cqsp::engine::Scene {
 
     client::SettingsWindow settings_window;
     client::CreditsWindow credits_window;
+    client::LoadGameWindow load_game_window;
 
     class EventListener : public Rml::EventListener {
      public:

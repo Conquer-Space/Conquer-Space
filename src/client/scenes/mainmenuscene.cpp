@@ -27,9 +27,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "client/components/clientctx.h"
 #include "client/scenes/universeloadingscene.h"
 #include "client/systems/sysoptionswindow.h"
 #include "common/util/paths.h"
+#include "common/util/save/save.h"
 #include "common/version.h"
 #include "engine/asset/asset.h"
 #include "engine/cqspgui.h"
@@ -39,7 +41,7 @@
 #include "engine/renderer/renderer.h"
 
 cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app)
-    : cqsp::engine::Scene(app), settings_window(app), credits_window(app) {}
+    : cqsp::engine::Scene(app), settings_window(app), credits_window(app), load_game_window(app) {}
 
 cqsp::scene::MainMenuScene::~MainMenuScene() {
     GetApp().GetRmlUiContext()->RemoveDataModel("settings");
@@ -48,6 +50,7 @@ cqsp::scene::MainMenuScene::~MainMenuScene() {
     main_menu->Close();
 
     settings_window.Close();
+    load_game_window.Close();
 }
 
 void cqsp::scene::MainMenuScene::Init() {
@@ -61,6 +64,8 @@ void cqsp::scene::MainMenuScene::Init() {
     settings_window.LoadDocument();
 
     credits_window.OpenDocument();
+
+    load_game_window.LoadDocument();
 
     ShuffleFileList();
     NextImage();
@@ -87,6 +92,11 @@ void cqsp::scene::MainMenuScene::Update(float deltaTime) {
     }
     last_options_visible = false;
     credits_window.Update(deltaTime);
+    if (load_game_window.Update()) {
+        // Load game
+        GetUniverse().ctx().emplace<client::ctx::GameLoad>(load_game_window.GetSaveDir());
+        GetApp().SetScene<cqsp::scene::UniverseLoadingScene>();
+    }
 }
 
 void cqsp::scene::MainMenuScene::Ui(float deltaTime) {}
@@ -228,6 +238,7 @@ void cqsp::scene::MainMenuScene::EventListener::ProcessEvent(Rml::Event& event) 
         // Confirm window, then new game
         m_scene->GetApp().SetScene<cqsp::scene::UniverseLoadingScene>();
     } else if (id_pressed == "save_game") {
+        m_scene->load_game_window.Show();
     } else if (id_pressed == "options") {
         m_scene->settings_window.Show();
         m_scene->is_options_visible = true;

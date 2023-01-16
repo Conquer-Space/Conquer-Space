@@ -749,7 +749,7 @@ bool Application::Screenshot(const char* path) {
     if (path == NULL) {
         // Make screenshot folder
         std::filesystem::path screenshot_folder =
-            std::filesystem::path(cqsp::common::util::GetCqspSavePath()) / "screenshots";
+            std::filesystem::path(cqsp::common::util::GetCqspAppDataPath()) / "screenshots";
         std::filesystem::create_directories(screenshot_folder);
 
         // Default file name is YYYY-MM-DD_HH.MM.SS.png in the data folder.
@@ -809,7 +809,7 @@ void Application::GlInit() {
 
 void Application::LoggerInit() {
     // Get path
-    properties["data"] = common::util::GetCqspSavePath();
+    properties["data"] = common::util::GetCqspAppDataPath();
     cqsp::engine::engine_logger = cqsp::common::util::make_logger("app", true);
     auto g_logger = cqsp::common::util::make_logger("game", true);
     spdlog::set_default_logger(g_logger);
@@ -825,7 +825,7 @@ void Application::LogInfo() {
     ENGINE_LOG_INFO("Compiled {} {}", __DATE__, __TIME__);
     ENGINE_LOG_INFO("Exe Path: {}", common::util::ExePath::exe_path);
     ENGINE_LOG_INFO("Data Path: {}", common::util::GetCqspDataPath());
-    ENGINE_LOG_INFO("Save Path: {}", common::util::GetCqspSavePath());
+    ENGINE_LOG_INFO("Save Path: {}", common::util::GetCqspAppDataPath());
 
 #ifdef TRACY_ENABLE
     ENGINE_LOG_INFO("Tracy protocol version: {}", tracy::ProtocolVersion);

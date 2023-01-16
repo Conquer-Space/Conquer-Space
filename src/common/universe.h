@@ -31,7 +31,9 @@ namespace cqsp {
 namespace common {
 class Universe : public entt::registry {
  public:
+    explicit Universe(std::string uuid);
     Universe();
+
     components::StarDate date;
 
     std::map<std::string, entt::entity> goods;
@@ -56,6 +58,7 @@ class Universe : public entt::registry {
 
     int GetDate() { return date.GetDate(); }
     std::unique_ptr<cqsp::common::util::IRandom> random;
+    std::string uuid;
 
  private:
     bool to_tick = false;

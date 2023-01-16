@@ -20,8 +20,10 @@
 
 #include <string>
 
+#include "client/components/clientctx.h"
 #include "client/scenes/universescene.h"
 #include "client/systems/assetloading.h"
+#include "client/systems/savegame.h"
 #include "common/systems/sysuniversegenerator.h"
 
 cqsp::scene::UniverseLoadingScene::UniverseLoadingScene(cqsp::engine::Application& app) : Scene(app) {}
@@ -66,6 +68,12 @@ void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
     ScriptUniverseGenerator script_generator(GetApp().GetScriptInterface());
 
     script_generator.Generate(GetUniverse());
+    if (GetUniverse().ctx().contains<client::ctx::GameLoad>()) {
+        const std::string& load_dir = GetUniverse().ctx().at<client::ctx::GameLoad>().load_dir;
+        SPDLOG_INFO("Loading save {}", load_dir);
+        client::save::load_game(GetUniverse(), load_dir);
+    }
+
     SPDLOG_INFO("Done loading the universe, entering game");
     m_completed_loading = true;
 }
