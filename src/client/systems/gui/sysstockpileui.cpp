@@ -20,6 +20,7 @@
 
 #include "client/systems/gui/systooltips.h"
 #include "common/components/name.h"
+#include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
 #include "engine/gui.h"
 
@@ -40,7 +41,7 @@ bool cqsp::client::systems::DrawLedgerTable(const std::string &name, const Unive
         for (auto iterator = ledger.begin(); iterator != ledger.end(); iterator++) {
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
-            ImGui::TextFmt("{}", gui::GetName(universe, iterator->first));
+            ImGui::TextFmt("{}", common::util::GetName(universe, iterator->first));
             ImGui::TableSetColumnIndex(1);
             ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(iterator->second)));
         }

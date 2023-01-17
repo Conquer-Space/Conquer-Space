@@ -229,6 +229,12 @@ struct LaborInformation {
 };
 
 struct FactoryProducing {};
+
+// This facility is bankrolled by something else, so if they run out of money
+// they can go to this wallet to ask for cash?
+struct Owned {
+    entt::entity owner;
+};
 }  // namespace components
 }  // namespace common
 }  // namespace cqsp

@@ -33,6 +33,7 @@
 #include "common/components/ships.h"
 #include "common/components/surface.h"
 #include "common/systems/population/cityinformation.h"
+#include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
 #include "engine/gui.h"
 
@@ -42,7 +43,7 @@ namespace cqsp::client::systems::gui {
 
 namespace {
 void RenderEntityType(const Universe& universe, entt::entity entity) {
-    std::string text = cqsp::client::systems::gui::GetEntityType(universe, entity);
+    std::string text = common::util::GetEntityType(universe, entity);
     if (text == "Player") {
         ImGui::TextColored(ImColor(252, 186, 3), "Player");
         return;
@@ -97,17 +98,6 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
 }
 }  // namespace
 
-std::string GetName(const Universe& universe, entt::entity entity) {
-    namespace cqspc = cqsp::common::components;
-    if (universe.all_of<cqspc::Name>(entity)) {
-        return universe.get<cqspc::Name>(entity);
-    } else if (universe.all_of<cqspc::Identifier>(entity)) {
-        return universe.get<cqspc::Identifier>(entity);
-    } else {
-        return fmt::format("{}", GetEntityType(universe, entity));
-    }
-}
-
 namespace cqspc = cqsp::common::components;
 void EntityTooltipContent(const Universe& universe, entt::entity entity) {
     if (entity == entt::null) {
@@ -119,7 +109,7 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
         return;
     }
 
-    ImGui::TextFmt("{}", GetName(universe, entity));
+    ImGui::TextFmt("{}", common::util::GetName(universe, entity));
 
     if (universe.any_of<common::components::Description>(entity)) {
         auto& desc = universe.get<common::components::Description>(entity);
@@ -151,7 +141,7 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
 
     if (universe.all_of<cqspc::Governed>(entity)) {
         auto& governed = universe.get<cqspc::Governed>(entity);
-        ImGui::TextFmt("Owned by: {}", GetName(universe, governed.governor));
+        ImGui::TextFmt("Owned by: {}", common::util::GetName(universe, governed.governor));
     }
 
     // If it's a city do population
@@ -201,52 +191,6 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
     // Resource stuff
     // TODO(EhWhoAmI): Set these text red, but too lazy to do it for now
     ResourceTooltipSection(universe, entity);
-}
-
-std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity entity) {
-    namespace cqspc = cqsp::common::components;
-    // Then get type of entity
-    if (entity == entt::null) {
-        return "Null Entity";
-    }
-    if (universe.all_of<cqspc::bodies::Star>(entity)) {
-        return "Star";
-    } else if (universe.all_of<cqspc::bodies::Planet>(entity)) {
-        return "Planet";
-    } else if (universe.any_of<cqspc::Settlement, cqspc::Habitation>(entity)) {
-        return "City";
-    } else if (universe.any_of<cqspc::Production>(entity)) {
-        std::string production = "";
-        auto& generator = universe.get<cqspc::Production>(entity);
-        return fmt::format("{} Factory", cqsp::client::systems::gui::GetName(universe, generator.recipe));
-    } else if (universe.any_of<cqspc::Mine>(entity)) {
-        /*
-        std::string production = "";
-        auto& generator = universe.get<cqspc::ResourceGenerator>(entity);
-        for (auto it = generator.begin(); it != generator.end(); ++it) {
-            production += universe.get<cqspc::Name>(it->first).name + ", ";
-        }
-        // Remove last comma
-        if (!production.empty()) {
-            production = production.substr(0, production.size() - 2);
-        }
-        return fmt::format("{} Mine", production);
-        */
-    } else if (universe.any_of<cqspc::Player>(entity)) {
-        return "Player";
-    } else if (universe.any_of<cqspc::Country>(entity)) {
-        return "Country";
-    } else if (universe.any_of<cqspc::Province>(entity)) {
-        return "Province";
-    } else if (universe.any_of<cqspc::Organization>(entity)) {
-        return "Organization";
-    } else if (universe.any_of<cqspc::science::Lab>(entity)) {
-        return "Science Lab";
-    } else if (universe.any_of<cqspc::Commercial>(entity)) {
-        return "Commercial";
-    } else {
-        return "Unknown";
-    }
 }
 
 // TODO(EhWhoAmI): Organize this so that it makes logical sense and order.

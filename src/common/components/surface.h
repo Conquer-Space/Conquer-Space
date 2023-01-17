@@ -70,6 +70,9 @@ struct ProvinceColor {
         return rgb;
     }
 };
+
+// Capital city
+struct CapitalCity {};
 }  // namespace components
 }  // namespace common
 }  // namespace cqsp

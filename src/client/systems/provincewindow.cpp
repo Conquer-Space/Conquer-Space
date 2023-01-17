@@ -31,6 +31,7 @@
 #include "common/components/ships.h"
 #include "common/components/surface.h"
 #include "common/systems/actions/shiplaunchaction.h"
+#include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
 #include "engine/cqspgui.h"
 
@@ -72,7 +73,7 @@ void SysProvinceInformation::DoUI(int delta_time) {
 void SysProvinceInformation::DoUpdate(int delta_time) {}
 
 void SysProvinceInformation::ProvinceView() {
-    ImGui::TextFmt("{}", gui::GetName(GetUniverse(), current_country));
+    ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), current_country));
     // List the cities
     auto& city_list = GetUniverse().get<common::components::Province>(current_country);
     int population = 0;
@@ -86,11 +87,11 @@ void SysProvinceInformation::ProvinceView() {
             population += segment.population;
         }
     }
-    ImGui::TextFmt("Part of {}", gui::GetName(GetUniverse(), city_list.country));
+    ImGui::TextFmt("Part of {}", common::util::GetName(GetUniverse(), city_list.country));
     ImGui::TextFmt("Population: {}", util::LongToHumanString(population));
     ImGui::Separator();
     for (entt::entity entity : city_list.cities) {
-        if (CQSPGui::DefaultSelectable(fmt::format("{}", gui::GetName(GetUniverse(), entity)).c_str())) {
+        if (CQSPGui::DefaultSelectable(fmt::format("{}", common::util::GetName(GetUniverse(), entity)).c_str())) {
             current_city = entity;
             view_mode = ViewMode::CITY_VIEW;
         }
@@ -208,7 +209,7 @@ void SysProvinceInformation::IndustryTab() {
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
         for (auto& at : city_industry.industries) {
-            ImGui::TextFmt("{}", gui::GetEntityType(GetUniverse(), at));
+            ImGui::TextFmt("{}", common::util::GetEntityType(GetUniverse(), at));
         }
         ImGui::EndTooltip();
     }
@@ -306,7 +307,7 @@ void SysProvinceInformation::IndustryListWindow() {
     auto& city_industry = GetUniverse().get<cqspc::IndustrialZone>(current_city);
 
     for (entt::entity industry : city_industry.industries) {
-        ImGui::TextFmt("{}", cqsp::client::systems::gui::GetName(GetUniverse(), industry));
+        ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), industry));
         if (ImGui::IsItemHovered()) {
             systems::gui::EntityTooltip(GetUniverse(), industry);
         }

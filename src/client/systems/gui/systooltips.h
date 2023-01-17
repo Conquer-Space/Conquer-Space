@@ -24,14 +24,6 @@
 
 namespace cqsp::client::systems::gui {
 /// <summary>
-/// Gets the name of the entity. If that isn't there, then the identifier.
-/// If you somehow mess even that up, it returns the identifier in string form.
-/// </summary>
-/// <param name="universe"></param>
-/// <param name="entity"></param>
-/// <returns></returns>
-std::string GetName(const cqsp::common::Universe &universe, entt::entity entity);
-/// <summary>
 /// This actually creates the tooltip for the entity
 /// </summary>
 /// <param name=""></param>
@@ -41,5 +33,4 @@ void EntityTooltip(const cqsp::common::Universe &, entt::entity);
 /// In case you want the tooltip content for debug displaying the information of an entity.
 /// </summary>
 void EntityTooltipContent(const cqsp::common::Universe &, entt::entity);
-std::string GetEntityType(const cqsp::common::Universe &, entt::entity);
 }  // namespace cqsp::client::systems::gui

@@ -26,11 +26,14 @@
 #include "common/components/bodies.h"
 #include "common/components/economy.h"
 #include "common/components/name.h"
+#include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
 
 namespace cqsp::client::systems {
 namespace cqspb = cqsp::common::components::bodies;
 namespace cqspc = cqsp::common::components;
+
+using cqsp::common::util::GetName;
 
 void MarketInformationTable(common::Universe& universe, const entt::entity& market_entity) {
     if (!universe.any_of<cqspc::Market>(market_entity)) {
@@ -59,10 +62,10 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
     for (entt::entity good_entity : goodsview) {
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
-        if (universe.any_of<cqspc::Capital>(good_entity)) {
-            ImGui::TextFmtColored(ImColor(1.f, 1.f, 0.f), "{}", client::systems::gui::GetName(universe, good_entity));
+        if (universe.any_of<cqspc::CapitalGood>(good_entity)) {
+            ImGui::TextFmtColored(ImColor(1.f, 1.f, 0.f), "{}", GetName(universe, good_entity));
         } else {
-            ImGui::TextFmt("{}", client::systems::gui::GetName(universe, good_entity));
+            ImGui::TextFmt("{}", GetName(universe, good_entity));
         }
         ImGui::TableSetColumnIndex(1);
         // Mark the cell as red if the thing is not valid
