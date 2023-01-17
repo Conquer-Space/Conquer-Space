@@ -16,30 +16,18 @@
 */
 #pragma once
 
-#include <vector>
+#include <string>
 
-#include <entt/entt.hpp>
+#include "common/universe.h"
 
-namespace cqsp {
-namespace common {
-namespace components {
+namespace cqsp::common::util {
 /// <summary>
-/// The civilization or organization that owns or governs the city
+/// Gets the name of the entity. If that isn't there, then the identifier.
+/// If you somehow mess even that up, it returns the identifier in string form.
 /// </summary>
-struct Governed {
-    entt::entity governor;
-};
-
-struct Organization {};
-
-struct Country {
-    entt::entity capital_city = entt::null;
-};
-
-struct CountryCityList {
-    std::vector<entt::entity> city_list;
-    std::vector<entt::entity> province_list;
-};
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+/// <param name="universe"></param>
+/// <param name="entity"></param>
+/// <returns></returns>
+std::string GetName(const Universe& universe, entt::entity entity);
+std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity entity);
+}  // namespace cqsp::common::util

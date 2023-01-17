@@ -29,6 +29,12 @@ bool CountryLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     // A country will be it's own market
     universe.emplace<components::Market>(entity);
 
+    // Add the list of liabilities the country has?
+
+    if (!values["wallet"].empty()) {
+        auto& wallet = universe.emplace<components::Wallet>(entity);
+        wallet = values["wallet"];
+    }
     return true;
 }
 }  // namespace cqsp::common::systems::loading

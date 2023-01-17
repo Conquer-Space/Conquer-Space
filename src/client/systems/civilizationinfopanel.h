@@ -29,6 +29,7 @@ class CivilizationInfoPanel : public SysUserInterface {
     void DoUpdate(int delta_time);
 
     void CivInfoPanel();
+    void BudgetInfoPanel();
 
     bool to_display = false;
 };

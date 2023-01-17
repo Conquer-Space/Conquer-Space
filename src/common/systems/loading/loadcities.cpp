@@ -29,6 +29,7 @@
 #include "common/components/population.h"
 #include "common/components/surface.h"
 #include "common/systems/actions/factoryconstructaction.h"
+#include "common/util/nameutil.h"
 
 namespace cqsp::common::systems::loading {
 bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
@@ -156,6 +157,28 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
             // Set the stuff
             auto& highway = universe.emplace<components::infrastructure::Highway>(entity);
             highway.extent = values["infrastructure"]["highway"].to_double();
+        }
+    }
+
+    if (!values["tags"].empty()) {
+        for (int i = 0; i < values["tags"].size(); i++) {
+            if (values["tags"][i].to_string() == "capital") {
+                // Then it's a capital city of whatever country it's in
+                universe.emplace<components::CapitalCity>(entity);
+                // Add to parent city
+                if (universe.any_of<components::Governed>(entity)) {
+                    entt::entity governor = universe.get<components::Governed>(entity).governor;
+                    auto& country_comp = universe.get<components::Country>(governor);
+                    if (country_comp.capital_city != entt::null) {
+                        // Get name
+                        SPDLOG_INFO("Country {} already has a capital; {} will be replaced with {}",
+                                    util::GetName(universe, governor),
+                                    util::GetName(universe, country_comp.capital_city),
+                                    util::GetName(universe, entity));
+                    }
+                    country_comp.capital_city = entity;
+                }
+            }
         }
     }
     return true;

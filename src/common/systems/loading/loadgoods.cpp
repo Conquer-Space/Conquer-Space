@@ -118,7 +118,7 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         if (values["tags"][i] == "mineral") {
             universe.get_or_emplace<cqspc::Mineral>(entity);
         } else if (values["tags"][i] == "captialgood") {
-            universe.get_or_emplace<cqspc::Capital>(entity);
+            universe.get_or_emplace<cqspc::CapitalGood>(entity);
         }
     }
 

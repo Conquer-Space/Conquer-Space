@@ -57,8 +57,6 @@ void ScriptUniverseGenerator::Generate(cqsp::common::Universe& universe) {
     auto player = universe.countries["usa"];
     //universe.emplace<cqspc::Civilization>(player);
     universe.emplace<cqspc::Player>(player);
-    // Add wallet to civilization
-    universe.emplace<cqspc::Wallet>(player, entt::null, 10000000);
 
     // Add top level fleet
     /*

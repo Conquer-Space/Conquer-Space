@@ -47,6 +47,7 @@
 #include "common/components/surface.h"
 #include "common/components/units.h"
 #include "common/systems/actions/cityactions.h"
+#include "common/util/nameutil.h"
 #include "common/util/profiler.h"
 #include "engine/graphics/primitives/cube.h"
 #include "engine/graphics/primitives/line.h"
@@ -375,7 +376,7 @@ void SysStarSystemRenderer::DrawSkybox() {
 
 void SysStarSystemRenderer::DrawEntityName(glm::vec3& object_pos, entt::entity ent_id) {
     using cqsp::common::components::Name;
-    std::string text = gui::GetName(m_app.GetUniverse(), ent_id);
+    std::string text = common::util::GetName(m_app.GetUniverse(), ent_id);
     glm::vec3 pos = GetBillboardPosition(object_pos);
     // Check if the position on screen is within bounds
     if (!(pos.z >= 1 || pos.z <= -1) &&
@@ -400,7 +401,7 @@ void SysStarSystemRenderer::DrawPlanetBillboards(const entt::entity& ent_id, con
         return;
     }
 
-    std::string text = gui::GetName(m_app.GetUniverse(), ent_id);
+    std::string text = common::util::GetName(m_app.GetUniverse(), ent_id);
 
     glm::mat4 planetDispMat = GetBillboardMatrix(pos);
 
@@ -1058,7 +1059,7 @@ void SysStarSystemRenderer::RenderInformationWindow(double deltaTime) {
     std::string country_name_t = "";
     if (m_universe.valid(selected_province) && m_universe.any_of<common::components::Province>(selected_province)) {
         country_name_t =
-            systems::gui::GetName(m_universe, m_universe.get<common::components::Province>(selected_province).country);
+            common::util::GetName(m_universe, m_universe.get<common::components::Province>(selected_province).country);
     }
     ImGui::TextFmt("Hovering on Texture: {} {}", tex_x, tex_y);
     ImGui::TextFmt("Texture color: {} {} {}", tex_r, tex_g, tex_b);

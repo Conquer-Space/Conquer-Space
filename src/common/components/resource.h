@@ -69,7 +69,7 @@ struct ConsumerGood {
 
 struct Mineral {};
 // Good is for capital goods
-struct Capital {};
+struct CapitalGood {};
 
 typedef std::map<entt::entity, double> LedgerMap;
 

@@ -47,6 +47,7 @@
 #include "common/systems/actions/factoryconstructaction.h"
 #include "common/systems/actions/shiplaunchaction.h"
 #include "common/systems/economy/markethelpers.h"
+#include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
 #include "engine/cqspgui.h"
 #include "engine/gui.h"
@@ -75,10 +76,10 @@ void SysPlanetInformation::DisplayPlanet() {
     }
     switch (view_mode) {
         case ViewMode::PLANET_VIEW:
-            viewname = gui::GetName(GetUniverse(), selected_planet);
+            viewname = common::util::GetName(GetUniverse(), selected_planet);
             break;
         case ViewMode::CITY_VIEW:
-            viewname = gui::GetName(GetUniverse(), selected_city_entity);
+            viewname = common::util::GetName(GetUniverse(), selected_city_entity);
             break;
     }
 
@@ -314,7 +315,7 @@ void SysPlanetInformation::IndustryTab() {
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
         for (auto& at : city_industry.industries) {
-            ImGui::TextFmt("{}", gui::GetEntityType(GetUniverse(), at));
+            ImGui::TextFmt("{}", common::util::GetEntityType(GetUniverse(), at));
         }
         ImGui::EndTooltip();
     }
@@ -499,7 +500,7 @@ void SysPlanetInformation::FactoryConstruction() {
             selected_recipe = entity;
         }
         const bool selected = selected_recipe_index == index;
-        std::string name = gui::GetName(GetUniverse(), entity);
+        std::string name = common::util::GetName(GetUniverse(), entity);
 
         if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), selected)) {
             selected_recipe_index = index;
@@ -545,7 +546,7 @@ void SysPlanetInformation::MineConstruction() {
             selected_good = entity;
         }
         const bool selected = selected_good_index == index;
-        std::string name = gui::GetName(GetUniverse(), entity);
+        std::string name = common::util::GetName(GetUniverse(), entity);
         if (CQSPGui::DefaultSelectable(fmt::format("{}", name).c_str(), selected)) {
             selected_good_index = index;
             selected_good = entity;
