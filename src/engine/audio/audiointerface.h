@@ -25,7 +25,6 @@
 #include <map>
 #include <memory>
 #include <string>
-#include <thread>
 #include <vector>
 
 #include "engine/audio/audioasset.h"
@@ -112,12 +111,12 @@ class AudioInterface : public IAudioInterface {
     void PlayAudioClip(const std::string &key);
     void PlayAudioClip(cqsp::asset::AudioAsset *asset, int channel);
     void SetChannelVolume(int channel, float gain);
+    void OnFrame() override;
 
     ~AudioInterface();
 
-    std::thread worker_thread;
     std::unique_ptr<cqsp::asset::AudioAsset> LoadWav(std::ifstream &input);
-    std::unique_ptr<cqsp::asset::AudioAsset> music = nullptr;
+    std::unique_ptr<cqsp::asset::AudioAsset> music_asset = nullptr;
 
     std::shared_ptr<spdlog::logger> logger;
 

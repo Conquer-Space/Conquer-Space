@@ -636,6 +636,7 @@ void Application::run() {
 
         //ProcessRmlUiUserInput();
         rml_context->Update();
+        m_audio_interface->OnFrame();
 
         // Clear screen
         glClearColor(0.f, 0.f, 0.f, 1.0f);
