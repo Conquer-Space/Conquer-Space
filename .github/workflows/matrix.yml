@@ -57,7 +57,7 @@ jobs:
 
     - name: Build Conquer Space
       run: |
-        cmake --build build --parallel --config ${{ matrix.config }}
+        cmake --build build --parallel --config ${{ matrix.config }} -- -j1
 
     - name: Tests
       run: |
