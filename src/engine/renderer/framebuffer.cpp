@@ -71,6 +71,9 @@ void cqsp::engine::FramebufferRenderer::BeginDraw() {
 
 void cqsp::engine::FramebufferRenderer::EndDraw() {
     ZoneScoped;
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) {
+        // Then celebrate or something like that
+    }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -203,8 +206,11 @@ void LayerRenderer::DrawAllLayers() {
     for (auto& frame : framebuffers) {
         frame->RenderBuffer();
     }
-    // Reset render buffer
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    int drawFboId = 0;
+    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
+    if (drawFboId != 0) {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
 }
 
 void LayerRenderer::NewFrame(const cqsp::engine::Window& window) {
