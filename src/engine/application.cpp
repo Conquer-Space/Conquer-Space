@@ -647,7 +647,12 @@ void Application::run() {
         m_scene_manager.Render(deltaTime);
         END_TIMED_BLOCK(Scene_Render);
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // Shut the opengl debugger up
+        int drawFboId = 0;
+        glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
+        if (drawFboId != 0) {
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
         rml_context->Render();
 
         BEGIN_TIMED_BLOCK(ImGui_Render_Draw);
