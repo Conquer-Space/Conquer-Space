@@ -38,6 +38,7 @@ class IAudioInterface {
     virtual void SetMusicVolume(float volume) = 0;
     virtual void PlayAudioClip(cqsp::asset::AudioAsset *asset, int channel) = 0;
     virtual void SetChannelVolume(int channel, float gain) = 0;
+    virtual void OnFrame() = 0;
 
     virtual void AddAudioClip(const std::string &key, cqsp::asset::AudioAsset *asset) = 0;
     virtual void PlayAudioClip(const std::string &key) = 0;
