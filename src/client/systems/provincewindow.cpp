@@ -320,7 +320,7 @@ void SysProvinceInformation::IndustryTabGenericChild(const std::string& tabname,
                                                      const ImVec2& size) {
     ImGui::BeginChild(tabname.c_str(), size, true, ImGuiWindowFlags_HorizontalScrollbar | window_flags);
     auto& city_industry = GetUniverse().get<cqspc::IndustrialZone>(current_city);
-    ImGui::TextFmt(tabname);
+    ImGui::TextFmt("{}", tabname);
     // List all the stuff it produces
 
     cqspc::ResourceLedger input_resources;
