@@ -77,9 +77,10 @@ TEST(OrbitTest, OrbitConversionTest) {
     EXPECT_NEAR(glm::length(velocity), cqspt::AvgOrbitalVelocity(orb), cqspt::AvgOrbitalVelocity(orb) * 0.0001);
     EXPECT_NEAR(glm::length(position), orb.semi_major_axis, orb.semi_major_axis * 0.001);
     auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.GM, 0);
-    EXPECT_DOUBLE_EQ(new_orbit.v, orb.v);
-    EXPECT_DOUBLE_EQ(new_orbit.E, orb.E);
-    EXPECT_DOUBLE_EQ(new_orbit.M0, orb.M0);
+    // We need the fmod things because the orbital elements are a bit wacky with perfectly round and non-inclined orbits
+    EXPECT_DOUBLE_EQ(fmod(new_orbit.v, cqspt::PI), std::fmod(orb.v, cqspt::PI));
+    EXPECT_DOUBLE_EQ(fmod(new_orbit.E, cqspt::PI), std::fmod(orb.E, cqspt::PI));
+    EXPECT_DOUBLE_EQ(fmod(new_orbit.M0, cqspt::PI), std::fmod(orb.M0, cqspt::PI));
     EXPECT_NEAR(new_orbit.semi_major_axis, orb.semi_major_axis, orb.semi_major_axis * 0.01);
     EXPECT_DOUBLE_EQ(new_orbit.LAN, orb.LAN);
     EXPECT_DOUBLE_EQ(new_orbit.inclination, orb.inclination);
