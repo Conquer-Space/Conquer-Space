@@ -174,8 +174,8 @@ TEST(OrbitTest, NewOrbitConversionTest3) {
     cqspt::UpdateOrbit(orb, 0);
     // Expect the true anomaly to be M0
     EXPECT_EQ(orb.GetMtElliptic(0), M0);
-    // EXPECT_EQ(orb.v, 0);
-    // EXPECT_EQ(orb.E, 0);
+    EXPECT_EQ(orb.v, 0);
+    EXPECT_EQ(orb.E, 0);
     auto position = cqspt::toVec3(orb);
     auto velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
     EXPECT_EQ(acos(1), 0);
