@@ -45,12 +45,6 @@ jobs:
       run: |
         echo "CC=${{ matrix.compiler == 'gcc' && 'gcc' || 'clang'   }}" >> $GITHUB_ENV
         echo "CXX=${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}" >> $GITHUB_ENV
-        echo "CMAKE_C_COMPILER_LAUNCHER=ccache" >> $GITHUB_ENV
-        echo "CMAKE_CXX_COMPILER_LAUNCHER=ccache" >> $GITHUB_ENV
-
-    - uses: hendrikmuhs/ccache-action@v1
-      with:
-        key: build-${{ matrix.compiler }}-${{ matrix.config }}
 
     - name: Install dependencies
       run: |
@@ -63,7 +57,7 @@ jobs:
 
     - name: Build Conquer Space
       run: |
-        cmake --build build --parallel --config ${{ matrix.config }}
+        cmake --build build --parallel --config ${{ matrix.config }} -- -j1
 
     - name: Tests
       run: |
