@@ -70,8 +70,7 @@ void ProcessIndustries(Universe& universe, entt::entity entity) {
         // Log how much manufacturing is being throttled by input
         market[recipe.output.entity].inputratio = limitedinput;
 
-        if (market.history.back().sd_ratio[recipe.output.entity] < 1.1) {
-            if (limitedcapitalinput > 1) limitedcapitalinput = 1;
+        if (market.sd_ratio[recipe.output.entity] < 1.1) {
             size.utilization *= 1 + (0.01) * std::fmin(limitedcapitalinput, 1);
         } else {
             size.utilization *= 0.99;
