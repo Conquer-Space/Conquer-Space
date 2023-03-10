@@ -22,6 +22,7 @@
 #include "client/components/clientctx.h"
 #include "client/systems/gui/sysstockpileui.h"
 #include "client/systems/gui/systooltips.h"
+#include "client/systems/marketwindow.h"
 #include "client/systems/views/starsystemview.h"
 #include "common/components/economy.h"
 #include "common/components/infrastructure.h"
@@ -162,6 +163,11 @@ void SysProvinceInformation::CityIndustryTabs() {
                 SpacePortTab();
                 ImGui::EndTabItem();
             }
+        }
+        if (ImGui::BeginTabItem("Economy")) {
+            // Show economy window
+            MarketInformationTable(GetUniverse(), current_city);
+            ImGui::EndTabItem();
         }
         ImGui::EndTabBar();
     }
