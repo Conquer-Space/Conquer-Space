@@ -142,7 +142,6 @@ class SysStarSystemRenderer {
 
     void DrawAllPlanets(auto &bodies);
     void DrawAllPlanetBillboards(auto &bodies);
-    void DrawPlanet(glm::vec3 &object_pos, entt::entity entity);
 
     void DrawTexturedPlanet(glm::vec3 &object_pos, entt::entity entity);
     void GetPlanetTexture(entt::entity entity, bool &have_normal, bool &have_roughness);
@@ -157,6 +156,7 @@ class SysStarSystemRenderer {
     void LoadPlanetTextures();
     void InitializeFramebuffers();
     void LoadProvinceMap();
+    void InitializeMeshes();
 
     void GenerateOrbit(entt::entity entity);
 
