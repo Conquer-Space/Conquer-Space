@@ -97,54 +97,20 @@ struct PlanetOrbit {
 }  // namespace
 
 void SysStarSystemRenderer::Initialize() {
-    // Initialize meshes, etc
-    cqsp::engine::Mesh* sphere_mesh =
-        cqsp::engine::primitive::ConstructSphereMesh(sphere_resolution, sphere_resolution);
-
-    // Initialize sky box
-    asset::Texture* sky_texture = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>("core:skycubemap");
-
-    sky.mesh = engine::primitive::MakeCube();
-    sky.shaderProgram = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:skybox")->MakeShader();
-
-    asset::ShaderProgram_t circle_shader =
-        m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:2dcolorshader")->MakeShader();
-
-    planet_circle.mesh = engine::primitive::CreateFilledCircle();
-    planet_circle.shaderProgram = circle_shader;
-
-    ship_overlay.mesh = engine::primitive::CreateFilledTriangle();
-    ship_overlay.shaderProgram = circle_shader;
-
-    city.mesh = engine::primitive::MakeTexturedPaneMesh();
-    city.shaderProgram = circle_shader;
-
-    // Initialize shaders
-    asset::ShaderProgram_t planet_shader =
-        m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:planetshader")->MakeShader();
-
-    // Planet spheres
-    planet.mesh = sphere_mesh;
-    planet.shaderProgram = planet_shader;
-
-    // Initialize shaders
-    asset::ShaderProgram_t textured_planet_shader =
-        m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:planet_textureshader")->MakeShader();
-    near_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:neartexturedobject")->MakeShader();
-    textured_planet.mesh = sphere_mesh;
-    textured_planet.shaderProgram = textured_planet_shader;
-
-    // Initialize sun
-    sun.mesh = sphere_mesh;
-    sun.shaderProgram = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:sunshader")->MakeShader();
-
-    orbit_shader = sun.shaderProgram;
-
+    InitializeMeshes();
     InitializeFramebuffers();
 
     earth_map_texture = m_app.GetAssetManager().GetAsset<asset::Texture>("province_map_texture");
 
     LoadProvinceMap();
+
+    // Zoom into the player's capital city
+    entt::entity player = m_app.GetUniverse().view<common::components::Player>().front();
+    entt::entity player_capital = m_app.GetUniverse().get<common::components::Country>(player).capital_city;
+    if (player_capital != entt::null) {
+        // Zoom into the thing
+        m_app.GetUniverse().emplace_or_replace<FocusedCity>(player_capital);
+    }
 }
 
 void SysStarSystemRenderer::OnTick() {
@@ -725,6 +691,51 @@ void SysStarSystemRenderer::LoadProvinceMap() {
 
     std::copy(&d[0], &d[province_width * province_height * comp], std::back_inserter(country_map));
     delete d;
+}
+
+void SysStarSystemRenderer::InitializeMeshes() {
+    // Initialize meshes, etc
+    cqsp::engine::Mesh* sphere_mesh =
+        cqsp::engine::primitive::ConstructSphereMesh(sphere_resolution, sphere_resolution);
+
+    // Initialize sky box
+    asset::Texture* sky_texture = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>("core:skycubemap");
+
+    sky.mesh = engine::primitive::MakeCube();
+    sky.shaderProgram = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:skybox")->MakeShader();
+
+    asset::ShaderProgram_t circle_shader =
+        m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:2dcolorshader")->MakeShader();
+
+    planet_circle.mesh = engine::primitive::CreateFilledCircle();
+    planet_circle.shaderProgram = circle_shader;
+
+    ship_overlay.mesh = engine::primitive::CreateFilledTriangle();
+    ship_overlay.shaderProgram = circle_shader;
+
+    city.mesh = engine::primitive::MakeTexturedPaneMesh();
+    city.shaderProgram = circle_shader;
+
+    // Initialize shaders
+    asset::ShaderProgram_t planet_shader =
+        m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:planetshader")->MakeShader();
+
+    // Planet spheres
+    planet.mesh = sphere_mesh;
+    planet.shaderProgram = planet_shader;
+
+    // Initialize shaders
+    asset::ShaderProgram_t textured_planet_shader =
+        m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:planet_textureshader")->MakeShader();
+    near_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:neartexturedobject")->MakeShader();
+    textured_planet.mesh = sphere_mesh;
+    textured_planet.shaderProgram = textured_planet_shader;
+
+    // Initialize sun
+    sun.mesh = sphere_mesh;
+    sun.shaderProgram = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:sunshader")->MakeShader();
+
+    orbit_shader = sun.shaderProgram;
 }
 
 glm::quat SysStarSystemRenderer::GetBodyRotation(double axial, double rotation, double day_offset) {

@@ -165,7 +165,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
             if (values["tags"][i].to_string() == "capital") {
                 // Then it's a capital city of whatever country it's in
                 universe.emplace<components::CapitalCity>(entity);
-                // Add to parent city
+                // Add to parent country
                 if (universe.any_of<components::Governed>(entity)) {
                     entt::entity governor = universe.get<components::Governed>(entity).governor;
                     auto& country_comp = universe.get<components::Country>(governor);
@@ -175,6 +175,8 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
                                     util::GetName(universe, governor),
                                     util::GetName(universe, country_comp.capital_city),
                                     util::GetName(universe, entity));
+                        // Remove capital tag on the other capital city
+                        universe.remove<components::CapitalCity>(country_comp.capital_city);
                     }
                     country_comp.capital_city = entity;
                 }
