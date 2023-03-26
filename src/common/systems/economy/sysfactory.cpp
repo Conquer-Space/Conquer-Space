@@ -38,7 +38,8 @@ namespace {
 /// <param name="universe">Registry used for searching for components</param>
 /// <param name="entity">Entity containing an Inudstries that need to be processed</param>
 /// <param name="market">The market the industry uses.</param>
-void ProcessIndustries(common::Universe& universe, entt::entity entity, cqspc::Market& market) {
+void ProcessIndustries(Universe& universe, entt::entity entity) {
+    auto& market = universe.get<components::Market>(entity);
     // Get the transport cost
     auto& infrastructure = universe.get<cqspc::infrastructure::CityInfrastructure>(entity);
     // Calculate the infrastructure cost
@@ -69,8 +70,7 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity, cqspc::M
         // Log how much manufacturing is being throttled by input
         market[recipe.output.entity].inputratio = limitedinput;
 
-        if (market.history.back().sd_ratio[recipe.output.entity] < 1.1) {
-            if (limitedcapitalinput > 1) limitedcapitalinput = 1;
+        if (market.sd_ratio[recipe.output.entity] < 1.1) {
             size.utilization *= 1 + (0.01) * std::fmin(limitedcapitalinput, 1);
         } else {
             size.utilization *= 0.99;
@@ -121,23 +121,15 @@ void ProcessIndustries(common::Universe& universe, entt::entity entity, cqspc::M
 void SysProduction::DoSystem() {
     ZoneScoped;
     Universe& universe = GetUniverse();
-    auto view = universe.view<components::IndustrialZone>();
+    auto view = universe.view<components::IndustrialZone, components::Market>();
+    // Each industrial zone is a a market
     BEGIN_TIMED_BLOCK(INDUSTRY);
     int factories = 0;
     // Loop through the markets
-    auto market_view = universe.view<cqspc::Country>();
     int settlement_count = 0;
-    for (entt::entity entity : market_view) {
-        auto& market = universe.get_or_emplace<cqspc::Market>(entity);
-        // Read the segment information
-        // Get the children of the market
-        if (!universe.any_of<cqspc::CountryCityList>(entity)) {
-            return;
-        }
-        auto& habitation = universe.get<cqspc::CountryCityList>(entity);
-        for (entt::entity settlement : habitation.city_list) {
-            ProcessIndustries(universe, settlement, market);
-        }
+    // Get the markets and process the values?
+    for (entt::entity entity : view) {
+        ProcessIndustries(universe, entity);
     }
     END_TIMED_BLOCK(INDUSTRY);
     SPDLOG_TRACE("Updated {} factories, {} industries", factories, view.size());

@@ -1,7 +1,7 @@
 [
     {
         name: Washington, D.C.
-        identifier: WDC
+        identifier: wdc
         coordinates: {
             latitude: 38.8892
             longitude: -77.0506
@@ -14,7 +14,7 @@
                 size: 500000
             }
         ]
-        // Because DC is so far away lmao
+        // Because DC is so tiny lmao
         province: maryland
         industry: [
         ]

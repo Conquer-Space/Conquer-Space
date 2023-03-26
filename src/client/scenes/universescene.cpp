@@ -37,7 +37,6 @@
 #include "client/systems/sysdebuggui.h"
 #include "client/systems/sysfieldviewer.h"
 #include "client/systems/syspausemenu.h"
-#include "client/systems/sysplanetviewer.h"
 #include "client/systems/sysstarsystemtree.h"
 #include "client/systems/systechviewer.h"
 #include "client/systems/systurnsavewindow.h"
@@ -80,7 +79,6 @@ void cqsp::scene::UniverseScene::Init() {
 
     SeePlanet(GetApp(), GetUniverse().planets["earth"]);
 
-    //AddUISystem<cqsps::SysPlanetInformation>();
     //AddUISystem<cqsps::SysTurnSaveWindow>();
     AddUISystem<cqsps::SysStarSystemTree>();
     AddUISystem<cqsps::SysPauseMenu>();

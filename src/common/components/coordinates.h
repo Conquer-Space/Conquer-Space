@@ -307,8 +307,8 @@ struct SurfaceCoordinate {
     /// <summary>
     /// Creates a surface coordinate
     /// </summary>
-    /// <param name="_lat">Latitude in degrees</param>
-    /// <param name="_long">Longtitude in degrees</param>
+    /// <param name="_lat">Latitude in degrees (-90 ~ 90)</param>
+    /// <param name="_long">Longtitude in degrees(-180 ~ 180)</param>
     SurfaceCoordinate(degree _lat, degree _long) : _latitude(toRadian(_lat)), _longitude(toRadian(_long)) {
         _lat = normalize_radian_coord(_lat);
         _longitude = normalize_radian_coord(_longitude);
@@ -331,7 +331,16 @@ struct SurfaceCoordinate {
 };
 
 /// <summary>
-/// Converts surface coordinate to vector3, shown in opengl.
+/// Calculates the angle between the two coordinates. Just multiply by the planet's diameter for fun and engagement.
+/// </summary>
+/// <param name="coord1"></param>
+/// <param name="coord2"></param>
+/// <returns></returns>
+double GreatCircleDistance(SurfaceCoordinate& coord1, SurfaceCoordinate& coord2);
+
+/// <summary>
+/// Converts surface coordinate to vector3 in space so that we can get the surface
+/// coordinate to render in space
 /// </summary>
 glm::vec3 toVec3(const SurfaceCoordinate& coord, const float& radius = 1);
 

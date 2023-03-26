@@ -208,7 +208,22 @@ glm::vec3 CalculateVelocityElliptic(const double& E, const double& r, const doub
     return ((float)(sqrt(GM * a) / r) * glm::vec3(-sin(E), sqrt(1 - e * e) * cos(E), 0));
 }
 
+double GreatCircleDistance(SurfaceCoordinate& coord1, SurfaceCoordinate& coord2) {
+    double delta_lambda = abs(coord2.r_longitude() - coord1.r_longitude());
+    double alpha = cos(coord2.r_latitude()) * sin(delta_lambda);
+    double beta = cos(coord1.r_latitude()) * sin(coord2.r_latitude()) -
+                  cos(coord2.r_latitude()) * sin(coord1.r_latitude()) * cos(delta_lambda);
+    return atan2(sqrt(alpha * alpha + beta * beta),
+                 (sin(coord1.r_latitude()) * sin(coord2.r_latitude()) +
+                  cos(coord1.r_latitude()) * cos(coord2.r_latitude()) * cos(delta_lambda)));
+}
+
 glm::vec3 toVec3(const SurfaceCoordinate& coord, const float& radius) {
+    // This formula is wrong, it's actually
+    // x = sin(latitude) * cos (longitude)
+    // y = cos latitude
+    // z = sin latitude * sin longitude
+    // We should probably change it, but it breaks a lot, so we'll leave it here for now.
     return glm::vec3(cos(coord.r_latitude()) * sin(coord.r_longitude()), sin(coord.r_latitude()),
                      cos(coord.r_latitude()) * cos(coord.r_longitude())) *
            radius;

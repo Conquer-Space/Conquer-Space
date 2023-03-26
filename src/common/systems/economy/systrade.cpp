@@ -14,24 +14,14 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "common/systems/loading/loadcountries.h"
+#include "common/systems/economy/systrade.h"
 
 #include "common/components/economy.h"
-#include "common/components/name.h"
-#include "common/components/organizations.h"
 
-namespace cqsp::common::systems::loading {
-bool CountryLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
-    // Just make the country
-    universe.emplace<components::Country>(entity);
-    universe.countries[universe.get<components::Identifier>(entity).identifier] = entity;
-
-    // Add the list of liabilities the country has?
-
-    if (!values["wallet"].empty()) {
-        auto& wallet = universe.emplace<components::Wallet>(entity);
-        wallet = values["wallet"];
-    }
-    return true;
+void cqsp::common::systems::SysTrade::DoSystem() {
+    // Sort through all the districts, and figure out their trade
+    // Get all the markets
+    // Then cross reference to see if they can buy or sell
+    // Then list all the markets
+    auto markets = GetUniverse().view<components::Market>();
 }
-}  // namespace cqsp::common::systems::loading
