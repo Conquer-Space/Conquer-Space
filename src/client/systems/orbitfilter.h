@@ -16,25 +16,18 @@
 */
 #pragma once
 
-#include <string>
+#include "client/systems/sysgui.h"
 
-namespace cqsp::client::ctx {
-struct StarSystemViewDebug {
-    bool to_show = false;
+namespace cqsp::client::systems {
+class SysOrbitFilter : public SysUserInterface {
+ public:
+    explicit SysOrbitFilter(cqsp::engine::Application& app) : SysUserInterface(app) {}
+    void Init() override;
+    void DoUI(int delta_time) override;
+    void DoUpdate(int delta_time) override;
+
+ private:
+    bool visible = true;
+    bool hide_all_orbits = false;
 };
-
-struct PauseOptions {
-    bool to_tick = false;
-    int tick_speed = 3;
-};
-
-struct SelectedCountry {};
-
-struct SelectedProvince {};
-
-struct GameLoad {
-    std::string load_dir;
-};
-
-struct VisibleOrbit {};
-}  // namespace cqsp::client::ctx
+}  // namespace cqsp::client::systems

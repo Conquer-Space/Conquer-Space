@@ -30,6 +30,7 @@
 #include "client/systems/civilizationinfopanel.h"
 #include "client/systems/gui/sysevent.h"
 #include "client/systems/marketwindow.h"
+#include "client/systems/orbitfilter.h"
 #include "client/systems/provincewindow.h"
 #include "client/systems/rmlui/turnsavewindow.h"
 #include "client/systems/syscommand.h"
@@ -88,6 +89,7 @@ void cqsp::scene::UniverseScene::Init() {
     //AddUISystem<cqsps::SysTechnologyProjectViewer>();
     //AddUISystem<cqsps::SysTechnologyViewer>();
     AddUISystem<cqsps::SysProvinceInformation>();
+    AddUISystem<cqsps::SysOrbitFilter>();
     //AddUISystem<cqsps::SysPlanetMarketInformation>();
 
     AddUISystem<cqsps::gui::SysEvent>();

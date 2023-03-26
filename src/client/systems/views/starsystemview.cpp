@@ -119,11 +119,6 @@ void SysStarSystemRenderer::OnTick() {
         view_center = CalculateObjectPos(m_viewing_entity);
     }
     namespace cqspb = cqsp::common::components::bodies;
-
-    auto system = m_app.GetUniverse().view<common::components::types::Orbit>();
-    for (entt::entity ent : system) {
-        m_app.GetUniverse().get_or_emplace<ToRender>(ent);
-    }
 }
 
 void SysStarSystemRenderer::Render(float deltaTime) {
@@ -170,16 +165,8 @@ void SysStarSystemRenderer::Render(float deltaTime) {
 
 void SysStarSystemRenderer::SeeStarSystem() {
     namespace cqspb = cqsp::common::components::bodies;
-    m_universe.clear<ToRender>();
 
     GenerateOrbitLines();
-
-    auto orbits = m_app.GetUniverse().view<common::components::types::Orbit>();
-
-    for (auto body : orbits) {
-        // Add a tag
-        m_universe.get_or_emplace<ToRender>(body);
-    }
 
     SPDLOG_INFO("Loading planet textures");
     LoadPlanetTextures();
@@ -277,7 +264,7 @@ void SysStarSystemRenderer::DrawStars() {
     // Draw stars
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqsps = cqsp::common::components::ships;
-    auto stars = m_app.GetUniverse().view<ToRender, cqspb::Body, cqspb::LightEmitter>();
+    auto stars = m_app.GetUniverse().view<cqspb::Body, cqspb::LightEmitter>();
     renderer.BeginDraw(physical_layer);
     for (auto ent_id : stars) {
         // Draw the star circle
@@ -291,7 +278,7 @@ void SysStarSystemRenderer::DrawStars() {
 void SysStarSystemRenderer::DrawBodies() {
     ZoneScoped;
     // Draw other bodies
-    auto bodies = m_app.GetUniverse().view<ToRender, cqspb::Body>(entt::exclude<cqspb::LightEmitter>);
+    auto bodies = m_app.GetUniverse().view<cqspb::Body>(entt::exclude<cqspb::LightEmitter>);
     renderer.BeginDraw(planet_icon_layer);
     glDepthFunc(GL_ALWAYS);
     DrawAllPlanetBillboards(bodies);
@@ -314,11 +301,12 @@ void SysStarSystemRenderer::DrawShips() {
     ZoneScoped;
     namespace cqsps = cqsp::common::components::ships;
     // Draw Ships
-    auto ships = m_app.GetUniverse().view<ToRender, cqsps::Ship>();
+    auto ships = m_app.GetUniverse().view<cqsps::Ship, ctx::VisibleOrbit>();
 
     renderer.BeginDraw(ship_icon_layer);
     ship_overlay.shaderProgram->UseProgram();
     for (auto ent_id : ships) {
+        // if it's not visible, then don't render
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
         ship_overlay.shaderProgram->setVec4("color", 1, 0, 0, 1);
         DrawShipIcon(object_pos);
@@ -1146,7 +1134,7 @@ glm::vec3 SysStarSystemRenderer::GetMouseIntersectionOnObject(int mouse_x, int m
     ZoneScoped;
     // Normalize 3d device coordinates
     namespace cqspb = cqsp::common::components::bodies;
-    auto bodies = m_app.GetUniverse().view<ToRender, cqspb::Body>();
+    auto bodies = m_app.GetUniverse().view<cqspb::Body>();
     for (entt::entity ent_id : bodies) {
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
         float x = (2.0f * mouse_x) / m_app.GetWindowWidth() - 1.0f;
@@ -1229,7 +1217,7 @@ entt::entity SysStarSystemRenderer::GetMouseOnObject(int mouse_x, int mouse_y) {
     namespace cqspb = cqsp::common::components::bodies;
 
     // Loop through objects
-    auto bodies = m_app.GetUniverse().view<ToRender, cqspb::Body>();
+    auto bodies = m_app.GetUniverse().view<cqspb::Body>();
     for (entt::entity ent_id : bodies) {
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
         // Check if the sphere is rendered or not
@@ -1265,7 +1253,19 @@ void SysStarSystemRenderer::DrawAllOrbits() {
     ZoneScoped;
     namespace cqspt = cqsp::common::components::types;
     auto orbits = m_universe.view<cqspt::Orbit>();
+    // Always render planet orbits
+    // Visible orbits will not be rendered
     for (entt::entity orbit_entity : orbits) {
+        // Check the type of orbiting things, and then don't render if it doesn't fit the filter
+        if (m_universe.any_of<common::components::bodies::Planet>(orbit_entity)) {
+            // Render no matter what
+            DrawOrbit(orbit_entity);
+            continue;
+        }
+        if (!m_universe.any_of<ctx::VisibleOrbit>(orbit_entity)) {
+            // Then don't render
+            continue;
+        }
         DrawOrbit(orbit_entity);
     }
 }
