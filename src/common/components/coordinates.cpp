@@ -219,6 +219,11 @@ double GreatCircleDistance(SurfaceCoordinate& coord1, SurfaceCoordinate& coord2)
 }
 
 glm::vec3 toVec3(const SurfaceCoordinate& coord, const float& radius) {
+    // This formula is wrong, it's actually
+    // x = sin(latitude) * cos (longitude)
+    // y = cos latitude
+    // z = sin latitude * sin longitude
+    // We should probably change it, but it breaks a lot, so we'll leave it here for now.
     return glm::vec3(cos(coord.r_latitude()) * sin(coord.r_longitude()), sin(coord.r_latitude()),
                      cos(coord.r_latitude()) * cos(coord.r_longitude())) *
            radius;

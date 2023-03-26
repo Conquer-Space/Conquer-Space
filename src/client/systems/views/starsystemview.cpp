@@ -533,7 +533,6 @@ void SysStarSystemRenderer::DrawAllPlanets(auto& bodies) {
             // if (m_app.GetUniverse().all_of<cqspb::Terrain>(body_entity)) {
             // Do empty terrain
             // Check if the planet has the thing
-            // DrawPlanet(object_pos, body_entity);
             if (m_app.GetUniverse().all_of<cqspb::TexturedTerrain>(body_entity)) {
                 DrawTexturedPlanet(object_pos, body_entity);
             } else {
@@ -559,37 +558,6 @@ void SysStarSystemRenderer::DrawAllPlanetBillboards(auto& bodies) {
             continue;
         }
     }
-}
-
-void SysStarSystemRenderer::DrawPlanet(glm::vec3& object_pos, entt::entity entity) {
-    // TODO(EhWhoAmI): Maybe don't reload the textures all the time
-    if (m_universe.all_of<TerrainTextureData>(entity)) {
-        auto& terrain_data = m_universe.get<TerrainTextureData>(entity);
-        planet.textures.clear();
-        planet.textures.push_back(terrain_data.terrain_albedo);
-        planet.textures.push_back(terrain_data.heightmap);
-    }
-    glm::mat4 position = glm::mat4(1.f);
-    position = glm::translate(position, object_pos);
-
-    glm::mat4 transform = glm::mat4(1.f);
-
-    position = position * transform;
-
-    planet.SetMVP(position, camera_matrix, projection);
-    planet.shaderProgram->UseProgram();
-
-    planet.shaderProgram->setVec3("lightDir", glm::normalize(sun_position - object_pos));
-    planet.shaderProgram->setVec3("lightPosition", sun_position);
-
-    planet.shaderProgram->setVec3("lightColor", sun_color);
-    planet.shaderProgram->setVec3("viewPos", cam_pos);
-    planet.shaderProgram->setVec4("country_color", glm::vec4(selected_province_color, 1));
-    planet.shaderProgram->setBool("country", true);
-    using cqsp::common::components::bodies::TerrainData;
-    entt::entity terrain = m_universe.get<cqsp::common::components::bodies::Terrain>(entity).terrain_type;
-    planet.shaderProgram->Set("seaLevel", m_universe.get<TerrainData>(terrain).sea_level);
-    engine::Draw(planet);
 }
 
 void SysStarSystemRenderer::DrawStar(const entt::entity& entity, glm::vec3& object_pos) {
@@ -858,7 +826,7 @@ void SysStarSystemRenderer::CenterCameraOnCity() {
 
     glm::quat quat = GetBodyRotation(body.axial, body.rotation, body.rotation_offset);
 
-    glm::vec3 vec = cqspt::toVec3(surf, 1);
+    glm::vec3 vec = cqspt::toVec3(surf.universe_view(), 1);
     auto s = quat * vec;
     glm::vec3 pos = glm::normalize(s);
     view_x = atan2(s.x, s.z);
@@ -1332,7 +1300,7 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
 }
 
 void SysStarSystemRenderer::OrbitEditor() {
-    /*
+#if 0
     static float semi_major_axis = 8000;
     static float inclination = 0;
     static float eccentricity = 0;
@@ -1366,7 +1334,8 @@ void SysStarSystemRenderer::OrbitEditor() {
         orb.eccentricity = eccentricity;
         orb.w = arg_of_perapsis;
         orb.LAN = LAN;
-    }*/
+    }
+#endif
 }
 
 SysStarSystemRenderer::~SysStarSystemRenderer() {}
