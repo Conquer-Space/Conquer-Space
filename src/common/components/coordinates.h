@@ -339,7 +339,8 @@ struct SurfaceCoordinate {
 double GreatCircleDistance(SurfaceCoordinate& coord1, SurfaceCoordinate& coord2);
 
 /// <summary>
-/// Converts surface coordinate to vector3, shown in opengl.
+/// Converts surface coordinate to vector3 in space so that we can get the surface
+/// coordinate to render in space
 /// </summary>
 glm::vec3 toVec3(const SurfaceCoordinate& coord, const float& radius = 1);
 
