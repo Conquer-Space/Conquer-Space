@@ -34,11 +34,6 @@ namespace cqsp {
 namespace client {
 namespace systems {
 // TODO(EhWhoAmI): Would be helpful to move the following structs to a header file.
-/*
- * Tag class for bodies to render.
- */
-struct ToRender {};
-
 struct MouseOverEntity {};
 
 // Planet that the camera center is at
