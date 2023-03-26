@@ -29,5 +29,5 @@ TEST(CoordinateTest, GreatCircleDistanceTest1) {
 TEST(CoordinateTest, GreatCircleDistanceTest2) {
     SurfaceCoordinate coord1(45, 32);
     SurfaceCoordinate coord2(24, 17);
-    EXPECT_DOUBLE_EQ(0.423711, GreatCircleDistance(coord1, coord2));
+    EXPECT_NEAR(0.423711, GreatCircleDistance(coord1, coord2), 0.0001);
 }
