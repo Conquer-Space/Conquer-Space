@@ -108,10 +108,14 @@ void cqsp::scene::UniverseScene::Update(float deltaTime) {
         }
     }
 
-    if (pause_opt.to_tick &&
-        GetApp().GetTime() - last_tick > static_cast<float>(tick_speeds[pause_opt.tick_speed]) / 1000.f) {
+    double tick_length = static_cast<float>(tick_speeds[pause_opt.tick_speed]) / 1000.f;
+    if (pause_opt.to_tick && GetApp().GetTime() - last_tick > tick_length) {
         GetUniverse().EnableTick();
         last_tick = GetApp().GetTime();
+    }
+
+    if (pause_opt.to_tick) {
+        GetUniverse().tick_fraction = (GetApp().GetTime() - last_tick) / tick_length;
     }
 
     // Check for last tick
