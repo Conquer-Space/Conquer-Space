@@ -60,6 +60,11 @@ class Universe : public entt::registry {
     std::unique_ptr<cqsp::common::util::IRandom> random;
     std::string uuid;
 
+    /// <summary>
+    /// What is the current fraction of the wait of the tick we are processing
+    /// </summary>
+    double tick_fraction = 0;
+
  private:
     bool to_tick = false;
 };

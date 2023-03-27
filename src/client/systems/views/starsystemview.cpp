@@ -728,8 +728,9 @@ void SysStarSystemRenderer::InitializeMeshes() {
 
 glm::quat SysStarSystemRenderer::GetBodyRotation(double axial, double rotation, double day_offset) {
     namespace cqspt = cqsp::common::components::types;
-    float rot =
-        (float)common::components::bodies::GetPlanetRotationAngle(m_universe.date.ToSecond(), rotation, day_offset);
+    // Need to interpolate between the frames
+    float rot = (float)common::components::bodies::GetPlanetRotationAngle(
+        m_universe.date.ToSecond() + m_universe.tick_fraction * 60, rotation, day_offset);
     if (rotation == 0) {
         rot = 0;
     }
