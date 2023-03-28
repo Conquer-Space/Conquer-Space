@@ -826,6 +826,10 @@ void SysStarSystemRenderer::CenterCameraOnCity() {
     // coordinates to 3d coordinates to surface coordinates. I think it can be
     // solved with a basic formula.
     entt::entity planet = m_app.GetUniverse().view<FocusedPlanet>().front();
+
+    if (!m_universe.any_of<cqsp::common::components::bodies::Body>(planet)) {
+        return;
+    }
     auto& body = m_universe.get<cqsp::common::components::bodies::Body>(planet);
 
     glm::quat quat = GetBodyRotation(body.axial, body.rotation, body.rotation_offset);
