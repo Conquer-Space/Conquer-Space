@@ -130,7 +130,7 @@ class SysStarSystemRenderer {
     void DrawEntityName(glm::vec3 &object_pos, entt::entity ent_id);
     void DrawPlanetIcon(glm::vec3 &object_pos);
     void DrawPlanetBillboards(const entt::entity &ent_id, const glm::vec3 &object_pos);
-    void DrawShipIcon(glm::vec3 &object_pos);
+    void DrawShipIcon(const glm::vec3 &object_pos);
     void DrawCityIcon(glm::vec3 &object_pos);
 
     void DrawAllCities(auto &bodies);
@@ -138,8 +138,8 @@ class SysStarSystemRenderer {
     void DrawAllPlanets(auto &bodies);
     void DrawAllPlanetBillboards(auto &bodies);
 
-    void DrawTexturedPlanet(glm::vec3 &object_pos, entt::entity entity);
-    void GetPlanetTexture(entt::entity entity, bool &have_normal, bool &have_roughness);
+    void DrawTexturedPlanet(const glm::vec3 &object_pos, const entt::entity entity);
+    void GetPlanetTexture(const entt::entity entity, bool &have_normal, bool &have_roughness);
     void DrawTerrainlessPlanet(const entt::entity &entity, glm::vec3 &object_pos);
 
     void DrawStar(const entt::entity &entity, glm::vec3 &object_pos);

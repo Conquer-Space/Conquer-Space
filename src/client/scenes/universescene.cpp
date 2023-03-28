@@ -116,6 +116,7 @@ void cqsp::scene::UniverseScene::Update(float deltaTime) {
 
     if (pause_opt.to_tick) {
         GetUniverse().tick_fraction = (GetApp().GetTime() - last_tick) / tick_length;
+        if (!interp) GetUniverse().tick_fraction = 0;
     }
 
     // Check for last tick
@@ -160,6 +161,9 @@ void cqsp::scene::UniverseScene::Ui(float deltaTime) {
     }
     // Render star system renderer ui
     system_renderer->DoUI(deltaTime);
+    ImGui::Begin("Scene Debug");
+    ImGui::Checkbox("Interpolation", &interp);
+    ImGui::End();
 }
 
 void cqsp::scene::UniverseScene::Render(float deltaTime) {

@@ -118,6 +118,10 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
         EnterSOI(universe, parent, body);
     }
 
+    auto& future_pos = universe.get_or_emplace<cqspt::FuturePosition>(body);
+    future_pos.position = cqspt::OrbitTimeToVec3(orb, universe.date.ToSecond() + universe.date.TIME_INCREMENT);
+    future_pos.center = pos.center;
+
     if (!universe.any_of<cqspc::bodies::OrbitalSystem>(body)) {
         return;
     }

@@ -241,6 +241,12 @@ struct Kinematics {
     glm::dvec3 center {0, 0, 0};
 };
 
+struct FuturePosition {
+    glm::dvec3 position {0, 0, 0};
+    glm::dvec3 velocity {0, 0, 0};
+    glm::dvec3 center {0, 0, 0};
+};
+
 // A one tick impulse in the vector
 struct Impulse {
     glm::dvec3 impulse;
@@ -364,9 +370,17 @@ inline Vec3AU toVec3AU(const Orbit& orb, radian theta) {
     return vec / KmInAu;
 }
 
+/// <summary>
+/// Converts orbit to theta
+/// </summary>
+/// <param name="orb"></param>
+/// <param name="theta">True anomaly (radians)</param>
+/// <returns></returns>
 inline glm::dvec3 toVec3(const Orbit& orb, radian theta) {
     return OrbitToVec3(orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN, orb.w, theta);
 }
+
+glm::dvec3 OrbitTimeToVec3(const Orbit& orb, const second& time);
 
 inline glm::dvec3 toVec3(const Orbit& orb) { return toVec3(orb, orb.v); }
 /// <summary>

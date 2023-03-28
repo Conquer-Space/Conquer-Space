@@ -229,6 +229,17 @@ glm::vec3 toVec3(const SurfaceCoordinate& coord, const float& radius) {
            radius;
 }
 
+glm::dvec3 OrbitTimeToVec3(const Orbit& orb, const second& time) {
+    double v = 0;
+    double E = 0;
+    if (orb.eccentricity < 1) {
+        v = TrueAnomalyElliptic(orb, time, E);
+    } else {
+        v = TrueAnomalyHyperbolic(orb, time);
+    }
+    return toVec3(orb, v);
+}
+
 double GetLaunchAzimuth(double latitude, double inclination) {
     // https://www.orbiterwiki.org/wiki/Launch_Azimuth
     return asin(cos(inclination) / cos(latitude));

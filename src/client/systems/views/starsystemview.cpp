@@ -308,8 +308,12 @@ void SysStarSystemRenderer::DrawShips() {
     for (auto ent_id : ships) {
         // if it's not visible, then don't render
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
+        // Interpolate so that it looks nice
+        auto& future_comp = m_universe.get<common::components::types::FuturePosition>(ent_id);
+        const auto& pos = future_comp.position + future_comp.center;
+        glm::vec3 future_pos = CalculateCenteredObject(ConvertPoint(pos));
         ship_overlay.shaderProgram->setVec4("color", 1, 0, 0, 1);
-        DrawShipIcon(object_pos);
+        DrawShipIcon(glm::mix(object_pos, future_pos, m_universe.tick_fraction));
     }
     renderer.EndDraw(ship_icon_layer);
 }
@@ -391,7 +395,7 @@ void SysStarSystemRenderer::DrawAllCities(auto& bodies) {
     }
 }
 
-void SysStarSystemRenderer::DrawShipIcon(glm::vec3& object_pos) {
+void SysStarSystemRenderer::DrawShipIcon(const glm::vec3& object_pos) {
     glm::vec3 pos = GetBillboardPosition(object_pos);
     glm::mat4 shipDispMat = GetBillboardMatrix(pos);
     float window_ratio = GetWindowRatio();
@@ -408,7 +412,7 @@ void SysStarSystemRenderer::DrawShipIcon(glm::vec3& object_pos) {
     engine::Draw(ship_overlay);
 }
 
-void SysStarSystemRenderer::DrawTexturedPlanet(glm::vec3& object_pos, entt::entity entity) {
+void SysStarSystemRenderer::DrawTexturedPlanet(const glm::vec3& object_pos, const entt::entity entity) {
     bool have_normal = false;
     bool have_roughness = false;
     GetPlanetTexture(entity, have_normal, have_roughness);
@@ -452,7 +456,7 @@ void SysStarSystemRenderer::DrawTexturedPlanet(glm::vec3& object_pos, entt::enti
     glDepthFunc(GL_LESS);
 }
 
-void SysStarSystemRenderer::GetPlanetTexture(entt::entity entity, bool& have_normal, bool& have_roughness) {
+void SysStarSystemRenderer::GetPlanetTexture(const entt::entity entity, bool& have_normal, bool& have_roughness) {
     if (!m_universe.all_of<PlanetTexture>(entity)) {
         return;
     }
@@ -730,7 +734,7 @@ glm::quat SysStarSystemRenderer::GetBodyRotation(double axial, double rotation, 
     namespace cqspt = cqsp::common::components::types;
     // Need to interpolate between the frames
     float rot = (float)common::components::bodies::GetPlanetRotationAngle(
-        m_universe.date.ToSecond() + m_universe.tick_fraction * 60, rotation, day_offset);
+        m_universe.date.ToSecond() + m_universe.tick_fraction * m_universe.date.TIME_INCREMENT, rotation, day_offset);
     if (rotation == 0) {
         rot = 0;
     }
