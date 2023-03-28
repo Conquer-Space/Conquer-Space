@@ -104,6 +104,8 @@ class UniverseScene : public cqsp::engine::Scene {
 
     std::array<int, 7> tick_speeds {1000, 500, 333, 100, 50, 10, 1};
     void ToggleTick();
+
+    bool interp = false;
 };
 
 void SeePlanet(cqsp::engine::Application&, entt::entity);

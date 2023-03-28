@@ -44,15 +44,18 @@ namespace cqsp::common::components {
 /// </summary>
 class StarDate {
  public:
+    // How many seconds a tick is
+    static const int TIME_INCREMENT = 60;
+
     static const int HOUR = 1;
-    static const int DAY = 24;
+    static const int DAY = 24 * HOUR;
     static const int WEEK = DAY * 7;
 
     void IncrementDate() { date++; }
 
     int GetDate() { return date; }
 
-    double ToSecond() { return date * 60; }
+    double ToSecond() { return date * TIME_INCREMENT; }
     double ToDay() { return date / (float)1440.; }
 
     std::string ToString();
