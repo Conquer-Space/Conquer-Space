@@ -159,11 +159,6 @@ void cqsp::scene::UniverseScene::Ui(float deltaTime) {
     for (auto& ui : user_interfaces) {
         ui->DoUI(deltaTime);
     }
-    // Render star system renderer ui
-    system_renderer->DoUI(deltaTime);
-    ImGui::Begin("Scene Debug");
-    ImGui::Checkbox("Interpolation", &interp);
-    ImGui::End();
 }
 
 void cqsp::scene::UniverseScene::Render(float deltaTime) {
