@@ -17,6 +17,8 @@
 #include "engine/audio/audiointerface.h"
 
 #include <chrono>
+#include <future>
+#include <random>
 #include <string>
 
 #include "common/util/logging.h"
@@ -42,6 +44,8 @@ void AudioInterface::Initialize() {
         Hjson::DecoderOptions decOpt;
         playlist_input >> Hjson::StreamDecoder(playlist, decOpt);
     }
+    SPDLOG_LOGGER_INFO(logger, "Playlist size: {}", playlist.size());
+
     channels.push_back(std::make_unique<AudioChannel>());
     channels.push_back(std::make_unique<AudioChannel>());
 }
@@ -69,7 +73,7 @@ void AudioInterface::RequestPlayAudio() {}
 
 void AudioInterface::SetMusicVolume(float volume) {
     if (music_asset != nullptr) {
-        channels[0]->SetGain(volume);
+        channels[MUSIC_CHANNEL]->SetGain(volume);
     }
     music_volume = volume;
 }
@@ -82,10 +86,10 @@ void cqsp::engine::audio::AudioInterface::PlayAudioClip(const std::string& key) 
     if (assets.find(key) == assets.end()) {
         SPDLOG_LOGGER_WARN(logger, "Unable to find audio clip {}", key);
     } else {
-        channels[1]->Stop();
-        channels[1]->SetBuffer(assets[key]);
-        channels[1]->Rewind();
-        channels[1]->Play();
+        channels[UI_CHANNEL]->Stop();
+        channels[UI_CHANNEL]->SetBuffer(assets[key]);
+        channels[UI_CHANNEL]->Rewind();
+        channels[UI_CHANNEL]->Play();
     }
 }
 
@@ -97,43 +101,40 @@ void cqsp::engine::audio::AudioInterface::SetChannelVolume(int channel, float ga
 
 void cqsp::engine::audio::AudioInterface::OnFrame() {
     bool to_quit = false;
-    if (channels[0]->IsPlaying() && !to_quit) {
+    if (channels[MUSIC_CHANNEL]->IsPlaying() && !to_quit) {
         return;
     }
 
+    if (channels[MUSIC_CHANNEL]->IsStopped()) {
+        // Check for device error?
+        int error = alcGetError(device);
+        ALCint status;
+        //alcGetIntegerv(device, ALC_, 1, &status);
+        if (error != ALC_NO_ERROR) {
+            SPDLOG_LOGGER_INFO(logger, "Error {}", error);
+        }
+    }
+
     if (music_asset != nullptr) {
-        channels[0]->Stop();
-        channels[0]->EmptyBuffer();
+        SPDLOG_LOGGER_INFO(logger, "Completed track");
+        channels[MUSIC_CHANNEL]->Stop();
+        channels[MUSIC_CHANNEL]->EmptyBuffer();
         music_asset.reset();
     }
 
-    // Then do all the work
-    // Choose random song from thing
-    int selected_track = (time(0) * 0x0000BC8F) % 0x7FFFFFFF % playlist.size();
-
-    selected_track++;
-    selected_track %= playlist.size();
-    Hjson::Value track_info = playlist[selected_track];
-    std::string track_file = cqsp::common::util::GetCqspDataPath() + "/core/music/" + track_info["file"];
-    SPDLOG_LOGGER_INFO(logger, "Loading track \'{}\'", track_info["name"]);
-    auto mfile = std::ifstream(track_file, std::ios::binary);
-    if (mfile.good()) {
-        music_asset = cqsp::asset::LoadOgg(mfile);
-        SPDLOG_LOGGER_INFO(logger, "Length of audio: {}", music_asset->Length());
+    if (audio_future.valid()) {
+        if (audio_future.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
+            music_asset = audio_future.get();
+        }
     } else {
-        SPDLOG_LOGGER_ERROR(logger, "Failed to load audio {}", track_info["name"]);
+        audio_future = std::async(&AudioInterface::LoadNextFile, &*this);
     }
-
+    // Get the thing after it loads
     if (music_asset != nullptr) {
         // Set the music_asset
-        channels[0]->SetBuffer(music_asset.get());
-        channels[0]->SetGain(music_volume);
-        channels[0]->Play();
-
-        //// Stop the music_asset if it has
-        // Stop music_asset
-
-        SPDLOG_LOGGER_INFO(logger, "Completed track");
+        channels[MUSIC_CHANNEL]->SetBuffer(music_asset.get());
+        channels[MUSIC_CHANNEL]->SetGain(music_volume);
+        channels[MUSIC_CHANNEL]->Play();
     }
 }
 
@@ -246,6 +247,28 @@ void AudioInterface::InitALContext() {
     context = alcCreateContext(device, NULL);
     if (!alcMakeContextCurrent(context)) {
         SPDLOG_LOGGER_ERROR(logger, "Failed to make default context");
+    }
+}
+
+std::unique_ptr<AudioAsset> cqsp::engine::audio::AudioInterface::LoadNextFile() {
+    // Choose random song from playlist
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist6(
+        0, playlist.size() - 1);  // distribution in range [1, 6]
+
+    int selected_track = dist6(rng);
+
+    Hjson::Value track_info = playlist[selected_track];
+    std::string track_file = cqsp::common::util::GetCqspDataPath() + "/core/music/" + track_info["file"];
+    SPDLOG_LOGGER_INFO(logger, "Loading track \'{}\'", track_info["name"]);
+    auto mfile = std::ifstream(track_file, std::ios::binary);
+    if (mfile.good()) {
+        return cqsp::asset::LoadOgg(mfile);
+        SPDLOG_LOGGER_INFO(logger, "Length of audio: {}", music_asset->Length());
+    } else {
+        SPDLOG_LOGGER_ERROR(logger, "Failed to load audio {}", track_info["name"]);
+        return nullptr;
     }
 }
 
