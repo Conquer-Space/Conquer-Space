@@ -22,6 +22,7 @@
 
 #include <atomic>
 #include <fstream>
+#include <future>
 #include <map>
 #include <memory>
 #include <string>
@@ -30,9 +31,7 @@
 #include "engine/audio/audioasset.h"
 #include "engine/audio/iaudiointerface.h"
 
-namespace cqsp {
-namespace engine {
-namespace audio {
+namespace cqsp::engine::audio {
 struct AudioChannel {
     // Set all variables
     AudioChannel() {
@@ -61,6 +60,12 @@ struct AudioChannel {
     void Pause() { alSourcePause(channel); }
 
     void Rewind() { alSourceRewind(channel); }
+
+    bool IsStopped() {
+        ALint source_state;
+        alGetSourcei(channel, AL_SOURCE_STATE, &source_state);
+        return (source_state == AL_STOPPED || source_state == AL_PAUSED);
+    }
 
     bool IsPlaying() {
         ALint source_state;
@@ -128,11 +133,18 @@ class AudioInterface : public IAudioInterface {
     void PrintInformation();
     void InitListener();
     void InitALContext();
+    std::unique_ptr<cqsp::asset::AudioAsset> LoadNextFile();
     std::map<std::string, cqsp::asset::AudioAsset *> assets;
     std::vector<std::unique_ptr<AudioChannel>> channels;
 
     float music_volume = 0;
+
+    static const int MUSIC_CHANNEL = 0;
+    static const int UI_CHANNEL = 1;
+
+    /// <summary>
+    /// Async load audio files
+    /// </summary>
+    std::future<std::unique_ptr<cqsp::asset::AudioAsset>> audio_future;
 };
-}  // namespace audio
-}  // namespace engine
-}  // namespace cqsp
+}  // namespace cqsp::engine::audio
