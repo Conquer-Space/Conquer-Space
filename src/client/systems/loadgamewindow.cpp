@@ -50,6 +50,10 @@ void cqsp::client::LoadGameWindow::InitializeDataModel() {
     // Load saves
     // List the files in the save directory
     std::filesystem::path save_path = common::util::GetCqspSavePath();
+    // If the save path doesn't exist, then generate it
+    if (!std::filesystem::exists(save_path)) {
+        std::filesystem::create_directories(save_path);
+    }
     std::filesystem::directory_iterator it(save_path);
     for (auto entry : it) {
         // Check if it has the meta file name
