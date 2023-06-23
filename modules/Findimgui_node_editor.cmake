@@ -37,8 +37,6 @@ target_include_directories(imgui_node_editor PUBLIC
 
 target_link_libraries(imgui_node_editor PUBLIC imgui::imgui)
 
-source_group(TREE ${IMGUI_NODE_EDITOR_ROOT_DIR} FILES ${_imgui_node_editor_Sources})
-
 include(${CMAKE_ROOT}/Modules/FindPackageHandleStandardArgs.cmake)
 
 find_package_handle_standard_args(
