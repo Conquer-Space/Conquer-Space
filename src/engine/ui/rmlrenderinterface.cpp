@@ -265,7 +265,7 @@ void cqsp::engine::CQSPRenderInterface::ReleaseTexture(Rml::TextureHandle textur
 }
 
 void cqsp::engine::CQSPRenderInterface::SetTransform(const Rml::Matrix4f* transform) {
-    m_transform_enabled = static_cast<bool>(transform);
+    m_transform_enabled = (transform != nullptr);
 
     if (transform == nullptr) {
         m_transform_matrix = glm::mat4(1.0);
