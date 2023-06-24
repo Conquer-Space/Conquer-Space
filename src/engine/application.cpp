@@ -377,7 +377,8 @@ bool Application::ShouldExit() { return glfwWindowShouldClose(window(m_window)) 
 void Application::ExitApplication() { glfwSetWindowShouldClose(window(m_window), 1); }
 
 Rml::ElementDocument* Application::LoadDocument(const std::string& path) {
-    auto document = rml_context->LoadDocument(path);
+    auto document = rml_context->LoadDocument((std::filesystem::path(common::util::GetCqspDataPath()) / path).string());
+    SPDLOG_INFO("Loading document {}", common::util::GetCqspDataPath() + path);
     if (document == nullptr) {
         ENGINE_LOG_WARN("Unable to load document {}", path);
     }
