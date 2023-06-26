@@ -24,6 +24,7 @@
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
 #include "common/components/name.h"
+#include "common/components/orbit.h"
 #include "common/util/nameutil.h"
 #include "engine/cqspgui.h"
 

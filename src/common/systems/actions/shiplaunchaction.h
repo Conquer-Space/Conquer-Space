@@ -22,6 +22,7 @@
 #include <glm/vec3.hpp>
 
 #include "common/components/coordinates.h"
+#include "common/components/orbit.h"
 #include "common/universe.h"
 
 namespace cqsp::common::systems::actions {

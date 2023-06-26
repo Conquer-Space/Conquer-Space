@@ -36,7 +36,7 @@
 #include "engine/asset/assetmanager.h"
 #include "engine/gui.h"
 
-#define LOADING_ID "../data/core/gui/screens/loading_screen.rml"
+#define LOADING_ID "core/gui/screens/loading_screen.rml"
 
 cqsp::scene::LoadingScene::LoadingScene(cqsp::engine::Application& app) : Scene(app) {
     m_done_loading = false;
@@ -64,10 +64,11 @@ void cqsp::scene::LoadingScene::Init() {
     constructor.Bind("current", &loading_data.current);
     constructor.Bind("max", &loading_data.max);
     model_handle = constructor.GetModelHandle();
-
     document = GetApp().LoadDocument(LOADING_ID);
     if (document != nullptr) {
         document->Show();
+    } else {
+        SPDLOG_WARN("Couldn't load document");
     }
 }
 

@@ -21,6 +21,7 @@
 #include <fstream>
 
 #include "common/components/coordinates.h"
+#include "common/components/orbit.h"
 #include "common/systems/movement/sysmovement.h"
 #include "common/universe.h"
 
@@ -344,6 +345,26 @@ TEST(OrbitTest, SolveKeplerElliptic) {
                     std::get<2>(line), 1e-6);
     }
 }
+
+TEST(Common_TransferTest, TransferTimeTest_Mars) {
+    namespace cqspt = cqsp::common::components::types;
+    cqspt::Orbit orb1;
+    orb1.semi_major_axis = 149598023;
+    orb1.v = 3.8868698;
+    orb1.GM = cqspt::SunMu;
+    orb1.CalculateVariables();
+    cqspt::Orbit orb2;
+    orb2.semi_major_axis = 227939366;
+    orb2.GM = cqspt::SunMu;
+    orb2.v = 0.338803314;
+    orb2.CalculateVariables();
+    double b = cqspt::CalculateTransferTime(orb1, orb2);
+    double p = cqspt::CalculateTransferAngle(orb1, orb2);
+    std::cout << p << std::endl;
+    // The approximate transfer time between the two
+    EXPECT_NEAR(b / 86400, 259, 2);
+}
+
 /*
 TEST(Common_SOITest, SOIExitTest) {
     namespace cqspc = cqsp::common::components;
