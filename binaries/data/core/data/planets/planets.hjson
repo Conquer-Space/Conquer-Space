@@ -1,14 +1,12 @@
-// https://ssd.jpl.nasa.gov/sats/elem/
-// https://ssd.jpl.nasa.gov/planets/orbits.html
 [
     {
         name: The Sun
         identifier: sun
         type: star
         radius: 695508 km
-        // GM is in km^3 * kg^-1 * s^-2
-        gm: 1.327124400189e11
-        orbit: {
+        gm: 132712440018.9
+        orbit:
+        {
             semi_major_axis: 0
             eccentricity: 0
             inclination: 0
@@ -23,18 +21,20 @@
         identifier: mercury
         radius: 2440 km
         reference: sun
-        gm: 2.20329e4
-        orbit: {
-            semi_major_axis: 0.3870993 AU
-            eccentricity: 0.20564
-            inclination: 7.005 deg
-            arg_periapsis: 29.13 deg
-            LAN: 48.3 deg
-            M0: 174.796 deg
+        gm: 22032.9
+        orbit:
+        {
+            eccentricity: 0.2056302515978038
+            semi_major_axis: 57909070.25241733 km
+            M0: 175.1155302923815 deg
+            inclination: 7.005014362233553 deg
+            LAN: 48.33053877672862 deg
+            arg_periapsis: 29.12427943500334 deg
         }
         day_length: 58.646 d
         axial: 2.04 deg
-        texture: {
+        texture:
+        {
             terrain: mercurymap
         }
         tags: []
@@ -44,19 +44,20 @@
         identifier: venus
         radius: 6052 km
         reference: sun
-        gm: 3.248599e5
-        orbit: {
-            semi_major_axis: 0.723332 AU
-            eccentricity: 0.006773
-            inclination: 3.39458 deg
-            arg_periapsis: 54.884 deg
-            LAN: 76.680 deg
-            M0: 50.115 deg
+        gm: 324859.9
+        orbit:
+        {
+            eccentricity: 0.006755697268576816
+            semi_major_axis: 108208156.5316098 km
+            M0: 49.90452231912491 deg
+            inclination: 3.394589632757466 deg
+            LAN: 76.6783751109416 deg
+            arg_periapsis: 55.18541504725159 deg
         }
-        // Venus rotates backward
         day_length: -243.0226 d
         axial: 2.64 deg
-        texture: {
+        texture:
+        {
             terrain: venusmap
         }
         tags: []
@@ -66,22 +67,22 @@
         identifier: earth
         radius: 6371 km
         reference: sun
-        gm: 3.9860044188e5
+        gm: 398600.44188
         habitation: true
-        orbit: {
-            semi_major_axis: 149598023 km
-            eccentricity: 0.0167086
-            inclination: 0.00005 deg
-            arg_periapsis: 359.9965004168758 deg
-            LAN: -11.26064 deg
-            M0: 358.617 deg
+        orbit:
+        {
+            eccentricity: 0.01670257989152663
+            semi_major_axis: 149597369.8038478 km
+            M0: 356.9521225619375 deg
+            inclination: 0.0001036081554173719 deg
+            LAN: 140.2241915047173 deg
+            arg_periapsis: 322.693500525724 deg
         }
-        // Sidereal 
         day_length: 0.99726968 d
         day_offset: 3 deg
-        // Axial tilt
         axial: 23.4392811 deg
-        texture: {
+        texture:
+        {
             terrain: earthmap
             normal: earthnormal
             roughness: earthroughness
@@ -89,8 +90,8 @@
             province_map: province_map
             definitions: province_defs
         }
-        // Each individual planet has a separate market
-        tags: [
+        tags:
+        [
             market
         ]
     }
@@ -99,16 +100,18 @@
         identifier: moon
         reference: earth
         radius: 1737.4 km
-        gm: 4.90486959e3
-        orbit: {
-            semi_major_axis: 384308.4377707066 km
-            eccentricity: 0.05328149353682574
-            inclination: 5.145 deg
-            arg_periapsis: 199.7640930160823 deg
-            LAN: 2.296616161126016 deg
-            M0: 222.7012350930954 deg
+        gm: 4904.86959
+        orbit:
+        {
+            eccentricity: 0.06476694128611303
+            semi_major_axis: 376586.6585063708 km
+            M0: 145.1550311169049 deg
+            inclination: 5.240010829674767 deg
+            LAN: 123.9837028145578 deg
+            arg_periapsis: 308.1359034620372 deg
         }
-        texture: {
+        texture:
+        {
             terrain: moonmap
         }
         axial: 1.5424 deg
@@ -121,18 +124,20 @@
         adjective: Martian
         radius: 3390 km
         reference: sun
-        gm: 4.2828372e4
-        orbit: {
-            semi_major_axis: 1.52368055 AU
-            eccentricity: 0.0934
-            inclination: 1.850 deg
-            arg_periapsis: 286.5 deg
-            LAN: 49.57854 deg
-            M0: 19.412 deg
+        gm: 42828.372
+        orbit:
+        {
+            eccentricity: 0.09331460751689258
+            semi_major_axis: 227939012.3632921 km
+            M0: 23.02024587055417 deg
+            inclination: 1.849876671640822 deg
+            LAN: 49.56199839924829 deg
+            arg_periapsis: 286.5373599595444 deg
         }
         day_length: 1.025957 d
         axial: 25.19 deg
-        texture: {
+        texture:
+        {
             terrain: marsmap
         }
         tags: []
@@ -143,18 +148,20 @@
         adjective: jovian
         radius: 69911 km
         reference: sun
-        gm: 1.266865349e8
-        orbit: {
-            semi_major_axis: 5.2038 AU
-            eccentricity: 0.0489
-            inclination: 1.303 deg
-            arg_periapsis: 273.867 deg
-            LAN: 100.464 deg
-            M0: 20.020 deg
+        gm: 126686534.9
+        orbit:
+        {
+            eccentricity: 0.04877479419403492
+            semi_major_axis: 778547207.872486 km
+            M0: 20.68528432460539 deg
+            inclination: 1.304625710897931 deg
+            LAN: 100.491590596888 deg
+            arg_periapsis: 275.0663364296838 deg
         }
         day_length: 9.9250 h
         axial: 3.13 deg
-        texture: {
+        texture:
+        {
             terrain: jupitermap
         }
         tags: []
@@ -164,18 +171,20 @@
         identifier: saturn
         radius: 58232 km
         reference: sun
-        gm: 3.79311879e7
-        orbit: {
-            semi_major_axis: 9.5826 AU
-            eccentricity: 0.0565
-            inclination: 2.485 deg
-            arg_periapsis: 339.392 deg
-            LAN: 113.665 deg
-            M0: 317.020 deg
+        gm: 37931187.9
+        orbit:
+        {
+            eccentricity: 0.05572214168539928
+            semi_major_axis: 1433449772.231375 km
+            M0: 316.0307997658592 deg
+            inclination: 2.485250250453571 deg
+            LAN: 113.6429729724832 deg
+            arg_periapsis: 336.011626007106 deg
         }
         day_length: 633 m
         axial: 26.73 deg
-        texture: {
+        texture:
+        {
             terrain: saturnmap
         }
         tags: []
@@ -185,18 +194,20 @@
         identifier: uranus
         radius: 25362 km
         reference: sun
-        gm: 5.7939399e6
-        orbit: {
-            semi_major_axis: 19.19126 AU
-            eccentricity: 0.04717
-            inclination: 0.773 deg
-            arg_periapsis: 96.998857 deg
-            LAN: 74.006 deg
-            M0: 142.238600 deg
+        gm: 5793939.9
+        orbit:
+        {
+            eccentricity: 0.04440321712269083
+            semi_major_axis: 2876687911.444109 km
+            M0: 145.8819294217686 deg
+            inclination: 0.7725679808057498 deg
+            LAN: 73.98948084754441 deg
+            arg_periapsis: 96.54392765701294 deg
         }
         day_length: -0.71833 d
         axial: 28.32
-        texture: {
+        texture:
+        {
             terrain: uranusmap
         }
         tags: []
@@ -206,18 +217,20 @@
         identifier: neptune
         radius: 24622 km
         reference: sun
-        gm: 6.8365299e6
-        orbit: {
-            semi_major_axis: 30.07 AU
-            eccentricity: 0.008678
-            inclination: 1.770 deg
-            arg_periapsis: 273.187 deg
-            LAN: 131.783 deg
-            M0: 256.228 deg
+        gm: 6836529.9
+        orbit:
+        {
+            eccentricity: 0.01121519483557542
+            semi_major_axis: 4503456762.153956 km
+            M0: 266.4979731171627 deg
+            inclination: 1.767984967728157 deg
+            LAN: 131.793872244445 deg
+            arg_periapsis: 265.630336157717 deg
         }
         day_length: 0.6713 d
         axial: 97.77 deg
-        texture: {
+        texture:
+        {
             terrain: neptunemap
         }
         tags: []
@@ -227,16 +240,17 @@
         identifier: pluto
         radius: 1188.3 km
         reference: sun
-        gm: 8.719e2
+        gm: 871.9
         day_length: -6.387230 d
         axial: 122.53 deg
-        orbit: {
-            semi_major_axis: 39.482 AU
-            eccentricity: 0.2488
-            inclination: 17.16 deg
-            arg_periapsis: 113.834 deg
-            LAN: 110.299 deg
-            M0: 14.53 deg
+        orbit:
+        {
+            eccentricity: 0.2446752685954255
+            semi_major_axis: 5873871430.620249 km
+            M0: 25.20639169742568 deg
+            inclination: 17.15134604252063 deg
+            LAN: 110.2869838988196 deg
+            arg_periapsis: 113.7633715512292 deg
         }
         tags: []
     }
