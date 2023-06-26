@@ -33,6 +33,7 @@
 #include "common/components/economy.h"
 #include "common/components/infrastructure.h"
 #include "common/components/name.h"
+#include "common/components/orbit.h"
 #include "common/components/population.h"
 #include "common/components/surface.h"
 #include "common/util/random/random.h"

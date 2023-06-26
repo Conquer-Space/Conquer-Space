@@ -20,6 +20,7 @@
 
 #include "client/components/clientctx.h"
 #include "common/components/coordinates.h"
+#include "common/components/orbit.h"
 #include "common/util/nameutil.h"
 
 void cqsp::client::systems::SysOrbitFilter::Init() {

@@ -21,6 +21,7 @@
 #include <tracy/Tracy.hpp>
 
 #include "common/components/coordinates.h"
+#include "common/components/orbit.h"
 #include "common/components/ships.h"
 #include "common/components/units.h"
 

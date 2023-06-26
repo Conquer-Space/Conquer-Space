@@ -18,6 +18,7 @@
 
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
+#include "common/components/orbit.h"
 #include "common/components/ships.h"
 #include "common/systems/actions/shiplaunchaction.h"
 #include "common/systems/movement/sysmovement.h"

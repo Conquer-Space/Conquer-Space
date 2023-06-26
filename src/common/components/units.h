@@ -53,7 +53,7 @@ static const double G = 6.6743015e-11;
 // Gravitional constant in km^3 * kg^-1 * s^-2
 static const double G_km = 6.6743015e-20;
 
-// Sun gravitational constant in km^3 * s^-2
+// GM of sun/sun gravitational constant in km^3 * s^-2
 static const double SunMu = 1.32712400188e11;
 
 /// <summary>
