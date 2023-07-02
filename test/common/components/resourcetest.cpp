@@ -31,12 +31,12 @@ TEST(Common_ResourceLedger, ResourceLedgerComparison) {
     second[good_one] = 20;
     EXPECT_TRUE(first < second);
     EXPECT_FALSE(first > second);
-    EXPECT_FALSE(first == second);
+    EXPECT_FALSE(first.LedgerEquals(second));
 
     first.clear();
     EXPECT_TRUE(first < second);
     EXPECT_FALSE(first > second);
-    EXPECT_FALSE(first == second);
+    EXPECT_FALSE(first.LedgerEquals(second));
 
     second.clear();
     first[good_two] = 15;
@@ -44,13 +44,13 @@ TEST(Common_ResourceLedger, ResourceLedgerComparison) {
     second[good_two] = 10;
     EXPECT_TRUE(first > second);
     EXPECT_FALSE(first < second);
-    EXPECT_FALSE(first == second);
+    EXPECT_FALSE(first.LedgerEquals(second));
 
     second[good_two] = 15;
     second[good_one] = 5;
     EXPECT_FALSE(first > second);
     EXPECT_FALSE(first < second);
-    EXPECT_TRUE(first == second);
+    EXPECT_TRUE(first.LedgerEquals(second));
 
     first.clear();
     second.clear();
@@ -58,7 +58,7 @@ TEST(Common_ResourceLedger, ResourceLedgerComparison) {
     first[good_one] = 5;
     EXPECT_TRUE(first > second);
     EXPECT_FALSE(first < second);
-    EXPECT_FALSE(first == second);
+    EXPECT_FALSE(first.LedgerEquals(second));
 
     first.clear();
     second.clear();
@@ -68,7 +68,7 @@ TEST(Common_ResourceLedger, ResourceLedgerComparison) {
     second[good_one] = 10;
     EXPECT_FALSE(first > second);
     EXPECT_FALSE(first < second);
-    EXPECT_FALSE(first == second);
+    EXPECT_FALSE(first.LedgerEquals(second));
 
     first.clear();
 }

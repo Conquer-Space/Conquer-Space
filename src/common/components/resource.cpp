@@ -228,7 +228,7 @@ bool ResourceLedger::operator>=(const ResourceLedger &ledger) {
     return MergeCompare(*this, ledger, 0, [](double a, double b) { return a >= b; });
 }
 
-bool ResourceLedger::operator==(const ResourceLedger &ledger) {
+bool ResourceLedger::LedgerEquals(const ResourceLedger &ledger) {
     return MergeCompare(*this, ledger, 0, [](double a, double b) { return a == b; });
 }
 
