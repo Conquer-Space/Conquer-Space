@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "client/scenes/universescene.h"
 
 #include <fmt/format.h>
@@ -30,13 +30,13 @@
 #include "client/systems/civilizationinfopanel.h"
 #include "client/systems/gui/sysevent.h"
 #include "client/systems/marketwindow.h"
+#include "client/systems/orbitfilter.h"
 #include "client/systems/provincewindow.h"
 #include "client/systems/rmlui/turnsavewindow.h"
 #include "client/systems/syscommand.h"
 #include "client/systems/sysdebuggui.h"
 #include "client/systems/sysfieldviewer.h"
 #include "client/systems/syspausemenu.h"
-#include "client/systems/sysplanetviewer.h"
 #include "client/systems/sysstarsystemtree.h"
 #include "client/systems/systechviewer.h"
 #include "client/systems/systurnsavewindow.h"
@@ -79,7 +79,6 @@ void cqsp::scene::UniverseScene::Init() {
 
     SeePlanet(GetApp(), GetUniverse().planets["earth"]);
 
-    //AddUISystem<cqsps::SysPlanetInformation>();
     //AddUISystem<cqsps::SysTurnSaveWindow>();
     AddUISystem<cqsps::SysStarSystemTree>();
     AddUISystem<cqsps::SysPauseMenu>();
@@ -90,6 +89,7 @@ void cqsp::scene::UniverseScene::Init() {
     //AddUISystem<cqsps::SysTechnologyProjectViewer>();
     //AddUISystem<cqsps::SysTechnologyViewer>();
     AddUISystem<cqsps::SysProvinceInformation>();
+    AddUISystem<cqsps::SysOrbitFilter>();
     //AddUISystem<cqsps::SysPlanetMarketInformation>();
 
     AddUISystem<cqsps::gui::SysEvent>();
@@ -108,10 +108,15 @@ void cqsp::scene::UniverseScene::Update(float deltaTime) {
         }
     }
 
-    if (pause_opt.to_tick &&
-        GetApp().GetTime() - last_tick > static_cast<float>(tick_speeds[pause_opt.tick_speed]) / 1000.f) {
+    double tick_length = static_cast<float>(tick_speeds[pause_opt.tick_speed]) / 1000.f;
+    if (pause_opt.to_tick && GetApp().GetTime() - last_tick > tick_length) {
         GetUniverse().EnableTick();
         last_tick = GetApp().GetTime();
+    }
+
+    if (pause_opt.to_tick) {
+        GetUniverse().tick_fraction = (GetApp().GetTime() - last_tick) / tick_length;
+        if (!interp) GetUniverse().tick_fraction = 0;
     }
 
     // Check for last tick
@@ -154,8 +159,6 @@ void cqsp::scene::UniverseScene::Ui(float deltaTime) {
     for (auto& ui : user_interfaces) {
         ui->DoUI(deltaTime);
     }
-    // Render star system renderer ui
-    system_renderer->DoUI(deltaTime);
 }
 
 void cqsp::scene::UniverseScene::Render(float deltaTime) {

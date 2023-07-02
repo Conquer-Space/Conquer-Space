@@ -1,5 +1,5 @@
 /* Conquer Space
- * Copyright (C) 2021 Conquer Space
+ * Copyright (C) 2021-2023 Conquer Space
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 
 #include "common/systems/navy/sysnavy.h"
 
-#include <math.h>
+#include <cmath>
 
 #include "common/components/coordinates.h"
 #include "common/components/ships.h"

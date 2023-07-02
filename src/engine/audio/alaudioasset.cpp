@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "engine/audio/alaudioasset.h"
 
 #include <stb_vorbis.h>
@@ -36,7 +36,10 @@ std::unique_ptr<AudioAsset> LoadOgg(std::ifstream& input) {
     int numSamples = stb_vorbis_decode_memory((unsigned char*)(data), size, &channels, &sample_rate, &buffer);
 
     ALenum format = channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
-    alBufferData(audio_asset->buffer, format, buffer, numSamples * channels * sizeof(int16), sample_rate);
+    alBufferData(
+        audio_asset->buffer, format, buffer,
+        static_cast<unsigned long long>(numSamples) * static_cast<unsigned long long>(channels) * sizeof(int16),
+        sample_rate);
     audio_asset->length = static_cast<float>(numSamples) / static_cast<float>(sample_rate);
 
     // Free memory
@@ -52,7 +55,10 @@ std::unique_ptr<AudioAsset> LoadOgg(uint8_t* buffer, int size) {
     int sample_rate;
     int num_samples = stb_vorbis_decode_memory(buffer, size, &channels, &sample_rate, &output);
     ALenum format = (channels == 1) ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
-    alBufferData(audio_asset->buffer, format, output, num_samples * channels * sizeof(int16), sample_rate);
+    alBufferData(
+        audio_asset->buffer, format, output,
+        static_cast<unsigned long long>(num_samples) * static_cast<unsigned long long>(channels) * sizeof(int16),
+        sample_rate);
     audio_asset->length = static_cast<float>(num_samples) / static_cast<float>(sample_rate);
 
     // Free memory

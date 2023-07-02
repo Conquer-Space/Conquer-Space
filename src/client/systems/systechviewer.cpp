@@ -1,18 +1,18 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "client/systems/systechviewer.h"
 
@@ -21,6 +21,7 @@
 #include "client/systems/gui/systooltips.h"
 #include "common/components/player.h"
 #include "common/components/science.h"
+#include "common/util/nameutil.h"
 
 namespace cqsp::client::systems {
 void SysTechnologyViewer::Init() {}
@@ -34,7 +35,7 @@ void SysTechnologyViewer::DoUI(int delta_time) {
     if (GetUniverse().any_of<TechnologicalProgress>(player)) {
         auto& progress = GetUniverse().get<TechnologicalProgress>(player);
         for (entt::entity researched : progress.researched_techs) {
-            ImGui::TextFmt("{}", gui::GetName(GetUniverse(), researched));
+            ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), researched));
         }
     } else {
         ImGui::Text("Nope, no technology");
@@ -55,7 +56,7 @@ void SysTechnologyProjectViewer::DoUI(int delta_time) {
     if (GetUniverse().any_of<ScientificResearch>(player)) {
         auto& progress = GetUniverse().get<ScientificResearch>(player);
         for (auto& researched : progress.current_research) {
-            ImGui::TextFmt("{} {}", gui::GetName(GetUniverse(), researched.first), researched.second);
+            ImGui::TextFmt("{} {}", common::util::GetName(GetUniverse(), researched.first), researched.second);
         }
 
         ImGui::Separator();
@@ -63,7 +64,7 @@ void SysTechnologyProjectViewer::DoUI(int delta_time) {
 
         std::vector<entt::entity> potential_research;
         for (const entt::entity& researched : progress.potential_research) {
-            ImGui::TextFmt("{}", gui::GetName(GetUniverse(), researched));
+            ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), researched));
             ImGui::SameLine();
             if (ImGui::Button(fmt::format("Queue Research##{}", researched).c_str())) {
                 // Add to tech queue

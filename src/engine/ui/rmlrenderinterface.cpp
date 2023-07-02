@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "engine/ui/rmlrenderinterface.h"
 
 #include <glad/glad.h>
@@ -37,15 +37,15 @@ class RmlUiRendererGeometryHandler {
     RmlUiRendererGeometryHandler() : VAO(0), VBO(0), EBO(0), num_vertices(0), num_indices(0), texture(0) {}
 
     ~RmlUiRendererGeometryHandler() {
-        if (VAO) {
+        if (VAO != 0u) {
             glDeleteVertexArrays(1, &VAO);
         }
 
-        if (VBO) {
+        if (VBO != 0u) {
             glDeleteBuffers(1, &VBO);
         }
 
-        if (EBO) {
+        if (EBO != 0u) {
             glDeleteBuffers(1, &EBO);
         }
         VAO = VBO = EBO = 0;
@@ -126,7 +126,7 @@ void cqsp::engine::CQSPRenderInterface::RenderGeometry(Rml::Vertex* vertices, in
                                                        const Rml::Vector2f& translation) {
     // Render the geometry
     Rml::CompiledGeometryHandle compiled = CompileGeometry(vertices, num_vertices, indices, num_indices, texture);
-    if (compiled != NULL) {
+    if (compiled != 0) {
         RenderCompiledGeometry(compiled, translation);
         ReleaseCompiledGeometry(compiled);
     }
@@ -140,7 +140,7 @@ Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(R
     // Create the vertex
     geom->num_vertices = num_vertices;
     geom->num_indices = num_indices;
-    geom->texture = (cqsp::asset::Texture*)texture;
+    geom->texture = (cqsp::asset::Texture*)texture;  // NOLINT
     glGenVertexArrays(1, &geom->VAO);
     glGenBuffers(1, &geom->VBO);
     glGenBuffers(1, &geom->EBO);
@@ -156,11 +156,11 @@ Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(R
     glEnableVertexAttribArray(0);
 
     glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Rml::Vertex),
-                          reinterpret_cast<void*>(sizeof(Rml::Vector2f)));
+                          reinterpret_cast<void*>(sizeof(Rml::Vector2f)));  // NOLINT
     glEnableVertexAttribArray(1);
 
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Rml::Vertex),
-                          reinterpret_cast<void*>(sizeof(Rml::Vector2f) + sizeof(Rml::Colourb)));
+                          reinterpret_cast<void*>(sizeof(Rml::Vector2f) + sizeof(Rml::Colourb)));  // NOLINT
     glEnableVertexAttribArray(2);
 
     return reinterpret_cast<Rml::CompiledGeometryHandle>(geom);
@@ -168,7 +168,7 @@ Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(R
 
 void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(Rml::CompiledGeometryHandle geometry,
                                                                const Rml::Vector2f& translation) {
-    RmlUiRendererGeometryHandler* geom = reinterpret_cast<RmlUiRendererGeometryHandler*>(geometry);
+    RmlUiRendererGeometryHandler* geom = reinterpret_cast<RmlUiRendererGeometryHandler*>(geometry);  // NOLINT
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthFunc(GL_ALWAYS);
@@ -176,7 +176,7 @@ void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(Rml::CompiledGeom
 
     asset::ShaderProgram* shader = nullptr;
     // Draw the geometry
-    if (geom->texture) {
+    if (geom->texture != nullptr) {
         texture_shader->UseProgram();
         shader = texture_shader.get();
         glActiveTexture(GL_TEXTURE0);
@@ -198,7 +198,7 @@ void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(Rml::CompiledGeom
 }
 
 void cqsp::engine::CQSPRenderInterface::ReleaseCompiledGeometry(Rml::CompiledGeometryHandle geometry) {
-    delete (RmlUiRendererGeometryHandler*)geometry;
+    delete (RmlUiRendererGeometryHandler*)geometry;  // NOLINT
 }
 
 void cqsp::engine::CQSPRenderInterface::EnableScissorRegion(bool enable) {
@@ -218,7 +218,6 @@ void cqsp::engine::CQSPRenderInterface::EnableScissorRegion(bool enable) {
 
 void cqsp::engine::CQSPRenderInterface::SetScissorRegion(int x, int y, int width, int height) {
     glScissor(x, app.GetWindowHeight() - (y + height), width, height);
-    return;
     // TODO(EhWhoAmI): Add stencil buffer rendering
     // Reference:
     // https://github.com/mikke89/RmlUi/blob/master/Samples/shell/src/ShellRenderInterfaceOpenGL.cpp#L120
@@ -231,10 +230,13 @@ bool cqsp::engine::CQSPRenderInterface::LoadTexture(Rml::TextureHandle& texture_
     // Open file and do things
     cqsp::asset::Texture* texture = new cqsp::asset::Texture();
 
-    int width, height, components;
+    int width;
+    int height;
+    int components;
     //stbi_set_flip_vertically_on_load(true);
     unsigned char* data2 = stbi_load(source.c_str(), &width, &height, &components, 0);
-    if (!data2) {
+    if (data2 == nullptr) {
+        delete texture;
         return false;
     }
     asset::TextureLoadingOptions options;
@@ -261,11 +263,11 @@ bool cqsp::engine::CQSPRenderInterface::GenerateTexture(Rml::TextureHandle& text
 }
 
 void cqsp::engine::CQSPRenderInterface::ReleaseTexture(Rml::TextureHandle texture) {
-    delete (cqsp::asset::Texture*)texture;
+    delete (cqsp::asset::Texture*)texture;  // NOLINT
 }
 
 void cqsp::engine::CQSPRenderInterface::SetTransform(const Rml::Matrix4f* transform) {
-    m_transform_enabled = static_cast<bool>(transform);
+    m_transform_enabled = (transform != nullptr);
 
     if (transform == nullptr) {
         m_transform_matrix = glm::mat4(1.0);

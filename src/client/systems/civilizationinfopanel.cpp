@@ -1,5 +1,5 @@
 /* Conquer Space
- * Copyright (C) 2021 Conquer Space
+ * Copyright (C) 2021-2023 Conquer Space
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,11 @@
 #include "common/components/economy.h"
 #include "common/components/organizations.h"
 #include "common/components/player.h"
+#include "common/components/surface.h"
+#include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
+
+using cqsp::common::util::GetName;
 
 void cqsp::client::systems::CivilizationInfoPanel::Init() {}
 
@@ -56,10 +60,19 @@ void cqsp::client::systems::CivilizationInfoPanel::CivInfoPanel() {
     if (player == entt::null) {
         return;
     }
-    ImGui::TextFmt("{}", gui::GetName(GetUniverse(), player));
+    ImGui::TextFmt("{}", GetName(GetUniverse(), player));
 
     // Make hoverable
     gui::EntityTooltip(GetUniverse(), player);
+
+    // If it has a capital city
+    if (GetUniverse().any_of<common::components::Country>(player)) {
+        entt::entity capital = GetUniverse().get<common::components::Country>(player).capital_city;
+        if (capital != entt::null) {
+            ImGui::TextFmt("Capital City: {}", GetName(GetUniverse(), capital));
+        }
+    }
+
     if (GetUniverse().any_of<common::components::Wallet>(player)) {
         auto& wallet = GetUniverse().get<common::components::Wallet>(player);
         ImGui::TextFmt("Reserves: {}", util::LongToHumanString(wallet.GetBalance()));
@@ -75,7 +88,7 @@ void cqsp::client::systems::CivilizationInfoPanel::CivInfoPanel() {
             ImGui::BeginChild("ownedcitiespanel");
             for (auto entity : view) {
                 if (GetUniverse().get<common::components::Governed>(entity).governor == player) {
-                    ImGui::TextFmt("{}", client::systems::gui::GetName(GetUniverse(), entity));
+                    ImGui::TextFmt("{}", GetName(GetUniverse(), entity));
                     gui::EntityTooltip(GetUniverse(), entity);
                 }
             }
@@ -87,7 +100,7 @@ void cqsp::client::systems::CivilizationInfoPanel::CivInfoPanel() {
                 for (entt::entity entity :
                      GetUniverse().get<common::components::CountryCityList>(player).province_list) {
                     bool selected = GetUniverse().view<ctx::SelectedProvince>().front() == entity;
-                    if (ImGui::SelectableFmt("{}", &selected, client::systems::gui::GetName(GetUniverse(), entity))) {
+                    if (ImGui::SelectableFmt("{}", &selected, GetName(GetUniverse(), entity))) {
                         entt::entity ent = GetUniverse().view<ctx::SelectedProvince>().front();
                         if (ent != entt::null) {
                             GetUniverse().remove<ctx::SelectedProvince>(ent);
@@ -104,6 +117,23 @@ void cqsp::client::systems::CivilizationInfoPanel::CivInfoPanel() {
             MarketInformationTable(GetUniverse(), player);
             ImGui::EndTabItem();
         }
+        if (ImGui::BeginTabItem("Budget")) {
+            BudgetInfoPanel();
+            ImGui::EndTabItem();
+        }
         ImGui::EndTabBar();
     }
+}
+
+void cqsp::client::systems::CivilizationInfoPanel::BudgetInfoPanel() {
+    entt::entity player = GetUniverse().view<common::components::Player>().front();
+
+    if (GetUniverse().any_of<common::components::Wallet>(player)) {
+        auto& wallet = GetUniverse().get<common::components::Wallet>(player);
+        ImGui::TextFmt("Reserves: {}", util::LongToHumanString(wallet.GetBalance()));
+    } else {
+        ImGui::TextFmt("No Wallet!");
+    }
+
+    // Then show the liabilities where they bankroll things
 }

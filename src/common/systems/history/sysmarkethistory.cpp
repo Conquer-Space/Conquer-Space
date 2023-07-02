@@ -1,5 +1,5 @@
 /* Conquer Space
- * Copyright (C) 2021 Conquer Space
+ * Copyright (C) 2021-2023 Conquer Space
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,11 +20,13 @@
 #include "common/components/history.h"
 
 void cqsp::common::systems::history::SysMarketHistory::DoSystem() {
+    /*
+    auto view = GetUniverse().view<components::Market, components::MarketHistory>();
+
     for (entt::entity marketentity : GetUniverse().view<components::Market>()) {
         components::Market& market_data = GetUniverse().get<components::Market>(marketentity);
         market_data.history.push_back(market_data);
     }
-    return;
     auto view = GetUniverse().view<components::Market, components::MarketHistory>();
     for (entt::entity entity : view) {
         auto& history = GetUniverse().get<components::MarketHistory>(entity);
@@ -42,5 +44,5 @@ void cqsp::common::systems::history::SysMarketHistory::DoSystem() {
             }
         }
         history.gdp.push_back(val);
-    }
+    }*/
 }

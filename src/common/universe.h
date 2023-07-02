@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #pragma once
 
 #include <map>
@@ -31,7 +31,9 @@ namespace cqsp {
 namespace common {
 class Universe : public entt::registry {
  public:
+    explicit Universe(std::string uuid);
     Universe();
+
     components::StarDate date;
 
     std::map<std::string, entt::entity> goods;
@@ -46,7 +48,7 @@ class Universe : public entt::registry {
     std::map<std::string, entt::entity> countries;
     std::map<std::string, entt::entity> provinces;
     std::map<int, entt::entity> province_colors;
-
+    std::map<entt::entity, int> colors_province;
     entt::entity sun;
 
     void EnableTick() { to_tick = true; }
@@ -56,6 +58,12 @@ class Universe : public entt::registry {
 
     int GetDate() { return date.GetDate(); }
     std::unique_ptr<cqsp::common::util::IRandom> random;
+    std::string uuid;
+
+    /// <summary>
+    /// What is the current fraction of the wait of the tick we are processing
+    /// </summary>
+    double tick_fraction = 0;
 
  private:
     bool to_tick = false;

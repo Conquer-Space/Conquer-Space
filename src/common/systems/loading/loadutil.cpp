@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "common/systems/loading/loadutil.h"
 
 #include <spdlog/spdlog.h>
@@ -59,7 +59,7 @@ bool LoadInitialValues(Universe& universe, const entt::entity& entity, const Hjs
 
 cqsp::common::components::ResourceLedger HjsonToLedger(cqsp::common::Universe& universe, Hjson::Value& hjson) {
     components::ResourceLedger stockpile;
-    for (auto input_good : hjson) {
+    for (auto& input_good : hjson) {
         stockpile[universe.goods[input_good.first]] = input_good.second;
     }
     return stockpile;
@@ -109,7 +109,7 @@ double ReadUnit(std::string_view value, components::types::UnitType unit_type, b
     std::size_t index = content.find_last_of(' ');
     if (index == std::string::npos) {
         for (index = content.size(); index > 0; index--) {
-            if (!isalpha(content.at(index - 1))) {
+            if (isalpha(content.at(index - 1)) == 0) {
                 break;
             }
         }

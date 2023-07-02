@@ -1,0 +1,3 @@
+#!/bin/sh
+python tools/git-pre-commit.py
+exit $?

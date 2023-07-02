@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "client/scenes/texttestscene.h"
 
 #include <glad/glad.h>
@@ -21,7 +21,7 @@
 #define TX(x)        \
     indices[#x] = x; \
     names.push_back(#x);
-cqsp::scene::TextTestScene::~TextTestScene() {}
+cqsp::scene::TextTestScene::~TextTestScene() = default;
 
 void cqsp::scene::TextTestScene::Init() {
     auto shader = GetApp().GetAssetManager().MakeShader("core:framebuffervert", "core:framebufferfrag");
@@ -104,9 +104,9 @@ void cqsp::scene::TextTestScene::Render(float deltaTime) {
     glEnable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
     renderer.BeginDraw(layer);
-    GetApp().DrawText(text, 20, GetApp().GetWindowHeight() / 2, font_size);
+    GetApp().DrawText(text, 20, GetApp().GetWindowHeight() / 2.f, font_size);
     renderer.DrawAllLayers();
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    GetApp().DrawText(fmt::format("2: {}", text), 20, GetApp().GetWindowHeight() / 2 - 50, font_size);
+    GetApp().DrawText(fmt::format("2: {}", text), 20, GetApp().GetWindowHeight() / 2.f - 50.f, font_size);
 }

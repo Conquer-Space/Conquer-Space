@@ -1,0 +1,35 @@
+<rml>
+    <head>
+        <link type="text/rcss" href="default.rcss"/>
+        <title>Load Saves</title>
+        <style>
+            body {
+                width: 80%;
+                height: 80%;
+                background-color: rgba(14, 0, 54, 240);
+            }
+            td {
+                border: 1px #e99;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Load Saves</h1>
+        <br/>
+        <div>
+            <table data-model="load_game">
+                <tbody>
+                <tr data-for="save : save_list">
+                    <div>
+                        <p>{{ save.country }} </p>
+                        <br/>
+                        <p>Date: {{ save.date }}</p>
+                        <button data-event-click="LoadGame(save.path)">Load Save</button>
+                        <br/>
+                    </div>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+    </body>
+</rml>

@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #pragma once
 
 #include <map>
@@ -34,11 +34,6 @@ namespace cqsp {
 namespace client {
 namespace systems {
 // TODO(EhWhoAmI): Would be helpful to move the following structs to a header file.
-/*
- * Tag class for bodies to render.
- */
-struct ToRender {};
-
 struct MouseOverEntity {};
 
 // Planet that the camera center is at
@@ -115,10 +110,6 @@ class SysStarSystemRenderer {
     asset::ShaderProgram_t no_light_shader;
 #endif
 
-    cqsp::asset::Texture *planet_texture;
-    cqsp::asset::Texture *planet_heightmap;
-    cqsp::asset::Texture *earth_map_texture;
-
     glm::vec3 cam_pos;
     glm::vec3 cam_up = glm::vec3(0.0f, 1.0f, 0.0f);
     glm::mat4 camera_matrix;
@@ -135,17 +126,16 @@ class SysStarSystemRenderer {
     void DrawEntityName(glm::vec3 &object_pos, entt::entity ent_id);
     void DrawPlanetIcon(glm::vec3 &object_pos);
     void DrawPlanetBillboards(const entt::entity &ent_id, const glm::vec3 &object_pos);
-    void DrawShipIcon(glm::vec3 &object_pos);
-    void DrawCityIcon(glm::vec3 &object_pos);
+    void DrawShipIcon(const glm::vec3 &object_pos);
+    void DrawCityIcon(const glm::vec3 &object_pos);
 
     void DrawAllCities(auto &bodies);
 
     void DrawAllPlanets(auto &bodies);
     void DrawAllPlanetBillboards(auto &bodies);
-    void DrawPlanet(glm::vec3 &object_pos, entt::entity entity);
 
-    void DrawTexturedPlanet(glm::vec3 &object_pos, entt::entity entity);
-    void GetPlanetTexture(entt::entity entity, bool &have_normal, bool &have_roughness);
+    void DrawTexturedPlanet(const glm::vec3 &object_pos, const entt::entity entity);
+    void GetPlanetTexture(const entt::entity entity, bool &have_normal, bool &have_roughness, bool &have_province);
     void DrawTerrainlessPlanet(const entt::entity &entity, glm::vec3 &object_pos);
 
     void DrawStar(const entt::entity &entity, glm::vec3 &object_pos);
@@ -157,8 +147,9 @@ class SysStarSystemRenderer {
     void LoadPlanetTextures();
     void InitializeFramebuffers();
     void LoadProvinceMap();
+    void InitializeMeshes();
 
-    void GenerateOrbit(entt::entity entity);
+    void GenerateOrbit(entt::entity body);
 
     /// <summary>
     /// Gets the quaternion to calculate the planet's rotation from the axial rotation
@@ -223,7 +214,9 @@ class SysStarSystemRenderer {
 
     bool is_founding_city = false;
     bool is_rendering_founding_city = false;
-    glm::vec3 city_founding_position;
+    glm::vec3 mouse_on_object;
+    // Gets the intersection in 3d point between the mouse and any planet
+    glm::vec3 GetMouseOnObject() { return mouse_on_object; }
     entt::entity on_planet;
 
     float view_scale = 10.f;
@@ -231,13 +224,9 @@ class SysStarSystemRenderer {
     entt::entity selected_city = entt::null;
 
     /// <summary>
-    /// For debugging, the x position of the mouse on the texture
+    /// Debugging mouse position
     /// </summary>
     int tex_x;
-
-    /// <summary>
-    /// For debugging, the y position of the mouse on the texture
-    /// </summary>
     int tex_y;
 
     /// <summary>
@@ -250,18 +239,13 @@ class SysStarSystemRenderer {
     int province_height = 0;
     int province_width = 0;
 
-    std::vector<unsigned char> country_map;
-
-    common::components::types::SurfaceCoordinate GetCitySurfaceCoordinate();
+    common::components::types::SurfaceCoordinate GetMouseSurfaceIntersection();
     void CityDetection();
 
     glm::vec3 selected_province_color;
     glm::vec3 selected_country_color;
     entt::entity hovering_province;
     entt::entity selected_province;
-    bool countries = false;
-
-    const double object_distance = 0.4;
 
     int orbits_generated = 0;
 

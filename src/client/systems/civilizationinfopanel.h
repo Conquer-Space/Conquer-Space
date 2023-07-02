@@ -1,5 +1,5 @@
 /* Conquer Space
- * Copyright (C) 2021 Conquer Space
+ * Copyright (C) 2021-2023 Conquer Space
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ class CivilizationInfoPanel : public SysUserInterface {
     void DoUpdate(int delta_time);
 
     void CivInfoPanel();
+    void BudgetInfoPanel();
 
     bool to_display = false;
 };

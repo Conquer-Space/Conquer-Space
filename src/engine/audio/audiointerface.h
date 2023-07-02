@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #pragma once
 
 #include <AL/al.h>
@@ -22,18 +22,16 @@
 
 #include <atomic>
 #include <fstream>
+#include <future>
 #include <map>
 #include <memory>
 #include <string>
-#include <thread>
 #include <vector>
 
 #include "engine/audio/audioasset.h"
 #include "engine/audio/iaudiointerface.h"
 
-namespace cqsp {
-namespace engine {
-namespace audio {
+namespace cqsp::engine::audio {
 struct AudioChannel {
     // Set all variables
     AudioChannel() {
@@ -62,6 +60,12 @@ struct AudioChannel {
     void Pause() { alSourcePause(channel); }
 
     void Rewind() { alSourceRewind(channel); }
+
+    bool IsStopped() {
+        ALint source_state;
+        alGetSourcei(channel, AL_SOURCE_STATE, &source_state);
+        return (source_state == AL_STOPPED || source_state == AL_PAUSED);
+    }
 
     bool IsPlaying() {
         ALint source_state;
@@ -99,25 +103,25 @@ class AudioInterface : public IAudioInterface {
     ALCcontext *context;
     ALboolean enumeration;
 
-    void Initialize();
-    void Pause(bool to_pause);
-    void PauseMusic(bool to_pause);
-    std::string GetAudioVersion();
-    void Destruct();
-    void StartWorker();
-    void RequestPlayAudio();
-    void SetMusicVolume(float volume);
+    void Initialize() override;
+    void Pause(bool to_pause) override;
+    void PauseMusic(bool to_pause) override;
+    std::string GetAudioVersion() override;
+    void Destruct() override;
+    void StartWorker() override;
+    void RequestPlayAudio() override;
+    void SetMusicVolume(float volume) override;
 
-    void AddAudioClip(const std::string &key, cqsp::asset::AudioAsset *asset);
-    void PlayAudioClip(const std::string &key);
-    void PlayAudioClip(cqsp::asset::AudioAsset *asset, int channel);
-    void SetChannelVolume(int channel, float gain);
+    void AddAudioClip(const std::string &key, cqsp::asset::AudioAsset *asset) override;
+    void PlayAudioClip(const std::string &key) override;
+    void PlayAudioClip(cqsp::asset::AudioAsset *asset, int channel) override;
+    void SetChannelVolume(int channel, float gain) override;
+    void OnFrame() override;
 
     ~AudioInterface();
 
-    std::thread worker_thread;
     std::unique_ptr<cqsp::asset::AudioAsset> LoadWav(std::ifstream &input);
-    std::unique_ptr<cqsp::asset::AudioAsset> music = nullptr;
+    std::unique_ptr<cqsp::asset::AudioAsset> music_asset = nullptr;
 
     std::shared_ptr<spdlog::logger> logger;
 
@@ -129,11 +133,18 @@ class AudioInterface : public IAudioInterface {
     void PrintInformation();
     void InitListener();
     void InitALContext();
+    std::unique_ptr<cqsp::asset::AudioAsset> LoadNextFile();
     std::map<std::string, cqsp::asset::AudioAsset *> assets;
     std::vector<std::unique_ptr<AudioChannel>> channels;
 
     float music_volume = 0;
+
+    static const int MUSIC_CHANNEL = 0;
+    static const int UI_CHANNEL = 1;
+
+    /// <summary>
+    /// Async load audio files
+    /// </summary>
+    std::future<std::unique_ptr<cqsp::asset::AudioAsset>> audio_future;
 };
-}  // namespace audio
-}  // namespace engine
-}  // namespace cqsp
+}  // namespace cqsp::engine::audio

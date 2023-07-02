@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #pragma once
 
 #include <map>
@@ -146,8 +146,8 @@ struct Wallet {
     // Basic multiplication that logs the change
     // TODO(EhWhoAmI): Make sure this is correct
     Wallet& operator*=(const double coefficent) {
-        float newbalance = this->balance * coefficent;
-        float change = newbalance - this->balance;
+        double newbalance = this->balance * coefficent;
+        double change = newbalance - this->balance;
         if (change > 0) {
             *this += change;
         } else if (change < 0) {
@@ -229,6 +229,12 @@ struct LaborInformation {
 };
 
 struct FactoryProducing {};
+
+// This facility is bankrolled by something else, so if they run out of money
+// they can go to this wallet to ask for cash?
+struct Owned {
+    entt::entity owner;
+};
 }  // namespace components
 }  // namespace common
 }  // namespace cqsp

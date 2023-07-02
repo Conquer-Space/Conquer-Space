@@ -1,25 +1,25 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 #include "common/systems/loading/loadplanets.h"
 
 #include <spdlog/spdlog.h>
-#include <stdlib.h>
 
+#include <cstdlib>
 #include <random>
 #include <string>
 #include <vector>
@@ -83,6 +83,15 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
         if (texture["roughness"].type() == Hjson::Type::String) {
             texture_comp.roughness_name = texture["roughness"].to_string();
+        }
+
+        if (texture["province_texture"].type() == Hjson::Type::String) {
+            // We probably need a much more rigorous check, like actually verifying if the files actually exist.
+            auto& provinces = universe.emplace<components::ProvincedPlanet>(entity);
+            provinces.province_texture = texture["province_texture"].to_string();
+            if (texture["province_map"].type() == Hjson::Type::String) {
+                provinces.province_map = texture["province_map"].to_string();
+            }
         }
     }
 

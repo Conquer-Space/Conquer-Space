@@ -1,5 +1,5 @@
 /* Conquer Space
- * Copyright (C) 2021 Conquer Space
+ * Copyright (C) 2021-2023 Conquer Space
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #include "common/systems/loading/loadutil.h"
 
 #define CHECK_DEFINED(x, entity)  \
-    if (!x.defined()) {           \
+    if (!(x).defined()) {         \
         universe.destroy(entity); \
         continue;                 \
     }
@@ -118,7 +118,7 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         if (values["tags"][i] == "mineral") {
             universe.get_or_emplace<cqspc::Mineral>(entity);
         } else if (values["tags"][i] == "captialgood") {
-            universe.get_or_emplace<cqspc::Capital>(entity);
+            universe.get_or_emplace<cqspc::CapitalGood>(entity);
         }
     }
 

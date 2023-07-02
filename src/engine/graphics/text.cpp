@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "engine/graphics/text.h"
 
 #include <ft2build.h>
@@ -32,7 +32,7 @@
 void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer, uint64_t size) {
     FT_Library ft;
     // All functions return a value different than 0 whenever an error occurred
-    if (FT_Init_FreeType(&ft)) {
+    if (FT_Init_FreeType(&ft) != 0) {
         ENGINE_LOG_INFO("Cannot load freetype library");
     }
 
@@ -40,8 +40,8 @@ void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer, uint64_t s
     // buffer until you are done using that font as FreeType will reference
     // it directly.
     FT_Face face;
-    int id = -12;
-    if ((id = FT_New_Memory_Face(ft, fontBuffer, size, 0, &face))) {
+    int id = FT_New_Memory_Face(ft, fontBuffer, size, 0, &face);
+    if (id != 0) {
         ENGINE_LOG_INFO("Cannot load font: {}", id);
         return;
     }
@@ -57,7 +57,7 @@ void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer, uint64_t s
     // load first 128 characters of ASCII set
     for (unsigned char c = 0; c < 128; c++) {
         // Load character glyph
-        if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
+        if (FT_Load_Char(face, c, FT_LOAD_RENDER) != 0) {
             ENGINE_LOG_WARN("Freetype does not have character {}", c);
             continue;
         }

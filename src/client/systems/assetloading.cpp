@@ -1,18 +1,18 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "client/systems/assetloading.h"
 
@@ -35,14 +35,14 @@
 #include "common/systems/sysuniversegenerator.h"
 
 namespace {
-void LoadResource(cqsp::engine::Application& app, std::string asset_name,
+void LoadResource(cqsp::engine::Application& app, const std::string& asset_name,
                   void (*func)(cqsp::common::Universe& universe, Hjson::Value& recipes)) {
     namespace cqspc = cqsp::common::components;
-    for (auto it = app.GetAssetManager().GetPackageBegin(); it != app.GetAssetManager().GetPackageEnd(); it++) {
-        if (!it->second->HasAsset(asset_name)) {
+    for (const auto& it : app.GetAssetManager()) {
+        if (!it.second->HasAsset(asset_name)) {
             continue;
         }
-        cqsp::asset::HjsonAsset* good_assets = it->second->GetAsset<cqsp::asset::HjsonAsset>(asset_name);
+        cqsp::asset::HjsonAsset* good_assets = it.second->GetAsset<cqsp::asset::HjsonAsset>(asset_name);
         try {
             func(app.GetUniverse(), good_assets->data);
         } catch (std::runtime_error& error) {
@@ -53,17 +53,17 @@ void LoadResource(cqsp::engine::Application& app, std::string asset_name,
 }
 
 template <class T>
-void LoadResource(cqsp::engine::Application& app, std::string asset_name) {
+void LoadResource(cqsp::engine::Application& app, const std::string& asset_name) {
     using cqsp::common::systems::loading::HjsonLoader;
     static_assert(std::is_base_of<HjsonLoader, T>::value, "Class is not child of");
     std::unique_ptr<HjsonLoader> ptr = std::make_unique<T>(app.GetUniverse());
 
     namespace cqspc = cqsp::common::components;
-    for (auto it = app.GetAssetManager().GetPackageBegin(); it != app.GetAssetManager().GetPackageEnd(); it++) {
-        if (!it->second->HasAsset(asset_name)) {
+    for (const auto& it : app.GetAssetManager()) {
+        if (!it.second->HasAsset(asset_name)) {
             continue;
         }
-        cqsp::asset::HjsonAsset* good_assets = it->second->GetAsset<cqsp::asset::HjsonAsset>(asset_name);
+        cqsp::asset::HjsonAsset* good_assets = it.second->GetAsset<cqsp::asset::HjsonAsset>(asset_name);
         try {
             ptr->LoadHjson(good_assets->data);
         } catch (std::runtime_error& error) {

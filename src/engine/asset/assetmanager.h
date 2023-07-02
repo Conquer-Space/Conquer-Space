@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #pragma once
 
 #include <hjson.h>
@@ -63,8 +63,8 @@ class AssetPrototype {
 };
 
 /**
-* Holds a prototype in the queue to be loaded in the main thread
-*/
+ * Holds a prototype in the queue to be loaded in the main thread
+ */
 class QueueHolder {
  public:
     QueueHolder() { prototype = nullptr; }
@@ -74,8 +74,8 @@ class QueueHolder {
 };
 
 /**
-* Queue to hold the asset prototypes.
-*/
+ * Queue to hold the asset prototypes.
+ */
 template <typename T>
 class ThreadsafeQueue {
     std::queue<T> queue_;
@@ -139,6 +139,10 @@ class Package {
     bool HasAsset(const char* asset);
     bool HasAsset(const std::string& asset);
 
+    auto begin() { return assets.begin(); }
+
+    auto end() { return assets.end(); }
+
  private:
     std::map<std::string, std::unique_ptr<Asset>> assets;
 
@@ -161,7 +165,7 @@ class PackagePrototype {
 
 class AssetManager {
  public:
-    AssetManager();
+    AssetManager() = default;
 
     ShaderProgram_t MakeShader(const std::string& vert, const std::string& frag);
     ShaderProgram_t MakeShader(const std::string& vert, const std::string& frag, const std::string& geom);
@@ -204,6 +208,7 @@ class AssetManager {
         if (ptr == nullptr) {
             SPDLOG_WARN("Asset {} is wrong type", key);
         }
+        ptr->accessed++;
         return ptr;
     }
 
@@ -214,9 +219,9 @@ class AssetManager {
 
     int GetPackageCount() { return packages.size(); }
 
-    auto GetPackageBegin() { return packages.begin(); }
+    auto begin() { return packages.begin(); }
 
-    auto GetPackageEnd() { return packages.end(); }
+    auto end() { return packages.end(); }
 
     void SaveModList();
 
@@ -269,7 +274,7 @@ class AssetLoader {
     /// </summary>
     /// <param name="package">Path to package folder</param>
     /// <returns>The uniqueptr to the package that is created</returns>
-    std::unique_ptr<Package> LoadPackage(std::string package);
+    std::unique_ptr<Package> LoadPackage(const std::string& path);
 
     /// <summary>
     /// The assets that need to be on the main thread. Takes one asset from the queue and processes it
@@ -467,7 +472,7 @@ class AssetLoader {
     /// <param name="path">Path of directory to read</param>
     /// <param name="file">Function pointer to do something with the path, and it takes the path of the
     /// asset as the parameter</param>
-    void LoadDirectory(std::string path, std::function<void(std::string)> file);
+    void LoadDirectory(const std::string& path, const std::function<void(std::string)>& file);
 
     /// <summary>
     /// Loads all the `resource.hjson` files in the specified directory.
@@ -497,7 +502,7 @@ class AssetLoader {
     /// <param name="resource_mount_path">root path of the package</param>
     /// <param name="resource_file_path">Resource file path</param>
     /// <param name="asset_value">Hjson value to read from</param>
-    void LoadResourceHjsonFile(Package& package, const std::string& resource_mount_path,
+    void LoadResourceHjsonFile(Package& package, const std::string& package_mount_path,
                                const std::string& resource_file_path, const Hjson::Value& asset_value);
     /// <summary>
     /// Defines a directory that contains hjson asset data.

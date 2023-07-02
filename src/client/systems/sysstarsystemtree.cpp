@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "client/systems/sysstarsystemtree.h"
 
 #include <string>
@@ -24,6 +24,7 @@
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
 #include "common/components/name.h"
+#include "common/util/nameutil.h"
 #include "engine/cqspgui.h"
 
 namespace cqsp::client::systems {
@@ -58,7 +59,7 @@ void SysStarSystemTree::DoUI(int delta_time) {
         if (!GetUniverse().any_of<cqspb::OrbitalSystem>(entity) || entity == GetUniverse().sun) {
             SeePlanetSelectable(entity);
         } else {
-            std::string planet_name = gui::GetName(GetUniverse(), entity);
+            std::string planet_name = common::util::GetName(GetUniverse(), entity);
             if (ImGui::TreeNodeEx(planet_name.c_str(), ImGuiTreeNodeFlags_OpenOnArrow)) {
                 // If it's double clicked
                 if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
@@ -83,7 +84,7 @@ void SysStarSystemTree::DoUI(int delta_time) {
 void SysStarSystemTree::DoUpdate(int delta_time) {}
 
 void SysStarSystemTree::SeePlanetSelectable(entt::entity entity) {
-    std::string planet_name = gui::GetName(GetUniverse(), entity);
+    std::string planet_name = common::util::GetName(GetUniverse(), entity);
     bool is_selected = (entity == selected_planet);
     ImGui::Dummy(ImVec2(20, 16));
     ImGui::SameLine();
@@ -100,7 +101,7 @@ void SysStarSystemTree::SeePlanetSelectable(entt::entity entity) {
 void SysStarSystemTree::DoChildTree(entt::entity entity) {
     namespace cqspb = cqsp::common::components::bodies;
     for (auto child : GetUniverse().get<cqspb::OrbitalSystem>(entity).children) {
-        std::string child_name = gui::GetName(GetUniverse(), child);
+        std::string child_name = common::util::GetName(GetUniverse(), child);
         bool is_selected = (child == selected_planet);
         if (CQSPGui::DefaultSelectable(child_name.c_str(), is_selected, ImGuiSelectableFlags_AllowDoubleClick)) {
             if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {

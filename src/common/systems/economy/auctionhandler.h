@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #pragma once
 
 #include <entt/entt.hpp>
@@ -32,7 +32,7 @@ namespace systems {
 /// <param name="quantity">Quantity</param>
 /// <returns>True if the order is fufilled immediately, false if a buy order is
 /// placed.</returns>
-bool BuyGood(components::AuctionHouse& auction_house, entt::entity good, entt::entity agent, double price,
+bool BuyGood(components::AuctionHouse& auction_house, entt::entity agent, entt::entity good, double price,
              double quantity);
 
 /// <summary>
@@ -44,7 +44,7 @@ bool BuyGood(components::AuctionHouse& auction_house, entt::entity good, entt::e
 /// <param name="quantity">Quantity</param>
 /// <returns>True if the order is fufilled immediately, false if a sell order is
 /// placed.</returns>
-bool SellGood(components::AuctionHouse& auction_house, entt::entity good, entt::entity agent, double price,
+bool SellGood(components::AuctionHouse& auction_house, entt::entity agent, entt::entity good, double price,
               double quantity);
 }  // namespace systems
 }  // namespace common

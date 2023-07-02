@@ -63,7 +63,7 @@ bool Backend::Initialize(const char* name, int width, int height, bool allow_res
 
     glfwSetErrorCallback(LogErrorFromGLFW);
 
-    if (!glfwInit()) return false;
+    if (glfwInit() == 0) return false;
 
     // Set window hints for OpenGL 3.3 Core context creation.
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -82,7 +82,7 @@ bool Backend::Initialize(const char* name, int width, int height, bool allow_res
     glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
 
     GLFWwindow* window = glfwCreateWindow(width, height, name, nullptr, nullptr);
-    if (!window) return false;
+    if (window == nullptr) return false;
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
@@ -153,7 +153,7 @@ bool Backend::ProcessEvents(Rml::Context* context, KeyDownCallback key_down_call
     data->context = nullptr;
     data->key_down_callback = nullptr;
 
-    const bool result = !glfwWindowShouldClose(data->window);
+    const bool result = glfwWindowShouldClose(data->window) == 0;
     glfwSetWindowShouldClose(data->window, GLFW_FALSE);
     return result;
 }
@@ -182,38 +182,44 @@ static void SetupCallbacks(GLFWwindow* window) {
     RMLUI_ASSERT(data);
 
     // Key input
-    glfwSetKeyCallback(
-        window, [](GLFWwindow* /*window*/, int glfw_key, int /*scancode*/, int glfw_action, int glfw_mods) {
-            if (!data->context) return;
+    glfwSetKeyCallback(window, [](GLFWwindow* /*window*/, int glfw_key, int /*scancode*/, int glfw_action,
+                                  int glfw_mods) {
+        if (data->context == nullptr) return;
 
-            // Store the active modifiers for later because GLFW doesn't provide them in the callbacks to the
-            // mouse input events.
-            data->glfw_active_modifiers = glfw_mods;
+        // Store the active modifiers for later because GLFW doesn't provide them in the callbacks to the
+        // mouse input events.
+        data->glfw_active_modifiers = glfw_mods;
 
-            // Override the default key event callback to add global shortcuts for the samples.
-            Rml::Context* context = data->context;
-            KeyDownCallback key_down_callback = data->key_down_callback;
+        // Override the default key event callback to add global shortcuts for the samples.
+        Rml::Context* context = data->context;
+        KeyDownCallback key_down_callback = data->key_down_callback;
 
-            switch (glfw_action) {
-                case GLFW_PRESS:
-                case GLFW_REPEAT: {
-                    const Rml::Input::KeyIdentifier key = RmlGLFW::ConvertKey(glfw_key);
-                    const int key_modifier = RmlGLFW::ConvertKeyModifiers(glfw_mods);
-                    float dp_ratio = 1.f;
-                    glfwGetWindowContentScale(data->window, &dp_ratio, nullptr);
+        switch (glfw_action) {
+            case GLFW_PRESS:
+            case GLFW_REPEAT: {
+                const Rml::Input::KeyIdentifier key = RmlGLFW::ConvertKey(glfw_key);
+                const int key_modifier = RmlGLFW::ConvertKeyModifiers(glfw_mods);
+                float dp_ratio = 1.f;
+                glfwGetWindowContentScale(data->window, &dp_ratio, nullptr);
 
-                    // See if we have any global shortcuts that take priority over the context.
-                    if (key_down_callback && !key_down_callback(context, key, key_modifier, dp_ratio, true)) break;
-                    // Otherwise, hand the event over to the context by calling the input handler as normal.
-                    if (!RmlGLFW::ProcessKeyCallback(context, glfw_key, glfw_action, glfw_mods)) break;
-                    // The key was not consumed by the context either, try keyboard shortcuts of lower priority.
-                    if (key_down_callback && !key_down_callback(context, key, key_modifier, dp_ratio, false)) break;
-                } break;
-                case GLFW_RELEASE:
-                    RmlGLFW::ProcessKeyCallback(context, glfw_key, glfw_action, glfw_mods);
+                // See if we have any global shortcuts that take priority over the context.
+                if ((key_down_callback != nullptr) && !key_down_callback(context, key, key_modifier, dp_ratio, true)) {
                     break;
-            }
-        });
+                }
+                // Otherwise, hand the event over to the context by calling the input handler as normal.
+                if (!RmlGLFW::ProcessKeyCallback(context, glfw_key, glfw_action, glfw_mods)) {
+                    break;
+                }
+                // The key was not consumed by the context either, try keyboard shortcuts of lower priority.
+                if ((key_down_callback != nullptr) && !key_down_callback(context, key, key_modifier, dp_ratio, false)) {
+                    break;
+                }
+            } break;
+            case GLFW_RELEASE:
+                RmlGLFW::ProcessKeyCallback(context, glfw_key, glfw_action, glfw_mods);
+                break;
+        }
+    });
 
     glfwSetCharCallback(window, [](GLFWwindow* /*window*/, unsigned int codepoint) {
         RmlGLFW::ProcessCharCallback(data->context, codepoint);

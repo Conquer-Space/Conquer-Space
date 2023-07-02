@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include <gtest/gtest.h>
 
 #include "common/components/resource.h"
@@ -21,7 +21,8 @@
 using cqsp::common::components::ResourceLedger;
 
 TEST(Common_ResourceLedger, ResourceLedgerComparison) {
-    ResourceLedger first, second;
+    ResourceLedger first;
+    ResourceLedger second;
     // Set the stuff
     // Registry because it's demanding
     entt::registry reg;
@@ -31,12 +32,12 @@ TEST(Common_ResourceLedger, ResourceLedgerComparison) {
     second[good_one] = 20;
     EXPECT_TRUE(first < second);
     EXPECT_FALSE(first > second);
-    EXPECT_FALSE(first == second);
+    EXPECT_FALSE(first.LedgerEquals(second));
 
     first.clear();
     EXPECT_TRUE(first < second);
     EXPECT_FALSE(first > second);
-    EXPECT_FALSE(first == second);
+    EXPECT_FALSE(first.LedgerEquals(second));
 
     second.clear();
     first[good_two] = 15;
@@ -44,13 +45,13 @@ TEST(Common_ResourceLedger, ResourceLedgerComparison) {
     second[good_two] = 10;
     EXPECT_TRUE(first > second);
     EXPECT_FALSE(first < second);
-    EXPECT_FALSE(first == second);
+    EXPECT_FALSE(first.LedgerEquals(second));
 
     second[good_two] = 15;
     second[good_one] = 5;
     EXPECT_FALSE(first > second);
     EXPECT_FALSE(first < second);
-    EXPECT_TRUE(first == second);
+    EXPECT_TRUE(first.LedgerEquals(second));
 
     first.clear();
     second.clear();
@@ -58,7 +59,7 @@ TEST(Common_ResourceLedger, ResourceLedgerComparison) {
     first[good_one] = 5;
     EXPECT_TRUE(first > second);
     EXPECT_FALSE(first < second);
-    EXPECT_FALSE(first == second);
+    EXPECT_FALSE(first.LedgerEquals(second));
 
     first.clear();
     second.clear();
@@ -68,7 +69,7 @@ TEST(Common_ResourceLedger, ResourceLedgerComparison) {
     second[good_one] = 10;
     EXPECT_FALSE(first > second);
     EXPECT_FALSE(first < second);
-    EXPECT_FALSE(first == second);
+    EXPECT_FALSE(first.LedgerEquals(second));
 
     first.clear();
 }
@@ -131,5 +132,38 @@ TEST(Common_ResourceLedger, HasAllResoourcesTest) {
     second[good_one] = 10;
     second[good_two] = 20;
     second[good_three] = 8;
-    EXPECT_TRUE(second.HasAllResources(second));
+    EXPECT_FALSE(first.HasAllResources(second));
+    EXPECT_TRUE(second.HasAllResources(first));
+    EXPECT_TRUE(first.HasAllResources(first));
+}
+
+TEST(Common_ResourceLedger, LedgerAdditionTest1) {
+    ResourceLedger first;
+    ResourceLedger second;
+
+    entt::registry reg;
+    entt::entity good_one = reg.create();
+
+    first[good_one] = 20;
+    second += first;
+    EXPECT_EQ(second[good_one], 20);
+    EXPECT_EQ(first[good_one], 20);
+    EXPECT_EQ(first.size(), 1);
+    EXPECT_EQ(second.size(), 1);
+}
+
+TEST(Common_ResourceLedger, LedgerSubtractionTest1) {
+    ResourceLedger first;
+    ResourceLedger second;
+
+    entt::registry reg;
+    entt::entity good_one = reg.create();
+
+    first[good_one] = 20;
+    second[good_one] = 30;
+    second -= first;
+    EXPECT_EQ(second[good_one], 10);
+    EXPECT_EQ(first[good_one], 20);
+    EXPECT_EQ(first.size(), 1);
+    EXPECT_EQ(second.size(), 1);
 }

@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "client/systems/rmlui/turnsavewindow.h"
 
 #include "client/components/clientctx.h"
@@ -27,21 +27,9 @@ TurnSaveWindow::~TurnSaveWindow() {
 void TurnSaveWindow::Update(double delta_time) {
     auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
 
-    // This is to avoid a memory leak in RmlUi's SetInnerRML.
-    // I think it's because SetRML doesn't free their resources when they change the RML.
-    // So, gotta do this or else it'll leak about 30MB a minute.
-    // If you can figure it out, send a PR to RmlUi.
-    static auto date = GetUniverse().date.GetDate();
-    static bool tr = true;
-    if (date != GetUniverse().date.GetDate() || (date == 0 && tr)) {
-        // Then do the rest
-        // Check if it changed, or something
-        const std::string date_text = fmt::format("{} {:02d}:{:02d}", GetUniverse().date.ToString(),
-                                                  GetUniverse().date.GetHour(), GetUniverse().date.GetMinute());
-        time_element->SetInnerRML(date_text);
-        date = GetUniverse().date.GetDate();
-        tr = false;
-    }
+    const std::string date_text = fmt::format("{} {:02d}:{:02d}", GetUniverse().date.ToString(),
+                                              GetUniverse().date.GetHour(), GetUniverse().date.GetMinute());
+    time_element->SetInnerRML(date_text);
     static auto tick_speed = pause_opt.tick_speed;
     if (tick_speed != pause_opt.tick_speed) {
         speed_element->SetInnerRML(fmt::format("Speed: {}", pause_opt.tick_speed));

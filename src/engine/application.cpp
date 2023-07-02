@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "engine/application.h"
 
 #include <RmlUi/Core.h>
@@ -120,7 +120,7 @@ void Application::ProcessRmlUiUserInput() {
         key_modifier |= Rml::Input::KeyModifier::KM_CAPSLOCK;
     }
     if ((mods & GLFW_MOD_NUM_LOCK) == GLFW_MOD_NUM_LOCK) {
-        Rml::Input::KeyModifier::KM_NUMLOCK;
+        key_modifier |= Rml::Input::KeyModifier::KM_NUMLOCK;
     }
     rml_context->ProcessMouseMove(GetMouseX(), GetMouseY(), key_modifier);
 
@@ -181,7 +181,7 @@ void Application::InitRmlUi() {
     Rml::Initialise();
 
     rml_context = Rml::CreateContext("main", Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
-    if (!rml_context) {
+    if (rml_context == nullptr) {
         ENGINE_LOG_CRITICAL("Unable to load rml context!");
     }
 
@@ -202,7 +202,7 @@ void Application::InitRmlUi() {
 
     // Load the fonts
     for (int index = 0; index < fontDatabase["rmlui"].size(); index++) {
-        Rml::LoadFontFace((fontPath + fontDatabase["rmlui"][index]).c_str());
+        Rml::LoadFontFace(fontPath + fontDatabase["rmlui"][index]);
     }
     // Load fonts
     //m_event_instancer = std::make_unique<CqspEventInstancer>();
@@ -269,7 +269,7 @@ void Application::CalculateProjections() {
 Application::Application(int _argc, char* _argv[]) {
     cqsp::common::util::ExePath::exe_path = _argv[0];
     for (int i = 0; i < _argc; i++) {
-        cmd_line_args.push_back(_argv[i]);
+        cmd_line_args.emplace_back(_argv[i]);
     }
     // Get exe path
     std::ifstream config_path(m_client_options.GetDefaultLocation());
@@ -336,6 +336,7 @@ void Application::run() {
 
         //ProcessRmlUiUserInput();
         rml_context->Update();
+        m_audio_interface->OnFrame();
 
         // Clear screen
         glClearColor(0.f, 0.f, 0.f, 1.0f);
@@ -346,7 +347,12 @@ void Application::run() {
         m_scene_manager.Render(deltaTime);
         END_TIMED_BLOCK(Scene_Render);
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // Shut the opengl debugger up
+        int drawFboId = 0;
+        glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
+        if (drawFboId != 0) {
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
         rml_context->Render();
 
         BEGIN_TIMED_BLOCK(ImGui_Render_Draw);
@@ -367,13 +373,13 @@ void Application::run() {
     destroy();
 }
 
-bool Application::ShouldExit() { return !glfwWindowShouldClose(window(m_window)); }
+bool Application::ShouldExit() { return glfwWindowShouldClose(window(m_window)) == 0; }
 
-void Application::ExitApplication() { glfwSetWindowShouldClose(window(m_window), true); }
+void Application::ExitApplication() { glfwSetWindowShouldClose(window(m_window), 1); }
 
 Rml::ElementDocument* Application::LoadDocument(const std::string& path) {
     auto document = rml_context->LoadDocument(path);
-    if (!document) {
+    if (document == nullptr) {
         ENGINE_LOG_WARN("Unable to load document {}", path);
     }
     loaded_documents[path] = document;
@@ -449,7 +455,7 @@ bool Application::Screenshot(const char* path) {
     if (path == NULL) {
         // Make screenshot folder
         std::filesystem::path screenshot_folder =
-            std::filesystem::path(cqsp::common::util::GetCqspSavePath()) / "screenshots";
+            std::filesystem::path(cqsp::common::util::GetCqspAppDataPath()) / "screenshots";
         std::filesystem::create_directories(screenshot_folder);
 
         // Default file name is YYYY-MM-DD_HH.MM.SS.png in the data folder.
@@ -508,7 +514,7 @@ void Application::GlInit() {
 
 void Application::LoggerInit() {
     // Get path
-    properties["data"] = common::util::GetCqspSavePath();
+    properties["data"] = common::util::GetCqspAppDataPath();
     cqsp::engine::engine_logger = cqsp::common::util::make_logger("app", true);
     auto g_logger = cqsp::common::util::make_logger("game", true);
     spdlog::set_default_logger(g_logger);
@@ -524,7 +530,7 @@ void Application::LogInfo() {
     ENGINE_LOG_INFO("Compiled {} {}", __DATE__, __TIME__);
     ENGINE_LOG_INFO("Exe Path: {}", common::util::ExePath::exe_path);
     ENGINE_LOG_INFO("Data Path: {}", common::util::GetCqspDataPath());
-    ENGINE_LOG_INFO("Save Path: {}", common::util::GetCqspSavePath());
+    ENGINE_LOG_INFO("Save Path: {}", common::util::GetCqspAppDataPath());
 
 #ifdef TRACY_ENABLE
     ENGINE_LOG_INFO("Tracy protocol version: {}", tracy::ProtocolVersion);
@@ -548,7 +554,7 @@ void Application::SetFullScreen(bool screen) {
 
 Application::CqspEventInstancer::CqspEventInstancer() {}
 
-Application::CqspEventInstancer::~CqspEventInstancer() {}
+Application::CqspEventInstancer::~CqspEventInstancer() = default;
 
 Rml::EventListener* Application::CqspEventInstancer::InstanceEventListener(const Rml::String& value,
                                                                            Rml::Element* element) {
@@ -556,7 +562,7 @@ Rml::EventListener* Application::CqspEventInstancer::InstanceEventListener(const
     return new CqspEventListener(value);
 }
 
-Application::CqspEventListener::~CqspEventListener() {}
+Application::CqspEventListener::~CqspEventListener() = default;
 
 void Application::CqspEventListener::ProcessEvent(Rml::Event& event) {}
 }  // namespace cqsp::engine

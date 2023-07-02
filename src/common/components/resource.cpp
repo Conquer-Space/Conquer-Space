@@ -1,24 +1,25 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "common/components/resource.h"
 
 #include <spdlog/spdlog.h>
 
 #include <limits>
+#include <ranges>
 #include <utility>
 
 namespace cqsp::common::components {
@@ -89,7 +90,7 @@ bool MergeCompare(const ResourceLedger &m1, const ResourceLedger &m2, ResourceLe
 
 using cqsp::common::components::ResourceLedger;
 
-const double ResourceLedger::operator[](const entt::entity entity) const {
+double ResourceLedger::operator[](const entt::entity entity) const {
     cqsp::common::components::LedgerMap::const_iterator location = this->find(entity);
     if (location == this->end()) {
         return 0;
@@ -204,14 +205,14 @@ ResourceLedger ResourceLedger::operator/(const double value) const {
 
 // Not sure if this is faster than a function, but wanted to have fun with the preprocessor,
 // so here we go
-#define compare(map, compare_to, comparison)                               \
-    bool op = true;                                                        \
-    if (map.size() == 0) {                                                 \
-        return 0 comparison compare_to;                                    \
-    }                                                                      \
-    for (auto iterator = map.begin(); iterator != map.end(); iterator++) { \
-        op &= iterator->second comparison compare_to;                      \
-    }                                                                      \
+#define compare(map, compare_to, comparison)                                   \
+    bool op = true;                                                            \
+    if ((map).empty()) {                                                       \
+        return 0 comparison compare_to;                                        \
+    }                                                                          \
+    for (auto iterator = (map).begin(); iterator != (map).end(); iterator++) { \
+        op &= iterator->second comparison compare_to;                          \
+    }                                                                          \
     return op;
 
 bool ResourceLedger::operator>(const double &i) { compare((*this), i, >) }
@@ -228,7 +229,7 @@ bool ResourceLedger::operator>=(const ResourceLedger &ledger) {
     return MergeCompare(*this, ledger, 0, [](double a, double b) { return a >= b; });
 }
 
-bool ResourceLedger::operator==(const ResourceLedger &ledger) {
+bool ResourceLedger::LedgerEquals(const ResourceLedger &ledger) {
     return MergeCompare(*this, ledger, 0, [](double a, double b) { return a == b; });
 }
 
@@ -285,7 +286,7 @@ ResourceLedger ResourceLedger::LimitedRemoveResources(const ResourceLedger &othe
             t = 0;
         }
     }
-    return std::move(removed);
+    return removed;
 }
 
 ResourceLedger ResourceLedger::UnitLeger(const double val) {
@@ -300,22 +301,21 @@ ResourceLedger ResourceLedger::Clamp(const double minclamp, const double maxclam
     ResourceLedger newleg;
     for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
         double val = newleg[iterator->first];
-        if (val > maxclamp)
+        if (val > maxclamp) {
             val = maxclamp;
-        else if (val < minclamp)
+        } else if (val < minclamp) {
             val = minclamp;
+        }
         newleg[iterator->first];
     }
     return newleg;
 }
 
 bool ResourceLedger::HasAllResources(const ResourceLedger &ledger) {
-    for (auto led : ledger) {
-        if ((*this)[led.first] <= 0) {
-            return false;
-        }
+    if (&ledger == this) {
+        return true;
     }
-    return true;
+    return std::ranges::all_of(ledger, [this](auto led) { return (*this)[led.first] > 0; });
 }
 
 double ResourceLedger::GetSum() {
@@ -354,8 +354,9 @@ ResourceLedger ResourceLedger::SafeDivision(const ResourceLedger &other) {
 /// <returns>The smallest value in the ledger</returns>
 double ResourceLedger::Min() {
     double Minimum = this->begin()->second;
-    for (auto iterator = this->begin(); iterator != this->end(); iterator++)
+    for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
         if (iterator->second < Minimum) Minimum = iterator->second;
+    }
     return Minimum;
 }
 
@@ -365,8 +366,9 @@ double ResourceLedger::Min() {
 /// <returns>The largest value in the ledger</returns>
 double ResourceLedger::Max() {
     double Maximum = this->begin()->second;
-    for (auto iterator = this->begin(); iterator != this->end(); iterator++)
+    for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
         if (iterator->second > Maximum) Maximum = iterator->second;
+    }
     return Maximum;
 }
 

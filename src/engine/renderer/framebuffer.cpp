@@ -1,23 +1,25 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "engine/renderer/framebuffer.h"
 
 #include <glad/glad.h>
 #include <spdlog/spdlog.h>
+
+#include <utility>
 
 #include <tracy/Tracy.hpp>
 
@@ -32,7 +34,7 @@ void GenerateFrameBuffer(unsigned int& framebuffer) {
 }
 }  // namespace
 
-cqsp::engine::FramebufferRenderer::~FramebufferRenderer() { Free(); }
+cqsp::engine::FramebufferRenderer::~FramebufferRenderer() { FreeBuffer(); }
 
 void cqsp::engine::FramebufferRenderer::InitTexture(int width, int height) {
     GenerateFrameBuffer(framebuffer);
@@ -53,8 +55,9 @@ void cqsp::engine::FramebufferRenderer::InitTexture(int width, int height) {
     // now actually attach it
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         ENGINE_LOG_ERROR("Framebuffer is not complete!");
+    }
     // Reset framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -71,6 +74,9 @@ void cqsp::engine::FramebufferRenderer::BeginDraw() {
 
 void cqsp::engine::FramebufferRenderer::EndDraw() {
     ZoneScoped;
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) {
+        // Then celebrate or something like that
+    }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -85,7 +91,9 @@ void cqsp::engine::FramebufferRenderer::RenderBuffer() {
     glActiveTexture(GL_TEXTURE0);
 }
 
-void cqsp::engine::FramebufferRenderer::Free() {
+void cqsp::engine::FramebufferRenderer::Free() { FreeBuffer(); }
+
+void cqsp::engine::FramebufferRenderer::FreeBuffer() {
     glDeleteFramebuffers(1, &framebuffer);
     glDeleteBuffers(1, &colorbuffer);
 }
@@ -104,7 +112,7 @@ void cqsp::engine::FramebufferRenderer::NewFrame(const Window& window) {
     }
 }
 
-cqsp::engine::AAFrameBufferRenderer::~AAFrameBufferRenderer() { Free(); }
+cqsp::engine::AAFrameBufferRenderer::~AAFrameBufferRenderer() { FreeBuffer(); }
 
 void cqsp::engine::AAFrameBufferRenderer::InitTexture(int width, int height) {
     this->width = width;
@@ -154,7 +162,9 @@ void cqsp::engine::AAFrameBufferRenderer::BeginDraw() { glBindFramebuffer(GL_FRA
 
 void cqsp::engine::AAFrameBufferRenderer::EndDraw() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 
-void cqsp::engine::AAFrameBufferRenderer::Free() {
+void cqsp::engine::AAFrameBufferRenderer::Free() { FreeBuffer(); }
+
+void cqsp::engine::AAFrameBufferRenderer::FreeBuffer() {
     glDeleteFramebuffers(1, &framebuffer);
     glDeleteFramebuffers(1, &intermediateFBO);
     glDeleteBuffers(1, &screenTexture);
@@ -203,8 +213,11 @@ void LayerRenderer::DrawAllLayers() {
     for (auto& frame : framebuffers) {
         frame->RenderBuffer();
     }
-    // Reset render buffer
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    int drawFboId = 0;
+    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
+    if (drawFboId != 0) {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
 }
 
 void LayerRenderer::NewFrame(const cqsp::engine::Window& window) {
@@ -221,5 +234,5 @@ void LayerRenderer::InitFramebuffer(IFramebuffer* buffer, cqsp::asset::ShaderPro
     // Initialize pane
     buffer->InitTexture(window.GetWindowWidth(), window.GetWindowHeight());
     buffer->SetMesh(engine::primitive::MakeTexturedPaneMesh(true));
-    buffer->SetShader(shader);
+    buffer->SetShader(std::move(shader));
 }

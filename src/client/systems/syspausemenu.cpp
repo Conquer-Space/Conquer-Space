@@ -1,26 +1,30 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "client/systems/syspausemenu.h"
 
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
+
+#include <fstream>
+#include <string>
 
 #include "client/scenes/universescene.h"
+#include "client/systems/savegame.h"
 #include "client/systems/sysoptionswindow.h"
+#include "common/util/paths.h"
 #include "common/version.h"
 #include "engine/cqspgui.h"
 
@@ -45,7 +49,9 @@ void cqsp::client::systems::SysPauseMenu::DoUI(int delta_time) {
             to_show = false;
             cqsp::scene::SetGameHalted(false);
         }
-        CQSPGui::DefaultButton("Save Game", ImVec2(-FLT_MIN, button_height));
+        if (CQSPGui::DefaultButton("Save Game", ImVec2(-FLT_MIN, button_height))) {
+            client::save::save_game(GetUniverse());
+        }
         CQSPGui::DefaultButton("Load Game", ImVec2(-FLT_MIN, button_height));
         ImGui::Separator();
 
@@ -73,7 +79,7 @@ void cqsp::client::systems::SysPauseMenu::DoUI(int delta_time) {
 }
 
 void cqsp::client::systems::SysPauseMenu::DoUpdate(int delta_time) {
-    if (GetApp().ButtonIsReleased(GLFW_KEY_ESCAPE)) {
+    if (GetApp().ButtonIsReleased(cqsp::engine::KEY_ESCAPE)) {
         // Then pause
         to_show = !to_show;
         to_show_options_window = false;

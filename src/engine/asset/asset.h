@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #pragma once
 
 #include <string>
@@ -76,6 +76,7 @@ enum class AssetType {
     /// </summary>
     /// \see @ref cqsp::asset::AssetLoader::LoadShaderDefinition for implementation
     SHADER_DEFINITION,
+    SCRIPT,
     BINARY
 };
 
@@ -145,6 +146,8 @@ inline std::string ToString(AssetType type) {
             return "audio";
         case AssetType::BINARY:
             return "binary";
+        case AssetType::SHADER_DEFINITION:
+            return "shader_def";
     }
 }
 
@@ -154,8 +157,10 @@ inline std::string ToString(AssetType type) {
 class Asset {
  public:
     // Virtual destructor to make class virtual
-    virtual ~Asset() {}
+    virtual ~Asset() = default;
+    virtual AssetType GetAssetType() = 0;
     std::string path;
+    int accessed = 0;
 };
 }  // namespace asset
 }  // namespace cqsp

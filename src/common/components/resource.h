@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #pragma once
 
 #include <iostream>
@@ -69,7 +69,7 @@ struct ConsumerGood {
 
 struct Mineral {};
 // Good is for capital goods
-struct Capital {};
+struct CapitalGood {};
 
 typedef std::map<entt::entity, double> LedgerMap;
 
@@ -78,7 +78,7 @@ class ResourceLedger : private LedgerMap {
     ResourceLedger() = default;
     ~ResourceLedger() = default;
 
-    const double operator[](const entt::entity) const;
+    double operator[](const entt::entity) const;
 
     /// <summary>
     /// This resource ledger has enough resources inside to transfer "amount" amount of resources away
@@ -125,7 +125,7 @@ class ResourceLedger : private LedgerMap {
     /// </summary>
     bool operator>=(const ResourceLedger&);
 
-    bool operator==(const ResourceLedger&);
+    bool LedgerEquals(const ResourceLedger&);
 
     /// <summary>
     /// All resources in this ledger are greater than the number
@@ -202,7 +202,7 @@ class ResourceLedger : private LedgerMap {
     /// </summary>
     /// <param name=""></param>
     /// <returns></returns>
-    double MultiplyAndGetSum(ResourceLedger& ledger);
+    double MultiplyAndGetSum(ResourceLedger& other);
 
     std::string to_string();
 

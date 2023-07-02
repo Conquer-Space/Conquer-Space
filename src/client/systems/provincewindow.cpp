@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "client/systems/provincewindow.h"
 
 #include <limits>
@@ -22,6 +22,7 @@
 #include "client/components/clientctx.h"
 #include "client/systems/gui/sysstockpileui.h"
 #include "client/systems/gui/systooltips.h"
+#include "client/systems/marketwindow.h"
 #include "client/systems/views/starsystemview.h"
 #include "common/components/economy.h"
 #include "common/components/infrastructure.h"
@@ -31,6 +32,7 @@
 #include "common/components/ships.h"
 #include "common/components/surface.h"
 #include "common/systems/actions/shiplaunchaction.h"
+#include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
 #include "engine/cqspgui.h"
 
@@ -72,7 +74,7 @@ void SysProvinceInformation::DoUI(int delta_time) {
 void SysProvinceInformation::DoUpdate(int delta_time) {}
 
 void SysProvinceInformation::ProvinceView() {
-    ImGui::TextFmt("{}", gui::GetName(GetUniverse(), current_country));
+    ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), current_country));
     // List the cities
     auto& city_list = GetUniverse().get<common::components::Province>(current_country);
     int population = 0;
@@ -86,11 +88,11 @@ void SysProvinceInformation::ProvinceView() {
             population += segment.population;
         }
     }
-    ImGui::TextFmt("Part of {}", gui::GetName(GetUniverse(), city_list.country));
+    ImGui::TextFmt("Part of {}", common::util::GetName(GetUniverse(), city_list.country));
     ImGui::TextFmt("Population: {}", util::LongToHumanString(population));
     ImGui::Separator();
     for (entt::entity entity : city_list.cities) {
-        if (CQSPGui::DefaultSelectable(fmt::format("{}", gui::GetName(GetUniverse(), entity)).c_str())) {
+        if (CQSPGui::DefaultSelectable(fmt::format("{}", common::util::GetName(GetUniverse(), entity)).c_str())) {
             current_city = entity;
             view_mode = ViewMode::CITY_VIEW;
         }
@@ -162,6 +164,11 @@ void SysProvinceInformation::CityIndustryTabs() {
                 ImGui::EndTabItem();
             }
         }
+        if (ImGui::BeginTabItem("Economy")) {
+            // Show economy window
+            MarketInformationTable(GetUniverse(), current_city);
+            ImGui::EndTabItem();
+        }
         ImGui::EndTabBar();
     }
 }
@@ -208,7 +215,7 @@ void SysProvinceInformation::IndustryTab() {
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
         for (auto& at : city_industry.industries) {
-            ImGui::TextFmt("{}", gui::GetEntityType(GetUniverse(), at));
+            ImGui::TextFmt("{}", common::util::GetEntityType(GetUniverse(), at));
         }
         ImGui::EndTooltip();
     }
@@ -306,7 +313,7 @@ void SysProvinceInformation::IndustryListWindow() {
     auto& city_industry = GetUniverse().get<cqspc::IndustrialZone>(current_city);
 
     for (entt::entity industry : city_industry.industries) {
-        ImGui::TextFmt("{}", cqsp::client::systems::gui::GetName(GetUniverse(), industry));
+        ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), industry));
         if (ImGui::IsItemHovered()) {
             systems::gui::EntityTooltip(GetUniverse(), industry);
         }
@@ -319,7 +326,7 @@ void SysProvinceInformation::IndustryTabGenericChild(const std::string& tabname,
                                                      const ImVec2& size) {
     ImGui::BeginChild(tabname.c_str(), size, true, ImGuiWindowFlags_HorizontalScrollbar | window_flags);
     auto& city_industry = GetUniverse().get<cqspc::IndustrialZone>(current_city);
-    ImGui::TextFmt(tabname);
+    ImGui::TextFmt("{}", tabname);
     // List all the stuff it produces
 
     cqspc::ResourceLedger input_resources;

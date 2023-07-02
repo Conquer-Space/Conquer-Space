@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "common/util/paths.h"
 
 #include <filesystem>
@@ -34,8 +34,8 @@ char* get_home_dir(uid_t uid) {
     struct passwd* pwentp;
     char buf[1024];
 
-    if (getpwuid_r(uid, &pwent, buf, sizeof buf, &pwentp)) {
-        return "~";  // Easy trick because we couldn't find the dir
+    if (getpwuid_r(uid, &pwent, buf, sizeof buf, &pwentp) != 0) {
+        return (char*)"~";  // Easy trick because we couldn't find the dir
     } else {
         return pwent.pw_dir;
     }
@@ -46,8 +46,8 @@ char* get_home_dir(uid_t uid) {
 namespace cqsp::common::util {
 std::string ExePath::exe_path = std::string();  // NOLINT
 
-std::string GetCqspSavePath() {
-    std::string directory = "";
+std::string GetCqspAppDataPath() {
+    std::string directory;
     std::string dirname = "cqsp";
 #ifdef _WIN32
     // Set log folder
@@ -83,7 +83,7 @@ std::string GetCqspDataPath() {
     // so if it's debug, we'd automatically assume we're running from the local
     // windows debugger Because apparently linux doesn't build the debug
     // version. Not sure about other versions, but we'd probably have do deal
-    // with it in the future Usually, the output is at build\src\Debug, so we
+    // with it in the future. Usually, the output is at build\src\Debug, so we
     // need to access ../../../binaries/data
     return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) / ".." / ".." / ".." / "binaries" /
                                       "data")
@@ -97,5 +97,9 @@ std::string GetCqspDataPath() {
     //   - data <-- data is here, so it's ../data/
     return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) / "../data").string();
 #endif
+}
+std::string GetCqspSavePath() {
+    std::filesystem::path path = GetCqspAppDataPath();
+    return (path / "saves").string();
 }
 }  // namespace cqsp::common::util

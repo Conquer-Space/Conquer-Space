@@ -1,0 +1,25 @@
+[
+    {
+        name: Washington, D.C.
+        identifier: wdc
+        coordinates: {
+            latitude: 38.8892
+            longitude: -77.0506
+        }
+        planet: earth
+        timezone: EST
+        country: usa
+        population: [
+            {
+                size: 500000
+            }
+        ]
+        // Because DC is so tiny lmao
+        province: maryland
+        industry: [
+        ]
+        tags: [
+            capital
+        ]
+    }
+]

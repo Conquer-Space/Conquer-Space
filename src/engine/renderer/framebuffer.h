@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #pragma once
 
 #include <memory>
@@ -50,7 +50,7 @@ class FramebufferRenderer : public IFramebuffer {
     FramebufferRenderer() : IFramebuffer() {}
     ~FramebufferRenderer();
 
-    void InitTexture(int width = 1280, int height = 720) override;
+    void InitTexture(int width, int height) override;
     void Clear() override;
     void BeginDraw() override;
     void EndDraw() override;
@@ -60,6 +60,7 @@ class FramebufferRenderer : public IFramebuffer {
     void SetMesh(cqsp::engine::Mesh* mesh) override { mesh_output = mesh; }
     cqsp::engine::Mesh& GetMeshOutput() override { return *mesh_output; }
     void SetShader(cqsp::asset::ShaderProgram_t shader) override { buffer_shader = shader; }
+    void FreeBuffer();
 
  private:
     unsigned int framebuffer;
@@ -73,13 +74,14 @@ class AAFrameBufferRenderer : public IFramebuffer {
     AAFrameBufferRenderer() : IFramebuffer() {}
     ~AAFrameBufferRenderer();
 
-    void InitTexture(int width = 1280, int height = 720);
+    void InitTexture(int width, int height) override;
     void Clear() override;
     void BeginDraw() override;
     void EndDraw() override;
     void Free() override;
     void RenderBuffer() override;
     void NewFrame(const Window& window) override;
+    void FreeBuffer();
 
     cqsp::engine::Mesh& GetMeshOutput() override { return *mesh_output; }
     void SetMesh(cqsp::engine::Mesh* mesh) override { mesh_output = mesh; }

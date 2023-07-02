@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "common/components/coordinates.h"
 
 #include "common/components/units.h"
@@ -208,10 +208,36 @@ glm::vec3 CalculateVelocityElliptic(const double& E, const double& r, const doub
     return ((float)(sqrt(GM * a) / r) * glm::vec3(-sin(E), sqrt(1 - e * e) * cos(E), 0));
 }
 
+double GreatCircleDistance(SurfaceCoordinate& coord1, SurfaceCoordinate& coord2) {
+    double delta_lambda = abs(coord2.r_longitude() - coord1.r_longitude());
+    double alpha = cos(coord2.r_latitude()) * sin(delta_lambda);
+    double beta = cos(coord1.r_latitude()) * sin(coord2.r_latitude()) -
+                  cos(coord2.r_latitude()) * sin(coord1.r_latitude()) * cos(delta_lambda);
+    return atan2(sqrt(alpha * alpha + beta * beta),
+                 (sin(coord1.r_latitude()) * sin(coord2.r_latitude()) +
+                  cos(coord1.r_latitude()) * cos(coord2.r_latitude()) * cos(delta_lambda)));
+}
+
 glm::vec3 toVec3(const SurfaceCoordinate& coord, const float& radius) {
+    // This formula is wrong, it's actually
+    // x = sin(latitude) * cos (longitude)
+    // y = cos latitude
+    // z = sin latitude * sin longitude
+    // We should probably change it, but it breaks a lot, so we'll leave it here for now.
     return glm::vec3(cos(coord.r_latitude()) * sin(coord.r_longitude()), sin(coord.r_latitude()),
                      cos(coord.r_latitude()) * cos(coord.r_longitude())) *
            radius;
+}
+
+glm::dvec3 OrbitTimeToVec3(const Orbit& orb, const second& time) {
+    double v = 0;
+    double E = 0;
+    if (orb.eccentricity < 1) {
+        v = TrueAnomalyElliptic(orb, time, E);
+    } else {
+        v = TrueAnomalyHyperbolic(orb, time);
+    }
+    return toVec3(orb, v);
 }
 
 double GetLaunchAzimuth(double latitude, double inclination) {

@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "client/systems/creditswindow.h"
 
 #include <fstream>
@@ -29,8 +29,8 @@ std::string strip(const std::string& inpt) {
     }
     auto start_it = inpt.begin();
     auto end_it = inpt.rbegin();
-    while (std::isspace(*start_it)) ++start_it;
-    while (std::isspace(*end_it)) ++end_it;
+    while (std::isspace(*start_it) != 0) ++start_it;
+    while (std::isspace(*end_it) != 0) ++end_it;
     return std::string(start_it, end_it.base());
 }
 }  // namespace
@@ -133,7 +133,7 @@ void cqsp::client::CreditsWindow::LoadCreditsText() {
         } else if (line.rfind("##", 0) == 0) {
             tag = "h2";
             line = line.substr(2);
-        } else if (line.rfind("#", 0) == 0) {
+        } else if (line.rfind('#', 0) == 0) {
             tag = "h1";
             line = line.substr(1);
         }

@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "common/systems/loading/loadcities.h"
 
 #include <spdlog/spdlog.h>
@@ -29,6 +29,7 @@
 #include "common/components/population.h"
 #include "common/components/surface.h"
 #include "common/systems/actions/factoryconstructaction.h"
+#include "common/util/nameutil.h"
 
 namespace cqsp::common::systems::loading {
 bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
@@ -84,7 +85,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
     // Industry and economy
     auto& industry = universe.emplace<components::IndustrialZone>(entity);
-
+    auto& market = universe.emplace<components::Market>(entity);
     // Commercial area
     entt::entity commercial = universe.create();
 
@@ -156,6 +157,30 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
             // Set the stuff
             auto& highway = universe.emplace<components::infrastructure::Highway>(entity);
             highway.extent = values["infrastructure"]["highway"].to_double();
+        }
+    }
+
+    if (!values["tags"].empty()) {
+        for (int i = 0; i < values["tags"].size(); i++) {
+            if (values["tags"][i].to_string() == "capital") {
+                // Then it's a capital city of whatever country it's in
+                universe.emplace<components::CapitalCity>(entity);
+                // Add to parent country
+                if (universe.any_of<components::Governed>(entity)) {
+                    entt::entity governor = universe.get<components::Governed>(entity).governor;
+                    auto& country_comp = universe.get<components::Country>(governor);
+                    if (country_comp.capital_city != entt::null) {
+                        // Get name
+                        SPDLOG_INFO("Country {} already has a capital; {} will be replaced with {}",
+                                    util::GetName(universe, governor),
+                                    util::GetName(universe, country_comp.capital_city),
+                                    util::GetName(universe, entity));
+                        // Remove capital tag on the other capital city
+                        universe.remove<components::CapitalCity>(country_comp.capital_city);
+                    }
+                    country_comp.capital_city = entity;
+                }
+            }
         }
     }
     return true;

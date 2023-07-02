@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "engine/graphics/primitives/polygon.h"
 
 #include <glad/glad.h>
@@ -61,12 +61,13 @@ Mesh* CreateFilledCircle(int segments) {
     glBindVertexArray(vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(float), &positions[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(float), positions.data(), GL_STATIC_DRAW);
     int stride = 5;
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float),
+                          reinterpret_cast<void*>(3 * sizeof(float)));  // NOLINT
     glEnableVertexAttribArray(1);
     mesh->VAO = vao;
     mesh->VBO = vbo;
@@ -81,13 +82,12 @@ Mesh* CreateFilledTriangle() { return CreateFilledCircle(3); }
 Mesh* CreateFilledSquare() { return CreateFilledCircle(4); }
 
 Mesh* CreateLineCircle(int segments, float size) {
-    Mesh* mesh = new Mesh();
     std::vector<glm::vec3> positions;
     for (int i = 0; i <= segments + 1; i++) {
         double theta = i * cqsp::common::components::types::toRadian(360.f / segments);
         double y = std::sin(theta) * size;
         double x = std::cos(theta) * size;
-        positions.push_back({x, 0, y});
+        positions.emplace_back(x, 0, y);
     }
 
     return CreateLineSequence(positions);

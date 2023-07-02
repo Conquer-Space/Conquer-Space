@@ -1,18 +1,18 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "client/systems/editor/goodviewer.h"
 
@@ -20,6 +20,7 @@
 #include "common/components/economy.h"
 #include "common/components/name.h"
 #include "common/components/resource.h"
+#include "common/util/nameutil.h"
 
 void cqsp::client::systems::SysGoodViewer::Init() {}
 
@@ -31,7 +32,7 @@ void cqsp::client::systems::SysGoodViewer::DoUI(int delta_time) {
     ImGui::BeginChild("Good_viewer_left", ImVec2(300, -1));
     for (entt::entity good : goods) {
         bool is_selected = good == selected_good;
-        if (ImGui::SelectableFmt("{}", &is_selected, gui::GetName(GetUniverse(), good))) {
+        if (ImGui::SelectableFmt("{}", &is_selected, common::util::GetName(GetUniverse(), good))) {
             selected_good = good;
         }
     }
@@ -51,7 +52,7 @@ void cqsp::client::systems::SysGoodViewer::GoodViewerRight() {
         ImGui::Text("Good is invalid!");
         return;
     }
-    ImGui::TextFmt("Name: {}", gui::GetName(GetUniverse(), selected_good));
+    ImGui::TextFmt("Name: {}", common::util::GetName(GetUniverse(), selected_good));
     ImGui::TextFmt("Identifier: {}", GetUniverse().get<cc::Identifier>(selected_good).identifier);
     if (GetUniverse().any_of<cc::Matter>(selected_good)) {
         auto& good_comp = GetUniverse().get<cc::Matter>(selected_good);
@@ -64,7 +65,7 @@ void cqsp::client::systems::SysGoodViewer::GoodViewerRight() {
     if (GetUniverse().any_of<cc::Mineral>(selected_good)) {
         ImGui::TextFmt("mineral");
     }
-    if (GetUniverse().any_of<cc::Capital>(selected_good)) {
+    if (GetUniverse().any_of<cc::CapitalGood>(selected_good)) {
         ImGui::TextFmt("capitalgood");
     }
     ImGui::Separator();

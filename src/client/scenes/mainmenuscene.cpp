@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "client/scenes/mainmenuscene.h"
 
 #include <RmlUi/Debugger.h>
@@ -27,9 +27,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "client/components/clientctx.h"
 #include "client/scenes/universeloadingscene.h"
 #include "client/systems/sysoptionswindow.h"
 #include "common/util/paths.h"
+#include "common/util/save/save.h"
 #include "common/version.h"
 #include "engine/asset/asset.h"
 #include "engine/cqspgui.h"
@@ -39,7 +41,7 @@
 #include "engine/renderer/renderer.h"
 
 cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app)
-    : cqsp::engine::Scene(app), settings_window(app), credits_window(app) {}
+    : cqsp::engine::Scene(app), settings_window(app), credits_window(app), load_game_window(app) {}
 
 cqsp::scene::MainMenuScene::~MainMenuScene() {
     GetApp().GetRmlUiContext()->RemoveDataModel("settings");
@@ -48,6 +50,7 @@ cqsp::scene::MainMenuScene::~MainMenuScene() {
     main_menu->Close();
 
     settings_window.Close();
+    load_game_window.Close();
 }
 
 void cqsp::scene::MainMenuScene::Init() {
@@ -61,6 +64,8 @@ void cqsp::scene::MainMenuScene::Init() {
     settings_window.LoadDocument();
 
     credits_window.OpenDocument();
+
+    load_game_window.LoadDocument();
 
     ShuffleFileList();
     NextImage();
@@ -78,7 +83,7 @@ void cqsp::scene::MainMenuScene::Update(float deltaTime) {
     if (GetApp().GetTime() - last_switch > switch_time) {
         NextImage();
     }
-    if (is_options_visible && last_options_visible == false) {
+    if (is_options_visible && !last_options_visible) {
         auto opacity = settings_window.GetOpacity();
         if (opacity <= 0) {
             is_options_visible = false;
@@ -87,6 +92,11 @@ void cqsp::scene::MainMenuScene::Update(float deltaTime) {
     }
     last_options_visible = false;
     credits_window.Update(deltaTime);
+    if (load_game_window.Update()) {
+        // Load game
+        GetUniverse().ctx().emplace<client::ctx::GameLoad>(load_game_window.GetSaveDir());
+        GetApp().SetScene<cqsp::scene::UniverseLoadingScene>();
+    }
 }
 
 void cqsp::scene::MainMenuScene::Ui(float deltaTime) {}
@@ -189,7 +199,7 @@ void cqsp::scene::MainMenuScene::ShuffleFileList() {
     std::string splash_dir = GetApp().GetClientOptions().GetOptions()["splashscreens"].to_string();
     auto s = std::filesystem::canonical(std::filesystem::path(splash_dir)).string();
 
-    for (auto entry : std::filesystem::directory_iterator(splash_dir)) {
+    for (const auto& entry : std::filesystem::directory_iterator(splash_dir)) {
         std::string extension = entry.path().extension().string();
         std::transform(extension.begin(), extension.end(), extension.begin(),
                        [](unsigned char c) { return std::tolower(c); });
@@ -228,6 +238,7 @@ void cqsp::scene::MainMenuScene::EventListener::ProcessEvent(Rml::Event& event) 
         // Confirm window, then new game
         m_scene->GetApp().SetScene<cqsp::scene::UniverseLoadingScene>();
     } else if (id_pressed == "save_game") {
+        m_scene->load_game_window.Show();
     } else if (id_pressed == "options") {
         m_scene->settings_window.Show();
         m_scene->is_options_visible = true;

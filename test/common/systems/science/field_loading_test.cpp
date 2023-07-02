@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include <gtest/gtest.h>
 #include <hjson.h>
 
@@ -85,12 +85,14 @@ TEST(Science_FieldTest, FieldLoadingTest) {
     // Sort the list
     // written_hjson[0]
     std::vector<Hjson::Value> written_hjson_vector;
+    written_hjson_vector.reserve(written_hjson.size());
     for (int i = 0; i < written_hjson.size(); i++) {
         // Add the vector
         written_hjson_vector.push_back(written_hjson[i]);
     }
 
     std::vector<Hjson::Value> original_hjson_vector;
+    original_hjson_vector.reserve(hjson.size());
     for (int i = 0; i < hjson.size(); i++) {
         // Add the vector
         original_hjson_vector.push_back(hjson[i]);

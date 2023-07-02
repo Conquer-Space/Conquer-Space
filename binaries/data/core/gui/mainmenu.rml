@@ -51,7 +51,7 @@
     <img class="banner_image" src="../gfx/img/mainbanner2.png"/>
     <div class="button_menu">
         <button id="new_game" class="button active_button">New Game</button><br/>
-        <button id="save_game" class="button inactive_button">Load Save</button><br/>
+        <button id="save_game" class="button active_button">Load Save</button><br/>
         <button id="options" class="button active_button">Options</button><br/>
         <button id="credits" class="button active_button">Credits</button><br/>
         <button id="mods" class="button inactive_button">Mods</button><br/>

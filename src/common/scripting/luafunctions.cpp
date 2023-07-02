@@ -1,19 +1,19 @@
-/*
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+/* Conquer Space
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "common/scripting/luafunctions.h"
 
 #include <map>
@@ -99,7 +99,9 @@ void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::
     });
 
     REGISTER_FUNCTION("set_system_position", [&](entt::entity orbital_ent, double x, double y) {
-        universe.get_or_emplace<cqspt::GalacticCoordinate>(orbital_ent, x, y);
+        auto& coord = universe.get_or_emplace<cqspt::GalacticCoordinate>(orbital_ent);
+        coord.x = x;
+        coord.y = y;
     });
 
     REGISTER_FUNCTION("set_radius", [&](entt::entity body, int radius) {
@@ -108,7 +110,7 @@ void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::
     });
 
     REGISTER_FUNCTION("create_terrain", [&](entt::entity planet, int seed, entt::entity terrain_type) {
-        universe.emplace<cqspb::Terrain>(planet, seed, terrain_type);
+        static_cast<void>(universe.emplace<cqspb::Terrain>(planet, seed, terrain_type));
     });
 }
 

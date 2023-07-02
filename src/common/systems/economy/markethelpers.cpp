@@ -1,19 +1,19 @@
 /* Conquer Space
-* Copyright (C) 2021 Conquer Space
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2021-2023 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "common/systems/economy/markethelpers.h"
 
 #include "common/components/economy.h"
@@ -25,11 +25,11 @@ void cqsp::common::systems::economy::AddParticipant(cqsp::common::Universe& univ
     auto& market = universe.get<cqspc::Market>(market_entity);
     market.participants.insert(entity);
     universe.emplace<cqspc::MarketAgent>(entity, market_entity);
-    universe.get_or_emplace<cqspc::Wallet>(entity);
+    static_cast<void>(universe.get_or_emplace<cqspc::Wallet>(entity));
 }
 
 double cqsp::common::systems::economy::GetCost(cqsp::common::Universe& universe, entt::entity market,
-                                               components::ResourceLedger ledger) {
+                                               const components::ResourceLedger& ledger) {
     if (!universe.any_of<components::Market>(market)) {
         return 0.0;
     }
@@ -43,12 +43,12 @@ entt::entity cqsp::common::systems::economy::CreateMarket(Universe& universe) {
 }
 
 void cqsp::common::systems::economy::CreateMarket(Universe& universe, entt::entity market) {
-    universe.get_or_emplace<components::Market>(market);
-    universe.get_or_emplace<components::MarketHistory>(market);
+    static_cast<void>(universe.get_or_emplace<components::Market>(market));
+    static_cast<void>(universe.get_or_emplace<components::MarketHistory>(market));
 }
 
 bool cqsp::common::systems::economy::PurchaseGood(Universe& universe, entt::entity agent,
-                                                  components::ResourceLedger purchase) {
+                                                  const components::ResourceLedger& purchase) {
     // Calculating on how to buy from the market shouldn't be too hard, right?
     // Get the market connected to, and build the demand
     entt::entity market = universe.get<components::MarketAgent>(agent).market;
@@ -79,7 +79,7 @@ bool cqsp::common::systems::economy::PurchaseGood(Universe& universe, entt::enti
 }
 
 bool cqsp::common::systems::economy::SellGood(Universe& universe, entt::entity agent,
-                                              components::ResourceLedger selling) {
+                                              const components::ResourceLedger& selling) {
     // Calculating on how to buy from the market shouldn't be too hard, right?
     // Get the market connected to, and build the demand
     entt::entity market = universe.get<components::MarketAgent>(agent).market;
@@ -87,12 +87,13 @@ bool cqsp::common::systems::economy::SellGood(Universe& universe, entt::entity a
     auto& agent_stockpile = universe.get<components::ResourceStockpile>(agent);
     market_comp.AddSupply(selling);
 
+    double cost = market_comp.GetPrice(selling);
+
     // Remove from stockpile
     agent_stockpile -= selling;
 
     // Then subtract the cash from the person, or something
     // Check if they have enough money and purchase, I guess
-    double cost = market_comp.GetPrice(selling);
     components::Wallet& wallet = universe.get<components::Wallet>(agent);
     wallet += cost;
     return true;
