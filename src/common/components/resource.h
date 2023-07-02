@@ -125,7 +125,7 @@ class ResourceLedger : private LedgerMap {
     /// </summary>
     bool operator>=(const ResourceLedger&);
 
-    bool operator==(const ResourceLedger&);
+    bool LedgerEquals(const ResourceLedger&);
 
     /// <summary>
     /// All resources in this ledger are greater than the number
