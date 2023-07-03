@@ -74,6 +74,7 @@ const char* ParseType(GLenum type) {
         case GL_DEBUG_TYPE_OTHER:
             return ("Other");
     }
+    return "";
 }
 
 const char* ParseSeverity(GLenum severity) {
@@ -87,6 +88,7 @@ const char* ParseSeverity(GLenum severity) {
         case GL_DEBUG_SEVERITY_NOTIFICATION:
             return ("notification");
     }
+    return "";
 }
 
 const char* ParseSource(GLenum source) {
@@ -104,6 +106,7 @@ const char* ParseSource(GLenum source) {
         case GL_DEBUG_SOURCE_OTHER:
             return ("Other");
     }
+    return "";
 }
 
 void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum severity, GLsizei length,
@@ -429,7 +432,7 @@ void Application::ProcessRmlUiUserInput() {
         key_modifier |= Rml::Input::KeyModifier::KM_CAPSLOCK;
     }
     if ((mods & GLFW_MOD_NUM_LOCK) == GLFW_MOD_NUM_LOCK) {
-        Rml::Input::KeyModifier::KM_NUMLOCK;
+        key_modifier |= Rml::Input::KeyModifier::KM_NUMLOCK;
     }
     rml_context->ProcessMouseMove(GetMouseX(), GetMouseY(), key_modifier);
 

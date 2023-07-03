@@ -206,6 +206,8 @@ cqsp::asset::Shader::Shader(const std::string& code, ShaderType type) : id(0), s
         case ShaderType::GEOM:
             gl_shader_type = GL_GEOMETRY_SHADER;
             break;
+        case ShaderType::NONE:
+            break;
     }
     id = glCreateShader(gl_shader_type);
     const char* shader_char = code.c_str();
@@ -238,6 +240,8 @@ void cqsp::asset::Shader::operator()(const std::string& code, ShaderType type) {
         case ShaderType::GEOM:
             gl_shader_type = GL_GEOMETRY_SHADER;
             break;
+        case ShaderType::NONE:
+            break;
     }
     id = glCreateShader(gl_shader_type);
     const char* shader_char = code.c_str();
@@ -266,9 +270,7 @@ namespace {
 GLenum GetUniformType(GLuint program, const char* name) {
     GLuint in[1];
     glGetUniformIndices(program, 1, &name, in);
-    if (in == nullptr) {
-        return GL_INVALID_ENUM;
-    }
+
     GLint location = *in;
     ENGINE_LOG_TRACE("Program {}: {} is {}", program, name, location);
     if (location != -1) {

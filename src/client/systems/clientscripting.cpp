@@ -97,7 +97,7 @@ void UiInterfaces(engine::Application& app) {
 
     REGISTER_FUNCTION("End", [](const char* name) { ImGui::End(); });
 
-    REGISTER_FUNCTION("Text", [](const char* name) { ImGui::Text(name); });
+    REGISTER_FUNCTION("Text", [](const char* name) { ImGui::Text("%s", name); });
 
     REGISTER_FUNCTION("Separator", [](const char* name) { ImGui::Separator(); });
 

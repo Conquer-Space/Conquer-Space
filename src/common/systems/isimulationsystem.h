@@ -27,7 +27,7 @@ namespace systems {
 class ISimulationSystem {
  public:
     explicit ISimulationSystem(Game& game) : game(game) {}
-
+    virtual ~ISimulationSystem() = default;
     virtual void DoSystem() = 0;
 
     /// How often is `DoSystem` is run. It will be run every

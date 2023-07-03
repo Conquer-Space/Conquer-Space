@@ -114,7 +114,7 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
     if (universe.any_of<common::components::Description>(entity)) {
         auto& desc = universe.get<common::components::Description>(entity);
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7, 0.7, 0.7, 1));
-        ImGui::TextWrapped(desc.description.c_str());
+        ImGui::TextWrapped("%s", desc.description.c_str());
         ImGui::PopStyleColor();
     }
 

@@ -40,7 +40,7 @@ class NativeFile : public IVirtualFile {
 
     void Read(uint8_t* buffer, int bytes) override;
 
-    bool Seek(long offset, Offset origin);
+    bool Seek(long offset, Offset origin) override;
     uint64_t Tell() override;
 
     IVirtualFileSystem* GetFileSystem() override { return reinterpret_cast<IVirtualFileSystem*>(nfs); }
@@ -69,7 +69,7 @@ class NativeFileSystem : public IVirtualFileSystem {
     bool IsFile(const std::string& path) override;
     bool IsDirectory(const std::string& path) override;
     bool Exists(const std::string& path) override;
-    const std::string& GetRoot() { return root.c_str(); }
+    const std::string& GetRoot() { return root; }
 
  private:
     std::string root;

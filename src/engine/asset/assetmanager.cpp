@@ -144,6 +144,13 @@ void MakeShader(const Hjson::Value& hjson) {
                 }
                 break;
             }
+
+            case Hjson::Type::Undefined:
+            case Hjson::Type::Bool:
+            case Hjson::Type::Null:
+            case Hjson::Type::Map:
+            case Hjson::Type::String:
+                break;
         }
     }
 }

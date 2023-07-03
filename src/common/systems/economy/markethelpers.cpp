@@ -25,7 +25,7 @@ void cqsp::common::systems::economy::AddParticipant(cqsp::common::Universe& univ
     auto& market = universe.get<cqspc::Market>(market_entity);
     market.participants.insert(entity);
     universe.emplace<cqspc::MarketAgent>(entity, market_entity);
-    universe.get_or_emplace<cqspc::Wallet>(entity);
+    static_cast<void>(universe.get_or_emplace<cqspc::Wallet>(entity));
 }
 
 double cqsp::common::systems::economy::GetCost(cqsp::common::Universe& universe, entt::entity market,
@@ -43,8 +43,8 @@ entt::entity cqsp::common::systems::economy::CreateMarket(Universe& universe) {
 }
 
 void cqsp::common::systems::economy::CreateMarket(Universe& universe, entt::entity market) {
-    universe.get_or_emplace<components::Market>(market);
-    universe.get_or_emplace<components::MarketHistory>(market);
+    static_cast<void>(universe.get_or_emplace<components::Market>(market));
+    static_cast<void>(universe.get_or_emplace<components::MarketHistory>(market));
 }
 
 bool cqsp::common::systems::economy::PurchaseGood(Universe& universe, entt::entity agent,

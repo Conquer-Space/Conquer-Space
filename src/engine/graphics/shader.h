@@ -55,7 +55,6 @@ class Shader : public Asset {
     unsigned int id;
 
  private:
-    const Shader& operator=(const Shader&) {}
     explicit Shader(const Shader&) = default;
 };
 

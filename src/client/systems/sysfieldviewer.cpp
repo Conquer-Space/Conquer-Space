@@ -67,23 +67,23 @@ void SysFieldViewer::FieldInformationWindow() {
     }
     auto& field = GetUniverse().get<common::components::science::Field>(selected_tech);
     auto& name = GetUniverse().get<common::components::Name>(selected_tech);
-    ImGui::Text(name.name.c_str());
+    ImGui::Text("%s", name.name.c_str());
     if (GetUniverse().any_of<common::components::Description>(selected_tech)) {
         auto& desc = GetUniverse().get<common::components::Description>(selected_tech);
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7, 0.7, 0.7, 1));
-        ImGui::TextWrapped(desc.description.c_str());
+        ImGui::TextWrapped("%s", desc.description.c_str());
         ImGui::PopStyleColor();
     }
     ImGui::Separator();
     ImGui::Text("Parents");
     for (auto& f : field.parents) {
-        ImGui::Text(GetUniverse().get<common::components::Name>(f).name.c_str());
+        ImGui::Text("%s", GetUniverse().get<common::components::Name>(f).name.c_str());
     }
     ImGui::Separator();
     ImGui::Text("Adjacents");
 
     for (auto& f : field.adjacent) {
-        ImGui::Text(GetUniverse().get<common::components::Name>(f).name.c_str());
+        ImGui::Text("%s", GetUniverse().get<common::components::Name>(f).name.c_str());
     }
 }
 

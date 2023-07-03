@@ -40,7 +40,7 @@ class CQSPRenderInterface : public Rml::RenderInterface {
 
     void RenderCompiledGeometry(Rml::CompiledGeometryHandle geometry, const Rml::Vector2f& translation) override;
 
-    void ReleaseCompiledGeometry(Rml::CompiledGeometryHandle geometry);
+    void ReleaseCompiledGeometry(Rml::CompiledGeometryHandle geometry) override;
 
     void EnableScissorRegion(bool enable) override;
 

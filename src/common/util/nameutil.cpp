@@ -86,8 +86,7 @@ std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity e
         return "Science Lab";
     } else if (universe.any_of<cqspc::Commercial>(entity)) {
         return "Commercial";
-    } else {
-        return "Unknown";
     }
+    return "Unknown";
 }
 }  // namespace cqsp::common::util

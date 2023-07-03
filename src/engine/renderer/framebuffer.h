@@ -73,7 +73,7 @@ class AAFrameBufferRenderer : public IFramebuffer {
     AAFrameBufferRenderer() : IFramebuffer() {}
     ~AAFrameBufferRenderer();
 
-    void InitTexture(int width = 1280, int height = 720);
+    void InitTexture(int width = 1280, int height = 720) override;
     void Clear() override;
     void BeginDraw() override;
     void EndDraw() override;

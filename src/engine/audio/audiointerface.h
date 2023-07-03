@@ -103,19 +103,19 @@ class AudioInterface : public IAudioInterface {
     ALCcontext *context;
     ALboolean enumeration;
 
-    void Initialize();
-    void Pause(bool to_pause);
-    void PauseMusic(bool to_pause);
-    std::string GetAudioVersion();
-    void Destruct();
-    void StartWorker();
-    void RequestPlayAudio();
-    void SetMusicVolume(float volume);
+    void Initialize() override;
+    void Pause(bool to_pause) override;
+    void PauseMusic(bool to_pause) override;
+    std::string GetAudioVersion() override;
+    void Destruct() override;
+    void StartWorker() override;
+    void RequestPlayAudio() override;
+    void SetMusicVolume(float volume) override;
 
-    void AddAudioClip(const std::string &key, cqsp::asset::AudioAsset *asset);
-    void PlayAudioClip(const std::string &key);
-    void PlayAudioClip(cqsp::asset::AudioAsset *asset, int channel);
-    void SetChannelVolume(int channel, float gain);
+    void AddAudioClip(const std::string &key, cqsp::asset::AudioAsset *asset) override;
+    void PlayAudioClip(const std::string &key) override;
+    void PlayAudioClip(cqsp::asset::AudioAsset *asset, int channel) override;
+    void SetChannelVolume(int channel, float gain) override;
     void OnFrame() override;
 
     ~AudioInterface();

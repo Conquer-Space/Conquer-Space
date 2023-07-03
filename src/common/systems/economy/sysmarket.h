@@ -22,7 +22,7 @@ namespace cqsp::common::systems {
 class SysMarket : public ISimulationSystem {
  public:
     explicit SysMarket(Game& game) : ISimulationSystem(game) {}
-    void DoSystem();
+    void DoSystem() override;
     int Interval() override { return components::StarDate::DAY; }
 
     /// <summary>
