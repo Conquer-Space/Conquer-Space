@@ -17,12 +17,13 @@
 #include "common/universe.h"
 
 #include <memory>
+#include <utility>
 
 #include "common/util/random/stdrandom.h"
 #include "common/util/uuid.h"
 
 cqsp::common::Universe::Universe() : Universe(util::random_id()) {}
 
-cqsp::common::Universe::Universe(std::string uuid) : uuid(uuid) {
+cqsp::common::Universe::Universe(std::string uuid) : uuid(std::move(uuid)) {
     random = std::make_unique<cqsp::common::util::StdRandom>(42);
 }

@@ -59,7 +59,7 @@ bool LoadInitialValues(Universe& universe, const entt::entity& entity, const Hjs
 
 cqsp::common::components::ResourceLedger HjsonToLedger(cqsp::common::Universe& universe, Hjson::Value& hjson) {
     components::ResourceLedger stockpile;
-    for (auto input_good : hjson) {
+    for (auto& input_good : hjson) {
         stockpile[universe.goods[input_good.first]] = input_good.second;
     }
     return stockpile;
@@ -109,7 +109,7 @@ double ReadUnit(std::string_view value, components::types::UnitType unit_type, b
     std::size_t index = content.find_last_of(' ');
     if (index == std::string::npos) {
         for (index = content.size(); index > 0; index--) {
-            if (!isalpha(content.at(index - 1))) {
+            if (isalpha(content.at(index - 1)) == 0) {
                 break;
             }
         }

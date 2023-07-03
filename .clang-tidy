@@ -42,6 +42,10 @@ Checks: '-*,
 	,-readability-suspicious-call-argument,
 	,-modernize-use-default-member-init,
 	,-google-readability-casting,
+	,-readability-identifier-length,
+	,-modernize-loop-convert,
+	,-clang-diagnostic-builtin-macro-redefined,
+	,-modernize-use-nullptr,
 '
 
 WarningsAsErrors: '*'

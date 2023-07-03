@@ -84,8 +84,8 @@ class FontPrototype : public AssetPrototype {
 };
 }  // namespace
 
-bool Package::HasAsset(const char* asset) { return assets.count(asset) != 0; }
-bool Package::HasAsset(const std::string& asset) { return assets.count(asset) != 0; }
+bool Package::HasAsset(const char* asset) { return assets.contains(asset); }
+bool Package::HasAsset(const std::string& asset) { return assets.contains(asset); }
 
 void Package::ClearAssets() {
     for (auto a = assets.begin(); a != assets.end(); a++) {
@@ -94,15 +94,12 @@ void Package::ClearAssets() {
     assets.clear();
 }
 
-AssetManager::AssetManager() {}
-
 ShaderProgram_t AssetManager::MakeShader(const std::string& vert, const std::string& frag) {
-    return std::make_shared<ShaderProgram>(*GetAsset<Shader>(vert.c_str()), *GetAsset<Shader>(frag.c_str()));
+    return std::make_shared<ShaderProgram>(*GetAsset<Shader>(vert), *GetAsset<Shader>(frag));
 }
 
 ShaderProgram_t AssetManager::MakeShader(const std::string& vert, const std::string& frag, const std::string& geom) {
-    return std::make_shared<ShaderProgram>(*GetAsset<Shader>(vert.c_str()), *GetAsset<Shader>(frag.c_str()),
-                                           *GetAsset<Shader>(geom.c_str()));
+    return std::make_shared<ShaderProgram>(*GetAsset<Shader>(vert), *GetAsset<Shader>(frag), *GetAsset<Shader>(geom));
 }
 
 std::string GetShaderCode(const std::string& identifier) { return std::string(); }
@@ -237,7 +234,7 @@ void AssetLoader::LoadMods() {
 
     // Load all the mods
     std::filesystem::directory_iterator mods_folder_iterator(mods_folder);
-    for (auto mod_element : mods_folder_iterator) {
+    for (auto& mod_element : mods_folder_iterator) {
         mod_load(LoadModPrototype(mod_element.path().string()));
     }
     ENGINE_LOG_INFO("Loaded mods folder");
@@ -256,12 +253,12 @@ void AssetLoader::LoadMods() {
     mods = Hjson::Merge(all_mods, mods);
 
     // Load the mods that are to be loaded
-    for (auto it : mods) {
+    for (auto& it : mods) {
         manager->m_package_prototype_list[it.first].enabled = static_cast<bool>(it.second);
     }
 
     // Load all the packages
-    for (auto it : manager->m_package_prototype_list) {
+    for (auto& it : manager->m_package_prototype_list) {
         // Get the thing
         auto package = LoadPackage(it.second.path);
         if (package == nullptr) {
@@ -339,7 +336,7 @@ std::unique_ptr<Package> AssetLoader::LoadPackage(std::string path) {
 
     // Mount to name
     std::string mount_point = package->name;
-    mounter.AddMountPoint(mount_point.c_str(), vfs);
+    mounter.AddMountPoint(mount_point, vfs);
 
     ENGINE_LOG_INFO("Mounted package {}", package->name);
 
@@ -385,6 +382,7 @@ std::unique_ptr<Asset> AssetLoader::LoadAsset(const AssetType& type, const std::
     }
     return std::move(loading_functions[type](&mounter, path, key, hints));
 }
+
 void AssetLoader::PlaceAsset(Package& package, const AssetType& type, const std::string& path, const std::string& key,
                              const Hjson::Value& hints) {
     ZoneScoped;
@@ -456,7 +454,7 @@ std::unique_ptr<Asset> AssetLoader::LoadText(VirtualMounter* mount, const std::s
         return nullptr;
     }
     std::unique_ptr<cqspa::TextAsset> asset = std::make_unique<cqspa::TextAsset>();
-    auto file = mount->Open(path.c_str());
+    auto file = mount->Open(path);
     int size = file->Size();
     asset->data = ReadAllFromVFileToString(file.get());
     return std::move(asset);
@@ -469,7 +467,7 @@ std::unique_ptr<Asset> AssetLoader::LoadTextDirectory(VirtualMounter* mount, con
         return nullptr;
     }
     std::unique_ptr<cqspa::TextDirectoryAsset> asset = std::make_unique<cqspa::TextDirectoryAsset>();
-    auto dir = mount->OpenDirectory(path.c_str());
+    auto dir = mount->OpenDirectory(path);
     int size = dir->GetSize();
     for (int i = 0; i < size; i++) {
         auto file = dir->GetFile(i);
@@ -500,12 +498,12 @@ std::unique_ptr<Asset> AssetLoader::LoadTexture(VirtualMounter* mount, const std
         prototype->options.mag_filter = false;
     }
 
-    auto file = mount->Open(path.c_str(), FileModes::Binary);
+    auto file = mount->Open(path, FileModes::Binary);
     uint64_t file_size = file->Size();
     auto buffer = ReadAllFromVFile(file.get());
     prototype->data = stbi_load_from_memory(buffer.data(), file_size, &prototype->width, &prototype->height,
                                             &prototype->components, 0);
-    if (prototype->data) {
+    if (prototype->data != nullptr) {
         QueueHolder holder(prototype);
 
         m_asset_queue.push(holder);
@@ -557,7 +555,7 @@ std::unique_ptr<Asset> AssetLoader::LoadHjson(VirtualMounter* mount, const std::
             }
         }
     } else {
-        auto file = mount->Open(path.c_str());
+        auto file = mount->Open(path);
         // Read the file
         try {
             asset->data = Hjson::Unmarshal(ReadAllFromVFileToString(file.get()), dec_opt);
@@ -753,7 +751,7 @@ std::unique_ptr<TextDirectoryAsset> AssetLoader::LoadScriptDirectory(VirtualMoun
         std::string file_path = file->Path();
 
         // Ignore non lua files
-        if (file_path.substr(file_path.find_last_of(".") + 1) != "lua") {
+        if (file_path.substr(file_path.find_last_of('.') + 1) != "lua") {
             continue;
         }
         // Ignore base.lua file
@@ -772,7 +770,7 @@ std::unique_ptr<TextDirectoryAsset> AssetLoader::LoadScriptDirectory(VirtualMoun
         // to require a file called test/abc.lua
 
         // Remove file extension
-        size_t lastdot = script_file_name.find_last_of(".");
+        size_t lastdot = script_file_name.find_last_of('.');
         if (lastdot != std::string::npos) {
             script_file_name = script_file_name.substr(0, lastdot);
         }
@@ -787,7 +785,7 @@ std::unique_ptr<TextDirectoryAsset> AssetLoader::LoadScriptDirectory(VirtualMoun
     return asset;
 }
 
-void AssetLoader::LoadDirectory(std::string path, std::function<void(std::string)> file) {
+void AssetLoader::LoadDirectory(const std::string& path, const std::function<void(std::string)>& file) {
     auto iterator = std::filesystem::recursive_directory_iterator(path);
     int count = std::distance(iterator, std::filesystem::recursive_directory_iterator());
     max_loading += count;
@@ -838,7 +836,7 @@ void AssetLoader::LoadResources(Package& package, const std::string& package_mou
 void AssetLoader::LoadResourceHjsonFile(Package& package, const std::string& package_mount_path,
                                         const std::string& resource_file_path, const Hjson::Value& asset_value) {
     ZoneScoped;
-    for (const auto [key, val] : asset_value) {
+    for (const auto& [key, val] : asset_value) {
         ENGINE_LOG_TRACE("Loading asset {}", key);
         std::string type = val["type"];
 
@@ -883,6 +881,6 @@ bool AssetLoader::HjsonPrototypeDirectory(Package& package, const std::string& p
 
 IVirtualFileSystem* AssetLoader::GetVfs(const std::string& path) {
     // Return native filesystem for now.
-    return new NativeFileSystem(path.c_str());
+    return new NativeFileSystem(path);
 }
 }  // namespace cqsp::asset

@@ -58,7 +58,6 @@ std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity e
     } else if (universe.any_of<cqspc::Settlement, cqspc::Habitation>(entity)) {
         return "City";
     } else if (universe.any_of<cqspc::Production>(entity)) {
-        std::string production = "";
         auto& generator = universe.get<cqspc::Production>(entity);
         return fmt::format("{} Factory", GetName(universe, generator.recipe));
     } else if (universe.any_of<cqspc::Mine>(entity)) {

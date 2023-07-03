@@ -29,7 +29,7 @@
 #include "common/systems/loading/loadutil.h"
 
 #define CHECK_DEFINED(x, entity)  \
-    if (!x.defined()) {           \
+    if (!(x).defined()) {         \
         universe.destroy(entity); \
         continue;                 \
     }

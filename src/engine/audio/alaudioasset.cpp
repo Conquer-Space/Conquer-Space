@@ -36,7 +36,10 @@ std::unique_ptr<AudioAsset> LoadOgg(std::ifstream& input) {
     int numSamples = stb_vorbis_decode_memory((unsigned char*)(data), size, &channels, &sample_rate, &buffer);
 
     ALenum format = channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
-    alBufferData(audio_asset->buffer, format, buffer, numSamples * channels * sizeof(int16), sample_rate);
+    alBufferData(
+        audio_asset->buffer, format, buffer,
+        static_cast<unsigned long long>(numSamples) * static_cast<unsigned long long>(channels) * sizeof(int16),
+        sample_rate);
     audio_asset->length = static_cast<float>(numSamples) / static_cast<float>(sample_rate);
 
     // Free memory

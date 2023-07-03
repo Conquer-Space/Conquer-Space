@@ -75,8 +75,8 @@ void ProcessAction(Universe& universe, entt::entity civilization, const std::str
     // Split by the colon
     auto& tech_progress = universe.get_or_emplace<components::science::TechnologicalProgress>(civilization);
 
-    std::string action_name = action.substr(0, action.find(":"));
-    std::string outcome_name = action.substr(action.find(":") + 1, action.size());
+    std::string action_name = action.substr(0, action.find(':'));
+    std::string outcome_name = action.substr(action.find(':') + 1, action.size());
     if (action_name == "recipe") {
         // Get the text
         // Now load recipe

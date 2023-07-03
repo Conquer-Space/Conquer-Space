@@ -47,7 +47,7 @@ namespace cqsp::common::util {
 std::string ExePath::exe_path = std::string();  // NOLINT
 
 std::string GetCqspAppDataPath() {
-    std::string directory = "";
+    std::string directory;
     std::string dirname = "cqsp";
 #ifdef _WIN32
     // Set log folder

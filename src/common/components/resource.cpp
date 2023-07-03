@@ -19,6 +19,7 @@
 #include <spdlog/spdlog.h>
 
 #include <limits>
+#include <ranges>
 #include <utility>
 
 namespace cqsp::common::components {
@@ -89,7 +90,7 @@ bool MergeCompare(const ResourceLedger &m1, const ResourceLedger &m2, ResourceLe
 
 using cqsp::common::components::ResourceLedger;
 
-const double ResourceLedger::operator[](const entt::entity entity) const {
+double ResourceLedger::operator[](const entt::entity entity) const {
     cqsp::common::components::LedgerMap::const_iterator location = this->find(entity);
     if (location == this->end()) {
         return 0;
@@ -204,14 +205,14 @@ ResourceLedger ResourceLedger::operator/(const double value) const {
 
 // Not sure if this is faster than a function, but wanted to have fun with the preprocessor,
 // so here we go
-#define compare(map, compare_to, comparison)                               \
-    bool op = true;                                                        \
-    if (map.size() == 0) {                                                 \
-        return 0 comparison compare_to;                                    \
-    }                                                                      \
-    for (auto iterator = map.begin(); iterator != map.end(); iterator++) { \
-        op &= iterator->second comparison compare_to;                      \
-    }                                                                      \
+#define compare(map, compare_to, comparison)                                   \
+    bool op = true;                                                            \
+    if ((map).empty()) {                                                       \
+        return 0 comparison compare_to;                                        \
+    }                                                                          \
+    for (auto iterator = (map).begin(); iterator != (map).end(); iterator++) { \
+        op &= iterator->second comparison compare_to;                          \
+    }                                                                          \
     return op;
 
 bool ResourceLedger::operator>(const double &i) { compare((*this), i, >) }
@@ -285,7 +286,7 @@ ResourceLedger ResourceLedger::LimitedRemoveResources(const ResourceLedger &othe
             t = 0;
         }
     }
-    return std::move(removed);
+    return removed;
 }
 
 ResourceLedger ResourceLedger::UnitLeger(const double val) {
@@ -300,22 +301,18 @@ ResourceLedger ResourceLedger::Clamp(const double minclamp, const double maxclam
     ResourceLedger newleg;
     for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
         double val = newleg[iterator->first];
-        if (val > maxclamp)
+        if (val > maxclamp) {
             val = maxclamp;
-        else if (val < minclamp)
+        } else if (val < minclamp) {
             val = minclamp;
+        }
         newleg[iterator->first];
     }
     return newleg;
 }
 
 bool ResourceLedger::HasAllResources(const ResourceLedger &ledger) {
-    for (auto led : ledger) {
-        if ((*this)[led.first] <= 0) {
-            return false;
-        }
-    }
-    return true;
+    return std::ranges::all_of(ledger, [&](auto led) { return (*this)[led.first] <= 0; });
 }
 
 double ResourceLedger::GetSum() {
@@ -354,8 +351,9 @@ ResourceLedger ResourceLedger::SafeDivision(const ResourceLedger &other) {
 /// <returns>The smallest value in the ledger</returns>
 double ResourceLedger::Min() {
     double Minimum = this->begin()->second;
-    for (auto iterator = this->begin(); iterator != this->end(); iterator++)
+    for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
         if (iterator->second < Minimum) Minimum = iterator->second;
+    }
     return Minimum;
 }
 
@@ -365,8 +363,9 @@ double ResourceLedger::Min() {
 /// <returns>The largest value in the ledger</returns>
 double ResourceLedger::Max() {
     double Maximum = this->begin()->second;
-    for (auto iterator = this->begin(); iterator != this->end(); iterator++)
+    for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
         if (iterator->second > Maximum) Maximum = iterator->second;
+    }
     return Maximum;
 }
 

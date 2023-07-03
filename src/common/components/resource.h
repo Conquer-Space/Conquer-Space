@@ -78,7 +78,7 @@ class ResourceLedger : private LedgerMap {
     ResourceLedger() = default;
     ~ResourceLedger() = default;
 
-    const double operator[](const entt::entity) const;
+    double operator[](const entt::entity) const;
 
     /// <summary>
     /// This resource ledger has enough resources inside to transfer "amount" amount of resources away
@@ -202,7 +202,7 @@ class ResourceLedger : private LedgerMap {
     /// </summary>
     /// <param name=""></param>
     /// <returns></returns>
-    double MultiplyAndGetSum(ResourceLedger& ledger);
+    double MultiplyAndGetSum(ResourceLedger& other);
 
     std::string to_string();
 

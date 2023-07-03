@@ -161,7 +161,7 @@ class PackagePrototype {
 
 class AssetManager {
  public:
-    AssetManager();
+    AssetManager() = default;
 
     ShaderProgram_t MakeShader(const std::string& vert, const std::string& frag);
     ShaderProgram_t MakeShader(const std::string& vert, const std::string& frag, const std::string& geom);
@@ -269,7 +269,7 @@ class AssetLoader {
     /// </summary>
     /// <param name="package">Path to package folder</param>
     /// <returns>The uniqueptr to the package that is created</returns>
-    std::unique_ptr<Package> LoadPackage(std::string package);
+    std::unique_ptr<Package> LoadPackage(std::string path);
 
     /// <summary>
     /// The assets that need to be on the main thread. Takes one asset from the queue and processes it
@@ -467,7 +467,7 @@ class AssetLoader {
     /// <param name="path">Path of directory to read</param>
     /// <param name="file">Function pointer to do something with the path, and it takes the path of the
     /// asset as the parameter</param>
-    void LoadDirectory(std::string path, std::function<void(std::string)> file);
+    void LoadDirectory(const std::string& path, const std::function<void(std::string)>& file);
 
     /// <summary>
     /// Loads all the `resource.hjson` files in the specified directory.

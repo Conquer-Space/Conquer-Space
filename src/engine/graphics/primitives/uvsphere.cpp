@@ -156,16 +156,16 @@ cqsp::engine::Mesh* cqsp::engine::primitive::ConstructSphereMesh(int x_segments,
         vertices.push_back(positions[i].x);
         vertices.push_back(positions[i].y);
         vertices.push_back(positions[i].z);
-        if (uv.size() > 0) {
+        if (!uv.empty()) {
             vertices.push_back(uv[i].x);
             vertices.push_back(uv[i].y);
         }
-        if (normals.size() > 0) {
+        if (!normals.empty()) {
             vertices.push_back(normals[i].x);
             vertices.push_back(normals[i].y);
             vertices.push_back(normals[i].z);
         }
-        if (tangents.size() > 0) {
+        if (!tangents.empty()) {
             vertices.push_back(tangents[i].x);
             vertices.push_back(tangents[i].y);
             vertices.push_back(tangents[i].z);
@@ -179,7 +179,7 @@ cqsp::engine::Mesh* cqsp::engine::primitive::ConstructSphereMesh(int x_segments,
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
     float stride = (3 + 2 + 3);
-    if (tangents.size() > 0) {
+    if (!tangents.empty()) {
         stride += 4;
     }
     stride *= sizeof(float);
@@ -189,7 +189,7 @@ cqsp::engine::Mesh* cqsp::engine::primitive::ConstructSphereMesh(int x_segments,
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(5 * sizeof(float)));
-    if (tangents.size() > 0) {
+    if (!tangents.empty()) {
         glEnableVertexAttribArray(3);
         glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(8 * sizeof(float)));
     }

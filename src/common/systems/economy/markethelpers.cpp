@@ -29,7 +29,7 @@ void cqsp::common::systems::economy::AddParticipant(cqsp::common::Universe& univ
 }
 
 double cqsp::common::systems::economy::GetCost(cqsp::common::Universe& universe, entt::entity market,
-                                               components::ResourceLedger ledger) {
+                                               const components::ResourceLedger& ledger) {
     if (!universe.any_of<components::Market>(market)) {
         return 0.0;
     }
@@ -48,7 +48,7 @@ void cqsp::common::systems::economy::CreateMarket(Universe& universe, entt::enti
 }
 
 bool cqsp::common::systems::economy::PurchaseGood(Universe& universe, entt::entity agent,
-                                                  components::ResourceLedger purchase) {
+                                                  const components::ResourceLedger& purchase) {
     // Calculating on how to buy from the market shouldn't be too hard, right?
     // Get the market connected to, and build the demand
     entt::entity market = universe.get<components::MarketAgent>(agent).market;
@@ -79,7 +79,7 @@ bool cqsp::common::systems::economy::PurchaseGood(Universe& universe, entt::enti
 }
 
 bool cqsp::common::systems::economy::SellGood(Universe& universe, entt::entity agent,
-                                              components::ResourceLedger selling) {
+                                              const components::ResourceLedger& selling) {
     // Calculating on how to buy from the market shouldn't be too hard, right?
     // Get the market connected to, and build the demand
     entt::entity market = universe.get<components::MarketAgent>(agent).market;
