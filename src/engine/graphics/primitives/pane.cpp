@@ -34,7 +34,9 @@ cqsp::engine::Mesh* cqsp::engine::primitive::MakeTexturedPaneMesh() {
         0, 1, 3,  // first triangle
         1, 2, 3   // second triangle
     };
-    unsigned int VBO, VAO, EBO;
+    unsigned int VBO;
+    unsigned int VAO;
+    unsigned int EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);

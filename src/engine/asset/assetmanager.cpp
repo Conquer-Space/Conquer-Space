@@ -304,7 +304,7 @@ std::optional<PackagePrototype> AssetLoader::LoadModPrototype(const std::string&
     return std::optional<PackagePrototype>(prototype);
 }
 
-std::unique_ptr<Package> AssetLoader::LoadPackage(std::string path) {
+std::unique_ptr<Package> AssetLoader::LoadPackage(const std::string& path) {
     ZoneScoped;
     // Load into filesystem
     // Load the assets of a package specified by a path

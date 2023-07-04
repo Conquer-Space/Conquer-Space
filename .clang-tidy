@@ -44,7 +44,7 @@ Checks: '-*,
 	,-google-readability-casting,
 	,-readability-identifier-length,
 	,-modernize-loop-convert,
-	,-clang-diagnostic-builtin-macro-redefined,
+	,-clang-diagnostic-macro-redefined,
 	,-modernize-use-nullptr,
 '
 

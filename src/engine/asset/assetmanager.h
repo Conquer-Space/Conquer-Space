@@ -269,7 +269,7 @@ class AssetLoader {
     /// </summary>
     /// <param name="package">Path to package folder</param>
     /// <returns>The uniqueptr to the package that is created</returns>
-    std::unique_ptr<Package> LoadPackage(std::string path);
+    std::unique_ptr<Package> LoadPackage(const std::string& path);
 
     /// <summary>
     /// The assets that need to be on the main thread. Takes one asset from the queue and processes it
@@ -497,7 +497,7 @@ class AssetLoader {
     /// <param name="resource_mount_path">root path of the package</param>
     /// <param name="resource_file_path">Resource file path</param>
     /// <param name="asset_value">Hjson value to read from</param>
-    void LoadResourceHjsonFile(Package& package, const std::string& resource_mount_path,
+    void LoadResourceHjsonFile(Package& package, const std::string& package_mount_path,
                                const std::string& resource_file_path, const Hjson::Value& asset_value);
     /// <summary>
     /// Defines a directory that contains hjson asset data.
