@@ -90,7 +90,7 @@ void SysFieldViewer::FieldInformationWindow() {
 void SysFieldNodeViewer::Init() {}
 
 namespace {
-typedef std::map<entt::entity, std::tuple<int, int, int>> FieldNodeInformation;
+using FieldNodeInformation = std::map<entt::entity, std::tuple<int, int, int>>;
 
 entt::entity CalculateInputPair(const FieldNodeInformation& map, int pin_value) {
     entt::entity field = entt::null;
@@ -152,7 +152,8 @@ void AcceptNewItem(cqsp::common::Universe& universe, int input_type, entt::entit
 }
 
 void CreateNewNode(cqsp::common::Universe& universe, FieldNodeInformation& map) {
-    ed::PinId inputPinId, outputPinId;
+    ed::PinId inputPinId;
+    ed::PinId outputPinId;
     if (!ed::QueryNewLink(&inputPinId, &outputPinId)) {
         return;
     }

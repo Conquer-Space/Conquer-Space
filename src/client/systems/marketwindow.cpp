@@ -76,10 +76,11 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
         ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.previous_demand[good_entity]));
         ImGui::TableSetColumnIndex(4);
         double sd_ratio = market.sd_ratio[good_entity];
-        if (sd_ratio == std::numeric_limits<double>::infinity())
+        if (sd_ratio == std::numeric_limits<double>::infinity()) {
             ImGui::TextFmt("inf");
-        else
+        } else {
             ImGui::TextFmt("{}", sd_ratio);
+        }
         ImGui::TableSetColumnIndex(5);
         ImGui::TextFmt("{}", market.ds_ratio[good_entity]);
         ImGui::TableSetColumnIndex(6);

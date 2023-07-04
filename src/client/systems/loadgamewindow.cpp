@@ -55,7 +55,7 @@ void cqsp::client::LoadGameWindow::InitializeDataModel() {
         std::filesystem::create_directories(save_path);
     }
     std::filesystem::directory_iterator it(save_path);
-    for (auto entry : it) {
+    for (const auto& entry : it) {
         // Check if it has the meta file name
         if (!entry.is_directory()) {
             continue;

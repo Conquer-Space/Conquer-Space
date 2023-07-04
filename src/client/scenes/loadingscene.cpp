@@ -66,7 +66,7 @@ void cqsp::scene::LoadingScene::Init() {
     model_handle = constructor.GetModelHandle();
 
     document = GetApp().LoadDocument(LOADING_ID);
-    if (document) {
+    if (document != nullptr) {
         document->Show();
     }
 }
@@ -81,7 +81,7 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
 
         // Load audio
         auto hjson = GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("core:ui_sounds");
-        for (auto element : hjson->data) {
+        for (const auto& element : hjson->data) {
             auto audio_asset = GetAssetManager().GetAsset<cqsp::asset::AudioAsset>(element.second.to_string());
             if (audio_asset == nullptr) {
                 SPDLOG_WARN("Cannot find audio asset {}", element.second.to_string());

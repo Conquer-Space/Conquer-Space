@@ -109,7 +109,8 @@ cqsp::engine::Mesh* cqsp::engine::primitive::ConstructSphereMesh(int x_segments,
     GLuint vao = 0;
     glGenVertexArrays(1, &vao);
 
-    unsigned int vbo, ebo;
+    unsigned int vbo;
+    unsigned int ebo;
     glGenBuffers(1, &vbo);
     glGenBuffers(1, &ebo);
 
@@ -129,10 +130,10 @@ cqsp::engine::Mesh* cqsp::engine::primitive::ConstructSphereMesh(int x_segments,
             float xPos = std::cos(xTheta) * std::sin(yTheta / 2);
             float yPos = std::cos(yTheta / 2);
             float zPos = std::sin(xTheta) * std::sin(yTheta / 2);
-            positions.push_back({xPos, yPos, zPos});
+            positions.emplace_back(xPos, yPos, zPos);
             // Invert x segments so that the texture shows up properly.
-            uv.push_back({x_segments - xSegment, ySegment});
-            normals.push_back({xPos, yPos, zPos});
+            uv.emplace_back(x_segments - xSegment, ySegment);
+            normals.emplace_back(xPos, yPos, zPos);
             //tangents.push_back({std::cos(xTheta - PI / 2), 0.0f, std::sin(xTheta - PI / 2), 1.0f});
         }
     }

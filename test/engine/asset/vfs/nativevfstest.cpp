@@ -23,9 +23,7 @@
 
 class NativeVfsTest : public ::testing::Test {
  protected:
-    NativeVfsTest() : nfs(package_root.c_str()) {
-        full_name = (std::filesystem::path(package_root) / test_file).string();
-    }
+    NativeVfsTest() : nfs(package_root) { full_name = (std::filesystem::path(package_root) / test_file).string(); }
     void SetUp() {
         if (!std::filesystem::exists(full_name)) {
             FAIL() << "File " << full_name << ", which is needed for this test";
@@ -99,8 +97,8 @@ TEST_F(NativeVfsTest, SeekTest) {
 }
 
 TEST_F(NativeVfsTest, IsFileTest) {
-    ASSERT_TRUE(nfs.Exists(test_file.c_str()));
-    ASSERT_TRUE(nfs.IsFile(test_file.c_str()));
+    ASSERT_TRUE(nfs.Exists(test_file));
+    ASSERT_TRUE(nfs.IsFile(test_file));
     // File doesn't exist
     ASSERT_FALSE(nfs.IsFile("dir"));
     ASSERT_FALSE(nfs.Exists("dir"));

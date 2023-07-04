@@ -87,7 +87,7 @@ Mesh* CreateLineCircle(int segments, float size) {
         double theta = i * cqsp::common::components::types::toRadian(360.f / segments);
         double y = std::sin(theta) * size;
         double x = std::cos(theta) * size;
-        positions.emplace_back(glm::vec3 {x, 0, y});
+        positions.emplace_back(x, 0, y);
     }
 
     return CreateLineSequence(positions);

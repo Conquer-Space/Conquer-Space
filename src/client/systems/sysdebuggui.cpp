@@ -192,7 +192,7 @@ void cqsp::client::systems::SysDebugMenu::ConsoleInput() {
                 break;
             }
             if (no_command) {
-                items.push_back("#Command does not exist!");
+                items.emplace_back("#Command does not exist!");
             }
 
             command = "";
@@ -241,20 +241,20 @@ void SysDebugMenu::DoUpdate(int delta_time) {
     if (!fps_history.empty() && (fps_history.begin()->x + fps_history_len) < time) {
         fps_history.erase(fps_history.begin());
     }
-    fps_history.push_back(ImVec2(time, fps));
+    fps_history.emplace_back(time, fps);
 
     for (auto it = profiler_information_map.begin(); it != profiler_information_map.end(); it++) {
         if (!history_maps[it->first].empty() && (history_maps[it->first].begin()->x + fps_history_len) < time) {
             history_maps[it->first].erase(history_maps[it->first].begin());
         }
 
-        history_maps[it->first].push_back(ImVec2(time, it->second));
+        history_maps[it->first].emplace_back(time, it->second);
     }
 
     // Add lua logging information
     if (!GetApp().GetScriptInterface().values.empty()) {
         // Fill up the things
-        for (auto str : GetApp().GetScriptInterface().values) {
+        for (const auto& str : GetApp().GetScriptInterface().values) {
             items.push_back("[lua] " + str);
         }
         GetApp().GetScriptInterface().values.clear();

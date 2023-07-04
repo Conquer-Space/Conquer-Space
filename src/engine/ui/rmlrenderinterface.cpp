@@ -37,15 +37,15 @@ class RmlUiRendererGeometryHandler {
     RmlUiRendererGeometryHandler() : VAO(0), VBO(0), EBO(0), num_vertices(0), num_indices(0), texture(0) {}
 
     ~RmlUiRendererGeometryHandler() {
-        if (VAO) {
+        if (VAO != 0u) {
             glDeleteVertexArrays(1, &VAO);
         }
 
-        if (VBO) {
+        if (VBO != 0u) {
             glDeleteBuffers(1, &VBO);
         }
 
-        if (EBO) {
+        if (EBO != 0u) {
             glDeleteBuffers(1, &EBO);
         }
         VAO = VBO = EBO = 0;
@@ -176,7 +176,7 @@ void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(Rml::CompiledGeom
 
     asset::ShaderProgram* shader = nullptr;
     // Draw the geometry
-    if (geom->texture) {
+    if (geom->texture != nullptr) {
         texture_shader->UseProgram();
         shader = texture_shader.get();
         glActiveTexture(GL_TEXTURE0);
@@ -218,7 +218,6 @@ void cqsp::engine::CQSPRenderInterface::EnableScissorRegion(bool enable) {
 
 void cqsp::engine::CQSPRenderInterface::SetScissorRegion(int x, int y, int width, int height) {
     glScissor(x, app.GetWindowHeight() - (y + height), width, height);
-    return;
     // TODO(EhWhoAmI): Add stencil buffer rendering
     // Reference:
     // https://github.com/mikke89/RmlUi/blob/master/Samples/shell/src/ShellRenderInterfaceOpenGL.cpp#L120
@@ -231,10 +230,12 @@ bool cqsp::engine::CQSPRenderInterface::LoadTexture(Rml::TextureHandle& texture_
     // Open file and do things
     cqsp::asset::Texture* texture = new cqsp::asset::Texture();
 
-    int width, height, components;
+    int width;
+    int height;
+    int components;
     //stbi_set_flip_vertically_on_load(true);
     unsigned char* data2 = stbi_load(source.c_str(), &width, &height, &components, 0);
-    if (!data2) {
+    if (data2 == nullptr) {
         return false;
     }
     asset::TextureLoadingOptions options;

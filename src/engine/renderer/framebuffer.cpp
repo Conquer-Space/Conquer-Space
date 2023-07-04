@@ -19,6 +19,8 @@
 #include <glad/glad.h>
 #include <spdlog/spdlog.h>
 
+#include <utility>
+
 #include <tracy/Tracy.hpp>
 
 #include "common/util/profiler.h"
@@ -53,8 +55,9 @@ void cqsp::engine::FramebufferRenderer::InitTexture(int width, int height) {
     // now actually attach it
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         ENGINE_LOG_ERROR("Framebuffer is not complete!");
+    }
     // Reset framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -227,5 +230,5 @@ void LayerRenderer::InitFramebuffer(IFramebuffer* buffer, cqsp::asset::ShaderPro
     // Initialize pane
     buffer->InitTexture(window.GetWindowWidth(), window.GetWindowHeight());
     buffer->SetMesh(engine::primitive::MakeTexturedPaneMesh(true));
-    buffer->SetShader(shader);
+    buffer->SetShader(std::move(shader));
 }

@@ -83,7 +83,7 @@ void cqsp::scene::MainMenuScene::Update(float deltaTime) {
     if (GetApp().GetTime() - last_switch > switch_time) {
         NextImage();
     }
-    if (is_options_visible && last_options_visible == false) {
+    if (is_options_visible && !last_options_visible) {
         auto opacity = settings_window.GetOpacity();
         if (opacity <= 0) {
             is_options_visible = false;
@@ -199,7 +199,7 @@ void cqsp::scene::MainMenuScene::ShuffleFileList() {
     std::string splash_dir = GetApp().GetClientOptions().GetOptions()["splashscreens"].to_string();
     auto s = std::filesystem::canonical(std::filesystem::path(splash_dir)).string();
 
-    for (auto entry : std::filesystem::directory_iterator(splash_dir)) {
+    for (const auto& entry : std::filesystem::directory_iterator(splash_dir)) {
         std::string extension = entry.path().extension().string();
         std::transform(extension.begin(), extension.end(), extension.begin(),
                        [](unsigned char c) { return std::tolower(c); });

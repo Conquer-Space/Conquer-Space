@@ -78,11 +78,11 @@ cqsp::engine::BasicRendererObject cqsp::engine::MakeRenderable() {
     return std::make_shared<cqsp::engine::Renderable>();
 }
 
-cqsp::engine::BasicRenderer::~BasicRenderer() {}
+cqsp::engine::BasicRenderer::~BasicRenderer() = default;
 
 void cqsp::engine::BasicRenderer::Draw() {
     // Then iterate through them and render
-    for (auto renderable : renderables) {
+    for (const auto &renderable : renderables) {
         renderable->shaderProgram->UseProgram();
         renderable->shaderProgram->setMat4("model", renderable->model);
         renderable->shaderProgram->setMat4("view", view);

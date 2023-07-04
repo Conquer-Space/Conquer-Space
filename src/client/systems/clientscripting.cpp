@@ -47,6 +47,7 @@ sol::object JsonToLuaObject(const Hjson::Value& j, const sol::this_state& s) {
         }
         case Hjson::Type::Vector: {
             std::vector<sol::object> vec;
+            vec.reserve(static_cast<int>(j.size()));
             for (auto index = 0; index < static_cast<int>(j.size()); ++index) {
                 vec.push_back(JsonToLuaObject(j[index], s));
             }

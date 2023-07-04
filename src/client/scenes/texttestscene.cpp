@@ -21,7 +21,7 @@
 #define TX(x)        \
     indices[#x] = x; \
     names.push_back(#x);
-cqsp::scene::TextTestScene::~TextTestScene() {}
+cqsp::scene::TextTestScene::~TextTestScene() = default;
 
 void cqsp::scene::TextTestScene::Init() {
     auto shader = GetApp().GetAssetManager().MakeShader("core:framebuffervert", "core:framebufferfrag");

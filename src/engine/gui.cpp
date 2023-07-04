@@ -142,11 +142,11 @@ void DrawFlowIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& b, ax::Dr
     drawList->PathBezierCurveTo(ImVec2(left, bottom), ImVec2(left, bottom), ImVec2(left, bottom) - ImVec2(0, rounding));
 
     if (!filled) {
-        if (innerColor & 0xFF000000) {
+        if ((innerColor & 0xFF000000) != 0u) {
             drawList->AddConvexPolyFilled(drawList->_Path.Data, drawList->_Path.Size, innerColor);
         }
 
-        drawList->PathStroke(color, true, 2.0f * outline_scale);
+        drawList->PathStroke(color, 1, 2.0f * outline_scale);
     } else {
         drawList->PathFillConvex(color);
     }
@@ -185,7 +185,7 @@ void ax::Drawing::DrawIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& 
             if (!filled) {
                 const auto r = 0.5f * rect_w / 2.0f - 0.5f;
 
-                if (innerColor & 0xFF000000) drawList->AddCircleFilled(c, r, innerColor, 12 + extra_segments);
+                if ((innerColor & 0xFF000000) != 0u) drawList->AddCircleFilled(c, r, innerColor, 12 + extra_segments);
                 drawList->AddCircle(c, r, color, 12 + extra_segments, 2.0f * outline_scale);
             } else {
                 drawList->AddCircleFilled(c, 0.5f * rect_w / 2.0f, color, 12 + extra_segments);
@@ -203,7 +203,8 @@ void ax::Drawing::DrawIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& 
                 const auto p0 = rect_center - ImVec2(r, r);
                 const auto p1 = rect_center + ImVec2(r, r);
 
-                if (innerColor & 0xFF000000) drawList->AddRectFilled(p0, p1, innerColor, 0, 15 + extra_segments);
+                if ((innerColor & 0xFF000000) != 0u)
+                    drawList->AddRectFilled(p0, p1, innerColor, 0, 15 + extra_segments);
 
                 drawList->AddRect(p0, p1, color, 0, 15 + extra_segments, 2.0f * outline_scale);
             }
@@ -250,7 +251,7 @@ void ax::Drawing::DrawIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& 
                 const auto p0 = rect_center - ImVec2(r, r);
                 const auto p1 = rect_center + ImVec2(r, r);
 
-                if (innerColor & 0xFF000000) {
+                if ((innerColor & 0xFF000000) != 0u) {
                     drawList->AddRectFilled(p0, p1, innerColor, cr, 15);
                 }
 
@@ -275,11 +276,11 @@ void ax::Drawing::DrawIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& 
                 drawList->PathLineTo(c + ImVec2(0, r));
                 drawList->PathLineTo(c + ImVec2(-r, 0));
 
-                if (innerColor & 0xFF000000) {
+                if ((innerColor & 0xFF000000) != 0u) {
                     drawList->AddConvexPolyFilled(drawList->_Path.Data, drawList->_Path.Size, innerColor);
                 }
 
-                drawList->PathStroke(color, true, 2.0f * outline_scale);
+                drawList->PathStroke(color, 1, 2.0f * outline_scale);
             }
         } else {
             const auto triangleTip = triangleStart + rect_w * (0.45f - 0.32f);

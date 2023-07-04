@@ -111,8 +111,9 @@ const char* ParseSource(GLenum source) {
 
 void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum severity, GLsizei length,
                             const char* message, const void* userParam) {
-    if (id == 131169 || id == 131185 || id == 131218 || id == 131204)
+    if (id == 131169 || id == 131185 || id == 131218 || id == 131204) {
         return;  // ignore these non-significant error codes
+    }
 
     ENGINE_LOG_INFO("{} message from {} ({}:{}): {}", ParseType(type), ParseSource(source), ParseSeverity(severity), id,
                     message);
@@ -120,17 +121,19 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum 
 
 class GLWindow : public cqsp::engine::Window {
  public:
-    bool ButtonIsHeld(int btn) const { return m_keys_held[btn]; }
-    bool ButtonIsReleased(int btn) const { return m_keys_released[btn]; }
-    bool ButtonIsPressed(int btn) const { return m_keys_pressed[btn]; }
-    double GetMouseX() const { return m_mouse_x; }
-    double GetMouseY() const { return m_mouse_y; }
+    [[nodiscard]] bool ButtonIsHeld(int btn) const { return m_keys_held[btn]; }
+    [[nodiscard]] bool ButtonIsReleased(int btn) const { return m_keys_released[btn]; }
+    [[nodiscard]] bool ButtonIsPressed(int btn) const { return m_keys_pressed[btn]; }
+    [[nodiscard]] double GetMouseX() const { return m_mouse_x; }
+    [[nodiscard]] double GetMouseY() const { return m_mouse_y; }
 
-    bool MouseButtonIsHeld(int btn) const { return m_mouse_keys_held[btn]; }
-    bool MouseButtonIsReleased(int btn) const { return m_mouse_keys_released[btn]; }
-    bool MouseButtonIsPressed(int btn) const { return m_mouse_keys_pressed[btn]; }
+    [[nodiscard]] bool MouseButtonIsHeld(int btn) const { return m_mouse_keys_held[btn]; }
+    [[nodiscard]] bool MouseButtonIsReleased(int btn) const { return m_mouse_keys_released[btn]; }
+    [[nodiscard]] bool MouseButtonIsPressed(int btn) const { return m_mouse_keys_pressed[btn]; }
 
-    bool MouseDragged() const { return !(m_mouse_x == m_mouse_x_on_pressed && m_mouse_y == m_mouse_y_on_pressed); }
+    [[nodiscard]] bool MouseDragged() const {
+        return m_mouse_x != m_mouse_x_on_pressed || m_mouse_y != m_mouse_y_on_pressed;
+    }
 
     void KeyboardCallback(GLFWwindow* _w, int key, int scancode, int action, int mods) {
         if (action == GLFW_PRESS) {
@@ -243,10 +246,10 @@ class GLWindow : public cqsp::engine::Window {
         ZoneScoped;
         glfwSwapBuffers(window);
         // Before polling events, clear the buttons
-        std::memset(m_keys_pressed, false, sizeof(m_keys_pressed));
-        std::memset(m_keys_released, false, sizeof(m_keys_released));
-        std::memset(m_mouse_keys_pressed, false, sizeof(m_mouse_keys_pressed));
-        std::memset(m_mouse_keys_released, false, sizeof(m_mouse_keys_released));
+        std::memset(m_keys_pressed, 0, sizeof(m_keys_pressed));
+        std::memset(m_keys_released, 0, sizeof(m_keys_released));
+        std::memset(m_mouse_keys_pressed, 0, sizeof(m_mouse_keys_pressed));
+        std::memset(m_mouse_keys_released, 0, sizeof(m_mouse_keys_released));
         m_scroll_amount = 0;
         keys_pressed_last.clear();
         keys_released_last.clear();
@@ -261,11 +264,11 @@ class GLWindow : public cqsp::engine::Window {
         glfwSetWindowSize(window, width, height);
     }
 
-    bool WindowSizeChanged() const { return window_size_changed; }
+    [[nodiscard]] bool WindowSizeChanged() const { return window_size_changed; }
 
-    int GetScrollAmount() const { return m_scroll_amount; }
-    int GetWindowHeight() const { return m_window_height; }
-    int GetWindowWidth() const { return m_window_width; }
+    [[nodiscard]] int GetScrollAmount() const { return m_scroll_amount; }
+    [[nodiscard]] int GetWindowHeight() const { return m_window_height; }
+    [[nodiscard]] int GetWindowWidth() const { return m_window_width; }
 
     void InitWindow(int width, int height) {
         glfwInit();
@@ -273,8 +276,8 @@ class GLWindow : public cqsp::engine::Window {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_SAMPLES, app->GetClientOptions().GetOptions()["samples"].to_int64());
-        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-        glfwWindowHint(GLFW_DOUBLEBUFFER, true);
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, 1);
+        glfwWindowHint(GLFW_DOUBLEBUFFER, 1);
         glfwWindowHint(GLFW_DECORATED,
                        ((bool)app->GetClientOptions().GetOptions()["window"]["decorated"]) ? GLFW_TRUE : GLFW_FALSE);
 
@@ -300,14 +303,14 @@ class GLWindow : public cqsp::engine::Window {
         SetCallbacks();
 
         // Init glad
-        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        if (gladLoadGLLoader((GLADloadproc)glfwGetProcAddress) == 0) {
             glfwTerminate();
             ENGINE_LOG_CRITICAL("Cannot load glad");
         }
         int flags;
         glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
 
-        if (flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
+        if ((flags & GL_CONTEXT_FLAG_DEBUG_BIT) != 0) {
             glEnable(GL_DEBUG_OUTPUT);
             glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);  // makes sure errors are displayed synchronously
             glDebugMessageCallback(glDebugOutput, nullptr);
@@ -318,9 +321,9 @@ class GLWindow : public cqsp::engine::Window {
         glViewport(0, 0, width, height);
     }
 
-    double MouseButtonLastReleased(int btn) const { return m_mouse_keys_last_pressed[btn]; }
+    [[nodiscard]] double MouseButtonLastReleased(int btn) const { return m_mouse_keys_last_pressed[btn]; }
 
-    bool MouseButtonDoubleClicked(int btn) const {
+    [[nodiscard]] bool MouseButtonDoubleClicked(int btn) const {
         bool is_pressed_long_enough = (m_mouse_pressed_time[btn]) <= 0.5f;
         return (MouseButtonIsPressed(btn) && is_pressed_long_enough);
     }
@@ -484,7 +487,7 @@ void Application::InitRmlUi() {
     Rml::Initialise();
 
     rml_context = Rml::CreateContext("main", Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
-    if (!rml_context) {
+    if (rml_context == nullptr) {
         ENGINE_LOG_CRITICAL("Unable to load rml context!");
     }
 
@@ -505,7 +508,7 @@ void Application::InitRmlUi() {
 
     // Load the fonts
     for (int index = 0; index < fontDatabase["rmlui"].size(); index++) {
-        Rml::LoadFontFace((fontPath + fontDatabase["rmlui"][index]).c_str());
+        Rml::LoadFontFace(fontPath + fontDatabase["rmlui"][index]);
     }
     // Load fonts
     //m_event_instancer = std::make_unique<CqspEventInstancer>();
@@ -572,7 +575,7 @@ void Application::CalculateProjections() {
 Application::Application(int _argc, char* _argv[]) {
     cqsp::common::util::ExePath::exe_path = _argv[0];
     for (int i = 0; i < _argc; i++) {
-        cmd_line_args.push_back(_argv[i]);
+        cmd_line_args.emplace_back(_argv[i]);
     }
     // Get exe path
     std::ifstream config_path(m_client_options.GetDefaultLocation());
@@ -676,13 +679,13 @@ void Application::run() {
     destroy();
 }
 
-bool Application::ShouldExit() { return !glfwWindowShouldClose(window(m_window)); }
+bool Application::ShouldExit() { return glfwWindowShouldClose(window(m_window)) == 0; }
 
-void Application::ExitApplication() { glfwSetWindowShouldClose(window(m_window), true); }
+void Application::ExitApplication() { glfwSetWindowShouldClose(window(m_window), 1); }
 
 Rml::ElementDocument* Application::LoadDocument(const std::string& path) {
     auto document = rml_context->LoadDocument(path);
-    if (!document) {
+    if (document == nullptr) {
         ENGINE_LOG_WARN("Unable to load document {}", path);
     }
     loaded_documents[path] = document;
@@ -890,9 +893,9 @@ void SceneManager::Render(float deltaTime) {
     m_scene->Render(deltaTime);
 }
 
-Application::CqspEventInstancer::CqspEventInstancer() {}
+Application::CqspEventInstancer::CqspEventInstancer() = default;
 
-Application::CqspEventInstancer::~CqspEventInstancer() {}
+Application::CqspEventInstancer::~CqspEventInstancer() = default;
 
 Rml::EventListener* Application::CqspEventInstancer::InstanceEventListener(const Rml::String& value,
                                                                            Rml::Element* element) {
@@ -900,7 +903,7 @@ Rml::EventListener* Application::CqspEventInstancer::InstanceEventListener(const
     return new CqspEventListener(value);
 }
 
-Application::CqspEventListener::~CqspEventListener() {}
+Application::CqspEventListener::~CqspEventListener() = default;
 
 void Application::CqspEventListener::ProcessEvent(Rml::Event& event) {}
 }  // namespace cqsp::engine

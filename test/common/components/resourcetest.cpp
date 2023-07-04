@@ -21,7 +21,8 @@
 using cqsp::common::components::ResourceLedger;
 
 TEST(Common_ResourceLedger, ResourceLedgerComparison) {
-    ResourceLedger first, second;
+    ResourceLedger first;
+    ResourceLedger second;
     // Set the stuff
     // Registry because it's demanding
     entt::registry reg;
