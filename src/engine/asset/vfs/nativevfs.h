@@ -33,7 +33,7 @@ class NativeFile : public IVirtualFile {
     explicit NativeFile(NativeFileSystem* _nfs) : IVirtualFile(), nfs(_nfs), path("") {}
     NativeFile(NativeFileSystem* _nfs, const std::string& file) : IVirtualFile(), nfs(_nfs), path(file) {}
 
-    ~NativeFile();
+    ~NativeFile() = default;
 
     const std::string& Path() override;
     uint64_t Size() override;
@@ -57,14 +57,14 @@ class NativeFile : public IVirtualFile {
 
 class NativeFileSystem : public IVirtualFileSystem {
  public:
-    explicit NativeFileSystem(const std::string& root);
-    ~NativeFileSystem();
+    explicit NativeFileSystem(std::string root);
+    ~NativeFileSystem() = default;
 
     bool Initialize() override { return true; }
 
-    std::shared_ptr<IVirtualFile> Open(const std::string& path, FileModes = None) override;
+    std::shared_ptr<IVirtualFile> Open(const std::string& path, FileModes) override;
     void Close(std::shared_ptr<IVirtualFile>&) override;
-    std::shared_ptr<IVirtualDirectory> OpenDirectory(const std::string& path) override;
+    std::shared_ptr<IVirtualDirectory> OpenDirectory(const std::string& dir) override;
 
     bool IsFile(const std::string& path) override;
     bool IsDirectory(const std::string& path) override;
