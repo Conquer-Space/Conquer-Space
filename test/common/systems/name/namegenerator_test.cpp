@@ -29,7 +29,7 @@ using cqsp::common::systems::names::NameGenerator;
 
 TEST(NameGeneratorTest, BasicTest) {
     NameGenerator gen;
-    cqsp::common::util::StdRandom std_random(31415926535);
+    cqsp::common::util::StdRandom std_random(31415);
     Hjson::Value val;
     val = Hjson::UnmarshalFromFile("../data/core/data/names/name_gen_test.hjson");
     gen.LoadNameGenerator(val[0]);
@@ -56,7 +56,7 @@ TEST(NameGeneratorTest, BasicTest) {
 TEST(NameGeneratorTest, IncorrectFormatTest) {
     // Get a text with the incorrect format
     NameGenerator gen;
-    cqsp::common::util::StdRandom std_random(31415926535);
+    cqsp::common::util::StdRandom std_random(31415);
     Hjson::Value val;
     val = Hjson::UnmarshalFromFile("../data/core/data/names/name_gen_test.hjson");
     gen.LoadNameGenerator(val[0]);

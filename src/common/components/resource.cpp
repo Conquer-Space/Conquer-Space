@@ -108,8 +108,8 @@ bool ResourceLedger::EnoughToTransfer(const ResourceLedger &amount) {
 }
 
 void ResourceLedger::operator-=(const ResourceLedger &other) {
-    for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
-        (*this)[iterator->first] -= iterator->second;
+    for (const auto &p : other) {
+        (*this)[p.first] -= p.second;
     }
 }
 
@@ -312,7 +312,10 @@ ResourceLedger ResourceLedger::Clamp(const double minclamp, const double maxclam
 }
 
 bool ResourceLedger::HasAllResources(const ResourceLedger &ledger) {
-    return std::ranges::all_of(ledger, [&](auto led) { return (*this)[led.first] <= 0; });
+    if (&ledger == this) {
+        return true;
+    }
+    return std::ranges::all_of(ledger, [this](auto led) { return (*this)[led.first] > 0; });
 }
 
 double ResourceLedger::GetSum() {

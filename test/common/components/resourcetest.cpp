@@ -132,5 +132,38 @@ TEST(Common_ResourceLedger, HasAllResoourcesTest) {
     second[good_one] = 10;
     second[good_two] = 20;
     second[good_three] = 8;
-    EXPECT_TRUE(second.HasAllResources(second));
+    EXPECT_FALSE(first.HasAllResources(second));
+    EXPECT_TRUE(second.HasAllResources(first));
+    EXPECT_TRUE(first.HasAllResources(first));
+}
+
+TEST(Common_ResourceLedger, LedgerAdditionTest1) {
+    ResourceLedger first;
+    ResourceLedger second;
+
+    entt::registry reg;
+    entt::entity good_one = reg.create();
+
+    first[good_one] = 20;
+    second += first;
+    EXPECT_EQ(second[good_one], 20);
+    EXPECT_EQ(first[good_one], 20);
+    EXPECT_EQ(first.size(), 1);
+    EXPECT_EQ(second.size(), 1);
+}
+
+TEST(Common_ResourceLedger, LedgerSubtractionTest1) {
+    ResourceLedger first;
+    ResourceLedger second;
+
+    entt::registry reg;
+    entt::entity good_one = reg.create();
+
+    first[good_one] = 20;
+    second[good_one] = 30;
+    second -= first;
+    EXPECT_EQ(second[good_one], 10);
+    EXPECT_EQ(first[good_one], 30);
+    EXPECT_EQ(first.size(), 1);
+    EXPECT_EQ(second.size(), 1);
 }

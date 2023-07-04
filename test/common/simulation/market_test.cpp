@@ -67,6 +67,7 @@ TEST_F(MarketTwoTest, SellTest) {
     auto& stockpile = universe.get<cqspc::ResourceStockpile>(agent1);
     stockpile[good_1] = 100;
     // Now test sell the goods
+    EXPECT_EQ(stockpile[good_1], 100);
     ASSERT_TRUE(cqsp::common::systems::economy::SellGood(universe, agent1, stockpile));
     // Then check if the goods are sold
     auto& market_comp = universe.get<cqspc::Market>(market);

@@ -87,12 +87,13 @@ bool cqsp::common::systems::economy::SellGood(Universe& universe, entt::entity a
     auto& agent_stockpile = universe.get<components::ResourceStockpile>(agent);
     market_comp.AddSupply(selling);
 
+    double cost = market_comp.GetPrice(selling);
+
     // Remove from stockpile
     agent_stockpile -= selling;
 
     // Then subtract the cash from the person, or something
     // Check if they have enough money and purchase, I guess
-    double cost = market_comp.GetPrice(selling);
     components::Wallet& wallet = universe.get<components::Wallet>(agent);
     wallet += cost;
     return true;

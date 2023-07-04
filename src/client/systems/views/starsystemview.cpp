@@ -486,18 +486,18 @@ void SysStarSystemRenderer::DrawAllPlanets(auto& bodies) {
 
         // This can probably switched to some log system based off the mass of
         // a planet.
-        if (true) {
-            // Check if planet has terrain or not
-            // Don't actually use proc-gen terrain for now
-            // if (m_app.GetUniverse().all_of<cqspb::Terrain>(body_entity)) {
-            // Do empty terrain
-            // Check if the planet has the thing
-            if (m_app.GetUniverse().all_of<cqspb::TexturedTerrain>(body_entity)) {
-                DrawTexturedPlanet(object_pos, body_entity);
-            } else {
-                DrawTerrainlessPlanet(body_entity, object_pos);
-            }
+        //if (true) {
+        // Check if planet has terrain or not
+        // Don't actually use proc-gen terrain for now
+        // if (m_app.GetUniverse().all_of<cqspb::Terrain>(body_entity)) {
+        // Do empty terrain
+        // Check if the planet has the thing
+        if (m_app.GetUniverse().all_of<cqspb::TexturedTerrain>(body_entity)) {
+            DrawTexturedPlanet(object_pos, body_entity);
+        } else {
+            DrawTerrainlessPlanet(body_entity, object_pos);
         }
+        //}
     }
 }
 
@@ -1288,8 +1288,8 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
     }
     glm::vec3 center = glm::vec3(0, 0, 0);
     // If it has a parent, draw around the parent
-    entt::entity ref;
-    if ((ref = m_universe.get<common::components::types::Orbit>(entity).reference_body) != entt::null) {
+    entt::entity ref = m_universe.get<common::components::types::Orbit>(entity).reference_body;
+    if (ref != entt::null) {
         center = CalculateObjectPos(ref);
     } else {
         return;
