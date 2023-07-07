@@ -35,7 +35,7 @@
 #include "common/systems/sysuniversegenerator.h"
 
 namespace {
-void LoadResource(cqsp::engine::Application& app, std::string asset_name,
+void LoadResource(cqsp::engine::Application& app, const std::string& asset_name,
                   void (*func)(cqsp::common::Universe& universe, Hjson::Value& recipes)) {
     namespace cqspc = cqsp::common::components;
     for (auto it = app.GetAssetManager().GetPackageBegin(); it != app.GetAssetManager().GetPackageEnd(); it++) {
@@ -53,7 +53,7 @@ void LoadResource(cqsp::engine::Application& app, std::string asset_name,
 }
 
 template <class T>
-void LoadResource(cqsp::engine::Application& app, std::string asset_name) {
+void LoadResource(cqsp::engine::Application& app, const std::string& asset_name) {
     using cqsp::common::systems::loading::HjsonLoader;
     static_assert(std::is_base_of<HjsonLoader, T>::value, "Class is not child of");
     std::unique_ptr<HjsonLoader> ptr = std::make_unique<T>(app.GetUniverse());

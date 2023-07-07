@@ -16,7 +16,7 @@
  */
 #include "common/systems/movement/sysmovement.h"
 
-#include <math.h>
+#include <cmath>
 
 #include <tracy/Tracy.hpp>
 
@@ -119,7 +119,7 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     }
 
     auto& future_pos = universe.get_or_emplace<cqspt::FuturePosition>(body);
-    future_pos.position = cqspt::OrbitTimeToVec3(orb, universe.date.ToSecond() + universe.date.TIME_INCREMENT);
+    future_pos.position = cqspt::OrbitTimeToVec3(orb, universe.date.ToSecond() + components::StarDate::TIME_INCREMENT);
     future_pos.center = pos.center;
 
     if (!universe.any_of<cqspc::bodies::OrbitalSystem>(body)) {

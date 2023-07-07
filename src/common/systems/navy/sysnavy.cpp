@@ -17,7 +17,7 @@
 
 #include "common/systems/navy/sysnavy.h"
 
-#include <math.h>
+#include <cmath>
 
 #include "common/components/coordinates.h"
 #include "common/components/ships.h"

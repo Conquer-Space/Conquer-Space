@@ -16,7 +16,7 @@
  */
 #include "engine/asset/vfs/vfs.h"
 
-#include <string.h>
+#include <cstring>
 
 namespace cqsp::asset {
 VirtualMounter::~VirtualMounter() {
@@ -25,8 +25,8 @@ VirtualMounter::~VirtualMounter() {
     }
 }
 
-void VirtualMounter::AddMountPoint(const std::string& point, IVirtualFileSystem* fs) {
-    mount_points[std::string(point)] = fs;
+void VirtualMounter::AddMountPoint(const std::string& path, IVirtualFileSystem* fs) {
+    mount_points[std::string(path)] = fs;
 }
 
 std::shared_ptr<IVirtualFile> VirtualMounter::Open(const std::string& path, FileModes mode) {
@@ -36,7 +36,7 @@ std::shared_ptr<IVirtualFile> VirtualMounter::Open(const std::string& path, File
             // Remove the path string and the path separator, and get the path
             // to get from the file system
             std::string mount_path = path.substr(it->first.size() + 1, path.size());
-            return it->second->Open(mount_path.c_str(), mode);
+            return it->second->Open(mount_path, mode);
         }
     }
     return nullptr;
@@ -61,7 +61,7 @@ std::shared_ptr<IVirtualDirectory> VirtualMounter::OpenDirectory(const std::stri
             mount_path = path.substr(it->first.size() + 1, path.size());
         }
 
-        return it->second->OpenDirectory(mount_path.c_str());
+        return it->second->OpenDirectory(mount_path);
     }
     return nullptr;
 }
@@ -77,7 +77,7 @@ bool VirtualMounter::IsFile(const std::string& path) {
             // Remove the path string and the path separator, and get the path
             // to get from the file system
             std::string mount_path = path.substr(it->first.size() + 1, path.size());
-            if (it->second->IsFile(mount_path.c_str())) {
+            if (it->second->IsFile(mount_path)) {
                 return true;
             }
         }
@@ -93,7 +93,7 @@ bool VirtualMounter::IsDirectory(const std::string& path) {
     for (auto it = mount_points.begin(); it != mount_points.end(); it++) {
         if (path.rfind(it->first, 0) == 0) {
             std::string mount_path = path.substr(it->first.size() + 1, path.size());
-            if (it->second->IsDirectory(mount_path.c_str())) {
+            if (it->second->IsDirectory(mount_path)) {
                 return true;
             }
         }
@@ -109,7 +109,7 @@ bool VirtualMounter::Exists(const std::string& path) {
     for (auto it = mount_points.begin(); it != mount_points.end(); it++) {
         if (path.rfind(it->first, 0) == 0) {
             std::string mount_path = path.substr(it->first.size() + 1, path.size());
-            if (it->second->Exists(mount_path.c_str())) {
+            if (it->second->Exists(mount_path)) {
                 return true;
             }
         }

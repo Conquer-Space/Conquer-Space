@@ -28,6 +28,7 @@ namespace audio {
 enum ChannelType {};
 class IAudioInterface {
  public:
+    virtual ~IAudioInterface() = default;
     virtual void Pause(bool to_pause) = 0;
     virtual void PauseMusic(bool to_pause) = 0;
     virtual std::string GetAudioVersion() = 0;

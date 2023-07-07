@@ -52,11 +52,11 @@ void cqsp::client::systems::gui::SysEvent::DoUI(int delta_time) {
 
         asset::Texture* texture = GetAssetManager().GetAsset<asset::Texture>(env->image);
         float multiplier = 450.f / texture->width;
-        ImGui::Image(reinterpret_cast<void*>(texture->id),
+        ImGui::Image(reinterpret_cast<void*>(texture->id),  // NOLINT
                      ImVec2(texture->width * multiplier, texture->height * multiplier));
         ImGui::Separator();
         ImGui::BeginChild("eventchild", ImVec2(-FLT_MIN, 150), false, window_flags);
-        ImGui::Text(env->content.c_str());
+        ImGui::Text("%s", env->content.c_str());
         ImGui::EndChild();
         if (env->actions.empty()) {
             if (CQSPGui::DefaultButton("Ok", ImVec2(-FLT_MIN, 0))) {
@@ -77,7 +77,7 @@ void cqsp::client::systems::gui::SysEvent::DoUI(int delta_time) {
                 }
                 if (ImGui::IsItemHovered() && !action_result->tooltip.empty()) {
                     ImGui::BeginTooltip();
-                    ImGui::Text(action_result->tooltip.c_str());
+                    ImGui::Text("%s", action_result->tooltip.c_str());
                     ImGui::EndTooltip();
                 }
             }

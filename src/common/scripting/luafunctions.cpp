@@ -99,7 +99,9 @@ void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::
     });
 
     REGISTER_FUNCTION("set_system_position", [&](entt::entity orbital_ent, double x, double y) {
-        universe.get_or_emplace<cqspt::GalacticCoordinate>(orbital_ent, x, y);
+        auto& coord = universe.get_or_emplace<cqspt::GalacticCoordinate>(orbital_ent);
+        coord.x = x;
+        coord.y = y;
     });
 
     REGISTER_FUNCTION("set_radius", [&](entt::entity body, int radius) {
@@ -108,7 +110,7 @@ void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::
     });
 
     REGISTER_FUNCTION("create_terrain", [&](entt::entity planet, int seed, entt::entity terrain_type) {
-        universe.emplace<cqspb::Terrain>(planet, seed, terrain_type);
+        static_cast<void>(universe.emplace<cqspb::Terrain>(planet, seed, terrain_type));
     });
 }
 

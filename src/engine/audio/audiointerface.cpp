@@ -147,10 +147,10 @@ cqsp::engine::audio::AudioInterface::~AudioInterface() {
 namespace {
 inline bool isBigEndian() {
     int a = 1;
-    return !(reinterpret_cast<char*>(&a))[0];
+    return (reinterpret_cast<char*>(&a))[0] == 0;
 }
 
-inline int convertToInt(char* buffer, int len) {
+inline int convertToInt(const char* buffer, int len) {
     int a = 0;
     if (!isBigEndian()) {
         for (int i = 0; i < len; i++) (reinterpret_cast<char*>(&a))[i] = buffer[i];
@@ -240,12 +240,12 @@ void AudioInterface::InitALContext() {
     const ALCchar* defaultDeviceName = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
 
     device = alcOpenDevice(defaultDeviceName);
-    if (!device) {
+    if (device == nullptr) {
         SPDLOG_LOGGER_ERROR(logger, "Unable to open default device");
     }
 
     context = alcCreateContext(device, NULL);
-    if (!alcMakeContextCurrent(context)) {
+    if (alcMakeContextCurrent(context) == 0) {
         SPDLOG_LOGGER_ERROR(logger, "Failed to make default context");
     }
 }

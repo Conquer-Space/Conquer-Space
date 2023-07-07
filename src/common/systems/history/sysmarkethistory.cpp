@@ -20,7 +20,6 @@
 #include "common/components/history.h"
 
 void cqsp::common::systems::history::SysMarketHistory::DoSystem() {
-    return;
     /*
     auto view = GetUniverse().view<components::Market, components::MarketHistory>();
 

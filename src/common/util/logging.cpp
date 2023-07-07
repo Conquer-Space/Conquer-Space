@@ -33,7 +33,7 @@
 
 namespace {
 // Change this if you need
-static const char* DEFAULT_PATTERN = "[%T.%e] [%^%l%$] [%n] [%s:%#] %v";
+const char* DEFAULT_PATTERN = "[%T.%e] [%^%l%$] [%n] [%s:%#] %v";
 
 template <typename Mutex>
 class TracySink : public spdlog::sinks::base_sink<Mutex> {

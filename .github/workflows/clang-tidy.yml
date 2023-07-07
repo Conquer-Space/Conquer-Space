@@ -60,4 +60,4 @@ jobs:
     # Implicitly requires build/compile_commands.json to exist
     - name: Run Clang Analyzer
       run: |
-        ./run-clang-tidy.py -j $(nproc) -quiet -p build
+        ./run-clang-tidy.py -j $(nproc) -quiet -p build -extra-arg "-Wall -Wextra"

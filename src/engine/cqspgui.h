@@ -46,7 +46,7 @@ template <typename... Args>
 void SimpleTextTooltip(fmt::format_string<Args...> fmt, Args&&... args) {
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
-        ImGui::Text(fmt::format(fmt, std::forward<Args>(args)...).c_str());
+        ImGui::Text("%s", fmt::format(fmt, std::forward<Args>(args)...).c_str());
         ImGui::EndTooltip();
     }
 }

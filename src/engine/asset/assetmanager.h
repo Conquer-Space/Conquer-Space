@@ -161,7 +161,7 @@ class PackagePrototype {
 
 class AssetManager {
  public:
-    AssetManager();
+    AssetManager() = default;
 
     ShaderProgram_t MakeShader(const std::string& vert, const std::string& frag);
     ShaderProgram_t MakeShader(const std::string& vert, const std::string& frag, const std::string& geom);
@@ -269,7 +269,7 @@ class AssetLoader {
     /// </summary>
     /// <param name="package">Path to package folder</param>
     /// <returns>The uniqueptr to the package that is created</returns>
-    std::unique_ptr<Package> LoadPackage(std::string package);
+    std::unique_ptr<Package> LoadPackage(const std::string& path);
 
     /// <summary>
     /// The assets that need to be on the main thread. Takes one asset from the queue and processes it
@@ -467,7 +467,7 @@ class AssetLoader {
     /// <param name="path">Path of directory to read</param>
     /// <param name="file">Function pointer to do something with the path, and it takes the path of the
     /// asset as the parameter</param>
-    void LoadDirectory(std::string path, std::function<void(std::string)> file);
+    void LoadDirectory(const std::string& path, const std::function<void(std::string)>& file);
 
     /// <summary>
     /// Loads all the `resource.hjson` files in the specified directory.
@@ -497,7 +497,7 @@ class AssetLoader {
     /// <param name="resource_mount_path">root path of the package</param>
     /// <param name="resource_file_path">Resource file path</param>
     /// <param name="asset_value">Hjson value to read from</param>
-    void LoadResourceHjsonFile(Package& package, const std::string& resource_mount_path,
+    void LoadResourceHjsonFile(Package& package, const std::string& package_mount_path,
                                const std::string& resource_file_path, const Hjson::Value& asset_value);
     /// <summary>
     /// Defines a directory that contains hjson asset data.

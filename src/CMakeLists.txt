@@ -28,7 +28,7 @@ if(MSVC)
 endif()
 
 # Add icon file for windows
-if(WIN32)
+if(MSVC)
 SET(ICON_FILE "${CMAKE_SOURCE_DIR}/packaging/windows/app.rc")
 else()
 SET(ICON_FILE "")

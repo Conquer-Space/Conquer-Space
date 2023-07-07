@@ -27,7 +27,7 @@ cqsp::scene::ObjectEditorScene::ObjectEditorScene(cqsp::engine::Application& app
     AddUISystem<cqsp::client::systems::SysRecipeViewer>("Recipe Viewer");
 }
 
-cqsp::scene::ObjectEditorScene::~ObjectEditorScene() {}
+cqsp::scene::ObjectEditorScene::~ObjectEditorScene() = default;
 
 void cqsp::scene::ObjectEditorScene::Init() {
     // Sorta need to initialize everything

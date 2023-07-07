@@ -22,14 +22,14 @@ namespace cqsp::common::systems {
 class SysPopulationGrowth : public ISimulationSystem {
  public:
     explicit SysPopulationGrowth(Game& game) : ISimulationSystem(game) {}
-    void DoSystem();
-    int Interval() { return components::StarDate::WEEK * 4; }
+    void DoSystem() override;
+    int Interval() override { return components::StarDate::WEEK * 4; }
 };
 
 class SysPopulationConsumption : public ISimulationSystem {
  public:
     explicit SysPopulationConsumption(Game& game) : ISimulationSystem(game) {}
-    void DoSystem();
+    void DoSystem() override;
     int Interval() override { return components::StarDate::DAY; }
 };
 }  // namespace cqsp::common::systems

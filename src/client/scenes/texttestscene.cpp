@@ -21,7 +21,7 @@
 #define TX(x)        \
     indices[#x] = x; \
     names.push_back(#x);
-cqsp::scene::TextTestScene::~TextTestScene() {}
+cqsp::scene::TextTestScene::~TextTestScene() = default;
 
 void cqsp::scene::TextTestScene::Init() {
     auto shader = GetApp().GetAssetManager().MakeShader("core:framebuffervert", "core:framebufferfrag");
@@ -104,9 +104,9 @@ void cqsp::scene::TextTestScene::Render(float deltaTime) {
     glEnable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
     renderer.BeginDraw(layer);
-    GetApp().DrawText(text, 20, GetApp().GetWindowHeight() / 2, font_size);
+    GetApp().DrawText(text, 20, GetApp().GetWindowHeight() / 2.f, font_size);
     renderer.DrawAllLayers();
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    GetApp().DrawText(fmt::format("2: {}", text), 20, GetApp().GetWindowHeight() / 2 - 50, font_size);
+    GetApp().DrawText(fmt::format("2: {}", text), 20, GetApp().GetWindowHeight() / 2.f - 50.f, font_size);
 }

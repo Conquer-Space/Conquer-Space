@@ -64,7 +64,7 @@ std::string cqsp::asset::GetErrorLog(unsigned int shader) {
 
     // The maxLength includes the NULL character
     std::vector<GLchar> errorLog(error_max_len);
-    glGetShaderInfoLog(shader, error_max_len, &error_max_len, &errorLog[0]);
+    glGetShaderInfoLog(shader, error_max_len, &error_max_len, errorLog.data());
 
     std::string s(errorLog.begin(), errorLog.end());
     return s;
@@ -206,6 +206,8 @@ cqsp::asset::Shader::Shader(const std::string& code, ShaderType type) : id(0), s
         case ShaderType::GEOM:
             gl_shader_type = GL_GEOMETRY_SHADER;
             break;
+        case ShaderType::NONE:
+            break;
     }
     id = glCreateShader(gl_shader_type);
     const char* shader_char = code.c_str();
@@ -238,6 +240,8 @@ void cqsp::asset::Shader::operator()(const std::string& code, ShaderType type) {
         case ShaderType::GEOM:
             gl_shader_type = GL_GEOMETRY_SHADER;
             break;
+        case ShaderType::NONE:
+            break;
     }
     id = glCreateShader(gl_shader_type);
     const char* shader_char = code.c_str();
@@ -266,9 +270,7 @@ namespace {
 GLenum GetUniformType(GLuint program, const char* name) {
     GLuint in[1];
     glGetUniformIndices(program, 1, &name, in);
-    if (in == nullptr) {
-        return GL_INVALID_ENUM;
-    }
+
     GLint location = *in;
     ENGINE_LOG_TRACE("Program {}: {} is {}", program, name, location);
     if (location != -1) {
@@ -492,7 +494,7 @@ cqsp::asset::ShaderProgram_t cqsp::asset::ShaderDefinition::MakeShader() {
                             (float)value.second[2].to_double(), (float)value.second[3].to_double());
                 break;
             case GL_FLOAT:
-                if (!(value.second.type() == Hjson::Type::Double || value.second.type() == Hjson::Type::Int64)) {
+                if (value.second.type() != Hjson::Type::Double && value.second.type() != Hjson::Type::Int64) {
                     ENGINE_LOG_WARN("Uniform {} is not type float, it is {}", value.first,
                                     hjson_type_set[value.second.type()]);
                     break;

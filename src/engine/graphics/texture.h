@@ -47,7 +47,7 @@ unsigned int CreateTexture(unsigned char* data, int width, int height, int compo
 void CreateTexture(Texture& texture, unsigned char* data, int width, int height, int components,
                    const TextureLoadingOptions& options = TextureLoadingOptions());
 
-void LoadCubemapData(Texture& texture, std::vector<unsigned char*>& data, int width, int height, int components,
+void LoadCubemapData(Texture& texture, std::vector<unsigned char*>& faces, int width, int height, int components,
                      TextureLoadingOptions& options);
 
 bool SaveImage(const char* path, int width, int height, int components, const unsigned char* data, bool flip = true);

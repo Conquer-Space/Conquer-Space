@@ -47,6 +47,7 @@ sol::object JsonToLuaObject(const Hjson::Value& j, const sol::this_state& s) {
         }
         case Hjson::Type::Vector: {
             std::vector<sol::object> vec;
+            vec.reserve(static_cast<int>(j.size()));
             for (auto index = 0; index < static_cast<int>(j.size()); ++index) {
                 vec.push_back(JsonToLuaObject(j[index], s));
             }
@@ -97,7 +98,7 @@ void UiInterfaces(engine::Application& app) {
 
     REGISTER_FUNCTION("End", [](const char* name) { ImGui::End(); });
 
-    REGISTER_FUNCTION("Text", [](const char* name) { ImGui::Text(name); });
+    REGISTER_FUNCTION("Text", [](const char* name) { ImGui::Text("%s", name); });
 
     REGISTER_FUNCTION("Separator", [](const char* name) { ImGui::Separator(); });
 

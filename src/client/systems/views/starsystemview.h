@@ -153,7 +153,7 @@ class SysStarSystemRenderer {
     void LoadProvinceMap();
     void InitializeMeshes();
 
-    void GenerateOrbit(entt::entity entity);
+    void GenerateOrbit(entt::entity body);
 
     /// <summary>
     /// Gets the quaternion to calculate the planet's rotation from the axial rotation

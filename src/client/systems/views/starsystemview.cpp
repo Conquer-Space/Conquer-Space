@@ -22,6 +22,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstddef>
 #include <limits>
 #include <memory>
 #include <string>
@@ -337,7 +338,7 @@ void SysStarSystemRenderer::DrawEntityName(glm::vec3& object_pos, entt::entity e
     std::string text = common::util::GetName(m_app.GetUniverse(), ent_id);
     glm::vec3 pos = GetBillboardPosition(object_pos);
     // Check if the position on screen is within bounds
-    if (!(pos.z >= 1 || pos.z <= -1) &&
+    if (pos.z < 1 && pos.z > -1 &&
         (pos.x > 0 && pos.x < m_app.GetWindowWidth() && pos.y > 0 && pos.y < m_app.GetWindowHeight())) {
         m_app.DrawText(text, pos.x, pos.y, 20);
     }
@@ -463,14 +464,14 @@ void SysStarSystemRenderer::GetPlanetTexture(const entt::entity entity, bool& ha
     auto& terrain_data = m_universe.get<PlanetTexture>(entity);
     textured_planet.textures.clear();
     textured_planet.textures.push_back(terrain_data.terrain);
-    if (terrain_data.normal) {
+    if (terrain_data.normal != nullptr) {
         have_normal = true;
         textured_planet.textures.push_back(terrain_data.normal);
     } else {
         textured_planet.textures.push_back(terrain_data.terrain);
     }
     textured_planet.textures.push_back(earth_map_texture);
-    if (terrain_data.roughness) {
+    if (terrain_data.roughness != nullptr) {
         have_roughness = true;
         textured_planet.textures.push_back(terrain_data.roughness);
     }
@@ -485,18 +486,18 @@ void SysStarSystemRenderer::DrawAllPlanets(auto& bodies) {
 
         // This can probably switched to some log system based off the mass of
         // a planet.
-        if (glm::distance(object_pos, cam_pos) <= object_distance || true) {
-            // Check if planet has terrain or not
-            // Don't actually use proc-gen terrain for now
-            // if (m_app.GetUniverse().all_of<cqspb::Terrain>(body_entity)) {
-            // Do empty terrain
-            // Check if the planet has the thing
-            if (m_app.GetUniverse().all_of<cqspb::TexturedTerrain>(body_entity)) {
-                DrawTexturedPlanet(object_pos, body_entity);
-            } else {
-                DrawTerrainlessPlanet(body_entity, object_pos);
-            }
+        //if (true) {
+        // Check if planet has terrain or not
+        // Don't actually use proc-gen terrain for now
+        // if (m_app.GetUniverse().all_of<cqspb::Terrain>(body_entity)) {
+        // Do empty terrain
+        // Check if the planet has the thing
+        if (m_app.GetUniverse().all_of<cqspb::TexturedTerrain>(body_entity)) {
+            DrawTexturedPlanet(object_pos, body_entity);
+        } else {
+            DrawTerrainlessPlanet(body_entity, object_pos);
         }
+        //}
     }
 }
 
@@ -509,12 +510,12 @@ void SysStarSystemRenderer::DrawAllPlanetBillboards(auto& bodies) {
         glm::vec3 object_pos = CalculateCenteredObject(body_entity);
 
         namespace cqspc = cqsp::common::components;
-        if (glm::distance(object_pos, cam_pos) > object_distance || true) {
-            // Check if it's obscured by a planet, but eh, we can deal with
-            // it later Set planet circle color
-            DrawPlanetBillboards(body_entity, object_pos);
-            continue;
-        }
+        //if (true) {
+        // Check if it's obscured by a planet, but eh, we can deal with
+        // it later Set planet circle color
+        DrawPlanetBillboards(body_entity, object_pos);
+        //continue;
+        //}
     }
 }
 
@@ -656,10 +657,10 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
         auto textures = m_app.GetUniverse().get<cqspb::TexturedTerrain>(body);
         auto& data = m_universe.get_or_emplace<PlanetTexture>(body);
         data.terrain = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>(textures.terrain_name);
-        if (textures.normal_name != "") {
+        if (!textures.normal_name.empty()) {
             data.normal = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>(textures.normal_name);
         }
-        if (textures.roughness_name != "") {
+        if (!textures.roughness_name.empty()) {
             data.roughness = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>(textures.roughness_name);
         }
     }
@@ -681,7 +682,8 @@ void SysStarSystemRenderer::LoadProvinceMap() {
     int comp = 0;
     auto d = stbi_load_from_memory(bin_asset->data.data(), file_size, &province_width, &province_height, &comp, 0);
 
-    std::copy(&d[0], &d[province_width * province_height * comp], std::back_inserter(country_map));
+    std::copy(&d[0], &d[static_cast<ptrdiff_t>(province_width * province_height * comp)],
+              std::back_inserter(country_map));
     delete d;
 }
 
@@ -734,7 +736,8 @@ glm::quat SysStarSystemRenderer::GetBodyRotation(double axial, double rotation, 
     namespace cqspt = cqsp::common::components::types;
     // Need to interpolate between the frames
     float rot = (float)common::components::bodies::GetPlanetRotationAngle(
-        m_universe.date.ToSecond() + m_universe.tick_fraction * m_universe.date.TIME_INCREMENT, rotation, day_offset);
+        m_universe.date.ToSecond() + m_universe.tick_fraction * cqsp::common::components::StarDate::TIME_INCREMENT,
+        rotation, day_offset);
     if (rotation == 0) {
         rot = 0;
     }
@@ -788,8 +791,8 @@ glm::vec4 SysStarSystemRenderer::CalculateGLPosition(const glm::vec3& object_pos
 }
 
 bool SysStarSystemRenderer::GLPositionNotInBounds(const glm::vec4& gl_Position, const glm::vec3& pos) {
-    return !(!(isnan(gl_Position.z)) &&
-             (pos.x > 0 && pos.x < m_app.GetWindowWidth() && pos.y > 0 && pos.y < m_app.GetWindowHeight()));
+    return (isnan(gl_Position.z)) || pos.x <= 0 || pos.x >= m_app.GetWindowWidth() || pos.y <= 0 ||
+           pos.y >= m_app.GetWindowHeight();
 }
 
 glm::mat4 SysStarSystemRenderer::GetBillboardMatrix(const glm::vec3& pos) {
@@ -1032,7 +1035,7 @@ void SysStarSystemRenderer::RenderInformationWindow(double deltaTime) {
     ImGui::TextFmt("Scroll: {}", scroll);
     ImGui::TextFmt("View {} {}", view_x, view_y);
     // Get the province name
-    std::string country_name_t = "";
+    std::string country_name_t;
     if (m_universe.valid(selected_province) && m_universe.any_of<common::components::Province>(selected_province)) {
         country_name_t =
             common::util::GetName(m_universe, m_universe.get<common::components::Province>(selected_province).country);
@@ -1255,7 +1258,7 @@ entt::entity SysStarSystemRenderer::GetMouseOnObject(int mouse_x, int mouse_y) {
 }
 
 bool SysStarSystemRenderer::IsFoundingCity(common::Universe& universe) {
-    return universe.view<CityFounding>().size() >= 1;
+    return !universe.view<CityFounding>().empty();
 }
 
 void SysStarSystemRenderer::DrawAllOrbits() {
@@ -1285,8 +1288,8 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
     }
     glm::vec3 center = glm::vec3(0, 0, 0);
     // If it has a parent, draw around the parent
-    entt::entity ref;
-    if ((ref = m_universe.get<common::components::types::Orbit>(entity).reference_body) != entt::null) {
+    entt::entity ref = m_universe.get<common::components::types::Orbit>(entity).reference_body;
+    if (ref != entt::null) {
         center = CalculateObjectPos(ref);
     } else {
         return;
@@ -1358,5 +1361,5 @@ void SysStarSystemRenderer::OrbitEditor() {
 #endif
 }
 
-SysStarSystemRenderer::~SysStarSystemRenderer() {}
+SysStarSystemRenderer::~SysStarSystemRenderer() = default;
 }  // namespace cqsp::client::systems

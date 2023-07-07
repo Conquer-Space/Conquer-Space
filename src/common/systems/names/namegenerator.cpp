@@ -20,7 +20,7 @@
 #include <fmt/format.h>
 
 using cqsp::common::systems::names::NameGenerator;
-std::string NameGenerator::Generate(const std::string& rule_name) noexcept {
+std::string NameGenerator::Generate(const std::string& rule_name) {
     if (rule_list.find(rule_name) == rule_list.end()) {
         return "";
     }
@@ -32,7 +32,7 @@ std::string NameGenerator::Generate(const std::string& rule_name) noexcept {
     // Format rule, I guess
     fmt::dynamic_format_arg_store<fmt::format_context> args;
     for (const auto& syllable : syllables_list) {
-        if (syllable.second.size() == 0) {
+        if (syllable.second.empty()) {
             args.push_back(fmt::arg(syllable.first.c_str(), std::string()));
             continue;
         }
@@ -50,11 +50,11 @@ std::string NameGenerator::Generate(const std::string& rule_name) noexcept {
 void NameGenerator::LoadNameGenerator(const Hjson::Value& value) {
     name = value["name"].to_string();
     Hjson::Value rules_hjson = value["rules"];
-    for (auto rule : rules_hjson) {
+    for (auto& rule : rules_hjson) {
         rule_list[rule.first] = rule.second.to_string();
     }
 
-    for (auto syllable : value) {
+    for (auto& syllable : value) {
         if (syllable.first == "name" || syllable.first == "rules") {
             continue;
         }

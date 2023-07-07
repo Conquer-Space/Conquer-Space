@@ -39,7 +39,7 @@ std::string StarDate::ToString() {
 std::string StarDate::ToString(double offset) {
     int day = this->date / 24;
 
-    double diff = floor(this->date / 24.f) - floor((this->date + offset) / 24.f);
+    double diff = std::floor(this->date / 24.f) - std::floor((this->date + offset) / 24.f);
     if (diff > 0) {
         day--;
     } else if (diff < 0) {

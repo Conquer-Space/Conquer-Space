@@ -85,12 +85,14 @@ TEST(Science_FieldTest, FieldLoadingTest) {
     // Sort the list
     // written_hjson[0]
     std::vector<Hjson::Value> written_hjson_vector;
+    written_hjson_vector.reserve(written_hjson.size());
     for (int i = 0; i < written_hjson.size(); i++) {
         // Add the vector
         written_hjson_vector.push_back(written_hjson[i]);
     }
 
     std::vector<Hjson::Value> original_hjson_vector;
+    original_hjson_vector.reserve(hjson.size());
     for (int i = 0; i < hjson.size(); i++) {
         // Add the vector
         original_hjson_vector.push_back(hjson[i]);

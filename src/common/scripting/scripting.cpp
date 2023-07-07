@@ -62,8 +62,7 @@ void ScriptInterface::RegisterDataGroup(std::string_view name) {
         end
         }}
     )",
-                       name)
-               .c_str());
+                       name));
 }
 
 void ScriptInterface::Init() {

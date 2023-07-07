@@ -18,8 +18,8 @@
 #include "common/systems/loading/loadplanets.h"
 
 #include <spdlog/spdlog.h>
-#include <stdlib.h>
 
+#include <cstdlib>
 #include <random>
 #include <string>
 #include <vector>

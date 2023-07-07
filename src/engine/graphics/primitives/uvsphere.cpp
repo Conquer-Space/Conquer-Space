@@ -109,7 +109,8 @@ cqsp::engine::Mesh* cqsp::engine::primitive::ConstructSphereMesh(int x_segments,
     GLuint vao = 0;
     glGenVertexArrays(1, &vao);
 
-    unsigned int vbo, ebo;
+    unsigned int vbo;
+    unsigned int ebo;
     glGenBuffers(1, &vbo);
     glGenBuffers(1, &ebo);
 
@@ -129,10 +130,10 @@ cqsp::engine::Mesh* cqsp::engine::primitive::ConstructSphereMesh(int x_segments,
             float xPos = std::cos(xTheta) * std::sin(yTheta / 2);
             float yPos = std::cos(yTheta / 2);
             float zPos = std::sin(xTheta) * std::sin(yTheta / 2);
-            positions.push_back({xPos, yPos, zPos});
+            positions.emplace_back(xPos, yPos, zPos);
             // Invert x segments so that the texture shows up properly.
-            uv.push_back({x_segments - xSegment, ySegment});
-            normals.push_back({xPos, yPos, zPos});
+            uv.emplace_back(x_segments - xSegment, ySegment);
+            normals.emplace_back(xPos, yPos, zPos);
             //tangents.push_back({std::cos(xTheta - PI / 2), 0.0f, std::sin(xTheta - PI / 2), 1.0f});
         }
     }
@@ -156,16 +157,16 @@ cqsp::engine::Mesh* cqsp::engine::primitive::ConstructSphereMesh(int x_segments,
         vertices.push_back(positions[i].x);
         vertices.push_back(positions[i].y);
         vertices.push_back(positions[i].z);
-        if (uv.size() > 0) {
+        if (!uv.empty()) {
             vertices.push_back(uv[i].x);
             vertices.push_back(uv[i].y);
         }
-        if (normals.size() > 0) {
+        if (!normals.empty()) {
             vertices.push_back(normals[i].x);
             vertices.push_back(normals[i].y);
             vertices.push_back(normals[i].z);
         }
-        if (tangents.size() > 0) {
+        if (!tangents.empty()) {
             vertices.push_back(tangents[i].x);
             vertices.push_back(tangents[i].y);
             vertices.push_back(tangents[i].z);
@@ -179,19 +180,19 @@ cqsp::engine::Mesh* cqsp::engine::primitive::ConstructSphereMesh(int x_segments,
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
     float stride = (3 + 2 + 3);
-    if (tangents.size() > 0) {
+    if (!tangents.empty()) {
         stride += 4;
     }
     stride *= sizeof(float);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(0));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(0));  // NOLINT
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(3 * sizeof(float)));  // NOLINT
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(5 * sizeof(float)));
-    if (tangents.size() > 0) {
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(5 * sizeof(float)));  // NOLINT
+    if (!tangents.empty()) {
         glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(8 * sizeof(float)));
+        glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(8 * sizeof(float)));  // NOLINT
     }
 
     mesh->VAO = vao;

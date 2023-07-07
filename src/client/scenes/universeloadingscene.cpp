@@ -38,7 +38,7 @@ void cqsp::scene::UniverseLoadingScene::Init() {
     m_completed_loading = false;
     thread = std::make_unique<std::thread>(loading);
     document = GetApp().LoadDocument("../data/core/gui/screens/universe_loading_screen.rml");
-    if (document) {
+    if (document != nullptr) {
         document->Show();
     }
 }

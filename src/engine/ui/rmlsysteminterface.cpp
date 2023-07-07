@@ -22,7 +22,7 @@ cqsp::engine::CQSPSystemInterface::CQSPSystemInterface(Application& app) : m_app
     logger = cqsp::common::util::make_registered_logger("RmlUi", true);
 }
 
-cqsp::engine::CQSPSystemInterface::~CQSPSystemInterface() {}
+cqsp::engine::CQSPSystemInterface::~CQSPSystemInterface() = default;
 
 double cqsp::engine::CQSPSystemInterface::GetElapsedTime() { return m_app.GetTime(); }
 
@@ -39,8 +39,6 @@ bool cqsp::engine::CQSPSystemInterface::LogMessage(Rml::Log::Type type, const Rm
             level = spdlog::level::level_enum::debug;
             break;
         case Rml::Log::Type::LT_WARNING:
-            level = spdlog::level::level_enum::warn;
-            break;
         case Rml::Log::Type::LT_ASSERT:
             level = spdlog::level::level_enum::warn;
             break;

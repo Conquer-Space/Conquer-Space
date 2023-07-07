@@ -146,8 +146,8 @@ struct Wallet {
     // Basic multiplication that logs the change
     // TODO(EhWhoAmI): Make sure this is correct
     Wallet& operator*=(const double coefficent) {
-        float newbalance = this->balance * coefficent;
-        float change = newbalance - this->balance;
+        double newbalance = this->balance * coefficent;
+        double change = newbalance - this->balance;
         if (change > 0) {
             *this += change;
         } else if (change < 0) {

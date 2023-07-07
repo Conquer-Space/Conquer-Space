@@ -436,6 +436,8 @@ cqsp::engine::KeyInput cqsp::engine::GetKey(int key) {
             return KeyInput::KEY_RIGHT_SUPER;
         case GLFW_KEY_MENU:
             return KeyInput::KEY_MENU;
+        default:
+            return KeyInput::KEY_F25;
     }
 }
 

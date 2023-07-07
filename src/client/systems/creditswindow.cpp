@@ -29,8 +29,8 @@ std::string strip(const std::string& inpt) {
     }
     auto start_it = inpt.begin();
     auto end_it = inpt.rbegin();
-    while (std::isspace(*start_it)) ++start_it;
-    while (std::isspace(*end_it)) ++end_it;
+    while (std::isspace(*start_it) != 0) ++start_it;
+    while (std::isspace(*end_it) != 0) ++end_it;
     return std::string(start_it, end_it.base());
 }
 }  // namespace
@@ -133,7 +133,7 @@ void cqsp::client::CreditsWindow::LoadCreditsText() {
         } else if (line.rfind("##", 0) == 0) {
             tag = "h2";
             line = line.substr(2);
-        } else if (line.rfind("#", 0) == 0) {
+        } else if (line.rfind('#', 0) == 0) {
             tag = "h1";
             line = line.substr(1);
         }

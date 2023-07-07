@@ -29,7 +29,7 @@ class CQSPSystemInterface : public Rml::SystemInterface {
     explicit CQSPSystemInterface(Application& app);
     virtual ~CQSPSystemInterface();
 
-    double GetElapsedTime();
+    double GetElapsedTime() override;
     bool LogMessage(Rml::Log::Type type, const Rml::String& message) override;
 
  private:
