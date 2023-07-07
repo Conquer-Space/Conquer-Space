@@ -46,6 +46,7 @@ Checks: '-*,
 	,-modernize-loop-convert,
 	,-clang-diagnostic-macro-redefined,
 	,-modernize-use-nullptr,
+	,-clang-diagnostic-builtin-macro-redefined,
 '
 
 WarningsAsErrors: '*'

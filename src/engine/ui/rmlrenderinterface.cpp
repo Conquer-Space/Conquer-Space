@@ -236,6 +236,7 @@ bool cqsp::engine::CQSPRenderInterface::LoadTexture(Rml::TextureHandle& texture_
     //stbi_set_flip_vertically_on_load(true);
     unsigned char* data2 = stbi_load(source.c_str(), &width, &height, &components, 0);
     if (data2 == nullptr) {
+        delete texture;
         return false;
     }
     asset::TextureLoadingOptions options;
@@ -262,7 +263,7 @@ bool cqsp::engine::CQSPRenderInterface::GenerateTexture(Rml::TextureHandle& text
 }
 
 void cqsp::engine::CQSPRenderInterface::ReleaseTexture(Rml::TextureHandle texture) {
-    delete (cqsp::asset::Texture*)texture;
+    delete (cqsp::asset::Texture*)texture;  // NOLINT
 }
 
 void cqsp::engine::CQSPRenderInterface::SetTransform(const Rml::Matrix4f* transform) {

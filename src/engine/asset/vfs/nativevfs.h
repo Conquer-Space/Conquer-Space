@@ -82,7 +82,7 @@ class NativeDirectory : public IVirtualDirectory {
 
     uint64_t GetSize() override;
     const std::string& GetRoot() override;
-    std::shared_ptr<IVirtualFile> GetFile(int index, FileModes modes = None) override;
+    std::shared_ptr<IVirtualFile> GetFile(int index, FileModes modes) override;
     const std::string& GetFilename(int index) override;
     IVirtualFileSystem* GetFileSystem() override;
 
