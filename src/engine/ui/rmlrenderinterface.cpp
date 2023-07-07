@@ -126,7 +126,7 @@ void cqsp::engine::CQSPRenderInterface::RenderGeometry(Rml::Vertex* vertices, in
                                                        const Rml::Vector2f& translation) {
     // Render the geometry
     Rml::CompiledGeometryHandle compiled = CompileGeometry(vertices, num_vertices, indices, num_indices, texture);
-    if (compiled != NULL) {
+    if (compiled != 0) {
         RenderCompiledGeometry(compiled, translation);
         ReleaseCompiledGeometry(compiled);
     }

@@ -34,8 +34,8 @@ char* get_home_dir(uid_t uid) {
     struct passwd* pwentp;
     char buf[1024];
 
-    if (getpwuid_r(uid, &pwent, buf, sizeof buf, &pwentp)) {
-        return "~";  // Easy trick because we couldn't find the dir
+    if (getpwuid_r(uid, &pwent, buf, sizeof buf, &pwentp) != 0) {
+        return (char*)"~";  // Easy trick because we couldn't find the dir
     } else {
         return pwent.pw_dir;
     }
