@@ -110,7 +110,7 @@ void DrawFlowIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& b, ax::Dr
 
     const auto offset_x = 1.0f * origin_scale;
     const auto offset_y = 0.0f * origin_scale;
-    const auto margin = (filled ? 2.0f : 2.0f) * origin_scale;
+    const auto margin = 0.2f * origin_scale;
     const auto rounding = 0.1f * origin_scale;
     const auto tip_round = 0.7f;  // percentage of triangle edge (for tip)
     //const auto edge_round = 0.7f; // percentage of triangle edge (for corner)
@@ -145,7 +145,6 @@ void DrawFlowIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& b, ax::Dr
         if ((innerColor & 0xFF000000) != 0u) {
             drawList->AddConvexPolyFilled(drawList->_Path.Data, drawList->_Path.Size, innerColor);
         }
-
         drawList->PathStroke(color, 1, 2.0f * outline_scale);
     } else {
         drawList->PathFillConvex(color);
@@ -203,9 +202,9 @@ void ax::Drawing::DrawIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& 
                 const auto p0 = rect_center - ImVec2(r, r);
                 const auto p1 = rect_center + ImVec2(r, r);
 
-                if ((innerColor & 0xFF000000) != 0u)
+                if ((innerColor & 0xFF000000) != 0u) {
                     drawList->AddRectFilled(p0, p1, innerColor, 0, 15 + extra_segments);
-
+                }
                 drawList->AddRect(p0, p1, color, 0, 15 + extra_segments, 2.0f * outline_scale);
             }
         }

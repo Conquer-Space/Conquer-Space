@@ -53,23 +53,17 @@ double SystemInterface_GLFW::GetElapsedTime() { return glfwGetTime(); }
 void SystemInterface_GLFW::SetMouseCursor(const Rml::String& cursor_name) {
     GLFWcursor* cursor = nullptr;
 
-    if (cursor_name.empty() || cursor_name == "arrow") {
-        cursor = nullptr;
-    } else if (cursor_name == "move") {
-        cursor = cursor_pointer;
-    } else if (cursor_name == "pointer") {
-        cursor = cursor_pointer;
-    } else if (cursor_name == "resize") {
+    if (cursor_name == "move" || cursor_name == "resize" || cursor_name == "pointer") {
         cursor = cursor_pointer;
     } else if (cursor_name == "cross") {
         cursor = cursor_cross;
     } else if (cursor_name == "text") {
         cursor = cursor_text;
-    } else if (cursor_name == "unavailable") {
-        cursor = nullptr;
     }
 
-    if (window != nullptr) glfwSetCursor(window, cursor);
+    if (window != nullptr) {
+        glfwSetCursor(window, cursor);
+    }
 }
 
 void SystemInterface_GLFW::SetClipboardText(const Rml::String& text_utf8) {

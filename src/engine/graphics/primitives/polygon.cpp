@@ -66,7 +66,8 @@ Mesh* CreateFilledCircle(int segments) {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride * sizeof(float),
+                          reinterpret_cast<void*>(3 * sizeof(float)));  // NOLINT
     glEnableVertexAttribArray(1);
     mesh->VAO = vao;
     mesh->VBO = vbo;
@@ -81,7 +82,6 @@ Mesh* CreateFilledTriangle() { return CreateFilledCircle(3); }
 Mesh* CreateFilledSquare() { return CreateFilledCircle(4); }
 
 Mesh* CreateLineCircle(int segments, float size) {
-    Mesh* mesh = new Mesh();
     std::vector<glm::vec3> positions;
     for (int i = 0; i <= segments + 1; i++) {
         double theta = i * cqsp::common::components::types::toRadian(360.f / segments);

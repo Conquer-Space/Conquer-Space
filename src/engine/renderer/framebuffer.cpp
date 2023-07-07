@@ -34,7 +34,7 @@ void GenerateFrameBuffer(unsigned int& framebuffer) {
 }
 }  // namespace
 
-cqsp::engine::FramebufferRenderer::~FramebufferRenderer() { Free(); }
+cqsp::engine::FramebufferRenderer::~FramebufferRenderer() { FreeBuffer(); }
 
 void cqsp::engine::FramebufferRenderer::InitTexture(int width, int height) {
     GenerateFrameBuffer(framebuffer);
@@ -91,7 +91,9 @@ void cqsp::engine::FramebufferRenderer::RenderBuffer() {
     glActiveTexture(GL_TEXTURE0);
 }
 
-void cqsp::engine::FramebufferRenderer::Free() {
+void cqsp::engine::FramebufferRenderer::Free() { FreeBuffer(); }
+
+void cqsp::engine::FramebufferRenderer::FreeBuffer() {
     glDeleteFramebuffers(1, &framebuffer);
     glDeleteBuffers(1, &colorbuffer);
 }
@@ -110,7 +112,7 @@ void cqsp::engine::FramebufferRenderer::NewFrame(const Window& window) {
     }
 }
 
-cqsp::engine::AAFrameBufferRenderer::~AAFrameBufferRenderer() { Free(); }
+cqsp::engine::AAFrameBufferRenderer::~AAFrameBufferRenderer() { FreeBuffer(); }
 
 void cqsp::engine::AAFrameBufferRenderer::InitTexture(int width, int height) {
     this->width = width;
@@ -160,7 +162,9 @@ void cqsp::engine::AAFrameBufferRenderer::BeginDraw() { glBindFramebuffer(GL_FRA
 
 void cqsp::engine::AAFrameBufferRenderer::EndDraw() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 
-void cqsp::engine::AAFrameBufferRenderer::Free() {
+void cqsp::engine::AAFrameBufferRenderer::Free() { FreeBuffer(); }
+
+void cqsp::engine::AAFrameBufferRenderer::FreeBuffer() {
     glDeleteFramebuffers(1, &framebuffer);
     glDeleteFramebuffers(1, &intermediateFBO);
     glDeleteBuffers(1, &screenTexture);

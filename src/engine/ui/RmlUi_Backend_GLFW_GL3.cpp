@@ -203,13 +203,17 @@ static void SetupCallbacks(GLFWwindow* window) {
                 glfwGetWindowContentScale(data->window, &dp_ratio, nullptr);
 
                 // See if we have any global shortcuts that take priority over the context.
-                if ((key_down_callback != nullptr) && !key_down_callback(context, key, key_modifier, dp_ratio, true))
+                if ((key_down_callback != nullptr) && !key_down_callback(context, key, key_modifier, dp_ratio, true)) {
                     break;
+                }
                 // Otherwise, hand the event over to the context by calling the input handler as normal.
-                if (!RmlGLFW::ProcessKeyCallback(context, glfw_key, glfw_action, glfw_mods)) break;
-                // The key was not consumed by the context either, try keyboard shortcuts of lower priority.
-                if ((key_down_callback != nullptr) && !key_down_callback(context, key, key_modifier, dp_ratio, false))
+                if (!RmlGLFW::ProcessKeyCallback(context, glfw_key, glfw_action, glfw_mods)) {
                     break;
+                }
+                // The key was not consumed by the context either, try keyboard shortcuts of lower priority.
+                if ((key_down_callback != nullptr) && !key_down_callback(context, key, key_modifier, dp_ratio, false)) {
+                    break;
+                }
             } break;
             case GLFW_RELEASE:
                 RmlGLFW::ProcessKeyCallback(context, glfw_key, glfw_action, glfw_mods);

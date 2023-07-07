@@ -40,8 +40,8 @@ void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer, uint64_t s
     // buffer until you are done using that font as FreeType will reference
     // it directly.
     FT_Face face;
-    int id = -12;
-    if ((id = FT_New_Memory_Face(ft, fontBuffer, size, 0, &face)) != 0) {
+    int id = FT_New_Memory_Face(ft, fontBuffer, size, 0, &face);
+    if (id != 0) {
         ENGINE_LOG_INFO("Cannot load font: {}", id);
         return;
     }

@@ -140,7 +140,7 @@ Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(R
     // Create the vertex
     geom->num_vertices = num_vertices;
     geom->num_indices = num_indices;
-    geom->texture = (cqsp::asset::Texture*)texture;
+    geom->texture = (cqsp::asset::Texture*)texture;  // NOLINT
     glGenVertexArrays(1, &geom->VAO);
     glGenBuffers(1, &geom->VBO);
     glGenBuffers(1, &geom->EBO);
@@ -156,11 +156,11 @@ Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(R
     glEnableVertexAttribArray(0);
 
     glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Rml::Vertex),
-                          reinterpret_cast<void*>(sizeof(Rml::Vector2f)));
+                          reinterpret_cast<void*>(sizeof(Rml::Vector2f)));  // NOLINT
     glEnableVertexAttribArray(1);
 
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Rml::Vertex),
-                          reinterpret_cast<void*>(sizeof(Rml::Vector2f) + sizeof(Rml::Colourb)));
+                          reinterpret_cast<void*>(sizeof(Rml::Vector2f) + sizeof(Rml::Colourb)));  // NOLINT
     glEnableVertexAttribArray(2);
 
     return reinterpret_cast<Rml::CompiledGeometryHandle>(geom);
@@ -168,7 +168,7 @@ Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(R
 
 void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(Rml::CompiledGeometryHandle geometry,
                                                                const Rml::Vector2f& translation) {
-    RmlUiRendererGeometryHandler* geom = reinterpret_cast<RmlUiRendererGeometryHandler*>(geometry);
+    RmlUiRendererGeometryHandler* geom = reinterpret_cast<RmlUiRendererGeometryHandler*>(geometry);  // NOLINT
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthFunc(GL_ALWAYS);
@@ -198,7 +198,7 @@ void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(Rml::CompiledGeom
 }
 
 void cqsp::engine::CQSPRenderInterface::ReleaseCompiledGeometry(Rml::CompiledGeometryHandle geometry) {
-    delete (RmlUiRendererGeometryHandler*)geometry;
+    delete (RmlUiRendererGeometryHandler*)geometry;  // NOLINT
 }
 
 void cqsp::engine::CQSPRenderInterface::EnableScissorRegion(bool enable) {

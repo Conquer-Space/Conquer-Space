@@ -39,8 +39,6 @@ bool cqsp::engine::CQSPSystemInterface::LogMessage(Rml::Log::Type type, const Rm
             level = spdlog::level::level_enum::debug;
             break;
         case Rml::Log::Type::LT_WARNING:
-            level = spdlog::level::level_enum::warn;
-            break;
         case Rml::Log::Type::LT_ASSERT:
             level = spdlog::level::level_enum::warn;
             break;

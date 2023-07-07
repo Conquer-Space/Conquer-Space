@@ -49,4 +49,5 @@ Checks: '-*,
 	,-clang-diagnostic-builtin-macro-redefined,
 '
 
-WarningsAsErrors: '*'
+WarningsAsErrors: '*,
+	-clang-diagnostic-macro-redefined'

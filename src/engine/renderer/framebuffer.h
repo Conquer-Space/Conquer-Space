@@ -50,7 +50,7 @@ class FramebufferRenderer : public IFramebuffer {
     FramebufferRenderer() : IFramebuffer() {}
     ~FramebufferRenderer();
 
-    void InitTexture(int width = 1280, int height = 720) override;
+    void InitTexture(int width, int height) override;
     void Clear() override;
     void BeginDraw() override;
     void EndDraw() override;
@@ -60,6 +60,7 @@ class FramebufferRenderer : public IFramebuffer {
     void SetMesh(cqsp::engine::Mesh* mesh) override { mesh_output = mesh; }
     cqsp::engine::Mesh& GetMeshOutput() override { return *mesh_output; }
     void SetShader(cqsp::asset::ShaderProgram_t shader) override { buffer_shader = shader; }
+    void FreeBuffer();
 
  private:
     unsigned int framebuffer;
@@ -73,13 +74,14 @@ class AAFrameBufferRenderer : public IFramebuffer {
     AAFrameBufferRenderer() : IFramebuffer() {}
     ~AAFrameBufferRenderer();
 
-    void InitTexture(int width = 1280, int height = 720) override;
+    void InitTexture(int width, int height) override;
     void Clear() override;
     void BeginDraw() override;
     void EndDraw() override;
     void Free() override;
     void RenderBuffer() override;
     void NewFrame(const Window& window) override;
+    void FreeBuffer();
 
     cqsp::engine::Mesh& GetMeshOutput() override { return *mesh_output; }
     void SetMesh(cqsp::engine::Mesh* mesh) override { mesh_output = mesh; }

@@ -510,12 +510,12 @@ void SysStarSystemRenderer::DrawAllPlanetBillboards(auto& bodies) {
         glm::vec3 object_pos = CalculateCenteredObject(body_entity);
 
         namespace cqspc = cqsp::common::components;
-        if (true) {
-            // Check if it's obscured by a planet, but eh, we can deal with
-            // it later Set planet circle color
-            DrawPlanetBillboards(body_entity, object_pos);
-            continue;
-        }
+        //if (true) {
+        // Check if it's obscured by a planet, but eh, we can deal with
+        // it later Set planet circle color
+        DrawPlanetBillboards(body_entity, object_pos);
+        //continue;
+        //}
     }
 }
 
