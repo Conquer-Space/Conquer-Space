@@ -163,7 +163,7 @@ TEST(Common_ResourceLedger, LedgerSubtractionTest1) {
     second[good_one] = 30;
     second -= first;
     EXPECT_EQ(second[good_one], 10);
-    EXPECT_EQ(first[good_one], 30);
+    EXPECT_EQ(first[good_one], 20);
     EXPECT_EQ(first.size(), 1);
     EXPECT_EQ(second.size(), 1);
 }

@@ -108,8 +108,8 @@ bool ResourceLedger::EnoughToTransfer(const ResourceLedger &amount) {
 }
 
 void ResourceLedger::operator-=(const ResourceLedger &other) {
-    for (const auto &p : other) {
-        (*this)[p.first] -= p.second;
+    for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
+        (*this)[iterator->first] -= iterator->second;
     }
 }
 
