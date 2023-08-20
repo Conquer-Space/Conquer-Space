@@ -348,18 +348,19 @@ TEST(OrbitTest, SolveKeplerElliptic) {
 
 TEST(Common_TransferTest, TransferTimeTest_Mars) {
     namespace cqspt = cqsp::common::components::types;
-    cqspt::Orbit orb1;
-    orb1.semi_major_axis = 149598023;
-    orb1.v = 3.8868698;
-    orb1.GM = cqspt::SunMu;
-    orb1.CalculateVariables();
-    cqspt::Orbit orb2;
-    orb2.semi_major_axis = 227939366;
-    orb2.GM = cqspt::SunMu;
-    orb2.v = 0.338803314;
-    orb2.CalculateVariables();
-    double b = cqspt::CalculateTransferTime(orb1, orb2);
-    double p = cqspt::CalculateTransferAngle(orb1, orb2);
+    using cqspt::_deg;
+    cqspt::Orbit earth_orbit;
+    earth_orbit.semi_major_axis = 149598023;
+    earth_orbit.v = 356.9521225619375_deg;
+    earth_orbit.GM = cqspt::SunMu;
+    earth_orbit.CalculateVariables();
+    cqspt::Orbit mars_orbit;
+    mars_orbit.semi_major_axis = 227939366;
+    mars_orbit.GM = cqspt::SunMu;
+    mars_orbit.v = 0.338803314_deg;
+    mars_orbit.CalculateVariables();
+    double b = cqspt::CalculateTransferTime(earth_orbit, mars_orbit);
+    double p = cqspt::CalculateTransferAngle(earth_orbit, mars_orbit);
     std::cout << p << std::endl;
     // The approximate transfer time between the two
     EXPECT_NEAR(b / 86400, 259, 2);
