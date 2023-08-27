@@ -974,8 +974,12 @@ void SysStarSystemRenderer::SelectCountry() {
         return;
     }
     m_universe.clear<cqsp::client::ctx::SelectedProvince>();
-    m_universe.emplace_or_replace<cqsp::client::ctx::SelectedProvince>(selected_province);
-    countries = true;
+    // Get selected planet, then
+    entt::entity focused_planet = m_universe.view<FocusedPlanet>().front();
+    countries = m_universe.any_of<cqsp::common::components::Habitation>(focused_planet);
+    if (countries) {
+        m_universe.emplace_or_replace<cqsp::client::ctx::SelectedProvince>(selected_province);
+    }
 }
 
 void SysStarSystemRenderer::FocusOnEntity(entt::entity ent) {
@@ -985,15 +989,15 @@ void SysStarSystemRenderer::FocusOnEntity(entt::entity ent) {
     entt::entity focused_planet = m_universe.view<FocusedPlanet>().front();
 
     // if the focused planet is the current planet, then check if it's close
-    // enough, and then do the things
+    // enough. If it is see the countries on the planet
     if (ent == focused_planet) {
         auto& body = m_universe.get<cqspb::Body>(focused_planet);
-        auto& kin = m_universe.get<cqspt::Kinematics>(focused_planet);
 
         if (scroll > body.radius * 10) {
             // Planet selection
             SeePlanet(ent);
         } else {
+            // Check if the planet has stuff and then don't select if there's no countries on the planet
             SelectCountry();
         }
     } else {
