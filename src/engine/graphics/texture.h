@@ -39,6 +39,8 @@ class Texture : public Asset {
 
     Texture();
     ~Texture();
+
+    AssetType GetAssetType() override { return AssetType::TEXTURE; }
 };
 
 unsigned int CreateTexture(unsigned char* data, int width, int height, int components,

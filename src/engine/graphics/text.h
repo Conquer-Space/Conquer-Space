@@ -38,6 +38,8 @@ class Font : public Asset {
     unsigned int VAO, VBO;
     unsigned int texture;
     float initial_size;
+
+    AssetType GetAssetType() override { return AssetType::FONT; }
 };
 
 void LoadFontData(Font& font, unsigned char* fontBuffer, uint64_t size);

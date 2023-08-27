@@ -20,14 +20,16 @@
 
 namespace cqsp {
 namespace asset {
-class AudioAsset : public cqsp::asset::Asset {
+class AudioAsset : public Asset {
  public:
     /**
      * Length in seconds.
      */
     virtual float Length() = 0;
 
-    virtual ~AudioAsset() {}
+    virtual ~AudioAsset() = default;
+
+    AssetType GetAssetType() override { return AssetType::AUDIO; }
 };
 }  // namespace asset
 }  // namespace cqsp

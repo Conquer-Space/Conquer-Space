@@ -53,6 +53,7 @@ class Shader : public Asset {
 
     /// Id of the shader
     unsigned int id;
+    AssetType GetAssetType() override { return AssetType::SHADER; }
 
  private:
     explicit Shader(const Shader&) = default;
@@ -156,6 +157,8 @@ class ShaderDefinition : public Asset {
     Hjson::Value uniforms;
 
     ShaderProgram_t MakeShader();
+
+    AssetType GetAssetType() override { return AssetType::SHADER_DEFINITION; }
 };
 
 // Set of utility functions that load shaders
