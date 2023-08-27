@@ -121,12 +121,17 @@ void cqsp::client::systems::SysDebugMenu::ShowWindows() {
     if (to_show_cqsp_metrics) {
         CqspMetricsWindow();
     }
+    if (to_show_asset_window) {
+        DrawAssetWindow();
+    }
 }
 
 void cqsp::client::systems::SysDebugMenu::CreateMenuBar() {
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("Tools")) {
             ImGui::MenuItem("Benchmarks", 0, &to_show_cqsp_metrics);
+            ImGui::MenuItem("Asset Debug Window", 0, &to_show_asset_window);
+
             if (ImGui::BeginMenu("ImGui")) {
                 ImGui::MenuItem("About ImGui", 0, &to_show_imgui_about);
                 ImGui::MenuItem("ImGui Debugger", 0, &to_show_metrics_window);
@@ -208,6 +213,41 @@ void cqsp::client::systems::SysDebugMenu::ConsoleInput() {
         ImGui::SetKeyboardFocusHere(-1);
         reclaim_focus = false;
     }
+}
+
+void SysDebugMenu::DrawAssetWindow() {
+    ImGui::Begin("Asset Debug Window", &to_show_asset_window);
+    ImGui::Text("Search: ");
+    ImGui::SameLine();
+    ImGui::InputText("###asset_search", &asset_search);
+    if (ImGui::BeginTable("asset_debug_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable)) {
+        ImGui::TableSetupColumn("Name");
+        ImGui::TableSetupColumn("Accessed Times");
+        ImGui::TableSetupColumn("Type");
+        ImGui::TableHeadersRow();
+
+        auto& asset_manager = GetApp().GetAssetManager();
+        for (auto& package : asset_manager) {
+            for (auto& asset : *package.second) {
+                if (!asset_search.empty()) {
+                    // Then look through the thing
+                    std::string str = fmt::format("{}:{}", package.first, asset.first);
+                    if (str.find(asset_search) == std::string::npos) {
+                        continue;
+                    }
+                }
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                ImGui::TextFmt("{}:{}", package.first, asset.first);
+                ImGui::TableNextColumn();
+                ImGui::TextFmt("{}", asset.second->accessed);
+                ImGui::TableNextColumn();
+                ImGui::TextFmt("{}", cqsp::asset::ToString(asset.second->GetAssetType()));
+            }
+        }
+        ImGui::EndTable();
+    }
+    ImGui::End();
 }
 
 void SysDebugMenu::DoUI(int delta_time) {

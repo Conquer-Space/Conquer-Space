@@ -27,6 +27,7 @@ namespace cqsp::asset {
 class TextAsset : public Asset {
  public:
     std::string data;
+    AssetType GetAssetType() override { return AssetType::TEXT; }
 };
 
 /// <summary>
@@ -48,15 +49,18 @@ class TextDirectoryAsset : public Asset {
  public:
     // Get the path of the assets
     std::map<std::string, PathedTextAsset> paths;
+    AssetType GetAssetType() override { return AssetType::SCRIPT; }
 };
 
 class HjsonAsset : public Asset {
  public:
     Hjson::Value data;
+    AssetType GetAssetType() override { return AssetType::HJSON; }
 };
 
 class BinaryAsset : public Asset {
  public:
     std::vector<uint8_t> data;
+    AssetType GetAssetType() override { return AssetType::BINARY; }
 };
 }  // namespace cqsp::asset
