@@ -4,8 +4,8 @@
     uniforms: {
         terrain_tex: 0
         normal_tex: 1
-        country_tex: 2
-        roughness_map: 3
+        roughness_map: 2
+        country_tex: 3
         C: 1
         far: 1e13
         offset: 1.0

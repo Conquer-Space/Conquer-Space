@@ -88,6 +88,8 @@ struct PlanetTexture {
     cqsp::asset::Texture* terrain = nullptr;
     cqsp::asset::Texture* normal = nullptr;
     cqsp::asset::Texture* roughness = nullptr;
+    cqsp::asset::Texture* province_texture = nullptr;
+    cqsp::asset::BinaryAsset* province_map = nullptr;
 };
 
 struct PlanetOrbit {
@@ -100,8 +102,6 @@ struct PlanetOrbit {
 void SysStarSystemRenderer::Initialize() {
     InitializeMeshes();
     InitializeFramebuffers();
-
-    earth_map_texture = m_app.GetAssetManager().GetAsset<asset::Texture>("province_map_texture");
 
     LoadProvinceMap();
 
@@ -470,10 +470,13 @@ void SysStarSystemRenderer::GetPlanetTexture(const entt::entity entity, bool& ha
     } else {
         textured_planet.textures.push_back(terrain_data.terrain);
     }
-    textured_planet.textures.push_back(earth_map_texture);
     if (terrain_data.roughness != nullptr) {
         have_roughness = true;
         textured_planet.textures.push_back(terrain_data.roughness);
+    }
+    // add the texture, if they have it...
+    if (terrain_data.province_texture != nullptr) {
+        textured_planet.textures.push_back(terrain_data.province_texture);
     }
 }
 
@@ -663,6 +666,12 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
         if (!textures.roughness_name.empty()) {
             data.roughness = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>(textures.roughness_name);
         }
+        if (!m_universe.any_of<common::components::ProvincedPlanet>(body)) {
+            continue;
+        }
+        auto& province_map = m_universe.get<common::components::ProvincedPlanet>(body);
+        data.province_map = m_app.GetAssetManager().GetAsset<cqsp::asset::BinaryAsset>(province_map.province_map);
+        data.province_texture = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>(province_map.province_texture);
     }
 }
 

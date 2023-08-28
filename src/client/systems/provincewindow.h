@@ -39,7 +39,6 @@ class SysProvinceInformation : public SysUserInterface {
     void InfrastructureTab();
     void IndustryListWindow();
 
-    void MarketInformationTooltipContent(const entt::entity marketentity);
     template <typename T>
     void IndustryTabGenericChild(const std::string& tabname, const std::string& industryname, const ImVec2& size);
 
