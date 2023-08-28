@@ -16,6 +16,7 @@
  */
 #pragma once
 
+#include <string>
 #include <vector>
 
 #include <entt/entt.hpp>
@@ -27,16 +28,21 @@ struct Surface {
     int64_t seed;
 };
 
-/*
- * If people are living on a body or not
- */
+/// <summary>
+/// If people are living on a planet or not
+/// </summary>
 struct Habitation {
     std::vector<entt::entity> settlements;
 };
 
-/*
- * People who live there.
- */
+struct ProvincedPlanet {
+    std::string province_texture;
+    std::string province_map;
+};
+
+/// <summary>
+/// A settlement is a place where a population can live in, such as a city or a space station
+/// </summary>
 struct Settlement {
     std::vector<entt::entity> population;
 };

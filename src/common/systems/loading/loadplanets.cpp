@@ -84,6 +84,15 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         if (texture["roughness"].type() == Hjson::Type::String) {
             texture_comp.roughness_name = texture["roughness"].to_string();
         }
+
+        if (texture["province_texture"].type() == Hjson::Type::String) {
+            // We probably need a much more rigorous check, like actually verifying if the files actually exist.
+            auto& provinces = universe.emplace<components::ProvincedPlanet>(entity);
+            provinces.province_texture = texture["province_texture"].to_string();
+            if (texture["province_map"].type() == Hjson::Type::String) {
+                provinces.province_map = texture["province_map"].to_string();
+            }
+        }
     }
 
     body_comp.GM = values["gm"].to_double();

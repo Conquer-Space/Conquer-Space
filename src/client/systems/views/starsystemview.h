@@ -110,10 +110,6 @@ class SysStarSystemRenderer {
     asset::ShaderProgram_t no_light_shader;
 #endif
 
-    cqsp::asset::Texture *planet_texture;
-    cqsp::asset::Texture *planet_heightmap;
-    cqsp::asset::Texture *earth_map_texture;
-
     glm::vec3 cam_pos;
     glm::vec3 cam_up = glm::vec3(0.0f, 1.0f, 0.0f);
     glm::mat4 camera_matrix;
