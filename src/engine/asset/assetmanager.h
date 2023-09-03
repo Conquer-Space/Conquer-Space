@@ -139,6 +139,10 @@ class Package {
     bool HasAsset(const char* asset);
     bool HasAsset(const std::string& asset);
 
+    auto begin() { return assets.begin(); }
+
+    auto end() { return assets.end(); }
+
  private:
     std::map<std::string, std::unique_ptr<Asset>> assets;
 
@@ -204,6 +208,7 @@ class AssetManager {
         if (ptr == nullptr) {
             SPDLOG_WARN("Asset {} is wrong type", key);
         }
+        ptr->accessed++;
         return ptr;
     }
 
@@ -214,9 +219,9 @@ class AssetManager {
 
     int GetPackageCount() { return packages.size(); }
 
-    auto GetPackageBegin() { return packages.begin(); }
+    auto begin() { return packages.begin(); }
 
-    auto GetPackageEnd() { return packages.end(); }
+    auto end() { return packages.end(); }
 
     void SaveModList();
 

@@ -38,11 +38,11 @@ namespace {
 void LoadResource(cqsp::engine::Application& app, const std::string& asset_name,
                   void (*func)(cqsp::common::Universe& universe, Hjson::Value& recipes)) {
     namespace cqspc = cqsp::common::components;
-    for (auto it = app.GetAssetManager().GetPackageBegin(); it != app.GetAssetManager().GetPackageEnd(); it++) {
-        if (!it->second->HasAsset(asset_name)) {
+    for (const auto& it : app.GetAssetManager()) {
+        if (!it.second->HasAsset(asset_name)) {
             continue;
         }
-        cqsp::asset::HjsonAsset* good_assets = it->second->GetAsset<cqsp::asset::HjsonAsset>(asset_name);
+        cqsp::asset::HjsonAsset* good_assets = it.second->GetAsset<cqsp::asset::HjsonAsset>(asset_name);
         try {
             func(app.GetUniverse(), good_assets->data);
         } catch (std::runtime_error& error) {
@@ -59,11 +59,11 @@ void LoadResource(cqsp::engine::Application& app, const std::string& asset_name)
     std::unique_ptr<HjsonLoader> ptr = std::make_unique<T>(app.GetUniverse());
 
     namespace cqspc = cqsp::common::components;
-    for (auto it = app.GetAssetManager().GetPackageBegin(); it != app.GetAssetManager().GetPackageEnd(); it++) {
-        if (!it->second->HasAsset(asset_name)) {
+    for (const auto& it : app.GetAssetManager()) {
+        if (!it.second->HasAsset(asset_name)) {
             continue;
         }
-        cqsp::asset::HjsonAsset* good_assets = it->second->GetAsset<cqsp::asset::HjsonAsset>(asset_name);
+        cqsp::asset::HjsonAsset* good_assets = it.second->GetAsset<cqsp::asset::HjsonAsset>(asset_name);
         try {
             ptr->LoadHjson(good_assets->data);
         } catch (std::runtime_error& error) {

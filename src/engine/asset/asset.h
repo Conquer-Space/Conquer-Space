@@ -76,6 +76,7 @@ enum class AssetType {
     /// </summary>
     /// \see @ref cqsp::asset::AssetLoader::LoadShaderDefinition for implementation
     SHADER_DEFINITION,
+    SCRIPT,
     BINARY
 };
 
@@ -145,6 +146,8 @@ inline std::string ToString(AssetType type) {
             return "audio";
         case AssetType::BINARY:
             return "binary";
+        case AssetType::SHADER_DEFINITION:
+            return "shader_def";
     }
 }
 
@@ -154,8 +157,10 @@ inline std::string ToString(AssetType type) {
 class Asset {
  public:
     // Virtual destructor to make class virtual
-    virtual ~Asset() {}
+    virtual ~Asset() = default;
+    virtual AssetType GetAssetType() = 0;
     std::string path;
+    int accessed = 0;
 };
 }  // namespace asset
 }  // namespace cqsp

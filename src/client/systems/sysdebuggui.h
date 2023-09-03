@@ -42,6 +42,7 @@ class SysDebugMenu : public SysUserInterface {
     void CreateMenuBar();
     void DrawConsole();
     void ConsoleInput();
+    void DrawAssetWindow();
 
     bool to_show_window = false;
     bool to_show_metrics_window = false;
@@ -50,7 +51,10 @@ class SysDebugMenu : public SysUserInterface {
     bool reclaim_focus = false;
     bool scroll_to_bottom = true;
     bool to_show_cqsp_metrics = false;
+    bool to_show_asset_window = false;
+
     std::string command;
+    std::string asset_search;
     std::vector<std::string> items;
 
     typedef std::vector<std::string> CommandOutput;
