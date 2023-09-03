@@ -64,6 +64,8 @@ struct ProvinceColor {
     int r;
     int g;
     int b;
+    ProvinceColor() = default;
+    ProvinceColor(int r, int g, int b) : r(r), g(g), b(b) {}
 
     bool operator==(const ProvinceColor& other) const { return (other.r == r && other.g == g && other.b == b); }
 
@@ -74,6 +76,14 @@ struct ProvinceColor {
         rgb = (rgb << 8) + g;
         rgb = (rgb << 8) + b;
         return rgb;
+    }
+
+    static ProvinceColor fromInt(int color) {
+        int r = (color & 0xFF0000) >> 16;
+        int g = (color & 0x00FF00) >> 8;
+        int b = (color & 0x0000FF);
+
+        return ProvinceColor(r, g, b);
     }
 };
 

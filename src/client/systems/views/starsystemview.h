@@ -241,8 +241,6 @@ class SysStarSystemRenderer {
     int province_height = 0;
     int province_width = 0;
 
-    std::vector<unsigned char> country_map;
-
     common::components::types::SurfaceCoordinate GetCitySurfaceCoordinate();
     void CityDetection();
 
@@ -252,11 +250,11 @@ class SysStarSystemRenderer {
     entt::entity selected_province;
     bool countries = false;
 
-    const double object_distance = 0.4;
-
     int orbits_generated = 0;
 
     const int sphere_resolution = 64;
+
+    std::vector<entt::entity> province_map;
 };
 }  // namespace systems
 }  // namespace client

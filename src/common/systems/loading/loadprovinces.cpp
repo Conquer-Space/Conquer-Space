@@ -56,6 +56,7 @@ void cqsp::common::systems::loading::LoadProvinces(common::Universe& universe, c
         universe.get_or_emplace<components::CountryCityList>(universe.countries[country])
             .province_list.push_back(entity);
 
-        universe.province_colors[color] = entity;
+        universe.province_colors[(int)color] = entity;
+        universe.colors_province[entity] = (int)color;
     }
 }
