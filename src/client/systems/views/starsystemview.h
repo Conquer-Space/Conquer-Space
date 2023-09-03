@@ -127,7 +127,7 @@ class SysStarSystemRenderer {
     void DrawPlanetIcon(glm::vec3 &object_pos);
     void DrawPlanetBillboards(const entt::entity &ent_id, const glm::vec3 &object_pos);
     void DrawShipIcon(const glm::vec3 &object_pos);
-    void DrawCityIcon(glm::vec3 &object_pos);
+    void DrawCityIcon(const glm::vec3 &object_pos);
 
     void DrawAllCities(auto &bodies);
 
@@ -214,7 +214,9 @@ class SysStarSystemRenderer {
 
     bool is_founding_city = false;
     bool is_rendering_founding_city = false;
-    glm::vec3 city_founding_position;
+    glm::vec3 mouse_on_object;
+    // Gets the intersection in 3d point between the mouse and any planet
+    glm::vec3 GetMouseOnObject() { return mouse_on_object; }
     entt::entity on_planet;
 
     float view_scale = 10.f;
@@ -241,7 +243,7 @@ class SysStarSystemRenderer {
     int province_height = 0;
     int province_width = 0;
 
-    common::components::types::SurfaceCoordinate GetCitySurfaceCoordinate();
+    common::components::types::SurfaceCoordinate GetMouseSurfaceIntersection();
     void CityDetection();
 
     glm::vec3 selected_province_color;

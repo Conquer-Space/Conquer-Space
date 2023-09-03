@@ -229,7 +229,7 @@ void SysStarSystemRenderer::Update(float deltaTime) {
     }
 
     using cqsp::client::components::PlanetTerrainRender;
-    city_founding_position = GetMouseIntersectionOnObject(m_app.GetMouseX(), m_app.GetMouseY());
+    mouse_on_object = GetMouseIntersectionOnObject(m_app.GetMouseX(), m_app.GetMouseY());
 
     /*
     // Check if it has terrain resource rendering, and make terrain thing
@@ -371,7 +371,7 @@ void SysStarSystemRenderer::DrawPlanetBillboards(const entt::entity& ent_id, con
     m_app.DrawText(text, pos.x, pos.y, 20);
 }
 
-void SysStarSystemRenderer::DrawCityIcon(glm::vec3& object_pos) {
+void SysStarSystemRenderer::DrawCityIcon(const glm::vec3& object_pos) {
     glm::vec3 pos = GetBillboardPosition(object_pos);
     if (pos.z >= 1 || pos.z <= -1) {
         return;
@@ -598,7 +598,7 @@ void SysStarSystemRenderer::RenderCities(glm::vec3& object_pos, const entt::enti
     }
 
     if (is_founding_city && is_rendering_founding_city) {
-        DrawCityIcon(city_founding_position);
+        DrawCityIcon(GetMouseOnObject());
     }
 }
 
@@ -968,7 +968,7 @@ void SysStarSystemRenderer::FoundCity() {
     namespace cqspt = cqsp::common::components::types;
     namespace cqspc = cqsp::common::components;
 
-    auto s = GetCitySurfaceCoordinate();
+    auto s = GetMouseSurfaceIntersection();
     SPDLOG_INFO("Founding city at {} {}", s.latitude(), s.longitude());
 
     entt::entity settlement =
@@ -1109,7 +1109,7 @@ void SysStarSystemRenderer::RenderSelectedObjectInformation() {
     ImGui::End();
 }
 
-common::components::types::SurfaceCoordinate SysStarSystemRenderer::GetCitySurfaceCoordinate() {
+common::components::types::SurfaceCoordinate SysStarSystemRenderer::GetMouseSurfaceIntersection() {
     namespace cqspt = cqsp::common::components::types;
     namespace cqspc = cqsp::common::components;
 
@@ -1120,7 +1120,7 @@ common::components::types::SurfaceCoordinate SysStarSystemRenderer::GetCitySurfa
         return cqspt::SurfaceCoordinate(0, 0);
     }
 
-    glm::vec3 p = city_founding_position - CalculateCenteredObject(on_planet);
+    glm::vec3 p = GetMouseOnObject() - CalculateCenteredObject(on_planet);
     p = glm::normalize(p);
 
     auto& planet_comp = m_app.GetUniverse().get<cqspc::bodies::Body>(on_planet);
@@ -1138,7 +1138,7 @@ void SysStarSystemRenderer::CityDetection() {
     if (on_planet == entt::null || !m_universe.valid(on_planet)) {
         return;
     }
-    auto s = GetCitySurfaceCoordinate();
+    auto s = GetMouseSurfaceIntersection();
 
     // Look for the vector
     // Rotate based on the axial tilt and roation
@@ -1163,6 +1163,7 @@ glm::vec3 SysStarSystemRenderer::GetMouseIntersectionOnObject(int mouse_x, int m
     // Normalize 3d device coordinates
     namespace cqspb = cqsp::common::components::bodies;
     auto bodies = m_app.GetUniverse().view<cqspb::Body>();
+    // TODO(EhWhoAmI): Sort the bodies by distance before calculating intersection
     for (entt::entity ent_id : bodies) {
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
         float x = (2.0f * mouse_x) / m_app.GetWindowWidth() - 1.0f;
