@@ -89,7 +89,7 @@ struct PlanetTexture {
     cqsp::asset::Texture* normal = nullptr;
     cqsp::asset::Texture* roughness = nullptr;
     cqsp::asset::Texture* province_texture = nullptr;
-    cqsp::asset::BinaryAsset* province_map = nullptr;
+    std::vector<entt::entity> province_map;
 };
 
 struct PlanetOrbit {
@@ -416,7 +416,8 @@ void SysStarSystemRenderer::DrawShipIcon(const glm::vec3& object_pos) {
 void SysStarSystemRenderer::DrawTexturedPlanet(const glm::vec3& object_pos, const entt::entity entity) {
     bool have_normal = false;
     bool have_roughness = false;
-    GetPlanetTexture(entity, have_normal, have_roughness);
+    bool have_province;
+    GetPlanetTexture(entity, have_normal, have_roughness, have_province);
 
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqspt = cqsp::common::components::types;
@@ -450,14 +451,15 @@ void SysStarSystemRenderer::DrawTexturedPlanet(const glm::vec3& object_pos, cons
 
     // If a country is clicked on...
     shader->setVec4("country_color", glm::vec4(selected_country_color, 1));
-    shader->setBool("country", countries);
+    shader->setBool("country", have_province);
     shader->setBool("is_roughness", have_roughness);
 
     engine::Draw(textured_planet, shader);
     glDepthFunc(GL_LESS);
 }
 
-void SysStarSystemRenderer::GetPlanetTexture(const entt::entity entity, bool& have_normal, bool& have_roughness) {
+void SysStarSystemRenderer::GetPlanetTexture(const entt::entity entity, bool& have_normal, bool& have_roughness,
+                                             bool& have_province) {
     if (!m_universe.all_of<PlanetTexture>(entity)) {
         return;
     }
@@ -474,7 +476,8 @@ void SysStarSystemRenderer::GetPlanetTexture(const entt::entity entity, bool& ha
         have_roughness = true;
         textured_planet.textures.push_back(terrain_data.roughness);
     }
-    // add the texture, if they have it...
+    // Add province data if they have it
+    have_province = (terrain_data.province_texture != nullptr);
     if (terrain_data.province_texture != nullptr) {
         textured_planet.textures.push_back(terrain_data.province_texture);
     }
@@ -670,8 +673,32 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
             continue;
         }
         auto& province_map = m_universe.get<common::components::ProvincedPlanet>(body);
-        data.province_map = m_app.GetAssetManager().GetAsset<cqsp::asset::BinaryAsset>(province_map.province_map);
+        // Add province data if they have it
         data.province_texture = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>(province_map.province_texture);
+
+        cqsp::asset::BinaryAsset* bin_asset =
+            m_app.GetAssetManager().GetAsset<cqsp::asset::BinaryAsset>(province_map.province_map);
+        // Then create vector
+        uint64_t file_size = bin_asset->data.size();
+        int comp = 0;
+        auto d = stbi_load_from_memory(bin_asset->data.data(), file_size, &province_width, &province_height, &comp, 0);
+
+        // Set country map
+        data.province_map.reserve(province_height * province_width);
+        for (int x = 0; x < province_width; x++) {
+            for (int y = 0; y < province_height; y++) {
+                // Then get from the maps
+                int pos = (x * province_height + y) * comp;
+                std::tuple<int, int, int, int> t = std::make_tuple(d[pos], d[pos + 1], d[pos + 2], d[pos + 3]);
+                int i = common::components::ProvinceColor::toInt(std::get<0>(t), std::get<1>(t), std::get<2>(t));
+                if (m_universe.province_colors.find(i) != m_universe.province_colors.end()) {
+                    data.province_map.push_back(m_universe.province_colors[i]);
+                } else {
+                    data.province_map.push_back(entt::null);
+                }
+            }
+        }
+        delete d;
     }
 }
 
@@ -684,30 +711,7 @@ void SysStarSystemRenderer::InitializeFramebuffers() {
     skybox_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *m_app.GetWindow());
 }
 
-void SysStarSystemRenderer::LoadProvinceMap() {
-    auto bin_asset = m_app.GetAssetManager().GetAsset<asset::BinaryAsset>("province_map");
-    // Might be able to release this after it's done
-    uint64_t file_size = bin_asset->data.size();
-    int comp = 0;
-    auto d = stbi_load_from_memory(bin_asset->data.data(), file_size, &province_width, &province_height, &comp, 0);
-
-    // Set country map
-    province_map.reserve(province_height * province_width);
-    for (int x = 0; x < province_width; x++) {
-        for (int y = 0; y < province_height; y++) {
-            // Then get from the maps
-            int pos = (x * province_height + y) * comp;
-            std::tuple<int, int, int, int> t = std::make_tuple(d[pos], d[pos + 1], d[pos + 2], d[pos + 3]);
-            int i = common::components::ProvinceColor::toInt(std::get<0>(t), std::get<1>(t), std::get<2>(t));
-            if (m_universe.province_colors.find(i) != m_universe.province_colors.end()) {
-                province_map.push_back(m_universe.province_colors[i]);
-            } else {
-                province_map.push_back(entt::null);
-            }
-        }
-    }
-    delete d;
-}
+void SysStarSystemRenderer::LoadProvinceMap() {}
 
 void SysStarSystemRenderer::InitializeMeshes() {
     // Initialize meshes, etc
@@ -998,8 +1002,11 @@ void SysStarSystemRenderer::SelectCountry() {
     m_universe.clear<cqsp::client::ctx::SelectedProvince>();
     // Get selected planet, then
     entt::entity focused_planet = m_universe.view<FocusedPlanet>().front();
-    countries = m_universe.any_of<cqsp::common::components::Habitation>(focused_planet);
-    if (countries) {
+    if (!m_universe.any_of<PlanetTexture>(focused_planet)) {
+        return;
+    }
+    auto& tex = m_universe.get<PlanetTexture>(focused_planet);
+    if (tex.province_texture != nullptr) {
         m_universe.emplace_or_replace<cqsp::client::ctx::SelectedProvince>(selected_province);
     }
 }
@@ -1148,9 +1155,16 @@ void SysStarSystemRenderer::CityDetection() {
     if (pos < 0 || pos > province_width * province_height) {
         return;
     }
+    if (!m_universe.any_of<PlanetTexture>(on_planet)) {
+        return;
+    }
+    auto& planet_texture = m_universe.get<PlanetTexture>(on_planet);
+    if (planet_texture.province_texture == nullptr) {
+        return;
+    }
     ZoneNamed(LookforProvince, true);
     {
-        hovering_province = province_map[pos];
+        hovering_province = planet_texture.province_map[pos];
         int color = m_universe.colors_province[hovering_province];
         auto province_color = cqsp::common::components::ProvinceColor::fromInt(color);
         selected_province_color =

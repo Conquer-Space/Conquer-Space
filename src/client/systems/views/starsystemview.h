@@ -135,7 +135,7 @@ class SysStarSystemRenderer {
     void DrawAllPlanetBillboards(auto &bodies);
 
     void DrawTexturedPlanet(const glm::vec3 &object_pos, const entt::entity entity);
-    void GetPlanetTexture(const entt::entity entity, bool &have_normal, bool &have_roughness);
+    void GetPlanetTexture(const entt::entity entity, bool &have_normal, bool &have_roughness, bool &have_province);
     void DrawTerrainlessPlanet(const entt::entity &entity, glm::vec3 &object_pos);
 
     void DrawStar(const entt::entity &entity, glm::vec3 &object_pos);
@@ -224,13 +224,9 @@ class SysStarSystemRenderer {
     entt::entity selected_city = entt::null;
 
     /// <summary>
-    /// For debugging, the x position of the mouse on the texture
+    /// Debugging mouse position
     /// </summary>
     int tex_x;
-
-    /// <summary>
-    /// For debugging, the y position of the mouse on the texture
-    /// </summary>
     int tex_y;
 
     /// <summary>
@@ -250,13 +246,10 @@ class SysStarSystemRenderer {
     glm::vec3 selected_country_color;
     entt::entity hovering_province;
     entt::entity selected_province;
-    bool countries = false;
 
     int orbits_generated = 0;
 
     const int sphere_resolution = 64;
-
-    std::vector<entt::entity> province_map;
 };
 }  // namespace systems
 }  // namespace client
