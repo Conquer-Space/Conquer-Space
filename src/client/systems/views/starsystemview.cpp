@@ -684,7 +684,7 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
         auto d = stbi_load_from_memory(bin_asset->data.data(), file_size, &province_width, &province_height, &comp, 0);
 
         // Set country map
-        data.province_map.reserve(province_height * province_width);
+        data.province_map.reserve(static_cast<long>(province_height * province_width));
         for (int x = 0; x < province_width; x++) {
             for (int y = 0; y < province_height; y++) {
                 // Then get from the maps
