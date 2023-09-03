@@ -691,8 +691,21 @@ void SysStarSystemRenderer::LoadProvinceMap() {
     int comp = 0;
     auto d = stbi_load_from_memory(bin_asset->data.data(), file_size, &province_width, &province_height, &comp, 0);
 
-    std::copy(&d[0], &d[static_cast<ptrdiff_t>(province_width * province_height * comp)],
-              std::back_inserter(country_map));
+    // Set country map
+    province_map.reserve(province_height * province_width);
+    for (int x = 0; x < province_width; x++) {
+        for (int y = 0; y < province_height; y++) {
+            // Then get from the maps
+            int pos = (x * province_height + y) * comp;
+            std::tuple<int, int, int, int> t = std::make_tuple(d[pos], d[pos + 1], d[pos + 2], d[pos + 3]);
+            int i = common::components::ProvinceColor::toInt(std::get<0>(t), std::get<1>(t), std::get<2>(t));
+            if (m_universe.province_colors.find(i) != m_universe.province_colors.end()) {
+                province_map.push_back(m_universe.province_colors[i]);
+            } else {
+                province_map.push_back(entt::null);
+            }
+        }
+    }
     delete d;
 }
 
@@ -1131,27 +1144,17 @@ void SysStarSystemRenderer::CityDetection() {
     // Rotate based on the axial tilt and roation
     int x = (-1 * (s.latitude() * 2 - 180)) / 360 * province_height;
     int y = fmod(s.longitude() + 180, 360) / 360. * province_width;
-    int pos = (x * province_width + y) * 4;
-    tex_x = x;
-    tex_y = y;
-    std::tuple<int, int, int, int> t =
-        std::make_tuple(country_map[pos], country_map[pos + 1], country_map[pos + 2], country_map[pos + 3]);
-    tex_r = std::get<0>(t);
-    tex_g = std::get<1>(t);
-    tex_b = std::get<2>(t);
-
-    if (std::get<3>(t) == 0) {
-        // Then ignore because it is ocean
+    int pos = (x * province_width + y);
+    if (pos < 0 || pos > province_width * province_height) {
         return;
     }
     ZoneNamed(LookforProvince, true);
     {
-        selected_province_color = (glm::vec3(std::get<0>(t), std::get<1>(t), std::get<2>(t)) / 255.f);
-        int i = common::components::ProvinceColor::toInt(tex_r, tex_g, tex_b);
-        if (m_universe.province_colors.find(i) != m_universe.province_colors.end()) {
-            hovering_province = m_universe.province_colors[i];
-        } else {
-        }
+        hovering_province = province_map[pos];
+        int color = m_universe.colors_province[hovering_province];
+        auto province_color = cqsp::common::components::ProvinceColor::fromInt(color);
+        selected_province_color =
+            (glm::vec3((float)province_color.r, (float)province_color.g, (float)province_color.b) / 255.f);
     }
 }
 
