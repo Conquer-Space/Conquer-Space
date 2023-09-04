@@ -21,6 +21,7 @@
 #include <utility>
 #include <vector>
 
+#include "client/scenes/scene.h"
 #include "client/systems/sysgui.h"
 #include "client/systems/views/starsystemview.h"
 #include "common/components/bodies.h"
@@ -30,11 +31,10 @@
 #include "engine/graphics/renderable.h"
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/renderer2d.h"
-#include "engine/scene.h"
 
 namespace cqsp {
 namespace scene {
-class UniverseScene : public cqsp::engine::Scene {
+class UniverseScene : public cqsp::client::Scene {
  public:
     explicit UniverseScene(cqsp::engine::Application& app);
     ~UniverseScene() {
@@ -108,7 +108,7 @@ class UniverseScene : public cqsp::engine::Scene {
     bool interp = true;
 };
 
-void SeePlanet(cqsp::engine::Application&, entt::entity);
+void SeePlanet(cqsp::common::Universe& universe, entt::entity ent);
 entt::entity GetCurrentViewingPlanet(cqsp::common::Universe&);
 // Halts all other things
 void SetGameHalted(bool b);

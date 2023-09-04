@@ -76,7 +76,6 @@ int Application::init() {
     std::unique_ptr<Scene> initial_scene = std::make_unique<EmptyScene>(*this);
     m_scene_manager.SetInitialScene(std::move(initial_scene));
 
-    InitGame();
     return 0;
 }
 
@@ -552,7 +551,7 @@ void Application::SetFullScreen(bool screen) {
     }
 }
 
-Application::CqspEventInstancer::CqspEventInstancer() {}
+Application::CqspEventInstancer::CqspEventInstancer() = default;
 
 Application::CqspEventInstancer::~CqspEventInstancer() = default;
 

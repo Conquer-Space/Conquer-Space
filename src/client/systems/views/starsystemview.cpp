@@ -106,16 +106,16 @@ void SysStarSystemRenderer::Initialize() {
     LoadProvinceMap();
 
     // Zoom into the player's capital city
-    entt::entity player = m_app.GetUniverse().view<common::components::Player>().front();
-    entt::entity player_capital = m_app.GetUniverse().get<common::components::Country>(player).capital_city;
+    entt::entity player = m_universe.view<common::components::Player>().front();
+    entt::entity player_capital = m_universe.get<common::components::Country>(player).capital_city;
     if (player_capital != entt::null) {
         // Zoom into the thing
-        m_app.GetUniverse().emplace_or_replace<FocusedCity>(player_capital);
+        m_universe.emplace_or_replace<FocusedCity>(player_capital);
     }
 }
 
 void SysStarSystemRenderer::OnTick() {
-    entt::entity current_planet = m_app.GetUniverse().view<FocusedPlanet>().front();
+    entt::entity current_planet = m_universe.view<FocusedPlanet>().front();
     if (current_planet != entt::null) {
         view_center = CalculateObjectPos(m_viewing_entity);
     }
@@ -127,7 +127,7 @@ void SysStarSystemRenderer::Render(float deltaTime) {
     namespace cqspb = cqsp::common::components::bodies;
 
     // Seeing new planet
-    entt::entity current_planet = m_app.GetUniverse().view<FocusedPlanet>().front();
+    entt::entity current_planet = m_universe.view<FocusedPlanet>().front();
     if (current_planet != m_viewing_entity && current_planet != entt::null) {
         SPDLOG_INFO("Switched displaying planet, seeing {}", current_planet);
         m_viewing_entity = current_planet;
@@ -185,8 +185,8 @@ void SysStarSystemRenderer::SeeEntity() {
     view_center = CalculateObjectPos(m_viewing_entity);
 
     // Set the variable
-    if (m_app.GetUniverse().all_of<cqspb::Body>(m_viewing_entity)) {
-        scroll = m_app.GetUniverse().get<cqspb::Body>(m_viewing_entity).radius * 2.5;
+    if (m_universe.all_of<cqspb::Body>(m_viewing_entity)) {
+        scroll = m_universe.get<cqspb::Body>(m_viewing_entity).radius * 2.5;
         if (scroll < 0.1) scroll = 0.1;
     } else {
         scroll = 5;
@@ -213,7 +213,7 @@ void SysStarSystemRenderer::Update(float deltaTime) {
         previous_mouseY = m_app.GetMouseY();
 
         // If clicks on object, go to the planet
-        entt::entity ent = m_app.GetUniverse().view<MouseOverEntity>().front();
+        entt::entity ent = m_universe.view<MouseOverEntity>().front();
         if (m_app.MouseButtonIsReleased(engine::MouseInput::LEFT) && ent != entt::null && !m_app.MouseDragged()) {
             FocusOnEntity(ent);
 
@@ -233,7 +233,7 @@ void SysStarSystemRenderer::Update(float deltaTime) {
 
     /*
     // Check if it has terrain resource rendering, and make terrain thing
-    if (m_viewing_entity != entt::null && m_app.GetUniverse().all_of<PlanetTerrainRender>(m_viewing_entity)) {
+    if (m_viewing_entity != entt::null && m_universe.all_of<PlanetTerrainRender>(m_viewing_entity)) {
         CheckResourceDistRender();
     } else if (m_viewing_entity != entt::null) {
         // Reset to default
@@ -248,8 +248,8 @@ void SysStarSystemRenderer::Update(float deltaTime) {
 }
 
 void SysStarSystemRenderer::SeePlanet(entt::entity ent) {
-    m_app.GetUniverse().clear<FocusedPlanet>();
-    m_app.GetUniverse().emplace<FocusedPlanet>(ent);
+    m_universe.clear<FocusedPlanet>();
+    m_universe.emplace<FocusedPlanet>(ent);
 }
 
 void SysStarSystemRenderer::DoUI(float deltaTime) {
@@ -265,7 +265,7 @@ void SysStarSystemRenderer::DrawStars() {
     // Draw stars
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqsps = cqsp::common::components::ships;
-    auto stars = m_app.GetUniverse().view<cqspb::Body, cqspb::LightEmitter>();
+    auto stars = m_universe.view<cqspb::Body, cqspb::LightEmitter>();
     renderer.BeginDraw(physical_layer);
     for (auto ent_id : stars) {
         // Draw the star circle
@@ -279,7 +279,7 @@ void SysStarSystemRenderer::DrawStars() {
 void SysStarSystemRenderer::DrawBodies() {
     ZoneScoped;
     // Draw other bodies
-    auto bodies = m_app.GetUniverse().view<cqspb::Body>(entt::exclude<cqspb::LightEmitter>);
+    auto bodies = m_universe.view<cqspb::Body>(entt::exclude<cqspb::LightEmitter>);
     renderer.BeginDraw(planet_icon_layer);
     glDepthFunc(GL_ALWAYS);
     DrawAllPlanetBillboards(bodies);
@@ -302,7 +302,7 @@ void SysStarSystemRenderer::DrawShips() {
     ZoneScoped;
     namespace cqsps = cqsp::common::components::ships;
     // Draw Ships
-    auto ships = m_app.GetUniverse().view<cqsps::Ship, ctx::VisibleOrbit>();
+    auto ships = m_universe.view<cqsps::Ship, ctx::VisibleOrbit>();
 
     renderer.BeginDraw(ship_icon_layer);
     ship_overlay.shaderProgram->UseProgram();
@@ -335,7 +335,7 @@ void SysStarSystemRenderer::DrawSkybox() {
 
 void SysStarSystemRenderer::DrawEntityName(glm::vec3& object_pos, entt::entity ent_id) {
     using cqsp::common::components::Name;
-    std::string text = common::util::GetName(m_app.GetUniverse(), ent_id);
+    std::string text = common::util::GetName(m_universe, ent_id);
     glm::vec3 pos = GetBillboardPosition(object_pos);
     // Check if the position on screen is within bounds
     if (pos.z < 1 && pos.z > -1 &&
@@ -360,7 +360,7 @@ void SysStarSystemRenderer::DrawPlanetBillboards(const entt::entity& ent_id, con
         return;
     }
 
-    std::string text = common::util::GetName(m_app.GetUniverse(), ent_id);
+    std::string text = common::util::GetName(m_universe, ent_id);
 
     glm::mat4 planetDispMat = GetBillboardMatrix(pos);
 
@@ -495,10 +495,10 @@ void SysStarSystemRenderer::DrawAllPlanets(auto& bodies) {
         //if (true) {
         // Check if planet has terrain or not
         // Don't actually use proc-gen terrain for now
-        // if (m_app.GetUniverse().all_of<cqspb::Terrain>(body_entity)) {
+        // if (m_universe.all_of<cqspb::Terrain>(body_entity)) {
         // Do empty terrain
         // Check if the planet has the thing
-        if (m_app.GetUniverse().all_of<cqspb::TexturedTerrain>(body_entity)) {
+        if (m_universe.all_of<cqspb::TexturedTerrain>(body_entity)) {
             DrawTexturedPlanet(object_pos, body_entity);
         } else {
             DrawTerrainlessPlanet(body_entity, object_pos);
@@ -565,15 +565,15 @@ void SysStarSystemRenderer::RenderCities(glm::vec3& object_pos, const entt::enti
     // Draw Cities
     namespace cqspc = cqsp::common::components;
     namespace cqspt = cqsp::common::components::types;
-    if (!m_app.GetUniverse().all_of<cqspc::Habitation>(body_entity)) {
+    if (!m_universe.all_of<cqspc::Habitation>(body_entity)) {
         return;
     }
-    std::vector<entt::entity> cities = m_app.GetUniverse().get<cqspc::Habitation>(body_entity).settlements;
+    std::vector<entt::entity> cities = m_universe.get<cqspc::Habitation>(body_entity).settlements;
     if (cities.empty()) {
         return;
     }
 
-    auto& body = m_app.GetUniverse().get<cqspc::bodies::Body>(body_entity);
+    auto& body = m_universe.get<cqspc::bodies::Body>(body_entity);
     auto quat = GetBodyRotation(body.axial, body.rotation, body.rotation_offset);
 
     // Rotate the body
@@ -582,12 +582,12 @@ void SysStarSystemRenderer::RenderCities(glm::vec3& object_pos, const entt::enti
     city.shaderProgram->setVec4("color", 0.5, 0.5, 0.5, 1);
     for (auto city_entity : cities) {
         // Calculate position to render
-        if (!m_app.GetUniverse().any_of<Offset>(city_entity)) {
+        if (!m_universe.any_of<Offset>(city_entity)) {
             // Calculate offset
             continue;
         }
-        Offset doffset = m_app.GetUniverse().get<Offset>(city_entity);
-        glm::vec3 city_pos = m_app.GetUniverse().get<Offset>(city_entity).offset * (float)body.radius;
+        Offset doffset = m_universe.get<Offset>(city_entity);
+        glm::vec3 city_pos = m_universe.get<Offset>(city_entity).offset * (float)body.radius;
         // Check if line of sight and city position intersects the sphere that is the planet
         city_pos = quat * city_pos;
         glm::vec3 city_world_pos = city_pos + object_pos;
@@ -618,23 +618,23 @@ void SysStarSystemRenderer::CalculateCityPositions() {
     namespace cqspc = cqsp::common::components;
     namespace cqspt = cqsp::common::components::types;
     // Calculate offset for all cities on planet if they exist
-    if (!m_app.GetUniverse().valid(m_viewing_entity)) {
+    if (!m_universe.valid(m_viewing_entity)) {
         return;
     }
-    if (!m_app.GetUniverse().all_of<cqspc::Habitation>(m_viewing_entity)) {
+    if (!m_universe.all_of<cqspc::Habitation>(m_viewing_entity)) {
         return;
     }
-    std::vector<entt::entity> cities = m_app.GetUniverse().get<cqspc::Habitation>(m_viewing_entity).settlements;
+    std::vector<entt::entity> cities = m_universe.get<cqspc::Habitation>(m_viewing_entity).settlements;
     if (cities.empty()) {
         return;
     }
     for (auto& city_entity : cities) {
-        if (!m_app.GetUniverse().all_of<cqspt::SurfaceCoordinate>(city_entity)) {
+        if (!m_universe.all_of<cqspt::SurfaceCoordinate>(city_entity)) {
             continue;
         }
-        auto& coord = m_app.GetUniverse().get<cqspt::SurfaceCoordinate>(city_entity);
-        cqspb::Body parent = m_app.GetUniverse().get<cqspb::Body>(m_viewing_entity);
-        m_app.GetUniverse().emplace_or_replace<Offset>(city_entity, cqspt::toVec3(coord.universe_view(), 1));
+        auto& coord = m_universe.get<cqspt::SurfaceCoordinate>(city_entity);
+        cqspb::Body parent = m_universe.get<cqspb::Body>(m_viewing_entity);
+        m_universe.emplace_or_replace<Offset>(city_entity, cqspt::toVec3(coord.universe_view(), 1));
     }
     SPDLOG_INFO("Calculated offset");
 }
@@ -642,11 +642,11 @@ void SysStarSystemRenderer::CalculateCityPositions() {
 void SysStarSystemRenderer::CalculateScroll() {
     namespace cqspb = cqsp::common::components::bodies;
     double min_scroll;
-    if (m_viewing_entity == entt::null || !m_app.GetUniverse().all_of<cqspb::Body>(m_viewing_entity)) {
+    if (m_viewing_entity == entt::null || !m_universe.all_of<cqspb::Body>(m_viewing_entity)) {
         // Scroll i
         min_scroll = 0.1;
     } else {
-        min_scroll = std::max(m_app.GetUniverse().get<cqspb::Body>(m_viewing_entity).radius * 1.1, 0.1);
+        min_scroll = std::max(m_universe.get<cqspb::Body>(m_viewing_entity).radius * 1.1, 0.1);
     }
     if (scroll - m_app.GetScrollAmount() * 3 * scroll / 33 <= min_scroll) {
         return;
@@ -655,12 +655,12 @@ void SysStarSystemRenderer::CalculateScroll() {
 }
 
 void SysStarSystemRenderer::LoadPlanetTextures() {
-    auto orbits = m_app.GetUniverse().view<common::components::types::Orbit>();
+    auto orbits = m_universe.view<common::components::types::Orbit>();
     for (auto body : orbits) {
-        if (!m_app.GetUniverse().all_of<cqspb::TexturedTerrain>(body)) {
+        if (!m_universe.all_of<cqspb::TexturedTerrain>(body)) {
             continue;
         }
-        auto textures = m_app.GetUniverse().get<cqspb::TexturedTerrain>(body);
+        auto textures = m_universe.get<cqspb::TexturedTerrain>(body);
         auto& data = m_universe.get_or_emplace<PlanetTexture>(body);
         data.terrain = m_app.GetAssetManager().GetAsset<cqsp::asset::Texture>(textures.terrain_name);
         if (!textures.normal_name.empty()) {
@@ -772,7 +772,7 @@ glm::quat SysStarSystemRenderer::GetBodyRotation(double axial, double rotation, 
 
 void SysStarSystemRenderer::FocusCityView() {
     ZoneScoped;
-    auto focused_city_view = m_app.GetUniverse().view<FocusedCity>();
+    auto focused_city_view = m_universe.view<FocusedCity>();
     // City to focus view on
     if (focused_city_view.empty()) {
         return;
@@ -781,7 +781,7 @@ void SysStarSystemRenderer::FocusCityView() {
     m_universe.clear<FocusedCity>();
 
     CenterCameraOnCity();
-    entt::entity planet = m_app.GetUniverse().view<FocusedPlanet>().front();
+    entt::entity planet = m_universe.view<FocusedPlanet>().front();
     auto& body = m_universe.get<cqsp::common::components::bodies::Body>(planet);
     // 100 km above the city
     scroll = body.radius + 100;
@@ -854,7 +854,7 @@ void SysStarSystemRenderer::CenterCameraOnCity() {
     // coordinate system multiple times. Currently this changes from surface
     // coordinates to 3d coordinates to surface coordinates. I think it can be
     // solved with a basic formula.
-    entt::entity planet = m_app.GetUniverse().view<FocusedPlanet>().front();
+    entt::entity planet = m_universe.view<FocusedPlanet>().front();
 
     if (!m_universe.any_of<cqsp::common::components::bodies::Body>(planet)) {
         return;
@@ -917,18 +917,18 @@ void SysStarSystemRenderer::CheckResourceDistRender() {
 #if FALSE
     using cqsp::client::components::PlanetTerrainRender;
     // Then check if it's the same rendered object
-    auto& rend = m_app.GetUniverse().get<PlanetTerrainRender>(m_viewing_entity);
+    auto& rend = m_universe.get<PlanetTerrainRender>(m_viewing_entity);
     if (rend.resource == terrain_displaying) {
         return;
     }
 
     // Check if it's the same
     using cqsp::common::components::ResourceDistribution;
-    if (!m_app.GetUniverse().any_of<ResourceDistribution>(m_viewing_entity)) {
+    if (!m_universe.any_of<ResourceDistribution>(m_viewing_entity)) {
         return;
     }
 
-    auto& dist = m_app.GetUniverse().get<ResourceDistribution>(m_viewing_entity);
+    auto& dist = m_universe.get<ResourceDistribution>(m_viewing_entity);
     TerrainImageGenerator gen;
     gen.terrain.seed = dist.dist[rend.resource];
     gen.GenerateHeightMap(3, 9);
@@ -975,17 +975,16 @@ void SysStarSystemRenderer::FoundCity() {
     auto s = GetMouseSurfaceIntersection();
     SPDLOG_INFO("Founding city at {} {}", s.latitude(), s.longitude());
 
-    entt::entity settlement =
-        cqsp::common::actions::CreateCity(m_app.GetUniverse(), on_planet, s.latitude(), s.longitude());
+    entt::entity settlement = cqsp::common::actions::CreateCity(m_universe, on_planet, s.latitude(), s.longitude());
     // Set the name of the city
     cqspc::Name& name = m_universe.emplace<cqspc::Name>(settlement);
     name.name = m_universe.name_generators["Town Names"].Generate("1");
 
     // Set country
     // Add population and economy
-    m_app.GetUniverse().emplace<cqspc::IndustrialZone>(settlement);
+    m_universe.emplace<cqspc::IndustrialZone>(settlement);
 
-    m_app.GetUniverse().clear<CityFounding>();
+    m_universe.clear<CityFounding>();
 
     CalculateCityPositions();
 }
@@ -1061,7 +1060,7 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
 void SysStarSystemRenderer::RenderInformationWindow(double deltaTime) {
     // FIXME(EhWhoamI)
     // auto &debug_info =
-    // m_app.GetUniverse().ctx().emplace<ctx::StarSystemViewDebug>();
+    // m_universe.ctx().emplace<ctx::StarSystemViewDebug>();
     ImGui::Begin("Debug ui window");
     ImGui::TextFmt("Cam Pos: {} {} {}", cam_pos.x, cam_pos.y, cam_pos.z);
     ImGui::TextFmt("View Center: {} {} {}", view_center.x, view_center.y, view_center.z);
@@ -1130,7 +1129,7 @@ common::components::types::SurfaceCoordinate SysStarSystemRenderer::GetMouseSurf
     glm::vec3 p = GetMouseOnObject() - CalculateCenteredObject(on_planet);
     p = glm::normalize(p);
 
-    auto& planet_comp = m_app.GetUniverse().get<cqspc::bodies::Body>(on_planet);
+    auto& planet_comp = m_universe.get<cqspc::bodies::Body>(on_planet);
     glm::quat quat = GetBodyRotation(planet_comp.axial, planet_comp.rotation, planet_comp.rotation_offset);
     // Rotate the vector based on the axial tilt and rotation.
     p = glm::inverse(quat) * p;
@@ -1176,7 +1175,7 @@ glm::vec3 SysStarSystemRenderer::GetMouseIntersectionOnObject(int mouse_x, int m
     ZoneScoped;
     // Normalize 3d device coordinates
     namespace cqspb = cqsp::common::components::bodies;
-    auto bodies = m_app.GetUniverse().view<cqspb::Body>();
+    auto bodies = m_universe.view<cqspb::Body>();
     // TODO(EhWhoAmI): Sort the bodies by distance before calculating intersection
     for (entt::entity ent_id : bodies) {
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
@@ -1185,7 +1184,7 @@ glm::vec3 SysStarSystemRenderer::GetMouseIntersectionOnObject(int mouse_x, int m
         float z = 1.0f;
 
         glm::vec3 ray_wor = CalculateMouseRay(glm::vec3(x, y, z));
-        auto& body = m_app.GetUniverse().get<cqspb::Body>(ent_id);
+        auto& body = m_universe.get<cqspb::Body>(ent_id);
         float radius = body.radius;
 
         // Check for intersection for sphere
@@ -1260,7 +1259,7 @@ entt::entity SysStarSystemRenderer::GetMouseOnObject(int mouse_x, int mouse_y) {
     namespace cqspb = cqsp::common::components::bodies;
 
     // Loop through objects
-    auto bodies = m_app.GetUniverse().view<cqspb::Body>();
+    auto bodies = m_universe.view<cqspb::Body>();
     for (entt::entity ent_id : bodies) {
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
         // Check if the sphere is rendered or not
@@ -1270,7 +1269,7 @@ entt::entity SysStarSystemRenderer::GetMouseOnObject(int mouse_x, int mouse_y) {
         float z = 1.0f;
 
         glm::vec3 ray_wor = CalculateMouseRay(glm::vec3(x, y, z));
-        auto& body = m_app.GetUniverse().get<cqspb::Body>(ent_id);
+        auto& body = m_universe.get<cqspb::Body>(ent_id);
         float radius = body.radius;
 
         // Check for intersection for sphere
@@ -1281,7 +1280,7 @@ entt::entity SysStarSystemRenderer::GetMouseOnObject(int mouse_x, int mouse_y) {
 
         // Get the closer value
         if ((b * b - c) >= 0) {
-            m_app.GetUniverse().emplace<MouseOverEntity>(ent_id);
+            m_universe.emplace<MouseOverEntity>(ent_id);
             return ent_id;
         }
     }

@@ -20,11 +20,12 @@
 #include <memory>
 #include <thread>
 
-#include "engine/scene.h"
+#include "client/scenes/scene.h"
 
 namespace cqsp {
 namespace scene {
-class LoadingScene : public cqsp::engine::Scene {
+// First loading scene when the game starts
+class LoadingScene : public cqsp::client::Scene {
  public:
     explicit LoadingScene(cqsp::engine::Application& app);
     ~LoadingScene();

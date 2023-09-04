@@ -21,7 +21,7 @@
 #include "client/systems/editor/recipeviewer.h"
 #include "client/systems/sysfieldviewer.h"
 
-cqsp::scene::ObjectEditorScene::ObjectEditorScene(cqsp::engine::Application& app) : cqsp::engine::Scene(app) {
+cqsp::scene::ObjectEditorScene::ObjectEditorScene(cqsp::engine::Application& app) : cqsp::client::Scene(app) {
     AddUISystem<cqsp::client::systems::SysFieldNodeViewer>("Node Viewer");
     AddUISystem<cqsp::client::systems::SysGoodViewer>("Good Viewer");
     AddUISystem<cqsp::client::systems::SysRecipeViewer>("Recipe Viewer");
@@ -31,7 +31,7 @@ cqsp::scene::ObjectEditorScene::~ObjectEditorScene() = default;
 
 void cqsp::scene::ObjectEditorScene::Init() {
     // Sorta need to initialize everything
-    cqsp::client::systems::LoadAllResources(GetApp());
+    cqsp::client::systems::LoadAllResources(GetApp(), *dynamic_cast<cqsp::client::ConquerSpace*>(GetApp().GetGame()));
 }
 
 void cqsp::scene::ObjectEditorScene::Update(float deltaTime) {}

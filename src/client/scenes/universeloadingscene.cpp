@@ -26,7 +26,7 @@
 #include "client/systems/savegame.h"
 #include "common/systems/sysuniversegenerator.h"
 
-cqsp::scene::UniverseLoadingScene::UniverseLoadingScene(cqsp::engine::Application& app) : Scene(app) {}
+cqsp::scene::UniverseLoadingScene::UniverseLoadingScene(cqsp::engine::Application& app) : cqsp::client::Scene(app) {}
 
 cqsp::scene::UniverseLoadingScene::~UniverseLoadingScene() {
     GetApp().CloseDocument("../data/core/gui/screens/universe_loading_screen.rml");
@@ -56,16 +56,16 @@ void cqsp::scene::UniverseLoadingScene::Ui(float deltaTime) {}
 void cqsp::scene::UniverseLoadingScene::Render(float deltaTime) {}
 
 void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
-    cqsp::client::systems::LoadAllResources(GetApp());
+    cqsp::client::systems::LoadAllResources(GetApp(), *dynamic_cast<cqsp::client::ConquerSpace*>(GetApp().GetGame()));
     SPDLOG_INFO("Made all game resources into game objects");
     using cqsp::asset::TextAsset;
     // Process scripts for core
     TextAsset* script_list = GetAssetManager().GetAsset<TextAsset>("core:base");
-    GetApp().GetScriptInterface().RunScript(script_list->data);
+    GetScriptInterface().RunScript(script_list->data);
     SPDLOG_INFO("Done loading scripts");
     using cqsp::common::systems::universegenerator::ScriptUniverseGenerator;
     // Load universe
-    ScriptUniverseGenerator script_generator(GetApp().GetScriptInterface());
+    ScriptUniverseGenerator script_generator(GetScriptInterface());
 
     script_generator.Generate(GetUniverse());
     if (GetUniverse().ctx().contains<client::ctx::GameLoad>()) {

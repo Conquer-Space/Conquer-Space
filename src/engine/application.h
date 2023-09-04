@@ -32,6 +32,7 @@
 #include "engine/audio/iaudiointerface.h"
 #include "engine/clientoptions.h"
 #include "engine/engine.h"
+#include "engine/gamestate.h"
 #include "engine/graphics/text.h"
 #include "engine/gui.h"
 #include "engine/scene.h"
@@ -76,11 +77,7 @@ class Application {
         m_scene_manager.SetScene(std::move(ptr));
     }
 
-    cqsp::common::Universe& GetUniverse() { return m_game->GetUniverse(); }
-
-    cqsp::common::Game& GetGame() { return *m_game; }
-
-    cqsp::scripting::ScriptInterface& GetScriptInterface() { return m_game->GetScriptInterface(); }
+    cqsp::engine::GameState* GetGame() { return m_game.get(); }
 
     cqsp::engine::audio::IAudioInterface& GetAudioInterface() { return *m_audio_interface; }
 
@@ -183,6 +180,11 @@ class Application {
         std::string name;
     };
 
+    template <class T>
+    void InitGame() {
+        m_game = std::make_unique<T>();
+    }
+
  private:
     void InitFonts();
 
@@ -203,7 +205,7 @@ class Application {
     int init();
 
     void ResetGame() { m_game.reset(); }
-    void InitGame() { m_game = std::make_unique<cqsp::common::Game>(); }
+
     /*
      * Releases all data.
      */
@@ -235,7 +237,7 @@ class Application {
 
     cqsp::asset::AssetManager manager;
 
-    std::unique_ptr<cqsp::common::Game> m_game;
+    std::unique_ptr<cqsp::engine::GameState> m_game;
 
     cqsp::asset::Font* m_font = nullptr;
     cqsp::asset::ShaderProgram* fontShader = nullptr;

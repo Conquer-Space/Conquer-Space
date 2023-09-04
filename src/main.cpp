@@ -19,6 +19,7 @@
 #include <iostream>
 #include <memory>
 
+#include "client/conquerspace.h"
 #include "client/scenes/loadingscene.h"
 #include "engine/application.h"
 
@@ -28,6 +29,7 @@ int main(int argc, char* argv[]) {
     // TODO(EhWhoAmI): Run the game and subsequent simulation in a headless mode, so that we don't
     // have to load the UI
     // Set initial scene
+    application.InitGame<cqsp::client::ConquerSpace>();
     application.SetScene<cqsp::scene::LoadingScene>();
     application.run();
 }

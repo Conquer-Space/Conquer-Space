@@ -17,9 +17,15 @@
 #pragma once
 
 #include "client/conquerspace.h"
-#include "engine/application.h"
+#include "engine/scene.h"
 
-namespace cqsp::client::systems {
-// Loads all the goods and the like into the game.
-void LoadAllResources(cqsp::engine::Application& app, ConquerSpace& conquer_space);
-}  // namespace cqsp::client::systems
+namespace cqsp::client {
+class Scene : public cqsp::engine::Scene {
+ public:
+    explicit Scene(cqsp::engine::Application &app) : engine::Scene(app) {}
+    cqsp::common::Universe &GetUniverse() { return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->m_universe; }
+    scripting::ScriptInterface &GetScriptInterface() {
+        return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->script_interface;
+    }
+};
+}  // namespace cqsp::client

@@ -109,7 +109,7 @@ void SysProvinceInformation::CityView() {
     ImGui::SameLine();
     if (ImGui::Button("Focus on city")) {
         // Focus city
-        GetApp().GetUniverse().emplace_or_replace<FocusedCity>(current_city);
+        GetUniverse().emplace_or_replace<FocusedCity>(current_city);
     }
     ImGui::Separator();
     if (GetUniverse().all_of<cqspc::Settlement>(current_city)) {

@@ -36,7 +36,7 @@ void cqsp::client::systems::gui::SysEvent::Init() {
 void cqsp::client::systems::gui::SysEvent::DoUI(int delta_time) {
     using cqsp::common::event::Event;
     using cqsp::common::event::EventQueue;
-    auto events = GetApp().GetUniverse().view<cqsp::common::components::Player, EventQueue>();
+    auto events = GetUniverse().view<cqsp::common::components::Player, EventQueue>();
     for (auto [ent, queue] : events.each()) {
         if (queue.events.empty()) {
             continue;
@@ -72,7 +72,7 @@ void cqsp::client::systems::gui::SysEvent::DoUI(int delta_time) {
                     // Check if it has an event
                     if (action_result->has_event) {
                         sol::protected_function_result res = action_result->action(env->table);
-                        GetApp().GetScriptInterface().ParseResult(res);
+                        GetScriptInterface().ParseResult(res);
                     }
                 }
                 if (ImGui::IsItemHovered() && !action_result->tooltip.empty()) {

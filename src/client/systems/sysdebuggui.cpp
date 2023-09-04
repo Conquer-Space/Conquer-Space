@@ -22,6 +22,7 @@
 #include "client/components/clientctx.h"
 #include "client/systems/views/starsystemview.h"
 #include "common/components/name.h"
+#include "common/util/nameutil.h"
 #include "common/util/profiler.h"
 
 using cqsp::client::systems::SysDebugMenu;
@@ -29,15 +30,15 @@ using cqsp::engine::Application;
 
 SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
     using std::string_view;
-    auto help_command = [&](Application& app, const string_view& args, CommandOutput& input) {
+    auto help_command = [&](sysdebuggui_parameters) {
         for (auto it = commands.begin(); it != commands.end(); it++) {
             input.push_back(fmt::format("{} - {}", it->first.c_str(), it->second.first));
         }
     };
 
-    auto entity_command = [](Application& app, const string_view& args, CommandOutput& input) {
+    auto entity_command = [](sysdebuggui_parameters) {
         using cqsp::client::systems::MouseOverEntity;
-        entt::entity ent = app.GetUniverse().view<MouseOverEntity>().front();
+        entt::entity ent = universe.view<MouseOverEntity>().front();
         if (ent == entt::null) {
             input.push_back(fmt::format("Mouse is over null"));
         } else {
@@ -45,32 +46,30 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
         }
     };
 
-    auto screen_clear = [](Application& app, const string_view& args, CommandOutput& input) { input.clear(); };
+    auto screen_clear = [](sysdebuggui_parameters) { input.clear(); };
 
-    auto entitycount = [](Application& app, const string_view& args, CommandOutput& input) {
-        input.push_back(
-            fmt::format("Total entities: {}, Alive: {}", app.GetUniverse().size(), app.GetUniverse().alive()));
+    auto entitycount = [](sysdebuggui_parameters) {
+        input.push_back(fmt::format("Total entities: {}, Alive: {}", universe.size(), universe.alive()));
     };
 
-    auto entity_name = [](Application& app, const string_view& args, CommandOutput& input) {
+    auto entity_name = [](sysdebuggui_parameters) {
         if (std::all_of(args.begin(), args.end(), ::isdigit)) {
             namespace cqspc = cqsp::common::components;
+
             entt::entity entity = static_cast<entt::entity>(atoi(args.data()));
             std::string name = "N/A";
-            if (app.GetUniverse().all_of<cqspc::Name>(entity)) {
-                name = app.GetUniverse().get<cqspc::Name>(entity);
+            if (universe.all_of<cqspc::Name>(entity)) {
+                name = universe.get<cqspc::Name>(entity);
             }
             std::string identifier = "N/A";
-            if (app.GetUniverse().all_of<cqspc::Identifier>(entity)) {
-                identifier = app.GetUniverse().get<cqspc::Identifier>(entity);
+            if (universe.all_of<cqspc::Identifier>(entity)) {
+                identifier = universe.get<cqspc::Identifier>(entity);
             }
             input.push_back(fmt::format("Name: {}, {}", name, identifier));
         }
     };
 
-    auto lua = [](Application& app, const string_view& args, CommandOutput& input) {
-        app.GetScriptInterface().RunScript(args);
-    };
+    auto lua = [](sysdebuggui_parameters) { script_interface.RunScript(args); };
 
     commands = {{"help", {"Shows this help menu", help_command}},
                 {"mouseon", {"Get the entitiy the mouse is over", entity_command}},
@@ -191,7 +190,7 @@ void cqsp::client::systems::SysDebugMenu::ConsoleInput() {
                 if (command_request.rfind(it->first, 0) != 0) {
                     continue;
                 }
-                it->second.second(GetApp(),
+                it->second.second(GetApp(), GetUniverse(), GetScriptInterface(),
                                   command.length() == it->first.length() ? "" : command.substr(it->first.length() + 1),
                                   items);
                 no_command = false;
@@ -293,11 +292,11 @@ void SysDebugMenu::DoUpdate(int delta_time) {
     }
 
     // Add lua logging information
-    if (!GetApp().GetScriptInterface().values.empty()) {
+    if (!GetScriptInterface().values.empty()) {
         // Fill up the things
-        for (const auto& str : GetApp().GetScriptInterface().values) {
+        for (const auto& str : GetScriptInterface().values) {
             items.push_back("[lua] " + str);
         }
-        GetApp().GetScriptInterface().values.clear();
+        GetScriptInterface().values.clear();
     }
 }

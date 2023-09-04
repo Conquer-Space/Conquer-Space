@@ -32,7 +32,6 @@ class Scene {
     virtual ~Scene() {}
 
     Application& GetApp() { return (*m_application); }
-    cqsp::common::Universe& GetUniverse();
     cqsp::asset::AssetManager& GetAssetManager();
 
     virtual void Init() = 0;
