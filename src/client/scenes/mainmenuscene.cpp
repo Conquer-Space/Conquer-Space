@@ -41,7 +41,7 @@
 #include "engine/renderer/renderer.h"
 
 cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app)
-    : cqsp::engine::Scene(app), settings_window(app), credits_window(app), load_game_window(app) {}
+    : cqsp::client::Scene(app), settings_window(app), credits_window(app), load_game_window(app) {}
 
 cqsp::scene::MainMenuScene::~MainMenuScene() {
     GetApp().GetRmlUiContext()->RemoveDataModel("settings");

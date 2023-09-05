@@ -64,7 +64,7 @@ void SysStarSystemTree::DoUI(int delta_time) {
                 // If it's double clicked
                 if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
                     // Go to the planet
-                    cqsp::scene::SeePlanet(GetApp(), entity);
+                    cqsp::scene::SeePlanet(GetUniverse(), entity);
                 }
                 // Get children
                 gui::EntityTooltip(GetUniverse(), entity);
@@ -72,7 +72,7 @@ void SysStarSystemTree::DoUI(int delta_time) {
                 ImGui::TreePop();
             } else {
                 if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-                    cqsp::scene::SeePlanet(GetApp(), entity);
+                    cqsp::scene::SeePlanet(GetUniverse(), entity);
                 }
                 gui::EntityTooltip(GetUniverse(), entity);
             }
@@ -92,7 +92,7 @@ void SysStarSystemTree::SeePlanetSelectable(entt::entity entity) {
         // Selected object
         if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
             // Go to the planet
-            cqsp::scene::SeePlanet(GetApp(), entity);
+            cqsp::scene::SeePlanet(GetUniverse(), entity);
         }
     }
     gui::EntityTooltip(GetUniverse(), entity);
@@ -106,7 +106,7 @@ void SysStarSystemTree::DoChildTree(entt::entity entity) {
         if (CQSPGui::DefaultSelectable(child_name.c_str(), is_selected, ImGuiSelectableFlags_AllowDoubleClick)) {
             if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
                 // Go to the planet
-                cqsp::scene::SeePlanet(GetApp(), child);
+                cqsp::scene::SeePlanet(GetUniverse(), child);
             }
         }
         gui::EntityTooltip(GetUniverse(), child);

@@ -38,7 +38,7 @@
 
 #define LOADING_ID "../data/core/gui/screens/loading_screen.rml"
 
-cqsp::scene::LoadingScene::LoadingScene(cqsp::engine::Application& app) : cqsp::engine::Scene(app) {
+cqsp::scene::LoadingScene::LoadingScene(cqsp::engine::Application& app) : Scene(app) {
     m_done_loading = false;
     percentage = 0;
 }

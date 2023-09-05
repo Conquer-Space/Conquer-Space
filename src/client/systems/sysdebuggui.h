@@ -25,12 +25,16 @@
 
 #include "client/systems/sysgui.h"
 
+#define sysdebuggui_parameters                                                                                \
+    cqsp::engine::Application &app, common::Universe &universe, scripting::ScriptInterface &script_interface, \
+        const std::string_view &args, CommandOutput &input
+
 namespace cqsp {
 namespace client {
 namespace systems {
 class SysDebugMenu : public SysUserInterface {
  public:
-    explicit SysDebugMenu(cqsp::engine::Application& app);
+    explicit SysDebugMenu(cqsp::engine::Application &app);
 
     void Init();
     void DoUI(int delta_time);
@@ -58,8 +62,7 @@ class SysDebugMenu : public SysUserInterface {
     std::vector<std::string> items;
 
     typedef std::vector<std::string> CommandOutput;
-    typedef std::function<void(cqsp::engine::Application& app, const std::string_view& args, CommandOutput& input)>
-        DebugCommand_t;
+    typedef std::function<void(sysdebuggui_parameters)> DebugCommand_t;
     std::map<std::string, std::pair<std::string, DebugCommand_t>, std::less<>> commands;
     std::vector<ImVec2> fps_history;
     float fps_history_len = 10;

@@ -20,11 +20,11 @@
 #include <memory>
 #include <thread>
 
-#include "engine/scene.h"
+#include "client/scenes/scene.h"
 
 namespace cqsp {
 namespace scene {
-class UniverseLoadingScene : public cqsp::engine::Scene {
+class UniverseLoadingScene : public cqsp::client::Scene {
  public:
     explicit UniverseLoadingScene(cqsp::engine::Application& app);
     ~UniverseLoadingScene();

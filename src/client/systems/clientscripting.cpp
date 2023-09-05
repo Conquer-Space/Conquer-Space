@@ -59,9 +59,8 @@ sol::object JsonToLuaObject(const Hjson::Value& j, const sol::this_state& s) {
     }
 }
 
-void AssetManagerInterfaces(engine::Application& app) {
-    cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
-
+void AssetManagerInterfaces(engine::Application& app, common::Universe& universe,
+                            cqsp::scripting::ScriptInterface& script_engine) {
     CREATE_NAMESPACE(client);
 
     script_engine.set_function("require", [&](const char* script) {
@@ -89,9 +88,8 @@ void AssetManagerInterfaces(engine::Application& app) {
     });
 }
 
-void UiInterfaces(engine::Application& app) {
-    cqsp::scripting::ScriptInterface& script_engine = app.GetScriptInterface();
-
+void UiInterfaces(engine::Application& app, common::Universe& universe,
+                  cqsp::scripting::ScriptInterface& script_engine) {
     CREATE_NAMESPACE(ImGui);
 
     REGISTER_FUNCTION("Begin", [](const char* name) { ImGui::Begin(name); });
@@ -108,8 +106,9 @@ void UiInterfaces(engine::Application& app) {
 }
 }  // namespace
 
-void ClientFunctions(engine::Application& app) {
-    AssetManagerInterfaces(app);
-    UiInterfaces(app);
+void ClientFunctions(engine::Application& app, common::Universe& universe,
+                     cqsp::scripting::ScriptInterface& script_engine) {
+    AssetManagerInterfaces(app, universe, script_engine);
+    UiInterfaces(app, universe, script_engine);
 }
 };  // namespace cqsp::client::scripting

@@ -19,6 +19,7 @@
 #include <string>
 #include <vector>
 
+#include "client/scenes/scene.h"
 #include "client/systems/creditswindow.h"
 #include "client/systems/loadgamewindow.h"
 #include "client/systems/settingswindow.h"
@@ -27,11 +28,10 @@
 #include "engine/graphics/text.h"
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/renderer2d.h"
-#include "engine/scene.h"
 
 namespace cqsp {
 namespace scene {
-class MainMenuScene : public cqsp::engine::Scene {
+class MainMenuScene : public cqsp::client::Scene {
  public:
     explicit MainMenuScene(cqsp::engine::Application& app);
     ~MainMenuScene();

@@ -16,7 +16,6 @@
  */
 #include "engine/application.h"
 
-#include <GLFW/glfw3.h>
 #include <RmlUi/Core.h>
 #include <RmlUi/Debugger.h>
 #include <fmt/core.h>
@@ -46,6 +45,7 @@
 #include "engine/audio/audiointerface.h"
 #include "engine/cqspgui.h"
 #include "engine/enginelogger.h"
+#include "engine/glfwwindow.h"
 #include "engine/ui/RmlUi_Renderer_GL3.h"
 #include "engine/ui/rmlrenderinterface.h"
 #include "engine/ui/rmlsysteminterface.h"
@@ -53,316 +53,6 @@
 
 namespace cqsp::engine {
 namespace {
-const char* ParseType(GLenum type) {
-    switch (type) {
-        case GL_DEBUG_TYPE_ERROR:
-            return ("Error");
-        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
-            return ("Deprecated Behaviour");
-        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
-            return ("Undefined Behaviour");
-        case GL_DEBUG_TYPE_PORTABILITY:
-            return ("Portability");
-        case GL_DEBUG_TYPE_PERFORMANCE:
-            return ("Performance");
-        case GL_DEBUG_TYPE_MARKER:
-            return ("Marker");
-        case GL_DEBUG_TYPE_PUSH_GROUP:
-            return ("Push Group");
-        case GL_DEBUG_TYPE_POP_GROUP:
-            return ("Pop Group");
-        case GL_DEBUG_TYPE_OTHER:
-            return ("Other");
-    }
-    return "";
-}
-
-const char* ParseSeverity(GLenum severity) {
-    switch (severity) {
-        case GL_DEBUG_SEVERITY_HIGH:
-            return ("high");
-        case GL_DEBUG_SEVERITY_MEDIUM:
-            return ("medium");
-        case GL_DEBUG_SEVERITY_LOW:
-            return ("low");
-        case GL_DEBUG_SEVERITY_NOTIFICATION:
-            return ("notification");
-    }
-    return "";
-}
-
-const char* ParseSource(GLenum source) {
-    switch (source) {
-        case GL_DEBUG_SOURCE_API:
-            return ("API");
-        case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
-            return ("Window System");
-        case GL_DEBUG_SOURCE_SHADER_COMPILER:
-            return ("Shader Compiler");
-        case GL_DEBUG_SOURCE_THIRD_PARTY:
-            return ("Third Party");
-        case GL_DEBUG_SOURCE_APPLICATION:
-            return ("Application");
-        case GL_DEBUG_SOURCE_OTHER:
-            return ("Other");
-    }
-    return "";
-}
-
-void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum severity, GLsizei length,
-                            const char* message, const void* userParam) {
-    if (id == 131169 || id == 131185 || id == 131218 || id == 131204) {
-        return;  // ignore these non-significant error codes
-    }
-
-    ENGINE_LOG_INFO("{} message from {} ({}:{}): {}", ParseType(type), ParseSource(source), ParseSeverity(severity), id,
-                    message);
-}
-
-class GLWindow : public cqsp::engine::Window {
- public:
-    [[nodiscard]] bool ButtonIsHeld(int btn) const { return m_keys_held[btn]; }
-    [[nodiscard]] bool ButtonIsReleased(int btn) const { return m_keys_released[btn]; }
-    [[nodiscard]] bool ButtonIsPressed(int btn) const { return m_keys_pressed[btn]; }
-    [[nodiscard]] double GetMouseX() const { return m_mouse_x; }
-    [[nodiscard]] double GetMouseY() const { return m_mouse_y; }
-
-    [[nodiscard]] bool MouseButtonIsHeld(int btn) const { return m_mouse_keys_held[btn]; }
-    [[nodiscard]] bool MouseButtonIsReleased(int btn) const { return m_mouse_keys_released[btn]; }
-    [[nodiscard]] bool MouseButtonIsPressed(int btn) const { return m_mouse_keys_pressed[btn]; }
-
-    [[nodiscard]] bool MouseDragged() const {
-        return m_mouse_x != m_mouse_x_on_pressed || m_mouse_y != m_mouse_y_on_pressed;
-    }
-
-    void KeyboardCallback(GLFWwindow* _w, int key, int scancode, int action, int mods) {
-        if (action == GLFW_PRESS) {
-            m_keys_held[key] = true;
-            m_keys_pressed[key] = true;
-            keys_pressed_last.push_back(key);
-            m_mods = mods;
-        } else if (action == GLFW_RELEASE) {
-            m_keys_held[key] = false;
-            m_keys_released[key] = true;
-            keys_released_last.push_back(key);
-        }
-        RmlGLFW::ProcessKeyCallback(app->GetRmlUiContext(), key, action, mods);
-    }
-
-    void MousePositionCallback(GLFWwindow* _w, double xpos, double ypos) {
-        m_mouse_x = xpos;
-        m_mouse_y = ypos;
-        RmlGLFW::ProcessCursorPosCallback(app->GetRmlUiContext(), xpos, ypos, 0);
-    }
-
-    void MouseEnterCallback(GLFWwindow* _w, int entered) {
-        RmlGLFW::ProcessCursorEnterCallback(app->GetRmlUiContext(), entered);
-    }
-
-    void MouseButtonCallback(GLFWwindow* _w, int button, int action, int mods) {
-        if (action == GLFW_PRESS) {
-            m_mouse_keys_held[button] = true;
-            m_mouse_keys_pressed[button] = true;
-            m_mouse_x_on_pressed = m_mouse_x;
-            m_mouse_y_on_pressed = m_mouse_y;
-            m_mouse_pressed_time[button] = glfwGetTime() - m_mouse_keys_last_pressed[button];
-            m_mouse_keys_last_pressed[button] = glfwGetTime();
-        } else if (action == GLFW_RELEASE) {
-            m_mouse_keys_held[button] = false;
-            m_mouse_keys_released[button] = true;
-        }
-        RmlGLFW::ProcessMouseButtonCallback(app->GetRmlUiContext(), button, action, mods);
-    }
-
-    void ScrollCallback(GLFWwindow* _w, double xoffset, double yoffset) {
-        m_scroll_amount = yoffset;
-        RmlGLFW::ProcessScrollCallback(app->GetRmlUiContext(), yoffset, 0);
-    }
-
-    void CharacterCallback(GLFWwindow* window, unsigned int codepoint) {
-        // Callback
-        code_input.push_back(codepoint);
-        RmlGLFW::ProcessCharCallback(app->GetRmlUiContext(), codepoint);
-    }
-
-    void DropCallback(GLFWwindow* _w, int count, const char** paths) {}
-
-    void FrameBufferSizeCallback(GLFWwindow* window, int width, int height) {
-        glViewport(0, 0, width, height);
-
-        m_window_width = width;
-        m_window_height = height;
-        window_size_changed = true;
-        RmlGLFW::ProcessFramebufferSizeCallback(app->GetRmlUiContext(), width, height);
-    }
-
-    void SetCallbacks() {
-        // Set user pointer
-        glfwSetWindowUserPointer(window, this);
-
-        auto key_callback = [](GLFWwindow* _w, int key, int scancode, int action, int mods) {
-            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))->KeyboardCallback(_w, key, scancode, action, mods);
-        };
-
-        auto cursor_position_callback = [](GLFWwindow* _w, double xpos, double ypos) {
-            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))->MousePositionCallback(_w, xpos, ypos);
-        };
-
-        auto cursor_enter_callback = [](GLFWwindow* _w, int entered) {
-            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))->MouseEnterCallback(_w, entered);
-        };
-
-        auto mouse_button_callback = [](GLFWwindow* _w, int button, int action, int mods) {
-            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))->MouseButtonCallback(_w, button, action, mods);
-        };
-
-        auto scroll_callback = [](GLFWwindow* _w, double xoffset, double yoffset) {
-            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))->ScrollCallback(_w, xoffset, yoffset);
-        };
-
-        auto drop_callback = [](GLFWwindow* _w, int count, const char** paths) {
-            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))->DropCallback(_w, count, paths);
-        };
-
-        auto frame_buffer_callback = [](GLFWwindow* _w, int width, int height) {
-            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))->FrameBufferSizeCallback(_w, width, height);
-        };
-
-        auto character_callback = [](GLFWwindow* _w, unsigned int codepoint) {
-            static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))->CharacterCallback(_w, codepoint);
-        };
-
-        glfwSetKeyCallback(window, key_callback);
-        glfwSetCursorPosCallback(window, cursor_position_callback);
-        glfwSetCursorEnterCallback(window, cursor_enter_callback);
-        glfwSetMouseButtonCallback(window, mouse_button_callback);
-        glfwSetScrollCallback(window, scroll_callback);
-        glfwSetDropCallback(window, drop_callback);
-        glfwSetFramebufferSizeCallback(window, frame_buffer_callback);
-        glfwSetCharCallback(window, character_callback);
-    }
-
-    void OnFrame() {
-        ZoneScoped;
-        glfwSwapBuffers(window);
-        // Before polling events, clear the buttons
-        std::memset(m_keys_pressed, 0, sizeof(m_keys_pressed));
-        std::memset(m_keys_released, 0, sizeof(m_keys_released));
-        std::memset(m_mouse_keys_pressed, 0, sizeof(m_mouse_keys_pressed));
-        std::memset(m_mouse_keys_released, 0, sizeof(m_mouse_keys_released));
-        m_scroll_amount = 0;
-        keys_pressed_last.clear();
-        keys_released_last.clear();
-        code_input.clear();
-        window_size_changed = false;
-        glfwPollEvents();
-    }
-
-    void SetWindowSize(int width, int height) {
-        m_window_width = width;
-        m_window_height = height;
-        glfwSetWindowSize(window, width, height);
-    }
-
-    [[nodiscard]] bool WindowSizeChanged() const { return window_size_changed; }
-
-    [[nodiscard]] int GetScrollAmount() const { return m_scroll_amount; }
-    [[nodiscard]] int GetWindowHeight() const { return m_window_height; }
-    [[nodiscard]] int GetWindowWidth() const { return m_window_width; }
-
-    void InitWindow(int width, int height) {
-        glfwInit();
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_SAMPLES, app->GetClientOptions().GetOptions()["samples"].to_int64());
-        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, 1);
-        glfwWindowHint(GLFW_DOUBLEBUFFER, 1);
-        glfwWindowHint(GLFW_DECORATED,
-                       ((bool)app->GetClientOptions().GetOptions()["window"]["decorated"]) ? GLFW_TRUE : GLFW_FALSE);
-
-#ifdef __APPLE__
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-        m_window_width = width;
-        m_window_height = height;
-
-        // Create window
-        window = glfwCreateWindow(width, height, "Conquer Space", NULL, NULL);
-        if (window == NULL) {
-            glfwTerminate();
-            ENGINE_LOG_INFO("Cannot load glfw");
-        }
-
-        glfwMakeContextCurrent(window);
-
-        // Enable vsync
-        glfwSwapInterval(1);
-
-        // Add callbacks
-        SetCallbacks();
-
-        // Init glad
-        if (gladLoadGLLoader((GLADloadproc)glfwGetProcAddress) == 0) {
-            glfwTerminate();
-            ENGINE_LOG_CRITICAL("Cannot load glad");
-        }
-        int flags;
-        glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
-
-        if ((flags & GL_CONTEXT_FLAG_DEBUG_BIT) != 0) {
-            glEnable(GL_DEBUG_OUTPUT);
-            glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);  // makes sure errors are displayed synchronously
-            glDebugMessageCallback(glDebugOutput, nullptr);
-            glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
-        }
-
-        // Fix the weird black bar we have on top of windows
-        glViewport(0, 0, width, height);
-    }
-
-    [[nodiscard]] double MouseButtonLastReleased(int btn) const { return m_mouse_keys_last_pressed[btn]; }
-
-    [[nodiscard]] bool MouseButtonDoubleClicked(int btn) const {
-        bool is_pressed_long_enough = (m_mouse_pressed_time[btn]) <= 0.5f;
-        return (MouseButtonIsPressed(btn) && is_pressed_long_enough);
-    }
-
-    GLFWwindow* window;
-
-    Application* app;
-
- private:
-    bool window_size_changed;
-    double m_mouse_x;
-    double m_mouse_y;
-
-    double m_mouse_x_on_pressed;
-    double m_mouse_y_on_pressed;
-
-    bool m_mouse_keys_held[GLFW_MOUSE_BUTTON_LAST] = {false};
-    bool m_mouse_keys_released[GLFW_MOUSE_BUTTON_LAST] = {false};
-    bool m_mouse_keys_pressed[GLFW_MOUSE_BUTTON_LAST] = {false};
-
-    double m_mouse_keys_last_pressed[GLFW_MOUSE_BUTTON_LAST] = {0.0};
-    double m_mouse_pressed_time[GLFW_MOUSE_BUTTON_LAST] = {0.0};
-
-    bool m_keys_held[GLFW_KEY_LAST] = {false};
-    bool m_keys_released[GLFW_KEY_LAST] = {false};
-    bool m_keys_pressed[GLFW_KEY_LAST] = {false};
-
-    double m_scroll_amount;
-
-    int m_window_width, m_window_height;
-
- public:
-    std::vector<int> keys_pressed_last;
-    std::vector<int> keys_released_last;
-    std::vector<unsigned int> code_input;
-
-    int m_mods;
-};
-
 GLFWwindow* window(cqsp::engine::Window* window) { return reinterpret_cast<GLWindow*>(window)->window; }
 }  // namespace
 
@@ -372,14 +62,9 @@ int Application::init() {
     GlInit();
 
     manager.LoadDefaultTexture();
-    // Init audio
-    m_audio_interface = new audio::AudioInterface();
-    m_audio_interface->Initialize();
-    // Set option things
-    m_audio_interface->SetMusicVolume(m_client_options.GetOptions()["audio"]["music"]);
-    m_audio_interface->SetChannelVolume(1, m_client_options.GetOptions()["audio"]["ui"]);
-
     SetIcon();
+
+    InitAudio();
 
     InitImgui();
     InitRmlUi();
@@ -391,7 +76,6 @@ int Application::init() {
     std::unique_ptr<Scene> initial_scene = std::make_unique<EmptyScene>(*this);
     m_scene_manager.SetInitialScene(std::move(initial_scene));
 
-    m_game = std::make_unique<cqsp::common::Game>();
     return 0;
 }
 
@@ -474,6 +158,15 @@ void Application::ProcessRmlUiUserInput() {
     }
 }
 
+void Application::InitAudio() {
+    // Init audio
+    m_audio_interface = new audio::AudioInterface();
+    m_audio_interface->Initialize();
+    // Set option things
+    m_audio_interface->SetMusicVolume(m_client_options.GetOptions()["audio"]["music"]);
+    m_audio_interface->SetChannelVolume(1, m_client_options.GetOptions()["audio"]["ui"]);
+}
+
 void Application::InitRmlUi() {
     // Begin by installing the custom interfaces.
     m_system_interface = std::make_unique<SystemInterface_GLFW>();
@@ -523,7 +216,7 @@ int Application::destroy() {
 
     // Clear assets
     ENGINE_LOG_INFO("Deleting game");
-    m_game.reset();
+    ResetGame();
     ENGINE_LOG_INFO("Deleted game");
 
     ENGINE_LOG_INFO("Deleting audio interface");
@@ -805,8 +498,7 @@ void Application::SetIcon() {
 }
 
 void Application::GlInit() {
-    m_window = new GLWindow();
-    ((GLWindow*)m_window)->app = this;
+    m_window = new GLWindow(this);
     m_window->InitWindow(m_client_options.GetOptions()["window"]["width"],
                          m_client_options.GetOptions()["window"]["height"]);
 
@@ -857,40 +549,6 @@ void Application::SetFullScreen(bool screen) {
         glfwSetWindowMonitor(window(m_window), NULL, 40, 40, GetClientOptions().GetOptions()["window"]["width"],
                              GetClientOptions().GetOptions()["window"]["height"], mode->refreshRate);
     }
-}
-
-void SceneManager::SetInitialScene(std::unique_ptr<Scene> scene) { m_scene = std::move(scene); }
-
-void SceneManager::SetScene(std::unique_ptr<Scene> scene) {
-    m_next_scene = std::move(scene);
-    m_switch = true;
-}
-
-void SceneManager::SwitchScene() {
-    m_scene = std::move(m_next_scene);
-    ENGINE_LOG_TRACE("Initializing scene");
-    m_scene->Init();
-    ENGINE_LOG_TRACE("Done Initializing scene");
-    m_switch = false;
-}
-
-Scene* SceneManager::GetScene() { return m_scene.get(); }
-
-void SceneManager::DeleteCurrentScene() { m_scene.reset(); }
-
-void SceneManager::Update(float deltaTime) {
-    ZoneScoped;
-    m_scene->Update(deltaTime);
-}
-
-void SceneManager::Ui(float deltaTime) {
-    ZoneScoped;
-    m_scene->Ui(deltaTime);
-}
-
-void SceneManager::Render(float deltaTime) {
-    ZoneScoped;
-    m_scene->Render(deltaTime);
 }
 
 Application::CqspEventInstancer::CqspEventInstancer() = default;

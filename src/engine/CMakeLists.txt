@@ -39,7 +39,6 @@ endforeach()
 add_library(cqsp-engine ${SOURCE_FILES})
 
 target_link_libraries(cqsp-engine PUBLIC 
-    cqsp-core
     OpenGL::GL
     imgui::imgui
     implot::implot

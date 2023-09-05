@@ -53,7 +53,7 @@ void cqsp::client::systems::SysCommand::DoUI(int delta_time) {
     ImGui::Begin("Order Target", &to_see, ImGuiWindowFlags_NoResize | window_flags);
     int index = 0;
     // Get selected planet
-    auto system = GetApp().GetUniverse().view<common::components::types::Orbit>();
+    auto system = GetUniverse().view<common::components::types::Orbit>();
     entt::entity current_planet = cqsp::scene::GetCurrentViewingPlanet(GetUniverse());
     for (auto entity : system) {
         bool is_selected = (entity == current_planet);

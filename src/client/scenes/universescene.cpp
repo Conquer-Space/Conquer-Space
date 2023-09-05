@@ -58,7 +58,7 @@
 // If the game is paused or not, like when escape is pressed
 bool game_halted = false;
 
-cqsp::scene::UniverseScene::UniverseScene(cqsp::engine::Application& app) : Scene(app) {}
+cqsp::scene::UniverseScene::UniverseScene(cqsp::engine::Application& app) : cqsp::client::Scene(app) {}
 
 void cqsp::scene::UniverseScene::Init() {
     ZoneScoped;
@@ -68,7 +68,7 @@ void cqsp::scene::UniverseScene::Init() {
     namespace cqsps = cqsp::client::systems;
 
     using cqspco::systems::simulation::Simulation;
-    simulation = std::make_unique<Simulation>(GetApp().GetGame());
+    simulation = std::make_unique<Simulation>(dynamic_cast<cqsp::client::ConquerSpace*>(GetApp().GetGame())->GetGame());
 
     system_renderer = new cqsps::SysStarSystemRenderer(GetUniverse(), GetApp());
     system_renderer->Initialize();
@@ -77,7 +77,7 @@ void cqsp::scene::UniverseScene::Init() {
 
     system_renderer->SeeStarSystem();
 
-    SeePlanet(GetApp(), GetUniverse().planets["earth"]);
+    SeePlanet(GetUniverse(), GetUniverse().planets["earth"]);
 
     //AddUISystem<cqsps::SysTurnSaveWindow>();
     AddUISystem<cqsps::SysStarSystemTree>();
@@ -184,9 +184,9 @@ entt::entity cqsp::scene::GetCurrentViewingPlanet(cqsp::common::Universe& univer
     return universe.view<cqsp::client::systems::FocusedPlanet>().front();
 }
 
-void cqsp::scene::SeePlanet(cqsp::engine::Application& app, entt::entity ent) {
-    app.GetUniverse().clear<cqsp::client::systems::FocusedPlanet>();
-    app.GetUniverse().emplace<cqsp::client::systems::FocusedPlanet>(ent);
+void cqsp::scene::SeePlanet(cqsp::common::Universe& universe, entt::entity ent) {
+    universe.clear<cqsp::client::systems::FocusedPlanet>();
+    universe.emplace<cqsp::client::systems::FocusedPlanet>(ent);
 }
 
 void cqsp::scene::SetGameHalted(bool b) { game_halted = b; }

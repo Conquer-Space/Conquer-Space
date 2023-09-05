@@ -20,18 +20,17 @@
 #include <string>
 #include <vector>
 
+#include "client/scenes/scene.h"
 #include "engine/renderer/framebuffer.h"
-#include "engine/scene.h"
-
 namespace cqsp {
 namespace scene {
 /// <summary>
 /// Just a playground for various graphics stuff
 /// </summary>
 /// <param name="app"></param>
-class TextTestScene : public cqsp::engine::Scene {
+class TextTestScene : public cqsp::client::Scene {
  public:
-    explicit TextTestScene(cqsp::engine::Application& app) : cqsp::engine::Scene(app) {}
+    explicit TextTestScene(cqsp::engine::Application& app) : cqsp::client::Scene(app) {}
     ~TextTestScene();
 
     void Init();
