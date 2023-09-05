@@ -109,10 +109,10 @@ void GLWindow::OnFrame() {
     ZoneScoped;
     glfwSwapBuffers(window);
     // Before polling events, clear the buttons
-    std::memset(m_keys_pressed, false, sizeof(m_keys_pressed));
-    std::memset(m_keys_released, false, sizeof(m_keys_released));
-    std::memset(m_mouse_keys_pressed, false, sizeof(m_mouse_keys_pressed));
-    std::memset(m_mouse_keys_released, false, sizeof(m_mouse_keys_released));
+    std::memset(m_keys_pressed, (int)false, sizeof(m_keys_pressed));
+    std::memset(m_keys_released, (int)false, sizeof(m_keys_released));
+    std::memset(m_mouse_keys_pressed, (int)false, sizeof(m_mouse_keys_pressed));
+    std::memset(m_mouse_keys_released, (int)false, sizeof(m_mouse_keys_released));
     m_scroll_amount = 0;
     keys_pressed_last.clear();
     keys_released_last.clear();
@@ -127,8 +127,8 @@ void GLWindow::InitWindow(int width, int height) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_SAMPLES, app->GetClientOptions().GetOptions()["samples"].to_int64());
-    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-    glfwWindowHint(GLFW_DOUBLEBUFFER, true);
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, (int)true);
+    glfwWindowHint(GLFW_DOUBLEBUFFER, (int)true);
     glfwWindowHint(GLFW_DECORATED,
                    ((bool)app->GetClientOptions().GetOptions()["window"]["decorated"]) ? GLFW_TRUE : GLFW_FALSE);
 
@@ -154,14 +154,14 @@ void GLWindow::InitWindow(int width, int height) {
     SetCallbacks();
 
     // Init glad
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    if (gladLoadGLLoader((GLADloadproc)glfwGetProcAddress) == 0) {
         glfwTerminate();
         ENGINE_LOG_CRITICAL("Cannot load glad");
     }
     int flags;
     glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
 
-    if (flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
+    if ((flags & GL_CONTEXT_FLAG_DEBUG_BIT) != 0) {
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);  // makes sure errors are displayed synchronously
         glDebugMessageCallback(glDebugOutput, nullptr);
