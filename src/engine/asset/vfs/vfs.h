@@ -24,7 +24,7 @@
 namespace cqsp {
 namespace asset {
 enum FileModes {
-    None = 0,
+    Text = 0,        // Opens in text mode
     Binary = 1 << 0  // If true, file is opened in binary mode, if false, file is opened in text mode
 };
 
@@ -48,7 +48,7 @@ class IVirtualFileSystem {
     /// <summary>
     /// Opens file from the filesystem. Returns nullptr if file is invalid
     /// </summary>
-    virtual IVirtualFilePtr Open(const std::string& path, FileModes modes = None) = 0;
+    virtual IVirtualFilePtr Open(const std::string& path, FileModes modes = Text) = 0;
 
     /// <summary>
     /// Closes the file.
@@ -104,7 +104,7 @@ class IVirtualDirectory {
     /// <summary>
     /// Opens file of index.
     /// </summary>
-    virtual std::shared_ptr<IVirtualFile> GetFile(int index, FileModes modes = None) = 0;
+    virtual IVirtualFilePtr GetFile(int index, FileModes modes = Text) = 0;
 
     /// <summary>
     /// Get file name relative to this directory
@@ -159,13 +159,12 @@ class VirtualMounter {
     /// <summary>
     /// Opens file.
     /// </summary>
-    std::shared_ptr<IVirtualFile> Open(const std::string& path, FileModes mode = FileModes::None);
+    IVirtualFilePtr Open(const std::string& path, FileModes mode = FileModes::Text);
 
     /// <summary>
     /// Opens file in mounted filesystem `mount`, with the mount path relative path `path`
     /// </summary>
-    std::shared_ptr<IVirtualFile> Open(const std::string& mount, const std::string& path,
-                                       FileModes mode = FileModes::None);
+    IVirtualFilePtr Open(const std::string& mount, const std::string& path, FileModes mode = FileModes::Text);
 
     /// <summary>
     /// Opens directory

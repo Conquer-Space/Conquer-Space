@@ -16,28 +16,8 @@
  */
 #pragma once
 
-namespace cqsp {
-namespace engine {
-enum DrawType { ARRAYS = 0, ELEMENTS = 1 };
+#include <vector>
 
-class Mesh {
- public:
-    Mesh();
-    ~Mesh();
-
-    unsigned int VAO;
-    unsigned int VBO;
-    unsigned int EBO;
-
-    unsigned int indicies;
-
-    unsigned int mode;
-
-    DrawType buffer_type = DrawType::ELEMENTS;
-
-    void Draw();
-
-    static void Destroy(Mesh& mesh);
-};
-}  // namespace engine
-}  // namespace cqsp
+namespace cqsp::engine {
+class Model {};
+}  // namespace cqsp::engine

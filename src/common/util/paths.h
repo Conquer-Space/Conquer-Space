@@ -25,7 +25,12 @@ namespace cqsp::common::util {
 /// <returns></returns>
 std::string GetCqspAppDataPath();
 std::string GetCqspExePath();
+/// <summary>
+///  This returns binaries/data
+/// </summary>
+/// <returns></returns>
 std::string GetCqspDataPath();
+/// This should return Documents/cqsp
 std::string GetCqspSavePath();
 
 struct ExePath {

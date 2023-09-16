@@ -16,6 +16,8 @@
  */
 #include "engine/asset/assetmanager.h"
 
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
 #include <glad/glad.h>
 #include <spdlog/spdlog.h>
 #include <stb_image.h>
@@ -27,9 +29,11 @@
 #include <utility>
 #include <vector>
 
+#include <assimp/Importer.hpp>
 #include <tracy/Tracy.hpp>
 
 #include "common/util/paths.h"
+#include "engine/asset/modelloader.h"
 #include "engine/asset/vfs/nativevfs.h"
 #include "engine/audio/alaudioasset.h"
 #include "engine/enginelogger.h"
@@ -188,6 +192,7 @@ AssetLoader::AssetLoader() {
     loading_functions[AssetType::FONT] = CREATE_ASSET_LAMBDA(LoadFont);
     loading_functions[AssetType::SHADER_DEFINITION] = CREATE_ASSET_LAMBDA(LoadShaderDefinition);
     loading_functions[AssetType::BINARY] = CREATE_ASSET_LAMBDA(LoadBinaryAsset);
+    loading_functions[AssetType::MODEL] = CREATE_ASSET_LAMBDA(LoadModel);
 }
 
 namespace cqspa = cqsp::asset;
@@ -687,6 +692,28 @@ std::unique_ptr<Asset> AssetLoader::LoadCubemap(VirtualMounter* mount, const std
     QueueHolder holder(prototype);
     m_asset_queue.push(holder);
     return asset;
+}
+
+std::unique_ptr<cqsp::asset::Asset> AssetLoader::LoadModel(cqsp::asset::VirtualMounter* mount, const std::string& path,
+                                                           const std::string& key, const Hjson::Value& hints) {
+    Assimp::Importer importer;
+    SPDLOG_INFO("Meshing {}", path);
+    ModelLoader loader;
+    //importer.SetIOHandler(new IOSystem(mount));
+    //auto file_ptr = mount->Open(path, FileModes::Binary);
+    //importer.SetIOHandler()
+
+    //auto file = ReadAllFromVFile(file_ptr.get());
+    const aiScene* scene = importer.ReadFile(
+        cqsp::common::util::GetCqspDataPath() + "/" + path,
+        aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+    if ((scene == nullptr) || ((scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) != 0u) || (scene->mRootNode == nullptr)) {
+        ENGINE_LOG_WARN("Assimp Error while loading {}: {}", key, importer.GetErrorString());
+        return nullptr;
+    }
+    ENGINE_LOG_WARN("Generated mesh");
+    loader.LoadNode(scene->mRootNode, scene);
+    return std::unique_ptr<cqsp::asset::Asset>();
 }
 
 std::unique_ptr<ShaderDefinition> AssetLoader::LoadShaderDefinition(VirtualMounter* mount, const std::string& path,

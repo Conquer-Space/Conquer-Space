@@ -16,6 +16,8 @@
  */
 #include "engine/asset/vfs/vfs.h"
 
+#include <spdlog/spdlog.h>
+
 #include <cstring>
 
 namespace cqsp::asset {
