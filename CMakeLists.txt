@@ -84,6 +84,7 @@ find_package(freetype CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(implot CONFIG REQUIRED)
 find_package(imgui_node_editor REQUIRED)
+find_package(assimp CONFIG REQUIRED)
 
 # Lua config
 if (UNIX)

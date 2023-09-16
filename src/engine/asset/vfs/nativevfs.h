@@ -33,7 +33,7 @@ class NativeFile : public IVirtualFile {
     explicit NativeFile(NativeFileSystem* _nfs) : IVirtualFile(), nfs(_nfs), path("") {}
     NativeFile(NativeFileSystem* _nfs, const std::string& file) : IVirtualFile(), nfs(_nfs), path(file) {}
 
-    ~NativeFile() = default;
+    ~NativeFile() { file.close(); }
 
     const std::string& Path() override;
     uint64_t Size() override;

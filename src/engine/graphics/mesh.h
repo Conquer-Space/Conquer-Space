@@ -16,8 +16,6 @@
  */
 #pragma once
 
-#include <vector>
-
 namespace cqsp {
 namespace engine {
 enum DrawType { ARRAYS = 0, ELEMENTS = 1 };

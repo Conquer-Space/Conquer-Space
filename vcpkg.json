@@ -37,7 +37,8 @@
         "name": "lua",
         "platform": "!windows"
       },
-      "date"
+      "date",
+      "assimp"
     ],
     "overrides": [
       { "name": "imgui", "version": "1.85" },

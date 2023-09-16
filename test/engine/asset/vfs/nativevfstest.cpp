@@ -43,7 +43,7 @@ class NativeVfsTest : public ::testing::Test {
 TEST_F(NativeVfsTest, OpenTest) {
     // Check if the test files exist, if they do, then complain
 
-    auto ptr = nfs.Open(test_file, cqsp::asset::FileModes::None);
+    auto ptr = nfs.Open(test_file, cqsp::asset::FileModes::Text);
     ASSERT_NE(ptr, nullptr);
     ASSERT_EQ(ptr->Path(), test_file);
     // Close the file
@@ -53,7 +53,7 @@ TEST_F(NativeVfsTest, OpenTest) {
 TEST_F(NativeVfsTest, FileSizeTest) {
     int size = std::filesystem::file_size(full_name);
 
-    auto ptr = nfs.Open(test_file, cqsp::asset::FileModes::None);
+    auto ptr = nfs.Open(test_file, cqsp::asset::FileModes::Text);
     ASSERT_EQ(ptr->Size(), size);
 
     // Close the file
@@ -64,7 +64,7 @@ TEST_F(NativeVfsTest, FileReadTest) {
     // Read the entire file and compare contents, I guess
     int size = std::filesystem::file_size(full_name);
 
-    auto ptr = nfs.Open(test_file, cqsp::asset::FileModes::None);
+    auto ptr = nfs.Open(test_file, cqsp::asset::FileModes::Text);
 
     std::string to_test = cqsp::asset::ReadAllFromVFileToString(ptr.get());
 
@@ -81,7 +81,7 @@ TEST_F(NativeVfsTest, FileReadTest) {
 TEST_F(NativeVfsTest, SeekTest) {
     int size = std::filesystem::file_size(full_name);
 
-    auto ptr = nfs.Open(test_file, cqsp::asset::FileModes::None);
+    auto ptr = nfs.Open(test_file, cqsp::asset::FileModes::Text);
     ptr->Seek(10);
     ASSERT_EQ(ptr->Tell(), 10);
 

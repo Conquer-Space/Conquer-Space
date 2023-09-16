@@ -18,6 +18,8 @@
 
 #include <glad/glad.h>
 
+#include <cstdint>
+
 namespace cqspe = cqsp::engine;
 
 cqsp::engine::Mesh* cqsp::engine::primitive::MakeTexturedPaneMesh() {

@@ -407,6 +407,9 @@ class AssetLoader {
     std::unique_ptr<cqsp::asset::Asset> LoadCubemap(cqsp::asset::VirtualMounter* mount, const std::string& path,
                                                     const std::string& key, const Hjson::Value& hints);
 
+    std::unique_ptr<cqsp::asset::Asset> LoadModel(cqsp::asset::VirtualMounter* mount, const std::string& path,
+                                                  const std::string& key, const Hjson::Value& hints);
+
     /// <summary>
     /// A shader definiton file.
     /// <br />
