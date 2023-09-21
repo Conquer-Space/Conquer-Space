@@ -55,20 +55,6 @@
             type: frag
         }
     }
-    skycubefrag: {
-        path: skybox.frag
-        type: shader
-        hints: {
-            type: frag
-        }
-    }
-    skycubevert: {
-        path: skybox.vert
-        type: shader
-        hints: {
-            type: vert
-        }
-    }
     coloredcirclefrag: {
         path: color_shader.frag
         type: shader
@@ -97,18 +83,10 @@
             type: frag
         }
     }
-    line.frag: {
-        path: line.frag
-        type: shader
+    orbitshader: {
+        path: orbit_shader.hjson
+        type: shader_def
         hints: {
-            type: frag
-        }
-    }
-    line.vert: {
-        path: line.vert
-        type: shader
-        hints: {
-            type: vert
         }
     }
     2dtexturedshader: {
@@ -129,7 +107,7 @@
         hints: {}
     }
     skybox: {
-        path: skybox.hjson
+        path: skybox/skybox.hjson
         type: shader_def
         hints: {}
     }

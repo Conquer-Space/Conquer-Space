@@ -37,6 +37,7 @@
 #include "engine/asset/vfs/nativevfs.h"
 #include "engine/audio/alaudioasset.h"
 #include "engine/enginelogger.h"
+#include "engine/graphics/model.h"
 
 #define CREATE_ASSET_LAMBDA(FuncName)                                                                           \
     [this](VirtualMounter* mount, const std::string& path, const std::string& key, const Hjson::Value& hints) { \
@@ -698,7 +699,6 @@ std::unique_ptr<cqsp::asset::Asset> AssetLoader::LoadModel(cqsp::asset::VirtualM
                                                            const std::string& key, const Hjson::Value& hints) {
     Assimp::Importer importer;
     SPDLOG_INFO("Meshing {}", path);
-    ModelLoader loader;
     //importer.SetIOHandler(new IOSystem(mount));
     //auto file_ptr = mount->Open(path, FileModes::Binary);
     //importer.SetIOHandler()
@@ -711,9 +711,10 @@ std::unique_ptr<cqsp::asset::Asset> AssetLoader::LoadModel(cqsp::asset::VirtualM
         ENGINE_LOG_WARN("Assimp Error while loading {}: {}", key, importer.GetErrorString());
         return nullptr;
     }
-    ENGINE_LOG_WARN("Generated mesh");
+    auto model = std::make_unique<cqsp::asset::Model>();
+    ModelLoader loader(model.get());
     loader.LoadNode(scene->mRootNode, scene);
-    return std::unique_ptr<cqsp::asset::Asset>();
+    return model;
 }
 
 std::unique_ptr<ShaderDefinition> AssetLoader::LoadShaderDefinition(VirtualMounter* mount, const std::string& path,

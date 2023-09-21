@@ -21,7 +21,7 @@
 #include "engine/enginelogger.h"
 
 namespace cqsp::engine {
-const char* ParseType(GLenum type) {
+const inline char* ParseType(GLenum type) {
     switch (type) {
         case GL_DEBUG_TYPE_ERROR:
             return ("Error");
@@ -44,7 +44,7 @@ const char* ParseType(GLenum type) {
     }
 }
 
-const char* ParseSeverity(GLenum severity) {
+const inline char* ParseSeverity(GLenum severity) {
     switch (severity) {
         case GL_DEBUG_SEVERITY_HIGH:
             return ("high");
@@ -57,7 +57,7 @@ const char* ParseSeverity(GLenum severity) {
     }
 }
 
-const char* ParseSource(GLenum source) {
+const inline char* ParseSource(GLenum source) {
     switch (source) {
         case GL_DEBUG_SOURCE_API:
             return ("API");
@@ -74,8 +74,8 @@ const char* ParseSource(GLenum source) {
     }
 }
 
-void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum severity, GLsizei length,
-                            const char* message, const void* userParam) {
+void inline APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum severity, GLsizei length,
+                                   const char* message, const void* userParam) {
     if (id == 131169 || id == 131185 || id == 131218 || id == 131204)
         return;  // ignore these non-significant error codes
 

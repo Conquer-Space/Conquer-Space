@@ -18,6 +18,17 @@
 
 #include <vector>
 
-namespace cqsp::engine {
-class Model {};
-}  // namespace cqsp::engine
+#include "engine/asset/asset.h"
+#include "engine/graphics/mesh.h"
+#include "engine/graphics/texture.h"
+
+namespace cqsp::asset {
+struct Model : public Asset {
+    engine::Mesh mesh;
+    std::vector<cqsp::asset::Texture*> textures;
+
+    // Free textures...
+
+    AssetType GetAssetType() override { return AssetType::MODEL; }
+};
+}  // namespace cqsp::asset

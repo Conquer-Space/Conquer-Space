@@ -85,12 +85,11 @@ size_t IOStream::FileSize() const { return ivfp->Size(); }
 void IOStream::Flush() {}
 
 void ModelLoader::LoadNode(aiNode* node, const aiScene* scene) {
-    ENGINE_LOG_INFO("Processing mesh of size meshes: {} children: {}", node->mNumMeshes, node->mNumChildren);
     for (unsigned int i = 0; i < node->mNumMeshes; i++) {
         // the node object only contains indices to index the actual objects in the scene.
         // the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        ENGINE_LOG_INFO("Processing mesh");
+        LoadMesh(mesh, scene);
     }
     LoadMaterials(scene);
     // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
@@ -101,7 +100,7 @@ void ModelLoader::LoadNode(aiNode* node, const aiScene* scene) {
 void ModelLoader::LoadMesh(aiMesh* mesh, const aiScene* scene) {
     std::vector<Vertex> vertices(mesh->mNumVertices);
     std::vector<unsigned int> indices;
-    for (int i = 0; i < mesh->mNumVertices; i++) {
+    for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;
         vertex.position.x = mesh->mVertices[i].x;
         vertex.position.y = mesh->mVertices[i].y;
@@ -131,10 +130,10 @@ void ModelLoader::LoadMesh(aiMesh* mesh, const aiScene* scene) {
         }
         vertices.push_back(vertex);
     }
-    for (int i = 0; i < mesh->mNumFaces; i++) {
+    for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
         aiFace& face = mesh->mFaces[i];
-        for (int j = 0; j < face.mNumIndices; j++) {
-            indices.push_back(face.mIndices[i]);
+        for (unsigned int j = 0; j < face.mNumIndices; j++) {
+            indices.push_back(face.mIndices[j]);
         }
     }
     // Generate mesh
@@ -168,7 +167,6 @@ void ModelLoader::LoadMaterialTexture(aiMaterial* material, const aiTextureType&
     for (int i = 0; i < material->GetTextureCount(type); i++) {
         aiString path;
         material->GetTexture(type, i, &path);
-        ENGINE_LOG_INFO("Loading material {}", path.C_Str());
         Texture texure;
         // Load file from memory
         int width;
@@ -183,15 +181,20 @@ void ModelLoader::LoadMaterialTexture(aiMaterial* material, const aiTextureType&
 }
 
 void ModelLoader::GenerateMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices) {
-    engine::Mesh mesh;
+    engine::Mesh& mesh = model->mesh;
     mesh.buffer_type = engine::DrawType::ELEMENTS;
-    unsigned int VAO;
-    unsigned int VBO;
-    unsigned int EBO;
+    GLuint VAO = 0;
+    unsigned int VBO = 0;
+    unsigned int EBO = 0;
     // create buffers/arrays
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
+
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR) {
+        SPDLOG_ERROR("{:x}", error);
+    }
 
     glBindVertexArray(VAO);
     // load data into vertex buffers

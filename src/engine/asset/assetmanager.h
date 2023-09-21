@@ -192,6 +192,7 @@ class AssetManager {
         // Check if package exists
         if (packages.count(package_name) == 0) {
             ENGINE_LOG_ERROR("Cannot find package {}", package_name);
+            return nullptr;
         }
         std::string pkg_key = key.substr(separation + 1, key.length());
         auto& package = packages[package_name];
@@ -202,13 +203,15 @@ class AssetManager {
             if constexpr (std::is_same<T, asset::Texture>::value) {
                 return &empty_texture;
             }
+            return nullptr;
         }
         // Check if asset exists
         T* ptr = package->GetAsset<T>(pkg_key);
         if (ptr == nullptr) {
             SPDLOG_WARN("Asset {} is wrong type", key);
+        } else {
+            ptr->accessed++;
         }
-        ptr->accessed++;
         return ptr;
     }
 
