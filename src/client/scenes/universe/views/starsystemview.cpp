@@ -161,7 +161,11 @@ void SysStarSystemRenderer::Render(float deltaTime) {
     DrawShips();
     DrawSkybox();
 
+    // Unable to render this
     renderer.DrawAllLayers();
+    // Draw model
+    vis_shader->UseProgram();
+    model->mesh.Draw();
 }
 
 void SysStarSystemRenderer::SeeStarSystem() {
@@ -759,7 +763,9 @@ void SysStarSystemRenderer::InitializeMeshes() {
     sun.mesh = sphere_mesh;
     sun.shaderProgram = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:sunshader")->MakeShader();
 
-    orbit_shader = sun.shaderProgram;
+    orbit_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:orbitshader")->MakeShader();
+    vis_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:vertex_vis")->MakeShader();
+    model = m_app.GetAssetManager().GetAsset<asset::Model>("core:backpack");
 }
 
 glm::quat SysStarSystemRenderer::GetBodyRotation(double axial, double rotation, double day_offset) {

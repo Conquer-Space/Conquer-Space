@@ -23,6 +23,7 @@
 #include "common/components/coordinates.h"
 #include "common/universe.h"
 #include "engine/application.h"
+#include "engine/graphics/model.h"
 #include "engine/graphics/renderable.h"
 #include "engine/renderer/framebuffer.h"
 #include "engine/renderer/renderer.h"
@@ -101,9 +102,10 @@ class SysStarSystemRenderer {
     cqsp::engine::Renderable ship_overlay;
     cqsp::engine::Renderable city;
     cqsp::engine::Renderable sun;
-
+    cqsp::asset::Model *model;
     cqsp::asset::ShaderProgram_t orbit_shader;
     cqsp::asset::ShaderProgram_t near_shader;
+    cqsp::asset::ShaderProgram_t vis_shader;
 #if FALSE
     // Disabled for now
     asset::ShaderProgram_t no_light_shader;

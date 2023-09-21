@@ -1,5 +1,6 @@
 {
-    // Just a white sphere, but I would like to add cool like a sun texture and lens flaring to this
+    // Renders white lines
+    // Yes, this is copied straight from sunshader
     vert: object_log.vert
     frag: color_shader_log.frag
     uniforms: {

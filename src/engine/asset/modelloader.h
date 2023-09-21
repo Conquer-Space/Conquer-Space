@@ -29,6 +29,7 @@
 #include <glm/glm.hpp>
 
 #include "engine/asset/assetmanager.h"
+#include "engine/graphics/model.h"
 #include "engine/graphics/texture.h"
 
 namespace cqsp::asset {
@@ -92,7 +93,10 @@ struct Vertex {
 };
 
 class ModelLoader {
+    Model* model;
+
  public:
+    explicit ModelLoader(Model* model) : model(model) {}
     void LoadNode(aiNode* node, const aiScene* scene);
     void LoadMesh(aiMesh* mesh, const aiScene* scene);
     void LoadMaterials(const aiScene* scene);
@@ -100,5 +104,10 @@ class ModelLoader {
     void LoadMaterialTexture(aiMaterial* material, const aiTextureType& type);
     void GenerateMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
     std::map<std::string, Texture> material_textures;
+};
+
+class ModelPrototype {
+    std::vector<Vertex> vertices;
+    std::vector<unsigned int> indices;
 };
 }  // namespace cqsp::asset

@@ -1,3 +1,4 @@
+// This shader is a log shader
 #version 330 core
 
 in vec2 TexCoords;
@@ -91,6 +92,7 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0) {
 }
 
 void main() {
+    // Log rendering
     gl_FragDepth = (log(C * frag_pos.z + offset) / log(C * far + offset));
     vec3 albedo = texture(terrain_tex, TexCoords).rgb;
 
@@ -124,7 +126,7 @@ void main() {
     float G = GeometrySmith(N, V, L, roughness);
     vec3 F = fresnelSchlick(clamp(dot(H, V), 0.0, 1.0), F0);
 
-    vec3 nominator    = NDF * G * F; 
+    vec3 nominator    = NDF * G * F;
     float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001;
 
     vec3 specular = nominator / denominator; // prevent divide by zero for NdotV=0.0 or NdotL=0.0

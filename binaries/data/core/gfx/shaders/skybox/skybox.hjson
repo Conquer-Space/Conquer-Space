@@ -1,4 +1,6 @@
 {
+    // Renders a skybox
+    // Skybox should be a cubemap
     vert: skybox.vert
     frag: skybox.frag
     uniforms: {
