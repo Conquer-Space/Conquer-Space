@@ -45,7 +45,8 @@ enum PrototypeType {
     TEXTURE,  //!< texture prototype
     SHADER,   //!< shader prototype
     FONT,     //!< Font prototype
-    CUBEMAP   //!< cubemap prototype
+    CUBEMAP,  //!< cubemap prototype
+    MODEL     //!< Model prototype
 };
 
 ///
@@ -414,8 +415,6 @@ class AssetLoader {
                                                   const std::string& key, const Hjson::Value& hints);
 
     /// <summary>
-    /// A shader definiton file.
-    /// <br />
     /// A shader defintion is a way to simplify the creation of shader objects.
     /// <br />
     /// A shader definiton file is loaded in hjson, and follows this format:

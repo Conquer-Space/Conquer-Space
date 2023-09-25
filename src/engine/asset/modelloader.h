@@ -73,41 +73,5 @@ class Material {
     std::vector<Texture> textures;
 };
 
-struct Vertex {
- public:
-    static const int MAX_BONE_INFLUENCE = 4;
-    // position
-    glm::vec3 position;
-    // normal
-    glm::vec3 normal;
-    // texCoords
-    glm::vec2 texCoords;
-    // tangent
-    glm::vec3 tangent;
-    // bitangent
-    glm::vec3 bitangent;
-    //bone indexes which will influence this vertex
-    int m_BoneIDs[MAX_BONE_INFLUENCE];
-    //weights from each bone
-    float m_Weights[MAX_BONE_INFLUENCE];
-};
-
-class ModelLoader {
-    Model* model;
-
- public:
-    explicit ModelLoader(Model* model) : model(model) {}
-    void LoadNode(aiNode* node, const aiScene* scene);
-    void LoadMesh(aiMesh* mesh, const aiScene* scene);
-    void LoadMaterials(const aiScene* scene);
-    void LoadMaterial(aiMaterial* material);
-    void LoadMaterialTexture(aiMaterial* material, const aiTextureType& type);
-    void GenerateMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
-    std::map<std::string, Texture> material_textures;
-};
-
-class ModelPrototype {
-    std::vector<Vertex> vertices;
-    std::vector<unsigned int> indices;
-};
+void LoadModelData(asset::Model* model, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
 }  // namespace cqsp::asset

@@ -87,8 +87,113 @@ class FontPrototype : public AssetPrototype {
 
     int GetPrototypeType() { return PrototypeType::FONT; }
 };
+
+struct ModelPrototype : public AssetPrototype {
+ public:
+    std::vector<Vertex> vertices;
+    std::vector<unsigned int> indices;
+    int GetPrototypeType() { return PrototypeType::MODEL; }
+};
 }  // namespace
 
+// Model loading things
+// This is the reason why we should rewrite asset manager into separate classes
+namespace {
+struct ModelLoader {
+    ModelPrototype* model_prototype;
+    std::map<std::string, Texture> material_textures;
+
+    ModelLoader() { model_prototype = new ModelPrototype(); }
+    void LoadNode(aiNode* node, const aiScene* scene) {
+        for (unsigned int i = 0; i < node->mNumMeshes; i++) {
+            // the node object only contains indices to index the actual objects in the scene.
+            // the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
+            aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+            LoadMesh(mesh, scene);
+        }
+        LoadMaterials(scene);
+        // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
+        for (unsigned int i = 0; i < node->mNumChildren; i++) {
+            LoadNode(node->mChildren[i], scene);
+        }
+    }
+    void LoadMesh(aiMesh* mesh, const aiScene* scene) {
+        for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
+            Vertex vertex;
+            vertex.position.x = mesh->mVertices[i].x;
+            vertex.position.y = mesh->mVertices[i].y;
+            vertex.position.z = mesh->mVertices[i].z;
+            if (mesh->HasNormals()) {
+                vertex.normal.x = mesh->mNormals[i].x;
+                vertex.normal.y = mesh->mNormals[i].y;
+                vertex.normal.z = mesh->mNormals[i].z;
+            }
+            // does the mesh contain texture coordinates?
+            if (mesh->mTextureCoords[0] != nullptr) {
+                glm::vec2 vec;
+                // a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't
+                // use models where a vertex can have multiple texture coordinates so we always take the first set (0).
+                vertex.texCoords.x = mesh->mTextureCoords[0][i].x;
+                vertex.texCoords.x = mesh->mTextureCoords[0][i].y;
+                // tangent
+                vertex.tangent.x = mesh->mTangents[i].x;
+                vertex.tangent.y = mesh->mTangents[i].y;
+                vertex.tangent.z = mesh->mTangents[i].z;
+                // bitangent
+                vertex.bitangent.x = mesh->mBitangents[i].x;
+                vertex.bitangent.y = mesh->mBitangents[i].y;
+                vertex.bitangent.z = mesh->mBitangents[i].z;
+            } else {
+                vertex.texCoords = glm::vec2(0.0f, 0.0f);
+            }
+            model_prototype->vertices.push_back(vertex);
+        }
+        for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
+            aiFace& face = mesh->mFaces[i];
+            for (unsigned int j = 0; j < face.mNumIndices; j++) {
+                model_prototype->indices.push_back(face.mIndices[j]);
+            }
+        }
+        if (mesh->mMaterialIndex >= 0) {
+            LoadMaterial(scene->mMaterials[mesh->mMaterialIndex]);
+        }
+    }
+
+    // https://assimp.sourceforge.net/lib_html/material_8h.html#a7dd415ff703a2cc53d1c22ddbbd7dde0
+    // https://assimp.sourceforge.net/lib_html/structai_material.html
+    void LoadMaterials(const aiScene* scene) {
+        for (int i = 0; i < scene->mNumMaterials; i++) {
+            aiMaterial* mat = scene->mMaterials[i];
+            LoadMaterialTexture(mat, aiTextureType_SPECULAR);
+            LoadMaterialTexture(mat, aiTextureType_DIFFUSE);
+            LoadMaterialTexture(mat, aiTextureType_HEIGHT);
+            LoadMaterialTexture(mat, aiTextureType_AMBIENT);
+        }
+    }
+    void LoadMaterial(aiMaterial* material) {
+        LoadMaterialTexture(material, aiTextureType_SPECULAR);
+        LoadMaterialTexture(material, aiTextureType_DIFFUSE);
+        LoadMaterialTexture(material, aiTextureType_HEIGHT);
+        LoadMaterialTexture(material, aiTextureType_AMBIENT);
+    }
+    void LoadMaterialTexture(aiMaterial* material, const aiTextureType& type) {
+        for (int i = 0; i < material->GetTextureCount(type); i++) {
+            aiString path;
+            material->GetTexture(type, i, &path);
+            Texture texure;
+            // Load file from memory
+            int width;
+            int height;
+            int channels;
+            unsigned char* c = stbi_load(path.C_Str(), &width, &height, &channels, 0);
+
+            // Check if the thing has already been loaded, and then
+            CreateTexture(texure, c, width, height, channels);
+            // Then add it to the map or something
+        }
+    }
+};
+}  // namespace
 bool Package::HasAsset(const char* asset) { return assets.contains(asset); }
 bool Package::HasAsset(const std::string& asset) { return assets.contains(asset); }
 
@@ -447,6 +552,12 @@ void AssetLoader::BuildNextAsset() {
             asset::LoadCubemapData(*asset, prototype->data, prototype->width, prototype->height, prototype->components,
                                    prototype->options);
         } break;
+        case PrototypeType::MODEL: {
+            // Generate model
+            ModelPrototype* prototype = dynamic_cast<ModelPrototype*>(temp.prototype);
+            Model* asset = dynamic_cast<Model*>(prototype->asset);
+            asset::LoadModelData(asset, prototype->vertices, prototype->indices);
+        } break;
     }
 
     // Free memory
@@ -712,8 +823,12 @@ std::unique_ptr<cqsp::asset::Asset> AssetLoader::LoadModel(cqsp::asset::VirtualM
         return nullptr;
     }
     auto model = std::make_unique<cqsp::asset::Model>();
-    ModelLoader loader(model.get());
+    ModelLoader loader;
     loader.LoadNode(scene->mRootNode, scene);
+    loader.model_prototype->key = key;
+    loader.model_prototype->asset = model.get();
+    QueueHolder holder(loader.model_prototype);
+    m_asset_queue.push(holder);
     return model;
 }
 
