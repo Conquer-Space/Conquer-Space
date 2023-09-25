@@ -18,6 +18,9 @@
 
 #include <vector>
 
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+
 #include "engine/asset/asset.h"
 #include "engine/graphics/mesh.h"
 #include "engine/graphics/texture.h"
@@ -30,5 +33,24 @@ struct Model : public Asset {
     // Free textures...
 
     AssetType GetAssetType() override { return AssetType::MODEL; }
+};
+
+struct Vertex {
+ public:
+    static const int MAX_BONE_INFLUENCE = 4;
+    // position
+    glm::vec3 position;
+    // normal
+    glm::vec3 normal;
+    // texCoords
+    glm::vec2 texCoords;
+    // tangent
+    glm::vec3 tangent;
+    // bitangent
+    glm::vec3 bitangent;
+    //bone indexes which will influence this vertex
+    int m_BoneIDs[MAX_BONE_INFLUENCE];
+    //weights from each bone
+    float m_Weights[MAX_BONE_INFLUENCE];
 };
 }  // namespace cqsp::asset
