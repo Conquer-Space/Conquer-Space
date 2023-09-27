@@ -18,7 +18,6 @@
 
 #include "common/components/orbit.h"
 #include "common/components/units.h"
-#include "orbit.h"
 
 namespace cqsp::common::components::types {
 double GreatCircleDistance(SurfaceCoordinate& coord1, SurfaceCoordinate& coord2) {
