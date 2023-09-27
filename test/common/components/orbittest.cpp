@@ -22,6 +22,7 @@
 
 #include "common/components/coordinates.h"
 #include "common/components/orbit.h"
+#include "common/components/units.h"
 #include "common/systems/movement/sysmovement.h"
 #include "common/universe.h"
 
@@ -348,7 +349,7 @@ TEST(OrbitTest, SolveKeplerElliptic) {
 
 TEST(Common_TransferTest, TransferTimeTest_Mars) {
     namespace cqspt = cqsp::common::components::types;
-    using cqspt::_deg;
+    using namespace cqspt;  // NOLINT
     cqspt::Orbit earth_orbit;
     earth_orbit.semi_major_axis = 149598023;
     earth_orbit.v = 356.9521225619375_deg;
