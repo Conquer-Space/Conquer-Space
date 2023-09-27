@@ -90,6 +90,6 @@ inline kilometer toKm(astronomical_unit au) { return au * KmInAu; }
 inline radian toRadian(degree theta) { return theta * (PI / 180.f); }
 inline degree toDegree(radian theta) { return theta * (180.f / PI); }
 
-inline double operator""_deg(long double deg) { return normalize_radian(toRadian(deg)); }
-inline double operator""_au(long double au) { return toKm(au); }
+inline constexpr double operator""_deg(long double deg) { return normalize_radian(toRadian(deg)); }
+inline constexpr double operator""_au(long double au) { return toKm(au); }
 }  // namespace cqsp::common::components::types
