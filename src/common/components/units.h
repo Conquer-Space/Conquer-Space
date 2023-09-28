@@ -42,25 +42,25 @@ typedef double joule;
 typedef double second;
 
 // Constants
-const double PI = 3.14159265358979323846;
-const double TWOPI = PI * 2;
-const double HALFPI = PI / 2;
+constexpr double PI = 3.14159265358979323846;
+constexpr double TWOPI = PI * 2;
+constexpr double HALFPI = PI / 2;
 
-const double KmInAu = 149597870.700;
+constexpr double KmInAu = 149597870.700;
 
 // Gravitional constant in m^3 * kg^-1 * s^-2
-static const double G = 6.6743015e-11;
+constexpr double G = 6.6743015e-11;
 // Gravitional constant in km^3 * kg^-1 * s^-2
-static const double G_km = 6.6743015e-20;
+constexpr double G_km = 6.6743015e-20;
 
 // GM of sun/sun gravitational constant in km^3 * s^-2
-static const double SunMu = 1.32712400188e11;
+constexpr double SunMu = 1.32712400188e11;
 
 /// <summary>
 /// Normalizes a radian to [0, PI*2)
 /// </summary>
 /// \param[in] Radian to normalizes
-inline radian normalize_radian(const radian& radian) {
+inline constexpr radian normalize_radian(const radian& radian) {
     double x = std::fmod(radian, TWOPI);
     if (x < 0) {
         x += TWOPI;
@@ -68,13 +68,13 @@ inline radian normalize_radian(const radian& radian) {
     return x;
 }
 
-inline double normalize_radian_coord(const radian& radian) {
+inline constexpr double normalize_radian_coord(const radian& radian) {
     double r = fmod(radian + PI, TWOPI);
     if (r < 0) r += TWOPI;
     return r - PI;
 }
 
-inline degree normalize_degree(const degree& radian) {
+inline constexpr degree normalize_degree(const degree& radian) {
     double x = std::fmod(radian, 360);
     if (x < 0) {
         x += 360;
@@ -83,13 +83,13 @@ inline degree normalize_degree(const degree& radian) {
 }
 
 // Conversions
-inline astronomical_unit toAU(kilometer km) { return km / KmInAu; }
-inline light_year toLightYear(astronomical_unit au) { return au / 63241; }
-inline astronomical_unit LtyrtoAU(light_year ltyr) { return ltyr * 63241; }
-inline kilometer toKm(astronomical_unit au) { return au * KmInAu; }
-inline radian toRadian(degree theta) { return theta * (PI / 180.f); }
-inline degree toDegree(radian theta) { return theta * (180.f / PI); }
+inline constexpr astronomical_unit toAU(kilometer km) { return km / KmInAu; }
+inline constexpr light_year toLightYear(astronomical_unit au) { return au / 63241; }
+inline constexpr astronomical_unit LtyrtoAU(light_year ltyr) { return ltyr * 63241; }
+inline constexpr kilometer toKm(astronomical_unit au) { return au * KmInAu; }
+inline constexpr radian toRadian(degree theta) { return theta * (PI / 180.f); }
+inline constexpr degree toDegree(radian theta) { return theta * (180.f / PI); }
 
-inline constexpr double operator""_deg(long double deg) { return normalize_radian(toRadian(deg)); }
-inline constexpr double operator""_au(long double au) { return toKm(au); }
+inline constexpr double operator""_deg(const long double deg) { return normalize_radian(toRadian(deg)); }
+inline constexpr double operator""_au(const long double au) { return toKm(au); }
 }  // namespace cqsp::common::components::types
