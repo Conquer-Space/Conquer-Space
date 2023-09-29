@@ -56,12 +56,19 @@ constexpr double G_km = 6.6743015e-20;
 // GM of sun/sun gravitational constant in km^3 * s^-2
 constexpr double SunMu = 1.32712400188e11;
 
+#if __cplusplus == 202302L
+// Then use fmod
+#define floatmod std::fmod
+#else
+inline double constexpr floatmod(double x, double y) { return x - y * (int)(x / y); }
+#endif
+
 /// <summary>
 /// Normalizes a radian to [0, PI*2)
 /// </summary>
 /// \param[in] Radian to normalizes
 inline constexpr radian normalize_radian(const radian& radian) {
-    double x = std::fmod(radian, TWOPI);
+    double x = floatmod(radian, TWOPI);
     if (x < 0) {
         x += TWOPI;
     }
@@ -69,13 +76,13 @@ inline constexpr radian normalize_radian(const radian& radian) {
 }
 
 inline constexpr double normalize_radian_coord(const radian& radian) {
-    double r = fmod(radian + PI, TWOPI);
+    double r = floatmod(radian + PI, TWOPI);
     if (r < 0) r += TWOPI;
     return r - PI;
 }
 
 inline constexpr degree normalize_degree(const degree& radian) {
-    double x = std::fmod(radian, 360);
+    double x = floatmod(radian, 360);
     if (x < 0) {
         x += 360;
     }
@@ -92,4 +99,7 @@ inline constexpr degree toDegree(radian theta) { return theta * (180.f / PI); }
 
 inline constexpr double operator""_deg(const long double deg) { return normalize_radian(toRadian(deg)); }
 inline constexpr double operator""_au(const long double au) { return toKm(au); }
+#ifdef floatmod
+#undef floatmod
+#endif  // floatmod
 }  // namespace cqsp::common::components::types
