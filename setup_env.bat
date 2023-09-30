@@ -1,12 +1,7 @@
 @echo off
 REM This file gets vcpkg, setups the cmake build system after that
 SET has_vcpkg=NOT exist vcpkg/vcpkg.exe
-FOR /F "tokens=*" %%g IN ('git -C vcpkg rev-parse --is-shallow-repository') do (SET VAR=%%g)
-SET is_shallow= (%g=="true")
-
-if %is_shallow% (
-    call git -C vcpkg fetch --unshallow
-)
+git -C vcpkg fetch --unshallow
 
 if %has_vcpkg% (
     call .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
