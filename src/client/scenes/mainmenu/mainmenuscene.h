@@ -20,14 +20,14 @@
 #include <vector>
 
 #include "client/scenes/scene.h"
-#include "client/systems/creditswindow.h"
-#include "client/systems/loadgamewindow.h"
-#include "client/systems/settingswindow.h"
+#include "creditswindow.h"
 #include "engine/graphics/primitives/pane.h"
 #include "engine/graphics/renderable.h"
 #include "engine/graphics/text.h"
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/renderer2d.h"
+#include "loadgamewindow.h"
+#include "settingswindow.h"
 
 namespace cqsp {
 namespace scene {

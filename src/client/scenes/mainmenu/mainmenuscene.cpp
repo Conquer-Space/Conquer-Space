@@ -14,19 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/scenes/mainmenuscene.h"
-
-#include <RmlUi/Debugger.h>
-#include <glad/glad.h>
+#include "client/scenes/mainmenu/mainmenuscene.h"
 
 #include <algorithm>
 #include <filesystem>
 #include <string>
 #include <utility>
 
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
+#include "RmlUi/Debugger.h"
 #include "client/components/clientctx.h"
 #include "client/scenes/universeloadingscene.h"
 #include "client/systems/sysoptionswindow.h"
@@ -39,6 +34,9 @@
 #include "engine/graphics/text.h"
 #include "engine/gui.h"
 #include "engine/renderer/renderer.h"
+#include "glad/glad.h"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app)
     : cqsp::client::Scene(app), settings_window(app), credits_window(app), load_game_window(app) {}
