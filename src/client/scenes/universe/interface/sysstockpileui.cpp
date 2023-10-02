@@ -14,15 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/systems/gui/sysstockpileui.h"
+#include "sysstockpileui.h"
 
-#include <fmt/format.h>
-
-#include "client/systems/gui/systooltips.h"
 #include "common/components/name.h"
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
 #include "engine/gui.h"
+#include "fmt/format.h"
+#include "systooltips.h"
 
 using cqsp::common::Universe;
 using cqsp::common::components::Identifier;

@@ -19,7 +19,6 @@
 #include <limits>
 
 #include "client/components/clientctx.h"
-#include "client/systems/gui/systooltips.h"
 #include "common/components/bodies.h"
 #include "common/components/economy.h"
 #include "common/components/organizations.h"
@@ -28,6 +27,7 @@
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
 #include "marketwindow.h"
+#include "systooltips.h"
 
 using cqsp::common::util::GetName;
 

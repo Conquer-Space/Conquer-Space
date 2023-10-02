@@ -14,12 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/systems/gui/systooltips.h"
+#include "systooltips.h"
 
 #include <cmath>
 #include <string>
 
-#include "client/systems/gui/sysstockpileui.h"
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
@@ -37,6 +36,7 @@
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
 #include "engine/gui.h"
+#include "sysstockpileui.h"
 
 using cqsp::common::Universe;
 
@@ -55,12 +55,11 @@ void RenderEntityType(const Universe& universe, entt::entity entity) {
 
 void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
     namespace cqspc = cqsp::common::components;
-    //TODO(EhWhoAmI): Set these text red, but too lazy to do it for now
     if (universe.all_of<cqspc::FailedResourceTransfer>(entity)) {
-        ImGui::TextFmt("Failed resource transfer last tick");
+        ImGui::TextFmtColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f), "Failed resource transfer last tick");
     }
     if (universe.all_of<cqspc::FailedResourceProduction>(entity)) {
-        ImGui::TextFmt("Failed resource production last tick");
+        ImGui::TextFmtColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f), "Failed resource production last tick");
     }
 
     if (universe.all_of<cqspc::ResourceStockpile>(entity)) {

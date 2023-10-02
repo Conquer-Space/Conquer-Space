@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/systems/gui/sysevent.h"
+#include "sysevent.h"
 
 #include <memory>
 #include <string>

@@ -18,16 +18,18 @@
 
 #include <string>
 
-#include <entt/entt.hpp>
-
-#include "common/components/resource.h"
 #include "common/universe.h"
+#include "entt/entt.hpp"
 
-namespace cqsp {
-namespace client {
-namespace systems {
-bool DrawLedgerTable(const std::string& name, const cqsp::common::Universe&,
-                     const cqsp::common::components::ResourceLedger& ledger);
-}  // namespace systems
-}  // namespace client
-}  // namespace cqsp
+namespace cqsp::client::systems::gui {
+/// <summary>
+/// This actually creates the tooltip for the entity
+/// </summary>
+/// <param name=""></param>
+/// <param name=""></param>
+void EntityTooltip(const cqsp::common::Universe &, entt::entity);
+/// <summary>
+/// In case you want the tooltip content for debug displaying the information of an entity.
+/// </summary>
+void EntityTooltipContent(const cqsp::common::Universe &, entt::entity);
+}  // namespace cqsp::client::systems::gui

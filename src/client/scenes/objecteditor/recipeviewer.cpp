@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/systems/editor/recipeviewer.h"
+#include "recipeviewer.h"
 
-#include "client/systems/gui/systooltips.h"
+#include "client/scenes/universe/interface/systooltips.h"
 #include "common/components/economy.h"
 #include "common/components/name.h"
 #include "common/components/resource.h"

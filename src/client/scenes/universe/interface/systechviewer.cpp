@@ -18,10 +18,10 @@
 
 #include <vector>
 
-#include "client/systems/gui/systooltips.h"
 #include "common/components/player.h"
 #include "common/components/science.h"
 #include "common/util/nameutil.h"
+#include "systooltips.h"
 
 namespace cqsp::client::systems {
 void SysTechnologyViewer::Init() {}

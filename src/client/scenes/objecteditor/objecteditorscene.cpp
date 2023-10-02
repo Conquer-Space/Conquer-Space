@@ -17,8 +17,8 @@
 #include "objecteditorscene.h"
 
 #include "client/systems/assetloading.h"
-#include "client/systems/editor/goodviewer.h"
-#include "client/systems/editor/recipeviewer.h"
+#include "goodviewer.h"
+#include "recipeviewer.h"
 #include "sysfieldviewer.h"
 
 cqsp::scene::ObjectEditorScene::ObjectEditorScene(cqsp::engine::Application& app) : cqsp::client::Scene(app) {

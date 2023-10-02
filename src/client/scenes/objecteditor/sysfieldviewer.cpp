@@ -22,7 +22,7 @@
 #include <tuple>
 #include <vector>
 
-#include "client/systems/gui/systooltips.h"
+#include "client/scenes/universe/interface/systooltips.h"
 #include "common/components/name.h"
 #include "common/components/science.h"
 #include "common/systems/science/fields.h"

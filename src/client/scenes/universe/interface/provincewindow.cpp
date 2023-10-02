@@ -21,8 +21,6 @@
 
 #include "client/components/clientctx.h"
 #include "client/scenes/universe/views/starsystemview.h"
-#include "client/systems/gui/sysstockpileui.h"
-#include "client/systems/gui/systooltips.h"
 #include "common/components/economy.h"
 #include "common/components/infrastructure.h"
 #include "common/components/name.h"
@@ -36,6 +34,8 @@
 #include "common/util/utilnumberdisplay.h"
 #include "engine/cqspgui.h"
 #include "marketwindow.h"
+#include "sysstockpileui.h"
+#include "systooltips.h"
 
 namespace cqsp::client::systems {
 namespace cqspc = cqsp::common::components;

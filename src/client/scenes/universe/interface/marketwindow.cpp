@@ -21,12 +21,12 @@
 #include "GLFW/glfw3.h"
 #include "client/scenes/universe/universescene.h"
 #include "client/scenes/universe/views/starsystemview.h"
-#include "client/systems/gui/systooltips.h"
 #include "common/components/bodies.h"
 #include "common/components/economy.h"
 #include "common/components/name.h"
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
+#include "systooltips.h"
 
 namespace cqsp::client::systems {
 namespace cqspb = cqsp::common::components::bodies;

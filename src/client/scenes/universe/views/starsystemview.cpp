@@ -29,7 +29,7 @@
 
 #include "client/components/clientctx.h"
 #include "client/components/planetrendering.h"
-#include "client/systems/gui/systooltips.h"
+#include "client/scenes/universe/interface/systooltips.h"
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
