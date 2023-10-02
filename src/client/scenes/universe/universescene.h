@@ -22,8 +22,8 @@
 #include <vector>
 
 #include "client/scenes/scene.h"
+#include "client/scenes/universe/views/starsystemview.h"
 #include "client/systems/sysgui.h"
-#include "client/systems/views/starsystemview.h"
 #include "common/components/bodies.h"
 #include "common/components/organizations.h"
 #include "common/simulation.h"

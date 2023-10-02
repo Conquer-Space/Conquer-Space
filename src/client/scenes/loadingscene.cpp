@@ -27,8 +27,8 @@
 #include <tracy/Tracy.hpp>
 #include <tracy/common/TracySystem.hpp>
 
-#include "client/scenes/fieldviewerscene.h"
 #include "client/scenes/mainmenu/mainmenuscene.h"
+#include "client/scenes/objecteditor/objecteditorscene.h"
 #include "client/scenes/texttestscene.h"
 #include "client/scenes/universeloadingscene.h"
 #include "common/scripting/scripting.h"

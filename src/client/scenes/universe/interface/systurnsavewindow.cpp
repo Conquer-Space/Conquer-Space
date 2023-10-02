@@ -14,12 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/systems/systurnsavewindow.h"
-
-#include <glad/glad.h>
+#include "systurnsavewindow.h"
 
 #include "engine/cqspgui.h"
 #include "engine/gui.h"
+#include "glad/glad.h"
 
 namespace cqsp::client::systems {
 void SysTurnSaveWindow::Init() {}

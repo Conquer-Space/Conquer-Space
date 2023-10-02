@@ -14,13 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/systems/civilizationinfopanel.h"
+#include "civilizationinfopanel.h"
 
 #include <limits>
 
 #include "client/components/clientctx.h"
 #include "client/systems/gui/systooltips.h"
-#include "client/systems/marketwindow.h"
 #include "common/components/bodies.h"
 #include "common/components/economy.h"
 #include "common/components/organizations.h"
@@ -28,6 +27,7 @@
 #include "common/components/surface.h"
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
+#include "marketwindow.h"
 
 using cqsp::common::util::GetName;
 

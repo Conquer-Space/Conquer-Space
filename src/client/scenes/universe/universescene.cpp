@@ -14,32 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/scenes/universescene.h"
-
-#include <fmt/format.h>
-#include <glad/glad.h>
+#include "universescene.h"
 
 #include <cmath>
 #include <string>
 
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/polar_coordinates.hpp>
-#include <tracy/Tracy.hpp>
-
 #include "client/components/clientctx.h"
-#include "client/systems/civilizationinfopanel.h"
+#include "client/scenes/objecteditor/sysfieldviewer.h"
+#include "client/scenes/universe/interface/civilizationinfopanel.h"
+#include "client/scenes/universe/interface/debug/sysdebuggui.h"
+#include "client/scenes/universe/interface/marketwindow.h"
+#include "client/scenes/universe/interface/orbitfilter.h"
+#include "client/scenes/universe/interface/provincewindow.h"
+#include "client/scenes/universe/interface/syspausemenu.h"
+#include "client/scenes/universe/interface/sysstarsystemtree.h"
+#include "client/scenes/universe/interface/systechviewer.h"
+#include "client/scenes/universe/interface/systurnsavewindow.h"
 #include "client/systems/gui/sysevent.h"
-#include "client/systems/marketwindow.h"
-#include "client/systems/orbitfilter.h"
-#include "client/systems/provincewindow.h"
 #include "client/systems/rmlui/turnsavewindow.h"
 #include "client/systems/syscommand.h"
-#include "client/systems/sysdebuggui.h"
-#include "client/systems/sysfieldviewer.h"
-#include "client/systems/syspausemenu.h"
-#include "client/systems/sysstarsystemtree.h"
-#include "client/systems/systechviewer.h"
-#include "client/systems/systurnsavewindow.h"
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
@@ -54,6 +47,11 @@
 #include "engine/graphics/primitives/uvsphere.h"
 #include "engine/gui.h"
 #include "engine/renderer/renderer.h"
+#include "fmt/format.h"
+#include "glad/glad.h"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/polar_coordinates.hpp"
+#include "tracy/Tracy.hpp"
 
 // If the game is paused or not, like when escape is pressed
 bool game_halted = false;

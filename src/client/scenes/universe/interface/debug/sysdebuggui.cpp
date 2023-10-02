@@ -14,16 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/systems/sysdebuggui.h"
+#include "sysdebuggui.h"
 
-#include <GLFW/glfw3.h>
-#include <glad/glad.h>
-
+#include "GLFW/glfw3.h"
 #include "client/components/clientctx.h"
-#include "client/systems/views/starsystemview.h"
+#include "client/scenes/universe/views/starsystemview.h"
 #include "common/components/name.h"
 #include "common/util/nameutil.h"
 #include "common/util/profiler.h"
+#include "glad/glad.h"
 
 using cqsp::client::systems::SysDebugMenu;
 using cqsp::engine::Application;

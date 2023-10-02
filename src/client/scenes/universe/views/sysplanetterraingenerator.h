@@ -16,12 +16,11 @@
  */
 #pragma once
 
-#include <hjson.h>
-#include <noise/noise.h>
-#include <noiseutils.h>
-
 #include "common/components/bodies.h"
 #include "common/universe.h"
+#include "hjson.h"
+#include "noise/noise.h"
+#include "noiseutils.h"
 
 namespace cqsp {
 namespace client {

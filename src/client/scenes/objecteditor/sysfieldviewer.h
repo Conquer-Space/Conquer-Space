@@ -18,10 +18,9 @@
 
 #include <string>
 
-#include <entt/entt.hpp>
-
 #include "client/systems/sysgui.h"
 #include "engine/application.h"
+#include "entt/entt.hpp"
 
 namespace cqsp {
 namespace client {

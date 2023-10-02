@@ -14,11 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/systems/views/starsystemview.h"
+#include "starsystemview.h"
 
-#include <glad/glad.h>
 #include <noise/noise.h>
-#include <stb_image.h>
 
 #include <algorithm>
 #include <cmath>
@@ -28,11 +26,6 @@
 #include <string>
 #include <tuple>
 #include <vector>
-
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/quaternion.hpp>
-#include <glm/gtx/string_cast.hpp>
-#include <tracy/Tracy.hpp>
 
 #include "client/components/clientctx.h"
 #include "client/components/planetrendering.h"
@@ -57,6 +50,12 @@
 #include "engine/graphics/primitives/polygon.h"
 #include "engine/graphics/primitives/uvsphere.h"
 #include "engine/renderer/renderer.h"
+#include "glad/glad.h"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/quaternion.hpp"
+#include "glm/gtx/string_cast.hpp"
+#include "stb_image.h"
+#include "tracy/Tracy.hpp"
 
 namespace cqspb = cqsp::common::components::bodies;
 

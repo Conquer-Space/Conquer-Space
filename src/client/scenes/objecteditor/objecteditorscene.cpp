@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/scenes/fieldviewerscene.h"
+#include "objecteditorscene.h"
 
 #include "client/systems/assetloading.h"
 #include "client/systems/editor/goodviewer.h"
 #include "client/systems/editor/recipeviewer.h"
-#include "client/systems/sysfieldviewer.h"
+#include "sysfieldviewer.h"
 
 cqsp::scene::ObjectEditorScene::ObjectEditorScene(cqsp::engine::Application& app) : cqsp::client::Scene(app) {
     AddUISystem<cqsp::client::systems::SysFieldNodeViewer>("Node Viewer");

@@ -22,9 +22,9 @@
 #include <string>
 #include <vector>
 
-#include "client/scenes/universescene.h"
+#include "client/scenes/universe/universescene.h"
+#include "client/scenes/universe/views/starsystemview.h"
 #include "client/systems/gui/systooltips.h"
-#include "client/systems/views/starsystemview.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
 #include "common/components/name.h"

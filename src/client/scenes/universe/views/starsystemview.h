@@ -20,15 +20,14 @@
 #include <string>
 #include <vector>
 
-#include <entt/entt.hpp>
-#include <glm/glm.hpp>
-
 #include "common/components/coordinates.h"
 #include "common/universe.h"
 #include "engine/application.h"
 #include "engine/graphics/renderable.h"
 #include "engine/renderer/framebuffer.h"
 #include "engine/renderer/renderer.h"
+#include "entt/entt.hpp"
+#include "glm/glm.hpp"
 
 namespace cqsp {
 namespace client {

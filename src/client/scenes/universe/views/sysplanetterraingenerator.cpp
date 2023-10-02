@@ -14,15 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/systems/sysplanetterraingenerator.h"
-
-#include <spdlog/spdlog.h>
+#include "sysplanetterraingenerator.h"
 
 #include <cmath>
 
-#include <tracy/Tracy.hpp>
-
 #include "common/components/bodies.h"
+#include "spdlog/spdlog.h"
+#include "tracy/Tracy.hpp"
 
 using cqsp::client::systems::TerrainImageGenerator;
 

@@ -14,16 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/systems/provincewindow.h"
+#include "provincewindow.h"
 
 #include <limits>
 #include <string>
 
 #include "client/components/clientctx.h"
+#include "client/scenes/universe/views/starsystemview.h"
 #include "client/systems/gui/sysstockpileui.h"
 #include "client/systems/gui/systooltips.h"
-#include "client/systems/marketwindow.h"
-#include "client/systems/views/starsystemview.h"
 #include "common/components/economy.h"
 #include "common/components/infrastructure.h"
 #include "common/components/name.h"
@@ -36,6 +35,7 @@
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
 #include "engine/cqspgui.h"
+#include "marketwindow.h"
 
 namespace cqsp::client::systems {
 namespace cqspc = cqsp::common::components;

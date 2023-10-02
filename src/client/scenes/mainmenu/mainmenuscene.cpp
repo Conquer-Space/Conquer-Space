@@ -23,8 +23,8 @@
 
 #include "RmlUi/Debugger.h"
 #include "client/components/clientctx.h"
+#include "client/scenes/universe/sysoptionswindow.h"
 #include "client/scenes/universeloadingscene.h"
-#include "client/systems/sysoptionswindow.h"
 #include "common/util/paths.h"
 #include "common/util/save/save.h"
 #include "common/version.h"

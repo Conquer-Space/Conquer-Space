@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/systems/sysstarsystemtree.h"
+#include "sysstarsystemtree.h"
 
 #include <string>
 
-#include "client/scenes/universescene.h"
+#include "client/scenes/universe/universescene.h"
+#include "client/scenes/universe/views/starsystemview.h"
 #include "client/systems/gui/systooltips.h"
-#include "client/systems/views/starsystemview.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
 #include "common/components/name.h"

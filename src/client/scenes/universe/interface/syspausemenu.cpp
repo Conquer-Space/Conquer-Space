@@ -14,16 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/systems/syspausemenu.h"
-
-#include <GLFW/glfw3.h>
+#include "syspausemenu.h"
 
 #include <fstream>
 #include <string>
 
-#include "client/scenes/universescene.h"
+#include "GLFW/glfw3.h"
+#include "client/scenes/universe/sysoptionswindow.h"
+#include "client/scenes/universe/universescene.h"
 #include "client/systems/savegame.h"
-#include "client/systems/sysoptionswindow.h"
 #include "common/util/paths.h"
 #include "common/version.h"
 #include "engine/cqspgui.h"
