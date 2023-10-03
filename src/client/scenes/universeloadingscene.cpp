@@ -21,7 +21,7 @@
 #include <string>
 
 #include "client/components/clientctx.h"
-#include "client/scenes/universescene.h"
+#include "client/scenes/universe/universescene.h"
 #include "client/systems/assetloading.h"
 #include "client/systems/savegame.h"
 #include "common/systems/sysuniversegenerator.h"
