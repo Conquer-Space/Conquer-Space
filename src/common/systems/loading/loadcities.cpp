@@ -19,6 +19,7 @@
 #include <spdlog/spdlog.h>
 
 #include <string>
+#include <vector>
 
 #include "common/components/area.h"
 #include "common/components/coordinates.h"
@@ -32,6 +33,12 @@
 #include "common/util/nameutil.h"
 
 namespace cqsp::common::systems::loading {
+namespace {
+struct ConnectedCities {
+    // Holder class for the names of all the cities connected to this particular city
+    std::vector<std::string> entities;
+};
+}  // namespace
 bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     // Load the city
     std::string planet = values["planet"].to_string();
@@ -86,6 +93,18 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     // Industry and economy
     auto& industry = universe.emplace<components::IndustrialZone>(entity);
     auto& market = universe.emplace<components::Market>(entity);
+    // Get the connected markets
+    if (!values["connections"].empty() && values["connections"].type() == Hjson::Type::Vector) {
+        // Get connected cities and then see if they're done
+        Hjson::Value connected = values["connections"];
+        if (!connected.empty()) {
+            auto& conn = universe.emplace<ConnectedCities>(entity);
+            for (int i = 0; i < connected.size(); i++) {
+                Hjson::Value& val = connected[i];
+                conn.entities.push_back(val.to_string());
+            }
+        }
+    }
     // Commercial area
     entt::entity commercial = universe.create();
 
@@ -183,8 +202,17 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
             }
         }
     }
+    universe.cities[universe.get<components::Identifier>(entity).identifier] = entity;
     return true;
 }
 
-void CityLoader::PostLoad(const entt::entity& entity) {}
+void CityLoader::PostLoad(const entt::entity& entity) {
+    if (universe.all_of<ConnectedCities>(entity)) {
+        auto& connected = universe.get<ConnectedCities>(entity);
+        auto& market = universe.get<components::Market>(entity);
+        for (auto& entity : connected.entities) {
+            market.connected_markets.emplace(universe.cities[entity]);
+        }
+    }
+}
 }  // namespace cqsp::common::systems::loading

@@ -50,8 +50,10 @@ struct MarketInformation {
     ResourceLedger previous_supply;
 
     // Supply that existed, but not fufilled last time
+    // Surplus supply
     ResourceLedger latent_supply;
     // Demand that existed, but was not fufilled the last time
+    // Surplus demand
     ResourceLedger last_latent_demand;
     ResourceLedger latent_demand;
 };
@@ -73,6 +75,7 @@ struct Market : MarketInformation {
     std::map<entt::entity, MarketElementInformation> last_market_information;
 
     std::set<entt::entity> participants;
+    entt::basic_sparse_set<entt::entity> connected_markets;
 
     double GDP = 0;
 
@@ -196,6 +199,10 @@ struct MarketAgent {
 struct MarketCenter {
     entt::entity market;
 };
+
+// This trade node has international connections
+// For space connections, the spaceport struct exists
+struct InternationalPort {};
 
 /// <summary>
 /// Represents commercial areas and other amenities that generate economic activity. They don't export goods

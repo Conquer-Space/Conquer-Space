@@ -144,5 +144,8 @@
         infrastructure: {
             highway: 0.02
         }
+        connections: [
+            wdc
+        ]
     }
 ]

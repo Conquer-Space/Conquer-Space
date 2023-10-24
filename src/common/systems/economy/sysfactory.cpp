@@ -63,7 +63,7 @@ void ProcessIndustries(Universe& universe, entt::entity entity) {
         components::ResourceLedger output;  // * ratio.output;
         output[recipe.output.entity] = recipe.output.amount * size.utilization;
 
-        // Figure out what's throttling production and maintaince
+        // Figure out what's throttling production and maintenance
         double limitedinput = CopyVals(input, market.history.back().sd_ratio).Min();
         double limitedcapitalinput = CopyVals(capitalinput, market.history.back().sd_ratio).Min();
 
@@ -94,7 +94,7 @@ void ProcessIndustries(Universe& universe, entt::entity entity) {
         // need a balanced economy
         components::CostBreakdown& costs = universe.get_or_emplace<components::CostBreakdown>(productionentity);
 
-        // Maintainence costs will still have to be upkept, so if
+        // Maintenance costs will still have to be upkept, so if
         // there isnt any resources to upkeep the place, then stop
         // the production
         costs.materialcosts = (recipe.input * size.utilization * market.price).GetSum();
