@@ -259,10 +259,14 @@ struct IndustrySize {
 
 struct CostBreakdown {
     double revenue;
+    // How much it paid in materials to produce goods
     double materialcosts;
+    // How much cash it took to maintain the factory
     double maintenance;
+    // How much it paid to people
     double wages;
     double profit;
+    // How much it paid in transport fees
     double transport;
 
     void Reset() {

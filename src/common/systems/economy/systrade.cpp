@@ -24,4 +24,26 @@ void cqsp::common::systems::SysTrade::DoSystem() {
     // Then cross reference to see if they can buy or sell
     // Then list all the markets
     auto markets = GetUniverse().view<components::Market>();
+    for (entt::entity entity : markets) {
+        auto& market = GetUniverse().get<components::Market>(entity);
+        // Iterate through the connected markets, and also calculate if we need to connect to other markets
+        for (entt::entity connected : market.connected_markets) {
+            // Get the entity?
+        }
+        // Get the prices of everything and then
+        // Look for trading options
+        for (entt::entity pair : markets) {
+            // Get the lacking goods, and then compensentate
+            if (pair == entity) {
+                continue;
+            }
+            auto& connected_market = GetUniverse().get<components::Market>(pair);
+            // Get the goods and sort through?
+            // Get surplus
+            //market.latent_supply;
+            //market.latent_demand;
+            // Get the latent supply and demand from the opposing market, and see if our latent can fulfull the other
+            connected_market.latent_demand - market.latent_supply;  // Remaining goods?
+        }
+    }
 }

@@ -14,12 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "provincewindow.h"
+#include "client/scenes/universe/interface/provincewindow.h"
 
 #include <limits>
 #include <string>
 
 #include "client/components/clientctx.h"
+#include "client/scenes/universe/interface/marketwindow.h"
+#include "client/scenes/universe/interface/sysstockpileui.h"
+#include "client/scenes/universe/interface/systooltips.h"
 #include "client/scenes/universe/views/starsystemview.h"
 #include "common/components/economy.h"
 #include "common/components/infrastructure.h"
@@ -33,9 +36,6 @@
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
 #include "engine/cqspgui.h"
-#include "marketwindow.h"
-#include "sysstockpileui.h"
-#include "systooltips.h"
 
 namespace cqsp::client::systems {
 namespace cqspc = cqsp::common::components;
@@ -167,6 +167,14 @@ void SysProvinceInformation::CityIndustryTabs() {
         }
         if (ImGui::BeginTabItem("Economy")) {
             // Show economy window
+
+            cqspc::Market& market = GetUniverse().get<cqspc::Market>(current_city);
+            // List the market's connected cities
+            ImGui::TextFmt("Connected cities");
+            for (entt::entity entity : market.connected_markets) {
+                ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), entity));
+            }
+            ImGui::Separator();
             MarketInformationTable(GetUniverse(), current_city);
             ImGui::EndTabItem();
         }
