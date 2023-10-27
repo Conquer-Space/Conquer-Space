@@ -57,6 +57,8 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     auto& orbit_comp = universe.emplace<components::types::Orbit>(entity);
     universe.emplace<components::bodies::Planet>(entity);
     auto& body_comp = universe.emplace<components::bodies::Body>(entity);
+    universe.emplace<components::Market>(entity);
+    universe.emplace<components::PlanetaryMarket>(entity);
 
     universe.emplace<components::bodies::NautralObject>(entity);
     if (values["type"].type() != Hjson::Type::Undefined) {

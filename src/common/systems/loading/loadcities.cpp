@@ -213,6 +213,7 @@ void CityLoader::PostLoad(const entt::entity& entity) {
         for (auto& entity : connected.entities) {
             market.connected_markets.emplace(universe.cities[entity]);
         }
+        universe.remove<ConnectedCities>(entity);
     }
 }
 }  // namespace cqsp::common::systems::loading
