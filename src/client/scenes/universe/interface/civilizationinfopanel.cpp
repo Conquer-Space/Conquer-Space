@@ -14,11 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "civilizationinfopanel.h"
+#include "client/scenes/universe/interface/civilizationinfopanel.h"
 
 #include <limits>
 
 #include "client/components/clientctx.h"
+#include "client/scenes/universe/interface/marketwindow.h"
+#include "client/scenes/universe/interface/systooltips.h"
 #include "common/components/bodies.h"
 #include "common/components/economy.h"
 #include "common/components/organizations.h"
@@ -26,8 +28,6 @@
 #include "common/components/surface.h"
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
-#include "marketwindow.h"
-#include "systooltips.h"
 
 using cqsp::common::util::GetName;
 
@@ -121,6 +121,10 @@ void cqsp::client::systems::CivilizationInfoPanel::CivInfoPanel() {
             BudgetInfoPanel();
             ImGui::EndTabItem();
         }
+        if (ImGui::BeginTabItem("Markets")) {
+            PlanetMarketInfoPanel();
+            ImGui::EndTabItem();
+        }
         ImGui::EndTabBar();
     }
 }
@@ -136,4 +140,21 @@ void cqsp::client::systems::CivilizationInfoPanel::BudgetInfoPanel() {
     }
 
     // Then show the liabilities where they bankroll things
+}
+
+void cqsp::client::systems::CivilizationInfoPanel::PlanetMarketInfoPanel() {
+    if (!ImGui::BeginTabBar("market_info_panel")) {
+        return;
+    }
+    auto view = GetUniverse().view<common::components::Market, common::components::PlanetaryMarket>();
+    for (entt::entity entity : view) {
+        if (!ImGui::BeginTabItem(fmt::format("{}", GetName(GetUniverse(), entity)).c_str())) {
+            continue;
+        }
+        ImGui::TextFmt("{}", GetName(GetUniverse(), entity));
+        auto& market = GetUniverse().get<common::components::Market>(entity);
+        client::systems::MarketInformationTable(GetUniverse(), entity);
+        ImGui::EndTabItem();
+    }
+    ImGui::EndTabBar();
 }
