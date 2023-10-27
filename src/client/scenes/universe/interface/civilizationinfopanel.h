@@ -31,6 +31,7 @@ class CivilizationInfoPanel : public SysUserInterface {
     void CivInfoPanel();
     void BudgetInfoPanel();
 
+    void PlanetMarketInfoPanel();
     bool to_display = false;
 };
 }  // namespace cqsp::client::systems

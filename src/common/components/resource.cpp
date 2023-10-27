@@ -18,6 +18,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include <algorithm>
 #include <limits>
 #include <ranges>
 #include <utility>
