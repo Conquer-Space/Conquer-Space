@@ -68,6 +68,8 @@ struct MarketElementInformation {
     double inputratio;
 };
 
+struct PlanetaryMarket {};
+
 struct Market : MarketInformation {
     std::vector<MarketInformation> history;
 

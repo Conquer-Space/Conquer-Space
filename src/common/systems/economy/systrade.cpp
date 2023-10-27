@@ -17,33 +17,26 @@
 #include "common/systems/economy/systrade.h"
 
 #include "common/components/economy.h"
+#include "common/components/surface.h"
 
 void cqsp::common::systems::SysTrade::DoSystem() {
     // Sort through all the districts, and figure out their trade
     // Get all the markets
     // Then cross reference to see if they can buy or sell
     // Then list all the markets
-    auto markets = GetUniverse().view<components::Market>();
-    for (entt::entity entity : markets) {
-        auto& market = GetUniverse().get<components::Market>(entity);
-        // Iterate through the connected markets, and also calculate if we need to connect to other markets
-        for (entt::entity connected : market.connected_markets) {
-            // Get the entity?
-        }
-        // Get the prices of everything and then
-        // Look for trading options
-        for (entt::entity pair : markets) {
-            // Get the lacking goods, and then compensentate
-            if (pair == entity) {
+    // Get the market of the planet, and add latent supply and demand, and then compute the market
+    auto planetary_markets =
+        GetUniverse().view<components::Market, components::PlanetaryMarket, components::Habitation>();
+    for (entt::entity entity : planetary_markets) {
+        auto& p_market = GetUniverse().get<components::Market>(entity);
+        auto& habitation = GetUniverse().get<components::Habitation>(entity);
+        for (entt::entity habitation : habitation.settlements) {
+            if (!GetUniverse().any_of<components::Market>(habitation)) {
                 continue;
             }
-            auto& connected_market = GetUniverse().get<components::Market>(pair);
-            // Get the goods and sort through?
-            // Get surplus
-            //market.latent_supply;
-            //market.latent_demand;
-            // Get the latent supply and demand from the opposing market, and see if our latent can fulfull the other
-            connected_market.latent_demand - market.latent_supply;  // Remaining goods?
+            auto& market = GetUniverse().get<components::Market>(habitation);
+            p_market.supply += market.latent_supply;
+            p_market.demand += market.latent_demand;
         }
     }
 }

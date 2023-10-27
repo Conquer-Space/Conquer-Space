@@ -63,3 +63,9 @@ Price determining
 Who to trade with
  - Own country first then other countries
 When to trade with outside
+
+Assumptions:
+ - Agents will tend to stick with who they are already purchasing goods with unless the difference in price is high.
+ - Agents will try to minimize costs and maximize profits
+ - Agents will try to break even, which means that they will stop selling goods after the cost to produce a good is higher than the selling price.
+ - Agents will try to do stuff
