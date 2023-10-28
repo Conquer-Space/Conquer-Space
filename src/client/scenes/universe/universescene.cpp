@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "universescene.h"
+#include "client/scenes/universe/universescene.h"
 
 #include <cmath>
 #include <string>
@@ -26,6 +26,7 @@
 #include "client/scenes/universe/interface/marketwindow.h"
 #include "client/scenes/universe/interface/orbitfilter.h"
 #include "client/scenes/universe/interface/provincewindow.h"
+#include "client/scenes/universe/interface/spaceshipwindow.h"
 #include "client/scenes/universe/interface/sysevent.h"
 #include "client/scenes/universe/interface/syspausemenu.h"
 #include "client/scenes/universe/interface/sysstarsystemtree.h"
@@ -83,6 +84,7 @@ void cqsp::scene::UniverseScene::Init() {
     AddUISystem<cqsps::SysDebugMenu>();
     //AddUISystem<cqsps::SysCommand>();
     AddUISystem<cqsps::CivilizationInfoPanel>();
+    AddUISystem<cqsps::SpaceshipWindow>();
     //AddUISystem<cqsps::SysFieldViewer>();
     //AddUISystem<cqsps::SysTechnologyProjectViewer>();
     //AddUISystem<cqsps::SysTechnologyViewer>();

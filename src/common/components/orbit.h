@@ -32,6 +32,8 @@ namespace cqsp::common::components::types {
 /// </summary>
 typedef glm::dvec3 Vec3AU;
 
+double GetOrbitingRadius(const double& e, const double& a, const double& v);
+
 /**
  * Orbit of a body
  */
@@ -138,9 +140,11 @@ struct Orbit {
     }
 
     double GetMtElliptic(double time) { return normalize_radian(M0 + (time - epoch) * nu); }
-};
 
-double GetOrbitingRadius(const double& e, const double& a, const double& v);
+    double GetOrbitingRadius() { return types::GetOrbitingRadius(eccentricity, semi_major_axis, v); }
+
+    double GetOrbitingRadius(const double& v) { return types::GetOrbitingRadius(eccentricity, semi_major_axis, v); }
+};
 
 /// <summary>
 /// Converts the orbital params with the inclination, longitude of ascending node, and argument or periapsis
