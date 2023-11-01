@@ -54,6 +54,9 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
             double r = orbit.GetOrbitingRadius();
             double p = GetUniverse().get<common::components::bodies::Body>(orbit.reference_body).radius;
             ImGui::TextFmt("Altitude: {}", (r - p));
+            ImGui::TextFmt("Periapsis: {} {}", orbit.GetPeriapsis() - p, orbit.TimeToMeanAnomaly(0));
+            ImGui::TextFmt("Apoapsis: {} {}", orbit.GetApoapsis() - p,
+                           orbit.TimeToMeanAnomaly(common::components::types::PI));
         }
     }
     if (ImGui::CollapsingHeader("Orbital Vectors")) {

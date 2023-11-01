@@ -144,6 +144,29 @@ struct Orbit {
     double GetOrbitingRadius() { return types::GetOrbitingRadius(eccentricity, semi_major_axis, v); }
 
     double GetOrbitingRadius(const double& v) { return types::GetOrbitingRadius(eccentricity, semi_major_axis, v); }
+
+    double GetApoapsis() { return semi_major_axis * (1 + eccentricity); }
+
+    double GetPeriapsis() { return semi_major_axis * (1 - eccentricity); }
+
+    // https://space.stackexchange.com/questions/54396/how-to-calculate-the-time-to-reach-a-given-true-anomaly
+    double TimeToMeanAnomaly(double v2) {
+        // If it's a hyperbolic orbit, we will have to use different equations.
+        // The mean anomaly will be positive, so
+        // Get eccentric anomaly
+        // Assume current v is v0.
+        double E0 = std::acos((eccentricity + cos(v)) / (1 + eccentricity * cos(v)));
+        double M0 = E0 - std::sin(E0) * eccentricity;
+        // Need to determine a way to calculate if M0 is positive or negative
+        // Eccentric
+        double E = std::acos((eccentricity + cos(v2)) / (1 + eccentricity * cos(v2)));
+        double M = E - std::sin(E) * eccentricity;
+        double t = (M - M0) / nu;
+        if (t < 0) {
+            t += T;
+        }
+        return (t);
+    }
 };
 
 /// <summary>
@@ -180,6 +203,16 @@ glm::vec3 CalculateVelocityHyperbolic(const double& E, const double& r, const do
                                       const double& e);
 
 double GetOrbitingRadius(const double& e, const double& a, const double& v);
+
+/// Get the circular orbiting velocity for the radius
+double GetCircularOrbitingVelocity(double radius, double GM);
+
+/// @brief Calculates v_inf, the true anomaly for the asymtope for a hyperbolic orbit
+/// The orbit is bouded within -v_inf < v < v_inf
+/// https://orbital-mechanics.space/the-orbit-equation/hyperbolic-trajectories.html#hyperbolic-trajectories-e-1
+/// @param orbit
+/// @return
+double GetTrueAnomalyToAsymptope(const Orbit& orbit);
 
 /// <summary>
 /// Converts position and velocity to orbit.
@@ -305,4 +338,5 @@ inline void UpdatePos(Kinematics& kin, const Orbit& orb) {
 
 double CalculateTransferTime(const Orbit& orb1, const Orbit& orb2);
 double CalculateTransferAngle(const Orbit& orb1, const Orbit& orb2);
+double GetEccentricAnomaly(double eccentricity, double theta);
 }  // namespace cqsp::common::components::types
