@@ -41,15 +41,6 @@ struct Fleet {
     // creates top level fleet
     explicit Fleet(entt::entity _owner) : Fleet(entt::null, _owner, 0) {}
 };
-
-/// <summary>
-/// Commands for fleets and ships
-///
-/// Not used
-/// </summary>
-struct Command {
-    entt::entity target;
-};
 }  // namespace ships
 }  // namespace components
 }  // namespace common

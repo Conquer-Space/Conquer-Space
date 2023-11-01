@@ -37,6 +37,7 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
     // Eccentricity
     double e = glm::length(ecc_v);
 
+    // TODO(EhWhoAmI): if e > 1, then it's a hyperbolic orbit
     // Vector pointing towards the ascending node
     const auto n = glm::dvec3(-h.y, h.x, 0);
     // True anomaly

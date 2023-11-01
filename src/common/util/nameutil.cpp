@@ -35,6 +35,9 @@
 
 namespace cqsp::common::util {
 std::string GetName(const Universe& universe, entt::entity entity) {
+    if (!universe.valid(entity)) {
+        return "";
+    }
     namespace cqspc = cqsp::common::components;
     if (universe.all_of<cqspc::Name>(entity)) {
         return universe.get<cqspc::Name>(entity);
