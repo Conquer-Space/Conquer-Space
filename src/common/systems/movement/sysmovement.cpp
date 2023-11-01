@@ -21,10 +21,10 @@
 #include <tracy/Tracy.hpp>
 
 #include "common/components/coordinates.h"
+#include "common/components/movement.h"
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
 #include "common/components/units.h"
-
 namespace cqsp::common::systems {
 namespace cqspc = cqsp::common::components;
 namespace cqsps = cqsp::common::components::ships;
@@ -98,6 +98,24 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
             universe.get_or_emplace<cqsps::Crash>(body);
             pos.position = glm::vec3(0);
             orb.semi_major_axis = 0;
+        }
+
+        if (universe.any_of<cqspc::CommandQueue>(body)) {
+            // Check if the current date is beyond the universe date
+            auto& queue = universe.get<cqspc::CommandQueue>(body);
+            if (!queue.commands.empty()) {
+                auto& command = queue.commands.front();
+                if (command.time < universe.date.ToSecond()) {
+                    // Then execute the command
+                    auto reference = orb.reference_body;
+                    orb = cqspt::Vec3ToOrbit(pos.position, pos.velocity + command.delta_v, p_bod.GM, command.time);
+                    orb.reference_body = reference;
+                    pos.position = cqspt::toVec3(orb);
+                    pos.velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
+                    universe.emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
+                    queue.commands.pop();
+                }
+            }
         }
 
         if (universe.any_of<cqspc::types::Impulse>(body)) {

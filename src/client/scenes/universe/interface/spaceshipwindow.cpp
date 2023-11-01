@@ -18,6 +18,7 @@
 
 #include "client/scenes/universe/views/starsystemview.h"
 #include "common/components/coordinates.h"
+#include "common/components/movement.h"
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
 #include "common/util/nameutil.h"
@@ -38,8 +39,8 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
     }
     ImGui::Begin(fmt::format("{}", common::util::GetName(GetUniverse(), body)).c_str());
     // Display orbital elements
+    auto& orbit = GetUniverse().get<common::components::types::Orbit>(body);
     if (ImGui::CollapsingHeader("Orbital Elements", ImGuiTreeNodeFlags_DefaultOpen)) {
-        auto& orbit = GetUniverse().get<common::components::types::Orbit>(body);
         ImGui::Text("Semi-major axis: %f", orbit.semi_major_axis);
         ImGui::Text("Eccentricity: %f", orbit.eccentricity);
         ImGui::Text("Inclination: %f", orbit.inclination);
@@ -65,6 +66,16 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         ImGui::TextFmt("Velocity {} {} {}", coords.velocity.x, coords.velocity.y, coords.velocity.z);
     }
 
+    if (ImGui::Button("Circularize at apoapsis")) {
+        double time = orbit.TimeToMeanAnomaly(common::components::types::PI);
+        time = (double)GetUniverse().date.ToSecond() + time;
+        // Add random delta v
+        common::components::Maneuver maneuver;
+        maneuver.time = time;
+        // I forgot it added 5km/s
+        maneuver.delta_v = glm::dvec3(5, 0, 0);
+        GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push(maneuver);
+    }
     // Display spaceship delta v in the future
     // Display controls of the spaceship
     ImGui::End();
