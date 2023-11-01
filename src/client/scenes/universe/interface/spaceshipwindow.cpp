@@ -73,7 +73,8 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         common::components::Maneuver maneuver;
         maneuver.time = time;
         // I forgot it added 5km/s
-        maneuver.delta_v = glm::dvec3(5, 0, 0);
+        maneuver.delta_v = glm::dvec3(15, 0, 0);
+        // Get velocity at apoapsis and then subtract from the supposed velocity if it were a circular orbit
         GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push(maneuver);
     }
     // Display spaceship delta v in the future

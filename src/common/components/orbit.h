@@ -339,4 +339,7 @@ inline void UpdatePos(Kinematics& kin, const Orbit& orb) {
 double CalculateTransferTime(const Orbit& orb1, const Orbit& orb2);
 double CalculateTransferAngle(const Orbit& orb1, const Orbit& orb2);
 double GetEccentricAnomaly(double eccentricity, double theta);
+// https://orbital-mechanics.space/the-orbit-equation/hyperbolic-trajectories.html
+// True anomaly of the asymptope for a hyperbolic orbit
+double GetHyperbolicAsymptopeAnomaly(double eccentricity);
 }  // namespace cqsp::common::components::types
