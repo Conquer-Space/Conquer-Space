@@ -79,6 +79,8 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
     return orb;
 }
 
+double GetTrueAnomalyToAsymptope(const Orbit& orbit) { return std::acos(-1 / orbit.eccentricity); }
+
 // https://downloads.rene-schwarz.com/download/M001-Keplerian_Orbit_Elements_to_Cartesian_State_Vectors.pdf
 glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i, const radian& LAN, const radian& w,
                        const radian& v) {
@@ -170,6 +172,8 @@ radian TrueAnomalyElliptic(const Orbit& orbit, const second& time, double& E_out
     return EccentricAnomalyToTrueAnomaly(orbit.eccentricity, E);
 }
 
+double GetCircularOrbitingVelocity(const double& GM, const double& r) { return sqrt(GM / r); }
+
 radian TrueAnomalyHyperbolic(const Orbit& orbit, const second& time) {
     // Get the time
     double Mt = GetMtHyperbolic(orbit.GM, orbit.semi_major_axis, time - orbit.epoch);
@@ -228,5 +232,9 @@ double CalculateTransferTime(const Orbit& orb1, const Orbit& orb2) {
 double CalculateTransferAngle(const Orbit& orb1, const Orbit& orb2) {
     double transfer_time = CalculateTransferTime(orb1, orb2);
     return (orb2.v - orb1.v) - transfer_time * orb2.nu;
+}
+double GetEccentricAnomaly(double eccentricity, double theta) {
+    //return std::acos()
+    return 0;
 }
 }  // namespace cqsp::common::components::types
