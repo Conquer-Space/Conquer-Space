@@ -48,12 +48,20 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
 
     // Inclination
     const double i = std::acos(h.z / glm::length(h));
+    // Hyperbolic eccentric anomaly
 
-    // Eccentric anomaly
-    const double E = 2 * atan(tan(v / 2) / sqrt((1 + e) / (1 - e)));
-    double M0 = E - e * sin(E);
     double T = n.x / glm::length(n);
-
+    double M0 = 0;
+    double E = 0;
+    if (e < 1) {
+        // Eccentric anomaly
+        E = 2 * atan(tan(v / 2) / sqrt((1 + e) / (1 - e)));
+        M0 = E - e * sin(E);
+    } else {
+        const double F = 2 * atanh(sqrt((e - 1) / (e + 1)) * tan(v / 2));
+        M0 = e * sinh(F) - F;
+        E = F;
+    }
     double LAN = acos(glm::clamp(T, -1., 1.));
     if (n.y < 0) LAN = TWOPI - LAN;
     if (glm::length(n) == 0) LAN = 0;
@@ -238,4 +246,6 @@ double GetEccentricAnomaly(double eccentricity, double theta) {
     //return std::acos()
     return 0;
 }
+
+double GetHyperbolicAsymptopeAnomaly(double eccentricity) { return std::acos(-1 / eccentricity); }
 }  // namespace cqsp::common::components::types

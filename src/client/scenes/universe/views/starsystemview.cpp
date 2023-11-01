@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "starsystemview.h"
+#include "client/scenes/universe/views/starsystemview.h"
 
 #include <noise/noise.h>
 
@@ -54,7 +54,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtx/string_cast.hpp"
-#include "stb_image.h"
+#include "stb_image.h"  // NOLINT: STB is rather annoying
 #include "tracy/Tracy.hpp"
 
 namespace cqspb = cqsp::common::components::bodies;
@@ -1220,17 +1220,19 @@ void SysStarSystemRenderer::GenerateOrbit(entt::entity body) {
     }
 
     orbit_points.reserve(res);
+    // If hyperbolic
     if (orb.eccentricity > 1) {
-        for (int i = 0; i <= res; i++) {
+        double v_inf = common::components::types::GetHyperbolicAsymptopeAnomaly(orb.eccentricity);
+        // Remove one because it's slightly off.
+        for (int i = 1; i < res; i++) {
             ZoneScoped;
-            double theta =
-                (common::components::types::PI / res * 1.5 * i) - common::components::types::PI / 2 - 1.5 / 2;
+            double theta = -v_inf * (1 - (double)i / (double)res) + v_inf * (((double)i / (double)res));
 
             glm::vec3 vec = common::components::types::toVec3(orb, theta);
-
-            // If the length is greater than the sphere of influence, then
-            // remove it
-            orbit_points.push_back(ConvertPoint(vec));
+            // Check if the length is greater than the SOI, then we don't add it
+            if (glm::length(vec) < SOI) {
+                orbit_points.push_back(ConvertPoint(vec));
+            }
         }
     } else {
         for (int i = 0; i <= res; i++) {
