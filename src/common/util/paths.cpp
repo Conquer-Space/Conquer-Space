@@ -43,6 +43,23 @@ char* get_home_dir(uid_t uid) {
 }  // namespace
 #endif
 
+#if __APPLE__
+#include <limits.h>
+#include <sysdir.h>
+
+namespace {
+char* get_home_dir() {
+    char path[PATH_MAX];
+    sysdir_search_path_enumeration_state state =
+        sysdir_start_search_path_enumeration(SYSDIR_DIRECTORY_DOCUMENT, SYSDIR_DOMAIN_MASK_USER);
+
+    while ((state = sysdir_get_next_search_path_enumeration(state, path)) != 0) {
+        // Handle directory path
+    }
+    return path;
+}
+}  // namespace
+#endif
 namespace cqsp::common::util {
 std::string ExePath::exe_path = std::string();  // NOLINT
 
@@ -55,7 +72,7 @@ std::string GetCqspAppDataPath() {
     HRESULT result = SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, my_documents);
 
     directory = std::string(my_documents);
-#else
+#elif __linux__ || __APPLE__
     // Get home directory to put the save data, and other data
     const char* homedir = get_home_dir(getuid());
     directory = std::string(homedir);
