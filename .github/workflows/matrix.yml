@@ -69,7 +69,7 @@ jobs:
         name: Conquer-Space_${{ matrix.os }}${{ matrix.compiler }}_${{ matrix.config }}_b${{ github.run_number }}
         path: |
           binaries
-
+        
   windows-build:
     needs: skip-duplicates
     # Skip tasks
@@ -103,9 +103,42 @@ jobs:
         name: Conquer-Space_Windows_${{ matrix.config }}_${{ github.run_number }}
         path: |
           binaries
+  
+  osx-build:
+    needs: skip-duplicates
+    # Skip tasks
+    if: ${{ needs.skip-duplicates.outputs.should_skip != 'true' }}
+    strategy:
+      matrix:
+        config: [Release, Debug]
+    runs-on: [macos-latest]
+    name: macOS (${{ matrix.config }})
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+        submodules: recursive
+
+    - name: Configure Build Files
+      run: |
+        ./setup_env.sh
+
+    - name: Build Conquer Space
+      run: |
+        cmake --build build --parallel --config ${{ matrix.config }}
+
+    - name: Run Tests
+      run: ctest -V --schedule-random --progress --output-on-failure --parallel --no-tests error --build-config ${{ matrix.config }} --test-dir build/test
+
+    - uses: actions/upload-artifact@v2
+      continue-on-error: true
+      with:
+        name: Conquer-Space_macOS_${{ matrix.config }}_${{ github.run_number }}
+        path: |
+          binaries
 
   build-check:
-    needs: [windows-build, linux-build]
+    needs: [windows-build, linux-build, osx-build]
     runs-on: ubuntu-latest
     name: Build Matrix
     steps:
