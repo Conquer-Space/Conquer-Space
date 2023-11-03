@@ -103,7 +103,6 @@ glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i, const 
 double AvgOrbitalVelocity(const Orbit& orb) { return (PI * 2 * orb.semi_major_axis) / orb.T; }
 
 glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v) {
-    // Convert the values
     if (orb.semi_major_axis == 0) {
         return glm::vec3(0, 0, 0);
     }
@@ -181,7 +180,7 @@ radian TrueAnomalyElliptic(const Orbit& orbit, const second& time, double& E_out
     return EccentricAnomalyToTrueAnomaly(orbit.eccentricity, E);
 }
 
-double GetCircularOrbitingVelocity(const double& GM, const double& r) { return sqrt(GM / r); }
+double GetCircularOrbitingVelocity(const double& GM, const double& radius) { return sqrt(GM / radius); }
 
 radian TrueAnomalyHyperbolic(const Orbit& orbit, const second& time) {
     // Get the time

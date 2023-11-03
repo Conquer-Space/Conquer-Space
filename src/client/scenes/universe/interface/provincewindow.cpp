@@ -269,7 +269,7 @@ void SysProvinceInformation::SpacePortTab() {
     static float LAN = 0;
     auto& city_coord = GetUniverse().get<cqspc::types::SurfaceCoordinate>(current_city);
 
-    ImGui::SliderFloat("Semi Major Axis", &semi_major_axis, 6000, 100000000);
+    ImGui::SliderFloat("Semi Major Axis", &semi_major_axis, 6000, 10000);
     ImGui::SliderFloat("Eccentricity", &eccentricity, 0, 0.9999);
     ImGui::SliderAngle("Launch Azimuth", &azimuth, 0, 360);
     ImGui::SliderAngle("Argument of perapsis", &arg_of_perapsis, 0, 360);
