@@ -116,4 +116,8 @@ if(TESTS)
   add_subdirectory(test)
 endif()
 
+if (APPLE)
+add_compile_definitions(SOL_NO_NIL=0)
+endif()
+
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Conquer-Space)
