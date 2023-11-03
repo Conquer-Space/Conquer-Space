@@ -72,9 +72,13 @@ std::string GetCqspAppDataPath() {
     HRESULT result = SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, my_documents);
 
     directory = std::string(my_documents);
-#elif __linux__ || __APPLE__
+#elif __linux__
     // Get home directory to put the save data, and other data
     const char* homedir = get_home_dir(getuid());
+    directory = std::string(homedir);
+    dirname = "." + dirname;
+#elif __APPLE__
+    const char* homedir = get_home_dir();
     directory = std::string(homedir);
     dirname = "." + dirname;
 #endif
