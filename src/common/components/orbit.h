@@ -170,7 +170,7 @@ struct Orbit {
 };
 
 /// <summary>
-/// Converts the orbital params with the inclination, longitude of ascending node, and argument or periapsis
+/// Transforms a vector to the orbital plane vector
 /// </summary>
 /// All units are in radians
 /// <param name="LAN">Longitude of the ascending node</param>
@@ -205,7 +205,7 @@ glm::vec3 CalculateVelocityHyperbolic(const double& E, const double& r, const do
 double GetOrbitingRadius(const double& e, const double& a, const double& v);
 
 /// Get the circular orbiting velocity for the radius
-double GetCircularOrbitingVelocity(double radius, double GM);
+double GetCircularOrbitingVelocity(const double& GM, const double& radius);
 
 /// @brief Calculates v_inf, the true anomaly for the asymtope for a hyperbolic orbit
 /// The orbit is bouded within -v_inf < v < v_inf

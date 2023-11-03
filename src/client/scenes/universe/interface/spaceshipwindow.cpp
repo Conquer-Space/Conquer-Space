@@ -73,9 +73,19 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         common::components::Maneuver maneuver;
         maneuver.time = time;
         // I forgot it added 5km/s
-        maneuver.delta_v = glm::dvec3(15, 0, 0);
         // Get velocity at apoapsis and then subtract from the supposed velocity if it were a circular orbit
+        // Get velocity at
+        glm::dvec3 velocity_vec = common::components::types::OrbitVelocityToVec3(orbit, common::components::types::PI);
+        double velocity = common::components::types::GetCircularOrbitingVelocity(orbit.GM, orbit.GetApoapsis());
+        // So for apoapsis, we need this amount of delta v at prograde
+        // Get the vector of the direction and then compute?
+        // Then transform by the orbital math
+        glm::vec3 vec = common::components::types::ConvertOrbParams(
+            orbit.LAN, orbit.inclination, orbit.w, glm::dvec3(velocity - glm::length(velocity_vec), 0, 0));
+        maneuver.delta_v = vec;
         GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push(maneuver);
+        SPDLOG_INFO("{} km/s delta-v {}, {}", velocity - glm::length(velocity_vec), glm::length(velocity_vec),
+                    velocity);
     }
     // Display spaceship delta v in the future
     // Display controls of the spaceship
