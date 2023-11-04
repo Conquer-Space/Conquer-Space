@@ -22,6 +22,14 @@ double GetOrbitingRadius(const double& e, const double& a, const double& v) {
     return (a * (1 - e * e)) / (1 + e * cos(v));
 }
 
+glm::dvec3 MatrixConvertOrbParams(const double LAN, const double i, const double w, const glm::dvec3& vec) {
+    return glm::dvec3(vec.x * (cos(w) * cos(LAN) - sin(w) * cos(i) * sin(LAN)) -
+                          vec.y * (sin(w) * cos(LAN) + cos(w) * cos(i) * sin(LAN)),
+                      vec.x * (cos(w) * sin(LAN) + sin(w) * cos(i) * sin(LAN)) +
+                          vec.y * (cos(w) * cos(i) * cos(LAN) - sin(w) * sin(LAN)),
+                      vec.x * (sin(LAN) * sin(i)) + vec.y * (cos(w) * sin(i)));
+}
+
 glm::dvec3 ConvertOrbParams(const double LAN, const double i, const double w, const glm::dvec3& vec) {
     return glm::dquat {glm::dvec3(0, 0, LAN)} * glm::dquat {glm::dvec3(i, 0, 0)} * glm::dquat {glm::dvec3(0, 0, w)} *
            vec;
@@ -97,7 +105,8 @@ glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i, const 
         return glm::vec3(0, 0, 0);
     }
     double r = GetOrbitingRadius(e, a, v);
-    return ConvertOrbParams(LAN, i, w, glm::vec3(r * cos(v), r * sin(v), 0));
+    //MatrixConvertOrbParams(LAN, i, w, glm::dvec(r * cos(v), r * sin(v), 0);
+    return r * ConvertOrbParams(LAN, i, w, glm::dvec3(cos(v), sin(v), 0));
 }
 
 double AvgOrbitalVelocity(const Orbit& orb) { return (PI * 2 * orb.semi_major_axis) / orb.T; }
