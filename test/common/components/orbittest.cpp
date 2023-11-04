@@ -264,7 +264,7 @@ TEST(OrbitTest, NewOrbitConversionTest5) {
     orb.inclination = 3.14;
     orb.LAN = 0.29;
     orb.w = 0.68;
-    double M0 = 2.8;
+    cqspt::radian M0 = 2.8;
     orb.M0 = M0;
 
     orb.CalculateVariables();

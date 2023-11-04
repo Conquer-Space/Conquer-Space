@@ -181,6 +181,8 @@ struct Orbit {
 /// <param name="vec">Vector to convert</param>
 glm::dvec3 ConvertOrbParams(const double LAN, const double i, const double w, const glm::dvec3& vec);
 
+glm::dvec3 MatrixConvertOrbParams(const double LAN, const double i, const double w, const glm::dvec3& vec);
+
 /// <summary>
 /// Updates the orbit's true anomaly.
 /// </summary>
