@@ -284,7 +284,7 @@ TEST(OrbitTest, NewOrbitConversionTest5) {
     EXPECT_NEAR(new_orbit.E, orb.E, 0.001);
     EXPECT_NEAR(new_orbit.M0, orb.M0, 0.001);
     EXPECT_NEAR(new_orbit.semi_major_axis, orb.semi_major_axis,
-                orb.semi_major_axis * 0.01);  // 1% error cause doubles are bad
+                0.001);  // 1m difference
     EXPECT_NEAR(new_orbit.LAN, orb.LAN, 0.001);
     EXPECT_NEAR(new_orbit.w, orb.w, 0.001);
     EXPECT_NEAR(new_orbit.inclination, orb.inclination, 0.001);
@@ -305,6 +305,24 @@ TEST(OrbitTest, NewOrbitConversionTest5) {
         EXPECT_NEAR(new_pos.y, position.y, 300);
         EXPECT_NEAR(new_pos.z, position.z, 300);
     }
+}
+
+TEST(OrbitTest, OrbitImpulseTest) {
+    namespace cqspt = cqsp::common::components::types;
+    // Make a random orbit, apply an impulse, and ensure the position is te same
+    cqspt::Orbit orbit(57.91e7, 0.1, 1.45, 0.29, 0.68, 0);
+    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, glm::dvec3(1, 0, 0), 0);
+    double r = orbit.GetOrbitingRadius();
+    double r2 = new_orbit.GetOrbitingRadius();
+    EXPECT_NEAR(r, r2, 1);
+    glm::dvec3 orbit_vec = cqspt::toVec3(orbit);
+    glm::dvec3 new_orbit_vec = cqspt::toVec3(new_orbit);
+    EXPECT_NEAR(orbit_vec.x, new_orbit_vec.x, 0.1);
+    EXPECT_NEAR(orbit_vec.y, new_orbit_vec.y, 0.1);
+    EXPECT_NEAR(orbit_vec.z, new_orbit_vec.z, 0.1);
+    // SMA should be higher because we are burning prograde
+    EXPECT_GT(new_orbit.semi_major_axis, orbit.semi_major_axis);
+    EXPECT_GT(new_orbit.eccentricity, orbit.eccentricity);
 }
 
 TEST(OrbitTest, ToRadianTest) {
@@ -362,7 +380,6 @@ TEST(Common_TransferTest, TransferTimeTest_Mars) {
     mars_orbit.CalculateVariables();
     double b = cqspt::CalculateTransferTime(earth_orbit, mars_orbit);
     double p = cqspt::CalculateTransferAngle(earth_orbit, mars_orbit);
-    std::cout << p << std::endl;
     // The approximate transfer time between the two
     EXPECT_NEAR(b / 86400, 259, 2);
 }

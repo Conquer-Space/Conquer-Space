@@ -107,11 +107,13 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
                 auto& command = queue.commands.front();
                 if (command.time < universe.date.ToSecond()) {
                     // Then execute the command
-                    auto reference = orb.reference_body;
-                    orb = cqspt::Vec3ToOrbit(pos.position, pos.velocity + command.delta_v, orb.GM, command.time);
-                    orb.reference_body = reference;
+                    // quick check if position is the same
+                    glm::vec3 vec = cqspt::toVec3(orb);
+                    orb = cqspt::ApplyImpulse(orb, command.delta_v, command.time);
                     pos.position = cqspt::toVec3(orb);
                     pos.velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
+                    SPDLOG_INFO("{} {} {} | {} {} {}", vec.x, vec.y, vec.z, pos.position.x, pos.position.y,
+                                pos.position.z);
                     universe.emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
                     queue.commands.pop_front();
                 }

@@ -128,7 +128,8 @@ struct Orbit {
           w(w),
           M0(M0),
           v(M0),
-          T(0) {
+          T(0),
+          epoch(0) {
         CalculateVariables();
     }
 
@@ -188,6 +189,13 @@ glm::dvec3 ConvertOrbParams(const double LAN, const double i, const double w, co
 /// <param name="time"></param>
 void UpdateOrbit(Orbit& orb, const second& time);
 
+/// <summary>
+/// Get anomaly at epoch
+/// </summary>
+/// <param name="orb"></param>
+/// <param name="epoch"></param>
+double GetTrueAnomaly(const Orbit& orb, const second& epoch);
+
 /// Calculates the vector velocity of the orbit
 ///
 /// \param[in] E Eccentric anomaly
@@ -217,6 +225,7 @@ double GetTrueAnomalyToAsymptope(const Orbit& orbit);
 
 /// <summary>
 /// Converts position and velocity to orbit.
+/// Note: you will have to set the reference body after the orbit is returned
 /// </summary>
 /// <param name="position">Position of the body</param>
 /// <param name="velocity">Velocity of the body</param>
@@ -306,6 +315,15 @@ inline Vec3AU toVec3AU(const Orbit& orb, radian theta) {
     glm::dvec3 vec = OrbitToVec3(orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN, orb.w, theta);
     return vec / KmInAu;
 }
+
+/// <summary>
+/// Applies impulse based
+/// </summary>
+/// <param name="orbit"></param>
+/// <param name="impulse"></param>
+/// <param name="time"></param>
+/// <returns></returns>
+Orbit ApplyImpulse(const Orbit& orbit, const glm::dvec3& impulse, double time);
 
 /// <summary>
 /// Converts orbit to theta

@@ -200,6 +200,17 @@ void UpdateOrbit(Orbit& orb, const second& time) {
     orb.E = E;
 }
 
+double GetTrueAnomaly(const Orbit& orb, const second& epoch) {
+    double E = 0;
+    double v = 0;
+    if (orb.eccentricity < 1) {
+        v = TrueAnomalyElliptic(orb, epoch, E);
+    } else {
+        v = TrueAnomalyHyperbolic(orb, epoch);
+    }
+    return v;
+}
+
 glm::vec3 CalculateVelocity(const double& E, const double& r, const double& GM, const double& a, const double& e) {
     // Elliptic orbit
     if (e < 1) {
@@ -216,6 +227,19 @@ glm::vec3 CalculateVelocityHyperbolic(const double& E, const double& r, const do
 glm::vec3 CalculateVelocityElliptic(const double& E, const double& r, const double& GM, const double& a,
                                     const double& e) {
     return ((float)(sqrt(GM * a) / r) * glm::vec3(-sin(E), sqrt(1 - e * e) * cos(E), 0));
+}
+
+Orbit ApplyImpulse(const Orbit& orbit, const glm::dvec3& impulse, double time) {
+    // Calculate v at epoch
+    // Move the orbit
+    const glm::dvec3& norm_impulse = ConvertOrbParams(orbit.LAN, orbit.inclination, orbit.w, impulse);
+    double v = GetTrueAnomaly(orbit, time);
+    const glm::vec3 position = toVec3(orbit, v);
+    const glm::dvec3 velocity = OrbitVelocityToVec3(orbit, v);
+    // Rotate the
+    Orbit new_orbit = Vec3ToOrbit(position, velocity + norm_impulse, orbit.GM, time);
+    new_orbit.reference_body = orbit.reference_body;
+    return new_orbit;
 }
 
 glm::dvec3 OrbitTimeToVec3(const Orbit& orb, const second& time) {
