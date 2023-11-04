@@ -104,6 +104,7 @@ struct Orbit {
     double nu = 0;
 
     /// <summary>
+    /// Gravitational constant of the reference body this is orbiting
     /// Graviational constant * mass of orbiting body
     /// <br />
     /// km^3 * s^-2

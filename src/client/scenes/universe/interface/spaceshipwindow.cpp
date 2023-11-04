@@ -66,6 +66,15 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         ImGui::TextFmt("Velocity {} {} {}", coords.velocity.x, coords.velocity.y, coords.velocity.z);
     }
 
+    if (ImGui::CollapsingHeader("Manuvers")) {
+        if (GetUniverse().any_of<common::components::CommandQueue>(body)) {
+            auto& queue = GetUniverse().get<common::components::CommandQueue>(body);
+            for (auto& manuver : queue) {
+                ImGui::TextFmt("Manuver in {}", manuver.time - GetUniverse().date.ToSecond());
+            }
+        }
+    }
+
     if (ImGui::Button("Circularize at apoapsis")) {
         double time = orbit.TimeToMeanAnomaly(common::components::types::PI);
         time = (double)GetUniverse().date.ToSecond() + time;
@@ -83,7 +92,7 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         glm::vec3 vec = common::components::types::ConvertOrbParams(
             orbit.LAN, orbit.inclination, orbit.w, glm::dvec3(velocity - glm::length(velocity_vec), 0, 0));
         maneuver.delta_v = vec;
-        GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push(maneuver);
+        GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push_back(maneuver);
         SPDLOG_INFO("{} km/s delta-v {}, {}", velocity - glm::length(velocity_vec), glm::length(velocity_vec),
                     velocity);
     }

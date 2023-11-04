@@ -16,7 +16,7 @@
  */
 #pragma once
 
-#include <queue>
+#include <deque>
 
 #include "common/components/coordinates.h"
 
@@ -29,7 +29,10 @@ struct Maneuver {
 };
 
 struct CommandQueue {
-    std::queue<Maneuver> commands;
+    std::deque<Maneuver> commands;
     CommandQueue() = default;
+
+    auto begin() { return commands.begin(); }
+    auto end() { return commands.end(); }
 };
 }  // namespace cqsp::common::components
