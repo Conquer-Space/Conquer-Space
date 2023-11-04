@@ -309,12 +309,16 @@ void SysStarSystemRenderer::DrawShips() {
     for (auto ent_id : ships) {
         // if it's not visible, then don't render
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
-        // Interpolate so that it looks nice
-        auto& future_comp = m_universe.get<common::components::types::FuturePosition>(ent_id);
-        const auto& pos = future_comp.position + future_comp.center;
-        glm::vec3 future_pos = CalculateCenteredObject(ConvertPoint(pos));
         ship_overlay.shaderProgram->setVec4("color", 1, 0, 0, 1);
-        DrawShipIcon(glm::mix(object_pos, future_pos, m_universe.tick_fraction));
+        // Interpolate so that it looks nice
+        if (m_universe.any_of<common::components::types::FuturePosition>(ent_id)) {
+            auto& future_comp = m_universe.get<common::components::types::FuturePosition>(ent_id);
+            const auto& pos = future_comp.position + future_comp.center;
+            glm::vec3 future_pos = CalculateCenteredObject(ConvertPoint(pos));
+            DrawShipIcon(glm::mix(object_pos, future_pos, m_universe.tick_fraction));
+        } else {
+            DrawShipIcon(object_pos);
+        }
     }
     renderer.EndDraw(ship_icon_layer);
 }
