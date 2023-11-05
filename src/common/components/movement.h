@@ -24,6 +24,13 @@ namespace cqsp::common::components {
 /// <summary>
 /// </summary>
 struct Maneuver {
+    /// <summary>
+    /// Delta v applied with respect to the orbital vector
+    /// positive y is prograde, negative y is retrograde
+    /// I'm not sure what the rest are, but I think
+    /// positve x is radial out, negative x is radial in
+    /// positve z is normal, negative z is anti-normal
+    /// </summary>
     glm::dvec3 delta_v;
     double time;
 };

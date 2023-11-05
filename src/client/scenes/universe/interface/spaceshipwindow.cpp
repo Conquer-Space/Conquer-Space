@@ -66,11 +66,11 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         ImGui::TextFmt("Velocity {} {} {}", coords.velocity.x, coords.velocity.y, coords.velocity.z);
     }
 
-    if (ImGui::CollapsingHeader("Manuvers")) {
+    if (ImGui::CollapsingHeader("Maneuvers")) {
         if (GetUniverse().any_of<common::components::CommandQueue>(body)) {
             auto& queue = GetUniverse().get<common::components::CommandQueue>(body);
             for (auto& manuver : queue) {
-                ImGui::TextFmt("Manuver in {}", manuver.time - GetUniverse().date.ToSecond());
+                ImGui::TextFmt("Maneuver in {}", manuver.time - GetUniverse().date.ToSecond());
             }
         }
     }
@@ -89,9 +89,8 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         // So for apoapsis, we need this amount of delta v at prograde
         // Get the vector of the direction and then compute?
         // Then transform by the orbital math
-        glm::vec3 vec = common::components::types::ConvertOrbParams(
-            orbit.LAN, orbit.inclination, orbit.w, glm::dvec3(velocity - glm::length(velocity_vec), 0, 0));
-        maneuver.delta_v = vec;
+
+        maneuver.delta_v = glm::dvec3(0, velocity - glm::length(velocity_vec), 0);
         GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push_back(maneuver);
         SPDLOG_INFO("{} km/s delta-v {}, {}", velocity - glm::length(velocity_vec), glm::length(velocity_vec),
                     velocity);
