@@ -181,6 +181,9 @@ struct Orbit {
 /// <param name="vec">Vector to convert</param>
 glm::dvec3 ConvertOrbParams(const double LAN, const double i, const double w, const glm::dvec3& vec);
 
+glm::dvec3 ConvertToOrbitalVector(const double LAN, const double i, const double w, const double v,
+                                  const glm::dvec3& vec);
+
 glm::dvec3 MatrixConvertOrbParams(const double LAN, const double i, const double w, const glm::dvec3& vec);
 
 /// <summary>
@@ -320,7 +323,10 @@ inline Vec3AU toVec3AU(const Orbit& orb, radian theta) {
 }
 
 /// <summary>
-/// Applies impulse based
+/// Applies impulse based on the vector impulse
+/// For some reason y is prograde, I'm not sure what the others are.
+/// TODO(EhWhoAmI): Determine the axis of thrust for each vector
+/// I think x is radial, and z is normal.
 /// </summary>
 /// <param name="orbit"></param>
 /// <param name="impulse"></param>

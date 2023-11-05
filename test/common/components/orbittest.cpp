@@ -311,7 +311,18 @@ TEST(OrbitTest, OrbitImpulseTest) {
     namespace cqspt = cqsp::common::components::types;
     // Make a random orbit, apply an impulse, and ensure the position is te same
     cqspt::Orbit orbit(57.91e7, 0.1, 1.45, 0.29, 0.68, 0);
-    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, glm::dvec3(1, 0, 0), 0);
+    glm::vec3 impulse(0, 1, 0);
+    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, impulse, 0);
+
+    // Sanity check on the vector addition
+    EXPECT_NEAR(glm::length(cqspt::ConvertToOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, orbit.v, impulse)), 1,
+                0.00001);
+    // Dot product the velociy of the orbit should be 0
+    glm::dvec3 transfer_vec = cqspt::ConvertToOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, orbit.v, impulse);
+    glm::dvec3 velocity_vec = cqspt::OrbitVelocityToVec3(orbit, 0);
+    // The velocity vector and transfer vector should be parallel
+    // so
+    EXPECT_NEAR(glm::dot(glm::normalize(transfer_vec), glm::normalize(velocity_vec)), 1, 1e-4);
     double r = orbit.GetOrbitingRadius();
     double r2 = new_orbit.GetOrbitingRadius();
     EXPECT_NEAR(r, r2, 1e-4);
@@ -323,6 +334,13 @@ TEST(OrbitTest, OrbitImpulseTest) {
     // SMA should be higher because we are burning prograde
     EXPECT_GT(new_orbit.semi_major_axis, orbit.semi_major_axis);
     EXPECT_GT(new_orbit.eccentricity, orbit.eccentricity);
+
+    // Checks if their position matches up with what we expect it to be
+    glm::dvec3 orbit_v = cqspt::OrbitVelocityToVec3(orbit, 0);
+    glm::dvec3 new_orbit_v = cqspt::OrbitVelocityToVec3(new_orbit, 0);
+
+    EXPECT_GT(glm::length(new_orbit_v), glm::length(orbit_v));
+    EXPECT_NEAR(glm::length(new_orbit_v) - glm::length(orbit_v), 1, 1e-4);
 }
 
 TEST(OrbitTest, ToRadianTest) {

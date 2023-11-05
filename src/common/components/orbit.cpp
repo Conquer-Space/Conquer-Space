@@ -35,6 +35,12 @@ glm::dvec3 ConvertOrbParams(const double LAN, const double i, const double w, co
            vec;
 }
 
+glm::dvec3 ConvertToOrbitalVector(const double LAN, const double i, const double w, const double v,
+                                  const glm::dvec3& vec) {
+    return glm::dquat {glm::dvec3(0, 0, LAN)} * glm::dquat {glm::dvec3(i, 0, 0)} * glm::dquat {glm::dvec3(0, 0, w)} *
+           glm::dquat {glm::dvec3(0, 0, v)} * vec;
+}
+
 // https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
 Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const double& GM, const double& time) {
     // Orbital momentum vector
@@ -106,7 +112,7 @@ glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i, const 
     }
     double r = GetOrbitingRadius(e, a, v);
     //MatrixConvertOrbParams(LAN, i, w, glm::dvec(r * cos(v), r * sin(v), 0);
-    return r * ConvertOrbParams(LAN, i, w, glm::dvec3(cos(v), sin(v), 0));
+    return r * ConvertToOrbitalVector(LAN, i, w, v, glm::vec3(1, 0, 0));
 }
 
 double AvgOrbitalVelocity(const Orbit& orb) { return (PI * 2 * orb.semi_major_axis) / orb.T; }
@@ -241,11 +247,13 @@ glm::dvec3 CalculateVelocityElliptic(const double& E, const double& r, const dou
 Orbit ApplyImpulse(const Orbit& orbit, const glm::dvec3& impulse, double time) {
     // Calculate v at epoch
     // Move the orbit
-    const glm::dvec3& norm_impulse = ConvertOrbParams(orbit.LAN, orbit.inclination, orbit.w, impulse);
-    double v = GetTrueAnomaly(orbit, time);
+    const glm::dvec3& norm_impulse = ConvertToOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, orbit.v, impulse);
+    const double v = GetTrueAnomaly(orbit, time);
     const glm::dvec3 position = toVec3(orbit, v);
     const glm::dvec3 velocity = OrbitVelocityToVec3(orbit, v);
-    // Rotate the
+
+    // Rotate the vector based off the velocity vector
+    // Do quaternions?
     Orbit new_orbit = Vec3ToOrbit(position, velocity + norm_impulse, orbit.GM, time);
     new_orbit.reference_body = orbit.reference_body;
     return new_orbit;
