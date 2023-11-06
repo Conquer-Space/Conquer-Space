@@ -63,6 +63,72 @@ void LeaveSOI(Universe& universe, const entt::entity& body, entt::entity& parent
     universe.emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
 }
 
+namespace {
+/// <summary>
+/// Check if the entity has crashed into its parent object
+/// </summary>
+/// <param name="universe"></param>
+/// <param name="orb"></param>
+/// <param name="body"></param>
+/// <param name="parent"></param>
+void CrashObject(Universe& universe, cqspt::Orbit& orb, entt::entity body, entt::entity parent) {
+    if (universe.any_of<cqspc::bodies::Body>(parent)) {
+        return;
+    }
+    auto& p_bod = universe.get<cqspc::bodies::Body>(parent);
+    auto& pos = universe.get<cqspt::Kinematics>(body);
+    if (universe.any_of<cqsps::Crash>(body)) {
+        pos.position = glm::vec3(0);
+    }
+
+    // Next time we need to account for the atmosphere
+    if (glm::length(pos.position) <= p_bod.radius) {
+        // Crash
+        SPDLOG_INFO("Object {} collided with the ground", body);
+        // Then remove from the tree or something like that
+        universe.get_or_emplace<cqsps::Crash>(body);
+        pos.position = glm::vec3(0);
+        orb.semi_major_axis = 0;
+    }
+}
+
+void CalculateImpulse(Universe& universe, cqspt::Orbit& orb, entt::entity body, entt::entity parent) {
+    if (universe.any_of<cqspc::types::Impulse>(body)) {
+        // Then add to the orbit the speed.
+        // Then also convert the velocity
+        auto& impulse = universe.get<cqspc::types::Impulse>(body);
+        auto reference = orb.reference_body;
+        auto& pos = universe.get_or_emplace<cqspt::Kinematics>(body);
+
+        orb = cqspt::Vec3ToOrbit(pos.position, pos.velocity + impulse.impulse, orb.GM, universe.date.ToSecond());
+        orb.reference_body = reference;
+        orb.CalculateVariables();
+        pos.position = cqspt::toVec3(orb);
+        pos.velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
+        universe.emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
+        // Remove impulse
+        universe.remove<cqspc::types::Impulse>(body);
+    }
+}
+
+void UpdateCommandQueue(Universe& universe, cqspt::Orbit& orb, entt::entity body, entt::entity parent) {
+    // Process thrust before updating orbit
+    if (universe.any_of<cqspc::CommandQueue>(body)) {
+        // Check if the current date is beyond the universe date
+        auto& queue = universe.get<cqspc::CommandQueue>(body);
+        if (!queue.commands.empty()) {
+            auto& command = queue.commands.front();
+            if (command.time < universe.date.ToSecond()) {
+                // Then execute the command
+                orb = cqspt::ApplyImpulse(orb, command.delta_v, command.time);
+                universe.emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
+                queue.commands.pop_front();
+            }
+        }
+    }
+}
+}  // namespace
+
 void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     namespace cqspc = cqsp::common::components;
     namespace cqsps = cqsp::common::components::ships;
@@ -72,8 +138,10 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
         return;
     }
 
-    // Calculate the position
     auto& orb = universe.get<cqspt::Orbit>(body);
+
+    UpdateCommandQueue(universe, orb, body, parent);
+
     cqspt::UpdateOrbit(orb, universe.date.ToSecond());
     auto& pos = universe.get_or_emplace<cqspt::Kinematics>(body);
     pos.position = cqspt::toVec3(orb);
@@ -87,54 +155,9 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
             LeaveSOI(universe, body, parent, orb, pos, p_pos);
         }
 
-        if (universe.any_of<cqsps::Crash>(body)) {
-            pos.position = glm::vec3(0);
-        }
-        // Next time we need to account for the atmosphere
-        if (glm::length(pos.position) <= p_bod.radius) {
-            // Crash
-            SPDLOG_INFO("Object {} collided with the ground", body);
-            // Then remove from the tree or something like that
-            universe.get_or_emplace<cqsps::Crash>(body);
-            pos.position = glm::vec3(0);
-            orb.semi_major_axis = 0;
-        }
+        CrashObject(universe, orb, body, parent);
 
-        if (universe.any_of<cqspc::CommandQueue>(body)) {
-            // Check if the current date is beyond the universe date
-            auto& queue = universe.get<cqspc::CommandQueue>(body);
-            if (!queue.commands.empty()) {
-                auto& command = queue.commands.front();
-                if (command.time < universe.date.ToSecond()) {
-                    // Then execute the command
-                    // quick check if position is the same
-                    glm::vec3 vec = cqspt::toVec3(orb);
-                    orb = cqspt::ApplyImpulse(orb, command.delta_v, command.time);
-                    pos.position = cqspt::toVec3(orb);
-                    pos.velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
-                    SPDLOG_INFO("{} {} {} | {} {} {}", vec.x, vec.y, vec.z, pos.position.x, pos.position.y,
-                                pos.position.z);
-                    universe.emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
-                    queue.commands.pop_front();
-                }
-            }
-        }
-
-        if (universe.any_of<cqspc::types::Impulse>(body)) {
-            // Then add to the orbit the speed.
-            // Then also convert the velocity
-            auto& impulse = universe.get<cqspc::types::Impulse>(body);
-            auto reference = orb.reference_body;
-
-            orb = cqspt::Vec3ToOrbit(pos.position, pos.velocity + impulse.impulse, orb.GM, universe.date.ToSecond());
-            orb.reference_body = reference;
-            orb.CalculateVariables();
-            pos.position = cqspt::toVec3(orb);
-            pos.velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
-            universe.emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
-            // Remove impulse
-            universe.remove<cqspc::types::Impulse>(body);
-        }
+        CalculateImpulse(universe, orb, body, parent);
         pos.center = p_pos.center + p_pos.position;
         EnterSOI(universe, parent, body);
     }

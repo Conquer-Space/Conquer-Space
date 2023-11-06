@@ -26,6 +26,7 @@
 void cqsp::client::systems::SpaceshipWindow::Init() {}
 
 void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
+    using common::components::types::toDegree;
     // Get selected spaceship, and then do the window
     // Check if the selected body is a spaceship
     // Then display information on it
@@ -41,22 +42,23 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
     // Display orbital elements
     auto& orbit = GetUniverse().get<common::components::types::Orbit>(body);
     if (ImGui::CollapsingHeader("Orbital Elements", ImGuiTreeNodeFlags_DefaultOpen)) {
-        ImGui::Text("Semi-major axis: %f", orbit.semi_major_axis);
-        ImGui::Text("Eccentricity: %f", orbit.eccentricity);
-        ImGui::Text("Inclination: %f", orbit.inclination);
-        ImGui::Text("Longitude of the ascending node: %f", orbit.LAN);
-        ImGui::Text("Argument of periapsis: %f", orbit.w);
-        ImGui::Text("Mean anomaly: %f", orbit.M0);
-        ImGui::Text("Epoch: %f", orbit.epoch);
-        ImGui::Text("GM: %f", orbit.GM);
-        ImGui::Text("Orbital period: %f", orbit.T);
-        ImGui::Text("Orbiting: %s", common::util::GetName(GetUniverse(), orbit.reference_body).c_str());
+        ImGui::TextFmt("Semi-major axis: {} km", orbit.semi_major_axis);
+        ImGui::TextFmt("Eccentricity: {}", orbit.eccentricity);
+        // Degree symbol is broken :(
+        ImGui::TextFmt("Inclination: {}\u00b0", toDegree(orbit.inclination));
+        ImGui::TextFmt("Longitude of the ascending node: {}\u00b0", toDegree(orbit.LAN));
+        ImGui::TextFmt("Argument of periapsis: {}\u00b0", toDegree(orbit.w));
+        ImGui::TextFmt("Mean anomaly: {}\u00b0", toDegree(orbit.M0));
+        ImGui::TextFmt("Epoch: {}s", orbit.epoch);
+        ImGui::TextFmt("GM: {} km^3 * s^-2", orbit.GM);
+        ImGui::TextFmt("Orbital period: {} s", orbit.T);
+        ImGui::TextFmt("Orbiting: {}", common::util::GetName(GetUniverse(), orbit.reference_body).c_str());
         if (GetUniverse().any_of<common::components::bodies::Body>(orbit.reference_body)) {
             double r = orbit.GetOrbitingRadius();
             double p = GetUniverse().get<common::components::bodies::Body>(orbit.reference_body).radius;
-            ImGui::TextFmt("Altitude: {}", (r - p));
-            ImGui::TextFmt("Periapsis: {} {}", orbit.GetPeriapsis() - p, orbit.TimeToMeanAnomaly(0));
-            ImGui::TextFmt("Apoapsis: {} {}", orbit.GetApoapsis() - p,
+            ImGui::TextFmt("Altitude: {} km", (r - p));
+            ImGui::TextFmt("Periapsis: {:<10} km ({:.1f} s)", orbit.GetPeriapsis() - p, orbit.TimeToMeanAnomaly(0));
+            ImGui::TextFmt("Apoapsis: {:<10} km ({:.1f} s)", orbit.GetApoapsis() - p,
                            orbit.TimeToMeanAnomaly(common::components::types::PI));
         }
     }

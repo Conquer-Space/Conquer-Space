@@ -157,15 +157,15 @@ struct Orbit {
         // The mean anomaly will be positive, so
         // Get eccentric anomaly
         // Assume current v is v0.
-        double E0 = std::acos((eccentricity + cos(v)) / (1 + eccentricity * cos(v)));
-        double M0 = E0 - std::sin(E0) * eccentricity;
+        const double E0 = std::acos((eccentricity + cos(v)) / (1 + eccentricity * cos(v)));
+        const double M0 = E0 - std::sin(E0) * eccentricity;
         // Need to determine a way to calculate if M0 is positive or negative
         // Eccentric
-        double E = std::acos((eccentricity + cos(v2)) / (1 + eccentricity * cos(v2)));
-        double M = E - std::sin(E) * eccentricity;
+        const double E = std::acos((eccentricity + cos(v2)) / (1 + eccentricity * cos(v2)));
+        const double M = E - std::sin(E) * eccentricity;
         double t = (M - M0) / nu;
         if (t < 0) {
-            t += T;
+            t = T + t;
         }
         return (t);
     }
