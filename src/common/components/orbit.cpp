@@ -115,6 +115,11 @@ glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i, const 
     return r * ConvertToOrbitalVector(LAN, i, w, v, glm::vec3(1, 0, 0));
 }
 
+double OrbitVelocity(const double v, const double e, const double a, const double GM) {
+    double r = GetOrbitingRadius(e, a, v);
+    return sqrt(GM * (2 / r - 1 / a));
+}
+
 double AvgOrbitalVelocity(const Orbit& orb) { return (PI * 2 * orb.semi_major_axis) / orb.T; }
 
 glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v) {
@@ -241,7 +246,7 @@ glm::dvec3 CalculateVelocityHyperbolic(const double& E, const double& r, const d
 
 glm::dvec3 CalculateVelocityElliptic(const double& E, const double& r, const double& GM, const double& a,
                                      const double& e) {
-    return ((double)(sqrt(GM * a) / r) * glm::dvec3(-sin(E), sqrt(1 - e * e) * cos(E), 0));
+    return ((sqrt(GM * a) / r) * glm::dvec3(-sin(E), sqrt(1 - e * e) * cos(E), 0));
 }
 
 Orbit ApplyImpulse(const Orbit& orbit, const glm::dvec3& impulse, double time) {
