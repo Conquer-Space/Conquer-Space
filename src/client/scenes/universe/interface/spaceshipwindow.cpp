@@ -89,11 +89,12 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         // So for apoapsis, we need this amount of delta v at prograde
         // Get the vector of the direction and then compute?
         // Then transform by the orbital math
-
-        maneuver.delta_v = glm::dvec3(0, velocity - glm::length(velocity_vec), 0);
+        double ov = common::components::types::OrbitVelocity(common::components::types::PI, orbit.eccentricity,
+                                                             orbit.semi_major_axis, orbit.GM);
+        maneuver.delta_v = glm::dvec3(0, velocity - ov, 0);
         GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push_back(maneuver);
-        SPDLOG_INFO("{} km/s delta-v {}, {}", velocity - glm::length(velocity_vec), glm::length(velocity_vec),
-                    velocity);
+        SPDLOG_INFO("{} km/s delta-v {}, {}, {}", velocity - glm::length(velocity_vec), glm::length(velocity_vec),
+                    velocity, ov);
     }
     // Display spaceship delta v in the future
     // Display controls of the spaceship
