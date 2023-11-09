@@ -83,20 +83,25 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         // Add random delta v
         common::components::Maneuver maneuver;
         maneuver.time = time;
-        // I forgot it added 5km/s
-        // Get velocity at apoapsis and then subtract from the supposed velocity if it were a circular orbit
-        // Get velocity at
         glm::dvec3 velocity_vec = common::components::types::OrbitVelocityToVec3(orbit, common::components::types::PI);
-        double velocity = common::components::types::GetCircularOrbitingVelocity(orbit.GM, orbit.GetApoapsis());
+        double circular_velocity =
+            common::components::types::GetCircularOrbitingVelocity(orbit.GM, orbit.GetApoapsis());
         // So for apoapsis, we need this amount of delta v at prograde
         // Get the vector of the direction and then compute?
         // Then transform by the orbital math
-        double ov = common::components::types::OrbitVelocity(common::components::types::PI, orbit.eccentricity,
-                                                             orbit.semi_major_axis, orbit.GM);
-        maneuver.delta_v = glm::dvec3(0, velocity - ov, 0);
+        double orbit_velocity = common::components::types::OrbitVelocity(
+            common::components::types::PI, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+        maneuver.delta_v = glm::dvec3(0, circular_velocity - orbit_velocity, 0);
         GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push_back(maneuver);
-        SPDLOG_INFO("{} km/s delta-v {}, {}, {}", velocity - glm::length(velocity_vec), glm::length(velocity_vec),
-                    velocity, ov);
+    }
+    if (ImGui::IsItemHovered()) {
+        double circular_velocity =
+            common::components::types::GetCircularOrbitingVelocity(orbit.GM, orbit.GetApoapsis());
+        // So for apoapsis, we need this amount of delta v at prograde
+        // Get the vector of the direction and then compute?
+        // Then transform by the orbital math
+        double orbit_velocity = common::components::types::OrbitVelocity(
+            common::components::types::PI, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
     }
     // Display spaceship delta v in the future
     // Display controls of the spaceship

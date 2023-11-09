@@ -301,9 +301,17 @@ TEST(OrbitTest, NewOrbitConversionTest5) {
     for (int i = 0; i < 360; i++) {
         auto new_pos = cqspt::toVec3(new_orbit, cqspt::toRadian(i));
         auto position = cqspt::toVec3(orb, cqspt::toRadian(i));
+        auto new_velocity = cqspt::OrbitVelocityToVec3(new_orbit, cqspt::toRadian(i));
+        auto velocity = cqspt::OrbitVelocityToVec3(orb, cqspt::toRadian(i));
         EXPECT_NEAR(new_pos.x, position.x, 1e-4);
         EXPECT_NEAR(new_pos.y, position.y, 1e-4);
         EXPECT_NEAR(new_pos.z, position.z, 1e-4);
+        EXPECT_NEAR(new_velocity.x, velocity.x, 1e-4);
+        EXPECT_NEAR(new_velocity.y, velocity.y, 1e-4);
+        EXPECT_NEAR(new_velocity.z, velocity.z, 1e-4);
+        // Check for the tangental orbital velocity
+        double t_velocity = cqspt::OrbitVelocity(cqspt::toRadian(i), orb.eccentricity, orb.semi_major_axis, orb.GM);
+        EXPECT_NEAR(glm::length(velocity), t_velocity, 1e-4);
     }
 }
 
