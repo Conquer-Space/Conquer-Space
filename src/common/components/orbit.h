@@ -89,7 +89,7 @@ struct Orbit {
     /// <br />
     /// Radians
     /// </summary>
-    double v = 0;
+    radian v = 0;
 
     /// <summary>
     /// Orbital period
@@ -205,15 +205,16 @@ double GetTrueAnomaly(const Orbit& orb, const second& epoch);
 /// \param[in] GM G*M of orbiting body
 /// \param[in] a Semi major axis
 /// \param[in] e eccentricity
-glm::vec3 CalculateVelocity(const double& E, const double& r, const double& GM, const double& a, const double& e);
+glm::dvec3 CalculateVelocity(const double& E, const kilometer& r, const double& GM, const kilometer& a,
+                             const double& e);
 
-glm::vec3 CalculateVelocityElliptic(const double& E, const double& r, const double& GM, const double& a,
-                                    const double& e);
+glm::dvec3 CalculateVelocityElliptic(const double& E, const kilometer& r, const double& GM, const kilometer& a,
+                                     const double& e);
 
-glm::vec3 CalculateVelocityHyperbolic(const double& E, const double& r, const double& GM, const double& a,
-                                      const double& e);
+glm::dvec3 CalculateVelocityHyperbolic(const double& E, const double& r, const double& GM, const double& a,
+                                       const double& e);
 
-double GetOrbitingRadius(const double& e, const double& a, const double& v);
+double GetOrbitingRadius(const double& e, const kilometer& a, const radian& v);
 
 /// Get the circular orbiting velocity for the radius
 double GetCircularOrbitingVelocity(const double& GM, const double& radius);
