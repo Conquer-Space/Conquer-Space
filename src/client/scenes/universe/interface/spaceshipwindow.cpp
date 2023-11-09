@@ -56,6 +56,7 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         if (GetUniverse().any_of<common::components::bodies::Body>(orbit.reference_body)) {
             double r = orbit.GetOrbitingRadius();
             double p = GetUniverse().get<common::components::bodies::Body>(orbit.reference_body).radius;
+            p = 0;
             ImGui::TextFmt("Altitude: {} km", (r - p));
             ImGui::TextFmt("Periapsis: {:<10} km ({:.1f} s)", orbit.GetPeriapsis() - p, orbit.TimeToMeanAnomaly(0));
             ImGui::TextFmt("Apoapsis: {:<10} km ({:.1f} s)", orbit.GetApoapsis() - p,
@@ -121,6 +122,43 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
             common::components::types::OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
         maneuver.delta_v = glm::dvec3(0, circular_velocity - orbit_velocity, 0);
         GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push_back(maneuver);
+    }
+
+    if (ImGui::IsItemHovered()) {
+        double circular_velocity =
+            common::components::types::GetCircularOrbitingVelocity(orbit.GM, orbit.GetPeriapsis());
+        // So for apoapsis, we need this amount of delta v at prograde
+        // Get the vector of the direction and then compute?
+        // Then transform by the orbital math
+        double orbit_velocity =
+            common::components::types::OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+        ImGui::SetTooltip("Delta-v: %f km/s", circular_velocity - orbit_velocity);
+    }
+
+    // Change apogee
+    ImGui::InputDouble("Set Periapsis Altitude", &new_perigee, 0, 10000000);
+    if (ImGui::Button("Set Periapsis")) {
+        // Get apogee
+        double new_sma = (orbit.GetApoapsis() + new_perigee) / 2;
+        // Get velocity at the new apogee
+        double new_v = common::components::types::OrbitVelocityAtR(new_sma, orbit.GetApoapsis(), orbit.GM);
+        // Get the velocity
+        common::components::Maneuver maneuver;
+        maneuver.time = orbit.TimeToMeanAnomaly(0) + (double)GetUniverse().date.ToSecond();
+
+        double orbit_velocity =
+            common::components::types::OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+        maneuver.delta_v = glm::vec3(0, new_v - orbit_velocity, 0);
+        GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push_back(maneuver);
+    }
+
+    if (ImGui::IsItemHovered()) {
+        double new_sma = (orbit.GetApoapsis() + new_perigee) / 2;
+        // Get velocity at the new apogee
+        double new_v = common::components::types::OrbitVelocityAtR(new_sma, orbit.GetApoapsis(), orbit.GM);
+        double orbit_velocity =
+            common::components::types::OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+        ImGui::SetTooltip("Delta-v: %f km/s", new_v - orbit_velocity);
     }
     // Display spaceship delta v in the future
     // Display controls of the spaceship

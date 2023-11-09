@@ -265,9 +265,7 @@ Orbit ApplyImpulse(const Orbit& orbit, const glm::dvec3& impulse, double time) {
     return new_orbit;
 }
 
-double OrbitVelocityAtR(const double v, const double a, const double r, const double GM) {
-    return sqrt(GM * (2 / r - 1 / a));
-}
+double OrbitVelocityAtR(const double a, const double r, const double GM) { return sqrt(GM * (2 / r - 1 / a)); }
 
 glm::dvec3 OrbitTimeToVec3(const Orbit& orb, const second& time) {
     double v = 0;

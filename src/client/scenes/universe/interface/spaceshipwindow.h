@@ -29,5 +29,6 @@ class SpaceshipWindow : public SysUserInterface {
  private:
     bool show_orbital_elements = true;
     bool show_orbital_vectors = false;
+    double new_perigee = 0.;
 };
 }  // namespace cqsp::client::systems
