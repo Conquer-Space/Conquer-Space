@@ -151,25 +151,10 @@ struct Orbit {
 
     double GetPeriapsis() { return semi_major_axis * (1 - eccentricity); }
 
-    // https://space.stackexchange.com/questions/54396/how-to-calculate-the-time-to-reach-a-given-true-anomaly
-    double TimeToMeanAnomaly(double v2) {
-        // If it's a hyperbolic orbit, we will have to use different equations.
-        // The mean anomaly will be positive, so
-        // Get eccentric anomaly
-        // Assume current v is v0.
-        const double E0 = std::acos((eccentricity + cos(v)) / (1 + eccentricity * cos(v)));
-        const double M0 = E0 - std::sin(E0) * eccentricity;
-        // Need to determine a way to calculate if M0 is positive or negative
-        // Eccentric
-        const double E = std::acos((eccentricity + cos(v2)) / (1 + eccentricity * cos(v2)));
-        const double M = E - std::sin(E) * eccentricity;
-        double t = (M - M0) / nu;
-        if (t < 0) {
-            t = T + t;
-        }
-        return (t);
-    }
+    double TimeToMeanAnomaly(double v2);
 };
+
+struct Orbit2 {};
 
 /// <summary>
 /// Transforms a vector to the orbital plane vector
@@ -264,7 +249,7 @@ glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v);
 /// <param name="mean_anomaly"></param>
 /// <param name="ecc"></param>
 /// <param name="steps">Number of steps for the Newton-Raphson. More steps means more precision but less speed</param>
-/// <returns>Eccentric anomaly</returns>
+/// <returns>Eccentric anomaly (E)goog</returns>
 double SolveKeplerElliptic(const double& mean_anomaly, const double& ecc, const int steps = 200);
 
 /// <summary>
@@ -368,7 +353,7 @@ inline void UpdatePos(Kinematics& kin, const Orbit& orb) {
 
 double CalculateTransferTime(const Orbit& orb1, const Orbit& orb2);
 double CalculateTransferAngle(const Orbit& orb1, const Orbit& orb2);
-double GetEccentricAnomaly(double eccentricity, double theta);
+
 // https://orbital-mechanics.space/the-orbit-equation/hyperbolic-trajectories.html
 // True anomaly of the asymptope for a hyperbolic orbit
 double GetHyperbolicAsymptopeAnomaly(double eccentricity);
