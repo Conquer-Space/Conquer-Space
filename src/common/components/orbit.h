@@ -252,6 +252,7 @@ glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i, const 
                        const radian& v);
 
 double OrbitVelocity(const double v, const double e, const double a, const double GM);
+double OrbitVelocityAtR(const double v, const double a, const double r, const double GM);
 double AvgOrbitalVelocity(const Orbit& orb);
 
 glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v);

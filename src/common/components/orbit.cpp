@@ -18,7 +18,6 @@
 
 namespace cqsp::common::components::types {
 double GetOrbitingRadius(const double& e, const double& a, const double& v) {
-    // Calculate the math
     return (a * (1 - e * e)) / (1 + e * cos(v));
 }
 
@@ -262,6 +261,10 @@ Orbit ApplyImpulse(const Orbit& orbit, const glm::dvec3& impulse, double time) {
     Orbit new_orbit = Vec3ToOrbit(position, velocity + norm_impulse, orbit.GM, time);
     new_orbit.reference_body = orbit.reference_body;
     return new_orbit;
+}
+
+double OrbitVelocityAtR(const double v, const double a, const double r, const double GM) {
+    return sqrt(GM * (2 / r - 1 / a));
 }
 
 glm::dvec3 OrbitTimeToVec3(const Orbit& orb, const second& time) {
