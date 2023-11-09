@@ -349,6 +349,8 @@ TEST(OrbitTest, OrbitImpulseTest) {
 
     EXPECT_GT(glm::length(new_orbit_v), glm::length(orbit_v));
     EXPECT_NEAR(glm::length(new_orbit_v) - glm::length(orbit_v), 1, 1e-4);
+
+    // Check out the new semi major axis
 }
 
 TEST(OrbitTest, ToRadianTest) {
