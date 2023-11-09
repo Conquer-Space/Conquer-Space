@@ -125,8 +125,10 @@ glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v) {
     if (orb.semi_major_axis == 0) {
         return glm::dvec3(0, 0, 0);
     }
+    double E = 2 * atan(tan(v / 2) / sqrt((1 + orb.eccentricity) /
+                                          (1 - orb.eccentricity)));  //SolveKeplerElliptic(v, orb.eccentricity);
     double r = GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, v);
-    glm::dvec3 velocity = CalculateVelocity(orb.E, r, orb.GM, orb.semi_major_axis, orb.eccentricity);
+    glm::dvec3 velocity = CalculateVelocity(E, r, orb.GM, orb.semi_major_axis, orb.eccentricity);
     return ConvertOrbParams(orb.LAN, orb.inclination, orb.w, velocity);
 }
 
@@ -141,7 +143,7 @@ double SolveKeplerElliptic(const double& mean_anomaly, const double& ecc, const 
     double ea = mean_anomaly;
     double old_m = mean_anomaly;
 
-    while ((it < steps) && (abs(de) > 1.0E-5)) {  // normal accuracy is 1.0e-10
+    while ((it < steps) && (abs(de) > 1.0E-10)) {
         double new_m = ea - ecc * sin(ea);
         de = (old_m - new_m) / (1.0 - ecc * cos(ea));
         ea += de;
@@ -161,7 +163,7 @@ double SolveKeplerHyperbolic(const double& mean_anomaly, const double& ecc, cons
     double ea = mean_anomaly;
     double old_m = mean_anomaly;
 
-    while ((it < steps) && (abs(de) > 1.0E-5)) {  // normal accuracy is 1.0e-10
+    while ((it < steps) && (abs(de) > 1.0E-10)) {
         double new_m = ecc * sinh(ea) - ea;
         de = (old_m - new_m) / (ecc * cosh(ea) - 1.0);
         ea += de;
@@ -290,10 +292,31 @@ double CalculateTransferAngle(const Orbit& orb1, const Orbit& orb2) {
     double transfer_time = CalculateTransferTime(orb1, orb2);
     return (orb2.v - orb1.v) - transfer_time * orb2.nu;
 }
-double GetEccentricAnomaly(double eccentricity, double theta) {
-    //return std::acos()
-    return 0;
-}
 
 double GetHyperbolicAsymptopeAnomaly(double eccentricity) { return std::acos(-1 / eccentricity); }
+
+// https://space.stackexchange.com/questions/54396/how-to-calculate-the-time-to-reach-a-given-true-anomaly
+double Orbit::TimeToMeanAnomaly(double v2) {
+    // If it's a hyperbolic orbit, we will have to use different equations.
+    // The mean anomaly will be positive, so
+    // Get eccentric anomaly
+    // Assume current v is v0.
+    const double E0 = std::acos((eccentricity + cos(v)) / (1 + eccentricity * cos(v)));
+    double M0 = E0 - std::sin(E0) * eccentricity;
+    if (v > PI) {
+        M0 *= -1;
+    }
+    // Need to determine a way to calculate if M0 is positive or negative
+    const double E = std::acos((eccentricity + cos(v2)) / (1 + eccentricity * cos(v2)));
+    double M = E - std::sin(E) * eccentricity;
+
+    if (v2 > PI) {
+        M *= -1;
+    }
+    double t = (M - M0) / nu;
+    if (t < 0) {
+        t = T + t;
+    }
+    return (t);
+}
 }  // namespace cqsp::common::components::types

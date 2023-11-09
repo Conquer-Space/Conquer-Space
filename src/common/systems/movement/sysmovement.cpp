@@ -113,19 +113,22 @@ void CalculateImpulse(Universe& universe, cqspt::Orbit& orb, entt::entity body, 
 
 void UpdateCommandQueue(Universe& universe, cqspt::Orbit& orb, entt::entity body, entt::entity parent) {
     // Process thrust before updating orbit
-    if (universe.any_of<cqspc::CommandQueue>(body)) {
-        // Check if the current date is beyond the universe date
-        auto& queue = universe.get<cqspc::CommandQueue>(body);
-        if (!queue.commands.empty()) {
-            auto& command = queue.commands.front();
-            if (command.time < universe.date.ToSecond()) {
-                // Then execute the command
-                orb = cqspt::ApplyImpulse(orb, command.delta_v, command.time);
-                universe.emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
-                queue.commands.pop_front();
-            }
-        }
+    if (!universe.any_of<cqspc::CommandQueue>(body)) {
+        return;
     }
+    // Check if the current date is beyond the universe date
+    auto& queue = universe.get<cqspc::CommandQueue>(body);
+    if (queue.commands.empty()) {
+        return;
+    }
+    auto& command = queue.commands.front();
+    if (command.time > universe.date.ToSecond()) {
+        return;
+    }
+    // Then execute the command
+    orb = cqspt::ApplyImpulse(orb, command.delta_v, command.time);
+    universe.emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
+    queue.commands.pop_front();
 }
 }  // namespace
 

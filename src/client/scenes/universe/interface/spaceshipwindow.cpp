@@ -102,6 +102,25 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         // Then transform by the orbital math
         double orbit_velocity = common::components::types::OrbitVelocity(
             common::components::types::PI, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+        ImGui::SetTooltip("Delta-v: %f km/s", circular_velocity - orbit_velocity);
+    }
+
+    if (ImGui::Button("Circularize at perapsis")) {
+        double time = orbit.TimeToMeanAnomaly(0);
+        time = (double)GetUniverse().date.ToSecond() + time;
+        // Add random delta v
+        common::components::Maneuver maneuver;
+        maneuver.time = time;
+        glm::dvec3 velocity_vec = common::components::types::OrbitVelocityToVec3(orbit, 0);
+        double circular_velocity =
+            common::components::types::GetCircularOrbitingVelocity(orbit.GM, orbit.GetPeriapsis());
+        // So for apoapsis, we need this amount of delta v at prograde
+        // Get the vector of the direction and then compute?
+        // Then transform by the orbital math
+        double orbit_velocity =
+            common::components::types::OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+        maneuver.delta_v = glm::dvec3(0, circular_velocity - orbit_velocity, 0);
+        GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push_back(maneuver);
     }
     // Display spaceship delta v in the future
     // Display controls of the spaceship

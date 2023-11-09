@@ -371,6 +371,33 @@ TEST(OrbitTest, ToDegreeTest) {
     EXPECT_DOUBLE_EQ(360, cqspt::toDegree(cqspt::PI * 2));
 }
 
+TEST(OrbitTest, CircularOrbitVelocityTest) {
+    // Make circular Orbit
+    using namespace cqsp::common::components::types;  // NOLINT
+    Orbit orbit(150000000, 0, 0, 0, 0, 0);
+    double v = GetCircularOrbitingVelocity(SunMu, 150000000);
+    double orb_v = glm::length(OrbitVelocityToVec3(orbit, 0));
+    EXPECT_DOUBLE_EQ(v, orb_v);
+}
+
+TEST(OrbitTest, EllipticOrbitTest) {
+    // Make circular Orbit
+    using namespace cqsp::common::components::types;  // NOLINT
+    Orbit orbit(150000000, 0.5, 0, 0, 0, 0);
+    for (int i = 0; i < 360; i++) {
+        double v = (double)(i / (PI * 2));
+        double calc_velocity = OrbitVelocity(v, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+        double E = SolveKeplerElliptic(orbit.eccentricity, v);
+        //EXPECT_DOUBLE_EQ(v, E - orbit.eccentricity * )
+        double orb_velocity = glm::length(OrbitVelocityToVec3(orbit, v));
+        EXPECT_DOUBLE_EQ(calc_velocity, orb_velocity);
+        // Check orbit altitude?
+        double rad = GetOrbitingRadius(orbit.eccentricity, orbit.semi_major_axis, v);
+        double len = glm::length(toVec3(orbit, v));
+        EXPECT_DOUBLE_EQ(rad, len);
+    }
+}
+
 TEST(OrbitTest, SolveKeplerHyperbolic) {
     // https://www.fxsolver.com/browse/formulas/Hyperbolic+Kepler+equation
     std::vector<std::tuple<double, double, double>> data = {
