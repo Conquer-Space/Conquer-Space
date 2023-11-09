@@ -102,7 +102,7 @@ double GetTrueAnomalyToAsymptope(const Orbit& orbit) { return std::acos(-1 / orb
 glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i, const radian& LAN, const radian& w,
                        const radian& v) {
     if (a == 0) {
-        return glm::vec3(0, 0, 0);
+        return glm::dvec3(0, 0, 0);
     }
     double r = GetOrbitingRadius(e, a, v);
     //MatrixConvertOrbParams(LAN, i, w, glm::dvec(r * cos(v), r * sin(v), 0);
@@ -113,10 +113,10 @@ double AvgOrbitalVelocity(const Orbit& orb) { return (PI * 2 * orb.semi_major_ax
 
 glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v) {
     if (orb.semi_major_axis == 0) {
-        return glm::vec3(0, 0, 0);
+        return glm::dvec3(0, 0, 0);
     }
     double r = GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, v);
-    glm::vec3 velocity = CalculateVelocity(orb.E, r, orb.GM, orb.semi_major_axis, orb.eccentricity);
+    glm::dvec3 velocity = CalculateVelocity(orb.E, r, orb.GM, orb.semi_major_axis, orb.eccentricity);
     return ConvertOrbParams(orb.LAN, orb.inclination, orb.w, velocity);
 }
 
@@ -220,7 +220,7 @@ double GetTrueAnomaly(const Orbit& orb, const second& epoch) {
     return v;
 }
 
-glm::vec3 CalculateVelocity(const double& E, const double& r, const double& GM, const double& a, const double& e) {
+glm::dvec3 CalculateVelocity(const double& E, const double& r, const double& GM, const double& a, const double& e) {
     // Elliptic orbit
     if (e < 1) {
         return CalculateVelocityElliptic(E, r, GM, a, e);
@@ -228,14 +228,14 @@ glm::vec3 CalculateVelocity(const double& E, const double& r, const double& GM, 
     return CalculateVelocityHyperbolic(E, r, GM, a, e);
 }
 
-glm::vec3 CalculateVelocityHyperbolic(const double& E, const double& r, const double& GM, const double& a,
-                                      const double& e) {
-    return (float)(sqrt(-GM * a) / r) * glm::vec3(sinh(E), -sqrt(e * e - 1) * cosh(E), 0);
+glm::dvec3 CalculateVelocityHyperbolic(const double& E, const double& r, const double& GM, const double& a,
+                                       const double& e) {
+    return (double)(sqrt(-GM * a) / r) * glm::dvec3(sinh(E), -sqrt(e * e - 1) * cosh(E), 0);
 }
 
-glm::vec3 CalculateVelocityElliptic(const double& E, const double& r, const double& GM, const double& a,
-                                    const double& e) {
-    return ((float)(sqrt(GM * a) / r) * glm::vec3(-sin(E), sqrt(1 - e * e) * cos(E), 0));
+glm::dvec3 CalculateVelocityElliptic(const double& E, const double& r, const double& GM, const double& a,
+                                     const double& e) {
+    return ((double)(sqrt(GM * a) / r) * glm::dvec3(-sin(E), sqrt(1 - e * e) * cos(E), 0));
 }
 
 Orbit ApplyImpulse(const Orbit& orbit, const glm::dvec3& impulse, double time) {
@@ -243,7 +243,7 @@ Orbit ApplyImpulse(const Orbit& orbit, const glm::dvec3& impulse, double time) {
     // Move the orbit
     const glm::dvec3& norm_impulse = ConvertOrbParams(orbit.LAN, orbit.inclination, orbit.w, impulse);
     double v = GetTrueAnomaly(orbit, time);
-    const glm::vec3 position = toVec3(orbit, v);
+    const glm::dvec3 position = toVec3(orbit, v);
     const glm::dvec3 velocity = OrbitVelocityToVec3(orbit, v);
     // Rotate the
     Orbit new_orbit = Vec3ToOrbit(position, velocity + norm_impulse, orbit.GM, time);

@@ -201,9 +201,9 @@ TEST(OrbitTest, DISABLED_NewOrbitConversionTest3) {
     for (int i = 0; i < 360; i++) {
         auto new_pos = cqspt::toVec3(new_orbit, cqspt::toRadian(i));
         auto position = cqspt::toVec3(orb, cqspt::toRadian(i));
-        EXPECT_NEAR(new_pos.x, position.x, 500);
-        EXPECT_NEAR(new_pos.y, position.y, 500);
-        EXPECT_NEAR(new_pos.z, position.z, 500);
+        EXPECT_NEAR(new_pos.x, position.x, 0.001);
+        EXPECT_NEAR(new_pos.y, position.y, 0.001);
+        EXPECT_NEAR(new_pos.z, position.z, 0.001);
     }
 }
 
@@ -249,9 +249,9 @@ TEST(OrbitTest, NewOrbitConversionTest4) {
     for (int i = 0; i < 360; i++) {
         auto new_pos = cqspt::toVec3(new_orbit, cqspt::toRadian(i));
         auto position = cqspt::toVec3(orb, cqspt::toRadian(i));
-        EXPECT_NEAR(new_pos.x, position.x, 300);
-        EXPECT_NEAR(new_pos.y, position.y, 300);
-        EXPECT_NEAR(new_pos.z, position.z, 300);
+        EXPECT_NEAR(new_pos.x, position.x, 0.001);
+        EXPECT_NEAR(new_pos.y, position.y, 0.001);
+        EXPECT_NEAR(new_pos.z, position.z, 0.001);
     }
 }
 
@@ -278,32 +278,32 @@ TEST(OrbitTest, NewOrbitConversionTest5) {
 
     EXPECT_EQ(acos(1), 0);
     EXPECT_NEAR(glm::length(position), cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v),
-                orb.semi_major_axis * 0.01);
+                orb.semi_major_axis * 1e-5);
     auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.GM, 0);
-    EXPECT_NEAR(new_orbit.v, orb.v, 0.001);
-    EXPECT_NEAR(new_orbit.E, orb.E, 0.001);
-    EXPECT_NEAR(new_orbit.M0, orb.M0, 0.001);
+    EXPECT_NEAR(new_orbit.v, orb.v, 1e-5);
+    EXPECT_NEAR(new_orbit.E, orb.E, 1e-5);
+    EXPECT_NEAR(new_orbit.M0, orb.M0, 1e-5);
     EXPECT_NEAR(new_orbit.semi_major_axis, orb.semi_major_axis,
-                0.001);  // 1m difference
-    EXPECT_NEAR(new_orbit.LAN, orb.LAN, 0.001);
-    EXPECT_NEAR(new_orbit.w, orb.w, 0.001);
-    EXPECT_NEAR(new_orbit.inclination, orb.inclination, 0.001);
-    EXPECT_NEAR(new_orbit.eccentricity, orb.eccentricity, 0.001);
-    EXPECT_NEAR(new_orbit.v, orb.v, 0.001);
-    EXPECT_NEAR(new_orbit.E, orb.E, 0.001);
-    EXPECT_NEAR(new_orbit.M0, orb.M0, 0.001);
+                1e-5);  // 1m difference
+    EXPECT_NEAR(new_orbit.LAN, orb.LAN, 1e-5);
+    EXPECT_NEAR(new_orbit.w, orb.w, 1e-5);
+    EXPECT_NEAR(new_orbit.inclination, orb.inclination, 1e-5);
+    EXPECT_NEAR(new_orbit.eccentricity, orb.eccentricity, 1e-5);
+    EXPECT_NEAR(new_orbit.v, orb.v, 1e-5);
+    EXPECT_NEAR(new_orbit.E, orb.E, 1e-5);
+    EXPECT_NEAR(new_orbit.M0, orb.M0, 1e-5);
     new_orbit.CalculateVariables();
     auto new_pos = cqspt::toVec3(new_orbit);
-    EXPECT_NEAR(new_pos.x, position.x, 300);
-    EXPECT_NEAR(new_pos.y, position.y, 300);
-    EXPECT_NEAR(new_pos.z, position.z, 300);
+    EXPECT_NEAR(new_pos.x, position.x, 1e-4);
+    EXPECT_NEAR(new_pos.y, position.y, 1e-4);
+    EXPECT_NEAR(new_pos.z, position.z, 1e-4);
     // Check all the points of the orbit
     for (int i = 0; i < 360; i++) {
         auto new_pos = cqspt::toVec3(new_orbit, cqspt::toRadian(i));
         auto position = cqspt::toVec3(orb, cqspt::toRadian(i));
-        EXPECT_NEAR(new_pos.x, position.x, 300);
-        EXPECT_NEAR(new_pos.y, position.y, 300);
-        EXPECT_NEAR(new_pos.z, position.z, 300);
+        EXPECT_NEAR(new_pos.x, position.x, 1e-4);
+        EXPECT_NEAR(new_pos.y, position.y, 1e-4);
+        EXPECT_NEAR(new_pos.z, position.z, 1e-4);
     }
 }
 
@@ -314,12 +314,12 @@ TEST(OrbitTest, OrbitImpulseTest) {
     cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, glm::dvec3(1, 0, 0), 0);
     double r = orbit.GetOrbitingRadius();
     double r2 = new_orbit.GetOrbitingRadius();
-    EXPECT_NEAR(r, r2, 1);
+    EXPECT_NEAR(r, r2, 1e-4);
     glm::dvec3 orbit_vec = cqspt::toVec3(orbit);
     glm::dvec3 new_orbit_vec = cqspt::toVec3(new_orbit);
-    EXPECT_NEAR(orbit_vec.x, new_orbit_vec.x, 0.1);
-    EXPECT_NEAR(orbit_vec.y, new_orbit_vec.y, 0.1);
-    EXPECT_NEAR(orbit_vec.z, new_orbit_vec.z, 0.1);
+    EXPECT_NEAR(orbit_vec.x, new_orbit_vec.x, 1e-4);
+    EXPECT_NEAR(orbit_vec.y, new_orbit_vec.y, 1e-4);
+    EXPECT_NEAR(orbit_vec.z, new_orbit_vec.z, 1e-4);
     // SMA should be higher because we are burning prograde
     EXPECT_GT(new_orbit.semi_major_axis, orbit.semi_major_axis);
     EXPECT_GT(new_orbit.eccentricity, orbit.eccentricity);
