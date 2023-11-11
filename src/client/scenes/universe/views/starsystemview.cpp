@@ -1334,11 +1334,14 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
     orbit_shader->SetMVP(transform, camera_matrix, m_app.Get3DProj());
 
     //Set the color of each orbit based on its distance from its center body
-    double dis = m_universe.get<common::components::types::Orbit>(entity).semi_major_axis;
-    double max_dis = m_universe.get<common::components::bodies::Body>(ref).SOI;
-    double inc = m_universe.get<common::components::types::Orbit>(entity).inclination;
 
-    float min_launch_dis = 8000;
+    auto& orb = m_universe.get<common::components::types::Orbit>(entity);
+
+    double dis = orb.semi_major_axis;
+    double max_dis = body.SOI;
+    double inc = orb.inclination;
+
+    float min_launch_dis = body.radius;
     dis = dis - min_launch_dis;
     float r = log(dis) / log(max_dis);
     float g = 1 - r;
