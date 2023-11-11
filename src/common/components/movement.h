@@ -17,6 +17,7 @@
 #pragma once
 
 #include <deque>
+#include <utility>
 
 #include "common/components/coordinates.h"
 
@@ -33,6 +34,8 @@ struct Maneuver {
     /// </summary>
     glm::dvec3 delta_v;
     double time;
+    Maneuver() = default;
+    explicit Maneuver(const std::pair<glm::dvec3, double>& maneuver) : delta_v(maneuver.first), time(maneuver.second) {}
 };
 
 struct CommandQueue {
