@@ -1332,7 +1332,25 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
     //    glm::quat{{0.f, 0, (float)body.axial}});
     // Draw orbit
     orbit_shader->SetMVP(transform, camera_matrix, m_app.Get3DProj());
-    orbit_shader->Set("color", glm::vec4(1, 1, 1, 1));
+
+    //Set the color of each orbit based on its distance from its center body
+
+    auto& orb = m_universe.get<common::components::types::Orbit>(entity);
+
+    const double dis = orb.semi_major_axis;
+    const double max_dis = body.SOI;
+    const double inc = orb.inclination;
+
+    const float min_launch_dis = body.radius;
+    float col = dis - min_launch_dis;
+    float r = log(col) / log(max_dis);
+    float g = 1 - r;
+    float b = inc / 3.15;
+    glm::vec4 color_v = {r, g, b, 1};
+    orbit_shader->Set("color", color_v);
+
+
+    //orbit_shader->Set("color", glm::vec4(1, 1, 1, 1));
     // Set to the center of the universe
     auto& orbit = m_universe.get<PlanetOrbit>(entity);
 
