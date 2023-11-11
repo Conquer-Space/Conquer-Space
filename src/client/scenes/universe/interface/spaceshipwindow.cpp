@@ -141,7 +141,7 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         // Get apogee
         double new_sma = (orbit.GetApoapsis() + new_perigee) / 2;
         // Get velocity at the new apogee
-        double new_v = common::components::types::OrbitVelocityAtR(new_sma, orbit.GetApoapsis(), orbit.GM);
+        double new_v = common::components::types::OrbitVelocityAtR(orbit.GM, new_sma, orbit.GetApoapsis());
         // Get the velocity
         common::components::Maneuver maneuver;
         maneuver.time = orbit.TimeToMeanAnomaly(0) + (double)GetUniverse().date.ToSecond();
@@ -155,7 +155,7 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
     if (ImGui::IsItemHovered()) {
         double new_sma = (orbit.GetApoapsis() + new_perigee) / 2;
         // Get velocity at the new apogee
-        double new_v = common::components::types::OrbitVelocityAtR(new_sma, orbit.GetApoapsis(), orbit.GM);
+        double new_v = common::components::types::OrbitVelocityAtR(orbit.GM, new_sma, orbit.GetApoapsis());
         double orbit_velocity =
             common::components::types::OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
         ImGui::SetTooltip("Delta-v: %f km/s", new_v - orbit_velocity);
