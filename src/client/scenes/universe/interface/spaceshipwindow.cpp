@@ -21,6 +21,7 @@
 #include "common/components/movement.h"
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
+#include "common/systems/maneuver/maneuver.h"
 #include "common/util/nameutil.h"
 
 void cqsp::client::systems::SpaceshipWindow::Init() {}
@@ -79,20 +80,9 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
     }
 
     if (ImGui::Button("Circularize at apoapsis")) {
-        double time = orbit.TimeToMeanAnomaly(common::components::types::PI);
-        time = (double)GetUniverse().date.ToSecond() + time;
         // Add random delta v
-        common::components::Maneuver maneuver;
-        maneuver.time = time;
-        glm::dvec3 velocity_vec = common::components::types::OrbitVelocityToVec3(orbit, common::components::types::PI);
-        double circular_velocity =
-            common::components::types::GetCircularOrbitingVelocity(orbit.GM, orbit.GetApoapsis());
-        // So for apoapsis, we need this amount of delta v at prograde
-        // Get the vector of the direction and then compute?
-        // Then transform by the orbital math
-        double orbit_velocity = common::components::types::OrbitVelocity(
-            common::components::types::PI, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
-        maneuver.delta_v = glm::dvec3(0, circular_velocity - orbit_velocity, 0);
+        common::components::Maneuver maneuver(common::systems::CircularizeAtApoapsis(orbit));
+        maneuver.time += GetUniverse().date.ToSecond();
         GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push_back(maneuver);
     }
     if (ImGui::IsItemHovered()) {
@@ -107,20 +97,8 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
     }
 
     if (ImGui::Button("Circularize at perapsis")) {
-        double time = orbit.TimeToMeanAnomaly(0);
-        time = (double)GetUniverse().date.ToSecond() + time;
-        // Add random delta v
-        common::components::Maneuver maneuver;
-        maneuver.time = time;
-        glm::dvec3 velocity_vec = common::components::types::OrbitVelocityToVec3(orbit, 0);
-        double circular_velocity =
-            common::components::types::GetCircularOrbitingVelocity(orbit.GM, orbit.GetPeriapsis());
-        // So for apoapsis, we need this amount of delta v at prograde
-        // Get the vector of the direction and then compute?
-        // Then transform by the orbital math
-        double orbit_velocity =
-            common::components::types::OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
-        maneuver.delta_v = glm::dvec3(0, circular_velocity - orbit_velocity, 0);
+        common::components::Maneuver maneuver(common::systems::CircularizeAtPeriapsis(orbit));
+        maneuver.time += GetUniverse().date.ToSecond();
         GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push_back(maneuver);
     }
 
@@ -136,19 +114,14 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
     }
 
     // Change apogee
-    ImGui::InputDouble("Set Periapsis Altitude", &new_perigee, 0, 10000000);
-    if (ImGui::Button("Set Periapsis")) {
-        // Get apogee
-        double new_sma = (orbit.GetApoapsis() + new_perigee) / 2;
+    ImGui::InputDouble("Set Apoapsis Altitude", &new_perigee, 0, 10000000);
+    if (ImGui::Button("Set Apoapsis")) {
         // Get velocity at the new apogee
-        double new_v = common::components::types::OrbitVelocityAtR(orbit.GM, new_sma, orbit.GetApoapsis());
         // Get the velocity
         common::components::Maneuver maneuver;
-        maneuver.time = orbit.TimeToMeanAnomaly(0) + (double)GetUniverse().date.ToSecond();
-
-        double orbit_velocity =
-            common::components::types::OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
-        maneuver.delta_v = glm::vec3(0, new_v - orbit_velocity, 0);
+        auto m = common::systems::SetApoapsis(orbit, new_perigee);
+        maneuver.delta_v = m.first;
+        maneuver.time = GetUniverse().date.ToSecond() + m.second;
         GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push_back(maneuver);
     }
 

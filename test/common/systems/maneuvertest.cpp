@@ -143,12 +143,11 @@ TEST(Maneuver, HighEccentricityCircularizePerigeeTest) {
     // Make a random orbit, apply an impulse, and ensure the position is te same
     cqspt::Orbit orbit(57.91e9, 0.9, 0., 0, 0, 0);
     auto maneuver = cqsps::CircularizeAtApoapsis(orbit);
-    // Get the manever velocity?
-    // Compare to circular velocity
+
     double to_velocity = cqspt::GetCircularOrbitingVelocity(orbit.GM, orbit.GetApoapsis());
     double from_velocity = glm::length(cqspt::OrbitVelocityToVec3(orbit, cqspt::PI));
     double r = cqspt::OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetApoapsis());
-    // So the expected delta v at that point should be...
+
     EXPECT_DOUBLE_EQ(from_velocity, r);
     EXPECT_NEAR(glm::length(maneuver.first), to_velocity - from_velocity, 1e-10);
     cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T);
@@ -156,4 +155,68 @@ TEST(Maneuver, HighEccentricityCircularizePerigeeTest) {
     EXPECT_DOUBLE_EQ(maneuver.second, orbit.T / 2);
     EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
     EXPECT_DOUBLE_EQ(new_orbit.semi_major_axis, orbit.GetApoapsis());
+}
+
+TEST(Maneuver, RaiseApogeeTest) {
+    namespace cqspt = cqsp::common::components::types;
+    namespace cqsps = cqsp::common::systems;
+    // Make a random orbit, apply an impulse, and ensure the position is te same
+    cqspt::Orbit orbit(57.91e9, 0.2, 0., 0, 0, 0);
+    const double delta_orbit = 2e10;
+    auto maneuver = cqsps::SetApoapsis(orbit, orbit.GetApoapsis() + delta_orbit);
+
+    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T);
+    // Check if it's circular
+
+    EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis(), 1e-4);
+    // Let's just set this to 2e-4 for now, until we can figure out double errors.
+    // I think 2 meter difference is acceptable, for now
+    EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis() + delta_orbit, 2e-4);
+}
+
+TEST(Maneuver, ReduceApogeeTest) {
+    namespace cqspt = cqsp::common::components::types;
+    namespace cqsps = cqsp::common::systems;
+    // Make a random orbit, apply an impulse, and ensure the position is te same
+    cqspt::Orbit orbit(57.91e9, 0.2, 0., 0, 0, 0);
+    const double delta_orbit = -2e10;
+    auto maneuver = cqsps::SetApoapsis(orbit, orbit.GetApoapsis() + delta_orbit);
+
+    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T);
+    // Check if it's circular
+    //EXPECT_DOUBLE_EQ(maneuver.second, orbit.T / 2);
+    //EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
+    EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis(), 1e-4);
+    EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis() + delta_orbit, 1e-4);
+}
+
+TEST(Maneuver, RaisePerigeeTest) {
+    namespace cqspt = cqsp::common::components::types;
+    namespace cqsps = cqsp::common::systems;
+    // Make a random orbit, apply an impulse, and ensure the position is te same
+    cqspt::Orbit orbit(57.91e9, 0.2, 0., 0, 0, 0);
+    const double delta_orbit = 2e10;
+    auto maneuver = cqsps::SetPeriapsis(orbit, orbit.GetPeriapsis() + delta_orbit);
+
+    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T);
+    // Check if it's circular
+
+    EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis() + delta_orbit, 1e-4);
+    EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis(), 1e-4);
+}
+
+TEST(Maneuver, ReducePerigee) {
+    namespace cqspt = cqsp::common::components::types;
+    namespace cqsps = cqsp::common::systems;
+    // Make a random orbit, apply an impulse, and ensure the position is te same
+    cqspt::Orbit orbit(57.91e9, 0.2, 0., 0, 0, 0);
+    const double delta_orbit = -2e10;
+    auto maneuver = cqsps::SetPeriapsis(orbit, orbit.GetPeriapsis() + delta_orbit);
+
+    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T);
+    // Check if it's circular
+    //EXPECT_DOUBLE_EQ(maneuver.second, orbit.T / 2);
+    //EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
+    EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis() + delta_orbit, 1e-4);
+    EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis(), 1e-4);
 }

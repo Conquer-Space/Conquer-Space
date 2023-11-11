@@ -29,4 +29,12 @@ namespace cqsp::common::systems {
 std::pair<glm::dvec3, double> CircularizeAtApoapsis(const components::types::Orbit& orbit);
 // Creates a manuever for a circular orbit at perigee, new altitude will be perigee, the maneuver will be at the perigee
 std::pair<glm::dvec3, double> CircularizeAtPeriapsis(const components::types::Orbit& orbit);
+
+// Raises or lowers apogee to the new altitude. This will not check if you are colliding with the body :(
+// The burn will be at the periapsis
+std::pair<glm::dvec3, double> SetApoapsis(const components::types::Orbit& orbit, double altitude);
+// Raises or lowers perapsis to the new altitude. This will not check if you are colliding with the body
+// The burn will be at the apoapsis
+std::pair<glm::dvec3, double> SetPeriapsis(const components::types::Orbit& orbit, double altitude);
+
 }  // namespace cqsp::common::systems

@@ -36,4 +36,19 @@ std::pair<glm::dvec3, double> CircularizeAtPeriapsis(const components::types::Or
     // This should go retrograde, so it should be negative
     return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), orbit.TimeToMeanAnomaly(0));
 }
+
+std::pair<glm::dvec3, double> SetApoapsis(const components::types::Orbit& orbit, double altitude) {
+    const double new_sma = (orbit.GetPeriapsis() + altitude) / 2;
+    double old_velocity = components::types::OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetPeriapsis());
+    double new_velocity = components::types::OrbitVelocityAtR(orbit.GM, new_sma, orbit.GetPeriapsis());
+    return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), orbit.TimeToMeanAnomaly(0));
+}
+
+std::pair<glm::dvec3, double> SetPeriapsis(const components::types::Orbit& orbit, double altitude) {
+    const double new_sma = (orbit.GetApoapsis() + altitude) / 2;
+    double old_velocity = components::types::OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetApoapsis());
+    double new_velocity = components::types::OrbitVelocityAtR(orbit.GM, new_sma, orbit.GetApoapsis());
+    return std::make_pair(glm::dvec3(0, old_velocity - new_velocity, 0),
+                          orbit.TimeToMeanAnomaly(common::components::types::PI));
+}
 }  // namespace cqsp::common::systems
