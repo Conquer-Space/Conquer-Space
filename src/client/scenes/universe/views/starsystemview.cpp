@@ -1337,13 +1337,13 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
 
     auto& orb = m_universe.get<common::components::types::Orbit>(entity);
 
-    double dis = orb.semi_major_axis;
-    double max_dis = body.SOI;
-    double inc = orb.inclination;
+    const double dis = orb.semi_major_axis;
+    const double max_dis = body.SOI;
+    const double inc = orb.inclination;
 
-    float min_launch_dis = body.radius;
-    dis = dis - min_launch_dis;
-    float r = log(dis) / log(max_dis);
+    const float min_launch_dis = body.radius;
+    float col = dis - min_launch_dis;
+    float r = log(col) / log(max_dis);
     float g = 1 - r;
     float b = inc / 3.15;
     glm::vec4 color_v = {r, g, b, 1};
