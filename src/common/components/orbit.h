@@ -52,7 +52,7 @@ struct Orbit {
     /// a
     kilometer semi_major_axis = 0;
 
-    /// inclination
+    /// inclination, between [0, pi/2], [0, 1.57079633]
     /// <br />
     /// Radians
     /// <br />
@@ -116,6 +116,7 @@ struct Orbit {
 
     /// <summary>
     /// Eccentric anomaly
+    /// Note: This orbit is not updated regularly and should not be trusted for any equation
     /// </summary>
     double E = 0;
 
@@ -141,17 +142,19 @@ struct Orbit {
         nu = sqrt(GM / (semi_major_axis * semi_major_axis * semi_major_axis));
     }
 
-    double GetMtElliptic(double time) { return normalize_radian(M0 + (time - epoch) * nu); }
+    double GetMtElliptic(double time) const { return normalize_radian(M0 + (time - epoch) * nu); }
 
-    double GetOrbitingRadius() { return types::GetOrbitingRadius(eccentricity, semi_major_axis, v); }
+    double GetOrbitingRadius() const { return types::GetOrbitingRadius(eccentricity, semi_major_axis, v); }
 
-    double GetOrbitingRadius(const double& v) { return types::GetOrbitingRadius(eccentricity, semi_major_axis, v); }
+    double GetOrbitingRadius(const double& v) const {
+        return types::GetOrbitingRadius(eccentricity, semi_major_axis, v);
+    }
 
-    double GetApoapsis() { return semi_major_axis * (1 + eccentricity); }
+    double GetApoapsis() const { return semi_major_axis * (1 + eccentricity); }
 
-    double GetPeriapsis() { return semi_major_axis * (1 - eccentricity); }
+    double GetPeriapsis() const { return semi_major_axis * (1 - eccentricity); }
 
-    double TimeToMeanAnomaly(double v2);
+    double TimeToMeanAnomaly(double v2) const;
 };
 
 struct Orbit2 {};
@@ -237,7 +240,7 @@ glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i, const 
                        const radian& v);
 
 double OrbitVelocity(const double v, const double e, const double a, const double GM);
-double OrbitVelocityAtR(const double a, const double r, const double GM);
+double OrbitVelocityAtR(const double GM, const double a, const double r);
 double AvgOrbitalVelocity(const Orbit& orb);
 
 glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v);

@@ -265,7 +265,7 @@ Orbit ApplyImpulse(const Orbit& orbit, const glm::dvec3& impulse, double time) {
     return new_orbit;
 }
 
-double OrbitVelocityAtR(const double a, const double r, const double GM) { return sqrt(GM * (2 / r - 1 / a)); }
+double OrbitVelocityAtR(const double GM, const double a, const double r) { return sqrt(GM * (2 / r - 1 / a)); }
 
 glm::dvec3 OrbitTimeToVec3(const Orbit& orb, const second& time) {
     double v = 0;
@@ -294,7 +294,7 @@ double CalculateTransferAngle(const Orbit& orb1, const Orbit& orb2) {
 double GetHyperbolicAsymptopeAnomaly(double eccentricity) { return std::acos(-1 / eccentricity); }
 
 // https://space.stackexchange.com/questions/54396/how-to-calculate-the-time-to-reach-a-given-true-anomaly
-double Orbit::TimeToMeanAnomaly(double v2) {
+double Orbit::TimeToMeanAnomaly(double v2) const {
     // If it's a hyperbolic orbit, we will have to use different equations.
     // The mean anomaly will be positive, so
     // Get eccentric anomaly

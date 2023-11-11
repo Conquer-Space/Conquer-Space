@@ -23,6 +23,7 @@
 #include "common/components/coordinates.h"
 #include "common/components/orbit.h"
 #include "common/components/units.h"
+#include "common/systems/maneuver/maneuver.h"
 #include "common/systems/movement/sysmovement.h"
 #include "common/universe.h"
 
@@ -319,7 +320,8 @@ TEST(OrbitTest, OrbitImpulseTest) {
     namespace cqspt = cqsp::common::components::types;
     // Make a random orbit, apply an impulse, and ensure the position is te same
     cqspt::Orbit orbit(57.91e7, 0.1, 1.45, 0.29, 0.68, 0);
-    glm::vec3 impulse(0, 1, 0);
+    double velocity = cqspt::OrbitVelocity(orbit.v, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+    glm::dvec3 impulse(0, 1, 0);
     cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, impulse, 0);
 
     // Sanity check on the vector addition
@@ -329,7 +331,6 @@ TEST(OrbitTest, OrbitImpulseTest) {
     glm::dvec3 transfer_vec = cqspt::ConvertToOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, orbit.v, impulse);
     glm::dvec3 velocity_vec = cqspt::OrbitVelocityToVec3(orbit, 0);
     // The velocity vector and transfer vector should be parallel
-    // so
     EXPECT_NEAR(glm::dot(glm::normalize(transfer_vec), glm::normalize(velocity_vec)), 1, 1e-4);
     double r = orbit.GetOrbitingRadius();
     double r2 = new_orbit.GetOrbitingRadius();
@@ -351,6 +352,18 @@ TEST(OrbitTest, OrbitImpulseTest) {
     EXPECT_NEAR(glm::length(new_orbit_v) - glm::length(orbit_v), 1, 1e-4);
 
     // Check out the new semi major axis
+    // velocity + glm::length(impulse)
+    double orb_velocity = velocity + glm::length(impulse);
+    double new_sma = -1 / (orb_velocity * orb_velocity / orbit.GM - 2 / glm::length(orbit_vec));
+    EXPECT_NEAR(new_orbit.semi_major_axis, new_sma, 1e-4);
+    // Eccentricity should be
+    double ap = new_sma * 2 - glm::length(orbit_vec);
+    double pe = glm::length(orbit_vec);
+    double ecc = (ap - pe) / (ap + pe);
+    EXPECT_NEAR(ecc, new_orbit.eccentricity, 1e-10);
+    EXPECT_NEAR(orbit.inclination, new_orbit.inclination, 1e-10);
+    EXPECT_NEAR(orbit.w, new_orbit.w, 1e-10);
+    EXPECT_NEAR(orbit.LAN, new_orbit.LAN, 1e-10);
 }
 
 TEST(OrbitTest, ToRadianTest) {
