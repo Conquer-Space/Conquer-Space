@@ -21,6 +21,7 @@
 #include "common/components/movement.h"
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
+#include "common/systems/maneuver/hohmann.h"
 #include "common/systems/maneuver/maneuver.h"
 #include "common/util/nameutil.h"
 
@@ -153,6 +154,24 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         double orbit_velocity =
             common::components::types::OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
         ImGui::SetTooltip("Delta-v: %f km/s", new_v - orbit_velocity);
+    }
+
+    ImGui::InputDouble("Set Orbit Altitude", &new_hohmann, 0, 10000000);
+    if (ImGui::Button("Set New Orbit")) {
+        // Get velocity at the new apogee
+        // Get the velocity
+        auto hohmann = common::systems::HohmannTransfer(orbit, new_hohmann);
+        if (hohmann.has_value()) {
+            auto& queue = GetUniverse().get_or_emplace<common::components::CommandQueue>(body);
+            common::components::Maneuver man_1(hohmann->first);
+            common::components::Maneuver man_2(hohmann->second);
+            man_1.time += (GetUniverse().date.ToSecond() + 1000);
+            man_2.time += (GetUniverse().date.ToSecond() + 1000);
+            queue.commands.push_back(man_1);
+            queue.commands.push_back(man_2);
+        } else {
+            SPDLOG_INFO("Orbit is not circular!");
+        }
     }
     // Display spaceship delta v in the future
     // Display controls of the spaceship

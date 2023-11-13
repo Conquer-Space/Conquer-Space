@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include "common/components/orbit.h"
 #include "common/components/units.h"
 #include "common/systems/maneuver/maneuver.h"
+
 TEST(Maneuver, CircularCircularizeApogeeTest) {
     namespace cqspt = cqsp::common::components::types;
     namespace cqsps = cqsp::common::systems;
@@ -103,7 +103,7 @@ TEST(Maneuver, HighEccentricityCircularizeApogeeTest) {
 
 // TODO(EhWhoAmI): Reenable when I understand what's up with this
 // The formula works, but when I change mt to epoch, it gets a bit weird
-TEST(Maneuver, OffsetCircularizeApogeeTest_Disabled) {
+TEST(Maneuver, DISABLED_OffsetCircularizeApogeeTest) {
     namespace cqspt = cqsp::common::components::types;
     namespace cqsps = cqsp::common::systems;
     // Make a random orbit, apply an impulse, and ensure the position is te same
@@ -184,7 +184,7 @@ TEST(Maneuver, HighEccentricityCircularizePerigeeTest) {
     EXPECT_NEAR(new_orbit.GetApoapsis(), new_orbit.GetPeriapsis(), 1e-4);
 }
 
-TEST(Maneuver, OffsetCircularizePerigeeTest_Disabled) {
+TEST(Maneuver, DISABLED_OffsetCircularizePerigeeTest) {
     // MT is offset a little bit to catch the error where we did not get the correct true anomaly
     // of the impulse position
     namespace cqspt = cqsp::common::components::types;
