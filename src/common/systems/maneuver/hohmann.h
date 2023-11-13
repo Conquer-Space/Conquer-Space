@@ -16,21 +16,15 @@
  */
 #pragma once
 
-#include "client/systems/sysgui.h"
+#include <optional>
+#include <utility>
 
-namespace cqsp::client::systems {
-class SpaceshipWindow : public SysUserInterface {
- public:
-    explicit SpaceshipWindow(cqsp::engine::Application& app) : SysUserInterface(app) {}
-    void Init();
-    void DoUI(int delta_time);
-    void DoUpdate(int delta_time);
+#include <glm/vec3.hpp>
 
- private:
-    bool show_orbital_elements = true;
-    bool show_orbital_vectors = false;
-    double new_perigee = 0.;
-    double new_apogee = 0.;
-    double new_hohmann = 0.;
-};
-}  // namespace cqsp::client::systems
+#include "common/components/orbit.h"
+
+namespace cqsp::common::systems {
+typedef std::pair<glm::dvec3, double> Maneuver_t;
+typedef std::pair<Maneuver_t, Maneuver_t> HohmannPair_t;
+std::optional<HohmannPair_t> HohmannTransfer(const components::types::Orbit& orbit, double altitude);
+}  // namespace cqsp::common::systems
