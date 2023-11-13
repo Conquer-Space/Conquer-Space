@@ -133,6 +133,27 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
             common::components::types::OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
         ImGui::SetTooltip("Delta-v: %f km/s", new_v - orbit_velocity);
     }
+
+    // Change apogee
+    ImGui::InputDouble("Set Periapsis Altitude", &new_apogee, 0, 10000000);
+    if (ImGui::Button("Set Periapsis")) {
+        // Get velocity at the new apogee
+        // Get the velocity
+        common::components::Maneuver maneuver;
+        auto m = common::systems::SetPeriapsis(orbit, new_apogee);
+        maneuver.delta_v = m.first;
+        maneuver.time = GetUniverse().date.ToSecond() + m.second;
+        GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push_back(maneuver);
+    }
+
+    if (ImGui::IsItemHovered()) {
+        double new_sma = (orbit.GetPeriapsis() + new_apogee) / 2;
+        // Get velocity at the new apogee
+        double new_v = common::components::types::OrbitVelocityAtR(orbit.GM, new_sma, orbit.GetPeriapsis());
+        double orbit_velocity =
+            common::components::types::OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+        ImGui::SetTooltip("Delta-v: %f km/s", new_v - orbit_velocity);
+    }
     // Display spaceship delta v in the future
     // Display controls of the spaceship
     ImGui::End();
