@@ -49,7 +49,7 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         ImGui::TextFmt("Inclination: {}\u00b0", toDegree(orbit.inclination));
         ImGui::TextFmt("Longitude of the ascending node: {}\u00b0", toDegree(orbit.LAN));
         ImGui::TextFmt("Argument of periapsis: {}\u00b0", toDegree(orbit.w));
-        ImGui::TextFmt("Mean anomaly: {}\u00b0", toDegree(orbit.M0));
+        ImGui::TextFmt("Mean anomaly at Epoch: {}\u00b0", toDegree(orbit.M0));
         ImGui::TextFmt("Epoch: {}s", orbit.epoch);
         ImGui::TextFmt("GM: {} km^3 * s^-2", orbit.GM);
         ImGui::TextFmt("Orbital period: {} s", orbit.T);

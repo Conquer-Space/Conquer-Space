@@ -101,6 +101,32 @@ TEST(Maneuver, HighEccentricityCircularizeApogeeTest) {
     EXPECT_DOUBLE_EQ(new_orbit.semi_major_axis, orbit.GetApoapsis());
 }
 
+// TODO(EhWhoAmI): Reenable when I understand what's up with this
+// The formula works, but when I change mt to epoch, it gets a bit weird
+TEST(Maneuver, OffsetCircularizeApogeeTest_Disabled) {
+    namespace cqspt = cqsp::common::components::types;
+    namespace cqsps = cqsp::common::systems;
+    // Make a random orbit, apply an impulse, and ensure the position is te same
+    const cqspt::Orbit orbit(57.91e7, 0.2, 0, 0, 0, 1);
+    auto maneuver = cqsps::CircularizeAtApoapsis(orbit);
+    // Get the manever velocity?
+    // Compare to circular velocity
+    double to_velocity = cqspt::GetCircularOrbitingVelocity(orbit.GM, orbit.GetApoapsis());
+    double from_velocity = glm::length(cqspt::OrbitVelocityToVec3(orbit, cqspt::PI));
+    double r = cqspt::OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetApoapsis());
+    EXPECT_DOUBLE_EQ(from_velocity, r);
+    EXPECT_NEAR(glm::length(maneuver.first), to_velocity - from_velocity, 1e-10);
+    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second);
+    EXPECT_EQ(GetTrueAnomaly(orbit, orbit.TimeToMeanAnomaly(cqspt::PI)), cqspt::PI);
+    EXPECT_EQ(orbit.nu, 0);
+    // Check if it's circular
+    // Get velocity at apogee
+    EXPECT_DOUBLE_EQ(orbit.TimeToMeanAnomaly(cqspt::PI), maneuver.second);
+    EXPECT_EQ(orbit.TimeToMeanAnomaly(cqspt::PI), 0);
+    EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
+    EXPECT_DOUBLE_EQ(new_orbit.semi_major_axis, orbit.GetApoapsis());
+}
+
 TEST(Maneuver, CircularizePerigeeTest) {
     namespace cqspt = cqsp::common::components::types;
     namespace cqsps = cqsp::common::systems;
@@ -137,24 +163,46 @@ TEST(Maneuver, CircularCircularizePerigeeTest) {
     EXPECT_DOUBLE_EQ(new_orbit.semi_major_axis, orbit.GetPeriapsis());
 }
 
+// TODO(EhWhoAmI): Reenable when I understand what's up with this
 TEST(Maneuver, HighEccentricityCircularizePerigeeTest) {
     namespace cqspt = cqsp::common::components::types;
     namespace cqsps = cqsp::common::systems;
-    // Make a random orbit, apply an impulse, and ensure the position is te same
     cqspt::Orbit orbit(57.91e9, 0.9, 0., 0, 0, 0);
-    auto maneuver = cqsps::CircularizeAtApoapsis(orbit);
+    // Circularize at periapsis
+    auto maneuver = cqsps::CircularizeAtPeriapsis(orbit);
 
-    double to_velocity = cqspt::GetCircularOrbitingVelocity(orbit.GM, orbit.GetApoapsis());
-    double from_velocity = glm::length(cqspt::OrbitVelocityToVec3(orbit, cqspt::PI));
-    double r = cqspt::OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetApoapsis());
-
+    double to_velocity = cqspt::GetCircularOrbitingVelocity(orbit.GM, orbit.GetPeriapsis());
+    double from_velocity = glm::length(cqspt::OrbitVelocityToVec3(orbit, 0));
+    double r = cqspt::OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetPeriapsis());
     EXPECT_DOUBLE_EQ(from_velocity, r);
-    EXPECT_NEAR(glm::length(maneuver.first), to_velocity - from_velocity, 1e-10);
+    EXPECT_NEAR(glm::length(maneuver.first), from_velocity - to_velocity, 1e-10);
     cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T);
     // Check if it's circular
-    EXPECT_DOUBLE_EQ(maneuver.second, orbit.T / 2);
+    EXPECT_DOUBLE_EQ(maneuver.second, 0);
     EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
-    EXPECT_DOUBLE_EQ(new_orbit.semi_major_axis, orbit.GetApoapsis());
+    EXPECT_NEAR(new_orbit.semi_major_axis, orbit.GetPeriapsis(), 1e-4);
+    EXPECT_NEAR(new_orbit.GetApoapsis(), new_orbit.GetPeriapsis(), 1e-4);
+}
+
+TEST(Maneuver, OffsetCircularizePerigeeTest_Disabled) {
+    // MT is offset a little bit to catch the error where we did not get the correct true anomaly
+    // of the impulse position
+    namespace cqspt = cqsp::common::components::types;
+    namespace cqsps = cqsp::common::systems;
+    cqspt::Orbit orbit(57.91e9, 0.9, 0., 0, 0, 0.45);
+    // Circularize at periapsis
+    auto maneuver = cqsps::CircularizeAtPeriapsis(orbit);
+
+    double to_velocity = cqspt::GetCircularOrbitingVelocity(orbit.GM, orbit.GetPeriapsis());
+    double from_velocity = glm::length(cqspt::OrbitVelocityToVec3(orbit, 0));
+    double r = cqspt::OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetPeriapsis());
+    EXPECT_DOUBLE_EQ(from_velocity, r);
+    EXPECT_NEAR(glm::length(maneuver.first), from_velocity - to_velocity, 1e-10);
+    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T);
+    // Check if it's circular
+    EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
+    EXPECT_NEAR(new_orbit.semi_major_axis, orbit.GetPeriapsis(), 1e-4);
+    EXPECT_NEAR(new_orbit.GetApoapsis(), new_orbit.GetPeriapsis(), 1e-4);
 }
 
 TEST(Maneuver, RaiseApogeeTest) {

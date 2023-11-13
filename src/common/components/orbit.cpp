@@ -222,10 +222,9 @@ void UpdateOrbit(Orbit& orb, const second& time) {
 }
 
 double GetTrueAnomaly(const Orbit& orb, const second& epoch) {
-    double E = 0;
     double v = 0;
     if (orb.eccentricity < 1) {
-        v = TrueAnomalyElliptic(orb, epoch, E);
+        v = TrueAnomalyElliptic(orb, epoch);
     } else {
         v = TrueAnomalyHyperbolic(orb, epoch);
     }
@@ -253,8 +252,8 @@ glm::dvec3 CalculateVelocityElliptic(const double& E, const double& r, const dou
 Orbit ApplyImpulse(const Orbit& orbit, const glm::dvec3& impulse, double time) {
     // Calculate v at epoch
     // Move the orbit
-    const glm::dvec3& norm_impulse = ConvertToOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, orbit.v, impulse);
     const double v = GetTrueAnomaly(orbit, time);
+    const glm::dvec3& norm_impulse = ConvertToOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, v, impulse);
     const glm::dvec3 position = toVec3(orbit, v);
     const glm::dvec3 velocity = OrbitVelocityToVec3(orbit, v);
 
@@ -304,7 +303,7 @@ double Orbit::TimeToMeanAnomaly(double v2) const {
     if (v > PI) {
         M0 *= -1;
     }
-    // Need to determine a way to calculate if M0 is positive or negative
+
     const double E = std::acos((eccentricity + cos(v2)) / (1 + eccentricity * cos(v2)));
     double M = E - std::sin(E) * eccentricity;
 
