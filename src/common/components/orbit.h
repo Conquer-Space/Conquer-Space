@@ -121,6 +121,9 @@ struct Orbit {
     double E = 0;
 
     Orbit() = default;
+
+    // TODO(EhWhoAmI): Mean anomaly is not the true anomaly, we need to convert
+    // mean anomaly to true anomaly
     Orbit(kilometer semi_major_axis, double eccentricity, radian inclination, radian LAN, radian w, radian M0)
         : eccentricity(eccentricity),
           semi_major_axis(semi_major_axis),

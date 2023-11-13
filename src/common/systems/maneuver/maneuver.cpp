@@ -23,7 +23,7 @@ std::pair<glm::dvec3, double> CircularizeAtApoapsis(const components::types::Orb
     // Get velocity at apogee
     const double old_velocity =
         components::types::OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetApoapsis());
-    return std::make_pair(glm::dvec3(0, old_velocity - new_velocity, 0),
+    return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0),
                           orbit.TimeToMeanAnomaly(common::components::types::PI));
 }
 
@@ -48,7 +48,7 @@ std::pair<glm::dvec3, double> SetPeriapsis(const components::types::Orbit& orbit
     const double new_sma = (orbit.GetApoapsis() + altitude) / 2;
     double old_velocity = components::types::OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetApoapsis());
     double new_velocity = components::types::OrbitVelocityAtR(orbit.GM, new_sma, orbit.GetApoapsis());
-    return std::make_pair(glm::dvec3(0, old_velocity - new_velocity, 0),
+    return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0),
                           orbit.TimeToMeanAnomaly(common::components::types::PI));
 }
 }  // namespace cqsp::common::systems
