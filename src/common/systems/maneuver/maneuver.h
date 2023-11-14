@@ -36,5 +36,6 @@ std::pair<glm::dvec3, double> SetApoapsis(const components::types::Orbit& orbit,
 // Raises or lowers perapsis to the new altitude. This will not check if you are colliding with the body
 // The burn will be at the apoapsis
 std::pair<glm::dvec3, double> SetPeriapsis(const components::types::Orbit& orbit, double altitude);
-
+std::pair<glm::dvec3, double> SetInclination(const components::types::Orbit& orbit, double inclination);
+std::pair<glm::dvec3, double> SetCircularInclination(const components::types::Orbit& orbit, double inclination);
 }  // namespace cqsp::common::systems

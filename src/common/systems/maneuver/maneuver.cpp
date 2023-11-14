@@ -51,4 +51,21 @@ std::pair<glm::dvec3, double> SetPeriapsis(const components::types::Orbit& orbit
     return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0),
                           orbit.TimeToMeanAnomaly(common::components::types::PI));
 }
+
+std::pair<glm::dvec3, double> SetInclination(const components::types::Orbit& orbit, double inclination) {
+    const double d_inc = inclination - orbit.inclination;
+    double dv = (2 * sin(d_inc / 2) * (1 + orbit.eccentricity * cos(orbit.v)) * orbit.nu * orbit.semi_major_axis) /
+                (sqrt(1 - orbit.eccentricity * orbit.eccentricity) * cos(orbit.w + orbit.v));
+    return std::make_pair(glm::dvec3(), 0);
+}
+
+std::pair<glm::dvec3, double> SetCircularInclination(const components::types::Orbit& orbit, double inclination) {
+    // Get inclination at time
+    const double d_inc = abs(inclination - orbit.inclination);
+    double v = components::types::GetCircularOrbitingVelocity(orbit.GM, orbit.semi_major_axis);
+    double delta_v = 2 * v * sin(d_inc / 2);
+    // Delta-v should be at the ascending node
+    glm::dvec3 vector = glm::dquat(glm::dvec3(inclination, 0, 0)) * glm::dvec3(0, 0, delta_v);
+    return std::make_pair(vector, orbit.TimeToMeanAnomaly(orbit.LAN));
+}
 }  // namespace cqsp::common::systems
