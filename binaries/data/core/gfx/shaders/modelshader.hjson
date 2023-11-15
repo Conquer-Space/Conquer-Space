@@ -1,0 +1,9 @@
+{
+    // Renders white lines
+    // Yes, this is copied straight from sunshader
+    vert: modelshader.vert
+    frag: modelfrag.frag
+    uniforms: {
+        
+    }
+}

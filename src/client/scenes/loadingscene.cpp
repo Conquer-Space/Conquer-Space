@@ -28,6 +28,7 @@
 #include <tracy/common/TracySystem.hpp>
 
 #include "client/scenes/mainmenu/mainmenuscene.h"
+#include "client/scenes/modelscene.h"
 #include "client/scenes/objecteditor/objecteditorscene.h"
 #include "client/scenes/texttestscene.h"
 #include "client/scenes/universeloadingscene.h"
@@ -103,6 +104,8 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
             GetApp().SetScene<cqsp::scene::TextTestScene>();
         } else if (GetApp().HasCmdLineArgs("-ov")) {
             GetApp().SetScene<cqsp::scene::ObjectEditorScene>();
+        } else if (GetApp().HasCmdLineArgs("-mv")) {
+            GetApp().SetScene<cqsp::scene::ModelScene>();
         } else {
             SPDLOG_INFO("Loading main menu");
             GetApp().SetScene<cqsp::scene::MainMenuScene>();

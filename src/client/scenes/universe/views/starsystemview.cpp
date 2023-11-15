@@ -165,7 +165,7 @@ void SysStarSystemRenderer::Render(float deltaTime) {
     renderer.DrawAllLayers();
     // Draw model
     vis_shader->UseProgram();
-    model->mesh.Draw();
+    vis_shader->SetMVP(glm::mat4(1.f), glm::mat4(1.f), projection);
 }
 
 void SysStarSystemRenderer::SeeStarSystem() {
@@ -1360,7 +1360,6 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
     float b = inc / 3.15;
     glm::vec4 color_v = {r, g, b, 1};
     orbit_shader->Set("color", color_v);
-
 
     //orbit_shader->Set("color", glm::vec4(1, 1, 1, 1));
     // Set to the center of the universe

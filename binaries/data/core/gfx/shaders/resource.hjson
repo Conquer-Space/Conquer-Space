@@ -141,4 +141,9 @@
         type: shader_def
         hints: {}
     }
+    model_shader: {
+        path: modelshader.hjson
+        type: shader_def
+        hints: {}
+    }
 }

@@ -142,7 +142,7 @@ void GenerateMesh(engine::Mesh& mesh, std::vector<Vertex> vertices, std::vector<
     mesh.VBO = VBO;
 }
 
-void LoadModelData(asset::Model* model, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices) {
-    GenerateMesh(model->mesh, std::move(vertices), std::move(indices));
+void LoadModelData(engine::Mesh* mesh, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices) {
+    GenerateMesh(*mesh, std::move(vertices), std::move(indices));
 }
 }  // namespace cqsp::asset
