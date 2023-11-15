@@ -132,7 +132,7 @@ class Application {
     void SetFontShader(cqsp::asset::ShaderProgram* shader) { fontShader = shader; }
 
     /// <summary>
-    /// Time in seconds
+    /// Time since glfw was initialized in seconds
     /// </summary>
     /// <returns></returns>
     double GetTime();

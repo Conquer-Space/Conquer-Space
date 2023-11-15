@@ -73,5 +73,5 @@ class Material {
     std::vector<Texture> textures;
 };
 
-void LoadModelData(asset::Model* model, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
+void LoadModelData(engine::Mesh* mesh, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
 }  // namespace cqsp::asset

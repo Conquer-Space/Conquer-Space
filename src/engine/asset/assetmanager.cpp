@@ -88,10 +88,14 @@ class FontPrototype : public AssetPrototype {
     int GetPrototypeType() { return PrototypeType::FONT; }
 };
 
-struct ModelPrototype : public AssetPrototype {
- public:
+struct MeshPrototype {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
+};
+
+struct ModelPrototype : public AssetPrototype {
+ public:
+    std::vector<MeshPrototype> prototypes;
     int GetPrototypeType() { return PrototypeType::MODEL; }
 };
 }  // namespace
@@ -100,6 +104,7 @@ struct ModelPrototype : public AssetPrototype {
 // This is the reason why we should rewrite asset manager into separate classes
 namespace {
 struct ModelLoader {
+    int m_count = 0;
     ModelPrototype* model_prototype;
     std::map<std::string, Texture> material_textures;
 
@@ -117,7 +122,10 @@ struct ModelLoader {
             LoadNode(node->mChildren[i], scene);
         }
     }
+
     void LoadMesh(aiMesh* mesh, const aiScene* scene) {
+        SPDLOG_INFO("Loading meshes {}", m_count++);
+        MeshPrototype mesh_prototype;
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
             Vertex vertex;
             vertex.position.x = mesh->mVertices[i].x;
@@ -146,17 +154,18 @@ struct ModelLoader {
             } else {
                 vertex.texCoords = glm::vec2(0.0f, 0.0f);
             }
-            model_prototype->vertices.push_back(vertex);
+            mesh_prototype.vertices.push_back(vertex);
         }
         for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
             aiFace& face = mesh->mFaces[i];
             for (unsigned int j = 0; j < face.mNumIndices; j++) {
-                model_prototype->indices.push_back(face.mIndices[j]);
+                mesh_prototype.indices.push_back(face.mIndices[j]);
             }
         }
         if (mesh->mMaterialIndex >= 0) {
             LoadMaterial(scene->mMaterials[mesh->mMaterialIndex]);
         }
+        model_prototype->prototypes.push_back(mesh_prototype);
     }
 
     // https://assimp.sourceforge.net/lib_html/material_8h.html#a7dd415ff703a2cc53d1c22ddbbd7dde0
@@ -556,7 +565,11 @@ void AssetLoader::BuildNextAsset() {
             // Generate model
             ModelPrototype* prototype = dynamic_cast<ModelPrototype*>(temp.prototype);
             Model* asset = dynamic_cast<Model*>(prototype->asset);
-            asset::LoadModelData(asset, prototype->vertices, prototype->indices);
+            for (auto& mesh_type : prototype->prototypes) {
+                engine::Mesh mesh;
+                asset::LoadModelData(&mesh, mesh_type.vertices, mesh_type.indices);
+                asset->meshes.push_back(mesh);
+            }
         } break;
     }
 
