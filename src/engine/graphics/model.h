@@ -53,15 +53,15 @@ struct Vertex {
  public:
     static const int MAX_BONE_INFLUENCE = 4;
     // position
-    glm::vec3 position;
+    glm::vec3 position = glm::vec3(0.f, 0.f, 0.f);
     // normal
-    glm::vec3 normal;
+    glm::vec3 normal = glm::vec3(0.f, 0.f, 0.f);
     // texCoords
-    glm::vec2 texCoords;
+    glm::vec2 texCoords = glm::vec2(0.f, 0.f);
     // tangent
-    glm::vec3 tangent;
+    glm::vec3 tangent = glm::vec3(0.f, 0.f, 0.f);
     // bitangent
-    glm::vec3 bitangent;
+    glm::vec3 bitangent = glm::vec3(0.f, 0.f, 0.f);
     //bone indexes which will influence this vertex
     int m_BoneIDs[MAX_BONE_INFLUENCE];
     //weights from each bone

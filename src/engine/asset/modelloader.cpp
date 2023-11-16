@@ -166,6 +166,7 @@ void LoadModelPrototype(ModelPrototype* prototype, Model* asset) {
         asset::CreateTexture(*texture, tex_prototype.texture_data, tex_prototype.width, tex_prototype.height,
                              tex_prototype.channels);
         // Insert the textures into the model
+        stbi_image_free(tex_prototype.texture_data);
         texture_map[textures.first] = texture;
     }
 
@@ -198,6 +199,7 @@ void ModelLoader::LoadMaterialTextures(aiMaterial* material, const aiTextureType
         // Look for the relative path to the model
         // TODO(EhWhoAmI): Load it from our vfs
         auto tex_path = std::filesystem::path(asset_path) / path_str;
+        stbi_set_flip_vertically_on_load((int)true);
         mesh_proto.texture_data =
             stbi_load(tex_path.string().c_str(), &mesh_proto.width, &mesh_proto.height, &mesh_proto.channels, 0);
         if (mesh_proto.texture_data == NULL) {
@@ -262,7 +264,7 @@ void ModelLoader::LoadMesh(aiMesh* mesh) {
             // a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't
             // use models where a vertex can have multiple texture coordinates so we always take the first set (0).
             vertex.texCoords.x = mesh->mTextureCoords[0][i].x;
-            vertex.texCoords.x = mesh->mTextureCoords[0][i].y;
+            vertex.texCoords.y = mesh->mTextureCoords[0][i].y;
             // tangent
             vertex.tangent.x = mesh->mTangents[i].x;
             vertex.tangent.y = mesh->mTangents[i].y;
@@ -283,7 +285,7 @@ void ModelLoader::LoadMesh(aiMesh* mesh) {
         }
     }
     if (mesh->mMaterialIndex >= 0) {
-        // Set the mateiral index
+        // Set the material index
         mesh_prototype.material_id = mesh->mMaterialIndex;
     }
     model_prototype->prototypes.push_back(mesh_prototype);
