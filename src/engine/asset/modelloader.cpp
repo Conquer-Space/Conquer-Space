@@ -20,11 +20,18 @@
 #include <stb_image.h>
 
 #include <cstddef>
+#include <filesystem>
+#include <memory>
 #include <utility>
 #include <vector>
 
 #include "engine/graphics/mesh.h"
 #include "engine/graphics/texture.h"
+
+#define SET_MATERIAL_TEXTURES(part)                      \
+    for (auto&(part) : material_prototype.second.part) { \
+        material.part.push_back(texture_map[part]);      \
+    }
 
 namespace cqsp::asset {
 IOSystem::IOSystem(VirtualMounter* mount) : mount(mount) {}
@@ -143,43 +150,77 @@ void GenerateMesh(engine::Mesh& mesh, std::vector<Vertex> vertices, std::vector<
     mesh.indicies = indices.size();
 }
 
+void LoadModelPrototype(ModelPrototype* prototype, Model* asset) {
+    for (auto& mesh_type : prototype->prototypes) {
+        ModelMesh_t mesh = std::make_shared<ModelMesh>();
+        asset::LoadModelData(mesh.get(), mesh_type.vertices, mesh_type.indices);
+        mesh->material = mesh_type.material_id;
+        asset->meshes.push_back(mesh);
+    }
+    // Load textures
+    std::map<std::string, asset::Texture*> texture_map;
+    for (auto& textures : prototype->texture_map) {
+        // Set the map
+        asset::Texture* texture = new asset::Texture();
+        auto& tex_prototype = textures.second;
+        asset::CreateTexture(*texture, tex_prototype.texture_data, tex_prototype.width, tex_prototype.height,
+                             tex_prototype.channels);
+        // Insert the textures into the model
+        texture_map[textures.first] = texture;
+    }
+
+    // Load materials
+    for (auto& material_prototype : prototype->material_map) {
+        // Loop through the list
+        Material material;
+        SET_MATERIAL_TEXTURES(ambient);
+        SET_MATERIAL_TEXTURES(specular);
+        SET_MATERIAL_TEXTURES(diffuse);
+        SET_MATERIAL_TEXTURES(height);
+        asset->materials[material_prototype.first] = material;
+    }
+}
+
 void LoadModelData(engine::Mesh* mesh, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices) {
     GenerateMesh(*mesh, std::move(vertices), std::move(indices));
 }
 
 void ModelLoader::LoadMaterialTextures(aiMaterial* material, const aiTextureType& type, MaterialPrototype& prototype) {
-    {
-        // Set the prototype mesh
-        for (int i = 0; i < material->GetTextureCount(type); i++) {
-            aiString path;
-            material->GetTexture(type, i, &path);
-            std::string path_str(path.C_Str());
-            if (model_prototype->texture_map.contains(path_str)) {
-                continue;
-            }
-            ModelTexturePrototype mesh_proto;
-            ENGINE_LOG_INFO("Loading texture {}", path.C_Str());
-            // Look for the relative path to the model
-            mesh_proto.texture_data =
-                stbi_load(path.C_Str(), &mesh_proto.width, &mesh_proto.height, &mesh_proto.channels, 0);
-            model_prototype->texture_map[path_str] = mesh_proto;
-            // This is rather ugly
-            switch (type) {
-                case aiTextureType_SPECULAR:
-                    prototype.specular.push_back(path_str);
-                    break;
-                case aiTextureType_DIFFUSE:
-                    prototype.diffuse.push_back(path_str);
-                    break;
-                case aiTextureType_HEIGHT:
-                    prototype.height.push_back(path_str);
-                    break;
-                case aiTextureType_AMBIENT:
-                    prototype.ambient.push_back(path_str);
-                    break;
-                default:
-                    break;
-            }
+    // Set the prototype mesh
+    for (int i = 0; i < material->GetTextureCount(type); i++) {
+        aiString path;
+        material->GetTexture(type, i, &path);
+        std::string path_str(path.C_Str());
+        if (model_prototype->texture_map.contains(path_str)) {
+            continue;
+        }
+        ModelTexturePrototype mesh_proto;
+        // Look for the relative path to the model
+        // TODO(EhWhoAmI): Load it from our vfs
+        auto tex_path = std::filesystem::path(asset_path) / path_str;
+        mesh_proto.texture_data =
+            stbi_load(tex_path.string().c_str(), &mesh_proto.width, &mesh_proto.height, &mesh_proto.channels, 0);
+        if (mesh_proto.texture_data == NULL) {
+            ENGINE_LOG_WARN("Error loading texture {} ()", path_str, asset_path);
+            continue;
+        }
+        model_prototype->texture_map[path_str] = mesh_proto;
+        // This is rather ugly
+        switch (type) {
+            case aiTextureType_SPECULAR:
+                prototype.specular.push_back(path_str);
+                break;
+            case aiTextureType_DIFFUSE:
+                prototype.diffuse.push_back(path_str);
+                break;
+            case aiTextureType_HEIGHT:
+                prototype.height.push_back(path_str);
+                break;
+            case aiTextureType_AMBIENT:
+                prototype.ambient.push_back(path_str);
+                break;
+            default:
+                break;
         }
     }
 }
@@ -204,7 +245,6 @@ void ModelLoader::LoadNode(aiNode* node) {
 }
 
 void ModelLoader::LoadMesh(aiMesh* mesh) {
-    SPDLOG_INFO("Loading meshes {}", m_count++);
     MeshPrototype mesh_prototype;
     for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;

@@ -17,6 +17,7 @@
 #pragma once
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -29,16 +30,21 @@
 
 namespace cqsp::asset {
 struct Material {
-    std::vector<cqsp::asset::Texture*> textures;
+    std::vector<asset::Texture*> diffuse;
+    std::vector<asset::Texture*> specular;
+    std::vector<asset::Texture*> ambient;
+    std::vector<asset::Texture*> height;
 };
 
 struct ModelMesh : public engine::Mesh {
-    Material* material;
+    int material;
 };
 
+typedef std::shared_ptr<ModelMesh> ModelMesh_t;
+
 struct Model : public Asset {
-    std::vector<engine::Mesh_t> meshes;
-    std::map<std::string, Material> materials;
+    std::vector<ModelMesh_t> meshes;
+    std::map<int, Material> materials;
 
     AssetType GetAssetType() override { return AssetType::MODEL; }
 };
