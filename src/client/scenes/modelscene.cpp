@@ -56,6 +56,6 @@ void cqsp::scene::ModelScene::Render(float deltaTime) {
     shader->setMat4("model", model_transform);
     //mesh->Draw();
     for (auto& model_mesh : model->meshes) {
-        model_mesh.Draw();
+        model_mesh->Draw();
     }
 }

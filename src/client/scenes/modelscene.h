@@ -38,7 +38,7 @@ class ModelScene : public cqsp::client::Scene {
  private:
     asset::Model* model;
     asset::ShaderProgram_t shader;
-    engine::Mesh* mesh;
+    engine::Mesh_t mesh;
 };
 }  // namespace scene
 }  // namespace cqsp

@@ -93,9 +93,9 @@ struct PlanetTexture {
 };
 
 struct PlanetOrbit {
-    cqsp::engine::Mesh* orbit_mesh;
+    cqsp::engine::Mesh_t orbit_mesh;
 
-    ~PlanetOrbit() { delete orbit_mesh; }
+    ~PlanetOrbit() = default;
 };
 }  // namespace
 
@@ -723,7 +723,7 @@ void SysStarSystemRenderer::LoadProvinceMap() {}
 
 void SysStarSystemRenderer::InitializeMeshes() {
     // Initialize meshes, etc
-    cqsp::engine::Mesh* sphere_mesh =
+    cqsp::engine::Mesh_t sphere_mesh =
         cqsp::engine::primitive::ConstructSphereMesh(sphere_resolution, sphere_resolution);
 
     // Initialize sky box
@@ -1263,7 +1263,6 @@ void SysStarSystemRenderer::GenerateOrbit(entt::entity body) {
     auto& line = m_universe.get_or_emplace<PlanetOrbit>(body);
     // Get the orbit line
     // Do the points
-    delete line.orbit_mesh;
     line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);
 }
 

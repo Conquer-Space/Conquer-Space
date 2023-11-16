@@ -566,8 +566,8 @@ void AssetLoader::BuildNextAsset() {
             ModelPrototype* prototype = dynamic_cast<ModelPrototype*>(temp.prototype);
             Model* asset = dynamic_cast<Model*>(prototype->asset);
             for (auto& mesh_type : prototype->prototypes) {
-                engine::Mesh mesh;
-                asset::LoadModelData(&mesh, mesh_type.vertices, mesh_type.indices);
+                engine::Mesh_t mesh = engine::MakeMesh();
+                asset::LoadModelData(mesh.get(), mesh_type.vertices, mesh_type.indices);
                 asset->meshes.push_back(mesh);
             }
         } break;
