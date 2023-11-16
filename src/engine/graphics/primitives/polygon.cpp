@@ -26,8 +26,8 @@
 #include "common/components/units.h"
 
 namespace cqsp::engine::primitive {
-Mesh* CreateFilledCircle(int segments) {
-    Mesh* mesh = new Mesh();
+Mesh_t CreateFilledCircle(int segments) {
+    Mesh_t mesh = engine::MakeMesh();
 
     std::vector<float> positions;
     positions.push_back(0);
@@ -77,11 +77,11 @@ Mesh* CreateFilledCircle(int segments) {
     return mesh;
 }
 
-Mesh* CreateFilledTriangle() { return CreateFilledCircle(3); }
+Mesh_t CreateFilledTriangle() { return CreateFilledCircle(3); }
 
-Mesh* CreateFilledSquare() { return CreateFilledCircle(4); }
+Mesh_t CreateFilledSquare() { return CreateFilledCircle(4); }
 
-Mesh* CreateLineCircle(int segments, float size) {
+Mesh_t CreateLineCircle(int segments, float size) {
     std::vector<glm::vec3> positions;
     for (int i = 0; i <= segments + 1; i++) {
         double theta = i * cqsp::common::components::types::toRadian(360.f / segments);
@@ -93,8 +93,8 @@ Mesh* CreateLineCircle(int segments, float size) {
     return CreateLineSequence(positions);
 }
 
-Mesh* CreateLineSequence(const std::vector<glm::vec3>& sequence) {
-    Mesh* mesh = new Mesh();
+Mesh_t CreateLineSequence(const std::vector<glm::vec3>& sequence) {
+    Mesh_t mesh = engine::MakeMesh();
     std::vector<float> positions;
     for (int i = 0; i < sequence.size(); i++) {
         positions.push_back(sequence[i].x);

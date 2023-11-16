@@ -18,8 +18,8 @@
 
 #include <glad/glad.h>
 
-cqsp::engine::Mesh* cqsp::engine::primitive::MakeCube() {
-    cqsp::engine::Mesh* mesh = new cqsp::engine::Mesh();
+cqsp::engine::Mesh_t cqsp::engine::primitive::MakeCube() {
+    cqsp::engine::Mesh_t mesh = engine::MakeMesh();
     float verticies[] = {// positions
                          -1.0f, 1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  -1.0f, -1.0f,
                          1.0f,  -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, -1.0f, 1.0f,  -1.0f,

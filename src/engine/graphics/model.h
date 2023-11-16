@@ -27,7 +27,7 @@
 
 namespace cqsp::asset {
 struct Model : public Asset {
-    std::vector<engine::Mesh> meshes;
+    std::vector<engine::Mesh_t> meshes;
     std::vector<cqsp::asset::Texture*> textures;
 
     AssetType GetAssetType() override { return AssetType::MODEL; }

@@ -19,8 +19,8 @@
 #include <glad/glad.h>
 
 namespace cqsp::engine::primitive {
-cqsp::engine::Mesh* MakeLine(const std::vector<glm::vec3>& vertices) {
-    cqsp::engine::Mesh* mesh = new cqsp::engine::Mesh();
+cqsp::engine::Mesh_t MakeLine(const std::vector<glm::vec3>& vertices) {
+    cqsp::engine::Mesh_t mesh = engine::MakeMesh();
     mesh->mode = GL_LINES;
     mesh->indicies = vertices.size();
     mesh->buffer_type = engine::DrawType::ARRAYS;

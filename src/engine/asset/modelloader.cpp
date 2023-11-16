@@ -140,6 +140,7 @@ void GenerateMesh(engine::Mesh& mesh, std::vector<Vertex> vertices, std::vector<
     mesh.EBO = EBO;
     mesh.VAO = VAO;
     mesh.VBO = VBO;
+    mesh.indicies = indices.size();
 }
 
 void LoadModelData(engine::Mesh* mesh, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices) {

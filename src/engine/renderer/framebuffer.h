@@ -41,7 +41,7 @@ class IFramebuffer {
     virtual void NewFrame(const Window& window) = 0;
 
     virtual cqsp::engine::Mesh& GetMeshOutput() = 0;
-    virtual void SetMesh(cqsp::engine::Mesh*) = 0;
+    virtual void SetMesh(cqsp::engine::Mesh_t) = 0;
     virtual void SetShader(cqsp::asset::ShaderProgram_t shader) = 0;
 };
 
@@ -57,7 +57,7 @@ class FramebufferRenderer : public IFramebuffer {
     void RenderBuffer() override;
     void Free() override;
     void NewFrame(const Window& window) override;
-    void SetMesh(cqsp::engine::Mesh* mesh) override { mesh_output = mesh; }
+    void SetMesh(cqsp::engine::Mesh_t mesh) override { mesh_output = mesh; }
     cqsp::engine::Mesh& GetMeshOutput() override { return *mesh_output; }
     void SetShader(cqsp::asset::ShaderProgram_t shader) override { buffer_shader = shader; }
     void FreeBuffer();
@@ -66,7 +66,7 @@ class FramebufferRenderer : public IFramebuffer {
     unsigned int framebuffer;
     unsigned int colorbuffer;
     cqsp::asset::ShaderProgram_t buffer_shader;
-    cqsp::engine::Mesh* mesh_output;
+    cqsp::engine::Mesh_t mesh_output;
 };
 
 class AAFrameBufferRenderer : public IFramebuffer {
@@ -84,7 +84,7 @@ class AAFrameBufferRenderer : public IFramebuffer {
     void FreeBuffer();
 
     cqsp::engine::Mesh& GetMeshOutput() override { return *mesh_output; }
-    void SetMesh(cqsp::engine::Mesh* mesh) override { mesh_output = mesh; }
+    void SetMesh(cqsp::engine::Mesh_t mesh) override { mesh_output = mesh; }
     void SetShader(cqsp::asset::ShaderProgram_t shader) override { buffer_shader = shader; }
 
  private:
@@ -96,7 +96,7 @@ class AAFrameBufferRenderer : public IFramebuffer {
     unsigned int screenTexture;
     unsigned int mscat;
     cqsp::asset::ShaderProgram_t buffer_shader;
-    cqsp::engine::Mesh* mesh_output;
+    cqsp::engine::Mesh_t mesh_output;
 };
 
 /// <summary>

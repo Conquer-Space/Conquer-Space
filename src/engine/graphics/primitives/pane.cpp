@@ -22,8 +22,8 @@
 
 namespace cqspe = cqsp::engine;
 
-cqsp::engine::Mesh* cqsp::engine::primitive::MakeTexturedPaneMesh() {
-    cqsp::engine::Mesh* mesh = new cqsp::engine::Mesh();
+cqsp::engine::Mesh_t cqsp::engine::primitive::MakeTexturedPaneMesh() {
+    cqsp::engine::Mesh_t mesh = engine::MakeMesh();
     float vertices[] = {
         // positions // texture coords
         1.0f,  -1.0f, 0.0f, 1.0f, 1.0f,  // top right
@@ -69,8 +69,8 @@ cqsp::engine::Mesh* cqsp::engine::primitive::MakeTexturedPaneMesh() {
     return mesh;
 }
 
-cqsp::engine::Mesh* cqsp::engine::primitive::MakeTexturedPaneMesh(bool mirrored) {
-    cqsp::engine::Mesh* mesh = new cqsp::engine::Mesh();
+cqsp::engine::Mesh_t cqsp::engine::primitive::MakeTexturedPaneMesh(bool mirrored) {
+    cqsp::engine::Mesh_t mesh = engine::MakeMesh();
 
     float vertices[] = {
         // positions // texture coords

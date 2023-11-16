@@ -21,6 +21,6 @@
 
 namespace cqsp {
 namespace engine::primitive {
-cqsp::engine::Mesh* ConstructSphereMesh(int x_segments, int y_segments);
+cqsp::engine::Mesh_t ConstructSphereMesh(int x_segments, int y_segments);
 }  // namespace engine::primitive
 }  // namespace cqsp

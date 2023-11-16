@@ -27,7 +27,7 @@ namespace cqsp {
 namespace engine {
 class Renderable {
  public:
-    Mesh* mesh;
+    Mesh_t mesh;
     glm::mat4 model;
 
     cqsp::asset::ShaderProgram_t shaderProgram;

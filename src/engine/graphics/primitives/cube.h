@@ -20,6 +20,6 @@
 
 namespace cqsp {
 namespace engine::primitive {
-cqsp::engine::Mesh* MakeCube();
+cqsp::engine::Mesh_t MakeCube();
 }  // namespace engine::primitive
 }  // namespace cqsp

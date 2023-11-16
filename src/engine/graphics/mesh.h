@@ -16,6 +16,8 @@
  */
 #pragma once
 
+#include <memory>
+
 namespace cqsp {
 namespace engine {
 enum DrawType { ARRAYS = 0, ELEMENTS = 1 };
@@ -39,5 +41,7 @@ class Mesh {
 
     static void Destroy(Mesh& mesh);
 };
+typedef std::shared_ptr<Mesh> Mesh_t;
+inline Mesh_t MakeMesh() { return std::make_shared<Mesh>(); }
 }  // namespace engine
 }  // namespace cqsp
