@@ -29,6 +29,7 @@
 #include <glm/glm.hpp>
 
 #include "engine/asset/assetmanager.h"
+#include "engine/graphics/mesh.h"
 #include "engine/graphics/model.h"
 #include "engine/graphics/texture.h"
 
@@ -67,6 +68,55 @@ class IOSystem : public Assimp::IOSystem {
 
     Assimp::IOStream* Open(const char* pFile, const char* pMode) override;
     void Close(Assimp::IOStream* pFile) override;
+};
+
+struct MeshPrototype {
+    std::vector<Vertex> vertices;
+    std::vector<unsigned int> indices;
+    std::vector<std::string> textures;
+    int material_id;
+};
+
+struct ModelTexturePrototype {
+    int width;
+    int height;
+    int channels;
+
+    unsigned char* texture_data;
+};
+
+struct MaterialPrototype {
+    std::vector<std::string> diffuse;
+    std::vector<std::string> specular;
+    std::vector<std::string> ambient;
+    std::vector<std::string> height;
+};
+
+struct ModelPrototype : public AssetPrototype {
+ public:
+    std::vector<MeshPrototype> prototypes;
+    std::map<std::string, ModelTexturePrototype> texture_map;
+    std::map<int, MaterialPrototype> material_map;
+    int GetPrototypeType() { return PrototypeType::MODEL; }
+};
+
+struct ModelLoader {
+    int m_count = 0;
+    ModelPrototype* model_prototype;
+    const aiScene* scene;
+    explicit ModelLoader(const aiScene* _scene) : scene(_scene) { model_prototype = new ModelPrototype(); }
+
+    void LoadModel();
+
+    void LoadNode(aiNode* node);
+
+    void LoadMesh(aiMesh* mesh);
+
+    void LoadMaterials();
+
+    void LoadMaterial(int idx, aiMaterial* material);
+
+    void LoadMaterialTextures(aiMaterial* material, const aiTextureType& type, MaterialPrototype& prototype);
 };
 
 void LoadModelData(engine::Mesh* mesh, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);

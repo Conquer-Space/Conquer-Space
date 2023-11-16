@@ -146,4 +146,125 @@ void GenerateMesh(engine::Mesh& mesh, std::vector<Vertex> vertices, std::vector<
 void LoadModelData(engine::Mesh* mesh, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices) {
     GenerateMesh(*mesh, std::move(vertices), std::move(indices));
 }
+
+void ModelLoader::LoadMaterialTextures(aiMaterial* material, const aiTextureType& type, MaterialPrototype& prototype) {
+    {
+        // Set the prototype mesh
+        for (int i = 0; i < material->GetTextureCount(type); i++) {
+            aiString path;
+            material->GetTexture(type, i, &path);
+            std::string path_str(path.C_Str());
+            if (model_prototype->texture_map.contains(path_str)) {
+                continue;
+            }
+            ModelTexturePrototype mesh_proto;
+            ENGINE_LOG_INFO("Loading texture {}", path.C_Str());
+            // Look for the relative path to the model
+            mesh_proto.texture_data =
+                stbi_load(path.C_Str(), &mesh_proto.width, &mesh_proto.height, &mesh_proto.channels, 0);
+            model_prototype->texture_map[path_str] = mesh_proto;
+            // This is rather ugly
+            switch (type) {
+                case aiTextureType_SPECULAR:
+                    prototype.specular.push_back(path_str);
+                    break;
+                case aiTextureType_DIFFUSE:
+                    prototype.diffuse.push_back(path_str);
+                    break;
+                case aiTextureType_HEIGHT:
+                    prototype.height.push_back(path_str);
+                    break;
+                case aiTextureType_AMBIENT:
+                    prototype.ambient.push_back(path_str);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+}
+
+void ModelLoader::LoadModel() {
+    LoadNode(scene->mRootNode);
+    LoadMaterials();
+}
+
+void ModelLoader::LoadNode(aiNode* node) {
+    for (unsigned int i = 0; i < node->mNumMeshes; i++) {
+        // the node object only contains indices to index the actual objects in the scene.
+        // the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
+        aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+        LoadMesh(mesh);
+    }
+
+    // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
+    for (unsigned int i = 0; i < node->mNumChildren; i++) {
+        LoadNode(node->mChildren[i]);
+    }
+}
+
+void ModelLoader::LoadMesh(aiMesh* mesh) {
+    SPDLOG_INFO("Loading meshes {}", m_count++);
+    MeshPrototype mesh_prototype;
+    for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
+        Vertex vertex;
+        vertex.position.x = mesh->mVertices[i].x;
+        vertex.position.y = mesh->mVertices[i].y;
+        vertex.position.z = mesh->mVertices[i].z;
+        if (mesh->HasNormals()) {
+            vertex.normal.x = mesh->mNormals[i].x;
+            vertex.normal.y = mesh->mNormals[i].y;
+            vertex.normal.z = mesh->mNormals[i].z;
+        }
+        // does the mesh contain texture coordinates?
+        if (mesh->mTextureCoords[0] != nullptr) {
+            glm::vec2 vec;
+            // a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't
+            // use models where a vertex can have multiple texture coordinates so we always take the first set (0).
+            vertex.texCoords.x = mesh->mTextureCoords[0][i].x;
+            vertex.texCoords.x = mesh->mTextureCoords[0][i].y;
+            // tangent
+            vertex.tangent.x = mesh->mTangents[i].x;
+            vertex.tangent.y = mesh->mTangents[i].y;
+            vertex.tangent.z = mesh->mTangents[i].z;
+            // bitangent
+            vertex.bitangent.x = mesh->mBitangents[i].x;
+            vertex.bitangent.y = mesh->mBitangents[i].y;
+            vertex.bitangent.z = mesh->mBitangents[i].z;
+        } else {
+            vertex.texCoords = glm::vec2(0.0f, 0.0f);
+        }
+        mesh_prototype.vertices.push_back(vertex);
+    }
+    for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
+        aiFace& face = mesh->mFaces[i];
+        for (unsigned int j = 0; j < face.mNumIndices; j++) {
+            mesh_prototype.indices.push_back(face.mIndices[j]);
+        }
+    }
+    if (mesh->mMaterialIndex >= 0) {
+        // Set the mateiral index
+        mesh_prototype.material_id = mesh->mMaterialIndex;
+    }
+    model_prototype->prototypes.push_back(mesh_prototype);
+}
+
+void ModelLoader::LoadMaterials() {
+    for (int i = 0; i < scene->mNumMaterials; i++) {
+        aiMaterial* mat = scene->mMaterials[i];
+        // Alright in theory you can merge multiple textures to the same material
+        // But that will take way too much effort
+        // So I will go ahead and avoid that
+        LoadMaterial(i, mat);
+    }
+}
+
+void ModelLoader::LoadMaterial(int idx, aiMaterial* material) {
+    MaterialPrototype prototype;
+    LoadMaterialTextures(material, aiTextureType_SPECULAR, prototype);
+    LoadMaterialTextures(material, aiTextureType_DIFFUSE, prototype);
+    LoadMaterialTextures(material, aiTextureType_HEIGHT, prototype);
+    LoadMaterialTextures(material, aiTextureType_AMBIENT, prototype);
+    model_prototype->material_map[idx] = prototype;
+}
 }  // namespace cqsp::asset

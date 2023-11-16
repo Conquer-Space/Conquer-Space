@@ -33,6 +33,7 @@
 #include <tracy/Tracy.hpp>
 
 #include "common/util/paths.h"
+#include "engine/asset/assetprototypedefs.h"
 #include "engine/asset/modelloader.h"
 #include "engine/asset/vfs/nativevfs.h"
 #include "engine/audio/alaudioasset.h"
@@ -46,209 +47,9 @@
 
 // Definition for prototypes
 namespace cqsp::asset {
-namespace {
-class ImagePrototype : public AssetPrototype {
- public:
-    unsigned char* data;
-    int width;
-    int height;
-    int components;
-
-    asset::TextureLoadingOptions options;
-
-    int GetPrototypeType() { return PrototypeType::TEXTURE; }
-};
-
-class CubemapPrototype : public AssetPrototype {
- public:
-    std::vector<unsigned char*> data;
-    int width;
-    int height;
-    int components;
-
-    asset::TextureLoadingOptions options;
-
-    int GetPrototypeType() { return PrototypeType::CUBEMAP; }
-};
-
-class ShaderPrototype : public AssetPrototype {
- public:
-    std::string data;
-    int type;
-    Hjson::Value hints;
-
-    int GetPrototypeType() { return PrototypeType::SHADER; }
-};
-
-class FontPrototype : public AssetPrototype {
- public:
-    std::vector<uint8_t> fontBuffer;
-    int size;
-
-    int GetPrototypeType() { return PrototypeType::FONT; }
-};
-
-struct MeshPrototype {
-    std::vector<Vertex> vertices;
-    std::vector<unsigned int> indices;
-    std::vector<std::string> textures;
-    int material_id;
-};
-
-struct ModelTexturePrototype {
-    int width;
-    int height;
-    int channels;
-
-    unsigned char* texture_data;
-};
-
-struct MaterialPrototype {
-    std::vector<std::string> diffuse;
-    std::vector<std::string> specular;
-    std::vector<std::string> ambient;
-    std::vector<std::string> height;
-};
-
-struct ModelPrototype : public AssetPrototype {
- public:
-    std::vector<MeshPrototype> prototypes;
-    std::map<std::string, ModelTexturePrototype> texture_map;
-    std::map<int, MaterialPrototype> material_map;
-    int GetPrototypeType() { return PrototypeType::MODEL; }
-};
-}  // namespace
-
 // Model loading things
 // This is the reason why we should rewrite asset manager into separate classes
-namespace {
-struct ModelLoader {
-    int m_count = 0;
-    ModelPrototype* model_prototype;
-
-    ModelLoader() { model_prototype = new ModelPrototype(); }
-    void LoadModel(const aiScene* scene) {
-        LoadNode(scene->mRootNode, scene);
-        LoadMaterials(scene);
-    }
-
-    void LoadNode(aiNode* node, const aiScene* scene) {
-        for (unsigned int i = 0; i < node->mNumMeshes; i++) {
-            // the node object only contains indices to index the actual objects in the scene.
-            // the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
-            aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            LoadMesh(mesh, scene);
-        }
-
-        // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
-        for (unsigned int i = 0; i < node->mNumChildren; i++) {
-            LoadNode(node->mChildren[i], scene);
-        }
-    }
-
-    void LoadMesh(aiMesh* mesh, const aiScene* scene) {
-        SPDLOG_INFO("Loading meshes {}", m_count++);
-        MeshPrototype mesh_prototype;
-        for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
-            Vertex vertex;
-            vertex.position.x = mesh->mVertices[i].x;
-            vertex.position.y = mesh->mVertices[i].y;
-            vertex.position.z = mesh->mVertices[i].z;
-            if (mesh->HasNormals()) {
-                vertex.normal.x = mesh->mNormals[i].x;
-                vertex.normal.y = mesh->mNormals[i].y;
-                vertex.normal.z = mesh->mNormals[i].z;
-            }
-            // does the mesh contain texture coordinates?
-            if (mesh->mTextureCoords[0] != nullptr) {
-                glm::vec2 vec;
-                // a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't
-                // use models where a vertex can have multiple texture coordinates so we always take the first set (0).
-                vertex.texCoords.x = mesh->mTextureCoords[0][i].x;
-                vertex.texCoords.x = mesh->mTextureCoords[0][i].y;
-                // tangent
-                vertex.tangent.x = mesh->mTangents[i].x;
-                vertex.tangent.y = mesh->mTangents[i].y;
-                vertex.tangent.z = mesh->mTangents[i].z;
-                // bitangent
-                vertex.bitangent.x = mesh->mBitangents[i].x;
-                vertex.bitangent.y = mesh->mBitangents[i].y;
-                vertex.bitangent.z = mesh->mBitangents[i].z;
-            } else {
-                vertex.texCoords = glm::vec2(0.0f, 0.0f);
-            }
-            mesh_prototype.vertices.push_back(vertex);
-        }
-        for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
-            aiFace& face = mesh->mFaces[i];
-            for (unsigned int j = 0; j < face.mNumIndices; j++) {
-                mesh_prototype.indices.push_back(face.mIndices[j]);
-            }
-        }
-        if (mesh->mMaterialIndex >= 0) {
-            // Set the mateiral index
-            mesh_prototype.material_id = mesh->mMaterialIndex;
-        }
-        model_prototype->prototypes.push_back(mesh_prototype);
-    }
-
-    // https://assimp.sourceforge.net/lib_html/material_8h.html#a7dd415ff703a2cc53d1c22ddbbd7dde0
-    // https://assimp.sourceforge.net/lib_html/structai_material.html
-    void LoadMaterials(const aiScene* scene) {
-        for (int i = 0; i < scene->mNumMaterials; i++) {
-            aiMaterial* mat = scene->mMaterials[i];
-            // Alright in theory you can merge multiple textures to the same material
-            // But that will take way too much effort
-            // So I will go ahead and avoid that
-            LoadMaterial(i, mat);
-        }
-    }
-
-    void LoadMaterial(int idx, aiMaterial* material) {
-        MaterialPrototype prototype;
-        LoadMaterialTextures(material, aiTextureType_SPECULAR, prototype);
-        LoadMaterialTextures(material, aiTextureType_DIFFUSE, prototype);
-        LoadMaterialTextures(material, aiTextureType_HEIGHT, prototype);
-        LoadMaterialTextures(material, aiTextureType_AMBIENT, prototype);
-        model_prototype->material_map[idx] = prototype;
-    }
-
-    void LoadMaterialTextures(aiMaterial* material, const aiTextureType& type, MaterialPrototype& prototype) {
-        // Set the prototype mesh
-        for (int i = 0; i < material->GetTextureCount(type); i++) {
-            aiString path;
-            material->GetTexture(type, i, &path);
-            std::string path_str(path.C_Str());
-            if (model_prototype->texture_map.contains(path_str)) {
-                continue;
-            }
-            ModelTexturePrototype mesh_proto;
-            ENGINE_LOG_INFO("Loading texture {}", path.C_Str());
-            // Look for the relative path to the model
-            mesh_proto.texture_data =
-                stbi_load(path.C_Str(), &mesh_proto.width, &mesh_proto.height, &mesh_proto.channels, 0);
-            model_prototype->texture_map[path_str] = mesh_proto;
-            // This is rather ugly
-            switch (type) {
-                case aiTextureType_SPECULAR:
-                    prototype.specular.push_back(path_str);
-                    break;
-                case aiTextureType_DIFFUSE:
-                    prototype.diffuse.push_back(path_str);
-                    break;
-                case aiTextureType_HEIGHT:
-                    prototype.height.push_back(path_str);
-                    break;
-                case aiTextureType_AMBIENT:
-                    prototype.ambient.push_back(path_str);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-};
-}  // namespace
+namespace {}  // namespace
 bool Package::HasAsset(const char* asset) { return assets.contains(asset); }
 bool Package::HasAsset(const std::string& asset) { return assets.contains(asset); }
 
@@ -892,10 +693,10 @@ std::unique_ptr<cqsp::asset::Asset> AssetLoader::LoadModel(cqsp::asset::VirtualM
         return nullptr;
     }
     auto model = std::make_unique<cqsp::asset::Model>();
-    ModelLoader loader;
+    ModelLoader loader(scene);
     // Get parent path of the model, so that the file knows where to look
     //std::filesystem::path(cqsp::common::util::GetCqspDataPath() + "/" + path).parent_path()
-    loader.LoadModel(scene);
+    loader.LoadModel();
     ENGINE_LOG_INFO("Loading {} textures", loader.model_prototype->texture_map.size());
     loader.model_prototype->key = key;
     loader.model_prototype->asset = model.get();
