@@ -29,6 +29,7 @@
 #include <vector>
 
 #include "engine/asset/asset.h"
+#include "engine/asset/assetprototype.h"
 #include "engine/asset/textasset.h"
 #include "engine/asset/vfs/vfs.h"
 #include "engine/engine.h"
@@ -40,29 +41,6 @@
 
 namespace cqsp {
 namespace asset {
-enum PrototypeType {
-    NONE = 0,
-    TEXTURE,  //!< texture prototype
-    SHADER,   //!< shader prototype
-    FONT,     //!< Font prototype
-    CUBEMAP,  //!< cubemap prototype
-    MODEL     //!< Model prototype
-};
-
-///
-/// Asset Prototypes are for assets that need additional processing
-/// in the main thread, such as images.
-///
-class AssetPrototype {
- public:
-    std::string key;
-    /// <summary>
-    /// Store the asset here so that at least we have the promise of an asset to the thing
-    /// </summary>
-    Asset* asset;
-    virtual int GetPrototypeType() { return PrototypeType::NONE; }
-};
-
 /**
  * Holds a prototype in the queue to be loaded in the main thread
  */

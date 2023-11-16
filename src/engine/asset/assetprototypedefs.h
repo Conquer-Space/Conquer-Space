@@ -16,49 +16,55 @@
  */
 #pragma once
 
+#include <hjson.h>
+
 #include <map>
 #include <string>
 #include <vector>
 
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
-
 #include "engine/asset/asset.h"
-#include "engine/graphics/mesh.h"
+#include "engine/asset/assetprototype.h"
 #include "engine/graphics/texture.h"
 
 namespace cqsp::asset {
-struct Material {
-    std::vector<cqsp::asset::Texture*> textures;
-};
-
-struct ModelMesh : public engine::Mesh {
-    Material* material;
-};
-
-struct Model : public Asset {
-    std::vector<engine::Mesh_t> meshes;
-    std::map<std::string, Material> materials;
-
-    AssetType GetAssetType() override { return AssetType::MODEL; }
-};
-
-struct Vertex {
+class ImagePrototype : public AssetPrototype {
  public:
-    static const int MAX_BONE_INFLUENCE = 4;
-    // position
-    glm::vec3 position;
-    // normal
-    glm::vec3 normal;
-    // texCoords
-    glm::vec2 texCoords;
-    // tangent
-    glm::vec3 tangent;
-    // bitangent
-    glm::vec3 bitangent;
-    //bone indexes which will influence this vertex
-    int m_BoneIDs[MAX_BONE_INFLUENCE];
-    //weights from each bone
-    float m_Weights[MAX_BONE_INFLUENCE];
+    unsigned char* data;
+    int width;
+    int height;
+    int components;
+
+    asset::TextureLoadingOptions options;
+
+    int GetPrototypeType() { return PrototypeType::TEXTURE; }
+};
+
+class CubemapPrototype : public AssetPrototype {
+ public:
+    std::vector<unsigned char*> data;
+    int width;
+    int height;
+    int components;
+
+    asset::TextureLoadingOptions options;
+
+    int GetPrototypeType() { return PrototypeType::CUBEMAP; }
+};
+
+class ShaderPrototype : public AssetPrototype {
+ public:
+    std::string data;
+    int type;
+    Hjson::Value hints;
+
+    int GetPrototypeType() { return PrototypeType::SHADER; }
+};
+
+class FontPrototype : public AssetPrototype {
+ public:
+    std::vector<uint8_t> fontBuffer;
+    int size;
+
+    int GetPrototypeType() { return PrototypeType::FONT; }
 };
 }  // namespace cqsp::asset
