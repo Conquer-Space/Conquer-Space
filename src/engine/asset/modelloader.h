@@ -104,7 +104,10 @@ struct ModelLoader {
     int m_count = 0;
     ModelPrototype* model_prototype;
     const aiScene* scene;
-    explicit ModelLoader(const aiScene* _scene) : scene(_scene) { model_prototype = new ModelPrototype(); }
+    std::string asset_path;
+    ModelLoader(const aiScene* _scene, std::string asset_path) : scene(_scene), asset_path(asset_path) {
+        model_prototype = new ModelPrototype();
+    }
 
     void LoadModel();
 
@@ -118,6 +121,8 @@ struct ModelLoader {
 
     void LoadMaterialTextures(aiMaterial* material, const aiTextureType& type, MaterialPrototype& prototype);
 };
+
+void LoadModelPrototype(ModelPrototype* prototype, Model* asset);
 
 void LoadModelData(engine::Mesh* mesh, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
 }  // namespace cqsp::asset

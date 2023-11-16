@@ -57,6 +57,10 @@ void cqsp::scene::ModelScene::Render(float deltaTime) {
     //mesh->Draw();
     for (auto& model_mesh : model->meshes) {
         // Set the texture of the model mesh
+        // Set the material
+        glActiveTexture(GL_TEXTURE0);
+        int id = model->materials[model_mesh->material].diffuse.front()->id;
+        glBindTexture(GL_TEXTURE_2D, id);
         model_mesh->Draw();
     }
 }

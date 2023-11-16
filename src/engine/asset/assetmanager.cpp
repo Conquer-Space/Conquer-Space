@@ -412,22 +412,7 @@ void AssetLoader::BuildNextAsset() {
             // Generate model
             ModelPrototype* prototype = dynamic_cast<ModelPrototype*>(temp.prototype);
             Model* asset = dynamic_cast<Model*>(prototype->asset);
-            for (auto& mesh_type : prototype->prototypes) {
-                engine::Mesh_t mesh = engine::MakeMesh();
-                asset::LoadModelData(mesh.get(), mesh_type.vertices, mesh_type.indices);
-                asset->meshes.push_back(mesh);
-            }
-            // Load textures
-            for (auto& textures : prototype->texture_map) {
-                // Set the map
-                asset::Texture* texture = new asset::Texture();
-                auto& tex_prototype = textures.second;
-                asset::CreateTexture(*texture, tex_prototype.texture_data, tex_prototype.width, tex_prototype.height,
-                                     tex_prototype.channels);
-                // Insert the textures into the model
-                //asset->ma[textures.first] = texture;
-            }
-            // Now append the textures to the current mesh
+            LoadModelPrototype(prototype, asset);
         } break;
     }
 
@@ -685,17 +670,16 @@ std::unique_ptr<cqsp::asset::Asset> AssetLoader::LoadModel(cqsp::asset::VirtualM
     //importer.SetIOHandler()
 
     //auto file = ReadAllFromVFile(file_ptr.get());
-    const aiScene* scene = importer.ReadFile(
-        cqsp::common::util::GetCqspDataPath() + "/" + path,
-        aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+    std::filesystem::path file_path = std::filesystem::path(cqsp::common::util::GetCqspDataPath()) / path;
+    const aiScene* scene =
+        importer.ReadFile(file_path.string().c_str(), aiProcess_Triangulate | aiProcess_GenSmoothNormals |
+                                                          aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
     if ((scene == nullptr) || ((scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) != 0u) || (scene->mRootNode == nullptr)) {
         ENGINE_LOG_WARN("Assimp Error while loading {}: {}", key, importer.GetErrorString());
         return nullptr;
     }
     auto model = std::make_unique<cqsp::asset::Model>();
-    ModelLoader loader(scene);
-    // Get parent path of the model, so that the file knows where to look
-    //std::filesystem::path(cqsp::common::util::GetCqspDataPath() + "/" + path).parent_path()
+    ModelLoader loader(scene, file_path.parent_path().string());
     loader.LoadModel();
     ENGINE_LOG_INFO("Loading {} textures", loader.model_prototype->texture_map.size());
     loader.model_prototype->key = key;
