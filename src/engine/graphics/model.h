@@ -16,6 +16,8 @@
  */
 #pragma once
 
+#include <map>
+#include <string>
 #include <vector>
 
 #include <glm/vec2.hpp>
@@ -26,9 +28,16 @@
 #include "engine/graphics/texture.h"
 
 namespace cqsp::asset {
+struct Material {
+    std::vector<cqsp::asset::Texture*> textures;
+};
+
+struct ModelMesh : public engine::Mesh {
+    Material* material;
+};
 struct Model : public Asset {
     std::vector<engine::Mesh_t> meshes;
-    std::vector<cqsp::asset::Texture*> textures;
+    std::map<std::string, Material> materials;
 
     AssetType GetAssetType() override { return AssetType::MODEL; }
 };

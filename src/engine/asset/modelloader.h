@@ -69,9 +69,5 @@ class IOSystem : public Assimp::IOSystem {
     void Close(Assimp::IOStream* pFile) override;
 };
 
-class Material {
-    std::vector<Texture> textures;
-};
-
 void LoadModelData(engine::Mesh* mesh, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
 }  // namespace cqsp::asset

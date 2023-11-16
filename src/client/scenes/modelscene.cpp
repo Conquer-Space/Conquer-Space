@@ -56,6 +56,7 @@ void cqsp::scene::ModelScene::Render(float deltaTime) {
     shader->setMat4("model", model_transform);
     //mesh->Draw();
     for (auto& model_mesh : model->meshes) {
+        // Set the texture of the model mesh
         model_mesh->Draw();
     }
 }
