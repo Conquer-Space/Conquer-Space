@@ -52,7 +52,7 @@ jobs:
         sudo apt install -y libglfw3 libglfw3-dev libopenal-dev libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev
 
     - name: Install new LLVM
-      if: ${{ matrix.compiler == "clang" }}
+      if: ${{ matrix.compiler == 'clang' }}
       run:
         wget https://apt.llvm.org/llvm.sh
         chmod +x ./llvm.sh
