@@ -102,7 +102,9 @@ class SysStarSystemRenderer {
     cqsp::engine::Renderable ship_overlay;
     cqsp::engine::Renderable city;
     cqsp::engine::Renderable sun;
-    cqsp::asset::Model *model;
+    cqsp::asset::Model *iss_model;
+
+    cqsp::asset::ShaderProgram_t model_shader;
     cqsp::asset::ShaderProgram_t orbit_shader;
     cqsp::asset::ShaderProgram_t near_shader;
     cqsp::asset::ShaderProgram_t vis_shader;
@@ -123,6 +125,7 @@ class SysStarSystemRenderer {
     void DrawBodies();
     void DrawShips();
     void DrawSkybox();
+    void DrawModels();
 
     void DrawEntityName(glm::vec3 &object_pos, entt::entity ent_id);
     void DrawPlanetIcon(glm::vec3 &object_pos);

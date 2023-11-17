@@ -146,4 +146,9 @@
         type: shader_def
         hints: {}
     }
+    model_log_shader: {
+        path: model_log/model_log.hjson
+        type: shader_def
+        hints: {}
+    }
 }
