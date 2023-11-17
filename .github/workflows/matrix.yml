@@ -43,14 +43,16 @@ jobs:
 
     - name: Set compiler
       run: |
-        echo "CC=${{ matrix.compiler == 'gcc' && 'gcc' || 'clang'   }}" >> $GITHUB_ENV
-        echo "CXX=${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}" >> $GITHUB_ENV
+        echo "CC=${{ matrix.compiler == 'gcc' && 'gcc' || 'clang-17'   }}" >> $GITHUB_ENV
+        echo "CXX=${{ matrix.compiler == 'gcc' && 'g++' || 'clang++-17' }}" >> $GITHUB_ENV
 
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt install -y libglfw3 libglfw3-dev libopenal-dev libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev
+
     - name: Install new LLVM
+      if: ${{ matrix.compiler == clang }}
       run:
         wget https://apt.llvm.org/llvm.sh
         chmod +x ./llvm.sh
@@ -58,7 +60,7 @@ jobs:
 
     - name: Configure Build files
       run: |
-        ./setup_env.sh
+        ./setup_env.sh 
 
     - name: Build Conquer Space
       run: |
