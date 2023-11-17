@@ -349,6 +349,9 @@ void SysStarSystemRenderer::DrawModels() {
     // Loop through the space bodies that are close
     for (entt::entity body_entity : ships) {
         glm::vec3 object_pos = CalculateCenteredObject(body_entity);
+        if (glm::distance(cam_pos, object_pos) > 1000) {
+            continue;
+        }
         glm::mat4 transform = glm::mat4(1.f);
         transform = glm::translate(transform, object_pos);
         transform = glm::scale(transform, glm::vec3(20));

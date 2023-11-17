@@ -35,6 +35,7 @@ struct MaterialTextureStack {
     asset::Texture* ambient;
     asset::Texture* height;
 };
+
 struct Material {
     std::vector<asset::Texture*> diffuse;
     std::vector<asset::Texture*> specular;
@@ -45,6 +46,22 @@ struct Material {
     glm::vec3 base_ambient;
     glm::vec3 base_emissive;
     glm::vec3 base_transparent;
+
+    Material() = default;
+    ~Material() {
+        for (auto& texture : diffuse) {
+            delete texture;
+        }
+        for (auto& texture : specular) {
+            delete texture;
+        }
+        for (auto& texture : ambient) {
+            delete texture;
+        }
+        for (auto& texture : height) {
+            delete texture;
+        }
+    }
 };
 
 struct ModelMesh : public engine::Mesh {
