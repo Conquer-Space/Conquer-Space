@@ -90,6 +90,12 @@ struct MaterialPrototype {
     std::vector<std::string> specular;
     std::vector<std::string> ambient;
     std::vector<std::string> height;
+
+    glm::vec3 base_diffuse;
+    glm::vec3 base_specular;
+    glm::vec3 base_ambient;
+    glm::vec3 base_emissive;
+    glm::vec3 base_transparent;
 };
 
 struct ModelPrototype : public AssetPrototype {

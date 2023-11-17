@@ -1,0 +1,8 @@
+{
+    iss: {
+        path: iss.obj
+        type: model
+        hints: {
+        }
+    }
+}

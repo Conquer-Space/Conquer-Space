@@ -23,7 +23,7 @@
 
 void cqsp::scene::ModelScene::Init() {
     // Load the model and shaders
-    model = GetApp().GetAssetManager().GetAsset<asset::Model>("core:backpack");
+    model = GetApp().GetAssetManager().GetAsset<asset::Model>("core:iss");
     // Load shader
     mesh = engine::primitive::MakeCube();
     shader = GetApp().GetAssetManager().GetAsset<asset::ShaderDefinition>("core:model_shader")->MakeShader();
@@ -51,16 +51,20 @@ void cqsp::scene::ModelScene::Render(float deltaTime) {
     model_transform = glm::translate(
         model_transform, glm::vec3(0.0f, 0.0f, 0.0f));  // translate it down so it's at the center of the scene
     model_transform =
-        glm::scale(model_transform, glm::vec3(1.0f, 1.0f, 1.0f));  // it's a bit too big for our scene, so scale it down
+        glm::scale(model_transform, glm::vec3(4.0f, 4.0f, 4.0f));  // it's a bit too big for our scene, so scale it down
     model_transform = glm::rotate(model_transform, (float)GetApp().GetTime(), glm::vec3(0, 1.f, 0.f));
     shader->setMat4("model", model_transform);
     //mesh->Draw();
     for (auto& model_mesh : model->meshes) {
         // Set the texture of the model mesh
         // Set the material
+        // Check the type of material, if it's just
+        auto& material = model->materials[model_mesh->material];
+        /*
         glActiveTexture(GL_TEXTURE0);
         int id = model->materials[model_mesh->material].diffuse.front()->id;
-        glBindTexture(GL_TEXTURE_2D, id);
+        glBindTexture(GL_TEXTURE_2D, id);*/
+        shader->setVec3("diffuse", material.base_diffuse);
         model_mesh->Draw();
     }
 }

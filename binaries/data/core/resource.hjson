@@ -11,10 +11,4 @@
         hints: {
         }
     }
-    backpack: {
-        path: backpack.obj
-        type: model
-        hints: {
-        }
-    }
 }
