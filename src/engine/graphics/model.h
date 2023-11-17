@@ -58,6 +58,18 @@ struct Model : public Asset {
     std::map<int, Material> materials;
 
     AssetType GetAssetType() override { return AssetType::MODEL; }
+
+    void Draw(ShaderProgram* shader) {
+        for (auto& model_mesh : meshes) {
+            // Set the texture of the model mesh
+            // Set the material
+            // ISS just has a base diffuse color
+            auto& material = materials[model_mesh->material];
+
+            shader->setVec3("diffuse", material.base_diffuse);
+            model_mesh->Draw();
+        }
+    }
 };
 
 struct Vertex {

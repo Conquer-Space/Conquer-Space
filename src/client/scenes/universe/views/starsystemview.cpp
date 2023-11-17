@@ -293,6 +293,7 @@ void SysStarSystemRenderer::DrawBodies() {
     renderer.BeginDraw(physical_layer);
     DrawAllPlanets(bodies);
     DrawAllOrbits();
+    DrawModels();
     renderer.EndDraw(physical_layer);
 
     // This is on the ship icon layer because the cities have to appear on top of planets
@@ -339,6 +340,22 @@ void SysStarSystemRenderer::DrawSkybox() {
     engine::Draw(sky);
     glDepthFunc(GL_LESS);
     renderer.EndDraw(skybox_layer);
+}
+
+void SysStarSystemRenderer::DrawModels() {
+    namespace cqsps = cqsp::common::components::ships;
+
+    auto ships = m_universe.view<cqsps::Ship, ctx::VisibleOrbit>();
+    // Loop through the space bodies that are close
+    for (entt::entity body_entity : ships) {
+        glm::vec3 object_pos = CalculateCenteredObject(body_entity);
+        glm::mat4 transform = glm::mat4(1.f);
+        transform = glm::translate(transform, object_pos);
+        transform = glm::scale(transform, glm::vec3(20));
+        model_shader->UseProgram();
+        model_shader->SetMVP(transform, camera_matrix, projection);
+        iss_model->Draw(model_shader.get());
+    }
 }
 
 void SysStarSystemRenderer::DrawEntityName(glm::vec3& object_pos, entt::entity ent_id) {
@@ -417,8 +434,6 @@ void SysStarSystemRenderer::DrawShipIcon(const glm::vec3& object_pos) {
 
     shipDispMat = glm::scale(shipDispMat, glm::vec3(1, window_ratio, 1));
     SetBillboardProjection(ship_overlay.shaderProgram, shipDispMat);
-
-    engine::Draw(ship_overlay);
 }
 
 void SysStarSystemRenderer::DrawTexturedPlanet(const glm::vec3& object_pos, const entt::entity entity) {
@@ -765,7 +780,8 @@ void SysStarSystemRenderer::InitializeMeshes() {
 
     orbit_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:orbitshader")->MakeShader();
     vis_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:vertex_vis")->MakeShader();
-    model = m_app.GetAssetManager().GetAsset<asset::Model>("core:backpack");
+    iss_model = m_app.GetAssetManager().GetAsset<asset::Model>("core:iss");
+    model_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:model_log_shader")->MakeShader();
 }
 
 glm::quat SysStarSystemRenderer::GetBodyRotation(double axial, double rotation, double day_offset) {

@@ -58,12 +58,13 @@ void cqsp::scene::ModelScene::Render(float deltaTime) {
     for (auto& model_mesh : model->meshes) {
         // Set the texture of the model mesh
         // Set the material
-        // Check the type of material, if it's just
+        // ISS just has a base diffuse color
         auto& material = model->materials[model_mesh->material];
         /*
-        glActiveTexture(GL_TEXTURE0);
-        int id = model->materials[model_mesh->material].diffuse.front()->id;
-        glBindTexture(GL_TEXTURE_2D, id);*/
+            glActiveTexture(GL_TEXTURE0);
+            int id = model->materials[model_mesh->material].diffuse.front()->id;
+            glBindTexture(GL_TEXTURE_2D, id);
+        */
         shader->setVec3("diffuse", material.base_diffuse);
         model_mesh->Draw();
     }
