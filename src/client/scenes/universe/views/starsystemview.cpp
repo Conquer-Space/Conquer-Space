@@ -602,8 +602,6 @@ void SysStarSystemRenderer::RenderCities(glm::vec3& object_pos, const entt::enti
     auto& body = m_universe.get<cqspc::bodies::Body>(body_entity);
     auto quat = GetBodyRotation(body.axial, body.rotation, body.rotation_offset);
 
-    // Rotate the body
-    // Put in same layer as ships
     city.shaderProgram->UseProgram();
     city.shaderProgram->setVec4("color", 0.5, 0.5, 0.5, 1);
     for (auto city_entity : cities) {
@@ -617,7 +615,7 @@ void SysStarSystemRenderer::RenderCities(glm::vec3& object_pos, const entt::enti
         // Check if line of sight and city position intersects the sphere that is the planet
         city_pos = quat * city_pos;
         glm::vec3 city_world_pos = city_pos + object_pos;
-        if (CityIsVisible(city_world_pos, object_pos, cam_pos, body.radius)) {
+        if (CityIsVisible(city_world_pos, object_pos, cam_pos)) {
             // If it's reasonably close, then we can show city names
             //if (scroll < 3) {
             DrawEntityName(city_world_pos, city_entity);
@@ -631,13 +629,9 @@ void SysStarSystemRenderer::RenderCities(glm::vec3& object_pos, const entt::enti
     }
 }
 
-bool SysStarSystemRenderer::CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos, double radius) {
-    float d = glm::distance(cam_pos, city_pos);
-    float D = glm::distance(cam_pos, planet_pos);
-
-    float discriminant = sqrt(D * D + radius * radius);
-    // If the discriminant is greater than d, then it's hidden by the sphere
-    return (d + 1e-5 < discriminant);
+bool SysStarSystemRenderer::CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos) {
+    float dist = glm::dot((planet_pos - city_pos), (cam_pos - city_pos));
+    return (dist < 0);
 }
 
 void SysStarSystemRenderer::CalculateCityPositions() {
