@@ -60,12 +60,23 @@ std::pair<glm::dvec3, double> SetInclination(const components::types::Orbit& orb
 }
 
 std::pair<glm::dvec3, double> SetCircularInclination(const components::types::Orbit& orbit, double inclination) {
-    // Get inclination at time
-    const double d_inc = abs(inclination - orbit.inclination);
+    double v_change = components::types::PI - orbit.w;
+    // Figure out if we're going into or out of the other orbital plane.
+    double sign = -1;
+    if (orbit.v > v_change) {
+        v_change = 2 * components::types::PI - orbit.w;
+        sign = 1;
+    }
+    if (orbit.w > components::types::PI) {
+        sign *= -1;
+    }
+    const double d_inc = (inclination - orbit.inclination) * sign;
     double v = components::types::GetCircularOrbitingVelocity(orbit.GM, orbit.semi_major_axis);
-    double delta_v = 2 * v * sin(d_inc / 2);
+    // Just set to original velocity
     // Delta-v should be at the ascending node
-    glm::dvec3 vector = glm::dquat(glm::dvec3(inclination, 0, 0)) * glm::dvec3(0, 0, delta_v);
-    return std::make_pair(vector, orbit.TimeToMeanAnomaly(orbit.LAN));
+    glm::dvec3 vector =
+        glm::dvec3(0, v * (cos(d_inc) - 1),
+                   v * sin(d_inc));  //glm::dquat(glm::dvec3(inclination, 0, 0)) * glm::dvec3(0, 0, delta_v);
+    return std::make_pair(vector, orbit.TimeToMeanAnomaly(v_change));
 }
 }  // namespace cqsp::common::systems
