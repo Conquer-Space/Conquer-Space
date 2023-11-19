@@ -269,7 +269,7 @@ TEST(Maneuver, ReducePerigee) {
     EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis(), 1e-4);
 }
 
-TEST(Maneuver, ChnangeInclinationTest) {
+TEST(Maneuver, ChangeInclinationTest) {
     namespace cqspt = cqsp::common::components::types;
     namespace cqsps = cqsp::common::systems;
     // Make a random orbit, apply an impulse, and ensure the position is te same
@@ -280,10 +280,12 @@ TEST(Maneuver, ChnangeInclinationTest) {
     cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second);
     // Check if it's circular
     //EXPECT_DOUBLE_EQ(maneuver.second, orbit.T / 2);
-    //EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
+    EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
     EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis(), 1e-4);
     EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis(), 1e-4);
     EXPECT_NEAR(new_orbit.inclination, 0.5, 1e-4);
+    EXPECT_NEAR(new_orbit.w, orbit.w, 1e-4);
+    EXPECT_NEAR(new_orbit.LAN, orbit.LAN, 1e-4);
 }
 
 TEST(Maneuver, InclinedChangeInclinationTest) {
@@ -298,10 +300,12 @@ TEST(Maneuver, InclinedChangeInclinationTest) {
     cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second);
     // Check if it's circular
     //EXPECT_DOUBLE_EQ(maneuver.second, orbit.T / 2);
-    //EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
+    EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
     EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis(), 1e-4);
     EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis(), 1e-4);
     EXPECT_NEAR(new_orbit.inclination, 0.5, 1e-4);
+    EXPECT_NEAR(new_orbit.w, orbit.w, 1e-4);
+    EXPECT_NEAR(new_orbit.LAN, orbit.LAN, 1e-4);
 }
 
 TEST(Maneuver, ReduceInclinationTest) {
@@ -316,8 +320,65 @@ TEST(Maneuver, ReduceInclinationTest) {
     cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second);
     // Check if it's circular
     //EXPECT_DOUBLE_EQ(maneuver.second, orbit.T / 2);
-    //EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
+    EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
     EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis(), 1e-4);
     EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis(), 1e-4);
     EXPECT_NEAR(new_orbit.inclination, new_inclination, 1e-4);
+    // Just make sure that they're in the same location
+    glm::vec3 start = cqspt::toVec3(orbit, GetTrueAnomaly(orbit, maneuver.second));
+    glm::vec3 end = cqspt::toVec3(new_orbit);
+    EXPECT_NEAR(start.x, end.x, 1e-4);
+    EXPECT_NEAR(start.y, end.y, 1e-4);
+    EXPECT_NEAR(start.z, end.z, 1e-4);
+
+    EXPECT_NEAR(new_orbit.LAN, orbit.LAN, 1e-4);
+}
+
+// Test for altered argument of periapsis
+TEST(Maneuver, AlteredWInclinationTest) {
+    namespace cqspt = cqsp::common::components::types;
+    namespace cqsps = cqsp::common::systems;
+    // Make a random orbit, apply an impulse, and ensure the position is te same
+    double new_inclination = 0.4;
+    cqspt::Orbit orbit(57.91e9, 0, 0.7, 0, 0.3, 0);
+    auto maneuver = cqsps::SetCircularInclination(orbit, new_inclination);
+    double v = cqsp::common::components::types::GetCircularOrbitingVelocity(orbit.GM, orbit.semi_major_axis);
+    EXPECT_NEAR(glm::length(maneuver.first), abs(2 * v * sin((new_inclination - orbit.inclination) / 2)), 1e-4);
+    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second);
+    // Check if it's circular
+    //EXPECT_DOUBLE_EQ(maneuver.second, orbit.T / 2);
+    EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
+    EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis(), 1e-4);
+    EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis(), 1e-4);
+    EXPECT_NEAR(new_orbit.inclination, new_inclination, 1e-4);
+    glm::vec3 start = cqspt::toVec3(orbit, GetTrueAnomaly(orbit, maneuver.second));
+    glm::vec3 end = cqspt::toVec3(new_orbit);
+    EXPECT_NEAR(start.x, end.x, 1e-4);
+    EXPECT_NEAR(start.y, end.y, 1e-4);
+    EXPECT_NEAR(start.z, end.z, 1e-4);
+    EXPECT_NEAR(new_orbit.LAN, orbit.LAN, 1e-4);
+}
+
+// Test for altered argument of periapsis
+TEST(Maneuver, AlteredLANInclinationTest) {
+    namespace cqspt = cqsp::common::components::types;
+    namespace cqsps = cqsp::common::systems;
+    // Make a random orbit, apply an impulse, and ensure the position is te same
+    double new_inclination = 0.4;
+    cqspt::Orbit orbit(57.91e9, 0, 0.7, 0, 0.3, 0);
+    auto maneuver = cqsps::SetCircularInclination(orbit, new_inclination);
+    double v = cqsp::common::components::types::GetCircularOrbitingVelocity(orbit.GM, orbit.semi_major_axis);
+    EXPECT_NEAR(glm::length(maneuver.first), abs(2 * v * sin((new_inclination - orbit.inclination) / 2)), 1e-4);
+    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second);
+    // Check if it's circular
+    EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
+    EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis(), 1e-4);
+    EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis(), 1e-4);
+    EXPECT_NEAR(new_orbit.inclination, new_inclination, 1e-4);
+    glm::vec3 start = cqspt::toVec3(orbit, GetTrueAnomaly(orbit, maneuver.second));
+    glm::vec3 end = cqspt::toVec3(new_orbit);
+    EXPECT_NEAR(start.x, end.x, 1e-4);
+    EXPECT_NEAR(start.y, end.y, 1e-4);
+    EXPECT_NEAR(start.z, end.z, 1e-4);
+    EXPECT_NEAR(new_orbit.LAN, orbit.LAN, 1e-4);
 }

@@ -81,6 +81,7 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
 
     double w = acos(glm::dot(n, ecc_v) / (e * glm::length(n)));
     if (ecc_v.z < 0) w = TWOPI - w;
+    if (e == 0) w = 0;
     if (glm::length(n) == 0) w = 0;
 
     double velocity_mag = glm::length(velocity);
@@ -89,8 +90,8 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
     Orbit orb;
     orb.semi_major_axis = sma;
     orb.eccentricity = e;
-    orb.LAN = LAN;
-    orb.w = w;
+    orb.LAN = normalize_radian(LAN);
+    orb.w = normalize_radian(w);
     orb.inclination = i;
     orb.M0 = M0;
     orb.epoch = time;
