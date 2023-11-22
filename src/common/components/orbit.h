@@ -363,4 +363,6 @@ double CalculateTransferAngle(const Orbit& orb1, const Orbit& orb2);
 // https://orbital-mechanics.space/the-orbit-equation/hyperbolic-trajectories.html
 // True anomaly of the asymptope for a hyperbolic orbit
 double GetHyperbolicAsymptopeAnomaly(double eccentricity);
+
+double FlightPathAngle(double eccentricity, double v);
 }  // namespace cqsp::common::components::types
