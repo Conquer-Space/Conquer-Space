@@ -16,6 +16,8 @@
  */
 #include "common/components/orbit.h"
 
+#include <algorithm>
+
 namespace cqsp::common::components::types {
 double GetOrbitingRadius(const double& e, const double& a, const double& v) {
     return (a * (1 - e * e)) / (1 + e * cos(v));
@@ -79,7 +81,7 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
     if (n.y < 0) LAN = TWOPI - LAN;
     if (glm::length(n) == 0) LAN = 0;
 
-    double w = acos(glm::dot(n, ecc_v) / (e * glm::length(n)));
+    double w = acos(std::clamp(glm::dot(n, ecc_v) / (e * glm::length(n)), -1., 1.));
     if (ecc_v.z < 0) w = TWOPI - w;
     if (e == 0) w = 0;
     if (glm::length(n) == 0) w = 0;
@@ -292,6 +294,10 @@ double CalculateTransferAngle(const Orbit& orb1, const Orbit& orb2) {
 }
 
 double GetHyperbolicAsymptopeAnomaly(double eccentricity) { return std::acos(-1 / eccentricity); }
+
+double FlightPathAngle(double eccentricity, double v) {
+    return atan2(eccentricity * sin(v), 1 - eccentricity * cos(v));
+}
 
 // https://space.stackexchange.com/questions/54396/how-to-calculate-the-time-to-reach-a-given-true-anomaly
 double Orbit::TimeToMeanAnomaly(double v2) const {

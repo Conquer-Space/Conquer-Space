@@ -52,11 +52,30 @@ std::pair<glm::dvec3, double> SetPeriapsis(const components::types::Orbit& orbit
                           orbit.TimeToMeanAnomaly(common::components::types::PI));
 }
 
+namespace {
+double GetInclinationChangeDeltaV(const components::types::Orbit& orbit, double v, double d_inc) {
+    double velocity = components::types::OrbitVelocity(v, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+    double fpa = components::types::FlightPathAngle(orbit.eccentricity, v);
+    return abs(2 * velocity * cos(fpa) * sin(d_inc / 2.));
+}
+}  // namespace
+
 std::pair<glm::dvec3, double> SetInclination(const components::types::Orbit& orbit, double inclination) {
-    const double d_inc = inclination - orbit.inclination;
-    double dv = (2 * sin(d_inc / 2) * (1 + orbit.eccentricity * cos(orbit.v)) * orbit.nu * orbit.semi_major_axis) /
-                (sqrt(1 - orbit.eccentricity * orbit.eccentricity) * cos(orbit.w + orbit.v));
-    return std::make_pair(glm::dvec3(), 0);
+    double v_change = components::types::PI - orbit.w;
+    const double d_inc = -1 * (inclination - orbit.inclination);
+    // Figure out which v_change has the least delta-v expenditure
+    double change_1 = GetInclinationChangeDeltaV(orbit, components::types::PI - orbit.w, d_inc);
+    double change_2 = GetInclinationChangeDeltaV(orbit, 2 * components::types::PI - orbit.w, d_inc);
+    // It will always be at apogee, so we're trying to find the point closest to apogee
+    if (change_1 > change_2) {
+        v_change = 2. * components::types::PI - orbit.w;
+    }
+    double v = components::types::OrbitVelocity(v_change, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+    // Just set to original velocity
+    // Delta-v should be at the ascending node
+    // Do we have to get flight path angle?
+    glm::dvec3 vector = glm::dvec3(0, v * (cos(d_inc) - 1), v * sin(d_inc));
+    return std::make_pair(vector, orbit.TimeToMeanAnomaly(v_change));
 }
 
 std::pair<glm::dvec3, double> SetCircularInclination(const components::types::Orbit& orbit, double inclination) {
@@ -74,9 +93,7 @@ std::pair<glm::dvec3, double> SetCircularInclination(const components::types::Or
     double v = components::types::GetCircularOrbitingVelocity(orbit.GM, orbit.semi_major_axis);
     // Just set to original velocity
     // Delta-v should be at the ascending node
-    glm::dvec3 vector =
-        glm::dvec3(0, v * (cos(d_inc) - 1),
-                   v * sin(d_inc));  //glm::dquat(glm::dvec3(inclination, 0, 0)) * glm::dvec3(0, 0, delta_v);
+    glm::dvec3 vector = glm::dvec3(0, v * (cos(d_inc) - 1), v * sin(d_inc));
     return std::make_pair(vector, orbit.TimeToMeanAnomaly(v_change));
 }
 }  // namespace cqsp::common::systems
