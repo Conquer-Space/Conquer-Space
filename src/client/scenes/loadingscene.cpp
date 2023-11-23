@@ -52,7 +52,6 @@ cqsp::scene::LoadingScene::~LoadingScene() {
 
 void cqsp::scene::LoadingScene::Init() {
     auto loading = [&]() {
-        tracy::SetThreadName("Resource Loading");
         SPDLOG_INFO("Loading resources");
         LoadResources();
         SPDLOG_INFO("Need halt: {}", need_halt);

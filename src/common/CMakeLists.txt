@@ -18,6 +18,7 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/examples)
 include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/include)
 include_directories(${LUA_HEADERS})
+include_directories(${CMAKE_SOURCE_DIR}/lib/tracy)
 
 file (GLOB_RECURSE CPP_FILES *.cpp)
 file (GLOB_RECURSE H_FILES *.h)
@@ -42,6 +43,6 @@ target_link_libraries(cqsp-core PUBLIC
     fmt::fmt
     libnoise
     sol2
-    Tracy
     stb
+    debug Tracy
 )
