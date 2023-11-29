@@ -16,7 +16,12 @@
  */
 #include "common/systems/maneuver/maneuver.h"
 
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/projection.hpp>
+#include <glm/gtx/vector_angle.hpp>
+
 namespace cqsp::common::systems {
+using namespace components::types;  // NOLINT
 std::pair<glm::dvec3, double> CircularizeAtApoapsis(const components::types::Orbit& orbit) {
     // Get apogee
     const double new_velocity = components::types::GetCircularOrbitingVelocity(orbit.GM, orbit.GetApoapsis());
@@ -95,5 +100,24 @@ std::pair<glm::dvec3, double> SetCircularInclination(const components::types::Or
     // Delta-v should be at the ascending node
     glm::dvec3 vector = glm::dvec3(0, v * (cos(d_inc) - 1), v * sin(d_inc));
     return std::make_pair(vector, orbit.TimeToMeanAnomaly(v_change));
+}
+
+// Shamelessly stolen from mechjeb
+std::pair<glm::dvec3, double> MatchPlanes(const components::types::Orbit& orbit, const components::types::Orbit& dest) {
+    // Find intersection theta with the other orbit
+    double rel_inclination = dest.inclination - orbit.inclination;
+    // Ascending node is 180-w?
+    auto vec = glm::cross(GetOrbitNormal(orbit), GetOrbitNormal(dest));
+    // Get the intersection of this orbit?
+    auto projected = glm::proj(GetOrbitNormal(orbit), vec);
+    auto periapsis = toVec3(orbit, 0);
+    double angle = glm::angle(projected, periapsis);
+    // If the vector points to the infalling part of the orbit then we need to do 2 pi minus the
+    // angle from Pe to get the true anomaly. Test this by taking the the cross product of the
+    // orbit normal and vector to the periapsis. This gives a vector that points to center of the
+    // outgoing side of the orbit. If vectorToAN is more than 90 degrees from this vector, it occurs
+    // during the infalling part of the orbit.
+    //if (abs(glm::angle(GetOrbitNormal(orbit, ))))
+    return std::pair<glm::dvec3, double>();
 }
 }  // namespace cqsp::common::systems
