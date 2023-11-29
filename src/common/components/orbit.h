@@ -20,7 +20,6 @@
 
 #include <entt/entt.hpp>
 #include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
 
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
@@ -365,4 +364,10 @@ double CalculateTransferAngle(const Orbit& orb1, const Orbit& orb2);
 double GetHyperbolicAsymptopeAnomaly(double eccentricity);
 
 double FlightPathAngle(double eccentricity, double v);
+
+glm::dvec3 GetOrbitNormal(const Orbit& orbit);
+
+double TrueAnomalyFromVector(const Orbit& orbit, const glm::dvec3& vec);
+
+double AscendingTrueAnomaly(const Orbit& start, const Orbit& dest);
 }  // namespace cqsp::common::components::types

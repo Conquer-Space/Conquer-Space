@@ -18,6 +18,10 @@
 
 #include <algorithm>
 
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/projection.hpp>
+#include <glm/gtx/vector_angle.hpp>
+
 namespace cqsp::common::components::types {
 double GetOrbitingRadius(const double& e, const double& a, const double& v) {
     return (a * (1 - e * e)) / (1 + e * cos(v));
@@ -297,6 +301,32 @@ double GetHyperbolicAsymptopeAnomaly(double eccentricity) { return std::acos(-1 
 
 double FlightPathAngle(double eccentricity, double v) {
     return atan2(eccentricity * sin(v), 1 - eccentricity * cos(v));
+}
+
+glm::dvec3 GetOrbitNormal(const Orbit& orbit) {
+    return glm::dquat {glm::dvec3(0, 0, orbit.LAN)} * glm::dquat {glm::dvec3(orbit.inclination, 0, 0)} *
+           glm::dquat {glm::dvec3(0, 0, orbit.w)} * glm::dvec3(0, 0, 1);
+}
+
+double TrueAnomalyFromVector(const Orbit& orbit, const glm::dvec3& vec) {
+    // Get the intersection of this orbit?
+    //auto projected = glm::proj(vec, GetOrbitNormal(orbit));
+    auto periapsis = toVec3(orbit, 0);
+    double angle = glm::angle(glm::normalize(vec), glm::normalize(periapsis));
+    // Shamelessly stolen from mechjeb
+    // If the vector points to the infalling part of the orbit then we need to do 2 pi minus the
+    // angle from Pe to get the true anomaly. Test this by taking the the cross product of the
+    // orbit normal and vector to the periapsis. This gives a vector that points to center of the
+    // outgoing side of the orbit. If vectorToAN is more than 90 degrees from this vector, it occurs
+    // during the infalling part of the orbit.
+    if (abs(glm::angle(vec, glm::cross(GetOrbitNormal(orbit), periapsis))) < PI / 2) {
+        return angle;
+    }
+    return PI * 2 - angle;
+}
+
+double AscendingTrueAnomaly(const Orbit& start, const Orbit& dest) {
+    return normalize_radian(TrueAnomalyFromVector(start, glm::cross(GetOrbitNormal(start), GetOrbitNormal(dest))));
 }
 
 // https://space.stackexchange.com/questions/54396/how-to-calculate-the-time-to-reach-a-given-true-anomaly
