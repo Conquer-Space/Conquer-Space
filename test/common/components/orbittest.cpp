@@ -480,6 +480,27 @@ TEST(OrbitTest, AscendingNodeTest) {
         EXPECT_DOUBLE_EQ(cqspt::AscendingTrueAnomaly(std::get<0>(element), std::get<1>(element)), std::get<2>(element));
     }
 }
+
+TEST(OrbitTest, PhaseAngleTest) {
+    namespace cqspt = cqsp::common::components::types;
+    // The angles are taken from https://ksp.olex.biz/, which should be a decent estimation.
+    cqspt::Orbit kerbin;
+    kerbin.semi_major_axis = 13599840.256;
+    kerbin.GM = 1.1723328e9;
+    kerbin.CalculateVariables();
+    cqspt::Orbit duna;
+    duna.GM = 1.1723328e9;
+    duna.semi_major_axis = 20726155.264;
+    duna.CalculateVariables();
+
+    EXPECT_NEAR(cqspt::CalculateTransferAngle(kerbin, duna), cqspt::toRadian(44.6), 0.5);
+    // Eve transfer
+    cqspt::Orbit eve;
+    eve.GM = 1.1723328e9;
+    eve.semi_major_axis = 9832684.544;
+    eve.CalculateVariables();
+    EXPECT_NEAR(cqspt::CalculateTransferAngle(kerbin, eve), cqspt::toRadian(-54.13), 0.5);
+}
 /*
 TEST(Common_SOITest, SOIExitTest) {
     namespace cqspc = cqsp::common::components;

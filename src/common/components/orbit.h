@@ -105,6 +105,7 @@ struct Orbit {
     /// <summary>
     /// Gravitational constant of the reference body this is orbiting
     /// Graviational constant * mass of orbiting body
+    /// So if it's in m^3 divide it by 10^9
     /// <br />
     /// km^3 * s^-2
     /// </summary>
@@ -357,7 +358,7 @@ inline void UpdatePos(Kinematics& kin, const Orbit& orb) {
 }
 
 double CalculateTransferTime(const Orbit& orb1, const Orbit& orb2);
-double CalculateTransferAngle(const Orbit& orb1, const Orbit& orb2);
+double CalculateTransferAngle(const Orbit& start_orbit, const Orbit& end_orbit);
 
 // https://orbital-mechanics.space/the-orbit-equation/hyperbolic-trajectories.html
 // True anomaly of the asymptope for a hyperbolic orbit
