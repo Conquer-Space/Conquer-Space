@@ -359,6 +359,7 @@ inline void UpdatePos(Kinematics& kin, const Orbit& orb) {
 
 double CalculateTransferTime(const Orbit& orb1, const Orbit& orb2);
 double CalculateTransferAngle(const Orbit& start_orbit, const Orbit& end_orbit);
+double CalculatePhaseAngle(const Orbit& start_orbit, const Orbit& end_orbit, double epoch);
 
 // https://orbital-mechanics.space/the-orbit-equation/hyperbolic-trajectories.html
 // True anomaly of the asymptope for a hyperbolic orbit

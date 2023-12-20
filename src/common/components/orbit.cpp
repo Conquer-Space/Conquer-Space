@@ -292,6 +292,7 @@ double CalculateTransferTime(const Orbit& orb1, const Orbit& orb2) {
     double TOF = (E - e * sin(E)) * sqrt(transfer_sma * transfer_sma * transfer_sma / orb1.GM);
     return TOF;
 }
+
 double CalculateTransferAngle(const Orbit& start_orbit, const Orbit& end_orbit) {
     double new_sma = (start_orbit.semi_major_axis + end_orbit.semi_major_axis) / 2;
     double t_trans = PI * sqrt((new_sma * new_sma * new_sma) / start_orbit.GM);
@@ -299,6 +300,13 @@ double CalculateTransferAngle(const Orbit& start_orbit, const Orbit& end_orbit) 
     // Get mean motion of both bodies
     double phase_angle = PI - t_trans * end_orbit.nu;
     return phase_angle;
+}
+
+double CalculatePhaseAngle(const Orbit& start_orbit, const Orbit& end_orbit, double epoch) {
+    double a = GetTrueAnomaly(start_orbit, epoch) + start_orbit.w;
+    double b = GetTrueAnomaly(end_orbit, epoch) + end_orbit.w;
+
+    return b - a;
 }
 
 double GetHyperbolicAsymptopeAnomaly(double eccentricity) { return std::acos(-1 / eccentricity); }
