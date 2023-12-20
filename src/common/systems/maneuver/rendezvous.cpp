@@ -20,27 +20,30 @@
 
 namespace cqsp::common::systems {
 using namespace components::types;  // NOLINT
-std::pair<glm::dvec3, double> CoplanarIntercept(const components::types::Orbit& start_orbit,
-                                                const components::types::Orbit& end_orbit, double epoch) {
+HohmannPair_t CoplanarIntercept(const components::types::Orbit& start_orbit, const components::types::Orbit& end_orbit,
+                                double epoch) {
     // They need to be the same plane, but let's ignore that
     // Also needs to be circular
-    // TODO(EhWhoAmI): Don't calculate the vector position and measure the relative angle
-    // Need to have a more geometric calculation for this
-    // Get true anomaly
-    double a = GetTrueAnomaly(start_orbit, epoch) + start_orbit.w;
-    double b = GetTrueAnomaly(end_orbit, epoch) + end_orbit.w;
+    double current_phase_angle = CalculatePhaseAngle(start_orbit, end_orbit, epoch);
 
+    double t_phase_angle = CalculateTransferAngle(start_orbit, end_orbit);
+
+    // In theory, you're supposed to add a k function to check if the time is less than zero or something
+    double k = 0;
+    if (t_phase_angle - current_phase_angle < 0) {
+        k++;
+    }
+    double t_wait = (t_phase_angle - current_phase_angle) / (end_orbit.nu - start_orbit.nu);
+    // Get the nearesxt time to that phase angle, maybe next time we can put a time where we can
     // Get the delta phase angle so that we can match up
     // Make sure that the phase angle matches up
-    HohmannTransfer(start_orbit, end_orbit.semi_major_axis);
-    // Get the new semi major axis
-    double new_sma = (start_orbit.semi_major_axis + end_orbit.semi_major_axis) / 2;
-    double t_trans = PI * sqrt((new_sma * new_sma * new_sma) * start_orbit.GM);
-    // So calculate the phase angle that we have to do
-    // Get mean motion of both bodies
-    double phase_angle = PI - sqrt(end_orbit.GM / end_orbit.semi_major_axis) * t_trans;
-    // Get the time it will be at the phase angle
+    auto maneuver = UnsafeHohmannTransfer(start_orbit, end_orbit.semi_major_axis);
 
-    return std::pair<glm::dvec3, double>();
+    // This is the initial burn
+    maneuver.first.second += t_wait;
+    // This is the subsequent burn
+    maneuver.second.second += t_wait;
+
+    return maneuver;
 }
 }  // namespace cqsp::common::systems

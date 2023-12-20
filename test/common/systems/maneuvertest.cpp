@@ -19,6 +19,7 @@
 #include "common/components/orbit.h"
 #include "common/components/units.h"
 #include "common/systems/maneuver/maneuver.h"
+#include "common/systems/maneuver/rendezvous.h"
 
 TEST(Maneuver, CircularCircularizeApogeeTest) {
     namespace cqspt = cqsp::common::components::types;
@@ -489,4 +490,29 @@ TEST(Maneuver, ChangeWEccentricChangeInclinationTest) {
     EXPECT_NEAR(new_orbit.LAN, orbit.LAN, 1e-4);
     EXPECT_NEAR(cqspt::normalize_radian(new_orbit.LAN + new_orbit.w), cqspt::normalize_radian(orbit.LAN + orbit.w),
                 1e-4);
+}
+
+TEST(Maneuver, CoplanarInterceptTest) {
+    namespace cqspt = cqsp::common::components::types;
+    namespace cqsps = cqsp::common::systems;
+
+    cqspt::Orbit orbit(57.91e9, 0, 0, 0, 0, 0);
+    cqspt::Orbit orbit2(57.91e10, 0, 0, 0, 0, 0);
+
+    auto maneuver = cqsps::CoplanarIntercept(orbit, orbit2, 0);
+    // Now generate the new orbit, and check if they're gonna match up
+    double transfer_angle = cqspt::CalculateTransferAngle(orbit, orbit2);
+    double phase = cqspt::CalculatePhaseAngle(orbit, orbit2, maneuver.first.second);
+    EXPECT_NEAR(transfer_angle, phase, 1e-4);
+    cqspt::Orbit intercept_orbit = cqspt::ApplyImpulse(orbit, maneuver.first.first, maneuver.first.second);
+    double time = intercept_orbit.TimeToMeanAnomaly(cqspt::PI);
+    EXPECT_DOUBLE_EQ(intercept_orbit.GetApoapsis(), orbit2.semi_major_axis);
+    EXPECT_DOUBLE_EQ(intercept_orbit.GetPeriapsis(), orbit.semi_major_axis);
+    EXPECT_NEAR(maneuver.second.second - maneuver.first.second, time, 0.5);
+    glm::dvec3 interceptor_orbit_vec = cqspt::toVec3(intercept_orbit, cqspt::PI);
+    glm::dvec3 intercepted_place = cqspt::toVec3(orbit2, cqspt::GetTrueAnomaly(orbit2, maneuver.second.second));
+    // Get the phase angle between the two at the end?
+    EXPECT_NEAR(0., cqspt::CalculatePhaseAngle(orbit2, intercept_orbit, maneuver.second.second), 1e-4);
+    double dist = glm::distance(interceptor_orbit_vec, intercepted_place);
+    EXPECT_NEAR(dist, 0, 100);
 }

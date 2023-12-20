@@ -17,11 +17,7 @@
 #include "common/systems/maneuver/hohmann.h"
 
 namespace cqsp::common::systems {
-std::optional<HohmannPair_t> HohmannTransfer(const components::types::Orbit& orbit, double altitude) {
-    if (orbit.eccentricity > 1e-5) {
-        // Can't do it
-        return std::nullopt;
-    }
+HohmannPair_t UnsafeHohmannTransfer(const components::types::Orbit& orbit, double altitude) {
     const double new_sma = (orbit.semi_major_axis + altitude) / 2;
     const double new_velocity = components::types::OrbitVelocityAtR(orbit.GM, new_sma, orbit.semi_major_axis);
     const double old_velocity = components::types::GetCircularOrbitingVelocity(orbit.GM, orbit.semi_major_axis);
@@ -36,7 +32,14 @@ std::optional<HohmannPair_t> HohmannTransfer(const components::types::Orbit& orb
     // Circularize
     const double final_velocity = components::types::GetCircularOrbitingVelocity(orbit.GM, altitude);
     Maneuver_t end = std::make_pair(glm::dvec3(0, final_velocity - apogee_velocity, 0), transfer_time);
+    return std::make_pair(start, end);
+}
+std::optional<HohmannPair_t> HohmannTransfer(const components::types::Orbit& orbit, double altitude) {
+    if (orbit.eccentricity > 1e-5) {
+        // Can't do it
+        return std::nullopt;
+    }
 
-    return std::make_optional(std::make_pair(start, end));
+    return std::make_optional(UnsafeHohmannTransfer(orbit, altitude));
 }
 }  // namespace cqsp::common::systems

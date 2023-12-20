@@ -26,5 +26,8 @@
 namespace cqsp::common::systems {
 typedef std::pair<glm::dvec3, double> Maneuver_t;
 typedef std::pair<Maneuver_t, Maneuver_t> HohmannPair_t;
+// Executes a Hohmann transfer but without the checks you should normally have such
+// as if it is a circular orbit or even on the same plane
+HohmannPair_t UnsafeHohmannTransfer(const components::types::Orbit& orbit, double altitude);
 std::optional<HohmannPair_t> HohmannTransfer(const components::types::Orbit& orbit, double altitude);
 }  // namespace cqsp::common::systems
