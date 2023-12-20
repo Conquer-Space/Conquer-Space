@@ -125,7 +125,6 @@ void LoadSatellites(Universe& universe, std::string& string) {
         auto orbit = GetOrbit(line_one, line_two, GM);
         orbit.inclination += universe.get<components::bodies::Body>(earth).axial * cos(orbit.inclination);
         // orbit.M0 += universe.get<components::bodies::Body>(earth).axial;
-        orbit.CalculateVariables();
         orbit.reference_body = earth;
         // The math works
         universe.get<components::bodies::OrbitalSystem>(earth).push_back(satellite);

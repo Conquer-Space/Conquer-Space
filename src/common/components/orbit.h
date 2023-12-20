@@ -91,18 +91,6 @@ struct Orbit {
     radian v = 0;
 
     /// <summary>
-    /// Orbital period
-    /// <br />
-    /// Seconds
-    /// </summary>
-    double T = 0;
-
-    /// <summary>
-    /// Average motion, radians per second
-    /// </summary>
-    double nu = 0;
-
-    /// <summary>
     /// Gravitational constant of the reference body this is orbiting
     /// Graviational constant * mass of orbiting body
     /// So if it's in m^3 divide it by 10^9
@@ -132,26 +120,21 @@ struct Orbit {
           w(w),
           M0(M0),
           v(M0),
-          T(0),
-          epoch(0) {
-        CalculateVariables();
-    }
+          epoch(0) {}
 
-    /// <summary>
-    /// Calculates period and mean motion
-    /// </summary>
-    void CalculateVariables() {
-        T = 2 * PI * sqrt(semi_major_axis * semi_major_axis * semi_major_axis / GM);
-        nu = sqrt(GM / (semi_major_axis * semi_major_axis * semi_major_axis));
-    }
-
-    double GetMtElliptic(double time) const { return normalize_radian(M0 + (time - epoch) * nu); }
+    double GetMtElliptic(double time) const { return normalize_radian(M0 + (time - epoch) * nu()); }
 
     double GetOrbitingRadius() const { return types::GetOrbitingRadius(eccentricity, semi_major_axis, v); }
 
     double GetOrbitingRadius(const double& v) const {
         return types::GetOrbitingRadius(eccentricity, semi_major_axis, v);
     }
+
+    // Orbital period
+    double T() const { return 2 * PI * sqrt(semi_major_axis * semi_major_axis * semi_major_axis / GM); }
+
+    // Mean motion
+    double nu() const { return sqrt(GM / (semi_major_axis * semi_major_axis * semi_major_axis)); }
 
     double GetApoapsis() const { return semi_major_axis * (1 + eccentricity); }
 

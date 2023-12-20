@@ -34,6 +34,7 @@ HohmannPair_t UnsafeHohmannTransfer(const components::types::Orbit& orbit, doubl
     Maneuver_t end = std::make_pair(glm::dvec3(0, final_velocity - apogee_velocity, 0), transfer_time);
     return std::make_pair(start, end);
 }
+
 std::optional<HohmannPair_t> HohmannTransfer(const components::types::Orbit& orbit, double altitude) {
     if (orbit.eccentricity > 1e-5) {
         // Can't do it

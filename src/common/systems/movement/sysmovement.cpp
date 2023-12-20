@@ -57,7 +57,6 @@ void LeaveSOI(Universe& universe, const entt::entity& body, entt::entity& parent
     orb = cqspt::Vec3ToOrbit(pos.position + p_pos.position, pos.velocity + p_pos.velocity, parent_parent_orb.GM,
                              universe.date.ToSecond());
     orb.reference_body = p_orb.reference_body;
-    orb.CalculateVariables();
 
     // Update dirty orbit
     universe.emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
@@ -102,7 +101,6 @@ void CalculateImpulse(Universe& universe, cqspt::Orbit& orb, entt::entity body, 
 
         orb = cqspt::Vec3ToOrbit(pos.position, pos.velocity + impulse.impulse, orb.GM, universe.date.ToSecond());
         orb.reference_body = reference;
-        orb.CalculateVariables();
         pos.position = cqspt::toVec3(orb);
         pos.velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
         universe.emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
@@ -229,7 +227,6 @@ void EnterSOI(Universe& universe, const entt::entity& parent, const entt::entity
             orb = cqspt::Vec3ToOrbit(pos.position - kinematics.position, pos.velocity - kinematics.velocity,
                                      body_comp.GM, universe.date.ToSecond());
             orb.reference_body = entity;
-            orb.CalculateVariables();
             // Calculate position, and change the thing
             pos.position = cqspt::toVec3(orb);
             pos.velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);

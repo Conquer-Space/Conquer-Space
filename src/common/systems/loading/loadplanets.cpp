@@ -215,7 +215,6 @@ void PlanetLoader::PostLoad(const entt::entity& entity) {
     if (universe.planets.find(parent_temp.parent) == universe.planets.end()) {
         SPDLOG_INFO("{} parent is not found: {}", universe.get<components::Identifier>(entity).identifier,
                     parent_temp.parent);
-        orbit.CalculateVariables();
         universe.remove<ParentTemp>(entity);
         return;
     }
@@ -226,7 +225,6 @@ void PlanetLoader::PostLoad(const entt::entity& entity) {
     orbit.GM = universe.get<components::bodies::Body>(parent).GM;
     body.SOI = components::bodies::CalculateSOI(body.GM, orbit.GM, orbit.semi_major_axis);
     body.mass = components::bodies::CalculateMass(body.GM);
-    orbit.CalculateVariables();
     universe.get_or_emplace<components::bodies::OrbitalSystem>(parent).push_back(entity);
     universe.remove<ParentTemp>(entity);
 }

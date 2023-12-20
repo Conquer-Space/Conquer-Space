@@ -53,7 +53,7 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         ImGui::TextFmt("Mean anomaly at Epoch: {}\u00b0", toDegree(orbit.M0));
         ImGui::TextFmt("Epoch: {}s", orbit.epoch);
         ImGui::TextFmt("GM: {} km^3 * s^-2", orbit.GM);
-        ImGui::TextFmt("Orbital period: {} s", orbit.T);
+        ImGui::TextFmt("Orbital period: {} s", orbit.T());
         ImGui::TextFmt("Orbiting: {}", common::util::GetName(GetUniverse(), orbit.reference_body).c_str());
         if (GetUniverse().any_of<common::components::bodies::Body>(orbit.reference_body)) {
             double r = orbit.GetOrbitingRadius();

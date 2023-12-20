@@ -31,7 +31,7 @@ TEST(Maneuver, CircularCircularizeApogeeTest) {
     // Check if it's circular
     // Get velocity at apogee
     EXPECT_NEAR(glm::length(maneuver.first), 0, 1e-10);
-    EXPECT_DOUBLE_EQ(maneuver.second, orbit.T / 2);
+    EXPECT_DOUBLE_EQ(maneuver.second, orbit.T() / 2);
     EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
     EXPECT_DOUBLE_EQ(new_orbit.semi_major_axis, orbit.GetApoapsis());
 }
@@ -53,7 +53,7 @@ TEST(Maneuver, CircularizeApogeeTest) {
     cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second);
     // Check if it's circular
     // Get velocity at apogee
-    EXPECT_DOUBLE_EQ(maneuver.second, orbit.T / 2);
+    EXPECT_DOUBLE_EQ(maneuver.second, orbit.T() / 2);
     EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
     EXPECT_DOUBLE_EQ(new_orbit.semi_major_axis, orbit.GetApoapsis());
 }
@@ -75,7 +75,7 @@ TEST(Maneuver, InclinedCircularizeApogeeTest) {
     cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second);
     // Check if it's circular
     // Get velocity at apogee
-    EXPECT_DOUBLE_EQ(maneuver.second, orbit.T / 2);
+    EXPECT_DOUBLE_EQ(maneuver.second, orbit.T() / 2);
     EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
     EXPECT_DOUBLE_EQ(new_orbit.semi_major_axis, orbit.GetApoapsis());
 }
@@ -97,7 +97,7 @@ TEST(Maneuver, HighEccentricityCircularizeApogeeTest) {
     cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second);
     // Check if it's circular
     // Get velocity at apogee
-    EXPECT_DOUBLE_EQ(maneuver.second, orbit.T / 2);
+    EXPECT_DOUBLE_EQ(maneuver.second, orbit.T() / 2);
     EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
     EXPECT_DOUBLE_EQ(new_orbit.semi_major_axis, orbit.GetApoapsis());
 }
@@ -119,7 +119,7 @@ TEST(Maneuver, DISABLED_OffsetCircularizeApogeeTest) {
     EXPECT_NEAR(glm::length(maneuver.first), to_velocity - from_velocity, 1e-10);
     cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second);
     EXPECT_EQ(GetTrueAnomaly(orbit, orbit.TimeToMeanAnomaly(cqspt::PI)), cqspt::PI);
-    EXPECT_EQ(orbit.nu, 0);
+    EXPECT_EQ(orbit.nu(), 0);
     // Check if it's circular
     // Get velocity at apogee
     EXPECT_DOUBLE_EQ(orbit.TimeToMeanAnomaly(cqspt::PI), maneuver.second);
@@ -143,7 +143,7 @@ TEST(Maneuver, CircularizePerigeeTest) {
     EXPECT_DOUBLE_EQ(from_velocity, r);
     EXPECT_NEAR(glm::length(maneuver.first), from_velocity - to_velocity, 1e-10);
     // Add one period so that we can actually calculate things
-    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T);
+    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T());
     // Check if it's circular
     EXPECT_DOUBLE_EQ(maneuver.second, 0);
     EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
@@ -156,7 +156,7 @@ TEST(Maneuver, CircularCircularizePerigeeTest) {
     // Make a random orbit, apply an impulse, and ensure the position is te same
     cqspt::Orbit orbit(57.91e7, 0, 0, 0, 0, 0);
     auto maneuver = cqsps::CircularizeAtPeriapsis(orbit);
-    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T);
+    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T());
     EXPECT_NEAR(glm::length(maneuver.first), 0, 1e-10);
     EXPECT_DOUBLE_EQ(maneuver.second, 0);
     // Check if it's circular
@@ -177,7 +177,7 @@ TEST(Maneuver, HighEccentricityCircularizePerigeeTest) {
     double r = cqspt::OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetPeriapsis());
     EXPECT_DOUBLE_EQ(from_velocity, r);
     EXPECT_NEAR(glm::length(maneuver.first), from_velocity - to_velocity, 1e-10);
-    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T);
+    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T());
     // Check if it's circular
     EXPECT_DOUBLE_EQ(maneuver.second, 0);
     EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
@@ -199,7 +199,7 @@ TEST(Maneuver, DISABLED_OffsetCircularizePerigeeTest) {
     double r = cqspt::OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetPeriapsis());
     EXPECT_DOUBLE_EQ(from_velocity, r);
     EXPECT_NEAR(glm::length(maneuver.first), from_velocity - to_velocity, 1e-10);
-    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T);
+    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T());
     // Check if it's circular
     EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
     EXPECT_NEAR(new_orbit.semi_major_axis, orbit.GetPeriapsis(), 1e-4);
@@ -214,7 +214,7 @@ TEST(Maneuver, RaiseApogeeTest) {
     const double delta_orbit = 2e10;
     auto maneuver = cqsps::SetApoapsis(orbit, orbit.GetApoapsis() + delta_orbit);
 
-    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T);
+    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T());
     // Check if it's circular
 
     EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis(), 1e-4);
@@ -231,9 +231,9 @@ TEST(Maneuver, ReduceApogeeTest) {
     const double delta_orbit = -2e10;
     auto maneuver = cqsps::SetApoapsis(orbit, orbit.GetApoapsis() + delta_orbit);
 
-    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T);
+    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T());
     // Check if it's circular
-    //EXPECT_DOUBLE_EQ(maneuver.second, orbit.T / 2);
+    //EXPECT_DOUBLE_EQ(maneuver.second, orbit.T() / 2);
     //EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
     EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis(), 1e-4);
     EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis() + delta_orbit, 1e-4);
@@ -247,7 +247,7 @@ TEST(Maneuver, RaisePerigeeTest) {
     const double delta_orbit = 2e10;
     auto maneuver = cqsps::SetPeriapsis(orbit, orbit.GetPeriapsis() + delta_orbit);
 
-    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T);
+    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T());
     // Check if it's circular
 
     EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis() + delta_orbit, 1e-4);
@@ -262,9 +262,9 @@ TEST(Maneuver, ReducePerigee) {
     const double delta_orbit = -2e10;
     auto maneuver = cqsps::SetPeriapsis(orbit, orbit.GetPeriapsis() + delta_orbit);
 
-    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T);
+    cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second + orbit.T());
     // Check if it's circular
-    //EXPECT_DOUBLE_EQ(maneuver.second, orbit.T / 2);
+    //EXPECT_DOUBLE_EQ(maneuver.second, orbit.T() / 2);
     //EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
     EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis() + delta_orbit, 1e-4);
     EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis(), 1e-4);
@@ -280,7 +280,7 @@ TEST(Maneuver, ChangeInclinationTest) {
     EXPECT_NEAR(glm::length(maneuver.first), 2 * v * sin(0.5 / 2), 1e-4);
     cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second);
     // Check if it's circular
-    //EXPECT_DOUBLE_EQ(maneuver.second, orbit.T / 2);
+    //EXPECT_DOUBLE_EQ(maneuver.second, orbit.T() / 2);
     EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
     EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis(), 1e-4);
     EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis(), 1e-4);
@@ -300,7 +300,7 @@ TEST(Maneuver, InclinedChangeInclinationTest) {
     EXPECT_NEAR(glm::length(maneuver.first), 2 * v * sin((new_inclination - orbit.inclination) / 2), 1e-4);
     cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second);
     // Check if it's circular
-    //EXPECT_DOUBLE_EQ(maneuver.second, orbit.T / 2);
+    //EXPECT_DOUBLE_EQ(maneuver.second, orbit.T() / 2);
     EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
     EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis(), 1e-4);
     EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis(), 1e-4);
@@ -320,7 +320,7 @@ TEST(Maneuver, ReduceInclinationTest) {
     EXPECT_NEAR(glm::length(maneuver.first), abs(2 * v * sin((new_inclination - orbit.inclination) / 2)), 1e-4);
     cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second);
     // Check if it's circular
-    //EXPECT_DOUBLE_EQ(maneuver.second, orbit.T / 2);
+    //EXPECT_DOUBLE_EQ(maneuver.second, orbit.T() / 2);
     EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
     EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis(), 1e-4);
     EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis(), 1e-4);
@@ -347,7 +347,7 @@ TEST(Maneuver, AlteredWInclinationTest) {
     EXPECT_NEAR(glm::length(maneuver.first), abs(2 * v * sin((new_inclination - orbit.inclination) / 2)), 1e-4);
     cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second);
     // Check if it's circular
-    //EXPECT_DOUBLE_EQ(maneuver.second, orbit.T / 2);
+    //EXPECT_DOUBLE_EQ(maneuver.second, orbit.T() / 2);
     EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
     EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis(), 1e-4);
     EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis(), 1e-4);

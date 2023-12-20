@@ -14,11 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "systooltips.h"
+#include "client/scenes/universe/interface/systooltips.h"
 
 #include <cmath>
 #include <string>
 
+#include "client/scenes/universe/interface/sysstockpileui.h"
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
@@ -36,7 +37,6 @@
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
 #include "engine/gui.h"
-#include "sysstockpileui.h"
 
 using cqsp::common::Universe;
 
@@ -165,9 +165,9 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
         ImGui::TextFmt("Longitude of Linear Node: {} deg", common::components::types::toDegree(orbit.LAN));
         ImGui::TextFmt("Argument of Periapsis: {} deg", common::components::types::toDegree(orbit.w));
         ImGui::TextFmt("True Anomaly: {} deg", common::components::types::toDegree(orbit.v));
-        ImGui::TextFmt("Orbital Period: {} y {} d {} h {} m {} s", (int)(orbit.T / (60 * 60 * 24 * 365)),
-                       (int)std::fmod(orbit.T / (60 * 60 * 24), 24), (int)std::fmod(orbit.T / (60 * 60), 60),
-                       (int)std::fmod(orbit.T / 60, 60), std::fmod(orbit.T, 60));
+        ImGui::TextFmt("Orbital Period: {} y {} d {} h {} m {} s", (int)(orbit.T() / (60 * 60 * 24 * 365)),
+                       (int)std::fmod(orbit.T() / (60 * 60 * 24), 24), (int)std::fmod(orbit.T() / (60 * 60), 60),
+                       (int)std::fmod(orbit.T() / 60, 60), std::fmod(orbit.T(), 60));
     }
 
     if (universe.all_of<common::components::ships::Crash>(entity)) {
