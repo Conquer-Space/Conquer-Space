@@ -33,7 +33,8 @@ HohmannPair_t CoplanarIntercept(const components::types::Orbit& start_orbit, con
     if (t_phase_angle - current_phase_angle < 0) {
         k++;
     }
-    double t_wait = (t_phase_angle - current_phase_angle) / (end_orbit.nu - start_orbit.nu);
+
+    double t_wait = (t_phase_angle - current_phase_angle + 2 * PI * k) / (start_orbit.nu() - end_orbit.nu());
     // Get the nearesxt time to that phase angle, maybe next time we can put a time where we can
     // Get the delta phase angle so that we can match up
     // Make sure that the phase angle matches up

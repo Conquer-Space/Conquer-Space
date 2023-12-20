@@ -32,10 +32,9 @@ TEST(Common_Loading_Satellites, GetEpochYearTest) {
 TEST(Common_Loading_Satellites, GetOrbitTest) {
     auto orbit = GetOrbit("1 25544U 98067A   22275.23091245  .00058352  00000+0  10342-2 0  9998",
                           "2 25544  51.6417 166.2459 0003022 250.0408 254.8118 15.49684437361780", 3.9860044188e5);
-    orbit.CalculateVariables();
 
     // Orbital time should be roughly equal, which indicates the semi major axis is correct
-    EXPECT_NEAR(15.49684437361780, 3600 * 24 / orbit.T, 0.001);
+    EXPECT_NEAR(15.49684437361780, 3600 * 24 / orbit.T(), 0.001);
     EXPECT_NEAR(toRadian(51.6417), orbit.inclination, 0.0001);
     EXPECT_NEAR(toRadian(166.2459), orbit.LAN, 0.0001);
     EXPECT_DOUBLE_EQ(orbit.eccentricity, 0.0003022);

@@ -104,7 +104,6 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
     orb.v = v;
     orb.E = E;
     orb.GM = GM;
-    orb.CalculateVariables();
     return orb;
 }
 
@@ -126,7 +125,7 @@ double OrbitVelocity(const double v, const double e, const double a, const doubl
     return sqrt(GM * (2 / r - 1 / a));
 }
 
-double AvgOrbitalVelocity(const Orbit& orb) { return (PI * 2 * orb.semi_major_axis) / orb.T; }
+double AvgOrbitalVelocity(const Orbit& orb) { return (PI * 2 * orb.semi_major_axis) / orb.T(); }
 
 glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v) {
     if (orb.semi_major_axis == 0) {
@@ -196,13 +195,13 @@ double GetMtElliptic(const double& M0, const double& nu, const double& time, con
 double GetMtHyperbolic(const double& Mu, const double& a, const double& d_t) { return sqrt(Mu / (-a * a * a)) * d_t; }
 
 radian TrueAnomalyElliptic(const Orbit& orbit, const second& time) {
-    double Mt = GetMtElliptic(orbit.M0, orbit.nu, time, orbit.epoch);
+    double Mt = GetMtElliptic(orbit.M0, orbit.nu(), time, orbit.epoch);
     double E = SolveKeplerElliptic(Mt, orbit.eccentricity);
     return EccentricAnomalyToTrueAnomaly(orbit.eccentricity, E);
 }
 
 radian TrueAnomalyElliptic(const Orbit& orbit, const second& time, double& E_out) {
-    double Mt = GetMtElliptic(orbit.M0, orbit.nu, time, orbit.epoch);
+    double Mt = GetMtElliptic(orbit.M0, orbit.nu(), time, orbit.epoch);
     double E = SolveKeplerElliptic(Mt, orbit.eccentricity);
     E_out = E;
     return EccentricAnomalyToTrueAnomaly(orbit.eccentricity, E);
@@ -298,7 +297,7 @@ double CalculateTransferAngle(const Orbit& start_orbit, const Orbit& end_orbit) 
     double t_trans = PI * sqrt((new_sma * new_sma * new_sma) / start_orbit.GM);
     // So calculate the phase angle that we have to do
     // Get mean motion of both bodies
-    double phase_angle = PI - t_trans * end_orbit.nu;
+    double phase_angle = PI - t_trans * end_orbit.nu();
     return phase_angle;
 }
 
@@ -359,9 +358,9 @@ double Orbit::TimeToMeanAnomaly(double v2) const {
     if (v2 > PI) {
         M *= -1;
     }
-    double t = (M - M0) / nu;
+    double t = (M - M0) / nu();
     if (t < 0) {
-        t = T + t;
+        t = T() + t;
     }
     return (t);
 }

@@ -43,8 +43,7 @@ TEST(OrbitTest, DISABLED_toVec3Test) {
     double i = orb.inclination = data["inclination"];
     double LAN = orb.LAN = data["ascending_node"];
     double w = orb.w = data["argument"];
-    orb.CalculateVariables();
-    std::cout << orb.T << std::endl;
+    //std::cout << orb.T() << std::endl;
     double T = 3.1415926535 * 2;
     int resolution = 5000;
     std::ofstream file("data.txt");
@@ -55,7 +54,7 @@ TEST(OrbitTest, DISABLED_toVec3Test) {
         //EXPECT_THAT(glm::length(vec), AllOf(Ge(0.98326934275),Le(1.0167257013)));
     }
     file.close();
-    EXPECT_NEAR(orb.T / 86400, 365.256363004, 0.01);
+    EXPECT_NEAR(orb.T() / 86400, 365.256363004, 0.01);
 }
 
 TEST(OrbitTest, OrbitConversionTest) {
@@ -68,7 +67,6 @@ TEST(OrbitTest, OrbitConversionTest) {
     orb.LAN = 0;
     orb.w = 0;
 
-    orb.CalculateVariables();
     cqspt::UpdateOrbit(orb, 0);
     // Expect the true anomaly to be 0
     EXPECT_EQ(orb.GetMtElliptic(0), 0);
@@ -101,7 +99,6 @@ TEST(OrbitTest, NewOrbitConversionTest) {
     orb.LAN = 0;
     orb.w = 0;
 
-    orb.CalculateVariables();
     cqspt::UpdateOrbit(orb, 0);
     // Expect the true anomaly to be 0
     EXPECT_EQ(orb.GetMtElliptic(0), 0);
@@ -132,7 +129,6 @@ TEST(OrbitTest, NewOrbitConversionTest2) {
     orb.w = 0;
     orb.M0 = 0.8;
 
-    orb.CalculateVariables();
     cqspt::UpdateOrbit(orb, 0);
     // Expect the true anomaly to be 0.8
     EXPECT_EQ(orb.GetMtElliptic(0), 0.8);
@@ -174,7 +170,6 @@ TEST(OrbitTest, DISABLED_NewOrbitConversionTest3) {
     double M0 = 0;
     orb.M0 = M0;
 
-    orb.CalculateVariables();
     cqspt::UpdateOrbit(orb, 0);
     // Expect the true anomaly to be M0
     EXPECT_EQ(orb.GetMtElliptic(0), M0);
@@ -220,7 +215,6 @@ TEST(OrbitTest, NewOrbitConversionTest4) {
     double M0 = cqspt::PI / 4;
     orb.M0 = M0;
 
-    orb.CalculateVariables();
     cqspt::UpdateOrbit(orb, 0);
     // Expect the true anomaly to be M0
     EXPECT_EQ(orb.GetMtElliptic(0), M0);
@@ -245,7 +239,6 @@ TEST(OrbitTest, NewOrbitConversionTest4) {
     EXPECT_NEAR(new_orbit.v, orb.v, 0.001);
     EXPECT_NEAR(new_orbit.E, orb.E, 0.001);
     EXPECT_NEAR(new_orbit.M0, orb.M0, 0.001);
-    new_orbit.CalculateVariables();
     auto new_pos = cqspt::toVec3(new_orbit);
     for (int i = 0; i < 360; i++) {
         auto new_pos = cqspt::toVec3(new_orbit, cqspt::toRadian(i));
@@ -268,7 +261,6 @@ TEST(OrbitTest, NewOrbitConversionTest5) {
     cqspt::radian M0 = 2.8;
     orb.M0 = M0;
 
-    orb.CalculateVariables();
     cqspt::UpdateOrbit(orb, 0);
     // Expect the true anomaly to be M0
     EXPECT_EQ(orb.GetMtElliptic(0), M0);
@@ -293,7 +285,7 @@ TEST(OrbitTest, NewOrbitConversionTest5) {
     EXPECT_NEAR(new_orbit.v, orb.v, 1e-5);
     EXPECT_NEAR(new_orbit.E, orb.E, 1e-5);
     EXPECT_NEAR(new_orbit.M0, orb.M0, 1e-5);
-    new_orbit.CalculateVariables();
+
     auto new_pos = cqspt::toVec3(new_orbit);
     EXPECT_NEAR(new_pos.x, position.x, 1e-4);
     EXPECT_NEAR(new_pos.y, position.y, 1e-4);
@@ -440,12 +432,12 @@ TEST(Common_TransferTest, TransferTimeTest_Mars) {
     earth_orbit.semi_major_axis = 149598023;
     earth_orbit.v = 356.9521225619375_deg;
     earth_orbit.GM = cqspt::SunMu;
-    earth_orbit.CalculateVariables();
+
     cqspt::Orbit mars_orbit;
     mars_orbit.semi_major_axis = 227939366;
     mars_orbit.GM = cqspt::SunMu;
     mars_orbit.v = 0.338803314_deg;
-    mars_orbit.CalculateVariables();
+
     double b = cqspt::CalculateTransferTime(earth_orbit, mars_orbit);
     double p = cqspt::CalculateTransferAngle(earth_orbit, mars_orbit);
     // The approximate transfer time between the two
@@ -487,18 +479,17 @@ TEST(OrbitTest, PhaseAngleTest) {
     cqspt::Orbit kerbin;
     kerbin.semi_major_axis = 13599840.256;
     kerbin.GM = 1.1723328e9;
-    kerbin.CalculateVariables();
+
     cqspt::Orbit duna;
     duna.GM = 1.1723328e9;
     duna.semi_major_axis = 20726155.264;
-    duna.CalculateVariables();
 
     EXPECT_NEAR(cqspt::CalculateTransferAngle(kerbin, duna), cqspt::toRadian(44.6), 0.5);
     // Eve transfer
     cqspt::Orbit eve;
     eve.GM = 1.1723328e9;
     eve.semi_major_axis = 9832684.544;
-    eve.CalculateVariables();
+
     EXPECT_NEAR(cqspt::CalculateTransferAngle(kerbin, eve), cqspt::toRadian(-54.13), 0.5);
 }
 /*
