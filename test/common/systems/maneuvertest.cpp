@@ -509,7 +509,8 @@ TEST(Maneuver, CoplanarInterceptTest) {
     EXPECT_DOUBLE_EQ(intercept_orbit.GetApoapsis(), orbit2.semi_major_axis);
     EXPECT_DOUBLE_EQ(intercept_orbit.GetPeriapsis(), orbit.semi_major_axis);
     EXPECT_NEAR(maneuver.second.second - maneuver.first.second, time, 0.5);
-    glm::dvec3 interceptor_orbit_vec = cqspt::toVec3(intercept_orbit, cqspt::PI);
+    glm::dvec3 interceptor_orbit_vec =
+        cqspt::toVec3(intercept_orbit, cqspt::GetTrueAnomaly(intercept_orbit, maneuver.second.second));
     glm::dvec3 intercepted_place = cqspt::toVec3(orbit2, cqspt::GetTrueAnomaly(orbit2, maneuver.second.second));
     // Get the phase angle between the two at the end?
     EXPECT_NEAR(0., cqspt::CalculatePhaseAngle(orbit2, intercept_orbit, maneuver.second.second), 1e-4);

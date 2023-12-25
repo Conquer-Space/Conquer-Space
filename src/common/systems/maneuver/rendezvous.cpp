@@ -28,16 +28,11 @@ HohmannPair_t CoplanarIntercept(const components::types::Orbit& start_orbit, con
 
     double t_phase_angle = CalculateTransferAngle(start_orbit, end_orbit);
 
-    // In theory, you're supposed to add a k function to check if the time is less than zero or something
-    double k = 0;
-    if (t_phase_angle - current_phase_angle < 0) {
-        k++;
-    }
-
-    double t_wait = (t_phase_angle - current_phase_angle + 2 * PI * k) / (start_orbit.nu() - end_orbit.nu());
+    double t_wait = -(t_phase_angle - current_phase_angle) / (start_orbit.nu() - end_orbit.nu());
     // Get the nearesxt time to that phase angle, maybe next time we can put a time where we can
     // Get the delta phase angle so that we can match up
     // Make sure that the phase angle matches up
+
     auto maneuver = UnsafeHohmannTransfer(start_orbit, end_orbit.semi_major_axis);
 
     // This is the initial burn
