@@ -23,6 +23,7 @@
 #include "common/components/ships.h"
 #include "common/systems/maneuver/hohmann.h"
 #include "common/systems/maneuver/maneuver.h"
+#include "common/systems/maneuver/rendezvous.h"
 #include "common/util/nameutil.h"
 
 void cqsp::client::systems::SpaceshipWindow::Init() {}
@@ -175,6 +176,32 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
     }
     // Display spaceship delta v in the future
     // Display controls of the spaceship
+    if (ImGui::CollapsingHeader("Rendezvous")) {
+        auto& o_system = GetUniverse().get<cqsp::common::components::bodies::OrbitalSystem>(orbit.reference_body);
+        static entt::entity selected = o_system.children.empty() ? entt::null : o_system.children.front();
+        auto& target = GetUniverse().get<common::components::types::Orbit>(selected);
+
+        if (ImGui::Button("Rendez-vous!")) {
+            // Rdv with target
+            auto pair = cqsp::common::systems::CoplanarIntercept(orbit, target, GetUniverse().date.ToSecond());
+            auto& queue = GetUniverse().get_or_emplace<common::components::CommandQueue>(body);
+            common::components::Maneuver man_1(pair.first);
+            common::components::Maneuver man_2(pair.second);
+            queue.commands.push_back(man_1);
+            queue.commands.push_back(man_2);
+        }
+        ImGui::TextFmt("Phase angle: {}", cqsp::common::components::types::CalculatePhaseAngle(
+                                              orbit, target, GetUniverse().date.ToSecond()));
+        ImGui::TextFmt("Transfer angle: {}", cqsp::common::components::types::CalculateTransferAngle(orbit, target));
+        if (ImGui::BeginChild("Rendezvous Target")) {
+            for (auto& entity : o_system.children) {
+                if (ImGui::Selectable(common::util::GetName(GetUniverse(), entity).c_str(), selected == entity)) {
+                    selected = entity;
+                }
+            }
+        }
+        ImGui::EndChild();
+    }
     ImGui::End();
 }
 
