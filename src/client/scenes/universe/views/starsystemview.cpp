@@ -437,6 +437,7 @@ void SysStarSystemRenderer::DrawShipIcon(const glm::vec3& object_pos) {
 
     shipDispMat = glm::scale(shipDispMat, glm::vec3(1, window_ratio, 1));
     SetBillboardProjection(ship_overlay.shaderProgram, shipDispMat);
+    engine::Draw(ship_overlay);
 }
 
 void SysStarSystemRenderer::DrawTexturedPlanet(const glm::vec3& object_pos, const entt::entity entity) {
