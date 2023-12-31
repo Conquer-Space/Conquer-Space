@@ -211,7 +211,9 @@ void EnterSOI(Universe& universe, const entt::entity& parent, const entt::entity
     auto& pos = universe.get<cqspc::types::Kinematics>(body);
     auto& orb = universe.get<cqspc::types::Orbit>(body);
     // Check parents for SOI if we're intersecting with anything
-    for (entt::entity entity : universe.get<cqspc::bodies::OrbitalSystem>(parent).children) {
+    auto& o_system = universe.get<cqspc::bodies::OrbitalSystem>(parent);
+
+    for (entt::entity entity : o_system.children) {
         // Get the stuff
         if (entity == body) {
             continue;
@@ -235,6 +237,34 @@ void EnterSOI(Universe& universe, const entt::entity& parent, const entt::entity
             auto& vec = universe.get<cqspc::bodies::OrbitalSystem>(parent).children;
             vec.erase(std::remove(vec.begin(), vec.end(), body), vec.end());
             break;
+        }
+        // Now check if it's intersecting with any things outside of stuff
+        if (parent == universe.sun) {
+            continue;
+        }
+        for (entt::entity s : o_system.children) {
+            if (!universe.any_of<cqspc::bodies::Body>(s)) {
+                continue;
+            }
+            // Then check if it's within the SOI, and then calculate it
+            auto& kin = universe.get<cqspc::types::Kinematics>(s);
+            auto& parent_body = universe.get<cqspc::bodies::Body>(s);
+            if (glm::distance(kinematics.position, kin.position) > parent_body.SOI) {
+                // Then enter SOI or something
+                // Remove self from the current entity, and place me inside the soi of whatever is inside, and also
+                // convert the orbital velocities
+                SPDLOG_INFO("Entity is entering SOI");
+                // Change the position of the SOI
+                orb = cqspt::Vec3ToOrbit(pos.position - kin.position, pos.position - kin.velocity, parent_body.GM,
+                                         universe.date.ToSecond());
+                orb.reference_body = entity;
+                // Surely it'll be fine?
+                universe.get_or_emplace<cqspc::bodies::OrbitalSystem>(s).push_back(body);
+                auto& vec = universe.get<cqspc::bodies::OrbitalSystem>(parent).children;
+                vec.erase(std::remove(vec.begin(), vec.end(), body), vec.end());
+                // Mark this entity for removal and then
+                break;
+            }
         }
     }
 }
