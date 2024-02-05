@@ -39,5 +39,6 @@ std::pair<glm::dvec3, double> SetPeriapsis(const components::types::Orbit& orbit
 // This will find the nearest point in the inclination that intersects with the orbital inclination plane 0 degrees.
 std::pair<glm::dvec3, double> SetInclination(const components::types::Orbit& orbit, double inclination);
 std::pair<glm::dvec3, double> SetCircularInclination(const components::types::Orbit& orbit, double inclination);
-std::pair<glm::dvec3, double> MatchPlanes(const components::types::Orbit& orbit, const components::types::Orbit& dest);
+std::pair<glm::dvec3, double> MatchPlanes(const components::types::Orbit& orbit,
+                                          const components::types::Orbit& target);
 }  // namespace cqsp::common::systems
