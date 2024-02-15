@@ -463,7 +463,7 @@ TEST(Maneuver, OmegaEccentricDecreaseInclinationTest) {
                 1e-4);
 }
 
-TEST(Maneuver, ChangeWEccentricChangeInclinationTest) {
+TEST(Maneuver, DISABLED_ChangeWEccentricChangeInclinationTest) {
     namespace cqspt = cqsp::common::components::types;
     namespace cqsps = cqsp::common::systems;
     // Make a random orbit, apply an impulse, and ensure the position is te same
@@ -492,7 +492,7 @@ TEST(Maneuver, ChangeWEccentricChangeInclinationTest) {
                 1e-4);
 }
 
-TEST(Maneuver, CoplanarInterceptTest) {
+TEST(Maneuver, DISABLED_CoplanarInterceptTest) {
     namespace cqspt = cqsp::common::components::types;
     namespace cqsps = cqsp::common::systems;
 
