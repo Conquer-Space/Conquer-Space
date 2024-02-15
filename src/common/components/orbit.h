@@ -230,6 +230,7 @@ double OrbitVelocityAtR(const double GM, const double a, const double r);
 double AvgOrbitalVelocity(const Orbit& orb);
 
 glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v);
+glm::dvec3 OrbitVelocityToVec3(const Orbit& orb);
 
 /// <summary>
 /// Computes eccentric anomaly for a elliptic or circular orbit (e < 1) in radians given
@@ -287,6 +288,14 @@ radian TrueAnomalyElliptic(const Orbit& orbit, const second& time, double& E_out
 
 radian TrueAnomalyHyperbolic(const Orbit& orbit, const second& time);
 
+/// <summary>
+/// Calculates Eccentric anomaly
+/// </summary>
+/// <param name="v">True anomaly</param>
+/// <param name="e">Eccentricicy</param>
+/// <returns></returns>
+radian EccentricAnomaly(double v, double e);
+radian HyperbolicAnomaly(double v, double e);
 /// <summary>
 /// Convert orbit to AU coordinates
 /// </summary>

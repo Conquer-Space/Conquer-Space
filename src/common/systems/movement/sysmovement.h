@@ -40,12 +40,12 @@ class SysOrbit : public ISimulationSystem {
 void LeaveSOI(Universe& universe, const entt::entity& body);
 
 /// <summary>
-/// Change the SOI into something in the same SOI, like changing orbits from earth to the moon
+/// Change the current body's SOI into a child SOI
 /// </summary>
 /// <param name="universe"></param>
 /// <param name="parent"></param>
-/// <param name="body"></param>
-void EnterSOI(Universe& universe, const entt::entity& parent, const entt::entity& body);
+/// <param name="body">Body that we want to check if it's entering a SOI</param>
+bool EnterSOI(Universe& universe, const entt::entity& parent, const entt::entity& body);
 
 class SysPath : public ISimulationSystem {
  public:

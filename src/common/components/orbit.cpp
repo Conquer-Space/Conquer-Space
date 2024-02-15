@@ -122,7 +122,11 @@ glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i, const 
 
 double OrbitVelocity(const double v, const double e, const double a, const double GM) {
     double r = GetOrbitingRadius(e, a, v);
-    return sqrt(GM * (2 / r - 1 / a));
+    double sma = a;
+    if (e > 1) {
+        sma = -sma;
+    }
+    return sqrt(GM * (2 / r - 1 / sma));
 }
 
 double AvgOrbitalVelocity(const Orbit& orb) { return (PI * 2 * orb.semi_major_axis) / orb.T(); }
@@ -131,12 +135,13 @@ glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v) {
     if (orb.semi_major_axis == 0) {
         return glm::dvec3(0, 0, 0);
     }
-    double E = 2 * atan(tan(v / 2) / sqrt((1 + orb.eccentricity) /
-                                          (1 - orb.eccentricity)));  //SolveKeplerElliptic(v, orb.eccentricity);
+    double E = (orb.eccentricity < 1.) ? EccentricAnomaly(v, orb.eccentricity) : HyperbolicAnomaly(v, orb.eccentricity);
     double r = GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, v);
     glm::dvec3 velocity = CalculateVelocity(E, r, orb.GM, orb.semi_major_axis, orb.eccentricity);
     return ConvertOrbParams(orb.LAN, orb.inclination, orb.w, velocity);
 }
+
+glm::dvec3 OrbitVelocityToVec3(const Orbit& orb) { return OrbitVelocityToVec3(orb, orb.v); }
 
 double SolveKeplerElliptic(const double& mean_anomaly, const double& ecc, const int steps) {
     if (abs(ecc) < 1.0E-9) {
@@ -215,6 +220,11 @@ radian TrueAnomalyHyperbolic(const Orbit& orbit, const second& time) {
     double H = SolveKeplerHyperbolic(Mt, orbit.eccentricity);
     return HyperbolicAnomalyToTrueAnomaly(orbit.eccentricity, H);
 }
+
+// https://space.stackexchange.com/questions/27602/what-is-hyperbolic-eccentric-anomaly-f
+radian EccentricAnomaly(double v, double e) { return 2 * atan(tan(v / 2) * sqrt((1 - e) / (1 + e))); }
+
+radian HyperbolicAnomaly(double v, double e) { return 2 * atanh(tan(v / 2) * sqrt((e - 1) / (e + 1))); }
 
 void UpdateOrbit(Orbit& orb, const second& time) {
     // Get the thingy
