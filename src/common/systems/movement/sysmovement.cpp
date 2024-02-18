@@ -147,6 +147,11 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
 
     cqspt::UpdateOrbit(orb, universe.date.ToSecond());
     auto& pos = universe.get_or_emplace<cqspt::Kinematics>(body);
+    if (universe.any_of<cqspt::SetTrueAnomaly>(body)) {
+        orb.v = universe.get<cqspt::SetTrueAnomaly>(body).true_anomaly;
+        // Set new mean anomaly at epoch
+        universe.remove<cqspt::SetTrueAnomaly>(body);
+    }
     pos.position = cqspt::toVec3(orb);
     pos.velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
 

@@ -52,6 +52,7 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         ImGui::TextFmt("Longitude of the ascending node: {}\u00b0", toDegree(orbit.LAN));
         ImGui::TextFmt("Argument of periapsis: {}\u00b0", toDegree(orbit.w));
         ImGui::TextFmt("Mean anomaly at Epoch: {}\u00b0", toDegree(orbit.M0));
+        ImGui::TextFmt("True anomaly: {}", orbit.v);
         ImGui::TextFmt("Epoch: {}s", orbit.epoch);
         ImGui::TextFmt("GM: {} km^3 * s^-2", orbit.GM);
         ImGui::TextFmt("Orbital period: {} s", orbit.T());
@@ -82,6 +83,15 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
     }
 
     if (ImGui::CollapsingHeader("Basic Orbital Maneuvers")) {
+        static float true_anomaly = 0;
+        ImGui::SliderAngle("trueanomaly", &true_anomaly, (0));
+        if (ImGui::Button("Fix True anomaly")) {
+            // Emplace
+            GetUniverse().emplace_or_replace<common::components::types::SetTrueAnomaly>(body, true_anomaly);
+        }
+        if (GetUniverse().any_of<common::components::types::SetTrueAnomaly>(body)) {
+            // Now set the true anomaly consistently or something
+        }
         if (ImGui::Button("Circularize at apoapsis")) {
             // Add random delta v
             common::components::Maneuver maneuver(common::systems::CircularizeAtApoapsis(orbit));

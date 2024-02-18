@@ -102,12 +102,6 @@ struct Orbit {
     // So we can prepare for moons and stuff
     entt::entity reference_body = entt::null;
 
-    /// <summary>
-    /// Eccentric anomaly
-    /// Note: This orbit is not updated regularly and should not be trusted for any equation
-    /// </summary>
-    double E = 0;
-
     Orbit() = default;
 
     // TODO(EhWhoAmI): Mean anomaly is not the true anomaly, we need to convert
@@ -134,7 +128,7 @@ struct Orbit {
     double T() const { return 2 * PI * sqrt(semi_major_axis * semi_major_axis * semi_major_axis / GM); }
 
     // Mean motion
-    double nu() const { return sqrt(GM / (semi_major_axis * semi_major_axis * semi_major_axis)); }
+    double nu() const { return sqrt(GM / abs(semi_major_axis * semi_major_axis * semi_major_axis)); }
 
     double GetApoapsis() const { return semi_major_axis * (1 + eccentricity); }
 
@@ -143,7 +137,9 @@ struct Orbit {
     double TimeToMeanAnomaly(double v2) const;
 };
 
-struct Orbit2 {};
+struct SetTrueAnomaly {
+    double true_anomaly;
+};
 
 /// <summary>
 /// Transforms a vector to the orbital plane vector
@@ -277,7 +273,7 @@ double GetMtElliptic(const double& M0, const double& nu, const double& time, con
 /// <param name="a">Semi-major axis</param>
 /// <param name="d+t">Time from periapsis</param>
 /// <returns></returns>
-double GetMtHyperbolic(const double& Mu, const double& a, const double& d_t);
+double GetMtHyperbolic(const double& M0, const double& nu, const double& time, const double& epoch);
 
 /// <param name="orbit">[in]  Orbit to compute</param>
 /// <param name="time">[in]  Current time (seconds)</param>
