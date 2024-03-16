@@ -322,16 +322,16 @@ void Application::run() {
         ImGui::NewFrame();
 
         // Gui
-        BEGIN_TIMED_BLOCK(UiCreation);
+        //BEGIN_TIMED_BLOCK(UiCreation);
         m_scene_manager.Ui(deltaTime);
-        END_TIMED_BLOCK(UiCreation);
+        //END_TIMED_BLOCK(UiCreation);
 
-        BEGIN_TIMED_BLOCK(ImGui_Render);
+        //BEGIN_TIMED_BLOCK(ImGui_Render);
         {
             ZoneScopedN("ImGui::Render");
             ImGui::Render();
         }
-        END_TIMED_BLOCK(ImGui_Render);
+        //END_TIMED_BLOCK(ImGui_Render);
 
         //ProcessRmlUiUserInput();
         rml_context->Update();
@@ -342,9 +342,9 @@ void Application::run() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         // Render scene
-        BEGIN_TIMED_BLOCK(Scene_Render);
+        //BEGIN_TIMED_BLOCK(Scene_Render);
         m_scene_manager.Render(deltaTime);
-        END_TIMED_BLOCK(Scene_Render);
+        //END_TIMED_BLOCK(Scene_Render);
 
         // Shut the opengl debugger up
         int drawFboId = 0;
@@ -354,9 +354,9 @@ void Application::run() {
         }
         rml_context->Render();
 
-        BEGIN_TIMED_BLOCK(ImGui_Render_Draw);
+        // BEGIN_TIMED_BLOCK(ImGui_Render_Draw);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        END_TIMED_BLOCK(ImGui_Render_Draw);
+        //END_TIMED_BLOCK(ImGui_Render_Draw);
 
         // FPS counter
         if (draw_fps) {

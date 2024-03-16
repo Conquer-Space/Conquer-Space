@@ -122,7 +122,10 @@ void GLWindow::OnFrame() {
 }
 
 void GLWindow::InitWindow(int width, int height) {
-    glfwInit();
+    if (glfwInit() != 0) {
+        // Then rip
+        ENGINE_LOG_CRITICAL("Cannot initialize GLFW");
+    }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -142,7 +145,7 @@ void GLWindow::InitWindow(int width, int height) {
     window = glfwCreateWindow(width, height, "Conquer Space", NULL, NULL);
     if (window == NULL) {
         glfwTerminate();
-        ENGINE_LOG_INFO("Cannot load glfw");
+        ENGINE_LOG_CRITICAL("Cannot load glfw");
     }
 
     glfwMakeContextCurrent(window);

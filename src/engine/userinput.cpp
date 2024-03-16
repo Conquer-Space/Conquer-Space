@@ -683,5 +683,7 @@ int cqsp::engine::GetGlfwKey(KeyInput key) {
             return GLFW_KEY_RIGHT_SUPER;
         case KeyInput::KEY_MENU:
             return GLFW_KEY_MENU;
+        default:
+            return GLFW_INVALID_VALUE;
     }
 }
