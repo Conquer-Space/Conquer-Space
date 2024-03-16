@@ -69,7 +69,6 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
     // Inclination
     const double i = std::acos(h.z / glm::length(h));
 
-    double T = n.x / glm::length(n);
     double M0 = 0;
     double E = 0;
     if (e < 1) {
@@ -81,7 +80,8 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
         M0 = e * sinh(F) - F;
         E = F;
     }
-    double LAN = acos(glm::clamp(T, -1., 1.));
+
+    double LAN = acos(glm::clamp(n.x / glm::length(n), -1., 1.));
     if (n.y < 0) LAN = TWOPI - LAN;
     if (glm::length(n) == 0) LAN = 0;
 
@@ -187,7 +187,7 @@ double EccentricAnomalyToTrueAnomaly(const double& ecc, const double& E) {
 }
 
 double HyperbolicAnomalyToTrueAnomaly(const double& ecc, const double& H) {
-    return 2 * atan(sqrt((ecc + 1.) / (ecc - 1.)) * tanh(H / 2));
+    return 2 * atan2(sqrt(ecc + 1) * sinh(H / 2), sqrt(ecc - 1) * cosh(H / 2)) - types::TWOPI;
 }
 
 double GetMtElliptic(const double& M0, const double& nu, const double& time, const double& epoch) {
@@ -198,7 +198,7 @@ double GetMtElliptic(const double& M0, const double& nu, const double& time, con
 
 double GetMtHyperbolic(const double& M0, const double& nu, const double& time, const double& epoch) {
     double Mt = M0 + (time - epoch) * nu;
-    return normalize_radian(Mt);
+    return Mt;  //normalize_radian(Mt);
 }
 
 radian TrueAnomalyElliptic(const Orbit& orbit, const second& time) {
@@ -217,10 +217,13 @@ radian TrueAnomalyElliptic(const Orbit& orbit, const second& time, double& E_out
 double GetCircularOrbitingVelocity(const double& GM, const double& radius) { return sqrt(GM / radius); }
 
 radian TrueAnomalyHyperbolic(const Orbit& orbit, const second& time) {
-    // Get the time
     double Mt = GetMtHyperbolic(orbit.M0, orbit.nu(), time, orbit.epoch);
     double H = SolveKeplerHyperbolic(Mt, orbit.eccentricity);
-    return HyperbolicAnomalyToTrueAnomaly(orbit.eccentricity, H);
+    double v = HyperbolicAnomalyToTrueAnomaly(orbit.eccentricity, H);
+    assert((-GetHyperbolicAsymptopeAnomaly(orbit.eccentricity) < v &&
+            v < GetHyperbolicAsymptopeAnomaly(orbit.eccentricity) &&
+            "Orbit needs to be between the hyperbolic asymtopes!"));
+    return v;
 }
 
 // https://space.stackexchange.com/questions/27602/what-is-hyperbolic-eccentric-anomaly-f

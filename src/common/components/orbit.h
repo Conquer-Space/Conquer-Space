@@ -351,6 +351,7 @@ double CalculatePhaseAngle(const Orbit& start_orbit, const Orbit& end_orbit, dou
 
 // https://orbital-mechanics.space/the-orbit-equation/hyperbolic-trajectories.html
 // True anomaly of the asymptope for a hyperbolic orbit
+// The hyperbolic asymtope is defined by -GetHyperbolicAsymtope < v <GetHyperbolicAsymtope
 double GetHyperbolicAsymptopeAnomaly(double eccentricity);
 
 double FlightPathAngle(double eccentricity, double v);
