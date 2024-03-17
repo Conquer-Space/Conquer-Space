@@ -30,7 +30,7 @@ jobs:
       matrix:
         config: [Release, Debug]
         compiler: [gcc, clang]
-        os: [ubuntu-20.04]
+        os: [ubuntu-latest]
 
     name: Ubuntu with ${{ matrix.compiler }} (${{ matrix.config }})
     runs-on: ${{ matrix.os }}
