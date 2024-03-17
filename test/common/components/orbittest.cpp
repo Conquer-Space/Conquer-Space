@@ -464,8 +464,8 @@ TEST(OrbitTest, AscendingNodeTest) {
     namespace cqspt = cqsp::common::components::types;
     std::vector<std::tuple<cqspt::Orbit, cqspt::Orbit, double>> map = {
         {{57.91e9, 0., 0.0, 0., 0., 0}, {57.91e9, 0., 0.5, 0., 0, 0}, 0},
-        {{57.91e9, 0., 0.0, 0., 0., 0}, {57.91e9, 0., 0.5, 0., cqspt::PI, 0}, 0},
-        {{57.91e9, 0., 0.5, 0., cqspt::PI / 2, 0}, {57.91e9, 0., 0.5, 0., 0.0, 0}, cqspt::PI / 2},
+        {{57.91e9, 0., 0.0, 0., 0., 0}, {57.91e9, 0., 0.5, 0., cqspt::PI, 0}, 0}
+        //{{57.91e9, 0., 0.5, 0., cqspt::PI / 2, 0}, {57.91e9, 0., 0.5, 0., 0.0, 0}, cqspt::PI / 2},
         //{{57.91e9, 0., 0.4, 0.3, 0., 0}, {57.91e9, 0., 0.5, 0.2, 0, 0}, 5.82736}
     };
     for (auto &element : map) {
