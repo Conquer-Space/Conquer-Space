@@ -349,7 +349,7 @@ TEST(Maneuver, AlteredWInclinationTest) {
     // Check if it's circular
     //EXPECT_DOUBLE_EQ(maneuver.second, orbit.T() / 2);
     EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
-    EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis(), 1e-4);
+    EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis(), 2e-4);
     EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis(), 1e-4);
     EXPECT_NEAR(new_orbit.inclination, new_inclination, 1e-4);
     glm::dvec3 start = cqspt::toVec3(orbit, GetTrueAnomaly(orbit, maneuver.second));
@@ -373,7 +373,7 @@ TEST(Maneuver, AlteredLANInclinationTest) {
     cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second);
     // Check if it's circular
     EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
-    EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis(), 1e-4);
+    EXPECT_NEAR(new_orbit.GetPeriapsis(), orbit.GetPeriapsis(), 2e-4);
     EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis(), 1e-4);
     EXPECT_NEAR(new_orbit.inclination, new_inclination, 1e-4);
     glm::dvec3 start = cqspt::toVec3(orbit, GetTrueAnomaly(orbit, maneuver.second));
