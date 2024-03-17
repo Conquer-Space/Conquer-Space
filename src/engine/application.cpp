@@ -377,28 +377,34 @@ bool Application::ShouldExit() { return glfwWindowShouldClose(window(m_window)) 
 void Application::ExitApplication() { glfwSetWindowShouldClose(window(m_window), 1); }
 
 Rml::ElementDocument* Application::LoadDocument(const std::string& path) {
-    auto document = rml_context->LoadDocument((std::filesystem::path(common::util::GetCqspDataPath()) / path).string());
-    SPDLOG_INFO("Loading document {}", common::util::GetCqspDataPath() + path);
+    std::filesystem::path doc_path =
+        std::filesystem::canonical(std::filesystem::path(common::util::GetCqspDataPath()) / path);
+    auto document = rml_context->LoadDocument(doc_path.string());
+    SPDLOG_INFO("Loading document {}", doc_path.string());
     if (document == nullptr) {
         ENGINE_LOG_WARN("Unable to load document {}", path);
     }
-    loaded_documents[path] = document;
+    loaded_documents[doc_path] = document;
     return document;
 }
 
 void Application::CloseDocument(const std::string& path) {
-    loaded_documents[path]->Close();
-    loaded_documents.erase(path);
+        std::filesystem::path doc_path =
+        std::filesystem::canonical(std::filesystem::path(common::util::GetCqspDataPath()) / path);
+    loaded_documents[doc_path.string()]->Close();
+    loaded_documents.erase(doc_path.string());
 }
 
 Rml::ElementDocument* Application::ReloadDocument(const std::string& path) {
-    if (loaded_documents.find(path) == loaded_documents.end()) {
+    std::filesystem::path doc_path =
+        std::filesystem::canonical(std::filesystem::path(common::util::GetCqspDataPath()) / path);
+    if (loaded_documents.find(doc_path.string()) == loaded_documents.end()) {
         return nullptr;
     }
-    bool visible = loaded_documents[path]->IsVisible();
-    loaded_documents[path]->Close();
-    auto document = rml_context->LoadDocument(path);
-    loaded_documents[path] = document;
+    bool visible = loaded_documents[doc_path.string()]->IsVisible();
+    loaded_documents[doc_path.string()]->Close();
+    auto document = rml_context->LoadDocument(doc_path.string());
+    loaded_documents[doc_path.string()] = document;
     if (visible) {
         document->Show();
     }
