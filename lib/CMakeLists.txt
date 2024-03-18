@@ -20,8 +20,6 @@ add_subdirectory(hjson-cpp)
 set(SOL2_LUA_VERSION "LuaJIT" CACHE STRING "" FORCE)
 add_subdirectory(sol2)
 
-add_subdirectory(libnoise)
-
 # Glad
 add_subdirectory(cqsp-glad)
 
@@ -43,4 +41,4 @@ set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 set(ENABLE_SVG_PLUGIN ON CACHE BOOL "" FORCE)
 add_subdirectory(RmlUi)
 
-set_target_properties(hjson libnoise glad stb RmlCore RmlDebugger Tracy lunasvg imgui_node_editor PROPERTIES FOLDER "Libs")
+set_target_properties(hjson glad stb RmlCore RmlDebugger Tracy lunasvg imgui_node_editor PROPERTIES FOLDER "Libs")

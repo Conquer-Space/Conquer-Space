@@ -7,9 +7,6 @@
 [submodule "lib/stb"]
 	path = lib/stb
 	url = https://github.com/nothings/stb/
-[submodule "lib/libnoise"]
-	path = lib/libnoise
-	url = https://github.com/EhWhoAmI/libnoise
 [submodule "lib/tracy"]
 	path = lib/tracy/tracy
 	url = https://github.com/wolfpld/tracy

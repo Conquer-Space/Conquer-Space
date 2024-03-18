@@ -15,8 +15,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
-include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/examples)
-include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/include)
 include_directories(${LUA_HEADERS})
 include_directories(${CMAKE_SOURCE_DIR}/lib/tracy)
 

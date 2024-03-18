@@ -266,10 +266,9 @@ std::unique_ptr<AudioAsset> cqsp::engine::audio::AudioInterface::LoadNextFile() 
     if (mfile.good()) {
         return cqsp::asset::LoadOgg(mfile);
         SPDLOG_LOGGER_INFO(logger, "Length of audio: {}", music_asset->Length());
-    } else {
-        SPDLOG_LOGGER_ERROR(logger, "Failed to load audio {}", track_info["name"]);
-        return nullptr;
     }
+    SPDLOG_LOGGER_ERROR(logger, "Failed to load audio {}", track_info["name"]);
+    return nullptr;
 }
 
 void cqsp::engine::audio::AudioChannel::SetBuffer(cqsp::asset::AudioAsset* buffer) {

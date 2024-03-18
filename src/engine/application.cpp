@@ -322,16 +322,16 @@ void Application::run() {
         ImGui::NewFrame();
 
         // Gui
-        BEGIN_TIMED_BLOCK(UiCreation);
+        //BEGIN_TIMED_BLOCK(UiCreation);
         m_scene_manager.Ui(deltaTime);
-        END_TIMED_BLOCK(UiCreation);
+        //END_TIMED_BLOCK(UiCreation);
 
-        BEGIN_TIMED_BLOCK(ImGui_Render);
+        //BEGIN_TIMED_BLOCK(ImGui_Render);
         {
             ZoneScopedN("ImGui::Render");
             ImGui::Render();
         }
-        END_TIMED_BLOCK(ImGui_Render);
+        //END_TIMED_BLOCK(ImGui_Render);
 
         //ProcessRmlUiUserInput();
         rml_context->Update();
@@ -342,9 +342,9 @@ void Application::run() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         // Render scene
-        BEGIN_TIMED_BLOCK(Scene_Render);
+        //BEGIN_TIMED_BLOCK(Scene_Render);
         m_scene_manager.Render(deltaTime);
-        END_TIMED_BLOCK(Scene_Render);
+        //END_TIMED_BLOCK(Scene_Render);
 
         // Shut the opengl debugger up
         int drawFboId = 0;
@@ -354,9 +354,9 @@ void Application::run() {
         }
         rml_context->Render();
 
-        BEGIN_TIMED_BLOCK(ImGui_Render_Draw);
+        // BEGIN_TIMED_BLOCK(ImGui_Render_Draw);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        END_TIMED_BLOCK(ImGui_Render_Draw);
+        //END_TIMED_BLOCK(ImGui_Render_Draw);
 
         // FPS counter
         if (draw_fps) {
@@ -377,28 +377,34 @@ bool Application::ShouldExit() { return glfwWindowShouldClose(window(m_window)) 
 void Application::ExitApplication() { glfwSetWindowShouldClose(window(m_window), 1); }
 
 Rml::ElementDocument* Application::LoadDocument(const std::string& path) {
-    auto document = rml_context->LoadDocument((std::filesystem::path(common::util::GetCqspDataPath()) / path).string());
-    SPDLOG_INFO("Loading document {}", common::util::GetCqspDataPath() + path);
+    std::filesystem::path doc_path =
+        std::filesystem::canonical(std::filesystem::path(common::util::GetCqspDataPath()) / path);
+    auto document = rml_context->LoadDocument(doc_path.string());
+    SPDLOG_INFO("Loading document {}", doc_path.string());
     if (document == nullptr) {
         ENGINE_LOG_WARN("Unable to load document {}", path);
     }
-    loaded_documents[path] = document;
+    loaded_documents[doc_path.string()] = document;
     return document;
 }
 
 void Application::CloseDocument(const std::string& path) {
-    loaded_documents[path]->Close();
-    loaded_documents.erase(path);
+        std::filesystem::path doc_path =
+        std::filesystem::canonical(std::filesystem::path(common::util::GetCqspDataPath()) / path);
+    loaded_documents[doc_path.string()]->Close();
+    loaded_documents.erase(doc_path.string());
 }
 
 Rml::ElementDocument* Application::ReloadDocument(const std::string& path) {
-    if (loaded_documents.find(path) == loaded_documents.end()) {
+    std::filesystem::path doc_path =
+        std::filesystem::canonical(std::filesystem::path(common::util::GetCqspDataPath()) / path);
+    if (loaded_documents.find(doc_path.string()) == loaded_documents.end()) {
         return nullptr;
     }
-    bool visible = loaded_documents[path]->IsVisible();
-    loaded_documents[path]->Close();
-    auto document = rml_context->LoadDocument(path);
-    loaded_documents[path] = document;
+    bool visible = loaded_documents[doc_path.string()]->IsVisible();
+    loaded_documents[doc_path.string()]->Close();
+    auto document = rml_context->LoadDocument(doc_path.string());
+    loaded_documents[doc_path.string()] = document;
     if (visible) {
         document->Show();
     }

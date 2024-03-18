@@ -30,7 +30,9 @@ std::string strip(const std::string& inpt) {
     auto start_it = inpt.begin();
     auto end_it = inpt.rbegin();
     while (std::isspace(*start_it) != 0) ++start_it;
-    while (std::isspace(*end_it) != 0) ++end_it;
+    if (start_it != inpt.end()) {
+        while (std::isspace(*end_it) != 0) ++end_it;
+    }
     return std::string(start_it, end_it.base());
 }
 }  // namespace
