@@ -384,7 +384,7 @@ Rml::ElementDocument* Application::LoadDocument(const std::string& path) {
     if (document == nullptr) {
         ENGINE_LOG_WARN("Unable to load document {}", path);
     }
-    loaded_documents[doc_path] = document;
+    loaded_documents[doc_path.string()] = document;
     return document;
 }
 
