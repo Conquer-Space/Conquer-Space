@@ -130,14 +130,8 @@ void GLWindow::InitWindow(int width, int height) {
     if (glfwInit() != GLFW_TRUE) {
         // Then rip
         ENGINE_LOG_CRITICAL("Cannot initialize GLFW");
-        const char* description;
-        int code = glfwGetError(&description);
-        ENGINE_LOG_ERROR("Loading description:");
-        if (description) {
-            ENGINE_LOG_ERROR(description);
-        }
     }
-    if (GLAD_GL_VERSION_4_3) {
+    if (GLAD_GL_VERSION_4_3 != 0) {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     } else {
@@ -184,7 +178,7 @@ void GLWindow::InitWindow(int width, int height) {
     if ((flags & GL_CONTEXT_FLAG_DEBUG_BIT) != 0) {
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);  // makes sure errors are displayed synchronously
-        if (GLAD_GL_VERSION_4_3) {
+        if (GLAD_GL_VERSION_4_3 != 0) {
             glDebugMessageCallback(glDebugOutput, nullptr);
             glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
         }
