@@ -316,7 +316,17 @@ bool ResourceLedger::HasAllResources(const ResourceLedger &ledger) {
     if (&ledger == this) {
         return true;
     }
-    return std::ranges::all_of(ledger, [this](auto led) { return (*this)[led.first] > 0; });
+    // NOLINTBEGIN
+    for (auto iterator = ledger.begin(); iterator != ledger.end(); iterator++) {
+        if ((*this)[iterator->first] < 0) {
+            return false;
+        }
+    }
+    // NOLINTEND
+    return true;
+    // TODO(EhWhoAmI): When apple gets their act together and starts to support ranges, then uncomment this
+    // "first 1 trillion dollar company" can't even do simple things like this
+    //return std::ranges::all_of(ledger, [this](auto led) { return (*this)[led.first] > 0; });
 }
 
 double ResourceLedger::GetSum() {
