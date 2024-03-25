@@ -187,7 +187,9 @@ double EccentricAnomalyToTrueAnomaly(const double& ecc, const double& E) {
 }
 
 double HyperbolicAnomalyToTrueAnomaly(const double& ecc, const double& H) {
-    return 2 * atan2(sqrt(ecc + 1) * sinh(H / 2), sqrt(ecc - 1) * cosh(H / 2)) - types::TWOPI;
+    return 2 * atan((sqrt(ecc + 1) * sinh(H / 2)) / (sqrt(ecc - 1) * cosh(H / 2)));
+    // Might need to do a random -2pi or something like that, not sure how to handle it
+    // I think if the hyperbolic anomaly is out of bounds we subtract pi? Because the difference is a bit whack
 }
 
 double GetMtElliptic(const double& M0, const double& nu, const double& time, const double& epoch) {
