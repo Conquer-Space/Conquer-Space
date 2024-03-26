@@ -241,8 +241,7 @@ int Application::destroy() {
     Rml::Shutdown();
     ENGINE_LOG_INFO("Killed RmlUi");
 
-    glfwDestroyWindow(window(m_window));
-    glfwTerminate();
+    m_window->Destroy();
     ENGINE_LOG_INFO("Killed GLFW");
 
     // Save options
@@ -372,9 +371,9 @@ void Application::run() {
     destroy();
 }
 
-bool Application::ShouldExit() { return glfwWindowShouldClose(window(m_window)) == 0; }
+bool Application::ShouldExit() { return m_window->ShouldExit(); }
 
-void Application::ExitApplication() { glfwSetWindowShouldClose(window(m_window), 1); }
+void Application::ExitApplication() { m_window->ExitApplication(); }
 
 Rml::ElementDocument* Application::LoadDocument(const std::string& path) {
     auto document = rml_context->LoadDocument((std::filesystem::path(common::util::GetCqspDataPath()) / path).string());
@@ -440,7 +439,7 @@ void Application::DrawTextNormalized(const std::string& text, float x, float y) 
     }
 }
 
-double Application::GetTime() { return glfwGetTime(); }
+double Application::GetTime() { return m_window->GetTime(); }
 
 bool Application::Screenshot(const char* path) {
     // Take screenshot
@@ -490,13 +489,7 @@ void Application::InitFonts() {
     io.FontDefault = defaultFont;
 }
 
-void Application::SetIcon() {
-    GLFWimage images[1];
-    images[0].pixels = stbi_load((cqsp::common::util::GetCqspDataPath() + "/" + icon_path).c_str(), &images[0].width,
-                                 &images[0].height, 0, 4);
-    glfwSetWindowIcon(window(m_window), 1, images);
-    stbi_image_free(images[0].pixels);
-}
+void Application::SetIcon() { m_window->SetIcon(cqsp::common::util::GetCqspDataPath() + "/" + icon_path); }
 
 void Application::GlInit() {
     m_window = new GLWindow(this);
@@ -540,17 +533,7 @@ void Application::LogInfo() {
 
 void Application::SetWindowDimensions(int width, int height) { m_window->SetWindowSize(width, height); }
 
-void Application::SetFullScreen(bool screen) {
-    if (screen) {
-        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowMonitor(window(m_window), glfwGetPrimaryMonitor(), 0, 0, mode->width, mode->height,
-                             GLFW_DONT_CARE);
-    } else {
-        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowMonitor(window(m_window), NULL, 40, 40, GetClientOptions().GetOptions()["window"]["width"],
-                             GetClientOptions().GetOptions()["window"]["height"], mode->refreshRate);
-    }
-}
+void Application::SetFullScreen(bool screen) { m_window->SetFullScreen(screen); }
 
 Application::CqspEventInstancer::CqspEventInstancer() = default;
 

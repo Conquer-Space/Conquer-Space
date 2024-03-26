@@ -92,6 +92,17 @@ class GLWindow : public cqsp::engine::Window {
         return (MouseButtonIsPressed(btn) && is_pressed_long_enough);
     }
 
+    void Destroy();
+
+    float GetTime() const;
+
+    void SetFullScreen(bool fullscreen) const;
+
+    bool ShouldExit() const;
+    bool ExitApplication();
+
+    void SetIcon(std::string_view path);
+
     GLFWwindow* window;
 
     Application* app;

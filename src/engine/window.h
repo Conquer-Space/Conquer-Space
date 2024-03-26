@@ -44,6 +44,7 @@ class Window {
     virtual int GetWindowWidth() const = 0;
 
     virtual void SetCallbacks() = 0;
+    virtual void Destroy() = 0;
 
     /// <summary>
     /// Any cleanups or clearing the window has to do each frame
@@ -53,6 +54,15 @@ class Window {
     virtual void InitWindow(int width, int height) = 0;
 
     virtual bool WindowSizeChanged() const = 0;
+
+    virtual float GetTime() const = 0;
+
+    virtual void SetFullScreen(bool fullscreen) const = 0;
+
+    virtual bool ShouldExit() const = 0;
+    virtual bool ExitApplication() = 0;
+
+    virtual void SetIcon(std::string_view path) = 0;
 };
 }  // namespace engine
 }  // namespace cqsp
