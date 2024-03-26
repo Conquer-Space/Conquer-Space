@@ -16,6 +16,8 @@
 */
 #include "engine/glfwwindow.h"
 
+#include <stb_image.h>  // NOLINT
+
 #include <tracy/Tracy.hpp>
 
 #include "engine/glfwdebug.h"
@@ -108,6 +110,38 @@ void GLWindow::SetCallbacks() {
     glfwSetFramebufferSizeCallback(window, frame_buffer_callback);
     glfwSetCharCallback(window, character_callback);
     glfwSetErrorCallback(error_callback);
+}
+
+void GLWindow::Destroy() {
+    glfwDestroyWindow(window);
+    glfwTerminate();
+}
+
+float GLWindow::GetTime() const { return static_cast<float>(glfwGetTime()); }
+
+void GLWindow::SetFullScreen(bool fullscreen) const {
+    if (fullscreen) {
+        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, mode->width, mode->height, GLFW_DONT_CARE);
+    } else {
+        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        glfwSetWindowMonitor(window, NULL, 40, 40, app->GetClientOptions().GetOptions()["window"]["width"],
+                             app->GetClientOptions().GetOptions()["window"]["height"], mode->refreshRate);
+    }
+}
+
+bool GLWindow::ShouldExit() const { return glfwWindowShouldClose(window) == 0; }
+
+bool GLWindow::ExitApplication() {
+    glfwSetWindowShouldClose(window, 1);
+    return true;
+}
+
+void GLWindow::SetIcon(std::string_view path) {
+    GLFWimage images[1];
+    images[0].pixels = stbi_load((path).data(), &images[0].width, &images[0].height, 0, 4);
+    glfwSetWindowIcon(window, 1, images);
+    stbi_image_free(images[0].pixels);
 }
 
 void GLWindow::OnFrame() {
