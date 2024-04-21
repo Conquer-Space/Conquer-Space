@@ -34,6 +34,8 @@ namespace Gfx {
 struct ShadersData;
 }
 
+namespace RmlGL3 {
+
 class RenderInterface_GL3 : public Rml::RenderInterface {
  public:
     RenderInterface_GL3();
@@ -92,7 +94,7 @@ class RenderInterface_GL3 : public Rml::RenderInterface {
 
     Rml::UniquePtr<Gfx::ShadersData> shaders;
 };
-
+}  // namespace Rml
 /**
     Helper functions for the OpenGL 3 renderer.
  */

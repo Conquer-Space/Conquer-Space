@@ -26,7 +26,7 @@
 using cqsp::common::Universe;
 using cqsp::common::components::Identifier;
 using cqsp::common::components::ResourceLedger;
-using cqsp::util::LongToHumanString;
+using cqsp::common::util::LongToHumanString;
 bool cqsp::client::systems::DrawLedgerTable(const std::string &name, const Universe &universe,
                                             const ResourceLedger &ledger) {
     if (ledger.empty()) {

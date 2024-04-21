@@ -40,6 +40,8 @@
 
 using cqsp::common::Universe;
 
+using cqsp::common::util::LongToHumanString;
+
 namespace cqsp::client::systems::gui {
 
 namespace {
@@ -87,13 +89,13 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
     }
     if (universe.all_of<cqspc::CostBreakdown>(entity)) {
         cqspc::CostBreakdown costs = universe.get<cqspc::CostBreakdown>(entity);
-        ImGui::TextFmt("Material Cost: {}", util::LongToHumanString(costs.materialcosts));
-        ImGui::TextFmt("Wage Cost: {}", util::LongToHumanString(costs.wages));
-        ImGui::TextFmt("Maintenance Cost: {}", util::LongToHumanString(costs.maintenance));
-        ImGui::TextFmt("Transport Costs: {}", util::LongToHumanString(costs.transport));
+        ImGui::TextFmt("Material Cost: {}", LongToHumanString(costs.materialcosts));
+        ImGui::TextFmt("Wage Cost: {}", LongToHumanString(costs.wages));
+        ImGui::TextFmt("Maintenance Cost: {}", LongToHumanString(costs.maintenance));
+        ImGui::TextFmt("Transport Costs: {}", LongToHumanString(costs.transport));
         ImGui::Separator();
-        ImGui::TextFmt("Profit: {}", util::LongToHumanString(costs.profit));
-        ImGui::TextFmt("Revenue: {}", util::LongToHumanString(costs.revenue));
+        ImGui::TextFmt("Profit: {}", LongToHumanString(costs.profit));
+        ImGui::TextFmt("Revenue: {}", LongToHumanString(costs.revenue));
     }
 }
 }  // namespace
@@ -146,7 +148,7 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
 
     // If it's a city do population
     if (universe.all_of<cqspc::Settlement>(entity)) {
-        ImGui::TextFmt("Population: {}", util::LongToHumanString(common::systems::GetCityPopulation(universe, entity)));
+        ImGui::TextFmt("Population: {}", LongToHumanString(common::systems::GetCityPopulation(universe, entity)));
     }
     if (universe.all_of<common::components::bodies::Body>(entity)) {
         auto& body = universe.get<common::components::bodies::Body>(entity);

@@ -24,6 +24,8 @@
 
 #include "common/scripting/functionreg.h"
 
+using namespace cqsp::common::scripting;
+
 namespace cqsp::client::scripting {
 namespace {
 sol::object JsonToLuaObject(const Hjson::Value& j, const sol::this_state& s) {
@@ -60,7 +62,7 @@ sol::object JsonToLuaObject(const Hjson::Value& j, const sol::this_state& s) {
 }
 
 void AssetManagerInterfaces(engine::Application& app, common::Universe& universe,
-                            cqsp::scripting::ScriptInterface& script_engine) {
+                            ScriptInterface& script_engine) {
     CREATE_NAMESPACE(client);
 
     script_engine.set_function("require", [&](const char* script) {
@@ -89,7 +91,7 @@ void AssetManagerInterfaces(engine::Application& app, common::Universe& universe
 }
 
 void UiInterfaces(engine::Application& app, common::Universe& universe,
-                  cqsp::scripting::ScriptInterface& script_engine) {
+                  ScriptInterface& script_engine) {
     CREATE_NAMESPACE(ImGui);
 
     REGISTER_FUNCTION("Begin", [](const char* name) { ImGui::Begin(name); });
@@ -107,7 +109,7 @@ void UiInterfaces(engine::Application& app, common::Universe& universe,
 }  // namespace
 
 void ClientFunctions(engine::Application& app, common::Universe& universe,
-                     cqsp::scripting::ScriptInterface& script_engine) {
+                     ScriptInterface& script_engine) {
     AssetManagerInterfaces(app, universe, script_engine);
     UiInterfaces(app, universe, script_engine);
 }

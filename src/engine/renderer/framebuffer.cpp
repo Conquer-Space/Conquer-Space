@@ -27,7 +27,7 @@
 #include "engine/enginelogger.h"
 #include "engine/graphics/primitives/pane.h"
 
-namespace {
+namespace cqsp::engine {
 void GenerateFrameBuffer(unsigned int& framebuffer) {
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);

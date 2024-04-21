@@ -21,7 +21,7 @@
 #include <cmath>
 #include <string>
 
-namespace cqsp {
+namespace cqsp::common {
 namespace util {
 inline std::string LongToHumanString(int64_t l) {
     if (abs(l) < 1000) {

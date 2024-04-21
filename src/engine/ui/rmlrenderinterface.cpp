@@ -26,7 +26,7 @@
 #include "engine/application.h"
 #include "engine/graphics/mesh.h"
 
-namespace {
+namespace cqsp::engine {
 class RmlUiRendererGeometryHandler {
  public:
     GLuint VAO, VBO, EBO;

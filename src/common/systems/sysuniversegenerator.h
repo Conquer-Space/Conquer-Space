@@ -34,11 +34,11 @@ class ISysUniverseGenerator {
 
 class ScriptUniverseGenerator : public ISysUniverseGenerator {
  public:
-    explicit ScriptUniverseGenerator(cqsp::scripting::ScriptInterface& _interface) : script_engine(_interface) {}
+    explicit ScriptUniverseGenerator(cqsp::common::scripting::ScriptInterface& _interface) : script_engine(_interface) {}
     void Generate(cqsp::common::Universe& universe);
 
  private:
-    cqsp::scripting::ScriptInterface& script_engine;
+    cqsp::common::scripting::ScriptInterface& script_engine;
 };
 
 }  // namespace universegenerator

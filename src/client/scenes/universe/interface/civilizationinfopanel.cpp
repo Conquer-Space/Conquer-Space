@@ -30,10 +30,12 @@
 #include "common/util/utilnumberdisplay.h"
 
 using cqsp::common::util::GetName;
+using cqsp::common::util::LongToHumanString;
+using cqsp::client::systems::CivilizationInfoPanel;
 
-void cqsp::client::systems::CivilizationInfoPanel::Init() {}
+void CivilizationInfoPanel::Init() {}
 
-void cqsp::client::systems::CivilizationInfoPanel::DoUI(int delta_time) {
+void CivilizationInfoPanel::DoUI(int delta_time) {
     // Get the ui
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
     if (to_display) {
@@ -52,9 +54,9 @@ void cqsp::client::systems::CivilizationInfoPanel::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void cqsp::client::systems::CivilizationInfoPanel::DoUpdate(int delta_time) {}
+void CivilizationInfoPanel::DoUpdate(int delta_time) {}
 
-void cqsp::client::systems::CivilizationInfoPanel::CivInfoPanel() {
+void CivilizationInfoPanel::CivInfoPanel() {
     // Get player
     entt::entity player = GetUniverse().view<common::components::Player>().front();
     if (player == entt::null) {
@@ -75,7 +77,7 @@ void cqsp::client::systems::CivilizationInfoPanel::CivInfoPanel() {
 
     if (GetUniverse().any_of<common::components::Wallet>(player)) {
         auto& wallet = GetUniverse().get<common::components::Wallet>(player);
-        ImGui::TextFmt("Reserves: {}", util::LongToHumanString(wallet.GetBalance()));
+        ImGui::TextFmt("Reserves: {}", LongToHumanString(wallet.GetBalance()));
     }
 
     if (ImGui::BeginTabBar("civ_info_window")) {
@@ -129,12 +131,12 @@ void cqsp::client::systems::CivilizationInfoPanel::CivInfoPanel() {
     }
 }
 
-void cqsp::client::systems::CivilizationInfoPanel::BudgetInfoPanel() {
+void CivilizationInfoPanel::BudgetInfoPanel() {
     entt::entity player = GetUniverse().view<common::components::Player>().front();
 
     if (GetUniverse().any_of<common::components::Wallet>(player)) {
         auto& wallet = GetUniverse().get<common::components::Wallet>(player);
-        ImGui::TextFmt("Reserves: {}", util::LongToHumanString(wallet.GetBalance()));
+        ImGui::TextFmt("Reserves: {}", LongToHumanString(wallet.GetBalance()));
     } else {
         ImGui::TextFmt("No Wallet!");
     }
@@ -142,7 +144,7 @@ void cqsp::client::systems::CivilizationInfoPanel::BudgetInfoPanel() {
     // Then show the liabilities where they bankroll things
 }
 
-void cqsp::client::systems::CivilizationInfoPanel::PlanetMarketInfoPanel() {
+void CivilizationInfoPanel::PlanetMarketInfoPanel() {
     if (!ImGui::BeginTabBar("market_info_panel")) {
         return;
     }

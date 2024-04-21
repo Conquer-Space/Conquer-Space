@@ -34,23 +34,23 @@
 #include <RmlUi/Core/Log.h>
 #include <RmlUi/Core/SystemInterface.h>
 
-SystemInterface_GLFW::SystemInterface_GLFW() {
+RmlGLFW::SystemInterface_GLFW::SystemInterface_GLFW() {
     cursor_pointer = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
     cursor_cross = glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR);
     cursor_text = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
 }
 
-SystemInterface_GLFW::~SystemInterface_GLFW() {
+RmlGLFW::SystemInterface_GLFW::~SystemInterface_GLFW() {
     glfwDestroyCursor(cursor_pointer);
     glfwDestroyCursor(cursor_cross);
     glfwDestroyCursor(cursor_text);
 }
 
-void SystemInterface_GLFW::SetWindow(GLFWwindow* in_window) { window = in_window; }
+void RmlGLFW::SystemInterface_GLFW::SetWindow(GLFWwindow* in_window) { window = in_window; }
 
-double SystemInterface_GLFW::GetElapsedTime() { return glfwGetTime(); }
+double RmlGLFW::SystemInterface_GLFW::GetElapsedTime() { return glfwGetTime(); }
 
-void SystemInterface_GLFW::SetMouseCursor(const Rml::String& cursor_name) {
+void RmlGLFW::SystemInterface_GLFW::SetMouseCursor(const Rml::String& cursor_name) {
     GLFWcursor* cursor = nullptr;
 
     if (cursor_name == "move" || cursor_name == "resize" || cursor_name == "pointer") {
@@ -66,11 +66,11 @@ void SystemInterface_GLFW::SetMouseCursor(const Rml::String& cursor_name) {
     }
 }
 
-void SystemInterface_GLFW::SetClipboardText(const Rml::String& text_utf8) {
+void RmlGLFW::SystemInterface_GLFW::SetClipboardText(const Rml::String& text_utf8) {
     if (window != nullptr) glfwSetClipboardString(window, text_utf8.c_str());
 }
 
-void SystemInterface_GLFW::GetClipboardText(Rml::String& text) {
+void RmlGLFW::SystemInterface_GLFW::GetClipboardText(Rml::String& text) {
     if (window != nullptr) text = Rml::String(glfwGetClipboardString(window));
 }
 

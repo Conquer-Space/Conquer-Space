@@ -31,7 +31,7 @@
 
 #include "common/util/paths.h"
 
-namespace {
+namespace cqsp::common::util {
 // Change this if you need
 const char* DEFAULT_PATTERN = "[%T.%e] [%^%l%$] [%n] [%s:%#] %v";
 

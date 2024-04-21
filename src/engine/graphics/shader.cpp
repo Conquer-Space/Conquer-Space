@@ -266,7 +266,7 @@ cqsp::asset::Shader::~Shader() {
         glDeleteShader(id);
     }
 }
-namespace {
+namespace cqsp::asset {
 GLenum GetUniformType(GLuint program, const char* name) {
     GLuint in[1];
     glGetUniformIndices(program, 1, &name, in);

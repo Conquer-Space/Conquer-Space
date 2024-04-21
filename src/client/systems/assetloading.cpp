@@ -34,7 +34,7 @@
 #include "common/systems/science/technology.h"
 #include "common/systems/sysuniversegenerator.h"
 
-namespace {
+namespace cqsp::client::systems {
 void LoadResource(cqsp::engine::Application& app, cqsp::common::Universe& universe, const std::string& asset_name,
                   void (*func)(cqsp::common::Universe& universe, Hjson::Value& recipes)) {
     namespace cqspc = cqsp::common::components;
@@ -96,7 +96,7 @@ void LoadAllResources(cqsp::engine::Application& app, ConquerSpace& conquer_spac
 
     // Load scripts
     // Load lua functions
-    cqsp::scripting::LoadFunctions(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
+    common::scripting::LoadFunctions(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
     scripting::ClientFunctions(app, conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
 
     // Load universe

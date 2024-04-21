@@ -26,7 +26,7 @@
 #include "common/components/science.h"
 #include "common/systems/loading/loadutil.h"
 
-namespace {
+namespace cqsp::common::systems::science {
 struct FieldTemplate {
     std::vector<std::string> parent;
     std::vector<std::string> adjacent;

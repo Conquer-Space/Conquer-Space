@@ -37,6 +37,8 @@
 #include "common/util/utilnumberdisplay.h"
 #include "engine/cqspgui.h"
 
+using cqsp::common::util::LongToHumanString;
+
 namespace cqsp::client::systems {
 namespace cqspc = cqsp::common::components;
 void SysProvinceInformation::Init() {}
@@ -90,7 +92,7 @@ void SysProvinceInformation::ProvinceView() {
         }
     }
     ImGui::TextFmt("Part of {}", common::util::GetName(GetUniverse(), city_list.country));
-    ImGui::TextFmt("Population: {}", util::LongToHumanString(population));
+    ImGui::TextFmt("Population: {}", LongToHumanString(population));
     ImGui::Separator();
     for (entt::entity entity : city_list.cities) {
         if (CQSPGui::DefaultSelectable(fmt::format("{}", common::util::GetName(GetUniverse(), entity)).c_str())) {
@@ -117,7 +119,7 @@ void SysProvinceInformation::CityView() {
         int size = GetUniverse().get<cqspc::Settlement>(current_city).population.size();
         for (auto seg_entity : GetUniverse().get<cqspc::Settlement>(current_city).population) {
             auto& pop_segement = GetUniverse().get<cqspc::PopulationSegment>(seg_entity);
-            ImGui::TextFmt("Population: {}", cqsp::util::LongToHumanString(pop_segement.population));
+            ImGui::TextFmt("Population: {}", LongToHumanString(pop_segement.population));
         }
     } else {
         ImGui::TextFmt("No population");
@@ -189,19 +191,19 @@ void SysProvinceInformation::DemographicsTab() {
     auto& settlement = GetUniverse().get<Settlement>(current_city);
     for (auto& seg_entity : settlement.population) {
         ImGui::TextFmt("Population: {}",
-                       cqsp::util::LongToHumanString(GetUniverse().get<PopulationSegment>(seg_entity).population));
+                       LongToHumanString(GetUniverse().get<PopulationSegment>(seg_entity).population));
         gui::EntityTooltip(GetUniverse(), seg_entity);
         if (GetUniverse().all_of<cqspc::Hunger>(seg_entity)) {
             ImGui::TextFmt("Hungry");
         }
         ImGui::TextFmt("Labor Force: {}",
-                       cqsp::util::LongToHumanString(GetUniverse().get<PopulationSegment>(seg_entity).labor_force));
+                       LongToHumanString(GetUniverse().get<PopulationSegment>(seg_entity).labor_force));
         // Then other labor information
 
         // Get spending for population
         if (GetUniverse().all_of<cqspc::Wallet>(seg_entity)) {
             auto& wallet = GetUniverse().get<cqspc::Wallet>(seg_entity);
-            ImGui::TextFmt("Spending: {}", cqsp::util::LongToHumanString(wallet.GetGDPChange()));
+            ImGui::TextFmt("Spending: {}", LongToHumanString(wallet.GetGDPChange()));
         }
         // Market
         if (GetUniverse().all_of<cqspc::Market>(current_city)) {
@@ -238,8 +240,8 @@ void SysProvinceInformation::IndustryTab() {
         labor_fufillment += employ.population_fufilled;
     }
     double percentag = (double)labor_fufillment / (double)labor_demand * 100.;
-    ImGui::TextFmt("Labor fufillment: {}/{} ({}%%)", cqsp::util::LongToHumanString(labor_fufillment),
-                   cqsp::util::LongToHumanString(labor_demand), percentag);
+    ImGui::TextFmt("Labor fufillment: {}/{} ({}%%)", LongToHumanString(labor_fufillment),
+                   LongToHumanString(labor_demand), percentag);
 
     IndustryTabGenericChild<cqspc::Service>(
         "Service Sector", "Company",
@@ -357,7 +359,7 @@ void SysProvinceInformation::IndustryTabGenericChild(const std::string& tabname,
             }
         }
     }
-    ImGui::TextFmt("GDP: {}", cqsp::util::LongToHumanString(GDP_calculation));
+    ImGui::TextFmt("GDP: {}", LongToHumanString(GDP_calculation));
     ImGui::TextFmt("{} Count: {}", industryname, count);
 
     ImGui::SameLine();

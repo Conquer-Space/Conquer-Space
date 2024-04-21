@@ -22,7 +22,7 @@
 
 #include "common/universe.h"
 
-namespace cqsp::common::save {
+namespace cqsp::common::game {
 class Save {
  public:
     // Get the savegame?

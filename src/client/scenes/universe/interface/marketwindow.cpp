@@ -33,14 +33,17 @@ namespace cqspb = cqsp::common::components::bodies;
 namespace cqspc = cqsp::common::components;
 
 using cqsp::common::util::GetName;
+using cqsp::common::util::LongToHumanString;
+using cqspc::Market;
+
 
 void MarketInformationTable(common::Universe& universe, const entt::entity& market_entity) {
-    if (!universe.any_of<cqspc::Market>(market_entity)) {
+    if (!universe.any_of<Market>(market_entity)) {
         ImGui::TextFmt("Market is not a market");
         return;
     }
     // auto& center = GetUniverse().get<cqspc::MarketCenter>(marketentity);
-    cqspc::Market& market = universe.get<cqspc::Market>(market_entity);
+    Market& market = universe.get<Market>(market_entity);
     ImGui::TextFmt("Has {} entities attached to it", market.participants.size());
 
     // Get resource stockpile
@@ -70,9 +73,9 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
         // Mark the cell as red if the thing is not valid
         ImGui::TextFmt("{}", market.price[good_entity]);
         ImGui::TableSetColumnIndex(2);
-        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.previous_supply[good_entity]));
+        ImGui::TextFmt("{}",  LongToHumanString(market.previous_supply[good_entity]));
         ImGui::TableSetColumnIndex(3);
-        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.previous_demand[good_entity]));
+        ImGui::TextFmt("{}", LongToHumanString(market.previous_demand[good_entity]));
         ImGui::TableSetColumnIndex(4);
         double sd_ratio = market.sd_ratio[good_entity];
         if (sd_ratio == std::numeric_limits<double>::infinity()) {

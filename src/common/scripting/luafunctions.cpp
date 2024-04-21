@@ -51,12 +51,12 @@ namespace cqsps = cqsp::common::components::ships;
 namespace cqspt = cqsp::common::components::types;
 namespace cqspc = cqsp::common::components;
 
-namespace {
+namespace cqsp::common::scripting {
 /// <summary>
 /// Initializes functions for RNG
 /// </summary>
 /// <param name="app"></param>
-void FunctionRandom(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionRandom(cqsp::common::Universe& universe, ScriptInterface& script_engine) {
     // RNG
     // Make namespace
     CREATE_NAMESPACE(core);
@@ -67,7 +67,7 @@ void FunctionRandom(cqsp::common::Universe& universe, cqsp::scripting::ScriptInt
                       [&](int mean, int sd) { return universe.random->GetRandomNormal(mean, sd); });
 }
 
-void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionUniverseBodyGen(cqsp::common::Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("add_planet", [&]() {
@@ -114,7 +114,7 @@ void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::
     });
 }
 
-void FunctionCivilizationGen(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionCivilizationGen(cqsp::common::Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("add_civilization", [&]() {
@@ -139,7 +139,7 @@ void FunctionCivilizationGen(cqsp::common::Universe& universe, cqsp::scripting::
     });
 }
 
-void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionEconomy(cqsp::common::Universe& universe, ScriptInterface& script_engine) {
     namespace cqspa = cqsp::common::systems::actions;
     CREATE_NAMESPACE(core);
 
@@ -223,14 +223,14 @@ void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
     });
 }
 
-void FunctionUser(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionUser(cqsp::common::Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("set_name", [&](entt::entity entity, std::string name) {
         universe.emplace_or_replace<cqspc::Name>(entity, name);
     });
 
-    REGISTER_FUNCTION("to_human_string", [&](int64_t number) { return cqsp::util::LongToHumanString(number); });
+    REGISTER_FUNCTION("to_human_string", [&](int64_t number) { return cqsp::common::util::LongToHumanString(number); });
 
     REGISTER_FUNCTION("get_name", [&](entt::entity entity) { return universe.get<cqspc::Name>(entity).name; });
 
@@ -239,7 +239,7 @@ void FunctionUser(cqsp::common::Universe& universe, cqsp::scripting::ScriptInter
     });
 }
 
-void FunctionPopulation(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionPopulation(cqsp::common::Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("add_population_segment", [&](entt::entity settlement, uint64_t popsize) {
@@ -265,7 +265,7 @@ void FunctionPopulation(cqsp::common::Universe& universe, cqsp::scripting::Scrip
                       [&](entt::entity planet) { return universe.get<cqspc::Habitation>(planet).settlements; });
 }
 
-void FunctionShips(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionShips(cqsp::common::Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("create_ship", [&](entt::entity civ, entt::entity orbit, entt::entity starsystem) {
@@ -273,7 +273,7 @@ void FunctionShips(cqsp::common::Universe& universe, cqsp::scripting::ScriptInte
     });
 }
 
-void FunctionEvent(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionEvent(cqsp::common::Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("push_event", [&](entt::entity entity, sol::table event_table) {
@@ -309,7 +309,7 @@ void FunctionEvent(cqsp::common::Universe& universe, cqsp::scripting::ScriptInte
     });
 }
 
-void FunctionResource(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionResource(cqsp::common::Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("add_resource", [&](entt::entity storage, entt::entity resource, int amount) {
@@ -322,13 +322,13 @@ void FunctionResource(cqsp::common::Universe& universe, cqsp::scripting::ScriptI
     });
 }
 
-void FunctionCivilizations(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionCivilizations(cqsp::common::Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("get_player", [&]() { return universe.view<cqspc::Player>().front(); });
 }
 
-void FunctionScience(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionScience(cqsp::common::Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("create_lab", [&]() { return cqsp::common::systems::science::CreateLab(universe); });
@@ -356,9 +356,8 @@ void FunctionScience(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
         res.potential_research.insert(tech);
     });
 }
-}  // namespace
 
-void cqsp::scripting::LoadFunctions(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void LoadFunctions(cqsp::common::Universe& universe, ScriptInterface& script_engine) {
     FunctionCivilizationGen(universe, script_engine);
     FunctionCivilizations(universe, script_engine);
     FunctionEconomy(universe, script_engine);
@@ -371,3 +370,6 @@ void cqsp::scripting::LoadFunctions(cqsp::common::Universe& universe, cqsp::scri
     FunctionResource(universe, script_engine);
     FunctionScience(universe, script_engine);
 }
+}  // namespace
+
+

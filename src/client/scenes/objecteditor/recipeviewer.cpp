@@ -46,7 +46,7 @@ void cqsp::client::systems::SysRecipeViewer::DoUI(int delta_time) {
 
 void cqsp::client::systems::SysRecipeViewer::DoUpdate(int delta_time) {}
 
-namespace {
+namespace cqsp::client::systems {
 void ResourceMapTable(cqsp::common::Universe& universe, cqsp::common::components::ResourceLedger& ledger,
                       const char* name) {
     if (!ImGui::BeginTable(name, 2)) {

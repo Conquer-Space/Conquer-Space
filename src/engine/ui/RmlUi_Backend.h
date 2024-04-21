@@ -32,8 +32,7 @@
 #include <RmlUi/Core/SystemInterface.h>
 #include <RmlUi/Core/Types.h>
 
-using KeyDownCallback = bool (*)(Rml::Context* context, Rml::Input::KeyIdentifier key, int key_modifier,
-                                 float native_dp_ratio, bool priority);
+
 
 /**
     This interface serves as a basic abstraction over the various backends included with RmlUi.
@@ -46,6 +45,9 @@ using KeyDownCallback = bool (*)(Rml::Context* context, Rml::Input::KeyIdentifie
     backend are intended to be re-usable as is.
  */
 namespace Backend {
+
+using KeyDownCallback = bool (*)(Rml::Context* context, Rml::Input::KeyIdentifier key, int key_modifier,
+                                 float native_dp_ratio, bool priority);
 
 // Initializes the backend, including the custom system and render interfaces, and opens a
 // window for rendering the RmlUi context.

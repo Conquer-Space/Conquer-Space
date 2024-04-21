@@ -22,7 +22,7 @@
 
 #include "common/util/paths.h"
 
-namespace {
+namespace cqsp::client {
 std::string strip(const std::string& inpt) {
     if (inpt.empty()) {
         return "";

@@ -37,7 +37,9 @@
 #include "engine/asset/assetmanager.h"
 #include "engine/gui.h"
 
-#define LOADING_ID "core/gui/screens/loading_screen.rml"
+namespace cqsp::scene {
+const std::string LOADING_ID = "core/gui/screens/loading_screen.rml";
+}
 
 cqsp::scene::LoadingScene::LoadingScene(cqsp::engine::Application& app) : Scene(app) {
     m_done_loading = false;

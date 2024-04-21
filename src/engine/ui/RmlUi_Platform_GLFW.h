@@ -32,6 +32,7 @@
 #include <RmlUi/Core/SystemInterface.h>
 #include <RmlUi/Core/Types.h>
 
+namespace RmlGLFW {
 class SystemInterface_GLFW : public Rml::SystemInterface {
  public:
     SystemInterface_GLFW();
@@ -56,6 +57,7 @@ class SystemInterface_GLFW : public Rml::SystemInterface {
     GLFWcursor* cursor_cross = nullptr;
     GLFWcursor* cursor_text = nullptr;
 };
+}  // namespace RmlGLFW
 
 /**
     Optional helper functions for the GLFW plaform.

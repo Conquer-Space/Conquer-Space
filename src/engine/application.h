@@ -219,7 +219,7 @@ class Application {
     std::string icon_path;
 
     Rml::Context* rml_context;
-    std::unique_ptr<SystemInterface_GLFW> m_system_interface;
+    std::unique_ptr<RmlGLFW::SystemInterface_GLFW> m_system_interface;
     std::unique_ptr<Rml::RenderInterface> m_render_interface;
     ax::NodeEditor::EditorContext* m_ne_context = nullptr;
 

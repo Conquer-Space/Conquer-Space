@@ -16,8 +16,9 @@
  */
 #include "engine/cqspgui.h"
 
-cqsp::engine::Application* AppContext = nullptr;
+
 namespace CQSPGui {
+cqsp::engine::Application* AppContext = nullptr;
 void SetApplication(cqsp::engine::Application* context) { AppContext = context; }
 
 bool DefaultButton(const char* name, const ImVec2& size) {

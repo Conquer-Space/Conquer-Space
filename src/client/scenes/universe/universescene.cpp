@@ -55,7 +55,9 @@
 #include "tracy/Tracy.hpp"
 
 // If the game is paused or not, like when escape is pressed
-bool game_halted = false;
+namespace cqsp::scene {
+    bool game_halted = false;
+}
 
 cqsp::scene::UniverseScene::UniverseScene(cqsp::engine::Application& app) : cqsp::client::Scene(app) {}
 

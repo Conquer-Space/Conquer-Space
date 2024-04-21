@@ -78,11 +78,11 @@ void AudioInterface::SetMusicVolume(float volume) {
     music_volume = volume;
 }
 
-void cqsp::engine::audio::AudioInterface::AddAudioClip(const std::string& key, AudioAsset* asset) {
+void AudioInterface::AddAudioClip(const std::string& key, AudioAsset* asset) {
     assets[key] = asset;
 }
 
-void cqsp::engine::audio::AudioInterface::PlayAudioClip(const std::string& key) {
+void AudioInterface::PlayAudioClip(const std::string& key) {
     if (assets.find(key) == assets.end()) {
         SPDLOG_LOGGER_WARN(logger, "Unable to find audio clip {}", key);
     } else {
@@ -93,13 +93,13 @@ void cqsp::engine::audio::AudioInterface::PlayAudioClip(const std::string& key) 
     }
 }
 
-void cqsp::engine::audio::AudioInterface::PlayAudioClip(cqsp::asset::AudioAsset* asset, int channel) {}
+void AudioInterface::PlayAudioClip(cqsp::asset::AudioAsset* asset, int channel) {}
 
-void cqsp::engine::audio::AudioInterface::SetChannelVolume(int channel, float gain) {
+void AudioInterface::SetChannelVolume(int channel, float gain) {
     channels[channel]->SetGain(gain);
 }
 
-void cqsp::engine::audio::AudioInterface::OnFrame() {
+void AudioInterface::OnFrame() {
     bool to_quit = false;
     if (channels[MUSIC_CHANNEL]->IsPlaying() && !to_quit) {
         return;
@@ -108,7 +108,7 @@ void cqsp::engine::audio::AudioInterface::OnFrame() {
     if (channels[MUSIC_CHANNEL]->IsStopped()) {
         // Check for device error?
         int error = alcGetError(device);
-        ALCint status;
+        //ALCint status = 0;
         //alcGetIntegerv(device, ALC_, 1, &status);
         if (error != ALC_NO_ERROR) {
             SPDLOG_LOGGER_INFO(logger, "Error {}", error);
@@ -250,7 +250,7 @@ void AudioInterface::InitALContext() {
     }
 }
 
-std::unique_ptr<AudioAsset> cqsp::engine::audio::AudioInterface::LoadNextFile() {
+std::unique_ptr<AudioAsset> AudioInterface::LoadNextFile() {
     // Choose random song from playlist
     std::random_device dev;
     std::mt19937 rng(dev());

@@ -23,11 +23,12 @@
 #include <utility>
 #include <vector>
 
-#include "client/systems/sysgui.h"
+#include "client/systems/sysgui.h"    
 
 #define sysdebuggui_parameters                                                                                \
-    cqsp::engine::Application &app, common::Universe &universe, scripting::ScriptInterface &script_interface, \
-        const std::string_view &args, CommandOutput &input
+cqsp::engine::Application &app, common::Universe &universe,                                                   \
+common::scripting::ScriptInterface &script_interface, const std::string_view &args,                           \
+    CommandOutput &input
 
 namespace cqsp {
 namespace client {

@@ -34,6 +34,7 @@
 #include "RmlUi_Platform_GLFW.h"
 #include "RmlUi_Renderer_GL3.h"
 
+namespace Backend {
 static void SetupCallbacks(GLFWwindow* window);
 
 static void LogErrorFromGLFW(int error, const char* description) {
@@ -46,8 +47,8 @@ static void LogErrorFromGLFW(int error, const char* description) {
     Lifetime governed by the calls to Backend::Initialize() and Backend::Shutdown().
  */
 struct BackendData {
-    SystemInterface_GLFW system_interface;
-    RenderInterface_GL3 render_interface;
+    RmlGLFW::SystemInterface_GLFW system_interface;
+    RmlGL3::RenderInterface_GL3 render_interface;
     GLFWwindow* window = nullptr;
     int glfw_active_modifiers = 0;
     bool context_dimensions_dirty = true;
@@ -57,6 +58,8 @@ struct BackendData {
     KeyDownCallback key_down_callback = nullptr;
 };
 static Rml::UniquePtr<BackendData> data;
+}
+
 
 bool Backend::Initialize(const char* name, int width, int height, bool allow_resize) {
     RMLUI_ASSERT(!data);
@@ -178,7 +181,7 @@ void Backend::PresentFrame() {
     RMLUI_FrameMark;
 }
 
-static void SetupCallbacks(GLFWwindow* window) {
+static void Backend::SetupCallbacks(GLFWwindow* window) {
     RMLUI_ASSERT(data);
 
     // Key input
