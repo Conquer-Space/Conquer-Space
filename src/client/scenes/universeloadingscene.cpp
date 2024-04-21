@@ -26,13 +26,15 @@
 #include "client/systems/savegame.h"
 #include "common/systems/sysuniversegenerator.h"
 
-cqsp::scene::UniverseLoadingScene::UniverseLoadingScene(cqsp::engine::Application& app) : cqsp::client::Scene(app) {}
+using cqsp::scene::UniverseLoadingScene;
 
-cqsp::scene::UniverseLoadingScene::~UniverseLoadingScene() {
+UniverseLoadingScene::UniverseLoadingScene(cqsp::engine::Application& app) : cqsp::client::Scene(app) {}
+
+UniverseLoadingScene::~UniverseLoadingScene() {
     GetApp().CloseDocument("../data/core/gui/screens/universe_loading_screen.rml");
 }
 
-void cqsp::scene::UniverseLoadingScene::Init() {
+void UniverseLoadingScene::Init() {
     auto loading = [&]() { LoadUniverse(); };
 
     m_completed_loading = false;
@@ -43,7 +45,7 @@ void cqsp::scene::UniverseLoadingScene::Init() {
     }
 }
 
-void cqsp::scene::UniverseLoadingScene::Update(float deltaTime) {
+void UniverseLoadingScene::Update(float deltaTime) {
     if (m_completed_loading && thread->joinable()) {
         // Switch scene
         thread->join();
@@ -51,19 +53,19 @@ void cqsp::scene::UniverseLoadingScene::Update(float deltaTime) {
     }
 }
 
-void cqsp::scene::UniverseLoadingScene::Ui(float deltaTime) {}
+void UniverseLoadingScene::Ui(float deltaTime) {}
 
-void cqsp::scene::UniverseLoadingScene::Render(float deltaTime) {}
+void UniverseLoadingScene::Render(float deltaTime) {}
 
-void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
-    cqsp::client::systems::LoadAllResources(GetApp(), *dynamic_cast<cqsp::client::ConquerSpace*>(GetApp().GetGame()));
+void UniverseLoadingScene::LoadUniverse() {
+    client::systems::LoadAllResources(GetApp(), *dynamic_cast<cqsp::client::ConquerSpace*>(GetApp().GetGame()));
     SPDLOG_INFO("Made all game resources into game objects");
-    using cqsp::asset::TextAsset;
+    using asset::TextAsset;
     // Process scripts for core
     TextAsset* script_list = GetAssetManager().GetAsset<TextAsset>("core:base");
     GetScriptInterface().RunScript(script_list->data);
     SPDLOG_INFO("Done loading scripts");
-    using cqsp::common::systems::universegenerator::ScriptUniverseGenerator;
+    using common::systems::universegenerator::ScriptUniverseGenerator;
     // Load universe
     ScriptUniverseGenerator script_generator(GetScriptInterface());
 

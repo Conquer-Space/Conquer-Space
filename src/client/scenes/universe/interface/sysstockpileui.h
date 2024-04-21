@@ -22,11 +22,7 @@
 #include "common/universe.h"
 #include "entt/entt.hpp"
 
-namespace cqsp {
-namespace client {
-namespace systems {
-bool DrawLedgerTable(const std::string& name, const cqsp::common::Universe&,
-                     const cqsp::common::components::ResourceLedger& ledger);
-}  // namespace systems
-}  // namespace client
-}  // namespace cqsp
+namespace cqsp::client::systems {
+bool DrawLedgerTable(const std::string& name, const common::Universe&,
+                     const common::components::ResourceLedger& ledger);
+}  // namespace cqsp::client::systems

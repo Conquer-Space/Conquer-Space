@@ -16,9 +16,11 @@
  */
 #include "settingswindow.h"
 
-cqsp::client::SettingsWindow::SettingsWindow(cqsp::engine::Application& app) : app(app) { InitializeDataModel(); }
+using cqsp::client::SettingsWindow;
 
-void cqsp::client::SettingsWindow::ProcessEvent(Rml::Event& event) {
+SettingsWindow::SettingsWindow(cqsp::engine::Application& app) : app(app) { InitializeDataModel(); }
+
+void SettingsWindow::ProcessEvent(Rml::Event& event) {
     std::string id_pressed = event.GetTargetElement()->GetId();
     if (event.GetId() == Rml::EventId::Keydown) {
         Rml::Input::KeyIdentifier key_identifier =
@@ -53,13 +55,13 @@ void cqsp::client::SettingsWindow::ProcessEvent(Rml::Event& event) {
     }
 }
 
-void cqsp::client::SettingsWindow::AddEventListeners() {
+void SettingsWindow::AddEventListeners() {
     options_menu->AddEventListener(Rml::EventId::Click, this);
     options_menu->AddEventListener(Rml::EventId::Keydown, this);
     options_menu->AddEventListener(Rml::EventId::Submit, this);
 }
 
-void cqsp::client::SettingsWindow::InitializeOptionVariables() {
+void SettingsWindow::InitializeOptionVariables() {
     music_volume = GetApp().GetClientOptions().GetOptions()["audio"]["music"];
     ui_volume = GetApp().GetClientOptions().GetOptions()["audio"]["ui"];
     full_screen = static_cast<bool>(GetApp().GetClientOptions().GetOptions()["full_screen"]);
@@ -85,13 +87,13 @@ void cqsp::client::SettingsWindow::InitializeOptionVariables() {
     model_handle.DirtyAllVariables();
 }
 
-void cqsp::client::SettingsWindow::RemoveEventListeners() {
+void SettingsWindow::RemoveEventListeners() {
     options_menu->RemoveEventListener(Rml::EventId::Click, this);
     options_menu->RemoveEventListener(Rml::EventId::Keydown, this);
     options_menu->RemoveEventListener(Rml::EventId::Submit, this);
 }
 
-void cqsp::client::SettingsWindow::InitializeDataModel() {
+void SettingsWindow::InitializeDataModel() {
     Rml::DataModelConstructor constructor = GetApp().GetRmlUiContext()->CreateDataModel("settings");
     constructor.Bind("music_volume", &music_volume);
     constructor.Bind("ui_volume", &ui_volume);
@@ -107,7 +109,7 @@ void cqsp::client::SettingsWindow::InitializeDataModel() {
     model_handle = constructor.GetModelHandle();
 }
 
-void cqsp::client::SettingsWindow::Show() {
+void SettingsWindow::Show() {
     options_menu->Show();
     options_menu->PullToFront();
     options_menu->Focus();
@@ -115,30 +117,30 @@ void cqsp::client::SettingsWindow::Show() {
     InitializeOptionVariables();
 }
 
-void cqsp::client::SettingsWindow::Hide() { options_menu->SetClass("visible", false); }
+void SettingsWindow::Hide() { options_menu->SetClass("visible", false); }
 
-void cqsp::client::SettingsWindow::Close() {
+void SettingsWindow::Close() {
     options_menu->RemoveEventListener(Rml::EventId::Click, this);
     options_menu->RemoveEventListener(Rml::EventId::Keydown, this);
     options_menu->RemoveEventListener(Rml::EventId::Submit, this);
     options_menu->Close();
 }
 
-void cqsp::client::SettingsWindow::LoadDocument() {
+void SettingsWindow::LoadDocument() {
     options_menu = GetApp().LoadDocument(document_name);
     AddEventListeners();
     InitializeOptionVariables();
     options_menu->PushToBack();
 }
 
-void cqsp::client::SettingsWindow::ReloadDocument() {
+void SettingsWindow::ReloadDocument() {
     options_menu = GetApp().ReloadDocument(document_name);
     AddEventListeners();
     InitializeOptionVariables();
 }
 
-float cqsp::client::SettingsWindow::GetOpacity() {
+float SettingsWindow::GetOpacity() {
     return options_menu->GetProperty(Rml::PropertyId::Opacity)->Get<float>();
 }
 
-void cqsp::client::SettingsWindow::PushToBack() { options_menu->PushToBack(); }
+void SettingsWindow::PushToBack() { options_menu->PushToBack(); }

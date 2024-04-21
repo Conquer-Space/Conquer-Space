@@ -59,19 +59,23 @@ namespace cqsp::scene {
     bool game_halted = false;
 }
 
-cqsp::scene::UniverseScene::UniverseScene(cqsp::engine::Application& app) : cqsp::client::Scene(app) {}
+namespace common = cqsp::common;
+namespace components = common::components;
+namespace bodies = components::bodies;
+namespace client = cqsp::client;
+namespace systems = client::systems;
+using common::systems::simulation::Simulation;
+using cqsp::scene::UniverseScene;
+using entt::entity;
 
-void cqsp::scene::UniverseScene::Init() {
+UniverseScene::UniverseScene(engine::Application& app) : client::Scene(app) {}
+
+void UniverseScene::Init() {
     ZoneScoped;
-    namespace cqspb = cqsp::common::components::bodies;
-    namespace cqspco = cqsp::common;
-    namespace cqspc = cqsp::common::components;
-    namespace cqsps = cqsp::client::systems;
 
-    using cqspco::systems::simulation::Simulation;
-    simulation = std::make_unique<Simulation>(dynamic_cast<cqsp::client::ConquerSpace*>(GetApp().GetGame())->GetGame());
+    simulation = std::make_unique<Simulation>(dynamic_cast<client::ConquerSpace*>(GetApp().GetGame())->GetGame());
 
-    system_renderer = new cqsps::SysStarSystemRenderer(GetUniverse(), GetApp());
+    system_renderer = new systems::SysStarSystemRenderer(GetUniverse(), GetApp());
     system_renderer->Initialize();
 
     GetUniverse().ctx().emplace<client::ctx::PauseOptions>();
@@ -81,26 +85,26 @@ void cqsp::scene::UniverseScene::Init() {
     SeePlanet(GetUniverse(), GetUniverse().planets["earth"]);
 
     //AddUISystem<cqsps::SysTurnSaveWindow>();
-    AddUISystem<cqsps::SysStarSystemTree>();
-    AddUISystem<cqsps::SysPauseMenu>();
-    AddUISystem<cqsps::SysDebugMenu>();
+    AddUISystem<systems::SysStarSystemTree>();
+    AddUISystem<systems::SysPauseMenu>();
+    AddUISystem<systems::SysDebugMenu>();
     //AddUISystem<cqsps::SysCommand>();
-    AddUISystem<cqsps::CivilizationInfoPanel>();
-    AddUISystem<cqsps::SpaceshipWindow>();
+    AddUISystem<systems::CivilizationInfoPanel>();
+    AddUISystem<systems::SpaceshipWindow>();
     //AddUISystem<cqsps::SysFieldViewer>();
     //AddUISystem<cqsps::SysTechnologyProjectViewer>();
     //AddUISystem<cqsps::SysTechnologyViewer>();
-    AddUISystem<cqsps::SysProvinceInformation>();
-    AddUISystem<cqsps::SysOrbitFilter>();
+    AddUISystem<systems::SysProvinceInformation>();
+    AddUISystem<systems::SysOrbitFilter>();
     //AddUISystem<cqsps::SysPlanetMarketInformation>();
 
-    AddUISystem<cqsps::gui::SysEvent>();
+    AddUISystem<systems::gui::SysEvent>();
     simulation->tick();
 
-    AddRmlUiSystem<cqsps::rmlui::TurnSaveWindow>();
+    AddRmlUiSystem<systems::rmlui::TurnSaveWindow>();
 }
 
-void cqsp::scene::UniverseScene::Update(float deltaTime) {
+void UniverseScene::Update(float deltaTime) {
     ZoneScoped;
 
     auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
@@ -139,7 +143,7 @@ void cqsp::scene::UniverseScene::Update(float deltaTime) {
     DoScreenshot();
 
     if (view_mode) {
-        GetUniverse().clear<cqsp::client::systems::MouseOverEntity>();
+        GetUniverse().clear<systems::MouseOverEntity>();
         system_renderer->GetMouseOnObject(GetApp().GetMouseX(), GetApp().GetMouseY());
     }
 
@@ -157,19 +161,19 @@ void cqsp::scene::UniverseScene::Update(float deltaTime) {
     }
 }
 
-void cqsp::scene::UniverseScene::Ui(float deltaTime) {
+void UniverseScene::Ui(float deltaTime) {
     for (auto& ui : user_interfaces) {
         ui->DoUI(deltaTime);
     }
 }
 
-void cqsp::scene::UniverseScene::Render(float deltaTime) {
+void UniverseScene::Render(float deltaTime) {
     ZoneScoped;
     glEnable(GL_MULTISAMPLE);
     system_renderer->Render(deltaTime);
 }
 
-void cqsp::scene::UniverseScene::DoScreenshot() {
+void UniverseScene::DoScreenshot() {
     // Take screenshot
     if ((GetApp().ButtonIsReleased(engine::KeyInput::KEY_F1) && GetApp().ButtonIsHeld(engine::KeyInput::KEY_F10)) ||
         (GetApp().ButtonIsHeld(engine::KeyInput::KEY_F1) && GetApp().ButtonIsReleased(engine::KeyInput::KEY_F10))) {
@@ -177,20 +181,23 @@ void cqsp::scene::UniverseScene::DoScreenshot() {
     }
 }
 
-void cqsp::scene::UniverseScene::ToggleTick() {
+void UniverseScene::ToggleTick() {
     auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
     pause_opt.to_tick = !pause_opt.to_tick;
 }
 
-entt::entity cqsp::scene::GetCurrentViewingPlanet(cqsp::common::Universe& universe) {
-    return universe.view<cqsp::client::systems::FocusedPlanet>().front();
+namespace cqsp::scene {
+entt::entity GetCurrentViewingPlanet(common::Universe& universe) {
+    return universe.view<client::systems::FocusedPlanet>().front();
 }
 
-void cqsp::scene::SeePlanet(cqsp::common::Universe& universe, entt::entity ent) {
-    universe.clear<cqsp::client::systems::FocusedPlanet>();
-    universe.emplace<cqsp::client::systems::FocusedPlanet>(ent);
+void SeePlanet(common::Universe& universe, entity ent) {
+    universe.clear<systems::FocusedPlanet>();
+    universe.emplace<systems::FocusedPlanet>(ent);
 }
 
 void cqsp::scene::SetGameHalted(bool b) { game_halted = b; }
 
 bool cqsp::scene::IsGameHalted() { return game_halted; }
+}
+

@@ -21,22 +21,25 @@
 #include "recipeviewer.h"
 #include "sysfieldviewer.h"
 
-cqsp::scene::ObjectEditorScene::ObjectEditorScene(cqsp::engine::Application& app) : cqsp::client::Scene(app) {
-    AddUISystem<cqsp::client::systems::SysFieldNodeViewer>("Node Viewer");
-    AddUISystem<cqsp::client::systems::SysGoodViewer>("Good Viewer");
-    AddUISystem<cqsp::client::systems::SysRecipeViewer>("Recipe Viewer");
+using cqsp::scene::ObjectEditorScene;
+using entt::entity;
+
+ObjectEditorScene::ObjectEditorScene(engine::Application& app) : client::Scene(app) {
+    AddUISystem<client::systems::SysFieldNodeViewer>("Node Viewer");
+    AddUISystem<client::systems::SysGoodViewer>("Good Viewer");
+    AddUISystem<client::systems::SysRecipeViewer>("Recipe Viewer");
 }
 
-cqsp::scene::ObjectEditorScene::~ObjectEditorScene() = default;
+ObjectEditorScene::~ObjectEditorScene() = default;
 
-void cqsp::scene::ObjectEditorScene::Init() {
+void ObjectEditorScene::Init() {
     // Sorta need to initialize everything
-    cqsp::client::systems::LoadAllResources(GetApp(), *dynamic_cast<cqsp::client::ConquerSpace*>(GetApp().GetGame()));
+    client::systems::LoadAllResources(GetApp(), *dynamic_cast<client::ConquerSpace*>(GetApp().GetGame()));
 }
 
-void cqsp::scene::ObjectEditorScene::Update(float deltaTime) {}
+void ObjectEditorScene::Update(float deltaTime) {}
 
-void cqsp::scene::ObjectEditorScene::Ui(float deltaTime) {
+void ObjectEditorScene::Ui(float deltaTime) {
     // Do information UI
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
     ImGui::Begin("UI to Show");
@@ -55,4 +58,4 @@ void cqsp::scene::ObjectEditorScene::Ui(float deltaTime) {
     }
 }
 
-void cqsp::scene::ObjectEditorScene::Render(float deltaTime) {}
+void ObjectEditorScene::Render(float deltaTime) {}

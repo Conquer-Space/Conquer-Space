@@ -26,24 +26,40 @@
 #include "common/systems/maneuver/rendezvous.h"
 #include "common/util/nameutil.h"
 
-void cqsp::client::systems::SpaceshipWindow::Init() {}
+namespace components = cqsp::common::components;
+namespace types = cqsp::common::components::types;
+namespace ships = cqsp::common::components::ships;
+namespace systems = cqsp::common::systems;
+using components::CommandQueue;
+using components::Maneuver;
+using types::Kinematics;
+using types::Orbit;
 
-void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
-    using common::components::types::toDegree;
+using types::OrbitVelocity;
+
+using components::bodies::Body;
+using cqsp::client::systems::SpaceshipWindow;
+using entt::entity;
+using cqsp::common::util::GetName;
+
+void SpaceshipWindow::Init() {}
+
+void SpaceshipWindow::DoUI(int delta_time) {
+    using types::toDegree;
     // Get selected spaceship, and then do the window
     // Check if the selected body is a spaceship
     // Then display information on it
-    entt::entity body = GetUniverse().view<FocusedPlanet>().front();
+    entity body = GetUniverse().view<FocusedPlanet>().front();
     if (!GetUniverse().valid(body)) {
         return;
     }
-    if (!GetUniverse().all_of<common::components::ships::Ship>(body)) {
+    if (!GetUniverse().all_of<ships::Ship>(body)) {
         // Display the details of the spaceship
         return;
     }
-    ImGui::Begin(fmt::format("{}", common::util::GetName(GetUniverse(), body)).c_str());
+    ImGui::Begin(fmt::format("{}", GetName(GetUniverse(), body)).c_str());
     // Display orbital elements
-    auto& orbit = GetUniverse().get<common::components::types::Orbit>(body);
+    auto& orbit = GetUniverse().get<Orbit>(body);
     if (ImGui::CollapsingHeader("Orbital Elements", ImGuiTreeNodeFlags_DefaultOpen)) {
         ImGui::TextFmt("Semi-major axis: {} km", orbit.semi_major_axis);
         ImGui::TextFmt("Eccentricity: {}", orbit.eccentricity);
@@ -55,26 +71,26 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         ImGui::TextFmt("Epoch: {}s", orbit.epoch);
         ImGui::TextFmt("GM: {} km^3 * s^-2", orbit.GM);
         ImGui::TextFmt("Orbital period: {} s", orbit.T());
-        ImGui::TextFmt("Orbiting: {}", common::util::GetName(GetUniverse(), orbit.reference_body).c_str());
-        if (GetUniverse().any_of<common::components::bodies::Body>(orbit.reference_body)) {
+        ImGui::TextFmt("Orbiting: {}", GetName(GetUniverse(), orbit.reference_body).c_str());
+        if (GetUniverse().any_of<Body>(orbit.reference_body)) {
             double r = orbit.GetOrbitingRadius();
-            double p = GetUniverse().get<common::components::bodies::Body>(orbit.reference_body).radius;
+            double p = GetUniverse().get<Body>(orbit.reference_body).radius;
             p = 0;
             ImGui::TextFmt("Altitude: {} km", (r - p));
             ImGui::TextFmt("Periapsis: {:<10} km ({:.1f} s)", orbit.GetPeriapsis() - p, orbit.TimeToMeanAnomaly(0));
             ImGui::TextFmt("Apoapsis: {:<10} km ({:.1f} s)", orbit.GetApoapsis() - p,
-                           orbit.TimeToMeanAnomaly(common::components::types::PI));
+                           orbit.TimeToMeanAnomaly(components::types::PI));
         }
     }
     if (ImGui::CollapsingHeader("Orbital Vectors")) {
-        auto& coords = GetUniverse().get<common::components::types::Kinematics>(body);
+        auto& coords = GetUniverse().get<Kinematics>(body);
         ImGui::TextFmt("Position {} {} {}", coords.position.x, coords.position.y, coords.position.z);
         ImGui::TextFmt("Velocity {} {} {}", coords.velocity.x, coords.velocity.y, coords.velocity.z);
     }
 
     if (ImGui::CollapsingHeader("Maneuver Queue")) {
-        if (GetUniverse().any_of<common::components::CommandQueue>(body)) {
-            auto& queue = GetUniverse().get<common::components::CommandQueue>(body);
+        if (GetUniverse().any_of<CommandQueue>(body)) {
+            auto& queue = GetUniverse().get<CommandQueue>(body);
             for (auto& manuver : queue) {
                 ImGui::TextFmt("Maneuver in {}", manuver.time - GetUniverse().date.ToSecond());
             }
@@ -84,35 +100,35 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
     if (ImGui::CollapsingHeader("Basic Orbital Maneuvers")) {
         if (ImGui::Button("Circularize at apoapsis")) {
             // Add random delta v
-            common::components::Maneuver maneuver(common::systems::CircularizeAtApoapsis(orbit));
+            Maneuver maneuver(common::systems::CircularizeAtApoapsis(orbit));
             maneuver.time += GetUniverse().date.ToSecond();
-            GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push_back(maneuver);
+            GetUniverse().get_or_emplace<CommandQueue>(body).commands.push_back(maneuver);
         }
         if (ImGui::IsItemHovered()) {
             double circular_velocity =
-                common::components::types::GetCircularOrbitingVelocity(orbit.GM, orbit.GetApoapsis());
+                types::GetCircularOrbitingVelocity(orbit.GM, orbit.GetApoapsis());
             // So for apoapsis, we need this amount of delta v at prograde
             // Get the vector of the direction and then compute?
             // Then transform by the orbital math
-            double orbit_velocity = common::components::types::OrbitVelocity(
-                common::components::types::PI, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+            double orbit_velocity = OrbitVelocity(
+                types::PI, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
             ImGui::SetTooltip("Delta-v: %f km/s", circular_velocity - orbit_velocity);
         }
 
         if (ImGui::Button("Circularize at perapsis")) {
-            common::components::Maneuver maneuver(common::systems::CircularizeAtPeriapsis(orbit));
+            Maneuver maneuver(common::systems::CircularizeAtPeriapsis(orbit));
             maneuver.time += GetUniverse().date.ToSecond();
-            GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push_back(maneuver);
+            GetUniverse().get_or_emplace<CommandQueue>(body).commands.push_back(maneuver);
         }
 
         if (ImGui::IsItemHovered()) {
             double circular_velocity =
-                common::components::types::GetCircularOrbitingVelocity(orbit.GM, orbit.GetPeriapsis());
+                types::GetCircularOrbitingVelocity(orbit.GM, orbit.GetPeriapsis());
             // So for apoapsis, we need this amount of delta v at prograde
             // Get the vector of the direction and then compute?
             // Then transform by the orbital math
             double orbit_velocity =
-                common::components::types::OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+                OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
             ImGui::SetTooltip("Delta-v: %f km/s", circular_velocity - orbit_velocity);
         }
 
@@ -121,19 +137,19 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         if (ImGui::Button("Set Apoapsis")) {
             // Get velocity at the new apogee
             // Get the velocity
-            common::components::Maneuver maneuver;
+            Maneuver maneuver;
             auto m = common::systems::SetApoapsis(orbit, new_perigee);
             maneuver.delta_v = m.first;
             maneuver.time = GetUniverse().date.ToSecond() + m.second;
-            GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push_back(maneuver);
+            GetUniverse().get_or_emplace<CommandQueue>(body).commands.push_back(maneuver);
         }
 
         if (ImGui::IsItemHovered()) {
             double new_sma = (orbit.GetApoapsis() + new_perigee) / 2;
             // Get velocity at the new apogee
-            double new_v = common::components::types::OrbitVelocityAtR(orbit.GM, new_sma, orbit.GetApoapsis());
+            double new_v = types::OrbitVelocityAtR(orbit.GM, new_sma, orbit.GetApoapsis());
             double orbit_velocity =
-                common::components::types::OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+                types::OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
             ImGui::SetTooltip("Delta-v: %f km/s", new_v - orbit_velocity);
         }
 
@@ -142,19 +158,19 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         if (ImGui::Button("Set Periapsis")) {
             // Get velocity at the new apogee
             // Get the velocity
-            common::components::Maneuver maneuver;
+            Maneuver maneuver;
             auto m = common::systems::SetPeriapsis(orbit, new_apogee);
             maneuver.delta_v = m.first;
             maneuver.time = GetUniverse().date.ToSecond() + m.second;
-            GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push_back(maneuver);
+            GetUniverse().get_or_emplace<CommandQueue>(body).commands.push_back(maneuver);
         }
 
         if (ImGui::IsItemHovered()) {
             double new_sma = (orbit.GetPeriapsis() + new_apogee) / 2;
             // Get velocity at the new apogee
-            double new_v = common::components::types::OrbitVelocityAtR(orbit.GM, new_sma, orbit.GetPeriapsis());
+            double new_v = types::OrbitVelocityAtR(orbit.GM, new_sma, orbit.GetPeriapsis());
             double orbit_velocity =
-                common::components::types::OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+                types::OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
             ImGui::SetTooltip("Delta-v: %f km/s", new_v - orbit_velocity);
         }
 
@@ -164,9 +180,9 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
             // Get the velocity
             auto hohmann = common::systems::HohmannTransfer(orbit, new_hohmann);
             if (hohmann.has_value()) {
-                auto& queue = GetUniverse().get_or_emplace<common::components::CommandQueue>(body);
-                common::components::Maneuver man_1(hohmann->first);
-                common::components::Maneuver man_2(hohmann->second);
+                auto& queue = GetUniverse().get_or_emplace<CommandQueue>(body);
+                Maneuver man_1(hohmann->first);
+                Maneuver man_2(hohmann->second);
                 man_1.time += (GetUniverse().date.ToSecond() + 1000);
                 man_2.time += (GetUniverse().date.ToSecond() + 1000);
                 queue.commands.push_back(man_1);
@@ -180,20 +196,20 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
     // Display spaceship delta v in the future
     // Display controls of the spaceship
     if (ImGui::CollapsingHeader("Rendezvous")) {
-        auto& o_system = GetUniverse().get<cqsp::common::components::bodies::OrbitalSystem>(orbit.reference_body);
-        static entt::entity selected = o_system.children.empty() ? entt::null : o_system.children.front();
-        auto& target = GetUniverse().get<common::components::types::Orbit>(selected);
+        auto& o_system = GetUniverse().get<components::bodies::OrbitalSystem>(orbit.reference_body);
+        static entity selected = o_system.children.empty() ? entt::null : o_system.children.front();
+        auto& target = GetUniverse().get<Orbit>(selected);
 
         // Get distance from target
-        glm::vec3 target_distance = GetUniverse().get<common::components::types::Kinematics>(selected).position -
-                                    GetUniverse().get<common::components::types::Kinematics>(body).position;
+        glm::vec3 target_distance = GetUniverse().get<Kinematics>(selected).position -
+                                    GetUniverse().get<Kinematics>(body).position;
         ImGui::TextFmt("Distance to target: {}", glm::length(target_distance));
         if (ImGui::Button("Rendez-vous!")) {
             // Rdv with target
             auto pair = cqsp::common::systems::CoplanarIntercept(orbit, target, GetUniverse().date.ToSecond());
-            auto& queue = GetUniverse().get_or_emplace<common::components::CommandQueue>(body);
-            common::components::Maneuver man_1(pair.first);
-            common::components::Maneuver man_2(pair.second);
+            auto& queue = GetUniverse().get_or_emplace<CommandQueue>(body);
+            Maneuver man_1(pair.first);
+            Maneuver man_2(pair.second);
             man_1.time += GetUniverse().date.ToSecond();
             man_2.time += GetUniverse().date.ToSecond();
             queue.commands.push_back(man_1);
@@ -201,21 +217,21 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         }
         if (ImGui::Button("Maneuver to point")) {
             auto pair = cqsp::common::systems::CoplanarIntercept(orbit, target, GetUniverse().date.ToSecond());
-            auto& queue = GetUniverse().get_or_emplace<common::components::CommandQueue>(body);
+            auto& queue = GetUniverse().get_or_emplace<CommandQueue>(body);
             common::components::Maneuver man_1(pair.first);
             man_1.time += GetUniverse().date.ToSecond();
             queue.commands.push_back(man_1);
         }
         if (ImGui::Button("Match Planes")) {
-            auto& queue = GetUniverse().get_or_emplace<common::components::CommandQueue>(body);
+            auto& queue = GetUniverse().get_or_emplace<CommandQueue>(body);
             auto maneuver = cqsp::common::systems::MatchPlanes(orbit, target);
             maneuver.second += GetUniverse().date.ToSecond();
             queue.commands.emplace_back(maneuver);
         }
-        ImGui::TextFmt("Phase angle: {}", cqsp::common::components::types::CalculatePhaseAngle(
+        ImGui::TextFmt("Phase angle: {}", types::CalculatePhaseAngle(
                                               orbit, target, GetUniverse().date.ToSecond()));
-        ImGui::TextFmt("Transfer angle: {}", cqsp::common::components::types::CalculateTransferAngle(orbit, target));
-        double ttma = orbit.TimeToMeanAnomaly(common::components::types::AscendingTrueAnomaly(orbit, target));
+        ImGui::TextFmt("Transfer angle: {}", types::CalculateTransferAngle(orbit, target));
+        double ttma = orbit.TimeToMeanAnomaly(types::AscendingTrueAnomaly(orbit, target));
         ImGui::TextFmt("Time to ascending node: {}", ttma);
         if (ImGui::BeginChild("Rendezvous Target")) {
             for (auto& entity : o_system.children) {
@@ -229,4 +245,4 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void cqsp::client::systems::SpaceshipWindow::DoUpdate(int delta_time) {}
+void SpaceshipWindow::DoUpdate(int delta_time) {}

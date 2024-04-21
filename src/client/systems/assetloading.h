@@ -21,5 +21,5 @@
 
 namespace cqsp::client::systems {
 // Loads all the goods and the like into the game.
-void LoadAllResources(cqsp::engine::Application& app, ConquerSpace& conquer_space);
+void LoadAllResources(engine::Application& app, ConquerSpace& conquer_space);
 }  // namespace cqsp::client::systems

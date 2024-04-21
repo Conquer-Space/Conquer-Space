@@ -18,7 +18,8 @@
 
 #include "client/components/clientctx.h"
 
-namespace cqsp::client::systems::rmlui {
+using cqsp::client::systems::rmlui::TurnSaveWindow;
+
 TurnSaveWindow::~TurnSaveWindow() {
     document->RemoveEventListener(Rml::EventId::Click, &listener);
     document->Close();
@@ -77,4 +78,4 @@ void TurnSaveWindow::EventListener::ProcessEvent(Rml::Event& event) {
         }
     }
 }
-}  // namespace cqsp::client::systems::rmlui
+

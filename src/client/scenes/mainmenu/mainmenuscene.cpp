@@ -39,10 +39,12 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-cqsp::scene::MainMenuScene::MainMenuScene(cqsp::engine::Application& app)
+using cqsp::scene::MainMenuScene;
+
+cqsp::scene::MainMenuScene::MainMenuScene(engine::Application& app)
     : cqsp::client::Scene(app), settings_window(app), credits_window(app), load_game_window(app) {}
 
-cqsp::scene::MainMenuScene::~MainMenuScene() {
+MainMenuScene::~MainMenuScene() {
     GetApp().GetRmlUiContext()->RemoveDataModel("settings");
 
     main_menu->RemoveEventListener(Rml::EventId::Click, &listener);
@@ -52,7 +54,7 @@ cqsp::scene::MainMenuScene::~MainMenuScene() {
     load_game_window.Close();
 }
 
-void cqsp::scene::MainMenuScene::Init() {
+void MainMenuScene::Init() {
     listener.app = &GetApp();
     listener.m_scene = this;
 
@@ -70,7 +72,7 @@ void cqsp::scene::MainMenuScene::Init() {
     NextImage();
 }
 
-void cqsp::scene::MainMenuScene::Update(float deltaTime) {
+void MainMenuScene::Update(float deltaTime) {
     if (GetApp().ButtonIsPressed(engine::KeyInput::KEY_F5)) {
         Rml::Factory::ClearStyleSheetCache();
         main_menu = GetApp().ReloadDocument("../data/core/gui/mainmenu.rml");
@@ -98,13 +100,13 @@ void cqsp::scene::MainMenuScene::Update(float deltaTime) {
     }
 }
 
-void cqsp::scene::MainMenuScene::Ui(float deltaTime) {}
+void MainMenuScene::Ui(float deltaTime) {}
 
-void cqsp::scene::MainMenuScene::Render(float deltaTime) {
+void MainMenuScene::Render(float deltaTime) {
     GetApp().DrawText(fmt::format("Version: {}", CQSP_VERSION_STRING), 8, 8);
 }
 
-void cqsp::scene::MainMenuScene::ModWindow() {
+void MainMenuScene::ModWindow() {
     /*
     ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x * 0.8f, ImGui::GetIO().DisplaySize.y * 0.8f),
         ImGuiCond_Always);
@@ -193,8 +195,8 @@ void cqsp::scene::MainMenuScene::ModWindow() {
     ImGui::End();*/
 }
 
-void cqsp::scene::MainMenuScene::ShuffleFileList() {
-    std::string splash_dir = cqsp::common::util::GetCqspDataPath() + "/core/gui/splashscreens";
+void MainMenuScene::ShuffleFileList() {
+    std::string splash_dir = common::util::GetCqspDataPath() + "/core/gui/splashscreens";
     auto s = std::filesystem::canonical(splash_dir).string();
 
     for (const auto& entry : std::filesystem::directory_iterator(splash_dir)) {
@@ -217,19 +219,19 @@ void cqsp::scene::MainMenuScene::ShuffleFileList() {
     index = 0;
 }
 
-void cqsp::scene::MainMenuScene::SetMainMenuImage(const std::string& file) {
+void MainMenuScene::SetMainMenuImage(const std::string& file) {
     main_menu->GetElementById("main_window")
         ->SetProperty("decorator", fmt::format("image(\"{}\" none cover center bottom)", file));
 }
 
-void cqsp::scene::MainMenuScene::NextImage() {
+void MainMenuScene::NextImage() {
     SetMainMenuImage(file_list[index]);
     index++;
     index %= file_list.size();
     last_switch = GetApp().GetTime();
 }
 
-void cqsp::scene::MainMenuScene::EventListener::ProcessEvent(Rml::Event& event) {
+void MainMenuScene::EventListener::ProcessEvent(Rml::Event& event) {
     std::string id_pressed = event.GetTargetElement()->GetId();
     if (id_pressed == "new_game") {
         // New game!

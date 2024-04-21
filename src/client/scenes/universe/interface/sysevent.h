@@ -19,13 +19,10 @@
 #include "client/systems/sysgui.h"
 #include "common/components/event.h"
 
-namespace cqsp {
-namespace client {
-namespace systems {
-namespace gui {
+namespace cqsp::client::systems::gui {
 class SysEvent : public SysUserInterface {
  public:
-    explicit SysEvent(cqsp::engine::Application& app) : SysUserInterface(app) {}
+    explicit SysEvent(engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
     void DoUI(int delta_time);
@@ -33,7 +30,4 @@ class SysEvent : public SysUserInterface {
     void FireEvent();
     bool to_show;
 };
-}  // namespace gui
-}  // namespace systems
-}  // namespace client
-}  // namespace cqsp
+}  // namespace cqsp::client::systems::gui

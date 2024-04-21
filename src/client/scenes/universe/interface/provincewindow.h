@@ -23,7 +23,7 @@
 namespace cqsp::client::systems {
 class SysProvinceInformation : public SysUserInterface {
  public:
-    explicit SysProvinceInformation(cqsp::engine::Application& app) : SysUserInterface(app) {}
+    explicit SysProvinceInformation(engine::Application& app) : SysUserInterface(app) {}
     void Init();
     void DoUI(int delta_time);
     void DoUpdate(int delta_time);

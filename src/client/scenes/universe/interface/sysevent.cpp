@@ -22,7 +22,11 @@
 #include "common/components/player.h"
 #include "engine/cqspgui.h"
 
-void cqsp::client::systems::gui::SysEvent::Init() {
+using cqsp::client::systems::gui::SysEvent;
+using cqsp::common::event::Event;
+using cqsp::common::event::EventQueue;
+
+void SysEvent::Init() {
 #if false
     GetApp().markdownConfig.tooltipCallback = []( \
     ImGui::MarkdownTooltipCallbackData conf) {
@@ -33,9 +37,7 @@ void cqsp::client::systems::gui::SysEvent::Init() {
 #endif
 }
 
-void cqsp::client::systems::gui::SysEvent::DoUI(int delta_time) {
-    using cqsp::common::event::Event;
-    using cqsp::common::event::EventQueue;
+void SysEvent::DoUI(int delta_time) {
     auto events = GetUniverse().view<cqsp::common::components::Player, EventQueue>();
     for (auto [ent, queue] : events.each()) {
         if (queue.events.empty()) {
@@ -89,6 +91,6 @@ void cqsp::client::systems::gui::SysEvent::DoUI(int delta_time) {
     }
 }
 
-void cqsp::client::systems::gui::SysEvent::DoUpdate(int delta_time) {}
+void SysEvent::DoUpdate(int delta_time) {}
 
-void cqsp::client::systems::gui::SysEvent::FireEvent() {}
+void SysEvent::FireEvent() {}

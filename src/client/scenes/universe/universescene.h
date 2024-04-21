@@ -32,9 +32,8 @@
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/renderer2d.h"
 
-namespace cqsp {
-namespace scene {
-class UniverseScene : public cqsp::client::Scene {
+namespace cqsp::scene {
+class UniverseScene : public client::Scene {
  public:
     explicit UniverseScene(cqsp::engine::Application& app);
     ~UniverseScene() {
@@ -74,10 +73,10 @@ class UniverseScene : public cqsp::client::Scene {
     /// </summary>
     void DoScreenshot();
 
-    cqsp::engine::Renderable sphere;
-    cqsp::engine::Renderable sky;
-    cqsp::engine::Renderable planetDisp;
-    cqsp::engine::Renderable sun;
+    engine::Renderable sphere;
+    engine::Renderable sky;
+    engine::Renderable planetDisp;
+    engine::Renderable sun;
 
     float x = 0, y = 0;
 
@@ -87,16 +86,16 @@ class UniverseScene : public cqsp::client::Scene {
     entt::entity player;
     entt::entity selected_planet = entt::null;
 
-    cqsp::client::systems::SysStarSystemRenderer* system_renderer;
+    client::systems::SysStarSystemRenderer* system_renderer;
 
-    std::unique_ptr<cqsp::common::systems::simulation::Simulation> simulation;
+    std::unique_ptr<common::systems::simulation::Simulation> simulation;
 
     bool to_show_planet_window = false;
 
     // False is galaxy view, true is star system view
     bool view_mode = true;
 
-    std::vector<std::unique_ptr<cqsp::client::systems::SysUserInterface>> user_interfaces;
+    std::vector<std::unique_ptr<client::systems::SysUserInterface>> user_interfaces;
 
     std::vector<std::unique_ptr<client::systems::SysRmlUiInterface>> documents;
 
@@ -108,10 +107,9 @@ class UniverseScene : public cqsp::client::Scene {
     bool interp = true;
 };
 
-void SeePlanet(cqsp::common::Universe& universe, entt::entity ent);
-entt::entity GetCurrentViewingPlanet(cqsp::common::Universe&);
+void SeePlanet(common::Universe& universe, entt::entity ent);
+entt::entity GetCurrentViewingPlanet(common::Universe&);
 // Halts all other things
 void SetGameHalted(bool b);
 bool IsGameHalted();
-}  // namespace scene
-}  // namespace cqsp
+}  // namespace cqsp::scene

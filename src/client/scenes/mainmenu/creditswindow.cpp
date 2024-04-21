@@ -22,30 +22,34 @@
 
 #include "common/util/paths.h"
 
-namespace cqsp::client {
-std::string strip(const std::string& inpt) {
-    if (inpt.empty()) {
-        return "";
+using cqsp::client::CreditsWindow;
+
+namespace cqsp::client::util
+{
+    std::string strip(const std::string& inpt) {
+        if (inpt.empty()) {
+            return "";
+        }
+        auto start_it = inpt.begin();
+        auto end_it = inpt.rbegin();
+        while (std::isspace(*start_it) != 0) ++start_it;
+        if (start_it != inpt.end()) {
+            while (std::isspace(*end_it) != 0) ++end_it;
+        }
+        return std::string(start_it, end_it.base());
     }
-    auto start_it = inpt.begin();
-    auto end_it = inpt.rbegin();
-    while (std::isspace(*start_it) != 0) ++start_it;
-    if (start_it != inpt.end()) {
-        while (std::isspace(*end_it) != 0) ++end_it;
-    }
-    return std::string(start_it, end_it.base());
 }
-}  // namespace
 
-cqsp::client::CreditsWindow::CreditsWindow(cqsp::engine::Application& app) : m_app(app) {}
 
-cqsp::client::CreditsWindow::~CreditsWindow() {
+CreditsWindow::CreditsWindow(engine::Application& app) : m_app(app) {}
+
+CreditsWindow::~CreditsWindow() {
     document->RemoveEventListener(Rml::EventId::Click, this);
     document->RemoveEventListener(Rml::EventId::Keydown, this);
     document->RemoveEventListener(Rml::EventId::Keyup, this);
 }
 
-void cqsp::client::CreditsWindow::OpenDocument() {
+void CreditsWindow::OpenDocument() {
     document = m_app.LoadDocument(GetDocumentName());
     // Read credits text file and then parse
     credits_text_element = document->GetElementById("credits_text");
@@ -56,14 +60,14 @@ void cqsp::client::CreditsWindow::OpenDocument() {
     LoadCreditsText();
 }
 
-void cqsp::client::CreditsWindow::Show() {
+void CreditsWindow::Show() {
     scroll_percentage = m_app.GetWindowHeight();
     SetCreditsScroll();
     document->Show();
     document->SetClass("visible", true);
 }
 
-void cqsp::client::CreditsWindow::Update(double delta_time) {
+void CreditsWindow::Update(double delta_time) {
     if (!document->IsVisible()) {
         return;
     }
@@ -82,13 +86,13 @@ void cqsp::client::CreditsWindow::Update(double delta_time) {
     }
 }
 
-void cqsp::client::CreditsWindow::Hide() { document->SetClass("visible", false); }
+void CreditsWindow::Hide() { document->SetClass("visible", false); }
 
-std::string cqsp::client::CreditsWindow::GetDocumentName() {
-    return cqsp::common::util::GetCqspDataPath() + "/core/gui/credits.rml";
+std::string CreditsWindow::GetDocumentName() {
+    return common::util::GetCqspDataPath() + "/core/gui/credits.rml";
 }
 
-void cqsp::client::CreditsWindow::ProcessEvent(Rml::Event& event) {
+void CreditsWindow::ProcessEvent(Rml::Event& event) {
     if (event.GetId() == Rml::EventId::Keydown) {
         Rml::Input::KeyIdentifier key_identifier =
             (Rml::Input::KeyIdentifier)event.GetParameter<int>("key_identifier", 0);
@@ -109,8 +113,8 @@ void cqsp::client::CreditsWindow::ProcessEvent(Rml::Event& event) {
     document->SetClass("visible", false);
 }
 
-void cqsp::client::CreditsWindow::LoadCreditsText() {
-    std::string credits_file = cqsp::common::util::GetCqspDataPath() + "/core/credits.md";
+void CreditsWindow::LoadCreditsText() {
+    std::string credits_file = common::util::GetCqspDataPath() + "/core/credits.md";
 
     std::ifstream credits_stream(credits_file);
     std::string line;
@@ -139,7 +143,7 @@ void cqsp::client::CreditsWindow::LoadCreditsText() {
             tag = "h1";
             line = line.substr(1);
         }
-        line = strip(line);
+        line = client::util::strip(line);
 
         buffer << fmt::format("<{0}>{1}</{0}>", tag, line);
         buffer << "<br />";
@@ -151,6 +155,7 @@ void cqsp::client::CreditsWindow::LoadCreditsText() {
     document->GetElementById("credits_text")->SetInnerRML(credits_text);
 }
 
-void cqsp::client::CreditsWindow::SetCreditsScroll() {
+void CreditsWindow::SetCreditsScroll() {
     credits_text_element->SetProperty("transform", fmt::format("translateY({}px)", scroll_percentage));
 }
+

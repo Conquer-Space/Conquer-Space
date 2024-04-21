@@ -21,13 +21,11 @@
 #include "client/systems/sysgui.h"
 #include "engine/application.h"
 
-namespace cqsp {
-namespace client {
-namespace systems {
+namespace cqsp::client::systems {
 
 class SysTurnSaveWindow : public SysUserInterface {
  public:
-    explicit SysTurnSaveWindow(cqsp::engine::Application& app) : SysUserInterface(app) {}
+    explicit SysTurnSaveWindow(engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
     void DoUI(int delta_time);
@@ -41,6 +39,4 @@ class SysTurnSaveWindow : public SysUserInterface {
     std::vector<int> tick_speeds {1000, 500, 333, 100, 50, 10, 1};
     int tick_speed = tick_speeds.size() / 2;
 };
-}  // namespace systems
-}  // namespace client
-}  // namespace cqsp
+}  // namespace cqsp::client::systems

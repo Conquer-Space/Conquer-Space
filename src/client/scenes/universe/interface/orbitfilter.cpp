@@ -23,15 +23,18 @@
 #include "common/components/orbit.h"
 #include "common/util/nameutil.h"
 
-void cqsp::client::systems::SysOrbitFilter::Init() {
+using cqsp::client::systems::SysOrbitFilter;
+using entt::entity;
+
+void SysOrbitFilter::Init() {
     // Set all orbits to be visible
     auto orbits = GetUniverse().view<common::components::types::Orbit>();
-    for (entt::entity orb : orbits) {
+    for (entity orb : orbits) {
         GetUniverse().emplace_or_replace<ctx::VisibleOrbit>(orb);
     }
 }
 
-void cqsp::client::systems::SysOrbitFilter::DoUI(int delta_time) {
+void SysOrbitFilter::DoUI(int delta_time) {
     if (!visible) {
         return;
     }
@@ -40,11 +43,11 @@ void cqsp::client::systems::SysOrbitFilter::DoUI(int delta_time) {
     auto orbits = GetUniverse().view<common::components::types::Orbit>();
     if (ImGui::Checkbox("Hide all orbits", &hide_all_orbits)) {
         if (hide_all_orbits) {
-            for (entt::entity orb : orbits) {
+            for (entity orb : orbits) {
                 GetUniverse().remove<ctx::VisibleOrbit>(orb);
             }
         } else {
-            for (entt::entity orb : orbits) {
+            for (entity orb : orbits) {
                 GetUniverse().get_or_emplace<ctx::VisibleOrbit>(orb);
             }
         }
@@ -55,7 +58,7 @@ void cqsp::client::systems::SysOrbitFilter::DoUI(int delta_time) {
         ImGui::TableSetupColumn("Visible");
         ImGui::TableHeadersRow();
         int i = 0;
-        for (entt::entity orb : orbits) {
+        for (entity orb : orbits) {
             // Get the name
             if (GetUniverse().any_of<cqsp::common::components::bodies::Planet>(orb)) {
                 continue;
@@ -80,4 +83,4 @@ void cqsp::client::systems::SysOrbitFilter::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void cqsp::client::systems::SysOrbitFilter::DoUpdate(int delta_time) {}
+void SysOrbitFilter::DoUpdate(int delta_time) {}

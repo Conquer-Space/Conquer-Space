@@ -27,9 +27,9 @@ namespace cqsp::client::systems::gui {
 /// </summary>
 /// <param name=""></param>
 /// <param name=""></param>
-void EntityTooltip(const cqsp::common::Universe &, entt::entity);
+void EntityTooltip(const common::Universe &, entt::entity);
 /// <summary>
 /// In case you want the tooltip content for debug displaying the information of an entity.
 /// </summary>
-void EntityTooltipContent(const cqsp::common::Universe &, entt::entity);
+void EntityTooltipContent(const common::Universe &, entt::entity);
 }  // namespace cqsp::client::systems::gui

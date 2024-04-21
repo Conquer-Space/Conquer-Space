@@ -30,9 +30,7 @@
 #include "entt/entt.hpp"
 #include "glm/glm.hpp"
 
-namespace cqsp {
-namespace client {
-namespace systems {
+namespace cqsp::client::systems {
 // TODO(EhWhoAmI): Would be helpful to move the following structs to a header file.
 struct MouseOverEntity {};
 
@@ -55,7 +53,7 @@ class SysStarSystemRenderer {
     void SeeStarSystem();
     void SeeEntity();
     void Update(float deltaTime);
-    void SeePlanet(entt::entity);
+    void SeePlanet(entt::entity);//Error
     void DoUI(float deltaTime);
 
     glm::vec3 GetMouseIntersectionOnObject(int mouse_x, int mouse_y);
@@ -92,22 +90,22 @@ class SysStarSystemRenderer {
     entt::entity m_viewing_entity = entt::null;
     entt::entity terrain_displaying = entt::null;
 
-    cqsp::common::Universe &m_universe;
-    cqsp::engine::Application &m_app;
+    common::Universe &m_universe;
+    engine::Application &m_app;
 
-    cqsp::engine::Renderable planet;
-    cqsp::engine::Renderable textured_planet;
-    cqsp::engine::Renderable sky;
-    cqsp::engine::Renderable planet_circle;
-    cqsp::engine::Renderable ship_overlay;
-    cqsp::engine::Renderable city;
-    cqsp::engine::Renderable sun;
-    cqsp::asset::Model *iss_model;
+    engine::Renderable planet;
+    engine::Renderable textured_planet;
+    engine::Renderable sky;
+    engine::Renderable planet_circle;
+    engine::Renderable ship_overlay;
+    engine::Renderable city;
+    engine::Renderable sun;
+    asset::Model *iss_model;
 
-    cqsp::asset::ShaderProgram_t model_shader;
-    cqsp::asset::ShaderProgram_t orbit_shader;
-    cqsp::asset::ShaderProgram_t near_shader;
-    cqsp::asset::ShaderProgram_t vis_shader;
+    asset::ShaderProgram_t model_shader;
+    asset::ShaderProgram_t orbit_shader;
+    asset::ShaderProgram_t near_shader;
+    asset::ShaderProgram_t vis_shader;
 #if FALSE
     // Disabled for now
     asset::ShaderProgram_t no_light_shader;
@@ -255,6 +253,5 @@ class SysStarSystemRenderer {
 
     const int sphere_resolution = 64;
 };
-}  // namespace systems
-}  // namespace client
-}  // namespace cqsp
+}  // namespace cqsp::client::systems
+

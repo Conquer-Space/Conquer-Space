@@ -41,18 +41,20 @@ namespace cqsp::scene {
 const std::string LOADING_ID = "core/gui/screens/loading_screen.rml";
 }
 
-cqsp::scene::LoadingScene::LoadingScene(cqsp::engine::Application& app) : Scene(app) {
+using cqsp::scene::LoadingScene;
+
+LoadingScene::LoadingScene(engine::Application& app) : Scene(app) {
     m_done_loading = false;
     percentage = 0;
 }
 
-cqsp::scene::LoadingScene::~LoadingScene() {
+LoadingScene::~LoadingScene() {
     if (thread->joinable()) {
         thread->join();
     }
 }
 
-void cqsp::scene::LoadingScene::Init() {
+void LoadingScene::Init() {
     auto loading = [&]() {
         SPDLOG_INFO("Loading resources");
         LoadResources();
@@ -74,7 +76,7 @@ void cqsp::scene::LoadingScene::Init() {
     }
 }
 
-void cqsp::scene::LoadingScene::Update(float deltaTime) {
+void LoadingScene::Update(float deltaTime) {
     while (assetLoader.QueueHasItems()) {
         assetLoader.BuildNextAsset();
     }
@@ -114,7 +116,7 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
     }
 }
 
-void cqsp::scene::LoadingScene::Ui(float deltaTime) {
+void LoadingScene::Ui(float deltaTime) {
     // Load rmlui ui
     if (m_done_loading) {
         return;
@@ -130,9 +132,9 @@ void cqsp::scene::LoadingScene::Ui(float deltaTime) {
     progress->SetMax(max);
 }
 
-void cqsp::scene::LoadingScene::Render(float deltaTime) {}
+void LoadingScene::Render(float deltaTime) {}
 
-void cqsp::scene::LoadingScene::LoadResources() {
+void LoadingScene::LoadResources() {
     ZoneScoped;
     // Loading goes here
     // Read core mod
@@ -144,12 +146,12 @@ void cqsp::scene::LoadingScene::LoadResources() {
     m_done_loading = true;
 }
 
-void cqsp::scene::LoadingScene::LoadFont() {
-    cqsp::asset::ShaderProgram* fontshader =
-        new asset::ShaderProgram(*GetAssetManager().GetAsset<cqsp::asset::Shader>("core:fontvertexshader"),
-                                 *GetApp().GetAssetManager().GetAsset<cqsp::asset::Shader>("core:fontfragshader"));
+void LoadingScene::LoadFont() {
+    asset::ShaderProgram* fontshader =
+        new asset::ShaderProgram(*GetAssetManager().GetAsset<asset::Shader>("core:fontvertexshader"),
+                                 *GetApp().GetAssetManager().GetAsset<asset::Shader>("core:fontfragshader"));
 
-    cqsp::asset::Font* font = GetApp().GetAssetManager().GetAsset<cqsp::asset::Font>("core:defaultfont");
+    asset::Font* font = GetApp().GetAssetManager().GetAsset<asset::Font>("core:defaultfont");
 
     GetApp().SetFont(font);
     GetApp().SetFontShader(fontshader);

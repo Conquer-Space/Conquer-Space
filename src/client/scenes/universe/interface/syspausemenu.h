@@ -18,16 +18,14 @@
 
 #include "client/systems/sysgui.h"
 
-namespace cqsp {
-namespace client {
-namespace systems {
+namespace cqsp::client::systems {
 /// <summary>
 /// Menu when the key escape is pressed, pauses all interaction with the background,
 ///     displays exit game, options, and other things.
 /// </summary>
 class SysPauseMenu : public SysUserInterface {
  public:
-    explicit SysPauseMenu(cqsp::engine::Application& app) : SysUserInterface(app) {}
+    explicit SysPauseMenu(engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
     void DoUI(int delta_time);
@@ -37,6 +35,4 @@ class SysPauseMenu : public SysUserInterface {
     bool to_show = false;
     bool to_show_options_window = false;
 };
-}  // namespace systems
-}  // namespace client
-}  // namespace cqsp
+}  // namespace cqsp::client::systems

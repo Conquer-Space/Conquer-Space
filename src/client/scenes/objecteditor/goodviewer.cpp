@@ -22,17 +22,22 @@
 #include "common/components/resource.h"
 #include "common/util/nameutil.h"
 
-void cqsp::client::systems::SysGoodViewer::Init() {}
+using cqsp::client::systems::SysGoodViewer;
+using cqsp::common::util::GetName;
+namespace components = cqsp::common::components;
+using entt::entity;
 
-void cqsp::client::systems::SysGoodViewer::DoUI(int delta_time) {
+void SysGoodViewer::Init() {}
+
+void SysGoodViewer::DoUI(int delta_time) {
     ImGui::Begin("Good Viewer");
     // List out all the stuff
-    auto goods = GetUniverse().view<common::components::Good>();
+    auto goods = GetUniverse().view<components::Good>();
     ImGui::TextFmt("Goods: {}", goods.size());
     ImGui::BeginChild("Good_viewer_left", ImVec2(300, -1));
     for (entt::entity good : goods) {
         bool is_selected = good == selected_good;
-        if (ImGui::SelectableFmt("{}", &is_selected, common::util::GetName(GetUniverse(), good))) {
+        if (ImGui::SelectableFmt("{}", &is_selected, GetName(GetUniverse(), good))) {
             selected_good = good;
         }
     }
@@ -44,33 +49,32 @@ void cqsp::client::systems::SysGoodViewer::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void cqsp::client::systems::SysGoodViewer::DoUpdate(int delta_time) {}
+void SysGoodViewer::DoUpdate(int delta_time) {}
 
-void cqsp::client::systems::SysGoodViewer::GoodViewerRight() {
-    namespace cc = common::components;
+void SysGoodViewer::GoodViewerRight() {
     if (selected_good == entt::null) {
         ImGui::Text("Good is invalid!");
         return;
     }
-    ImGui::TextFmt("Name: {}", common::util::GetName(GetUniverse(), selected_good));
-    ImGui::TextFmt("Identifier: {}", GetUniverse().get<cc::Identifier>(selected_good).identifier);
-    if (GetUniverse().any_of<cc::Matter>(selected_good)) {
-        auto& good_comp = GetUniverse().get<cc::Matter>(selected_good);
+    ImGui::TextFmt("Name: {}", GetName(GetUniverse(), selected_good));
+    ImGui::TextFmt("Identifier: {}", GetUniverse().get<components::Identifier>(selected_good).identifier);
+    if (GetUniverse().any_of<components::Matter>(selected_good)) {
+        auto& good_comp = GetUniverse().get<components::Matter>(selected_good);
         ImGui::TextFmt("Mass: {} kg", good_comp.mass);
         ImGui::TextFmt("Volume: {} m3", good_comp.volume);
     }
     ImGui::Separator();
     ImGui::TextFmt("Tags");
     ImGui::BeginChild("Tags_a");
-    if (GetUniverse().any_of<cc::Mineral>(selected_good)) {
+    if (GetUniverse().any_of<components::Mineral>(selected_good)) {
         ImGui::TextFmt("mineral");
     }
-    if (GetUniverse().any_of<cc::CapitalGood>(selected_good)) {
+    if (GetUniverse().any_of<components::CapitalGood>(selected_good)) {
         ImGui::TextFmt("capitalgood");
     }
     ImGui::Separator();
-    if (GetUniverse().any_of<cc::Price>(selected_good)) {
-        auto& price_comp = GetUniverse().get<cc::Price>(selected_good);
+    if (GetUniverse().any_of<components::Price>(selected_good)) {
+        auto& price_comp = GetUniverse().get<components::Price>(selected_good);
         ImGui::TextFmt("Initial Price: {}", price_comp.price);
     }
     ImGui::EndChild();

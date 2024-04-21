@@ -26,7 +26,7 @@
 namespace cqsp::client {
 class SettingsWindow : public Rml::EventListener {
  public:
-    explicit SettingsWindow(cqsp::engine::Application& app);
+    explicit SettingsWindow(engine::Application& app);
 
     void ProcessEvent(Rml::Event& event);
 
@@ -50,7 +50,7 @@ class SettingsWindow : public Rml::EventListener {
  private:
     const std::string document_name = "../data/core/gui/options.rml";
 
-    cqsp::engine::Application& GetApp() { return app; }
+    engine::Application& GetApp() { return app; }
 
     float ui_volume;
     float music_volume;
@@ -63,6 +63,6 @@ class SettingsWindow : public Rml::EventListener {
     Rml::ElementDocument* options_menu;
     Rml::DataModelHandle model_handle;
 
-    cqsp::engine::Application& app;
+    engine::Application& app;
 };
 }  // namespace cqsp::client

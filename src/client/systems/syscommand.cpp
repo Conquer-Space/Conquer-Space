@@ -33,20 +33,22 @@
 #include "common/components/ships.h"
 #include "engine/cqspgui.h"
 
-void cqsp::client::systems::SysCommand::Init() {}
+namespace components = cqsp::common::components;
+namespace bodies = components::bodies;
+namespace ships = components::ships;
+namespace types = components::types;
+namespace systems = cqsp::client::systems;
 
-void cqsp::client::systems::SysCommand::DoUI(int delta_time) {
+using components::Name;
+
+namespace cqsp::client::systems {
+void SysCommand::Init() {}
+
+void SysCommand::DoUI(int delta_time) {
     ShipList();
     if (!to_see) {
         return;
     }
-
-    namespace cqspb = cqsp::common::components::bodies;
-    namespace cqsps = cqsp::common::components::ships;
-    namespace cqspt = cqsp::common::components::types;
-    namespace cqspcs = cqsp::client::systems;
-
-    using cqsp::common::components::Name;
 
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.79f, ImGui::GetIO().DisplaySize.y * 0.55f),
                             ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
@@ -55,7 +57,7 @@ void cqsp::client::systems::SysCommand::DoUI(int delta_time) {
     int index = 0;
     // Get selected planet
     auto system = GetUniverse().view<common::components::types::Orbit>();
-    entt::entity current_planet = cqsp::scene::GetCurrentViewingPlanet(GetUniverse());
+    entt::entity current_planet = scene::GetCurrentViewingPlanet(GetUniverse());
     for (auto entity : system) {
         bool is_selected = (entity == current_planet);
         std::string planet_name = fmt::format("{}", entity);
@@ -68,7 +70,7 @@ void cqsp::client::systems::SysCommand::DoUI(int delta_time) {
             selected_index = index;
             if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && selected_ship != entt::null) {
                 // Go to the planet
-                GetUniverse().emplace_or_replace<cqspt::MoveTarget>(selected_ship, entity);
+                GetUniverse().emplace_or_replace<types::MoveTarget>(selected_ship, entity);
                 SPDLOG_INFO("Move Ordered");
             }
         }
@@ -78,9 +80,7 @@ void cqsp::client::systems::SysCommand::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void cqsp::client::systems::SysCommand::DoUpdate(int delta_time) {
-    namespace cqspb = cqsp::common::components::bodies;
-    namespace cqspt = cqsp::common::components::types;
+void SysCommand::DoUpdate(int delta_time) {
     selected_planet = cqsp::scene::GetCurrentViewingPlanet(GetUniverse());
     /*entt::entity mouse_over = GetUniverse()
             .view<cqsp::client::systems::MouseOverEntity, cqspt::Kinematics>().front();
@@ -91,12 +91,7 @@ void cqsp::client::systems::SysCommand::DoUpdate(int delta_time) {
     }*/
 }
 
-void cqsp::client::systems::SysCommand::ShipList() {
-    namespace cqspcs = cqsp::client::systems;
-    namespace cqspb = cqsp::common::components::bodies;
-    namespace cqsps = cqsp::common::components::ships;
-    namespace cqspc = cqsp::common::components;
-
+void SysCommand::ShipList() {
     /*
     static entt::entity selectedFleetEnt = GetUniverse()
                            .get<cqspc::Civilization>(GetUniverse()
@@ -160,3 +155,5 @@ void cqsp::client::systems::SysCommand::ShipList() {
 
     ImGui::End();*/
 }
+}
+

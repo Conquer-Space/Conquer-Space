@@ -18,9 +18,7 @@
 
 #include "client/systems/sysgui.h"
 
-namespace cqsp {
-namespace client {
-namespace systems {
+namespace cqsp::client::systems {
 class SysCommand : public SysUserInterface {
  public:
     explicit SysCommand(cqsp::engine::Application& app) : SysUserInterface(app) {}
@@ -37,6 +35,4 @@ class SysCommand : public SysUserInterface {
     entt::entity selected_ship = entt::null;
     void ShipList();
 };
-}  // namespace systems
-}  // namespace client
-}  // namespace cqsp
+}  // namespace cqsp::client::systems

@@ -22,12 +22,10 @@
 #include "engine/application.h"
 #include "entt/entt.hpp"
 
-namespace cqsp {
-namespace client {
-namespace systems {
+namespace cqsp::client::systems {
 class SysFieldViewer : public SysUserInterface {
  public:
-    explicit SysFieldViewer(cqsp::engine::Application& app) : SysUserInterface(app) {}
+    explicit SysFieldViewer(engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
     void DoUI(int delta_time);
@@ -40,7 +38,7 @@ class SysFieldViewer : public SysUserInterface {
 
 class SysFieldNodeViewer : public SysUserInterface {
  public:
-    explicit SysFieldNodeViewer(cqsp::engine::Application& app) : SysUserInterface(app) {}
+    explicit SysFieldNodeViewer(engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
     void DoUI(int delta_time);
@@ -51,6 +49,4 @@ class SysFieldNodeViewer : public SysUserInterface {
     void FieldHjsonViewerWindow();
     std::string hjson_content;
 };
-}  // namespace systems
-}  // namespace client
-}  // namespace cqsp
+}  // namespace cqsp::client::systems

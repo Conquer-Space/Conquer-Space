@@ -20,7 +20,8 @@
 #include "engine/gui.h"
 #include "glad/glad.h"
 
-namespace cqsp::client::systems {
+using cqsp::client::systems::SysTurnSaveWindow;
+
 void SysTurnSaveWindow::Init() {}
 
 void SysTurnSaveWindow::DoUI(int delta_time) {
@@ -69,4 +70,3 @@ void SysTurnSaveWindow::DoUpdate(int delta_time) {
 }
 
 void SysTurnSaveWindow::TogglePlayState() { to_tick = !to_tick; }
-}  // namespace cqsp::client::systems

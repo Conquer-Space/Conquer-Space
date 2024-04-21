@@ -27,8 +27,10 @@ using cqsp::common::Universe;
 using cqsp::common::components::Identifier;
 using cqsp::common::components::ResourceLedger;
 using cqsp::common::util::LongToHumanString;
-bool cqsp::client::systems::DrawLedgerTable(const std::string &name, const Universe &universe,
-                                            const ResourceLedger &ledger) {
+using cqsp::common::util::GetName;
+
+namespace cqsp::client::systems {
+bool DrawLedgerTable(const std::string &name, const Universe &universe, const ResourceLedger &ledger) {
     if (ledger.empty()) {
         ImGui::Text("Empty ledger");
         return false;
@@ -40,7 +42,7 @@ bool cqsp::client::systems::DrawLedgerTable(const std::string &name, const Unive
         for (auto iterator = ledger.begin(); iterator != ledger.end(); iterator++) {
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
-            ImGui::TextFmt("{}", common::util::GetName(universe, iterator->first));
+            ImGui::TextFmt("{}", GetName(universe, iterator->first));
             ImGui::TableSetColumnIndex(1);
             ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(iterator->second)));
         }
@@ -48,3 +50,5 @@ bool cqsp::client::systems::DrawLedgerTable(const std::string &name, const Unive
     }
     return true;
 }
+}
+

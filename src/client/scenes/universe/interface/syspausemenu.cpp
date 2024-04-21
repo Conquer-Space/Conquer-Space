@@ -27,9 +27,12 @@
 #include "common/version.h"
 #include "engine/cqspgui.h"
 
-void cqsp::client::systems::SysPauseMenu::Init() {}
+namespace systems = cqsp::client::systems;
+using systems::SysPauseMenu;
 
-void cqsp::client::systems::SysPauseMenu::DoUI(int delta_time) {
+void SysPauseMenu::Init() {}
+
+void SysPauseMenu::DoUI(int delta_time) {
     if (!to_show) {
         return;
     }
@@ -73,15 +76,15 @@ void cqsp::client::systems::SysPauseMenu::DoUI(int delta_time) {
     }
 
     if (to_show_options_window) {
-        cqsp::client::systems::ShowOptionsWindow(&to_show_options_window, GetApp());
+        ShowOptionsWindow(&to_show_options_window, GetApp());
     }
 }
 
-void cqsp::client::systems::SysPauseMenu::DoUpdate(int delta_time) {
-    if (GetApp().ButtonIsReleased(cqsp::engine::KEY_ESCAPE)) {
+void SysPauseMenu::DoUpdate(int delta_time) {
+    if (GetApp().ButtonIsReleased(engine::KEY_ESCAPE)) {
         // Then pause
         to_show = !to_show;
         to_show_options_window = false;
-        cqsp::scene::SetGameHalted(to_show);
+        scene::SetGameHalted(to_show);
     }
 }

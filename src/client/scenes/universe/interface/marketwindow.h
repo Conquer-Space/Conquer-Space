@@ -23,7 +23,7 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
 
 class SysPlanetMarketInformation : public SysUserInterface {
  public:
-    explicit SysPlanetMarketInformation(cqsp::engine::Application& app) : SysUserInterface(app) {}
+    explicit SysPlanetMarketInformation(engine::Application& app) : SysUserInterface(app) {}
     void Init();
     void DoUI(int delta_time);
     void DoUpdate(int delta_time);
