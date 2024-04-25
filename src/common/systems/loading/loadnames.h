@@ -21,5 +21,5 @@
 #include "common/universe.h"
 
 namespace cqsp::common::systems::loading {
-void LoadNameLists(cqsp::common::Universe&, Hjson::Value&);
+void LoadNameLists(Universe&, Hjson::Value&);
 }  // namespace cqsp::common::systems::loading

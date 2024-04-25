@@ -21,9 +21,7 @@
 #include "common/game.h"
 #include "common/universe.h"
 
-namespace cqsp {
-namespace common {
-namespace systems {
+namespace cqsp::common::systems {
 class ISimulationSystem {
  public:
     explicit ISimulationSystem(Game& game) : game(game) {}
@@ -42,6 +40,4 @@ class ISimulationSystem {
  private:
     Game& game;
 };
-}  // namespace systems
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::systems

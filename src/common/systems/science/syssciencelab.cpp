@@ -20,16 +20,20 @@
 
 #include "common/components/science.h"
 
-void cqsp::common::systems::SysScienceLab::DoSystem() {
+using cqsp::common::components::science::Lab;
+using cqsp::common::components::science::ScientificProgress;
+using cqsp::common::systems::SysScienceLab;
+
+
+void SysScienceLab::DoSystem() {
     ZoneScoped;
-    auto view = GetUniverse().view<components::science::Lab>();
     // Add to the science
-    for (entt::entity entity : view) {
+    for (entt::entity entity : GetUniverse().view<Lab>()) {
         // Add to the scientific progress of the area, I guess
-        auto& lab = GetUniverse().get<components::science::Lab>(entity);
+        auto& lab = GetUniverse().get<Lab>(entity);
         // Progress the science, I guess
         // Get the science progress, and add to it, somehow
-        auto& science_progress = GetUniverse().get_or_emplace<components::science::ScientificProgress>(entity);
+        auto& science_progress = GetUniverse().get_or_emplace<ScientificProgress>(entity);
         // Progress science
         science_progress.science_progress.MultiplyAdd(lab.science_contribution, Interval());
 

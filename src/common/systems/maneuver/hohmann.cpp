@@ -16,26 +16,32 @@
  */
 #include "common/systems/maneuver/hohmann.h"
 
+namespace components = cqsp::common::components;
+namespace types = components::types;
+using types::Orbit;
+using types::OrbitVelocityAtR;
+using types::GetCircularOrbitingVelocity;
+
 namespace cqsp::common::systems {
-HohmannPair_t UnsafeHohmannTransfer(const components::types::Orbit& orbit, double altitude) {
+HohmannPair_t UnsafeHohmannTransfer(const Orbit& orbit, double altitude) {
     const double new_sma = (orbit.semi_major_axis + altitude) / 2;
-    const double new_velocity = components::types::OrbitVelocityAtR(orbit.GM, new_sma, orbit.semi_major_axis);
-    const double old_velocity = components::types::GetCircularOrbitingVelocity(orbit.GM, orbit.semi_major_axis);
+    const double new_velocity = OrbitVelocityAtR(orbit.GM, new_sma, orbit.semi_major_axis);
+    const double old_velocity = GetCircularOrbitingVelocity(orbit.GM, orbit.semi_major_axis);
     Maneuver_t start = std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), 0);
 
     // Set the time for the second orbit
     // The time to run it is half the period
     // Circularize at top orbit
-    const double apogee_velocity = components::types::OrbitVelocityAtR(orbit.GM, new_sma, altitude);
-    components::types::GetCircularOrbitingVelocity(orbit.GM, altitude);
-    const double transfer_time = components::types::PI * sqrt(new_sma * new_sma * new_sma / orbit.GM);
+    const double apogee_velocity = OrbitVelocityAtR(orbit.GM, new_sma, altitude);
+    GetCircularOrbitingVelocity(orbit.GM, altitude);
+    const double transfer_time = types::PI * sqrt(new_sma * new_sma * new_sma / orbit.GM);
     // Circularize
-    const double final_velocity = components::types::GetCircularOrbitingVelocity(orbit.GM, altitude);
+    const double final_velocity = types::GetCircularOrbitingVelocity(orbit.GM, altitude);
     Maneuver_t end = std::make_pair(glm::dvec3(0, final_velocity - apogee_velocity, 0), transfer_time);
     return std::make_pair(start, end);
 }
 
-std::optional<HohmannPair_t> HohmannTransfer(const components::types::Orbit& orbit, double altitude) {
+std::optional<HohmannPair_t> HohmannTransfer(const Orbit& orbit, double altitude) {
     if (orbit.eccentricity > 1e-5) {
         // Can't do it
         return std::nullopt;

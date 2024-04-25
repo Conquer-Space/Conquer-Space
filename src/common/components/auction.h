@@ -22,9 +22,7 @@
 
 #include <entt/entt.hpp>
 
-namespace cqsp {
-namespace common {
-namespace components {
+namespace cqsp::common::components {
 struct Order {
     Order() : price(0), quantity(0) {}
     Order(double price, double quantity, entt::entity agent) : price(price), quantity(quantity), agent(agent) {}
@@ -92,6 +90,4 @@ struct AuctionHouse {
         return supply;
     }
 };
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::components

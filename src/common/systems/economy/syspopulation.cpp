@@ -27,36 +27,48 @@
 #include "common/components/resource.h"
 #include "common/components/surface.h"
 
-namespace cqspc = cqsp::common::components;
+namespace components = cqsp::common::components;
+namespace infrastructure = components::infrastructure;
 
-namespace cqsp::common::systems {
+using cqsp::common::systems::SysPopulationGrowth;
+using cqsp::common::systems::SysPopulationConsumption;
+using components::PopulationSegment;
+using components::Settlement;
+using components::Wallet;
+using components::Hunger;
+using components::FailedResourceTransfer;
+using components::LaborInformation;
+using components::ResourceConsumption;
+using components::ConsumerGood;
+using components::Habitation;
+using components::Market;
+
 // Must be run after SysPopulationConsumption
 // This is because population growth is dependent on if consumption was
 // satisfied.
 void SysPopulationGrowth::DoSystem() {
     ZoneScoped;
 
-    namespace cqspc = cqsp::common::components;
     Universe& universe = GetUniverse();
 
-    auto view = universe.view<cqspc::PopulationSegment>();
+    auto view = universe.view<PopulationSegment>();
     for (entt::entity entity : view) {
-        auto& segment = universe.get<cqspc::PopulationSegment>(entity);
+        auto& segment = universe.get<PopulationSegment>(entity);
         // If it's hungry, decay population
-        if (universe.all_of<cqspc::Hunger>(entity)) {
+        if (universe.all_of<Hunger>(entity)) {
             // Population decrease will be about 1 percent each year.
             float increase = 1.f - static_cast<float>(Interval()) * 0.00000114077116f;
             segment.population *= increase;
         }
 
-        if (universe.all_of<cqspc::FailedResourceTransfer>(entity)) {
+        if (universe.all_of<FailedResourceTransfer>(entity)) {
             // Then alert hunger.
-            universe.get_or_emplace<cqspc::Hunger>(entity);
+            universe.get_or_emplace<Hunger>(entity);
         } else {
-            universe.remove<cqspc::Hunger>(entity);
+            universe.remove<Hunger>(entity);
         }
         // If not hungry, grow population
-        if (!universe.all_of<cqspc::Hunger>(entity)) {
+        if (!universe.all_of<Hunger>(entity)) {
             // Population growth will be about 1 percent each year.
             float increase = static_cast<float>(Interval()) * 0.00000114077116f + 1;
             segment.population *= increase;
@@ -67,26 +79,26 @@ void SysPopulationGrowth::DoSystem() {
         // For now, we would have 100% of the population working, because we
         // haven't got to social simulation yet. But in the future, this will
         // probably have to change.
-        auto& employee = universe.get_or_emplace<cqspc::LaborInformation>(entity);
+        auto& employee = universe.get_or_emplace<LaborInformation>(entity);
         employee.working_population = segment.population;
     }
 }
 
-namespace {
-void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement, cqspc::Market& market,
-                       cqspc::ResourceConsumption& marginal_propensity_base,
-                       cqspc::ResourceConsumption& autonomous_consumption_base, float savings) {
+namespace cqsp::common::systems {
+void ProcessSettlement(Universe& universe, entt::entity settlement, Market& market,
+                       ResourceConsumption& marginal_propensity_base,
+                       ResourceConsumption& autonomous_consumption_base, float savings) {
     // Get the transport cost
-    auto& infrastructure = universe.get<cqspc::infrastructure::CityInfrastructure>(settlement);
+    auto& infrastructure = universe.get<infrastructure::CityInfrastructure>(settlement);
     // Calculate the infrastructure cost
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
 
     // Loop through the population segments through the settlements
-    auto& settlement_comp = universe.get<cqspc::Settlement>(settlement);
+    auto& settlement_comp = universe.get<Settlement>(settlement);
     for (entt::entity segmententity : settlement_comp.population) {
         // Compute things
-        cqspc::PopulationSegment& segment = universe.get_or_emplace<cqspc::PopulationSegment>(segmententity);
-        cqspc::ResourceConsumption& consumption = universe.get_or_emplace<cqspc::ResourceConsumption>(segmententity);
+        PopulationSegment& segment = universe.get_or_emplace<PopulationSegment>(segmententity);
+        ResourceConsumption& consumption = universe.get_or_emplace<ResourceConsumption>(segmententity);
         // Reduce pop to some unreasonably low level so that the economy can
         // handle it
         const uint64_t population = segment.population / 10;
@@ -97,12 +109,12 @@ void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement
         // should be calculated in SysPopulationGrowth
         consumption *= population;
 
-        cqspc::Wallet& wallet = universe.get_or_emplace<cqspc::Wallet>(segmententity);
+        Wallet& wallet = universe.get_or_emplace<Wallet>(segmententity);
         const double cost = (consumption * market.price).GetSum();
         wallet -= cost;    // Spend, even if it puts the pop into debt
         if (wallet > 0) {  // If the pop has cash left over spend it
             // Add to the cost of price of transport
-            cqspc::ResourceConsumption extraconsumption = marginal_propensity_base;
+            ResourceConsumption extraconsumption = marginal_propensity_base;
             // Loop through all the things, if there isn't enough resources for a
             // If the market supply has all of the goods, then they can buy the goods
             // Get previous market supply
@@ -137,7 +149,7 @@ void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement
         market.demand += consumption;
     }
 }
-}  // namespace
+}  // namespace cqsp::common::systems
 
 // In economics, the consumption function describes a relationship between
 // consumption and disposable income.
@@ -169,27 +181,26 @@ void SysPopulationConsumption::DoSystem() {
     ZoneScoped;
     Universe& universe = GetUniverse();
 
-    cqspc::ResourceConsumption marginal_propensity_base;
-    cqspc::ResourceConsumption autonomous_consumption_base;
+    ResourceConsumption marginal_propensity_base;
+    ResourceConsumption autonomous_consumption_base;
     float savings = 1;  // We calculate how much is saved since it is simpler
                         // than calculating spending
     for (entt::entity cgentity : universe.consumergoods) {
-        const cqspc::ConsumerGood& good = universe.get<cqspc::ConsumerGood>(cgentity);
+        const ConsumerGood& good = universe.get<ConsumerGood>(cgentity);
         marginal_propensity_base[cgentity] = good.marginal_propensity;
         autonomous_consumption_base[cgentity] = good.autonomous_consumption;
         savings -= good.marginal_propensity;
     }  // These tables technically never need to be recalculated
-    auto settlementview = universe.view<cqspc::Settlement>();
+    auto settlementview = universe.view<Settlement>();
 
     // Loop through the settlements on a planet, then process the market?
-    auto market_view = universe.view<cqspc::Habitation>();
     int settlement_count = 0;
-    for (entt::entity entity : market_view) {
+    for (entt::entity entity : universe.view<Habitation>()) {
         // Get the children, because reasons
         // All planets with a habitation WILL have a market
-        auto& market = universe.get_or_emplace<cqspc::Market>(entity);
+        auto& market = universe.get_or_emplace<Market>(entity);
         // Read the segment information
-        auto& habit = universe.get<cqspc::Habitation>(entity);
+        auto& habit = universe.get<Habitation>(entity);
         for (entt::entity settlement : habit.settlements) {
             ProcessSettlement(universe, settlement, market, marginal_propensity_base, autonomous_consumption_base,
                               savings);
@@ -198,4 +209,3 @@ void SysPopulationConsumption::DoSystem() {
     }
     SPDLOG_TRACE("Processing {} settlements in {} markets", settlement_count, market_view.size());
 }
-}  // namespace cqsp::common::systems

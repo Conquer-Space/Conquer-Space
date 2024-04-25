@@ -21,5 +21,5 @@
 #include "common/universe.h"
 
 namespace cqsp::common::systems::loading {
-void LoadProvinces(common::Universe& universe, const std::string& text);
+void LoadProvinces(Universe& universe, const std::string& text);
 }

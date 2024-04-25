@@ -19,7 +19,7 @@
 #include "common/components/name.h"
 #include "common/components/surface.h"
 
-namespace cqsp::common::systems::loading {
+using cqsp::common::systems::loading::TimezoneLoader;
 bool TimezoneLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     // Read timezones
     double offset = values["offset"].to_double();
@@ -29,4 +29,3 @@ bool TimezoneLoader::LoadValue(const Hjson::Value& values, entt::entity entity) 
 }
 
 void TimezoneLoader::PostLoad(const entt::entity& entity) {}
-}  // namespace cqsp::common::systems::loading

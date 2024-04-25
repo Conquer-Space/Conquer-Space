@@ -19,7 +19,9 @@
 #include "common/components/economy.h"
 #include "common/components/history.h"
 
-void cqsp::common::systems::history::SysMarketHistory::DoSystem() {
+using cqsp::common::systems::history::SysMarketHistory;
+
+void SysMarketHistory::DoSystem() {
     /*
     auto view = GetUniverse().view<components::Market, components::MarketHistory>();
 

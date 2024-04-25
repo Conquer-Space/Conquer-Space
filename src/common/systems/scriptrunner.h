@@ -22,9 +22,7 @@
 #include "common/systems/isimulationsystem.h"
 #include "common/universe.h"
 
-namespace cqsp {
-namespace common {
-namespace systems {
+namespace cqsp::common::systems {
 /// <summary>
 /// Runs scripts that are added to the game
 /// </summary>
@@ -56,5 +54,3 @@ class SysScript : public cqsp::common::systems::ISimulationSystem {
     std::vector<sol::table> events;
 };
 }  // namespace systems
-}  // namespace common
-}  // namespace cqsp

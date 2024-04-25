@@ -22,6 +22,10 @@
 #include "common/components/science.h"
 #include "common/systems/loading/loadutil.h"
 
+namespace science = cqsp::common::components::science;
+using science::Technology;
+using science::TechnologicalProgress;
+
 namespace cqsp::common::systems::science {
 void LoadTechnologies(Universe& universe, Hjson::Value& value) {
     // Load the technologies
@@ -38,7 +42,7 @@ void LoadTechnologies(Universe& universe, Hjson::Value& value) {
             // Then kill the loading because you need an identifier
         }
 
-        auto& tech = universe.emplace<components::science::Technology>(entity);
+        auto& tech = universe.emplace<Technology>(entity);
         // Add tech data
         Hjson::Value val = element["actions"];
         for (int i = 0; i < val.size(); i++) {
@@ -60,12 +64,11 @@ void LoadTechnologies(Universe& universe, Hjson::Value& value) {
 
 void ResearchTech(Universe& universe, entt::entity civilization, entt::entity tech) {
     // Ensure it's a tech or something
-    auto& tech_progress = universe.get_or_emplace<components::science::TechnologicalProgress>(civilization);
+    auto& tech_progress = universe.get_or_emplace<TechnologicalProgress>(civilization);
     tech_progress.researched_techs.emplace(tech);
 
     // Research technology somehow
-    auto& tech_comp = universe.get<components::science::Technology>(tech);
-    for (const std::string& act : tech_comp.actions) {
+    for (const std::string& act : universe.get<Technology>(tech).actions) {
         ProcessAction(universe, civilization, act);
     }
 }
@@ -73,7 +76,7 @@ void ResearchTech(Universe& universe, entt::entity civilization, entt::entity te
 void ProcessAction(Universe& universe, entt::entity civilization, const std::string& action) {
     // Process the tech
     // Split by the colon
-    auto& tech_progress = universe.get_or_emplace<components::science::TechnologicalProgress>(civilization);
+    auto& tech_progress = universe.get_or_emplace<TechnologicalProgress>(civilization);
 
     std::string action_name = action.substr(0, action.find(':'));
     std::string outcome_name = action.substr(action.find(':') + 1, action.size());

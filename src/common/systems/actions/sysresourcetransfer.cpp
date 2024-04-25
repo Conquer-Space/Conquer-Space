@@ -18,26 +18,32 @@
 
 #include "common/components/resource.h"
 
-bool cqsp::common::systems::resource::TransferResources(entt::registry& registry, entt::entity from, entt::entity to,
-                                                        entt::entity good, double amount) {
-    namespace cqspc = cqsp::common::components;
-    // Get resource stockpile
-    if (!(registry.all_of<cqspc::ResourceStockpile>(from) && registry.all_of<cqspc::ResourceStockpile>(to) &&
-          registry.all_of<cqspc::Good>(good))) {
+namespace components = cqsp::common::components;
+using components::ResourceStockpile;
+using components::Good;
+
+namespace cqsp::common::systems::resource
+{
+    bool TransferResources(entt::registry& registry, entt::entity from, entt::entity to, entt::entity good, double amount) {
+        // Get resource stockpile
+        if (!(registry.all_of<ResourceStockpile>(from) && registry.all_of<ResourceStockpile>(to) &&
+              registry.all_of<Good>(good))) {
+            return false;
+        }
+
+        // Get resource stockpile
+        auto& from_stockpile = registry.get<ResourceStockpile>(from);
+        auto& to_stockpile = registry.get<ResourceStockpile>(from);
+        // Transfer resources
+        if (from_stockpile.HasGood(good)) {
+            // Then we can transfer
+            if (from_stockpile[good] >= amount) {
+                from_stockpile[good] -= amount;
+                to_stockpile[good] += amount;
+                return true;
+            }
+        }
         return false;
     }
-
-    // Get resource stockpile
-    auto& from_stockpile = registry.get<cqspc::ResourceStockpile>(from);
-    auto& to_stockpile = registry.get<cqspc::ResourceStockpile>(from);
-    // Transfer resources
-    if (from_stockpile.HasGood(good)) {
-        // Then we can transfer
-        if (from_stockpile[good] >= amount) {
-            from_stockpile[good] -= amount;
-            to_stockpile[good] += amount;
-            return true;
-        }
-    }
-    return false;
 }
+

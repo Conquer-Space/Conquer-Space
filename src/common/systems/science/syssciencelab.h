@@ -18,15 +18,11 @@
 
 #include "common/systems/isimulationsystem.h"
 
-namespace cqsp {
-namespace common {
-namespace systems {
+namespace cqsp::common::systems {
 class SysScienceLab : public ISimulationSystem {
  public:
     explicit SysScienceLab(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
     int Interval() override { return components::StarDate::DAY; }
 };
-}  // namespace systems
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::systems

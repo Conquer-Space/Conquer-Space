@@ -19,22 +19,26 @@
 #include "common/components/economy.h"
 #include "common/components/surface.h"
 
-void cqsp::common::systems::SysTrade::DoSystem() {
+using cqsp::common::systems::SysTrade;
+namespace components = cqsp::common::components;
+using components::Market;
+using components::PlanetaryMarket;
+using components::Habitation;
+
+void SysTrade::DoSystem() {
     // Sort through all the districts, and figure out their trade
     // Get all the markets
     // Then cross reference to see if they can buy or sell
     // Then list all the markets
     // Get the market of the planet, and add latent supply and demand, and then compute the market
-    auto planetary_markets =
-        GetUniverse().view<components::Market, components::PlanetaryMarket, components::Habitation>();
-    for (entt::entity entity : planetary_markets) {
-        auto& p_market = GetUniverse().get<components::Market>(entity);
-        auto& habitation = GetUniverse().get<components::Habitation>(entity);
+    for (entt::entity entity : GetUniverse().view<Market, PlanetaryMarket, Habitation>()) {
+        auto& p_market = GetUniverse().get<Market>(entity);
+        auto& habitation = GetUniverse().get<Habitation>(entity);
         for (entt::entity habitation : habitation.settlements) {
-            if (!GetUniverse().any_of<components::Market>(habitation)) {
+            if (!GetUniverse().any_of<Market>(habitation)) {
                 continue;
             }
-            auto& market = GetUniverse().get<components::Market>(habitation);
+            auto& market = GetUniverse().get<Market>(habitation);
             p_market.supply += market.latent_supply;
             p_market.demand += market.latent_demand;
         }

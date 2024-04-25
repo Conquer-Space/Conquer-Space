@@ -23,10 +23,7 @@
 #include "common/components/resource.h"
 #include "common/universe.h"
 
-namespace cqsp {
-namespace common {
-namespace systems {
-namespace actions {
+namespace cqsp::common::systems::actions {
 /// <summary>
 /// Will charge the entity builder the amount needed to construct the factory/building. You'll have to find a
 /// organization that can construct it though.
@@ -37,7 +34,7 @@ namespace actions {
 /// <param name="productivity"></param>
 /// <param name="builder"></param>
 /// <returns>The factory entity created, entt::null if it's not possible.</returns>
-entt::entity OrderConstructionFactory(cqsp::common::Universe& universe, entt::entity city, entt::entity market,
+entt::entity OrderConstructionFactory(Universe& universe, entt::entity city, entt::entity market,
                                       entt::entity recipe, int productivity, entt::entity builder);
 
 /// <summary>
@@ -48,14 +45,11 @@ entt::entity OrderConstructionFactory(cqsp::common::Universe& universe, entt::en
 /// <param name="recipe"></param>
 /// <param name="productivity"></param>
 /// <returns>The factory entity created</returns>
-entt::entity CreateFactory(cqsp::common::Universe& universe, entt::entity city, entt::entity recipe, int productivity);
+entt::entity CreateFactory(Universe& universe, entt::entity city, entt::entity recipe, int productivity);
 
-cqsp::common::components::ResourceLedger GetFactoryCost(cqsp::common::Universe& universe, entt::entity city,
+components::ResourceLedger GetFactoryCost(Universe& universe, entt::entity city,
                                                         entt::entity recipe, int productivity);
 
-entt::entity CreateCommercialArea(cqsp::common::Universe& universe, entt::entity city);
+entt::entity CreateCommercialArea(Universe& universe, entt::entity city);
 
-}  // namespace actions
-}  // namespace systems
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::systems::actions

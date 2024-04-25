@@ -24,20 +24,25 @@
 
 #include "common/components/economy.h"
 #include "common/components/name.h"
+using cqsp::common::systems::SysMarket;
 
-void cqsp::common::systems::SysMarket::DoSystem() {
+namespace components = cqsp::common::components;
+using components::Market;
+using components::Price;
+
+void SysMarket::DoSystem() {
     ZoneScoped;
     // Get all the new and improved (tm) markets
-    auto marketview = GetUniverse().view<components::Market>();
+    auto marketview = GetUniverse().view<Market>();
     SPDLOG_INFO("Processing {} market(s)", marketview.size());
     TracyPlot("Market Count", (int64_t)marketview.size());
-    auto goodsview = GetUniverse().view<components::Price>();
+    auto goodsview = GetUniverse().view<Price>();
     Universe& universe = GetUniverse();
     // Calculate all the things
     for (entt::entity entity : marketview) {
         // Get the resources and process the price, then do things, I guess
         // Get demand
-        components::Market& market = universe.get<components::Market>(entity);
+        Market& market = universe.get<Market>(entity);
 
         // TODO(EhWhoAmI): GDP Calculations
         // market.gdp = market.volume* market.price;
@@ -84,20 +89,20 @@ void cqsp::common::systems::SysMarket::DoSystem() {
     }
 }
 
-void cqsp::common::systems::SysMarket::InitializeMarket(Game& game) {
-    auto marketview = game.GetUniverse().view<components::Market>();
-    auto goodsview = game.GetUniverse().view<components::Price>();
+void SysMarket::InitializeMarket(Game& game) {
+    auto marketview = game.GetUniverse().view<Market>();
+    auto goodsview = game.GetUniverse().view<Price>();
 
     Universe& universe = game.GetUniverse();
     // Calculate all the things
     for (entt::entity entity : marketview) {
         // Get the resources and process the price, then do things, I guess
         // Get demand
-        components::Market& market = universe.get<components::Market>(entity);
+        Market& market = universe.get<Market>(entity);
 
         // Initialize the price
         for (entt::entity goodenity : goodsview) {
-            market.price[goodenity] = universe.get<components::Price>(goodenity);
+            market.price[goodenity] = universe.get<Price>(goodenity);
             // Set the supply and demand things as 1 so that they sell for
             // now
             market.previous_demand[goodenity] = 1;

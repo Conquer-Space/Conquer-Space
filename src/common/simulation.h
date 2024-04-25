@@ -22,10 +22,7 @@
 #include "common/game.h"
 #include "common/systems/isimulationsystem.h"
 
-namespace cqsp {
-namespace common {
-namespace systems {
-namespace simulation {
+namespace cqsp::common::systems::simulation {
 /// <summary>
 /// Main simulation of game.
 ///</summary>
@@ -37,7 +34,7 @@ namespace simulation {
 ///
 class Simulation {
  public:
-    explicit Simulation(cqsp::common::Game &game);
+    explicit Simulation(Game &game);
 
     /// <summary>
     /// 1 game tick, runs every single system that is added.
@@ -46,19 +43,16 @@ class Simulation {
 
     template <class T>
     void AddSystem() {
-        static_assert(std::is_base_of<cqsp::common::systems::ISimulationSystem, T>::value);
+        static_assert(std::is_base_of<ISimulationSystem, T>::value);
         system_list.push_back(std::make_unique<T>(m_game));
     }
 
  private:
-    cqsp::common::Game &m_game;
+    Game &m_game;
     /// <summary>
     /// Holds all the systems.
     /// </summary>
-    std::vector<std::unique_ptr<cqsp::common::systems::ISimulationSystem>> system_list;
-    cqsp::common::Universe &m_universe;
+    std::vector<std::unique_ptr<ISimulationSystem>> system_list;
+    Universe &m_universe;
 };
-}  // namespace simulation
-}  // namespace systems
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::systems::simulation

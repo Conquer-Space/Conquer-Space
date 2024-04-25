@@ -26,20 +26,18 @@
 #include "common/components/area.h"
 #include "common/components/units.h"
 
-namespace cqsp {
-namespace common {
-namespace components {
+namespace cqsp::common::components {
 /// <summary>
 /// Something that has a mass.
 /// </summary>
 struct Matter {
-    cqsp::common::components::types::meter_cube volume;
-    cqsp::common::components::types::kilogram mass;
+    types::meter_cube volume;
+    types::kilogram mass;
 };
 
 struct Energy {
     // Energy per unit
-    cqsp::common::components::types::joule energy;
+    types::joule energy;
 };
 
 /// <summary>
@@ -313,6 +311,4 @@ struct FailedResourceConsumption {};
 struct ResourceDistribution {
     std::map<entt::entity, double> dist;
 };
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::components

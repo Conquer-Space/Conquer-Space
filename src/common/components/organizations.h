@@ -20,9 +20,7 @@
 
 #include <entt/entt.hpp>
 
-namespace cqsp {
-namespace common {
-namespace components {
+namespace cqsp::common::components {
 /// <summary>
 /// The civilization or organization that owns or governs the city
 /// </summary>
@@ -40,6 +38,4 @@ struct CountryCityList {
     std::vector<entt::entity> city_list;
     std::vector<entt::entity> province_list;
 };
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::components

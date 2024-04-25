@@ -20,9 +20,7 @@
 
 #include "common/systems/isimulationsystem.h"
 
-namespace cqsp {
-namespace common {
-namespace systems {
+namespace cqsp::common::systems {
 class SysOrbit : public ISimulationSystem {
  public:
     explicit SysOrbit(Game& game) : ISimulationSystem(game) {}
@@ -60,6 +58,4 @@ class SysSurface : public ISimulationSystem {
     void DoSystem();
     int Interval() { return 1; }
 };
-}  // namespace systems
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::systems

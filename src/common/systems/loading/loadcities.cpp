@@ -32,8 +32,9 @@
 #include "common/systems/actions/factoryconstructaction.h"
 #include "common/util/nameutil.h"
 
+using cqsp::common::systems::loading::CityLoader;
+
 namespace cqsp::common::systems::loading {
-namespace {
 struct ConnectedCities {
     // Holder class for the names of all the cities connected to this particular city
     std::vector<std::string> entities;
@@ -216,4 +217,3 @@ void CityLoader::PostLoad(const entt::entity& entity) {
         universe.remove<ConnectedCities>(entity);
     }
 }
-}  // namespace cqsp::common::systems::loading

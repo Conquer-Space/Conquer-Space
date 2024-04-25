@@ -22,10 +22,7 @@
 
 #include "common/components/units.h"
 
-namespace cqsp {
-namespace common {
-namespace components {
-namespace ships {
+namespace cqsp::common::components::ships {
 struct Ship {};
 
 struct Crash {};
@@ -41,7 +38,4 @@ struct Fleet {
     // creates top level fleet
     explicit Fleet(entt::entity _owner) : Fleet(entt::null, _owner, 0) {}
 };
-}  // namespace ships
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::components::ships

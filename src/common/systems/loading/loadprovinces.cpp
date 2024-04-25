@@ -24,7 +24,7 @@
 #include "common/components/organizations.h"
 #include "common/components/surface.h"
 
-void cqsp::common::systems::loading::LoadProvinces(common::Universe& universe, const std::string& text) {
+void cqsp::common::systems::loading::LoadProvinces(Universe& universe, const std::string& text) {
     // The text has to be csv, so treat it is csv
     std::istringstream f(text);
     std::string line;

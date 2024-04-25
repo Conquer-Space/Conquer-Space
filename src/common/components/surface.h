@@ -21,9 +21,7 @@
 
 #include <entt/entt.hpp>
 
-namespace cqsp {
-namespace common {
-namespace components {
+namespace cqsp::common::components {
 struct Surface {
     int64_t seed;
 };
@@ -89,6 +87,4 @@ struct ProvinceColor {
 
 // Capital city
 struct CapitalCity {};
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::components

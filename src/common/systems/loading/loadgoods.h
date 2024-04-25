@@ -23,9 +23,9 @@
 #include "common/universe.h"
 
 namespace cqsp::common::systems::loading {
-void LoadGoods(cqsp::common::Universe&, Hjson::Value&);
-void LoadRecipes(cqsp::common::Universe&, Hjson::Value&);
-void LoadTerrainData(cqsp::common::Universe&, Hjson::Value&);
+void LoadGoods(Universe&, Hjson::Value&);
+void LoadRecipes(Universe&, Hjson::Value&);
+void LoadTerrainData(Universe&, Hjson::Value&);
 
 class GoodLoader : public HjsonLoader {
  public:

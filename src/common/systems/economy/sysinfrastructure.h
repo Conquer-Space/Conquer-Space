@@ -18,14 +18,10 @@
 
 #include "common/systems/isimulationsystem.h"
 
-namespace cqsp {
-namespace common {
-namespace systems {
+namespace cqsp::common::systems {
 class InfrastructureSim : public ISimulationSystem {
  public:
     explicit InfrastructureSim(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
 };
-}  // namespace systems
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::systems

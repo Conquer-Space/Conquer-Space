@@ -20,6 +20,6 @@
 
 #include "common/universe.h"
 
-namespace cqsp::common::actions {
+namespace cqsp::common::systems::actions {
 entt::entity CreateCity(Universe& universe, entt::entity planet, double lat, double longi);
 }  // namespace cqsp::common::actions

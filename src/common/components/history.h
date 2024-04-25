@@ -21,12 +21,7 @@
 
 #include <entt/entt.hpp>
 
-namespace cqsp {
-namespace common {
-namespace components {
-/// <summary>
-/// Records the history of market.
-/// </summary>
+namespace cqsp::common::components {
 class MarketHistory {
  public:
     std::map<entt::entity, std::vector<double>> price_history;
@@ -36,6 +31,4 @@ class MarketHistory {
     std::map<entt::entity, std::vector<double>> volume;
     std::vector<double> gdp;
 };
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::components

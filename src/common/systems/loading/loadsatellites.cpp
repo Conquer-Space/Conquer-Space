@@ -27,6 +27,13 @@
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
 
+namespace types = cqsp::common::components::types;
+namespace components = cqsp::common::components;
+namespace bodies = components::bodies;
+namespace types = components::types;
+
+using types::Orbit;
+
 namespace cqsp::common::systems::loading {
 namespace {
 std::string trim(const std::string& str, const std::string& whitespace = " \t") {
@@ -40,7 +47,7 @@ std::string trim(const std::string& str, const std::string& whitespace = " \t") 
 }
 }  // namespace
 
-components::types::Orbit GetOrbit(const std::string& line_one, const std::string& line_two, const double& GM) {
+Orbit GetOrbit(const std::string& line_one, const std::string& line_two, const double& GM) {
     // Epoch year
     double epoch_year = std::stoi(line_one.substr(18, 2));
     double epoch_time = std::stod(line_one.substr(20, 12));
@@ -53,7 +60,7 @@ components::types::Orbit GetOrbit(const std::string& line_one, const std::string
     std::istream_iterator<std::string> end;
     std::vector<std::string> vstrings(begin, end);
 
-    components::types::Orbit orbit;
+    Orbit orbit;
 
     // https://en.wikipedia.org/wiki/Two-line_element_set
 
@@ -69,7 +76,7 @@ components::types::Orbit GetOrbit(const std::string& line_one, const std::string
     double mean_motion = std::stod(vstrings[7]);
 
     double T = (24 * 3600) / mean_motion;
-    double a = pow(T * T * GM / (4.0 * components::types::PI * components::types::PI),
+    double a = pow(T * T * GM / (4.0 * types::PI * types::PI),
                    1. / 3.0);  // semi_major_axis
 
     orbit.eccentricity = e;
@@ -123,12 +130,12 @@ void LoadSatellites(Universe& universe, std::string& string) {
         // Add to earth
         // Calculate the thingies
         auto orbit = GetOrbit(line_one, line_two, GM);
-        orbit.inclination += universe.get<components::bodies::Body>(earth).axial * cos(orbit.inclination);
+        orbit.inclination += universe.get<bodies::Body>(earth).axial * cos(orbit.inclination);
         // orbit.M0 += universe.get<components::bodies::Body>(earth).axial;
         orbit.reference_body = earth;
         // The math works
-        universe.get<components::bodies::OrbitalSystem>(earth).push_back(satellite);
-        universe.emplace<components::types::Orbit>(satellite, orbit);
+        universe.get<bodies::OrbitalSystem>(earth).push_back(satellite);
+        universe.emplace<Orbit>(satellite, orbit);
         universe.emplace<components::ships::Ship>(satellite);
     }
 }

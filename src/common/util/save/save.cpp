@@ -23,7 +23,10 @@
 
 #include "common/version.h"
 
-Hjson::Value cqsp::common::game::Save::GetMetadata() {
+using cqsp::common::game::Save;
+using cqsp::common::game::Load;
+
+Hjson::Value Save::GetMetadata() {
     // This generates the basic information of the save
     Hjson::Value value;
     value["date"] = universe.date.GetDate();
@@ -32,12 +35,12 @@ Hjson::Value cqsp::common::game::Save::GetMetadata() {
     return value;
 }
 
-Hjson::Value cqsp::common::game::Save::SaveGame() {
+Hjson::Value Save::SaveGame() {
     // Save all the game information
     return Hjson::Value();
 }
 
-void cqsp::common::game::Load::LoadMetadata(Hjson::Value& data) {
+void Load::LoadMetadata(Hjson::Value& data) {
     universe.date.SetDate((int)data["date"]);
     // Verify version, but screw that
     universe.uuid = data["uuid"].to_string();

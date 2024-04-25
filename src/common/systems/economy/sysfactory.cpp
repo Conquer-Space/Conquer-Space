@@ -28,9 +28,13 @@
 #include "common/components/surface.h"
 #include "common/util/profiler.h"
 
+namespace components = cqsp::common::components;
+using components::ResourceLedger;
+using components::IndustrySize;
+using components::Recipe;
+using components::Production;
+
 namespace cqsp::common::systems {
-namespace cqspc = cqsp::common::components;
-namespace {
 /// <summary>
 /// Runs the production cycle
 /// Consumes material from the market based on supply and then sells the manufactured goods on the market.
@@ -41,26 +45,26 @@ namespace {
 void ProcessIndustries(Universe& universe, entt::entity entity) {
     auto& market = universe.get<components::Market>(entity);
     // Get the transport cost
-    auto& infrastructure = universe.get<cqspc::infrastructure::CityInfrastructure>(entity);
+    auto& infrastructure = universe.get<components::infrastructure::CityInfrastructure>(entity);
     // Calculate the infrastructure cost
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
 
-    auto& industries = universe.get<cqspc::IndustrialZone>(entity);
+    auto& industries = universe.get<components::IndustrialZone>(entity);
     auto& population_wallet =
-        universe.get_or_emplace<cqspc::Wallet>(universe.get<cqspc::Settlement>(entity).population.front());
+        universe.get_or_emplace<components::Wallet>(universe.get<components::Settlement>(entity).population.front());
     for (entt::entity productionentity : industries.industries) {
         // Process imdustries
         // Industries MUST have production and a linked recipe
-        if (!universe.all_of<components::Production>(productionentity)) continue;
-        components::Recipe recipe =
-            universe.get_or_emplace<components::Recipe>(universe.get<components::Production>(productionentity).recipe);
-        components::IndustrySize& size = universe.get_or_emplace<components::IndustrySize>(productionentity, 1000.0);
+        if (!universe.all_of<Production>(productionentity)) continue;
+        Recipe recipe =
+            universe.get_or_emplace<Recipe>(universe.get<Production>(productionentity).recipe);
+        IndustrySize& size = universe.get_or_emplace<IndustrySize>(productionentity, 1000.0);
         // Calculate resource consumption
-        components::ResourceLedger capitalinput = recipe.capitalcost * (0.01 * size.size);
-        components::ResourceLedger input = (recipe.input + size.utilization) + capitalinput;
+        ResourceLedger capitalinput = recipe.capitalcost * (0.01 * size.size);
+        ResourceLedger input = (recipe.input + size.utilization) + capitalinput;
 
         // Calculate the greatest possible production
-        components::ResourceLedger output;  // * ratio.output;
+        ResourceLedger output;  // * ratio.output;
         output[recipe.output.entity] = recipe.output.amount * size.utilization;
 
         // Figure out what's throttling production and maintenance
@@ -116,8 +120,6 @@ void ProcessIndustries(Universe& universe, entt::entity entity) {
         population_wallet += costs.wages;
     }
 }
-}  // namespace
-
 void SysProduction::DoSystem() {
     ZoneScoped;
     Universe& universe = GetUniverse();

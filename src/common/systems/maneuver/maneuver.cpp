@@ -20,8 +20,16 @@
 #include <glm/gtx/projection.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
+namespace components = cqsp::common::components;
+namespace types = components::types;
+using types::Orbit;
+using types::OrbitVelocityAtR;
+using types::GetCircularOrbitingVelocity;
+using types::OrbitVelocity;
+using types::FlightPathAngle;
+using types::PI;
+
 namespace cqsp::common::systems {
-using namespace components::types;  // NOLINT
 std::pair<glm::dvec3, double> CircularizeAtApoapsis(const Orbit& orbit) {
     // Get apogee
     const double new_velocity = GetCircularOrbitingVelocity(orbit.GM, orbit.GetApoapsis());
@@ -53,13 +61,11 @@ std::pair<glm::dvec3, double> SetPeriapsis(const Orbit& orbit, double altitude) 
     return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), orbit.TimeToMeanAnomaly(PI));
 }
 
-namespace {
 double GetInclinationChangeDeltaV(const Orbit& orbit, double v, double d_inc) {
     double velocity = OrbitVelocity(v, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
     double fpa = FlightPathAngle(orbit.eccentricity, v);
     return abs(2 * velocity * cos(fpa) * sin(d_inc / 2.));
 }
-}  // namespace
 
 std::pair<glm::dvec3, double> SetInclination(const Orbit& orbit, double inclination) {
     double v_change = PI - orbit.w;

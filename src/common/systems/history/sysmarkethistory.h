@@ -18,12 +18,10 @@
 
 #include "common/systems/isimulationsystem.h"
 
-namespace cqsp::common::systems {
-namespace history {
+namespace cqsp::common::systems::history {
 class SysMarketHistory : public ISimulationSystem {
  public:
     explicit SysMarketHistory(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
 };
-}  // namespace history
-}  // namespace cqsp::common::systems
+}  // namespace cqsp::common::systems::history

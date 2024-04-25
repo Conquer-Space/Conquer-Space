@@ -33,37 +33,40 @@
 #include "common/systems/population/cityinformation.h"
 #include "common/util/utilnumberdisplay.h"
 
+namespace components = cqsp::common::components;
+
+using components::Name;
+using components::Identifier;
+
 namespace cqsp::common::util {
 std::string GetName(const Universe& universe, entt::entity entity) {
     if (!universe.valid(entity)) {
         return "";
     }
-    namespace cqspc = cqsp::common::components;
-    if (universe.all_of<cqspc::Name>(entity)) {
-        return universe.get<cqspc::Name>(entity);
-    } else if (universe.all_of<cqspc::Identifier>(entity)) {
-        return universe.get<cqspc::Identifier>(entity);
+    if (universe.all_of<Name>(entity)) {
+        return universe.get<Name>(entity);
+    } else if (universe.all_of<Identifier>(entity)) {
+        return universe.get<Identifier>(entity);
     } else {
         return fmt::format("{}", GetEntityType(universe, entity));
     }
 }
 
-std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity entity) {
-    namespace cqspc = cqsp::common::components;
+std::string GetEntityType(const Universe& universe, entt::entity entity) {
     // Then get type of entity
     if (entity == entt::null) {
         return "Null Entity";
     }
-    if (universe.all_of<cqspc::bodies::Star>(entity)) {
+    if (universe.all_of<components::bodies::Star>(entity)) {
         return "Star";
-    } else if (universe.all_of<cqspc::bodies::Planet>(entity)) {
+    } else if (universe.all_of<components::bodies::Planet>(entity)) {
         return "Planet";
-    } else if (universe.any_of<cqspc::Settlement, cqspc::Habitation>(entity)) {
+    } else if (universe.any_of<components::Settlement, components::Habitation>(entity)) {
         return "City";
-    } else if (universe.any_of<cqspc::Production>(entity)) {
-        auto& generator = universe.get<cqspc::Production>(entity);
+    } else if (universe.any_of<components::Production>(entity)) {
+        auto& generator = universe.get<components::Production>(entity);
         return fmt::format("{} Factory", GetName(universe, generator.recipe));
-    } else if (universe.any_of<cqspc::Mine>(entity)) {
+    } else if (universe.any_of<components::Mine>(entity)) {
         /*
         std::string production = "";
         auto& generator = universe.get<cqspc::ResourceGenerator>(entity);
@@ -76,17 +79,17 @@ std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity e
         }
         return fmt::format("{} Mine", production);
         */
-    } else if (universe.any_of<cqspc::Player>(entity)) {
+    } else if (universe.any_of<components::Player>(entity)) {
         return "Player";
-    } else if (universe.any_of<cqspc::Country>(entity)) {
+    } else if (universe.any_of<components::Country>(entity)) {
         return "Country";
-    } else if (universe.any_of<cqspc::Province>(entity)) {
+    } else if (universe.any_of<components::Province>(entity)) {
         return "Province";
-    } else if (universe.any_of<cqspc::Organization>(entity)) {
+    } else if (universe.any_of<components::Organization>(entity)) {
         return "Organization";
-    } else if (universe.any_of<cqspc::science::Lab>(entity)) {
+    } else if (universe.any_of<components::science::Lab>(entity)) {
         return "Science Lab";
-    } else if (universe.any_of<cqspc::Commercial>(entity)) {
+    } else if (universe.any_of<components::Commercial>(entity)) {
         return "Commercial";
     }
     return "Unknown";

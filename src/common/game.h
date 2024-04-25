@@ -19,8 +19,7 @@
 #include "common/scripting/scripting.h"
 #include "common/universe.h"
 
-namespace cqsp {
-namespace common {
+namespace cqsp::common {
 /// <summary>
 /// Wrapper class for all the components of the game, so that all the game stuff can be
 /// initialized in one place.
@@ -38,5 +37,4 @@ class Game {
     Universe universe;
     scripting::ScriptInterface script_interface;
 };
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common

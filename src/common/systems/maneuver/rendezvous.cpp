@@ -18,8 +18,11 @@
 
 #include "common/systems/maneuver/hohmann.h"
 
+namespace components = cqsp::common::components;
+namespace types = components::types;
+
 namespace cqsp::common::systems {
-using namespace components::types;  // NOLINT
+
 HohmannPair_t CoplanarIntercept(const components::types::Orbit& start_orbit, const components::types::Orbit& end_orbit,
                                 double epoch) {
     // They need to be the same plane, but let's ignore that

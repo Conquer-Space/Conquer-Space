@@ -19,23 +19,23 @@
 #include "common/components/economy.h"
 #include "common/systems/economy/markethelpers.h"
 
-void cqsp::common::systems::SysAgent::DoSystem() {
-    /*
-    auto view = GetUniverse().view<cqsp::common::components::MarketAgent>();
+using cqsp::common::systems::SysAgent;
+/*
+void SysAgent::DoSystem() {
+    auto view = GetUniverse().view<components::MarketAgent>();
     for (entt::entity entity : view) {
         // Sell resources that agents produced
         double production_multiplier = 1;
-        if (GetUniverse().any_of<components::FactoryProductivity>(entity)) {
-            auto& prod = GetUniverse().get<components::FactoryProductivity>(entity);
-            production_multiplier = prod.current_production;
+        if (GetUniverse().any_of<components::IndustrySize>(entity)) {
+            auto& prod = GetUniverse().get<components::IndustrySize>(entity);
+            production_multiplier = prod.size;
         }
         components::ResourceLedger selling;
-        
-        if (GetUniverse().all_of<components::ResourceGenerator>(entity)) {
-            auto& gen = GetUniverse().get<components::ResourceGenerator>(entity);
-            selling.MultiplyAdd(gen, production_multiplier);
+
+        if (GetUniverse().all_of<components::Recipe>(entity)) {
+            auto& gen = GetUniverse().get<components::Recipe>(entity);
+            selling.MultiplyAdd(gen.output, production_multiplier);
         }
-        
 
         // Recipe things
         auto resource_converter = GetUniverse().try_get<components::ResourceConverter>(entity);
@@ -71,5 +71,6 @@ void cqsp::common::systems::SysAgent::DoSystem() {
             GetUniverse().emplace_or_replace<components::FactoryProducing>(entity);
         }
     }
-    */
 }
+*/
+

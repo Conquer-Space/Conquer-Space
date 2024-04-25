@@ -21,8 +21,7 @@
 #include <cmath>
 #include <string>
 
-namespace cqsp::common {
-namespace util {
+namespace cqsp::common::util {
 inline std::string LongToHumanString(int64_t l) {
     if (abs(l) < 1000) {
         return fmt::format("{}", l);
@@ -40,5 +39,4 @@ inline std::string LongToHumanString(int64_t l) {
 
     return fmt::format("{} {}", d, numbers[exponent - 1]);
 }
-}  // namespace util
-}  // namespace cqsp
+}  // namespace cqsp::common::util

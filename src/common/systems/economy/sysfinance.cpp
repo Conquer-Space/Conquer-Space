@@ -18,12 +18,13 @@
 
 #include "common/components/economy.h"
 
-namespace cqsp::common::systems {
+namespace components = cqsp::common::components;
+using components::Wallet;
+using  cqsp::common::systems::SysWalletReset;
+
 void SysWalletReset::DoSystem() {
-    namespace cqspc = cqsp::common::components;
-    auto view = GetUniverse().view<cqspc::Wallet>();
+    auto view = GetUniverse().view<Wallet>();
     for (entt::entity entity : view) {
-        GetUniverse().get<cqspc::Wallet>(entity).Reset();
+        GetUniverse().get<Wallet>(entity).Reset();
     }
 }
-}  // namespace cqsp::common::systems

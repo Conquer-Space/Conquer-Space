@@ -17,9 +17,7 @@
 #pragma once
 #include "common/components/resource.h"
 
-namespace cqsp {
-namespace common {
-namespace components {
+namespace cqsp::common::components {
 struct PopulationSegment {
     uint64_t population;
     /// The total potential workers
@@ -30,6 +28,4 @@ struct PopulationSegment {
 };
 
 struct Hunger {};
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::components
