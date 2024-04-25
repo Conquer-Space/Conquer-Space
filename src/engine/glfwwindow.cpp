@@ -97,6 +97,10 @@ void GLWindow::SetCallbacks() {
         static_cast<GLWindow*>(glfwGetWindowUserPointer(_w))->CharacterCallback(_w, codepoint);
     };
 
+    auto error_callback = [](int error_code, const char* description) {
+        ENGINE_LOG_ERROR("Error {}: {}", error_code, description);
+    };
+
     glfwSetKeyCallback(window, key_callback);
     glfwSetCursorPosCallback(window, cursor_position_callback);
     glfwSetCursorEnterCallback(window, cursor_enter_callback);
@@ -105,6 +109,7 @@ void GLWindow::SetCallbacks() {
     glfwSetDropCallback(window, drop_callback);
     glfwSetFramebufferSizeCallback(window, frame_buffer_callback);
     glfwSetCharCallback(window, character_callback);
+    glfwSetErrorCallback(error_callback);
 }
 
 void GLWindow::Destroy() {
@@ -156,9 +161,18 @@ void GLWindow::OnFrame() {
 }
 
 void GLWindow::InitWindow(int width, int height) {
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    if (glfwInit() != GLFW_TRUE) {
+        // Then rip
+        ENGINE_LOG_CRITICAL("Cannot initialize GLFW");
+    }
+    if (GLAD_GL_VERSION_4_3 != 0) {
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    } else {
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    }
+
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_SAMPLES, app->GetClientOptions().GetOptions()["samples"].to_int64());
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, (int)true);
@@ -176,7 +190,7 @@ void GLWindow::InitWindow(int width, int height) {
     window = glfwCreateWindow(width, height, "Conquer Space", NULL, NULL);
     if (window == NULL) {
         glfwTerminate();
-        ENGINE_LOG_INFO("Cannot load glfw");
+        ENGINE_LOG_CRITICAL("Cannot load glfw");
     }
 
     glfwMakeContextCurrent(window);
@@ -198,8 +212,10 @@ void GLWindow::InitWindow(int width, int height) {
     if ((flags & GL_CONTEXT_FLAG_DEBUG_BIT) != 0) {
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);  // makes sure errors are displayed synchronously
-        glDebugMessageCallback(glDebugOutput, nullptr);
-        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+        if (GLAD_GL_VERSION_4_3 != 0) {
+            glDebugMessageCallback(glDebugOutput, nullptr);
+            glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+        }
     }
 
     // Fix the weird black bar we have on top of windows

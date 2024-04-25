@@ -21,10 +21,13 @@
 #include <string>
 
 extern std::map<std::string, int> profiler_information_map;
+
 #define BEGIN_TIMED_BLOCK(NAME) \
     std::chrono::high_resolution_clock::time_point block_start_##NAME = std::chrono::high_resolution_clock::now();
 
+void set_time_block(const std::string& str, std::chrono::high_resolution_clock::time_point start,
+                    std::chrono::high_resolution_clock::time_point end);
+
 #define END_TIMED_BLOCK(NAME)                                                                                    \
     std::chrono::high_resolution_clock::time_point block_end_##NAME = std::chrono::high_resolution_clock::now(); \
-    profiler_information_map[#NAME] =                                                                            \
-        std::chrono::duration_cast<std::chrono::microseconds>(block_end_##NAME - block_start_##NAME).count();
+    set_time_block(#NAME, block_start_##NAME, block_end_##NAME);

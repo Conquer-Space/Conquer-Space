@@ -20,6 +20,7 @@
 #include <filesystem>
 #include <string>
 #include <utility>
+#include <random>
 
 #include "RmlUi/Debugger.h"
 #include "client/components/clientctx.h"
@@ -193,7 +194,6 @@ void cqsp::scene::MainMenuScene::ModWindow() {
 }
 
 void cqsp::scene::MainMenuScene::ShuffleFileList() {
-    // Random number
     std::string splash_dir = cqsp::common::util::GetCqspDataPath() + "/core/gui/splashscreens";
     auto s = std::filesystem::canonical(splash_dir).string();
 
@@ -207,19 +207,19 @@ void cqsp::scene::MainMenuScene::ShuffleFileList() {
         // Or else load the image
         file_list.push_back(std::filesystem::canonical(entry.path()).string());
     }
-    // Now choose a random selection
+    std::random_device device;
+    std::mt19937 generator(device());
+    std::uniform_int_distribution<int> dist(0, file_list.size() - 1);
     for (int i = 0; i < file_list.size(); i++) {
-        int index = rand() % file_list.size();  // NOLINT
-        std::string tmp = file_list[index];
-        file_list[index] = file_list[i];
-        file_list[i] = tmp;
+        int index = dist(generator);
+        std::swap(file_list[index], file_list[i]);
     }
     index = 0;
 }
 
 void cqsp::scene::MainMenuScene::SetMainMenuImage(const std::string& file) {
     main_menu->GetElementById("main_window")
-        ->SetProperty("decorator", fmt::format("image({} none cover center bottom)", file));
+        ->SetProperty("decorator", fmt::format("image(\"{}\" none cover center bottom)", file));
 }
 
 void cqsp::scene::MainMenuScene::NextImage() {

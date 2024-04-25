@@ -23,7 +23,7 @@ file (GLOB_RECURSE H_FILES *.h)
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/stb)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
-include_directories(${CMAKE_SOURCE_DIR}/lib/libnoise/include)
+
 # Lua
 include_directories(${CMAKE_SOURCE_DIR}/lib/sol2/include)
 

@@ -16,8 +16,6 @@
  */
 #include "client/scenes/universe/views/starsystemview.h"
 
-#include <noise/noise.h>
-
 #include <algorithm>
 #include <cmath>
 #include <cstddef>

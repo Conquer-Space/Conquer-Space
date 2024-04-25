@@ -20,3 +20,8 @@
 
 // Define the thing
 std::map<std::string, int> profiler_information_map;
+
+void set_time_block(const std::string& str, std::chrono::high_resolution_clock::time_point start,
+                    std::chrono::high_resolution_clock::time_point end) {
+    profiler_information_map[str] = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+}

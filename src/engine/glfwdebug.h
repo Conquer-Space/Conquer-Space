@@ -40,6 +40,7 @@ const inline char* ParseType(GLenum type) {
         case GL_DEBUG_TYPE_POP_GROUP:
             return ("Pop Group");
         case GL_DEBUG_TYPE_OTHER:
+        default:
             return ("Other");
     }
 }
@@ -53,6 +54,7 @@ const inline char* ParseSeverity(GLenum severity) {
         case GL_DEBUG_SEVERITY_LOW:
             return ("low");
         case GL_DEBUG_SEVERITY_NOTIFICATION:
+        default:
             return ("notification");
     }
 }
@@ -70,6 +72,7 @@ const inline char* ParseSource(GLenum source) {
         case GL_DEBUG_SOURCE_APPLICATION:
             return ("Application");
         case GL_DEBUG_SOURCE_OTHER:
+        default:
             return ("Other");
     }
 }

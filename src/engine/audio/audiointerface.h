@@ -79,7 +79,7 @@ struct AudioChannel {
         return length;
     }
 
-    void EmptyBuffer() { alSourcei(channel, AL_BUFFER, NULL); }
+    void EmptyBuffer() { alSourcei(channel, AL_BUFFER, (ALint)NULL); }
 
     void SetBuffer(cqsp::asset::AudioAsset *buffer);
     float length = 0;
