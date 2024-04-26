@@ -133,7 +133,7 @@ void FunctionCivilizationGen(Universe& universe, ScriptInterface& script_engine)
     });
 
     REGISTER_FUNCTION("is_player", [&](entity civ) {
-        return static_cast<bool>(universe.all_of<components::Player>(civ)); });        
+        return static_cast<bool>(universe.all_of<components::Player>(civ)); });
 
     REGISTER_FUNCTION("add_planet_habitation",
                       [&](entity planet) { universe.emplace<components::Habitation>(planet); });

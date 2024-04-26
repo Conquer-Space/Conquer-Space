@@ -34,7 +34,7 @@ using components::Recipe;
 
 using entt::entity;
 
-namespace cqsp::common::systems::actions{
+namespace cqsp::common::systems::actions {
 entity OrderConstructionFactory(Universe& universe, entity city, entity market, entity recipe,
                                 int productivity, entity builder) {
     entt::entity factory = CreateFactory(universe, city, recipe, productivity);

@@ -199,5 +199,5 @@ void SeePlanet(common::Universe& universe, entity ent) {
 void SetGameHalted(bool b) { game_halted = b; }
 
 bool IsGameHalted() { return game_halted; }
-}
+} // namespace cqsp::scene
 
