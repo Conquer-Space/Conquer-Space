@@ -430,20 +430,19 @@ std::map<Hjson::Type, std::string> hjson_type_set {
     {Hjson::Type::Undefined, "Undefined"}, {Hjson::Type::Null, "Null"},   {Hjson::Type::Bool, "Bool"},
     {Hjson::Type::Double, "Double"},       {Hjson::Type::Int64, "Int64"}, {Hjson::Type::String, "String"},
     {Hjson::Type::Vector, "Vector"},       {Hjson::Type::Map, "Map"}};
-}  // namespace
 
-cqsp::asset::ShaderProgram_t cqsp::asset::ShaderDefinition::MakeShader() {
-    cqsp::asset::Shader vert_shader(vert, cqsp::asset::ShaderType::VERT);
-    cqsp::asset::Shader frag_shader(frag, cqsp::asset::ShaderType::FRAG);
+ShaderProgram_t ShaderDefinition::MakeShader() {
+    Shader vert_shader(vert, ShaderType::VERT);
+    Shader frag_shader(frag, ShaderType::FRAG);
 
     // Create the shader
-    cqsp::asset::ShaderProgram_t shader = nullptr;
+    ShaderProgram_t shader = nullptr;
     if (!geometry.empty()) {
-        cqsp::asset::Shader geom_shader(geometry, cqsp::asset::ShaderType::GEOM);
+        Shader geom_shader(geometry, ShaderType::GEOM);
         // Add to the shader
-        shader = cqsp::asset::MakeShaderProgram(vert_shader, frag_shader, geom_shader);
+        shader = MakeShaderProgram(vert_shader, frag_shader, geom_shader);
     } else {
-        shader = cqsp::asset::MakeShaderProgram(vert_shader, frag_shader);
+        shader = MakeShaderProgram(vert_shader, frag_shader);
     }
     // Initial values
     shader->UseProgram();
@@ -514,3 +513,6 @@ cqsp::asset::ShaderProgram_t cqsp::asset::ShaderDefinition::MakeShader() {
     }
     return shader;
 }
+
+}  // namespace cqsp::asset
+

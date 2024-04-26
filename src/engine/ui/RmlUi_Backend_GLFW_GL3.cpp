@@ -58,7 +58,7 @@ struct BackendData {
     KeyDownCallback key_down_callback = nullptr;
 };
 static Rml::UniquePtr<BackendData> data;
-}
+} // namespace Backend
 
 
 bool Backend::Initialize(const char* name, int width, int height, bool allow_resize) {

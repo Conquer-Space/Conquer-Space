@@ -57,8 +57,7 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
     };
 
     auto entity_name = [](sysdebuggui_parameters) {
-        if (std::all_of(args.begin(), args.end(), ::isdigit)) {
-
+        if (std::all_of(args.begin(), args.end(), isdigit)) {
             entity entity = static_cast<entt::entity>(atoi(args.data()));
             std::string name = "N/A";
             if (universe.all_of<components::Name>(entity)) {

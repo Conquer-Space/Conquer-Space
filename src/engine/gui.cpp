@@ -150,9 +150,8 @@ void DrawFlowIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& b, ax::Dr
         drawList->PathFillConvex(color);
     }
 }
-}  // namespace
 
-void ax::Drawing::DrawIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& b, IconType type, bool filled,
+void DrawIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& b, IconType type, bool filled,
                            ImU32 color, ImU32 innerColor) {
     auto rect = ImRect(a, b);
     auto rect_x = rect.Min.x;
@@ -291,12 +290,14 @@ void ax::Drawing::DrawIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& 
     }
 }
 
-void ax::Drawing::Icon(const ImVec2& size, IconType type, bool filled, const ImVec4& color, const ImVec4& innerColor) {
+
+void Drawing::Icon(const ImVec2& size, IconType type, bool fill, const ImVec4& color, const ImVec4& innerColor) {
     if (ImGui::IsRectVisible(size)) {
         auto cursorPos = ImGui::GetCursorScreenPos();
         auto drawList = ImGui::GetWindowDrawList();
-        ax::Drawing::DrawIcon(drawList, cursorPos, cursorPos + size, type, filled, ImColor(color), ImColor(innerColor));
+        Drawing::DrawIcon(drawList, cursorPos, cursorPos + size, type, fill, ImColor(color), ImColor(innerColor));
     }
 
     ImGui::Dummy(size);
 }
+} // namespace ax::Drawing

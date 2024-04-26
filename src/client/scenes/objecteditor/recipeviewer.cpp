@@ -68,7 +68,7 @@ void ResourceMapTable(common::Universe& universe, components::ResourceLedger& le
     }
     ImGui::EndTable();
 }
-}  // namespace
+}  // namespace cqsp::client::systems
 
 void SysRecipeViewer::RecipeViewerRight() {
     if (selected_recipe == entt::null) {

@@ -43,4 +43,4 @@ class Load {
 };
 
 std::string GetMetaPath(std::string_view folder);
-}  // namespace cqsp::common::save
+} // namespace cqsp::common::game

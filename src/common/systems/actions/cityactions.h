@@ -22,4 +22,4 @@
 
 namespace cqsp::common::systems::actions {
 entt::entity CreateCity(Universe& universe, entt::entity planet, double lat, double longi);
-}  // namespace cqsp::common::actions
+}  // cqsp::common::systems::actions

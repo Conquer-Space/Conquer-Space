@@ -19,8 +19,6 @@
 #include "common/scripting/scripting.h"
 #include "common/universe.h"
 
-namespace cqsp::common {
-namespace scripting {
-void LoadFunctions(cqsp::common::Universe& universe, ScriptInterface& script_engine);
-}  // namespace scripting
-}  // namespace cqsp
+namespace cqsp::common::scripting {
+void LoadFunctions(Universe& universe, ScriptInterface& script_engine);
+}  // namespace cqsp::common::scripting

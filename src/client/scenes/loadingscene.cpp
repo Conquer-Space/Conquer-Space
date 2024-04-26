@@ -38,7 +38,7 @@
 #include "engine/gui.h"
 
 namespace cqsp::scene {
-const std::string LOADING_ID = "core/gui/screens/loading_screen.rml";
+const char LOADING_ID[] = "core/gui/screens/loading_screen.rml";
 }
 
 using cqsp::scene::LoadingScene;

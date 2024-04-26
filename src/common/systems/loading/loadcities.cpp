@@ -40,7 +40,7 @@ struct ConnectedCities {
     // Holder class for the names of all the cities connected to this particular city
     std::vector<std::string> entities;
 };
-}  // namespace
+} // namespace cqsp::common::systems::loading
 bool CityLoader::LoadValue(const Hjson::Value& values, entity cityentity) {
     // Load the city
     std::string planet = values["planet"].to_string();

@@ -24,8 +24,6 @@
 
 #include "common/scripting/functionreg.h"
 
-using namespace cqsp::common::scripting;
-
 namespace cqsp::client::scripting {
 sol::object JsonToLuaObject(const Hjson::Value& j, const sol::this_state& s) {
     sol::state_view lua(s);
@@ -109,7 +107,7 @@ void UiInterfaces(engine::Application& app, common::Universe& universe,
 void ClientFunctions(engine::Application& app, common::Universe& universe, ScriptInterface& script_engine) {
     AssetManagerInterfaces(app, universe, script_engine);
     UiInterfaces(app, universe, script_engine);
-};  // namespace cqsp::client::scripting
-}  // namespace
+}  
+}  // namespace cqsp::client::scripting
 
 

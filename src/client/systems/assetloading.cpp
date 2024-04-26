@@ -108,4 +108,4 @@ void LoadAllResources(Application& app, ConquerSpace& conquer_space) {
     script_interface.RegisterDataGroup("generators");
     script_interface.RegisterDataGroup("events");
 }
-}  // namespace
+} // namespace cqsp::client::systems

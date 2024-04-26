@@ -94,7 +94,6 @@ bool is_number(std::string_view s) {
 }  // namespace
 
 double ReadUnit(std::string_view value, UnitType unit_type, bool* correct) {
-
     // Find the letters
     if (correct != nullptr) {
         (*correct) = true;

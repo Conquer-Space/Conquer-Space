@@ -50,8 +50,6 @@ void SysStarSystemTree::Init() {
 }
 
 void SysStarSystemTree::DoUI(int delta_time) {
-
-
     // Get star system
     selected_planet = scene::GetCurrentViewingPlanet(GetUniverse());
     ImGui::SetNextWindowPos(ImVec2(30, ImGui::GetIO().DisplaySize.y - 30), ImGuiCond_Always, ImVec2(0.f, 1.f));

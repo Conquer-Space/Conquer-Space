@@ -40,9 +40,9 @@ char* get_home_dir(uid_t uid) {
         return pwent.pw_dir;
     }
 }
-}  // namespace
+} // namespace cqsp::common::util
 #endif
-
+//Split due to ifdefs
 namespace cqsp::common::util {
 std::string ExePath::exe_path = std::string();  // NOLINT
 

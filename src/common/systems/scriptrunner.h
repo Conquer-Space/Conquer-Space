@@ -53,4 +53,4 @@ class SysScript : public cqsp::common::systems::ISimulationSystem {
  private:
     std::vector<sol::table> events;
 };
-}  // namespace systems
+} // namespace cqsp::common::systems

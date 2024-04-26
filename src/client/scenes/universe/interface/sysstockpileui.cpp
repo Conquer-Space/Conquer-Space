@@ -50,5 +50,5 @@ bool DrawLedgerTable(const std::string &name, const Universe &universe, const Re
     }
     return true;
 }
-}
+} // namespace cqsp::client::systems
 

@@ -22,8 +22,7 @@ namespace components = cqsp::common::components;
 using components::ResourceStockpile;
 using components::Good;
 using entt::entity;
-namespace cqsp::common::systems::resource
-{
+namespace cqsp::common::systems::resource {
     bool TransferResources(entt::registry& registry, entity from, entity to, entity good, double amount) {
         // Get resource stockpile
         if (!(registry.all_of<ResourceStockpile>(from) && registry.all_of<ResourceStockpile>(to) &&
@@ -45,5 +44,5 @@ namespace cqsp::common::systems::resource
         }
         return false;
     }
-}
+} // namespace cqsp::common::systems::resource
 

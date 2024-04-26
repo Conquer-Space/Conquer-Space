@@ -81,8 +81,6 @@ GoodLoader::GoodLoader(Universe& universe) : HjsonLoader(universe) {
 }
 
 bool GoodLoader::LoadValue(const Hjson::Value& values, entity entity) {
-
-
     universe.emplace<Good>(entity);
 
     std::string identifier = values["identifier"].to_string();
@@ -146,7 +144,6 @@ RecipeLoader::RecipeLoader(Universe& universe) : HjsonLoader(universe) {
 }
 
 bool RecipeLoader::LoadValue(const Hjson::Value& values, entity entity) {
-
     auto& recipe_component = universe.emplace<components::Recipe>(entity);
 
     Hjson::Value input_value = values["input"];

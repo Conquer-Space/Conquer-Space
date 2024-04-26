@@ -22,8 +22,7 @@
 #include <string>
 #include <utility>
 #include <vector>
-
-#include "client/systems/sysgui.h"    
+#include "client/systems/sysgui.h"
 
 #define sysdebuggui_parameters                                                                                \
 cqsp::engine::Application &app, common::Universe &universe,                                                   \

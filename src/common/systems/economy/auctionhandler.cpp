@@ -112,5 +112,5 @@ bool SellGood(AuctionHouse& auction_house, entity agent, entity good, double pri
     sell_order_list.put(order);
     return false;
 }
-}
+} // namespace cqsp::common::systems
 

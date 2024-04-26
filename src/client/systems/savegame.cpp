@@ -53,4 +53,4 @@ void load_game(common::Universe& universe, std::string_view directory) {
     Hjson::Value metadata = Hjson::UnmarshalFromFile(common::game::GetMetaPath(directory));
     load.LoadMetadata(metadata);
 }
-}
+} // namespace cqsp::client::save

@@ -108,7 +108,6 @@ void CrashObject(Universe& universe, Orbit& orb, entity body, entity parent) {
 
 void CalculateImpulse(Universe& universe, Orbit& orb, entity body, entity parent) {
     if (!universe.any_of<Impulse>(body)) {
-
         return;
     }
     // Then add to the orbit the speed.

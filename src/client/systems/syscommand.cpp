@@ -154,5 +154,5 @@ void SysCommand::ShipList() {
 
     ImGui::End();*/
 }
-}
+} // namespace cqsp::client::systems
 

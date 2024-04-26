@@ -50,9 +50,6 @@ class TracySink : public spdlog::sinks::base_sink<Mutex> {
 
 using TracySink_mt = TracySink<std::mutex>;
 using TracySink_st = TracySink<spdlog::details::null_mutex>;
-}  // namespace
-
-namespace cqsp::common::util {
 std::shared_ptr<spdlog::logger> make_logger(const std::string& name, bool error) {
     std::shared_ptr<spdlog::logger> logger;
 

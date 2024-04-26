@@ -57,7 +57,7 @@
 // If the game is paused or not, like when escape is pressed
 namespace cqsp::scene {
     bool game_halted = false;
-}
+}// namespace cqsp::scene
 
 namespace common = cqsp::common;
 namespace components = common::components;
@@ -196,8 +196,8 @@ void SeePlanet(common::Universe& universe, entity ent) {
     universe.emplace<systems::FocusedPlanet>(ent);
 }
 
-void cqsp::scene::SetGameHalted(bool b) { game_halted = b; }
+void SetGameHalted(bool b) { game_halted = b; }
 
-bool cqsp::scene::IsGameHalted() { return game_halted; }
+bool IsGameHalted() { return game_halted; }
 }
 

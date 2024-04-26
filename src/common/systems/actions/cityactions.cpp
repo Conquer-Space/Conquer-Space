@@ -29,7 +29,6 @@ using components::Settlement;
 using entt::entity;
 
 entity cqsp::common::systems::actions::CreateCity(Universe& universe, entity planet, double lat, double longi) {
-
     entity settlement = universe.create();
     universe.emplace<Settlement>(settlement);
     universe.emplace<SurfaceCoordinate>(settlement, lat, longi);

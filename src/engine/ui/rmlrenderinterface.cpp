@@ -26,6 +26,8 @@
 #include "engine/application.h"
 #include "engine/graphics/mesh.h"
 
+using cqsp::engine::CQSPRenderInterface;
+
 namespace cqsp::engine {
 class RmlUiRendererGeometryHandler {
  public:
@@ -51,9 +53,9 @@ class RmlUiRendererGeometryHandler {
         VAO = VBO = EBO = 0;
     }
 };
-}  // namespace
+}  // namespace cqsp::engine
 
-cqsp::engine::CQSPRenderInterface::CQSPRenderInterface(Application& _app) : app(_app) {
+CQSPRenderInterface::CQSPRenderInterface(Application& _app) : app(_app) {
     logger = spdlog::get("RmlUi");
     if (logger == nullptr) {
         logger = spdlog::default_logger();
@@ -121,7 +123,7 @@ void main()
     SPDLOG_LOGGER_INFO(logger, "Initialized RmlUi renderer");
 }
 
-void cqsp::engine::CQSPRenderInterface::RenderGeometry(Rml::Vertex* vertices, int num_vertices, int* indices,
+void CQSPRenderInterface::RenderGeometry(Rml::Vertex* vertices, int num_vertices, int* indices,
                                                        int num_indices, Rml::TextureHandle texture,
                                                        const Rml::Vector2f& translation) {
     // Render the geometry
@@ -132,7 +134,7 @@ void cqsp::engine::CQSPRenderInterface::RenderGeometry(Rml::Vertex* vertices, in
     }
 }
 
-Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(Rml::Vertex* vertices, int num_vertices,
+Rml::CompiledGeometryHandle CQSPRenderInterface::CompileGeometry(Rml::Vertex* vertices, int num_vertices,
                                                                                int* indices, int num_indices,
                                                                                Rml::TextureHandle texture) {
     RmlUiRendererGeometryHandler* geom = new RmlUiRendererGeometryHandler();
@@ -166,7 +168,7 @@ Rml::CompiledGeometryHandle cqsp::engine::CQSPRenderInterface::CompileGeometry(R
     return reinterpret_cast<Rml::CompiledGeometryHandle>(geom);
 }
 
-void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(Rml::CompiledGeometryHandle geometry,
+void CQSPRenderInterface::RenderCompiledGeometry(Rml::CompiledGeometryHandle geometry,
                                                                const Rml::Vector2f& translation) {
     RmlUiRendererGeometryHandler* geom = reinterpret_cast<RmlUiRendererGeometryHandler*>(geometry);  // NOLINT
     glEnable(GL_BLEND);
@@ -197,11 +199,11 @@ void cqsp::engine::CQSPRenderInterface::RenderCompiledGeometry(Rml::CompiledGeom
     glBindVertexArray(0);
 }
 
-void cqsp::engine::CQSPRenderInterface::ReleaseCompiledGeometry(Rml::CompiledGeometryHandle geometry) {
+void CQSPRenderInterface::ReleaseCompiledGeometry(Rml::CompiledGeometryHandle geometry) {
     delete (RmlUiRendererGeometryHandler*)geometry;  // NOLINT
 }
 
-void cqsp::engine::CQSPRenderInterface::EnableScissorRegion(bool enable) {
+void CQSPRenderInterface::EnableScissorRegion(bool enable) {
     if (enable) {
         if (!m_transform_enabled) {
             glEnable(GL_SCISSOR_TEST);
@@ -216,19 +218,19 @@ void cqsp::engine::CQSPRenderInterface::EnableScissorRegion(bool enable) {
     }
 }
 
-void cqsp::engine::CQSPRenderInterface::SetScissorRegion(int x, int y, int width, int height) {
+void CQSPRenderInterface::SetScissorRegion(int x, int y, int width, int height) {
     glScissor(x, app.GetWindowHeight() - (y + height), width, height);
     // TODO(EhWhoAmI): Add stencil buffer rendering
     // Reference:
     // https://github.com/mikke89/RmlUi/blob/master/Samples/shell/src/ShellRenderInterfaceOpenGL.cpp#L120
 }
 
-bool cqsp::engine::CQSPRenderInterface::LoadTexture(Rml::TextureHandle& texture_handle,
+bool CQSPRenderInterface::LoadTexture(Rml::TextureHandle& texture_handle,
                                                     Rml::Vector2i& texture_dimensions, const Rml::String& source) {
     // Load the texture from the file
     SPDLOG_LOGGER_INFO(logger, "Loading image {}", source);
     // Open file and do things
-    cqsp::asset::Texture* texture = new cqsp::asset::Texture();
+    asset::Texture* texture = new asset::Texture();
 
     int width;
     int height;
@@ -241,7 +243,7 @@ bool cqsp::engine::CQSPRenderInterface::LoadTexture(Rml::TextureHandle& texture_
     }
     asset::TextureLoadingOptions options;
     // Read file
-    cqsp::asset::CreateTexture(*texture, data2, width, height, components, options);
+    asset::CreateTexture(*texture, data2, width, height, components, options);
     texture_dimensions.x = width;
     texture_dimensions.y = height;
     // Dump image
@@ -250,23 +252,23 @@ bool cqsp::engine::CQSPRenderInterface::LoadTexture(Rml::TextureHandle& texture_
     return true;
 }
 
-bool cqsp::engine::CQSPRenderInterface::GenerateTexture(Rml::TextureHandle& texture_handle, const Rml::byte* source,
+bool CQSPRenderInterface::GenerateTexture(Rml::TextureHandle& texture_handle, const Rml::byte* source,
                                                         const Rml::Vector2i& source_dimensions) {
-    cqsp::asset::Texture* texture = new cqsp::asset::Texture();
+    asset::Texture* texture = new asset::Texture();
     // Generate opengl texture
     // Cast the source to things
-    cqsp::asset::TextureLoadingOptions options;
-    cqsp::asset::CreateTexture(*texture, (unsigned char*)(source), source_dimensions.x, source_dimensions.y, 4,
+    asset::TextureLoadingOptions options;
+    asset::CreateTexture(*texture, (unsigned char*)(source), source_dimensions.x, source_dimensions.y, 4,
                                options);
     texture_handle = (Rml::TextureHandle)texture;
     return true;
 }
 
-void cqsp::engine::CQSPRenderInterface::ReleaseTexture(Rml::TextureHandle texture) {
-    delete (cqsp::asset::Texture*)texture;  // NOLINT
+void CQSPRenderInterface::ReleaseTexture(Rml::TextureHandle texture) {
+    delete (asset::Texture*)texture;  // NOLINT
 }
 
-void cqsp::engine::CQSPRenderInterface::SetTransform(const Rml::Matrix4f* transform) {
+void CQSPRenderInterface::SetTransform(const Rml::Matrix4f* transform) {
     m_transform_enabled = (transform != nullptr);
 
     if (transform == nullptr) {
@@ -280,6 +282,6 @@ void cqsp::engine::CQSPRenderInterface::SetTransform(const Rml::Matrix4f* transf
                                     (*transform)[3][0], (*transform)[3][1], (*transform)[3][2], (*transform)[3][3]};
 }
 
-void cqsp::engine::CQSPRenderInterface::PrepareRenderBuffer() {}
+void CQSPRenderInterface::PrepareRenderBuffer() {}
 
-void cqsp::engine::CQSPRenderInterface::PresentRenderBuffer() {}
+void CQSPRenderInterface::PresentRenderBuffer() {}

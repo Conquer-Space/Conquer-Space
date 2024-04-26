@@ -132,9 +132,8 @@ void FunctionCivilizationGen(Universe& universe, ScriptInterface& script_engine)
         gov.governor = owner;
     });
 
-    REGISTER_FUNCTION("is_player",[&](entity civ) { 
-        return static_cast<bool>(universe.all_of<components::Player>(civ)); });
-                      
+    REGISTER_FUNCTION("is_player", [&](entity civ) {
+        return static_cast<bool>(universe.all_of<components::Player>(civ)); });        
 
     REGISTER_FUNCTION("add_planet_habitation",
                       [&](entity planet) { universe.emplace<components::Habitation>(planet); });
@@ -374,6 +373,6 @@ void LoadFunctions(Universe& universe, ScriptInterface& script_engine) {
     FunctionResource(universe, script_engine);
     FunctionScience(universe, script_engine);
 }
-}  // namespace
+}  // namespace cqsp::common::scripting
 
 

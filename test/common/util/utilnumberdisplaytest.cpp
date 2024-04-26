@@ -19,19 +19,20 @@
 
 #include "common/util/utilnumberdisplay.h"
 
-using namespace cqsp::common::util;
+using cqsp::common::util::LongToHumanString;
 
 TEST(NumberDisplayTest, LongToHumanStringTest) {
-    EXPECT_STREQ("1 k",     LongToHumanString(1000).c_str());
-    EXPECT_STREQ("1 M",     LongToHumanString(1000000).c_str());
-    EXPECT_STREQ("1 B",     LongToHumanString(1000000000).c_str());
-    EXPECT_STREQ("1 T",     LongToHumanString(1000000000000).c_str());
-    EXPECT_STREQ("1 Qa",    LongToHumanString(1000000000000000).c_str());
-    EXPECT_STREQ("1 Qn",    LongToHumanString(1000000000000000000).c_str());
-    EXPECT_STREQ("2.6 M",   LongToHumanString(2600000).c_str());
-    EXPECT_STREQ("2.6 B",   LongToHumanString(2600000000).c_str());
-    EXPECT_STREQ("420",     LongToHumanString(420).c_str());
+    EXPECT_STREQ("1 k", LongToHumanString(1000).c_str());
+    EXPECT_STREQ("1 M", LongToHumanString(1000000).c_str());
+    EXPECT_STREQ("1 B", LongToHumanString(1000000000).c_str());
+    EXPECT_STREQ("1 T", LongToHumanString(1000000000000).c_str());
+    EXPECT_STREQ("1 Qa", LongToHumanString(1000000000000000).c_str());
+    EXPECT_STREQ("1 Qn", LongToHumanString(1000000000000000000).c_str());
+    EXPECT_STREQ("2.6 M", LongToHumanString(2600000).c_str());
+    EXPECT_STREQ("2.6 B", LongToHumanString(2600000000).c_str());
+    EXPECT_STREQ("420", LongToHumanString(420).c_str());
     EXPECT_STREQ("9.22 Qn", LongToHumanString(9223372036854775806).c_str());
     EXPECT_STREQ("-3.15 M", LongToHumanString(-3150000).c_str());
-    EXPECT_STREQ("3.15 M",  LongToHumanString(3145000).c_str());
+    EXPECT_STREQ("3.15 M", LongToHumanString(3145000).c_str());
 }
+

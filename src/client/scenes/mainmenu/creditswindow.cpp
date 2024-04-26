@@ -24,8 +24,7 @@
 
 using cqsp::client::CreditsWindow;
 
-namespace cqsp::client::util
-{
+namespace cqsp::client::util {
     std::string strip(const std::string& inpt) {
         if (inpt.empty()) {
             return "";
@@ -38,7 +37,7 @@ namespace cqsp::client::util
         }
         return std::string(start_it, end_it.base());
     }
-}
+}// namespace cqsp::client::util
 
 
 CreditsWindow::CreditsWindow(engine::Application& app) : m_app(app) {}

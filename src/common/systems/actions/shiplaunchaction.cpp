@@ -94,5 +94,5 @@ entity LaunchShip(Universe& universe, Orbit& orbit) {
     universe.get<bodies::OrbitalSystem>(orbit.reference_body).push_back(ship);
     return ship;
 }
-}
+} // namespace cqsp::common::systems::actions
 

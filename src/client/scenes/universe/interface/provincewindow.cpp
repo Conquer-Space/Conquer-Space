@@ -195,8 +195,6 @@ void SysProvinceInformation::CityIndustryTabs() {
 }
 
 void SysProvinceInformation::DemographicsTab() {
-
-
     auto& settlement = GetUniverse().get<Settlement>(current_city);
     for (auto& seg_entity : settlement.population) {
         ImGui::TextFmt("Population: {}",
@@ -268,8 +266,6 @@ void SysProvinceInformation::IndustryTab() {
 }
 
 void SysProvinceInformation::SpacePortTab() {
-
-
     // Set the things
     static float semi_major_axis = 8000;
     static float azimuth = 0;

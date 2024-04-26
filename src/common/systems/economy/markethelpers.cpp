@@ -27,8 +27,7 @@ using components::Wallet;
 using components::ResourceLedger;
 using components::ResourceStockpile;
 using entt::entity;
-namespace cqsp::common::systems::economy
-{
+namespace cqsp::common::systems::economy {
 void AddParticipant(Universe& universe, entity market_entity, entity entity) {
     auto& market = universe.get<Market>(market_entity);
     market.participants.insert(entity);
@@ -103,6 +102,4 @@ bool SellGood(Universe& universe, entity agent, const ResourceLedger& selling) {
     wallet += cost;
     return true;
 }
-}
-    
-
+} // namespace cqsp::common::systems::economy

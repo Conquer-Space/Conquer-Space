@@ -94,7 +94,7 @@ class RenderInterface_GL3 : public Rml::RenderInterface {
 
     Rml::UniquePtr<Gfx::ShadersData> shaders;
 };
-}  // namespace Rml
+}  // namespace RmlGL3
 /**
     Helper functions for the OpenGL 3 renderer.
  */
