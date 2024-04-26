@@ -100,7 +100,7 @@ IMPLOT_API void PlotPieChart(std::map<std::string, T>& map, double x, double y, 
 }  // namespace ImPlot
 
 namespace ax::Drawing {
-void DrawFlowIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& b, IconType type, 
+void DrawFlowIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& b, IconType type,
     bool  filled, ImU32 color, ImU32 innerColor) {
     auto rect = ImRect(a, b);
     auto rect_w = rect.Max.x - rect.Min.x;

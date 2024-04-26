@@ -1,7 +1,6 @@
 name: Clang Tidy
 
 on:
-  pull_request:
   push:
 
 jobs:

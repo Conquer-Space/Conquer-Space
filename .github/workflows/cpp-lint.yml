@@ -2,8 +2,7 @@ name: C++ Linting
 
 on:
   push:
-  pull_request:
-
+  
 jobs:
   cpp-lint:
     name: C++ Linting
