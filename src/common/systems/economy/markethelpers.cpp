@@ -26,41 +26,38 @@ using components::MarketHistory;
 using components::Wallet;
 using components::ResourceLedger;
 using components::ResourceStockpile;
-
+using entt::entity;
 namespace cqsp::common::systems::economy
 {
-void AddParticipant(Universe& universe, entt::entity market_entity,
-                                                    entt::entity entity) {
+void AddParticipant(Universe& universe, entity market_entity, entity entity) {
     auto& market = universe.get<Market>(market_entity);
     market.participants.insert(entity);
     universe.emplace<MarketAgent>(entity, market_entity);
     static_cast<void>(universe.get_or_emplace<Wallet>(entity));
 }
 
-double GetCost(Universe& universe, entt::entity market,
-                                               const components::ResourceLedger& ledger) {
+double GetCost(Universe& universe, entity market, const ResourceLedger& ledger) {
     if (!universe.any_of<Market>(market)) {
         return 0.0;
     }
     return universe.get<Market>(market).GetPrice(ledger);
 }
 
-entt::entity CreateMarket(Universe& universe) {
-    entt::entity market = universe.create();
+entity CreateMarket(Universe& universe) {
+    entity market = universe.create();
     CreateMarket(universe, market);
     return market;
 }
 
-void CreateMarket(Universe& universe, entt::entity market) {
+void CreateMarket(Universe& universe, entity market) {
     static_cast<void>(universe.get_or_emplace<Market>(market));
     static_cast<void>(universe.get_or_emplace<MarketHistory>(market));
 }
 
-bool PurchaseGood(Universe& universe, entt::entity agent,
-                                                  const ResourceLedger& purchase) {
+bool PurchaseGood(Universe& universe, entity agent, const ResourceLedger& purchase) {
     // Calculating on how to buy from the market shouldn't be too hard, right?
     // Get the market connected to, and build the demand
-    entt::entity market = universe.get<MarketAgent>(agent).market;
+    entity market = universe.get<MarketAgent>(agent).market;
     auto& market_comp = universe.get<Market>(market);
     // Prices
     double cost = market_comp.GetPrice(purchase);
@@ -87,11 +84,10 @@ bool PurchaseGood(Universe& universe, entt::entity agent,
     return true;
 }
 
-bool SellGood(Universe& universe, entt::entity agent,
-                                              const components::ResourceLedger& selling) {
+bool SellGood(Universe& universe, entity agent, const ResourceLedger& selling) {
     // Calculating on how to buy from the market shouldn't be too hard, right?
     // Get the market connected to, and build the demand
-    entt::entity market = universe.get<MarketAgent>(agent).market;
+    entity market = universe.get<MarketAgent>(agent).market;
     auto& market_comp = universe.get<Market>(market);
     auto& agent_stockpile = universe.get<ResourceStockpile>(agent);
     market_comp.AddSupply(selling);

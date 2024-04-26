@@ -31,17 +31,17 @@ using infrastructure::PowerConsumption;
 using infrastructure::CityPower;
 using infrastructure::BrownOut;
 using infrastructure::CityInfrastructure;
+using entt::entity;
 
 void InfrastructureSim::DoSystem() {
     ZoneScoped;
     Universe& universe = GetUniverse();
     // Get all cities with industry and infrastruture
-    auto view = universe.view<IndustrialZone>();
-    for (entt::entity entity : view) {
-        auto& industry = universe.get<IndustrialZone>(entity);
+    for (entity zone : universe.view<IndustrialZone>()) {
+        auto& industry = universe.get<IndustrialZone>(zone);
         double power_production = 0;
         double power_consumption = 0;
-        for (entt::entity industrial_site : industry.industries) {
+        for (entity industrial_site : industry.industries) {
             if (universe.any_of<PowerPlant>(industrial_site)) {
                 power_production += universe.get<PowerPlant>(industrial_site).production;
             }
@@ -50,20 +50,20 @@ void InfrastructureSim::DoSystem() {
             }
         }
         // Now assign infrastrutural information
-        universe.emplace_or_replace<CityPower>(entity, power_production, power_consumption);
+        universe.emplace_or_replace<CityPower>(zone, power_production, power_consumption);
 
         if (power_production < power_consumption) {
             // Then city has no power. Next time, we'd allow transmitting power, or allowing emergency use power
             // but for now, the city will go under brownout.
-            universe.get_or_emplace<BrownOut>(entity);
+            universe.get_or_emplace<BrownOut>(zone);
         } else {
-            universe.remove<BrownOut>(entity);
+            universe.remove<BrownOut>(zone);
         }
-        CityInfrastructure& infra = GetUniverse().get_or_emplace<CityInfrastructure>(entity);
+        CityInfrastructure& infra = GetUniverse().get_or_emplace<CityInfrastructure>(zone);
         infra.improvement = 0;
         // Add highway things I guess
-        if (GetUniverse().any_of<Highway>(entity)) {
-            infra.improvement += GetUniverse().get<Highway>(entity).extent;
+        if (GetUniverse().any_of<Highway>(zone)) {
+            infra.improvement += GetUniverse().get<Highway>(zone).extent;
         }
     }
 }

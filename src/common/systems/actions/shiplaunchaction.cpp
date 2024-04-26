@@ -39,10 +39,11 @@ using types::toVec3AU;
 using ships::Ship;
 using bodies::Body;
 
+using entt::entity;
+
 namespace cqsp::common::systems::actions {
-entt::entity CreateShip(Universe& universe, entt::entity civEnt, const glm::vec3& orbit,
-                          entt::entity starsystem) {
-    entt::entity ship = universe.create();
+entity CreateShip(Universe& universe, entity civEnt, const glm::vec3& orbit, entity starsystem) {
+    entity ship = universe.create();
     universe.emplace<Ship>(ship);
 
     auto& position = universe.emplace<Kinematics>(ship);
@@ -55,15 +56,13 @@ entt::entity CreateShip(Universe& universe, entt::entity civEnt, const glm::vec3
     return ship;
 }
 
-entt::entity CreateShip(Universe& universe, entt::entity civ,
-                                                        entt::entity orbit, entt::entity starsystem) {
+entity CreateShip(Universe& universe, entity civ, entity orbit, entity starsystem) {
     return CreateShip(universe, civ, types::toVec3AU(universe.get<Orbit>(orbit)), starsystem);
 }
 
-entt::entity CreateShip(Universe& universe, entt::entity fleetEnt,
-                                                        entt::entity starsystemEnt, const glm::vec3& orbit,
-                                                        const std::string& shipName) {
-    entt::entity ship = universe.create();
+entity CreateShip(Universe& universe, entity fleetEnt, entity starsystemEnt, const glm::vec3&   orbit,
+                                                                             const std::string& shipName) {
+    entity ship = universe.create();
     universe.emplace<Ship>(ship);
 
     auto& position = universe.emplace<Kinematics>(ship);
@@ -78,16 +77,14 @@ entt::entity CreateShip(Universe& universe, entt::entity fleetEnt,
     return ship;
 }
 
-entt::entity CreateShip(Universe& universe, entt::entity fleetEnt,
-                                                        entt::entity starsystemEnt, entt::entity orbitEnt,
-                                                        const std::string& shipName) {
-    return CreateShip(universe, fleetEnt, starsystemEnt, toVec3AU(universe.get<Orbit>(orbitEnt)),
-                      shipName);
+entity CreateShip(Universe& universe, entity fleetEnt, entity starsystemEnt, entity orbitEnt,
+                                      const std::string& shipName) {
+    return CreateShip(universe, fleetEnt, starsystemEnt, toVec3AU(universe.get<Orbit>(orbitEnt)), shipName);
 }
 
-entt::entity LaunchShip(Universe& universe, components::types::Orbit& orbit) {
+entity LaunchShip(Universe& universe, Orbit& orbit) {
     // Set the orbit
-    entt::entity ship = universe.create();
+    entity ship = universe.create();
     universe.emplace<Ship>(ship);
     // Now do things
     auto& o = universe.emplace<Orbit>(ship, orbit);

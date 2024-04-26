@@ -56,9 +56,8 @@ void SysCommand::DoUI(int delta_time) {
     ImGui::Begin("Order Target", &to_see, ImGuiWindowFlags_NoResize | window_flags);
     int index = 0;
     // Get selected planet
-    auto system = GetUniverse().view<common::components::types::Orbit>();
     entt::entity current_planet = scene::GetCurrentViewingPlanet(GetUniverse());
-    for (auto entity : system) {
+    for (auto entity : GetUniverse().view<common::components::types::Orbit>()) {
         bool is_selected = (entity == current_planet);
         std::string planet_name = fmt::format("{}", entity);
         if (GetUniverse().all_of<Name>(entity)) {

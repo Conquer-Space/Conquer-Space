@@ -47,6 +47,7 @@ using  cqsp::common::systems::loading::PlanetLoader;
 using components::types::UnitType;
 using bodies::Body;
 using types::Orbit;
+using entt::entity;
 
 namespace cqsp::common::systems::loading {
 struct ParentTemp {
@@ -54,7 +55,7 @@ struct ParentTemp {
 };
 }  // namespace cqsp::common::systems::loading
 
-bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
+bool PlanetLoader::LoadValue(const Hjson::Value& values, entity entity) {
     // Load orbit
     std::string identifier = values["identifier"];
     const Hjson::Value& orbit = values["orbit"];
@@ -206,7 +207,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     return true;
 }
 
-void PlanetLoader::PostLoad(const entt::entity& entity) {
+void PlanetLoader::PostLoad(const entity& entity) {
     // Set the parent
     Orbit& orbit = universe.get<Orbit>(entity);
     Body& body = universe.get<Body>(entity);

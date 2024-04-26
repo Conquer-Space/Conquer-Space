@@ -24,13 +24,14 @@
 #include "common/util/nameutil.h"
 
 using cqsp::client::systems::SysOrbitFilter;
+using cqsp::common::components::types::Orbit;
 using entt::entity;
+using cqsp::client::ctx::VisibleOrbit;
 
 void SysOrbitFilter::Init() {
     // Set all orbits to be visible
-    auto orbits = GetUniverse().view<common::components::types::Orbit>();
-    for (entity orb : orbits) {
-        GetUniverse().emplace_or_replace<ctx::VisibleOrbit>(orb);
+    for (entity orb : GetUniverse().view<Orbit>()) {
+        GetUniverse().emplace_or_replace<VisibleOrbit>(orb);
     }
 }
 
@@ -40,15 +41,15 @@ void SysOrbitFilter::DoUI(int delta_time) {
     }
     ImGui::Begin("Orbit filter", &visible);
     // List out all the types of orbits and then determine if they are visible or not
-    auto orbits = GetUniverse().view<common::components::types::Orbit>();
     if (ImGui::Checkbox("Hide all orbits", &hide_all_orbits)) {
+        auto orbits = GetUniverse().view<Orbit>();
         if (hide_all_orbits) {
             for (entity orb : orbits) {
-                GetUniverse().remove<ctx::VisibleOrbit>(orb);
+                GetUniverse().remove<VisibleOrbit>(orb);
             }
         } else {
             for (entity orb : orbits) {
-                GetUniverse().get_or_emplace<ctx::VisibleOrbit>(orb);
+                GetUniverse().get_or_emplace<VisibleOrbit>(orb);
             }
         }
     }
@@ -58,9 +59,9 @@ void SysOrbitFilter::DoUI(int delta_time) {
         ImGui::TableSetupColumn("Visible");
         ImGui::TableHeadersRow();
         int i = 0;
-        for (entity orb : orbits) {
+        for (entity orb : GetUniverse().view<Orbit>()) {
             // Get the name
-            if (GetUniverse().any_of<cqsp::common::components::bodies::Planet>(orb)) {
+            if (GetUniverse().any_of<common::components::bodies::Planet>(orb)) {
                 continue;
             }
             ImGui::TableNextRow();
@@ -68,12 +69,12 @@ void SysOrbitFilter::DoUI(int delta_time) {
             ImGui::TableSetColumnIndex(0);
             ImGui::TextFmt("{}", name);
             ImGui::TableSetColumnIndex(1);
-            bool check = GetUniverse().any_of<ctx::VisibleOrbit>(orb);
+            bool check = GetUniverse().any_of<VisibleOrbit>(orb);
             ImGui::Checkbox(fmt::format("###Visible orbit{}", i).c_str(), &check);
             if (check) {
-                GetUniverse().get_or_emplace<ctx::VisibleOrbit>(orb);
+                GetUniverse().get_or_emplace<VisibleOrbit>(orb);
             } else {
-                GetUniverse().remove<ctx::VisibleOrbit>(orb);
+                GetUniverse().remove<VisibleOrbit>(orb);
             }
             i++;
         }

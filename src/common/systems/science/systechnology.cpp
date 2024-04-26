@@ -26,12 +26,13 @@
 using cqsp::common::components::science::Technology;
 using cqsp::common::components::science::ScientificResearch;
 using cqsp::common::systems::SysTechProgress;
+using entt::entity;
 
 void SysTechProgress::DoSystem() {
     ZoneScoped;
-    for (entt::entity entity : GetUniverse().view<ScientificResearch>()) {
-        auto& research = GetUniverse().get<ScientificResearch>(entity);
-        std::vector<entt::entity> completed_techs;
+    for (entity presearch : GetUniverse().view<ScientificResearch>()) {
+        auto& research = GetUniverse().get<ScientificResearch>(presearch);
+        std::vector<entity> completed_techs;
         for (auto& res : research.current_research) {
             res.second += Interval();
             // Get the research amount
@@ -41,8 +42,8 @@ void SysTechProgress::DoSystem() {
                 completed_techs.push_back(res.first);
             }
         }
-        for (entt::entity r : completed_techs) {
-            cqsp::common::systems::science::ResearchTech(GetUniverse(), entity, r);
+        for (entity r : completed_techs) {
+            science::ResearchTech(GetUniverse(), presearch, r);
             research.current_research.erase(r);
         }
     }

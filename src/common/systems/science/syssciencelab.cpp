@@ -23,12 +23,12 @@
 using cqsp::common::components::science::Lab;
 using cqsp::common::components::science::ScientificProgress;
 using cqsp::common::systems::SysScienceLab;
-
+using entt::entity;
 
 void SysScienceLab::DoSystem() {
     ZoneScoped;
     // Add to the science
-    for (entt::entity entity : GetUniverse().view<Lab>()) {
+    for (entity entity : GetUniverse().view<Lab>()) {
         // Add to the scientific progress of the area, I guess
         auto& lab = GetUniverse().get<Lab>(entity);
         // Progress the science, I guess

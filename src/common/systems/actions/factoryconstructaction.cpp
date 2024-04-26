@@ -32,11 +32,12 @@ using components::Factory;
 using components::ResourceLedger;
 using components::Recipe;
 
+using entt::entity;
+
 namespace cqsp::common::systems::actions
 {
-entt::entity OrderConstructionFactory(Universe& universe, entt::entity city,
-                                                                      entt::entity market, entt::entity recipe,
-                                                                      int productivity, entt::entity builder) {
+entity OrderConstructionFactory(Universe& universe, entity city, entity market, entity recipe,
+                                int productivity, entity builder) {
     entt::entity factory = CreateFactory(universe, city, recipe, productivity);
     if (factory == entt::null) {
         return entt::null;
@@ -49,8 +50,7 @@ entt::entity OrderConstructionFactory(Universe& universe, entt::entity city,
     return factory;
 }
 
-entt::entity CreateFactory(Universe& universe, entt::entity city, entt::entity recipe,
-                                                           int productivity) {
+entt::entity CreateFactory(Universe& universe, entity city, entity recipe, int productivity) {
     // Make the factory
     if (city == entt::null || recipe == entt::null) {
         SPDLOG_WARN("City or recipe is null");
@@ -70,7 +70,7 @@ entt::entity CreateFactory(Universe& universe, entt::entity city, entt::entity r
         return entt::null;
     }
 
-    entt::entity factory = universe.create();
+    entity factory = universe.create();
     //auto& factory_converter = universe.emplace<cqspc::ResourceConverter>(factory);
     auto& production = universe.emplace<components::Production>(factory);
     // Add recipes and stuff
@@ -102,8 +102,7 @@ entt::entity CreateFactory(Universe& universe, entt::entity city, entt::entity r
     return factory;
 }
 
-    ResourceLedger GetFactoryCost(
-    Universe& universe, entt::entity city, entt::entity recipe, int productivity) {
+ResourceLedger GetFactoryCost(Universe& universe, entity city, entity recipe, int productivity) {
     ResourceLedger ledger;
     // Get the recipe and things
     if (universe.any_of<components::RecipeCost>(recipe)) {
@@ -114,8 +113,8 @@ entt::entity CreateFactory(Universe& universe, entt::entity city, entt::entity r
     return ledger;
 }
 
-entt::entity CreateCommercialArea(cqsp::common::Universe& universe, entt::entity city) {
-    entt::entity commercial = universe.create();
+entity CreateCommercialArea(common::Universe& universe, entity city) {
+    entity commercial = universe.create();
 
     universe.emplace<components::Employer>(commercial);
     universe.emplace<components::Commercial>(commercial, city, 0);

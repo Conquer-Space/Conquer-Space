@@ -19,6 +19,8 @@
 #include "common/components/economy.h"
 #include "common/systems/economy/markethelpers.h"
 
+using entt::entity;
+
 using cqsp::common::systems::SysAgent;
 /*
 void SysAgent::DoSystem() {

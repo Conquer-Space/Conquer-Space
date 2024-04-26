@@ -22,6 +22,9 @@
 #include <glm/gtx/projection.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
+using entt::entity;
+
+
 namespace cqsp::common::components::types {
 double GetOrbitingRadius(const double& e, const double& a, const double& v) {
     return (a * (1 - e * e)) / (1 + e * cos(v));
@@ -37,7 +40,7 @@ glm::dvec3 MatrixConvertOrbParams(const double LAN, const double i, const double
 
 glm::dvec3 ConvertOrbParams(const double LAN, const double i, const double w, const glm::dvec3& vec) {
     return glm::dquat {glm::dvec3(0, 0, LAN)} * glm::dquat {glm::dvec3(i, 0, 0)} * glm::dquat {glm::dvec3(0, 0, w)} *
-           vec;
+    vec;
 }
 
 glm::dvec3 ConvertToOrbitalVector(const double LAN, const double i, const double w, const double v,

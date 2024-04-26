@@ -85,12 +85,11 @@ void CivilizationInfoPanel::CivInfoPanel() {
     if (ImGui::BeginTabBar("civ_info_window")) {
         if (ImGui::BeginTabItem("City Information")) {
             // Collate all the owned stuff
-            auto view = GetUniverse().view<components::Governed>();
             ImGui::Separator();
             ImGui::Text("Owned Cities");
 
             ImGui::BeginChild("ownedcitiespanel");
-            for (auto entity : view) {
+            for (auto entity : GetUniverse().view<components::Governed>()) {
                 if (GetUniverse().get<components::Governed>(entity).governor == player) {
                     ImGui::TextFmt("{}", GetName(GetUniverse(), entity));
                     gui::EntityTooltip(GetUniverse(), entity);
@@ -150,8 +149,7 @@ void CivilizationInfoPanel::PlanetMarketInfoPanel() {
     if (!ImGui::BeginTabBar("market_info_panel")) {
         return;
     }
-    auto views = GetUniverse().view<components::Market, components::PlanetaryMarket>();
-    for (entity entity : views) {
+    for (entity entity : GetUniverse().view<components::Market, components::PlanetaryMarket>()) {
         if (!ImGui::BeginTabItem(fmt::format("{}", GetName(GetUniverse(), entity)).c_str())) {
             continue;
         }

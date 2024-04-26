@@ -29,6 +29,7 @@ using cqsp::common::systems::SysMarket;
 namespace components = cqsp::common::components;
 using components::Market;
 using components::Price;
+using entt::entity;
 
 void SysMarket::DoSystem() {
     ZoneScoped;

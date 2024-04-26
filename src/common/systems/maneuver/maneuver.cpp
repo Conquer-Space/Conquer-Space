@@ -28,6 +28,7 @@ using types::GetCircularOrbitingVelocity;
 using types::OrbitVelocity;
 using types::FlightPathAngle;
 using types::PI;
+using entt::entity;
 
 namespace cqsp::common::systems {
 std::pair<glm::dvec3, double> CircularizeAtApoapsis(const Orbit& orbit) {

@@ -105,13 +105,11 @@ void SpaceshipWindow::DoUI(int delta_time) {
             GetUniverse().get_or_emplace<CommandQueue>(body).commands.push_back(maneuver);
         }
         if (ImGui::IsItemHovered()) {
-            double circular_velocity =
-                types::GetCircularOrbitingVelocity(orbit.GM, orbit.GetApoapsis());
+            double circular_velocity = types::GetCircularOrbitingVelocity(orbit.GM, orbit.GetApoapsis());
             // So for apoapsis, we need this amount of delta v at prograde
             // Get the vector of the direction and then compute?
             // Then transform by the orbital math
-            double orbit_velocity = OrbitVelocity(
-                types::PI, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+            double orbit_velocity = OrbitVelocity(types::PI, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
             ImGui::SetTooltip("Delta-v: %f km/s", circular_velocity - orbit_velocity);
         }
 
@@ -122,13 +120,11 @@ void SpaceshipWindow::DoUI(int delta_time) {
         }
 
         if (ImGui::IsItemHovered()) {
-            double circular_velocity =
-                types::GetCircularOrbitingVelocity(orbit.GM, orbit.GetPeriapsis());
+            double circular_velocity = types::GetCircularOrbitingVelocity(orbit.GM, orbit.GetPeriapsis());
             // So for apoapsis, we need this amount of delta v at prograde
             // Get the vector of the direction and then compute?
             // Then transform by the orbital math
-            double orbit_velocity =
-                OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+            double orbit_velocity = OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
             ImGui::SetTooltip("Delta-v: %f km/s", circular_velocity - orbit_velocity);
         }
 
@@ -169,8 +165,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
             double new_sma = (orbit.GetPeriapsis() + new_apogee) / 2;
             // Get velocity at the new apogee
             double new_v = types::OrbitVelocityAtR(orbit.GM, new_sma, orbit.GetPeriapsis());
-            double orbit_velocity =
-                types::OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+            double orbit_velocity = types::OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
             ImGui::SetTooltip("Delta-v: %f km/s", new_v - orbit_velocity);
         }
 
@@ -228,8 +223,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
             maneuver.second += GetUniverse().date.ToSecond();
             queue.commands.emplace_back(maneuver);
         }
-        ImGui::TextFmt("Phase angle: {}", types::CalculatePhaseAngle(
-                                              orbit, target, GetUniverse().date.ToSecond()));
+        ImGui::TextFmt("Phase angle: {}", types::CalculatePhaseAngle(orbit, target, GetUniverse().date.ToSecond()));
         ImGui::TextFmt("Transfer angle: {}", types::CalculateTransferAngle(orbit, target));
         double ttma = orbit.TimeToMeanAnomaly(types::AscendingTrueAnomaly(orbit, target));
         ImGui::TextFmt("Time to ascending node: {}", ttma);

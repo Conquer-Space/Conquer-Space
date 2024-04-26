@@ -33,6 +33,7 @@
 #include "common/util/nameutil.h"
 
 using cqsp::common::systems::loading::CityLoader;
+using entt::entity;
 
 namespace cqsp::common::systems::loading {
 struct ConnectedCities {
@@ -40,28 +41,28 @@ struct ConnectedCities {
     std::vector<std::string> entities;
 };
 }  // namespace
-bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
+bool CityLoader::LoadValue(const Hjson::Value& values, entity cityentity) {
     // Load the city
     std::string planet = values["planet"].to_string();
     double longi = values["coordinates"]["longitude"].to_double();
     double lat = values["coordinates"]["latitude"].to_double();
-    auto& sc = universe.emplace<components::types::SurfaceCoordinate>(entity, lat, longi);
+    auto& sc = universe.emplace<components::types::SurfaceCoordinate>(cityentity, lat, longi);
     sc.planet = universe.planets[planet];
 
-    universe.get_or_emplace<components::Habitation>(universe.planets[planet]).settlements.push_back(entity);
+    universe.get_or_emplace<components::Habitation>(universe.planets[planet]).settlements.push_back(cityentity);
 
     if (!values["timezone"].empty()) {
-        entt::entity tz = universe.time_zones[values["timezone"].to_string()];
-        universe.emplace<components::CityTimeZone>(entity, tz);
+        entity tz = universe.time_zones[values["timezone"].to_string()];
+        universe.emplace<components::CityTimeZone>(cityentity, tz);
     }
 
-    auto& settlement = universe.emplace<components::Settlement>(entity);
+    auto& settlement = universe.emplace<components::Settlement>(cityentity);
     // Load population
     if (!values["population"].empty()) {
         Hjson::Value population = values["population"];
         for (int i = 0; i < population.size(); i++) {
             Hjson::Value population_seg = population[i];
-            entt::entity pop_ent = universe.create();
+            entity pop_ent = universe.create();
 
             auto size = population_seg["size"].to_int64();
             int64_t labor_force = size / 2;
@@ -76,7 +77,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
             settlement.population.push_back(pop_ent);
         }
     } else {
-        entt::entity pop_ent = universe.create();
+        entity pop_ent = universe.create();
 
         auto size = 50000;
         int64_t labor_force = size / 2;
@@ -86,20 +87,21 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         segment.labor_force = labor_force;
         universe.emplace<components::LaborInformation>(pop_ent);
         settlement.population.push_back(pop_ent);
-        SPDLOG_WARN("City {} does not have any population", universe.get<components::Identifier>(entity).identifier);
+        SPDLOG_WARN("City {} does not have any population",
+                    universe.get<components::Identifier>(cityentity).identifier);
     }
 
-    universe.emplace<components::ResourceLedger>(entity);
+    universe.emplace<components::ResourceLedger>(cityentity);
 
     // Industry and economy
-    auto& industry = universe.emplace<components::IndustrialZone>(entity);
-    auto& market = universe.emplace<components::Market>(entity);
+    auto& industry = universe.emplace<components::IndustrialZone>(cityentity);
+    auto& market = universe.emplace<components::Market>(cityentity);
     // Get the connected markets
     if (!values["connections"].empty() && values["connections"].type() == Hjson::Type::Vector) {
         // Get connected cities and then see if they're done
         Hjson::Value connected = values["connections"];
         if (!connected.empty()) {
-            auto& conn = universe.emplace<ConnectedCities>(entity);
+            auto& conn = universe.emplace<ConnectedCities>(cityentity);
             for (int i = 0; i < connected.size(); i++) {
                 Hjson::Value& val = connected[i];
                 conn.entities.push_back(val.to_string());
@@ -107,10 +109,10 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         }
     }
     // Commercial area
-    entt::entity commercial = universe.create();
+    entity commercial = universe.create();
 
     universe.emplace<components::Employer>(commercial);
-    universe.emplace<components::Commercial>(commercial, entity, 0);
+    universe.emplace<components::Commercial>(commercial, cityentity, 0);
 
     industry.industries.push_back(commercial);
 
@@ -123,47 +125,47 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
             auto productivity = ind_val["productivity"].to_double();
             if (universe.recipes.find(recipe) == universe.recipes.end()) {
                 SPDLOG_INFO("Recipe {} not found in city {}", recipe,
-                            universe.get<components::Identifier>(entity).identifier);
+                            universe.get<components::Identifier>(cityentity).identifier);
                 continue;
             }
-            entt::entity rec_ent = universe.recipes[recipe];
+            entity rec_ent = universe.recipes[recipe];
 
-            actions::CreateFactory(universe, entity, rec_ent, productivity);
+            actions::CreateFactory(universe, cityentity, rec_ent, productivity);
         }
     }
 
     if (!values["space-port"].empty()) {
         // Add space port
-        universe.emplace<components::infrastructure::SpacePort>(entity);
+        universe.emplace<components::infrastructure::SpacePort>(cityentity);
     }
 
     if (!values["country"].empty()) {
         if (universe.countries.find(values["country"]) != universe.countries.end()) {
-            entt::entity country = universe.countries[values["country"]];
-            universe.emplace<components::Governed>(entity, country);
+            entity country = universe.countries[values["country"]];
+            universe.emplace<components::Governed>(cityentity, country);
             // Add self to country?
-            universe.get_or_emplace<components::CountryCityList>(country).city_list.push_back(entity);
+            universe.get_or_emplace<components::CountryCityList>(country).city_list.push_back(cityentity);
         } else {
             SPDLOG_INFO("City {} has country {}, but it's undefined",
-                        universe.get<components::Identifier>(entity).identifier, values["country"]);
+                        universe.get<components::Identifier>(cityentity).identifier, values["country"]);
         }
     } else {
-        SPDLOG_WARN("City {} has no country", universe.get<components::Identifier>(entity).identifier);
+        SPDLOG_WARN("City {} has no country", universe.get<components::Identifier>(cityentity).identifier);
     }
 
     if (!values["province"].empty()) {
         if (universe.provinces[values["province"]] != universe.provinces.end()) {
-            entt::entity province = universe.provinces[values["province"]];
+            entity province = universe.provinces[values["province"]];
             // Now add self to province
-            universe.get<components::Province>(province).cities.push_back(entity);
+            universe.get<components::Province>(province).cities.push_back(cityentity);
         } else {
             SPDLOG_WARN("City {} has province {}, but it's undefined",
-                        universe.get<components::Identifier>(entity).identifier, values["province"]);
+                        universe.get<components::Identifier>(cityentity).identifier, values["province"]);
         }
     }
 
     // Add infrastructure to city
-    auto& infrastructure = universe.emplace<components::infrastructure::CityInfrastructure>(entity);
+    auto& infrastructure = universe.emplace<components::infrastructure::CityInfrastructure>(cityentity);
     if (!values["transport"].empty()) {
         infrastructure.default_purchase_cost = values["transport"].to_double();
     } else {
@@ -175,7 +177,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         if (!values["infrastructure"]["highway"].empty()) {
             SPDLOG_INFO("Has highway");
             // Set the stuff
-            auto& highway = universe.emplace<components::infrastructure::Highway>(entity);
+            auto& highway = universe.emplace<components::infrastructure::Highway>(cityentity);
             highway.extent = values["infrastructure"]["highway"].to_double();
         }
     }
@@ -184,30 +186,30 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         for (int i = 0; i < values["tags"].size(); i++) {
             if (values["tags"][i].to_string() == "capital") {
                 // Then it's a capital city of whatever country it's in
-                universe.emplace<components::CapitalCity>(entity);
+                universe.emplace<components::CapitalCity>(cityentity);
                 // Add to parent country
-                if (universe.any_of<components::Governed>(entity)) {
-                    entt::entity governor = universe.get<components::Governed>(entity).governor;
+                if (universe.any_of<components::Governed>(cityentity)) {
+                    entity governor = universe.get<components::Governed>(cityentity).governor;
                     auto& country_comp = universe.get<components::Country>(governor);
                     if (country_comp.capital_city != entt::null) {
                         // Get name
                         SPDLOG_INFO("Country {} already has a capital; {} will be replaced with {}",
                                     util::GetName(universe, governor),
                                     util::GetName(universe, country_comp.capital_city),
-                                    util::GetName(universe, entity));
+                                    util::GetName(universe, cityentity));
                         // Remove capital tag on the other capital city
                         universe.remove<components::CapitalCity>(country_comp.capital_city);
                     }
-                    country_comp.capital_city = entity;
+                    country_comp.capital_city = cityentity;
                 }
             }
         }
     }
-    universe.cities[universe.get<components::Identifier>(entity).identifier] = entity;
+    universe.cities[universe.get<components::Identifier>(cityentity).identifier] = cityentity;
     return true;
 }
 
-void CityLoader::PostLoad(const entt::entity& entity) {
+void CityLoader::PostLoad(const entity& entity) {
     if (universe.all_of<ConnectedCities>(entity)) {
         auto& connected = universe.get<ConnectedCities>(entity);
         auto& market = universe.get<components::Market>(entity);

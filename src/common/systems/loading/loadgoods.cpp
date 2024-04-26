@@ -40,13 +40,14 @@ using cqsp::common::systems::loading::RecipeLoader;
 namespace components = cqsp::common::components;
 namespace types = components::types;
 using components::Good;
+using entt::entity;
 
 namespace cqsp::common::systems::loading {
 void LoadTerrainData(Universe& universe, Hjson::Value& value) {
     for (auto it = value.begin(); it != value.end(); it++) {
-        entt::entity entity = universe.create();
+        entity terrainentity = universe.create();
 
-        TerrainData& data = universe.get_or_emplace<TerrainData>(entity);
+        TerrainData& data = universe.get_or_emplace<TerrainData>(terrainentity);
 
         data.sea_level = it->second["sealevel"];
         auto terrain_colors = it->second["terrain"];
@@ -69,7 +70,7 @@ void LoadTerrainData(Universe& universe, Hjson::Value& value) {
                 data.data[place] = tuple;
             }
         }
-        universe.terrain_data[it->first] = entity;
+        universe.terrain_data[it->first] = terrainentity;
     }
 }
 }  // namespace cqsp::common::systems::loading
@@ -79,7 +80,7 @@ GoodLoader::GoodLoader(Universe& universe) : HjsonLoader(universe) {
     default_val["tags"] = Hjson::Type::Vector;
 }
 
-bool GoodLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
+bool GoodLoader::LoadValue(const Hjson::Value& values, entity entity) {
 
 
     universe.emplace<Good>(entity);
@@ -144,7 +145,7 @@ RecipeLoader::RecipeLoader(Universe& universe) : HjsonLoader(universe) {
     default_val["output"] = Hjson::Type::Vector;
 }
 
-bool RecipeLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
+bool RecipeLoader::LoadValue(const Hjson::Value& values, entity entity) {
 
     auto& recipe_component = universe.emplace<components::Recipe>(entity);
 

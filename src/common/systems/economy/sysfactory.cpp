@@ -33,6 +33,7 @@ using components::ResourceLedger;
 using components::IndustrySize;
 using components::Recipe;
 using components::Production;
+using entt::entity;
 
 namespace cqsp::common::systems {
 /// <summary>
@@ -42,22 +43,20 @@ namespace cqsp::common::systems {
 /// <param name="universe">Registry used for searching for components</param>
 /// <param name="entity">Entity containing an Inudstries that need to be processed</param>
 /// <param name="market">The market the industry uses.</param>
-void ProcessIndustries(Universe& universe, entt::entity entity) {
+void ProcessIndustries(Universe& universe, entity entity) {
     auto& market = universe.get<components::Market>(entity);
     // Get the transport cost
     auto& infrastructure = universe.get<components::infrastructure::CityInfrastructure>(entity);
     // Calculate the infrastructure cost
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
 
-    auto& industries = universe.get<components::IndustrialZone>(entity);
     auto& population_wallet =
         universe.get_or_emplace<components::Wallet>(universe.get<components::Settlement>(entity).population.front());
-    for (entt::entity productionentity : industries.industries) {
+    for (entt::entity productionentity : universe.get<components::IndustrialZone>(entity).industries) {
         // Process imdustries
         // Industries MUST have production and a linked recipe
         if (!universe.all_of<Production>(productionentity)) continue;
-        Recipe recipe =
-            universe.get_or_emplace<Recipe>(universe.get<Production>(productionentity).recipe);
+        Recipe recipe = universe.get_or_emplace<Recipe>(universe.get<Production>(productionentity).recipe);
         IndustrySize& size = universe.get_or_emplace<IndustrySize>(productionentity, 1000.0);
         // Calculate resource consumption
         ResourceLedger capitalinput = recipe.capitalcost * (0.01 * size.size);
@@ -130,7 +129,7 @@ void SysProduction::DoSystem() {
     // Loop through the markets
     int settlement_count = 0;
     // Get the markets and process the values?
-    for (entt::entity entity : view) {
+    for (entity entity : view) {
         ProcessIndustries(universe, entity);
     }
     END_TIMED_BLOCK(INDUSTRY);

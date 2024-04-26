@@ -42,6 +42,7 @@ using components::ResourceConsumption;
 using components::ConsumerGood;
 using components::Habitation;
 using components::Market;
+using entt::entity;
 
 // Must be run after SysPopulationConsumption
 // This is because population growth is dependent on if consumption was
@@ -50,9 +51,7 @@ void SysPopulationGrowth::DoSystem() {
     ZoneScoped;
 
     Universe& universe = GetUniverse();
-
-    auto view = universe.view<PopulationSegment>();
-    for (entt::entity entity : view) {
+    for (entity entity : universe.view<PopulationSegment>()) {
         auto& segment = universe.get<PopulationSegment>(entity);
         // If it's hungry, decay population
         if (universe.all_of<Hunger>(entity)) {
@@ -85,7 +84,7 @@ void SysPopulationGrowth::DoSystem() {
 }
 
 namespace cqsp::common::systems {
-void ProcessSettlement(Universe& universe, entt::entity settlement, Market& market,
+void ProcessSettlement(Universe& universe, entity settlement, Market& market,
                        ResourceConsumption& marginal_propensity_base,
                        ResourceConsumption& autonomous_consumption_base, float savings) {
     // Get the transport cost
@@ -94,8 +93,7 @@ void ProcessSettlement(Universe& universe, entt::entity settlement, Market& mark
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
 
     // Loop through the population segments through the settlements
-    auto& settlement_comp = universe.get<Settlement>(settlement);
-    for (entt::entity segmententity : settlement_comp.population) {
+    for (entt::entity segmententity : universe.get<Settlement>(settlement).population) {
         // Compute things
         PopulationSegment& segment = universe.get_or_emplace<PopulationSegment>(segmententity);
         ResourceConsumption& consumption = universe.get_or_emplace<ResourceConsumption>(segmententity);
@@ -191,7 +189,8 @@ void SysPopulationConsumption::DoSystem() {
         autonomous_consumption_base[cgentity] = good.autonomous_consumption;
         savings -= good.marginal_propensity;
     }  // These tables technically never need to be recalculated
-    auto settlementview = universe.view<Settlement>();
+    //auto settlement
+    //  = universe.view<Settlement>();
 
     // Loop through the settlements on a planet, then process the market?
     int settlement_count = 0;

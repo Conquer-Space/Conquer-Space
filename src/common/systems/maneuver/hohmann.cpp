@@ -21,6 +21,7 @@ namespace types = components::types;
 using types::Orbit;
 using types::OrbitVelocityAtR;
 using types::GetCircularOrbitingVelocity;
+using entt::entity;
 
 namespace cqsp::common::systems {
 HohmannPair_t UnsafeHohmannTransfer(const Orbit& orbit, double altitude) {

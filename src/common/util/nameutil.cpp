@@ -37,9 +37,10 @@ namespace components = cqsp::common::components;
 
 using components::Name;
 using components::Identifier;
+using entt::entity;
 
 namespace cqsp::common::util {
-std::string GetName(const Universe& universe, entt::entity entity) {
+std::string GetName(const Universe& universe, entity entity) {
     if (!universe.valid(entity)) {
         return "";
     }
@@ -52,7 +53,7 @@ std::string GetName(const Universe& universe, entt::entity entity) {
     }
 }
 
-std::string GetEntityType(const Universe& universe, entt::entity entity) {
+std::string GetEntityType(const Universe& universe, entity entity) {
     // Then get type of entity
     if (entity == entt::null) {
         return "Null Entity";

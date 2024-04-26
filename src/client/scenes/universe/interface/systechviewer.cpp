@@ -38,8 +38,7 @@ void SysTechnologyViewer::Init() {}
 
 void SysTechnologyViewer::DoUI(int delta_time) {
     // Display UI
-    auto view = GetUniverse().view<components::Player>();
-    entity player = view.front();
+    entity player = GetUniverse().view<components::Player>().front();
     ImGui::Begin("Technology Information");
     if (GetUniverse().any_of<TechnologicalProgress>(player)) {
         auto& progress = GetUniverse().get<TechnologicalProgress>(player);
@@ -58,8 +57,7 @@ void SysTechnologyProjectViewer::Init() {}
 
 void SysTechnologyProjectViewer::DoUI(int delta_time) {
     // Display UI
-    auto view = GetUniverse().view<components::Player>();
-    entity player = view.front();
+    entity player = GetUniverse().view<components::Player>().front();
     ImGui::Begin("Technology Research");
     if (GetUniverse().any_of<ScientificResearch>(player)) {
         auto& progress = GetUniverse().get<ScientificResearch>(player);

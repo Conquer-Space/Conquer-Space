@@ -49,8 +49,7 @@ void SysFieldViewer::DoUI(int delta_time) {
     ImGui::BeginChild("Field List",
                       ImVec2(ImGui::GetContentRegionAvail().x * 0.5f - ImGui::GetStyle().ItemSpacing.y, height), true,
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
-    auto view = GetUniverse().view<science::Field>();
-    for (entity entity : view) {
+    for (entity entity : GetUniverse().view<science::Field>()) {
         if (ImGui::Selectable(GetUniverse().get<components::Name>(entity).name.c_str(),
                               selected_tech == entity)) {
             selected_tech = entity;
@@ -127,8 +126,7 @@ void RemoveFieldConnection(std::vector<entity>& vec, entity ent) {
     }
 }
 
-void AcceptNewItem(Universe& universe, int input_type, entity input_entity,
-                   entity output_entity) {
+void AcceptNewItem(Universe& universe, int input_type, entity input_entity, entity output_entity) {
     // Look for the link, then connect back
     // The initial pins should be in multiples of 4 because we make 4
     // Then connect the pins
@@ -232,8 +230,7 @@ void HandleDeletedNode(const ed::NodeId& nodeId, FieldNodeInformation& map, Univ
     // Delete entities
     entity ent = CalculateInputPair(map, nodeId.Get());
     //universe.get<
-    auto fields = universe.view<science::Field>();
-    for (entity pot : fields) {
+    for (entity pot : universe.view<science::Field>()) {
         auto& field_comp = universe.get<science::Field>(pot);
         RemoveFieldConnection(field_comp.adjacent, ent);
         RemoveFieldConnection(field_comp.parents, ent);
@@ -274,9 +271,8 @@ void SysFieldNodeViewer::FieldNodeViewerWindow() {
     int uniqueId = 1;
     FieldNodeInformation map;
 
-    auto fields = GetUniverse().view<Field>();
     // Start drawing nodes
-    for (const entt::entity& entity : fields) {
+    for (const entt::entity& entity : GetUniverse().view<Field>()) {
         int node_id = uniqueId++;
         if (ed::GetHoveredNode().Get() != node_id) {
             // Then make it light
@@ -339,7 +335,7 @@ void SysFieldNodeViewer::FieldNodeViewerWindow() {
     }
 
     // Draw more nodes
-    for (const entity& entity : fields) {
+    for (const entity& entity : GetUniverse().view<Field>()) {
         auto& field = GetUniverse().get<Field>(entity);
         const auto& current_tup = map[entity];
         for (const auto& parent : field.parents) {

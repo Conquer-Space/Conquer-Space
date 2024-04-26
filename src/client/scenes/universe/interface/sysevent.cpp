@@ -48,9 +48,8 @@ void SysEvent::DoUI(int delta_time) {
         std::shared_ptr<Event> env = queue.events.front();
         ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
                                 ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-        ImGui::Begin(env->title.c_str(), NULL,
-                     ImGuiWindowFlags_NoCollapse | window_flags | ImGuiWindowFlags_NoScrollbar |
-                         ImGuiWindowFlags_AlwaysAutoResize);
+        ImGui::Begin(env->title.c_str(), NULL, ImGuiWindowFlags_NoCollapse | window_flags |
+            ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize);
 
         asset::Texture* texture = GetAssetManager().GetAsset<asset::Texture>(env->image);
         float multiplier = 450.f / texture->width;

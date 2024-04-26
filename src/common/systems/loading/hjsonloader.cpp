@@ -24,14 +24,15 @@
 #include "common/systems/loading/loadutil.h"
 
 using cqsp::common::systems::loading::HjsonLoader;
+using entt::entity;
 
 int HjsonLoader::LoadHjson(const Hjson::Value& values) {
     int assets = 0;
-    std::vector<entt::entity> entity_list;
+    std::vector<entity> entity_list;
     for (int i = 0; i < values.size(); i++) {
         Hjson::Value value = values[i];
 
-        entt::entity entity = universe.create();
+        entity entity = universe.create();
         if (!LoadInitialValues(universe, entity, value)) {
             SPDLOG_WARN("No identifier");
             universe.destroy(entity);
@@ -61,7 +62,7 @@ int HjsonLoader::LoadHjson(const Hjson::Value& values) {
     }
 
     // Load all the assets again to parse?
-    for (entt::entity entity : entity_list) {
+    for (entity entity : entity_list) {
         PostLoad(entity);
     }
 

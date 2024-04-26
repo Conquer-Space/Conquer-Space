@@ -23,8 +23,7 @@ using components::Wallet;
 using  cqsp::common::systems::SysWalletReset;
 
 void SysWalletReset::DoSystem() {
-    auto view = GetUniverse().view<Wallet>();
-    for (entt::entity entity : view) {
+    for (entt::entity entity : GetUniverse().view<Wallet>()) {
         GetUniverse().get<Wallet>(entity).Reset();
     }
 }

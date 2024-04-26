@@ -21,8 +21,9 @@
 #include "common/components/organizations.h"
 
 using cqsp::common::systems::loading::CountryLoader;
+using entt::entity;
 
-bool CountryLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
+bool CountryLoader::LoadValue(const Hjson::Value& values, entity entity) {
     // Just make the country
     universe.emplace<components::Country>(entity);
     universe.countries[universe.get<components::Identifier>(entity).identifier] = entity;

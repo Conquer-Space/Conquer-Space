@@ -58,9 +58,8 @@ void MarketInformationTable(common::Universe& universe, const entity& market_ent
     ImGui::TableSetupColumn("Latent Demand");
     ImGui::TableSetupColumn("Input Ratio");
     ImGui::TableHeadersRow();
-    auto goodsview = universe.view<components::Price>();
 
-    for (entt::entity good_entity : goodsview) {
+    for (entt::entity good_entity : universe.view<components::Price>()) {
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         if (universe.any_of<components::CapitalGood>(good_entity)) {

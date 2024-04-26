@@ -25,6 +25,7 @@
 namespace science = cqsp::common::components::science;
 using science::Technology;
 using science::TechnologicalProgress;
+using entt::entity;
 
 namespace cqsp::common::systems::science {
 void LoadTechnologies(Universe& universe, Hjson::Value& value) {
@@ -37,12 +38,12 @@ void LoadTechnologies(Universe& universe, Hjson::Value& value) {
     for (int i = 0; i < value.size(); i++) {
         Hjson::Value element = Hjson::Merge(base, value[i]);
 
-        entt::entity entity = universe.create();
-        if (!loading::LoadInitialValues(universe, entity, element)) {
+        entity techentity = universe.create();
+        if (!loading::LoadInitialValues(universe, techentity, element)) {
             // Then kill the loading because you need an identifier
         }
 
-        auto& tech = universe.emplace<Technology>(entity);
+        auto& tech = universe.emplace<Technology>(techentity);
         // Add tech data
         Hjson::Value val = element["actions"];
         for (int i = 0; i < val.size(); i++) {
@@ -51,14 +52,14 @@ void LoadTechnologies(Universe& universe, Hjson::Value& value) {
 
         Hjson::Value fieldlist = element["fields"];
         for (int i = 0; i < fieldlist.size(); i++) {
-            entt::entity field_entity = universe.fields[fieldlist[i].to_string()];
+            entity field_entity = universe.fields[fieldlist[i].to_string()];
             tech.fields.insert(field_entity);
         }
 
         // Verify if the tags exist
         tech.difficulty = element["difficulty"];
 
-        universe.technologies[universe.get<components::Identifier>(entity)] = entity;
+        universe.technologies[universe.get<components::Identifier>(techentity)] = techentity;
     }
 }
 
@@ -73,7 +74,7 @@ void ResearchTech(Universe& universe, entt::entity civilization, entt::entity te
     }
 }
 
-void ProcessAction(Universe& universe, entt::entity civilization, const std::string& action) {
+void ProcessAction(Universe& universe, entity civilization, const std::string& action) {
     // Process the tech
     // Split by the colon
     auto& tech_progress = universe.get_or_emplace<TechnologicalProgress>(civilization);

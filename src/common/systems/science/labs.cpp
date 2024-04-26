@@ -19,10 +19,11 @@
 #include "common/components/science.h"
 
 using cqsp::common::components::science::Lab;
+using entt::entity;
 
 namespace cqsp::common::systems::science {
-entt::entity CreateLab(Universe& universe) {
-    entt::entity entity = universe.create();
+entity CreateLab(Universe& universe) {
+    entity entity = universe.create();
     // Create labs
     universe.emplace<Lab>(entity);
     return entity;

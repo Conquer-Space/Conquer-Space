@@ -26,10 +26,11 @@ using types::SurfaceCoordinate;
 using components::Habitation;
 using components::Settlement;
 
-entt::entity cqsp::common::systems::actions::CreateCity(Universe& universe, entt::entity planet, double lat,
-                                                        double longi) {
+using entt::entity;
 
-    entt::entity settlement = universe.create();
+entity cqsp::common::systems::actions::CreateCity(Universe& universe, entity planet, double lat, double longi) {
+
+    entity settlement = universe.create();
     universe.emplace<Settlement>(settlement);
     universe.emplace<SurfaceCoordinate>(settlement, lat, longi);
 

@@ -22,9 +22,10 @@
 
 using cqsp::common::components::types::UnitType;
 namespace types = cqsp::common::components::types;
+using entt::entity;
 
 namespace cqsp::common::systems::loading {
-bool LoadName(Universe& universe, const entt::entity& entity, const Hjson::Value& value) {
+bool LoadName(Universe& universe, const entity& entity, const Hjson::Value& value) {
     if (value["name"].type() != Hjson::Type::String) {
         return false;
     }
@@ -34,7 +35,7 @@ bool LoadName(Universe& universe, const entt::entity& entity, const Hjson::Value
     return true;
 }
 
-bool LoadIdentifier(Universe& universe, const entt::entity& entity, const Hjson::Value& value) {
+bool LoadIdentifier(Universe& universe, const entity& entity, const Hjson::Value& value) {
     if (value["identifier"].type() != Hjson::Type::String) {
         return false;
     }
@@ -44,7 +45,7 @@ bool LoadIdentifier(Universe& universe, const entt::entity& entity, const Hjson:
     return true;
 }
 
-bool LoadDescription(Universe& universe, const entt::entity& entity, const Hjson::Value& value) {
+bool LoadDescription(Universe& universe, const entity& entity, const Hjson::Value& value) {
     if (value["description"].type() != Hjson::Type::String) {
         return false;
     }
@@ -54,7 +55,7 @@ bool LoadDescription(Universe& universe, const entt::entity& entity, const Hjson
     return true;
 }
 
-bool LoadInitialValues(Universe& universe, const entt::entity& entity, const Hjson::Value& value) {
+bool LoadInitialValues(Universe& universe, const entity& entity, const Hjson::Value& value) {
     LoadName(universe, entity, value);
     LoadDescription(universe, entity, value);
     return LoadIdentifier(universe, entity, value);

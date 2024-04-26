@@ -19,6 +19,7 @@
 #include "common/components/orbit.h"
 #include "common/components/units.h"
 
+
 namespace cqsp::common::components::types {
 double GreatCircleDistance(SurfaceCoordinate& coord1, SurfaceCoordinate& coord2) {
     double delta_lambda = abs(coord2.r_longitude() - coord1.r_longitude());

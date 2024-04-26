@@ -24,6 +24,7 @@ namespace components = cqsp::common::components;
 using components::Market;
 using components::PlanetaryMarket;
 using components::Habitation;
+using entt::entity;
 
 void SysTrade::DoSystem() {
     // Sort through all the districts, and figure out their trade
@@ -31,10 +32,10 @@ void SysTrade::DoSystem() {
     // Then cross reference to see if they can buy or sell
     // Then list all the markets
     // Get the market of the planet, and add latent supply and demand, and then compute the market
-    for (entt::entity entity : GetUniverse().view<Market, PlanetaryMarket, Habitation>()) {
-        auto& p_market = GetUniverse().get<Market>(entity);
-        auto& habitation = GetUniverse().get<Habitation>(entity);
-        for (entt::entity habitation : habitation.settlements) {
+    for (entity tentity : GetUniverse().view<Market, PlanetaryMarket, Habitation>()) {
+        auto& p_market = GetUniverse().get<Market>(tentity);
+        auto& habitation = GetUniverse().get<Habitation>(tentity);
+        for (entity habitation : habitation.settlements) {
             if (!GetUniverse().any_of<Market>(habitation)) {
                 continue;
             }
