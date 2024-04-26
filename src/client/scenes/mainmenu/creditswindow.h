@@ -37,7 +37,7 @@ class CreditsWindow : public Rml::EventListener {
     void LoadCreditsText();
     void SetCreditsScroll();
 
-    Rml::ElementDocument* document;
+    Rml::ElementDocument* document = NULL;
     Rml::Element* credits_text_element;
     engine::Application& m_app;
 
