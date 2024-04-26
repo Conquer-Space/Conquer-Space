@@ -24,7 +24,9 @@
 
 #include "common/scripting/functionreg.h"
 
+
 namespace cqsp::client::scripting {
+namespace {
 sol::object JsonToLuaObject(const Hjson::Value& j, const sol::this_state& s) {
     sol::state_view lua(s);
     switch (j.type()) {
@@ -59,7 +61,7 @@ sol::object JsonToLuaObject(const Hjson::Value& j, const sol::this_state& s) {
 }
 
 void AssetManagerInterfaces(engine::Application& app, common::Universe& universe,
-                            ScriptInterface& script_engine) {
+                            common::scripting::ScriptInterface& script_engine) {
     CREATE_NAMESPACE(client);
 
     script_engine.set_function("require", [&](const char* script) {
@@ -88,7 +90,7 @@ void AssetManagerInterfaces(engine::Application& app, common::Universe& universe
 }
 
 void UiInterfaces(engine::Application& app, common::Universe& universe,
-                  ScriptInterface& script_engine) {
+                  common::scripting::ScriptInterface& script_engine) {
     CREATE_NAMESPACE(ImGui);
 
     REGISTER_FUNCTION("Begin", [](const char* name) { ImGui::Begin(name); });
@@ -103,11 +105,11 @@ void UiInterfaces(engine::Application& app, common::Universe& universe,
 
     REGISTER_FUNCTION("Button", [](const char* label) { return ImGui::Button(label); });
 }
+}  // namespace
 
-void ClientFunctions(engine::Application& app, common::Universe& universe, ScriptInterface& script_engine) {
+void ClientFunctions(engine::Application& app, common::Universe& universe,
+                     common::scripting::ScriptInterface& script_engine) {
     AssetManagerInterfaces(app, universe, script_engine);
     UiInterfaces(app, universe, script_engine);
-}  
-}  // namespace cqsp::client::scripting
-
-
+}
+};  // namespace cqsp::client::scripting
