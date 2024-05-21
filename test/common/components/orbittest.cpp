@@ -31,6 +31,8 @@ using ::testing::AllOf;
 using ::testing::Ge;
 using ::testing::Le;
 
+using cqsp::common::components::types::Orbit;
+
 // Tests for input from client options
 TEST(OrbitTest, DISABLED_toVec3Test) {
     // Read hjson file and set values
@@ -481,13 +483,78 @@ TEST(OrbitTest, PhaseAngleTest) {
 
     EXPECT_NEAR(cqspt::CalculateTransferAngle(kerbin, eve), cqspt::toRadian(-54.13), 0.5);
 }
+
+class HyperbolicOrbitTest : public testing::TestWithParam<Orbit> {
+ public:
+    ~HyperbolicOrbitTest() override = default;
+    void SetUp() override {}
+    void TearDown() override {}
+};
+
+TEST_P(HyperbolicOrbitTest, OrbitConversionTest) {
+    namespace cqspt = cqsp::common::components::types;
+
+    Orbit orb = GetParam();
+    cqspt::UpdateOrbit(orb, 0);
+
+    auto position = cqspt::toVec3(orb);
+    auto velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
+
+    // Needs to be absolute value because the orbiting radius will be negative
+    EXPECT_NEAR(glm::length(position), abs(cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v)),
+                abs(orb.semi_major_axis * 1e-5));
+    auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.GM, 0);
+    EXPECT_NEAR(new_orbit.v, orb.v, 1e-5);
+    EXPECT_NEAR(new_orbit.M0, orb.M0, 1e-5);
+    EXPECT_NEAR(new_orbit.semi_major_axis, orb.semi_major_axis,
+                1e-5);  // 1m difference
+    EXPECT_NEAR(new_orbit.LAN, orb.LAN, 1e-5);
+    EXPECT_NEAR(new_orbit.w, orb.w, 1e-5);
+    EXPECT_NEAR(new_orbit.inclination, orb.inclination, 1e-5);
+    EXPECT_NEAR(new_orbit.eccentricity, orb.eccentricity, 1e-5);
+    EXPECT_NEAR(new_orbit.v, orb.v, 1e-5);
+    EXPECT_NEAR(new_orbit.M0, orb.M0, 1e-5);
+
+    auto new_pos = cqspt::toVec3(new_orbit);
+    EXPECT_NEAR(new_pos.x, position.x, 1e-4);
+    EXPECT_NEAR(new_pos.y, position.y, 1e-4);
+    EXPECT_NEAR(new_pos.z, position.z, 1e-4);
+    // Check all the points of the orbit
+
+    for (int i = (int)-cqspt::GetHyperbolicAsymptopeAnomaly(orb.eccentricity);
+         i < (int)cqspt::GetHyperbolicAsymptopeAnomaly(orb.eccentricity); i++) {
+        auto new_pos = cqspt::toVec3(new_orbit, cqspt::toRadian(i));
+        auto position = cqspt::toVec3(orb, cqspt::toRadian(i));
+        auto new_velocity = cqspt::OrbitVelocityToVec3(new_orbit, cqspt::toRadian(i));
+        auto velocity = cqspt::OrbitVelocityToVec3(orb, cqspt::toRadian(i));
+        EXPECT_NEAR(new_pos.x, position.x, 2e-3);
+        EXPECT_NEAR(new_pos.y, position.y, 2e-3);  // TODO(EhWhoAmI): This precision is much lower than the other stuff.
+        EXPECT_NEAR(new_pos.z, position.z,
+                    2e-3);  // this is fine for now, but I would like it to be a bit more accurate
+        EXPECT_NEAR(new_velocity.x, velocity.x, 1e-4);
+        EXPECT_NEAR(new_velocity.y, velocity.y, 1e-4);
+        EXPECT_NEAR(new_velocity.z, velocity.z, 1e-4);
+        // Check for the tangental orbital velocity
+        double t_velocity = cqspt::OrbitVelocity(cqspt::toRadian(i), orb.eccentricity, orb.semi_major_axis, orb.GM);
+        EXPECT_NEAR(glm::length(velocity), t_velocity, 1e-4);
+    }
+}
+
+INSTANTIATE_TEST_SUITE_P(HyperbolicOrbitTest, HyperbolicOrbitTest,
+                         testing::Values(Orbit(-57.91e7, 1.2, 0, 0, 0, 0),    // Normal orbit
+                                         Orbit(-57.91e7, 1.2, 0.4, 0, 0, 0),  // Inclined
+                                         Orbit(-57.91e7, 1.2, 0, 0.4, 0, 0),  // Changed LAN
+                                         Orbit(-57.91e7, 1.2, 0, 0, 0.4, 0),  // Changed argument of periapsis
+                                         // In case there's any weird singularity at e = 1.2
+                                         Orbit(-57.91e7, 2, 0, 0, 0, 0)));
+
 /*
 TEST(Common_SOITest, SOIExitTest) {
     namespace cqspc = cqsp::common::components;
     namespace cqspt = cqsp::common::components::types;
     namespace cqsps = cqsp::common::systems;
     cqsp::common::Universe universe;
-    // Make bodies
+    // Make bodies // Changed argument of periapsis
     entt::entity body_1 = universe.create();
     entt::entity body_2 = universe.create();
     entt::entity satellite = universe.create();

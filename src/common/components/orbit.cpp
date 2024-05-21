@@ -17,6 +17,7 @@
 #include "common/components/orbit.h"
 
 #include <algorithm>
+#include <cassert>
 
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/projection.hpp>
@@ -24,7 +25,11 @@
 
 namespace cqsp::common::components::types {
 double GetOrbitingRadius(const double& e, const double& a, const double& v) {
-    return (a * (1 - e * e)) / (1 + e * cos(v));
+    if (e > 1) {
+        return (a * (e * e - 1)) / (1 + e * cos(v));
+    } else {
+        return (a * (1 - e * e)) / (1 + e * cos(v));
+    }
 }
 
 glm::dvec3 MatrixConvertOrbParams(const double LAN, const double i, const double w, const glm::dvec3& vec) {
@@ -67,7 +72,7 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
     //if (m >= 1) v = acosh(m);
 
     // Inclination
-    const double i = std::acos(h.z / glm::length(h));
+    const double i = std::acos(((e < 1) ? 1 : -1) * h.z / glm::length(h));
 
     double M0 = 0;
     double E = 0;
@@ -81,17 +86,19 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
         E = F;
     }
 
-    double LAN = acos(glm::clamp(n.x / glm::length(n), -1., 1.));
+    double LAN = acos(((e < 1) ? 1 : -1) * glm::clamp(n.x / glm::length(n), -1., 1.));
     if (n.y < 0) LAN = TWOPI - LAN;
     if (glm::length(n) == 0) LAN = 0;
 
-    double w = acos(std::clamp(glm::dot(n, ecc_v) / (e * glm::length(n)), -1., 1.));
+    double w = acos(((e < 1) ? 1 : -1) * std::clamp(glm::dot(n, ecc_v) / (e * glm::length(n)), -1., 1.));
     if (ecc_v.z < 0) w = TWOPI - w;
     if (e == 0) w = 0;
     if (glm::length(n) == 0) w = 0;
 
     double velocity_mag = glm::length(velocity);
     double sma = 1 / (2 / glm::length(position) - velocity_mag * velocity_mag / GM);
+
+    assert((e > 1 && sma <= 0) || (e <= 1 && sma >= 0));
 
     Orbit orb;
     orb.semi_major_axis = sma;
@@ -122,10 +129,8 @@ glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i, const 
 double OrbitVelocity(const double v, const double e, const double a, const double GM) {
     double r = GetOrbitingRadius(e, a, v);
     double sma = a;
-    if (e > 1) {
-        sma = -sma;
-    }
-    return sqrt(GM * (2 / r - 1 / sma));
+
+    return sqrt(GM * (2 / abs(r) - 1 / sma));
 }
 
 double AvgOrbitalVelocity(const Orbit& orb) { return (PI * 2 * orb.semi_major_axis) / orb.T(); }
@@ -262,7 +267,7 @@ glm::dvec3 CalculateVelocity(const double& E, const double& r, const double& GM,
 
 glm::dvec3 CalculateVelocityHyperbolic(const double& E, const double& r, const double& GM, const double& a,
                                        const double& e) {
-    return (double)(sqrt(-GM * a) / r) * glm::dvec3(sinh(E), -sqrt(e * e - 1) * cosh(E), 0);
+    return (double)(sqrt(abs(GM * a)) / r) * glm::dvec3(sinh(E), -sqrt(e * e - 1) * cosh(E), 0);
 }
 
 glm::dvec3 CalculateVelocityElliptic(const double& E, const double& r, const double& GM, const double& a,
