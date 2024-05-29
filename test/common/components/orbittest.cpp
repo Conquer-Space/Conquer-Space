@@ -32,6 +32,7 @@ using ::testing::Ge;
 using ::testing::Le;
 
 using cqsp::common::components::types::Orbit;
+namespace cqspt = cqsp::common::components::types;
 
 // Tests for input from client options
 TEST(OrbitTest, DISABLED_toVec3Test) {
@@ -541,10 +542,10 @@ TEST_P(HyperbolicOrbitTest, OrbitConversionTest) {
 }
 
 INSTANTIATE_TEST_SUITE_P(HyperbolicOrbitTest, HyperbolicOrbitTest,
-                         testing::Values(Orbit(-57.91e7, 1.2, 0, 0, 0, 0),    // Normal orbit
+                         testing::Values(Orbit(-57.91e7, 1.2, 0, 0, 0, 0),  // Normal orbit
+                                         Orbit(-57.91e7, 1.2, cqspt::PI, 0, 0, 0),
                                          Orbit(-57.91e7, 1.2, 0.4, 0, 0, 0),  // Inclined
-                                         Orbit(-57.91e7, 1.2, 0, 0.4, 0, 0),  // Changed LAN
-                                         Orbit(-57.91e7, 1.2, 0, 0, 0.4, 0),  // Changed argument of periapsis
+                                         Orbit(-57.91e7, 0, 0, 0, 0.4, 0),    // Changed argument of periapsis
                                          // In case there's any weird singularity at e = 1.2
                                          Orbit(-57.91e7, 2, 0, 0, 0, 0)));
 

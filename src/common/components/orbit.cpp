@@ -18,6 +18,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <iostream>
 
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/projection.hpp>
@@ -61,17 +62,15 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
     // Eccentricity
     double e = glm::length(ecc_v);
 
-    // TODO(EhWhoAmI): if e > 1, then it's a hyperbolic orbit
     // Vector pointing towards the ascending node
     const auto n = glm::dvec3(-h.y, h.x, 0);
-    // True anomaly
 
-    //double m = glm::dot(ecc_v, position) / (e * glm::length(position));
+    // True anomaly
     double v = glm::angle(glm::normalize(ecc_v), glm::normalize(position));  //acos(std::clamp(m, -1., 1.));
     if (glm::dot(position, velocity) < 0) v = TWOPI - v;
-    //if (m >= 1) v = acosh(m);
 
     // Inclination
+    std::cout << h.z << std::endl;
     const double i = std::acos(((e < 1) ? 1 : -1) * h.z / glm::length(h));
 
     double M0 = 0;
@@ -86,20 +85,38 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
         E = F;
     }
 
-    double LAN = acos(((e < 1) ? 1 : -1) * glm::clamp(n.x / glm::length(n), -1., 1.));
+    double LAN = acos(glm::clamp(n.x / glm::length(n), -1., 1.));
     if (n.y < 0) LAN = TWOPI - LAN;
-    if (glm::length(n) == 0) LAN = 0;
 
-    double w = acos(((e < 1) ? 1 : -1) * std::clamp(glm::dot(n, ecc_v) / (e * glm::length(n)), -1., 1.));
+    std::cerr << position.x << " " << position.y << " " << position.z << " " << velocity.x << " " << velocity.y << " "
+              << velocity.z << "\n";
+    std::cerr << "Ecc vec: " << ecc_v.x << " " << ecc_v.y << " " << ecc_v.z << "\n";
+    double w = glm::angle(glm::normalize(n), glm::normalize(ecc_v));
+    if (n == glm::dvec3(0.0, 0.0, 0.0)) {
+        // It's equal to the zero vector so LAN = 0
+        LAN = 0;
+        // Also figure out w
+        w = acos(ecc_v.x / glm::length(ecc_v));
+    }
     if (ecc_v.z < 0) w = TWOPI - w;
-    if (e == 0) w = 0;
-    if (glm::length(n) == 0) w = 0;
 
     double velocity_mag = glm::length(velocity);
     double sma = 1 / (2 / glm::length(position) - velocity_mag * velocity_mag / GM);
 
     assert((e > 1 && sma <= 0) || (e <= 1 && sma >= 0));
+    std::cerr << "Inclination: " << i << "\n";
 
+    if (i == 0 || i == PI) {
+        // Then figure out the values we want
+        // Set LAN and w to zero
+        std::cerr << "LAN: " << LAN << "\n";
+        LAN = 0;
+        w = 0;
+        // elliptical equatorial
+        if (e > 0 && e < 1) {
+            w = acos(ecc_v.x / glm::length(ecc_v));
+        }
+    }
     Orbit orb;
     orb.semi_major_axis = sma;
     orb.eccentricity = e;
