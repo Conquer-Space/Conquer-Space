@@ -156,10 +156,12 @@ glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v) {
     if (orb.semi_major_axis == 0) {
         return glm::dvec3(0, 0, 0);
     }
-    double E = (orb.eccentricity < 1.) ? EccentricAnomaly(v, orb.eccentricity) : HyperbolicAnomaly(v, orb.eccentricity);
-    double r = GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, v);
-    glm::dvec3 velocity = CalculateVelocity(E, r, orb.GM, orb.semi_major_axis, orb.eccentricity);
-    return ConvertOrbParams(orb.LAN, orb.inclination, orb.w, velocity);
+    // Return
+    double semi_param = orb.semi_major_axis * (1 - orb.eccentricity * orb.eccentricity);
+
+    return ConvertOrbParams(
+        orb.LAN, orb.inclination, orb.w,
+        glm::dvec3(-sqrt(orb.GM / semi_param) * sin(v), sqrt(orb.GM / semi_param) * (orb.eccentricity + cos(v)), 0));
 }
 
 glm::dvec3 OrbitVelocityToVec3(const Orbit& orb) { return OrbitVelocityToVec3(orb, orb.v); }
