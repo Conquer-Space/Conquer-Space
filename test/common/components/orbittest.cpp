@@ -81,12 +81,21 @@ TEST(OrbitTest, OrbitConversionTest) {
     EXPECT_NEAR(glm::length(position), orb.semi_major_axis, orb.semi_major_axis * 0.001);
     auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.GM, 0);
     // We need the fmod things because the orbital elements are a bit wacky with perfectly round and non-inclined orbits
-    EXPECT_DOUBLE_EQ(fmod(new_orbit.v, cqspt::PI), std::fmod(orb.v, cqspt::PI));
-    EXPECT_DOUBLE_EQ(fmod(new_orbit.M0, cqspt::PI), std::fmod(orb.M0, cqspt::PI));
+
     EXPECT_NEAR(new_orbit.semi_major_axis, orb.semi_major_axis, orb.semi_major_axis * 0.01);
-    EXPECT_DOUBLE_EQ(new_orbit.LAN, orb.LAN);
     EXPECT_DOUBLE_EQ(new_orbit.inclination, orb.inclination);
-    EXPECT_DOUBLE_EQ(new_orbit.w, orb.w);
+    // Since LAN and w don't matter for circular orbits we can safely ignore it
+    //EXPECT_DOUBLE_EQ(new_orbit.w, orb.w);
+    //EXPECT_DOUBLE_EQ(new_orbit.LAN, orb.LAN);
+    /*EXPECT_DOUBLE_EQ(new_orbit.v, orb.v);
+    EXPECT_DOUBLE_EQ(new_orbit.M0, orb.M0);*/
+    for (int i = 0; i < 360; i++) {
+        auto new_pos = cqspt::toVec3(new_orbit, cqspt::toRadian(i) + new_orbit.M0);
+        auto position = cqspt::toVec3(orb, cqspt::toRadian(i) + orb.M0);
+        EXPECT_NEAR(new_pos.x, position.x, 500);
+        EXPECT_NEAR(new_pos.y, position.y, 500);
+        EXPECT_NEAR(new_pos.z, position.z, 500);
+    }
     EXPECT_NEAR(new_orbit.eccentricity, orb.eccentricity, 0.001);
 }
 
@@ -522,7 +531,7 @@ TEST_P(HyperbolicOrbitTest, OrbitConversionTest) {
     EXPECT_NEAR(new_pos.z, position.z, 1e-4);
     // Check all the points of the orbit
 
-    for (int i = (int)-cqspt::GetHyperbolicAsymptopeAnomaly(orb.eccentricity);
+    for (int i = (int)-cqspt::GetHyperbolicAsymptopeAnomaly(orb.eccentricity) + 1;
          i < (int)cqspt::GetHyperbolicAsymptopeAnomaly(orb.eccentricity); i++) {
         auto new_pos = cqspt::toVec3(new_orbit, cqspt::toRadian(i));
         auto position = cqspt::toVec3(orb, cqspt::toRadian(i));
@@ -545,7 +554,7 @@ INSTANTIATE_TEST_SUITE_P(HyperbolicOrbitTest, HyperbolicOrbitTest,
                          testing::Values(Orbit(-57.91e7, 1.2, 0, 0, 0, 0),  // Normal orbit
                                          Orbit(-57.91e7, 1.2, cqspt::PI, 0, 0, 0),
                                          Orbit(-57.91e7, 1.2, 0.4, 0, 0, 0),  // Inclined
-                                         Orbit(-57.91e7, 0, 0, 0, 0.4, 0),    // Changed argument of periapsis
+                                         Orbit(-57.91e7, 1.2, 0, 0, 0.4, 0),  // Changed argument of periapsis
                                          // In case there's any weird singularity at e = 1.2
                                          Orbit(-57.91e7, 2, 0, 0, 0, 0)));
 

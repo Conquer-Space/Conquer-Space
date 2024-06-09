@@ -71,7 +71,7 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
 
     // Inclination
     std::cout << h.z << std::endl;
-    const double i = std::acos(((e < 1) ? 1 : -1) * h.z / glm::length(h));
+    const double i = std::acos(h.z / glm::length(h));
 
     double M0 = 0;
     double E = 0;
@@ -88,9 +88,6 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
     double LAN = acos(glm::clamp(n.x / glm::length(n), -1., 1.));
     if (n.y < 0) LAN = TWOPI - LAN;
 
-    std::cerr << position.x << " " << position.y << " " << position.z << " " << velocity.x << " " << velocity.y << " "
-              << velocity.z << "\n";
-    std::cerr << "Ecc vec: " << ecc_v.x << " " << ecc_v.y << " " << ecc_v.z << "\n";
     double w = glm::angle(glm::normalize(n), glm::normalize(ecc_v));
     if (n == glm::dvec3(0.0, 0.0, 0.0)) {
         // It's equal to the zero vector so LAN = 0
@@ -104,7 +101,6 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
     double sma = 1 / (2 / glm::length(position) - velocity_mag * velocity_mag / GM);
 
     assert((e > 1 && sma <= 0) || (e <= 1 && sma >= 0));
-    std::cerr << "Inclination: " << i << "\n";
 
     if (i == 0 || i == PI) {
         // Then figure out the values we want
@@ -115,6 +111,9 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
         // elliptical equatorial
         if (e > 0 && e < 1) {
             w = acos(ecc_v.x / glm::length(ecc_v));
+            if (ecc_v.y < 0) {
+                w = TWOPI - w;
+            }
         }
     }
     Orbit orb;
@@ -139,8 +138,11 @@ glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i, const 
         return glm::dvec3(0, 0, 0);
     }
     double r = GetOrbitingRadius(e, a, v);
+    double semi_param = a * (1 - e * e);
+
     //MatrixConvertOrbParams(LAN, i, w, glm::dvec(r * cos(v), r * sin(v), 0);
-    return r * ConvertToOrbitalVector(LAN, i, w, v, glm::vec3(1, 0, 0));
+    return ConvertToOrbitalVector(
+        LAN, i, w, 0, glm::vec3(semi_param * cos(v) / (1 + e * cos(v)), semi_param * sin(v) / (1 + e * cos(v)), 0));
 }
 
 double OrbitVelocity(const double v, const double e, const double a, const double GM) {
