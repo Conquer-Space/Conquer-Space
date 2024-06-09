@@ -92,7 +92,7 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
         // It's equal to the zero vector so LAN = 0
         LAN = 0;
         // Also figure out w
-        w = acos(glm::dot(ecc_v, glm::dvec3(1, 0, 0)) / glm::length(ecc_v));
+        w = acos(ecc_v.x / glm::length(ecc_v));
     }
     if (ecc_v.z < 0) w = TWOPI - w;
 
@@ -122,7 +122,7 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
     orb.inclination = i;
     orb.M0 = M0;
     orb.epoch = time;
-    orb.v = v;
+    orb.v = normalize_radian(v);
     orb.GM = GM;
     return orb;
 }
