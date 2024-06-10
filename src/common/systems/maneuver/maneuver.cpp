@@ -27,7 +27,7 @@ std::pair<glm::dvec3, double> CircularizeAtApoapsis(const Orbit& orbit) {
     const double new_velocity = GetCircularOrbitingVelocity(orbit.GM, orbit.GetApoapsis());
     // Get velocity at apogee
     const double old_velocity = OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetApoapsis());
-    return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), orbit.TimeToMeanAnomaly(PI));
+    return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), orbit.TimeToTrueAnomaly(PI));
 }
 
 std::pair<glm::dvec3, double> CircularizeAtPeriapsis(const Orbit& orbit) {
@@ -36,21 +36,21 @@ std::pair<glm::dvec3, double> CircularizeAtPeriapsis(const Orbit& orbit) {
     // Get velocity at apogee
     const double old_velocity = OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetPeriapsis());
     // This should go retrograde, so it should be negative
-    return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), orbit.TimeToMeanAnomaly(0));
+    return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), orbit.TimeToTrueAnomaly(0));
 }
 
 std::pair<glm::dvec3, double> SetApoapsis(const Orbit& orbit, double altitude) {
     const double new_sma = (orbit.GetPeriapsis() + altitude) / 2;
     double old_velocity = OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetPeriapsis());
     double new_velocity = OrbitVelocityAtR(orbit.GM, new_sma, orbit.GetPeriapsis());
-    return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), orbit.TimeToMeanAnomaly(0));
+    return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), orbit.TimeToTrueAnomaly(0));
 }
 
 std::pair<glm::dvec3, double> SetPeriapsis(const Orbit& orbit, double altitude) {
     const double new_sma = (orbit.GetApoapsis() + altitude) / 2;
     double old_velocity = OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetApoapsis());
     double new_velocity = OrbitVelocityAtR(orbit.GM, new_sma, orbit.GetApoapsis());
-    return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), orbit.TimeToMeanAnomaly(PI));
+    return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), orbit.TimeToTrueAnomaly(PI));
 }
 
 namespace {
@@ -76,7 +76,7 @@ std::pair<glm::dvec3, double> SetInclination(const Orbit& orbit, double inclinat
     // Delta-v should be at the ascending node
     // Do we have to get flight path angle?
     glm::dvec3 vector = glm::dvec3(0, v * (cos(d_inc) - 1), v * sin(d_inc));
-    return std::make_pair(vector, orbit.TimeToMeanAnomaly(v_change));
+    return std::make_pair(vector, orbit.TimeToTrueAnomaly(v_change));
 }
 
 std::pair<glm::dvec3, double> SetCircularInclination(const Orbit& orbit, double inclination) {
@@ -95,7 +95,7 @@ std::pair<glm::dvec3, double> SetCircularInclination(const Orbit& orbit, double 
     // Just set to original velocity
     // Delta-v should be at the ascending node
     glm::dvec3 vector = glm::dvec3(0, v * (cos(d_inc) - 1), v * sin(d_inc));
-    return std::make_pair(vector, orbit.TimeToMeanAnomaly(v_change));
+    return std::make_pair(vector, orbit.TimeToTrueAnomaly(v_change));
 }
 
 std::pair<glm::dvec3, double> MatchPlanes(const Orbit& orbit, const Orbit& target) {
@@ -107,6 +107,6 @@ std::pair<glm::dvec3, double> MatchPlanes(const Orbit& orbit, const Orbit& targe
     double theta = glm::angle(glm::normalize(GetOrbitNormal(orbit)), glm::normalize(GetOrbitNormal(target)));
 
     glm::dvec3 vector = glm::dvec3(0, v * (cos(theta) - 1), v * sin(theta));
-    return std::make_pair(vector, orbit.TimeToMeanAnomaly(taoan));
+    return std::make_pair(vector, orbit.TimeToTrueAnomaly(taoan));
 }
 }  // namespace cqsp::common::systems

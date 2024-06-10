@@ -62,9 +62,9 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
             double p = GetUniverse().get<common::components::bodies::Body>(orbit.reference_body).radius;
             p = 0;
             ImGui::TextFmt("Altitude: {} km", (r - p));
-            ImGui::TextFmt("Periapsis: {:<10} km ({:.1f} s)", orbit.GetPeriapsis() - p, orbit.TimeToMeanAnomaly(0));
+            ImGui::TextFmt("Periapsis: {:<10} km ({:.1f} s)", orbit.GetPeriapsis() - p, orbit.TimeToTrueAnomaly(0));
             ImGui::TextFmt("Apoapsis: {:<10} km ({:.1f} s)", orbit.GetApoapsis() - p,
-                           orbit.TimeToMeanAnomaly(common::components::types::PI));
+                           orbit.TimeToTrueAnomaly(common::components::types::PI));
         }
     }
     if (ImGui::CollapsingHeader("Orbital Vectors")) {
@@ -225,7 +225,7 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         ImGui::TextFmt("Phase angle: {}", cqsp::common::components::types::CalculatePhaseAngle(
                                               orbit, target, GetUniverse().date.ToSecond()));
         ImGui::TextFmt("Transfer angle: {}", cqsp::common::components::types::CalculateTransferAngle(orbit, target));
-        double ttma = orbit.TimeToMeanAnomaly(common::components::types::AscendingTrueAnomaly(orbit, target));
+        double ttma = orbit.TimeToTrueAnomaly(common::components::types::AscendingTrueAnomaly(orbit, target));
         ImGui::TextFmt("Time to ascending node: {}", ttma);
         if (ImGui::BeginChild("Rendezvous Target")) {
             for (auto& entity : o_system.children) {

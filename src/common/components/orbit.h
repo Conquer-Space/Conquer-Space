@@ -134,7 +134,7 @@ struct Orbit {
 
     double GetPeriapsis() const { return semi_major_axis * (1 - eccentricity); }
 
-    double TimeToMeanAnomaly(double v2) const;
+    double TimeToTrueAnomaly(double v2) const;
 };
 
 struct SetTrueAnomaly {

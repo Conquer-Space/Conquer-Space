@@ -118,12 +118,12 @@ TEST(Maneuver, DISABLED_OffsetCircularizeApogeeTest) {
     EXPECT_DOUBLE_EQ(from_velocity, r);
     EXPECT_NEAR(glm::length(maneuver.first), to_velocity - from_velocity, 1e-10);
     cqspt::Orbit new_orbit = cqspt::ApplyImpulse(orbit, maneuver.first, maneuver.second);
-    EXPECT_EQ(GetTrueAnomaly(orbit, orbit.TimeToMeanAnomaly(cqspt::PI)), cqspt::PI);
+    EXPECT_EQ(GetTrueAnomaly(orbit, orbit.TimeToTrueAnomaly(cqspt::PI)), cqspt::PI);
     EXPECT_EQ(orbit.nu(), 0);
     // Check if it's circular
     // Get velocity at apogee
-    EXPECT_DOUBLE_EQ(orbit.TimeToMeanAnomaly(cqspt::PI), maneuver.second);
-    EXPECT_EQ(orbit.TimeToMeanAnomaly(cqspt::PI), 0);
+    EXPECT_DOUBLE_EQ(orbit.TimeToTrueAnomaly(cqspt::PI), maneuver.second);
+    EXPECT_EQ(orbit.TimeToTrueAnomaly(cqspt::PI), 0);
     EXPECT_NEAR(new_orbit.eccentricity, 0, 1e-15);
     EXPECT_DOUBLE_EQ(new_orbit.semi_major_axis, orbit.GetApoapsis());
 }
@@ -404,7 +404,7 @@ TEST(Maneuver, EccentricInclinationTest) {
     EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis(), 1e-4);
     EXPECT_NEAR(new_orbit.inclination, new_inclination, 1e-4);
     // Should be at apoapsis because we look for the lowest velocity
-    EXPECT_NEAR(maneuver.second, orbit.TimeToMeanAnomaly(cqspt::PI), 1e-4);
+    EXPECT_NEAR(maneuver.second, orbit.TimeToTrueAnomaly(cqspt::PI), 1e-4);
     glm::dvec3 start = cqspt::toVec3(orbit, GetTrueAnomaly(orbit, maneuver.second));
     glm::dvec3 end = cqspt::toVec3(new_orbit);
     EXPECT_NEAR(start.x, end.x, 1e-4);
@@ -429,7 +429,7 @@ TEST(Maneuver, EccentricDecreaseInclinationTest) {
     EXPECT_NEAR(new_orbit.GetApoapsis(), orbit.GetApoapsis(), 1e-4);
     EXPECT_NEAR(new_orbit.inclination, new_inclination, 1e-4);
     // Should be at apoapsis because we look for the lowest velocity
-    EXPECT_NEAR(maneuver.second, orbit.TimeToMeanAnomaly(cqspt::PI), 1e-4);
+    EXPECT_NEAR(maneuver.second, orbit.TimeToTrueAnomaly(cqspt::PI), 1e-4);
     glm::dvec3 start = cqspt::toVec3(orbit, GetTrueAnomaly(orbit, maneuver.second));
     glm::dvec3 end = cqspt::toVec3(new_orbit);
     EXPECT_NEAR(start.x, end.x, 1e-4);
@@ -456,7 +456,7 @@ TEST(Maneuver, OmegaEccentricDecreaseInclinationTest) {
     EXPECT_NEAR(new_orbit.semi_major_axis, orbit.semi_major_axis, 1e-4);
 
     // Should be at apoapsis because we look for the lowest velocity
-    EXPECT_NEAR(maneuver.second, orbit.TimeToMeanAnomaly(cqspt::PI), 1e-4);
+    EXPECT_NEAR(maneuver.second, orbit.TimeToTrueAnomaly(cqspt::PI), 1e-4);
     glm::dvec3 start = cqspt::toVec3(orbit, GetTrueAnomaly(orbit, maneuver.second));
     glm::dvec3 end = cqspt::toVec3(new_orbit);
     // Ignore this, the math checks out, we are just having some precision issues
@@ -485,7 +485,7 @@ TEST(Maneuver, DISABLED_ChangeWEccentricChangeInclinationTest) {
     EXPECT_NEAR(new_orbit.semi_major_axis, orbit.semi_major_axis, 1e-4);
 
     // Should be at apoapsis because we look for the lowest velocity
-    EXPECT_NEAR(maneuver.second, orbit.TimeToMeanAnomaly(cqspt::PI), 1e-4);
+    EXPECT_NEAR(maneuver.second, orbit.TimeToTrueAnomaly(cqspt::PI), 1e-4);
     glm::dvec3 start = cqspt::toVec3(orbit, GetTrueAnomaly(orbit, maneuver.second));
     glm::dvec3 end = cqspt::toVec3(new_orbit);
     // Ignore this, the math checks out, we are just having some precision issues
@@ -511,7 +511,7 @@ TEST(Maneuver, DISABLED_CoplanarInterceptTest) {
     double phase = cqspt::CalculatePhaseAngle(orbit, orbit2, maneuver.first.second);
     EXPECT_NEAR(transfer_angle, phase, 1e-4);
     cqspt::Orbit intercept_orbit = cqspt::ApplyImpulse(orbit, maneuver.first.first, maneuver.first.second);
-    double time = intercept_orbit.TimeToMeanAnomaly(cqspt::PI);
+    double time = intercept_orbit.TimeToTrueAnomaly(cqspt::PI);
     EXPECT_DOUBLE_EQ(intercept_orbit.GetApoapsis(), orbit2.semi_major_axis);
     EXPECT_DOUBLE_EQ(intercept_orbit.GetPeriapsis(), orbit.semi_major_axis);
     EXPECT_NEAR(maneuver.second.second - maneuver.first.second, time, 0.5);
