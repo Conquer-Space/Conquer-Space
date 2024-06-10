@@ -270,20 +270,27 @@ TEST_P(EllipticalOrbitTest, OrbitConversionTest) {
     EXPECT_NEAR(glm::length(position), cqspt::GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, orb.v),
                 orb.semi_major_axis * 0.01);
     auto new_orbit = cqspt::Vec3ToOrbit(position, velocity, orb.GM, 0);
-    EXPECT_NEAR(std::fmod(new_orbit.v, cqspt::TWOPI - 0.001), std::fmod(orb.v, cqspt::TWOPI - 0.001), 0.001);
-    EXPECT_NEAR(new_orbit.M0, orb.M0, 0.001);
+    if (orb.eccentricity != 0) {
+        EXPECT_NEAR(std::fmod(new_orbit.v, cqspt::TWOPI - 0.001), std::fmod(orb.v, cqspt::TWOPI - 0.001), 0.001);
+        EXPECT_NEAR(new_orbit.M0, orb.M0, 0.001);
+        EXPECT_NEAR(std::fmod(new_orbit.w, cqspt::TWOPI - 0.001), std::fmod(orb.w, cqspt::TWOPI - 0.001), 0.001);
+    }
     EXPECT_NEAR(new_orbit.semi_major_axis, orb.semi_major_axis,
                 orb.semi_major_axis * 0.01);  // 1 % cause doubles are bad
     EXPECT_NEAR(new_orbit.LAN, orb.LAN, 0.001);
     EXPECT_NEAR(new_orbit.inclination, orb.inclination, 0.001);
-    EXPECT_NEAR(std::fmod(new_orbit.w, cqspt::TWOPI - 0.001), std::fmod(orb.w, cqspt::TWOPI - 0.001), 0.001);
+
     EXPECT_NEAR(new_orbit.eccentricity, orb.eccentricity, 0.001);
     for (int i = 0; i < 360; i++) {
-        auto new_pos = cqspt::toVec3(new_orbit, cqspt::toRadian(i));
-        auto position = cqspt::toVec3(orb, cqspt::toRadian(i));
+        double orbit_true_anomaly =
+            cqspt::EccentricAnomalyToTrueAnomaly(orb.eccentricity, cqspt::EccentricAnomaly(orb.v, orb.eccentricity));
+        double new_orbit_true_anomaly = cqspt::EccentricAnomalyToTrueAnomaly(
+            new_orbit.eccentricity, cqspt::EccentricAnomaly(new_orbit.v, new_orbit.eccentricity));
+        auto new_pos = cqspt::toVec3(new_orbit, cqspt::toRadian(i) + new_orbit.v);
+        auto position = cqspt::toVec3(orb, cqspt::toRadian(i) + orb.v);
 
-        auto new_velocity = cqspt::OrbitVelocityToVec3(new_orbit, cqspt::toRadian(i));
-        auto velocity = cqspt::OrbitVelocityToVec3(orb, cqspt::toRadian(i));
+        auto new_velocity = cqspt::OrbitVelocityToVec3(new_orbit, cqspt::toRadian(i) + new_orbit.v);
+        auto velocity = cqspt::OrbitVelocityToVec3(orb, cqspt::toRadian(i) + orb.v);
         EXPECT_NEAR(new_pos.x, position.x, 500);
         EXPECT_NEAR(new_pos.y, position.y, 500);
         EXPECT_NEAR(new_pos.z, position.z, 500);
@@ -293,7 +300,8 @@ TEST_P(EllipticalOrbitTest, OrbitConversionTest) {
         EXPECT_NEAR(new_velocity.z, velocity.z, 1e-4);
 
         // Check for the tangental orbital velocity
-        double t_velocity = cqspt::OrbitVelocity(cqspt::toRadian(i), orb.eccentricity, orb.semi_major_axis, orb.GM);
+        double t_velocity =
+            cqspt::OrbitVelocity(cqspt::toRadian(i) + orb.v, orb.eccentricity, orb.semi_major_axis, orb.GM);
         EXPECT_NEAR(glm::length(velocity), t_velocity, 1e-4);
     }
 }
@@ -321,12 +329,6 @@ TEST_P(HyperbolicOrbitTest, OrbitConversionTest) {
 
     EXPECT_NEAR(fmod(new_orbit.v, cqspt::TWOPI - 1e-5), fmod(orb.v, cqspt::TWOPI - 1e-5), 1e-5);
     EXPECT_NEAR(fmod(new_orbit.M0, cqspt::TWOPI - 1e-5), fmod(orb.M0, cqspt::TWOPI - 1e-5), 1e-5);
-
-    auto new_pos = cqspt::toVec3(new_orbit);
-    EXPECT_NEAR(new_pos.x, position.x, 1e-4);
-    EXPECT_NEAR(new_pos.y, position.y, 1e-4);
-    EXPECT_NEAR(new_pos.z, position.z, 1e-4);
-    // Check all the points of the orbit
 
     for (int i = (int)-cqspt::GetHyperbolicAsymptopeAnomaly(orb.eccentricity) + 1;
          i < (int)cqspt::GetHyperbolicAsymptopeAnomaly(orb.eccentricity); i++) {

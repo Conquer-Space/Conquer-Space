@@ -113,6 +113,11 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
                 w = TWOPI - w;
             }
         }
+    } else if (e == 0) {  // Circular inclined
+        w = glm::angle(glm::normalize(n), glm::normalize(position));
+        if (position.z < 0) w = TWOPI - w;
+        v = 0;
+        M0 = 0;
     }
     Orbit orb;
     orb.semi_major_axis = sma;
@@ -139,8 +144,8 @@ glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i, const 
     double semi_param = a * (1 - e * e);
 
     //MatrixConvertOrbParams(LAN, i, w, glm::dvec(r * cos(v), r * sin(v), 0);
-    return ConvertToOrbitalVector(
-        LAN, i, w, 0, glm::vec3(semi_param * cos(v) / (1 + e * cos(v)), semi_param * sin(v) / (1 + e * cos(v)), 0));
+    return semi_param *
+           ConvertToOrbitalVector(LAN, i, w, 0, glm::dvec3(cos(v) / (1 + e * cos(v)), sin(v) / (1 + e * cos(v)), 0));
 }
 
 double OrbitVelocity(const double v, const double e, const double a, const double GM) {
@@ -159,9 +164,8 @@ glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v) {
     // Return
     double semi_param = orb.semi_major_axis * (1 - orb.eccentricity * orb.eccentricity);
 
-    return ConvertOrbParams(
-        orb.LAN, orb.inclination, orb.w,
-        glm::dvec3(-sqrt(orb.GM / semi_param) * sin(v), sqrt(orb.GM / semi_param) * (orb.eccentricity + cos(v)), 0));
+    return sqrt(orb.GM / semi_param) *
+           ConvertOrbParams(orb.LAN, orb.inclination, orb.w, glm::dvec3(-sin(v), (orb.eccentricity + cos(v)), 0));
 }
 
 glm::dvec3 OrbitVelocityToVec3(const Orbit& orb) { return OrbitVelocityToVec3(orb, orb.v); }
