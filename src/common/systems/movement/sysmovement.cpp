@@ -60,6 +60,9 @@ void LeaveSOI(Universe& universe, const entt::entity& body, entt::entity& parent
                              universe.date.ToSecond());
     orb.reference_body = p_orb.reference_body;
 
+    // Set new position
+    pos.position = pos.position + p_pos.position;
+    pos.velocity = pos.velocity + p_pos.velocity;
     // Update dirty orbit
     universe.emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
 }
@@ -147,6 +150,11 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
 
     cqspt::UpdateOrbit(orb, universe.date.ToSecond());
     auto& pos = universe.get_or_emplace<cqspt::Kinematics>(body);
+    if (universe.any_of<cqspt::SetTrueAnomaly>(body)) {
+        orb.v = universe.get<cqspt::SetTrueAnomaly>(body).true_anomaly;
+        // Set new mean anomaly at epoch
+        universe.remove<cqspt::SetTrueAnomaly>(body);
+    }
     pos.position = cqspt::toVec3(orb);
     pos.velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
 
@@ -234,10 +242,10 @@ bool EnterSOI(Universe& universe, const entt::entity& parent, const entt::entity
             continue;
         }
         const auto& body_comp = universe.get<cqspc::bodies::Body>(entity);
-        const auto& kinematics = universe.get<cqspc::types::Kinematics>(entity);
-        if (glm::distance(kinematics.position, pos.position) <= body_comp.SOI) {
+        const auto& target_position = universe.get<cqspc::types::Kinematics>(entity);
+        if (glm::distance(target_position.position, pos.position) <= body_comp.SOI) {
             // Calculate position
-            orb = cqspt::Vec3ToOrbit(pos.position - kinematics.position, pos.velocity - kinematics.velocity,
+            orb = cqspt::Vec3ToOrbit(pos.position - target_position.position, pos.velocity - target_position.velocity,
                                      body_comp.GM, universe.date.ToSecond());
             orb.reference_body = entity;
             // Calculate position, and change the thing

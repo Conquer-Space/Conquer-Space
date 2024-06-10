@@ -17,6 +17,8 @@
 #include "common/components/orbit.h"
 
 #include <algorithm>
+#include <cassert>
+#include <iostream>
 
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/projection.hpp>
@@ -24,7 +26,11 @@
 
 namespace cqsp::common::components::types {
 double GetOrbitingRadius(const double& e, const double& a, const double& v) {
-    return (a * (1 - e * e)) / (1 + e * cos(v));
+    if (e > 1) {
+        return (a * (e * e - 1)) / (1 + e * cos(v));
+    } else {
+        return (a * (1 - e * e)) / (1 + e * cos(v));
+    }
 }
 
 glm::dvec3 MatrixConvertOrbParams(const double LAN, const double i, const double w, const glm::dvec3& vec) {
@@ -51,48 +57,68 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
     // Orbital momentum vector
     const auto h = glm::cross(position, velocity);
     // Eccentricity vector
-    const auto ecc_v = glm::cross(velocity, h) / GM - glm::normalize(position);
+    const glm::dvec3 ecc_v = glm::cross(velocity, h) / GM - glm::normalize(position);
 
     // Eccentricity
     double e = glm::length(ecc_v);
 
-    // TODO(EhWhoAmI): if e > 1, then it's a hyperbolic orbit
     // Vector pointing towards the ascending node
     const auto n = glm::dvec3(-h.y, h.x, 0);
+
     // True anomaly
-    double m = glm::dot(ecc_v, position) / (e * glm::length(position));
-    double v = acos(std::clamp(m, -1., 1.));
+    double v = glm::angle(glm::normalize(ecc_v), glm::normalize(position));  //acos(std::clamp(m, -1., 1.));
     if (glm::dot(position, velocity) < 0) v = TWOPI - v;
-    if (m >= 1) v = 0;
 
     // Inclination
     const double i = std::acos(h.z / glm::length(h));
-    // Hyperbolic eccentric anomaly
 
-    double T = n.x / glm::length(n);
     double M0 = 0;
     double E = 0;
     if (e < 1) {
         // Eccentric anomaly
-        E = 2 * atan(tan(v / 2) / sqrt((1 + e) / (1 - e)));
+        E = EccentricAnomaly(v, e);
         M0 = E - e * sin(E);
     } else {
-        const double F = 2 * atanh(sqrt((e - 1) / (e + 1)) * tan(v / 2));
+        const double F = HyperbolicAnomaly(v, e);
         M0 = e * sinh(F) - F;
         E = F;
     }
-    double LAN = acos(glm::clamp(T, -1., 1.));
-    if (n.y < 0) LAN = TWOPI - LAN;
-    if (glm::length(n) == 0) LAN = 0;
 
-    double w = acos(std::clamp(glm::dot(n, ecc_v) / (e * glm::length(n)), -1., 1.));
+    double LAN = acos(glm::clamp(n.x / glm::length(n), -1., 1.));
+    if (n.y < 0) LAN = TWOPI - LAN;
+
+    double w = glm::angle(glm::normalize(n), glm::normalize(ecc_v));
+    if (n == glm::dvec3(0.0, 0.0, 0.0)) {
+        // It's equal to the zero vector so LAN = 0
+        LAN = 0;
+        // Also figure out w
+        w = acos(ecc_v.x / glm::length(ecc_v));
+    }
     if (ecc_v.z < 0) w = TWOPI - w;
-    if (e == 0) w = 0;
-    if (glm::length(n) == 0) w = 0;
 
     double velocity_mag = glm::length(velocity);
     double sma = 1 / (2 / glm::length(position) - velocity_mag * velocity_mag / GM);
 
+    assert((e > 1 && sma <= 0) || (e <= 1 && sma >= 0));
+
+    if (i == 0 || i == PI) {
+        // Then figure out the values we want
+        // Set LAN and w to zero
+
+        LAN = 0;
+        // elliptical equatorial
+        if (e > 0 && e < 1) {
+            w = acos(ecc_v.x / glm::length(ecc_v));
+            if (ecc_v.y < 0) {
+                w = TWOPI - w;
+            }
+        }
+    } else if (e == 0) {  // Circular inclined
+        w = glm::angle(glm::normalize(n), glm::normalize(position));
+        if (position.z < 0) w = TWOPI - w;
+        v = 0;
+        M0 = 0;
+    }
     Orbit orb;
     orb.semi_major_axis = sma;
     orb.eccentricity = e;
@@ -101,8 +127,7 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
     orb.inclination = i;
     orb.M0 = M0;
     orb.epoch = time;
-    orb.v = v;
-    orb.E = E;
+    orb.v = normalize_radian(v);
     orb.GM = GM;
     return orb;
 }
@@ -116,17 +141,18 @@ glm::dvec3 OrbitToVec3(const double& a, const double& e, const radian& i, const 
         return glm::dvec3(0, 0, 0);
     }
     double r = GetOrbitingRadius(e, a, v);
+    double semi_param = a * (1 - e * e);
+
     //MatrixConvertOrbParams(LAN, i, w, glm::dvec(r * cos(v), r * sin(v), 0);
-    return r * ConvertToOrbitalVector(LAN, i, w, v, glm::vec3(1, 0, 0));
+    return semi_param *
+           ConvertToOrbitalVector(LAN, i, w, 0, glm::dvec3(cos(v) / (1 + e * cos(v)), sin(v) / (1 + e * cos(v)), 0));
 }
 
 double OrbitVelocity(const double v, const double e, const double a, const double GM) {
     double r = GetOrbitingRadius(e, a, v);
     double sma = a;
-    if (e > 1) {
-        sma = -sma;
-    }
-    return sqrt(GM * (2 / r - 1 / sma));
+
+    return sqrt(GM * (2 / abs(r) - 1 / sma));
 }
 
 double AvgOrbitalVelocity(const Orbit& orb) { return (PI * 2 * orb.semi_major_axis) / orb.T(); }
@@ -135,10 +161,11 @@ glm::dvec3 OrbitVelocityToVec3(const Orbit& orb, double v) {
     if (orb.semi_major_axis == 0) {
         return glm::dvec3(0, 0, 0);
     }
-    double E = (orb.eccentricity < 1.) ? EccentricAnomaly(v, orb.eccentricity) : HyperbolicAnomaly(v, orb.eccentricity);
-    double r = GetOrbitingRadius(orb.eccentricity, orb.semi_major_axis, v);
-    glm::dvec3 velocity = CalculateVelocity(E, r, orb.GM, orb.semi_major_axis, orb.eccentricity);
-    return ConvertOrbParams(orb.LAN, orb.inclination, orb.w, velocity);
+    // Return
+    double semi_param = orb.semi_major_axis * (1 - orb.eccentricity * orb.eccentricity);
+
+    return sqrt(orb.GM / semi_param) *
+           ConvertOrbParams(orb.LAN, orb.inclination, orb.w, glm::dvec3(-sin(v), (orb.eccentricity + cos(v)), 0));
 }
 
 glm::dvec3 OrbitVelocityToVec3(const Orbit& orb) { return OrbitVelocityToVec3(orb, orb.v); }
@@ -188,7 +215,9 @@ double EccentricAnomalyToTrueAnomaly(const double& ecc, const double& E) {
 }
 
 double HyperbolicAnomalyToTrueAnomaly(const double& ecc, const double& H) {
-    return 2 * atan(sqrt((ecc + 1.) / (ecc - 1.)) * tanh(H / 2));
+    return 2 * atan((sqrt(ecc + 1) * sinh(H / 2)) / (sqrt(ecc - 1) * cosh(H / 2)));
+    // Might need to do a random -2pi or something like that, not sure how to handle it
+    // I think if the hyperbolic anomaly is out of bounds we subtract pi? Because the difference is a bit whack
 }
 
 double GetMtElliptic(const double& M0, const double& nu, const double& time, const double& epoch) {
@@ -197,7 +226,10 @@ double GetMtElliptic(const double& M0, const double& nu, const double& time, con
     return normalize_radian(Mt);
 }
 
-double GetMtHyperbolic(const double& Mu, const double& a, const double& d_t) { return sqrt(Mu / (-a * a * a)) * d_t; }
+double GetMtHyperbolic(const double& M0, const double& nu, const double& time, const double& epoch) {
+    double Mt = M0 + (time - epoch) * nu;
+    return Mt;  //normalize_radian(Mt);
+}
 
 radian TrueAnomalyElliptic(const Orbit& orbit, const second& time) {
     double Mt = GetMtElliptic(orbit.M0, orbit.nu(), time, orbit.epoch);
@@ -215,10 +247,13 @@ radian TrueAnomalyElliptic(const Orbit& orbit, const second& time, double& E_out
 double GetCircularOrbitingVelocity(const double& GM, const double& radius) { return sqrt(GM / radius); }
 
 radian TrueAnomalyHyperbolic(const Orbit& orbit, const second& time) {
-    // Get the time
-    double Mt = GetMtHyperbolic(orbit.GM, orbit.semi_major_axis, time - orbit.epoch);
+    double Mt = GetMtHyperbolic(orbit.M0, orbit.nu(), time, orbit.epoch);
     double H = SolveKeplerHyperbolic(Mt, orbit.eccentricity);
-    return HyperbolicAnomalyToTrueAnomaly(orbit.eccentricity, H);
+    double v = HyperbolicAnomalyToTrueAnomaly(orbit.eccentricity, H);
+    assert((-GetHyperbolicAsymptopeAnomaly(orbit.eccentricity) < v &&
+            v < GetHyperbolicAsymptopeAnomaly(orbit.eccentricity) &&
+            "Orbit needs to be between the hyperbolic asymtopes!"));
+    return v;
 }
 
 // https://space.stackexchange.com/questions/27602/what-is-hyperbolic-eccentric-anomaly-f
@@ -228,13 +263,11 @@ radian HyperbolicAnomaly(double v, double e) { return 2 * atanh(tan(v / 2) * sqr
 
 void UpdateOrbit(Orbit& orb, const second& time) {
     // Get the thingy
-    double E = 0;
     if (orb.eccentricity < 1) {
-        orb.v = TrueAnomalyElliptic(orb, time, E);
+        orb.v = TrueAnomalyElliptic(orb, time);
     } else {
         orb.v = TrueAnomalyHyperbolic(orb, time);
     }
-    orb.E = E;
 }
 
 double GetTrueAnomaly(const Orbit& orb, const second& epoch) {
@@ -257,7 +290,7 @@ glm::dvec3 CalculateVelocity(const double& E, const double& r, const double& GM,
 
 glm::dvec3 CalculateVelocityHyperbolic(const double& E, const double& r, const double& GM, const double& a,
                                        const double& e) {
-    return (double)(sqrt(-GM * a) / r) * glm::dvec3(sinh(E), -sqrt(e * e - 1) * cosh(E), 0);
+    return (double)(sqrt(abs(GM * a)) / r) * glm::dvec3(sinh(E), -sqrt(e * e - 1) * cosh(E), 0);
 }
 
 glm::dvec3 CalculateVelocityElliptic(const double& E, const double& r, const double& GM, const double& a,
