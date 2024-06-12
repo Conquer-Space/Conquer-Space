@@ -76,7 +76,7 @@ namespace {
 /// <param name="body"></param>
 /// <param name="parent"></param>
 void CrashObject(Universe& universe, cqspt::Orbit& orb, entt::entity body, entt::entity parent) {
-    if (universe.any_of<cqspc::bodies::Body>(parent)) {
+    if (universe.any_of<cqspc::bodies::Body>(body)) {
         return;
     }
     auto& p_bod = universe.get<cqspc::bodies::Body>(parent);

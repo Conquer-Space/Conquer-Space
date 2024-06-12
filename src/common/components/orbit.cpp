@@ -384,27 +384,38 @@ double AscendingTrueAnomaly(const Orbit& start, const Orbit& dest) {
 }
 
 // https://space.stackexchange.com/questions/54396/how-to-calculate-the-time-to-reach-a-given-true-anomaly
-double Orbit::TimeToMeanAnomaly(double v2) const {
+double Orbit::TimeToTrueAnomaly(double v2) const {
     // If it's a hyperbolic orbit, we will have to use different equations.
     // The mean anomaly will be positive, so
     // Get eccentric anomaly
     // Assume current v is v0.
-    const double E0 = std::acos((eccentricity + cos(v)) / (1 + eccentricity * cos(v)));
-    double M0 = E0 - std::sin(E0) * eccentricity;
-    if (v > PI) {
-        M0 *= -1;
-    }
+    if (eccentricity > 1) {
+        // Use hyperbolic equations
+        const double F0 = std::acosh((eccentricity + cos(v)) / (1 + eccentricity * cos(v)));
+        double M0 = eccentricity * sinh(F0) - F0;
 
-    const double E = std::acos((eccentricity + cos(v2)) / (1 + eccentricity * cos(v2)));
-    double M = E - std::sin(E) * eccentricity;
+        const double F = std::acosh((eccentricity + cos(v2)) / (1 + eccentricity * cos(v2)));
+        double M = eccentricity * sinh(F) - F;
+        double t = (M0 - M) / nu();
+        return t;
+    } else {
+        const double E0 = std::acos((eccentricity + cos(v)) / (1 + eccentricity * cos(v)));
+        double M0 = E0 - std::sin(E0) * eccentricity;
+        if (v > PI) {
+            M0 *= -1;
+        }
 
-    if (v2 > PI) {
-        M *= -1;
+        const double E = std::acos((eccentricity + cos(v2)) / (1 + eccentricity * cos(v2)));
+        double M = E - std::sin(E) * eccentricity;
+
+        if (v2 > PI) {
+            M *= -1;
+        }
+        double t = (M - M0) / nu();
+        if (t < 0) {
+            t = T() + t;
+        }
+        return (t);
     }
-    double t = (M - M0) / nu();
-    if (t < 0) {
-        t = T() + t;
-    }
-    return (t);
 }
 }  // namespace cqsp::common::components::types
