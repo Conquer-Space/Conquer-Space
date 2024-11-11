@@ -1,3 +1,0 @@
-All satellites' around earth will be held in the satellites.txt file.
-This is because the orbital elements are most easily accessible from two line elements, from  https://celestrak.org/NORAD/elements/active.txt.
-Defining a constellation of satellites

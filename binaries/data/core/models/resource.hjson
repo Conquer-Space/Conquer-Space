@@ -1,6 +1,6 @@
 {
     iss: {
-        path: iss.obj
+        path: hst.obj
         type: model
         hints: {
         }
