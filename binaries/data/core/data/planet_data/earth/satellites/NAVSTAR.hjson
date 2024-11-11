@@ -13,5 +13,9 @@
         constellation: GPS
         type: navigation
         owner: USA
+        orbit: {
+            center: core:earth
+            eccentricity: 10
+        }
     }
 ]
