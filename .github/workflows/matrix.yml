@@ -55,10 +55,30 @@ jobs:
       with:
         os: ${{ matrix.os }}
 
+    - name: Cache variables
+      run: |
+        echo "VCPKG_HASH=$(git submodule status vcpkg | cut -c 1-8)" >> $GITHUB_ENV
+
+    - name: Get vcpkg
+      id: cache-vcpkg
+      uses: actions/cache@v4
+      with:
+        path: vcpkg
+        key: ${{ matrix.os }}-${{ matrix.compiler }}-${{ env.VCPKG_HASH }}-vcpkg
+
     - name: Configure Build files
       run: |
         ./setup_env.sh
         du -sh ./vcpkg
+
+    - name: Save vcpkg
+      if: steps.cache-vcpkg.outputs.cache-hit != 'true'
+      id: cache-vcpkg-save
+      uses: actions/cache/save@v4
+      with:
+        path: |
+          vcpkg
+        key: ${{ matrix.os }}-${{ matrix.compiler }}-${{ env.VCPKG_HASH }}-vcpkg
 
     - name: Build Conquer Space
       run: |
