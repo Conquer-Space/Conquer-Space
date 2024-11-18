@@ -58,6 +58,7 @@ jobs:
     - name: Configure Build files
       run: |
         ./setup_env.sh
+        du -sh ./vcpkg
 
     - name: Build Conquer Space
       run: |
