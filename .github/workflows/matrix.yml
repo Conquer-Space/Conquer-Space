@@ -65,7 +65,7 @@ jobs:
 
     - name: Tests
       run: |
-        ctest -V --schedule-random --progress --output-on-failure --parallel --no-tests-error --build-config ${{ matrix.config }} --test-dir build/test
+        ctest -V --schedule-random --progress --output-on-failure --parallel --no-tests=error --build-config ${{ matrix.config }} --test-dir build/test
 
     - uses: actions/upload-artifact@v4
       continue-on-error: true
