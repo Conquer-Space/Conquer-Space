@@ -1,6 +1,7 @@
 /binaries/bin
 !/binaries/bin/README.txt
 /build
+*.pdb
 
 # Doxygen
 /docs/latex
