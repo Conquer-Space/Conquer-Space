@@ -48,4 +48,4 @@ Create build files
 `cmake --build build`
 
 #### Mac
-Sorry, we don't have any mac developers, so if you are one, feel free to join us and the discord and help us!
+We are currently looking for developers on Mac! Please join the Discord to participate in the effort!
