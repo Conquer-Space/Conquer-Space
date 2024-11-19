@@ -27,13 +27,11 @@ Compile:
 Or you can open the Visual Studio project in build, and compile.
 
 #### Linux (Ubuntu)
-You'll need a few libraries, so
+Install the necessary libraries with
 
-`sudo apt-get update`,
-
-and
-
-`sudo apt install -y libglfw3 libglfw3-dev libopenal-dev libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev`
+```
+sudo apt-get update && sudo apt install -y libglfw3 libglfw3-dev libopenal-dev libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev
+```
 
 Open the repository
 
