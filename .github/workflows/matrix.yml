@@ -49,36 +49,25 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt install -y libglfw3 libglfw3-dev libopenal-dev libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev
+        sudo apt install -y libglfw3 libglfw3-dev libopenal-dev libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev libxxf86vm-dev
 
     - uses: mjp41/workaround8649@main
       with:
         os: ${{ matrix.os }}
 
-    - name: Cache variables
-      run: |
-        echo "VCPKG_HASH=$(git submodule status vcpkg | cut -c 1-8)" >> $GITHUB_ENV
-
-    - name: Get vcpkg
-      id: cache-vcpkg
-      uses: actions/cache@v4
+    - name: Export GitHub Actions cache environment variables
+      uses: actions/github-script@v7
       with:
-        path: vcpkg
-        key: ${{ matrix.os }}-${{ matrix.compiler }}-${{ env.VCPKG_HASH }}-vcpkg
+        script: |
+          core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+          core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
     - name: Configure Build files
       run: |
         ./setup_env.sh
         du -sh ./vcpkg
-
-    - name: Save vcpkg
-      if: steps.cache-vcpkg.outputs.cache-hit != 'true'
-      id: cache-vcpkg-save
-      uses: actions/cache/save@v4
-      with:
-        path: |
-          vcpkg
-        key: ${{ matrix.os }}-${{ matrix.compiler }}-${{ env.VCPKG_HASH }}-vcpkg
+      env:
+        VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
 
     - name: Build Conquer Space
       run: |
