@@ -84,11 +84,11 @@ void LoadAllResources(cqsp::engine::Application& app, ConquerSpace& conquer_spac
     LoadResource<CountryLoader>(app, conquer_space.GetUniverse(), "countries");
     LoadProvinces(conquer_space.GetUniverse(), app.GetAssetManager().GetAsset<asset::TextAsset>("province_defs")->data);
     LoadResource<CityLoader>(app, conquer_space.GetUniverse(), "cities");
+    LoadResource<SatelliteLoader>(app, conquer_space.GetUniverse(), "satellites");
+
     LoadResource(app, conquer_space.m_universe, "names", LoadNameLists);
     LoadResource(app, conquer_space.m_universe, "tech_fields", common::systems::science::LoadFields);
     LoadResource(app, conquer_space.m_universe, "tech_list", common::systems::science::LoadTechnologies);
-    common::systems::loading::LoadSatellites(conquer_space.GetUniverse(),
-                                             app.GetAssetManager().GetAsset<asset::TextAsset>("satellites")->data);
 
     // Initialize planet terrains
     asset::HjsonAsset* asset = app.GetAssetManager().GetAsset<asset::HjsonAsset>("core:terrain_colors");

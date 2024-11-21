@@ -18,6 +18,9 @@
 
 #include <spdlog/spdlog.h>
 
+#include <map>
+#include <string>
+
 #include "common/components/name.h"
 
 namespace cqsp::common::systems::loading {
@@ -28,6 +31,7 @@ bool LoadName(Universe& universe, const entt::entity& entity, const Hjson::Value
     std::string identifier = value["name"].to_string();
     auto& name = universe.emplace<components::Name>(entity);
     name.name = identifier;
+    SPDLOG_INFO("{}", name.name);
     return true;
 }
 
