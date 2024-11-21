@@ -1,7 +1,7 @@
 {
     satellites: {
-        path: satellites.txt
-        type: text
+        path: satellites/
+        type: hjson
         hints: {
         }
     }

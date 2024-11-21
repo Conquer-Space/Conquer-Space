@@ -29,6 +29,7 @@ class HjsonLoader {
     int LoadHjson(const Hjson::Value& values);
     virtual bool LoadValue(const Hjson::Value& values, entt::entity entity) = 0;
     virtual void PostLoad(const entt::entity& entity) {}
+    virtual bool NeedIdentifier() { return true; }
 
  protected:
     Universe& universe;

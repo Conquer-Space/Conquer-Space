@@ -116,6 +116,18 @@ struct Orbit {
           v(M0),
           epoch(0) {}
 
+    Orbit(const Orbit& orbit)
+        : eccentricity(orbit.eccentricity),
+          semi_major_axis(orbit.semi_major_axis),
+          inclination(orbit.inclination),
+          LAN(orbit.LAN),
+          w(orbit.w),
+          M0(orbit.M0),
+          v(orbit.M0),
+          epoch(orbit.epoch),
+          GM(orbit.GM),
+          reference_body(orbit.reference_body) {}
+
     double GetMtElliptic(double time) const { return normalize_radian(M0 + (time - epoch) * nu()); }
 
     double GetOrbitingRadius() const { return types::GetOrbitingRadius(eccentricity, semi_major_axis, v); }

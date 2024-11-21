@@ -44,9 +44,9 @@ def parse_tle(satellite):
     mean_motion = float(line_two[52:63])
     # # Semi major axis
     T = (24 * 3600)/mean_motion
-    mu = 3.9860044188e14
+    mu = 3.9860044188e14 # Gravitational constant m3 s-2
+    # Semi major axis
     a = (T**2*mu/(4.0*pi**2))**(1/3.0)
-    # # Focus
 
     # print("Orbit time: {} hours".format(24/float(mean_motion)))
     # print("Semi major axis: {} km".format(a/1000))
@@ -64,7 +64,7 @@ def parse_tle(satellite):
         "semi_major_axis": a,
         "inclination": inclination,
         "LAN": raan,
-        "w": w,
+        "arg_periapsis": w,
         "M0": mean_anomaly,
         "epoch": date.timestamp() # Time since 1970
     }

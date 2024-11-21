@@ -30,7 +30,7 @@ std::optional<components::types::Orbit> LoadOrbit(const Hjson::Value& values) {
     components::types::Orbit orbit;
     if (values["semi_major_axis"].type() != Hjson::Type::String && values["semi_major_axis"].to_double() == 0) {
         orbit.semi_major_axis = 0;
-        return orbit;
+        return std::optional<components::types::Orbit>(orbit);
     }
 
     bool sma_correct;
@@ -64,6 +64,6 @@ std::optional<components::types::Orbit> LoadOrbit(const Hjson::Value& values) {
     if (!M0_correct) {
         return std::nullopt;
     }
-    return orbit;
+    return std::optional<components::types::Orbit>(orbit);
 }
 }  // namespace cqsp::common::systems::loading
