@@ -31,10 +31,14 @@ int HjsonLoader::LoadHjson(const Hjson::Value& values) {
         Hjson::Value value = values[i];
 
         entt::entity entity = universe.create();
-        if (!LoadInitialValues(universe, entity, value)) {
-            SPDLOG_WARN("No identifier");
-            universe.destroy(entity);
-            continue;
+        if (NeedIdentifier()) {
+            if (!LoadInitialValues(universe, entity, value)) {
+                SPDLOG_WARN("No identifier");
+                universe.destroy(entity);
+                continue;
+            }
+        } else {
+            LoadInitialValues(universe, entity, value);
         }
 
         value = Hjson::Merge(GetDefaultValues(), value);

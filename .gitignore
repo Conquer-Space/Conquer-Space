@@ -25,3 +25,5 @@
 git-hook.cfg
 /build-makefile/
 tools/run-clang-tidy.py
+
+*.pdb

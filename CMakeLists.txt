@@ -18,7 +18,7 @@ cmake_minimum_required(VERSION 3.13)
 # Look for vcpkg
 set(CMAKE_TOOLCHAIN_FILE vcpkg/scripts/buildsystems/vcpkg.cmake)
 if (WIN32)
-  set(VCPKG_TARGET_TRIPLET "x64-windows-static")
+  set(VCPKG_TARGET_TRIPLET "x64-windows-static" CACHE STRING "" FORCE)
 endif()
 
 # set the project name
