@@ -9,6 +9,9 @@ tle_source = "https://celestrak.org/NORAD/elements/gp.php?GROUP=stations&FORMAT=
 # Ran the following command line arguments:
 # -i "https://celestrak.org/NORAD/elements/gp.php?GROUP=gps-ops&FORMAT=tle" -t "navigation gps"
 #       -o ../binaries/data/core/data/planet_data/earth/satellites/NAVSTAR.hjson
+# -i "https://celestrak.org/NORAD/elements/gp.php?GROUP=galileo&FORMAT=tle" -t "navigation galileo"
+#       -o ../binaries/data/core/data/planet_data/earth/satellites/galileo.hjson
+# 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="Satellite Parser")
     parser.add_argument("-i", "--input", default=tle_source, help="Input text file url of the TLE input")

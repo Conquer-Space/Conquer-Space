@@ -31,7 +31,6 @@ bool LoadName(Universe& universe, const entt::entity& entity, const Hjson::Value
     std::string identifier = value["name"].to_string();
     auto& name = universe.emplace<components::Name>(entity);
     name.name = identifier;
-    SPDLOG_INFO("{}", name.name);
     return true;
 }
 

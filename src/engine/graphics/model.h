@@ -37,6 +37,7 @@ struct MaterialTextureStack {
 };
 
 struct Material {
+    union {};
     std::vector<asset::Texture*> diffuse;
     std::vector<asset::Texture*> specular;
     std::vector<asset::Texture*> ambient;

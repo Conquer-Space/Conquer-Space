@@ -1,8 +1,21 @@
 {
     iss: {
+        path: iss.obj
+        type: model
+        hints: {
+        }
+    }
+    hst: {
         path: hst.obj
         type: model
         hints: {
+        }
+    }
+    galileo: {
+        path: galileo/galileo.obj
+        type: model
+        hints: {
+            pbr
         }
     }
 }
