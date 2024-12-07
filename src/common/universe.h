@@ -16,6 +16,8 @@
  */
 #pragma once
 
+#include <fmt/format.h>
+
 #include <map>
 #include <memory>
 #include <string>
@@ -71,3 +73,12 @@ class Universe : public entt::registry {
 };
 }  // namespace common
 }  // namespace cqsp
+
+template <>
+struct fmt::formatter<entt::entity> : formatter<std::string_view> {
+    template <typename FormatContext>
+    constexpr auto format(entt::entity entity, FormatContext& ctx) const {
+        std::string_view name = std::to_string((uint64_t)entity);
+        return formatter<std::string_view>::format(name, ctx);
+    }
+};

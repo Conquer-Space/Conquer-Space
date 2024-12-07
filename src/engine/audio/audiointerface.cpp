@@ -18,6 +18,7 @@
 
 #include <chrono>
 #include <future>
+#include <memory>
 #include <random>
 #include <string>
 
@@ -261,13 +262,13 @@ std::unique_ptr<AudioAsset> cqsp::engine::audio::AudioInterface::LoadNextFile() 
 
     Hjson::Value track_info = playlist[selected_track];
     std::string track_file = cqsp::common::util::GetCqspDataPath() + "/core/music/" + track_info["file"];
-    SPDLOG_LOGGER_INFO(logger, "Loading track \'{}\'", track_info["name"]);
+    SPDLOG_LOGGER_INFO(logger, "Loading track \'{}\'", track_info["name"].to_string());
     auto mfile = std::ifstream(track_file, std::ios::binary);
     if (mfile.good()) {
         return cqsp::asset::LoadOgg(mfile);
         SPDLOG_LOGGER_INFO(logger, "Length of audio: {}", music_asset->Length());
     }
-    SPDLOG_LOGGER_ERROR(logger, "Failed to load audio {}", track_info["name"]);
+    SPDLOG_LOGGER_ERROR(logger, "Failed to load audio {}", track_info["name"].to_string());
     return nullptr;
 }
 

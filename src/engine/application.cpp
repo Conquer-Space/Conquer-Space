@@ -31,7 +31,9 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -388,7 +390,7 @@ Rml::ElementDocument* Application::LoadDocument(const std::string& path) {
 }
 
 void Application::CloseDocument(const std::string& path) {
-        std::filesystem::path doc_path =
+    std::filesystem::path doc_path =
         std::filesystem::canonical(std::filesystem::path(common::util::GetCqspDataPath()) / path);
     loaded_documents[doc_path.string()]->Close();
     loaded_documents.erase(doc_path.string());
@@ -504,10 +506,10 @@ void Application::GlInit() {
 
     // Print gl information
     ENGINE_LOG_INFO(" --- Begin GL information ---");
-    ENGINE_LOG_INFO("GL version: {}", glGetString(GL_VERSION));
-    ENGINE_LOG_INFO("GL vendor: {}", glGetString(GL_VENDOR));
-    ENGINE_LOG_INFO("GL Renderer: {}", glGetString(GL_RENDERER));
-    ENGINE_LOG_INFO("GL shading language: {}", glGetString(GL_SHADING_LANGUAGE_VERSION));
+    ENGINE_LOG_INFO("GL version: {}", (char*)glGetString(GL_VERSION));
+    ENGINE_LOG_INFO("GL vendor: {}", (char*)glGetString(GL_VENDOR));
+    ENGINE_LOG_INFO("GL Renderer: {}", (char*)glGetString(GL_RENDERER));
+    ENGINE_LOG_INFO("GL shading language: {}", (char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
     ENGINE_LOG_INFO(" --- End of GL information ---");
 }
 
@@ -532,8 +534,8 @@ void Application::LogInfo() {
     ENGINE_LOG_INFO("Save Path: {}", common::util::GetCqspAppDataPath());
 
 #ifdef TRACY_ENABLE
-    ENGINE_LOG_INFO("Tracy protocol version: {}", tracy::ProtocolVersion);
-    ENGINE_LOG_INFO("Tracy broadcast version: {}", tracy::BroadcastVersion);
+    ENGINE_LOG_INFO("Tracy protocol version: {}", (uint16_t)tracy::ProtocolVersion);
+    ENGINE_LOG_INFO("Tracy broadcast version: {}", (uint16_t)tracy::BroadcastVersion);
 #endif  // TRACY_ENABLED
 }
 

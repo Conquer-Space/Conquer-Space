@@ -144,7 +144,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
             universe.get_or_emplace<components::CountryCityList>(country).city_list.push_back(entity);
         } else {
             SPDLOG_INFO("City {} has country {}, but it's undefined",
-                        universe.get<components::Identifier>(entity).identifier, values["country"]);
+                        universe.get<components::Identifier>(entity).identifier, values["country"].to_string());
         }
     } else {
         SPDLOG_WARN("City {} has no country", universe.get<components::Identifier>(entity).identifier);
@@ -157,7 +157,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
             universe.get<components::Province>(province).cities.push_back(entity);
         } else {
             SPDLOG_WARN("City {} has province {}, but it's undefined",
-                        universe.get<components::Identifier>(entity).identifier, values["province"]);
+                        universe.get<components::Identifier>(entity).identifier, values["province"].to_string());
         }
     }
 

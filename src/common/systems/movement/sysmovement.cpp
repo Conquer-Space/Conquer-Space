@@ -88,7 +88,7 @@ void CrashObject(Universe& universe, cqspt::Orbit& orb, entt::entity body, entt:
     // Next time we need to account for the atmosphere
     if (glm::length(pos.position) <= p_bod.radius) {
         // Crash
-        SPDLOG_INFO("Object {} collided with the ground", body);
+        SPDLOG_INFO("Object {} collided with the ground", (uint64_t)body);
         // Then remove from the tree or something like that
         universe.get_or_emplace<cqsps::Crash>(body);
         pos.position = glm::vec3(0);
