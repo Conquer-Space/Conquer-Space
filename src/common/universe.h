@@ -75,10 +75,9 @@ class Universe : public entt::registry {
 }  // namespace cqsp
 
 template <>
-struct fmt::formatter<entt::entity> : formatter<std::string_view> {
+struct fmt::formatter<entt::entity> : formatter<std::string> {
     template <typename FormatContext>
     constexpr auto format(entt::entity entity, FormatContext& ctx) const {
-        std::string_view name = std::to_string((uint64_t)entity);
-        return formatter<std::string_view>::format(name, ctx);
+        return formatter<std::string>::format(std::to_string((uint64_t)entity), ctx);
     }
 };
