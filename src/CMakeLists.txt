@@ -44,6 +44,9 @@ add_subdirectory(client)
 target_compile_definitions(cqsp-client PUBLIC "$<$<CONFIG:DEBUG>:TRACY_ENABLE>")
 target_compile_definitions(cqsp-core PUBLIC "$<$<CONFIG:DEBUG>:TRACY_ENABLE>")
 target_compile_definitions(cqsp-engine PUBLIC "$<$<CONFIG:DEBUG>:TRACY_ENABLE>")
+target_compile_definitions(cqsp-client PUBLIC "GLM_ENABLE_EXPERIMENTAL")
+target_compile_definitions(cqsp-core PUBLIC "GLM_ENABLE_EXPERIMENTAL")
+target_compile_definitions(cqsp-engine PUBLIC "GLM_ENABLE_EXPERIMENTAL")
 
 add_executable(Conquer-Space main.cpp ${ICON_FILE})
 
