@@ -46,11 +46,20 @@ jobs:
       with:
         os: ubuntu-latest
 
+    - name: Export GitHub Actions cache environment variables
+      uses: actions/github-script@v7
+      with:
+        script: |
+          core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+          core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+  
     - name: Configure Build files
       run: |
         chmod +x setup_env.sh
         ./setup_env.sh
-
+      env:
+        VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+    
     - name: Download Clang Analysis Driver Scripts
       run: |
         wget https://raw.githubusercontent.com/llvm/llvm-project/llvmorg-11.0.1/clang-tools-extra/clang-tidy/tool/run-clang-tidy.py
