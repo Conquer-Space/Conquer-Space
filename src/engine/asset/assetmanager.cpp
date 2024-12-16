@@ -25,7 +25,9 @@
 #include <algorithm>
 #include <filesystem>
 #include <iostream>
+#include <memory>
 #include <regex>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -665,25 +667,34 @@ std::unique_ptr<Asset> AssetLoader::LoadCubemap(VirtualMounter* mount, const std
 std::unique_ptr<cqsp::asset::Asset> AssetLoader::LoadModel(cqsp::asset::VirtualMounter* mount, const std::string& path,
                                                            const std::string& key, const Hjson::Value& hints) {
     Assimp::Importer importer;
-    //importer.SetIOHandler(new IOSystem(mount));
-    //auto file_ptr = mount->Open(path, FileModes::Binary);
-    //importer.SetIOHandler()
-
-    //auto file = ReadAllFromVFile(file_ptr.get());
     std::filesystem::path file_path = std::filesystem::path(cqsp::common::util::GetCqspDataPath()) / path;
     const aiScene* scene =
         importer.ReadFile(file_path.string().c_str(), aiProcess_Triangulate | aiProcess_GenSmoothNormals |
                                                           aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+
     if ((scene == nullptr) || ((scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) != 0u) || (scene->mRootNode == nullptr)) {
         ENGINE_LOG_WARN("Assimp Error while loading {}: {}", key, importer.GetErrorString());
         return nullptr;
     }
+
     auto model = std::make_unique<cqsp::asset::Model>();
     ModelLoader loader(scene, file_path.parent_path().string());
+    // Set model scale?
     loader.LoadModel();
     ENGINE_LOG_INFO("Loading {} textures", loader.model_prototype->texture_map.size());
     loader.model_prototype->key = key;
     loader.model_prototype->asset = model.get();
+
+    if (hints["scale"].defined() && hints["scale"].type() == Hjson::Type::Vector && hints["scale"].size() == 3) {
+        // Load scale vector
+        model->scale.x = hints["scale"][0].to_double();
+        model->scale.y = hints["scale"][1].to_double();
+        model->scale.z = hints["scale"][2].to_double();
+    } else {
+        // Set to 1
+        model->scale = glm::vec3(1);
+    }
+
     QueueHolder holder(loader.model_prototype);
     m_asset_queue.push(holder);
     return model;

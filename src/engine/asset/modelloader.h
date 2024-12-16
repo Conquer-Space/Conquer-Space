@@ -105,6 +105,7 @@ struct ModelPrototype : public AssetPrototype {
     std::vector<MeshPrototype> prototypes;
     std::map<std::string, ModelTexturePrototype> texture_map;
     std::map<int, MaterialPrototype> material_map;
+
     int GetPrototypeType() { return PrototypeType::MODEL; }
 };
 

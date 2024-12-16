@@ -75,6 +75,7 @@ typedef std::shared_ptr<ModelMesh> ModelMesh_t;
 struct Model : public Asset {
     std::vector<ModelMesh_t> meshes;
     std::map<int, Material> materials;
+    glm::vec3 scale;
 
     AssetType GetAssetType() override { return AssetType::MODEL; }
 

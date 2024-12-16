@@ -352,7 +352,8 @@ void SysStarSystemRenderer::DrawModels() {
         }
         glm::mat4 transform = glm::mat4(1.f);
         transform = glm::translate(transform, object_pos);
-        transform = glm::scale(transform, glm::vec3(20));
+
+        transform = glm::scale(transform, iss_model->scale);
         model_shader->UseProgram();
         model_shader->SetMVP(transform, camera_matrix, projection);
         iss_model->Draw(model_shader.get());
