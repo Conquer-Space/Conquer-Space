@@ -10,8 +10,6 @@ illum 1
 Ps 0.000000
 Pc 0.000000
 Pcr 0.030000
-aniso 0.000000
-anisor 0.000000
 map_Kd galileofoilsubstance_Bassecolor.galileo.png
 map_Pm galileofoilsubstance_Metallic.galileo.png
 map_Pr galileofoilsubstance_Roughness.galileo.png
@@ -25,8 +23,6 @@ illum 1
 Ps 0.000000
 Pc 0.000000
 Pcr 0.030000
-aniso 0.000000
-anisor 0.000000
 map_Kd galileofoilsubstance_Bassecolor.foil.png
 map_Pm galileofoilsubstance_Metallic.foil.png
 map_Pr galileofoilsubstance_Roughness.foil.png

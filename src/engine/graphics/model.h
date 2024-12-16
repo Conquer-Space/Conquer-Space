@@ -29,19 +29,14 @@
 #include "engine/graphics/texture.h"
 
 namespace cqsp::asset {
-struct MaterialTextureStack {
-    asset::Texture* diffuse;
-    asset::Texture* specular;
-    asset::Texture* ambient;
-    asset::Texture* height;
-};
 
 struct Material {
-    union {};
     std::vector<asset::Texture*> diffuse;
     std::vector<asset::Texture*> specular;
     std::vector<asset::Texture*> ambient;
     std::vector<asset::Texture*> height;
+    std::vector<asset::Texture*> metallic;
+    std::vector<asset::Texture*> roughness;
     glm::vec3 base_diffuse;
     glm::vec3 base_specular;
     glm::vec3 base_ambient;
@@ -60,6 +55,12 @@ struct Material {
             delete texture;
         }
         for (auto& texture : height) {
+            delete texture;
+        }
+        for (auto& texture : metallic) {
+            delete texture;
+        }
+        for (auto& texture : roughness) {
             delete texture;
         }
     }

@@ -90,6 +90,8 @@ struct MaterialPrototype {
     std::vector<std::string> specular;
     std::vector<std::string> ambient;
     std::vector<std::string> height;
+    std::vector<std::string> metallic;
+    std::vector<std::string> roughness;
 
     glm::vec3 base_diffuse;
     glm::vec3 base_specular;

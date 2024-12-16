@@ -175,17 +175,18 @@ void LoadModelPrototype(ModelPrototype* prototype, Model* asset) {
     // Load materials
     for (auto& material_prototype : prototype->material_map) {
         // Loop through the list
-        Material material;
+        Material& material = asset->materials[material_prototype.first];
         SET_MATERIAL_TEXTURES(ambient);
         SET_MATERIAL_TEXTURES(specular);
         SET_MATERIAL_TEXTURES(diffuse);
         SET_MATERIAL_TEXTURES(height);
+        SET_MATERIAL_TEXTURES(metallic);
+        SET_MATERIAL_TEXTURES(roughness);
         material.base_diffuse = material_prototype.second.base_diffuse;
         material.base_ambient = material_prototype.second.base_ambient;
         material.base_emissive = material_prototype.second.base_emissive;
         material.base_specular = material_prototype.second.base_specular;
         material.base_transparent = material_prototype.second.base_transparent;
-        asset->materials[material_prototype.first] = material;
     }
 }
 
@@ -228,6 +229,9 @@ void ModelLoader::LoadMaterialTextures(aiMaterial* material, const aiTextureType
                 break;
             case aiTextureType_AMBIENT:
                 prototype.ambient.push_back(path_str);
+                break;
+            case aiTextureType_METALNESS:
+                prototype.metallic.push_back(path_str);
                 break;
             default:
                 break;
@@ -326,14 +330,17 @@ void ModelLoader::LoadMaterial(int idx, aiMaterial* material) {
     prototype.base_transparent = glm::vec3(color.r, color.g, color.b);
 
     ENGINE_LOG_INFO("Loading {} properties", material->mNumProperties);
-    // PBR type
+
+    ENGINE_LOG_INFO("Shading model: {}", material->GetTextureCount(aiTextureType_METALNESS));
     LoadMaterialTextures(material, aiTextureType_SPECULAR, prototype);
     LoadMaterialTextures(material, aiTextureType_DIFFUSE, prototype);
     LoadMaterialTextures(material, aiTextureType_HEIGHT, prototype);
     LoadMaterialTextures(material, aiTextureType_AMBIENT, prototype);
+    LoadMaterialTextures(material, aiTextureType_METALNESS, prototype);
+    LoadMaterialTextures(material, aiTextureType_DIFFUSE_ROUGHNESS, prototype);
 
-    // Also load other textures for the pbr properties...
-    // How to load materials?
+    // Check if it's pbr and if it's pbr
+
     model_prototype->material_map[idx] = prototype;
 }
 }  // namespace cqsp::asset

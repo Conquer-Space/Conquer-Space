@@ -15,7 +15,7 @@
         path: galileo/galileo.obj
         type: model
         hints: {
-            pbr
+            scale: [1, 1, 1]
         }
     }
 }
