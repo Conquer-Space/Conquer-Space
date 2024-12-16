@@ -866,12 +866,11 @@ void AssetLoader::LoadResourceHjsonFile(Package& package, const std::string& pac
         if (!mounter.Exists(path)) {
             ENGINE_LOG_WARN("Cannot find asset {} at {}", key, path);
             // Check if it's required
-            if (!val["required"].empty() && val["required"]) {
-                // Then required
-                ENGINE_LOG_CRITICAL("Cannot find critical resource {}, exiting", key);
-                missing_assets.push_back(key);
+            if (val["required"].empty() || !val["required"]) {
+                continue;
             }
-            continue;
+            ENGINE_LOG_CRITICAL("Cannot find critical resource {}, exiting", key);
+            missing_assets.push_back(key);
         }
         Hjson::Value hints;
         if (val["hints"].defined()) {
