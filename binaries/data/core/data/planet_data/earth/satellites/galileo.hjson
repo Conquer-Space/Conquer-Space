@@ -12,6 +12,7 @@
       epoch: 1732147616.237184
       reference: earth
     }
+    model: galileo
     tags:
     [
       navigation

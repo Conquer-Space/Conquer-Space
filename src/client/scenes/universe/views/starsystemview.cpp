@@ -31,6 +31,7 @@
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
+#include "common/components/model.h"
 #include "common/components/name.h"
 #include "common/components/orbit.h"
 #include "common/components/organizations.h"
@@ -346,17 +347,24 @@ void SysStarSystemRenderer::DrawModels() {
     auto ships = m_universe.view<cqsps::Ship, ctx::VisibleOrbit>();
     // Loop through the space bodies that are close
     for (entt::entity body_entity : ships) {
+        // Get the model of the object
+
+        if (!m_universe.any_of<common::components::WorldModel>(body_entity)) {
+            continue;
+        }
+        auto model_name = m_universe.get<common::components::WorldModel>(body_entity);
         glm::vec3 object_pos = CalculateCenteredObject(body_entity);
         if (glm::distance(cam_pos, object_pos) > 1000) {
             continue;
         }
+        auto model = m_app.GetAssetManager().GetAsset<asset::Model>(model_name.name);
         glm::mat4 transform = glm::mat4(1.f);
         transform = glm::translate(transform, object_pos);
 
-        transform = glm::scale(transform, iss_model->scale);
+        transform = glm::scale(transform, model->scale);
         model_shader->UseProgram();
         model_shader->SetMVP(transform, camera_matrix, projection);
-        iss_model->Draw(model_shader.get());
+        model->Draw(model_shader.get());
     }
 }
 

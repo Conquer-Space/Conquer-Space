@@ -25,11 +25,11 @@
 #include <vector>
 
 #include "common/components/coordinates.h"
+#include "common/components/model.h"
 #include "common/components/name.h"
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
 #include "common/systems/loading/loadorbit.h"
-
 namespace cqsp::common::systems::loading {
 namespace {
 std::string trim(const std::string& str, const std::string& whitespace = " \t") {
@@ -144,7 +144,13 @@ bool SatelliteLoader::LoadValue(const Hjson::Value& values, entt::entity entity)
     }
     orbit->reference_body = universe.planets[values["orbit"]["reference"].to_string()];
     orbit->GM = universe.get<components::bodies::Body>(orbit->reference_body).GM;
-
+    if (values["model"].defined()) {
+        // Then we can add a model
+        universe.emplace<components::WorldModel>(entity, values["model"].to_string());
+    } else {
+        // We add a generic model instead
+        // Let's ignore it for now...
+    }
     // Get name but no identifier
     universe.emplace<components::types::Orbit>(entity, *orbit);
     universe.get<components::bodies::OrbitalSystem>(orbit->reference_body).push_back(entity);
