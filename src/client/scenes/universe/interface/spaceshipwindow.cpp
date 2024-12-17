@@ -38,9 +38,9 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         return;
     }
     if (!GetUniverse().all_of<common::components::ships::Ship>(body)) {
-        // Display the details of the spaceship
         return;
     }
+    // Display the details of the spaceship
     ImGui::Begin(fmt::format("{}", common::util::GetName(GetUniverse(), body)).c_str());
     // Display orbital elements
     auto& orbit = GetUniverse().get<common::components::types::Orbit>(body);
@@ -57,7 +57,8 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         ImGui::TextFmt("GM: {} km^3 * s^-2", orbit.GM);
         ImGui::TextFmt("Orbital period: {} s", orbit.T());
         ImGui::TextFmt("Orbiting: {}", common::util::GetName(GetUniverse(), orbit.reference_body).c_str());
-        if (GetUniverse().any_of<common::components::bodies::Body>(orbit.reference_body)) {
+        if (GetUniverse().valid(orbit.reference_body) &&
+            GetUniverse().any_of<common::components::bodies::Body>(orbit.reference_body)) {
             double r = orbit.GetOrbitingRadius();
             double p = GetUniverse().get<common::components::bodies::Body>(orbit.reference_body).radius;
             p = 0;

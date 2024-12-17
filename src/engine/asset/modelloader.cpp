@@ -21,7 +21,9 @@
 
 #include <cstddef>
 #include <filesystem>
+#include <map>
 #include <memory>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -173,17 +175,18 @@ void LoadModelPrototype(ModelPrototype* prototype, Model* asset) {
     // Load materials
     for (auto& material_prototype : prototype->material_map) {
         // Loop through the list
-        Material material;
+        Material& material = asset->materials[material_prototype.first];
         SET_MATERIAL_TEXTURES(ambient);
         SET_MATERIAL_TEXTURES(specular);
         SET_MATERIAL_TEXTURES(diffuse);
         SET_MATERIAL_TEXTURES(height);
+        SET_MATERIAL_TEXTURES(metallic);
+        SET_MATERIAL_TEXTURES(roughness);
         material.base_diffuse = material_prototype.second.base_diffuse;
         material.base_ambient = material_prototype.second.base_ambient;
         material.base_emissive = material_prototype.second.base_emissive;
         material.base_specular = material_prototype.second.base_specular;
         material.base_transparent = material_prototype.second.base_transparent;
-        asset->materials[material_prototype.first] = material;
     }
 }
 
@@ -212,7 +215,8 @@ void ModelLoader::LoadMaterialTextures(aiMaterial* material, const aiTextureType
             continue;
         }
         model_prototype->texture_map[path_str] = mesh_proto;
-        // This is rather ugly
+
+        ENGINE_LOG_INFO("Loading texture {} at path {} for model", path_str, tex_path.string());
         switch (type) {
             case aiTextureType_SPECULAR:
                 prototype.specular.push_back(path_str);
@@ -225,6 +229,9 @@ void ModelLoader::LoadMaterialTextures(aiMaterial* material, const aiTextureType
                 break;
             case aiTextureType_AMBIENT:
                 prototype.ambient.push_back(path_str);
+                break;
+            case aiTextureType_METALNESS:
+                prototype.metallic.push_back(path_str);
                 break;
             default:
                 break;
@@ -297,6 +304,7 @@ void ModelLoader::LoadMesh(aiMesh* mesh) {
 }
 
 void ModelLoader::LoadMaterials() {
+    ENGINE_LOG_INFO("Loading {} materials", scene->mNumMaterials);
     for (int i = 0; i < scene->mNumMaterials; i++) {
         aiMaterial* mat = scene->mMaterials[i];
         // Alright in theory you can merge multiple textures to the same material
@@ -309,6 +317,7 @@ void ModelLoader::LoadMaterials() {
 void ModelLoader::LoadMaterial(int idx, aiMaterial* material) {
     MaterialPrototype prototype;
     aiColor3D color(0.f, 0.f, 0.f);
+    ENGINE_LOG_INFO("Loading material {}", material->GetName().C_Str());
     material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
     prototype.base_diffuse = glm::vec3(color.r, color.g, color.b);
     material->Get(AI_MATKEY_COLOR_SPECULAR, color);
@@ -320,13 +329,18 @@ void ModelLoader::LoadMaterial(int idx, aiMaterial* material) {
     material->Get(AI_MATKEY_COLOR_TRANSPARENT, color);
     prototype.base_transparent = glm::vec3(color.r, color.g, color.b);
 
-    ENGINE_LOG_INFO("Loading {} properties?", material->mNumProperties);
-    // Load properties?
+    ENGINE_LOG_INFO("Loading {} properties", material->mNumProperties);
+
+    ENGINE_LOG_INFO("Shading model: {}", material->GetTextureCount(aiTextureType_METALNESS));
     LoadMaterialTextures(material, aiTextureType_SPECULAR, prototype);
     LoadMaterialTextures(material, aiTextureType_DIFFUSE, prototype);
     LoadMaterialTextures(material, aiTextureType_HEIGHT, prototype);
     LoadMaterialTextures(material, aiTextureType_AMBIENT, prototype);
-    // How to load materials?
+    LoadMaterialTextures(material, aiTextureType_METALNESS, prototype);
+    LoadMaterialTextures(material, aiTextureType_DIFFUSE_ROUGHNESS, prototype);
+
+    // Check if it's pbr and if it's pbr
+
     model_prototype->material_map[idx] = prototype;
 }
 }  // namespace cqsp::asset

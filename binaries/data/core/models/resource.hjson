@@ -5,4 +5,17 @@
         hints: {
         }
     }
+    hst: {
+        path: hst.obj
+        type: model
+        hints: {
+        }
+    }
+    galileo: {
+        path: galileo/galileo.obj
+        type: model
+        hints: {
+            scale: [0.1, 0.1, 0.1]
+        }
+    }
 }

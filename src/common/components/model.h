@@ -16,22 +16,10 @@
  */
 #pragma once
 
-#include <hjson.h>
+#include <string>
 
-#include "common/universe.h"
-
-namespace cqsp::common::systems::loading {
-class HjsonLoader {
- public:
-    explicit HjsonLoader(Universe& universe) : universe(universe) {}
-    virtual ~HjsonLoader() = default;
-    virtual const Hjson::Value& GetDefaultValues() = 0;
-    int LoadHjson(const Hjson::Value& values);
-    virtual bool LoadValue(const Hjson::Value& values, entt::entity entity) = 0;
-    virtual void PostLoad(const entt::entity& entity) {}
-    virtual bool NeedIdentifier() { return true; }
-
- protected:
-    Universe& universe;
+namespace cqsp::common::components {
+struct WorldModel {
+    std::string name;
 };
-}  // namespace cqsp::common::systems::loading
+}  // namespace cqsp::common::components

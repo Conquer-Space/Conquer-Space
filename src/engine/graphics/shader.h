@@ -21,6 +21,7 @@
 #include <istream>
 #include <memory>
 #include <string>
+#include <utility>
 
 #include <glm/glm.hpp>
 
@@ -84,6 +85,7 @@ class ShaderProgram {
     void setMat2(const std::string& name, const glm::mat2& mat);
     void setMat3(const std::string& name, const glm::mat3& mat);
     void setMat4(const std::string& name, const glm::mat4& mat);
+    void bindTexture(int texture, unsigned int texture_id);
 
     // Simpler overloaded functions so that you can just say set xxx and change the type
     // as and when you like.
@@ -159,6 +161,9 @@ class ShaderDefinition : public Asset {
     ShaderProgram_t MakeShader();
 
     AssetType GetAssetType() override { return AssetType::SHADER_DEFINITION; }
+
+ private:
+    void SetShaderUniform(cqsp::asset::ShaderProgram_t& shader, std::pair<const std::string, Hjson::Value>& value);
 };
 
 // Set of utility functions that load shaders
