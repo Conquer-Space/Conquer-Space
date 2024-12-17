@@ -148,8 +148,7 @@ bool SatelliteLoader::LoadValue(const Hjson::Value& values, entt::entity entity)
         // Then we can add a model
         universe.emplace<components::WorldModel>(entity, values["model"].to_string());
     } else {
-        // We add a generic model instead
-        // Let's ignore it for now...
+        // TODO(EhWhoAmI): We add a generic model instead
     }
     // Get name but no identifier
     universe.emplace<components::types::Orbit>(entity, *orbit);

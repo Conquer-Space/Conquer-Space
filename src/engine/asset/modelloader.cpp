@@ -318,6 +318,7 @@ void ModelLoader::LoadMaterial(int idx, aiMaterial* material) {
     MaterialPrototype prototype;
     aiColor3D color(0.f, 0.f, 0.f);
     ENGINE_LOG_INFO("Loading material {}", material->GetName().C_Str());
+    // Get the color and then apply it or something
     material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
     prototype.base_diffuse = glm::vec3(color.r, color.g, color.b);
     material->Get(AI_MATKEY_COLOR_SPECULAR, color);

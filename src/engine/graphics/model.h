@@ -26,10 +26,10 @@
 
 #include "engine/asset/asset.h"
 #include "engine/graphics/mesh.h"
+#include "engine/graphics/shader.h"
 #include "engine/graphics/texture.h"
 
 namespace cqsp::asset {
-
 struct Material {
     std::vector<asset::Texture*> diffuse;
     std::vector<asset::Texture*> specular;
@@ -76,6 +76,9 @@ struct Model : public Asset {
     std::vector<ModelMesh_t> meshes;
     std::map<int, Material> materials;
     glm::vec3 scale;
+    // In theory each material could have a different shader,
+    // but for now we will generalize for the entire model
+    ShaderProgram_t shader;
 
     AssetType GetAssetType() override { return AssetType::MODEL; }
 
@@ -85,6 +88,21 @@ struct Model : public Asset {
             // Set the material
             // ISS just has a base diffuse color
             auto& material = materials[model_mesh->material];
+            shader->bindTexture(0, material.diffuse[0]->id);
+            model_mesh->Draw();
+        }
+    }
+
+    void Draw() {
+        // Check the values we need to configure
+        for (auto& model_mesh : meshes) {
+            // Set the texture of the model mesh
+            // Set the material
+            // ISS just has a base diffuse color
+            // We will also need to set the lighting in the future
+            //
+            auto& material = materials[model_mesh->material];
+            // Need a way to automatically set the variables in the shader
             shader->bindTexture(0, material.diffuse[0]->id);
             model_mesh->Draw();
         }

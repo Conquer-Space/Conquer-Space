@@ -18,8 +18,10 @@
 
 #include <string>
 
+#include "engine/"
 namespace cqsp::common::components {
 struct WorldModel {
     std::string name;
+    // Associate with a shader program
 };
 }  // namespace cqsp::common::components

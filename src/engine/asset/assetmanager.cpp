@@ -695,6 +695,11 @@ std::unique_ptr<cqsp::asset::Asset> AssetLoader::LoadModel(cqsp::asset::VirtualM
         model->scale = glm::vec3(1);
     }
 
+    // Set shader
+    if (hints["shader"].defined()) {
+        loader.model_prototype->shader = hints["shader"].to_string();
+    }
+
     QueueHolder holder(loader.model_prototype);
     m_asset_queue.push(holder);
     return model;
