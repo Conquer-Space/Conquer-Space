@@ -778,7 +778,7 @@ void SysStarSystemRenderer::InitializeMeshes() {
     orbit_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:orbitshader")->MakeShader();
     vis_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:vertex_vis")->MakeShader();
     iss_model = m_app.GetAssetManager().GetAsset<asset::Model>("core:galileo");
-    model_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:model_log_shader")->MakeShader();
+    model_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:model_pbr_log_shader")->MakeShader();
 }
 
 glm::quat SysStarSystemRenderer::GetBodyRotation(double axial, double rotation, double day_offset) {

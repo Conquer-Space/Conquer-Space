@@ -1,0 +1,12 @@
+{
+    // Note: This does not load textures yet, I'd like to load textures and the base
+    // texture in the future
+    vert: model_pbr_log.vert
+    frag: model_pbr_log.frag
+    uniforms: {
+        C: 1
+        far: 1e13
+        offset: 1.0
+        diffuse: 0
+    }
+}

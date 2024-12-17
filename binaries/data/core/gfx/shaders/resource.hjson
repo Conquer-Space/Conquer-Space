@@ -151,4 +151,9 @@
         type: shader_def
         hints: {}
     }
+    model_pbr_log_shader: {
+        path: model_pbr_log/model_pbr_log.hjson
+        type: shader_def
+        hints: {}
+    }
 }

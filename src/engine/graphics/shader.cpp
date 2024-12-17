@@ -497,7 +497,7 @@ void cqsp::asset::ShaderDefinition::SetShaderUniform(cqsp::asset::ShaderProgram_
             break;
         default:
             // We don't support matrices yet
-            break
+            break;
     }
 }
 
@@ -522,4 +522,9 @@ cqsp::asset::ShaderProgram_t cqsp::asset::ShaderDefinition::MakeShader() {
         SetShaderUniform(shader, value);
     }
     return shader;
+}
+
+void cqsp::asset::ShaderProgram::bindTexture(int texture, unsigned int texture_id) {
+    glActiveTexture(GL_TEXTURE0 + texture);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
 }

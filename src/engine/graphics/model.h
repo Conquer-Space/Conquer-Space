@@ -85,8 +85,7 @@ struct Model : public Asset {
             // Set the material
             // ISS just has a base diffuse color
             auto& material = materials[model_mesh->material];
-
-            shader->setVec3("diffuse", material.base_diffuse);
+            shader->bindTexture(0, material.diffuse[0]->id);
             model_mesh->Draw();
         }
     }
