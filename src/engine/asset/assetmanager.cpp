@@ -696,8 +696,17 @@ std::unique_ptr<cqsp::asset::Asset> AssetLoader::LoadModel(cqsp::asset::VirtualM
     }
 
     // Set shader
+    if (hints["textures"].defined()) {
+        // Set the indices for each attribute
+        // It's a class
+        // Then assign each string ot a map
+        for (auto& [key, value] : hints["textures"]) {
+            loader.model_prototype->texture_idx_map[key] = (int)value.to_int64();
+        }
+    }
+
     if (hints["shader"].defined()) {
-        loader.model_prototype->shader = hints["shader"].to_string();
+        model->shader_name = hints["shader"].to_string();
     }
 
     QueueHolder holder(loader.model_prototype);

@@ -31,37 +31,22 @@
 
 namespace cqsp::asset {
 struct Material {
-    std::vector<asset::Texture*> diffuse;
-    std::vector<asset::Texture*> specular;
-    std::vector<asset::Texture*> ambient;
-    std::vector<asset::Texture*> height;
-    std::vector<asset::Texture*> metallic;
-    std::vector<asset::Texture*> roughness;
-    glm::vec3 base_diffuse;
-    glm::vec3 base_specular;
-    glm::vec3 base_ambient;
-    glm::vec3 base_emissive;
-    glm::vec3 base_transparent;
-
+    // Assign each texture to an id
+    std::vector<std::pair<int, asset::Texture*>> textures;
+    std::vector<std::pair<std::string, glm::vec3>> attributes;
     Material() = default;
     ~Material() {
-        for (auto& texture : diffuse) {
-            delete texture;
+        for (auto& pair : textures) {
+            delete pair.second;
         }
-        for (auto& texture : specular) {
-            delete texture;
+    }
+
+    void SetShader(ShaderProgram_t& shader) {
+        for (auto& pair : textures) {
+            shader->bindTexture(pair.first, pair.second->id);
         }
-        for (auto& texture : ambient) {
-            delete texture;
-        }
-        for (auto& texture : height) {
-            delete texture;
-        }
-        for (auto& texture : metallic) {
-            delete texture;
-        }
-        for (auto& texture : roughness) {
-            delete texture;
+        for (auto& pair : attributes) {
+            shader->setVec3(pair.first, pair.second);
         }
     }
 };
@@ -79,31 +64,30 @@ struct Model : public Asset {
     // In theory each material could have a different shader,
     // but for now we will generalize for the entire model
     ShaderProgram_t shader;
+    std::string shader_name;
+
+    void PostLoad(AssetManager&);
 
     AssetType GetAssetType() override { return AssetType::MODEL; }
 
-    void Draw(ShaderProgram* shader) {
+    void Draw(ShaderProgram_t shader) {
         for (auto& model_mesh : meshes) {
             // Set the texture of the model mesh
             // Set the material
             // ISS just has a base diffuse color
             auto& material = materials[model_mesh->material];
-            shader->bindTexture(0, material.diffuse[0]->id);
+            material.SetShader(shader);
             model_mesh->Draw();
         }
     }
 
     void Draw() {
-        // Check the values we need to configure
         for (auto& model_mesh : meshes) {
             // Set the texture of the model mesh
             // Set the material
             // ISS just has a base diffuse color
-            // We will also need to set the lighting in the future
-            //
             auto& material = materials[model_mesh->material];
-            // Need a way to automatically set the variables in the shader
-            shader->bindTexture(0, material.diffuse[0]->id);
+            material.SetShader(shader);
             model_mesh->Draw();
         }
     }

@@ -362,9 +362,9 @@ void SysStarSystemRenderer::DrawModels() {
         transform = glm::translate(transform, object_pos);
 
         transform = glm::scale(transform, model->scale);
-        model_shader->UseProgram();
-        model_shader->SetMVP(transform, camera_matrix, projection);
-        model->Draw(model_shader.get());
+        model->shader->UseProgram();
+        model->shader->SetMVP(transform, camera_matrix, projection);
+        model->Draw();
     }
 }
 
@@ -785,7 +785,6 @@ void SysStarSystemRenderer::InitializeMeshes() {
 
     orbit_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:orbitshader")->MakeShader();
     vis_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:vertex_vis")->MakeShader();
-    iss_model = m_app.GetAssetManager().GetAsset<asset::Model>("core:galileo");
     model_shader = m_app.GetAssetManager().GetAsset<asset::ShaderDefinition>("core:model_pbr_log_shader")->MakeShader();
 }
 

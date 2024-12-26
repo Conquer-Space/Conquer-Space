@@ -191,6 +191,7 @@ class AssetManager {
         } else {
             ptr->accessed++;
         }
+        ptr->PostLoad(*this);
         return ptr;
     }
 

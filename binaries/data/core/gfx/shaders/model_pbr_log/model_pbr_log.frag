@@ -18,6 +18,6 @@ in vec4 frag_pos;
 
 void main()
 {
-    FragColor = vec4(texture(diffuse, TexCoords).rgb, 1);
+    FragColor = texture(diffuse, TexCoords);
     gl_FragDepth = (log(C * frag_pos.z + offset) / log(C * far + offset));
 }

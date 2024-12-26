@@ -14,14 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
+#include "engine/graphics/model.h"
 
-#include <string>
+#include "engine/asset/assetmanager.h"
 
-//#include "engine/"
-namespace cqsp::common::components {
-struct WorldModel {
-    std::string name;
-    // Associate with a shader program
-};
-}  // namespace cqsp::common::components
+namespace cqsp::asset {
+void Model::PostLoad(AssetManager& manager) {
+    if (shader.get() != nullptr) {
+        return;
+    }
+    auto shader_def = manager.GetAsset<asset::ShaderDefinition>(shader_name);
+    if (shader_def == nullptr) {
+        return;
+    }
+    shader = shader_def->MakeShader();
+}
+}  // namespace cqsp::asset

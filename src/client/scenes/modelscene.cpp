@@ -65,7 +65,7 @@ void cqsp::scene::ModelScene::Render(float deltaTime) {
             int id = model->materials[model_mesh->material].diffuse.front()->id;
             glBindTexture(GL_TEXTURE_2D, id);
         */
-        shader->setVec3("diffuse", material.base_diffuse);
+        //shader->setVec3("diffuse", material.base_diffuse);
         model_mesh->Draw();
     }
 }

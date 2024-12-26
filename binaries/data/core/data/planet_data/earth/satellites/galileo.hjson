@@ -32,6 +32,7 @@
       epoch: 1732039781.872896
       reference: earth
     }
+    model: iss
     tags:
     [
       navigation

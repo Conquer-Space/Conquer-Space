@@ -21,6 +21,9 @@
         hints: {
             scale: [0.1, 0.1, 0.1]
             shader: model_pbr_log_shader
+            textures: {
+                "diffuse": 0
+            }
         }
     }
 }

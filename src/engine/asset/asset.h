@@ -28,6 +28,8 @@
 /// </summary>
 namespace cqsp {
 namespace asset {
+class AssetManager;
+
 enum class AssetType {
     NONE,
     /// \see @ref cqsp::asset::AssetLoader::LoadTexture for implementation
@@ -159,6 +161,8 @@ class Asset {
     // Virtual destructor to make class virtual
     virtual ~Asset() = default;
     virtual AssetType GetAssetType() = 0;
+    // For lazy initialization or other
+    virtual void PostLoad(AssetManager&) {}
     std::string path;
     int accessed = 0;
 };
