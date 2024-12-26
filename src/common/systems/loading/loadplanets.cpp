@@ -25,7 +25,9 @@
 #include <vector>
 
 #include "common/systems/actions/factoryconstructaction.h"
+#include "common/systems/loading/loadorbit.h"
 #include "common/systems/loading/loadutil.h"
+
 //#include "common/components/coordinates.h"
 #include "common/components/area.h"
 #include "common/components/bodies.h"
@@ -149,46 +151,10 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     }
 
     universe.planets[identifier] = entity;
-
-    if (orbit["semi_major_axis"].type() != Hjson::Type::String && orbit["semi_major_axis"].to_double() == 0) {
-        SPDLOG_INFO("Semi major axis of {} is zero", identifier);
-        return true;
-    }
-
-    bool sma_correct;
-    orbit_comp.semi_major_axis = ReadUnit(orbit["semi_major_axis"].to_string(), UnitType::Distance, &sma_correct);
-    if (!sma_correct) {
-        SPDLOG_WARN("Issue with semi major axis of {}: {}", identifier, orbit["semi_major_axis"].to_string());
-        return false;
-    }
-
-    orbit_comp.eccentricity = orbit["eccentricity"].to_double();
-
-    bool inc_correct;
-    orbit_comp.inclination = ReadUnit(orbit["inclination"].to_string(), UnitType::Angle, &inc_correct);
-    if (!inc_correct) {
-        SPDLOG_WARN("Issue with inclination of {}: {}", identifier, orbit["inclination"].to_string());
-        return false;
-    }
-
-    bool w_correct;
-    orbit_comp.w = ReadUnit(orbit["arg_periapsis"].to_string(), UnitType::Angle, &w_correct);
-    if (!w_correct) {
-        SPDLOG_WARN("Issue with arg of periapsis of {}: {}", identifier, orbit["arg_periapsis"].to_string());
-        return false;
-    }
-
-    bool LAN_correct;
-    orbit_comp.LAN = ReadUnit(orbit["LAN"].to_string(), UnitType::Angle, &LAN_correct);
-    if (!LAN_correct) {
-        SPDLOG_WARN("Issue with LAN of {}: {}", identifier, orbit["LAN"].to_string());
-        return false;
-    }
-
-    bool M0_correct;
-    orbit_comp.M0 = ReadUnit(orbit["M0"].to_string(), UnitType::Angle, &M0_correct);
-    if (!M0_correct) {
-        SPDLOG_WARN("Issue with mean anomaly of {}: {}", identifier, orbit["M0"].to_string());
+    auto orbit_opt = LoadOrbit(orbit);
+    if (orbit_opt) {
+        orbit_comp = *orbit_opt;
+    } else {
         return false;
     }
 

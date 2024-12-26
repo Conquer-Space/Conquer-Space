@@ -21,7 +21,9 @@
 
 #include <cstddef>
 #include <filesystem>
+#include <map>
 #include <memory>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -173,63 +175,55 @@ void LoadModelPrototype(ModelPrototype* prototype, Model* asset) {
     // Load materials
     for (auto& material_prototype : prototype->material_map) {
         // Loop through the list
-        Material material;
-        SET_MATERIAL_TEXTURES(ambient);
-        SET_MATERIAL_TEXTURES(specular);
-        SET_MATERIAL_TEXTURES(diffuse);
-        SET_MATERIAL_TEXTURES(height);
-        material.base_diffuse = material_prototype.second.base_diffuse;
-        material.base_ambient = material_prototype.second.base_ambient;
-        material.base_emissive = material_prototype.second.base_emissive;
-        material.base_specular = material_prototype.second.base_specular;
-        material.base_transparent = material_prototype.second.base_transparent;
-        asset->materials[material_prototype.first] = material;
+        Material& material = asset->materials[material_prototype.first];
+        // Set all the values
+        material.attributes.reserve(material_prototype.second.base_map.size());
+        for (auto& pair : material_prototype.second.base_map) {
+            // Copy the base elements
+            material.attributes.push_back(std::make_pair(pair.first, pair.second));
+        }
+        for (auto& [key, texture] : material_prototype.second.texture_map) {
+            // Look for the names and assign the integer value
+            // Check if it exists in the
+            if (prototype->texture_idx_map.contains(key)) {
+                material.textures.push_back(std::make_pair(prototype->texture_idx_map[key], texture_map[texture]));
+            }
+        }
     }
+    // Set the shader
 }
 
 void LoadModelData(engine::Mesh* mesh, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices) {
     GenerateMesh(*mesh, std::move(vertices), std::move(indices));
 }
 
-void ModelLoader::LoadMaterialTextures(aiMaterial* material, const aiTextureType& type, MaterialPrototype& prototype) {
-    // Set the prototype mesh
-    for (int i = 0; i < material->GetTextureCount(type); i++) {
-        aiString path;
-        material->GetTexture(type, i, &path);
-        std::string path_str(path.C_Str());
-        if (model_prototype->texture_map.contains(path_str)) {
-            continue;
-        }
-        ModelTexturePrototype mesh_proto;
-        // Look for the relative path to the model
-        // TODO(EhWhoAmI): Load it from our vfs
-        auto tex_path = std::filesystem::path(asset_path) / path_str;
-        stbi_set_flip_vertically_on_load((int)true);
-        mesh_proto.texture_data =
-            stbi_load(tex_path.string().c_str(), &mesh_proto.width, &mesh_proto.height, &mesh_proto.channels, 0);
-        if (mesh_proto.texture_data == NULL) {
-            ENGINE_LOG_WARN("Error loading texture {} ()", path_str, asset_path);
-            continue;
-        }
-        model_prototype->texture_map[path_str] = mesh_proto;
-        // This is rather ugly
-        switch (type) {
-            case aiTextureType_SPECULAR:
-                prototype.specular.push_back(path_str);
-                break;
-            case aiTextureType_DIFFUSE:
-                prototype.diffuse.push_back(path_str);
-                break;
-            case aiTextureType_HEIGHT:
-                prototype.height.push_back(path_str);
-                break;
-            case aiTextureType_AMBIENT:
-                prototype.ambient.push_back(path_str);
-                break;
-            default:
-                break;
-        }
+bool ModelLoader::LoadMaterialTexture(aiMaterial* material, const aiTextureType type, std::string& str) {
+    if (material->GetTextureCount(type) == 0) {
+        return false;
     }
+    aiString path;
+    material->GetTexture(type, 0, &path);
+    std::string path_str(path.C_Str());
+    if (model_prototype->texture_map.contains(path_str)) {
+        // Set the path str
+        str = path_str;
+        return true;
+    }
+    ModelTexturePrototype mesh_proto;
+    // Look for the relative path to the model
+    // TODO(EhWhoAmI): Load it from our vfs
+    auto tex_path = std::filesystem::path(asset_path) / path_str;
+    stbi_set_flip_vertically_on_load((int)true);
+    mesh_proto.texture_data =
+        stbi_load(tex_path.string().c_str(), &mesh_proto.width, &mesh_proto.height, &mesh_proto.channels, 0);
+    if (mesh_proto.texture_data == NULL) {
+        ENGINE_LOG_WARN("Error loading texture {} ()", path_str, asset_path);
+        return false;
+    }
+    model_prototype->texture_map[path_str] = mesh_proto;
+    // return the name of the file
+    str = path_str;
+    return true;
 }
 
 void ModelLoader::LoadModel() {
@@ -297,6 +291,7 @@ void ModelLoader::LoadMesh(aiMesh* mesh) {
 }
 
 void ModelLoader::LoadMaterials() {
+    ENGINE_LOG_INFO("Loading {} materials", scene->mNumMaterials);
     for (int i = 0; i < scene->mNumMaterials; i++) {
         aiMaterial* mat = scene->mMaterials[i];
         // Alright in theory you can merge multiple textures to the same material
@@ -307,26 +302,72 @@ void ModelLoader::LoadMaterials() {
 }
 
 void ModelLoader::LoadMaterial(int idx, aiMaterial* material) {
+    // Since our rendering model is to "apply" a shader to a mesh,
     MaterialPrototype prototype;
     aiColor3D color(0.f, 0.f, 0.f);
-    material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
-    prototype.base_diffuse = glm::vec3(color.r, color.g, color.b);
-    material->Get(AI_MATKEY_COLOR_SPECULAR, color);
-    prototype.base_specular = glm::vec3(color.r, color.g, color.b);
-    material->Get(AI_MATKEY_COLOR_AMBIENT, color);
-    prototype.base_ambient = glm::vec3(color.r, color.g, color.b);
-    material->Get(AI_MATKEY_COLOR_EMISSIVE, color);
-    prototype.base_emissive = glm::vec3(color.r, color.g, color.b);
-    material->Get(AI_MATKEY_COLOR_TRANSPARENT, color);
-    prototype.base_transparent = glm::vec3(color.r, color.g, color.b);
+    ENGINE_LOG_INFO("Loading material {}", material->GetName().C_Str());
+    // Get the color and then apply it or something
+    // Assimp will always give us a value for each of these parameters
+    // However there really isn't a good way to identify when we should use
+    // So we will probably need to cancel them based off which texture attribute
+    // we are able to retrieve
+    std::string buf;
+    if (!LoadMaterialTexture(material, aiTextureType_SPECULAR, buf)) {
+        // Load the 3d vector
+        material->Get(AI_MATKEY_COLOR_SPECULAR, color);
+        prototype.base_map["specular"] = glm::vec3(color.r, color.g, color.b);
+    } else {
+        prototype.texture_map["specular"] = buf;
+    }
 
-    ENGINE_LOG_INFO("Loading {} properties?", material->mNumProperties);
-    // Load properties?
-    LoadMaterialTextures(material, aiTextureType_SPECULAR, prototype);
-    LoadMaterialTextures(material, aiTextureType_DIFFUSE, prototype);
-    LoadMaterialTextures(material, aiTextureType_HEIGHT, prototype);
-    LoadMaterialTextures(material, aiTextureType_AMBIENT, prototype);
-    // How to load materials?
+    if (!LoadMaterialTexture(material, aiTextureType_DIFFUSE, buf)) {
+        // Load the 3d vector
+        material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+        prototype.base_map["diffuse"] = glm::vec3(color.r, color.g, color.b);
+    } else {
+        prototype.texture_map["diffuse"] = buf;
+    }
+
+    if (!LoadMaterialTexture(material, aiTextureType_AMBIENT, buf)) {
+        // Load the 3d vector
+        material->Get(AI_MATKEY_COLOR_AMBIENT, color);
+        prototype.base_map["ambient"] = glm::vec3(color.r, color.g, color.b);
+    } else {
+        prototype.texture_map["ambient"] = buf;
+    }
+
+    if (!LoadMaterialTexture(material, aiTextureType_EMISSIVE, buf)) {
+        // Load the 3d vector
+        material->Get(AI_MATKEY_COLOR_EMISSIVE, color);
+        prototype.base_map["emissive"] = glm::vec3(color.r, color.g, color.b);
+    } else {
+        prototype.texture_map["emissive"] = buf;
+    }
+
+    if (LoadMaterialTexture(material, aiTextureType_HEIGHT, buf)) {
+        // Load the 3d vector
+        prototype.texture_map["height"] = buf;
+    }
+
+    if (LoadMaterialTexture(material, aiTextureType_METALNESS, buf)) {
+        // Load the 3d vector
+        prototype.texture_map["metalness"] = buf;
+    }
+
+    if (LoadMaterialTexture(material, aiTextureType_DIFFUSE_ROUGHNESS, buf)) {
+        // Load the 3d vector
+        prototype.texture_map["roughness"] = buf;
+    }
+
+    material->Get(AI_MATKEY_COLOR_TRANSPARENT, color);
+    prototype.base_map["transparent"] = glm::vec3(color.r, color.g, color.b);
+
+    ENGINE_LOG_INFO("Loading {} properties", material->mNumProperties);
+
+    ENGINE_LOG_INFO("Shading model: {}", material->GetTextureCount(aiTextureType_METALNESS));
+
+    // Check if it's pbr and if it's pbr
+
     model_prototype->material_map[idx] = prototype;
 }
 }  // namespace cqsp::asset

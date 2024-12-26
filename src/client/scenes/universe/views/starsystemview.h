@@ -102,7 +102,6 @@ class SysStarSystemRenderer {
     cqsp::engine::Renderable ship_overlay;
     cqsp::engine::Renderable city;
     cqsp::engine::Renderable sun;
-    cqsp::asset::Model *iss_model;
 
     cqsp::asset::ShaderProgram_t model_shader;
     cqsp::asset::ShaderProgram_t orbit_shader;

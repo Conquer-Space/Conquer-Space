@@ -26,40 +26,27 @@
 
 #include "engine/asset/asset.h"
 #include "engine/graphics/mesh.h"
+#include "engine/graphics/shader.h"
 #include "engine/graphics/texture.h"
 
 namespace cqsp::asset {
-struct MaterialTextureStack {
-    asset::Texture* diffuse;
-    asset::Texture* specular;
-    asset::Texture* ambient;
-    asset::Texture* height;
-};
-
 struct Material {
-    std::vector<asset::Texture*> diffuse;
-    std::vector<asset::Texture*> specular;
-    std::vector<asset::Texture*> ambient;
-    std::vector<asset::Texture*> height;
-    glm::vec3 base_diffuse;
-    glm::vec3 base_specular;
-    glm::vec3 base_ambient;
-    glm::vec3 base_emissive;
-    glm::vec3 base_transparent;
-
+    // Assign each texture to an id
+    std::vector<std::pair<int, asset::Texture*>> textures;
+    std::vector<std::pair<std::string, glm::vec3>> attributes;
     Material() = default;
     ~Material() {
-        for (auto& texture : diffuse) {
-            delete texture;
+        for (auto& pair : textures) {
+            delete pair.second;
         }
-        for (auto& texture : specular) {
-            delete texture;
+    }
+
+    void SetShader(ShaderProgram_t& shader) {
+        for (auto& pair : textures) {
+            shader->bindTexture(pair.first, pair.second->id);
         }
-        for (auto& texture : ambient) {
-            delete texture;
-        }
-        for (auto& texture : height) {
-            delete texture;
+        for (auto& pair : attributes) {
+            shader->setVec3(pair.first, pair.second);
         }
     }
 };
@@ -73,17 +60,34 @@ typedef std::shared_ptr<ModelMesh> ModelMesh_t;
 struct Model : public Asset {
     std::vector<ModelMesh_t> meshes;
     std::map<int, Material> materials;
+    glm::vec3 scale;
+    // In theory each material could have a different shader,
+    // but for now we will generalize for the entire model
+    ShaderProgram_t shader;
+    std::string shader_name;
+
+    void PostLoad(AssetManager&);
 
     AssetType GetAssetType() override { return AssetType::MODEL; }
 
-    void Draw(ShaderProgram* shader) {
+    void Draw(ShaderProgram_t shader) {
         for (auto& model_mesh : meshes) {
             // Set the texture of the model mesh
             // Set the material
             // ISS just has a base diffuse color
             auto& material = materials[model_mesh->material];
+            material.SetShader(shader);
+            model_mesh->Draw();
+        }
+    }
 
-            shader->setVec3("diffuse", material.base_diffuse);
+    void Draw() {
+        for (auto& model_mesh : meshes) {
+            // Set the texture of the model mesh
+            // Set the material
+            // ISS just has a base diffuse color
+            auto& material = materials[model_mesh->material];
+            material.SetShader(shader);
             model_mesh->Draw();
         }
     }

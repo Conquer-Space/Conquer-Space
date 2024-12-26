@@ -20,6 +20,7 @@
 
 #include "common/components/coordinates.h"
 #include "common/components/orbit.h"
+#include "common/systems/loading/hjsonloader.h"
 #include "common/universe.h"
 
 namespace cqsp::common::systems::loading {
@@ -27,4 +28,16 @@ components::types::Orbit GetOrbit(const std::string& line_one, const std::string
 int GetEpochYear(int year);
 double GetEpoch(double year, double time);
 void LoadSatellites(Universe& universe, std::string& string);
+
+class SatelliteLoader : public HjsonLoader {
+ public:
+    explicit SatelliteLoader(Universe& universe) : HjsonLoader(universe) {}
+
+    const Hjson::Value& GetDefaultValues() override { return default_val; }
+    bool LoadValue(const Hjson::Value& values, entt::entity entity) override;
+    virtual bool NeedIdentifier() { return false; }
+
+ private:
+    Hjson::Value default_val;
+};
 }  // namespace cqsp::common::systems::loading

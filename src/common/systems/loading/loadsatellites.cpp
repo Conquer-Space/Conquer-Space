@@ -17,16 +17,19 @@
 #include "common/systems/loading/loadsatellites.h"
 
 #include <fmt/format.h>
+#include <spdlog/spdlog.h>
 
 #include <iostream>
 #include <sstream>
+#include <string>
 #include <vector>
 
 #include "common/components/coordinates.h"
+#include "common/components/model.h"
 #include "common/components/name.h"
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
-
+#include "common/systems/loading/loadorbit.h"
 namespace cqsp::common::systems::loading {
 namespace {
 std::string trim(const std::string& str, const std::string& whitespace = " \t") {
@@ -119,9 +122,8 @@ void LoadSatellites(Universe& universe, std::string& string) {
         std::getline(f, line_two);
         entt::entity satellite = universe.create();
         universe.emplace<components::Name>(satellite, line);
-        // Calculate the thingies
+
         // Add to earth
-        // Calculate the thingies
         auto orbit = GetOrbit(line_one, line_two, GM);
         orbit.inclination += universe.get<components::bodies::Body>(earth).axial * cos(orbit.inclination);
         // orbit.M0 += universe.get<components::bodies::Body>(earth).axial;
@@ -131,5 +133,28 @@ void LoadSatellites(Universe& universe, std::string& string) {
         universe.emplace<components::types::Orbit>(satellite, orbit);
         universe.emplace<components::ships::Ship>(satellite);
     }
+}
+
+bool SatelliteLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
+    std::optional<components::types::Orbit> orbit = LoadOrbit(values["orbit"]);
+    if (!orbit.has_value()) {
+        SPDLOG_INFO("Loaded orbit!");
+
+        return false;
+    }
+    orbit->reference_body = universe.planets[values["orbit"]["reference"].to_string()];
+    orbit->GM = universe.get<components::bodies::Body>(orbit->reference_body).GM;
+    if (values["model"].defined()) {
+        // Then we can add a model
+        universe.emplace<components::WorldModel>(entity, values["model"].to_string());
+    } else {
+        // TODO(EhWhoAmI): We add a generic model instead
+    }
+    // Get name but no identifier
+    universe.emplace<components::types::Orbit>(entity, *orbit);
+    universe.get<components::bodies::OrbitalSystem>(orbit->reference_body).push_back(entity);
+    universe.emplace<components::ships::Ship>(entity);
+    SPDLOG_INFO("Loaded orbit!");
+    return true;
 }
 }  // namespace cqsp::common::systems::loading

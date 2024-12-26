@@ -23,6 +23,7 @@
 #include <vector>
 
 #include "engine/asset/asset.h"
+
 namespace cqsp::asset {
 class TextAsset : public Asset {
  public:

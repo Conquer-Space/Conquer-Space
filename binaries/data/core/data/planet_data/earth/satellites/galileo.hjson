@@ -1,0 +1,622 @@
+[
+  {
+    name: GSAT0101 (GALILEO-PFM)
+    orbit:
+    {
+      eccentricity: 0.0003041
+      semi_major_axis: 29600096.650780153 m
+      inclination: 29600096.650780153 deg
+      LAN: 356.3769 deg
+      arg_periapsis: 319.6475 deg
+      M0: 40.3526 deg
+      epoch: 1735036707.033792
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0102 (GALILEO-FM2)
+    orbit:
+    {
+      eccentricity: 0.000465
+      semi_major_axis: 29600162.283902355 m
+      inclination: 29600162.283902355 deg
+      LAN: 356.5064 deg
+      arg_periapsis: 304.8315 deg
+      M0: 54.1553 deg
+      epoch: 1734624733.041792
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0103 (GALILEO-FM3)
+    orbit:
+    {
+      eccentricity: 0.0003067
+      semi_major_axis: 29600377.706636243 m
+      inclination: 29600377.706636243 deg
+      LAN: 116.3654 deg
+      arg_periapsis: 255.8822 deg
+      M0: 104.0528 deg
+      epoch: 1735040116.121184
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0201 (GALILEO 5)
+    orbit:
+    {
+      eccentricity: 0.1616494
+      semi_major_axis: 27977476.85260335 m
+      inclination: 27977476.85260335 deg
+      LAN: 295.4908 deg
+      arg_periapsis: 158.5331 deg
+      M0: 209.1336 deg
+      epoch: 1734813672.033024
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0202 (GALILEO 6)
+    orbit:
+    {
+      eccentricity: 0.1616082
+      semi_major_axis: 27977400.545031045 m
+      inclination: 27977400.545031045 deg
+      LAN: 294.4512 deg
+      arg_periapsis: 159.4331 deg
+      M0: 207.9334 deg
+      epoch: 1735068769.994304
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0203 (GALILEO 7)
+    orbit:
+    {
+      eccentricity: 0.0006138
+      semi_major_axis: 29600077.08824445 m
+      inclination: 29600077.08824445 deg
+      LAN: 356.2751 deg
+      arg_periapsis: 271.0825 deg
+      M0: 88.8697 deg
+      epoch: 1735068274.547328
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0204 (GALILEO 8)
+    orbit:
+    {
+      eccentricity: 0.0005787
+      semi_major_axis: 29600111.351641864 m
+      inclination: 29600111.351641864 deg
+      LAN: 356.3004 deg
+      arg_periapsis: 261.9832 deg
+      M0: 97.9735 deg
+      epoch: 1735039600.14384
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0205 (GALILEO 9)
+    orbit:
+    {
+      eccentricity: 0.0006099
+      semi_major_axis: 29600409.308473885 m
+      inclination: 29600409.308473885 deg
+      LAN: 236.4951 deg
+      arg_periapsis: 38.8424 deg
+      M0: 321.2877 deg
+      epoch: 1735070294.378016
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0206 (GALILEO 10)
+    orbit:
+    {
+      eccentricity: 0.0003866
+      semi_major_axis: 29600394.954515196 m
+      inclination: 29600394.954515196 deg
+      LAN: 236.5006 deg
+      arg_periapsis: 33.6004 deg
+      M0: 326.5088 deg
+      epoch: 1735038674.116416
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0209 (GALILEO 12)
+    orbit:
+    {
+      eccentricity: 0.0002241
+      semi_major_axis: 29600247.01714842 m
+      inclination: 29600247.01714842 deg
+      LAN: 116.0721 deg
+      arg_periapsis: 328.3873 deg
+      M0: 31.5681 deg
+      epoch: 1735053268.808736
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0208 (GALILEO 11)
+    orbit:
+    {
+      eccentricity: 0.0001577
+      semi_major_axis: 29600262.64424774 m
+      inclination: 29600262.64424774 deg
+      LAN: 116.112 deg
+      arg_periapsis: 332.0245 deg
+      M0: 27.9386 deg
+      epoch: 1734920225.416224
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0211 (GALILEO 14)
+    orbit:
+    {
+      eccentricity: 0.0004
+      semi_major_axis: 29600393.91269629 m
+      inclination: 29600393.91269629 deg
+      LAN: 236.5182 deg
+      arg_periapsis: 355.7352 deg
+      M0: 4.3484 deg
+      epoch: 1735082936.784576
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0210 (GALILEO 13)
+    orbit:
+    {
+      eccentricity: 8.39e-05
+      semi_major_axis: 29600366.593922175 m
+      inclination: 29600366.593922175 deg
+      LAN: 236.5418 deg
+      arg_periapsis: 247.5551 deg
+      M0: 112.5193 deg
+      epoch: 1735003859.206176
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0207 (GALILEO 15)
+    orbit:
+    {
+      eccentricity: 0.0002403
+      semi_major_axis: 29600254.54130478 m
+      inclination: 29600254.54130478 deg
+      LAN: 116.0839 deg
+      arg_periapsis: 300.5114 deg
+      M0: 59.4366 deg
+      epoch: 1734875905.389696
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0212 (GALILEO 16)
+    orbit:
+    {
+      eccentricity: 0.0001449
+      semi_major_axis: 29600225.60226804 m
+      inclination: 29600225.60226804 deg
+      LAN: 116.1002 deg
+      arg_periapsis: 10.3539 deg
+      M0: 349.6205 deg
+      epoch: 1734812617.457952
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0213 (GALILEO 17)
+    orbit:
+    {
+      eccentricity: 0.0002774
+      semi_major_axis: 29600194.232432112 m
+      inclination: 29600194.232432112 deg
+      LAN: 116.032 deg
+      arg_periapsis: 267.4724 deg
+      M0: 92.4648 deg
+      epoch: 1735047155.437632
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0214 (GALILEO 18)
+    orbit:
+    {
+      eccentricity: 0.0001823
+      semi_major_axis: 29600212.290334895 m
+      inclination: 29600212.290334895 deg
+      LAN: 116.0051 deg
+      arg_periapsis: 265.1904 deg
+      M0: 94.756 deg
+      epoch: 1735110403.165728
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0215 (GALILEO 19)
+    orbit:
+    {
+      eccentricity: 0.000147
+      semi_major_axis: 29600319.712274507 m
+      inclination: 29600319.712274507 deg
+      LAN: 236.4768 deg
+      arg_periapsis: 321.9644 deg
+      M0: 38.1096 deg
+      epoch: 1734645937.973472
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0216 (GALILEO 20)
+    orbit:
+    {
+      eccentricity: 0.000234
+      semi_major_axis: 29600299.107559685 m
+      inclination: 29600299.107559685 deg
+      LAN: 236.3879 deg
+      arg_periapsis: 323.8731 deg
+      M0: 36.1921 deg
+      epoch: 1734924534.443424
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0217 (GALILEO 21)
+    orbit:
+    {
+      eccentricity: 0.000326
+      semi_major_axis: 29600321.217114635 m
+      inclination: 29600321.217114635 deg
+      LAN: 236.3642 deg
+      arg_periapsis: 328.9527 deg
+      M0: 31.1111 deg
+      epoch: 1734994267.456608
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0218 (GALILEO 22)
+    orbit:
+    {
+      eccentricity: 0.0002678
+      semi_major_axis: 29600308.715371687 m
+      inclination: 29600308.715371687 deg
+      LAN: 236.3878 deg
+      arg_periapsis: 308.4145 deg
+      M0: 51.6422 deg
+      epoch: 1734911920.208448
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0221 (GALILEO 25)
+    orbit:
+    {
+      eccentricity: 0.0006479
+      semi_major_axis: 29600099.89191345 m
+      inclination: 29600099.89191345 deg
+      LAN: 356.3277 deg
+      arg_periapsis: 283.1355 deg
+      M0: 76.8148 deg
+      epoch: 1735055410.85136
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0222 (GALILEO 26)
+    orbit:
+    {
+      eccentricity: 0.0005744
+      semi_major_axis: 29600129.062153053 m
+      inclination: 29600129.062153053 deg
+      LAN: 356.3238 deg
+      arg_periapsis: 260.7584 deg
+      M0: 99.1993 deg
+      epoch: 1735074314.342784
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0219 (GALILEO 23)
+    orbit:
+    {
+      eccentricity: 0.0005625
+      semi_major_axis: 29600104.753615063 m
+      inclination: 29600104.753615063 deg
+      LAN: 356.4464 deg
+      arg_periapsis: 286.2014 deg
+      M0: 73.7548 deg
+      epoch: 1734688012.548672
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0220 (GALILEO 24)
+    orbit:
+    {
+      eccentricity: 0.0005871
+      semi_major_axis: 29600090.2842709 m
+      inclination: 29600090.2842709 deg
+      LAN: 356.3456 deg
+      arg_periapsis: 284.9926 deg
+      M0: 74.9647 deg
+      epoch: 1735011172.615392
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0223 (GALILEO 27)
+    orbit:
+    {
+      eccentricity: 0.0004025
+      semi_major_axis: 29600075.46768081 m
+      inclination: 29600075.46768081 deg
+      LAN: 356.2356 deg
+      arg_periapsis: 251.1541 deg
+      M0: 268.6298 deg
+      epoch: 1735020924.578208
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0224 (GALILEO 28)
+    orbit:
+    {
+      eccentricity: 0.0003372
+      semi_major_axis: 29600073.384099312 m
+      inclination: 29600073.384099312 deg
+      LAN: 356.2067 deg
+      arg_periapsis: 256.8071 deg
+      M0: 281.8291 deg
+      epoch: 1735109098.05312
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0225 (GALILEO 29)
+    orbit:
+    {
+      eccentricity: 0.0003039
+      semi_major_axis: 29600223.518660124 m
+      inclination: 29600223.518660124 deg
+      LAN: 116.1585 deg
+      arg_periapsis: 210.9006 deg
+      M0: 158.779 deg
+      epoch: 1735086556.142784
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0227 (GALILEO 30)
+    orbit:
+    {
+      eccentricity: 0.0002944
+      semi_major_axis: 29600211.711555533 m
+      inclination: 29600211.711555533 deg
+      LAN: 116.2029 deg
+      arg_periapsis: 126.245 deg
+      M0: 233.7531 deg
+      epoch: 1734948986.052096
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0232 (GALILEO 32)
+    orbit:
+    {
+      eccentricity: 0.0001601
+      semi_major_axis: 29600360.458782416 m
+      inclination: 29600360.458782416 deg
+      LAN: 236.1326 deg
+      arg_periapsis: 201.6893 deg
+      M0: 236.469 deg
+      epoch: 1734983133.853248
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+  {
+    name: GSAT0226 (GALILEO 31)
+    orbit:
+    {
+      eccentricity: 0.0001229
+      semi_major_axis: 29600353.513345018 m
+      inclination: 29600353.513345018 deg
+      LAN: 236.1092 deg
+      arg_periapsis: 96.3098 deg
+      M0: 25.7123 deg
+      epoch: 1735074828.822816
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      galileo
+    ]
+    model: galileo
+  }
+]

@@ -86,16 +86,8 @@ struct ModelTexturePrototype {
 };
 
 struct MaterialPrototype {
-    std::vector<std::string> diffuse;
-    std::vector<std::string> specular;
-    std::vector<std::string> ambient;
-    std::vector<std::string> height;
-
-    glm::vec3 base_diffuse;
-    glm::vec3 base_specular;
-    glm::vec3 base_ambient;
-    glm::vec3 base_emissive;
-    glm::vec3 base_transparent;
+    std::map<std::string, std::string> texture_map;
+    std::map<std::string, glm::vec3> base_map;
 };
 
 struct ModelPrototype : public AssetPrototype {
@@ -103,6 +95,10 @@ struct ModelPrototype : public AssetPrototype {
     std::vector<MeshPrototype> prototypes;
     std::map<std::string, ModelTexturePrototype> texture_map;
     std::map<int, MaterialPrototype> material_map;
+    std::map<std::string, int> texture_idx_map;  // Probably should be per material but
+                                                 // Let's figure that out later
+    std::string shader;
+
     int GetPrototypeType() { return PrototypeType::MODEL; }
 };
 
@@ -125,7 +121,7 @@ struct ModelLoader {
 
     void LoadMaterial(int idx, aiMaterial* material);
 
-    void LoadMaterialTextures(aiMaterial* material, const aiTextureType& type, MaterialPrototype& prototype);
+    bool LoadMaterialTexture(aiMaterial* material, const aiTextureType type, std::string& str);
 };
 
 void LoadModelPrototype(ModelPrototype* prototype, Model* asset);

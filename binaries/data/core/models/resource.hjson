@@ -3,6 +3,27 @@
         path: iss.obj
         type: model
         hints: {
+            scale: [1, 1, 1]
+            shader: model_log_shader
+        }
+    }
+    hst: {
+        path: hst.obj
+        type: model
+        hints: {
+            scale: [1, 1, 1]
+            shader: model_log_shader
+        }
+    }
+    galileo: {
+        path: galileo/galileo.obj
+        type: model
+        hints: {
+            scale: [0.1, 0.1, 0.1]
+            shader: model_pbr_log_shader
+            textures: {
+                "diffuse": 0
+            }
         }
     }
 }

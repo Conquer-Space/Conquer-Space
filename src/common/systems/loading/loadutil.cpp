@@ -18,6 +18,9 @@
 
 #include <spdlog/spdlog.h>
 
+#include <map>
+#include <string>
+
 #include "common/components/name.h"
 
 namespace cqsp::common::systems::loading {
