@@ -51,10 +51,6 @@ jobs:
         sudo apt-get update
         sudo apt install -y libglfw3 libglfw3-dev libopenal-dev libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev libxxf86vm-dev
 
-    - uses: mjp41/workaround8649@main
-      with:
-        os: ${{ matrix.os }}
-
     - name: Export GitHub Actions cache environment variables
       uses: actions/github-script@v7
       with:
