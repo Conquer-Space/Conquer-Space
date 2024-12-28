@@ -43,7 +43,7 @@ class GLWindow : public cqsp::engine::Window {
     void MousePositionCallback(GLFWwindow* _w, double xpos, double ypos) {
         m_mouse_x = xpos;
         m_mouse_y = ypos;
-        RmlGLFW::ProcessCursorPosCallback(app->GetRmlUiContext(), xpos, ypos, 0);
+        RmlGLFW::ProcessCursorPosCallback(app->GetRmlUiContext(), _w, xpos, ypos, 0);
     }
 
     void MouseEnterCallback(GLFWwindow* _w, int entered) {

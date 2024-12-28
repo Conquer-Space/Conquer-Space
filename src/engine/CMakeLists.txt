@@ -52,8 +52,8 @@ target_link_libraries(cqsp-engine PUBLIC
     sol2
     ${OPENAL_LIBRARY}
     stb
-    RmlCore
-    RmlDebugger
+    RmlUi::RmlUi
+    rmlui_debugger
     lunasvg
     imgui_node_editor
     assimp::assimp

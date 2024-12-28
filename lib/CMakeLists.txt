@@ -41,4 +41,4 @@ set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 set(ENABLE_SVG_PLUGIN ON CACHE BOOL "" FORCE)
 add_subdirectory(RmlUi)
 
-set_target_properties(hjson glad stb RmlCore RmlDebugger Tracy lunasvg imgui_node_editor PROPERTIES FOLDER "Libs")
+set_target_properties(hjson glad stb rmlui rmlui_debugger Tracy lunasvg imgui_node_editor PROPERTIES FOLDER "Libs")

@@ -14,7 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "settingswindow.h"
+#include "client/scenes/mainmenu/settingswindow.h"
+
+#include <RmlUi/Core.h>
 
 cqsp::client::SettingsWindow::SettingsWindow(cqsp::engine::Application& app) : app(app) { InitializeDataModel(); }
 
