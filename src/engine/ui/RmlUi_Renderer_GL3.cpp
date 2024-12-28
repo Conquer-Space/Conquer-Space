@@ -84,11 +84,11 @@ out vec2 fragTexCoord;
 out vec4 fragColor;
 
 void main() {
-	fragTexCoord = inTexCoord0;
-	fragColor = inColor0;
+    fragTexCoord = inTexCoord0;
+    fragColor = inColor0;
 
-	vec2 translatedPos = inPosition + _translate;
-	vec4 outPos = _transform * vec4(translatedPos, 0.0, 1.0);
+    vec2 translatedPos = inPosition + _translate;
+    vec4 outPos = _transform * vec4(translatedPos, 0.0, 1.0);
 
     gl_Position = outPos;
 }
@@ -101,8 +101,8 @@ in vec4 fragColor;
 out vec4 finalColor;
 
 void main() {
-	vec4 texColor = texture(_tex, fragTexCoord);
-	finalColor = fragColor * texColor;
+    vec4 texColor = texture(_tex, fragTexCoord);
+    finalColor = fragColor * texColor;
 }
 )";
 static const char* shader_frag_color = RMLUI_SHADER_HEADER R"(
@@ -112,7 +112,7 @@ in vec4 fragColor;
 out vec4 finalColor;
 
 void main() {
-	finalColor = fragColor;
+    finalColor = fragColor;
 }
 )";
 
@@ -146,43 +146,43 @@ in vec4 fragColor;
 out vec4 finalColor;
 
 vec4 mix_stop_colors(float t) {
-	vec4 color = _stop_colors[0];
+    vec4 color = _stop_colors[0];
 
-	for (int i = 1; i < _num_stops; i++)
-		color = mix(color, _stop_colors[i], smoothstep(_stop_positions[i-1], _stop_positions[i], t));
+    for (int i = 1; i < _num_stops; i++)
+        color = mix(color, _stop_colors[i], smoothstep(_stop_positions[i-1], _stop_positions[i], t));
 
-	return color;
+    return color;
 }
 
 void main() {
-	float t = 0.0;
+    float t = 0.0;
 
-	if (_func == LINEAR || _func == REPEATING_LINEAR)
-	{
-		float dist_square = dot(_v, _v);
-		vec2 V = fragTexCoord - _p;
-		t = dot(_v, V) / dist_square;
-	}
-	else if (_func == RADIAL || _func == REPEATING_RADIAL)
-	{
-		vec2 V = fragTexCoord - _p;
-		t = length(_v * V);
-	}
-	else if (_func == CONIC || _func == REPEATING_CONIC)
-	{
-		mat2 R = mat2(_v.x, -_v.y, _v.y, _v.x);
-		vec2 V = R * (fragTexCoord - _p);
-		t = 0.5 + atan(-V.x, V.y) / (2.0 * PI);
-	}
+    if (_func == LINEAR || _func == REPEATING_LINEAR)
+    {
+        float dist_square = dot(_v, _v);
+        vec2 V = fragTexCoord - _p;
+        t = dot(_v, V) / dist_square;
+    }
+    else if (_func == RADIAL || _func == REPEATING_RADIAL)
+    {
+        vec2 V = fragTexCoord - _p;
+        t = length(_v * V);
+    }
+    else if (_func == CONIC || _func == REPEATING_CONIC)
+    {
+        mat2 R = mat2(_v.x, -_v.y, _v.y, _v.x);
+        vec2 V = R * (fragTexCoord - _p);
+        t = 0.5 + atan(-V.x, V.y) / (2.0 * PI);
+    }
 
-	if (_func == REPEATING_LINEAR || _func == REPEATING_RADIAL || _func == REPEATING_CONIC)
-	{
-		float t0 = _stop_positions[0];
-		float t1 = _stop_positions[_num_stops - 1];
-		t = t0 + mod(t - t0, t1 - t0);
-	}
+    if (_func == REPEATING_LINEAR || _func == REPEATING_RADIAL || _func == REPEATING_CONIC)
+    {
+        float t0 = _stop_positions[0];
+        float t1 = _stop_positions[_num_stops - 1];
+        t = t0 + mod(t - t0, t1 - t0);
+    }
 
-	finalColor = fragColor * mix_stop_colors(t);
+    finalColor = fragColor * mix_stop_colors(t);
 }
 )";
 
@@ -196,20 +196,20 @@ in vec4 fragColor;
 out vec4 finalColor;
 
 void main() {
-	float t = _value;
-	vec3 c;
-	float l;
-	for (int i = 0; i < 3; i++) {
-		vec2 p = fragTexCoord;
-		vec2 uv = p;
-		p -= .5;
-		p.x *= _dimensions.x / _dimensions.y;
-		float z = t + float(i) * .07;
-		l = length(p);
-		uv += p / l * (sin(z) + 1.) * abs(sin(l * 9. - z - z));
-		c[i] = .01 / length(mod(uv, 1.) - .5);
-	}
-	finalColor = vec4(c / l, fragColor.a);
+    float t = _value;
+    vec3 c;
+    float l;
+    for (int i = 0; i < 3; i++) {
+        vec2 p = fragTexCoord;
+        vec2 uv = p;
+        p -= .5;
+        p.x *= _dimensions.x / _dimensions.y;
+        float z = t + float(i) * .07;
+        l = length(p);
+        uv += p / l * (sin(z) + 1.) * abs(sin(l * 9. - z - z));
+        c[i] = .01 / length(mod(uv, 1.) - .5);
+    }
+    finalColor = vec4(c / l, fragColor.a);
 }
 )";
 
@@ -220,7 +220,7 @@ in vec2 inTexCoord0;
 out vec2 fragTexCoord;
 
 void main() {
-	fragTexCoord = inTexCoord0;
+    fragTexCoord = inTexCoord0;
     gl_Position = vec4(inPosition, 0.0, 1.0);
 }
 )";
@@ -230,7 +230,7 @@ in vec2 fragTexCoord;
 out vec4 finalColor;
 
 void main() {
-	finalColor = texture(_tex, fragTexCoord);
+    finalColor = texture(_tex, fragTexCoord);
 }
 )";
 static const char* shader_frag_color_matrix = RMLUI_SHADER_HEADER R"(
@@ -241,15 +241,15 @@ in vec2 fragTexCoord;
 out vec4 finalColor;
 
 void main() {
-	// The general case uses a 4x5 color matrix for full rgba transformation, plus a constant term with the last column.
-	// However, we only consider the case of rgb transformations. Thus, we could in principle use a 3x4 matrix, but we
-	// keep the alpha row for simplicity.
-	// In the general case we should do the matrix transformation in non-premultiplied space. However, without alpha
-	// transformations, we can do it directly in premultiplied space to avoid the extra division and multiplication
-	// steps. In this space, the constant term needs to be multiplied by the alpha value, instead of unity.
-	vec4 texColor = texture(_tex, fragTexCoord);
-	vec3 transformedColor = vec3(_color_matrix * texColor);
-	finalColor = vec4(transformedColor, texColor.a);
+    // The general case uses a 4x5 color matrix for full rgba transformation, plus a constant term with the last column.
+    // However, we only consider the case of rgb transformations. Thus, we could in principle use a 3x4 matrix, but we
+    // keep the alpha row for simplicity.
+    // In the general case we should do the matrix transformation in non-premultiplied space. However, without alpha
+    // transformations, we can do it directly in premultiplied space to avoid the extra division and multiplication
+    // steps. In this space, the constant term needs to be multiplied by the alpha value, instead of unity.
+    vec4 texColor = texture(_tex, fragTexCoord);
+    vec3 transformedColor = vec3(_color_matrix * texColor);
+    finalColor = vec4(transformedColor, texColor.a);
 }
 )";
 static const char* shader_frag_blend_mask = RMLUI_SHADER_HEADER R"(
@@ -260,9 +260,9 @@ in vec2 fragTexCoord;
 out vec4 finalColor;
 
 void main() {
-	vec4 texColor = texture(_tex, fragTexCoord);
-	float maskAlpha = texture(_texMask, fragTexCoord).a;
-	finalColor = texColor * maskAlpha;
+    vec4 texColor = texture(_tex, fragTexCoord);
+    float maskAlpha = texture(_texMask, fragTexCoord).a;
+    finalColor = texColor * maskAlpha;
 }
 )";
 
@@ -279,8 +279,8 @@ in vec2 inTexCoord0;
 out vec2 fragTexCoord[BLUR_SIZE];
 
 void main() {
-	for(int i = 0; i < BLUR_SIZE; i++)
-		fragTexCoord[i] = inTexCoord0 - float(i - BLUR_NUM_WEIGHTS + 1) * _texelOffset;
+    for(int i = 0; i < BLUR_SIZE; i++)
+        fragTexCoord[i] = inTexCoord0 - float(i - BLUR_NUM_WEIGHTS + 1) * _texelOffset;
     gl_Position = vec4(inPosition, 1.0);
 }
 )";
@@ -294,13 +294,13 @@ in vec2 fragTexCoord[BLUR_SIZE];
 out vec4 finalColor;
 
 void main() {
-	vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
-	for(int i = 0; i < BLUR_SIZE; i++)
-	{
-		vec2 in_region = step(_texCoordMin, fragTexCoord[i]) * step(fragTexCoord[i], _texCoordMax);
-		color += texture(_tex, fragTexCoord[i]) * in_region.x * in_region.y * _weights[abs(i - BLUR_NUM_WEIGHTS + 1)];
-	}
-	finalColor = color;
+    vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
+    for(int i = 0; i < BLUR_SIZE; i++)
+    {
+        vec2 in_region = step(_texCoordMin, fragTexCoord[i]) * step(fragTexCoord[i], _texCoordMax);
+        color += texture(_tex, fragTexCoord[i]) * in_region.x * in_region.y * _weights[abs(i - BLUR_NUM_WEIGHTS + 1)];
+    }
+    finalColor = color;
 }
 )";
 static const char* shader_frag_drop_shadow = RMLUI_SHADER_HEADER R"(
@@ -313,8 +313,8 @@ in vec2 fragTexCoord;
 out vec4 finalColor;
 
 void main() {
-	vec2 in_region = step(_texCoordMin, fragTexCoord) * step(fragTexCoord, _texCoordMax);
-	finalColor = texture(_tex, fragTexCoord).a * in_region.x * in_region.y * _color;
+    vec2 in_region = step(_texCoordMin, fragTexCoord) * step(fragTexCoord, _texCoordMax);
+    finalColor = texture(_tex, fragTexCoord).a * in_region.x * in_region.y * _color;
 }
 )";
 
@@ -402,31 +402,31 @@ struct ProgramDefinition {
 
 // clang-format off
 static const VertShaderDefinition vert_shader_definitions[] = {
-	{VertShaderId::Main,        "main",         shader_vert_main},
-	{VertShaderId::Passthrough, "passthrough",  shader_vert_passthrough},
-	{VertShaderId::Blur,        "blur",         shader_vert_blur},
+    {VertShaderId::Main,        "main",         shader_vert_main},
+    {VertShaderId::Passthrough, "passthrough",  shader_vert_passthrough},
+    {VertShaderId::Blur,        "blur",         shader_vert_blur},
 };
 static const FragShaderDefinition frag_shader_definitions[] = {
-	{FragShaderId::Color,       "color",        shader_frag_color},
-	{FragShaderId::Texture,     "texture",      shader_frag_texture},
-	{FragShaderId::Gradient,    "gradient",     shader_frag_gradient},
-	{FragShaderId::Creation,    "creation",     shader_frag_creation},
-	{FragShaderId::Passthrough, "passthrough",  shader_frag_passthrough},
-	{FragShaderId::ColorMatrix, "color_matrix", shader_frag_color_matrix},
-	{FragShaderId::BlendMask,   "blend_mask",   shader_frag_blend_mask},
-	{FragShaderId::Blur,        "blur",         shader_frag_blur},
-	{FragShaderId::DropShadow,  "drop_shadow",  shader_frag_drop_shadow},
+    {FragShaderId::Color,       "color",        shader_frag_color},
+    {FragShaderId::Texture,     "texture",      shader_frag_texture},
+    {FragShaderId::Gradient,    "gradient",     shader_frag_gradient},
+    {FragShaderId::Creation,    "creation",     shader_frag_creation},
+    {FragShaderId::Passthrough, "passthrough",  shader_frag_passthrough},
+    {FragShaderId::ColorMatrix, "color_matrix", shader_frag_color_matrix},
+    {FragShaderId::BlendMask,   "blend_mask",   shader_frag_blend_mask},
+    {FragShaderId::Blur,        "blur",         shader_frag_blur},
+    {FragShaderId::DropShadow,  "drop_shadow",  shader_frag_drop_shadow},
 };
 static const ProgramDefinition program_definitions[] = {
-	{ProgramId::Color,       "color",        VertShaderId::Main,        FragShaderId::Color},
-	{ProgramId::Texture,     "texture",      VertShaderId::Main,        FragShaderId::Texture},
-	{ProgramId::Gradient,    "gradient",     VertShaderId::Main,        FragShaderId::Gradient},
-	{ProgramId::Creation,    "creation",     VertShaderId::Main,        FragShaderId::Creation},
-	{ProgramId::Passthrough, "passthrough",  VertShaderId::Passthrough, FragShaderId::Passthrough},
-	{ProgramId::ColorMatrix, "color_matrix", VertShaderId::Passthrough, FragShaderId::ColorMatrix},
-	{ProgramId::BlendMask,   "blend_mask",   VertShaderId::Passthrough, FragShaderId::BlendMask},
-	{ProgramId::Blur,        "blur",         VertShaderId::Blur,        FragShaderId::Blur},
-	{ProgramId::DropShadow,  "drop_shadow",  VertShaderId::Passthrough, FragShaderId::DropShadow},
+    {ProgramId::Color,       "color",        VertShaderId::Main,        FragShaderId::Color},
+    {ProgramId::Texture,     "texture",      VertShaderId::Main,        FragShaderId::Texture},
+    {ProgramId::Gradient,    "gradient",     VertShaderId::Main,        FragShaderId::Gradient},
+    {ProgramId::Creation,    "creation",     VertShaderId::Main,        FragShaderId::Creation},
+    {ProgramId::Passthrough, "passthrough",  VertShaderId::Passthrough, FragShaderId::Passthrough},
+    {ProgramId::ColorMatrix, "color_matrix", VertShaderId::Passthrough, FragShaderId::ColorMatrix},
+    {ProgramId::BlendMask,   "blend_mask",   VertShaderId::Passthrough, FragShaderId::BlendMask},
+    {ProgramId::Blur,        "blur",         VertShaderId::Blur,        FragShaderId::Blur},
+    {ProgramId::DropShadow,  "drop_shadow",  VertShaderId::Passthrough, FragShaderId::DropShadow},
 };
 // clang-format on
 
@@ -1484,12 +1484,12 @@ Rml::CompiledFilterHandle RenderInterface_GL3::CompileFilter(const Rml::String& 
         const float rev_value = 1.f - value;
         const Rml::Vector3f gray = value * Rml::Vector3f(0.2126f, 0.7152f, 0.0722f);
         // clang-format off
-		filter.color_matrix = Rml::Matrix4f::FromRows(
-			{gray.x + rev_value, gray.y,             gray.z,             0.f},
-			{gray.x,             gray.y + rev_value, gray.z,             0.f},
-			{gray.x,             gray.y,             gray.z + rev_value, 0.f},
-			{0.f,                0.f,                0.f,                1.f}
-		);
+        filter.color_matrix = Rml::Matrix4f::FromRows(
+            {gray.x + rev_value, gray.y,             gray.z,             0.f},
+            {gray.x,             gray.y + rev_value, gray.z,             0.f},
+            {gray.x,             gray.y,             gray.z + rev_value, 0.f},
+            {0.f,                0.f,                0.f,                1.f}
+        );
         // clang-format on
     } else if (name == "sepia") {
         filter.type = FilterType::ColorMatrix;
@@ -1499,12 +1499,12 @@ Rml::CompiledFilterHandle RenderInterface_GL3::CompileFilter(const Rml::String& 
         const Rml::Vector3f g_mix = value * Rml::Vector3f(0.349f, 0.686f, 0.168f);
         const Rml::Vector3f b_mix = value * Rml::Vector3f(0.272f, 0.534f, 0.131f);
         // clang-format off
-		filter.color_matrix = Rml::Matrix4f::FromRows(
-			{r_mix.x + rev_value, r_mix.y,             r_mix.z,             0.f},
-			{g_mix.x,             g_mix.y + rev_value, g_mix.z,             0.f},
-			{b_mix.x,             b_mix.y,             b_mix.z + rev_value, 0.f},
-			{0.f,                 0.f,                 0.f,                 1.f}
-		);
+        filter.color_matrix = Rml::Matrix4f::FromRows(
+            {r_mix.x + rev_value, r_mix.y,             r_mix.z,             0.f},
+            {g_mix.x,             g_mix.y + rev_value, g_mix.z,             0.f},
+            {b_mix.x,             b_mix.y,             b_mix.z + rev_value, 0.f},
+            {0.f,                 0.f,                 0.f,                 1.f}
+        );
         // clang-format on
     } else if (name == "hue-rotate") {
         // Hue-rotation and saturation values based on: https://www.w3.org/TR/filter-effects-1/#attr-valuedef-type-huerotate
@@ -1513,23 +1513,23 @@ Rml::CompiledFilterHandle RenderInterface_GL3::CompileFilter(const Rml::String& 
         const float s = Rml::Math::Sin(value);
         const float c = Rml::Math::Cos(value);
         // clang-format off
-		filter.color_matrix = Rml::Matrix4f::FromRows(
-			{0.213f + 0.787f * c - 0.213f * s,  0.715f - 0.715f * c - 0.715f * s,  0.072f - 0.072f * c + 0.928f * s,  0.f},
-			{0.213f - 0.213f * c + 0.143f * s,  0.715f + 0.285f * c + 0.140f * s,  0.072f - 0.072f * c - 0.283f * s,  0.f},
-			{0.213f - 0.213f * c - 0.787f * s,  0.715f - 0.715f * c + 0.715f * s,  0.072f + 0.928f * c + 0.072f * s,  0.f},
-			{0.f,                               0.f,                               0.f,                               1.f}
-		);
+        filter.color_matrix = Rml::Matrix4f::FromRows(
+            {0.213f + 0.787f * c - 0.213f * s,  0.715f - 0.715f * c - 0.715f * s,  0.072f - 0.072f * c + 0.928f * s,  0.f},
+            {0.213f - 0.213f * c + 0.143f * s,  0.715f + 0.285f * c + 0.140f * s,  0.072f - 0.072f * c - 0.283f * s,  0.f},
+            {0.213f - 0.213f * c - 0.787f * s,  0.715f - 0.715f * c + 0.715f * s,  0.072f + 0.928f * c + 0.072f * s,  0.f},
+            {0.f,                               0.f,                               0.f,                               1.f}
+        );
         // clang-format on
     } else if (name == "saturate") {
         filter.type = FilterType::ColorMatrix;
         const float value = Rml::Get(parameters, "value", 1.0f);
         // clang-format off
-		filter.color_matrix = Rml::Matrix4f::FromRows(
-			{0.213f + 0.787f * value,  0.715f - 0.715f * value,  0.072f - 0.072f * value,  0.f},
-			{0.213f - 0.213f * value,  0.715f + 0.285f * value,  0.072f - 0.072f * value,  0.f},
-			{0.213f - 0.213f * value,  0.715f - 0.715f * value,  0.072f + 0.928f * value,  0.f},
-			{0.f,                      0.f,                      0.f,                      1.f}
-		);
+        filter.color_matrix = Rml::Matrix4f::FromRows(
+            {0.213f + 0.787f * value,  0.715f - 0.715f * value,  0.072f - 0.072f * value,  0.f},
+            {0.213f - 0.213f * value,  0.715f + 0.285f * value,  0.072f - 0.072f * value,  0.f},
+            {0.213f - 0.213f * value,  0.715f - 0.715f * value,  0.072f + 0.928f * value,  0.f},
+            {0.f,                      0.f,                      0.f,                      1.f}
+        );
         // clang-format on
     }
 
