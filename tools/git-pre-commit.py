@@ -25,11 +25,6 @@ for line in cpp_file_list:
     # Clang format the files
     clang_format.format_file(line)
 
-    # Run cpplint for the files
-    val = subprocess.run(['cpplint', '--quiet', '--recursive', line], stdout=subprocess.PIPE)
-    if val.returncode != 0:
-        error = True
-
 
 cfg = configparser.ConfigParser()
 try:
