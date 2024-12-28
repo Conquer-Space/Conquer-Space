@@ -16,6 +16,7 @@
  */
 #include "client/scenes/loadingscene.h"
 
+#include <RmlUi/Core.h>
 #include <spdlog/spdlog.h>
 
 #include <chrono>

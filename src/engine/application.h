@@ -18,6 +18,9 @@
 
 #include <RmlUi/Core/Context.h>
 #include <RmlUi/Core/ElementDocument.h>
+#include <RmlUi/Core/EventListener.h>
+#include <RmlUi/Core/EventListenerInstancer.h>
+#include <RmlUi/Core/RenderInterface.h>
 #include <glad/glad.h>
 #include <spdlog/spdlog.h>
 
@@ -38,7 +41,6 @@
 #include "engine/scene.h"
 #include "engine/scenemanager.h"
 #include "engine/ui/RmlUi_Platform_GLFW.h"
-#include "engine/ui/rmlrenderinterface.h"
 #include "engine/userinput.h"
 #include "engine/window.h"
 

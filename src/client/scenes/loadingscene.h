@@ -16,6 +16,8 @@
  */
 #pragma once
 
+#include <RmlUi/Core/DataModelHandle.h>
+
 #include <atomic>
 #include <memory>
 #include <thread>

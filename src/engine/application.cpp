@@ -48,9 +48,8 @@
 #include "engine/cqspgui.h"
 #include "engine/enginelogger.h"
 #include "engine/glfwwindow.h"
+#include "engine/ui/RmlUi_Platform_GLFW.h"
 #include "engine/ui/RmlUi_Renderer_GL3.h"
-#include "engine/ui/rmlrenderinterface.h"
-#include "engine/ui/rmlsysteminterface.h"
 #include "engine/userinput.h"
 
 namespace cqsp::engine {
@@ -173,11 +172,11 @@ void Application::InitRmlUi() {
     // Begin by installing the custom interfaces.
     m_system_interface = std::make_unique<SystemInterface_GLFW>();
     m_system_interface->SetWindow((static_cast<GLWindow*>(GetWindow())->window));
-    m_render_interface = std::make_unique<CQSPRenderInterface>(*this);
+    m_render_interface = std::make_unique<RenderInterface_GL3>();
 
     Rml::SetSystemInterface(m_system_interface.get());
     Rml::SetRenderInterface(m_render_interface.get());
-
+    reinterpret_cast<RenderInterface_GL3*>(m_render_interface.get())->SetViewport(GetWindowWidth(), GetWindowHeight());
     // Now we can initialize RmlUi.
     Rml::Initialise();
 
@@ -353,7 +352,9 @@ void Application::run() {
         if (drawFboId != 0) {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
+        reinterpret_cast<RenderInterface_GL3*>(m_render_interface.get())->BeginFrame();
         rml_context->Render();
+        reinterpret_cast<RenderInterface_GL3*>(m_render_interface.get())->EndFrame();
 
         // BEGIN_TIMED_BLOCK(ImGui_Render_Draw);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -379,33 +380,39 @@ void Application::ExitApplication() { m_window->ExitApplication(); }
 
 Rml::ElementDocument* Application::LoadDocument(const std::string& path) {
     std::filesystem::path doc_path =
-        std::filesystem::canonical(std::filesystem::path(common::util::GetCqspDataPath()) / path);
-    auto document = rml_context->LoadDocument(doc_path.string());
-    SPDLOG_INFO("Loading document {}", doc_path.string());
+        std::filesystem::relative(std::filesystem::path(common::util::GetCqspDataPath()) / path);
+    std::string path_name = doc_path.string();
+    std::replace(path_name.begin(), path_name.end(), '\\', '/');
+    auto document = rml_context->LoadDocument(path_name);
+    SPDLOG_INFO("Loading document {}", path_name);
     if (document == nullptr) {
         ENGINE_LOG_WARN("Unable to load document {}", path);
     }
-    loaded_documents[doc_path.string()] = document;
+    loaded_documents[path_name] = document;
     return document;
 }
 
 void Application::CloseDocument(const std::string& path) {
     std::filesystem::path doc_path =
-        std::filesystem::canonical(std::filesystem::path(common::util::GetCqspDataPath()) / path);
-    loaded_documents[doc_path.string()]->Close();
-    loaded_documents.erase(doc_path.string());
+        std::filesystem::relative(std::filesystem::path(common::util::GetCqspDataPath()) / path);
+    std::string path_name = doc_path.string();
+    std::replace(path_name.begin(), path_name.end(), '\\', '/');
+    loaded_documents[path_name]->Close();
+    loaded_documents.erase(path_name);
 }
 
 Rml::ElementDocument* Application::ReloadDocument(const std::string& path) {
     std::filesystem::path doc_path =
         std::filesystem::canonical(std::filesystem::path(common::util::GetCqspDataPath()) / path);
-    if (loaded_documents.find(doc_path.string()) == loaded_documents.end()) {
+    std::string path_name = doc_path.string();
+    std::replace(path_name.begin(), path_name.end(), '\\', '/');
+    if (loaded_documents.find(path_name) == loaded_documents.end()) {
         return nullptr;
     }
-    bool visible = loaded_documents[doc_path.string()]->IsVisible();
-    loaded_documents[doc_path.string()]->Close();
-    auto document = rml_context->LoadDocument(doc_path.string());
-    loaded_documents[doc_path.string()] = document;
+    bool visible = loaded_documents[path_name]->IsVisible();
+    loaded_documents[path_name]->Close();
+    auto document = rml_context->LoadDocument(path_name);
+    loaded_documents[path_name] = document;
     if (visible) {
         document->Show();
     }

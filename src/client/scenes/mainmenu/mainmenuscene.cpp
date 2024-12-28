@@ -16,11 +16,13 @@
  */
 #include "client/scenes/mainmenu/mainmenuscene.h"
 
+#include <RmlUi/Core.h>
+
 #include <algorithm>
 #include <filesystem>
+#include <random>
 #include <string>
 #include <utility>
-#include <random>
 
 #include "RmlUi/Debugger.h"
 #include "client/components/clientctx.h"
