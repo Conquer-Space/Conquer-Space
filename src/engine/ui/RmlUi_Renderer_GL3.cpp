@@ -102,6 +102,11 @@ out vec4 finalColor;
 
 void main() {
     vec4 texColor = texture(_tex, fragTexCoord);
+    // TODO: Remove the following 3 lines when we can root cause
+    // why the alpha channel is not alphing
+    if (texColor.a == 0) {
+        discard;
+    }
     finalColor = fragColor * texColor;
 }
 )";
@@ -1180,7 +1185,7 @@ Rml::TextureHandle RenderInterface_GL3::LoadTexture(Rml::Vector2i& texture_dimen
 
     FileUser user(file_interface, file_handle);
     int x, y, channels_in_file;
-    stbi_uc* output = stbi_load_from_callbacks(&callbacks, &user, &x, &y, &channels_in_file, 4);
+    stbi_uc* output = stbi_load_from_callbacks(&callbacks, &user, &x, &y, &channels_in_file, 0);
 
     texture_dimensions.x = x;
     texture_dimensions.y = y;
@@ -1218,6 +1223,8 @@ Rml::TextureHandle RenderInterface_GL3::LoadTexture(Rml::Vector2i& texture_dimen
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    Rml::Log::Message(Rml::Log::LT_ERROR, "Loading texture %s.", source.c_str());
 
     stbi_image_free(output);
     return (Rml::TextureHandle)texture_id;
