@@ -58,4 +58,5 @@ target_link_libraries(cqsp-engine PUBLIC
     imgui_node_editor
     assimp::assimp
     debug Tracy
+    cqsp-core
 )
