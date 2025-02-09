@@ -159,6 +159,7 @@ void cqsp::scene::UniverseScene::Ui(float deltaTime) {
     for (auto& ui : user_interfaces) {
         ui->DoUI(deltaTime);
     }
+    system_renderer->DoUI(deltaTime);
 }
 
 void cqsp::scene::UniverseScene::Render(float deltaTime) {

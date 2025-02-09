@@ -256,9 +256,9 @@ void SysStarSystemRenderer::SeePlanet(entt::entity ent) {
 }
 
 void SysStarSystemRenderer::DoUI(float deltaTime) {
-#ifdef NDEBUG
-    return;
-#endif
+    // #ifdef NDEBUG
+    //     return;
+    // #endif
     RenderInformationWindow(deltaTime);
     RenderSelectedObjectInformation();
 }
@@ -484,7 +484,7 @@ void SysStarSystemRenderer::DrawTexturedPlanet(const glm::vec3& object_pos, cons
     shader->setVec3("viewPos", cam_pos);
 
     // If a country is clicked on...
-    shader->setVec4("country_color", glm::vec4(selected_country_color, 1));
+    shader->setVec4("country_color", glm::vec4(selected_province_color, 1));
     shader->setBool("country", have_province);
     shader->setBool("is_roughness", have_roughness);
 
@@ -709,6 +709,7 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
         // Then create vector
         uint64_t file_size = bin_asset->data.size();
         int comp = 0;
+        stbi_set_flip_vertically_on_load(false);
         auto d = stbi_load_from_memory(bin_asset->data.data(), file_size, &province_width, &province_height, &comp, 0);
 
         // Set country map
@@ -726,7 +727,7 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
                 }
             }
         }
-        delete d;
+        stbi_image_free(d);
     }
 }
 
@@ -1022,7 +1023,7 @@ void SysStarSystemRenderer::FoundCity() {
 void SysStarSystemRenderer::SelectCountry() {
     // Country selection
     // Then select planet and tell the state
-    selected_country_color = selected_province_color;
+    selected_province_color = hovering_province_color;
     selected_province = hovering_province;
     // Set the selected province
     if (!m_universe.valid(selected_province)) {
@@ -1104,12 +1105,23 @@ void SysStarSystemRenderer::RenderInformationWindow(double deltaTime) {
     }
     ImGui::TextFmt("Hovering on Texture: {} {}", tex_x, tex_y);
     ImGui::TextFmt("Texture color: {} {} {}", tex_r, tex_g, tex_b);
-    ImGui::TextFmt("Selected country color: {} {} {}", selected_country_color.x, selected_country_color.y,
-                   selected_country_color.z);
+    ImGui::TextFmt("Selected province color: {} {} {}", selected_province_color.x, selected_province_color.y,
+                   selected_province_color.z);
+
+    ImGui::TextFmt("Hovered province color: {} {} {}", hovering_province_color.x, hovering_province_color.y,
+                   hovering_province_color.z);
+    ImGui::TextFmt("Hovering province {}", cqsp::common::util::GetName(m_universe, hovering_province));
     ImGui::TextFmt("Focused planets: {}", m_universe.view<FocusedPlanet>().size());
     ImGui::TextFmt("Generated {} orbits last frame", orbits_generated);
+    auto intersection = GetMouseSurfaceIntersection();
+    ImGui::TextFmt("Intersection: {} {}", intersection.latitude(), intersection.longitude());
     entt::entity earth = m_universe.planets["earth"];
     auto& b = m_universe.get<cqspb::Body>(earth);
+    if (ImGui::Button("Focus on part")) {
+        // Add a city founding entity
+        entt::entity ent = m_universe.create();
+        m_universe.emplace<CityFounding>(ent);
+    }
     // float offset = (float) b.rotation_offset;
     // ImGui::SliderAngle("asdf", &offset);
     // b.rotation_offset = (float) offset;
@@ -1177,9 +1189,8 @@ void SysStarSystemRenderer::CityDetection() {
     auto s = GetMouseSurfaceIntersection();
 
     // Look for the vector
-    // Rotate based on the axial tilt and roation
-    int x = (-1 * (s.latitude() * 2 - 180)) / 360 * province_height;
-    int y = fmod(s.longitude() + 180, 360) / 360. * province_width;
+    int x = tex_x = ((-1 * (s.latitude() * 2 - 180))) / 360 * province_height;
+    int y = tex_y = fmod(s.longitude() + 180, 360) / 360. * province_width;
     int pos = (x * province_width + y);
     if (pos < 0 || pos > province_width * province_height) {
         return;
@@ -1196,7 +1207,7 @@ void SysStarSystemRenderer::CityDetection() {
         hovering_province = planet_texture.province_map[pos];
         int color = m_universe.colors_province[hovering_province];
         auto province_color = cqsp::common::components::ProvinceColor::fromInt(color);
-        selected_province_color =
+        hovering_province_color =
             (glm::vec3((float)province_color.r, (float)province_color.g, (float)province_color.b) / 255.f);
     }
 }
