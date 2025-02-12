@@ -19,7 +19,8 @@
 #include <memory>
 #include <string>
 
-#include "client/systems/clientscripting.h"
+#include "client/scripting/clientscripting.h"
+#include "client/scripting/imguifunctions.h"
 #include "common/scripting/luafunctions.h"
 #include "common/systems/loading/hjsonloader.h"
 #include "common/systems/loading/loadcities.h"
@@ -97,6 +98,7 @@ void LoadAllResources(cqsp::engine::Application& app, ConquerSpace& conquer_spac
     // Load scripts
     // Load lua functions
     cqsp::scripting::LoadFunctions(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
+    scripting::LoadImGuiFunctions(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
     scripting::ClientFunctions(app, conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
 
     // Load universe
@@ -104,5 +106,6 @@ void LoadAllResources(cqsp::engine::Application& app, ConquerSpace& conquer_spac
     auto& script_interface = conquer_space.GetScriptInterface();
     script_interface.RegisterDataGroup("generators");
     script_interface.RegisterDataGroup("events");
+    script_interface.RegisterDataGroup("interfaces");
 }
 }  // namespace cqsp::client::systems

@@ -16,9 +16,19 @@
  */
 #pragma once
 
-#include "common/scripting/scripting.h"
-#include "common/universe.h"
+#include "client/systems/sysgui.h"
 
-namespace cqsp::scripting {
-void LoadFunctions(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine);
-}  // namespace cqsp::scripting
+namespace cqsp::client::systems {
+void MarketInformationTable(common::Universe& universe, const entt::entity& market_entity);
+
+class ImGuiInterface : public SysUserInterface {
+ public:
+    explicit ImGuiInterface(cqsp::engine::Application& app) : SysUserInterface(app) {}
+    void Init();
+    void DoUI(int delta_time);
+    void DoUpdate(int delta_time);
+
+ private:
+    std::vector<sol::table> interfaces;
+};
+}  // namespace cqsp::client::systems

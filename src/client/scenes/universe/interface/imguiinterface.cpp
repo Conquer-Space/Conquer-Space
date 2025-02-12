@@ -14,11 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
+#include "client/scenes/universe/interface/imguiinterface.h"
 
-#include "common/scripting/scripting.h"
-#include "common/universe.h"
+namespace cqsp::client::systems {
+void ImGuiInterface::Init() {
+    sol::optional<std::vector<sol::table>> optional = GetScriptInterface()["interfaces"]["data"];
+    if (optional.has_value()) {
+        interfaces = *optional;
+    }
+}
+void ImGuiInterface::DoUI(int delta_time) {
+    for (auto& iface : interfaces) {
+        sol::protected_function_result result = iface["do_ui"](iface);
+        GetScriptInterface().ParseResult(result);
+    }
+}
 
-namespace cqsp::scripting {
-void LoadFunctions(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine);
-}  // namespace cqsp::scripting
+void ImGuiInterface::DoUpdate(int delta_time) {}
+}  // namespace cqsp::client::systems

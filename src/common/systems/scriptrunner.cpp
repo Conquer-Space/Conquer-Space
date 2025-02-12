@@ -25,7 +25,9 @@
 
 cqsp::common::systems::SysScript::SysScript(Game &game) : ISimulationSystem(game) {
     sol::optional<std::vector<sol::table>> optional = game.GetScriptInterface()["events"]["data"];
-    events = *optional;
+    if (optional.has_value()) {
+        events = *optional;
+    }
 }
 
 cqsp::common::systems::SysScript::~SysScript() {
@@ -39,8 +41,8 @@ cqsp::common::systems::SysScript::~SysScript() {
 void cqsp::common::systems::SysScript::DoSystem() {
     BEGIN_TIMED_BLOCK(ScriptEngine);
     GetGame().GetScriptInterface()["date"] = GetUniverse().date.GetDate();
-    for (auto &a : events) {
-        sol::protected_function_result result = a["on_tick"](a);
+    for (auto &evt : events) {
+        sol::protected_function_result result = evt["on_tick"](evt);
         GetGame().GetScriptInterface().ParseResult(result);
     }
     END_TIMED_BLOCK(ScriptEngine);
