@@ -35,7 +35,8 @@ variables = ["goods",
             "date",
             "terrain_colors",
             "fields",
-            "technologies"]
+            "technologies",
+            "ImGui"]
 REGISTER_FUNC_NAME = "REGISTER_FUNCTION"
 
 def ParseFile(filename):
@@ -80,7 +81,11 @@ def WriteConfigFile():
     output.close()
 
 def main():
-    file_parse_list = ["src/common/scripting/luafunctions.cpp", "src/client/systems/clientscripting.cpp"]
+    file_parse_list = ["src/common/scripting/luafunctions.cpp",
+                       "src/client/scripting/clientscripting.cpp",
+                       "src/common/scripting/luafunctions.cpp",
+                       "src/client/scripting/clientuielements.cpp",
+                       "src/client/scripting/clientscripting.cpp"]
     for file in file_parse_list:
         ParseFile(file)
 
