@@ -36,7 +36,8 @@ variables = ["goods",
             "terrain_colors",
             "fields",
             "technologies",
-            "ImGui"]
+            "ImGui",
+            "client"]
 REGISTER_FUNC_NAME = "REGISTER_FUNCTION"
 
 def ParseFile(filename):
