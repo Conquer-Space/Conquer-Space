@@ -75,6 +75,11 @@ std::tuple<float, float> GetWindowPos() {
     const auto vec2 {ImGui::GetWindowPos()};
     return std::make_tuple(vec2.x, vec2.y);
 }
+
+std::tuple<float, float> GetDisplaySize() {
+    return std::make_tuple(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y);
+}
+
 std::tuple<float, float> GetWindowSize() {
     const auto vec2 {ImGui::GetWindowSize()};
     return std::make_tuple(vec2.x, vec2.y);

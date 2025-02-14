@@ -1,3 +1,3 @@
 require("universegen.defaultgen")
 require("events.default")
-require("interface.test")
+require("interface.civinfopanel")

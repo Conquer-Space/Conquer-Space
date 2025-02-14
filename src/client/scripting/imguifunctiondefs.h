@@ -88,6 +88,8 @@ std::tuple<float, float> GetWindowContentRegionMin();
 std::tuple<float, float> GetWindowContentRegionMax();
 float GetWindowContentRegionWidth();
 
+std::tuple<float, float> GetDisplaySize();
+
 // Windows Scrolling
 float GetScrollX();
 float GetScrollY();

@@ -61,6 +61,7 @@ inline void Init(sol::state& lua) {
     ImGui.set_function("GetWindowWidth", GetWindowWidth);
     ImGui.set_function("GetWindowHeight", GetWindowHeight);
 
+    ImGui.set_function("GetDisplaySize", GetDisplaySize);
     // Prefer  SetNext...
     ImGui.set_function("SetNextWindowPos",
                        sol::overload(sol::resolve<void(float, float)>(SetNextWindowPos),
