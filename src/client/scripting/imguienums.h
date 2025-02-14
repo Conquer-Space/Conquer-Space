@@ -16,9 +16,7 @@
  */
 #pragma once
 
-#include "common/scripting/scripting.h"
-#include "common/universe.h"
-
-namespace cqsp::scripting {
-void LoadFunctions(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine);
-}  // namespace cqsp::scripting
+#include <sol/sol.hpp>
+namespace cqsp::client::scripting {
+void InitEnums(sol::state& lua);
+}

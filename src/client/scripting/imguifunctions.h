@@ -19,6 +19,6 @@
 #include "common/scripting/scripting.h"
 #include "common/universe.h"
 
-namespace cqsp::scripting {
-void LoadFunctions(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine);
-}  // namespace cqsp::scripting
+namespace cqsp::client::scripting {
+void LoadImGuiFunctions(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine);
+}  // namespace cqsp::client::scripting

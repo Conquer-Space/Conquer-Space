@@ -21,8 +21,8 @@
 
 #include "client/components/clientctx.h"
 #include "client/scenes/objecteditor/sysfieldviewer.h"
-#include "client/scenes/universe/interface/civilizationinfopanel.h"
 #include "client/scenes/universe/interface/debug/sysdebuggui.h"
+#include "client/scenes/universe/interface/imguiinterface.h"
 #include "client/scenes/universe/interface/marketwindow.h"
 #include "client/scenes/universe/interface/orbitfilter.h"
 #include "client/scenes/universe/interface/provincewindow.h"
@@ -83,13 +83,13 @@ void cqsp::scene::UniverseScene::Init() {
     AddUISystem<cqsps::SysPauseMenu>();
     AddUISystem<cqsps::SysDebugMenu>();
     //AddUISystem<cqsps::SysCommand>();
-    AddUISystem<cqsps::CivilizationInfoPanel>();
     AddUISystem<cqsps::SpaceshipWindow>();
     //AddUISystem<cqsps::SysFieldViewer>();
     //AddUISystem<cqsps::SysTechnologyProjectViewer>();
     //AddUISystem<cqsps::SysTechnologyViewer>();
     AddUISystem<cqsps::SysProvinceInformation>();
     AddUISystem<cqsps::SysOrbitFilter>();
+    AddUISystem<cqsps::ImGuiInterface>();
     //AddUISystem<cqsps::SysPlanetMarketInformation>();
 
     AddUISystem<cqsps::gui::SysEvent>();

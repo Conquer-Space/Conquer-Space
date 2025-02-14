@@ -20,6 +20,7 @@
 #include <string>
 
 #include "client/components/clientctx.h"
+#include "client/scenes/universe/interface/markettable.h"
 #include "client/scenes/universe/interface/marketwindow.h"
 #include "client/scenes/universe/interface/sysstockpileui.h"
 #include "client/scenes/universe/interface/systooltips.h"

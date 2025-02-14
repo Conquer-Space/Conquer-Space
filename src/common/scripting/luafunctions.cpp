@@ -43,6 +43,7 @@
 #include "common/systems/economy/markethelpers.h"
 #include "common/systems/science/labs.h"
 #include "common/systems/science/technology.h"
+#include "common/util/nameutil.h"
 #include "common/util/random/stdrandom.h"
 #include "common/util/utilnumberdisplay.h"
 
@@ -51,6 +52,10 @@ namespace cqsps = cqsp::common::components::ships;
 namespace cqspt = cqsp::common::components::types;
 namespace cqspc = cqsp::common::components;
 
+/**
+ * Notes:
+ * If you want to return arrays you need to encapsulate it on sol::as_table
+ */
 namespace {
 /// <summary>
 /// Initializes functions for RNG
@@ -128,6 +133,22 @@ void FunctionCivilizationGen(cqsp::common::Universe& universe, cqsp::scripting::
         gov.governor = owner;
     });
 
+    REGISTER_FUNCTION("get_governed", [&](entt::entity governor) {
+        auto view = universe.view<cqspc::Governed>();
+        // this is probably an antiBpattern but ah well
+        std::vector<entt::entity> governed;
+        for (auto entity : view) {
+            if (universe.get<cqspc::Governed>(entity).governor == governor) {
+                governed.push_back(entity);
+            }
+        }
+        return sol::as_table(governed);
+    });
+
+    REGISTER_FUNCTION("get_owned_cities", [&](entt::entity player) {
+        return sol::as_table(universe.get<cqspc::CountryCityList>(player).province_list);
+    });
+
     REGISTER_FUNCTION("is_player",
                       [&](entt::entity civ) { return static_cast<bool>(universe.all_of<cqspc::Player>(civ)); });
 
@@ -185,6 +206,7 @@ void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
     });
 
     // TODO(EhWhoAmI): Will have to fix the documentation for this so that it looks neater
+    // The macro cannot take lambadas that contain templates that contain commas
     auto lambda = [&]() {
         /*entt::entity entity = universe.create();
         auto& market = universe.emplace<cqspc::Market>(entity);
@@ -218,9 +240,23 @@ void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
         cqsp::common::systems::economy::AddParticipant(universe, market_entity, participant);
     });
 
-    REGISTER_FUNCTION("add_cash", [&](entt::entity participant, double balance) {
+    REGISTER_FUNCTION("get_balance", [&](entt::entity participant) {
+        return universe.get_or_emplace<cqspc::Wallet>(participant).GetBalance();
+    });
+
+    REGISTER_FUNCTION("add_balance", [&](entt::entity participant, double balance) {
         universe.get_or_emplace<cqspc::Wallet>(participant) += balance;
     });
+
+    auto get_planetary_markets = [&]() {
+        auto view = universe.view<cqspc::Market, cqspc::PlanetaryMarket>();
+        std::vector<entt::entity> markets;
+        for (entt::entity entity : view) {
+            markets.push_back(entity);
+        }
+        return sol::as_table(markets);
+    };
+    REGISTER_FUNCTION("get_planetary_markets", get_planetary_markets);
 }
 
 void FunctionUser(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
@@ -232,7 +268,7 @@ void FunctionUser(cqsp::common::Universe& universe, cqsp::scripting::ScriptInter
 
     REGISTER_FUNCTION("to_human_string", [&](int64_t number) { return cqsp::util::LongToHumanString(number); });
 
-    REGISTER_FUNCTION("get_name", [&](entt::entity entity) { return universe.get<cqspc::Name>(entity).name; });
+    REGISTER_FUNCTION("get_name", [&](entt::entity entity) { return cqsp::common::util::GetName(universe, entity); });
 
     REGISTER_FUNCTION("get_random_name", [&](const std::string& name_gen, const std::string& rule) {
         return universe.name_generators[name_gen].Generate(rule);
@@ -326,6 +362,8 @@ void FunctionCivilizations(cqsp::common::Universe& universe, cqsp::scripting::Sc
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("get_player", [&]() { return universe.view<cqspc::Player>().front(); });
+    REGISTER_FUNCTION("get_capital_city",
+                      [&](entt::entity civ) { return universe.get<cqspc::Country>(civ).capital_city; });
 }
 
 void FunctionScience(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {

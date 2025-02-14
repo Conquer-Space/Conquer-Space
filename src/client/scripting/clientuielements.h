@@ -16,9 +16,8 @@
  */
 #pragma once
 
-#include "common/scripting/scripting.h"
-#include "common/universe.h"
+#include "engine/application.h"
 
-namespace cqsp::scripting {
-void LoadFunctions(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine);
-}  // namespace cqsp::scripting
+namespace cqsp::client::scripting {
+void InitClientElements(common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine);
+}  // namespace cqsp::client::scripting

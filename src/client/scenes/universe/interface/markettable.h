@@ -16,22 +16,8 @@
  */
 #pragma once
 
-#include "client/systems/sysgui.h"
-#include "engine/application.h"
+#include "common/universe.h"
 
 namespace cqsp::client::systems {
-class CivilizationInfoPanel : public SysUserInterface {
- public:
-    explicit CivilizationInfoPanel(cqsp::engine::Application& app) : SysUserInterface(app) {}
-
-    void Init();
-    void DoUI(int delta_time);
-    void DoUpdate(int delta_time);
-
-    void CivInfoPanel();
-    void BudgetInfoPanel();
-
-    void PlanetMarketInfoPanel();
-    bool to_display = false;
-};
+void MarketInformationTable(common::Universe& universe, const entt::entity& market_entity);
 }  // namespace cqsp::client::systems

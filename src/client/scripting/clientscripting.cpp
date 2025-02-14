@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/systems/clientscripting.h"
+#include "client/scripting/clientscripting.h"
 
 #include <imgui.h>
 
@@ -87,28 +87,10 @@ void AssetManagerInterfaces(engine::Application& app, common::Universe& universe
         return JsonToLuaObject(as->data, s).as<sol::table>();
     });
 }
-
-void UiInterfaces(engine::Application& app, common::Universe& universe,
-                  cqsp::scripting::ScriptInterface& script_engine) {
-    CREATE_NAMESPACE(ImGui);
-
-    REGISTER_FUNCTION("Begin", [](const char* name) { ImGui::Begin(name); });
-
-    REGISTER_FUNCTION("End", [](const char* name) { ImGui::End(); });
-
-    REGISTER_FUNCTION("Text", [](const char* name) { ImGui::Text("%s", name); });
-
-    REGISTER_FUNCTION("Separator", [](const char* name) { ImGui::Separator(); });
-
-    REGISTER_FUNCTION("SameLine", [](const char* name) { ImGui::SameLine(); });
-
-    REGISTER_FUNCTION("Button", [](const char* label) { return ImGui::Button(label); });
-}
 }  // namespace
 
 void ClientFunctions(engine::Application& app, common::Universe& universe,
                      cqsp::scripting::ScriptInterface& script_engine) {
     AssetManagerInterfaces(app, universe, script_engine);
-    UiInterfaces(app, universe, script_engine);
 }
 };  // namespace cqsp::client::scripting
