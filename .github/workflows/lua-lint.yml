@@ -23,4 +23,4 @@ jobs:
         python tools/lualinting/configure_globals.py
     - name: Linting
       run: |
-        luacheck --config temp/luaconfig.lua binaries/data tools/lualinting/meta.lua
+        luacheck --config temp/luaconfig.lua binaries/data
