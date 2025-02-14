@@ -20,6 +20,7 @@
 #include <string>
 
 #include "client/scripting/clientscripting.h"
+#include "client/scripting/clientuielements.h"
 #include "client/scripting/imguifunctions.h"
 #include "common/scripting/luafunctions.h"
 #include "common/systems/loading/hjsonloader.h"
@@ -100,6 +101,7 @@ void LoadAllResources(cqsp::engine::Application& app, ConquerSpace& conquer_spac
     cqsp::scripting::LoadFunctions(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
     scripting::LoadImGuiFunctions(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
     scripting::ClientFunctions(app, conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
+    scripting::InitClientElements(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
 
     // Load universe
     // Register data groups

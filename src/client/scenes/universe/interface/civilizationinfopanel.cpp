@@ -19,6 +19,7 @@
 #include <limits>
 
 #include "client/components/clientctx.h"
+#include "client/scenes/universe/interface/markettable.h"
 #include "client/scenes/universe/interface/marketwindow.h"
 #include "client/scenes/universe/interface/systooltips.h"
 #include "common/components/bodies.h"

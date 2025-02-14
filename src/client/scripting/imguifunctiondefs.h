@@ -23,7 +23,7 @@
 
 #include <sol/sol.hpp>
 
-namespace sol_ImGui {
+namespace cqsp::client::scripting {
 // Windows
 bool Begin(const std::string& name);
 std::tuple<bool, bool> Begin(const std::string& name, bool open);
@@ -675,4 +675,4 @@ void CaptureMouseFromApp(bool want_capture_mouse_value);
 // Clipboard Utilities
 std::string GetClipboardText();
 void SetClipboardText(const std::string& text);
-}  // namespace sol_ImGui
+}  // namespace cqsp::client::scripting

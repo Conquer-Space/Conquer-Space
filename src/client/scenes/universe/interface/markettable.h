@@ -16,18 +16,8 @@
  */
 #pragma once
 
-#include "client/systems/sysgui.h"
+#include "common/universe.h"
 
 namespace cqsp::client::systems {
-class SysPlanetMarketInformation : public SysUserInterface {
- public:
-    explicit SysPlanetMarketInformation(cqsp::engine::Application& app) : SysUserInterface(app) {}
-    void Init();
-    void DoUI(int delta_time);
-    void DoUpdate(int delta_time);
-
- private:
-    bool to_see = true;
-    entt::entity selected_planet;
-};
+void MarketInformationTable(common::Universe& universe, const entt::entity& market_entity);
 }  // namespace cqsp::client::systems

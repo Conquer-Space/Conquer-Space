@@ -19,7 +19,7 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
-namespace sol_ImGui {
+namespace cqsp::client::scripting {
 // Windows
 bool Begin(const std::string& name) { return ImGui::Begin(name.c_str()); }
 std::tuple<bool, bool> Begin(const std::string& name, bool open) {
@@ -1878,4 +1878,4 @@ void CaptureMouseFromApp(bool want_capture_mouse_value) { ImGui::CaptureMouseFro
 // Clipboard Utilities
 std::string GetClipboardText() { return std::string(ImGui::GetClipboardText()); }
 void SetClipboardText(const std::string& text) { ImGui::SetClipboardText(text.c_str()); }
-}  // namespace sol_ImGui
+}  // namespace cqsp::client::scripting

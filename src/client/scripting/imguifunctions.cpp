@@ -24,11 +24,10 @@
 #include "client/scripting/imguienums.h"
 #include "client/scripting/imguifunctiondefs.h"
 
-namespace sol_ImGui {
-inline void Init(sol::state& lua) {
-    InitEnums(lua);
-
-    sol::table ImGui = lua.create_named_table("ImGui");
+namespace cqsp::client::scripting {
+void LoadImGuiFunctions(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+    InitEnums(script_engine);
+    auto ImGui = script_engine["ImGui"].get_or_create<sol::table>();
 
 #pragma region Windows
     ImGui.set_function("Begin",
@@ -812,11 +811,5 @@ inline void Init(sol::state& lua) {
     ImGui.set_function("GetClipboardText", GetClipboardText);
     ImGui.set_function("SetClipboardText", SetClipboardText);
 #pragma endregion Clipboard Utilities
-}
-}  // namespace sol_ImGui
-
-namespace cqsp::client::scripting {
-void LoadImGuiFunctions(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
-    sol_ImGui::Init(script_engine);
 }
 }  // namespace cqsp::client::scripting

@@ -14,20 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
+#include "client/scripting/clientuielements.h"
 
-#include "client/systems/sysgui.h"
+#include "client/scenes/universe/interface/markettable.h"
+#include "client/scenes/universe/interface/systooltips.h"
+#include "common/scripting/functionreg.h"
 
-namespace cqsp::client::systems {
-class SysPlanetMarketInformation : public SysUserInterface {
- public:
-    explicit SysPlanetMarketInformation(cqsp::engine::Application& app) : SysUserInterface(app) {}
-    void Init();
-    void DoUI(int delta_time);
-    void DoUpdate(int delta_time);
+namespace cqsp::client::scripting {
+void InitClientElements(common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+    CREATE_NAMESPACE(client);
 
- private:
-    bool to_see = true;
-    entt::entity selected_planet;
-};
-}  // namespace cqsp::client::systems
+    REGISTER_FUNCTION("EntityTooltip", [&](entt::entity entity) { systems::gui::EntityTooltip(universe, entity); });
+
+    REGISTER_FUNCTION("MarketInformationTable",
+                      [&](entt::entity entity) { client::systems::MarketInformationTable(universe, entity); });
+}
+}  // namespace cqsp::client::scripting

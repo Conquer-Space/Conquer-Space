@@ -14,7 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#pragma once
+
 #include <sol/sol.hpp>
-namespace sol_ImGui {
+namespace cqsp::client::scripting {
 void InitEnums(sol::state& lua);
 }

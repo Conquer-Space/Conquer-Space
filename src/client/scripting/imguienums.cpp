@@ -19,7 +19,7 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
-namespace sol_ImGui {
+namespace cqsp::client::scripting {
 void InitEnums(sol::state& lua) {
 #pragma region Window Flags
     lua.new_enum(
@@ -251,4 +251,4 @@ void InitEnums(sol::state& lua) {
 #pragma endregion MouseCursor
 }
 
-}  // namespace sol_ImGui
+}  // namespace cqsp::client::scripting

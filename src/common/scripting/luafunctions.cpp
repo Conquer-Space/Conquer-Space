@@ -43,6 +43,7 @@
 #include "common/systems/economy/markethelpers.h"
 #include "common/systems/science/labs.h"
 #include "common/systems/science/technology.h"
+#include "common/util/nameutil.h"
 #include "common/util/random/stdrandom.h"
 #include "common/util/utilnumberdisplay.h"
 
@@ -51,6 +52,10 @@ namespace cqsps = cqsp::common::components::ships;
 namespace cqspt = cqsp::common::components::types;
 namespace cqspc = cqsp::common::components;
 
+/**
+ * Notes:
+ * If you want to return arrays you need to encapsulate it on sol::as_table
+ */
 namespace {
 /// <summary>
 /// Initializes functions for RNG
@@ -126,6 +131,22 @@ void FunctionCivilizationGen(cqsp::common::Universe& universe, cqsp::scripting::
     REGISTER_FUNCTION("set_owner", [&](entt::entity entity, entt::entity owner) {
         auto& gov = universe.get_or_emplace<cqspc::Governed>(entity);
         gov.governor = owner;
+    });
+
+    REGISTER_FUNCTION("get_governed", [&](entt::entity governor) {
+        auto view = universe.view<cqspc::Governed>();
+        // this is probably an antiBpattern but ah well
+        std::vector<entt::entity> governed;
+        for (auto entity : view) {
+            if (universe.get<cqspc::Governed>(entity).governor == governor) {
+                governed.push_back(entity);
+            }
+        }
+        return sol::as_table(governed);
+    });
+
+    REGISTER_FUNCTION("get_owned_cities", [&](entt::entity player) {
+        return sol::as_table(universe.get<cqspc::CountryCityList>(player).province_list);
     });
 
     REGISTER_FUNCTION("is_player",
@@ -218,7 +239,11 @@ void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
         cqsp::common::systems::economy::AddParticipant(universe, market_entity, participant);
     });
 
-    REGISTER_FUNCTION("add_cash", [&](entt::entity participant, double balance) {
+    REGISTER_FUNCTION("get_balance", [&](entt::entity participant) {
+        return universe.get_or_emplace<cqspc::Wallet>(participant).GetBalance();
+    });
+
+    REGISTER_FUNCTION("add_balance", [&](entt::entity participant, double balance) {
         universe.get_or_emplace<cqspc::Wallet>(participant) += balance;
     });
 }
@@ -232,7 +257,7 @@ void FunctionUser(cqsp::common::Universe& universe, cqsp::scripting::ScriptInter
 
     REGISTER_FUNCTION("to_human_string", [&](int64_t number) { return cqsp::util::LongToHumanString(number); });
 
-    REGISTER_FUNCTION("get_name", [&](entt::entity entity) { return universe.get<cqspc::Name>(entity).name; });
+    REGISTER_FUNCTION("get_name", [&](entt::entity entity) { return cqsp::common::util::GetName(universe, entity); });
 
     REGISTER_FUNCTION("get_random_name", [&](const std::string& name_gen, const std::string& rule) {
         return universe.name_generators[name_gen].Generate(rule);
@@ -326,6 +351,8 @@ void FunctionCivilizations(cqsp::common::Universe& universe, cqsp::scripting::Sc
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("get_player", [&]() { return universe.view<cqspc::Player>().front(); });
+    REGISTER_FUNCTION("get_capital_city",
+                      [&](entt::entity civ) { return universe.get<cqspc::Country>(civ).capital_city; });
 }
 
 void FunctionScience(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
