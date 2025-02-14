@@ -37,7 +37,16 @@ variables = ["goods",
             "fields",
             "technologies",
             "ImGui",
-            "client"]
+            "client",
+            "interfaces",
+            "ImGuiCond",
+            "ImGuiMouseButton",
+            "ImGuiSliderFlags",
+            "ImGuiColorEditFlags",
+            "ImGuiStyleVar",
+            "ImGuiWindowFlags",
+            "ImGuiChildFlags",
+            "ImGuiItemFlags"]
 REGISTER_FUNC_NAME = "REGISTER_FUNCTION"
 
 def ParseFile(filename):
