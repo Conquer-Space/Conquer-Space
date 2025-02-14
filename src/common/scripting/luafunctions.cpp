@@ -206,6 +206,7 @@ void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
     });
 
     // TODO(EhWhoAmI): Will have to fix the documentation for this so that it looks neater
+    // The macro cannot take lambadas that contain templates that contain commas
     auto lambda = [&]() {
         /*entt::entity entity = universe.create();
         auto& market = universe.emplace<cqspc::Market>(entity);
@@ -246,6 +247,16 @@ void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
     REGISTER_FUNCTION("add_balance", [&](entt::entity participant, double balance) {
         universe.get_or_emplace<cqspc::Wallet>(participant) += balance;
     });
+
+    auto get_planetary_markets = [&]() {
+        auto view = universe.view<cqspc::Market, cqspc::PlanetaryMarket>();
+        std::vector<entt::entity> markets;
+        for (entt::entity entity : view) {
+            markets.push_back(entity);
+        }
+        return sol::as_table(markets);
+    };
+    REGISTER_FUNCTION("get_planetary_markets", get_planetary_markets);
 }
 
 void FunctionUser(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {

@@ -20,8 +20,21 @@ local civinfopanel = {
 }
 
 function civinfopanel:planetmarketinfopanel()
-    
+    if not ImGui.BeginTabBar("market_info_panel") then
+        return
+    end
+
+    local markets = core.get_planetary_markets()
+    for _, market in pairs(markets) do
+        if ImGui.BeginTabItem(core.get_name(market)) then
+            ImGui.Text(core.get_name(market))
+            client.MarketInformationTable(market)
+            ImGui.EndTabItem()
+        end
+    end
+    ImGui.EndTabBar()
 end
+
 function civinfopanel:civinfopanel()
     local player = core.get_player()
     ImGui.Text(core.get_name(player))
@@ -61,6 +74,7 @@ function civinfopanel:civinfopanel()
             ImGui.EndTabItem()
         end
         if ImGui.BeginTabItem("Markets") then
+            self:planetmarketinfopanel()
             ImGui.EndTabItem()
         end
         ImGui.EndTabBar()
@@ -81,7 +95,7 @@ function civinfopanel:do_ui()
     end
     if self.open then
         -- Then civ info panel
-        self.civinfopanel()
+        self:civinfopanel()
     end
     ImGui.End()
 end

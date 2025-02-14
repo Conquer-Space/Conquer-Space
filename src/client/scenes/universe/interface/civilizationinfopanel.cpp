@@ -153,7 +153,6 @@ void cqsp::client::systems::CivilizationInfoPanel::PlanetMarketInfoPanel() {
             continue;
         }
         ImGui::TextFmt("{}", GetName(GetUniverse(), entity));
-        auto& market = GetUniverse().get<common::components::Market>(entity);
         client::systems::MarketInformationTable(GetUniverse(), entity);
         ImGui::EndTabItem();
     }
