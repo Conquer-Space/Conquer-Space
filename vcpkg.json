@@ -34,7 +34,7 @@
       "implot",
       {
         "name": "luajit",
-        "platform": "!linux"
+        "platform": "windows"
       },
       {
         "name": "lua",
