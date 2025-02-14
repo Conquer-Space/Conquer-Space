@@ -245,8 +245,8 @@ class SysStarSystemRenderer {
     common::components::types::SurfaceCoordinate GetMouseSurfaceIntersection();
     void CityDetection();
 
+    glm::vec3 hovering_province_color;
     glm::vec3 selected_province_color;
-    glm::vec3 selected_country_color;
     entt::entity hovering_province;
     entt::entity selected_province;
 
