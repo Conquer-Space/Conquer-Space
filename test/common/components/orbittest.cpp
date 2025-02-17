@@ -19,6 +19,7 @@
 #include <hjson.h>
 
 #include <fstream>
+#include <numbers>
 
 #include "common/components/coordinates.h"
 #include "common/components/orbit.h"
@@ -46,7 +47,7 @@ TEST(OrbitTest, DISABLED_toVec3Test) {
     double i = orb.inclination = data["inclination"];
     double LAN = orb.LAN = data["ascending_node"];
     double w = orb.w = data["argument"];
-    double T = 3.1415926535 * 2;
+    double T = std::numbers::pi * 2;
     int resolution = 5000;
     std::ofstream file("data.txt");
     for (int i = 0; i < resolution + 1; i++) {

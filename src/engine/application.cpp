@@ -186,7 +186,7 @@ void Application::InitRmlUi() {
     }
 
     // Disable debugger ui for now
-#if 0
+#ifdef RML_DEBUGGER
     Rml::Debugger::Initialise(rml_context);
     Rml::Debugger::SetVisible(true);
 #endif

@@ -36,7 +36,7 @@ RUN_CLANG_TIDY_URL='https://raw.githubusercontent.com/llvm/llvm-project/release/
 CLANG_TIDY_PATH='tools/run-clang-tidy.py'
 if 'CLANG_TIDY' in cfg and 'clang_tidy' in cfg['CLANG_TIDY']:
     # We don't do linux for now
-    if cfg['CLANG_TIDY']['clang_tidy'] == 'yes' and sys.platform == 'win32':
+    if (cfg['CLANG_TIDY']['clang_tidy'] == 'yes' or cfg['CLANG_TIDY']['clang_tidy'] == 'true') and sys.platform == 'win32':
         print('Generating \'compile_commands.json\'')
         subprocess.run('"tools/makefile_gen.bat"')
         # run makefile
@@ -45,7 +45,7 @@ if 'CLANG_TIDY' in cfg and 'clang_tidy' in cfg['CLANG_TIDY']:
             with open(CLANG_TIDY_PATH, 'wb') as f:
                 f.write(request.content)
         # Now run clang-tidy fix
-        print('Running clang tidy')
+
         # Get the git diff files
         
         if len(cpp_file_list) > 0:

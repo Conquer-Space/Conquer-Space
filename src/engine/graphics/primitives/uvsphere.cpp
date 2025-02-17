@@ -18,6 +18,7 @@
 
 #include <glad/glad.h>
 
+#include <numbers>
 #include <vector>
 
 cqsp::engine::Mesh_t cqsp::engine::primitive::ConstructSphereMesh(int x_segments, int y_segments) {
@@ -36,7 +37,7 @@ cqsp::engine::Mesh_t cqsp::engine::primitive::ConstructSphereMesh(int x_segments
     std::vector<glm::vec4> tangents;
     std::vector<unsigned int> indices;
 
-    const float PI = 3.14159265359;
+    const float PI = std::numbers::pi;
     for (unsigned int y = 0; y <= y_segments; ++y) {
         for (unsigned int x = 0; x <= x_segments; ++x) {
             const float xSegment = static_cast<float>(x) / x_segments;

@@ -69,7 +69,7 @@ bool IsWindowFocused(int flags) { return ImGui::IsWindowFocused(static_cast<ImGu
 bool IsWindowHovered() { return ImGui::IsWindowHovered(); }
 bool IsWindowHovered(int flags) { return ImGui::IsWindowHovered(static_cast<ImGuiHoveredFlags>(flags)); }
 ImDrawList* GetWindowDrawList() { return nullptr; /* TODO: GetWindowDrawList() ==> UNSUPPORTED */ }
-float GetWindowDpiScale() { return 1; }  // TODO: Unsupported for now
+float GetWindowDpiScale() { return 1; }  // TODO(zyunl): Unsupported for now
 ImGuiViewport* GetWindowViewport() { return nullptr; /* TODO: GetWindowViewport() ==> UNSUPPORTED */ }
 std::tuple<float, float> GetWindowPos() {
     const auto vec2 {ImGui::GetWindowPos()};
@@ -261,29 +261,30 @@ void PushID(const std::string& stringID) { ImGui::PushID(stringID.c_str()); }
 void PushID(const std::string& stringIDBegin, const std::string& stringIDEnd) {
     ImGui::PushID(stringIDBegin.c_str(), stringIDEnd.c_str());
 }
-void PushID(const void*) { /* TODO: PushID(void*) ==> UNSUPPORTED */
-}
+void PushID(const void* /*unused*/) { /* TODO: PushID(void*) ==> UNSUPPORTED */ }
 void PushID(int intID) { ImGui::PushID(intID); }
 void PopID() { ImGui::PopID(); }
 int GetID(const std::string& stringID) { return ImGui::GetID(stringID.c_str()); }
 int GetID(const std::string& stringIDBegin, const std::string& stringIDEnd) {
     return ImGui::GetID(stringIDBegin.c_str(), stringIDEnd.c_str());
 }
-int GetID(const void*) { return 0; /* TODO: GetID(void*) ==> UNSUPPORTED */ }
+int GetID(const void* /*unused*/) { return 0; /* TODO: GetID(void*) ==> UNSUPPORTED */ }
 
 // Widgets: Text
 void TextUnformatted(const std::string& text) { ImGui::TextUnformatted(text.c_str()); }
 void TextUnformatted(const std::string& text, const std::string& textEnd) {
     ImGui::TextUnformatted(text.c_str(), textEnd.c_str());
 }
-void Text(const std::string& text) { ImGui::Text(text.c_str()); }
+void Text(const std::string& text) { ImGui::Text("%s", text.c_str()); }
 void TextColored(float colR, float colG, float colB, float colA, const std::string& text) {
-    ImGui::TextColored({colR, colG, colB, colA}, text.c_str());
+    ImGui::TextColored({colR, colG, colB, colA}, "%s", text.c_str());
 }
-void TextDisabled(const std::string& text) { ImGui::TextDisabled(text.c_str()); }
-void TextWrapped(const std::string text) { ImGui::TextWrapped(text.c_str()); }
-void LabelText(const std::string& label, const std::string& text) { ImGui::LabelText(label.c_str(), text.c_str()); }
-void BulletText(const std::string& text) { ImGui::BulletText(text.c_str()); }
+void TextDisabled(const std::string& text) { ImGui::TextDisabled("%s", text.c_str()); }
+void TextWrapped(const std::string& text) { ImGui::TextWrapped("%s", text.c_str()); }
+void LabelText(const std::string& label, const std::string& text) {
+    ImGui::LabelText(label.c_str(), "%s", text.c_str());
+}
+void BulletText(const std::string& text) { ImGui::BulletText("%s", text.c_str()); }
 
 // Widgets: Main
 bool Button(const std::string& label) { return ImGui::Button(label.c_str()); }
@@ -295,10 +296,8 @@ bool InvisibleButton(const std::string& stringID, float sizeX, float sizeY) {
 bool ArrowButton(const std::string& stringID, int dir) {
     return ImGui::ArrowButton(stringID.c_str(), static_cast<ImGuiDir>(dir));
 }
-void Image() { /* TODO: Image(...) ==> UNSUPPORTED */
-}
-void ImageButton() { /* TODO: ImageButton(...) ==> UNSUPPORTED */
-}
+void Image() { /* TODO: Image(...) ==> UNSUPPORTED */ }
+void ImageButton() { /* TODO: ImageButton(...) ==> UNSUPPORTED */ }
 std::tuple<bool, bool> Checkbox(const std::string& label, bool v) {
     bool value {v};
     bool pressed = ImGui::Checkbox(label.c_str(), &value);
@@ -334,6 +333,7 @@ std::tuple<int, bool> Combo(const std::string& label, int currentItem, const sol
     }
 
     std::vector<const char*> cstrings;
+    cstrings.reserve(strings.size());
     for (auto& string : strings) cstrings.push_back(string.c_str());
 
     bool clicked = ImGui::Combo(label.c_str(), &currentItem, cstrings.data(), itemsCount);
@@ -348,6 +348,7 @@ std::tuple<int, bool> Combo(const std::string& label, int currentItem, const sol
     }
 
     std::vector<const char*> cstrings;
+    cstrings.reserve(strings.size());
     for (auto& string : strings) cstrings.push_back(string.c_str());
 
     bool clicked = ImGui::Combo(label.c_str(), &currentItem, cstrings.data(), itemsCount, popupMaxHeightInItems);
@@ -362,7 +363,7 @@ std::tuple<int, bool> Combo(const std::string& label, int currentItem, const std
     bool clicked = ImGui::Combo(label.c_str(), &currentItem, itemsSeparatedByZeros.c_str(), popupMaxHeightInItems);
     return std::make_tuple(currentItem, clicked);
 }
-// TODO: 3rd Combo from ImGui not Supported
+// TODO(zyunl): 3rd Combo from ImGui not Supported
 
 // Widgets: Drags
 std::tuple<float, bool> DragFloat(const std::string& label, float v) {
@@ -392,8 +393,8 @@ std::tuple<float, bool> DragFloat(const std::string& label, float v, float v_spe
     return std::make_tuple(v, used);
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat2(const std::string& label, const sol::table& v) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[2] = {float(v1), float(v2)};
     bool used = ImGui::DragFloat2(label.c_str(), value);
 
@@ -403,8 +404,8 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat2(const std::stri
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat2(const std::string& label, const sol::table& v,
                                                                  float v_speed) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[2] = {float(v1), float(v2)};
     bool used = ImGui::DragFloat2(label.c_str(), value, v_speed);
 
@@ -414,8 +415,8 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat2(const std::stri
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat2(const std::string& label, const sol::table& v,
                                                                  float v_speed, float v_min) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[2] = {float(v1), float(v2)};
     bool used = ImGui::DragFloat2(label.c_str(), value, v_speed, v_min);
 
@@ -425,8 +426,8 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat2(const std::stri
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat2(const std::string& label, const sol::table& v,
                                                                  float v_speed, float v_min, float v_max) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[2] = {float(v1), float(v2)};
     bool used = ImGui::DragFloat2(label.c_str(), value, v_speed, v_min, v_max);
 
@@ -437,8 +438,8 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat2(const std::stri
 std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat2(const std::string& label, const sol::table& v,
                                                                  float v_speed, float v_min, float v_max,
                                                                  const std::string& format) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[2] = {float(v1), float(v2)};
     bool used = ImGui::DragFloat2(label.c_str(), value, v_speed, v_min, v_max, format.c_str());
 
@@ -449,8 +450,8 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat2(const std::stri
 std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat2(const std::string& label, const sol::table& v,
                                                                  float v_speed, float v_min, float v_max,
                                                                  const std::string& format, float power) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[2] = {float(v1), float(v2)};
     bool used = ImGui::DragFloat2(label.c_str(), value, v_speed, v_min, v_max, format.c_str(), power);
 
@@ -459,9 +460,9 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat2(const std::stri
     return std::make_tuple(float2, used);
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat3(const std::string& label, const sol::table& v) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[3] = {float(v1), float(v2), float(v3)};
     bool used = ImGui::DragFloat3(label.c_str(), value);
 
@@ -471,9 +472,9 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat3(const std::stri
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat3(const std::string& label, const sol::table& v,
                                                                  float v_speed) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[3] = {float(v1), float(v2), float(v3)};
     bool used = ImGui::DragFloat3(label.c_str(), value, v_speed);
 
@@ -483,9 +484,9 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat3(const std::stri
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat3(const std::string& label, const sol::table& v,
                                                                  float v_speed, float v_min) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[3] = {float(v1), float(v2), float(v3)};
     bool used = ImGui::DragFloat3(label.c_str(), value, v_speed, v_min);
 
@@ -495,9 +496,9 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat3(const std::stri
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat3(const std::string& label, const sol::table& v,
                                                                  float v_speed, float v_min, float v_max) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[3] = {float(v1), float(v2), float(v3)};
     bool used = ImGui::DragFloat3(label.c_str(), value, v_speed, v_min, v_max);
 
@@ -508,9 +509,9 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat3(const std::stri
 std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat3(const std::string& label, const sol::table& v,
                                                                  float v_speed, float v_min, float v_max,
                                                                  const std::string& format) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[3] = {float(v1), float(v2), float(v3)};
     bool used = ImGui::DragFloat3(label.c_str(), value, v_speed, v_min, v_max, format.c_str());
 
@@ -521,9 +522,9 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat3(const std::stri
 std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat3(const std::string& label, const sol::table& v,
                                                                  float v_speed, float v_min, float v_max,
                                                                  const std::string& format, float power) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[3] = {float(v1), float(v2), float(v3)};
     bool used = ImGui::DragFloat3(label.c_str(), value, v_speed, v_min, v_max, format.c_str(), power);
 
@@ -532,10 +533,10 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat3(const std::stri
     return std::make_tuple(float3, used);
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat4(const std::string& label, const sol::table& v) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[4] = {float(v1), float(v2), float(v3), float(v4)};
     bool used = ImGui::DragFloat4(label.c_str(), value);
 
@@ -545,10 +546,10 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat4(const std::stri
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat4(const std::string& label, const sol::table& v,
                                                                  float v_speed) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[4] = {float(v1), float(v2), float(v3), float(v4)};
     bool used = ImGui::DragFloat4(label.c_str(), value, v_speed);
 
@@ -558,10 +559,10 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat4(const std::stri
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat4(const std::string& label, const sol::table& v,
                                                                  float v_speed, float v_min) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[4] = {float(v1), float(v2), float(v3), float(v4)};
     bool used = ImGui::DragFloat4(label.c_str(), value, v_speed, v_min);
 
@@ -571,10 +572,10 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat4(const std::stri
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat4(const std::string& label, const sol::table& v,
                                                                  float v_speed, float v_min, float v_max) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[4] = {float(v1), float(v2), float(v3), float(v4)};
     bool used = ImGui::DragFloat4(label.c_str(), value, v_speed, v_min, v_max);
 
@@ -585,10 +586,10 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat4(const std::stri
 std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat4(const std::string& label, const sol::table& v,
                                                                  float v_speed, float v_min, float v_max,
                                                                  const std::string& format) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[4] = {float(v1), float(v2), float(v3), float(v4)};
     bool used = ImGui::DragFloat4(label.c_str(), value, v_speed, v_min, v_max, format.c_str());
 
@@ -599,10 +600,10 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat4(const std::stri
 std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat4(const std::string& label, const sol::table& v,
                                                                  float v_speed, float v_min, float v_max,
                                                                  const std::string& format, float power) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[4] = {float(v1), float(v2), float(v3), float(v4)};
     bool used = ImGui::DragFloat4(label.c_str(), value, v_speed, v_min, v_max, format.c_str(), power);
 
@@ -610,8 +611,7 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> DragFloat4(const std::stri
 
     return std::make_tuple(float4, used);
 }
-void DragFloatRange2() { /* TODO: DragFloatRange2(...) ==> UNSUPPORTED */
-}
+void DragFloatRange2() { /* TODO: DragFloatRange2(...) ==> UNSUPPORTED */ }
 std::tuple<int, bool> DragInt(const std::string& label, int v) {
     bool used = ImGui::DragInt(label.c_str(), &v);
     return std::make_tuple(v, used);
@@ -634,8 +634,8 @@ std::tuple<int, bool> DragInt(const std::string& label, int v, float v_speed, in
     return std::make_tuple(v, used);
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt2(const std::string& label, const sol::table& v) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[2] = {int(v1), int(v2)};
     bool used = ImGui::DragInt2(label.c_str(), value);
 
@@ -645,8 +645,8 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt2(const std::string& 
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt2(const std::string& label, const sol::table& v,
                                                              float v_speed) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[2] = {int(v1), int(v2)};
     bool used = ImGui::DragInt2(label.c_str(), value, v_speed);
 
@@ -656,8 +656,8 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt2(const std::string& 
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt2(const std::string& label, const sol::table& v,
                                                              float v_speed, int v_min) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[2] = {int(v1), int(v2)};
     bool used = ImGui::DragInt2(label.c_str(), value, v_speed, v_min);
 
@@ -667,8 +667,8 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt2(const std::string& 
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt2(const std::string& label, const sol::table& v,
                                                              float v_speed, int v_min, int v_max) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[2] = {int(v1), int(v2)};
     bool used = ImGui::DragInt2(label.c_str(), value, v_speed, v_min, v_max);
 
@@ -679,8 +679,8 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt2(const std::string& 
 std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt2(const std::string& label, const sol::table& v,
                                                              float v_speed, int v_min, int v_max,
                                                              const std::string& format) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[2] = {int(v1), int(v2)};
     bool used = ImGui::DragInt2(label.c_str(), value, v_speed, v_min, v_max, format.c_str());
 
@@ -689,9 +689,9 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt2(const std::string& 
     return std::make_tuple(int2, used);
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt3(const std::string& label, const sol::table& v) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[3] = {int(v1), int(v2), int(v3)};
     bool used = ImGui::DragInt3(label.c_str(), value);
 
@@ -701,9 +701,9 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt3(const std::string& 
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt3(const std::string& label, const sol::table& v,
                                                              float v_speed) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[3] = {int(v1), int(v2), int(v3)};
     bool used = ImGui::DragInt3(label.c_str(), value, v_speed);
 
@@ -713,9 +713,9 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt3(const std::string& 
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt3(const std::string& label, const sol::table& v,
                                                              float v_speed, int v_min) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[3] = {int(v1), int(v2), int(v3)};
     bool used = ImGui::DragInt3(label.c_str(), value, v_speed, v_min);
 
@@ -725,9 +725,9 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt3(const std::string& 
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt3(const std::string& label, const sol::table& v,
                                                              float v_speed, int v_min, int v_max) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[3] = {int(v1), int(v2), int(v3)};
     bool used = ImGui::DragInt3(label.c_str(), value, v_speed, v_min, v_max);
 
@@ -738,9 +738,9 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt3(const std::string& 
 std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt3(const std::string& label, const sol::table& v,
                                                              float v_speed, int v_min, int v_max,
                                                              const std::string& format) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[3] = {int(v1), int(v2), int(v3)};
     bool used = ImGui::DragInt3(label.c_str(), value, v_speed, v_min, v_max, format.c_str());
 
@@ -749,10 +749,10 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt3(const std::string& 
     return std::make_tuple(int3, used);
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt4(const std::string& label, const sol::table& v) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[4] = {int(v1), int(v2), int(v3), int(v4)};
     bool used = ImGui::DragInt4(label.c_str(), value);
 
@@ -762,10 +762,10 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt4(const std::string& 
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt4(const std::string& label, const sol::table& v,
                                                              float v_speed) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[4] = {int(v1), int(v2), int(v3), int(v4)};
     bool used = ImGui::DragInt4(label.c_str(), value, v_speed);
 
@@ -775,10 +775,10 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt4(const std::string& 
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt4(const std::string& label, const sol::table& v,
                                                              float v_speed, int v_min) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[4] = {int(v1), int(v2), int(v3), int(v4)};
     bool used = ImGui::DragInt4(label.c_str(), value, v_speed, v_min);
 
@@ -788,10 +788,10 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt4(const std::string& 
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt4(const std::string& label, const sol::table& v,
                                                              float v_speed, int v_min, int v_max) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[4] = {int(v1), int(v2), int(v3), int(v4)};
     bool used = ImGui::DragInt4(label.c_str(), value, v_speed, v_min, v_max);
 
@@ -802,10 +802,10 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt4(const std::string& 
 std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt4(const std::string& label, const sol::table& v,
                                                              float v_speed, int v_min, int v_max,
                                                              const std::string& format) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[4] = {int(v1), int(v2), int(v3), int(v4)};
     bool used = ImGui::DragInt4(label.c_str(), value, v_speed, v_min, v_max, format.c_str());
 
@@ -813,12 +813,9 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> DragInt4(const std::string& 
 
     return std::make_tuple(int4, used);
 }
-void DragIntRange2() { /* TODO: DragIntRange2(...) ==> UNSUPPORTED */
-}
-void DragScalar() { /* TODO: DragScalar(...) ==> UNSUPPORTED */
-}
-void DragScalarN() { /* TODO: DragScalarN(...) ==> UNSUPPORTED */
-}
+void DragIntRange2() { /* TODO: DragIntRange2(...) ==> UNSUPPORTED */ }
+void DragScalar() { /* TODO: DragScalar(...) ==> UNSUPPORTED */ }
+void DragScalarN() { /* TODO: DragScalarN(...) ==> UNSUPPORTED */ }
 
 // Widgets: Sliders
 std::tuple<float, bool> SliderFloat(const std::string& label, float v, float v_min, float v_max) {
@@ -837,8 +834,8 @@ std::tuple<float, bool> SliderFloat(const std::string& label, float v, float v_m
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> SliderFloat2(const std::string& label, const sol::table& v,
                                                                    float v_min, float v_max) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[2] = {float(v1), float(v2)};
     bool used = ImGui::SliderFloat2(label.c_str(), value, v_min, v_max);
 
@@ -849,8 +846,8 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> SliderFloat2(const std::st
 std::tuple<sol::as_table_t<std::vector<float>>, bool> SliderFloat2(const std::string& label, const sol::table& v,
                                                                    float v_min, float v_max,
                                                                    const std::string& format) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[2] = {float(v1), float(v2)};
     bool used = ImGui::SliderFloat2(label.c_str(), value, v_min, v_max, format.c_str());
 
@@ -861,8 +858,8 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> SliderFloat2(const std::st
 std::tuple<sol::as_table_t<std::vector<float>>, bool> SliderFloat2(const std::string& label, const sol::table& v,
                                                                    float v_min, float v_max, const std::string& format,
                                                                    float power) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[2] = {float(v1), float(v2)};
     bool used = ImGui::SliderFloat2(label.c_str(), value, v_min, v_max, format.c_str(), power);
 
@@ -872,9 +869,9 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> SliderFloat2(const std::st
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> SliderFloat3(const std::string& label, const sol::table& v,
                                                                    float v_min, float v_max) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[3] = {float(v1), float(v2), float(v3)};
     bool used = ImGui::SliderFloat3(label.c_str(), value, v_min, v_max);
 
@@ -885,9 +882,9 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> SliderFloat3(const std::st
 std::tuple<sol::as_table_t<std::vector<float>>, bool> SliderFloat3(const std::string& label, const sol::table& v,
                                                                    float v_min, float v_max,
                                                                    const std::string& format) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[3] = {float(v1), float(v2), float(v3)};
     bool used = ImGui::SliderFloat3(label.c_str(), value, v_min, v_max, format.c_str());
 
@@ -898,9 +895,9 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> SliderFloat3(const std::st
 std::tuple<sol::as_table_t<std::vector<float>>, bool> SliderFloat3(const std::string& label, const sol::table& v,
                                                                    float v_min, float v_max, const std::string& format,
                                                                    float power) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[3] = {float(v1), float(v2), float(v3)};
     bool used = ImGui::SliderFloat3(label.c_str(), value, v_min, v_max, format.c_str(), power);
 
@@ -910,10 +907,10 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> SliderFloat3(const std::st
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> SliderFloat4(const std::string& label, const sol::table& v,
                                                                    float v_min, float v_max) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[4] = {float(v1), float(v2), float(v3), float(v4)};
     bool used = ImGui::SliderFloat4(label.c_str(), value, v_min, v_max);
 
@@ -924,10 +921,10 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> SliderFloat4(const std::st
 std::tuple<sol::as_table_t<std::vector<float>>, bool> SliderFloat4(const std::string& label, const sol::table& v,
                                                                    float v_min, float v_max,
                                                                    const std::string& format) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[4] = {float(v1), float(v2), float(v3), float(v4)};
     bool used = ImGui::SliderFloat4(label.c_str(), value, v_min, v_max, format.c_str());
 
@@ -938,10 +935,10 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> SliderFloat4(const std::st
 std::tuple<sol::as_table_t<std::vector<float>>, bool> SliderFloat4(const std::string& label, const sol::table& v,
                                                                    float v_min, float v_max, const std::string& format,
                                                                    float power) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[4] = {float(v1), float(v2), float(v3), float(v4)};
     bool used = ImGui::SliderFloat4(label.c_str(), value, v_min, v_max, format.c_str(), power);
 
@@ -976,8 +973,8 @@ std::tuple<int, bool> SliderInt(const std::string& label, int v, int v_min, int 
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> SliderInt2(const std::string& label, const sol::table& v, int v_min,
                                                                int v_max) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[2] = {int(v1), int(v2)};
     bool used = ImGui::SliderInt2(label.c_str(), value, v_min, v_max);
 
@@ -987,8 +984,8 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> SliderInt2(const std::string
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> SliderInt2(const std::string& label, const sol::table& v, int v_min,
                                                                int v_max, const std::string& format) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[2] = {int(v1), int(v2)};
     bool used = ImGui::SliderInt2(label.c_str(), value, v_min, v_max, format.c_str());
 
@@ -998,9 +995,9 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> SliderInt2(const std::string
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> SliderInt3(const std::string& label, const sol::table& v, int v_min,
                                                                int v_max) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[3] = {int(v1), int(v2), int(v3)};
     bool used = ImGui::SliderInt3(label.c_str(), value, v_min, v_max);
 
@@ -1010,9 +1007,9 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> SliderInt3(const std::string
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> SliderInt3(const std::string& label, const sol::table& v, int v_min,
                                                                int v_max, const std::string& format) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[3] = {int(v1), int(v2), int(v3)};
     bool used = ImGui::SliderInt3(label.c_str(), value, v_min, v_max, format.c_str());
 
@@ -1022,10 +1019,10 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> SliderInt3(const std::string
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> SliderInt4(const std::string& label, const sol::table& v, int v_min,
                                                                int v_max) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[4] = {int(v1), int(v2), int(v3), int(v4)};
     bool used = ImGui::SliderInt4(label.c_str(), value, v_min, v_max);
 
@@ -1035,10 +1032,10 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> SliderInt4(const std::string
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> SliderInt4(const std::string& label, const sol::table& v, int v_min,
                                                                int v_max, const std::string& format) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[4] = {int(v1), int(v2), int(v3), int(v4)};
     bool used = ImGui::SliderInt4(label.c_str(), value, v_min, v_max, format.c_str());
 
@@ -1046,10 +1043,8 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> SliderInt4(const std::string
 
     return std::make_tuple(int4, used);
 }
-void SliderScalar() { /* TODO: SliderScalar(...) ==> UNSUPPORTED */
-}
-void SliderScalarN() { /* TODO: SliderScalarN(...) ==> UNSUPPORTED */
-}
+void SliderScalar() { /* TODO: SliderScalar(...) ==> UNSUPPORTED */ }
+void SliderScalarN() { /* TODO: SliderScalarN(...) ==> UNSUPPORTED */ }
 std::tuple<float, bool> VSliderFloat(const std::string& label, float sizeX, float sizeY, float v, float v_min,
                                      float v_max) {
     bool used = ImGui::VSliderFloat(label.c_str(), {sizeX, sizeY}, &v, v_min, v_max);
@@ -1074,41 +1069,40 @@ std::tuple<int, bool> VSliderInt(const std::string& label, float sizeX, float si
     bool used = ImGui::VSliderInt(label.c_str(), {sizeX, sizeY}, &v, v_min, v_max, format.c_str());
     return std::make_tuple(v, used);
 }
-void VSliderScalar() { /* TODO: VSliderScalar(...) ==> UNSUPPORTED */
-}
+void VSliderScalar() { /* TODO: VSliderScalar(...) ==> UNSUPPORTED */ }
 
 // Widgets: Input with Keyboard
 std::tuple<std::string, bool> InputText(const std::string& label, std::string text, unsigned int buf_size) {
-    bool selected = ImGui::InputText(label.c_str(), &text[0], buf_size);
+    bool selected = ImGui::InputText(label.c_str(), text.data(), buf_size);
     return std::make_tuple(text, selected);
 }
 std::tuple<std::string, bool> InputText(const std::string& label, std::string text, unsigned int buf_size, int flags) {
-    bool selected = ImGui::InputText(label.c_str(), &text[0], buf_size, static_cast<ImGuiInputTextFlags>(flags));
+    bool selected = ImGui::InputText(label.c_str(), text.data(), buf_size, static_cast<ImGuiInputTextFlags>(flags));
     return std::make_tuple(text, selected);
 }
 std::tuple<std::string, bool> InputTextMultiline(const std::string& label, std::string text, unsigned int buf_size) {
-    bool selected = ImGui::InputTextMultiline(label.c_str(), &text[0], buf_size);
+    bool selected = ImGui::InputTextMultiline(label.c_str(), text.data(), buf_size);
     return std::make_tuple(text, selected);
 }
 std::tuple<std::string, bool> InputTextMultiline(const std::string& label, std::string text, unsigned int buf_size,
                                                  float sizeX, float sizeY) {
-    bool selected = ImGui::InputTextMultiline(label.c_str(), &text[0], buf_size, {sizeX, sizeY});
+    bool selected = ImGui::InputTextMultiline(label.c_str(), text.data(), buf_size, {sizeX, sizeY});
     return std::make_tuple(text, selected);
 }
 std::tuple<std::string, bool> InputTextMultiline(const std::string& label, std::string text, unsigned int buf_size,
                                                  float sizeX, float sizeY, int flags) {
-    bool selected = ImGui::InputTextMultiline(label.c_str(), &text[0], buf_size, {sizeX, sizeY},
+    bool selected = ImGui::InputTextMultiline(label.c_str(), text.data(), buf_size, {sizeX, sizeY},
                                               static_cast<ImGuiInputTextFlags>(flags));
     return std::make_tuple(text, selected);
 }
 std::tuple<std::string, bool> InputTextWithHint(const std::string& label, const std::string& hint, std::string text,
                                                 unsigned int buf_size) {
-    bool selected = ImGui::InputTextWithHint(label.c_str(), hint.c_str(), &text[0], buf_size);
+    bool selected = ImGui::InputTextWithHint(label.c_str(), hint.c_str(), text.data(), buf_size);
     return std::make_tuple(text, selected);
 }
 std::tuple<std::string, bool> InputTextWithHint(const std::string& label, const std::string& hint, std::string text,
                                                 unsigned int buf_size, int flags) {
-    bool selected = ImGui::InputTextWithHint(label.c_str(), hint.c_str(), &text[0], buf_size,
+    bool selected = ImGui::InputTextWithHint(label.c_str(), hint.c_str(), text.data(), buf_size,
                                              static_cast<ImGuiInputTextFlags>(flags));
     return std::make_tuple(text, selected);
 }
@@ -1136,8 +1130,8 @@ std::tuple<float, bool> InputFloat(const std::string& label, float v, float step
     return std::make_tuple(v, selected);
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> InputFloat2(const std::string& label, const sol::table& v) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[2] = {float(v1), float(v2)};
     bool used = ImGui::InputFloat2(label.c_str(), value);
 
@@ -1147,8 +1141,8 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> InputFloat2(const std::str
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> InputFloat2(const std::string& label, const sol::table& v,
                                                                   const std::string& format) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[2] = {float(v1), float(v2)};
     bool used = ImGui::InputFloat2(label.c_str(), value, format.c_str());
 
@@ -1158,8 +1152,8 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> InputFloat2(const std::str
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> InputFloat2(const std::string& label, const sol::table& v,
                                                                   const std::string& format, int flags) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[2] = {float(v1), float(v2)};
     bool used = ImGui::InputFloat2(label.c_str(), value, format.c_str(), static_cast<ImGuiInputTextFlags>(flags));
 
@@ -1168,9 +1162,9 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> InputFloat2(const std::str
     return std::make_tuple(float2, used);
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> InputFloat3(const std::string& label, const sol::table& v) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[3] = {float(v1), float(v2), float(v3)};
     bool used = ImGui::InputFloat3(label.c_str(), value);
 
@@ -1180,9 +1174,9 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> InputFloat3(const std::str
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> InputFloat3(const std::string& label, const sol::table& v,
                                                                   const std::string& format) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[3] = {float(v1), float(v2), float(v3)};
     bool used = ImGui::InputFloat3(label.c_str(), value, format.c_str());
 
@@ -1192,9 +1186,9 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> InputFloat3(const std::str
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> InputFloat3(const std::string& label, const sol::table& v,
                                                                   const std::string& format, int flags) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[3] = {float(v1), float(v2), float(v3)};
     bool used = ImGui::InputFloat3(label.c_str(), value, format.c_str(), static_cast<ImGuiInputTextFlags>(flags));
 
@@ -1203,10 +1197,10 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> InputFloat3(const std::str
     return std::make_tuple(float3, used);
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> InputFloat4(const std::string& label, const sol::table& v) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[4] = {float(v1), float(v2), float(v3), float(v4)};
     bool used = ImGui::InputFloat4(label.c_str(), value);
 
@@ -1216,10 +1210,10 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> InputFloat4(const std::str
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> InputFloat4(const std::string& label, const sol::table& v,
                                                                   const std::string& format) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[4] = {float(v1), float(v2), float(v3), float(v4)};
     bool used = ImGui::InputFloat4(label.c_str(), value, format.c_str());
 
@@ -1229,10 +1223,10 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> InputFloat4(const std::str
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> InputFloat4(const std::string& label, const sol::table& v,
                                                                   const std::string& format, int flags) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float value[4] = {float(v1), float(v2), float(v3), float(v4)};
     bool used = ImGui::InputFloat4(label.c_str(), value, format.c_str(), static_cast<ImGuiInputTextFlags>(flags));
 
@@ -1257,8 +1251,8 @@ std::tuple<int, bool> InputInt(const std::string& label, int v, int step, int st
     return std::make_tuple(v, selected);
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> InputInt2(const std::string& label, const sol::table& v) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[2] = {int(v1), int(v2)};
     bool used = ImGui::InputInt2(label.c_str(), value);
 
@@ -1268,8 +1262,8 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> InputInt2(const std::string&
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> InputInt2(const std::string& label, const sol::table& v,
                                                               int flags) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[2] = {int(v1), int(v2)};
     bool used = ImGui::InputInt2(label.c_str(), value, static_cast<ImGuiInputTextFlags>(flags));
 
@@ -1278,9 +1272,9 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> InputInt2(const std::string&
     return std::make_tuple(int2, used);
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> InputInt3(const std::string& label, const sol::table& v) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[3] = {int(v1), int(v2), int(v3)};
     bool used = ImGui::InputInt3(label.c_str(), value);
 
@@ -1290,9 +1284,9 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> InputInt3(const std::string&
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> InputInt3(const std::string& label, const sol::table& v,
                                                               int flags) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[3] = {int(v1), int(v2), int(v3)};
     bool used = ImGui::InputInt3(label.c_str(), value, static_cast<ImGuiInputTextFlags>(flags));
 
@@ -1301,10 +1295,10 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> InputInt3(const std::string&
     return std::make_tuple(int3, used);
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> InputInt4(const std::string& label, const sol::table& v) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[4] = {int(v1), int(v2), int(v3), int(v4)};
     bool used = ImGui::InputInt4(label.c_str(), value);
 
@@ -1314,10 +1308,10 @@ std::tuple<sol::as_table_t<std::vector<int>>, bool> InputInt4(const std::string&
 }
 std::tuple<sol::as_table_t<std::vector<int>>, bool> InputInt4(const std::string& label, const sol::table& v,
                                                               int flags) {
-    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v1 {v[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v2 {v[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v3 {v[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number v4 {v[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     int value[4] = {int(v1), int(v2), int(v3), int(v4)};
     bool used = ImGui::InputInt4(label.c_str(), value, static_cast<ImGuiInputTextFlags>(flags));
 
@@ -1348,16 +1342,14 @@ std::tuple<double, bool> InputDouble(const std::string& label, double v, double 
         ImGui::InputDouble(label.c_str(), &v, step, step_fast, format.c_str(), static_cast<ImGuiInputTextFlags>(flags));
     return std::make_tuple(v, selected);
 }
-void InputScalar() { /* TODO: InputScalar(...) ==> UNSUPPORTED */
-}
-void InputScalarN() { /* TODO: InputScalarN(...) ==> UNSUPPORTED */
-}
+void InputScalar() { /* TODO: InputScalar(...) ==> UNSUPPORTED */ }
+void InputScalarN() { /* TODO: InputScalarN(...) ==> UNSUPPORTED */ }
 
 // Widgets: Color Editor / Picker
 std::tuple<sol::as_table_t<std::vector<float>>, bool> ColorEdit3(const std::string& label, const sol::table& col) {
-    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float color[3] = {float(r), float(g), float(b)};
     bool used = ImGui::ColorEdit3(label.c_str(), color);
 
@@ -1367,9 +1359,9 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> ColorEdit3(const std::stri
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> ColorEdit3(const std::string& label, const sol::table& col,
                                                                  int flags) {
-    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float color[3] = {float(r), float(g), float(b)};
     bool used = ImGui::ColorEdit3(label.c_str(), color, static_cast<ImGuiColorEditFlags>(flags));
 
@@ -1378,10 +1370,10 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> ColorEdit3(const std::stri
     return std::make_tuple(rgb, used);
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> ColorEdit4(const std::string& label, const sol::table& col) {
-    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        a {col[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number a {col[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float color[4] = {float(r), float(g), float(b), float(a)};
     bool used = ImGui::ColorEdit4(label.c_str(), color);
 
@@ -1391,10 +1383,10 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> ColorEdit4(const std::stri
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> ColorEdit4(const std::string& label, const sol::table& col,
                                                                  int flags) {
-    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        a {col[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number a {col[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float color[4] = {float(r), float(g), float(b), float(a)};
     bool used = ImGui::ColorEdit4(label.c_str(), color, static_cast<ImGuiColorEditFlags>(flags));
 
@@ -1403,9 +1395,9 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> ColorEdit4(const std::stri
     return std::make_tuple(rgba, used);
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> ColorPicker3(const std::string& label, const sol::table& col) {
-    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float color[3] = {float(r), float(g), float(b)};
     bool used = ImGui::ColorPicker3(label.c_str(), color);
 
@@ -1415,9 +1407,9 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> ColorPicker3(const std::st
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> ColorPicker3(const std::string& label, const sol::table& col,
                                                                    int flags) {
-    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float color[3] = {float(r), float(g), float(b)};
     bool used = ImGui::ColorPicker3(label.c_str(), color, static_cast<ImGuiColorEditFlags>(flags));
 
@@ -1426,10 +1418,10 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> ColorPicker3(const std::st
     return std::make_tuple(rgb, used);
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> ColorPicker4(const std::string& label, const sol::table& col) {
-    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        a {col[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number a {col[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float color[4] = {float(r), float(g), float(b), float(a)};
     bool used = ImGui::ColorPicker4(label.c_str(), color);
 
@@ -1439,10 +1431,10 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> ColorPicker4(const std::st
 }
 std::tuple<sol::as_table_t<std::vector<float>>, bool> ColorPicker4(const std::string& label, const sol::table& col,
                                                                    int flags) {
-    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        a {col[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number a {col[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     float color[4] = {float(r), float(g), float(b), float(a)};
     bool used = ImGui::ColorPicker4(label.c_str(), color, static_cast<ImGuiColorEditFlags>(flags));
 
@@ -1451,26 +1443,26 @@ std::tuple<sol::as_table_t<std::vector<float>>, bool> ColorPicker4(const std::st
     return std::make_tuple(rgba, used);
 }
 bool ColorButton(const std::string& desc_id, const sol::table& col) {
-    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        a {col[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number a {col[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     const ImVec4 color {float(r), float(g), float(b), float(a)};
     return ImGui::ColorButton(desc_id.c_str(), color);
 }
 bool ColorButton(const std::string& desc_id, const sol::table& col, int flags) {
-    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        a {col[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number a {col[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     const ImVec4 color {float(r), float(g), float(b), float(a)};
     return ImGui::ColorButton(desc_id.c_str(), color, static_cast<ImGuiColorEditFlags>(flags));
 }
 bool ColorButton(const std::string& desc_id, const sol::table& col, int flags, float sizeX, float sizeY) {
-    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))},
-        a {col[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number r {col[1].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number g {col[2].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number b {col[3].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
+    const lua_Number a {col[4].get<std::optional<lua_Number>>().value_or(static_cast<lua_Number>(0))};
     const ImVec4 color {float(r), float(g), float(b), float(a)};
     return ImGui::ColorButton(desc_id.c_str(), color, static_cast<ImGuiColorEditFlags>(flags), {sizeX, sizeY});
 }
@@ -1478,14 +1470,16 @@ void SetColorEditOptions(int flags) { ImGui::SetColorEditOptions(static_cast<ImG
 
 // Widgets: Trees
 bool TreeNode(const std::string& label) { return ImGui::TreeNode(label.c_str()); }
-bool TreeNode(const std::string& label, const std::string& fmt) { return ImGui::TreeNode(label.c_str(), fmt.c_str()); }
+bool TreeNode(const std::string& label, const std::string& fmt) {
+    return ImGui::TreeNode(label.c_str(), "%s", fmt.c_str());
+}
 /* TODO: TreeNodeV(...) (2) ==> UNSUPPORTED */
 bool TreeNodeEx(const std::string& label) { return ImGui::TreeNodeEx(label.c_str()); }
 bool TreeNodeEx(const std::string& label, int flags) {
     return ImGui::TreeNodeEx(label.c_str(), static_cast<ImGuiTreeNodeFlags>(flags));
 }
 bool TreeNodeEx(const std::string& label, int flags, const std::string& fmt) {
-    return ImGui::TreeNodeEx(label.c_str(), static_cast<ImGuiTreeNodeFlags>(flags), fmt.c_str());
+    return ImGui::TreeNodeEx(label.c_str(), static_cast<ImGuiTreeNodeFlags>(flags), "%s", fmt.c_str());
 }
 /* TODO: TreeNodeExV(...) (2) ==> UNSUPPORTED */
 void TreePush(const std::string& str_id) { ImGui::TreePush(str_id.c_str()); }
@@ -1508,7 +1502,7 @@ void SetNextItemOpen(bool is_open) { ImGui::SetNextItemOpen(is_open); }
 void SetNextItemOpen(bool is_open, int cond) { ImGui::SetNextItemOpen(is_open, static_cast<ImGuiCond>(cond)); }
 
 // Widgets: Selectables
-// TODO: Only one of Selectable variations is possible due to same parameters for Lua
+// TODO(zyunl): Only one of Selectable variations is possible due to same parameters for Lua
 bool Selectable(const std::string& label) { return ImGui::Selectable(label.c_str()); }
 bool Selectable(const std::string& label, bool selected) {
     ImGui::Selectable(label.c_str(), &selected);
@@ -1532,6 +1526,7 @@ std::tuple<int, bool> ListBox(const std::string& label, int current_item, const 
     }
 
     std::vector<const char*> cstrings;
+    cstrings.reserve(strings.size());
     for (auto& string : strings) cstrings.push_back(string.c_str());
 
     bool clicked = ImGui::ListBox(label.c_str(), &current_item, cstrings.data(), items_count);
@@ -1546,6 +1541,7 @@ std::tuple<int, bool> ListBox(const std::string& label, int current_item, const 
     }
 
     std::vector<const char*> cstrings;
+    cstrings.reserve(strings.size());
     for (auto& string : strings) cstrings.push_back(string.c_str());
 
     bool clicked = ImGui::ListBox(label.c_str(), &current_item, cstrings.data(), items_count, height_in_items);
@@ -1598,9 +1594,8 @@ std::tuple<bool, bool> MenuItem(const std::string& label, const std::string& sho
 // Tooltips
 void BeginTooltip() { ImGui::BeginTooltip(); }
 void EndTooltip() { ImGui::EndTooltip(); }
-void SetTooltip(const std::string& fmt) { ImGui::SetTooltip(fmt.c_str()); }
-void SetTooltipV() { /* TODO: SetTooltipV(...) ==> UNSUPPORTED */
-}
+void SetTooltip(const std::string& fmt) { ImGui::SetTooltip("%s", fmt.c_str()); }
+void SetTooltipV() { /* TODO: SetTooltipV(...) ==> UNSUPPORTED */ }
 
 // Popups, Modals
 bool BeginPopup(const std::string& str_id) { return ImGui::BeginPopup(str_id.c_str()); }
@@ -1617,7 +1612,7 @@ void OpenPopup(const std::string& str_id) { ImGui::OpenPopup(str_id.c_str()); }
 void OpenPopup(const std::string& str_id, int popup_flags) {
     ImGui::OpenPopup(str_id.c_str(), static_cast<ImGuiPopupFlags>(popup_flags));
 }
-void OpenPopupOnItemClick() { ImGui::OpenPopupOnItemClick(); }  // TODO: Verify
+void OpenPopupOnItemClick() { ImGui::OpenPopupOnItemClick(); }  // TODO(zyunl): Verify
 void OpenPopupContextItem(const std::string& str_id) { ImGui::OpenPopupOnItemClick(str_id.c_str()); }
 bool OpenPopupContextItem(const std::string& str_id, int popup_flags) {
     return ImGui::BeginPopupContextItem(str_id.c_str(), static_cast<ImGuiPopupFlags>(popup_flags));
@@ -1687,8 +1682,7 @@ void SetNextWindowDockID(unsigned int dock_id) { ImGui::SetNextWindowDockID(dock
 void SetNextWindowDockID(unsigned int dock_id, int cond) {
     ImGui::SetNextWindowDockID(dock_id, static_cast<ImGuiCond>(cond));
 }
-void SetNextWindowClass() { /* TODO: SetNextWindowClass(...) ==> UNSUPPORTED */
-}
+void SetNextWindowClass() { /* TODO: SetNextWindowClass(...) ==> UNSUPPORTED */ }
 unsigned int GetWindowDockID() { return ImGui::GetWindowDockID(); }
 bool IsWindowDocked() { return ImGui::IsWindowDocked(); }
 #endif  // IMGUI_HAS_DOC
@@ -1704,10 +1698,10 @@ void LogToClipboard() { ImGui::LogToClipboard(); }
 void LogToClipboard(int auto_open_depth) { ImGui::LogToClipboard(auto_open_depth); }
 void LogFinish() { ImGui::LogFinish(); }
 void LogButtons() { ImGui::LogButtons(); }
-void LogText(const std::string& fmt) { ImGui::LogText(fmt.c_str()); }
+void LogText(const std::string& fmt) { ImGui::LogText("%s", fmt.c_str()); }
 
 // Drag and Drop
-// TODO: Drag and Drop ==> UNSUPPORTED
+// TODO(zyunl): Drag and Drop ==> UNSUPPORTED
 
 // Clipping
 void PushClipRect(float min_x, float min_y, float max_x, float max_y, bool intersect_current) {
@@ -1764,7 +1758,7 @@ bool BeginChildFrame(unsigned int id, float sizeX, float sizeY) { return ImGui::
 bool BeginChildFrame(unsigned int id, float sizeX, float sizeY, int flags) {
     return ImGui::BeginChildFrame(id, {sizeX, sizeY}, static_cast<ImGuiWindowFlags>(flags));
 }
-void EndChildFrame() { return ImGui::EndChildFrame(); }
+void EndChildFrame() { ImGui::EndChildFrame(); }
 
 // Text Utilities
 std::tuple<float, float> CalcTextSize(const std::string& text) {
@@ -1804,12 +1798,16 @@ unsigned int ColorConvertFloat4ToU32(const sol::table& rgba) {
 }
 #endif
 std::tuple<float, float, float> ColorConvertRGBtoHSV(float r, float g, float b) {
-    float h {}, s {}, v {};
+    float h {};
+    float s {};
+    float v {};
     ImGui::ColorConvertRGBtoHSV(r, g, b, h, s, v);
     return std::make_tuple(h, s, v);
 }
 std::tuple<float, float, float> ColorConvertHSVtoRGB(float h, float s, float v) {
-    float r {}, g {}, b {};
+    float r {};
+    float g {};
+    float b {};
     ImGui::ColorConvertHSVtoRGB(h, s, v, r, g, b);
     return std::make_tuple(r, g, b);
 }

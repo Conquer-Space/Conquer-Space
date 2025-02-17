@@ -106,6 +106,9 @@ void MakeShader(const Hjson::Value& hjson) {
                         shader->Set(value.first, (float)value.second[0].to_double(), (float)value.second[1].to_double(),
                                     (float)value.second[2].to_double(), (float)value.second[3].to_double());
                         break;
+                    default:
+                        // Not the right size, ignore!
+                        break;
                 }
                 break;
             }
@@ -311,7 +314,7 @@ std::unique_ptr<Package> AssetLoader::LoadPackage(const std::string& path) {
 
     // Load dependencies
     // Now load the 'important' folders
-    std::filesystem::path script_path(package_path / "scripts");
+
     // Check if files exist
     // Load scripts
     if (mounter.IsDirectory(mount_point, "scripts") && mounter.IsFile(mount_point, "scripts/base.lua")) {
@@ -376,7 +379,7 @@ void AssetLoader::BuildNextAsset() {
         return;
     }
     QueueHolder temp = *value;
-    std::string key = temp.prototype->key;
+
     switch (temp.prototype->GetPrototypeType()) {
         case PrototypeType::TEXTURE: {
             ImagePrototype* texture_prototype = dynamic_cast<ImagePrototype*>(temp.prototype);
@@ -416,6 +419,9 @@ void AssetLoader::BuildNextAsset() {
             Model* asset = dynamic_cast<Model*>(prototype->asset);
             LoadModelPrototype(prototype, asset);
         } break;
+        default:
+            // Ignore
+            break;
     }
 
     // Free memory
@@ -763,7 +769,7 @@ std::unique_ptr<ShaderDefinition> AssetLoader::LoadShaderDefinition(VirtualMount
 std::unique_ptr<TextDirectoryAsset> AssetLoader::LoadScriptDirectory(VirtualMounter* mount, const std::string& path,
                                                                      const Hjson::Value& hints) {
     ZoneScoped;
-    std::filesystem::path root(path);
+
     auto asset = std::make_unique<asset::TextDirectoryAsset>();
     if (!mount->IsDirectory(path)) {
         ENGINE_LOG_WARN("Script directory {} is not a script directory!", path);

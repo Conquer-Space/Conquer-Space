@@ -180,13 +180,13 @@ void LoadModelPrototype(ModelPrototype* prototype, Model* asset) {
         material.attributes.reserve(material_prototype.second.base_map.size());
         for (auto& pair : material_prototype.second.base_map) {
             // Copy the base elements
-            material.attributes.push_back(std::make_pair(pair.first, pair.second));
+            material.attributes.emplace_back(pair.first, pair.second);
         }
         for (auto& [key, texture] : material_prototype.second.texture_map) {
             // Look for the names and assign the integer value
             // Check if it exists in the
             if (prototype->texture_idx_map.contains(key)) {
-                material.textures.push_back(std::make_pair(prototype->texture_idx_map[key], texture_map[texture]));
+                material.textures.emplace_back(prototype->texture_idx_map[key], texture_map[texture]);
             }
         }
     }

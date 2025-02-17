@@ -49,7 +49,8 @@ void LoadResource(cqsp::engine::Application& app, cqsp::common::Universe& univer
             func(universe, good_assets->data);
         } catch (std::runtime_error& error) {
             SPDLOG_INFO("Failed to load hjson asset {}: {}", asset_name, error.what());
-        } catch (Hjson::index_out_of_bounds&) {
+        } catch (Hjson::index_out_of_bounds& error) {
+            SPDLOG_INFO("Failed to load hjson asset {}: Index out of bounds: {}", asset_name, error.what());
         }
     }
 }
@@ -57,7 +58,7 @@ void LoadResource(cqsp::engine::Application& app, cqsp::common::Universe& univer
 template <class T>
 void LoadResource(cqsp::engine::Application& app, cqsp::common::Universe& universe, const std::string& asset_name) {
     using cqsp::common::systems::loading::HjsonLoader;
-    static_assert(std::is_base_of<HjsonLoader, T>::value, "Class is not child of");
+    static_assert(std::is_base_of_v<HjsonLoader, T>, "Class is not child of");
     std::unique_ptr<HjsonLoader> ptr = std::make_unique<T>(universe);
 
     namespace cqspc = cqsp::common::components;
@@ -70,7 +71,8 @@ void LoadResource(cqsp::engine::Application& app, cqsp::common::Universe& univer
             ptr->LoadHjson(good_assets->data);
         } catch (std::runtime_error& error) {
             SPDLOG_INFO("Failed to load hjson asset {}: {}", asset_name, error.what());
-        } catch (Hjson::index_out_of_bounds&) {
+        } catch (Hjson::index_out_of_bounds& error) {
+            SPDLOG_INFO("Failed to load hjson asset {}: Index out of bounds: {}", asset_name, error.what());
         }
     }
 }

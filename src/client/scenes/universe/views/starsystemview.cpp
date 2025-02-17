@@ -21,6 +21,7 @@
 #include <cstddef>
 #include <limits>
 #include <memory>
+#include <numbers>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -709,7 +710,7 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
         // Then create vector
         uint64_t file_size = bin_asset->data.size();
         int comp = 0;
-        stbi_set_flip_vertically_on_load(false);
+        stbi_set_flip_vertically_on_load(0);
         auto d = stbi_load_from_memory(bin_asset->data.data(), file_size, &province_width, &province_height, &comp, 0);
 
         // Set country map
@@ -987,8 +988,8 @@ void SysStarSystemRenderer::CalculateViewChange(double deltaX, double deltaY) {
     if (!m_app.MouseButtonIsHeld(engine::MouseInput::LEFT)) {
         return;
     }
-    view_x += deltaX / m_app.GetWindowWidth() * 3.1415 * 4;
-    view_y -= deltaY / m_app.GetWindowHeight() * 3.1415 * 4;
+    view_x += deltaX / m_app.GetWindowWidth() * std::numbers::pi * 4;
+    view_y -= deltaY / m_app.GetWindowHeight() * std::numbers::pi * 4;
 
     if (glm::degrees(view_y) > 89.f) {
         view_y = glm::radians(89.f);
@@ -1278,7 +1279,7 @@ void SysStarSystemRenderer::GenerateOrbit(entt::entity body) {
     } else {
         for (int i = 0; i <= res; i++) {
             ZoneScoped;
-            double theta = 3.1415926535 * 2 / res * i;
+            double theta = std::numbers::pi * 2 / res * i;
 
             glm::vec3 vec = common::components::types::toVec3(orb, theta);
 
@@ -1396,59 +1397,9 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
     auto& orbit = m_universe.get<PlanetOrbit>(entity);
 
     orbit.orbit_mesh->Draw();
-
-#if false
-    // Get parent
-    glm::vec3 object_pos = CalculateCenteredObject(entity);
-    transform = glm::mat4(1.f);
-    //transform = glm::translate(transform, object_pos);
-    auto mesh = engine::primitive::CreateLineSequence(
-        {object_pos, CalculateCenteredObject(glm::vec3(0, 0, 0))});
-    orbit_shader->SetMVP(transform, camera_matrix, m_app.Get3DProj());
-
-    mesh->Draw();
-    delete mesh;
-#endif
 }
 
-void SysStarSystemRenderer::OrbitEditor() {
-#if 0
-    static float semi_major_axis = 8000;
-    static float inclination = 0;
-    static float eccentricity = 0;
-    static float arg_of_perapsis = 0;
-    static float LAN = 0;
-    ImGui::SliderFloat("Semi Major Axis", &semi_major_axis, 6000, 5000000);
-    ImGui::SliderFloat("Eccentricity", &eccentricity, 0, 0.9999);
-    ImGui::SliderAngle("Inclination", &inclination, 0, 180);
-    ImGui::SliderAngle("Argument of perapsis", &arg_of_perapsis, 0, 360);
-    ImGui::SliderAngle("Longitude of the ascending node", &LAN, 0, 360);
-    if (ImGui::Button("Launch!")) {
-        // Get reference body
-        entt::entity reference_body = selected_planet;
-        // Launch inclination will be the inclination of the thing
-        double axial =
-            GetUniverse().get<cqspc::bodies::Body>(selected_planet).axial;
-        double inc =
-            GetUniverse()
-                .get<cqspc::types::SurfaceCoordinate>(selected_city_entity)
-                .r_latitude();
-        inc += axial;
-        double sma = 0;
-        // Currently selected city
-        // entt::entity star_system =
-        // GetUniverse().get<cqspc::bodies::Body>(selected_planet);
-        // Launch
-        cqspc::types::Orbit orb;
-        orb.reference_body = selected_planet;
-        orb.inclination = inclination;
-        orb.semi_major_axis = semi_major_axis;
-        orb.eccentricity = eccentricity;
-        orb.w = arg_of_perapsis;
-        orb.LAN = LAN;
-    }
-#endif
-}
+void SysStarSystemRenderer::OrbitEditor() {}
 
 SysStarSystemRenderer::~SysStarSystemRenderer() = default;
 }  // namespace cqsp::client::systems

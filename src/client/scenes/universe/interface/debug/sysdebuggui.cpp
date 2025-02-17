@@ -156,7 +156,6 @@ void cqsp::client::systems::SysDebugMenu::DrawConsole() {
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
     for (auto b : items) {
         bool color = (b[0] == '#');
-        std::string str(b);
         int offset = 0;
         if (color) {
             ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.4f, 0.2f, 1.0f));
@@ -186,7 +185,7 @@ void cqsp::client::systems::SysDebugMenu::ConsoleInput() {
         if (!command_request.empty()) {
             bool no_command = true;
             for (auto it = commands.begin(); it != commands.end(); it++) {
-                if (command_request.rfind(it->first, 0) != 0) {
+                if (!command_request.starts_with(it->first)) {
                     continue;
                 }
                 it->second.second(GetApp(), GetUniverse(), GetScriptInterface(),
