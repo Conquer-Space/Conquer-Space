@@ -148,6 +148,8 @@ void AcceptNewItem(cqsp::common::Universe& universe, int input_type, entt::entit
             }
             break;
         }
+        default:
+            break;
     }
 }
 
@@ -194,6 +196,8 @@ void RemoveRelationship(cqsp::common::Universe& universe, int input_type, entt::
             RemoveFieldConnection(field.adjacent, input_entity);
             break;
         }
+        default:
+            break;
     }
 }
 

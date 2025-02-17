@@ -89,8 +89,6 @@ std::string GetCqspDataPath() {
                                       "data")
         .string();
 #else
-    // Then just search the default path
-    std::string path = GetCqspExePath();
     // The folder structure is
     // - binaries
     //   - bin
