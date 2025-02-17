@@ -128,14 +128,14 @@ void cqsp::client::CreditsWindow::LoadCreditsText() {
         }
         previous_return = false;
         std::string tag = "p";
-        if (line.rfind("###", 0) == 0) {
+        if (line.starts_with("###")) {
             tag = "h3";
             // remove prefix
             line = line.substr(3);
-        } else if (line.rfind("##", 0) == 0) {
+        } else if (line.starts_with("##")) {
             tag = "h2";
             line = line.substr(2);
-        } else if (line.rfind('#', 0) == 0) {
+        } else if (line.starts_with('#')) {
             tag = "h1";
             line = line.substr(1);
         }

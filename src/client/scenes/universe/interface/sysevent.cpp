@@ -22,16 +22,7 @@
 #include "common/components/player.h"
 #include "engine/cqspgui.h"
 
-void cqsp::client::systems::gui::SysEvent::Init() {
-#if false
-    GetApp().markdownConfig.tooltipCallback = []( \
-    ImGui::MarkdownTooltipCallbackData conf) {
-        ImGui::BeginTooltip();
-        ImGui::Text(std::string(conf.linkData.link, conf.linkData.linkLength).c_str());
-        ImGui::EndTooltip();
-    };
-#endif
-}
+void cqsp::client::systems::gui::SysEvent::Init() {}
 
 void cqsp::client::systems::gui::SysEvent::DoUI(int delta_time) {
     using cqsp::common::event::Event;

@@ -187,7 +187,7 @@ void TextUnformatted(const std::string& text, const std::string& textEnd);
 void Text(const std::string& text);
 void TextColored(float colR, float colG, float colB, float colA, const std::string& text);
 void TextDisabled(const std::string& text);
-void TextWrapped(const std::string text);
+void TextWrapped(const std::string& text);
 void LabelText(const std::string& label, const std::string& text);
 void BulletText(const std::string& text);
 

@@ -28,7 +28,7 @@ TEST(Hohmann, BasicHohmannTest) {
     // Set the new altitude and then compute
     auto hohmann = cqsps::HohmannTransfer(orbit, 100e7);
     ASSERT_TRUE(hohmann.has_value());
-    auto hohmann_pair = *hohmann;
+    auto hohmann_pair = *hohmann;  // NOLINT
     // Apply the first maneuver
     orbit = cqspt::ApplyImpulse(orbit, hohmann_pair.first.first, hohmann_pair.first.second);
     // Apply the second maneuver

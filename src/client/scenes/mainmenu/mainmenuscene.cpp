@@ -197,7 +197,6 @@ void cqsp::scene::MainMenuScene::ModWindow() {
 
 void cqsp::scene::MainMenuScene::ShuffleFileList() {
     std::string splash_dir = cqsp::common::util::GetCqspDataPath() + "/core/gui/splashscreens";
-    auto s = std::filesystem::canonical(splash_dir).string();
 
     for (const auto& entry : std::filesystem::directory_iterator(splash_dir)) {
         std::string extension = entry.path().extension().string();
