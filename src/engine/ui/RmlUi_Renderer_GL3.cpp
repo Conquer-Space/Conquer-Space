@@ -33,13 +33,11 @@
 #include <RmlUi/Core/FileInterface.h>
 #include <RmlUi/Core/Geometry.h>
 #include <RmlUi/Core/Log.h>
-#include <RmlUi/Core/Math.h>
 #include <RmlUi/Core/MeshUtilities.h>
 #include <RmlUi/Core/Platform.h>
 #include <RmlUi/Core/SystemInterface.h>
 #include <stb_image.h>
-
-#include <cstring>
+#include <string.h>
 
 #if defined(RMLUI_PLATFORM_WIN32) && !defined(__MINGW32__)
 // function call missing argument list
@@ -63,7 +61,8 @@
 // Determines the anti-aliasing quality when creating layers. Enables better-looking visuals, especially when transforms are applied.
 static constexpr int NUM_MSAA_SAMPLES = 2;
 
-enum : uint8_t { MAX_NUM_STOPS = 16, BLUR_SIZE = 7 };
+#define MAX_NUM_STOPS 16
+#define BLUR_SIZE 7
 #define BLUR_NUM_WEIGHTS ((BLUR_SIZE + 1) / 2)
 
 #define RMLUI_STRINGIFY_IMPL(x) #x
@@ -122,7 +121,7 @@ void main() {
 }
 )";
 
-enum class ShaderGradientFunction : uint8_t {
+enum class ShaderGradientFunction {
     Linear,
     Radial,
     Conic,
@@ -324,7 +323,7 @@ void main() {
 }
 )";
 
-enum class ProgramId : uint8_t {
+enum class ProgramId {
     None,
     Color,
     Texture,
@@ -337,13 +336,13 @@ enum class ProgramId : uint8_t {
     DropShadow,
     Count,
 };
-enum class VertShaderId : uint8_t {
+enum class VertShaderId {
     Main,
     Passthrough,
     Blur,
     Count,
 };
-enum class FragShaderId : uint8_t {
+enum class FragShaderId {
     Color,
     Texture,
     Gradient,
@@ -355,7 +354,7 @@ enum class FragShaderId : uint8_t {
     DropShadow,
     Count,
 };
-enum class UniformId : uint8_t {
+enum class UniformId {
     Translate,
     Transform,
     Tex,
@@ -385,7 +384,7 @@ static const char* const program_uniform_names[(size_t)UniformId::Count] = {
     "_func",        "_p",           "_v",           "_stop_colors[0]", "_stop_positions[0]",
     "_num_stops",   "_value",       "_dimensions"};
 
-enum class VertexAttribute : uint8_t { Position, Color0, TexCoord0, Count };
+enum class VertexAttribute { Position, Color0, TexCoord0, Count };
 static const char* const vertex_attribute_names[(size_t)VertexAttribute::Count] = {"inPosition", "inColor0",
                                                                                    "inTexCoord0"};
 
@@ -400,8 +399,8 @@ struct FragShaderDefinition {
     const char* code_str;
 };
 struct ProgramDefinition {
-    const char* name_str;
     ProgramId id;
+    const char* name_str;
     VertShaderId vert_shader;
     FragShaderId frag_shader;
 };
@@ -424,15 +423,15 @@ static const FragShaderDefinition frag_shader_definitions[] = {
     {FragShaderId::DropShadow,  "drop_shadow",  shader_frag_drop_shadow},
 };
 static const ProgramDefinition program_definitions[] = {
-    {"color",       ProgramId::Color,       VertShaderId::Main,        FragShaderId::Color},
-    {"texture",     ProgramId::Texture,    VertShaderId::Main,        FragShaderId::Texture},
-    {"gradient",    ProgramId::Gradient,    VertShaderId::Main,        FragShaderId::Gradient},
-    {"creation",    ProgramId::Creation,   VertShaderId::Main,        FragShaderId::Creation},
-    {"passthrough", ProgramId::Passthrough, VertShaderId::Passthrough, FragShaderId::Passthrough},
-    {"color_matrix",ProgramId::ColorMatrix, VertShaderId::Passthrough, FragShaderId::ColorMatrix},
-    {"blend_mask",  ProgramId::BlendMask, VertShaderId::Passthrough, FragShaderId::BlendMask},
-    {"blur",        ProgramId::Blur,       VertShaderId::Blur,        FragShaderId::Blur},
-    {"drop_shadow", ProgramId::DropShadow, VertShaderId::Passthrough, FragShaderId::DropShadow},
+    {ProgramId::Color,       "color",        VertShaderId::Main,        FragShaderId::Color},
+    {ProgramId::Texture,     "texture",      VertShaderId::Main,        FragShaderId::Texture},
+    {ProgramId::Gradient,    "gradient",     VertShaderId::Main,        FragShaderId::Gradient},
+    {ProgramId::Creation,    "creation",     VertShaderId::Main,        FragShaderId::Creation},
+    {ProgramId::Passthrough, "passthrough",  VertShaderId::Passthrough, FragShaderId::Passthrough},
+    {ProgramId::ColorMatrix, "color_matrix", VertShaderId::Passthrough, FragShaderId::ColorMatrix},
+    {ProgramId::BlendMask,   "blend_mask",   VertShaderId::Passthrough, FragShaderId::BlendMask},
+    {ProgramId::Blur,        "blur",         VertShaderId::Blur,        FragShaderId::Blur},
+    {ProgramId::DropShadow,  "drop_shadow",  VertShaderId::Passthrough, FragShaderId::DropShadow},
 };
 // clang-format on
 
@@ -447,8 +446,8 @@ class EnumArray {
         RMLUI_ASSERT((size_t)id < (size_t)Enum::Count);
         return ids[size_t(id)];
     }
-    [[nodiscard]] auto begin() const { return ids.begin(); }
-    [[nodiscard]] auto end() const { return ids.end(); }
+    auto begin() const { return ids.begin(); }
+    auto end() const { return ids.end(); }
 
  private:
     Rml::Array<T, (size_t)Enum::Count> ids = {};
@@ -460,7 +459,7 @@ using FragShaders = EnumArray<GLuint, FragShaderId>;
 
 class Uniforms {
  public:
-    [[nodiscard]] GLint Get(ProgramId id, UniformId uniform) const {
+    GLint Get(ProgramId id, UniformId uniform) const {
         auto it = map.find(ToKey(id, uniform));
         if (it != map.end()) return it->second;
         return -1;
@@ -469,7 +468,7 @@ class Uniforms {
 
  private:
     using Key = uint64_t;
-    [[nodiscard]] Key ToKey(ProgramId id, UniformId uniform) const {
+    Key ToKey(ProgramId id, UniformId uniform) const {
         return (static_cast<Key>(id) << 32) | static_cast<Key>(uniform);
     }
     Rml::UnorderedMap<Key, GLint> map;
@@ -498,7 +497,7 @@ struct FramebufferData {
     bool owns_depth_stencil_buffer;
 };
 
-enum class FramebufferAttachment : uint8_t { None, Depth, DepthStencil };
+enum class FramebufferAttachment { None, Depth, DepthStencil };
 
 static void CheckGLError(const char* operation_name) {
 #ifdef RMLUI_DEBUG
@@ -524,7 +523,7 @@ static void CheckGLError(const char* operation_name) {
 
 // Create the shader, 'shader_type' is either GL_VERTEX_SHADER or GL_FRAGMENT_SHADER.
 static bool CreateShader(GLuint& out_shader_id, GLenum shader_type, const char* code_string) {
-    RMLUI_ASSERT(shader_type == GL_VERTEX_SHADER || shader_type == GL_FRAGMENT_SHADER);  // NOLINT
+    RMLUI_ASSERT(shader_type == GL_VERTEX_SHADER || shader_type == GL_FRAGMENT_SHADER);
 
     GLuint id = glCreateShader(shader_type);
     glShaderSource(id, 1, (const GLchar**)&code_string, NULL);
@@ -661,7 +660,7 @@ static bool CreateFramebuffer(FramebufferData& out_fb, int width, int height, in
     // Create depth/stencil buffer storage attachment.
     GLuint depth_stencil_buffer = 0;
     if (attachment != FramebufferAttachment::None) {
-        if (shared_depth_stencil_buffer != 0u) {
+        if (shared_depth_stencil_buffer) {
             // Share depth/stencil buffer
             depth_stencil_buffer = shared_depth_stencil_buffer;
         } else {
@@ -699,23 +698,21 @@ static bool CreateFramebuffer(FramebufferData& out_fb, int width, int height, in
     out_fb.color_tex_buffer = color_tex_buffer;
     out_fb.color_render_buffer = color_render_buffer;
     out_fb.depth_stencil_buffer = depth_stencil_buffer;
-    out_fb.owns_depth_stencil_buffer = shared_depth_stencil_buffer != 0u;
+    out_fb.owns_depth_stencil_buffer = !shared_depth_stencil_buffer;
 
     return true;
 }
 
 static void DestroyFramebuffer(FramebufferData& fb) {
-    if (fb.framebuffer != 0u) glDeleteFramebuffers(1, &fb.framebuffer);
-    if (fb.color_tex_buffer != 0u) glDeleteTextures(1, &fb.color_tex_buffer);
-    if (fb.color_render_buffer != 0u) glDeleteRenderbuffers(1, &fb.color_render_buffer);
-    if (static_cast<unsigned int>(fb.owns_depth_stencil_buffer) != 0u && fb.depth_stencil_buffer != 0u) {
-        glDeleteRenderbuffers(1, &fb.depth_stencil_buffer);
-    }
+    if (fb.framebuffer) glDeleteFramebuffers(1, &fb.framebuffer);
+    if (fb.color_tex_buffer) glDeleteTextures(1, &fb.color_tex_buffer);
+    if (fb.color_render_buffer) glDeleteRenderbuffers(1, &fb.color_render_buffer);
+    if (fb.owns_depth_stencil_buffer && fb.depth_stencil_buffer) glDeleteRenderbuffers(1, &fb.depth_stencil_buffer);
     fb = {};
 }
 
 static void BindTexture(const FramebufferData& fb) {
-    if (fb.color_tex_buffer == 0u) {
+    if (!fb.color_tex_buffer) {
         RMLUI_ERRORMSG(
             "Only framebuffers with color textures can be bound as textures. This framebuffer probably uses "
             "multisampling which needs a "
@@ -737,22 +734,19 @@ static bool CreateShaders(ProgramData& data) {
     };
 
     for (const VertShaderDefinition& def : vert_shader_definitions) {
-        if (!CreateShader(data.vert_shaders[def.id], GL_VERTEX_SHADER, def.code_str)) {
+        if (!CreateShader(data.vert_shaders[def.id], GL_VERTEX_SHADER, def.code_str))
             return ReportError("vertex shader", def.name_str);
-        }
     }
 
     for (const FragShaderDefinition& def : frag_shader_definitions) {
-        if (!CreateShader(data.frag_shaders[def.id], GL_FRAGMENT_SHADER, def.code_str)) {
+        if (!CreateShader(data.frag_shaders[def.id], GL_FRAGMENT_SHADER, def.code_str))
             return ReportError("fragment shader", def.name_str);
-        }
     }
 
     for (const ProgramDefinition& def : program_definitions) {
         if (!CreateProgram(data.programs[def.id], data.uniforms, def.id, data.vert_shaders[def.vert_shader],
-                           data.frag_shaders[def.frag_shader])) {
+                           data.frag_shaders[def.frag_shader]))
             return ReportError("program", def.name_str);
-        }
     }
 
     glUseProgram(data.programs[ProgramId::BlendMask]);
@@ -784,7 +778,7 @@ RenderInterface_GL3::RenderInterface_GL3() {
 }
 
 RenderInterface_GL3::~RenderInterface_GL3() {
-    if (fullscreen_quad_geometry != 0u) {
+    if (fullscreen_quad_geometry) {
         RenderInterface_GL3::ReleaseGeometry(fullscreen_quad_geometry);
         fullscreen_quad_geometry = {};
     }
@@ -802,7 +796,7 @@ void RenderInterface_GL3::SetViewport(int width, int height) {
 }
 
 void RenderInterface_GL3::BeginFrame() {
-    RMLUI_ASSERT(viewport_width >= 1 && viewport_height >= 1);  // NOLINT
+    RMLUI_ASSERT(viewport_width >= 1 && viewport_height >= 1);
 
     // Backup GL state.
     glstate_backup.enable_cull_face = glIsEnabled(GL_CULL_FACE);
@@ -908,35 +902,30 @@ void RenderInterface_GL3::EndFrame() {
     render_layers.EndFrame();
 
     // Restore GL state.
-    if (glstate_backup.enable_cull_face) {
+    if (glstate_backup.enable_cull_face)
         glEnable(GL_CULL_FACE);
-    } else {
+    else
         glDisable(GL_CULL_FACE);
-    }
 
-    if (glstate_backup.enable_blend) {
+    if (glstate_backup.enable_blend)
         glEnable(GL_BLEND);
-    } else {
+    else
         glDisable(GL_BLEND);
-    }
 
-    if (glstate_backup.enable_stencil_test) {
+    if (glstate_backup.enable_stencil_test)
         glEnable(GL_STENCIL_TEST);
-    } else {
+    else
         glDisable(GL_STENCIL_TEST);
-    }
 
-    if (glstate_backup.enable_scissor_test) {
+    if (glstate_backup.enable_scissor_test)
         glEnable(GL_SCISSOR_TEST);
-    } else {
+    else
         glDisable(GL_SCISSOR_TEST);
-    }
 
-    if (glstate_backup.enable_depth_test) {
+    if (glstate_backup.enable_depth_test)
         glEnable(GL_DEPTH_TEST);
-    } else {
+    else
         glDisable(GL_DEPTH_TEST);
-    }
 
     glViewport(glstate_backup.viewport[0], glstate_backup.viewport[1], glstate_backup.viewport[2],
                glstate_backup.viewport[3]);
@@ -993,15 +982,15 @@ Rml::CompiledGeometryHandle RenderInterface_GL3::CompileGeometry(Rml::Span<const
 
     glEnableVertexAttribArray((GLuint)Gfx::VertexAttribute::Position);
     glVertexAttribPointer((GLuint)Gfx::VertexAttribute::Position, 2, GL_FLOAT, GL_FALSE, sizeof(Rml::Vertex),
-                          (const GLvoid*)(offsetof(Rml::Vertex, position)));  // NOLINT
+                          (const GLvoid*)(offsetof(Rml::Vertex, position)));
 
     glEnableVertexAttribArray((GLuint)Gfx::VertexAttribute::Color0);
     glVertexAttribPointer((GLuint)Gfx::VertexAttribute::Color0, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Rml::Vertex),
-                          (const GLvoid*)(offsetof(Rml::Vertex, colour)));  // NOLINT
+                          (const GLvoid*)(offsetof(Rml::Vertex, colour)));
 
     glEnableVertexAttribArray((GLuint)Gfx::VertexAttribute::TexCoord0);
     glVertexAttribPointer((GLuint)Gfx::VertexAttribute::TexCoord0, 2, GL_FLOAT, GL_FALSE, sizeof(Rml::Vertex),
-                          (const GLvoid*)(offsetof(Rml::Vertex, tex_coord)));  // NOLINT
+                          (const GLvoid*)(offsetof(Rml::Vertex, tex_coord)));
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * indices.size(), (const void*)indices.data(), draw_usage);
@@ -1022,11 +1011,11 @@ Rml::CompiledGeometryHandle RenderInterface_GL3::CompileGeometry(Rml::Span<const
 
 void RenderInterface_GL3::RenderGeometry(Rml::CompiledGeometryHandle handle, Rml::Vector2f translation,
                                          Rml::TextureHandle texture) {
-    Gfx::CompiledGeometryData* geometry = (Gfx::CompiledGeometryData*)handle;  // NOLINT
+    Gfx::CompiledGeometryData* geometry = (Gfx::CompiledGeometryData*)handle;
 
     if (texture == TexturePostprocess) {
         // Do nothing.
-    } else if (texture != 0u) {
+    } else if (texture) {
         UseProgram(ProgramId::Texture);
         SubmitTransformUniform(translation);
         if (texture != TextureEnableWithoutBinding) glBindTexture(GL_TEXTURE_2D, (GLuint)texture);
@@ -1046,7 +1035,7 @@ void RenderInterface_GL3::RenderGeometry(Rml::CompiledGeometryHandle handle, Rml
 }
 
 void RenderInterface_GL3::ReleaseGeometry(Rml::CompiledGeometryHandle handle) {
-    Gfx::CompiledGeometryData* geometry = (Gfx::CompiledGeometryData*)handle;  // NOLINT
+    Gfx::CompiledGeometryData* geometry = (Gfx::CompiledGeometryData*)handle;
 
     glDeleteVertexArrays(1, &geometry->vao);
     glDeleteBuffers(1, &geometry->vbo);
@@ -1068,11 +1057,10 @@ static Rml::Rectanglei VerticallyFlipped(Rml::Rectanglei rect, int viewport_heig
 
 void RenderInterface_GL3::SetScissor(Rml::Rectanglei region, bool vertically_flip) {
     if (region.Valid() != scissor_state.Valid()) {
-        if (region.Valid()) {
+        if (region.Valid())
             glEnable(GL_SCISSOR_TEST);
-        } else {
+        else
             glDisable(GL_SCISSOR_TEST);
-        }
     }
 
     if (region.Valid() && vertically_flip) region = VerticallyFlipped(region, viewport_height);
@@ -1097,11 +1085,10 @@ void RenderInterface_GL3::EnableScissorRegion(bool enable) {
 void RenderInterface_GL3::SetScissorRegion(Rml::Rectanglei region) { SetScissor(region); }
 
 void RenderInterface_GL3::EnableClipMask(bool enable) {
-    if (enable) {
+    if (enable)
         glEnable(GL_STENCIL_TEST);
-    } else {
+    else
         glDisable(GL_STENCIL_TEST);
-    }
 }
 
 void RenderInterface_GL3::RenderToClipMask(Rml::ClipMaskOperation operation, Rml::CompiledGeometryHandle geometry,
@@ -1182,24 +1169,22 @@ void Skip(void* user, int n) {
 }
 int Eof(void* user) {
     FileUser* usr = reinterpret_cast<FileUser*>(user);
-    return static_cast<int>(usr->interface->Tell(usr->handle) >= usr->interface->Length(usr->handle));
+    return usr->interface->Tell(usr->handle) >= usr->interface->Length(usr->handle);
 }
 }  // namespace
 
 Rml::TextureHandle RenderInterface_GL3::LoadTexture(Rml::Vector2i& texture_dimensions, const Rml::String& source) {
     Rml::FileInterface* file_interface = Rml::GetFileInterface();
     Rml::FileHandle file_handle = file_interface->Open(source);
-    if (file_handle == 0u) {
+    if (!file_handle) {
         Rml::Log::Message(Rml::Log::LT_ERROR, "Failed to handle file");
-        return 0u;
+        return false;
     }
 
     static const stbi_io_callbacks callbacks = {.read = Read, .skip = Skip, .eof = Eof};
 
     FileUser user(file_interface, file_handle);
-    int x;
-    int y;
-    int channels_in_file;
+    int x, y, channels_in_file;
     stbi_uc* output = stbi_load_from_callbacks(&callbacks, &user, &x, &y, &channels_in_file, 0);
 
     texture_dimensions.x = x;
@@ -1210,7 +1195,7 @@ Rml::TextureHandle RenderInterface_GL3::LoadTexture(Rml::Vector2i& texture_dimen
     glGenTextures(1, &texture_id);
     if (texture_id == 0) {
         Rml::Log::Message(Rml::Log::LT_ERROR, "Failed to generate texture.");
-        return 0u;
+        return false;
     }
 
     glBindTexture(GL_TEXTURE_2D, texture_id);
@@ -1251,7 +1236,7 @@ Rml::TextureHandle RenderInterface_GL3::GenerateTexture(Rml::Span<const Rml::byt
     glGenTextures(1, &texture_id);
     if (texture_id == 0) {
         Rml::Log::Message(Rml::Log::LT_ERROR, "Failed to generate texture.");
-        return 0u;
+        return false;
     }
 
     glBindTexture(GL_TEXTURE_2D, texture_id);
@@ -1292,7 +1277,7 @@ static Rml::Colourf ConvertToColorf(Rml::ColourbPremultiplied c0) {
 
 static void SigmaToParameters(const float desired_sigma, int& out_pass_level, float& out_sigma) {
     constexpr int max_num_passes = 10;
-    static_assert(max_num_passes < 31);
+    static_assert(max_num_passes < 31, "");
     constexpr float max_single_pass_sigma = 3.0f;
     out_pass_level =
         Rml::Math::Clamp(Rml::Math::Log2(int(desired_sigma * (2.f / max_single_pass_sigma))), 0, max_num_passes);
@@ -1317,12 +1302,11 @@ static void SetBlurWeights(GLint weights_location, float sigma) {
     float weights[num_weights];
     float normalization = 0.0f;
     for (int i = 0; i < num_weights; i++) {
-        if (Rml::Math::Absolute(sigma) < 0.1f) {
+        if (Rml::Math::Absolute(sigma) < 0.1f)
             weights[i] = float(i == 0);
-        } else {
+        else
             weights[i] = Rml::Math::Exp(-float(i * i) / (2.0f * sigma * sigma)) /
                          (Rml::Math::SquareRoot(2.f * Rml::Math::RMLUI_PI) * sigma);
-        }
 
         normalization += (i == 0 ? 1.f : 2.0f) * weights[i];
     }
@@ -1333,9 +1317,9 @@ static void SetBlurWeights(GLint weights_location, float sigma) {
 
 void RenderInterface_GL3::RenderBlur(float sigma, const Gfx::FramebufferData& source_destination,
                                      const Gfx::FramebufferData& temp, const Rml::Rectanglei window_flipped) {
-    RMLUI_ASSERT(&source_destination != &temp && source_destination.width == temp.width &&  // NOLINT
-                 source_destination.height == temp.height);                                 // NOLINT
-    RMLUI_ASSERT(window_flipped.Valid());                                                   // NOLINT
+    RMLUI_ASSERT(&source_destination != &temp && source_destination.width == temp.width &&
+                 source_destination.height == temp.height);
+    RMLUI_ASSERT(window_flipped.Valid());
 
     int pass_level = 0;
     SigmaToParameters(sigma, pass_level, sigma);
@@ -1448,11 +1432,11 @@ void RenderInterface_GL3::ReleaseTexture(Rml::TextureHandle texture_handle) {
 }
 
 void RenderInterface_GL3::SetTransform(const Rml::Matrix4f* new_transform) {
-    transform = ((new_transform != nullptr) ? (projection * (*new_transform)) : projection);
+    transform = (new_transform ? (projection * (*new_transform)) : projection);
     program_transform_dirty.set();
 }
 
-enum class FilterType : uint8_t { Invalid = 0, Passthrough, Blur, DropShadow, ColorMatrix, MaskImage };
+enum class FilterType { Invalid = 0, Passthrough, Blur, DropShadow, ColorMatrix, MaskImage };
 struct CompiledFilter {
     FilterType type;
 
@@ -1556,19 +1540,18 @@ Rml::CompiledFilterHandle RenderInterface_GL3::CompileFilter(const Rml::String& 
         // clang-format on
     }
 
-    if (filter.type != FilterType::Invalid) {
+    if (filter.type != FilterType::Invalid)
         return reinterpret_cast<Rml::CompiledFilterHandle>(new CompiledFilter(std::move(filter)));
-    }
 
     Rml::Log::Message(Rml::Log::LT_WARNING, "Unsupported filter type '%s'.", name.c_str());
     return {};
 }
 
 void RenderInterface_GL3::ReleaseFilter(Rml::CompiledFilterHandle filter) {
-    delete reinterpret_cast<CompiledFilter*>(filter);  // NOLINT
+    delete reinterpret_cast<CompiledFilter*>(filter);
 }
 
-enum class CompiledShaderType : uint8_t { Invalid = 0, Gradient, Creation };
+enum class CompiledShaderType { Invalid = 0, Gradient, Creation };
 struct CompiledShader {
     CompiledShaderType type;
 
@@ -1587,9 +1570,9 @@ Rml::CompiledShaderHandle RenderInterface_GL3::CompileShader(const Rml::String& 
                                                              const Rml::Dictionary& parameters) {
     auto ApplyColorStopList = [](CompiledShader& shader, const Rml::Dictionary& shader_parameters) {
         auto it = shader_parameters.find("color_stop_list");
-        RMLUI_ASSERT(it != shader_parameters.end() && it->second.GetType() == Rml::Variant::COLORSTOPLIST);  // NOLINT
+        RMLUI_ASSERT(it != shader_parameters.end() && it->second.GetType() == Rml::Variant::COLORSTOPLIST);
         const Rml::ColorStopList& color_stop_list = it->second.GetReference<Rml::ColorStopList>();
-        const int num_stops = Rml::Math::Min((int)color_stop_list.size(), (int)MAX_NUM_STOPS);
+        const int num_stops = Rml::Math::Min((int)color_stop_list.size(), MAX_NUM_STOPS);
 
         shader.stop_positions.resize(num_stops);
         shader.stop_colors.resize(num_stops);
@@ -1635,9 +1618,8 @@ Rml::CompiledShaderHandle RenderInterface_GL3::CompileShader(const Rml::String& 
         }
     }
 
-    if (shader.type != CompiledShaderType::Invalid) {
+    if (shader.type != CompiledShaderType::Invalid)
         return reinterpret_cast<Rml::CompiledShaderHandle>(new CompiledShader(std::move(shader)));
-    }
 
     Rml::Log::Message(Rml::Log::LT_WARNING, "Unsupported shader type '%s'.", name.c_str());
     return {};
@@ -1647,10 +1629,9 @@ void RenderInterface_GL3::RenderShader(Rml::CompiledShaderHandle shader_handle,
                                        Rml::CompiledGeometryHandle geometry_handle, Rml::Vector2f translation,
                                        Rml::TextureHandle /*texture*/) {
     RMLUI_ASSERT(shader_handle && geometry_handle);
-    const CompiledShader& shader = *reinterpret_cast<CompiledShader*>(shader_handle);  // NOLINT
+    const CompiledShader& shader = *reinterpret_cast<CompiledShader*>(shader_handle);
     const CompiledShaderType type = shader.type;
-    const Gfx::CompiledGeometryData& geometry =
-        *reinterpret_cast<Gfx::CompiledGeometryData*>(geometry_handle);  // NOLINT
+    const Gfx::CompiledGeometryData& geometry = *reinterpret_cast<Gfx::CompiledGeometryData*>(geometry_handle);
 
     switch (type) {
         case CompiledShaderType::Gradient: {
@@ -1691,7 +1672,7 @@ void RenderInterface_GL3::RenderShader(Rml::CompiledShaderHandle shader_handle,
 }
 
 void RenderInterface_GL3::ReleaseShader(Rml::CompiledShaderHandle shader_handle) {
-    delete reinterpret_cast<CompiledShader*>(shader_handle);  // NOLINT
+    delete reinterpret_cast<CompiledShader*>(shader_handle);
 }
 
 void RenderInterface_GL3::BlitLayerToPostprocessPrimary(Rml::LayerHandle layer_handle) {
@@ -1707,7 +1688,7 @@ void RenderInterface_GL3::BlitLayerToPostprocessPrimary(Rml::LayerHandle layer_h
 
 void RenderInterface_GL3::RenderFilters(Rml::Span<const Rml::CompiledFilterHandle> filter_handles) {
     for (const Rml::CompiledFilterHandle filter_handle : filter_handles) {
-        const CompiledFilter& filter = *reinterpret_cast<const CompiledFilter*>(filter_handle);  // NOLINT
+        const CompiledFilter& filter = *reinterpret_cast<const CompiledFilter*>(filter_handle);
         const FilterType type = filter.type;
 
         switch (type) {
@@ -1776,8 +1757,8 @@ void RenderInterface_GL3::RenderFilters(Rml::Span<const Rml::CompiledFilterHandl
 
                 const GLint uniform_location =
                     program_data->uniforms.Get(ProgramId::ColorMatrix, UniformId::ColorMatrix);
-                constexpr bool transpose = std::is_same_v<decltype(filter.color_matrix), Rml::RowMajorMatrix4f>;
-                glUniformMatrix4fv(uniform_location, 1, static_cast<GLboolean>(transpose), filter.color_matrix.data());
+                constexpr bool transpose = std::is_same<decltype(filter.color_matrix), Rml::RowMajorMatrix4f>::value;
+                glUniformMatrix4fv(uniform_location, 1, transpose, filter.color_matrix.data());
 
                 const Gfx::FramebufferData& source = render_layers.GetPostprocessPrimary();
                 const Gfx::FramebufferData& destination = render_layers.GetPostprocessSecondary();
@@ -1852,9 +1833,8 @@ void RenderInterface_GL3::CompositeLayers(Rml::LayerHandle source_handle, Rml::L
 
     if (blend_mode == BlendMode::Replace) glEnable(GL_BLEND);
 
-    if (destination_handle != render_layers.GetTopLayerHandle()) {
+    if (destination_handle != render_layers.GetTopLayerHandle())
         glBindFramebuffer(GL_FRAMEBUFFER, render_layers.GetTopLayer().framebuffer);
-    }
 
     Gfx::CheckGLError("CompositeLayers");
 }
@@ -1869,7 +1849,7 @@ Rml::TextureHandle RenderInterface_GL3::SaveLayerAsTexture() {
     const Rml::Rectanglei bounds = scissor_state;
 
     Rml::TextureHandle render_texture = GenerateTexture({}, bounds.Size());
-    if (render_texture == 0u) return {};
+    if (!render_texture) return {};
 
     BlitLayerToPostprocessPrimary(render_layers.GetTopLayerHandle());
 
@@ -1941,7 +1921,7 @@ void RenderInterface_GL3::SubmitTransformUniform(Rml::Vector2f translation) {
     const size_t program_index = (size_t)active_program;
 
     if (program_transform_dirty.test(program_index)) {
-        glUniformMatrix4fv(GetUniformLocation(UniformId::Transform), 1, 0u, transform.data());
+        glUniformMatrix4fv(GetUniformLocation(UniformId::Transform), 1, false, transform.data());
         program_transform_dirty.set(program_index, false);
     }
 
@@ -2025,7 +2005,7 @@ void RenderInterface_GL3::RenderLayerStack::DestroyFramebuffers() {
 const Gfx::FramebufferData& RenderInterface_GL3::RenderLayerStack::EnsureFramebufferPostprocess(int index) {
     RMLUI_ASSERT(index < (int)fb_postprocess.size())
     Gfx::FramebufferData& fb = fb_postprocess[index];
-    if (fb.framebuffer == 0u) Gfx::CreateFramebuffer(fb, width, height, 0, Gfx::FramebufferAttachment::None, 0);
+    if (!fb.framebuffer) Gfx::CreateFramebuffer(fb, width, height, 0, Gfx::FramebufferAttachment::None, 0);
     return fb;
 }
 
