@@ -19,7 +19,7 @@
 #include <math.h>
 
 #include <entt/entt.hpp>
-#include <glm/glm.hpp>
+#include <glm/vec3.hpp>
 
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"

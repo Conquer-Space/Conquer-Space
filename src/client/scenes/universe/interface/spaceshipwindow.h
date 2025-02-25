@@ -32,5 +32,6 @@ class SpaceshipWindow : public SysUserInterface {
     double new_perigee = 0.;
     double new_apogee = 0.;
     double new_hohmann = 0.;
+    float lambert_tof;
 };
 }  // namespace cqsp::client::systems

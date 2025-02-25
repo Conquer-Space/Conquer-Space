@@ -227,6 +227,9 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
                                               orbit, target, GetUniverse().date.ToSecond()));
         ImGui::TextFmt("Transfer angle: {}", cqsp::common::components::types::CalculateTransferAngle(orbit, target));
         double ttma = orbit.TimeToTrueAnomaly(common::components::types::AscendingTrueAnomaly(orbit, target));
+        if (ImGui::Button("Lambert transfer")) {
+        }
+        ImGui::SliderFloat("Value", &lambert_tof);
         ImGui::TextFmt("Time to ascending node: {}", ttma);
         if (ImGui::BeginChild("Rendezvous Target")) {
             for (auto& entity : o_system.children) {
