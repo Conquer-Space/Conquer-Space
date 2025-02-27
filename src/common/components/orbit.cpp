@@ -25,7 +25,7 @@
 #include <glm/gtx/vector_angle.hpp>
 
 namespace cqsp::common::components::types {
-double GetOrbitingRadius(const double& e, const double& a, const double& v) {
+double GetOrbitingRadius(const double& e, const radian& a, const radian& v) {
     if (e > 1) {
         return (a * (e * e - 1)) / (1 + e * cos(v));
     } else {
@@ -280,7 +280,8 @@ double GetTrueAnomaly(const Orbit& orb, const second& epoch) {
     return v;
 }
 
-glm::dvec3 CalculateVelocity(const double& E, const double& r, const double& GM, const double& a, const double& e) {
+glm::dvec3 CalculateVelocity(const double& E, const kilometer& r, const double& GM, const kilometer& a,
+                             const double& e) {
     // Elliptic orbit
     if (e < 1) {
         return CalculateVelocityElliptic(E, r, GM, a, e);
@@ -293,7 +294,7 @@ glm::dvec3 CalculateVelocityHyperbolic(const double& E, const double& r, const d
     return (double)(sqrt(abs(GM * a)) / r) * glm::dvec3(sinh(E), -sqrt(e * e - 1) * cosh(E), 0);
 }
 
-glm::dvec3 CalculateVelocityElliptic(const double& E, const double& r, const double& GM, const double& a,
+glm::dvec3 CalculateVelocityElliptic(const double& E, const kilometer& r, const double& GM, const kilometer& a,
                                      const double& e) {
     return ((sqrt(GM * a) / r) * glm::dvec3(-sin(E), sqrt(1 - e * e) * cos(E), 0));
 }

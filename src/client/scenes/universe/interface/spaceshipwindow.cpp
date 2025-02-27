@@ -228,8 +228,16 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         ImGui::TextFmt("Transfer angle: {}", cqsp::common::components::types::CalculateTransferAngle(orbit, target));
         double ttma = orbit.TimeToTrueAnomaly(common::components::types::AscendingTrueAnomaly(orbit, target));
         if (ImGui::Button("Lambert transfer")) {
+            // Compute lambert problem
+            // Get future position of the entity
+
+            // Get the position of the satellite at the time
+            // Assume elliptic lol
+            auto& target_orbit = GetUniverse().get<common::components::types::Orbit>(selected);
+            //OrbitTimeToVec3(target_orbit, )
+            // Now get the x and y position
         }
-        ImGui::SliderFloat("Value", &lambert_tof);
+        ImGui::SliderFloat("Lambert Time of Flight (seconds)", &lambert_tof, 0, 1e6);
         ImGui::TextFmt("Time to ascending node: {}", ttma);
         if (ImGui::BeginChild("Rendezvous Target")) {
             for (auto& entity : o_system.children) {
