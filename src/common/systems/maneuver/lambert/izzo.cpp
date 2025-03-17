@@ -1,6 +1,7 @@
 #include "common/systems/maneuver/lambert/izzo.h"
 
 #include <algorithm>
+#include <iostream>
 #include <limits>
 #include <vector>
 
@@ -15,8 +16,7 @@ cqsp::common::systems::lambert::Izzo::Izzo(const glm::dvec3& r1, const glm::dvec
 
 // Code heavily derived from https://github.com/esa/pykep/blob/master/src/lambert_problem.cpp
 glm::dvec3 cqsp::common::systems::lambert::Izzo::Solve(const glm::dvec3& v_start) {
-    glm::dvec3 c = r2 - r1;
-    double c_mag = glm::length(c);
+    double c_mag = glm::length(r2 - r1);
     double r1_mag = glm::length(r1);
     double r2_mag = glm::length(r2);
 
@@ -31,7 +31,7 @@ glm::dvec3 cqsp::common::systems::lambert::Izzo::Solve(const glm::dvec3& v_start
     lambda = std::sqrt(lambda2);
     glm::dvec3 i_t1;
     glm::dvec3 i_t2;
-    if (i_h.y < 0.0) {  // Transfer angle is larger than 180 degrees as seen from above the z axis
+    if ((r1.x * r2.y - r1.y * r2.x) < 0.0) {  // Transfer angle is larger than 180 degrees as seen from above the z axis
         lambda = -lambda;
         i_t1 = glm::cross(i_r1, i_h);
         i_t2 = glm::cross(i_r2, i_h);
@@ -56,21 +56,23 @@ glm::dvec3 cqsp::common::systems::lambert::Izzo::Solve(const glm::dvec3& v_start
     double gamma = sqrt(mu * s / 2.);
     double rho = (r1_mag - r2_mag) / c_mag;
     double sigma = sqrt(1 - rho * rho);
-    double vr1, vt1, vr2, vt2, y;
     for (size_t i = 0; i < x.size(); ++i) {
-        y = sqrt(1.0 - lambda2 + lambda2 * x[i] * x[i]);
-        vr1 = gamma * ((lambda * y - x[i]) - rho * (lambda * y + x[i])) / r1_mag;
-        vr2 = -gamma * ((lambda * y - x[i]) + rho * (lambda * y + x[i])) / r2_mag;
+        double y = sqrt(1.0 - lambda2 + lambda2 * x[i] * x[i]);
+        double vr1 = gamma * ((lambda * y - x[i]) - rho * (lambda * y + x[i])) / r1_mag;
+        double vr2 = -gamma * ((lambda * y - x[i]) + rho * (lambda * y + x[i])) / r2_mag;
         double vt = gamma * sigma * (y + lambda * x[i]);
-        vt1 = vt / r1_mag;
-        vt2 = vt / r2_mag;
-        for (int j = 0; j < 3; ++j) v1[i][j] = vr1 * i_r1[j] + vt1 * i_t1[j];
-        for (int j = 0; j < 3; ++j) v2[i][j] = vr2 * i_r2[j] + vt2 * i_t2[j];
+        double vt1 = vt / r1_mag;
+        double vt2 = vt / r2_mag;
+        v1[i] = vr1 * i_r1 + vt1 * i_t1;
+        v2[i] = vr2 * i_r2 + vt2 * i_t2;
     }
     double min_dv = std::numeric_limits<double>::infinity();
     int lowest_v = -1;
     for (size_t i = 0; i < v1.size(); i++) {
         double t = glm::length(v1[i] - v_start);
+        std::cout << "V1 " << v1[i].x << ", " << v1[i].y << ", " << v1[i].z << "\n";
+        std::cout << "V2 " << v2[i].x << ", " << v2[i].y << ", " << v2[i].z << "\n";
+        std::cout << x[i] << ", " << iters[i] << "\n";
         if (t < min_dv) {
             t = min_dv;
             lowest_v = i;
@@ -87,14 +89,13 @@ glm::dvec3 cqsp::common::systems::lambert::Izzo::Solve(const glm::dvec3& v_start
 void cqsp::common::systems::lambert::Izzo::FindXY(double lambda, double T) {
     // We now have lambda, T and we will find all x
     // Let's detect the number of revolutions for which there exists a solution
-    double Nmax = static_cast<int>(T / components::types::PI);
-    double T00 = acos(lambda) + lambda * sqrt(1 - lambda2);
+    int Nmax = static_cast<int>(T / components::types::PI);
+    double T00 = acos(lambda) + lambda * sqrt(1. - lambda2);
     double T0 = (T00 + Nmax * components::types::PI);
     double T1 = 2. / 3. * (1. - lambda3);
     if (Nmax > 0) {
         if (T < T0) {
             int it = 0;
-            double err = 1.0;
             double T_min = T0;
             double x_old = 0.0;
             double x_new = 0.0;
@@ -103,11 +104,11 @@ void cqsp::common::systems::lambert::Izzo::FindXY(double lambda, double T) {
                 if (DT != 0) {  // We use Halley iterations to find xM and TM
                     x_new = x_old - DT * DDT / (DDT * DDT - DT * DDDT / 2.0);
                 }
-                err = fabs(x_old - x_new);
+                double err = fabs(x_old - x_new);
                 if ((err < 1e-13) || (it > 12)) {
                     break;
                 }
-                x2tof(T_min, x_new, Nmax);
+                T_min = x2tof(x_new, Nmax);
                 x_old = x_new;
                 it++;
             }
@@ -118,7 +119,7 @@ void cqsp::common::systems::lambert::Izzo::FindXY(double lambda, double T) {
     }
     // We exit this if clause with Nmax being the maximum number of revolutions
     // for which there exists a solution. We crop it to revs
-    Nmax = std::min(static_cast<double>(revs), Nmax);
+    Nmax = (int)std::min((revs), Nmax);
 
     v1.resize(static_cast<size_t>(Nmax) * 2 + 1);
     v2.resize(static_cast<size_t>(Nmax) * 2 + 1);
@@ -171,7 +172,7 @@ int cqsp::common::systems::lambert::Izzo::householder(double& x0, const double T
     double xnew = 0.0;
     double tof = 0.0, delta = 0.0, DT = 0.0, DDT = 0.0, DDDT = 0.0;
     while ((err > eps) && (it < iter_max)) {
-        x2tof(tof, x0, N);
+        tof = x2tof(x0, N);
         dTdx(DT, DDT, DDDT, x0, tof);
         delta = tof - T;
         double DT2 = DT * DT;
@@ -183,29 +184,27 @@ int cqsp::common::systems::lambert::Izzo::householder(double& x0, const double T
     return it;
 }
 
-void cqsp::common::systems::lambert::Izzo::x2tof2(double& tof, const double x, const int N) {
+double cqsp::common::systems::lambert::Izzo::x2tof2(const double x, const int N) {
     double a = 1.0 / (1.0 - x * x);
-    if (a > 0)  // ellipse
-    {
+    if (a > 0) {  // ellipse
         double alfa = 2.0 * acos(x);
         double beta = 2.0 * asin(sqrt(lambda * lambda / a));
         if (lambda < 0.0) beta = -beta;
-        tof = ((a * sqrt(a) * ((alfa - sin(alfa)) - (beta - sin(beta)) + 2.0 * components::types::PI * N)) / 2.0);
+        return ((a * sqrt(a) * ((alfa - sin(alfa)) - (beta - sin(beta)) + 2.0 * components::types::PI * N)) / 2.0);
     } else {
         double alfa = 2.0 * acosh(x);
         double beta = 2.0 * asinh(sqrt(-lambda * lambda / a));
         if (lambda < 0.0) beta = -beta;
-        tof = (-a * sqrt(-a) * ((beta - sinh(beta)) - (alfa - sinh(alfa))) / 2.0);
+        return (-a * sqrt(-a) * ((beta - sinh(beta)) - (alfa - sinh(alfa))) / 2.0);
     }
 }
 
-void cqsp::common::systems::lambert::Izzo::x2tof(double& tof, const double x, const int N) {
-    double battin = 0.01;
-    double lagrange = 0.2;
+double cqsp::common::systems::lambert::Izzo::x2tof(const double x, const int N) {
+    const double battin = 0.01;
+    const double lagrange = 0.2;
     double dist = fabs(x - 1);
     if (dist < lagrange && dist > battin) {  // We use Lagrange tof expression
-        x2tof2(tof, x, N);
-        return;
+        return x2tof2(x, N);
     }
     double K = lambda * lambda;
     double E = x * x - 1.0;
@@ -216,8 +215,7 @@ void cqsp::common::systems::lambert::Izzo::x2tof(double& tof, const double x, co
         double S1 = 0.5 * (1.0 - lambda - x * eta);
         double Q = hypergeometricF(S1, 1e-11);
         Q = 4.0 / 3.0 * Q;
-        tof = (eta * eta * eta * Q + 4.0 * lambda * eta) / 2.0 + N * components::types::PI / pow(rho, 1.5);
-        return;
+        return (eta * eta * eta * Q + 4.0 * lambda * eta) / 2.0 + N * components::types::PI / pow(rho, 1.5);
     } else {  // We use Lancaster tof expresion
         double y = sqrt(rho);
         double g = x * z - lambda * E;
@@ -229,8 +227,7 @@ void cqsp::common::systems::lambert::Izzo::x2tof(double& tof, const double x, co
             double f = y * (z - lambda * x);
             d = log(f + g);
         }
-        tof = (x - lambda * z - d / y) / E;
-        return;
+        return (x - lambda * z - d / y) / E;
     }
 }
 
@@ -247,7 +244,7 @@ double cqsp::common::systems::lambert::Izzo::hypergeometricF(double z, double to
         err = fabs(Cj1);
         Sj = Sj1;
         Cj = Cj1;
-        j = j + 1;
+        j++;
     }
     return Sj;
 }

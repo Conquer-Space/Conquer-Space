@@ -31,16 +31,16 @@ class Izzo {
     void FindXY(double lambda, double T);
     void dTdx(double& DT, double& DDT, double DDDT, const double x, const double T);
     int householder(double& x0, const double T, const int N, const double eps, const int iter_max);
-    void x2tof2(double& tof, const double x, const int N);
-    void x2tof(double& tof, const double x, const int N);
+    double x2tof2(const double x, const int N);
+    double x2tof(const double x, const int N);
     double hypergeometricF(double z, double tol);
 
-    glm::dvec3 r1;
-    glm::dvec3 r2;
-    double tof;
-    double mu;
-    int cw;
-    int revs;
+    const glm::dvec3 r1;
+    const glm::dvec3 r2;
+    const double tof;
+    const double mu;
+    const int cw;
+    const int revs;
 
     std::vector<glm::dvec3> v1;
     std::vector<glm::dvec3> v2;
