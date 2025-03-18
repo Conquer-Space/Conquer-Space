@@ -21,39 +21,18 @@
 #include <glm/vec3.hpp>
 
 namespace cqsp::common::systems::lambert {
-class Izzo {
+class Gooding {
  public:
     // https://github.com/esa/pykep/blob/8b0e9444d09b909d7d1d11e951c8efcfde0a2ffd/src/lambert_problem.cpp
-    Izzo(const glm::dvec3& r1, const glm::dvec3& r2, double tof, double mu, int cw, int revs);
-    glm::dvec3 Solve(const glm::dvec3& v_start);
+    Gooding(const glm::dvec3& r1, const glm::dvec3& r2, double tof, double mu, int revs)
+        : r1(r1), r2(r2), tof(tof), mu(mu), revs(revs) {}
+    glm::dvec3 Solve();
 
  private:
-    void FindXY(double lambda, double T);
-    void dTdx(double& DT, double& DDT, double DDDT, const double x, const double T);
-    int householder(double& x0, const double T, const int N, const double eps, const int iter_max);
-    double x2tof2(const double x, const int N);
-    double x2tof(const double x, const int N);
-    double hypergeometricF(double z, double tol);
-
     const glm::dvec3 r1;
     const glm::dvec3 r2;
-    const double tof;
-    const double mu;
-    const int cw;
-    const int revs;
-
-    std::vector<glm::dvec3> v1;
-    std::vector<glm::dvec3> v2;
-    std::vector<int> iters;
-    std::vector<double> x;
-    double lambda;
-    double lambda2;
-    double lambda3;
-
-    double DT = 0.0;
-    double DDT = 0.0;
-    double DDDT = 0.0;
+    double tof;
+    double mu;
+    int revs;
 };
-
-void propagate_lagrangian(glm::dvec3& r0, glm::dvec3& v0, const double& t, const double& mu);
 }  // namespace cqsp::common::systems::lambert

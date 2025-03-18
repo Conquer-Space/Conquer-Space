@@ -316,15 +316,24 @@ Orbit ApplyImpulse(const Orbit& orbit, const glm::dvec3& impulse, double time) {
 
 double OrbitVelocityAtR(const double GM, const double a, const double r) { return sqrt(GM * (2 / r - 1 / a)); }
 
-glm::dvec3 OrbitTimeToVec3(const Orbit& orb, const second& time) {
+glm::dvec3 OrbitTimeToVec3(const Orbit& orb, const second time) {
     double v = 0;
-    double E = 0;
     if (orb.eccentricity < 1) {
-        v = TrueAnomalyElliptic(orb, time, E);
+        v = TrueAnomalyElliptic(orb, time);
     } else {
         v = TrueAnomalyHyperbolic(orb, time);
     }
     return toVec3(orb, v);
+}
+
+glm::dvec3 OrbitTimeToVelocityVec3(const Orbit& orb, const second time) {
+    double v = 0;
+    if (orb.eccentricity < 1) {
+        v = TrueAnomalyElliptic(orb, time);
+    } else {
+        v = TrueAnomalyHyperbolic(orb, time);
+    }
+    return OrbitVelocityToVec3(orb, v);
 }
 
 double CalculateTransferTime(const Orbit& orb1, const Orbit& orb2) {
