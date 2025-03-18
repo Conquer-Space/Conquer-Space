@@ -102,7 +102,6 @@ class UniverseScene : public cqsp::client::Scene {
 
     double last_tick = 0;
 
-    std::array<int, 7> tick_speeds {1000, 500, 333, 100, 50, 10, 1};
     void ToggleTick();
 
     bool interp = true;
