@@ -21,6 +21,7 @@
 #include "common/components/movement.h"
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
+#include "common/components/surface.h"
 #include "common/systems/maneuver/hohmann.h"
 #include "common/systems/maneuver/maneuver.h"
 #include "common/systems/maneuver/rendezvous.h"
@@ -230,6 +231,31 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         ImGui::TextFmt("Time to ascending node: {}", ttma);
         if (ImGui::BeginChild("Rendezvous Target")) {
             for (auto& entity : o_system.children) {
+                if (ImGui::Selectable(common::util::GetName(GetUniverse(), entity).c_str(), selected == entity)) {
+                    selected = entity;
+                }
+            }
+        }
+        ImGui::EndChild();
+    }
+    if (ImGui::CollapsingHeader("Land on Body")) {
+        auto& o_system = GetUniverse().get<cqsp::common::components::bodies::OrbitalSystem>(orbit.reference_body);
+        static entt::entity selected = entt::null;
+        if (selected == entt::null) {
+            ImGui::BeginDisabled(true);
+        }
+        if (ImGui::Button("Land on body")) {
+        }
+        if (selected == entt::null) {
+            ImGui::EndDisabled();
+        }
+
+        if (ImGui::BeginChild("Landing Target")) {
+            for (auto& entity : o_system.children) {
+                if (!GetUniverse().all_of<common::components::bodies::Planet, common::components::types::Orbit>(
+                        entity)) {
+                    continue;
+                }
                 if (ImGui::Selectable(common::util::GetName(GetUniverse(), entity).c_str(), selected == entity)) {
                     selected = entity;
                 }
