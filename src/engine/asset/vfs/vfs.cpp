@@ -50,7 +50,7 @@ std::shared_ptr<IVirtualFile> VirtualMounter::Open(const std::string& mount, con
 
 std::shared_ptr<IVirtualDirectory> VirtualMounter::OpenDirectory(const std::string& path) {
     for (auto it = mount_points.begin(); it != mount_points.end(); it++) {
-        if (path.starts_with(it->first)) {
+        if (!path.starts_with(it->first)) {
             continue;
         }
         // Then it's the mount point
