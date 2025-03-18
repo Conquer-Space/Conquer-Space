@@ -122,6 +122,7 @@ void SysOrbit::UpdateCommandQueue(cqspt::Orbit& orb, entt::entity body, entt::en
         return;
     }
     if (GetUniverse().date.ToSecond() - command.time > Interval()) {
+        SPDLOG_INFO("Negative time? {}", GetUniverse().date.ToSecond() - command.time);
     }
     // Then execute the command
     orb = cqspt::ApplyImpulse(orb, command.delta_v, command.time);

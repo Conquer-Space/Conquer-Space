@@ -21,7 +21,8 @@
 
 namespace cqsp::client::ctx {
 
-static const std::array tick_speeds {1000, 500, 333, 100, 50, 10, 1, -1, -2, -3, -4};
+static const std::array tick_speeds {1000, 500, 333, 100, 50, 10, 1, -1, -2, -5, -10};
+
 struct StarSystemViewDebug {
     bool to_show = false;
 };

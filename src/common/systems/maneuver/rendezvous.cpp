@@ -28,8 +28,11 @@ HohmannPair_t CoplanarIntercept(const components::types::Orbit& start_orbit, con
 
     double t_phase_angle = CalculateTransferAngle(start_orbit, end_orbit);
 
-    double t_wait = -(t_phase_angle - current_phase_angle) / (start_orbit.nu() - end_orbit.nu());
-    // Get the nearesxt time to that phase angle, maybe next time we can put a time where we can
+    double t_wait = (current_phase_angle - t_phase_angle) / (start_orbit.nu() - end_orbit.nu());
+    if (t_wait < 0) {
+        t_wait = (current_phase_angle - t_phase_angle + 2 * PI) / (start_orbit.nu() - end_orbit.nu());
+    }
+    // Get the nearest time to that phase angle, maybe next time we can put a time where we can
     // Get the delta phase angle so that we can match up
     // Make sure that the phase angle matches up
 
