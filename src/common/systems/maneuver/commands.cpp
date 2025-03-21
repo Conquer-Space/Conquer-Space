@@ -16,7 +16,9 @@
  */
 #include "common/systems/maneuver/commands.h"
 
+#include "common/components/movement.h"
 #include "common/systems/maneuver/maneuver.h"
+#include "common/systems/maneuver/rendezvous.h"
 
 namespace cqsp::common::systems::commands {
 bool VerifyCommand(Universe& universe, entt::entity command) {
@@ -25,14 +27,40 @@ bool VerifyCommand(Universe& universe, entt::entity command) {
 
 void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity command_entity, Command command) {
     // TODO(EhWhoAmI): What if there's an error with the command?
+    if (!universe.any_of<components::types::Orbit>(entity)) {
+        return;
+    }
+    // One huge switch statement is not how I want it to be but what can I do ¯\_(ツ)_/¯
+    switch (command) {
+        case Command::CircularizeAtPeriapsis: {
+            auto& orbit = universe.get<components::types::Orbit>(entity);
+            std::pair<glm::dvec3, double> man_t = CircularizeAtPeriapsis(orbit);
+            PushManeuvers(universe, entity, {man_t});
+        } break;
+        case Command::MatchPlanes: {
+            auto& orbit = universe.get<components::types::Orbit>(entity);
+            auto& target_orbit = universe.get<OrbitTarget>(command_entity);
+            std::pair<glm::dvec3, double> man_t = MatchPlanes(orbit, target_orbit.orbit);
+            PushManeuvers(universe, entity, {man_t});
+        } break;
+        case Command::CoplanarIntercept: {
+            auto& orbit = universe.get<components::types::Orbit>(entity);
+            auto& target_orbit = universe.get<OrbitTarget>(command_entity);
+            auto pair = cqsp::common::systems::CoplanarIntercept(orbit, target_orbit.orbit, universe.date());
+            PushManeuvers(universe, entity, {pair.first});
+        } break;
+    }
 }
 
 bool ProcessCommandQueue(Universe& universe, entt::entity body, Trigger trigger) {
     if (!universe.any_of<components::CommandQueue>(body)) {
-        return;
+        return false;
     }
 
     auto& queue = universe.get<components::CommandQueue>(body);
+    if (queue.commands.empty()) {
+        return false;  // empty command queue
+    }
 
     entt::entity next_command = queue.commands.front();
     if (commands::VerifyCommand(universe, next_command)) {
@@ -57,16 +85,16 @@ void TransferToMoon(Universe& universe, entt::entity agent, entt::entity target)
     // Match planes
     // Get orbit
     components::types::Orbit target_orbit = universe.get<components::types::Orbit>(target);
-    entt::entity plane_match = universe.create();
-    universe.emplace<Trigger>(plane_match, Trigger::ASAP);
-    universe.emplace<Command>(plane_match, Command::MatchPlanes);
-    universe.emplace<OrbitTarget>(plane_match, target_orbit);
+    components::types::Orbit current_orbit = universe.get<components::types::Orbit>(agent);
+
+    auto maneuver = cqsp::common::systems::MatchPlanes(current_orbit, target_orbit);
+    PushManeuvers(universe, agent, {maneuver});
 
     // Move to intercept
     entt::entity maneuver_to_point = universe.create();
-    universe.emplace<Trigger>(plane_match, Trigger::OnManeuver);
-    universe.emplace<Command>(plane_match, Command::CoplanarIntercept);
-    universe.emplace<OrbitTarget>(plane_match, target_orbit);
+    universe.emplace<Trigger>(maneuver_to_point, Trigger::OnManeuver);
+    universe.emplace<Command>(maneuver_to_point, Command::CoplanarIntercept);
+    universe.emplace<OrbitTarget>(maneuver_to_point, target_orbit);
 
     // Circularize around target body
     entt::entity circularize = universe.create();
@@ -74,8 +102,22 @@ void TransferToMoon(Universe& universe, entt::entity agent, entt::entity target)
     universe.emplace<Command>(circularize, Command::CircularizeAtPeriapsis);
 
     auto& command_queue = universe.get_or_emplace<components::CommandQueue>(agent);
-    command_queue.commands.push_back(plane_match);
     command_queue.commands.push_back(maneuver_to_point);
     command_queue.commands.push_back(circularize);
+}
+
+void PushManeuvers(Universe& universe, entt::entity entity, std::initializer_list<components::Maneuver_t> maneuver,
+                   double offset) {
+    // Now push back all the commands or something
+    auto& queue = universe.get_or_emplace<components::CommandQueue>(entity);
+    for (auto& man_t : maneuver) {
+        queue.maneuvers.push_back(components::Maneuver(man_t, universe.date() + offset));
+    }
+}
+
+void PushManeuvers(Universe& universe, entt::entity entity, components::HohmannPair_t hohmann_pair, double offset) {
+    auto& queue = universe.get_or_emplace<components::CommandQueue>(entity);
+    queue.maneuvers.push_back(components::Maneuver(hohmann_pair.first, universe.date() + offset));
+    queue.maneuvers.push_back(components::Maneuver(hohmann_pair.second, universe.date() + offset));
 }
 }  // namespace cqsp::common::systems::commands

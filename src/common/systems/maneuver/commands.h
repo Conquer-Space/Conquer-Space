@@ -16,6 +16,8 @@
  */
 #pragma once
 
+#include <initializer_list>
+
 #include "common/components/movement.h"
 #include "common/components/orbit.h"
 #include "common/universe.h"
@@ -53,4 +55,8 @@ bool VerifyCommand(Universe& universe, entt::entity command);
 bool ProcessCommandQueue(Universe& universe, entt::entity body, Trigger trigger);
 void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity command_entity, Command command);
 void TransferToMoon(Universe& universe, entt::entity agent, entt::entity target);
+
+void PushManeuvers(Universe& universe, entt::entity entity, std::initializer_list<components::Maneuver_t> maneuver,
+                   double offset = 0);
+void PushManeuvers(Universe& universe, entt::entity entity, components::HohmannPair_t hohmann_pair, double offset = 0);
 }  // namespace cqsp::common::systems::commands

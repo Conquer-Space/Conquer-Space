@@ -22,6 +22,7 @@
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
 #include "common/components/surface.h"
+#include "common/systems/maneuver/commands.h"
 #include "common/systems/maneuver/hohmann.h"
 #include "common/systems/maneuver/maneuver.h"
 #include "common/systems/maneuver/rendezvous.h"
@@ -154,10 +155,8 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         if (ImGui::Button("Set Periapsis")) {
             // Get velocity at the new apogee
             // Get the velocity
-            common::components::Maneuver maneuver;
             auto m = common::systems::SetPeriapsis(orbit, new_apogee);
-            maneuver.delta_v = m.first;
-            maneuver.time = GetUniverse().date.ToSecond() + m.second;
+            common::components::Maneuver maneuver(m, GetUniverse().date());
             GetUniverse().get_or_emplace<common::components::CommandQueue>(body).maneuvers.push_back(maneuver);
         }
 
@@ -177,10 +176,8 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
             auto hohmann = common::systems::HohmannTransfer(orbit, new_hohmann);
             if (hohmann.has_value()) {
                 auto& queue = GetUniverse().get_or_emplace<common::components::CommandQueue>(body);
-                common::components::Maneuver man_1(hohmann->first);
-                common::components::Maneuver man_2(hohmann->second);
-                man_1.time += (GetUniverse().date.ToSecond() + 1000);
-                man_2.time += (GetUniverse().date.ToSecond() + 1000);
+                common::components::Maneuver man_1(hohmann->first, (GetUniverse().date() + 1000));
+                common::components::Maneuver man_2(hohmann->second, (GetUniverse().date() + 1000));
                 queue.maneuvers.push_back(man_1);
                 queue.maneuvers.push_back(man_2);
             } else {
@@ -204,25 +201,21 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
             // Rdv with target
             auto pair = cqsp::common::systems::CoplanarIntercept(orbit, target, GetUniverse().date.ToSecond());
             auto& queue = GetUniverse().get_or_emplace<common::components::CommandQueue>(body);
-            common::components::Maneuver man_1(pair.first);
-            common::components::Maneuver man_2(pair.second);
-            man_1.time += GetUniverse().date.ToSecond();
-            man_2.time += GetUniverse().date.ToSecond();
+            common::components::Maneuver man_1(pair.first, GetUniverse().date());
+            common::components::Maneuver man_2(pair.second, GetUniverse().date());
             queue.maneuvers.push_back(man_1);
             queue.maneuvers.push_back(man_2);
         }
         if (ImGui::Button("Maneuver to point")) {
             auto pair = cqsp::common::systems::CoplanarIntercept(orbit, target, GetUniverse().date.ToSecond());
             auto& queue = GetUniverse().get_or_emplace<common::components::CommandQueue>(body);
-            common::components::Maneuver man_1(pair.first);
-            man_1.time += GetUniverse().date.ToSecond();
+            common::components::Maneuver man_1(pair.first, GetUniverse().date());
             queue.maneuvers.push_back(man_1);
         }
         if (ImGui::Button("Match Planes")) {
             auto& queue = GetUniverse().get_or_emplace<common::components::CommandQueue>(body);
             auto maneuver = cqsp::common::systems::MatchPlanes(orbit, target);
-            maneuver.second += GetUniverse().date.ToSecond();
-            queue.maneuvers.emplace_back(maneuver);
+            queue.maneuvers.emplace_back(common::components::Maneuver {maneuver, GetUniverse().date()});
         }
         ImGui::TextFmt("Phase angle: {}", cqsp::common::components::types::CalculatePhaseAngle(
                                               orbit, target, GetUniverse().date.ToSecond()));
@@ -247,6 +240,7 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         if (ImGui::Button("Land on body")) {
             // Check if the targeted body has a settlement to land on
             // Now make a new window that can target the thing?
+            common::systems::commands::TransferToMoon(GetUniverse(), body, selected);
         }
         if (selected == entt::null) {
             ImGui::EndDisabled();
