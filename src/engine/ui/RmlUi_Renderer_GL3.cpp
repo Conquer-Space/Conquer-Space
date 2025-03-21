@@ -25,8 +25,8 @@
  * THE SOFTWARE.
  *
  */
-
-#include "RmlUi_Renderer_GL3.h"
+// NOLINTBEGIN
+#include "engine/ui/RmlUi_Renderer_GL3.h"
 
 #include <RmlUi/Core/Core.h>
 #include <RmlUi/Core/DecorationTypes.h>
@@ -37,7 +37,8 @@
 #include <RmlUi/Core/Platform.h>
 #include <RmlUi/Core/SystemInterface.h>
 #include <stb_image.h>
-#include <string.h>
+
+#include <cstring>
 
 #if defined(RMLUI_PLATFORM_WIN32) && !defined(__MINGW32__)
 // function call missing argument list
@@ -2015,3 +2016,4 @@ bool RmlGL3::Initialize(Rml::String* out_message) {
 }
 
 void RmlGL3::Shutdown() {}
+// NOLINTEND
