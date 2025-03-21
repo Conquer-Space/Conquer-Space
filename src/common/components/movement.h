@@ -39,10 +39,10 @@ struct Maneuver {
 };
 
 struct CommandQueue {
-    std::deque<Maneuver> commands;
+    std::deque<Maneuver> maneuvers;
+    std::deque<entt::entity> commands;
     CommandQueue() = default;
-
-    auto begin() { return commands.begin(); }
-    auto end() { return commands.end(); }
+    auto begin() { return maneuvers.begin(); }
+    auto end() { return maneuvers.end(); }
 };
 }  // namespace cqsp::common::components

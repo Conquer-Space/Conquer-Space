@@ -78,8 +78,8 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
     if (ImGui::CollapsingHeader("Maneuver Queue")) {
         if (GetUniverse().any_of<common::components::CommandQueue>(body)) {
             auto& queue = GetUniverse().get<common::components::CommandQueue>(body);
-            for (auto& manuver : queue) {
-                ImGui::TextFmt("Maneuver in {}", manuver.time - GetUniverse().date.ToSecond());
+            for (auto& maneuver : queue) {
+                ImGui::TextFmt("Maneuver in {}", maneuver.time - GetUniverse().date.ToSecond());
             }
         }
     }
@@ -98,7 +98,7 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
             // Add random delta v
             common::components::Maneuver maneuver(common::systems::CircularizeAtApoapsis(orbit));
             maneuver.time += GetUniverse().date.ToSecond();
-            GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push_back(maneuver);
+            GetUniverse().get_or_emplace<common::components::CommandQueue>(body).maneuvers.push_back(maneuver);
         }
         if (ImGui::IsItemHovered()) {
             double circular_velocity =
@@ -114,7 +114,7 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         if (ImGui::Button("Circularize at perapsis")) {
             common::components::Maneuver maneuver(common::systems::CircularizeAtPeriapsis(orbit));
             maneuver.time += GetUniverse().date.ToSecond();
-            GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push_back(maneuver);
+            GetUniverse().get_or_emplace<common::components::CommandQueue>(body).maneuvers.push_back(maneuver);
         }
 
         if (ImGui::IsItemHovered()) {
@@ -137,7 +137,7 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
             auto m = common::systems::SetApoapsis(orbit, new_perigee);
             maneuver.delta_v = m.first;
             maneuver.time = GetUniverse().date.ToSecond() + m.second;
-            GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push_back(maneuver);
+            GetUniverse().get_or_emplace<common::components::CommandQueue>(body).maneuvers.push_back(maneuver);
         }
 
         if (ImGui::IsItemHovered()) {
@@ -158,7 +158,7 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
             auto m = common::systems::SetPeriapsis(orbit, new_apogee);
             maneuver.delta_v = m.first;
             maneuver.time = GetUniverse().date.ToSecond() + m.second;
-            GetUniverse().get_or_emplace<common::components::CommandQueue>(body).commands.push_back(maneuver);
+            GetUniverse().get_or_emplace<common::components::CommandQueue>(body).maneuvers.push_back(maneuver);
         }
 
         if (ImGui::IsItemHovered()) {
@@ -181,8 +181,8 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
                 common::components::Maneuver man_2(hohmann->second);
                 man_1.time += (GetUniverse().date.ToSecond() + 1000);
                 man_2.time += (GetUniverse().date.ToSecond() + 1000);
-                queue.commands.push_back(man_1);
-                queue.commands.push_back(man_2);
+                queue.maneuvers.push_back(man_1);
+                queue.maneuvers.push_back(man_2);
             } else {
                 SPDLOG_INFO("Orbit is not circular!");
             }
@@ -208,21 +208,21 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
             common::components::Maneuver man_2(pair.second);
             man_1.time += GetUniverse().date.ToSecond();
             man_2.time += GetUniverse().date.ToSecond();
-            queue.commands.push_back(man_1);
-            queue.commands.push_back(man_2);
+            queue.maneuvers.push_back(man_1);
+            queue.maneuvers.push_back(man_2);
         }
         if (ImGui::Button("Maneuver to point")) {
             auto pair = cqsp::common::systems::CoplanarIntercept(orbit, target, GetUniverse().date.ToSecond());
             auto& queue = GetUniverse().get_or_emplace<common::components::CommandQueue>(body);
             common::components::Maneuver man_1(pair.first);
             man_1.time += GetUniverse().date.ToSecond();
-            queue.commands.push_back(man_1);
+            queue.maneuvers.push_back(man_1);
         }
         if (ImGui::Button("Match Planes")) {
             auto& queue = GetUniverse().get_or_emplace<common::components::CommandQueue>(body);
             auto maneuver = cqsp::common::systems::MatchPlanes(orbit, target);
             maneuver.second += GetUniverse().date.ToSecond();
-            queue.commands.emplace_back(maneuver);
+            queue.maneuvers.emplace_back(maneuver);
         }
         ImGui::TextFmt("Phase angle: {}", cqsp::common::components::types::CalculatePhaseAngle(
                                               orbit, target, GetUniverse().date.ToSecond()));
@@ -245,6 +245,8 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
             ImGui::BeginDisabled(true);
         }
         if (ImGui::Button("Land on body")) {
+            // Check if the targeted body has a settlement to land on
+            // Now make a new window that can target the thing?
         }
         if (selected == entt::null) {
             ImGui::EndDisabled();

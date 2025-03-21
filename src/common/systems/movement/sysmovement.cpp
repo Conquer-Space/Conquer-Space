@@ -26,6 +26,7 @@
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
 #include "common/components/units.h"
+#include "common/systems/maneuver/commands.h"
 #include "common/util/nameutil.h"
 
 namespace cqsp::common::systems {
@@ -66,6 +67,8 @@ void SysOrbit::LeaveSOI(const entt::entity& body, entt::entity& parent, cqspt::O
     pos.velocity = pos.velocity + p_pos.velocity;
     // Update dirty orbit
     GetUniverse().emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
+
+    commands::ProcessCommandQueue(GetUniverse(), body, commands::Trigger::OnExitSOI);
 }
 
 void SysOrbit::CrashObject(cqspt::Orbit& orb, entt::entity body, entt::entity parent) {
@@ -114,10 +117,10 @@ void SysOrbit::UpdateCommandQueue(cqspt::Orbit& orb, entt::entity body, entt::en
     }
     // Check if the current date is beyond the universe date
     auto& queue = GetUniverse().get<cqspc::CommandQueue>(body);
-    if (queue.commands.empty()) {
+    if (queue.maneuvers.empty()) {
         return;
     }
-    auto& command = queue.commands.front();
+    auto& command = queue.maneuvers.front();
     if (command.time > GetUniverse().date.ToSecond()) {
         return;
     }
@@ -127,7 +130,11 @@ void SysOrbit::UpdateCommandQueue(cqspt::Orbit& orb, entt::entity body, entt::en
     // Then execute the command
     orb = cqspt::ApplyImpulse(orb, command.delta_v, command.time);
     GetUniverse().emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
-    queue.commands.pop_front();
+    // Check if the next command is something, and then execute it
+    queue.maneuvers.pop_front();
+    // Now then executethe next command or something like that
+    // Then check the command queue for more commands
+    commands::ProcessCommandQueue(GetUniverse(), body, commands::Trigger::OnManeuver);
 }
 
 void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
@@ -225,7 +232,7 @@ bool SysOrbit::EnterSOI(const entt::entity& parent, const entt::entity& body) {
 
     auto& pos = GetUniverse().get<cqspc::types::Kinematics>(body);
     auto& orb = GetUniverse().get<cqspc::types::Orbit>(body);
-    // Check parents for SOI if we're inters ecting with anything
+    // Check parents for SOI if we're intersecting with anything
     auto& o_system = GetUniverse().get<cqspc::bodies::OrbitalSystem>(parent);
 
     for (entt::entity entity : o_system.children) {
@@ -252,6 +259,8 @@ bool SysOrbit::EnterSOI(const entt::entity& parent, const entt::entity& body) {
             auto& vec = GetUniverse().get<cqspc::bodies::OrbitalSystem>(parent).children;
             vec.erase(std::remove(vec.begin(), vec.end(), body), vec.end());
             GetUniverse().emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
+            // I have a bad feeling about this
+            commands::ProcessCommandQueue(GetUniverse(), body, commands::Trigger::OnEnterSOI);
             return true;
         }
         // Now check if it's intersecting with any things outside of stuff

@@ -62,6 +62,7 @@ class SysOrbit : public ISimulationSystem {
     void UpdateCommandQueue(cqsp::common::components::types::Orbit& orb, entt::entity body, entt::entity parent);
 
     void CalculateImpulse(cqsp::common::components::types::Orbit& orb, entt::entity body, entt::entity parent);
+    void EnterSOITrigger(entt::entity body);
 };
 
 class SysPath : public ISimulationSystem {
