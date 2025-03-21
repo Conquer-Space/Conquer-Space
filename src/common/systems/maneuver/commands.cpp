@@ -30,25 +30,68 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
     if (!universe.any_of<components::types::Orbit>(entity)) {
         return;
     }
+    auto& orbit = universe.get<components::types::Orbit>(entity);
+
     // One huge switch statement is not how I want it to be but what can I do ¯\_(ツ)_/¯
     switch (command) {
         case Command::CircularizeAtPeriapsis: {
-            auto& orbit = universe.get<components::types::Orbit>(entity);
             std::pair<glm::dvec3, double> man_t = CircularizeAtPeriapsis(orbit);
             PushManeuvers(universe, entity, {man_t});
         } break;
+        case Command::CircularizeAtApoapsis: {
+            std::pair<glm::dvec3, double> man_t = CircularizeAtApoapsis(orbit);
+            PushManeuvers(universe, entity, {man_t});
+        } break;
         case Command::MatchPlanes: {
-            auto& orbit = universe.get<components::types::Orbit>(entity);
+            if (!universe.any_of<OrbitTarget>(command_entity)) {
+                break;
+            }
             auto& target_orbit = universe.get<OrbitTarget>(command_entity);
             std::pair<glm::dvec3, double> man_t = MatchPlanes(orbit, target_orbit.orbit);
             PushManeuvers(universe, entity, {man_t});
         } break;
         case Command::CoplanarIntercept: {
-            auto& orbit = universe.get<components::types::Orbit>(entity);
+            if (!universe.any_of<OrbitTarget>(command_entity)) {
+                break;
+            }
             auto& target_orbit = universe.get<OrbitTarget>(command_entity);
             auto pair = cqsp::common::systems::CoplanarIntercept(orbit, target_orbit.orbit, universe.date());
             PushManeuvers(universe, entity, {pair.first});
         } break;
+        case Command::CoplanarInterceptAndTransfer: {
+            if (!universe.any_of<OrbitTarget>(command_entity)) {
+                break;
+            }
+            auto& target_orbit = universe.get<OrbitTarget>(command_entity);
+            auto pair = cqsp::common::systems::CoplanarIntercept(orbit, target_orbit.orbit, universe.date());
+            PushManeuvers(universe, entity, {pair.first, pair.second});
+        } break;
+        case Command::SetInclination: {
+            if (!universe.any_of<OrbitScalar>(command_entity)) {
+                break;
+            }
+            auto& scalar_change = universe.get<OrbitScalar>(command_entity);
+            auto maneuver = SetInclination(orbit, scalar_change.value);
+            PushManeuvers(universe, entity, {maneuver});
+        } break;
+        case Command::SetApoapsis: {
+            if (!universe.any_of<OrbitScalar>(command_entity)) {
+                break;
+            }
+            auto& scalar_change = universe.get<OrbitScalar>(command_entity);
+            auto maneuver = SetApoapsis(orbit, scalar_change.value);
+            PushManeuvers(universe, entity, {maneuver});
+        } break;
+        case Command::SetPeriapsis: {
+            if (!universe.any_of<OrbitScalar>(command_entity)) {
+                break;
+            }
+            auto& scalar_change = universe.get<OrbitScalar>(command_entity);
+            auto maneuver = SetPeriapsis(orbit, scalar_change.value);
+            PushManeuvers(universe, entity, {maneuver});
+        } break;
+        default:
+            break;
     }
 }
 

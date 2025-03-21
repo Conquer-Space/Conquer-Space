@@ -24,7 +24,7 @@
 
 namespace cqsp::common::systems::commands {
 enum class Command {
-    CirculaizeAtApoapsis,
+    CircularizeAtApoapsis,
     CircularizeAtPeriapsis,
     SetApoapsis,
     SetPeriapsis,
@@ -40,11 +40,14 @@ enum class Trigger {
     OnEnterSOI,
     OnExitSOI,
     OnManeuver,  // When the previous manuever is executed
-    ASAP,
 };
 
 struct OrbitTarget {
     components::types::Orbit orbit;
+};
+
+struct OrbitScalar {
+    double value;  // Modifies the orbit by some sort of scalar
 };
 
 /// Verifies if the command is a valid ship command option.
