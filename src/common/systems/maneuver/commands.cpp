@@ -16,7 +16,11 @@
  */
 #include "common/systems/maneuver/commands.h"
 
+#include <algorithm>
+
 #include "common/components/movement.h"
+#include "common/components/orbit.h"
+#include "common/components/surface.h"
 #include "common/systems/maneuver/maneuver.h"
 #include "common/systems/maneuver/rendezvous.h"
 
@@ -90,6 +94,28 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
             auto maneuver = SetPeriapsis(orbit, scalar_change.value);
             PushManeuvers(universe, entity, {maneuver});
         } break;
+        case Command::LandOnBody: {
+            // Then check if it's going to
+            if (!universe.any_of<OrbitEntityTarget>(command_entity)) {
+                break;
+            }
+            entt::entity target_city = universe.get<OrbitEntityTarget>(command_entity).target;
+            // Then check if it's the same body as the body that we landed on
+            // Eh who cares
+            auto& docked_ships = universe.get_or_emplace<components::DockedShips>(target_city);
+            // Now add the entity back
+            docked_ships.docked_ships.emplace_back(entity);
+            // Also remove from the orbital system
+            // Get the current orbital system that we're in
+            auto& orbit = universe.get<components::types::Orbit>(entity);
+            if (orbit.reference_body != entt::null && universe.valid(orbit.reference_body) &&
+                universe.any_of<components::bodies::OrbitalSystem>(orbit.reference_body)) {
+                auto& children = universe.get<components::bodies::OrbitalSystem>(orbit.reference_body).children;
+                children.erase(std::remove(children.begin(), children.end(), entity), children.end());
+            }
+            universe.remove<components::types::Orbit>(entity);
+            universe.remove<components::types::Kinematics>(entity);
+        } break;
         default:
             break;
     }
@@ -118,7 +144,9 @@ bool ProcessCommandQueue(Universe& universe, entt::entity body, Trigger trigger)
 
     // Now execute the command
     commands::ExecuteCommand(universe, body, next_command, universe.get<commands::Command>(next_command));
+
     // Done executing the command, then we're done
+    universe.destroy(next_command);
     queue.commands.pop_front();
     return true;
 }
@@ -162,5 +190,31 @@ void PushManeuvers(Universe& universe, entt::entity entity, components::HohmannP
     auto& queue = universe.get_or_emplace<components::CommandQueue>(entity);
     queue.maneuvers.emplace_back(hohmann_pair.first, universe.date() + offset);
     queue.maneuvers.emplace_back(hohmann_pair.second, universe.date() + offset);
+}
+
+void LandOnMoon(Universe& universe, entt::entity agent, entt::entity target, entt::entity city) {
+    // If the current body is the moon, then we don't really need to bother
+    auto& orbit = universe.get<components::types::Orbit>(agent);
+    if (orbit.reference_body != target) {
+        TransferToMoon(universe, agent, target);
+    }
+    // Lower the periapsis to about 90% of the radius
+    // In theory we'll do the math to land on the moon properly but eh
+    auto& body = universe.get<components::bodies::Body>(target);
+    double landing_radius = body.radius * 0.9;
+    entt::entity land_action = universe.create();
+    universe.emplace<Trigger>(land_action, Trigger::OnManeuver);
+    universe.emplace<Command>(land_action, Command::SetPeriapsis);
+    universe.emplace<OrbitScalar>(land_action, landing_radius);
+
+    // then land on the city on the moon
+    entt::entity dock_city = universe.create();
+    universe.emplace<Trigger>(dock_city, Trigger::OnCrash);
+    universe.emplace<Command>(dock_city, Command::LandOnBody);
+    universe.emplace<OrbitEntityTarget>(dock_city, city);
+
+    auto& command_queue = universe.get_or_emplace<components::CommandQueue>(agent);
+    command_queue.commands.push_back(land_action);
+    command_queue.commands.push_back(dock_city);
 }
 }  // namespace cqsp::common::systems::commands

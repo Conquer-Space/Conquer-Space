@@ -33,6 +33,7 @@ enum class Command {
     CoplanarIntercept,             // Just intercepts
     CoplanarInterceptAndTransfer,  // Intercepts and matches orbit
     Impulse,
+    LandOnBody,
 };
 
 enum class Trigger {
@@ -40,6 +41,7 @@ enum class Trigger {
     OnEnterSOI,
     OnExitSOI,
     OnManeuver,  // When the previous manuever is executed
+    OnCrash,
 };
 
 struct OrbitTarget {
@@ -50,6 +52,10 @@ struct OrbitScalar {
     double value;  // Modifies the orbit by some sort of scalar
 };
 
+struct OrbitEntityTarget {
+    entt::entity target;
+};
+
 /// Verifies if the command is a valid ship command option.
 /// This verifies if it's not null, and contains the
 /// necessary components to make it a command
@@ -58,6 +64,7 @@ bool VerifyCommand(Universe& universe, entt::entity command);
 bool ProcessCommandQueue(Universe& universe, entt::entity body, Trigger trigger);
 void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity command_entity, Command command);
 void TransferToMoon(Universe& universe, entt::entity agent, entt::entity target);
+void LandOnMoon(Universe& universe, entt::entity agent, entt::entity target, entt::entity city);
 
 void PushManeuvers(Universe& universe, entt::entity entity, std::initializer_list<components::Maneuver_t> maneuver,
                    double offset = 0);

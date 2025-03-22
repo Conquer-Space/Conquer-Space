@@ -77,6 +77,9 @@ void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement
                        cqspc::ResourceConsumption& marginal_propensity_base,
                        cqspc::ResourceConsumption& autonomous_consumption_base, float savings) {
     // Get the transport cost
+    if (!universe.any_of<cqspc::infrastructure::CityInfrastructure>(settlement)) {
+        return;
+    }
     auto& infrastructure = universe.get<cqspc::infrastructure::CityInfrastructure>(settlement);
     // Calculate the infrastructure cost
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;

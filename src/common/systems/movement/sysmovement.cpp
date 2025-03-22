@@ -79,14 +79,22 @@ void SysOrbit::CrashObject(cqspt::Orbit& orb, entt::entity body, entt::entity pa
     auto& pos = GetUniverse().get<cqspt::Kinematics>(body);
     if (GetUniverse().any_of<cqsps::Crash>(body)) {
         pos.position = glm::vec3(0);
+        return;
     }
 
     // Next time we need to account for the atmosphere
-    if (glm::length(pos.position) <= p_bod.radius) {
+    if (glm::length(pos.position) > p_bod.radius) {
+        return;
+    }
+    // Check if there is a command
+    if (commands::ProcessCommandQueue(GetUniverse(), body, commands::Trigger::OnCrash)) {
+        SPDLOG_INFO("Executed maneuver on crash");
+    } else {
         // Crash
         SPDLOG_INFO("Object {} collided with the ground", (uint64_t)body);
         // Then remove from the tree or something like that
         GetUniverse().get_or_emplace<cqsps::Crash>(body);
+        GetUniverse().get_or_emplace<cqspc::bodies::DirtyOrbit>(body);
         pos.position = glm::vec3(0);
         orb.semi_major_axis = 0;
     }
@@ -230,6 +238,9 @@ bool SysOrbit::EnterSOI(const entt::entity& parent, const entt::entity& body) {
     SPDLOG_TRACE("Calculating SOI entrance for {} in {}", util::GetName(universe, body),
                  util::GetName(universe, parent));
 
+    if (!GetUniverse().all_of<cqspc::types::Kinematics, cqspc::types::Orbit>(body)) {
+        return false;
+    }
     auto& pos = GetUniverse().get<cqspc::types::Kinematics>(body);
     auto& orb = GetUniverse().get<cqspc::types::Orbit>(body);
     // Check parents for SOI if we're intersecting with anything
