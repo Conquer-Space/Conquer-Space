@@ -154,13 +154,13 @@ void PushManeuvers(Universe& universe, entt::entity entity, std::initializer_lis
     // Now push back all the commands or something
     auto& queue = universe.get_or_emplace<components::CommandQueue>(entity);
     for (auto& man_t : maneuver) {
-        queue.maneuvers.emplace_back(components::Maneuver(man_t, universe.date() + offset));
+        queue.maneuvers.emplace_back({man_t, universe.date() + offset});
     }
 }
 
 void PushManeuvers(Universe& universe, entt::entity entity, components::HohmannPair_t hohmann_pair, double offset) {
     auto& queue = universe.get_or_emplace<components::CommandQueue>(entity);
-    queue.maneuvers.emplace_back(components::Maneuver(hohmann_pair.first, universe.date() + offset));
-    queue.maneuvers.emplace_back(components::Maneuver(hohmann_pair.second, universe.date() + offset));
+    queue.maneuvers.emplace_back({hohmann_pair.first, universe.date() + offset});
+    queue.maneuvers.emplace_back({hohmann_pair.second, universe.date() + offset});
 }
 }  // namespace cqsp::common::systems::commands
