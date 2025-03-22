@@ -20,6 +20,7 @@
 
 #include <glm/vec3.hpp>
 
+#include "common/components/movement.h"
 #include "common/components/orbit.h"
 #include "common/systems/maneuver/hohmann.h"
 
@@ -27,6 +28,6 @@ namespace cqsp::common::systems {
 // Tools for rendezvous
 // Coplanar rendezvous
 // Basically a Hohmann transfer at the right time
-HohmannPair_t CoplanarIntercept(const components::types::Orbit& start_orbit, const components::types::Orbit& end_orbit,
-                                double epoch);
+components::HohmannPair_t CoplanarIntercept(const components::types::Orbit& start_orbit,
+                                            const components::types::Orbit& end_orbit, double epoch);
 }  // namespace cqsp::common::systems

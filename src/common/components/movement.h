@@ -22,6 +22,10 @@
 #include "common/components/coordinates.h"
 
 namespace cqsp::common::components {
+// Datatype returned by a command
+typedef std::pair<glm::dvec3, double> Maneuver_t;
+typedef std::pair<Maneuver_t, Maneuver_t> HohmannPair_t;
+
 /// <summary>
 /// </summary>
 struct Maneuver {
@@ -36,13 +40,15 @@ struct Maneuver {
     double time;
     Maneuver() = default;
     explicit Maneuver(const std::pair<glm::dvec3, double>& maneuver) : delta_v(maneuver.first), time(maneuver.second) {}
+    explicit Maneuver(const std::pair<glm::dvec3, double>& maneuver, double current_time)
+        : delta_v(maneuver.first), time(maneuver.second + current_time) {}
 };
 
 struct CommandQueue {
-    std::deque<Maneuver> commands;
+    std::deque<Maneuver> maneuvers;
+    std::deque<entt::entity> commands;
     CommandQueue() = default;
-
-    auto begin() { return commands.begin(); }
-    auto end() { return commands.end(); }
+    auto begin() { return maneuvers.begin(); }
+    auto end() { return maneuvers.end(); }
 };
 }  // namespace cqsp::common::components

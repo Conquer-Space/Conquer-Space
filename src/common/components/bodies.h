@@ -96,6 +96,8 @@ struct NautralObject {};
 /// </summary>
 struct OrbitalSystem {
     // Set the tree
+    // TODO(EhWhoAmI): Large optimizations to be gained by separating bodies with a SOI to bodies without.
+    // We can have one iterator that interacts with both
     std::vector<entt::entity> children;
     void push_back(const entt::entity& entity) { children.push_back(entity); }
 };

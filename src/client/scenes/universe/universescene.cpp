@@ -31,7 +31,6 @@
 #include "client/scenes/universe/interface/syspausemenu.h"
 #include "client/scenes/universe/interface/sysstarsystemtree.h"
 #include "client/scenes/universe/interface/systechviewer.h"
-#include "client/scenes/universe/interface/systurnsavewindow.h"
 #include "client/scenes/universe/interface/turnsavewindow.h"
 #include "client/systems/syscommand.h"
 #include "common/components/area.h"
@@ -108,7 +107,11 @@ void cqsp::scene::UniverseScene::Update(float deltaTime) {
         }
     }
 
-    double tick_length = static_cast<float>(tick_speeds[pause_opt.tick_speed]) / 1000.f;
+    int tick_speed = client::ctx::tick_speeds[pause_opt.tick_speed];
+    double tick_length = static_cast<float>(tick_speed) / 1000.f;
+    if (tick_speed < 0) {
+        tick_length = 1 / 1000.f;
+    }
     if (pause_opt.to_tick && GetApp().GetTime() - last_tick > tick_length) {
         GetUniverse().EnableTick();
         last_tick = GetApp().GetTime();
@@ -122,7 +125,13 @@ void cqsp::scene::UniverseScene::Update(float deltaTime) {
     // Check for last tick
     if (GetUniverse().ToTick() && !game_halted) {
         // Game tick
-        simulation->tick();
+        if (client::ctx::tick_speeds[pause_opt.tick_speed] < 0) {
+            for (int i = 0; i < -client::ctx::tick_speeds[pause_opt.tick_speed]; i++) {
+                simulation->tick();
+            }
+        } else {
+            simulation->tick();
+        }
         system_renderer->OnTick();
     }
 
