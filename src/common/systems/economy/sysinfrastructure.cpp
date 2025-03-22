@@ -49,11 +49,13 @@ void cqsp::common::systems::InfrastructureSim::DoSystem() {
         } else {
             universe.remove<cqspc::infrastructure::BrownOut>(entity);
         }
-        auto& infra = GetUniverse().get<cqspc::infrastructure::CityInfrastructure>(entity);
-        infra.improvement = 0;
-        // Add highway things I guess
-        if (GetUniverse().any_of<cqspc::infrastructure::Highway>(entity)) {
-            infra.improvement += GetUniverse().get<cqspc::infrastructure::Highway>(entity).extent;
+        if (GetUniverse().any_of<cqspc::infrastructure::CityInfrastructure>(entity)) {
+            auto& infra = GetUniverse().get<cqspc::infrastructure::CityInfrastructure>(entity);
+            infra.improvement = 0;
+            // Add highway things I guess
+            if (GetUniverse().any_of<cqspc::infrastructure::Highway>(entity)) {
+                infra.improvement += GetUniverse().get<cqspc::infrastructure::Highway>(entity).extent;
+            }
         }
     }
 }

@@ -39,7 +39,7 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
     if (!GetUniverse().valid(body)) {
         return;
     }
-    if (!GetUniverse().all_of<common::components::ships::Ship>(body)) {
+    if (!GetUniverse().all_of<common::components::ships::Ship, common::components::types::Orbit>(body)) {
         return;
     }
     // Display the details of the spaceship
@@ -70,7 +70,8 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
                            orbit.TimeToTrueAnomaly(common::components::types::PI));
         }
     }
-    if (ImGui::CollapsingHeader("Orbital Vectors")) {
+    if (GetUniverse().all_of<common::components::types::Kinematics>(body) &&
+        ImGui::CollapsingHeader("Orbital Vectors")) {
         auto& coords = GetUniverse().get<common::components::types::Kinematics>(body);
         ImGui::TextFmt("Position {} {} {}", coords.position.x, coords.position.y, coords.position.z);
         ImGui::TextFmt("Velocity {} {} {}", coords.velocity.x, coords.velocity.y, coords.velocity.z);
@@ -214,16 +215,24 @@ void cqsp::client::systems::SpaceshipWindow::DoUI(int delta_time) {
         }
         ImGui::EndChild();
     }
-    if (ImGui::CollapsingHeader("Land on Body")) {
+    if (ImGui::CollapsingHeader("Moon Transfers")) {
         auto& o_system = GetUniverse().get<cqsp::common::components::bodies::OrbitalSystem>(orbit.reference_body);
         static entt::entity selected = entt::null;
         if (selected == entt::null) {
             ImGui::BeginDisabled(true);
         }
-        if (ImGui::Button("Land on body")) {
-            // Check if the targeted body has a settlement to land on
-            // Now make a new window that can target the thing?
+        if (ImGui::Button("Transfer to Moon")) {
             common::systems::commands::TransferToMoon(GetUniverse(), body, selected);
+        }
+
+        // Land on body?
+        if (ImGui::Button("Land On City")) {
+            // Check if the targeted body has a settlement to land on
+            // Just grab the first one
+            auto& cities = GetUniverse().get<common::components::Habitation>(selected);
+            if (!cities.settlements.empty()) {
+                common::systems::commands::LandOnMoon(GetUniverse(), body, selected, cities.settlements.front());
+            }
         }
         if (selected == entt::null) {
             ImGui::EndDisabled();
