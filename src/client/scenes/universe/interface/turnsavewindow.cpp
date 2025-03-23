@@ -17,7 +17,6 @@
 #include "turnsavewindow.h"
 
 #include "client/components/clientctx.h"
-
 namespace cqsp::client::systems::rmlui {
 TurnSaveWindow::~TurnSaveWindow() {
     document->RemoveEventListener(Rml::EventId::Click, &listener);
@@ -72,7 +71,7 @@ void TurnSaveWindow::EventListener::ProcessEvent(Rml::Event& event) {
     } else if (id_pressed == "slow_down") {
         if (pause_opt.tick_speed > 0) pause_opt.tick_speed--;
     } else if (id_pressed == "speed_up" || id_pressed == "fast_forward") {
-        if (pause_opt.tick_speed < 6) {
+        if (pause_opt.tick_speed < ctx::tick_speeds.size() - 1) {
             pause_opt.tick_speed++;
         }
     }

@@ -25,8 +25,8 @@
  * THE SOFTWARE.
  *
  */
-
-#include "RmlUi_Renderer_GL3.h"
+// NOLINTBEGIN
+#include "engine/ui/RmlUi_Renderer_GL3.h"
 
 #include <RmlUi/Core/Core.h>
 #include <RmlUi/Core/DecorationTypes.h>
@@ -2015,3 +2015,4 @@ bool RmlGL3::Initialize(Rml::String* out_message) {
 }
 
 void RmlGL3::Shutdown() {}
+// NOLINTEND

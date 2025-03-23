@@ -20,16 +20,19 @@
 
 namespace cqsp::common::systems {
 using namespace components::types;  // NOLINT
-HohmannPair_t CoplanarIntercept(const components::types::Orbit& start_orbit, const components::types::Orbit& end_orbit,
-                                double epoch) {
+components::HohmannPair_t CoplanarIntercept(const components::types::Orbit& start_orbit,
+                                            const components::types::Orbit& end_orbit, double epoch) {
     // They need to be the same plane, but let's ignore that
     // Also needs to be circular
     double current_phase_angle = CalculatePhaseAngle(start_orbit, end_orbit, epoch);
 
     double t_phase_angle = CalculateTransferAngle(start_orbit, end_orbit);
 
-    double t_wait = -(t_phase_angle - current_phase_angle) / (start_orbit.nu() - end_orbit.nu());
-    // Get the nearesxt time to that phase angle, maybe next time we can put a time where we can
+    double t_wait = (current_phase_angle - t_phase_angle) / (start_orbit.nu() - end_orbit.nu());
+    if (t_wait < 0) {
+        t_wait = (current_phase_angle - t_phase_angle + 2 * PI) / (start_orbit.nu() - end_orbit.nu());
+    }
+    // Get the nearest time to that phase angle, maybe next time we can put a time where we can
     // Get the delta phase angle so that we can match up
     // Make sure that the phase angle matches up
 

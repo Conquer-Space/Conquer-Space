@@ -69,6 +69,8 @@ class StarDate {
 
     void SetDate(unsigned int _date) { date = _date; }
 
+    double operator()() { return ToSecond(); }
+
  private:
     // The date is in minutes
     unsigned int date = -1;

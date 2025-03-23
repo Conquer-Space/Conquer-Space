@@ -20,25 +20,25 @@
 
 #include <glm/vec3.hpp>
 
+#include "common/components/movement.h"
 #include "common/components/orbit.h"
 
 // Basic satellite maneuvers
 namespace cqsp::common::systems {
 // Creates a manuever for a circular orbit at apogee, the new altitude of the entire orbit will be the apogee,
 // the maneuever will be at apogee
-std::pair<glm::dvec3, double> CircularizeAtApoapsis(const components::types::Orbit& orbit);
+components::Maneuver_t CircularizeAtApoapsis(const components::types::Orbit& orbit);
 // Creates a manuever for a circular orbit at perigee, new altitude will be perigee, the maneuver will be at the perigee
-std::pair<glm::dvec3, double> CircularizeAtPeriapsis(const components::types::Orbit& orbit);
+components::Maneuver_t CircularizeAtPeriapsis(const components::types::Orbit& orbit);
 
 // Raises or lowers apogee to the new altitude. This will not check if you are colliding with the body :(
 // The burn will be at the periapsis
-std::pair<glm::dvec3, double> SetApoapsis(const components::types::Orbit& orbit, double altitude);
+components::Maneuver_t SetApoapsis(const components::types::Orbit& orbit, double altitude);
 // Raises or lowers perapsis to the new altitude. This will not check if you are colliding with the body
 // The burn will be at the apoapsis
-std::pair<glm::dvec3, double> SetPeriapsis(const components::types::Orbit& orbit, double altitude);
+components::Maneuver_t SetPeriapsis(const components::types::Orbit& orbit, double altitude);
 // This will find the nearest point in the inclination that intersects with the orbital inclination plane 0 degrees.
-std::pair<glm::dvec3, double> SetInclination(const components::types::Orbit& orbit, double inclination);
-std::pair<glm::dvec3, double> SetCircularInclination(const components::types::Orbit& orbit, double inclination);
-std::pair<glm::dvec3, double> MatchPlanes(const components::types::Orbit& orbit,
-                                          const components::types::Orbit& target);
+components::Maneuver_t SetInclination(const components::types::Orbit& orbit, double inclination);
+components::Maneuver_t SetCircularInclination(const components::types::Orbit& orbit, double inclination);
+components::Maneuver_t MatchPlanes(const components::types::Orbit& orbit, const components::types::Orbit& target);
 }  // namespace cqsp::common::systems
