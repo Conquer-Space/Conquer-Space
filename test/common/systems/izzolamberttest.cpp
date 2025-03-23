@@ -21,7 +21,6 @@
 #include "common/components/orbit.h"
 #include "common/components/units.h"
 #include "common/systems/maneuver/lambert/izzo.h"
-#include "common/systems/maneuver/lambert/lambert.h"
 #include "common/systems/maneuver/maneuver.h"
 #include "common/systems/maneuver/rendezvous.h"
 
@@ -52,7 +51,7 @@ TEST(IzzoTest, Lambert) {
             double tof = std::uniform_real_distribution<>(0, orbit.T() * 1. / 2.)(gen);
             glm::dvec3 r1 = cqspt::OrbitTimeToVec3(orbit, tof);
 
-            kep_toolbox::lambert_problem lp(r0, r1, tof, 1, rotation != 0, 1);
+            cqsps::lambert::Izzo lp(r0, r1, tof, 1, rotation != 0, 1);
             lp.solve();
             bool has_correct_orbit = false;
 

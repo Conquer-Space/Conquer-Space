@@ -16,45 +16,59 @@
  */
 #pragma once
 
+#include <cmath>
 #include <vector>
 
-#include <glm/vec3.hpp>
+#include <glm/glm.hpp>
 
 namespace cqsp::common::systems::lambert {
+/**
+ * This class represent a Lambert's problem. When instantiated it assumes a prograde orbit (unless otherwise stated)
+ * and evaluates all the solutions up to a maximum number of multiple revolutions.
+ * After the object is instantiated the solutions can be retreived using the appropriate getters. Note that the
+ * number of solutions will be N_max*2 + 1, where N_max is the maximum number of revolutions.
+ *
+ * NOTE: The class has been tested extensively via monte carlo runs checked with numerical propagation. Compared
+ * to the previous Lambert Solver in the keplerian_toolbox it is 1.7 times faster (on average as defined
+ * by lambert_test.cpp). With respect to Gooding algorithm it is 1.3 - 1.5 times faster (zero revs - multi revs).
+ * The algorithm is described in detail in the publication below and its original with the author.
+ *
+ * @author Dario Izzo (dario.izzo _AT_ googlemail.com)
+ */
+
 class Izzo {
  public:
-    // https://github.com/esa/pykep/blob/8b0e9444d09b909d7d1d11e951c8efcfde0a2ffd/src/lambert_problem.cpp
-    Izzo(const glm::dvec3& r1, const glm::dvec3& r2, double tof, double mu, int cw, int revs);
-    glm::dvec3 Solve(const glm::dvec3& v_start);
-    std::vector<glm::dvec3>& get_v1() { return v1; }
+    Izzo(const glm::dvec3 &r1, const glm::dvec3 &r2, const double &tof = 3.1415926535 / 2, const double &mu = 1.,
+         const bool cw = false, const int &multi_revs = 5);
+    const std::vector<glm::dvec3> &get_v1() const;
+    const std::vector<glm::dvec3> &get_v2() const;
+    const glm::dvec3 &get_r1() const;
+    const glm::dvec3 &get_r2() const;
+    const double &get_tof() const;
+    const double &get_mu() const;
+    const std::vector<double> &get_x() const;
+    const std::vector<int> &get_iters() const;
+    int get_Nmax() const;
+    void solve();
 
  private:
-    void FindXY(double lambda, double T);
-    void dTdx(double& DT, double& DDT, double DDDT, const double x, const double T);
-    int householder(double& x0, const double T, const int N, const double eps, const int iter_max);
-    double x2tof2(const double x, const int N);
-    double x2tof(const double x, const int N);
+    int householder(const double T, double &x0, const int N, const double eps, const int iter_max);
+    void dTdx(double &DT, double &DDT, double &DDDT, const double x0, const double tof);
+    void x2tof(double &tof, const double x0, const int N);
+    void x2tof2(double &tof, const double x0, const int N);
     double hypergeometricF(double z, double tol);
 
-    const glm::dvec3 r1;
-    const glm::dvec3 r2;
+    const glm::dvec3 r1, r2;
     const double tof;
     const double mu;
-    const int cw;
-    const int revs;
-
-    std::vector<glm::dvec3> v1;
-    std::vector<glm::dvec3> v2;
-    std::vector<int> iters;
-    std::vector<double> x;
-    double lambda;
-    double lambda2;
-    double lambda3;
-
-    double DT = 0.0;
-    double DDT = 0.0;
-    double DDDT = 0.0;
+    std::vector<glm::dvec3> m_v1;
+    std::vector<glm::dvec3> m_v2;
+    std::vector<int> m_iters;
+    std::vector<double> m_x;
+    double m_s, m_c, m_lambda;
+    int m_Nmax;
+    bool m_has_converged;
+    int m_multi_revs;
+    bool cw;
 };
-
-void propagate_lagrangian(glm::dvec3& r0, glm::dvec3& v0, const double& t, const double& mu);
 }  // namespace cqsp::common::systems::lambert

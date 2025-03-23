@@ -1,178 +1,191 @@
+/* Conquer Space
+ * Copyright (C) 2021-2025 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include "common/systems/maneuver/lambert/izzo.h"
 
-#include <algorithm>
-#include <iostream>
-#include <limits>
-#include <vector>
+#include <cstddef>
+#include <numbers>
+#include <ostream>
 
-#include <glm/glm.hpp>
+namespace cqsp::common::systems::lambert {
+/** Constructs and solves a Lambert problem.
+  *
+  * \param[in] R1 first cartesian position
+  * \param[in] R2 second cartesian position
+  * \param[in] tof time of flight
+  * \param[in] mu gravity parameter
+  * \param[in] cw when 1 a retrograde orbit is assumed
+  * \param[in] multi_revs maximum number of multirevolutions to compute
+  */
+Izzo::Izzo(const glm::dvec3 &r1, const glm::dvec3 &r2, const double &tof, const double &mu, const bool cw,
+           const int &multi_revs)
+    : r1(r1), r2(r2), tof(tof), mu(mu), m_has_converged(true), m_multi_revs(multi_revs), cw(cw) {}
 
-#include "common/components/units.h"
-#include "izzo.h"
+void Izzo::solve() {
+    // 0 - Sanity checks
+    if (tof <= 0) {
+        //  throw_value_error("Time of flight is negative!");
+    }
+    if (mu <= 0) {
+        //  throw_value_error("Gravity parameter is zero or negative!");
+    }
+    // 1 - Getting lambda and T
+    m_c =
+        sqrt((r2[0] - r1[0]) * (r2[0] - r1[0]) + (r2[1] - r1[1]) * (r2[1] - r1[1]) + (r2[2] - r1[2]) * (r2[2] - r1[2]));
+    double R1 = glm::length(r1);
+    double R2 = glm::length(r2);
+    m_s = (m_c + R1 + R2) / 2.0;
+    glm::dvec3 ir1;
+    glm::dvec3 ir2;
+    glm::dvec3 ih;
+    glm::dvec3 it1;
+    glm::dvec3 it2;
+    ir1 = r1 / R1;
+    ir2 = r2 / R2;
+    ih = glm::cross(ir1, ir2);
 
-cqsp::common::systems::lambert::Izzo::Izzo(const glm::dvec3& r1, const glm::dvec3& r2, double tof, double mu, int cw,
-                                           int revs)
-    : r1(r1), r2(r2), tof(tof), mu(mu), cw(cw), revs(revs) {}
+    ih = glm::normalize(ih);
+    if (ih[2] == 0) {
+        //  throw_value_error("The angular momentum vector has no z component, impossible to define automatically clock or "
+        //                    "counterclockwise");
+    }
+    double lambda2 = 1.0 - m_c / m_s;
+    m_lambda = sqrt(lambda2);
 
-// Code heavily derived from https://github.com/esa/pykep/blob/master/src/lambert_problem.cpp
-glm::dvec3 cqsp::common::systems::lambert::Izzo::Solve(const glm::dvec3& v_start) {
-    double c_mag = glm::length(r2 - r1);
-    double r1_mag = glm::length(r1);
-    double r2_mag = glm::length(r2);
-
-    double s = 0.5 * (r1_mag + r2_mag + c_mag);
-
-    glm::dvec3 i_r1 = glm::normalize(r1);
-    glm::dvec3 i_r2 = glm::normalize(r2);
-    glm::dvec3 i_h = glm::cross(i_r1, i_r2);
-    i_h = glm::normalize(i_h);
-
-    lambda2 = 1 - c_mag / s;
-    lambda = std::sqrt(lambda2);
-    glm::dvec3 i_t1;
-    glm::dvec3 i_t2;
-    if ((r1.x * r2.y - r1.y * r2.x) < 0.0) {  // Transfer angle is larger than 180 degrees as seen from above the z axis
-        lambda = -lambda;
-        i_t1 = glm::cross(i_r1, i_h);
-        i_t2 = glm::cross(i_r2, i_h);
+    if (ih[2] < 0.0)  // Transfer angle is larger than 180 degrees as seen from abive the z axis
+    {
+        m_lambda = -m_lambda;
+        it1 = glm::cross(ir1, ih);
+        it2 = glm::cross(ir2, ih);
     } else {
-        i_t1 = glm::cross(i_h, i_r1);
-        i_t2 = glm::cross(i_h, i_r2);
+        it1 = glm::cross(ih, ir1);
+        it2 = glm::cross(ih, ir2);
     }
-    i_t1 = glm::normalize(i_t1);
-    i_t2 = glm::normalize(i_t2);
+    it1 = glm::normalize(it1);
+    it2 = glm::normalize(it2);
 
-    if (cw) {
-        // Retrograde motion
-        lambda = -lambda;
-        i_t1 = -i_t1;
-        i_t2 = -i_t2;
+    if (cw) {  // Retrograde motion
+        m_lambda = -m_lambda;
+        it1 = -it1;
+        it2 = -it2;
     }
-    lambda3 = lambda * lambda2;
-    double T = sqrt(2. * mu / s / s / s) * tof;
-    FindXY(lambda, T);
+    double lambda3 = m_lambda * lambda2;
+    double T = sqrt(2.0 * mu / m_s / m_s / m_s) * tof;
 
-    // 4 - For each found x value we reconstruct the terminal velocities
-    double gamma = sqrt(mu * s / 2.);
-    double rho = (r1_mag - r2_mag) / c_mag;
-    double sigma = sqrt(1 - rho * rho);
-    for (size_t i = 0; i < x.size(); ++i) {
-        double y = sqrt(1.0 - lambda2 + lambda2 * x[i] * x[i]);
-        double vr1 = gamma * ((lambda * y - x[i]) - rho * (lambda * y + x[i])) / r1_mag;
-        double vr2 = -gamma * ((lambda * y - x[i]) + rho * (lambda * y + x[i])) / r2_mag;
-        double vt = gamma * sigma * (y + lambda * x[i]);
-        double vt1 = vt / r1_mag;
-        double vt2 = vt / r2_mag;
-        v1[i] = vr1 * i_r1 + vt1 * i_t1;
-        v2[i] = vr2 * i_r2 + vt2 * i_t2;
-    }
-    double min_dv = std::numeric_limits<double>::infinity();
-    int lowest_v = -1;
-    for (size_t i = 0; i < v1.size(); i++) {
-        double t = glm::length(v1[i] - v_start);
-        /*std::cout << "V1 " << v1[i].x << ", " << v1[i].y << ", " << v1[i].z << "\n";
-        std::cout << "V2 " << v2[i].x << ", " << v2[i].y << ", " << v2[i].z << "\n";
-        std::cout << x[i] << ", " << iters[i] << "\n";*/
-        if (t < min_dv) {
-            t = min_dv;
-            lowest_v = i;
-        }
-    }
-    // Then return lowest v
-    if (lowest_v >= 0) {
-        return v1[lowest_v];
-    } else {
-        return v1[0];
-    }
-}
-
-void cqsp::common::systems::lambert::Izzo::FindXY(double lambda, double T) {
-    // We now have lambda, T and we will find all x
-    // Let's detect the number of revolutions for which there exists a solution
-    int Nmax = static_cast<int>(T / components::types::PI);
-    double T00 = acos(lambda) + lambda * sqrt(1. - lambda2);
-    double T0 = (T00 + Nmax * components::types::PI);
-    double T1 = 2. / 3. * (1. - lambda3);
-    if (Nmax > 0) {
-        if (T < T0) {
+    // 2 - We now have lambda, T and we will find all x
+    // 2.1 - Let us first detect the maximum number of revolutions for which there exists a solution
+    m_Nmax = static_cast<int>(T / std::numbers::pi);
+    double T00 = acos(m_lambda) + m_lambda * sqrt(1.0 - lambda2);
+    double T0 = (T00 + m_Nmax * std::numbers::pi);
+    double T1 = 2.0 / 3.0 * (1.0 - lambda3);
+    double DT = 0.0;
+    double DDT = 0.0;
+    double DDDT = 0.0;
+    if (m_Nmax > 0) {
+        if (T < T0) {  // We use Halley iterations to find xM and TM
             int it = 0;
+            double err = 1.0;
             double T_min = T0;
             double x_old = 0.0;
             double x_new = 0.0;
             while (true) {
                 dTdx(DT, DDT, DDDT, x_old, T_min);
-                if (DT != 0) {  // We use Halley iterations to find xM and TM
+                if (DT != 0.0) {
                     x_new = x_old - DT * DDT / (DDT * DDT - DT * DDDT / 2.0);
                 }
-                double err = fabs(x_old - x_new);
+                err = fabs(x_old - x_new);
                 if ((err < 1e-13) || (it > 12)) {
                     break;
                 }
-                T_min = x2tof(x_new, Nmax);
+                x2tof(T_min, x_new, m_Nmax);
                 x_old = x_new;
                 it++;
             }
             if (T_min > T) {
-                Nmax--;
+                m_Nmax -= 1;
             }
         }
     }
     // We exit this if clause with Nmax being the maximum number of revolutions
-    // for which there exists a solution. We crop it to revs
-    Nmax = (int)std::min((revs), Nmax);
+    // for which there exists a solution. We crop it to m_multi_revs
+    m_Nmax = std::min(m_multi_revs, m_Nmax);
 
-    v1.resize(static_cast<size_t>(Nmax) * 2 + 1);
-    v2.resize(static_cast<size_t>(Nmax) * 2 + 1);
-    iters.resize(static_cast<size_t>(Nmax) * 2 + 1);
-    x.resize(static_cast<size_t>(Nmax) * 2 + 1);
+    // 2.2 We now allocate the memory for the output variables
+    m_v1.resize(static_cast<size_t>(m_Nmax) * 2 + 1);
+    m_v2.resize(static_cast<size_t>(m_Nmax) * 2 + 1);
+    m_iters.resize(static_cast<size_t>(m_Nmax) * 2 + 1);
+    m_x.resize(static_cast<size_t>(m_Nmax) * 2 + 1);
 
-    // Find all solutions in x, y
-    // 0 rev solution
-    // Get initial guess
+    // 3 - We may now find all solutions in x,y
+    // 3.1 0 rev solution
+    // 3.1.1 initial guess
     if (T >= T00) {
-        x[0] = -(T - T00) / (T - T00 + 4);
+        m_x[0] = -(T - T00) / (T - T00 + 4);
     } else if (T <= T1) {
-        x[0] = T1 * (T1 - T) / (2. / 5. * (1 - lambda2 * lambda3) * T) + 1;
+        m_x[0] = T1 * (T1 - T) / (2.0 / 5.0 * (1 - lambda2 * lambda3) * T) + 1;
     } else {
-        x[0] = pow(T / T00, 0.69314718055994529 / log(T1 / T00)) - 1;  // 0.69314718055994529 = ln 2
+        m_x[0] = pow((T / T00), std::numbers::ln2 / log(T1 / T00)) - 1.0;
+    }
+    // 3.1.2 Householder iterations
+    m_iters[0] = householder(T, m_x[0], 0, 1e-5, 15);
+    // 3.2 multi rev solutions
+    double tmp;
+    for (size_t i = 1; i < m_Nmax + 1; ++i) {
+        // 3.2.1 left Householder iterations
+        tmp = pow((i * std::numbers::pi + std::numbers::pi) / (8.0 * T), 2.0 / 3.0);
+        m_x[2 * i - 1] = (tmp - 1) / (tmp + 1);
+        m_iters[2 * i - 1] = householder(T, m_x[2 * i - 1], i, 1e-8, 15);
+        // 3.2.1 right Householder iterations
+        tmp = pow((8.0 * T) / (i * std::numbers::pi), 2.0 / 3.0);
+        m_x[2 * i] = (tmp - 1) / (tmp + 1);
+        m_iters[2 * i] = householder(T, m_x[2 * i], i, 1e-8, 15);
     }
 
-    // Householder iterations
-    iters[0] = householder(T, x[0], 0, 1e-5, 15);
-
-    // Multi rev solutions
-    for (decltype(Nmax) i = 1; i < Nmax + 1; i++) {
-        // Left householder iterations
-        double tmp = pow((i * components::types::PI + components::types::PI) / (8. * T), 2. / 3.);
-        x[2 * i - 1] = (tmp - 1) / (tmp + 1);
-        iters[2 * i - 1] = householder(T, x[2 * i - 1], i, 1e-8, 15);
-        // Right householder iterations
-        tmp = pow((8. * T) / (i * components::types::PI), 2. / 3.);
-        x[2 * i] = (tmp - 1) / (tmp + 1);
-        iters[2 * i] = householder(T, x[2 * i], i, 1e-8, 15);
+    // 4 - For each found x value we reconstruct the terminal velocities
+    double gamma = sqrt(mu * m_s / 2.0);
+    double rho = (R1 - R2) / m_c;
+    double sigma = sqrt(1 - rho * rho);
+    double vr1;
+    double vt1;
+    double vr2;
+    double vt2;
+    double y;
+    for (size_t i = 0; i < m_x.size(); ++i) {
+        y = sqrt(1.0 - lambda2 + lambda2 * m_x[i] * m_x[i]);
+        vr1 = gamma * ((m_lambda * y - m_x[i]) - rho * (m_lambda * y + m_x[i])) / R1;
+        vr2 = -gamma * ((m_lambda * y - m_x[i]) + rho * (m_lambda * y + m_x[i])) / R2;
+        double vt = gamma * sigma * (y + m_lambda * m_x[i]);
+        vt1 = vt / R1;
+        vt2 = vt / R2;
+        for (int j = 0; j < 3; ++j) m_v1[i][j] = vr1 * ir1[j] + vt1 * it1[j];
+        for (int j = 0; j < 3; ++j) m_v2[i][j] = vr2 * ir2[j] + vt2 * it2[j];
     }
 }
 
-void cqsp::common::systems::lambert::Izzo::dTdx(double& DT, double& DDT, double DDDT, const double x, const double T) {
-    double l2 = lambda * lambda;
-    double l3 = l2 * lambda;
-    double umx2 = 1.0 - x * x;
-    double y = sqrt(1.0 - l2 * umx2);
-    double y2 = y * y;
-    double y3 = y * y2;
-    DT = 1. / umx2 * (3. * T * x - 2.0 + 2.0 * l3 * x / y);
-    DDT = 1.0 / umx2 * (3. * T + 5. * x * DT + 2. * (1. - l2) * l3 / y3);
-    DDDT = 1. / umx2 * (7. * x * DDT + 8. * DT - 6. * (1. * l2) * l2 * l3 * x / y3 / y2);
-}
-
-int cqsp::common::systems::lambert::Izzo::householder(double& x0, const double T, const int N, const double eps,
-                                                      const int iter_max) {
+int Izzo::householder(const double T, double &x0, const int N, const double eps, const int iter_max) {
     int it = 0;
     double err = 1.0;
     double xnew = 0.0;
-    double tof = 0.0, delta = 0.0, DT = 0.0, DDT = 0.0, DDDT = 0.0;
+    double tof = 0.0;
+    double delta = 0.0;
+    double DT = 0.0;
+    double DDT = 0.0;
+    double DDDT = 0.0;
     while ((err > eps) && (it < iter_max)) {
-        tof = x2tof(x0, N);
+        x2tof(tof, x0, N);
         dTdx(DT, DDT, DDDT, x0, tof);
         delta = tof - T;
         double DT2 = DT * DT;
@@ -184,54 +197,70 @@ int cqsp::common::systems::lambert::Izzo::householder(double& x0, const double T
     return it;
 }
 
-double cqsp::common::systems::lambert::Izzo::x2tof2(const double x, const int N) {
+void Izzo::dTdx(double &DT, double &DDT, double &DDDT, const double x, const double T) {
+    double l2 = m_lambda * m_lambda;
+    double l3 = l2 * m_lambda;
+    double umx2 = 1.0 - x * x;
+    double y = sqrt(1.0 - l2 * umx2);
+    double y2 = y * y;
+    double y3 = y2 * y;
+    DT = 1.0 / umx2 * (3.0 * T * x - 2.0 + 2.0 * l3 * x / y);
+    DDT = 1.0 / umx2 * (3.0 * T + 5.0 * x * DT + 2.0 * (1.0 - l2) * l3 / y3);
+    DDDT = 1.0 / umx2 * (7.0 * x * DDT + 8.0 * DT - 6.0 * (1.0 - l2) * l2 * l3 * x / y3 / y2);
+}
+
+void Izzo::x2tof2(double &tof, const double x, const int N) {
     double a = 1.0 / (1.0 - x * x);
-    if (a > 0) {  // ellipse
+    if (a > 0)  // ellipse
+    {
         double alfa = 2.0 * acos(x);
-        double beta = 2.0 * asin(sqrt(lambda * lambda / a));
-        if (lambda < 0.0) beta = -beta;
-        return ((a * sqrt(a) * ((alfa - sin(alfa)) - (beta - sin(beta)) + 2.0 * components::types::PI * N)) / 2.0);
+        double beta = 2.0 * asin(sqrt(m_lambda * m_lambda / a));
+        if (m_lambda < 0.0) beta = -beta;
+        tof = ((a * sqrt(a) * ((alfa - sin(alfa)) - (beta - sin(beta)) + 2.0 * std::numbers::pi * N)) / 2.0);
     } else {
         double alfa = 2.0 * acosh(x);
-        double beta = 2.0 * asinh(sqrt(-lambda * lambda / a));
-        if (lambda < 0.0) beta = -beta;
-        return (-a * sqrt(-a) * ((beta - sinh(beta)) - (alfa - sinh(alfa))) / 2.0);
+        double beta = 2.0 * asinh(sqrt(-m_lambda * m_lambda / a));
+        if (m_lambda < 0.0) beta = -beta;
+        tof = (-a * sqrt(-a) * ((beta - sinh(beta)) - (alfa - sinh(alfa))) / 2.0);
     }
 }
 
-double cqsp::common::systems::lambert::Izzo::x2tof(const double x, const int N) {
-    const double battin = 0.01;
-    const double lagrange = 0.2;
+void Izzo::x2tof(double &tof, const double x, const int N) {
+    double battin = 0.01;
+    double lagrange = 0.2;
     double dist = fabs(x - 1);
     if (dist < lagrange && dist > battin) {  // We use Lagrange tof expression
-        return x2tof2(x, N);
+        x2tof2(tof, x, N);
+        return;
     }
-    double K = lambda * lambda;
+    double K = m_lambda * m_lambda;
     double E = x * x - 1.0;
     double rho = fabs(E);
     double z = sqrt(1 + K * E);
     if (dist < battin) {  // We use Battin series tof expression
-        double eta = z - lambda * x;
-        double S1 = 0.5 * (1.0 - lambda - x * eta);
+        double eta = z - m_lambda * x;
+        double S1 = 0.5 * (1.0 - m_lambda - x * eta);
         double Q = hypergeometricF(S1, 1e-11);
         Q = 4.0 / 3.0 * Q;
-        return (eta * eta * eta * Q + 4.0 * lambda * eta) / 2.0 + N * components::types::PI / pow(rho, 1.5);
+        tof = (eta * eta * eta * Q + 4.0 * m_lambda * eta) / 2.0 + N * std::numbers::pi / pow(rho, 1.5);
+        return;
     } else {  // We use Lancaster tof expresion
         double y = sqrt(rho);
-        double g = x * z - lambda * E;
+        double g = x * z - m_lambda * E;
         double d = 0.0;
         if (E < 0) {
             double l = acos(g);
-            d = N * components::types::PI + l;
+            d = N * std::numbers::pi + l;
         } else {
-            double f = y * (z - lambda * x);
+            double f = y * (z - m_lambda * x);
             d = log(f + g);
         }
-        return (x - lambda * z - d / y) / E;
+        tof = (x - m_lambda * z - d / y) / E;
+        return;
     }
 }
 
-double cqsp::common::systems::lambert::Izzo::hypergeometricF(double z, double tol) {
+double Izzo::hypergeometricF(double z, double tol) {
     double Sj = 1.0;
     double Cj = 1.0;
     double err = 1.0;
@@ -244,69 +273,65 @@ double cqsp::common::systems::lambert::Izzo::hypergeometricF(double z, double to
         err = fabs(Cj1);
         Sj = Sj1;
         Cj = Cj1;
-        j++;
+        j = j + 1;
     }
     return Sj;
 }
 
-//void propagate_lagrangian(glm::dvec3& r0, glm::dvec3& v0, const double& t, const double& mu) {
-//    double R = sqrt(r0[0] * r0[0] + r0[1] * r0[1] + r0[2] * r0[2]);
-//    double V = sqrt(v0[0] * v0[0] + v0[1] * v0[1] + v0[2] * v0[2]);
-//    double energy = (V * V / 2 - mu / R);
-//    double a = -mu / 2.0 / energy;
-//    double sqrta;
-//    double F, G, Ft, Gt;
-//
-//    double sigma0 = (r0[0] * v0[0] + r0[1] * v0[1] + r0[2] * v0[2]) / sqrt(mu);
-//
-//    if (a > 0) {  // Solve Kepler's equation, elliptical case
-//        sqrta = sqrt(a);
-//        double DM = sqrt(mu / pow(a, 3)) * t;
-//        double DE = DM;
-//
-//        // Solve Kepler Equation for ellipses in DE (eccentric anomaly difference)
-//        // newton_raphson(DE,boost::bind(kepDE,_1,DM,sigma0,sqrta,a,R),boost::bind(d_kepDE,_1,sigma0,sqrta,a,R),100,ASTRO_TOLERANCE);
-//        std::pair<double, double> result;
-//        int iter = 50;
-//        result = boost::math::tools::bracket_and_solve_root(boost::bind(kepDE, _1, DM, sigma0, sqrta, a, R), DE, 2.0,
-//                                                            true, tol, iter);
-//        DE = (result.first + result.second) / 2;
-//        double r = a + (R - a) * cos(DE) + sigma0 * sqrta * sin(DE);
-//
-//        // Lagrange coefficients
-//        F = 1 - a / R * (1 - cos(DE));
-//        G = a * sigma0 / sqrt(mu) * (1 - cos(DE)) + R * sqrt(a / mu) * sin(DE);
-//        Ft = -sqrt(mu * a) / (r * R) * sin(DE);
-//        Gt = 1 - a / r * (1 - cos(DE));
-//    } else {  // Solve Kepler's equation, hyperbolic case
-//        sqrta = sqrt(-a);
-//        double DN = sqrt(-mu / pow(a, 3)) * t;
-//        double DH;
-//        t > 0 ? DH = 1 : DH = -1;  // TODO: find a better initial guess. I tried with
-//                                   // 0 and D (both have numercial problems and
-//                                   // result in exceptions)
-//
-//        // Solve Kepler Equation for hyperbolae in DH (hyperbolic anomaly
-//        // difference)
-//        // newton_raphson(DH,boost::bind(kepDH,_1,DN,sigma0,sqrta,a,R),boost::bind(d_kepDH,_1,sigma0,sqrta,a,R),100,ASTRO_TOLERANCE);
-//        std::pair<double, double> result;
-//        boost::uintmax_t iter = ASTRO_MAX_ITER;
-//        boost::math::tools::eps_tolerance<double> tol(64);
-//        result = boost::math::tools::bracket_and_solve_root(boost::bind(kepDH, _1, DN, sigma0, sqrta, a, R), DH, 2.0,
-//                                                            true, tol, iter);
-//        DH = (result.first + result.second) / 2;
-//        double r = a + (R - a) * cosh(DH) + sigma0 * sqrta * sinh(DH);
-//
-//        // Lagrange coefficients
-//        F = 1 - a / R * (1 - cosh(DH));
-//        G = a * sigma0 / sqrt(mu) * (1 - cosh(DH)) + R * sqrt(-a / mu) * sinh(DH);
-//        Ft = -sqrt(-mu * a) / (r * R) * sinh(DH);
-//        Gt = 1 - a / r * (1 - cosh(DH));
-//    }
-//
-//    double temp[3] = {r0[0], r0[1], r0[2]};
-//    for (int i = 0; i < 3; i++) {
-//        r0[i] = F * r0[i] + G * v0[i];
-//        v0[i] = Ft * temp[i] + Gt * v0[i];
-//    }
-//}
+/**
+  *
+  * \return an std::vector containing 3-d arrays with the cartesian components of the velocities at r1 for all 2N_max+1
+  * solutions
+  */
+const std::vector<glm::dvec3> &Izzo::get_v1() const { return m_v1; }
+
+/**
+  *
+  * \return an std::vector containing 3-d arrays with the cartesian components of the velocities at r2 for all 2N_max+1
+  * solutions
+  */
+const std::vector<glm::dvec3> &Izzo::get_v2() const { return m_v2; }
+
+/**
+  *
+  * \return a 3-d array with the cartesian components of r1
+  */
+const glm::dvec3 &Izzo::get_r1() const { return r1; }
+
+/**
+  *
+  * \return a 3-d array with the cartesian components of r2
+  */
+const glm::dvec3 &Izzo::get_r2() const { return r2; }
+
+/**
+  *
+  * \return the time of flight
+  */
+const double &Izzo::get_tof() const { return tof; }
+
+/**
+  * Gets the x variable for each solution found (0 revs, 1,1,2,2,3,3 .... N,N)
+  *
+  * \return the x variables in an std::vector
+  */
+const std::vector<double> &Izzo::get_x() const { return m_x; }
+
+/**
+  *
+  * \return the gravitational parameter
+  */
+const double &Izzo::get_mu() const { return mu; }
+
+/**
+  *
+  * \return an std::vector containing the iterations taken to compute each one of the solutions
+  */
+const std::vector<int> &Izzo::get_iters() const { return m_iters; }
+
+/**
+  *
+  * \return the maximum number of revolutions. The number of solutions to the problem will be Nmax*2 +1
+  */
+int Izzo::get_Nmax() const { return m_Nmax; }
+}  // namespace cqsp::common::systems::lambert
