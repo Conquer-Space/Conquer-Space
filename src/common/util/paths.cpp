@@ -43,9 +43,73 @@ char* get_home_dir(uid_t uid) {
 }  // namespace
 #endif
 
-namespace cqsp::common::util {
-std::string ExePath::exe_path = std::string();  // NOLINT
+#if defined(_WIN32)
+#include <Shlwapi.h>
+#include <atlstr.h>
+#include <io.h>
+#define access _access_s
+#endif
 
+#ifdef __APPLE__
+#include <libgen.h>
+#include <limits.h>
+#include <mach-o/dyld.h>
+#include <unistd.h>
+#endif
+
+#ifdef __linux__
+#include <libgen.h>
+#include <limits.h>
+#include <unistd.h>
+
+#if defined(__sun)
+#define PROC_SELF_EXE "/proc/self/path/a.out"
+#else
+#define PROC_SELF_EXE "/proc/self/exe"
+#endif
+#endif
+namespace {
+std::string getExecutableDir();
+
+#if defined(_WIN32)
+
+std::string getExecutablePath() {
+    char rawPathName[MAX_PATH];
+    GetModuleFileNameA(NULL, rawPathName, MAX_PATH);
+    return std::string(rawPathName);
+}
+#endif
+
+#ifdef __linux__
+std::string getExecutablePath() {
+    char rawPathName[PATH_MAX];
+    realpath(PROC_SELF_EXE, rawPathName);
+    return std::string(rawPathName);
+}
+#endif
+
+#ifdef __APPLE__
+std::string getExecutablePath() {
+    char rawPathName[PATH_MAX];
+    char realPathName[PATH_MAX];
+    uint32_t rawPathSize = (uint32_t)sizeof(rawPathName);
+
+    if (!_NSGetExecutablePath(rawPathName, &rawPathSize)) {
+        realpath(rawPathName, realPathName);
+    }
+    return std::string(realPathName);
+}
+
+#endif
+
+bool checkIfFileExists(const std::string& filePath) { return access(filePath.c_str(), 0) == 0; }
+
+std::string getExecutableDir() {
+    std::string executablePath = getExecutablePath();
+    return std::filesystem::path(executablePath).parent_path().string();
+}
+}  // namespace
+namespace cqsp::common::util {
 std::string GetCqspAppDataPath() {
     std::string directory;
     std::string dirname = "cqsp";
@@ -72,7 +136,7 @@ std::string GetCqspAppDataPath() {
 
 std::string GetCqspExePath() {
     // Get current path
-    std::filesystem::path p(ExePath::exe_path);
+    std::filesystem::path p(getExecutablePath());
     p = p.remove_filename();
     return std::filesystem::canonical(p).string();
 }

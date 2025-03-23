@@ -18,8 +18,10 @@
 
 #include <math.h>
 
+#include <ostream>
+
 #include <entt/entt.hpp>
-#include <glm/glm.hpp>
+#include <glm/vec3.hpp>
 
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
@@ -148,6 +150,12 @@ struct Orbit {
 
     double TimeToTrueAnomaly(double v2) const;
 };
+
+inline std::ostream& operator<<(std::ostream& outs, const Orbit& orb) {
+    return outs << "(" << orb.semi_major_axis << ", " << orb.eccentricity << ", " << orb.inclination << ", " << orb.LAN
+                << ", " << orb.w << ", " << orb.GM << ", " << orb.v << ", " << orb.epoch << ", "
+                << (uint32_t)orb.reference_body << ")";
+}
 
 struct SetTrueAnomaly {
     double true_anomaly;
@@ -337,7 +345,8 @@ inline glm::dvec3 toVec3(const Orbit& orb, radian theta) {
     return OrbitToVec3(orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN, orb.w, theta);
 }
 
-glm::dvec3 OrbitTimeToVec3(const Orbit& orb, const second& time);
+glm::dvec3 OrbitTimeToVec3(const Orbit& orb, const second time = 0);
+glm::dvec3 OrbitTimeToVelocityVec3(const Orbit& orb, const second time = 0);
 
 inline glm::dvec3 toVec3(const Orbit& orb) { return toVec3(orb, orb.v); }
 /// <summary>

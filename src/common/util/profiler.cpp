@@ -25,3 +25,5 @@ void set_time_block(const std::string& str, std::chrono::high_resolution_clock::
                     std::chrono::high_resolution_clock::time_point end) {
     profiler_information_map[str] = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 }
+
+std::map<std::string, int>& get_profile_information() { return profiler_information_map; }

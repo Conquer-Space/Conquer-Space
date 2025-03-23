@@ -102,7 +102,7 @@ void SysDebugMenu::CqspMetricsWindow() {
         }
         ImPlot::EndPlot();
     }
-    profiler_information_map.clear();
+    get_profile_information().clear();
     ImGui::End();
 }
 
@@ -281,7 +281,7 @@ void SysDebugMenu::DoUpdate(int delta_time) {
     }
     fps_history.emplace_back(time, fps);
 
-    for (auto it = profiler_information_map.begin(); it != profiler_information_map.end(); it++) {
+    for (auto it = get_profile_information().begin(); it != get_profile_information().end(); it++) {
         if (!history_maps[it->first].empty() && (history_maps[it->first].begin()->x + fps_history_len) < time) {
             history_maps[it->first].erase(history_maps[it->first].begin());
         }

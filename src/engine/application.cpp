@@ -266,7 +266,6 @@ void Application::CalculateProjections() {
 }
 
 Application::Application(int _argc, char* _argv[]) {
-    cqsp::common::util::ExePath::exe_path = _argv[0];
     for (int i = 0; i < _argc; i++) {
         cmd_line_args.emplace_back(_argv[i]);
     }
@@ -536,7 +535,7 @@ void Application::LogInfo() {
 #endif
     ENGINE_LOG_INFO("Platform: {}", PLATFORM_NAME);
     ENGINE_LOG_INFO("Compiled {} {}", __DATE__, __TIME__);
-    ENGINE_LOG_INFO("Exe Path: {}", common::util::ExePath::exe_path);
+    ENGINE_LOG_INFO("Exe Path: {}", common::util::GetCqspExePath());
     ENGINE_LOG_INFO("Data Path: {}", common::util::GetCqspDataPath());
     ENGINE_LOG_INFO("Save Path: {}", common::util::GetCqspAppDataPath());
 

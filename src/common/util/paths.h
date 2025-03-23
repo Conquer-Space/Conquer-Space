@@ -32,8 +32,4 @@ std::string GetCqspExePath();
 std::string GetCqspDataPath();
 /// This should return Documents/cqsp
 std::string GetCqspSavePath();
-
-struct ExePath {
-    static std::string exe_path;
-};
 }  // namespace cqsp::common::util
