@@ -78,26 +78,14 @@ std::string getExecutablePath() {
     GetModuleFileNameA(NULL, rawPathName, MAX_PATH);
     return std::string(rawPathName);
 }
-
-std::string mergePaths(const std::string& pathA, const std::string& pathB) {
-    char combined[MAX_PATH];
-    PathCombineA(combined, pathA.c_str(), pathB.c_str());
-    std::string mergedPath(combined);
-    return mergedPath;
-}
-
 #endif
 
 #ifdef __linux__
-
 std::string getExecutablePath() {
     char rawPathName[PATH_MAX];
     realpath(PROC_SELF_EXE, rawPathName);
     return std::string(rawPathName);
 }
-
-std::string mergePaths(std::string pathA, std::string pathB) { return pathA + "/" + pathB; }
-
 #endif
 
 #ifdef __APPLE__
@@ -112,7 +100,6 @@ std::string getExecutablePath() {
     return std::string(realPathName);
 }
 
-std::string mergePaths(const std::string& pathA, const std::string& pathB) { return pathA + "/" + pathB; }
 #endif
 
 bool checkIfFileExists(const std::string& filePath) { return access(filePath.c_str(), 0) == 0; }
