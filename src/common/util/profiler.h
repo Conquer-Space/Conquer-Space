@@ -20,6 +20,7 @@
 #include <map>
 #include <string>
 
+std::map<std::string, int>& get_profile_information();
 extern std::map<std::string, int> profiler_information_map;
 
 #define BEGIN_TIMED_BLOCK(NAME) \

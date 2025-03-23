@@ -50,13 +50,9 @@ namespace kep_toolbox {
 // Streaming operator for the class kep_toolbox::lambert_problem.
 
 class lambert_problem {
-    static const glm::dvec3 default_r1;
-    static const glm::dvec3 default_r2;
-
  public:
-    lambert_problem(const glm::dvec3 &r1 = default_r1, const glm::dvec3 &r2 = default_r2,
-                    const double &tof = 3.1415926535 / 2, const double &mu = 1., const int &cw = 0,
-                    const int &multi_revs = 5);
+    lambert_problem(const glm::dvec3 &r1, const glm::dvec3 &r2, const double &tof = 3.1415926535 / 2,
+                    const double &mu = 1., const bool cw = false, const int &multi_revs = 5);
     const std::vector<glm::dvec3> &get_v1() const;
     const std::vector<glm::dvec3> &get_v2() const;
     const glm::dvec3 &get_r1() const;
@@ -66,17 +62,18 @@ class lambert_problem {
     const std::vector<double> &get_x() const;
     const std::vector<int> &get_iters() const;
     int get_Nmax() const;
+    void solve();
 
  private:
-    int householder(const double T, double &x0, const int N, const double eps, const int itermax);
+    int householder(const double T, double &x0, const int N, const double eps, const int iter_max);
     void dTdx(double &DT, double &DDT, double &DDDT, const double x0, const double tof);
     void x2tof(double &tof, const double x0, const int N);
     void x2tof2(double &tof, const double x0, const int N);
     double hypergeometricF(double z, double tol);
 
-    const glm::dvec3 m_r1, m_r2;
-    const double m_tof;
-    const double m_mu;
+    const glm::dvec3 r1, r2;
+    const double tof;
+    const double mu;
     std::vector<glm::dvec3> m_v1;
     std::vector<glm::dvec3> m_v2;
     std::vector<int> m_iters;
@@ -85,11 +82,8 @@ class lambert_problem {
     int m_Nmax;
     bool m_has_converged;
     int m_multi_revs;
+    bool cw;
 };
-
-// Streaming operator for the class kep_toolbox::lambert_problem.
-//KEP_TOOLBOX_DLL_PUBLIC std::ostream &operator<<(std::ostream &, const lambert_problem &);
-
 }  // namespace kep_toolbox
 
 #endif  // KEP_TOOLBOX_LAMBERT_PROBLEM_H

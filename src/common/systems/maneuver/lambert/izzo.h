@@ -26,6 +26,7 @@ class Izzo {
     // https://github.com/esa/pykep/blob/8b0e9444d09b909d7d1d11e951c8efcfde0a2ffd/src/lambert_problem.cpp
     Izzo(const glm::dvec3& r1, const glm::dvec3& r2, double tof, double mu, int cw, int revs);
     glm::dvec3 Solve(const glm::dvec3& v_start);
+    std::vector<glm::dvec3>& get_v1() { return v1; }
 
  private:
     void FindXY(double lambda, double T);
