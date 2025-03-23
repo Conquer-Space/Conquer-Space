@@ -69,6 +69,7 @@ char* get_home_dir(uid_t uid) {
 #endif
 #endif
 namespace {
+std::string getExecutableDir();
 
 #if defined(_WIN32)
 
@@ -76,16 +77,6 @@ std::string getExecutablePath() {
     char rawPathName[MAX_PATH];
     GetModuleFileNameA(NULL, rawPathName, MAX_PATH);
     return std::string(rawPathName);
-}
-
-std::string getExecutableDir() {
-    std::string executablePath = getExecutablePath();
-    char* exePath = new char[executablePath.length()];
-    strncpy(exePath, executablePath.c_str(), executablePath.length());
-    PathRemoveFileSpecA(exePath);
-    std::string directory = std::string(exePath);
-    delete[] exePath;
-    return directory;
 }
 
 std::string mergePaths(const std::string& pathA, const std::string& pathB) {
@@ -105,15 +96,6 @@ std::string getExecutablePath() {
     return std::string(rawPathName);
 }
 
-std::string getExecutableDir() {
-    std::string executablePath = getExecutablePath();
-    char* executablePathStr = new char[executablePath.length() + 1];
-    strncpy(executablePathStr, executablePath.c_str(), executablePath.length() + 1);
-    char* executableDir = dirname(executablePathStr);
-    delete[] executablePathStr;
-    return std::string(executableDir);
-}
-
 std::string mergePaths(std::string pathA, std::string pathB) { return pathA + "/" + pathB; }
 
 #endif
@@ -130,19 +112,15 @@ std::string getExecutablePath() {
     return std::string(realPathName);
 }
 
-std::string getExecutableDir() {
-    std::string executablePath = getExecutablePath();
-    char* executablePathStr = new char[executablePath.length() + 1];
-    strncpy(executablePathStr, executablePath.c_str(), executablePath.length() + 1);
-    char* executableDir = dirname(executablePathStr);
-    delete[] executablePathStr;
-    return std::string(executableDir);
-}
-
 std::string mergePaths(std::string pathA, std::string pathB) { return pathA + "/" + pathB; }
 #endif
 
 bool checkIfFileExists(const std::string& filePath) { return access(filePath.c_str(), 0) == 0; }
+
+std::string getExecutableDir() {
+    std::string executablePath = getExecutablePath();
+    return std::filesystem::path(executablePath).parent_path().string();
+}
 }  // namespace
 namespace cqsp::common::util {
 std::string GetCqspAppDataPath() {
