@@ -37,7 +37,8 @@
 #include <RmlUi/Core/Platform.h>
 #include <RmlUi/Core/SystemInterface.h>
 #include <stb_image.h>
-#include <string.h>
+
+#include <cstring>
 
 #if defined(RMLUI_PLATFORM_WIN32) && !defined(__MINGW32__)
 // function call missing argument list
