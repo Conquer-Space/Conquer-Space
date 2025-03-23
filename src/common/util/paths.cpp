@@ -112,7 +112,7 @@ std::string getExecutablePath() {
     return std::string(realPathName);
 }
 
-std::string mergePaths(std::string pathA, std::string pathB) { return pathA + "/" + pathB; }
+std::string mergePaths(const std::string& pathA, const std::string& pathB) { return pathA + "/" + pathB; }
 #endif
 
 bool checkIfFileExists(const std::string& filePath) { return access(filePath.c_str(), 0) == 0; }
