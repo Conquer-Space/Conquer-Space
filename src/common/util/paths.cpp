@@ -81,7 +81,7 @@ std::string getExecutablePath() {
 std::string getExecutableDir() {
     std::string executablePath = getExecutablePath();
     char* exePath = new char[executablePath.length()];
-    strcpy_s(exePath, executablePath.length(), executablePath.c_str());
+    strncpy(exePath, executablePath.c_str(), executablePath.length());
     PathRemoveFileSpecA(exePath);
     std::string directory = std::string(exePath);
     delete[] exePath;
@@ -108,7 +108,7 @@ std::string getExecutablePath() {
 std::string getExecutableDir() {
     std::string executablePath = getExecutablePath();
     char* executablePathStr = new char[executablePath.length() + 1];
-    strcpy_s(executablePathStr, executablePath.length() + 1, executablePath.c_str());
+    strncpy(executablePathStr, executablePath.c_str(), executablePath.length() + 1);
     char* executableDir = dirname(executablePathStr);
     delete[] executablePathStr;
     return std::string(executableDir);
@@ -133,7 +133,7 @@ std::string getExecutablePath() {
 std::string getExecutableDir() {
     std::string executablePath = getExecutablePath();
     char* executablePathStr = new char[executablePath.length() + 1];
-    strcpy_s(executablePathStr, executablePath.length() + 1, executablePath.c_str());
+    strncpy(executablePathStr, executablePath.c_str(), executablePath.length() + 1);
     char* executableDir = dirname(executablePathStr);
     delete[] executablePathStr;
     return std::string(executableDir);
