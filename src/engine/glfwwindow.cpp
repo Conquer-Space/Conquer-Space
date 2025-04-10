@@ -160,10 +160,11 @@ void GLWindow::OnFrame() {
     glfwPollEvents();
 }
 
-void GLWindow::InitWindow(int width, int height) {
+bool GLWindow::InitWindow(int width, int height) {
     if (glfwInit() != GLFW_TRUE) {
         // Then rip
         ENGINE_LOG_CRITICAL("Cannot initialize GLFW");
+        return false;
     }
     if (GLAD_GL_VERSION_4_3 != 0) {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -191,6 +192,7 @@ void GLWindow::InitWindow(int width, int height) {
     if (window == NULL) {
         glfwTerminate();
         ENGINE_LOG_CRITICAL("Cannot load glfw");
+        return false;
     }
 
     glfwMakeContextCurrent(window);
@@ -205,6 +207,7 @@ void GLWindow::InitWindow(int width, int height) {
     if (gladLoadGLLoader((GLADloadproc)glfwGetProcAddress) == 0) {
         glfwTerminate();
         ENGINE_LOG_CRITICAL("Cannot load glad");
+        return false;
     }
     int flags;
     glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
@@ -220,5 +223,6 @@ void GLWindow::InitWindow(int width, int height) {
 
     // Fix the weird black bar we have on top of windows
     glViewport(0, 0, width, height);
+    return true;
 }
 }  // namespace cqsp::engine

@@ -46,7 +46,7 @@ cqsp::scene::LoadingScene::LoadingScene(cqsp::engine::Application& app) : Scene(
 }
 
 cqsp::scene::LoadingScene::~LoadingScene() {
-    if (thread->joinable()) {
+    if (thread != nullptr && thread->joinable()) {
         thread->join();
     }
 }

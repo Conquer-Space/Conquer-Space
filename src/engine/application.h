@@ -192,7 +192,7 @@ class Application {
 
     void SetIcon();
 
-    void GlInit();
+    bool GlInit();
     void LoggerInit();
     void LogInfo();
 

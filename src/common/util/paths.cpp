@@ -152,6 +152,10 @@ std::string GetCqspDataPath() {
     return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) / ".." / ".." / ".." / "binaries" /
                                       "data")
         .string();
+#elif !defined(NDEBUG) && defined(__linux__)
+    return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) / ".." / ".." / "binaries" /
+                                      "data")
+        .string();
 #else
     // The folder structure is
     // - binaries
