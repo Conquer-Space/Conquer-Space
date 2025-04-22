@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import sys
+import hjson
 
 def parse_def_line(line):
     province, r, g, b, country = line.split(",")
@@ -53,6 +54,8 @@ def main(image_name, def_name):
                 if neigh in def_data:
                     print(def_data[neigh], end=",")
     print(connection_map)
+    with open("province_connection.hjson", "w") as file:
+        file.write(hjson.dumps(connection_map))
 
 if __name__ == "__main__":
     if len(sys.argv) > 2:
