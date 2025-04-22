@@ -138,8 +138,6 @@ void LoadSatellites(Universe& universe, std::string& string) {
 bool SatelliteLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     std::optional<components::types::Orbit> orbit = LoadOrbit(values["orbit"]);
     if (!orbit.has_value()) {
-        SPDLOG_INFO("Loaded orbit!");
-
         return false;
     }
     orbit->reference_body = universe.planets[values["orbit"]["reference"].to_string()];

@@ -525,6 +525,7 @@ class AssetLoader {
     /// </summary>
     /// \see @ref LoadScriptDirectory LoadCubemap LoadAudio LoadText LoadTexture LoadHjson LoadShader LoadFont
     std::map<AssetType, LoaderFunction> loading_functions;
+    std::map<AssetType, uint64_t> loading_times;
     VirtualMounter mounter;
 };
 }  // namespace asset

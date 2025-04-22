@@ -16,6 +16,7 @@
  */
 #include "client/systems/assetloading.h"
 
+#include <chrono>
 #include <memory>
 #include <string>
 
@@ -57,6 +58,7 @@ void LoadResource(cqsp::engine::Application& app, cqsp::common::Universe& univer
 
 template <class T>
 void LoadResource(cqsp::engine::Application& app, cqsp::common::Universe& universe, const std::string& asset_name) {
+    auto start = std::chrono::system_clock::now();
     using cqsp::common::systems::loading::HjsonLoader;
     static_assert(std::is_base_of_v<HjsonLoader, T>, "Class is not child of");
     std::unique_ptr<HjsonLoader> ptr = std::make_unique<T>(universe);
@@ -75,6 +77,9 @@ void LoadResource(cqsp::engine::Application& app, cqsp::common::Universe& univer
             SPDLOG_INFO("Failed to load hjson asset {}: Index out of bounds: {}", asset_name, error.what());
         }
     }
+    auto end = std::chrono::system_clock::now();
+    SPDLOG_INFO("{} load took {} ms", asset_name,
+                std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count());
 }
 }  // namespace
 
