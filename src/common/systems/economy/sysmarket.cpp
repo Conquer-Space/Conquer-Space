@@ -33,9 +33,9 @@ void cqsp::common::systems::SysMarket::DoSystem() {
     TracyPlot("Market Count", (int64_t)marketview.size());
     auto goodsview = GetUniverse().view<components::Price>();
     Universe& universe = GetUniverse();
-    // Calculate all the things
+
     for (entt::entity entity : marketview) {
-        // Get the resources and process the price, then do things, I guess
+        // Get the resources and process the price
         // Get demand
         components::Market& market = universe.get<components::Market>(entity);
 
