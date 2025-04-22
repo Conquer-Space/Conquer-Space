@@ -108,6 +108,6 @@
         space-port: {
             launch: 0
         }
-        province: florida
+        province: florida_usa
     }
 ]
