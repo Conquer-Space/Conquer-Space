@@ -68,8 +68,9 @@ struct MarketElementInformation {
     double inputratio;
 };
 
-struct PlanetaryMarket {};
-
+struct PlanetaryMarket {
+    std::vector<entt::entity> participants;  // The markets that are connected
+};
 struct Market : MarketInformation {
     std::vector<MarketInformation> history;
 
@@ -77,6 +78,7 @@ struct Market : MarketInformation {
     std::map<entt::entity, MarketElementInformation> last_market_information;
 
     std::set<entt::entity> participants;
+    // std::vector<std::pair<entt::entity, entt::entity>> neighbors;
     entt::basic_sparse_set<entt::entity> connected_markets;
 
     double GDP = 0;
@@ -244,6 +246,8 @@ struct FactoryProducing {};
 struct Owned {
     entt::entity owner;
 };
+
+struct TradePartners : std::vector<entt::entity> {};
 }  // namespace components
 }  // namespace common
 }  // namespace cqsp

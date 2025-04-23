@@ -16,10 +16,13 @@
  */
 #pragma once
 
+#include <hjson.h>
+
 #include <string>
 
 #include "common/universe.h"
 
 namespace cqsp::common::systems::loading {
 void LoadProvinces(common::Universe& universe, const std::string& text);
-}
+void LoadAdjProvinces(common::Universe& universe, Hjson::Value& adjacency_map);
+}  // namespace cqsp::common::systems::loading

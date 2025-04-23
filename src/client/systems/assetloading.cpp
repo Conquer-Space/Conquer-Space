@@ -92,6 +92,8 @@ void LoadAllResources(cqsp::engine::Application& app, ConquerSpace& conquer_spac
     LoadResource<TimezoneLoader>(app, conquer_space.GetUniverse(), "timezones");
     LoadResource<CountryLoader>(app, conquer_space.GetUniverse(), "countries");
     LoadProvinces(conquer_space.GetUniverse(), app.GetAssetManager().GetAsset<asset::TextAsset>("province_defs")->data);
+    LoadAdjProvinces(conquer_space.GetUniverse(),
+                     app.GetAssetManager().GetAsset<asset::HjsonAsset>("province_adj_map")->data);
     LoadResource<CityLoader>(app, conquer_space.GetUniverse(), "cities");
     LoadResource<SatelliteLoader>(app, conquer_space.GetUniverse(), "satellites");
 

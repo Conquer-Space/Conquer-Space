@@ -58,6 +58,7 @@ struct CityTimeZone {
 struct Province {
     entt::entity country;
     std::vector<entt::entity> cities;
+    std::vector<entt::entity> neighbors;
 };
 
 struct ProvinceColor {

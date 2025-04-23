@@ -30,6 +30,8 @@ void cqsp::common::systems::SysTrade::DoSystem() {
     for (entt::entity entity : planetary_markets) {
         auto& p_market = GetUniverse().get<components::Market>(entity);
         auto& habitation = GetUniverse().get<components::Habitation>(entity);
+        // This is so bad lmao
+        // We should make a graph on the neighbors
         for (entt::entity habitation : habitation.settlements) {
             if (!GetUniverse().any_of<components::Market>(habitation)) {
                 continue;
