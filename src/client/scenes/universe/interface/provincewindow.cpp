@@ -93,11 +93,24 @@ void SysProvinceInformation::ProvinceView() {
     ImGui::TextFmt("Part of {}", common::util::GetName(GetUniverse(), city_list.country));
     ImGui::TextFmt("Population: {}", util::LongToHumanString(population));
     ImGui::Separator();
-    for (entt::entity entity : city_list.cities) {
-        if (CQSPGui::DefaultSelectable(fmt::format("{}", common::util::GetName(GetUniverse(), entity)).c_str())) {
-            current_city = entity;
-            view_mode = ViewMode::CITY_VIEW;
+    if (ImGui::BeginTabBar("ProvinceInformationTabs", ImGuiTabBarFlags_None)) {
+        if (ImGui::BeginTabItem("Cities")) {
+            for (entt::entity entity : city_list.cities) {
+                if (CQSPGui::DefaultSelectable(
+                        fmt::format("{}", common::util::GetName(GetUniverse(), entity)).c_str())) {
+                    current_city = entity;
+                    view_mode = ViewMode::CITY_VIEW;
+                }
+            }
+            ImGui::EndTabItem();
         }
+        if (ImGui::BeginTabItem("Neighbors")) {
+            for (entt::entity entity : city_list.neighbors) {
+                ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), entity));
+            }
+            ImGui::EndTabItem();
+        }
+        ImGui::EndTabBar();
     }
 }
 

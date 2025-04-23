@@ -60,3 +60,23 @@ void cqsp::common::systems::loading::LoadProvinces(common::Universe& universe, c
         universe.colors_province[entity] = (int)color;
     }
 }
+
+void cqsp::common::systems::loading::LoadAdjProvinces(common::Universe& universe, Hjson::Value& adjacency_map) {
+    // Go through value
+    for (auto const& [province_name, neighbors] : adjacency_map) {
+        if (!universe.provinces.contains(province_name)) {
+            SPDLOG_WARN("Cannot find province {}", province_name);
+            continue;
+        }
+        entt::entity province_id = universe.provinces[province_name];
+        auto& province = universe.get<components::Province>(province_id);
+        province.neighbors.resize(neighbors.size());
+        for (int i = 0; i < neighbors.size(); i++) {
+            if (!universe.provinces.contains(neighbors[i].to_string())) {
+                SPDLOG_WARN("Cannot find province {}", neighbors[i].to_string());
+                continue;
+            }
+            province.neighbors[i] = universe.provinces[neighbors[i].to_string()];
+        }
+    }
+}
