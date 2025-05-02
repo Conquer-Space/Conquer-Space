@@ -183,21 +183,8 @@ void SysPopulationConsumption::DoSystem() {
     }  // These tables technically never need to be recalculated
     auto settlementview = universe.view<cqspc::Settlement>();
 
-    // Loop through the settlements on a planet, then process the market?
-    auto market_view = universe.view<cqspc::Habitation>();
-    int settlement_count = 0;
-    for (entt::entity entity : market_view) {
-        // Get the children, because reasons
-        // All planets with a habitation WILL have a market
-        // This adds a market to the settlement as a whole, so it's the global market...
-        auto& market = universe.get_or_emplace<cqspc::Market>(entity);
-        // Read the segment information
-        auto& habit = universe.get<cqspc::Habitation>(entity);
-        for (entt::entity settlement : habit.settlements) {
-            ProcessSettlement(universe, settlement, marginal_propensity_base, autonomous_consumption_base, savings);
-            settlement_count++;
-        }
+    for (entt::entity settlement : settlementview) {
+        ProcessSettlement(universe, settlement, marginal_propensity_base, autonomous_consumption_base, savings);
     }
-    SPDLOG_INFO("Processing {} settlements in {} markets", settlement_count, market_view.size());
 }
 }  // namespace cqsp::common::systems

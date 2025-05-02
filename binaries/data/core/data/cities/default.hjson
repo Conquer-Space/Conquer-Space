@@ -1,304 +1,304 @@
-// // In the future, we probably have to add economies to cities,
-// // so it will probably helpful to add the economic data to the cites here.
-// // It will probably be necessary to put the cities in separate files
-// [
-//     {
-//         name: London
-//         coordinates: {
-//             latitude: 51.5072
-//             longitude: -0.1275
-//         }
-//         identifier: london
-//         timezone: GMT
-//         planet: earth
-//         country: uk
-//         industry: [
-//         ]
-//         population: [
-//             {
-//                 size: 7195000
-//             }
-//         ]
-//     }
-//     {
-//         name: Paris
-//         identifier: paris
-//         coordinates: {
-//             latitude: 48.8566
-//             longitude: 2.3522
+// In the future, we probably have to add economies to cities,
+// so it will probably helpful to add the economic data to the cites here.
+// It will probably be necessary to put the cities in separate files
+[
+    {
+        name: London
+        coordinates: {
+            latitude: 51.5072
+            longitude: -0.1275
+        }
+        identifier: london
+        timezone: GMT
+        planet: earth
+        country: uk
+        industry: [
+        ]
+        population: [
+            {
+                size: 7195000
+            }
+        ]
+    }
+    {
+        name: Paris
+        identifier: paris
+        coordinates: {
+            latitude: 48.8566
+            longitude: 2.3522
 
-//         }
-//         planet: earth
-//         timezone: RDT
-//         country: france
-//         population: [
-//             {
-//                 size: 2130000
-//             }
-//         ]
-//     }
-//     {
-//         name: Tokyo
-//         identifier: tokyo
-//         coordinates: {
-//             latitude: 35.6839
-//             longitude: 139.7744
+        }
+        planet: earth
+        timezone: RDT
+        country: france
+        population: [
+            {
+                size: 2130000
+            }
+        ]
+    }
+    {
+        name: Tokyo
+        identifier: tokyo
+        coordinates: {
+            latitude: 35.6839
+            longitude: 139.7744
 
-//         }
-//         planet: earth
-//         timezone: JST
-//         country: japan
-//         population: [
-//             {
-//                 size: 34450000
-//             }
-//         ]
-//     }
-//     {
-//         name: Beijing
-//         identifier: beijing
-//         country: china
-//         coordinates: {
-//             latitude: 39.904
-//             longitude: 116.4075
+        }
+        planet: earth
+        timezone: JST
+        country: japan
+        population: [
+            {
+                size: 34450000
+            }
+        ]
+    }
+    {
+        name: Beijing
+        identifier: beijing
+        country: china
+        coordinates: {
+            latitude: 39.904
+            longitude: 116.4075
 
-//         }
-//         planet: earth
-//         timezone: CST
-//         population: [
-//             {
-//                 size: 13569194
-//             }
-//         ]
-//     }
-//     {
-//         name: Hong Kong
-//         identifier: hong_kong
-//         country: china
-//         coordinates: {
-//             latitude: 22.3069
-//             longitude: 114.1831
+        }
+        planet: earth
+        timezone: CST
+        population: [
+            {
+                size: 13569194
+            }
+        ]
+    }
+    {
+        name: Hong Kong
+        identifier: hong_kong
+        country: china
+        coordinates: {
+            latitude: 22.3069
+            longitude: 114.1831
 
-//         }
-//         planet: earth
-//         timezone: CST
-//         population: [
-//             {
-//                 size: 6665000
-//             }
-//         ]
-//     }
-//     {
-//         name: Singapore
-//         identifier: singapore
-//         coordinates: {
-//             latitude: 1.3521
-//             longitude: 103.8198
-//         }
-//         planet: earth
-//         country: singapore
-//         timezone: MPST
-//         population: [
-//             {
-//                 size: 4028000
-//             }
-//         ]
-//     }
-//     {
-//         name: Shanghai
-//         identifier: shanghai
-//         country: china
-//         coordinates: {
-//             latitude: 31.1667
-//             longitude: 121.4667
-//         }
-//         planet: earth
-//         timezone: CST
-//         population: [
-//             {
-//                 size: 14460678
-//             }
-//         ]
-//     }
-//     {
-//         name: Sydney
-//         identifier: sydney
-//         coordinates: {
-//             latitude: -33.865
-//             longitude: 151.2094
-//         }
-//         planet: earth
-//         country: australia
-//         timezone: CST
-//         population: [
-//             {
-//                 size: 3780000
-//             }
-//         ]
-//     }
-//     {
-//         name: Rio de Janeiro
-//         identifier: rio_de_janeiro
-//         coordinates: {
-//             latitude: -22.9083
-//             longitude: -43.1964
-//         }
-//         planet: earth
-//         timezone: ESAST
-//         country: brazil
-//         population: [
-//             {
-//                 size: 13300000
-//             }
-//         ]
-//     }
-//     {
-//         name: Addis Ababa
-//         identifier: addis_ababa
-//         coordinates: {
-//             latitude: 9.0272
-//             longitude: 38.7369
-//         }
-//         planet: earth
-//         timezone: EAST
-//         country: ethiopia
-//         population: [
-//             {
-//                 size: 2377000
-//             }
-//         ]
-//     }
-//     {
-//         name: Moscow
-//         identifier: moscow
-//         coordinates: {
-//             latitude: 55.7558
-//             longitude: 37.6178
-//         }
-//         planet: earth
-//         timezone: MSK
-//         country: russia
-//         population: [
-//             {
-//                 size: 10000000
-//             }
-//         ]
-//     }
-//     {
-//         name: New Delhi
-//         identifier: new_delhi
-//         coordinates: {
-//             latitude: 28.6139
-//             longitude: 77.209
-//         }
-//         planet: earth
-//         timezone: IST
-//         country: india
-//         population: [
-//             {
-//                 size: 32066000
-//             }
-//         ]
-//     }
-//     {
-//         name: Cairo
-//         identifier: cairo
-//         coordinates: {
-//             latitude: 30.0444
-//             longitude: 31.2358
-//         }
-//         population: [
-//             {
-//                 size: 13626000
-//             }
-//         ]
-//         planet: earth
-//         country: egypt
-//         timezone: EST
-//         industry: [
-//             {
-//                 type: Farms
-//                 recipe: crop_cultivation
-//                 productivity: 3
-//             }
-//             {
-//                 recipe: transport_cap
-//                 productivity: 1
-//             }
-//         ]
-//     }
-//     {
-//         name: Toronto
-//         identifier: toronto
-//         coordinates: {
-//             latitude: 43.7417
-//             longitude: -79.3733
-//         }
-//         planet: earth
-//         timezone: EST
-//         country: canada
-//         province: ontario
-//         population: [
-//             {
-//                 size: 4607000
-//             }
-//         ]
-//         industry: [
-//             {
-//                 type: Mining
-//                 recipe: fmetal_mine
-//                 productivity: 1
-//             }
-//             {
-//                 type: Mining
-//                 recipe: nmetal_mine
-//                 productivity: 0.2
-//             }
-//         ]
-//     }
-//     {
-//         name: Mexico City
-//         identifier: mexico_city
-//         coordinates: {
-//             latitude: 19.4333
-//             longitude: -99.1333
-//         }
-//         planet: earth
-//         country: mexico
-//         timezone: CDT
-//         population: [
-//             {
-//                 size: 18457027
-//             }
-//         ]
-//     }
-//     {
-//         name: Jakarta
-//         identifier: jakarta
-//         coordinates: {
-//             latitude: -6.2146
-//             longitude: 106.8451
-//         }
-//         planet: earth
-//         timezone: SAST
-//         country: indonesia
-//         population: [
-//             {
-//                 size: 8390000
-//             }
-//         ]
-//         province: jakarta_raya
-//         industry: [
-//             {
-//                 type: Farms
-//                 recipe: crop_cultivation
-//                 productivity: 3
-//             }
-//             {
-//                 type: Clothes Making
-//                 recipe: garments_man
-//                 productivity: 1
-//             }
-//         ]
-//     }
-// ]
+        }
+        planet: earth
+        timezone: CST
+        population: [
+            {
+                size: 6665000
+            }
+        ]
+    }
+    {
+        name: Singapore
+        identifier: singapore
+        coordinates: {
+            latitude: 1.3521
+            longitude: 103.8198
+        }
+        planet: earth
+        country: singapore
+        timezone: MPST
+        population: [
+            {
+                size: 4028000
+            }
+        ]
+    }
+    {
+        name: Shanghai
+        identifier: shanghai
+        country: china
+        coordinates: {
+            latitude: 31.1667
+            longitude: 121.4667
+        }
+        planet: earth
+        timezone: CST
+        population: [
+            {
+                size: 14460678
+            }
+        ]
+    }
+    {
+        name: Sydney
+        identifier: sydney
+        coordinates: {
+            latitude: -33.865
+            longitude: 151.2094
+        }
+        planet: earth
+        country: australia
+        timezone: CST
+        population: [
+            {
+                size: 3780000
+            }
+        ]
+    }
+    {
+        name: Rio de Janeiro
+        identifier: rio_de_janeiro
+        coordinates: {
+            latitude: -22.9083
+            longitude: -43.1964
+        }
+        planet: earth
+        timezone: ESAST
+        country: brazil
+        population: [
+            {
+                size: 13300000
+            }
+        ]
+    }
+    {
+        name: Addis Ababa
+        identifier: addis_ababa
+        coordinates: {
+            latitude: 9.0272
+            longitude: 38.7369
+        }
+        planet: earth
+        timezone: EAST
+        country: ethiopia
+        population: [
+            {
+                size: 2377000
+            }
+        ]
+    }
+    {
+        name: Moscow
+        identifier: moscow
+        coordinates: {
+            latitude: 55.7558
+            longitude: 37.6178
+        }
+        planet: earth
+        timezone: MSK
+        country: russia
+        population: [
+            {
+                size: 10000000
+            }
+        ]
+    }
+    {
+        name: New Delhi
+        identifier: new_delhi
+        coordinates: {
+            latitude: 28.6139
+            longitude: 77.209
+        }
+        planet: earth
+        timezone: IST
+        country: india
+        population: [
+            {
+                size: 32066000
+            }
+        ]
+    }
+    {
+        name: Cairo
+        identifier: cairo
+        coordinates: {
+            latitude: 30.0444
+            longitude: 31.2358
+        }
+        population: [
+            {
+                size: 13626000
+            }
+        ]
+        planet: earth
+        country: egypt
+        timezone: EST
+        industry: [
+            {
+                type: Farms
+                recipe: crop_cultivation
+                productivity: 3
+            }
+            {
+                recipe: transport_cap
+                productivity: 1
+            }
+        ]
+    }
+    {
+        name: Toronto
+        identifier: toronto
+        coordinates: {
+            latitude: 43.7417
+            longitude: -79.3733
+        }
+        planet: earth
+        timezone: EST
+        country: canada
+        province: ontario
+        population: [
+            {
+                size: 4607000
+            }
+        ]
+        industry: [
+            {
+                type: Mining
+                recipe: fmetal_mine
+                productivity: 1
+            }
+            {
+                type: Mining
+                recipe: nmetal_mine
+                productivity: 0.2
+            }
+        ]
+    }
+    {
+        name: Mexico City
+        identifier: mexico_city
+        coordinates: {
+            latitude: 19.4333
+            longitude: -99.1333
+        }
+        planet: earth
+        country: mexico
+        timezone: CDT
+        population: [
+            {
+                size: 18457027
+            }
+        ]
+    }
+    {
+        name: Jakarta
+        identifier: jakarta
+        coordinates: {
+            latitude: -6.2146
+            longitude: 106.8451
+        }
+        planet: earth
+        timezone: SAST
+        country: indonesia
+        population: [
+            {
+                size: 8390000
+            }
+        ]
+        province: jakarta_raya
+        industry: [
+            {
+                type: Farms
+                recipe: crop_cultivation
+                productivity: 3
+            }
+            {
+                type: Clothes Making
+                recipe: garments_man
+                productivity: 1
+            }
+        ]
+    }
+]
