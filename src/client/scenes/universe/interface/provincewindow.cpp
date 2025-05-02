@@ -31,6 +31,7 @@
 #include "common/components/orbit.h"
 #include "common/components/organizations.h"
 #include "common/components/population.h"
+#include "common/components/resource.h"
 #include "common/components/ships.h"
 #include "common/components/surface.h"
 #include "common/systems/actions/shiplaunchaction.h"
@@ -215,7 +216,9 @@ void SysProvinceInformation::DemographicsTab() {
         // Get spending for population
         if (GetUniverse().all_of<cqspc::Wallet>(seg_entity)) {
             auto& wallet = GetUniverse().get<cqspc::Wallet>(seg_entity);
-            ImGui::TextFmt("Spending: {}", cqsp::util::LongToHumanString(wallet.GetGDPChange()));
+            ImGui::TextFmt("GDP Contribution: {}", cqsp::util::LongToHumanString(wallet.GetGDPChange()));
+            ImGui::TextFmt("Balance: {}", cqsp::util::LongToHumanString(wallet.GetBalance()));
+            ImGui::TextFmt("Balance change: {}", cqsp::util::LongToHumanString(wallet.GetChange()));
         }
         // Market
         if (GetUniverse().all_of<cqspc::Market>(current_city)) {
@@ -223,6 +226,14 @@ void SysProvinceInformation::DemographicsTab() {
                 CQSPGui::SimpleTextTooltip("Click for detailed market information");
             }
         }
+        if (ImGui::CollapsingHeader("Resource Consumption")) {
+            if (GetUniverse().all_of<cqspc::ResourceConsumption>(seg_entity)) {
+                auto& res_consumption = GetUniverse().get<cqspc::ResourceConsumption>(seg_entity);
+                DrawLedgerTable("Resource consumption", GetUniverse(), res_consumption);
+            }
+        }
+        // Display the data
+        ImGui::Separator();
     }
 }
 
