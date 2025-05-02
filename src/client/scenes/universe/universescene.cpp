@@ -92,7 +92,8 @@ void cqsp::scene::UniverseScene::Init() {
     //AddUISystem<cqsps::SysPlanetMarketInformation>();
 
     AddUISystem<cqsps::gui::SysEvent>();
-    simulation->tick();
+    simulation->Init();
+    simulation->tick();  // Why do we tick the simulation once here? Idk
 
     AddRmlUiSystem<cqsps::rmlui::TurnSaveWindow>();
 }

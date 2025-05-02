@@ -30,7 +30,6 @@ def main(def_name):
                     new_name = new_name + "_" + str(same_name_count)
 
                 # Therefore also link the previous element to be something else as well
-                # if data[0] == definition_list[] 
                 if not triggered_last:
                     definition_list[-1]= (last_item[1] + "_" + last_item[2], last_item[0][0], last_item[0][1], last_item[0][2], last_item[2])
                     current_list.add(last_item[1] + "_" + last_item[2])

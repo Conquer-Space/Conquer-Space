@@ -176,6 +176,8 @@ struct Wallet {
 
     double GetBalance() const { return balance; }
 
+    double GetChange() const { return change; }
+
     void Reset() {
         change = 0;
         GDP_change = 0;
