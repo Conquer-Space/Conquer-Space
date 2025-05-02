@@ -1,112 +1,112 @@
-// [
+[
     
-//     {
-//         name: Los Angeles
-//         identifier: los_angeles
-//         coordinates: {
-//             latitude: 34.1139
-//             longitude: -118.4068
-//         }
-//         planet: earth
-//         timezone: PDT
-//         country: usa
-//         province: california
-//         population: [
-//             {
-//                 size: 3694820
-//             }
-//         ]
-//     }
-//     {
-//         name: Chicago
-//         identifier: chicago
-//         coordinates: {
-//             latitude: 41.8373
-//             longitude: -87.6862
+    {
+        name: Los Angeles
+        identifier: los_angeles
+        coordinates: {
+            latitude: 34.1139
+            longitude: -118.4068
+        }
+        planet: earth
+        timezone: PDT
+        country: usa
+        province: california
+        population: [
+            {
+                size: 3694820
+            }
+        ]
+    }
+    {
+        name: Chicago
+        identifier: chicago
+        coordinates: {
+            latitude: 41.8373
+            longitude: -87.6862
 
-//         }
-//         planet: earth
-//         country: usa
-//         timezone: CDT
-//         population: [
-//             {
-//                 size: 2896016
-//             }
-//         ]
-//     }
-//     {
-//         name: Seattle
-//         identifier: seattle
-//         coordinates: {
-//             latitude: 47.6211
-//             longitude: -122.3244
-//         }
-//         province: washington
-//         planet: earth
-//         timezone: PST
-//         country: usa
-//         population: [
-//             {
-//                 // Seattle is small lol
-//                 size: 563374
-//             }
-//         ]
-//         industry: [
-//             {
-//                 recipe: public_transport
-//                 productivity: 1
-//             }
-//             {
-//                 recipe: medical_serv
-//                 productivity: 1
-//             }
-//         ]
-//     }
+        }
+        planet: earth
+        country: usa
+        timezone: CDT
+        population: [
+            {
+                size: 2896016
+            }
+        ]
+    }
+    {
+        name: Seattle
+        identifier: seattle
+        coordinates: {
+            latitude: 47.6211
+            longitude: -122.3244
+        }
+        province: washington
+        planet: earth
+        timezone: PST
+        country: usa
+        population: [
+            {
+                // Seattle is small lol
+                size: 563374
+            }
+        ]
+        industry: [
+            {
+                recipe: public_transport
+                productivity: 1
+            }
+            {
+                recipe: medical_serv
+                productivity: 1
+            }
+        ]
+    }
     
-//     {
-//         name: Phoenix
-//         identifier: phoenix
-//         coordinates: {
-//             latitude: 33.5722
-//             longitude: -112.0891
-//         }
-//         planet: earth
-//         timezone: UMST
-//         province: arizona
-//         country: usa
-//         population: [
-//             {
-//                 size: 3251876
-//             }
-//         ]
-//         industry: [
-//             {
-//                 recipe: computer_man
-//                 productivity: 1
-//             }
-//             {
-//                 recipe: industrial_equipment_cap
-//                 productivity: 1
-//             }
-//             {
-//                 recipe: construction_cap
-//                 productivity: 1
-//             }
-//         ]
-//     }
-//     {
-//         name: Cape Canaveral
-//         identifier: cape_canaveral
-//         timezone: EDT
-//         planet: earth
-//         country: usa
-//         coordinates: {
-//             latitude: 28.46
-//             longitude: -80.53
-//         }
-//         space-port: {
-//             launch: 0
-//         }
-//         province: florida_usa
-//     }
-// ]
+    {
+        name: Phoenix
+        identifier: phoenix
+        coordinates: {
+            latitude: 33.5722
+            longitude: -112.0891
+        }
+        planet: earth
+        timezone: UMST
+        province: arizona
+        country: usa
+        population: [
+            {
+                size: 3251876
+            }
+        ]
+        industry: [
+            {
+                recipe: computer_man
+                productivity: 1
+            }
+            {
+                recipe: industrial_equipment_cap
+                productivity: 1
+            }
+            {
+                recipe: construction_cap
+                productivity: 1
+            }
+        ]
+    }
+    {
+        name: Cape Canaveral
+        identifier: cape_canaveral
+        timezone: EDT
+        planet: earth
+        country: usa
+        coordinates: {
+            latitude: 28.46
+            longitude: -80.53
+        }
+        space-port: {
+            launch: 0
+        }
+        province: florida_usa
+    }
+]
