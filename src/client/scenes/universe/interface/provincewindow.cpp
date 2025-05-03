@@ -190,6 +190,13 @@ void SysProvinceInformation::CityIndustryTabs() {
                 ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), entity));
             }
             ImGui::Separator();
+            // Now market wallet
+            if (GetUniverse().any_of<common::components::Wallet>(current_city)) {
+                auto& wallet = GetUniverse().get<cqspc::Wallet>(current_city);
+                ImGui::TextFmt("GDP Contribution: {}", cqsp::util::LongToHumanString(wallet.GetGDPChange()));
+                ImGui::TextFmt("Balance: {}", cqsp::util::LongToHumanString(wallet.GetBalance()));
+                ImGui::TextFmt("Balance change: {}", cqsp::util::LongToHumanString(wallet.GetChange()));
+            }
             MarketInformationTable(GetUniverse(), current_city);
             ImGui::EndTabItem();
         }

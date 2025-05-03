@@ -30,10 +30,24 @@ void cqsp::common::systems::SysTrade::DoSystem() {
     for (entt::entity entity : planetary_markets) {
         auto& p_market = GetUniverse().get<components::Market>(entity);
         auto& habitation = GetUniverse().get<components::Habitation>(entity);
+        auto& wallet = GetUniverse().get_or_emplace<components::Wallet>(entity);
         for (entt::entity habitation : habitation.settlements) {
             if (!GetUniverse().any_of<components::Market>(habitation)) {
                 continue;
             }
+            auto& market = GetUniverse().get<components::Market>(habitation);
+            auto& market_wallet = GetUniverse().get_or_emplace<components::Wallet>(habitation);
+            // Supply the previous market information to this
+            // Add the supply and difference
+            // Add supply difference to itself or something
+            // How do we ensure that is is properly supplied?
+            market.demand().AddPositive(market.supply_difference);
+            market.supply().AddNegative(market.supply_difference);
+
+            // Compute deficit
+            double trade_balance = (market.supply_difference * p_market.price).GetSum();
+            wallet += trade_balance;
+            market_wallet += trade_balance;
             // Cities are the actual entities that buy and sell goods on the market
             // therefore they will have some sort of wallet to handle the trade on the global market.
             // In the future, we can have shipping companies own fractions of the shipping market
@@ -41,10 +55,10 @@ void cqsp::common::systems::SysTrade::DoSystem() {
             // The issue is that what if a market runs out of money? like completely? what do we do?
             // Maybe we can implement it wity some sort of deficit or debt system, but I think that will be
             // faroff
-            auto& market = GetUniverse().get<components::Market>(habitation);
             p_market.supply().AddPositive(market.supply_difference);
             p_market.demand().AddNegative(market.supply_difference);
         }
         // Swap the old and new markets
+        p_market.ResetLedgers();
     }
 }
