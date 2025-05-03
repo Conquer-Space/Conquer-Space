@@ -18,23 +18,6 @@
         ]
     }
     {
-        name: Chicago
-        identifier: chicago
-        coordinates: {
-            latitude: 41.8373
-            longitude: -87.6862
-
-        }
-        planet: earth
-        country: usa
-        timezone: CDT
-        population: [
-            {
-                size: 2896016
-            }
-        ]
-    }
-    {
         name: Seattle
         identifier: seattle
         coordinates: {

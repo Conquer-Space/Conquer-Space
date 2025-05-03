@@ -164,7 +164,15 @@ class ResourceLedger : private LedgerMap {
     /// <summary>
     /// Returns a copy of the vector with the values set to indicated value
     /// </summary>
-    ResourceLedger UnitLeger(const double);
+    ResourceLedger UnitLedger(const double);
+
+    // Add all the positive values in the other ledger to this ledger
+    // Essentially this += other (if idx > 0)
+    void AddPositive(const ResourceLedger&);
+
+    // Add all the negative values in the other ledger to this ledger
+    // Essentially this += abs(other) (if idx < 0)
+    void AddNegative(const ResourceLedger&);
 
     /// <summary>
     /// Returns a copy of the vector with the values clamped between the min and max indicated
@@ -208,6 +216,7 @@ class ResourceLedger : private LedgerMap {
 
     // All the things that we get from map
     using LedgerMap::operator[];
+    using LedgerMap::operator=;
     using LedgerMap::begin;
     using LedgerMap::cbegin;
     using LedgerMap::cend;

@@ -119,7 +119,7 @@ void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement
             consumption += extraconsumption;   // Remove purchased goods from the market
             for (auto& t : consumption) {
                 // Look for in the market, and then if supply is zero, then deny them buying
-                if (market.previous_supply.HasGood(t.first) && market.previous_supply[t.first] <= 0) {
+                if (market.previous_supply().HasGood(t.first) && market.previous_supply()[t.first] <= 0) {
                     // Then they cannot buy the goods, and add latent demand
                     market.latent_demand[t.first] += t.second;
                     t.second = 0;
@@ -136,7 +136,7 @@ void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement
         // TODO(EhWhoAmI): Don't inject cash, take the money from the government
         wallet += segment.population * 50;  // Inject cash
 
-        market.demand += consumption;
+        market.demand() += consumption;
     }
 }
 }  // namespace
