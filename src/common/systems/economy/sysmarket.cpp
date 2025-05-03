@@ -43,7 +43,7 @@ void cqsp::common::systems::SysMarket::DoSystem() {
         // market.gdp = market.volume* market.price;
 
         // Calculate Supply and demand
-        market.sd_ratio = market.supply.SafeDivision(market.demand);
+        market.sd_ratio = market.supply().SafeDivision(market.demand());
         // market.ds_ratio = market.previous_demand.SafeDivision(market.supply);
         // market.ds_ratio = market.ds_ratio.Clamp(0, 2);
 
@@ -71,14 +71,13 @@ void cqsp::common::systems::SysMarket::DoSystem() {
         // Set the previous supply and demand
         //components::MarketInformation current = market;
         //market.history.push_back(current);
-
+        // So positive values are left over goods in the market
+        // and negative values are goods that are in demand in the market
+        market.supply_difference = market.supply() - market.demand();
         // Swap and clear?
-        std::swap(market.supply, market.previous_supply);
-        std::swap(market.demand, market.previous_demand);
+        market.ResetLedgers();
         std::swap(market.latent_demand, market.last_latent_demand);
 
-        market.supply.clear();
-        market.demand.clear();
         market.latent_supply.clear();
         market.latent_demand.clear();
     }
@@ -100,12 +99,12 @@ void cqsp::common::systems::SysMarket::InitializeMarket(Game& game) {
             market.price[goodenity] = universe.get<components::Price>(goodenity);
             // Set the supply and demand things as 1 so that they sell for
             // now
-            market.previous_demand[goodenity] = 1;
-            market.previous_supply[goodenity] = 1;
-            market.supply[goodenity] = 1;
-            market.demand[goodenity] = 1;
+            market.previous_demand()[goodenity] = 1;
+            market.previous_supply()[goodenity] = 1;
+            market.supply()[goodenity] = 1;
+            market.demand()[goodenity] = 1;
         }
-        market.sd_ratio = market.supply.SafeDivision(market.demand);
+        market.sd_ratio = market.supply().SafeDivision(market.demand());
         market.history.push_back(market);
     }
 }

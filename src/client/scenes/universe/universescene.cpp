@@ -89,7 +89,7 @@ void cqsp::scene::UniverseScene::Init() {
     AddUISystem<cqsps::SysProvinceInformation>();
     AddUISystem<cqsps::SysOrbitFilter>();
     AddUISystem<cqsps::ImGuiInterface>();
-    //AddUISystem<cqsps::SysPlanetMarketInformation>();
+    AddUISystem<cqsps::SysPlanetMarketInformation>();
 
     AddUISystem<cqsps::gui::SysEvent>();
     simulation->Init();

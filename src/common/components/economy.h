@@ -33,12 +33,18 @@ namespace components {
 /// Might change this to a different type of resource ledger so that we don't have so many lookups
 /// </summary>
 struct MarketInformation {
-    ResourceLedger demand;
+ private:
+    ResourceLedger _demand;
+    ResourceLedger _supply;
+    ResourceLedger _previous_demand;
+    ResourceLedger _previous_supply;
+    bool current = true;
+
+ public:
     ResourceLedger sd_ratio;
 
     // Might not need this in the future.
     ResourceLedger ds_ratio;
-    ResourceLedger supply;
 
     /// <summary>
     /// The amount of goods that changed hands. We can use this to calculate the
@@ -46,8 +52,6 @@ struct MarketInformation {
     /// </summary>
     ResourceLedger volume;
     ResourceLedger price;
-    ResourceLedger previous_demand;
-    ResourceLedger previous_supply;
 
     // Supply that existed, but not fufilled last time
     // Surplus supply
@@ -56,6 +60,45 @@ struct MarketInformation {
     // Surplus demand
     ResourceLedger last_latent_demand;
     ResourceLedger latent_demand;
+    ResourceLedger supply_difference;
+
+    void ResetLedgers() {
+        // Reset the ledger values
+        current = !current;
+        demand().clear();
+        supply().clear();
+    }
+
+    ResourceLedger& supply() {
+        if (current) {
+            return _supply;
+        } else {
+            return _previous_supply;
+        }
+    }
+    ResourceLedger& demand() {
+        if (current) {
+            return _demand;
+        } else {
+            return _previous_demand;
+        }
+    }
+
+    ResourceLedger& previous_supply() {
+        if (current) {
+            return _previous_supply;
+        } else {
+            return _supply;
+        }
+    }
+
+    ResourceLedger& previous_demand() {
+        if (current) {
+            return _previous_demand;
+        } else {
+            return _demand;
+        }
+    }
 };
 
 struct MarketElementInformation {
@@ -71,6 +114,7 @@ struct MarketElementInformation {
 struct PlanetaryMarket {
     std::vector<entt::entity> participants;  // The markets that are connected
 };
+
 struct Market : MarketInformation {
     std::vector<MarketInformation> history;
 
