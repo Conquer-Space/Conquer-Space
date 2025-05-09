@@ -33,6 +33,7 @@
 #include "common/components/population.h"
 #include "common/components/resource.h"
 #include "common/components/ships.h"
+#include "common/components/spaceport.h"
 #include "common/components/surface.h"
 #include "common/systems/actions/shiplaunchaction.h"
 #include "common/util/nameutil.h"
@@ -149,7 +150,9 @@ void SysProvinceInformation::CityView() {
         }
 
         const std::string& tz_name = GetUniverse().get<cqspc::Identifier>(tz.time_zone).identifier;
-        ImGui::TextFmt("Time: {} {}:00 ({})", GetUniverse().date.ToString(tz_def.time_diff), time, tz_name);
+        int hour = GetUniverse().date.GetHour(tz_def.time_diff);
+        ImGui::TextFmt("Time: {} {}:{} ({})", GetUniverse().date.ToString(tz_def.time_diff), hour,
+                       GetUniverse().date.GetMinute(), tz_name);
     }
 
     // Other industry information

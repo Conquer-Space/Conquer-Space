@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/economy/systrade.h"
+#include "common/systems/economy/sysplanetarytrade.h"
 
 #include "common/components/economy.h"
 #include "common/components/surface.h"
 
-void cqsp::common::systems::SysTrade::DoSystem() {
+void cqsp::common::systems::SysPlanetaryTrade::DoSystem() {
     // Sort through all the districts, and figure out their trade
     // Get all the markets
     // Then cross reference to see if they can buy or sell
@@ -57,6 +57,8 @@ void cqsp::common::systems::SysTrade::DoSystem() {
             // faroff
             p_market.supply().AddPositive(market.supply_difference);
             p_market.demand().AddNegative(market.supply_difference);
+            // We probably need stockpiles for more isolated markets...
+            // Or do we do stockpiles for everything...
         }
         // Swap the old and new markets
         p_market.ResetLedgers();
