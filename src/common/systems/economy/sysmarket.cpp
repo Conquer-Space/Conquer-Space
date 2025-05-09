@@ -79,7 +79,7 @@ void SysMarket::DeterminePrice(components::Market& market, entt::entity good_ent
         // Too much supply, so we will decrease the price
         price += (-0.01 + price * -0.01f);
 
-        // Limit price to a minimum of 0.001
+        // Limit price to a minimum of 0.00001
         if (price < 0.00001) {
             price = 0.00001;
         }
