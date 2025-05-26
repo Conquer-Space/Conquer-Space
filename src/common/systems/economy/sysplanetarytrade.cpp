@@ -55,6 +55,7 @@ void cqsp::common::systems::SysPlanetaryTrade::DoSystem() {
             // The issue is that what if a market runs out of money? like completely? what do we do?
             // Maybe we can implement it wity some sort of deficit or debt system, but I think that will be
             // faroff
+            // The thing is that we might have an issue
             p_market.supply().AddPositive(market.supply_difference);
             p_market.demand().AddNegative(market.supply_difference);
             // We probably need stockpiles for more isolated markets...

@@ -62,6 +62,8 @@ struct MarketInformation {
     ResourceLedger latent_demand;
     ResourceLedger supply_difference;
 
+    ResourceLedger chronic_shortages;
+
     void ResetLedgers() {
         // Reset the ledger values
         current = !current;
