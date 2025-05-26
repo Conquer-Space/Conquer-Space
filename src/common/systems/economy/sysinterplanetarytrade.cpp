@@ -16,7 +16,8 @@
  */
 #include "common/systems/economy/sysinterplanetarytrade.h"
 
-#include "common/component/spaceport.h"
+#include "common/components/economy.h"
+#include "common/components/spaceport.h"
 
 namespace cqsp::common::systems {
 void SysInterplanetaryTrade::DoSystem() {

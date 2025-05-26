@@ -57,7 +57,24 @@ void SysMarket::DoSystem() {
         // So positive values are left over goods in the market
         // and negative values are goods that are in demand in the market
         market.supply_difference = market.supply() - market.demand();
-        // Swap and clear?
+
+        // Get chronic supply shortages
+        // Just get all the values where the supply is 0, and the demand is greater than 0
+        // Just get all the values where the supply is zero, and there is nonzero demand...
+        components::ResourceLedger& market_supply = market.supply();
+        components::ResourceLedger& market_demand = market.demand();
+        for (auto iterator = market_supply.begin(); iterator != market_supply.end(); iterator++) {
+            if (iterator->second == 0 && market_demand[iterator->first] > 0) {
+                market.chronic_shortages[iterator->first]++;
+            } else {
+                // Remove it if it exists in it
+                if (market.chronic_shortages.contains(iterator->first)) {
+                    market.chronic_shortages.erase(iterator->first);
+                }
+            }
+        }
+
+        // Swap and clear
         market.ResetLedgers();
         std::swap(market.latent_demand, market.last_latent_demand);
 

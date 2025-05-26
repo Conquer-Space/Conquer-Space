@@ -221,11 +221,13 @@ class ResourceLedger : private LedgerMap {
     using LedgerMap::cbegin;
     using LedgerMap::cend;
     using LedgerMap::clear;
+    using LedgerMap::contains;
     using LedgerMap::crbegin;
     using LedgerMap::crend;
     using LedgerMap::emplace;
     using LedgerMap::empty;
     using LedgerMap::end;
+    using LedgerMap::erase;
     using LedgerMap::mapped_type;
     using LedgerMap::rbegin;
     using LedgerMap::rend;
