@@ -1,0 +1,27 @@
+[
+    {
+        name: Armstrong
+        identifier: armstrong
+        coordinates: {
+            latitude: 0.67416
+            longitude: 23.47314
+        }
+        planet: moon
+        // timezone: EST
+        country: usa
+        population: [
+            {
+                size: 500000
+            }
+        ]
+        // Because DC is so tiny lmao
+        // province: maryland
+        industry: [
+        ]
+        tags: [
+        ]
+        connections: [
+        ]
+    }
+]
+
