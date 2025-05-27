@@ -69,4 +69,14 @@ void LandOnMoon(Universe& universe, entt::entity agent, entt::entity target, ent
 void PushManeuvers(Universe& universe, entt::entity entity, std::initializer_list<components::Maneuver_t> maneuver,
                    double offset = 0);
 void PushManeuvers(Universe& universe, entt::entity entity, components::HohmannPair_t hohmann_pair, double offset = 0);
+std::vector<entt::entity> GetSOIHierarchy(Universe& universe, entt::entity source);
+/**
+ * Finds the common sphere of influence between the two bodies.
+ * @param universe universe registry
+ * @param source source entity
+ * @param target target entity
+ * @return least common sphere of influence between source and target. If null, then we are comparing two completely
+ * separate SOI trees.
+ */
+entt::entity GetCommonSOI(Universe& universe, entt::entity source, entt::entity target);
 }  // namespace cqsp::common::systems::commands
