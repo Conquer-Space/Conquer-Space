@@ -63,62 +63,6 @@
         tags: []
     }
     {
-        name: Earth
-        identifier: earth
-        radius: 6371 km
-        reference: sun
-        gm: 398600.44188
-        habitation: true
-        orbit:
-        {
-            eccentricity: 0.01670257989152663
-            semi_major_axis: 149597369.8038478 km
-            M0: 356.9521225619375 deg
-            inclination: 0.0001036081554173719 deg
-            LAN: 140.2241915047173 deg
-            arg_periapsis: 322.693500525724 deg
-        }
-        day_length: 0.99726968 d
-        day_offset: 3 deg
-        axial: 23.4392811 deg
-        texture:
-        {
-            terrain: earthmap
-            normal: earthnormal
-            roughness: earthroughness
-            province_texture: province_map_texture
-            province_map: province_map
-            definitions: province_defs
-        }
-        tags:
-        [
-            market
-        ]
-    }
-    {
-        name: Moon
-        identifier: moon
-        reference: earth
-        radius: 1737.4 km
-        gm: 4904.86959
-        orbit:
-        {
-            eccentricity: 0.06476694128611303
-            semi_major_axis: 376586.6585063708 km
-            M0: 145.1550311169049 deg
-            inclination: 5.240010829674767 deg
-            LAN: 123.9837028145578 deg
-            arg_periapsis: 308.1359034620372 deg
-        }
-        texture:
-        {
-            terrain: moonmap
-        }
-        axial: 1.5424 deg
-        day_length: 27.321661 d
-        tags: []
-    }
-    {
         name: Mars
         identifier: mars
         adjective: Martian

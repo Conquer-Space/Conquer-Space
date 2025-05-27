@@ -14,8 +14,6 @@
                 size: 500000
             }
         ]
-        // Because DC is so tiny lmao
-        // province: maryland
         industry: [
         ]
         tags: [
