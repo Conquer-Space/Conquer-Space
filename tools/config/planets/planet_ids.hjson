@@ -1,0 +1,16 @@
+// The object id of a body is based off the  NAIF Integer ID codes.
+// The first integer in the array is the ephemeris of the body we want to get
+// and the second integer is the reference body of what we want to get
+// for reference, 3 is Earth.
+{
+    mercury: [1, 10]
+    venus: [2,10],
+    earth: [3, 10],
+    mars: [4, 10],
+    jupiter: [5, 10],
+    saturn: [6, 10],
+    uranus: [7, 10],
+    neptune: [8, 10],
+    pluto: [9, 10],
+    moon: [301, 3]
+}

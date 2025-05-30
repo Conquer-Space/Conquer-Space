@@ -1,0 +1,6 @@
+[
+    {
+        input: config/planets/planet_ids.hjson
+        output: ../binaries/data/core/data/planets/
+    }
+]
