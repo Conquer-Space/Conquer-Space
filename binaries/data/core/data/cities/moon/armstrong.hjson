@@ -7,7 +7,6 @@
             longitude: 23.47314
         }
         planet: moon
-        // timezone: EST
         country: usa
         population: [
             {

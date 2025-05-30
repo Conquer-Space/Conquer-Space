@@ -1,0 +1,26 @@
+[
+    {
+        name: Mars
+        identifier: mars
+        adjective: Martian
+        radius: 3390 km
+        reference: sun
+        gm: 42828.372
+        orbit:
+        {
+            eccentricity: 0.09331460751689258
+            semi_major_axis: 227939012.3632921 km
+            M0: 23.02024587055417 deg
+            inclination: 1.849876671640822 deg
+            LAN: 49.56199839924829 deg
+            arg_periapsis: 286.5373599595444 deg
+        }
+        day_length: 1.025957 d
+        axial: 25.19 deg
+        texture:
+        {
+            terrain: marsmap
+        }
+        tags: []
+    }
+]

@@ -1,0 +1,19 @@
+[
+    {
+        name: The Sun
+        identifier: sun
+        type: star
+        radius: 695508 km
+        gm: 132712440018.9
+        orbit:
+        {
+            semi_major_axis: 0
+            eccentricity: 0
+            inclination: 0
+            arg_periapsis: 0
+            LAN: 0
+            M0: 0
+        }
+        tags: []
+    }
+]
