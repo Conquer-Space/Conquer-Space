@@ -53,9 +53,11 @@ void cqsp::common::systems::loading::LoadProvinces(common::Universe& universe, c
             SPDLOG_WARN("Province {} conflicts with an already preexisting province", identifier);
         }
         // Add province to country
-        universe.get_or_emplace<components::CountryCityList>(universe.countries[country])
-            .province_list.push_back(entity);
-
+        // check if it is assigned to a country
+        if (!country.empty() && universe.countries.contains(country)) {
+            universe.get_or_emplace<components::CountryCityList>(universe.countries[country])
+                .province_list.push_back(entity);
+        }
         universe.province_colors[(int)color] = entity;
         universe.colors_province[entity] = (int)color;
     }
