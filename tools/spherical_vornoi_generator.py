@@ -46,7 +46,7 @@ def generate_province_segment(size: int = 5):
 def generate_province_name():
     return f"{generate_province_segment()}-{generate_province_segment()}"
 
-def generate_voronoi_district_map(district_count: int, seed: int, width: int, height: int, output_filename: str):
+def generate_voronoi_district_map(district_count: int, seed: int, width: int, height: int, output_filename: str, province_filename: str):
     voronoi_points = generate_random_points(district_count, seed)
     random.seed(seed)
     sv = SphericalVoronoi(voronoi_points)
@@ -109,12 +109,15 @@ def generate_voronoi_district_map(district_count: int, seed: int, width: int, he
         print(f"Coloring province {coloring}/{district_count}", end="\r")
         coloring += 1
 
-    print()
     # We also need funcitons to generate the names and colors of the individual districts as well
     image = np.transpose(image, (1, 0, 2))
     img = Image.fromarray(image.astype(np.int8), 'RGB')
     img.save(output_filename)
     print(f"Written image to {output_filename}!", end="")
+    # Write csv output
+    with open(province_filename, "w") as file:
+        for prov in province_names:
+            file.write(f"{prov[0]},{prov[1]},{prov[2]},{prov[3]},\n")
 
 # Just a simple wrapper to generate the file
 if __name__ == "__main__":
@@ -123,7 +126,7 @@ if __name__ == "__main__":
     parser.add_argument("-n", "--count", help="Number of voronoi cells", required=True, type=int)
     parser.add_argument("-s", "--seed", help="Seed of the voronoi point generator", default=0, type=int)
     parser.add_argument("-o", "--output", help="Output file name of the voronoi image map (normally a png)", default="out.png")
-    parser.add_argument("-p", "--province-output", help="Output file of the province colors and randomly generated names")
+    parser.add_argument("-p", "--province-output", help="Output file of the province colors and randomly generated names", default="out.csv")
     parser.add_argument("-d", "--dimension", help="width,height tuple", default="1024,512")
     arguments = parser.parse_args()
 
@@ -135,4 +138,9 @@ if __name__ == "__main__":
     width, height = arguments.dimension.split(",")
     width = int(width)
     height = int(height)
-    generate_voronoi_district_map(arguments.count, arguments.seed, width, height, arguments.output)
+    generate_voronoi_district_map(arguments.count,
+                                    arguments.seed,
+                                    width,
+                                    height,
+                                    arguments.output,
+                                    arguments.province_output)
