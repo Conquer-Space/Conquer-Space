@@ -107,7 +107,7 @@ def generate_voronoi_district_map(district_count: int, seed: int, width: int, he
         name = generate_province_name()
         province_names.append((name, *district_color))
         print(f"Coloring province {coloring}/{district_count}", end="\r")
-        coloring += 1
+        coloring += 10
 
     # We also need funcitons to generate the names and colors of the individual districts as well
     image = np.transpose(image, (1, 0, 2))

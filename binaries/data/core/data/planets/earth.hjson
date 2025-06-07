@@ -25,7 +25,8 @@
             roughness: earthroughness
             province_texture: province_map_texture
             province_map: province_map
-            definitions: province_defs
+            province_definitions: province_defs
+            adjacencies: province_adj_map
         }
         tags:
         [

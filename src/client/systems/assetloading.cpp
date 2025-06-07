@@ -23,6 +23,7 @@
 #include "client/scripting/clientscripting.h"
 #include "client/scripting/clientuielements.h"
 #include "client/scripting/imguifunctions.h"
+#include "common/components/surface.h"
 #include "common/scripting/luafunctions.h"
 #include "common/systems/loading/hjsonloader.h"
 #include "common/systems/loading/loadcities.h"
@@ -84,6 +85,26 @@ void LoadResource(cqsp::engine::Application& app, cqsp::common::Universe& univer
 }  // namespace
 
 namespace cqsp::client::systems {
+namespace {
+void LoadPlanetProvinces(cqsp::engine::Application& app, ConquerSpace& conquer_space) {
+    using namespace cqsp::common::systems::loading;  // NOLINT
+    auto& universe = conquer_space.GetUniverse();
+    auto view = universe.view<common::components::ProvincedPlanet>();
+
+    for (entt::entity entity : view) {
+        // Check if it's empty or not
+        auto& province_map = universe.get<common::components::ProvincedPlanet>(entity);
+        if (!province_map.province_definitions.empty()) {
+            asset::TextAsset* asset =
+                app.GetAssetManager().GetAsset<asset::TextAsset>(province_map.province_definitions);
+            if (asset != nullptr) {
+                LoadProvinces(universe, entity, asset->data);
+            }
+        }
+    }
+}
+}  // namespace
+
 void LoadAllResources(cqsp::engine::Application& app, ConquerSpace& conquer_space) {
     using namespace cqsp::common::systems::loading;  // NOLINT
     LoadResource<GoodLoader>(app, conquer_space.GetUniverse(), "goods");
@@ -91,9 +112,8 @@ void LoadAllResources(cqsp::engine::Application& app, ConquerSpace& conquer_spac
     LoadResource<PlanetLoader>(app, conquer_space.GetUniverse(), "planets");
     LoadResource<TimezoneLoader>(app, conquer_space.GetUniverse(), "timezones");
     LoadResource<CountryLoader>(app, conquer_space.GetUniverse(), "countries");
-    LoadProvinces(conquer_space.GetUniverse(), app.GetAssetManager().GetAsset<asset::TextAsset>("province_defs")->data);
-    LoadAdjProvinces(conquer_space.GetUniverse(),
-                     app.GetAssetManager().GetAsset<asset::HjsonAsset>("province_adj_map")->data);
+
+    LoadPlanetProvinces(app, conquer_space);
     LoadResource<CityLoader>(app, conquer_space.GetUniverse(), "cities");
     LoadResource<SatelliteLoader>(app, conquer_space.GetUniverse(), "satellites");
 

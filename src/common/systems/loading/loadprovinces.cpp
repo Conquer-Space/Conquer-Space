@@ -24,7 +24,8 @@
 #include "common/components/organizations.h"
 #include "common/components/surface.h"
 
-void cqsp::common::systems::loading::LoadProvinces(common::Universe& universe, const std::string& text) {
+namespace cqsp::common::systems::loading {
+void LoadProvinces(common::Universe& universe, entt::entity planet, const std::string& text) {
     // The text has to be csv, so treat it is csv
     std::istringstream f(text);
     std::string line;
@@ -58,12 +59,12 @@ void cqsp::common::systems::loading::LoadProvinces(common::Universe& universe, c
             universe.get_or_emplace<components::CountryCityList>(universe.countries[country])
                 .province_list.push_back(entity);
         }
-        universe.province_colors[(int)color] = entity;
-        universe.colors_province[entity] = (int)color;
+        universe.province_colors[planet][(int)color] = entity;
+        universe.colors_province[planet][entity] = (int)color;
     }
 }
 
-void cqsp::common::systems::loading::LoadAdjProvinces(common::Universe& universe, Hjson::Value& adjacency_map) {
+void LoadAdjProvinces(common::Universe& universe, Hjson::Value& adjacency_map) {
     // Go through value
     for (auto const& [province_name, neighbors] : adjacency_map) {
         if (!universe.provinces.contains(province_name)) {
@@ -82,3 +83,4 @@ void cqsp::common::systems::loading::LoadAdjProvinces(common::Universe& universe
         }
     }
 }
+}  // namespace cqsp::common::systems::loading
