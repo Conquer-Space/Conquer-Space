@@ -28,6 +28,7 @@
 #include "common/components/name.h"
 #include "common/components/organizations.h"
 #include "common/components/population.h"
+#include "common/components/spaceport.h"
 #include "common/components/surface.h"
 #include "common/systems/actions/factoryconstructaction.h"
 #include "common/util/nameutil.h"

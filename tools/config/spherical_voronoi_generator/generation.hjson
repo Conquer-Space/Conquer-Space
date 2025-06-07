@@ -1,0 +1,8 @@
+[
+    {
+        count: 250
+        seed: 32
+        output: ../binaries/data/core/map/moon/province_map.png
+        province-output: ../binaries/data/core/map/moon/province_def.csv
+    }
+]

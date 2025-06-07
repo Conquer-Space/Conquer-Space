@@ -64,7 +64,7 @@ class StarDate {
     int GetYear();
     int GetMonth();
     int GetDay();
-    int GetHour();
+    int GetHour(double offset = 0.0);
     int GetMinute();
 
     void SetDate(unsigned int _date) { date = _date; }

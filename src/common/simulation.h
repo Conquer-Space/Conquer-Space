@@ -43,6 +43,7 @@ class Simulation {
     /// 1 game tick, runs every single system that is added.
     /// </summary>
     void tick();
+    void Init();
 
     template <class T>
     void AddSystem() {

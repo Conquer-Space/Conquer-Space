@@ -1,0 +1,26 @@
+[
+    {
+        name: Jupiter
+        identifier: jupiter
+        adjective: jovian
+        radius: 69911 km
+        reference: sun
+        gm: 126686534.9
+        orbit:
+        {
+            eccentricity: 0.04877479419403492
+            semi_major_axis: 778547207.872486 km
+            M0: 20.68528432460539 deg
+            inclination: 1.304625710897931 deg
+            LAN: 100.491590596888 deg
+            arg_periapsis: 275.0663364296838 deg
+        }
+        day_length: 9.9250 h
+        axial: 3.13 deg
+        texture:
+        {
+            terrain: jupitermap
+        }
+        tags: []
+    }
+]

@@ -21,14 +21,13 @@
 #include "common/game.h"
 #include "common/universe.h"
 
-namespace cqsp {
-namespace common {
-namespace systems {
+namespace cqsp::common::systems {
 class ISimulationSystem {
  public:
     explicit ISimulationSystem(Game& game) : game(game) {}
     virtual ~ISimulationSystem() = default;
     virtual void DoSystem() = 0;
+    virtual void Init() {};
 
     /// How often is `DoSystem` is run. It will be run every
     /// n number of ticks when the tick becomes a multiple of the number below.
@@ -42,6 +41,4 @@ class ISimulationSystem {
  private:
     Game& game;
 };
-}  // namespace systems
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::systems

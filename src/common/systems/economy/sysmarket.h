@@ -16,6 +16,7 @@
  */
 #pragma once
 
+#include "common/components/economy.h"
 #include "common/systems/isimulationsystem.h"
 
 namespace cqsp::common::systems {
@@ -30,5 +31,8 @@ class SysMarket : public ISimulationSystem {
     /// </summary>
     /// <param name="game"></param>
     static void InitializeMarket(Game& game);
+
+ private:
+    void DeterminePrice(components::Market& market, entt::entity good_entity);
 };
 }  // namespace cqsp::common::systems

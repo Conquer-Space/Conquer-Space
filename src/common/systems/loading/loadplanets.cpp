@@ -97,6 +97,9 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
             if (texture["province_map"].type() == Hjson::Type::String) {
                 provinces.province_map = texture["province_map"].to_string();
             }
+            if (texture["province_definitions"].type() == Hjson::Type::String) {
+                provinces.province_definitions = texture["province_definitions"].to_string();
+            }
         }
     }
 

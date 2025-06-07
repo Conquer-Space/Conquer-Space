@@ -108,6 +108,20 @@ bool ResourceLedger::EnoughToTransfer(const ResourceLedger &amount) {
     return b;
 }
 
+void ResourceLedger::AddPositive(const ResourceLedger &other) {
+    for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
+        if (iterator->second <= 0) continue;
+        (*this)[iterator->first] += iterator->second;
+    }
+}
+
+void ResourceLedger::AddNegative(const ResourceLedger &other) {
+    for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
+        if (iterator->second >= 0) continue;
+        (*this)[iterator->first] += -iterator->second;
+    }
+}
+
 void ResourceLedger::operator-=(const ResourceLedger &other) {
     for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
         (*this)[iterator->first] -= iterator->second;
@@ -290,7 +304,7 @@ ResourceLedger ResourceLedger::LimitedRemoveResources(const ResourceLedger &othe
     return removed;
 }
 
-ResourceLedger ResourceLedger::UnitLeger(const double val) {
+ResourceLedger ResourceLedger::UnitLedger(const double val) {
     ResourceLedger newleg;
     for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
         newleg[iterator->first] = val;

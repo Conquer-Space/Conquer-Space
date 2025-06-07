@@ -73,7 +73,7 @@ void SysPopulationGrowth::DoSystem() {
 }
 
 namespace {
-void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement, cqspc::Market& market,
+void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement,
                        cqspc::ResourceConsumption& marginal_propensity_base,
                        cqspc::ResourceConsumption& autonomous_consumption_base, float savings) {
     // Get the transport cost
@@ -83,7 +83,7 @@ void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement
     auto& infrastructure = universe.get<cqspc::infrastructure::CityInfrastructure>(settlement);
     // Calculate the infrastructure cost
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
-
+    auto& market = universe.get<cqspc::Market>(settlement);
     // Loop through the population segments through the settlements
     auto& settlement_comp = universe.get<cqspc::Settlement>(settlement);
     for (entt::entity segmententity : settlement_comp.population) {
@@ -102,7 +102,8 @@ void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement
 
         cqspc::Wallet& wallet = universe.get_or_emplace<cqspc::Wallet>(segmententity);
         const double cost = (consumption * market.price).GetSum();
-        wallet -= cost;    // Spend, even if it puts the pop into debt
+        wallet -= cost;  // Spend, even if it puts the pop into debt
+
         if (wallet > 0) {  // If the pop has cash left over spend it
             // Add to the cost of price of transport
             cqspc::ResourceConsumption extraconsumption = marginal_propensity_base;
@@ -118,10 +119,8 @@ void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement
             consumption += extraconsumption;   // Remove purchased goods from the market
             for (auto& t : consumption) {
                 // Look for in the market, and then if supply is zero, then deny them buying
-                if (market.previous_supply[t.first] <= 0) {
-                    // Then they cannot buy the stuff
-                    // Then do the consumption
-                    // Add to latent demand
+                if (market.previous_supply().HasGood(t.first) && market.previous_supply()[t.first] <= 0) {
+                    // Then they cannot buy the goods, and add latent demand
                     market.latent_demand[t.first] += t.second;
                     t.second = 0;
                 }
@@ -135,9 +134,9 @@ void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement
         }
 
         // TODO(EhWhoAmI): Don't inject cash, take the money from the government
-        wallet += segment.population * 50000;  // Inject cash
+        wallet += segment.population * 50;  // Inject cash
 
-        market.demand += consumption;
+        market.demand() += consumption;
     }
 }
 }  // namespace
@@ -184,21 +183,8 @@ void SysPopulationConsumption::DoSystem() {
     }  // These tables technically never need to be recalculated
     auto settlementview = universe.view<cqspc::Settlement>();
 
-    // Loop through the settlements on a planet, then process the market?
-    auto market_view = universe.view<cqspc::Habitation>();
-    int settlement_count = 0;
-    for (entt::entity entity : market_view) {
-        // Get the children, because reasons
-        // All planets with a habitation WILL have a market
-        auto& market = universe.get_or_emplace<cqspc::Market>(entity);
-        // Read the segment information
-        auto& habit = universe.get<cqspc::Habitation>(entity);
-        for (entt::entity settlement : habit.settlements) {
-            ProcessSettlement(universe, settlement, market, marginal_propensity_base, autonomous_consumption_base,
-                              savings);
-            settlement_count++;
-        }
+    for (entt::entity settlement : settlementview) {
+        ProcessSettlement(universe, settlement, marginal_propensity_base, autonomous_consumption_base, savings);
     }
-    SPDLOG_TRACE("Processing {} settlements in {} markets", settlement_count, market_view.size());
 }
 }  // namespace cqsp::common::systems

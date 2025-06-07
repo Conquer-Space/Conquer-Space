@@ -48,6 +48,11 @@ std::string GetName(const Universe& universe, entt::entity entity) {
     }
 }
 
+/**
+ * I feel like this is a very inefficient way of getting the name
+ * Perhaps we could just have a component that stores the name, and we
+ * can get rid of this complex and honestly unwieldy function.
+ */
 std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity entity) {
     namespace cqspc = cqsp::common::components;
     // Then get type of entity
@@ -76,6 +81,7 @@ std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity e
         }
         return fmt::format("{} Mine", production);
         */
+        return "Mine";
     } else if (universe.any_of<cqspc::Player>(entity)) {
         return "Player";
     } else if (universe.any_of<cqspc::Country>(entity)) {
@@ -88,6 +94,8 @@ std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity e
         return "Science Lab";
     } else if (universe.any_of<cqspc::Commercial>(entity)) {
         return "Commercial";
+    } else if (universe.any_of<cqspc::ships::Ship>(entity)) {
+        return "Ship";
     }
     return "Unknown";
 }

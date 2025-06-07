@@ -1,0 +1,25 @@
+[
+    {
+        name: Neptune
+        identifier: neptune
+        radius: 24622 km
+        reference: sun
+        gm: 6836529.9
+        orbit:
+        {
+            eccentricity: 0.01121519483557542
+            semi_major_axis: 4503456762.153956 km
+            M0: 266.4979731171627 deg
+            inclination: 1.767984967728157 deg
+            LAN: 131.793872244445 deg
+            arg_periapsis: 265.630336157717 deg
+        }
+        day_length: 0.6713 d
+        axial: 97.77 deg
+        texture:
+        {
+            terrain: neptunemap
+        }
+        tags: []
+    }
+]

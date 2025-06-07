@@ -36,8 +36,8 @@
 #include "common/systems/economy/sysfinance.h"
 #include "common/systems/economy/sysinfrastructure.h"
 #include "common/systems/economy/sysmarket.h"
+#include "common/systems/economy/sysplanetarytrade.h"
 #include "common/systems/economy/syspopulation.h"
-#include "common/systems/economy/systrade.h"
 #include "common/systems/history/sysmarkethistory.h"
 #include "common/systems/movement/sysmovement.h"
 #include "common/systems/navy/sysnavy.h"
@@ -65,11 +65,17 @@ Simulation::Simulation(cqsp::common::Game& game) : m_game(game), m_universe(game
 
     // AddSystem<cqspcs::SysAgent>();
     AddSystem<cqspcs::SysMarket>();
-    AddSystem<cqspcs::SysTrade>();
+    AddSystem<cqspcs::SysPlanetaryTrade>();
     AddSystem<cqspcs::history::SysMarketHistory>();
     AddSystem<cqspcs::SysOrbit>();
 
     cqspcs::SysMarket::InitializeMarket(game);
+}
+
+void Simulation::Init() {
+    for (auto& sys : system_list) {
+        sys->Init();
+    }
 }
 
 void Simulation::tick() {
