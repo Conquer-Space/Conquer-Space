@@ -20,6 +20,9 @@
         ]
         connections: [
         ]
+        space-port: {
+            launch: 0
+        }
     }
 ]
 
