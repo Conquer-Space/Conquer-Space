@@ -36,8 +36,12 @@ struct Habitation {
 };
 
 struct ProvincedPlanet {
+    // Identifier of the texture for opengl to decide what to render
     std::string province_texture;
+    // Identifier for the mouse to identify which province the person has clicked on
     std::string province_map;
+    std::string province_definitions;
+    std::string adjacencies;
 };
 
 /// <summary>

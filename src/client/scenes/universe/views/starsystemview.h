@@ -239,9 +239,6 @@ class SysStarSystemRenderer {
     int tex_g;
     int tex_b;
 
-    int province_height = 0;
-    int province_width = 0;
-
     common::components::types::SurfaceCoordinate GetMouseSurfaceIntersection();
     void CityDetection();
 
@@ -253,6 +250,8 @@ class SysStarSystemRenderer {
     int orbits_generated = 0;
 
     const int sphere_resolution = 64;
+
+    bool have_province = false;
 };
 }  // namespace systems
 }  // namespace client

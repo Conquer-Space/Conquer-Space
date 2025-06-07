@@ -17,7 +17,9 @@
         texture:
         {
             terrain: moonmap
-            province_texture: 
+            province_texture: moon_province_map_texture
+            province_map: moon_province_map
+            province_definitions: moon_province_defs
         }
         axial: 1.5424 deg
         day_length: 27.321661 d
