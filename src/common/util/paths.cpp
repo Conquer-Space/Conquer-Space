@@ -52,15 +52,16 @@ char* get_home_dir(uid_t uid) {
 
 #ifdef __APPLE__
 #include <libgen.h>
-#include <limits.h>
 #include <mach-o/dyld.h>
 #include <unistd.h>
+
+#include <climits>
 #endif
 
 #ifdef __linux__
 #include <libgen.h>
-#include <limits.h>
-#include <unistd.h>
+
+#include <climits>
 
 #if defined(__sun)
 #define PROC_SELF_EXE "/proc/self/path/a.out"
@@ -151,6 +152,9 @@ std::string GetCqspDataPath() {
     // need to access ../../../binaries/data
     return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) / ".." / ".." / ".." / "binaries" /
                                       "data")
+        .string();
+#elif !defined(NDEBUG) && defined(__linux__)
+    return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) / ".." / ".." / "binaries" / "data")
         .string();
 #else
     // The folder structure is

@@ -23,6 +23,7 @@
 #include <stb_image.h>
 
 #include <algorithm>
+#include <chrono>
 #include <filesystem>
 #include <iostream>
 #include <memory>
@@ -232,11 +233,17 @@ void AssetLoader::LoadMods() {
     // Load all the packages
     for (auto& it : manager->m_package_prototype_list) {
         // Get the thing
+        ENGINE_LOG_INFO("Loading package {}", it.second.name);
         auto package = LoadPackage(it.second.path);
         if (package == nullptr) {
             continue;
         }
         manager->packages[it.first] = std::move(package);
+    }
+    ENGINE_LOG_INFO("Loaded all packages!");
+    ENGINE_LOG_INFO("Logging times needed for each asset type:");
+    for (auto const& [k, v] : loading_times) {
+        ENGINE_LOG_INFO("\t{} took {} ms", ToString(k), v);
     }
 }
 
@@ -352,7 +359,11 @@ std::unique_ptr<Asset> AssetLoader::LoadAsset(const AssetType& type, const std::
     if (!mounter.Exists(path)) {
         ENGINE_LOG_WARN("{} at {} does not exist, errors may ensue", key, path);
     }
-    return std::move(loading_functions[type](&mounter, path, key, hints));
+    auto start = std::chrono::system_clock::now();
+    std::unique_ptr<Asset> ptr = loading_functions[type](&mounter, path, key, hints);
+    auto end = std::chrono::system_clock::now();
+    loading_times[type] += std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    return std::move(ptr);
 }
 
 void AssetLoader::PlaceAsset(Package& package, const AssetType& type, const std::string& path, const std::string& key,
