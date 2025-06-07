@@ -8,6 +8,7 @@
         }
         planet: moon
         country: usa
+        province: RL2QQ-QSMQA
         population: [
             {
                 size: 500000
