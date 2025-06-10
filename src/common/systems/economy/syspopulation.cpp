@@ -136,7 +136,7 @@ void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement
         // TODO(EhWhoAmI): Don't inject cash, take the money from the government
         wallet += segment.population * 50;  // Inject cash
 
-        market.demand() += consumption;
+        market.consumption += consumption;
     }
 }
 }  // namespace

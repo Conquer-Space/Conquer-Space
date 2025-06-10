@@ -41,7 +41,7 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
     ImGui::TextFmt("Has {} entities attached to it", market.participants.size());
 
     // Get resource stockpile
-    if (!ImGui::BeginTable("marketinfotable", 9, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+    if (!ImGui::BeginTable("marketinfotable", 11, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         return;
     }
     ImGui::TableSetupColumn("Good");
@@ -49,10 +49,12 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
     ImGui::TableSetupColumn("Supply");
     ImGui::TableSetupColumn("Demand");
     ImGui::TableSetupColumn("S/D ratio");
-    ImGui::TableSetupColumn("D/S ratio");
-    ImGui::TableSetupColumn("Latent Demand");
+    ImGui::TableSetupColumn("Previous supply");
+    ImGui::TableSetupColumn("Previous emand");
     ImGui::TableSetupColumn("Input Ratio");
     ImGui::TableSetupColumn("Chronic Shortages");
+    ImGui::TableSetupColumn("Imports");
+    ImGui::TableSetupColumn("Exports");
     ImGui::TableHeadersRow();
     auto goodsview = universe.view<cqspc::Price>();
 
@@ -79,13 +81,17 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
             ImGui::TextFmt("{}", sd_ratio);
         }
         ImGui::TableSetColumnIndex(5);
-        ImGui::TextFmt("{}", market.ds_ratio[good_entity]);
+        ImGui::TextFmt("{}", 0);
         ImGui::TableSetColumnIndex(6);
         ImGui::TextFmt("{}", market.last_latent_demand[good_entity]);
         ImGui::TableSetColumnIndex(7);
-        ImGui::TextFmt("{}", market[good_entity].inputratio);
+        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.production[good_entity]));
         ImGui::TableSetColumnIndex(8);
-        ImGui::TextFmt("{}", market.chronic_shortages[good_entity]);
+        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.consumption[good_entity]));
+        ImGui::TableSetColumnIndex(9);
+        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.imports[good_entity]));
+        ImGui::TableSetColumnIndex(10);
+        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.exports[good_entity]));
     }
     ImGui::EndTable();
 }

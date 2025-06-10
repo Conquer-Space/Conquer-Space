@@ -84,8 +84,8 @@ void ProcessIndustries(Universe& universe, entt::entity entity) {
             // Industry
         }
 
-        market.demand() += input;
-        market.supply() += output;
+        market.consumption += input;
+        market.production += output;
 
         double output_transport_cost = output.GetSum() * infra_cost;
         double input_transport_cost = input.GetSum() * infra_cost;

@@ -37,13 +37,12 @@ void cqsp::common::systems::SysPlanetaryTrade::DoSystem() {
             }
             auto& market = GetUniverse().get<components::Market>(habitation);
             auto& market_wallet = GetUniverse().get_or_emplace<components::Wallet>(habitation);
-            // Supply the previous market information to this
-            // Add the supply and difference
-            // Add supply difference to itself or something
-            // How do we ensure that is is properly supplied?
-            market.demand().AddPositive(market.supply_difference);
-            market.supply().AddNegative(market.supply_difference);
-
+            // Import the missing goods that we need
+            market.imports.clear();
+            market.imports.AddPositive(market.supply_difference);
+            market.exports.clear();
+            market.exports.AddNegative(market.supply_difference);
+            // Add the market inputs
             // Compute deficit
             double trade_balance = (market.supply_difference * p_market.price).GetSum();
             wallet += trade_balance;
@@ -56,8 +55,8 @@ void cqsp::common::systems::SysPlanetaryTrade::DoSystem() {
             // Maybe we can implement it wity some sort of deficit or debt system, but I think that will be
             // faroff
             // The thing is that we might have an issue
-            p_market.supply().AddPositive(market.supply_difference);
-            p_market.demand().AddNegative(market.supply_difference);
+            p_market.exports.AddPositive(market.supply_difference);
+            p_market.imports.AddNegative(market.supply_difference);
             // We probably need stockpiles for more isolated markets...
             // Or do we do stockpiles for everything...
         }

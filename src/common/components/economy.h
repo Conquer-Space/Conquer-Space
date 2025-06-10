@@ -25,15 +25,14 @@
 
 #include "common/components/resource.h"
 
-namespace cqsp {
-namespace common {
-namespace components {
+namespace cqsp::common::components {
 /// <summary>
 /// Historical information about the market
 /// Might change this to a different type of resource ledger so that we don't have so many lookups
 /// </summary>
 struct MarketInformation {
  private:
+    // I forgot why we have 2 separate ledgers for supply and demand
     ResourceLedger _demand;
     ResourceLedger _supply;
     ResourceLedger _previous_demand;
@@ -42,10 +41,6 @@ struct MarketInformation {
 
  public:
     ResourceLedger sd_ratio;
-
-    // Might not need this in the future.
-    ResourceLedger ds_ratio;
-
     /// <summary>
     /// The amount of goods that changed hands. We can use this to calculate the
     /// GDP
@@ -63,6 +58,12 @@ struct MarketInformation {
     ResourceLedger supply_difference;
 
     ResourceLedger chronic_shortages;
+
+    ResourceLedger imports;
+    ResourceLedger exports;
+
+    ResourceLedger production;
+    ResourceLedger consumption;
 
     void ResetLedgers() {
         // Reset the ledger values
@@ -296,6 +297,4 @@ struct Owned {
 };
 
 struct TradePartners : std::vector<entt::entity> {};
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::components

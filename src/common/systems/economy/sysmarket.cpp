@@ -44,7 +44,10 @@ void SysMarket::DoSystem() {
         // market.gdp = market.volume* market.price;
 
         // Calculate Supply and demand
-        market.sd_ratio = market.supply().SafeDivision(market.demand());
+        // Add combined supply and demand to compute S/D ratio
+        market.supply() = market.imports + market.production;
+        market.demand() = market.exports + market.consumption;
+        market.sd_ratio = (market.supply()).SafeDivision(market.demand());
         // market.ds_ratio = market.previous_demand.SafeDivision(market.supply);
         // market.ds_ratio = market.ds_ratio.Clamp(0, 2);
 
@@ -75,11 +78,7 @@ void SysMarket::DoSystem() {
         }
 
         // Swap and clear
-        market.ResetLedgers();
         std::swap(market.latent_demand, market.last_latent_demand);
-
-        market.latent_supply.clear();
-        market.latent_demand.clear();
     }
 }
 
@@ -117,14 +116,14 @@ void SysMarket::InitializeMarket(Game& game) {
         components::Market& market = universe.get<components::Market>(entity);
 
         // Initialize the price
-        for (entt::entity goodenity : goodsview) {
-            market.price[goodenity] = universe.get<components::Price>(goodenity);
+        for (entt::entity good_entity : goodsview) {
+            market.price[good_entity] = universe.get<components::Price>(good_entity);
             // Set the supply and demand things as 1 so that they sell for
             // now
-            market.previous_demand()[goodenity] = 1;
-            market.previous_supply()[goodenity] = 1;
-            market.supply()[goodenity] = 1;
-            market.demand()[goodenity] = 1;
+            market.previous_demand()[good_entity] = 1;
+            market.previous_supply()[good_entity] = 1;
+            market.supply()[good_entity] = 1;
+            market.demand()[good_entity] = 1;
         }
         market.sd_ratio = market.supply().SafeDivision(market.demand());
         market.history.push_back(market);
