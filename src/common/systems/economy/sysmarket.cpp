@@ -99,8 +99,6 @@ void SysMarket::DeterminePrice(components::Market& market, entt::entity good_ent
         if (price < 0.00001) {
             price = 0.00001;
         }
-    } else {
-        // Keep price approximately the same
     }
 }
 

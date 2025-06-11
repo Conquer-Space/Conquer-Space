@@ -105,12 +105,6 @@ void ProcessIndustries(Universe& universe, entt::entity entity) {
         costs.wages = size.size * recipe.workers * size.wages;
         costs.profit = costs.revenue - costs.maintenance - costs.materialcosts - costs.wages;
         costs.transport = output_transport_cost + input_transport_cost;
-        double& price = market.price[recipe.output.entity];
-        if (costs.profit > 0) {
-            price += (-0.1 + price * -0.01f);
-        } else {
-            price += (0.2 + price * 0.01f);
-        }
 
         // Pay the workers
         population_wallet += costs.wages;

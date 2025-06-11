@@ -117,14 +117,7 @@ void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement
             extraconsumption *= wallet;        // Distribute wallet amongst goods
             extraconsumption /= market.price;  // Find out how much of each good you can buy
             consumption += extraconsumption;   // Remove purchased goods from the market
-            for (auto& t : consumption) {
-                // Look for in the market, and then if supply is zero, then deny them buying
-                if (market.previous_supply().HasGood(t.first) && market.previous_supply()[t.first] <= 0) {
-                    // Then they cannot buy the goods, and add latent demand
-                    market.latent_demand[t.first] += t.second;
-                    t.second = 0;
-                }
-            }
+
             // Consumption
             // Check if there's enough on the market
             // Add the transport costs, and because they're importing it, we only account this
