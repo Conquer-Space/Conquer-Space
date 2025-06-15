@@ -69,7 +69,7 @@ void FunctionRandom(cqsp::common::Universe& universe, cqsp::scripting::ScriptInt
     REGISTER_FUNCTION("random", [&](int low, int high) { return universe.random->GetRandomInt(low, high); });
 
     REGISTER_FUNCTION("random_normal_int",
-                      [&](int mean, int sd) { return universe.random->GetRandomNormal(mean, sd); });
+                      [&](int mean, int sd) { return universe.random->GetRandomNormalInt(mean, sd); });
 }
 
 void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {

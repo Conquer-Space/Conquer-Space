@@ -51,8 +51,8 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
     ImGui::TableSetupColumn("S/D ratio");
     ImGui::TableSetupColumn("Previous supply");
     ImGui::TableSetupColumn("Previous emand");
-    ImGui::TableSetupColumn("Input Ratio");
-    ImGui::TableSetupColumn("Chronic Shortages");
+    ImGui::TableSetupColumn("Production");
+    ImGui::TableSetupColumn("Consumption");
     ImGui::TableSetupColumn("Imports");
     ImGui::TableSetupColumn("Exports");
     ImGui::TableHeadersRow();

@@ -202,6 +202,9 @@ class ResourceLedger : private LedgerMap {
 
     bool HasGood(entt::entity good) { return (*this).find(good) != (*this).end(); }
 
+    /**
+     * Gets the sum of all the goods in this resource ledger.
+     */
     double GetSum();
 
     /// <summary>
@@ -263,8 +266,13 @@ struct RecipeCost {
 
 // Factory size
 struct IndustrySize {
+    // The size of the factory.
+    // the maximum output of the factory is
     double size;
+    // The utilization of the factory.
     double utilization;
+
+    double workers;
     double wages = 100;
 };
 

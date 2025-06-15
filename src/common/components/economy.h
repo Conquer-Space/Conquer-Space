@@ -65,6 +65,9 @@ struct MarketInformation {
     ResourceLedger production;
     ResourceLedger consumption;
 
+    // PID controller
+    ResourceLedger sd_integral;
+
     void ResetLedgers() {
         // Reset the ledger values
         current = !current;

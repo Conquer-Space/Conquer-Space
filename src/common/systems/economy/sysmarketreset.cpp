@@ -26,8 +26,6 @@ void SysMarketReset::DoSystem() {
         // Reset the ledgers
         components::Market& market = universe.get<components::Market>(entity);
         market.ResetLedgers();
-        market.imports.clear();
-        market.exports.clear();
         market.production.clear();
         market.consumption.clear();
         market.latent_supply.clear();
