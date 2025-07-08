@@ -239,7 +239,6 @@ class ResourceLedger : private LedgerMap {
 };
 
 ResourceLedger CopyVals(const ResourceLedger& keys, const ResourceLedger& values);
-ResourceLedger ResourceLedgerZip(const ResourceLedger& key, const ResourceLedger& value);
 
 struct RecipeOutput {
     entt::entity entity;

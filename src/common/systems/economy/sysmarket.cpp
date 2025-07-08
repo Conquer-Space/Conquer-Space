@@ -45,8 +45,10 @@ void SysMarket::DoSystem() {
 
         // Calculate Supply and demand
         // Add combined supply and demand to compute S/D ratio
-        market.supply() = market.imports + market.production;
-        market.demand() = market.exports + market.consumption;
+        market.supply().AddPositive(market.trade);
+        market.demand().AddNegative(market.trade);
+        market.supply() += market.production;
+        market.demand() += market.consumption;
         market.sd_ratio = (market.supply()).SafeDivision(market.demand());
         // market.ds_ratio = market.previous_demand.SafeDivision(market.supply);
         // market.ds_ratio = market.ds_ratio.Clamp(0, 2);
@@ -76,9 +78,6 @@ void SysMarket::DoSystem() {
                 }
             }
         }
-
-        // Swap and clear
-        std::swap(market.latent_demand, market.last_latent_demand);
     }
 }
 

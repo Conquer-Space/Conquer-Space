@@ -89,9 +89,9 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
         ImGui::TableSetColumnIndex(8);
         ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.consumption[good_entity]));
         ImGui::TableSetColumnIndex(9);
-        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.imports[good_entity]));
+        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.trade[good_entity]));
         ImGui::TableSetColumnIndex(10);
-        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.exports[good_entity]));
+        ImGui::TextFmt("{}", 0);
     }
     ImGui::EndTable();
 }

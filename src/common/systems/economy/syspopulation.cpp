@@ -108,7 +108,7 @@ void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement
             // Add to the cost of price of transport
             cqspc::ResourceConsumption extraconsumption = marginal_propensity_base;
             // Loop through all the things, if there isn't enough resources for a
-            // If the market supply has all of the goods, then they can buy the goods
+            // If the market supply has all of the goods, then they can buy the goods q
             // Get previous market supply
             // the total consumption
             // Add to the cost
