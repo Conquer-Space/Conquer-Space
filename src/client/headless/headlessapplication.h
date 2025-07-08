@@ -16,12 +16,18 @@
  */
 #pragma once
 
-namespace cqsp::asset {
-class AssetOptions {
- public:
-    bool load_visual;
+#include "common/universe.h"
+#include "engine/asset/assetloader.h"
+#include "engine/asset/assetmanager.h"
 
-    AssetOptions() : load_visual(true) {}
-    AssetOptions(bool load_visual) : load_visual(load_visual) {}
+namespace cqsp::headless {
+class HeadlessApplication {
+ public:
+    HeadlessApplication();
+    int run();
+
+ private:
+    cqsp::asset::AssetManager asset_manager;
+    cqsp::asset::AssetLoader asset_loader;
 };
-}  // namespace cqsp::asset
+};  // namespace cqsp::headless

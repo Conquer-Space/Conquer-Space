@@ -20,10 +20,23 @@
 #include <memory>
 
 #include "client/conquerspace.h"
+#include "client/headless/headlessapplication.h"
 #include "client/scenes/loadingscene.h"
 #include "engine/application.h"
 
 int main(int argc, char* argv[]) {
+    bool headless = false;
+    for (int i = 0; i < argc; i++) {
+        if (strcmp(argv[i], "--headless")) {
+            // Load headless application
+            headless = true;
+        }
+    }
+    if (headless) {
+        cqsp::headless::HeadlessApplication headless_application;
+        return headless_application.run();
+    }
+
     cqsp::engine::Application application(argc, argv);
 
     // TODO(EhWhoAmI): Run the game and subsequent simulation in a headless mode, so that we don't
