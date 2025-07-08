@@ -23,6 +23,7 @@
 #include <optional>
 #include <vector>
 
+#include "engine/asset/assetoptions.h"
 #include "engine/asset/assetprototype.h"
 #include "engine/asset/package.h"
 #include "engine/asset/packageprototype.h"
@@ -42,7 +43,7 @@ class QueueHolder {
 
 class AssetLoader {
  public:
-    AssetLoader();
+    AssetLoader(AssetOptions options = AssetOptions());
 
     /// <summary>
     /// Checks for all the loaded mods, and loads the assets that the mod loads.
@@ -349,5 +350,7 @@ class AssetLoader {
     std::map<AssetType, LoaderFunction> loading_functions;
     std::map<AssetType, uint64_t> loading_times;
     VirtualMounter mounter;
+
+    AssetOptions asset_options;
 };
 }  // namespace cqsp::asset

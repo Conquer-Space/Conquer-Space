@@ -21,6 +21,7 @@
 #include <string>
 
 #include "engine/asset/asset.h"
+#include "engine/enginelogger.h"
 
 namespace cqsp::asset {
 class AssetLoader;
@@ -37,6 +38,7 @@ class Package {
     T* GetAsset(const V asset) {
         if (!HasAsset(asset)) {
             ENGINE_LOG_ERROR("Invalid key {}", asset);
+            return nullptr;
         }
         return dynamic_cast<T*>(assets[asset].get());
     }

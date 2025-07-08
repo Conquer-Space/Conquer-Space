@@ -50,7 +50,15 @@
     };
 
 namespace cqsp::asset {
-AssetLoader::AssetLoader() {
+AssetLoader::AssetLoader(AssetOptions asset_options)
+    : asset_options(asset_options),
+      missing_assets(),
+      m_asset_queue(),
+      max_loading(),
+      currentloading(),
+      loading_functions(),
+      loading_times(),
+      mounter() {
     loading_functions[AssetType::TEXT] = CREATE_ASSET_LAMBDA(LoadText);
     loading_functions[AssetType::TEXTURE] = CREATE_ASSET_LAMBDA(LoadTexture);
     loading_functions[AssetType::TEXT_ARRAY] = CREATE_ASSET_LAMBDA(LoadTextDirectory);
@@ -234,8 +242,9 @@ std::unique_ptr<Package> AssetLoader::LoadPackage(const std::string& path) {
         ENGINE_LOG_INFO("No script file for package {}", package->name);
     }
 
-    // Load a few other hjson folders.
-    // So the folders we have to keep track off are the goods and recipes
+    // Load a few default folders
+    // TODO(#279): Don't have default asset loading
+    // So the folders we have to keep track of are the goods and recipes
     HjsonPrototypeDirectory(*package, fmt::format("{}/data/goods", mount_point), "goods");
     HjsonPrototypeDirectory(*package, fmt::format("{}/data/recipes", mount_point), "recipes");
     HjsonPrototypeDirectory(*package, fmt::format("{}/data/names", mount_point), "names");
@@ -808,7 +817,12 @@ void AssetLoader::LoadResourceHjsonFile(Package& package, const std::string& pac
         if (val["hints"].defined()) {
             hints = val["hints"];
         }
-        PlaceAsset(package, FromString(type), path, std::string(key), hints);
+        // Check the type of asset and don't load it if necessary
+        AssetType asset_type = FromString(type);
+        if (!asset_options.load_visual && AssetIsVisual(asset_type)) {
+            continue;
+        }
+        PlaceAsset(package, asset_type, path, std::string(key), hints);
         currentloading++;
     }
 }
