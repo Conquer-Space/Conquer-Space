@@ -19,6 +19,8 @@
 #include <iostream>
 #include <string>
 
+#include <sol/error.hpp>
+
 #include "client/headless/generate.h"
 #include "common/util/logging.h"
 #include "common/util/strip.h"
@@ -51,6 +53,13 @@ int HeadlessApplication::run() {
             // Now we get the commands
             if (line == "@generate") {
                 generate(*this);
+            }
+        } else {
+            // Now lua scripting
+            try {
+                conquer_space.GetScriptInterface().RunScript(line);
+            } catch (sol::error& error) {
+                // since it's automatically logged we can ignore it..
             }
         }
     }
