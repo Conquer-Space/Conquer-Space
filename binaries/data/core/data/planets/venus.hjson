@@ -1,0 +1,25 @@
+[
+    {
+        name: Venus
+        identifier: venus
+        radius: 6052 km
+        reference: sun
+        gm: 324859.9
+        orbit:
+        {
+            eccentricity: 0.006755697268576816
+            semi_major_axis: 108208156.5316098 km
+            M0: 49.90452231912491 deg
+            inclination: 3.394589632757466 deg
+            LAN: 76.6783751109416 deg
+            arg_periapsis: 55.18541504725159 deg
+        }
+        day_length: -243.0226 d
+        axial: 2.64 deg
+        texture:
+        {
+            terrain: venusmap
+        }
+        tags: []
+    }
+]

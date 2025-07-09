@@ -36,6 +36,8 @@ class SysProvinceInformation : public SysUserInterface {
     void DemographicsTab();
     void IndustryTab();
     void SpacePortTab();
+    void LaunchTab();
+    void DockedTab();
     void InfrastructureTab();
     void IndustryListWindow();
 
@@ -48,6 +50,7 @@ class SysProvinceInformation : public SysUserInterface {
 
     bool visible = false;
     entt::entity current_market;
+    entt::entity selected_ship;
     bool city_factory_info = false;
 
     enum ViewMode { COUNTRY_VIEW, CITY_VIEW } view_mode = ViewMode::COUNTRY_VIEW;

@@ -454,6 +454,7 @@ void SysStarSystemRenderer::DrawTexturedPlanet(const glm::vec3& object_pos, cons
     bool have_province;
     GetPlanetTexture(entity, have_normal, have_roughness, have_province);
 
+    this->have_province = have_province;
     namespace cqspb = cqsp::common::components::bodies;
     namespace cqspt = cqsp::common::components::types;
     auto& body = m_universe.get<cqspb::Body>(entity);
@@ -510,6 +511,8 @@ void SysStarSystemRenderer::GetPlanetTexture(const entt::entity entity, bool& ha
     if (terrain_data.roughness != nullptr) {
         have_roughness = true;
         textured_planet.textures.push_back(terrain_data.roughness);
+    } else {
+        textured_planet.textures.push_back(terrain_data.terrain);
     }
     // Add province data if they have it
     have_province = (terrain_data.province_texture != nullptr);
@@ -707,22 +710,29 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
 
         cqsp::asset::BinaryAsset* bin_asset =
             m_app.GetAssetManager().GetAsset<cqsp::asset::BinaryAsset>(province_map.province_map);
+        if (bin_asset == nullptr) {
+            SPDLOG_ERROR("Could not find the planet province map {}", province_map.province_map);
+            continue;
+        }
         // Then create vector
         uint64_t file_size = bin_asset->data.size();
         int comp = 0;
         stbi_set_flip_vertically_on_load(0);
+        int province_width;
+        int province_height;
         auto d = stbi_load_from_memory(bin_asset->data.data(), file_size, &province_width, &province_height, &comp, 0);
 
         // Set country map
         data.province_map.reserve(static_cast<long>(province_height * province_width));
+        // the province map will be the same dimensions as the province texture, so it should be fine?
         for (int x = 0; x < province_width; x++) {
             for (int y = 0; y < province_height; y++) {
                 // Then get from the maps
                 int pos = (x * province_height + y) * comp;
                 std::tuple<int, int, int, int> t = std::make_tuple(d[pos], d[pos + 1], d[pos + 2], d[pos + 3]);
                 int i = common::components::ProvinceColor::toInt(std::get<0>(t), std::get<1>(t), std::get<2>(t));
-                if (m_universe.province_colors.find(i) != m_universe.province_colors.end()) {
-                    data.province_map.push_back(m_universe.province_colors[i]);
+                if (m_universe.province_colors[body].find(i) != m_universe.province_colors[body].end()) {
+                    data.province_map.push_back(m_universe.province_colors[body][i]);
                 } else {
                     data.province_map.push_back(entt::null);
                 }
@@ -1116,6 +1126,11 @@ void SysStarSystemRenderer::RenderInformationWindow(double deltaTime) {
     ImGui::TextFmt("Generated {} orbits last frame", orbits_generated);
     auto intersection = GetMouseSurfaceIntersection();
     ImGui::TextFmt("Intersection: {} {}", intersection.latitude(), intersection.longitude());
+    if (have_province) {
+        ImGui::TextFmt("Current planet has province");
+    } else {
+        ImGui::TextFmt("Current planet has no province");
+    }
     entt::entity earth = m_universe.planets["earth"];
     auto& b = m_universe.get<cqspb::Body>(earth);
     if (ImGui::Button("Focus on part")) {
@@ -1189,13 +1204,6 @@ void SysStarSystemRenderer::CityDetection() {
     }
     auto s = GetMouseSurfaceIntersection();
 
-    // Look for the vector
-    int x = tex_x = ((-1 * (s.latitude() * 2 - 180))) / 360 * province_height;
-    int y = tex_y = fmod(s.longitude() + 180, 360) / 360. * province_width;
-    int pos = (x * province_width + y);
-    if (pos < 0 || pos > province_width * province_height) {
-        return;
-    }
     if (!m_universe.any_of<PlanetTexture>(on_planet)) {
         return;
     }
@@ -1203,10 +1211,23 @@ void SysStarSystemRenderer::CityDetection() {
     if (planet_texture.province_texture == nullptr) {
         return;
     }
+
+    int _province_height = planet_texture.province_texture->height;
+    int _province_width = planet_texture.province_texture->width;
+
+    // Get the texture
+    // Look for the vector
+    int x = tex_x = ((-1 * (s.latitude() * 2 - 180))) / 360 * _province_height;
+    int y = tex_y = fmod(s.longitude() + 180, 360) / 360. * _province_width;
+    int pos = (x * _province_width + y);
+    if (pos < 0 || pos > _province_width * _province_height) {
+        return;
+    }
+
     ZoneNamed(LookforProvince, true);
     {
         hovering_province = planet_texture.province_map[pos];
-        int color = m_universe.colors_province[hovering_province];
+        int color = m_universe.colors_province[on_planet][hovering_province];
         auto province_color = cqsp::common::components::ProvinceColor::fromInt(color);
         hovering_province_color =
             (glm::vec3((float)province_color.r, (float)province_color.g, (float)province_color.b) / 255.f);

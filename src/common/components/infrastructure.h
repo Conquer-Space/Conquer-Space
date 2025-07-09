@@ -25,7 +25,7 @@ namespace infrastructure {
 // Infrastrucutre provides many benefits
 // Electric grid, roads, railways, water supply, etc.
 struct Infrastructure {
-    // Different types of infrastructure w
+    // Different types of infrastructure
 };
 
 struct CityInfrastructure {
@@ -49,8 +49,6 @@ struct CityPower {
 };
 
 struct BrownOut {};
-
-class SpacePort {};
 
 // The city has a highway that boosts costs?
 struct Highway {

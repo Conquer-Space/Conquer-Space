@@ -25,7 +25,8 @@
 #include "common/components/economy.h"
 #include "common/components/name.h"
 
-void cqsp::common::systems::SysMarket::DoSystem() {
+namespace cqsp::common::systems {
+void SysMarket::DoSystem() {
     ZoneScoped;
     // Get all the new and improved (tm) markets
     auto marketview = GetUniverse().view<components::Market>();
@@ -33,9 +34,9 @@ void cqsp::common::systems::SysMarket::DoSystem() {
     TracyPlot("Market Count", (int64_t)marketview.size());
     auto goodsview = GetUniverse().view<components::Price>();
     Universe& universe = GetUniverse();
-    // Calculate all the things
+
     for (entt::entity entity : marketview) {
-        // Get the resources and process the price, then do things, I guess
+        // Get the resources and process the price
         // Get demand
         components::Market& market = universe.get<components::Market>(entity);
 
@@ -43,48 +44,68 @@ void cqsp::common::systems::SysMarket::DoSystem() {
         // market.gdp = market.volume* market.price;
 
         // Calculate Supply and demand
-        market.sd_ratio = market.supply.SafeDivision(market.demand);
+        market.sd_ratio = market.supply().SafeDivision(market.demand());
         // market.ds_ratio = market.previous_demand.SafeDivision(market.supply);
         // market.ds_ratio = market.ds_ratio.Clamp(0, 2);
 
         for (entt::entity good_entity : goodsview) {
-            const double sd_ratio = market.sd_ratio[good_entity];
-            double& price = market.price[good_entity];
-            // If supply and demand = 0, then it will be undefined
-            if (sd_ratio < 1) {
-                // Too much demand, so we will increase the price
-                // Later increase it based on SD ratio
-                price += (0.02 + price * 0.01f);
-                //price = 0.5;
-            } else if (sd_ratio > 1 || sd_ratio == std::numeric_limits<double>::infinity()) {
-                // Too much supply, so we will decrease the price
-                price += (-0.01 + price * -0.01f);
-
-                // Limit price to a minimum of 0.001
-                if (price < 0.00001) {
-                    price = 0.00001;
-                }
-            } else {
-                // Keep price approximately the same
-            }
+            DeterminePrice(market, good_entity);
         }
         // Set the previous supply and demand
         //components::MarketInformation current = market;
         //market.history.push_back(current);
+        // So positive values are left over goods in the market
+        // and negative values are goods that are in demand in the market
+        market.supply_difference = market.supply() - market.demand();
 
-        // Swap and clear?
-        std::swap(market.supply, market.previous_supply);
-        std::swap(market.demand, market.previous_demand);
+        // Get chronic supply shortages
+        // Just get all the values where the supply is 0, and the demand is greater than 0
+        // Just get all the values where the supply is zero, and there is nonzero demand...
+        components::ResourceLedger& market_supply = market.supply();
+        components::ResourceLedger& market_demand = market.demand();
+        for (auto iterator = market_supply.begin(); iterator != market_supply.end(); iterator++) {
+            if (iterator->second == 0 && market_demand[iterator->first] > 0) {
+                market.chronic_shortages[iterator->first]++;
+            } else {
+                // Remove it if it exists in it
+                if (market.chronic_shortages.contains(iterator->first)) {
+                    market.chronic_shortages.erase(iterator->first);
+                }
+            }
+        }
+
+        // Swap and clear
+        market.ResetLedgers();
         std::swap(market.latent_demand, market.last_latent_demand);
 
-        market.supply.clear();
-        market.demand.clear();
         market.latent_supply.clear();
         market.latent_demand.clear();
     }
 }
 
-void cqsp::common::systems::SysMarket::InitializeMarket(Game& game) {
+void SysMarket::DeterminePrice(components::Market& market, entt::entity good_entity) {
+    const double sd_ratio = market.sd_ratio[good_entity];
+    double& price = market.price[good_entity];
+    // If supply and demand = 0, then it will be undefined
+    if (sd_ratio < 1) {
+        // Too much demand, so we will increase the price
+        // Later increase it based on SD ratio
+        price += (0.02 + price * 0.01f);
+        //price = 0.5;
+    } else if (sd_ratio > 1 || sd_ratio == std::numeric_limits<double>::infinity()) {
+        // Too much supply, so we will decrease the price
+        price += (-0.01 + price * -0.01f);
+
+        // Limit price to a minimum of 0.00001
+        if (price < 0.00001) {
+            price = 0.00001;
+        }
+    } else {
+        // Keep price approximately the same
+    }
+}
+
+void SysMarket::InitializeMarket(Game& game) {
     auto marketview = game.GetUniverse().view<components::Market>();
     auto goodsview = game.GetUniverse().view<components::Price>();
 
@@ -100,12 +121,13 @@ void cqsp::common::systems::SysMarket::InitializeMarket(Game& game) {
             market.price[goodenity] = universe.get<components::Price>(goodenity);
             // Set the supply and demand things as 1 so that they sell for
             // now
-            market.previous_demand[goodenity] = 1;
-            market.previous_supply[goodenity] = 1;
-            market.supply[goodenity] = 1;
-            market.demand[goodenity] = 1;
+            market.previous_demand()[goodenity] = 1;
+            market.previous_supply()[goodenity] = 1;
+            market.supply()[goodenity] = 1;
+            market.demand()[goodenity] = 1;
         }
-        market.sd_ratio = market.supply.SafeDivision(market.demand);
+        market.sd_ratio = market.supply().SafeDivision(market.demand());
         market.history.push_back(market);
     }
 }
+}  // namespace cqsp::common::systems

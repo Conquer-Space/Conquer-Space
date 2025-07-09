@@ -1,0 +1,31 @@
+[
+  {
+    input: https://celestrak.org/NORAD/elements/gp.php?GROUP=gps-ops&FORMAT=tle
+    output: ../binaries/data/core/data/planet_data/earth/satellites/NAVSTAR.hjson
+    model: ""
+    tags:
+    [
+      navigation
+      gps
+    ]
+  }
+  {
+    input: https://celestrak.org/NORAD/elements/gp.php?GROUP=galileo&FORMAT=tle
+    output: ../binaries/data/core/data/planet_data/earth/satellites/galileo.hjson
+    model: ""
+    tags:
+    [
+      navigation
+      galileo
+    ]
+  }
+  {
+    input: https://celestrak.org/NORAD/elements/gp.php?GROUP=stations&FORMAT=tle
+    output: ../binaries/data/core/data/planet_data/earth/satellites/stations.hjson
+    model: ""
+    tags:
+    [
+      station
+    ]
+  }
+]

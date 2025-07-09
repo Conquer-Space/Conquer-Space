@@ -1,0 +1,36 @@
+[
+    {
+        name: Earth
+        identifier: earth
+        radius: 6371 km
+        reference: sun
+        gm: 398600.44188
+        habitation: true
+        orbit:
+        {
+            eccentricity: 0.01670257989152663
+            semi_major_axis: 149597369.8038478 km
+            M0: 356.9521225619375 deg
+            inclination: 0.0001036081554173719 deg
+            LAN: 140.2241915047173 deg
+            arg_periapsis: 322.693500525724 deg
+        }
+        day_length: 0.99726968 d
+        day_offset: 3 deg
+        axial: 23.4392811 deg
+        texture:
+        {
+            terrain: earthmap
+            normal: earthnormal
+            roughness: earthroughness
+            province_texture: province_map_texture
+            province_map: province_map
+            province_definitions: province_defs
+            adjacencies: province_adj_map
+        }
+        tags:
+        [
+            market
+        ]
+    }
+]

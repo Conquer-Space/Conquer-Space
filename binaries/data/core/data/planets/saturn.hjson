@@ -1,0 +1,25 @@
+[
+    {
+        name: Saturn
+        identifier: saturn
+        radius: 58232 km
+        reference: sun
+        gm: 37931187.9
+        orbit:
+        {
+            eccentricity: 0.05572214168539928
+            semi_major_axis: 1433449772.231375 km
+            M0: 316.0307997658592 deg
+            inclination: 2.485250250453571 deg
+            LAN: 113.6429729724832 deg
+            arg_periapsis: 336.011626007106 deg
+        }
+        day_length: 633 m
+        axial: 26.73 deg
+        texture:
+        {
+            terrain: saturnmap
+        }
+        tags: []
+    }
+]
