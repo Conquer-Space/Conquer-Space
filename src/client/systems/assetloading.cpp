@@ -36,12 +36,14 @@
 #include "common/systems/science/fields.h"
 #include "common/systems/science/technology.h"
 #include "common/systems/sysuniversegenerator.h"
+#include "engine/asset/assetmanager.h"
 
 namespace {
-void LoadResource(cqsp::engine::Application& app, cqsp::common::Universe& universe, const std::string& asset_name,
+void LoadResource(cqsp::asset::AssetManager& asset_manager, cqsp::common::Universe& universe,
+                  const std::string& asset_name,
                   void (*func)(cqsp::common::Universe& universe, Hjson::Value& recipes)) {
     namespace cqspc = cqsp::common::components;
-    for (const auto& it : app.GetAssetManager()) {
+    for (const auto& it : asset_manager) {
         if (!it.second->HasAsset(asset_name)) {
             continue;
         }
@@ -57,14 +59,15 @@ void LoadResource(cqsp::engine::Application& app, cqsp::common::Universe& univer
 }
 
 template <class T>
-void LoadResource(cqsp::engine::Application& app, cqsp::common::Universe& universe, const std::string& asset_name) {
+void LoadResource(cqsp::asset::AssetManager& asset_manager, cqsp::common::Universe& universe,
+                  const std::string& asset_name) {
     auto start = std::chrono::system_clock::now();
     using cqsp::common::systems::loading::HjsonLoader;
     static_assert(std::is_base_of_v<HjsonLoader, T>, "Class is not child of");
     std::unique_ptr<HjsonLoader> ptr = std::make_unique<T>(universe);
 
     namespace cqspc = cqsp::common::components;
-    for (const auto& it : app.GetAssetManager()) {
+    for (const auto& it : asset_manager) {
         if (!it.second->HasAsset(asset_name)) {
             continue;
         }
@@ -84,30 +87,30 @@ void LoadResource(cqsp::engine::Application& app, cqsp::common::Universe& univer
 }  // namespace
 
 namespace cqsp::client::systems {
-void LoadAllResources(cqsp::engine::Application& app, ConquerSpace& conquer_space) {
+void LoadAllResources(cqsp::asset::AssetManager& asset_manager, ConquerSpace& conquer_space) {
     using namespace cqsp::common::systems::loading;  // NOLINT
-    LoadResource<GoodLoader>(app, conquer_space.GetUniverse(), "goods");
-    LoadResource<RecipeLoader>(app, conquer_space.GetUniverse(), "recipes");
-    LoadResource<PlanetLoader>(app, conquer_space.GetUniverse(), "planets");
-    LoadResource<TimezoneLoader>(app, conquer_space.GetUniverse(), "timezones");
-    LoadResource<CountryLoader>(app, conquer_space.GetUniverse(), "countries");
-    LoadProvinces(conquer_space.GetUniverse(), app.GetAssetManager().GetAsset<asset::TextAsset>("province_defs")->data);
-    LoadResource<CityLoader>(app, conquer_space.GetUniverse(), "cities");
-    LoadResource<SatelliteLoader>(app, conquer_space.GetUniverse(), "satellites");
+    LoadResource<GoodLoader>(asset_manager, conquer_space.GetUniverse(), "goods");
+    LoadResource<RecipeLoader>(asset_manager, conquer_space.GetUniverse(), "recipes");
+    LoadResource<PlanetLoader>(asset_manager, conquer_space.GetUniverse(), "planets");
+    LoadResource<TimezoneLoader>(asset_manager, conquer_space.GetUniverse(), "timezones");
+    LoadResource<CountryLoader>(asset_manager, conquer_space.GetUniverse(), "countries");
+    LoadProvinces(conquer_space.GetUniverse(), asset_manager.GetAsset<asset::TextAsset>("province_defs")->data);
+    LoadResource<CityLoader>(asset_manager, conquer_space.GetUniverse(), "cities");
+    LoadResource<SatelliteLoader>(asset_manager, conquer_space.GetUniverse(), "satellites");
 
-    LoadResource(app, conquer_space.m_universe, "names", LoadNameLists);
-    LoadResource(app, conquer_space.m_universe, "tech_fields", common::systems::science::LoadFields);
-    LoadResource(app, conquer_space.m_universe, "tech_list", common::systems::science::LoadTechnologies);
+    LoadResource(asset_manager, conquer_space.m_universe, "names", LoadNameLists);
+    LoadResource(asset_manager, conquer_space.m_universe, "tech_fields", common::systems::science::LoadFields);
+    LoadResource(asset_manager, conquer_space.m_universe, "tech_list", common::systems::science::LoadTechnologies);
 
     // Initialize planet terrains
-    asset::HjsonAsset* asset = app.GetAssetManager().GetAsset<asset::HjsonAsset>("core:terrain_colors");
+    asset::HjsonAsset* asset = asset_manager.GetAsset<asset::HjsonAsset>("core:terrain_colors");
     common::systems::loading::LoadTerrainData(conquer_space.GetUniverse(), asset->data);
 
     // Load scripts
     // Load lua functions
     cqsp::scripting::LoadFunctions(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
     scripting::LoadImGuiFunctions(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
-    scripting::ClientFunctions(app, conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
+    scripting::ClientFunctions(asset_manager, conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
     scripting::InitClientElements(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
 
     // Load universe

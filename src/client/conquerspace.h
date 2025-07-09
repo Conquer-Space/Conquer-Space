@@ -17,6 +17,7 @@
 #pragma once
 
 #include "common/game.h"
+#include "common/scripting/scripting.h"
 #include "engine/gamestate.h"
 
 namespace cqsp::client {

@@ -19,9 +19,15 @@
 #include <iostream>
 #include <string>
 
+#include "client/headless/generate.h"
 #include "common/util/logging.h"
+#include "common/util/strip.h"
 
 namespace cqsp::headless {
+cqsp::asset::AssetManager& HeadlessApplication::GetAssetManager() { return asset_manager; }
+
+cqsp::client::ConquerSpace& HeadlessApplication::GetGame() { return conquer_space; }
+
 HeadlessApplication::HeadlessApplication() : asset_manager(), asset_loader(asset::AssetOptions(false)) {}
 
 int HeadlessApplication::run() {
@@ -34,10 +40,19 @@ int HeadlessApplication::run() {
     asset_loader.manager = &asset_manager;
     asset_loader.LoadMods();
 
+    // Now let's generate a universe
     while (1) {
         std::cout << "> ";
         std::string line;
         std::getline(std::cin, line);
+        // Now we parse the command line depending on the mode
+        if (!line.empty() && line[0] == '@') {
+            // Then we have a special command or something
+            // Now we get the commands
+            if (line == "@generate") {
+                generate(*this);
+            }
+        }
     }
     return 0;
 }

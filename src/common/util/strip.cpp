@@ -14,26 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
+#include "common/util/strip.h"
 
-#include "client/conquerspace.h"
-#include "common/universe.h"
-#include "engine/asset/assetloader.h"
-#include "engine/asset/assetmanager.h"
-
-namespace cqsp::headless {
-class HeadlessApplication {
- public:
-    HeadlessApplication();
-    int run();
-
-    cqsp::asset::AssetManager& GetAssetManager();
-    cqsp::client::ConquerSpace& GetGame();
-
- private:
-    cqsp::asset::AssetManager asset_manager;
-    cqsp::asset::AssetLoader asset_loader;
-
-    cqsp::client::ConquerSpace conquer_space;
-};
-};  // namespace cqsp::headless
+namespace cqsp::util {
+std::string strip(const std::string& inpt) {
+    if (inpt.empty()) {
+        return "";
+    }
+    auto start_it = inpt.begin();
+    auto end_it = inpt.rbegin();
+    while (std::isspace(*start_it) != 0) ++start_it;
+    if (start_it != inpt.end()) {
+        while (std::isspace(*end_it) != 0) ++end_it;
+    }
+    return std::string(start_it, end_it.base());
+}
+}  // namespace cqsp::util

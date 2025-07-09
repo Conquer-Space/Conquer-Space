@@ -31,7 +31,8 @@ cqsp::scene::ObjectEditorScene::~ObjectEditorScene() = default;
 
 void cqsp::scene::ObjectEditorScene::Init() {
     // Sorta need to initialize everything
-    cqsp::client::systems::LoadAllResources(GetApp(), *dynamic_cast<cqsp::client::ConquerSpace*>(GetApp().GetGame()));
+    cqsp::client::systems::LoadAllResources(GetApp().GetAssetManager(),
+                                            *dynamic_cast<cqsp::client::ConquerSpace*>(GetApp().GetGame()));
 }
 
 void cqsp::scene::ObjectEditorScene::Update(float deltaTime) {}

@@ -101,7 +101,7 @@ class AssetManager {
 
     Package* GetPackage(const std::string& name) { return packages[name].get(); }
 
-    int GetPackageCount() { return packages.size(); }
+    size_t GetPackageCount() { return packages.size(); }
 
     auto begin() { return packages.begin(); }
 

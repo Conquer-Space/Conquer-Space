@@ -16,24 +16,8 @@
  */
 #pragma once
 
-#include "client/conquerspace.h"
-#include "common/universe.h"
-#include "engine/asset/assetloader.h"
-#include "engine/asset/assetmanager.h"
+#include <string>
 
-namespace cqsp::headless {
-class HeadlessApplication {
- public:
-    HeadlessApplication();
-    int run();
-
-    cqsp::asset::AssetManager& GetAssetManager();
-    cqsp::client::ConquerSpace& GetGame();
-
- private:
-    cqsp::asset::AssetManager asset_manager;
-    cqsp::asset::AssetLoader asset_loader;
-
-    cqsp::client::ConquerSpace conquer_space;
-};
-};  // namespace cqsp::headless
+namespace cqsp::util {
+std::string strip(const std::string& inpt);
+}  // namespace cqsp::util

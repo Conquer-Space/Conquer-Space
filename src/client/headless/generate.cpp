@@ -14,26 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
+#include "client/headless/generate.h"
 
-#include "client/conquerspace.h"
-#include "common/universe.h"
-#include "engine/asset/assetloader.h"
-#include "engine/asset/assetmanager.h"
+#include "client/systems/universeloader.h"
 
 namespace cqsp::headless {
-class HeadlessApplication {
- public:
-    HeadlessApplication();
-    int run();
-
-    cqsp::asset::AssetManager& GetAssetManager();
-    cqsp::client::ConquerSpace& GetGame();
-
- private:
-    cqsp::asset::AssetManager asset_manager;
-    cqsp::asset::AssetLoader asset_loader;
-
-    cqsp::client::ConquerSpace conquer_space;
-};
-};  // namespace cqsp::headless
+int generate(HeadlessApplication& application) {
+    client::LoadUniverse(application.GetAssetManager(), application.GetGame());
+    return 0;
+}
+}  // namespace cqsp::headless
