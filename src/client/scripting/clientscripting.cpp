@@ -59,14 +59,14 @@ sol::object JsonToLuaObject(const Hjson::Value& j, const sol::this_state& s) {
     }
 }
 
-void AssetManagerInterfaces(engine::Application& app, common::Universe& universe,
+void AssetManagerInterfaces(asset::AssetManager& asset_manager, common::Universe& universe,
                             cqsp::scripting::ScriptInterface& script_engine) {
     CREATE_NAMESPACE(client);
 
     script_engine.set_function("require", [&](const char* script) {
         using cqsp::asset::TextDirectoryAsset;
         // Get script from asset loader
-        cqsp::asset::TextDirectoryAsset* asset = app.GetAssetManager().GetAsset<TextDirectoryAsset>("core:scripts");
+        cqsp::asset::TextDirectoryAsset* asset = asset_manager.GetAsset<TextDirectoryAsset>("core:scripts");
         // Get the thing
         if (asset->paths.find(script) != asset->paths.end()) {
             return script_engine.require_script(script, asset->paths[script].data);
@@ -77,20 +77,20 @@ void AssetManagerInterfaces(engine::Application& app, common::Universe& universe
     });
 
     REGISTER_FUNCTION("get_text_asset", [&](const char* id) {
-        cqsp::asset::TextAsset* asset = app.GetAssetManager().GetAsset<cqsp::asset::TextAsset>(id);
+        cqsp::asset::TextAsset* asset = asset_manager.GetAsset<cqsp::asset::TextAsset>(id);
         return sol::make_object<std::string>(script_engine, asset->data);
     });
 
     REGISTER_FUNCTION("get_hjson_asset", [&](const char* string, sol::this_state s) -> sol::table {
-        cqsp::asset::HjsonAsset* as = app.GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>(string);
+        cqsp::asset::HjsonAsset* as = asset_manager.GetAsset<cqsp::asset::HjsonAsset>(string);
         // Create json object.
         return JsonToLuaObject(as->data, s).as<sol::table>();
     });
 }
 }  // namespace
 
-void ClientFunctions(engine::Application& app, common::Universe& universe,
+void ClientFunctions(asset::AssetManager& asset_manager, common::Universe& universe,
                      cqsp::scripting::ScriptInterface& script_engine) {
-    AssetManagerInterfaces(app, universe, script_engine);
+    AssetManagerInterfaces(asset_manager, universe, script_engine);
 }
 };  // namespace cqsp::client::scripting

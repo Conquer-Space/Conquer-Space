@@ -14,11 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
+#include "client/headless/generate.h"
 
-#include "engine/application.h"
+#include "client/systems/universeloader.h"
 
-namespace cqsp::client::scripting {
-void ClientFunctions(asset::AssetManager& asset_manager, common::Universe& universe,
-                     cqsp::scripting::ScriptInterface& script_engine);
-}  // namespace cqsp::client::scripting
+namespace cqsp::headless {
+int generate(HeadlessApplication& application) {
+    client::LoadUniverse(application.GetAssetManager(), application.GetGame());
+    return 0;
+}
+}  // namespace cqsp::headless

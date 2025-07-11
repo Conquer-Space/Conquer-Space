@@ -16,9 +16,11 @@
  */
 #pragma once
 
-#include "engine/application.h"
+#include "client/conquerspace.h"
+#include "common/scripting/scripting.h"
+#include "common/universe.h"
+#include "engine/asset/assetmanager.h"
 
-namespace cqsp::client::scripting {
-void ClientFunctions(asset::AssetManager& asset_manager, common::Universe& universe,
-                     cqsp::scripting::ScriptInterface& script_engine);
-}  // namespace cqsp::client::scripting
+namespace cqsp::client {
+void LoadUniverse(asset::AssetManager& asset_manager, cqsp::client::ConquerSpace& conquer_space);
+}  // namespace cqsp::client

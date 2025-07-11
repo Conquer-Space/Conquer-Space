@@ -23,6 +23,7 @@
 #include <thread>
 
 #include "client/scenes/scene.h"
+#include "engine/asset/assetloader.h"
 
 namespace cqsp {
 namespace scene {

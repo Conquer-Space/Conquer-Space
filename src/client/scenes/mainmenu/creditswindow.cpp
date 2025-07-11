@@ -21,21 +21,7 @@
 #include <string>
 
 #include "common/util/paths.h"
-
-namespace {
-std::string strip(const std::string& inpt) {
-    if (inpt.empty()) {
-        return "";
-    }
-    auto start_it = inpt.begin();
-    auto end_it = inpt.rbegin();
-    while (std::isspace(*start_it) != 0) ++start_it;
-    if (start_it != inpt.end()) {
-        while (std::isspace(*end_it) != 0) ++end_it;
-    }
-    return std::string(start_it, end_it.base());
-}
-}  // namespace
+#include "common/util/strip.h"
 
 cqsp::client::CreditsWindow::CreditsWindow(cqsp::engine::Application& app) : m_app(app) {}
 
@@ -139,7 +125,7 @@ void cqsp::client::CreditsWindow::LoadCreditsText() {
             tag = "h1";
             line = line.substr(1);
         }
-        line = strip(line);
+        line = cqsp::util::strip(line);
 
         buffer << fmt::format("<{0}>{1}</{0}>", tag, line);
         buffer << "<br />";
