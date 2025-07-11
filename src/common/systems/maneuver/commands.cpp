@@ -217,4 +217,26 @@ void LandOnMoon(Universe& universe, entt::entity agent, entt::entity target, ent
     command_queue.commands.push_back(land_action);
     command_queue.commands.push_back(dock_city);
 }
+
+std::vector<entt::entity> GetSOIHierarchy(Universe& universe, entt::entity source) {
+    std::vector<entt::entity> source_list;
+    entt::entity parent_body = universe.get<components::types::Orbit>(source).reference_body;
+    while (parent_body != entt::null) {
+        source_list.push_back(parent_body);
+        parent_body = universe.get<components::types::Orbit>(parent_body).reference_body;
+    }
+    return std::move(source_list);
+}
+
+entt::entity GetCommonSOI(Universe& universe, entt::entity source, entt::entity target) {
+    // Get common ancestor
+    std::vector<entt::entity> source_list = GetSOIHierarchy(universe, source);
+    std::vector<entt::entity> target_list = GetSOIHierarchy(universe, target);
+    for (size_t i = 2; i < std::min(source_list.size(), target_list.size()); i++) {
+        if (source_list[source_list.size() - i] != target_list[target_list.size() - i]) {
+            return source_list[source_list.size() - i + 1];
+        }
+    }
+    return entt::null;
+}
 }  // namespace cqsp::common::systems::commands

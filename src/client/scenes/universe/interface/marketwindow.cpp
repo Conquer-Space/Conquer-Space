@@ -45,7 +45,13 @@ void SysPlanetMarketInformation::DoUI(int delta_time) {
     if (!GetUniverse().valid(selected_planet)) {
         return;
     }
-    ImGui::Begin("Market");
+    ImGui::Begin("Planetary Market");
+    if (GetUniverse().any_of<common::components::Wallet>(selected_planet)) {
+        auto& wallet = GetUniverse().get<cqspc::Wallet>(selected_planet);
+        ImGui::TextFmt("GDP Contribution: {}", cqsp::util::LongToHumanString(wallet.GetGDPChange()));
+        ImGui::TextFmt("Balance: {}", cqsp::util::LongToHumanString(wallet.GetBalance()));
+        ImGui::TextFmt("Balance change: {}", cqsp::util::LongToHumanString(wallet.GetChange()));
+    }
     MarketInformationTable(GetUniverse(), selected_planet);
     ImGui::End();
 }

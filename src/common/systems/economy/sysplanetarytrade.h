@@ -23,9 +23,9 @@ namespace cqsp::common::systems {
 // System for mines to reduce production so that production will stay stable if the price
 // dips too low
 // Main goal is to maintain stable pricing
-class SysTrade : public ISimulationSystem {
+class SysPlanetaryTrade : public ISimulationSystem {
  public:
-    explicit SysTrade(Game& game) : ISimulationSystem(game) {}
+    explicit SysPlanetaryTrade(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
     int Interval() override { return components::StarDate::DAY; }
 };

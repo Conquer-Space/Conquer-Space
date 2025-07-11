@@ -1,1 +1,3 @@
 hjson
+scipy==1.14.1
+numpy==1.26.4

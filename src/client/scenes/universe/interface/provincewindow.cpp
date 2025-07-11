@@ -31,7 +31,9 @@
 #include "common/components/orbit.h"
 #include "common/components/organizations.h"
 #include "common/components/population.h"
+#include "common/components/resource.h"
 #include "common/components/ships.h"
+#include "common/components/spaceport.h"
 #include "common/components/surface.h"
 #include "common/systems/actions/shiplaunchaction.h"
 #include "common/util/nameutil.h"
@@ -93,11 +95,24 @@ void SysProvinceInformation::ProvinceView() {
     ImGui::TextFmt("Part of {}", common::util::GetName(GetUniverse(), city_list.country));
     ImGui::TextFmt("Population: {}", util::LongToHumanString(population));
     ImGui::Separator();
-    for (entt::entity entity : city_list.cities) {
-        if (CQSPGui::DefaultSelectable(fmt::format("{}", common::util::GetName(GetUniverse(), entity)).c_str())) {
-            current_city = entity;
-            view_mode = ViewMode::CITY_VIEW;
+    if (ImGui::BeginTabBar("ProvinceInformationTabs", ImGuiTabBarFlags_None)) {
+        if (ImGui::BeginTabItem("Cities")) {
+            for (entt::entity entity : city_list.cities) {
+                if (CQSPGui::DefaultSelectable(
+                        fmt::format("{}", common::util::GetName(GetUniverse(), entity)).c_str())) {
+                    current_city = entity;
+                    view_mode = ViewMode::CITY_VIEW;
+                }
+            }
+            ImGui::EndTabItem();
         }
+        if (ImGui::BeginTabItem("Neighbors")) {
+            for (entt::entity entity : city_list.neighbors) {
+                ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), entity));
+            }
+            ImGui::EndTabItem();
+        }
+        ImGui::EndTabBar();
     }
 }
 
@@ -135,7 +150,9 @@ void SysProvinceInformation::CityView() {
         }
 
         const std::string& tz_name = GetUniverse().get<cqspc::Identifier>(tz.time_zone).identifier;
-        ImGui::TextFmt("Time: {} {}:00 ({})", GetUniverse().date.ToString(tz_def.time_diff), time, tz_name);
+        int hour = GetUniverse().date.GetHour(tz_def.time_diff);
+        ImGui::TextFmt("Time: {} {}:{} ({})", GetUniverse().date.ToString(tz_def.time_diff), hour,
+                       GetUniverse().date.GetMinute(), tz_name);
     }
 
     // Other industry information
@@ -160,11 +177,9 @@ void SysProvinceInformation::CityIndustryTabs() {
             InfrastructureTab();
             ImGui::EndTabItem();
         }
-        if (GetUniverse().any_of<cqspc::infrastructure::SpacePort>(current_city)) {
-            if (ImGui::BeginTabItem("Space Port")) {
-                SpacePortTab();
-                ImGui::EndTabItem();
-            }
+        if (ImGui::BeginTabItem("Space Port")) {
+            SpacePortTab();
+            ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Economy")) {
             // Show economy window
@@ -176,6 +191,13 @@ void SysProvinceInformation::CityIndustryTabs() {
                 ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), entity));
             }
             ImGui::Separator();
+            // Now market wallet
+            if (GetUniverse().any_of<common::components::Wallet>(current_city)) {
+                auto& wallet = GetUniverse().get<cqspc::Wallet>(current_city);
+                ImGui::TextFmt("GDP Contribution: {}", cqsp::util::LongToHumanString(wallet.GetGDPChange()));
+                ImGui::TextFmt("Balance: {}", cqsp::util::LongToHumanString(wallet.GetBalance()));
+                ImGui::TextFmt("Balance change: {}", cqsp::util::LongToHumanString(wallet.GetChange()));
+            }
             MarketInformationTable(GetUniverse(), current_city);
             ImGui::EndTabItem();
         }
@@ -202,7 +224,9 @@ void SysProvinceInformation::DemographicsTab() {
         // Get spending for population
         if (GetUniverse().all_of<cqspc::Wallet>(seg_entity)) {
             auto& wallet = GetUniverse().get<cqspc::Wallet>(seg_entity);
-            ImGui::TextFmt("Spending: {}", cqsp::util::LongToHumanString(wallet.GetGDPChange()));
+            ImGui::TextFmt("GDP Contribution: {}", cqsp::util::LongToHumanString(wallet.GetGDPChange()));
+            ImGui::TextFmt("Balance: {}", cqsp::util::LongToHumanString(wallet.GetBalance()));
+            ImGui::TextFmt("Balance change: {}", cqsp::util::LongToHumanString(wallet.GetChange()));
         }
         // Market
         if (GetUniverse().all_of<cqspc::Market>(current_city)) {
@@ -210,6 +234,14 @@ void SysProvinceInformation::DemographicsTab() {
                 CQSPGui::SimpleTextTooltip("Click for detailed market information");
             }
         }
+        if (ImGui::CollapsingHeader("Resource Consumption")) {
+            if (GetUniverse().all_of<cqspc::ResourceConsumption>(seg_entity)) {
+                auto& res_consumption = GetUniverse().get<cqspc::ResourceConsumption>(seg_entity);
+                DrawLedgerTable("Resource consumption", GetUniverse(), res_consumption);
+            }
+        }
+        // Display the data
+        ImGui::Separator();
     }
 }
 
@@ -258,48 +290,17 @@ void SysProvinceInformation::IndustryTab() {
 }
 
 void SysProvinceInformation::SpacePortTab() {
-    namespace cqspt = cqsp::common::components::types;
-    namespace cqsps = cqsp::common::components::ships;
-    namespace cqspb = cqsp::common::components::bodies;
-
-    // Set the things
-    static float semi_major_axis = 8000;
-    static float azimuth = 0;
-    static float eccentricity = 0;
-    static float arg_of_perapsis = 0;
-    static float LAN = 0;
-    auto& city_coord = GetUniverse().get<cqspc::types::SurfaceCoordinate>(current_city);
-
-    ImGui::SliderFloat("Semi Major Axis", &semi_major_axis, 6000, 100000);
-    ImGui::SliderFloat("Eccentricity", &eccentricity, 0, 0.9999);
-    ImGui::SliderAngle("Launch Azimuth", &azimuth, 0, 360);
-    ImGui::SliderAngle("Argument of perapsis", &arg_of_perapsis, 0, 360);
-    ImGui::SliderAngle("Longitude of the ascending node", &LAN, 0, 360);
-    if (ImGui::Button("Launch!")) {
-        // Get reference body
-        entt::entity reference_body = city_coord.planet;
-        // Launch inclination will be the inclination of the thing
-        double axial = GetUniverse().get<cqspc::bodies::Body>(reference_body).axial;
-        double inc = city_coord.r_latitude();
-        inc += axial;
-
-        cqspc::types::Orbit orb;
-        orb.reference_body = reference_body;
-        orb.inclination = cqspc::types::GetLaunchInclination(city_coord.r_latitude(), azimuth);
-        orb.semi_major_axis = semi_major_axis;
-        orb.eccentricity = eccentricity;
-        orb.w = arg_of_perapsis;
-        orb.LAN = LAN;
-        orb.epoch = GetUniverse().date.ToSecond();
-        cqsp::common::systems::actions::LaunchShip(GetUniverse(), orb);
+    if (ImGui::BeginTabBar("SpacePortTabs", ImGuiTabBarFlags_None)) {
+        if (ImGui::BeginTabItem("Launch")) {
+            LaunchTab();
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Docked Ships")) {
+            DockedTab();
+            ImGui::EndTabItem();
+        }
+        ImGui::EndTabBar();
     }
-    double periapsis = semi_major_axis * (1 - eccentricity);
-    if (GetUniverse().get<cqspc::bodies::Body>(city_coord.planet).radius > periapsis) {
-        ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f),
-                           "Orbit's periapsis is below the planet radius (%f), so it will crash", periapsis);
-    }
-    ImGui::TextFmt("Launch Inclination: {}",
-                   cqspc::types::toDegree(cqspc::types::GetLaunchInclination(city_coord.r_latitude(), azimuth)));
 }
 
 void SysProvinceInformation::InfrastructureTab() {
@@ -382,5 +383,64 @@ void SysProvinceInformation::IndustryTabGenericChild(const std::string& tabname,
     ImGui::Text("Input");
     DrawLedgerTable(tabname + "input", GetUniverse(), input_resources);
     ImGui::EndChild();
+}
+
+void SysProvinceInformation::LaunchTab() {
+    namespace cqspt = cqsp::common::components::types;
+    namespace cqsps = cqsp::common::components::ships;
+    namespace cqspb = cqsp::common::components::bodies;
+
+    // Set the things
+    static float semi_major_axis = 8000;
+    static float azimuth = 0;
+    static float eccentricity = 0;
+    static float arg_of_perapsis = 0;
+    static float LAN = 0;
+    auto& city_coord = GetUniverse().get<cqspc::types::SurfaceCoordinate>(current_city);
+
+    ImGui::SliderFloat("Semi Major Axis", &semi_major_axis, 6000, 100000);
+    ImGui::SliderFloat("Eccentricity", &eccentricity, 0, 0.9999);
+    ImGui::SliderAngle("Launch Azimuth", &azimuth, 0, 360);
+    ImGui::SliderAngle("Argument of perapsis", &arg_of_perapsis, 0, 360);
+    ImGui::SliderAngle("Longitude of the ascending node", &LAN, 0, 360);
+    if (ImGui::Button("Launch!")) {
+        // Get reference body
+        entt::entity reference_body = city_coord.planet;
+        // Launch inclination will be the inclination of the thing
+        double axial = GetUniverse().get<cqspc::bodies::Body>(reference_body).axial;
+        double inc = city_coord.r_latitude();
+        inc += axial;
+
+        cqspc::types::Orbit orb;
+        orb.reference_body = reference_body;
+        orb.inclination = cqspc::types::GetLaunchInclination(city_coord.r_latitude(), azimuth);
+        orb.semi_major_axis = semi_major_axis;
+        orb.eccentricity = eccentricity;
+        orb.w = arg_of_perapsis;
+        orb.LAN = LAN;
+        orb.epoch = GetUniverse().date.ToSecond();
+        cqsp::common::systems::actions::LaunchShip(GetUniverse(), orb);
+    }
+    double periapsis = semi_major_axis * (1 - eccentricity);
+    if (GetUniverse().get<cqspc::bodies::Body>(city_coord.planet).radius > periapsis) {
+        ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f),
+                           "Orbit's periapsis is below the planet radius (%f), so it will crash", periapsis);
+    }
+    ImGui::TextFmt("Launch Inclination: {}",
+                   cqspc::types::toDegree(cqspc::types::GetLaunchInclination(city_coord.r_latitude(), azimuth)));
+}
+
+void SysProvinceInformation::DockedTab() {
+    if (!GetUniverse().any_of<common::components::DockedShips>(current_city)) {
+        return;
+    }
+    auto& docked_ships = GetUniverse().get<common::components::DockedShips>(current_city);
+
+    for (entt::entity docked : docked_ships.docked_ships) {
+        ImGui::Selectable(common::util::GetName(GetUniverse(), docked).c_str());
+        if (ImGui::IsItemHovered()) {
+            systems::gui::EntityTooltip(GetUniverse(), docked);
+        }
+    }
 }
 }  // namespace cqsp::client::systems

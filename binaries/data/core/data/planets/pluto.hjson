@@ -1,0 +1,21 @@
+[
+    {
+        name: Pluto
+        identifier: pluto
+        radius: 1188.3 km
+        reference: sun
+        gm: 871.9
+        day_length: -6.387230 d
+        axial: 122.53 deg
+        orbit:
+        {
+            eccentricity: 0.2446752685954255
+            semi_major_axis: 5873871430.620249 km
+            M0: 25.20639169742568 deg
+            inclination: 17.15134604252063 deg
+            LAN: 110.2869838988196 deg
+            arg_periapsis: 113.7633715512292 deg
+        }
+        tags: []
+    }
+]

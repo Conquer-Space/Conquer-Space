@@ -1,0 +1,25 @@
+[
+    {
+        name: Mercury
+        identifier: mercury
+        radius: 2440 km
+        reference: sun
+        gm: 22032.9
+        orbit:
+        {
+            eccentricity: 0.2056302515978038
+            semi_major_axis: 57909070.25241733 km
+            M0: 175.1155302923815 deg
+            inclination: 7.005014362233553 deg
+            LAN: 48.33053877672862 deg
+            arg_periapsis: 29.12427943500334 deg
+        }
+        day_length: 58.646 d
+        axial: 2.04 deg
+        texture:
+        {
+            terrain: mercurymap
+        }
+        tags: []
+    }
+]

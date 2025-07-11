@@ -24,7 +24,8 @@
 #include "common/components/organizations.h"
 #include "common/components/surface.h"
 
-void cqsp::common::systems::loading::LoadProvinces(common::Universe& universe, const std::string& text) {
+namespace cqsp::common::systems::loading {
+void LoadProvinces(common::Universe& universe, entt::entity planet, const std::string& text) {
     // The text has to be csv, so treat it is csv
     std::istringstream f(text);
     std::string line;
@@ -53,10 +54,33 @@ void cqsp::common::systems::loading::LoadProvinces(common::Universe& universe, c
             SPDLOG_WARN("Province {} conflicts with an already preexisting province", identifier);
         }
         // Add province to country
-        universe.get_or_emplace<components::CountryCityList>(universe.countries[country])
-            .province_list.push_back(entity);
-
-        universe.province_colors[(int)color] = entity;
-        universe.colors_province[entity] = (int)color;
+        // check if it is assigned to a country
+        if (!country.empty() && universe.countries.contains(country)) {
+            universe.get_or_emplace<components::CountryCityList>(universe.countries[country])
+                .province_list.push_back(entity);
+        }
+        universe.province_colors[planet][(int)color] = entity;
+        universe.colors_province[planet][entity] = (int)color;
     }
 }
+
+void LoadAdjProvinces(common::Universe& universe, Hjson::Value& adjacency_map) {
+    // Go through value
+    for (auto const& [province_name, neighbors] : adjacency_map) {
+        if (!universe.provinces.contains(province_name)) {
+            SPDLOG_WARN("Cannot find province {}", province_name);
+            continue;
+        }
+        entt::entity province_id = universe.provinces[province_name];
+        auto& province = universe.get<components::Province>(province_id);
+        province.neighbors.resize(neighbors.size());
+        for (int i = 0; i < neighbors.size(); i++) {
+            if (!universe.provinces.contains(neighbors[i].to_string())) {
+                SPDLOG_WARN("Cannot find province {}", neighbors[i].to_string());
+                continue;
+            }
+            province.neighbors[i] = universe.provinces[neighbors[i].to_string()];
+        }
+    }
+}
+}  // namespace cqsp::common::systems::loading

@@ -31,4 +31,9 @@
         type: binary
         hints: {}
     }
+    province_adj_map: {
+        path: province_connection.hjson
+        type: hjson
+        hints: {}
+    }
 }

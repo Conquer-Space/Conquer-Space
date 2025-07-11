@@ -23,6 +23,7 @@
 #include "client/scripting/clientscripting.h"
 #include "client/scripting/clientuielements.h"
 #include "client/scripting/imguifunctions.h"
+#include "common/components/surface.h"
 #include "common/scripting/luafunctions.h"
 #include "common/systems/loading/hjsonloader.h"
 #include "common/systems/loading/loadcities.h"
@@ -87,6 +88,27 @@ void LoadResource(cqsp::asset::AssetManager& asset_manager, cqsp::common::Univer
 }  // namespace
 
 namespace cqsp::client::systems {
+namespace {
+void LoadPlanetProvinces(cqsp::asset::AssetManager& asset_manager, ConquerSpace& conquer_space) {
+    using namespace cqsp::common::systems::loading;  // NOLINT
+    auto& universe = conquer_space.GetUniverse();
+    auto view = universe.view<common::components::ProvincedPlanet>();
+
+    for (entt::entity entity : view) {
+        // Check if it's empty or not
+        auto& province_map = universe.get<common::components::ProvincedPlanet>(entity);
+        if (!province_map.province_definitions.empty()) {
+            asset::TextAsset* asset =
+                asset_manager.GetAsset<asset::TextAsset>(province_map.province_definitions);
+            if (asset != nullptr) {
+                LoadProvinces(universe, entity, asset->data);
+            }
+        }
+    }
+}
+}  // namespace
+
+  
 void LoadAllResources(cqsp::asset::AssetManager& asset_manager, ConquerSpace& conquer_space) {
     using namespace cqsp::common::systems::loading;  // NOLINT
     LoadResource<GoodLoader>(asset_manager, conquer_space.GetUniverse(), "goods");
@@ -94,11 +116,12 @@ void LoadAllResources(cqsp::asset::AssetManager& asset_manager, ConquerSpace& co
     LoadResource<PlanetLoader>(asset_manager, conquer_space.GetUniverse(), "planets");
     LoadResource<TimezoneLoader>(asset_manager, conquer_space.GetUniverse(), "timezones");
     LoadResource<CountryLoader>(asset_manager, conquer_space.GetUniverse(), "countries");
-    LoadProvinces(conquer_space.GetUniverse(), asset_manager.GetAsset<asset::TextAsset>("province_defs")->data);
+  
+    LoadPlanetProvinces(asset_manager, conquer_space);
     LoadResource<CityLoader>(asset_manager, conquer_space.GetUniverse(), "cities");
     LoadResource<SatelliteLoader>(asset_manager, conquer_space.GetUniverse(), "satellites");
-
-    LoadResource(asset_manager, conquer_space.m_universe, "names", LoadNameLists);
+ 
+  LoadResource(asset_manager, conquer_space.m_universe, "names", LoadNameLists);
     LoadResource(asset_manager, conquer_space.m_universe, "tech_fields", common::systems::science::LoadFields);
     LoadResource(asset_manager, conquer_space.m_universe, "tech_list", common::systems::science::LoadTechnologies);
 

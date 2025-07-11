@@ -6,7 +6,6 @@
         coordinates: {
             latitude: 34.1139
             longitude: -118.4068
-
         }
         planet: earth
         timezone: PDT
@@ -15,23 +14,6 @@
         population: [
             {
                 size: 3694820
-            }
-        ]
-    }
-    {
-        name: Chicago
-        identifier: chicago
-        coordinates: {
-            latitude: 41.8373
-            longitude: -87.6862
-
-        }
-        planet: earth
-        country: usa
-        timezone: CDT
-        population: [
-            {
-                size: 2896016
             }
         ]
     }
@@ -108,6 +90,6 @@
         space-port: {
             launch: 0
         }
-        province: florida
+        province: florida_usa
     }
 ]

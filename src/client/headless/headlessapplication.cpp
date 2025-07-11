@@ -68,7 +68,6 @@ int HeadlessApplication::run() {
             // Let's split the arguments
             // Let's just get the first space
             std::vector<std::string> argument;
-            std::string function = line;
             if (line.find(' ') != std::string::npos) {
                 std::string arg_string = line.substr(line.find(' '), std::string::npos);
                 arg_string = cqsp::util::strip(arg_string);
@@ -82,7 +81,7 @@ int HeadlessApplication::run() {
                 loadluafile(*this, argument);
             } else {
                 // Then it doesn't exist
-                std::cout << "Unknown command \'" << line << "\'!" << std::endl;
+                std::cout << "Unknown command \'" << line << "\'!\n";
             }
         } else {
             // Now lua scripting
@@ -90,7 +89,7 @@ int HeadlessApplication::run() {
                 conquer_space.GetScriptInterface().RunScript(line);
             } catch (sol::error& error) {
                 // since it's automatically logged we can ignore it..
-                std::cout << "Lua error!" << std::endl;
+                std::cout << "Lua error!\n";
             }
         }
     }
