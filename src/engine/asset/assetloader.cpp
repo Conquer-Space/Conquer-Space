@@ -50,15 +50,7 @@
     };
 
 namespace cqsp::asset {
-AssetLoader::AssetLoader(AssetOptions asset_options)
-    : asset_options(asset_options),
-      missing_assets(),
-      m_asset_queue(),
-      max_loading(),
-      currentloading(),
-      loading_functions(),
-      loading_times(),
-      mounter() {
+AssetLoader::AssetLoader(AssetOptions asset_options) : asset_options(asset_options) {
     loading_functions[AssetType::TEXT] = CREATE_ASSET_LAMBDA(LoadText);
     loading_functions[AssetType::TEXTURE] = CREATE_ASSET_LAMBDA(LoadTexture);
     loading_functions[AssetType::TEXT_ARRAY] = CREATE_ASSET_LAMBDA(LoadTextDirectory);

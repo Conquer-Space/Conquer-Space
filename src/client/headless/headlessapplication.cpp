@@ -22,6 +22,7 @@
 #include <sol/error.hpp>
 
 #include "client/headless/generate.h"
+#include "client/headless/loadluafile.h"
 #include "common/util/logging.h"
 #include "common/util/strip.h"
 
@@ -30,7 +31,23 @@ cqsp::asset::AssetManager& HeadlessApplication::GetAssetManager() { return asset
 
 cqsp::client::ConquerSpace& HeadlessApplication::GetGame() { return conquer_space; }
 
-HeadlessApplication::HeadlessApplication() : asset_manager(), asset_loader(asset::AssetOptions(false)) {}
+HeadlessApplication::HeadlessApplication() : asset_loader(asset::AssetOptions(false)) {}
+namespace {
+std::vector<std::string> split(const std::string& s, const std::string& delimiter) {
+    std::string copy = s;
+    std::vector<std::string> tokens;
+    size_t pos = 0;
+    std::string token;
+    while ((pos = copy.find(delimiter)) != std::string::npos) {
+        token = copy.substr(0, pos);
+        tokens.push_back(token);
+        copy.erase(0, pos + delimiter.length());
+    }
+    tokens.push_back(copy);
+
+    return tokens;
+}
+}  // namespace
 
 int HeadlessApplication::run() {
     // Load data
@@ -42,17 +59,30 @@ int HeadlessApplication::run() {
     asset_loader.manager = &asset_manager;
     asset_loader.LoadMods();
 
-    // Now let's generate a universe
-    while (1) {
+    while (true) {
         std::cout << "> ";
         std::string line;
         std::getline(std::cin, line);
         // Now we parse the command line depending on the mode
         if (!line.empty() && line[0] == '@') {
-            // Then we have a special command or something
-            // Now we get the commands
+            // Let's split the arguments
+            // Let's just get the first space
+            std::vector<std::string> argument;
+            std::string function = line;
+            if (line.find(' ') != std::string::npos) {
+                std::string arg_string = line.substr(line.find(' '), std::string::npos);
+                arg_string = cqsp::util::strip(arg_string);
+                // Now we have to iterate forward and find any quotation marks...
+                argument = split(arg_string, " ");
+                line = line.substr(0, line.find(' '));
+            }
             if (line == "@generate") {
                 generate(*this);
+            } else if (line == "@loadluafile") {
+                loadluafile(*this, argument);
+            } else {
+                // Then it doesn't exist
+                std::cout << "Unknown command \'" << line << "\'!" << std::endl;
             }
         } else {
             // Now lua scripting
@@ -60,6 +90,7 @@ int HeadlessApplication::run() {
                 conquer_space.GetScriptInterface().RunScript(line);
             } catch (sol::error& error) {
                 // since it's automatically logged we can ignore it..
+                std::cout << "Lua error!" << std::endl;
             }
         }
     }

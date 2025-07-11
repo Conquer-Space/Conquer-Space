@@ -16,12 +16,19 @@
  */
 #pragma once
 
+#include <map>
+#include <string>
+#include <vector>
+
 #include "client/conquerspace.h"
 #include "common/universe.h"
 #include "engine/asset/assetloader.h"
 #include "engine/asset/assetmanager.h"
 
 namespace cqsp::headless {
+
+typedef int (*HeadlessCommand)(cqsp::client::ConquerSpace&, std::vector<std::string> arguments);
+
 class HeadlessApplication {
  public:
     HeadlessApplication();
@@ -35,5 +42,7 @@ class HeadlessApplication {
     cqsp::asset::AssetLoader asset_loader;
 
     cqsp::client::ConquerSpace conquer_space;
+
+    std::map<std::string, HeadlessCommand> command_map;
 };
 };  // namespace cqsp::headless
