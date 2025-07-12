@@ -14,33 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#pragma once
 
-#include <fstream>
-#include <iostream>
-#include <memory>
+#include <string>
 
-#include "client/conquerspace.h"
 #include "client/headless/headlessapplication.h"
-#include "client/scenes/loadingscene.h"
-#include "engine/application.h"
 
-int main(int argc, char* argv[]) {
-    bool headless = false;
-    for (int i = 0; i < argc; i++) {
-        if (strcmp(argv[i], "--headless") != 0) {
-            // Load headless application
-            headless = true;
-        }
-    }
-    if (headless) {
-        cqsp::headless::HeadlessApplication headless_application;
-        return headless_application.run();
-    }
-
-    cqsp::engine::Application application(argc, argv);
-
-    // Set initial scene
-    application.InitGame<cqsp::client::ConquerSpace>();
-    application.SetScene<cqsp::scene::LoadingScene>();
-    application.run();
-}
+namespace cqsp::headless {
+int loadluafile(HeadlessApplication& application, const std::vector<std::string>& arguments);
+};

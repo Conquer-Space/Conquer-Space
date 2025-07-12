@@ -16,9 +16,12 @@
  */
 #pragma once
 
-#include "engine/application.h"
+namespace cqsp::asset {
+class AssetOptions {
+ public:
+    bool load_visual;
 
-namespace cqsp::client::scripting {
-void ClientFunctions(asset::AssetManager& asset_manager, common::Universe& universe,
-                     cqsp::scripting::ScriptInterface& script_engine);
-}  // namespace cqsp::client::scripting
+    AssetOptions() : load_visual(true) {}
+    AssetOptions(bool load_visual) : load_visual(load_visual) {}
+};
+}  // namespace cqsp::asset

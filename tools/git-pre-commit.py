@@ -47,7 +47,6 @@ if 'CLANG_TIDY' in cfg and 'clang_tidy' in cfg['CLANG_TIDY']:
         # Now run clang-tidy fix
 
         # Get the git diff files
-        
         if len(cpp_file_list) > 0:
             s = " ".join(cpp_file_list)
             val = subprocess.run('python tools/run-clang-tidy.py -config-file=.clang-tidy -quiet -fix -p build-makefile ' + s)

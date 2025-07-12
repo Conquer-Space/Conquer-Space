@@ -14,33 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#include "client/headless/loadluafile.h"
 
 #include <fstream>
 #include <iostream>
-#include <memory>
+#include <sstream>
 
-#include "client/conquerspace.h"
-#include "client/headless/headlessapplication.h"
-#include "client/scenes/loadingscene.h"
-#include "engine/application.h"
-
-int main(int argc, char* argv[]) {
-    bool headless = false;
-    for (int i = 0; i < argc; i++) {
-        if (strcmp(argv[i], "--headless") != 0) {
-            // Load headless application
-            headless = true;
-        }
+namespace cqsp::headless {
+int loadluafile(HeadlessApplication& application, const std::vector<std::string>& arguments) {
+    // Now load the lua file and execute
+    // Open the file argument
+    if (arguments.empty()) {
+        std::cout << "Usage:\n";
+        std::cout << "\t@loadluafile [lua file name]\n";
+        return 1;
     }
-    if (headless) {
-        cqsp::headless::HeadlessApplication headless_application;
-        return headless_application.run();
+    // Else load the file
+    std::ifstream input_file(arguments[0], std::ios::binary);
+    std::stringstream buffer;
+    if (!input_file.is_open()) {
+        std::cout << "Failed to open file " << arguments[0] << "\n";
     }
+    buffer << input_file.rdbuf();
 
-    cqsp::engine::Application application(argc, argv);
-
-    // Set initial scene
-    application.InitGame<cqsp::client::ConquerSpace>();
-    application.SetScene<cqsp::scene::LoadingScene>();
-    application.run();
+    application.GetGame().GetScriptInterface().RunScript(buffer.str());
+    return 0;
 }
+};  // namespace cqsp::headless

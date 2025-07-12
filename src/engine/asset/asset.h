@@ -26,8 +26,7 @@
 /// When loading an asset from the game, read
 /// @ref cqsp::asset::AssetLoader::GetAsset
 /// </summary>
-namespace cqsp {
-namespace asset {
+namespace cqsp::asset {
 class AssetManager;
 
 enum class AssetType {
@@ -153,6 +152,13 @@ inline std::string ToString(AssetType type) {
     }
 }
 
+/// Checks whether the asset is needed for windowed mode or not
+inline bool AssetIsVisual(AssetType type) {
+    return (type == AssetType::SHADER) || (type == AssetType::MODEL) || (type == AssetType::CUBEMAP) ||
+           (type == AssetType::SHADER_DEFINITION) || (type == AssetType::TEXTURE) || (type == AssetType::FONT) ||
+           (type == AssetType::AUDIO);
+}
+
 /// <summary>
 /// The base class for assets.
 /// </summary>
@@ -166,5 +172,4 @@ class Asset {
     std::string path;
     int accessed = 0;
 };
-}  // namespace asset
-}  // namespace cqsp
+}  // namespace cqsp::asset

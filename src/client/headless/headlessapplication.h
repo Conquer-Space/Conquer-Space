@@ -16,25 +16,33 @@
  */
 #pragma once
 
-#include "common/game.h"
-#include "common/scripting/scripting.h"
-#include "engine/gamestate.h"
+#include <map>
+#include <string>
+#include <vector>
 
-namespace cqsp::client {
-class ConquerSpace : public engine::GameState {
+#include "client/conquerspace.h"
+#include "common/universe.h"
+#include "engine/asset/assetloader.h"
+#include "engine/asset/assetmanager.h"
+
+namespace cqsp::headless {
+
+typedef int (*HeadlessCommand)(cqsp::client::ConquerSpace&, std::vector<std::string> arguments);
+
+class HeadlessApplication {
  public:
-    ConquerSpace() : m_universe(game.GetUniverse()), script_interface(game.GetScriptInterface()) {}
-    ~ConquerSpace() = default;
+    HeadlessApplication();
+    int run();
 
-    common::Universe& m_universe;
-    scripting::ScriptInterface& script_interface;
-
-    common::Universe& GetUniverse() { return m_universe; }
-    scripting::ScriptInterface& GetScriptInterface() { return script_interface; }
-
-    common::Game& GetGame() { return game; }
+    cqsp::asset::AssetManager& GetAssetManager();
+    cqsp::client::ConquerSpace& GetGame();
 
  private:
-    common::Game game;
+    cqsp::asset::AssetManager asset_manager;
+    cqsp::asset::AssetLoader asset_loader;
+
+    cqsp::client::ConquerSpace conquer_space;
+
+    std::map<std::string, HeadlessCommand> command_map;
 };
-}  // namespace cqsp::client
+};  // namespace cqsp::headless

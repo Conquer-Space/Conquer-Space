@@ -29,6 +29,7 @@
 #include <glm/glm.hpp>
 
 #include "engine/asset/assetmanager.h"
+#include "engine/asset/assetprototype.h"
 #include "engine/graphics/mesh.h"
 #include "engine/graphics/model.h"
 #include "engine/graphics/texture.h"
