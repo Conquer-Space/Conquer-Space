@@ -262,7 +262,7 @@ void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
 void FunctionUser(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
-    REGISTER_FUNCTION("set_name", [&](entt::entity entity, std::string name) {
+    REGISTER_FUNCTION("set_name", [&](entt::entity entity, const std::string& name) {
         universe.emplace_or_replace<cqspc::Name>(entity, name);
     });
 
@@ -299,6 +299,8 @@ void FunctionPopulation(cqsp::common::Universe& universe, cqsp::scripting::Scrip
     // Get cities of a planet
     REGISTER_FUNCTION("get_cities",
                       [&](entt::entity planet) { return universe.get<cqspc::Habitation>(planet).settlements; });
+
+    REGISTER_FUNCTION("get_city", [&](const std::string& planet) { return universe.cities[planet]; });
 }
 
 void FunctionShips(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
@@ -393,6 +395,24 @@ void FunctionScience(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
         auto& res = universe.get<cqsp::common::components::science::ScientificResearch>(entity);
         res.potential_research.insert(tech);
     });
+}
+
+// this is just meant for debugging and is not performant at all
+sol::table GetMarketTable(cqsp::common::Universe& universe, entt::entity market) {
+    sol::table market_table;
+    cqsp::common::components::Market& market_component = universe.get<cqsp::common::components::Market>(market);
+    auto goods_view = universe.view<cqsp::common::components::Price>();
+    for (entt::entity good : goods_view) {
+        // Now get all the values for goods
+        market_component.price[good];
+    }
+    return market_table;
+}
+
+void FunctionTrade(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+    CREATE_NAMESPACE(core);
+
+    REGISTER_FUNCTION("get_market_table", [&](entt::entity market) { return GetMarketTable(universe, market); });
 }
 }  // namespace
 

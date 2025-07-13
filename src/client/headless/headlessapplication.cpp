@@ -22,6 +22,7 @@
 #include <sol/error.hpp>
 
 #include "client/headless/generate.h"
+#include "client/headless/headlessluafunctions.h"
 #include "client/headless/loadluafile.h"
 #include "common/util/logging.h"
 #include "common/util/strip.h"
@@ -59,6 +60,9 @@ int HeadlessApplication::run() {
     asset_loader.manager = &asset_manager;
     asset_loader.LoadMods();
 
+    // Add lua functions
+    LoadHeadlessFunctions(*this);
+
     while (true) {
         std::cout << "> ";
         std::string line;
@@ -77,22 +81,36 @@ int HeadlessApplication::run() {
             }
             if (line == "@generate") {
                 generate(*this);
+                // Now generate the simulation
             } else if (line == "@loadluafile") {
                 loadluafile(*this, argument);
+            } else if (line == "@exit") {
+                break;
             } else {
                 // Then it doesn't exist
                 std::cout << "Unknown command \'" << line << "\'!\n";
             }
         } else {
-            // Now lua scripting
+            // Lua scripting
+            // TODO(#282): Print out variable if it's not assigned to something
             try {
                 conquer_space.GetScriptInterface().RunScript(line);
             } catch (sol::error& error) {
-                // since it's automatically logged we can ignore it..
-                std::cout << "Lua error!\n";
+                // since it's automatically logged we can ignore it
+                ;
             }
         }
     }
     return 0;
 }
+
+/*
+* Initializes the pointer for the simulation
+*/
+void HeadlessApplication::InitSimulationPtr() {
+    // I am not happy with this interface
+    simulation = std::make_unique<cqsp::common::systems::simulation::Simulation>(GetGame().GetGame());
+}
+
+cqsp::common::systems::simulation::Simulation& HeadlessApplication::GetSimulation() { return *(simulation.get()); }
 }  // namespace cqsp::headless
