@@ -14,16 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/headless/generate.h"
+#pragma once
 
-#include "client/systems/universeloader.h"
+#include "client/headless/headlessapplication.h"
+#include "common/scripting/scripting.h"
+#include "common/universe.h"
 
 namespace cqsp::headless {
-int generate(HeadlessApplication& application) {
-    client::LoadUniverse(application.GetAssetManager(), application.GetGame());
-    application.InitSimulationPtr();
-    // Now we also tick the simulation by one
-    application.GetSimulation().Init();
-    return 0;
-}
+void LoadHeadlessFunctions(HeadlessApplication& application);
 }  // namespace cqsp::headless

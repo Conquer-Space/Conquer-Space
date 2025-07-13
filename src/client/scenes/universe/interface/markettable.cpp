@@ -79,7 +79,7 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
             ImGui::TextFmt("{}", sd_ratio);
         }
         ImGui::TableSetColumnIndex(5);
-        ImGui::TextFmt("{}", market.ds_ratio[good_entity]);
+        ImGui::TextFmt("{}", 0.0);
         ImGui::TableSetColumnIndex(6);
         ImGui::TextFmt("{}", market.last_latent_demand[good_entity]);
         ImGui::TableSetColumnIndex(7);

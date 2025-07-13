@@ -14,16 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/headless/generate.h"
+#include "client/headless/headlessluafunctions.h"
 
-#include "client/systems/universeloader.h"
+#include "common/scripting/functionreg.h"
 
 namespace cqsp::headless {
-int generate(HeadlessApplication& application) {
-    client::LoadUniverse(application.GetAssetManager(), application.GetGame());
-    application.InitSimulationPtr();
-    // Now we also tick the simulation by one
-    application.GetSimulation().Init();
-    return 0;
+namespace {
+void TickFunctions(HeadlessApplication& application) {
+    scripting::ScriptInterface& script_engine = application.GetGame().GetScriptInterface();
+    CREATE_NAMESPACE(simulation);
+
+    REGISTER_FUNCTION("tick", [&](unsigned int ticks) {
+        for (int i = 0; i < ticks; i++) {
+            application.GetSimulation().tick();
+        }
+    });
 }
+}  // namespace
+
+void LoadHeadlessFunctions(HeadlessApplication& application) { TickFunctions(application); }
 }  // namespace cqsp::headless
