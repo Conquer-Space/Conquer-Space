@@ -95,7 +95,7 @@ def main():
     file_parse_list = ["src/common/scripting/luafunctions.cpp",
                        "src/client/scripting/clientscripting.cpp",
                        "src/common/scripting/luafunctions.cpp",
-                       "src/client/headless/luafunctions.cpp",
+                       "src/client/headless/headlessluafunctions.cpp",
                        "src/client/scripting/clientuielements.cpp",
                        "src/client/scripting/clientscripting.cpp"]
     for file in file_parse_list:

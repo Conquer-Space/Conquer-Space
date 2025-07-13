@@ -398,13 +398,20 @@ void FunctionScience(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
 }
 
 // this is just meant for debugging and is not performant at all
-sol::table GetMarketTable(cqsp::common::Universe& universe, entt::entity market) {
-    sol::table market_table;
+sol::table GetMarketTable(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine,
+                          entt::entity market) {
+    sol::table market_table = script_engine.create_table_with();
+
     cqsp::common::components::Market& market_component = universe.get<cqsp::common::components::Market>(market);
     auto goods_view = universe.view<cqsp::common::components::Price>();
     for (entt::entity good : goods_view) {
+        sol::table good_table = script_engine.create_table_with();
+        good_table["price"] = market_component.price[good];
+        good_table["supply"] = market_component.supply()[good];
+        good_table["demand"] = market_component.demand()[good];
+        good_table["sd_ratio"] = market_component.sd_ratio[good];
+        market_table.set(good, good_table);
         // Now get all the values for goods
-        market_component.price[good];
     }
     return market_table;
 }
@@ -412,7 +419,8 @@ sol::table GetMarketTable(cqsp::common::Universe& universe, entt::entity market)
 void FunctionTrade(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
-    REGISTER_FUNCTION("get_market_table", [&](entt::entity market) { return GetMarketTable(universe, market); });
+    REGISTER_FUNCTION("get_market_table",
+                      [&](entt::entity market) { return GetMarketTable(universe, script_engine, market); });
 }
 }  // namespace
 
@@ -428,4 +436,5 @@ void cqsp::scripting::LoadFunctions(cqsp::common::Universe& universe, cqsp::scri
     FunctionShips(universe, script_engine);
     FunctionResource(universe, script_engine);
     FunctionScience(universe, script_engine);
+    FunctionTrade(universe, script_engine);
 }
