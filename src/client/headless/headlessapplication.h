@@ -17,10 +17,12 @@
 #pragma once
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include "client/conquerspace.h"
+#include "common/simulation.h"
 #include "common/universe.h"
 #include "engine/asset/assetloader.h"
 #include "engine/asset/assetmanager.h"
@@ -37,11 +39,15 @@ class HeadlessApplication {
     cqsp::asset::AssetManager& GetAssetManager();
     cqsp::client::ConquerSpace& GetGame();
 
+    void InitSimulationPtr();
+    cqsp::common::systems::simulation::Simulation& GetSimulation();
+
  private:
     cqsp::asset::AssetManager asset_manager;
     cqsp::asset::AssetLoader asset_loader;
 
     cqsp::client::ConquerSpace conquer_space;
+    std::unique_ptr<cqsp::common::systems::simulation::Simulation> simulation;
 
     std::map<std::string, HeadlessCommand> command_map;
 };

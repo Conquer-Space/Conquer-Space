@@ -37,7 +37,12 @@ int loadluafile(HeadlessApplication& application, const std::vector<std::string>
     }
     buffer << input_file.rdbuf();
 
-    application.GetGame().GetScriptInterface().RunScript(buffer.str());
+    try {
+        application.GetGame().GetScriptInterface().RunScript(buffer.str());
+    } catch (sol::error& error) {
+        // Ignore error as it is printed out before this
+        ;
+    }
     return 0;
 }
 };  // namespace cqsp::headless

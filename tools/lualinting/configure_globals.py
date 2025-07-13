@@ -28,6 +28,7 @@ from common.cqsproot import GetCqspRoot
 cqsp_root = GetCqspRoot()
 variables = ["goods",
             "core",
+            "simulation",
             "recipes",
             "generators",
             "events",
@@ -94,6 +95,7 @@ def main():
     file_parse_list = ["src/common/scripting/luafunctions.cpp",
                        "src/client/scripting/clientscripting.cpp",
                        "src/common/scripting/luafunctions.cpp",
+                       "src/client/headless/headlessluafunctions.cpp",
                        "src/client/scripting/clientuielements.cpp",
                        "src/client/scripting/clientscripting.cpp"]
     for file in file_parse_list:
