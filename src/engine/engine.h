@@ -16,15 +16,13 @@
  */
 #pragma once
 
-namespace cqsp {
-namespace engine {
+namespace cqsp::engine {
 class Application;
 class Scene;
 class EmptyScene;
 class SceneManager;
-}  // namespace engine
+}  // namespace cqsp::engine
 
-namespace asset {
+namespace cqsp::asset {
 class AssetManager;
-}
-}  // namespace cqsp
+}  // namespace cqsp::asset

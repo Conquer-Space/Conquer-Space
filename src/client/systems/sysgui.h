@@ -19,9 +19,7 @@
 #include "client/conquerspace.h"
 #include "engine/application.h"
 
-namespace cqsp {
-namespace client {
-namespace systems {
+namespace cqsp::client::systems {
 class SysUserInterface {
  public:
     explicit SysUserInterface(cqsp::engine::Application &_app) : m_app(_app) {}
@@ -57,6 +55,4 @@ class SysRmlUiInterface {
  private:
     cqsp::engine::Application &m_app;
 };
-}  // namespace systems
-}  // namespace client
-}  // namespace cqsp
+} // namespace cqsp::client::systems

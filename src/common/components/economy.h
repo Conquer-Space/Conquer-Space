@@ -25,9 +25,7 @@
 
 #include "common/components/resource.h"
 
-namespace cqsp {
-namespace common {
-namespace components {
+namespace cqsp::common::components {
 /// <summary>
 /// Historical information about the market
 /// Might change this to a different type of resource ledger so that we don't have so many lookups
@@ -296,6 +294,4 @@ struct Owned {
 };
 
 struct TradePartners : std::vector<entt::entity> {};
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::components

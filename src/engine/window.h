@@ -16,8 +16,7 @@
  */
 #pragma once
 
-namespace cqsp {
-namespace engine {
+namespace cqsp::engine {
 /// <summary>
 /// The window handles the initialization of the callbacks, and all the input and output.
 /// It also manages all the pointers for the windows.
@@ -64,5 +63,4 @@ class Window {
 
     virtual void SetIcon(std::string_view path) = 0;
 };
-}  // namespace engine
-}  // namespace cqsp
+}  // namespace cqsp::engine

@@ -20,8 +20,7 @@
 #include "engine/graphics/shader.h"
 #include "engine/graphics/texture.h"
 
-namespace cqsp {
-namespace engine {
+namespace cqsp::engine {
 class Renderer2D {
  public:
     Renderer2D(cqsp::asset::ShaderProgram_t tex, cqsp::asset::ShaderProgram_t color);
@@ -52,5 +51,4 @@ class Renderer2D {
     cqsp::asset::ShaderProgram_t texture_shader;
     cqsp::asset::ShaderProgram_t color_shader;
 };
-}  // namespace engine
-}  // namespace cqsp
+}  // namespace cqsp::engine

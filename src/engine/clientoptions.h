@@ -22,8 +22,7 @@
 #include <istream>
 #include <string>
 
-namespace cqsp {
-namespace client {
+namespace cqsp::client {
 class ClientOptions {
  public:
     void LoadOptions(std::istream& stream);
@@ -41,5 +40,4 @@ class ClientOptions {
  private:
     Hjson::Value options;
 };
-}  // namespace client
-}  // namespace cqsp
+}  // namespace cqsp::client

@@ -18,8 +18,7 @@
 
 #include "engine/asset/asset.h"
 
-namespace cqsp {
-namespace asset {
+namespace cqsp::asset {
 class AudioAsset : public Asset {
  public:
     /**
@@ -31,5 +30,4 @@ class AudioAsset : public Asset {
 
     AssetType GetAssetType() override { return AssetType::AUDIO; }
 };
-}  // namespace asset
-}  // namespace cqsp
+}  // namespace cqsp::asset

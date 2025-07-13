@@ -22,8 +22,6 @@
 
 #include "engine/graphics/mesh.h"
 
-namespace cqsp {
-namespace engine::primitive {
+namespace cqsp::engine::primitive {
 //engine::Mesh* MakeLine(const std::vector<glm::vec3>&);
-}
-}  // namespace cqsp
+} // namespace cqsp::engine::primitive

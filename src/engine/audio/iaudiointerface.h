@@ -22,9 +22,7 @@
 
 #include "engine/audio/audioasset.h"
 
-namespace cqsp {
-namespace engine {
-namespace audio {
+namespace cqsp::engine::audio {
 enum ChannelType {};
 class IAudioInterface {
  public:
@@ -44,6 +42,4 @@ class IAudioInterface {
     virtual void AddAudioClip(const std::string &key, cqsp::asset::AudioAsset *asset) = 0;
     virtual void PlayAudioClip(const std::string &key) = 0;
 };
-}  // namespace audio
-}  // namespace engine
-}  // namespace cqsp
+}  // namespace cqsp::engine::audio

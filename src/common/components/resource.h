@@ -26,9 +26,7 @@
 #include "common/components/area.h"
 #include "common/components/units.h"
 
-namespace cqsp {
-namespace common {
-namespace components {
+namespace cqsp::common::components {
 /// <summary>
 /// Something that has a mass.
 /// </summary>
@@ -324,6 +322,4 @@ struct FailedResourceConsumption {};
 struct ResourceDistribution {
     std::map<entt::entity, double> dist;
 };
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::components

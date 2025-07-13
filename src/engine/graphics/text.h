@@ -23,8 +23,7 @@
 
 #include "engine/graphics/shader.h"
 
-namespace cqsp {
-namespace asset {
+namespace cqsp::asset {
 struct Character {
     unsigned int TextureID;  // ID handle of the glyph texture
     glm::ivec2 Size;         // Size of glyph
@@ -45,5 +44,4 @@ class Font : public Asset {
 void LoadFontData(Font& font, unsigned char* fontBuffer, uint64_t size);
 void RenderText(cqsp::asset::ShaderProgram& shader, Font& font, std::string text, float x, float y, float scale,
                 glm::vec3 color);
-}  // namespace asset
-}  // namespace cqsp
+}  // namespace cqsp::asset
