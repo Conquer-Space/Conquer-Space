@@ -68,15 +68,16 @@ Simulation::Simulation(cqsp::common::Game& game) : m_game(game), m_universe(game
     // AddSystem<cqspcs::SysAgent>();
     AddSystem<cqspcs::SysMarket>();
     AddSystem<cqspcs::SysPlanetaryTrade>();
-
     AddSystem<cqspcs::history::SysMarketHistory>();
+
     // Movement
     AddSystem<cqspcs::SysOrbit>();
-
-    cqspcs::SysMarket::InitializeMarket(game);
 }
 
 void Simulation::Init() {
+    namespace cqspcs = cqsp::common::systems;
+    cqspcs::SysMarket::InitializeMarket(m_game);
+
     for (auto& sys : system_list) {
         sys->Init();
     }

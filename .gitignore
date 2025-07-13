@@ -2,6 +2,7 @@
 !/binaries/bin/README.txt
 /build
 *.pdb
+.venv
 
 # Doxygen
 /docs/latex

@@ -49,12 +49,15 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
     ImGui::TableSetupColumn("Supply");
     ImGui::TableSetupColumn("Demand");
     ImGui::TableSetupColumn("S/D ratio");
-    ImGui::TableSetupColumn("Previous supply");
-    ImGui::TableSetupColumn("Previous emand");
+
     ImGui::TableSetupColumn("Production");
-    ImGui::TableSetupColumn("Consumption");
     ImGui::TableSetupColumn("Imports");
     ImGui::TableSetupColumn("Exports");
+
+    ImGui::TableSetupColumn("D/S ratio");
+    ImGui::TableSetupColumn("Latent Demand");
+    ImGui::TableSetupColumn("Input Ratio");
+
     ImGui::TableHeadersRow();
     auto goodsview = universe.view<cqspc::Price>();
 
@@ -83,7 +86,7 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
         ImGui::TableSetColumnIndex(5);
         ImGui::TextFmt("{}", 0);
         ImGui::TableSetColumnIndex(6);
-        ImGui::TextFmt("{}", market.last_latent_demand[good_entity]);
+        ImGui::TextFmt("{}", 0.0);
         ImGui::TableSetColumnIndex(7);
         ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.production[good_entity]));
         ImGui::TableSetColumnIndex(8);

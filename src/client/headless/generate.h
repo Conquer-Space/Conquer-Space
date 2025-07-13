@@ -16,9 +16,8 @@
  */
 #pragma once
 
-#include "engine/application.h"
+#include "client/headless/headlessapplication.h"
 
-namespace cqsp::client::scripting {
-void ClientFunctions(asset::AssetManager& asset_manager, common::Universe& universe,
-                     cqsp::scripting::ScriptInterface& script_engine);
-}  // namespace cqsp::client::scripting
+namespace cqsp::headless {
+int generate(HeadlessApplication& application);
+}  // namespace cqsp::headless

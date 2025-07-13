@@ -24,6 +24,7 @@
 #include "client/scenes/universe/universescene.h"
 #include "client/systems/assetloading.h"
 #include "client/systems/savegame.h"
+#include "client/systems/universeloader.h"
 #include "common/systems/sysuniversegenerator.h"
 
 cqsp::scene::UniverseLoadingScene::UniverseLoadingScene(cqsp::engine::Application& app) : cqsp::client::Scene(app) {}
@@ -56,18 +57,8 @@ void cqsp::scene::UniverseLoadingScene::Ui(float deltaTime) {}
 void cqsp::scene::UniverseLoadingScene::Render(float deltaTime) {}
 
 void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
-    cqsp::client::systems::LoadAllResources(GetApp(), *dynamic_cast<cqsp::client::ConquerSpace*>(GetApp().GetGame()));
-    SPDLOG_INFO("Made all game resources into game objects");
-    using cqsp::asset::TextAsset;
-    // Process scripts for core
-    TextAsset* script_list = GetAssetManager().GetAsset<TextAsset>("core:base");
-    GetScriptInterface().RunScript(script_list->data);
-    SPDLOG_INFO("Done loading scripts");
-    using cqsp::common::systems::universegenerator::ScriptUniverseGenerator;
-    // Load universe
-    ScriptUniverseGenerator script_generator(GetScriptInterface());
-
-    script_generator.Generate(GetUniverse());
+    client::LoadUniverse(GetAssetManager(), *dynamic_cast<cqsp::client::ConquerSpace*>(GetApp().GetGame()));
+    // Load saves
     if (GetUniverse().ctx().contains<client::ctx::GameLoad>()) {
         const std::string& load_dir = GetUniverse().ctx().at<client::ctx::GameLoad>().load_dir;
         SPDLOG_INFO("Loading save {}", load_dir);

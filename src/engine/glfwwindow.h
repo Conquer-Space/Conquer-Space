@@ -83,7 +83,7 @@ class GLWindow : public cqsp::engine::Window {
     int GetWindowHeight() const { return m_window_height; }
     int GetWindowWidth() const { return m_window_width; }
 
-    void InitWindow(int width, int height);
+    bool InitWindow(int width, int height);
 
     double MouseButtonLastReleased(int btn) const { return m_mouse_keys_last_pressed[btn]; }
 

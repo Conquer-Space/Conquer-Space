@@ -60,7 +60,9 @@ GLFWwindow* window(cqsp::engine::Window* window) { return reinterpret_cast<GLWin
 int Application::init() {
     LoggerInit();
     LogInfo();
-    GlInit();
+    if (!GlInit()) {
+        return -1;
+    }
 
     manager.LoadDefaultTexture();
     SetIcon();
@@ -289,6 +291,7 @@ void Application::run() {
     fps = 0;
     if (code != 0) {
         // Fail
+        ENGINE_LOG_ERROR("ERROR! Exiting!");
         return;
     }
     m_audio_interface->StartWorker();
@@ -505,10 +508,13 @@ void Application::InitFonts() {
 
 void Application::SetIcon() { m_window->SetIcon(cqsp::common::util::GetCqspDataPath() + "/" + icon_path); }
 
-void Application::GlInit() {
+bool Application::GlInit() {
     m_window = new GLWindow(this);
-    m_window->InitWindow(m_client_options.GetOptions()["window"]["width"],
-                         m_client_options.GetOptions()["window"]["height"]);
+    if (!m_window->InitWindow(m_client_options.GetOptions()["window"]["width"],
+                              m_client_options.GetOptions()["window"]["height"])) {
+        ENGINE_LOG_CRITICAL("Failed to init window!");
+        return false;
+    }
 
     // Print gl information
     ENGINE_LOG_INFO(" --- Begin GL information ---");
@@ -517,6 +523,7 @@ void Application::GlInit() {
     ENGINE_LOG_INFO("GL Renderer: {}", (char*)glGetString(GL_RENDERER));
     ENGINE_LOG_INFO("GL shading language: {}", (char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
     ENGINE_LOG_INFO(" --- End of GL information ---");
+    return true;
 }
 
 void Application::LoggerInit() {

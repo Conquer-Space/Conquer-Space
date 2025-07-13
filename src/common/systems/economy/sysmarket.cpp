@@ -50,8 +50,6 @@ void SysMarket::DoSystem() {
         market.supply() += market.production;
         market.demand() += market.consumption;
         market.sd_ratio = (market.supply()).SafeDivision(market.demand());
-        // market.ds_ratio = market.previous_demand.SafeDivision(market.supply);
-        // market.ds_ratio = market.ds_ratio.Clamp(0, 2);
 
         for (entt::entity good_entity : goodsview) {
             DeterminePrice(market, good_entity);
@@ -98,6 +96,8 @@ void SysMarket::DeterminePrice(components::Market& market, entt::entity good_ent
         if (price < 0.00001) {
             price = 0.00001;
         }
+    } else {
+        // Keep price approximately the same
     }
 }
 

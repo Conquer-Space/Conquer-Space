@@ -14,11 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
+#include "client/headless/headlessluafunctions.h"
 
-#include "engine/application.h"
+#include "common/scripting/functionreg.h"
 
-namespace cqsp::client::scripting {
-void ClientFunctions(asset::AssetManager& asset_manager, common::Universe& universe,
-                     cqsp::scripting::ScriptInterface& script_engine);
-}  // namespace cqsp::client::scripting
+namespace cqsp::headless {
+namespace {
+void TickFunctions(HeadlessApplication& application) {
+    scripting::ScriptInterface& script_engine = application.GetGame().GetScriptInterface();
+    CREATE_NAMESPACE(simulation);
+
+    REGISTER_FUNCTION("tick", [&](unsigned int ticks) {
+        for (int i = 0; i < ticks; i++) {
+            application.GetSimulation().tick();
+        }
+    });
+}
+}  // namespace
+
+void LoadHeadlessFunctions(HeadlessApplication& application) { TickFunctions(application); }
+}  // namespace cqsp::headless

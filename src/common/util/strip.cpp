@@ -14,11 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
+#include "common/util/strip.h"
 
-#include "engine/application.h"
-
-namespace cqsp::client::scripting {
-void ClientFunctions(asset::AssetManager& asset_manager, common::Universe& universe,
-                     cqsp::scripting::ScriptInterface& script_engine);
-}  // namespace cqsp::client::scripting
+namespace cqsp::util {
+std::string strip(const std::string& inpt) {
+    if (inpt.empty()) {
+        return "";
+    }
+    auto start_it = inpt.begin();
+    auto end_it = inpt.rbegin();
+    while (std::isspace(*start_it) != 0) ++start_it;
+    if (start_it != inpt.end()) {
+        while (std::isspace(*end_it) != 0) ++end_it;
+    }
+    return std::string(start_it, end_it.base());
+}
+}  // namespace cqsp::util

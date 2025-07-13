@@ -16,9 +16,17 @@
  */
 #pragma once
 
-#include "engine/application.h"
+#include <string>
 
-namespace cqsp::client::scripting {
-void ClientFunctions(asset::AssetManager& asset_manager, common::Universe& universe,
-                     cqsp::scripting::ScriptInterface& script_engine);
-}  // namespace cqsp::client::scripting
+namespace cqsp::asset {
+class PackagePrototype {
+ public:
+    std::string name;
+    std::string version;
+    std::string title;
+    std::string author;
+    std::string path;
+
+    bool enabled;
+};
+}  // namespace cqsp::asset

@@ -14,11 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
+#include "engine/asset/package.h"
 
-#include "engine/application.h"
+#include <string>
 
-namespace cqsp::client::scripting {
-void ClientFunctions(asset::AssetManager& asset_manager, common::Universe& universe,
-                     cqsp::scripting::ScriptInterface& script_engine);
-}  // namespace cqsp::client::scripting
+namespace cqsp::asset {
+bool Package::HasAsset(const char* asset) { return assets.contains(asset); }
+bool Package::HasAsset(const std::string& asset) { return assets.contains(asset); }
+
+void Package::ClearAssets() {
+    for (auto a = assets.begin(); a != assets.end(); a++) {
+        a->second.reset();
+    }
+    assets.clear();
+}
+}  // namespace cqsp::asset

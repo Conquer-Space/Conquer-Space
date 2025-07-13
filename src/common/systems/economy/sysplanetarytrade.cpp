@@ -34,11 +34,10 @@ void cqsp::common::systems::SysPlanetaryTrade::DoSystem() {
         auto& p_market = GetUniverse().get<components::Market>(entity);
         auto& habitation = GetUniverse().get<components::Habitation>(entity);
         auto& wallet = GetUniverse().get_or_emplace<components::Wallet>(entity);
+
         p_market.trade.clear();
+
         for (entt::entity habitation : habitation.settlements) {
-            if (!GetUniverse().any_of<components::Market>(habitation)) {
-                continue;
-            }
             auto& market = GetUniverse().get<components::Market>(habitation);
             auto& market_wallet = GetUniverse().get_or_emplace<components::Wallet>(habitation);
             // Import the missing goods that we need

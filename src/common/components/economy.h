@@ -41,6 +41,7 @@ struct MarketInformation {
 
  public:
     ResourceLedger sd_ratio;
+
     /// <summary>
     /// The amount of goods that changed hands. We can use this to calculate the
     /// GDP

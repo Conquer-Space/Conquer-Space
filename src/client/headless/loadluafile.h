@@ -16,9 +16,10 @@
  */
 #pragma once
 
-#include "engine/application.h"
+#include <string>
 
-namespace cqsp::client::scripting {
-void ClientFunctions(asset::AssetManager& asset_manager, common::Universe& universe,
-                     cqsp::scripting::ScriptInterface& script_engine);
-}  // namespace cqsp::client::scripting
+#include "client/headless/headlessapplication.h"
+
+namespace cqsp::headless {
+int loadluafile(HeadlessApplication& application, const std::vector<std::string>& arguments);
+};
