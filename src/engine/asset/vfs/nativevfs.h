@@ -23,8 +23,7 @@
 
 #include "engine/asset/vfs/vfs.h"
 
-namespace cqsp {
-namespace asset {
+namespace cqsp::asset {
 class NativeFileSystem;
 class NativeDirectory;
 
@@ -92,5 +91,4 @@ class NativeDirectory : public IVirtualDirectory {
     std::string root;
     NativeFileSystem* const nfs;
 };
-}  // namespace asset
-}  // namespace cqsp
+}  // namespace cqsp::asset

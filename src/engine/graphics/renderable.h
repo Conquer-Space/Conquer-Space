@@ -23,8 +23,7 @@
 #include "engine/graphics/shader.h"
 #include "engine/graphics/texture.h"
 
-namespace cqsp {
-namespace engine {
+namespace cqsp::engine {
 class Renderable {
  public:
     Mesh_t mesh;
@@ -38,5 +37,4 @@ class Renderable {
 
     int z = 0;
 };
-}  // namespace engine
-}  // namespace cqsp
+}  // namespace cqsp::engine

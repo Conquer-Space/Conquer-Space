@@ -16,10 +16,6 @@
  */
 #pragma once
 
-namespace cqsp {
-namespace common {
-namespace components {
+namespace cqsp::common::components {
 struct Player {};
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::components

@@ -22,9 +22,7 @@
 
 #include <sol/sol.hpp>
 
-namespace cqsp {
-namespace common {
-namespace event {
+namespace cqsp::common::event {
 struct EventResult {
     std::string name;
     std::string tooltip;
@@ -42,6 +40,4 @@ struct Event {
 struct EventQueue {
     std::vector<std::shared_ptr<Event>> events;
 };
-}  // namespace event
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::event

@@ -18,9 +18,7 @@
 
 #include <entt/entt.hpp>
 
-namespace cqsp {
-namespace common {
-namespace systems {
+namespace cqsp::common::systems {
 namespace resource {
 /// <summary>
 /// Transfers resources from the first entity to the second
@@ -33,6 +31,4 @@ namespace resource {
 /// <returns>If transfering resources failed.</returns>
 bool TransferResources(entt::registry &registry, entt::entity from, entt::entity to, entt::entity good, double amount);
 }  // namespace resource
-}  // namespace systems
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::systems

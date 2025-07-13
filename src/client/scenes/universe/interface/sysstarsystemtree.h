@@ -18,9 +18,7 @@
 
 #include "client/systems/sysgui.h"
 
-namespace cqsp {
-namespace client {
-namespace systems {
+namespace cqsp::client::systems {
 /// <summary>
 /// Displays the star system tree to show all the planets and moons
 /// </summary>
@@ -40,6 +38,4 @@ class SysStarSystemTree : public SysUserInterface {
     entt::entity selected_planet;
     entt::sparse_set planets;
 };
-}  // namespace systems
-}  // namespace client
-}  // namespace cqsp
+} // namespace cqsp::client::systems

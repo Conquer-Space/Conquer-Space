@@ -21,9 +21,7 @@
 #include <string>
 #include <vector>
 
-namespace cqsp {
-namespace common {
-namespace components {
+namespace cqsp::common::components {
 struct Name {
     std::string name;
     operator const std::string&() const { return name; }
@@ -37,6 +35,4 @@ struct Identifier {
 struct Description {
     std::string description;
 };
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::components

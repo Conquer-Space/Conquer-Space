@@ -20,8 +20,7 @@
 
 #include "engine/asset/asset.h"
 
-namespace cqsp {
-namespace asset {
+namespace cqsp::asset {
 
 struct TextureLoadingOptions {
     /*
@@ -53,5 +52,4 @@ void LoadCubemapData(Texture& texture, std::vector<unsigned char*>& faces, int w
                      TextureLoadingOptions& options);
 
 bool SaveImage(const char* path, int width, int height, int components, const unsigned char* data, bool flip = true);
-}  // namespace asset
-}  // namespace cqsp
+}  // namespace cqsp::asset

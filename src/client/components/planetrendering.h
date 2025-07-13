@@ -18,12 +18,8 @@
 
 #include <entt/entt.hpp>
 
-namespace cqsp {
-namespace client {
-namespace components {
+namespace cqsp::client::components {
 struct PlanetTerrainRender {
     entt::entity resource;
 };
-}  // namespace components
-}  // namespace client
-}  // namespace cqsp
+}  // namespace cqsp::client::components

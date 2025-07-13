@@ -29,8 +29,7 @@
 #include "common/systems/names/namegenerator.h"
 #include "common/util/random/random.h"
 
-namespace cqsp {
-namespace common {
+namespace cqsp::common {
 class Universe : public entt::registry {
  public:
     explicit Universe(std::string uuid);
@@ -73,8 +72,7 @@ class Universe : public entt::registry {
  private:
     bool to_tick = false;
 };
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common
 
 template <>
 struct fmt::formatter<entt::entity> : formatter<std::string> {

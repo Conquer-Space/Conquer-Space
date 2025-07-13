@@ -22,8 +22,7 @@
 
 #include "client/scenes/scene.h"
 
-namespace cqsp {
-namespace scene {
+namespace cqsp::scene {
 class UniverseLoadingScene : public cqsp::client::Scene {
  public:
     explicit UniverseLoadingScene(cqsp::engine::Application& app);
@@ -44,5 +43,4 @@ class UniverseLoadingScene : public cqsp::client::Scene {
 
     Rml::ElementDocument* document;
 };
-}  // namespace scene
-}  // namespace cqsp
+} // namespace cqsp::scene

@@ -18,8 +18,6 @@
 
 #include "engine/graphics/mesh.h"
 
-namespace cqsp {
-namespace engine::primitive {
+namespace cqsp::engine::primitive {
 cqsp::engine::Mesh_t MakeCube();
-}  // namespace engine::primitive
-}  // namespace cqsp
+} // namespace cqsp::engine::primitive

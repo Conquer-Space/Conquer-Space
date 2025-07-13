@@ -21,8 +21,7 @@
 #include <string>
 #include <vector>
 
-namespace cqsp {
-namespace asset {
+namespace cqsp::asset {
 enum FileModes {
     Text = 0,        // Opens in text mode
     Binary = 1 << 0  // If true, file is opened in binary mode, if false, file is opened in text mode
@@ -223,5 +222,4 @@ inline std::string GetParentPath(const std::string& path) {
     }
     return path.substr(0, last);
 }
-}  // namespace asset
-}  // namespace cqsp
+}  // namespace cqsp::asset

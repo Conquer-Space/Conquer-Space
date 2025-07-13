@@ -22,8 +22,7 @@
 
 #include "client/scenes/scene.h"
 #include "engine/renderer/framebuffer.h"
-namespace cqsp {
-namespace scene {
+namespace cqsp::scene {
 /// <summary>
 /// Just a playground for various graphics stuff
 /// </summary>
@@ -49,5 +48,4 @@ class TextTestScene : public cqsp::client::Scene {
     std::vector<const char*> names;
     float delta_t = 0;
 };
-}  // namespace scene
-}  // namespace cqsp
+} // namespace cqsp::scene

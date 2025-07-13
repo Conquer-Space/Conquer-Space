@@ -22,8 +22,7 @@
 // This was already included in application.h, but this is needed to be included again for some reason.
 #include "common/universe.h"
 
-namespace cqsp {
-namespace engine {
+namespace cqsp::engine {
 class Scene {
  public:
     explicit Scene(Application& app);
@@ -52,5 +51,4 @@ class EmptyScene : public Scene {
     void Ui(float deltaTime);
     void Render(float deltaTime);
 };
-}  // namespace engine
-}  // namespace cqsp
+}  // namespace cqsp::engine

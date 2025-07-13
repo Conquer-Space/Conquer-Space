@@ -25,8 +25,7 @@
 #include "client/scenes/scene.h"
 #include "engine/asset/assetloader.h"
 
-namespace cqsp {
-namespace scene {
+namespace cqsp::scene {
 // First loading scene when the game starts
 class LoadingScene : public cqsp::client::Scene {
  public:
@@ -66,5 +65,4 @@ class LoadingScene : public cqsp::client::Scene {
 
     Rml::DataModelHandle model_handle;
 };
-}  // namespace scene
-}  // namespace cqsp
+} // namespace cqsp::scene

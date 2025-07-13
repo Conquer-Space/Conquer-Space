@@ -16,8 +16,7 @@
  */
 #pragma once
 
-namespace cqsp {
-namespace engine {
+namespace cqsp::engine {
 class UserInput {};
 int GetRmlUiKey(int key);
 int GetAsciiKey(int key);
@@ -151,5 +150,4 @@ KeyInput GetKey(int key);
 int GetGlfwKey(KeyInput key);
 
 enum MouseInput { LEFT = 0, RIGHT = 1, MIDDLE = 2 };
-}  // namespace engine
-}  // namespace cqsp
+}  // namespace cqsp::engine
