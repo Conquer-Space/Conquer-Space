@@ -41,7 +41,6 @@
 
 namespace cqsp::client::systems {
 namespace {
-
 void LoadResource(cqsp::asset::AssetManager& asset_manager, cqsp::common::Universe& universe,
                   const std::string& asset_name,
                   void (*func)(cqsp::common::Universe& universe, Hjson::Value& recipes)) {
