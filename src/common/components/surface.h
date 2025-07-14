@@ -21,9 +21,7 @@
 
 #include <entt/entt.hpp>
 
-namespace cqsp {
-namespace common {
-namespace components {
+namespace cqsp::common::components {
 struct Surface {
     int64_t seed;
 };
@@ -98,6 +96,4 @@ struct CapitalCity {};
 struct DockedShips {
     std::vector<entt::entity> docked_ships;
 };
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::components

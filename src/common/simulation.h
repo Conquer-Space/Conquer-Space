@@ -22,10 +22,7 @@
 #include "common/game.h"
 #include "common/systems/isimulationsystem.h"
 
-namespace cqsp {
-namespace common {
-namespace systems {
-namespace simulation {
+namespace cqsp::common::systems::simulation {
 /// <summary>
 /// Main simulation of game.
 ///</summary>
@@ -59,7 +56,4 @@ class Simulation {
     std::vector<std::unique_ptr<cqsp::common::systems::ISimulationSystem>> system_list;
     cqsp::common::Universe &m_universe;
 };
-}  // namespace simulation
-}  // namespace systems
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::systems::simulation

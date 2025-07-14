@@ -20,9 +20,7 @@
 
 #include "common/components/auction.h"
 
-namespace cqsp {
-namespace common {
-namespace systems {
+namespace cqsp::common::systems {
 /// <summary>
 /// Buys a good from the market
 /// </summary>
@@ -46,6 +44,4 @@ bool BuyGood(components::AuctionHouse& auction_house, entt::entity agent, entt::
 /// placed.</returns>
 bool SellGood(components::AuctionHouse& auction_house, entt::entity agent, entt::entity good, double price,
               double quantity);
-}  // namespace systems
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::systems

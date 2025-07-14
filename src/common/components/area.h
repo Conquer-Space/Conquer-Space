@@ -20,9 +20,7 @@
 
 #include <entt/entt.hpp>
 
-namespace cqsp {
-namespace common {
-namespace components {
+namespace cqsp::common::components {
 struct IndustrialZone {
     std::vector<entt::entity> industries;
 };
@@ -48,6 +46,4 @@ struct Farm {
 };
 
 struct RawResourceGen {};
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::components

@@ -18,10 +18,6 @@
 
 #include "engine/application.h"
 
-namespace cqsp {
-namespace client {
-namespace systems {
+namespace cqsp::client::systems {
 void ShowOptionsWindow(bool* open, cqsp::engine::Application& app);
-}  // namespace systems
-}  // namespace client
-}  // namespace cqsp
+} // namespace cqsp::client::systems

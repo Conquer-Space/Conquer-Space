@@ -27,8 +27,7 @@
 
 #include "engine/asset/asset.h"
 
-namespace cqsp {
-namespace asset {
+namespace cqsp::asset {
 enum class ShaderType {
     NONE,  //!< Invalid shader
     VERT,  //!< Vertex shader
@@ -176,5 +175,4 @@ unsigned int MakeShaderProgram(int vertex, int fragment, int geometry = -1);
 /// <param name="shader">shader id</param>
 /// <returns>the error text of the shader</returns>
 std::string GetErrorLog(unsigned int shader);
-}  // namespace asset
-}  // namespace cqsp
+}  // namespace cqsp::asset

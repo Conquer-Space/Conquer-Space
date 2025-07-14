@@ -23,10 +23,7 @@
 #include "common/components/resource.h"
 #include "common/universe.h"
 
-namespace cqsp {
-namespace common {
-namespace systems {
-namespace actions {
+namespace cqsp::common::systems::actions {
 /// <summary>
 /// Will charge the entity builder the amount needed to construct the factory/building. You'll have to find a
 /// organization that can construct it though.
@@ -55,7 +52,4 @@ cqsp::common::components::ResourceLedger GetFactoryCost(cqsp::common::Universe& 
 
 entt::entity CreateCommercialArea(cqsp::common::Universe& universe, entt::entity city);
 
-}  // namespace actions
-}  // namespace systems
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::systems::actions

@@ -44,8 +44,7 @@
 #include "engine/userinput.h"
 #include "engine/window.h"
 
-namespace cqsp {
-namespace engine {
+namespace cqsp::engine {
 class Application {
  public:
     Application(int _argc, char* _argv[]);
@@ -257,5 +256,4 @@ class Application {
 
     bool draw_fps = false;
 };
-}  // namespace engine
-}  // namespace cqsp
+}  // namespace cqsp::engine

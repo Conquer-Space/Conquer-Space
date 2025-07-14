@@ -22,8 +22,7 @@
 #include "engine/graphics/shader.h"
 #include "engine/renderer/framebuffer.h"
 
-namespace cqsp {
-namespace scene {
+namespace cqsp::scene {
 
 class ModelScene : public cqsp::client::Scene {
  public:
@@ -40,5 +39,4 @@ class ModelScene : public cqsp::client::Scene {
     asset::ShaderProgram_t shader;
     engine::Mesh_t mesh;
 };
-}  // namespace scene
-}  // namespace cqsp
+} // namespace cqsp::scene

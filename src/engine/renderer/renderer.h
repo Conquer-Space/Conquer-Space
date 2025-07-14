@@ -23,8 +23,7 @@
 
 #include "engine/graphics/renderable.h"
 
-namespace cqsp {
-namespace engine {
+namespace cqsp::engine {
 void Draw(Renderable &);
 void Draw(Renderable &, asset::ShaderProgram_t &shader);
 void Draw(Renderable &, asset::ShaderProgram *shader);
@@ -41,5 +40,4 @@ class BasicRenderer {
     std::vector<BasicRendererObject> renderables;
     void Draw();
 };
-}  // namespace engine
-}  // namespace cqsp
+}  // namespace cqsp::engine

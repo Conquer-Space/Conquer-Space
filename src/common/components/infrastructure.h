@@ -18,10 +18,7 @@
 
 #include <entt/entt.hpp>
 
-namespace cqsp {
-namespace common {
-namespace components {
-namespace infrastructure {
+namespace cqsp::common::components::infrastructure {
 // Infrastrucutre provides many benefits
 // Electric grid, roads, railways, water supply, etc.
 struct Infrastructure {
@@ -54,7 +51,4 @@ struct BrownOut {};
 struct Highway {
     int extent;
 };
-}  // namespace infrastructure
-}  // namespace components
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::components::infrastructure

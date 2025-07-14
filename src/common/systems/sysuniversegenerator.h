@@ -22,10 +22,7 @@
 #include "common/scripting/scripting.h"
 #include "common/universe.h"
 
-namespace cqsp {
-namespace common {
-namespace systems {
-namespace universegenerator {
+namespace cqsp::common::systems::universegenerator {
 
 class ISysUniverseGenerator {
  public:
@@ -41,7 +38,4 @@ class ScriptUniverseGenerator : public ISysUniverseGenerator {
     cqsp::scripting::ScriptInterface& script_engine;
 };
 
-}  // namespace universegenerator
-}  // namespace systems
-}  // namespace common
-}  // namespace cqsp
+}  // namespace cqsp::common::systems::universegenerator

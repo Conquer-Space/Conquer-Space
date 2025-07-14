@@ -23,8 +23,7 @@
 #include "engine/renderer/renderer.h"
 #include "engine/window.h"
 
-namespace cqsp {
-namespace engine {
+namespace cqsp::engine {
 /// <summary>
 /// Interface for framebuffer renderers.
 /// </summary>
@@ -152,5 +151,4 @@ class LayerRenderer {
     std::vector<std::unique_ptr<IFramebuffer>> framebuffers;
     void InitFramebuffer(IFramebuffer* buffer, cqsp::asset::ShaderProgram_t shader, const cqsp::engine::Window& window);
 };
-}  // namespace engine
-}  // namespace cqsp
+}  // namespace cqsp::engine

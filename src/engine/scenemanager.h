@@ -18,8 +18,7 @@
 
 #include <memory>
 
-namespace cqsp {
-namespace engine {
+namespace cqsp::engine {
 class Scene;
 
 /// <summary>
@@ -72,5 +71,4 @@ class SceneManager {
     /// </summary>
     bool m_switch;
 };
-}  // namespace engine
-}  // namespace cqsp
+}  // namespace cqsp::engine

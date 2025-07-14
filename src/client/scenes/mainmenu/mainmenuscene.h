@@ -29,8 +29,7 @@
 #include "loadgamewindow.h"
 #include "settingswindow.h"
 
-namespace cqsp {
-namespace scene {
+namespace cqsp::scene {
 class MainMenuScene : public cqsp::client::Scene {
  public:
     explicit MainMenuScene(cqsp::engine::Application& app);
@@ -72,5 +71,4 @@ class MainMenuScene : public cqsp::client::Scene {
     // Change every minute
     const float switch_time = 60;
 };
-}  // namespace scene
-}  // namespace cqsp
+}  // namespace cqsp::scene

@@ -32,8 +32,7 @@
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/renderer2d.h"
 
-namespace cqsp {
-namespace scene {
+namespace cqsp::scene {
 class UniverseScene : public cqsp::client::Scene {
  public:
     explicit UniverseScene(cqsp::engine::Application& app);
@@ -112,5 +111,4 @@ entt::entity GetCurrentViewingPlanet(cqsp::common::Universe&);
 // Halts all other things
 void SetGameHalted(bool b);
 bool IsGameHalted();
-}  // namespace scene
-}  // namespace cqsp
+} // namespace cqsp::scene
