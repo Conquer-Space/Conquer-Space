@@ -28,7 +28,7 @@
 namespace cqsp::client {
 class LoadGameWindow : public Rml::EventListener {
  public:
-    explicit LoadGameWindow(cqsp::engine::Application& app);
+    explicit LoadGameWindow(engine::Application& app);
 
     void ProcessEvent(Rml::Event& event);
 
@@ -64,12 +64,12 @@ class LoadGameWindow : public Rml::EventListener {
  private:
     const std::string document_name = "../data/core/gui/loadsave.rml";
 
-    cqsp::engine::Application& GetApp() { return app; }
+    engine::Application& GetApp() { return app; }
 
     Rml::ElementDocument* options_menu;
     Rml::DataModelHandle model_handle;
 
-    cqsp::engine::Application& app;
+    engine::Application& app;
 
     std::string load_path;
     bool to_load = false;

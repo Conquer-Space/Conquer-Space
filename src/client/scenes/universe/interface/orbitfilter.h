@@ -21,7 +21,7 @@
 namespace cqsp::client::systems {
 class SysOrbitFilter : public SysUserInterface {
  public:
-    explicit SysOrbitFilter(cqsp::engine::Application& app) : SysUserInterface(app) {}
+    explicit SysOrbitFilter(engine::Application& app) : SysUserInterface(app) {}
     void Init() override;
     void DoUI(int delta_time) override;
     void DoUpdate(int delta_time) override;

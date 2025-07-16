@@ -22,11 +22,11 @@
 #include "engine/graphics/shader.h"
 #include "engine/renderer/framebuffer.h"
 
-namespace cqsp::scene {
+namespace cqsp::client::scene {
 
-class ModelScene : public cqsp::client::Scene {
+class ModelScene : public ClientScene {
  public:
-    explicit ModelScene(cqsp::engine::Application& app) : cqsp::client::Scene(app) {}
+    explicit ModelScene(engine::Application& app) : ClientScene(app) {}
     ~ModelScene() = default;
 
     void Init();
@@ -39,4 +39,4 @@ class ModelScene : public cqsp::client::Scene {
     asset::ShaderProgram_t shader;
     engine::Mesh_t mesh;
 };
-} // namespace cqsp::scene
+}  // namespace cqsp::client::scene

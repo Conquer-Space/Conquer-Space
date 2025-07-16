@@ -20,6 +20,6 @@
 
 #include "client/headless/headlessapplication.h"
 
-namespace cqsp::headless {
+namespace cqsp::client::headless {
 int loadluafile(HeadlessApplication& application, const std::vector<std::string>& arguments);
 };

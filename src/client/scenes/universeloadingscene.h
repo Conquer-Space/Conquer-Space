@@ -22,10 +22,10 @@
 
 #include "client/scenes/scene.h"
 
-namespace cqsp::scene {
-class UniverseLoadingScene : public cqsp::client::Scene {
+namespace cqsp::client::scene {
+class UniverseLoadingScene : public ClientScene {
  public:
-    explicit UniverseLoadingScene(cqsp::engine::Application& app);
+    explicit UniverseLoadingScene(engine::Application& app);
     ~UniverseLoadingScene();
 
     void Init();
@@ -37,10 +37,10 @@ class UniverseLoadingScene : public cqsp::client::Scene {
     std::atomic<bool> m_done_loading;
     std::unique_ptr<std::thread> thread;
 
-    void LoadUniverse();
+    void LoadCurrentUniverse();
 
     bool m_completed_loading;
 
     Rml::ElementDocument* document;
 };
-} // namespace cqsp::scene
+}  // namespace cqsp::client::scene

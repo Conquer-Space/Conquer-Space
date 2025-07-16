@@ -24,7 +24,7 @@ namespace cqsp::client::systems {
 /// </summary>
 class SysStarSystemTree : public SysUserInterface {
  public:
-    explicit SysStarSystemTree(cqsp::engine::Application& app) : SysUserInterface(app) {}
+    explicit SysStarSystemTree(engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
     void DoUI(int delta_time);

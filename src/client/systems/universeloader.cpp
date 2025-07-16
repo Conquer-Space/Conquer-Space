@@ -21,15 +21,17 @@
 #include "common/systems/sysuniversegenerator.h"
 
 namespace cqsp::client {
-void LoadUniverse(asset::AssetManager& asset_manager, cqsp::client::ConquerSpace& conquer_space) {
-    cqsp::client::systems::LoadAllResources(asset_manager, conquer_space);
+
+using common::systems::universegenerator::ScriptUniverseGenerator;
+
+void LoadUniverse(asset::AssetManager& asset_manager, ConquerSpace& conquer_space) {
+    systems::LoadAllResources(asset_manager, conquer_space);
     SPDLOG_INFO("Made all game resources into game objects");
-    using cqsp::asset::TextAsset;
+    using asset::TextAsset;
     // Process scripts for core
     TextAsset* script_list = asset_manager.GetAsset<TextAsset>("core:base");
     conquer_space.GetScriptInterface().RunScript(script_list->data);
     SPDLOG_INFO("Done loading scripts");
-    using cqsp::common::systems::universegenerator::ScriptUniverseGenerator;
     // Load universe
     ScriptUniverseGenerator script_generator(conquer_space.GetScriptInterface());
 

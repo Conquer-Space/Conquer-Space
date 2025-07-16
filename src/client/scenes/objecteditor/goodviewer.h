@@ -21,7 +21,7 @@
 namespace cqsp::client::systems {
 class SysGoodViewer : public SysUserInterface {
  public:
-    explicit SysGoodViewer(cqsp::engine::Application& app) : SysUserInterface(app) {}
+    explicit SysGoodViewer(engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
     void DoUI(int delta_time);

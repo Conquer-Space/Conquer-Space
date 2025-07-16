@@ -27,28 +27,28 @@
 #include "engine/asset/assetloader.h"
 #include "engine/asset/assetmanager.h"
 
-namespace cqsp::headless {
+namespace cqsp::client::headless {
 
-typedef int (*HeadlessCommand)(cqsp::client::ConquerSpace&, std::vector<std::string> arguments);
+typedef int (*HeadlessCommand)(ConquerSpace&, std::vector<std::string> arguments);
 
 class HeadlessApplication {
  public:
     HeadlessApplication();
     int run();
 
-    cqsp::asset::AssetManager& GetAssetManager();
-    cqsp::client::ConquerSpace& GetGame();
+    asset::AssetManager& GetAssetManager();
+    ConquerSpace& GetGame();
 
     void InitSimulationPtr();
-    cqsp::common::systems::simulation::Simulation& GetSimulation();
+    common::systems::simulation::Simulation& GetSimulation();
 
  private:
-    cqsp::asset::AssetManager asset_manager;
-    cqsp::asset::AssetLoader asset_loader;
+    asset::AssetManager asset_manager;
+    asset::AssetLoader asset_loader;
 
-    cqsp::client::ConquerSpace conquer_space;
-    std::unique_ptr<cqsp::common::systems::simulation::Simulation> simulation;
+    client::ConquerSpace conquer_space;
+    std::unique_ptr<common::systems::simulation::Simulation> simulation;
 
     std::map<std::string, HeadlessCommand> command_map;
 };
-};  // namespace cqsp::headless
+};  // namespace cqsp::client::headless

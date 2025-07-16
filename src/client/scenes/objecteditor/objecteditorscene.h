@@ -24,10 +24,10 @@
 #include "client/scenes/scene.h"
 #include "client/systems/sysgui.h"
 
-namespace cqsp::scene {
-class ObjectEditorScene : public cqsp::client::Scene {
+namespace cqsp::client::scene {
+class ObjectEditorScene : public ClientScene {
  public:
-    explicit ObjectEditorScene(cqsp::engine::Application& app);
+    explicit ObjectEditorScene(engine::Application& app);
     ~ObjectEditorScene();
 
     void Init();
@@ -43,6 +43,6 @@ class ObjectEditorScene : public cqsp::client::Scene {
     }
 
  private:
-    std::map<std::string, std::pair<bool, std::unique_ptr<cqsp::client::systems::SysUserInterface>>> user_interfaces;
+    std::map<std::string, std::pair<bool, std::unique_ptr<systems::SysUserInterface>>> user_interfaces;
 };
-}  // namespace cqsp::scene
+}  // namespace cqsp::client::scene

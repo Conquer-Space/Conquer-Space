@@ -18,12 +18,12 @@
 
 #include "client/systems/universeloader.h"
 
-namespace cqsp::headless {
+namespace cqsp::client::headless {
 int generate(HeadlessApplication& application) {
-    client::LoadUniverse(application.GetAssetManager(), application.GetGame());
+    LoadUniverse(application.GetAssetManager(), application.GetGame());
     application.InitSimulationPtr();
     // Now we also tick the simulation by one
     application.GetSimulation().Init();
     return 0;
 }
-}  // namespace cqsp::headless
+}  // namespace cqsp::client::headless
