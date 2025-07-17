@@ -22,19 +22,22 @@
 #include "common/components/player.h"
 #include "engine/cqspgui.h"
 
-void cqsp::client::systems::gui::SysEvent::Init() {}
+namespace cqsp::client::systems::gui {
 
-void cqsp::client::systems::gui::SysEvent::DoUI(int delta_time) {
-    using cqsp::common::event::Event;
-    using cqsp::common::event::EventQueue;
-    auto events = GetUniverse().view<cqsp::common::components::Player, EventQueue>();
+namespace event = common::event; 
+
+void SysEvent::Init() {}
+
+void SysEvent::DoUI(int delta_time) {
+
+    auto events = GetUniverse().view<common::components::Player, event::EventQueue>();
     for (auto [ent, queue] : events.each()) {
         if (queue.events.empty()) {
             continue;
         }
         // Halt the game
         GetUniverse().DisableTick();
-        std::shared_ptr<Event> env = queue.events.front();
+        std::shared_ptr<event::Event> env = queue.events.front();
         ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
                                 ImGuiCond_Always, ImVec2(0.5f, 0.5f));
         ImGui::Begin(env->title.c_str(), NULL,
@@ -80,6 +83,7 @@ void cqsp::client::systems::gui::SysEvent::DoUI(int delta_time) {
     }
 }
 
-void cqsp::client::systems::gui::SysEvent::DoUpdate(int delta_time) {}
+void SysEvent::DoUpdate(int delta_time) {}
 
-void cqsp::client::systems::gui::SysEvent::FireEvent() {}
+void FireEvent() {}
+}  // namespace cqsp::client::systems::gui

@@ -21,7 +21,7 @@
 namespace cqsp::client::systems {
 class SysRecipeViewer : public SysUserInterface {
  public:
-    explicit SysRecipeViewer(cqsp::engine::Application& app) : SysUserInterface(app) {}
+    explicit SysRecipeViewer(engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
     void DoUI(int delta_time);

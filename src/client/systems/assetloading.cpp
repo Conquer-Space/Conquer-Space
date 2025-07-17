@@ -39,16 +39,23 @@
 #include "common/systems/sysuniversegenerator.h"
 #include "engine/asset/assetmanager.h"
 
-namespace {
-void LoadResource(cqsp::asset::AssetManager& asset_manager, cqsp::common::Universe& universe,
+namespace cqsp::client::systems {
+
+namespace loading = common::systems::loading;
+namespace components = common::components;
+using asset::AssetManager;
+using asset::HjsonAsset;
+using common::Universe;
+using loading::HjsonLoader;
+
+void LoadResource(AssetManager& asset_manager, Universe& universe,
                   const std::string& asset_name,
-                  void (*func)(cqsp::common::Universe& universe, Hjson::Value& recipes)) {
-    namespace cqspc = cqsp::common::components;
+                  void (*func)(Universe& universe, Hjson::Value& recipes)) {
     for (const auto& it : asset_manager) {
         if (!it.second->HasAsset(asset_name)) {
             continue;
         }
-        cqsp::asset::HjsonAsset* good_assets = it.second->GetAsset<cqsp::asset::HjsonAsset>(asset_name);
+        HjsonAsset* good_assets = it.second->GetAsset<HjsonAsset>(asset_name);
         try {
             func(universe, good_assets->data);
         } catch (std::runtime_error& error) {
@@ -60,19 +67,17 @@ void LoadResource(cqsp::asset::AssetManager& asset_manager, cqsp::common::Univer
 }
 
 template <class T>
-void LoadResource(cqsp::asset::AssetManager& asset_manager, cqsp::common::Universe& universe,
-                  const std::string& asset_name) {
+void LoadResource(AssetManager& asset_manager, Universe& universe, const std::string& asset_name) {
+                  
     auto start = std::chrono::system_clock::now();
-    using cqsp::common::systems::loading::HjsonLoader;
     static_assert(std::is_base_of_v<HjsonLoader, T>, "Class is not child of");
     std::unique_ptr<HjsonLoader> ptr = std::make_unique<T>(universe);
 
-    namespace cqspc = cqsp::common::components;
     for (const auto& it : asset_manager) {
         if (!it.second->HasAsset(asset_name)) {
             continue;
         }
-        cqsp::asset::HjsonAsset* good_assets = it.second->GetAsset<cqsp::asset::HjsonAsset>(asset_name);
+        HjsonAsset* good_assets = it.second->GetAsset<HjsonAsset>(asset_name);
         try {
             ptr->LoadHjson(good_assets->data);
         } catch (std::runtime_error& error) {
@@ -85,48 +90,46 @@ void LoadResource(cqsp::asset::AssetManager& asset_manager, cqsp::common::Univer
     SPDLOG_INFO("{} load took {} ms", asset_name,
                 std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count());
 }
-}  // namespace
 
-namespace cqsp::client::systems {
-namespace {
-void LoadPlanetProvinces(cqsp::asset::AssetManager& asset_manager, ConquerSpace& conquer_space) {
-    using namespace cqsp::common::systems::loading;  // NOLINT
+
+
+
+void LoadPlanetProvinces(AssetManager& asset_manager, ConquerSpace& conquer_space) {
     auto& universe = conquer_space.GetUniverse();
-    auto view = universe.view<common::components::ProvincedPlanet>();
+    auto view = universe.view<components::ProvincedPlanet>();
 
     for (entt::entity entity : view) {
         // Check if it's empty or not
-        auto& province_map = universe.get<common::components::ProvincedPlanet>(entity);
+        auto& province_map = universe.get<components::ProvincedPlanet>(entity);
         if (!province_map.province_definitions.empty()) {
             asset::TextAsset* asset =
                 asset_manager.GetAsset<asset::TextAsset>(province_map.province_definitions);
             if (asset != nullptr) {
-                LoadProvinces(universe, entity, asset->data);
+                loading::LoadProvinces(universe, entity, asset->data);
             }
         }
     }
 }
-}  // namespace
 
   
-void LoadAllResources(cqsp::asset::AssetManager& asset_manager, ConquerSpace& conquer_space) {
-    using namespace cqsp::common::systems::loading;  // NOLINT
-    LoadResource<GoodLoader>(asset_manager, conquer_space.GetUniverse(), "goods");
-    LoadResource<RecipeLoader>(asset_manager, conquer_space.GetUniverse(), "recipes");
-    LoadResource<PlanetLoader>(asset_manager, conquer_space.GetUniverse(), "planets");
-    LoadResource<TimezoneLoader>(asset_manager, conquer_space.GetUniverse(), "timezones");
-    LoadResource<CountryLoader>(asset_manager, conquer_space.GetUniverse(), "countries");
+void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) {
+    
+    LoadResource<loading::GoodLoader>(asset_manager, conquer_space.GetUniverse(), "goods");
+    LoadResource<loading::RecipeLoader>(asset_manager, conquer_space.GetUniverse(), "recipes");
+    LoadResource<loading::PlanetLoader>(asset_manager, conquer_space.GetUniverse(), "planets");
+    LoadResource<loading::TimezoneLoader>(asset_manager, conquer_space.GetUniverse(), "timezones");
+    LoadResource<loading::CountryLoader>(asset_manager, conquer_space.GetUniverse(), "countries");
   
     LoadPlanetProvinces(asset_manager, conquer_space);
-    LoadResource<CityLoader>(asset_manager, conquer_space.GetUniverse(), "cities");
-    LoadResource<SatelliteLoader>(asset_manager, conquer_space.GetUniverse(), "satellites");
+    LoadResource<loading::CityLoader>(asset_manager, conquer_space.GetUniverse(), "cities");
+    LoadResource<loading::SatelliteLoader>(asset_manager, conquer_space.GetUniverse(), "satellites");
  
-  LoadResource(asset_manager, conquer_space.m_universe, "names", LoadNameLists);
+    LoadResource(asset_manager, conquer_space.m_universe, "names", loading::LoadNameLists);
     LoadResource(asset_manager, conquer_space.m_universe, "tech_fields", common::systems::science::LoadFields);
     LoadResource(asset_manager, conquer_space.m_universe, "tech_list", common::systems::science::LoadTechnologies);
 
     // Initialize planet terrains
-    asset::HjsonAsset* asset = asset_manager.GetAsset<asset::HjsonAsset>("core:terrain_colors");
+    HjsonAsset* asset = asset_manager.GetAsset<HjsonAsset>("core:terrain_colors");
     common::systems::loading::LoadTerrainData(conquer_space.GetUniverse(), asset->data);
 
     // Load scripts

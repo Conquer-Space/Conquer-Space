@@ -21,7 +21,9 @@
 #include "engine/graphics/model.h"
 #include "engine/graphics/primitives/cube.h"
 
-void cqsp::scene::ModelScene::Init() {
+namespace cqsp::client::scene {
+
+void ModelScene::Init() {
     // Load the model and shaders
     model = GetApp().GetAssetManager().GetAsset<asset::Model>("core:iss");
     // Load shader
@@ -29,11 +31,11 @@ void cqsp::scene::ModelScene::Init() {
     shader = GetApp().GetAssetManager().GetAsset<asset::ShaderDefinition>("core:model_shader")->MakeShader();
 }
 
-void cqsp::scene::ModelScene::Update(float deltaTime) {}
+void ModelScene::Update(float deltaTime) {}
 
-void cqsp::scene::ModelScene::Ui(float deltaTime) {}
+void ModelScene::Ui(float deltaTime) {}
 
-void cqsp::scene::ModelScene::Render(float deltaTime) {
+void ModelScene::Render(float deltaTime) {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -69,3 +71,4 @@ void cqsp::scene::ModelScene::Render(float deltaTime) {
         model_mesh->Draw();
     }
 }
+}  // namespace cqsp::client::scene

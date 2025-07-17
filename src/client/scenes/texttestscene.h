@@ -22,14 +22,14 @@
 
 #include "client/scenes/scene.h"
 #include "engine/renderer/framebuffer.h"
-namespace cqsp::scene {
+namespace cqsp::client::scene {
 /// <summary>
 /// Just a playground for various graphics stuff
 /// </summary>
 /// <param name="app"></param>
-class TextTestScene : public cqsp::client::Scene {
+class TextTestScene : public ClientScene {
  public:
-    explicit TextTestScene(cqsp::engine::Application& app) : cqsp::client::Scene(app) {}
+    explicit TextTestScene(engine::Application& app) : client::ClientScene(app) {}
     ~TextTestScene();
 
     void Init();
@@ -38,7 +38,7 @@ class TextTestScene : public cqsp::client::Scene {
     void Render(float deltaTime);
 
  private:
-    cqsp::engine::LayerRenderer renderer;
+    engine::LayerRenderer renderer;
     float font_size = 40.f;
     std::string text = "The quick brown fox jumps over the lazy dog";
     int layer;
@@ -48,4 +48,4 @@ class TextTestScene : public cqsp::client::Scene {
     std::vector<const char*> names;
     float delta_t = 0;
 };
-} // namespace cqsp::scene
+}  // namespace cqsp::client::scene

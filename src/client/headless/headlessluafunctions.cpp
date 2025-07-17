@@ -18,8 +18,8 @@
 
 #include "common/scripting/functionreg.h"
 
-namespace cqsp::headless {
-namespace {
+namespace cqsp::client::headless {
+
 void TickFunctions(HeadlessApplication& application) {
     scripting::ScriptInterface& script_engine = application.GetGame().GetScriptInterface();
     CREATE_NAMESPACE(simulation);
@@ -30,7 +30,6 @@ void TickFunctions(HeadlessApplication& application) {
         }
     });
 }
-}  // namespace
 
 void LoadHeadlessFunctions(HeadlessApplication& application) { TickFunctions(application); }
-}  // namespace cqsp::headless
+}  // namespace cqsp::client::headless

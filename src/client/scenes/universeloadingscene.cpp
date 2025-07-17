@@ -27,14 +27,16 @@
 #include "client/systems/universeloader.h"
 #include "common/systems/sysuniversegenerator.h"
 
-cqsp::scene::UniverseLoadingScene::UniverseLoadingScene(cqsp::engine::Application& app) : cqsp::client::Scene(app) {}
+namespace cqsp::client::scene {
 
-cqsp::scene::UniverseLoadingScene::~UniverseLoadingScene() {
+UniverseLoadingScene::UniverseLoadingScene(engine::Application& app) : ClientScene(app) {}
+
+UniverseLoadingScene::~UniverseLoadingScene() {
     GetApp().CloseDocument("../data/core/gui/screens/universe_loading_screen.rml");
 }
 
-void cqsp::scene::UniverseLoadingScene::Init() {
-    auto loading = [&]() { LoadUniverse(); };
+void UniverseLoadingScene::Init() {
+    auto loading = [&]() { LoadCurrentUniverse(); };
 
     m_completed_loading = false;
     thread = std::make_unique<std::thread>(loading);
@@ -44,27 +46,28 @@ void cqsp::scene::UniverseLoadingScene::Init() {
     }
 }
 
-void cqsp::scene::UniverseLoadingScene::Update(float deltaTime) {
+void UniverseLoadingScene::Update(float deltaTime) {
     if (m_completed_loading && thread->joinable()) {
         // Switch scene
         thread->join();
-        GetApp().SetScene<cqsp::scene::UniverseScene>();
+        GetApp().SetScene<cqsp::client::scene::UniverseScene>();
     }
 }
 
-void cqsp::scene::UniverseLoadingScene::Ui(float deltaTime) {}
+void UniverseLoadingScene::Ui(float deltaTime) {}
 
-void cqsp::scene::UniverseLoadingScene::Render(float deltaTime) {}
+void UniverseLoadingScene::Render(float deltaTime) {}
 
-void cqsp::scene::UniverseLoadingScene::LoadUniverse() {
-    client::LoadUniverse(GetAssetManager(), *dynamic_cast<cqsp::client::ConquerSpace*>(GetApp().GetGame()));
+void UniverseLoadingScene::LoadCurrentUniverse() {
+    LoadUniverse(GetAssetManager(), *dynamic_cast<ConquerSpace*>(GetApp().GetGame()));
     // Load saves
     if (GetUniverse().ctx().contains<client::ctx::GameLoad>()) {
-        const std::string& load_dir = GetUniverse().ctx().at<client::ctx::GameLoad>().load_dir;
+        const std::string& load_dir = GetUniverse().ctx().at<ctx::GameLoad>().load_dir;
         SPDLOG_INFO("Loading save {}", load_dir);
-        client::save::load_game(GetUniverse(), load_dir);
+        save::load_game(GetUniverse(), load_dir);
     }
 
     SPDLOG_INFO("Done loading the universe, entering game");
     m_completed_loading = true;
 }
+}  // namespace cqsp::client::scene

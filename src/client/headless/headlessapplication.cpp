@@ -27,10 +27,14 @@
 #include "common/util/logging.h"
 #include "common/util/strip.h"
 
-namespace cqsp::headless {
-cqsp::asset::AssetManager& HeadlessApplication::GetAssetManager() { return asset_manager; }
 
-cqsp::client::ConquerSpace& HeadlessApplication::GetGame() { return conquer_space; }
+namespace cqsp::client::headless {
+
+using common::systems::simulation::Simulation;
+
+asset::AssetManager& HeadlessApplication::GetAssetManager() { return asset_manager; }
+
+ConquerSpace& HeadlessApplication::GetGame() { return conquer_space; }
 
 HeadlessApplication::HeadlessApplication() : asset_loader(asset::AssetOptions(false)) {}
 namespace {
@@ -52,8 +56,8 @@ std::vector<std::string> split(const std::string& s, const std::string& delimite
 
 int HeadlessApplication::run() {
     // Load data
-    cqsp::engine::engine_logger = cqsp::common::util::make_logger("app", true);
-    auto g_logger = cqsp::common::util::make_logger("game", true);
+    engine::engine_logger = common::util::make_logger("app", true);
+    auto g_logger = common::util::make_logger("game", true);
     spdlog::set_default_logger(g_logger);
 
     std::cout << "Loading game data...\n";
@@ -109,8 +113,8 @@ int HeadlessApplication::run() {
 */
 void HeadlessApplication::InitSimulationPtr() {
     // I am not happy with this interface
-    simulation = std::make_unique<cqsp::common::systems::simulation::Simulation>(GetGame().GetGame());
+    simulation = std::make_unique<Simulation>(GetGame().GetGame());
 }
 
-cqsp::common::systems::simulation::Simulation& HeadlessApplication::GetSimulation() { return *(simulation.get()); }
-}  // namespace cqsp::headless
+Simulation& HeadlessApplication::GetSimulation() { return *(simulation.get()); }
+}  // namespace cqsp::client::headless

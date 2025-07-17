@@ -29,10 +29,10 @@
 #include "loadgamewindow.h"
 #include "settingswindow.h"
 
-namespace cqsp::scene {
-class MainMenuScene : public cqsp::client::Scene {
+namespace cqsp::client::scene {
+class MainMenuScene : public ClientScene {
  public:
-    explicit MainMenuScene(cqsp::engine::Application& app);
+    explicit MainMenuScene(engine::Application& app);
     ~MainMenuScene();
 
     void Init();
@@ -45,15 +45,15 @@ class MainMenuScene : public cqsp::client::Scene {
 
     Rml::ElementDocument* main_menu;
 
-    client::SettingsWindow settings_window;
-    client::CreditsWindow credits_window;
-    client::LoadGameWindow load_game_window;
+    SettingsWindow settings_window;
+    CreditsWindow credits_window;
+    LoadGameWindow load_game_window;
 
     class EventListener : public Rml::EventListener {
      public:
         EventListener() = default;
         void ProcessEvent(Rml::Event& event);
-        cqsp::engine::Application* app;
+        engine::Application* app;
         MainMenuScene* m_scene;
     } listener;
 
@@ -71,4 +71,4 @@ class MainMenuScene : public cqsp::client::Scene {
     // Change every minute
     const float switch_time = 60;
 };
-}  // namespace cqsp::scene
+}  // namespace cqsp::client::scene

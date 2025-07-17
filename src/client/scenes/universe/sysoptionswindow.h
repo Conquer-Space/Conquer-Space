@@ -19,5 +19,5 @@
 #include "engine/application.h"
 
 namespace cqsp::client::systems {
-void ShowOptionsWindow(bool* open, cqsp::engine::Application& app);
+void ShowOptionsWindow(bool* open, engine::Application& app);
 } // namespace cqsp::client::systems

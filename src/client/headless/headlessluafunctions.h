@@ -20,6 +20,6 @@
 #include "common/scripting/scripting.h"
 #include "common/universe.h"
 
-namespace cqsp::headless {
+namespace cqsp::client::headless {
 void LoadHeadlessFunctions(HeadlessApplication& application);
-}  // namespace cqsp::headless
+}  // namespace cqsp::client::headless

@@ -25,11 +25,11 @@
 #include "client/scenes/scene.h"
 #include "engine/asset/assetloader.h"
 
-namespace cqsp::scene {
+namespace cqsp::client::scene {
 // First loading scene when the game starts
-class LoadingScene : public cqsp::client::Scene {
+class LoadingScene : public ClientScene {
  public:
-    explicit LoadingScene(cqsp::engine::Application& app);
+    explicit LoadingScene(engine::Application& app);
     ~LoadingScene();
 
     void Init();
@@ -51,7 +51,7 @@ class LoadingScene : public cqsp::client::Scene {
 
     std::atomic<float> percentage;
 
-    cqsp::asset::AssetLoader assetLoader;
+    asset::AssetLoader assetLoader;
 
     Rml::ElementDocument* document;
 
@@ -65,4 +65,4 @@ class LoadingScene : public cqsp::client::Scene {
 
     Rml::DataModelHandle model_handle;
 };
-} // namespace cqsp::scene
+}  // namespace cqsp::client::scene

@@ -25,7 +25,7 @@ namespace cqsp::client::systems {
 /// </summary>
 class SysPauseMenu : public SysUserInterface {
  public:
-    explicit SysPauseMenu(cqsp::engine::Application& app) : SysUserInterface(app) {}
+    explicit SysPauseMenu(engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
     void DoUI(int delta_time);

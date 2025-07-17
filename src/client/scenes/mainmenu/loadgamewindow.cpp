@@ -22,9 +22,11 @@
 #include "common/util/paths.h"
 #include "common/util/uuid.h"
 
-cqsp::client::LoadGameWindow::LoadGameWindow(cqsp::engine::Application& app) : app(app) { InitializeDataModel(); }
+namespace cqsp::client {
 
-void cqsp::client::LoadGameWindow::ProcessEvent(Rml::Event& event) {
+LoadGameWindow::LoadGameWindow(engine::Application& app) : app(app) { InitializeDataModel(); }
+
+void LoadGameWindow::ProcessEvent(Rml::Event& event) {
     if (event.GetId() == Rml::EventId::Keydown) {
         Rml::Input::KeyIdentifier key_identifier =
             (Rml::Input::KeyIdentifier)event.GetParameter<int>("key_identifier", 0);
@@ -34,19 +36,19 @@ void cqsp::client::LoadGameWindow::ProcessEvent(Rml::Event& event) {
     }
 }
 
-void cqsp::client::LoadGameWindow::AddEventListeners() {
+void LoadGameWindow::AddEventListeners() {
     options_menu->AddEventListener(Rml::EventId::Click, this);
     options_menu->AddEventListener(Rml::EventId::Keydown, this);
     options_menu->AddEventListener(Rml::EventId::Submit, this);
 }
 
-void cqsp::client::LoadGameWindow::RemoveEventListeners() {
+void LoadGameWindow::RemoveEventListeners() {
     options_menu->RemoveEventListener(Rml::EventId::Click, this);
     options_menu->RemoveEventListener(Rml::EventId::Keydown, this);
     options_menu->RemoveEventListener(Rml::EventId::Submit, this);
 }
 
-void cqsp::client::LoadGameWindow::InitializeDataModel() {
+void LoadGameWindow::InitializeDataModel() {
     // Load saves
     // List the files in the save directory
     std::filesystem::path save_path = common::util::GetCqspSavePath();
@@ -97,7 +99,7 @@ void cqsp::client::LoadGameWindow::InitializeDataModel() {
         });
 }
 
-void cqsp::client::LoadGameWindow::Show() {
+void LoadGameWindow::Show() {
     options_menu->Show();
     options_menu->PullToFront();
     options_menu->Focus();
@@ -105,32 +107,34 @@ void cqsp::client::LoadGameWindow::Show() {
     options_menu->RemoveProperty("display");
 }
 
-bool cqsp::client::LoadGameWindow::Update() { return to_load; }
+bool LoadGameWindow::Update() { return to_load; }
 
-void cqsp::client::LoadGameWindow::Hide() { options_menu->SetProperty("display", "none"); }
+void LoadGameWindow::Hide() { options_menu->SetProperty("display", "none"); }
 
-void cqsp::client::LoadGameWindow::Close() {
+void LoadGameWindow::Close() {
     options_menu->RemoveEventListener(Rml::EventId::Click, this);
     options_menu->RemoveEventListener(Rml::EventId::Keydown, this);
     options_menu->RemoveEventListener(Rml::EventId::Submit, this);
     options_menu->Close();
 }
 
-void cqsp::client::LoadGameWindow::LoadDocument() {
+void LoadGameWindow::LoadDocument() {
     options_menu = GetApp().LoadDocument(document_name);
     AddEventListeners();
     options_menu->PushToBack();
 }
 
-void cqsp::client::LoadGameWindow::ReloadDocument() {
+void LoadGameWindow::ReloadDocument() {
     options_menu = GetApp().ReloadDocument(document_name);
     AddEventListeners();
 }
 
-float cqsp::client::LoadGameWindow::GetOpacity() { return 0.0f; }
+float LoadGameWindow::GetOpacity() { return 0.0f; }
 
-void cqsp::client::LoadGameWindow::PushToBack() {}
+void LoadGameWindow::PushToBack() {}
 
-void cqsp::client::LoadGameWindow::GetAllGames() {}
+void LoadGameWindow::GetAllGames() {}
 
-std::string cqsp::client::LoadGameWindow::GetSaveDir() { return load_path; }
+std::string LoadGameWindow::GetSaveDir() { return load_path; }
+
+}  // namespace cqsp::client

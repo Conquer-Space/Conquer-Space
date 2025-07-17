@@ -18,6 +18,6 @@
 
 #include "client/headless/headlessapplication.h"
 
-namespace cqsp::headless {
+namespace cqsp::client::headless {
 int generate(HeadlessApplication& application);
-}  // namespace cqsp::headless
+}  // namespace cqsp::client::headless

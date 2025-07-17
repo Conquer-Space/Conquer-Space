@@ -23,7 +23,7 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
 
 class ImGuiInterface : public SysUserInterface {
  public:
-    explicit ImGuiInterface(cqsp::engine::Application& app) : SysUserInterface(app) {}
+    explicit ImGuiInterface(engine::Application& app) : SysUserInterface(app) {}
     void Init();
     void DoUI(int delta_time);
     void DoUpdate(int delta_time);

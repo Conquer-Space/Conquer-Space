@@ -32,10 +32,10 @@
 #include "engine/renderer/renderer.h"
 #include "engine/renderer/renderer2d.h"
 
-namespace cqsp::scene {
-class UniverseScene : public cqsp::client::Scene {
+namespace cqsp::client::scene {
+class UniverseScene : public ClientScene {
  public:
-    explicit UniverseScene(cqsp::engine::Application& app);
+    explicit UniverseScene(engine::Application& app);
     ~UniverseScene() {
         // Delete ui
         simulation.reset();
@@ -73,10 +73,10 @@ class UniverseScene : public cqsp::client::Scene {
     /// </summary>
     void DoScreenshot();
 
-    cqsp::engine::Renderable sphere;
-    cqsp::engine::Renderable sky;
-    cqsp::engine::Renderable planetDisp;
-    cqsp::engine::Renderable sun;
+    engine::Renderable sphere;
+    engine::Renderable sky;
+    engine::Renderable planetDisp;
+    engine::Renderable sun;
 
     float x = 0, y = 0;
 
@@ -106,9 +106,9 @@ class UniverseScene : public cqsp::client::Scene {
     bool interp = true;
 };
 
-void SeePlanet(cqsp::common::Universe& universe, entt::entity ent);
-entt::entity GetCurrentViewingPlanet(cqsp::common::Universe&);
+void SeePlanet(common::Universe& universe, entt::entity ent);
+entt::entity GetCurrentViewingPlanet(common::Universe&);
 // Halts all other things
 void SetGameHalted(bool b);
 bool IsGameHalted();
-} // namespace cqsp::scene
+}  // namespace cqsp::client::scene

@@ -32,7 +32,7 @@
 namespace cqsp::client::systems {
 class SysDebugMenu : public SysUserInterface {
  public:
-    explicit SysDebugMenu(cqsp::engine::Application &app);
+    explicit SysDebugMenu(engine::Application &app);
 
     void Init();
     void DoUI(int delta_time);

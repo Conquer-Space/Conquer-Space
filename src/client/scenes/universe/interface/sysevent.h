@@ -22,7 +22,7 @@
 namespace cqsp::client::systems::gui {
 class SysEvent : public SysUserInterface {
  public:
-    explicit SysEvent(cqsp::engine::Application& app) : SysUserInterface(app) {}
+    explicit SysEvent(engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
     void DoUI(int delta_time);
