@@ -954,12 +954,11 @@ void SysStarSystemRenderer::CheckResourceDistRender() {
     }
 
     // Check if it's the same
-    using components::ResourceDistribution;
-    if (!m_universe.any_of<ResourceDistribution>(m_viewing_entity)) {
+    if (!m_universe.any_of<components::ResourceDistribution>(m_viewing_entity)) {
         return;
     }
 
-    auto& dist = m_universe.get<ResourceDistribution>(m_viewing_entity);
+    auto& dist = m_universe.get<components::ResourceDistribution>(m_viewing_entity);
     TerrainImageGenerator gen;
     gen.terrain.seed = dist.dist[rend.resource];
     gen.GenerateHeightMap(3, 9);
