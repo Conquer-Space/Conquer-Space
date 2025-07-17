@@ -23,7 +23,7 @@
 #include "common/systems/loading/loadutil.h"
 
 namespace cqsp::common::systems::science {
-//TODO move to loading namespace
+//TODO(AGM) move to loading namespace
 void LoadTechnologies(Universe& universe, Hjson::Value& value) {
     // Load the technologies
     Hjson::Value base;
