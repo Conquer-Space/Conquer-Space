@@ -30,9 +30,8 @@
 #include "entt/entt.hpp"
 #include "glm/glm.hpp"
 
-namespace cqsp {
-namespace client {
-namespace systems {
+namespace cqsp::client::systems {
+
 // TODO(EhWhoAmI): Would be helpful to move the following structs to a header file.
 struct MouseOverEntity {};
 
@@ -48,7 +47,7 @@ struct CityFounding {};
  */
 class SysStarSystemRenderer {
  public:
-    SysStarSystemRenderer(cqsp::common::Universe &, cqsp::engine::Application &);
+    SysStarSystemRenderer(common::Universe &, engine::Application &);
     void Initialize();
     void OnTick();
     void Render(float deltaTime);
@@ -92,21 +91,27 @@ class SysStarSystemRenderer {
     entt::entity m_viewing_entity = entt::null;
     entt::entity terrain_displaying = entt::null;
 
-    cqsp::common::Universe &m_universe;
-    cqsp::engine::Application &m_app;
+    common::Universe &m_universe;
+    engine::Application &m_app;
 
-    cqsp::engine::Renderable planet;
-    cqsp::engine::Renderable textured_planet;
-    cqsp::engine::Renderable sky;
-    cqsp::engine::Renderable planet_circle;
-    cqsp::engine::Renderable ship_overlay;
-    cqsp::engine::Renderable city;
-    cqsp::engine::Renderable sun;
+    engine::Renderable planet;
+    engine::Renderable textured_planet;
+    engine::Renderable sky;
+    engine::Renderable planet_circle;
+    engine::Renderable ship_overlay;
+    engine::Renderable city;
+    engine::Renderable sun;
 
-    cqsp::asset::ShaderProgram_t model_shader;
-    cqsp::asset::ShaderProgram_t orbit_shader;
-    cqsp::asset::ShaderProgram_t near_shader;
-    cqsp::asset::ShaderProgram_t vis_shader;
+    asset::ShaderProgram_t model_shader;
+    asset::ShaderProgram_t orbit_shader;
+    asset::ShaderProgram_t near_shader;
+    asset::ShaderProgram_t vis_shader;
+    asset::ShaderProgram_t circle_shader;
+    asset::ShaderProgram_t planet_shader;
+    asset::ShaderProgram_t textured_planet_shader;
+    asset::ShaderProgram_t sun_shader;
+    asset::ShaderProgram_t skybox_shader;
+    asset::ShaderProgram_t buffer_shader;
 #if FALSE
     // Disabled for now
     asset::ShaderProgram_t no_light_shader;
@@ -146,6 +151,8 @@ class SysStarSystemRenderer {
     bool CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos);
     void CalculateCityPositions();
     void CalculateScroll();
+
+    asset::ShaderProgram_t ConstructShader(const std::string &key);
 
     void LoadPlanetTextures();
     void InitializeFramebuffers();
@@ -253,6 +260,4 @@ class SysStarSystemRenderer {
 
     bool have_province = false;
 };
-}  // namespace systems
-}  // namespace client
-}  // namespace cqsp
+}  // namespace cqsp::client::systems
