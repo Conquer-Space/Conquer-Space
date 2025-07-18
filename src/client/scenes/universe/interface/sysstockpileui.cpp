@@ -31,8 +31,7 @@ using common::components::Identifier;
 using common::components::ResourceLedger;
 using util::LongToHumanString;
 
-bool DrawLedgerTable(const std::string &name, const Universe &universe,
-                                            const ResourceLedger &ledger) {
+bool DrawLedgerTable(const std::string &name, const Universe &universe, const ResourceLedger &ledger) {
     if (ledger.empty()) {
         ImGui::Text("Empty ledger");
         return false;

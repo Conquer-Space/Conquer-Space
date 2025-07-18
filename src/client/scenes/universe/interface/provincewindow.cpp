@@ -424,7 +424,7 @@ void SysProvinceInformation::LaunchTab() {
         orb.w = arg_of_perapsis;
         orb.LAN = LAN;
         orb.epoch = GetUniverse().date.ToSecond();
-        cqsp::common::systems::actions::LaunchShip(GetUniverse(), orb);
+        common::systems::actions::LaunchShip(GetUniverse(), orb);
     }
     double periapsis = semi_major_axis * (1 - eccentricity);
     if (GetUniverse().get<components::bodies::Body>(city_coord.planet).radius > periapsis) {

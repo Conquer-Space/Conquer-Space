@@ -34,8 +34,7 @@ ObjectEditorScene::~ObjectEditorScene() = default;
 
 void ObjectEditorScene::Init() {
     // Sorta need to initialize everything
-    systems::LoadAllResources(GetApp().GetAssetManager(),
-                                      *dynamic_cast<client::ConquerSpace*>(GetApp().GetGame()));
+    systems::LoadAllResources(GetApp().GetAssetManager(), *dynamic_cast<client::ConquerSpace*>(GetApp().GetGame()));
 }
 
 void ObjectEditorScene::Update(float deltaTime) {}

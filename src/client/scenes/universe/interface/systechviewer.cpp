@@ -25,7 +25,6 @@
 
 namespace cqsp::client::systems {
 
-
 namespace components = common::components;
 using components::science::TechnologicalProgress;
 using components::science::ScientificResearch;
