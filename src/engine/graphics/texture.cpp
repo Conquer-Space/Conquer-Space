@@ -23,7 +23,8 @@
 #include <glad/glad.h>
 #include <stb_image_write.h>
 
-unsigned int cqsp::asset::CreateTexture(unsigned char* data, int width, int height, int components,
+namespace cqsp::asset {
+unsigned int CreateTexture(unsigned char* data, int width, int height, int components,
                                         const TextureLoadingOptions& options) {
     unsigned int texid;
     glGenTextures(1, &texid);
@@ -53,7 +54,7 @@ unsigned int cqsp::asset::CreateTexture(unsigned char* data, int width, int heig
     return texid;
 }
 
-void cqsp::asset::CreateTexture(Texture& texture, unsigned char* data, int width, int height, int components,
+void CreateTexture(Texture& texture, unsigned char* data, int width, int height, int components,
                                 const TextureLoadingOptions& options) {
     texture.id = CreateTexture(data, width, height, components, options);
     texture.width = width;
@@ -61,7 +62,7 @@ void cqsp::asset::CreateTexture(Texture& texture, unsigned char* data, int width
     texture.texture_type = GL_TEXTURE_2D;
 }
 
-void cqsp::asset::LoadCubemapData(Texture& texture, std::vector<unsigned char*>& faces, int width, int height,
+void LoadCubemapData(Texture& texture, std::vector<unsigned char*>& faces, int width, int height,
                                   int components, TextureLoadingOptions& options) {
     glGenTextures(1, &texture.id);
     glBindTexture(GL_TEXTURE_CUBE_MAP, texture.id);
@@ -95,7 +96,7 @@ void cqsp::asset::LoadCubemapData(Texture& texture, std::vector<unsigned char*>&
     texture.texture_type = GL_TEXTURE_CUBE_MAP;
 }
 
-bool cqsp::asset::SaveImage(const char* path, int width, int height, int components, const unsigned char* data,
+bool SaveImage(const char* path, int width, int height, int components, const unsigned char* data,
                             bool flip) {
     if (flip) {
         // Flip because everybody can't agree on having one origin for the window.
@@ -104,12 +105,13 @@ bool cqsp::asset::SaveImage(const char* path, int width, int height, int compone
     return stbi_write_png(path, width, height, components, data, width * components) != 0;
 }
 
-cqsp::asset::Texture::Texture() : width(-1), height(-1), id(0), texture_type(-1) {}
+Texture::Texture() : width(-1), height(-1), id(0), texture_type(-1) {}
 
-cqsp::asset::Texture::~Texture() {
+Texture::~Texture() {
     // Delete textures
     // If it's a null texture, then no need to destroy it
     if (texture_type != -1) {
         glDeleteTextures(1, &id);
     }
 }
+}  // namespace cqsp::asset

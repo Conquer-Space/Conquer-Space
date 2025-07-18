@@ -18,16 +18,18 @@
 
 #include "engine/gui.h"
 
-cqsp::engine::Scene::Scene(Application& app) : m_application(&app) {}
+namespace cqsp::engine {
+Scene::Scene(Application& app) : m_application(&app) {}
 
-cqsp::asset::AssetManager& cqsp::engine::Scene::GetAssetManager() { return GetApp().GetAssetManager(); }
+asset::AssetManager& Scene::GetAssetManager() { return GetApp().GetAssetManager(); }
 
-cqsp::engine::EmptyScene::EmptyScene(Application& app) : Scene(app) {}
+EmptyScene::EmptyScene(Application& app) : Scene(app) {}
 
-void cqsp::engine ::EmptyScene::Init() {}
+void EmptyScene::Init() {}
 
-void cqsp::engine::EmptyScene::Update(float deltaTime) {}
+void EmptyScene::Update(float deltaTime) {}
 
-void cqsp::engine::EmptyScene::Ui(float deltaTime) {}
+void EmptyScene::Ui(float deltaTime) {}
 
-void cqsp::engine::EmptyScene::Render(float deltaTime) {}
+void EmptyScene::Render(float deltaTime) {}
+}  // namespace cqsp::engine

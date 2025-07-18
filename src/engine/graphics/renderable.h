@@ -29,7 +29,7 @@ class Renderable {
     Mesh_t mesh;
     glm::mat4 model;
 
-    cqsp::asset::ShaderProgram_t shaderProgram;
+    asset::ShaderProgram_t shaderProgram;
     std::vector<asset::Texture*> textures;
 
     void SetTexture(const std::string& name, int id, asset::Texture* texture);

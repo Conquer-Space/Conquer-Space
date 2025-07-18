@@ -21,8 +21,9 @@
 #include <numbers>
 #include <vector>
 
-cqsp::engine::Mesh_t cqsp::engine::primitive::ConstructSphereMesh(int x_segments, int y_segments) {
-    cqsp::engine::Mesh_t mesh = engine::MakeMesh();
+namespace cqsp::engine::primitive {
+Mesh_t ConstructSphereMesh(int x_segments, int y_segments) {
+    Mesh_t mesh = engine::MakeMesh();
     GLuint vao = 0;
     glGenVertexArrays(1, &vao);
 
@@ -119,3 +120,4 @@ cqsp::engine::Mesh_t cqsp::engine::primitive::ConstructSphereMesh(int x_segments
     mesh->indicies = indices.size();
     return mesh;
 }
+}  // namespace cqsp::engine::primitive

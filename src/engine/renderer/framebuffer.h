@@ -39,9 +39,9 @@ class IFramebuffer {
     virtual void Free() = 0;
     virtual void NewFrame(const Window& window) = 0;
 
-    virtual cqsp::engine::Mesh& GetMeshOutput() = 0;
-    virtual void SetMesh(cqsp::engine::Mesh_t) = 0;
-    virtual void SetShader(cqsp::asset::ShaderProgram_t shader) = 0;
+    virtual Mesh& GetMeshOutput() = 0;
+    virtual void SetMesh(Mesh_t) = 0;
+    virtual void SetShader(asset::ShaderProgram_t shader) = 0;
 };
 
 class FramebufferRenderer : public IFramebuffer {
@@ -56,16 +56,16 @@ class FramebufferRenderer : public IFramebuffer {
     void RenderBuffer() override;
     void Free() override;
     void NewFrame(const Window& window) override;
-    void SetMesh(cqsp::engine::Mesh_t mesh) override { mesh_output = mesh; }
-    cqsp::engine::Mesh& GetMeshOutput() override { return *mesh_output; }
-    void SetShader(cqsp::asset::ShaderProgram_t shader) override { buffer_shader = shader; }
+    void SetMesh(Mesh_t mesh) override { mesh_output = mesh; }
+    Mesh& GetMeshOutput() override { return *mesh_output; }
+    void SetShader(asset::ShaderProgram_t shader) override { buffer_shader = shader; }
     void FreeBuffer();
 
  private:
     unsigned int framebuffer;
     unsigned int colorbuffer;
-    cqsp::asset::ShaderProgram_t buffer_shader;
-    cqsp::engine::Mesh_t mesh_output;
+    asset::ShaderProgram_t buffer_shader;
+    engine::Mesh_t mesh_output;
 };
 
 class AAFrameBufferRenderer : public IFramebuffer {
@@ -82,9 +82,9 @@ class AAFrameBufferRenderer : public IFramebuffer {
     void NewFrame(const Window& window) override;
     void FreeBuffer();
 
-    cqsp::engine::Mesh& GetMeshOutput() override { return *mesh_output; }
-    void SetMesh(cqsp::engine::Mesh_t mesh) override { mesh_output = mesh; }
-    void SetShader(cqsp::asset::ShaderProgram_t shader) override { buffer_shader = shader; }
+    engine::Mesh& GetMeshOutput() override { return *mesh_output; }
+    void SetMesh(engine::Mesh_t mesh) override { mesh_output = mesh; }
+    void SetShader(asset::ShaderProgram_t shader) override { buffer_shader = shader; }
 
  private:
     int width;
@@ -94,8 +94,8 @@ class AAFrameBufferRenderer : public IFramebuffer {
     unsigned int intermediateFBO;
     unsigned int screenTexture;
     unsigned int mscat;
-    cqsp::asset::ShaderProgram_t buffer_shader;
-    cqsp::engine::Mesh_t mesh_output;
+    asset::ShaderProgram_t buffer_shader;
+    Mesh_t mesh_output;
 };
 
 /// <summary>

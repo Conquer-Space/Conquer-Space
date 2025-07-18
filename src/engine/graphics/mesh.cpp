@@ -18,15 +18,16 @@
 
 #include <glad/glad.h>
 
-cqsp::engine::Mesh::Mesh() { mode = GL_TRIANGLES; }
+namespace cqsp::engine {
+Mesh::Mesh() { mode = GL_TRIANGLES; }
 
-cqsp::engine::Mesh::~Mesh() {
+Mesh::~Mesh() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
 }
 
-void cqsp::engine::Mesh::Draw() {
+void Mesh::Draw() {
     glBindVertexArray(VAO);
 
     // There is probably a more elegant way to do this, but for now, just differentiating between
@@ -43,8 +44,9 @@ void cqsp::engine::Mesh::Draw() {
     glBindVertexArray(0);
 }
 
-void cqsp::engine::Mesh::Destroy(Mesh& mesh) {
+void Mesh::Destroy(Mesh& mesh) {
     glDeleteVertexArrays(1, &mesh.VAO);
     glDeleteBuffers(1, &mesh.VBO);
     glDeleteBuffers(1, &mesh.EBO);
 }
+}  // namespace cqsp::engine

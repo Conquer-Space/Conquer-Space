@@ -24,10 +24,10 @@
 
 #include <tracy/Tracy.hpp>
 
-cqsp::asset::NativeFileSystem::NativeFileSystem(std::string _root) : root(std::move(_root)) {}
+namespace cqsp::asset {
+NativeFileSystem::NativeFileSystem(std::string _root) : root(std::move(_root)) {}
 
-std::shared_ptr<cqsp::asset::IVirtualFile> cqsp::asset::NativeFileSystem::Open(const std::string& file_path,
-                                                                               FileModes modes) {
+std::shared_ptr<IVirtualFile> NativeFileSystem::Open(const std::string& file_path, FileModes modes) {
     std::string file_pos = file_path;
     // Remove initial '/' if it has it, or std::filesystem goes crazy and thinks that it's
     // at the root directory of the drive, not the root directory of the filesystem
@@ -59,13 +59,13 @@ std::shared_ptr<cqsp::asset::IVirtualFile> cqsp::asset::NativeFileSystem::Open(c
     }
 }
 
-void cqsp::asset::NativeFileSystem::Close(std::shared_ptr<IVirtualFile>& vf) {
+void NativeFileSystem::Close(std::shared_ptr<IVirtualFile>& vf) {
     // Cast the pointer
     NativeFile* f = dynamic_cast<NativeFile*>(vf.get());
     f->file.close();
 }
 
-std::shared_ptr<cqsp::asset::IVirtualDirectory> cqsp::asset::NativeFileSystem::OpenDirectory(const std::string& dir) {
+std::shared_ptr<IVirtualDirectory> NativeFileSystem::OpenDirectory(const std::string& dir) {
     // get the directory
     std::string path = std::filesystem::absolute(std::filesystem::path(root) / dir).string();
     if (!std::filesystem::is_directory(path)) {
@@ -94,29 +94,29 @@ std::shared_ptr<cqsp::asset::IVirtualDirectory> cqsp::asset::NativeFileSystem::O
     return native_dir;
 }
 
-bool cqsp::asset::NativeFileSystem::IsFile(const std::string& path) {
+bool NativeFileSystem::IsFile(const std::string& path) {
     return std::filesystem::is_regular_file(std::filesystem::path(root) / path);
 }
 
-bool cqsp::asset::NativeFileSystem::IsDirectory(const std::string& path) {
+bool NativeFileSystem::IsDirectory(const std::string& path) {
     return std::filesystem::is_directory(std::filesystem::path(root) / path);
 }
 
-bool cqsp::asset::NativeFileSystem::Exists(const std::string& path) {
+bool NativeFileSystem::Exists(const std::string& path) {
     return std::filesystem::exists(std::filesystem::path(root) / path);
 }
 
-const std::string& cqsp::asset::NativeFile::Path() { return path; }
+const std::string& NativeFile::Path() { return path; }
 
-uint64_t cqsp::asset::NativeFile::Size() { return size; }
+uint64_t NativeFile::Size() { return size; }
 
-void cqsp::asset::NativeFile::Read(uint8_t* buffer, int num_bytes) {
+void NativeFile::Read(uint8_t* buffer, int num_bytes) {
     // Text mode is mildly screwed up, because of carrige return on windows.
     // Flawfinder: ignore
     file.read(reinterpret_cast<char*>(buffer), static_cast<std::streamsize>(num_bytes));
 }
 
-bool cqsp::asset::NativeFile::Seek(long offset, Offset origin) {
+bool NativeFile::Seek(long offset, Offset origin) {
     std::ios_base::seekdir seek;
     switch (origin) {
         case Offset::Beg:
@@ -133,18 +133,19 @@ bool cqsp::asset::NativeFile::Seek(long offset, Offset origin) {
     return true;
 }
 
-uint64_t cqsp::asset::NativeFile::Tell() { return file.tellg(); }
+uint64_t NativeFile::Tell() { return file.tellg(); }
 
-uint64_t cqsp::asset::NativeDirectory::GetSize() { return paths.size(); }
+uint64_t NativeDirectory::GetSize() { return paths.size(); }
 
-const std::string& cqsp::asset::NativeDirectory::GetRoot() { return root; }
+const std::string& NativeDirectory::GetRoot() { return root; }
 
-std::shared_ptr<cqsp::asset::IVirtualFile> cqsp::asset::NativeDirectory::GetFile(int index, FileModes modes) {
+std::shared_ptr<IVirtualFile> NativeDirectory::GetFile(int index, FileModes modes) {
     // Get the file
     std::string path = (std::string(root) + "/" + paths[index]);
     return nfs->Open(path, modes);
 }
 
-const std::string& cqsp::asset::NativeDirectory::GetFilename(int index) { return paths[index]; }
+const std::string& NativeDirectory::GetFilename(int index) { return paths[index]; }
 
-cqsp::asset::IVirtualFileSystem* cqsp::asset::NativeDirectory::GetFileSystem() { return nfs; }
+IVirtualFileSystem* NativeDirectory::GetFileSystem() { return nfs; }
+}  // namespace cqsp::asset
