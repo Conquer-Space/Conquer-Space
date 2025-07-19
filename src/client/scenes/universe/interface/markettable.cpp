@@ -41,7 +41,7 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
     ImGui::TextFmt("Has {} entities attached to it", market.participants.size());
 
     // Get resource stockpile
-    if (!ImGui::BeginTable("marketinfotable", 11, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+    if (!ImGui::BeginTable("marketinfotable", 9, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         return;
     }
     ImGui::TableSetupColumn("Good");
@@ -49,14 +49,10 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
     ImGui::TableSetupColumn("Supply");
     ImGui::TableSetupColumn("Demand");
     ImGui::TableSetupColumn("S/D ratio");
-
     ImGui::TableSetupColumn("Production");
-    ImGui::TableSetupColumn("Imports");
-    ImGui::TableSetupColumn("Exports");
-
-    ImGui::TableSetupColumn("D/S ratio");
-    ImGui::TableSetupColumn("Latent Demand");
-    ImGui::TableSetupColumn("Input Ratio");
+    ImGui::TableSetupColumn("Consumption");
+    ImGui::TableSetupColumn("Trade");
+    ImGui::TableSetupColumn("Trade Delta");
 
     ImGui::TableHeadersRow();
     auto goodsview = universe.view<cqspc::Price>();
@@ -73,9 +69,9 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
         // Mark the cell as red if the thing is not valid
         ImGui::TextFmt("{}", market.price[good_entity]);
         ImGui::TableSetColumnIndex(2);
-        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.previous_supply()[good_entity]));
+        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.supply()[good_entity]));
         ImGui::TableSetColumnIndex(3);
-        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.previous_demand()[good_entity]));
+        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.demand()[good_entity]));
         ImGui::TableSetColumnIndex(4);
         double sd_ratio = market.sd_ratio[good_entity];
         if (sd_ratio == std::numeric_limits<double>::infinity()) {
@@ -84,17 +80,13 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
             ImGui::TextFmt("{}", sd_ratio);
         }
         ImGui::TableSetColumnIndex(5);
-        ImGui::TextFmt("{}", 0);
-        ImGui::TableSetColumnIndex(6);
-        ImGui::TextFmt("{}", 0.0);
-        ImGui::TableSetColumnIndex(7);
         ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.production[good_entity]));
-        ImGui::TableSetColumnIndex(8);
+        ImGui::TableSetColumnIndex(6);
         ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.consumption[good_entity]));
-        ImGui::TableSetColumnIndex(9);
+        ImGui::TableSetColumnIndex(7);
         ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.trade[good_entity]));
-        ImGui::TableSetColumnIndex(10);
-        ImGui::TextFmt("{}", 0);
+        ImGui::TableSetColumnIndex(8);
+        ImGui::TextFmt("{}", (market.delta[good_entity]));
     }
     ImGui::EndTable();
 }

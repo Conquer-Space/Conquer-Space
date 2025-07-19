@@ -28,7 +28,6 @@
 namespace cqsp::common::systems {
 void SysMarket::DoSystem() {
     ZoneScoped;
-    // Get all the new and improved (tm) markets
     auto marketview = GetUniverse().view<components::Market>();
     SPDLOG_INFO("Processing {} market(s)", marketview.size());
     TracyPlot("Market Count", (int64_t)marketview.size());
@@ -45,10 +44,10 @@ void SysMarket::DoSystem() {
 
         // Calculate Supply and demand
         // Add combined supply and demand to compute S/D ratio
+        market.supply() = market.production;
+        market.demand() = market.consumption;
         market.supply().AddPositive(market.trade);
         market.demand().AddNegative(market.trade);
-        market.supply() += market.production;
-        market.demand() += market.consumption;
         market.sd_ratio = (market.supply()).SafeDivision(market.demand());
 
         for (entt::entity good_entity : goodsview) {

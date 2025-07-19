@@ -44,7 +44,8 @@ void cqsp::common::systems::SysPlanetaryTrade::DoSystem() {
             // We should ramp up and down imports and exports, and also try to maintain S/D ratios at 1.
             // If it's the initial tick then we just set the values, otherwise we change it by a delta
             if (initial_tick) {
-                market.trade = market.supply_difference;
+                // compute supply difference
+                market.trade = market.supply_difference * -1;
             } else {
                 // Now we want to increase and reduce that export and import amount based off what
                 // We're producing and what's on the market
@@ -70,19 +71,21 @@ void cqsp::common::systems::SysPlanetaryTrade::DoSystem() {
                     entt::entity good = it->first;
                     double planetary_cost = p_market.price[good];
                     double local_cost = market.price[good];
+                    double trade_difference = 1;
                     if (planetary_cost < local_cost) {
                         // We should import more and export less
                         // We should change the value
                         // Let's just decrease proportionally (we can do a different kind of loop)
                         // later
                         // We need to modify by trade
-                        market.trade[good] *= 1. + std::clamp(market.trade[good] * 0.0001, 0., 0.1);
+                        trade_difference = 1. - std::clamp(market.trade[good] * 0.0001, 0., 0.1);
+                        market.trade[good] *= trade_difference;
                     } else if (planetary_cost > local_cost) {
                         // We should export more and import less
-                        market.trade[good] *= 1 - std::clamp(std::fabs(market.trade[good] * 0.0001), 0., 0.1);
-                    } else {
-                        // Now we should keep the same
+                        trade_difference = 1. + std::clamp(std::fabs(market.trade[good] * 0.0001), 0., 0.1);
+                        market.trade[good] *= trade_difference;
                     }
+                    market.delta[good] = trade_difference;
                 }
                 // market.production/market.exports;
 

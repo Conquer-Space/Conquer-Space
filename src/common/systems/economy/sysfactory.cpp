@@ -130,7 +130,7 @@ void ProcessIndustries(Universe& universe, entt::entity entity) {
         // Now what's the goal
         // The more profit we have the less we increase until some level
         // Let's just make it a log level
-        // TODO: This should just be some sort of setting tbh
+        // TODO(EhWhoAmI): This should just be some sort of setting tbh
         float profit_multiplier = 0.001;
         // but if we have close to zero profit, we want to take risks and move in a certain direction.
 

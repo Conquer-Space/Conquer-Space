@@ -61,6 +61,7 @@ struct MarketInformation {
     ResourceLedger chronic_shortages;
 
     ResourceLedger trade;
+    ResourceLedger delta;
 
     ResourceLedger production;
     ResourceLedger consumption;
