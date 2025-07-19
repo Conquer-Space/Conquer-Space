@@ -48,7 +48,8 @@ using asset::HjsonAsset;
 using common::Universe;
 using loading::HjsonLoader;
 
-void LoadResource(AssetManager& asset_manager, Universe& universe,
+
+  void LoadResource(AssetManager& asset_manager, Universe& universe,
                   const std::string& asset_name,
                   void (*func)(Universe& universe, Hjson::Value& recipes)) {
     for (const auto& it : asset_manager) {
@@ -91,9 +92,6 @@ void LoadResource(AssetManager& asset_manager, Universe& universe, const std::st
                 std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count());
 }
 
-
-
-
 void LoadPlanetProvinces(AssetManager& asset_manager, ConquerSpace& conquer_space) {
     auto& universe = conquer_space.GetUniverse();
     auto view = universe.view<components::ProvincedPlanet>();
@@ -102,16 +100,13 @@ void LoadPlanetProvinces(AssetManager& asset_manager, ConquerSpace& conquer_spac
         // Check if it's empty or not
         auto& province_map = universe.get<components::ProvincedPlanet>(entity);
         if (!province_map.province_definitions.empty()) {
-            asset::TextAsset* asset =
-                asset_manager.GetAsset<asset::TextAsset>(province_map.province_definitions);
+            asset::TextAsset* asset = asset_manager.GetAsset<asset::TextAsset>(province_map.province_definitions);
             if (asset != nullptr) {
                 loading::LoadProvinces(universe, entity, asset->data);
             }
         }
     }
 }
-
-  
 void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) {
     
     LoadResource<loading::GoodLoader>(asset_manager, conquer_space.GetUniverse(), "goods");

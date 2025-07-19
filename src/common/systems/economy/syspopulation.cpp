@@ -108,7 +108,7 @@ void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement
             // Add to the cost of price of transport
             cqspc::ResourceConsumption extraconsumption = marginal_propensity_base;
             // Loop through all the things, if there isn't enough resources for a
-            // If the market supply has all of the goods, then they can buy the goods
+            // If the market supply has all of the goods, then they can buy the goods q
             // Get previous market supply
             // the total consumption
             // Add to the cost
@@ -117,14 +117,7 @@ void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement
             extraconsumption *= wallet;        // Distribute wallet amongst goods
             extraconsumption /= market.price;  // Find out how much of each good you can buy
             consumption += extraconsumption;   // Remove purchased goods from the market
-            for (auto& t : consumption) {
-                // Look for in the market, and then if supply is zero, then deny them buying
-                if (market.previous_supply().HasGood(t.first) && market.previous_supply()[t.first] <= 0) {
-                    // Then they cannot buy the goods, and add latent demand
-                    market.latent_demand[t.first] += t.second;
-                    t.second = 0;
-                }
-            }
+
             // Consumption
             // Check if there's enough on the market
             // Add the transport costs, and because they're importing it, we only account this
@@ -136,7 +129,7 @@ void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement
         // TODO(EhWhoAmI): Don't inject cash, take the money from the government
         wallet += segment.population * 50;  // Inject cash
 
-        market.demand() += consumption;
+        market.consumption += consumption;
     }
 }
 }  // namespace

@@ -16,31 +16,10 @@
  */
 #pragma once
 
-#include <random>
-
-#include "common/util/random/random.h"
-
-namespace cqsp::common::util {
-class StdRandom : public IRandom {
+namespace cqsp::client::headless {
+class HeadlessClient {
  public:
-    explicit StdRandom(int _seed) : IRandom(_seed), random_gen(_seed) {}
-
-    int GetRandomInt(int min, int max) {
-        std::uniform_int_distribution<> dist(min, max);
-        return dist(random_gen);
-    }
-
-    int GetRandomNormalInt(double mean, double sd) {
-        std::normal_distribution<> norm {mean, sd};
-        return static_cast<int>(round(norm(random_gen)));
-    }
-
-    double GetRandomNormal(double mean, double sd) {
-        std::normal_distribution<> norm {mean, sd};
-        return norm(random_gen);
-    }
-
- private:
-    std::mt19937 random_gen;
+    void run();
+    // Add more game stuff
 };
-}  // namespace cqsp::common::util
+}  // namespace cqsp::client::headless

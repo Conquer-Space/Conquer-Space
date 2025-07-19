@@ -18,6 +18,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include <algorithm>
+
 #include <tracy/Tracy.hpp>
 
 #include "common/components/area.h"
@@ -54,13 +56,13 @@ void ProcessIndustries(Universe& universe, entt::entity entity) {
         if (!universe.all_of<components::Production>(productionentity)) continue;
         components::Recipe recipe =
             universe.get_or_emplace<components::Recipe>(universe.get<components::Production>(productionentity).recipe);
-        components::IndustrySize& size = universe.get_or_emplace<components::IndustrySize>(productionentity, 1000.0);
+        components::IndustrySize& size = universe.get<components::IndustrySize>(productionentity);
         // Calculate resource consumption
-        components::ResourceLedger capitalinput = recipe.capitalcost * (0.01 * size.size);
-        components::ResourceLedger input = (recipe.input + size.utilization) + capitalinput;
+        components::ResourceLedger capitalinput = recipe.capitalcost * (size.size);
+        components::ResourceLedger input = (recipe.input * size.utilization) + capitalinput;
 
         // Calculate the greatest possible production
-        components::ResourceLedger output;  // * ratio.output;
+        components::ResourceLedger output;
         output[recipe.output.entity] = recipe.output.amount * size.utilization;
 
         // Figure out what's throttling production and maintenance
@@ -77,15 +79,8 @@ void ProcessIndustries(Universe& universe, entt::entity entity) {
         }
         size.utilization = std::clamp(size.utilization, 0., size.size);
 
-        if (limitedinput < 1) {  // If an input good is undersupplied on
-                                 // the market, throttle production
-            input *= limitedinput;
-            output *= limitedinput;
-            // Industry
-        }
-
-        market.demand() += input;
-        market.supply() += output;
+        market.consumption += input;
+        market.production += output;
 
         double output_transport_cost = output.GetSum() * infra_cost;
         double input_transport_cost = input.GetSum() * infra_cost;
@@ -97,21 +92,55 @@ void ProcessIndustries(Universe& universe, entt::entity entity) {
         // Maintenance costs will still have to be upkept, so if
         // there isnt any resources to upkeep the place, then stop
         // the production
-        costs.materialcosts = (recipe.input * size.utilization * market.price).GetSum();
-        costs.revenue = (recipe.output * market.price).GetSum();
-        if (market.sd_ratio[recipe.output.entity] > 1) {
-            costs.revenue /= market.sd_ratio[recipe.output.entity];
-        }
+        costs.materialcosts = (input * market.price).GetSum();
         costs.wages = size.size * recipe.workers * size.wages;
+
+        costs.revenue = (recipe.output * market.price).GetSum();
         costs.profit = costs.revenue - costs.maintenance - costs.materialcosts - costs.wages;
         costs.transport = output_transport_cost + input_transport_cost;
-        double& price = market.price[recipe.output.entity];
-        if (costs.profit > 0) {
-            price += (-0.1 + price * -0.01f);
-        } else {
-            price += (0.2 + price * 0.01f);
-        }
 
+        // Now try to maximize profit
+        // Maximizing profit is a two fold thing
+        // If the S/D ratio is < 1, and the profit is negative, that means that this factory is not supplying enough
+        // This could be either the good that we are producing is not profitable, or the fact that our base costs
+        // are too high.
+
+        // For the former option, we should reduce production because our goods are not making a profit and cut costs
+        // until we can make a profit, either by squeezing out the market. If we're not big enough to change the market
+        // we will just go out of business.
+        // and for the second production, we should increase our production because we just need more production so
+        // that we can get to profitability
+
+        // If S/D ratio is > 1, and we are still making negative profit, we are producing too much, or paying the workers
+        // too much. There are so many knobs that we have to tune, so I'm not sure how we can simplify this into a few
+        // simple knobs (more like one)
+
+        // I think one of the issues that we have is what if all the businesses go out of business at one time, and end
+        // up just killing off the specific market for a good?
+        // Do we need to prop things out
+        // or have a stage where it stays hibernated for a while, and then ramps up production if it can become profitable
+
+        // Right now we should naively modify the price then to maximize profit
+        // Now let's target profit only
+        // If we're making more money, increase utilization, if we're making less money, reduce utilization
+        // We can only reduce and increase production by a certain amount, let's say a maximum of 5%
+
+        // Then the other thing is in that case, it would just have boom and busts
+        // If we make the time that a business dies random, then perhaps we could tune it more
+        // Now what's the goal
+        // The more profit we have the less we increase until some level
+        // Let's just make it a log level
+        // TODO(EhWhoAmI): This should just be some sort of setting tbh
+        float profit_multiplier = 0.001;
+        // but if we have close to zero profit, we want to take risks and move in a certain direction.
+
+        // So we will add a random chance to increase or decrease profit
+        double diff = std::clamp(log(fabs(costs.profit) * profit_multiplier), 0., 0.05);
+        diff += 1 + universe.random->GetRandomNormal(0, 0.075);
+        diff *= (costs.profit < 0) ? -1 : 1;
+        size.utilization = std::clamp(size.utilization * diff, 0.1 * size.size, size.size);
+        // Now diff it by that much
+        // Let the minimum the factory can produce be like 10% of the
         // Pay the workers
         population_wallet += costs.wages;
     }

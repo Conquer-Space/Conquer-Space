@@ -69,7 +69,7 @@ void FunctionRandom(cqsp::common::Universe& universe, cqsp::scripting::ScriptInt
     REGISTER_FUNCTION("random", [&](int low, int high) { return universe.random->GetRandomInt(low, high); });
 
     REGISTER_FUNCTION("random_normal_int",
-                      [&](int mean, int sd) { return universe.random->GetRandomNormal(mean, sd); });
+                      [&](int mean, int sd) { return universe.random->GetRandomNormalInt(mean, sd); });
 }
 
 void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
@@ -410,6 +410,9 @@ sol::table GetMarketTable(cqsp::common::Universe& universe, cqsp::scripting::Scr
         good_table["supply"] = market_component.supply()[good];
         good_table["demand"] = market_component.demand()[good];
         good_table["sd_ratio"] = market_component.sd_ratio[good];
+        good_table["consumption"] = market_component.consumption[good];
+        good_table["production"] = market_component.production[good];
+        good_table["trade"] = market_component.trade[good];
         market_table.set(good, good_table);
         // Now get all the values for goods
     }

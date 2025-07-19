@@ -511,7 +511,7 @@ void Application::SetIcon() { m_window->SetIcon(cqsp::common::util::GetCqspDataP
 bool Application::GlInit() {
     m_window = new GLWindow(this);
     if (!m_window->InitWindow(m_client_options.GetOptions()["window"]["width"],
-                         m_client_options.GetOptions()["window"]["height"])) {
+                              m_client_options.GetOptions()["window"]["height"])) {
         ENGINE_LOG_CRITICAL("Failed to init window!");
         return false;
     }
