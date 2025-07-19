@@ -68,8 +68,8 @@ Mesh_t MakeTexturedPaneMesh() {
     return mesh;
 }
 
-cqsp::engine::Mesh_t cqsp::engine::primitive::MakeTexturedPaneMesh(bool mirrored) {
-    cqsp::engine::Mesh_t mesh = engine::MakeMesh();
+Mesh_t MakeTexturedPaneMesh(bool mirrored) {
+    Mesh_t mesh = MakeMesh();
 
     float vertices[] = {
         // positions // texture coords
