@@ -40,18 +40,20 @@
 
 #define LOADING_ID "core/gui/screens/loading_screen.rml"
 
-cqsp::scene::LoadingScene::LoadingScene(cqsp::engine::Application& app) : Scene(app) {
+namespace cqsp::client::scene {
+
+LoadingScene::LoadingScene(engine::Application& app) : ClientScene(app) {
     m_done_loading = false;
     percentage = 0;
 }
 
-cqsp::scene::LoadingScene::~LoadingScene() {
+LoadingScene::~LoadingScene() {
     if (thread != nullptr && thread->joinable()) {
         thread->join();
     }
 }
 
-void cqsp::scene::LoadingScene::Init() {
+void LoadingScene::Init() {
     auto loading = [&]() {
         SPDLOG_INFO("Loading resources");
         LoadResources();
@@ -73,7 +75,7 @@ void cqsp::scene::LoadingScene::Init() {
     }
 }
 
-void cqsp::scene::LoadingScene::Update(float deltaTime) {
+void LoadingScene::Update(float deltaTime) {
     while (assetLoader.QueueHasItems()) {
         assetLoader.BuildNextAsset();
     }
@@ -82,9 +84,9 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
         LoadFont();
 
         // Load audio
-        auto hjson = GetAssetManager().GetAsset<cqsp::asset::HjsonAsset>("core:ui_sounds");
+        auto hjson = GetAssetManager().GetAsset<asset::HjsonAsset>("core:ui_sounds");
         for (const auto& element : hjson->data) {
-            auto audio_asset = GetAssetManager().GetAsset<cqsp::asset::AudioAsset>(element.second.to_string());
+            auto audio_asset = GetAssetManager().GetAsset<asset::AudioAsset>(element.second.to_string());
             if (audio_asset == nullptr) {
                 SPDLOG_WARN("Cannot find audio asset {}", element.second.to_string());
                 continue;
@@ -99,21 +101,21 @@ void cqsp::scene::LoadingScene::Update(float deltaTime) {
         // Set main menu scene
         if (GetApp().HasCmdLineArgs("-i")) {
             SPDLOG_INFO("Loading universe scene, skipping the main menu scene");
-            GetApp().SetScene<cqsp::scene::UniverseLoadingScene>();
+            GetApp().SetScene<UniverseLoadingScene>();
         } else if (GetApp().HasCmdLineArgs("-tt")) {
-            GetApp().SetScene<cqsp::scene::TextTestScene>();
+            GetApp().SetScene<TextTestScene>();
         } else if (GetApp().HasCmdLineArgs("-ov")) {
-            GetApp().SetScene<cqsp::scene::ObjectEditorScene>();
+            GetApp().SetScene<ObjectEditorScene>();
         } else if (GetApp().HasCmdLineArgs("-mv")) {
-            GetApp().SetScene<cqsp::scene::ModelScene>();
+            GetApp().SetScene<ModelScene>();
         } else {
             SPDLOG_INFO("Loading main menu");
-            GetApp().SetScene<cqsp::scene::MainMenuScene>();
+            GetApp().SetScene<MainMenuScene>();
         }
     }
 }
 
-void cqsp::scene::LoadingScene::Ui(float deltaTime) {
+void LoadingScene::Ui(float deltaTime) {
     // Load rmlui ui
     if (m_done_loading) {
         return;
@@ -129,9 +131,9 @@ void cqsp::scene::LoadingScene::Ui(float deltaTime) {
     progress->SetMax(max);
 }
 
-void cqsp::scene::LoadingScene::Render(float deltaTime) {}
+void LoadingScene::Render(float deltaTime) {}
 
-void cqsp::scene::LoadingScene::LoadResources() {
+void LoadingScene::LoadResources() {
     ZoneScoped;
     // Loading goes here
     // Read core mod
@@ -143,13 +145,15 @@ void cqsp::scene::LoadingScene::LoadResources() {
     m_done_loading = true;
 }
 
-void cqsp::scene::LoadingScene::LoadFont() {
-    cqsp::asset::ShaderProgram* fontshader =
-        new asset::ShaderProgram(*GetAssetManager().GetAsset<cqsp::asset::Shader>("core:fontvertexshader"),
-                                 *GetApp().GetAssetManager().GetAsset<cqsp::asset::Shader>("core:fontfragshader"));
+void LoadingScene::LoadFont() {
+    asset::ShaderProgram* fontshader =
+        new asset::ShaderProgram(*GetAssetManager().GetAsset<asset::Shader>("core:fontvertexshader"),
+                                 *GetApp().GetAssetManager().GetAsset<asset::Shader>("core:fontfragshader"));
 
-    cqsp::asset::Font* font = GetApp().GetAssetManager().GetAsset<cqsp::asset::Font>("core:defaultfont");
+    asset::Font* font = GetApp().GetAssetManager().GetAsset<asset::Font>("core:defaultfont");
 
     GetApp().SetFont(font);
     GetApp().SetFontShader(fontshader);
 }
+
+}  // namespace cqsp::client::scene

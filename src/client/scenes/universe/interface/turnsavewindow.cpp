@@ -24,7 +24,7 @@ TurnSaveWindow::~TurnSaveWindow() {
 }
 
 void TurnSaveWindow::Update(double delta_time) {
-    auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
+    auto& pause_opt = GetUniverse().ctx().at<ctx::PauseOptions>();
 
     const std::string date_text = fmt::format("{} {:02d}:{:02d}", GetUniverse().date.ToString(),
                                               GetUniverse().date.GetHour(), GetUniverse().date.GetMinute());
@@ -57,13 +57,13 @@ void TurnSaveWindow::OpenDocument() {
     speed_element = document->GetElementById("speed");
     pause_element = document->GetElementById("pause_button");
 
-    auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
+    auto& pause_opt = GetUniverse().ctx().at<ctx::PauseOptions>();
     speed_element->SetInnerRML(fmt::format("Speed: {}", pause_opt.tick_speed));
 }
 
 void TurnSaveWindow::EventListener::ProcessEvent(Rml::Event& event) {
     // Clicked on button?
-    auto& pause_opt = universe->ctx().at<client::ctx::PauseOptions>();
+    auto& pause_opt = universe->ctx().at<ctx::PauseOptions>();
     std::string id_pressed = event.GetTargetElement()->GetId();
 
     if (id_pressed == "stop_time" || id_pressed == "pause_button") {

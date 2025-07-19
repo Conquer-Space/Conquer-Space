@@ -22,5 +22,5 @@
 #include "engine/asset/assetmanager.h"
 
 namespace cqsp::client {
-void LoadUniverse(asset::AssetManager& asset_manager, cqsp::client::ConquerSpace& conquer_space);
+void LoadUniverse(asset::AssetManager& asset_manager, client::ConquerSpace& conquer_space);
 }  // namespace cqsp::client

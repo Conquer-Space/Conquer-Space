@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
         }
     }
     if (headless) {
-        cqsp::headless::HeadlessApplication headless_application;
+        cqsp::client::headless::HeadlessApplication headless_application;
         return headless_application.run();
     }
 
@@ -41,6 +41,6 @@ int main(int argc, char* argv[]) {
 
     // Set initial scene
     application.InitGame<cqsp::client::ConquerSpace>();
-    application.SetScene<cqsp::scene::LoadingScene>();
+    application.SetScene<cqsp::client::scene::LoadingScene>();
     application.run();
 }

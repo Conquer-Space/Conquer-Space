@@ -29,43 +29,47 @@
 #include "systooltips.h"
 
 namespace cqsp::client::systems {
+
+namespace components = common::components;
+namespace bodies = components::bodies;
+namespace types = components::types;
+using bodies::OrbitalSystem;
+using common::util::GetName;
+
 void SysStarSystemTree::Init() {
     // Sort all the planets in order
-    namespace cqspb = cqsp::common::components::bodies;
-    namespace cqspt = cqsp::common::components::types;
-    auto& orbital_system = GetUniverse().get<cqspb::OrbitalSystem>(GetUniverse().sun);
+
+    auto& orbital_system = GetUniverse().get<OrbitalSystem>(GetUniverse().sun);
     planets.emplace(GetUniverse().sun);
     planets.insert(orbital_system.children.begin(), orbital_system.children.end());
     planets.sort([&](const entt::entity lhs, const entt::entity rhs) {
-        return (GetUniverse().get<cqspt::Orbit>(lhs).semi_major_axis <
-                GetUniverse().get<cqspt::Orbit>(rhs).semi_major_axis);
+        return (GetUniverse().get<types::Orbit>(lhs).semi_major_axis <
+                GetUniverse().get<types::Orbit>(rhs).semi_major_axis);
     });
 }
 
 void SysStarSystemTree::DoUI(int delta_time) {
-    namespace cqspb = cqsp::common::components::bodies;
-    namespace cqspcs = cqsp::client::systems;
-    namespace cqspc = cqsp::common::components;
+
 
     // Get star system
-    selected_planet = cqsp::scene::GetCurrentViewingPlanet(GetUniverse());
+    selected_planet = scene::GetCurrentViewingPlanet(GetUniverse());
     ImGui::SetNextWindowPos(ImVec2(30, ImGui::GetIO().DisplaySize.y - 30), ImGuiCond_Always, ImVec2(0.f, 1.f));
     ImGui::SetNextWindowSize(ImVec2(200, 400), ImGuiCond_Always);
     ImGui::Begin("Star System", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | window_flags);
     int index = 0;
     // Get selected planet
     // Sort by sma
-    entt::entity current_planet = cqsp::scene::GetCurrentViewingPlanet(GetUniverse());
+    entt::entity current_planet = scene::GetCurrentViewingPlanet(GetUniverse());
     for (auto entity : planets) {
-        if (!GetUniverse().any_of<cqspb::OrbitalSystem>(entity) || entity == GetUniverse().sun) {
+        if (!GetUniverse().any_of<OrbitalSystem>(entity) || entity == GetUniverse().sun) {
             SeePlanetSelectable(entity);
         } else {
-            std::string planet_name = common::util::GetName(GetUniverse(), entity);
+            std::string planet_name = GetName(GetUniverse(), entity);
             if (ImGui::TreeNodeEx(planet_name.c_str(), ImGuiTreeNodeFlags_OpenOnArrow)) {
                 // If it's double clicked
                 if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
                     // Go to the planet
-                    cqsp::scene::SeePlanet(GetUniverse(), entity);
+                    scene::SeePlanet(GetUniverse(), entity);
                 }
                 // Get children
                 gui::EntityTooltip(GetUniverse(), entity);
@@ -73,7 +77,7 @@ void SysStarSystemTree::DoUI(int delta_time) {
                 ImGui::TreePop();
             } else {
                 if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-                    cqsp::scene::SeePlanet(GetUniverse(), entity);
+                    scene::SeePlanet(GetUniverse(), entity);
                 }
                 gui::EntityTooltip(GetUniverse(), entity);
             }
@@ -85,7 +89,7 @@ void SysStarSystemTree::DoUI(int delta_time) {
 void SysStarSystemTree::DoUpdate(int delta_time) {}
 
 void SysStarSystemTree::SeePlanetSelectable(entt::entity entity) {
-    std::string planet_name = common::util::GetName(GetUniverse(), entity);
+    std::string planet_name = GetName(GetUniverse(), entity);
     bool is_selected = (entity == selected_planet);
     ImGui::Dummy(ImVec2(20, 16));
     ImGui::SameLine();
@@ -93,21 +97,20 @@ void SysStarSystemTree::SeePlanetSelectable(entt::entity entity) {
         // Selected object
         if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
             // Go to the planet
-            cqsp::scene::SeePlanet(GetUniverse(), entity);
+            scene::SeePlanet(GetUniverse(), entity);
         }
     }
     gui::EntityTooltip(GetUniverse(), entity);
 }
 
 void SysStarSystemTree::DoChildTree(entt::entity entity) {
-    namespace cqspb = cqsp::common::components::bodies;
-    for (auto child : GetUniverse().get<cqspb::OrbitalSystem>(entity).children) {
-        std::string child_name = common::util::GetName(GetUniverse(), child);
+    for (auto child : GetUniverse().get<OrbitalSystem>(entity).children) {
+        std::string child_name = GetName(GetUniverse(), child);
         bool is_selected = (child == selected_planet);
         if (CQSPGui::DefaultSelectable(child_name.c_str(), is_selected, ImGuiSelectableFlags_AllowDoubleClick)) {
             if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
                 // Go to the planet
-                cqsp::scene::SeePlanet(GetUniverse(), child);
+                scene::SeePlanet(GetUniverse(), child);
             }
         }
         gui::EntityTooltip(GetUniverse(), child);

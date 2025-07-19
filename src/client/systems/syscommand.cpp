@@ -33,20 +33,21 @@
 #include "common/components/ships.h"
 #include "engine/cqspgui.h"
 
-void cqsp::client::systems::SysCommand::Init() {}
+namespace cqsp::client::systems {
 
-void cqsp::client::systems::SysCommand::DoUI(int delta_time) {
+namespace components = cqsp::common::components;
+namespace bodies = components::bodies;
+namespace types = components::types;
+using components::Name;
+
+
+void SysCommand::Init() {}
+
+void SysCommand::DoUI(int delta_time) {
     ShipList();
     if (!to_see) {
         return;
     }
-
-    namespace cqspb = cqsp::common::components::bodies;
-    namespace cqsps = cqsp::common::components::ships;
-    namespace cqspt = cqsp::common::components::types;
-    namespace cqspcs = cqsp::client::systems;
-
-    using cqsp::common::components::Name;
 
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.79f, ImGui::GetIO().DisplaySize.y * 0.55f),
                             ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
@@ -54,8 +55,8 @@ void cqsp::client::systems::SysCommand::DoUI(int delta_time) {
     ImGui::Begin("Order Target", &to_see, ImGuiWindowFlags_NoResize | window_flags);
     int index = 0;
     // Get selected planet
-    auto system = GetUniverse().view<common::components::types::Orbit>();
-    entt::entity current_planet = cqsp::scene::GetCurrentViewingPlanet(GetUniverse());
+    auto system = GetUniverse().view<types::Orbit>();
+    entt::entity current_planet = scene::GetCurrentViewingPlanet(GetUniverse());
     for (auto entity : system) {
         bool is_selected = (entity == current_planet);
         std::string planet_name = fmt::format("{}", entity);
@@ -68,7 +69,7 @@ void cqsp::client::systems::SysCommand::DoUI(int delta_time) {
             selected_index = index;
             if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && selected_ship != entt::null) {
                 // Go to the planet
-                GetUniverse().emplace_or_replace<cqspt::MoveTarget>(selected_ship, entity);
+                GetUniverse().emplace_or_replace<types::MoveTarget>(selected_ship, entity);
                 SPDLOG_INFO("Move Ordered");
             }
         }
@@ -78,33 +79,30 @@ void cqsp::client::systems::SysCommand::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void cqsp::client::systems::SysCommand::DoUpdate(int delta_time) {
-    namespace cqspb = cqsp::common::components::bodies;
-    namespace cqspt = cqsp::common::components::types;
-    selected_planet = cqsp::scene::GetCurrentViewingPlanet(GetUniverse());
-    /*entt::entity mouse_over = GetUniverse()
-            .view<cqsp::client::systems::MouseOverEntity, cqspt::Kinematics>().front();
+void SysCommand::DoUpdate(int delta_time) {
+    selected_planet = scene::GetCurrentViewingPlanet(GetUniverse());
+    /*
+    entt::entity mouse_over = GetUniverse()
+            .view<cqsp::client::systems::MouseOverEntity, types::Kinematics>().front();
     if (!ImGui::GetIO().WantCaptureMouse &&
         GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) &&
         mouse_over == selected_planet && !GetApp().MouseDragged()) {
         to_see = true;
-    }*/
+    }
+    */
 }
 
 void cqsp::client::systems::SysCommand::ShipList() {
-    namespace cqspcs = cqsp::client::systems;
-    namespace cqspb = cqsp::common::components::bodies;
-    namespace cqsps = cqsp::common::components::ships;
-    namespace cqspc = cqsp::common::components;
+
 
     /*
     static entt::entity selectedFleetEnt = GetUniverse()
-                           .get<cqspc::Civilization>(GetUniverse()
-                           .view<cqspc::Player>()
+                           .get<components::Civilization>(GetUniverse()
+                           .view<components::Player>()
                            .front()).top_level_fleet;
 
-    auto& selectedFleet = GetUniverse().get<cqsps::Fleet>(selectedFleetEnt);
-    auto& selectedFleetName = GetUniverse().get<cqspc::Name>(selectedFleetEnt);
+    auto& selectedFleet = GetUniverse().get<components::ships::Fleet>(selectedFleetEnt);
+    auto& selectedFleetName = GetUniverse().get<components::Name>(selectedFleetEnt);
 
     std::stringstream finalSelectedFleetName;
     for (size_t i = 0; i < selectedFleet.echelon; i++) {
@@ -158,5 +156,7 @@ void cqsp::client::systems::SysCommand::ShipList() {
         }
     }
 
-    ImGui::End();*/
+    ImGui::End();
+    */
 }
+}  // namespace cqsp::client::systems

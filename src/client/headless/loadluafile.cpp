@@ -20,7 +20,7 @@
 #include <iostream>
 #include <sstream>
 
-namespace cqsp::headless {
+namespace cqsp::client::headless {
 int loadluafile(HeadlessApplication& application, const std::vector<std::string>& arguments) {
     // Now load the lua file and execute
     // Open the file argument
@@ -45,4 +45,4 @@ int loadluafile(HeadlessApplication& application, const std::vector<std::string>
     }
     return 0;
 }
-};  // namespace cqsp::headless
+};  // namespace cqsp::client::headless

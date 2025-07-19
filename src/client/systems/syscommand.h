@@ -21,7 +21,7 @@
 namespace cqsp::client::systems {
 class SysCommand : public SysUserInterface {
  public:
-    explicit SysCommand(cqsp::engine::Application& app) : SysUserInterface(app) {}
+    explicit SysCommand(engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
     void DoUI(int delta_time);

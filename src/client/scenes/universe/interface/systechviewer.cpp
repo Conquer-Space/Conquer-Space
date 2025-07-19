@@ -24,12 +24,17 @@
 #include "systooltips.h"
 
 namespace cqsp::client::systems {
+
+
+namespace components = common::components;
+using components::science::TechnologicalProgress;
+using components::science::ScientificResearch;
+
 void SysTechnologyViewer::Init() {}
 
 void SysTechnologyViewer::DoUI(int delta_time) {
-    using common::components::science::TechnologicalProgress;
     // Display UI
-    auto view = GetUniverse().view<common::components::Player>();
+    auto view = GetUniverse().view<components::Player>();
     entt::entity player = view.front();
     ImGui::Begin("Technology Information");
     if (GetUniverse().any_of<TechnologicalProgress>(player)) {
@@ -48,9 +53,7 @@ void SysTechnologyViewer::DoUpdate(int delta_time) {}
 void SysTechnologyProjectViewer::Init() {}
 
 void SysTechnologyProjectViewer::DoUI(int delta_time) {
-    using common::components::science::ScientificResearch;
-    // Display UI
-    auto view = GetUniverse().view<common::components::Player>();
+    auto view = GetUniverse().view<components::Player>();
     entt::entity player = view.front();
     ImGui::Begin("Technology Research");
     if (GetUniverse().any_of<ScientificResearch>(player)) {
@@ -67,8 +70,7 @@ void SysTechnologyProjectViewer::DoUI(int delta_time) {
             ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), researched));
             ImGui::SameLine();
             if (ImGui::Button(fmt::format("Queue Research##{}", researched).c_str())) {
-                // Add to tech queue
-                potential_research.push_back(researched);
+                potential_research.push_back(researched);// Add to tech queue
             }
         }
         for (entt::entity res : potential_research) {

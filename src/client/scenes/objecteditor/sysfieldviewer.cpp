@@ -30,6 +30,15 @@
 #include "engine/cqspgui.h"
 
 namespace cqsp::client::systems {
+
+namespace components = common::components;
+namespace science = components::science;
+
+using components::Description;
+using components::Identifier;
+using components::Name;
+using science::Field;
+
 void SysFieldViewer::Init() {}
 
 void SysFieldViewer::DoUI(int delta_time) {
@@ -40,9 +49,9 @@ void SysFieldViewer::DoUI(int delta_time) {
     ImGui::BeginChild("Field List",
                       ImVec2(ImGui::GetContentRegionAvail().x * 0.5f - ImGui::GetStyle().ItemSpacing.y, height), true,
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
-    auto view = GetUniverse().view<common::components::science::Field>();
+    auto view = GetUniverse().view<Field>();
     for (entt::entity entity : view) {
-        if (ImGui::Selectable(GetUniverse().get<common::components::Name>(entity).name.c_str(),
+        if (ImGui::Selectable(GetUniverse().get<Name>(entity).name.c_str(),
                               selected_tech == entity)) {
             selected_tech = entity;
         }
@@ -62,14 +71,14 @@ void SysFieldViewer::FieldInformationWindow() {
     if (!GetUniverse().valid(selected_tech)) {
         return;
     }
-    if (!GetUniverse().any_of<common::components::science::Field>(selected_tech)) {
+    if (!GetUniverse().any_of<Field>(selected_tech)) {
         return;
     }
-    auto& field = GetUniverse().get<common::components::science::Field>(selected_tech);
-    auto& name = GetUniverse().get<common::components::Name>(selected_tech);
+    auto& field = GetUniverse().get<Field>(selected_tech);
+    auto& name = GetUniverse().get<Name>(selected_tech);
     ImGui::Text("%s", name.name.c_str());
-    if (GetUniverse().any_of<common::components::Description>(selected_tech)) {
-        auto& desc = GetUniverse().get<common::components::Description>(selected_tech);
+    if (GetUniverse().any_of<Description>(selected_tech)) {
+        auto& desc = GetUniverse().get<Description>(selected_tech);
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7, 0.7, 0.7, 1));
         ImGui::TextWrapped("%s", desc.description.c_str());
         ImGui::PopStyleColor();
@@ -77,13 +86,13 @@ void SysFieldViewer::FieldInformationWindow() {
     ImGui::Separator();
     ImGui::Text("Parents");
     for (auto& f : field.parents) {
-        ImGui::Text("%s", GetUniverse().get<common::components::Name>(f).name.c_str());
+        ImGui::Text("%s", GetUniverse().get<Name>(f).name.c_str());
     }
     ImGui::Separator();
     ImGui::Text("Adjacents");
 
     for (auto& f : field.adjacent) {
-        ImGui::Text("%s", GetUniverse().get<common::components::Name>(f).name.c_str());
+        ImGui::Text("%s", GetUniverse().get<Name>(f).name.c_str());
     }
 }
 
@@ -118,7 +127,7 @@ void RemoveFieldConnection(std::vector<entt::entity>& vec, entt::entity ent) {
     }
 }
 
-void AcceptNewItem(cqsp::common::Universe& universe, int input_type, entt::entity input_entity,
+void AcceptNewItem(common::Universe& universe, int input_type, entt::entity input_entity,
                    entt::entity output_entity) {
     // Look for the link, then connect back
     // The initial pins should be in multiples of 4 because we make 4
@@ -127,14 +136,14 @@ void AcceptNewItem(cqsp::common::Universe& universe, int input_type, entt::entit
     switch (input_type) {
         case 1: {
             // Then they want to be a child ofthe output entity
-            auto& field = universe.get<cqsp::common::components::science::Field>(input_entity);
+            auto& field = universe.get<Field>(input_entity);
             if (std::find(field.parents.begin(), field.parents.end(), output_entity) == field.parents.end()) {
                 field.parents.push_back(output_entity);
             }
             break;
         }
         case 2: {
-            auto& field = universe.get<cqsp::common::components::science::Field>(input_entity);
+            auto& field = universe.get<Field>(input_entity);
             if (std::find(field.adjacent.begin(), field.adjacent.end(), output_entity) == field.adjacent.end()) {
                 field.adjacent.push_back(output_entity);
             }
@@ -142,7 +151,7 @@ void AcceptNewItem(cqsp::common::Universe& universe, int input_type, entt::entit
         }
         case 3: {
             // Then they want to be a child ofthe output entity
-            auto& field = universe.get<cqsp::common::components::science::Field>(output_entity);
+            auto& field = universe.get<Field>(output_entity);
             if (std::find(field.parents.begin(), field.parents.end(), input_entity) == field.parents.end()) {
                 field.parents.push_back(input_entity);
             }
@@ -153,7 +162,7 @@ void AcceptNewItem(cqsp::common::Universe& universe, int input_type, entt::entit
     }
 }
 
-void CreateNewNode(cqsp::common::Universe& universe, FieldNodeInformation& map) {
+void CreateNewNode(common::Universe& universe, FieldNodeInformation& map) {
     ed::PinId inputPinId;
     ed::PinId outputPinId;
     if (!ed::QueryNewLink(&inputPinId, &outputPinId)) {
@@ -176,23 +185,23 @@ void CreateNewNode(cqsp::common::Universe& universe, FieldNodeInformation& map) 
     }
 }
 
-void RemoveRelationship(cqsp::common::Universe& universe, int input_type, entt::entity input_entity,
+void RemoveRelationship(common::Universe& universe, int input_type, entt::entity input_entity,
                         entt::entity output_entity) {
     switch (input_type) {
         case 1: {
             // Then they want to be a child ofthe output entity
-            auto& field = universe.get<cqsp::common::components::science::Field>(input_entity);
+            auto& field = universe.get<Field>(input_entity);
             RemoveFieldConnection(field.parents, output_entity);
             break;
         }
         case 2: {
-            auto& field = universe.get<cqsp::common::components::science::Field>(input_entity);
+            auto& field = universe.get<Field>(input_entity);
             RemoveFieldConnection(field.adjacent, output_entity);
             break;
         }
         case 3: {
             // Then they want to be a child ofthe output entity
-            auto& field = universe.get<cqsp::common::components::science::Field>(output_entity);
+            auto& field = universe.get<Field>(output_entity);
             RemoveFieldConnection(field.adjacent, input_entity);
             break;
         }
@@ -201,7 +210,7 @@ void RemoveRelationship(cqsp::common::Universe& universe, int input_type, entt::
     }
 }
 
-void HandleDeletedRelationship(const ed::LinkId& linkId, FieldNodeInformation& map, cqsp::common::Universe& universe) {
+void HandleDeletedRelationship(const ed::LinkId& linkId, FieldNodeInformation& map, common::Universe& universe) {
     if (!ed::AcceptDeletedItem()) {
         return;
     }
@@ -219,7 +228,7 @@ void HandleDeletedRelationship(const ed::LinkId& linkId, FieldNodeInformation& m
     RemoveRelationship(universe, input_type, input_entity, output_entity);
 }
 
-void HandleDeletedNode(const ed::NodeId& nodeId, FieldNodeInformation& map, cqsp::common::Universe& universe) {
+void HandleDeletedNode(const ed::NodeId& nodeId, FieldNodeInformation& map, common::Universe& universe) {
     if (!ed::AcceptDeletedItem()) {
         return;
     }
@@ -227,16 +236,16 @@ void HandleDeletedNode(const ed::NodeId& nodeId, FieldNodeInformation& map, cqsp
     // Delete entities
     entt::entity ent = CalculateInputPair(map, nodeId.Get());
     //universe.get<
-    auto fields = universe.view<cqsp::common::components::science::Field>();
+    auto fields = universe.view<Field>();
     for (entt::entity pot : fields) {
-        auto& field_comp = universe.get<cqsp::common::components::science::Field>(pot);
+        auto& field_comp = universe.get<Field>(pot);
         RemoveFieldConnection(field_comp.adjacent, ent);
         RemoveFieldConnection(field_comp.parents, ent);
     }
     universe.destroy(ent);
 }
 
-void HandleNodeDelete(FieldNodeInformation& map, cqsp::common::Universe& universe) {
+void HandleNodeDelete(FieldNodeInformation& map, common::Universe& universe) {
     ed::LinkId linkId = 0;
     while (ed::QueryDeletedLink(&linkId)) {
         HandleDeletedRelationship(linkId, map, universe);
@@ -256,10 +265,6 @@ void SysFieldNodeViewer::DoUI(int delta_time) {
 void SysFieldNodeViewer::DoUpdate(int delta_time) {}
 
 void SysFieldNodeViewer::FieldNodeViewerWindow() {
-    using common::components::Description;
-    using common::components::Identifier;
-    using common::components::Name;
-    using common::components::science::Field;
     // View Fields
     ImGui::SetNextWindowSize(ImVec2(1400, 900), ImGuiCond_Appearing);
     ImGui::Begin("Field Node Viewer Window");
@@ -379,7 +384,7 @@ void SysFieldNodeViewer::FieldHjsonViewerWindow() {
     ImGui::SameLine();
     if (ImGui::Button("Save to file")) {
         // Write to the hjson file, which should remain the same
-        std::filesystem::path p = cqsp::common::util::GetCqspDataPath();
+        std::filesystem::path p = common::util::GetCqspDataPath();
         std::filesystem::path default_path = p / "core" / "data" / "science" / "fields" / "default.hjson";
         // Update content
         std::ofstream output(default_path, std::ios::trunc);

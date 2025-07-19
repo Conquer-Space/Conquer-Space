@@ -22,12 +22,16 @@
 #include "common/components/resource.h"
 #include "common/util/nameutil.h"
 
-void cqsp::client::systems::SysRecipeViewer::Init() {}
+namespace cqsp::client::systems {
 
-void cqsp::client::systems::SysRecipeViewer::DoUI(int delta_time) {
+namespace components = common::components;
+
+void SysRecipeViewer::Init() {}
+
+void SysRecipeViewer::DoUI(int delta_time) {
     ImGui::Begin("Recipe Viewer");
     // List out all the stuff
-    auto recipes = GetUniverse().view<common::components::Recipe>();
+    auto recipes = GetUniverse().view<components::Recipe>();
     ImGui::TextFmt("Recipes: {}", recipes.size());
     ImGui::BeginChild("recipe_viewer_left", ImVec2(300, -1));
     for (entt::entity recipe : recipes) {
@@ -44,11 +48,11 @@ void cqsp::client::systems::SysRecipeViewer::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void cqsp::client::systems::SysRecipeViewer::DoUpdate(int delta_time) {}
+void SysRecipeViewer::DoUpdate(int delta_time) {}
 
 namespace {
-void ResourceMapTable(cqsp::common::Universe& universe, cqsp::common::components::ResourceLedger& ledger,
-                      const char* name) {
+void ResourceMapTable(common::Universe& universe, components::ResourceLedger& ledger, 
+    const char* name) {
     if (!ImGui::BeginTable(name, 2)) {
         return;
     }
@@ -66,16 +70,15 @@ void ResourceMapTable(cqsp::common::Universe& universe, cqsp::common::components
 }
 }  // namespace
 
-void cqsp::client::systems::SysRecipeViewer::RecipeViewerRight() {
-    namespace cc = common::components;
+void SysRecipeViewer::RecipeViewerRight() {
     if (selected_recipe == entt::null) {
         ImGui::Text("Good is invalid!");
         return;
     }
     ImGui::TextFmt("Name: {}", common::util::GetName(GetUniverse(), selected_recipe));
-    ImGui::TextFmt("Identifier: {}", GetUniverse().get<cc::Identifier>(selected_recipe).identifier);
+    ImGui::TextFmt("Identifier: {}", GetUniverse().get<components::Identifier>(selected_recipe).identifier);
     // Get inputs and outputs
-    auto& recipe_comp = GetUniverse().get<cc::Recipe>(selected_recipe);
+    auto& recipe_comp = GetUniverse().get<components::Recipe>(selected_recipe);
     ImGui::TextFmt("Workers per unit of recipe: {}", recipe_comp.workers);
     ImGui::Text("Input");
     ResourceMapTable(GetUniverse(), recipe_comp.input, "input_table");
@@ -85,3 +88,4 @@ void cqsp::client::systems::SysRecipeViewer::RecipeViewerRight() {
     ImGui::TextFmt("{}, {}", common::util::GetName(GetUniverse(), recipe_comp.output.entity),
                    recipe_comp.output.amount);
 }
+}  // namespace cqsp::client::systems

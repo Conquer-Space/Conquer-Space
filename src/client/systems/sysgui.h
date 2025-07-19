@@ -22,37 +22,37 @@
 namespace cqsp::client::systems {
 class SysUserInterface {
  public:
-    explicit SysUserInterface(cqsp::engine::Application &_app) : m_app(_app) {}
+    explicit SysUserInterface(engine::Application &_app) : m_app(_app) {}
     virtual ~SysUserInterface() = default;
     virtual void Init() = 0;
     virtual void DoUI(int delta_time) = 0;
     virtual void DoUpdate(int delta_time) = 0;
 
-    cqsp::engine::Application &GetApp() { return m_app; }
-    cqsp::common::Universe &GetUniverse() { return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->m_universe; }
+    engine::Application &GetApp() { return m_app; }
+    common::Universe &GetUniverse() { return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->m_universe; }
     scripting::ScriptInterface &GetScriptInterface() {
         return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->script_interface;
     }
-    cqsp::asset::AssetManager &GetAssetManager() { return GetApp().GetAssetManager(); }
+    asset::AssetManager &GetAssetManager() { return GetApp().GetAssetManager(); }
     ImGuiWindowFlags window_flags = 0;
 
  private:
-    cqsp::engine::Application &m_app;
+    engine::Application &m_app;
 };
 
 class SysRmlUiInterface {
  public:
-    explicit SysRmlUiInterface(cqsp::engine::Application &app) : m_app(app) {}
+    explicit SysRmlUiInterface(engine::Application &app) : m_app(app) {}
     virtual ~SysRmlUiInterface() {}
     virtual void Update(double delta_time) = 0;
     virtual void OpenDocument() = 0;
 
  protected:
-    cqsp::engine::Application &GetApp() { return m_app; }
-    cqsp::common::Universe &GetUniverse() { return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->m_universe; }
-    cqsp::asset::AssetManager &GetAssetManager() { return GetApp().GetAssetManager(); }
+    engine::Application &GetApp() { return m_app; }
+    common::Universe &GetUniverse() { return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->m_universe; }
+    asset::AssetManager &GetAssetManager() { return GetApp().GetAssetManager(); }
 
  private:
-    cqsp::engine::Application &m_app;
+    engine::Application &m_app;
 };
 } // namespace cqsp::client::systems

@@ -30,10 +30,10 @@
 #include "systooltips.h"
 
 namespace cqsp::client::systems {
-namespace cqspb = cqsp::common::components::bodies;
-namespace cqspc = cqsp::common::components;
+namespace components = common::components;
+namespace bodies = components::bodies;
 
-using cqsp::common::util::GetName;
+using common::util::GetName;
 
 void SysPlanetMarketInformation::Init() {}
 
@@ -46,11 +46,11 @@ void SysPlanetMarketInformation::DoUI(int delta_time) {
         return;
     }
     ImGui::Begin("Planetary Market");
-    if (GetUniverse().any_of<common::components::Wallet>(selected_planet)) {
-        auto& wallet = GetUniverse().get<cqspc::Wallet>(selected_planet);
-        ImGui::TextFmt("GDP Contribution: {}", cqsp::util::LongToHumanString(wallet.GetGDPChange()));
-        ImGui::TextFmt("Balance: {}", cqsp::util::LongToHumanString(wallet.GetBalance()));
-        ImGui::TextFmt("Balance change: {}", cqsp::util::LongToHumanString(wallet.GetChange()));
+    if (GetUniverse().any_of<components::Wallet>(selected_planet)) {
+        auto& wallet = GetUniverse().get<components::Wallet>(selected_planet);
+        ImGui::TextFmt("GDP Contribution: {}", util::LongToHumanString(wallet.GetGDPChange()));
+        ImGui::TextFmt("Balance: {}", util::LongToHumanString(wallet.GetBalance()));
+        ImGui::TextFmt("Balance change: {}", util::LongToHumanString(wallet.GetChange()));
     }
     MarketInformationTable(GetUniverse(), selected_planet);
     ImGui::End();
@@ -59,19 +59,19 @@ void SysPlanetMarketInformation::DoUI(int delta_time) {
 void SysPlanetMarketInformation::DoUpdate(int delta_time) {
     to_see = true;
 
-    selected_planet = cqsp::scene::GetCurrentViewingPlanet(GetUniverse());
+    selected_planet = scene::GetCurrentViewingPlanet(GetUniverse());
     entt::entity mouse_over = GetUniverse().view<MouseOverEntity>().front();
     if (!ImGui::GetIO().WantCaptureMouse && GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT) &&
-        mouse_over == selected_planet && !cqsp::scene::IsGameHalted() && !GetApp().MouseDragged()) {
+        mouse_over == selected_planet && !scene::IsGameHalted() && !GetApp().MouseDragged()) {
         to_see = true;
 
         if (GetUniverse().valid(selected_planet)) {
-            SPDLOG_INFO("Switched entity: {}", GetUniverse().get<cqspc::Identifier>(selected_planet).identifier);
+            SPDLOG_INFO("Switched entity: {}", GetUniverse().get<components::Identifier>(selected_planet).identifier);
         } else {
             SPDLOG_INFO("Switched entity is not valid");
         }
     }
-    if (!GetUniverse().valid(selected_planet) || !GetUniverse().all_of<cqspb::Body>(selected_planet)) {
+    if (!GetUniverse().valid(selected_planet) || !GetUniverse().all_of<bodies::Body>(selected_planet)) {
         to_see = false;
     }
 }

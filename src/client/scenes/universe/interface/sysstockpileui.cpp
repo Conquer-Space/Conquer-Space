@@ -23,11 +23,15 @@
 #include "fmt/format.h"
 #include "systooltips.h"
 
-using cqsp::common::Universe;
-using cqsp::common::components::Identifier;
-using cqsp::common::components::ResourceLedger;
-using cqsp::util::LongToHumanString;
-bool cqsp::client::systems::DrawLedgerTable(const std::string &name, const Universe &universe,
+
+namespace cqsp::client::systems {
+
+using common::Universe;
+using common::components::Identifier;
+using common::components::ResourceLedger;
+using util::LongToHumanString;
+
+bool DrawLedgerTable(const std::string &name, const Universe &universe,
                                             const ResourceLedger &ledger) {
     if (ledger.empty()) {
         ImGui::Text("Empty ledger");
@@ -48,3 +52,5 @@ bool cqsp::client::systems::DrawLedgerTable(const std::string &name, const Unive
     }
     return true;
 }
+
+}  // namespace cqsp::client::systems

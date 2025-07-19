@@ -34,6 +34,7 @@ struct FieldTemplate {
 }  // namespace
 
 namespace cqsp::common::systems::science {
+//TODO(AGM) move to loading namespace
 void LoadFields(Universe& universe, Hjson::Value& hjson) {
     for (int i = 0; i < hjson.size(); i++) {
         Hjson::Value val = hjson[i];

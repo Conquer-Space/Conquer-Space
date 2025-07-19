@@ -23,29 +23,34 @@
 #include "common/components/orbit.h"
 #include "common/util/nameutil.h"
 
-void cqsp::client::systems::SysOrbitFilter::Init() {
+namespace cqsp::client::systems {
+
+using common::components::types::Orbit;
+using ctx::VisibleOrbit;
+
+void SysOrbitFilter::Init() {
     // Set all orbits to be visible
-    auto orbits = GetUniverse().view<common::components::types::Orbit>();
+    auto orbits = GetUniverse().view<Orbit>();
     for (entt::entity orb : orbits) {
-        GetUniverse().emplace_or_replace<ctx::VisibleOrbit>(orb);
+        GetUniverse().emplace_or_replace<VisibleOrbit>(orb);
     }
 }
 
-void cqsp::client::systems::SysOrbitFilter::DoUI(int delta_time) {
+void SysOrbitFilter::DoUI(int delta_time) {
     if (!visible) {
         return;
     }
     ImGui::Begin("Orbit filter", &visible);
     // List out all the types of orbits and then determine if they are visible or not
-    auto orbits = GetUniverse().view<common::components::types::Orbit>();
+    auto orbits = GetUniverse().view<Orbit>();
     if (ImGui::Checkbox("Hide all orbits", &hide_all_orbits)) {
         if (hide_all_orbits) {
             for (entt::entity orb : orbits) {
-                GetUniverse().remove<ctx::VisibleOrbit>(orb);
+                GetUniverse().remove<VisibleOrbit>(orb);
             }
         } else {
             for (entt::entity orb : orbits) {
-                GetUniverse().get_or_emplace<ctx::VisibleOrbit>(orb);
+                GetUniverse().get_or_emplace<VisibleOrbit>(orb);
             }
         }
     }
@@ -57,7 +62,7 @@ void cqsp::client::systems::SysOrbitFilter::DoUI(int delta_time) {
         int i = 0;
         for (entt::entity orb : orbits) {
             // Get the name
-            if (GetUniverse().any_of<cqsp::common::components::bodies::Planet>(orb)) {
+            if (GetUniverse().any_of<common::components::bodies::Planet>(orb)) {
                 continue;
             }
             ImGui::TableNextRow();
@@ -65,12 +70,12 @@ void cqsp::client::systems::SysOrbitFilter::DoUI(int delta_time) {
             ImGui::TableSetColumnIndex(0);
             ImGui::TextFmt("{}", name);
             ImGui::TableSetColumnIndex(1);
-            bool check = GetUniverse().any_of<ctx::VisibleOrbit>(orb);
+            bool check = GetUniverse().any_of<VisibleOrbit>(orb);
             ImGui::Checkbox(fmt::format("###Visible orbit{}", i).c_str(), &check);
             if (check) {
-                GetUniverse().get_or_emplace<ctx::VisibleOrbit>(orb);
+                GetUniverse().get_or_emplace<VisibleOrbit>(orb);
             } else {
-                GetUniverse().remove<ctx::VisibleOrbit>(orb);
+                GetUniverse().remove<VisibleOrbit>(orb);
             }
             i++;
         }
@@ -80,4 +85,6 @@ void cqsp::client::systems::SysOrbitFilter::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void cqsp::client::systems::SysOrbitFilter::DoUpdate(int delta_time) {}
+void SysOrbitFilter::DoUpdate(int delta_time) {}
+
+}  // namespace cqsp::client::systems

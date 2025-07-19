@@ -21,7 +21,7 @@
 namespace cqsp::client::systems {
 class SpaceshipWindow : public SysUserInterface {
  public:
-    explicit SpaceshipWindow(cqsp::engine::Application& app) : SysUserInterface(app) {}
+    explicit SpaceshipWindow(engine::Application& app) : SysUserInterface(app) {}
     void Init();
     void DoUI(int delta_time);
     void DoUpdate(int delta_time);

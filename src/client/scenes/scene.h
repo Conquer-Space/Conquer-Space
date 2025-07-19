@@ -20,10 +20,10 @@
 #include "engine/scene.h"
 
 namespace cqsp::client {
-class Scene : public cqsp::engine::Scene {
+class ClientScene : public engine::Scene {
  public:
-    explicit Scene(cqsp::engine::Application &app) : engine::Scene(app) {}
-    cqsp::common::Universe &GetUniverse() { return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->m_universe; }
+    explicit ClientScene(engine::Application &app) : engine::Scene(app) {}
+    common::Universe &GetUniverse() { return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->m_universe; }
     scripting::ScriptInterface &GetScriptInterface() {
         return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->script_interface;
     }

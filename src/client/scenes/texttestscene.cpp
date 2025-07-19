@@ -21,9 +21,11 @@
 #define TX(x)        \
     indices[#x] = x; \
     names.push_back(#x);
-cqsp::scene::TextTestScene::~TextTestScene() = default;
 
-void cqsp::scene::TextTestScene::Init() {
+namespace cqsp::client::scene {
+TextTestScene::~TextTestScene() = default;
+
+void TextTestScene::Init() {
     auto shader = GetApp().GetAssetManager().MakeShader("core:framebuffervert", "core:framebufferfrag");
     layer = renderer.AddLayer<cqsp::engine::AAFrameBufferRenderer>(shader, *GetApp().GetWindow());
 
@@ -47,7 +49,7 @@ void cqsp::scene::TextTestScene::Init() {
     TX(GL_ONE_MINUS_SRC1_ALPHA);
 }
 
-void cqsp::scene::TextTestScene::Update(float deltaTime) {
+void TextTestScene::Update(float deltaTime) {
     //delta_t += deltaTime;
     if (delta_t > 0.1f) {
         src++;
@@ -63,7 +65,7 @@ void cqsp::scene::TextTestScene::Update(float deltaTime) {
     }
 }
 
-void cqsp::scene::TextTestScene::Ui(float deltaTime) {
+void TextTestScene::Ui(float deltaTime) {
     ImGui::Begin("Text config");
     ImGui::TextFmt("{}", delta_t);
     ImGui::DragFloat("Font size", &font_size, 0, 255);
@@ -95,7 +97,7 @@ void cqsp::scene::TextTestScene::Ui(float deltaTime) {
     ImGui::End();
 }
 
-void cqsp::scene::TextTestScene::Render(float deltaTime) {
+void TextTestScene::Render(float deltaTime) {
     // Set a cool background color
     renderer.NewFrame(*GetApp().GetWindow());
     glClearColor(1.f, 0.f, 1.f, 1.0f);
@@ -110,3 +112,4 @@ void cqsp::scene::TextTestScene::Render(float deltaTime) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     GetApp().DrawText(fmt::format("2: {}", text), 20, GetApp().GetWindowHeight() / 2.f - 50.f, font_size);
 }
+}  // namespace cqsp::client::scene

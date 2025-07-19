@@ -24,8 +24,10 @@
 #include "common/util/profiler.h"
 #include "glad/glad.h"
 
-using cqsp::client::systems::SysDebugMenu;
-using cqsp::engine::Application;
+
+namespace cqsp::client::systems {
+using engine::Application;
+namespace components = common::components;
 
 SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
     using std::string_view;
@@ -36,7 +38,6 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
     };
 
     auto entity_command = [](sysdebuggui_parameters) {
-        using cqsp::client::systems::MouseOverEntity;
         entt::entity ent = universe.view<MouseOverEntity>().front();
         if (ent == entt::null) {
             input.push_back(fmt::format("Mouse is over null"));
@@ -53,16 +54,15 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
 
     auto entity_name = [](sysdebuggui_parameters) {
         if (std::all_of(args.begin(), args.end(), ::isdigit)) {
-            namespace cqspc = cqsp::common::components;
 
             entt::entity entity = static_cast<entt::entity>(atoi(args.data()));
             std::string name = "N/A";
-            if (universe.all_of<cqspc::Name>(entity)) {
-                name = universe.get<cqspc::Name>(entity);
+            if (universe.all_of<components::Name>(entity)) {
+                name = universe.get<components::Name>(entity);
             }
             std::string identifier = "N/A";
-            if (universe.all_of<cqspc::Identifier>(entity)) {
-                identifier = universe.get<cqspc::Identifier>(entity);
+            if (universe.all_of<components::Identifier>(entity)) {
+                identifier = universe.get<components::Identifier>(entity);
             }
             input.push_back(fmt::format("Name: {}, {}", name, identifier));
         }
@@ -106,7 +106,7 @@ void SysDebugMenu::CqspMetricsWindow() {
     ImGui::End();
 }
 
-void cqsp::client::systems::SysDebugMenu::ShowWindows() {
+void SysDebugMenu::ShowWindows() {
     if (to_show_imgui_about) {
         ImGui::ShowAboutWindow(&to_show_imgui_about);
     }
@@ -124,7 +124,7 @@ void cqsp::client::systems::SysDebugMenu::ShowWindows() {
     }
 }
 
-void cqsp::client::systems::SysDebugMenu::CreateMenuBar() {
+void SysDebugMenu::CreateMenuBar() {
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("Tools")) {
             ImGui::MenuItem("Benchmarks", 0, &to_show_cqsp_metrics);
@@ -150,7 +150,7 @@ void cqsp::client::systems::SysDebugMenu::CreateMenuBar() {
     }
 }
 
-void cqsp::client::systems::SysDebugMenu::DrawConsole() {
+void SysDebugMenu::DrawConsole() {
     const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
     ImGui::BeginChild("consolearea", ImVec2(0, -footer_height_to_reserve), false,
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
@@ -174,7 +174,7 @@ void cqsp::client::systems::SysDebugMenu::DrawConsole() {
     ImGui::EndChild();
 }
 
-void cqsp::client::systems::SysDebugMenu::ConsoleInput() {
+void SysDebugMenu::ConsoleInput() {
     ImGui::PushItemWidth(-1);
     if (ImGui::InputText("DebugInput", &command,
                          ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackCompletion |
@@ -298,3 +298,5 @@ void SysDebugMenu::DoUpdate(int delta_time) {
         GetScriptInterface().values.clear();
     }
 }
+
+}  // namespace cqsp::client::systems
