@@ -681,7 +681,7 @@ void SysStarSystemRenderer::CalculateScroll() {
 }
 
 void SysStarSystemRenderer::LoadPlanetTextures() {
-    for (auto body : m_universe.view<types::Orbit>()) {
+    for (auto body : m_universe.view<Orbit>()) {
         if (!m_universe.all_of<bodies::TexturedTerrain>(body)) {
             continue;
         }

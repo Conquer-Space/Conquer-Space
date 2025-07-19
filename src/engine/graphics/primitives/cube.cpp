@@ -18,9 +18,10 @@
 
 #include <glad/glad.h>
 
-cqsp::engine::Mesh_t cqsp::engine::primitive::MakeCube() {
-    cqsp::engine::Mesh_t mesh = engine::MakeMesh();
-    float verticies[] = {// positions
+namespace cqsp::engine::primitive {
+Mesh_t MakeCube() {
+    Mesh_t mesh = MakeMesh();
+    const float verticies[] = {// positions
                          -1.0f, 1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  -1.0f, -1.0f,
                          1.0f,  -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, -1.0f, 1.0f,  -1.0f,
 
@@ -48,6 +49,7 @@ cqsp::engine::Mesh_t cqsp::engine::primitive::MakeCube() {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), reinterpret_cast<void*>(0));
     mesh->indicies = 36;
     mesh->mode = GL_TRIANGLES;
-    mesh->buffer_type = cqsp::engine::DrawType::ARRAYS;
+    mesh->buffer_type = DrawType::ARRAYS;
     return mesh;
 }
+}  // namespace cqsp::engine::primitive

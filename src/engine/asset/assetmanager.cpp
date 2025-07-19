@@ -113,9 +113,9 @@ void AssetManager::LoadDefaultTexture() {
         0,   0,  // These two padding bytes are needed for some reason. Opengl doesn't like 2x2 images
         255, 0, 255, 0,   0, 0};
 
-    asset::TextureLoadingOptions f;
+    TextureLoadingOptions f;
     f.mag_filter = true;
-    asset::CreateTexture(empty_texture, texture_bytes, 2, 2, 3, f);
+    CreateTexture(empty_texture, texture_bytes, 2, 2, 3, f);
 }
 
 void AssetManager::ClearAssets() { ZoneScoped packages.clear(); }

@@ -20,7 +20,7 @@
 
 
 namespace cqsp::engine::primitive {
-cqsp::engine::Mesh_t MakeTexturedPaneMesh();
+Mesh_t MakeTexturedPaneMesh();
 // In case you need a mirrored pane, like for framebuffers
-cqsp::engine::Mesh_t MakeTexturedPaneMesh(bool);
+Mesh_t MakeTexturedPaneMesh(bool);
 } // namespace cqsp::engine::primitive

@@ -61,7 +61,7 @@ void UniverseLoadingScene::Render(float deltaTime) {}
 void UniverseLoadingScene::LoadCurrentUniverse() {
     LoadUniverse(GetAssetManager(), *dynamic_cast<ConquerSpace*>(GetApp().GetGame()));
     // Load saves
-    if (GetUniverse().ctx().contains<client::ctx::GameLoad>()) {
+    if (GetUniverse().ctx().contains<ctx::GameLoad>()) {
         const std::string& load_dir = GetUniverse().ctx().at<ctx::GameLoad>().load_dir;
         SPDLOG_INFO("Loading save {}", load_dir);
         save::load_game(GetUniverse(), load_dir);

@@ -24,9 +24,9 @@
 
 
 namespace cqsp::engine::primitive {
-cqsp::engine::Mesh_t CreateFilledCircle(int segments = 64);
-cqsp::engine::Mesh_t CreateFilledTriangle();
-cqsp::engine::Mesh_t CreateFilledSquare();
-cqsp::engine::Mesh_t CreateLineCircle(int segments = 64, float size = 1.0f);
-cqsp::engine::Mesh_t CreateLineSequence(const std::vector<glm::vec3>& sequence);
+Mesh_t CreateFilledCircle(int segments = 64);
+Mesh_t CreateFilledTriangle();
+Mesh_t CreateFilledSquare();
+Mesh_t CreateLineCircle(int segments = 64, float size = 1.0f);
+Mesh_t CreateLineSequence(const std::vector<glm::vec3>& sequence);
 } // namespace cqsp::engine::primitive

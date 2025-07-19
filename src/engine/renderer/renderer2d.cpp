@@ -22,18 +22,20 @@
 #include <utility>
 
 #include <glm/gtx/transform.hpp>
+namespace cqsp::engine {
 
-cqsp::engine::Renderer2D::Renderer2D(cqsp::asset::ShaderProgram_t tex, cqsp::asset::ShaderProgram_t color)
-    : texture_shader(std::move(std::move(tex))), color_shader(std::move(std::move(color))) {}
+using asset::ShaderProgram_t;
+using asset::Texture;
 
-cqsp::engine::Renderer2D::Renderer2D(cqsp::asset::ShaderProgram_t tex)
-    : texture_shader(std::move(std::move(tex))), color_shader(nullptr) {}
+Renderer2D::Renderer2D(ShaderProgram_t tex, ShaderProgram_t color)
+: texture_shader(std::move(std::move(tex))), color_shader(std::move(std::move(color))) {}
 
-cqsp::engine::Renderer2D::Renderer2D(cqsp::asset::ShaderProgram_t color, bool /*unused*/)
+Renderer2D::Renderer2D(ShaderProgram_t tex) : texture_shader(std::move(std::move(tex))), color_shader(nullptr) {}
+
+Renderer2D::Renderer2D(ShaderProgram_t color, bool /*unused*/)
     : texture_shader(nullptr), color_shader(std::move(std::move(color))) {}
 
-void cqsp::engine::Renderer2D::DrawTexturedSprite(cqsp::engine::Mesh* mesh, cqsp::asset::Texture& texture,
-                                                  glm::vec2 position, glm::vec2 size, float rotate) {
+void Renderer2D::DrawTexturedSprite(Mesh* mesh, Texture& texture, glm::vec2 position, glm::vec2 size, float rotate) {
     if (!TextureEnabled()) {
         return;
     }
@@ -59,7 +61,7 @@ void cqsp::engine::Renderer2D::DrawTexturedSprite(cqsp::engine::Mesh* mesh, cqsp
     mesh->Draw();
 }
 
-void cqsp::engine::Renderer2D::SetProjection(const glm::mat4& projection) {
+void Renderer2D::SetProjection(const glm::mat4& projection) {
     if (TextureEnabled()) {
         texture_shader->UseProgram();
         texture_shader->Set("projection", projection);
@@ -70,8 +72,7 @@ void cqsp::engine::Renderer2D::SetProjection(const glm::mat4& projection) {
     }
 }
 
-void cqsp::engine::Renderer2D::DrawColoredSprite(cqsp::engine::Mesh* mesh, glm::vec3 color, glm::vec2 position,
-                                                 glm::vec2 size, float rotate) {
+void Renderer2D::DrawColoredSprite(Mesh* mesh, glm::vec3 color, glm::vec2 position, glm::vec2 size, float rotate) {
     if (!ColorEnabled()) {
         return;
     }
@@ -93,5 +94,6 @@ void cqsp::engine::Renderer2D::DrawColoredSprite(cqsp::engine::Mesh* mesh, glm::
     mesh->Draw();
 }
 
-bool cqsp::engine::Renderer2D::ColorEnabled() { return color_shader != nullptr; }
-bool cqsp::engine::Renderer2D::TextureEnabled() { return texture_shader != nullptr; }
+bool Renderer2D::ColorEnabled() { return color_shader != nullptr; }
+bool Renderer2D::TextureEnabled() { return texture_shader != nullptr; }
+}  // namespace cqsp::engine
