@@ -21,7 +21,6 @@
 #include "recipeviewer.h"
 #include "sysfieldviewer.h"
 
-
 namespace cqsp::client::scene {
 
 ObjectEditorScene::ObjectEditorScene(engine::Application& app) : ClientScene(app) {

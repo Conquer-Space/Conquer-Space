@@ -27,8 +27,8 @@
 #include "engine/audio/alaudioasset.h"
 
 namespace cqsp::engine::audio {
-using asset::AudioAsset;
 using asset::ALAudioAsset;
+using asset::AudioAsset;
 
 AudioInterface::AudioInterface() { logger = common::util::make_logger("audio"); }
 
@@ -80,9 +80,7 @@ void AudioInterface::SetMusicVolume(float volume) {
     music_volume = volume;
 }
 
-void AudioInterface::AddAudioClip(const std::string& key, AudioAsset* asset) {
-    assets[key] = asset;
-}
+void AudioInterface::AddAudioClip(const std::string& key, AudioAsset* asset) { assets[key] = asset; }
 
 void AudioInterface::PlayAudioClip(const std::string& key) {
     if (assets.find(key) == assets.end()) {
@@ -97,9 +95,7 @@ void AudioInterface::PlayAudioClip(const std::string& key) {
 
 void AudioInterface::PlayAudioClip(AudioAsset* asset, int channel) {}
 
-void AudioInterface::SetChannelVolume(int channel, float gain) {
-    channels[channel]->SetGain(gain);
-}
+void AudioInterface::SetChannelVolume(int channel, float gain) { channels[channel]->SetGain(gain); }
 
 void cqsp::engine::audio::AudioInterface::OnFrame() {
     bool to_quit = false;

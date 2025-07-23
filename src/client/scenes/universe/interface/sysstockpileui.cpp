@@ -23,7 +23,6 @@
 #include "fmt/format.h"
 #include "systooltips.h"
 
-
 namespace cqsp::client::systems {
 
 using common::Universe;

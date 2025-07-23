@@ -34,13 +34,13 @@ namespace components = cqsp::common::components;
 namespace types = components::types;
 namespace ships = components::ships;
 namespace bodies = components::bodies;
+using common::systems::commands::PushManeuvers;
+using common::util::GetName;
+using types::GetCircularOrbitingVelocity;
 using types::Kinematics;
 using types::Orbit;
-using types::toDegree;
 using types::OrbitVelocity;
-using types::GetCircularOrbitingVelocity;
-using common::util::GetName;
-using common::systems::commands::PushManeuvers;
+using types::toDegree;
 
 void SpaceshipWindow::Init() {}
 
@@ -72,8 +72,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
         ImGui::TextFmt("GM: {} km^3 * s^-2", orbit.GM);
         ImGui::TextFmt("Orbital period: {} s", orbit.T());
         ImGui::TextFmt("Orbiting: {}", GetName(GetUniverse(), orbit.reference_body).c_str());
-        if (GetUniverse().valid(orbit.reference_body) &&
-            GetUniverse().any_of<bodies::Body>(orbit.reference_body)) {
+        if (GetUniverse().valid(orbit.reference_body) && GetUniverse().any_of<bodies::Body>(orbit.reference_body)) {
             double r = orbit.GetOrbitingRadius();
             double p = GetUniverse().get<bodies::Body>(orbit.reference_body).radius;
             p = 0;
@@ -83,8 +82,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
                            orbit.TimeToTrueAnomaly(common::components::types::PI));
         }
     }
-    if (GetUniverse().all_of<Kinematics>(body) &&
-        ImGui::CollapsingHeader("Orbital Vectors")) {
+    if (GetUniverse().all_of<Kinematics>(body) && ImGui::CollapsingHeader("Orbital Vectors")) {
         auto& coords = GetUniverse().get<Kinematics>(body);
         ImGui::TextFmt("Position {} {} {}", coords.position.x, coords.position.y, coords.position.z);
         ImGui::TextFmt("Velocity {} {} {}", coords.velocity.x, coords.velocity.y, coords.velocity.z);
@@ -194,8 +192,8 @@ void SpaceshipWindow::DoUI(int delta_time) {
         auto& target = GetUniverse().get<Orbit>(selected);
 
         // Get distance from target
-        glm::vec3 target_distance = GetUniverse().get<Kinematics>(selected).position -
-                                    GetUniverse().get<Kinematics>(body).position;
+        glm::vec3 target_distance =
+            GetUniverse().get<Kinematics>(selected).position - GetUniverse().get<Kinematics>(body).position;
         ImGui::TextFmt("Distance to target: {}", glm::length(target_distance));
         if (ImGui::Button("Rendez-vous!")) {
             // Rdv with target
@@ -260,8 +258,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
 
         if (ImGui::BeginChild("Landing Target")) {
             for (auto& entity : o_system.children) {
-                if (!GetUniverse().all_of<bodies::Planet, Orbit>(
-                        entity)) {
+                if (!GetUniverse().all_of<bodies::Planet, Orbit>(entity)) {
                     continue;
                 }
                 if (ImGui::Selectable(GetName(GetUniverse(), entity).c_str(), selected == entity)) {

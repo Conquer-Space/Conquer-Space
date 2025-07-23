@@ -35,4 +35,4 @@ class SysCommand : public SysUserInterface {
     entt::entity selected_ship = entt::null;
     void ShipList();
 };
-} // namespace cqsp::client::systems
+}  // namespace cqsp::client::systems

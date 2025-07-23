@@ -20,4 +20,4 @@
 
 namespace cqsp::engine::primitive {
 Mesh_t MakeCube();
-} // namespace cqsp::engine::primitive
+}  // namespace cqsp::engine::primitive

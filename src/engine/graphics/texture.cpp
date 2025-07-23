@@ -25,7 +25,7 @@
 
 namespace cqsp::asset {
 unsigned int CreateTexture(unsigned char* data, int width, int height, int components,
-                                        const TextureLoadingOptions& options) {
+                           const TextureLoadingOptions& options) {
     unsigned int texid;
     glGenTextures(1, &texid);
     GLenum format = GL_RED;
@@ -55,15 +55,15 @@ unsigned int CreateTexture(unsigned char* data, int width, int height, int compo
 }
 
 void CreateTexture(Texture& texture, unsigned char* data, int width, int height, int components,
-                                const TextureLoadingOptions& options) {
+                   const TextureLoadingOptions& options) {
     texture.id = CreateTexture(data, width, height, components, options);
     texture.width = width;
     texture.height = height;
     texture.texture_type = GL_TEXTURE_2D;
 }
 
-void LoadCubemapData(Texture& texture, std::vector<unsigned char*>& faces, int width, int height,
-                                  int components, TextureLoadingOptions& options) {
+void LoadCubemapData(Texture& texture, std::vector<unsigned char*>& faces, int width, int height, int components,
+                     TextureLoadingOptions& options) {
     glGenTextures(1, &texture.id);
     glBindTexture(GL_TEXTURE_CUBE_MAP, texture.id);
 
@@ -96,8 +96,7 @@ void LoadCubemapData(Texture& texture, std::vector<unsigned char*>& faces, int w
     texture.texture_type = GL_TEXTURE_CUBE_MAP;
 }
 
-bool SaveImage(const char* path, int width, int height, int components, const unsigned char* data,
-                            bool flip) {
+bool SaveImage(const char* path, int width, int height, int components, const unsigned char* data, bool flip) {
     if (flip) {
         // Flip because everybody can't agree on having one origin for the window.
         stbi_flip_vertically_on_write(1);

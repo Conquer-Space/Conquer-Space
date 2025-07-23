@@ -20,4 +20,4 @@
 
 namespace cqsp::client::systems {
 void ShowOptionsWindow(bool* open, engine::Application& app);
-} // namespace cqsp::client::systems
+}  // namespace cqsp::client::systems

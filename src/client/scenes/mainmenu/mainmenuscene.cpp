@@ -220,7 +220,8 @@ void MainMenuScene::ShuffleFileList() {
     index = 0;
 }
 
-void MainMenuScene::SetMainMenuImage(const std::string& file) { main_menu->GetElementById("main_window")
+void MainMenuScene::SetMainMenuImage(const std::string& file) {
+    main_menu->GetElementById("main_window")
         ->SetProperty("decorator", fmt::format("image(\"{}\" none cover center bottom)", file));
 }
 

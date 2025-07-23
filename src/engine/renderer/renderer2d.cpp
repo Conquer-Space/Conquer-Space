@@ -28,7 +28,7 @@ using asset::ShaderProgram_t;
 using asset::Texture;
 
 Renderer2D::Renderer2D(ShaderProgram_t tex, ShaderProgram_t color)
-: texture_shader(std::move(std::move(tex))), color_shader(std::move(std::move(color))) {}
+    : texture_shader(std::move(std::move(tex))), color_shader(std::move(std::move(color))) {}
 
 Renderer2D::Renderer2D(ShaderProgram_t tex) : texture_shader(std::move(std::move(tex))), color_shader(nullptr) {}
 

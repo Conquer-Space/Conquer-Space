@@ -450,8 +450,8 @@ void Application::DrawText(const std::string& text, const glm::vec3& color, floa
 
 void Application::DrawTextNormalized(const std::string& text, float x, float y) {
     if (fontShader != nullptr && m_font != nullptr) {
-        RenderText(*fontShader, *m_font, text, (x + 1) * GetWindowWidth() / 2,
-                                (y + 1) * GetWindowHeight() / 2, 16, glm::vec3(1.f, 1.f, 1.f));
+        RenderText(*fontShader, *m_font, text, (x + 1) * GetWindowWidth() / 2, (y + 1) * GetWindowHeight() / 2, 16,
+                   glm::vec3(1.f, 1.f, 1.f));
     }
 }
 
@@ -510,7 +510,7 @@ void Application::SetIcon() { m_window->SetIcon(GetCqspDataPath() + "/" + icon_p
 bool Application::GlInit() {
     m_window = new GLWindow(this);
     if (!m_window->InitWindow(m_client_options.GetOptions()["window"]["width"],
-                         m_client_options.GetOptions()["window"]["height"])) {
+                              m_client_options.GetOptions()["window"]["height"])) {
         ENGINE_LOG_CRITICAL("Failed to init window!");
         return false;
     }

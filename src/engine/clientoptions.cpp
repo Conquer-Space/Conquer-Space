@@ -51,7 +51,5 @@ Hjson::Value ClientOptions::GetDefaultOptions() {
     return default_options;
 }
 
-std::string ClientOptions::GetDefaultLocation() {
-    return common::util::GetCqspAppDataPath() + "/settings.hjson";
-}
+std::string ClientOptions::GetDefaultLocation() { return common::util::GetCqspAppDataPath() + "/settings.hjson"; }
 }  // namespace cqsp::client

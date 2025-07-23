@@ -580,8 +580,8 @@ std::unique_ptr<Asset> AssetLoader::LoadCubemap(VirtualMounter* mount, const std
     return asset;
 }
 
-std::unique_ptr<Asset> AssetLoader::LoadModel(VirtualMounter* mount, const std::string& path,
-                                                           const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<Asset> AssetLoader::LoadModel(VirtualMounter* mount, const std::string& path, const std::string& key,
+                                              const Hjson::Value& hints) {
     Assimp::Importer importer;
     std::filesystem::path file_path = std::filesystem::path(common::util::GetCqspDataPath()) / path;
     const aiScene* scene =

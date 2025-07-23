@@ -166,7 +166,7 @@ void LoadModelPrototype(ModelPrototype* prototype, Model* asset) {
         Texture* texture = new Texture();
         auto& tex_prototype = textures.second;
         CreateTexture(*texture, tex_prototype.texture_data, tex_prototype.width, tex_prototype.height,
-                             tex_prototype.channels);
+                      tex_prototype.channels);
         // Insert the textures into the model
         stbi_image_free(tex_prototype.texture_data);
         texture_map[textures.first] = texture;

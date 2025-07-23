@@ -25,14 +25,13 @@
 #include "engine/enginelogger.h"
 namespace cqsp::engine {
 
-using asset::Texture;
 using asset::ShaderProgram_t;
+using asset::Texture;
 
 void Draw(Renderable &renderable) {
     renderable.shaderProgram->UseProgram();
     int i = -1;
-    for (std::vector<Texture *>::iterator it = renderable.textures.begin();
-         it != renderable.textures.end(); ++it) {
+    for (std::vector<Texture *>::iterator it = renderable.textures.begin(); it != renderable.textures.end(); ++it) {
         i++;
         if ((*it)->texture_type == -1) {
             ENGINE_LOG_WARN("Texture {} is not initialized properly", (*it)->id);
@@ -57,8 +56,7 @@ void Draw(Renderable &renderable, ShaderProgram_t &shader) { Draw(renderable, sh
 void Draw(Renderable &renderable, asset::ShaderProgram *shader) {
     shader->UseProgram();
     int i = -1;
-    for (std::vector<Texture *>::iterator it = renderable.textures.begin();
-         it != renderable.textures.end(); ++it) {
+    for (std::vector<Texture *>::iterator it = renderable.textures.begin(); it != renderable.textures.end(); ++it) {
         i++;
         if ((*it)->texture_type == -1) {
             ENGINE_LOG_WARN("Texture {} is not initialized properly", (*it)->id);
@@ -78,9 +76,7 @@ void Draw(Renderable &renderable, asset::ShaderProgram *shader) {
     glActiveTexture(GL_TEXTURE0);
 }
 
-BasicRendererObject MakeRenderable() {
-    return std::make_shared<Renderable>();
-}
+BasicRendererObject MakeRenderable() { return std::make_shared<Renderable>(); }
 
 BasicRenderer::~BasicRenderer() = default;
 
