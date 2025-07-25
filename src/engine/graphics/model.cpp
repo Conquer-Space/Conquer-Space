@@ -23,7 +23,7 @@ void Model::PostLoad(AssetManager& manager) {
     if (shader.get() != nullptr) {
         return;
     }
-    auto shader_def = manager.GetAsset<asset::ShaderDefinition>(shader_name);
+    auto shader_def = manager.GetAsset<ShaderDefinition>(shader_name);
     if (shader_def == nullptr) {
         return;
     }

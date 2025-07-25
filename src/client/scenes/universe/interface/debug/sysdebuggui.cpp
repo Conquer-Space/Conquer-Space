@@ -24,7 +24,6 @@
 #include "common/util/profiler.h"
 #include "glad/glad.h"
 
-
 namespace cqsp::client::systems {
 using engine::Application;
 namespace components = common::components;
@@ -54,7 +53,6 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
 
     auto entity_name = [](sysdebuggui_parameters) {
         if (std::all_of(args.begin(), args.end(), ::isdigit)) {
-
             entt::entity entity = static_cast<entt::entity>(atoi(args.data()));
             std::string name = "N/A";
             if (universe.all_of<components::Name>(entity)) {

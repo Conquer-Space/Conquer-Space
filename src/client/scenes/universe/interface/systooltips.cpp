@@ -38,18 +38,16 @@
 #include "common/util/utilnumberdisplay.h"
 #include "engine/gui.h"
 
-
 namespace cqsp::client::systems::gui {
-
 
 namespace components = common::components;
 namespace types = components::types;
 namespace bodies = components::bodies;
 namespace ships = components::ships;
-using common::Universe;
-using util::LongToHumanString;
-using types::Orbit;
 using bodies::Body;
+using common::Universe;
+using types::Orbit;
+using util::LongToHumanString;
 
 void RenderEntityType(const Universe& universe, entt::entity entity) {
     std::string text = common::util::GetEntityType(universe, entity);
@@ -74,7 +72,6 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
         ImGui::TextFmt("Resources");
         // Then do demand
         DrawLedgerTable("resourcesstockpiletooltip", universe, universe.get<components::ResourceStockpile>(entity));
-                                               
     }
     if (universe.all_of<components::FactoryProducing>(entity)) {
         ImGui::Text("Producing next tick");
@@ -103,7 +100,6 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
         ImGui::TextFmt("Revenue: {}", LongToHumanString(costs.revenue));
     }
 }
-
 
 void EntityTooltipContent(const Universe& universe, entt::entity entity) {
     if (entity == entt::null) {

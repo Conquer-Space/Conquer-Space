@@ -38,4 +38,4 @@ class SysStarSystemTree : public SysUserInterface {
     entt::entity selected_planet;
     entt::sparse_set planets;
 };
-} // namespace cqsp::client::systems
+}  // namespace cqsp::client::systems

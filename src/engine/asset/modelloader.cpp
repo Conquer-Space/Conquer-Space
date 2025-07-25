@@ -155,18 +155,18 @@ void GenerateMesh(engine::Mesh& mesh, std::vector<Vertex> vertices, std::vector<
 void LoadModelPrototype(ModelPrototype* prototype, Model* asset) {
     for (auto& mesh_type : prototype->prototypes) {
         ModelMesh_t mesh = std::make_shared<ModelMesh>();
-        asset::LoadModelData(mesh.get(), mesh_type.vertices, mesh_type.indices);
+        LoadModelData(mesh.get(), mesh_type.vertices, mesh_type.indices);
         mesh->material = mesh_type.material_id;
         asset->meshes.push_back(mesh);
     }
     // Load textures
-    std::map<std::string, asset::Texture*> texture_map;
+    std::map<std::string, Texture*> texture_map;
     for (auto& textures : prototype->texture_map) {
         // Set the map
-        asset::Texture* texture = new asset::Texture();
+        Texture* texture = new Texture();
         auto& tex_prototype = textures.second;
-        asset::CreateTexture(*texture, tex_prototype.texture_data, tex_prototype.width, tex_prototype.height,
-                             tex_prototype.channels);
+        CreateTexture(*texture, tex_prototype.texture_data, tex_prototype.width, tex_prototype.height,
+                      tex_prototype.channels);
         // Insert the textures into the model
         stbi_image_free(tex_prototype.texture_data);
         texture_map[textures.first] = texture;

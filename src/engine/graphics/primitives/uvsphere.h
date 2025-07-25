@@ -19,7 +19,6 @@
 #include "engine/graphics/mesh.h"
 #include "engine/graphics/renderable.h"
 
-
 namespace cqsp::engine::primitive {
-cqsp::engine::Mesh_t ConstructSphereMesh(int x_segments, int y_segments);
-} // namespace cqsp::engine::primitive
+Mesh_t ConstructSphereMesh(int x_segments, int y_segments);
+}  // namespace cqsp::engine::primitive

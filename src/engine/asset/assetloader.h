@@ -126,28 +126,28 @@ class AssetLoader {
     ///
     /// This has no hints
     /// </summary>
-    std::unique_ptr<cqsp::asset::Asset> LoadText(cqsp::asset::VirtualMounter* mount, const std::string& path,
-                                                 const std::string& key, const Hjson::Value& hints);
+    std::unique_ptr<Asset> LoadText(VirtualMounter* mount, const std::string& path, const std::string& key,
+                                    const Hjson::Value& hints);
     /// <summary>
     /// Loads a directory of text files into a map of strings keyed by their relative path to the
     /// resource.hjson file.
     /// </summary>
-    std::unique_ptr<cqsp::asset::Asset> LoadTextDirectory(cqsp::asset::VirtualMounter* mount, const std::string& path,
-                                                          const std::string& key, const Hjson::Value& hints);
+    std::unique_ptr<Asset> LoadTextDirectory(VirtualMounter* mount, const std::string& path, const std::string& key,
+                                             const Hjson::Value& hints);
 
     /// <summary>
     /// Textures have one hint, the `magfilter` hint. If it is present, and set to true, it will enable
     /// closest magfilter, which will make the texture look pixellated.
     /// If it is not present, then it will be linear mag.
     /// </summary>
-    std::unique_ptr<cqsp::asset::Asset> LoadTexture(cqsp::asset::VirtualMounter* mount, const std::string& path,
-                                                    const std::string& key, const Hjson::Value& hints);
+    std::unique_ptr<Asset> LoadTexture(VirtualMounter* mount, const std::string& path, const std::string& key,
+                                       const Hjson::Value& hints);
 
     /// <summary>
     /// Loads binary data straight from the file.
     /// </summary>
-    std::unique_ptr<cqsp::asset::Asset> LoadBinaryAsset(cqsp::asset::VirtualMounter* mount, const std::string& path,
-                                                        const std::string& key, const Hjson::Value& hints);
+    std::unique_ptr<Asset> LoadBinaryAsset(VirtualMounter* mount, const std::string& path, const std::string& key,
+                                           const Hjson::Value& hints);
 
     /// <summary>
     /// Hjson is rather flexible, it can load a single file or a directory, with just the same option.
@@ -160,16 +160,16 @@ class AssetLoader {
     /// If it refers to directory, and a file that is loaded is not in a hjson array, it will not load that specific
     /// file, but it will not fail.
     /// </summary>
-    std::unique_ptr<cqsp::asset::Asset> LoadHjson(cqsp::asset::VirtualMounter* mount, const std::string& path,
-                                                  const std::string& key, const Hjson::Value& hints);
+    std::unique_ptr<Asset> LoadHjson(VirtualMounter* mount, const std::string& path, const std::string& key,
+                                     const Hjson::Value& hints);
 
     /// <summary>
     /// Shaders have one option, the `type` hint, to specify what type of shader it is.
     /// We have two so far, the `frag` option for a fragment shader, and `vert` for a vertex shader.
     /// We do not have support for compute and geometry shaders, but we may add support for that in the future.
     /// </summary>
-    std::unique_ptr<cqsp::asset::Asset> LoadShader(cqsp::asset::VirtualMounter* mount, const std::string& path,
-                                                   const std::string& key, const Hjson::Value& hints);
+    std::unique_ptr<Asset> LoadShader(VirtualMounter* mount, const std::string& path, const std::string& key,
+                                      const Hjson::Value& hints);
     /// <summary>
     /// Just specify a .ttf file, and it will load it into an opengl texture font object.
     /// </summary>
@@ -178,16 +178,16 @@ class AssetLoader {
     /// Because each UI library has their differing implementation of fonts, to add
     /// fonts to the UI, do not use a `resource.hjson`. You need to go to `binaries/data/core/gfx/fonts.hjson`
     /// to alter and add fonts for the UI.
-    std::unique_ptr<cqsp::asset::Asset> LoadFont(cqsp::asset::VirtualMounter* mount, const std::string& path,
-                                                 const std::string& key, const Hjson::Value& hints);
+    std::unique_ptr<Asset> LoadFont(VirtualMounter* mount, const std::string& path, const std::string& key,
+                                    const Hjson::Value& hints);
     /// <summary>
     /// Only ogg files are supported for now.
     /// </summary>
     /// If you're looking to add a music file, do not add it by the 'normal' way. This is for performance
     /// reasons.
     /// Go to `binaries/data/core/music/readme.txt` for further reading.
-    std::unique_ptr<cqsp::asset::Asset> LoadAudio(cqsp::asset::VirtualMounter* mount, const std::string& path,
-                                                  const std::string& key, const Hjson::Value& hints);
+    std::unique_ptr<Asset> LoadAudio(VirtualMounter* mount, const std::string& path, const std::string& key,
+                                     const Hjson::Value& hints);
 
     /// <summary>
     /// Cubemaps are a special type of texture that make up the skybox. Although they are specified differently in the
@@ -212,11 +212,11 @@ class AssetLoader {
     ///```
     /// This will not load the texture more or less than 6 textures are defined in the array.
     /// </summary>
-    std::unique_ptr<cqsp::asset::Asset> LoadCubemap(cqsp::asset::VirtualMounter* mount, const std::string& path,
-                                                    const std::string& key, const Hjson::Value& hints);
+    std::unique_ptr<Asset> LoadCubemap(VirtualMounter* mount, const std::string& path, const std::string& key,
+                                       const Hjson::Value& hints);
 
-    std::unique_ptr<cqsp::asset::Asset> LoadModel(cqsp::asset::VirtualMounter* mount, const std::string& path,
-                                                  const std::string& key, const Hjson::Value& hints);
+    std::unique_ptr<Asset> LoadModel(VirtualMounter* mount, const std::string& path, const std::string& key,
+                                     const Hjson::Value& hints);
 
     /// <summary>
     /// A shader defintion is a way to simplify the creation of shader objects.
@@ -240,7 +240,7 @@ class AssetLoader {
     /// Matrices are not supported yet
     /// </summary>
     /// \see @ref cqsp::asset::ShaderDefinition for a most up to date version
-    std::unique_ptr<ShaderDefinition> LoadShaderDefinition(cqsp::asset::VirtualMounter* mount, const std::string& path,
+    std::unique_ptr<ShaderDefinition> LoadShaderDefinition(VirtualMounter* mount, const std::string& path,
                                                            const std::string& key, const Hjson::Value& hints);
 
     /// <summary>
@@ -260,8 +260,8 @@ class AssetLoader {
     /// <param name="key">Key of the asset to be loaded</param>
     /// <param name="hints">Any hints to give to the loader</param>
     /// <returns></returns>
-    std::unique_ptr<cqsp::asset::Asset> LoadAsset(const AssetType& type, const std::string& path,
-                                                  const std::string& key, const Hjson::Value& hints);
+    std::unique_ptr<Asset> LoadAsset(const AssetType& type, const std::string& path, const std::string& key,
+                                     const Hjson::Value& hints);
 
     /// <summary>
     /// Conducts checks to determine if the asset was loaded correctly. Wraps Load asset,

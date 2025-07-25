@@ -51,8 +51,7 @@ void SysFieldViewer::DoUI(int delta_time) {
                       ImGuiWindowFlags_HorizontalScrollbar | window_flags);
     auto view = GetUniverse().view<Field>();
     for (entt::entity entity : view) {
-        if (ImGui::Selectable(GetUniverse().get<Name>(entity).name.c_str(),
-                              selected_tech == entity)) {
+        if (ImGui::Selectable(GetUniverse().get<Name>(entity).name.c_str(), selected_tech == entity)) {
             selected_tech = entity;
         }
     }
@@ -127,8 +126,7 @@ void RemoveFieldConnection(std::vector<entt::entity>& vec, entt::entity ent) {
     }
 }
 
-void AcceptNewItem(common::Universe& universe, int input_type, entt::entity input_entity,
-                   entt::entity output_entity) {
+void AcceptNewItem(common::Universe& universe, int input_type, entt::entity input_entity, entt::entity output_entity) {
     // Look for the link, then connect back
     // The initial pins should be in multiples of 4 because we make 4
     // Then connect the pins

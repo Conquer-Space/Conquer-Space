@@ -18,25 +18,26 @@
 
 #include "common/util/paths.h"
 
-void cqsp::client::ClientOptions::LoadOptions(std::istream& inputstream) {
+namespace cqsp::client {
+void ClientOptions::LoadOptions(std::istream& inputstream) {
     Hjson::DecoderOptions decOpt;
     inputstream >> Hjson::StreamDecoder(options, decOpt);
     options = Hjson::Merge(GetDefaultOptions(), options);
 }
 
-void cqsp::client::ClientOptions::WriteOptions(std::ostream& output_stream) {
+void ClientOptions::WriteOptions(std::ostream& output_stream) {
     Hjson::EncoderOptions decOpt;
     output_stream << Hjson::StreamEncoder(options, decOpt);
 }
 
-void cqsp::client::ClientOptions::WriteOptions() {
+void ClientOptions::WriteOptions() {
     std::ofstream config_path(GetDefaultLocation(), std::ios::trunc);
     WriteOptions(config_path);
 }
 
-void cqsp::client::ClientOptions::LoadDefaultOptions() { options = Hjson::Merge(GetDefaultOptions(), options); }
+void ClientOptions::LoadDefaultOptions() { options = Hjson::Merge(GetDefaultOptions(), options); }
 
-Hjson::Value cqsp::client::ClientOptions::GetDefaultOptions() {
+Hjson::Value ClientOptions::GetDefaultOptions() {
     Hjson::Value default_options;
     default_options["window"]["width"] = 1280;
     default_options["window"]["height"] = 720;
@@ -50,6 +51,5 @@ Hjson::Value cqsp::client::ClientOptions::GetDefaultOptions() {
     return default_options;
 }
 
-std::string cqsp::client::ClientOptions::GetDefaultLocation() {
-    return cqsp::common::util::GetCqspAppDataPath() + "/settings.hjson";
-}
+std::string ClientOptions::GetDefaultLocation() { return common::util::GetCqspAppDataPath() + "/settings.hjson"; }
+}  // namespace cqsp::client

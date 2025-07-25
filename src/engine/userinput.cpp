@@ -19,7 +19,8 @@
 #include <GLFW/glfw3.h>
 #include <RmlUi/Core/Input.h>
 
-int cqsp::engine::GetRmlUiKey(int glfw_key) {
+namespace cqsp::engine {
+int GetRmlUiKey(int glfw_key) {
     switch (glfw_key) {
         case GLFW_KEY_A:
             return Rml::Input::KI_A;
@@ -192,9 +193,9 @@ int cqsp::engine::GetRmlUiKey(int glfw_key) {
     }
 }
 
-int cqsp::engine::GetAsciiKey(int glfw_key) { return 0; }
+int GetAsciiKey(int glfw_key) { return 0; }
 
-cqsp::engine::KeyInput cqsp::engine::GetKey(int key) {
+KeyInput GetKey(int key) {
     switch (key) {
         case GLFW_KEY_SPACE:
             return KeyInput::KEY_SPACE;
@@ -441,7 +442,7 @@ cqsp::engine::KeyInput cqsp::engine::GetKey(int key) {
     }
 }
 
-int cqsp::engine::GetGlfwKey(KeyInput key) {
+int GetGlfwKey(KeyInput key) {
     switch (key) {
         case KeyInput::KEY_SPACE:
             return GLFW_KEY_SPACE;
@@ -687,3 +688,4 @@ int cqsp::engine::GetGlfwKey(KeyInput key) {
             return GLFW_INVALID_VALUE;
     }
 }
+}  // namespace cqsp::engine

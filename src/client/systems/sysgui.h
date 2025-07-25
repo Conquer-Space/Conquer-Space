@@ -55,4 +55,4 @@ class SysRmlUiInterface {
  private:
     engine::Application &m_app;
 };
-} // namespace cqsp::client::systems
+}  // namespace cqsp::client::systems

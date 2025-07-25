@@ -53,9 +53,11 @@
 #include "engine/userinput.h"
 
 namespace cqsp::engine {
-namespace {
-GLFWwindow* window(cqsp::engine::Window* window) { return reinterpret_cast<GLWindow*>(window)->window; }
-}  // namespace
+
+using asset::RenderText;
+using common::util::GetCqspDataPath;
+
+GLFWwindow* window(Window* window) { return reinterpret_cast<GLWindow*>(window)->window; }
 
 int Application::init() {
     LoggerInit();
@@ -198,9 +200,9 @@ void Application::InitRmlUi() {
     Hjson::Value fontDatabase;
     Hjson::DecoderOptions decOpt;
     decOpt.comments = false;
-    std::fstream stream(cqsp::common::util::GetCqspDataPath() + "/core/gfx/fonts/fonts.hjson");
+    std::fstream stream(GetCqspDataPath() + "/core/gfx/fonts/fonts.hjson");
     stream >> Hjson::StreamDecoder(fontDatabase, decOpt);
-    std::string fontPath = cqsp::common::util::GetCqspDataPath() + "/core/gfx/fonts/";
+    std::string fontPath = GetCqspDataPath() + "/core/gfx/fonts/";
 
     // Load the fonts
     for (int index = 0; index < fontDatabase["rmlui"].size(); index++) {
@@ -381,8 +383,7 @@ bool Application::ShouldExit() { return m_window->ShouldExit(); }
 void Application::ExitApplication() { m_window->ExitApplication(); }
 
 Rml::ElementDocument* Application::LoadDocument(const std::string& path) {
-    std::filesystem::path doc_path =
-        std::filesystem::relative(std::filesystem::path(common::util::GetCqspDataPath()) / path);
+    std::filesystem::path doc_path = std::filesystem::relative(std::filesystem::path(GetCqspDataPath()) / path);
     std::string path_name = doc_path.string();
     std::replace(path_name.begin(), path_name.end(), '\\', '/');
     auto document = rml_context->LoadDocument(path_name);
@@ -395,8 +396,7 @@ Rml::ElementDocument* Application::LoadDocument(const std::string& path) {
 }
 
 void Application::CloseDocument(const std::string& path) {
-    std::filesystem::path doc_path =
-        std::filesystem::relative(std::filesystem::path(common::util::GetCqspDataPath()) / path);
+    std::filesystem::path doc_path = std::filesystem::relative(std::filesystem::path(GetCqspDataPath()) / path);
     std::string path_name = doc_path.string();
     std::replace(path_name.begin(), path_name.end(), '\\', '/');
     loaded_documents[path_name]->Close();
@@ -404,8 +404,7 @@ void Application::CloseDocument(const std::string& path) {
 }
 
 Rml::ElementDocument* Application::ReloadDocument(const std::string& path) {
-    std::filesystem::path doc_path =
-        std::filesystem::canonical(std::filesystem::path(common::util::GetCqspDataPath()) / path);
+    std::filesystem::path doc_path = std::filesystem::canonical(std::filesystem::path(GetCqspDataPath()) / path);
     std::string path_name = doc_path.string();
     std::replace(path_name.begin(), path_name.end(), '\\', '/');
     if (loaded_documents.find(path_name) == loaded_documents.end()) {
@@ -424,35 +423,35 @@ Rml::ElementDocument* Application::ReloadDocument(const std::string& path) {
 void Application::DrawText(const std::string& text, float x, float y) {
     if (fontShader != nullptr && m_font != nullptr) {
         // Render with size 16 white text
-        cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, 16, glm::vec3(1.f, 1.f, 1.f));
+        RenderText(*fontShader, *m_font, text, x, y, 16, glm::vec3(1.f, 1.f, 1.f));
     }
 }
 
 void Application::DrawText(const std::string& text, const glm::vec3& color, float x, float y) {
     if (fontShader != nullptr && m_font != nullptr) {
         // Render with size 16 white text
-        cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, 16, color);
+        RenderText(*fontShader, *m_font, text, x, y, 16, color);
     }
 }
 
 void Application::DrawText(const std::string& text, float x, float y, float size) {
     if (fontShader != nullptr && m_font != nullptr) {
         // Render with size 16 white text
-        cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, size, glm::vec3(1.f, 1.f, 1.f));
+        RenderText(*fontShader, *m_font, text, x, y, size, glm::vec3(1.f, 1.f, 1.f));
     }
 }
 
 void Application::DrawText(const std::string& text, const glm::vec3& color, float x, float y, float size) {
     if (fontShader != nullptr && m_font != nullptr) {
         // Render with size 16 white text
-        cqsp::asset::RenderText(*fontShader, *m_font, text, x, y, size, color);
+        RenderText(*fontShader, *m_font, text, x, y, size, color);
     }
 }
 
 void Application::DrawTextNormalized(const std::string& text, float x, float y) {
     if (fontShader != nullptr && m_font != nullptr) {
-        cqsp::asset::RenderText(*fontShader, *m_font, text, (x + 1) * GetWindowWidth() / 2,
-                                (y + 1) * GetWindowHeight() / 2, 16, glm::vec3(1.f, 1.f, 1.f));
+        RenderText(*fontShader, *m_font, text, (x + 1) * GetWindowWidth() / 2, (y + 1) * GetWindowHeight() / 2, 16,
+                   glm::vec3(1.f, 1.f, 1.f));
     }
 }
 
@@ -496,17 +495,17 @@ void Application::InitFonts() {
     Hjson::Value fontDatabase;
     Hjson::DecoderOptions decOpt;
     decOpt.comments = false;
-    std::fstream stream(cqsp::common::util::GetCqspDataPath() + "/core/gfx/fonts/fonts.hjson");
+    std::fstream stream(GetCqspDataPath() + "/core/gfx/fonts/fonts.hjson");
 
     stream >> Hjson::StreamDecoder(fontDatabase, decOpt);
-    std::string fontPath = cqsp::common::util::GetCqspDataPath() + "/core/gfx/fonts/";
+    std::string fontPath = GetCqspDataPath() + "/core/gfx/fonts/";
     ImGuiIO io = ImGui::GetIO();
     ImFont* defaultFont = io.Fonts->AddFontFromFileTTF((fontPath + fontDatabase["default"]["path"]).c_str(),
                                                        fontDatabase["default"]["size"]);
     io.FontDefault = defaultFont;
 }
 
-void Application::SetIcon() { m_window->SetIcon(cqsp::common::util::GetCqspDataPath() + "/" + icon_path); }
+void Application::SetIcon() { m_window->SetIcon(GetCqspDataPath() + "/" + icon_path); }
 
 bool Application::GlInit() {
     m_window = new GLWindow(this);
@@ -529,8 +528,8 @@ bool Application::GlInit() {
 void Application::LoggerInit() {
     // Get path
     properties["data"] = common::util::GetCqspAppDataPath();
-    cqsp::engine::engine_logger = cqsp::common::util::make_logger("app", true);
-    auto g_logger = cqsp::common::util::make_logger("game", true);
+    engine_logger = common::util::make_logger("app", true);
+    auto g_logger = common::util::make_logger("game", true);
     spdlog::set_default_logger(g_logger);
 }
 

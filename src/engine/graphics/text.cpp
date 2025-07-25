@@ -28,8 +28,8 @@
 #include <utility>
 
 #include "engine/enginelogger.h"
-
-void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer, uint64_t size) {
+namespace cqsp::asset {
+void LoadFontData(Font &font, unsigned char *fontBuffer, uint64_t size) {
     FT_Library ft;
     // All functions return a value different than 0 whenever an error occurred
     if (FT_Init_FreeType(&ft) != 0) {
@@ -95,8 +95,7 @@ void cqsp::asset::LoadFontData(Font &font, unsigned char *fontBuffer, uint64_t s
     glBindVertexArray(0);
 }
 
-void cqsp::asset::RenderText(cqsp::asset::ShaderProgram &shader, Font &font, std::string text, float x, float y,
-                             float scale, glm::vec3 color) {
+void RenderText(ShaderProgram &shader, Font &font, std::string text, float x, float y, float scale, glm::vec3 color) {
     // activate corresponding render state
     shader.UseProgram();
     shader.setVec3("textColor", color);
@@ -137,3 +136,4 @@ void cqsp::asset::RenderText(cqsp::asset::ShaderProgram &shader, Font &font, std
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
+}  // namespace cqsp::asset

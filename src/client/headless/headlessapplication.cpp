@@ -27,7 +27,6 @@
 #include "common/util/logging.h"
 #include "common/util/strip.h"
 
-
 namespace cqsp::client::headless {
 
 using common::systems::simulation::Simulation;

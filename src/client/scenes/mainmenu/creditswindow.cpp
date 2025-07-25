@@ -72,9 +72,7 @@ void CreditsWindow::Update(double delta_time) {
 
 void CreditsWindow::Hide() { document->SetClass("visible", false); }
 
-std::string CreditsWindow::GetDocumentName() {
-    return common::util::GetCqspDataPath() + "/core/gui/credits.rml";
-}
+std::string CreditsWindow::GetDocumentName() { return common::util::GetCqspDataPath() + "/core/gui/credits.rml"; }
 
 void CreditsWindow::ProcessEvent(Rml::Event& event) {
     if (event.GetId() == Rml::EventId::Keydown) {

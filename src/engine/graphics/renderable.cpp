@@ -15,17 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "engine/graphics/renderable.h"
-
-void cqsp::engine::Renderable::SetTexture(const std::string& name, int id, asset::Texture* texture) {
+namespace cqsp::engine {
+void Renderable::SetTexture(const std::string& name, int id, asset::Texture* texture) {
     shaderProgram->UseProgram();
     shaderProgram->setInt(name, id);
 
     textures.push_back(texture);
 }
 
-void cqsp::engine::Renderable::SetMVP(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection) {
+void Renderable::SetMVP(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection) {
     shaderProgram->UseProgram();
     shaderProgram->setMat4("model", model);
     shaderProgram->setMat4("view", view);
     shaderProgram->setMat4("projection", projection);
 }
+}  // namespace cqsp::engine

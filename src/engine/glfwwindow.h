@@ -22,7 +22,7 @@
 #include "engine/window.h"
 
 namespace cqsp::engine {
-class GLWindow : public cqsp::engine::Window {
+class GLWindow : public Window {
  public:
     explicit GLWindow(Application* app) : app(app) {}
 

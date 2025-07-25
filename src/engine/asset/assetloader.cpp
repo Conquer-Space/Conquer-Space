@@ -64,13 +64,11 @@ AssetLoader::AssetLoader(AssetOptions asset_options) : asset_options(asset_optio
     loading_functions[AssetType::MODEL] = CREATE_ASSET_LAMBDA(LoadModel);
 }
 
-namespace cqspa = cqsp::asset;
-
 void AssetLoader::LoadMods() {
     ZoneScoped;
     // Load enabled mods
     // Load core
-    std::filesystem::path data_path(cqsp::common::util::GetCqspDataPath());
+    std::filesystem::path data_path(common::util::GetCqspDataPath());
     std::filesystem::recursive_directory_iterator it(data_path);
 
     // Load mods from the document folders
@@ -100,7 +98,7 @@ void AssetLoader::LoadMods() {
     all_mods["core"] = true;
 
     // Load other packages
-    std::filesystem::path save_path(cqsp::common::util::GetCqspAppDataPath());
+    std::filesystem::path save_path(common::util::GetCqspAppDataPath());
     std::filesystem::path mods_folder = save_path / "mods";
     if (!std::filesystem::exists(mods_folder)) {
         std::filesystem::create_directories(mods_folder);
@@ -149,7 +147,7 @@ void AssetLoader::LoadMods() {
 }
 
 std::string AssetLoader::GetModFilePath() {
-    return (std::filesystem::path(cqsp::common::util::GetCqspAppDataPath()) / "mod.hjson").string();
+    return (std::filesystem::path(common::util::GetCqspAppDataPath()) / "mod.hjson").string();
 }
 
 std::optional<PackagePrototype> AssetLoader::LoadModPrototype(const std::string& path_string) {
@@ -347,7 +345,7 @@ std::unique_ptr<Asset> AssetLoader::LoadText(VirtualMounter* mount, const std::s
     if (!mount->IsFile(path)) {
         return nullptr;
     }
-    std::unique_ptr<cqspa::TextAsset> asset = std::make_unique<cqspa::TextAsset>();
+    std::unique_ptr<TextAsset> asset = std::make_unique<TextAsset>();
     auto file = mount->Open(path);
     int size = file->Size();
     asset->data = ReadAllFromVFileToString(file.get());
@@ -360,7 +358,7 @@ std::unique_ptr<Asset> AssetLoader::LoadTextDirectory(VirtualMounter* mount, con
     if (!mount->IsDirectory(path)) {
         return nullptr;
     }
-    std::unique_ptr<cqspa::TextDirectoryAsset> asset = std::make_unique<cqspa::TextDirectoryAsset>();
+    std::unique_ptr<TextDirectoryAsset> asset = std::make_unique<TextDirectoryAsset>();
     auto dir = mount->OpenDirectory(path);
     int size = dir->GetSize();
     for (int i = 0; i < size; i++) {
@@ -409,9 +407,8 @@ std::unique_ptr<Asset> AssetLoader::LoadTexture(VirtualMounter* mount, const std
     return std::move(texture);
 }
 
-std::unique_ptr<cqsp::asset::Asset> AssetLoader::LoadBinaryAsset(cqsp::asset::VirtualMounter* mount,
-                                                                 const std::string& path, const std::string& key,
-                                                                 const Hjson::Value& hints) {
+std::unique_ptr<Asset> AssetLoader::LoadBinaryAsset(VirtualMounter* mount, const std::string& path,
+                                                    const std::string& key, const Hjson::Value& hints) {
     std::unique_ptr<BinaryAsset> asset = std::make_unique<BinaryAsset>();
     auto file = mount->Open(path);
     asset->data = ReadAllFromVFile(file.get());
@@ -421,7 +418,7 @@ std::unique_ptr<cqsp::asset::Asset> AssetLoader::LoadBinaryAsset(cqsp::asset::Vi
 std::unique_ptr<Asset> AssetLoader::LoadHjson(VirtualMounter* mount, const std::string& path, const std::string& key,
                                               const Hjson::Value& hints) {
     ZoneScoped;
-    std::unique_ptr<cqspa::HjsonAsset> asset = std::make_unique<cqspa::HjsonAsset>();
+    std::unique_ptr<HjsonAsset> asset = std::make_unique<HjsonAsset>();
 
     Hjson::DecoderOptions dec_opt;
     dec_opt.comments = false;
@@ -583,10 +580,10 @@ std::unique_ptr<Asset> AssetLoader::LoadCubemap(VirtualMounter* mount, const std
     return asset;
 }
 
-std::unique_ptr<cqsp::asset::Asset> AssetLoader::LoadModel(cqsp::asset::VirtualMounter* mount, const std::string& path,
-                                                           const std::string& key, const Hjson::Value& hints) {
+std::unique_ptr<Asset> AssetLoader::LoadModel(VirtualMounter* mount, const std::string& path, const std::string& key,
+                                              const Hjson::Value& hints) {
     Assimp::Importer importer;
-    std::filesystem::path file_path = std::filesystem::path(cqsp::common::util::GetCqspDataPath()) / path;
+    std::filesystem::path file_path = std::filesystem::path(common::util::GetCqspDataPath()) / path;
     const aiScene* scene =
         importer.ReadFile(file_path.string().c_str(), aiProcess_Triangulate | aiProcess_GenSmoothNormals |
                                                           aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
@@ -596,7 +593,7 @@ std::unique_ptr<cqsp::asset::Asset> AssetLoader::LoadModel(cqsp::asset::VirtualM
         return nullptr;
     }
 
-    auto model = std::make_unique<cqsp::asset::Model>();
+    auto model = std::make_unique<Model>();
     ModelLoader loader(scene, file_path.parent_path().string());
     // Set model scale?
     loader.LoadModel();
@@ -683,7 +680,7 @@ std::unique_ptr<TextDirectoryAsset> AssetLoader::LoadScriptDirectory(VirtualMoun
                                                                      const Hjson::Value& hints) {
     ZoneScoped;
 
-    auto asset = std::make_unique<asset::TextDirectoryAsset>();
+    auto asset = std::make_unique<TextDirectoryAsset>();
     if (!mount->IsDirectory(path)) {
         ENGINE_LOG_WARN("Script directory {} is not a script directory!", path);
         return nullptr;

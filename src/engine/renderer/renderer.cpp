@@ -23,12 +23,15 @@
 #include <vector>
 
 #include "engine/enginelogger.h"
+namespace cqsp::engine {
 
-void cqsp::engine::Draw(Renderable &renderable) {
+using asset::ShaderProgram_t;
+using asset::Texture;
+
+void Draw(Renderable &renderable) {
     renderable.shaderProgram->UseProgram();
     int i = -1;
-    for (std::vector<cqsp::asset::Texture *>::iterator it = renderable.textures.begin();
-         it != renderable.textures.end(); ++it) {
+    for (std::vector<Texture *>::iterator it = renderable.textures.begin(); it != renderable.textures.end(); ++it) {
         i++;
         if ((*it)->texture_type == -1) {
             ENGINE_LOG_WARN("Texture {} is not initialized properly", (*it)->id);
@@ -48,13 +51,12 @@ void cqsp::engine::Draw(Renderable &renderable) {
     glActiveTexture(GL_TEXTURE0);
 }
 
-void cqsp::engine::Draw(Renderable &renderable, asset::ShaderProgram_t &shader) { Draw(renderable, shader.get()); }
+void Draw(Renderable &renderable, ShaderProgram_t &shader) { Draw(renderable, shader.get()); }
 
-void cqsp::engine::Draw(Renderable &renderable, asset::ShaderProgram *shader) {
+void Draw(Renderable &renderable, asset::ShaderProgram *shader) {
     shader->UseProgram();
     int i = -1;
-    for (std::vector<cqsp::asset::Texture *>::iterator it = renderable.textures.begin();
-         it != renderable.textures.end(); ++it) {
+    for (std::vector<Texture *>::iterator it = renderable.textures.begin(); it != renderable.textures.end(); ++it) {
         i++;
         if ((*it)->texture_type == -1) {
             ENGINE_LOG_WARN("Texture {} is not initialized properly", (*it)->id);
@@ -74,13 +76,11 @@ void cqsp::engine::Draw(Renderable &renderable, asset::ShaderProgram *shader) {
     glActiveTexture(GL_TEXTURE0);
 }
 
-cqsp::engine::BasicRendererObject cqsp::engine::MakeRenderable() {
-    return std::make_shared<cqsp::engine::Renderable>();
-}
+BasicRendererObject MakeRenderable() { return std::make_shared<Renderable>(); }
 
-cqsp::engine::BasicRenderer::~BasicRenderer() = default;
+BasicRenderer::~BasicRenderer() = default;
 
-void cqsp::engine::BasicRenderer::Draw() {
+void BasicRenderer::Draw() {
     // Then iterate through them and render
     for (const auto &renderable : renderables) {
         renderable->shaderProgram->UseProgram();
@@ -101,3 +101,4 @@ void cqsp::engine::BasicRenderer::Draw() {
         glActiveTexture(GL_TEXTURE0);
     }
 }
+}  // namespace cqsp::engine
