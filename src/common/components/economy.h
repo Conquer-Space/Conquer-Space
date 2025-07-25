@@ -32,6 +32,7 @@ namespace cqsp::common::components {
 /// </summary>
 struct MarketInformation {
  private:
+    // I forgot why we have 2 separate ledgers for supply and demand
     ResourceLedger _demand;
     ResourceLedger _supply;
     ResourceLedger _previous_demand;
@@ -58,6 +59,15 @@ struct MarketInformation {
     ResourceLedger supply_difference;
 
     ResourceLedger chronic_shortages;
+
+    ResourceLedger trade;
+    ResourceLedger delta;
+
+    ResourceLedger production;
+    ResourceLedger consumption;
+
+    // PID controller
+    ResourceLedger sd_integral;
 
     void ResetLedgers() {
         // Reset the ledger values

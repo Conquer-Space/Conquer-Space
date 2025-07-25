@@ -115,5 +115,5 @@ void HeadlessApplication::InitSimulationPtr() {
     simulation = std::make_unique<Simulation>(GetGame().GetGame());
 }
 
-Simulation& HeadlessApplication::GetSimulation() { return *(simulation.get()); }
+Simulation& HeadlessApplication::GetSimulation() { return *(simulation); }
 }  // namespace cqsp::client::headless

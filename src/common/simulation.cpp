@@ -36,6 +36,7 @@
 #include "common/systems/economy/sysfinance.h"
 #include "common/systems/economy/sysinfrastructure.h"
 #include "common/systems/economy/sysmarket.h"
+#include "common/systems/economy/sysmarketreset.h"
 #include "common/systems/economy/sysplanetarytrade.h"
 #include "common/systems/economy/syspopulation.h"
 #include "common/systems/history/sysmarkethistory.h"
@@ -54,10 +55,11 @@ Simulation::Simulation(cqsp::common::Game& game) : m_game(game), m_universe(game
     AddSystem<cqspcs::SysScript>();
     AddSystem<cqspcs::SysWalletReset>();
 
-    // AddSystem<cqspcs::SysNavyControl>();
-
     AddSystem<cqspcs::SysScienceLab>();
     AddSystem<cqspcs::SysTechProgress>();
+
+    // Economy progress
+    AddSystem<cqspcs::SysMarketReset>();
 
     AddSystem<cqspcs::InfrastructureSim>();
     AddSystem<cqspcs::SysPopulationConsumption>();
@@ -67,6 +69,8 @@ Simulation::Simulation(cqsp::common::Game& game) : m_game(game), m_universe(game
     AddSystem<cqspcs::SysMarket>();
     AddSystem<cqspcs::SysPlanetaryTrade>();
     AddSystem<cqspcs::history::SysMarketHistory>();
+
+    // Movement
     AddSystem<cqspcs::SysOrbit>();
 }
 

@@ -14,21 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
+#include "common/systems/economy/sysmarketreset.h"
 
-namespace cqsp::common::util {
-class IRandom {
- public:
-    explicit IRandom(int _seed) : seed(_seed) {}
-    virtual ~IRandom() = default;
-    // Random int between [a, b]
-    virtual int GetRandomInt(int, int) = 0;
-    // Random normal value with mean, and standard deviation
-    virtual int GetRandomNormalInt(double mean, double sd) = 0;
-    // Random normal value with mean, and standard deviation
-    virtual double GetRandomNormal(double mean, double sd) = 0;
+#include "common/components/economy.h"
 
- protected:
-    int seed;
-};
-}  // namespace cqsp::common::util
+namespace cqsp::common::systems {
+void SysMarketReset::DoSystem() {
+    auto marketview = GetUniverse().view<components::Market>();
+    Universe& universe = GetUniverse();
+    for (entt::entity entity : marketview) {
+        // Reset the ledgers
+        components::Market& market = universe.get<components::Market>(entity);
+        market.ResetLedgers();
+        market.production.clear();
+        market.consumption.clear();
+        market.latent_supply.clear();
+        market.latent_demand.clear();
+    }
+}
+}  // namespace cqsp::common::systems

@@ -200,6 +200,9 @@ class ResourceLedger : private LedgerMap {
 
     bool HasGood(entt::entity good) { return (*this).find(good) != (*this).end(); }
 
+    /**
+     * Gets the sum of all the goods in this resource ledger.
+     */
     double GetSum();
 
     /// <summary>
@@ -234,7 +237,6 @@ class ResourceLedger : private LedgerMap {
 };
 
 ResourceLedger CopyVals(const ResourceLedger& keys, const ResourceLedger& values);
-ResourceLedger ResourceLedgerZip(const ResourceLedger& key, const ResourceLedger& value);
 
 struct RecipeOutput {
     entt::entity entity;
@@ -261,8 +263,13 @@ struct RecipeCost {
 
 // Factory size
 struct IndustrySize {
+    // The size of the factory.
+    // the maximum output of the factory is
     double size;
+    // The utilization of the factory.
     double utilization;
+
+    double workers;
     double wages = 100;
 };
 

@@ -47,7 +47,9 @@ variables = ["goods",
             "ImGuiStyleVar",
             "ImGuiWindowFlags",
             "ImGuiChildFlags",
-            "ImGuiItemFlags"]
+            "ImGuiItemFlags",
+            "print_city_market",
+            "print_market_table"]
 REGISTER_FUNC_NAME = "REGISTER_FUNCTION"
 
 def ParseFile(filename):

@@ -16,31 +16,18 @@
  */
 #pragma once
 
-#include <random>
+#include "common/systems/isimulationsystem.h"
 
-#include "common/util/random/random.h"
-
-namespace cqsp::common::util {
-class StdRandom : public IRandom {
+namespace cqsp::common::systems {
+/**
+ * Resets the market for this tick's market loop.
+ * Ideally we do not have this system at all, because memory clears are very inefficient
+ * So we will need to find a way to more dynamically reset resource ledgers on the fly.
+ */
+class SysMarketReset : public ISimulationSystem {
  public:
-    explicit StdRandom(int _seed) : IRandom(_seed), random_gen(_seed) {}
-
-    int GetRandomInt(int min, int max) {
-        std::uniform_int_distribution<> dist(min, max);
-        return dist(random_gen);
-    }
-
-    int GetRandomNormalInt(double mean, double sd) {
-        std::normal_distribution<> norm {mean, sd};
-        return static_cast<int>(round(norm(random_gen)));
-    }
-
-    double GetRandomNormal(double mean, double sd) {
-        std::normal_distribution<> norm {mean, sd};
-        return norm(random_gen);
-    }
-
- private:
-    std::mt19937 random_gen;
+    explicit SysMarketReset(Game& game) : ISimulationSystem(game) {}
+    void DoSystem() override;
+    int Interval() override { return components::StarDate::DAY; }
 };
-}  // namespace cqsp::common::util
+}  // namespace cqsp::common::systems

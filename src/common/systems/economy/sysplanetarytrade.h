@@ -25,8 +25,11 @@ namespace cqsp::common::systems {
 // Main goal is to maintain stable pricing
 class SysPlanetaryTrade : public ISimulationSystem {
  public:
-    explicit SysPlanetaryTrade(Game& game) : ISimulationSystem(game) {}
+    explicit SysPlanetaryTrade(Game& game) : ISimulationSystem(game), initial_tick(true) {}
     void DoSystem() override;
     int Interval() override { return components::StarDate::DAY; }
+
+ private:
+    bool initial_tick;
 };
 }  // namespace cqsp::common::systems
