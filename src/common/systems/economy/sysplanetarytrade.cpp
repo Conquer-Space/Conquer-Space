@@ -22,7 +22,8 @@
 #include "common/components/economy.h"
 #include "common/components/surface.h"
 
-void cqsp::common::systems::SysPlanetaryTrade::DoSystem() {
+namespace cqsp::common::systems {
+void SysPlanetaryTrade::DoSystem() {
     // Sort through all the districts, and figure out their trade
     // Get all the markets
     // Then cross reference to see if they can buy or sell
@@ -30,6 +31,9 @@ void cqsp::common::systems::SysPlanetaryTrade::DoSystem() {
     // Get the market of the planet, and add latent supply and demand, and then compute the market
     auto planetary_markets =
         GetUniverse().view<components::Market, components::PlanetaryMarket, components::Habitation>();
+
+    auto goodsview = GetUniverse().view<components::Price>();
+
     for (entt::entity entity : planetary_markets) {
         auto& p_market = GetUniverse().get<components::Market>(entity);
         auto& habitation = GetUniverse().get<components::Habitation>(entity);
@@ -39,77 +43,43 @@ void cqsp::common::systems::SysPlanetaryTrade::DoSystem() {
 
         for (entt::entity habitation : habitation.settlements) {
             auto& market = GetUniverse().get<components::Market>(habitation);
-            auto& market_wallet = GetUniverse().get_or_emplace<components::Wallet>(habitation);
-            // Import the missing goods that we need
-            // We should ramp up and down imports and exports, and also try to maintain S/D ratios at 1.
-            // If it's the initial tick then we just set the values, otherwise we change it by a delta
-            if (initial_tick) {
-                // compute supply difference
-                market.trade = market.supply_difference * -1;
-            } else {
-                // Now we want to increase and reduce that export and import amount based off what
-                // We're producing and what's on the market
-                // We also want to alter the price.
-                // We can set the price of the market to track the current market price
-                // So we need to compute this
-                // So the goal of the market is to balance the two
-                // The issue with reducing the supply is that it won't lower the cost in
-                // What if we did a price thing
-                // But the thing is
-                // The price delta also has to be proportional to the amount bought and sold
-                // Now compute the proportion the price will be affected
-                // If there isn't enough demand, we need to reduce the amount that we import
-                // Let's just get the weighted average of the values?
-                // Now compute the amount needed to
-                // Let's compute the imports vs the exports of the market
-                // For each element check if it's higher and then tweak the market exports and imports
-                // Go through the supply difference
-                // New
-                for (auto it = market.supply_difference.begin(); it != market.supply_difference.end(); it++) {
-                    // Now compute the difference in the parent market and reduce supply and demand based off whatever
-                    // metrics
-                    entt::entity good = it->first;
-                    double planetary_cost = p_market.price[good];
-                    double local_cost = market.price[good];
-                    double trade_difference = 1;
-                    if (planetary_cost < local_cost) {
-                        // We should import more and export less
-                        // We should change the value
-                        // Let's just decrease proportionally (we can do a different kind of loop)
-                        // later
-                        // We need to modify by trade
-                        trade_difference = 1. - std::clamp(market.trade[good] * 0.0001, 0., 0.1);
-                        market.trade[good] *= trade_difference;
-                    } else if (planetary_cost > local_cost) {
-                        // We should export more and import less
-                        trade_difference = 1. + std::clamp(std::fabs(market.trade[good] * 0.0001), 0., 0.1);
-                        market.trade[good] *= trade_difference;
-                    }
-                    market.delta[good] = trade_difference;
-                }
-                // market.production/market.exports;
 
-                //(market.price - p_market.price);
-            }
-            // Add the market inputs
-            // Compute deficit
-            double trade_balance = (market.supply_difference * p_market.price).GetSum();
-            wallet += trade_balance;
-            market_wallet += trade_balance;
-            // Cities are the actual entities that buy and sell goods on the market
-            // therefore they will have some sort of wallet to handle the trade on the global market.
-            // In the future, we can have shipping companies own fractions of the shipping market
-            // then we can do shipping companies or other stuff like that.
-            // The issue is that what if a market runs out of money? like completely? what do we do?
-            // Maybe we can implement it wity some sort of deficit or debt system, but I think that will be
-            // faroff
-            // The thing is that we might have an issue
-            p_market.trade += market.trade;
-            // We probably need stockpiles for more isolated markets...
-            // Or do we do stockpiles for everything...
+            p_market.supply() += market.supply();
+            p_market.demand() += market.demand();
         }
-        // Swap the old and new markets
-        p_market.ResetLedgers();
+
+        for (entt::entity good_entity : goodsview) {
+            DeterminePrice(p_market, good_entity);
+        }
+        // Now we can compute the prices for the individual markets
+        for (entt::entity habitation : habitation.settlements) {
+            auto& market = GetUniverse().get<components::Market>(habitation);
+            auto& market_wallet = GetUniverse().get_or_emplace<components::Wallet>(habitation);
+            for (entt::entity good_entity : goodsview) {
+                market.price[good_entity] = p_market.price[good_entity] * market.market_access +
+                                            (1 - market.market_access) * market.price[good_entity];
+            }
+        }
     }
     initial_tick = false;
 }
+
+void SysPlanetaryTrade::Init() {
+    auto goodsview = GetUniverse().view<components::Price>();
+
+    for (entt::entity good_entity : goodsview) {
+        base_prices[good_entity] = GetUniverse().get<components::Price>(good_entity);
+    }
+}
+
+void SysPlanetaryTrade::DeterminePrice(components::Market& market, entt::entity good_entity) {
+    const double sd_ratio = market.sd_ratio[good_entity];
+    const double supply = market.supply()[good_entity];
+    const double demand = market.demand()[good_entity];
+    double& price = market.price[good_entity];
+    // Now just adjust cost
+    // Get parent market
+    price = base_prices[good_entity] *
+            (1 + 0.75 * std::clamp((demand - supply) / (std::max(0.001, std::min(demand, supply))), -1., 1.));
+}
+}  // namespace cqsp::common::systems

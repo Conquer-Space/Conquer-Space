@@ -16,6 +16,7 @@
  */
 #include "common/systems/economy/sysmarket.h"
 
+#include <algorithm>
 #include <fstream>
 #include <limits>
 #include <utility>
@@ -28,9 +29,9 @@
 namespace cqsp::common::systems {
 void SysMarket::DoSystem() {
     ZoneScoped;
-    auto marketview = GetUniverse().view<components::Market>();
-    SPDLOG_INFO("Processing {} market(s)", marketview.size());
-    TracyPlot("Market Count", (int64_t)marketview.size());
+    auto marketview = GetUniverse().view<components::Market>(entt::exclude<components::PlanetaryMarket>);
+    SPDLOG_INFO("Processing {} market(s)", marketview.size_hint());
+    TracyPlot("Market Count", (int64_t)marketview.size_hint());
     auto goodsview = GetUniverse().view<components::Price>();
     Universe& universe = GetUniverse();
 
@@ -53,16 +54,7 @@ void SysMarket::DoSystem() {
         for (entt::entity good_entity : goodsview) {
             DeterminePrice(market, good_entity);
         }
-        // Set the previous supply and demand
-        //components::MarketInformation current = market;
-        //market.history.push_back(current);
-        // So positive values are left over goods in the market
-        // and negative values are goods that are in demand in the market
-        market.supply_difference = market.supply() - market.demand();
 
-        // Get chronic supply shortages
-        // Just get all the values where the supply is 0, and the demand is greater than 0
-        // Just get all the values where the supply is zero, and there is nonzero demand...
         components::ResourceLedger& market_supply = market.supply();
         components::ResourceLedger& market_demand = market.demand();
         for (auto iterator = market_supply.begin(); iterator != market_supply.end(); iterator++) {
@@ -80,40 +72,28 @@ void SysMarket::DoSystem() {
 
 void SysMarket::DeterminePrice(components::Market& market, entt::entity good_entity) {
     const double sd_ratio = market.sd_ratio[good_entity];
+    const double supply = market.supply()[good_entity];
+    const double demand = market.demand()[good_entity];
     double& price = market.price[good_entity];
-    // If supply and demand = 0, then it will be undefined
-    if (sd_ratio < 1) {
-        // Too much demand, so we will increase the price
-        // Later increase it based on SD ratio
-        price += (0.02 + price * 0.01f);
-        //price = 0.5;
-    } else if (sd_ratio > 1 || sd_ratio == std::numeric_limits<double>::infinity()) {
-        // Too much supply, so we will decrease the price
-        price += (-0.01 + price * -0.01f);
-
-        // Limit price to a minimum of 0.00001
-        if (price < 0.00001) {
-            price = 0.00001;
-        }
-    } else {
-        // Keep price approximately the same
-    }
+    // Now just adjust cost
+    // Get parent market
+    price = base_prices[good_entity] *
+            (1 + 0.75 * std::clamp((demand - supply) / (std::max(0.001, std::min(demand, supply))), -1., 1.));
 }
 
-void SysMarket::InitializeMarket(Game& game) {
-    auto marketview = game.GetUniverse().view<components::Market>();
-    auto goodsview = game.GetUniverse().view<components::Price>();
+void SysMarket::Init() {
+    auto marketview = GetUniverse().view<components::Market>();
+    auto goodsview = GetUniverse().view<components::Price>();
 
-    Universe& universe = game.GetUniverse();
     // Calculate all the things
     for (entt::entity entity : marketview) {
         // Get the resources and process the price, then do things, I guess
         // Get demand
-        components::Market& market = universe.get<components::Market>(entity);
+        components::Market& market = GetUniverse().get<components::Market>(entity);
 
         // Initialize the price
         for (entt::entity good_entity : goodsview) {
-            market.price[good_entity] = universe.get<components::Price>(good_entity);
+            market.price[good_entity] = GetUniverse().get<components::Price>(good_entity);
             // Set the supply and demand things as 1 so that they sell for
             // now
             market.previous_demand()[good_entity] = 1;
@@ -123,6 +103,9 @@ void SysMarket::InitializeMarket(Game& game) {
         }
         market.sd_ratio = market.supply().SafeDivision(market.demand());
         market.history.push_back(market);
+    }
+    for (entt::entity good_entity : goodsview) {
+        base_prices[good_entity] = GetUniverse().get<components::Price>(good_entity);
     }
 }
 }  // namespace cqsp::common::systems

@@ -94,6 +94,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     // Industry and economy
     auto& industry = universe.emplace<components::IndustrialZone>(entity);
     auto& market = universe.emplace<components::Market>(entity);
+    market.parent_market = universe.planets[planet];
     // Get the connected markets
     if (!values["connections"].empty() && values["connections"].type() == Hjson::Type::Vector) {
         // Get connected cities and then see if they're done
@@ -207,6 +208,9 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     return true;
 }
 
+/**
+ * Loads the city and sets the parent.
+ */
 void CityLoader::PostLoad(const entt::entity& entity) {
     if (universe.all_of<ConnectedCities>(entity)) {
         auto& connected = universe.get<ConnectedCities>(entity);

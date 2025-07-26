@@ -76,7 +76,6 @@ Simulation::Simulation(cqsp::common::Game& game) : m_game(game), m_universe(game
 
 void Simulation::Init() {
     namespace cqspcs = cqsp::common::systems;
-    cqspcs::SysMarket::InitializeMarket(m_game);
 
     for (auto& sys : system_list) {
         sys->Init();
