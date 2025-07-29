@@ -47,11 +47,11 @@ namespace infrastructure = components::infrastructure;
 namespace types = components::types;
 namespace ships = components::ships;
 namespace bodies = components::bodies;
+using common::util::GetName;
 using components::PopulationSegment;
 using components::Settlement;
 using components::Wallet;
 using util::LongToHumanString;
-using common::util::GetName;
 
 void SysProvinceInformation::Init() {}
 
@@ -107,8 +107,7 @@ void SysProvinceInformation::ProvinceView() {
     if (ImGui::BeginTabBar("ProvinceInformationTabs", ImGuiTabBarFlags_None)) {
         if (ImGui::BeginTabItem("Cities")) {
             for (entt::entity entity : city_list.cities) {
-                if (CQSPGui::DefaultSelectable(
-                        fmt::format("{}", GetName(GetUniverse(), entity)).c_str())) {
+                if (CQSPGui::DefaultSelectable(fmt::format("{}", GetName(GetUniverse(), entity)).c_str())) {
                     current_city = entity;
                     view_mode = ViewMode::CITY_VIEW;
                 }
@@ -174,14 +173,13 @@ void SysProvinceInformation::CityView() {
 
 void SysProvinceInformation::DisplayWallet(entt::entity entity) {
     if (GetUniverse().all_of<Wallet>(entity)) {
-		Wallet& wallet = GetUniverse().get<Wallet>(entity);
-		ImGui::TextFmt("GDP Contribution: {}", LongToHumanString(wallet.GetGDPChange()));
-		ImGui::TextFmt("Balance: {}", LongToHumanString(wallet.GetBalance()));
-		ImGui::TextFmt("Balance change: {}", LongToHumanString(wallet.GetChange()));
-	} else {
-		ImGui::TextFmt("No wallet");
-	}
-
+        Wallet& wallet = GetUniverse().get<Wallet>(entity);
+        ImGui::TextFmt("GDP Contribution: {}", LongToHumanString(wallet.GetGDPChange()));
+        ImGui::TextFmt("Balance: {}", LongToHumanString(wallet.GetBalance()));
+        ImGui::TextFmt("Balance change: {}", LongToHumanString(wallet.GetChange()));
+    } else {
+        ImGui::TextFmt("No wallet");
+    }
 }
 
 void SysProvinceInformation::CityIndustryTabs() {
@@ -222,7 +220,6 @@ void SysProvinceInformation::CityIndustryTabs() {
 }
 
 void SysProvinceInformation::DemographicsTab() {
-
     auto& settlement = GetUniverse().get<Settlement>(current_city);
     for (auto& seg_entity : settlement.population) {
         ImGui::TextFmt("Population: {}",
@@ -394,7 +391,6 @@ void SysProvinceInformation::IndustryTabGenericChild(const std::string& tabname,
 }
 
 void SysProvinceInformation::LaunchTab() {
-
     // Set the things
     static float semi_major_axis = 8000;
     static float azimuth = 0;
@@ -424,7 +420,7 @@ void SysProvinceInformation::LaunchTab() {
         orb.w = arg_of_perapsis;
         orb.LAN = LAN;
         orb.epoch = GetUniverse().date.ToSecond();
-        cqsp::common::systems::actions::LaunchShip(GetUniverse(), orb);
+        common::systems::actions::LaunchShip(GetUniverse(), orb);
     }
     double periapsis = semi_major_axis * (1 - eccentricity);
     if (GetUniverse().get<components::bodies::Body>(city_coord.planet).radius > periapsis) {

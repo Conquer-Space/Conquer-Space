@@ -24,4 +24,4 @@ class SysMarketHistory : public ISimulationSystem {
     explicit SysMarketHistory(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
 };
-} // namespace cqsp::common::systems::history
+}  // namespace cqsp::common::systems::history

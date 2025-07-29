@@ -24,12 +24,11 @@
 
 namespace cqsp::client::systems::gui {
 
-namespace event = common::event; 
+namespace event = common::event;
 
 void SysEvent::Init() {}
 
 void SysEvent::DoUI(int delta_time) {
-
     auto events = GetUniverse().view<common::components::Player, event::EventQueue>();
     for (auto [ent, queue] : events.each()) {
         if (queue.events.empty()) {

@@ -51,8 +51,7 @@ void SysRecipeViewer::DoUI(int delta_time) {
 void SysRecipeViewer::DoUpdate(int delta_time) {}
 
 namespace {
-void ResourceMapTable(common::Universe& universe, components::ResourceLedger& ledger, 
-    const char* name) {
+void ResourceMapTable(common::Universe& universe, components::ResourceLedger& ledger, const char* name) {
     if (!ImGui::BeginTable(name, 2)) {
         return;
     }

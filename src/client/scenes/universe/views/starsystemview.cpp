@@ -57,7 +57,6 @@
 #include "stb_image.h"  // NOLINT: STB is rather annoying
 #include "tracy/Tracy.hpp"
 
-
 namespace cqsp::client::systems {
 
 namespace components = common::components;
@@ -65,18 +64,18 @@ namespace bodies = components::bodies;
 namespace types = components::types;
 namespace ships = components::ships;
 
-using asset::Texture;
 using asset::ShaderDefinition;
 using asset::ShaderProgram_t;
-using components::Name;
-using components::Habitation;
+using asset::Texture;
 using client::components::PlanetTerrainRender;
+using components::Habitation;
+using components::Name;
 
 using bodies::Body;
 using bodies::LightEmitter;
+using common::util::GetName;
 using types::Orbit;
 using types::SurfaceCoordinate;
-using common::util::GetName;
 
 SysStarSystemRenderer::SysStarSystemRenderer(common::Universe& _u, engine::Application& _a)
     : m_universe(_u),
@@ -185,7 +184,6 @@ void SysStarSystemRenderer::Render(float deltaTime) {
 }
 
 void SysStarSystemRenderer::SeeStarSystem() {
-
     GenerateOrbitLines();
 
     SPDLOG_INFO("Loading planet textures");
@@ -198,7 +196,6 @@ void SysStarSystemRenderer::SeeStarSystem() {
 }
 
 void SysStarSystemRenderer::SeeEntity() {
-
     // See the object
     view_center = CalculateObjectPos(m_viewing_entity);
 
@@ -352,7 +349,6 @@ void SysStarSystemRenderer::DrawSkybox() {
 }
 
 void SysStarSystemRenderer::DrawModels() {
-
     // Loop through the space bodies that are close
     for (entt::entity ship : m_universe.view<ships::Ship, ctx::VisibleOrbit>()) {
         // Get the model of the object
@@ -530,7 +526,6 @@ void SysStarSystemRenderer::DrawAllPlanets(auto& bodies) {
     for (entt::entity body_entity : bodies) {
         glm::vec3 object_pos = CalculateCenteredObject(body_entity);
 
-
         // This can probably switched to some log system based off the mass of
         // a planet.
         //if (true) {
@@ -582,7 +577,6 @@ void SysStarSystemRenderer::DrawStar(const entt::entity& entity, glm::vec3& obje
 }
 
 void SysStarSystemRenderer::DrawTerrainlessPlanet(const entt::entity& entity, glm::vec3& object_pos) {
-
     glm::mat4 position = glm::mat4(1.f);
     position = glm::translate(position, object_pos);
     float scale = 300;
@@ -681,7 +675,7 @@ void SysStarSystemRenderer::CalculateScroll() {
 }
 
 void SysStarSystemRenderer::LoadPlanetTextures() {
-    for (auto body : m_universe.view<types::Orbit>()) {
+    for (auto body : m_universe.view<Orbit>()) {
         if (!m_universe.all_of<bodies::TexturedTerrain>(body)) {
             continue;
         }
@@ -701,8 +695,7 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
         // Add province data if they have it
         data.province_texture = m_app.GetAssetManager().GetAsset<Texture>(province_map.province_texture);
 
-        asset::BinaryAsset* bin_asset =
-            m_app.GetAssetManager().GetAsset<asset::BinaryAsset>(province_map.province_map);
+        asset::BinaryAsset* bin_asset = m_app.GetAssetManager().GetAsset<asset::BinaryAsset>(province_map.province_map);
         if (bin_asset == nullptr) {
             SPDLOG_ERROR("Could not find the planet province map {}", province_map.province_map);
             continue;
@@ -779,7 +772,6 @@ void SysStarSystemRenderer::InitializeMeshes() {
     city.mesh = engine::primitive::MakeTexturedPaneMesh();
     city.shaderProgram = circle_shader;
 
-
     // Planet spheres
     planet.mesh = sphere_mesh;
     planet.shaderProgram = planet_shader;
@@ -790,14 +782,13 @@ void SysStarSystemRenderer::InitializeMeshes() {
     // Initialize sun
     sun.mesh = sphere_mesh;
     sun.shaderProgram = sun_shader;
-
 }
 
 glm::quat SysStarSystemRenderer::GetBodyRotation(double axial, double rotation, double day_offset) {
     // Need to interpolate between the frames
     float rot = (float)bodies::GetPlanetRotationAngle(
-        m_universe.date.ToSecond() + m_universe.tick_fraction * components::StarDate::TIME_INCREMENT,
-        rotation, day_offset);
+        m_universe.date.ToSecond() + m_universe.tick_fraction * components::StarDate::TIME_INCREMENT, rotation,
+        day_offset);
     if (rotation == 0) {
         rot = 0;
     }
@@ -999,7 +990,6 @@ void SysStarSystemRenderer::CalculateViewChange(double deltaX, double deltaY) {
 }
 
 void SysStarSystemRenderer::FoundCity() {
-
     auto s = GetMouseSurfaceIntersection();
     SPDLOG_INFO("Founding city at {} {}", s.latitude(), s.longitude());
 
@@ -1039,7 +1029,6 @@ void SysStarSystemRenderer::SelectCountry() {
 }
 
 void SysStarSystemRenderer::FocusOnEntity(entt::entity ent) {
-
     // Check the focused planet
     entt::entity focused_planet = m_universe.view<FocusedPlanet>().front();
 
@@ -1154,7 +1143,6 @@ void SysStarSystemRenderer::RenderSelectedObjectInformation() {
 }
 
 SurfaceCoordinate SysStarSystemRenderer::GetMouseSurfaceIntersection() {
-
     if (on_planet == entt::null || !m_universe.valid(on_planet)) {
         return SurfaceCoordinate(0, 0);
     }
@@ -1331,12 +1319,12 @@ void SysStarSystemRenderer::DrawAllOrbits() {
     ZoneScoped;
     for (entt::entity orbit_entity : m_universe.view<Orbit>()) {
         // Check the type of orbiting things, and then don't render if it doesn't fit the filter
-        if (m_universe.any_of<bodies::Planet>(orbit_entity)) {// Always render planet orbits
+        if (m_universe.any_of<bodies::Planet>(orbit_entity)) {  // Always render planet orbits
             // Render no matter what
             DrawOrbit(orbit_entity);
             continue;
         }
-        if (!m_universe.any_of<ctx::VisibleOrbit>(orbit_entity)) {// Visible orbits will not be rendered
+        if (!m_universe.any_of<ctx::VisibleOrbit>(orbit_entity)) {  // Visible orbits will not be rendered
             continue;
         }
         DrawOrbit(orbit_entity);

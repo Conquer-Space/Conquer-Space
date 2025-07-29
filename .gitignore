@@ -28,3 +28,5 @@ git-hook.cfg
 tools/run-clang-tidy.py
 
 *.pdb
+
+*.editorconfig

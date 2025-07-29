@@ -25,10 +25,9 @@
 
 namespace cqsp::client::systems {
 
-
 namespace components = common::components;
-using components::science::TechnologicalProgress;
 using components::science::ScientificResearch;
+using components::science::TechnologicalProgress;
 
 void SysTechnologyViewer::Init() {}
 
@@ -70,7 +69,7 @@ void SysTechnologyProjectViewer::DoUI(int delta_time) {
             ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), researched));
             ImGui::SameLine();
             if (ImGui::Button(fmt::format("Queue Research##{}", researched).c_str())) {
-                potential_research.push_back(researched);// Add to tech queue
+                potential_research.push_back(researched);  // Add to tech queue
             }
         }
         for (entt::entity res : potential_research) {
