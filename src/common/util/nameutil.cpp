@@ -34,15 +34,15 @@
 #include "common/util/utilnumberdisplay.h"
 
 namespace cqsp::common::util {
+namespace components = cqsp::common::components;
 std::string GetName(const Universe& universe, entt::entity entity) {
     if (!universe.valid(entity)) {
         return "";
     }
-    namespace cqspc = cqsp::common::components;
-    if (universe.all_of<cqspc::Name>(entity)) {
-        return universe.get<cqspc::Name>(entity);
-    } else if (universe.all_of<cqspc::Identifier>(entity)) {
-        return universe.get<cqspc::Identifier>(entity);
+    if (universe.all_of<components::Name>(entity)) {
+        return universe.get<components::Name>(entity);
+    } else if (universe.all_of<components::Identifier>(entity)) {
+        return universe.get<components::Identifier>(entity);
     } else {
         return fmt::format("{}", GetEntityType(universe, entity));
     }
