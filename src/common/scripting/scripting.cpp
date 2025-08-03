@@ -24,7 +24,7 @@
 
 #include "common/util/logging.h"
 
-using cqsp::scripting::ScriptInterface;
+namespace cqsp::common::scripting {
 
 ScriptInterface::ScriptInterface() {
     open_libraries(sol::lib::base, sol::lib::table, sol::lib::math, sol::lib::package, sol::lib::string);
@@ -74,4 +74,6 @@ void ScriptInterface::Init() {
 
 int ScriptInterface::GetLength(std::string_view a) { return static_cast<int>((*this)[a]["len"]); }
 
-std::vector<std::string> cqsp::scripting::ScriptInterface::GetLogs() { return ringbuffer_sink->last_formatted(); }
+std::vector<std::string> ScriptInterface::GetLogs() { return ringbuffer_sink->last_formatted(); }
+
+}  // namespace cqsp::common::scripting

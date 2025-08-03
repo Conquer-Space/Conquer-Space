@@ -21,7 +21,7 @@
 namespace cqsp::client::headless {
 
 void TickFunctions(HeadlessApplication& application) {
-    scripting::ScriptInterface& script_engine = application.GetGame().GetScriptInterface();
+    common::scripting::ScriptInterface& script_engine = application.GetGame().GetScriptInterface();
     CREATE_NAMESPACE(simulation);
 
     REGISTER_FUNCTION("tick", [&](unsigned int ticks) {

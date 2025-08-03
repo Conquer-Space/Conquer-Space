@@ -47,21 +47,37 @@
 #include "common/util/random/stdrandom.h"
 #include "common/util/utilnumberdisplay.h"
 
-namespace cqspb = cqsp::common::components::bodies;
-namespace cqsps = cqsp::common::components::ships;
-namespace cqspt = cqsp::common::components::types;
-namespace cqspc = cqsp::common::components;
+
 
 /**
  * Notes:
  * If you want to return arrays you need to encapsulate it on sol::as_table
  */
-namespace {
+namespace cqsp::common::scripting {
+
+namespace bodies = components::bodies;
+namespace types = components::types;
+namespace infrastructure = components::infrastructure;
+namespace actions = systems::actions;
+
+using components::ResourceStockpile;
+using components::Governed;
+using components::Player;
+using components::Habitation;
+using components::IndustrialZone;
+using components::Price;
+using components::Market;
+using components::PopulationSegment;
+using components::Settlement;
+using components::Wallet;
+using components::science::ScientificResearch;
+using bodies::Body;
+
 /// <summary>
 /// Initializes functions for RNG
 /// </summary>
 /// <param name="app"></param>
-void FunctionRandom(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionRandom(Universe& universe, ScriptInterface& script_engine) {
     // RNG
     // Make namespace
     CREATE_NAMESPACE(core);
@@ -72,73 +88,73 @@ void FunctionRandom(cqsp::common::Universe& universe, cqsp::scripting::ScriptInt
                       [&](int mean, int sd) { return universe.random->GetRandomNormalInt(mean, sd); });
 }
 
-void FunctionUniverseBodyGen(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionUniverseBodyGen(Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("add_planet", [&]() {
         entt::entity planet = universe.create();
-        auto& body = universe.emplace<cqspb::Body>(planet);
-        universe.emplace<cqspb::Planet>(planet);
+        Body& body = universe.emplace<Body>(planet);
+        universe.emplace<bodies::Planet>(planet);
         return planet;
     });
 
     REGISTER_FUNCTION("add_star", [&]() {
         entt::entity star = universe.create();
-        universe.emplace<cqspb::Star>(star);
-        auto& body = universe.emplace<cqspb::Body>(star);
-        universe.emplace<cqspb::LightEmitter>(star);
+        universe.emplace<bodies::Star>(star);
+        Body& body = universe.emplace<Body>(star);
+        universe.emplace<bodies::LightEmitter>(star);
         return star;
     });
 
     REGISTER_FUNCTION("set_orbit", [&](entt::entity orbital_entity, double semi_major_axis, double eccentricity,
                                        double inclination, double LAN, double w, double M0) {
-        cqspt::Orbit& orb = universe.emplace<cqspt::Orbit>(orbital_entity);
+        types::Orbit& orb = universe.emplace<types::Orbit>(orbital_entity);
         orb.eccentricity = eccentricity;
         orb.semi_major_axis = semi_major_axis;
         orb.inclination = inclination;
         orb.LAN = LAN;
         orb.w = w;
         orb.M0 = M0;
-        auto& kinematics = universe.emplace<cqspt::Kinematics>(orbital_entity);
-        cqspt::UpdatePos(kinematics, orb);
+        auto& kinematics = universe.emplace<types::Kinematics>(orbital_entity);
+        types::UpdatePos(kinematics, orb);
     });
 
     REGISTER_FUNCTION("set_system_position", [&](entt::entity orbital_ent, double x, double y) {
-        auto& coord = universe.get_or_emplace<cqspt::GalacticCoordinate>(orbital_ent);
+        auto& coord = universe.get_or_emplace<types::GalacticCoordinate>(orbital_ent);
         coord.x = x;
         coord.y = y;
     });
 
     REGISTER_FUNCTION("set_radius", [&](entt::entity body, int radius) {
-        cqspb::Body& bod = universe.get<cqspb::Body>(body);
+        Body& bod = universe.get<Body>(body);
         bod.radius = radius;
     });
 
     REGISTER_FUNCTION("create_terrain", [&](entt::entity planet, int seed, entt::entity terrain_type) {
-        static_cast<void>(universe.emplace<cqspb::Terrain>(planet, seed, terrain_type));
+        static_cast<void>(universe.emplace<bodies::Terrain>(planet, seed, terrain_type));
     });
 }
 
-void FunctionCivilizationGen(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionCivilizationGen(Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("add_civilization", [&]() {
         entt::entity civ = universe.create();
-        universe.emplace<cqspc::Organization>(civ);
+        universe.emplace<components::Organization>(civ);
         return civ;
     });
 
     REGISTER_FUNCTION("set_owner", [&](entt::entity entity, entt::entity owner) {
-        auto& gov = universe.get_or_emplace<cqspc::Governed>(entity);
+        auto& gov = universe.get_or_emplace<Governed>(entity);
         gov.governor = owner;
     });
 
     REGISTER_FUNCTION("get_governed", [&](entt::entity governor) {
-        auto view = universe.view<cqspc::Governed>();
+        auto view = universe.view<Governed>();
         // this is probably an antiBpattern but ah well
         std::vector<entt::entity> governed;
         for (auto entity : view) {
-            if (universe.get<cqspc::Governed>(entity).governor == governor) {
+            if (universe.get<Governed>(entity).governor == governor) {
                 governed.push_back(entity);
             }
         }
@@ -146,62 +162,59 @@ void FunctionCivilizationGen(cqsp::common::Universe& universe, cqsp::scripting::
     });
 
     REGISTER_FUNCTION("get_owned_cities", [&](entt::entity player) {
-        return sol::as_table(universe.get<cqspc::CountryCityList>(player).province_list);
+        return sol::as_table(universe.get<components::CountryCityList>(player).province_list);
     });
 
-    REGISTER_FUNCTION("is_player",
-                      [&](entt::entity civ) { return static_cast<bool>(universe.all_of<cqspc::Player>(civ)); });
+    REGISTER_FUNCTION("is_player", [&](entt::entity civ) { return static_cast<bool>(universe.all_of<Player>(civ)); });
 
-    REGISTER_FUNCTION("add_planet_habitation",
-                      [&](entt::entity planet) { universe.emplace<cqspc::Habitation>(planet); });
+    REGISTER_FUNCTION("add_planet_habitation", [&](entt::entity planet) { universe.emplace<Habitation>(planet); });
 
     REGISTER_FUNCTION("add_planet_settlement", [&](entt::entity planet, double lat, double longi) {
-        return cqsp::common::actions::CreateCity(universe, planet, lat, longi);
+        return common::actions::CreateCity(universe, planet, lat, longi);
     });
 }
 
-void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
-    namespace cqspa = cqsp::common::systems::actions;
+void FunctionEconomy(Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
-    REGISTER_FUNCTION("create_industries", [&](entt::entity city) { universe.emplace<cqspc::IndustrialZone>(city); });
+    REGISTER_FUNCTION("create_industries", [&](entt::entity city) { universe.emplace<IndustrialZone>(city); });
 
     REGISTER_FUNCTION("add_industry", [&](entt::entity city, entt::entity entity) {
-        universe.get<cqspc::IndustrialZone>(city).industries.push_back(entity);
+        universe.get<IndustrialZone>(city).industries.push_back(entity);
     });
 
     REGISTER_FUNCTION("create_factory", [&](entt::entity city, entt::entity recipe, float productivity) {
-        entt::entity factory = cqspa::CreateFactory(universe, city, recipe, productivity);
+        entt::entity factory = actions::CreateFactory(universe, city, recipe, productivity);
         return factory;
     });
 
     REGISTER_FUNCTION("add_production", [&](entt::entity factory) {
         // Factory will produce in the first tick
-        universe.emplace<cqspc::FactoryProducing>(factory);
+        universe.emplace<components::FactoryProducing>(factory);
     });
 
     REGISTER_FUNCTION("set_power_consumption", [&](entt::entity factory, double max, double min) {
-        universe.emplace<cqspc::infrastructure::PowerConsumption>(factory, max, min, 0.f);
+        universe.emplace<infrastructure::PowerConsumption>(factory, max, min, 0.f);
         return factory;
     });
 
     REGISTER_FUNCTION("add_power_plant", [&](entt::entity city, double productivity) {
         entt::entity entity = universe.create();
-        universe.emplace<cqspc::infrastructure::PowerPlant>(entity, productivity);
-        universe.get<cqspc::IndustrialZone>(city).industries.push_back(entity);
+        universe.emplace<infrastructure::PowerPlant>(entity, productivity);
+        universe.get<IndustrialZone>(city).industries.push_back(entity);
         return entity;
     });
 
     REGISTER_FUNCTION("create_commercial_area",
-                      [&](entt::entity city) { return cqspa::CreateCommercialArea(universe, city); });
+                      [&](entt::entity city) { return actions::CreateCommercialArea(universe, city); });
 
     REGISTER_FUNCTION("set_resource_consume", [&](entt::entity entity, entt::entity good, double amount) {
-        auto& consumption = universe.get_or_emplace<cqspc::ResourceConsumption>(entity);
+        auto& consumption = universe.get_or_emplace<components::ResourceConsumption>(entity);
         consumption[good] = amount;
     });
 
     REGISTER_FUNCTION("set_resource", [&](entt::entity planet, entt::entity resource, int seed) {
-        auto& dist = universe.get_or_emplace<cqspc::ResourceDistribution>(planet);
+        auto& dist = universe.get_or_emplace<components::ResourceDistribution>(planet);
         dist.dist[resource] = seed;
     });
 
@@ -209,23 +222,23 @@ void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
     // The macro cannot take lambadas that contain templates that contain commas
     auto lambda = [&]() {
         /*entt::entity entity = universe.create();
-        auto& market = universe.emplace<cqspc::Market>(entity);
-        universe.emplace<cqspc::ResourceStockpile>(entity);
+        auto& market = universe.emplace<components::Market>(entity);
+        universe.emplace<components::ResourceStockpile>(entity);
         // Set the market prices
         // TODO(EhWhoAmI): This is a bandaid solution, please fix this
 
-        auto view = universe.view<cqspc::Good, cqspc::Price>();
+        auto view = universe.view<components::Good, components::Price>();
         for (entt::entity entity : view) {
             // Assign price to market
             market.prices[entity] = universe.get<cqspc::Price>(entity);
         }*/
-        entt::entity market_entity = cqsp::common::systems::economy::CreateMarket(universe);
+        entt::entity market_entity = systems::economy::CreateMarket(universe);
         // Set prices of market
-        auto view = universe.view<cqspc::Good, cqspc::Price>();
-        auto& market = universe.get<cqsp::common::components::Market>(market_entity);
+        auto view = universe.view<components::Good, Price>();
+        auto& market = universe.get<Market>(market_entity);
         for (entt::entity entity : view) {
             // Assign price to market
-            market.market_information[entity].price = universe.get<cqspc::Price>(entity);
+            market.market_information[entity].price = universe.get<Price>(entity);
         }
         return market_entity;
         // return entity;
@@ -233,23 +246,23 @@ void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
     REGISTER_FUNCTION("create_market", lambda);
 
     REGISTER_FUNCTION("place_market", [&](entt::entity market, entt::entity planet) {
-        universe.emplace<cqspc::MarketCenter>(planet, market);
+        universe.emplace<components::MarketCenter>(planet, market);
     });
 
     REGISTER_FUNCTION("attach_market", [&](entt::entity market_entity, entt::entity participant) {
-        cqsp::common::systems::economy::AddParticipant(universe, market_entity, participant);
+        systems::economy::AddParticipant(universe, market_entity, participant);
     });
 
     REGISTER_FUNCTION("get_balance", [&](entt::entity participant) {
-        return universe.get_or_emplace<cqspc::Wallet>(participant).GetBalance();
+        return universe.get_or_emplace<Wallet>(participant).GetBalance();
     });
 
     REGISTER_FUNCTION("add_balance", [&](entt::entity participant, double balance) {
-        universe.get_or_emplace<cqspc::Wallet>(participant) += balance;
+        universe.get_or_emplace<Wallet>(participant) += balance;
     });
 
     auto get_planetary_markets = [&]() {
-        auto view = universe.view<cqspc::Market, cqspc::PlanetaryMarket>();
+        auto view = universe.view<Market, components::PlanetaryMarket>();
         std::vector<entt::entity> markets;
         for (entt::entity entity : view) {
             markets.push_back(entity);
@@ -259,63 +272,61 @@ void FunctionEconomy(cqsp::common::Universe& universe, cqsp::scripting::ScriptIn
     REGISTER_FUNCTION("get_planetary_markets", get_planetary_markets);
 }
 
-void FunctionUser(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionUser(Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("set_name", [&](entt::entity entity, const std::string& name) {
-        universe.emplace_or_replace<cqspc::Name>(entity, name);
+        universe.emplace_or_replace<components::Name>(entity, name);
     });
 
     REGISTER_FUNCTION("to_human_string", [&](int64_t number) { return cqsp::util::LongToHumanString(number); });
 
-    REGISTER_FUNCTION("get_name", [&](entt::entity entity) { return cqsp::common::util::GetName(universe, entity); });
+    REGISTER_FUNCTION("get_name", [&](entt::entity entity) { return util::GetName(universe, entity); });
 
     REGISTER_FUNCTION("get_random_name", [&](const std::string& name_gen, const std::string& rule) {
         return universe.name_generators[name_gen].Generate(rule);
     });
 }
 
-void FunctionPopulation(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionPopulation(Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("add_population_segment", [&](entt::entity settlement, uint64_t popsize) {
         entt::entity population = universe.create();
-        universe.emplace<cqspc::PopulationSegment>(population, popsize);
-        universe.emplace<cqspc::ResourceStockpile>(population);
-        universe.emplace<cqspc::LaborInformation>(population);
+        universe.emplace<PopulationSegment>(population, popsize);
+        universe.emplace<components::ResourceStockpile>(population);
+        universe.emplace<components::LaborInformation>(population);
         // Add to planet list
-        universe.get<cqspc::Settlement>(settlement).population.push_back(population);
+        universe.get<Settlement>(settlement).population.push_back(population);
 
         return population;
     });
 
     REGISTER_FUNCTION("get_segment_size",
-                      [&](entt::entity segment) { return universe.get<cqspc::PopulationSegment>(segment).population; });
+                      [&](entt::entity segment) { return universe.get<PopulationSegment>(segment).population; });
 
     // Get population segments of a planet
-    REGISTER_FUNCTION("get_segments",
-                      [&](entt::entity planet) { return universe.get<cqspc::Settlement>(planet).population; });
+    REGISTER_FUNCTION("get_segments", [&](entt::entity planet) { return universe.get<Settlement>(planet).population; });
 
     // Get cities of a planet
-    REGISTER_FUNCTION("get_cities",
-                      [&](entt::entity planet) { return universe.get<cqspc::Habitation>(planet).settlements; });
+    REGISTER_FUNCTION("get_cities", [&](entt::entity planet) { return universe.get<Habitation>(planet).settlements; });
 
     REGISTER_FUNCTION("get_city", [&](const std::string& planet) { return universe.cities[planet]; });
 }
 
-void FunctionShips(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionShips(cqsp::common::Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("create_ship", [&](entt::entity civ, entt::entity orbit, entt::entity starsystem) {
-        return cqsp::common::systems::actions::CreateShip(universe, civ, orbit, starsystem);
+        return actions::CreateShip(universe, civ, orbit, starsystem);
     });
 }
 
-void FunctionEvent(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionEvent(Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("push_event", [&](entt::entity entity, sol::table event_table) {
-        auto& queue = universe.get_or_emplace<cqsp::common::event::EventQueue>(entity);
+        auto& queue = universe.get_or_emplace<event::EventQueue>(entity);
         auto event = std::make_shared<cqsp::common::event::Event>();
         event->title = event_table["title"];
         SPDLOG_INFO("Parsing event \"{}\"", event->title);
@@ -347,63 +358,62 @@ void FunctionEvent(cqsp::common::Universe& universe, cqsp::scripting::ScriptInte
     });
 }
 
-void FunctionResource(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionResource(Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("add_resource", [&](entt::entity storage, entt::entity resource, int amount) {
         // Add resources to the resource stockpile
-        universe.get<cqspc::ResourceStockpile>(storage)[resource] += amount;
+        universe.get<ResourceStockpile>(storage)[resource] += amount;
     });
 
     REGISTER_FUNCTION("get_resource_count", [&](entt::entity stockpile, entt::entity resource) {
-        return universe.get<cqspc::ResourceStockpile>(stockpile)[resource];
+        return universe.get<ResourceStockpile>(stockpile)[resource];
     });
 }
 
-void FunctionCivilizations(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionCivilizations(Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
-    REGISTER_FUNCTION("get_player", [&]() { return universe.view<cqspc::Player>().front(); });
+    REGISTER_FUNCTION("get_player", [&]() { return universe.view<components::Player>().front(); });
     REGISTER_FUNCTION("get_capital_city",
-                      [&](entt::entity civ) { return universe.get<cqspc::Country>(civ).capital_city; });
+                      [&](entt::entity civ) { return universe.get<components::Country>(civ).capital_city; });
 }
 
-void FunctionScience(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionScience(Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
-    REGISTER_FUNCTION("create_lab", [&]() { return cqsp::common::systems::science::CreateLab(universe); });
+    REGISTER_FUNCTION("create_lab", [&]() { return systems::science::CreateLab(universe); });
 
     REGISTER_FUNCTION("add_science", [&](entt::entity lab, entt::entity research, double progress) {
-        cqsp::common::systems::science::AddScienceResearch(universe, lab, research, progress);
+        systems::science::AddScienceResearch(universe, lab, research, progress);
     });
 
     REGISTER_FUNCTION("add_tech_progress", [&](entt::entity entity) {
-        universe.emplace<cqsp::common::components::science::TechnologicalProgress>(entity);
-        universe.emplace<cqsp::common::components::science::ScientificResearch>(entity);
+        universe.emplace<components::science::TechnologicalProgress>(entity);
+        universe.emplace<ScientificResearch>(entity);
     });
 
     REGISTER_FUNCTION("complete_technology", [&](entt::entity entity, entt::entity tech) {
-        cqsp::common::systems::science::ResearchTech(universe, entity, tech);
+        systems::science::ResearchTech(universe, entity, tech);
     });
 
     REGISTER_FUNCTION("research_technology", [&](entt::entity entity, entt::entity tech) {
-        auto& res = universe.get<cqsp::common::components::science::ScientificResearch>(entity);
+        auto& res = universe.get<ScientificResearch>(entity);
         res.current_research[tech] = 0;
     });
 
     REGISTER_FUNCTION("add_potential_tech", [&](entt::entity entity, entt::entity tech) {
-        auto& res = universe.get<cqsp::common::components::science::ScientificResearch>(entity);
+        auto& res = universe.get<ScientificResearch>(entity);
         res.potential_research.insert(tech);
     });
 }
 
 // this is just meant for debugging and is not performant at all
-sol::table GetMarketTable(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine,
-                          entt::entity market) {
+sol::table GetMarketTable(Universe& universe, ScriptInterface& script_engine, entt::entity market) {
     sol::table market_table = script_engine.create_table_with();
 
-    cqsp::common::components::Market& market_component = universe.get<cqsp::common::components::Market>(market);
-    auto goods_view = universe.view<cqsp::common::components::Price>();
+    Market& market_component = universe.get<Market>(market);
+    auto goods_view = universe.view<components::Price>();
     for (entt::entity good : goods_view) {
         sol::table good_table = script_engine.create_table_with();
         good_table["price"] = market_component.price[good];
@@ -419,15 +429,14 @@ sol::table GetMarketTable(cqsp::common::Universe& universe, cqsp::scripting::Scr
     return market_table;
 }
 
-void FunctionTrade(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void FunctionTrade(Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("get_market_table",
                       [&](entt::entity market) { return GetMarketTable(universe, script_engine, market); });
 }
-}  // namespace
 
-void cqsp::scripting::LoadFunctions(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void LoadFunctions(Universe& universe, ScriptInterface& script_engine) {
     FunctionCivilizationGen(universe, script_engine);
     FunctionCivilizations(universe, script_engine);
     FunctionEconomy(universe, script_engine);
@@ -441,3 +450,4 @@ void cqsp::scripting::LoadFunctions(cqsp::common::Universe& universe, cqsp::scri
     FunctionScience(universe, script_engine);
     FunctionTrade(universe, script_engine);
 }
+}  // namespace cqsp::common::scripting

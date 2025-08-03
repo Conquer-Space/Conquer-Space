@@ -126,7 +126,7 @@ void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) 
 
     // Load scripts
     // Load lua functions
-    cqsp::scripting::LoadFunctions(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
+    common::scripting::LoadFunctions(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
     scripting::LoadImGuiFunctions(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
     scripting::ClientFunctions(asset_manager, conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
     scripting::InitClientElements(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());

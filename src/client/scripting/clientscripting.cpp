@@ -60,13 +60,13 @@ sol::object JsonToLuaObject(const Hjson::Value& j, const sol::this_state& s) {
 }
 
 void AssetManagerInterfaces(asset::AssetManager& asset_manager, common::Universe& universe,
-                            cqsp::scripting::ScriptInterface& script_engine) {
+                            common::scripting::ScriptInterface& script_engine) {
     CREATE_NAMESPACE(client);
 
     script_engine.set_function("require", [&](const char* script) {
-        using cqsp::asset::TextDirectoryAsset;
+        using asset::TextDirectoryAsset;
         // Get script from asset loader
-        cqsp::asset::TextDirectoryAsset* asset = asset_manager.GetAsset<TextDirectoryAsset>("core:scripts");
+        asset::TextDirectoryAsset* asset = asset_manager.GetAsset<TextDirectoryAsset>("core:scripts");
         // Get the thing
         if (asset->paths.find(script) != asset->paths.end()) {
             return script_engine.require_script(script, asset->paths[script].data);
@@ -90,7 +90,7 @@ void AssetManagerInterfaces(asset::AssetManager& asset_manager, common::Universe
 }  // namespace
 
 void ClientFunctions(asset::AssetManager& asset_manager, common::Universe& universe,
-                     cqsp::scripting::ScriptInterface& script_engine) {
+                     common::scripting::ScriptInterface& script_engine) {
     AssetManagerInterfaces(asset_manager, universe, script_engine);
 }
 };  // namespace cqsp::client::scripting

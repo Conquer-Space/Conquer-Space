@@ -21,7 +21,7 @@
 #include "common/scripting/functionreg.h"
 
 namespace cqsp::client::scripting {
-void InitClientElements(common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void InitClientElements(common::Universe& universe, common::scripting::ScriptInterface& script_engine) {
     CREATE_NAMESPACE(client);
 
     REGISTER_FUNCTION("EntityTooltip", [&](entt::entity entity) { systems::gui::EntityTooltip(universe, entity); });

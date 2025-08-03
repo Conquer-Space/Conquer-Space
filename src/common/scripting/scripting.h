@@ -26,7 +26,7 @@
 
 #include <sol/sol.hpp>
 
-namespace cqsp::scripting {
+namespace cqsp::common::scripting {
 class ScriptInterface : public sol::state {
  public:
     using sol::state::state;
