@@ -40,7 +40,7 @@ bool LoadDescription(Universe& universe, const entt::entity& entity, const Hjson
 /// </summary>
 bool LoadInitialValues(Universe& universe, const entt::entity& entity, const Hjson::Value& value);
 
-components::ResourceLedger HjsonToLedger(cqsp::common::Universe&, Hjson::Value&);
+components::ResourceLedger HjsonToLedger(Universe&, Hjson::Value&);
 
 bool VerifyHjsonValueExists(const Hjson::Value& value, const std::string& name, Hjson::Type type);
 /// <summary>

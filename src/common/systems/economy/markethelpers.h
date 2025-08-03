@@ -40,7 +40,7 @@ void CreateMarket(Universe& universe, entt::entity market);
 bool PurchaseGood(Universe& universe, entt::entity agent, const components::ResourceLedger& purchase);
 bool SellGood(Universe& universe, entt::entity agent, const components::ResourceLedger& selling);
 
-void AddParticipant(cqsp::common::Universe& universe, entt::entity market, entt::entity entity);
+void AddParticipant(Universe& universe, entt::entity market, entt::entity entity);
 
-double GetCost(cqsp::common::Universe& universe, entt::entity market, const components::ResourceLedger& ledger);
+double GetCost(Universe& universe, entt::entity market, const components::ResourceLedger& ledger);
 }  // namespace cqsp::common::systems::economy

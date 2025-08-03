@@ -118,7 +118,7 @@ void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) 
 
     LoadResource(asset_manager, conquer_space.m_universe, "names", loading::LoadNameLists);
     LoadResource(asset_manager, conquer_space.m_universe, "tech_fields", common::systems::science::LoadFields);
-    LoadResource(asset_manager, conquer_space.m_universe, "tech_list", common::systems::science::LoadTechnologies);
+    LoadResource(asset_manager, conquer_space.m_universe, "tech_list", common::systems::loading::LoadTechnologies);
 
     // Initialize planet terrains
     HjsonAsset* asset = asset_manager.GetAsset<HjsonAsset>("core:terrain_colors");

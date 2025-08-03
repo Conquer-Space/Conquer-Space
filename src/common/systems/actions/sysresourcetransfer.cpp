@@ -18,18 +18,19 @@
 
 #include "common/components/resource.h"
 
-bool cqsp::common::systems::resource::TransferResources(entt::registry& registry, entt::entity from, entt::entity to,
-                                                        entt::entity good, double amount) {
-    namespace cqspc = cqsp::common::components;
+namespace cqsp::common::systems::resource {
+using components::ResourceStockpile;
+
+bool TransferResources(entt::registry& registry, entt::entity from, entt::entity to, entt::entity good, double amount) {
     // Get resource stockpile
-    if (!(registry.all_of<cqspc::ResourceStockpile>(from) && registry.all_of<cqspc::ResourceStockpile>(to) &&
-          registry.all_of<cqspc::Good>(good))) {
+    if (!(registry.all_of<ResourceStockpile>(from) && registry.all_of<ResourceStockpile>(to) &&
+          registry.all_of<components::Good>(good))) {
         return false;
     }
 
     // Get resource stockpile
-    auto& from_stockpile = registry.get<cqspc::ResourceStockpile>(from);
-    auto& to_stockpile = registry.get<cqspc::ResourceStockpile>(from);
+    auto& from_stockpile = registry.get<ResourceStockpile>(from);
+    auto& to_stockpile = registry.get<ResourceStockpile>(from);
     // Transfer resources
     if (from_stockpile.HasGood(good)) {
         // Then we can transfer
@@ -41,3 +42,4 @@ bool cqsp::common::systems::resource::TransferResources(entt::registry& registry
     }
     return false;
 }
+}  // namespace cqsp::common::systems::resource

@@ -19,15 +19,16 @@
 #include "common/components/population.h"
 #include "common/components/surface.h"
 
-uint64_t cqsp::common::systems::GetCityPopulation(const Universe& universe, entt::entity city) {
-    namespace cqspc = common::components;
-    if (!universe.any_of<cqspc::Settlement>(city)) {
+namespace cqsp::common::systems {
+uint64_t GetCityPopulation(const Universe& universe, entt::entity city) {
+    if (!universe.any_of<components::Settlement>(city)) {
         return 0;
     }
     uint64_t pop_count = 0;
-    auto& settlement = universe.get<cqspc::Settlement>(city);
+    auto& settlement = universe.get<components::Settlement>(city);
     for (entt::entity pop : settlement.population) {
-        pop_count += universe.get<cqspc::PopulationSegment>(pop).population;
+        pop_count += universe.get<components::PopulationSegment>(pop).population;
     }
     return pop_count;
 }
+}  // namespace cqsp::common::systems

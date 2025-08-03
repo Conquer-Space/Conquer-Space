@@ -170,7 +170,7 @@ void FunctionCivilizationGen(Universe& universe, ScriptInterface& script_engine)
     REGISTER_FUNCTION("add_planet_habitation", [&](entt::entity planet) { universe.emplace<Habitation>(planet); });
 
     REGISTER_FUNCTION("add_planet_settlement", [&](entt::entity planet, double lat, double longi) {
-        return common::actions::CreateCity(universe, planet, lat, longi);
+        return systems::actions::CreateCity(universe, planet, lat, longi);
     });
 }
 
@@ -230,7 +230,7 @@ void FunctionEconomy(Universe& universe, ScriptInterface& script_engine) {
         auto view = universe.view<components::Good, components::Price>();
         for (entt::entity entity : view) {
             // Assign price to market
-            market.prices[entity] = universe.get<cqspc::Price>(entity);
+            market.prices[entity] = universe.get<components::Price>(entity);
         }*/
         entt::entity market_entity = systems::economy::CreateMarket(universe);
         // Set prices of market
@@ -394,7 +394,7 @@ void FunctionScience(Universe& universe, ScriptInterface& script_engine) {
     });
 
     REGISTER_FUNCTION("complete_technology", [&](entt::entity entity, entt::entity tech) {
-        systems::science::ResearchTech(universe, entity, tech);
+        systems::loading::ResearchTech(universe, entity, tech);
     });
 
     REGISTER_FUNCTION("research_technology", [&](entt::entity entity, entt::entity tech) {

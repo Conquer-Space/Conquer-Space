@@ -31,6 +31,13 @@
 #include "common/components/ships.h"
 #include "common/systems/loading/loadorbit.h"
 namespace cqsp::common::systems::loading {
+
+namespace types = components::types;
+namespace bodies = components::bodies;
+using types::Orbit;
+using types::toRadian;
+using bodies::Body;
+
 namespace {
 std::string trim(const std::string& str, const std::string& whitespace = " \t") {
     const auto strBegin = str.find_first_not_of(whitespace);
@@ -43,7 +50,7 @@ std::string trim(const std::string& str, const std::string& whitespace = " \t") 
 }
 }  // namespace
 
-components::types::Orbit GetOrbit(const std::string& line_one, const std::string& line_two, const double& GM) {
+Orbit GetOrbit(const std::string& line_one, const std::string& line_two, const double& GM) {
     // Epoch year
     double epoch_year = std::stoi(line_one.substr(18, 2));
     double epoch_time = std::stod(line_one.substr(20, 12));
@@ -56,11 +63,9 @@ components::types::Orbit GetOrbit(const std::string& line_one, const std::string
     std::istream_iterator<std::string> end;
     std::vector<std::string> vstrings(begin, end);
 
-    components::types::Orbit orbit;
+    Orbit orbit;
 
     // https://en.wikipedia.org/wiki/Two-line_element_set
-
-    using components::types::toRadian;
 
     double inclination = toRadian(std::stod(vstrings[2]));
     double LAN = toRadian(std::stod(vstrings[3]));       // Longitude of the ascending node
@@ -107,7 +112,7 @@ void LoadSatellites(Universe& universe, std::string& string) {
     std::string line;
     int count = 0;
     entt::entity earth = universe.planets["earth"];
-    const double GM = universe.get<components::bodies::Body>(earth).GM;
+    const double GM = universe.get<Body>(earth).GM;
 
     // Get the next three lines or something like that
     while (std::getline(f, line)) {
@@ -125,23 +130,23 @@ void LoadSatellites(Universe& universe, std::string& string) {
 
         // Add to earth
         auto orbit = GetOrbit(line_one, line_two, GM);
-        orbit.inclination += universe.get<components::bodies::Body>(earth).axial * cos(orbit.inclination);
+        orbit.inclination += universe.get<Body>(earth).axial * cos(orbit.inclination);
         // orbit.M0 += universe.get<components::bodies::Body>(earth).axial;
         orbit.reference_body = earth;
         // The math works
-        universe.get<components::bodies::OrbitalSystem>(earth).push_back(satellite);
-        universe.emplace<components::types::Orbit>(satellite, orbit);
+        universe.get<bodies::OrbitalSystem>(earth).push_back(satellite);
+        universe.emplace<Orbit>(satellite, orbit);
         universe.emplace<components::ships::Ship>(satellite);
     }
 }
 
 bool SatelliteLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
-    std::optional<components::types::Orbit> orbit = LoadOrbit(values["orbit"]);
+    std::optional<Orbit> orbit = LoadOrbit(values["orbit"]);
     if (!orbit.has_value()) {
         return false;
     }
     orbit->reference_body = universe.planets[values["orbit"]["reference"].to_string()];
-    orbit->GM = universe.get<components::bodies::Body>(orbit->reference_body).GM;
+    orbit->GM = universe.get<Body>(orbit->reference_body).GM;
     if (values["model"].defined()) {
         // Then we can add a model
         universe.emplace<components::WorldModel>(entity, values["model"].to_string());
@@ -149,8 +154,8 @@ bool SatelliteLoader::LoadValue(const Hjson::Value& values, entt::entity entity)
         // TODO(EhWhoAmI): We add a generic model instead
     }
     // Get name but no identifier
-    universe.emplace<components::types::Orbit>(entity, *orbit);
-    universe.get<components::bodies::OrbitalSystem>(orbit->reference_body).push_back(entity);
+    universe.emplace<Orbit>(entity, *orbit);
+    universe.get<bodies::OrbitalSystem>(orbit->reference_body).push_back(entity);
     universe.emplace<components::ships::Ship>(entity);
     SPDLOG_INFO("Loaded orbit!");
     return true;

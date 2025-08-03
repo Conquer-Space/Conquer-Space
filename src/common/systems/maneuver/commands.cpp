@@ -25,16 +25,21 @@
 #include "common/systems/maneuver/rendezvous.h"
 
 namespace cqsp::common::systems::commands {
+
+namespace types = components::types;
+
+using types::Orbit;
+
 bool VerifyCommand(Universe& universe, entt::entity command) {
     return (command == entt::null || !universe.any_of<Trigger>(command) || !universe.any_of<Command>(command));
 }
 
 void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity command_entity, Command command) {
     // TODO(EhWhoAmI): What if there's an error with the command?
-    if (!universe.any_of<components::types::Orbit>(entity)) {
+    if (!universe.any_of<Orbit>(entity)) {
         return;
     }
-    auto& orbit = universe.get<components::types::Orbit>(entity);
+    Orbit& orbit = universe.get<Orbit>(entity);
 
     // One huge switch statement is not how I want it to be but what can I do ¯\_(ツ)_/¯
     switch (command) {
@@ -59,7 +64,7 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
                 break;
             }
             auto& target_orbit = universe.get<OrbitTarget>(command_entity);
-            auto pair = cqsp::common::systems::CoplanarIntercept(orbit, target_orbit.orbit, universe.date());
+            auto pair = CoplanarIntercept(orbit, target_orbit.orbit, universe.date());
             PushManeuvers(universe, entity, {pair.first});
         } break;
         case Command::CoplanarInterceptAndTransfer: {
@@ -67,7 +72,7 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
                 break;
             }
             auto& target_orbit = universe.get<OrbitTarget>(command_entity);
-            auto pair = cqsp::common::systems::CoplanarIntercept(orbit, target_orbit.orbit, universe.date());
+            auto pair = CoplanarIntercept(orbit, target_orbit.orbit, universe.date());
             PushManeuvers(universe, entity, {pair.first, pair.second});
         } break;
         case Command::SetInclination: {
@@ -107,14 +112,14 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
             docked_ships.docked_ships.emplace_back(entity);
             // Also remove from the orbital system
             // Get the current orbital system that we're in
-            auto& orbit = universe.get<components::types::Orbit>(entity);
+            auto& orbit = universe.get<Orbit>(entity);
             if (orbit.reference_body != entt::null && universe.valid(orbit.reference_body) &&
                 universe.any_of<components::bodies::OrbitalSystem>(orbit.reference_body)) {
                 auto& children = universe.get<components::bodies::OrbitalSystem>(orbit.reference_body).children;
                 children.erase(std::remove(children.begin(), children.end(), entity), children.end());
             }
-            universe.remove<components::types::Orbit>(entity);
-            universe.remove<components::types::Kinematics>(entity);
+            universe.remove<Orbit>(entity);
+            universe.remove<types::Kinematics>(entity);
         } break;
         default:
             break;
@@ -155,10 +160,10 @@ void TransferToMoon(Universe& universe, entt::entity agent, entt::entity target)
     // Now generate the commands
     // Match planes
     // Get orbit
-    components::types::Orbit target_orbit = universe.get<components::types::Orbit>(target);
-    components::types::Orbit current_orbit = universe.get<components::types::Orbit>(agent);
+    Orbit target_orbit = universe.get<Orbit>(target);
+    Orbit current_orbit = universe.get<Orbit>(agent);
 
-    auto maneuver = cqsp::common::systems::MatchPlanes(current_orbit, target_orbit);
+    auto maneuver = MatchPlanes(current_orbit, target_orbit);
     PushManeuvers(universe, agent, {maneuver});
 
     // Move to intercept
@@ -220,10 +225,10 @@ void LandOnMoon(Universe& universe, entt::entity agent, entt::entity target, ent
 
 std::vector<entt::entity> GetSOIHierarchy(Universe& universe, entt::entity source) {
     std::vector<entt::entity> source_list;
-    entt::entity parent_body = universe.get<components::types::Orbit>(source).reference_body;
+    entt::entity parent_body = universe.get<Orbit>(source).reference_body;
     while (parent_body != entt::null) {
         source_list.push_back(parent_body);
-        parent_body = universe.get<components::types::Orbit>(parent_body).reference_body;
+        parent_body = universe.get<Orbit>(parent_body).reference_body;
     }
     return std::move(source_list);
 }

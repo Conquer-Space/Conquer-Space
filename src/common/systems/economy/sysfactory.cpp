@@ -31,8 +31,6 @@
 #include "common/util/profiler.h"
 
 namespace cqsp::common::systems {
-namespace cqspc = cqsp::common::components;
-namespace {
 /// <summary>
 /// Runs the production cycle
 /// Consumes material from the market based on supply and then sells the manufactured goods on the market.
@@ -43,13 +41,13 @@ namespace {
 void ProcessIndustries(Universe& universe, entt::entity entity) {
     auto& market = universe.get<components::Market>(entity);
     // Get the transport cost
-    auto& infrastructure = universe.get<cqspc::infrastructure::CityInfrastructure>(entity);
+    auto& infrastructure = universe.get<components::infrastructure::CityInfrastructure>(entity);
     // Calculate the infrastructure cost
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
 
-    auto& industries = universe.get<cqspc::IndustrialZone>(entity);
+    auto& industries = universe.get<components::IndustrialZone>(entity);
     auto& population_wallet =
-        universe.get_or_emplace<cqspc::Wallet>(universe.get<cqspc::Settlement>(entity).population.front());
+        universe.get_or_emplace<components::Wallet>(universe.get<components::Settlement>(entity).population.front());
     for (entt::entity productionentity : industries.industries) {
         // Process imdustries
         // Industries MUST have production and a linked recipe
@@ -145,7 +143,7 @@ void ProcessIndustries(Universe& universe, entt::entity entity) {
         population_wallet += costs.wages;
     }
 }
-}  // namespace
+
 
 void SysProduction::DoSystem() {
     ZoneScoped;

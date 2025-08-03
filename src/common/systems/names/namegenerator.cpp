@@ -19,7 +19,7 @@
 #include <fmt/args.h>
 #include <fmt/format.h>
 
-using cqsp::common::systems::names::NameGenerator;
+namespace cqsp::common::systems::names {
 std::string NameGenerator::Generate(const std::string& rule_name) {
     if (rule_list.find(rule_name) == rule_list.end()) {
         return "";
@@ -66,3 +66,4 @@ void NameGenerator::LoadNameGenerator(const Hjson::Value& value) {
         }
     }
 }
+}  // namespace cqsp::common::systems::names

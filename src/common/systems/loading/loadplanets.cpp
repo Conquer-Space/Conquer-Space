@@ -40,11 +40,16 @@
 #include "common/components/surface.h"
 #include "common/util/random/random.h"
 
-namespace cqspt = cqsp::common::components::types;
-namespace cqspc = cqsp::common::components;
-namespace cqspa = cqsp::common::systems::actions;
+
 
 namespace cqsp::common::systems::loading {
+
+namespace types = components::types;
+namespace actions = systems::actions;
+namespace bodies = components::bodies;
+using types::UnitType;
+using bodies::Body;
+
 namespace {
 struct ParentTemp {
     std::string parent;
@@ -52,24 +57,23 @@ struct ParentTemp {
 }  // namespace
 
 bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
-    using components::types::UnitType;
     // Load orbit
     std::string identifier = values["identifier"];
     const Hjson::Value& orbit = values["orbit"];
-    auto& orbit_comp = universe.emplace<components::types::Orbit>(entity);
-    universe.emplace<components::bodies::Planet>(entity);
-    auto& body_comp = universe.emplace<components::bodies::Body>(entity);
+    auto& orbit_comp = universe.emplace<types::Orbit>(entity);
+    universe.emplace<bodies::Planet>(entity);
+    auto& body_comp = universe.emplace<Body>(entity);
     universe.emplace<components::Market>(entity);
     universe.emplace<components::PlanetaryMarket>(entity);
 
-    universe.emplace<components::bodies::NautralObject>(entity);
+    universe.emplace<bodies::NautralObject>(entity);
     if (values["type"].type() != Hjson::Type::Undefined) {
         if (values["type"].type() != Hjson::Type::String) {
             SPDLOG_INFO("Planet type of {} is in incorrect format", identifier);
             return true;
         }
         if (values["type"].to_string() == "star") {
-            universe.emplace<components::bodies::LightEmitter>(entity);
+            universe.emplace<bodies::LightEmitter>(entity);
         }
     }
 
@@ -173,9 +177,9 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
 void PlanetLoader::PostLoad(const entt::entity& entity) {
     // Set the parent
-    auto& orbit = universe.get<components::types::Orbit>(entity);
-    auto& body = universe.get<components::bodies::Body>(entity);
-    body.mass = components::bodies::CalculateMass(body.GM);
+    auto& orbit = universe.get<types::Orbit>(entity);
+    auto& body = universe.get<Body>(entity);
+    body.mass = bodies::CalculateMass(body.GM);
     if (!universe.any_of<ParentTemp>(entity)) {
         return;
     }
@@ -191,10 +195,10 @@ void PlanetLoader::PostLoad(const entt::entity& entity) {
     SPDLOG_INFO("{}'s parent is {}", universe.get<components::Identifier>(entity).identifier, parent_temp.parent);
     orbit.reference_body = parent;
     // Set mu
-    orbit.GM = universe.get<components::bodies::Body>(parent).GM;
-    body.SOI = components::bodies::CalculateSOI(body.GM, orbit.GM, orbit.semi_major_axis);
-    body.mass = components::bodies::CalculateMass(body.GM);
-    universe.get_or_emplace<components::bodies::OrbitalSystem>(parent).push_back(entity);
+    orbit.GM = universe.get<Body>(parent).GM;
+    body.SOI = bodies::CalculateSOI(body.GM, orbit.GM, orbit.semi_major_axis);
+    body.mass = bodies::CalculateMass(body.GM);
+    universe.get_or_emplace<bodies::OrbitalSystem>(parent).push_back(entity);
     universe.remove<ParentTemp>(entity);
 }
 }  // namespace cqsp::common::systems::loading

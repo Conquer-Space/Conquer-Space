@@ -55,11 +55,11 @@ class SysOrbit : public ISimulationSystem {
     /// <param name="orb"></param>
     /// <param name="body"></param>
     /// <param name="parent"></param>
-    void CrashObject(cqsp::common::components::types::Orbit& orb, entt::entity body, entt::entity parent);
+    void CrashObject(components::types::Orbit& orb, entt::entity body, entt::entity parent);
 
-    void UpdateCommandQueue(cqsp::common::components::types::Orbit& orb, entt::entity body, entt::entity parent);
+    void UpdateCommandQueue(components::types::Orbit& orb, entt::entity body, entt::entity parent);
 
-    void CalculateImpulse(cqsp::common::components::types::Orbit& orb, entt::entity body, entt::entity parent);
+    void CalculateImpulse(components::types::Orbit& orb, entt::entity body, entt::entity parent);
 };
 
 class SysPath : public ISimulationSystem {

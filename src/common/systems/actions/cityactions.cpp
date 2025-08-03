@@ -20,21 +20,22 @@
 #include "common/components/name.h"
 #include "common/components/surface.h"
 
-entt::entity cqsp::common::actions::CreateCity(Universe& universe, entt::entity planet, double lat, double longi) {
-    namespace cqspt = cqsp::common::components::types;
-    namespace cqspc = cqsp::common::components;
+namespace cqsp::common::systems::actions {
+
+entt::entity CreateCity(Universe& universe, entt::entity planet, double lat, double longi) {
     entt::entity settlement = universe.create();
-    universe.emplace<cqspc::Settlement>(settlement);
-    universe.emplace<cqspt::SurfaceCoordinate>(settlement, lat, longi);
+    universe.emplace<components::Settlement>(settlement);
+    universe.emplace<components::types::SurfaceCoordinate>(settlement, lat, longi);
 
     // Add to planet list
 
-    if (universe.all_of<cqspc::Habitation>(planet)) {
-        universe.get<cqspc::Habitation>(planet).settlements.push_back(settlement);
+    if (universe.all_of<components::Habitation>(planet)) {
+        universe.get<components::Habitation>(planet).settlements.push_back(settlement);
     } else {
-        universe.emplace<cqspc::Habitation>(planet);
-        universe.get<cqspc::Habitation>(planet).settlements.push_back(settlement);
+        universe.emplace<components::Habitation>(planet);
+        universe.get<components::Habitation>(planet).settlements.push_back(settlement);
     }
 
     return settlement;
 }
+}  // namespace cqsp::common::systems::actions

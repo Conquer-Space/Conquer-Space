@@ -35,6 +35,8 @@ struct FieldTemplate {
 
 namespace cqsp::common::systems::science {
 //TODO(AGM) move to loading namespace
+namespace science = components::science;
+
 void LoadFields(Universe& universe, Hjson::Value& hjson) {
     for (int i = 0; i < hjson.size(); i++) {
         Hjson::Value val = hjson[i];
@@ -43,7 +45,7 @@ void LoadFields(Universe& universe, Hjson::Value& hjson) {
         }
         // Get the name
         entt::entity field = universe.create();
-        auto& field_comp = universe.emplace<components::science::Field>(field);
+        auto& field_comp = universe.emplace<science::Field>(field);
         loading::LoadName(universe, field, val);
         if (!loading::LoadIdentifier(universe, field, val)) {
             universe.destroy(field);
@@ -89,7 +91,7 @@ void LoadFields(Universe& universe, Hjson::Value& hjson) {
     auto view = universe.view<FieldTemplate>();
     for (entt::entity entity : view) {
         auto& field_template = universe.get<FieldTemplate>(entity);
-        auto& field = universe.get<components::science::Field>(entity);
+        auto& field = universe.get<science::Field>(entity);
         for (const auto& parent_name : field_template.parent) {
             // If it does not contain, warn
             if (universe.fields.find(parent_name) == universe.fields.end()) {
