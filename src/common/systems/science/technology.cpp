@@ -89,4 +89,4 @@ void ProcessAction(Universe& universe, entt::entity civilization, const std::str
         tech_progress.researched_mining.emplace(universe.goods[outcome_name]);
     }
 }
-}  // namespace cqsp::common::systems::science
+}  // namespace cqsp::common::systems::loading
