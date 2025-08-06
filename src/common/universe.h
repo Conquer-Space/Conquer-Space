@@ -28,8 +28,47 @@
 #include "common/components/stardate.h"
 #include "common/systems/names/namegenerator.h"
 #include "common/util/random/random.h"
+#include "common/node.h"
 
 namespace cqsp::common {
+
+template <typename Registry, typename... Components>
+class NodeView {
+ public:
+    using ViewType = entt::basic_view<entt::entity, entt::get_t<Components...>, entt::exclude_t<>, void>;
+
+    class Iterator {
+     public:
+        Iterator(ViewType view, typename ViewType::iterator it, Registry& registry)
+            : view_(view), it_(it), registry_(registry) {}
+
+        auto operator*() const -> Node {
+            return Node(*it_, registry_);
+        }
+
+        Iterator& operator++() {
+            ++it_;
+            return *this;
+        }
+
+        bool operator!=(const Iterator& other) const { return it_ != other.it_; }
+
+     private:
+        ViewType view_;
+        typename ViewType::iterator it_;
+        Registry& registry_;
+    };
+
+    NodeView(ViewType view, Registry& registry) : view_(view), registry_(registry) {}
+
+    Iterator begin() { return Iterator(view_, view_.begin(), registry_); }
+    Iterator end() { return Iterator(view_, view_.end(), registry_); }
+
+ private:
+    ViewType view_;
+    Registry& registry_;
+};
+
 class Universe : public entt::registry {
  public:
     explicit Universe(std::string uuid);
@@ -69,10 +108,20 @@ class Universe : public entt::registry {
     /// </summary>
     double tick_fraction = 0;
 
+    template <typename... Components>
+    auto nodes() {
+        using ViewType = entt::basic_view<entt::entity, entt::get_t<Components...>, entt::exclude_t<>, void>;
+        ViewType view = this->view<Components...>();
+        return NodeView<Universe, Components...>(view, *this);
+    }
+
  private:
-    bool to_tick = false;
+    bool to_tick = false;   
 };
 }  // namespace cqsp::common
+
+
+
 
 template <>
 struct fmt::formatter<entt::entity> : formatter<std::string> {

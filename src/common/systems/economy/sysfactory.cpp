@@ -29,32 +29,34 @@
 #include "common/components/organizations.h"
 #include "common/components/surface.h"
 #include "common/util/profiler.h"
+#include "common/node.h"
+
 
 namespace cqsp::common::systems {
 /// <summary>
 /// Runs the production cycle
 /// Consumes material from the market based on supply and then sells the manufactured goods on the market.
 /// </summary>
-/// <param name="universe">Registry used for searching for components</param>
+/// <param name="current_registry">Registry used for searching for components</param>
 /// <param name="entity">Entity containing an Inudstries that need to be processed</param>
 /// <param name="market">The market the industry uses.</param>
-void ProcessIndustries(Universe& universe, entt::entity entity) {
-    auto& market = universe.get<components::Market>(entity);
+void ProcessIndustries(Node& industrynode) {
+    components::Market& market = industrynode.get<components::Market>();
     // Get the transport cost
-    auto& infrastructure = universe.get<components::infrastructure::CityInfrastructure>(entity);
+    auto& infrastructure = industrynode.get<components::infrastructure::CityInfrastructure>();
     // Calculate the infrastructure cost
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
 
-    auto& industries = universe.get<components::IndustrialZone>(entity);
+    auto& industries = industrynode.get<components::IndustrialZone>();
     auto& population_wallet =
-        universe.get_or_emplace<components::Wallet>(universe.get<components::Settlement>(entity).population.front());
-    for (entt::entity productionentity : industries.industries) {
+        industrynode.get_or_emplace<components::Wallet>(industrynode.get<components::Settlement>().population.front());
+    for (Node productionnode : industrynode.Convert(industries.industries)) {
         // Process imdustries
         // Industries MUST have production and a linked recipe
-        if (!universe.all_of<components::Production>(productionentity)) continue;
-        components::Recipe recipe =
-            universe.get_or_emplace<components::Recipe>(universe.get<components::Production>(productionentity).recipe);
-        components::IndustrySize& size = universe.get<components::IndustrySize>(productionentity);
+        if (!productionnode.all_of<components::Production>()) continue;
+        components::Recipe recipe = productionnode.get_or_emplace<components::Recipe>(
+            productionnode.get<components::Production>().recipe);
+        components::IndustrySize& size = productionnode.get<components::IndustrySize>();
         // Calculate resource consumption
         components::ResourceLedger capitalinput = recipe.capitalcost * (size.size);
         components::ResourceLedger input = (recipe.input * size.utilization) + capitalinput;
@@ -85,7 +87,7 @@ void ProcessIndustries(Universe& universe, entt::entity entity) {
         // Next time need to compute the costs along with input and
         // output so that the factory doesn't overspend. We sorta
         // need a balanced economy
-        components::CostBreakdown& costs = universe.get_or_emplace<components::CostBreakdown>(productionentity);
+        components::CostBreakdown& costs = productionnode.get_or_emplace<components::CostBreakdown>();
 
         // Maintenance costs will still have to be upkept, so if
         // there isnt any resources to upkeep the place, then stop
@@ -134,7 +136,7 @@ void ProcessIndustries(Universe& universe, entt::entity entity) {
 
         // So we will add a random chance to increase or decrease profit
         double diff = std::clamp(log(fabs(costs.profit) * profit_multiplier), 0., 0.05);
-        diff += 1 + universe.random->GetRandomNormal(0, 0.075);
+        //diff += 1 + productionnode.current_registry.random->GetRandomNormal(0, 0.075);
         diff *= (costs.profit < 0) ? -1 : 1;
         size.utilization = std::clamp(size.utilization * diff, 0.1 * size.size, size.size);
         // Now diff it by that much
@@ -148,15 +150,20 @@ void ProcessIndustries(Universe& universe, entt::entity entity) {
 void SysProduction::DoSystem() {
     ZoneScoped;
     Universe& universe = GetUniverse();
-    auto view = universe.view<components::IndustrialZone, components::Market>();
     // Each industrial zone is a a market
     BEGIN_TIMED_BLOCK(INDUSTRY);
     int factories = 0;
     // Loop through the markets
     int settlement_count = 0;
     // Get the markets and process the values?
+    auto view = universe.view<components::IndustrialZone, components::Market>();
     for (entt::entity entity : view) {
-        ProcessIndustries(universe, entity);
+        Node node(entity, universe);
+        ProcessIndustries(node);
+    }
+
+    for (Node node : universe.nodes<components::IndustrialZone, components::Market>()) {
+        ProcessIndustries(node);
     }
     END_TIMED_BLOCK(INDUSTRY);
     SPDLOG_TRACE("Updated {} factories, {} industries", factories, view.size());
