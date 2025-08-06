@@ -27,26 +27,21 @@
 #include "common/systems/economy/markethelpers.h"
 
 namespace cqsp::common::systems::actions {
-using cqsp::common::Universe;
-entt::entity cqsp::common::systems::actions::OrderConstructionFactory(cqsp::common::Universe& universe,
-                                                                      entt::entity city, entt::entity market,
-                                                                      entt::entity recipe, int productivity,
-                                                                      entt::entity builder) {
-    entt::entity factory = common::systems::actions::CreateFactory(universe, city, recipe, productivity);
+entt::entity OrderConstructionFactory(Universe& universe, entt::entity city, entt::entity market,
+                                      entt::entity recipe, int productivity, entt::entity builder) {
+    entt::entity factory = CreateFactory(universe, city, recipe, productivity);
     if (factory == entt::null) {
         return entt::null;
     }
-    cqsp::common::systems::economy::AddParticipant(universe, market, factory);
-    auto cost = common::systems::actions::GetFactoryCost(universe, city, recipe, productivity);
+    economy::AddParticipant(universe, market, factory);
+    auto cost = GetFactoryCost(universe, city, recipe, productivity);
 
     // Buy the goods on the market
-    common::systems::economy::PurchaseGood(universe, builder, cost);
+    economy::PurchaseGood(universe, builder, cost);
     return factory;
 }
 
-entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, entt::entity city, entt::entity recipe,
-                                                           int productivity) {
-    namespace components = cqsp::common::components;
+entt::entity CreateFactory(Universe& universe, entt::entity city, entt::entity recipe, int productivity) {
     // Make the factory
     if (city == entt::null || recipe == entt::null) {
         SPDLOG_WARN("City or recipe is null");
@@ -98,9 +93,9 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
     return factory;
 }
 
-cqsp::common::components::ResourceLedger cqsp::common::systems::actions::GetFactoryCost(
-    cqsp::common::Universe& universe, entt::entity city, entt::entity recipe, int productivity) {
-    cqsp::common::components::ResourceLedger ledger;
+components::ResourceLedger GetFactoryCost(Universe& universe, entt::entity city, entt::entity recipe, int productivity) 
+{
+    components::ResourceLedger ledger;
     // Get the recipe and things
     if (universe.any_of<components::RecipeCost>(recipe)) {
         auto& cost = universe.get<components::RecipeCost>(recipe);
@@ -110,8 +105,7 @@ cqsp::common::components::ResourceLedger cqsp::common::systems::actions::GetFact
     return ledger;
 }
 
-entt::entity cqsp::common::systems::actions::CreateCommercialArea(cqsp::common::Universe& universe, entt::entity city) {
-    namespace components = cqsp::common::components;
+entt::entity CreateCommercialArea(Universe& universe, entt::entity city) {
     entt::entity commercial = universe.create();
 
     universe.emplace<components::Employer>(commercial);
