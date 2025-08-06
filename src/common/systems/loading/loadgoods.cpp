@@ -35,11 +35,14 @@
     }
 
 namespace cqsp::common::systems::loading {
-void LoadTerrainData(cqsp::common::Universe& universe, Hjson::Value& value) {
+
+namespace types = components::types;
+using components::bodies::TerrainData;
+
+void LoadTerrainData(Universe& universe, Hjson::Value& value) {
     for (auto it = value.begin(); it != value.end(); it++) {
         entt::entity entity = universe.create();
 
-        using cqsp::common::components::bodies::TerrainData;
         TerrainData& data = universe.get_or_emplace<TerrainData>(entity);
 
         data.sea_level = it->second["sealevel"];
@@ -73,24 +76,23 @@ GoodLoader::GoodLoader(Universe& universe) : HjsonLoader(universe) {
 }
 
 bool GoodLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
-    namespace cqspc = cqsp::common::components;
-    namespace cqspt = cqsp::common::components::types;
 
-    universe.emplace<cqspc::Good>(entity);
+
+    universe.emplace<components::Good>(entity);
 
     std::string identifier = values["identifier"].to_string();
     if (values["mass"].defined() && values["volume"].defined()) {
         // Then it's matter and physical
-        auto& matter = universe.emplace<cqspc::Matter>(entity);
+        auto& matter = universe.emplace<components::Matter>(entity);
         bool mass_correct;
-        matter.mass = ReadUnit(values["mass"].to_string(), cqspt::Mass, &mass_correct);
+        matter.mass = ReadUnit(values["mass"].to_string(), types::Mass, &mass_correct);
         if (!mass_correct) {
             SPDLOG_WARN("Mass is formatted incorrectly for {}: {}", identifier, values["mass"].to_string());
             return false;
         }
 
         bool volume_correct;
-        matter.volume = ReadUnit(values["volume"].to_string(), cqspt::Volume, &volume_correct);
+        matter.volume = ReadUnit(values["volume"].to_string(), types::Volume, &volume_correct);
         if (!volume_correct) {
             SPDLOG_WARN("Volume is formatted incorrectly for {}: {}", identifier, values["volume"].to_string());
             return false;
@@ -99,14 +101,14 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
     if (values["energy"].defined()) {
         double t = values["energy"];
-        universe.emplace<cqspc::Energy>(entity, t);
+        universe.emplace<components::Energy>(entity, t);
     }
     if (values["consumption"].defined()) {
         const Hjson::Value& consumption = values["consumption"];
         double autonomous_consumption = consumption["autonomous_consumption"].to_double();
         double marginal_propensity = consumption["marginal_propensity"].to_double();
 
-        cqspc::ConsumerGood& cg = universe.get_or_emplace<cqspc::ConsumerGood>(entity);
+        components::ConsumerGood& cg = universe.get_or_emplace<components::ConsumerGood>(entity);
         cg.autonomous_consumption = autonomous_consumption;
         cg.marginal_propensity = marginal_propensity;
         SPDLOG_INFO("Creating consumer good {} with values: {} {}", identifier, cg.autonomous_consumption,
@@ -116,16 +118,16 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
     for (int i = 0; i < values["tags"].size(); i++) {
         if (values["tags"][i] == "mineral") {
-            universe.get_or_emplace<cqspc::Mineral>(entity);
+            universe.get_or_emplace<components::Mineral>(entity);
         } else if (values["tags"][i] == "captialgood") {
-            universe.get_or_emplace<cqspc::CapitalGood>(entity);
+            universe.get_or_emplace<components::CapitalGood>(entity);
         }
     }
 
-    universe.emplace<cqspc::Price>(entity, values["price"].to_double());
+    universe.emplace<components::Price>(entity, values["price"].to_double());
 
     if (values["unit"].type() == Hjson::Type::String) {
-        universe.emplace<cqspc::Unit>(entity, values["unit"].to_string());
+        universe.emplace<components::Unit>(entity, values["unit"].to_string());
     }
 
     // Basically if it fails at any point, we'll remove the component
@@ -139,9 +141,8 @@ RecipeLoader::RecipeLoader(Universe& universe) : HjsonLoader(universe) {
 }
 
 bool RecipeLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
-    namespace cqspc = cqsp::common::components;
 
-    auto& recipe_component = universe.emplace<cqspc::Recipe>(entity);
+    auto& recipe_component = universe.emplace<components::Recipe>(entity);
 
     Hjson::Value input_value = values["input"];
     recipe_component.input = HjsonToLedger(universe, input_value);
@@ -161,7 +162,7 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     // Check if it has cost
     if (values["cost"].defined()) {
         Hjson::Value cost_map = values["cost"];
-        auto& recipe_cost = universe.emplace<cqspc::RecipeCost>(entity);
+        auto& recipe_cost = universe.emplace<components::RecipeCost>(entity);
 
         if (cost_map["capital"].defined()) {
             Hjson::Value capital = cost_map["capital"];
@@ -187,15 +188,15 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
     for (int i = 0; i < values["tags"].size(); i++) {
         if (values["tags"][i] == "raw") {
-            recipe_component.type = cqspc::mine;
+            recipe_component.type = components::mine;
         } else if (values["tags"][i] == "service") {
-            recipe_component.type = cqspc::service;
+            recipe_component.type = components::service;
         } else if (values["tags"][i] == "factory") {
-            recipe_component.type = cqspc::factory;
+            recipe_component.type = components::factory;
         }
     }
 
-    auto& name_object = universe.get<cqspc::Identifier>(entity);
+    auto& name_object = universe.get<components::Identifier>(entity);
     universe.recipes[name_object] = entity;
     return true;
 }

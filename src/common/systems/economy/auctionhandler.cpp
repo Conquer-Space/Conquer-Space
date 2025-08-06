@@ -17,9 +17,11 @@
 #include "common/systems/economy/auctionhandler.h"
 
 #include <spdlog/spdlog.h>
+namespace cqsp::common::systems {
 
-bool cqsp::common::systems::BuyGood(components::AuctionHouse& auction_house, entt::entity agent, entt::entity good,
-                                    double price, double quantity) {
+using components::AuctionHouse;
+
+bool BuyGood(AuctionHouse& auction_house, entt::entity agent, entt::entity good, double price, double quantity) {
     // The orders we want to try and fufill
     auto& sell_order_list = auction_house.sell_orders[good];
     auto& buy_order_list = auction_house.buy_orders[good];
@@ -62,8 +64,7 @@ bool cqsp::common::systems::BuyGood(components::AuctionHouse& auction_house, ent
     return false;
 }
 
-bool cqsp::common::systems::SellGood(components::AuctionHouse& auction_house, entt::entity agent, entt::entity good,
-                                     double price, double quantity) {
+bool SellGood(AuctionHouse& auction_house, entt::entity agent, entt::entity good, double price, double quantity) {
     // The place we will put our order if we cannot fufill it
     auto& sell_order_list = auction_house.sell_orders[good];
 
@@ -110,3 +111,4 @@ bool cqsp::common::systems::SellGood(components::AuctionHouse& auction_house, en
     sell_order_list.put(order);
     return false;
 }
+}  // namespace cqsp::common::systems

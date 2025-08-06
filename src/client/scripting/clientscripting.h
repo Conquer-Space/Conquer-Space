@@ -20,5 +20,5 @@
 
 namespace cqsp::client::scripting {
 void ClientFunctions(asset::AssetManager& asset_manager, common::Universe& universe,
-                     cqsp::scripting::ScriptInterface& script_engine);
+                     common::scripting::ScriptInterface& script_engine);
 }  // namespace cqsp::client::scripting

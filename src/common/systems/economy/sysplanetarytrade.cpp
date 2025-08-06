@@ -21,8 +21,8 @@
 
 #include "common/components/economy.h"
 #include "common/components/surface.h"
-
-void cqsp::common::systems::SysPlanetaryTrade::DoSystem() {
+namespace cqsp::common::systems {
+void SysPlanetaryTrade::DoSystem() {
     // Sort through all the districts, and figure out their trade
     // Get all the markets
     // Then cross reference to see if they can buy or sell
@@ -113,3 +113,4 @@ void cqsp::common::systems::SysPlanetaryTrade::DoSystem() {
     }
     initial_tick = false;
 }
+}  // namespace cqsp::common::systems

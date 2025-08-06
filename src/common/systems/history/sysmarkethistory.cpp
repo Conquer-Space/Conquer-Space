@@ -18,19 +18,23 @@
 
 #include "common/components/economy.h"
 #include "common/components/history.h"
+namespace cqsp::common::systems::history {
 
-void cqsp::common::systems::history::SysMarketHistory::DoSystem() {
+using components::MarketHistory;
+using components::Market;
+
+void SysMarketHistory::DoSystem() {
     /*
-    auto view = GetUniverse().view<components::Market, components::MarketHistory>();
+    auto view = GetUniverse().view<Market, MarketHistory>();
 
-    for (entt::entity marketentity : GetUniverse().view<components::Market>()) {
-        components::Market& market_data = GetUniverse().get<components::Market>(marketentity);
+    for (entt::entity marketentity : GetUniverse().view<Market>()) {
+        Market& market_data = GetUniverse().get<Market>(marketentity);
         market_data.history.push_back(market_data);
     }
-    auto view = GetUniverse().view<components::Market, components::MarketHistory>();
+    auto view = GetUniverse().view<Market, MarketHistory>();
     for (entt::entity entity : view) {
-        auto& history = GetUniverse().get<components::MarketHistory>(entity);
-        components::Market& market_data = GetUniverse().get<components::Market>(entity);
+        auto& history = GetUniverse().get<MarketHistory>(entity);
+        Market& market_data = GetUniverse().get<Market>(entity);
         // Loop through the prices
         for (auto resource : market_data.market_information) {
             history.price_history[resource.first].push_back(resource.second.price);
@@ -44,5 +48,6 @@ void cqsp::common::systems::history::SysMarketHistory::DoSystem() {
             }
         }
         history.gdp.push_back(val);
-    }*/
+    */
 }
+}  // namespace cqsp::common::systems::history

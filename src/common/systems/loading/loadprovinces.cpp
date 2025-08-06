@@ -25,7 +25,7 @@
 #include "common/components/surface.h"
 
 namespace cqsp::common::systems::loading {
-void LoadProvinces(common::Universe& universe, entt::entity planet, const std::string& text) {
+void LoadProvinces(Universe& universe, entt::entity planet, const std::string& text) {
     // The text has to be csv, so treat it is csv
     std::istringstream f(text);
     std::string line;
@@ -64,7 +64,7 @@ void LoadProvinces(common::Universe& universe, entt::entity planet, const std::s
     }
 }
 
-void LoadAdjProvinces(common::Universe& universe, Hjson::Value& adjacency_map) {
+void LoadAdjProvinces(Universe& universe, Hjson::Value& adjacency_map) {
     // Go through value
     for (auto const& [province_name, neighbors] : adjacency_map) {
         if (!universe.provinces.contains(province_name)) {

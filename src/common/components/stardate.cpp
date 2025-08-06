@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/stardate.h"
+#include "common/components/stardate.h"
 
 #include <fmt/format.h>
 

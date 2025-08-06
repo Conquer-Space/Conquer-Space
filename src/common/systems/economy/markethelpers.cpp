@@ -21,11 +21,11 @@
 
 void cqsp::common::systems::economy::AddParticipant(cqsp::common::Universe& universe, entt::entity market_entity,
                                                     entt::entity entity) {
-    namespace cqspc = cqsp::common::components;
-    auto& market = universe.get<cqspc::Market>(market_entity);
+    namespace components = cqsp::common::components;
+    auto& market = universe.get<components::Market>(market_entity);
     market.participants.insert(entity);
-    universe.emplace<cqspc::MarketAgent>(entity, market_entity);
-    static_cast<void>(universe.get_or_emplace<cqspc::Wallet>(entity));
+    universe.emplace<components::MarketAgent>(entity, market_entity);
+    static_cast<void>(universe.get_or_emplace<components::Wallet>(entity));
 }
 
 double cqsp::common::systems::economy::GetCost(cqsp::common::Universe& universe, entt::entity market,

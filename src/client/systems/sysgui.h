@@ -30,7 +30,7 @@ class SysUserInterface {
 
     engine::Application &GetApp() { return m_app; }
     common::Universe &GetUniverse() { return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->m_universe; }
-    scripting::ScriptInterface &GetScriptInterface() {
+    common::scripting::ScriptInterface &GetScriptInterface() {
         return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->script_interface;
     }
     asset::AssetManager &GetAssetManager() { return GetApp().GetAssetManager(); }

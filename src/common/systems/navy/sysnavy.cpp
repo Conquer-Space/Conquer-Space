@@ -23,5 +23,6 @@
 #include "common/components/ships.h"
 #include "common/components/units.h"
 #include "common/systems/movement/sysmovement.h"
-
-void cqsp::common::systems::SysNavyControl::DoSystem() { cqsp::common::Universe &universe = GetUniverse(); }
+namespace cqsp::common::systems {
+void SysNavyControl::DoSystem() { Universe &universe = GetUniverse(); }
+}  // namespace cqsp::common::systems

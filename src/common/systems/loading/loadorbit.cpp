@@ -20,17 +20,21 @@
 #include "common/systems/loading/loadutil.h"
 
 namespace cqsp::common::systems::loading {
+
+namespace types = components::types;
+using types::UnitType;
+using types::Orbit;
+
 /// @brief Loads an orbit from a hjson object
 /// Note: The caller will have to set the center entity.
 /// @param values The hjson input values
 /// @return Will return a nullopt if the struct is invalid
-std::optional<components::types::Orbit> LoadOrbit(const Hjson::Value& values) {
-    using cqsp::common::components::types::UnitType;
+std::optional<Orbit> LoadOrbit(const Hjson::Value& values) {
 
-    components::types::Orbit orbit;
+    Orbit orbit;
     if (values["semi_major_axis"].type() != Hjson::Type::String && values["semi_major_axis"].to_double() == 0) {
         orbit.semi_major_axis = 0;
-        return std::optional<components::types::Orbit>(orbit);
+        return std::optional<Orbit>(orbit);
     }
 
     bool sma_correct;
@@ -64,6 +68,6 @@ std::optional<components::types::Orbit> LoadOrbit(const Hjson::Value& values) {
     if (!M0_correct) {
         return std::nullopt;
     }
-    return std::optional<components::types::Orbit>(orbit);
+    return std::optional<Orbit>(orbit);
 }
 }  // namespace cqsp::common::systems::loading

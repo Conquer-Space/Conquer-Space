@@ -22,7 +22,7 @@
 #include "common/components/science.h"
 #include "common/systems/loading/loadutil.h"
 
-namespace cqsp::common::systems::science {
+namespace cqsp::common::systems::loading {
 //TODO(AGM) move to loading namespace
 void LoadTechnologies(Universe& universe, Hjson::Value& value) {
     // Load the technologies
@@ -89,4 +89,4 @@ void ProcessAction(Universe& universe, entt::entity civilization, const std::str
         tech_progress.researched_mining.emplace(universe.goods[outcome_name]);
     }
 }
-}  // namespace cqsp::common::systems::science
+}  // namespace cqsp::common::systems::loading

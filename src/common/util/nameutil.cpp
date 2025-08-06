@@ -34,15 +34,15 @@
 #include "common/util/utilnumberdisplay.h"
 
 namespace cqsp::common::util {
+namespace components = cqsp::common::components;
 std::string GetName(const Universe& universe, entt::entity entity) {
     if (!universe.valid(entity)) {
         return "";
     }
-    namespace cqspc = cqsp::common::components;
-    if (universe.all_of<cqspc::Name>(entity)) {
-        return universe.get<cqspc::Name>(entity);
-    } else if (universe.all_of<cqspc::Identifier>(entity)) {
-        return universe.get<cqspc::Identifier>(entity);
+    if (universe.all_of<components::Name>(entity)) {
+        return universe.get<components::Name>(entity);
+    } else if (universe.all_of<components::Identifier>(entity)) {
+        return universe.get<components::Identifier>(entity);
     } else {
         return fmt::format("{}", GetEntityType(universe, entity));
     }
@@ -53,27 +53,26 @@ std::string GetName(const Universe& universe, entt::entity entity) {
  * Perhaps we could just have a component that stores the name, and we
  * can get rid of this complex and honestly unwieldy function.
  */
-std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity entity) {
-    namespace cqspc = cqsp::common::components;
+std::string GetEntityType(const Universe& universe, entt::entity entity) {
     // Then get type of entity
     if (entity == entt::null) {
         return "Null Entity";
     }
-    if (universe.all_of<cqspc::bodies::Star>(entity)) {
+    if (universe.all_of<components::bodies::Star>(entity)) {
         return "Star";
-    } else if (universe.all_of<cqspc::bodies::Planet>(entity)) {
+    } else if (universe.all_of<components::bodies::Planet>(entity)) {
         return "Planet";
-    } else if (universe.any_of<cqspc::Settlement, cqspc::Habitation>(entity)) {
+    } else if (universe.any_of<components::Settlement, components::Habitation>(entity)) {
         return "City";
-    } else if (universe.any_of<cqspc::Production>(entity)) {
-        auto& generator = universe.get<cqspc::Production>(entity);
+    } else if (universe.any_of<components::Production>(entity)) {
+        auto& generator = universe.get<components::Production>(entity);
         return fmt::format("{} Factory", GetName(universe, generator.recipe));
-    } else if (universe.any_of<cqspc::Mine>(entity)) {
+    } else if (universe.any_of<components::Mine>(entity)) {
         /*
         std::string production = "";
-        auto& generator = universe.get<cqspc::ResourceGenerator>(entity);
+        auto& generator = universe.get<components::ResourceGenerator>(entity);
         for (auto it = generator.begin(); it != generator.end(); ++it) {
-            production += universe.get<cqspc::Name>(it->first).name + ", ";
+            production += universe.get<components::Name>(it->first).name + ", ";
         }
         // Remove last comma
         if (!production.empty()) {
@@ -82,19 +81,19 @@ std::string GetEntityType(const cqsp::common::Universe& universe, entt::entity e
         return fmt::format("{} Mine", production);
         */
         return "Mine";
-    } else if (universe.any_of<cqspc::Player>(entity)) {
+    } else if (universe.any_of<components::Player>(entity)) {
         return "Player";
-    } else if (universe.any_of<cqspc::Country>(entity)) {
+    } else if (universe.any_of<components::Country>(entity)) {
         return "Country";
-    } else if (universe.any_of<cqspc::Province>(entity)) {
+    } else if (universe.any_of<components::Province>(entity)) {
         return "Province";
-    } else if (universe.any_of<cqspc::Organization>(entity)) {
+    } else if (universe.any_of<components::Organization>(entity)) {
         return "Organization";
-    } else if (universe.any_of<cqspc::science::Lab>(entity)) {
+    } else if (universe.any_of<components::science::Lab>(entity)) {
         return "Science Lab";
-    } else if (universe.any_of<cqspc::Commercial>(entity)) {
+    } else if (universe.any_of<components::Commercial>(entity)) {
         return "Commercial";
-    } else if (universe.any_of<cqspc::ships::Ship>(entity)) {
+    } else if (universe.any_of<components::ships::Ship>(entity)) {
         return "Ship";
     }
     return "Unknown";

@@ -16,8 +16,7 @@
  */
 #include "common/components/economy.h"
 
-using cqsp::common::components::Market;
-using cqsp::common::components::ResourceStockpile;
+namespace cqsp::common::components {
 
 void Market::AddSupply(const ResourceLedger& stockpile) {
     for (const auto& stockpile_element : stockpile) {
@@ -58,3 +57,4 @@ double Market::GetSupply(const entt::entity& good) { return market_information[g
 double Market::GetDemand(const entt::entity& good) { return market_information[good].demand; }
 
 double Market::GetPrice(const entt::entity& good) { return market_information[good].price; }
+}  // namespace cqsp::common::components

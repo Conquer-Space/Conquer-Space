@@ -26,26 +26,22 @@
 #include "common/components/resource.h"
 #include "common/systems/economy/markethelpers.h"
 
-using cqsp::common::Universe;
-entt::entity cqsp::common::systems::actions::OrderConstructionFactory(cqsp::common::Universe& universe,
-                                                                      entt::entity city, entt::entity market,
-                                                                      entt::entity recipe, int productivity,
-                                                                      entt::entity builder) {
-    entt::entity factory = common::systems::actions::CreateFactory(universe, city, recipe, productivity);
+namespace cqsp::common::systems::actions {
+entt::entity OrderConstructionFactory(Universe& universe, entt::entity city, entt::entity market,
+                                      entt::entity recipe, int productivity, entt::entity builder) {
+    entt::entity factory = CreateFactory(universe, city, recipe, productivity);
     if (factory == entt::null) {
         return entt::null;
     }
-    cqsp::common::systems::economy::AddParticipant(universe, market, factory);
-    auto cost = common::systems::actions::GetFactoryCost(universe, city, recipe, productivity);
+    economy::AddParticipant(universe, market, factory);
+    auto cost = GetFactoryCost(universe, city, recipe, productivity);
 
     // Buy the goods on the market
-    common::systems::economy::PurchaseGood(universe, builder, cost);
+    economy::PurchaseGood(universe, builder, cost);
     return factory;
 }
 
-entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, entt::entity city, entt::entity recipe,
-                                                           int productivity) {
-    namespace cqspc = cqsp::common::components;
+entt::entity CreateFactory(Universe& universe, entt::entity city, entt::entity recipe, int productivity) {
     // Make the factory
     if (city == entt::null || recipe == entt::null) {
         SPDLOG_WARN("City or recipe is null");
@@ -55,41 +51,41 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
         SPDLOG_WARN("City or recipe is invalid");
         return entt::null;
     }
-    if (!universe.any_of<cqspc::IndustrialZone>(city)) {
+    if (!universe.any_of<components::IndustrialZone>(city)) {
         SPDLOG_WARN("City {} has no industry", city);
         return entt::null;
     }
 
-    if (!universe.any_of<cqspc::Recipe>(recipe)) {
+    if (!universe.any_of<components::Recipe>(recipe)) {
         SPDLOG_WARN("Recipe {} has no recipe", recipe);
         return entt::null;
     }
 
     entt::entity factory = universe.create();
-    //auto& factory_converter = universe.emplace<cqspc::ResourceConverter>(factory);
-    auto& production = universe.emplace<cqspc::Production>(factory);
+    //auto& factory_converter = universe.emplace<components::ResourceConverter>(factory);
+    auto& production = universe.emplace<components::Production>(factory);
     // Add recipes and stuff
     production.recipe = recipe;
-    universe.get<cqspc::IndustrialZone>(city).industries.push_back(factory);
+    universe.get<components::IndustrialZone>(city).industries.push_back(factory);
 
     // Add capacity
     // Add producivity
-    auto& prod = universe.emplace<cqspc::IndustrySize>(factory);
+    auto& prod = universe.emplace<components::IndustrySize>(factory);
     prod.size = productivity;
     prod.utilization = productivity;
-    const auto& recipe_comp = universe.get<cqspc::Recipe>(recipe);
+    const auto& recipe_comp = universe.get<components::Recipe>(recipe);
     switch (recipe_comp.type) {
-        case cqspc::mine:
-            universe.emplace<cqspc::Mine>(factory);
+        case components::mine:
+            universe.emplace<components::Mine>(factory);
             break;
-        case cqspc::service:
-            universe.emplace<cqspc::Service>(factory);
+        case components::service:
+            universe.emplace<components::Service>(factory);
             break;
         default:
-            universe.emplace<cqspc::Factory>(factory);
+            universe.emplace<components::Factory>(factory);
     }
 
-    auto& employer = universe.emplace<cqspc::Employer>(factory);
+    auto& employer = universe.emplace<components::Employer>(factory);
     // Set the employment amount, next time we can add other services like HR, tech, etc.
     employer.population_fufilled = 0;
     employer.population_needed = recipe_comp.workers * productivity;
@@ -97,9 +93,9 @@ entt::entity cqsp::common::systems::actions::CreateFactory(Universe& universe, e
     return factory;
 }
 
-cqsp::common::components::ResourceLedger cqsp::common::systems::actions::GetFactoryCost(
-    cqsp::common::Universe& universe, entt::entity city, entt::entity recipe, int productivity) {
-    cqsp::common::components::ResourceLedger ledger;
+components::ResourceLedger GetFactoryCost(Universe& universe, entt::entity city, entt::entity recipe, int productivity) 
+{
+    components::ResourceLedger ledger;
     // Get the recipe and things
     if (universe.any_of<components::RecipeCost>(recipe)) {
         auto& cost = universe.get<components::RecipeCost>(recipe);
@@ -109,13 +105,13 @@ cqsp::common::components::ResourceLedger cqsp::common::systems::actions::GetFact
     return ledger;
 }
 
-entt::entity cqsp::common::systems::actions::CreateCommercialArea(cqsp::common::Universe& universe, entt::entity city) {
-    namespace cqspc = cqsp::common::components;
+entt::entity CreateCommercialArea(Universe& universe, entt::entity city) {
     entt::entity commercial = universe.create();
 
-    universe.emplace<cqspc::Employer>(commercial);
-    universe.emplace<cqspc::Commercial>(commercial, city, 0);
+    universe.emplace<components::Employer>(commercial);
+    universe.emplace<components::Commercial>(commercial, city, 0);
 
-    universe.get<cqspc::IndustrialZone>(city).industries.push_back(commercial);
+    universe.get<components::IndustrialZone>(city).industries.push_back(commercial);
     return commercial;
 }
+}  // namespace cqsp::common::systems::actions

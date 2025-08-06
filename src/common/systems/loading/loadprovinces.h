@@ -23,7 +23,7 @@
 #include "common/universe.h"
 
 namespace cqsp::common::systems::loading {
-void LoadProvinces(common::Universe& universe, entt::entity planet, const std::string& text);
-void LoadAdjProvinces(common::Universe& universe, Hjson::Value& adjacency_map);
-void LoadAllProvinces(common::Universe& universe);
+void LoadProvinces(Universe& universe, entt::entity planet, const std::string& text);
+void LoadAdjProvinces(Universe& universe, Hjson::Value& adjacency_map);
+void LoadAllProvinces(Universe& universe);
 }  // namespace cqsp::common::systems::loading

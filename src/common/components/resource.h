@@ -31,13 +31,13 @@ namespace cqsp::common::components {
 /// Something that has a mass.
 /// </summary>
 struct Matter {
-    cqsp::common::components::types::meter_cube volume;
-    cqsp::common::components::types::kilogram mass;
+    types::meter_cube volume;
+    types::kilogram mass;
 };
 
 struct Energy {
     // Energy per unit
-    cqsp::common::components::types::joule energy;
+    types::joule energy;
 };
 
 /// <summary>

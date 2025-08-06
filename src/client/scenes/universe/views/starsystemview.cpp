@@ -993,7 +993,7 @@ void SysStarSystemRenderer::FoundCity() {
     auto s = GetMouseSurfaceIntersection();
     SPDLOG_INFO("Founding city at {} {}", s.latitude(), s.longitude());
 
-    entt::entity settlement = common::actions::CreateCity(m_universe, on_planet, s.latitude(), s.longitude());
+    entt::entity settlement = common::systems::actions::CreateCity(m_universe, on_planet, s.latitude(), s.longitude());
     // Set the name of the city
     Name& name = m_universe.emplace<Name>(settlement);
     name.name = m_universe.name_generators["Town Names"].Generate("1");

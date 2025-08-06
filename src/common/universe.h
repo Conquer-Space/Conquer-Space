@@ -25,7 +25,7 @@
 
 #include <entt/entt.hpp>
 
-#include "common/stardate.h"
+#include "common/components/stardate.h"
 #include "common/systems/names/namegenerator.h"
 #include "common/util/random/random.h"
 
