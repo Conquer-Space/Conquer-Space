@@ -20,6 +20,7 @@
 
 #include <map>
 #include <memory>
+#include <ranges>
 #include <string>
 #include <vector>
 
@@ -30,6 +31,9 @@
 #include "common/util/random/random.h"
 
 namespace cqsp::common {
+
+class Node;
+
 class Universe : public entt::registry {
  public:
     explicit Universe(std::string uuid);
@@ -68,10 +72,36 @@ class Universe : public entt::registry {
     /// What is the current fraction of the wait of the tick we are processing
     /// </summary>
     double tick_fraction = 0;
+    std::function<Node(entt::entity)> nodeFactory;
+    auto nodeTransform() { return std::views::transform(nodeFactory); }
+    //auto Convert(std::vector<entt::entity>& entities) { return entities | nodeTransform(); }
+    
+    std::vector<Node> Convert( std::vector<entt::entity> entities)  {
+        std::vector<Node> nodes;
+        nodes.reserve(entities.size());
+        for (const auto entity : entities) {
+            nodes.emplace_back(*this, entity);
+        }
+        return nodes;
+    }
+    template <typename... Components>
+    auto nodes() { return this->template view<Components...>() | nodeTransform();}
 
  private:
     bool to_tick = false;
 };
+
+class Node : public entt::handle {
+ public:
+    explicit Node(Universe& universe, entt::entity entity) : entt::handle(universe, entity) {}
+
+    Node(entt::handle handle, entt::entity entity) : entt::handle(*handle.registry(), entity) {}
+    explicit Node(Universe& universe) : entt::handle(universe, universe.create()) {}
+    Universe& universe() const { return static_cast<Universe&>(*this->registry()); }
+    auto Convert(std::vector<entt::entity>& entities) { return this->universe().Convert(entities); }
+    auto Convert(entt::entity entity) { return Node(*this, entity); } 
+};
+
 }  // namespace cqsp::common
 
 template <>

@@ -27,5 +27,6 @@ Universe::Universe() : Universe(util::random_id()) {}
 
 Universe::Universe(std::string uuid) : uuid(std::move(uuid)) {
     random = std::make_unique<util::StdRandom>(42);
+    nodeFactory = [this](entt::entity entity) { return Node(*this, entity); };
 }
 }  // namespace cqsp::common
