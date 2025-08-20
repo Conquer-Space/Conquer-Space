@@ -29,7 +29,7 @@ Universe::Universe(std::string uuid) : uuid(std::move(uuid)) {
     random = std::make_unique<util::StdRandom>(42);
     nodeFactory = [this](entt::entity entity) { return Node(*this, entity); };
 }
-std::vector<Node> Universe::Convert(std::vector<entt::entity> entities) {
+std::vector<Node> Universe::Convert(const std::vector<entt::entity>& entities) {
     std::vector<Node> nodes;
     nodes.reserve(entities.size());
     for (const auto entity : entities) {

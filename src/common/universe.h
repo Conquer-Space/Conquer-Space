@@ -74,7 +74,7 @@ class Universe : public entt::registry {
     double tick_fraction = 0;
     std::function<Node(entt::entity)> nodeFactory;
     auto nodeTransform() { return std::views::transform(nodeFactory); }
-    std::vector<Node> Convert(std::vector<entt::entity> entities);
+    std::vector<Node> Convert(const std::vector<entt::entity>& entities);
     template <typename... Components>
     auto nodes() { return this->template view<Components...>() | nodeTransform();}
 
