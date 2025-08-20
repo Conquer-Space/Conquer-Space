@@ -88,8 +88,8 @@ class Node : public entt::handle {
     Node(entt::handle handle, entt::entity entity);
     explicit Node(Universe& universe);
     Universe& universe() const;
-    std::vector<Node> Convert(std::vector<entt::entity>& entities);
-    Node Convert(entt::entity entity);
+    std::vector<Node> Convert(const std::vector<entt::entity>& entities);
+    Node Convert(const entt::entity entity);
 };
 
 }  // namespace cqsp::common
