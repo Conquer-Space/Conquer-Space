@@ -29,4 +29,20 @@ Universe::Universe(std::string uuid) : uuid(std::move(uuid)) {
     random = std::make_unique<util::StdRandom>(42);
     nodeFactory = [this](entt::entity entity) { return Node(*this, entity); };
 }
+std::vector<Node> Universe::Convert(std::vector<entt::entity> entities) {
+    std::vector<Node> nodes;
+    nodes.reserve(entities.size());
+    for (const auto entity : entities) {
+        nodes.emplace_back(*this, entity);
+    }
+    return nodes;
+}
+
+Node::Node(Universe& universe, entt::entity entity) : entt::handle(universe, entity) {}
+Node::Node(entt::handle handle, entt::entity entity) : entt::handle(*handle.registry(), entity) {}
+Node::Node(Universe& universe) : entt::handle(universe, universe.create()) {}
+Universe& Node::universe() const { return static_cast<Universe&>(*this->registry()); }
+std::vector<Node> Node::Convert(std::vector<entt::entity>& entities) { return this->universe().Convert(entities); }
+Node Node::Convert(entt::entity entity) { return Node(*this, entity); }
+
 }  // namespace cqsp::common

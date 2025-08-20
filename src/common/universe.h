@@ -74,16 +74,7 @@ class Universe : public entt::registry {
     double tick_fraction = 0;
     std::function<Node(entt::entity)> nodeFactory;
     auto nodeTransform() { return std::views::transform(nodeFactory); }
-    //auto Convert(std::vector<entt::entity>& entities) { return entities | nodeTransform(); }
-    
-    std::vector<Node> Convert( std::vector<entt::entity> entities)  {
-        std::vector<Node> nodes;
-        nodes.reserve(entities.size());
-        for (const auto entity : entities) {
-            nodes.emplace_back(*this, entity);
-        }
-        return nodes;
-    }
+    std::vector<Node> Convert(std::vector<entt::entity> entities);
     template <typename... Components>
     auto nodes() { return this->template view<Components...>() | nodeTransform();}
 
@@ -93,13 +84,12 @@ class Universe : public entt::registry {
 
 class Node : public entt::handle {
  public:
-    explicit Node(Universe& universe, entt::entity entity) : entt::handle(universe, entity) {}
-
-    Node(entt::handle handle, entt::entity entity) : entt::handle(*handle.registry(), entity) {}
-    explicit Node(Universe& universe) : entt::handle(universe, universe.create()) {}
-    Universe& universe() const { return static_cast<Universe&>(*this->registry()); }
-    auto Convert(std::vector<entt::entity>& entities) { return this->universe().Convert(entities); }
-    auto Convert(entt::entity entity) { return Node(*this, entity); } 
+    explicit Node(Universe& universe, entt::entity entity);
+    Node(entt::handle handle, entt::entity entity);
+    explicit Node(Universe& universe);
+    Universe& universe() const;
+    std::vector<Node> Convert(std::vector<entt::entity>& entities);
+    Node Convert(entt::entity entity);
 };
 
 }  // namespace cqsp::common
