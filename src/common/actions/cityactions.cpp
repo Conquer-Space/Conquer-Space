@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/actions/cityactions.h"
+#include "common/actions/cityactions.h"
 
 #include "common/components/coordinates.h"
 #include "common/components/name.h"

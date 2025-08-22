@@ -41,7 +41,7 @@
 #include "common/components/ships.h"
 #include "common/components/surface.h"
 #include "common/components/units.h"
-#include "common/systems/actions/cityactions.h"
+#include "common/actions/cityactions.h"
 #include "common/util/nameutil.h"
 #include "common/util/profiler.h"
 #include "engine/graphics/primitives/cube.h"

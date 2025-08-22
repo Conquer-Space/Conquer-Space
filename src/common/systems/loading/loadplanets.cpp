@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-#include "common/systems/actions/factoryconstructaction.h"
+#include "common/actions/factoryconstructaction.h"
 #include "common/systems/loading/loadorbit.h"
 #include "common/systems/loading/loadutil.h"
 

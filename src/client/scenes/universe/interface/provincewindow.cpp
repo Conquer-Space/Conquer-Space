@@ -35,7 +35,7 @@
 #include "common/components/ships.h"
 #include "common/components/spaceport.h"
 #include "common/components/surface.h"
-#include "common/systems/actions/shiplaunchaction.h"
+#include "common/actions/shiplaunchaction.h"
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
 #include "engine/cqspgui.h"
