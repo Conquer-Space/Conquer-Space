@@ -53,8 +53,8 @@ void ProcessIndustries(Node& node) {
         // Process imdustries
         // Industries MUST have production and a linked recipe
         if (!industrynode.all_of<components::Production>()) continue;
-        components::Recipe recipe =
-            universe.get_or_emplace<components::Recipe>(industrynode.get<components::Production>().recipe);
+        Node recipenode = industrynode.Convert(industrynode.get<components::Production>().recipe);
+        components::Recipe recipe = recipenode.get_or_emplace<components::Recipe>();
         components::IndustrySize& size = industrynode.get<components::IndustrySize>();
         // Calculate resource consumption
         components::ResourceLedger capitalinput = recipe.capitalcost * (size.size);
