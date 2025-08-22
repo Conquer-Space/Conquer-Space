@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/actions/shiplaunchaction.h"
+#include "common/actions/shiplaunchaction.h"
 
 #include <fmt/format.h>
 #include <spdlog/spdlog.h>
@@ -28,7 +28,7 @@
 #include "common/components/organizations.h"
 #include "common/components/ships.h"
 
-namespace cqsp::common::systems::actions {
+namespace cqsp::common::actions {
 
 namespace types = components::types;
 namespace ships = components::ships;

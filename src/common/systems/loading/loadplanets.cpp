@@ -45,7 +45,6 @@
 namespace cqsp::common::systems::loading {
 
 namespace types = components::types;
-namespace actions = systems::actions;
 namespace bodies = components::bodies;
 using types::UnitType;
 using bodies::Body;

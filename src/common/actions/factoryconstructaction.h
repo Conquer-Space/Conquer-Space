@@ -23,7 +23,7 @@
 #include "common/components/resource.h"
 #include "common/universe.h"
 
-namespace cqsp::common::systems::actions {
+namespace cqsp::common::actions {
 /// <summary>
 /// Will charge the entity builder the amount needed to construct the factory/building. You'll have to find a
 /// organization that can construct it though.

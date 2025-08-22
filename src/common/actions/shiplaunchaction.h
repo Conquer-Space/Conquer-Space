@@ -25,7 +25,7 @@
 #include "common/components/orbit.h"
 #include "common/universe.h"
 
-namespace cqsp::common::systems::actions {
+namespace cqsp::common::actions {
 // deprecated
 entt::entity CreateShip(Universe &universe, entt::entity civ, const glm::vec3 &orbit, entt::entity starsystem);
 // deprecated

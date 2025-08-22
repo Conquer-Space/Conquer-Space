@@ -26,18 +26,18 @@
 #include "common/components/resource.h"
 #include "common/systems/economy/markethelpers.h"
 
-namespace cqsp::common::systems::actions {
+namespace cqsp::common::actions {
 entt::entity OrderConstructionFactory(Universe& universe, entt::entity city, entt::entity market,
                                       entt::entity recipe, int productivity, entt::entity builder) {
     entt::entity factory = CreateFactory(universe, city, recipe, productivity);
     if (factory == entt::null) {
         return entt::null;
     }
-    economy::AddParticipant(universe, market, factory);
+    systems::economy::AddParticipant(universe, market, factory);
     auto cost = GetFactoryCost(universe, city, recipe, productivity);
 
     // Buy the goods on the market
-    economy::PurchaseGood(universe, builder, cost);
+    systems::economy::PurchaseGood(universe, builder, cost);
     return factory;
 }
 

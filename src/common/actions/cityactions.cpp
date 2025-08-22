@@ -20,7 +20,7 @@
 #include "common/components/name.h"
 #include "common/components/surface.h"
 
-namespace cqsp::common::systems::actions {
+namespace cqsp::common::actions {
 
 entt::entity CreateCity(Universe& universe, entt::entity planet, double lat, double longi) {
     entt::entity settlement = universe.create();

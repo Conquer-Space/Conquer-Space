@@ -58,7 +58,6 @@ namespace cqsp::common::scripting {
 namespace bodies = components::bodies;
 namespace types = components::types;
 namespace infrastructure = components::infrastructure;
-namespace actions = systems::actions;
 
 using components::ResourceStockpile;
 using components::Governed;
@@ -170,7 +169,7 @@ void FunctionCivilizationGen(Universe& universe, ScriptInterface& script_engine)
     REGISTER_FUNCTION("add_planet_habitation", [&](entt::entity planet) { universe.emplace<Habitation>(planet); });
 
     REGISTER_FUNCTION("add_planet_settlement", [&](entt::entity planet, double lat, double longi) {
-        return systems::actions::CreateCity(universe, planet, lat, longi);
+        return actions::CreateCity(universe, planet, lat, longi);
     });
 }
 
