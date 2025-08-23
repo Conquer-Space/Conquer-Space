@@ -29,6 +29,11 @@ namespace cqsp::common::systems::commands {
 namespace types = components::types;
 
 using types::Orbit;
+using components::Command;
+using components::Trigger;
+using components::OrbitTarget;
+using components::OrbitScalar;
+using components::OrbitEntityTarget;
 
 bool VerifyCommand(Universe& universe, entt::entity command) {
     return (command == entt::null || !universe.any_of<Trigger>(command) || !universe.any_of<Command>(command));

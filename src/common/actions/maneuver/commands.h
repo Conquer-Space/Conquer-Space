@@ -20,49 +20,20 @@
 
 #include "common/components/movement.h"
 #include "common/components/orbit.h"
+#include "common/components/orders.h"
+
 #include "common/universe.h"
 
 namespace cqsp::common::systems::commands {
-enum class Command {
-    CircularizeAtApoapsis,
-    CircularizeAtPeriapsis,
-    SetApoapsis,
-    SetPeriapsis,
-    SetInclination,
-    MatchPlanes,
-    CoplanarIntercept,             // Just intercepts
-    CoplanarInterceptAndTransfer,  // Intercepts and matches orbit
-    Impulse,
-    LandOnBody,
-};
 
-enum class Trigger {
-    // When to trigger the command
-    OnEnterSOI,
-    OnExitSOI,
-    OnManeuver,  // When the previous manuever is executed
-    OnCrash,
-};
-
-struct OrbitTarget {
-    components::types::Orbit orbit;
-};
-
-struct OrbitScalar {
-    double value;  // Modifies the orbit by some sort of scalar
-};
-
-struct OrbitEntityTarget {
-    entt::entity target;
-};
 
 /// Verifies if the command is a valid ship command option.
 /// This verifies if it's not null, and contains the
 /// necessary components to make it a command
 bool VerifyCommand(Universe& universe, entt::entity command);
 /// Returns true if a command is processed and popped, returns false if not
-bool ProcessCommandQueue(Universe& universe, entt::entity body, Trigger trigger);
-void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity command_entity, Command command);
+bool ProcessCommandQueue(Universe& universe, entt::entity body, components::Trigger trigger);
+void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity command_entity, components::Command command);
 void TransferToMoon(Universe& universe, entt::entity agent, entt::entity target);
 void LandOnMoon(Universe& universe, entt::entity agent, entt::entity target, entt::entity city);
 
