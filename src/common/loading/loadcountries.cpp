@@ -14,19 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/loading/timezoneloader.h"
+#include "common/loading/loadcountries.h"
 
+#include "common/components/economy.h"
 #include "common/components/name.h"
-#include "common/components/surface.h"
+#include "common/components/organizations.h"
 
 namespace cqsp::common::systems::loading {
-bool TimezoneLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
-    // Read timezones
-    double offset = values["offset"].to_double();
-    universe.emplace<components::TimeZone>(entity, offset);
-    universe.time_zones[universe.get<components::Identifier>(entity).identifier] = entity;
+bool CountryLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
+    // Just make the country
+    universe.emplace<components::Country>(entity);
+    universe.countries[universe.get<components::Identifier>(entity).identifier] = entity;
+
+    // Add the list of liabilities the country has?
+
+    if (!values["wallet"].empty()) {
+        auto& wallet = universe.emplace<components::Wallet>(entity);
+        wallet = values["wallet"];
+    }
     return true;
 }
-
-void TimezoneLoader::PostLoad(const entt::entity& entity) {}
 }  // namespace cqsp::common::systems::loading

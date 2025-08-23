@@ -20,7 +20,7 @@
 
 #include "common/components/coordinates.h"
 #include "common/components/orbit.h"
-#include "common/systems/loading/hjsonloader.h"
+#include "common/loading/hjsonloader.h"
 #include "common/universe.h"
 
 namespace cqsp::common::systems::loading {

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/loading/loadgoods.h"
+#include "common/loading/loadgoods.h"
 
 #include <spdlog/spdlog.h>
 
@@ -26,7 +26,7 @@
 #include "common/components/economy.h"
 #include "common/components/name.h"
 #include "common/components/resource.h"
-#include "common/systems/loading/loadutil.h"
+#include "common/loading/loadutil.h"
 
 #define CHECK_DEFINED(x, entity)  \
     if (!(x).defined()) {         \

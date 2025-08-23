@@ -14,17 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
+#include "common/loading/timezoneloader.h"
 
-#include <hjson.h>
-
-#include <string>
-
-#include "common/systems/loading/hjsonloader.h"
-#include "common/actions/science/technologyactions.h"
-#include "common/universe.h"
+#include "common/components/name.h"
+#include "common/components/surface.h"
 
 namespace cqsp::common::systems::loading {
-void LoadTechnologies(Universe &universe, Hjson::Value &value);
+bool TimezoneLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
+    // Read timezones
+    double offset = values["offset"].to_double();
+    universe.emplace<components::TimeZone>(entity, offset);
+    universe.time_zones[universe.get<components::Identifier>(entity).identifier] = entity;
+    return true;
+}
 
-}  // namespace cqsp::common::systems::science
+void TimezoneLoader::PostLoad(const entt::entity& entity) {}
+}  // namespace cqsp::common::systems::loading

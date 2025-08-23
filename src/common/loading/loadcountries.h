@@ -16,16 +16,15 @@
  */
 #pragma once
 
-#include "common/systems/loading/hjsonloader.h"
+#include "common/loading/hjsonloader.h"
 
 namespace cqsp::common::systems::loading {
-class PlanetLoader : public HjsonLoader {
+class CountryLoader : public HjsonLoader {
  public:
-    explicit PlanetLoader(Universe& universe) : HjsonLoader(universe) {}
+    explicit CountryLoader(Universe& universe) : HjsonLoader(universe) {}
 
     const Hjson::Value& GetDefaultValues() override { return default_val; }
     bool LoadValue(const Hjson::Value& values, entt::entity entity) override;
-    void PostLoad(const entt::entity& entity) override;
 
  private:
     Hjson::Value default_val;

@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/loading/hjsonloader.h"
+#include "common/loading/hjsonloader.h"
 
 #include <spdlog/spdlog.h>
 
 #include <vector>
 
 #include "common/components/name.h"
-#include "common/systems/loading/loadutil.h"
+#include "common/loading/loadutil.h"
 
 namespace cqsp::common::systems::loading {
 int HjsonLoader::LoadHjson(const Hjson::Value& values) {

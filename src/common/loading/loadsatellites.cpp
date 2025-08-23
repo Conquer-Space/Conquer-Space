@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/loading/loadsatellites.h"
+#include "common/loading/loadsatellites.h"
 
 #include <fmt/format.h>
 #include <spdlog/spdlog.h>
@@ -29,7 +29,7 @@
 #include "common/components/name.h"
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
-#include "common/systems/loading/loadorbit.h"
+#include "common/loading/loadorbit.h"
 namespace cqsp::common::systems::loading {
 
 namespace types = components::types;

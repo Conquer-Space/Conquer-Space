@@ -16,22 +16,15 @@
  */
 #pragma once
 
-#include "common/systems/loading/hjsonloader.h"
+#include <hjson.h>
+
+#include <string>
+
+#include "common/loading/hjsonloader.h"
+#include "common/actions/science/technologyactions.h"
+#include "common/universe.h"
 
 namespace cqsp::common::systems::loading {
-/// <summary>
-/// This loader has to be loaded after \ref PlanetLoader because it adds the cities to the
-/// respectve planets
-/// </summary>
-class CityLoader : public HjsonLoader {
- public:
-    explicit CityLoader(Universe& universe) : HjsonLoader(universe) {}
+void LoadTechnologies(Universe &universe, Hjson::Value &value);
 
-    const Hjson::Value& GetDefaultValues() override { return default_val; }
-    bool LoadValue(const Hjson::Value& values, entt::entity entity) override;
-    void PostLoad(const entt::entity& entity) override;
-
- private:
-    Hjson::Value default_val;
-};
-}  // namespace cqsp::common::systems::loading
+}  // namespace cqsp::common::systems::science

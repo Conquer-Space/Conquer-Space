@@ -21,7 +21,7 @@
 #include <tracy/Tracy.hpp>
 
 #include "common/components/science.h"
-#include "common/systems/loading/technology.h"
+#include "common/loading/technology.h"
 
 namespace cqsp::common::systems {
 

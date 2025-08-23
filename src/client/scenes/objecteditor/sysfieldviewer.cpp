@@ -25,7 +25,7 @@
 #include "client/scenes/universe/interface/systooltips.h"
 #include "common/components/name.h"
 #include "common/components/science.h"
-#include "common/systems/loading/fields.h"
+#include "common/loading/fields.h"
 #include "common/util/paths.h"
 #include "engine/cqspgui.h"
 

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "common/systems/loading/loadplanets.h"
+#include "common/loading/loadplanets.h"
 
 #include <spdlog/spdlog.h>
 
@@ -25,8 +25,8 @@
 #include <vector>
 
 #include "common/actions/factoryconstructaction.h"
-#include "common/systems/loading/loadorbit.h"
-#include "common/systems/loading/loadutil.h"
+#include "common/loading/loadorbit.h"
+#include "common/loading/loadutil.h"
 
 //#include "common/components/coordinates.h"
 #include "common/components/area.h"

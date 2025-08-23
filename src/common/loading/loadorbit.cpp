@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/loading/loadorbit.h"
+#include "common/loading/loadorbit.h"
 
 #include "common/components/units.h"
-#include "common/systems/loading/loadutil.h"
+#include "common/loading/loadutil.h"
 
 namespace cqsp::common::systems::loading {
 

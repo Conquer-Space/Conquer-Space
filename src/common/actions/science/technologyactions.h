@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "common/systems/loading/hjsonloader.h"
+#include "common/loading/hjsonloader.h"
 #include "common/universe.h"
 
 namespace cqsp::common::actions {

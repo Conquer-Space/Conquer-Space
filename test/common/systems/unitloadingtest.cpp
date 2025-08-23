@@ -16,7 +16,7 @@
  */
 #include <gtest/gtest.h>
 
-#include "common/systems/loading/loadutil.h"
+#include "common/loading/loadutil.h"
 
 using cqsp::common::components::types::UnitType;
 

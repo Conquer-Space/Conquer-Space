@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/loading/technology.h"
+#include "common/loading/technology.h"
 
 #include <spdlog/spdlog.h>
 
 #include "common/components/name.h"
 #include "common/components/science.h"
-#include "common/systems/loading/loadutil.h"
+#include "common/loading/loadutil.h"
 #include "common/actions/science/technologyactions.h"
 
 namespace cqsp::common::systems::loading {

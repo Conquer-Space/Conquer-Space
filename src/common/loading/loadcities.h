@@ -14,24 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/loading/loadcountries.h"
+#pragma once
 
-#include "common/components/economy.h"
-#include "common/components/name.h"
-#include "common/components/organizations.h"
+#include "common/loading/hjsonloader.h"
 
 namespace cqsp::common::systems::loading {
-bool CountryLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
-    // Just make the country
-    universe.emplace<components::Country>(entity);
-    universe.countries[universe.get<components::Identifier>(entity).identifier] = entity;
+/// <summary>
+/// This loader has to be loaded after \ref PlanetLoader because it adds the cities to the
+/// respectve planets
+/// </summary>
+class CityLoader : public HjsonLoader {
+ public:
+    explicit CityLoader(Universe& universe) : HjsonLoader(universe) {}
 
-    // Add the list of liabilities the country has?
+    const Hjson::Value& GetDefaultValues() override { return default_val; }
+    bool LoadValue(const Hjson::Value& values, entt::entity entity) override;
+    void PostLoad(const entt::entity& entity) override;
 
-    if (!values["wallet"].empty()) {
-        auto& wallet = universe.emplace<components::Wallet>(entity);
-        wallet = values["wallet"];
-    }
-    return true;
-}
+ private:
+    Hjson::Value default_val;
+};
 }  // namespace cqsp::common::systems::loading

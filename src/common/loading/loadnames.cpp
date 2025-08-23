@@ -14,19 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
+#include "common/loading/loadnames.h"
 
-#include "common/systems/loading/hjsonloader.h"
+#include "common/actions/names/namegenerator.h"
 
-namespace cqsp::common::systems::loading {
-class CountryLoader : public HjsonLoader {
- public:
-    explicit CountryLoader(Universe& universe) : HjsonLoader(universe) {}
+void cqsp::common::systems::loading::LoadNameLists(cqsp::common::Universe &universe, Hjson::Value &value) {
+    for (int i = 0; i < value.size(); i++) {
+        Hjson::Value &name_list = value[i];
+        actions::NameGenerator name_gen;
+        name_gen.SetRandom(universe.random.get());
 
-    const Hjson::Value& GetDefaultValues() override { return default_val; }
-    bool LoadValue(const Hjson::Value& values, entt::entity entity) override;
-
- private:
-    Hjson::Value default_val;
-};
-}  // namespace cqsp::common::systems::loading
+        name_gen.LoadNameGenerator(name_list);
+        universe.name_generators[name_gen.GetName()] = name_gen;
+    }
+}

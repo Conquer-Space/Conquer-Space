@@ -16,16 +16,32 @@
  */
 #pragma once
 
-#include "common/systems/loading/hjsonloader.h"
+#include <hjson.h>
+
+#include "common/components/resource.h"
+#include "common/loading/hjsonloader.h"
+#include "common/universe.h"
 
 namespace cqsp::common::systems::loading {
-class TimezoneLoader : public HjsonLoader {
- public:
-    explicit TimezoneLoader(Universe& universe) : HjsonLoader(universe) {}
+void LoadGoods(cqsp::common::Universe&, Hjson::Value&);
+void LoadRecipes(cqsp::common::Universe&, Hjson::Value&);
+void LoadTerrainData(cqsp::common::Universe&, Hjson::Value&);
 
+class GoodLoader : public HjsonLoader {
+ public:
+    explicit GoodLoader(Universe& universe);
     const Hjson::Value& GetDefaultValues() override { return default_val; }
     bool LoadValue(const Hjson::Value& values, entt::entity entity) override;
-    void PostLoad(const entt::entity& entity) override;
+
+ private:
+    Hjson::Value default_val;
+};
+
+class RecipeLoader : public HjsonLoader {
+ public:
+    explicit RecipeLoader(Universe& universe);
+    const Hjson::Value& GetDefaultValues() override { return default_val; }
+    bool LoadValue(const Hjson::Value& values, entt::entity entity) override;
 
  private:
     Hjson::Value default_val;

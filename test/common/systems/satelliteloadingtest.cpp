@@ -17,7 +17,7 @@
 #include <gtest/gtest.h>
 
 #include "common/components/units.h"
-#include "common/systems/loading/loadsatellites.h"
+#include "common/loading/loadsatellites.h"
 
 using namespace cqsp::common::systems::loading;   // NOLINT
 using namespace cqsp::common::components::types;  // NOLINT
