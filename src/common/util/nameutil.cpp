@@ -30,7 +30,7 @@
 #include "common/components/science.h"
 #include "common/components/ships.h"
 #include "common/components/surface.h"
-#include "common/systems/population/cityinformation.h"
+#include "common/actions/population/cityinformation.h"
 #include "common/util/utilnumberdisplay.h"
 
 namespace cqsp::common::util {

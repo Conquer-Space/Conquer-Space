@@ -20,9 +20,9 @@
 
 #include "common/components/orbit.h"
 #include "common/components/units.h"
-#include "common/systems/maneuver/lambert/izzo.h"
-#include "common/systems/maneuver/maneuver.h"
-#include "common/systems/maneuver/rendezvous.h"
+#include "common/actions/maneuver/lambert/izzo.h"
+#include "common/actions/maneuver/maneuver.h"
+#include "common/actions/maneuver/rendezvous.h"
 
 namespace cqsps = cqsp::common::systems;
 namespace cqspt = cqsp::common::components::types;

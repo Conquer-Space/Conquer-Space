@@ -20,7 +20,7 @@
 #include "common/components/coordinates.h"
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
-#include "common/systems/actions/shiplaunchaction.h"
+#include "common/actions/shiplaunchaction.h"
 #include "common/systems/movement/sysmovement.h"
 
 namespace cqspt = cqsp::common::components::types;
@@ -55,7 +55,7 @@ TEST_F(SystemsMovementTest, ShipMovementTest) {
     cqsp::common::Universe& universe = m_game.GetUniverse();
     {
         // Test out if the ship is created
-        ship = cqsp::common::systems::actions::CreateShip(
+        ship = cqsp::common::actions::CreateShip(
             universe, entt::null, cqspt::toVec3AU(universe.get<cqspt::Orbit>(planet)), star_system);
         EXPECT_TRUE(universe.valid(ship));
         bool all_of_pos_and_ship = universe.all_of<cqspt::Kinematics, cqsp::common::components::ships::Ship>(ship);

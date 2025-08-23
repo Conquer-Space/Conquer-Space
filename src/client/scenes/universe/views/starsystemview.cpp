@@ -41,7 +41,7 @@
 #include "common/components/ships.h"
 #include "common/components/surface.h"
 #include "common/components/units.h"
-#include "common/systems/actions/cityactions.h"
+#include "common/actions/cityactions.h"
 #include "common/util/nameutil.h"
 #include "common/util/profiler.h"
 #include "engine/graphics/primitives/cube.h"
@@ -993,7 +993,7 @@ void SysStarSystemRenderer::FoundCity() {
     auto s = GetMouseSurfaceIntersection();
     SPDLOG_INFO("Founding city at {} {}", s.latitude(), s.longitude());
 
-    entt::entity settlement = common::systems::actions::CreateCity(m_universe, on_planet, s.latitude(), s.longitude());
+    entt::entity settlement = common::actions::CreateCity(m_universe, on_planet, s.latitude(), s.longitude());
     // Set the name of the city
     Name& name = m_universe.emplace<Name>(settlement);
     name.name = m_universe.name_generators["Town Names"].Generate("1");

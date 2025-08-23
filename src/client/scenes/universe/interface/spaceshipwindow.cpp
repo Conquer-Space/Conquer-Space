@@ -22,10 +22,10 @@
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
 #include "common/components/surface.h"
-#include "common/systems/maneuver/commands.h"
-#include "common/systems/maneuver/hohmann.h"
-#include "common/systems/maneuver/maneuver.h"
-#include "common/systems/maneuver/rendezvous.h"
+#include "common/actions/maneuver/commands.h"
+#include "common/actions/maneuver/hohmann.h"
+#include "common/actions/maneuver/maneuver.h"
+#include "common/actions/maneuver/rendezvous.h"
 #include "common/util/nameutil.h"
 
 namespace cqsp::client::systems {

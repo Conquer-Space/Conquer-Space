@@ -25,7 +25,7 @@
 #include "client/scenes/universe/interface/systooltips.h"
 #include "common/components/name.h"
 #include "common/components/science.h"
-#include "common/systems/science/fields.h"
+#include "common/loading/fields.h"
 #include "common/util/paths.h"
 #include "engine/cqspgui.h"
 
@@ -374,7 +374,7 @@ void SysFieldNodeViewer::FieldHjsonViewerWindow() {
     ImGui::Begin("Field Hjson viewer");
     if (ImGui::Button("Make Fields to Hjson")) {
         // Make the hjson
-        auto fields = common::systems::science::WriteFields(GetUniverse());
+        auto fields = common::loading::WriteFields(GetUniverse());
         Hjson::EncoderOptions eo;
         eo.indentBy = "    ";  // 4 spaces
         hjson_content = Hjson::Marshal(fields, eo);
@@ -388,7 +388,7 @@ void SysFieldNodeViewer::FieldHjsonViewerWindow() {
         std::ofstream output(default_path, std::ios::trunc);
         Hjson::EncoderOptions eo;
         eo.indentBy = "    ";  // 4 spaces
-        auto fields = common::systems::science::WriteFields(GetUniverse());
+        auto fields = common::loading::WriteFields(GetUniverse());
         Hjson::MarshalToFile(fields, default_path.string(), eo);
     }
     ImGui::InputTextMultiline("field_hjson_viewer", &hjson_content, ImVec2(-1, -1));

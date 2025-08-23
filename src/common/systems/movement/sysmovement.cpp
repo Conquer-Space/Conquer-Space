@@ -26,7 +26,7 @@
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
 #include "common/components/units.h"
-#include "common/systems/maneuver/commands.h"
+#include "common/actions/maneuver/commands.h"
 #include "common/util/nameutil.h"
 
 namespace cqsp::common::systems {
@@ -73,7 +73,7 @@ void SysOrbit::LeaveSOI(const entt::entity& body, entt::entity& parent, Orbit& o
     // Update dirty orbit
     GetUniverse().emplace_or_replace<bodies::DirtyOrbit>(body);
 
-    commands::ProcessCommandQueue(GetUniverse(), body, commands::Trigger::OnExitSOI);
+    commands::ProcessCommandQueue(GetUniverse(), body, components::Trigger::OnExitSOI);
 }
 
 void SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
@@ -92,7 +92,7 @@ void SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
         return;
     }
     // Check if there is a command
-    if (commands::ProcessCommandQueue(GetUniverse(), body, commands::Trigger::OnCrash)) {
+    if (commands::ProcessCommandQueue(GetUniverse(), body, components::Trigger::OnCrash)) {
         SPDLOG_INFO("Executed maneuver on crash");
     } else {
         // Crash
@@ -147,7 +147,7 @@ void SysOrbit::UpdateCommandQueue(Orbit& orb, entt::entity body, entt::entity pa
     queue.maneuvers.pop_front();
     // Now then executethe next command or something like that
     // Then check the command queue for more commands
-    commands::ProcessCommandQueue(GetUniverse(), body, commands::Trigger::OnManeuver);
+    commands::ProcessCommandQueue(GetUniverse(), body, components::Trigger::OnManeuver);
 }
 
 void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
@@ -271,7 +271,7 @@ bool SysOrbit::EnterSOI(const entt::entity& parent, const entt::entity& body) {
             vec.erase(std::remove(vec.begin(), vec.end(), body), vec.end());
             GetUniverse().emplace_or_replace<bodies::DirtyOrbit>(body);
             // I have a bad feeling about this
-            commands::ProcessCommandQueue(GetUniverse(), body, commands::Trigger::OnEnterSOI);
+            commands::ProcessCommandQueue(GetUniverse(), body, components::Trigger::OnEnterSOI);
             return true;
         }
         // Now check if it's intersecting with any things outside of stuff
