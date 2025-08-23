@@ -14,50 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/science/technology.h"
+#include "common/actions/science/technologyactions.h"
 
 #include <spdlog/spdlog.h>
 
 #include "common/components/name.h"
 #include "common/components/science.h"
-#include "common/systems/loading/loadutil.h"
+#include "common/actions/science/technologyactions.h"
 
 namespace cqsp::common::systems::loading {
-//TODO(AGM) move to loading namespace
-void LoadTechnologies(Universe& universe, Hjson::Value& value) {
-    // Load the technologies
-    Hjson::Value base;
-    base["actions"] = Hjson::Type::Vector;
-    base["fields"] = Hjson::Type::Vector;
-    base["difficulty"] = 10.;
 
-    for (int i = 0; i < value.size(); i++) {
-        Hjson::Value element = Hjson::Merge(base, value[i]);
-
-        entt::entity entity = universe.create();
-        if (!loading::LoadInitialValues(universe, entity, element)) {
-            // Then kill the loading because you need an identifier
-        }
-
-        auto& tech = universe.emplace<components::science::Technology>(entity);
-        // Add tech data
-        Hjson::Value val = element["actions"];
-        for (int i = 0; i < val.size(); i++) {
-            tech.actions.push_back(val[i].to_string());
-        }
-
-        Hjson::Value fieldlist = element["fields"];
-        for (int i = 0; i < fieldlist.size(); i++) {
-            entt::entity field_entity = universe.fields[fieldlist[i].to_string()];
-            tech.fields.insert(field_entity);
-        }
-
-        // Verify if the tags exist
-        tech.difficulty = element["difficulty"];
-
-        universe.technologies[universe.get<components::Identifier>(entity)] = entity;
-    }
-}
 
 void ResearchTech(Universe& universe, entt::entity civilization, entt::entity tech) {
     // Ensure it's a tech or something

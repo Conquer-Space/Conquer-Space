@@ -42,7 +42,7 @@
 #include "common/actions/shiplaunchaction.h"
 #include "common/actions/economy/markethelpers.h"
 #include "common/actions/science/labs.h"
-#include "common/systems/science/technology.h"
+#include "common/systems/loading/technology.h"
 #include "common/util/nameutil.h"
 #include "common/util/random/stdrandom.h"
 #include "common/util/utilnumberdisplay.h"
