@@ -27,8 +27,8 @@
 #include "common/actions/economy/markethelpers.h"
 
 namespace cqsp::common::actions {
-entt::entity OrderConstructionFactory(Universe& universe, entt::entity city, entt::entity market,
-                                      entt::entity recipe, int productivity, entt::entity builder) {
+entt::entity OrderConstructionFactory(Universe& universe, entt::entity city, entt::entity market, entt::entity recipe,
+                                      int productivity, entt::entity builder) {
     entt::entity factory = CreateFactory(universe, city, recipe, productivity);
     if (factory == entt::null) {
         return entt::null;
@@ -93,8 +93,8 @@ entt::entity CreateFactory(Universe& universe, entt::entity city, entt::entity r
     return factory;
 }
 
-components::ResourceLedger GetFactoryCost(Universe& universe, entt::entity city, entt::entity recipe, int productivity) 
-{
+components::ResourceLedger GetFactoryCost(Universe& universe, entt::entity city, entt::entity recipe,
+                                          int productivity) {
     components::ResourceLedger ledger;
     // Get the recipe and things
     if (universe.any_of<components::RecipeCost>(recipe)) {
@@ -114,4 +114,4 @@ entt::entity CreateCommercialArea(Universe& universe, entt::entity city) {
     universe.get<components::IndustrialZone>(city).industries.push_back(commercial);
     return commercial;
 }
-}  // namespace cqsp::common::systems::actions
+}  // namespace cqsp::common::actions

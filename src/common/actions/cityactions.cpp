@@ -38,4 +38,4 @@ entt::entity CreateCity(Universe& universe, entt::entity planet, double lat, dou
 
     return settlement;
 }
-}  // namespace cqsp::common::systems::actions
+}  // namespace cqsp::common::actions

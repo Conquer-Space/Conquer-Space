@@ -20,7 +20,6 @@
 
 #include "common/components/name.h"
 #include "common/components/science.h"
-#include "common/actions/science/technologyactions.h"
 
 namespace cqsp::common::systems::loading {
 
