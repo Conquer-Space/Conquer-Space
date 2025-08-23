@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/economy/markethelpers.h"
+#include "common/actions/economy/markethelpers.h"
 
 #include "common/components/economy.h"
 #include "common/components/history.h"

@@ -16,7 +16,7 @@
  */
 #include "common/systems/loading/loadnames.h"
 
-#include "common/systems/names/namegenerator.h"
+#include "common/actions/names/namegenerator.h"
 
 void cqsp::common::systems::loading::LoadNameLists(cqsp::common::Universe &universe, Hjson::Value &value) {
     for (int i = 0; i < value.size(); i++) {

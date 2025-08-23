@@ -14,15 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/maneuver/commands.h"
+#include "common/actions/maneuver/commands.h"
 
 #include <algorithm>
 
 #include "common/components/movement.h"
 #include "common/components/orbit.h"
 #include "common/components/surface.h"
-#include "common/systems/maneuver/maneuver.h"
-#include "common/systems/maneuver/rendezvous.h"
+#include "common/actions/maneuver/maneuver.h"
+#include "common/actions/maneuver/rendezvous.h"
 
 namespace cqsp::common::systems::commands {
 

@@ -22,7 +22,7 @@
 
 #include "common/components/movement.h"
 #include "common/components/orbit.h"
-#include "common/systems/maneuver/hohmann.h"
+#include "common/actions/maneuver/hohmann.h"
 
 namespace cqsp::common::systems {
 // Tools for rendezvous

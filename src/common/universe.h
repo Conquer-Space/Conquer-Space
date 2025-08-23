@@ -26,7 +26,7 @@
 #include <entt/entt.hpp>
 
 #include "common/components/stardate.h"
-#include "common/systems/names/namegenerator.h"
+#include "common/actions/names/namegenerator.h"
 #include "common/util/random/random.h"
 
 namespace cqsp::common {

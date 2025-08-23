@@ -26,7 +26,7 @@
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
 #include "common/components/units.h"
-#include "common/systems/maneuver/commands.h"
+#include "common/actions/maneuver/commands.h"
 #include "common/util/nameutil.h"
 
 namespace cqsp::common::systems {

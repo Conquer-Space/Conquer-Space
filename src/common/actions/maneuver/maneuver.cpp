@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/maneuver/maneuver.h"
+#include "common/actions/maneuver/maneuver.h"
 
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/projection.hpp>

@@ -24,7 +24,7 @@
 #include "common/components/area.h"
 #include "common/components/economy.h"
 #include "common/components/resource.h"
-#include "common/systems/economy/markethelpers.h"
+#include "common/actions/economy/markethelpers.h"
 
 namespace cqsp::common::actions {
 entt::entity OrderConstructionFactory(Universe& universe, entt::entity city, entt::entity market,
