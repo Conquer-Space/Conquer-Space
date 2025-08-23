@@ -21,7 +21,7 @@
 
 #include "common/components/name.h"
 #include "common/components/science.h"
-#include "common/systems/science/fields.h"
+#include "common/systems/loading/fields.h"
 
 TEST(Science_FieldTest, FieldLoadingTest) {
     std::string val =

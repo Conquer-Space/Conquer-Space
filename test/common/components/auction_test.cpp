@@ -21,7 +21,7 @@
 #include <algorithm>
 #include <iostream>
 
-#include "common/systems/economy/auctionhandler.h"
+#include "common/actions/economy/auctionhandler.h"
 
 using cqsp::common::components::AscendingSortedOrderList;
 using cqsp::common::components::AuctionHouse;

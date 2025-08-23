@@ -34,7 +34,7 @@
 #include "common/systems/loading/loadprovinces.h"
 #include "common/systems/loading/loadsatellites.h"
 #include "common/systems/loading/timezoneloader.h"
-#include "common/systems/science/fields.h"
+#include "common/systems/loading/fields.h"
 #include "common/systems/science/technology.h"
 #include "common/systems/sysuniversegenerator.h"
 #include "engine/asset/assetmanager.h"
