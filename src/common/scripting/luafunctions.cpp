@@ -231,7 +231,7 @@ void FunctionEconomy(Universe& universe, ScriptInterface& script_engine) {
             // Assign price to market
             market.prices[entity] = universe.get<components::Price>(entity);
         }*/
-        entt::entity market_entity = systems::economy::CreateMarket(universe);
+        entt::entity market_entity = actions::CreateMarket(universe);
         // Set prices of market
         auto view = universe.view<components::Good, Price>();
         auto& market = universe.get<Market>(market_entity);
@@ -249,7 +249,7 @@ void FunctionEconomy(Universe& universe, ScriptInterface& script_engine) {
     });
 
     REGISTER_FUNCTION("attach_market", [&](entt::entity market_entity, entt::entity participant) {
-        systems::economy::AddParticipant(universe, market_entity, participant);
+        actions::AddParticipant(universe, market_entity, participant);
     });
 
     REGISTER_FUNCTION("get_balance", [&](entt::entity participant) {
@@ -381,10 +381,10 @@ void FunctionCivilizations(Universe& universe, ScriptInterface& script_engine) {
 void FunctionScience(Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
-    REGISTER_FUNCTION("create_lab", [&]() { return systems::science::CreateLab(universe); });
+    REGISTER_FUNCTION("create_lab", [&]() { return actions::CreateLab(universe); });
 
     REGISTER_FUNCTION("add_science", [&](entt::entity lab, entt::entity research, double progress) {
-        systems::science::AddScienceResearch(universe, lab, research, progress);
+        actions::AddScienceResearch(universe, lab, research, progress);
     });
 
     REGISTER_FUNCTION("add_tech_progress", [&](entt::entity entity) {
@@ -393,7 +393,7 @@ void FunctionScience(Universe& universe, ScriptInterface& script_engine) {
     });
 
     REGISTER_FUNCTION("complete_technology", [&](entt::entity entity, entt::entity tech) {
-        systems::loading::ResearchTech(universe, entity, tech);
+        actions::ResearchTech(universe, entity, tech);
     });
 
     REGISTER_FUNCTION("research_technology", [&](entt::entity entity, entt::entity tech) {

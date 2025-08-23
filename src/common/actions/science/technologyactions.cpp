@@ -21,8 +21,7 @@
 #include "common/components/name.h"
 #include "common/components/science.h"
 
-namespace cqsp::common::systems::loading {
-
+namespace cqsp::common::actions {
 
 void ResearchTech(Universe& universe, entt::entity civilization, entt::entity tech) {
     // Ensure it's a tech or something
@@ -54,4 +53,4 @@ void ProcessAction(Universe& universe, entt::entity civilization, const std::str
         tech_progress.researched_mining.emplace(universe.goods[outcome_name]);
     }
 }
-}  // namespace cqsp::common::systems::loading
+}  // namespace cqsp::common::actions

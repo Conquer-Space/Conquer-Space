@@ -24,7 +24,7 @@
 
 #include "common/util/random/random.h"
 
-namespace cqsp::common::systems::names {
+namespace cqsp::common::actions {
 /// <summary>
 /// Name generator is pretty straightforward
 /// Format:
@@ -67,4 +67,4 @@ class NameGenerator {
 
     util::IRandom* random;
 };
-}  // namespace cqsp::common::systems::names
+}  // namespace cqsp::common::actions

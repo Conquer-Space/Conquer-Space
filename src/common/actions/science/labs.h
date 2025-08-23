@@ -20,7 +20,7 @@
 
 #include "common/universe.h"
 
-namespace cqsp::common::systems::science {
+namespace cqsp::common::actions {
 entt::entity CreateLab(Universe& universe);
 void AddScienceResearch(Universe& universe, entt::entity lab, entt::entity research, double progress);
-}  // namespace cqsp::common::systems::science
+}  // namespace cqsp::common::actions

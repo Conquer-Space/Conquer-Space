@@ -17,7 +17,7 @@
 #include "common/actions/economy/auctionhandler.h"
 
 #include <spdlog/spdlog.h>
-namespace cqsp::common::systems {
+namespace cqsp::common::actions {
 
 using components::AuctionHouse;
 
@@ -111,4 +111,4 @@ bool SellGood(AuctionHouse& auction_house, entt::entity agent, entt::entity good
     sell_order_list.put(order);
     return false;
 }
-}  // namespace cqsp::common::systems
+}  // namespace cqsp::common::actions

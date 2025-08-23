@@ -18,7 +18,7 @@
 
 #include "common/components/science.h"
 
-namespace cqsp::common::systems::science {
+namespace cqsp::common::actions {
 entt::entity CreateLab(Universe& universe) {
     entt::entity entity = universe.create();
     // Create labs
@@ -30,4 +30,4 @@ void AddScienceResearch(Universe& universe, entt::entity lab, entt::entity resea
     // Add the things
     universe.get<components::science::Lab>(lab).science_contribution[research] += progress;
 }
-}  // namespace cqsp::common::systems::science
+}  // namespace cqsp::common::actions

@@ -44,7 +44,7 @@ void SysTechProgress::DoSystem() {
             }
         }
         for (entt::entity r : completed_techs) {
-            loading::ResearchTech(GetUniverse(), entity, r);
+            actions::ResearchTech(GetUniverse(), entity, r);
             research.current_research.erase(r);
         }
     }

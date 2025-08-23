@@ -20,6 +20,6 @@
 
 #include "common/universe.h"
 
-namespace cqsp::common::systems {
+namespace cqsp::common::actions {
 uint64_t GetCityPopulation(const Universe& universe, entt::entity city);
-}  // namespace cqsp::common::systems
+}  // namespace cqsp::common::actions

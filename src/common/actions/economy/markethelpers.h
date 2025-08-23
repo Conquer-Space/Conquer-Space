@@ -21,7 +21,7 @@
 #include "common/components/resource.h"
 #include "common/universe.h"
 
-namespace cqsp::common::systems::economy {
+namespace cqsp::common::actions {
 /// <summary>
 /// Creates a market two instance.
 /// </summary>
@@ -43,4 +43,4 @@ bool SellGood(Universe& universe, entt::entity agent, const components::Resource
 void AddParticipant(Universe& universe, entt::entity market, entt::entity entity);
 
 double GetCost(Universe& universe, entt::entity market, const components::ResourceLedger& ledger);
-}  // namespace cqsp::common::systems::economy
+}  // namespace cqsp::common::actions

@@ -25,7 +25,7 @@
 
 #include "common/util/random/stdrandom.h"
 
-using cqsp::common::systems::names::NameGenerator;
+using cqsp::common::actions::NameGenerator;
 
 TEST(NameGeneratorTest, BasicTest) {
     NameGenerator gen;

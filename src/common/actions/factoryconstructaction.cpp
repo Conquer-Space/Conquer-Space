@@ -33,11 +33,11 @@ entt::entity OrderConstructionFactory(Universe& universe, entt::entity city, ent
     if (factory == entt::null) {
         return entt::null;
     }
-    systems::economy::AddParticipant(universe, market, factory);
+    AddParticipant(universe, market, factory);
     auto cost = GetFactoryCost(universe, city, recipe, productivity);
 
     // Buy the goods on the market
-    systems::economy::PurchaseGood(universe, builder, cost);
+    PurchaseGood(universe, builder, cost);
     return factory;
 }
 

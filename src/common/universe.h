@@ -41,7 +41,7 @@ class Universe : public entt::registry {
     std::vector<entt::entity> consumergoods;
     std::map<std::string, entt::entity> recipes;
     std::map<std::string, entt::entity> terrain_data;
-    std::map<std::string, systems::names::NameGenerator> name_generators;
+    std::map<std::string, actions::NameGenerator> name_generators;
     std::map<std::string, entt::entity> fields;
     std::map<std::string, entt::entity> technologies;
     std::map<std::string, entt::entity> planets;

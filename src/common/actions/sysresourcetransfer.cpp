@@ -18,7 +18,7 @@
 
 #include "common/components/resource.h"
 
-namespace cqsp::common::systems::resource {
+namespace cqsp::common::actions {
 using components::ResourceStockpile;
 
 bool TransferResources(entt::registry& registry, entt::entity from, entt::entity to, entt::entity good, double amount) {
@@ -42,4 +42,4 @@ bool TransferResources(entt::registry& registry, entt::entity from, entt::entity
     }
     return false;
 }
-}  // namespace cqsp::common::systems::resource
+}  // namespace cqsp::common::actions

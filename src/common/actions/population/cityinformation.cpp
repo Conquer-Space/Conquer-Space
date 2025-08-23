@@ -19,7 +19,7 @@
 #include "common/components/population.h"
 #include "common/components/surface.h"
 
-namespace cqsp::common::systems {
+namespace cqsp::common::actions {
 uint64_t GetCityPopulation(const Universe& universe, entt::entity city) {
     if (!universe.any_of<components::Settlement>(city)) {
         return 0;
@@ -31,4 +31,4 @@ uint64_t GetCityPopulation(const Universe& universe, entt::entity city) {
     }
     return pop_count;
 }
-}  // namespace cqsp::common::systems
+}  // namespace cqsp::common::actions
