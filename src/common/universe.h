@@ -20,6 +20,7 @@
 
 #include <map>
 #include <memory>
+#include <ranges>
 #include <string>
 #include <vector>
 
@@ -30,6 +31,9 @@
 #include "common/util/random/random.h"
 
 namespace cqsp::common {
+
+class Node;
+
 class Universe : public entt::registry {
  public:
     explicit Universe(std::string uuid);
@@ -68,10 +72,26 @@ class Universe : public entt::registry {
     /// What is the current fraction of the wait of the tick we are processing
     /// </summary>
     double tick_fraction = 0;
+    std::function<Node(entt::entity)> nodeFactory;
+    auto nodeTransform() { return std::views::transform(nodeFactory); }
+    std::vector<Node> Convert(const std::vector<entt::entity>& entities);
+    template <typename... Components>
+    auto nodes() { return this->template view<Components...>() | nodeTransform();}
 
  private:
     bool to_tick = false;
 };
+
+class Node : public entt::handle {
+ public:
+    explicit Node(Universe& universe, entt::entity entity);
+    Node(entt::handle handle, entt::entity entity);
+    explicit Node(Universe& universe);
+    Universe& universe() const;
+    std::vector<Node> Convert(const std::vector<entt::entity>& entities);
+    Node Convert(const entt::entity entity);
+};
+
 }  // namespace cqsp::common
 
 template <>
