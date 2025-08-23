@@ -23,7 +23,7 @@
 #include "common/components/name.h"
 #include "common/loading/loadutil.h"
 
-namespace cqsp::common::systems::loading {
+namespace cqsp::common::loading {
 int HjsonLoader::LoadHjson(const Hjson::Value& values) {
     int assets = 0;
     std::vector<entt::entity> entity_list;
@@ -70,4 +70,4 @@ int HjsonLoader::LoadHjson(const Hjson::Value& values) {
 
     return assets;
 }
-}  // namespace cqsp::common::systems::loading
+}  // namespace cqsp::common::loading

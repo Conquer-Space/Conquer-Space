@@ -23,7 +23,7 @@
 
 #include "common/components/name.h"
 
-namespace cqsp::common::systems::loading {
+namespace cqsp::common::loading {
 
 namespace types = components::types;
 using types::UnitType;
@@ -208,4 +208,4 @@ double ReadUnit(std::string_view value, UnitType unit_type, bool* correct) {
     }
     return read_value;
 }
-}  // namespace cqsp::common::systems::loading
+}  // namespace cqsp::common::loading

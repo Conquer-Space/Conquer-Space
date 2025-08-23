@@ -42,7 +42,7 @@
 
 
 
-namespace cqsp::common::systems::loading {
+namespace cqsp::common::loading {
 
 namespace types = components::types;
 namespace bodies = components::bodies;
@@ -200,4 +200,4 @@ void PlanetLoader::PostLoad(const entt::entity& entity) {
     universe.get_or_emplace<bodies::OrbitalSystem>(parent).push_back(entity);
     universe.remove<ParentTemp>(entity);
 }
-}  // namespace cqsp::common::systems::loading
+}  // namespace cqsp::common::loading

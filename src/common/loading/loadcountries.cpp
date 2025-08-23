@@ -20,7 +20,7 @@
 #include "common/components/name.h"
 #include "common/components/organizations.h"
 
-namespace cqsp::common::systems::loading {
+namespace cqsp::common::loading {
 bool CountryLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     // Just make the country
     universe.emplace<components::Country>(entity);
@@ -34,4 +34,4 @@ bool CountryLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     }
     return true;
 }
-}  // namespace cqsp::common::systems::loading
+}  // namespace cqsp::common::loading

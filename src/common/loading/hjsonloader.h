@@ -20,7 +20,7 @@
 
 #include "common/universe.h"
 
-namespace cqsp::common::systems::loading {
+namespace cqsp::common::loading {
 class HjsonLoader {
  public:
     explicit HjsonLoader(Universe& universe) : universe(universe) {}
@@ -34,4 +34,4 @@ class HjsonLoader {
  protected:
     Universe& universe;
 };
-}  // namespace cqsp::common::systems::loading
+}  // namespace cqsp::common::loading

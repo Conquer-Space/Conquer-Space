@@ -22,7 +22,7 @@
 #include "common/loading/hjsonloader.h"
 #include "common/universe.h"
 
-namespace cqsp::common::systems::loading {
+namespace cqsp::common::loading {
 void LoadGoods(cqsp::common::Universe&, Hjson::Value&);
 void LoadRecipes(cqsp::common::Universe&, Hjson::Value&);
 void LoadTerrainData(cqsp::common::Universe&, Hjson::Value&);
@@ -46,4 +46,4 @@ class RecipeLoader : public HjsonLoader {
  private:
     Hjson::Value default_val;
 };
-}  // namespace cqsp::common::systems::loading
+}  // namespace cqsp::common::loading

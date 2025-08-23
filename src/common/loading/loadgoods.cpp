@@ -34,7 +34,7 @@
         continue;                 \
     }
 
-namespace cqsp::common::systems::loading {
+namespace cqsp::common::loading {
 
 namespace types = components::types;
 using components::bodies::TerrainData;
@@ -200,4 +200,4 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     universe.recipes[name_object] = entity;
     return true;
 }
-}  // namespace cqsp::common::systems::loading
+}  // namespace cqsp::common::loading

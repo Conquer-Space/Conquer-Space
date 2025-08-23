@@ -23,7 +23,7 @@
 #include "common/loading/hjsonloader.h"
 #include "common/universe.h"
 
-namespace cqsp::common::systems::loading {
+namespace cqsp::common::loading {
 components::types::Orbit GetOrbit(const std::string& line_one, const std::string& line_two, const double& GM);
 int GetEpochYear(int year);
 double GetEpoch(double year, double time);
@@ -40,4 +40,4 @@ class SatelliteLoader : public HjsonLoader {
  private:
     Hjson::Value default_val;
 };
-}  // namespace cqsp::common::systems::loading
+}  // namespace cqsp::common::loading

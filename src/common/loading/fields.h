@@ -20,7 +20,7 @@
 
 #include "common/universe.h"
 
-namespace cqsp::common::systems::science {
+namespace cqsp::common::loading {
 void LoadFields(Universe& universe, Hjson::Value& hjson);
 Hjson::Value WriteFields(Universe& universe);
-}  // namespace cqsp::common::systems::science
+}  // namespace cqsp::common::loading

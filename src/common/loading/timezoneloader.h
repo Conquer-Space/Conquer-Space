@@ -18,7 +18,7 @@
 
 #include "common/loading/hjsonloader.h"
 
-namespace cqsp::common::systems::loading {
+namespace cqsp::common::loading {
 class TimezoneLoader : public HjsonLoader {
  public:
     explicit TimezoneLoader(Universe& universe) : HjsonLoader(universe) {}
@@ -30,4 +30,4 @@ class TimezoneLoader : public HjsonLoader {
  private:
     Hjson::Value default_val;
 };
-}  // namespace cqsp::common::systems::loading
+}  // namespace cqsp::common::loading

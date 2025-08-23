@@ -56,7 +56,7 @@ TEST(Science_FieldTest, FieldLoadingTest) {
     Hjson::Value hjson = Hjson::Unmarshal(val);
     cqsp::common::Universe universe;
     namespace cqspc = cqsp::common::components;
-    cqsp::common::systems::science::LoadFields(universe, hjson);
+    cqsp::common::loading::LoadFields(universe, hjson);
     // Look for parents
     ASSERT_EQ(universe.fields.size(), hjson.size());
     ASSERT_NE(universe.fields.find("chemistry"), universe.fields.end());
@@ -78,7 +78,7 @@ TEST(Science_FieldTest, FieldLoadingTest) {
 
     // Test loading
     // Save the hjson
-    Hjson::Value written_hjson = cqsp::common::systems::science::WriteFields(universe);
+    Hjson::Value written_hjson = cqsp::common::loading::WriteFields(universe);
     EXPECT_EQ(written_hjson.size(), hjson.size());
 
     // Reorder the things

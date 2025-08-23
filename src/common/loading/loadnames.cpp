@@ -18,7 +18,8 @@
 
 #include "common/actions/names/namegenerator.h"
 
-void cqsp::common::systems::loading::LoadNameLists(cqsp::common::Universe &universe, Hjson::Value &value) {
+namespace cqsp::common::loading {
+void LoadNameLists(Universe &universe, Hjson::Value &value) {
     for (int i = 0; i < value.size(); i++) {
         Hjson::Value &name_list = value[i];
         actions::NameGenerator name_gen;
@@ -28,3 +29,4 @@ void cqsp::common::systems::loading::LoadNameLists(cqsp::common::Universe &unive
         universe.name_generators[name_gen.GetName()] = name_gen;
     }
 }
+}  // namespace cqsp::common::loading

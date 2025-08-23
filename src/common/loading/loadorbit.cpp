@@ -19,7 +19,7 @@
 #include "common/components/units.h"
 #include "common/loading/loadutil.h"
 
-namespace cqsp::common::systems::loading {
+namespace cqsp::common::loading {
 
 namespace types = components::types;
 using types::UnitType;
@@ -70,4 +70,4 @@ std::optional<Orbit> LoadOrbit(const Hjson::Value& values) {
     }
     return std::optional<Orbit>(orbit);
 }
-}  // namespace cqsp::common::systems::loading
+}  // namespace cqsp::common::loading

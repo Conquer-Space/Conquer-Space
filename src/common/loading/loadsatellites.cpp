@@ -30,7 +30,7 @@
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
 #include "common/loading/loadorbit.h"
-namespace cqsp::common::systems::loading {
+namespace cqsp::common::loading {
 
 namespace types = components::types;
 namespace bodies = components::bodies;
@@ -160,4 +160,4 @@ bool SatelliteLoader::LoadValue(const Hjson::Value& values, entt::entity entity)
     SPDLOG_INFO("Loaded orbit!");
     return true;
 }
-}  // namespace cqsp::common::systems::loading
+}  // namespace cqsp::common::loading

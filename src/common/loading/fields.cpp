@@ -33,8 +33,7 @@ struct FieldTemplate {
 };
 }  // namespace
 
-namespace cqsp::common::systems::science {
-//TODO(AGM) move to loading namespace
+namespace cqsp::common::loading {
 namespace science = components::science;
 
 void LoadFields(Universe& universe, Hjson::Value& hjson) {
@@ -46,8 +45,8 @@ void LoadFields(Universe& universe, Hjson::Value& hjson) {
         // Get the name
         entt::entity field = universe.create();
         auto& field_comp = universe.emplace<science::Field>(field);
-        loading::LoadName(universe, field, val);
-        if (!loading::LoadIdentifier(universe, field, val)) {
+        LoadName(universe, field, val);
+        if (!LoadIdentifier(universe, field, val)) {
             universe.destroy(field);
             SPDLOG_INFO("No field with {}", Hjson::Marshal(val));
             continue;
@@ -145,4 +144,4 @@ Hjson::Value WriteFields(Universe& universe) {
     }
     return all_fields;
 }
-}  // namespace cqsp::common::systems::science
+}  // namespace cqsp::common::loading

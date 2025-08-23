@@ -22,6 +22,6 @@
 
 #include "common/components/orbit.h"
 
-namespace cqsp::common::systems::loading {
+namespace cqsp::common::loading {
 std::optional<components::types::Orbit> LoadOrbit(const Hjson::Value& values);
-}  // namespace cqsp::common::systems::loading
+}  // namespace cqsp::common::loading

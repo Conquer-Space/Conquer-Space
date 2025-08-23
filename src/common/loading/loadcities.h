@@ -18,7 +18,7 @@
 
 #include "common/loading/hjsonloader.h"
 
-namespace cqsp::common::systems::loading {
+namespace cqsp::common::loading {
 /// <summary>
 /// This loader has to be loaded after \ref PlanetLoader because it adds the cities to the
 /// respectve planets
@@ -34,4 +34,4 @@ class CityLoader : public HjsonLoader {
  private:
     Hjson::Value default_val;
 };
-}  // namespace cqsp::common::systems::loading
+}  // namespace cqsp::common::loading

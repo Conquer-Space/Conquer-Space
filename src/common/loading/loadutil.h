@@ -25,7 +25,7 @@
 #include "common/components/units.h"
 #include "common/universe.h"
 
-namespace cqsp::common::systems::loading {
+namespace cqsp::common::loading {
 /// <summary>
 /// Returns true if name exists
 /// </summary>
@@ -57,4 +57,4 @@ bool VerifyInitialValues(const Hjson::Value& value, const std::map<std::string, 
 /// <param name="correct">[out] if the unit is of the correct type</param>
 /// <returns></returns>
 double ReadUnit(std::string_view value, components::types::UnitType unit_type, bool* correct = nullptr);
-}  // namespace cqsp::common::systems::loading
+}  // namespace cqsp::common::loading

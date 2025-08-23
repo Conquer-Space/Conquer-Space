@@ -41,7 +41,7 @@
 
 namespace cqsp::client::systems {
 
-namespace loading = common::systems::loading;
+namespace loading = common::loading;
 namespace components = common::components;
 using asset::AssetManager;
 using asset::HjsonAsset;
@@ -117,12 +117,12 @@ void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) 
     LoadResource<loading::SatelliteLoader>(asset_manager, conquer_space.GetUniverse(), "satellites");
 
     LoadResource(asset_manager, conquer_space.m_universe, "names", loading::LoadNameLists);
-    LoadResource(asset_manager, conquer_space.m_universe, "tech_fields", common::systems::science::LoadFields);
-    LoadResource(asset_manager, conquer_space.m_universe, "tech_list", common::systems::loading::LoadTechnologies);
+    LoadResource(asset_manager, conquer_space.m_universe, "tech_fields", loading::LoadFields);
+    LoadResource(asset_manager, conquer_space.m_universe, "tech_list", loading::LoadTechnologies);
 
     // Initialize planet terrains
     HjsonAsset* asset = asset_manager.GetAsset<HjsonAsset>("core:terrain_colors");
-    common::systems::loading::LoadTerrainData(conquer_space.GetUniverse(), asset->data);
+    loading::LoadTerrainData(conquer_space.GetUniverse(), asset->data);
 
     // Load scripts
     // Load lua functions

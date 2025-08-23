@@ -24,7 +24,7 @@
 #include "common/actions/science/technologyactions.h"
 #include "common/universe.h"
 
-namespace cqsp::common::systems::loading {
+namespace cqsp::common::loading {
 void LoadTechnologies(Universe &universe, Hjson::Value &value);
 
-}  // namespace cqsp::common::systems::science
+}  // namespace cqsp::common::loading
