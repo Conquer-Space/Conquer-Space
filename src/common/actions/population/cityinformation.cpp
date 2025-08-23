@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/population/cityinformation.h"
+#include "common/actions/population/cityinformation.h"
 
 #include "common/components/population.h"
 #include "common/components/surface.h"

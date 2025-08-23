@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/maneuver/rendezvous.h"
+#include "common/actions/maneuver/rendezvous.h"
 
-#include "common/systems/maneuver/hohmann.h"
+#include "common/actions/maneuver/hohmann.h"
 
 namespace cqsp::common::systems {
 using namespace components::types;  // NOLINT
