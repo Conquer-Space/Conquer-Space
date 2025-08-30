@@ -20,7 +20,7 @@
 #include "common/components/area.h"
 #include "common/components/economy.h"
 #include "common/components/resource.h"
-#include "common/systems/actions/factoryconstructaction.h"
+#include "common/actions/factoryconstructaction.h"
 #include "common/universe.h"
 
 TEST(FactoryConstuctTest, ConstructTest) {
@@ -32,7 +32,7 @@ TEST(FactoryConstuctTest, ConstructTest) {
     auto& recipe_comp = universe.emplace<cqsp::common::components::Recipe>(recipe);
     recipe_comp.workers = 10;
     recipe_comp.type = cqsp::common::components::factory;
-    entt::entity factory = cqsp::common::systems::actions::CreateFactory(universe, city, recipe, 10);
+    entt::entity factory = cqsp::common::actions::CreateFactory(universe, city, recipe, 10);
     // Ensure that it has everything
     ASSERT_TRUE(universe.any_of<cqsp::common::components::Employer>(factory));
     ASSERT_EQ(universe.get<cqsp::common::components::Employer>(factory).population_needed, 10 * 10);
@@ -40,7 +40,7 @@ TEST(FactoryConstuctTest, ConstructTest) {
 
 TEST(FactoryConstuctTest, ConstructExpectNoCrash) {
     cqsp::common::Universe universe;
-    cqsp::common::systems::actions::CreateFactory(universe, entt::null, entt::null, 0);
-    cqsp::common::systems::actions::CreateFactory(universe, universe.create(), entt::null, 0);
-    cqsp::common::systems::actions::CreateFactory(universe, entt::null, universe.create(), 0);
+    cqsp::common::actions::CreateFactory(universe, entt::null, entt::null, 0);
+    cqsp::common::actions::CreateFactory(universe, universe.create(), entt::null, 0);
+    cqsp::common::actions::CreateFactory(universe, entt::null, universe.create(), 0);
 }

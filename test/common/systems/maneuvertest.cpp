@@ -18,8 +18,8 @@
 
 #include "common/components/orbit.h"
 #include "common/components/units.h"
-#include "common/systems/maneuver/maneuver.h"
-#include "common/systems/maneuver/rendezvous.h"
+#include "common/actions/maneuver/maneuver.h"
+#include "common/actions/maneuver/rendezvous.h"
 
 TEST(Maneuver, CircularCircularizeApogeeTest) {
     namespace cqspt = cqsp::common::components::types;

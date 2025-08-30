@@ -33,7 +33,7 @@
 #include "common/components/science.h"
 #include "common/components/ships.h"
 #include "common/components/surface.h"
-#include "common/systems/population/cityinformation.h"
+#include "common/actions/population/cityinformation.h"
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
 #include "engine/gui.h"
@@ -148,7 +148,7 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
 
     // If it's a city do population
     if (universe.all_of<components::Settlement>(entity)) {
-        ImGui::TextFmt("Population: {}", LongToHumanString(common::systems::GetCityPopulation(universe, entity)));
+        ImGui::TextFmt("Population: {}", LongToHumanString(common::actions::GetCityPopulation(universe, entity)));
     }
     if (universe.all_of<Body>(entity)) {
         auto& body = universe.get<Body>(entity);

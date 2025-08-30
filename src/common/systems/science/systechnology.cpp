@@ -21,7 +21,7 @@
 #include <tracy/Tracy.hpp>
 
 #include "common/components/science.h"
-#include "common/systems/science/technology.h"
+#include "common/loading/technology.h"
 
 namespace cqsp::common::systems {
 
@@ -44,7 +44,7 @@ void SysTechProgress::DoSystem() {
             }
         }
         for (entt::entity r : completed_techs) {
-            loading::ResearchTech(GetUniverse(), entity, r);
+            actions::ResearchTech(GetUniverse(), entity, r);
             research.current_research.erase(r);
         }
     }

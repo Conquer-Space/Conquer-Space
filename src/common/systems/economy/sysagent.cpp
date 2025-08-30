@@ -17,7 +17,7 @@
 #include "common/systems/economy/sysagent.h"
 
 #include "common/components/economy.h"
-#include "common/systems/economy/markethelpers.h"
+#include "common/actions/economy/markethelpers.h"
 
 namespace cqsp::common::systems {
 void SysAgent::DoSystem() {

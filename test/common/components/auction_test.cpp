@@ -21,7 +21,7 @@
 #include <algorithm>
 #include <iostream>
 
-#include "common/systems/economy/auctionhandler.h"
+#include "common/actions/economy/auctionhandler.h"
 
 using cqsp::common::components::AscendingSortedOrderList;
 using cqsp::common::components::AuctionHouse;
@@ -110,7 +110,7 @@ TEST(AuctionTest, BasicBuyOrderTest) {
 
     EXPECT_EQ(auction_house.sell_orders[test_good].size(), 1);
     EXPECT_EQ(static_cast<int>(auction_house.GetSupply(test_good)), 50);
-    bool is_ordered = cqsp::common::systems::BuyGood(auction_house, test_agent, test_good, 10, 50);
+    bool is_ordered = cqsp::common::actions::BuyGood(auction_house, test_agent, test_good, 10, 50);
 
     // Ensure it's fufilled immediately
     EXPECT_TRUE(is_ordered);
@@ -125,7 +125,7 @@ TEST(AuctionTest, UnfufilledBuyOrderTest) {
     AuctionHouse auction_house;
     // Add basic buy order
     auction_house.AddSellOrder(test_good, Order(10, 100, test_agent));
-    bool is_ordered = cqsp::common::systems::BuyGood(auction_house, test_agent, test_good, 10, 50);
+    bool is_ordered = cqsp::common::actions::BuyGood(auction_house, test_agent, test_good, 10, 50);
 
     // It's fufilled immediately
     EXPECT_TRUE(is_ordered);
@@ -145,7 +145,7 @@ TEST(AuctionTest, OverfufilledBuyOrderTest) {
     AuctionHouse auction_house;
     auction_house.AddSellOrder(test_good, Order(10, 100, test_agent));
 
-    bool is_ordered = cqsp::common::systems::BuyGood(auction_house, test_agent, test_good, 10, 1000);
+    bool is_ordered = cqsp::common::actions::BuyGood(auction_house, test_agent, test_good, 10, 1000);
 
     EXPECT_FALSE(is_ordered);
 
@@ -161,7 +161,7 @@ TEST(AuctionTest, OverpricedBuyOrderTest) {
     AuctionHouse auction_house;
     // Add basic buy order
     auction_house.AddSellOrder(test_good, Order(1000, 100, test_agent));
-    bool is_ordered = cqsp::common::systems::BuyGood(auction_house, test_agent, test_good, 10, 100);
+    bool is_ordered = cqsp::common::actions::BuyGood(auction_house, test_agent, test_good, 10, 100);
 
     // It's fufilled immediately
     EXPECT_FALSE(is_ordered);
@@ -182,7 +182,7 @@ TEST(AuctionTest, BasicSellOrderTest) {
     AuctionHouse auction_house;
     // Add basic buy order
     auction_house.AddBuyOrder(test_good, Order(10, 50, test_agent));
-    bool is_ordered = cqsp::common::systems::SellGood(auction_house, test_agent, test_good, 10, 50);
+    bool is_ordered = cqsp::common::actions::SellGood(auction_house, test_agent, test_good, 10, 50);
 
     // Ensure it's fufilled immediately
     EXPECT_TRUE(is_ordered);
@@ -197,7 +197,7 @@ TEST(AuctionTest, UnfufilledSellOrderTest) {
     AuctionHouse auction_house;
     // Add basic buy order
     auction_house.AddBuyOrder(test_good, Order(10, 100, test_agent));
-    bool is_ordered = cqsp::common::systems::SellGood(auction_house, test_agent, test_good, 10, 50);
+    bool is_ordered = cqsp::common::actions::SellGood(auction_house, test_agent, test_good, 10, 50);
 
     // It's fufilled immediately
     EXPECT_TRUE(is_ordered);
@@ -217,7 +217,7 @@ TEST(AuctionTest, OverfufilledSellOrderTest) {
     AuctionHouse auction_house;
     auction_house.AddBuyOrder(test_good, Order(10, 100, test_agent));
 
-    bool is_ordered = cqsp::common::systems::SellGood(auction_house, test_agent, test_good, 10, 1000);
+    bool is_ordered = cqsp::common::actions::SellGood(auction_house, test_agent, test_good, 10, 1000);
 
     EXPECT_FALSE(is_ordered);
 
@@ -234,7 +234,7 @@ TEST(AuctionTest, OverpricedSellOrderTest) {
     AuctionHouse auction_house;
     // Add basic buy order
     auction_house.AddBuyOrder(test_good, Order(10, 100, test_agent));
-    bool is_ordered = cqsp::common::systems::SellGood(auction_house, test_agent, test_good, 1000, 100);
+    bool is_ordered = cqsp::common::actions::SellGood(auction_house, test_agent, test_good, 1000, 100);
 
     // It's not fufilled immediately
     EXPECT_FALSE(is_ordered);

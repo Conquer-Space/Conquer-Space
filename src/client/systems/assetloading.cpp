@@ -25,23 +25,23 @@
 #include "client/scripting/imguifunctions.h"
 #include "common/components/surface.h"
 #include "common/scripting/luafunctions.h"
-#include "common/systems/loading/hjsonloader.h"
-#include "common/systems/loading/loadcities.h"
-#include "common/systems/loading/loadcountries.h"
-#include "common/systems/loading/loadgoods.h"
-#include "common/systems/loading/loadnames.h"
-#include "common/systems/loading/loadplanets.h"
-#include "common/systems/loading/loadprovinces.h"
-#include "common/systems/loading/loadsatellites.h"
-#include "common/systems/loading/timezoneloader.h"
-#include "common/systems/science/fields.h"
-#include "common/systems/science/technology.h"
+#include "common/loading/hjsonloader.h"
+#include "common/loading/loadcities.h"
+#include "common/loading/loadcountries.h"
+#include "common/loading/loadgoods.h"
+#include "common/loading/loadnames.h"
+#include "common/loading/loadplanets.h"
+#include "common/loading/loadprovinces.h"
+#include "common/loading/loadsatellites.h"
+#include "common/loading/timezoneloader.h"
+#include "common/loading/fields.h"
+#include "common/loading/technology.h"
 #include "common/systems/sysuniversegenerator.h"
 #include "engine/asset/assetmanager.h"
 
 namespace cqsp::client::systems {
 
-namespace loading = common::systems::loading;
+namespace loading = common::loading;
 namespace components = common::components;
 using asset::AssetManager;
 using asset::HjsonAsset;
@@ -117,12 +117,12 @@ void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) 
     LoadResource<loading::SatelliteLoader>(asset_manager, conquer_space.GetUniverse(), "satellites");
 
     LoadResource(asset_manager, conquer_space.m_universe, "names", loading::LoadNameLists);
-    LoadResource(asset_manager, conquer_space.m_universe, "tech_fields", common::systems::science::LoadFields);
-    LoadResource(asset_manager, conquer_space.m_universe, "tech_list", common::systems::loading::LoadTechnologies);
+    LoadResource(asset_manager, conquer_space.m_universe, "tech_fields", loading::LoadFields);
+    LoadResource(asset_manager, conquer_space.m_universe, "tech_list", loading::LoadTechnologies);
 
     // Initialize planet terrains
     HjsonAsset* asset = asset_manager.GetAsset<HjsonAsset>("core:terrain_colors");
-    common::systems::loading::LoadTerrainData(conquer_space.GetUniverse(), asset->data);
+    loading::LoadTerrainData(conquer_space.GetUniverse(), asset->data);
 
     // Load scripts
     // Load lua functions
