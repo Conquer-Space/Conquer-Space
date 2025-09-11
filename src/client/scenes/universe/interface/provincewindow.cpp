@@ -47,22 +47,22 @@ namespace infrastructure = components::infrastructure;
 namespace types = components::types;
 namespace ships = components::ships;
 namespace bodies = components::bodies;
+using common::util::GetName;
 using components::PopulationSegment;
 using components::Settlement;
 using components::Wallet;
 using util::LongToHumanString;
-using common::util::GetName;
 
 void SysProvinceInformation::Init() {}
 
 void SysProvinceInformation::DoUI(int delta_time) {
     entt::entity country = GetUniverse().view<ctx::SelectedProvince>().front();
-    if (country != current_country) {
-        current_country = country;
+    if (country != current_province) {
+        current_province = country;
         view_mode = ViewMode::COUNTRY_VIEW;
         visible = true;
     }
-    if (current_country == entt::null || !GetUniverse().any_of<components::Province>(current_country)) {
+    if (current_province == entt::null || !GetUniverse().any_of<components::Province>(current_province)) {
         return;
     }
     if (!visible) {
@@ -89,9 +89,9 @@ void SysProvinceInformation::DoUI(int delta_time) {
 void SysProvinceInformation::DoUpdate(int delta_time) {}
 
 void SysProvinceInformation::ProvinceView() {
-    ImGui::TextFmt("{}", GetName(GetUniverse(), current_country));
+    ImGui::TextFmt("{}", GetName(GetUniverse(), current_province));
     // List the cities
-    auto& city_list = GetUniverse().get<components::Province>(current_country);
+    auto& city_list = GetUniverse().get<components::Province>(current_province);
     int population = 0;
     for (entt::entity entity : city_list.cities) {
         // Get city population
@@ -107,8 +107,7 @@ void SysProvinceInformation::ProvinceView() {
     if (ImGui::BeginTabBar("ProvinceInformationTabs", ImGuiTabBarFlags_None)) {
         if (ImGui::BeginTabItem("Cities")) {
             for (entt::entity entity : city_list.cities) {
-                if (CQSPGui::DefaultSelectable(
-                        fmt::format("{}", GetName(GetUniverse(), entity)).c_str())) {
+                if (CQSPGui::DefaultSelectable(fmt::format("{}", GetName(GetUniverse(), entity)).c_str())) {
                     current_city = entity;
                     view_mode = ViewMode::CITY_VIEW;
                 }
@@ -174,14 +173,13 @@ void SysProvinceInformation::CityView() {
 
 void SysProvinceInformation::DisplayWallet(entt::entity entity) {
     if (GetUniverse().all_of<Wallet>(entity)) {
-		Wallet& wallet = GetUniverse().get<Wallet>(entity);
-		ImGui::TextFmt("GDP Contribution: {}", LongToHumanString(wallet.GetGDPChange()));
-		ImGui::TextFmt("Balance: {}", LongToHumanString(wallet.GetBalance()));
-		ImGui::TextFmt("Balance change: {}", LongToHumanString(wallet.GetChange()));
-	} else {
-		ImGui::TextFmt("No wallet");
-	}
-
+        Wallet& wallet = GetUniverse().get<Wallet>(entity);
+        ImGui::TextFmt("GDP Contribution: {}", LongToHumanString(wallet.GetGDPChange()));
+        ImGui::TextFmt("Balance: {}", LongToHumanString(wallet.GetBalance()));
+        ImGui::TextFmt("Balance change: {}", LongToHumanString(wallet.GetChange()));
+    } else {
+        ImGui::TextFmt("No wallet");
+    }
 }
 
 void SysProvinceInformation::CityIndustryTabs() {
@@ -222,27 +220,25 @@ void SysProvinceInformation::CityIndustryTabs() {
 }
 
 void SysProvinceInformation::DemographicsTab() {
-
     auto& settlement = GetUniverse().get<Settlement>(current_city);
     for (auto& seg_entity : settlement.population) {
-        ImGui::TextFmt("Population: {}",
-                       LongToHumanString(GetUniverse().get<PopulationSegment>(seg_entity).population));
+        auto& segment_comp = GetUniverse().get<PopulationSegment>(seg_entity);
+        ImGui::TextFmt("Population: {}", LongToHumanString(segment_comp.population));
+
         gui::EntityTooltip(GetUniverse(), seg_entity);
         if (GetUniverse().all_of<components::Hunger>(seg_entity)) {
             ImGui::TextFmt("Hungry");
         }
-        ImGui::TextFmt("Labor Force: {}",
-                       LongToHumanString(GetUniverse().get<PopulationSegment>(seg_entity).labor_force));
-        // Then other labor information
+        ImGui::TextFmt("Labor Force: {}", LongToHumanString(segment_comp.labor_force));
+        ImGui::TextFmt("Standard of Living: {}", segment_comp.standard_of_living);
 
         // Get spending for population
-        DisplayWallet(current_city);
-        // Market
-        if (GetUniverse().all_of<components::Market>(current_city)) {
-            if (ImGui::IsItemHovered()) {
-                CQSPGui::SimpleTextTooltip("Click for detailed market information");
-            }
+        DisplayWallet(seg_entity);
+        if (GetUniverse().all_of<Wallet>(seg_entity)) {
+            Wallet& wallet = GetUniverse().get<Wallet>(seg_entity);
+            ImGui::TextFmt("GDP per capita: {}", wallet.GetGDPChange() / segment_comp.population);
         }
+
         if (ImGui::CollapsingHeader("Resource Consumption")) {
             if (GetUniverse().all_of<components::ResourceConsumption>(seg_entity)) {
                 auto& res_consumption = GetUniverse().get<components::ResourceConsumption>(seg_entity);
@@ -280,7 +276,7 @@ void SysProvinceInformation::IndustryTab() {
         labor_fufillment += employ.population_fufilled;
     }
     double percentag = (double)labor_fufillment / (double)labor_demand * 100.;
-    ImGui::TextFmt("Labor fufillment: {}/{} ({}%%)", cqsp::util::LongToHumanString(labor_fufillment),
+    ImGui::TextFmt("Labor fufillment: {}/{} ({}%)", cqsp::util::LongToHumanString(labor_fufillment),
                    cqsp::util::LongToHumanString(labor_demand), percentag);
 
     IndustryTabGenericChild<components::Service>(
@@ -359,8 +355,8 @@ void SysProvinceInformation::IndustryTabGenericChild(const std::string& tabname,
             const components::Recipe& recipe = GetUniverse().get<components::Recipe>(generator.recipe);
             const components::IndustrySize& ratio = GetUniverse().get<components::IndustrySize>(industry);
 
-            input_resources += (recipe.input * ratio.size);
-            output_resources[recipe.output.entity] += recipe.output.amount;
+            input_resources += (recipe.input * ratio.utilization) + (recipe.capitalcost * ratio.size);
+            output_resources[recipe.output.entity] += recipe.output.amount * ratio.utilization;
 
             if (GetUniverse().all_of<components::Wallet>(industry)) {
                 GDP_calculation += GetUniverse().get<components::Wallet>(industry).GetGDPChange();
@@ -394,7 +390,6 @@ void SysProvinceInformation::IndustryTabGenericChild(const std::string& tabname,
 }
 
 void SysProvinceInformation::LaunchTab() {
-
     // Set the things
     static float semi_major_axis = 8000;
     static float azimuth = 0;

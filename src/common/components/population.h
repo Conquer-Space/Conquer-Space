@@ -25,6 +25,8 @@ struct PopulationSegment {
     /// The labor force must always be less than the population
     /// population - labor_force = dependents
     uint64_t labor_force;
+    // Just an index for the amount of marginal propensity that we want to consume...
+    double standard_of_living = 0;
 };
 
 struct Hunger {};

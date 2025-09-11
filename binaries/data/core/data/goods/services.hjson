@@ -123,4 +123,34 @@
             w: 0.01
         }
     }*/
+    {
+        name: Services
+        identifier: services
+        volume: 0 m3
+        mass: 0 kg
+        price: 30
+        tags: [
+            service
+            consumable
+        ]
+        consumption: {
+            autonomous_consumption: 0.001
+            marginal_propensity: 0.05
+        }
+    }
+    {
+        name: Amenities
+        identifier: amenities
+        volume: 0 m3
+        mass: 0 kg
+        price: 50
+        tags: [
+            service
+            consumable
+        ]
+        consumption: {
+            autonomous_consumption: 0.001
+            marginal_propensity: 0.02
+        }
+    }
 ]

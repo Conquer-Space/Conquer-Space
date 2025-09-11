@@ -61,6 +61,9 @@ void ProcessIndustries(Universe& universe, entt::entity entity) {
         components::ResourceLedger capitalinput = recipe.capitalcost * (size.size);
         components::ResourceLedger input = (recipe.input * size.utilization) + capitalinput;
 
+        auto& employer = universe.get<components::Employer>(productionentity);
+        employer.population_fufilled = size.size * recipe.workers;
+
         // Calculate the greatest possible production
         components::ResourceLedger output;
         output[recipe.output.entity] = recipe.output.amount * size.utilization;

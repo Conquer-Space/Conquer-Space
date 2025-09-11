@@ -29,6 +29,9 @@ class SysGoodViewer : public SysUserInterface {
 
  private:
     void GoodViewerRight();
+    void RecipeTable();
+    void InputRecipeTable();
+    void OutputRecipeTable();
     entt::entity selected_good = entt::null;
 };
 }  // namespace cqsp::client::systems

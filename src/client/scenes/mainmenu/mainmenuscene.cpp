@@ -13,7 +13,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
+*/
 #include "client/scenes/mainmenu/mainmenuscene.h"
 
 #include <RmlUi/Core.h>
@@ -222,7 +222,7 @@ void MainMenuScene::ShuffleFileList() {
 
 void MainMenuScene::SetMainMenuImage(const std::string& file) {
     main_menu->GetElementById("main_window")
-        ->SetProperty("decorator", fmt::format("image(\"{}\" none cover center bottom)", file));
+        ->SetProperty("decorator", fmt::format("image(\"{}\" flip-vertical cover center bottom)", file));
 }
 
 void MainMenuScene::NextImage() {

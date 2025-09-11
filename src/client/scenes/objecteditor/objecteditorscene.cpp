@@ -16,11 +16,10 @@
  */
 #include "objecteditorscene.h"
 
+#include "client/scenes/objecteditor/recipeviewer.h"
+#include "client/scenes/objecteditor/sysfieldviewer.h"
+#include "client/scenes/objecteditor/sysgoodviewer.h"
 #include "client/systems/assetloading.h"
-#include "goodviewer.h"
-#include "recipeviewer.h"
-#include "sysfieldviewer.h"
-
 
 namespace cqsp::client::scene {
 
@@ -34,8 +33,7 @@ ObjectEditorScene::~ObjectEditorScene() = default;
 
 void ObjectEditorScene::Init() {
     // Sorta need to initialize everything
-    systems::LoadAllResources(GetApp().GetAssetManager(),
-                                      *dynamic_cast<client::ConquerSpace*>(GetApp().GetGame()));
+    systems::LoadAllResources(GetApp().GetAssetManager(), *dynamic_cast<client::ConquerSpace*>(GetApp().GetGame()));
 }
 
 void ObjectEditorScene::Update(float deltaTime) {}
