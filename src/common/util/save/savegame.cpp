@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/systems/savegame.h"
+#include "common/util/save/savegame.h"
 
 #include <filesystem>
 #include <fstream>
@@ -24,34 +24,33 @@
 #include "common/components/player.h"
 #include "common/util/paths.h"
 #include "common/util/save/save.h"
-namespace cqsp::client::save {
+namespace cqsp::common::save {
 
-namespace save = common::save;
 
-void save_game(common::Universe& universe) {
-    std::string save_dir_path = common::util::GetCqspSavePath();
+void save_game(Universe& universe) {
+    std::string save_dir_path = util::GetCqspSavePath();
     if (!std::filesystem::exists(save_dir_path)) std::filesystem::create_directories(save_dir_path);
 
     // Generate basic information
-    save::Save save(universe);
+    Save save(universe);
     Hjson::Value metadata = save.GetMetadata();
     // Write to a file
-    entt::entity player = universe.view<common::components::Player>().front();
-    auto& name = universe.get<common::components::Identifier>(player);
+    entt::entity player = universe.view<components::Player>().front();
+    auto& name = universe.get<components::Identifier>(player);
     // Generate the folder
     std::filesystem::path path = std::filesystem::path(save_dir_path) / (name.identifier + "_" + universe.uuid);
     std::filesystem::create_directories(path);
 
     // Generate the file
-    Hjson::MarshalToFile(save.GetMetadata(), save::GetMetaPath(path.string()));
+    Hjson::MarshalToFile(save.GetMetadata(), GetMetaPath(path.string()));
 
     // Then write other game information, however we do that.
 }
 
-void load_game(common::Universe& universe, std::string_view directory) {
-    save::Load load(universe);
+void load_game(Universe& universe, std::string_view directory) {
+    Load load(universe);
     // Load meta file
-    Hjson::Value metadata = Hjson::UnmarshalFromFile(save::GetMetaPath(directory));
+    Hjson::Value metadata = Hjson::UnmarshalFromFile(GetMetaPath(directory));
     load.LoadMetadata(metadata);
 }
 }  // namespace cqsp::client::save

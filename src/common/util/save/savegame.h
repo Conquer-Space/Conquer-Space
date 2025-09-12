@@ -20,7 +20,7 @@
 
 #include "common/universe.h"
 
-namespace cqsp::client::save {
-void save_game(common::Universe& universe);
-void load_game(common::Universe& universe, std::string_view directory);
+namespace cqsp::common::save {
+void save_game(Universe& universe);
+void load_game(Universe& universe, std::string_view directory);
 }  // namespace cqsp::client::save
