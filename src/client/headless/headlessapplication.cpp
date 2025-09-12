@@ -25,7 +25,7 @@
 #include "client/headless/headlessluafunctions.h"
 #include "client/headless/loadluafile.h"
 #include "common/util/logging.h"
-#include "common/util/strip.h"
+#include "common/util/string.h"
 
 namespace cqsp::client::headless {
 

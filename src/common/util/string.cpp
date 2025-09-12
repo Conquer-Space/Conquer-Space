@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/util/strip.h"
+#include "common/util/string.h"
 
 namespace cqsp::util {
 std::string strip(const std::string& inpt) {
