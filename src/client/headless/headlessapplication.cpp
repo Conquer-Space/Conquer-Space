@@ -36,22 +36,6 @@ asset::AssetManager& HeadlessApplication::GetAssetManager() { return asset_manag
 ConquerSpace& HeadlessApplication::GetGame() { return conquer_space; }
 
 HeadlessApplication::HeadlessApplication() : asset_loader(asset::AssetOptions(false)) {}
-namespace {
-std::vector<std::string> split(const std::string& s, const std::string& delimiter) {
-    std::string copy = s;
-    std::vector<std::string> tokens;
-    size_t pos = 0;
-    std::string token;
-    while ((pos = copy.find(delimiter)) != std::string::npos) {
-        token = copy.substr(0, pos);
-        tokens.push_back(token);
-        copy.erase(0, pos + delimiter.length());
-    }
-    tokens.push_back(copy);
-
-    return tokens;
-}
-}  // namespace
 
 int HeadlessApplication::run() {
     // Load data
@@ -77,9 +61,9 @@ int HeadlessApplication::run() {
             std::vector<std::string> argument;
             if (line.find(' ') != std::string::npos) {
                 std::string arg_string = line.substr(line.find(' '), std::string::npos);
-                arg_string = cqsp::util::strip(arg_string);
+                arg_string = util::strip(arg_string);
                 // Now we have to iterate forward and find any quotation marks...
-                argument = split(arg_string, " ");
+                argument = util::split(arg_string, " ");
                 line = line.substr(0, line.find(' '));
             }
             if (line == "@generate") {

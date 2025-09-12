@@ -17,7 +17,9 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace cqsp::util {
 std::string strip(const std::string& inpt);
+std::vector<std::string> split(const std::string& s, const std::string& delimiter);
 }  // namespace cqsp::util
