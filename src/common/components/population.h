@@ -27,6 +27,8 @@ struct PopulationSegment {
     uint64_t labor_force;
     // Just an index for the amount of marginal propensity that we want to consume...
     double standard_of_living = 0;
+    // How much percent of their income they will will put towards savings
+    double saving_ratio = 0.1;
 };
 
 struct Hunger {};
