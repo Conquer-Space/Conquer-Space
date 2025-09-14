@@ -90,6 +90,8 @@ void Application::InitImgui() {
     ImGui::StyleColorsDark();
     ImGui::GetIO().IniFilename = NULL;
     CQSPGui::SetApplication(this);
+    ax::NodeEditor::Config config;
+    config.SettingsFile = nullptr;
     m_ne_context = ax::NodeEditor::CreateEditor();
     ax::NodeEditor::SetCurrentEditor(m_ne_context);
     InitFonts();

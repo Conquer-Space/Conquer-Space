@@ -99,6 +99,10 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
         ImGui::TextFmt("Profit: {}", LongToHumanString(costs.profit));
         ImGui::TextFmt("Revenue: {}", LongToHumanString(costs.revenue));
     }
+    if (universe.all_of<components::Price>(entity)) {
+        ImGui::TextFmt("Default Price: {}", universe.get<components::Price>(entity).price);
+        
+    }
 }
 
 void EntityTooltipContent(const Universe& universe, entt::entity entity) {

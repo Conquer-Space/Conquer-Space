@@ -19,6 +19,7 @@
 #include "client/scenes/objecteditor/recipeviewer.h"
 #include "client/scenes/objecteditor/sysfieldviewer.h"
 #include "client/scenes/objecteditor/sysgoodviewer.h"
+#include "client/util/assetwindow.h"
 #include "client/systems/assetloading.h"
 
 namespace cqsp::client::scene {
@@ -27,6 +28,7 @@ ObjectEditorScene::ObjectEditorScene(engine::Application& app) : ClientScene(app
     AddUISystem<systems::SysFieldNodeViewer>("Node Viewer");
     AddUISystem<systems::SysGoodViewer>("Good Viewer");
     AddUISystem<systems::SysRecipeViewer>("Recipe Viewer");
+    AddUISystem<systems::AssetWindow>("Asset Window");
 }
 
 ObjectEditorScene::~ObjectEditorScene() = default;

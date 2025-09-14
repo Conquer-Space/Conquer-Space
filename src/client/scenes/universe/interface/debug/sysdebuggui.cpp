@@ -29,7 +29,8 @@ namespace cqsp::client::systems {
 using engine::Application;
 namespace components = common::components;
 
-SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app) {
+SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app), asset_window(app) {
+    asset_window.SetWindowOpenPtr(&to_show_asset_window);
     using std::string_view;
     auto help_command = [&](sysdebuggui_parameters) {
         for (auto it = commands.begin(); it != commands.end(); it++) {
@@ -106,7 +107,7 @@ void SysDebugMenu::CqspMetricsWindow() {
     ImGui::End();
 }
 
-void SysDebugMenu::ShowWindows() {
+void SysDebugMenu::ShowWindows(double delta_time) {
     if (to_show_imgui_about) {
         ImGui::ShowAboutWindow(&to_show_imgui_about);
     }
@@ -120,7 +121,7 @@ void SysDebugMenu::ShowWindows() {
         CqspMetricsWindow();
     }
     if (to_show_asset_window) {
-        DrawAssetWindow();
+        asset_window.DoUI(delta_time);
     }
 }
 
@@ -212,43 +213,8 @@ void SysDebugMenu::ConsoleInput() {
     }
 }
 
-void SysDebugMenu::DrawAssetWindow() {
-    ImGui::Begin("Asset Debug Window", &to_show_asset_window);
-    ImGui::Text("Search: ");
-    ImGui::SameLine();
-    ImGui::InputText("###asset_search", &asset_search);
-    if (ImGui::BeginTable("asset_debug_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable)) {
-        ImGui::TableSetupColumn("Name");
-        ImGui::TableSetupColumn("Accessed Times");
-        ImGui::TableSetupColumn("Type");
-        ImGui::TableHeadersRow();
-
-        auto& asset_manager = GetApp().GetAssetManager();
-        for (auto& package : asset_manager) {
-            for (auto& asset : *package.second) {
-                if (!asset_search.empty()) {
-                    // Then look through the thing
-                    std::string str = fmt::format("{}:{}", package.first, asset.first);
-                    if (str.find(asset_search) == std::string::npos) {
-                        continue;
-                    }
-                }
-                ImGui::TableNextRow();
-                ImGui::TableNextColumn();
-                ImGui::TextFmt("{}:{}", package.first, asset.first);
-                ImGui::TableNextColumn();
-                ImGui::TextFmt("{}", asset.second->accessed);
-                ImGui::TableNextColumn();
-                ImGui::TextFmt("{}", cqsp::asset::ToString(asset.second->GetAssetType()));
-            }
-        }
-        ImGui::EndTable();
-    }
-    ImGui::End();
-}
-
 void SysDebugMenu::DoUI(int delta_time) {
-    ShowWindows();
+    ShowWindows(delta_time);
     if (!to_show_window) {
         return;
     }
