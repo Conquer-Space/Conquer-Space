@@ -8,7 +8,7 @@
         input: {
 
         }
-s        output: {
+        output: {
             fmetal: 500
         }
         cost: {
@@ -97,6 +97,17 @@ s        output: {
             ratio
             raw
         ]
+    }
+    {
+        name: Crude Oil Drilling
+        identifier: oil_drilling
+        input: {
+            industrial: 0.1
+            transport: 0.1
+        }
+        output: {
+            crude_oil: 1000
+        }
     }
     {
         name: Fuel Refining

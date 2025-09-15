@@ -3,7 +3,7 @@
 # This is the default file for recipes, and also serves as a demonstration for stuff
 [
     {
-        name: Basic Power 
+        name: Basic Power Generation
         identifier: power_man
         input: {
             fuel: 50

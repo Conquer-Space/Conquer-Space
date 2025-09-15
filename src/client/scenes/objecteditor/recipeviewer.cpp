@@ -21,6 +21,7 @@
 #include "common/components/name.h"
 #include "common/components/resource.h"
 #include "common/util/nameutil.h"
+#include "common/util/utilnumberdisplay.h"
 
 namespace cqsp::client::systems {
 
@@ -35,13 +36,30 @@ void SysRecipeViewer::DoUI(int delta_time) {
     auto recipes = GetUniverse().view<components::Recipe>();
     ImGui::TextFmt("Recipes: {}", recipes.size());
     ImGui::BeginChild("recipe_viewer_left", ImVec2(300, 700));
+    ImGui::InputText("##recipe_viewer_search_text", search_text.data(), search_text.size());
+    ImGui::BeginChild("recipe_viewer_scroll");
     for (entt::entity recipe : recipes) {
         bool is_selected = recipe == selected_recipe;
-        if (ImGui::SelectableFmt("{}", &is_selected, common::util::GetName(GetUniverse(), recipe))) {
+        std::string name = common::util::GetName(GetUniverse(), recipe);
+        std::string search_string(search_text.data());
+        std::transform(search_string.begin(), search_string.end(), search_string.begin(),
+            [](unsigned char c){ return std::tolower(c); });
+        std::string name_lower = name;
+        std::transform(name_lower.begin(), name_lower.end(), name_lower.begin(),
+            [](unsigned char c){ return std::tolower(c); });
+        if (!search_string.empty()) {
+            // Then we can check if the text contains it
+            if (name_lower.find(search_string) == std::string::npos) {
+                continue;
+            }
+        }
+        // Now check if the string is in stuff
+        if (ImGui::SelectableFmt("{}", &is_selected, name)) {
             selected_recipe = recipe;
             ResetSelection();
         }
     }
+    ImGui::EndChild();
     ImGui::EndChild();
     ImGui::SameLine();
     ImGui::BeginChild("recipe_viewer_right", ImVec2(400, 700));
@@ -104,21 +122,21 @@ void SysRecipeViewer::RecipeViewerRight() {
     ResourceMapTable(GetUniverse(), recipe_comp.input, "input_table");
     ImGui::Separator();
     ImGui::Text("Capital Cost");
-    ImGui::TextFmt("Capital Default Cost: {}", GetLedgerCost(GetUniverse(), recipe_comp.capitalcost));
+    ImGui::TextFmt("Capital Default Cost: {}", util::LongToHumanString(GetLedgerCost(GetUniverse(), recipe_comp.capitalcost)));
     ResourceMapTable(GetUniverse(), recipe_comp.capitalcost, "capital_table");
     ImGui::Separator();
     ImGui::Text("Output");
-    ImGui::TextFmt("Output Cost: {}", GetUniverse().get<components::Price>(recipe_comp.output.entity) * recipe_comp.output.amount);
+    ImGui::TextFmt("Output Cost: {}", util::LongToHumanString(GetUniverse().get<components::Price>(recipe_comp.output.entity) * recipe_comp.output.amount));
     ImGui::TextFmt("{}, {}", common::util::GetName(GetUniverse(), recipe_comp.output.entity),
-                   recipe_comp.output.amount);
+                   util::LongToHumanString(recipe_comp.output.amount));
     // Some basic calculator so that we can make things easier
     ImGui::Separator();
     double expected_cost = GetLedgerCost(GetUniverse(), recipe_comp.input) * expected_production + GetLedgerCost(GetUniverse(), recipe_comp.capitalcost);
     double expected_income = GetUniverse().get<components::Price>(recipe_comp.output.entity) * recipe_comp.output.amount * expected_production;
     double expected_profit = expected_income - expected_cost;
-    ImGui::TextFmt("Expected Income: {}", expected_income);
-    ImGui::TextFmt("Expected Cost: {}", expected_cost);
-    ImGui::TextFmt("Expected Profit: {}", expected_profit);
+    ImGui::TextFmt("Expected Income: {}", util::LongToHumanString(expected_income));
+    ImGui::TextFmt("Expected Cost: {}", util::LongToHumanString(expected_cost));
+    ImGui::TextFmt("Expected Profit: {}", util::LongToHumanString(expected_profit));
     ImGui::DragFloat("Amount Produced", &expected_production, 1, 0, 10000000);
 }
 

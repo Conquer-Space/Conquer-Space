@@ -14,28 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
+#include "common/util/text.h"
 
-#include <array>
-#include "client/systems/sysgui.h"
+#include <vector>
 
-namespace cqsp::client::systems {
-class SysRecipeViewer : public SysUserInterface {
- public:
-    explicit SysRecipeViewer(engine::Application& app) : SysUserInterface(app) {
-      search_text.fill(0);
+namespace cqsp::common::util {
+int LevenshteinDistance(std::string_view string1, std::string_view string2) {
+    std::vector<std::vector<int>> matrix;
+    for (int i = 0; i < string1.size(); i++) {
+        matrix.push_back(std::vector<int>(string2.size(), 0));
     }
-
-    void Init();
-    void DoUI(int delta_time);
-    void DoUpdate(int delta_time);
-
- private:
-    void RecipeViewerRight();
-    void ResetSelection();
-    entt::entity selected_recipe = entt::null;
-
-    std::array<char, 255> search_text;
-    float expected_production;
-};
-}  // namespace cqsp::client::systems
+    for (int i = 0; i < string1.size(); i++) {
+        matrix[i][0] = i; 
+    }
+    return 0;
+}
+}

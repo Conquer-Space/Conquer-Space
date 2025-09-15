@@ -16,26 +16,8 @@
  */
 #pragma once
 
-#include <array>
-#include "client/systems/sysgui.h"
+#include <string_view>
 
-namespace cqsp::client::systems {
-class SysRecipeViewer : public SysUserInterface {
- public:
-    explicit SysRecipeViewer(engine::Application& app) : SysUserInterface(app) {
-      search_text.fill(0);
-    }
-
-    void Init();
-    void DoUI(int delta_time);
-    void DoUpdate(int delta_time);
-
- private:
-    void RecipeViewerRight();
-    void ResetSelection();
-    entt::entity selected_recipe = entt::null;
-
-    std::array<char, 255> search_text;
-    float expected_production;
-};
-}  // namespace cqsp::client::systems
+namespace cqsp::common::util {
+int LevenshteinDistance(std::string_view string1, std::string_view string2);
+}
