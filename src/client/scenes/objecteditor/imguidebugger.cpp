@@ -14,24 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
-
-#include "client/systems/sysgui.h"
+#include "client/scenes/objecteditor/imguidebugger.h"
 
 namespace cqsp::client::systems {
-class SysRecipeViewer : public SysUserInterface {
- public:
-    explicit SysRecipeViewer(engine::Application& app) : SysUserInterface(app) {}
+void ImGuiDebugger::Init() {
 
-    void Init();
-    void DoUI(int delta_time);
-    void DoUpdate(int delta_time);
+}
+void ImGuiDebugger::DoUI(int delta_time) {
+    ImGui::ShowMetricsWindow();
+}
+void ImGuiDebugger::DoUpdate(int delta_time) {
 
- private:
-    void RecipeViewerRight();
-    void ResetSelection();
-    entt::entity selected_recipe = entt::null;
-
-    float expected_production;
-};
+}
 }  // namespace cqsp::client::systems

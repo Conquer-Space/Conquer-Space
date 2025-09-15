@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/scenes/objecteditor/assetwindow.h"
+#include "client/util/assetwindow.h"
 
 namespace cqsp::client::systems {   
 void AssetWindow::Init() {

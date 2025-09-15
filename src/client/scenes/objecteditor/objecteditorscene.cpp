@@ -19,6 +19,7 @@
 #include "client/scenes/objecteditor/recipeviewer.h"
 #include "client/scenes/objecteditor/sysfieldviewer.h"
 #include "client/scenes/objecteditor/sysgoodviewer.h"
+#include "client/scenes/objecteditor/imguidebugger.h"
 #include "client/util/assetwindow.h"
 #include "client/systems/assetloading.h"
 
@@ -29,6 +30,7 @@ ObjectEditorScene::ObjectEditorScene(engine::Application& app) : ClientScene(app
     AddUISystem<systems::SysGoodViewer>("Good Viewer");
     AddUISystem<systems::SysRecipeViewer>("Recipe Viewer");
     AddUISystem<systems::AssetWindow>("Asset Window");
+    AddUISystem<systems::ImGuiDebugger>("ImGui Debugger Window");
 }
 
 ObjectEditorScene::~ObjectEditorScene() = default;

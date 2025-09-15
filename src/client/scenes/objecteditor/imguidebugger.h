@@ -19,19 +19,12 @@
 #include "client/systems/sysgui.h"
 
 namespace cqsp::client::systems {
-class SysRecipeViewer : public SysUserInterface {
+class ImGuiDebugger : public SysUserInterface {
  public:
-    explicit SysRecipeViewer(engine::Application& app) : SysUserInterface(app) {}
+    explicit ImGuiDebugger(engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
     void DoUI(int delta_time);
     void DoUpdate(int delta_time);
-
- private:
-    void RecipeViewerRight();
-    void ResetSelection();
-    entt::entity selected_recipe = entt::null;
-
-    float expected_production;
 };
 }  // namespace cqsp::client::systems
