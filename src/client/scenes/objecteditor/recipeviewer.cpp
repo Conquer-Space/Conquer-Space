@@ -29,6 +29,7 @@ namespace components = common::components;
 void SysRecipeViewer::Init() {}
 
 void SysRecipeViewer::DoUI(int delta_time) {
+    ImGui::SetNextWindowSize(ImVec2(800, 700), ImGuiCond_FirstUseEver);
     ImGui::Begin("Recipe Viewer");
     // List out all the stuff
     auto recipes = GetUniverse().view<components::Recipe>();
@@ -86,6 +87,15 @@ void SysRecipeViewer::RecipeViewerRight() {
     }
     ImGui::TextFmt("Name: {}", common::util::GetName(GetUniverse(), selected_recipe));
     ImGui::TextFmt("Identifier: {}", GetUniverse().get<components::Identifier>(selected_recipe).identifier);
+    if (ImGui::IsItemClicked()) {
+        // Then copy
+        ImGui::SetClipboardText(GetUniverse().get<components::Identifier>(selected_recipe).identifier.c_str());
+    }
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::Text("Click to copy identifier");
+        ImGui::EndTooltip();
+    }
     // Get inputs and outputs
     auto& recipe_comp = GetUniverse().get<components::Recipe>(selected_recipe);
     ImGui::TextFmt("Workers per unit of recipe: {}", recipe_comp.workers);

@@ -1,14 +1,12 @@
 # This file is part of Conquer Space
 #
 [
-    /*
     {
         name: Power
         identifier: power
-        volume: 0.002 m3
-        mass: 4 kg
-        price: 1
-        
+        volume: 0 m3
+        mass: 0 kg
+        price: 1       
         tags: [
             service
             consumable
@@ -21,7 +19,7 @@
         '''
         One unit of power is a KWH 
         '''
-    }
+    }/*
     {
         name: Recreation
         identifier: recreation

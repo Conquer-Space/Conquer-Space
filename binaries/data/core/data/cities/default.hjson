@@ -218,7 +218,7 @@
         industry: [
             {
                 type: Farms
-                recipe: crop_cultivation
+                recipe: farming
                 productivity: 3
             }
             {
@@ -291,7 +291,7 @@
         industry: [
             {
                 type: Farms
-                recipe: crop_cultivation
+                recipe: farming
                 productivity: 3
             }
             {

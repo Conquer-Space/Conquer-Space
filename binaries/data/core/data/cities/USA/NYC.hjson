@@ -108,8 +108,8 @@
                 productivity: 2000
             }
 			{
-                type: crop_cultivation
-                recipe: crop_cultivation
+                type: Farming
+                recipe: farming
                 productivity: 2000
             }
 			{

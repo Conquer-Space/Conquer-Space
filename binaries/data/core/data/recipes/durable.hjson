@@ -9,10 +9,6 @@
             nmetal: 100
             remetal: 20
         }
-        elasticity: {
-            nmetal: 1
-            remetal: 1
-        }
         output: {
             computer: 100
         }
@@ -43,11 +39,6 @@
             plastic: 20
             computer: 1
         }
-        elasticity: {
-            fmetal: 1
-            plastic: 1
-            computer: 1
-        }
         output: {
             recgoods: 100
         }
@@ -71,9 +62,6 @@
         identifier: housegoods_man
         input: {
             plastic: 5000
-        }
-        elasticity: {
-            plastic: 1
         }
         output: {
             housegoods: 2000
@@ -101,11 +89,6 @@
             nmetal: 2
             computer: 1
         }
-        elasticity: {
-            fmetal: 1
-            nmetal: 1
-            computer: 1
-        }
         output: {
             egoods: 50
         }
@@ -130,10 +113,6 @@
         input: {
             fmetal: 20
             computer: 2
-        }
-        elasticity: {
-            fmetal: 1
-            computer: 1
         }
         output: {
             motorvehicles: 20
