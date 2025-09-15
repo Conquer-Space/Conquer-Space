@@ -35,12 +35,29 @@ void SysGoodViewer::DoUI(int delta_time) {
     auto goods = GetUniverse().view<components::Good>();
     ImGui::TextFmt("Goods: {}", goods.size());
     ImGui::BeginChild("Good_viewer_left", ImVec2(300, -1));
+    ImGui::InputText("##good_viewer_search_text", search_text.data(), search_text.size());
+    std::string search_string(search_text.data());
+    std::transform(search_string.begin(), search_string.end(), search_string.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+    ImGui::BeginChild("good_viewer_scroll");
     for (entt::entity good : goods) {
+        std::string name = common::util::GetName(GetUniverse(), good);
+        std::string name_lower = name;
+        std::transform(name_lower.begin(), name_lower.end(), name_lower.begin(),
+                       [](unsigned char c) { return std::tolower(c); });
+        if (!search_string.empty()) {
+            // Then we can check if the text contains it
+            if (name_lower.find(search_string) == std::string::npos) {
+                continue;
+            }
+        }
         bool is_selected = good == selected_good;
-        if (ImGui::SelectableFmt("{}", &is_selected, common::util::GetName(GetUniverse(), good))) {
+        // Now also compute that
+        if (ImGui::SelectableFmt("{}", &is_selected, name)) {
             selected_good = good;
         }
     }
+    ImGui::EndChild();
     ImGui::EndChild();
     ImGui::SameLine();
     ImGui::BeginChild("good_viewer_right", ImVec2(500, -1));
@@ -58,6 +75,15 @@ void SysGoodViewer::GoodViewerRight() {
     }
     ImGui::TextFmt("Name: {}", common::util::GetName(GetUniverse(), selected_good));
     ImGui::TextFmt("Identifier: {}", GetUniverse().get<components::Identifier>(selected_good).identifier);
+    if (ImGui::IsItemClicked()) {
+        // Copy
+        ImGui::SetClipboardText(GetUniverse().get<components::Identifier>(selected_good).identifier.c_str());
+    }
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::TextColored(ImVec4(0.921568627, 0.392156863, 0.203921569, 1), "Click to copy identifier");
+        ImGui::EndTooltip();
+    }
     if (GetUniverse().any_of<components::Matter>(selected_good)) {
         auto& good_comp = GetUniverse().get<components::Matter>(selected_good);
         ImGui::TextFmt("Mass: {} kg", good_comp.mass);
@@ -122,6 +148,7 @@ void SysGoodViewer::InputRecipeTable() {
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), recipe));
+        RecipeTooltip(recipe);
         ImGui::TableSetColumnIndex(1);
         ImGui::TextFmt("{}", recipe_comp.input[selected_good]);
     }
@@ -146,9 +173,23 @@ void SysGoodViewer::OutputRecipeTable() {
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), recipe));
+        RecipeTooltip(recipe);
         ImGui::TableSetColumnIndex(1);
         ImGui::TextFmt("{}", recipe_comp.output.amount);
     }
     ImGui::EndTable();
+}
+
+void SysGoodViewer::RecipeTooltip(entt::entity recipe) {
+    if (ImGui::IsItemClicked()) {
+        // Copy
+        ImGui::SetClipboardText(GetUniverse().get<components::Identifier>(recipe).identifier.c_str());
+    }
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::TextColored(ImVec4(0.921568627, 0.392156863, 0.203921569, 1), "Click to copy identifier");
+        systems::gui::EntityTooltipContent(GetUniverse(), recipe);
+        ImGui::EndTooltip();
+    }
 }
 }  // namespace cqsp::client::systems

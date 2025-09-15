@@ -16,12 +16,14 @@
  */
 #pragma once
 
+#include <array>
+
 #include "client/systems/sysgui.h"
 
 namespace cqsp::client::systems {
 class SysGoodViewer : public SysUserInterface {
  public:
-    explicit SysGoodViewer(engine::Application& app) : SysUserInterface(app) {}
+    explicit SysGoodViewer(engine::Application& app) : SysUserInterface(app) { search_text.fill(0); }
 
     void Init();
     void DoUI(int delta_time);
@@ -32,6 +34,9 @@ class SysGoodViewer : public SysUserInterface {
     void RecipeTable();
     void InputRecipeTable();
     void OutputRecipeTable();
+    void RecipeTooltip(entt::entity recipe);
+
+    std::array<char, 255> search_text;
     entt::entity selected_good = entt::null;
 };
 }  // namespace cqsp::client::systems

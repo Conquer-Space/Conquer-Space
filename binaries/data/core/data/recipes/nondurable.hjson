@@ -50,7 +50,7 @@
         ]
     }
     {
-        name: Garment Fab
+        name: Garment Manufacturing
         identifier: garments_man
         input: {
             potwater: 1000
