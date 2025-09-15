@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/util/strip.h"
+#include "common/util/string.h"
 
 namespace cqsp::util {
 std::string strip(const std::string& inpt) {
@@ -28,5 +28,20 @@ std::string strip(const std::string& inpt) {
         while (std::isspace(*end_it) != 0) ++end_it;
     }
     return std::string(start_it, end_it.base());
+}
+
+std::vector<std::string> split(const std::string& s, const std::string& delimiter) {
+    std::string copy = s;
+    std::vector<std::string> tokens;
+    size_t pos = 0;
+    std::string token;
+    while ((pos = copy.find(delimiter)) != std::string::npos) {
+        token = copy.substr(0, pos);
+        tokens.push_back(token);
+        copy.erase(0, pos + delimiter.length());
+    }
+    tokens.push_back(copy);
+
+    return tokens;
 }
 }  // namespace cqsp::util

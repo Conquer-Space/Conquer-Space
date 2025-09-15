@@ -16,11 +16,10 @@
  */
 #pragma once
 
-#include <string_view>
+#include <string>
+#include <vector>
 
-#include "common/universe.h"
-
-namespace cqsp::client::save {
-void save_game(common::Universe& universe);
-void load_game(common::Universe& universe, std::string_view directory);
-}  // namespace cqsp::client::save
+namespace cqsp::util {
+std::string strip(const std::string& inpt);
+std::vector<std::string> split(const std::string& s, const std::string& delimiter);
+}  // namespace cqsp::util

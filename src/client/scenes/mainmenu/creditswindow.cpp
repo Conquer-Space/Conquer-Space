@@ -21,7 +21,7 @@
 #include <string>
 
 #include "common/util/paths.h"
-#include "common/util/strip.h"
+#include "common/util/string.h"
 
 namespace cqsp::client {
 

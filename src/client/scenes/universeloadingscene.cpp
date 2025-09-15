@@ -23,7 +23,7 @@
 #include "client/components/clientctx.h"
 #include "client/scenes/universe/universescene.h"
 #include "client/systems/assetloading.h"
-#include "client/systems/savegame.h"
+#include "common/util/save/savegame.h"
 #include "client/systems/universeloader.h"
 #include "common/systems/sysuniversegenerator.h"
 
@@ -50,7 +50,7 @@ void UniverseLoadingScene::Update(float deltaTime) {
     if (m_completed_loading && thread->joinable()) {
         // Switch scene
         thread->join();
-        GetApp().SetScene<cqsp::client::scene::UniverseScene>();
+        GetApp().SetScene<UniverseScene>();
     }
 }
 
@@ -64,7 +64,7 @@ void UniverseLoadingScene::LoadCurrentUniverse() {
     if (GetUniverse().ctx().contains<ctx::GameLoad>()) {
         const std::string& load_dir = GetUniverse().ctx().at<ctx::GameLoad>().load_dir;
         SPDLOG_INFO("Loading save {}", load_dir);
-        save::load_game(GetUniverse(), load_dir);
+        common::save::load_game(GetUniverse(), load_dir);
     }
 
     SPDLOG_INFO("Done loading the universe, entering game");
