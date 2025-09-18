@@ -26,16 +26,16 @@ namespace cqsp::common::systems::universegenerator {
 
 class ISysUniverseGenerator {
  public:
-    virtual void Generate(cqsp::common::Universe& universe) = 0;
+    virtual void Generate(Universe& universe) = 0;
 };
 
 class ScriptUniverseGenerator : public ISysUniverseGenerator {
  public:
-    explicit ScriptUniverseGenerator(cqsp::scripting::ScriptInterface& _interface) : script_engine(_interface) {}
-    void Generate(cqsp::common::Universe& universe);
+    explicit ScriptUniverseGenerator(scripting::ScriptInterface& _interface) : script_engine(_interface) {}
+    void Generate(Universe& universe);
 
  private:
-    cqsp::scripting::ScriptInterface& script_engine;
+    scripting::ScriptInterface& script_engine;
 };
 
 }  // namespace cqsp::common::systems::universegenerator

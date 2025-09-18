@@ -21,27 +21,32 @@
 #include <tracy/Tracy.hpp>
 
 #include "common/components/science.h"
-#include "common/systems/science/technology.h"
+#include "common/loading/technology.h"
 
-void cqsp::common::systems::SysTechProgress::DoSystem() {
+namespace cqsp::common::systems {
+
+namespace science = components::science;
+
+void SysTechProgress::DoSystem() {
     ZoneScoped;
-    auto field = GetUniverse().view<components::science::ScientificResearch>();
+    auto field = GetUniverse().view<science::ScientificResearch>();
 
     for (entt::entity entity : field) {
-        auto& research = GetUniverse().get<components::science::ScientificResearch>(entity);
+        auto& research = GetUniverse().get<science::ScientificResearch>(entity);
         std::vector<entt::entity> completed_techs;
         for (auto& res : research.current_research) {
             res.second += Interval();
             // Get the research amount
-            auto& tech = GetUniverse().get<components::science::Technology>(res.first);
+            auto& tech = GetUniverse().get<science::Technology>(res.first);
             if (res.second > tech.difficulty) {
                 // Add the researched
                 completed_techs.push_back(res.first);
             }
         }
         for (entt::entity r : completed_techs) {
-            cqsp::common::systems::science::ResearchTech(GetUniverse(), entity, r);
+            actions::ResearchTech(GetUniverse(), entity, r);
             research.current_research.erase(r);
         }
     }
 }
+}  // namespace cqsp::common::systems

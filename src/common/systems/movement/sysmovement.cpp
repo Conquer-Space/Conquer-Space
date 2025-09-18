@@ -21,18 +21,23 @@
 
 #include <tracy/Tracy.hpp>
 
+#include "common/actions/maneuver/commands.h"
 #include "common/components/coordinates.h"
 #include "common/components/movement.h"
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
 #include "common/components/units.h"
-#include "common/systems/maneuver/commands.h"
 #include "common/util/nameutil.h"
 
 namespace cqsp::common::systems {
-namespace cqspc = cqsp::common::components;
-namespace cqsps = cqsp::common::components::ships;
-namespace cqspt = cqsp::common::components::types;
+namespace ships = components::ships;
+namespace types = components::types;
+namespace bodies = components::bodies;
+
+using bodies::Body;
+using bodies::OrbitalSystem;
+using types::Kinematics;
+using types::Orbit;
 
 void SysOrbit::DoSystem() {
     ZoneScoped;
@@ -40,25 +45,25 @@ void SysOrbit::DoSystem() {
     ParseOrbitTree(entt::null, GetUniverse().sun);
 }
 
-void SysOrbit::LeaveSOI(const entt::entity& body, entt::entity& parent, cqspt::Orbit& orb, cqspt::Kinematics& pos,
-                        cqspt::Kinematics& p_pos) {
+void SysOrbit::LeaveSOI(const entt::entity& body, entt::entity& parent, Orbit& orb, Kinematics& pos,
+                        Kinematics& p_pos) {
     // Then change parent, then set the orbit
-    auto& p_orb = GetUniverse().get<cqspt::Orbit>(parent);
+    auto& p_orb = GetUniverse().get<Orbit>(parent);
     if (p_orb.reference_body == entt::null) {
         return;
     }
     // Then add to orbital system
-    GetUniverse().get<cqspc::bodies::OrbitalSystem>(p_orb.reference_body).push_back(body);
+    GetUniverse().get<OrbitalSystem>(p_orb.reference_body).push_back(body);
 
-    auto& parent_parent_orb = GetUniverse().get<cqspc::bodies::Body>(p_orb.reference_body);
+    auto& parent_parent_orb = GetUniverse().get<Body>(p_orb.reference_body);
 
-    auto& pp_pos = GetUniverse().get<cqspt::Kinematics>(p_orb.reference_body);
+    auto& pp_pos = GetUniverse().get<Kinematics>(p_orb.reference_body);
     // Remove from parent
-    auto& pt = GetUniverse().get<cqspc::bodies::OrbitalSystem>(parent);
+    auto& pt = GetUniverse().get<OrbitalSystem>(parent);
     std::erase(pt.children, body);
     // Get velocity and change posiiton
     // Convert orbit
-    orb = cqspt::Vec3ToOrbit(pos.position + p_pos.position, pos.velocity + p_pos.velocity, parent_parent_orb.GM,
+    orb = types::Vec3ToOrbit(pos.position + p_pos.position, pos.velocity + p_pos.velocity, parent_parent_orb.GM,
                              GetUniverse().date.ToSecond());
     orb.reference_body = p_orb.reference_body;
 
@@ -66,18 +71,18 @@ void SysOrbit::LeaveSOI(const entt::entity& body, entt::entity& parent, cqspt::O
     pos.position = pos.position + p_pos.position;
     pos.velocity = pos.velocity + p_pos.velocity;
     // Update dirty orbit
-    GetUniverse().emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
+    GetUniverse().emplace_or_replace<bodies::DirtyOrbit>(body);
 
-    commands::ProcessCommandQueue(GetUniverse(), body, commands::Trigger::OnExitSOI);
+    commands::ProcessCommandQueue(GetUniverse(), body, components::Trigger::OnExitSOI);
 }
 
-void SysOrbit::CrashObject(cqspt::Orbit& orb, entt::entity body, entt::entity parent) {
-    if (GetUniverse().any_of<cqspc::bodies::Body>(body)) {
+void SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
+    if (GetUniverse().any_of<Body>(body)) {
         return;
     }
-    auto& p_bod = GetUniverse().get<cqspc::bodies::Body>(parent);
-    auto& pos = GetUniverse().get<cqspt::Kinematics>(body);
-    if (GetUniverse().any_of<cqsps::Crash>(body)) {
+    auto& p_bod = GetUniverse().get<Body>(parent);
+    auto& pos = GetUniverse().get<Kinematics>(body);
+    if (GetUniverse().any_of<ships::Crash>(body)) {
         pos.position = glm::vec3(0);
         return;
     }
@@ -87,44 +92,44 @@ void SysOrbit::CrashObject(cqspt::Orbit& orb, entt::entity body, entt::entity pa
         return;
     }
     // Check if there is a command
-    if (commands::ProcessCommandQueue(GetUniverse(), body, commands::Trigger::OnCrash)) {
+    if (commands::ProcessCommandQueue(GetUniverse(), body, components::Trigger::OnCrash)) {
         SPDLOG_INFO("Executed maneuver on crash");
     } else {
         // Crash
         SPDLOG_INFO("Object {} collided with the ground", (uint64_t)body);
         // Then remove from the tree or something like that
-        GetUniverse().get_or_emplace<cqsps::Crash>(body);
-        GetUniverse().get_or_emplace<cqspc::bodies::DirtyOrbit>(body);
+        GetUniverse().get_or_emplace<ships::Crash>(body);
+        GetUniverse().get_or_emplace<bodies::DirtyOrbit>(body);
         pos.position = glm::vec3(0);
         orb.semi_major_axis = 0;
     }
 }
 
-void SysOrbit::CalculateImpulse(cqspt::Orbit& orb, entt::entity body, entt::entity parent) {
-    if (GetUniverse().any_of<cqspc::types::Impulse>(body)) {
+void SysOrbit::CalculateImpulse(types::Orbit& orb, entt::entity body, entt::entity parent) {
+    if (GetUniverse().any_of<types::Impulse>(body)) {
         // Then add to the orbit the speed.
         // Then also convert the velocity
-        auto& impulse = GetUniverse().get<cqspc::types::Impulse>(body);
+        auto& impulse = GetUniverse().get<types::Impulse>(body);
         auto reference = orb.reference_body;
-        auto& pos = GetUniverse().get_or_emplace<cqspt::Kinematics>(body);
+        auto& pos = GetUniverse().get_or_emplace<Kinematics>(body);
 
-        orb = cqspt::Vec3ToOrbit(pos.position, pos.velocity + impulse.impulse, orb.GM, GetUniverse().date.ToSecond());
+        orb = types::Vec3ToOrbit(pos.position, pos.velocity + impulse.impulse, orb.GM, GetUniverse().date.ToSecond());
         orb.reference_body = reference;
-        pos.position = cqspt::toVec3(orb);
-        pos.velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
-        GetUniverse().emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
+        pos.position = types::toVec3(orb);
+        pos.velocity = types::OrbitVelocityToVec3(orb, orb.v);
+        GetUniverse().emplace_or_replace<bodies::DirtyOrbit>(body);
         // Remove impulse
-        GetUniverse().remove<cqspc::types::Impulse>(body);
+        GetUniverse().remove<types::Impulse>(body);
     }
 }
 
-void SysOrbit::UpdateCommandQueue(cqspt::Orbit& orb, entt::entity body, entt::entity parent) {
+void SysOrbit::UpdateCommandQueue(Orbit& orb, entt::entity body, entt::entity parent) {
     // Process thrust before updating orbit
-    if (!GetUniverse().any_of<cqspc::CommandQueue>(body)) {
+    if (!GetUniverse().any_of<components::CommandQueue>(body)) {
         return;
     }
     // Check if the current date is beyond the universe date
-    auto& queue = GetUniverse().get<cqspc::CommandQueue>(body);
+    auto& queue = GetUniverse().get<components::CommandQueue>(body);
     if (queue.maneuvers.empty()) {
         return;
     }
@@ -136,41 +141,38 @@ void SysOrbit::UpdateCommandQueue(cqspt::Orbit& orb, entt::entity body, entt::en
         SPDLOG_INFO("Negative time? {}", GetUniverse().date.ToSecond() - command.time);
     }
     // Then execute the command
-    orb = cqspt::ApplyImpulse(orb, command.delta_v, command.time);
-    GetUniverse().emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
+    orb = types::ApplyImpulse(orb, command.delta_v, command.time);
+    GetUniverse().emplace_or_replace<components::bodies::DirtyOrbit>(body);
     // Check if the next command is something, and then execute it
     queue.maneuvers.pop_front();
     // Now then executethe next command or something like that
     // Then check the command queue for more commands
-    commands::ProcessCommandQueue(GetUniverse(), body, commands::Trigger::OnManeuver);
+    commands::ProcessCommandQueue(GetUniverse(), body, components::Trigger::OnManeuver);
 }
 
 void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
-    namespace cqspc = cqsp::common::components;
-    namespace cqsps = cqsp::common::components::ships;
-    namespace cqspt = cqsp::common::components::types;
     if (!GetUniverse().valid(body)) {
         return;
     }
 
-    auto& orb = GetUniverse().get<cqspt::Orbit>(body);
+    auto& orb = GetUniverse().get<types::Orbit>(body);
 
     UpdateCommandQueue(orb, body, parent);
 
-    cqspt::UpdateOrbit(orb, GetUniverse().date.ToSecond());
-    auto& pos = GetUniverse().get_or_emplace<cqspt::Kinematics>(body);
-    if (GetUniverse().any_of<cqspt::SetTrueAnomaly>(body)) {
-        orb.v = GetUniverse().get<cqspt::SetTrueAnomaly>(body).true_anomaly;
+    types::UpdateOrbit(orb, GetUniverse().date.ToSecond());
+    auto& pos = GetUniverse().get_or_emplace<types::Kinematics>(body);
+    if (GetUniverse().any_of<types::SetTrueAnomaly>(body)) {
+        orb.v = GetUniverse().get<types::SetTrueAnomaly>(body).true_anomaly;
         // Set new mean anomaly at epoch
-        GetUniverse().remove<cqspt::SetTrueAnomaly>(body);
+        GetUniverse().remove<types::SetTrueAnomaly>(body);
     }
-    pos.position = cqspt::toVec3(orb);
-    pos.velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
+    pos.position = types::toVec3(orb);
+    pos.velocity = types::OrbitVelocityToVec3(orb, orb.v);
 
     if (parent != entt::null) {
-        auto& p_pos = GetUniverse().get_or_emplace<cqspt::Kinematics>(parent);
+        auto& p_pos = GetUniverse().get_or_emplace<types::Kinematics>(parent);
         // If distance is above SOI, then be annoyed
-        auto& p_bod = GetUniverse().get<cqspc::bodies::Body>(parent);
+        auto& p_bod = GetUniverse().get<components::bodies::Body>(parent);
         if (glm::length(pos.position) > p_bod.SOI) {
             LeaveSOI(body, parent, orb, pos, p_pos);
         }
@@ -184,15 +186,15 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
         }
     }
 
-    auto& future_pos = GetUniverse().get_or_emplace<cqspt::FuturePosition>(body);
+    auto& future_pos = GetUniverse().get_or_emplace<types::FuturePosition>(body);
     future_pos.position =
-        cqspt::OrbitTimeToVec3(orb, GetUniverse().date.ToSecond() + components::StarDate::TIME_INCREMENT);
+        types::OrbitTimeToVec3(orb, GetUniverse().date.ToSecond() + components::StarDate::TIME_INCREMENT);
     future_pos.center = pos.center;
 
-    if (!GetUniverse().any_of<cqspc::bodies::OrbitalSystem>(body)) {
+    if (!GetUniverse().any_of<components::bodies::OrbitalSystem>(body)) {
         return;
     }
-    for (entt::entity entity : GetUniverse().get<cqspc::bodies::OrbitalSystem>(body).children) {
+    for (entt::entity entity : GetUniverse().get<components::bodies::OrbitalSystem>(body).children) {
         // Calculate position
         ParseOrbitTree(body, entity);
     }
@@ -201,14 +203,14 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
 void SysSurface::DoSystem() {
     Universe& universe = GetGame().GetUniverse();
 
-    auto objects = GetUniverse().view<cqspt::SurfaceCoordinate>();
+    auto objects = GetUniverse().view<types::SurfaceCoordinate>();
     // First put them in a tree
     // Find all the entities
     for (entt::entity object : objects) {
-        cqspt::SurfaceCoordinate& surface = GetUniverse().get<cqspt::SurfaceCoordinate>(object);
-        //cqspt::Kinematics& surfacekin = universe.get_or_emplace<cqspt::Kinematics>(object);
-        //cqspt::Kinematics& center = universe.get<cqspt::Kinematics>(surface.planet);
-        glm::vec3 anglevec = cqspt::toVec3(surface);
+        types::SurfaceCoordinate& surface = GetUniverse().get<types::SurfaceCoordinate>(object);
+        //types::Kinematics& surfacekin = universe.get_or_emplace<types::Kinematics>(object);
+        //types::Kinematics& center = universe.get<types::Kinematics>(surface.planet);
+        glm::vec3 anglevec = types::toVec3(surface);
         // Get planet radius
         //surfacekin.position = (anglevec * surface.radius + center.position);
     }
@@ -216,35 +218,32 @@ void SysSurface::DoSystem() {
 
 void SysPath::DoSystem() {
     ZoneScoped;
-    namespace cqspc = cqsp::common::components;
-    namespace cqsps = cqsp::common::components::ships;
-    namespace cqspt = cqsp::common::components::types;
+
     Universe& universe = GetUniverse();
 
-    auto bodies = GetUniverse().view<cqspt::MoveTarget, cqspt::Kinematics>(entt::exclude<cqspt::Orbit>);
+    auto bodies = universe.view<types::MoveTarget, Kinematics>(entt::exclude<Orbit>);
     for (entt::entity body : bodies) {
-        cqspt::Kinematics& bodykin = GetUniverse().get<cqspt::Kinematics>(body);
-        cqspt::Kinematics& targetkin =
-            GetUniverse().get<cqspt::Kinematics>(GetUniverse().get<cqspt::MoveTarget>(body).target);
+        Kinematics& bodykin = universe.get<Kinematics>(body);
+        Kinematics& targetkin = universe.get<Kinematics>(GetUniverse().get<types::MoveTarget>(body).target);
         glm::vec3 path = targetkin.position - bodykin.position;
     }
 }
 
 bool SysOrbit::EnterSOI(const entt::entity& parent, const entt::entity& body) {
     // We should ignore bodies
-    if (GetUniverse().any_of<cqspc::bodies::Body>(body)) {
+    if (GetUniverse().any_of<Body>(body)) {
         return false;
     }
     SPDLOG_TRACE("Calculating SOI entrance for {} in {}", util::GetName(universe, body),
                  util::GetName(universe, parent));
 
-    if (!GetUniverse().all_of<cqspc::types::Kinematics, cqspc::types::Orbit>(body)) {
+    if (!GetUniverse().all_of<Kinematics, Orbit>(body)) {
         return false;
     }
-    auto& pos = GetUniverse().get<cqspc::types::Kinematics>(body);
-    auto& orb = GetUniverse().get<cqspc::types::Orbit>(body);
+    auto& pos = GetUniverse().get<Kinematics>(body);
+    auto& orb = GetUniverse().get<Orbit>(body);
     // Check parents for SOI if we're intersecting with anything
-    auto& o_system = GetUniverse().get<cqspc::bodies::OrbitalSystem>(parent);
+    auto& o_system = GetUniverse().get<OrbitalSystem>(parent);
 
     for (entt::entity entity : o_system.children) {
         // Get the stuff
@@ -252,26 +251,26 @@ bool SysOrbit::EnterSOI(const entt::entity& parent, const entt::entity& body) {
             continue;
         }
         // Check the distance
-        if (!GetUniverse().all_of<cqspc::bodies::Body, cqspc::types::Kinematics>(entity)) {
+        if (!GetUniverse().all_of<Body, Kinematics>(entity)) {
             continue;
         }
-        const auto& body_comp = GetUniverse().get<cqspc::bodies::Body>(entity);
-        const auto& target_position = GetUniverse().get<cqspc::types::Kinematics>(entity);
+        const auto& body_comp = GetUniverse().get<Body>(entity);
+        const auto& target_position = GetUniverse().get<Kinematics>(entity);
         if (glm::distance(target_position.position, pos.position) <= body_comp.SOI) {
             // Calculate position
-            orb = cqspt::Vec3ToOrbit(pos.position - target_position.position, pos.velocity - target_position.velocity,
+            orb = types::Vec3ToOrbit(pos.position - target_position.position, pos.velocity - target_position.velocity,
                                      body_comp.GM, GetUniverse().date.ToSecond());
             orb.reference_body = entity;
             // Calculate position, and change the thing
-            pos.position = cqspt::toVec3(orb);
-            pos.velocity = cqspt::OrbitVelocityToVec3(orb, orb.v);
+            pos.position = types::toVec3(orb);
+            pos.velocity = types::OrbitVelocityToVec3(orb, orb.v);
             // Then change SOI
-            GetUniverse().get_or_emplace<cqspc::bodies::OrbitalSystem>(entity).push_back(body);
-            auto& vec = GetUniverse().get<cqspc::bodies::OrbitalSystem>(parent).children;
+            GetUniverse().get_or_emplace<OrbitalSystem>(entity).push_back(body);
+            auto& vec = GetUniverse().get<OrbitalSystem>(parent).children;
             vec.erase(std::remove(vec.begin(), vec.end(), body), vec.end());
-            GetUniverse().emplace_or_replace<cqspc::bodies::DirtyOrbit>(body);
+            GetUniverse().emplace_or_replace<bodies::DirtyOrbit>(body);
             // I have a bad feeling about this
-            commands::ProcessCommandQueue(GetUniverse(), body, commands::Trigger::OnEnterSOI);
+            commands::ProcessCommandQueue(GetUniverse(), body, components::Trigger::OnEnterSOI);
             return true;
         }
         // Now check if it's intersecting with any things outside of stuff

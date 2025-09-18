@@ -141,9 +141,7 @@ void SettingsWindow::ReloadDocument() {
     InitializeOptionVariables();
 }
 
-float SettingsWindow::GetOpacity() {
-    return options_menu->GetProperty(Rml::PropertyId::Opacity)->Get<float>();
-}
+float SettingsWindow::GetOpacity() { return options_menu->GetProperty(Rml::PropertyId::Opacity)->Get<float>(); }
 
 void SettingsWindow::PushToBack() { options_menu->PushToBack(); }
 

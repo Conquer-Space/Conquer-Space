@@ -20,16 +20,20 @@
 
 #include <map>
 #include <memory>
+#include <ranges>
 #include <string>
 #include <vector>
 
 #include <entt/entt.hpp>
 
-#include "common/stardate.h"
-#include "common/systems/names/namegenerator.h"
+#include "common/actions/names/namegenerator.h"
+#include "common/components/stardate.h"
 #include "common/util/random/random.h"
 
 namespace cqsp::common {
+
+class Node;
+
 class Universe : public entt::registry {
  public:
     explicit Universe(std::string uuid);
@@ -41,7 +45,7 @@ class Universe : public entt::registry {
     std::vector<entt::entity> consumergoods;
     std::map<std::string, entt::entity> recipes;
     std::map<std::string, entt::entity> terrain_data;
-    std::map<std::string, systems::names::NameGenerator> name_generators;
+    std::map<std::string, actions::NameGenerator> name_generators;
     std::map<std::string, entt::entity> fields;
     std::map<std::string, entt::entity> technologies;
     std::map<std::string, entt::entity> planets;
@@ -68,10 +72,28 @@ class Universe : public entt::registry {
     /// What is the current fraction of the wait of the tick we are processing
     /// </summary>
     double tick_fraction = 0;
+    std::function<Node(entt::entity)> nodeFactory;
+    auto nodeTransform() { return std::views::transform(nodeFactory); }
+    std::vector<Node> Convert(const std::vector<entt::entity>& entities);
+    template <typename... Components>
+    auto nodes() {
+        return this->template view<Components...>() | nodeTransform();
+    }
 
  private:
     bool to_tick = false;
 };
+
+class Node : public entt::handle {
+ public:
+    explicit Node(Universe& universe, entt::entity entity);
+    Node(entt::handle handle, entt::entity entity);
+    explicit Node(Universe& universe);
+    Universe& universe() const;
+    std::vector<Node> Convert(const std::vector<entt::entity>& entities);
+    Node Convert(const entt::entity entity);
+};
+
 }  // namespace cqsp::common
 
 template <>

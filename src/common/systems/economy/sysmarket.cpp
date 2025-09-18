@@ -27,18 +27,22 @@
 #include "common/components/name.h"
 
 namespace cqsp::common::systems {
+
+using components::Market;
+
 void SysMarket::DoSystem() {
     ZoneScoped;
-    auto marketview = GetUniverse().view<components::Market>(entt::exclude<components::PlanetaryMarket>);
+    auto marketview = GetUniverse().view<Market>(entt::exclude<components::PlanetaryMarket>);
     SPDLOG_INFO("Processing {} market(s)", marketview.size_hint());
     TracyPlot("Market Count", (int64_t)marketview.size_hint());
+
     auto goodsview = GetUniverse().view<components::Price>();
     Universe& universe = GetUniverse();
 
     for (entt::entity entity : marketview) {
         // Get the resources and process the price
         // Get demand
-        components::Market& market = universe.get<components::Market>(entity);
+        Market& market = universe.get<Market>(entity);
 
         // TODO(EhWhoAmI): GDP Calculations
         // market.gdp = market.volume* market.price;
@@ -70,7 +74,7 @@ void SysMarket::DoSystem() {
     }
 }
 
-void SysMarket::DeterminePrice(components::Market& market, entt::entity good_entity) {
+void SysMarket::DeterminePrice(Market& market, entt::entity good_entity) {
     const double sd_ratio = market.sd_ratio[good_entity];
     const double supply = market.supply()[good_entity];
     const double demand = market.demand()[good_entity];
@@ -82,14 +86,14 @@ void SysMarket::DeterminePrice(components::Market& market, entt::entity good_ent
 }
 
 void SysMarket::Init() {
-    auto marketview = GetUniverse().view<components::Market>();
+    auto marketview = GetUniverse().view<Market>();
     auto goodsview = GetUniverse().view<components::Price>();
 
     // Calculate all the things
     for (entt::entity entity : marketview) {
         // Get the resources and process the price, then do things, I guess
         // Get demand
-        components::Market& market = GetUniverse().get<components::Market>(entity);
+        Market& market = GetUniverse().get<Market>(entity);
 
         // Initialize the price
         for (entt::entity good_entity : goodsview) {

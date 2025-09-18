@@ -26,8 +26,8 @@
 #include "client/systems/sysgui.h"
 #include "client/util/assetwindow.h"
 
-#define sysdebuggui_parameters                                                                                \
-    cqsp::engine::Application &app, common::Universe &universe, scripting::ScriptInterface &script_interface, \
+#define sysdebuggui_parameters                                                                                        \
+    cqsp::engine::Application &app, common::Universe &universe, common::scripting::ScriptInterface &script_interface, \
         const std::string_view &args, CommandOutput &input
 
 namespace cqsp::client::systems {

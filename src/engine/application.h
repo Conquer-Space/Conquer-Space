@@ -63,7 +63,7 @@ class Application {
     double GetDeltaTime() const { return deltaTime; }
     double GetFps() const { return fps; }
 
-    cqsp::asset::AssetManager& GetAssetManager() { return manager; }
+    asset::AssetManager& GetAssetManager() { return manager; }
 
     bool ShouldExit();
 
@@ -78,9 +78,9 @@ class Application {
         m_scene_manager.SetScene(std::move(ptr));
     }
 
-    cqsp::engine::GameState* GetGame() { return m_game.get(); }
+    GameState* GetGame() { return m_game.get(); }
 
-    cqsp::engine::audio::IAudioInterface& GetAudioInterface() { return *m_audio_interface; }
+    audio::IAudioInterface& GetAudioInterface() { return *m_audio_interface; }
 
     bool ButtonIsHeld(int btn) { return m_window->ButtonIsHeld(btn); }
     bool ButtonIsHeld(KeyInput btn) { return ButtonIsHeld(GetGlfwKey(btn)); }
@@ -121,7 +121,7 @@ class Application {
 
     Window* GetWindow() { return m_window; }
 
-    cqsp::asset::Font*& GetFont() { return m_font; }
+    asset::Font*& GetFont() { return m_font; }
     void DrawText(const std::string& text, float x, float y);
     void DrawText(const std::string& text, const glm::vec3& color, float x, float y);
     void DrawText(const std::string& text, float x, float y, float size);
@@ -129,8 +129,8 @@ class Application {
     // Draw text based on normalized device coordinates
     void DrawTextNormalized(const std::string& text, float x, float y);
 
-    void SetFont(cqsp::asset::Font* font) { m_font = font; }
-    void SetFontShader(cqsp::asset::ShaderProgram* shader) { fontShader = shader; }
+    void SetFont(asset::Font* font) { m_font = font; }
+    void SetFontShader(asset::ShaderProgram* shader) { fontShader = shader; }
 
     /// <summary>
     /// Time since glfw was initialized in seconds
@@ -226,7 +226,7 @@ class Application {
 
     std::unique_ptr<CqspEventInstancer> m_event_instancer;
 
-    cqsp::engine::SceneManager m_scene_manager;
+    SceneManager m_scene_manager;
 
     client::ClientOptions m_client_options;
 
@@ -236,16 +236,16 @@ class Application {
 
     std::string locale;
 
-    cqsp::asset::AssetManager manager;
+    asset::AssetManager manager;
 
-    std::unique_ptr<cqsp::engine::GameState> m_game;
+    std::unique_ptr<GameState> m_game;
 
-    cqsp::asset::Font* m_font = nullptr;
-    cqsp::asset::ShaderProgram* fontShader = nullptr;
+    asset::Font* m_font = nullptr;
+    asset::ShaderProgram* fontShader = nullptr;
 
     std::map<std::string, std::string> properties;
 
-    cqsp::engine::audio::IAudioInterface* m_audio_interface;
+    audio::IAudioInterface* m_audio_interface;
 
     std::map<std::string, Rml::ElementDocument*> loaded_documents;
 

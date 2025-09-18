@@ -24,7 +24,7 @@ class ClientScene : public engine::Scene {
  public:
     explicit ClientScene(engine::Application &app) : engine::Scene(app) {}
     common::Universe &GetUniverse() { return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->m_universe; }
-    scripting::ScriptInterface &GetScriptInterface() {
+    common::scripting::ScriptInterface &GetScriptInterface() {
         return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->script_interface;
     }
 };

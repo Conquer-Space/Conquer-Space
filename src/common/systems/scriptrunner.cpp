@@ -22,15 +22,15 @@
 #include <vector>
 
 #include "common/util/profiler.h"
-
-cqsp::common::systems::SysScript::SysScript(Game &game) : ISimulationSystem(game) {
+namespace cqsp::common::systems {
+SysScript::SysScript(Game &game) : ISimulationSystem(game) {
     sol::optional<std::vector<sol::table>> optional = game.GetScriptInterface()["events"]["data"];
     if (optional.has_value()) {
         events = *optional;
     }
 }
 
-cqsp::common::systems::SysScript::~SysScript() {
+SysScript::~SysScript() {
     // So it doesn't crash when we delete this
     for (auto &evet : events) {
         evet.abandon();
@@ -38,7 +38,7 @@ cqsp::common::systems::SysScript::~SysScript() {
     events.clear();
 }
 
-void cqsp::common::systems::SysScript::DoSystem() {
+void SysScript::DoSystem() {
     BEGIN_TIMED_BLOCK(ScriptEngine);
     GetGame().GetScriptInterface()["date"] = GetUniverse().date.GetDate();
     for (auto &evt : events) {
@@ -47,3 +47,4 @@ void cqsp::common::systems::SysScript::DoSystem() {
     }
     END_TIMED_BLOCK(ScriptEngine);
 }
+}  // namespace cqsp::common::systems

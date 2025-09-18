@@ -20,10 +20,9 @@
 
 namespace cqsp::common::systems {
 void SysWalletReset::DoSystem() {
-    namespace cqspc = cqsp::common::components;
-    auto view = GetUniverse().view<cqspc::Wallet>();
+    auto view = GetUniverse().view<components::Wallet>();
     for (entt::entity entity : view) {
-        GetUniverse().get<cqspc::Wallet>(entity).Reset();
+        GetUniverse().get<components::Wallet>(entity).Reset();
     }
 }
 }  // namespace cqsp::common::systems

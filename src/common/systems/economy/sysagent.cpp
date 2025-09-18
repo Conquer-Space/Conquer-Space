@@ -16,12 +16,13 @@
  */
 #include "common/systems/economy/sysagent.h"
 
+#include "common/actions/economy/markethelpers.h"
 #include "common/components/economy.h"
-#include "common/systems/economy/markethelpers.h"
 
-void cqsp::common::systems::SysAgent::DoSystem() {
+namespace cqsp::common::systems {
+void SysAgent::DoSystem() {
     /*
-    auto view = GetUniverse().view<cqsp::common::components::MarketAgent>();
+    auto view = GetUniverse().view<components::MarketAgent>();
     for (entt::entity entity : view) {
         // Sell resources that agents produced
         double production_multiplier = 1;
@@ -73,3 +74,4 @@ void cqsp::common::systems::SysAgent::DoSystem() {
     }
     */
 }
+}  // namespace cqsp::common::systems

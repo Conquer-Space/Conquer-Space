@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/names/namegenerator.h"
+#include "common/actions/names/namegenerator.h"
 
 #include <gmock/gmock-more-matchers.h>
 #include <gmock/gmock.h>
@@ -25,7 +25,7 @@
 
 #include "common/util/random/stdrandom.h"
 
-using cqsp::common::systems::names::NameGenerator;
+using cqsp::common::actions::NameGenerator;
 
 TEST(NameGeneratorTest, BasicTest) {
     NameGenerator gen;

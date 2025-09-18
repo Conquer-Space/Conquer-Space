@@ -27,10 +27,10 @@ class ConquerSpace : public engine::GameState {
     ~ConquerSpace() = default;
 
     common::Universe& m_universe;
-    scripting::ScriptInterface& script_interface;
+    common::scripting::ScriptInterface& script_interface;
 
     common::Universe& GetUniverse() { return m_universe; }
-    scripting::ScriptInterface& GetScriptInterface() { return script_interface; }
+    common::scripting::ScriptInterface& GetScriptInterface() { return script_interface; }
 
     common::Game& GetGame() { return game; }
 

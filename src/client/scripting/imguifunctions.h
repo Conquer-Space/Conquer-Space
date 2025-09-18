@@ -20,5 +20,5 @@
 #include "common/universe.h"
 
 namespace cqsp::client::scripting {
-void LoadImGuiFunctions(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine);
+void LoadImGuiFunctions(common::Universe& universe, common::scripting::ScriptInterface& script_engine);
 }  // namespace cqsp::client::scripting

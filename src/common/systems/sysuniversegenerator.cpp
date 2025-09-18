@@ -21,7 +21,9 @@
 
 #include <string>
 
-#include "actions/shiplaunchaction.h"
+#include "common/actions/economy/markethelpers.h"
+#include "common/actions/factoryconstructaction.h"
+#include "common/actions/shiplaunchaction.h"
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
@@ -33,16 +35,14 @@
 #include "common/components/resource.h"
 #include "common/components/ships.h"
 #include "common/components/surface.h"
-#include "common/systems/actions/factoryconstructaction.h"
-#include "common/systems/economy/markethelpers.h"
 #include "common/util/random/stdrandom.h"
 
 namespace cqsp::common::systems::universegenerator {
 void ScriptUniverseGenerator::Generate(cqsp::common::Universe& universe) {
     namespace cqspb = cqsp::common::components::bodies;
-    namespace cqsps = cqsp::common::components::ships;
-    namespace cqspt = cqsp::common::components::types;
-    namespace cqspc = cqsp::common::components;
+    namespace ships = cqsp::common::components::ships;
+    namespace types = cqsp::common::components::types;
+    namespace components = cqsp::common::components;
 
     script_engine["goods"] = universe.goods;
     script_engine["recipes"] = universe.recipes;
@@ -55,29 +55,29 @@ void ScriptUniverseGenerator::Generate(cqsp::common::Universe& universe) {
     // Set player
     // Set to country
     auto player = universe.countries["usa"];
-    //universe.emplace<cqspc::Civilization>(player);
-    universe.emplace<cqspc::Player>(player);
+    //universe.emplace<components::Civilization>(player);
+    universe.emplace<components::Player>(player);
 
     // Add top level fleet
     /*
     auto playerFleet = universe.create();
-    universe.emplace<cqspc::Name>(playerFleet, "navy");
-    universe.emplace<cqspc::ships::Fleet>(playerFleet, player);
-    universe.get<cqspc::Civilization>(player).top_level_fleet = playerFleet;
+    universe.emplace<components::Name>(playerFleet, "navy");
+    universe.emplace<components::ships::Fleet>(playerFleet, player);
+    universe.get<components::Civilization>(player).top_level_fleet = playerFleet;
     // Add a subfleet
     auto playerSubFleet = universe.create();
-    universe.emplace<cqspc::Name>(playerSubFleet, "vice-navy");
-    universe.emplace<cqspc::ships::Fleet>(playerSubFleet, playerFleet, player, 1);
-    universe.get<cqsps::Fleet>(universe.get<cqspc::Civilization>(player).top_level_fleet)
+    universe.emplace<components::Name>(playerSubFleet, "vice-navy");
+    universe.emplace<components::ships::Fleet>(playerSubFleet, playerFleet, player, 1);
+    universe.get<ships::Fleet>(universe.get<components::Civilization>(player).top_level_fleet)
         .subfleets.push_back(playerSubFleet);
         */
     /*
     sol::optional<sol::table> generator = script_engine["generators"]["data"][1];
     if (generator) {
         (*generator)["civ_init"]();
-        //script_engine["civilizations"] = sol::as_table(universe.view<cqspc::Civilization>());
+        //script_engine["civilizations"] = sol::as_table(universe.view<components::Civilization>());
         (*generator)["universe_gen"]();
-        auto view = universe.view<cqspc::Civilization>();
+        auto view = universe.view<components::Civilization>();
         SPDLOG_INFO("Initing planets");
         for (auto ent : view) {
             (*generator)["planets"](ent);

@@ -31,8 +31,6 @@
 #include "common/util/profiler.h"
 
 namespace cqsp::common::systems {
-namespace cqspc = cqsp::common::components;
-namespace {
 /// <summary>
 /// Runs the production cycle
 /// Consumes material from the market based on supply and then sells the manufactured goods on the market.
@@ -40,28 +38,29 @@ namespace {
 /// <param name="universe">Registry used for searching for components</param>
 /// <param name="entity">Entity containing an Inudstries that need to be processed</param>
 /// <param name="market">The market the industry uses.</param>
-void ProcessIndustries(Universe& universe, entt::entity entity) {
-    auto& market = universe.get<components::Market>(entity);
+void ProcessIndustries(Node& node) {
+    auto& universe = node.universe();
+    auto& market = node.get<components::Market>();
     // Get the transport cost
-    auto& infrastructure = universe.get<cqspc::infrastructure::CityInfrastructure>(entity);
+    auto& infrastructure = node.get<components::infrastructure::CityInfrastructure>();
     // Calculate the infrastructure cost
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
 
-    auto& industries = universe.get<cqspc::IndustrialZone>(entity);
-    auto& population_wallet =
-        universe.get_or_emplace<cqspc::Wallet>(universe.get<cqspc::Settlement>(entity).population.front());
-    for (entt::entity productionentity : industries.industries) {
+    auto& industries = node.get<components::IndustrialZone>();
+    Node populationnode = node.Convert(node.get<components::Settlement>().population.front());
+    auto& population_wallet = populationnode.get_or_emplace<components::Wallet>();
+    for (Node industrynode : node.Convert(industries.industries)) {
         // Process imdustries
         // Industries MUST have production and a linked recipe
-        if (!universe.all_of<components::Production>(productionentity)) continue;
-        components::Recipe recipe =
-            universe.get_or_emplace<components::Recipe>(universe.get<components::Production>(productionentity).recipe);
-        components::IndustrySize& size = universe.get<components::IndustrySize>(productionentity);
+        if (!industrynode.all_of<components::Production>()) continue;
+        Node recipenode = industrynode.Convert(industrynode.get<components::Production>().recipe);
+        components::Recipe recipe = recipenode.get_or_emplace<components::Recipe>();
+        components::IndustrySize& size = industrynode.get<components::IndustrySize>();
         // Calculate resource consumption
         components::ResourceLedger capitalinput = recipe.capitalcost * (size.size);
         components::ResourceLedger input = (recipe.input * size.utilization) + capitalinput;
 
-        auto& employer = universe.get<components::Employer>(productionentity);
+        auto& employer = industrynode.get<components::Employer>();
         employer.population_fufilled = size.size * recipe.workers;
 
         // Calculate the greatest possible production
@@ -90,7 +89,7 @@ void ProcessIndustries(Universe& universe, entt::entity entity) {
         // Next time need to compute the costs along with input and
         // output so that the factory doesn't overspend. We sorta
         // need a balanced economy
-        components::CostBreakdown& costs = universe.get_or_emplace<components::CostBreakdown>(productionentity);
+        components::CostBreakdown& costs = industrynode.get_or_emplace<components::CostBreakdown>();
 
         // Maintenance costs will still have to be upkept, so if
         // there isnt any resources to upkeep the place, then stop
@@ -148,20 +147,18 @@ void ProcessIndustries(Universe& universe, entt::entity entity) {
         population_wallet += costs.wages;
     }
 }
-}  // namespace
 
 void SysProduction::DoSystem() {
     ZoneScoped;
     Universe& universe = GetUniverse();
-    auto view = universe.view<components::IndustrialZone, components::Market>();
     // Each industrial zone is a a market
     BEGIN_TIMED_BLOCK(INDUSTRY);
     int factories = 0;
     // Loop through the markets
     int settlement_count = 0;
     // Get the markets and process the values?
-    for (entt::entity entity : view) {
-        ProcessIndustries(universe, entity);
+    for (Node entity : universe.nodes<components::IndustrialZone, components::Market>()) {
+        ProcessIndustries(entity);
     }
     END_TIMED_BLOCK(INDUSTRY);
     SPDLOG_TRACE("Updated {} factories, {} industries", factories, view.size());

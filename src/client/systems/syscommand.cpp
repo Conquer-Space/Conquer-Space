@@ -40,7 +40,6 @@ namespace bodies = components::bodies;
 namespace types = components::types;
 using components::Name;
 
-
 void SysCommand::Init() {}
 
 void SysCommand::DoUI(int delta_time) {
@@ -93,8 +92,6 @@ void SysCommand::DoUpdate(int delta_time) {
 }
 
 void cqsp::client::systems::SysCommand::ShipList() {
-
-
     /*
     static entt::entity selectedFleetEnt = GetUniverse()
                            .get<components::Civilization>(GetUniverse()

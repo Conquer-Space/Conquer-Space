@@ -15,5 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "common/game.h"
-
-cqsp::common::Game::Game() { script_interface.Init(); }
+namespace cqsp::common {
+Game::Game() { script_interface.Init(); }
+}  // namespace cqsp::common

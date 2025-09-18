@@ -47,36 +47,32 @@
 #include "common/systems/scriptrunner.h"
 #include "common/util/profiler.h"
 
-using cqsp::common::Universe;
-using cqsp::common::systems::simulation::Simulation;
+namespace cqsp::common::systems::simulation {
 
-Simulation::Simulation(cqsp::common::Game& game) : m_game(game), m_universe(game.GetUniverse()) {
-    namespace cqspcs = cqsp::common::systems;
-    AddSystem<cqspcs::SysScript>();
-    AddSystem<cqspcs::SysWalletReset>();
+Simulation::Simulation(Game& game) : m_game(game), m_universe(game.GetUniverse()) {
+    AddSystem<SysScript>();
+    AddSystem<SysWalletReset>();
 
-    AddSystem<cqspcs::SysScienceLab>();
-    AddSystem<cqspcs::SysTechProgress>();
+    AddSystem<SysScienceLab>();
+    AddSystem<SysTechProgress>();
 
     // Economy progress
-    AddSystem<cqspcs::SysMarketReset>();
+    AddSystem<SysMarketReset>();
 
-    AddSystem<cqspcs::InfrastructureSim>();
-    AddSystem<cqspcs::SysPopulationConsumption>();
-    AddSystem<cqspcs::SysProduction>();
+    AddSystem<InfrastructureSim>();
+    AddSystem<SysPopulationConsumption>();
+    AddSystem<SysProduction>();
 
-    // AddSystem<cqspcs::SysAgent>();
-    AddSystem<cqspcs::SysMarket>();
-    AddSystem<cqspcs::SysPlanetaryTrade>();
-    AddSystem<cqspcs::history::SysMarketHistory>();
+    // AddSystem<SysAgent>();
+    AddSystem<SysMarket>();
+    AddSystem<SysPlanetaryTrade>();
+    AddSystem<history::SysMarketHistory>();
 
     // Movement
-    AddSystem<cqspcs::SysOrbit>();
+    AddSystem<SysOrbit>();
 }
 
 void Simulation::Init() {
-    namespace cqspcs = cqsp::common::systems;
-
     for (auto& sys : system_list) {
         sys->Init();
     }
@@ -86,9 +82,7 @@ void Simulation::tick() {
     m_universe.DisableTick();
     m_universe.date.IncrementDate();
     // Get previous tick spacing
-    namespace cqspc = cqsp::common::components;
-    namespace cqsps = cqsp::common::components::ships;
-    namespace cqspt = cqsp::common::components::types;
+
     auto start = std::chrono::high_resolution_clock::now();
     BEGIN_TIMED_BLOCK(Game_Loop);
 
@@ -105,3 +99,4 @@ void Simulation::tick() {
         SPDLOG_WARN("Tick has taken more than {} ms at {} ms", expected_len, len);
     }
 }
+}  // namespace cqsp::common::systems::simulation

@@ -21,7 +21,6 @@
 
 #include "common/components/economy.h"
 #include "common/components/surface.h"
-
 namespace cqsp::common::systems {
 void SysPlanetaryTrade::DoSystem() {
     // Sort through all the districts, and figure out their trade

@@ -25,7 +25,7 @@
 #include "client/scripting/imguifunctiondefs.h"
 
 namespace cqsp::client::scripting {
-void LoadImGuiFunctions(cqsp::common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine) {
+void LoadImGuiFunctions(common::Universe& universe, common::scripting::ScriptInterface& script_engine) {
     InitEnums(script_engine);
     auto ImGui = script_engine["ImGui"].get_or_create<sol::table>();
 

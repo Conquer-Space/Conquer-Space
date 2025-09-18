@@ -20,11 +20,10 @@
 
 #include <cstdint>
 
-namespace cqspe = cqsp::engine;
-
-cqsp::engine::Mesh_t cqsp::engine::primitive::MakeTexturedPaneMesh() {
-    cqsp::engine::Mesh_t mesh = engine::MakeMesh();
-    float vertices[] = {
+namespace cqsp::engine::primitive {
+Mesh_t MakeTexturedPaneMesh() {
+    Mesh_t mesh = MakeMesh();
+    const float vertices[] = {
         // positions // texture coords
         1.0f,  -1.0f, 0.0f, 1.0f, 1.0f,  // top right
         1.0f,  1.0f,  0.0f, 1.0f, 0.0f,  // bottom right
@@ -69,8 +68,8 @@ cqsp::engine::Mesh_t cqsp::engine::primitive::MakeTexturedPaneMesh() {
     return mesh;
 }
 
-cqsp::engine::Mesh_t cqsp::engine::primitive::MakeTexturedPaneMesh(bool mirrored) {
-    cqsp::engine::Mesh_t mesh = engine::MakeMesh();
+Mesh_t MakeTexturedPaneMesh(bool mirrored) {
+    Mesh_t mesh = MakeMesh();
 
     float vertices[] = {
         // positions // texture coords
@@ -116,3 +115,4 @@ cqsp::engine::Mesh_t cqsp::engine::primitive::MakeTexturedPaneMesh(bool mirrored
     mesh->mode = GL_TRIANGLES;
     return mesh;
 }
+}  // namespace cqsp::engine::primitive

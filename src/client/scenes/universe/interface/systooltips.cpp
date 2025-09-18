@@ -20,6 +20,7 @@
 #include <string>
 
 #include "client/scenes/universe/interface/sysstockpileui.h"
+#include "common/actions/population/cityinformation.h"
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
@@ -33,7 +34,6 @@
 #include "common/components/science.h"
 #include "common/components/ships.h"
 #include "common/components/surface.h"
-#include "common/systems/population/cityinformation.h"
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
 #include "engine/gui.h"
@@ -101,7 +101,6 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
     }
     if (universe.all_of<components::Price>(entity)) {
         ImGui::TextFmt("Default Price: {}", universe.get<components::Price>(entity).price);
-        
     }
 }
 
@@ -152,7 +151,7 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
 
     // If it's a city do population
     if (universe.all_of<components::Settlement>(entity)) {
-        ImGui::TextFmt("Population: {}", LongToHumanString(common::systems::GetCityPopulation(universe, entity)));
+        ImGui::TextFmt("Population: {}", LongToHumanString(common::actions::GetCityPopulation(universe, entity)));
     }
     if (universe.all_of<Body>(entity)) {
         auto& body = universe.get<Body>(entity);

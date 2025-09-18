@@ -27,36 +27,36 @@
 #include "common/components/resource.h"
 #include "common/components/surface.h"
 
-namespace cqspc = cqsp::common::components;
-
 namespace cqsp::common::systems {
 // Must be run after SysPopulationConsumption
 // This is because population growth is dependent on if consumption was
 // satisfied.
+
+using components::ResourceConsumption;
+
 void SysPopulationGrowth::DoSystem() {
     ZoneScoped;
 
-    namespace cqspc = cqsp::common::components;
     Universe& universe = GetUniverse();
 
-    auto view = universe.view<cqspc::PopulationSegment>();
+    auto view = universe.view<components::PopulationSegment>();
     for (entt::entity entity : view) {
-        auto& segment = universe.get<cqspc::PopulationSegment>(entity);
+        auto& segment = universe.get<components::PopulationSegment>(entity);
         // If it's hungry, decay population
-        if (universe.all_of<cqspc::Hunger>(entity)) {
+        if (universe.all_of<components::Hunger>(entity)) {
             // Population decrease will be about 1 percent each year.
             float increase = 1.f - static_cast<float>(Interval()) * 0.00000114077116f;
             segment.population *= increase;
         }
 
-        if (universe.all_of<cqspc::FailedResourceTransfer>(entity)) {
+        if (universe.all_of<components::FailedResourceTransfer>(entity)) {
             // Then alert hunger.
-            universe.get_or_emplace<cqspc::Hunger>(entity);
+            universe.get_or_emplace<components::Hunger>(entity);
         } else {
-            universe.remove<cqspc::Hunger>(entity);
+            universe.remove<components::Hunger>(entity);
         }
         // If not hungry, grow population
-        if (!universe.all_of<cqspc::Hunger>(entity)) {
+        if (!universe.all_of<components::Hunger>(entity)) {
             // Population growth will be about 1 percent each year.
             float increase = static_cast<float>(Interval()) * 0.00000114077116f + 1;
             segment.population *= increase;
@@ -67,29 +67,28 @@ void SysPopulationGrowth::DoSystem() {
         // For now, we would have 100% of the population working, because we
         // haven't got to social simulation yet. But in the future, this will
         // probably have to change.
-        auto& employee = universe.get_or_emplace<cqspc::LaborInformation>(entity);
+        auto& employee = universe.get_or_emplace<components::LaborInformation>(entity);
         employee.working_population = segment.population;
     }
 }
 
 namespace {
-void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement,
-                       cqspc::ResourceConsumption& marginal_propensity_base,
-                       cqspc::ResourceConsumption& autonomous_consumption_base, float savings) {
+void ProcessSettlement(Universe& universe, entt::entity settlement, ResourceConsumption& marginal_propensity_base,
+                       ResourceConsumption& autonomous_consumption_base, float savings) {
     // Get the transport cost
-    if (!universe.any_of<cqspc::infrastructure::CityInfrastructure>(settlement)) {
+    if (!universe.any_of<components::infrastructure::CityInfrastructure>(settlement)) {
         return;
     }
-    auto& infrastructure = universe.get<cqspc::infrastructure::CityInfrastructure>(settlement);
+    auto& infrastructure = universe.get<components::infrastructure::CityInfrastructure>(settlement);
     // Calculate the infrastructure cost
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
-    auto& market = universe.get<cqspc::Market>(settlement);
+    auto& market = universe.get<components::Market>(settlement);
     // Loop through the population segments through the settlements
-    auto& settlement_comp = universe.get<cqspc::Settlement>(settlement);
+    auto& settlement_comp = universe.get<components::Settlement>(settlement);
     for (entt::entity segmententity : settlement_comp.population) {
         // Compute things
-        cqspc::PopulationSegment& segment = universe.get_or_emplace<cqspc::PopulationSegment>(segmententity);
-        cqspc::ResourceConsumption& consumption = universe.get_or_emplace<cqspc::ResourceConsumption>(segmententity);
+        components::PopulationSegment& segment = universe.get_or_emplace<components::PopulationSegment>(segmententity);
+        ResourceConsumption& consumption = universe.get_or_emplace<ResourceConsumption>(segmententity);
         // Reduce pop to some unreasonably low level so that the economy can
         // handle it
         const uint64_t population = segment.population / 10;
@@ -100,12 +99,12 @@ void ProcessSettlement(cqsp::common::Universe& universe, entt::entity settlement
         // should be calculated in SysPopulationGrowth
         consumption *= population;
 
-        cqspc::Wallet& wallet = universe.get_or_emplace<cqspc::Wallet>(segmententity);
+        components::Wallet& wallet = universe.get_or_emplace<components::Wallet>(segmententity);
         double cost = (consumption * market.price).GetSum();
 
         if (wallet > 0) {  // If the pop has cash left over spend it
             // Add to the cost of price of transport
-            cqspc::ResourceConsumption extraconsumption = marginal_propensity_base;
+            components::ResourceConsumption extraconsumption = marginal_propensity_base;
 
             double extra_cost = (extraconsumption * market.price).GetSum();  // Distribute wallet amongst goods
 
@@ -162,17 +161,17 @@ void SysPopulationConsumption::DoSystem() {
     ZoneScoped;
     Universe& universe = GetUniverse();
 
-    cqspc::ResourceConsumption marginal_propensity_base;
-    cqspc::ResourceConsumption autonomous_consumption_base;
+    ResourceConsumption marginal_propensity_base;
+    ResourceConsumption autonomous_consumption_base;
     float savings = 1;  // We calculate how much is saved since it is simpler
                         // than calculating spending
     for (entt::entity cgentity : universe.consumergoods) {
-        const cqspc::ConsumerGood& good = universe.get<cqspc::ConsumerGood>(cgentity);
+        const components::ConsumerGood& good = universe.get<components::ConsumerGood>(cgentity);
         marginal_propensity_base[cgentity] = good.marginal_propensity;
         autonomous_consumption_base[cgentity] = good.autonomous_consumption;
         savings -= good.marginal_propensity;
     }  // These tables technically never need to be recalculated
-    auto settlementview = universe.view<cqspc::Settlement>();
+    auto settlementview = universe.view<components::Settlement>();
 
     for (entt::entity settlement : settlementview) {
         ProcessSettlement(universe, settlement, marginal_propensity_base, autonomous_consumption_base, savings);

@@ -21,10 +21,10 @@
 #include <fstream>
 #include <numbers>
 
+#include "common/actions/maneuver/maneuver.h"
 #include "common/components/coordinates.h"
 #include "common/components/orbit.h"
 #include "common/components/units.h"
-#include "common/systems/maneuver/maneuver.h"
 #include "common/systems/movement/sysmovement.h"
 #include "common/universe.h"
 

@@ -26,7 +26,7 @@
 
 #include <sol/sol.hpp>
 
-namespace cqsp::scripting {
+namespace cqsp::common::scripting {
 class ScriptInterface : public sol::state {
  public:
     using sol::state::state;
@@ -45,4 +45,4 @@ class ScriptInterface : public sol::state {
     std::shared_ptr<spdlog::logger> logger;
     std::shared_ptr<spdlog::sinks::ringbuffer_sink_mt> ringbuffer_sink;
 };
-}  // namespace cqsp::scripting
+}  // namespace cqsp::common::scripting

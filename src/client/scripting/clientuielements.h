@@ -19,5 +19,5 @@
 #include "engine/application.h"
 
 namespace cqsp::client::scripting {
-void InitClientElements(common::Universe& universe, cqsp::scripting::ScriptInterface& script_engine);
+void InitClientElements(common::Universe& universe, common::scripting::ScriptInterface& script_engine);
 }  // namespace cqsp::client::scripting

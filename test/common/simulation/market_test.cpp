@@ -18,8 +18,8 @@
 
 #include <iostream>
 
+#include "common/actions/economy/markethelpers.h"
 #include "common/components/economy.h"
-#include "common/systems/economy/markethelpers.h"
 #include "common/systems/economy/sysmarket.h"
 #include "common/universe.h"
 
@@ -33,7 +33,7 @@ class MarketTwoTest : public ::testing::Test {
         good_1 = universe.create();
         good_2 = universe.create();
 
-        market = cqsp::common::systems::economy::CreateMarket(universe);
+        market = cqsp::common::actions::CreateMarket(universe);
         auto& market_comp = universe.get<cqspc::Market>(market);
         market_comp[good_1].price = good_1_default_price;
         market_comp[good_2].price = good_2_default_price;
@@ -68,7 +68,7 @@ TEST_F(MarketTwoTest, SellTest) {
     stockpile[good_1] = 100;
     // Now test sell the goods
     EXPECT_EQ(stockpile[good_1], 100);
-    ASSERT_TRUE(cqsp::common::systems::economy::SellGood(universe, agent1, stockpile));
+    ASSERT_TRUE(cqsp::common::actions::SellGood(universe, agent1, stockpile));
     // Then check if the goods are sold
     auto& market_comp = universe.get<cqspc::Market>(market);
 
@@ -90,7 +90,7 @@ TEST_F(MarketTwoTest, BuyTest) {
     // Now test sell the goods
     cqspc::ResourceStockpile to_buy;
     to_buy[good_1] = 100;
-    ASSERT_TRUE(cqsp::common::systems::economy::PurchaseGood(universe, agent1, to_buy));
+    ASSERT_TRUE(cqsp::common::actions::PurchaseGood(universe, agent1, to_buy));
 
     auto& market_comp = universe.get<cqspc::Market>(market);
 
@@ -112,8 +112,8 @@ TEST_F(MarketTwoTest, BuySellTest) {
     cqspc::ResourceLedger ledger;
     ledger[good_1] = 100;
     // Then try to sell it
-    ASSERT_TRUE(cqsp::common::systems::economy::SellGood(universe, agent1, ledger));
-    ASSERT_TRUE(cqsp::common::systems::economy::PurchaseGood(universe, agent2, ledger));
+    ASSERT_TRUE(cqsp::common::actions::SellGood(universe, agent1, ledger));
+    ASSERT_TRUE(cqsp::common::actions::PurchaseGood(universe, agent2, ledger));
 
     // Check if the good is sold then bought
     EXPECT_EQ(universe.get<cqspc::ResourceStockpile>(agent2)[good_1], 100);
@@ -144,9 +144,9 @@ TEST_F(MarketTwoTest, BuySellOverSupplyTest) {
     cqspc::ResourceLedger ledger;
     ledger[good_1] = 100;
     // Then try to sell it
-    ASSERT_TRUE(cqsp::common::systems::economy::SellGood(universe, agent1, ledger));
+    ASSERT_TRUE(cqsp::common::actions::SellGood(universe, agent1, ledger));
     ledger[good_1] = 50;
-    ASSERT_TRUE(cqsp::common::systems::economy::PurchaseGood(universe, agent2, ledger));
+    ASSERT_TRUE(cqsp::common::actions::PurchaseGood(universe, agent2, ledger));
 
     // Check if the good is sold then bought
     EXPECT_EQ(universe.get<cqspc::ResourceStockpile>(agent1)[good_1], 0);

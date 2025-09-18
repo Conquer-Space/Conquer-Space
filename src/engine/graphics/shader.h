@@ -162,7 +162,7 @@ class ShaderDefinition : public Asset {
     AssetType GetAssetType() override { return AssetType::SHADER_DEFINITION; }
 
  private:
-    void SetShaderUniform(cqsp::asset::ShaderProgram_t& shader, std::pair<const std::string, Hjson::Value>& value);
+    void SetShaderUniform(ShaderProgram_t& shader, std::pair<const std::string, Hjson::Value>& value);
 };
 
 // Set of utility functions that load shaders
