@@ -104,7 +104,7 @@ void ProcessSettlement(Universe& universe, entt::entity settlement, ResourceCons
 
         if (wallet > 0) {  // If the pop has cash left over spend it
             // Add to the cost of price of transport
-            components::ResourceConsumption extraconsumption = marginal_propensity_base;
+            components::ResourceConsumption& extraconsumption = marginal_propensity_base;
 
             double extra_cost = (extraconsumption * market.price).GetSum();  // Distribute wallet amongst goods
 
