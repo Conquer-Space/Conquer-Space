@@ -16,15 +16,14 @@
  */
 #include "objecteditorscene.h"
 
+#include "client/scenes/objecteditor/imguidebugger.h"
 #include "client/scenes/objecteditor/recipeviewer.h"
 #include "client/scenes/objecteditor/sysfieldviewer.h"
 #include "client/scenes/objecteditor/sysgoodviewer.h"
-#include "client/scenes/objecteditor/imguidebugger.h"
-#include "client/util/assetwindow.h"
 #include "client/systems/assetloading.h"
+#include "client/util/assetwindow.h"
 
 namespace cqsp::client::scene {
-
 ObjectEditorScene::ObjectEditorScene(engine::Application& app) : ClientScene(app) {
     AddUISystem<systems::SysFieldNodeViewer>("Node Viewer");
     AddUISystem<systems::SysGoodViewer>("Good Viewer");
