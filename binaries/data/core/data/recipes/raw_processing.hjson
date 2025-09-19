@@ -1,0 +1,22 @@
+# This file is part of Conquer Space
+[
+    {
+        name: Plastic Manufacturing
+        identifier: plastic_manufacturing
+        input: {
+            crude_oil: 1000
+        }
+        output: {
+            plastic: 1000
+        }
+        cost: {
+            labor: {
+                worker: 1000
+            }
+        }
+        tags: [
+            ratio
+            raw
+        ]
+    }
+]
