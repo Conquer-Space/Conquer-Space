@@ -36,7 +36,7 @@
         identifier: computersystems
         volume: 1 m3
         mass: 6500 kg
-        price: 7
+        price: 5000
         tags: [
             captialgood
         ]

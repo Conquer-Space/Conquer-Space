@@ -8,9 +8,6 @@
         input: {
             motorvehicles: 1
         }
-        elasticity: {
-            motorvehicles: 1
-        }
         output: {
             transport: 2
         }
@@ -37,11 +34,6 @@
             fmetal: 50
             housegoods: 50
         }
-        elasticity: {
-            bricks: 1
-            fmetal: 1
-            housegoods: 1
-        }
         output: {
             structures: 1
         }
@@ -67,10 +59,6 @@
             fmetal: 5
             egoods: 1
         }
-        elasticity: {
-            fmetal: 5
-            egoods: 1
-        }
         output: {
             industrial: 1
         }
@@ -92,9 +80,6 @@
         name: System Integration
         identifier: systems_cap
         input: {
-            computer: 1
-        }
-        elasticity: {
             computer: 1
         }
         output: {

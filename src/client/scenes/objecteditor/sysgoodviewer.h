@@ -16,22 +16,27 @@
  */
 #pragma once
 
-#include "common/components/economy.h"
-#include "common/components/resource.h"
-#include "common/systems/isimulationsystem.h"
+#include <array>
 
-namespace cqsp::common::systems {
-class SysMarket : public ISimulationSystem {
+#include "client/systems/sysgui.h"
+
+namespace cqsp::client::systems {
+class SysGoodViewer : public SysUserInterface {
  public:
-    explicit SysMarket(Game& game) : ISimulationSystem(game) {}
-    void DoSystem() override;
-    int Interval() override { return components::StarDate::DAY; }
+    explicit SysGoodViewer(engine::Application& app) : SysUserInterface(app) { search_text.fill(0); }
 
-    void Init() override;
+    void Init();
+    void DoUI(int delta_time);
+    void DoUpdate(int delta_time);
 
  private:
-    void DeterminePrice(components::Market& market, entt::entity good_entity);
+    void GoodViewerRight();
+    void RecipeTable();
+    void InputRecipeTable();
+    void OutputRecipeTable();
+    void RecipeTooltip(entt::entity recipe);
 
-    components::ResourceLedger base_prices;
+    std::array<char, 255> search_text;
+    entt::entity selected_good = entt::null;
 };
-}  // namespace cqsp::common::systems
+}  // namespace cqsp::client::systems

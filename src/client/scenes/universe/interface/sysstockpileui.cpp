@@ -40,6 +40,9 @@ bool DrawLedgerTable(const std::string &name, const Universe &universe, const Re
         ImGui::TableSetupColumn("Amount");
         ImGui::TableHeadersRow();
         for (auto iterator = ledger.begin(); iterator != ledger.end(); iterator++) {
+            if (iterator->second == 0) {
+                continue;
+            }
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::TextFmt("{}", common::util::GetName(universe, iterator->first));

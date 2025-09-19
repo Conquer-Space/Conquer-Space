@@ -27,7 +27,6 @@
 #include "common/components/resource.h"
 #include "common/components/surface.h"
 
-
 namespace cqsp::common::systems {
 // Must be run after SysPopulationConsumption
 // This is because population growth is dependent on if consumption was
@@ -101,33 +100,31 @@ void ProcessSettlement(Universe& universe, entt::entity settlement, ResourceCons
         consumption *= population;
 
         components::Wallet& wallet = universe.get_or_emplace<components::Wallet>(segmententity);
-        const double cost = (consumption * market.price).GetSum();
-        wallet -= cost;  // Spend, even if it puts the pop into debt
+        double cost = (consumption * market.price).GetSum();
 
         if (wallet > 0) {  // If the pop has cash left over spend it
             // Add to the cost of price of transport
-            components::ResourceConsumption extraconsumption = marginal_propensity_base;
-            // Loop through all the things, if there isn't enough resources for a
-            // If the market supply has all of the goods, then they can buy the goods q
-            // Get previous market supply
-            // the total consumption
-            // Add to the cost
-            // They can buy less because of things
-            //extraconsumption *= infra_cost;
-            extraconsumption *= wallet;        // Distribute wallet amongst goods
-            extraconsumption /= market.price;  // Find out how much of each good you can buy
-            consumption += extraconsumption;   // Remove purchased goods from the market
+            components::ResourceConsumption& extraconsumption = marginal_propensity_base;
+
+            double extra_cost = (extraconsumption * market.price).GetSum();  // Distribute wallet amongst goods
+
+            extra_cost *= segment.standard_of_living;
+
+            // Now we should change the value that we do
+            // Also see if we have extra money and then we can adjust SOL or something like that
+            consumption += extraconsumption * segment.standard_of_living;  // Remove purchased goods from the market
 
             // Consumption
             // Check if there's enough on the market
             // Add the transport costs, and because they're importing it, we only account this
-            double cost = consumption.GetSum() * infra_cost;
-            wallet *= savings;  // Update savings
-            wallet -= cost;
+            cost += extra_cost;
         }
 
+        wallet -= cost;  // Spend, even if it puts the pop into debt
+
         // TODO(EhWhoAmI): Don't inject cash, take the money from the government
-        wallet += segment.population * 50;  // Inject cash
+        wallet += segment.population * 1;  // Inject cash
+        //wallet.GetChange();
 
         market.consumption += consumption;
     }

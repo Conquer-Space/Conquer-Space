@@ -53,7 +53,7 @@ struct Good {};
 /// See SysPopulationConsumption for an explanation of these values
 /// </summary>
 struct ConsumerGood {
-    ///   autonomous consumption is independent of disposable income
+    ///   Autonomous consumption is independent of disposable income
     ///   or when income levels are zero
     ///   if income levels cannot pay for this level of maintenance they are
     ///   drawn from the population's savings or debt
@@ -295,19 +295,11 @@ struct CostBreakdown {
     }
 };
 
-//Essentially resource consumption + production
-struct ResourceIO {
-    ResourceLedger input;
-    ResourceLedger output;
-};
-
 // TODO(AGM): Remove
 struct FactoryTimer {
     float interval;
     float time_left;
 };
-
-//Resource generator
 
 struct ResourceConsumption : public ResourceLedger {};
 struct ResourceProduction : public ResourceLedger {};

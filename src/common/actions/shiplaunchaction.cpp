@@ -37,7 +37,6 @@ namespace bodies = components::bodies;
 using ships::Ship;
 
 entt::entity CreateShip(Universe& universe, entt::entity civEnt, const glm::vec3& orbit, entt::entity starsystem) {
-
     entt::entity ship = universe.create();
     universe.emplace<Ship>(ship);
 
@@ -52,13 +51,11 @@ entt::entity CreateShip(Universe& universe, entt::entity civEnt, const glm::vec3
 }
 
 entt::entity CreateShip(Universe& universe, entt::entity civ, entt::entity orbit, entt::entity starsystem) {
-    
     return CreateShip(universe, civ, types::toVec3AU(universe.get<types::Orbit>(orbit)), starsystem);
 }
 
 entt::entity CreateShip(Universe& universe, entt::entity fleetEnt, entt::entity starsystemEnt, const glm::vec3& orbit,
-    const std::string& shipName) {
-
+                        const std::string& shipName) {
     entt::entity ship = universe.create();
     universe.emplace<Ship>(ship);
 
@@ -74,8 +71,8 @@ entt::entity CreateShip(Universe& universe, entt::entity fleetEnt, entt::entity 
     return ship;
 }
 
-entt::entity CreateShip(Universe& universe, entt::entity fleetEnt, entt::entity starsystemEnt, 
-                                            entt::entity orbitEnt, const std::string& shipName) {
+entt::entity CreateShip(Universe& universe, entt::entity fleetEnt, entt::entity starsystemEnt, entt::entity orbitEnt,
+                        const std::string& shipName) {
     return CreateShip(universe, fleetEnt, starsystemEnt, types::toVec3AU(universe.get<types::Orbit>(orbitEnt)),
                       shipName);
 }

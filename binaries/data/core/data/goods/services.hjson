@@ -1,14 +1,12 @@
 # This file is part of Conquer Space
 #
 [
-    /*
     {
         name: Power
         identifier: power
-        volume: 0.002 m3
-        mass: 4 kg
-        price: 1
-        
+        volume: 0 m3
+        mass: 0 kg
+        price: 1       
         tags: [
             service
             consumable
@@ -19,9 +17,9 @@
         }
         description:
         '''
-        One unit of power is a KWH 
+        One unit of power is a kWh
         '''
-    }
+    }/*
     {
         name: Recreation
         identifier: recreation
@@ -123,4 +121,34 @@
             w: 0.01
         }
     }*/
+    {
+        name: Services
+        identifier: services
+        volume: 0 m3
+        mass: 0 kg
+        price: 30
+        tags: [
+            service
+            consumable
+        ]
+        consumption: {
+            autonomous_consumption: 0.001
+            marginal_propensity: 0.05
+        }
+    }
+    {
+        name: Amenities
+        identifier: amenities
+        volume: 0 m3
+        mass: 0 kg
+        price: 50
+        tags: [
+            service
+            consumable
+        ]
+        consumption: {
+            autonomous_consumption: 0.001
+            marginal_propensity: 0.02
+        }
+    }
 ]

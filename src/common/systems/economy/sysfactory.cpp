@@ -60,6 +60,9 @@ void ProcessIndustries(Node& node) {
         components::ResourceLedger capitalinput = recipe.capitalcost * (size.size);
         components::ResourceLedger input = (recipe.input * size.utilization) + capitalinput;
 
+        auto& employer = industrynode.get<components::Employer>();
+        employer.population_fufilled = size.size * recipe.workers;
+
         // Calculate the greatest possible production
         components::ResourceLedger output;
         output[recipe.output.entity] = recipe.output.amount * size.utilization;
@@ -144,7 +147,6 @@ void ProcessIndustries(Node& node) {
         population_wallet += costs.wages;
     }
 }
-
 
 void SysProduction::DoSystem() {
     ZoneScoped;

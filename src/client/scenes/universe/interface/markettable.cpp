@@ -23,6 +23,7 @@
 #include "common/components/name.h"
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
+#include "client/scenes/universe/interface/systooltips.h"
 #include "engine/gui.h"
 
 namespace cqsp::client::systems {
@@ -64,6 +65,9 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
             ImGui::TextFmtColored(ImColor(1.f, 1.f, 0.f), "{}", GetName(universe, good_entity));
         } else {
             ImGui::TextFmt("{}", GetName(universe, good_entity));
+        }
+        if (ImGui::IsItemHovered()) {
+            gui::EntityTooltip(universe, good_entity);
         }
         ImGui::TableSetColumnIndex(1);
         // Mark the cell as red if the thing is not valid

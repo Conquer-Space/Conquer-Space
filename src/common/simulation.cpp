@@ -47,9 +47,7 @@
 #include "common/systems/scriptrunner.h"
 #include "common/util/profiler.h"
 
-
 namespace cqsp::common::systems::simulation {
-
 
 Simulation::Simulation(Game& game) : m_game(game), m_universe(game.GetUniverse()) {
     AddSystem<SysScript>();
@@ -75,8 +73,6 @@ Simulation::Simulation(Game& game) : m_game(game), m_universe(game.GetUniverse()
 }
 
 void Simulation::Init() {
-    SysMarket::InitializeMarket(m_game);
-
     for (auto& sys : system_list) {
         sys->Init();
     }

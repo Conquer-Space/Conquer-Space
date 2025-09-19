@@ -3,12 +3,9 @@
 # This is the default file for recipes, and also serves as a demonstration for stuff
 [
     {
-        name: Fuel Burning
+        name: Basic Power Generation
         identifier: power_man
         input: {
-            fuel: 50
-        }
-        elasticity: {
             fuel: 50
         }
         output: {
@@ -38,14 +35,6 @@
             crops: 200
             animals: 200
         }
-        elasticity: {
-            potwater: 1
-            crops: 1
-            animals: 1
-        }
-        output: {
-            food: 1000
-        }
         cost: {
             capital: {
                 structures: 1
@@ -66,10 +55,6 @@
         input: {
             food: 500
             recgoods: 500
-        }
-        elasticity: {
-            food: 1
-            recgoods: 1
         }
         output: {
             recreation: 20000
@@ -93,9 +78,6 @@
         name: Finance Sector
         identifier: finance
         input: {
-
-        }
-        elasticity: {
 
         }
         output: {
@@ -123,10 +105,6 @@
             housegoods: 200
             egoods: 10
         }
-        elasticity: {
-            housegoods: 1
-            egoods: 1
-        }
         output: {
             medical: 200
         }
@@ -152,9 +130,6 @@
         input: {
             fuel: 100
         }
-        elasticity: {
-            fuel: 100
-        }
         output: {
             ptransport: 500000
         }
@@ -177,9 +152,6 @@
         name: Real Estate Market
         identifier: real_estate
         input: {
-            housegoods: 1
-        }
-        elasticity: {
             housegoods: 1
         }
         output: {

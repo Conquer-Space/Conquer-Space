@@ -20,8 +20,8 @@
 #include "common/components/history.h"
 namespace cqsp::common::systems::history {
 
-using components::MarketHistory;
 using components::Market;
+using components::MarketHistory;
 
 void SysMarketHistory::DoSystem() {
     /*

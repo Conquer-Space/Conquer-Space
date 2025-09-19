@@ -66,8 +66,9 @@ struct MarketInformation {
     ResourceLedger production;
     ResourceLedger consumption;
 
-    // PID controller
-    ResourceLedger sd_integral;
+    entt::entity parent_market = entt::null;
+
+    double market_access = 0.2;
 
     void ResetLedgers() {
         // Reset the ledger values

@@ -20,6 +20,7 @@
 #include <string>
 
 #include "client/scenes/universe/interface/sysstockpileui.h"
+#include "common/actions/population/cityinformation.h"
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
@@ -33,7 +34,6 @@
 #include "common/components/science.h"
 #include "common/components/ships.h"
 #include "common/components/surface.h"
-#include "common/actions/population/cityinformation.h"
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
 #include "engine/gui.h"
@@ -99,6 +99,9 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
         ImGui::TextFmt("Profit: {}", LongToHumanString(costs.profit));
         ImGui::TextFmt("Revenue: {}", LongToHumanString(costs.revenue));
     }
+    if (universe.all_of<components::Price>(entity)) {
+        ImGui::TextFmt("Default Price: {}", universe.get<components::Price>(entity).price);
+    }
 }
 
 void EntityTooltipContent(const Universe& universe, entt::entity entity) {
@@ -124,7 +127,7 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
 
     if (universe.all_of<components::Wallet>(entity)) {
         auto& balance = universe.get<components::Wallet>(entity);
-        ImGui::TextFmt("Wallet: {}", balance.GetBalance());
+        ImGui::TextFmt("Wallet: {}", util::LongToHumanString(balance.GetBalance()));
     }
 
     if (universe.all_of<components::MarketAgent>(entity)) {

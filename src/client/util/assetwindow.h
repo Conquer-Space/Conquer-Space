@@ -16,22 +16,24 @@
  */
 #pragma once
 
-#include "common/components/economy.h"
-#include "common/components/resource.h"
-#include "common/systems/isimulationsystem.h"
+#include "client/systems/sysgui.h"
 
-namespace cqsp::common::systems {
-class SysMarket : public ISimulationSystem {
+namespace cqsp::client::systems {
+class AssetWindow : public SysUserInterface {
  public:
-    explicit SysMarket(Game& game) : ISimulationSystem(game) {}
-    void DoSystem() override;
-    int Interval() override { return components::StarDate::DAY; }
+    explicit AssetWindow(engine::Application& app) : SysUserInterface(app), window_open(nullptr) {}
 
-    void Init() override;
+    void Init();
+    void DoUI(int delta_time);
+    void DoUpdate(int delta_time);
+
+    void SetWindowOpenPtr(bool* open) {
+      window_open = open;
+    }
 
  private:
-    void DeterminePrice(components::Market& market, entt::entity good_entity);
-
-    components::ResourceLedger base_prices;
+    std::string asset_search;
+    bool *window_open;
 };
-}  // namespace cqsp::common::systems
+}  // namespace cqsp::client::systems
+

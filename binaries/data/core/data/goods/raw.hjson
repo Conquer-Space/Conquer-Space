@@ -52,4 +52,15 @@
             raw
         ]
     }
+    {
+        name: Crude Oil
+        identifier: crude_oil
+        volume: 0.148987 m3
+        mass: 136 kg
+        price: 100
+        tags: [
+            raw
+            fluid
+        ]
+    }
 ]

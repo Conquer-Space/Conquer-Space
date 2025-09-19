@@ -21,6 +21,8 @@
 
 #include <string>
 
+#include "common/actions/economy/markethelpers.h"
+#include "common/actions/factoryconstructaction.h"
 #include "common/actions/shiplaunchaction.h"
 #include "common/components/area.h"
 #include "common/components/bodies.h"
@@ -33,8 +35,6 @@
 #include "common/components/resource.h"
 #include "common/components/ships.h"
 #include "common/components/surface.h"
-#include "common/actions/factoryconstructaction.h"
-#include "common/actions/economy/markethelpers.h"
 #include "common/util/random/stdrandom.h"
 
 namespace cqsp::common::systems::universegenerator {

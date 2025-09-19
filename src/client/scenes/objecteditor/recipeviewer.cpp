@@ -21,6 +21,7 @@
 #include "common/components/name.h"
 #include "common/components/resource.h"
 #include "common/util/nameutil.h"
+#include "common/util/utilnumberdisplay.h"
 
 namespace cqsp::client::systems {
 
@@ -29,20 +30,40 @@ namespace components = common::components;
 void SysRecipeViewer::Init() {}
 
 void SysRecipeViewer::DoUI(int delta_time) {
+    ImGui::SetNextWindowSize(ImVec2(800, 700), ImGuiCond_FirstUseEver);
     ImGui::Begin("Recipe Viewer");
     // List out all the stuff
     auto recipes = GetUniverse().view<components::Recipe>();
     ImGui::TextFmt("Recipes: {}", recipes.size());
-    ImGui::BeginChild("recipe_viewer_left", ImVec2(300, -1));
+    ImGui::BeginChild("recipe_viewer_left", ImVec2(300, 700));
+    ImGui::InputText("##recipe_viewer_search_text", search_text.data(), search_text.size());
+    std::string search_string(search_text.data());
+    std::transform(search_string.begin(), search_string.end(), search_string.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+
+    ImGui::BeginChild("recipe_viewer_scroll");
     for (entt::entity recipe : recipes) {
         bool is_selected = recipe == selected_recipe;
-        if (ImGui::SelectableFmt("{}", &is_selected, common::util::GetName(GetUniverse(), recipe))) {
+        std::string name = common::util::GetName(GetUniverse(), recipe);
+        std::string name_lower = name;
+        std::transform(name_lower.begin(), name_lower.end(), name_lower.begin(),
+                       [](unsigned char c) { return std::tolower(c); });
+        if (!search_string.empty()) {
+            // Then we can check if the text contains it
+            if (name_lower.find(search_string) == std::string::npos) {
+                continue;
+            }
+        }
+        // Now check if the string is in stuff
+        if (ImGui::SelectableFmt("{}", &is_selected, name)) {
             selected_recipe = recipe;
+            ResetSelection();
         }
     }
     ImGui::EndChild();
+    ImGui::EndChild();
     ImGui::SameLine();
-    ImGui::BeginChild("recipe_viewer_right", ImVec2(300, -1));
+    ImGui::BeginChild("recipe_viewer_right", ImVec2(400, 700));
     RecipeViewerRight();
     ImGui::EndChild();
     ImGui::End();
@@ -62,10 +83,28 @@ void ResourceMapTable(common::Universe& universe, components::ResourceLedger& le
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         ImGui::TextFmt("{}", cqsp::common::util::GetName(universe, in.first));
+        if (ImGui::IsItemClicked()) {
+            // Copy
+            ImGui::SetClipboardText(universe.get<components::Identifier>(in.first).identifier.c_str());
+        }
+        if (ImGui::IsItemHovered()) {
+            ImGui::BeginTooltip();
+            ImGui::TextColored(ImVec4(0.921568627, 0.392156863, 0.203921569, 1), "Click to copy identifier");
+            systems::gui::EntityTooltipContent(universe, in.first);
+            ImGui::EndTooltip();
+        }
         ImGui::TableSetColumnIndex(1);
         ImGui::TextFmt("{}", in.second);
     }
     ImGui::EndTable();
+}
+
+double GetLedgerCost(common::Universe& universe, components::ResourceLedger& ledger) {
+    double input_cost = 0;
+    for (auto& [entity, amount] : ledger) {
+        input_cost = universe.get<components::Price>(entity) * amount;
+    }
+    return input_cost;
 }
 }  // namespace
 
@@ -76,15 +115,55 @@ void SysRecipeViewer::RecipeViewerRight() {
     }
     ImGui::TextFmt("Name: {}", common::util::GetName(GetUniverse(), selected_recipe));
     ImGui::TextFmt("Identifier: {}", GetUniverse().get<components::Identifier>(selected_recipe).identifier);
+    if (ImGui::IsItemClicked()) {
+        // Then copy
+        ImGui::SetClipboardText(GetUniverse().get<components::Identifier>(selected_recipe).identifier.c_str());
+    }
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::TextColored(ImVec4(0.921568627, 0.392156863, 0.203921569, 1), "Click to copy identifier");
+        ImGui::EndTooltip();
+    }
     // Get inputs and outputs
     auto& recipe_comp = GetUniverse().get<components::Recipe>(selected_recipe);
     ImGui::TextFmt("Workers per unit of recipe: {}", recipe_comp.workers);
     ImGui::Text("Input");
+    ImGui::TextFmt("Input Default Cost: {}", GetLedgerCost(GetUniverse(), recipe_comp.input));
     ResourceMapTable(GetUniverse(), recipe_comp.input, "input_table");
+    ImGui::Separator();
     ImGui::Text("Capital Cost");
+    ImGui::TextFmt("Capital Default Cost: {}",
+                   util::LongToHumanString(GetLedgerCost(GetUniverse(), recipe_comp.capitalcost)));
     ResourceMapTable(GetUniverse(), recipe_comp.capitalcost, "capital_table");
+    ImGui::Separator();
     ImGui::Text("Output");
+    ImGui::TextFmt("Output Cost: {}",
+                   util::LongToHumanString(GetUniverse().get<components::Price>(recipe_comp.output.entity) *
+                                           recipe_comp.output.amount));
     ImGui::TextFmt("{}, {}", common::util::GetName(GetUniverse(), recipe_comp.output.entity),
-                   recipe_comp.output.amount);
+                   util::LongToHumanString(recipe_comp.output.amount));
+    if (ImGui::IsItemClicked()) {
+        // Then copy
+        ImGui::SetClipboardText(
+            GetUniverse().get<components::Identifier>(recipe_comp.output.entity).identifier.c_str());
+    }
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::TextColored(ImVec4(0.921568627, 0.392156863, 0.203921569, 1), "Click to copy identifier");
+        ImGui::EndTooltip();
+    }
+    // Some basic calculator so that we can make things easier
+    ImGui::Separator();
+    double expected_cost = GetLedgerCost(GetUniverse(), recipe_comp.input) * expected_production +
+                           GetLedgerCost(GetUniverse(), recipe_comp.capitalcost);
+    double expected_income = GetUniverse().get<components::Price>(recipe_comp.output.entity) *
+                             recipe_comp.output.amount * expected_production;
+    double expected_profit = expected_income - expected_cost;
+    ImGui::TextFmt("Expected Income: {}", util::LongToHumanString(expected_income));
+    ImGui::TextFmt("Expected Cost: {}", util::LongToHumanString(expected_cost));
+    ImGui::TextFmt("Expected Profit: {}", util::LongToHumanString(expected_profit));
+    ImGui::DragFloat("Amount Produced", &expected_production, 1, 0, 10000000);
 }
+
+void SysRecipeViewer::ResetSelection() { expected_production = 1; }
 }  // namespace cqsp::client::systems

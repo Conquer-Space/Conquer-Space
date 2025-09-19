@@ -16,9 +16,9 @@
  */
 #include <gtest/gtest.h>
 
+#include "common/actions/maneuver/hohmann.h"
 #include "common/components/orbit.h"
 #include "common/components/units.h"
-#include "common/actions/maneuver/hohmann.h"
 
 TEST(Hohmann, BasicHohmannTest) {
     namespace cqspt = cqsp::common::components::types;

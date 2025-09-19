@@ -14,24 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
+#include "client/scenes/objecteditor/imguidebugger.h"
 
-#include "common/components/economy.h"
-#include "common/components/resource.h"
-#include "common/systems/isimulationsystem.h"
+namespace cqsp::client::systems {
+void ImGuiDebugger::Init() {
 
-namespace cqsp::common::systems {
-class SysMarket : public ISimulationSystem {
- public:
-    explicit SysMarket(Game& game) : ISimulationSystem(game) {}
-    void DoSystem() override;
-    int Interval() override { return components::StarDate::DAY; }
+}
+void ImGuiDebugger::DoUI(int delta_time) {
+    ImGui::ShowMetricsWindow();
+}
+void ImGuiDebugger::DoUpdate(int delta_time) {
 
-    void Init() override;
-
- private:
-    void DeterminePrice(components::Market& market, entt::entity good_entity);
-
-    components::ResourceLedger base_prices;
-};
-}  // namespace cqsp::common::systems
+}
+}  // namespace cqsp::client::systems

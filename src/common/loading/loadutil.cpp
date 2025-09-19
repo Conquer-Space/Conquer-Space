@@ -68,6 +68,11 @@ bool LoadInitialValues(Universe& universe, const entt::entity& entity, const Hjs
 components::ResourceLedger HjsonToLedger(Universe& universe, Hjson::Value& hjson) {
     components::ResourceLedger stockpile;
     for (auto& input_good : hjson) {
+        if (!universe.goods.contains(input_good.first)) {
+            // Ideally we'd like to fail out of here but let's just fail silently here for now
+            SPDLOG_ERROR("Non-existent good {}, skipping!", input_good.first);
+            continue;
+        }
         stockpile[universe.goods[input_good.first]] = input_good.second;
     }
     return stockpile;

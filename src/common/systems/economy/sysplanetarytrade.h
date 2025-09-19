@@ -16,6 +16,7 @@
  */
 #pragma once
 
+#include "common/components/economy.h"
 #include "common/systems/isimulationsystem.h"
 #include "common/universe.h"
 
@@ -28,8 +29,13 @@ class SysPlanetaryTrade : public ISimulationSystem {
     explicit SysPlanetaryTrade(Game& game) : ISimulationSystem(game), initial_tick(true) {}
     void DoSystem() override;
     int Interval() override { return components::StarDate::DAY; }
+    void Init() override;
+
+    void DeterminePrice(components::Market& market, entt::entity good_entity);
 
  private:
     bool initial_tick;
+
+    components::ResourceLedger base_prices;
 };
 }  // namespace cqsp::common::systems
