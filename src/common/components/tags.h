@@ -14,8 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/headless/headlessmode.h"
+#pragma once
 
-namespace cqsp::client::headless {
-void HeadlessClient::run() {}
-}  // namespace cqsp::client::headless
+#include <vector>
+#include <string> 
+namespace cqsp::common::components {
+/**
+ * Tags for the entity.
+ */
+struct Tags {
+ public:
+    std::vector<std::string> tags;
+};
+}  // namespace cqsp::common::components

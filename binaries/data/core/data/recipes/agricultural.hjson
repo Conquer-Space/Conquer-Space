@@ -1,0 +1,58 @@
+# This file is part of Conquer-Space
+[
+    {
+        name: Farming
+        identifier: farming
+        input: {
+            tractors: 0.1
+        }
+        output: {
+            cereal_grains: 1000
+        }
+        cost: {
+            labor: {
+                worker: 400
+            }
+        }
+        tags: [
+            ratio
+            raw
+        ]
+    }
+    {
+        name: Meat Production
+        identifier: meat_production
+        input: {
+            cereal_grains: 90
+        }
+        output: {
+            meat: 60
+        }
+        cost: {
+            labor: {
+                worker: 500
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+    {
+        name: Fruit and Vegetable Production
+        identifier: fresh_food_production
+        input: {
+            tractors: 0.1
+        }
+        output: {
+            fruits_and_vegetables: 500
+        }
+        cost: {
+            labor: {
+                worker: 500
+            }
+        }
+        tags: [
+            ratio
+        ]
+    }
+]

@@ -17,9 +17,16 @@
         ]
         industry: [
             {
-                type: food
-                recipe: food_serv
+                recipe: farming
                 productivity: 300
+            }
+            {
+                recipe: meat_production
+                productivity: 600
+            }
+            {
+                recipe: fresh_food_production
+                productivity: 700
             }
         ]
     }

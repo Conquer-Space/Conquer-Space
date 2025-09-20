@@ -76,8 +76,6 @@ GoodLoader::GoodLoader(Universe& universe) : HjsonLoader(universe) {
 }
 
 bool GoodLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
-
-
     universe.emplace<components::Good>(entity);
 
     std::string identifier = values["identifier"].to_string();
@@ -141,7 +139,6 @@ RecipeLoader::RecipeLoader(Universe& universe) : HjsonLoader(universe) {
 }
 
 bool RecipeLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
-
     auto& recipe_component = universe.emplace<components::Recipe>(entity);
 
     Hjson::Value input_value = values["input"];
@@ -171,7 +168,7 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
         if (cost_map["labor"].defined()) {
             Hjson::Value labor = cost_map["labor"];
-            //recipe_component.capitalcost = HjsonToLedger(universe, labor);
+            // TODO(EhWhoAmI): Add different types of labor that is needed for this
             recipe_component.workers = labor["worker"].to_double();
         }
 

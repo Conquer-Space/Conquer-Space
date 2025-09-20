@@ -32,7 +32,7 @@
 #include "common/components/ships.h"
 #include "common/components/units.h"
 #include "common/systems/economy/sysagent.h"
-#include "common/systems/economy/sysfactory.h"
+#include "common/systems/economy/sysproduction.h"
 #include "common/systems/economy/sysfinance.h"
 #include "common/systems/economy/sysinfrastructure.h"
 #include "common/systems/economy/sysmarket.h"

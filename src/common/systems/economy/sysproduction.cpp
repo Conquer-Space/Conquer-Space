@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/economy/sysfactory.h"
+#include "common/systems/economy/sysproduction.h"
 
 #include <spdlog/spdlog.h>
 
@@ -81,6 +81,8 @@ void ProcessIndustries(Node& node) {
         }
         size.utilization = std::clamp(size.utilization, 0., size.size);
 
+        // Get the input goods and compare the 
+
         market.consumption += input;
         market.production += output;
 
@@ -140,6 +142,14 @@ void ProcessIndustries(Node& node) {
         double diff = std::clamp(log(fabs(costs.profit) * profit_multiplier), 0., 0.05);
         diff += 1 + universe.random->GetRandomNormal(0, 0.075);
         diff *= (costs.profit < 0) ? -1 : 1;
+
+        double prod_sum = recipe.input.GetSum();
+        for (auto& [good, amount] : recipe.input) {
+            if (market.chronic_shortages[good] > 0) {
+                // reduce the amount
+            }
+        }
+
         size.utilization = std::clamp(size.utilization * diff, 0.1 * size.size, size.size);
         // Now diff it by that much
         // Let the minimum the factory can produce be like 10% of the

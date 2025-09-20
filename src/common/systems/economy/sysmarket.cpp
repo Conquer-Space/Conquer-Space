@@ -67,7 +67,8 @@ void SysMarket::DoSystem() {
             } else {
                 // Remove it if it exists in it
                 if (market.chronic_shortages.contains(iterator->first)) {
-                    market.chronic_shortages.erase(iterator->first);
+                    market.chronic_shortages[iterator->first]--;
+                    market.chronic_shortages[iterator->first] = std::max(market.chronic_shortages[iterator->first], 0.);
                 }
             }
         }

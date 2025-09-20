@@ -11,4 +11,44 @@
             fluid
         ]
     }
+    {
+        name: Silicates
+        identifier: silicates
+        volume: 1 m3
+        mass: 1602 kg
+        price: 20
+        tags: [
+            raw
+        ]
+    }
+    {
+        name: Ferrous Metals
+        identifier: ferrous_metals
+        volume: 1 m3
+        mass: 7874 kg
+        price: 100
+        tags: [
+            raw
+        ]
+    }
+    {
+        name: Copper
+        identifier: copper
+        volume: 1 m3
+        mass: 8960 kg
+        price: 7000
+        tags: [
+            raw
+        ]
+    }
+    {
+        name: Coal
+        identifier: coal
+        volume: 1 m3
+        mass: 1500 kg
+        price: 50
+        tags: [
+            raw
+        ]
+    }
 ]
