@@ -84,6 +84,8 @@ void SysProvinceInformation::DoUI(int delta_time) {
             break;
     }
     ImGui::End();
+
+    IndustryListWindow();
 }
 
 void SysProvinceInformation::DoUpdate(int delta_time) {}
@@ -251,7 +253,6 @@ void SysProvinceInformation::DemographicsTab() {
 }
 
 void SysProvinceInformation::IndustryTab() {
-    IndustryListWindow();
     auto& city_industry = GetUniverse().get<components::IndustrialZone>(current_city);
     int height = 300;
     ImGui::TextFmt("Factories: {}", city_industry.industries.size());
@@ -323,15 +324,45 @@ void SysProvinceInformation::IndustryListWindow() {
     if (!city_factory_info) {
         return;
     }
-    ImGui::Begin("Name", &city_factory_info);
+    ImGui::Begin("Name##industry_list_window", &city_factory_info);
     // Loop through market industry
-    auto& city_industry = GetUniverse().get<components::IndustrialZone>(current_city);
+    if (ImGui::BeginTable("industry_list_table", 6, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Production Type");
+        ImGui::TableSetupColumn("Size");
+        ImGui::TableSetupColumn("Utilization");
+        ImGui::TableSetupColumn("Utilization Delta");
+        ImGui::TableSetupColumn("Revenue");
+        ImGui::TableSetupColumn("Profit");
+        ImGui::TableHeadersRow();
+        auto& city_industry = GetUniverse().get<components::IndustrialZone>(current_city);
+        for (entt::entity industry : city_industry.industries) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), industry));
+            if (ImGui::IsItemHovered()) {
+                systems::gui::EntityTooltip(GetUniverse(), industry);
+            }
 
-    for (entt::entity industry : city_industry.industries) {
-        ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), industry));
-        if (ImGui::IsItemHovered()) {
-            systems::gui::EntityTooltip(GetUniverse(), industry);
+            if (GetUniverse().all_of<components::IndustrySize>(industry)) {
+                auto& industry_component = GetUniverse().get<components::IndustrySize>(industry);
+
+                ImGui::TableSetColumnIndex(1);
+                ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(industry_component.size)));
+                ImGui::TableSetColumnIndex(2);
+                ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(industry_component.utilization)));
+                ImGui::TableSetColumnIndex(3);
+                ImGui::TextFmt("{}", industry_component.diff);
+            }
+            if (GetUniverse().all_of<components::CostBreakdown>(industry)) {
+                auto& income_component = GetUniverse().get<components::CostBreakdown>(industry);
+
+                ImGui::TableSetColumnIndex(4);
+                ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(income_component.revenue)));
+                ImGui::TableSetColumnIndex(5);
+                ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(income_component.profit)));
+            }
         }
+        ImGui::EndTable();
     }
     ImGui::End();
 }

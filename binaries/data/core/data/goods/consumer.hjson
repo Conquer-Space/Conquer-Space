@@ -64,7 +64,7 @@
         mass: 136 kg
         price: 400
         consumption: {
-            autonomous_consumption: 0.1
+            autonomous_consumption: 0.2
             marginal_propensity: 0.005
         }
         tags: [

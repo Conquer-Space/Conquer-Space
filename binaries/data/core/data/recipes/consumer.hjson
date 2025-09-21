@@ -1,8 +1,8 @@
 # This file is part of Conquer Space
 [
     {
-        name: groceries_production
-        identifier: groceries_manufacturqing
+        name: Groceries Production
+        identifier: groceries_manufacturing
         input: {
             meat: 1000
             cereal_grains: 1000

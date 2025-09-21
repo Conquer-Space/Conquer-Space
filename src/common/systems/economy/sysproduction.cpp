@@ -139,18 +139,25 @@ void ProcessIndustries(Node& node) {
         // but if we have close to zero profit, we want to take risks and move in a certain direction.
 
         // So we will add a random chance to increase or decrease profit
-        double diff = std::clamp(log(fabs(costs.profit) * profit_multiplier), 0., 0.05);
-        diff += 1 + universe.random->GetRandomNormal(0, 0.075);
-        diff *= (costs.profit < 0) ? -1 : 1;
-
+        bool shortage = false;
         double prod_sum = recipe.input.GetSum();
         for (auto& [good, amount] : recipe.input) {
             if (market.chronic_shortages[good] > 0) {
-                // reduce the amount
+                // Reduce the amount based off the weighted average of the input?
+                // Then reduce production over time or something
+                shortage = true;
+                break;
             }
         }
+        
+        double diff = 1 + universe.economy_config.production_config.max_factory_delta / (1 + std::exp(-(costs.profit * profit_multiplier))) - universe.economy_config.production_config.max_factory_delta / 2;
+        diff += universe.random->GetRandomNormal(0, 0.005);
+        if (shortage) {
+            diff -= std::max(universe.random->GetRandomNormal(0.1, 0.1), 0.02);
+        }
+        size.diff = diff;
 
-        size.utilization = std::clamp(size.utilization * diff, 0.1 * size.size, size.size);
+        size.utilization = std::clamp(size.utilization * diff, 0.05 * size.size, size.size);
         // Now diff it by that much
         // Let the minimum the factory can produce be like 10% of the
         // Pay the workers

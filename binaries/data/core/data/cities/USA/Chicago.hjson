@@ -28,6 +28,10 @@
                 recipe: fresh_food_production
                 productivity: 700
             }
+            {
+                recipe: groceries_manufacturing
+                productivity: 200
+            }
         ]
     }
 ]
