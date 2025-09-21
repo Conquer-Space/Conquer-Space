@@ -326,10 +326,11 @@ void SysProvinceInformation::IndustryListWindow() {
     }
     ImGui::Begin("Name##industry_list_window", &city_factory_info);
     // Loop through market industry
-    if (ImGui::BeginTable("industry_list_table", 7, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+    if (ImGui::BeginTable("industry_list_table", 8, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Production Type");
         ImGui::TableSetupColumn("Size");
         ImGui::TableSetupColumn("Utilization");
+        ImGui::TableSetupColumn("Utilization Delta");
         ImGui::TableSetupColumn("Utilization Delta");
         ImGui::TableSetupColumn("Hired Workers");
         ImGui::TableSetupColumn("Revenue");
@@ -362,18 +363,20 @@ void SysProvinceInformation::IndustryListWindow() {
                 } else {
                     ImGui::TextFmt(fmt::runtime(format_string), diff);
                 }
+                ImGui::TableSetColumnIndex(4);
+                ImGui::TextFmt(fmt::runtime(format_string), industry_component.diff_delta);
             }
             if (GetUniverse().all_of<components::Employer>(industry)) {
-                ImGui::TableSetColumnIndex(4);
+                ImGui::TableSetColumnIndex(5);
                 auto& employer = GetUniverse().get<components::Employer>(industry);
                 ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(employer.population_fufilled)));
             }
             if (GetUniverse().all_of<components::CostBreakdown>(industry)) {
                 auto& income_component = GetUniverse().get<components::CostBreakdown>(industry);
 
-                ImGui::TableSetColumnIndex(5);
-                ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(income_component.revenue)));
                 ImGui::TableSetColumnIndex(6);
+                ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(income_component.revenue)));
+                ImGui::TableSetColumnIndex(7);
                 ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(income_component.profit)));
             }
         }

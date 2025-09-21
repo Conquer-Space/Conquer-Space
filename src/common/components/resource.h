@@ -269,6 +269,7 @@ struct IndustrySize {
     // The utilization of the factory.
     double utilization;
     double diff;
+    double diff_delta;
 
     int workers;
     double wages = 10;

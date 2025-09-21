@@ -81,7 +81,7 @@ void ProcessIndustries(Node& node) {
         }
         size.utilization = std::clamp(size.utilization, 0., size.size);
 
-        // Get the input goods and compare the 
+        // Get the input goods and compare the
 
         market.consumption += input;
         market.production += output;
@@ -98,7 +98,7 @@ void ProcessIndustries(Node& node) {
         // the production
         costs.materialcosts = (input * market.price).GetSum();
         costs.wages = employer.population_fufilled * size.wages;
-        costs.transport = 0; //output_transport_cost + input_transport_cost;
+        costs.transport = 0;  //output_transport_cost + input_transport_cost;
 
         costs.revenue = (output * market.price).GetSum();
         costs.profit = costs.revenue - costs.maintenance - costs.materialcosts - costs.wages - costs.transport;
@@ -149,15 +149,22 @@ void ProcessIndustries(Node& node) {
                 break;
             }
         }
-        
-        double diff = 1 + universe.economy_config.production_config.max_factory_delta / (1 + std::exp(-(costs.profit * profit_multiplier))) - universe.economy_config.production_config.max_factory_delta / 2;
+
+        double diff = 1 +
+                      universe.economy_config.production_config.max_factory_delta /
+                          (1 + std::exp(-(costs.profit * profit_multiplier))) -
+                      universe.economy_config.production_config.max_factory_delta / 2;
         diff += universe.random->GetRandomNormal(0, 0.005);
         if (shortage) {
             diff -= std::max(universe.random->GetRandomNormal(0.1, 0.1), 0.02);
         }
         size.diff = diff;
 
-        size.utilization = std::clamp(size.utilization * diff, universe.economy_config.production_config.factory_min_utilization * size.size, size.size);
+        double past_util = size.utilization;
+        size.utilization =
+            std::clamp(size.utilization * diff,
+                       universe.economy_config.production_config.factory_min_utilization * size.size, size.size);
+        size.diff_delta = size.utilization - past_util;
         // Now diff it by that much
         // Let the minimum the factory can produce be like 10% of the
         // Pay the workers
