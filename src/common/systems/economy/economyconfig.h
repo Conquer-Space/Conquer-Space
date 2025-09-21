@@ -31,6 +31,7 @@ struct EconomyConfig {
     struct {
         double profit_multiplier = 0.001;
         double max_factory_delta = 0.01;
+        double factory_min_utilization = 0.05;
     } production_config;
 };
 }  // namespace cqsp::common::systems

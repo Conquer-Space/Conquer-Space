@@ -1,0 +1,22 @@
+# This file is part of Conquer Space
+[
+    {
+        name: Tractor Production
+        identifier: tractor_production
+        input: {
+            steel: 20
+        }
+        output: {
+            tractors: 5
+        }
+        cost: {
+            labor: {
+                worker: 3000
+            }
+        }
+        tags: [
+            ratio
+            capital
+        ]
+    }
+]

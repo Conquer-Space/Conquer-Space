@@ -1365,7 +1365,7 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
     float r = log(col) / log(max_dis);
     float g = 1 - r;
     float b = inc / 3.15;
-    glm::vec4 color_v = {1, 1, 1, 1};
+    glm::vec4 color_v = {1, 1, 1, 0.7};
     orbit_shader->Set("color", color_v);
 
     //orbit_shader->Set("color", glm::vec4(1, 1, 1, 1));

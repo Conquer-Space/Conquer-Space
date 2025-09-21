@@ -97,11 +97,11 @@ void ProcessIndustries(Node& node) {
         // there isnt any resources to upkeep the place, then stop
         // the production
         costs.materialcosts = (input * market.price).GetSum();
-        costs.wages = size.size * recipe.workers * size.wages;
+        costs.wages = employer.population_fufilled * size.wages;
+        costs.transport = 0; //output_transport_cost + input_transport_cost;
 
-        costs.revenue = (recipe.output * market.price).GetSum();
-        costs.profit = costs.revenue - costs.maintenance - costs.materialcosts - costs.wages;
-        costs.transport = output_transport_cost + input_transport_cost;
+        costs.revenue = (output * market.price).GetSum();
+        costs.profit = costs.revenue - costs.maintenance - costs.materialcosts - costs.wages - costs.transport;
 
         // Now try to maximize profit
         // Maximizing profit is a two fold thing
@@ -157,7 +157,7 @@ void ProcessIndustries(Node& node) {
         }
         size.diff = diff;
 
-        size.utilization = std::clamp(size.utilization * diff, 0.05 * size.size, size.size);
+        size.utilization = std::clamp(size.utilization * diff, universe.economy_config.production_config.factory_min_utilization * size.size, size.size);
         // Now diff it by that much
         // Let the minimum the factory can produce be like 10% of the
         // Pay the workers

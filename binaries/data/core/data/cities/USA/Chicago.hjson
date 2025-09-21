@@ -32,6 +32,14 @@
                 recipe: groceries_manufacturing
                 productivity: 200
             }
+            {
+                recipe: tractor_production
+                productivity: 20
+            }
+            {
+                recipe: steel_manufacturing
+                productivity: 200
+            }
         ]
     }
 ]

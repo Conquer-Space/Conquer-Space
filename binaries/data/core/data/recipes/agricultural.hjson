@@ -7,11 +7,11 @@
             tractors: 0.1
         }
         output: {
-            cereal_grains: 1000
+            cereal_grains: 3000
         }
         cost: {
             labor: {
-                worker: 400
+                worker: 100
             }
         }
         tags: [
@@ -26,11 +26,11 @@
             cereal_grains: 90
         }
         output: {
-            meat: 60
+            meat: 600
         }
         cost: {
             labor: {
-                worker: 500
+                worker: 250
             }
         }
         tags: [
@@ -44,11 +44,11 @@
             tractors: 0.1
         }
         output: {
-            fruits_and_vegetables: 500
+            fruits_and_vegetables: 1000
         }
         cost: {
             labor: {
-                worker: 500
+                worker: 250
             }
         }
         tags: [

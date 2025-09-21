@@ -1,8 +1,8 @@
 # This file is part of Conquer Space
 [
     {
-        name: Garments
-        identifier: garments
+        name: Textile Goods
+        identifier: textile_goods
         volume: 1 m3
         mass: 2000 kg
         price: 500

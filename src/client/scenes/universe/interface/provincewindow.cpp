@@ -326,11 +326,12 @@ void SysProvinceInformation::IndustryListWindow() {
     }
     ImGui::Begin("Name##industry_list_window", &city_factory_info);
     // Loop through market industry
-    if (ImGui::BeginTable("industry_list_table", 6, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+    if (ImGui::BeginTable("industry_list_table", 7, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Production Type");
         ImGui::TableSetupColumn("Size");
         ImGui::TableSetupColumn("Utilization");
         ImGui::TableSetupColumn("Utilization Delta");
+        ImGui::TableSetupColumn("Hired Workers");
         ImGui::TableSetupColumn("Revenue");
         ImGui::TableSetupColumn("Profit");
         ImGui::TableHeadersRow();
@@ -351,14 +352,28 @@ void SysProvinceInformation::IndustryListWindow() {
                 ImGui::TableSetColumnIndex(2);
                 ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(industry_component.utilization)));
                 ImGui::TableSetColumnIndex(3);
-                ImGui::TextFmt("{}", industry_component.diff);
+                double diff = industry_component.diff - 1;
+                diff *= 100;
+                const char* format_string = "{:.2f}%";
+                if (diff > 0) {
+                    ImGui::TextFmtColored(ImVec4(0, 0.75, 0, 1), fmt::runtime(format_string), diff);
+                } else if (diff < 0) {
+                    ImGui::TextFmtColored(ImVec4(0.75, 0, 0, 1), fmt::runtime(format_string), diff);
+                } else {
+                    ImGui::TextFmt(fmt::runtime(format_string), diff);
+                }
+            }
+            if (GetUniverse().all_of<components::Employer>(industry)) {
+                ImGui::TableSetColumnIndex(4);
+                auto& employer = GetUniverse().get<components::Employer>(industry);
+                ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(employer.population_fufilled)));
             }
             if (GetUniverse().all_of<components::CostBreakdown>(industry)) {
                 auto& income_component = GetUniverse().get<components::CostBreakdown>(industry);
 
-                ImGui::TableSetColumnIndex(4);
-                ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(income_component.revenue)));
                 ImGui::TableSetColumnIndex(5);
+                ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(income_component.revenue)));
+                ImGui::TableSetColumnIndex(6);
                 ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(income_component.profit)));
             }
         }
@@ -396,20 +411,6 @@ void SysProvinceInformation::IndustryTabGenericChild(const std::string& tabname,
     }
     ImGui::TextFmt("GDP: {}", LongToHumanString(GDP_calculation));
     ImGui::TextFmt("{} Count: {}", industryname, count);
-
-    ImGui::SameLine();
-    if (CQSPGui::SmallDefaultButton("List")) {
-        /* factory_list_panel = true;
-            industrylist.resize(0);
-            auto& city_industry =
-                GetUniverse()
-                    .get<cqspc::Industry>(selected_city_entity)
-                    .industries;
-            for (entt::entity production : city_industry) {
-                if (GetUniverse().all_of<T>(production))
-                    industrylist.push_back(production);
-            }*/
-    }
 
     ImGui::Text("Output");
     // Output table

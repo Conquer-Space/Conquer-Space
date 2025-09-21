@@ -270,8 +270,8 @@ struct IndustrySize {
     double utilization;
     double diff;
 
-    double workers;
-    double wages = 100;
+    int workers;
+    double wages = 10;
 };
 
 struct CostBreakdown {

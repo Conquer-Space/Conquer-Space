@@ -9,7 +9,7 @@
             fruits_and_vegetables: 1000
         }
         output: {
-            groceries: 200
+            groceries: 800
         }
         cost: {
             labor: {
