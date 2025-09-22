@@ -68,18 +68,18 @@ void ProcessIndustries(Node& node) {
         output[recipe.output.entity] = recipe.output.amount * size.utilization;
 
         // Figure out what's throttling production and maintenance
-        double limitedinput = CopyVals(input, market.history.back().sd_ratio).Min();
-        double limitedcapitalinput = CopyVals(capitalinput, market.history.back().sd_ratio).Min();
+        // double limitedinput = CopyVals(input, market.history.back().sd_ratio).Min();
+        // double limitedcapitalinput = CopyVals(capitalinput, market.history.back().sd_ratio).Min();
 
-        // Log how much manufacturing is being throttled by input
-        market[recipe.output.entity].inputratio = limitedinput;
+        // // Log how much manufacturing is being throttled by input
+        // market[recipe.output.entity].inputratio = limitedinput;
 
-        if (market.sd_ratio[recipe.output.entity] < 1.1) {
-            size.utilization *= 1 + (0.01) * std::fmin(limitedcapitalinput, 1);
-        } else {
-            size.utilization *= 0.99;
-        }
-        size.utilization = std::clamp(size.utilization, 0., size.size);
+        // if (market.sd_ratio[recipe.output.entity] < 1.1) {
+        //     size.utilization *= 1 + (0.01) * std::fmin(limitedcapitalinput, 1);
+        // } else {
+        //     size.utilization *= 0.99;
+        // }
+        // size.utilization = std::clamp(size.utilization, 0., size.size);
 
         // Get the input goods and compare the
 
@@ -159,6 +159,7 @@ void ProcessIndustries(Node& node) {
             diff -= std::max(universe.random->GetRandomNormal(0.1, 0.1), 0.02);
         }
         size.diff = diff;
+        size.shortage = shortage;
 
         double past_util = size.utilization;
         size.utilization =

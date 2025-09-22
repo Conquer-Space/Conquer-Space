@@ -272,6 +272,7 @@ struct IndustrySize {
     double diff_delta;
 
     int workers;
+    bool shortage = false;
     double wages = 10;
 };
 

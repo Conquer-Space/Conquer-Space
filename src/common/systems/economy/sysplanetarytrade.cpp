@@ -21,6 +21,7 @@
 
 #include "common/components/economy.h"
 #include "common/components/surface.h"
+
 namespace cqsp::common::systems {
 void SysPlanetaryTrade::DoSystem() {
     // Sort through all the districts, and figure out their trade
@@ -58,6 +59,7 @@ void SysPlanetaryTrade::DoSystem() {
                 market.price[good_entity] = p_market.price[good_entity] * market.market_access +
                                             (1 - market.market_access) * market.price[good_entity];
             }
+            // Also determine the supply for the market...
         }
     }
     initial_tick = false;

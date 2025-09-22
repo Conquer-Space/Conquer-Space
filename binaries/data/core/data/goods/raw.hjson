@@ -22,8 +22,8 @@
         ]
     }
     {
-        name: Ferrous Metals
-        identifier: ferrous_metals
+        name: Iron
+        identifier: iron
         volume: 1 m3
         mass: 7874 kg
         price: 100

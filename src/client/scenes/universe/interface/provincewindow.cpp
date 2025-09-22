@@ -349,7 +349,11 @@ void SysProvinceInformation::IndustryListWindow() {
                 auto& industry_component = GetUniverse().get<components::IndustrySize>(industry);
 
                 ImGui::TableSetColumnIndex(1);
-                ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(industry_component.size)));
+                if (!industry_component.shortage) {
+                    ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(industry_component.size)));
+                } else {
+                    ImGui::TextFmtColored(ImVec4(0.75, 0, 0, 1), "{}", LongToHumanString(static_cast<int64_t>(industry_component.size)));
+                }
                 ImGui::TableSetColumnIndex(2);
                 ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(industry_component.utilization)));
                 ImGui::TableSetColumnIndex(3);
@@ -364,7 +368,7 @@ void SysProvinceInformation::IndustryListWindow() {
                     ImGui::TextFmt(fmt::runtime(format_string), diff);
                 }
                 ImGui::TableSetColumnIndex(4);
-                ImGui::TextFmt(fmt::runtime(format_string), industry_component.diff_delta);
+                ImGui::TextFmt("{}", industry_component.diff_delta);
             }
             if (GetUniverse().all_of<components::Employer>(industry)) {
                 ImGui::TableSetColumnIndex(5);
