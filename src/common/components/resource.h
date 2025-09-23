@@ -183,6 +183,11 @@ class ResourceLedger : private LedgerMap {
     ResourceLedger SafeDivision(const ResourceLedger&);
 
     /// <summary>
+    /// Returns a copy of the vector divided by the indicated vector, with division by zero resulting in the specified value
+    /// </summary>
+    ResourceLedger SafeDivision(const ResourceLedger&, double);
+
+    /// <summary>
     /// Returns a copy of the vector divided by the indicated vector, with
     /// division by zero resulting in infiniy
     /// </summary>

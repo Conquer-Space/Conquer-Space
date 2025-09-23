@@ -366,6 +366,21 @@ ResourceLedger ResourceLedger::SafeDivision(const ResourceLedger &other) {
     }
     return ledger;
 }
+
+ResourceLedger ResourceLedger::SafeDivision(const ResourceLedger &other, double value) {
+    ResourceLedger ledger;
+    ledger = *this;
+    for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
+        if (iterator->second == 0) {
+            ledger[iterator->first] = value;
+        } else if (ledger[iterator->first] == 0) {
+            ledger[iterator->first] = 0;
+        } else {
+            ledger[iterator->first] = ledger[iterator->first] / iterator->second;
+        }
+    }
+    return ledger;
+}
 /// <summary>
 /// Finds the smallest value in the Ledger.
 /// </summary>

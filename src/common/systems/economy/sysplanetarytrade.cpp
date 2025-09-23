@@ -59,7 +59,25 @@ void SysPlanetaryTrade::DoSystem() {
                 market.price[good_entity] = p_market.price[good_entity] * market.market_access +
                                             (1 - market.market_access) * market.price[good_entity];
             }
-            // Also determine the supply for the market...
+
+            // Determine supply and demand for the market
+            market.trade.clear();
+            // Now loop through the demand and stuff
+            //for ()
+            // market.demand() / p_market.demand() * p_market.supply()
+            for (auto& [good, value] : market.supply()) {
+                if (p_market.supply()[good] == 0) {
+                    continue;
+                }
+                market.trade[good] -= value / p_market.supply()[good] * p_market.demand()[good];
+            }
+
+            for (auto& [good, value] : market.demand()) {
+                if (p_market.demand()[good] == 0) {
+                    continue;
+                }
+                market.trade[good] += (value / p_market.demand()[good] * p_market.supply()[good]);
+            }
         }
     }
     initial_tick = false;
