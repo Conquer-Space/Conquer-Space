@@ -1,31 +1,21 @@
 # This file is part of Conquer Space
-#
 [
     {
-        name: Fuel Oil
-        identifier: fuel_manufacturing
+        name: Steel Manufacturing
+        identifier: steel_manufacturing
         input: {
-            crude_oil: 50
-            structures: 0.1
-            industrial: 0.3
-            transport: 0.2
+            iron: 100
+            coal: 20
         }
         output: {
-            fuel: 100
+            steel: 120
         }
         cost: {
-            capital: {
-                structures: 1
-                industrial: 3
-                transport: 2
-            }
             labor: {
-                worker: 1000
+                worker: 1500
             }
         }
         tags: [
-            ratio
-            raw
         ]
     }
 ]

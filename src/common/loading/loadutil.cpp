@@ -22,9 +22,9 @@
 #include <string>
 
 #include "common/components/name.h"
+#include "common/components/tags.h"
 
 namespace cqsp::common::loading {
-
 namespace types = components::types;
 using types::UnitType;
 
@@ -59,9 +59,30 @@ bool LoadDescription(Universe& universe, const entt::entity& entity, const Hjson
     return true;
 }
 
+bool LoadTags(Universe& universe, const entt::entity& entity, const Hjson::Value& value) {
+    if (value["tags"].type() != Hjson::Type::Vector) {
+        return false;
+    }
+    std::vector<std::string> tags;
+    for (int i = 0; i < value["tags"].size(); i++) {
+        Hjson::Value tag_value = value["tags"][i];
+        if (tag_value.type() != Hjson::Type::String) {
+            // We should probably fail
+            return false;
+        }
+        tags.push_back(tag_value.to_string());
+    }
+    if (!tags.empty()) {
+        auto& tag_component = universe.emplace_or_replace<components::Tags>(entity);
+        tag_component.tags = std::move(tags);
+    }
+    return true;
+}
+
 bool LoadInitialValues(Universe& universe, const entt::entity& entity, const Hjson::Value& value) {
     LoadName(universe, entity, value);
     LoadDescription(universe, entity, value);
+    LoadTags(universe, entity, value);
     return LoadIdentifier(universe, entity, value);
 }
 

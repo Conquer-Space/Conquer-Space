@@ -33,6 +33,7 @@ namespace cqsp::common::loading {
 bool LoadName(Universe& universe, const entt::entity& entity, const Hjson::Value& value);
 bool LoadIdentifier(Universe& universe, const entt::entity& entity, const Hjson::Value& value);
 bool LoadDescription(Universe& universe, const entt::entity& entity, const Hjson::Value& value);
+bool LoadTags(Universe& universe, const entt::entity& entity, const Hjson::Value& value);
 
 /// <summary>
 /// Loads all the values that should be on every single data type

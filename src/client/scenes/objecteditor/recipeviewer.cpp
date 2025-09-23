@@ -162,6 +162,7 @@ void SysRecipeViewer::RecipeViewerRight() {
     ImGui::TextFmt("Expected Income: {}", util::LongToHumanString(expected_income));
     ImGui::TextFmt("Expected Cost: {}", util::LongToHumanString(expected_cost));
     ImGui::TextFmt("Expected Profit: {}", util::LongToHumanString(expected_profit));
+    ImGui::TextFmt("P/L ratio: {}", expected_income/expected_cost);
     ImGui::DragFloat("Amount Produced", &expected_production, 1, 0, 10000000);
 }
 

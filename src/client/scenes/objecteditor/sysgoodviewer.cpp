@@ -20,6 +20,7 @@
 #include "common/components/economy.h"
 #include "common/components/name.h"
 #include "common/components/resource.h"
+#include "common/components/tags.h"
 #include "common/util/nameutil.h"
 
 namespace cqsp::client::systems {
@@ -91,12 +92,12 @@ void SysGoodViewer::GoodViewerRight() {
     }
     ImGui::Separator();
     ImGui::TextFmt("Tags");
-    ImGui::BeginChild("Tags_a");
-    if (GetUniverse().any_of<components::Mineral>(selected_good)) {
-        ImGui::TextFmt("mineral");
-    }
-    if (GetUniverse().any_of<components::CapitalGood>(selected_good)) {
-        ImGui::TextFmt("capitalgood");
+    if (GetUniverse().any_of<components::Tags>(selected_good)) {
+        auto& tag_component = GetUniverse().get<components::Tags>(selected_good);
+        for (auto& tag : tag_component.tags) {
+            // Now print tags
+            ImGui::TextFmt("{}", tag);
+        }
     }
     if (GetUniverse().any_of<components::Price>(selected_good)) {
         ImGui::Separator();
@@ -122,7 +123,6 @@ void SysGoodViewer::GoodViewerRight() {
     // Find all recipes that lead up to this
     ImGui::Separator();
     RecipeTable();
-    ImGui::EndChild();
 }
 
 void SysGoodViewer::RecipeTable() {

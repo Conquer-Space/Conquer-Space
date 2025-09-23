@@ -1,0 +1,24 @@
+# This file is part of Conquer Space
+[
+    {
+        name: Groceries Production
+        identifier: groceries_manufacturing
+        input: {
+            meat: 1000
+            cereal_grains: 1000
+            fruits_and_vegetables: 1000
+        }
+        output: {
+            groceries: 800
+        }
+        cost: {
+            labor: {
+                worker: 1500
+            }
+        }
+        tags: [
+            ratio
+            raw
+        ]
+    }
+]

@@ -1,0 +1,43 @@
+# This file is part of Conquer Space
+[
+    {
+        name: Cereal Grains
+        identifier: cereal_grains
+        volume: 1 m3
+        mass: 1200 kg
+        price: 20
+        tags: [
+            agricultural
+        ]
+    }
+    {
+        name: Fruits and Vegetables
+        identifier: fruits_and_vegetables
+        volume: 1 m3
+        mass: 1300 kg
+        price: 30
+        tags: [
+            agricultural
+        ]
+    }
+    {
+        name: Meat
+        identifier: meat
+        volume: 1 m3
+        mass: 1500 kg
+        price: 45
+        tags: [
+            agricultural
+        ]
+    }
+    {
+        name: Oilseeds
+        identifier: oilseeds
+        volume: 1 m3
+        mass: 1500 kg
+        price: 45
+        tags: [
+            agricultural
+        ]
+    }
+]

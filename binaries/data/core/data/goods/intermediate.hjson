@@ -1,0 +1,24 @@
+# This file is part of Conquer Space
+[
+    {
+        name: Plastic
+        identifier: plastic
+        volume: 1 m3
+        mass: 500 kg
+        price: 300
+        tags: [
+            intermediate
+        ]
+    }
+    {
+        name: Steel
+        identifier: steel
+        volume: 1 m3
+        mass: 7850 kg
+        price: 700
+        desc: "Steel is an alloy of carbon and iron that displays improved mechanical properties"
+        tags: [
+            intermediate
+        ]
+    }
+]

@@ -1,0 +1,98 @@
+# This file is part of Conquer Space
+[
+    {
+        name: Plastic Manufacturing
+        identifier: plastic_manufacturing
+        input: {
+            crude_oil: 1000
+        }
+        output: {
+            plastic: 1000
+        }
+        cost: {
+            labor: {
+                worker: 50
+            }
+        }
+        tags: [
+            ratio
+            raw
+        ]
+    }
+    {
+        name: Concrete Manufacturing
+        identifier: concrete_manufacturing
+        input: {
+            silicates: 1000
+        }
+        output: {
+            concrete: 500
+        }
+        cost: {
+            labor: {
+                worker: 100
+            }
+        }
+        tags: [
+            ratio
+            raw
+        ]
+    }
+    {
+        name: Gasoline Production
+        identifier: gasoline_production
+        input: {
+            crude_oil: 1000
+        }
+        output: {
+            gasoline: 1000
+        }
+        cost: {
+            labor: {
+                worker: 100
+            }
+        }
+        tags: [
+            ratio
+            raw
+        ]
+    }
+    {
+        name: Iron Mining
+        identifier: iron_mining
+        input: {
+            heavy_machinery: 0.1
+        }
+        output: {
+            iron: 1000
+        }
+        cost: {
+            labor: {
+                worker: 100
+            }
+        }
+        tags: [
+            ratio
+            raw
+        ]
+    }
+    {
+        name: Coal Mining
+        identifier: coal_mining
+        input: {
+            heavy_machinery: 0.1
+        }
+        output: {
+            coal: 800
+        }
+        cost: {
+            labor: {
+                worker: 100
+            }
+        }
+        tags: [
+            ratio
+            raw
+        ]
+    }
+]

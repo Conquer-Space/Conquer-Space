@@ -22,7 +22,7 @@ The agent will try to balance their inputs and outputs so that they stay profita
 
 General code locations:
  - [common/components/resource.h](https://github.com/Conquer-Space/Conquer-Space/blob/main/src/common/components/resource.h#L237) For the components of the 
-  - [cqsp::common::systems::SysProduction](https://github.com/Conquer-Space/Conquer-Space/blob/main/src/common/systems/economy/sysfactory.cpp) For the implementation in the resource generation of the factories
+  - [cqsp::common::systems::SysProduction](https://github.com/Conquer-Space/Conquer-Space/blob/main/src/common/systems/economy/sysproduction.cpp) For the implementation in the resource generation of the factories
 
 ### Notes:
 I think we should add multiple resource outputs, and it should not be too hard to implement it.

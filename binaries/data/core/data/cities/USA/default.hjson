@@ -64,16 +64,12 @@
         ]
         industry: [
             {
-                recipe: computer_man
-                productivity: 1
+                recipe: iron_mining
+                productivity: 10
             }
             {
-                recipe: industrial_equipment_cap
-                productivity: 1
-            }
-            {
-                recipe: construction_cap
-                productivity: 1
+                recipe: coal_mining
+                productivity: 20
             }
         ]
     }

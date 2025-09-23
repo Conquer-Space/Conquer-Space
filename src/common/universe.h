@@ -27,6 +27,7 @@
 #include <entt/entt.hpp>
 
 #include "common/actions/names/namegenerator.h"
+#include "common/systems/economy/economyconfig.h"
 #include "common/components/stardate.h"
 #include "common/util/random/random.h"
 
@@ -79,6 +80,8 @@ class Universe : public entt::registry {
     auto nodes() {
         return this->template view<Components...>() | nodeTransform();
     }
+
+    systems::EconomyConfig economy_config;
 
  private:
     bool to_tick = false;

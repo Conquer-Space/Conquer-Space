@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/economy/sysfactory.h"
+#include "common/systems/economy/sysproduction.h"
 
 #include <spdlog/spdlog.h>
 
@@ -68,18 +68,20 @@ void ProcessIndustries(Node& node) {
         output[recipe.output.entity] = recipe.output.amount * size.utilization;
 
         // Figure out what's throttling production and maintenance
-        double limitedinput = CopyVals(input, market.history.back().sd_ratio).Min();
-        double limitedcapitalinput = CopyVals(capitalinput, market.history.back().sd_ratio).Min();
+        // double limitedinput = CopyVals(input, market.history.back().sd_ratio).Min();
+        // double limitedcapitalinput = CopyVals(capitalinput, market.history.back().sd_ratio).Min();
 
-        // Log how much manufacturing is being throttled by input
-        market[recipe.output.entity].inputratio = limitedinput;
+        // // Log how much manufacturing is being throttled by input
+        // market[recipe.output.entity].inputratio = limitedinput;
 
-        if (market.sd_ratio[recipe.output.entity] < 1.1) {
-            size.utilization *= 1 + (0.01) * std::fmin(limitedcapitalinput, 1);
-        } else {
-            size.utilization *= 0.99;
-        }
-        size.utilization = std::clamp(size.utilization, 0., size.size);
+        // if (market.sd_ratio[recipe.output.entity] < 1.1) {
+        //     size.utilization *= 1 + (0.01) * std::fmin(limitedcapitalinput, 1);
+        // } else {
+        //     size.utilization *= 0.99;
+        // }
+        // size.utilization = std::clamp(size.utilization, 0., size.size);
+
+        // Get the input goods and compare the
 
         market.consumption += input;
         market.production += output;
@@ -95,11 +97,11 @@ void ProcessIndustries(Node& node) {
         // there isnt any resources to upkeep the place, then stop
         // the production
         costs.materialcosts = (input * market.price).GetSum();
-        costs.wages = size.size * recipe.workers * size.wages;
+        costs.wages = employer.population_fufilled * size.wages;
+        costs.transport = 0;  //output_transport_cost + input_transport_cost;
 
-        costs.revenue = (recipe.output * market.price).GetSum();
-        costs.profit = costs.revenue - costs.maintenance - costs.materialcosts - costs.wages;
-        costs.transport = output_transport_cost + input_transport_cost;
+        costs.revenue = (output * market.price).GetSum();
+        costs.profit = costs.revenue - costs.maintenance - costs.materialcosts - costs.wages - costs.transport;
 
         // Now try to maximize profit
         // Maximizing profit is a two fold thing
@@ -137,10 +139,33 @@ void ProcessIndustries(Node& node) {
         // but if we have close to zero profit, we want to take risks and move in a certain direction.
 
         // So we will add a random chance to increase or decrease profit
-        double diff = std::clamp(log(fabs(costs.profit) * profit_multiplier), 0., 0.05);
-        diff += 1 + universe.random->GetRandomNormal(0, 0.075);
-        diff *= (costs.profit < 0) ? -1 : 1;
-        size.utilization = std::clamp(size.utilization * diff, 0.1 * size.size, size.size);
+        bool shortage = false;
+        double prod_sum = recipe.input.GetSum();
+        for (auto& [good, amount] : recipe.input) {
+            if (market.chronic_shortages[good] > 0) {
+                // Reduce the amount based off the weighted average of the input?
+                // Then reduce production over time or something
+                shortage = true;
+                break;
+            }
+        }
+
+        double diff = 1 +
+                      universe.economy_config.production_config.max_factory_delta /
+                          (1 + std::exp(-(costs.profit * profit_multiplier))) -
+                      universe.economy_config.production_config.max_factory_delta / 2;
+        diff += universe.random->GetRandomNormal(0, 0.005);
+        if (shortage) {
+            diff -= std::max(universe.random->GetRandomNormal(0.1, 0.1), 0.02);
+        }
+        size.diff = diff;
+        size.shortage = shortage;
+
+        double past_util = size.utilization;
+        size.utilization =
+            std::clamp(size.utilization * diff,
+                       universe.economy_config.production_config.factory_min_utilization * size.size, size.size);
+        size.diff_delta = size.utilization - past_util;
         // Now diff it by that much
         // Let the minimum the factory can produce be like 10% of the
         // Pay the workers

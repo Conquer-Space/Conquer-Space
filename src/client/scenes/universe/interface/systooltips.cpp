@@ -80,6 +80,7 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
     if (universe.all_of<components::IndustrySize>(entity)) {
         ImGui::TextFmt("Size: {}", universe.get<components::IndustrySize>(entity).size);
         ImGui::TextFmt("Utilization: {}", universe.get<components::IndustrySize>(entity).utilization);
+        ImGui::TextFmt("Last Tick Difference: {}", universe.get<components::IndustrySize>(entity).diff);
     }
 
     if (universe.all_of<components::infrastructure::PowerConsumption>(entity)) {

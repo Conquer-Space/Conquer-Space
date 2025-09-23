@@ -67,7 +67,8 @@ void SysMarket::DoSystem() {
             } else {
                 // Remove it if it exists in it
                 if (market.chronic_shortages.contains(iterator->first)) {
-                    market.chronic_shortages.erase(iterator->first);
+                    market.chronic_shortages[iterator->first]--;
+                    market.chronic_shortages[iterator->first] = std::max(market.chronic_shortages[iterator->first], 0.);
                 }
             }
         }
@@ -82,7 +83,7 @@ void SysMarket::DeterminePrice(Market& market, entt::entity good_entity) {
     // Now just adjust cost
     // Get parent market
     price = base_prices[good_entity] *
-            (1 + 0.75 * std::clamp((demand - supply) / (std::max(0.001, std::min(demand, supply))), -1., 1.));
+            (1. + GetUniverse().economy_config.market_config.base_price_deviation * std::clamp((demand - supply) / (std::max(0.001, std::min(demand, supply))), -1., 1.));
 }
 
 void SysMarket::Init() {
