@@ -27,6 +27,7 @@
 #include "common/components/infrastructure.h"
 #include "common/components/name.h"
 #include "common/components/organizations.h"
+#include "common/components/population.h"
 #include "common/components/surface.h"
 #include "common/util/profiler.h"
 
@@ -47,8 +48,8 @@ void ProcessIndustries(Node& node) {
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
 
     auto& industries = node.get<components::IndustrialZone>();
-    Node populationnode = node.Convert(node.get<components::Settlement>().population.front());
-    auto& population_wallet = populationnode.get_or_emplace<components::Wallet>();
+    Node population_node = node.Convert(node.get<components::Settlement>().population.front());
+    auto& population_wallet = population_node.get_or_emplace<components::Wallet>();
     for (Node industrynode : node.Convert(industries.industries)) {
         // Process imdustries
         // Industries MUST have production and a linked recipe
@@ -169,7 +170,11 @@ void ProcessIndustries(Node& node) {
         // Now diff it by that much
         // Let the minimum the factory can produce be like 10% of the
         // Pay the workers
+        population_node.get<components::PopulationSegment>().income += costs.wages;
+        population_node.get<components::PopulationSegment>().employed_amount += employer.population_fufilled;
         population_wallet += costs.wages;
+        // If we have left over income we should improve the wages a little bit
+        // There should also have a bank to reinvest into the company
     }
 }
 

@@ -224,21 +224,31 @@ void SysProvinceInformation::CityIndustryTabs() {
 void SysProvinceInformation::DemographicsTab() {
     auto& settlement = GetUniverse().get<Settlement>(current_city);
     for (auto& seg_entity : settlement.population) {
-        auto& segment_comp = GetUniverse().get<PopulationSegment>(seg_entity);
-        ImGui::TextFmt("Population: {}", LongToHumanString(segment_comp.population));
+        auto& pop_segement = GetUniverse().get<PopulationSegment>(seg_entity);
+        ImGui::TextFmt("Population: {}", LongToHumanString(pop_segement.population));
 
         gui::EntityTooltip(GetUniverse(), seg_entity);
         if (GetUniverse().all_of<components::Hunger>(seg_entity)) {
             ImGui::TextFmt("Hungry");
         }
-        ImGui::TextFmt("Labor Force: {}", LongToHumanString(segment_comp.labor_force));
-        ImGui::TextFmt("Standard of Living: {}", segment_comp.standard_of_living);
+
+        ImGui::TextFmt("Spending: {}", LongToHumanString(static_cast<uint64_t>(pop_segement.spending)));
+        ImGui::TextFmt("Spending per capita: {}", pop_segement.spending / pop_segement.population);
+        ImGui::TextFmt("Income: {}", LongToHumanString(static_cast<uint64_t>(pop_segement.income)));
+        ImGui::TextFmt("Income per capita: {}", pop_segement.income / pop_segement.population);
+
+        ImGui::TextFmt("Labor Force: {}", LongToHumanString(pop_segement.labor_force));
+        ImGui::TextFmt("Employed: {}", LongToHumanString(pop_segement.employed_amount));
+        ImGui::TextFmt("Unemployment Rate: {:.2f}", (1. - static_cast<double>(pop_segement.employed_amount) /
+                                                              static_cast<double>(pop_segement.labor_force)) *
+                                                        100.);
+        ImGui::TextFmt("Standard of Living: {}", pop_segement.standard_of_living);
 
         // Get spending for population
         DisplayWallet(seg_entity);
         if (GetUniverse().all_of<Wallet>(seg_entity)) {
             Wallet& wallet = GetUniverse().get<Wallet>(seg_entity);
-            ImGui::TextFmt("GDP per capita: {}", wallet.GetGDPChange() / segment_comp.population);
+            ImGui::TextFmt("GDP per capita: {}", wallet.GetGDPChange() / pop_segement.population);
         }
 
         if (ImGui::CollapsingHeader("Resource Consumption")) {

@@ -25,8 +25,12 @@ struct PopulationSegment {
     /// The labor force must always be less than the population
     /// population - labor_force = dependents
     uint64_t labor_force;
+    uint64_t employed_amount = 0;
     // Just an index for the amount of marginal propensity that we want to consume...
     double standard_of_living = 0;
+    // Spending last tick
+    double spending;
+    double income;
     // How much percent of their income they will will put towards savings
     double saving_ratio = 0.1;
 };

@@ -120,6 +120,9 @@ void ProcessSettlement(Universe& universe, entt::entity settlement, ResourceCons
             cost += extra_cost;
         }
 
+        segment.spending = cost;
+        segment.income = 0;
+        segment.employed_amount = 0;
         wallet -= cost;  // Spend, even if it puts the pop into debt
 
         // TODO(EhWhoAmI): Don't inject cash, take the money from the government
