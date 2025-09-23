@@ -65,7 +65,11 @@
         industry: [
             {
                 recipe: iron_mining
-                productivity: 100
+                productivity: 10
+            }
+            {
+                recipe: coal_mining
+                productivity: 20
             }
         ]
     }

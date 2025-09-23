@@ -5,7 +5,7 @@
         identifier: steel_manufacturing
         input: {
             iron: 100
-            copper: 20
+            coal: 20
         }
         output: {
             steel: 120

@@ -26,7 +26,7 @@
             }
             {
                 recipe: fresh_food_production
-                productivity: 700
+                productivity: 250
             }
             {
                 recipe: groceries_manufacturing
@@ -39,6 +39,10 @@
             {
                 recipe: steel_manufacturing
                 productivity: 200
+            }
+            {
+                recipe: machinery_production
+                productivity: 50
             }
         ]
     }

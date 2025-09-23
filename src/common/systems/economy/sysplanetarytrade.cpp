@@ -44,8 +44,8 @@ void SysPlanetaryTrade::DoSystem() {
         for (entt::entity habitation : habitation.settlements) {
             auto& market = GetUniverse().get<components::Market>(habitation);
 
-            p_market.supply() += market.supply();
-            p_market.demand() += market.demand();
+            p_market.supply() += market.production;
+            p_market.demand() += market.consumption;
         }
 
         for (entt::entity good_entity : goodsview) {
@@ -62,21 +62,20 @@ void SysPlanetaryTrade::DoSystem() {
 
             // Determine supply and demand for the market
             market.trade.clear();
-            // Now loop through the demand and stuff
-            //for ()
-            // market.demand() / p_market.demand() * p_market.supply()
-            for (auto& [good, value] : market.supply()) {
+            for (auto& [good, supply] : market.supply()) {
                 if (p_market.supply()[good] == 0) {
                     continue;
                 }
-                market.trade[good] -= value / p_market.supply()[good] * p_market.demand()[good];
+                // Remove local production so that we don't confound this with our local production
+                market.trade[good] -= std::max((supply / p_market.supply()[good] * p_market.demand()[good]) - market.consumption[good], 0.);
             }
 
             for (auto& [good, value] : market.demand()) {
                 if (p_market.demand()[good] == 0) {
                     continue;
                 }
-                market.trade[good] += (value / p_market.demand()[good] * p_market.supply()[good]);
+                // Remove local consumption so that we don't confound this with local production
+                market.trade[good] += std::max((value / p_market.demand()[good] * p_market.supply()[good]) - market.production[good], 0.);
             }
         }
     }

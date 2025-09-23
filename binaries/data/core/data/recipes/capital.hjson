@@ -19,4 +19,23 @@
             capital
         ]
     }
+    {
+        name: Heavy Machinery Production
+        identifier: machinery_production
+        input: {
+            steel: 20
+        }
+        output: {
+            heavy_machinery: 5
+        }
+        cost: {
+            labor: {
+                worker: 3000
+            }
+        }
+        tags: [
+            ratio
+            capital
+        ]
+    }
 ]
