@@ -118,6 +118,15 @@ void ProcessSettlement(Universe& universe, entt::entity settlement, ResourceCons
             // Check if there's enough on the market
             // Add the transport costs, and because they're importing it, we only account this
             cost += extra_cost;
+
+            double spending_ratio = (segment.income - segment.spending) / segment.income;
+            if (spending_ratio > 0.1) {
+                // Then we can increase SOL by 0.1
+                segment.standard_of_living += 0.1 + segment.standard_of_living * 0.1;
+            } else if (spending_ratio < 0.1) {
+                segment.standard_of_living -= 0.1 + segment.standard_of_living * 0.1;
+                segment.standard_of_living = std::max(segment.standard_of_living, 1.);
+            }
         }
 
         segment.spending = cost;

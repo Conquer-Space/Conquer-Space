@@ -175,6 +175,13 @@ void ProcessIndustries(Node& node) {
         population_wallet += costs.wages;
         // If we have left over income we should improve the wages a little bit
         // There should also have a bank to reinvest into the company
+        double pl_ratio = costs.profit / costs.revenue;
+        if (pl_ratio > 0.1) {
+            // Now we can expand it and improve our wages as well
+            size.wages *= 1.05;
+        } else if (pl_ratio < -0.1) {
+            size.wages *= 0.95;
+        }
     }
 }
 
