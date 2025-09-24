@@ -21,4 +21,25 @@
             raw
         ]
     }
+    {
+        name: Furniture Manufacturing
+        identifier: furniture_manufacturing
+        input: {
+            lumber: 1000
+            iron: 200
+            steel: 50
+        }
+        output: {
+            furniture: 800
+        }
+        cost: {
+            labor: {
+                worker: 1500
+            }
+        }
+        tags: [
+            ratio
+            raw
+        ]
+    }
 ]

@@ -95,4 +95,23 @@
             raw
         ]
     }
+    {
+        name: Logging
+        identifier: logging
+        input: {
+            heavy_machinery: 0.1
+        }
+        output: {
+            lumber: 800
+        }
+        cost: {
+            labor: {
+                worker: 400
+            }
+        }
+        tags: [
+            ratio
+            raw
+        ]
+    }
 ]

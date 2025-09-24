@@ -13,12 +13,13 @@
         population: [
             {
                 size: 2896016
+                sol: 1000
             }
         ]
         industry: [
             {
                 recipe: farming
-                productivity: 300
+                productivity: 200
             }
             {
                 recipe: meat_production
@@ -42,7 +43,7 @@
             }
             {
                 recipe: machinery_production
-                productivity: 50
+                productivity: 20
             }
         ]
     }
