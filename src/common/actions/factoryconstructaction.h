@@ -45,7 +45,7 @@ entt::entity OrderConstructionFactory(Universe& universe, entt::entity city, ent
 /// <param name="recipe"></param>
 /// <param name="productivity"></param>
 /// <returns>The factory entity created</returns>
-entt::entity CreateFactory(Universe& universe, entt::entity city, entt::entity recipe, int productivity);
+entt::entity CreateFactory(Universe& universe, entt::entity city, entt::entity recipe, int productivity, double wages);
 
 components::ResourceLedger GetFactoryCost(Universe& universe, entt::entity city, entt::entity recipe, int productivity);
 

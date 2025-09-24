@@ -4,11 +4,11 @@
         name: Textile Goods
         identifier: textile_goods
         volume: 1 m3
-        mass: 2000 kg
+        mass: 500 kg
         price: 500
         consumption: {
-            autonomous_consumption: 0.005
-            marginal_propensity: 0.0005
+            autonomous_consumption: 1
+            marginal_propensity: 0.2
         }
         tags: [
             consumer
@@ -21,8 +21,8 @@
         mass: 500 kg
         price: 300
         consumption: {
-            autonomous_consumption: 0.001
-            marginal_propensity: 0.00001
+            autonomous_consumption: 5
+            marginal_propensity: 1
         }
         tags: [
             consumer
@@ -36,8 +36,8 @@
         price: 300
         description: Household supplies for cleaning and maintainence of a household
         consumption: {
-            autonomous_consumption: 0.01
-            marginal_propensity: 0.0005
+            autonomous_consumption: 10
+            marginal_propensity: 5
         }
         tags: [
             consumer
@@ -50,8 +50,8 @@
         mass: 850 kg
         price: 500
         consumption: {
-            autonomous_consumption: 0.02
-            marginal_propensity: 0.001
+            autonomous_consumption: 50
+            marginal_propensity: 10
         }
         tags: [
             consumer
@@ -64,8 +64,8 @@
         mass: 136 kg
         price: 400
         consumption: {
-            autonomous_consumption: 0.2
-            marginal_propensity: 0.005
+            autonomous_consumption: 20
+            marginal_propensity: 2
         }
         tags: [
             consumer

@@ -69,6 +69,11 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
                 standard_of_living = population_seg["sol"].to_double();
             }
 
+            double balance = 0;
+            if (!population_seg["balance"].empty()) {
+                balance = population_seg["balance"].to_double();
+            }
+
             int64_t labor_force = size / 2;
             if (!population_seg["labor_force"].empty()) {
                 labor_force = population_seg["labor_force"].to_int64();
@@ -79,6 +84,8 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
             segment.labor_force = labor_force;
             segment.standard_of_living = standard_of_living;
             universe.emplace<components::LaborInformation>(pop_ent);
+            auto& wallet = universe.emplace<components::Wallet>(pop_ent);
+            wallet = balance;
             settlement.population.push_back(pop_ent);
         }
     } else {
@@ -132,6 +139,10 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
                 SPDLOG_INFO("Recipe {} not found in city {}", recipe,
                             universe.get<components::Identifier>(entity).identifier);
                 continue;
+            }
+            double wage = 10;
+            if (!ind_val["wage"].empty()) {
+                wage = ind_val["wage"].to_double();
             }
             entt::entity rec_ent = universe.recipes[recipe];
 

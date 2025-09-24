@@ -336,13 +336,14 @@ void SysProvinceInformation::IndustryListWindow() {
     }
     ImGui::Begin("Name##industry_list_window", &city_factory_info);
     // Loop through market industry
-    if (ImGui::BeginTable("industry_list_table", 8, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+    if (ImGui::BeginTable("industry_list_table", 9, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Production Type");
         ImGui::TableSetupColumn("Size");
         ImGui::TableSetupColumn("Utilization");
         ImGui::TableSetupColumn("Utilization Delta");
         ImGui::TableSetupColumn("Utilization Delta");
         ImGui::TableSetupColumn("Hired Workers");
+        ImGui::TableSetupColumn("Wage");
         ImGui::TableSetupColumn("Revenue");
         ImGui::TableSetupColumn("Profit");
         ImGui::TableHeadersRow();
@@ -385,12 +386,19 @@ void SysProvinceInformation::IndustryListWindow() {
                 auto& employer = GetUniverse().get<components::Employer>(industry);
                 ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(employer.population_fufilled)));
             }
+
+            if (GetUniverse().all_of<components::IndustrySize>(industry)) {
+                auto& industry_component = GetUniverse().get<components::IndustrySize>(industry);
+
+                ImGui::TableSetColumnIndex(6);
+                ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(industry_component.wages)));
+            }
             if (GetUniverse().all_of<components::CostBreakdown>(industry)) {
                 auto& income_component = GetUniverse().get<components::CostBreakdown>(industry);
 
-                ImGui::TableSetColumnIndex(6);
-                ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(income_component.revenue)));
                 ImGui::TableSetColumnIndex(7);
+                ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(income_component.revenue)));
+                ImGui::TableSetColumnIndex(8);
                 ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(income_component.profit)));
             }
         }

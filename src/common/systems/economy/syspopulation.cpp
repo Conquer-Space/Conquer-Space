@@ -118,15 +118,15 @@ void ProcessSettlement(Universe& universe, entt::entity settlement, ResourceCons
             // Check if there's enough on the market
             // Add the transport costs, and because they're importing it, we only account this
             cost += extra_cost;
+        }
 
-            double spending_ratio = (segment.income - segment.spending) / segment.income;
-            if (spending_ratio > 0.1) {
-                // Then we can increase SOL by 0.1
-                segment.standard_of_living += 0.1 + segment.standard_of_living * 0.1;
-            } else if (spending_ratio < 0.1) {
-                segment.standard_of_living -= 0.1 + segment.standard_of_living * 0.1;
-                segment.standard_of_living = std::max(segment.standard_of_living, 1.);
-            }
+        double spending_ratio = (segment.income - segment.spending) / segment.income;
+        if (spending_ratio > 0.1) {
+            // Then we can increase SOL by 0.1
+            segment.standard_of_living += 0.1 + segment.standard_of_living * 0.25;
+        } else if (spending_ratio < 0.1) {
+            segment.standard_of_living -= 0.1 + segment.standard_of_living * 0.25;
+            segment.standard_of_living = std::max(segment.standard_of_living, 1.);
         }
 
         segment.spending = cost;
@@ -136,7 +136,6 @@ void ProcessSettlement(Universe& universe, entt::entity settlement, ResourceCons
 
         // TODO(EhWhoAmI): Don't inject cash, take the money from the government
         wallet += segment.population * 1;  // Inject cash
-        //wallet.GetChange();
 
         market.consumption += consumption;
     }
@@ -179,8 +178,8 @@ void SysPopulationConsumption::DoSystem() {
                         // than calculating spending
     for (entt::entity cgentity : universe.consumergoods) {
         const components::ConsumerGood& good = universe.get<components::ConsumerGood>(cgentity);
-        marginal_propensity_base[cgentity] = good.marginal_propensity;
-        autonomous_consumption_base[cgentity] = good.autonomous_consumption;
+        marginal_propensity_base[cgentity] = good.marginal_propensity * Interval();
+        autonomous_consumption_base[cgentity] = good.autonomous_consumption * Interval();
         savings -= good.marginal_propensity;
     }  // These tables technically never need to be recalculated
     auto settlementview = universe.view<components::Settlement>();

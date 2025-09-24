@@ -68,9 +68,11 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         double marginal_propensity = consumption["marginal_propensity"].to_double();
 
         components::ConsumerGood& cg = universe.get_or_emplace<components::ConsumerGood>(entity);
-        cg.autonomous_consumption = autonomous_consumption;
-        cg.marginal_propensity = marginal_propensity;
-        SPDLOG_INFO("Creating consumer good {} with values: {} {}", identifier, cg.autonomous_consumption,
+        // We should set the consumption to be consumption over a year
+        // So it should be
+        cg.autonomous_consumption = autonomous_consumption / static_cast<double>(universe.date.YEAR);
+        cg.marginal_propensity = marginal_propensity / static_cast<double>(universe.date.YEAR);
+        SPDLOG_INFO("Creating consumer good {} with autonomous consumption {} and marginal propensity {}", identifier, cg.autonomous_consumption,
                     cg.marginal_propensity);
         universe.consumergoods.push_back(entity);
     }
