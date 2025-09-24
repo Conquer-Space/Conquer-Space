@@ -18,17 +18,8 @@
 
 #include <hjson.h>
 
-#include "common/loading/hjsonloader.h"
 #include "common/universe.h"
 
 namespace cqsp::common::loading {
-class GoodLoader : public HjsonLoader {
- public:
-    explicit GoodLoader(Universe& universe);
-    const Hjson::Value& GetDefaultValues() override { return default_val; }
-    bool LoadValue(const Hjson::Value& values, entt::entity entity) override;
-
- private:
-    Hjson::Value default_val;
-};
+void LoadTerrainData(cqsp::common::Universe&, Hjson::Value&);
 }  // namespace cqsp::common::loading

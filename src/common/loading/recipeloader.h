@@ -16,15 +16,13 @@
  */
 #pragma once
 
-#include <hjson.h>
-
 #include "common/loading/hjsonloader.h"
 #include "common/universe.h"
 
 namespace cqsp::common::loading {
-class GoodLoader : public HjsonLoader {
+class RecipeLoader : public HjsonLoader {
  public:
-    explicit GoodLoader(Universe& universe);
+    explicit RecipeLoader(Universe& universe);
     const Hjson::Value& GetDefaultValues() override { return default_val; }
     bool LoadValue(const Hjson::Value& values, entt::entity entity) override;
 

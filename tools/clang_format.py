@@ -13,6 +13,7 @@ def is_cpp_file(file):
     return False
 
 def format_file(file):
+    print("Formatting", file)
     subprocess.run(['clang-format', '-i', file])
 
 # Scans entire directory and runs clang format on it
