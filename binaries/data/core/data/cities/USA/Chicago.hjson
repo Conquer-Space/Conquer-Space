@@ -21,30 +21,37 @@
             {
                 recipe: farming
                 productivity: 200
+                wage: 200
             }
             {
                 recipe: meat_production
                 productivity: 600
+                wage: 40
             }
             {
                 recipe: fresh_food_production
                 productivity: 250
+                wage: 40
             }
             {
                 recipe: groceries_manufacturing
                 productivity: 200
+                wage: 40
             }
             {
                 recipe: tractor_production
                 productivity: 20
+                wage: 40
             }
             {
                 recipe: steel_manufacturing
                 productivity: 200
+                wage: 40
             }
             {
                 recipe: machinery_production
                 productivity: 20
+                wage: 40
             }
         ]
     }
