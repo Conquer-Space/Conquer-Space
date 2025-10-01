@@ -428,9 +428,7 @@ void SysStarSystemRenderer::DrawCityIcon(const glm::vec3& object_pos) {
 void SysStarSystemRenderer::DrawAllCities(auto& bodies) {
     for (auto body_entity : bodies) {
         glm::vec3 object_pos = CalculateCenteredObject(body_entity);
-        // if (glm::distance(object_pos, cam_pos) <= dist) {
         RenderCities(object_pos, body_entity);
-        //}
     }
 }
 
@@ -878,7 +876,7 @@ void SysStarSystemRenderer::CenterCameraOnCity() {
     // solved with a basic formula.
     entt::entity planet = m_universe.view<FocusedPlanet>().front();
 
-    if (!m_universe.any_of<Body>(planet)) {
+    if (!m_universe.valid(planet) || !m_universe.any_of<Body>(planet)) {
         return;
     }
     Body& body = m_universe.get<Body>(planet);

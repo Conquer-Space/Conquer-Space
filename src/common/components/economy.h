@@ -116,6 +116,17 @@ struct PlanetaryMarket {
     std::vector<entt::entity> participants;  // The markets that are connected
 };
 
+struct MarketOrder {
+    entt::entity target;
+    double amount;
+    double cost;
+};
+
+struct InterplanetaryMarket {
+    std::map<entt::entity, MarketOrder> demands;
+    std::map<entt::entity, MarketOrder> requests;
+};
+
 struct Market : MarketInformation {
     std::vector<MarketInformation> history;
 

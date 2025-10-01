@@ -35,6 +35,7 @@
 #include "common/systems/economy/sysproduction.h"
 #include "common/systems/economy/sysfinance.h"
 #include "common/systems/economy/sysinfrastructure.h"
+#include "common/systems/economy/sysinterplanetarytrade.h"
 #include "common/systems/economy/sysmarket.h"
 #include "common/systems/economy/sysmarketreset.h"
 #include "common/systems/economy/sysplanetarytrade.h"
@@ -66,6 +67,7 @@ Simulation::Simulation(Game& game) : m_game(game), m_universe(game.GetUniverse()
     // AddSystem<SysAgent>();
     AddSystem<SysMarket>();
     AddSystem<SysPlanetaryTrade>();
+    AddSystem<SysInterplanetaryTrade>();
     AddSystem<history::SysMarketHistory>();
 
     // Movement

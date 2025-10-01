@@ -59,7 +59,6 @@ void SysInterplanetaryTrade::DoSystem() {
                 // Or something like that
                 double expected_input = market_component.demand()[good] * shortage;
                 market_component.resource_fulfilled[good] = shortage;
-                // Now we should queue them to the space port of the province...
             }
         }
     }

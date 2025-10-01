@@ -42,7 +42,7 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
     ImGui::TextFmt("Has {} entities attached to it", market.participants.size());
 
     // Get resource stockpile
-    if (!ImGui::BeginTable("marketinfotable", 10, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+    if (!ImGui::BeginTable("marketinfotable", 11, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         return;
     }
     ImGui::TableSetupColumn("Good");
@@ -55,6 +55,7 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
     ImGui::TableSetupColumn("Trade");
     ImGui::TableSetupColumn("Trade Delta");
     ImGui::TableSetupColumn("Chronic Shortages");
+    ImGui::TableSetupColumn("Resource Fulfilled");
 
     ImGui::TableHeadersRow();
     auto goodsview = universe.view<components::Price>();
@@ -94,6 +95,8 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
         ImGui::TextFmt("{}", (market.delta[good_entity]));
         ImGui::TableSetColumnIndex(9);
         ImGui::TextFmt("{}", (market.chronic_shortages[good_entity]));
+        ImGui::TableSetColumnIndex(10);
+        ImGui::TextFmt("{}", (market.resource_fulfilled[good_entity]));
     }
     ImGui::EndTable();
 }

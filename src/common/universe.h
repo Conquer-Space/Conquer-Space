@@ -28,6 +28,7 @@
 
 #include "common/actions/names/namegenerator.h"
 #include "common/systems/economy/economyconfig.h"
+#include "common/components/economy.h"
 #include "common/components/stardate.h"
 #include "common/util/random/random.h"
 
@@ -59,6 +60,8 @@ class Universe : public entt::registry {
     // province -> color
     std::map<entt::entity, std::map<entt::entity, int>> colors_province;
     entt::entity sun;
+
+    components::InterplanetaryMarket interplanetary_market;
 
     void EnableTick() { to_tick = true; }
     void DisableTick() { to_tick = false; }
