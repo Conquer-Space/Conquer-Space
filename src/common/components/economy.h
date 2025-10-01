@@ -49,19 +49,12 @@ struct MarketInformation {
     ResourceLedger volume;
     ResourceLedger price;
 
-    // Supply that existed, but not fufilled last time
-    // Surplus supply
-    ResourceLedger latent_supply;
-    // Demand that existed, but was not fufilled the last time
-    // Surplus demand
-    ResourceLedger last_latent_demand;
-    ResourceLedger latent_demand;
-    ResourceLedger supply_difference;
-
     ResourceLedger chronic_shortages;
 
     ResourceLedger trade;
     ResourceLedger delta;
+
+    ResourceLedger resource_fulfilled;
 
     ResourceLedger production;
     ResourceLedger consumption;

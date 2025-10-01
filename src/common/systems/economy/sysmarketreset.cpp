@@ -28,8 +28,6 @@ void SysMarketReset::DoSystem() {
         market.ResetLedgers();
         market.production.clear();
         market.consumption.clear();
-        market.latent_supply.clear();
-        market.latent_demand.clear();
     }
 }
 }  // namespace cqsp::common::systems

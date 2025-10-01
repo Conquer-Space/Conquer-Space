@@ -38,23 +38,34 @@ void SysInterplanetaryTrade::DoSystem() {
     // We have a bunch of space ports that act as providers and other stuff
     // Alright so we have a bunch of spaceports that want to deliver goods, we should
     // Get the space ports that want to launch something
-    auto planetary_markets = GetUniverse().view<components::Market, components::PlanetaryMarket>();
+    auto planetary_markets = GetUniverse().view<components::Market, components::infrastructure::SpacePort>();
     // Let's make a directed graph and try to get the time to transfer to each thing
     // Alright so we should do path finding
     for (entt::entity entity : planetary_markets) {
-        // Now get the difference, and try to organize it
-        // do we just order it based off the price, and see if someone wants to deliver to
-        // a place
-        // But we also have to consider orbital maneuvers
-        // So what do we prioritize by time/delta-v?
-        // Since going to space is gonna be easy
+        // Now let's make a table for the resources that we need
+        // Get the children entites and check if they have a space port
+        auto& market_component = GetUniverse().get<components::Market>(entity);
+        // So now we want to figure out which goods have a chronic shortage that we can't fulfill, and are cheap enough
+        // that we can ship with some margin of profit
+        auto& spaceport_component = GetUniverse().get<components::infrastructure::SpacePort>(entity);
+        // Get all the values that are lacking
+        for (auto& [good, shortage] : market_component.chronic_shortages) {
+            if (shortage > 0) {
+                // Then we should probably add this to the spaceport queue
+                // Now we also need a way to account for whatever's already in the queue so we don't queue multiple requests
+                // then add it to the list...
+                // Since we won't get resources fulfilled
+                // See if the thing
+                // Or something like that
+                double expected_input = market_component.demand()[good] * shortage;
+                market_component.resource_fulfilled[good] = shortage;
+                // Now we should queue them to the space port of the province...
+            }
+        }
     }
-    // Make a directed graph for the orbits
 
+    // Now get the spaceports and see if we can fulfill the requirements, and if we can in the attached market, let's
+    // ship it out
     auto space_ports = GetUniverse().view<components::infrastructure::SpacePort>();
-    for (entt::entity entity : space_ports) {
-        // Now see who wants to deliver and who doesn't want to
-        // How do we order the priority of which space port delivers to who?
-    }
 }
 }  // namespace cqsp::common::systems
