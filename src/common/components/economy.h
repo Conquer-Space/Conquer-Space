@@ -117,14 +117,20 @@ struct PlanetaryMarket {
 };
 
 struct MarketOrder {
+    /**
+     * If it is a buy order it is the entity that wants to buy, if it is a sell order, it is
+     * the entity that is selling it.g
+     */
     entt::entity target;
     double amount;
-    double cost;
+    double price;
+
+    MarketOrder(entt::entity target, double amount, double price) : target(target), amount(amount), price(price) {}
 };
 
 struct InterplanetaryMarket {
-    std::map<entt::entity, MarketOrder> demands;
-    std::map<entt::entity, MarketOrder> requests;
+    std::map<entt::entity, std::vector<MarketOrder>> demands;
+    std::map<entt::entity, std::vector<MarketOrder>> requests;
 };
 
 struct Market : MarketInformation {

@@ -59,6 +59,9 @@ void SysInterplanetaryTrade::DoSystem() {
                 // Or something like that
                 double expected_input = market_component.demand()[good] * shortage;
                 market_component.resource_fulfilled[good] = shortage;
+                // Now dump that on the interplanetary market
+                GetUniverse().interplanetary_market.demands[good].push_back(
+                    components::MarketOrder(entity, expected_input, market_component.price[good]));
             }
         }
     }
@@ -66,5 +69,6 @@ void SysInterplanetaryTrade::DoSystem() {
     // Now get the spaceports and see if we can fulfill the requirements, and if we can in the attached market, let's
     // ship it out
     auto space_ports = GetUniverse().view<components::infrastructure::SpacePort>();
+    // Start bidding for resources
 }
 }  // namespace cqsp::common::systems
