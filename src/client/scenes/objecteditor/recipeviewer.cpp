@@ -133,15 +133,15 @@ void SysRecipeViewer::RecipeViewerRight() {
     ImGui::Separator();
     ImGui::Text("Capital Cost");
     ImGui::TextFmt("Capital Default Cost: {}",
-                   util::LongToHumanString(GetLedgerCost(GetUniverse(), recipe_comp.capitalcost)));
+                   util::NumberToHumanString(GetLedgerCost(GetUniverse(), recipe_comp.capitalcost)));
     ResourceMapTable(GetUniverse(), recipe_comp.capitalcost, "capital_table");
     ImGui::Separator();
     ImGui::Text("Output");
     ImGui::TextFmt("Output Cost: {}",
-                   util::LongToHumanString(GetUniverse().get<components::Price>(recipe_comp.output.entity) *
+                   util::NumberToHumanString(GetUniverse().get<components::Price>(recipe_comp.output.entity) *
                                            recipe_comp.output.amount));
     ImGui::TextFmt("{}, {}", common::util::GetName(GetUniverse(), recipe_comp.output.entity),
-                   util::LongToHumanString(recipe_comp.output.amount));
+                   util::NumberToHumanString(recipe_comp.output.amount));
     if (ImGui::IsItemClicked()) {
         // Then copy
         ImGui::SetClipboardText(
@@ -159,9 +159,9 @@ void SysRecipeViewer::RecipeViewerRight() {
     double expected_income = GetUniverse().get<components::Price>(recipe_comp.output.entity) *
                              recipe_comp.output.amount * expected_production;
     double expected_profit = expected_income - expected_cost;
-    ImGui::TextFmt("Expected Income: {}", util::LongToHumanString(expected_income));
-    ImGui::TextFmt("Expected Cost: {}", util::LongToHumanString(expected_cost));
-    ImGui::TextFmt("Expected Profit: {}", util::LongToHumanString(expected_profit));
+    ImGui::TextFmt("Expected Income: {}", util::NumberToHumanString(expected_income));
+    ImGui::TextFmt("Expected Cost: {}", util::NumberToHumanString(expected_cost));
+    ImGui::TextFmt("Expected Profit: {}", util::NumberToHumanString(expected_profit));
     ImGui::TextFmt("P/L ratio: {}", expected_income/expected_cost);
     ImGui::DragFloat("Amount Produced", &expected_production, 1, 0, 10000000);
 }

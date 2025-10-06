@@ -276,7 +276,7 @@ void FunctionUser(Universe& universe, ScriptInterface& script_engine) {
         universe.emplace_or_replace<components::Name>(entity, name);
     });
 
-    REGISTER_FUNCTION("to_human_string", [&](int64_t number) { return cqsp::util::LongToHumanString(number); });
+    REGISTER_FUNCTION("to_human_string", [&](int64_t number) { return cqsp::util::NumberToHumanString(number); });
 
     REGISTER_FUNCTION("get_name", [&](entt::entity entity) { return util::GetName(universe, entity); });
 

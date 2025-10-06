@@ -28,7 +28,6 @@
 #include "common/loading/loadorbit.h"
 #include "common/loading/loadutil.h"
 
-//#include "common/components/coordinates.h"
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
@@ -39,8 +38,6 @@
 #include "common/components/population.h"
 #include "common/components/surface.h"
 #include "common/util/random/random.h"
-
-
 
 namespace cqsp::common::loading {
 
@@ -198,6 +195,7 @@ void PlanetLoader::PostLoad(const entt::entity& entity) {
     body.SOI = bodies::CalculateSOI(body.GM, orbit.GM, orbit.semi_major_axis);
     body.mass = bodies::CalculateMass(body.GM);
     universe.get_or_emplace<bodies::OrbitalSystem>(parent).push_back(entity);
+    universe.emplace<components::InterplanetaryMarket>(entity);
     universe.remove<ParentTemp>(entity);
 }
 }  // namespace cqsp::common::loading

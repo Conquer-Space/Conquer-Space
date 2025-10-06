@@ -40,6 +40,7 @@ struct ConnectedCities {
     std::vector<std::string> entities;
 };
 }  // namespace
+
 bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     // Load the city
     std::string planet = values["planet"].to_string();
@@ -152,7 +153,8 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
     if (!values["space-port"].empty()) {
         // Add space port
-        universe.emplace<components::infrastructure::SpacePort>(entity);
+        auto& space_port = universe.emplace<components::infrastructure::SpacePort>(entity);
+        space_port.reference_body = sc.planet;
     }
 
     if (!values["country"].empty()) {

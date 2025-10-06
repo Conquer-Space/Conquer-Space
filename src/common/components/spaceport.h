@@ -36,7 +36,7 @@ class TransportedGood {
  * which means that we could launch like hundreds of rockets a day, which is kind of nuts
  * But for now, we'll support a limited amount of space launch systems
  */
-class SpacePort {
+struct SpacePort {
     // The map is target, and queue
     // The entt entity must have an orbit, and we must be able to rendezvous to that entity
     // So this is the list of goods that it wants to deliver to different places
@@ -44,5 +44,6 @@ class SpacePort {
     std::vector<std::pair<entt::entity, double>> requests;
     double launch_cadance;
     int launchpads;
+    entt::entity reference_body = entt::null;
 };
 }  // namespace cqsp::common::components::infrastructure

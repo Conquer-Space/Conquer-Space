@@ -75,9 +75,9 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
         // Mark the cell as red if the thing is not valid
         ImGui::TextFmt("{}", market.price[good_entity]);
         ImGui::TableSetColumnIndex(2);
-        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.supply()[good_entity]));
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.supply()[good_entity]));
         ImGui::TableSetColumnIndex(3);
-        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.demand()[good_entity]));
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.demand()[good_entity]));
         ImGui::TableSetColumnIndex(4);
         double sd_ratio = market.sd_ratio[good_entity];
         if (sd_ratio == std::numeric_limits<double>::infinity()) {
@@ -86,11 +86,11 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
             ImGui::TextFmt("{}", sd_ratio);
         }
         ImGui::TableSetColumnIndex(5);
-        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.production[good_entity]));
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.production[good_entity]));
         ImGui::TableSetColumnIndex(6);
-        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.consumption[good_entity]));
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.consumption[good_entity]));
         ImGui::TableSetColumnIndex(7);
-        ImGui::TextFmt("{}", cqsp::util::LongToHumanString(market.trade[good_entity]));
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.trade[good_entity]));
         ImGui::TableSetColumnIndex(8);
         ImGui::TextFmt("{}", (market.delta[good_entity]));
         ImGui::TableSetColumnIndex(9);

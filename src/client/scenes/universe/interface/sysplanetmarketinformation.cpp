@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/scenes/universe/interface/marketwindow.h"
+#include "client/scenes/universe/interface/sysplanetmarketinformation.h"
 
 #include <limits>
 
@@ -46,11 +46,12 @@ void SysPlanetMarketInformation::DoUI(int delta_time) {
         return;
     }
     ImGui::Begin("Planetary Market");
+    // ImGui::BeginTab()
     if (GetUniverse().any_of<components::Wallet>(selected_planet)) {
         auto& wallet = GetUniverse().get<components::Wallet>(selected_planet);
-        ImGui::TextFmt("GDP Contribution: {}", util::LongToHumanString(wallet.GetGDPChange()));
-        ImGui::TextFmt("Balance: {}", util::LongToHumanString(wallet.GetBalance()));
-        ImGui::TextFmt("Balance change: {}", util::LongToHumanString(wallet.GetChange()));
+        ImGui::TextFmt("GDP Contribution: {}", util::NumberToHumanString(wallet.GetGDPChange()));
+        ImGui::TextFmt("Balance: {}", util::NumberToHumanString(wallet.GetBalance()));
+        ImGui::TextFmt("Balance change: {}", util::NumberToHumanString(wallet.GetChange()));
     }
     MarketInformationTable(GetUniverse(), selected_planet);
     ImGui::End();
