@@ -103,7 +103,7 @@ void SysPlanetMarketInformation::InterplanetaryTradeInformation() {
     std::transform(search_string.begin(), search_string.end(), search_string.begin(),
                    [](unsigned char c) { return std::tolower(c); });
 
-    ImGui::BeginChild("recipe_viewer_scroll");
+    ImGui::BeginChild("planetary_trade_viewer_scroll");
     for (auto& [good, order] : interplanetary_market.demands) {
         bool is_selected = selected_good == good;
         std::string name = common::util::GetName(GetUniverse(), good);
@@ -124,9 +124,20 @@ void SysPlanetMarketInformation::InterplanetaryTradeInformation() {
     ImGui::EndChild();
     ImGui::EndChild();
     ImGui::SameLine();
-    ImGui::BeginChild("recipe_viewer_right", ImVec2(400, 700));
-    RecipeViewerRight();
+    ImGui::BeginChild("planetary_trade_viewer_right", ImVec2(400, 700));
+    InterplanetaryTradeRightPanel();
     ImGui::EndChild();
     ImGui::EndTabItem();
+}
+
+void SysPlanetMarketInformation::InterplanetaryTradeRightPanel() {
+    // Get the list of selected goods
+    auto& interplanetary_market = GetUniverse().get<components::InterplanetaryMarket>(selected_planet);
+    for (auto& demand : interplanetary_market.demands[selected_good]) {
+        ImGui::TextFmt("Target: {}", common::util::GetName(GetUniverse(), demand.target));
+        ImGui::TextFmt("Amount: {}", demand.amount);
+        ImGui::TextFmt("Price: {}", demand.price);
+        ImGui::Separator();
+    }
 }
 }  // namespace cqsp::client::systems
