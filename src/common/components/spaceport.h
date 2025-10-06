@@ -42,8 +42,8 @@ struct SpacePort {
     // So this is the list of goods that it wants to deliver to different places
     std::map<entt::entity, std::priority_queue<TransportedGood>> deliveries;
     std::vector<std::pair<entt::entity, double>> requests;
-    double launch_cadance;
-    int launchpads;
+    double launch_cadance = 0;
+    int launchpads = 0;
     entt::entity reference_body = entt::null;
 };
 }  // namespace cqsp::common::components::infrastructure

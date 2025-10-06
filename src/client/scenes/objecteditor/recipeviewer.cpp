@@ -71,8 +71,7 @@ void SysRecipeViewer::DoUI(int delta_time) {
 
 void SysRecipeViewer::DoUpdate(int delta_time) {}
 
-namespace {
-void ResourceMapTable(common::Universe& universe, components::ResourceLedger& ledger, const char* name) {
+void SysRecipeViewer::ResourceMapTable(components::ResourceLedger& ledger, const char* name) {
     if (!ImGui::BeginTable(name, 2)) {
         return;
     }
@@ -82,15 +81,15 @@ void ResourceMapTable(common::Universe& universe, components::ResourceLedger& le
     for (auto& in : ledger) {
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
-        ImGui::TextFmt("{}", cqsp::common::util::GetName(universe, in.first));
+        ImGui::TextFmt("{}", cqsp::common::util::GetName(GetUniverse(), in.first));
         if (ImGui::IsItemClicked()) {
             // Copy
-            ImGui::SetClipboardText(universe.get<components::Identifier>(in.first).identifier.c_str());
+            ImGui::SetClipboardText(GetUniverse().get<components::Identifier>(in.first).identifier.c_str());
         }
         if (ImGui::IsItemHovered()) {
             ImGui::BeginTooltip();
-            ImGui::TextColored(ImVec4(0.921568627, 0.392156863, 0.203921569, 1), "Click to copy identifier");
-            systems::gui::EntityTooltipContent(universe, in.first);
+            ImGui::TextColored(id_copy_color, "Click to copy identifier");
+            systems::gui::EntityTooltipContent(GetUniverse(), in.first);
             ImGui::EndTooltip();
         }
         ImGui::TableSetColumnIndex(1);
@@ -99,6 +98,7 @@ void ResourceMapTable(common::Universe& universe, components::ResourceLedger& le
     ImGui::EndTable();
 }
 
+namespace {
 double GetLedgerCost(common::Universe& universe, components::ResourceLedger& ledger) {
     double input_cost = 0;
     for (auto& [entity, amount] : ledger) {
@@ -121,7 +121,7 @@ void SysRecipeViewer::RecipeViewerRight() {
     }
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
-        ImGui::TextColored(ImVec4(0.921568627, 0.392156863, 0.203921569, 1), "Click to copy identifier");
+        ImGui::TextColored(id_copy_color, "Click to copy identifier");
         ImGui::EndTooltip();
     }
     // Get inputs and outputs
@@ -129,12 +129,12 @@ void SysRecipeViewer::RecipeViewerRight() {
     ImGui::TextFmt("Workers per unit of recipe: {}", recipe_comp.workers);
     ImGui::Text("Input");
     ImGui::TextFmt("Input Default Cost: {}", GetLedgerCost(GetUniverse(), recipe_comp.input));
-    ResourceMapTable(GetUniverse(), recipe_comp.input, "input_table");
+    ResourceMapTable(recipe_comp.input, "input_table");
     ImGui::Separator();
     ImGui::Text("Capital Cost");
     ImGui::TextFmt("Capital Default Cost: {}",
                    util::NumberToHumanString(GetLedgerCost(GetUniverse(), recipe_comp.capitalcost)));
-    ResourceMapTable(GetUniverse(), recipe_comp.capitalcost, "capital_table");
+    ResourceMapTable(recipe_comp.capitalcost, "capital_table");
     ImGui::Separator();
     ImGui::Text("Output");
     ImGui::TextFmt("Output Cost: {}",
@@ -149,7 +149,7 @@ void SysRecipeViewer::RecipeViewerRight() {
     }
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
-        ImGui::TextColored(ImVec4(0.921568627, 0.392156863, 0.203921569, 1), "Click to copy identifier");
+        ImGui::TextColored(id_copy_color, "Click to copy identifier");
         ImGui::EndTooltip();
     }
     // Some basic calculator so that we can make things easier

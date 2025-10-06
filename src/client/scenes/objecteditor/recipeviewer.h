@@ -19,6 +19,7 @@
 #include <array>
 
 #include "client/systems/sysgui.h"
+#include "common/components/resource.h"
 
 namespace cqsp::client::systems {
 class SysRecipeViewer : public SysUserInterface {
@@ -32,9 +33,11 @@ class SysRecipeViewer : public SysUserInterface {
  private:
     void RecipeViewerRight();
     void ResetSelection();
+    void ResourceMapTable(common::components::ResourceLedger& ledger, const char* name);
     entt::entity selected_recipe = entt::null;
 
     std::array<char, 255> search_text;
     float expected_production;
+    const ImVec4 id_copy_color = ImVec4(0.921568627f, 0.392156863f, 0.203921569f, 1.f);
 };
 }  // namespace cqsp::client::systems

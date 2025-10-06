@@ -46,7 +46,7 @@ class IFramebuffer {
 
 class FramebufferRenderer : public IFramebuffer {
  public:
-    FramebufferRenderer() : IFramebuffer() {}
+    FramebufferRenderer() : IFramebuffer(), framebuffer(0), colorbuffer(0) {}
     ~FramebufferRenderer();
 
     void InitTexture(int width, int height) override;
@@ -70,7 +70,8 @@ class FramebufferRenderer : public IFramebuffer {
 
 class AAFrameBufferRenderer : public IFramebuffer {
  public:
-    AAFrameBufferRenderer() : IFramebuffer() {}
+    AAFrameBufferRenderer()
+        : IFramebuffer(), width(0), height(0), framebuffer(0), intermediateFBO(0), screenTexture(0), mscat(0) {}
     ~AAFrameBufferRenderer();
 
     void InitTexture(int width, int height) override;

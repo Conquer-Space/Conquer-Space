@@ -180,7 +180,7 @@ void FunctionEconomy(Universe& universe, ScriptInterface& script_engine) {
         universe.get<IndustrialZone>(city).industries.push_back(entity);
     });
 
-    REGISTER_FUNCTION("create_factory", [&](entt::entity city, entt::entity recipe, float productivity) {
+    REGISTER_FUNCTION("create_factory", [&](entt::entity city, entt::entity recipe, int productivity) {
         entt::entity factory = actions::CreateFactory(universe, city, recipe, productivity);
         return factory;
     });

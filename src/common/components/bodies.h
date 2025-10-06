@@ -31,20 +31,20 @@ struct Body {
     /*
      * Radius of the body
      */
-    types::kilometer radius;
+    types::kilometer radius = 0;
 
     /// <summary>
     /// Radius of sphere of influence
     /// rsoi = a(m/M)^2/5
     /// </summary>
     types::kilometer SOI = std::numeric_limits<double>::infinity();
-    types::kilogram mass;
+    types::kilogram mass = 0;
 
     // gravitational constant in km^3 * s^-2
-    double GM;
+    double GM = 1;
 
     // Rotation period in seconds
-    double rotation;
+    double rotation = 1;
 
     // Axial rotation
     double axial = 0.0;
