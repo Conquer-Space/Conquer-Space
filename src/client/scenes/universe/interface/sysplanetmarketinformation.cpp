@@ -45,15 +45,12 @@ void SysPlanetMarketInformation::DoUI(int delta_time) {
     if (!GetUniverse().valid(selected_planet)) {
         return;
     }
-    ImGui::Begin("Planetary Market");
-    // ImGui::BeginTab()
-    if (GetUniverse().any_of<components::Wallet>(selected_planet)) {
-        auto& wallet = GetUniverse().get<components::Wallet>(selected_planet);
-        ImGui::TextFmt("GDP Contribution: {}", util::NumberToHumanString(wallet.GetGDPChange()));
-        ImGui::TextFmt("Balance: {}", util::NumberToHumanString(wallet.GetBalance()));
-        ImGui::TextFmt("Balance change: {}", util::NumberToHumanString(wallet.GetChange()));
+    ImGui::Begin(fmt::format("{} Planetary Market", common::util::GetName(GetUniverse(), selected_planet)).c_str());
+    if (ImGui::BeginTabBar("Planetary Market Tab Bar", ImGuiTabBarFlags_None)) {
+        LocalMarketInformation();
+        InterplanetaryTradeInformation();
+        ImGui::EndTabBar();
     }
-    MarketInformationTable(GetUniverse(), selected_planet);
     ImGui::End();
 }
 
@@ -75,5 +72,61 @@ void SysPlanetMarketInformation::DoUpdate(int delta_time) {
     if (!GetUniverse().valid(selected_planet) || !GetUniverse().all_of<bodies::Body>(selected_planet)) {
         to_see = false;
     }
+}
+void SysPlanetMarketInformation::LocalMarketInformation() {
+    if (!ImGui::BeginTabItem("Market Information")) {
+        return;
+    }
+    if (GetUniverse().any_of<components::Wallet>(selected_planet)) {
+        auto& wallet = GetUniverse().get<components::Wallet>(selected_planet);
+        ImGui::TextFmt("GDP Contribution: {}", util::NumberToHumanString(wallet.GetGDPChange()));
+        ImGui::TextFmt("Balance: {}", util::NumberToHumanString(wallet.GetBalance()));
+        ImGui::TextFmt("Balance change: {}", util::NumberToHumanString(wallet.GetChange()));
+    }
+    MarketInformationTable(GetUniverse(), selected_planet);
+    ImGui::EndTabItem();
+}
+
+void SysPlanetMarketInformation::InterplanetaryTradeInformation() {
+    if (!ImGui::BeginTabItem("Trade Information")) {
+        return;
+    }
+    if (!GetUniverse().any_of<components::InterplanetaryMarket>(selected_planet)) {
+        ImGui::Text("No Interplanetary Market!");
+        ImGui::EndTabItem();
+        return;
+    }
+    auto& interplanetary_market = GetUniverse().get<components::InterplanetaryMarket>(selected_planet);
+    ImGui::BeginChild("planetary_market_left", ImVec2(300, 700));
+    ImGui::InputText("##planetary_market_search_text", search_text.data(), search_text.size());
+    std::string search_string(search_text.data());
+    std::transform(search_string.begin(), search_string.end(), search_string.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+
+    ImGui::BeginChild("recipe_viewer_scroll");
+    for (auto& [good, order] : interplanetary_market.demands) {
+        bool is_selected = selected_good == good;
+        std::string name = common::util::GetName(GetUniverse(), good);
+        std::string name_lower = name;
+        std::transform(name_lower.begin(), name_lower.end(), name_lower.begin(),
+                       [](unsigned char c) { return std::tolower(c); });
+        if (!search_string.empty()) {
+            // Then we can check if the text contains it
+            if (name_lower.find(search_string) == std::string::npos) {
+                continue;
+            }
+        }
+        // Now check if the string is in stuff
+        if (ImGui::SelectableFmt("{}", &is_selected, name)) {
+            selected_good = good;
+        }
+    }
+    ImGui::EndChild();
+    ImGui::EndChild();
+    ImGui::SameLine();
+    ImGui::BeginChild("recipe_viewer_right", ImVec2(400, 700));
+    RecipeViewerRight();
+    ImGui::EndChild();
+    ImGui::EndTabItem();
 }
 }  // namespace cqsp::client::systems

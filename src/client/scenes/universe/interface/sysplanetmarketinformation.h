@@ -27,7 +27,11 @@ class SysPlanetMarketInformation : public SysUserInterface {
     void DoUpdate(int delta_time);
 
  private:
+    void LocalMarketInformation();
+    void InterplanetaryTradeInformation();
+
     bool to_see = true;
-    entt::entity selected_planet;
+    entt::entity selected_planet = entt::null;
+    entt::entity selected_good = entt::null;
 };
 }  // namespace cqsp::client::systems
