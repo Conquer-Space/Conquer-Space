@@ -40,9 +40,10 @@ void SysInterplanetaryTrade::DoSystem() {
                 market_component.resource_fulfilled[good] = shortage;
                 // Now dump that on the interplanetary market
                 ////spaceport_component.reference_body
-                auto& interplanetary_market = GetUniverse().get<components::InterplanetaryMarket>(spaceport_component.reference_body);
-                interplanetary_market.demands[good].push_back(
-                    components::MarketOrder(entity, expected_input, market_component.price[good]));
+                auto& interplanetary_market = GetUniverse().get<components::InterplanetaryMarket>(spaceport_component.reference_body);\
+                // Add the resources that we want
+                // Add to a spaceport in the market
+                spaceport_component.demanded_resources[good] += market_component.price[good];
             }
         }
     }

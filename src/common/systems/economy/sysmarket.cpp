@@ -25,6 +25,7 @@
 
 #include "common/components/economy.h"
 #include "common/components/name.h"
+#include "common/components/spaceport.h"
 
 namespace cqsp::common::systems {
 
@@ -43,6 +44,15 @@ void SysMarket::DoSystem() {
         // Get the resources and process the price
         // Get demand
         Market& market = universe.get<Market>(entity);
+
+        // Add a supply if there is a space port
+        if (universe.any_of<components::infrastructure::SpacePort>(entity)) {
+            // Then add output resources to the market
+            auto& space_port = universe.get<components::infrastructure::SpacePort>(entity);
+            space_port.output_resources_rate;
+            space_port.output_resources_rate;
+            market.trade
+        }
 
         // TODO(EhWhoAmI): GDP Calculations
         // market.gdp = market.volume* market.price;
