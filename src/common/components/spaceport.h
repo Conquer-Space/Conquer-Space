@@ -21,6 +21,8 @@
 
 #include <entt/entt.hpp>
 
+#include "common/components/resource.h"
+
 namespace cqsp::common::components::infrastructure {
 class TransportedGood {
     entt::entity good;
@@ -45,5 +47,11 @@ struct SpacePort {
     double launch_cadance = 0;
     int launchpads = 0;
     entt::entity reference_body = entt::null;
+
+    ResourceLedger demanded_resources;
+    ResourceLedger demanded_resources_rate;
+    ResourceLedger output_resources;
+    ResourceLedger output_resources_rate;
+    ResourceLedger requests;
 };
 }  // namespace cqsp::common::components::infrastructure
