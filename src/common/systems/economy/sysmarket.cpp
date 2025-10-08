@@ -49,9 +49,24 @@ void SysMarket::DoSystem() {
         if (universe.any_of<components::infrastructure::SpacePort>(entity)) {
             // Then add output resources to the market
             auto& space_port = universe.get<components::infrastructure::SpacePort>(entity);
-            space_port.output_resources_rate;
-            space_port.output_resources_rate;
-            market.trade
+            market.supply() += space_port.output_resources_rate;
+            market.demand() += space_port.demanded_resources_rate;
+            // Remove the ones that are less than zero
+            space_port.output_resources -= space_port.output_resources_rate;
+            space_port.demanded_resources -= space_port.demanded_resources_rate;
+            space_port.resource_requests += space_port.demanded_resources_rate;
+            // If they're higher we set the output resouurces to zero
+            for (auto& [good, value] : space_port.output_resources) {
+                if (value < 0) {
+                    space_port.output_resources_rate[good] = 0;
+                }
+            }
+
+            for (auto& [good, value] : space_port.demanded_resources) {
+                if (value < 0) {
+                    space_port.demanded_resources_rate[good] = 0;
+                }
+            }
         }
 
         // TODO(EhWhoAmI): GDP Calculations

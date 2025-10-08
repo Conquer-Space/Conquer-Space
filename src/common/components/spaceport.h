@@ -52,6 +52,6 @@ struct SpacePort {
     ResourceLedger demanded_resources_rate;
     ResourceLedger output_resources;
     ResourceLedger output_resources_rate;
-    ResourceLedger requests;
+    ResourceLedger resource_stockpile;
 };
 }  // namespace cqsp::common::components::infrastructure

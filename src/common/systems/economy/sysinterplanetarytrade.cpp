@@ -16,15 +16,14 @@
  */
 #include "common/systems/economy/sysinterplanetarytrade.h"
 
+#include "common/components/bodies.h"
 #include "common/components/economy.h"
 #include "common/components/spaceport.h"
-#include "common/components/bodies.h"
 
 namespace cqsp::common::systems {
 void SysInterplanetaryTrade::DoSystem() {
     auto planetary_markets = GetUniverse().view<components::Market, components::infrastructure::SpacePort>();
     for (entt::entity entity : planetary_markets) {
-
         auto& market_component = GetUniverse().get<components::Market>(entity);
         auto& spaceport_component = GetUniverse().get<components::infrastructure::SpacePort>(entity);
         // Get all the goods that are lacking
@@ -39,11 +38,7 @@ void SysInterplanetaryTrade::DoSystem() {
                 double expected_input = market_component.demand()[good] * shortage;
                 market_component.resource_fulfilled[good] = shortage;
                 // Now dump that on the interplanetary market
-                ////spaceport_component.reference_body
-                auto& interplanetary_market = GetUniverse().get<components::InterplanetaryMarket>(spaceport_component.reference_body);\
-                // Add the resources that we want
-                // Add to a spaceport in the market
-                spaceport_component.demanded_resources[good] += market_component.price[good];
+                spaceport_component.demanded_resources[good] += expected_input;
             }
         }
     }
