@@ -67,7 +67,7 @@ Simulation::Simulation(Game& game) : m_game(game), m_universe(game.GetUniverse()
     // AddSystem<SysAgent>();
     AddSystem<SysMarket>();
     AddSystem<SysPlanetaryTrade>();
-    AddSystem<SysInterplanetaryTrade>();
+    // AddSystem<SysInterplanetaryTrade>();
     AddSystem<history::SysMarketHistory>();
 
     // Movement

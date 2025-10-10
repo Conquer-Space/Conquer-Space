@@ -63,8 +63,9 @@ void SysPlanetaryTrade::DoSystem() {
             auto& market = GetUniverse().get<components::Market>(habitation);
             auto& market_wallet = GetUniverse().get_or_emplace<components::Wallet>(habitation);
             for (entt::entity good_entity : goodsview) {
-                market.price[good_entity] = p_market.price[good_entity] * market.market_access +
-                                            (1 - market.market_access) * market.price[good_entity];
+                double access = market.market_access[good_entity];
+                market.price[good_entity] =
+                    p_market.price[good_entity] * access + (1 - access) * market.price[good_entity];
             }
 
             // Determine supply and demand for the market

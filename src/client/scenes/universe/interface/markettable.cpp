@@ -53,7 +53,7 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
     ImGui::TableSetupColumn("Production");
     ImGui::TableSetupColumn("Consumption");
     ImGui::TableSetupColumn("Trade");
-    ImGui::TableSetupColumn("Trade Delta");
+    ImGui::TableSetupColumn("Market Access");
     ImGui::TableSetupColumn("Chronic Shortages");
     ImGui::TableSetupColumn("Resource Fulfilled");
 
@@ -92,7 +92,7 @@ void MarketInformationTable(common::Universe& universe, const entt::entity& mark
         ImGui::TableSetColumnIndex(7);
         ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.trade[good_entity]));
         ImGui::TableSetColumnIndex(8);
-        ImGui::TextFmt("{}", (market.delta[good_entity]));
+        ImGui::TextFmt("{}", (market.market_access[good_entity]));
         ImGui::TableSetColumnIndex(9);
         ImGui::TextFmt("{}", (market.chronic_shortages[good_entity]));
         ImGui::TableSetColumnIndex(10);

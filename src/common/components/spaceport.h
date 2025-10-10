@@ -31,6 +31,15 @@ class TransportedGood {
 };
 
 /**
+ * A resource request for
+ */
+class ResourceRequest {
+    double amount;
+    double fulfilled;
+    double priority;
+};
+
+/**
  * for now, we'll only support vertical rocket based launches
  * I think the future might be just space planes that can take off from airports or other stuff
  * so that will unlock a lot of possibilities to go to space
@@ -43,14 +52,15 @@ struct SpacePort {
     // The entt entity must have an orbit, and we must be able to rendezvous to that entity
     // So this is the list of goods that it wants to deliver to different places
     std::map<entt::entity, std::priority_queue<TransportedGood>> deliveries;
-    std::vector<std::pair<entt::entity, double>> requests;
+    std::map<entt::entity, std::vector<ResourceRequest>> requests;
+
     double launch_cadance = 0;
     int launchpads = 0;
     entt::entity reference_body = entt::null;
 
     ResourceLedger demanded_resources;
     ResourceLedger demanded_resources_rate;
-    ResourceLedger output_resources;
+ResourceLedger output_resources;
     ResourceLedger output_resources_rate;
     ResourceLedger resource_stockpile;
 };

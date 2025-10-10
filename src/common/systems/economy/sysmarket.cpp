@@ -50,21 +50,13 @@ void SysMarket::DoSystem() {
             // Then add output resources to the market
             auto& space_port = universe.get<components::infrastructure::SpacePort>(entity);
             market.supply() += space_port.output_resources_rate;
-            market.demand() += space_port.demanded_resources_rate;
+
             // Remove the ones that are less than zero
             space_port.output_resources -= space_port.output_resources_rate;
-            space_port.demanded_resources -= space_port.demanded_resources_rate;
-            space_port.resource_requests += space_port.demanded_resources_rate;
             // If they're higher we set the output resouurces to zero
             for (auto& [good, value] : space_port.output_resources) {
                 if (value < 0) {
                     space_port.output_resources_rate[good] = 0;
-                }
-            }
-
-            for (auto& [good, value] : space_port.demanded_resources) {
-                if (value < 0) {
-                    space_port.demanded_resources_rate[good] = 0;
                 }
             }
         }
@@ -109,6 +101,7 @@ void SysMarket::DeterminePrice(Market& market, entt::entity good_entity) {
     const double supply = market.supply()[good_entity];
     const double demand = market.demand()[good_entity];
     double& price = market.price[good_entity];
+    // Get parent market price
     // Now just adjust cost
     // Get parent market
     price = base_prices[good_entity] *
@@ -135,6 +128,7 @@ void SysMarket::Init() {
             market.previous_supply()[good_entity] = 1;
             market.supply()[good_entity] = 1;
             market.demand()[good_entity] = 1;
+            market.market_access[good_entity] = 0.5;
         }
         market.sd_ratio = market.supply().SafeDivision(market.demand());
         market.history.push_back(market);

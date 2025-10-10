@@ -26,21 +26,7 @@ void SysInterplanetaryTrade::DoSystem() {
     for (entt::entity entity : planetary_markets) {
         auto& market_component = GetUniverse().get<components::Market>(entity);
         auto& spaceport_component = GetUniverse().get<components::infrastructure::SpacePort>(entity);
-        // Get all the goods that are lacking
-        for (auto& [good, shortage] : market_component.chronic_shortages) {
-            if (shortage > 0) {
-                // Then we should probably add this to the spaceport queue
-                // Now we also need a way to account for whatever's already in the queue so we don't queue multiple requests
-                // then add it to the list...
-                // Since we won't get resources fulfilled
-                // See if the thing
-                // Or something like that
-                double expected_input = market_component.demand()[good] * shortage;
-                market_component.resource_fulfilled[good] = shortage;
-                // Now dump that on the interplanetary market
-                spaceport_component.demanded_resources[good] += expected_input;
-            }
-        }
+        // Now we should compute how much we shipped in on average and how much we do
     }
 
     ParseOrbitTreeMarket(GetUniverse().sun);

@@ -52,16 +52,11 @@ struct MarketInformation {
     ResourceLedger chronic_shortages;
 
     ResourceLedger trade;
-    ResourceLedger delta;
 
     ResourceLedger resource_fulfilled;
 
     ResourceLedger production;
     ResourceLedger consumption;
-
-    entt::entity parent_market = entt::null;
-
-    double market_access = 0.2;
 
     void ResetLedgers() {
         // Reset the ledger values
@@ -140,8 +135,12 @@ struct Market : MarketInformation {
     std::map<entt::entity, MarketElementInformation> last_market_information;
 
     std::set<entt::entity> participants;
-    // std::vector<std::pair<entt::entity, entt::entity>> neighbors;
+
     entt::basic_sparse_set<entt::entity> connected_markets;
+    
+    ResourceLedger market_access;
+
+    entt::entity parent_market = entt::null;
 
     double GDP = 0;
 
