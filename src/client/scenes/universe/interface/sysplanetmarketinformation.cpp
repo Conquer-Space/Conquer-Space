@@ -233,7 +233,7 @@ void SysPlanetMarketInformation::PerGoodDetailsRightPanel() {
         ImGui::TextFmt("No cities attached!");
         return;
     }
-    if (!ImGui::BeginTable("per city details table", 7,
+    if (!ImGui::BeginTable("per city details table", 8,
                            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp)) {
         ImGui::EndTable();
 
@@ -246,6 +246,7 @@ void SysPlanetMarketInformation::PerGoodDetailsRightPanel() {
     ImGui::TableSetupColumn("Production");
     ImGui::TableSetupColumn("Consumption");
     ImGui::TableSetupColumn("Trade");
+    ImGui::TableSetupColumn("Chronic Shortages");
 
     ImGui::TableHeadersRow();
 
@@ -262,7 +263,7 @@ void SysPlanetMarketInformation::PerGoodDetailsRightPanel() {
         }
         ImGui::TableSetColumnIndex(1);
         // Mark the cell as red if the thing is not valid
-        ImGui::TextFmt("{}", market.price[per_good_details_selected]);
+        ImGui::TextFmt("{:.2f}", market.price[per_good_details_selected]);
         ImGui::TableSetColumnIndex(2);
         ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.supply()[per_good_details_selected]));
         ImGui::TableSetColumnIndex(3);
@@ -273,6 +274,8 @@ void SysPlanetMarketInformation::PerGoodDetailsRightPanel() {
         ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.consumption[per_good_details_selected]));
         ImGui::TableSetColumnIndex(6);
         ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.trade[per_good_details_selected]));
+        ImGui::TableSetColumnIndex(7);
+        ImGui::TextFmt("{:.2f}", market.chronic_shortages[per_good_details_selected]);
     }
 
     // Do overall as well
@@ -284,7 +287,7 @@ void SysPlanetMarketInformation::PerGoodDetailsRightPanel() {
 
     ImGui::TableSetColumnIndex(1);
     // Mark the cell as red if the thing is not valid
-    ImGui::TextFmt("{}", overall_market.price[per_good_details_selected]);
+    ImGui::TextFmt("{:.2f}", overall_market.price[per_good_details_selected]);
     ImGui::TableSetColumnIndex(2);
     ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.supply()[per_good_details_selected]));
     ImGui::TableSetColumnIndex(3);

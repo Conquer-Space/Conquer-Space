@@ -128,7 +128,7 @@
                 worker: 10
             }
         }
-                tags: [
+        tags: [
             ratio
             raw
         ]

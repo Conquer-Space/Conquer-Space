@@ -79,18 +79,25 @@ void SysMarket::DoSystem() {
         components::ResourceLedger& market_supply = market.supply();
         components::ResourceLedger& market_demand = market.demand();
         for (auto iterator = market_supply.begin(); iterator != market_supply.end(); iterator++) {
+            const double &demand = market_demand[iterator->first];
+            const double &supply = iterator->second;
             double shortage_level =
-                (market_demand[iterator->first] - iterator->second) / market_demand[iterator->first];
-            if (market_demand[iterator->first] == 0) {
+                (demand - supply) / demand;
+            if (demand == 0) {
                 shortage_level = 0;
             }
             if (shortage_level > 0.8) {
                 // The demand vs supply ratio should be below a certain amount
                 market.chronic_shortages[iterator->first] += shortage_level;
-            } else {
+            } else if (shortage_level > 0) {
                 if (market.chronic_shortages.contains(iterator->first)) {
-                    market.chronic_shortages[iterator->first] -= shortage_level;
+                    market.chronic_shortages[iterator->first] += shortage_level;
                 }
+            } else {
+                market.chronic_shortages[iterator->first] -= (1 - shortage_level);
+            }
+            if (market.chronic_shortages[iterator->first] < 0) {
+                market.chronic_shortages[iterator->first] = 0;
             }
         }
     }
