@@ -25,9 +25,10 @@
 #include "common/components/bodies.h"
 #include "common/components/market.h"
 #include "common/components/name.h"
+#include "common/components/surface.h"
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
-#include "systooltips.h"
+#include "client/scenes/universe/interface/systooltips.h"
 
 namespace cqsp::client::systems {
 namespace components = common::components;
@@ -184,6 +185,9 @@ void SysPlanetMarketInformation::InterplanetaryTradeAmounts() {
 }
 
 void SysPlanetMarketInformation::PerGoodDetails() {
+    if (!ImGui::BeginTabItem("Per City Details")) {
+        return;
+    }
     if (!GetUniverse().any_of<components::PlanetaryMarket>(selected_planet)) {
         ImGui::Text("No Planetary Market!");
         ImGui::EndTabItem();
@@ -193,11 +197,11 @@ void SysPlanetMarketInformation::PerGoodDetails() {
     ImGui::BeginChild("per_good_left", ImVec2(300, 700));
     ImGui::InputText("##per_good_search_text", per_good_details_search_text.data(), per_good_details_search_text.size());
     std::string search_string(per_good_details_search_text.data());
-    std::transform(search_string.begin(), per_good_details_search_text.end(), per_good_details_search_text.begin(),
+    std::transform(search_string.begin(), search_string.end(), search_string.begin(),
                    [](unsigned char c) { return std::tolower(c); });
-
+    auto goodsview = GetUniverse().view<components::Price>();
     ImGui::BeginChild("per_good_viewer_scroll");
-    for (auto& [good, order] : interplanetary_market.demands) {
+    for (auto good : goodsview) {
         bool is_selected = per_good_details_selected == good;
         std::string name = common::util::GetName(GetUniverse(), good);
         std::string name_lower = name;
@@ -217,7 +221,7 @@ void SysPlanetMarketInformation::PerGoodDetails() {
     ImGui::EndChild();
     ImGui::EndChild();
     ImGui::SameLine();
-    ImGui::BeginChild("per_good_viewer_right", ImVec2(400, 700));
+    ImGui::BeginChild("per_good_viewer_right", ImVec2(-1, -1));
     PerGoodDetailsRightPanel();
     ImGui::EndChild();
     ImGui::EndTabItem();
@@ -229,15 +233,68 @@ void SysPlanetMarketInformation::PerGoodDetailsRightPanel() {
         ImGui::TextFmt("No cities attached!");
         return;
     }
-    if (!ImGui::BeginTable("habitation table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+    if (!ImGui::BeginTable("per city details table", 7,
+                           ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp)) {
+        ImGui::EndTable();
+
         return;
     }
     ImGui::TableSetupColumn("City");
-    ImGui::TableSetupColumn("Additional Supply");
+    ImGui::TableSetupColumn("Price");
+    ImGui::TableSetupColumn("Supply");
+    ImGui::TableSetupColumn("Demand");
+    ImGui::TableSetupColumn("Production");
+    ImGui::TableSetupColumn("Consumption");
+    ImGui::TableSetupColumn("Trade");
+
+    ImGui::TableHeadersRow();
+
     auto& cities = GetUniverse().get<components::Habitation>(selected_planet);
     for (entt::entity city : cities.settlements) {
         auto& market = GetUniverse().get<components::Market>(city);
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+
+        ImGui::TextFmt("{}", GetName(GetUniverse(), city));
+
+        if (ImGui::IsItemHovered()) {
+            gui::EntityTooltip(GetUniverse(), city);
+        }
+        ImGui::TableSetColumnIndex(1);
+        // Mark the cell as red if the thing is not valid
+        ImGui::TextFmt("{}", market.price[per_good_details_selected]);
+        ImGui::TableSetColumnIndex(2);
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.supply()[per_good_details_selected]));
+        ImGui::TableSetColumnIndex(3);
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.demand()[per_good_details_selected]));
+        ImGui::TableSetColumnIndex(4);
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.production[per_good_details_selected]));
+        ImGui::TableSetColumnIndex(5);
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.consumption[per_good_details_selected]));
+        ImGui::TableSetColumnIndex(6);
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.trade[per_good_details_selected]));
     }
+
+    // Do overall as well
+    ImGui::TableNextRow();
+    ImGui::TableSetColumnIndex(0);
+    auto& overall_market = GetUniverse().get<components::Market>(selected_planet);
+    ImGui::TextFmt("Overall");
+
+
+    ImGui::TableSetColumnIndex(1);
+    // Mark the cell as red if the thing is not valid
+    ImGui::TextFmt("{}", overall_market.price[per_good_details_selected]);
+    ImGui::TableSetColumnIndex(2);
+    ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.supply()[per_good_details_selected]));
+    ImGui::TableSetColumnIndex(3);
+    ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.demand()[per_good_details_selected]));
+    ImGui::TableSetColumnIndex(4);
+    ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.production[per_good_details_selected]));
+    ImGui::TableSetColumnIndex(5);
+    ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.consumption[per_good_details_selected]));
+    ImGui::TableSetColumnIndex(6);
+    ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.trade[per_good_details_selected]));
     ImGui::EndTable();
 }
 }  // namespace cqsp::client::systems
