@@ -23,7 +23,7 @@
 
 namespace cqsp::util {
 template <typename T>
-inline constexpr std::string NumberToHumanString(const T l) {
+inline std::string NumberToHumanString(const T l) {
     T absolute_value = l;
     // Ensure that it is not a unsigned int
     if constexpr (!(std::is_same<T, uint64_t>::value || std::is_same<T, uint32_t>::value)) {

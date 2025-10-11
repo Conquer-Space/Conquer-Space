@@ -32,17 +32,31 @@ void SysInterplanetaryTrade::DoSystem() {
         auto& planetary_market = GetUniverse().get<components::PlanetaryMarket>(entity);
         planetary_market.supply_difference = market_component.demand() - market_component.supply();
     }
-}
 
-void SysInterplanetaryTrade::ParseOrbitTreeMarket(entt::entity body) {
-    auto& orbital_system = GetUniverse().get<components::bodies::OrbitalSystem>(body);
-    for (entt::entity child : orbital_system.children) {
-        if (GetUniverse().all_of<components::PlanetaryMarket, components::bodies::OrbitalSystem>(child)) {
-            ParseOrbitTreeMarket(child);
+    for (entt::entity seller : planetary_markets) {
+        // Market we are going to ship from
+        auto& seller_planetary_market = GetUniverse().get<components::PlanetaryMarket>(seller);
+        auto& seller_market = GetUniverse().get<components::Market>(seller);
+        for (entt::entity buyer: planetary_markets) {
+            // Market we are going to ship to
+            auto& buyer_planetary_market = GetUniverse().get<components::PlanetaryMarket>(buyer);
+            auto& buyer_market = GetUniverse().get<components::Market>(buyer);
+            // Check for any goods, check if the price is worth it, then buy it
+            // Check if the seller market needs stuff
+            for (auto& [good, supply_difference] : buyer_planetary_market.supply_difference) {
+                if (supply_difference <= 0) {
+                    // Let's not process anything where supply is greater than demand for now
+                    // TODO(EhWhoAmI): Leave a way to indicate if you want a great surplus
+                    // versus a low surplus
+                    continue;
+                }
+                // Now see if the price is acceptable
+                // TODO(EhWhoAmI): Estimate the cost of the good
+                if (buyer_market.price[good] > seller_market.price[good] && seller_market.chronic_shortages[good] <= 0) {
+                    // We should add a market order to the buyer market and then figure out 
+                }
+            }
         }
     }
-    // See if we can fulfill the current recipe
-    // Check for space ports
-    // Get space ports
 }
 }  // namespace cqsp::common::systems
