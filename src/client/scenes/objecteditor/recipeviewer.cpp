@@ -17,7 +17,7 @@
 #include "recipeviewer.h"
 
 #include "client/scenes/universe/interface/systooltips.h"
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/name.h"
 #include "common/components/resource.h"
 #include "common/util/nameutil.h"

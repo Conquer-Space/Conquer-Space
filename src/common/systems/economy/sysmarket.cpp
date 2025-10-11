@@ -23,7 +23,7 @@
 
 #include <tracy/Tracy.hpp>
 
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/name.h"
 #include "common/components/spaceport.h"
 
@@ -128,7 +128,7 @@ void SysMarket::Init() {
             market.previous_supply()[good_entity] = 1;
             market.supply()[good_entity] = 1;
             market.demand()[good_entity] = 1;
-            market.market_access[good_entity] = 0.5;
+            market.market_access[good_entity] = 0.8;
         }
         market.sd_ratio = market.supply().SafeDivision(market.demand());
         market.history.push_back(market);

@@ -29,7 +29,7 @@
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/event.h"
 #include "common/components/infrastructure.h"
 #include "common/components/name.h"

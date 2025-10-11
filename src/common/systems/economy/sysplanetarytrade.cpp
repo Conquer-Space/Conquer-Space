@@ -19,7 +19,7 @@
 #include <algorithm>
 #include <cmath>
 
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/spaceport.h"
 #include "common/components/surface.h"
 
@@ -88,6 +88,9 @@ void SysPlanetaryTrade::DoSystem() {
                     std::max((value / p_market.demand()[good] * p_market.supply()[good]) - market.production[good], 0.);
             }
         }
+
+        auto& planetary_market = GetUniverse().get<components::PlanetaryMarket>(entity);
+        planetary_market.supplied_resources.clear();
     }
     initial_tick = false;
 }

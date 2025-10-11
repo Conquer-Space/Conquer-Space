@@ -107,10 +107,6 @@ struct MarketElementInformation {
     double inputratio;
 };
 
-struct PlanetaryMarket {
-    std::vector<entt::entity> participants;  // The markets that are connected
-};
-
 struct MarketOrder {
     /**
      * If it is a buy order it is the entity that wants to buy, if it is a sell order, it is
@@ -123,9 +119,13 @@ struct MarketOrder {
     MarketOrder(entt::entity target, double amount, double price) : target(target), amount(amount), price(price) {}
 };
 
-struct InterplanetaryMarket {
+// A planetary market must have a regular market as well
+struct PlanetaryMarket {
     std::map<entt::entity, std::vector<MarketOrder>> demands;
     std::map<entt::entity, std::vector<MarketOrder>> requests;
+    // Resources supplied by the interplanetary market
+    ResourceLedger supplied_resources;
+    ResourceLedger supply_difference;
 };
 
 struct Market : MarketInformation {

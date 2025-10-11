@@ -23,7 +23,7 @@
 
 #include "common/actions/economy/markethelpers.h"
 #include "common/components/area.h"
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/resource.h"
 
 namespace cqsp::common::actions {

@@ -16,7 +16,7 @@
  */
 #pragma once
 
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/systems/isimulationsystem.h"
 #include "common/universe.h"
 

@@ -21,6 +21,14 @@
                 recipe: furniture_manufacturing
                 productivity: 300
             }
+            {
+                recipe: gasoline_production
+                productivity: 2000
+            }
+            {
+                recipe: oil_drilling
+                productivity: 2000
+            }
         ]
     }
     {

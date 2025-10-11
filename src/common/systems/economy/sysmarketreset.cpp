@@ -16,7 +16,7 @@
  */
 #include "common/systems/economy/sysmarketreset.h"
 
-#include "common/components/economy.h"
+#include "common/components/market.h"
 
 namespace cqsp::common::systems {
 void SysMarketReset::DoSystem() {

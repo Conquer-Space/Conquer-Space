@@ -21,7 +21,10 @@
 namespace cqsp::client::systems {
 class SysPlanetMarketInformation : public SysUserInterface {
  public:
-    explicit SysPlanetMarketInformation(engine::Application& app) : SysUserInterface(app) { search_text.fill(0); }
+    explicit SysPlanetMarketInformation(engine::Application& app) : SysUserInterface(app) {
+      search_text.fill(0);
+      per_good_details_search_text.fill(0);
+   }
     void Init();
     void DoUI(int delta_time);
     void DoUpdate(int delta_time);
@@ -30,10 +33,15 @@ class SysPlanetMarketInformation : public SysUserInterface {
     void LocalMarketInformation();
     void InterplanetaryTradeInformation();
     void InterplanetaryTradeRightPanel();
+    void InterplanetaryTradeAmounts();
+    void PerGoodDetails();
+    void PerGoodDetailsRightPanel();
 
     bool to_see = true;
     entt::entity selected_planet = entt::null;
     entt::entity selected_good = entt::null;
+    entt::entity per_good_details_selected = entt::null;
     std::array<char, 255> search_text;
+    std::array<char, 255> per_good_details_search_text;
 };
 }  // namespace cqsp::client::systems

@@ -25,7 +25,7 @@
 #include "client/scenes/universe/interface/systooltips.h"
 #include "client/scenes/universe/views/starsystemview.h"
 #include "common/actions/shiplaunchaction.h"
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/infrastructure.h"
 #include "common/components/name.h"
 #include "common/components/orbit.h"
@@ -376,6 +376,11 @@ void SysProvinceInformation::IndustryListWindow() {
                     ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.size)));
                 } else {
                     ImGui::TextFmtColored(ImVec4(0.75, 0, 0, 1), "{}", NumberToHumanString(static_cast<int64_t>(industry_component.size)));
+                    if (ImGui::IsItemHovered()) {
+                        ImGui::BeginTooltip();
+                        ImGui::TextFmt("Resource Shortage!");
+                        ImGui::EndTooltip();
+                    }
                 }
                 ImGui::TableSetColumnIndex(2);
                 ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.utilization)));

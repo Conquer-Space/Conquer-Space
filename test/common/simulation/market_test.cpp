@@ -19,7 +19,7 @@
 #include <iostream>
 
 #include "common/actions/economy/markethelpers.h"
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/systems/economy/sysmarket.h"
 #include "common/universe.h"
 

@@ -23,7 +23,7 @@
 
 #include "common/components/area.h"
 #include "common/components/bodies.h"
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/name.h"
 #include "common/components/resource.h"
 #include "common/loading/loadutil.h"

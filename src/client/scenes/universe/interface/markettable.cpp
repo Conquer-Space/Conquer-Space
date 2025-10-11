@@ -19,7 +19,7 @@
 #include <imgui.h>
 
 #include "common/components/bodies.h"
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/name.h"
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"

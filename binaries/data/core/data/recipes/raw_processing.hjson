@@ -114,4 +114,23 @@
             raw
         ]
     }
+    {
+        name: Oil Drilling
+        identifier: oil_drilling
+        input: {
+            heavy_machinery: 0.1
+        }
+        output: {
+            crude_oil: 1000
+        }
+        cost: {
+            labor: {
+                worker: 10
+            }
+        }
+                tags: [
+            ratio
+            raw
+        ]
+    }
 ]

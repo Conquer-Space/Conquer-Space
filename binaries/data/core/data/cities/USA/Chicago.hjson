@@ -50,7 +50,7 @@
             }
             {
                 recipe: machinery_production
-                productivity: 20
+                productivity: 40
                 wage: 40
             }
         ]

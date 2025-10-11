@@ -17,25 +17,27 @@
 #include "common/systems/economy/sysinterplanetarytrade.h"
 
 #include "common/components/bodies.h"
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/spaceport.h"
+#include "common/components/surface.h"
 
 namespace cqsp::common::systems {
 void SysInterplanetaryTrade::DoSystem() {
-    auto planetary_markets = GetUniverse().view<components::Market, components::infrastructure::SpacePort>();
+    auto planetary_markets = GetUniverse().view<components::Market, components::PlanetaryMarket, components::Habitation>();
     for (entt::entity entity : planetary_markets) {
         auto& market_component = GetUniverse().get<components::Market>(entity);
-        auto& spaceport_component = GetUniverse().get<components::infrastructure::SpacePort>(entity);
-        // Now we should compute how much we shipped in on average and how much we do
+        // Get the S/D ratio and see if we need to make a difference
+        auto& habitation = GetUniverse().get<components::Habitation>(entity);
+        // Their parent market should probably have a planetary market
+        auto& planetary_market = GetUniverse().get<components::PlanetaryMarket>(entity);
+        planetary_market.supply_difference = market_component.demand() - market_component.supply();
     }
-
-    ParseOrbitTreeMarket(GetUniverse().sun);
 }
 
 void SysInterplanetaryTrade::ParseOrbitTreeMarket(entt::entity body) {
     auto& orbital_system = GetUniverse().get<components::bodies::OrbitalSystem>(body);
     for (entt::entity child : orbital_system.children) {
-        if (GetUniverse().all_of<components::InterplanetaryMarket, components::bodies::OrbitalSystem>(child)) {
+        if (GetUniverse().all_of<components::PlanetaryMarket, components::bodies::OrbitalSystem>(child)) {
             ParseOrbitTreeMarket(child);
         }
     }
