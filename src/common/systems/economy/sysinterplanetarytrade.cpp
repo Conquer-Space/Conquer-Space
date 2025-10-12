@@ -38,6 +38,9 @@ void SysInterplanetaryTrade::DoSystem() {
         auto& seller_planetary_market = GetUniverse().get<components::PlanetaryMarket>(seller);
         auto& seller_market = GetUniverse().get<components::Market>(seller);
         for (entt::entity buyer: planetary_markets) {
+            if (seller == buyer) {
+                continue;
+            }
             // Market we are going to ship to
             auto& buyer_planetary_market = GetUniverse().get<components::PlanetaryMarket>(buyer);
             auto& buyer_market = GetUniverse().get<components::Market>(buyer);
@@ -54,6 +57,9 @@ void SysInterplanetaryTrade::DoSystem() {
                 // TODO(EhWhoAmI): Estimate the cost of the good
                 if (buyer_market.price[good] > seller_market.price[good] && seller_market.chronic_shortages[good] <= 0) {
                     // We should add a market order to the buyer market and then figure out 
+                    // Now dump it to the market
+                    components::MarketOrder order(buyer, supply_difference, buyer_market.price[good]);
+                    seller_planetary_market.demands[good].push_back(order);
                 }
             }
         }

@@ -108,6 +108,9 @@ void SysPlanetMarketInformation::InterplanetaryTradeInformation() {
 
     ImGui::BeginChild("planetary_trade_viewer_scroll");
     for (auto& [good, order] : interplanetary_market.demands) {
+        if (!GetUniverse().valid(good)) {
+            continue;
+        }
         bool is_selected = selected_good == good;
         std::string name = common::util::GetName(GetUniverse(), good);
         std::string name_lower = name;
