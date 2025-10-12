@@ -22,16 +22,22 @@
 #include <string>
 
 namespace cqsp::util {
-inline std::string LongToHumanString(int64_t l) {
-    if (abs(l) < 1000) {
+template <typename T>
+inline std::string NumberToHumanString(const T l) {
+    T absolute_value = l;
+    // Ensure that it is not a unsigned int
+    if constexpr (!(std::is_same<T, uint64_t>::value || std::is_same<T, uint32_t>::value)) {
+        absolute_value = std::abs(l);
+    }
+    if (absolute_value < static_cast<T>(1000)) {
         return fmt::format("{}", l);
     }
     static const std::string numbers[] = {"k", "M",  "B",  "T",  "Qa", "Qn", "Sx", "Sp", "O",
                                           "N", "De", "Ud", "Dd", "Td", "Qd", "Qi", "Sd"};
-    int exponent = static_cast<int>(log10(abs(l)) / 3);
+    int exponent = static_cast<int>(std::log10(absolute_value) / 3);
 
     // Now get the number
-    double d = static_cast<double>(l) / pow(10, exponent * 3);
+    double d = static_cast<T>(l) / pow(10, exponent * 3);
 
     // Round this to two decimal points
     const int precision = 100;

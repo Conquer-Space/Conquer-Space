@@ -16,18 +16,10 @@
  */
 #pragma once
 
-#include "client/systems/sysgui.h"
+#include <hjson.h>
 
-namespace cqsp::client::systems {
-class SysPlanetMarketInformation : public SysUserInterface {
- public:
-    explicit SysPlanetMarketInformation(engine::Application& app) : SysUserInterface(app) {}
-    void Init();
-    void DoUI(int delta_time);
-    void DoUpdate(int delta_time);
+#include "common/universe.h"
 
- private:
-    bool to_see = true;
-    entt::entity selected_planet;
-};
-}  // namespace cqsp::client::systems
+namespace cqsp::common::loading {
+void LoadTerrainData(cqsp::common::Universe&, Hjson::Value&);
+}  // namespace cqsp::common::loading

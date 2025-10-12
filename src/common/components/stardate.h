@@ -51,6 +51,8 @@ class StarDate {
     static const int DAY = 24 * HOUR;
     static const int WEEK = DAY * 7;
 
+    static const int YEAR = DAY * 365;
+
     void IncrementDate() { date++; }
 
     int GetDate() { return date; }

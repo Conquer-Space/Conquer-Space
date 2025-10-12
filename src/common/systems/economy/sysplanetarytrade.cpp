@@ -19,7 +19,8 @@
 #include <algorithm>
 #include <cmath>
 
-#include "common/components/economy.h"
+#include "common/components/market.h"
+#include "common/components/spaceport.h"
 #include "common/components/surface.h"
 
 namespace cqsp::common::systems {
@@ -46,6 +47,12 @@ void SysPlanetaryTrade::DoSystem() {
 
             p_market.supply() += market.production;
             p_market.demand() += market.consumption;
+
+            if (GetUniverse().any_of<components::infrastructure::SpacePort>(habitation)) {
+                auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(habitation);
+                p_market.supply() += space_port.output_resources_rate;
+                p_market.demand() += space_port.demanded_resources_rate;
+            }
         }
 
         for (entt::entity good_entity : goodsview) {
@@ -56,8 +63,9 @@ void SysPlanetaryTrade::DoSystem() {
             auto& market = GetUniverse().get<components::Market>(habitation);
             auto& market_wallet = GetUniverse().get_or_emplace<components::Wallet>(habitation);
             for (entt::entity good_entity : goodsview) {
-                market.price[good_entity] = p_market.price[good_entity] * market.market_access +
-                                            (1 - market.market_access) * market.price[good_entity];
+                double access = market.market_access[good_entity];
+                market.price[good_entity] =
+                    p_market.price[good_entity] * access + (1 - access) * market.price[good_entity];
             }
 
             // Determine supply and demand for the market
@@ -67,7 +75,8 @@ void SysPlanetaryTrade::DoSystem() {
                     continue;
                 }
                 // Remove local production so that we don't confound this with our local production
-                market.trade[good] -= std::max((supply / p_market.supply()[good] * p_market.demand()[good]) - market.consumption[good], 0.);
+                market.trade[good] -= std::max(
+                    (supply / p_market.supply()[good] * p_market.demand()[good]) - market.consumption[good], 0.);
             }
 
             for (auto& [good, value] : market.demand()) {
@@ -75,9 +84,13 @@ void SysPlanetaryTrade::DoSystem() {
                     continue;
                 }
                 // Remove local consumption so that we don't confound this with local production
-                market.trade[good] += std::max((value / p_market.demand()[good] * p_market.supply()[good]) - market.production[good], 0.);
+                market.trade[good] +=
+                    std::max((value / p_market.demand()[good] * p_market.supply()[good]) - market.production[good], 0.);
             }
         }
+
+        auto& planetary_market = GetUniverse().get<components::PlanetaryMarket>(entity);
+        planetary_market.supplied_resources.clear();
     }
     initial_tick = false;
 }

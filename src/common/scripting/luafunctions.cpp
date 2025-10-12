@@ -29,7 +29,7 @@
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/event.h"
 #include "common/components/infrastructure.h"
 #include "common/components/name.h"
@@ -180,7 +180,7 @@ void FunctionEconomy(Universe& universe, ScriptInterface& script_engine) {
         universe.get<IndustrialZone>(city).industries.push_back(entity);
     });
 
-    REGISTER_FUNCTION("create_factory", [&](entt::entity city, entt::entity recipe, float productivity) {
+    REGISTER_FUNCTION("create_factory", [&](entt::entity city, entt::entity recipe, int productivity) {
         entt::entity factory = actions::CreateFactory(universe, city, recipe, productivity);
         return factory;
     });
@@ -276,7 +276,7 @@ void FunctionUser(Universe& universe, ScriptInterface& script_engine) {
         universe.emplace_or_replace<components::Name>(entity, name);
     });
 
-    REGISTER_FUNCTION("to_human_string", [&](int64_t number) { return cqsp::util::LongToHumanString(number); });
+    REGISTER_FUNCTION("to_human_string", [&](int64_t number) { return cqsp::util::NumberToHumanString(number); });
 
     REGISTER_FUNCTION("get_name", [&](entt::entity entity) { return util::GetName(universe, entity); });
 

@@ -23,10 +23,11 @@
 #include <tracy/Tracy.hpp>
 
 #include "common/components/area.h"
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/infrastructure.h"
 #include "common/components/name.h"
 #include "common/components/organizations.h"
+#include "common/components/population.h"
 #include "common/components/surface.h"
 #include "common/util/profiler.h"
 
@@ -47,8 +48,8 @@ void ProcessIndustries(Node& node) {
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
 
     auto& industries = node.get<components::IndustrialZone>();
-    Node populationnode = node.Convert(node.get<components::Settlement>().population.front());
-    auto& population_wallet = populationnode.get_or_emplace<components::Wallet>();
+    Node population_node = node.Convert(node.get<components::Settlement>().population.front());
+    auto& population_wallet = population_node.get_or_emplace<components::Wallet>();
     for (Node industrynode : node.Convert(industries.industries)) {
         // Process imdustries
         // Industries MUST have production and a linked recipe
@@ -142,7 +143,7 @@ void ProcessIndustries(Node& node) {
         bool shortage = false;
         double prod_sum = recipe.input.GetSum();
         for (auto& [good, amount] : recipe.input) {
-            if (market.chronic_shortages[good] > 0) {
+            if (market.chronic_shortages[good] > 5) {
                 // Reduce the amount based off the weighted average of the input?
                 // Then reduce production over time or something
                 shortage = true;
@@ -169,7 +170,18 @@ void ProcessIndustries(Node& node) {
         // Now diff it by that much
         // Let the minimum the factory can produce be like 10% of the
         // Pay the workers
+        population_node.get<components::PopulationSegment>().income += costs.wages;
+        population_node.get<components::PopulationSegment>().employed_amount += employer.population_fufilled;
         population_wallet += costs.wages;
+        // If we have left over income we should improve the wages a little bit
+        // There should also have a bank to reinvest into the company
+        double pl_ratio = costs.profit / costs.revenue;
+        if (pl_ratio > 0.1) {
+            // Now we can expand it and improve our wages as well
+            size.wages *= 1.05;
+        } else if (pl_ratio < -0.1) {
+            size.wages *= 0.95;
+        }
     }
 }
 

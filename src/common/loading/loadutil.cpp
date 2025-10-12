@@ -28,7 +28,6 @@ namespace cqsp::common::loading {
 namespace types = components::types;
 using types::UnitType;
 
-
 bool LoadName(Universe& universe, const entt::entity& entity, const Hjson::Value& value) {
     if (value["name"].type() != Hjson::Type::String) {
         return false;
@@ -124,7 +123,6 @@ bool is_number(std::string_view s) {
 }  // namespace
 
 double ReadUnit(std::string_view value, UnitType unit_type, bool* correct) {
-
     // Find the letters
     if (correct != nullptr) {
         (*correct) = true;
@@ -169,7 +167,7 @@ double ReadUnit(std::string_view value, UnitType unit_type, bool* correct) {
     double read_value = 0.0;
     try {
         read_value = std::stod(value_string);
-    } catch (const std::exception& err) {
+    } catch (const std::exception&) {
         mark_wrong();
         return 0.0;
     }

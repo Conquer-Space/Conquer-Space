@@ -23,7 +23,7 @@
 #include "client/scenes/objecteditor/sysfieldviewer.h"
 #include "client/scenes/universe/interface/debug/sysdebuggui.h"
 #include "client/scenes/universe/interface/imguiinterface.h"
-#include "client/scenes/universe/interface/marketwindow.h"
+#include "client/scenes/universe/interface/sysplanetmarketinformation.h"
 #include "client/scenes/universe/interface/orbitfilter.h"
 #include "client/scenes/universe/interface/provincewindow.h"
 #include "client/scenes/universe/interface/spaceshipwindow.h"

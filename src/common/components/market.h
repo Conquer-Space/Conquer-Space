@@ -49,26 +49,14 @@ struct MarketInformation {
     ResourceLedger volume;
     ResourceLedger price;
 
-    // Supply that existed, but not fufilled last time
-    // Surplus supply
-    ResourceLedger latent_supply;
-    // Demand that existed, but was not fufilled the last time
-    // Surplus demand
-    ResourceLedger last_latent_demand;
-    ResourceLedger latent_demand;
-    ResourceLedger supply_difference;
-
     ResourceLedger chronic_shortages;
 
     ResourceLedger trade;
-    ResourceLedger delta;
+
+    ResourceLedger resource_fulfilled;
 
     ResourceLedger production;
     ResourceLedger consumption;
-
-    entt::entity parent_market = entt::null;
-
-    double market_access = 0.2;
 
     void ResetLedgers() {
         // Reset the ledger values
@@ -119,8 +107,25 @@ struct MarketElementInformation {
     double inputratio;
 };
 
+struct MarketOrder {
+    /**
+     * If it is a buy order it is the entity that wants to buy, if it is a sell order, it is
+     * the entity that is selling it.g
+     */
+    entt::entity target;
+    double amount;
+    double price;
+
+    MarketOrder(entt::entity target, double amount, double price) : target(target), amount(amount), price(price) {}
+};
+
+// A planetary market must have a regular market as well
 struct PlanetaryMarket {
-    std::vector<entt::entity> participants;  // The markets that are connected
+    std::map<entt::entity, std::vector<MarketOrder>> demands;
+    std::map<entt::entity, std::vector<MarketOrder>> requests;
+    // Resources supplied by the interplanetary market
+    ResourceLedger supplied_resources;
+    ResourceLedger supply_difference;
 };
 
 struct Market : MarketInformation {
@@ -130,8 +135,12 @@ struct Market : MarketInformation {
     std::map<entt::entity, MarketElementInformation> last_market_information;
 
     std::set<entt::entity> participants;
-    // std::vector<std::pair<entt::entity, entt::entity>> neighbors;
+
     entt::basic_sparse_set<entt::entity> connected_markets;
+    
+    ResourceLedger market_access;
+
+    entt::entity parent_market = entt::null;
 
     double GDP = 0;
 

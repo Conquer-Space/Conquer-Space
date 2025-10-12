@@ -28,19 +28,16 @@
 #include "common/loading/loadorbit.h"
 #include "common/loading/loadutil.h"
 
-//#include "common/components/coordinates.h"
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/infrastructure.h"
 #include "common/components/name.h"
 #include "common/components/orbit.h"
 #include "common/components/population.h"
 #include "common/components/surface.h"
 #include "common/util/random/random.h"
-
-
 
 namespace cqsp::common::loading {
 

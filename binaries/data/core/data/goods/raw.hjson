@@ -51,4 +51,14 @@
             raw
         ]
     }
+    {
+        name: Lumber
+        identifier: lumber
+        volume: 1 m3
+        mass: 1500 kg
+        price: 20
+        tags: [
+            raw
+        ]
+    }
 ]

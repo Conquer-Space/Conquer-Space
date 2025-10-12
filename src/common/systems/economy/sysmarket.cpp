@@ -23,8 +23,9 @@
 
 #include <tracy/Tracy.hpp>
 
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/name.h"
+#include "common/components/spaceport.h"
 
 namespace cqsp::common::systems {
 
@@ -44,6 +45,22 @@ void SysMarket::DoSystem() {
         // Get demand
         Market& market = universe.get<Market>(entity);
 
+        // Add a supply if there is a space port
+        if (universe.any_of<components::infrastructure::SpacePort>(entity)) {
+            // Then add output resources to the market
+            auto& space_port = universe.get<components::infrastructure::SpacePort>(entity);
+            market.supply() += space_port.output_resources_rate;
+
+            // Remove the ones that are less than zero
+            space_port.output_resources -= space_port.output_resources_rate;
+            // If they're higher we set the output resouurces to zero
+            for (auto& [good, value] : space_port.output_resources) {
+                if (value < 0) {
+                    space_port.output_resources_rate[good] = 0;
+                }
+            }
+        }
+
         // TODO(EhWhoAmI): GDP Calculations
         // market.gdp = market.volume* market.price;
 
@@ -62,14 +79,25 @@ void SysMarket::DoSystem() {
         components::ResourceLedger& market_supply = market.supply();
         components::ResourceLedger& market_demand = market.demand();
         for (auto iterator = market_supply.begin(); iterator != market_supply.end(); iterator++) {
-            if (iterator->second == 0 && market_demand[iterator->first] > 0) {
-                market.chronic_shortages[iterator->first]++;
-            } else {
-                // Remove it if it exists in it
+            const double &demand = market_demand[iterator->first];
+            const double &supply = iterator->second;
+            double shortage_level =
+                (demand - supply) / demand;
+            if (demand == 0) {
+                shortage_level = 0;
+            }
+            if (shortage_level > 0.8) {
+                // The demand vs supply ratio should be below a certain amount
+                market.chronic_shortages[iterator->first] += shortage_level;
+            } else if (shortage_level > 0) {
                 if (market.chronic_shortages.contains(iterator->first)) {
-                    market.chronic_shortages[iterator->first]--;
-                    market.chronic_shortages[iterator->first] = std::max(market.chronic_shortages[iterator->first], 0.);
+                    market.chronic_shortages[iterator->first] += shortage_level;
                 }
+            } else {
+                market.chronic_shortages[iterator->first] -= (1 - shortage_level);
+            }
+            if (market.chronic_shortages[iterator->first] < 0) {
+                market.chronic_shortages[iterator->first] = 0;
             }
         }
     }
@@ -80,10 +108,12 @@ void SysMarket::DeterminePrice(Market& market, entt::entity good_entity) {
     const double supply = market.supply()[good_entity];
     const double demand = market.demand()[good_entity];
     double& price = market.price[good_entity];
+    // Get parent market price
     // Now just adjust cost
     // Get parent market
     price = base_prices[good_entity] *
-            (1. + GetUniverse().economy_config.market_config.base_price_deviation * std::clamp((demand - supply) / (std::max(0.001, std::min(demand, supply))), -1., 1.));
+            (1. + GetUniverse().economy_config.market_config.base_price_deviation *
+                      std::clamp((demand - supply) / (std::max(0.001, std::min(demand, supply))), -1., 1.));
 }
 
 void SysMarket::Init() {
@@ -105,6 +135,7 @@ void SysMarket::Init() {
             market.previous_supply()[good_entity] = 1;
             market.supply()[good_entity] = 1;
             market.demand()[good_entity] = 1;
+            market.market_access[good_entity] = 0.8;
         }
         market.sd_ratio = market.supply().SafeDivision(market.demand());
         market.history.push_back(market);
