@@ -24,19 +24,15 @@
 #include "common/components/resource.h"
 
 namespace cqsp::common::components::infrastructure {
-class TransportedGood {
+struct TransportedGood {
     entt::entity good;
-    double amount;
-    int priority;
-};
-
-/**
- * A resource request for goods.
- */
-class ResourceRequest {
     double amount;
     double fulfilled;
     double priority;
+
+    TransportedGood() : good(entt::null), amount(0.0), fulfilled(0.0), priority(0) {}
+    explicit TransportedGood(const MarketOrder& order, entt::entity _good)
+        : good(_good), amount(order.amount), fulfilled(0.0), priority(0) {}
 };
 
 /**
@@ -51,8 +47,7 @@ struct SpacePort {
     // The map is target, and queue
     // The entt entity must have an orbit, and we must be able to rendezvous to that entity
     // So this is the list of goods that it wants to deliver to different places
-    std::map<entt::entity, std::priority_queue<TransportedGood>> deliveries;
-    std::map<entt::entity, std::vector<ResourceRequest>> requests;
+    std::map<entt::entity, std::queue<TransportedGood>> deliveries;
 
     double launch_cadence = 0;
     int launchpads = 0;
