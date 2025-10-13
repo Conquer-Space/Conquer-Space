@@ -25,5 +25,8 @@ class SysInterplanetaryTrade : public ISimulationSystem {
     explicit SysInterplanetaryTrade(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
     int Interval() override { return components::StarDate::DAY; }
+
+ private:
+    void ResolveTrades();
 };
 }  // namespace cqsp::common::systems

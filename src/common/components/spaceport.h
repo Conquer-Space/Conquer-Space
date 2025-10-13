@@ -31,7 +31,7 @@ class TransportedGood {
 };
 
 /**
- * A resource request for
+ * A resource request for goods.
  */
 class ResourceRequest {
     double amount;
@@ -54,13 +54,13 @@ struct SpacePort {
     std::map<entt::entity, std::priority_queue<TransportedGood>> deliveries;
     std::map<entt::entity, std::vector<ResourceRequest>> requests;
 
-    double launch_cadance = 0;
+    double launch_cadence = 0;
     int launchpads = 0;
     entt::entity reference_body = entt::null;
 
     ResourceLedger demanded_resources;
     ResourceLedger demanded_resources_rate;
-ResourceLedger output_resources;
+    ResourceLedger output_resources;
     ResourceLedger output_resources_rate;
     ResourceLedger resource_stockpile;
 };
