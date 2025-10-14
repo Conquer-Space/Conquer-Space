@@ -47,7 +47,7 @@ struct SpacePort {
     // The map is target, and queue
     // The entt entity must have an orbit, and we must be able to rendezvous to that entity
     // So this is the list of goods that it wants to deliver to different places
-    std::map<entt::entity, std::queue<TransportedGood>> deliveries;
+    std::map<entt::entity, std::vector<TransportedGood>> deliveries;
 
     double launch_cadence = 0;
     int launchpads = 0;

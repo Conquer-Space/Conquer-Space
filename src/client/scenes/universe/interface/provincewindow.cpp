@@ -25,8 +25,8 @@
 #include "client/scenes/universe/interface/systooltips.h"
 #include "client/scenes/universe/views/starsystemview.h"
 #include "common/actions/shiplaunchaction.h"
-#include "common/components/market.h"
 #include "common/components/infrastructure.h"
+#include "common/components/market.h"
 #include "common/components/name.h"
 #include "common/components/orbit.h"
 #include "common/components/organizations.h"
@@ -327,6 +327,10 @@ void SysProvinceInformation::SpacePortTab() {
             DockedTab();
             ImGui::EndTabItem();
         }
+        if (ImGui::BeginTabItem("Orders")) {
+            SpacePortOrdersTab();
+            ImGui::EndTabItem();
+        }
         ImGui::EndTabBar();
     }
 }
@@ -375,7 +379,8 @@ void SysProvinceInformation::IndustryListWindow() {
                 if (!industry_component.shortage) {
                     ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.size)));
                 } else {
-                    ImGui::TextFmtColored(ImVec4(0.75, 0, 0, 1), "{}", NumberToHumanString(static_cast<int64_t>(industry_component.size)));
+                    ImGui::TextFmtColored(ImVec4(0.75, 0, 0, 1), "{}",
+                                          NumberToHumanString(static_cast<int64_t>(industry_component.size)));
                     if (ImGui::IsItemHovered()) {
                         ImGui::BeginTooltip();
                         ImGui::TextFmt("Resource Shortage!");
@@ -514,6 +519,17 @@ void SysProvinceInformation::DockedTab() {
         ImGui::Selectable(common::util::GetName(GetUniverse(), docked).c_str());
         if (ImGui::IsItemHovered()) {
             systems::gui::EntityTooltip(GetUniverse(), docked);
+        }
+    }
+}
+
+void SysProvinceInformation::SpacePortOrdersTab() {
+    // Just list it for a basic UI
+    auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(current_city);
+    for (auto& [target, queue] : space_port.deliveries) {
+        for (auto& transport : queue) {
+            ImGui::TextFmt("To {}: {} {}/{}", common::util::GetName(GetUniverse(), target),
+                           common::util::GetName(GetUniverse(), transport.good), transport.fulfilled, transport.amount);
         }
     }
 }
