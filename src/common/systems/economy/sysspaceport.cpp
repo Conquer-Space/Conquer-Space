@@ -14,15 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
-
-#include "common/systems/isimulationsystem.h"
+#include "common/systems/economy/sysspaceport.h"
 
 namespace cqsp::common::systems {
-class SysProduction : public ISimulationSystem {
- public:
-    explicit SysProduction(Game& game) : ISimulationSystem(game) {}
-    void DoSystem() override;
-    int Interval() override { return components::StarDate::DAY; }
-};
+void SysSpacePort::DoSystem() {
+
+}
 }  // namespace cqsp::common::systems

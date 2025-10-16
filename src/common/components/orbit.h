@@ -116,7 +116,19 @@ struct Orbit {
           w(w),
           M0(M0),
           v(M0),
-          epoch(0) {}
+          epoch(0),
+          reference_body(entt::null) {}
+
+    Orbit(kilometer semi_major_axis, double eccentricity, radian inclination, radian LAN, radian w, radian M0, entt::entity reference)
+        : eccentricity(eccentricity),
+          semi_major_axis(semi_major_axis),
+          inclination(inclination),
+          LAN(LAN),
+          w(w),
+          M0(M0),
+          v(M0),
+          epoch(0),
+          reference_body(reference) {}
 
     Orbit(const Orbit& orbit)
         : eccentricity(orbit.eccentricity),

@@ -490,15 +490,11 @@ void SysProvinceInformation::LaunchTab() {
         double inc = city_coord.r_latitude();
         inc += axial;
 
-        types::Orbit orb;
-        orb.reference_body = reference_body;
-        orb.inclination = components::types::GetLaunchInclination(city_coord.r_latitude(), azimuth);
-        orb.semi_major_axis = semi_major_axis;
-        orb.eccentricity = eccentricity;
-        orb.w = arg_of_perapsis;
-        orb.LAN = LAN;
-        orb.epoch = GetUniverse().date.ToSecond();
-        common::actions::LaunchShip(GetUniverse(), orb);
+        types::Orbit orb(semi_major_axis, eccentricity,
+                         components::types::GetLaunchInclination(city_coord.r_latitude(), azimuth), LAN,
+                         arg_of_perapsis, 0, reference_body);
+        entt::entity ship = common::actions::LaunchShip(GetUniverse(), orb);
+        GetUniverse().emplace<ctx::VisibleOrbit>(ship);
     }
     double periapsis = semi_major_axis * (1 - eccentricity);
     if (GetUniverse().get<components::bodies::Body>(city_coord.planet).radius > periapsis) {

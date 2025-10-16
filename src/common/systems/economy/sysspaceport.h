@@ -19,9 +19,9 @@
 #include "common/systems/isimulationsystem.h"
 
 namespace cqsp::common::systems {
-class SysProduction : public ISimulationSystem {
+class SysSpacePort : public ISimulationSystem {
  public:
-    explicit SysProduction(Game& game) : ISimulationSystem(game) {}
+    explicit SysSpacePort(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
     int Interval() override { return components::StarDate::DAY; }
 };

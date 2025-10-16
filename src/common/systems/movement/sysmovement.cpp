@@ -218,7 +218,6 @@ void SysSurface::DoSystem() {
 
 void SysPath::DoSystem() {
     ZoneScoped;
-
     Universe& universe = GetUniverse();
 
     auto bodies = universe.view<types::MoveTarget, Kinematics>(entt::exclude<Orbit>);
