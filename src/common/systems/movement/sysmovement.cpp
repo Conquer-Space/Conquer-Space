@@ -130,10 +130,10 @@ void SysOrbit::UpdateCommandQueue(Orbit& orb, entt::entity body, entt::entity pa
     }
     // Check if the current date is beyond the universe date
     auto& queue = GetUniverse().get<components::CommandQueue>(body);
-    if (queue.maneuvers.empty()) {
+    if (queue.empty()) {
         return;
     }
-    auto& command = queue.maneuvers.front();
+    auto& command = queue.front();
     if (command.time > GetUniverse().date.ToSecond()) {
         return;
     }

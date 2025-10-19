@@ -45,10 +45,12 @@ struct Maneuver {
 };
 
 struct CommandQueue {
-    std::deque<Maneuver> maneuvers;
     std::deque<entt::entity> commands;
     CommandQueue() = default;
-    auto begin() { return maneuvers.begin(); }
-    auto end() { return maneuvers.end(); }
+
+    auto begin() { return commands.begin(); }
+    auto end() { return commands.end(); }
+    bool empty() { return commands.empty(); }
+    entt::entity front() { return commands.front(); }
 };
 }  // namespace cqsp::common::components
