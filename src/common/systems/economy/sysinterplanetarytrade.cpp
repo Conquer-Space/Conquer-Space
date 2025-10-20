@@ -16,45 +16,53 @@
  */
 #include "common/systems/economy/sysinterplanetarytrade.h"
 
-#include "common/components/economy.h"
+#include "common/components/bodies.h"
+#include "common/components/market.h"
 #include "common/components/spaceport.h"
+#include "common/components/surface.h"
 
 namespace cqsp::common::systems {
 void SysInterplanetaryTrade::DoSystem() {
-    // Connect all the space ports together and then do stuff
-    // maybe we have to make a graph or something to be able to compute it
-    // Since transport ships are descrete we need a way to organize them as well
-    // There are like 3 ways to schedule
-    // One is to have regular trips, like a bus or something like that
-    // one is specially scheduled for a specific type of good
-    // one is you wait there and wait until it is full and then send
-    // Should we support the first two models?
-    // then how do we interact with it
-    // So do we have a schedule for a space port
-    // then say like we have this amount of shipment from it
-    // then the spaceport will take from the queue/schedule
-    // maybe an aging priority queue? We add a few things?
-    // Alright so...
-    // We have a bunch of space ports that act as providers and other stuff
-    // Alright so we have a bunch of spaceports that want to deliver goods, we should
-    // Get the space ports that want to launch something
-    auto planetary_markets = GetUniverse().view<components::Market, components::PlanetaryMarket>();
-    // Let's make a directed graph and try to get the time to transfer to each thing
-    // Alright so we should do path finding
+    auto planetary_markets = GetUniverse().view<components::Market, components::PlanetaryMarket, components::Habitation>();
     for (entt::entity entity : planetary_markets) {
-        // Now get the difference, and try to organize it
-        // do we just order it based off the price, and see if someone wants to deliver to
-        // a place
-        // But we also have to consider orbital maneuvers
-        // So what do we prioritize by time/delta-v?
-        // Since going to space is gonna be easy
+        auto& market_component = GetUniverse().get<components::Market>(entity);
+        // Get the S/D ratio and see if we need to make a difference
+        auto& habitation = GetUniverse().get<components::Habitation>(entity);
+        // Their parent market should probably have a planetary market
+        auto& planetary_market = GetUniverse().get<components::PlanetaryMarket>(entity);
+        planetary_market.supply_difference = market_component.demand() - market_component.supply();
     }
-    // Make a directed graph for the orbits
 
-    auto space_ports = GetUniverse().view<components::infrastructure::SpacePort>();
-    for (entt::entity entity : space_ports) {
-        // Now see who wants to deliver and who doesn't want to
-        // How do we order the priority of which space port delivers to who?
+    for (entt::entity seller : planetary_markets) {
+        // Market we are going to ship from
+        auto& seller_planetary_market = GetUniverse().get<components::PlanetaryMarket>(seller);
+        auto& seller_market = GetUniverse().get<components::Market>(seller);
+        for (entt::entity buyer: planetary_markets) {
+            if (seller == buyer) {
+                continue;
+            }
+            // Market we are going to ship to
+            auto& buyer_planetary_market = GetUniverse().get<components::PlanetaryMarket>(buyer);
+            auto& buyer_market = GetUniverse().get<components::Market>(buyer);
+            // Check for any goods, check if the price is worth it, then buy it
+            // Check if the seller market needs stuff
+            for (auto& [good, supply_difference] : buyer_planetary_market.supply_difference) {
+                if (supply_difference <= 0) {
+                    // Let's not process anything where supply is greater than demand for now
+                    // TODO(EhWhoAmI): Leave a way to indicate if you want a great surplus
+                    // versus a low surplus
+                    continue;
+                }
+                // Now see if the price is acceptable
+                // TODO(EhWhoAmI): Estimate the cost of the good
+                if (buyer_market.price[good] > seller_market.price[good] && seller_market.chronic_shortages[good] <= 0) {
+                    // We should add a market order to the buyer market and then figure out 
+                    // Now dump it to the market
+                    components::MarketOrder order(buyer, supply_difference, buyer_market.price[good]);
+                    seller_planetary_market.demands[good].push_back(order);
+                }
+            }
+        }
     }
 }
 }  // namespace cqsp::common::systems

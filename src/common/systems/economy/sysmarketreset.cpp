@@ -16,7 +16,7 @@
  */
 #include "common/systems/economy/sysmarketreset.h"
 
-#include "common/components/economy.h"
+#include "common/components/market.h"
 
 namespace cqsp::common::systems {
 void SysMarketReset::DoSystem() {
@@ -28,8 +28,6 @@ void SysMarketReset::DoSystem() {
         market.ResetLedgers();
         market.production.clear();
         market.consumption.clear();
-        market.latent_supply.clear();
-        market.latent_demand.clear();
     }
 }
 }  // namespace cqsp::common::systems

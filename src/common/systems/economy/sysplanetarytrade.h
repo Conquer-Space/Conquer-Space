@@ -16,7 +16,7 @@
  */
 #pragma once
 
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/systems/isimulationsystem.h"
 #include "common/universe.h"
 
@@ -33,7 +33,7 @@ class SysPlanetaryTrade : public ISimulationSystem {
 
     void DeterminePrice(components::Market& market, entt::entity good_entity);
 
- private:
+    private:
     bool initial_tick;
 
     components::ResourceLedger base_prices;

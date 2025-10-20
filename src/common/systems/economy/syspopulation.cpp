@@ -20,7 +20,7 @@
 
 #include <tracy/Tracy.hpp>
 
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/infrastructure.h"
 #include "common/components/name.h"
 #include "common/components/population.h"
@@ -120,11 +120,22 @@ void ProcessSettlement(Universe& universe, entt::entity settlement, ResourceCons
             cost += extra_cost;
         }
 
+        double spending_ratio = (segment.income - segment.spending) / segment.income;
+        if (spending_ratio > 0.1) {
+            // Then we can increase SOL by 0.1
+            segment.standard_of_living += 0.1 + segment.standard_of_living * 0.25;
+        } else if (spending_ratio < 0.1) {
+            segment.standard_of_living -= 0.1 + segment.standard_of_living * 0.25;
+            segment.standard_of_living = std::max(segment.standard_of_living, 1.);
+        }
+
+        segment.spending = cost;
+        segment.income = 0;
+        segment.employed_amount = 0;
         wallet -= cost;  // Spend, even if it puts the pop into debt
 
         // TODO(EhWhoAmI): Don't inject cash, take the money from the government
         wallet += segment.population * 1;  // Inject cash
-        //wallet.GetChange();
 
         market.consumption += consumption;
     }
@@ -167,8 +178,8 @@ void SysPopulationConsumption::DoSystem() {
                         // than calculating spending
     for (entt::entity cgentity : universe.consumergoods) {
         const components::ConsumerGood& good = universe.get<components::ConsumerGood>(cgentity);
-        marginal_propensity_base[cgentity] = good.marginal_propensity;
-        autonomous_consumption_base[cgentity] = good.autonomous_consumption;
+        marginal_propensity_base[cgentity] = good.marginal_propensity * Interval();
+        autonomous_consumption_base[cgentity] = good.autonomous_consumption * Interval();
         savings -= good.marginal_propensity;
     }  // These tables technically never need to be recalculated
     auto settlementview = universe.view<components::Settlement>();

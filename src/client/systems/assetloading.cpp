@@ -33,6 +33,8 @@
 #include "common/loading/loadplanets.h"
 #include "common/loading/loadprovinces.h"
 #include "common/loading/loadsatellites.h"
+#include "common/loading/loadterrain.h"
+#include "common/loading/recipeloader.h"
 #include "common/loading/technology.h"
 #include "common/loading/timezoneloader.h"
 #include "common/scripting/luafunctions.h"

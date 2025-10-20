@@ -16,28 +16,32 @@
  */
 #pragma once
 
-#include <array>
-
 #include "client/systems/sysgui.h"
-#include "common/components/resource.h"
 
 namespace cqsp::client::systems {
-class SysRecipeViewer : public SysUserInterface {
+class SysPlanetMarketInformation : public SysUserInterface {
  public:
-    explicit SysRecipeViewer(engine::Application& app) : SysUserInterface(app) { search_text.fill(0); }
-
+    explicit SysPlanetMarketInformation(engine::Application& app) : SysUserInterface(app) {
+      search_text.fill(0);
+      per_good_details_search_text.fill(0);
+   }
     void Init();
     void DoUI(int delta_time);
     void DoUpdate(int delta_time);
 
  private:
-    void RecipeViewerRight();
-    void ResetSelection();
-    void ResourceMapTable(common::components::ResourceLedger& ledger, const char* name);
-    entt::entity selected_recipe = entt::null;
+    void LocalMarketInformation();
+    void InterplanetaryTradeInformation();
+    void InterplanetaryTradeRightPanel();
+    void InterplanetaryTradeAmounts();
+    void PerGoodDetails();
+    void PerGoodDetailsRightPanel();
 
+    bool to_see = true;
+    entt::entity selected_planet = entt::null;
+    entt::entity selected_good = entt::null;
+    entt::entity per_good_details_selected = entt::null;
     std::array<char, 255> search_text;
-    float expected_production;
-    const ImVec4 id_copy_color = ImVec4(0.921568627f, 0.392156863f, 0.203921569f, 1.f);
+    std::array<char, 255> per_good_details_search_text;
 };
 }  // namespace cqsp::client::systems

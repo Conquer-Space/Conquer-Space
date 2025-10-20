@@ -21,11 +21,22 @@
 
 #include <entt/entt.hpp>
 
+#include "common/components/resource.h"
+
 namespace cqsp::common::components::infrastructure {
 class TransportedGood {
     entt::entity good;
     double amount;
     int priority;
+};
+
+/**
+ * A resource request for
+ */
+class ResourceRequest {
+    double amount;
+    double fulfilled;
+    double priority;
 };
 
 /**
@@ -36,13 +47,21 @@ class TransportedGood {
  * which means that we could launch like hundreds of rockets a day, which is kind of nuts
  * But for now, we'll support a limited amount of space launch systems
  */
-class SpacePort {
+struct SpacePort {
     // The map is target, and queue
     // The entt entity must have an orbit, and we must be able to rendezvous to that entity
     // So this is the list of goods that it wants to deliver to different places
     std::map<entt::entity, std::priority_queue<TransportedGood>> deliveries;
-    std::vector<std::pair<entt::entity, double>> requests;
-    double launch_cadance;
-    int launchpads;
+    std::map<entt::entity, std::vector<ResourceRequest>> requests;
+
+    double launch_cadance = 0;
+    int launchpads = 0;
+    entt::entity reference_body = entt::null;
+
+    ResourceLedger demanded_resources;
+    ResourceLedger demanded_resources_rate;
+ResourceLedger output_resources;
+    ResourceLedger output_resources_rate;
+    ResourceLedger resource_stockpile;
 };
 }  // namespace cqsp::common::components::infrastructure

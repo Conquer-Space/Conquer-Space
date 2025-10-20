@@ -7,7 +7,7 @@
             tractors: 0.1
         }
         output: {
-            cereal_grains: 3000
+            cereal_grains: 1500
         }
         cost: {
             labor: {

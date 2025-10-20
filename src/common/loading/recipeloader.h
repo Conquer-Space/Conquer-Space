@@ -14,15 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/economy/sysfinance.h"
+#pragma once
 
-#include "common/components/market.h"
+#include "common/loading/hjsonloader.h"
+#include "common/universe.h"
 
-namespace cqsp::common::systems {
-void SysWalletReset::DoSystem() {
-    auto view = GetUniverse().view<components::Wallet>();
-    for (entt::entity entity : view) {
-        GetUniverse().get<components::Wallet>(entity).Reset();
-    }
-}
-}  // namespace cqsp::common::systems
+namespace cqsp::common::loading {
+class RecipeLoader : public HjsonLoader {
+ public:
+    explicit RecipeLoader(Universe& universe);
+    const Hjson::Value& GetDefaultValues() override { return default_val; }
+    bool LoadValue(const Hjson::Value& values, entt::entity entity) override;
+
+ private:
+    Hjson::Value default_val;
+};
+}  // namespace cqsp::common::loading

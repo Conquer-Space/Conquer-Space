@@ -50,15 +50,15 @@ struct Settlement {
 };
 
 struct TimeZone {
-    double time_diff;
+    double time_diff = 0;
 };
 
 struct CityTimeZone {
-    entt::entity time_zone;
+    entt::entity time_zone = entt::null;
 };
 
 struct Province {
-    entt::entity country;
+    entt::entity country = entt::null;
     std::vector<entt::entity> cities;
     std::vector<entt::entity> neighbors;
 };
