@@ -133,7 +133,7 @@ void SysOrbit::UpdateCommandQueue(Orbit& orb, entt::entity body, entt::entity pa
     if (queue.empty()) {
         return;
     }
-    auto& command = queue.front();
+    auto& command = queue.maneuvers.front();
     if (command.time > GetUniverse().date.ToSecond()) {
         return;
     }

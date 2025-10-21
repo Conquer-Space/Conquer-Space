@@ -15,6 +15,8 @@ enum class Command {
     CoplanarInterceptAndTransfer,  // Intercepts and matches orbit
     Impulse,
     LandOnBody,
+    GoToBody, // More generic command that will transition through spheres of influence
+    LandToBody2
 };
 
 enum class Trigger {
