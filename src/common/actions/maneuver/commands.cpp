@@ -105,6 +105,7 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
             PushManeuvers(universe, entity, {maneuver});
         } break;
         case Command::LandOnBody: {
+            // Lands on body when crashed
             // Then check if it's going to
             if (!universe.any_of<OrbitEntityTarget>(command_entity)) {
                 break;
@@ -125,6 +126,9 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
             }
             universe.remove<Orbit>(entity);
             universe.remove<types::Kinematics>(entity);
+        } break;
+        case Command::InterceptAndCircularizeBody: {
+            // We should intercept the body and stuff
         } break;
         default:
             break;
