@@ -25,26 +25,25 @@
 #include <vector>
 
 #include "common/actions/factoryconstructaction.h"
-#include "common/loading/loadorbit.h"
-#include "common/loading/loadutil.h"
-
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
-#include "common/components/market.h"
 #include "common/components/infrastructure.h"
+#include "common/components/market.h"
 #include "common/components/name.h"
 #include "common/components/orbit.h"
 #include "common/components/population.h"
 #include "common/components/surface.h"
+#include "common/loading/loadorbit.h"
+#include "common/loading/loadutil.h"
 #include "common/util/random/random.h"
 
 namespace cqsp::common::loading {
 
 namespace types = components::types;
 namespace bodies = components::bodies;
-using types::UnitType;
 using bodies::Body;
+using types::UnitType;
 
 namespace {
 struct ParentTemp {
@@ -61,6 +60,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     auto& body_comp = universe.emplace<Body>(entity);
     universe.emplace<components::Market>(entity);
     universe.emplace<components::PlanetaryMarket>(entity);
+    universe.emplace<bodies::OrbitalSystem>(entity);
 
     universe.emplace<bodies::NautralObject>(entity);
     if (values["type"].type() != Hjson::Type::Undefined) {
@@ -176,9 +176,11 @@ void PlanetLoader::PostLoad(const entt::entity& entity) {
     auto& orbit = universe.get<types::Orbit>(entity);
     auto& body = universe.get<Body>(entity);
     body.mass = bodies::CalculateMass(body.GM);
+
     if (!universe.any_of<ParentTemp>(entity)) {
         return;
     }
+
     auto& parent_temp = universe.get<ParentTemp>(entity);
 
     if (universe.planets.find(parent_temp.parent) == universe.planets.end()) {

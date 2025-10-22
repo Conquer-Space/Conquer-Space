@@ -32,7 +32,6 @@
 #include "common/components/ships.h"
 #include "common/components/units.h"
 #include "common/systems/economy/sysagent.h"
-#include "common/systems/economy/sysproduction.h"
 #include "common/systems/economy/sysfinance.h"
 #include "common/systems/economy/sysinfrastructure.h"
 #include "common/systems/economy/sysinterplanetarytrade.h"
@@ -40,6 +39,8 @@
 #include "common/systems/economy/sysmarketreset.h"
 #include "common/systems/economy/sysplanetarytrade.h"
 #include "common/systems/economy/syspopulation.h"
+#include "common/systems/economy/sysproduction.h"
+#include "common/systems/economy/sysspaceport.h"
 #include "common/systems/history/sysmarkethistory.h"
 #include "common/systems/movement/sysmovement.h"
 #include "common/systems/navy/sysnavy.h"
@@ -59,6 +60,7 @@ Simulation::Simulation(Game& game) : m_game(game), m_universe(game.GetUniverse()
 
     // Economy progress
     AddSystem<SysMarketReset>();
+    AddSystem<SysSpacePort>();
 
     AddSystem<InfrastructureSim>();
     AddSystem<SysPopulationConsumption>();

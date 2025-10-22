@@ -21,12 +21,9 @@
 #include "common/components/movement.h"
 #include "common/components/orbit.h"
 #include "common/components/orders.h"
-
 #include "common/universe.h"
 
 namespace cqsp::common::systems::commands {
-
-
 /// Verifies if the command is a valid ship command option.
 /// This verifies if it's not null, and contains the
 /// necessary components to make it a command
@@ -36,7 +33,8 @@ bool ProcessCommandQueue(Universe& universe, entt::entity body, components::Trig
 void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity command_entity, components::Command command);
 void TransferToMoon(Universe& universe, entt::entity agent, entt::entity target);
 void LandOnMoon(Universe& universe, entt::entity agent, entt::entity target, entt::entity city);
-
+components::Maneuver_t void PushManeuver(Universe& universe, entt::entity entity, components::Maneuver_t maneuver,
+                                         double offset = 0);
 void PushManeuvers(Universe& universe, entt::entity entity, std::initializer_list<components::Maneuver_t> maneuver,
                    double offset = 0);
 void PushManeuvers(Universe& universe, entt::entity entity, components::HohmannPair_t hohmann_pair, double offset = 0);

@@ -18,22 +18,22 @@
 
 #include <algorithm>
 
+#include "common/actions/maneuver/maneuver.h"
+#include "common/actions/maneuver/rendezvous.h"
 #include "common/components/movement.h"
 #include "common/components/orbit.h"
 #include "common/components/surface.h"
-#include "common/actions/maneuver/maneuver.h"
-#include "common/actions/maneuver/rendezvous.h"
 
 namespace cqsp::common::systems::commands {
 
 namespace types = components::types;
 
-using types::Orbit;
 using components::Command;
-using components::Trigger;
-using components::OrbitTarget;
-using components::OrbitScalar;
 using components::OrbitEntityTarget;
+using components::OrbitScalar;
+using components::OrbitTarget;
+using components::Trigger;
+using types::Orbit;
 
 bool VerifyCommand(Universe& universe, entt::entity command) {
     return (command == entt::null || !universe.any_of<Trigger>(command) || !universe.any_of<Command>(command));
@@ -189,6 +189,14 @@ void TransferToMoon(Universe& universe, entt::entity agent, entt::entity target)
     auto& command_queue = universe.get_or_emplace<components::CommandQueue>(agent);
     command_queue.commands.push_back(maneuver_to_point);
     command_queue.commands.push_back(circularize);
+}
+
+/**
+ * @param offset the time offset in ticks to push back the command
+ */
+void PushManeuver(Universe& universe, entt::entity entity, components::Maneuver_t maneuver, double offset) {
+    auto& queue = universe.get_or_emplace<components::CommandQueue>(entity);
+    queue.maneuvers.emplace_back(maneuver, universe.date() + offset);
 }
 
 void PushManeuvers(Universe& universe, entt::entity entity, std::initializer_list<components::Maneuver_t> maneuver,

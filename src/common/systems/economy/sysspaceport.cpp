@@ -16,15 +16,24 @@
  */
 #include "common/systems/economy/sysspaceport.h"
 
-#include "common/components/spaceport.h"
+#include "common/actions/maneuver/commands.h"
+#include "common/actions/shiplaunchaction.h"
 #include "common/components/bodies.h"
+#include "common/components/name.h"
+#include "common/components/orbit.h"
+#include "common/components/spaceport.h"
+#include "common/util/nameutil.h"
 
 namespace cqsp::common::systems {
 void SysSpacePort::DoSystem() {
-    auto& space_ports = GetUniverse().view<components::infrastructure::SpacePort>();
+    auto space_ports = GetUniverse().view<components::infrastructure::SpacePort>();
     for (entt::entity space_port : space_ports) {
         auto& port_component = GetUniverse().get<components::infrastructure::SpacePort>(space_port);
-        for (auto& [good, delivery_queue] : port_component.deliveries) {
+        for (auto& [target, delivery_queue] : port_component.deliveries) {
+            // Let's ignore the moon for now
+            if (target != GetUniverse().planets["moon"]) {
+                continue;
+            }
             // Launch a ship with the resources and stuff
             while (!delivery_queue.empty()) {
                 components::infrastructure::TransportedGood element = delivery_queue.back();
@@ -33,11 +42,20 @@ void SysSpacePort::DoSystem() {
                 auto& body = GetUniverse().get<components::bodies::Body>(port_component.reference_body);
                 // Let's set a parking orbit at 8% of the planet's radius
                 // TODO(EhWhoAmI): It should be a factor of the atmosphere in the future
-                components::types::Orbit orb(body.radius * 0.08, 0.,
-                    components::types::GetLaunchInclination(city_coord.r_latitude(), azimuth), 0,
-                    arg_of_perapsis, 0, reference_body);
+                const double eccentricity = std::fabs(GetUniverse().random->GetRandomNormal(0, 0.000005));
+                const double semi_major_axis =
+                    GetUniverse().random->GetRandomNormal(body.radius * 1.08, body.radius * 0.01);
+                const double inclination = GetUniverse().random->GetRandomNormal(0, 0.05);
+                components::types::Orbit orb(semi_major_axis, eccentricity, inclination, 0, 0.1, 0,
+                                             port_component.reference_body);
                 entt::entity ship = common::actions::LaunchShip(GetUniverse(), orb);
-                GetUniverse().emplace<ctx::VisibleOrbit>(ship);
+                GetUniverse().emplace<components::Name>(
+                    ship, fmt::format("{} Transport Vehicle", util::GetName(GetUniverse(), element.good)));
+                // Then target the target body
+                // Let's assume that its the moon for now so that we can see that we can automate things
+                // Let's add a zero maneuver like 30 minutes in the future and then we can do that
+                actions::PushManeuver(GetUniverse(), ship, std::make_pair());
+                // Add a resource stockpile to the ship
                 delivery_queue.pop_back();
             }
         }
