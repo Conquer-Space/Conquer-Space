@@ -764,6 +764,7 @@ void AssetLoader::LoadResources(Package& package, const std::string& package_mou
             asset_value = Hjson::Unmarshal(asset_data, dec_opt);
         } catch (Hjson::syntax_error& se) {
             ENGINE_LOG_WARN(se.what());
+            ENGINE_LOG_WARN("File: {}", resource_file->Path());
             // Then try again without the options
             dec_opt.duplicateKeyException = false;
             asset_value = Hjson::Unmarshal(asset_data, dec_opt);
@@ -783,7 +784,7 @@ void AssetLoader::LoadResourceHjsonFile(Package& package, const std::string& pac
 
         // Get the file
         std::string path;
-        // Sometimes it's in the root directory of the directory, which would make this display 2 forward
+        // Sometimes it's in the root directory of the filesystem, which would make this display 2 forward
         // slashes at a time, so this is to mitigate that.
         if (GetParentPath(resource_file_path).empty()) {
             path = package_mount_path + "/" + val["path"].to_string();

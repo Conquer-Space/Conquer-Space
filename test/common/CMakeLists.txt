@@ -30,6 +30,9 @@ add_executable(cqsp-tests ${CPP_FILES} ${H_FILES})
 target_link_libraries(cqsp-tests GTest::gtest)
 target_link_libraries(cqsp-tests GTest::gmock)
 target_link_libraries(cqsp-tests cqsp-core)
+# Add engine and client for some loading functions
+target_link_libraries(cqsp-tests cqsp-engine)
+target_link_libraries(cqsp-tests cqsp-client)
 
 set_property(TARGET cqsp-tests PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/binaries/bin")
 

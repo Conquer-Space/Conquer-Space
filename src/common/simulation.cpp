@@ -42,7 +42,7 @@
 #include "common/systems/economy/sysproduction.h"
 #include "common/systems/economy/sysspaceport.h"
 #include "common/systems/history/sysmarkethistory.h"
-#include "common/systems/movement/sysmovement.h"
+#include "common/systems/movement/sysorbit.h"
 #include "common/systems/navy/sysnavy.h"
 #include "common/systems/science/syssciencelab.h"
 #include "common/systems/science/systechnology.h"
@@ -50,8 +50,9 @@
 #include "common/util/profiler.h"
 
 namespace cqsp::common::systems::simulation {
+Simulation::Simulation(Game& game) : m_game(game), m_universe(game.GetUniverse()) { CreateSystems(); }
 
-Simulation::Simulation(Game& game) : m_game(game), m_universe(game.GetUniverse()) {
+void Simulation::CreateSystems() {
     AddSystem<SysScript>();
     AddSystem<SysWalletReset>();
 

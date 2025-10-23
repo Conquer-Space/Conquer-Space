@@ -21,7 +21,7 @@
 #include "common/components/coordinates.h"
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
-#include "common/systems/movement/sysmovement.h"
+#include "common/systems/movement/sysorbit.h"
 
 namespace cqspt = cqsp::common::components::types;
 class SystemsMovementTest : public ::testing::Test {

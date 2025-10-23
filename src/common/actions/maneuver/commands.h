@@ -33,8 +33,8 @@ bool ProcessCommandQueue(Universe& universe, entt::entity body, components::Trig
 void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity command_entity, components::Command command);
 void TransferToMoon(Universe& universe, entt::entity agent, entt::entity target);
 void LandOnMoon(Universe& universe, entt::entity agent, entt::entity target, entt::entity city);
-components::Maneuver_t void PushManeuver(Universe& universe, entt::entity entity, components::Maneuver_t maneuver,
-                                         double offset = 0);
+components::Maneuver_t MakeManeuver(const glm::dvec3& vector, double time);
+void PushManeuver(Universe& universe, entt::entity entity, components::Maneuver_t maneuver, double offset = 0);
 void PushManeuvers(Universe& universe, entt::entity entity, std::initializer_list<components::Maneuver_t> maneuver,
                    double offset = 0);
 void PushManeuvers(Universe& universe, entt::entity entity, components::HohmannPair_t hohmann_pair, double offset = 0);

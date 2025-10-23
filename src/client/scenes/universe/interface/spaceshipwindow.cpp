@@ -206,7 +206,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
         }
         if (ImGui::Button("Match Planes")) {
             auto maneuver = cqsp::common::systems::MatchPlanes(orbit, target);
-            common::systems::commands::PushManeuvers(GetUniverse(), body, {maneuver});
+            common::systems::commands::PushManeuver(GetUniverse(), body, maneuver);
         }
         ImGui::TextFmt("Phase angle: {}", cqsp::common::components::types::CalculatePhaseAngle(
                                               orbit, target, GetUniverse().date.ToSecond()));

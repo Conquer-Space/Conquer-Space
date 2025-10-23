@@ -53,8 +53,9 @@ void SysSpacePort::DoSystem() {
                     ship, fmt::format("{} Transport Vehicle", util::GetName(GetUniverse(), element.good)));
                 // Then target the target body
                 // Let's assume that its the moon for now so that we can see that we can automate things
-                // Let's add a zero maneuver like 30 minutes in the future and then we can do that
-                actions::PushManeuver(GetUniverse(), ship, std::make_pair());
+                // Let's add a zero maneuver like 30 minutes in the future and then we can trigger a plane change operation on that
+                // commands::PushManeuver(GetUniverse(), ship, commands::MakeManeuver(glm::dvec3(0., 0., 0.), 30 * components::StarDate::MINUTE), 0);
+                commands::TransferToMoon(GetUniverse(), ship, target);
                 // Add a resource stockpile to the ship
                 delivery_queue.pop_back();
             }
