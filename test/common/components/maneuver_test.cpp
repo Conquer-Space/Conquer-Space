@@ -16,25 +16,81 @@
  */
 #include <gtest/gtest.h>
 
+#include <filesystem>
+#include <memory>
+
 #include "common/game.h"
+#include "common/loading/hjsonloader.h"
+#include "common/loading/planetloader.h"
 #include "common/simulation.cpp"
 #include "common/systems/movement/sysorbit.h"
+#include "common/util/paths.h"
 #include "engine/asset/packageindex.h"
+#include "engine/asset/vfs/nativevfs.h"
 
 class ManeuverTestSimulation : public cqsp::common::systems::simulation::Simulation {
  public:
-    explicit ManeuverTestSimulation(cqsp::common::Game &game) : cqsp::common::systems::simulation::Simulation(game) {}
+    explicit ManeuverTestSimulation(cqsp::common::Game& game) : cqsp::common::systems::simulation::Simulation(game) {}
 
     void CreateSystems() override { AddSystem<cqsp::common::systems::SysOrbit>(); }
 };
+
+Hjson::Value LoadHjsonAsset(cqsp::asset::IVirtualFileSystemPtr mount, std::string path) {
+    Hjson::Value value;
+    Hjson::DecoderOptions dec_opt;
+    dec_opt.comments = false;
+
+    if (mount->IsDirectory(path)) {
+        // Load and append to assets.
+        auto dir = mount->OpenDirectory(path);
+        for (int i = 0; i < dir->GetSize(); i++) {
+            auto file = dir->GetFile(i);
+            Hjson::Value result;
+            // Since it's a directory, we will assume it's an array, and push back the values.
+            try {
+                result = Hjson::Unmarshal(ReadAllFromVFileToString(file.get()), dec_opt);
+                if (result.type() == Hjson::Type::Vector) {
+                    // Append all the values in place
+                    for (int k = 0; k < result.size(); k++) {
+                        value.push_back(result[k]);
+                    }
+                } else {
+                    // TODO(EhWhoAmI): Raise a non fatal error
+                }
+            } catch (Hjson::syntax_error& ex) {
+                // TODO(EhWhoAmI): Also raise a non fatal error
+            }
+        }
+    } else {
+        auto file = mount->Open(path);
+        // Read the file
+        try {
+            value = Hjson::Unmarshal(ReadAllFromVFileToString(file.get()), dec_opt);
+        } catch (Hjson::syntax_error& ex) {
+            // TODO(EhWhoAmI): Raise a fatal error
+        }
+    }
+    return value;
+}
 
 TEST(ManeuverTest, MatchPlaneTest) {
     // Now generate a bunch of orbits and universe and figure out if we can match to them
     // Generate a sim
     cqsp::common::Game game;
+    std::filesystem::path data_path(cqsp::common::util::GetCqspTestDataPath());
+    std::shared_ptr<cqsp::asset::NativeFileSystem> vfs_shared_ptr = std::shared_ptr<cqsp::asset::NativeFileSystem>(
+        new cqsp::asset::NativeFileSystem((data_path / "core").string()));
     // Initialize a few planets
     // Load the core package
-    // Load a folder
-    cqsp::asset::PackageIndex index();
+    cqsp::asset::PackageIndex index(vfs_shared_ptr->OpenDirectory(""));
     ManeuverTestSimulation simulation(game);
+    std::string path = index["planets"].path;
+    ASSERT_EQ(index["planets"].type, cqsp::asset::AssetType::HJSON);
+
+    Hjson::Value planets_hjson = LoadHjsonAsset(vfs_shared_ptr, path);
+    cqsp::common::loading::PlanetLoader loader(game.GetUniverse());
+    loader.LoadHjson(planets_hjson);
+    // Add something to orbit
+    entt::entity earth = game.GetUniverse().planets["earth"];
+    // Let's add something into orbit
 }

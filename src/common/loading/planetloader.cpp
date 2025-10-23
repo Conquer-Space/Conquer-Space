@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "common/loading/loadplanets.h"
+#include "common/loading/planetloader.h"
 
 #include <spdlog/spdlog.h>
 

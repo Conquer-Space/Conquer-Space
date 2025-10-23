@@ -39,6 +39,6 @@ set_property(TARGET cqsp-tests PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_S
 add_test(NAME cqsp-test COMMAND cqsp-tests WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/binaries/bin)
 
 # Disable logging
-target_compile_definitions(cqsp-tests PRIVATE SPDLOG_ACTIVE_LEVEL=1000)
+target_compile_definitions(cqsp-tests PRIVATE SPDLOG_ACTIVE_LEVEL=1000 TEST=1)
 
 set_target_properties(cqsp-tests PROPERTIES EXPORT_COMPILE_COMMANDS TRUE)

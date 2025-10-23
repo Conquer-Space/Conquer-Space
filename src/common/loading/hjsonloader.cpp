@@ -24,6 +24,9 @@
 #include "common/loading/loadutil.h"
 
 namespace cqsp::common::loading {
+/**
+ * Loads the hjson struct for an entire asset.
+ */
 int HjsonLoader::LoadHjson(const Hjson::Value& values) {
     int assets = 0;
     std::vector<entt::entity> entity_list;

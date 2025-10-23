@@ -142,6 +142,11 @@ std::string GetCqspExePath() {
     return std::filesystem::canonical(p).string();
 }
 
+std::string GetCqspTestDataPath() {
+    return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) / ".." / ".." / ".." / ".." / "binaries" /
+                                      "data")
+        .string();
+}
 std::string GetCqspDataPath() {
     // If it's cmake, then the directory may be different
 #if defined(_DEBUG) && defined(_MSC_VER)

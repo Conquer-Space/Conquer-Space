@@ -78,8 +78,6 @@ entt::entity CreateShip(Universe& universe, entt::entity fleetEnt, entt::entity 
 }
 
 entt::entity LaunchShip(Universe& universe, components::types::Orbit& orbit) {
-    // Set the orbit
-
     entt::entity ship = universe.create();
     universe.emplace<Ship>(ship);
     // Now do things

@@ -42,6 +42,6 @@ target_link_libraries(cqsp-engine-tests cqsp-core cqsp-engine)
 add_test(NAME cqsp-engine-test COMMAND cqsp-engine-tests WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/binaries/bin)
 
 # Disable logging
-target_compile_definitions(cqsp-engine-tests PRIVATE SPDLOG_ACTIVE_LEVEL=1000)
+target_compile_definitions(cqsp-engine-tests PRIVATE SPDLOG_ACTIVE_LEVEL=1000 TEST=1)
 
 set_target_properties(cqsp-engine-tests PROPERTIES EXPORT_COMPILE_COMMANDS TRUE)

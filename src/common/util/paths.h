@@ -30,6 +30,7 @@ std::string GetCqspExePath();
 /// </summary>
 /// <returns></returns>
 std::string GetCqspDataPath();
+std::string GetCqspTestDataPath();
 /// This should return Documents/cqsp
 std::string GetCqspSavePath();
 }  // namespace cqsp::common::util
