@@ -94,4 +94,9 @@ TEST(ManeuverTest, MatchPlaneTest) {
     // Add something to orbit
     entt::entity earth = game.GetUniverse().planets["earth"];
     // Let's add something into orbit
+    entt::entity ship1 = cqsp::common::actions::LaunchShip(game.GetUniverse(), cqsp::common::components::types::Orbit());
+
+    entt::entity ship2 = cqsp::common::actions::LaunchShip(game.GetUniverse(), cqsp::common::components::types::Orbit());
+
+    // Then we should set the orbit over time and stuff
 }
