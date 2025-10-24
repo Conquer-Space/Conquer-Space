@@ -20,13 +20,24 @@
 
 #include "common/components/orbit.h"
 
-namespace cqsp::test {
+namespace cqsp::common::util {
 class OrbitGenerator {
-    common::components::types::Orbit GenerateOrbit();
+ public:
+    OrbitGenerator(double position, double velocity) : OrbitGenerator(glm::dvec3(position), glm::dvec3(velocity)) {}
+    OrbitGenerator(glm::dvec3 position, glm::dvec3 velocity) : random_device(), gen(random_device()), position_distribution(position), velocity_distribution(velocity) {}
+    OrbitGenerator(double distribution) : OrbitGenerator(distribution, distribution) {}
+
+    common::components::types::Orbit GenerateOrbit(double GM, double time);
+    std::pair<glm::dvec3, glm::dvec3> GenerateVectors();
+
+ private:
+    double RandomValue(double range);
+    glm::dvec3 RandomVector(const glm::dvec3 &range);
+
+    glm::dvec3 position_distribution;
+    glm::dvec3 velocity_distribution;
 
     std::random_device random_device;
     std::mt19937 gen;
-
-    OrbitGenerator() : random_device(), gen(random_device()) {}
-}
-}  // namespace cqsp::test
+};
+}  // namespace cqsp::common::util
