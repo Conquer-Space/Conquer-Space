@@ -58,7 +58,7 @@ class StarDate {
 
     uint64_t GetDate() { return date; }
 
-    double ToSecond() { return date * TIME_INCREMENT; }
+    double ToSecond() { return (double)date * TIME_INCREMENT; }
     double ToDay() { return date / (float)DAY; }
 
     std::string ToString();

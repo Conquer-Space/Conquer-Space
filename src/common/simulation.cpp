@@ -43,7 +43,6 @@
 #include "common/systems/economy/sysspaceport.h"
 #include "common/systems/history/sysmarkethistory.h"
 #include "common/systems/movement/sysorbit.h"
-#include "common/systems/navy/sysnavy.h"
 #include "common/systems/science/syssciencelab.h"
 #include "common/systems/science/systechnology.h"
 #include "common/systems/scriptrunner.h"

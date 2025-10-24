@@ -19,6 +19,7 @@
 #include <filesystem>
 #include <memory>
 
+#include "common/actions//shiplaunchaction.h"
 #include "common/game.h"
 #include "common/loading/hjsonloader.h"
 #include "common/loading/planetloader.h"
