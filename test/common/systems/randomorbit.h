@@ -14,18 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include <gtest/gtest.h>
-#include <spdlog/spdlog.h>
+#pragma once
 
-#include <cstdio>
+#include <random>
 
-/// <summary>
-/// Custom main function for tests so that tests don't print out things from the
-/// logger.
-/// </summary>
-GTEST_API_ int main(int argc, char **argv) {
-    printf("Running main() from %s\n", __FILE__);
+#include "common/components/orbit.h"
 
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+namespace cqsp::test {
+class OrbitGenerator {
+    common::components::types::Orbit GenerateOrbit();
+
+    std::random_device random_device;
+    std::mt19937 gen;
+
+    OrbitGenerator() : random_device(), gen(random_device()) {}
 }
+}  // namespace cqsp::test

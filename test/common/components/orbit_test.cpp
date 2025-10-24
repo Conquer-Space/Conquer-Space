@@ -211,6 +211,15 @@ TEST(OrbitTest, OrbitNormalTest2) {
     EXPECT_DOUBLE_EQ(glm::dot(glm::normalize(orb), glm::normalize(vel)), 1.);
 }
 
+TEST(OrbitTest, OrbitNormalTestList) {
+    namespace cqspt = cqsp::common::components::types;
+    // Generate a couple of orbits
+    cqspt::Orbit vec = {57.91e9, 0.3, 0.4, 0., 0., 0};
+    glm::dvec3 orb = cqspt::GetOrbitNormal(vec);
+    glm::dvec3 vel = glm::cross(cqspt::toVec3(vec), cqspt::OrbitVelocityToVec3(vec, 0));
+    EXPECT_DOUBLE_EQ(glm::dot(glm::normalize(orb), glm::normalize(vel)), 1.);
+}
+
 TEST(OrbitTest, AscendingNodeTest) {
     namespace cqspt = cqsp::common::components::types;
     std::vector<std::tuple<cqspt::Orbit, cqspt::Orbit, double>> map = {

@@ -23,6 +23,7 @@
 
 namespace cqsp::common::components {
 // Datatype returned by a command
+// impulse vector and time in seconds of the maneuver
 typedef std::pair<glm::dvec3, double> Maneuver_t;
 typedef std::pair<Maneuver_t, Maneuver_t> HohmannPair_t;
 
@@ -36,10 +37,14 @@ struct Maneuver {
     /// positve x is radial out, negative x is radial in
     /// positve z is normal, negative z is anti-normal
     /// </summary>
-    glm::dvec3 delta_v;
-    double time;
+    const glm::dvec3 delta_v;
+    const double time;
     Maneuver() = default;
     explicit Maneuver(const std::pair<glm::dvec3, double>& maneuver) : delta_v(maneuver.first), time(maneuver.second) {}
+    /*
+    * @param maneuver maneuver pair
+    * @param offset seconds to offset how far in the future or in the past to put this maneuver
+    */
     explicit Maneuver(const std::pair<glm::dvec3, double>& maneuver, double current_time)
         : delta_v(maneuver.first), time(maneuver.second + current_time) {}
 };

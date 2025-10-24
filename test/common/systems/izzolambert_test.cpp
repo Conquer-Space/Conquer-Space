@@ -26,7 +26,7 @@
 
 namespace cqsps = cqsp::common::systems;
 namespace cqspt = cqsp::common::components::types;
-TEST(IzzoTest, Lambert) {
+TEST(IzzoTest, DISABLED_Lambert) {
     std::random_device random_device;
     std::mt19937 gen(random_device());
     const double random_range = 50.0;

@@ -43,5 +43,5 @@ entt::entity CreateShip(Universe &universe, entt::entity fleetEnt, entt::entity 
 entt::entity CreateShip(Universe &universe, entt::entity fleetEnt, entt::entity starsystemEnt,
                         entt::entity orbitEnt, const std::string &shipName);
 
-entt::entity LaunchShip(Universe &universe, components::types::Orbit &orbit);
+entt::entity LaunchShip(Universe &universe, const components::types::Orbit &orbit);
 }  // namespace cqsp::common::systems::actions

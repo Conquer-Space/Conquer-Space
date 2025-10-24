@@ -161,6 +161,8 @@ struct Orbit {
     double GetPeriapsis() const { return semi_major_axis * (1 - eccentricity); }
 
     double TimeToTrueAnomaly(double v2) const;
+
+    std::string ToHumanString();
 };
 
 inline std::ostream& operator<<(std::ostream& outs, const Orbit& orb) {

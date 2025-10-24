@@ -19,6 +19,8 @@
 #include <algorithm>
 #include <cassert>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/projection.hpp>
@@ -427,5 +429,30 @@ double Orbit::TimeToTrueAnomaly(double v2) const {
         }
         return (t);
     }
+}
+std::string Orbit::ToHumanString() {
+    std::ostringstream ss;
+    ss << std::fixed << std::setprecision(6);
+    ss << "Orbit Parameters:\n";
+    ss << "Semi-major axis (a):        " << semi_major_axis << " km\n";
+    ss << "Eccentricity (e):           " << eccentricity << "\n";
+    ss << "Inclination (i):            " << inclination << " rad (" << inclination * 180.0 / PI << " deg)\n";
+    ss << "Longitude of Asc. Node (LAN): " << LAN << " rad (" << LAN * 180.0 / PI << " deg)\n";
+    ss << "Argument of Periapsis (w):  " << w << " rad (" << w * 180.0 / PI << " deg)\n";
+    ss << "Mean Anomaly at Epoch (M0): " << M0 << " rad (" << M0 * 180.0 / PI << " deg)\n";
+    ss << "True Anomaly (v):           " << v << " rad (" << v * 180.0 / PI << " deg)\n";
+    ss << "Epoch:                      " << epoch << " s\n";
+    ss << "Gravitational Constant (GM): " << GM << " km^3/s^2\n";
+    ss << "Orbital Period (T):         " << T() << " s\n";
+    ss << "Mean Motion (n):            " << nu() << " rad/s\n";
+    ss << "Periapsis:                  " << GetPeriapsis() << " km\n";
+    ss << "Apoapsis:                   " << GetApoapsis() << " km\n";
+
+    if (reference_body != entt::null)
+        ss << "Reference Body Entity:      " << static_cast<uint32_t>(reference_body) << "\n";
+    else
+        ss << "Reference Body:             None\n";
+
+    return ss.str();
 }
 }  // namespace cqsp::common::components::types

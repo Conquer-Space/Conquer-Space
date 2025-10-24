@@ -104,6 +104,7 @@ std::pair<glm::dvec3, double> MatchPlanes(const Orbit& orbit, const Orbit& targe
     // Get orbit velocity at point to maintain orbit
     double v = OrbitVelocity(taoan, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
     // Calculate delta-v vector
+    // GetOrbitNormal(target)
     double theta = glm::angle(glm::normalize(GetOrbitNormal(orbit)), glm::normalize(GetOrbitNormal(target)));
 
     glm::dvec3 vector = glm::dvec3(0, v * (cos(theta) - 1), v * sin(theta));

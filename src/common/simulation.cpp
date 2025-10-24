@@ -49,7 +49,7 @@
 #include "common/util/profiler.h"
 
 namespace cqsp::common::systems::simulation {
-Simulation::Simulation(Game& game) : m_game(game), m_universe(game.GetUniverse()) { CreateSystems(); }
+Simulation::Simulation(Game& game) : m_game(game), m_universe(game.GetUniverse()) {}
 
 void Simulation::CreateSystems() {
     AddSystem<SysScript>();
