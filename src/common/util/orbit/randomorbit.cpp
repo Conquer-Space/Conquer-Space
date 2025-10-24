@@ -31,7 +31,7 @@ std::pair<glm::dvec3, glm::dvec3> OrbitGenerator::GenerateVectors() {
 
 double OrbitGenerator::RandomValue(double range) {
     std::uniform_real_distribution<> dist(-range, range);
-    return dist(gen);
+    return dist(gen());
 }
 
 glm::dvec3 OrbitGenerator::RandomVector(const glm::dvec3 &range) {
