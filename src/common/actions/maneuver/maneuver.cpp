@@ -101,13 +101,21 @@ std::pair<glm::dvec3, double> SetCircularInclination(const Orbit& orbit, double 
 std::pair<glm::dvec3, double> MatchPlanes(const Orbit& orbit, const Orbit& target) {
     // Now compute the location we need to execute the impulse
     double taoan = AscendingTrueAnomaly(orbit, target);
+    double time_to_true_anomaly = orbit.TimeToTrueAnomaly(taoan);
+
     // Get orbit velocity at point to maintain orbit
     double v = OrbitVelocity(taoan, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
     // Calculate delta-v vector
     // GetOrbitNormal(target)
-    double theta = glm::angle(glm::normalize(GetOrbitNormal(orbit)), glm::normalize(GetOrbitNormal(target)));
+    double target_ta = GetTrueAnomaly(target, time_to_true_anomaly);
+    // Now we have to compute the 
+    glm::dvec3 desired_velocity = glm::normalize(glm::cross(GetOrbitNormal(target), GetRadialVector(orbit, target_ta)));
+    
+    // Then we have
+    // Get our orbit velocity vector
+    glm::dvec3 current_velocity = OrbitVelocityToVec3(orbit, taoan);
 
-    glm::dvec3 vector = glm::dvec3(0, v * (cos(theta) - 1), v * sin(theta));
-    return std::make_pair(vector, orbit.TimeToTrueAnomaly(taoan));
+    // Then somehow convert it to ship space
+    return std::make_pair((v * desired_velocity) - current_velocity, time_to_true_anomaly);
 }
 }  // namespace cqsp::common::systems

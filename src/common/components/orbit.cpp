@@ -376,7 +376,6 @@ glm::dvec3 GetOrbitNormal(const Orbit& orbit) {
 
 double TrueAnomalyFromVector(const Orbit& orbit, const glm::dvec3& vec) {
     // Get the intersection of this orbit?
-    //auto projected = glm::proj(vec, GetOrbitNormal(orbit));
     auto periapsis = toVec3(orbit, 0);
     double angle = glm::angle(glm::normalize(vec), glm::normalize(periapsis));
     // Shamelessly stolen from mechjeb
@@ -430,6 +429,15 @@ double Orbit::TimeToTrueAnomaly(double v2) const {
         return (t);
     }
 }
+
+glm::dvec3 GetRadialVector(const Orbit& orbit) { return GetRadialVector(orbit, orbit.v); }
+
+glm::dvec3 GetRadialVector(const Orbit& orbit, double true_anomaly) {
+    return ConvertToOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, true_anomaly,
+                                  glm::dvec3(cos(true_anomaly) / (1 + orbit.eccentricity * cos(true_anomaly)),
+                                             sin(true_anomaly) / (1 + orbit.eccentricity * cos(true_anomaly)), 0));
+}
+
 std::string Orbit::ToHumanString() {
     std::ostringstream ss;
     ss << std::fixed << std::setprecision(6);

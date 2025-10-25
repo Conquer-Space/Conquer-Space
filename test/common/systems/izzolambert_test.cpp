@@ -27,9 +27,10 @@
 
 namespace cqsps = cqsp::common::systems;
 namespace cqspt = cqsp::common::components::types;
+
 TEST(IzzoTest, DISABLED_Lambert) {
     std::random_device random_device;
-    std::mt19937 gen(random_device);
+    std::mt19937 gen(random_device());
 
     cqsp::common::util::OrbitGenerator generator(50, 10);
     for (int i = 0; i < 100; i++) {

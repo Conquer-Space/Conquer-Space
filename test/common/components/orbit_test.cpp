@@ -27,6 +27,7 @@
 #include "common/components/units.h"
 #include "common/systems/movement/sysorbit.h"
 #include "common/universe.h"
+#include "common/util/orbit/randomorbit.h"
 
 using ::testing::AllOf;
 using ::testing::Ge;
@@ -214,10 +215,14 @@ TEST(OrbitTest, OrbitNormalTest2) {
 TEST(OrbitTest, OrbitNormalTestList) {
     namespace cqspt = cqsp::common::components::types;
     // Generate a couple of orbits
-    cqspt::Orbit vec = {57.91e9, 0.3, 0.4, 0., 0., 0};
-    glm::dvec3 orb = cqspt::GetOrbitNormal(vec);
-    glm::dvec3 vel = glm::cross(cqspt::toVec3(vec), cqspt::OrbitVelocityToVec3(vec, 0));
-    EXPECT_DOUBLE_EQ(glm::dot(glm::normalize(orb), glm::normalize(vel)), 1.);
+    // Now compute a bunch of orbits
+    cqsp::common::util::OrbitGenerator generator(30, 5);
+    for (int i = 0; i < 100; i ++) {
+        cqspt::Orbit vec = generator.GenerateOrbit(1, 0);
+        glm::dvec3 orb = cqspt::GetOrbitNormal(vec);
+        glm::dvec3 vel = glm::cross(cqspt::toVec3(vec), cqspt::OrbitVelocityToVec3(vec, 0));
+        EXPECT_DOUBLE_EQ(glm::dot(glm::normalize(orb), glm::normalize(vel)), 1.);
+    }
 }
 
 TEST(OrbitTest, AscendingNodeTest) {

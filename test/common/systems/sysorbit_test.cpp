@@ -22,6 +22,7 @@
 #include <memory>
 
 #include <glm/gtx/vector_angle.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "common/actions/maneuver/commands.h"
 #include "common/actions/maneuver/maneuver.h"
@@ -155,7 +156,7 @@ TEST_F(SysOrbitTest, BasicMatchPlaneTest) {
     entt::entity ship1 = cqsp::common::actions::LaunchShip(game.GetUniverse(), source_orbit);
 
     cqsp::common::components::types::Orbit target_orbit =
-        cqsp::common::components::types::Orbit(earth_body_component.radius * 2., 0.2, 0.2, 0.5, 1, 0, earth);
+        cqsp::common::components::types::Orbit(earth_body_component.radius + 500., 0.00001, 0.2, 0.5, 0.1, 0, earth);
     target_orbit.GM = earth_body_component.GM;
     // Target ship
     entt::entity ship2 = cqsp::common::actions::LaunchShip(game.GetUniverse(), target_orbit);
@@ -164,14 +165,26 @@ TEST_F(SysOrbitTest, BasicMatchPlaneTest) {
     cqsp::common::systems::commands::PushManeuver(universe, ship1, maneuver);
     ASSERT_TRUE(universe.all_of<cqsp::common::components::CommandQueue>(ship1));
 
+    auto& ship1_orbit = universe.get<cqsp::common::components::types::Orbit>(ship1);
+    auto& ship2_orbit = universe.get<cqsp::common::components::types::Orbit>(ship2);
+    SPDLOG_INFO("Maneuver: {}", glm::to_string(maneuver.first));
+    Tick(1);
+    SPDLOG_INFO("Chaser orbit: {}", ship1_orbit.ToHumanString());
+    SPDLOG_INFO("Target orbit: {}", ship2_orbit.ToHumanString());
+    SPDLOG_INFO("Chaser orbit position: {}", glm::to_string(cqsp::common::components::types::toVec3(ship1_orbit)));
+    SPDLOG_INFO("Target orbit position: {}", glm::to_string(cqsp::common::components::types::toVec3(ship2_orbit)));
+
+    SPDLOG_INFO("Chaser orbit velocity: {}",
+                glm::to_string(cqsp::common::components::types::OrbitVelocityToVec3(ship1_orbit)));
+    SPDLOG_INFO("Target orbit velocity: {}",
+                glm::to_string(cqsp::common::components::types::OrbitVelocityToVec3(ship2_orbit)));
     auto& queue = universe.get<cqsp::common::components::CommandQueue>(ship1);
 
     EXPECT_FALSE(queue.maneuvers.empty());
     // Then tick forward, maneuver is in seconds
-    Tick((int)(maneuver.second / 60) + 1000);
+    Tick((int)(maneuver.second / 60));
     // Now compare the planes of the angular momentum
-    auto& ship1_orbit = universe.get<cqsp::common::components::types::Orbit>(ship1);
-    auto& ship2_orbit = universe.get<cqsp::common::components::types::Orbit>(ship2);
+
     // Now expect it to still have the similar SMA to the meter
     EXPECT_NEAR(ship1_orbit.semi_major_axis, source_orbit.semi_major_axis, 0.001);
     // Also expect the maneuver queue to be empty
@@ -189,4 +202,9 @@ TEST_F(SysOrbitTest, BasicMatchPlaneTest) {
     // Print out the orbits
     SPDLOG_INFO("Chaser orbit: {}", ship1_orbit.ToHumanString());
     SPDLOG_INFO("Target orbit: {}", ship2_orbit.ToHumanString());
+    SPDLOG_INFO("Chaser orbit position: {}", glm::to_string(cqsp::common::components::types::toVec3(ship1_orbit)));
+    SPDLOG_INFO("Target orbit position: {}", glm::to_string(cqsp::common::components::types::toVec3(ship2_orbit)));
+
+    SPDLOG_INFO("Chaser orbit velocity: {}", glm::to_string(cqsp::common::components::types::OrbitVelocityToVec3(ship1_orbit)));
+    SPDLOG_INFO("Target orbit velocity: {}", glm::to_string(cqsp::common::components::types::OrbitVelocityToVec3(ship2_orbit)));
 }

@@ -392,6 +392,8 @@ double GetHyperbolicAsymptopeAnomaly(double eccentricity);
 double FlightPathAngle(double eccentricity, double v);
 
 glm::dvec3 GetOrbitNormal(const Orbit& orbit);
+glm::dvec3 GetRadialVector(const Orbit& orbit);
+glm::dvec3 GetRadialVector(const Orbit& orbit, double true_anomaly);
 
 double TrueAnomalyFromVector(const Orbit& orbit, const glm::dvec3& vec);
 
