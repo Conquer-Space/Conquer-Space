@@ -240,6 +240,8 @@ void LandOnMoon(Universe& universe, entt::entity agent, entt::entity target, ent
     command_queue.commands.push_back(dock_city);
 }
 
+components::Maneuver_t MakeManeuver(const glm::dvec3& vector, double time) { return std::make_pair(vector, time); }
+
 std::vector<entt::entity> GetSOIHierarchy(Universe& universe, entt::entity source) {
     std::vector<entt::entity> source_list;
     entt::entity parent_body = universe.get<Orbit>(source).reference_body;

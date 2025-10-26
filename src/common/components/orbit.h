@@ -162,12 +162,16 @@ struct Orbit {
 
     double TimeToTrueAnomaly(double v2) const;
 
+    double OrbitalVelocity();
+
+    double OrbitalVelocityAtTrueAnomaly(double true_anomaly);
+
     std::string ToHumanString();
 };
 
 inline std::ostream& operator<<(std::ostream& outs, const Orbit& orb) {
-    return outs << "(" << orb.semi_major_axis << ", " << orb.eccentricity << ", " << orb.inclination << ", " << orb.LAN
-                << ", " << orb.w << ", " << orb.GM << ", " << orb.v << ", " << orb.epoch << ", "
+    return outs << "(a=" << orb.semi_major_axis << ", e=" << orb.eccentricity << ", i=" << orb.inclination << ", LAN=" << orb.LAN
+                << ", w=" << orb.w << ", GM=" << orb.GM << ", v=" << orb.v << ", t=" << orb.epoch << ", ref="
                 << (uint32_t)orb.reference_body << ")";
 }
 
@@ -394,6 +398,7 @@ double FlightPathAngle(double eccentricity, double v);
 glm::dvec3 GetOrbitNormal(const Orbit& orbit);
 glm::dvec3 GetRadialVector(const Orbit& orbit);
 glm::dvec3 GetRadialVector(const Orbit& orbit, double true_anomaly);
+glm::dvec3 InvertOrbitalVector(const double LAN, const double i, const double w, const double v, const glm::dvec3& vec);
 
 double TrueAnomalyFromVector(const Orbit& orbit, const glm::dvec3& vec);
 

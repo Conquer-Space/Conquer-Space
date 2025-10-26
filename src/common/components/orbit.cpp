@@ -430,12 +430,23 @@ double Orbit::TimeToTrueAnomaly(double v2) const {
     }
 }
 
+double Orbit::OrbitalVelocity() { return OrbitVelocity(v, eccentricity, semi_major_axis, GM); }
+
+double Orbit::OrbitalVelocityAtTrueAnomaly(double true_anomaly) { return OrbitVelocity(true_anomaly, eccentricity, semi_major_axis, GM); }
+
 glm::dvec3 GetRadialVector(const Orbit& orbit) { return GetRadialVector(orbit, orbit.v); }
 
 glm::dvec3 GetRadialVector(const Orbit& orbit, double true_anomaly) {
     return ConvertToOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, true_anomaly,
                                   glm::dvec3(cos(true_anomaly) / (1 + orbit.eccentricity * cos(true_anomaly)),
                                              sin(true_anomaly) / (1 + orbit.eccentricity * cos(true_anomaly)), 0));
+}
+
+glm::dvec3 InvertOrbitalVector(const double LAN, const double i, const double w, const double v,
+                                  const glm::dvec3& vec) {
+    
+    return glm::inverse(glm::dquat {glm::dvec3(0, 0, LAN)} * glm::dquat {glm::dvec3(i, 0, 0)} * glm::dquat {glm::dvec3(0, 0, w)} *
+           glm::dquat {glm::dvec3(0, 0, v)}) * vec;
 }
 
 std::string Orbit::ToHumanString() {

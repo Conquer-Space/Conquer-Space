@@ -140,6 +140,10 @@ void SysOrbit::UpdateCommandQueue(Orbit& orb, entt::entity body, entt::entity pa
     if (GetUniverse().date.ToSecond() - command.time > Interval()) {
         SPDLOG_INFO("Negative time? {}", GetUniverse().date.ToSecond() - command.time);
     }
+    if (GetUniverse().any_of<components::ships::Crash>(body)) {
+        // If crashed
+        return;
+    }
     // Then execute the command
     orb = types::ApplyImpulse(orb, command.delta_v, command.time);
     GetUniverse().emplace_or_replace<components::bodies::DirtyOrbit>(body);

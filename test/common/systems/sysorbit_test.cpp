@@ -124,6 +124,12 @@ struct SysOrbitTest : public ::testing::Test {
         }
     }
 
+    void TickSeconds(double seconds) {
+        for (int i = 0; i < std::ceil(seconds / 60.); i++) {
+            simulation.tick();
+        }
+    }
+
     SysOrbitTest() : game(), universe(game.GetUniverse()), simulation(game) { simulation.CreateSystems(); }
 };
 
@@ -151,7 +157,7 @@ TEST_F(SysOrbitTest, BasicMatchPlaneTest) {
     auto& earth_body_component = universe.get<cqsp::common::components::bodies::Body>(earth);
     // Chaser ship
     cqsp::common::components::types::Orbit source_orbit =
-        cqsp::common::components::types::Orbit(earth_body_component.radius + 500., 0.00001, 0, 0.01, 0.1, 0, earth);
+        cqsp::common::components::types::Orbit(earth_body_component.radius + 500., 0.00001, 0, 0, 0.1, 0, earth);
     source_orbit.GM = earth_body_component.GM;
     entt::entity ship1 = cqsp::common::actions::LaunchShip(game.GetUniverse(), source_orbit);
 
@@ -182,7 +188,15 @@ TEST_F(SysOrbitTest, BasicMatchPlaneTest) {
 
     EXPECT_FALSE(queue.maneuvers.empty());
     // Then tick forward, maneuver is in seconds
-    Tick((int)(maneuver.second / 60));
+    Tick((int)(maneuver.second / 60) - 1);
+    SPDLOG_INFO("Chaser orbit position: {}", glm::to_string(cqsp::common::components::types::toVec3(ship1_orbit)));
+    SPDLOG_INFO("Target orbit position: {}", glm::to_string(cqsp::common::components::types::toVec3(ship2_orbit)));
+
+    SPDLOG_INFO("Chaser orbit velocity: {}",
+                glm::to_string(cqsp::common::components::types::OrbitVelocityToVec3(ship1_orbit)));
+    SPDLOG_INFO("Target orbit velocity: {}",
+                glm::to_string(cqsp::common::components::types::OrbitVelocityToVec3(ship2_orbit)));
+    Tick(1);
     // Now compare the planes of the angular momentum
 
     // Now expect it to still have the similar SMA to the meter
@@ -208,3 +222,57 @@ TEST_F(SysOrbitTest, BasicMatchPlaneTest) {
     SPDLOG_INFO("Chaser orbit velocity: {}", glm::to_string(cqsp::common::components::types::OrbitVelocityToVec3(ship1_orbit)));
     SPDLOG_INFO("Target orbit velocity: {}", glm::to_string(cqsp::common::components::types::OrbitVelocityToVec3(ship2_orbit)));
 }
+
+class CircularizeTests : public SysOrbitTest, public testing::WithParamInterface<cqsp::common::components::types::Orbit> {};
+
+TEST_P(CircularizeTests, ChangeApoapsis) {
+    // Add something to orbit
+    entt::entity earth = universe.planets["earth"];
+    // Let's add something into orbit
+    // Let's set this to LEO, at 500 km
+    auto& earth_body_component = universe.get<cqsp::common::components::bodies::Body>(earth);
+    // Chaser ship
+    cqsp::common::components::types::Orbit source_orbit = GetParam();
+    source_orbit.GM = earth_body_component.GM;
+    source_orbit.reference_body = earth;
+    entt::entity ship1 = cqsp::common::actions::LaunchShip(game.GetUniverse(), source_orbit);
+
+    // Circularize
+    cqsp::common::components::Maneuver_t circularize = cqsp::common::systems::CircularizeAtApoapsis(source_orbit);
+    cqsp::common::systems::commands::PushManeuver(universe, ship1, circularize);
+    ASSERT_TRUE(universe.all_of<cqsp::common::components::CommandQueue>(ship1));
+
+    TickSeconds(circularize.second + 1.);
+
+    auto& queue = universe.get<cqsp::common::components::CommandQueue>(ship1);
+    EXPECT_TRUE(queue.maneuvers.empty());
+
+    // ASSERT_FALSE(universe.any_of<cqsp::common::components::ships::Crash>(ship1));
+    // Now check the new periapsis is the same as the new apoapsis
+    double initial_apoapsis = source_orbit.GetApoapsis();
+    auto& ship1_orbit = universe.get<cqsp::common::components::types::Orbit>(ship1);
+    ASSERT_FALSE(universe.any_of<cqsp::common::components::ships::Crash>(ship1));
+    EXPECT_NEAR(initial_apoapsis, ship1_orbit.GetPeriapsis(), 1.);
+    // ensure that most of the orbital elements are the same
+    EXPECT_NEAR(ship1_orbit.inclination, source_orbit.inclination, 1e-6);
+    EXPECT_NEAR(ship1_orbit.eccentricity, 0, 1e-7);
+    EXPECT_NEAR(ship1_orbit.LAN, source_orbit.LAN, 1e-6);
+    // Now verify that the amount of delta v we put into it is also the amount we would expect
+    EXPECT_NEAR(
+        ship1_orbit.OrbitalVelocityAtTrueAnomaly(0),
+        glm::length(circularize.first) + source_orbit.OrbitalVelocityAtTrueAnomaly(cqsp::common::components::types::PI),
+        1);
+
+    EXPECT_NEAR(
+        ship1_orbit.OrbitalVelocityAtTrueAnomaly(0),
+                cqsp::common::components::types::GetCircularOrbitingVelocity(source_orbit.GM, source_orbit.semi_major_axis),
+        1);
+}
+
+// We shouldn't do a lot of orbits that have no inclination because if we have no inclination we don't really have a difference with
+// our LAN.
+INSTANTIATE_TEST_SUITE_P(BasicCircularizeTest, CircularizeTests, testing::Values(cqsp::common::components::types::Orbit(10000., 0.2, 0, 0, 0.1, 0),
+                                         cqsp::common::components::types::Orbit(10000., 0.3, 0.3, 0, 0.1, 0),
+                                         cqsp::common::components::types::Orbit(10000., 0.3, 0.1, 0.3, 0.1, 0),
+                                         cqsp::common::components::types::Orbit(10000., 0.3, 0.1, 0.3, 0.1, 1.2),
+                                         cqsp::common::components::types::Orbit(10000., 0.6, 0.1, 0.3, 0.1, 1.2)));

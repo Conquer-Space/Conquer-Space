@@ -109,13 +109,16 @@ std::pair<glm::dvec3, double> MatchPlanes(const Orbit& orbit, const Orbit& targe
     // GetOrbitNormal(target)
     double target_ta = GetTrueAnomaly(target, time_to_true_anomaly);
     // Now we have to compute the 
-    glm::dvec3 desired_velocity = glm::normalize(glm::cross(GetOrbitNormal(target), GetRadialVector(orbit, target_ta)));
-    
-    // Then we have
+    glm::dvec3 desired_velocity = glm::normalize(glm::cross(GetRadialVector(orbit, taoan), GetOrbitNormal(target)));
+
     // Get our orbit velocity vector
     glm::dvec3 current_velocity = OrbitVelocityToVec3(orbit, taoan);
 
     // Then somehow convert it to ship space
-    return std::make_pair((v * desired_velocity) - current_velocity, time_to_true_anomaly);
+    // How do we do so
+    glm::dvec3 expected_velocity = (v * desired_velocity) - current_velocity;
+    glm::dvec3 vector = InvertOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, taoan, glm::cross(expected_velocity, GetOrbitNormal(orbit)));
+    vector.y *= -1;
+    return std::make_pair(vector, time_to_true_anomaly);
 }
 }  // namespace cqsp::common::systems
