@@ -149,6 +149,11 @@ TEST_F(SysOrbitTest, BasicOrbitTest) {
     Tick(10000);
 }
 
+class PlaneMatchTests : public SysOrbitTest,
+                        public testing::WithParamInterface <
+                            std::pair<cqsp::common::components::types::Orbit, cqsp::common::components::types::Orbit> {
+};
+
 TEST_F(SysOrbitTest, BasicMatchPlaneTest) {
     // Add something to orbit
     entt::entity earth = universe.planets["earth"];
@@ -162,7 +167,7 @@ TEST_F(SysOrbitTest, BasicMatchPlaneTest) {
     entt::entity ship1 = cqsp::common::actions::LaunchShip(game.GetUniverse(), source_orbit);
 
     cqsp::common::components::types::Orbit target_orbit =
-        cqsp::common::components::types::Orbit(earth_body_component.radius + 500., 0.00001, 0.2, 0, 0.1, 0, earth);
+        cqsp::common::components::types::Orbit(earth_body_component.radius + 500., 0.00001, 0.2, 0.8, 0.1, 0, earth);
     target_orbit.GM = earth_body_component.GM;
     // Target ship
     entt::entity ship2 = cqsp::common::actions::LaunchShip(game.GetUniverse(), target_orbit);
@@ -173,8 +178,7 @@ TEST_F(SysOrbitTest, BasicMatchPlaneTest) {
 
     auto& ship1_orbit = universe.get<cqsp::common::components::types::Orbit>(ship1);
     auto& ship2_orbit = universe.get<cqsp::common::components::types::Orbit>(ship2);
-    SPDLOG_INFO("Maneuver: {} {}", glm::to_string(maneuver.first), maneuver.second
-    );
+    SPDLOG_INFO("Maneuver: {} {}", glm::to_string(maneuver.first), maneuver.second);
     Tick(1);
     SPDLOG_INFO("Chaser orbit: {}", ship1_orbit.ToHumanString());
     SPDLOG_INFO("Target orbit: {}", ship2_orbit.ToHumanString());

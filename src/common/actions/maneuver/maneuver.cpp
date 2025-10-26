@@ -107,7 +107,9 @@ std::pair<glm::dvec3, double> MatchPlanes(const Orbit& orbit, const Orbit& targe
     double v = OrbitVelocity(taoan, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
     // Calculate delta-v vector
     double target_ta = GetTrueAnomaly(target, time_to_true_anomaly);
-
+    double theta = glm::angle(glm::normalize(GetOrbitNormal(orbit)), glm::normalize(GetOrbitNormal(target)));
+    glm::dvec3 vector = glm::dvec3(0, v * (cos(theta) - 1), v * sin(theta));
+    return std::make_pair(vector, orbit.TimeToTrueAnomaly(taoan));
     glm::dvec3 desired_velocity = glm::normalize(glm::cross(GetOrbitNormal(target), GetRadialVector(orbit, taoan)));
 
     // Get our orbit velocity vector
@@ -116,8 +118,8 @@ std::pair<glm::dvec3, double> MatchPlanes(const Orbit& orbit, const Orbit& targe
     // Then somehow convert it to ship space
     // How do we do so
     glm::dvec3 expected_velocity = (v * desired_velocity) - current_velocity;
-    glm::dvec3 vector = expected_velocity;
-        //InvertOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, taoan, glm::cross(expected_velocity, GetOrbitNormal(orbit)));
+    glm::dvec3 vector2 = expected_velocity;
+    //InvertOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, taoan, glm::cross(expected_velocity, GetOrbitNormal(orbit)));
     /*vector.z = vector.x;
     vector.x = 0;
     //vector.z *= -1;*/
