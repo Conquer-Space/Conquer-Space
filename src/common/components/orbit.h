@@ -171,7 +171,7 @@ struct Orbit {
 
 inline std::ostream& operator<<(std::ostream& outs, const Orbit& orb) {
     return outs << "(a=" << orb.semi_major_axis << ", e=" << orb.eccentricity << ", i=" << orb.inclination << ", LAN=" << orb.LAN
-                << ", w=" << orb.w << ", GM=" << orb.GM << ", v=" << orb.v << ", t=" << orb.epoch << ", ref="
+                << ", w=" << orb.w << ", GM=" << orb.GM << ", v=" << orb.v << ", M0=" << orb.M0 << ", t=" << orb.epoch << ", ref="
                 << (uint32_t)orb.reference_body << ")";
 }
 
