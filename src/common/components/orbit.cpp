@@ -437,7 +437,7 @@ double Orbit::OrbitalVelocityAtTrueAnomaly(double true_anomaly) { return OrbitVe
 glm::dvec3 GetRadialVector(const Orbit& orbit) { return GetRadialVector(orbit, orbit.v); }
 
 glm::dvec3 GetRadialVector(const Orbit& orbit, double true_anomaly) {
-    return ConvertToOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, 0,
+    return ConvertToOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, true_anomaly,
                                   glm::dvec3(cos(true_anomaly) / (1 + orbit.eccentricity * cos(true_anomaly)),
                                              sin(true_anomaly) / (1 + orbit.eccentricity * cos(true_anomaly)), 0));
 }

@@ -116,11 +116,12 @@ std::pair<glm::dvec3, double> MatchPlanes(const Orbit& orbit, const Orbit& targe
     // Then somehow convert it to ship space
     // How do we do so
     glm::dvec3 expected_velocity = (v * desired_velocity) - current_velocity;
-    glm::dvec3 vector =
-        expected_velocity;  //InvertOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, taoan, glm::cross(expected_velocity, GetOrbitNormal(orbit)));
+    glm::dvec3 vector = expected_velocity;
+        //InvertOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, taoan, glm::cross(expected_velocity, GetOrbitNormal(orbit)));
     /*vector.z = vector.x;
-    vector.x = 0;*/
-    vector.z *= -1;
+    vector.x = 0;
+    //vector.z *= -1;*/
+
     return std::make_pair(vector, time_to_true_anomaly);
 }
 }  // namespace cqsp::common::systems

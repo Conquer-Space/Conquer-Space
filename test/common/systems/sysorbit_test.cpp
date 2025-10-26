@@ -167,13 +167,14 @@ TEST_F(SysOrbitTest, BasicMatchPlaneTest) {
     // Target ship
     entt::entity ship2 = cqsp::common::actions::LaunchShip(game.GetUniverse(), target_orbit);
 
-    cqsp::common::components::Maneuver_t maneuver = cqsp::common::systems::MatchPlanes(target_orbit, source_orbit);
+    cqsp::common::components::Maneuver_t maneuver = cqsp::common::systems::MatchPlanes(source_orbit, target_orbit);
     cqsp::common::systems::commands::PushManeuver(universe, ship1, maneuver);
     ASSERT_TRUE(universe.all_of<cqsp::common::components::CommandQueue>(ship1));
 
     auto& ship1_orbit = universe.get<cqsp::common::components::types::Orbit>(ship1);
     auto& ship2_orbit = universe.get<cqsp::common::components::types::Orbit>(ship2);
-    SPDLOG_INFO("Maneuver: {}", glm::to_string(maneuver.first));
+    SPDLOG_INFO("Maneuver: {} {}", glm::to_string(maneuver.first), maneuver.second
+    );
     Tick(1);
     SPDLOG_INFO("Chaser orbit: {}", ship1_orbit.ToHumanString());
     SPDLOG_INFO("Target orbit: {}", ship2_orbit.ToHumanString());
