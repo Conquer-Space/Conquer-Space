@@ -17,6 +17,7 @@
 #pragma once
 
 #include <string>
+#include <cstdint>
 
 namespace cqsp::common::components {
 /// <summary>

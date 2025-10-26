@@ -109,7 +109,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     if (values["day_length"].type() != Hjson::Type::Null) {
         body_comp.rotation = ReadUnit(values["day_length"].to_string(), UnitType::Time, &rotation_correct);
         if (!rotation_correct) {
-            SPDLOG_WARN("Rotation for {} incorrect", identifier);
+            SPDLOG_WARN("Rotation for {} has incorrect units", identifier);
             body_comp.rotation = 0;
         }
     } else {
@@ -120,7 +120,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         bool offset_correct;
         body_comp.rotation_offset = ReadUnit(values["day_offset"].to_string(), UnitType::Angle, &offset_correct);
         if (!offset_correct) {
-            SPDLOG_WARN("Axial for {} incorrect", identifier);
+            SPDLOG_WARN("Axial for {} has incorrect units", identifier);
             body_comp.rotation_offset = 0;
         }
     } else {
@@ -131,7 +131,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     if (values["axial"].type() != Hjson::Type::Null) {
         body_comp.axial = ReadUnit(values["axial"].to_string(), UnitType::Angle, &axial_correct);
         if (!axial_correct) {
-            SPDLOG_WARN("Axial for {} incorrect", identifier);
+            SPDLOG_WARN("Axial for {} has incorrect units", identifier);
             body_comp.axial = 0;
         }
     } else {

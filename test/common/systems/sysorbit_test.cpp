@@ -162,7 +162,7 @@ TEST_F(SysOrbitTest, BasicMatchPlaneTest) {
     entt::entity ship1 = cqsp::common::actions::LaunchShip(game.GetUniverse(), source_orbit);
 
     cqsp::common::components::types::Orbit target_orbit =
-        cqsp::common::components::types::Orbit(earth_body_component.radius + 500., 0.00001, 0.2, 0.5, 0.1, 0, earth);
+        cqsp::common::components::types::Orbit(earth_body_component.radius + 500., 0.00001, 0.2, 0, 0.1, 0, earth);
     target_orbit.GM = earth_body_component.GM;
     // Target ship
     entt::entity ship2 = cqsp::common::actions::LaunchShip(game.GetUniverse(), target_orbit);
