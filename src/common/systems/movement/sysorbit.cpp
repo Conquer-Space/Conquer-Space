@@ -83,7 +83,7 @@ void SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
     auto& p_bod = GetUniverse().get<Body>(parent);
     auto& pos = GetUniverse().get<Kinematics>(body);
     if (GetUniverse().any_of<ships::Crash>(body)) {
-        pos.position = glm::vec3(0);
+        pos.position = glm::dvec3(0);
         return;
     }
 
@@ -100,7 +100,7 @@ void SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
         // Then remove from the tree or something like that
         GetUniverse().get_or_emplace<ships::Crash>(body);
         GetUniverse().get_or_emplace<bodies::DirtyOrbit>(body);
-        pos.position = glm::vec3(0);
+        pos.position = glm::dvec3(0);
         orb.semi_major_axis = 0;
     }
 }

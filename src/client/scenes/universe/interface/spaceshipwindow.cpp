@@ -192,7 +192,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
         auto& target = GetUniverse().get<Orbit>(selected);
 
         // Get distance from target
-        glm::vec3 target_distance =
+        glm::dvec3 target_distance =
             GetUniverse().get<Kinematics>(selected).position - GetUniverse().get<Kinematics>(body).position;
         ImGui::TextFmt("Distance to target: {}", glm::length(target_distance));
         if (ImGui::Button("Rendez-vous!")) {

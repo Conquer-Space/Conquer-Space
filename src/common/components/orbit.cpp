@@ -305,7 +305,7 @@ Orbit ApplyImpulse(const Orbit& orbit, const glm::dvec3& impulse, double time) {
     // Calculate v at epoch
     // Move the orbit
     const double v = GetTrueAnomaly(orbit, time);
-    const glm::dvec3& norm_impulse = ConvertToOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, v, impulse);
+    const glm::dvec3 norm_impulse = ConvertToOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, v, impulse);
     const glm::dvec3 position = toVec3(orbit, v);
     const glm::dvec3 velocity = OrbitVelocityToVec3(orbit, v);
 

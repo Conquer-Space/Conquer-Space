@@ -107,6 +107,9 @@ struct SysOrbitTest : public ::testing::Test {
         cqsp::common::loading::PlanetLoader loader(game.GetUniverse());
         loader.LoadHjson(planets_hjson);
 
+        earth = universe.planets["earth"];
+        moon = universe.planets["moon"];
+
         // 1 tick to initialize the universe
         Tick(1);
     }
@@ -117,6 +120,8 @@ struct SysOrbitTest : public ::testing::Test {
 
     cqsp::common::Game game;
     cqsp::common::Universe& universe;
+    entt::entity earth;
+    entt::entity moon;
     ManeuverTestSimulation simulation;
 
     void Tick(int count = 1) {
@@ -141,7 +146,7 @@ struct SysOrbitTest : public ::testing::Test {
         if (std::fabs(angle) < 0.00001) {
             return testing::AssertionSuccess();
         } else {
-            return testing::AssertionFailure() << "The two orbits have a " << angle / 180. * std::numbers::pi << "degree difference";
+            return testing::AssertionFailure() << "The two orbits have a " << angle / 180. * std::numbers::pi << " degree difference";
         }
     }
 
@@ -151,8 +156,6 @@ struct SysOrbitTest : public ::testing::Test {
 Hjson::Value SysOrbitTest::planets_hjson;
 
 TEST_F(SysOrbitTest, BasicOrbitTest) {
-    // Add something to orbit
-    entt::entity earth = universe.planets["earth"];
     // Let's add something into orbit
     // Let's set this to LEO, at 500 km
     auto& body_component = universe.get<cqsp::common::components::bodies::Body>(earth);
@@ -195,10 +198,6 @@ INSTANTIATE_TEST_SUITE_P(
                                    cqsp::common::components::types::Orbit(50000, 0.00001, 0.2, 0.8, 0.1, 0))));
 
 TEST_P(PlaneMatchTests, MatchPlaneTest) {
-    // Add something to orbit
-    entt::entity earth = universe.planets["earth"];
-    // Let's add something into orbit
-    // Let's set this to LEO, at 500 km
     auto& earth_body_component = universe.get<cqsp::common::components::bodies::Body>(earth);
     // Chaser ship
     cqsp::common::components::types::Orbit source_orbit = GetParam().first;
@@ -291,9 +290,6 @@ class CircularizeTests : public SysOrbitTest,
     }
 
     cqsp::common::components::types::Orbit GetSourceOrbit() {
-        entt::entity earth = universe.planets["earth"];
-        // Let's add something into orbit
-        // Let's set this to LEO, at 500 km
         auto& earth_body_component = universe.get<cqsp::common::components::bodies::Body>(earth);
         // Chaser ship
         cqsp::common::components::types::Orbit source_orbit = GetParam();
@@ -373,11 +369,6 @@ INSTANTIATE_TEST_SUITE_P(BasicCircularizeTest, CircularizeTests,
                                          cqsp::common::components::types::Orbit(20000., 0.6, 0.1, 0.3, 0.1, 1.2)));
 
 TEST_F(SysOrbitTest, BasicTransferToMoonTest) {
-    // Add something to orbit
-    entt::entity earth = universe.planets["earth"];
-    entt::entity moon = universe.planets["moon"];
-    // Let's add something into orbit
-    // Let's set this to LEO, at 500 km
     auto& earth_body_component = universe.get<cqsp::common::components::bodies::Body>(earth);
     // Chaser ship
     cqsp::common::components::types::Orbit source_orbit =
@@ -431,4 +422,103 @@ TEST_F(SysOrbitTest, BasicTransferToMoonTest) {
     // Then we should figure out that we are circularized
     // now expect that we have a roughly circular orbit
     EXPECT_LT(ship_orbit.eccentricity, 0.1);
+}
+
+TEST_F(SysOrbitTest, EccentricTransferToMoonTest) {
+    // Let's add something into orbit
+    // Let's set this to LEO, at 500 km
+    auto& earth_body_component = universe.get<cqsp::common::components::bodies::Body>(earth);
+    // Chaser ship
+    cqsp::common::components::types::Orbit source_orbit =
+        cqsp::common::components::types::Orbit(50000, 0.2, 5.4, 5.8, 0.1, 1);
+    source_orbit.GM = earth_body_component.GM;
+    source_orbit.reference_body = earth;
+    entt::entity ship = cqsp::common::actions::LaunchShip(universe, source_orbit);
+
+    cqsp::common::systems::commands::TransferToMoon(universe, ship, moon);
+
+    auto& ship_orbit = universe.get<cqsp::common::components::types::Orbit>(ship);
+    auto& moon_orbit = universe.get<cqsp::common::components::types::Orbit>(moon);
+
+    // Check for the maneuvers
+    ASSERT_TRUE(universe.all_of<cqsp::common::components::CommandQueue>(ship));
+    auto& command_queue = universe.get<cqsp::common::components::CommandQueue>(ship);
+    // Now check for the circularization
+    ASSERT_EQ(command_queue.maneuvers.size(), 1);
+
+    TickSeconds(command_queue.maneuvers.front().time + 1);
+    SPDLOG_INFO("Chaser orbit: {}", ship_orbit.ToHumanString());
+
+    // Check that our orbit is roughly circular
+    EXPECT_LT(ship_orbit.eccentricity, 0.05);
+
+    // Then we wait till the next maneuver
+    ASSERT_EQ(command_queue.maneuvers.size(), 1);
+    TickSeconds(command_queue.maneuvers.front().time);
+
+    // Then check if our planes are equivalent
+    // Check that our plane is the same as the moon...
+    EXPECT_TRUE(IsSamePlane(ship, moon));
+
+    // Now compute the maneuver
+    ASSERT_EQ(command_queue.maneuvers.size(), 1);
+    // Now we should be going to the moon on the next tick
+    TickSeconds(command_queue.maneuvers.front().time);
+
+    // Now we should be on route to the moon
+    // Let's check if our apoapsis is intersecting with the moon's orbit
+    EXPECT_NEAR(ship_orbit.GetApoapsis(), moon_orbit.semi_major_axis, moon_orbit.semi_major_axis * 0.1);
+
+    // Make sure we hit the moon while we're less than the SOI
+    int time = 0;
+    double time_to_periapsis = ship_orbit.TimeToTrueAnomaly(0);
+    // Check if the time
+    while (ship_orbit.reference_body != moon) {
+        Tick(1);
+        time++;
+        // We should be around the moon right now
+        ASSERT_LT(time, time_to_periapsis);
+    }
+    // We should be around the moon
+    EXPECT_GT(ship_orbit.eccentricity, 1);
+
+    // Check if we circularize
+    ASSERT_EQ(command_queue.maneuvers.size(), 1);
+    TickSeconds(command_queue.maneuvers.front().time);
+
+    // Then we should figure out that we are circularized
+    // now expect that we have a roughly circular orbit
+    EXPECT_LT(ship_orbit.eccentricity, 0.1);
+}
+
+TEST_F(SysOrbitTest, ManeuverTest) {
+    auto& earth_body_component = universe.get<cqsp::common::components::bodies::Body>(earth);
+    // Chaser ship
+    cqsp::common::components::types::Orbit source_orbit =
+        cqsp::common::components::types::Orbit(50000, 0.2, 5.4, 5.8, 0.1, 1);
+    source_orbit.GM = earth_body_component.GM;
+    source_orbit.reference_body = earth;
+    const entt::entity ship = cqsp::common::actions::LaunchShip(universe, source_orbit);
+
+    // Let's just add prograde maneuvers everywhere and see if we see the intended velocity changes
+    const auto maneuver = cqsp::common::systems::commands::MakeManeuver(glm::dvec3(0, 2, 0), 1000);
+    cqsp::common::systems::commands::PushManeuver(universe, ship, maneuver);
+    
+    const auto& ship_orbit = universe.get<cqsp::common::components::types::Orbit>(ship);
+
+    // Let's get the expected speed at the true anomaly
+    const double true_anomaly = cqsp::common::components::types::GetTrueAnomaly(ship_orbit, maneuver.second);
+    // Now get our value
+    glm::dvec3 orbital_vector = OrbitVelocityToVec3(ship_orbit, true_anomaly);
+
+    // Now go ahead in time
+    TickSeconds(maneuver.second);
+    // Now check our orbit
+    // Now get our true anomaly at time
+    const double new_anomaly = cqsp::common::components::types::GetTrueAnomaly(ship_orbit, maneuver.second);
+    // Now check our velocity
+    glm::dvec3 new_orbital_vector = OrbitVelocityToVec3(ship_orbit, new_anomaly);
+    EXPECT_NEAR(glm::length(orbital_vector - new_orbital_vector), 2, 0.001);
+
+    SPDLOG_INFO("Final vector difference: {}", glm::to_string(orbital_vector - new_orbital_vector));
 }

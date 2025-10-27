@@ -52,7 +52,7 @@ TEST(OrbitTest, DISABLED_toVec3Test) {
     int resolution = 5000;
     std::ofstream file("data.txt");
     for (int i = 0; i < resolution + 1; i++) {
-        glm::vec3 vec = cqspt::OrbitToVec3(a, e, i, LAN, w, T / resolution * i);
+        glm::dvec3 vec = cqspt::OrbitToVec3(a, e, i, LAN, w, T / resolution * i);
         std::cout.precision(17);
         //EXPECT_THAT(glm::length(vec), AllOf(Ge(0.98326934275),Le(1.0167257013)));
     }
