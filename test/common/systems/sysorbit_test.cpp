@@ -150,25 +150,32 @@ TEST_F(SysOrbitTest, BasicOrbitTest) {
 }
 
 class PlaneMatchTests : public SysOrbitTest,
-                        public testing::WithParamInterface <
-                            std::pair<cqsp::common::components::types::Orbit, cqsp::common::components::types::Orbit> {
+                        public testing::WithParamInterface<
+                            std::pair<cqsp::common::components::types::Orbit, cqsp::common::components::types::Orbit>> {
 };
 
-TEST_F(SysOrbitTest, BasicMatchPlaneTest) {
+INSTANTIATE_TEST_SUITE_P(
+    PlaneMatchingTests, PlaneMatchTests,
+    testing::Values(std::make_pair(cqsp::common::components::types::Orbit(6371 + 500., 0.00001, 0, 0, 0.1, 0),
+                                   cqsp::common::components::types::Orbit(6371 + 500., 0.00001, 0.2, 0.8, 0.1, 0)),
+                    std::make_pair(cqsp::common::components::types::Orbit(10000, 0.00001, 0, 0, 0.1, 0),
+                                   cqsp::common::components::types::Orbit(10000, 0.00001, 0.2, 0.8, 0.1, 0))));
+
+TEST_P(PlaneMatchTests, BasicMatchPlaneTest) {
     // Add something to orbit
     entt::entity earth = universe.planets["earth"];
     // Let's add something into orbit
     // Let's set this to LEO, at 500 km
     auto& earth_body_component = universe.get<cqsp::common::components::bodies::Body>(earth);
     // Chaser ship
-    cqsp::common::components::types::Orbit source_orbit =
-        cqsp::common::components::types::Orbit(earth_body_component.radius + 500., 0.00001, 0, 0, 0.1, 0, earth);
+    cqsp::common::components::types::Orbit source_orbit = GetParam().first;
     source_orbit.GM = earth_body_component.GM;
+    source_orbit.reference_body = earth;
     entt::entity ship1 = cqsp::common::actions::LaunchShip(game.GetUniverse(), source_orbit);
 
-    cqsp::common::components::types::Orbit target_orbit =
-        cqsp::common::components::types::Orbit(earth_body_component.radius + 500., 0.00001, 0.2, 0.8, 0.1, 0, earth);
+    cqsp::common::components::types::Orbit target_orbit = GetParam().second;
     target_orbit.GM = earth_body_component.GM;
+    target_orbit.reference_body = earth;
     // Target ship
     entt::entity ship2 = cqsp::common::actions::LaunchShip(game.GetUniverse(), target_orbit);
 
