@@ -98,6 +98,10 @@ std::pair<glm::dvec3, double> SetCircularInclination(const Orbit& orbit, double 
     return std::make_pair(vector, orbit.TimeToTrueAnomaly(v_change));
 }
 
+/*
+* Computes maneuver to match
+* Note: This expects the orbit to 
+*/
 std::pair<glm::dvec3, double> MatchPlanes(const Orbit& orbit, const Orbit& target) {
     // Now compute the location we need to execute the impulse
     double taoan = AscendingTrueAnomaly(orbit, target);

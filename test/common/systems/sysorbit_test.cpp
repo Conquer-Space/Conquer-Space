@@ -159,9 +159,25 @@ INSTANTIATE_TEST_SUITE_P(
     testing::Values(std::make_pair(cqsp::common::components::types::Orbit(6371 + 500., 0.00001, 0, 0, 0.1, 0),
                                    cqsp::common::components::types::Orbit(6371 + 500., 0.00001, 0.2, 0.8, 0.1, 0)),
                     std::make_pair(cqsp::common::components::types::Orbit(10000, 0.00001, 0, 0, 0.1, 0),
-                                   cqsp::common::components::types::Orbit(10000, 0.00001, 0.2, 0.8, 0.1, 0))));
+                                   cqsp::common::components::types::Orbit(10000, 0.00001, 0.2, 0.8, 0.1, 0)),
+                    std::make_pair(cqsp::common::components::types::Orbit(50000, 0.00001, 0, 0, 0.1, 0),
+                                   cqsp::common::components::types::Orbit(50000, 0.00001, 0.2, 0.8, 0.1, 0)),
+                    std::make_pair(cqsp::common::components::types::Orbit(50000, 0.00001, 0, 0, 0.1, 0),
+                                   cqsp::common::components::types::Orbit(50000, 0.00001, 0.5, 1.5, 0.1, 0)),
+                    std::make_pair(cqsp::common::components::types::Orbit(50000, 0.00001, 0, 0, 0.1, 0),
+                                   cqsp::common::components::types::Orbit(50000, 0.00001, 4.5, 0.8, 0.1, 0)),
+                    std::make_pair(cqsp::common::components::types::Orbit(50000, 0.00001, 0.2, 0, 0.1, 0),
+                                   cqsp::common::components::types::Orbit(50000, 0.00001, 0, 0.8, 0.1, 0)),
+                    std::make_pair(cqsp::common::components::types::Orbit(50000, 0.00001, 0.2, 0.8, 0.1, 0),
+                                   cqsp::common::components::types::Orbit(50000, 0.00001, 0, 0.8, 0.1, 0)),
+                    std::make_pair(cqsp::common::components::types::Orbit(50000, 0.00001, 0.2, 0.8, 0.1, 0),
+                                   cqsp::common::components::types::Orbit(50000, 0.00001, 0, 0.8, 0.1, 0)),
+                    std::make_pair(cqsp::common::components::types::Orbit(50000, 0.00001, 0.2, 0.8, 0.1, 0),
+                                   cqsp::common::components::types::Orbit(50000, 0.00001, 5.4, 5.8, 0.1, 0)),
+                    std::make_pair(cqsp::common::components::types::Orbit(50000, 0.00001, 5.4, 5.8, 0.1, 0),
+                                   cqsp::common::components::types::Orbit(50000, 0.00001, 0.2, 0.8, 0.1, 0))));
 
-TEST_P(PlaneMatchTests, BasicMatchPlaneTest) {
+TEST_P(PlaneMatchTests, MatchPlaneTest) {
     // Add something to orbit
     entt::entity earth = universe.planets["earth"];
     // Let's add something into orbit
