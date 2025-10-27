@@ -378,34 +378,3 @@ INSTANTIATE_TEST_SUITE_P(EllipticalOrbitTest, EllipticalOrbitTest,
                                          Orbit(57.91e7, 0.9, 3.14, 0.29, 0.68, 2.8), Orbit(57.91e7, 0, 1, 0, 0, 0),
                                          Orbit(57.91e7, 0.6, 0, 0, 0, 0.8), Orbit(57.91e7, 0.6, 0, 0, 0, 0),
                                          Orbit(57.91e7, 0, 0, 0, 0, 0)));
-/*
-TEST(Common_SOITest, SOIExitTest) {
-    namespace cqspc = cqsp::common::components;
-    namespace cqspt = cqsp::common::components::types;
-    namespace cqsps = cqsp::common::systems;
-    cqsp::common::Universe universe;
-    // Make bodies // Changed argument of periapsis
-    entt::entity body_1 = universe.create();
-    entt::entity body_2 = universe.create();
-    entt::entity satellite = universe.create();
-    universe.emplace<cqspt::Orbit>(body_1);
-    universe.emplace<cqspt::Kinematics>(body_1);
-    universe.emplace<cqspc::bodies::Body>(body_1);
-    auto& body1_orb = universe.emplace<cqspc::bodies::OrbitalSystem>(body_1);
-    universe.emplace<cqspt::Orbit>(body_2).reference_body = body_1;
-    universe.emplace<cqspt::Kinematics>(body_2);
-    auto& body2_orb = universe.emplace<cqspc::bodies::OrbitalSystem>(body_2);
-    body1_orb.push_back(body_2);
-    body2_orb.push_back(satellite);
-    universe.emplace<cqspt::Orbit>(satellite).reference_body = body_2;
-    universe.emplace<cqspt::Kinematics>(satellite);
-    // Add all the necessary thigns
-    EXPECT_EQ(body1_orb.children.size(), 1);
-    EXPECT_EQ(body2_orb.children.size(), 1);
-    cqsps::LeaveSOI(universe, satellite);
-    EXPECT_EQ(body1_orb.children.size(), 2);
-    EXPECT_EQ(body1_orb.children[0], body_2);
-    EXPECT_EQ(body1_orb.children[1], satellite);
-    EXPECT_EQ(body2_orb.children.size(), 0);
-}
- */

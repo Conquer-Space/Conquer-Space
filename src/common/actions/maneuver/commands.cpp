@@ -172,8 +172,19 @@ void TransferToMoon(Universe& universe, entt::entity agent, entt::entity target)
     Orbit target_orbit = universe.get<Orbit>(target);
     Orbit current_orbit = universe.get<Orbit>(agent);
 
-    auto maneuver = MatchPlanes(current_orbit, target_orbit);
-    PushManeuvers(universe, agent, {maneuver});
+    if (current_orbit.eccentricity > 0.00001) {
+        // Then we should circularize
+        auto maneuver2 = CircularizeAtPeriapsis(current_orbit);
+        PushManeuver(universe, agent, maneuver2);
+
+        entt::entity match_plane = universe.create();
+        universe.emplace<Trigger>(match_plane, Trigger::OnManeuver);
+        universe.emplace<Command>(match_plane, Command::MatchPlanes);
+        universe.emplace<OrbitTarget>(match_plane, target_orbit);
+    } else {
+        auto maneuver = MatchPlanes(current_orbit, target_orbit);
+        PushManeuvers(universe, agent, {maneuver});
+    }
 
     // Move to intercept
     entt::entity maneuver_to_point = universe.create();
