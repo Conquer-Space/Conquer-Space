@@ -27,7 +27,8 @@ std::pair<glm::dvec3, double> CircularizeAtApoapsis(const Orbit& orbit) {
     const double new_velocity = GetCircularOrbitingVelocity(orbit.GM, orbit.GetApoapsis());
     // Get velocity at apogee
     const double old_velocity = OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetApoapsis());
-    return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), orbit.TimeToTrueAnomaly(PI));
+    double time = orbit.TimeToTrueAnomaly(PI);
+    return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), time);
 }
 
 std::pair<glm::dvec3, double> CircularizeAtPeriapsis(const Orbit& orbit) {
@@ -36,7 +37,8 @@ std::pair<glm::dvec3, double> CircularizeAtPeriapsis(const Orbit& orbit) {
     // Get velocity at apogee
     const double old_velocity = OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetPeriapsis());
     // This should go retrograde, so it should be negative
-    return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), orbit.TimeToTrueAnomaly(0));
+    double time = orbit.TimeToTrueAnomaly(0);
+    return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), time);
 }
 
 std::pair<glm::dvec3, double> SetApoapsis(const Orbit& orbit, double altitude) {
@@ -114,20 +116,5 @@ std::pair<glm::dvec3, double> MatchPlanes(const Orbit& orbit, const Orbit& targe
     double theta = glm::angle(glm::normalize(GetOrbitNormal(orbit)), glm::normalize(GetOrbitNormal(target)));
     glm::dvec3 vector = glm::dvec3(0, v * (cos(theta) - 1), v * sin(theta));
     return std::make_pair(vector, orbit.TimeToTrueAnomaly(taoan));
-    glm::dvec3 desired_velocity = glm::normalize(glm::cross(GetOrbitNormal(target), GetRadialVector(orbit, taoan)));
-
-    // Get our orbit velocity vector
-    glm::dvec3 current_velocity = OrbitVelocityToVec3(orbit, taoan);
-
-    // Then somehow convert it to ship space
-    // How do we do so
-    glm::dvec3 expected_velocity = (v * desired_velocity) - current_velocity;
-    glm::dvec3 vector2 = expected_velocity;
-    //InvertOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, taoan, glm::cross(expected_velocity, GetOrbitNormal(orbit)));
-    /*vector.z = vector.x;
-    vector.x = 0;
-    //vector.z *= -1;*/
-
-    return std::make_pair(vector, time_to_true_anomaly);
 }
 }  // namespace cqsp::common::systems
