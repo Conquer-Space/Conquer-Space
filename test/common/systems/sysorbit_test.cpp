@@ -452,7 +452,7 @@ TEST_F(SysOrbitTest, EccentricTransferToMoonTest) {
     // Now check for circularization
     ASSERT_EQ(command_queue.maneuvers.size(), 1);
     SPDLOG_INFO("Chaser orbit: {}", ship_orbit.ToHumanString());
-    TickSeconds(command_queue.maneuvers.front().time + 1);
+    TickSeconds(command_queue.maneuvers.front().time);
     SPDLOG_INFO("Chaser orbit: {}", ship_orbit.ToHumanString());
 
     // Check that our orbit is roughly circular
