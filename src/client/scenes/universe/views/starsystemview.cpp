@@ -819,6 +819,15 @@ glm::vec3 SysStarSystemRenderer::CalculateObjectPos(const entt::entity& ent) {
     return ConvertPoint(pos);
 }
 
+glm::vec3 SysStarSystemRenderer::CalculateFutureObjectPos(const entt::entity& ent) {
+    if (!m_universe.all_of<types::FuturePosition>(ent)) {
+        return glm::vec3(0, 0, 0);
+    }
+    auto& kin = m_universe.get<types::FuturePosition>(ent);
+    const auto& pos = kin.position + kin.center;
+    return ConvertPoint(pos);
+}
+
 glm::vec3 SysStarSystemRenderer::CalculateCenteredObject(const glm::vec3& vec) { return vec - view_center; }
 
 glm::vec3 SysStarSystemRenderer::TranslateToNormalized(const glm::vec3& pos) {

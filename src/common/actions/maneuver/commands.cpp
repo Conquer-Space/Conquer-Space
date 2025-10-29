@@ -138,6 +138,9 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
 
             orbit.LAN = target_orbit.LAN;
             orbit.inclination = target_orbit.inclination;
+            // Add a maneuver. This is a hack so that we run the next maneuver command after this
+            // TODO(EhWhoAmI): Fix this when we are able to figure out why plane matching doesn't work as well as we would hope.
+            PushManeuver(universe, entity, MakeManeuver(glm::dvec3(0, 0, 0), 100.));
             SPDLOG_INFO("New orbit!");
         }
         case Command::InterceptAndCircularizeBody: {
