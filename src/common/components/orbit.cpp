@@ -18,9 +18,9 @@
 
 #include <algorithm>
 #include <cassert>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
-#include <iomanip>
 
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/projection.hpp>
@@ -120,6 +120,9 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
         if (position.z < 0) w = TWOPI - w;
         v = 0;
         M0 = 0;
+    }
+    if (M0 < 0) {
+        M0 += TWOPI;
     }
     Orbit orb;
     orb.semi_major_axis = sma;
@@ -263,6 +266,9 @@ radian EccentricAnomaly(double v, double e) { return 2 * atan(tan(v / 2) * sqrt(
 
 radian HyperbolicAnomaly(double v, double e) { return 2 * atanh(tan(v / 2) * sqrt((e - 1) / (e + 1))); }
 
+/**
+ * Updates orbit's true anomaly
+ */
 void UpdateOrbit(Orbit& orb, const second& time) {
     // Get the thingy
     if (orb.eccentricity < 1) {
@@ -301,6 +307,9 @@ glm::dvec3 CalculateVelocityElliptic(const double& E, const kilometer& r, const 
     return ((sqrt(GM * a) / r) * glm::dvec3(-sin(E), sqrt(1 - e * e) * cos(E), 0));
 }
 
+/*
+ * Adds an impulse in the reference frame of the orbit w.r.t. the orbiting body
+*/
 Orbit ApplyImpulse(const Orbit& orbit, const glm::dvec3& impulse, double time) {
     // Calculate v at epoch
     // Move the orbit
@@ -371,7 +380,7 @@ double FlightPathAngle(double eccentricity, double v) {
 
 glm::dvec3 GetOrbitNormal(const Orbit& orbit) {
     return glm::dquat {glm::dvec3(0, 0, orbit.LAN)} * glm::dquat {glm::dvec3(orbit.inclination, 0, 0)} *
-           glm::dquat {glm::dvec3(0, 0, orbit.w)} * glm::dvec3(0, 0, 1);
+           glm::dvec3(0, 0, 1);
 }
 
 double TrueAnomalyFromVector(const Orbit& orbit, const glm::dvec3& vec) {
@@ -432,7 +441,9 @@ double Orbit::TimeToTrueAnomaly(double v2) const {
 
 double Orbit::OrbitalVelocity() { return OrbitVelocity(v, eccentricity, semi_major_axis, GM); }
 
-double Orbit::OrbitalVelocityAtTrueAnomaly(double true_anomaly) { return OrbitVelocity(true_anomaly, eccentricity, semi_major_axis, GM); }
+double Orbit::OrbitalVelocityAtTrueAnomaly(double true_anomaly) {
+    return OrbitVelocity(true_anomaly, eccentricity, semi_major_axis, GM);
+}
 
 glm::dvec3 GetRadialVector(const Orbit& orbit) { return GetRadialVector(orbit, orbit.v); }
 
@@ -443,10 +454,14 @@ glm::dvec3 GetRadialVector(const Orbit& orbit, double true_anomaly) {
 }
 
 glm::dvec3 InvertOrbitalVector(const double LAN, const double i, const double w, const double v,
-                                  const glm::dvec3& vec) {
-    
-    return glm::inverse(glm::dquat {glm::dvec3(0, 0, LAN)} * glm::dquat {glm::dvec3(i, 0, 0)} * glm::dquat {glm::dvec3(0, 0, w)} *
-           glm::dquat {glm::dvec3(0, 0, v)}) * vec;
+                               const glm::dvec3& vec) {
+    return glm::inverse(glm::dquat {glm::dvec3(0, 0, LAN)} * glm::dquat {glm::dvec3(i, 0, 0)} *
+                        glm::dquat {glm::dvec3(0, 0, w)} * glm::dquat {glm::dvec3(0, 0, v)}) *
+           vec;
+}
+
+double AngleWith(const Orbit& orbit, const Orbit& second_orbit) {
+    return glm::angle(glm::normalize(GetOrbitNormal(orbit)), glm::normalize(GetOrbitNormal(second_orbit)));
 }
 
 std::string Orbit::ToHumanString() {

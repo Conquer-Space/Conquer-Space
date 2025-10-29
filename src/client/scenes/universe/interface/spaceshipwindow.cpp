@@ -235,6 +235,9 @@ void SpaceshipWindow::DoUI(int delta_time) {
     }
     if (ImGui::CollapsingHeader("Moon Transfers")) {
         auto& o_system = GetUniverse().get<bodies::OrbitalSystem>(orbit.reference_body);
+        double angle =
+            common::components::types::AngleWith(orbit, GetUniverse().get<types::Orbit>(orbit.reference_body));
+        ImGui::TextFmt("Angle: {}", angle * 180 / types::PI);
         static entt::entity selected = entt::null;
         if (selected == entt::null) {
             ImGui::BeginDisabled(true);

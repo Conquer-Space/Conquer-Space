@@ -196,7 +196,9 @@ INSTANTIATE_TEST_SUITE_P(
                     std::make_pair(cqsp::common::components::types::Orbit(50000, 0.00001, 5.4, 5.8, 0.1, 0),
                                    cqsp::common::components::types::Orbit(50000, 0.00001, 0.2, 0.8, 0.1, 0)),
                     std::make_pair(cqsp::common::components::types::Orbit(25000, 0.00001, 5.4, 5.8, 0.1, 0),
-                                   cqsp::common::components::types::Orbit(50000, 0.00001, 0.2, 0.8, 0.1, 0))));
+                                   cqsp::common::components::types::Orbit(50000, 0.00001, 0.2, 0.8, 0.1, 0)),
+                    std::make_pair(cqsp::common::components::types::Orbit(7000, 0.00001, 5.4, 5.8, 0.1, 1.3),
+                                   cqsp::common::components::types::Orbit(380000, 0.4, 0.2, 0.8, 0.1, 0))));
 
 TEST_P(PlaneMatchTests, MatchPlaneTest) {
     auto& earth_body_component = universe.get<cqsp::common::components::bodies::Body>(earth);

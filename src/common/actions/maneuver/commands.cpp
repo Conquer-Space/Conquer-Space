@@ -16,6 +16,8 @@
  */
 #include "common/actions/maneuver/commands.h"
 
+#include <spdlog/spdlog.h>
+
 #include <algorithm>
 
 #include "common/actions/maneuver/maneuver.h"
@@ -127,6 +129,17 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
             universe.remove<Orbit>(entity);
             universe.remove<types::Kinematics>(entity);
         } break;
+        case Command::ForceMatchPlanes: {
+            if (!universe.any_of<OrbitTarget>(command_entity)) {
+                break;
+            }
+            auto& target_orbit = universe.get<OrbitTarget>(command_entity).orbit;
+            auto& orbit = universe.get<Orbit>(entity);
+
+            orbit.LAN = target_orbit.LAN;
+            orbit.inclination = target_orbit.inclination;
+            SPDLOG_INFO("New orbit!");
+        }
         case Command::InterceptAndCircularizeBody: {
             // We should intercept the body and stuff
         } break;
@@ -183,9 +196,20 @@ void TransferToMoon(Universe& universe, entt::entity agent, entt::entity target)
         universe.emplace<Command>(match_plane, Command::MatchPlanes);
         universe.emplace<OrbitTarget>(match_plane, target_orbit);
         command_queue.commands.push_back(match_plane);
+
+        entt::entity force_match_plane = universe.create();
+        universe.emplace<Trigger>(force_match_plane, Trigger::OnManeuver);
+        universe.emplace<Command>(force_match_plane, Command::ForceMatchPlanes);
+        universe.emplace<OrbitTarget>(force_match_plane, target_orbit);
+        command_queue.commands.push_back(force_match_plane);
     } else {
         auto maneuver = MatchPlanes(current_orbit, target_orbit);
         PushManeuvers(universe, agent, {maneuver});
+        entt::entity force_match_plane = universe.create();
+        universe.emplace<Trigger>(force_match_plane, Trigger::OnManeuver);
+        universe.emplace<Command>(force_match_plane, Command::ForceMatchPlanes);
+        universe.emplace<OrbitTarget>(force_match_plane, target_orbit);
+        command_queue.commands.push_back(force_match_plane);
     }
 
     // Move to intercept

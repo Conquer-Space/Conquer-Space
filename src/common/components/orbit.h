@@ -400,7 +400,7 @@ glm::dvec3 GetOrbitNormal(const Orbit& orbit);
 glm::dvec3 GetRadialVector(const Orbit& orbit);
 glm::dvec3 GetRadialVector(const Orbit& orbit, double true_anomaly);
 glm::dvec3 InvertOrbitalVector(const double LAN, const double i, const double w, const double v, const glm::dvec3& vec);
-
+double AngleWith(const Orbit& orbit, const Orbit& second_orbit);
 double TrueAnomalyFromVector(const Orbit& orbit, const glm::dvec3& vec);
 
 double AscendingTrueAnomaly(const Orbit& start, const Orbit& dest);
