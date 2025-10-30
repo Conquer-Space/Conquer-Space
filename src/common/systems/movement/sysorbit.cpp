@@ -96,7 +96,7 @@ void SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
         SPDLOG_INFO("Executed command on crash");
     } else {
         // Crash
-        SPDLOG_INFO("Object {} collided with the ground", (uint64_t)body);
+        SPDLOG_INFO("Object {} collided with the ground", util::GetName(GetUniverse(), body));
         // Then remove from the tree or something like that
         GetUniverse().get_or_emplace<ships::Crash>(body);
         GetUniverse().get_or_emplace<bodies::DirtyOrbit>(body);
@@ -148,13 +148,9 @@ void SysOrbit::UpdateCommandQueue(Orbit& orb, entt::entity body, entt::entity pa
         return;
     }
     // Then execute the command
-    SPDLOG_INFO("Orbit before: {}", orb.ToHumanString());
     orb = types::ApplyImpulse(orb, command.delta_v, command.time);
     // Get the difference in orbit
-    SPDLOG_INFO("Orbit angle difference: {} {}", util::GetName(GetUniverse(), body),
-                types::AngleWith(orb, GetUniverse().get<types::Orbit>(GetUniverse().planets["moon"])));
-    SPDLOG_INFO("Orbit after: {}", orb.ToHumanString());
-    SPDLOG_INFO("Moon orbit: {}", GetUniverse().get<types::Orbit>(GetUniverse().planets["moon"]).ToHumanString());
+
     GetUniverse().emplace_or_replace<components::bodies::DirtyOrbit>(body);
     // Check if the next command is something, and then execute it
     queue.maneuvers.pop_front();

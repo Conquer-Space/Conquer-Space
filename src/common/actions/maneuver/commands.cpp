@@ -25,6 +25,7 @@
 #include "common/components/movement.h"
 #include "common/components/orbit.h"
 #include "common/components/surface.h"
+#include "common/util/nameutil.h"
 
 namespace cqsp::common::systems::commands {
 
@@ -52,10 +53,12 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
     switch (command) {
         case Command::CircularizeAtPeriapsis: {
             std::pair<glm::dvec3, double> man_t = CircularizeAtPeriapsis(orbit);
+            SPDLOG_INFO("Circularizing at periapsis");
             PushManeuvers(universe, entity, {man_t});
         } break;
         case Command::CircularizeAtApoapsis: {
             std::pair<glm::dvec3, double> man_t = CircularizeAtApoapsis(orbit);
+            SPDLOG_INFO("Circularizing at apoapsis");
             PushManeuvers(universe, entity, {man_t});
         } break;
         case Command::MatchPlanes: {
@@ -64,6 +67,7 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
             }
             auto& target_orbit = universe.get<OrbitTarget>(command_entity);
             std::pair<glm::dvec3, double> man_t = MatchPlanes(orbit, target_orbit.orbit);
+            SPDLOG_INFO("Matching plane");
             PushManeuvers(universe, entity, {man_t});
         } break;
         case Command::CoplanarIntercept: {
@@ -72,6 +76,7 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
             }
             auto& target_orbit = universe.get<OrbitTarget>(command_entity);
             auto pair = CoplanarIntercept(orbit, target_orbit.orbit, universe.date());
+            SPDLOG_INFO("Coplanar intercepting");
             PushManeuvers(universe, entity, {pair.first});
         } break;
         case Command::CoplanarInterceptAndTransfer: {
@@ -79,6 +84,7 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
                 break;
             }
             auto& target_orbit = universe.get<OrbitTarget>(command_entity);
+            SPDLOG_INFO("Coplanar intercept and transfer");
             auto pair = CoplanarIntercept(orbit, target_orbit.orbit, universe.date());
             PushManeuvers(universe, entity, {pair.first, pair.second});
         } break;
@@ -87,6 +93,7 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
                 break;
             }
             auto& scalar_change = universe.get<OrbitScalar>(command_entity);
+            SPDLOG_INFO("Setting Inclination to {}", components::types::toDegree(scalar_change.value));
             auto maneuver = SetInclination(orbit, scalar_change.value);
             PushManeuvers(universe, entity, {maneuver});
         } break;
@@ -95,6 +102,7 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
                 break;
             }
             auto& scalar_change = universe.get<OrbitScalar>(command_entity);
+            SPDLOG_INFO("Setting apoapsis to {}", scalar_change.value);
             auto maneuver = SetApoapsis(orbit, scalar_change.value);
             PushManeuvers(universe, entity, {maneuver});
         } break;
@@ -103,6 +111,7 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
                 break;
             }
             auto& scalar_change = universe.get<OrbitScalar>(command_entity);
+            SPDLOG_INFO("Setting Periapsis to {}", scalar_change.value);
             auto maneuver = SetPeriapsis(orbit, scalar_change.value);
             PushManeuvers(universe, entity, {maneuver});
         } break;
@@ -126,6 +135,7 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
                 auto& children = universe.get<components::bodies::OrbitalSystem>(orbit.reference_body).children;
                 children.erase(std::remove(children.begin(), children.end(), entity), children.end());
             }
+            SPDLOG_INFO("Landing on city {}", util::GetName(universe, target_city));
             universe.remove<Orbit>(entity);
             universe.remove<types::Kinematics>(entity);
         } break;
@@ -141,7 +151,7 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
             // Add a maneuver. This is a hack so that we run the next maneuver command after this
             // TODO(EhWhoAmI): Fix this when we are able to figure out why plane matching doesn't work as well as we would hope.
             PushManeuver(universe, entity, MakeManeuver(glm::dvec3(0, 0, 0), 100.));
-            SPDLOG_INFO("New orbit!");
+            SPDLOG_INFO("Forced match plane");
         }
         case Command::InterceptAndCircularizeBody: {
             // We should intercept the body and stuff
