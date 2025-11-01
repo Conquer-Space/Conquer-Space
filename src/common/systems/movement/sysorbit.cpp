@@ -106,7 +106,7 @@ void SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
 }
 
 /**
- * Adds an impulse in the ECI frame
+ * Adds an impulse in the body centered inertial frame
  */
 void SysOrbit::CalculateImpulse(types::Orbit& orb, entt::entity body, entt::entity parent) {
     if (GetUniverse().any_of<types::Impulse>(body)) {
@@ -276,6 +276,7 @@ bool SysOrbit::EnterSOI(const entt::entity& parent, const entt::entity& body) {
             // Calculate position
             orb = types::Vec3ToOrbit(pos.position - target_position.position, pos.velocity - target_position.velocity,
                                      body_comp.GM, GetUniverse().date.ToSecond());
+            SPDLOG_INFO("Post enter SOI maneuver: {}", orb.ToHumanString());
             orb.reference_body = entity;
             // Calculate position, and change the thing
             pos.position = types::toVec3(orb);
