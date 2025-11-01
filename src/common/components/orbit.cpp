@@ -121,9 +121,7 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
         v = 0;
         M0 = 0;
     }
-    if (M0 < 0) {
-        M0 += TWOPI;
-    }
+
     Orbit orb;
     orb.semi_major_axis = sma;
     orb.eccentricity = e;

@@ -76,10 +76,20 @@ void SpaceshipWindow::DoUI(int delta_time) {
             double r = orbit.GetOrbitingRadius();
             double p = GetUniverse().get<bodies::Body>(orbit.reference_body).radius;
             p = 0;
-            ImGui::TextFmt("Altitude: {} km", (r - p));
+            ImGui::TextFmt("Altitude: {:.1f} km", (r - p));
             ImGui::TextFmt("Periapsis: {:<10} km ({:.1f} s)", orbit.GetPeriapsis() - p, orbit.TimeToTrueAnomaly(0));
+            if (ImGui::IsItemHovered()) {
+                ImGui::BeginTooltip();
+                ImGui::TextFmt("{:.2f} hours", orbit.TimeToTrueAnomaly(0) / (60 * 60));
+                ImGui::EndTooltip();
+            }
             ImGui::TextFmt("Apoapsis: {:<10} km ({:.1f} s)", orbit.GetApoapsis() - p,
                            orbit.TimeToTrueAnomaly(common::components::types::PI));
+            if (ImGui::IsItemHovered()) {
+                ImGui::BeginTooltip();
+                ImGui::TextFmt("{:.2f} hours", orbit.TimeToTrueAnomaly(common::components::types::PI) / (60 * 60));
+                ImGui::EndTooltip();
+            }
         }
     }
     if (GetUniverse().all_of<Kinematics>(body) && ImGui::CollapsingHeader("Orbital Vectors")) {

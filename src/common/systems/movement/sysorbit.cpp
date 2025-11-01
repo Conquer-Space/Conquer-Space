@@ -20,6 +20,7 @@
 #include <vector>
 
 #include <tracy/Tracy.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "common/actions/maneuver/commands.h"
 #include "common/components/coordinates.h"
@@ -76,20 +77,24 @@ void SysOrbit::LeaveSOI(const entt::entity& body, entt::entity& parent, Orbit& o
     commands::ProcessCommandQueue(GetUniverse(), body, components::Trigger::OnExitSOI);
 }
 
-void SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
+bool SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
     if (GetUniverse().any_of<Body>(body)) {
-        return;
+        return false;
     }
     auto& p_bod = GetUniverse().get<Body>(parent);
     auto& pos = GetUniverse().get<Kinematics>(body);
     if (GetUniverse().any_of<ships::Crash>(body)) {
         pos.position = glm::dvec3(0);
-        return;
+        // Also clear the command queue or something
+        if (GetUniverse().any_of<components::CommandQueue>(body)) {
+            GetUniverse().remove<components::CommandQueue>(body);
+        }
+        return true;
     }
 
     // Next time we need to account for the atmosphere
     if (glm::length(pos.position) > p_bod.radius) {
-        return;
+        return false;
     }
     // Check if there is a command
     if (commands::ProcessCommandQueue(GetUniverse(), body, components::Trigger::OnCrash)) {
@@ -103,6 +108,7 @@ void SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
         pos.position = glm::dvec3(0);
         orb.semi_major_axis = 0;
     }
+    return true;
 }
 
 /**
@@ -163,6 +169,10 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     if (!GetUniverse().valid(body)) {
         return;
     }
+    // Check if the body has crashed
+    if (GetUniverse().any_of<ships::Crash>(body)) {
+        return;
+    }
     auto& orb = GetUniverse().get<types::Orbit>(body);
 
     UpdateCommandQueue(orb, body, parent);
@@ -189,7 +199,11 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
             LeaveSOI(body, parent, orb, pos, p_pos);
         }
 
-        CrashObject(orb, body, parent);
+        // If it has crashed it is unlikely to have it's own orbital system, and even if it does
+        // everything on that orbital system likely crashed as well
+        if (CrashObject(orb, body, parent)) {
+            return;
+        }
 
         CalculateImpulse(orb, body, parent);
         pos.center = p_pos.center + p_pos.position;
@@ -199,10 +213,13 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
             future_center = future_pos.center + future_pos.position;
         }
         if (EnterSOI(parent, body)) {
+            //auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
+            //pause_opt.to_tick = false;
             SPDLOG_INFO("Entered SOI");
         }
     }
 
+    // If they're crashed then we don't care about the future position
     auto& future_pos = GetUniverse().get_or_emplace<types::FuturePosition>(body);
     future_pos.position =
         types::OrbitTimeToVec3(orb, GetUniverse().date.ToSecond() + components::StarDate::TIME_INCREMENT);
@@ -274,13 +291,20 @@ bool SysOrbit::EnterSOI(const entt::entity& parent, const entt::entity& body) {
         const auto& target_position = GetUniverse().get<Kinematics>(entity);
         if (glm::distance(target_position.position, pos.position) <= body_comp.SOI) {
             // Calculate position
+            SPDLOG_INFO("Pre enter position: {}", glm::to_string(pos.position - target_position.position));
+            SPDLOG_INFO("Pre enter velocity: {}", glm::to_string(pos.velocity - target_position.velocity));
+             
             orb = types::Vec3ToOrbit(pos.position - target_position.position, pos.velocity - target_position.velocity,
                                      body_comp.GM, GetUniverse().date.ToSecond());
             SPDLOG_INFO("Post enter SOI maneuver: {}", orb.ToHumanString());
             orb.reference_body = entity;
             // Calculate position, and change the thing
             pos.position = types::toVec3(orb);
+            pos.center = target_position.position + target_position.center;
             pos.velocity = types::OrbitVelocityToVec3(orb, orb.v);
+            SPDLOG_INFO("Post enter position: {}", glm::to_string(pos.position));
+            SPDLOG_INFO("Post enter velocity: {}", glm::to_string(pos.velocity));
+
             // Then change SOI
             GetUniverse().get_or_emplace<OrbitalSystem>(entity).push_back(body);
             auto& vec = GetUniverse().get<OrbitalSystem>(parent).children;
