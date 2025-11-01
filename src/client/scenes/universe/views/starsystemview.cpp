@@ -109,10 +109,10 @@ struct PlanetTexture {
     std::vector<entt::entity> province_map;
 };
 
-struct PlanetOrbit {
+struct OrbitMesh {
     engine::Mesh_t orbit_mesh;
 
-    ~PlanetOrbit() = default;
+    ~OrbitMesh() = default;
 };
 }  // namespace
 
@@ -1063,7 +1063,7 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
 
     // Generates orbits for satellites
     orbits_generated = 0;
-    for (auto body : m_universe.view<Orbit>(entt::exclude<PlanetOrbit>)) {
+    for (auto body : m_universe.view<Orbit>(entt::exclude<OrbitMesh>)) {
         GenerateOrbit(body);
         orbits_generated++;
     }
@@ -1073,6 +1073,11 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
         GenerateOrbit(body);
         m_universe.remove<bodies::DirtyOrbit>(body);
         orbits_generated++;
+    }
+    // Delete unnecessary orbit
+    for (entt::entity ship : m_universe.view<OrbitMesh, ships::Crash>()) {
+        // Then delete the orbit
+        m_universe.remove<OrbitMesh>(ship);
     }
 }
 
@@ -1282,7 +1287,7 @@ void SysStarSystemRenderer::GenerateOrbit(entt::entity body) {
     }
 
     // m_universe.remove<types::OrbitDirty>(body);
-    auto& line = m_universe.get_or_emplace<PlanetOrbit>(body);
+    auto& line = m_universe.get_or_emplace<OrbitMesh>(body);
     // Get the orbit line
     // Do the points
     line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);
@@ -1338,7 +1343,7 @@ void SysStarSystemRenderer::DrawAllOrbits() {
 }
 
 void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
-    if (!m_universe.any_of<PlanetOrbit>(entity)) {
+    if (!m_universe.any_of<OrbitMesh>(entity)) {
         return;
     }
     glm::vec3 center = glm::vec3(0, 0, 0);
@@ -1376,7 +1381,7 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
 
     //orbit_shader->Set("color", glm::vec4(1, 1, 1, 1));
     // Set to the center of the universe
-    auto& orbit = m_universe.get<PlanetOrbit>(entity);
+    auto& orbit = m_universe.get<OrbitMesh>(entity);
 
     orbit.orbit_mesh->Draw();
 }
