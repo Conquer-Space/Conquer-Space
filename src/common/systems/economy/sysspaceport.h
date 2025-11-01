@@ -24,5 +24,8 @@ class SysSpacePort : public ISimulationSystem {
     explicit SysSpacePort(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
     int Interval() override { return components::StarDate::DAY; }
+
+ private:
+    void ProcessDockedShips(entt::entity space_port);
 };
 }  // namespace cqsp::common::systems

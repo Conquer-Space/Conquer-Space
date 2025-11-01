@@ -331,6 +331,10 @@ void SysProvinceInformation::SpacePortTab() {
             SpacePortOrdersTab();
             ImGui::EndTabItem();
         }
+        if (ImGui::BeginTabItem("Resources")) {
+            SpacePortResourceTab();
+            ImGui::EndTabItem();
+        }
         ImGui::EndTabBar();
     }
 }
@@ -527,6 +531,26 @@ void SysProvinceInformation::SpacePortOrdersTab() {
             ImGui::TextFmt("To {}: {} {}/{}", common::util::GetName(GetUniverse(), target),
                            common::util::GetName(GetUniverse(), transport.good), transport.fulfilled, transport.amount);
         }
+    }
+}
+
+void SysProvinceInformation::SpacePortResourceTab() {
+    auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(current_city);
+    if (ImGui::BeginTable("space_port_resource_tables", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Good");
+        ImGui::TableSetupColumn("Output Resources");
+
+        ImGui::TableHeadersRow();
+        auto goodsview = GetUniverse().view<components::Price>();
+
+        for (entt::entity good_entity : goodsview) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt("{}", GetName(GetUniverse(), good_entity));
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextFmt("{}", util::NumberToHumanString(space_port.output_resources[good_entity]));
+        }
+        ImGui::EndTable();
     }
 }
 }  // namespace cqsp::client::systems

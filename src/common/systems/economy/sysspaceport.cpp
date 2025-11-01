@@ -54,13 +54,32 @@ void SysSpacePort::DoSystem() {
                     ship, fmt::format("{} Transport Vehicle", util::GetName(GetUniverse(), element.good)));
                 // Then target the target body
                 // Land on armstrong
-                // Get the target
                 auto& cities = GetUniverse().get<components::Habitation>(target);
                 commands::LandOnMoon(GetUniverse(), ship, target, cities.settlements.front());
                 // Add a resource stockpile to the ship
+                auto& stockpile = GetUniverse().emplace<components::ResourceStockpile>(ship);
+                stockpile[element.good] = element.amount;
                 delivery_queue.pop_back();
             }
         }
+        ProcessDockedShips(space_port);
+    }
+}
+
+void SysSpacePort::ProcessDockedShips(entt::entity space_port) {
+    if (!GetUniverse().any_of<components::DockedShips>(space_port)) {
+        return;
+    }
+    auto& docked_ships = GetUniverse().get<components::DockedShips>(space_port);
+    auto& space_port_comp = GetUniverse().get<components::infrastructure::SpacePort>(space_port);
+    // Check for each of the docked ships
+    for (entt::entity ship : docked_ships.docked_ships) {
+        // Now unload the resources in the space port
+        if (!GetUniverse().any_of<components::ResourceLedger>(ship)) {
+            continue;
+        }
+        space_port_comp.output_resources += GetUniverse().get<components::ResourceLedger>(ship);
+        GetUniverse().remove<components::ResourceLedger>(ship);
     }
 }
 }  // namespace cqsp::common::systems
