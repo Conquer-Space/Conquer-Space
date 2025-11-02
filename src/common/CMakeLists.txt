@@ -20,8 +20,10 @@ include_directories(${CMAKE_SOURCE_DIR}/lib/tracy)
 
 file (GLOB_RECURSE CPP_FILES *.cpp)
 file (GLOB_RECURSE H_FILES *.h)
+file (GLOB_RECURSE HJSON_FILES ${CMAKE_SOURCE_DIR}/binaries/*.hjson)
+file (GLOB_RECURSE LUA_FILES ${CMAKE_SOURCE_DIR}/binaries/*.lua)
 
-set (SOURCE_FILES ${CPP_FILES} ${H_FILES})
+set (SOURCE_FILES ${CPP_FILES} ${H_FILES} ${HJSON_FILES} ${LUA_FILES})
 
 foreach(_source IN ITEMS ${SOURCE_FILES})
     get_filename_component(_source_path "${_source}" PATH)
