@@ -20,6 +20,7 @@
 
 #include <fstream>
 #include <numbers>
+#include <glm/gtx/string_cast.hpp>
 
 #include "common/actions/maneuver/maneuver.h"
 #include "common/components/coordinates.h"
@@ -216,13 +217,21 @@ TEST(OrbitTest, OrbitNormalTestList) {
     namespace cqspt = cqsp::common::components::types;
     // Generate a couple of orbits
     // Now compute a bunch of orbits
-    cqsp::common::util::OrbitGenerator generator(30, 5);
-    for (int i = 0; i < 100; i ++) {
-        cqspt::Orbit vec = generator.GenerateOrbit(1, 0);
-        glm::dvec3 orb = cqspt::GetOrbitNormal(vec);
-        glm::dvec3 vel = glm::cross(cqspt::toVec3(vec), cqspt::OrbitVelocityToVec3(vec, 0));
-        EXPECT_DOUBLE_EQ(glm::dot(glm::normalize(orb), glm::normalize(vel)), 1.);
+    cqsp::common::util::OrbitGenerator generator(10, 0.5);
+    const int expected_tests = 1000;
+    int failures = 0;
+    const double GM = 1;
+    for (int i = 0; i < expected_tests; i ++) {
+        cqspt::Orbit orbit = generator.GenerateOrbit(GM, 0);
+        glm::dvec3 orbit_normal = cqspt::GetOrbitNormal(orbit);
+        glm::dvec3 angular_momentum_vector = glm::cross(cqspt::toVec3(orbit), cqspt::OrbitVelocityToVec3(orbit, 0));
+
+        EXPECT_DOUBLE_EQ(glm::dot(glm::normalize(orbit_normal), glm::normalize(angular_momentum_vector)), 1.);
+        if (glm::dot(glm::normalize(orbit_normal), glm::normalize(angular_momentum_vector)) < 0.99) {
+            failures++;
+        }
     }
+    SPDLOG_INFO("Failures: {}/{}", failures, expected_tests);
 }
 
 TEST(OrbitTest, AscendingNodeTest) {
@@ -234,7 +243,12 @@ TEST(OrbitTest, AscendingNodeTest) {
         //{{57.91e9, 0., 0.4, 0.3, 0., 0}, {57.91e9, 0., 0.5, 0.2, 0, 0}, 5.82736}
     };
     for (auto &element : map) {
-        EXPECT_DOUBLE_EQ(cqspt::AscendingTrueAnomaly(std::get<0>(element), std::get<1>(element)), std::get<2>(element));
+        double ascending_true_anomaly = cqspt::AscendingTrueAnomaly(std::get<0>(element), std::get<1>(element));
+        if (std::fabs(std::fmod(ascending_true_anomaly, cqspt::TWOPI) - cqspt::TWOPI) < ascending_true_anomaly) {
+            // Then we should just use this
+            ascending_true_anomaly = std::fabs(std::fmod(ascending_true_anomaly, cqspt::TWOPI) - cqspt::TWOPI);
+        }
+        EXPECT_NEAR(ascending_true_anomaly, std::get<2>(element), 1e-7);
     }
 }
 

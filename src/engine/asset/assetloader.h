@@ -353,4 +353,6 @@ class AssetLoader {
 
     AssetOptions asset_options;
 };
+
+Hjson::Value LoadHjsonAsset(cqsp::asset::IVirtualFileSystemPtr mount, std::string path);
 }  // namespace cqsp::asset

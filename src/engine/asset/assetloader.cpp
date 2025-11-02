@@ -829,4 +829,49 @@ IVirtualFileSystem* AssetLoader::GetVfs(const std::string& path) {
     // Return native filesystem for now.
     return new NativeFileSystem(path);
 }
+
+/**
+* A helper function to load hjson assets without the need of any asset loader.
+*
+* This will load both a directory and/or a hjson file.
+* @param mount mount point
+* @param path to load from
+*/
+Hjson::Value LoadHjsonAsset(cqsp::asset::IVirtualFileSystemPtr mount, std::string path) {
+    Hjson::Value value;
+    Hjson::DecoderOptions dec_opt;
+    dec_opt.comments = false;
+
+    if (mount->IsDirectory(path)) {
+        // Load and append to assets.
+        auto dir = mount->OpenDirectory(path);
+        for (int i = 0; i < dir->GetSize(); i++) {
+            auto file = dir->GetFile(i);
+            Hjson::Value result;
+            // Since it's a directory, we will assume it's an array, and push back the values.
+            try {
+                result = Hjson::Unmarshal(ReadAllFromVFileToString(file.get()), dec_opt);
+                if (result.type() == Hjson::Type::Vector) {
+                    // Append all the values in place
+                    for (int k = 0; k < result.size(); k++) {
+                        value.push_back(result[k]);
+                    }
+                } else {
+                    // TODO(EhWhoAmI): Raise a non fatal error
+                }
+            } catch (Hjson::syntax_error& ex) {
+                // TODO(EhWhoAmI): Also raise a non fatal error
+            }
+        }
+    } else {
+        auto file = mount->Open(path);
+        // Read the file
+        try {
+            value = Hjson::Unmarshal(ReadAllFromVFileToString(file.get()), dec_opt);
+        } catch (Hjson::syntax_error& ex) {
+            // TODO(EhWhoAmI): Raise a fatal error
+        }
+    }
+    return value;
+}
 }  // namespace cqsp::asset

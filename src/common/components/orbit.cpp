@@ -377,8 +377,7 @@ double FlightPathAngle(double eccentricity, double v) {
 }
 
 glm::dvec3 GetOrbitNormal(const Orbit& orbit) {
-    return glm::dquat {glm::dvec3(0, 0, orbit.LAN)} * glm::dquat {glm::dvec3(orbit.inclination, 0, 0)} *
-           glm::dvec3(0, 0, 1);
+    return glm::normalize(glm::cross(glm::normalize(toVec3(orbit)), glm::normalize(OrbitVelocityToVec3(orbit, 0))));
 }
 
 double TrueAnomalyFromVector(const Orbit& orbit, const glm::dvec3& vec) {
