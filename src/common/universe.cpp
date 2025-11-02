@@ -17,6 +17,7 @@
 #include "common/universe.h"
 
 #include <memory>
+#include <ranges>
 #include <utility>
 
 #include "common/util/random/stdrandom.h"
@@ -30,19 +31,17 @@ Universe::Universe(std::string uuid) : uuid(std::move(uuid)) {
     nodeFactory = [this](entt::entity entity) { return Node(*this, entity); };
 }
 std::vector<Node> Universe::Convert(const std::vector<entt::entity>& entities) {
-    std::vector<Node> nodes;
-    nodes.reserve(entities.size());
-    for (const auto entity : entities) {
-        nodes.emplace_back(*this, entity);
-    }
-    return nodes;
+    auto nodes_view =
+        entities | std::ranges::views::transform([this](entt::entity entity) { return Node(*this, entity); });
+
+    return std::vector<Node>(nodes_view.begin(), nodes_view.end());
 }
 
 Node::Node(Universe& universe, entt::entity entity) : entt::handle(universe, entity) {}
 Node::Node(entt::handle handle, entt::entity entity) : entt::handle(*handle.registry(), entity) {}
 Node::Node(Universe& universe) : entt::handle(universe, universe.create()) {}
 Universe& Node::universe() const { return static_cast<Universe&>(*this->registry()); }
-std::vector<Node> Node::Convert(const std::vector<entt::entity>& entities) {
+std::vector<Node> Node::Convert(const std::vector<entt::entity>& entities) const {
     return this->universe().Convert(entities);
 }
 Node Node::Convert(const entt::entity entity) { return Node(*this, entity); }

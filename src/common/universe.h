@@ -27,9 +27,9 @@
 #include <entt/entt.hpp>
 
 #include "common/actions/names/namegenerator.h"
-#include "common/systems/economy/economyconfig.h"
 #include "common/components/market.h"
 #include "common/components/stardate.h"
+#include "common/systems/economy/economyconfig.h"
 #include "common/util/random/random.h"
 
 namespace cqsp::common {
@@ -94,7 +94,7 @@ class Node : public entt::handle {
     Node(entt::handle handle, entt::entity entity);
     explicit Node(Universe& universe);
     Universe& universe() const;
-    std::vector<Node> Convert(const std::vector<entt::entity>& entities);
+    std::vector<Node> Convert(const std::vector<entt::entity>& entities) const;
     Node Convert(const entt::entity entity);
 };
 
