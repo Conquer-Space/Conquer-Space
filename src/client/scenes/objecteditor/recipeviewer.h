@@ -16,12 +16,15 @@
  */
 #pragma once
 
+#include <array>
+
 #include "client/systems/sysgui.h"
+#include "common/components/resource.h"
 
 namespace cqsp::client::systems {
 class SysRecipeViewer : public SysUserInterface {
  public:
-    explicit SysRecipeViewer(engine::Application& app) : SysUserInterface(app) {}
+    explicit SysRecipeViewer(engine::Application& app) : SysUserInterface(app) { search_text.fill(0); }
 
     void Init();
     void DoUI(int delta_time);
@@ -29,6 +32,12 @@ class SysRecipeViewer : public SysUserInterface {
 
  private:
     void RecipeViewerRight();
+    void ResetSelection();
+    void ResourceMapTable(common::components::ResourceLedger& ledger, const char* name);
     entt::entity selected_recipe = entt::null;
+
+    std::array<char, 255> search_text;
+    float expected_production;
+    const ImVec4 id_copy_color = ImVec4(0.921568627f, 0.392156863f, 0.203921569f, 1.f);
 };
 }  // namespace cqsp::client::systems

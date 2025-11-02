@@ -53,7 +53,7 @@ struct Good {};
 /// See SysPopulationConsumption for an explanation of these values
 /// </summary>
 struct ConsumerGood {
-    ///   autonomous consumption is independent of disposable income
+    ///   Autonomous consumption is independent of disposable income
     ///   or when income levels are zero
     ///   if income levels cannot pay for this level of maintenance they are
     ///   drawn from the population's savings or debt
@@ -183,6 +183,11 @@ class ResourceLedger : private LedgerMap {
     ResourceLedger SafeDivision(const ResourceLedger&);
 
     /// <summary>
+    /// Returns a copy of the vector divided by the indicated vector, with division by zero resulting in the specified value
+    /// </summary>
+    ResourceLedger SafeDivision(const ResourceLedger&, double);
+
+    /// <summary>
     /// Returns a copy of the vector divided by the indicated vector, with
     /// division by zero resulting in infiniy
     /// </summary>
@@ -268,9 +273,12 @@ struct IndustrySize {
     double size;
     // The utilization of the factory.
     double utilization;
+    double diff;
+    double diff_delta;
 
-    double workers;
-    double wages = 100;
+    int workers;
+    bool shortage = false;
+    double wages = 25;
 };
 
 struct CostBreakdown {
@@ -295,19 +303,11 @@ struct CostBreakdown {
     }
 };
 
-//Essentially resource consumption + production
-struct ResourceIO {
-    ResourceLedger input;
-    ResourceLedger output;
-};
-
 // TODO(AGM): Remove
 struct FactoryTimer {
     float interval;
     float time_left;
 };
-
-//Resource generator
 
 struct ResourceConsumption : public ResourceLedger {};
 struct ResourceProduction : public ResourceLedger {};

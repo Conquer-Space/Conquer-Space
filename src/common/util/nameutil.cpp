@@ -18,10 +18,11 @@
 
 #include <fmt/format.h>
 
+#include "common/actions/population/cityinformation.h"
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/infrastructure.h"
 #include "common/components/name.h"
 #include "common/components/organizations.h"
@@ -30,7 +31,6 @@
 #include "common/components/science.h"
 #include "common/components/ships.h"
 #include "common/components/surface.h"
-#include "common/actions/population/cityinformation.h"
 #include "common/util/utilnumberdisplay.h"
 
 namespace cqsp::common::util {

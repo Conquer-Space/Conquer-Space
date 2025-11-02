@@ -21,11 +21,11 @@
 
 #include "client/components/clientctx.h"
 #include "client/scenes/universe/interface/markettable.h"
-#include "client/scenes/universe/interface/marketwindow.h"
 #include "client/scenes/universe/interface/sysstockpileui.h"
 #include "client/scenes/universe/interface/systooltips.h"
 #include "client/scenes/universe/views/starsystemview.h"
-#include "common/components/economy.h"
+#include "common/actions/shiplaunchaction.h"
+#include "common/components/market.h"
 #include "common/components/infrastructure.h"
 #include "common/components/name.h"
 #include "common/components/orbit.h"
@@ -35,7 +35,6 @@
 #include "common/components/ships.h"
 #include "common/components/spaceport.h"
 #include "common/components/surface.h"
-#include "common/actions/shiplaunchaction.h"
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
 #include "engine/cqspgui.h"
@@ -51,18 +50,19 @@ using common::util::GetName;
 using components::PopulationSegment;
 using components::Settlement;
 using components::Wallet;
-using util::LongToHumanString;
+
+using util::NumberToHumanString;
 
 void SysProvinceInformation::Init() {}
 
 void SysProvinceInformation::DoUI(int delta_time) {
     entt::entity country = GetUniverse().view<ctx::SelectedProvince>().front();
-    if (country != current_country) {
-        current_country = country;
+    if (country != current_province) {
+        current_province = country;
         view_mode = ViewMode::COUNTRY_VIEW;
         visible = true;
     }
-    if (current_country == entt::null || !GetUniverse().any_of<components::Province>(current_country)) {
+    if (current_province == entt::null || !GetUniverse().any_of<components::Province>(current_province)) {
         return;
     }
     if (!visible) {
@@ -84,14 +84,16 @@ void SysProvinceInformation::DoUI(int delta_time) {
             break;
     }
     ImGui::End();
+
+    IndustryListWindow();
 }
 
 void SysProvinceInformation::DoUpdate(int delta_time) {}
 
 void SysProvinceInformation::ProvinceView() {
-    ImGui::TextFmt("{}", GetName(GetUniverse(), current_country));
+    ImGui::TextFmt("{}", GetName(GetUniverse(), current_province));
     // List the cities
-    auto& city_list = GetUniverse().get<components::Province>(current_country);
+    auto& city_list = GetUniverse().get<components::Province>(current_province);
     int population = 0;
     for (entt::entity entity : city_list.cities) {
         // Get city population
@@ -102,7 +104,7 @@ void SysProvinceInformation::ProvinceView() {
         }
     }
     ImGui::TextFmt("Part of {}", GetName(GetUniverse(), city_list.country));
-    ImGui::TextFmt("Population: {}", LongToHumanString(population));
+    ImGui::TextFmt("Population: {}", NumberToHumanString(population));
     ImGui::Separator();
     if (ImGui::BeginTabBar("ProvinceInformationTabs", ImGuiTabBarFlags_None)) {
         if (ImGui::BeginTabItem("Cities")) {
@@ -141,7 +143,7 @@ void SysProvinceInformation::CityView() {
         int size = GetUniverse().get<Settlement>(current_city).population.size();
         for (auto seg_entity : GetUniverse().get<Settlement>(current_city).population) {
             auto& pop_segement = GetUniverse().get<PopulationSegment>(seg_entity);
-            ImGui::TextFmt("Population: {}", LongToHumanString(pop_segement.population));
+            ImGui::TextFmt("Population: {}", NumberToHumanString(pop_segement.population));
         }
     } else {
         ImGui::TextFmt("No population");
@@ -174,9 +176,9 @@ void SysProvinceInformation::CityView() {
 void SysProvinceInformation::DisplayWallet(entt::entity entity) {
     if (GetUniverse().all_of<Wallet>(entity)) {
         Wallet& wallet = GetUniverse().get<Wallet>(entity);
-        ImGui::TextFmt("GDP Contribution: {}", LongToHumanString(wallet.GetGDPChange()));
-        ImGui::TextFmt("Balance: {}", LongToHumanString(wallet.GetBalance()));
-        ImGui::TextFmt("Balance change: {}", LongToHumanString(wallet.GetChange()));
+        ImGui::TextFmt("GDP Contribution: {}", NumberToHumanString(wallet.GetGDPChange()));
+        ImGui::TextFmt("Balance: {}", NumberToHumanString(wallet.GetBalance()));
+        ImGui::TextFmt("Balance change: {}", NumberToHumanString(wallet.GetChange()));
     } else {
         ImGui::TextFmt("No wallet");
     }
@@ -196,9 +198,21 @@ void SysProvinceInformation::CityIndustryTabs() {
             InfrastructureTab();
             ImGui::EndTabItem();
         }
+        const bool has_spaceport = GetUniverse().any_of<components::infrastructure::SpacePort>(current_city);
+        if (!has_spaceport) {
+            ImGui::BeginDisabled();
+        }
         if (ImGui::BeginTabItem("Space Port")) {
             SpacePortTab();
             ImGui::EndTabItem();
+        }
+        if (!has_spaceport) {
+            ImGui::EndDisabled();
+        }
+        if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled) && !has_spaceport) {
+            ImGui::BeginTooltip();
+            ImGui::Text("Build a Space Port in this city to unlock this ");
+            ImGui::EndTooltip();
         }
         if (ImGui::BeginTabItem("Economy")) {
             // Show economy window
@@ -222,24 +236,33 @@ void SysProvinceInformation::CityIndustryTabs() {
 void SysProvinceInformation::DemographicsTab() {
     auto& settlement = GetUniverse().get<Settlement>(current_city);
     for (auto& seg_entity : settlement.population) {
-        ImGui::TextFmt("Population: {}",
-                       LongToHumanString(GetUniverse().get<PopulationSegment>(seg_entity).population));
+        auto& pop_segement = GetUniverse().get<PopulationSegment>(seg_entity);
+        ImGui::TextFmt("Population: {}", NumberToHumanString(pop_segement.population));
+
         gui::EntityTooltip(GetUniverse(), seg_entity);
         if (GetUniverse().all_of<components::Hunger>(seg_entity)) {
             ImGui::TextFmt("Hungry");
         }
-        ImGui::TextFmt("Labor Force: {}",
-                       LongToHumanString(GetUniverse().get<PopulationSegment>(seg_entity).labor_force));
-        // Then other labor information
+
+        ImGui::TextFmt("Spending: {}", NumberToHumanString(static_cast<uint64_t>(pop_segement.spending)));
+        ImGui::TextFmt("Spending per capita: {}", pop_segement.spending / pop_segement.population);
+        ImGui::TextFmt("Income: {}", NumberToHumanString(static_cast<uint64_t>(pop_segement.income)));
+        ImGui::TextFmt("Income per capita: {}", pop_segement.income / pop_segement.population);
+
+        ImGui::TextFmt("Labor Force: {}", NumberToHumanString(pop_segement.labor_force));
+        ImGui::TextFmt("Employed: {}", NumberToHumanString(pop_segement.employed_amount));
+        ImGui::TextFmt("Unemployment Rate: {:.2f}", (1. - static_cast<double>(pop_segement.employed_amount) /
+                                                              static_cast<double>(pop_segement.labor_force)) *
+                                                        100.);
+        ImGui::TextFmt("Standard of Living: {}", pop_segement.standard_of_living);
 
         // Get spending for population
-        DisplayWallet(current_city);
-        // Market
-        if (GetUniverse().all_of<components::Market>(current_city)) {
-            if (ImGui::IsItemHovered()) {
-                CQSPGui::SimpleTextTooltip("Click for detailed market information");
-            }
+        DisplayWallet(seg_entity);
+        if (GetUniverse().all_of<Wallet>(seg_entity)) {
+            Wallet& wallet = GetUniverse().get<Wallet>(seg_entity);
+            ImGui::TextFmt("GDP per capita: {}", wallet.GetGDPChange() / pop_segement.population);
         }
+
         if (ImGui::CollapsingHeader("Resource Consumption")) {
             if (GetUniverse().all_of<components::ResourceConsumption>(seg_entity)) {
                 auto& res_consumption = GetUniverse().get<components::ResourceConsumption>(seg_entity);
@@ -252,7 +275,6 @@ void SysProvinceInformation::DemographicsTab() {
 }
 
 void SysProvinceInformation::IndustryTab() {
-    IndustryListWindow();
     auto& city_industry = GetUniverse().get<components::IndustrialZone>(current_city);
     int height = 300;
     ImGui::TextFmt("Factories: {}", city_industry.industries.size());
@@ -277,8 +299,8 @@ void SysProvinceInformation::IndustryTab() {
         labor_fufillment += employ.population_fufilled;
     }
     double percentag = (double)labor_fufillment / (double)labor_demand * 100.;
-    ImGui::TextFmt("Labor fufillment: {}/{} ({}%%)", cqsp::util::LongToHumanString(labor_fufillment),
-                   cqsp::util::LongToHumanString(labor_demand), percentag);
+    ImGui::TextFmt("Labor fufillment: {}/{} ({}%)", cqsp::util::NumberToHumanString(labor_fufillment),
+                   cqsp::util::NumberToHumanString(labor_demand), percentag);
 
     IndustryTabGenericChild<components::Service>(
         "Service Sector", "Company",
@@ -324,15 +346,80 @@ void SysProvinceInformation::IndustryListWindow() {
     if (!city_factory_info) {
         return;
     }
-    ImGui::Begin("Name", &city_factory_info);
+    ImGui::Begin("Name##industry_list_window", &city_factory_info);
     // Loop through market industry
-    auto& city_industry = GetUniverse().get<components::IndustrialZone>(current_city);
+    if (ImGui::BeginTable("industry_list_table", 9, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Production Type");
+        ImGui::TableSetupColumn("Size");
+        ImGui::TableSetupColumn("Utilization");
+        ImGui::TableSetupColumn("Utilization Delta");
+        ImGui::TableSetupColumn("Utilization Delta");
+        ImGui::TableSetupColumn("Hired Workers");
+        ImGui::TableSetupColumn("Wage");
+        ImGui::TableSetupColumn("Revenue");
+        ImGui::TableSetupColumn("Profit");
+        ImGui::TableHeadersRow();
+        auto& city_industry = GetUniverse().get<components::IndustrialZone>(current_city);
+        for (entt::entity industry : city_industry.industries) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), industry));
+            if (ImGui::IsItemHovered()) {
+                systems::gui::EntityTooltip(GetUniverse(), industry);
+            }
 
-    for (entt::entity industry : city_industry.industries) {
-        ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), industry));
-        if (ImGui::IsItemHovered()) {
-            systems::gui::EntityTooltip(GetUniverse(), industry);
+            if (GetUniverse().all_of<components::IndustrySize>(industry)) {
+                auto& industry_component = GetUniverse().get<components::IndustrySize>(industry);
+
+                ImGui::TableSetColumnIndex(1);
+                if (!industry_component.shortage) {
+                    ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.size)));
+                } else {
+                    ImGui::TextFmtColored(ImVec4(0.75, 0, 0, 1), "{}", NumberToHumanString(static_cast<int64_t>(industry_component.size)));
+                    if (ImGui::IsItemHovered()) {
+                        ImGui::BeginTooltip();
+                        ImGui::TextFmt("Resource Shortage!");
+                        ImGui::EndTooltip();
+                    }
+                }
+                ImGui::TableSetColumnIndex(2);
+                ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.utilization)));
+                ImGui::TableSetColumnIndex(3);
+                double diff = industry_component.diff - 1;
+                diff *= 100;
+                const char* format_string = "{:.2f}%";
+                if (diff > 0) {
+                    ImGui::TextFmtColored(ImVec4(0, 0.75, 0, 1), fmt::runtime(format_string), diff);
+                } else if (diff < 0) {
+                    ImGui::TextFmtColored(ImVec4(0.75, 0, 0, 1), fmt::runtime(format_string), diff);
+                } else {
+                    ImGui::TextFmt(fmt::runtime(format_string), diff);
+                }
+                ImGui::TableSetColumnIndex(4);
+                ImGui::TextFmt("{}", industry_component.diff_delta);
+            }
+            if (GetUniverse().all_of<components::Employer>(industry)) {
+                ImGui::TableSetColumnIndex(5);
+                auto& employer = GetUniverse().get<components::Employer>(industry);
+                ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(employer.population_fufilled)));
+            }
+
+            if (GetUniverse().all_of<components::IndustrySize>(industry)) {
+                auto& industry_component = GetUniverse().get<components::IndustrySize>(industry);
+
+                ImGui::TableSetColumnIndex(6);
+                ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.wages)));
+            }
+            if (GetUniverse().all_of<components::CostBreakdown>(industry)) {
+                auto& income_component = GetUniverse().get<components::CostBreakdown>(industry);
+
+                ImGui::TableSetColumnIndex(7);
+                ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(income_component.revenue)));
+                ImGui::TableSetColumnIndex(8);
+                ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(income_component.profit)));
+            }
         }
+        ImGui::EndTable();
     }
     ImGui::End();
 }
@@ -356,30 +443,16 @@ void SysProvinceInformation::IndustryTabGenericChild(const std::string& tabname,
             const components::Recipe& recipe = GetUniverse().get<components::Recipe>(generator.recipe);
             const components::IndustrySize& ratio = GetUniverse().get<components::IndustrySize>(industry);
 
-            input_resources += (recipe.input * ratio.size);
-            output_resources[recipe.output.entity] += recipe.output.amount;
+            input_resources += (recipe.input * ratio.utilization) + (recipe.capitalcost * ratio.size);
+            output_resources[recipe.output.entity] += recipe.output.amount * ratio.utilization;
 
             if (GetUniverse().all_of<components::Wallet>(industry)) {
                 GDP_calculation += GetUniverse().get<components::Wallet>(industry).GetGDPChange();
             }
         }
     }
-    ImGui::TextFmt("GDP: {}", LongToHumanString(GDP_calculation));
+    ImGui::TextFmt("GDP: {}", NumberToHumanString(GDP_calculation));
     ImGui::TextFmt("{} Count: {}", industryname, count);
-
-    ImGui::SameLine();
-    if (CQSPGui::SmallDefaultButton("List")) {
-        /* factory_list_panel = true;
-            industrylist.resize(0);
-            auto& city_industry =
-                GetUniverse()
-                    .get<cqspc::Industry>(selected_city_entity)
-                    .industries;
-            for (entt::entity production : city_industry) {
-                if (GetUniverse().all_of<T>(production))
-                    industrylist.push_back(production);
-            }*/
-    }
 
     ImGui::Text("Output");
     // Output table

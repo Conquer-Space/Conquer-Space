@@ -29,6 +29,7 @@
 #include "client/components/clientctx.h"
 #include "client/components/planetrendering.h"
 #include "client/scenes/universe/interface/systooltips.h"
+#include "common/actions/cityactions.h"
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
@@ -41,7 +42,6 @@
 #include "common/components/ships.h"
 #include "common/components/surface.h"
 #include "common/components/units.h"
-#include "common/actions/cityactions.h"
 #include "common/util/nameutil.h"
 #include "common/util/profiler.h"
 #include "engine/graphics/primitives/cube.h"
@@ -402,9 +402,7 @@ void SysStarSystemRenderer::DrawCityIcon(const glm::vec3& object_pos) {
 void SysStarSystemRenderer::DrawAllCities(auto& bodies) {
     for (auto body_entity : bodies) {
         glm::vec3 object_pos = CalculateCenteredObject(body_entity);
-        // if (glm::distance(object_pos, cam_pos) <= dist) {
         RenderCities(object_pos, body_entity);
-        //}
     }
 }
 
@@ -638,8 +636,7 @@ void SysStarSystemRenderer::CalculateCityPositions() {
 
 void SysStarSystemRenderer::CalculateScroll() {
     double min_scroll = 0.1;
-    if (m_viewing_entity != entt::null && !m_universe.all_of<Body>(m_viewing_entity)) {
-        // Scroll i
+    if (m_viewing_entity != entt::null && m_universe.all_of<Body>(m_viewing_entity)) {
         min_scroll = std::max(m_universe.get<Body>(m_viewing_entity).radius * 1.1, 0.1);
     }
     if (scroll - m_app.GetScrollAmount() * 3 * scroll / 33 <= min_scroll) {
@@ -853,7 +850,7 @@ void SysStarSystemRenderer::CenterCameraOnCity() {
     // solved with a basic formula.
     entt::entity planet = m_universe.view<FocusedPlanet>().front();
 
-    if (!m_universe.any_of<Body>(planet)) {
+    if (!m_universe.valid(planet) || !m_universe.any_of<Body>(planet)) {
         return;
     }
     Body& body = m_universe.get<Body>(planet);
@@ -1339,7 +1336,7 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
     float r = log(col) / log(max_dis);
     float g = 1 - r;
     float b = inc / 3.15;
-    glm::vec4 color_v = {1, 1, 1, 1};
+    glm::vec4 color_v = {1, 1, 1, 0.7};
     orbit_shader->Set("color", color_v);
 
     //orbit_shader->Set("color", glm::vec4(1, 1, 1, 1));

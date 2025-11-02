@@ -68,7 +68,7 @@ class MainMenuScene : public ClientScene {
     void NextImage();
 
     double last_switch = 0;
-    // Change every minute
+    // Change every minute (time is in seconds)
     const float switch_time = 60;
 };
 }  // namespace cqsp::client::scene

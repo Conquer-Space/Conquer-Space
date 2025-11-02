@@ -19,16 +19,12 @@
 #include "client/systems/sysgui.h"
 
 namespace cqsp::client::systems {
-class SysGoodViewer : public SysUserInterface {
+class ImGuiDebugger : public SysUserInterface {
  public:
-    explicit SysGoodViewer(engine::Application& app) : SysUserInterface(app) {}
+    explicit ImGuiDebugger(engine::Application& app) : SysUserInterface(app) {}
 
     void Init();
     void DoUI(int delta_time);
     void DoUpdate(int delta_time);
-
- private:
-    void GoodViewerRight();
-    entt::entity selected_good = entt::null;
 };
 }  // namespace cqsp::client::systems

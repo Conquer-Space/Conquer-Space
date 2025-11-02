@@ -42,7 +42,9 @@ Node::Node(Universe& universe, entt::entity entity) : entt::handle(universe, ent
 Node::Node(entt::handle handle, entt::entity entity) : entt::handle(*handle.registry(), entity) {}
 Node::Node(Universe& universe) : entt::handle(universe, universe.create()) {}
 Universe& Node::universe() const { return static_cast<Universe&>(*this->registry()); }
-std::vector<Node> Node::Convert(const std::vector<entt::entity>& entities) { return this->universe().Convert(entities); }
+std::vector<Node> Node::Convert(const std::vector<entt::entity>& entities) {
+    return this->universe().Convert(entities);
+}
 Node Node::Convert(const entt::entity entity) { return Node(*this, entity); }
 
 }  // namespace cqsp::common

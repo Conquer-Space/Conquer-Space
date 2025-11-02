@@ -1,0 +1,21 @@
+# This file is part of Conquer Space
+[
+    {
+        name: Steel Manufacturing
+        identifier: steel_manufacturing
+        input: {
+            iron: 100
+            coal: 20
+        }
+        output: {
+            steel: 120
+        }
+        cost: {
+            labor: {
+                worker: 1500
+            }
+        }
+        tags: [
+        ]
+    }
+]

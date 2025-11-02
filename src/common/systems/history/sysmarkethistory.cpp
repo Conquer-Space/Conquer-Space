@@ -16,12 +16,12 @@
  */
 #include "common/systems/history/sysmarkethistory.h"
 
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/history.h"
 namespace cqsp::common::systems::history {
 
-using components::MarketHistory;
 using components::Market;
+using components::MarketHistory;
 
 void SysMarketHistory::DoSystem() {
     /*

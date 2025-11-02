@@ -1,118 +1,41 @@
 # This file is part of Conquer Space
-#
-# This is the default file for recipes, and also serves as a demonstration for stuff
 [
     {
-        name: Transports
-        identifier: transport_cap
+        name: Tractor Production
+        identifier: tractor_production
         input: {
-            motorvehicles: 1
-        }
-        elasticity: {
-            motorvehicles: 1
+            steel: 20
         }
         output: {
-            transport: 2
+            tractors: 5
         }
         cost: {
-            capital: {
-                structures: 2
-                industrial: 2
-                transport: 1
-            }
             labor: {
-                worker: 1000
+                worker: 3000
             }
         }
         tags: [
             ratio
-            factory
+            capital
         ]
     }
     {
-        name: Construction Sector
-        identifier: construction_cap
+        name: Heavy Machinery Production
+        identifier: machinery_production
         input: {
-            bricks: 100
-            fmetal: 50
-            housegoods: 50
-        }
-        elasticity: {
-            bricks: 1
-            fmetal: 1
-            housegoods: 1
+            steel: 20
         }
         output: {
-            structures: 1
+            heavy_machinery: 5
         }
         cost: {
-            capital: {
-                structures: 1
-                industrial: 1
-                transport: 3
-            }
             labor: {
-                worker: 1000
+                worker: 3000
             }
         }
         tags: [
             ratio
-            factory
-        ]
-    }
-    {
-        name: Industrial Equipment Manufacturing
-        identifier: industrial_equipment_cap
-        input: {
-            fmetal: 5
-            egoods: 1
-        }
-        elasticity: {
-            fmetal: 5
-            egoods: 1
-        }
-        output: {
-            industrial: 1
-        }
-        cost: {
-            capital: {
-                structures: 2
-                industrial: 2
-            }
-            labor: {
-                worker: 1000
-            }
-        }
-        tags: [
-            ratio
-            factory
-        ]
-    }
-    {
-        name: System Integration
-        identifier: systems_cap
-        input: {
-            computer: 1
-        }
-        elasticity: {
-            computer: 1
-        }
-        output: {
-            computersystems: 1
-        }
-        cost: {
-            capital: {
-                structures: 1
-                industrial: 1
-                computersystems: 1
-            }
-            labor: {
-                worker: 1000
-            }
-        }
-        tags: [
-            ratio
-            factory
+            capital
         ]
     }
 ]

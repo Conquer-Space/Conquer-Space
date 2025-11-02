@@ -21,10 +21,15 @@
 #include <string>
 #include <vector>
 
+#include "common/actions/cityactions.h"
+#include "common/actions/economy/markethelpers.h"
+#include "common/actions/factoryconstructaction.h"
+#include "common/actions/science/labs.h"
+#include "common/actions/shiplaunchaction.h"
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/event.h"
 #include "common/components/infrastructure.h"
 #include "common/components/name.h"
@@ -36,18 +41,11 @@
 #include "common/components/science.h"
 #include "common/components/ships.h"
 #include "common/components/surface.h"
-#include "common/scripting/functionreg.h"
-#include "common/actions/cityactions.h"
-#include "common/actions/factoryconstructaction.h"
-#include "common/actions/shiplaunchaction.h"
-#include "common/actions/economy/markethelpers.h"
-#include "common/actions/science/labs.h"
 #include "common/loading/technology.h"
+#include "common/scripting/functionreg.h"
 #include "common/util/nameutil.h"
 #include "common/util/random/stdrandom.h"
 #include "common/util/utilnumberdisplay.h"
-
-
 
 /**
  * Notes:
@@ -59,18 +57,18 @@ namespace bodies = components::bodies;
 namespace types = components::types;
 namespace infrastructure = components::infrastructure;
 
-using components::ResourceStockpile;
+using bodies::Body;
 using components::Governed;
-using components::Player;
 using components::Habitation;
 using components::IndustrialZone;
-using components::Price;
 using components::Market;
+using components::Player;
 using components::PopulationSegment;
+using components::Price;
+using components::ResourceStockpile;
 using components::Settlement;
 using components::Wallet;
 using components::science::ScientificResearch;
-using bodies::Body;
 
 /// <summary>
 /// Initializes functions for RNG
@@ -182,7 +180,7 @@ void FunctionEconomy(Universe& universe, ScriptInterface& script_engine) {
         universe.get<IndustrialZone>(city).industries.push_back(entity);
     });
 
-    REGISTER_FUNCTION("create_factory", [&](entt::entity city, entt::entity recipe, float productivity) {
+    REGISTER_FUNCTION("create_factory", [&](entt::entity city, entt::entity recipe, int productivity) {
         entt::entity factory = actions::CreateFactory(universe, city, recipe, productivity);
         return factory;
     });
@@ -278,7 +276,7 @@ void FunctionUser(Universe& universe, ScriptInterface& script_engine) {
         universe.emplace_or_replace<components::Name>(entity, name);
     });
 
-    REGISTER_FUNCTION("to_human_string", [&](int64_t number) { return cqsp::util::LongToHumanString(number); });
+    REGISTER_FUNCTION("to_human_string", [&](int64_t number) { return cqsp::util::NumberToHumanString(number); });
 
     REGISTER_FUNCTION("get_name", [&](entt::entity entity) { return util::GetName(universe, entity); });
 
@@ -392,9 +390,8 @@ void FunctionScience(Universe& universe, ScriptInterface& script_engine) {
         universe.emplace<ScientificResearch>(entity);
     });
 
-    REGISTER_FUNCTION("complete_technology", [&](entt::entity entity, entt::entity tech) {
-        actions::ResearchTech(universe, entity, tech);
-    });
+    REGISTER_FUNCTION("complete_technology",
+                      [&](entt::entity entity, entt::entity tech) { actions::ResearchTech(universe, entity, tech); });
 
     REGISTER_FUNCTION("research_technology", [&](entt::entity entity, entt::entity tech) {
         auto& res = universe.get<ScientificResearch>(entity);

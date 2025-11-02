@@ -17,15 +17,15 @@
 #include "client/scenes/universe/interface/spaceshipwindow.h"
 
 #include "client/scenes/universe/views/starsystemview.h"
+#include "common/actions/maneuver/commands.h"
+#include "common/actions/maneuver/hohmann.h"
+#include "common/actions/maneuver/maneuver.h"
+#include "common/actions/maneuver/rendezvous.h"
 #include "common/components/coordinates.h"
 #include "common/components/movement.h"
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
 #include "common/components/surface.h"
-#include "common/actions/maneuver/commands.h"
-#include "common/actions/maneuver/hohmann.h"
-#include "common/actions/maneuver/maneuver.h"
-#include "common/actions/maneuver/rendezvous.h"
 #include "common/util/nameutil.h"
 
 namespace cqsp::client::systems {

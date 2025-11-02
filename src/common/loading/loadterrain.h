@@ -14,8 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "client/headless/headlessmode.h"
+#pragma once
 
-namespace cqsp::client::headless {
-void HeadlessClient::run() {}
-}  // namespace cqsp::client::headless
+#include <hjson.h>
+
+#include "common/universe.h"
+
+namespace cqsp::common::loading {
+void LoadTerrainData(cqsp::common::Universe&, Hjson::Value&);
+}  // namespace cqsp::common::loading

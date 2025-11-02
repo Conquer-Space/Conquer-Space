@@ -45,13 +45,13 @@ class SysProvinceInformation : public SysUserInterface {
     template <typename T>
     void IndustryTabGenericChild(const std::string& tabname, const std::string& industryname, const ImVec2& size);
 
-    entt::entity current_city;
-    entt::entity current_country;
+    entt::entity current_city = entt::null;
+    entt::entity current_province = entt::null;
     bool market_information_panel = false;
 
     bool visible = false;
-    entt::entity current_market;
-    entt::entity selected_ship;
+    entt::entity current_market = entt::null;
+    entt::entity selected_ship = entt::null;
     bool city_factory_info = false;
 
     enum ViewMode { COUNTRY_VIEW, CITY_VIEW } view_mode = ViewMode::COUNTRY_VIEW;

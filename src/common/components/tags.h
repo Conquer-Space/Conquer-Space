@@ -16,10 +16,14 @@
  */
 #pragma once
 
-namespace cqsp::client::headless {
-class HeadlessClient {
+#include <vector>
+#include <string> 
+namespace cqsp::common::components {
+/**
+ * Tags for the entity.
+ */
+struct Tags {
  public:
-    void run();
-    // Add more game stuff
+    std::vector<std::string> tags;
 };
-}  // namespace cqsp::client::headless
+}  // namespace cqsp::common::components

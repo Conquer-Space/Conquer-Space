@@ -17,10 +17,10 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "common/components/area.h"
-#include "common/components/economy.h"
-#include "common/components/resource.h"
 #include "common/actions/factoryconstructaction.h"
+#include "common/components/area.h"
+#include "common/components/market.h"
+#include "common/components/resource.h"
 #include "common/universe.h"
 
 TEST(FactoryConstuctTest, ConstructTest) {

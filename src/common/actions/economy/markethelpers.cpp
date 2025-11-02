@@ -16,7 +16,7 @@
  */
 #include "common/actions/economy/markethelpers.h"
 
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/history.h"
 
 namespace cqsp::common::actions {

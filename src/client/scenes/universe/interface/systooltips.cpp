@@ -20,10 +20,11 @@
 #include <string>
 
 #include "client/scenes/universe/interface/sysstockpileui.h"
+#include "common/actions/population/cityinformation.h"
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/infrastructure.h"
 #include "common/components/name.h"
 #include "common/components/orbit.h"
@@ -33,7 +34,6 @@
 #include "common/components/science.h"
 #include "common/components/ships.h"
 #include "common/components/surface.h"
-#include "common/actions/population/cityinformation.h"
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
 #include "engine/gui.h"
@@ -47,7 +47,7 @@ namespace ships = components::ships;
 using bodies::Body;
 using common::Universe;
 using types::Orbit;
-using util::LongToHumanString;
+using util::NumberToHumanString;
 
 void RenderEntityType(const Universe& universe, entt::entity entity) {
     std::string text = common::util::GetEntityType(universe, entity);
@@ -80,6 +80,7 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
     if (universe.all_of<components::IndustrySize>(entity)) {
         ImGui::TextFmt("Size: {}", universe.get<components::IndustrySize>(entity).size);
         ImGui::TextFmt("Utilization: {}", universe.get<components::IndustrySize>(entity).utilization);
+        ImGui::TextFmt("Last Tick Difference: {}", universe.get<components::IndustrySize>(entity).diff);
     }
 
     if (universe.all_of<components::infrastructure::PowerConsumption>(entity)) {
@@ -91,13 +92,16 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
     }
     if (universe.all_of<components::CostBreakdown>(entity)) {
         components::CostBreakdown costs = universe.get<components::CostBreakdown>(entity);
-        ImGui::TextFmt("Material Cost: {}", LongToHumanString(costs.materialcosts));
-        ImGui::TextFmt("Wage Cost: {}", LongToHumanString(costs.wages));
-        ImGui::TextFmt("Maintenance Cost: {}", LongToHumanString(costs.maintenance));
-        ImGui::TextFmt("Transport Costs: {}", LongToHumanString(costs.transport));
+        ImGui::TextFmt("Material Cost: {}", NumberToHumanString(costs.materialcosts));
+        ImGui::TextFmt("Wage Cost: {}", NumberToHumanString(costs.wages));
+        ImGui::TextFmt("Maintenance Cost: {}", NumberToHumanString(costs.maintenance));
+        ImGui::TextFmt("Transport Costs: {}", NumberToHumanString(costs.transport));
         ImGui::Separator();
-        ImGui::TextFmt("Profit: {}", LongToHumanString(costs.profit));
-        ImGui::TextFmt("Revenue: {}", LongToHumanString(costs.revenue));
+        ImGui::TextFmt("Profit: {}", NumberToHumanString(costs.profit));
+        ImGui::TextFmt("Revenue: {}", NumberToHumanString(costs.revenue));
+    }
+    if (universe.all_of<components::Price>(entity)) {
+        ImGui::TextFmt("Default Price: {}", universe.get<components::Price>(entity).price);
     }
 }
 
@@ -115,7 +119,7 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
 
     if (universe.any_of<components::Description>(entity)) {
         auto& desc = universe.get<components::Description>(entity);
-        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7, 0.7, 0.7, 1));
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.7f, 1.f));
         ImGui::TextWrapped("%s", desc.description.c_str());
         ImGui::PopStyleColor();
     }
@@ -124,7 +128,7 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
 
     if (universe.all_of<components::Wallet>(entity)) {
         auto& balance = universe.get<components::Wallet>(entity);
-        ImGui::TextFmt("Wallet: {}", balance.GetBalance());
+        ImGui::TextFmt("Wallet: {}", util::NumberToHumanString(balance.GetBalance()));
     }
 
     if (universe.all_of<components::MarketAgent>(entity)) {
@@ -148,7 +152,7 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
 
     // If it's a city do population
     if (universe.all_of<components::Settlement>(entity)) {
-        ImGui::TextFmt("Population: {}", LongToHumanString(common::actions::GetCityPopulation(universe, entity)));
+        ImGui::TextFmt("Population: {}", NumberToHumanString(common::actions::GetCityPopulation(universe, entity)));
     }
     if (universe.all_of<Body>(entity)) {
         auto& body = universe.get<Body>(entity);

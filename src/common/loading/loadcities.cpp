@@ -23,7 +23,7 @@
 
 #include "common/components/area.h"
 #include "common/components/coordinates.h"
-#include "common/components/economy.h"
+#include "common/components/market.h"
 #include "common/components/infrastructure.h"
 #include "common/components/name.h"
 #include "common/components/organizations.h"
@@ -40,6 +40,7 @@ struct ConnectedCities {
     std::vector<std::string> entities;
 };
 }  // namespace
+
 bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     // Load the city
     std::string planet = values["planet"].to_string();
@@ -64,6 +65,16 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
             entt::entity pop_ent = universe.create();
 
             auto size = population_seg["size"].to_int64();
+            double standard_of_living = 0;
+            if (!population_seg["sol"].empty()) {
+                standard_of_living = population_seg["sol"].to_double();
+            }
+
+            double balance = 0;
+            if (!population_seg["balance"].empty()) {
+                balance = population_seg["balance"].to_double();
+            }
+
             int64_t labor_force = size / 2;
             if (!population_seg["labor_force"].empty()) {
                 labor_force = population_seg["labor_force"].to_int64();
@@ -72,7 +83,10 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
             auto& segment = universe.emplace<components::PopulationSegment>(pop_ent);
             segment.population = size;
             segment.labor_force = labor_force;
+            segment.standard_of_living = standard_of_living;
             universe.emplace<components::LaborInformation>(pop_ent);
+            auto& wallet = universe.emplace<components::Wallet>(pop_ent);
+            wallet = balance;
             settlement.population.push_back(pop_ent);
         }
     } else {
@@ -94,6 +108,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     // Industry and economy
     auto& industry = universe.emplace<components::IndustrialZone>(entity);
     auto& market = universe.emplace<components::Market>(entity);
+    market.parent_market = universe.planets[planet];
     // Get the connected markets
     if (!values["connections"].empty() && values["connections"].type() == Hjson::Type::Vector) {
         // Get connected cities and then see if they're done
@@ -126,6 +141,10 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
                             universe.get<components::Identifier>(entity).identifier);
                 continue;
             }
+            double wage = 10;
+            if (!ind_val["wage"].empty()) {
+                wage = ind_val["wage"].to_double();
+            }
             entt::entity rec_ent = universe.recipes[recipe];
 
             actions::CreateFactory(universe, entity, rec_ent, productivity);
@@ -134,7 +153,8 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
     if (!values["space-port"].empty()) {
         // Add space port
-        universe.emplace<components::infrastructure::SpacePort>(entity);
+        auto& space_port = universe.emplace<components::infrastructure::SpacePort>(entity);
+        space_port.reference_body = sc.planet;
     }
 
     if (!values["country"].empty()) {
@@ -207,6 +227,9 @@ bool CityLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     return true;
 }
 
+/**
+ * Loads the city and sets the parent.
+ */
 void CityLoader::PostLoad(const entt::entity& entity) {
     if (universe.all_of<ConnectedCities>(entity)) {
         auto& connected = universe.get<ConnectedCities>(entity);

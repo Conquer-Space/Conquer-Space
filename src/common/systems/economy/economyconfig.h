@@ -16,18 +16,22 @@
  */
 #pragma once
 
-#include "client/systems/sysgui.h"
+namespace cqsp::common::systems {
+/**
+ * A struct for all the configs that we want to configure for the economy
+ */
+struct EconomyConfig {
+    struct {
+        /**
+         * Fraction that the price of a good can deviate from the base price.
+         */
+        double base_price_deviation = 0.75;
+    } market_config;
 
-namespace cqsp::client::systems {
-class SysPlanetMarketInformation : public SysUserInterface {
- public:
-    explicit SysPlanetMarketInformation(engine::Application& app) : SysUserInterface(app) {}
-    void Init();
-    void DoUI(int delta_time);
-    void DoUpdate(int delta_time);
-
- private:
-    bool to_see = true;
-    entt::entity selected_planet;
+    struct {
+        double profit_multiplier = 0.001;
+        double max_factory_delta = 0.01;
+        double factory_min_utilization = 0.05;
+    } production_config;
 };
-}  // namespace cqsp::client::systems
+}  // namespace cqsp::common::systems

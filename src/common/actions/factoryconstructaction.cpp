@@ -21,10 +21,10 @@
 #include <limits>
 #include <map>
 
-#include "common/components/area.h"
-#include "common/components/economy.h"
-#include "common/components/resource.h"
 #include "common/actions/economy/markethelpers.h"
+#include "common/components/area.h"
+#include "common/components/market.h"
+#include "common/components/resource.h"
 
 namespace cqsp::common::actions {
 entt::entity OrderConstructionFactory(Universe& universe, entt::entity city, entt::entity market, entt::entity recipe,
@@ -41,7 +41,7 @@ entt::entity OrderConstructionFactory(Universe& universe, entt::entity city, ent
     return factory;
 }
 
-entt::entity CreateFactory(Universe& universe, entt::entity city, entt::entity recipe, int productivity) {
+entt::entity CreateFactory(Universe& universe, entt::entity city, entt::entity recipe, int productivity, double wages) {
     // Make the factory
     if (city == entt::null || recipe == entt::null) {
         SPDLOG_WARN("City or recipe is null");
@@ -73,6 +73,7 @@ entt::entity CreateFactory(Universe& universe, entt::entity city, entt::entity r
     auto& prod = universe.emplace<components::IndustrySize>(factory);
     prod.size = productivity;
     prod.utilization = productivity;
+    prod.wages = wages;
     const auto& recipe_comp = universe.get<components::Recipe>(recipe);
     switch (recipe_comp.type) {
         case components::mine:

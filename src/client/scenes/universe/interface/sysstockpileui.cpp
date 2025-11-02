@@ -28,7 +28,7 @@ namespace cqsp::client::systems {
 using common::Universe;
 using common::components::Identifier;
 using common::components::ResourceLedger;
-using util::LongToHumanString;
+using util::NumberToHumanString;
 
 bool DrawLedgerTable(const std::string &name, const Universe &universe, const ResourceLedger &ledger) {
     if (ledger.empty()) {
@@ -40,11 +40,14 @@ bool DrawLedgerTable(const std::string &name, const Universe &universe, const Re
         ImGui::TableSetupColumn("Amount");
         ImGui::TableHeadersRow();
         for (auto iterator = ledger.begin(); iterator != ledger.end(); iterator++) {
+            if (iterator->second == 0) {
+                continue;
+            }
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::TextFmt("{}", common::util::GetName(universe, iterator->first));
             ImGui::TableSetColumnIndex(1);
-            ImGui::TextFmt("{}", LongToHumanString(static_cast<int64_t>(iterator->second)));
+            ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(iterator->second)));
         }
         ImGui::EndTable();
     }

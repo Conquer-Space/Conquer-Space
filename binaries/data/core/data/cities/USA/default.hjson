@@ -16,6 +16,20 @@
                 size: 3694820
             }
         ]
+        industry: [
+            {
+                recipe: furniture_manufacturing
+                productivity: 300
+            }
+            {
+                recipe: gasoline_production
+                productivity: 2000
+            }
+            {
+                recipe: oil_drilling
+                productivity: 2000
+            }
+        ]
     }
     {
         name: Seattle
@@ -36,12 +50,8 @@
         ]
         industry: [
             {
-                recipe: public_transport
-                productivity: 1
-            }
-            {
-                recipe: medical_serv
-                productivity: 1
+                recipe: logging
+                productivity: 200
             }
         ]
     }
@@ -64,16 +74,12 @@
         ]
         industry: [
             {
-                recipe: computer_man
-                productivity: 1
+                recipe: iron_mining
+                productivity: 60
             }
             {
-                recipe: industrial_equipment_cap
-                productivity: 1
-            }
-            {
-                recipe: construction_cap
-                productivity: 1
+                recipe: coal_mining
+                productivity: 10
             }
         ]
     }

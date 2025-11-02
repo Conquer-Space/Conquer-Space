@@ -1,44 +1,53 @@
 # This file is part of Conquer Space
-#
 [
     {
-        name: Large Structures
-        identifier: structures
-        volume: 10000 m3
-        mass: 500000 kg
-        price: 500000
-        tags: [
-            captialgood
-        ]
-    }
-    {
-        name: Industrial Equipment
-        identifier: industrial
-        volume: 200 m3
-        mass: 50000 kg
-        price: 100000
-        tags: [
-            captialgood
-        ]
-    }
-    {
-        name: Transport
-        identifier: transport
+        name: Fluid Systems
+        identifier: fluid_systems
         volume: 100 m3
-        mass: 10000 kg
-        price: 200000
+        mass: 30000 kg
+        price: 1000
         tags: [
-            captialgood
+            capital
         ]
     }
     {
-        name: Mainframes
-        identifier: computersystems
-        volume: 1 m3
-        mass: 6500 kg
-        price: 7
+        name: Heavy Machinery
+        identifier: heavy_machinery
+        volume: 100 m3
+        mass: 4000 kg
+        price: 60000
         tags: [
-            captialgood
+            capital
+        ]
+    }
+    {
+        name: Cranes
+        identifier: cranes
+        volume: 200 m3
+        mass: 4000 kg
+        price: 40000
+        tags: [
+            capital
+        ]
+    }
+    {
+        name: Machine Tools
+        identifier: machine_tools
+        volume: 200 m3
+        mass: 4000 kg
+        price: 40000
+        tags: [
+            capital
+        ]
+    }
+    {
+        name: Tractors
+        identifier: tractors
+        volume: 300 m3
+        mass: 4000 kg
+        price: 65000
+        tags: [
+            capital
         ]
     }
 ]

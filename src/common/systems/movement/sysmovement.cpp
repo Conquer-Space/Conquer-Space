@@ -21,12 +21,12 @@
 
 #include <tracy/Tracy.hpp>
 
+#include "common/actions/maneuver/commands.h"
 #include "common/components/coordinates.h"
 #include "common/components/movement.h"
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
 #include "common/components/units.h"
-#include "common/actions/maneuver/commands.h"
 #include "common/util/nameutil.h"
 
 namespace cqsp::common::systems {
@@ -34,10 +34,10 @@ namespace ships = components::ships;
 namespace types = components::types;
 namespace bodies = components::bodies;
 
-using types::Kinematics;
-using types::Orbit;
 using bodies::Body;
 using bodies::OrbitalSystem;
+using types::Kinematics;
+using types::Orbit;
 
 void SysOrbit::DoSystem() {
     ZoneScoped;
@@ -45,8 +45,8 @@ void SysOrbit::DoSystem() {
     ParseOrbitTree(entt::null, GetUniverse().sun);
 }
 
-void SysOrbit::LeaveSOI(const entt::entity& body, entt::entity& parent, Orbit& orb, Kinematics& pos, 
-                                                                                    Kinematics& p_pos) {
+void SysOrbit::LeaveSOI(const entt::entity& body, entt::entity& parent, Orbit& orb, Kinematics& pos,
+                        Kinematics& p_pos) {
     // Then change parent, then set the orbit
     auto& p_orb = GetUniverse().get<Orbit>(parent);
     if (p_orb.reference_body == entt::null) {
@@ -151,7 +151,6 @@ void SysOrbit::UpdateCommandQueue(Orbit& orb, entt::entity body, entt::entity pa
 }
 
 void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
-
     if (!GetUniverse().valid(body)) {
         return;
     }

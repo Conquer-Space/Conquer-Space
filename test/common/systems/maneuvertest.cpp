@@ -16,10 +16,10 @@
  */
 #include <gtest/gtest.h>
 
-#include "common/components/orbit.h"
-#include "common/components/units.h"
 #include "common/actions/maneuver/maneuver.h"
 #include "common/actions/maneuver/rendezvous.h"
+#include "common/components/orbit.h"
+#include "common/components/units.h"
 
 TEST(Maneuver, CircularCircularizeApogeeTest) {
     namespace cqspt = cqsp::common::components::types;

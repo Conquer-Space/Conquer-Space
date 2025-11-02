@@ -24,8 +24,9 @@
 #include <vector>
 
 #include "client/systems/sysgui.h"
+#include "client/util/assetwindow.h"
 
-#define sysdebuggui_parameters                                                                                \
+#define sysdebuggui_parameters                                                                                        \
     cqsp::engine::Application &app, common::Universe &universe, common::scripting::ScriptInterface &script_interface, \
         const std::string_view &args, CommandOutput &input
 
@@ -40,11 +41,10 @@ class SysDebugMenu : public SysUserInterface {
 
  private:
     void CqspMetricsWindow();
-    void ShowWindows();
+    void ShowWindows(double delta_time);
     void CreateMenuBar();
     void DrawConsole();
     void ConsoleInput();
-    void DrawAssetWindow();
 
     bool to_show_window = false;
     bool to_show_metrics_window = false;
@@ -66,5 +66,7 @@ class SysDebugMenu : public SysUserInterface {
     float fps_history_len = 10;
 
     std::map<std::string, std::vector<ImVec2>> history_maps;
+
+    AssetWindow asset_window;
 };
 }  // namespace cqsp::client::systems

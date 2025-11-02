@@ -16,8 +16,8 @@
  */
 #include <gtest/gtest.h>
 
-#include "common/components/orbit.h"
 #include "common/actions/maneuver/commands.h"
+#include "common/components/orbit.h"
 #include "common/universe.h"
 
 TEST(CommandTest, SOIHierachyTest) {

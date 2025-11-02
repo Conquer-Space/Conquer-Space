@@ -44,7 +44,5 @@ void Load::LoadMetadata(Hjson::Value& data) {
     universe.uuid = data["uuid"].to_string();
 }
 
-std::string GetMetaPath(std::string_view folder) {
-    return (std::filesystem::path(folder) / "meta.hjson").string();
-}
+std::string GetMetaPath(std::string_view folder) { return (std::filesystem::path(folder) / "meta.hjson").string(); }
 }  // namespace cqsp::common::save

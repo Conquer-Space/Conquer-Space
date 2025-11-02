@@ -26,8 +26,10 @@
 
 #include <entt/entt.hpp>
 
-#include "common/components/stardate.h"
 #include "common/actions/names/namegenerator.h"
+#include "common/systems/economy/economyconfig.h"
+#include "common/components/market.h"
+#include "common/components/stardate.h"
 #include "common/util/random/random.h"
 
 namespace cqsp::common {
@@ -76,7 +78,11 @@ class Universe : public entt::registry {
     auto nodeTransform() { return std::views::transform(nodeFactory); }
     std::vector<Node> Convert(const std::vector<entt::entity>& entities);
     template <typename... Components>
-    auto nodes() { return this->template view<Components...>() | nodeTransform();}
+    auto nodes() {
+        return this->template view<Components...>() | nodeTransform();
+    }
+
+    systems::EconomyConfig economy_config;
 
  private:
     bool to_tick = false;

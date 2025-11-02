@@ -32,9 +32,10 @@
 #include "common/components/ships.h"
 #include "common/components/units.h"
 #include "common/systems/economy/sysagent.h"
-#include "common/systems/economy/sysfactory.h"
+#include "common/systems/economy/sysproduction.h"
 #include "common/systems/economy/sysfinance.h"
 #include "common/systems/economy/sysinfrastructure.h"
+#include "common/systems/economy/sysinterplanetarytrade.h"
 #include "common/systems/economy/sysmarket.h"
 #include "common/systems/economy/sysmarketreset.h"
 #include "common/systems/economy/sysplanetarytrade.h"
@@ -47,9 +48,7 @@
 #include "common/systems/scriptrunner.h"
 #include "common/util/profiler.h"
 
-
 namespace cqsp::common::systems::simulation {
-
 
 Simulation::Simulation(Game& game) : m_game(game), m_universe(game.GetUniverse()) {
     AddSystem<SysScript>();
@@ -68,6 +67,7 @@ Simulation::Simulation(Game& game) : m_game(game), m_universe(game.GetUniverse()
     // AddSystem<SysAgent>();
     AddSystem<SysMarket>();
     AddSystem<SysPlanetaryTrade>();
+    AddSystem<SysInterplanetaryTrade>();
     AddSystem<history::SysMarketHistory>();
 
     // Movement
@@ -75,8 +75,6 @@ Simulation::Simulation(Game& game) : m_game(game), m_universe(game.GetUniverse()
 }
 
 void Simulation::Init() {
-    SysMarket::InitializeMarket(m_game);
-
     for (auto& sys : system_list) {
         sys->Init();
     }

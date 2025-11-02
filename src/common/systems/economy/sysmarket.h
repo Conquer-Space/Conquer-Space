@@ -16,7 +16,8 @@
  */
 #pragma once
 
-#include "common/components/economy.h"
+#include "common/components/market.h"
+#include "common/components/resource.h"
 #include "common/systems/isimulationsystem.h"
 
 namespace cqsp::common::systems {
@@ -26,13 +27,11 @@ class SysMarket : public ISimulationSystem {
     void DoSystem() override;
     int Interval() override { return components::StarDate::DAY; }
 
-    /// <summary>
-    /// To be called before the game starts
-    /// </summary>
-    /// <param name="game"></param>
-    static void InitializeMarket(Game& game);
+    void Init() override;
 
  private:
     void DeterminePrice(components::Market& market, entt::entity good_entity);
+
+    components::ResourceLedger base_prices;
 };
 }  // namespace cqsp::common::systems

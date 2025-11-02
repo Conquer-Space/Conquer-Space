@@ -30,3 +30,5 @@ tools/run-clang-tidy.py
 *.pdb
 
 *.editorconfig
+
+NodeEditor.json

@@ -1,53 +1,62 @@
 # This file is part of Conquer Space
-#
 [
     {
-        name: Ferrous Metal
-        identifier: fmetal
+        name: Crude Oil
+        identifier: crude_oil
+        volume: 0.148987 m3
+        mass: 136 kg
+        price: 100
+        tags: [
+            raw
+            fluid
+        ]
+    }
+    {
+        name: Silicates
+        identifier: silicates
         volume: 1 m3
-        mass: 7500 kg
-        # Initial price
-        price: 1500
+        mass: 1602 kg
+        price: 20
         tags: [
             raw
         ]
     }
     {
-        name: Noble Metal
-        identifier: nmetal
+        name: Iron
+        identifier: iron
         volume: 1 m3
-        mass: 7500 kg
-        price: 4500
-        tags: [
-            raw
-        ]
-    }
-    {
-        name: Rare Earth Metal
-        identifier: remetal
-        volume: 1 m3
-        mass: 7500 kg
-        price: 100000
-        tags: [
-            raw
-        ]
-    }
-    {
-        name: Plastic
-        identifier: plastic
-        volume: 1 m3
-        mass: 100 kg
+        mass: 7874 kg
         price: 100
         tags: [
             raw
         ]
     }
     {
-        name: Masonary
-        identifier: bricks
+        name: Copper
+        identifier: copper
         volume: 1 m3
-        mass: 2500 kg
-        price: 200
+        mass: 8960 kg
+        price: 7000
+        tags: [
+            raw
+        ]
+    }
+    {
+        name: Coal
+        identifier: coal
+        volume: 1 m3
+        mass: 1500 kg
+        price: 50
+        tags: [
+            raw
+        ]
+    }
+    {
+        name: Lumber
+        identifier: lumber
+        volume: 1 m3
+        mass: 1500 kg
+        price: 20
         tags: [
             raw
         ]

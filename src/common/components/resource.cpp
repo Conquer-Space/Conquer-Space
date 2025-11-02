@@ -260,6 +260,9 @@ bool ResourceLedger::operator<=(const ResourceLedger &ledger) {
     return MergeCompare(*this, ledger, 0, [](double a, double b) { return a <= b; });
 }
 
+/**
+ * Assigns values from the other ledger to this ledger.
+ */
 void ResourceLedger::AssignFrom(const ResourceLedger &ledger) {
     for (auto iterator = ledger.begin(); iterator != ledger.end(); iterator++) {
         (*this)[iterator->first] = iterator->second;
@@ -363,16 +366,34 @@ ResourceLedger ResourceLedger::SafeDivision(const ResourceLedger &other) {
     }
     return ledger;
 }
+
+ResourceLedger ResourceLedger::SafeDivision(const ResourceLedger &other, double value) {
+    ResourceLedger ledger;
+    ledger = *this;
+    for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
+        if (iterator->second == 0) {
+            ledger[iterator->first] = value;
+        } else if (ledger[iterator->first] == 0) {
+            ledger[iterator->first] = 0;
+        } else {
+            ledger[iterator->first] = ledger[iterator->first] / iterator->second;
+        }
+    }
+    return ledger;
+}
 /// <summary>
 /// Finds the smallest value in the Ledger.
 /// </summary>
-/// <returns>The smallest value in the ledger</returns>
+/// <returns>The smallest value in the ledger, returns 0 if none found</returns>
 double ResourceLedger::Min() {
-    double Minimum = this->begin()->second;
-    for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
-        if (iterator->second < Minimum) Minimum = iterator->second;
+    if (this->begin() == this->end()) {
+        return 0;
     }
-    return Minimum;
+    double minimum = this->begin()->second;
+    for (auto iterator = this->begin(); iterator != this->end(); iterator++) {
+        if (iterator->second < minimum) minimum = iterator->second;
+    }
+    return minimum;
 }
 
 /// <summary>
