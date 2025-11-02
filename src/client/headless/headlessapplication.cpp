@@ -55,23 +55,23 @@ int HeadlessApplication::run() {
         std::string line;
         std::getline(std::cin, line);
         // Now we parse the command line depending on the mode
-        if (!line.empty() && line[0] == '@') {
+        if (!line.empty() && (line[0] == '@' || (line[0] == '-' && line[1] == '-'))) {
             // Let's split the arguments
             // Let's just get the first space
-            std::vector<std::string> argument;
+            std::vector<std::string> arguments;
             if (line.find(' ') != std::string::npos) {
                 std::string arg_string = line.substr(line.find(' '), std::string::npos);
                 arg_string = util::strip(arg_string);
                 // Now we have to iterate forward and find any quotation marks...
-                argument = util::split(arg_string, " ");
+                arguments = util::split(arg_string, " ");
                 line = line.substr(0, line.find(' '));
             }
-            if (line == "@generate") {
+            if (IsCommandComment(line, arguments, "generate")) {
                 generate(*this);
                 // Now generate the simulation
-            } else if (line == "@loadluafile") {
-                loadluafile(*this, argument);
-            } else if (line == "@exit") {
+            } else if (IsCommandComment(line, arguments, "loadluafile")) {
+                loadluafile(*this, arguments);
+            } else if (IsCommandComment(line, arguments, "exit")) {
                 break;
             } else {
                 // Then it doesn't exist
@@ -100,4 +100,17 @@ void HeadlessApplication::InitSimulationPtr() {
 }
 
 Simulation& HeadlessApplication::GetSimulation() { return *(simulation); }
+
+bool HeadlessApplication::IsCommandComment(const std::string& line, const std::vector<std::string>& arguments, const std::string& command) {
+    if (line != "--") {
+        return false;
+    }
+    if (line == ("@" + command)) {
+        return true;
+    }
+    if (arguments.empty()) {
+        return false;
+    }
+    return (arguments[0] == command);
+}
 }  // namespace cqsp::client::headless
