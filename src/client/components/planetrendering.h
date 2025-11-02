@@ -22,4 +22,32 @@ namespace cqsp::client::components {
 struct PlanetTerrainRender {
     entt::entity resource;
 };
+
+struct Offset {
+    glm::vec3 offset;
+};
+
+struct TerrainTextureData {
+    asset::Texture* terrain_albedo = nullptr;
+    asset::Texture* heightmap = nullptr;
+
+    void DeleteData() {
+        delete terrain_albedo;
+        delete heightmap;
+    }
+};
+
+struct PlanetTexture {
+    asset::Texture* terrain = nullptr;
+    asset::Texture* normal = nullptr;
+    asset::Texture* roughness = nullptr;
+    asset::Texture* province_texture = nullptr;
+    std::vector<entt::entity> province_map;
+};
+
+struct OrbitMesh {
+    engine::Mesh_t orbit_mesh;
+
+    ~OrbitMesh() = default;
+};
 }  // namespace cqsp::client::components
