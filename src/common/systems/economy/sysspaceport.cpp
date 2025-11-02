@@ -75,11 +75,11 @@ void SysSpacePort::ProcessDockedShips(entt::entity space_port) {
     // Check for each of the docked ships
     for (entt::entity ship : docked_ships.docked_ships) {
         // Now unload the resources in the space port
-        if (!GetUniverse().any_of<components::ResourceLedger>(ship)) {
+        if (!GetUniverse().any_of<components::ResourceStockpile>(ship)) {
             continue;
         }
-        space_port_comp.output_resources += GetUniverse().get<components::ResourceLedger>(ship);
-        GetUniverse().remove<components::ResourceLedger>(ship);
+        space_port_comp.output_resources += GetUniverse().get<components::ResourceStockpile>(ship);
+        GetUniverse().remove<components::ResourceStockpile>(ship);
     }
 }
 }  // namespace cqsp::common::systems
