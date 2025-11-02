@@ -73,7 +73,7 @@ int HeadlessApplication::run() {
                 loadluafile(*this, arguments);
             } else if (IsCommandComment(line, arguments, "exit")) {
                 break;
-            } else {
+            } else if (line != "--") {
                 // Then it doesn't exist
                 std::cout << "Unknown command \'" << line << "\'!\n";
             }
