@@ -14,15 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#pragma once
 
-#include "common/systems/navy/sysnavy.h"
+#include <map>
+#include <string>
 
-#include <cmath>
+#include "engine/asset/asset.h"
+#include "engine/asset/vfs/vfs.h"
 
-#include "common/components/coordinates.h"
-#include "common/components/ships.h"
-#include "common/components/units.h"
-#include "common/systems/movement/sysmovement.h"
-namespace cqsp::common::systems {
-void SysNavyControl::DoSystem() { Universe &universe = GetUniverse(); }
-}  // namespace cqsp::common::systems
+namespace cqsp::asset {
+struct AssetEntry {
+    std::string path;
+    AssetType type;
+    AssetEntry() : path(""), type(AssetType::NONE) {}
+    AssetEntry(const std::string& _path, AssetType _type) : path(_path), type(_type) {}
+};
+
+/**
+ * A way for the program to quickly load all the files in the 
+ */
+class PackageIndex {
+ public:
+    explicit PackageIndex(const IVirtualDirectoryPtr& directory);
+
+    AssetEntry& operator[](const std::string& name) { return assets[name]; }
+
+ private:
+    std::string path;
+    bool valid;
+    std::map<std::string, AssetEntry> assets;
+};
+}  // namespace cqsp::asset

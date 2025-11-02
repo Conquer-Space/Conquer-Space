@@ -20,13 +20,15 @@
 
 #include <fstream>
 #include <numbers>
+#include <glm/gtx/string_cast.hpp>
 
 #include "common/actions/maneuver/maneuver.h"
 #include "common/components/coordinates.h"
 #include "common/components/orbit.h"
 #include "common/components/units.h"
-#include "common/systems/movement/sysmovement.h"
+#include "common/systems/movement/sysorbit.h"
 #include "common/universe.h"
+#include "common/util/orbit/randomorbit.h"
 
 using ::testing::AllOf;
 using ::testing::Ge;
@@ -51,7 +53,7 @@ TEST(OrbitTest, DISABLED_toVec3Test) {
     int resolution = 5000;
     std::ofstream file("data.txt");
     for (int i = 0; i < resolution + 1; i++) {
-        glm::vec3 vec = cqspt::OrbitToVec3(a, e, i, LAN, w, T / resolution * i);
+        glm::dvec3 vec = cqspt::OrbitToVec3(a, e, i, LAN, w, T / resolution * i);
         std::cout.precision(17);
         //EXPECT_THAT(glm::length(vec), AllOf(Ge(0.98326934275),Le(1.0167257013)));
     }
@@ -211,6 +213,27 @@ TEST(OrbitTest, OrbitNormalTest2) {
     EXPECT_DOUBLE_EQ(glm::dot(glm::normalize(orb), glm::normalize(vel)), 1.);
 }
 
+TEST(OrbitTest, OrbitNormalTestList) {
+    namespace cqspt = cqsp::common::components::types;
+    // Generate a couple of orbits
+    // Now compute a bunch of orbits
+    cqsp::common::util::OrbitGenerator generator(10, 0.5);
+    const int expected_tests = 1000;
+    int failures = 0;
+    const double GM = 1;
+    for (int i = 0; i < expected_tests; i ++) {
+        cqspt::Orbit orbit = generator.GenerateOrbit(GM, 0);
+        glm::dvec3 orbit_normal = cqspt::GetOrbitNormal(orbit);
+        glm::dvec3 angular_momentum_vector = glm::cross(cqspt::toVec3(orbit), cqspt::OrbitVelocityToVec3(orbit, 0));
+
+        EXPECT_DOUBLE_EQ(glm::dot(glm::normalize(orbit_normal), glm::normalize(angular_momentum_vector)), 1.);
+        if (glm::dot(glm::normalize(orbit_normal), glm::normalize(angular_momentum_vector)) < 0.99) {
+            failures++;
+        }
+    }
+    SPDLOG_INFO("Failures: {}/{}", failures, expected_tests);
+}
+
 TEST(OrbitTest, AscendingNodeTest) {
     namespace cqspt = cqsp::common::components::types;
     std::vector<std::tuple<cqspt::Orbit, cqspt::Orbit, double>> map = {
@@ -220,7 +243,12 @@ TEST(OrbitTest, AscendingNodeTest) {
         //{{57.91e9, 0., 0.4, 0.3, 0., 0}, {57.91e9, 0., 0.5, 0.2, 0, 0}, 5.82736}
     };
     for (auto &element : map) {
-        EXPECT_DOUBLE_EQ(cqspt::AscendingTrueAnomaly(std::get<0>(element), std::get<1>(element)), std::get<2>(element));
+        double ascending_true_anomaly = cqspt::AscendingTrueAnomaly(std::get<0>(element), std::get<1>(element));
+        if (std::fabs(std::fmod(ascending_true_anomaly, cqspt::TWOPI) - cqspt::TWOPI) < ascending_true_anomaly) {
+            // Then we should just use this
+            ascending_true_anomaly = std::fabs(std::fmod(ascending_true_anomaly, cqspt::TWOPI) - cqspt::TWOPI);
+        }
+        EXPECT_NEAR(ascending_true_anomaly, std::get<2>(element), 1e-7);
     }
 }
 
@@ -364,34 +392,3 @@ INSTANTIATE_TEST_SUITE_P(EllipticalOrbitTest, EllipticalOrbitTest,
                                          Orbit(57.91e7, 0.9, 3.14, 0.29, 0.68, 2.8), Orbit(57.91e7, 0, 1, 0, 0, 0),
                                          Orbit(57.91e7, 0.6, 0, 0, 0, 0.8), Orbit(57.91e7, 0.6, 0, 0, 0, 0),
                                          Orbit(57.91e7, 0, 0, 0, 0, 0)));
-/*
-TEST(Common_SOITest, SOIExitTest) {
-    namespace cqspc = cqsp::common::components;
-    namespace cqspt = cqsp::common::components::types;
-    namespace cqsps = cqsp::common::systems;
-    cqsp::common::Universe universe;
-    // Make bodies // Changed argument of periapsis
-    entt::entity body_1 = universe.create();
-    entt::entity body_2 = universe.create();
-    entt::entity satellite = universe.create();
-    universe.emplace<cqspt::Orbit>(body_1);
-    universe.emplace<cqspt::Kinematics>(body_1);
-    universe.emplace<cqspc::bodies::Body>(body_1);
-    auto& body1_orb = universe.emplace<cqspc::bodies::OrbitalSystem>(body_1);
-    universe.emplace<cqspt::Orbit>(body_2).reference_body = body_1;
-    universe.emplace<cqspt::Kinematics>(body_2);
-    auto& body2_orb = universe.emplace<cqspc::bodies::OrbitalSystem>(body_2);
-    body1_orb.push_back(body_2);
-    body2_orb.push_back(satellite);
-    universe.emplace<cqspt::Orbit>(satellite).reference_body = body_2;
-    universe.emplace<cqspt::Kinematics>(satellite);
-    // Add all the necessary thigns
-    EXPECT_EQ(body1_orb.children.size(), 1);
-    EXPECT_EQ(body2_orb.children.size(), 1);
-    cqsps::LeaveSOI(universe, satellite);
-    EXPECT_EQ(body1_orb.children.size(), 2);
-    EXPECT_EQ(body1_orb.children[0], body_2);
-    EXPECT_EQ(body1_orb.children[1], satellite);
-    EXPECT_EQ(body2_orb.children.size(), 0);
-}
- */

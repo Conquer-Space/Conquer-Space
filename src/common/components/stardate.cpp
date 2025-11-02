@@ -68,6 +68,6 @@ int StarDate::GetDay() {
 /**
  * @param offset The hour offset
  */
-int StarDate::GetHour(double offset) { return (int)((double)date / 60 + offset) % DAY; }
+int StarDate::GetHour(double offset) { return (int)((double)date / 60 + offset) % 24; }
 int StarDate::GetMinute() { return date % 60; }
 }  // namespace cqsp::common::components

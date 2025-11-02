@@ -111,12 +111,25 @@ struct Orbit {
     Orbit(kilometer semi_major_axis, double eccentricity, radian inclination, radian LAN, radian w, radian M0)
         : eccentricity(eccentricity),
           semi_major_axis(semi_major_axis),
-          inclination(inclination),
-          LAN(LAN),
+          inclination(std::fmod(inclination, PI)),
+          LAN(std::fmod(LAN, TWOPI)),
           w(w),
           M0(M0),
           v(M0),
-          epoch(0) {}
+          epoch(0),
+          reference_body(entt::null) {}
+
+    Orbit(kilometer semi_major_axis, double eccentricity, radian inclination, radian LAN, radian w, radian M0,
+          entt::entity reference)
+        : eccentricity(eccentricity),
+          semi_major_axis(semi_major_axis),
+          inclination(std::fmod(inclination, PI)),
+          LAN(std::fmod(LAN, TWOPI)),
+          w(w),
+          M0(M0),
+          v(M0),
+          epoch(0),
+          reference_body(reference) {}
 
     Orbit(const Orbit& orbit)
         : eccentricity(orbit.eccentricity),
@@ -149,12 +162,18 @@ struct Orbit {
     double GetPeriapsis() const { return semi_major_axis * (1 - eccentricity); }
 
     double TimeToTrueAnomaly(double v2) const;
+
+    double OrbitalVelocity();
+
+    double OrbitalVelocityAtTrueAnomaly(double true_anomaly);
+
+    std::string ToHumanString();
 };
 
 inline std::ostream& operator<<(std::ostream& outs, const Orbit& orb) {
-    return outs << "(" << orb.semi_major_axis << ", " << orb.eccentricity << ", " << orb.inclination << ", " << orb.LAN
-                << ", " << orb.w << ", " << orb.GM << ", " << orb.v << ", " << orb.epoch << ", "
-                << (uint32_t)orb.reference_body << ")";
+    return outs << "(a=" << orb.semi_major_axis << ", e=" << orb.eccentricity << ", i=" << orb.inclination
+                << ", LAN=" << orb.LAN << ", w=" << orb.w << ", GM=" << orb.GM << ", v=" << orb.v << ", M0=" << orb.M0
+                << ", t=" << orb.epoch << ", ref=" << (uint32_t)orb.reference_body << ")";
 }
 
 struct SetTrueAnomaly {
@@ -378,7 +397,10 @@ double GetHyperbolicAsymptopeAnomaly(double eccentricity);
 double FlightPathAngle(double eccentricity, double v);
 
 glm::dvec3 GetOrbitNormal(const Orbit& orbit);
-
+glm::dvec3 GetRadialVector(const Orbit& orbit);
+glm::dvec3 GetRadialVector(const Orbit& orbit, double true_anomaly);
+glm::dvec3 InvertOrbitalVector(const double LAN, const double i, const double w, const double v, const glm::dvec3& vec);
+double AngleWith(const Orbit& orbit, const Orbit& second_orbit);
 double TrueAnomalyFromVector(const Orbit& orbit, const glm::dvec3& vec);
 
 double AscendingTrueAnomaly(const Orbit& start, const Orbit& dest);

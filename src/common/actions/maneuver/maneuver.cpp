@@ -27,7 +27,8 @@ std::pair<glm::dvec3, double> CircularizeAtApoapsis(const Orbit& orbit) {
     const double new_velocity = GetCircularOrbitingVelocity(orbit.GM, orbit.GetApoapsis());
     // Get velocity at apogee
     const double old_velocity = OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetApoapsis());
-    return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), orbit.TimeToTrueAnomaly(PI));
+    double time = orbit.TimeToTrueAnomaly(PI);
+    return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), time);
 }
 
 std::pair<glm::dvec3, double> CircularizeAtPeriapsis(const Orbit& orbit) {
@@ -36,7 +37,8 @@ std::pair<glm::dvec3, double> CircularizeAtPeriapsis(const Orbit& orbit) {
     // Get velocity at apogee
     const double old_velocity = OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetPeriapsis());
     // This should go retrograde, so it should be negative
-    return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), orbit.TimeToTrueAnomaly(0));
+    double time = orbit.TimeToTrueAnomaly(0);
+    return std::make_pair(glm::dvec3(0, new_velocity - old_velocity, 0), time);
 }
 
 std::pair<glm::dvec3, double> SetApoapsis(const Orbit& orbit, double altitude) {
@@ -98,14 +100,20 @@ std::pair<glm::dvec3, double> SetCircularInclination(const Orbit& orbit, double 
     return std::make_pair(vector, orbit.TimeToTrueAnomaly(v_change));
 }
 
+/*
+* Computes maneuver to match
+* Note: This expects the orbit to 
+*/
 std::pair<glm::dvec3, double> MatchPlanes(const Orbit& orbit, const Orbit& target) {
     // Now compute the location we need to execute the impulse
     double taoan = AscendingTrueAnomaly(orbit, target);
+    double time_to_true_anomaly = orbit.TimeToTrueAnomaly(taoan);
+
     // Get orbit velocity at point to maintain orbit
     double v = OrbitVelocity(taoan, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
     // Calculate delta-v vector
+    double target_ta = GetTrueAnomaly(target, time_to_true_anomaly);
     double theta = glm::angle(glm::normalize(GetOrbitNormal(orbit)), glm::normalize(GetOrbitNormal(target)));
-
     glm::dvec3 vector = glm::dvec3(0, v * (cos(theta) - 1), v * sin(theta));
     return std::make_pair(vector, orbit.TimeToTrueAnomaly(taoan));
 }

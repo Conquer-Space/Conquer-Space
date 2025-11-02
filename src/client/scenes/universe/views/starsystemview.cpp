@@ -69,7 +69,7 @@ using asset::ShaderProgram_t;
 using asset::Texture;
 using client::components::PlanetTerrainRender;
 using client::components::PlanetTexture;
-using client::components::PlanetOrbit;
+using client::components::OrbitMesh;
 using client::components::Offset;
 using components::Habitation;
 using components::Name;
@@ -793,6 +793,15 @@ glm::vec3 SysStarSystemRenderer::CalculateObjectPos(const entt::entity& ent) {
     return ConvertPoint(pos);
 }
 
+glm::vec3 SysStarSystemRenderer::CalculateFutureObjectPos(const entt::entity& ent) {
+    if (!m_universe.all_of<types::FuturePosition>(ent)) {
+        return glm::vec3(0, 0, 0);
+    }
+    auto& kin = m_universe.get<types::FuturePosition>(ent);
+    const auto& pos = kin.position + kin.center;
+    return ConvertPoint(pos);
+}
+
 glm::vec3 SysStarSystemRenderer::CalculateCenteredObject(const glm::vec3& vec) { return vec - view_center; }
 
 glm::vec3 SysStarSystemRenderer::TranslateToNormalized(const glm::vec3& pos) {
@@ -1028,7 +1037,7 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
 
     // Generates orbits for satellites
     orbits_generated = 0;
-    for (auto body : m_universe.view<Orbit>(entt::exclude<PlanetOrbit>)) {
+    for (auto body : m_universe.view<Orbit>(entt::exclude<OrbitMesh>)) {
         GenerateOrbit(body);
         orbits_generated++;
     }
@@ -1038,6 +1047,11 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
         GenerateOrbit(body);
         m_universe.remove<bodies::DirtyOrbit>(body);
         orbits_generated++;
+    }
+    // Delete unnecessary orbit
+    for (entt::entity ship : m_universe.view<OrbitMesh, ships::Crash>()) {
+        // Then delete the orbit
+        m_universe.remove<OrbitMesh>(ship);
     }
 }
 
@@ -1247,7 +1261,7 @@ void SysStarSystemRenderer::GenerateOrbit(entt::entity body) {
     }
 
     // m_universe.remove<types::OrbitDirty>(body);
-    auto& line = m_universe.get_or_emplace<PlanetOrbit>(body);
+    auto& line = m_universe.get_or_emplace<OrbitMesh>(body);
     // Get the orbit line
     // Do the points
     line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);
@@ -1303,7 +1317,7 @@ void SysStarSystemRenderer::DrawAllOrbits() {
 }
 
 void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
-    if (!m_universe.any_of<PlanetOrbit>(entity)) {
+    if (!m_universe.any_of<OrbitMesh>(entity)) {
         return;
     }
     glm::vec3 center = glm::vec3(0, 0, 0);
@@ -1341,7 +1355,7 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
 
     //orbit_shader->Set("color", glm::vec4(1, 1, 1, 1));
     // Set to the center of the universe
-    auto& orbit = m_universe.get<PlanetOrbit>(entity);
+    auto& orbit = m_universe.get<OrbitMesh>(entity);
 
     orbit.orbit_mesh->Draw();
 }

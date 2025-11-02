@@ -14,23 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
-
-#include <string>
+#include "common/util/orbit/randomorbit.h"
 
 namespace cqsp::common::util {
-/// <summary>
-/// The path for where all the data of the game is stored, including logs, and other things
-/// </summary>
-/// <returns></returns>
-std::string GetCqspAppDataPath();
-std::string GetCqspExePath();
-/// <summary>
-///  This returns binaries/data
-/// </summary>
-/// <returns></returns>
-std::string GetCqspDataPath();
-std::string GetCqspTestDataPath();
-/// This should return Documents/cqsp
-std::string GetCqspSavePath();
+common::components::types::Orbit OrbitGenerator::GenerateOrbit(double GM, double time) {
+    auto pair = GenerateVectors();
+    return components::types::Vec3ToOrbit(pair.first, pair.second, GM, time);
+}
+
+/**
+ * Generates a position and velocity pair.
+ */
+std::pair<glm::dvec3, glm::dvec3> OrbitGenerator::GenerateVectors() {
+    return std::make_pair(RandomVector(position_distribution), RandomVector(velocity_distribution));
+}
+
+double OrbitGenerator::RandomValue(double range) {
+    std::uniform_real_distribution<> dist(-range, range);
+    return dist(gen);
+}
+
+glm::dvec3 OrbitGenerator::RandomVector(const glm::dvec3 &range) {
+    return glm::dvec3(RandomValue(range.x), RandomValue(range.y), RandomValue(range.z));
+}
 }  // namespace cqsp::common::util

@@ -27,7 +27,7 @@
 namespace cqsp::asset {
 NativeFileSystem::NativeFileSystem(std::string _root) : root(std::move(_root)) {}
 
-std::shared_ptr<IVirtualFile> NativeFileSystem::Open(const std::string& file_path, FileModes modes) {
+IVirtualFilePtr NativeFileSystem::Open(const std::string& file_path, FileModes modes) {
     std::string file_pos = file_path;
     // Remove initial '/' if it has it, or std::filesystem goes crazy and thinks that it's
     // at the root directory of the drive, not the root directory of the filesystem
@@ -59,13 +59,13 @@ std::shared_ptr<IVirtualFile> NativeFileSystem::Open(const std::string& file_pat
     }
 }
 
-void NativeFileSystem::Close(std::shared_ptr<IVirtualFile>& vf) {
+void NativeFileSystem::Close(IVirtualFilePtr& vf) {
     // Cast the pointer
     NativeFile* f = dynamic_cast<NativeFile*>(vf.get());
     f->file.close();
 }
 
-std::shared_ptr<IVirtualDirectory> NativeFileSystem::OpenDirectory(const std::string& dir) {
+IVirtualDirectoryPtr NativeFileSystem::OpenDirectory(const std::string& dir) {
     // get the directory
     std::string path = std::filesystem::absolute(std::filesystem::path(root) / dir).string();
     if (!std::filesystem::is_directory(path)) {
@@ -78,7 +78,7 @@ std::shared_ptr<IVirtualDirectory> NativeFileSystem::OpenDirectory(const std::st
         if (!dir_entry.is_regular_file()) {
             continue;
         }
-        // Replace the backslashes with forward slashes so that we keep it consistent
+        // Replace the backslashes with forward slashes so that we keep paths consistent across platforms
         std::string vfile_path =
             std::filesystem::relative(dir_entry.path(), std::filesystem::path(root) / path).string();
         std::replace(vfile_path.begin(), vfile_path.end(), '\\', '/');

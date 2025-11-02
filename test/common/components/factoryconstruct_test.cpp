@@ -40,7 +40,7 @@ TEST(FactoryConstuctTest, ConstructTest) {
 
 TEST(FactoryConstuctTest, ConstructExpectNoCrash) {
     cqsp::common::Universe universe;
-    cqsp::common::actions::CreateFactory(universe, entt::null, entt::null, 0);
-    cqsp::common::actions::CreateFactory(universe, universe.create(), entt::null, 0);
-    cqsp::common::actions::CreateFactory(universe, entt::null, universe.create(), 0);
+    EXPECT_TRUE(cqsp::common::actions::CreateFactory(universe, entt::null, entt::null, 0) == entt::null);
+    EXPECT_TRUE(cqsp::common::actions::CreateFactory(universe, universe.create(), entt::null, 0) == entt::null);
+    EXPECT_TRUE(cqsp::common::actions::CreateFactory(universe, entt::null, universe.create(), 0) == entt::null);
 }

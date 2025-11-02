@@ -764,6 +764,7 @@ void AssetLoader::LoadResources(Package& package, const std::string& package_mou
             asset_value = Hjson::Unmarshal(asset_data, dec_opt);
         } catch (Hjson::syntax_error& se) {
             ENGINE_LOG_WARN(se.what());
+            ENGINE_LOG_WARN("File: {}", resource_file->Path());
             // Then try again without the options
             dec_opt.duplicateKeyException = false;
             asset_value = Hjson::Unmarshal(asset_data, dec_opt);
@@ -783,7 +784,7 @@ void AssetLoader::LoadResourceHjsonFile(Package& package, const std::string& pac
 
         // Get the file
         std::string path;
-        // Sometimes it's in the root directory of the directory, which would make this display 2 forward
+        // Sometimes it's in the root directory of the filesystem, which would make this display 2 forward
         // slashes at a time, so this is to mitigate that.
         if (GetParentPath(resource_file_path).empty()) {
             path = package_mount_path + "/" + val["path"].to_string();
@@ -827,5 +828,52 @@ bool AssetLoader::HjsonPrototypeDirectory(Package& package, const std::string& p
 IVirtualFileSystem* AssetLoader::GetVfs(const std::string& path) {
     // Return native filesystem for now.
     return new NativeFileSystem(path);
+}
+
+/**
+* A helper function to load hjson assets without the need of any asset loader.
+*
+* This will load both a directory and/or a hjson file.
+* @param mount mount point
+* @param path to load from
+*/
+Hjson::Value LoadHjsonAsset(const cqsp::asset::IVirtualFileSystemPtr& mount, const std::string& path) {
+    Hjson::Value value;
+    Hjson::DecoderOptions dec_opt;
+    dec_opt.comments = false;
+
+    if (mount->IsDirectory(path)) {
+        // Load and append to assets.
+        auto dir = mount->OpenDirectory(path);
+        for (int i = 0; i < dir->GetSize(); i++) {
+            auto file = dir->GetFile(i);
+            Hjson::Value result;
+            // Since it's a directory, we will assume it's an array, and push back the values.
+            try {
+                result = Hjson::Unmarshal(ReadAllFromVFileToString(file.get()), dec_opt);
+                if (result.type() == Hjson::Type::Vector) {
+                    // Append all the values in place
+                    for (int k = 0; k < result.size(); k++) {
+                        value.push_back(result[k]);
+                    }
+                } else {
+                    // TODO(EhWhoAmI): Raise a non fatal error
+                }
+            } catch (Hjson::syntax_error& ex) {
+                // TODO(EhWhoAmI): Also raise a non fatal error
+                SPDLOG_ERROR("Unable to load asset");
+            }
+        }
+    } else {
+        auto file = mount->Open(path);
+        // Read the file
+        try {
+            value = Hjson::Unmarshal(ReadAllFromVFileToString(file.get()), dec_opt);
+        } catch (Hjson::syntax_error& ex) {
+            // TODO(EhWhoAmI): Raise a fatal error
+            SPDLOG_ERROR("Unable to load asset");
+        }
+    }
+    return value;
 }
 }  // namespace cqsp::asset

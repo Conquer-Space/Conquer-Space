@@ -36,6 +36,8 @@ class SysProvinceInformation : public SysUserInterface {
     void DemographicsTab();
     void IndustryTab();
     void SpacePortTab();
+    void SpacePortOrdersTab();
+    void SpacePortResourceTab();
     void LaunchTab();
     void DockedTab();
     void InfrastructureTab();

@@ -25,8 +25,6 @@
 /// </summary>
 GTEST_API_ int main(int argc, char **argv) {
     printf("Running main() from %s\n", __FILE__);
-    // Disable all logging
-    spdlog::set_level(spdlog::level::off);
 
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

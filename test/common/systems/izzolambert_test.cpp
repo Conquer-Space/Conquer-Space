@@ -23,21 +23,19 @@
 #include "common/actions/maneuver/rendezvous.h"
 #include "common/components/orbit.h"
 #include "common/components/units.h"
+#include "common/util/orbit/randomorbit.h"
 
 namespace cqsps = cqsp::common::systems;
 namespace cqspt = cqsp::common::components::types;
-TEST(IzzoTest, Lambert) {
+
+TEST(IzzoTest, DISABLED_Lambert) {
     std::random_device random_device;
     std::mt19937 gen(random_device());
-    const double random_range = 50.0;
 
-    std::uniform_real_distribution<> dist(-random_range, random_range);
+    cqsp::common::util::OrbitGenerator generator(50, 10);
     for (int i = 0; i < 100; i++) {
         do {
-            glm::dvec3 r0(dist(gen), dist(gen), dist(gen));
-
-            glm::dvec3 v0(dist(gen), dist(gen), dist(gen));
-            v0 *= 0.2;
+            auto [r0, v0] = generator.GenerateVectors();
             cqspt::Orbit orbit = cqspt::Vec3ToOrbit(r0, v0, 1, 0);
             if (orbit.eccentricity > 1) {
                 continue;

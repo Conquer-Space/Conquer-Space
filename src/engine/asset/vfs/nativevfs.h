@@ -62,8 +62,8 @@ class NativeFileSystem : public IVirtualFileSystem {
     bool Initialize() override { return true; }
 
     std::shared_ptr<IVirtualFile> Open(const std::string& path, FileModes) override;
-    void Close(std::shared_ptr<IVirtualFile>&) override;
-    std::shared_ptr<IVirtualDirectory> OpenDirectory(const std::string& dir) override;
+    void Close(IVirtualFilePtr&) override;
+    IVirtualDirectoryPtr OpenDirectory(const std::string& dir) override;
 
     bool IsFile(const std::string& path) override;
     bool IsDirectory(const std::string& path) override;

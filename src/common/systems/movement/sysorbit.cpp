@@ -14,12 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "common/systems/movement/sysmovement.h"
+#include "common/systems/movement/sysorbit.h"
 
 #include <cmath>
 #include <vector>
 
 #include <tracy/Tracy.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "common/actions/maneuver/commands.h"
 #include "common/components/coordinates.h"
@@ -76,35 +77,43 @@ void SysOrbit::LeaveSOI(const entt::entity& body, entt::entity& parent, Orbit& o
     commands::ProcessCommandQueue(GetUniverse(), body, components::Trigger::OnExitSOI);
 }
 
-void SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
+bool SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
     if (GetUniverse().any_of<Body>(body)) {
-        return;
+        return false;
     }
     auto& p_bod = GetUniverse().get<Body>(parent);
     auto& pos = GetUniverse().get<Kinematics>(body);
     if (GetUniverse().any_of<ships::Crash>(body)) {
-        pos.position = glm::vec3(0);
-        return;
+        pos.position = glm::dvec3(0);
+        // Also clear the command queue or something
+        if (GetUniverse().any_of<components::CommandQueue>(body)) {
+            GetUniverse().remove<components::CommandQueue>(body);
+        }
+        return true;
     }
 
     // Next time we need to account for the atmosphere
     if (glm::length(pos.position) > p_bod.radius) {
-        return;
+        return false;
     }
     // Check if there is a command
     if (commands::ProcessCommandQueue(GetUniverse(), body, components::Trigger::OnCrash)) {
-        SPDLOG_INFO("Executed maneuver on crash");
+        SPDLOG_INFO("Executed command on crash");
     } else {
         // Crash
-        SPDLOG_INFO("Object {} collided with the ground", (uint64_t)body);
+        SPDLOG_INFO("Object {} collided with the ground", util::GetName(GetUniverse(), body));
         // Then remove from the tree or something like that
         GetUniverse().get_or_emplace<ships::Crash>(body);
         GetUniverse().get_or_emplace<bodies::DirtyOrbit>(body);
-        pos.position = glm::vec3(0);
+        pos.position = glm::dvec3(0);
         orb.semi_major_axis = 0;
     }
+    return true;
 }
 
+/**
+ * Adds an impulse in the body centered inertial frame
+ */
 void SysOrbit::CalculateImpulse(types::Orbit& orb, entt::entity body, entt::entity parent) {
     if (GetUniverse().any_of<types::Impulse>(body)) {
         // Then add to the orbit the speed.
@@ -130,7 +139,7 @@ void SysOrbit::UpdateCommandQueue(Orbit& orb, entt::entity body, entt::entity pa
     }
     // Check if the current date is beyond the universe date
     auto& queue = GetUniverse().get<components::CommandQueue>(body);
-    if (queue.maneuvers.empty()) {
+    if (queue.empty()) {
         return;
     }
     auto& command = queue.maneuvers.front();
@@ -140,8 +149,14 @@ void SysOrbit::UpdateCommandQueue(Orbit& orb, entt::entity body, entt::entity pa
     if (GetUniverse().date.ToSecond() - command.time > Interval()) {
         SPDLOG_INFO("Negative time? {}", GetUniverse().date.ToSecond() - command.time);
     }
+    if (GetUniverse().any_of<components::ships::Crash>(body)) {
+        // If crashed
+        return;
+    }
     // Then execute the command
     orb = types::ApplyImpulse(orb, command.delta_v, command.time);
+    // Get the difference in orbit
+
     GetUniverse().emplace_or_replace<components::bodies::DirtyOrbit>(body);
     // Check if the next command is something, and then execute it
     queue.maneuvers.pop_front();
@@ -154,21 +169,28 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     if (!GetUniverse().valid(body)) {
         return;
     }
-
+    // Check if the body has crashed
+    if (GetUniverse().any_of<ships::Crash>(body)) {
+        return;
+    }
     auto& orb = GetUniverse().get<types::Orbit>(body);
 
     UpdateCommandQueue(orb, body, parent);
 
     types::UpdateOrbit(orb, GetUniverse().date.ToSecond());
     auto& pos = GetUniverse().get_or_emplace<types::Kinematics>(body);
+
+    // Set our current true anomaly for debugging purposes
     if (GetUniverse().any_of<types::SetTrueAnomaly>(body)) {
         orb.v = GetUniverse().get<types::SetTrueAnomaly>(body).true_anomaly;
         // Set new mean anomaly at epoch
         GetUniverse().remove<types::SetTrueAnomaly>(body);
     }
+
     pos.position = types::toVec3(orb);
     pos.velocity = types::OrbitVelocityToVec3(orb, orb.v);
 
+    glm::dvec3 future_center = glm::dvec3(0, 0, 0);
     if (parent != entt::null) {
         auto& p_pos = GetUniverse().get_or_emplace<types::Kinematics>(parent);
         // If distance is above SOI, then be annoyed
@@ -177,19 +199,31 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
             LeaveSOI(body, parent, orb, pos, p_pos);
         }
 
-        CrashObject(orb, body, parent);
+        // If it has crashed it is unlikely to have it's own orbital system, and even if it does
+        // everything on that orbital system likely crashed as well
+        if (CrashObject(orb, body, parent)) {
+            return;
+        }
 
         CalculateImpulse(orb, body, parent);
         pos.center = p_pos.center + p_pos.position;
+
+        if (GetUniverse().any_of<types::FuturePosition>(parent)) {
+            auto& future_pos = GetUniverse().get<types::FuturePosition>(parent);
+            future_center = future_pos.center + future_pos.position;
+        }
         if (EnterSOI(parent, body)) {
+            //auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
+            //pause_opt.to_tick = false;
             SPDLOG_INFO("Entered SOI");
         }
     }
 
+    // If they're crashed then we don't care about the future position
     auto& future_pos = GetUniverse().get_or_emplace<types::FuturePosition>(body);
     future_pos.position =
         types::OrbitTimeToVec3(orb, GetUniverse().date.ToSecond() + components::StarDate::TIME_INCREMENT);
-    future_pos.center = pos.center;
+    future_pos.center = future_center;
 
     if (!GetUniverse().any_of<components::bodies::OrbitalSystem>(body)) {
         return;
@@ -218,7 +252,6 @@ void SysSurface::DoSystem() {
 
 void SysPath::DoSystem() {
     ZoneScoped;
-
     Universe& universe = GetUniverse();
 
     auto bodies = universe.view<types::MoveTarget, Kinematics>(entt::exclude<Orbit>);
@@ -258,12 +291,20 @@ bool SysOrbit::EnterSOI(const entt::entity& parent, const entt::entity& body) {
         const auto& target_position = GetUniverse().get<Kinematics>(entity);
         if (glm::distance(target_position.position, pos.position) <= body_comp.SOI) {
             // Calculate position
+            SPDLOG_INFO("Pre enter position: {}", glm::to_string(pos.position - target_position.position));
+            SPDLOG_INFO("Pre enter velocity: {}", glm::to_string(pos.velocity - target_position.velocity));
+             
             orb = types::Vec3ToOrbit(pos.position - target_position.position, pos.velocity - target_position.velocity,
                                      body_comp.GM, GetUniverse().date.ToSecond());
+            SPDLOG_INFO("Post enter SOI maneuver: {}", orb.ToHumanString());
             orb.reference_body = entity;
             // Calculate position, and change the thing
             pos.position = types::toVec3(orb);
+            pos.center = target_position.position + target_position.center;
             pos.velocity = types::OrbitVelocityToVec3(orb, orb.v);
+            SPDLOG_INFO("Post enter position: {}", glm::to_string(pos.position));
+            SPDLOG_INFO("Post enter velocity: {}", glm::to_string(pos.velocity));
+
             // Then change SOI
             GetUniverse().get_or_emplace<OrbitalSystem>(entity).push_back(body);
             auto& vec = GetUniverse().get<OrbitalSystem>(parent).children;
