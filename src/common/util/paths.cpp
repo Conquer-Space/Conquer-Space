@@ -146,7 +146,6 @@ std::string GetCqspTestDataPath() {
 #if defined(_MSC_VER)
     return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) / ".." / ".." / ".." / ".." / "binaries" /
                                       "data").string();
-        .string();
 #else
     return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) / ".." / ".." / ".." / "binaries" /
                                       "data").string();
