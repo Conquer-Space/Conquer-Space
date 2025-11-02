@@ -51,7 +51,7 @@ void SysInterplanetaryTrade::DoSystem() {
             // Go through vector and pop the stack
             for (auto& order : market_orders) {
                 // Add the market orders to the space port and then delete some of the goods
-                space_port_component.deliveries[order.target].push_back(
+                space_port_component.deliveries[order.target].emplace_back(
                     components::infrastructure::TransportedGood(order, good));
                 order.amount = 0;
             }

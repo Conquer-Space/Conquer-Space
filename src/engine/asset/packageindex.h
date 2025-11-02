@@ -35,7 +35,7 @@ struct AssetEntry {
  */
 class PackageIndex {
  public:
-    explicit PackageIndex(IVirtualDirectoryPtr directory);
+    explicit PackageIndex(const IVirtualDirectoryPtr& directory);
 
     AssetEntry& operator[](const std::string& name) { return assets[name]; }
 

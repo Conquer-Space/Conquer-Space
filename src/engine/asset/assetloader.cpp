@@ -837,7 +837,7 @@ IVirtualFileSystem* AssetLoader::GetVfs(const std::string& path) {
 * @param mount mount point
 * @param path to load from
 */
-Hjson::Value LoadHjsonAsset(cqsp::asset::IVirtualFileSystemPtr mount, std::string path) {
+Hjson::Value LoadHjsonAsset(const cqsp::asset::IVirtualFileSystemPtr& mount, const std::string& path) {
     Hjson::Value value;
     Hjson::DecoderOptions dec_opt;
     dec_opt.comments = false;
@@ -861,6 +861,7 @@ Hjson::Value LoadHjsonAsset(cqsp::asset::IVirtualFileSystemPtr mount, std::strin
                 }
             } catch (Hjson::syntax_error& ex) {
                 // TODO(EhWhoAmI): Also raise a non fatal error
+                SPDLOG_ERROR("Unable to load asset");
             }
         }
     } else {
@@ -870,6 +871,7 @@ Hjson::Value LoadHjsonAsset(cqsp::asset::IVirtualFileSystemPtr mount, std::strin
             value = Hjson::Unmarshal(ReadAllFromVFileToString(file.get()), dec_opt);
         } catch (Hjson::syntax_error& ex) {
             // TODO(EhWhoAmI): Raise a fatal error
+            SPDLOG_ERROR("Unable to load asset");
         }
     }
     return value;

@@ -479,10 +479,11 @@ std::string Orbit::ToHumanString() {
     ss << "Periapsis:                  " << GetPeriapsis() << " km\n";
     ss << "Apoapsis:                   " << GetApoapsis() << " km\n";
 
-    if (reference_body != entt::null)
+    if (reference_body != entt::null) {
         ss << "Reference Body Entity:      " << static_cast<uint32_t>(reference_body) << "\n";
-    else
+    } else {
         ss << "Reference Body:             None\n";
+    }
 
     return ss.str();
 }

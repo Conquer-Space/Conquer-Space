@@ -21,7 +21,7 @@
 #include "engine/enginelogger.h"
 
 namespace cqsp::asset {
-PackageIndex::PackageIndex(IVirtualDirectoryPtr directory) : valid(false) {
+PackageIndex::PackageIndex(const IVirtualDirectoryPtr& directory) : valid(false) {
     // Load the package information
     Hjson::DecoderOptions dec_opt;
     dec_opt.comments = false;

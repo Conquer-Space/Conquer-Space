@@ -28,14 +28,15 @@
 #include "common/actions/maneuver/commands.h"
 #include "common/actions/maneuver/maneuver.h"
 #include "common/actions/shiplaunchaction.h"
+#include "common/components/ships.h"
 #include "common/game.h"
 #include "common/loading/hjsonloader.h"
 #include "common/loading/planetloader.h"
-#include "common/simulation.cpp"
+#include "common/simulation.h"
 #include "common/util/paths.h"
+#include "engine/asset/assetloader.h"
 #include "engine/asset/packageindex.h"
 #include "engine/asset/vfs/nativevfs.h"
-#include "engine/asset/assetloader.h"
 
 class ManeuverTestSimulation : public cqsp::common::systems::simulation::Simulation {
  public:
@@ -51,8 +52,8 @@ struct SysOrbitTest : public ::testing::Test {
     // Can be omitted if not needed.
     static void SetUpTestSuite() {
         std::filesystem::path data_path(cqsp::common::util::GetCqspTestDataPath());
-        std::shared_ptr<cqsp::asset::NativeFileSystem> vfs_shared_ptr = std::shared_ptr<cqsp::asset::NativeFileSystem>(
-            new cqsp::asset::NativeFileSystem((data_path / "core").string()));
+        std::shared_ptr<cqsp::asset::NativeFileSystem> vfs_shared_ptr = std::make_shared<cqsp::asset::NativeFileSystem>(
+            cqsp::asset::NativeFileSystem((data_path / "core").string()));
         // Initialize a few planets
         // Load the core package
         cqsp::asset::PackageIndex index(vfs_shared_ptr->OpenDirectory(""));
@@ -114,7 +115,7 @@ struct SysOrbitTest : public ::testing::Test {
         }
     }
 
-    SysOrbitTest() : game(), universe(game.GetUniverse()), simulation(game) { simulation.CreateSystems(); }
+    SysOrbitTest() : universe(game.GetUniverse()), simulation(game) { simulation.CreateSystems(); }
 };
 
 Hjson::Value SysOrbitTest::planets_hjson;
@@ -131,14 +132,16 @@ TEST_F(SysOrbitTest, BasicOrbitTest) {
     Tick(10000);
 }
 
-class PlaneMatchTests : public SysOrbitTest,
-                        public testing::WithParamInterface<
-          std::tuple<cqsp::common::components::types::Orbit, cqsp::common::components::types::Orbit, double>> {}; // Chaser orbit, target orbit, and precision
+class PlaneMatchTests
+    : public SysOrbitTest,
+      public testing::WithParamInterface<
+          std::tuple<cqsp::common::components::types::Orbit, cqsp::common::components::types::Orbit, double>> {
+};  // Chaser orbit, target orbit, and precision
 
 INSTANTIATE_TEST_SUITE_P(
     PlaneMatchingTests, PlaneMatchTests,
     testing::Values(std::tuple(cqsp::common::components::types::Orbit(6371 + 500., 0.00001, 0, 0, 0.1, 0),
-                                   cqsp::common::components::types::Orbit(6371 + 500., 0.00001, 0.2, 0.8, 0.1, 0), 0.0001),
+                               cqsp::common::components::types::Orbit(6371 + 500., 0.00001, 0.2, 0.8, 0.1, 0), 0.0001),
                     std::tuple(cqsp::common::components::types::Orbit(10000, 0.00001, 0, 0, 0.1, 0),
                                cqsp::common::components::types::Orbit(10000, 0.00001, 0.2, 0.8, 0.1, 0), 0.0001),
                     std::tuple(cqsp::common::components::types::Orbit(50000, 0.00001, 0, 0, 0.1, 0),
@@ -160,7 +163,8 @@ INSTANTIATE_TEST_SUITE_P(
                     std::tuple(cqsp::common::components::types::Orbit(25000, 0.00001, 5.4, 5.8, 0.1, 0),
                                cqsp::common::components::types::Orbit(50000, 0.00001, 0.2, 0.8, 0.1, 0), 0.0001),
                     std::tuple(cqsp::common::components::types::Orbit(7000, 0.00001, 5.4, 5.8, 0.1, 1.3),
-                               cqsp::common::components::types::Orbit(380000, 0.4, 0.2, 0.8, 0.1, 0), 0.001))); // This one is not as precise as before, but still is reasonably precise
+                               cqsp::common::components::types::Orbit(380000, 0.4, 0.2, 0.8, 0.1, 0),
+                               0.001)));  // This one is not as precise as before, but still is reasonably precise
 
 TEST_P(PlaneMatchTests, MatchPlaneTest) {
     auto& earth_body_component = universe.get<cqsp::common::components::bodies::Body>(earth);
