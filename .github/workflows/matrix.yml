@@ -69,6 +69,9 @@ jobs:
       run: |
         cmake --build build --parallel --config ${{ matrix.config }} -- -j1
 
+    - name: Smoketests
+      run: ./binaries/bin/Conquer-Space --headless < tools/smoketests/smoketest.lua
+
     - name: Tests
       run: |
         ctest -V --schedule-random --progress --output-on-failure --parallel --no-tests=error --build-config ${{ matrix.config }} --test-dir build/test
@@ -112,6 +115,11 @@ jobs:
     - name: Build Conquer Space
       run: |
         cmake --build build --parallel --config ${{ matrix.config }}
+
+    - name: Run Smoketests
+      if: ${{ matrix.config == 'Release'}}
+      run: |
+        "binaries/bin/Conquer-Space" --headless < tools/smoketests/smoketest.lua
 
     - name: Run Tests
       run: ctest -V --schedule-random --progress --output-on-failure --parallel --no-tests=error --build-config ${{ matrix.config }} --test-dir build/test
