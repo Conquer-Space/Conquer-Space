@@ -68,6 +68,9 @@ using asset::ShaderDefinition;
 using asset::ShaderProgram_t;
 using asset::Texture;
 using client::components::PlanetTerrainRender;
+using client::components::PlanetTexture;
+using client::components::PlanetOrbit;
+using client::components::Offset;
 using components::Habitation;
 using components::Name;
 
@@ -86,35 +89,6 @@ SysStarSystemRenderer::SysStarSystemRenderer(common::Universe& _u, engine::Appli
       view_center(glm::vec3(1, 1, 1)),
       sun_color(glm::vec3(10, 10, 10)) {}
 
-namespace {
-struct Offset {
-    glm::vec3 offset;
-};
-
-struct TerrainTextureData {
-    Texture* terrain_albedo = nullptr;
-    Texture* heightmap = nullptr;
-
-    void DeleteData() {
-        delete terrain_albedo;
-        delete heightmap;
-    }
-};
-
-struct PlanetTexture {
-    Texture* terrain = nullptr;
-    Texture* normal = nullptr;
-    Texture* roughness = nullptr;
-    Texture* province_texture = nullptr;
-    std::vector<entt::entity> province_map;
-};
-
-struct PlanetOrbit {
-    engine::Mesh_t orbit_mesh;
-
-    ~PlanetOrbit() = default;
-};
-}  // namespace
 
 void SysStarSystemRenderer::Initialize() {
     InitializeMeshes();

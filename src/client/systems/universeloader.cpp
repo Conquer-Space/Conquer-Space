@@ -17,7 +17,7 @@
 #include "client/systems/universeloader.h"
 
 #include "client/systems/assetloading.h"
-#include "client/systems/savegame.h"
+#include "common/util/save/savegame.h"
 #include "common/systems/sysuniversegenerator.h"
 
 namespace cqsp::client {

@@ -16,8 +16,11 @@
  */
 #pragma once
 
-#include <string>
+#include <string_view>
 
-namespace cqsp::util {
-std::string strip(const std::string& inpt);
-}  // namespace cqsp::util
+#include "common/universe.h"
+
+namespace cqsp::common::save {
+void save_game(Universe& universe);
+void load_game(Universe& universe, std::string_view directory);
+}  // namespace cqsp::client::save
