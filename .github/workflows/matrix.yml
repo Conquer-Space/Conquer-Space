@@ -7,7 +7,7 @@ on:
 jobs:
   skip-duplicates:
     # continue-on-error: true # Uncomment once integration is finished
-    runs-on: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ubuntu-latest
     # Map a step output to a job output
     outputs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
@@ -30,7 +30,7 @@ jobs:
       matrix:
         config: [Release, Debug]
         compiler: [gcc, clang]
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, ubuntu-24.04-arm]
 
     name: Ubuntu with ${{ matrix.compiler }} (${{ matrix.config }})
     runs-on: ${{ matrix.os }}
@@ -91,7 +91,8 @@ jobs:
     strategy:
       matrix:
         config: [Release, Debug]
-    runs-on: [windows-latest, windows-11-arm]
+        os: [windows-latest, windows-11-arm]
+    runs-on: ${{matrix.os}}
     name: Windows (${{ matrix.config }})
     steps:
     - uses: actions/checkout@v4
@@ -129,7 +130,7 @@ jobs:
     - uses: actions/upload-artifact@v4
       continue-on-error: true
       with:
-        name: Conquer-Space_Windows_${{ matrix.config }}_${{ github.run_number }}
+        name: Conquer-Space_${{matrix.os}}_${{ matrix.config }}_b${{ github.run_number }}
         path: |
           binaries
 
