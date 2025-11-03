@@ -7,7 +7,7 @@ on:
 jobs:
   skip-duplicates:
     # continue-on-error: true # Uncomment once integration is finished
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest, ubuntu-24.04-arm]
     # Map a step output to a job output
     outputs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
@@ -91,7 +91,7 @@ jobs:
     strategy:
       matrix:
         config: [Release, Debug]
-    runs-on: [windows-latest]
+    runs-on: [windows-latest, windows-11-arm]
     name: Windows (${{ matrix.config }})
     steps:
     - uses: actions/checkout@v4
