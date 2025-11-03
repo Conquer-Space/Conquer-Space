@@ -17,6 +17,7 @@
 #include "turnsavewindow.h"
 
 #include "client/components/clientctx.h"
+
 namespace cqsp::client::systems::rmlui {
 TurnSaveWindow::~TurnSaveWindow() {
     document->RemoveEventListener(Rml::EventId::Click, &listener);
@@ -44,6 +45,7 @@ void TurnSaveWindow::Update(double delta_time) {
         }
         is_paused = pause_opt.to_tick;
     }
+    // Tick once 
 }
 
 void TurnSaveWindow::OpenDocument() {

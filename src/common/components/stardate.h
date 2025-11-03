@@ -17,6 +17,7 @@
 #pragma once
 
 #include <string>
+#include <cstdint>
 
 namespace cqsp::common::components {
 /// <summary>
@@ -47,7 +48,8 @@ class StarDate {
     // How many seconds a tick is
     static const int TIME_INCREMENT = 60;
 
-    static const int HOUR = 1;
+    static const int MINUTE = 1;
+    static const int HOUR = 60 * MINUTE;
     static const int DAY = 24 * HOUR;
     static const int WEEK = DAY * 7;
 
@@ -55,10 +57,10 @@ class StarDate {
 
     void IncrementDate() { date++; }
 
-    int GetDate() { return date; }
+    uint64_t GetDate() { return date; }
 
-    double ToSecond() { return date * TIME_INCREMENT; }
-    double ToDay() { return date / (float)1440.; }
+    double ToSecond() { return (double)date * TIME_INCREMENT; }
+    double ToDay() { return date / (float)DAY; }
 
     std::string ToString();
     std::string ToString(double offset);
@@ -74,8 +76,9 @@ class StarDate {
     double operator()() { return ToSecond(); }
 
  private:
-    // The date is in minutes
-    unsigned int date = -1;
+    // Time in minutes since the start date
+    // This value is set to -1 since we will need to 0th tick to initialize everything properly
+    uint64_t date = -1;
 
     static const int start_date = 2000;
 };

@@ -76,10 +76,20 @@ void SpaceshipWindow::DoUI(int delta_time) {
             double r = orbit.GetOrbitingRadius();
             double p = GetUniverse().get<bodies::Body>(orbit.reference_body).radius;
             p = 0;
-            ImGui::TextFmt("Altitude: {} km", (r - p));
+            ImGui::TextFmt("Altitude: {:.1f} km", (r - p));
             ImGui::TextFmt("Periapsis: {:<10} km ({:.1f} s)", orbit.GetPeriapsis() - p, orbit.TimeToTrueAnomaly(0));
+            if (ImGui::IsItemHovered()) {
+                ImGui::BeginTooltip();
+                ImGui::TextFmt("{:.2f} hours", orbit.TimeToTrueAnomaly(0) / (60 * 60));
+                ImGui::EndTooltip();
+            }
             ImGui::TextFmt("Apoapsis: {:<10} km ({:.1f} s)", orbit.GetApoapsis() - p,
                            orbit.TimeToTrueAnomaly(common::components::types::PI));
+            if (ImGui::IsItemHovered()) {
+                ImGui::BeginTooltip();
+                ImGui::TextFmt("{:.2f} hours", orbit.TimeToTrueAnomaly(common::components::types::PI) / (60 * 60));
+                ImGui::EndTooltip();
+            }
         }
     }
     if (GetUniverse().all_of<Kinematics>(body) && ImGui::CollapsingHeader("Orbital Vectors")) {
@@ -192,7 +202,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
         auto& target = GetUniverse().get<Orbit>(selected);
 
         // Get distance from target
-        glm::vec3 target_distance =
+        glm::dvec3 target_distance =
             GetUniverse().get<Kinematics>(selected).position - GetUniverse().get<Kinematics>(body).position;
         ImGui::TextFmt("Distance to target: {}", glm::length(target_distance));
         if (ImGui::Button("Rendez-vous!")) {
@@ -206,7 +216,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
         }
         if (ImGui::Button("Match Planes")) {
             auto maneuver = cqsp::common::systems::MatchPlanes(orbit, target);
-            common::systems::commands::PushManeuvers(GetUniverse(), body, {maneuver});
+            common::systems::commands::PushManeuver(GetUniverse(), body, maneuver);
         }
         ImGui::TextFmt("Phase angle: {}", cqsp::common::components::types::CalculatePhaseAngle(
                                               orbit, target, GetUniverse().date.ToSecond()));
@@ -235,6 +245,9 @@ void SpaceshipWindow::DoUI(int delta_time) {
     }
     if (ImGui::CollapsingHeader("Moon Transfers")) {
         auto& o_system = GetUniverse().get<bodies::OrbitalSystem>(orbit.reference_body);
+        double angle =
+            common::components::types::AngleWith(orbit, GetUniverse().get<types::Orbit>(orbit.reference_body));
+        ImGui::TextFmt("Angle: {}", angle * 180 / types::PI);
         static entt::entity selected = entt::null;
         if (selected == entt::null) {
             ImGui::BeginDisabled(true);

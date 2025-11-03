@@ -23,16 +23,15 @@
 #include "client/scenes/objecteditor/sysfieldviewer.h"
 #include "client/scenes/universe/interface/debug/sysdebuggui.h"
 #include "client/scenes/universe/interface/imguiinterface.h"
-#include "client/scenes/universe/interface/sysplanetmarketinformation.h"
 #include "client/scenes/universe/interface/orbitfilter.h"
 #include "client/scenes/universe/interface/provincewindow.h"
 #include "client/scenes/universe/interface/spaceshipwindow.h"
 #include "client/scenes/universe/interface/sysevent.h"
 #include "client/scenes/universe/interface/syspausemenu.h"
+#include "client/scenes/universe/interface/sysplanetmarketinformation.h"
 #include "client/scenes/universe/interface/sysstarsystemtree.h"
 #include "client/scenes/universe/interface/systechviewer.h"
 #include "client/scenes/universe/interface/turnsavewindow.h"
-#include "client/systems/syscommand.h"
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
@@ -70,8 +69,9 @@ void UniverseScene::Init() {
     ZoneScoped;
 
     simulation = std::make_unique<Simulation>(dynamic_cast<ConquerSpace*>(GetApp().GetGame())->GetGame());
+    simulation->CreateSystems();
 
-    system_renderer = new systems::SysStarSystemRenderer(GetUniverse(), GetApp());
+    system_renderer = std::make_unique<systems::SysStarSystemRenderer>(GetUniverse(), GetApp());
     system_renderer->Initialize();
 
     GetUniverse().ctx().emplace<client::ctx::PauseOptions>();
@@ -84,7 +84,7 @@ void UniverseScene::Init() {
     AddUISystem<systems::SysStarSystemTree>();
     AddUISystem<systems::SysPauseMenu>();
     AddUISystem<systems::SysDebugMenu>();
-    //AddUISystem<cqsps::SysCommand>();
+
     AddUISystem<systems::SpaceshipWindow>();
     //AddUISystem<cqsps::SysFieldViewer>();
     //AddUISystem<cqsps::SysTechnologyProjectViewer>();

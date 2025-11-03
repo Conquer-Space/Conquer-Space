@@ -18,7 +18,9 @@
 
 #include <algorithm>
 #include <cassert>
+#include <iomanip>
 #include <iostream>
+#include <sstream>
 
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/projection.hpp>
@@ -119,6 +121,7 @@ Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const 
         v = 0;
         M0 = 0;
     }
+
     Orbit orb;
     orb.semi_major_axis = sma;
     orb.eccentricity = e;
@@ -261,6 +264,9 @@ radian EccentricAnomaly(double v, double e) { return 2 * atan(tan(v / 2) * sqrt(
 
 radian HyperbolicAnomaly(double v, double e) { return 2 * atanh(tan(v / 2) * sqrt((e - 1) / (e + 1))); }
 
+/**
+ * Updates orbit's true anomaly
+ */
 void UpdateOrbit(Orbit& orb, const second& time) {
     // Get the thingy
     if (orb.eccentricity < 1) {
@@ -299,11 +305,14 @@ glm::dvec3 CalculateVelocityElliptic(const double& E, const kilometer& r, const 
     return ((sqrt(GM * a) / r) * glm::dvec3(-sin(E), sqrt(1 - e * e) * cos(E), 0));
 }
 
+/*
+ * Adds an impulse in the reference frame of the orbit w.r.t. the orbiting body
+*/
 Orbit ApplyImpulse(const Orbit& orbit, const glm::dvec3& impulse, double time) {
     // Calculate v at epoch
     // Move the orbit
     const double v = GetTrueAnomaly(orbit, time);
-    const glm::dvec3& norm_impulse = ConvertToOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, v, impulse);
+    const glm::dvec3 norm_impulse = ConvertToOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, v, impulse);
     const glm::dvec3 position = toVec3(orbit, v);
     const glm::dvec3 velocity = OrbitVelocityToVec3(orbit, v);
 
@@ -368,13 +377,11 @@ double FlightPathAngle(double eccentricity, double v) {
 }
 
 glm::dvec3 GetOrbitNormal(const Orbit& orbit) {
-    return glm::dquat {glm::dvec3(0, 0, orbit.LAN)} * glm::dquat {glm::dvec3(orbit.inclination, 0, 0)} *
-           glm::dquat {glm::dvec3(0, 0, orbit.w)} * glm::dvec3(0, 0, 1);
+    return glm::normalize(glm::cross(glm::normalize(toVec3(orbit)), glm::normalize(OrbitVelocityToVec3(orbit, 0))));
 }
 
 double TrueAnomalyFromVector(const Orbit& orbit, const glm::dvec3& vec) {
     // Get the intersection of this orbit?
-    //auto projected = glm::proj(vec, GetOrbitNormal(orbit));
     auto periapsis = toVec3(orbit, 0);
     double angle = glm::angle(glm::normalize(vec), glm::normalize(periapsis));
     // Shamelessly stolen from mechjeb
@@ -427,5 +434,57 @@ double Orbit::TimeToTrueAnomaly(double v2) const {
         }
         return (t);
     }
+}
+
+double Orbit::OrbitalVelocity() { return OrbitVelocity(v, eccentricity, semi_major_axis, GM); }
+
+double Orbit::OrbitalVelocityAtTrueAnomaly(double true_anomaly) {
+    return OrbitVelocity(true_anomaly, eccentricity, semi_major_axis, GM);
+}
+
+glm::dvec3 GetRadialVector(const Orbit& orbit) { return GetRadialVector(orbit, orbit.v); }
+
+glm::dvec3 GetRadialVector(const Orbit& orbit, double true_anomaly) {
+    return ConvertToOrbitalVector(orbit.LAN, orbit.inclination, orbit.w, true_anomaly,
+                                  glm::dvec3(cos(true_anomaly) / (1 + orbit.eccentricity * cos(true_anomaly)),
+                                             sin(true_anomaly) / (1 + orbit.eccentricity * cos(true_anomaly)), 0));
+}
+
+glm::dvec3 InvertOrbitalVector(const double LAN, const double i, const double w, const double v,
+                               const glm::dvec3& vec) {
+    return glm::inverse(glm::dquat {glm::dvec3(0, 0, LAN)} * glm::dquat {glm::dvec3(i, 0, 0)} *
+                        glm::dquat {glm::dvec3(0, 0, w)} * glm::dquat {glm::dvec3(0, 0, v)}) *
+           vec;
+}
+
+double AngleWith(const Orbit& orbit, const Orbit& second_orbit) {
+    return glm::angle(glm::normalize(GetOrbitNormal(orbit)), glm::normalize(GetOrbitNormal(second_orbit)));
+}
+
+std::string Orbit::ToHumanString() {
+    std::ostringstream ss;
+    ss << std::fixed << std::setprecision(6);
+    ss << "Orbit Parameters:\n";
+    ss << "Semi-major axis (a):        " << semi_major_axis << " km\n";
+    ss << "Eccentricity (e):           " << eccentricity << "\n";
+    ss << "Inclination (i):            " << inclination << " rad (" << inclination * 180.0 / PI << " deg)\n";
+    ss << "Longitude of Asc. Node (LAN): " << LAN << " rad (" << LAN * 180.0 / PI << " deg)\n";
+    ss << "Argument of Periapsis (w):  " << w << " rad (" << w * 180.0 / PI << " deg)\n";
+    ss << "Mean Anomaly at Epoch (M0): " << M0 << " rad (" << M0 * 180.0 / PI << " deg)\n";
+    ss << "True Anomaly (v):           " << v << " rad (" << v * 180.0 / PI << " deg)\n";
+    ss << "Epoch:                      " << epoch << " s\n";
+    ss << "Gravitational Constant (GM): " << GM << " km^3/s^2\n";
+    ss << "Orbital Period (T):         " << T() << " s\n";
+    ss << "Mean Motion (n):            " << nu() << " rad/s\n";
+    ss << "Periapsis:                  " << GetPeriapsis() << " km\n";
+    ss << "Apoapsis:                   " << GetApoapsis() << " km\n";
+
+    if (reference_body != entt::null) {
+        ss << "Reference Body Entity:      " << static_cast<uint32_t>(reference_body) << "\n";
+    } else {
+        ss << "Reference Body:             None\n";
+    }
+
+    return ss.str();
 }
 }  // namespace cqsp::common::components::types

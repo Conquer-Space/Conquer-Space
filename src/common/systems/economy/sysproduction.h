@@ -19,9 +19,6 @@
 #include "common/systems/isimulationsystem.h"
 
 namespace cqsp::common::systems {
-// System for mines to reduce production so that production will stay stable if the price
-// dips too low
-// Main goal is to maintain stable pricing
 class SysProduction : public ISimulationSystem {
  public:
     explicit SysProduction(Game& game) : ISimulationSystem(game) {}

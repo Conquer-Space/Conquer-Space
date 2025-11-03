@@ -25,8 +25,8 @@
 #include "client/scenes/universe/interface/systooltips.h"
 #include "client/scenes/universe/views/starsystemview.h"
 #include "common/actions/shiplaunchaction.h"
-#include "common/components/market.h"
 #include "common/components/infrastructure.h"
+#include "common/components/market.h"
 #include "common/components/name.h"
 #include "common/components/orbit.h"
 #include "common/components/organizations.h"
@@ -327,6 +327,14 @@ void SysProvinceInformation::SpacePortTab() {
             DockedTab();
             ImGui::EndTabItem();
         }
+        if (ImGui::BeginTabItem("Orders")) {
+            SpacePortOrdersTab();
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Resources")) {
+            SpacePortResourceTab();
+            ImGui::EndTabItem();
+        }
         ImGui::EndTabBar();
     }
 }
@@ -375,7 +383,8 @@ void SysProvinceInformation::IndustryListWindow() {
                 if (!industry_component.shortage) {
                     ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.size)));
                 } else {
-                    ImGui::TextFmtColored(ImVec4(0.75, 0, 0, 1), "{}", NumberToHumanString(static_cast<int64_t>(industry_component.size)));
+                    ImGui::TextFmtColored(ImVec4(0.75, 0, 0, 1), "{}",
+                                          NumberToHumanString(static_cast<int64_t>(industry_component.size)));
                     if (ImGui::IsItemHovered()) {
                         ImGui::BeginTooltip();
                         ImGui::TextFmt("Resource Shortage!");
@@ -485,15 +494,11 @@ void SysProvinceInformation::LaunchTab() {
         double inc = city_coord.r_latitude();
         inc += axial;
 
-        types::Orbit orb;
-        orb.reference_body = reference_body;
-        orb.inclination = components::types::GetLaunchInclination(city_coord.r_latitude(), azimuth);
-        orb.semi_major_axis = semi_major_axis;
-        orb.eccentricity = eccentricity;
-        orb.w = arg_of_perapsis;
-        orb.LAN = LAN;
-        orb.epoch = GetUniverse().date.ToSecond();
-        common::actions::LaunchShip(GetUniverse(), orb);
+        types::Orbit orb(semi_major_axis, eccentricity,
+                         components::types::GetLaunchInclination(city_coord.r_latitude(), azimuth), LAN,
+                         arg_of_perapsis, 0, reference_body);
+        entt::entity ship = common::actions::LaunchShip(GetUniverse(), orb);
+        GetUniverse().emplace<ctx::VisibleOrbit>(ship);
     }
     double periapsis = semi_major_axis * (1 - eccentricity);
     if (GetUniverse().get<components::bodies::Body>(city_coord.planet).radius > periapsis) {
@@ -515,6 +520,37 @@ void SysProvinceInformation::DockedTab() {
         if (ImGui::IsItemHovered()) {
             systems::gui::EntityTooltip(GetUniverse(), docked);
         }
+    }
+}
+
+void SysProvinceInformation::SpacePortOrdersTab() {
+    // Just list it for a basic UI
+    auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(current_city);
+    for (auto& [target, queue] : space_port.deliveries) {
+        for (auto& transport : queue) {
+            ImGui::TextFmt("To {}: {} {}/{}", common::util::GetName(GetUniverse(), target),
+                           common::util::GetName(GetUniverse(), transport.good), transport.fulfilled, transport.amount);
+        }
+    }
+}
+
+void SysProvinceInformation::SpacePortResourceTab() {
+    auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(current_city);
+    if (ImGui::BeginTable("space_port_resource_tables", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Good");
+        ImGui::TableSetupColumn("Output Resources");
+
+        ImGui::TableHeadersRow();
+        auto goodsview = GetUniverse().view<components::Price>();
+
+        for (entt::entity good_entity : goodsview) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt("{}", GetName(GetUniverse(), good_entity));
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextFmt("{}", util::NumberToHumanString(space_port.output_resources[good_entity]));
+        }
+        ImGui::EndTable();
     }
 }
 }  // namespace cqsp::client::systems

@@ -45,7 +45,7 @@ class UniverseScene : public ClientScene {
         for (auto& it : documents) {
             it.reset();
         }
-        delete system_renderer;
+        system_renderer.reset();
     }
 
     void Init();
@@ -86,7 +86,7 @@ class UniverseScene : public ClientScene {
     entt::entity player;
     entt::entity selected_planet = entt::null;
 
-    cqsp::client::systems::SysStarSystemRenderer* system_renderer;
+    std::unique_ptr<systems::SysStarSystemRenderer> system_renderer;
 
     std::unique_ptr<cqsp::common::systems::simulation::Simulation> simulation;
 

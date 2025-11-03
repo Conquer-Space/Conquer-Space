@@ -31,8 +31,11 @@ enum class Offset { Beg, End, Cur };
 
 class IVirtualFile;
 class IVirtualDirectory;
+class IVirtualFileSystem;
+
 typedef std::shared_ptr<IVirtualFile> IVirtualFilePtr;
 typedef std::shared_ptr<IVirtualDirectory> IVirtualDirectoryPtr;
+typedef std::shared_ptr<IVirtualFileSystem> IVirtualFileSystemPtr;
 
 /// <summary>
 /// The main functionality for this is to read files, so writing to files will
@@ -56,9 +59,7 @@ class IVirtualFileSystem {
     virtual void Close(IVirtualFilePtr&) = 0;
 
     /// <summary>
-    /// Lists all the files in the directory.
-    /// Does not list directories in the list because for our purposes, we do not need
-    /// to traverse and process directories with this.
+    /// Lists all the files in the directory and subdirectories.
     /// Returns nullptr if path does not exist or is not a directory.
     /// </summary>
     virtual IVirtualDirectoryPtr OpenDirectory(const std::string& path) = 0;
@@ -151,9 +152,15 @@ class IVirtualFile {
     virtual IVirtualFileSystem* GetFileSystem() = 0;
 };
 
+/**
+ * A virtual file filesystem where it can mount multiple types of file systems in a directory.
+ */
 class VirtualMounter {
  public:
     ~VirtualMounter();
+    /**
+     * Mounts the new file system on <path>/
+     */
     void AddMountPoint(const std::string& path, IVirtualFileSystem* fs);
     /// <summary>
     /// Opens file.

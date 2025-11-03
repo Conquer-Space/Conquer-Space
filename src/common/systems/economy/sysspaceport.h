@@ -19,10 +19,13 @@
 #include "common/systems/isimulationsystem.h"
 
 namespace cqsp::common::systems {
-class SysNavyControl : public ISimulationSystem {
+class SysSpacePort : public ISimulationSystem {
  public:
-    explicit SysNavyControl(Game& game) : ISimulationSystem(game) {}
+    explicit SysSpacePort(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
-    int Interval() override { return components::StarDate::HOUR; }
+    int Interval() override { return components::StarDate::DAY; }
+
+ private:
+    void ProcessDockedShips(entt::entity space_port);
 };
 }  // namespace cqsp::common::systems

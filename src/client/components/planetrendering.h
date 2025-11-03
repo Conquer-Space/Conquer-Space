@@ -45,9 +45,9 @@ struct PlanetTexture {
     std::vector<entt::entity> province_map;
 };
 
-struct PlanetOrbit {
+struct OrbitMesh {
     engine::Mesh_t orbit_mesh;
 
-    ~PlanetOrbit() = default;
+    ~OrbitMesh() = default;
 };
 }  // namespace cqsp::client::components
