@@ -70,7 +70,8 @@ jobs:
         cmake --build build --parallel --config ${{ matrix.config }} -- -j1
 
     - name: Smoketests
-      run: ./binaries/bin/Conquer-Space --headless < tools/smoketests/smoketest.lua
+      run: |
+        cmd /C "./binaries/bin/Conquer-Space --headless < test/smoketest/smoketest.lua"
 
     - name: Tests
       run: |
