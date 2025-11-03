@@ -23,9 +23,9 @@
 #include "client/components/clientctx.h"
 #include "client/scenes/universe/universescene.h"
 #include "client/systems/assetloading.h"
-#include "common/util/save/savegame.h"
 #include "client/systems/universeloader.h"
 #include "common/systems/sysuniversegenerator.h"
+#include "common/util/save/savegame.h"
 
 namespace cqsp::client::scene {
 

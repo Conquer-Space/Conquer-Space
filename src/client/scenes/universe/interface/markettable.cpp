@@ -18,12 +18,12 @@
 
 #include <imgui.h>
 
+#include "client/scenes/universe/interface/systooltips.h"
 #include "common/components/bodies.h"
 #include "common/components/market.h"
 #include "common/components/name.h"
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
-#include "client/scenes/universe/interface/systooltips.h"
 #include "engine/gui.h"
 
 namespace cqsp::client::systems {

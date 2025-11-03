@@ -67,10 +67,10 @@ namespace ships = components::ships;
 using asset::ShaderDefinition;
 using asset::ShaderProgram_t;
 using asset::Texture;
+using client::components::Offset;
+using client::components::OrbitMesh;
 using client::components::PlanetTerrainRender;
 using client::components::PlanetTexture;
-using client::components::OrbitMesh;
-using client::components::Offset;
 using components::Habitation;
 using components::Name;
 
@@ -88,7 +88,6 @@ SysStarSystemRenderer::SysStarSystemRenderer(common::Universe& _u, engine::Appli
       view_y(0),
       view_center(glm::vec3(1, 1, 1)),
       sun_color(glm::vec3(10, 10, 10)) {}
-
 
 void SysStarSystemRenderer::Initialize() {
     InitializeMeshes();

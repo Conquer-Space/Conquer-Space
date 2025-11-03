@@ -16,8 +16,8 @@
  */
 #include "common/systems/history/sysmarkethistory.h"
 
-#include "common/components/market.h"
 #include "common/components/history.h"
+#include "common/components/market.h"
 namespace cqsp::common::systems::history {
 
 using components::Market;

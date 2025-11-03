@@ -137,7 +137,7 @@ struct Market : MarketInformation {
     std::set<entt::entity> participants;
 
     entt::basic_sparse_set<entt::entity> connected_markets;
-    
+
     ResourceLedger market_access;
 
     entt::entity parent_market = entt::null;

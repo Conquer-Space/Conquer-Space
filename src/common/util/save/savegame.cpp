@@ -26,7 +26,6 @@
 #include "common/util/save/save.h"
 namespace cqsp::common::save {
 
-
 void save_game(Universe& universe) {
     std::string save_dir_path = util::GetCqspSavePath();
     if (!std::filesystem::exists(save_dir_path)) std::filesystem::create_directories(save_dir_path);

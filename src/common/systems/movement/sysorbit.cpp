@@ -19,8 +19,8 @@
 #include <cmath>
 #include <vector>
 
-#include <tracy/Tracy.hpp>
 #include <glm/gtx/string_cast.hpp>
+#include <tracy/Tracy.hpp>
 
 #include "common/actions/maneuver/commands.h"
 #include "common/components/coordinates.h"
@@ -293,7 +293,7 @@ bool SysOrbit::EnterSOI(const entt::entity& parent, const entt::entity& body) {
             // Calculate position
             SPDLOG_INFO("Pre enter position: {}", glm::to_string(pos.position - target_position.position));
             SPDLOG_INFO("Pre enter velocity: {}", glm::to_string(pos.velocity - target_position.velocity));
-             
+
             orb = types::Vec3ToOrbit(pos.position - target_position.position, pos.velocity - target_position.velocity,
                                      body_comp.GM, GetUniverse().date.ToSecond());
             SPDLOG_INFO("Post enter SOI maneuver: {}", orb.ToHumanString());

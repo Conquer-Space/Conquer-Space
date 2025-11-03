@@ -50,5 +50,8 @@ class HeadlessApplication {
     std::unique_ptr<common::systems::simulation::Simulation> simulation;
 
     std::map<std::string, HeadlessCommand> command_map;
+
+    bool IsCommandComment(const std::string& line, const std::vector<std::string>& arguments,
+                          const std::string& command);
 };
 };  // namespace cqsp::client::headless

@@ -22,9 +22,9 @@ namespace cqsp::client::systems {
 class SysPlanetMarketInformation : public SysUserInterface {
  public:
     explicit SysPlanetMarketInformation(engine::Application& app) : SysUserInterface(app) {
-      search_text.fill(0);
-      per_good_details_search_text.fill(0);
-   }
+        search_text.fill(0);
+        per_good_details_search_text.fill(0);
+    }
     void Init();
     void DoUI(int delta_time);
     void DoUpdate(int delta_time);

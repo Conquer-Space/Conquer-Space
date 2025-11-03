@@ -20,6 +20,7 @@
 
 #include "GLFW/glfw3.h"
 #include "client/scenes/universe/interface/markettable.h"
+#include "client/scenes/universe/interface/systooltips.h"
 #include "client/scenes/universe/universescene.h"
 #include "client/scenes/universe/views/starsystemview.h"
 #include "common/components/bodies.h"
@@ -28,7 +29,6 @@
 #include "common/components/surface.h"
 #include "common/util/nameutil.h"
 #include "common/util/utilnumberdisplay.h"
-#include "client/scenes/universe/interface/systooltips.h"
 
 namespace cqsp::client::systems {
 namespace components = common::components;
@@ -198,7 +198,8 @@ void SysPlanetMarketInformation::PerGoodDetails() {
     }
     auto& interplanetary_market = GetUniverse().get<components::PlanetaryMarket>(selected_planet);
     ImGui::BeginChild("per_good_left", ImVec2(300, 700));
-    ImGui::InputText("##per_good_search_text", per_good_details_search_text.data(), per_good_details_search_text.size());
+    ImGui::InputText("##per_good_search_text", per_good_details_search_text.data(),
+                     per_good_details_search_text.size());
     std::string search_string(per_good_details_search_text.data());
     std::transform(search_string.begin(), search_string.end(), search_string.begin(),
                    [](unsigned char c) { return std::tolower(c); });
@@ -286,7 +287,6 @@ void SysPlanetMarketInformation::PerGoodDetailsRightPanel() {
     ImGui::TableSetColumnIndex(0);
     auto& overall_market = GetUniverse().get<components::Market>(selected_planet);
     ImGui::TextFmt("Overall");
-
 
     ImGui::TableSetColumnIndex(1);
     // Mark the cell as red if the thing is not valid
