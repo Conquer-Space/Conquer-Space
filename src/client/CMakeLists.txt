@@ -16,7 +16,7 @@
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
 include_directories(${LUA_HEADERS})
-include_directories(${CMAKE_SOURCE_DIR}/lib/tracy)
+include_directories(${CMAKE_SOURCE_DIR}/lib/tracy/tracy/public)
 
 # Set source files
 file (GLOB_RECURSE CPP_FILES *.cpp)

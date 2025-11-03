@@ -17,7 +17,7 @@
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 include_directories(${CMAKE_SOURCE_DIR}/lib/imgui_markdown)
 
-include_directories(${CMAKE_SOURCE_DIR}/lib/tracy)
+include_directories(${CMAKE_SOURCE_DIR}/lib/tracy/tracy/public)
 include_directories(${OPENAL_INCLUDE_DIR})
 include_directories(${LUA_HEADERS})
 
@@ -57,6 +57,6 @@ target_link_libraries(cqsp-engine PUBLIC
     lunasvg
     imgui_node_editor
     assimp::assimp
-    debug Tracy
+    debug Tracy::TracyClient
     cqsp-core
 )

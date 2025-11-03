@@ -186,10 +186,11 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
         // Set new mean anomaly at epoch
         GetUniverse().remove<types::SetTrueAnomaly>(body);
     }
-
-    pos.position = types::toVec3(orb);
-    pos.velocity = types::OrbitVelocityToVec3(orb, orb.v);
-
+    {
+        ZoneScopedN("Position determination");
+        pos.position = types::toVec3(orb);
+        pos.velocity = types::OrbitVelocityToVec3(orb, orb.v);
+    }
     glm::dvec3 future_center = glm::dvec3(0, 0, 0);
     if (parent != entt::null) {
         auto& p_pos = GetUniverse().get_or_emplace<types::Kinematics>(parent);
