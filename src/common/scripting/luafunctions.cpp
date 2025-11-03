@@ -29,9 +29,9 @@
 #include "common/components/area.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
-#include "common/components/market.h"
 #include "common/components/event.h"
 #include "common/components/infrastructure.h"
+#include "common/components/market.h"
 #include "common/components/name.h"
 #include "common/components/orbit.h"
 #include "common/components/organizations.h"
@@ -390,8 +390,9 @@ void FunctionScience(Universe& universe, ScriptInterface& script_engine) {
         universe.emplace<ScientificResearch>(entity);
     });
 
-    REGISTER_FUNCTION("complete_technology",
-                      [&](entt::entity entity, entt::entity tech) { actions::ResearchTech(universe, entity, tech); });
+    REGISTER_FUNCTION("complete_technology", [&](entt::entity entity, entt::entity tech) {
+        actions::ResearchTech(Node(universe, entity), Node(universe, tech));
+    });
 
     REGISTER_FUNCTION("research_technology", [&](entt::entity entity, entt::entity tech) {
         auto& res = universe.get<ScientificResearch>(entity);

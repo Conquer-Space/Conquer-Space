@@ -38,12 +38,12 @@
 #include "common/util/random/stdrandom.h"
 
 namespace cqsp::common::systems::universegenerator {
-void ScriptUniverseGenerator::Generate(cqsp::common::Universe& universe) {
-    namespace cqspb = cqsp::common::components::bodies;
-    namespace ships = cqsp::common::components::ships;
-    namespace types = cqsp::common::components::types;
-    namespace components = cqsp::common::components;
 
+namespace bodies = components::bodies;
+namespace ships = components::ships;
+namespace types = components::types;
+
+void ScriptUniverseGenerator::Generate(Universe& universe) {
     script_engine["goods"] = universe.goods;
     script_engine["recipes"] = universe.recipes;
     script_engine["terrain_colors"] = universe.terrain_data;
