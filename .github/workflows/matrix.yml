@@ -71,7 +71,7 @@ jobs:
 
     - name: Smoketests
       run: |
-        cmd /C "./binaries/bin/Conquer-Space --headless < test/smoketest/smoketest.lua"
+        "./binaries/bin/Conquer-Space --headless < test/smoketest/smoketest.lua
 
     - name: Tests
       run: |
@@ -120,7 +120,7 @@ jobs:
     - name: Run Smoketests
       if: ${{ matrix.config == 'Release'}}
       run: |
-        "binaries/bin/Conquer-Space" --headless < tools/smoketests/smoketest.lua
+        cmd /C "binaries/bin/Conquer-Space" --headless < tools/smoketests/smoketest.lua
 
     - name: Run Tests
       run: ctest -V --schedule-random --progress --output-on-failure --parallel --no-tests=error --build-config ${{ matrix.config }} --test-dir build/test
