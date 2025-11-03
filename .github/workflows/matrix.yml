@@ -71,7 +71,7 @@ jobs:
 
     - name: Smoketests
       run: |
-        "./binaries/bin/Conquer-Space --headless < test/smoketest/smoketest.lua
+        ./binaries/bin/Conquer-Space --headless < test/smoketest/smoketest.lua
 
     - name: Tests
       run: |
