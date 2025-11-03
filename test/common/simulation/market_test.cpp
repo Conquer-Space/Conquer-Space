@@ -14,12 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#include "common/components/market.h"
+
 #include <gtest/gtest.h>
 
 #include <iostream>
 
 #include "common/actions/economy/markethelpers.h"
-#include "common/components/market.h"
 #include "common/systems/economy/sysmarket.h"
 #include "common/universe.h"
 

@@ -34,9 +34,9 @@ namespace cqsp::common::loading {
 
 namespace types = components::types;
 namespace bodies = components::bodies;
+using bodies::Body;
 using types::Orbit;
 using types::toRadian;
-using bodies::Body;
 
 namespace {
 std::string trim(const std::string& str, const std::string& whitespace = " \t") {

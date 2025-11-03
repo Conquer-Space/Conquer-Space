@@ -23,8 +23,8 @@
 #include <tracy/Tracy.hpp>
 
 #include "common/components/area.h"
-#include "common/components/market.h"
 #include "common/components/infrastructure.h"
+#include "common/components/market.h"
 #include "common/components/name.h"
 #include "common/components/organizations.h"
 #include "common/components/population.h"

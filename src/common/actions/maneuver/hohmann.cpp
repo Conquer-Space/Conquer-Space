@@ -20,9 +20,9 @@ namespace cqsp::common::systems {
 
 namespace types = components::types;
 
+using types::GetCircularOrbitingVelocity;
 using types::Orbit;
 using types::OrbitVelocityAtR;
-using types::GetCircularOrbitingVelocity;
 
 components::HohmannPair_t UnsafeHohmannTransfer(const Orbit& orbit, double altitude) {
     const double new_sma = (orbit.semi_major_axis + altitude) / 2;

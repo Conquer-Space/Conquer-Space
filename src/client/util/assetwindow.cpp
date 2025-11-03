@@ -16,10 +16,8 @@
  */
 #include "client/util/assetwindow.h"
 
-namespace cqsp::client::systems {   
-void AssetWindow::Init() {
-
-}
+namespace cqsp::client::systems {
+void AssetWindow::Init() {}
 void AssetWindow::DoUI(int delta_time) {
     ImGui::Begin("Asset Debug Window");
     ImGui::Text("Search: ");
@@ -54,7 +52,5 @@ void AssetWindow::DoUI(int delta_time) {
     }
     ImGui::End();
 }
-void AssetWindow::DoUpdate(int delta_time) {
-
-}
+void AssetWindow::DoUpdate(int delta_time) {}
 };  // namespace cqsp::client::systems

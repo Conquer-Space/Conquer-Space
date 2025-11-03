@@ -22,15 +22,14 @@
 namespace cqsp::common::loading {
 
 namespace types = components::types;
-using types::UnitType;
 using types::Orbit;
+using types::UnitType;
 
 /// @brief Loads an orbit from a hjson object
 /// Note: The caller will have to set the center entity.
 /// @param values The hjson input values
 /// @return Will return a nullopt if the struct is invalid
 std::optional<Orbit> LoadOrbit(const Hjson::Value& values) {
-
     Orbit orbit;
     if (values["semi_major_axis"].type() != Hjson::Type::String && values["semi_major_axis"].to_double() == 0) {
         orbit.semi_major_axis = 0;

@@ -22,8 +22,8 @@
 #include "common/components/name.h"
 #include "common/components/orbit.h"
 #include "common/components/spaceport.h"
-#include "common/util/nameutil.h"
 #include "common/components/surface.h"
+#include "common/util/nameutil.h"
 
 namespace cqsp::common::systems {
 void SysSpacePort::DoSystem() {

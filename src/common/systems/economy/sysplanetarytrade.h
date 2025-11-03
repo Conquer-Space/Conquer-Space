@@ -33,7 +33,7 @@ class SysPlanetaryTrade : public ISimulationSystem {
 
     void DeterminePrice(components::Market& market, entt::entity good_entity);
 
-    private:
+ private:
     bool initial_tick;
 
     components::ResourceLedger base_prices;

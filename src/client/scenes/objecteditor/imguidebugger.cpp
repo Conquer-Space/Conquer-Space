@@ -17,13 +17,7 @@
 #include "client/scenes/objecteditor/imguidebugger.h"
 
 namespace cqsp::client::systems {
-void ImGuiDebugger::Init() {
-
-}
-void ImGuiDebugger::DoUI(int delta_time) {
-    ImGui::ShowMetricsWindow();
-}
-void ImGuiDebugger::DoUpdate(int delta_time) {
-
-}
+void ImGuiDebugger::Init() {}
+void ImGuiDebugger::DoUI(int delta_time) { ImGui::ShowMetricsWindow(); }
+void ImGuiDebugger::DoUpdate(int delta_time) {}
 }  // namespace cqsp::client::systems

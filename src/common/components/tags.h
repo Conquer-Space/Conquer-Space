@@ -16,8 +16,8 @@
  */
 #pragma once
 
+#include <string>
 #include <vector>
-#include <string> 
 namespace cqsp::common::components {
 /**
  * Tags for the entity.

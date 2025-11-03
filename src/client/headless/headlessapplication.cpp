@@ -101,7 +101,8 @@ void HeadlessApplication::InitSimulationPtr() {
 
 Simulation& HeadlessApplication::GetSimulation() { return *(simulation); }
 
-bool HeadlessApplication::IsCommandComment(const std::string& line, const std::vector<std::string>& arguments, const std::string& command) {
+bool HeadlessApplication::IsCommandComment(const std::string& line, const std::vector<std::string>& arguments,
+                                           const std::string& command) {
     if (line != "--") {
         return false;
     }

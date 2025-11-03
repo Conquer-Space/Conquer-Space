@@ -21,16 +21,16 @@
 #include <string>
 #include <vector>
 
+#include "common/actions/factoryconstructaction.h"
 #include "common/components/area.h"
 #include "common/components/coordinates.h"
-#include "common/components/market.h"
 #include "common/components/infrastructure.h"
+#include "common/components/market.h"
 #include "common/components/name.h"
 #include "common/components/organizations.h"
 #include "common/components/population.h"
 #include "common/components/spaceport.h"
 #include "common/components/surface.h"
-#include "common/actions/factoryconstructaction.h"
 #include "common/util/nameutil.h"
 
 namespace cqsp::common::loading {

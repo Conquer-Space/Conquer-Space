@@ -20,8 +20,8 @@
 
 #include <string>
 
-#include "common/loading/hjsonloader.h"
 #include "common/actions/science/technologyactions.h"
+#include "common/loading/hjsonloader.h"
 #include "common/universe.h"
 
 namespace cqsp::common::loading {

@@ -22,8 +22,8 @@
 #include "GLFW/glfw3.h"
 #include "client/scenes/universe/sysoptionswindow.h"
 #include "client/scenes/universe/universescene.h"
-#include "common/util/save/savegame.h"
 #include "common/util/paths.h"
+#include "common/util/save/savegame.h"
 #include "common/version.h"
 #include "engine/cqspgui.h"
 

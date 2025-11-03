@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#include "engine/asset/vfs/nativevfs.h"
+
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include <filesystem>
-
-#include "engine/asset/vfs/nativevfs.h"
 
 class NativeVfsTest : public ::testing::Test {
  protected:

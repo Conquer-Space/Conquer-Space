@@ -16,8 +16,8 @@
  */
 #include "common/actions/economy/markethelpers.h"
 
-#include "common/components/market.h"
 #include "common/components/history.h"
+#include "common/components/market.h"
 
 namespace cqsp::common::actions {
 
@@ -46,8 +46,7 @@ void CreateMarket(Universe& universe, entt::entity market) {
     static_cast<void>(universe.get_or_emplace<components::MarketHistory>(market));
 }
 
-bool PurchaseGood(Universe& universe, entt::entity agent,
-                                                  const components::ResourceLedger& purchase) {
+bool PurchaseGood(Universe& universe, entt::entity agent, const components::ResourceLedger& purchase) {
     // Calculating on how to buy from the market shouldn't be too hard, right?
     // Get the market connected to, and build the demand
     entt::entity market = universe.get<components::MarketAgent>(agent).market;
@@ -77,8 +76,7 @@ bool PurchaseGood(Universe& universe, entt::entity agent,
     return true;
 }
 
-bool SellGood(Universe& universe, entt::entity agent,
-                                              const components::ResourceLedger& selling) {
+bool SellGood(Universe& universe, entt::entity agent, const components::ResourceLedger& selling) {
     // Calculating on how to buy from the market shouldn't be too hard, right?
     // Get the market connected to, and build the demand
     entt::entity market = universe.get<components::MarketAgent>(agent).market;

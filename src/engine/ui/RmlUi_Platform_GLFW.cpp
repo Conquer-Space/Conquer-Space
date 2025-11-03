@@ -28,8 +28,6 @@
 
 #include "RmlUi_Platform_GLFW.h"
 
-#include <filesystem>
-
 #include <GLFW/glfw3.h>
 #include <RmlUi/Core.h>
 #include <RmlUi/Core/Context.h>
@@ -37,6 +35,8 @@
 #include <RmlUi/Core/Math.h>
 #include <RmlUi/Core/StringUtilities.h>
 #include <RmlUi/Core/URL.h>
+
+#include <filesystem>
 
 #include "engine/enginelogger.h"
 #include "engine/ui/RmlUi_Renderer_GL3.h"
@@ -157,11 +157,10 @@ void SystemInterface_GLFW::JoinPath(Rml::String& translated_path, const Rml::Str
         return;
     }
 
-    using Rml::StringUtilities::Replace;
-
     // Else get the relative path from the document path
-    translated_path = std::filesystem::canonical(std::filesystem::path(document_path).parent_path() /
-                                              std::filesystem::path(path)).string();
+    translated_path =
+        std::filesystem::canonical(std::filesystem::path(document_path).parent_path() / std::filesystem::path(path))
+            .string();
 }
 
 bool RmlGLFW::ProcessKeyCallback(Rml::Context* context, int key, int action, int mods) {

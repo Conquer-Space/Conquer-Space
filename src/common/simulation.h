@@ -51,7 +51,6 @@ class Simulation {
     virtual void CreateSystems();
 
  private:
-
     Game &m_game;
     /// <summary>
     /// Holds all the systems.
