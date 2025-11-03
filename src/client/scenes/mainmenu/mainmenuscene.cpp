@@ -208,14 +208,7 @@ void MainMenuScene::ShuffleFileList() {
             continue;
         }
         // Or else load the image
-        // Quick hack because rmlui has weird filesystem behavior
-        // TODO(EhWhoAmI): Investigate why RmlUi tends to exclude the first forward slash
-        // for paths that are rooted
-#ifdef __linux__
-        file_list.push_back("/" + std::filesystem::canonical(entry.path()).string());
-#else
         file_list.push_back(std::filesystem::canonical(entry.path()).string());
-#endif
     }
     std::random_device device;
     std::mt19937 generator(device());
