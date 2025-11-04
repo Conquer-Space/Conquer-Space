@@ -21,7 +21,7 @@
 
 #include <glm/vec3.hpp>
 
-#include "common/components/movement.h"
+#include "common/components/maneuver.h"
 #include "common/components/orbit.h"
 
 namespace cqsp::common::systems {

@@ -18,7 +18,7 @@
 
 #include <initializer_list>
 
-#include "common/components/movement.h"
+#include "common/components/maneuver.h"
 #include "common/components/orbit.h"
 #include "common/components/orders.h"
 #include "common/universe.h"

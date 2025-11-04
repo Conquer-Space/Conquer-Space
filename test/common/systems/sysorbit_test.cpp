@@ -26,7 +26,7 @@
 #include <glm/gtx/vector_angle.hpp>
 
 #include "common/actions/maneuver/commands.h"
-#include "common/actions/maneuver/maneuver.h"
+#include "common/actions/maneuver/basicmaneuver.h"
 #include "common/actions/shiplaunchaction.h"
 #include "common/components/ships.h"
 #include "common/game.h"

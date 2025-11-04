@@ -19,7 +19,7 @@
 #include <random>
 
 #include "common/actions/maneuver/lambert/izzo.h"
-#include "common/actions/maneuver/maneuver.h"
+#include "common/actions/maneuver/basicmaneuver.h"
 #include "common/actions/maneuver/rendezvous.h"
 #include "common/components/orbit.h"
 #include "common/components/units.h"

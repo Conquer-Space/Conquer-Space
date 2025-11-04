@@ -24,7 +24,7 @@
 
 #include "common/actions/maneuver/commands.h"
 #include "common/components/coordinates.h"
-#include "common/components/movement.h"
+#include "common/components/maneuver.h"
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
 #include "common/components/units.h"

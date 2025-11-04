@@ -25,7 +25,7 @@
 
 #include <glm/gtx/string_cast.hpp>
 
-#include "common/actions/maneuver/maneuver.h"
+#include "common/actions/maneuver/basicmaneuver.h"
 #include "common/components/coordinates.h"
 #include "common/components/units.h"
 #include "common/systems/movement/sysorbit.h"

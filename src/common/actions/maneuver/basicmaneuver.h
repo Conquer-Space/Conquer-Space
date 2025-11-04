@@ -20,7 +20,7 @@
 
 #include <glm/vec3.hpp>
 
-#include "common/components/movement.h"
+#include "common/components/maneuver.h"
 #include "common/components/orbit.h"
 
 // Basic satellite maneuvers

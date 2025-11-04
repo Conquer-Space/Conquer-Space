@@ -20,9 +20,9 @@
 
 #include <algorithm>
 
-#include "common/actions/maneuver/maneuver.h"
+#include "common/actions/maneuver/basicmaneuver.h"
 #include "common/actions/maneuver/rendezvous.h"
-#include "common/components/movement.h"
+#include "common/components/maneuver.h"
 #include "common/components/orbit.h"
 #include "common/components/surface.h"
 #include "common/util/nameutil.h"
