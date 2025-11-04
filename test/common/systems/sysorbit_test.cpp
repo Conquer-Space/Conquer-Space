@@ -25,8 +25,8 @@
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
-#include "common/actions/maneuver/commands.h"
 #include "common/actions/maneuver/basicmaneuver.h"
+#include "common/actions/maneuver/commands.h"
 #include "common/actions/shiplaunchaction.h"
 #include "common/components/ships.h"
 #include "common/game.h"
@@ -288,10 +288,10 @@ TEST_P(CircularizeTests, ChangeApoapsis) {
     // Now verify that the amount of delta v we put into it is also the amount we would expect
     // This can be more inaccurate because we are sourcing these values from many different calculations, so we
     // must allow for some numerical inaccuricies
-    EXPECT_NEAR(
-        ship_orbit.OrbitalVelocityAtTrueAnomaly(0),
-        glm::length(circularize.first) + source_orbit.OrbitalVelocityAtTrueAnomaly(cqsp::common::components::types::apoapsis),
-        2);
+    EXPECT_NEAR(ship_orbit.OrbitalVelocityAtTrueAnomaly(0),
+                glm::length(circularize.first) +
+                    source_orbit.OrbitalVelocityAtTrueAnomaly(cqsp::common::components::types::apoapsis),
+                2);
 
     EXPECT_NEAR(ship_orbit.OrbitalVelocityAtTrueAnomaly(0),
                 cqsp::common::components::types::GetCircularOrbitingVelocity(ship_orbit.GM, ship_orbit.semi_major_axis),

@@ -289,8 +289,8 @@ bool SysOrbit::CheckEnterSOI(const entt::entity& parent, const entt::entity& bod
     return false;
 }
 
-void SysOrbit::EnterSOI(entt::entity entity, entt::entity body, entt::entity parent, Orbit& orb, Kinematics& vehicle_position,
-                        const Body& body_comp, const Kinematics& target_position) {
+void SysOrbit::EnterSOI(entt::entity entity, entt::entity body, entt::entity parent, Orbit& orb,
+                        Kinematics& vehicle_position, const Body& body_comp, const Kinematics& target_position) {
     ZoneScoped;
     // Calculate position
     if (debug_prints) {
@@ -299,8 +299,8 @@ void SysOrbit::EnterSOI(entt::entity entity, entt::entity body, entt::entity par
     }
 
     orb = types::Vec3ToOrbit(vehicle_position.position - target_position.position,
-                             vehicle_position.velocity - target_position.velocity,
-                             body_comp.GM, GetUniverse().date.ToSecond());
+                             vehicle_position.velocity - target_position.velocity, body_comp.GM,
+                             GetUniverse().date.ToSecond());
     if (debug_prints) {
         SPDLOG_INFO("Post enter SOI maneuver: {}", orb.ToHumanString());
     }

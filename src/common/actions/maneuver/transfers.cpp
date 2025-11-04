@@ -39,13 +39,14 @@ components::Maneuver_t TransferFromBody(Universe& universe, components::types::O
     double intended_semi_major_axis = (orbital_radius + altitude) / 2;
     double intended_eccentricity = components::types::GetEccentricity(orbital_radius, altitude);
     // Now let's get our expected velocity
-    double intended_orbital_velocity = components::types::OrbitVelocity(components::types::apoapsis, intended_eccentricity, intended_semi_major_axis, orbiting_body_orbit.GM);
+    double intended_orbital_velocity = components::types::OrbitVelocity(
+        components::types::apoapsis, intended_eccentricity, intended_semi_major_axis, orbiting_body_orbit.GM);
     // Now we should get the delta
     // Now let's get our new velocity
     double v_inf = orbital_velocity - intended_orbital_velocity;
 
     double escape_eccentricity = 1 + (altitude * v_inf * v_inf) / orbiting_body_orbit.GM;
-    double burn_angle = std::acos(-1/escape_eccentricity);
+    double burn_angle = std::acos(-1 / escape_eccentricity);
 
     double burn_amount = std::sqrt(v_inf * v_inf + 2 * orbiting_body_orbit.GM / altitude);
     // We need to figure out when we should burn
@@ -54,7 +55,8 @@ components::Maneuver_t TransferFromBody(Universe& universe, components::types::O
     glm::dvec3 normal = components::types::GetOrbitNormal(orbit);
     glm::dvec3 orbiting_forward_vector = glm::normalize(orbiting_kinematics.velocity);
     // Project the orbiting body's into the ship orbit plane.
-    glm::dvec3 vel_frame = normal - glm::dot(normal, orbiting_forward_vector) / glm::length2(orbiting_forward_vector) * orbiting_forward_vector;
+    glm::dvec3 vel_frame = normal - glm::dot(normal, orbiting_forward_vector) / glm::length2(orbiting_forward_vector) *
+                                        orbiting_forward_vector;
 
     // Now we should get this value
     const auto h = glm::cross(kinematics.position, kinematics.velocity);
