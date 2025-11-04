@@ -19,7 +19,7 @@
 #include <spdlog/spdlog.h>
 
 #include <algorithm>
-#include <Tracy/Tracy.hpp>
+#include <tracy/Tracy.hpp>
 
 #include "common/actions/maneuver/basicmaneuver.h"
 #include "common/actions/maneuver/rendezvous.h"

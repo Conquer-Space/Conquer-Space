@@ -290,7 +290,7 @@ TEST_P(CircularizeTests, ChangeApoapsis) {
     // must allow for some numerical inaccuricies
     EXPECT_NEAR(
         ship_orbit.OrbitalVelocityAtTrueAnomaly(0),
-        glm::length(circularize.first) + source_orbit.OrbitalVelocityAtTrueAnomaly(cqsp::common::components::types::PI),
+        glm::length(circularize.first) + source_orbit.OrbitalVelocityAtTrueAnomaly(cqsp::common::components::types::apoapsis),
         2);
 
     EXPECT_NEAR(ship_orbit.OrbitalVelocityAtTrueAnomaly(0),
@@ -321,11 +321,11 @@ TEST_P(CircularizeTests, ChangePeriapsis) {
     // Now verify that the amount of delta v we put into it is also the amount we would expect
     // This can be more inaccurate because we are sourcing these values from many different calculations, so we
     // must allow for some numerical inaccuricies
-    EXPECT_NEAR(ship_orbit.OrbitalVelocityAtTrueAnomaly(cqsp::common::components::types::PI),
+    EXPECT_NEAR(ship_orbit.OrbitalVelocityAtTrueAnomaly(cqsp::common::components::types::apoapsis),
                 // Subtract as periapsis operation is reducing orbital energy
                 source_orbit.OrbitalVelocityAtTrueAnomaly(0) - glm::length(circularize.first), 2);
 
-    EXPECT_NEAR(ship_orbit.OrbitalVelocityAtTrueAnomaly(cqsp::common::components::types::PI),
+    EXPECT_NEAR(ship_orbit.OrbitalVelocityAtTrueAnomaly(cqsp::common::components::types::apoapsis),
                 cqsp::common::components::types::GetCircularOrbitingVelocity(ship_orbit.GM, ship_orbit.semi_major_axis),
                 1);
     EXPECT_LT(ship_orbit.eccentricity, 0.01);

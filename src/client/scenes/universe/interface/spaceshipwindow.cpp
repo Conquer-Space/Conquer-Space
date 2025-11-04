@@ -17,10 +17,11 @@
 #include "client/scenes/universe/interface/spaceshipwindow.h"
 
 #include "client/scenes/universe/views/starsystemview.h"
+#include "common/actions/maneuver/basicmaneuver.h"
 #include "common/actions/maneuver/commands.h"
 #include "common/actions/maneuver/hohmann.h"
-#include "common/actions/maneuver/basicmaneuver.h"
 #include "common/actions/maneuver/rendezvous.h"
+#include "common/actions/maneuver/transfers.h"
 #include "common/components/coordinates.h"
 #include "common/components/maneuver.h"
 #include "common/components/orbit.h"
@@ -84,10 +85,11 @@ void SpaceshipWindow::DoUI(int delta_time) {
                 ImGui::EndTooltip();
             }
             ImGui::TextFmt("Apoapsis: {:<10} km ({:.1f} s)", orbit.GetApoapsis() - p,
-                           orbit.TimeToTrueAnomaly(common::components::types::PI));
+                           orbit.TimeToTrueAnomaly(common::components::types::apoapsis));
             if (ImGui::IsItemHovered()) {
                 ImGui::BeginTooltip();
-                ImGui::TextFmt("{:.2f} hours", orbit.TimeToTrueAnomaly(common::components::types::PI) / (60 * 60));
+                ImGui::TextFmt("{:.2f} hours",
+                               orbit.TimeToTrueAnomaly(common::components::types::apoapsis) / (60 * 60));
                 ImGui::EndTooltip();
             }
         }
@@ -112,7 +114,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
         ImGui::SliderAngle("trueanomaly", &true_anomaly, (0));
 
         double apoapsis_velocity =
-            OrbitVelocity(common::components::types::PI, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+            OrbitVelocity(common::components::types::apoapsis, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
         double periapsis_velocity = OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
         double max_altitude = 10000000;
         double min_altitude = 0;
@@ -192,6 +194,10 @@ void SpaceshipWindow::DoUI(int delta_time) {
                 SPDLOG_INFO("Orbit is not circular!");
             }
         }
+        // Also get the radius
+        if (ImGui::Button("Leave")) {
+            common::systems::commands::TransferFromBody(GetUniverse(), );
+        }
     }
 
     // Display spaceship delta v in the future
@@ -247,7 +253,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
         auto& o_system = GetUniverse().get<bodies::OrbitalSystem>(orbit.reference_body);
         double angle =
             common::components::types::AngleWith(orbit, GetUniverse().get<types::Orbit>(orbit.reference_body));
-        ImGui::TextFmt("Angle: {}", angle * 180 / types::PI);
+        ImGui::TextFmt("Angle: {}", common::components::types::toDegree(angle));
         static entt::entity selected = entt::null;
         if (selected == entt::null) {
             ImGui::BeginDisabled(true);

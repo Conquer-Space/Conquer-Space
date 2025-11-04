@@ -26,8 +26,10 @@
 #include <glm/gtx/projection.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
+#include "orbit.h"
+
 namespace cqsp::common::components::types {
-double GetOrbitingRadius(const double& e, const radian& a, const radian& v) {
+double GetOrbitingRadius(const double e, const kilometer a, const radian v) {
     if (e > 1) {
         return (a * (e * e - 1)) / (1 + e * cos(v));
     } else {
@@ -399,6 +401,15 @@ double TrueAnomalyFromVector(const Orbit& orbit, const glm::dvec3& vec) {
 double AscendingTrueAnomaly(const Orbit& start, const Orbit& dest) {
     return normalize_radian(TrueAnomalyFromVector(start, glm::cross(GetOrbitNormal(start), GetOrbitNormal(dest))));
 }
+
+/**
+ * Computes the eccentricity from the apoapsis and periapsis.
+ */
+double GetEccentricity(double apoapsis, double periapsis) { return (apoapsis - periapsis) / (apoapsis + periapsis); }
+
+double Orbit::GetOrbitingRadius() const { return types::GetOrbitingRadius(eccentricity, semi_major_axis, v); }
+
+double Orbit::GetOrbitingRadius(double v) const { return types::GetOrbitingRadius(eccentricity, semi_major_axis, v); }
 
 // https://space.stackexchange.com/questions/54396/how-to-calculate-the-time-to-reach-a-given-true-anomaly
 double Orbit::TimeToTrueAnomaly(double v2) const {
