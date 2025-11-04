@@ -20,9 +20,8 @@
 
 namespace cqsp::common::systems {
 void SysWalletReset::DoSystem() {
-    auto view = GetUniverse().view<components::Wallet>();
-    for (entt::entity entity : view) {
-        GetUniverse().get<components::Wallet>(entity).Reset();
+    for (Node wallet_node : GetUniverse().nodes<components::Wallet>()) {
+        wallet_node.get<components::Wallet>().Reset();
     }
 }
 }  // namespace cqsp::common::systems
