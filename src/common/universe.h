@@ -75,11 +75,11 @@ class Universe : public entt::registry {
     /// </summary>
     double tick_fraction = 0;
     std::function<Node(entt::entity)> nodeFactory;
-    auto nodeTransform() { return std::views::transform(nodeFactory); }
+    auto NodeTransform() { return std::views::transform(nodeFactory); }
     std::vector<Node> Convert(const std::vector<entt::entity>& entities);
     template <typename... Components>
     auto nodes() {
-        return this->template view<Components...>() | nodeTransform();
+        return this->template view<Components...>() | NodeTransform();
     }
 
     systems::EconomyConfig economy_config;
@@ -95,7 +95,7 @@ class Node : public entt::handle {
     explicit Node(Universe& universe);
     Universe& universe() const;
     std::vector<Node> Convert(const std::vector<entt::entity>& entities) const;
-    Node Convert(const entt::entity entity);
+    Node Convert(const entt::entity entity) const;
 };
 
 }  // namespace cqsp::common

@@ -44,6 +44,6 @@ Universe& Node::universe() const { return static_cast<Universe&>(*this->registry
 std::vector<Node> Node::Convert(const std::vector<entt::entity>& entities) const {
     return this->universe().Convert(entities);
 }
-Node Node::Convert(const entt::entity entity) { return Node(*this, entity); }
+Node Node::Convert(const entt::entity entity) const { return Node(*this, entity); }
 
 }  // namespace cqsp::common
