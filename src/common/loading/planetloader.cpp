@@ -197,6 +197,7 @@ void PlanetLoader::PostLoad(const entt::entity& entity) {
     body.SOI = bodies::CalculateSOI(body.GM, orbit.GM, orbit.semi_major_axis);
     body.mass = bodies::CalculateMass(body.GM);
     universe.get_or_emplace<bodies::OrbitalSystem>(parent).push_back(entity);
+    universe.get_or_emplace<bodies::OrbitalSystem>(parent).bodies.push_back(entity);
     universe.remove<ParentTemp>(entity);
 }
 }  // namespace cqsp::common::loading

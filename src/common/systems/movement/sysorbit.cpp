@@ -48,6 +48,7 @@ void SysOrbit::DoSystem() {
 
 void SysOrbit::LeaveSOI(const entt::entity& body, entt::entity& parent, Orbit& orb, Kinematics& pos,
                         Kinematics& p_pos) {
+    ZoneScoped;
     // Then change parent, then set the orbit
     auto& p_orb = GetUniverse().get<Orbit>(parent);
     if (p_orb.reference_body == entt::null) {
@@ -78,6 +79,7 @@ void SysOrbit::LeaveSOI(const entt::entity& body, entt::entity& parent, Orbit& o
 }
 
 bool SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
+    ZoneScoped;
     if (GetUniverse().any_of<Body>(body)) {
         return false;
     }
@@ -115,24 +117,38 @@ bool SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
  * Adds an impulse in the body centered inertial frame
  */
 void SysOrbit::CalculateImpulse(types::Orbit& orb, entt::entity body, entt::entity parent) {
-    if (GetUniverse().any_of<types::Impulse>(body)) {
-        // Then add to the orbit the speed.
-        // Then also convert the velocity
-        auto& impulse = GetUniverse().get<types::Impulse>(body);
-        auto reference = orb.reference_body;
-        auto& pos = GetUniverse().get_or_emplace<Kinematics>(body);
+    ZoneScoped;
+    if (!GetUniverse().any_of<types::Impulse>(body)) {
+        return;
+    }
+    // Then add to the orbit the speed.
+    // Then also convert the velocity
+    auto& impulse = GetUniverse().get<types::Impulse>(body);
+    auto reference = orb.reference_body;
+    auto& pos = GetUniverse().get_or_emplace<Kinematics>(body);
 
-        orb = types::Vec3ToOrbit(pos.position, pos.velocity + impulse.impulse, orb.GM, GetUniverse().date.ToSecond());
-        orb.reference_body = reference;
-        pos.position = types::toVec3(orb);
-        pos.velocity = types::OrbitVelocityToVec3(orb, orb.v);
-        GetUniverse().emplace_or_replace<bodies::DirtyOrbit>(body);
-        // Remove impulse
-        GetUniverse().remove<types::Impulse>(body);
+    orb = types::Vec3ToOrbit(pos.position, pos.velocity + impulse.impulse, orb.GM, GetUniverse().date.ToSecond());
+    orb.reference_body = reference;
+    pos.position = types::toVec3(orb);
+    pos.velocity = types::OrbitVelocityToVec3(orb, orb.v);
+    GetUniverse().emplace_or_replace<bodies::DirtyOrbit>(body);
+    // Remove impulse
+    GetUniverse().remove<types::Impulse>(body);
+}
+
+void SysOrbit::ParseChildren(entt::entity body) {
+    ZoneScoped;
+    if (!GetUniverse().any_of<components::bodies::OrbitalSystem>(body)) {
+        return;
+    }
+    for (entt::entity entity : GetUniverse().get<components::bodies::OrbitalSystem>(body).children) {
+        // Calculate position
+        ParseOrbitTree(body, entity);
     }
 }
 
 void SysOrbit::UpdateCommandQueue(Orbit& orb, entt::entity body, entt::entity parent) {
+    ZoneScoped;
     // Process thrust before updating orbit
     if (!GetUniverse().any_of<components::CommandQueue>(body)) {
         return;
@@ -166,6 +182,7 @@ void SysOrbit::UpdateCommandQueue(Orbit& orb, entt::entity body, entt::entity pa
 }
 
 void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
+    ZoneScoped;
     if (!GetUniverse().valid(body)) {
         return;
     }
@@ -175,9 +192,12 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     }
     auto& orb = GetUniverse().get<types::Orbit>(body);
 
+    {
+        ZoneScopedN("Orbit Update");
+        types::UpdateOrbit(orb, GetUniverse().date.ToSecond());
+    }
     UpdateCommandQueue(orb, body, parent);
 
-    types::UpdateOrbit(orb, GetUniverse().date.ToSecond());
     auto& pos = GetUniverse().get_or_emplace<types::Kinematics>(body);
 
     // Set our current true anomaly for debugging purposes
@@ -193,6 +213,7 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     }
     glm::dvec3 future_center = glm::dvec3(0, 0, 0);
     if (parent != entt::null) {
+        ZoneScopedN("Future Position computation");
         auto& p_pos = GetUniverse().get_or_emplace<types::Kinematics>(parent);
         // If distance is above SOI, then be annoyed
         auto& p_bod = GetUniverse().get<components::bodies::Body>(parent);
@@ -209,9 +230,12 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
         CalculateImpulse(orb, body, parent);
         pos.center = p_pos.center + p_pos.position;
 
-        if (GetUniverse().any_of<types::FuturePosition>(parent)) {
-            auto& future_pos = GetUniverse().get<types::FuturePosition>(parent);
-            future_center = future_pos.center + future_pos.position;
+        {
+            ZoneScopedN("Computing future position");
+            if (GetUniverse().any_of<types::FuturePosition>(parent)) {
+                auto& future_pos = GetUniverse().get<types::FuturePosition>(parent);
+                future_center = future_pos.center + future_pos.position;
+            }
         }
         if (EnterSOI(parent, body)) {
             //auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
@@ -226,44 +250,11 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
         types::OrbitTimeToVec3(orb, GetUniverse().date.ToSecond() + components::StarDate::TIME_INCREMENT);
     future_pos.center = future_center;
 
-    if (!GetUniverse().any_of<components::bodies::OrbitalSystem>(body)) {
-        return;
-    }
-    for (entt::entity entity : GetUniverse().get<components::bodies::OrbitalSystem>(body).children) {
-        // Calculate position
-        ParseOrbitTree(body, entity);
-    }
-}
-
-void SysSurface::DoSystem() {
-    Universe& universe = GetGame().GetUniverse();
-
-    auto objects = GetUniverse().view<types::SurfaceCoordinate>();
-    // First put them in a tree
-    // Find all the entities
-    for (entt::entity object : objects) {
-        types::SurfaceCoordinate& surface = GetUniverse().get<types::SurfaceCoordinate>(object);
-        //types::Kinematics& surfacekin = universe.get_or_emplace<types::Kinematics>(object);
-        //types::Kinematics& center = universe.get<types::Kinematics>(surface.planet);
-        glm::vec3 anglevec = types::toVec3(surface);
-        // Get planet radius
-        //surfacekin.position = (anglevec * surface.radius + center.position);
-    }
-}
-
-void SysPath::DoSystem() {
-    ZoneScoped;
-    Universe& universe = GetUniverse();
-
-    auto bodies = universe.view<types::MoveTarget, Kinematics>(entt::exclude<Orbit>);
-    for (entt::entity body : bodies) {
-        Kinematics& bodykin = universe.get<Kinematics>(body);
-        Kinematics& targetkin = universe.get<Kinematics>(GetUniverse().get<types::MoveTarget>(body).target);
-        glm::vec3 path = targetkin.position - bodykin.position;
-    }
+    ParseChildren(body);
 }
 
 bool SysOrbit::EnterSOI(const entt::entity& parent, const entt::entity& body) {
+    ZoneScoped;
     // We should ignore bodies
     if (GetUniverse().any_of<Body>(body)) {
         return false;
@@ -279,32 +270,36 @@ bool SysOrbit::EnterSOI(const entt::entity& parent, const entt::entity& body) {
     // Check parents for SOI if we're intersecting with anything
     auto& o_system = GetUniverse().get<OrbitalSystem>(parent);
 
-    for (entt::entity entity : o_system.children) {
+    for (entt::entity entity : o_system.bodies) {
         // Get the stuff
         if (entity == body) {
             continue;
         }
-        // Check the distance
-        if (!GetUniverse().all_of<Body, Kinematics>(entity)) {
-            continue;
-        }
+
         const auto& body_comp = GetUniverse().get<Body>(entity);
         const auto& target_position = GetUniverse().get<Kinematics>(entity);
         if (glm::distance(target_position.position, pos.position) <= body_comp.SOI) {
             // Calculate position
-            SPDLOG_INFO("Pre enter position: {}", glm::to_string(pos.position - target_position.position));
-            SPDLOG_INFO("Pre enter velocity: {}", glm::to_string(pos.velocity - target_position.velocity));
+            if (debug_prints) {
+                SPDLOG_INFO("Pre enter position: {}", glm::to_string(pos.position - target_position.position));
+                SPDLOG_INFO("Pre enter velocity: {}", glm::to_string(pos.velocity - target_position.velocity));
+            }
 
             orb = types::Vec3ToOrbit(pos.position - target_position.position, pos.velocity - target_position.velocity,
                                      body_comp.GM, GetUniverse().date.ToSecond());
-            SPDLOG_INFO("Post enter SOI maneuver: {}", orb.ToHumanString());
+            if (debug_prints) {
+                SPDLOG_INFO("Post enter SOI maneuver: {}", orb.ToHumanString());
+            }
             orb.reference_body = entity;
             // Calculate position, and change the thing
             pos.position = types::toVec3(orb);
             pos.center = target_position.position + target_position.center;
             pos.velocity = types::OrbitVelocityToVec3(orb, orb.v);
-            SPDLOG_INFO("Post enter position: {}", glm::to_string(pos.position));
-            SPDLOG_INFO("Post enter velocity: {}", glm::to_string(pos.velocity));
+
+            if (debug_prints) {
+                SPDLOG_INFO("Post enter position: {}", glm::to_string(pos.position));
+                SPDLOG_INFO("Post enter velocity: {}", glm::to_string(pos.velocity));
+            }
 
             // Then change SOI
             GetUniverse().get_or_emplace<OrbitalSystem>(entity).push_back(body);

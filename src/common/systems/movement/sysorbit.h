@@ -61,19 +61,9 @@ class SysOrbit : public ISimulationSystem {
     void UpdateCommandQueue(components::types::Orbit& orb, entt::entity body, entt::entity parent);
 
     void CalculateImpulse(components::types::Orbit& orb, entt::entity body, entt::entity parent);
-};
 
-class SysPath : public ISimulationSystem {
- public:
-    explicit SysPath(Game& game) : ISimulationSystem(game) {}
-    void DoSystem();
-    int Interval() { return 1; }
-};
+    void ParseChildren(entt::entity body);
 
-class SysSurface : public ISimulationSystem {
- public:
-    explicit SysSurface(Game& game) : ISimulationSystem(game) {}
-    void DoSystem();
-    int Interval() { return 1; }
+    const bool debug_prints = false;
 };
 }  // namespace cqsp::common::systems
