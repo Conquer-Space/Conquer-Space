@@ -16,8 +16,8 @@
  */
 #include "common/systems/history/sysmarkethistory.h"
 
-#include "common/components/market.h"
 #include "common/components/history.h"
+#include "common/components/market.h"
 namespace cqsp::common::systems::history {
 
 using components::Market;
@@ -25,25 +25,23 @@ using components::MarketHistory;
 
 void SysMarketHistory::DoSystem() {
     /*
-    auto view = GetUniverse().view<Market, MarketHistory>();
-
-    for (entt::entity marketentity : GetUniverse().view<Market>()) {
-        Market& market_data = GetUniverse().get<Market>(marketentity);
+    for (Node market_node : GetUniverse().nodes<Market>()) {
+        Market& market_data = market_node.get<Market>();
         market_data.history.push_back(market_data);
     }
-    auto view = GetUniverse().view<Market, MarketHistory>();
-    for (entt::entity entity : view) {
-        auto& history = GetUniverse().get<MarketHistory>(entity);
-        Market& market_data = GetUniverse().get<Market>(entity);
+    auto view = GetUniverse().nodes<Market, MarketHistory>();
+    for (Node market_node : view) {
+        auto& history = market_node.get<MarketHistory>();
+        Market& market_data = market_node.get<Market>();
         // Loop through the prices
         for (auto resource : market_data.market_information) {
             history.price_history[resource.first].push_back(resource.second.price);
             history.volume[resource.first].push_back(market_data.last_market_information[resource.first].demand);
         }
         double val = 0;
-        for (entt::entity ent : market_data.participants) {
-            if (GetUniverse().any_of<components::Wallet>(ent)) {
-                auto& wallet = GetUniverse().get<components::Wallet>(ent);
+        for (Node participant_node : market_node.Convert(market_data.participants)) {
+            if (participant_node.any_of<components::Wallet>()) {
+                auto& wallet = participant_node.get<components::Wallet>();
                 val += wallet.GetGDPChange();
             }
         }

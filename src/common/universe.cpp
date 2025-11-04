@@ -36,12 +36,22 @@ std::vector<Node> Universe::Convert(const std::vector<entt::entity>& entities) {
 
     return std::vector<Node>(nodes_view.begin(), nodes_view.end());
 }
+std::set<Node> Universe::Convert(const std::set<entt::entity>& entities) {
+    std::set<Node> nodes;
+    for (const auto& entity : entities) {
+        nodes.insert(Node(*this, entity));
+    }
+    return nodes;
+}
 
 Node::Node(Universe& universe, entt::entity entity) : entt::handle(universe, entity) {}
 Node::Node(entt::handle handle, entt::entity entity) : entt::handle(*handle.registry(), entity) {}
 Node::Node(Universe& universe) : entt::handle(universe, universe.create()) {}
 Universe& Node::universe() const { return static_cast<Universe&>(*this->registry()); }
 std::vector<Node> Node::Convert(const std::vector<entt::entity>& entities) const {
+    return this->universe().Convert(entities);
+}
+std::set<Node> Node::Convert(const std::set<entt::entity>& entities) const {
     return this->universe().Convert(entities);
 }
 Node Node::Convert(const entt::entity entity) const { return Node(*this, entity); }
