@@ -31,9 +31,9 @@ class SysPlanetaryTrade : public ISimulationSystem {
     int Interval() override { return components::StarDate::DAY; }
     void Init() override;
 
-    void DeterminePrice(components::Market& market, entt::entity good_entity);
+    void DeterminePrice(components::Market& market, Node good_entity);
 
-    private:
+ private:
     bool initial_tick;
 
     components::ResourceLedger base_prices;
