@@ -34,7 +34,7 @@ class SysPopulationConsumption : public ISimulationSystem {
     int Interval() override { return components::StarDate::DAY; }
 
  private:
-    void ProcessSettlement(Node settlement, components::ResourceConsumption& marginal_propensity_base,
-                           components::ResourceConsumption& autonomous_consumption_base, float savings);
+    void ProcessSettlement(Node& settlement, const components::ResourceConsumption& marginal_propensity_base,
+                           const components::ResourceConsumption& autonomous_consumption_base, const float savings);
 };
 }  // namespace cqsp::common::systems

@@ -92,8 +92,8 @@ class Universe : public entt::registry {
 
 class Node : public entt::handle {
  public:
-    explicit Node(Universe& universe, entt::entity entity);
-    Node(const entt::handle handle, entt::entity entity);
+    explicit Node(Universe& universe, const entt::entity entity);
+    Node(const entt::handle handle, const entt::entity entity);
     explicit Node(Universe& universe);
     Universe& universe() const;
     std::vector<Node> Convert(const std::vector<entt::entity>& entities) const;

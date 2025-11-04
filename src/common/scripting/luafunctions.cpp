@@ -391,7 +391,9 @@ void FunctionScience(Universe& universe, ScriptInterface& script_engine) {
     });
 
     REGISTER_FUNCTION("complete_technology", [&](entt::entity entity, entt::entity tech) {
-        actions::ResearchTech(Node(universe, entity), Node(universe, tech));
+        Node civilization(universe, entity);
+        Node tech_node(universe, tech);
+        actions::ResearchTech(civilization, tech_node);
     });
 
     REGISTER_FUNCTION("research_technology", [&](entt::entity entity, entt::entity tech) {

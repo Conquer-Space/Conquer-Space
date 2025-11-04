@@ -69,8 +69,9 @@ void SysPopulationGrowth::DoSystem() {
     }
 }
 
-void SysPopulationConsumption::ProcessSettlement(Node settlement, ResourceConsumption& marginal_propensity_base,
-                                                 ResourceConsumption& autonomous_consumption_base, float savings) {
+void SysPopulationConsumption::ProcessSettlement(Node& settlement, const ResourceConsumption& marginal_propensity_base,
+                                                 const ResourceConsumption& autonomous_consumption_base,
+                                                 const float savings) {
     // Get the transport cost
     if (!settlement.any_of<components::infrastructure::CityInfrastructure>()) {
         return;
@@ -100,7 +101,7 @@ void SysPopulationConsumption::ProcessSettlement(Node settlement, ResourceConsum
 
         if (wallet > 0) {  // If the pop has cash left over spend it
             // Add to the cost of price of transport
-            components::ResourceConsumption& extraconsumption = marginal_propensity_base;
+            const ResourceConsumption& extraconsumption = marginal_propensity_base;
 
             double extra_cost = (extraconsumption * market.price).GetSum();  // Distribute wallet amongst goods
 

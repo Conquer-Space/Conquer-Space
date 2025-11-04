@@ -102,7 +102,7 @@ void SysPlanetaryTrade::Init() {
     }
 }
 
-void SysPlanetaryTrade::DeterminePrice(components::Market& market, Node good_entity) {
+void SysPlanetaryTrade::DeterminePrice(components::Market& market, Node& good_entity) {
     const double sd_ratio = market.sd_ratio[good_entity];
     const double supply = market.supply()[good_entity];
     const double demand = market.demand()[good_entity];

@@ -7,6 +7,6 @@
 #include "common/universe.h"
 
 namespace cqsp::common::actions {
-void ResearchTech(Node civilization, Node tech);
-void ProcessAction(Node civilization, const std::string &action);
+void ResearchTech(Node& civilization, Node& tech);
+void ProcessAction(Node& civilization, const std::string& action);
 }  // namespace cqsp::common::actions

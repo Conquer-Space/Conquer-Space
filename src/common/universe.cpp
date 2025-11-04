@@ -44,8 +44,8 @@ std::set<Node> Universe::Convert(const std::set<entt::entity>& entities) {
     return nodes;
 }
 
-Node::Node(Universe& universe, entt::entity entity) : entt::handle(universe, entity) {}
-Node::Node(entt::handle handle, entt::entity entity) : entt::handle(*handle.registry(), entity) {}
+Node::Node(Universe& universe, const entt::entity entity) : entt::handle(universe, entity) {}
+Node::Node(const entt::handle handle, const entt::entity entity) : entt::handle(*handle.registry(), entity) {}
 Node::Node(Universe& universe) : entt::handle(universe, universe.create()) {}
 Universe& Node::universe() const { return static_cast<Universe&>(*this->registry()); }
 std::vector<Node> Node::Convert(const std::vector<entt::entity>& entities) const {

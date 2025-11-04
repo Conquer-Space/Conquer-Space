@@ -23,7 +23,7 @@
 
 namespace cqsp::common::actions {
 
-void ResearchTech(Node civilization, Node tech) {
+void ResearchTech(Node& civilization, Node& tech) {
     // Ensure it's a tech or something
     auto& tech_progress = civilization.get_or_emplace<components::science::TechnologicalProgress>();
     tech_progress.researched_techs.emplace(tech);
@@ -35,7 +35,7 @@ void ResearchTech(Node civilization, Node tech) {
     }
 }
 
-void ProcessAction(Node civilization, const std::string& action) {
+void ProcessAction(Node& civilization, std::string& action) {
     // Process the tech
     // Split by the colon
     auto& tech_progress = civilization.get_or_emplace<components::science::TechnologicalProgress>();
