@@ -16,6 +16,7 @@
  */
 #pragma once
 
+#include "common/components/resource.h"
 #include "common/systems/isimulationsystem.h"
 
 namespace cqsp::common::systems {
@@ -31,5 +32,9 @@ class SysPopulationConsumption : public ISimulationSystem {
     explicit SysPopulationConsumption(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
     int Interval() override { return components::StarDate::DAY; }
+
+ private:
+    void ProcessSettlement(Node settlement, components::ResourceConsumption& marginal_propensity_base,
+                           components::ResourceConsumption& autonomous_consumption_base, float savings);
 };
 }  // namespace cqsp::common::systems
