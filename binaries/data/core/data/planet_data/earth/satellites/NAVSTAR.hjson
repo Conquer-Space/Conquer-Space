@@ -3,13 +3,13 @@
     name: GPS BIIR-2  (PRN 13)
     orbit:
     {
-      eccentricity: 0.008591
-      semi_major_axis: 26560502.585286524 m
-      inclination: 26560502.585286524 deg
-      LAN: 121.0251 deg
-      arg_periapsis: 54.9275 deg
-      M0: 305.8629 deg
-      epoch: 1732111254.332352
+      eccentricity: 0.0096319
+      semi_major_axis: 26560377.5716471 m
+      inclination: 55.8744 deg
+      LAN: 107.4682 deg
+      arg_periapsis: 56.9355 deg
+      M0: 304.0099 deg
+      epoch: 1762046563.994784
       reference: earth
     }
     tags:
@@ -22,13 +22,13 @@
     name: GPS BIIR-4  (PRN 20)
     orbit:
     {
-      eccentricity: 0.0040012
-      semi_major_axis: 26559992.740164846 m
-      inclination: 26559992.740164846 deg
-      LAN: 42.5115 deg
-      arg_periapsis: 222.2167 deg
-      M0: 191.7391 deg
-      epoch: 1732150001.691936
+      eccentricity: 0.0038264
+      semi_major_axis: 26559699.733754147 m
+      inclination: 55.0218 deg
+      LAN: 28.4878 deg
+      arg_periapsis: 238.1353 deg
+      M0: 291.7197 deg
+      epoch: 1762055873.656128
       reference: earth
     }
     tags:
@@ -41,13 +41,13 @@
     name: GPS BIIR-5  (PRN 22)
     orbit:
     {
-      eccentricity: 0.0139671
-      semi_major_axis: 26560458.6184575 m
-      inclination: 26560458.6184575 deg
-      LAN: 237.9584 deg
-      arg_periapsis: 297.1521 deg
-      M0: 251.5861 deg
-      epoch: 1732142513.302848
+      eccentricity: 0.0128295
+      semi_major_axis: 26560019.401589163 m
+      inclination: 54.9022 deg
+      LAN: 224.1925 deg
+      arg_periapsis: 300.9875 deg
+      M0: 21.8159 deg
+      epoch: 1762050279.549024
       reference: earth
     }
     tags:
@@ -60,32 +60,13 @@
     name: GPS BIIR-8  (PRN 16)
     orbit:
     {
-      eccentricity: 0.0140836
-      semi_major_axis: 26560143.528173983 m
-      inclination: 26560143.528173983 deg
-      LAN: 237.7621 deg
-      arg_periapsis: 48.3772 deg
-      M0: 56.7221 deg
-      epoch: 1732158724.59792
-      reference: earth
-    }
-    tags:
-    [
-      navigation
-      gps
-    ]
-  }
-  {
-    name: GPS BIIR-9  (PRN 21)
-    orbit:
-    {
-      eccentricity: 0.0257614
-      semi_major_axis: 26559920.083709046 m
-      inclination: 26559920.083709046 deg
-      LAN: 347.4771 deg
-      arg_periapsis: 331.4371 deg
-      M0: 99.4955 deg
-      epoch: 1732128859.662048
+      eccentricity: 0.0145724
+      semi_major_axis: 26559525.20500217 m
+      inclination: 54.9346 deg
+      LAN: 223.9279 deg
+      arg_periapsis: 51.252 deg
+      M0: 320.3076 deg
+      epoch: 1762215831.106272
       reference: earth
     }
     tags:
@@ -98,13 +79,13 @@
     name: GPS BIIR-11 (PRN 19)
     orbit:
     {
-      eccentricity: 0.0098534
-      semi_major_axis: 26559479.300090946 m
-      inclination: 26559479.300090946 deg
-      LAN: 298.7957 deg
-      arg_periapsis: 155.1034 deg
-      M0: 16.735 deg
-      epoch: 1732105483.32816
+      eccentricity: 0.010787
+      semi_major_axis: 26560467.888556916 m
+      inclination: 55.0218 deg
+      LAN: 284.8588 deg
+      arg_periapsis: 166.8811 deg
+      M0: 199.4074 deg
+      epoch: 1762063189.06896
       reference: earth
     }
     tags:
@@ -117,13 +98,13 @@
     name: GPS BIIR-13 (PRN 02)
     orbit:
     {
-      eccentricity: 0.0166266
-      semi_major_axis: 26560413.15094416 m
-      inclination: 26560413.15094416 deg
-      LAN: 347.9448 deg
-      arg_periapsis: 296.9031 deg
-      M0: 200.4111 deg
-      epoch: 1732138730.045568
+      eccentricity: 0.0169302
+      semi_major_axis: 26559999.008242033 m
+      inclination: 55.2603 deg
+      LAN: 334.1044 deg
+      arg_periapsis: 307.5258 deg
+      M0: 113.2243 deg
+      epoch: 1761933394.171296
       reference: earth
     }
     tags:
@@ -136,13 +117,13 @@
     name: GPS BIIRM-1 (PRN 17)
     orbit:
     {
-      eccentricity: 0.0137122
-      semi_major_axis: 26559352.356388357 m
-      inclination: 26559352.356388357 deg
-      LAN: 296.2729 deg
-      arg_periapsis: 286.9929 deg
-      M0: 68.9239 deg
-      epoch: 1732081250.206944
+      eccentricity: 0.0133497
+      semi_major_axis: 26561479.084247712 m
+      inclination: 55.0673 deg
+      LAN: 282.3211 deg
+      arg_periapsis: 292.5576 deg
+      M0: 55.173 deg
+      epoch: 1762105275.471168
       reference: earth
     }
     tags:
@@ -155,13 +136,13 @@
     name: GPS BIIRM-2 (PRN 31)
     orbit:
     {
-      eccentricity: 0.010549
-      semi_major_axis: 26559552.48320683 m
-      inclination: 26559552.48320683 deg
-      LAN: 174.0795 deg
-      arg_periapsis: 43.3577 deg
-      M0: 136.2723 deg
-      epoch: 1732158269.735616
+      eccentricity: 0.0107164
+      semi_major_axis: 26561052.804042812 m
+      inclination: 54.6886 deg
+      LAN: 160.3474 deg
+      arg_periapsis: 50.8543 deg
+      M0: 41.6813 deg
+      epoch: 1762086326.255136
       reference: earth
     }
     tags:
@@ -174,13 +155,13 @@
     name: GPS BIIRM-3 (PRN 12)
     orbit:
     {
-      eccentricity: 0.0086407
-      semi_major_axis: 26559233.712185103 m
-      inclination: 26559233.712185103 deg
-      LAN: 236.7839 deg
-      arg_periapsis: 83.9025 deg
-      M0: 277.1278 deg
-      epoch: 1732086637.723872
+      eccentricity: 0.0086521
+      semi_major_axis: 26559715.977344785 m
+      inclination: 54.9811 deg
+      LAN: 223.0119 deg
+      arg_periapsis: 87.1013 deg
+      M0: 273.9141 deg
+      epoch: 1762065172.949472
       reference: earth
     }
     tags:
@@ -193,13 +174,13 @@
     name: GPS BIIRM-4 (PRN 15)
     orbit:
     {
-      eccentricity: 0.0159534
-      semi_major_axis: 26560933.7876861 m
-      inclination: 26560933.7876861 deg
-      LAN: 103.8628 deg
-      arg_periapsis: 78.7413 deg
-      M0: 283.0179 deg
-      epoch: 1731941107.54416
+      eccentricity: 0.0164696
+      semi_major_axis: 26560126.48937483 m
+      inclination: 53.9265 deg
+      LAN: 89.4464 deg
+      arg_periapsis: 84.6485 deg
+      M0: 277.2299 deg
+      epoch: 1762048418.000544
       reference: earth
     }
     tags:
@@ -212,13 +193,13 @@
     name: GPS BIIRM-5 (PRN 29)
     orbit:
     {
-      eccentricity: 0.0027759
-      semi_major_axis: 26561059.161037058 m
-      inclination: 26561059.161037058 deg
-      LAN: 297.1417 deg
-      arg_periapsis: 157.4694 deg
-      M0: 15.6827 deg
-      epoch: 1732118791.203936
+      eccentricity: 0.0032256
+      semi_major_axis: 26559320.31172964 m
+      inclination: 55.2179 deg
+      LAN: 283.2744 deg
+      arg_periapsis: 163.6599 deg
+      M0: 152.0394 deg
+      epoch: 1762074277.26624
       reference: earth
     }
     tags:
@@ -231,13 +212,13 @@
     name: GPS BIIRM-6 (PRN 07)
     orbit:
     {
-      eccentricity: 0.0190292
-      semi_major_axis: 26559524.498771265 m
-      inclination: 26559524.498771265 deg
-      LAN: 172.8482 deg
-      arg_periapsis: 240.3864 deg
-      M0: 117.7726 deg
-      epoch: 1732062731.620608
+      eccentricity: 0.0201206
+      semi_major_axis: 26560334.22333452 m
+      inclination: 54.4707 deg
+      LAN: 158.9285 deg
+      arg_periapsis: 244.5685 deg
+      M0: 113.4315 deg
+      epoch: 1762217435.657952
       reference: earth
     }
     tags:
@@ -250,13 +231,13 @@
     name: GPS BIIRM-8 (PRN 05)
     orbit:
     {
-      eccentricity: 0.0054654
-      semi_major_axis: 26560632.45623958 m
-      inclination: 26560632.45623958 deg
-      LAN: 50.0899 deg
-      arg_periapsis: 76.0487 deg
-      M0: 286.396 deg
-      epoch: 1732104678.107808
+      eccentricity: 0.0053096
+      semi_major_axis: 26559958.2216652 m
+      inclination: 56.064 deg
+      LAN: 36.3792 deg
+      arg_periapsis: 82.2871 deg
+      M0: 278.8647 deg
+      epoch: 1762086191.15232
       reference: earth
     }
     tags:
@@ -269,13 +250,13 @@
     name: GPS BIIF-1  (PRN 25)
     orbit:
     {
-      eccentricity: 0.0118874
-      semi_major_axis: 26560716.85996708 m
-      inclination: 26560716.85996708 deg
-      LAN: 231.6984 deg
-      arg_periapsis: 62.4687 deg
-      M0: 117.7428 deg
-      epoch: 1732111939.28736
+      eccentricity: 0.0124148
+      semi_major_axis: 26561462.573076304 m
+      inclination: 54.3089 deg
+      LAN: 217.7127 deg
+      arg_periapsis: 64.6256 deg
+      M0: 290.9488 deg
+      epoch: 1762071138.368928
       reference: earth
     }
     tags:
@@ -288,13 +269,13 @@
     name: GPS BIIF-3  (PRN 24)
     orbit:
     {
-      eccentricity: 0.016097
-      semi_major_axis: 26560596.964495856 m
-      inclination: 26560596.964495856 deg
-      LAN: 167.1035 deg
-      arg_periapsis: 58.6579 deg
-      M0: 302.9704 deg
-      epoch: 1732078742.917824
+      eccentricity: 0.0174318
+      semi_major_axis: 26560259.00427908 m
+      inclination: 53.5499 deg
+      LAN: 152.909 deg
+      arg_periapsis: 63.3064 deg
+      M0: 298.5622 deg
+      epoch: 1762056861.905376
       reference: earth
     }
     tags:
@@ -307,13 +288,13 @@
     name: GPS BIIF-4  (PRN 27)
     orbit:
     {
-      eccentricity: 0.0127108
-      semi_major_axis: 26560462.238209646 m
-      inclination: 26560462.238209646 deg
-      LAN: 292.2787 deg
-      arg_periapsis: 45.0723 deg
-      M0: 315.9401 deg
-      epoch: 1732109893.938432
+      eccentricity: 0.0135488
+      semi_major_axis: 26560205.415441196 m
+      inclination: 54.6869 deg
+      LAN: 278.2103 deg
+      arg_periapsis: 48.2613 deg
+      M0: 312.8776 deg
+      epoch: 1762091758.935936
       reference: earth
     }
     tags:
@@ -326,13 +307,13 @@
     name: GPS BIIF-5  (PRN 30)
     orbit:
     {
-      eccentricity: 0.0072935
-      semi_major_axis: 26561452.242570344 m
-      inclination: 26561452.242570344 deg
-      LAN: 172.7302 deg
-      arg_periapsis: 220.2785 deg
-      M0: 139.2475 deg
-      epoch: 1732066480.271232
+      eccentricity: 0.0078448
+      semi_major_axis: 26559604.214881185 m
+      inclination: 53.6242 deg
+      LAN: 158.5937 deg
+      arg_periapsis: 226.1545 deg
+      M0: 133.2883 deg
+      epoch: 1762044742.767456
       reference: earth
     }
     tags:
@@ -345,13 +326,13 @@
     name: GPS BIIF-6  (PRN 06)
     orbit:
     {
-      eccentricity: 0.0034619
-      semi_major_axis: 26560913.48087411 m
-      inclination: 26560913.48087411 deg
-      LAN: 353.8257 deg
-      arg_periapsis: 313.3178 deg
-      M0: 46.44 deg
-      epoch: 1732090933.379808
+      eccentricity: 0.0037847
+      semi_major_axis: 26560312.946528908 m
+      inclination: 56.5977 deg
+      LAN: 340.319 deg
+      arg_periapsis: 317.0884 deg
+      M0: 42.6794 deg
+      epoch: 1762158726.693792
       reference: earth
     }
     tags:
@@ -364,13 +345,13 @@
     name: GPS BIIF-7  (PRN 09)
     orbit:
     {
-      eccentricity: 0.0029781
-      semi_major_axis: 26559198.136837732 m
-      inclination: 26559198.136837732 deg
-      LAN: 111.3539 deg
-      arg_periapsis: 117.4352 deg
-      M0: 242.8501 deg
-      epoch: 1732141327.415328
+      eccentricity: 0.0033294
+      semi_major_axis: 26559784.39491492 m
+      inclination: 55.2033 deg
+      LAN: 97.536 deg
+      arg_periapsis: 118.6659 deg
+      M0: 241.6806 deg
+      epoch: 1762033638.06576
       reference: earth
     }
     tags:
@@ -383,13 +364,13 @@
     name: GPS BIIF-8  (PRN 03)
     orbit:
     {
-      eccentricity: 0.005446
-      semi_major_axis: 26559803.375351157 m
-      inclination: 26559803.375351157 deg
-      LAN: 53.1513 deg
-      arg_periapsis: 65.4293 deg
-      M0: 295.1588 deg
-      epoch: 1732130881.086816
+      eccentricity: 0.0061101
+      semi_major_axis: 26560464.00394284 m
+      inclination: 56.8297 deg
+      LAN: 39.6804 deg
+      arg_periapsis: 69.8084 deg
+      M0: 290.8642 deg
+      epoch: 1762155741.362112
       reference: earth
     }
     tags:
@@ -402,13 +383,13 @@
     name: GPS BIIF-9  (PRN 26)
     orbit:
     {
-      eccentricity: 0.0094581
-      semi_major_axis: 26561000.800441045 m
-      inclination: 26561000.800441045 deg
-      LAN: 227.9354 deg
-      arg_periapsis: 32.187 deg
-      M0: 328.4472 deg
-      epoch: 1732099208.641344
+      eccentricity: 0.0105115
+      semi_major_axis: 26560244.260700352 m
+      inclination: 53.2059 deg
+      LAN: 213.5066 deg
+      arg_periapsis: 37.4511 deg
+      M0: 323.327 deg
+      epoch: 1762210108.893024
       reference: earth
     }
     tags:
@@ -421,13 +402,13 @@
     name: GPS BIIF-10 (PRN 08)
     orbit:
     {
-      eccentricity: 0.009922
-      semi_major_axis: 26560755.530518096 m
-      inclination: 26560755.530518096 deg
-      LAN: 290.6733 deg
-      arg_periapsis: 20.5577 deg
-      M0: 339.8263 deg
-      epoch: 1732113138.341376
+      eccentricity: 0.0108473
+      semi_major_axis: 26560005.099757206 m
+      inclination: 54.1648 deg
+      LAN: 276.3923 deg
+      arg_periapsis: 25.9281 deg
+      M0: 334.5926 deg
+      epoch: 1762180997.880096
       reference: earth
     }
     tags:
@@ -440,13 +421,13 @@
     name: GPS BIIF-11 (PRN 10)
     orbit:
     {
-      eccentricity: 0.0101375
-      semi_major_axis: 26560422.156144943 m
-      inclination: 26560422.156144943 deg
-      LAN: 53.0119 deg
-      arg_periapsis: 225.9327 deg
-      M0: 133.2513 deg
-      epoch: 1732118346.491904
+      eccentricity: 0.0109345
+      semi_major_axis: 26560053.03745503 m
+      inclination: 56.8038 deg
+      LAN: 39.5809 deg
+      arg_periapsis: 228.8982 deg
+      M0: 130.1734 deg
+      epoch: 1762053271.00128
       reference: earth
     }
     tags:
@@ -459,13 +440,13 @@
     name: GPS BIIF-12 (PRN 32)
     orbit:
     {
-      eccentricity: 0.0082479
-      semi_major_axis: 26561181.887088176 m
-      inclination: 26561181.887088176 deg
-      LAN: 112.2587 deg
-      arg_periapsis: 238.7915 deg
-      M0: 120.3792 deg
-      epoch: 1732082427.318816
+      eccentricity: 0.0090258
+      semi_major_axis: 26560422.509290226 m
+      inclination: 55.3821 deg
+      LAN: 98.4535 deg
+      arg_periapsis: 242.7672 deg
+      M0: 116.3192 deg
+      epoch: 1762107020.807328
       reference: earth
     }
     tags:
@@ -478,13 +459,13 @@
     name: GPS BIII-1  (PRN 04)
     orbit:
     {
-      eccentricity: 0.0031936
-      semi_major_axis: 26560507.26449792 m
-      inclination: 26560507.26449792 deg
-      LAN: 114.8442 deg
-      arg_periapsis: 192.2741 deg
-      M0: 137.8878 deg
-      epoch: 1732134852.296064
+      eccentricity: 0.0036616
+      semi_major_axis: 26561331.544155236 m
+      inclination: 55.544 deg
+      LAN: 101.0896 deg
+      arg_periapsis: 193.643 deg
+      M0: 179.2964 deg
+      epoch: 1762207292.539872
       reference: earth
     }
     tags:
@@ -497,13 +478,13 @@
     name: GPS BIII-2  (PRN 18)
     orbit:
     {
-      eccentricity: 0.0048549
-      semi_major_axis: 26560839.846933562 m
-      inclination: 26560839.846933562 deg
-      LAN: 353.8982 deg
-      arg_periapsis: 193.8335 deg
-      M0: 337.7954 deg
-      epoch: 1732127308.63776
+      eccentricity: 0.0057628
+      semi_major_axis: 26560242.053579547 m
+      inclination: 55.7364 deg
+      LAN: 340.1626 deg
+      arg_periapsis: 197.6302 deg
+      M0: 114.3547 deg
+      epoch: 1762083291.557952
       reference: earth
     }
     tags:
@@ -516,13 +497,13 @@
     name: GPS BIII-3  (PRN 23)
     orbit:
     {
-      eccentricity: 0.0049623
-      semi_major_axis: 26559783.953509826 m
-      inclination: 26559783.953509826 deg
-      LAN: 51.3055 deg
-      arg_periapsis: 196.381 deg
-      M0: 125.9896 deg
-      epoch: 1732109657.681088
+      eccentricity: 0.0059462
+      semi_major_axis: 26560438.753985986 m
+      inclination: 56.5193 deg
+      LAN: 37.7693 deg
+      arg_periapsis: 201.7264 deg
+      M0: 317.632 deg
+      epoch: 1762071653.76912
       reference: earth
     }
     tags:
@@ -535,13 +516,13 @@
     name: GPS BIII-4  (PRN 14)
     orbit:
     {
-      eccentricity: 0.005088
-      semi_major_axis: 26560637.930101156 m
-      inclination: 26560637.930101156 deg
-      LAN: 234.0531 deg
-      arg_periapsis: 198.6171 deg
-      M0: 351.8477 deg
-      epoch: 1732140082.044
+      eccentricity: 0.0063513
+      semi_major_axis: 26560028.053324018 m
+      inclination: 54.0274 deg
+      LAN: 220.2102 deg
+      arg_periapsis: 203.5305 deg
+      M0: 341.0401 deg
+      epoch: 1761600835.348416
       reference: earth
     }
     tags:
@@ -554,13 +535,13 @@
     name: GPS BIII-5  (PRN 11)
     orbit:
     {
-      eccentricity: 0.0019293
-      semi_major_axis: 26559303.097696684 m
-      inclination: 26559303.097696684 deg
-      LAN: 355.4892 deg
-      arg_periapsis: 227.7203 deg
-      M0: 189.1112 deg
-      epoch: 1732102048.283616
+      eccentricity: 0.0024425
+      semi_major_axis: 26561064.45853517 m
+      inclination: 55.2705 deg
+      LAN: 341.5915 deg
+      arg_periapsis: 231.2143 deg
+      M0: 19.3091 deg
+      epoch: 1762060136.175072
       reference: earth
     }
     tags:
@@ -573,13 +554,51 @@
     name: GPS BIII-6  (PRN 28)
     orbit:
     {
-      eccentricity: 0.0002505
-      semi_major_axis: 26561254.905346625 m
-      inclination: 26561254.905346625 deg
-      LAN: 171.0445 deg
-      arg_periapsis: 72.6447 deg
-      M0: 139.6814 deg
-      epoch: 1732115649.56688
+      eccentricity: 0.0003612
+      semi_major_axis: 26560756.060252648 m
+      inclination: 55.0989 deg
+      LAN: 157.4618 deg
+      arg_periapsis: 6.5529 deg
+      M0: 354.8311 deg
+      epoch: 1762025318.653824
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      gps
+    ]
+  }
+  {
+    name: GPS BIII-7  (PRN 01)
+    orbit:
+    {
+      eccentricity: 0.0010269
+      semi_major_axis: 26560080.228731528 m
+      inclination: 54.9351 deg
+      LAN: 343.3318 deg
+      arg_periapsis: 338.6815 deg
+      M0: 22.0118 deg
+      epoch: 1762192039.984128
+      reference: earth
+    }
+    tags:
+    [
+      navigation
+      gps
+    ]
+  }
+  {
+    name: GPS BIII-8  (PRN 21)
+    orbit:
+    {
+      eccentricity: 0.0003655
+      semi_major_axis: 26560616.387823503 m
+      inclination: 55.0777 deg
+      LAN: 40.2177 deg
+      arg_periapsis: 302.6449 deg
+      M0: 55.5808 deg
+      epoch: 1762212016.577376
       reference: earth
     }
     tags:

@@ -16,7 +16,7 @@
 
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
 include_directories(${LUA_HEADERS})
-include_directories(${CMAKE_SOURCE_DIR}/lib/tracy)
+include_directories(${CMAKE_SOURCE_DIR}/lib/tracy/tracy/public)
 
 file (GLOB_RECURSE CPP_FILES *.cpp)
 file (GLOB_RECURSE H_FILES *.h)
@@ -43,5 +43,5 @@ target_link_libraries(cqsp-core PUBLIC
     fmt::fmt
     sol2
     stb
-    debug Tracy
+    debug Tracy::TracyClient
 )

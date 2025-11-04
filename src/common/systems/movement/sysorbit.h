@@ -46,7 +46,7 @@ class SysOrbit : public ISimulationSystem {
     /// <param name="universe"></param>
     /// <param name="parent"></param>
     /// <param name="body">Body that we want to check if it's entering a SOI</param>
-    bool EnterSOI(const entt::entity& parent, const entt::entity& body);
+    bool CheckEnterSOI(const entt::entity& parent, const entt::entity& body);
 
     /// <summary>
     /// Check if the entity has crashed into its parent object
@@ -61,19 +61,13 @@ class SysOrbit : public ISimulationSystem {
     void UpdateCommandQueue(components::types::Orbit& orb, entt::entity body, entt::entity parent);
 
     void CalculateImpulse(components::types::Orbit& orb, entt::entity body, entt::entity parent);
-};
 
-class SysPath : public ISimulationSystem {
- public:
-    explicit SysPath(Game& game) : ISimulationSystem(game) {}
-    void DoSystem();
-    int Interval() { return 1; }
-};
+    void ParseChildren(entt::entity body);
 
-class SysSurface : public ISimulationSystem {
- public:
-    explicit SysSurface(Game& game) : ISimulationSystem(game) {}
-    void DoSystem();
-    int Interval() { return 1; }
+    void EnterSOI(entt::entity entity, entt::entity body, entt::entity parent, components::types::Orbit& orb,
+                  components::types::Kinematics& vehicle_position,
+                  const components::bodies::Body& body_comp, const components::types::Kinematics& target_position);
+
+    const bool debug_prints = false;
 };
 }  // namespace cqsp::common::systems

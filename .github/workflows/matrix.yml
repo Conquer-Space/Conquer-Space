@@ -30,9 +30,9 @@ jobs:
       matrix:
         config: [Release, Debug]
         compiler: [gcc, clang]
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, ubuntu-24.04-arm]
 
-    name: Ubuntu with ${{ matrix.compiler }} (${{ matrix.config }})
+    name: ${{ matrix.os }} with ${{ matrix.compiler }} (${{ matrix.config }})
     runs-on: ${{ matrix.os }}
     steps:
 
@@ -91,8 +91,9 @@ jobs:
     strategy:
       matrix:
         config: [Release, Debug]
-    runs-on: [windows-latest]
-    name: Windows (${{ matrix.config }})
+        os: [windows-latest]
+    runs-on: ${{matrix.os}}
+    name: ${{ matrix.os }} (${{ matrix.config }})
     steps:
     - uses: actions/checkout@v4
       with:
@@ -129,7 +130,7 @@ jobs:
     - uses: actions/upload-artifact@v4
       continue-on-error: true
       with:
-        name: Conquer-Space_Windows_${{ matrix.config }}_${{ github.run_number }}
+        name: Conquer-Space_${{matrix.os}}_${{ matrix.config }}_b${{ github.run_number }}
         path: |
           binaries
 

@@ -118,7 +118,7 @@ void AssetManager::LoadDefaultTexture() {
     CreateTexture(empty_texture, texture_bytes, 2, 2, 3, f);
 }
 
-void AssetManager::ClearAssets() { ZoneScoped packages.clear(); }
+void AssetManager::ClearAssets() { packages.clear(); }
 
 void AssetManager::SaveModList() {
     Hjson::Value enabled_mods;

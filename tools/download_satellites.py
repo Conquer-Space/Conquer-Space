@@ -18,7 +18,7 @@ def download_satellites(tle_source, tags, output, model):
         orbit = {
             "eccentricity": sat["eccentricity"],
             "semi_major_axis": f"{sat["semi_major_axis"]} m",
-            "inclination": f"{sat["semi_major_axis"]} deg",
+            "inclination": f"{sat["inclination"]} deg",
             "LAN": f"{sat["LAN"]} deg",
             "arg_periapsis": f"{sat["arg_periapsis"]} deg",
             "M0": f"{sat["M0"]} deg",
