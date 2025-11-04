@@ -83,6 +83,18 @@ class Universe : public entt::registry {
     auto nodes() {
         return this->template view<Components...>() | NodeTransform();
     }
+    template <typename... Components>
+    auto nodes() const {
+        return this->template view<Components...>() | NodeTransform();
+    }
+    template <typename... Components, typename... Exclude>
+    auto nodes(entt::exclude_t<Exclude...> exclude) {
+        return this->template view<Components...>(exclude) | NodeTransform();
+    }
+    template <typename... Components, typename... Exclude>
+    auto nodes(entt::exclude_t<Exclude...> exclude) const {
+        return this->template view<Components...>(exclude) | NodeTransform();
+    }
 
     systems::EconomyConfig economy_config;
 
