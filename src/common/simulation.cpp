@@ -77,6 +77,7 @@ void Simulation::CreateSystems() {
 }
 
 void Simulation::Init() {
+    CreateSystems();
     for (auto& sys : system_list) {
         sys->Init();
     }

@@ -183,9 +183,7 @@ void SysOrbit::UpdateCommandQueue(Orbit& orb, entt::entity body, entt::entity pa
 
 void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     ZoneScoped;
-    if (!GetUniverse().valid(body)) {
-        return;
-    }
+
     // Check if the body has crashed
     if (GetUniverse().any_of<ships::Crash>(body)) {
         return;

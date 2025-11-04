@@ -19,6 +19,7 @@
 #include <spdlog/spdlog.h>
 
 #include <algorithm>
+#include <Tracy/Tracy.hpp>
 
 #include "common/actions/maneuver/basicmaneuver.h"
 #include "common/actions/maneuver/rendezvous.h"
@@ -162,6 +163,7 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
 }
 
 bool ProcessCommandQueue(Universe& universe, entt::entity body, Trigger trigger) {
+    ZoneScoped;
     if (!universe.any_of<components::CommandQueue>(body)) {
         return false;
     }

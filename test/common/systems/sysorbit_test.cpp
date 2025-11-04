@@ -115,7 +115,7 @@ struct SysOrbitTest : public ::testing::Test {
         }
     }
 
-    SysOrbitTest() : universe(game.GetUniverse()), simulation(game) { simulation.CreateSystems(); }
+    SysOrbitTest() : universe(game.GetUniverse()), simulation(game) { simulation.Init(); }
 };
 
 Hjson::Value SysOrbitTest::planets_hjson;

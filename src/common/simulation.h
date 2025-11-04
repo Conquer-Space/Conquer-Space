@@ -48,6 +48,7 @@ class Simulation {
         system_list.push_back(std::make_unique<T>(m_game));
     }
 
+ protected:
     virtual void CreateSystems();
 
  private:

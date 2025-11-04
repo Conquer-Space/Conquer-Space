@@ -69,7 +69,6 @@ void UniverseScene::Init() {
     ZoneScoped;
 
     simulation = std::make_unique<Simulation>(dynamic_cast<ConquerSpace*>(GetApp().GetGame())->GetGame());
-    simulation->CreateSystems();
 
     system_renderer = std::make_unique<systems::SysStarSystemRenderer>(GetUniverse(), GetApp());
     system_renderer->Initialize();

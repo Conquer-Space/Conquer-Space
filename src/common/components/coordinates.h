@@ -39,6 +39,7 @@ struct FuturePosition {
     glm::dvec3 position {0, 0, 0};
     glm::dvec3 velocity {0, 0, 0};
     glm::dvec3 center {0, 0, 0};
+    double true_anomaly;
 };
 
 // A one tick impulse in the vector
