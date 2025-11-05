@@ -23,7 +23,7 @@
 
 namespace cqsp::common::systems {
 // This expects the altitude to be lower than the original orbit
-components::Maneuver_t TransferFromBody(Universe& universe, components::types::Orbit& orbit,
+components::Maneuver_t TransferFromBody(Universe& universe, const components::types::Orbit& orbit,
                                         const components::types::Kinematics& kinematics, double altitude) {
     // So we want this to happen:
     // Center Body ---- Orbiting Body ---- Satellite

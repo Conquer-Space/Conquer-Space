@@ -112,6 +112,7 @@ void SysStarSystemTree::DoChildTree(entt::entity entity) {
             }
         }
         gui::EntityTooltip(GetUniverse(), child);
+        // If it has children we should
     }
 }
 }  // namespace cqsp::client::systems

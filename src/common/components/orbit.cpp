@@ -447,9 +447,9 @@ double Orbit::TimeToTrueAnomaly(double v2) const {
     }
 }
 
-double Orbit::OrbitalVelocity() { return OrbitVelocity(v, eccentricity, semi_major_axis, GM); }
+double Orbit::OrbitalVelocity() const { return OrbitVelocity(v, eccentricity, semi_major_axis, GM); }
 
-double Orbit::OrbitalVelocityAtTrueAnomaly(double true_anomaly) {
+double Orbit::OrbitalVelocityAtTrueAnomaly(double true_anomaly) const {
     return OrbitVelocity(true_anomaly, eccentricity, semi_major_axis, GM);
 }
 
@@ -472,7 +472,7 @@ double AngleWith(const Orbit& orbit, const Orbit& second_orbit) {
     return glm::angle(glm::normalize(GetOrbitNormal(orbit)), glm::normalize(GetOrbitNormal(second_orbit)));
 }
 
-std::string Orbit::ToHumanString() {
+std::string Orbit::ToHumanString() const {
     std::ostringstream ss;
     ss << std::fixed << std::setprecision(6);
     ss << "Orbit Parameters:\n";

@@ -35,6 +35,7 @@ namespace components = cqsp::common::components;
 namespace types = components::types;
 namespace ships = components::ships;
 namespace bodies = components::bodies;
+using common::systems::commands::PushManeuver;
 using common::systems::commands::PushManeuvers;
 using common::util::GetName;
 using types::GetCircularOrbitingVelocity;
@@ -194,9 +195,12 @@ void SpaceshipWindow::DoUI(int delta_time) {
                 SPDLOG_INFO("Orbit is not circular!");
             }
         }
+        ImGui::InputDouble("Leave SOI altitude", &transfer_radius, min_altitude, max_altitude);
         // Also get the radius
-        if (ImGui::Button("Leave")) {
-            common::systems::commands::TransferFromBody(GetUniverse(), );
+        if (ImGui::Button("Leave SOI")) {
+            auto maneuver = common::systems::TransferFromBody(GetUniverse(), orbit, GetUniverse().get<Kinematics>(body),
+                                                              transfer_radius);
+            PushManeuver(GetUniverse(), body, maneuver);
         }
     }
 

@@ -22,6 +22,6 @@
 #include "common/universe.h"
 
 namespace cqsp::common::systems {
-components::Maneuver_t TransferFromBody(Universe& universe, const components::types::Orbit& orbit,
-                                        const components::types::Kinematics& kinematics, double altitude);
+[[noreturn]] components::Maneuver_t TransferFromBody(Universe& universe, const components::types::Orbit& orbit,
+                                                     const components::types::Kinematics& kinematics, double altitude);
 }  // namespace cqsp::common::systems

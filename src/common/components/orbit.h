@@ -161,11 +161,11 @@ struct Orbit {
 
     double TimeToTrueAnomaly(double v2) const;
 
-    double OrbitalVelocity();
+    double OrbitalVelocity() const;
 
-    double OrbitalVelocityAtTrueAnomaly(double true_anomaly);
+    double OrbitalVelocityAtTrueAnomaly(double true_anomaly) const;
 
-    std::string ToHumanString();
+    std::string ToHumanString() const;
 };
 
 inline std::ostream& operator<<(std::ostream& outs, const Orbit& orb) {
