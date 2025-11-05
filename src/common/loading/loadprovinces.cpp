@@ -25,7 +25,7 @@
 #include "common/components/surface.h"
 
 namespace cqsp::common::loading {
-void LoadProvinces(Universe& universe, entt::entity planet, const std::string& text) {
+void LoadProvinces(Node& planet, const std::string& text) {
     // The text has to be csv, so treat it is csv
     std::istringstream f(text);
     std::string line;
@@ -44,23 +44,24 @@ void LoadProvinces(Universe& universe, entt::entity planet, const std::string& t
         std::getline(f2, token, ',');
         std::string country = token;
         // Create
-        entt::entity entity = universe.create();
-        universe.emplace<components::Province>(entity, universe.countries[country]);
-        universe.emplace<components::Identifier>(entity, identifier);
-        auto& color = universe.emplace<components::ProvinceColor>(entity, std::stoi(r), std::stoi(g), std::stoi(b));
+        Universe& universe = planet.universe();
+        Node province_node = Node(universe);
+        Node country_node = Node(universe, universe.countries[country]);
+        province_node.emplace<components::Province>(country_node);
+        province_node.emplace<components::Identifier>(identifier);
+        auto& color = province_node.emplace<components::ProvinceColor>(std::stoi(r), std::stoi(g), std::stoi(b));
         if (universe.provinces.find(identifier) == universe.provinces.end()) {
-            universe.provinces[identifier] = entity;
+            universe.provinces[identifier] = province_node;
         } else {
             SPDLOG_WARN("Province {} conflicts with an already preexisting province", identifier);
         }
         // Add province to country
         // check if it is assigned to a country
         if (!country.empty() && universe.countries.contains(country)) {
-            universe.get_or_emplace<components::CountryCityList>(universe.countries[country])
-                .province_list.push_back(entity);
+            country_node.get_or_emplace<components::CountryCityList>().province_list.push_back(province_node);
         }
-        universe.province_colors[planet][(int)color] = entity;
-        universe.colors_province[planet][entity] = (int)color;
+        universe.province_colors[planet][(int)color] = province_node;
+        universe.colors_province[planet][province_node] = (int)color;
     }
 }
 
@@ -71,8 +72,8 @@ void LoadAdjProvinces(Universe& universe, Hjson::Value& adjacency_map) {
             SPDLOG_WARN("Cannot find province {}", province_name);
             continue;
         }
-        entt::entity province_id = universe.provinces[province_name];
-        auto& province = universe.get<components::Province>(province_id);
+        Node province_Node = Node(universe, universe.provinces[province_name]);
+        auto& province = province_Node.get<components::Province>();
         province.neighbors.resize(neighbors.size());
         for (int i = 0; i < neighbors.size(); i++) {
             if (!universe.provinces.contains(neighbors[i].to_string())) {

@@ -23,9 +23,9 @@ using components::bodies::TerrainData;
 
 void LoadTerrainData(Universe& universe, Hjson::Value& value) {
     for (auto it = value.begin(); it != value.end(); it++) {
-        entt::entity entity = universe.create();
+        entt::entity terrain_node = Node(universe);
 
-        TerrainData& data = universe.get_or_emplace<TerrainData>(entity);
+        TerrainData& data = universe.get_or_emplace<TerrainData>(terrain_node);
 
         data.sea_level = it->second["sealevel"];
         auto terrain_colors = it->second["terrain"];
@@ -48,7 +48,7 @@ void LoadTerrainData(Universe& universe, Hjson::Value& value) {
                 data.data[place] = tuple;
             }
         }
-        universe.terrain_data[it->first] = entity;
+        universe.terrain_data[it->first] = terrain_node;
     }
 }
 }  // namespace cqsp::common::loading

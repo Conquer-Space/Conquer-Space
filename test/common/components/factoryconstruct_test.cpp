@@ -26,13 +26,13 @@
 TEST(FactoryConstuctTest, ConstructTest) {
     // Create universe and recipe to generate
     cqsp::common::Universe universe;
-    entt::entity city = universe.create();
-    entt::entity recipe = universe.create();
-    universe.emplace<cqsp::common::components::IndustrialZone>(city);
-    auto& recipe_comp = universe.emplace<cqsp::common::components::Recipe>(recipe);
+    cqsp::common::Node city(universe);
+    cqsp::common::Node recipe(universe);
+    city.emplace<cqsp::common::components::IndustrialZone>();
+    auto& recipe_comp = recipe.emplace<cqsp::common::components::Recipe>(recipe);
     recipe_comp.workers = 10;
     recipe_comp.type = cqsp::common::components::factory;
-    entt::entity factory = cqsp::common::actions::CreateFactory(universe, city, recipe, 10);
+    entt::entity factory = cqsp::common::actions::CreateFactory(city, recipe, 10);
     // Ensure that it has everything
     ASSERT_TRUE(universe.any_of<cqsp::common::components::Employer>(factory));
     ASSERT_EQ(universe.get<cqsp::common::components::Employer>(factory).population_needed, 10 * 10);
@@ -40,7 +40,10 @@ TEST(FactoryConstuctTest, ConstructTest) {
 
 TEST(FactoryConstuctTest, ConstructExpectNoCrash) {
     cqsp::common::Universe universe;
-    EXPECT_TRUE(cqsp::common::actions::CreateFactory(universe, entt::null, entt::null, 0) == entt::null);
-    EXPECT_TRUE(cqsp::common::actions::CreateFactory(universe, universe.create(), entt::null, 0) == entt::null);
-    EXPECT_TRUE(cqsp::common::actions::CreateFactory(universe, entt::null, universe.create(), 0) == entt::null);
+    cqsp::common::Node city(universe);
+    cqsp::common::Node recipe(universe);
+    cqsp::common::Node null_node(universe, entt::null);
+    EXPECT_TRUE(cqsp::common::actions::CreateFactory(null_node, null_node, 0) == entt::null);
+    EXPECT_TRUE(cqsp::common::actions::CreateFactory(city, null_node, 0) == entt::null);
+    EXPECT_TRUE(cqsp::common::actions::CreateFactory(null_node, recipe, 0) == entt::null);
 }

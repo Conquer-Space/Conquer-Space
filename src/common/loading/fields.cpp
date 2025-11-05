@@ -43,17 +43,17 @@ void LoadFields(Universe& universe, Hjson::Value& hjson) {
             continue;
         }
         // Get the name
-        entt::entity field = universe.create();
-        auto& field_comp = universe.emplace<science::Field>(field);
-        LoadName(universe, field, val);
-        if (!LoadIdentifier(universe, field, val)) {
-            universe.destroy(field);
+        Node field_node = Node(universe);
+        auto& field_comp = field_node.emplace<science::Field>();
+        LoadName(field_node, val);
+        if (!LoadIdentifier(field_node, val)) {
+            universe.destroy(field_node);
             SPDLOG_INFO("No field with {}", Hjson::Marshal(val));
             continue;
         }
 
-        std::string identifier = universe.get<components::Identifier>(field);
-        auto& field_template = universe.emplace<FieldTemplate>(field);
+        std::string identifier = field_node.get<components::Identifier>();
+        auto& field_template = field_node.emplace<FieldTemplate>();
 
         if (val["parent"].type() == Hjson::Type::Vector) {
             for (int j = 0; j < val["parent"].size(); j++) {
@@ -82,15 +82,14 @@ void LoadFields(Universe& universe, Hjson::Value& hjson) {
 
         // Description
         if (val["description"].type() == Hjson::Type::String) {
-            universe.emplace<components::Description>(field, val["description"].to_string());
+            universe.emplace<components::Description>(field_node, val["description"].to_string());
         }
-        universe.fields[identifier] = field;
+        universe.fields[identifier] = field_node;
     }
 
-    auto view = universe.view<FieldTemplate>();
-    for (entt::entity entity : view) {
-        auto& field_template = universe.get<FieldTemplate>(entity);
-        auto& field = universe.get<science::Field>(entity);
+    for (Node field_node : universe.nodes<FieldTemplate>()) {
+        auto& field_template = field_node.get<FieldTemplate>();
+        auto& field = field_node.get<science::Field>();
         for (const auto& parent_name : field_template.parent) {
             // If it does not contain, warn
             if (universe.fields.find(parent_name) == universe.fields.end()) {
@@ -111,17 +110,16 @@ void LoadFields(Universe& universe, Hjson::Value& hjson) {
 }
 
 Hjson::Value WriteFields(Universe& universe) {
-    auto view = universe.view<components::science::Field>();
     Hjson::Value all_fields;
-    for (entt::entity entity : view) {
+    for (Node field_node : universe.nodes<components::science::Field>()) {
         Hjson::Value field_hjson;
-        field_hjson["name"] = universe.get<components::Name>(entity).name;
-        field_hjson["identifier"] = universe.get<components::Identifier>(entity).identifier;
-        if (universe.any_of<components::Description>(entity)) {
-            field_hjson["description"] = universe.get<components::Description>(entity).description;
+        field_hjson["name"] = field_node.get<components::Name>().name;
+        field_hjson["identifier"] = field_node.get<components::Identifier>().identifier;
+        if (field_node.any_of<components::Description>()) {
+            field_hjson["description"] = field_node.get<components::Description>().description;
         }
 
-        auto& field = universe.get<components::science::Field>(entity);
+        auto& field = field_node.get<components::science::Field>();
         if (!field.adjacent.empty()) {
             // Add all the entities
             Hjson::Value adj_list;
@@ -134,8 +132,8 @@ Hjson::Value WriteFields(Universe& universe) {
         if (!field.parents.empty()) {
             // Add all the entities
             Hjson::Value adj_list;
-            for (entt::entity adj : field.parents) {
-                auto& identifier = universe.get<components::Identifier>(adj);
+            for (Node adj : field_node.Convert(field.parents)) {
+                auto& identifier = adj.get<components::Identifier>();
                 adj_list.push_back(identifier.identifier);
             }
             field_hjson["parent"] = adj_list;

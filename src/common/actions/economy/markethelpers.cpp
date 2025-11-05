@@ -16,48 +16,43 @@
  */
 #include "common/actions/economy/markethelpers.h"
 
-#include "common/components/market.h"
 #include "common/components/history.h"
+#include "common/components/market.h"
 
 namespace cqsp::common::actions {
 
-void AddParticipant(Universe& universe, entt::entity market_entity, entt::entity entity) {
-    auto& market = universe.get<components::Market>(market_entity);
-    market.participants.insert(entity);
-    universe.emplace<components::MarketAgent>(entity, market_entity);
-    static_cast<void>(universe.get_or_emplace<components::Wallet>(entity));
+void AddParticipant(Node& market_node, Node& participant) {
+    auto& market = market_node.get<components::Market>();
+    market.participants.insert(participant);
+    participant.emplace<components::MarketAgent>(market_node);
+    static_cast<void>(participant.get_or_emplace<components::Wallet>());
 }
 
-double GetCost(Universe& universe, entt::entity market, const components::ResourceLedger& ledger) {
-    if (!universe.any_of<components::Market>(market)) {
+double GetCost(Node& market, const components::ResourceLedger& ledger) {
+    if (!market.any_of<components::Market>()) {
         return 0.0;
     }
-    return universe.get<components::Market>(market).GetPrice(ledger);
+    return market.get<components::Market>().GetPrice(ledger);
 }
 
-entt::entity CreateMarket(Universe& universe) {
-    entt::entity market = universe.create();
-    CreateMarket(universe, market);
+Node CreateMarket(Universe& universe) {
+    Node market = Node(universe);
+    static_cast<void>(market.get_or_emplace<components::Market>());
+    static_cast<void>(market.get_or_emplace<components::MarketHistory>());
     return market;
 }
 
-void CreateMarket(Universe& universe, entt::entity market) {
-    static_cast<void>(universe.get_or_emplace<components::Market>(market));
-    static_cast<void>(universe.get_or_emplace<components::MarketHistory>(market));
-}
-
-bool PurchaseGood(Universe& universe, entt::entity agent,
-                                                  const components::ResourceLedger& purchase) {
+bool PurchaseGood(Node& agent, const components::ResourceLedger& purchase) {
     // Calculating on how to buy from the market shouldn't be too hard, right?
     // Get the market connected to, and build the demand
-    entt::entity market = universe.get<components::MarketAgent>(agent).market;
-    auto& market_comp = universe.get<components::Market>(market);
+    Node market = Node(agent.universe(), agent.get<components::MarketAgent>().market);
+    auto& market_comp = market.get<components::Market>();
     // Prices
     double cost = market_comp.GetPrice(purchase);
 
     // Then subtract the cash from the person, or something
     // Check if they have enough money and purchase, I guess
-    auto& wallet = universe.get<components::Wallet>(agent);
+    auto& wallet = agent.get<components::Wallet>();
 
     // TODO(EhWhoAmI):
     // Check if there are enough resources on the market, or else there will have a shortage
@@ -70,20 +65,19 @@ bool PurchaseGood(Universe& universe, entt::entity agent,
 
     // Then agent has enough money to buy
     market_comp.AddDemand(purchase);
-    if (universe.all_of<components::ResourceStockpile>(agent)) {
-        universe.get<components::ResourceStockpile>(agent) += purchase;
+    if (agent.all_of<components::ResourceStockpile>()) {
+        agent.get<components::ResourceStockpile>() += purchase;
     }
     wallet -= cost;
     return true;
 }
 
-bool SellGood(Universe& universe, entt::entity agent,
-                                              const components::ResourceLedger& selling) {
+bool SellGood(Node& agent, const components::ResourceLedger& selling) {
     // Calculating on how to buy from the market shouldn't be too hard, right?
     // Get the market connected to, and build the demand
-    entt::entity market = universe.get<components::MarketAgent>(agent).market;
-    auto& market_comp = universe.get<components::Market>(market);
-    auto& agent_stockpile = universe.get<components::ResourceStockpile>(agent);
+    Node market = Node(agent.universe(), agent.get<components::MarketAgent>().market);
+    auto& market_comp = market.get<components::Market>();
+    auto& agent_stockpile = agent.get<components::ResourceStockpile>();
     market_comp.AddSupply(selling);
 
     double cost = market_comp.GetPrice(selling);
@@ -93,7 +87,7 @@ bool SellGood(Universe& universe, entt::entity agent,
 
     // Then subtract the cash from the person, or something
     // Check if they have enough money and purchase, I guess
-    components::Wallet& wallet = universe.get<components::Wallet>(agent);
+    components::Wallet& wallet = agent.get<components::Wallet>();
     wallet += cost;
     return true;
 }

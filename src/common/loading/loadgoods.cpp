@@ -36,13 +36,13 @@ GoodLoader::GoodLoader(Universe& universe) : HjsonLoader(universe) {
     default_val["tags"] = Hjson::Type::Vector;
 }
 
-bool GoodLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
-    universe.emplace<components::Good>(entity);
+bool GoodLoader::LoadValue(const Hjson::Value& values, Node& node) {
+    node.emplace<components::Good>();
 
     std::string identifier = values["identifier"].to_string();
     if (values["mass"].defined() && values["volume"].defined()) {
         // Then it's matter and physical
-        auto& matter = universe.emplace<components::Matter>(entity);
+        auto& matter = node.emplace<components::Matter>();
         bool mass_correct;
         matter.mass = ReadUnit(values["mass"].to_string(), types::Mass, &mass_correct);
         if (!mass_correct) {
@@ -60,39 +60,39 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
     if (values["energy"].defined()) {
         double t = values["energy"];
-        universe.emplace<components::Energy>(entity, t);
+        node.emplace<components::Energy>(t);
     }
     if (values["consumption"].defined()) {
         const Hjson::Value& consumption = values["consumption"];
         double autonomous_consumption = consumption["autonomous_consumption"].to_double();
         double marginal_propensity = consumption["marginal_propensity"].to_double();
 
-        components::ConsumerGood& cg = universe.get_or_emplace<components::ConsumerGood>(entity);
+        components::ConsumerGood& cg = node.get_or_emplace<components::ConsumerGood>();
         // We should set the consumption to be consumption over a year
         // So it should be
         cg.autonomous_consumption = autonomous_consumption / static_cast<double>(components::StarDate::YEAR);
         cg.marginal_propensity = marginal_propensity / static_cast<double>(components::StarDate::YEAR);
-        SPDLOG_INFO("Creating consumer good {} with autonomous consumption {} and marginal propensity {}", identifier, cg.autonomous_consumption,
-                    cg.marginal_propensity);
-        universe.consumergoods.push_back(entity);
+        SPDLOG_INFO("Creating consumer good {} with autonomous consumption {} and marginal propensity {}", identifier,
+                    cg.autonomous_consumption, cg.marginal_propensity);
+        universe.consumergoods.push_back(node);
     }
 
     for (int i = 0; i < values["tags"].size(); i++) {
         if (values["tags"][i] == "mineral") {
-            universe.get_or_emplace<components::Mineral>(entity);
+            node.get_or_emplace<components::Mineral>();
         } else if (values["tags"][i] == "captialgood") {
-            universe.get_or_emplace<components::CapitalGood>(entity);
+            node.get_or_emplace<components::CapitalGood>();
         }
     }
 
-    universe.emplace<components::Price>(entity, values["price"].to_double());
+    node.emplace<components::Price>(values["price"].to_double());
 
     if (values["unit"].type() == Hjson::Type::String) {
-        universe.emplace<components::Unit>(entity, values["unit"].to_string());
+        node.emplace<components::Unit>(values["unit"].to_string());
     }
 
     // Basically if it fails at any point, we'll remove the component
-    universe.goods[identifier] = entity;
+    universe.goods[identifier] = node;
     return true;
 }
 }  // namespace cqsp::common::loading

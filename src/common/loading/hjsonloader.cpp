@@ -29,19 +29,19 @@ namespace cqsp::common::loading {
  */
 int HjsonLoader::LoadHjson(const Hjson::Value& values) {
     int assets = 0;
-    std::vector<entt::entity> entity_list;
+    std::vector<Node> node_list;
     for (int i = 0; i < values.size(); i++) {
         Hjson::Value value = values[i];
 
-        entt::entity entity = universe.create();
+        Node node = Node(universe);
         if (NeedIdentifier()) {
-            if (!LoadInitialValues(universe, entity, value)) {
+            if (!LoadInitialValues(node, value)) {
                 SPDLOG_WARN("No identifier");
-                universe.destroy(entity);
+                universe.destroy(node);
                 continue;
             }
         } else {
-            LoadInitialValues(universe, entity, value);
+            LoadInitialValues(node, value);
         }
 
         value = Hjson::Merge(GetDefaultValues(), value);
@@ -49,26 +49,26 @@ int HjsonLoader::LoadHjson(const Hjson::Value& values) {
         // Catch errors
         bool success = false;
         try {
-            success = LoadValue(value, entity);
+            success = LoadValue(value, node);
         } catch (Hjson::index_out_of_bounds& ioob) {
-            auto& id = universe.get<components::Identifier>(entity).identifier;
+            auto& id = node.get<components::Identifier>().identifier;
             SPDLOG_WARN("Index out of bounds for {}: {}", id, ioob.what());
         } catch (Hjson::type_mismatch& tm) {
-            auto& id = universe.get<components::Identifier>(entity).identifier;
+            auto& id = node.get<components::Identifier>().identifier;
             SPDLOG_WARN("Type mismatch for {}: {}", id, tm.what());
         }
 
         if (!success) {
-            universe.destroy(entity);
+            universe.destroy(node);
             continue;
         }
-        entity_list.push_back(entity);
+        node_list.push_back(node);
         assets++;
     }
 
     // Load all the assets again to parse?
-    for (entt::entity entity : entity_list) {
-        PostLoad(entity);
+    for (Node node : node_list) {
+        PostLoad(node);
     }
 
     return assets;

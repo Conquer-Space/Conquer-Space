@@ -34,8 +34,7 @@ namespace cqsp::common::actions {
 /// <param name="productivity"></param>
 /// <param name="builder"></param>
 /// <returns>The factory entity created, entt::null if it's not possible.</returns>
-entt::entity OrderConstructionFactory(Universe& universe, entt::entity city, entt::entity market, entt::entity recipe,
-                                      int productivity, entt::entity builder);
+Node OrderConstructionFactory(Node& city, Node& market, Node& recipe, Node& builder, int productivity = 1);
 
 /// <summary>
 /// Creates a factory from thin air
@@ -45,11 +44,10 @@ entt::entity OrderConstructionFactory(Universe& universe, entt::entity city, ent
 /// <param name="recipe"></param>
 /// <param name="productivity"></param>
 /// <returns>The factory entity created</returns>
-entt::entity CreateFactory(Universe& universe, entt::entity city, entt::entity recipe, int productivity,
-                           double wages = 10);
+Node CreateFactory(Node& city, Node& recipe, int productivity = 1, double wages = 10);
 
-components::ResourceLedger GetFactoryCost(Universe& universe, entt::entity city, entt::entity recipe, int productivity);
+components::ResourceLedger GetFactoryCost(Node& city, Node& recipe, int productivity = 1);
 
-entt::entity CreateCommercialArea(Universe& universe, entt::entity city);
+Node CreateCommercialArea(Node& city);
 
 }  // namespace cqsp::common::actions

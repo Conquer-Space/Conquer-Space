@@ -21,15 +21,15 @@
 #include "common/components/organizations.h"
 
 namespace cqsp::common::loading {
-bool CountryLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
+bool CountryLoader::LoadValue(const Hjson::Value& values, Node& node) {
     // Just make the country
-    universe.emplace<components::Country>(entity);
-    universe.countries[universe.get<components::Identifier>(entity).identifier] = entity;
+    node.emplace<components::Country>();
+    universe.countries[node.get<components::Identifier>().identifier] = node;
 
     // Add the list of liabilities the country has?
 
     if (!values["wallet"].empty()) {
-        auto& wallet = universe.emplace<components::Wallet>(entity);
+        auto& wallet = node.emplace<components::Wallet>();
         wallet = values["wallet"];
     }
     return true;

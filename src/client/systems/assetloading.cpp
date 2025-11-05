@@ -93,15 +93,15 @@ void LoadResource(AssetManager& asset_manager, Universe& universe, const std::st
 
 void LoadPlanetProvinces(AssetManager& asset_manager, ConquerSpace& conquer_space) {
     auto& universe = conquer_space.GetUniverse();
-    auto view = universe.view<components::ProvincedPlanet>();
+    auto view = universe.nodes<components::ProvincedPlanet>();
 
-    for (entt::entity entity : view) {
+    for (common::Node node : view) {
         // Check if it's empty or not
-        auto& province_map = universe.get<components::ProvincedPlanet>(entity);
+        auto& province_map = node.get<components::ProvincedPlanet>();
         if (!province_map.province_definitions.empty()) {
             asset::TextAsset* asset = asset_manager.GetAsset<asset::TextAsset>(province_map.province_definitions);
             if (asset != nullptr) {
-                loading::LoadProvinces(universe, entity, asset->data);
+                loading::LoadProvinces(node, asset->data);
             }
         }
     }

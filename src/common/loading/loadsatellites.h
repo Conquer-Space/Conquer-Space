@@ -34,7 +34,7 @@ class SatelliteLoader : public HjsonLoader {
     explicit SatelliteLoader(Universe& universe) : HjsonLoader(universe) {}
 
     const Hjson::Value& GetDefaultValues() override { return default_val; }
-    bool LoadValue(const Hjson::Value& values, entt::entity entity) override;
+    bool LoadValue(const Hjson::Value& values, Node& node) override;
     virtual bool NeedIdentifier() { return false; }
 
  private:

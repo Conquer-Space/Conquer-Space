@@ -111,6 +111,12 @@ class Node : public entt::handle {
     std::vector<Node> Convert(const std::vector<entt::entity>& entities) const;
     std::set<Node> Convert(const std::set<entt::entity>& entities) const;
     Node Convert(const entt::entity entity) const;
+
+    // Overload equivalence against entt::null_t
+    friend bool operator==(const Node& lhs, const entt::null_t&) { return lhs.entity() == entt::null; }
+    friend bool operator==(const entt::null_t&, const Node& rhs) { return rhs.entity() == entt::null; }
+    friend bool operator!=(const Node& lhs, const entt::null_t&) { return lhs.entity() != entt::null; }
+    friend bool operator!=(const entt::null_t&, const Node& rhs) { return rhs.entity() != entt::null; }
 };
 
 }  // namespace cqsp::common

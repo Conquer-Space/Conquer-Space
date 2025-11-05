@@ -35,8 +35,8 @@ RecipeLoader::RecipeLoader(Universe& universe) : HjsonLoader(universe) {
     default_val["output"] = Hjson::Type::Vector;
 }
 
-bool RecipeLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
-    auto& recipe_component = universe.emplace<components::Recipe>(entity);
+bool RecipeLoader::LoadValue(const Hjson::Value& values, Node& node) {
+    auto& recipe_component = node.emplace<components::Recipe>();
 
     Hjson::Value input_value = values["input"];
     recipe_component.input = HjsonToLedger(universe, input_value);
@@ -56,7 +56,7 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     // Check if it has cost
     if (values["cost"].defined()) {
         Hjson::Value cost_map = values["cost"];
-        auto& recipe_cost = universe.emplace<components::RecipeCost>(entity);
+        auto& recipe_cost = node.emplace<components::RecipeCost>();
 
         if (cost_map["capital"].defined()) {
             Hjson::Value capital = cost_map["capital"];
@@ -90,8 +90,8 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
         }
     }
 
-    auto& name_object = universe.get<components::Identifier>(entity);
-    universe.recipes[name_object] = entity;
+    auto& name_object = node.get<components::Identifier>();
+    universe.recipes[name_object] = node;
     return true;
 }
 }  // namespace cqsp::common::loading

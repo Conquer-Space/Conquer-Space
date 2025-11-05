@@ -27,66 +27,65 @@
 #include "common/components/resource.h"
 
 namespace cqsp::common::actions {
-entt::entity OrderConstructionFactory(Universe& universe, entt::entity city, entt::entity market, entt::entity recipe,
-                                      int productivity, entt::entity builder) {
-    entt::entity factory = CreateFactory(universe, city, recipe, productivity);
-    if (factory == entt::null) {
-        return entt::null;
+Node OrderConstructionFactory(Node& city, Node& market, Node& recipe, Node& builder, int productivity) {
+    Node factory = CreateFactory(city, recipe, productivity);
+    if (factory.entity() == entt::null) {
+        return Node(city.universe(), entt::null);
     }
-    AddParticipant(universe, market, factory);
-    auto cost = GetFactoryCost(universe, city, recipe, productivity);
+    AddParticipant(market, factory);
+    auto cost = GetFactoryCost(city, recipe, productivity);
 
     // Buy the goods on the market
-    PurchaseGood(universe, builder, cost);
+    PurchaseGood(builder, cost);
     return factory;
 }
 
-entt::entity CreateFactory(Universe& universe, entt::entity city, entt::entity recipe, int productivity, double wages) {
+Node CreateFactory(Node& city, Node& recipe, int productivity, double wages) {
     // Make the factory
     if (city == entt::null || recipe == entt::null) {
         SPDLOG_WARN("City or recipe is null");
-        return entt::null;
+        return Node(city.universe(), entt::null);
     }
-    if (!universe.valid(city) || !universe.valid(recipe)) {
+    if (!city.valid() || !recipe.valid()) {
         SPDLOG_WARN("City or recipe is invalid");
-        return entt::null;
+        return Node(city.universe(), entt::null);
     }
-    if (!universe.any_of<components::IndustrialZone>(city)) {
-        SPDLOG_WARN("City {} has no industry", city);
-        return entt::null;
-    }
-
-    if (!universe.any_of<components::Recipe>(recipe)) {
-        SPDLOG_WARN("Recipe {} has no recipe", recipe);
-        return entt::null;
+    if (!city.any_of<components::IndustrialZone>()) {
+        SPDLOG_WARN("City {} has no industry", city.entity());
+        return Node(city.universe(), entt::null);
     }
 
-    entt::entity factory = universe.create();
+    if (!recipe.any_of<components::Recipe>()) {
+        SPDLOG_WARN("Recipe {} has no recipe", recipe.entity());
+        return Node(city.universe(), entt::null);
+    }
+
+    Node factory = Node(city.universe());
     //auto& factory_converter = universe.emplace<components::ResourceConverter>(factory);
-    auto& production = universe.emplace<components::Production>(factory);
+    auto& production = factory.emplace<components::Production>();
     // Add recipes and stuff
     production.recipe = recipe;
-    universe.get<components::IndustrialZone>(city).industries.push_back(factory);
+    city.get<components::IndustrialZone>().industries.push_back(factory);
 
     // Add capacity
     // Add producivity
-    auto& prod = universe.emplace<components::IndustrySize>(factory);
+    auto& prod = factory.emplace<components::IndustrySize>();
     prod.size = productivity;
     prod.utilization = productivity;
     prod.wages = wages;
-    const auto& recipe_comp = universe.get<components::Recipe>(recipe);
+    const auto& recipe_comp = recipe.get<components::Recipe>();
     switch (recipe_comp.type) {
         case components::mine:
-            universe.emplace<components::Mine>(factory);
+            factory.emplace<components::Mine>();
             break;
         case components::service:
-            universe.emplace<components::Service>(factory);
+            factory.emplace<components::Service>();
             break;
         default:
-            universe.emplace<components::Factory>(factory);
+            factory.emplace<components::Factory>();
     }
 
-    auto& employer = universe.emplace<components::Employer>(factory);
+    auto& employer = factory.emplace<components::Employer>();
     // Set the employment amount, next time we can add other services like HR, tech, etc.
     employer.population_fufilled = 0;
     employer.population_needed = recipe_comp.workers * productivity;
@@ -94,25 +93,24 @@ entt::entity CreateFactory(Universe& universe, entt::entity city, entt::entity r
     return factory;
 }
 
-components::ResourceLedger GetFactoryCost(Universe& universe, entt::entity city, entt::entity recipe,
-                                          int productivity) {
+components::ResourceLedger GetFactoryCost(Node& city, Node& recipe, int productivity) {
     components::ResourceLedger ledger;
     // Get the recipe and things
-    if (universe.any_of<components::RecipeCost>(recipe)) {
-        auto& cost = universe.get<components::RecipeCost>(recipe);
+    if (recipe.any_of<components::RecipeCost>()) {
+        auto& cost = recipe.get<components::RecipeCost>();
         ledger.MultiplyAdd(cost.scaling, productivity);
         ledger += cost.fixed;
     }
     return ledger;
 }
 
-entt::entity CreateCommercialArea(Universe& universe, entt::entity city) {
-    entt::entity commercial = universe.create();
+Node CreateCommercialArea(Node& city) {
+    Node commercial = Node(city.universe());
 
-    universe.emplace<components::Employer>(commercial);
-    universe.emplace<components::Commercial>(commercial, city, 0);
+    commercial.emplace<components::Employer>();
+    commercial.emplace<components::Commercial>(city, 0);
 
-    universe.get<components::IndustrialZone>(city).industries.push_back(commercial);
+    city.get<components::IndustrialZone>().industries.push_back(commercial);
     return commercial;
 }
 }  // namespace cqsp::common::actions
