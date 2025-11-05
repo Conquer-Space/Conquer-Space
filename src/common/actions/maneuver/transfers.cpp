@@ -55,8 +55,9 @@ components::Maneuver_t TransferFromBody(Universe& universe, const components::ty
     glm::dvec3 normal = components::types::GetOrbitNormal(orbit);
     glm::dvec3 orbiting_forward_vector = glm::normalize(orbiting_kinematics.velocity);
     // Project the orbiting body's into the ship orbit plane.
-    glm::dvec3 vel_frame = normal - glm::dot(normal, orbiting_forward_vector) / glm::length2(orbiting_forward_vector) *
-                                        orbiting_forward_vector;
+    glm::dvec3 vel_frame = orbiting_forward_vector - glm::dot(normal, orbiting_forward_vector) /
+                                                         glm::length2(orbiting_forward_vector) *
+                                                         orbiting_forward_vector;
 
     // Now we should get this value
     const auto h = glm::cross(kinematics.position, kinematics.velocity);
@@ -65,7 +66,7 @@ components::Maneuver_t TransferFromBody(Universe& universe, const components::ty
 
     double v = glm::angle(glm::normalize(ecc_v), glm::normalize(vel_frame));
     // Now we should add our true anomaly to this
-    double time = orbit.TimeToTrueAnomaly(v + burn_angle);
+    double time = orbit.TimeToTrueAnomaly(v + burn_angle + components::types::PI);
 
     double initial_velocity = orbit.OrbitalVelocityAtTrueAnomaly(v + burn_angle);
     return commands::MakeManeuver(glm::dvec3(0.0, initial_velocity, 0.0), time);
