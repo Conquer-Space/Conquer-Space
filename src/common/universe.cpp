@@ -30,13 +30,13 @@ Universe::Universe(std::string uuid) : uuid(std::move(uuid)) {
     random = std::make_unique<util::StdRandom>(42);
     nodeFactory = [this](entt::entity entity) { return Node(*this, entity); };
 }
-std::vector<Node> Universe::Convert(const std::vector<entt::entity>& entities) {
+std::vector<Node> Universe::Convert(const std::vector<entt::entity>& entities) const {
     auto nodes_view =
         entities | std::ranges::views::transform([this](entt::entity entity) { return Node(*this, entity); });
 
     return std::vector<Node>(nodes_view.begin(), nodes_view.end());
 }
-std::set<Node> Universe::Convert(const std::set<entt::entity>& entities) {
+std::set<Node> Universe::Convert(const std::set<entt::entity>& entities) const {
     std::set<Node> nodes;
     for (const auto& entity : entities) {
         nodes.insert(Node(*this, entity));
@@ -44,7 +44,7 @@ std::set<Node> Universe::Convert(const std::set<entt::entity>& entities) {
     return nodes;
 }
 
-Node::Node(Universe& universe, const entt::entity entity) : entt::handle(universe, entity) {}
+Node::Node(const Universe& universe, const entt::entity entity) : entt::handle((entt::registry&)(universe), entity) {}
 Node::Node(const entt::handle handle, const entt::entity entity) : entt::handle(*handle.registry(), entity) {}
 Node::Node(Universe& universe) : entt::handle(universe, universe.create()) {}
 Universe& Node::universe() const { return static_cast<Universe&>(*this->registry()); }
