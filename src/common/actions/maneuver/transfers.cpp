@@ -57,11 +57,10 @@ components::Maneuver_t TransferFromBody(Universe& universe, const components::ty
     glm::dvec3 normal = components::types::GetOrbitNormal(orbit);
     glm::dvec3 orbiting_forward_vector = glm::normalize(orbiting_kinematics.velocity);
     // Project the orbiting body's into the ship orbit plane.
-    glm::dvec3 vel_frame = orbiting_forward_vector - glm::dot(normal, orbiting_forward_vector) /
-                                                         glm::length2(orbiting_forward_vector) *
-                                                         orbiting_forward_vector;
+    glm::dvec3 vel_frame =
+        orbiting_forward_vector - glm::dot(orbiting_forward_vector, normal) / glm::length2(normal) * normal;
 
-    // Now we should get this value
+    // Now we should get the eccentricity vector
     const auto h = glm::cross(kinematics.position, kinematics.velocity);
     // Eccentricity vector
     const glm::dvec3 ecc_v = glm::cross(kinematics.velocity, h) / orbit.GM - glm::normalize(kinematics.position);
@@ -69,7 +68,11 @@ components::Maneuver_t TransferFromBody(Universe& universe, const components::ty
         // Then do stuff
     }
     double v = glm::angle(glm::normalize(ecc_v), glm::normalize(vel_frame));
+    // It's probably this that's causing our issues
     assert(!isnan(v));
+    if (v < 0) {
+        v += components::types::PI;
+    }
     // Now we should add our true anomaly to this
     double time = orbit.TimeToTrueAnomaly(v + burn_angle - components::types::PI);
 
