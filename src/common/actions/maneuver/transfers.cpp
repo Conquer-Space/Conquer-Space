@@ -65,8 +65,11 @@ components::Maneuver_t TransferFromBody(Universe& universe, const components::ty
     const auto h = glm::cross(kinematics.position, kinematics.velocity);
     // Eccentricity vector
     const glm::dvec3 ecc_v = glm::cross(kinematics.velocity, h) / orbit.GM - glm::normalize(kinematics.position);
-
+    if (glm::length(ecc_v) == 0) {
+        // Then do stuff
+    }
     double v = glm::angle(glm::normalize(ecc_v), glm::normalize(vel_frame));
+    assert(!isnan(v));
     // Now we should add our true anomaly to this
     double time = orbit.TimeToTrueAnomaly(v + burn_angle - components::types::PI);
 

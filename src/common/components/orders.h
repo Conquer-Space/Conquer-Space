@@ -17,6 +17,7 @@ enum class Command {
     LandOnBody,
     InterceptAndCircularizeBody,  // More generic command that will transition through spheres of influence
     ForceMatchPlanes,             // Matches planes immediately. Needs a corresponding orbit to match
+    ExitSOI
 };
 
 enum class Trigger {

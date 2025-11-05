@@ -32,6 +32,7 @@ bool VerifyCommand(Universe& universe, entt::entity command);
 bool ProcessCommandQueue(Universe& universe, entt::entity body, components::Trigger trigger);
 void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity command_entity, components::Command command);
 void TransferToMoon(Universe& universe, entt::entity agent, entt::entity target);
+void LeaveSOI(Universe& universe, entt::entity agent, double altitude);
 void LandOnMoon(Universe& universe, entt::entity agent, entt::entity target, entt::entity city);
 components::Maneuver_t MakeManeuver(const glm::dvec3& vector, double time);
 void PushManeuver(Universe& universe, entt::entity entity, components::Maneuver_t maneuver, double offset = 0);

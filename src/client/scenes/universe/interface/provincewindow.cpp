@@ -24,6 +24,7 @@
 #include "client/scenes/universe/interface/sysstockpileui.h"
 #include "client/scenes/universe/interface/systooltips.h"
 #include "client/scenes/universe/views/starsystemview.h"
+#include "common/actions/maneuver/commands.h"
 #include "common/actions/shiplaunchaction.h"
 #include "common/components/infrastructure.h"
 #include "common/components/market.h"
@@ -513,7 +514,13 @@ void SysProvinceInformation::LaunchTab() {
                          components::types::GetLaunchInclination(city_coord.r_latitude(), (azimuth)), LAN,
                          arg_of_perapsis, 0, reference_body);
         entt::entity ship = common::actions::LaunchShip(GetUniverse(), orb);
+        // Also compute the value
         GetUniverse().emplace<ctx::VisibleOrbit>(ship);
+
+        common::systems::commands::LeaveSOI(GetUniverse(), ship, 1000);
+        // Add maneuver like 1000 seconds in the future
+        common::systems::commands::PushManeuver(GetUniverse(), ship,
+                                                common::systems::commands::MakeManeuver(glm::dvec3(0, 0, 0), 1000));
     }
     double periapsis = semi_major_axis * (1 - eccentricity);
     if (GetUniverse().get<components::bodies::Body>(city_coord.planet).radius > periapsis) {

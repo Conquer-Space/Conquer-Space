@@ -24,6 +24,7 @@
 
 #include "common/actions/maneuver/basicmaneuver.h"
 #include "common/actions/maneuver/rendezvous.h"
+#include "common/actions/maneuver/transfers.h"
 #include "common/components/maneuver.h"
 #include "common/components/orbit.h"
 #include "common/components/surface.h"
@@ -157,6 +158,16 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
         }
         case Command::InterceptAndCircularizeBody: {
             // We should intercept the body and stuff
+        } break;
+        case Command::ExitSOI: {
+            if (!universe.any_of<OrbitScalar>(command_entity)) {
+                break;
+            }
+            auto& scalar_change = universe.get<OrbitScalar>(command_entity);
+            auto& orbit = universe.get<Orbit>(entity);
+            auto maneuver = common::systems::TransferFromBody(universe, orbit, universe.get<types::Kinematics>(entity),
+                                                              scalar_change.value);
+            PushManeuver(universe, entity, maneuver);
         } break;
         default:
             break;
@@ -314,5 +325,15 @@ entt::entity GetCommonSOI(Universe& universe, entt::entity source, entt::entity 
         }
     }
     return entt::null;
+}
+
+void LeaveSOI(Universe& universe, entt::entity agent, double altitude) {
+    entt::entity escape_action = universe.create();
+    universe.emplace<Trigger>(escape_action, Trigger::OnManeuver);
+    universe.emplace<Command>(escape_action, Command::ExitSOI);
+    universe.emplace<OrbitScalar>(escape_action, altitude);
+
+    auto& command_queue = universe.get_or_emplace<components::CommandQueue>(agent);
+    command_queue.commands.push_back(escape_action);
 }
 }  // namespace cqsp::common::systems::commands
