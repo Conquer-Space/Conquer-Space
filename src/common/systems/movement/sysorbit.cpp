@@ -315,7 +315,8 @@ void SysOrbit::EnterSOI(entt::entity entity, entt::entity body, entt::entity par
 
     if (debug_prints) {
         SPDLOG_INFO("Post enter position: {}", glm::to_string(vehicle_position.position));
-        SPDLOG_INFO("Post enter velocity: {}", glm::to_string(vehicle_position.velocity));
+        SPDLOG_INFO("Post enter velocity: {} ({})", glm::to_string(vehicle_position.velocity),
+                    glm::length(vehicle_position.velocity));
     }
 
     // Then change SOI

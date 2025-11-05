@@ -111,6 +111,7 @@ void SysProvinceInformation::ProvinceView() {
             for (entt::entity entity : city_list.cities) {
                 if (CQSPGui::DefaultSelectable(fmt::format("{}", GetName(GetUniverse(), entity)).c_str())) {
                     current_city = entity;
+                    changed_city = true;
                     view_mode = ViewMode::CITY_VIEW;
                 }
             }
@@ -481,6 +482,20 @@ void SysProvinceInformation::LaunchTab() {
     static float LAN = 0;
     auto& city_coord = GetUniverse().get<types::SurfaceCoordinate>(current_city);
 
+    if (changed_city) {
+        // Try to minimize this
+        double latitude = city_coord.r_latitude();
+        double temp_azimuth = components::types::GetLaunchInclination(city_coord.r_latitude(), 0);
+        int idx = 0;
+        while (idx < 10) {
+            double derivative =
+                -latitude * cos((temp_azimuth)) / sqrt(1 - latitude * latitude * sin(temp_azimuth) * sin(temp_azimuth));
+            double inclination = components::types::GetLaunchInclination(city_coord.r_latitude(), temp_azimuth);
+            temp_azimuth -= derivative / inclination;
+            idx++;
+        }
+        azimuth = temp_azimuth;
+    }
     ImGui::SliderFloat("Semi Major Axis", &semi_major_axis, 6000, 100000);
     ImGui::SliderFloat("Eccentricity", &eccentricity, 0, 0.9999);
     ImGui::SliderAngle("Launch Azimuth", &azimuth, 0, 360);
@@ -495,7 +510,7 @@ void SysProvinceInformation::LaunchTab() {
         inc += axial;
 
         types::Orbit orb(semi_major_axis, eccentricity,
-                         components::types::GetLaunchInclination(city_coord.r_latitude(), azimuth), LAN,
+                         components::types::GetLaunchInclination(city_coord.r_latitude(), (azimuth)), LAN,
                          arg_of_perapsis, 0, reference_body);
         entt::entity ship = common::actions::LaunchShip(GetUniverse(), orb);
         GetUniverse().emplace<ctx::VisibleOrbit>(ship);
@@ -506,7 +521,7 @@ void SysProvinceInformation::LaunchTab() {
                            "Orbit's periapsis is below the planet radius (%f), so it will crash", periapsis);
     }
     ImGui::TextFmt("Launch Inclination: {}",
-                   types::toDegree(types::GetLaunchInclination(city_coord.r_latitude(), azimuth)));
+                   types::toDegree(types::GetLaunchInclination(city_coord.r_latitude(), (azimuth))));
 }
 
 void SysProvinceInformation::DockedTab() {

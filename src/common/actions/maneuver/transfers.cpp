@@ -16,6 +16,8 @@
  */
 #include "common/actions/maneuver/transfers.h"
 
+#include <spdlog/spdlog.h>
+
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
@@ -45,10 +47,10 @@ components::Maneuver_t TransferFromBody(Universe& universe, const components::ty
     // Now let's get our new velocity
     double v_inf = orbital_velocity - intended_orbital_velocity;
 
-    double escape_eccentricity = 1 + (altitude * v_inf * v_inf) / orbiting_body_orbit.GM;
+    double escape_eccentricity = 1 + (orbit.GetOrbitingRadius() * v_inf * v_inf) / orbit.GM;
     double burn_angle = std::acos(-1 / escape_eccentricity);
 
-    double burn_amount = std::sqrt(v_inf * v_inf + 2 * orbiting_body_orbit.GM / altitude);
+    double burn_amount = std::sqrt(v_inf * v_inf + 2 * orbit.GM / orbit.GetOrbitingRadius());
     // We need to figure out when we should burn
     // We get the vector of the forward, and it is that many degrees off that
     auto& orbiting_kinematics = orbiting_body_node.get<components::types::Kinematics>();
@@ -66,9 +68,12 @@ components::Maneuver_t TransferFromBody(Universe& universe, const components::ty
 
     double v = glm::angle(glm::normalize(ecc_v), glm::normalize(vel_frame));
     // Now we should add our true anomaly to this
-    double time = orbit.TimeToTrueAnomaly(v + burn_angle + components::types::PI);
+    double time = orbit.TimeToTrueAnomaly(v + burn_angle - components::types::PI);
 
-    double initial_velocity = orbit.OrbitalVelocityAtTrueAnomaly(v + burn_angle);
+    SPDLOG_INFO("Time: {} v: {} burn angle: {} v_inf: {} eccentricity: {} burn: {}", time, v, burn_angle, v_inf,
+                escape_eccentricity, burn_amount);
+
+    double initial_velocity = burn_amount - orbit.OrbitalVelocityAtTrueAnomaly(v + burn_angle);
     return commands::MakeManeuver(glm::dvec3(0.0, initial_velocity, 0.0), time);
 }
 }  // namespace cqsp::common::systems

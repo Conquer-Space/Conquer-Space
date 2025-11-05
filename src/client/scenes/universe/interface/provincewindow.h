@@ -48,6 +48,7 @@ class SysProvinceInformation : public SysUserInterface {
     void IndustryTabGenericChild(const std::string& tabname, const std::string& industryname, const ImVec2& size);
 
     entt::entity current_city = entt::null;
+    bool changed_city = false;
     entt::entity current_province = entt::null;
     bool market_information_panel = false;
 

@@ -91,7 +91,7 @@ void UniverseScene::Init() {
     AddUISystem<systems::SysProvinceInformation>();
     AddUISystem<systems::SysOrbitFilter>();
     AddUISystem<systems::ImGuiInterface>();
-    AddUISystem<systems::SysPlanetMarketInformation>();
+    //AddUISystem<systems::SysPlanetMarketInformation>();
 
     AddUISystem<systems::gui::SysEvent>();
     simulation->Init();
