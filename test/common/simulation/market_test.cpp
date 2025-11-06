@@ -28,50 +28,50 @@ namespace cqspc = cqsp::common::components;
 
 class MarketTwoTest : public ::testing::Test {
  protected:
-    MarketTwoTest() : universe(game.GetUniverse()) {}
+    cqsp::common::Game game;
+    cqsp::common::Universe& universe;
+    cqsp::common::Node agent1;
+    cqsp::common::Node agent2;
+    cqsp::common::Node market;
+    cqsp::common::Node good_1;
+    cqsp::common::Node good_2;
+    const int good_1_default_price = 100;
+    const int good_2_default_price = 300;
+
+    MarketTwoTest()
+        : universe(game.GetUniverse()),
+          agent1(universe),
+          agent2(universe),
+          market(cqsp::common::actions::CreateMarket(universe)),
+          good_1(universe),
+          good_2(universe) {}
 
     void SetUp() override {
-        good_1 = universe.create();
-        good_2 = universe.create();
-
-        market = cqsp::common::actions::CreateMarket(universe);
-        auto& market_comp = universe.get<cqspc::Market>(market);
+        auto& market_comp = market.get<cqspc::Market>();
         market_comp[good_1].price = good_1_default_price;
         market_comp[good_2].price = good_2_default_price;
 
         // Setup agents
-        agent1 = universe.create();
-        universe.emplace<cqspc::Wallet>(agent1);
-        universe.emplace<cqspc::ResourceStockpile>(agent1);
-        universe.emplace<cqspc::MarketAgent>(agent1, market);
+        agent1.emplace<cqspc::Wallet>();
+        agent1.emplace<cqspc::ResourceStockpile>();
+        agent1.emplace<cqspc::MarketAgent>(market);
 
-        agent2 = universe.create();
-        universe.emplace<cqspc::Wallet>(agent2);
-        universe.emplace<cqspc::ResourceStockpile>(agent2);
-        universe.emplace<cqspc::MarketAgent>(agent2, market);
+        agent2.emplace<cqspc::Wallet>();
+        agent2.emplace<cqspc::ResourceStockpile>();
+        agent2.emplace<cqspc::MarketAgent>(market);
     }
-
-    cqsp::common::Game game;
-    cqsp::common::Universe& universe;
-    entt::entity agent1;
-    entt::entity agent2;
-    entt::entity market;
-    entt::entity good_1;
-    const int good_1_default_price = 100;
-    entt::entity good_2;
-    const int good_2_default_price = 300;
 };
 
 TEST_F(MarketTwoTest, SellTest) {
     // Then test if the prices fluctuate or something
     // Add resources
-    auto& stockpile = universe.get<cqspc::ResourceStockpile>(agent1);
+    auto& stockpile = agent1.get<cqspc::ResourceStockpile>();
     stockpile[good_1] = 100;
     // Now test sell the goods
     EXPECT_EQ(stockpile[good_1], 100);
-    ASSERT_TRUE(cqsp::common::actions::SellGood(universe, agent1, stockpile));
+    ASSERT_TRUE(cqsp::common::actions::SellGood(agent1, stockpile));
     // Then check if the goods are sold
-    auto& market_comp = universe.get<cqspc::Market>(market);
+    auto& market_comp = market.get<cqspc::Market>();
 
     // Check if goods are on the market
     EXPECT_EQ(market_comp[good_1].supply, 100);
@@ -80,47 +80,47 @@ TEST_F(MarketTwoTest, SellTest) {
     EXPECT_EQ(stockpile[good_1], 0);
     // So the supply is 100 now
     // Check if wallet is subtracted
-    auto& wallet = universe.get<cqspc::Wallet>(agent1);
+    auto& wallet = agent1.get<cqspc::Wallet>();
     EXPECT_EQ(wallet.GetBalance(), good_1_default_price * 100);
 }
 
 TEST_F(MarketTwoTest, BuyTest) {
     // Add money to the wallet so that they have enough to buy
-    universe.get<cqspc::Wallet>(agent1) = 100 * good_1_default_price;
+    agent1.get<cqspc::Wallet>() = 100 * good_1_default_price;
 
     // Now test sell the goods
     cqspc::ResourceStockpile to_buy;
     to_buy[good_1] = 100;
-    ASSERT_TRUE(cqsp::common::actions::PurchaseGood(universe, agent1, to_buy));
+    ASSERT_TRUE(cqsp::common::actions::PurchaseGood(agent1, to_buy));
 
-    auto& market_comp = universe.get<cqspc::Market>(market);
+    auto& market_comp = market.get<cqspc::Market>();
 
     // Check demand
     EXPECT_EQ(market_comp[good_1].demand, 100);
 
     // Check wallet
-    EXPECT_EQ(universe.get<cqspc::Wallet>(agent1).GetBalance(), 0);
+    EXPECT_EQ(agent1.get<cqspc::Wallet>().GetBalance(), 0);
 }
 
 TEST_F(MarketTwoTest, BuySellTest) {
     // Add the resources and sell them, then try buying them, then get the change in price
-    universe.get<cqspc::Wallet>(agent1) = 100 * good_1_default_price;
-    universe.get<cqspc::Wallet>(agent2) = 100 * good_1_default_price;
+    agent1.get<cqspc::Wallet>() = 100 * good_1_default_price;
+    agent2.get<cqspc::Wallet>() = 100 * good_1_default_price;
 
     // Add the goods
-    universe.get<cqspc::ResourceStockpile>(agent1)[good_1] = 100;
+    agent1.get<cqspc::ResourceStockpile>()[good_1] = 100;
 
     cqspc::ResourceLedger ledger;
     ledger[good_1] = 100;
     // Then try to sell it
-    ASSERT_TRUE(cqsp::common::actions::SellGood(universe, agent1, ledger));
-    ASSERT_TRUE(cqsp::common::actions::PurchaseGood(universe, agent2, ledger));
+    ASSERT_TRUE(cqsp::common::actions::SellGood(agent1, ledger));
+    ASSERT_TRUE(cqsp::common::actions::PurchaseGood(agent2, ledger));
 
     // Check if the good is sold then bought
-    EXPECT_EQ(universe.get<cqspc::ResourceStockpile>(agent2)[good_1], 100);
-    EXPECT_EQ(universe.get<cqspc::ResourceStockpile>(agent1)[good_1], 0);
+    EXPECT_EQ(agent2.get<cqspc::ResourceStockpile>()[good_1], 100);
+    EXPECT_EQ(agent1.get<cqspc::ResourceStockpile>()[good_1], 0);
 
-    auto& market_comp = universe.get<cqspc::Market>(market);
+    auto& market_comp = market.get<cqspc::Market>();
     EXPECT_EQ(market_comp[good_1].demand, 100);
     EXPECT_EQ(market_comp[good_1].supply, 100);
 
@@ -136,24 +136,24 @@ TEST_F(MarketTwoTest, BuySellTest) {
 // So there is an over supply the price should drop.
 TEST_F(MarketTwoTest, BuySellOverSupplyTest) {
     // Add the resources and sell them, then try buying them, then get the change in price
-    universe.get<cqspc::Wallet>(agent1) = 1000 * good_1_default_price;
-    universe.get<cqspc::Wallet>(agent2) = 1000 * good_1_default_price;
+    agent1.get<cqspc::Wallet>() = 1000 * good_1_default_price;
+    agent2.get<cqspc::Wallet>() = 1000 * good_1_default_price;
 
     // Add the goods
-    universe.get<cqspc::ResourceStockpile>(agent1)[good_1] = 100;
+    agent1.get<cqspc::ResourceStockpile>()[good_1] = 100;
 
     cqspc::ResourceLedger ledger;
     ledger[good_1] = 100;
     // Then try to sell it
-    ASSERT_TRUE(cqsp::common::actions::SellGood(universe, agent1, ledger));
+    ASSERT_TRUE(cqsp::common::actions::SellGood(agent1, ledger));
     ledger[good_1] = 50;
-    ASSERT_TRUE(cqsp::common::actions::PurchaseGood(universe, agent2, ledger));
+    ASSERT_TRUE(cqsp::common::actions::PurchaseGood(agent2, ledger));
 
     // Check if the good is sold then bought
-    EXPECT_EQ(universe.get<cqspc::ResourceStockpile>(agent1)[good_1], 0);
-    EXPECT_EQ(universe.get<cqspc::ResourceStockpile>(agent2)[good_1], 50);
+    EXPECT_EQ(agent1.get<cqspc::ResourceStockpile>()[good_1], 0);
+    EXPECT_EQ(agent2.get<cqspc::ResourceStockpile>()[good_1], 50);
 
-    auto& market_comp = universe.get<cqspc::Market>(market);
+    auto& market_comp = market.get<cqspc::Market>();
 
     // Check market the resources
     EXPECT_EQ(market_comp[good_1].demand, 50);

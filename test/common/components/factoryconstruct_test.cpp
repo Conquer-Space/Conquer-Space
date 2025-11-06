@@ -29,13 +29,13 @@ TEST(FactoryConstuctTest, ConstructTest) {
     cqsp::common::Node city(universe);
     cqsp::common::Node recipe(universe);
     city.emplace<cqsp::common::components::IndustrialZone>();
-    auto& recipe_comp = recipe.emplace<cqsp::common::components::Recipe>(recipe);
+    auto& recipe_comp = recipe.emplace<cqsp::common::components::Recipe>();
     recipe_comp.workers = 10;
     recipe_comp.type = cqsp::common::components::factory;
-    entt::entity factory = cqsp::common::actions::CreateFactory(city, recipe, 10);
+    cqsp::common::Node factory = cqsp::common::actions::CreateFactory(city, recipe, 10);
     // Ensure that it has everything
-    ASSERT_TRUE(universe.any_of<cqsp::common::components::Employer>(factory));
-    ASSERT_EQ(universe.get<cqsp::common::components::Employer>(factory).population_needed, 10 * 10);
+    ASSERT_TRUE(factory.any_of<cqsp::common::components::Employer>());
+    ASSERT_EQ(factory.get<cqsp::common::components::Employer>().population_needed, 10 * 10);
 }
 
 TEST(FactoryConstuctTest, ConstructExpectNoCrash) {
