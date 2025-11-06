@@ -14,15 +14,4 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
-
-#include "common/components/coordinates.h"
-#include "common/components/maneuver.h"
-#include "common/components/orbit.h"
-#include "common/universe.h"
-
-namespace cqsp::common::systems {
-[[noreturn]] components::Maneuver_t TransferFromBody(Universe& universe, const components::types::Orbit& orbit,
-                                                     const components::types::Kinematics& kinematics, double altitude);
-glm::dvec3 GetVector();
-}  // namespace cqsp::common::systems
+#include "common/systems/sysorbit_test.h"

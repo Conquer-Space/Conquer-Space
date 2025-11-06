@@ -65,7 +65,7 @@ components::Maneuver_t TransferFromBody(Universe& universe, const components::ty
     // Eccentricity vector
     const glm::dvec3 ecc_v = glm::cross(kinematics.velocity, h) / orbit.GM - glm::normalize(kinematics.position);
     if (glm::length(ecc_v) == 0) {
-        // Then do stuff
+        // Then we should ignore this
     }
     double v = glm::angle(glm::normalize(ecc_v), glm::normalize(vel_frame));
     // It's probably this that's causing our issues
