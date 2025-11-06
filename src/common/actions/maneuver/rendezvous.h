@@ -20,9 +20,9 @@
 
 #include <glm/vec3.hpp>
 
+#include "common/actions/maneuver/hohmann.h"
 #include "common/components/movement.h"
 #include "common/components/orbit.h"
-#include "common/actions/maneuver/hohmann.h"
 
 namespace cqsp::common::systems {
 // Tools for rendezvous

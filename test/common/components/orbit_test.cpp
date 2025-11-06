@@ -14,17 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#include "common/components/orbit.h"
+
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <hjson.h>
 
 #include <fstream>
 #include <numbers>
+
 #include <glm/gtx/string_cast.hpp>
 
 #include "common/actions/maneuver/maneuver.h"
 #include "common/components/coordinates.h"
-#include "common/components/orbit.h"
 #include "common/components/units.h"
 #include "common/systems/movement/sysorbit.h"
 #include "common/universe.h"
@@ -221,7 +223,7 @@ TEST(OrbitTest, OrbitNormalTestList) {
     const int expected_tests = 1000;
     int failures = 0;
     const double GM = 1;
-    for (int i = 0; i < expected_tests; i ++) {
+    for (int i = 0; i < expected_tests; i++) {
         cqspt::Orbit orbit = generator.GenerateOrbit(GM, 0);
         glm::dvec3 orbit_normal = cqspt::GetOrbitNormal(orbit);
         glm::dvec3 angular_momentum_vector = glm::cross(cqspt::toVec3(orbit), cqspt::OrbitVelocityToVec3(orbit, 0));

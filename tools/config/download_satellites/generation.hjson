@@ -12,7 +12,7 @@
   {
     input: https://celestrak.org/NORAD/elements/gp.php?GROUP=galileo&FORMAT=tle
     output: ../binaries/data/core/data/planet_data/earth/satellites/galileo.hjson
-    model: ""
+    model: "galileo"
     tags:
     [
       navigation
@@ -22,7 +22,7 @@
   {
     input: https://celestrak.org/NORAD/elements/gp.php?GROUP=stations&FORMAT=tle
     output: ../binaries/data/core/data/planet_data/earth/satellites/stations.hjson
-    model: ""
+    model: "iss"
     tags:
     [
       station

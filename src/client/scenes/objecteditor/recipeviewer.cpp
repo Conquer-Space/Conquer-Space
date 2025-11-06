@@ -139,7 +139,7 @@ void SysRecipeViewer::RecipeViewerRight() {
     ImGui::Text("Output");
     ImGui::TextFmt("Output Cost: {}",
                    util::NumberToHumanString(GetUniverse().get<components::Price>(recipe_comp.output.entity) *
-                                           recipe_comp.output.amount));
+                                             recipe_comp.output.amount));
     ImGui::TextFmt("{}, {}", common::util::GetName(GetUniverse(), recipe_comp.output.entity),
                    util::NumberToHumanString(recipe_comp.output.amount));
     if (ImGui::IsItemClicked()) {
@@ -162,7 +162,7 @@ void SysRecipeViewer::RecipeViewerRight() {
     ImGui::TextFmt("Expected Income: {}", util::NumberToHumanString(expected_income));
     ImGui::TextFmt("Expected Cost: {}", util::NumberToHumanString(expected_cost));
     ImGui::TextFmt("Expected Profit: {}", util::NumberToHumanString(expected_profit));
-    ImGui::TextFmt("P/L ratio: {}", expected_income/expected_cost);
+    ImGui::TextFmt("P/L ratio: {}", expected_income / expected_cost);
     ImGui::DragFloat("Amount Produced", &expected_production, 1, 0, 10000000);
 }
 

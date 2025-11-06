@@ -34,7 +34,11 @@
 #include <RmlUi/Core/Input.h>
 #include <RmlUi/Core/Math.h>
 #include <RmlUi/Core/StringUtilities.h>
+#include <RmlUi/Core/URL.h>
 
+#include <filesystem>
+
+#include "engine/enginelogger.h"
 #include "engine/ui/RmlUi_Renderer_GL3.h"
 
 #define GLFW_HAS_EXTRA_CURSORS (GLFW_VERSION_MAJOR >= 3 && GLFW_VERSION_MINOR >= 4)
@@ -105,6 +109,58 @@ void SystemInterface_GLFW::GetClipboardText(Rml::String& text) {
         return;
     }
     text = Rml::String(glfwGetClipboardString(window));
+}
+
+bool SystemInterface_GLFW::LogMessage(Rml::Log::Type type, const Rml::String& message) {
+    switch (type) {
+        case Rml::Log::Type::LT_ALWAYS:
+            ENGINE_LOG_CRITICAL(message);
+            break;
+        case Rml::Log::Type::LT_ERROR:
+            ENGINE_LOG_ERROR(message);
+            break;
+        case Rml::Log::Type::LT_ASSERT:
+            ENGINE_LOG_CRITICAL(message);
+            break;
+        case Rml::Log::Type::LT_WARNING:
+            ENGINE_LOG_WARN(message);
+            break;
+        case Rml::Log::Type::LT_INFO:
+            ENGINE_LOG_INFO(message);
+            break;
+        case Rml::Log::Type::LT_DEBUG:
+            ENGINE_LOG_DEBUG(message);
+            break;
+        case Rml::Log::Type::LT_MAX:
+            ENGINE_LOG_CRITICAL(message);
+            break;
+    }
+    return true;
+}
+
+void SystemInterface_GLFW::JoinPath(Rml::String& translated_path, const Rml::String& document_path,
+                                    const Rml::String& path) {
+    // We want absolute paths to be returned as is
+    // TODO(EhWhoAmI): Implement file:// protocols so that we can determine if it is
+    // absolute for the entire filesystem or just the base folder for
+    // If the path is a Windows-style absolute path, return it directly.
+    size_t drive_pos = path.find(':');
+    size_t slash_pos = Rml::Math::Min(path.find('/'), path.find('\\'));
+    if (drive_pos != Rml::String::npos && drive_pos < slash_pos) {
+        translated_path = path;
+        return;
+    }
+
+    // If it starts with a forward slash, it is also a absolute path, so we should probably use that path instead
+    if (!path.empty() && path[0] == '/') {
+        translated_path = path;
+        return;
+    }
+
+    // Else get the relative path from the document path
+    translated_path =
+        std::filesystem::canonical(std::filesystem::path(document_path).parent_path() / std::filesystem::path(path))
+            .string();
 }
 
 bool RmlGLFW::ProcessKeyCallback(Rml::Context* context, int key, int action, int mods) {

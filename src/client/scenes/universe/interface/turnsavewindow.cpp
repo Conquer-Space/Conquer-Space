@@ -45,7 +45,7 @@ void TurnSaveWindow::Update(double delta_time) {
         }
         is_paused = pause_opt.to_tick;
     }
-    // Tick once 
+    // Tick once
 }
 
 void TurnSaveWindow::OpenDocument() {

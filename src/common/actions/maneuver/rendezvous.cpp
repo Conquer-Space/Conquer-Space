@@ -20,8 +20,7 @@
 
 namespace cqsp::common::systems {
 using namespace components::types;  // NOLINT
-components::HohmannPair_t CoplanarIntercept(const Orbit& start_orbit,
-                                            const Orbit& end_orbit, double epoch) {
+components::HohmannPair_t CoplanarIntercept(const Orbit& start_orbit, const Orbit& end_orbit, double epoch) {
     // They need to be the same plane, but let's ignore that
     // Also needs to be circular
     double current_phase_angle = CalculatePhaseAngle(start_orbit, end_orbit, epoch);

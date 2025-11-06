@@ -30,10 +30,8 @@ target_include_directories(stb SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
 set_target_properties(
     stb PROPERTIES CXX_CLANG_TIDY ""
 )
-
-add_library(Tracy STATIC tracy/tracy/TracyClient.cpp)
-target_compile_definitions(Tracy PRIVATE TRACY_ENABLE)
-target_include_directories(Tracy PUBLIC tracy)
+set(TRACY_ON_DEMAND ON CACHE BOOL "" FORCE)
+add_subdirectory(tracy/tracy)
 
 add_subdirectory(lunasvg)
 
@@ -41,4 +39,4 @@ set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 set(RMLUI_SVG_PLUGIN ON CACHE BOOL "" FORCE)
 add_subdirectory(RmlUi)
 
-set_target_properties(hjson glad stb rmlui rmlui_debugger Tracy lunasvg imgui_node_editor PROPERTIES FOLDER "Libs")
+set_target_properties(hjson glad stb rmlui rmlui_debugger lunasvg imgui_node_editor PROPERTIES FOLDER "Libs")

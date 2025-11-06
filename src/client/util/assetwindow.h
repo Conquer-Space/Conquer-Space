@@ -27,13 +27,10 @@ class AssetWindow : public SysUserInterface {
     void DoUI(int delta_time);
     void DoUpdate(int delta_time);
 
-    void SetWindowOpenPtr(bool* open) {
-      window_open = open;
-    }
+    void SetWindowOpenPtr(bool* open) { window_open = open; }
 
  private:
     std::string asset_search;
-    bool *window_open;
+    bool* window_open;
 };
 }  // namespace cqsp::client::systems
-

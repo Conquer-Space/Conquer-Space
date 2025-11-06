@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#include "common/util/utilnumberdisplay.h"
+
 #include <gtest/gtest.h>
 #include <spdlog/spdlog.h>
-
-#include "common/util/utilnumberdisplay.h"
 
 TEST(NumberDisplayTest, LongToHumanStringTest) {
     EXPECT_STREQ("1 k", cqsp::util::NumberToHumanString(1000).c_str());

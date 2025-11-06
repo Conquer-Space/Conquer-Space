@@ -145,10 +145,12 @@ std::string GetCqspExePath() {
 std::string GetCqspTestDataPath() {
 #if defined(_MSC_VER)
     return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) / ".." / ".." / ".." / ".." / "binaries" /
-                                      "data").string();
+                                      "data")
+        .string();
 #else
     return std::filesystem::canonical(std::filesystem::path(GetCqspExePath()) / ".." / ".." / ".." / "binaries" /
-                                      "data").string();
+                                      "data")
+        .string();
 #endif
 }
 std::string GetCqspDataPath() {

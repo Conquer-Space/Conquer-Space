@@ -25,7 +25,6 @@ for line in cpp_file_list:
     # Clang format the files
     clang_format.format_file(line)
 
-
 cfg = configparser.ConfigParser()
 try:
     cfg.read('git-hook.cfg')
@@ -53,6 +52,8 @@ if 'CLANG_TIDY' in cfg and 'clang_tidy' in cfg['CLANG_TIDY']:
             val = subprocess.run('python tools/run-clang-tidy.py -config-file=.clang-tidy -quiet -fix -p build-makefile ' + s)
             if val.returncode != 0:
                 error = True
+            # Also format file
+            clang_format.format_file(cpp_file_list)
 
 for line in cpp_file_list:
     subprocess.run(['git', 'add', line])
