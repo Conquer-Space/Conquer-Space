@@ -189,7 +189,7 @@ void PlanetLoader::PostLoad(const Node& node) {
         node.remove<ParentTemp>();
         return;
     }
-    Node parent = Node(universe, universe.planets[parent_temp.parent]);
+    Node parent(universe, universe.planets[parent_temp.parent]);
     SPDLOG_INFO("{}'s parent is {}", identifier, parent_temp.parent);
     orbit.reference_body = parent;
     // Set mu

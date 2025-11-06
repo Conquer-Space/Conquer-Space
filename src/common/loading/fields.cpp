@@ -43,7 +43,7 @@ void LoadFields(Universe& universe, Hjson::Value& hjson) {
             continue;
         }
         // Get the name
-        Node field_node = Node(universe);
+        Node field_node(universe);
         auto& field_comp = field_node.emplace<science::Field>();
         LoadName(field_node, val);
         if (!LoadIdentifier(field_node, val)) {

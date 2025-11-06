@@ -181,8 +181,8 @@ void FunctionEconomy(Universe& universe, ScriptInterface& script_engine) {
     });
 
     REGISTER_FUNCTION("create_factory", [&](entt::entity city, entt::entity recipe, int productivity) {
-        Node city_node = Node(universe, city);
-        Node recipe_node = Node(universe, recipe);
+        Node city_node(universe, city);
+        Node recipe_node(universe, recipe);
         Node factory = actions::CreateFactory(city_node, recipe_node, productivity);
         return factory;
     });
@@ -205,7 +205,7 @@ void FunctionEconomy(Universe& universe, ScriptInterface& script_engine) {
     });
 
     REGISTER_FUNCTION("create_commercial_area", [&](entt::entity city) {
-        Node city_node = Node(universe, city);
+        Node city_node(universe, city);
         return actions::CreateCommercialArea(city_node);
     });
 
@@ -251,8 +251,8 @@ void FunctionEconomy(Universe& universe, ScriptInterface& script_engine) {
     });
 
     REGISTER_FUNCTION("attach_market", [&](entt::entity market_entity, entt::entity participant) {
-        Node market_node = Node(universe, market_entity);
-        Node participant_node = Node(universe, participant);
+        Node market_node(universe, market_entity);
+        Node participant_node(universe, participant);
         actions::AddParticipant(market_node, participant_node);
     });
 

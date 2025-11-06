@@ -33,7 +33,7 @@ int HjsonLoader::LoadHjson(const Hjson::Value& values) {
     for (int i = 0; i < values.size(); i++) {
         Hjson::Value value = values[i];
 
-        Node node = Node(universe);
+        Node node(universe);
         if (NeedIdentifier()) {
             if (!LoadInitialValues(node, value)) {
                 SPDLOG_WARN("No identifier");

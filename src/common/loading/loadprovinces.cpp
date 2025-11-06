@@ -44,12 +44,14 @@ void LoadProvinces(Node& planet, const std::string& text) {
         std::getline(f2, token, ',');
         std::string country = token;
         // Create
+        //SPDLOG_INFO("Loading Country: {} ID {}", country, identifier);
         Universe& universe = planet.universe();
-        Node province_node = Node(universe);
-        Node country_node = Node(universe, universe.countries[country]);
+        Node province_node(universe);
+        Node country_node(universe, universe.countries[country]);
         province_node.emplace<components::Province>(country_node);
         province_node.emplace<components::Identifier>(identifier);
         auto& color = province_node.emplace<components::ProvinceColor>(std::stoi(r), std::stoi(g), std::stoi(b));
+
         if (universe.provinces.find(identifier) == universe.provinces.end()) {
             universe.provinces[identifier] = province_node;
         } else {
@@ -62,6 +64,7 @@ void LoadProvinces(Node& planet, const std::string& text) {
         }
         universe.province_colors[planet][(int)color] = province_node;
         universe.colors_province[planet][province_node] = (int)color;
+        //SPDLOG_INFO("Provience Loaded");
     }
 }
 
@@ -72,7 +75,7 @@ void LoadAdjProvinces(Universe& universe, Hjson::Value& adjacency_map) {
             SPDLOG_WARN("Cannot find province {}", province_name);
             continue;
         }
-        Node province_Node = Node(universe, universe.provinces[province_name]);
+        Node province_Node(universe, universe.provinces[province_name]);
         auto& province = province_Node.get<components::Province>();
         province.neighbors.resize(neighbors.size());
         for (int i = 0; i < neighbors.size(); i++) {

@@ -36,7 +36,7 @@ void SysTechProgress::DoSystem() {
         std::vector<Node> completed_techs;
         for (auto& res : research.current_research) {
             res.second += Interval();
-            Node tech_node = Node(field_node, res.first);
+            Node tech_node(field_node, res.first);
             // Get the research amount
 
             auto& tech = tech_node.get<science::Technology>();

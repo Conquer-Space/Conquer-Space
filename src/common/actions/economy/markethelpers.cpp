@@ -36,7 +36,7 @@ double GetCost(Node& market, const components::ResourceLedger& ledger) {
 }
 
 Node CreateMarket(Universe& universe) {
-    Node market = Node(universe);
+    Node market(universe);
     static_cast<void>(market.get_or_emplace<components::Market>());
     static_cast<void>(market.get_or_emplace<components::MarketHistory>());
     return market;
@@ -45,7 +45,7 @@ Node CreateMarket(Universe& universe) {
 bool PurchaseGood(Node& agent, const components::ResourceLedger& purchase) {
     // Calculating on how to buy from the market shouldn't be too hard, right?
     // Get the market connected to, and build the demand
-    Node market = Node(agent.universe(), agent.get<components::MarketAgent>().market);
+    Node market(agent.universe(), agent.get<components::MarketAgent>().market);
     auto& market_comp = market.get<components::Market>();
     // Prices
     double cost = market_comp.GetPrice(purchase);
@@ -75,7 +75,7 @@ bool PurchaseGood(Node& agent, const components::ResourceLedger& purchase) {
 bool SellGood(Node& agent, const components::ResourceLedger& selling) {
     // Calculating on how to buy from the market shouldn't be too hard, right?
     // Get the market connected to, and build the demand
-    Node market = Node(agent.universe(), agent.get<components::MarketAgent>().market);
+    Node market(agent.universe(), agent.get<components::MarketAgent>().market);
     auto& market_comp = market.get<components::Market>();
     auto& agent_stockpile = agent.get<components::ResourceStockpile>();
     market_comp.AddSupply(selling);

@@ -60,7 +60,7 @@ Node CreateFactory(Node& city, Node& recipe, int productivity, double wages) {
         return Node(city.universe(), entt::null);
     }
 
-    Node factory = Node(city.universe());
+    Node factory(city.universe());
     //auto& factory_converter = universe.emplace<components::ResourceConverter>(factory);
     auto& production = factory.emplace<components::Production>();
     // Add recipes and stuff
@@ -105,7 +105,7 @@ components::ResourceLedger GetFactoryCost(Node& city, Node& recipe, int producti
 }
 
 Node CreateCommercialArea(Node& city) {
-    Node commercial = Node(city.universe());
+    Node commercial(city.universe());
 
     commercial.emplace<components::Employer>();
     commercial.emplace<components::Commercial>(city, 0);

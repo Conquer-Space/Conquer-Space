@@ -72,6 +72,7 @@ void LoadResource(AssetManager& asset_manager, Universe& universe, const std::st
     auto start = std::chrono::system_clock::now();
     static_assert(std::is_base_of_v<HjsonLoader, T>, "Class is not child of");
     std::unique_ptr<HjsonLoader> ptr = std::make_unique<T>(universe);
+    //SPDLOG_INFO("Starting load {}", asset_name);
 
     for (const auto& it : asset_manager) {
         if (!it.second->HasAsset(asset_name)) {
@@ -94,9 +95,11 @@ void LoadResource(AssetManager& asset_manager, Universe& universe, const std::st
 void LoadPlanetProvinces(AssetManager& asset_manager, ConquerSpace& conquer_space) {
     auto& universe = conquer_space.GetUniverse();
     auto view = universe.nodes<components::ProvincedPlanet>();
-
+    SPDLOG_INFO("Loading Provinces");
     for (common::Node node : view) {
         // Check if it's empty or not
+        //SPDLOG_INFO("Loading Provinces for planet");
+
         auto& province_map = node.get<components::ProvincedPlanet>();
         if (!province_map.province_definitions.empty()) {
             asset::TextAsset* asset = asset_manager.GetAsset<asset::TextAsset>(province_map.province_definitions);
@@ -104,7 +107,9 @@ void LoadPlanetProvinces(AssetManager& asset_manager, ConquerSpace& conquer_spac
                 loading::LoadProvinces(node, asset->data);
             }
         }
+        //SPDLOG_INFO("Done Loading Provinces for planet");
     }
+    SPDLOG_INFO("Proviences Loaded");
 }
 
 void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) {

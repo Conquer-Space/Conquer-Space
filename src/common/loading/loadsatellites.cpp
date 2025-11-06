@@ -111,7 +111,7 @@ void LoadSatellites(Universe& universe, std::string& string) {
     std::istringstream f(string);
     std::string line;
     int count = 0;
-    Node earth = Node(universe, universe.planets["earth"]);
+    Node earth(universe, universe.planets["earth"]);
     const double GM = earth.get<Body>().GM;
 
     // Get the next three lines or something like that
@@ -125,7 +125,7 @@ void LoadSatellites(Universe& universe, std::string& string) {
         std::getline(f, line_one);
         std::string line_two;
         std::getline(f, line_two);
-        Node satellite = Node(universe);
+        Node satellite(universe);
         satellite.emplace<components::Name>(line);
 
         // Add to earth
@@ -155,7 +155,7 @@ bool SatelliteLoader::LoadValue(const Hjson::Value& values, Node& node) {
     }
     // Get name but no identifier
     node.emplace<Orbit>(*orbit);
-    Node reference_node = Node(universe, orbit->reference_body);
+    Node reference_node(universe, orbit->reference_body);
     reference_node.get<bodies::OrbitalSystem>().push_back(node);
     node.emplace<components::ships::Ship>();
     SPDLOG_INFO("Loaded orbit!");

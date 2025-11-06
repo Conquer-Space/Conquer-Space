@@ -42,21 +42,22 @@ struct ConnectedCities {
 }  // namespace
 
 bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
-    // Load the city
+    //SPDLOG_INFO("Load the city);
     std::string planet = values["planet"].to_string();
     double longi = values["coordinates"]["longitude"].to_double();
     double lat = values["coordinates"]["latitude"].to_double();
     auto& sc = node.emplace<components::types::SurfaceCoordinate>(lat, longi);
-    Node planet_node = Node(node, universe.planets[planet]);
+    Node planet_node(node, universe.planets[planet]);
     sc.planet = planet_node;
 
     planet_node.get_or_emplace<components::Habitation>().settlements.push_back(node);
-
+    //SPDLOG_INFO("Load Timezone");
     if (!values["timezone"].empty()) {
         entt::entity tz = universe.time_zones[values["timezone"].to_string()];
         node.emplace<components::CityTimeZone>(tz);
     }
 
+    //SPDLOG_INFO("Load Population");
     auto& settlement = node.emplace<components::Settlement>();
     std::string identifier = node.get<components::Identifier>().identifier;
     // Load population
@@ -64,7 +65,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
         Hjson::Value population = values["population"];
         for (int i = 0; i < population.size(); i++) {
             Hjson::Value population_seg = population[i];
-            Node pop_node = Node(universe);
+            Node pop_node(universe);
 
             auto size = population_seg["size"].to_int64();
             double standard_of_living = 0;
@@ -104,7 +105,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
         settlement.population.push_back(pop_node);
         SPDLOG_WARN("City {} does not have any population", identifier);
     }
-
+    //SPDLOG_INFO("Load Industry");
     node.emplace<components::ResourceLedger>();
 
     // Industry and economy
@@ -124,7 +125,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
         }
     }
     // Commercial area
-    Node commercial_node = Node(universe);
+    Node commercial_node(universe);
 
     commercial_node.emplace<components::Employer>();
     commercial_node.emplace<components::Commercial>(node, 0);
@@ -146,34 +147,35 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
             if (!ind_val["wage"].empty()) {
                 wage = ind_val["wage"].to_double();
             }
-            Node rec_ent = Node(universe, universe.recipes[recipe]);
+            Node rec_ent(universe, universe.recipes[recipe]);
 
             actions::CreateFactory(node, rec_ent, productivity);
         }
     }
-
+    //SPDLOG_INFO("Load SpacePort");
     if (!values["space-port"].empty()) {
         // Add space port
         auto& space_port = node.emplace<components::infrastructure::SpacePort>();
         space_port.reference_body = sc.planet;
     }
-
+    //SPDLOG_INFO("Load Country");
     if (!values["country"].empty()) {
         if (universe.countries.find(values["country"]) != universe.countries.end()) {
-            Node country_node = Node(universe, universe.countries[values["country"]]);
-            country_node.emplace<components::Governed>();
+            Node country_node(universe, universe.countries[values["country"]]);
+            node.emplace<components::Governed>(country_node);
             // Add self to country?
             country_node.get_or_emplace<components::CountryCityList>().city_list.push_back(node);
+
         } else {
             SPDLOG_INFO("City {} has country {}, but it's undefined", identifier, values["country"].to_string());
         }
     } else {
         SPDLOG_WARN("City {} has no country", identifier);
     }
-
+    //SPDLOG_INFO("Load Provinces");
     if (!values["province"].empty()) {
         if (universe.provinces[values["province"]] != universe.provinces.end()) {
-            Node province_node = Node(universe, universe.provinces[values["province"]]);
+            Node province_node(universe, universe.provinces[values["province"]]);
             // Now add self to province
             province_node.get<components::Province>().cities.push_back(node);
         } else {
@@ -181,7 +183,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
         }
     }
 
-    // Add infrastructure to city
+    //SPDLOG_INFO("Add infrastructure to city");
     auto& infrastructure = node.emplace<components::infrastructure::CityInfrastructure>();
     if (!values["transport"].empty()) {
         infrastructure.default_purchase_cost = values["transport"].to_double();
@@ -199,6 +201,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
         }
     }
 
+    //SPDLOG_INFO("Load Tags");
     if (!values["tags"].empty()) {
         for (int i = 0; i < values["tags"].size(); i++) {
             if (values["tags"][i].to_string() == "capital") {
@@ -206,7 +209,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
                 node.emplace<components::CapitalCity>();
                 // Add to parent country
                 if (node.any_of<components::Governed>()) {
-                    Node governor_node = Node(universe, node.get<components::Governed>().governor);
+                    Node governor_node(universe, node.get<components::Governed>().governor);
                     auto& country_comp = universe.get<components::Country>(governor_node);
                     if (country_comp.capital_city != entt::null) {
                         // Get name
@@ -221,6 +224,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
             }
         }
     }
+    //SPDLOG_INFO("Save City");
     universe.cities[identifier] = node;
     return true;
 }

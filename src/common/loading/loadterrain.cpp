@@ -23,9 +23,9 @@ using components::bodies::TerrainData;
 
 void LoadTerrainData(Universe& universe, Hjson::Value& value) {
     for (auto it = value.begin(); it != value.end(); it++) {
-        entt::entity terrain_node = Node(universe);
+        Node terrain_node(universe);
 
-        TerrainData& data = universe.get_or_emplace<TerrainData>(terrain_node);
+        TerrainData& data = terrain_node.get_or_emplace<TerrainData>();
 
         data.sea_level = it->second["sealevel"];
         auto terrain_colors = it->second["terrain"];
