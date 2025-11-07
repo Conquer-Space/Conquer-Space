@@ -132,7 +132,7 @@ struct fmt::formatter<entt::entity> : formatter<std::string> {
 template <>
 struct fmt::formatter<cqsp::common::Node> : fmt::formatter<std::string> {
     template <typename FormatContext>
-    constexpr auto format(const cqsp::common::Node ship, FormatContext& ctx) const {
+    auto format(const cqsp::common::Node ship, FormatContext& ctx) const {
         return fmt::formatter<entt::entity> {}.format(ship.entity(), ctx);
     }
 };
