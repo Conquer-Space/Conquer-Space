@@ -181,7 +181,9 @@ void FunctionEconomy(Universe& universe, ScriptInterface& script_engine) {
     });
 
     REGISTER_FUNCTION("create_factory", [&](entt::entity city, entt::entity recipe, int productivity) {
-        entt::entity factory = actions::CreateFactory(universe, city, recipe, productivity);
+        Node city_node(universe, city);
+        Node recipe_node(universe, recipe);
+        Node factory = actions::CreateFactory(city_node, recipe_node, productivity);
         return factory;
     });
 
@@ -202,8 +204,10 @@ void FunctionEconomy(Universe& universe, ScriptInterface& script_engine) {
         return entity;
     });
 
-    REGISTER_FUNCTION("create_commercial_area",
-                      [&](entt::entity city) { return actions::CreateCommercialArea(universe, city); });
+    REGISTER_FUNCTION("create_commercial_area", [&](entt::entity city) {
+        Node city_node(universe, city);
+        return actions::CreateCommercialArea(city_node);
+    });
 
     REGISTER_FUNCTION("set_resource_consume", [&](entt::entity entity, entt::entity good, double amount) {
         auto& consumption = universe.get_or_emplace<components::ResourceConsumption>(entity);
@@ -247,7 +251,9 @@ void FunctionEconomy(Universe& universe, ScriptInterface& script_engine) {
     });
 
     REGISTER_FUNCTION("attach_market", [&](entt::entity market_entity, entt::entity participant) {
-        actions::AddParticipant(universe, market_entity, participant);
+        Node market_node(universe, market_entity);
+        Node participant_node(universe, participant);
+        actions::AddParticipant(market_node, participant_node);
     });
 
     REGISTER_FUNCTION("get_balance", [&](entt::entity participant) {
@@ -390,8 +396,11 @@ void FunctionScience(Universe& universe, ScriptInterface& script_engine) {
         universe.emplace<ScientificResearch>(entity);
     });
 
-    REGISTER_FUNCTION("complete_technology",
-                      [&](entt::entity entity, entt::entity tech) { actions::ResearchTech(universe, entity, tech); });
+    REGISTER_FUNCTION("complete_technology", [&](entt::entity entity, entt::entity tech) {
+        Node civilization(universe, entity);
+        Node tech_node(universe, tech);
+        actions::ResearchTech(civilization, tech_node);
+    });
 
     REGISTER_FUNCTION("research_technology", [&](entt::entity entity, entt::entity tech) {
         auto& res = universe.get<ScientificResearch>(entity);

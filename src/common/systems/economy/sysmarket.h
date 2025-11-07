@@ -30,7 +30,7 @@ class SysMarket : public ISimulationSystem {
     void Init() override;
 
  private:
-    void DeterminePrice(components::Market& market, entt::entity good_entity);
+    void DeterminePrice(components::Market& market, Node& good_entity);
 
     components::ResourceLedger base_prices;
 };

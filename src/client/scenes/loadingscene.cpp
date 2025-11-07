@@ -23,10 +23,10 @@
 #include <fstream>
 #include <string>
 
+#include <common/TracySystem.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <tracy/Tracy.hpp>
-#include <common/TracySystem.hpp>
 
 #include "client/scenes/mainmenu/mainmenuscene.h"
 #include "client/scenes/modelscene.h"

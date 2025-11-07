@@ -51,31 +51,31 @@ struct ParentTemp {
 };
 }  // namespace
 
-bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
+bool PlanetLoader::LoadValue(const Hjson::Value& values, Node& node) {
     // Load orbit
     std::string identifier = values["identifier"];
     const Hjson::Value& orbit = values["orbit"];
-    auto& orbit_comp = universe.emplace<types::Orbit>(entity);
-    universe.emplace<bodies::Planet>(entity);
-    auto& body_comp = universe.emplace<Body>(entity);
-    universe.emplace<components::Market>(entity);
-    universe.emplace<components::PlanetaryMarket>(entity);
-    universe.emplace<bodies::OrbitalSystem>(entity);
+    auto& orbit_comp = node.emplace<types::Orbit>();
+    node.emplace<bodies::Planet>();
+    auto& body_comp = node.emplace<Body>();
+    node.emplace<components::Market>();
+    node.emplace<components::PlanetaryMarket>();
+    node.emplace<bodies::OrbitalSystem>();
 
-    universe.emplace<bodies::NautralObject>(entity);
+    node.emplace<bodies::NautralObject>();
     if (values["type"].type() != Hjson::Type::Undefined) {
         if (values["type"].type() != Hjson::Type::String) {
             SPDLOG_INFO("Planet type of {} is in incorrect format", identifier);
             return true;
         }
         if (values["type"].to_string() == "star") {
-            universe.emplace<bodies::LightEmitter>(entity);
+            node.emplace<bodies::LightEmitter>();
         }
     }
 
     if (values["texture"].type() != Hjson::Type::Undefined) {
         const Hjson::Value& texture = values["texture"];
-        auto& texture_comp = universe.emplace<components::bodies::TexturedTerrain>(entity);
+        auto& texture_comp = node.emplace<components::bodies::TexturedTerrain>();
 
         if (texture["terrain"].type() != Hjson::Type::String) {
             SPDLOG_INFO("Terrain texture of {} is in incorrect format", identifier);
@@ -92,7 +92,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
         if (texture["province_texture"].type() == Hjson::Type::String) {
             // We probably need a much more rigorous check, like actually verifying if the files actually exist.
-            auto& provinces = universe.emplace<components::ProvincedPlanet>(entity);
+            auto& provinces = node.emplace<components::ProvincedPlanet>();
             provinces.province_texture = texture["province_texture"].to_string();
             if (texture["province_map"].type() == Hjson::Type::String) {
                 provinces.province_map = texture["province_map"].to_string();
@@ -147,13 +147,13 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
 
     if (values["reference"].defined()) {
         auto parent_name = values["reference"];
-        universe.emplace<ParentTemp>(entity, parent_name);
+        node.emplace<ParentTemp>(parent_name);
     } else {
         // It's the sun
-        universe.sun = entity;
+        universe.sun = node;
     }
 
-    universe.planets[identifier] = entity;
+    universe.planets[identifier] = node;
     auto orbit_opt = LoadOrbit(orbit);
     if (orbit_opt) {
         orbit_comp = *orbit_opt;
@@ -171,33 +171,34 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
     return true;
 }
 
-void PlanetLoader::PostLoad(const entt::entity& entity) {
+void PlanetLoader::PostLoad(const Node& node) {
     // Set the parent
-    auto& orbit = universe.get<types::Orbit>(entity);
-    auto& body = universe.get<Body>(entity);
+    std ::string identifier = node.get<components::Identifier>().identifier;
+    auto& orbit = node.get<types::Orbit>();
+    Body& body = node.get<Body>();
     body.mass = bodies::CalculateMass(body.GM);
 
-    if (!universe.any_of<ParentTemp>(entity)) {
+    if (!node.any_of<ParentTemp>()) {
         return;
     }
 
-    auto& parent_temp = universe.get<ParentTemp>(entity);
+    auto& parent_temp = node.get<ParentTemp>();
 
     if (universe.planets.find(parent_temp.parent) == universe.planets.end()) {
-        SPDLOG_INFO("{} parent is not found: {}", universe.get<components::Identifier>(entity).identifier,
-                    parent_temp.parent);
-        universe.remove<ParentTemp>(entity);
+        SPDLOG_INFO("{} parent is not found: {}", identifier, parent_temp.parent);
+        node.remove<ParentTemp>();
         return;
     }
-    entt::entity parent = universe.planets[parent_temp.parent];
-    SPDLOG_INFO("{}'s parent is {}", universe.get<components::Identifier>(entity).identifier, parent_temp.parent);
+    Node parent(universe, universe.planets[parent_temp.parent]);
+    SPDLOG_INFO("{}'s parent is {}", identifier, parent_temp.parent);
     orbit.reference_body = parent;
     // Set mu
     orbit.GM = universe.get<Body>(parent).GM;
     body.SOI = bodies::CalculateSOI(body.GM, orbit.GM, orbit.semi_major_axis);
     body.mass = bodies::CalculateMass(body.GM);
-    universe.get_or_emplace<bodies::OrbitalSystem>(parent).push_back(entity);
-    universe.get_or_emplace<bodies::OrbitalSystem>(parent).bodies.push_back(entity);
-    universe.remove<ParentTemp>(entity);
+
+    parent.get_or_emplace<bodies::OrbitalSystem>().push_back(node);
+    parent.get_or_emplace<bodies::OrbitalSystem>().bodies.push_back(node);
+    node.remove<ParentTemp>();
 }
 }  // namespace cqsp::common::loading

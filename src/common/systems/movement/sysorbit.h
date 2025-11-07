@@ -65,8 +65,8 @@ class SysOrbit : public ISimulationSystem {
     void ParseChildren(entt::entity body);
 
     void EnterSOI(entt::entity entity, entt::entity body, entt::entity parent, components::types::Orbit& orb,
-                  components::types::Kinematics& vehicle_position,
-                  const components::bodies::Body& body_comp, const components::types::Kinematics& target_position);
+                  components::types::Kinematics& vehicle_position, const components::bodies::Body& body_comp,
+                  const components::types::Kinematics& target_position);
 
     const bool debug_prints = false;
 };

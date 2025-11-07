@@ -31,41 +31,40 @@ void SysPlanetaryTrade::DoSystem() {
     // Then list all the markets
     // Get the market of the planet, and add latent supply and demand, and then compute the market
     auto planetary_markets =
-        GetUniverse().view<components::Market, components::PlanetaryMarket, components::Habitation>();
+        GetUniverse().nodes<components::Market, components::PlanetaryMarket, components::Habitation>();
 
-    auto goodsview = GetUniverse().view<components::Price>();
+    auto goodsview = GetUniverse().nodes<components::Price>();
 
-    for (entt::entity entity : planetary_markets) {
-        auto& p_market = GetUniverse().get<components::Market>(entity);
-        auto& habitation = GetUniverse().get<components::Habitation>(entity);
-        auto& wallet = GetUniverse().get_or_emplace<components::Wallet>(entity);
+    for (Node market_node : planetary_markets) {
+        auto& p_market = market_node.get<components::Market>();
+        auto& habitation = market_node.get<components::Habitation>();
+        auto& wallet = market_node.get_or_emplace<components::Wallet>();
 
         p_market.trade.clear();
 
-        for (entt::entity habitation : habitation.settlements) {
-            auto& market = GetUniverse().get<components::Market>(habitation);
+        for (Node settlement_node : market_node.Convert(habitation.settlements)) {
+            auto& market = settlement_node.get<components::Market>();
 
             p_market.supply() += market.production;
             p_market.demand() += market.consumption;
 
-            if (GetUniverse().any_of<components::infrastructure::SpacePort>(habitation)) {
-                auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(habitation);
+            if (settlement_node.any_of<components::infrastructure::SpacePort>()) {
+                auto& space_port = settlement_node.get<components::infrastructure::SpacePort>();
                 p_market.supply() += space_port.output_resources_rate;
                 p_market.demand() += space_port.demanded_resources_rate;
             }
         }
 
-        for (entt::entity good_entity : goodsview) {
-            DeterminePrice(p_market, good_entity);
+        for (Node good_node : goodsview) {
+            DeterminePrice(p_market, good_node);
         }
         // Now we can compute the prices for the individual markets
-        for (entt::entity habitation : habitation.settlements) {
-            auto& market = GetUniverse().get<components::Market>(habitation);
-            auto& market_wallet = GetUniverse().get_or_emplace<components::Wallet>(habitation);
-            for (entt::entity good_entity : goodsview) {
-                double access = market.market_access[good_entity];
-                market.price[good_entity] =
-                    p_market.price[good_entity] * access + (1 - access) * market.price[good_entity];
+        for (Node settlement_node : market_node.Convert(habitation.settlements)) {
+            auto& market = settlement_node.get<components::Market>();
+            auto& market_wallet = settlement_node.get_or_emplace<components::Wallet>();
+            for (Node good_node : goodsview) {
+                double access = market.market_access[good_node];
+                market.price[good_node] = p_market.price[good_node] * access + (1 - access) * market.price[good_node];
             }
 
             // Determine supply and demand for the market
@@ -89,7 +88,7 @@ void SysPlanetaryTrade::DoSystem() {
             }
         }
 
-        auto& planetary_market = GetUniverse().get<components::PlanetaryMarket>(entity);
+        auto& planetary_market = market_node.get<components::PlanetaryMarket>();
         planetary_market.supplied_resources.clear();
     }
     initial_tick = false;
@@ -103,7 +102,7 @@ void SysPlanetaryTrade::Init() {
     }
 }
 
-void SysPlanetaryTrade::DeterminePrice(components::Market& market, entt::entity good_entity) {
+void SysPlanetaryTrade::DeterminePrice(components::Market& market, Node& good_entity) {
     const double sd_ratio = market.sd_ratio[good_entity];
     const double supply = market.supply()[good_entity];
     const double demand = market.demand()[good_entity];
