@@ -128,3 +128,11 @@ struct fmt::formatter<entt::entity> : formatter<std::string> {
         return formatter<std::string>::format(std::to_string((uint64_t)entity), ctx);
     }
 };
+
+template <>
+struct fmt::formatter<cqsp::common::Node> : fmt::formatter<std::string> {
+    template <typename FormatContext>
+    constexpr auto format(const cqsp::common::Node ship, FormatContext& ctx) const {
+        return fmt::formatter<entt::entity> {}.format(ship.entity(), ctx);
+    }
+};

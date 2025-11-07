@@ -28,8 +28,9 @@ using cqsp::common::components::AuctionHouse;
 using cqsp::common::components::DescendingSortedOrderList;
 using cqsp::common::components::Order;
 
-entt::entity test_good = static_cast<entt::entity>(1);
-entt::entity test_agent = static_cast<entt::entity>(2);
+cqsp::common::Universe universe;
+cqsp::common::Node test_good(universe);
+cqsp::common::Node test_agent(universe);
 
 TEST(AuctionTest, DescendingSortedOrderListTest) {
     DescendingSortedOrderList sorted_list;
