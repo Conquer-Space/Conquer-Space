@@ -33,12 +33,11 @@ namespace cqsp::common::actions {
  *@param starsystemEnt The star system where the ship is created in
  *@return The ship that is created
  */
-Node& CreateShip(Node& starsystem, Node& fleet, const glm::vec3& orbit, const std::string& shipName = "");
+Node CreateShip(Node& starsystem, Node& fleet, const glm::vec3& orbit, const std::string& shipName = "");
 //@brief just like createShip with fleets but uses an orbit entity instead
-Node& CreateShip(Node& starsystem, Node& fleet, Node& orbit, const std::string& shipName = "");
+Node CreateShip(Node& starsystem, Node& fleet, Node& orbit, const std::string& shipName = "");
 
-Node& CreateShip(Node& starsystem, Node& fleet, const components::types::Orbit& orbit,
-                 const std::string& shipName = "");
+Node CreateShip(Node& starsystem, Node& fleet, const components::types::Orbit& orbit, const std::string& shipName = "");
 
 entt::entity LaunchShip(Universe& universe, const components::types::Orbit& orbit);
 }  // namespace cqsp::common::actions

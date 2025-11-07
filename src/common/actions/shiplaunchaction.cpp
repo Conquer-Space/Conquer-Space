@@ -36,7 +36,7 @@ namespace bodies = components::bodies;
 
 using ships::Ship;
 
-Node& CreateShip(Node& starsystem, Node& fleet, const glm::vec3& orbit, const std::string& shipName) {
+Node CreateShip(Node& starsystem, Node& fleet, const glm::vec3& orbit, const std::string& shipName) {
     Node ship(fleet.universe());
     ship.emplace<Ship>();
 
@@ -45,21 +45,23 @@ Node& CreateShip(Node& starsystem, Node& fleet, const glm::vec3& orbit, const st
     position.position = orbit;
     //universe.get<cqspb::StarSystem>(starsystemEnt).bodies.push_back(ship);
     // Set name
-    if (shipName.empty())
+    if (shipName.empty()) {
         ship.emplace<components::Name>(fmt::format("Ship {}", ship));
-    else
+
+    } else {
         ship.emplace<components::Name>(shipName);
+    }
     // Set in fleet
     if (fleet.all_of<components::ships::Fleet>()) fleet.get<components::ships::Fleet>().ships.push_back(ship);
 
     return ship;
 }
 
-Node& CreateShip(Node& starsystem, Node& fleet, Node& orbit, const std::string& shipName) {
+Node CreateShip(Node& starsystem, Node& fleet, Node& orbit, const std::string& shipName) {
     return CreateShip(starsystem, fleet, orbit.get<types::Orbit>(), shipName);
 }
 
-Node& CreateShip(Node& starsystem, Node& fleet, const components::types::Orbit& orbit, const std::string& shipName) {
+Node CreateShip(Node& starsystem, Node& fleet, const components::types::Orbit& orbit, const std::string& shipName) {
     return CreateShip(starsystem, fleet, types::toVec3AU(orbit), shipName);
 }
 
