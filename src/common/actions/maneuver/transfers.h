@@ -22,7 +22,8 @@
 #include "common/universe.h"
 
 namespace cqsp::common::systems {
-[[noreturn]] components::Maneuver_t TransferFromBody(Universe& universe, const components::types::Orbit& orbit,
-                                                     const components::types::Kinematics& kinematics, double altitude);
-glm::dvec3 GetVector();
+components::Maneuver_t TransferFromBody(Universe& universe, const components::types::Orbit& orbit,
+                                        const components::types::Kinematics& kinematics, double altitude);
+glm::dvec3 GetBodyVelocityVectorInOrbitPlane(const components::types::Orbit& orbit,
+                                             const components::types::Kinematics& body_kinematics);
 }  // namespace cqsp::common::systems

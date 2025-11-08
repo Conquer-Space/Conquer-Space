@@ -410,4 +410,6 @@ double TrueAnomalyFromVector(const Orbit& orbit, const glm::dvec3& vec);
 
 double AscendingTrueAnomaly(const Orbit& start, const Orbit& dest);
 double GetEccentricity(double apoapsis, double periapsis);
+glm::dvec3 GetEccentricityVector(const glm::dvec3& h, const glm::dvec3& r, const glm::dvec3& v, const double GM);
+glm::dvec3 GetEccentricityVector(const glm::dvec3& r, const glm::dvec3& v, const double GM);
 }  // namespace cqsp::common::components::types

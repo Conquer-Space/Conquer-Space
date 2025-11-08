@@ -56,12 +56,33 @@ glm::dvec3 ConvertToOrbitalVector(const double LAN, const double i, const double
            glm::dquat {glm::dvec3(0, 0, v)} * vec;
 }
 
+/**
+ * Calculates eccentricity vector
+ * @param h Angular momentum vector
+ * @param r Position vector
+ * @param v Velocity Vector
+ * @param GM Mu: gravitional constant * mass of orbiting body
+ */
+glm::dvec3 GetEccentricityVector(const glm::dvec3& h, const glm::dvec3& r, const glm::dvec3& v, const double GM) {
+    return glm::cross(v, h) / GM - glm::normalize(r);
+}
+
+/**
+ * Calculates eccentricity vector
+ * @param r Position vector
+ * @param v Velocity Vector
+ * @param GM Mu: gravitional constant * mass of orbiting body
+ */
+glm::dvec3 GetEccentricityVector(const glm::dvec3& r, const glm::dvec3& v, const double GM) {
+    return glm::cross(v, glm::cross(r, v)) / GM - glm::normalize(r);
+}
+
 // https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
 Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const double& GM, const double& time) {
     // Orbital momentum vector
     const auto h = glm::cross(position, velocity);
     // Eccentricity vector
-    const glm::dvec3 ecc_v = glm::cross(velocity, h) / GM - glm::normalize(position);
+    const glm::dvec3 ecc_v = GetEccentricityVector(h, position, velocity, GM);
 
     // Eccentricity
     double e = glm::length(ecc_v);

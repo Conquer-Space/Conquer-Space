@@ -21,5 +21,5 @@
 #include "common/universe.h"
 
 namespace cqsp::common::actions {
-entt::entity CreateCity(Universe& universe, entt::entity planet, double lat, double longi);
+[[nodiscard]] entt::entity CreateCity(Universe& universe, entt::entity planet, double lat, double longi);
 }  // namespace cqsp::common::actions

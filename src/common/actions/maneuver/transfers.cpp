@@ -35,37 +35,34 @@ components::Maneuver_t TransferFromBody(Universe& universe, const components::ty
     auto& orbiting_body_orbit = orbiting_body_node.get<components::types::Orbit>();
 
     // Now let's get our current velocity
-    double orbital_velocity = orbiting_body_orbit.OrbitalVelocity();
-    double orbital_radius = orbiting_body_orbit.GetOrbitingRadius();
+    const double orbital_velocity = orbiting_body_orbit.OrbitalVelocity();
+    const double orbital_radius = orbiting_body_orbit.GetOrbitingRadius();
     // So this should be the apoapsis and our new altitude should be an altitude
-    double intended_semi_major_axis = (orbital_radius + altitude) / 2;
-    double intended_eccentricity = components::types::GetEccentricity(orbital_radius, altitude);
+    const double intended_semi_major_axis = (orbital_radius + altitude) / 2;
+    const double intended_eccentricity = components::types::GetEccentricity(orbital_radius, altitude);
     // Now let's get our expected velocity
-    double intended_orbital_velocity = components::types::OrbitVelocity(
+    const double intended_orbital_velocity = components::types::OrbitVelocity(
         components::types::apoapsis, intended_eccentricity, intended_semi_major_axis, orbiting_body_orbit.GM);
     // Now we should get the delta
     // Now let's get our new velocity
-    double v_inf = orbital_velocity - intended_orbital_velocity;
+    const double v_inf = orbital_velocity - intended_orbital_velocity;
 
-    double escape_eccentricity = 1 + (orbit.GetOrbitingRadius() * v_inf * v_inf) / orbit.GM;
-    double burn_angle = std::acos(-1 / escape_eccentricity);
+    const double escape_eccentricity = 1 + (orbit.GetOrbitingRadius() * v_inf * v_inf) / orbit.GM;
+    const double burn_angle = std::acos(-1 / escape_eccentricity);
 
-    double burn_amount = std::sqrt(v_inf * v_inf + 2 * orbit.GM / orbit.GetOrbitingRadius());
+    const double burn_amount = std::sqrt(v_inf * v_inf + 2 * orbit.GM / orbit.GetOrbitingRadius());
     // We need to figure out when we should burn
     // We get the vector of the forward, and it is that many degrees off that
-    auto& orbiting_kinematics = orbiting_body_node.get<components::types::Kinematics>();
-    glm::dvec3 normal = components::types::GetOrbitNormal(orbit);
-    glm::dvec3 orbiting_forward_vector = glm::normalize(orbiting_kinematics.velocity);
-    // Project the orbiting body's into the ship orbit plane.
-    glm::dvec3 vel_frame =
-        orbiting_forward_vector - glm::dot(orbiting_forward_vector, normal) / glm::length2(normal) * normal;
+    const auto& orbiting_kinematics = orbiting_body_node.get<components::types::Kinematics>();
 
-    // Now we should get the eccentricity vector
-    const auto h = glm::cross(kinematics.position, kinematics.velocity);
+    // Project the orbiting body's into the ship orbit plane.
+    glm::dvec3 vel_frame = GetBodyVelocityVectorInOrbitPlane(orbit, orbiting_kinematics);
+
     // Eccentricity vector
-    const glm::dvec3 ecc_v = glm::cross(kinematics.velocity, h) / orbit.GM - glm::normalize(kinematics.position);
+    const glm::dvec3 ecc_v =
+        components::types::GetEccentricityVector(kinematics.position, kinematics.position, orbit.GM);
     if (glm::length(ecc_v) == 0) {
-        // Then we should ignore this
+        // Then do stuff
     }
     double v = glm::angle(glm::normalize(ecc_v), glm::normalize(vel_frame));
     // It's probably this that's causing our issues
@@ -81,5 +78,14 @@ components::Maneuver_t TransferFromBody(Universe& universe, const components::ty
 
     double initial_velocity = burn_amount - orbit.OrbitalVelocityAtTrueAnomaly(v + burn_angle);
     return commands::MakeManeuver(glm::dvec3(0.0, initial_velocity, 0.0), time);
+}
+glm::dvec3 GetBodyVelocityVectorInOrbitPlane(const components::types::Orbit& orbit,
+                                             const components::types::Kinematics& body_kinematics) {
+    const glm::dvec3 normal = components::types::GetOrbitNormal(orbit);
+    const glm::dvec3 orbiting_forward_vector = glm::normalize(body_kinematics.velocity);
+    // Project the orbiting body's into the ship orbit plane.
+    glm::dvec3 vel_frame =
+        orbiting_forward_vector - glm::dot(orbiting_forward_vector, normal) / glm::length2(normal) * normal;
+    return vel_frame;
 }
 }  // namespace cqsp::common::systems

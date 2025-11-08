@@ -18,6 +18,12 @@
 
 #include <gtest/gtest.h>
 
+#include <filesystem>
+#include <numbers>
+#include <memory>
+
+#include <glm/gtx/vector_angle.hpp>
+
 #include "common/actions/maneuver/basicmaneuver.h"
 #include "common/actions/maneuver/commands.h"
 #include "common/actions/shiplaunchaction.h"
@@ -30,6 +36,7 @@
 #include "engine/asset/assetloader.h"
 #include "engine/asset/packageindex.h"
 #include "engine/asset/vfs/nativevfs.h"
+#include "common/systems/movement/sysorbit.h"
 
 class ManeuverTestSimulation : public cqsp::common::systems::simulation::Simulation {
  public:
