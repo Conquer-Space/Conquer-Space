@@ -56,29 +56,28 @@ components::Maneuver_t TransferFromBody(Universe& universe, const components::ty
     const auto& orbiting_kinematics = orbiting_body_node.get<components::types::Kinematics>();
 
     // Project the orbiting body's into the ship orbit plane.
-    glm::dvec3 vel_frame = GetBodyVelocityVectorInOrbitPlane(orbit, orbiting_kinematics);
 
-    // Eccentricity vector
-    const glm::dvec3 ecc_v =
-        components::types::GetEccentricityVector(kinematics.position, kinematics.position, orbit.GM);
-    if (glm::length(ecc_v) == 0) {
-        // Then do stuff
-    }
-    double v = glm::angle(glm::normalize(ecc_v), glm::normalize(vel_frame));
-    // It's probably this that's causing our issues
-    assert(!isnan(v));
-    if (v < 0) {
-        v += components::types::PI;
-    }
+    const double v = GetBodyVelocityVectorInOrbitPlaneTrueAnomaly(orbit, kinematics, orbiting_kinematics);
+
     // Now we should add our true anomaly to this
-    double time = orbit.TimeToTrueAnomaly(v + burn_angle - components::types::PI);
-
+    double target_true_anomaly = v;
+    double time = orbit.TimeToTrueAnomaly(target_true_anomaly);
+    //  + burn_angle - components::types::PI
     SPDLOG_INFO("Time: {} v: {} burn angle: {} v_inf: {} eccentricity: {} burn: {}", time, v, burn_angle, v_inf,
                 escape_eccentricity, burn_amount);
 
-    double initial_velocity = burn_amount - orbit.OrbitalVelocityAtTrueAnomaly(v + burn_angle);
+    double initial_velocity = burn_amount - orbit.OrbitalVelocityAtTrueAnomaly(target_true_anomaly);
     return commands::MakeManeuver(glm::dvec3(0.0, initial_velocity, 0.0), time);
 }
+
+/*
+* Get the velocity vector of the orbiting body in the orbital plane of the orbit, whose reference body is the orbiting body.
+* 
+* Projects the velocity vector onto the orbital plane.
+* 
+* @param orbit The orbit to define the orbital plane
+* @param body_kinematics The kinematics of the orbiting bory
+*/
 glm::dvec3 GetBodyVelocityVectorInOrbitPlane(const components::types::Orbit& orbit,
                                              const components::types::Kinematics& body_kinematics) {
     const glm::dvec3 normal = components::types::GetOrbitNormal(orbit);
@@ -87,5 +86,32 @@ glm::dvec3 GetBodyVelocityVectorInOrbitPlane(const components::types::Orbit& orb
     glm::dvec3 vel_frame =
         orbiting_forward_vector - glm::dot(orbiting_forward_vector, normal) / glm::length2(normal) * normal;
     return vel_frame;
+}
+
+/**
+* Gets the true anomaly of the velocity vector projected onto the body plane.
+* 
+* Projects the velocity vector onto the orbital plane, and gets the true anomaly of that with reference to the
+* orbit.
+* 
+* @param orbit orbit to define the orbital plane
+* @param kinematics kinematics of the orbit
+* @param orbiting_kinematics Kinematics of the orbiting body
+*/
+double GetBodyVelocityVectorInOrbitPlaneTrueAnomaly(const components::types::Orbit& orbit,
+                                                    const components::types::Kinematics& kinematics,
+                                                    const components::types::Kinematics& orbiting_kinematics) {
+    glm::dvec3 vel_frame = GetBodyVelocityVectorInOrbitPlane(orbit, orbiting_kinematics);
+
+    // Eccentricity vector
+    const glm::dvec3 ecc_v =
+        components::types::GetEccentricityVector(kinematics.position, kinematics.velocity, orbit.GM);
+    if (glm::length(ecc_v) == 0) {
+        return 0;
+    }
+    double v = glm::angle(glm::normalize(ecc_v), glm::normalize(vel_frame));
+    if (glm::dot(kinematics.position, kinematics.velocity) < 0) v = components::types::TWOPI - v;
+
+    return v;
 }
 }  // namespace cqsp::common::systems

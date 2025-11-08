@@ -26,4 +26,7 @@ components::Maneuver_t TransferFromBody(Universe& universe, const components::ty
                                         const components::types::Kinematics& kinematics, double altitude);
 glm::dvec3 GetBodyVelocityVectorInOrbitPlane(const components::types::Orbit& orbit,
                                              const components::types::Kinematics& body_kinematics);
+double GetBodyVelocityVectorInOrbitPlaneTrueAnomaly(const components::types::Orbit& orbit,
+                                                    const components::types::Kinematics& kinematics,
+                                                    const components::types::Kinematics& orbiting_kinematics);
 }  // namespace cqsp::common::systems
