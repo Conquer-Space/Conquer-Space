@@ -21,5 +21,5 @@
 #include "common/universe.h"
 
 namespace cqsp::common::actions {
-uint64_t GetCityPopulation(const Universe& universe, entt::entity city);
+uint64_t GetCityPopulation(Node& city);
 }  // namespace cqsp::common::actions

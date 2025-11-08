@@ -167,7 +167,8 @@ void FunctionCivilizationGen(Universe& universe, ScriptInterface& script_engine)
     REGISTER_FUNCTION("add_planet_habitation", [&](entt::entity planet) { universe.emplace<Habitation>(planet); });
 
     REGISTER_FUNCTION("add_planet_settlement", [&](entt::entity planet, double lat, double longi) {
-        return actions::CreateCity(universe, planet, lat, longi);
+        Node planet_node(universe, planet);
+        return actions::CreateCity(planet_node, lat, longi);
     });
 }
 
@@ -321,7 +322,10 @@ void FunctionShips(cqsp::common::Universe& universe, ScriptInterface& script_eng
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("create_ship", [&](entt::entity civ, entt::entity orbit, entt::entity starsystem) {
-        return actions::CreateShip(universe, civ, orbit, starsystem);
+        Node civ_node(universe, civ);
+        Node orbit_node(universe, orbit);
+        Node starsystem_node(universe, orbit);
+        return actions::CreateShip(civ_node, orbit_node, starsystem_node);
     });
 }
 
@@ -388,7 +392,9 @@ void FunctionScience(Universe& universe, ScriptInterface& script_engine) {
     REGISTER_FUNCTION("create_lab", [&]() { return actions::CreateLab(universe); });
 
     REGISTER_FUNCTION("add_science", [&](entt::entity lab, entt::entity research, double progress) {
-        actions::AddScienceResearch(universe, lab, research, progress);
+        Node lab_node(universe, lab);
+        Node research_node(universe, research);
+        actions::AddScienceResearch(lab_node, research_node, progress);
     });
 
     REGISTER_FUNCTION("add_tech_progress", [&](entt::entity entity) {

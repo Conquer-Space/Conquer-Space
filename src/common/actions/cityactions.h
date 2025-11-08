@@ -18,8 +18,10 @@
 
 #include <entt/entt.hpp>
 
+#include "common/components/coordinates.h"
 #include "common/universe.h"
 
 namespace cqsp::common::actions {
-entt::entity CreateCity(Universe& universe, entt::entity planet, double lat, double longi);
+Node CreateCity(Node& planet, double lat, double longi);
+Node CreateCity(Node& planet, components::types::SurfaceCoordinate coords);
 }  // namespace cqsp::common::actions

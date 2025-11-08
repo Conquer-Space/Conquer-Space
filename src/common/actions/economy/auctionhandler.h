@@ -19,6 +19,7 @@
 #include <entt/entt.hpp>
 
 #include "common/components/auction.h"
+#include "common/universe.h"
 
 namespace cqsp::common::actions {
 /// <summary>
@@ -30,8 +31,7 @@ namespace cqsp::common::actions {
 /// <param name="quantity">Quantity</param>
 /// <returns>True if the order is fufilled immediately, false if a buy order is
 /// placed.</returns>
-bool BuyGood(components::AuctionHouse& auction_house, entt::entity agent, entt::entity good, double price,
-             double quantity);
+bool BuyGood(components::AuctionHouse& auction_house, Node& agent, Node& good, double price, double quantity);
 
 /// <summary>
 /// Sells a good to the market
@@ -42,6 +42,5 @@ bool BuyGood(components::AuctionHouse& auction_house, entt::entity agent, entt::
 /// <param name="quantity">Quantity</param>
 /// <returns>True if the order is fufilled immediately, false if a sell order is
 /// placed.</returns>
-bool SellGood(components::AuctionHouse& auction_house, entt::entity agent, entt::entity good, double price,
-              double quantity);
+bool SellGood(components::AuctionHouse& auction_house, Node& agent, Node&, double price, double quantity);
 }  // namespace cqsp::common::actions

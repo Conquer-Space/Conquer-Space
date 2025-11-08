@@ -21,7 +21,7 @@ namespace cqsp::common::actions {
 
 using components::AuctionHouse;
 
-bool BuyGood(AuctionHouse& auction_house, entt::entity agent, entt::entity good, double price, double quantity) {
+bool BuyGood(AuctionHouse& auction_house, Node& agent, Node& good, double price, double quantity) {
     // The orders we want to try and fufill
     auto& sell_order_list = auction_house.sell_orders[good];
     auto& buy_order_list = auction_house.buy_orders[good];
@@ -64,7 +64,7 @@ bool BuyGood(AuctionHouse& auction_house, entt::entity agent, entt::entity good,
     return false;
 }
 
-bool SellGood(AuctionHouse& auction_house, entt::entity agent, entt::entity good, double price, double quantity) {
+bool SellGood(AuctionHouse& auction_house, Node& agent, Node& good, double price, double quantity) {
     // The place we will put our order if we cannot fufill it
     auto& sell_order_list = auction_house.sell_orders[good];
 
