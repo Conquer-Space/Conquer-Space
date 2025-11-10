@@ -21,8 +21,10 @@
 #include "common/actions/maneuver/transfers.h"
 #include "common/actions/shiplaunchaction.h"
 #include "common/components/bodies.h"
+#include "common/components/maneuver.h"
 #include "common/components/name.h"
 #include "common/components/orbit.h"
+#include "common/components/orders.h"
 #include "common/components/spaceport.h"
 #include "common/components/surface.h"
 #include "common/util/nameutil.h"
@@ -97,8 +99,6 @@ entt::entity SysSpacePort::TargetMoonManeuver(const components::infrastructure::
     // Land on armstrong
     auto& cities = GetUniverse().get<components::Habitation>(target);
     commands::LandOnMoon(GetUniverse(), ship, target, cities.settlements.front());
-    // Add a resource stockpile to the ship
-
     return ship;
 }
 
@@ -124,6 +124,29 @@ entt::entity SysSpacePort::ReturnFromMoonManeuver(const components::infrastructu
 
     systems::commands::LeaveSOI(GetUniverse(), ship, target_body.radius * 5);
     systems::commands::PushManeuver(GetUniverse(), ship, systems::commands::MakeManeuver(glm::dvec3(0, 0, 0), 1000));
+
+    auto& command_queue = GetUniverse().get_or_emplace<components::CommandQueue>(ship);
+
+    // Circularize
+    entt::entity circularize = GetUniverse().create();
+    GetUniverse().emplace<components::Trigger>(circularize, components::Trigger::OnEnterSOI);
+    GetUniverse().emplace<components::Command>(circularize, components::Command::CircularizeAtPeriapsis);
+    command_queue.commands.push_back(circularize);
+
+    // Reenter
+    entt::entity reenter = GetUniverse().create();
+    GetUniverse().emplace<components::Trigger>(reenter, components::Trigger::OnManeuver);
+    GetUniverse().emplace<components::Command>(reenter, components::Command::SetPeriapsis);
+    GetUniverse().emplace<components::OrbitScalar>(reenter, target_body.radius * 0.9);
+    command_queue.commands.push_back(reenter);
+
+    entt::entity dock_city = GetUniverse().create();
+    auto& cities = GetUniverse().get<components::Habitation>(target);
+    GetUniverse().emplace<components::Trigger>(dock_city, components::Trigger::OnCrash);
+    GetUniverse().emplace<components::Command>(dock_city, components::Command::LandOnBody);
+    GetUniverse().emplace<components::OrbitEntityTarget>(dock_city, cities.settlements.front());
+    command_queue.commands.push_back(dock_city);
+
     return ship;
 }
 }  // namespace cqsp::common::systems
