@@ -21,6 +21,7 @@
 
 #include <entt/entt.hpp>
 
+#include "common/components/market.h"
 #include "common/components/resource.h"
 
 namespace cqsp::common::components::infrastructure {

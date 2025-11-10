@@ -326,10 +326,14 @@ entt::entity GetCommonSOI(Universe& universe, entt::entity source, entt::entity 
     // Get common ancestor
     std::vector<entt::entity> source_list = GetSOIHierarchy(universe, source);
     std::vector<entt::entity> target_list = GetSOIHierarchy(universe, target);
-    for (size_t i = 1; i < std::min(source_list.size(), target_list.size()); i++) {
+    size_t i;
+    for (i = 1; i < std::min(source_list.size(), target_list.size()); i++) {
         if (source_list[source_list.size() - i] != target_list[target_list.size() - i]) {
-            return source_list[source_list.size() - i - 1];
+            return source_list[source_list.size() - i + 1];
         }
+    }
+    if (i == std::min(source_list.size(), target_list.size())) {
+        return source_list[source_list.size() - i];
     }
     return source_list[source_list.size() - 1];
 }
