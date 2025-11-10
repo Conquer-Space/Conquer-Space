@@ -16,7 +16,9 @@
  */
 #include "common/systems/economy/sysspaceport.h"
 
+#include "client/components/clientctx.h"
 #include "common/actions/maneuver/commands.h"
+#include "common/actions/maneuver/transfers.h"
 #include "common/actions/shiplaunchaction.h"
 #include "common/components/bodies.h"
 #include "common/components/name.h"
@@ -32,33 +34,27 @@ void SysSpacePort::DoSystem() {
         auto& port_component = GetUniverse().get<components::infrastructure::SpacePort>(space_port);
         for (auto& [target, delivery_queue] : port_component.deliveries) {
             // Let's ignore the moon for now
-            if (target != GetUniverse().planets["moon"]) {
-                continue;
-            }
-            // Launch a ship with the resources and stuff
+            // Let's try to figure out the target
+            entt::entity common_soi = commands::GetCommonSOI(GetUniverse(), port_component.reference_body, target);
             while (!delivery_queue.empty()) {
-                components::infrastructure::TransportedGood element = delivery_queue.back();
-                // Spawn new ship and send it to a parking orbit
-                // Get the reference body
-                auto& body = GetUniverse().get<components::bodies::Body>(port_component.reference_body);
-                // Let's set a parking orbit at 8% of the planet's radius
-                // TODO(EhWhoAmI): It should be a factor of the atmosphere in the future
-                const double eccentricity = std::fabs(GetUniverse().random->GetRandomNormal(0, 0.000005));
-                const double semi_major_axis =
-                    GetUniverse().random->GetRandomNormal(body.radius * 1.08, body.radius * 0.01);
-                const double inclination = GetUniverse().random->GetRandomNormal(0, 0.05);
-                components::types::Orbit orb(semi_major_axis, eccentricity, inclination, 0, 0.1, 0,
-                                             port_component.reference_body);
-                entt::entity ship = common::actions::LaunchShip(GetUniverse(), orb);
-                GetUniverse().emplace<components::Name>(
-                    ship, fmt::format("{} Transport Vehicle", util::GetName(GetUniverse(), element.good)));
-                // Then target the target body
-                // Land on armstrong
-                auto& cities = GetUniverse().get<components::Habitation>(target);
-                commands::LandOnMoon(GetUniverse(), ship, target, cities.settlements.front());
-                // Add a resource stockpile to the ship
-                auto& stockpile = GetUniverse().emplace<components::ResourceStockpile>(ship);
-                stockpile[element.good] = element.amount;
+                entt::entity ship = entt::null;
+                components::infrastructure::TransportedGood& element = delivery_queue.back();
+                if (common_soi == target) {
+                    // Returning from moon
+                    ship = ReturnFromMoonManeuver(element, port_component.reference_body, target);
+                } else if (common_soi == port_component.reference_body) {
+                    // Target moon
+                    ship = TargetMoonManeuver(element, port_component.reference_body, target);
+                } else {
+                    SPDLOG_INFO("Interplanetary transfers not supported yet");
+                }
+
+                if (ship != entt::null) {
+                    auto& stockpile = GetUniverse().emplace<components::ResourceStockpile>(ship);
+                    stockpile[element.good] = element.amount;
+
+                    GetUniverse().emplace<client::ctx::VisibleOrbit>(ship);
+                }
                 delivery_queue.pop_back();
             }
         }
@@ -81,5 +77,53 @@ void SysSpacePort::ProcessDockedShips(entt::entity space_port) {
         space_port_comp.output_resources += GetUniverse().get<components::ResourceStockpile>(ship);
         GetUniverse().remove<components::ResourceStockpile>(ship);
     }
+}
+
+entt::entity SysSpacePort::TargetMoonManeuver(const components::infrastructure::TransportedGood& element,
+                                              entt::entity reference_body, entt::entity target) {
+    // Spawn new ship and send it to a parking orbit
+    // Get the reference body
+    auto& body = GetUniverse().get<components::bodies::Body>(reference_body);
+    // Let's set a parking orbit at 8% of the planet's radius
+    // TODO(EhWhoAmI): It should be a factor of the atmosphere in the future
+    const double eccentricity = std::fabs(GetUniverse().random->GetRandomNormal(0, 0.000005));
+    const double semi_major_axis = GetUniverse().random->GetRandomNormal(body.radius * 1.08, body.radius * 0.01);
+    const double inclination = GetUniverse().random->GetRandomNormal(0, 0.05);
+    components::types::Orbit source_orbit(semi_major_axis, eccentricity, inclination, 0, 0.1, 0, reference_body);
+    entt::entity ship = common::actions::LaunchShip(GetUniverse(), source_orbit);
+    GetUniverse().emplace<components::Name>(
+        ship, fmt::format("{} Transport Vehicle", util::GetName(GetUniverse(), element.good)));
+    // Then target the target body
+    // Land on armstrong
+    auto& cities = GetUniverse().get<components::Habitation>(target);
+    commands::LandOnMoon(GetUniverse(), ship, target, cities.settlements.front());
+    // Add a resource stockpile to the ship
+
+    return ship;
+}
+
+entt::entity SysSpacePort::ReturnFromMoonManeuver(const components::infrastructure::TransportedGood& element,
+                                                  entt::entity reference_body, entt::entity target) {
+    // Spawn new ship and send it to a parking orbit
+    // Get the reference body
+    auto& body = GetUniverse().get<components::bodies::Body>(reference_body);
+    // Let's set a parking orbit at 8% of the planet's radius
+    // TODO(EhWhoAmI): It should be a factor of the atmosphere in the future
+    const double eccentricity = std::fabs(GetUniverse().random->GetRandomNormal(0, 0.000005));
+    const double semi_major_axis = GetUniverse().random->GetRandomNormal(body.radius * 1.08, body.radius * 0.01);
+    const double inclination = GetUniverse().random->GetRandomNormal(0, 0.05);
+    components::types::Orbit source_orbit(semi_major_axis, eccentricity, inclination, 0, 0.1, 0, reference_body);
+    entt::entity ship = common::actions::LaunchShip(GetUniverse(), source_orbit);
+    GetUniverse().emplace<components::Name>(
+        ship, fmt::format("{} Transport Vehicle", util::GetName(GetUniverse(), element.good)));
+    // Then target the target body
+    // Land on armstrong
+
+    auto& cities = GetUniverse().get<components::Habitation>(target);
+    auto& target_body = GetUniverse().get<components::bodies::Body>(target);
+
+    systems::commands::LeaveSOI(GetUniverse(), ship, target_body.radius * 5);
+    systems::commands::PushManeuver(GetUniverse(), ship, systems::commands::MakeManeuver(glm::dvec3(0, 0, 0), 1000));
+    return ship;
 }
 }  // namespace cqsp::common::systems

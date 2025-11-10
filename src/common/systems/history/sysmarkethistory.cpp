@@ -74,26 +74,18 @@ void SysMarketHistory::DoSystem() {
 
     // TODO: REMOVE
     // Get reference body
-    entt::entity reference_body = GetUniverse().planets["moon"];
-    // Launch inclination will be the inclination of the thing
-    double axial = GetUniverse().get<components::bodies::Body>(reference_body).axial;
+    // entt::entity reference_body = GetUniverse().planets["moon"];
+    // // Launch inclination will be the inclination of the thing
+    // double axial = GetUniverse().get<components::bodies::Body>(reference_body).axial;
 
-    types::Orbit orb(8000, 0.0001, 0.001, 0, 0, 0, reference_body);
-    entt::entity ship = common::actions::LaunchShip(GetUniverse(), orb);
-    // Also compute the value
-    GetUniverse().emplace<client::ctx::VisibleOrbit>(ship);
+    // types::Orbit orb(8000, 0.0001, 0.001, 0, 0, 0, reference_body);
+    // entt::entity ship = actions::LaunchShip(GetUniverse(), orb);
+    // // Also compute the value
+    // GetUniverse().emplace<client::ctx::VisibleOrbit>(ship);
 
-    common::systems::commands::LeaveSOI(GetUniverse(), ship, 1000);
-    // Add maneuver like 1000 seconds in the future
-    common::systems::commands::PushManeuver(GetUniverse(), ship,
-                                            common::systems::commands::MakeManeuver(glm::dvec3(0, 0, 0), 1000));
-
-    // Also self destruct after leaving soi
-    entt::entity escape_action = GetUniverse().create();
-    GetUniverse().emplace<common::components::Trigger>(escape_action, common::components::Trigger::OnExitSOI);
-    GetUniverse().emplace<common::components::Command>(escape_action, common::components::Command::SelfDestruct);
-
-    auto& command_queue = GetUniverse().get_or_emplace<components::CommandQueue>(ship);
-    command_queue.commands.push_back(escape_action);
+    // systems::commands::LeaveSOI(GetUniverse(), ship, 10000);
+    // // Add maneuver like 1000 seconds in the future
+    // systems::commands::PushManeuver(GetUniverse(), ship,
+    //                                         systems::commands::MakeManeuver(glm::dvec3(0, 0, 0), 1000));
 }
 }  // namespace cqsp::common::systems::history

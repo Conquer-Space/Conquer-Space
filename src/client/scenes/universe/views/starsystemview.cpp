@@ -635,7 +635,8 @@ void SysStarSystemRenderer::CalculateCityPositions() {
 
 void SysStarSystemRenderer::CalculateScroll() {
     double min_scroll = 0.1;
-    if (m_viewing_entity != entt::null && m_universe.all_of<Body>(m_viewing_entity)) {
+    if (m_viewing_entity != entt::null && m_universe.valid(m_viewing_entity) &&
+        m_universe.all_of<Body>(m_viewing_entity)) {
         min_scroll = std::max(m_universe.get<Body>(m_viewing_entity).radius * 1.1, 0.1);
     }
     if (scroll - m_app.GetScrollAmount() * 3 * scroll / 33 <= min_scroll) {

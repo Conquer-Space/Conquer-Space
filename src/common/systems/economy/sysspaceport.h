@@ -16,6 +16,7 @@
  */
 #pragma once
 
+#include "common/components/spaceport.h"
 #include "common/systems/isimulationsystem.h"
 
 namespace cqsp::common::systems {
@@ -27,5 +28,9 @@ class SysSpacePort : public ISimulationSystem {
 
  private:
     void ProcessDockedShips(entt::entity space_port);
+    entt::entity TargetMoonManeuver(const components::infrastructure::TransportedGood& element,
+                                    entt::entity reference_body, entt::entity target);
+    entt::entity ReturnFromMoonManeuver(const components::infrastructure::TransportedGood& element,
+                                        entt::entity reference_body, entt::entity target);
 };
 }  // namespace cqsp::common::systems

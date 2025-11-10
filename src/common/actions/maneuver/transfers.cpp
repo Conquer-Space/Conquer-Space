@@ -24,9 +24,13 @@
 #include "common/actions/maneuver/commands.h"
 
 namespace cqsp::common::systems {
+/**
+ * Transfers
+ */
 // This expects the altitude to be lower than the original orbit
 components::Maneuver_t TransferFromBody(Universe& universe, const components::types::Orbit& orbit,
                                         const components::types::Kinematics& kinematics, double altitude) {
+    // TODO(EhWhoAmI): Iterate in the future so that we get a more accurate departure angle
     // So we want this to happen:
     // Center Body ---- Orbiting Body ---- Satellite
     // Center Body ---- Orbiting Body
@@ -57,16 +61,15 @@ components::Maneuver_t TransferFromBody(Universe& universe, const components::ty
 
     // Project the orbiting body's into the ship orbit plane.
     double time = 0;
-    double target_true_anomaly;
     // Now create new kinematics
     const double v = GetBodyVelocityVectorInOrbitPlaneTrueAnomaly(orbit, kinematics, orbiting_kinematics);
 
     // Now we should add our true anomaly to this
-    target_true_anomaly = v;
+    double target_true_anomaly = v - burn_angle + components::types::PI;
     time = orbit.TimeToTrueAnomaly(target_true_anomaly);
     //  + burn_angle - components::types::PI
-    SPDLOG_INFO("Time: {} v: {} burn angle: {} v_inf: {} eccentricity: {} burn: {}", time, v, burn_angle, v_inf,
-                escape_eccentricity, burn_amount);
+    SPDLOG_TRACE("Time: {} v: {} burn angle: {} v_inf: {} eccentricity: {} burn: {}", time, v, burn_angle, v_inf,
+                 escape_eccentricity, burn_amount);
     double initial_velocity = burn_amount - orbit.OrbitalVelocityAtTrueAnomaly(target_true_anomaly);
     return commands::MakeManeuver(glm::dvec3(0.0, initial_velocity, 0.0), time);
 }

@@ -313,6 +313,8 @@ components::Maneuver_t MakeManeuver(const glm::dvec3& vector, double time) { ret
 std::vector<entt::entity> GetSOIHierarchy(Universe& universe, entt::entity source) {
     std::vector<entt::entity> source_list;
     entt::entity parent_body = universe.get<Orbit>(source).reference_body;
+    source_list.push_back(source);
+
     while (parent_body != entt::null) {
         source_list.push_back(parent_body);
         parent_body = universe.get<Orbit>(parent_body).reference_body;
@@ -324,12 +326,12 @@ entt::entity GetCommonSOI(Universe& universe, entt::entity source, entt::entity 
     // Get common ancestor
     std::vector<entt::entity> source_list = GetSOIHierarchy(universe, source);
     std::vector<entt::entity> target_list = GetSOIHierarchy(universe, target);
-    for (size_t i = 2; i < std::min(source_list.size(), target_list.size()); i++) {
+    for (size_t i = 1; i < std::min(source_list.size(), target_list.size()); i++) {
         if (source_list[source_list.size() - i] != target_list[target_list.size() - i]) {
-            return source_list[source_list.size() - i + 1];
+            return source_list[source_list.size() - i - 1];
         }
     }
-    return entt::null;
+    return source_list[source_list.size() - 1];
 }
 
 void LeaveSOI(Universe& universe, entt::entity agent, double altitude) {
