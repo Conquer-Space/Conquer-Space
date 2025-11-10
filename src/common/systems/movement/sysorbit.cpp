@@ -141,10 +141,22 @@ void SysOrbit::ParseChildren(entt::entity body) {
     if (!GetUniverse().any_of<components::bodies::OrbitalSystem>(body)) {
         return;
     }
-    for (entt::entity entity : GetUniverse().get<components::bodies::OrbitalSystem>(body).children) {
+    auto& orbital_system = GetUniverse().get<components::bodies::OrbitalSystem>(body);
+    for (entt::entity entity : orbital_system.children) {
         // Calculate position
         ParseOrbitTree(body, entity);
     }
+    // Now check if anything has crashed and remove
+    orbital_system.children.erase(std::remove_if(orbital_system.children.begin(), orbital_system.children.end(),
+                                                 [&](entt::entity entity) {
+                                                     if (GetUniverse().any_of<ships::Crash>(entity)) {
+                                                         GetUniverse().destroy(entity);
+                                                         return true;
+                                                     }
+
+                                                     return false;
+                                                 }),
+                                  orbital_system.children.end());
 }
 
 void SysOrbit::UpdateCommandQueue(Orbit& orb, entt::entity body, entt::entity parent) {

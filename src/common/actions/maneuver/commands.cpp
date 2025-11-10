@@ -27,6 +27,7 @@
 #include "common/actions/maneuver/transfers.h"
 #include "common/components/maneuver.h"
 #include "common/components/orbit.h"
+#include "common/components/ships.h"
 #include "common/components/surface.h"
 #include "common/util/nameutil.h"
 
@@ -168,6 +169,10 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
             auto maneuver = common::systems::TransferFromBody(universe, orbit, universe.get<types::Kinematics>(entity),
                                                               scalar_change.value);
             PushManeuver(universe, entity, maneuver);
+        } break;
+        case Command::SelfDestruct: {
+            // Self destruct
+            universe.emplace_or_replace<components::ships::Crash>(entity);
         } break;
         default:
             break;

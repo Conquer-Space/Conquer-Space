@@ -440,26 +440,27 @@ double Orbit::TimeToTrueAnomaly(double v2) const {
     // Assume current v is v0.
     if (eccentricity > 1) {
         // Use hyperbolic equations
-        const double F0 = std::acosh((eccentricity + cos(v)) / (1 + eccentricity * cos(v)));
+        double F0 = std::acosh((eccentricity + cos(v)) / (1 + eccentricity * cos(v)));
+        if (v > PI) {
+            F0 *= -1.0;  // F is negative for v > PI
+        }
         double M0 = eccentricity * sinh(F0) - F0;
 
-        const double F = std::acosh((eccentricity + cos(v2)) / (1 + eccentricity * cos(v2)));
+        double F = std::acosh((eccentricity + cos(v2)) / (1 + eccentricity * cos(v2)));
+        if (v2 > PI) {
+            F *= -1.0;  // F is negative for v2 > PI
+        }
+
         double M = eccentricity * sinh(F) - F;
-        double t = (M0 - M) / nu();
+        double t = (M - M0) / nu();
         return t;
     } else {
-        const double E0 = std::acos((eccentricity + cos(v)) / (1 + eccentricity * cos(v)));
+        double E0 = std::atan2(std::sqrt(1.0 - eccentricity * eccentricity) * std::sin(v), eccentricity + std::cos(v));
         double M0 = E0 - std::sin(E0) * eccentricity;
-        if (v > PI) {
-            M0 *= -1;
-        }
 
-        const double E = std::acos((eccentricity + cos(v2)) / (1 + eccentricity * cos(v2)));
+        double E = std::atan2(std::sqrt(1.0 - eccentricity * eccentricity) * std::sin(v2), eccentricity + std::cos(v2));
         double M = E - std::sin(E) * eccentricity;
 
-        if (v2 > PI) {
-            M *= -1;
-        }
         double t = (M - M0) / nu();
         if (t < 0) {
             t = T() + t;

@@ -521,6 +521,14 @@ void SysProvinceInformation::LaunchTab() {
         // Add maneuver like 1000 seconds in the future
         common::systems::commands::PushManeuver(GetUniverse(), ship,
                                                 common::systems::commands::MakeManeuver(glm::dvec3(0, 0, 0), 1000));
+
+        // Also self destruct after leaving soi
+        entt::entity escape_action = GetUniverse().create();
+        GetUniverse().emplace<common::components::Trigger>(escape_action, common::components::Trigger::OnExitSOI);
+        GetUniverse().emplace<common::components::Command>(escape_action, common::components::Command::SelfDestruct);
+
+        auto& command_queue = GetUniverse().get_or_emplace<components::CommandQueue>(ship);
+        command_queue.commands.push_back(escape_action);
     }
     double periapsis = semi_major_axis * (1 - eccentricity);
     if (GetUniverse().get<components::bodies::Body>(city_coord.planet).radius > periapsis) {

@@ -56,16 +56,17 @@ components::Maneuver_t TransferFromBody(Universe& universe, const components::ty
     const auto& orbiting_kinematics = orbiting_body_node.get<components::types::Kinematics>();
 
     // Project the orbiting body's into the ship orbit plane.
-
+    double time = 0;
+    double target_true_anomaly;
+    // Now create new kinematics
     const double v = GetBodyVelocityVectorInOrbitPlaneTrueAnomaly(orbit, kinematics, orbiting_kinematics);
 
     // Now we should add our true anomaly to this
-    double target_true_anomaly = v;
-    double time = orbit.TimeToTrueAnomaly(target_true_anomaly);
+    target_true_anomaly = v;
+    time = orbit.TimeToTrueAnomaly(target_true_anomaly);
     //  + burn_angle - components::types::PI
     SPDLOG_INFO("Time: {} v: {} burn angle: {} v_inf: {} eccentricity: {} burn: {}", time, v, burn_angle, v_inf,
                 escape_eccentricity, burn_amount);
-
     double initial_velocity = burn_amount - orbit.OrbitalVelocityAtTrueAnomaly(target_true_anomaly);
     return commands::MakeManeuver(glm::dvec3(0.0, initial_velocity, 0.0), time);
 }
@@ -110,8 +111,12 @@ double GetBodyVelocityVectorInOrbitPlaneTrueAnomaly(const components::types::Orb
         return 0;
     }
     double v = glm::angle(glm::normalize(ecc_v), glm::normalize(vel_frame));
-    if (glm::dot(kinematics.position, kinematics.velocity) < 0) v = components::types::TWOPI - v;
 
+    const glm::dvec3 normal = glm::normalize(glm::cross(kinematics.position, kinematics.velocity));
+    glm::dvec3 cross_prod = glm::cross(glm::normalize(ecc_v), glm::normalize(vel_frame));
+    if (glm::dot(cross_prod, normal) < 0) {
+        v = components::types::TWOPI - v;
+    }
     return v;
 }
 }  // namespace cqsp::common::systems

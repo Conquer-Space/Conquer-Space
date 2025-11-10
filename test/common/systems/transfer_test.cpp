@@ -18,8 +18,8 @@
 
 #include "common/actions/maneuver/transfers.h"
 #include "common/systems/sysorbit_test.h"
+
 TEST_F(SysOrbitTest, BodyVelocityVectorInOrbitPlane) {
-    Tick(1);
     entt::entity moon = universe.planets["moon"];
 
     auto& moon_body = universe.get<cqsp::common::components::bodies::Body>(moon);
@@ -28,6 +28,8 @@ TEST_F(SysOrbitTest, BodyVelocityVectorInOrbitPlane) {
     source_orbit.GM = moon_body.GM;
     auto& moon_kinematics = universe.get<cqsp::common::components::types::Kinematics>(moon);
     entt::entity ship = cqsp::common::actions::LaunchShip(game.GetUniverse(), source_orbit);
+
+    Tick(1);
 
     auto& ship_kinematics = universe.get<cqsp::common::components::types::Kinematics>(ship);
     // The two vectors should be parallel
@@ -39,13 +41,17 @@ TEST_F(SysOrbitTest, BodyVelocityVectorInOrbitPlane) {
         glm::dvec3 velocity_vector =
             cqsp::common::systems::GetBodyVelocityVectorInOrbitPlane(source_orbit, moon_kinematics);
         glm::dvec3 velocity_cross = glm::cross(velocity_vector, moon_kinematics.velocity);
-        glm::dvec3 source = cqsp::common::components::types::GetOrbitNormal(source_orbit);
-        EXPECT_NEAR(glm::dot(velocity_cross, source), 0, 1e-4);
+        glm::dvec3 source_normal = cqsp::common::components::types::GetOrbitNormal(source_orbit);
+        EXPECT_NEAR(glm::dot(velocity_cross, source_normal), 0, 1e-4);
         // Also convert to true anomaly and then figure out
 
         double true_anomaly = cqsp::common::systems::GetBodyVelocityVectorInOrbitPlaneTrueAnomaly(
             source_orbit, ship_kinematics, moon_kinematics);
         glm::dvec3 position = cqsp::common::components::types::toVec3(source_orbit, true_anomaly);
+        // Check if we're coplanar with the normal plane
+        EXPECT_NEAR(glm::dot(source_normal, position), 0, 1e-5);
+        SPDLOG_INFO("{} {} {} {}", glm::to_string(position), glm::to_string(velocity_vector),
+                    glm::to_string(velocity_cross), glm::to_string(source_normal));
         EXPECT_NEAR(glm::dot(glm::normalize(position), glm::normalize(velocity_vector)), 1, 1e-5);
         Tick(180);
     }

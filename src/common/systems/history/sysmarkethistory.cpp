@@ -16,13 +16,35 @@
  */
 #include "common/systems/history/sysmarkethistory.h"
 
+#include "client/components/clientctx.h"
+#include "common/actions/maneuver/commands.h"
+#include "common/actions/shiplaunchaction.h"
 #include "common/components/history.h"
+#include "common/components/infrastructure.h"
 #include "common/components/market.h"
-namespace cqsp::common::systems::history {
+#include "common/components/name.h"
+#include "common/components/orbit.h"
+#include "common/components/organizations.h"
+#include "common/components/population.h"
+#include "common/components/resource.h"
+#include "common/components/ships.h"
+#include "common/components/spaceport.h"
+#include "common/components/surface.h"
+#include "common/util/nameutil.h"
+#include "common/util/utilnumberdisplay.h"
 
+namespace cqsp::common::systems::history {
 using components::Market;
 using components::MarketHistory;
 
+namespace infrastructure = components::infrastructure;
+namespace types = components::types;
+namespace ships = components::ships;
+namespace bodies = components::bodies;
+using common::util::GetName;
+using components::PopulationSegment;
+using components::Settlement;
+using components::Wallet;
 void SysMarketHistory::DoSystem() {
     /*
     auto view = GetUniverse().view<Market, MarketHistory>();
@@ -49,5 +71,29 @@ void SysMarketHistory::DoSystem() {
         }
         history.gdp.push_back(val);
     */
+
+    // TODO: REMOVE
+    // Get reference body
+    entt::entity reference_body = GetUniverse().planets["moon"];
+    // Launch inclination will be the inclination of the thing
+    double axial = GetUniverse().get<components::bodies::Body>(reference_body).axial;
+
+    types::Orbit orb(8000, 0.0001, 0.001, 0, 0, 0, reference_body);
+    entt::entity ship = common::actions::LaunchShip(GetUniverse(), orb);
+    // Also compute the value
+    GetUniverse().emplace<client::ctx::VisibleOrbit>(ship);
+
+    common::systems::commands::LeaveSOI(GetUniverse(), ship, 1000);
+    // Add maneuver like 1000 seconds in the future
+    common::systems::commands::PushManeuver(GetUniverse(), ship,
+                                            common::systems::commands::MakeManeuver(glm::dvec3(0, 0, 0), 1000));
+
+    // Also self destruct after leaving soi
+    entt::entity escape_action = GetUniverse().create();
+    GetUniverse().emplace<common::components::Trigger>(escape_action, common::components::Trigger::OnExitSOI);
+    GetUniverse().emplace<common::components::Command>(escape_action, common::components::Command::SelfDestruct);
+
+    auto& command_queue = GetUniverse().get_or_emplace<components::CommandQueue>(ship);
+    command_queue.commands.push_back(escape_action);
 }
 }  // namespace cqsp::common::systems::history
