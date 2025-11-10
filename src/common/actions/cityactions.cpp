@@ -22,20 +22,16 @@
 
 namespace cqsp::common::actions {
 
-entt::entity CreateCity(Universe& universe, entt::entity planet, double lat, double longi) {
-    entt::entity settlement = universe.create();
-    universe.emplace<components::Settlement>(settlement);
-    universe.emplace<components::types::SurfaceCoordinate>(settlement, lat, longi);
-
-    // Add to planet list
-
-    if (universe.all_of<components::Habitation>(planet)) {
-        universe.get<components::Habitation>(planet).settlements.push_back(settlement);
-    } else {
-        universe.emplace<components::Habitation>(planet);
-        universe.get<components::Habitation>(planet).settlements.push_back(settlement);
-    }
-
-    return settlement;
+Node CreateCity(Node& planet, components::types::SurfaceCoordinate coords) {
+    Node city_node(planet.universe());
+    city_node.emplace<components::Settlement>();
+    city_node.emplace<components::types::SurfaceCoordinate>(coords);
+    planet.get_or_emplace<components::Habitation>().settlements.push_back(city_node);
+    return city_node;
 }
+
+Node CreateCity(Node& planet, double lat, double longi) {
+    return CreateCity(planet, components::types::SurfaceCoordinate(lat, longi));
+}
+
 }  // namespace cqsp::common::actions

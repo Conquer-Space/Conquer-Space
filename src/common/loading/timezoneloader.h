@@ -24,8 +24,8 @@ class TimezoneLoader : public HjsonLoader {
     explicit TimezoneLoader(Universe& universe) : HjsonLoader(universe) {}
 
     const Hjson::Value& GetDefaultValues() override { return default_val; }
-    bool LoadValue(const Hjson::Value& values, entt::entity entity) override;
-    void PostLoad(const entt::entity& entity) override;
+    bool LoadValue(const Hjson::Value& values, Node& node) override;
+    void PostLoad(const Node& node) override;
 
  private:
     Hjson::Value default_val;

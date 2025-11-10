@@ -22,14 +22,14 @@
 
 void cqsp::common::systems::SysScienceLab::DoSystem() {
     ZoneScoped;
-    auto view = GetUniverse().view<components::science::Lab>();
+    auto labs = GetUniverse().nodes<components::science::Lab>();
     // Add to the science
-    for (entt::entity entity : view) {
+    for (Node lab_node : labs) {
         // Add to the scientific progress of the area, I guess
-        auto& lab = GetUniverse().get<components::science::Lab>(entity);
+        auto& lab = lab_node.get<components::science::Lab>();
         // Progress the science, I guess
         // Get the science progress, and add to it, somehow
-        auto& science_progress = GetUniverse().get_or_emplace<components::science::ScientificProgress>(entity);
+        auto& science_progress = lab_node.get_or_emplace<components::science::ScientificProgress>();
         // Progress science
         science_progress.science_progress.MultiplyAdd(lab.science_contribution, Interval());
 

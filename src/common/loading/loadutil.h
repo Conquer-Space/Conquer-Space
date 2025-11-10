@@ -30,16 +30,16 @@ namespace cqsp::common::loading {
 /// Returns true if name exists
 /// </summary>
 /// <returns></returns>
-bool LoadName(Universe& universe, const entt::entity& entity, const Hjson::Value& value);
-bool LoadIdentifier(Universe& universe, const entt::entity& entity, const Hjson::Value& value);
-bool LoadDescription(Universe& universe, const entt::entity& entity, const Hjson::Value& value);
-bool LoadTags(Universe& universe, const entt::entity& entity, const Hjson::Value& value);
+bool LoadName(const Node& node, const Hjson::Value& value);
+bool LoadIdentifier(const Node& node, const Hjson::Value& value);
+bool LoadDescription(const Node& node, const Hjson::Value& value);
+bool LoadTags(const Node& node, const Hjson::Value& value);
 
 /// <summary>
 /// Loads all the values that should be on every single data type
 /// Returns true if an identifier exists
 /// </summary>
-bool LoadInitialValues(Universe& universe, const entt::entity& entity, const Hjson::Value& value);
+bool LoadInitialValues(const Node& node, const Hjson::Value& value);
 
 components::ResourceLedger HjsonToLedger(Universe&, Hjson::Value&);
 

@@ -111,8 +111,8 @@ void LoadSatellites(Universe& universe, std::string& string) {
     std::istringstream f(string);
     std::string line;
     int count = 0;
-    entt::entity earth = universe.planets["earth"];
-    const double GM = universe.get<Body>(earth).GM;
+    Node earth(universe, universe.planets["earth"]);
+    const double GM = earth.get<Body>().GM;
 
     // Get the next three lines or something like that
     while (std::getline(f, line)) {
@@ -125,8 +125,8 @@ void LoadSatellites(Universe& universe, std::string& string) {
         std::getline(f, line_one);
         std::string line_two;
         std::getline(f, line_two);
-        entt::entity satellite = universe.create();
-        universe.emplace<components::Name>(satellite, line);
+        Node satellite(universe);
+        satellite.emplace<components::Name>(line);
 
         // Add to earth
         auto orbit = GetOrbit(line_one, line_two, GM);
@@ -134,13 +134,13 @@ void LoadSatellites(Universe& universe, std::string& string) {
         // orbit.M0 += universe.get<components::bodies::Body>(earth).axial;
         orbit.reference_body = earth;
         // The math works
-        universe.get<bodies::OrbitalSystem>(earth).push_back(satellite);
-        universe.emplace<Orbit>(satellite, orbit);
-        universe.emplace<components::ships::Ship>(satellite);
+        earth.get<bodies::OrbitalSystem>().push_back(satellite);
+        satellite.emplace<Orbit>(orbit);
+        satellite.emplace<components::ships::Ship>();
     }
 }
 
-bool SatelliteLoader::LoadValue(const Hjson::Value& values, entt::entity entity) {
+bool SatelliteLoader::LoadValue(const Hjson::Value& values, Node& node) {
     std::optional<Orbit> orbit = LoadOrbit(values["orbit"]);
     if (!orbit.has_value()) {
         return false;
@@ -149,14 +149,15 @@ bool SatelliteLoader::LoadValue(const Hjson::Value& values, entt::entity entity)
     orbit->GM = universe.get<Body>(orbit->reference_body).GM;
     if (values["model"].defined()) {
         // Then we can add a model
-        universe.emplace<components::WorldModel>(entity, values["model"].to_string());
+        node.emplace<components::WorldModel>(values["model"].to_string());
     } else {
         // TODO(EhWhoAmI): We add a generic model instead
     }
     // Get name but no identifier
-    universe.emplace<Orbit>(entity, *orbit);
-    universe.get<bodies::OrbitalSystem>(orbit->reference_body).push_back(entity);
-    universe.emplace<components::ships::Ship>(entity);
+    node.emplace<Orbit>(*orbit);
+    Node reference_node(universe, orbit->reference_body);
+    reference_node.get<bodies::OrbitalSystem>().push_back(node);
+    node.emplace<components::ships::Ship>();
     SPDLOG_INFO("Loaded orbit!");
     return true;
 }

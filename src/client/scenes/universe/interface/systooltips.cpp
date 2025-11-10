@@ -152,7 +152,8 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
 
     // If it's a city do population
     if (universe.all_of<components::Settlement>(entity)) {
-        ImGui::TextFmt("Population: {}", NumberToHumanString(common::actions::GetCityPopulation(universe, entity)));
+        common::Node node(universe, entity);
+        ImGui::TextFmt("Population: {}", NumberToHumanString(common::actions::GetCityPopulation(node)));
     }
     if (universe.all_of<Body>(entity)) {
         auto& body = universe.get<Body>(entity);

@@ -21,16 +21,15 @@
 namespace cqsp::common::actions {
 using components::ResourceStockpile;
 
-bool TransferResources(entt::registry& registry, entt::entity from, entt::entity to, entt::entity good, double amount) {
+bool TransferResources(Node& from, Node& to, Node& good, double amount) {
     // Get resource stockpile
-    if (!(registry.all_of<ResourceStockpile>(from) && registry.all_of<ResourceStockpile>(to) &&
-          registry.all_of<components::Good>(good))) {
+    if (!(from.all_of<ResourceStockpile>() && to.all_of<ResourceStockpile>() && good.all_of<components::Good>())) {
         return false;
     }
 
     // Get resource stockpile
-    auto& from_stockpile = registry.get<ResourceStockpile>(from);
-    auto& to_stockpile = registry.get<ResourceStockpile>(from);
+    auto& from_stockpile = from.get<ResourceStockpile>();
+    auto& to_stockpile = from.get<ResourceStockpile>();
     // Transfer resources
     if (from_stockpile.HasGood(good)) {
         // Then we can transfer

@@ -20,11 +20,9 @@
 
 namespace cqsp::common::systems {
 void SysMarketReset::DoSystem() {
-    auto marketview = GetUniverse().view<components::Market>();
-    Universe& universe = GetUniverse();
-    for (entt::entity entity : marketview) {
+    for (Node market_node : GetUniverse().nodes<components::Market>()) {
         // Reset the ledgers
-        components::Market& market = universe.get<components::Market>(entity);
+        components::Market& market = market_node.get<components::Market>();
         market.ResetLedgers();
         market.production.clear();
         market.consumption.clear();

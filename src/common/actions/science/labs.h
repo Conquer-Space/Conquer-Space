@@ -21,6 +21,6 @@
 #include "common/universe.h"
 
 namespace cqsp::common::actions {
-entt::entity CreateLab(Universe& universe);
-void AddScienceResearch(Universe& universe, entt::entity lab, entt::entity research, double progress);
+Node CreateLab(Universe& universe);
+void AddScienceResearch(Node& lab, Node& research, double progress);
 }  // namespace cqsp::common::actions

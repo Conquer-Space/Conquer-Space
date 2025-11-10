@@ -24,23 +24,23 @@
 namespace cqsp::common::systems {
 void SysInterplanetaryTrade::DoSystem() {
     auto planetary_markets =
-        GetUniverse().view<components::Market, components::PlanetaryMarket, components::Habitation>();
-    for (entt::entity entity : planetary_markets) {
-        auto& market_component = GetUniverse().get<components::Market>(entity);
+        GetUniverse().nodes<components::Market, components::PlanetaryMarket, components::Habitation>();
+    for (Node market_node : planetary_markets) {
+        auto& market_component = market_node.get<components::Market>();
         // Get the S/D ratio and see if we need to make a difference
-        auto& habitation = GetUniverse().get<components::Habitation>(entity);
+        auto& habitation = market_node.get<components::Habitation>();
         // Their parent market should probably have a planetary market
-        auto& planetary_market = GetUniverse().get<components::PlanetaryMarket>(entity);
+        auto& planetary_market = market_node.get<components::PlanetaryMarket>();
         planetary_market.supply_difference = market_component.demand() - market_component.supply();
     }
 
     ResolveTrades();
 
     // Loop through spaceports, see what we can fulfill and then compute what it is for
-    auto space_ports = GetUniverse().view<components::infrastructure::SpacePort>();
-    for (entt::entity space_port : space_ports) {
-        auto& space_port_component = GetUniverse().get<components::infrastructure::SpacePort>(space_port);
-        auto& planetary_market = GetUniverse().get<components::PlanetaryMarket>(space_port_component.reference_body);
+    for (Node space_port_node : GetUniverse().nodes<components::infrastructure::SpacePort>()) {
+        auto& space_port_component = space_port_node.get<components::infrastructure::SpacePort>();
+        Node planet_node = space_port_node.Convert(space_port_component.reference_body);
+        auto& planetary_market = planet_node.get<components::PlanetaryMarket>();
         // Now compute the value and see if we can launch stuff
         // Let's buy the goods and then ship them
         // Loop through goods and add to the queue
@@ -63,19 +63,19 @@ void SysInterplanetaryTrade::DoSystem() {
 
 void SysInterplanetaryTrade::ResolveTrades() {
     auto planetary_markets =
-        GetUniverse().view<components::Market, components::PlanetaryMarket, components::Habitation>();
+        GetUniverse().nodes<components::Market, components::PlanetaryMarket, components::Habitation>();
 
-    for (entt::entity seller : planetary_markets) {
+    for (Node seller_node : planetary_markets) {
         // Market we are going to ship from
-        auto& seller_planetary_market = GetUniverse().get<components::PlanetaryMarket>(seller);
-        auto& seller_market = GetUniverse().get<components::Market>(seller);
-        for (entt::entity buyer : planetary_markets) {
-            if (seller == buyer) {
+        auto& seller_planetary_market = seller_node.get<components::PlanetaryMarket>();
+        auto& seller_market = seller_node.get<components::Market>();
+        for (Node buyer_node : planetary_markets) {
+            if (seller_node == buyer_node) {
                 continue;
             }
             // Market we are going to ship to
-            auto& buyer_planetary_market = GetUniverse().get<components::PlanetaryMarket>(buyer);
-            auto& buyer_market = GetUniverse().get<components::Market>(buyer);
+            auto& buyer_planetary_market = buyer_node.get<components::PlanetaryMarket>();
+            auto& buyer_market = buyer_node.get<components::Market>();
             // Check for any goods, check if the price is worth it, then buy it
             // Check if the seller market needs stuff
             for (auto& [good, supply_difference] : buyer_planetary_market.supply_difference) {
@@ -91,7 +91,7 @@ void SysInterplanetaryTrade::ResolveTrades() {
                     seller_market.chronic_shortages[good] <= 0) {
                     // We should add a market order to the buyer market and then figure out
                     // Now dump it to the market
-                    components::MarketOrder order(buyer, supply_difference, buyer_market.price[good]);
+                    components::MarketOrder order(buyer_node, supply_difference, buyer_market.price[good]);
                     seller_planetary_market.demands[good].push_back(order);
                 }
             }

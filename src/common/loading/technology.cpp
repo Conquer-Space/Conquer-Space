@@ -35,12 +35,12 @@ void LoadTechnologies(Universe& universe, Hjson::Value& value) {
     for (int i = 0; i < value.size(); i++) {
         Hjson::Value element = Hjson::Merge(base, value[i]);
 
-        entt::entity entity = universe.create();
-        if (!loading::LoadInitialValues(universe, entity, element)) {
+        Node node(universe);
+        if (!loading::LoadInitialValues(node, element)) {
             // Then kill the loading because you need an identifier
         }
 
-        auto& tech = universe.emplace<components::science::Technology>(entity);
+        auto& tech = node.emplace<components::science::Technology>();
         // Add tech data
         Hjson::Value val = element["actions"];
         for (int i = 0; i < val.size(); i++) {
@@ -56,7 +56,7 @@ void LoadTechnologies(Universe& universe, Hjson::Value& value) {
         // Verify if the tags exist
         tech.difficulty = element["difficulty"];
 
-        universe.technologies[universe.get<components::Identifier>(entity)] = entity;
+        universe.technologies[node.get<components::Identifier>()] = node;
     }
 }
 

@@ -26,37 +26,35 @@ namespace infrastructure = components::infrastructure;
 
 void InfrastructureSim::DoSystem() {
     ZoneScoped;
-    Universe& universe = GetUniverse();
     // Get all cities with industry and infrastruture
-    auto view = universe.view<components::IndustrialZone>();
-    for (entt::entity entity : view) {
-        auto& industry = universe.get<components::IndustrialZone>(entity);
+    for (Node zone_node : GetUniverse().nodes<components::IndustrialZone>()) {
+        auto& industry = zone_node.get<components::IndustrialZone>();
         double power_production = 0;
         double power_consumption = 0;
-        for (entt::entity industrial_site : industry.industries) {
-            if (universe.any_of<infrastructure::PowerPlant>(industrial_site)) {
-                power_production += universe.get<infrastructure::PowerPlant>(industrial_site).production;
+        for (Node industrial_node : zone_node.Convert(industry.industries)) {
+            if (industrial_node.any_of<infrastructure::PowerPlant>()) {
+                power_production += industrial_node.get<infrastructure::PowerPlant>().production;
             }
-            if (universe.any_of<infrastructure::PowerConsumption>(industrial_site)) {
-                power_consumption += universe.get<infrastructure::PowerConsumption>(industrial_site).max;
+            if (industrial_node.any_of<infrastructure::PowerConsumption>()) {
+                power_consumption += industrial_node.get<infrastructure::PowerConsumption>().max;
             }
         }
         // Now assign infrastrutural information
-        universe.emplace_or_replace<infrastructure::CityPower>(entity, power_production, power_consumption);
+        zone_node.emplace_or_replace<infrastructure::CityPower>(power_production, power_consumption);
 
         if (power_production < power_consumption) {
             // Then city has no power. Next time, we'd allow transmitting power, or allowing emergency use power
             // but for now, the city will go under brownout.
-            universe.get_or_emplace<infrastructure::BrownOut>(entity);
+            zone_node.get_or_emplace<infrastructure::BrownOut>();
         } else {
-            universe.remove<infrastructure::BrownOut>(entity);
+            zone_node.remove<infrastructure::BrownOut>();
         }
-        if (GetUniverse().any_of<infrastructure::CityInfrastructure>(entity)) {
-            auto& infra = GetUniverse().get<infrastructure::CityInfrastructure>(entity);
+        if (zone_node.any_of<infrastructure::CityInfrastructure>()) {
+            auto& infra = zone_node.get<infrastructure::CityInfrastructure>();
             infra.improvement = 0;
             // Add highway things I guess
-            if (GetUniverse().any_of<infrastructure::Highway>(entity)) {
-                infra.improvement += GetUniverse().get<infrastructure::Highway>(entity).extent;
+            if (zone_node.any_of<infrastructure::Highway>()) {
+                infra.improvement += zone_node.get<infrastructure::Highway>().extent;
             }
         }
     }

@@ -75,11 +75,25 @@ class Universe : public entt::registry {
     /// </summary>
     double tick_fraction = 0;
     std::function<Node(entt::entity)> nodeFactory;
-    auto nodeTransform() { return std::views::transform(nodeFactory); }
-    std::vector<Node> Convert(const std::vector<entt::entity>& entities);
+    auto NodeTransform() const { return std::views::transform(nodeFactory); }
+    std::vector<Node> Convert(const std::vector<entt::entity>& entities) const;
+    std::set<Node> Convert(const std::set<entt::entity>& entities) const;
+
     template <typename... Components>
     auto nodes() {
-        return this->template view<Components...>() | nodeTransform();
+        return this->template view<Components...>() | NodeTransform();
+    }
+    template <typename... Components>
+    auto nodes() const {
+        return this->template view<Components...>() | NodeTransform();
+    }
+    template <typename... Components, typename... Exclude>
+    auto nodes(entt::exclude_t<Exclude...> exclude) {
+        return this->template view<Components...>(exclude) | NodeTransform();
+    }
+    template <typename... Components, typename... Exclude>
+    auto nodes(entt::exclude_t<Exclude...> exclude) const {
+        return this->template view<Components...>(exclude) | NodeTransform();
     }
 
     systems::EconomyConfig economy_config;
@@ -90,12 +104,19 @@ class Universe : public entt::registry {
 
 class Node : public entt::handle {
  public:
-    explicit Node(Universe& universe, entt::entity entity);
-    Node(entt::handle handle, entt::entity entity);
+    explicit Node(const Universe& universe, const entt::entity entity);
+    Node(const entt::handle handle, const entt::entity entity);
     explicit Node(Universe& universe);
     Universe& universe() const;
-    std::vector<Node> Convert(const std::vector<entt::entity>& entities);
-    Node Convert(const entt::entity entity);
+    std::vector<Node> Convert(const std::vector<entt::entity>& entities) const;
+    std::set<Node> Convert(const std::set<entt::entity>& entities) const;
+    Node Convert(const entt::entity entity) const;
+
+    // Overload equivalence against entt::null_t
+    friend bool operator==(const Node& lhs, const entt::null_t&) { return lhs.entity() == entt::null; }
+    friend bool operator==(const entt::null_t&, const Node& rhs) { return rhs.entity() == entt::null; }
+    friend bool operator!=(const Node& lhs, const entt::null_t&) { return lhs.entity() != entt::null; }
+    friend bool operator!=(const entt::null_t&, const Node& rhs) { return rhs.entity() != entt::null; }
 };
 
 }  // namespace cqsp::common
@@ -105,5 +126,13 @@ struct fmt::formatter<entt::entity> : formatter<std::string> {
     template <typename FormatContext>
     constexpr auto format(entt::entity entity, FormatContext& ctx) const {
         return formatter<std::string>::format(std::to_string((uint64_t)entity), ctx);
+    }
+};
+
+template <>
+struct fmt::formatter<cqsp::common::Node> : fmt::formatter<std::string> {
+    template <typename FormatContext>
+    auto format(const cqsp::common::Node ship, FormatContext& ctx) const {
+        return fmt::formatter<entt::entity> {}.format(ship.entity(), ctx);
     }
 };

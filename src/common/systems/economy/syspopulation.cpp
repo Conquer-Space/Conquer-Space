@@ -37,26 +37,23 @@ using components::ResourceConsumption;
 void SysPopulationGrowth::DoSystem() {
     ZoneScoped;
 
-    Universe& universe = GetUniverse();
-
-    auto view = universe.view<components::PopulationSegment>();
-    for (entt::entity entity : view) {
-        auto& segment = universe.get<components::PopulationSegment>(entity);
+    for (Node pop_node : GetUniverse().nodes<components::PopulationSegment>()) {
+        auto& segment = pop_node.get<components::PopulationSegment>();
         // If it's hungry, decay population
-        if (universe.all_of<components::Hunger>(entity)) {
+        if (pop_node.all_of<components::Hunger>()) {
             // Population decrease will be about 1 percent each year.
             float increase = 1.f - static_cast<float>(Interval()) * 0.00000114077116f;
             segment.population *= increase;
         }
 
-        if (universe.all_of<components::FailedResourceTransfer>(entity)) {
+        if (pop_node.all_of<components::FailedResourceTransfer>()) {
             // Then alert hunger.
-            universe.get_or_emplace<components::Hunger>(entity);
+            pop_node.get_or_emplace<components::Hunger>();
         } else {
-            universe.remove<components::Hunger>(entity);
+            pop_node.remove<components::Hunger>();
         }
         // If not hungry, grow population
-        if (!universe.all_of<components::Hunger>(entity)) {
+        if (!pop_node.all_of<components::Hunger>()) {
             // Population growth will be about 1 percent each year.
             float increase = static_cast<float>(Interval()) * 0.00000114077116f + 1;
             segment.population *= increase;
@@ -67,28 +64,28 @@ void SysPopulationGrowth::DoSystem() {
         // For now, we would have 100% of the population working, because we
         // haven't got to social simulation yet. But in the future, this will
         // probably have to change.
-        auto& employee = universe.get_or_emplace<components::LaborInformation>(entity);
+        auto& employee = pop_node.get_or_emplace<components::LaborInformation>();
         employee.working_population = segment.population;
     }
 }
 
-namespace {
-void ProcessSettlement(Universe& universe, entt::entity settlement, ResourceConsumption& marginal_propensity_base,
-                       ResourceConsumption& autonomous_consumption_base, float savings) {
+void SysPopulationConsumption::ProcessSettlement(Node& settlement, const ResourceConsumption& marginal_propensity_base,
+                                                 const ResourceConsumption& autonomous_consumption_base,
+                                                 const float savings) {
     // Get the transport cost
-    if (!universe.any_of<components::infrastructure::CityInfrastructure>(settlement)) {
+    if (!settlement.any_of<components::infrastructure::CityInfrastructure>()) {
         return;
     }
-    auto& infrastructure = universe.get<components::infrastructure::CityInfrastructure>(settlement);
+    auto& infrastructure = settlement.get<components::infrastructure::CityInfrastructure>();
     // Calculate the infrastructure cost
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
-    auto& market = universe.get<components::Market>(settlement);
+    auto& market = settlement.get<components::Market>();
     // Loop through the population segments through the settlements
-    auto& settlement_comp = universe.get<components::Settlement>(settlement);
-    for (entt::entity segmententity : settlement_comp.population) {
+    auto& settlement_comp = settlement.get<components::Settlement>();
+    for (Node node_segment : settlement.Convert(settlement_comp.population)) {
         // Compute things
-        components::PopulationSegment& segment = universe.get_or_emplace<components::PopulationSegment>(segmententity);
-        ResourceConsumption& consumption = universe.get_or_emplace<ResourceConsumption>(segmententity);
+        components::PopulationSegment& segment = node_segment.get_or_emplace<components::PopulationSegment>();
+        ResourceConsumption& consumption = node_segment.get_or_emplace<ResourceConsumption>();
         // Reduce pop to some unreasonably low level so that the economy can
         // handle it
         const uint64_t population = segment.population / 10;
@@ -99,12 +96,12 @@ void ProcessSettlement(Universe& universe, entt::entity settlement, ResourceCons
         // should be calculated in SysPopulationGrowth
         consumption *= population;
 
-        components::Wallet& wallet = universe.get_or_emplace<components::Wallet>(segmententity);
+        components::Wallet& wallet = node_segment.get_or_emplace<components::Wallet>();
         double cost = (consumption * market.price).GetSum();
 
         if (wallet > 0) {  // If the pop has cash left over spend it
             // Add to the cost of price of transport
-            components::ResourceConsumption& extraconsumption = marginal_propensity_base;
+            const ResourceConsumption& extraconsumption = marginal_propensity_base;
 
             double extra_cost = (extraconsumption * market.price).GetSum();  // Distribute wallet amongst goods
 
@@ -140,7 +137,6 @@ void ProcessSettlement(Universe& universe, entt::entity settlement, ResourceCons
         market.consumption += consumption;
     }
 }
-}  // namespace
 
 // In economics, the consumption function describes a relationship between
 // consumption and disposable income.
@@ -182,10 +178,9 @@ void SysPopulationConsumption::DoSystem() {
         autonomous_consumption_base[cgentity] = good.autonomous_consumption * Interval();
         savings -= good.marginal_propensity;
     }  // These tables technically never need to be recalculated
-    auto settlementview = universe.view<components::Settlement>();
 
-    for (entt::entity settlement : settlementview) {
-        ProcessSettlement(universe, settlement, marginal_propensity_base, autonomous_consumption_base, savings);
+    for (Node settlement : universe.nodes<components::Settlement>()) {
+        ProcessSettlement(settlement, marginal_propensity_base, autonomous_consumption_base, savings);
     }
 }
 }  // namespace cqsp::common::systems

@@ -28,37 +28,37 @@ namespace cqsp::common::loading {
 namespace types = components::types;
 using types::UnitType;
 
-bool LoadName(Universe& universe, const entt::entity& entity, const Hjson::Value& value) {
+bool LoadName(const Node& node, const Hjson::Value& value) {
     if (value["name"].type() != Hjson::Type::String) {
         return false;
     }
     std::string identifier = value["name"].to_string();
-    auto& name = universe.emplace<components::Name>(entity);
+    auto& name = node.emplace<components::Name>();
     name.name = identifier;
     return true;
 }
 
-bool LoadIdentifier(Universe& universe, const entt::entity& entity, const Hjson::Value& value) {
+bool LoadIdentifier(const Node& node, const Hjson::Value& value) {
     if (value["identifier"].type() != Hjson::Type::String) {
         return false;
     }
     std::string identifier = value["identifier"].to_string();
-    auto& identifier_comp = universe.emplace<components::Identifier>(entity);
+    auto& identifier_comp = node.emplace<components::Identifier>();
     identifier_comp.identifier = identifier;
     return true;
 }
 
-bool LoadDescription(Universe& universe, const entt::entity& entity, const Hjson::Value& value) {
+bool LoadDescription(const Node& node, const Hjson::Value& value) {
     if (value["description"].type() != Hjson::Type::String) {
         return false;
     }
     std::string identifier = value["description"].to_string();
-    auto& identifier_comp = universe.emplace<components::Description>(entity);
+    auto& identifier_comp = node.emplace<components::Description>();
     identifier_comp.description = identifier;
     return true;
 }
 
-bool LoadTags(Universe& universe, const entt::entity& entity, const Hjson::Value& value) {
+bool LoadTags(const Node& node, const Hjson::Value& value) {
     if (value["tags"].type() != Hjson::Type::Vector) {
         return false;
     }
@@ -72,17 +72,17 @@ bool LoadTags(Universe& universe, const entt::entity& entity, const Hjson::Value
         tags.push_back(tag_value.to_string());
     }
     if (!tags.empty()) {
-        auto& tag_component = universe.emplace_or_replace<components::Tags>(entity);
+        auto& tag_component = node.emplace_or_replace<components::Tags>();
         tag_component.tags = std::move(tags);
     }
     return true;
 }
 
-bool LoadInitialValues(Universe& universe, const entt::entity& entity, const Hjson::Value& value) {
-    LoadName(universe, entity, value);
-    LoadDescription(universe, entity, value);
-    LoadTags(universe, entity, value);
-    return LoadIdentifier(universe, entity, value);
+bool LoadInitialValues(const Node& node, const Hjson::Value& value) {
+    LoadName(node, value);
+    LoadDescription(node, value);
+    LoadTags(node, value);
+    return LoadIdentifier(node, value);
 }
 
 components::ResourceLedger HjsonToLedger(Universe& universe, Hjson::Value& hjson) {
