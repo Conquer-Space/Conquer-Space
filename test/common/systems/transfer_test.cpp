@@ -50,8 +50,7 @@ TEST_F(SysOrbitTest, BodyVelocityVectorInOrbitPlane) {
         glm::dvec3 position = cqsp::common::components::types::toVec3(source_orbit, true_anomaly);
         // Check if we're coplanar with the normal plane
         EXPECT_NEAR(glm::dot(source_normal, position), 0, 1e-5);
-        SPDLOG_INFO("{} {} {} {}", glm::to_string(position), glm::to_string(velocity_vector),
-                    glm::to_string(velocity_cross), glm::to_string(source_normal));
+
         EXPECT_NEAR(glm::dot(glm::normalize(position), glm::normalize(velocity_vector)), 1, 1e-5);
         Tick(180);
     }
