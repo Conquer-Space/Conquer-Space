@@ -128,7 +128,7 @@ entt::entity SysSpacePort::ReturnFromMoonManeuver(const components::infrastructu
 
     // Circularize
     entt::entity circularize = GetUniverse().create();
-    GetUniverse().emplace<components::Trigger>(circularize, components::Trigger::OnEnterSOI);
+    GetUniverse().emplace<components::Trigger>(circularize, components::Trigger::OnExitSOI);
     GetUniverse().emplace<components::Command>(circularize, components::Command::CircularizeAtPeriapsis);
     command_queue.commands.push_back(circularize);
 

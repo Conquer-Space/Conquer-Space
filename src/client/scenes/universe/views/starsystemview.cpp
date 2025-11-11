@@ -374,6 +374,7 @@ void SysStarSystemRenderer::DrawPlanetBillboards(const entt::entity& ent_id, con
     std::string text = GetName(m_universe, ent_id);
 
     glm::mat4 planetDispMat = GetBillboardMatrix(pos);
+    planetDispMat = glm::scale(planetDispMat, glm::vec3(1, GetWindowRatio(), 1));
 
     SetBillboardProjection(planet_circle.shaderProgram, planetDispMat);
 
