@@ -295,9 +295,10 @@ void SysStarSystemRenderer::DrawShips() {
         glm::vec3 object_pos = CalculateCenteredObject(ship);
         ship_overlay.shaderProgram->setVec4("color", 1, 0, 0, 1);
         // Interpolate so that it looks nice
-        if (m_universe.any_of<types::FuturePosition>(ship)) {
+        if (m_universe.all_of<types::FuturePosition, types::Kinematics>(ship)) {
+            auto& kinematics = m_universe.get<types::Kinematics>(ship);
             auto& future_comp = m_universe.get<types::FuturePosition>(ship);
-            const auto& pos = future_comp.position + future_comp.center;
+            const auto& pos = future_comp.position + kinematics.center;
             glm::vec3 future_pos = CalculateCenteredObject(ConvertPoint(pos));
             DrawShipIcon(glm::mix(object_pos, future_pos, m_universe.tick_fraction));
         } else {
@@ -337,7 +338,11 @@ void SysStarSystemRenderer::DrawModels() {
         }
         auto model = m_app.GetAssetManager().GetAsset<asset::Model>(model_name.name);
         glm::mat4 transform = glm::mat4(1.f);
-        transform = glm::translate(transform, object_pos);
+        auto& kinematics = m_universe.get<types::Kinematics>(ship);
+        auto& future_comp = m_universe.get<types::FuturePosition>(ship);
+        const auto& pos = future_comp.position + kinematics.center;
+        glm::vec3 future_pos = CalculateCenteredObject(ConvertPoint(pos));
+        transform = glm::translate(transform, glm::mix(object_pos, future_pos, m_universe.tick_fraction));
 
         transform = glm::scale(transform, model->scale);
         model->shader->UseProgram();
@@ -514,7 +519,7 @@ void SysStarSystemRenderer::DrawAllPlanetBillboards(auto& bodies) {
         //if (true) {
         // Check if it's obscured by a planet, but eh, we can deal with
         // it later Set planet circle color
-        DrawPlanetBillboards(body_entity, object_pos);
+        DrawPlanetBillboard(body_entity, object_pos);
         //continue;
         //}
     }
@@ -595,6 +600,9 @@ void SysStarSystemRenderer::RenderCities(glm::vec3& object_pos, const entt::enti
 }
 
 bool SysStarSystemRenderer::CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos) {
+    if (glm::length(cam_pos - city_pos) > 6378.1 * 10) {
+        return false;
+    }
     float dist = glm::dot((planet_pos - city_pos), (cam_pos - city_pos));
     return (dist < 0);
 }

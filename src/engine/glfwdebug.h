@@ -16,7 +16,10 @@
  */
 #pragma once
 
+#include <fmt/format.h>
 #include <glad/glad.h>
+
+#include <string>
 
 #include "engine/enginelogger.h"
 
@@ -74,6 +77,29 @@ const inline char* ParseSource(GLenum source) {
         case GL_DEBUG_SOURCE_OTHER:
         default:
             return ("Other");
+    }
+}
+
+const inline std::string GetGlError(GLenum error) {
+    switch (error) {
+        case GL_NO_ERROR:
+            return "No Error";
+        case GL_INVALID_ENUM:
+            return "Invalid Enum";
+        case GL_INVALID_VALUE:
+            return "Invalid Value";
+        case GL_INVALID_OPERATION:
+            return "Invalid Operation";
+        case GL_INVALID_FRAMEBUFFER_OPERATION:
+            return "Invalid Framebuffer Operation";
+        case GL_OUT_OF_MEMORY:
+            return "Out of Memory";
+        case GL_STACK_UNDERFLOW:
+            return "Stack Underflow";
+        case GL_STACK_OVERFLOW:
+            return "Stack Overflow";
+        default:
+            return fmt::format("Unknown error 0x{:x}", error);
     }
 }
 
