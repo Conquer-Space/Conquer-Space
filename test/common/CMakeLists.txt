@@ -20,6 +20,7 @@ file (GLOB_RECURSE CPP_FILES *.cpp)
 file (GLOB_RECURSE H_FILES *.h)
 
 include_directories(${CMAKE_SOURCE_DIR}/lib/include)
+include_directories(${CMAKE_SOURCE_DIR}/test)
 # Lua
 include_directories(${CMAKE_SOURCE_DIR}/lib/sol2/include)
 include_directories(${LUA_HEADERS})

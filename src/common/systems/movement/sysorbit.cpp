@@ -24,7 +24,7 @@
 
 #include "common/actions/maneuver/commands.h"
 #include "common/components/coordinates.h"
-#include "common/components/movement.h"
+#include "common/components/maneuver.h"
 #include "common/components/orbit.h"
 #include "common/components/ships.h"
 #include "common/components/units.h"
@@ -141,10 +141,22 @@ void SysOrbit::ParseChildren(entt::entity body) {
     if (!GetUniverse().any_of<components::bodies::OrbitalSystem>(body)) {
         return;
     }
-    for (entt::entity entity : GetUniverse().get<components::bodies::OrbitalSystem>(body).children) {
+    auto& orbital_system = GetUniverse().get<components::bodies::OrbitalSystem>(body);
+    for (entt::entity entity : orbital_system.children) {
         // Calculate position
         ParseOrbitTree(body, entity);
     }
+    // Now check if anything has crashed and remove
+    orbital_system.children.erase(std::remove_if(orbital_system.children.begin(), orbital_system.children.end(),
+                                                 [&](entt::entity entity) {
+                                                     if (GetUniverse().any_of<ships::Crash>(entity)) {
+                                                         GetUniverse().destroy(entity);
+                                                         return true;
+                                                     }
+
+                                                     return false;
+                                                 }),
+                                  orbital_system.children.end());
 }
 
 void SysOrbit::UpdateCommandQueue(Orbit& orb, entt::entity body, entt::entity parent) {
@@ -183,6 +195,7 @@ void SysOrbit::UpdateCommandQueue(Orbit& orb, entt::entity body, entt::entity pa
 
 void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     ZoneScoped;
+
     if (!GetUniverse().valid(body)) {
         return;
     }
@@ -314,7 +327,8 @@ void SysOrbit::EnterSOI(entt::entity entity, entt::entity body, entt::entity par
 
     if (debug_prints) {
         SPDLOG_INFO("Post enter position: {}", glm::to_string(vehicle_position.position));
-        SPDLOG_INFO("Post enter velocity: {}", glm::to_string(vehicle_position.velocity));
+        SPDLOG_INFO("Post enter velocity: {} ({})", glm::to_string(vehicle_position.velocity),
+                    glm::length(vehicle_position.velocity));
     }
 
     // Then change SOI

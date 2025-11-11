@@ -39,7 +39,7 @@ struct Maneuver {
     /// </summary>
     const glm::dvec3 delta_v;
     const double time;
-    Maneuver() = default;
+    Maneuver() = delete;
     explicit Maneuver(const std::pair<glm::dvec3, double>& maneuver) : delta_v(maneuver.first), time(maneuver.second) {}
     /*
     * @param maneuver maneuver pair

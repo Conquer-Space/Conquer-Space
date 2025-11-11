@@ -16,13 +16,7 @@
  */
 #include "common/systems/history/sysmarkethistory.h"
 
-#include "common/components/history.h"
-#include "common/components/market.h"
 namespace cqsp::common::systems::history {
-
-using components::Market;
-using components::MarketHistory;
-
 void SysMarketHistory::DoSystem() {
     /*
     for (Node market_node : GetUniverse().nodes<Market>()) {

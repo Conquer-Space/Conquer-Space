@@ -26,8 +26,10 @@
 #include <glm/gtx/projection.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
+#include "orbit.h"
+
 namespace cqsp::common::components::types {
-double GetOrbitingRadius(const double& e, const radian& a, const radian& v) {
+double GetOrbitingRadius(const double e, const kilometer a, const radian v) {
     if (e > 1) {
         return (a * (e * e - 1)) / (1 + e * cos(v));
     } else {
@@ -54,12 +56,33 @@ glm::dvec3 ConvertToOrbitalVector(const double LAN, const double i, const double
            glm::dquat {glm::dvec3(0, 0, v)} * vec;
 }
 
+/**
+ * Calculates eccentricity vector
+ * @param h Angular momentum vector
+ * @param r Position vector
+ * @param v Velocity Vector
+ * @param GM Mu: gravitional constant * mass of orbiting body
+ */
+glm::dvec3 GetEccentricityVector(const glm::dvec3& h, const glm::dvec3& r, const glm::dvec3& v, const double GM) {
+    return glm::cross(v, h) / GM - glm::normalize(r);
+}
+
+/**
+ * Calculates eccentricity vector
+ * @param r Position vector
+ * @param v Velocity Vector
+ * @param GM Mu: gravitional constant * mass of orbiting body
+ */
+glm::dvec3 GetEccentricityVector(const glm::dvec3& r, const glm::dvec3& v, const double GM) {
+    return glm::cross(v, glm::cross(r, v)) / GM - glm::normalize(r);
+}
+
 // https://downloads.rene-schwarz.com/download/M002-Cartesian_State_Vectors_to_Keplerian_Orbit_Elements.pdf
 Orbit Vec3ToOrbit(const glm::dvec3& position, const glm::dvec3& velocity, const double& GM, const double& time) {
     // Orbital momentum vector
     const auto h = glm::cross(position, velocity);
     // Eccentricity vector
-    const glm::dvec3 ecc_v = glm::cross(velocity, h) / GM - glm::normalize(position);
+    const glm::dvec3 ecc_v = GetEccentricityVector(h, position, velocity, GM);
 
     // Eccentricity
     double e = glm::length(ecc_v);
@@ -400,6 +423,15 @@ double AscendingTrueAnomaly(const Orbit& start, const Orbit& dest) {
     return normalize_radian(TrueAnomalyFromVector(start, glm::cross(GetOrbitNormal(start), GetOrbitNormal(dest))));
 }
 
+/**
+ * Computes the eccentricity from the apoapsis and periapsis.
+ */
+double GetEccentricity(double apoapsis, double periapsis) { return (apoapsis - periapsis) / (apoapsis + periapsis); }
+
+double Orbit::GetOrbitingRadius() const { return types::GetOrbitingRadius(eccentricity, semi_major_axis, v); }
+
+double Orbit::GetOrbitingRadius(double v) const { return types::GetOrbitingRadius(eccentricity, semi_major_axis, v); }
+
 // https://space.stackexchange.com/questions/54396/how-to-calculate-the-time-to-reach-a-given-true-anomaly
 double Orbit::TimeToTrueAnomaly(double v2) const {
     // If it's a hyperbolic orbit, we will have to use different equations.
@@ -408,26 +440,27 @@ double Orbit::TimeToTrueAnomaly(double v2) const {
     // Assume current v is v0.
     if (eccentricity > 1) {
         // Use hyperbolic equations
-        const double F0 = std::acosh((eccentricity + cos(v)) / (1 + eccentricity * cos(v)));
+        double F0 = std::acosh((eccentricity + cos(v)) / (1 + eccentricity * cos(v)));
+        if (v > PI) {
+            F0 *= -1.0;  // F is negative for v > PI
+        }
         double M0 = eccentricity * sinh(F0) - F0;
 
-        const double F = std::acosh((eccentricity + cos(v2)) / (1 + eccentricity * cos(v2)));
+        double F = std::acosh((eccentricity + cos(v2)) / (1 + eccentricity * cos(v2)));
+        if (v2 > PI) {
+            F *= -1.0;  // F is negative for v2 > PI
+        }
+
         double M = eccentricity * sinh(F) - F;
-        double t = (M0 - M) / nu();
+        double t = (M - M0) / nu();
         return t;
     } else {
-        const double E0 = std::acos((eccentricity + cos(v)) / (1 + eccentricity * cos(v)));
+        double E0 = std::atan2(std::sqrt(1.0 - eccentricity * eccentricity) * std::sin(v), eccentricity + std::cos(v));
         double M0 = E0 - std::sin(E0) * eccentricity;
-        if (v > PI) {
-            M0 *= -1;
-        }
 
-        const double E = std::acos((eccentricity + cos(v2)) / (1 + eccentricity * cos(v2)));
+        double E = std::atan2(std::sqrt(1.0 - eccentricity * eccentricity) * std::sin(v2), eccentricity + std::cos(v2));
         double M = E - std::sin(E) * eccentricity;
 
-        if (v2 > PI) {
-            M *= -1;
-        }
         double t = (M - M0) / nu();
         if (t < 0) {
             t = T() + t;
@@ -436,9 +469,9 @@ double Orbit::TimeToTrueAnomaly(double v2) const {
     }
 }
 
-double Orbit::OrbitalVelocity() { return OrbitVelocity(v, eccentricity, semi_major_axis, GM); }
+double Orbit::OrbitalVelocity() const { return OrbitVelocity(v, eccentricity, semi_major_axis, GM); }
 
-double Orbit::OrbitalVelocityAtTrueAnomaly(double true_anomaly) {
+double Orbit::OrbitalVelocityAtTrueAnomaly(double true_anomaly) const {
     return OrbitVelocity(true_anomaly, eccentricity, semi_major_axis, GM);
 }
 
@@ -461,7 +494,7 @@ double AngleWith(const Orbit& orbit, const Orbit& second_orbit) {
     return glm::angle(glm::normalize(GetOrbitNormal(orbit)), glm::normalize(GetOrbitNormal(second_orbit)));
 }
 
-std::string Orbit::ToHumanString() {
+std::string Orbit::ToHumanString() const {
     std::ostringstream ss;
     ss << std::fixed << std::setprecision(6);
     ss << "Orbit Parameters:\n";

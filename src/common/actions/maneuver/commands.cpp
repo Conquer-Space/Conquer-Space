@@ -20,10 +20,14 @@
 
 #include <algorithm>
 
-#include "common/actions/maneuver/maneuver.h"
+#include <tracy/Tracy.hpp>
+
+#include "common/actions/maneuver/basicmaneuver.h"
 #include "common/actions/maneuver/rendezvous.h"
-#include "common/components/movement.h"
+#include "common/actions/maneuver/transfers.h"
+#include "common/components/maneuver.h"
 #include "common/components/orbit.h"
+#include "common/components/ships.h"
 #include "common/components/surface.h"
 #include "common/util/nameutil.h"
 
@@ -156,12 +160,27 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
         case Command::InterceptAndCircularizeBody: {
             // We should intercept the body and stuff
         } break;
+        case Command::ExitSOI: {
+            if (!universe.any_of<OrbitScalar>(command_entity)) {
+                break;
+            }
+            auto& scalar_change = universe.get<OrbitScalar>(command_entity);
+            auto& orbit = universe.get<Orbit>(entity);
+            auto maneuver = common::systems::TransferFromBody(universe, orbit, universe.get<types::Kinematics>(entity),
+                                                              scalar_change.value);
+            PushManeuver(universe, entity, maneuver);
+        } break;
+        case Command::SelfDestruct: {
+            // Self destruct
+            universe.emplace_or_replace<components::ships::Crash>(entity);
+        } break;
         default:
             break;
     }
 }
 
 bool ProcessCommandQueue(Universe& universe, entt::entity body, Trigger trigger) {
+    ZoneScoped;
     if (!universe.any_of<components::CommandQueue>(body)) {
         return false;
     }
@@ -294,6 +313,8 @@ components::Maneuver_t MakeManeuver(const glm::dvec3& vector, double time) { ret
 std::vector<entt::entity> GetSOIHierarchy(Universe& universe, entt::entity source) {
     std::vector<entt::entity> source_list;
     entt::entity parent_body = universe.get<Orbit>(source).reference_body;
+    source_list.push_back(source);
+
     while (parent_body != entt::null) {
         source_list.push_back(parent_body);
         parent_body = universe.get<Orbit>(parent_body).reference_body;
@@ -305,11 +326,25 @@ entt::entity GetCommonSOI(Universe& universe, entt::entity source, entt::entity 
     // Get common ancestor
     std::vector<entt::entity> source_list = GetSOIHierarchy(universe, source);
     std::vector<entt::entity> target_list = GetSOIHierarchy(universe, target);
-    for (size_t i = 2; i < std::min(source_list.size(), target_list.size()); i++) {
+    size_t i;
+    for (i = 1; i < std::min(source_list.size(), target_list.size()); i++) {
         if (source_list[source_list.size() - i] != target_list[target_list.size() - i]) {
             return source_list[source_list.size() - i + 1];
         }
     }
-    return entt::null;
+    if (i == std::min(source_list.size(), target_list.size())) {
+        return source_list[source_list.size() - i];
+    }
+    return source_list[source_list.size() - 1];
+}
+
+void LeaveSOI(Universe& universe, entt::entity agent, double altitude) {
+    entt::entity escape_action = universe.create();
+    universe.emplace<Trigger>(escape_action, Trigger::OnManeuver);
+    universe.emplace<Command>(escape_action, Command::ExitSOI);
+    universe.emplace<OrbitScalar>(escape_action, altitude);
+
+    auto& command_queue = universe.get_or_emplace<components::CommandQueue>(agent);
+    command_queue.commands.push_back(escape_action);
 }
 }  // namespace cqsp::common::systems::commands

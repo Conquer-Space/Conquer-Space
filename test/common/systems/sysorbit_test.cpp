@@ -25,98 +25,19 @@
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
+#include "common/actions/maneuver/basicmaneuver.h"
 #include "common/actions/maneuver/commands.h"
-#include "common/actions/maneuver/maneuver.h"
 #include "common/actions/shiplaunchaction.h"
 #include "common/components/ships.h"
 #include "common/game.h"
 #include "common/loading/hjsonloader.h"
 #include "common/loading/planetloader.h"
 #include "common/simulation.h"
+#include "common/systems/sysorbit_test.h"
 #include "common/util/paths.h"
 #include "engine/asset/assetloader.h"
 #include "engine/asset/packageindex.h"
 #include "engine/asset/vfs/nativevfs.h"
-
-class ManeuverTestSimulation : public cqsp::common::systems::simulation::Simulation {
- public:
-    explicit ManeuverTestSimulation(cqsp::common::Game& game) : cqsp::common::systems::simulation::Simulation(game) {}
-
-    void CreateSystems() override { AddSystem<cqsp::common::systems::SysOrbit>(); }
-};
-
-struct SysOrbitTest : public ::testing::Test {
- protected:
-    // Per-test-suite set-up.
-    // Called before the first test in this test suite.
-    // Can be omitted if not needed.
-    static void SetUpTestSuite() {
-        std::filesystem::path data_path(cqsp::common::util::GetCqspTestDataPath());
-        std::shared_ptr<cqsp::asset::NativeFileSystem> vfs_shared_ptr = std::make_shared<cqsp::asset::NativeFileSystem>(
-            cqsp::asset::NativeFileSystem((data_path / "core").string()));
-        // Initialize a few planets
-        // Load the core package
-        cqsp::asset::PackageIndex index(vfs_shared_ptr->OpenDirectory(""));
-        std::string path = index["planets"].path;
-        ASSERT_EQ(index["planets"].type, cqsp::asset::AssetType::HJSON);
-
-        planets_hjson = cqsp::asset::LoadHjsonAsset(vfs_shared_ptr, path);
-    }
-
-    static void TearDownTestSuite() {}
-
-    void SetUp() override {
-        // TODO(EhWhoAmI): If we want further speedup we might be able to move this
-        // into the
-        cqsp::common::loading::PlanetLoader loader(game.GetUniverse());
-        loader.LoadHjson(planets_hjson);
-
-        earth = universe.planets["earth"];
-        moon = universe.planets["moon"];
-
-        // 1 tick to initialize the universe
-        Tick(1);
-    }
-
-    void TearDown() override {}
-
-    static Hjson::Value planets_hjson;
-
-    cqsp::common::Game game;
-    cqsp::common::Universe& universe;
-    entt::entity earth;
-    entt::entity moon;
-    ManeuverTestSimulation simulation;
-
-    void Tick(int count = 1) {
-        for (int i = 0; i < count; i++) {
-            simulation.tick();
-        }
-    }
-
-    void TickSeconds(double seconds) {
-        for (int i = 0; i < std::ceil(seconds / 60.); i++) {
-            simulation.tick();
-        }
-    }
-
-    testing::AssertionResult IsSamePlane(entt::entity ship1, entt::entity ship2, double tolerance = 0.00001) {
-        auto& kinematics1 = universe.get<cqsp::common::components::types::Kinematics>(ship1);
-        auto& kinematics2 = universe.get<cqsp::common::components::types::Kinematics>(ship2);
-        glm::dvec3 angular_momentum1 = glm::cross(kinematics1.position, kinematics1.velocity);
-        glm::dvec3 angular_momentum2 = glm::cross(kinematics2.position, kinematics2.velocity);
-        double angle = glm::angle(glm::normalize(angular_momentum1), glm::normalize(angular_momentum2));
-
-        if (std::fabs(angle) < tolerance) {
-            return testing::AssertionSuccess();
-        } else {
-            return testing::AssertionFailure()
-                   << "The two orbits have a " << angle / std::numbers::pi * 180 << " degree difference";
-        }
-    }
-
-    SysOrbitTest() : universe(game.GetUniverse()), simulation(game) { simulation.CreateSystems(); }
-};
 
 Hjson::Value SysOrbitTest::planets_hjson;
 
@@ -288,10 +209,10 @@ TEST_P(CircularizeTests, ChangeApoapsis) {
     // Now verify that the amount of delta v we put into it is also the amount we would expect
     // This can be more inaccurate because we are sourcing these values from many different calculations, so we
     // must allow for some numerical inaccuricies
-    EXPECT_NEAR(
-        ship_orbit.OrbitalVelocityAtTrueAnomaly(0),
-        glm::length(circularize.first) + source_orbit.OrbitalVelocityAtTrueAnomaly(cqsp::common::components::types::PI),
-        2);
+    EXPECT_NEAR(ship_orbit.OrbitalVelocityAtTrueAnomaly(0),
+                glm::length(circularize.first) +
+                    source_orbit.OrbitalVelocityAtTrueAnomaly(cqsp::common::components::types::apoapsis),
+                2);
 
     EXPECT_NEAR(ship_orbit.OrbitalVelocityAtTrueAnomaly(0),
                 cqsp::common::components::types::GetCircularOrbitingVelocity(ship_orbit.GM, ship_orbit.semi_major_axis),
@@ -321,11 +242,11 @@ TEST_P(CircularizeTests, ChangePeriapsis) {
     // Now verify that the amount of delta v we put into it is also the amount we would expect
     // This can be more inaccurate because we are sourcing these values from many different calculations, so we
     // must allow for some numerical inaccuricies
-    EXPECT_NEAR(ship_orbit.OrbitalVelocityAtTrueAnomaly(cqsp::common::components::types::PI),
+    EXPECT_NEAR(ship_orbit.OrbitalVelocityAtTrueAnomaly(cqsp::common::components::types::apoapsis),
                 // Subtract as periapsis operation is reducing orbital energy
                 source_orbit.OrbitalVelocityAtTrueAnomaly(0) - glm::length(circularize.first), 2);
 
-    EXPECT_NEAR(ship_orbit.OrbitalVelocityAtTrueAnomaly(cqsp::common::components::types::PI),
+    EXPECT_NEAR(ship_orbit.OrbitalVelocityAtTrueAnomaly(cqsp::common::components::types::apoapsis),
                 cqsp::common::components::types::GetCircularOrbitingVelocity(ship_orbit.GM, ship_orbit.semi_major_axis),
                 1);
     EXPECT_LT(ship_orbit.eccentricity, 0.01);

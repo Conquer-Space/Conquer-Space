@@ -26,6 +26,7 @@ TEST(CommandTest, SOIHierachyTest) {
     entt::entity source_body = current_body;
     // Now make the vector
     std::vector<entt::entity> expected_hierachy;
+    expected_hierachy.push_back(current_body);
     for (int i = 0; i < 5; i++) {
         entt::entity parent_body = universe.create();
         auto& orbit = universe.emplace<cqsp::common::components::types::Orbit>(current_body);

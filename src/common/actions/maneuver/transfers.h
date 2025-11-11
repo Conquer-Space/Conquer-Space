@@ -16,17 +16,17 @@
  */
 #pragma once
 
-#include <optional>
-#include <utility>
-
-#include <glm/vec3.hpp>
-
+#include "common/components/coordinates.h"
 #include "common/components/maneuver.h"
 #include "common/components/orbit.h"
+#include "common/universe.h"
 
 namespace cqsp::common::systems {
-// Executes a Hohmann transfer but without the checks you should normally have such
-// as if it is a circular orbit or even on the same plane
-components::HohmannPair_t UnsafeHohmannTransfer(const components::types::Orbit& orbit, double altitude);
-std::optional<components::HohmannPair_t> HohmannTransfer(const components::types::Orbit& orbit, double altitude);
+components::Maneuver_t TransferFromBody(Universe& universe, const components::types::Orbit& orbit,
+                                        const components::types::Kinematics& kinematics, double altitude);
+glm::dvec3 GetBodyVelocityVectorInOrbitPlane(const components::types::Orbit& orbit,
+                                             const components::types::Kinematics& body_kinematics);
+double GetBodyVelocityVectorInOrbitPlaneTrueAnomaly(const components::types::Orbit& orbit,
+                                                    const components::types::Kinematics& kinematics,
+                                                    const components::types::Kinematics& orbiting_kinematics);
 }  // namespace cqsp::common::systems

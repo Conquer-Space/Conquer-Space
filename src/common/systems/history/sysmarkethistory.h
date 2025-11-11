@@ -23,5 +23,7 @@ class SysMarketHistory : public ISimulationSystem {
  public:
     explicit SysMarketHistory(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
+
+    int Interval() override { return components::StarDate::HOUR; }
 };
 }  // namespace cqsp::common::systems::history

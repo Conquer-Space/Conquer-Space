@@ -635,7 +635,8 @@ void SysStarSystemRenderer::CalculateCityPositions() {
 
 void SysStarSystemRenderer::CalculateScroll() {
     double min_scroll = 0.1;
-    if (m_viewing_entity != entt::null && m_universe.all_of<Body>(m_viewing_entity)) {
+    if (m_viewing_entity != entt::null && m_universe.valid(m_viewing_entity) &&
+        m_universe.all_of<Body>(m_viewing_entity)) {
         min_scroll = std::max(m_universe.get<Body>(m_viewing_entity).radius * 1.1, 0.1);
     }
     if (scroll - m_app.GetScrollAmount() * 3 * scroll / 33 <= min_scroll) {
@@ -1349,7 +1350,10 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
     float r = log(col) / log(max_dis);
     float g = 1 - r;
     float b = inc / 3.15;
-    glm::vec4 color_v = {1, 1, 1, 0.7};
+    glm::vec4 color_v = {1.f, 1.f, 1.f, 0.7f};
+    if (m_universe.any_of<ships::Ship>(entity)) {
+        color_v = {0.10196078431372549f, 0.6313725490196078f, 0.24313725490196078f, 0.7f};
+    }
     orbit_shader->Set("color", color_v);
 
     //orbit_shader->Set("color", glm::vec4(1, 1, 1, 1));

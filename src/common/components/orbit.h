@@ -33,7 +33,7 @@ namespace cqsp::common::components::types {
 /// </summary>
 typedef glm::dvec3 Vec3AU;
 
-double GetOrbitingRadius(const double& e, const double& a, const double& v);
+double GetOrbitingRadius(const double e, const kilometer a, const radian v);
 
 /**
  * Orbit of a body
@@ -145,11 +145,9 @@ struct Orbit {
 
     double GetMtElliptic(double time) const { return normalize_radian(M0 + (time - epoch) * nu()); }
 
-    double GetOrbitingRadius() const { return types::GetOrbitingRadius(eccentricity, semi_major_axis, v); }
+    double GetOrbitingRadius() const;
 
-    double GetOrbitingRadius(const double& v) const {
-        return types::GetOrbitingRadius(eccentricity, semi_major_axis, v);
-    }
+    double GetOrbitingRadius(double v) const;
 
     // Orbital period
     double T() const { return 2 * PI * sqrt(semi_major_axis * semi_major_axis * semi_major_axis / GM); }
@@ -163,11 +161,11 @@ struct Orbit {
 
     double TimeToTrueAnomaly(double v2) const;
 
-    double OrbitalVelocity();
+    double OrbitalVelocity() const;
 
-    double OrbitalVelocityAtTrueAnomaly(double true_anomaly);
+    double OrbitalVelocityAtTrueAnomaly(double true_anomaly) const;
 
-    std::string ToHumanString();
+    std::string ToHumanString() const;
 };
 
 inline std::ostream& operator<<(std::ostream& outs, const Orbit& orb) {
@@ -175,6 +173,15 @@ inline std::ostream& operator<<(std::ostream& outs, const Orbit& orb) {
                 << ", LAN=" << orb.LAN << ", w=" << orb.w << ", GM=" << orb.GM << ", v=" << orb.v << ", M0=" << orb.M0
                 << ", t=" << orb.epoch << ", ref=" << (uint32_t)orb.reference_body << ")";
 }
+
+/**
+ * True anomaly of the apoapsis
+ */
+constexpr double apoapsis = PI;
+/**
+ * True anomaly of the periapsis
+ */
+constexpr double periapsis = 0;
 
 struct SetTrueAnomaly {
     double true_anomaly;
@@ -225,8 +232,6 @@ glm::dvec3 CalculateVelocityElliptic(const double& E, const kilometer& r, const 
 
 glm::dvec3 CalculateVelocityHyperbolic(const double& E, const double& r, const double& GM, const double& a,
                                        const double& e);
-
-double GetOrbitingRadius(const double& e, const kilometer& a, const radian& v);
 
 /// Get the circular orbiting velocity for the radius
 double GetCircularOrbitingVelocity(const double& GM, const double& radius);
@@ -404,4 +409,7 @@ double AngleWith(const Orbit& orbit, const Orbit& second_orbit);
 double TrueAnomalyFromVector(const Orbit& orbit, const glm::dvec3& vec);
 
 double AscendingTrueAnomaly(const Orbit& start, const Orbit& dest);
+double GetEccentricity(double apoapsis, double periapsis);
+glm::dvec3 GetEccentricityVector(const glm::dvec3& h, const glm::dvec3& r, const glm::dvec3& v, const double GM);
+glm::dvec3 GetEccentricityVector(const glm::dvec3& r, const glm::dvec3& v, const double GM);
 }  // namespace cqsp::common::components::types

@@ -22,6 +22,6 @@
 #include "common/universe.h"
 
 namespace cqsp::common::actions {
-Node CreateCity(Node& planet, double lat, double longi);
-Node CreateCity(Node& planet, components::types::SurfaceCoordinate coords);
+[[nodiscard]] Node CreateCity(Node& planet, double lat, double longi);
+[[nodiscard]] Node CreateCity(Node& planet, components::types::SurfaceCoordinate coords);
 }  // namespace cqsp::common::actions
