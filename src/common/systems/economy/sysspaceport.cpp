@@ -119,7 +119,6 @@ entt::entity SysSpacePort::ReturnFromMoonManeuver(const components::infrastructu
     // Then target the target body
     // Land on armstrong
 
-    auto& cities = GetUniverse().get<components::Habitation>(target);
     auto& target_body = GetUniverse().get<components::bodies::Body>(target);
 
     systems::commands::LeaveSOI(GetUniverse(), ship, target_body.radius * 5);
