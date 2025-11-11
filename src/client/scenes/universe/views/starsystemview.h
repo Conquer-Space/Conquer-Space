@@ -132,8 +132,7 @@ class SysStarSystemRenderer {
     void DrawModels();
 
     void DrawEntityName(glm::vec3 &object_pos, entt::entity ent_id);
-    void DrawPlanetIcon(glm::vec3 &object_pos);
-    void DrawPlanetBillboards(const entt::entity &ent_id, const glm::vec3 &object_pos);
+    void DrawPlanetBillboard(const entt::entity &ent_id, const glm::vec3 &object_pos);
     void DrawShipIcon(const glm::vec3 &object_pos);
     void DrawCityIcon(const glm::vec3 &object_pos);
 

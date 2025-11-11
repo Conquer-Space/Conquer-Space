@@ -356,14 +356,7 @@ void SysStarSystemRenderer::DrawEntityName(glm::vec3& object_pos, entt::entity e
     }
 }
 
-void SysStarSystemRenderer::DrawPlanetIcon(glm::vec3& object_pos) {
-    glm::mat4 planetDispMat = GetBillboardMatrix(GetBillboardPosition(object_pos));
-
-    SetBillboardProjection(planet_circle.shaderProgram, planetDispMat);
-    engine::Draw(planet_circle);
-}
-
-void SysStarSystemRenderer::DrawPlanetBillboards(const entt::entity& ent_id, const glm::vec3& object_pos) {
+void SysStarSystemRenderer::DrawPlanetBillboard(const entt::entity& ent_id, const glm::vec3& object_pos) {
     glm::vec3 pos = GetBillboardPosition(object_pos);
 
     // Check if the position on screen is within bounds
@@ -374,7 +367,6 @@ void SysStarSystemRenderer::DrawPlanetBillboards(const entt::entity& ent_id, con
     std::string text = GetName(m_universe, ent_id);
 
     glm::mat4 planetDispMat = GetBillboardMatrix(pos);
-    planetDispMat = glm::scale(planetDispMat, glm::vec3(1, GetWindowRatio(), 1));
 
     SetBillboardProjection(planet_circle.shaderProgram, planetDispMat);
 
@@ -390,8 +382,6 @@ void SysStarSystemRenderer::DrawCityIcon(const glm::vec3& object_pos) {
     }
 
     glm::mat4 planetDispMat = GetBillboardMatrix(pos);
-    // Scale it by the window ratio
-    planetDispMat = glm::scale(planetDispMat, glm::vec3(1, GetWindowRatio(), 1));
 
     SetBillboardProjection(city.shaderProgram, planetDispMat);
     city.shaderProgram->Set("color", 1, 0, 1, 1);
@@ -409,7 +399,6 @@ void SysStarSystemRenderer::DrawAllCities(auto& bodies) {
 void SysStarSystemRenderer::DrawShipIcon(const glm::vec3& object_pos) {
     glm::vec3 pos = GetBillboardPosition(object_pos);
     glm::mat4 shipDispMat = GetBillboardMatrix(pos);
-    float window_ratio = GetWindowRatio();
     glm::vec4 gl_Position = CalculateGLPosition(object_pos);
 
     // Check if the position on screen is within bounds
@@ -417,7 +406,6 @@ void SysStarSystemRenderer::DrawShipIcon(const glm::vec3& object_pos) {
         return;
     }
 
-    shipDispMat = glm::scale(shipDispMat, glm::vec3(1, window_ratio, 1));
     SetBillboardProjection(ship_overlay.shaderProgram, shipDispMat);
     engine::Draw(ship_overlay);
 }
@@ -831,6 +819,7 @@ glm::mat4 SysStarSystemRenderer::GetBillboardMatrix(const glm::vec3& pos) {
 
     billboardDispMat = glm::translate(billboardDispMat, TranslateToNormalized(pos));
     billboardDispMat = glm::scale(billboardDispMat, glm::vec3(circle_size, circle_size, circle_size));
+    billboardDispMat = glm::scale(billboardDispMat, glm::vec3(1, GetWindowRatio(), 1));
     return billboardDispMat;
 }
 
