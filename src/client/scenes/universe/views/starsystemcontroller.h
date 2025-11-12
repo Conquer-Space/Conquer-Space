@@ -1,0 +1,125 @@
+/* Conquer Space
+ * Copyright (C) 2021-2025 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+#pragma once
+
+#include <glm/glm.hpp>
+
+#include "client/scenes/universe/views/starsystemcamera.h"
+#include "common/components/coordinates.h"
+#include "common/universe.h"
+#include "engine/application.h"
+
+namespace cqsp::client::systems {
+class StarSystemController {
+ public:
+    StarSystemController(common::Universe &, engine::Application &, StarSystemCamera &);
+    void Update(float delta_time);
+
+    // Gets the intersection in 3d point between the mouse and any planet
+    glm::vec3 GetMouseOnObjectPosition() { return mouse_on_object; }
+
+    glm::vec3 ConvertPoint(const glm::vec3 &pos) { return glm::vec3(pos.x, pos.z, -pos.y); }
+
+    /// <summary>
+    /// Gets the quaternion to calculate the planet's rotation from the axial rotation
+    /// and the rotation period
+    /// </summary>
+    /// <param name="axial">Axial rotation in radians</param>
+    /// <param name="rotation">Rotation period in seconds</param>
+    glm::quat GetBodyRotation(double axial, double rotation, double day_offset);
+
+    bool ShouldDrawCityPrototype();
+
+    const glm::vec3 &SelectedProvinceColor();
+
+    glm::vec3 CalculateCenteredObject(const entt::entity &);
+    glm::vec3 CalculateCenteredObject(const glm::vec3 &);
+
+    glm::vec3 CalculateObjectPos(const entt::entity &ent);
+
+    void PreRender();
+
+    entt::entity m_viewing_entity = entt::null;
+
+ private:
+    void SeeEntity();
+    void CenterCameraOnCity();
+    void MoveCamera(double delta_time);
+
+    void FocusOnEntity(entt::entity ent);
+    void SeePlanet(entt::entity ent);
+
+    void CalculateScroll();
+    float GetScrollValue();
+
+    void FocusPlanetView();
+    void FocusCityView();
+
+    void CalculateCityPositions();
+    void CityDetection();
+
+    void FoundCity();
+    bool IsFoundingCity();
+
+    glm::vec3 CalculateMouseRay(const glm::vec3 &ray_nds);
+    entt::entity GetMouseOnObject(int mouse_x, int mouse_y);
+    void CalculateViewChange(double deltaX, double deltaY);
+
+    common::components::types::SurfaceCoordinate GetMouseSurfaceIntersection();
+
+    glm::vec3 GetMouseIntersectionOnObject(int mouse_x, int mouse_y);
+
+    void SelectCountry();
+
+    common::Universe &universe;
+    engine::Application &app;
+
+    StarSystemCamera &camera;
+
+    entt::entity terrain_displaying = entt::null;
+    entt::entity selected_city = entt::null;
+
+    double previous_mouseX;
+    double previous_mouseY;
+
+    entt::entity on_planet = entt::null;
+
+    /// <summary>
+    /// Debugging mouse position
+    /// </summary>
+    int tex_x;
+    int tex_y;
+
+    /// <summary>
+    /// Debugging colors
+    /// </summary>
+    int tex_r;
+    int tex_g;
+    int tex_b;
+
+    entt::entity hovering_province;
+    entt::entity selected_province;
+
+    glm::vec3 hovering_province_color;
+    glm::vec3 selected_province_color;
+
+    glm::vec3 mouse_on_object;
+
+    bool is_rendering_founding_city;
+    bool is_founding_city;
+};
+}  // namespace cqsp::client::systems

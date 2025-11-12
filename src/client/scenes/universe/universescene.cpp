@@ -139,19 +139,11 @@ void UniverseScene::Update(float deltaTime) {
     }
 
     if (!game_halted) {
-        if (!ImGui::GetIO().WantCaptureKeyboard && GetApp().ButtonIsReleased(engine::KeyInput::KEY_M)) {
-            view_mode = !view_mode;
-        }
         system_renderer->Update(deltaTime);
         // Check to see if you have to switch
     }
 
     DoScreenshot();
-
-    if (view_mode) {
-        GetUniverse().clear<systems::MouseOverEntity>();
-        system_renderer->GetMouseOnObject(GetApp().GetMouseX(), GetApp().GetMouseY());
-    }
 
     for (auto& ui : documents) {
         ui->Update(deltaTime);

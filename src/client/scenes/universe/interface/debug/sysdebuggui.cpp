@@ -18,7 +18,7 @@
 
 #include "GLFW/glfw3.h"
 #include "client/components/clientctx.h"
-#include "client/scenes/universe/views/starsystemview.h"
+#include "client/scenes/universe/views/starsystemrenderer.h"
 #include "common/components/name.h"
 #include "common/util/nameutil.h"
 #include "common/util/profiler.h"

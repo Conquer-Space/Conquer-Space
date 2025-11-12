@@ -19,7 +19,7 @@
 #include <string>
 
 #include "client/scenes/universe/universescene.h"
-#include "client/scenes/universe/views/starsystemview.h"
+#include "client/scenes/universe/views/starsystemrenderer.h"
 #include "common/components/bodies.h"
 #include "common/components/coordinates.h"
 #include "common/components/name.h"

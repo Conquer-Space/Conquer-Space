@@ -18,6 +18,8 @@
 
 #include <entt/entt.hpp>
 
+#include "engine/graphics/mesh.h"
+
 namespace cqsp::client::components {
 struct PlanetTerrainRender {
     entt::entity resource;
