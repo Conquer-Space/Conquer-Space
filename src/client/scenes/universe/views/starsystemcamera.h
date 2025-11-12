@@ -31,7 +31,7 @@ struct StarSystemCamera {
     void CalculateCameraMatrix(int window_width, int window_height);
 
     glm::vec3 cam_pos;
-    glm::vec3 cam_up = glm::vec3(0.0f, 1.0f, 0.0f);
+    const glm::vec3 cam_up = glm::vec3(0.0f, 0.0f, 1.0f);
     glm::mat4 camera_matrix;
     glm::mat4 projection;
     glm::vec4 viewport;

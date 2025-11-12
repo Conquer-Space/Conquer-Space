@@ -36,8 +36,8 @@ glm::vec3 toVec3(const SurfaceCoordinate& coord, const float& radius) {
     // y = cos latitude
     // z = sin latitude * sin longitude
     // We should probably change it, but it breaks a lot, so we'll leave it here for now.
-    return glm::vec3(cos(coord.r_latitude()) * sin(coord.r_longitude()), sin(coord.r_latitude()),
-                     cos(coord.r_latitude()) * cos(coord.r_longitude())) *
+    return glm::vec3(cos(coord.r_latitude()) * cos(coord.r_longitude()),
+                     cos(coord.r_latitude()) * sin(coord.r_longitude()), sin(coord.r_latitude())) *
            radius;
 }
 
@@ -49,8 +49,8 @@ double GetLaunchAzimuth(double latitude, double inclination) {
 double GetLaunchInclination(double latitude, double azimuth) { return acos(cos(latitude) * sin(azimuth)); }
 
 SurfaceCoordinate ToSurfaceCoordinate(const glm::vec3& vec) {
-    double latitude = (asin(vec.y));
-    double longitude = (atan2(vec.x, vec.z));
+    double latitude = asin(vec.z);
+    double longitude = atan2(vec.y, vec.x) + PI / 2;
     return SurfaceCoordinate(latitude, longitude, true);
 }
 }  // namespace cqsp::common::components::types

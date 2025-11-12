@@ -256,6 +256,7 @@ void SysStarSystemRenderer::DrawModels() {
         auto& future_comp = universe.get<types::FuturePosition>(ship);
         const auto& pos = future_comp.position + future_comp.center;
         glm::vec3 future_pos = controller.CalculateCenteredObject(ConvertPoint(pos));
+        transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         transform = glm::translate(transform, glm::mix(object_pos, future_pos, universe.tick_fraction));
 
         transform = glm::scale(transform, model->scale);
@@ -645,7 +646,7 @@ glm::vec3 SysStarSystemRenderer::TranslateToNormalized(const glm::vec3& pos) {
     return glm::vec3((pos.x / app.GetWindowWidth() - 0.5) * 2, (pos.y / app.GetWindowHeight() - 0.5) * 2, 0);
 }
 
-glm::vec3 SysStarSystemRenderer::ConvertPoint(const glm::vec3& pos) { return glm::vec3(pos.x, pos.z, -pos.y); }
+glm::vec3 SysStarSystemRenderer::ConvertPoint(const glm::vec3& pos) { return pos; }
 
 glm::vec4 SysStarSystemRenderer::CalculateGLPosition(const glm::vec3& object_pos) {
     glm::vec4 gl_Position = camera.projection * camera.camera_matrix * glm::vec4(object_pos, 1.0);

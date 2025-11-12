@@ -93,7 +93,8 @@ void StarSystemController::MoveCamera(double deltaTime) {
     float velocity = deltaTime * 30.f * camera.scroll / 40;
     // Get distance from the pane
     // Remove y axis
-    glm::vec3 forward = glm::normalize(glm::vec3(glm::sin(camera.view_x), 0, glm::cos(camera.view_x)));
+
+    glm::vec3 forward = glm::normalize(glm::vec3(glm::sin(camera.view_x), glm::cos(camera.view_x), 0));
     glm::vec3 right = glm::normalize(glm::cross(forward, camera.cam_up));
     auto post_move = [&]() {
         universe.clear<FocusedPlanet>();
@@ -136,7 +137,7 @@ void StarSystemController::CalculateViewChange(double deltaX, double deltaY) {
     if (!app.MouseButtonIsHeld(engine::MouseInput::LEFT)) {
         return;
     }
-    camera.view_x += deltaX / app.GetWindowWidth() * std::numbers::pi * 4;
+    camera.view_x -= deltaX / app.GetWindowWidth() * std::numbers::pi * 4;
     camera.view_y -= deltaY / app.GetWindowHeight() * std::numbers::pi * 4;
 
     if (glm::degrees(camera.view_y) > 89.f) {
@@ -170,7 +171,7 @@ void StarSystemController::CityDetection() {
 
     // Get the texture
     // Look for the vector
-    int x = tex_x = ((-1 * (s.latitude() * 2 - 180))) / 360 * _province_height;
+    int x = tex_x = ((-(s.latitude() * 2 - 180))) / 360 * _province_height;
     int y = tex_y = fmod(s.longitude() + 180, 360) / 360. * _province_width;
     int pos = (x * _province_width + y);
     if (pos < 0 || pos > _province_width * _province_height) {
@@ -203,9 +204,7 @@ SurfaceCoordinate StarSystemController::GetMouseSurfaceIntersection() {
     // Rotate the vector based on the axial tilt and rotation.
     p = glm::inverse(quat) * p;
 
-    SurfaceCoordinate s = types::ToSurfaceCoordinate(p);
-    s = SurfaceCoordinate(s.latitude(), s.longitude() + 90);
-    return s;
+    return types::ToSurfaceCoordinate(p);
 }
 
 glm::quat StarSystemController::GetBodyRotation(double axial, double rotation, double day_offset) {
@@ -215,7 +214,7 @@ glm::quat StarSystemController::GetBodyRotation(double axial, double rotation, d
     if (rotation == 0) {
         rot = 0;
     }
-    return glm::quat {{0, 0, (float)-axial}} * glm::quat {{0, (float)std::fmod(rot, types::TWOPI), 0}};
+    return glm::quat {{(float)-axial, 0, 0}} * glm::quat {{0, 0, (float)std::fmod(rot, types::TWOPI)}};
 }
 
 void StarSystemController::CenterCameraOnCity() {
@@ -339,13 +338,15 @@ glm::vec3 StarSystemController::GetMouseIntersectionOnObject(int mouse_x, int mo
     ZoneScoped;
     // Normalize 3d device coordinates
     // TODO(EhWhoAmI): Sort the bodies by distance before calculating intersection
+    float x = (2.0f * mouse_x) / app.GetWindowWidth() - 1.0f;
+    float y = 1.0f - (2.0f * mouse_y) / app.GetWindowHeight();
+    float z = 1.0f;
+
+    glm::vec3 ray_wor = CalculateMouseRay(glm::vec3(x, y, z));
+
     for (entt::entity ent_id : universe.view<Body>()) {
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
-        float x = (2.0f * mouse_x) / app.GetWindowWidth() - 1.0f;
-        float y = 1.0f - (2.0f * mouse_y) / app.GetWindowHeight();
-        float z = 1.0f;
 
-        glm::vec3 ray_wor = CalculateMouseRay(glm::vec3(x, y, z));
         Body& body = universe.get<Body>(ent_id);
 
         // Check for intersection for sphere

@@ -24,8 +24,7 @@ namespace cqsp::client::systems {
 StarSystemCamera::StarSystemCamera() : scroll(5), view_x(0), view_y(0), view_center(glm::vec3(1, 1, 1)) {}
 
 void StarSystemCamera::CalculateCameraMatrix(int window_width, int window_height) {
-    cam_pos = glm::vec3(cos(view_y) * sin(view_x), sin(view_y), cos(view_y) * cos(view_x)) * (float)scroll;
-    cam_up = glm::vec3(0.0f, 1.0f, 0.0f);
+    cam_pos = glm::vec3(cos(view_y) * sin(view_x), cos(view_y) * cos(view_x), sin(view_y)) * (float)scroll;
     camera_matrix = glm::lookAt(cam_pos, glm::vec3(0.f, 0.f, 0.f), cam_up);
     projection = glm::infinitePerspective(glm::radians(45.f),
                                           static_cast<float>(window_width) / static_cast<float>(window_height), 0.1f);

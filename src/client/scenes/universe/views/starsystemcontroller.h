@@ -33,7 +33,7 @@ class StarSystemController {
     // Gets the intersection in 3d point between the mouse and any planet
     glm::vec3 GetMouseOnObjectPosition() { return mouse_on_object; }
 
-    glm::vec3 ConvertPoint(const glm::vec3 &pos) { return glm::vec3(pos.x, pos.z, -pos.y); }
+    glm::vec3 ConvertPoint(const glm::vec3 &pos) { return pos; }
 
     /// <summary>
     /// Gets the quaternion to calculate the planet's rotation from the axial rotation
