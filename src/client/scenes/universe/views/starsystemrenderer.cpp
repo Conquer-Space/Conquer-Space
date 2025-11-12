@@ -213,7 +213,7 @@ void SysStarSystemRenderer::DrawShips() {
             auto& kinematics = universe.get<types::Kinematics>(ship);
             auto& future_comp = universe.get<types::FuturePosition>(ship);
             const auto& pos = future_comp.position + future_comp.center;
-            glm::vec3 future_pos = controller.CalculateCenteredObject(ConvertPoint(pos));
+            glm::vec3 future_pos = controller.CalculateCenteredObject(pos);
             DrawShipIcon(glm::mix(object_pos, future_pos, universe.tick_fraction));
         } else {
             DrawShipIcon(object_pos);
@@ -255,7 +255,7 @@ void SysStarSystemRenderer::DrawModels() {
         auto& kinematics = universe.get<types::Kinematics>(ship);
         auto& future_comp = universe.get<types::FuturePosition>(ship);
         const auto& pos = future_comp.position + future_comp.center;
-        glm::vec3 future_pos = controller.CalculateCenteredObject(ConvertPoint(pos));
+        glm::vec3 future_pos = controller.CalculateCenteredObject(pos);
         transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         transform = glm::translate(transform, glm::mix(object_pos, future_pos, universe.tick_fraction));
 
@@ -639,14 +639,12 @@ glm::vec3 SysStarSystemRenderer::CalculateFutureObjectPos(const entt::entity& en
     }
     auto& kin = universe.get<types::FuturePosition>(ent);
     const auto& pos = kin.position + kin.center;
-    return ConvertPoint(pos);
+    return pos;
 }
 
 glm::vec3 SysStarSystemRenderer::TranslateToNormalized(const glm::vec3& pos) {
     return glm::vec3((pos.x / app.GetWindowWidth() - 0.5) * 2, (pos.y / app.GetWindowHeight() - 0.5) * 2, 0);
 }
-
-glm::vec3 SysStarSystemRenderer::ConvertPoint(const glm::vec3& pos) { return pos; }
 
 glm::vec4 SysStarSystemRenderer::CalculateGLPosition(const glm::vec3& object_pos) {
     glm::vec4 gl_Position = camera.projection * camera.camera_matrix * glm::vec4(object_pos, 1.0);
@@ -772,7 +770,7 @@ void SysStarSystemRenderer::GenerateOrbit(entt::entity body) {
             glm::vec3 vec = types::toVec3(orb, theta);
             // Check if the length is greater than the SOI, then we don't add it
             if (glm::length(vec) < SOI) {
-                orbit_points.push_back(ConvertPoint(vec));
+                orbit_points.push_back(vec);
             }
         }
     } else {
@@ -785,7 +783,7 @@ void SysStarSystemRenderer::GenerateOrbit(entt::entity body) {
             // If the length is greater than the sphere of influence, then
             // remove it
             if (glm::length(vec) < SOI) {
-                orbit_points.push_back(ConvertPoint(vec));
+                orbit_points.push_back(vec);
             }
         }
     }

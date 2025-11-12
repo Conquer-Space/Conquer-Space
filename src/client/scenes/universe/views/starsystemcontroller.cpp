@@ -459,7 +459,7 @@ glm::vec3 StarSystemController::CalculateObjectPos(const entt::entity& ent) {
     }
     auto& kin = universe.get<types::Kinematics>(ent);
     const auto& pos = kin.position + kin.center;
-    return ConvertPoint(pos);
+    return pos;
 }
 
 void StarSystemController::FocusPlanetView() {

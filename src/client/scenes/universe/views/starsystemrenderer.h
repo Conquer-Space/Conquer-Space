@@ -131,7 +131,6 @@ class SysStarSystemRenderer {
     glm::vec3 CalculateFutureObjectPos(const entt::entity &);
 
     glm::vec3 TranslateToNormalized(const glm::vec3 &);
-    glm::vec3 ConvertPoint(const glm::vec3 &);
 
     /// <summary>
     /// Calculates the GL position for a log renderbuffer.
