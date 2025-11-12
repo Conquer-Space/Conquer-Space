@@ -24,6 +24,7 @@
 #include "engine/application.h"
 
 namespace cqsp::client::systems {
+class StarSystemViewUI;
 class StarSystemController {
  public:
     StarSystemController(common::Universe &, engine::Application &, StarSystemCamera &);
@@ -121,5 +122,7 @@ class StarSystemController {
 
     bool is_rendering_founding_city;
     bool is_founding_city;
+
+    friend StarSystemViewUI;
 };
 }  // namespace cqsp::client::systems

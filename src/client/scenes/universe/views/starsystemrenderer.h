@@ -23,6 +23,7 @@
 #include "client/scenes/universe/views/starsystemcamera.h"
 #include "client/scenes/universe/views/starsystemcontroller.h"
 #include "client/scenes/universe/views/starsystemview.h"
+#include "client/scenes/universe/views/starsystemviewui.h"
 #include "common/components/coordinates.h"
 #include "common/universe.h"
 #include "engine/application.h"
@@ -32,7 +33,6 @@
 #include "engine/renderer/renderer.h"
 #include "entt/entt.hpp"
 #include "glm/glm.hpp"
-
 namespace cqsp::client::systems {
 /*
  * Main renderer for the solar system
@@ -70,6 +70,7 @@ class SysStarSystemRenderer {
 
     StarSystemCamera camera;
     StarSystemController controller;
+    StarSystemViewUI user_interface;
 
     engine::Renderable planet;
     engine::Renderable textured_planet;
@@ -152,9 +153,6 @@ class SysStarSystemRenderer {
 
     void GenerateOrbitLines();
 
-    void RenderInformationWindow(double deltaTime);
-    void RenderSelectedObjectInformation();
-
     // How much to scale the the star system.
     const double divider = 0.01;
     float window_ratio;
@@ -178,5 +176,7 @@ class SysStarSystemRenderer {
     const int sphere_resolution = 64;
 
     bool have_province = false;
+
+    friend StarSystemViewUI;
 };
 }  // namespace cqsp::client::systems

@@ -16,14 +16,24 @@
  */
 #pragma once
 
+#include "client/scenes/universe/views/starsystemcamera.h"
+#include "client/scenes/universe/views/starsystemcontroller.h"
+#include "common/universe.h"
+
 namespace cqsp::client::systems {
-// TODO(EhWhoAmI): Would be helpful to move the following structs to a header file.
-struct MouseOverEntity {};
+class SysStarSystemRenderer;
+class StarSystemViewUI {
+ public:
+    StarSystemViewUI(common::Universe&, SysStarSystemRenderer&, StarSystemController&, StarSystemCamera&);
+    void RenderInformationWindow(double delta_time);
+    void RenderSelectedObjectInformation();
 
-// Planet that the camera center is at
-struct FocusedPlanet {};
-// City to look at
-struct FocusedCity {};
+    void DoUI(float delta_time);
 
-struct CityFounding {};
-}  // namespace cqsp::client::systems
+ private:
+    StarSystemController& controller;
+    StarSystemCamera& camera;
+    common::Universe& universe;
+    SysStarSystemRenderer& renderer;
+};
+};  // namespace cqsp::client::systems

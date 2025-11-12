@@ -80,7 +80,12 @@ using types::Orbit;
 using types::SurfaceCoordinate;
 
 SysStarSystemRenderer::SysStarSystemRenderer(common::Universe& _u, engine::Application& _a)
-    : universe(_u), app(_a), camera(), controller(universe, app, camera), sun_color(glm::vec3(10, 10, 10)) {}
+    : universe(_u),
+      app(_a),
+      camera(),
+      controller(universe, app, camera),
+      user_interface(universe, *this, controller, camera),
+      sun_color(glm::vec3(10, 10, 10)) {}
 
 void SysStarSystemRenderer::Initialize() {
     InitializeMeshes();
@@ -154,10 +159,7 @@ void SysStarSystemRenderer::SeeStarSystem() {
 
 void SysStarSystemRenderer::Update(float delta_time) { controller.Update(delta_time); }
 
-void SysStarSystemRenderer::DoUI(float delta_time) {
-    RenderInformationWindow(delta_time);
-    RenderSelectedObjectInformation();
-}
+void SysStarSystemRenderer::DoUI(float delta_time) { user_interface.DoUI(delta_time); }
 
 void SysStarSystemRenderer::DrawStars() {
     ZoneScoped;
@@ -740,79 +742,6 @@ void SysStarSystemRenderer::GenerateOrbitLines() {
         // Then delete the orbit
         universe.remove<OrbitMesh>(ship);
     }
-}
-
-void SysStarSystemRenderer::RenderInformationWindow(double delta_time) {
-    // FIXME(EhWhoamI)
-    // auto &debug_info =
-    // universe.ctx().emplace<ctx::StarSystemViewDebug>();
-    //ImGui::Begin("Debug ui window");
-    //ImGui::TextFmt("Cam Pos: {} {} {}", camera.cam_pos.x, camera.cam_pos.y, camera.cam_pos.z);
-    //ImGui::TextFmt("View Center: {} {} {}", camera.view_center.x, camera.view_center.y, camera.view_center.z);
-    //ImGui::TextFmt("Scroll: {}", camera.scroll);
-    //ImGui::TextFmt("View {} {}", camera.view_x, camera.view_y);
-    //// Get the province name
-    //std::string country_name_t;
-    //if (universe.valid(selected_province) && universe.any_of<components::Province>(selected_province)) {
-    //    country_name_t = GetName(universe, universe.get<components::Province>(selected_province).country);
-    //}
-    //ImGui::TextFmt("Hovering on Texture: {} {}", tex_x, tex_y);
-    //ImGui::TextFmt("Texture color: {} {} {}", tex_r, tex_g, tex_b);
-    //ImGui::TextFmt("Selected province color: {} {} {}", selected_province_color.x, selected_province_color.y,
-    //               selected_province_color.z);
-
-    //ImGui::TextFmt("Hovered province color: {} {} {}", hovering_province_color.x, hovering_province_color.y,
-    //               hovering_province_color.z);
-    //ImGui::TextFmt("Hovering province {}", GetName(universe, hovering_province));
-    //ImGui::TextFmt("Focused planets: {}", universe.view<FocusedPlanet>().size());
-    //ImGui::TextFmt("Generated {} orbits last frame", orbits_generated);
-    //auto intersection = GetMouseSurfaceIntersection();
-    //ImGui::TextFmt("Intersection: {} {}", intersection.latitude(), intersection.longitude());
-    //if (have_province) {
-    //    ImGui::TextFmt("Current planet has province");
-    //} else {
-    //    ImGui::TextFmt("Current planet has no province");
-    //}
-    //entt::entity earth = universe.planets["earth"];
-    //auto& b = universe.get<Body>(earth);
-    //if (ImGui::Button("Focus on part")) {
-    //    // Add a city founding entity
-    //    entt::entity ent = universe.create();
-    //    universe.emplace<CityFounding>(ent);
-    //}
-    //// float offset = (float) b.rotation_offset;
-    //// ImGui::SliderAngle("asdf", &offset);
-    //// b.rotation_offset = (float) offset;
-    //ImGui::End();
-}
-
-void SysStarSystemRenderer::RenderSelectedObjectInformation() {
-    // Get the focused object, and display their information
-    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x - 200, ImGui::GetIO().DisplaySize.y - 300),
-                            ImGuiCond_Appearing);
-    ImGui::Begin("Focused Object");
-    gui::EntityTooltipContent(universe, controller.m_viewing_entity);
-    // Edit the orbit if there is an issue
-    // Get normalized vector
-    if (universe.valid(controller.m_viewing_entity) &&
-        universe.any_of<types::Kinematics>(controller.m_viewing_entity)) {
-        const auto& kin = universe.get<types::Kinematics>(controller.m_viewing_entity);
-        auto norm = glm::normalize(kin.velocity);
-        ImGui::TextFmt("Prograde vector: {} {} {}", norm.x, norm.y, norm.z);
-
-        static float delta_v = 0.01;
-        norm *= delta_v;
-        glm::vec3 final_velocity = kin.velocity + norm;
-        ImGui::TextFmt("Velocity vector: {} {} {}", final_velocity.x, final_velocity.y, final_velocity.z);
-
-        if (ImGui::Button("Burn prograde")) {
-            // Add 10m/s prograde or something
-            auto& impulse = universe.get_or_emplace<types::Impulse>(controller.m_viewing_entity);
-            impulse.impulse += norm;
-        }
-        ImGui::SliderFloat("Text", &delta_v, -1, 1);
-    }
-    ImGui::End();
 }
 
 void SysStarSystemRenderer::GenerateOrbit(entt::entity body) {
