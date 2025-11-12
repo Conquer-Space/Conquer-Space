@@ -85,6 +85,7 @@ SysStarSystemRenderer::SysStarSystemRenderer(common::Universe& _u, engine::Appli
       camera(),
       controller(universe, app, camera),
       user_interface(universe, *this, controller, camera),
+      orbit_geometry(universe),
       sun_color(glm::vec3(10, 10, 10)) {}
 
 void SysStarSystemRenderer::Initialize() {
@@ -117,7 +118,7 @@ void SysStarSystemRenderer::Render(float delta_time) {
     // Check for resized window
     window_ratio = static_cast<float>(app.GetWindowWidth()) / static_cast<float>(app.GetWindowHeight());
 
-    GenerateOrbitLines();
+    orbit_geometry.GenerateOrbitLines();
 
     renderer.NewFrame(*app.GetWindow());
 
@@ -146,7 +147,7 @@ void SysStarSystemRenderer::Render(float delta_time) {
 }
 
 void SysStarSystemRenderer::SeeStarSystem() {
-    GenerateOrbitLines();
+    orbit_geometry.GenerateOrbitLines();
 
     SPDLOG_INFO("Loading planet textures");
     LoadPlanetTextures();
@@ -707,93 +708,7 @@ void SysStarSystemRenderer::CheckResourceDistRender() {
 #endif
 }
 
-glm::vec3 SysStarSystemRenderer::CalculateMouseRay(const glm::vec3& ray_nds) {
-    glm::vec4 ray_clip = glm::vec4(ray_nds.x, ray_nds.y, -1.0, 1.0);
-    glm::vec4 ray_eye = glm::inverse(camera.projection) * ray_clip;
-    ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0, 0.0);
-    glm::vec4 inv = (glm::inverse(camera.camera_matrix) * ray_eye);
-
-    // Normalize vector
-    return glm::normalize(glm::vec3(inv.x, inv.y, inv.z));
-}
-
 float SysStarSystemRenderer::GetWindowRatio() { return window_ratio; }
-
-void SysStarSystemRenderer::GenerateOrbitLines() {
-    ZoneScoped;
-    SPDLOG_TRACE("Creating planet orbits");
-
-    // Generates orbits for satellites
-    orbits_generated = 0;
-    for (auto body : universe.view<Orbit>(entt::exclude<OrbitMesh>)) {
-        GenerateOrbit(body);
-        orbits_generated++;
-    }
-
-    // Generate dirty orbits
-    for (auto body : universe.view<Orbit, bodies::DirtyOrbit>()) {
-        GenerateOrbit(body);
-        universe.remove<bodies::DirtyOrbit>(body);
-        orbits_generated++;
-    }
-    // Delete unnecessary orbit
-    for (entt::entity ship : universe.view<OrbitMesh, ships::Crash>()) {
-        // Then delete the orbit
-        universe.remove<OrbitMesh>(ship);
-    }
-}
-
-void SysStarSystemRenderer::GenerateOrbit(entt::entity body) {
-    // Then produce orbits
-    ZoneScoped;
-    // Generate the orbit
-    auto& orb = universe.get<Orbit>(body);
-    if (orb.semi_major_axis == 0) {
-        return;
-    }
-    const int res = 500;
-    std::vector<glm::vec3> orbit_points;
-    double SOI = std::numeric_limits<double>::infinity();
-    if (universe.valid(orb.reference_body)) {
-        SOI = universe.get<Body>(orb.reference_body).SOI;
-    }
-
-    orbit_points.reserve(res);
-    // If hyperbolic
-    if (orb.eccentricity > 1) {
-        double v_inf = types::GetHyperbolicAsymptopeAnomaly(orb.eccentricity);
-        // Remove one because it's slightly off.
-        for (int i = 1; i < res; i++) {
-            ZoneScoped;
-            double theta = -v_inf * (1 - (double)i / (double)res) + v_inf * (((double)i / (double)res));
-
-            glm::vec3 vec = types::toVec3(orb, theta);
-            // Check if the length is greater than the SOI, then we don't add it
-            if (glm::length(vec) < SOI) {
-                orbit_points.push_back(vec);
-            }
-        }
-    } else {
-        for (int i = 0; i <= res; i++) {
-            ZoneScoped;
-            double theta = std::numbers::pi * 2 / res * i;
-
-            glm::vec3 vec = types::toVec3(orb, theta);
-
-            // If the length is greater than the sphere of influence, then
-            // remove it
-            if (glm::length(vec) < SOI) {
-                orbit_points.push_back(vec);
-            }
-        }
-    }
-
-    // universe.remove<types::OrbitDirty>(body);
-    auto& line = universe.get_or_emplace<OrbitMesh>(body);
-    // Get the orbit line
-    // Do the points
-    line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);
-}
 
 void SysStarSystemRenderer::DrawAllOrbits() {
     ZoneScoped;
@@ -857,8 +772,6 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
 
     orbit.orbit_mesh->Draw();
 }
-
-void SysStarSystemRenderer::OrbitEditor() {}
 
 SysStarSystemRenderer::~SysStarSystemRenderer() = default;
 }  // namespace cqsp::client::systems

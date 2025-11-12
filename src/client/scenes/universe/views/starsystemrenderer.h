@@ -24,6 +24,7 @@
 #include "client/scenes/universe/views/starsystemcontroller.h"
 #include "client/scenes/universe/views/starsystemview.h"
 #include "client/scenes/universe/views/starsystemviewui.h"
+#include "client/scenes/universe/views/sysorbitgeometry.h"
 #include "common/components/coordinates.h"
 #include "common/universe.h"
 #include "engine/application.h"
@@ -33,6 +34,7 @@
 #include "engine/renderer/renderer.h"
 #include "entt/entt.hpp"
 #include "glm/glm.hpp"
+
 namespace cqsp::client::systems {
 /*
  * Main renderer for the solar system
@@ -58,9 +60,6 @@ class SysStarSystemRenderer {
     double GetDivider() { return divider; }
 
     void DrawAllOrbits();
-    void DrawOrbit(const entt::entity &entity);
-
-    void OrbitEditor();
 
     ~SysStarSystemRenderer();
 
@@ -71,6 +70,7 @@ class SysStarSystemRenderer {
     StarSystemCamera camera;
     StarSystemController controller;
     StarSystemViewUI user_interface;
+    SysOrbitGeometry orbit_geometry;
 
     engine::Renderable planet;
     engine::Renderable textured_planet;
@@ -126,7 +126,7 @@ class SysStarSystemRenderer {
     void LoadProvinceMap();
     void InitializeMeshes();
 
-    void GenerateOrbit(entt::entity body);
+    void DrawOrbit(const entt::entity &entity);
 
     glm::vec3 CalculateFutureObjectPos(const entt::entity &);
 
@@ -146,11 +146,7 @@ class SysStarSystemRenderer {
 
     void CheckResourceDistRender();
 
-    glm::vec3 CalculateMouseRay(const glm::vec3 &ray_nds);
-
     float GetWindowRatio();
-
-    void GenerateOrbitLines();
 
     // How much to scale the the star system.
     const double divider = 0.01;
@@ -169,8 +165,6 @@ class SysStarSystemRenderer {
     int skybox_layer;
 
     float view_scale = 10.f;
-
-    int orbits_generated = 0;
 
     const int sphere_resolution = 64;
 
