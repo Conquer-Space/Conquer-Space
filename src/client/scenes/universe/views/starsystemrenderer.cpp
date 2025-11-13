@@ -212,7 +212,7 @@ void SysStarSystemRenderer::DrawShips() {
         if (universe.all_of<types::FuturePosition, types::Kinematics>(ship)) {
             auto& kinematics = universe.get<types::Kinematics>(ship);
             auto& future_comp = universe.get<types::FuturePosition>(ship);
-            const auto& pos = future_comp.position + future_comp.center;
+            const auto& pos = future_comp.position + kinematics.center;
             glm::vec3 future_pos = controller.CalculateCenteredObject(pos);
             DrawShipIcon(glm::mix(object_pos, future_pos, universe.tick_fraction));
         } else {
@@ -254,7 +254,7 @@ void SysStarSystemRenderer::DrawModels() {
         glm::mat4 transform = glm::mat4(1.f);
         auto& kinematics = universe.get<types::Kinematics>(ship);
         auto& future_comp = universe.get<types::FuturePosition>(ship);
-        const auto& pos = future_comp.position + future_comp.center;
+        const auto& pos = future_comp.position + kinematics.center;
         glm::vec3 future_pos = controller.CalculateCenteredObject(pos);
         transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         transform = glm::translate(transform, glm::mix(object_pos, future_pos, universe.tick_fraction));
