@@ -64,6 +64,9 @@ class SysDebugMenu : public SysUserInterface {
     std::map<std::string, std::pair<std::string, DebugCommand_t>, std::less<>> commands;
     std::vector<float> fps_history;
     std::vector<float> time_history;
+    /**
+     * How long in seconds we should keep our fps history for.
+     */
     float fps_history_len = 10;
 
     std::map<std::string, std::vector<ImVec2>> history_maps;

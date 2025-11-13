@@ -122,7 +122,7 @@ float GLWindow::GetTime() const { return static_cast<float>(glfwGetTime()); }
 void GLWindow::SetFullScreen(bool fullscreen) const {
     if (fullscreen) {
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, mode->width, mode->height, GLFW_DONT_CARE);
+        glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, mode->width, mode->height, mode->refreshRate);
     } else {
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowMonitor(window, NULL, 40, 40, app->GetClientOptions().GetOptions()["window"]["width"],

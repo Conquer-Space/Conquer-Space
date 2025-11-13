@@ -23,6 +23,16 @@
 
 #include "engine/enginelogger.h"
 
+#define LogGlError(x)                                                \
+    do {                                                             \
+        GLenum error = glGetError();                                 \
+        while ((error = glGetError()) != GL_NO_ERROR) {              \
+            if (error != GL_NO_ERROR) {                              \
+                SPDLOG_ERROR("{} {}", x, engine::GetGlError(error)); \
+            }                                                        \
+        }                                                            \
+    } while (0)
+
 namespace cqsp::engine {
 const inline char* ParseType(GLenum type) {
     switch (type) {
