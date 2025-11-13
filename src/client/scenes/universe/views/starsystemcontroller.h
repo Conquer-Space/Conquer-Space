@@ -16,6 +16,8 @@
  */
 #pragma once
 
+#include <optional>
+
 #include <glm/glm.hpp>
 
 #include "client/scenes/universe/views/starsystemcamera.h"
@@ -81,6 +83,8 @@ class StarSystemController {
     common::components::types::SurfaceCoordinate GetMouseSurfaceIntersection();
 
     glm::vec3 GetMouseIntersectionOnObject(int mouse_x, int mouse_y);
+    glm::vec3 GetMouseInScreenSpace(int mouse_x, int mouse_y);
+    std::optional<glm::vec3> CheckIntersection(const glm::vec3 &object_pos, const glm::vec3 &ray_wor, float radius);
 
     void SelectCountry();
 
@@ -120,6 +124,10 @@ class StarSystemController {
 
     bool is_rendering_founding_city;
     bool is_founding_city;
+
+    const float CAMERA_MOVEMENT_SPEED = 30.f / 40.f;
+    const float PAN_SPEED = 4.0f;
+    const float SCROLL_SENSITIVITY = 3.f / 33.f;
 
     friend StarSystemViewUI;
 };

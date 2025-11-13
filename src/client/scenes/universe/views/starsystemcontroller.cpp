@@ -90,7 +90,7 @@ void StarSystemController::Update(float delta_time) {
 void StarSystemController::MoveCamera(double delta_time) {
     // Now navigation for changing the center
     glm::vec3 dir = (camera.view_center - camera.cam_pos);
-    float velocity = delta_time * 30.f * camera.scroll / 40;
+    float velocity = delta_time * camera.scroll * CAMERA_MOVEMENT_SPEED;
     // Get distance from the pane
     // Remove y axis
 
@@ -131,14 +131,14 @@ void StarSystemController::CalculateScroll() {
     camera.scroll -= scroll_value;
 }
 
-float StarSystemController::GetScrollValue() { return app.GetScrollAmount() * 3.f * camera.scroll / 33.f; }
+float StarSystemController::GetScrollValue() { return app.GetScrollAmount() * camera.scroll * SCROLL_SENSITIVITY; }
 
 void StarSystemController::CalculateViewChange(double deltaX, double deltaY) {
     if (!app.MouseButtonIsHeld(engine::MouseInput::LEFT)) {
         return;
     }
-    camera.view_x -= deltaX / app.GetWindowWidth() * std::numbers::pi * 4;
-    camera.view_y -= deltaY / app.GetWindowHeight() * std::numbers::pi * 4;
+    camera.view_x -= deltaX / app.GetWindowWidth() * std::numbers::pi * PAN_SPEED;
+    camera.view_y -= deltaY / app.GetWindowHeight() * std::numbers::pi * PAN_SPEED;
 
     if (glm::degrees(camera.view_y) > 89.f) {
         camera.view_y = glm::radians(89.f);
@@ -334,29 +334,34 @@ void StarSystemController::FocusCityView() {
     camera.scroll = body.radius + 100;
 }
 
+std::optional<glm::vec3> StarSystemController::CheckIntersection(const glm::vec3& object_pos, const glm::vec3& ray_wor,
+                                                                 float radius) {
+    // Check for intersection with sphere
+    glm::vec3 sub = camera.cam_pos - object_pos;
+    float b = glm::dot(ray_wor, sub);
+    float c = glm::dot(sub, sub) - radius * radius;
+
+    if ((b * b - c) >= 0) {
+        // Return the point
+        std::optional<glm::vec3>(camera.cam_pos + (-b - sqrt(b * b - c)) * ray_wor);
+    } else {
+        return std::nullopt;
+    }
+}
+
 glm::vec3 StarSystemController::GetMouseIntersectionOnObject(int mouse_x, int mouse_y) {
     ZoneScoped;
-    // Normalize 3d device coordinates
-    // TODO(EhWhoAmI): Sort the bodies by distance before calculating intersection
-    float x = (2.0f * mouse_x) / app.GetWindowWidth() - 1.0f;
-    float y = 1.0f - (2.0f * mouse_y) / app.GetWindowHeight();
-    float z = 1.0f;
-
-    glm::vec3 ray_wor = CalculateMouseRay(glm::vec3(x, y, z));
+    glm::vec3 ray_wor = CalculateMouseRay(GetMouseInScreenSpace(mouse_x, mouse_y));
 
     for (entt::entity ent_id : universe.view<Body>()) {
         glm::vec3 object_pos = CalculateCenteredObject(ent_id);
 
         Body& body = universe.get<Body>(ent_id);
+        auto intersection = CheckIntersection(object_pos, ray_wor, static_cast<float>(body.radius));
 
-        // Check for intersection for sphere
-        glm::vec3 sub = camera.cam_pos - object_pos;
-        float b = glm::dot(ray_wor, sub);
-        float c = glm::dot(sub, sub) - body.radius * body.radius;
-
-        glm::vec3 closest_hit = camera.cam_pos + (-b - sqrt(b * b - c)) * ray_wor;
         // Get the closer value
-        if ((b * b - c) >= 0) {
+        if (intersection) {
+            glm::vec3 closest_hit = *intersection;
             is_rendering_founding_city = true;
             on_planet = ent_id;
             return closest_hit;
@@ -399,28 +404,25 @@ void StarSystemController::CalculateCityPositions() {
     SPDLOG_INFO("Calculated offset");
 }
 
+glm::vec3 StarSystemController::GetMouseInScreenSpace(int mouse_x, int mouse_y) {
+    float x = (2.0f * mouse_x) / app.GetWindowWidth() - 1.0f;
+    float y = 1.0f - (2.0f * mouse_y) / app.GetWindowHeight();
+    float z = 1.0f;
+    return glm::vec3(x, y, z);
+}
+
 entt::entity StarSystemController::GetMouseOnObject(int mouse_x, int mouse_y) {
     // Loop through objects
+    glm::vec3 ray_wor = CalculateMouseRay(GetMouseInScreenSpace(mouse_x, mouse_y));
     for (entt::entity body_id : universe.view<Body>()) {
         glm::vec3 object_pos = CalculateCenteredObject(body_id);
         // Check if the sphere is rendered or not
         // Normalize 3d device coordinates
-        float x = (2.0f * mouse_x) / app.GetWindowWidth() - 1.0f;
-        float y = 1.0f - (2.0f * mouse_y) / app.GetWindowHeight();
-        float z = 1.0f;
-
-        glm::vec3 ray_wor = CalculateMouseRay(glm::vec3(x, y, z));
         auto& body = universe.get<Body>(body_id);
-        float radius = body.radius;
-
-        // Check for intersection for sphere
-        glm::vec3 sub = camera.cam_pos - object_pos;
-        float b = glm::dot(ray_wor, sub);
-        // Object radius
-        float c = glm::dot(sub, sub) - radius * radius;
+        auto intersection = CheckIntersection(object_pos, ray_wor, static_cast<float>(body.radius));
 
         // Get the closer value
-        if ((b * b - c) >= 0) {
+        if (intersection) {
             universe.emplace<MouseOverEntity>(body_id);
             return body_id;
         }
