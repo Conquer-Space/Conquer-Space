@@ -22,7 +22,7 @@
 #include "client/scenes/universe/interface/markettable.h"
 #include "client/scenes/universe/interface/systooltips.h"
 #include "client/scenes/universe/universescene.h"
-#include "client/scenes/universe/views/starsystemview.h"
+#include "client/scenes/universe/views/starsystemrenderer.h"
 #include "common/components/bodies.h"
 #include "common/components/market.h"
 #include "common/components/name.h"

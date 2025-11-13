@@ -46,11 +46,11 @@ Mesh_t ConstructSphereMesh(int x_segments, int y_segments) {
             const float xTheta = xSegment * PI * 2;
             const float yTheta = ySegment * PI * 2;
             float xPos = std::cos(xTheta) * std::sin(yTheta / 2);
-            float yPos = std::cos(yTheta / 2);
-            float zPos = std::sin(xTheta) * std::sin(yTheta / 2);
+            float yPos = std::sin(xTheta) * std::sin(yTheta / 2);
+            float zPos = std::cos(yTheta / 2);
             positions.emplace_back(xPos, yPos, zPos);
-            // Invert x segments so that the texture shows up properly.
-            uv.emplace_back(x_segments - xSegment, ySegment);
+            // This is such that the map is aligned to the center
+            uv.emplace_back(static_cast<float>(xSegment) - 0.5f, ySegment);
             normals.emplace_back(xPos, yPos, zPos);
             //tangents.push_back({std::cos(xTheta - PI / 2), 0.0f, std::sin(xTheta - PI / 2), 1.0f});
         }

@@ -62,7 +62,8 @@ class SysDebugMenu : public SysUserInterface {
     typedef std::vector<std::string> CommandOutput;
     typedef std::function<void(sysdebuggui_parameters)> DebugCommand_t;
     std::map<std::string, std::pair<std::string, DebugCommand_t>, std::less<>> commands;
-    std::vector<ImVec2> fps_history;
+    std::vector<float> fps_history;
+    std::vector<float> time_history;
     float fps_history_len = 10;
 
     std::map<std::string, std::vector<ImVec2>> history_maps;

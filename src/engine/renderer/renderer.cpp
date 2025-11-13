@@ -23,6 +23,8 @@
 #include <vector>
 
 #include "engine/enginelogger.h"
+#include "engine/glfwdebug.h"
+
 namespace cqsp::engine {
 
 using asset::ShaderProgram_t;
@@ -41,7 +43,7 @@ void Draw(Renderable &renderable) {
         glBindTexture((*it)->texture_type, (*it)->id);
         GLenum error = glGetError();
         if (error != GL_NO_ERROR) {
-            ENGINE_LOG_ERROR("Error when binding texture {}: {}", (*it)->id, error);
+            ENGINE_LOG_ERROR("Error when binding texture {}: {}", (*it)->id, engine::GetGlError(error));
         }
     }
 
@@ -66,7 +68,7 @@ void Draw(Renderable &renderable, asset::ShaderProgram *shader) {
         glBindTexture((*it)->texture_type, (*it)->id);
         GLenum error = glGetError();
         if (error != GL_NO_ERROR) {
-            ENGINE_LOG_ERROR("Error when binding texture {}: {}", (*it)->id, error);
+            ENGINE_LOG_ERROR("Error when binding texture {}: {}", (*it)->id, engine::GetGlError(error));
         }
     }
 

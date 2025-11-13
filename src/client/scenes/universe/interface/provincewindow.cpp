@@ -23,7 +23,7 @@
 #include "client/scenes/universe/interface/markettable.h"
 #include "client/scenes/universe/interface/sysstockpileui.h"
 #include "client/scenes/universe/interface/systooltips.h"
-#include "client/scenes/universe/views/starsystemview.h"
+#include "client/scenes/universe/views/starsystemrenderer.h"
 #include "common/actions/maneuver/commands.h"
 #include "common/actions/shiplaunchaction.h"
 #include "common/components/infrastructure.h"

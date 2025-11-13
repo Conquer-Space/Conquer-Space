@@ -16,14 +16,31 @@
  */
 #pragma once
 
+#include <glm/glm.hpp>
+
+#include "common/universe.h"
+#include "engine/application.h"
+
 namespace cqsp::client::systems {
-// TODO(EhWhoAmI): Would be helpful to move the following structs to a header file.
-struct MouseOverEntity {};
+/**
+ * Holds camera state.
+ */
+struct StarSystemCamera {
+ public:
+    StarSystemCamera();
+    void CalculateCameraMatrix(int window_width, int window_height);
 
-// Planet that the camera center is at
-struct FocusedPlanet {};
-// City to look at
-struct FocusedCity {};
+    glm::vec3 cam_pos;
+    const glm::vec3 cam_up = glm::vec3(0.0f, 0.0f, 1.0f);
+    glm::mat4 camera_matrix;
+    glm::mat4 projection;
+    glm::vec4 viewport;
+    glm::vec3 view_center;
+    double scroll;
 
-struct CityFounding {};
+    // The angle the camera is looking from
+    float view_x = 0;
+    // The angle the camera is looking away from
+    float view_y = 0;
+};
 }  // namespace cqsp::client::systems

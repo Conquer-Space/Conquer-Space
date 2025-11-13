@@ -17,6 +17,10 @@
 #pragma once
 
 #include <entt/entt.hpp>
+#include <glm/glm.hpp>
+
+#include "engine/graphics/mesh.h"
+#include "engine/graphics/texture.h"
 
 namespace cqsp::client::components {
 struct PlanetTerrainRender {

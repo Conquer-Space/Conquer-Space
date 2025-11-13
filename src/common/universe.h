@@ -33,7 +33,6 @@
 #include "common/util/random/random.h"
 
 namespace cqsp::common {
-
 class Node;
 
 class Universe : public entt::registry {

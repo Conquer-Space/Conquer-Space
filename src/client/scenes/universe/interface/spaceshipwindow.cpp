@@ -16,7 +16,7 @@
  */
 #include "client/scenes/universe/interface/spaceshipwindow.h"
 
-#include "client/scenes/universe/views/starsystemview.h"
+#include "client/scenes/universe/views/starsystemrenderer.h"
 #include "common/actions/maneuver/basicmaneuver.h"
 #include "common/actions/maneuver/commands.h"
 #include "common/actions/maneuver/hohmann.h"

@@ -16,14 +16,18 @@
  */
 #pragma once
 
+#include "common/universe.h"
+
 namespace cqsp::client::systems {
-// TODO(EhWhoAmI): Would be helpful to move the following structs to a header file.
-struct MouseOverEntity {};
+class SysOrbitGeometry {
+ public:
+    SysOrbitGeometry(common::Universe&);
+    void GenerateOrbitLines();
 
-// Planet that the camera center is at
-struct FocusedPlanet {};
-// City to look at
-struct FocusedCity {};
+    int orbits_generated;
 
-struct CityFounding {};
+ private:
+    void GenerateOrbit(entt::entity body);
+    common::Universe& universe;
+};
 }  // namespace cqsp::client::systems

@@ -18,7 +18,7 @@
 
 #include "GLFW/glfw3.h"
 #include "client/components/clientctx.h"
-#include "client/scenes/universe/views/starsystemview.h"
+#include "client/scenes/universe/views/starsystemrenderer.h"
 #include "common/components/name.h"
 #include "common/util/nameutil.h"
 #include "common/util/profiler.h"
@@ -86,7 +86,8 @@ void SysDebugMenu::CqspMetricsWindow() {
     if (ImPlot::BeginPlot("FPS", ImVec2(-1, 0), ImPlotFlags_NoChild)) {
         ImPlot::SetupAxis(ImAxis_X1, "Time (s)", ImPlotAxisFlags_AutoFit);
         ImPlot::SetupAxis(ImAxis_Y1, "FPS", ImPlotAxisFlags_AutoFit);
-        ImPlot::PlotLine("FPS", &fps_history[0].x, &fps_history[0].y, fps_history.size(), 0, sizeof(float) * 2);
+        ImPlot::PlotLine("FPS", time_history.data(), fps_history.data(), fps_history.size(), 0, 0,
+                         sizeof(std::decay_t<decltype(*time_history.begin())>));
         ImPlot::EndPlot();
     }
 
@@ -96,7 +97,7 @@ void SysDebugMenu::CqspMetricsWindow() {
         ImPlot::SetupAxis(ImAxis_Y1, "Run time (us)", ImPlotAxisFlags_AutoFit);
         ImPlot::SetupLegend(ImPlotLocation_SouthEast);
         for (auto it = history_maps.begin(); it != history_maps.end(); it++) {
-            ImPlot::PlotLine(it->first.c_str(), &it->second[0].x, &it->second[0].y, it->second.size(), 0,
+            ImPlot::PlotLine(it->first.c_str(), &it->second[0].x, &it->second[0].y, it->second.size(), 0, 0,
                              sizeof(float) * 2);
         }
         ImPlot::EndPlot();
@@ -240,10 +241,12 @@ void SysDebugMenu::DoUpdate(int delta_time) {
     float time = GetApp().GetTime();
     float fps = GetApp().GetFps();
     // Update metrics
-    if (!fps_history.empty() && (fps_history.begin()->x + fps_history_len) < time) {
+    if (!time_history.empty() && (*(time_history.begin()) + fps_history_len) < time) {
         fps_history.erase(fps_history.begin());
+        time_history.erase(time_history.begin());
     }
-    fps_history.emplace_back(time, fps);
+    time_history.emplace_back(time);
+    fps_history.emplace_back(fps);
 
     for (auto it = get_profile_information().begin(); it != get_profile_information().end(); it++) {
         if (!history_maps[it->first].empty() && (history_maps[it->first].begin()->x + fps_history_len) < time) {
