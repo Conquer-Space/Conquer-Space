@@ -87,7 +87,7 @@ void SysDebugMenu::CqspMetricsWindow() {
         ImPlot::SetupAxis(ImAxis_X1, "Time (s)", ImPlotAxisFlags_AutoFit);
         ImPlot::SetupAxis(ImAxis_Y1, "FPS", ImPlotAxisFlags_AutoFit);
         ImPlot::PlotLine("FPS", time_history.data(), fps_history.data(), fps_history.size(), 0, 0,
-                         sizeof(std::decay<decltype(*time_history.begin())>::type));
+                         sizeof(std::decay_t<decltype(*time_history.begin())>::type));
         ImPlot::EndPlot();
     }
 
