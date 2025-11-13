@@ -87,10 +87,10 @@ void StarSystemController::Update(float delta_time) {
     CenterCameraOnCity();
 }
 
-void StarSystemController::MoveCamera(double deltaTime) {
+void StarSystemController::MoveCamera(double delta_time) {
     // Now navigation for changing the center
     glm::vec3 dir = (camera.view_center - camera.cam_pos);
-    float velocity = deltaTime * 30.f * camera.scroll / 40;
+    float velocity = delta_time * 30.f * camera.scroll / 40;
     // Get distance from the pane
     // Remove y axis
 

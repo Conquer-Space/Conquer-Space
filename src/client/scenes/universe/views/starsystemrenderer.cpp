@@ -82,7 +82,6 @@ using types::SurfaceCoordinate;
 SysStarSystemRenderer::SysStarSystemRenderer(common::Universe& _u, engine::Application& _a)
     : universe(_u),
       app(_a),
-      camera(),
       controller(universe, app, camera),
       user_interface(universe, *this, controller, camera),
       orbit_geometry(universe),
