@@ -103,7 +103,7 @@ struct SurfaceCoordinate {
 
     radian r_latitude() const { return _latitude; }
 
-    SurfaceCoordinate universe_view() const { return SurfaceCoordinate(_latitude, _longitude - PI / 2, true); }
+    SurfaceCoordinate universe_view() const { return SurfaceCoordinate(_latitude, _longitude, true); }
 
     entt::entity planet = entt::null;
 };

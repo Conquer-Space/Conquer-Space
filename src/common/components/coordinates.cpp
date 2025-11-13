@@ -49,8 +49,8 @@ double GetLaunchAzimuth(double latitude, double inclination) {
 double GetLaunchInclination(double latitude, double azimuth) { return acos(cos(latitude) * sin(azimuth)); }
 
 SurfaceCoordinate ToSurfaceCoordinate(const glm::vec3& vec) {
-    double latitude = asin(vec.z);
-    double longitude = atan2(vec.y, vec.x) + PI / 2;
+    double latitude = std::asin(vec.z);
+    double longitude = std::atan2(vec.x, vec.y);
     return SurfaceCoordinate(latitude, longitude, true);
 }
 }  // namespace cqsp::common::components::types

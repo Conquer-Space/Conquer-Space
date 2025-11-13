@@ -18,8 +18,6 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "starsystemcamera.h"
-
 namespace cqsp::client::systems {
 StarSystemCamera::StarSystemCamera() : scroll(5), view_x(0), view_y(0), view_center(glm::vec3(1, 1, 1)) {}
 

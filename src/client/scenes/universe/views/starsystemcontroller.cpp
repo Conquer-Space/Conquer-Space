@@ -242,9 +242,11 @@ void StarSystemController::CenterCameraOnCity() {
 
     glm::vec3 vec = types::toVec3(surf.universe_view(), 1);
     auto s = quat * vec;
-    glm::vec3 pos = glm::normalize(s);
-    camera.view_x = atan2(s.x, s.z);
-    camera.view_y = -acos(s.y) + types::PI / 2;
+    // TODO(EhWhoAmI): Find a way to dynamically change our camera up when
+    // we want to focus on a city.
+    // camera.cam_up = quat * glm::vec3(0.0f, 0.0f, 1.0f);
+    camera.view_y = std::asin(s.z);
+    camera.view_x = std::atan2(s.x, s.y);
 }
 
 void StarSystemController::FocusOnEntity(entt::entity ent) {
@@ -343,7 +345,7 @@ std::optional<glm::vec3> StarSystemController::CheckIntersection(const glm::vec3
 
     if ((b * b - c) >= 0) {
         // Return the point
-        std::optional<glm::vec3>(camera.cam_pos + (-b - sqrt(b * b - c)) * ray_wor);
+        return std::optional<glm::vec3>(camera.cam_pos + (-b - sqrt(b * b - c)) * ray_wor);
     } else {
         return std::nullopt;
     }

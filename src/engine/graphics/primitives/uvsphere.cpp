@@ -50,7 +50,7 @@ Mesh_t ConstructSphereMesh(int x_segments, int y_segments) {
             float zPos = std::cos(yTheta / 2);
             positions.emplace_back(xPos, yPos, zPos);
             // This is such that the map is aligned to the center
-            uv.emplace_back(static_cast<float>(xSegment) - 0.25f, ySegment);
+            uv.emplace_back(static_cast<float>(xSegment) - 0.5f, ySegment);
             normals.emplace_back(xPos, yPos, zPos);
             //tangents.push_back({std::cos(xTheta - PI / 2), 0.0f, std::sin(xTheta - PI / 2), 1.0f});
         }
