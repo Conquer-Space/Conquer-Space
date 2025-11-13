@@ -46,7 +46,6 @@ class SysStarSystemRenderer {
     void OnTick();
     void Render(float delta_time);
     void SeeStarSystem();
-    void SeeEntity();
     void Update(float delta_time);
     void DoUI(float delta_time);
 

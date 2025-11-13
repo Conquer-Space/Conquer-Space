@@ -44,6 +44,7 @@
 #include "common/components/units.h"
 #include "common/util/nameutil.h"
 #include "common/util/profiler.h"
+#include "engine/glfwdebug.h"
 #include "engine/graphics/primitives/cube.h"
 #include "engine/graphics/primitives/line.h"
 #include "engine/graphics/primitives/pane.h"
@@ -295,7 +296,7 @@ void SysStarSystemRenderer::DrawPlanetBillboard(const entt::entity& ent_id, cons
     app.DrawText(text, pos.x, pos.y, 20);
 }
 
-void SysStarSystemRenderer::DrawCityIcon(const glm::vec3& object_pos) {
+void SysStarSystemRenderer::DrawCityIcon(const glm::vec3& object_pos, float alpha_value) {
     glm::vec3 pos = GetBillboardPosition(object_pos);
     if (pos.z >= 1 || pos.z <= -1) {
         return;
@@ -304,7 +305,7 @@ void SysStarSystemRenderer::DrawCityIcon(const glm::vec3& object_pos) {
     glm::mat4 planetDispMat = GetBillboardMatrix(pos);
 
     SetBillboardProjection(city.shaderProgram, planetDispMat);
-    city.shaderProgram->Set("color", 1, 0, 1, 1);
+    city.shaderProgram->Set("color", 1, 0, 1, alpha_value);
 
     engine::Draw(city);
 }
@@ -354,7 +355,7 @@ void SysStarSystemRenderer::DrawTexturedPlanet(const glm::vec3& object_pos, cons
         shader = near_shader.get();
         glDepthFunc(GL_ALWAYS);
     }
-
+    LogGlError("Error when getting shader");
     shader->SetMVP(position, camera.camera_matrix, camera.projection);
 
     // Maybe a seperate shader for planets without normal maps would be better
@@ -503,20 +504,19 @@ void SysStarSystemRenderer::RenderCities(glm::vec3& object_pos, const entt::enti
         glm::vec3 city_world_pos = city_pos + object_pos;
         if (CityIsVisible(city_world_pos, object_pos, camera.cam_pos)) {
             // If it's reasonably close, then we can show city names
-            //if (scroll < 3) {
             DrawEntityName(city_world_pos, city_entity);
-            //}
-            DrawCityIcon(city_world_pos);
+            DrawCityIcon(city_world_pos,
+                         Lerp(1, 0, (glm::length(camera.cam_pos - city_pos) - 6378.1 * 10) / (6378.1 * 10)));
         }
     }
 
     if (controller.ShouldDrawCityPrototype()) {
-        DrawCityIcon(controller.GetMouseOnObjectPosition());
+        DrawCityIcon(controller.GetMouseOnObjectPosition(), 1);
     }
 }
 
 bool SysStarSystemRenderer::CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos) {
-    if (glm::length(cam_pos - city_pos) > 6378.1 * 10) {
+    if (glm::length(cam_pos - city_pos) > 6378.1 * 100) {
         return false;
     }
     float dist = glm::dot((planet_pos - city_pos), (cam_pos - city_pos));
@@ -678,6 +678,15 @@ void SysStarSystemRenderer::SetBillboardProjection(ShaderProgram_t& shader, glm:
     shader->UseProgram();
     shader->setMat4("model", mat);
     shader->setMat4("projection", glm::mat4(1.0));
+}
+
+float SysStarSystemRenderer::Lerp(float a, float b, float t) {
+    if (t < 0) {
+        return a;
+    } else if (t > 1) {
+        return b;
+    }
+    return std::lerp(a, b, t);
 }
 
 void SysStarSystemRenderer::CheckResourceDistRender() {
