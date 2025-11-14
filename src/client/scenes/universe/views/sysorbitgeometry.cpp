@@ -120,5 +120,6 @@ std::vector<glm::vec3> SysOrbitGeometry::GenerateEllipticalOrbit(const common::c
         }
     }
     orbit_points.shrink_to_fit();
+    return orbit_points;
 }
 }  // namespace cqsp::client::systems
