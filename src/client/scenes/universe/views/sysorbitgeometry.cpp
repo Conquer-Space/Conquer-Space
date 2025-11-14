@@ -18,6 +18,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include <cmath>
 #include <numbers>
 
 #include "client/components/planetrendering.h"
@@ -60,51 +61,64 @@ void SysOrbitGeometry::GenerateOrbit(entt::entity body) {
     // Then produce orbits
     ZoneScoped;
     // Generate the orbit
-    auto& orb = universe.get<Orbit>(body);
-    if (orb.semi_major_axis == 0) {
+    auto& orbit = universe.get<Orbit>(body);
+    if (orbit.semi_major_axis == 0) {
         return;
     }
-    const int res = 500;
-    std::vector<glm::vec3> orbit_points;
+
     double SOI = std::numeric_limits<double>::infinity();
-    if (universe.valid(orb.reference_body)) {
-        SOI = universe.get<common::components::bodies::Body>(orb.reference_body).SOI;
+    if (universe.valid(orbit.reference_body)) {
+        SOI = universe.get<common::components::bodies::Body>(orbit.reference_body).SOI;
     }
 
-    orbit_points.reserve(res);
-    // If hyperbolic
-    if (orb.eccentricity > 1) {
-        double v_inf = common::components::types::GetHyperbolicAsymptopeAnomaly(orb.eccentricity);
-        // Remove one because it's slightly off.
-        for (int i = 1; i < res; i++) {
-            ZoneScoped;
-            double theta = -v_inf * (1 - (double)i / (double)res) + v_inf * (((double)i / (double)res));
+    std::vector<glm::vec3> orbit_points =
+        (orbit.eccentricity > 1) ? GenerateHyperbolicOrbit(orbit, SOI) : GenerateEllipticalOrbit(orbit, SOI);
 
-            glm::vec3 vec = common::components::types::toVec3(orb, theta);
-            // Check if the length is greater than the SOI, then we don't add it
-            if (glm::length(vec) < SOI) {
-                orbit_points.push_back(vec);
-            }
-        }
-    } else {
-        for (int i = 0; i <= res; i++) {
-            ZoneScoped;
-            double theta = std::numbers::pi * 2 / res * i;
-
-            glm::vec3 vec = common::components::types::toVec3(orb, theta);
-
-            // If the length is greater than the sphere of influence, then
-            // remove it
-            if (glm::length(vec) < SOI) {
-                orbit_points.push_back(vec);
-            }
-        }
-    }
-
-    // universe.remove<types::OrbitDirty>(body);
     auto& line = universe.get_or_emplace<components::OrbitMesh>(body);
     // Get the orbit line
     // Do the points
     line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);
+}
+
+std::vector<glm::vec3> SysOrbitGeometry::GenerateHyperbolicOrbit(const common::components::types::Orbit& orbit,
+                                                                 double SOI) {
+    std::vector<glm::vec3> orbit_points;
+    orbit_points.reserve(ORBIT_RESOLUTION);
+    double v_inf = common::components::types::GetHyperbolicAsymptopeAnomaly(orbit.eccentricity);
+    // Remove one because it's slightly off.
+    int points_generated = 0;
+    for (int i = 1; i < ORBIT_RESOLUTION; i++) {
+        ZoneScoped;
+        double theta = std::lerp(-v_inf, v_inf, (double)i / (double)ORBIT_RESOLUTION);
+
+        glm::vec3 vec = common::components::types::toVec3(orbit, theta);
+        // Check if the length is greater than the SOI, then we don't add it
+        if (glm::length(vec) < SOI) {
+            orbit_points.push_back(vec);
+            points_generated++;
+        }
+    }
+    orbit_points.shrink_to_fit();
+    return orbit_points;
+}
+
+std::vector<glm::vec3> SysOrbitGeometry::GenerateEllipticalOrbit(const common::components::types::Orbit& orbit,
+                                                                 double SOI) {
+    std::vector<glm::vec3> orbit_points;
+
+    orbit_points.reserve(ORBIT_RESOLUTION);
+    for (int i = 0; i <= ORBIT_RESOLUTION; i++) {
+        ZoneScoped;
+        double theta = std::numbers::pi * 2 / ORBIT_RESOLUTION * i;
+
+        glm::vec3 vec = common::components::types::toVec3(orbit, theta);
+
+        // If the length is greater than the sphere of influence, then
+        // remove it
+        if (glm::length(vec) < SOI) {
+            orbit_points.push_back(vec);
+        }
+    }
+    orbit_points.shrink_to_fit();
 }
 }  // namespace cqsp::client::systems
