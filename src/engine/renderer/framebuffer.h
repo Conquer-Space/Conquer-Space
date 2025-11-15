@@ -66,6 +66,9 @@ class FramebufferRenderer : public IFramebuffer {
  private:
     unsigned int framebuffer;
     unsigned int colorbuffer;
+    unsigned int rbo;
+    int width;
+    int height;
     asset::ShaderProgram_t buffer_shader;
     engine::Mesh_t mesh_output;
 };

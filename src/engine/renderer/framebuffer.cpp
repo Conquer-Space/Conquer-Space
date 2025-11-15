@@ -26,6 +26,15 @@
 #include "engine/glfwdebug.h"
 #include "engine/graphics/primitives/pane.h"
 
+#define FRAMEBUFFER_ERROR()                                                              \
+    do {                                                                                 \
+        GLenum framebuffer_status = glCheckFramebufferStatus(GL_FRAMEBUFFER);            \
+        if (framebuffer_status != GL_FRAMEBUFFER_COMPLETE) {                             \
+            ENGINE_LOG_ERROR("Incomplete framebuffer: 0x{:x} ({})!", framebuffer_status, \
+                             FramebufferStatusToString(framebuffer_status));             \
+        }                                                                                \
+    } while (0)
+
 namespace cqsp::engine {
 void GenerateFrameBuffer(unsigned int& framebuffer) {
     glGenFramebuffers(1, &framebuffer);
@@ -35,6 +44,8 @@ void GenerateFrameBuffer(unsigned int& framebuffer) {
 FramebufferRenderer::~FramebufferRenderer() { FreeBuffer(); }
 
 void FramebufferRenderer::InitTexture(int width, int height) {
+    this->width = width;
+    this->height = height;
     GenerateFrameBuffer(framebuffer);
     // create a color attachment texture
     glGenTextures(1, &colorbuffer);
@@ -45,7 +56,6 @@ void FramebufferRenderer::InitTexture(int width, int height) {
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorbuffer, 0);
 
     // create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
-    unsigned int rbo;
     glGenRenderbuffers(1, &rbo);
     glBindRenderbuffer(GL_RENDERBUFFER, rbo);
     // use a single renderbuffer object for both a depth AND stencil buffer.
@@ -53,11 +63,7 @@ void FramebufferRenderer::InitTexture(int width, int height) {
     // now actually attach it
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
-    GLenum framebuffer_status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    if (framebuffer_status != GL_FRAMEBUFFER_COMPLETE) {
-        ENGINE_LOG_ERROR("Incomplete framebuffer: 0x{:x} ({})!", framebuffer_status,
-                         FramebufferStatusToString(framebuffer_status));
-    }
+    FRAMEBUFFER_ERROR();
     // Reset framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -147,7 +153,11 @@ void AAFrameBufferRenderer::InitTexture(int width, int height) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture, 0);
-
+    GLenum framebuffer_status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (framebuffer_status != GL_FRAMEBUFFER_COMPLETE) {
+        ENGINE_LOG_ERROR("Incomplete framebuffer: 0x{:x} ({})!", framebuffer_status,
+                         FramebufferStatusToString(framebuffer_status));
+    }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
