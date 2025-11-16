@@ -26,8 +26,6 @@
 #include "common/components/units.h"
 
 namespace cqsp::common::components::types {
-struct OrbitDirty {};
-
 /// Relative position from the parent orbiting object
 struct Kinematics {
     glm::dvec3 position {0, 0, 0};

@@ -56,7 +56,7 @@ void StarSystemViewUI::RenderInformationWindow(double delta_time) {
                    controller.hovering_province_color.y, controller.hovering_province_color.z);
     ImGui::TextFmt("Hovering province {}", GetName(universe, controller.hovering_province));
     ImGui::TextFmt("Focused planets: {}", universe.view<FocusedPlanet>().size());
-    ImGui::TextFmt("Generated {} orbits last frame", renderer.orbit_geometry.orbits_generated);
+    ImGui::TextFmt("Generated {} orbits last frame", renderer.orbit_geometry.GetOrbitsGenerated());
     auto intersection = controller.GetMouseSurfaceIntersection();
     ImGui::TextFmt("Intersection: {} {}", intersection.latitude(), intersection.longitude());
 

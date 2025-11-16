@@ -16,6 +16,11 @@
  */
 #pragma once
 
+#include <vector>
+
+#include <glm/glm.hpp>
+
+#include "common/components/orbit.h"
 #include "common/universe.h"
 
 namespace cqsp::client::systems {
@@ -24,10 +29,15 @@ class SysOrbitGeometry {
     SysOrbitGeometry(common::Universe&);
     void GenerateOrbitLines();
 
-    int orbits_generated;
+    int GetOrbitsGenerated() { return orbits_generated; }
 
  private:
-    void GenerateOrbit(entt::entity body);
+    const int ORBIT_RESOLUTION = 500;
+    int orbits_generated;
     common::Universe& universe;
+
+    void GenerateOrbit(entt::entity body);
+    std::vector<glm::vec3> GenerateHyperbolicOrbit(const common::components::types::Orbit& orbit, double SOI);
+    std::vector<glm::vec3> GenerateEllipticalOrbit(const common::components::types::Orbit& orbit, double SOI);
 };
 }  // namespace cqsp::client::systems
