@@ -16,6 +16,8 @@
  */
 #pragma once
 
+#include <glad/glad.h>
+
 #include <memory>
 #include <utility>
 #include <vector>
@@ -64,6 +66,9 @@ class FramebufferRenderer : public IFramebuffer {
  private:
     unsigned int framebuffer;
     unsigned int colorbuffer;
+    unsigned int rbo;
+    int width;
+    int height;
     asset::ShaderProgram_t buffer_shader;
     engine::Mesh_t mesh_output;
 };
@@ -132,6 +137,7 @@ class AAFrameBufferRenderer : public IFramebuffer {
 /// </summary>
 class LayerRenderer {
  public:
+    LayerRenderer();
     template <class T>
     int AddLayer(asset::ShaderProgram_t shader, const engine::Window& window) {
         std::unique_ptr<T> fb = std::make_unique<T>();
@@ -149,7 +155,11 @@ class LayerRenderer {
     IFramebuffer* GetFrameBuffer(int layer) { return framebuffers[layer].get(); }
 
  private:
+    unsigned int blend_source_factor;
+    unsigned int blend_dest_factor;
     std::vector<std::unique_ptr<IFramebuffer>> framebuffers;
     void InitFramebuffer(IFramebuffer* buffer, cqsp::asset::ShaderProgram_t shader, const cqsp::engine::Window& window);
 };
+
+const char* FramebufferStatusToString(GLenum error);
 }  // namespace cqsp::engine

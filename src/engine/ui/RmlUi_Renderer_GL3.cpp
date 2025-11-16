@@ -504,10 +504,14 @@ static void CheckGLError(const char* operation_name) {
 #ifdef RMLUI_DEBUG
     GLenum error_code = glGetError();
     if (error_code != GL_NO_ERROR) {
-        static const Rml::Pair<GLenum, const char*> error_names[] = {{GL_INVALID_ENUM, "GL_INVALID_ENUM"},
-                                                                     {GL_INVALID_VALUE, "GL_INVALID_VALUE"},
-                                                                     {GL_INVALID_OPERATION, "GL_INVALID_OPERATION"},
-                                                                     {GL_OUT_OF_MEMORY, "GL_OUT_OF_MEMORY"}};
+        static const Rml::Pair<GLenum, const char*> error_names[] = {
+            {GL_INVALID_ENUM, "GL_INVALID_ENUM"},
+            {GL_INVALID_VALUE, "GL_INVALID_VALUE"},
+            {GL_INVALID_OPERATION, "GL_INVALID_OPERATION"},
+            {GL_OUT_OF_MEMORY, "GL_OUT_OF_MEMORY"},
+            {GL_INVALID_FRAMEBUFFER_OPERATION, "GL_INVALID_FRAMEBUFFER_OPERATION"},
+            {GL_STACK_OVERFLOW, "GL_STACK_OVERFLOW"},
+            {GL_STACK_UNDERFLOW, "GL_STACK_UNDERFLOW"}};
         const char* error_str = "''";
         for (auto& err : error_names) {
             if (err.first == error_code) {
@@ -1224,8 +1228,6 @@ Rml::TextureHandle RenderInterface_GL3::LoadTexture(Rml::Vector2i& texture_dimen
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     glBindTexture(GL_TEXTURE_2D, 0);
-
-    Rml::Log::Message(Rml::Log::LT_ERROR, "Loading texture %s.", source.c_str());
 
     stbi_image_free(output);
     return (Rml::TextureHandle)texture_id;

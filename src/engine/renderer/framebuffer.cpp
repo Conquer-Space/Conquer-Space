@@ -17,15 +17,23 @@
 #include "engine/renderer/framebuffer.h"
 
 #include <glad/glad.h>
-#include <spdlog/spdlog.h>
 
 #include <utility>
 
 #include <tracy/Tracy.hpp>
 
-#include "common/util/profiler.h"
 #include "engine/enginelogger.h"
+#include "engine/glfwdebug.h"
 #include "engine/graphics/primitives/pane.h"
+
+#define FRAMEBUFFER_ERROR()                                                              \
+    do {                                                                                 \
+        GLenum framebuffer_status = glCheckFramebufferStatus(GL_FRAMEBUFFER);            \
+        if (framebuffer_status != GL_FRAMEBUFFER_COMPLETE) {                             \
+            ENGINE_LOG_ERROR("Incomplete framebuffer: 0x{:x} ({})!", framebuffer_status, \
+                             FramebufferStatusToString(framebuffer_status));             \
+        }                                                                                \
+    } while (0)
 
 namespace cqsp::engine {
 void GenerateFrameBuffer(unsigned int& framebuffer) {
@@ -36,6 +44,8 @@ void GenerateFrameBuffer(unsigned int& framebuffer) {
 FramebufferRenderer::~FramebufferRenderer() { FreeBuffer(); }
 
 void FramebufferRenderer::InitTexture(int width, int height) {
+    this->width = width;
+    this->height = height;
     GenerateFrameBuffer(framebuffer);
     // create a color attachment texture
     glGenTextures(1, &colorbuffer);
@@ -46,7 +56,6 @@ void FramebufferRenderer::InitTexture(int width, int height) {
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorbuffer, 0);
 
     // create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
-    unsigned int rbo;
     glGenRenderbuffers(1, &rbo);
     glBindRenderbuffer(GL_RENDERBUFFER, rbo);
     // use a single renderbuffer object for both a depth AND stencil buffer.
@@ -54,9 +63,7 @@ void FramebufferRenderer::InitTexture(int width, int height) {
     // now actually attach it
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        ENGINE_LOG_ERROR("Framebuffer is not complete!");
-    }
+    FRAMEBUFFER_ERROR();
     // Reset framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -146,7 +153,11 @@ void AAFrameBufferRenderer::InitTexture(int width, int height) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture, 0);
-
+    GLenum framebuffer_status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (framebuffer_status != GL_FRAMEBUFFER_COMPLETE) {
+        ENGINE_LOG_ERROR("Incomplete framebuffer: 0x{:x} ({})!", framebuffer_status,
+                         FramebufferStatusToString(framebuffer_status));
+    }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -157,7 +168,10 @@ void AAFrameBufferRenderer::Clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void AAFrameBufferRenderer::BeginDraw() { glBindFramebuffer(GL_FRAMEBUFFER, framebuffer); }
+void AAFrameBufferRenderer::BeginDraw() {
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    LogGlError("Error when binding texture");
+}
 
 void AAFrameBufferRenderer::EndDraw() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 
@@ -200,13 +214,15 @@ void AAFrameBufferRenderer::NewFrame(const Window& window) {
     }
 }
 
+LayerRenderer::LayerRenderer() : blend_source_factor(GL_ONE), blend_dest_factor(GL_ONE_MINUS_SRC_ALPHA) {}
+
 void LayerRenderer::BeginDraw(int layer) { framebuffers[layer]->BeginDraw(); }
 
 void LayerRenderer::EndDraw(int layer) { framebuffers[layer]->EndDraw(); }
 
 void LayerRenderer::DrawAllLayers() {
     glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(blend_source_factor, blend_dest_factor);
 
     for (auto& frame : framebuffers) {
         frame->RenderBuffer();
@@ -232,5 +248,28 @@ void LayerRenderer::InitFramebuffer(IFramebuffer* buffer, asset::ShaderProgram_t
     buffer->InitTexture(window.GetWindowWidth(), window.GetWindowHeight());
     buffer->SetMesh(engine::primitive::MakeTexturedPaneMesh(true));
     buffer->SetShader(std::move(shader));
+}
+
+const char* FramebufferStatusToString(GLenum error) {
+    switch (error) {
+        case GL_FRAMEBUFFER_UNDEFINED:
+            return "GL_FRAMEBUFFER_UNDEFINED";
+        case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+            return "GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT";
+        case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+            return "GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT";
+        case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+            return "GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER";
+        case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+            return "GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER";
+        case GL_FRAMEBUFFER_UNSUPPORTED:
+            return "GL_FRAMEBUFFER_UNSUPPORTED";
+        case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+            return "GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE";
+        case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+            return "GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS";
+        default:
+            return "Unknown error!";
+    }
 }
 }  // namespace cqsp::engine

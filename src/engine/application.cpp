@@ -246,6 +246,8 @@ int Application::destroy() {
     ENGINE_LOG_INFO("Killed ImGui");
 
     Rml::Shutdown();
+    m_system_interface.reset();
+    m_render_interface.reset();
     ENGINE_LOG_INFO("Killed RmlUi");
 
     m_window->Destroy();

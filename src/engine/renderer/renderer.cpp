@@ -41,10 +41,7 @@ void Draw(Renderable &renderable) {
         }
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture((*it)->texture_type, (*it)->id);
-        GLenum error = glGetError();
-        if (error != GL_NO_ERROR) {
-            ENGINE_LOG_ERROR("Error when binding texture {}: {}", (*it)->id, engine::GetGlError(error));
-        }
+        LogGlError(fmt::format("Error when binding texture {}:", (*it)->id));
     }
 
     renderable.mesh->Draw();
@@ -66,10 +63,7 @@ void Draw(Renderable &renderable, asset::ShaderProgram *shader) {
         }
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture((*it)->texture_type, (*it)->id);
-        GLenum error = glGetError();
-        if (error != GL_NO_ERROR) {
-            ENGINE_LOG_ERROR("Error when binding texture {}: {}", (*it)->id, engine::GetGlError(error));
-        }
+        LogGlError(fmt::format("Error when binding texture {}:", (*it)->id));
     }
 
     renderable.mesh->Draw();

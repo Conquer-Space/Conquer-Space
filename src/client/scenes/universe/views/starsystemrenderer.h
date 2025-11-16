@@ -46,7 +46,6 @@ class SysStarSystemRenderer {
     void OnTick();
     void Render(float delta_time);
     void SeeStarSystem();
-    void SeeEntity();
     void Update(float delta_time);
     void DoUI(float delta_time);
 
@@ -104,7 +103,7 @@ class SysStarSystemRenderer {
     void DrawEntityName(glm::vec3 &object_pos, entt::entity ent_id);
     void DrawPlanetBillboard(const entt::entity &ent_id, const glm::vec3 &object_pos);
     void DrawShipIcon(const glm::vec3 &object_pos);
-    void DrawCityIcon(const glm::vec3 &object_pos);
+    void DrawCityIcon(const glm::vec3 &object_pos, float alpha_value);
 
     void DrawAllCities(auto &bodies);
 
@@ -147,6 +146,8 @@ class SysStarSystemRenderer {
     void CheckResourceDistRender();
 
     float GetWindowRatio();
+
+    float Lerp(float a, float b, float t);
 
     // How much to scale the the star system.
     const double divider = 0.01;
