@@ -27,19 +27,19 @@ namespace cqsp::common::systems::commands {
 /// Verifies if the command is a valid ship command option.
 /// This verifies if it's not null, and contains the
 /// necessary components to make it a command
-bool VerifyCommand(Universe& universe, entt::entity command);
+bool VerifyCommand(Node& command);
 /// Returns true if a command is processed and popped, returns false if not
-bool ProcessCommandQueue(Universe& universe, entt::entity body, components::Trigger trigger);
-void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity command_entity, components::Command command);
-void TransferToMoon(Universe& universe, entt::entity agent, entt::entity target);
-void LeaveSOI(Universe& universe, entt::entity agent, double altitude);
-void LandOnMoon(Universe& universe, entt::entity agent, entt::entity target, entt::entity city);
+bool ProcessCommandQueue(Node& body, components::Trigger trigger);
+void ExecuteCommand(Node& orbit_node, Node& command_node, components::Command command);
+void TransferToMoon(Node& agent, Node& target);
+void LeaveSOI(Node& agent, double altitude);
+void LandOnMoon(Node& agent, Node& target, Node& city);
 components::Maneuver_t MakeManeuver(const glm::dvec3& vector, double time);
-void PushManeuver(Universe& universe, entt::entity entity, components::Maneuver_t maneuver, double offset = 0);
-void PushManeuvers(Universe& universe, entt::entity entity, std::initializer_list<components::Maneuver_t> maneuver,
+void PushManeuver(Node& entity, components::Maneuver_t maneuver, double offset = 0);
+void PushManeuvers(Node& entity, std::initializer_list<components::Maneuver_t> maneuver,
                    double offset = 0);
-void PushManeuvers(Universe& universe, entt::entity entity, components::HohmannPair_t hohmann_pair, double offset = 0);
-std::vector<entt::entity> GetSOIHierarchy(Universe& universe, entt::entity source);
+void PushManeuvers(Node& entity, components::HohmannPair_t hohmann_pair, double offset = 0);
+std::vector<Node> GetSOIHierarchy(Node& source);
 /**
  * Finds the common sphere of influence between the two bodies.
  * @param universe universe registry
@@ -48,5 +48,5 @@ std::vector<entt::entity> GetSOIHierarchy(Universe& universe, entt::entity sourc
  * @return least common sphere of influence between source and target. If null, then we are comparing two completely
  * separate SOI trees.
  */
-entt::entity GetCommonSOI(Universe& universe, entt::entity source, entt::entity target);
+Node GetCommonSOI(Node& source, Node& target);
 }  // namespace cqsp::common::systems::commands

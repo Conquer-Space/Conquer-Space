@@ -29,7 +29,7 @@ class SysOrbit : public ISimulationSystem {
     int Interval() override { return 1; }
 
  private:
-    void ParseOrbitTree(entt::entity parent, entt::entity body);
+    void ParseOrbitTree(Node& parent, Node& body);
 
     /// <summary>
     /// Sets the SOI of the entity to the parent
@@ -37,7 +37,7 @@ class SysOrbit : public ISimulationSystem {
     /// <param name="universe"></param>
     /// <param name="body">Needs to have a Body and Orbit parameter</param>
     /// <param name="ppos">Parent position</param>
-    void LeaveSOI(const entt::entity& body, entt::entity& parent, components::types::Orbit& orb,
+    void LeaveSOI(Node& body, Node& parent, components::types::Orbit& orb,
                   components::types::Kinematics& pos, components::types::Kinematics& p_pos);
 
     /// <summary>
@@ -46,7 +46,7 @@ class SysOrbit : public ISimulationSystem {
     /// <param name="universe"></param>
     /// <param name="parent"></param>
     /// <param name="body">Body that we want to check if it's entering a SOI</param>
-    bool CheckEnterSOI(const entt::entity& parent, const entt::entity& body);
+    bool CheckEnterSOI(Node& parent, Node& body);
 
     /// <summary>
     /// Check if the entity has crashed into its parent object
@@ -56,15 +56,15 @@ class SysOrbit : public ISimulationSystem {
     /// <param name="body"></param>
     /// <param name="parent"></param>
     /// <returns>If the object's altitude is below the body's radius</returns>
-    bool CrashObject(components::types::Orbit& orb, entt::entity body, entt::entity parent);
+    bool CrashObject(components::types::Orbit& orb, Node& body, Node& parent);
 
-    void UpdateCommandQueue(components::types::Orbit& orb, entt::entity body, entt::entity parent);
+    void UpdateCommandQueue(components::types::Orbit& orb, Node& body, Node& parent);
 
-    void CalculateImpulse(components::types::Orbit& orb, entt::entity body, entt::entity parent);
+    void CalculateImpulse(components::types::Orbit& orb, Node& body, Node& parent);
 
-    void ParseChildren(entt::entity body);
+    void ParseChildren(Node& body);
 
-    void EnterSOI(entt::entity entity, entt::entity body, entt::entity parent, components::types::Orbit& orb,
+    void EnterSOI(Node& entity, Node& body, Node& parent, components::types::Orbit& orb,
                   components::types::Kinematics& vehicle_position, const components::bodies::Body& body_comp,
                   const components::types::Kinematics& target_position);
 

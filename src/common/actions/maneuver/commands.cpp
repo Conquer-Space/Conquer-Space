@@ -42,218 +42,220 @@ using components::OrbitTarget;
 using components::Trigger;
 using types::Orbit;
 
-bool VerifyCommand(Universe& universe, entt::entity command) {
-    return (command == entt::null || !universe.any_of<Trigger>(command) || !universe.any_of<Command>(command));
+bool VerifyCommand(Node& command) {
+    return (command == entt::null || !command.any_of<Trigger>() || !command.any_of<Command>());
 }
 
-void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity command_entity, Command command) {
+void ExecuteCommand(Node& orbit_node, Node& command_node, Command command) {
     // TODO(EhWhoAmI): What if there's an error with the command?
-    if (!universe.any_of<Orbit>(entity)) {
+    if (!orbit_node.any_of<Orbit>()) {
         return;
     }
-    Orbit& orbit = universe.get<Orbit>(entity);
+    Orbit& orbit = orbit_node.get<Orbit>();
 
     // One huge switch statement is not how I want it to be but what can I do ¯\_(ツ)_/¯
     switch (command) {
         case Command::CircularizeAtPeriapsis: {
             std::pair<glm::dvec3, double> man_t = CircularizeAtPeriapsis(orbit);
             SPDLOG_INFO("Circularizing at periapsis");
-            PushManeuvers(universe, entity, {man_t});
+            PushManeuvers(orbit_node, {man_t});
         } break;
         case Command::CircularizeAtApoapsis: {
             std::pair<glm::dvec3, double> man_t = CircularizeAtApoapsis(orbit);
             SPDLOG_INFO("Circularizing at apoapsis");
-            PushManeuvers(universe, entity, {man_t});
+            PushManeuvers(orbit_node, {man_t});
         } break;
         case Command::MatchPlanes: {
-            if (!universe.any_of<OrbitTarget>(command_entity)) {
+            if (!command_node.any_of<OrbitTarget>()) {
                 break;
             }
-            auto& target_orbit = universe.get<OrbitTarget>(command_entity);
+            auto& target_orbit = command_node.get<OrbitTarget>();
             std::pair<glm::dvec3, double> man_t = MatchPlanes(orbit, target_orbit.orbit);
             SPDLOG_INFO("Matching plane");
-            PushManeuvers(universe, entity, {man_t});
+            PushManeuvers(orbit_node, {man_t});
         } break;
         case Command::CoplanarIntercept: {
-            if (!universe.any_of<OrbitTarget>(command_entity)) {
+            if (!command_node.any_of<OrbitTarget>()) {
                 break;
             }
-            auto& target_orbit = universe.get<OrbitTarget>(command_entity);
-            auto pair = CoplanarIntercept(orbit, target_orbit.orbit, universe.date());
+            auto& target_orbit = command_node.get<OrbitTarget>();
+            auto pair = CoplanarIntercept(orbit, target_orbit.orbit, orbit_node.universe().date());
             SPDLOG_INFO("Coplanar intercepting");
-            PushManeuvers(universe, entity, {pair.first});
+            PushManeuvers(orbit_node, {pair.first});
         } break;
         case Command::CoplanarInterceptAndTransfer: {
-            if (!universe.any_of<OrbitTarget>(command_entity)) {
+            if (!command_node.any_of<OrbitTarget>()) {
                 break;
             }
-            auto& target_orbit = universe.get<OrbitTarget>(command_entity);
+            auto& target_orbit = command_node.get<OrbitTarget>();
             SPDLOG_INFO("Coplanar intercept and transfer");
-            auto pair = CoplanarIntercept(orbit, target_orbit.orbit, universe.date());
-            PushManeuvers(universe, entity, {pair.first, pair.second});
+            auto pair = CoplanarIntercept(orbit, target_orbit.orbit, orbit_node.universe().date());
+            PushManeuvers(orbit_node, {pair.first, pair.second});
         } break;
         case Command::SetInclination: {
-            if (!universe.any_of<OrbitScalar>(command_entity)) {
+            if (!command_node.any_of<OrbitScalar>()) {
                 break;
             }
-            auto& scalar_change = universe.get<OrbitScalar>(command_entity);
+            auto& scalar_change = command_node.get<OrbitScalar>();
             SPDLOG_INFO("Setting Inclination to {}", components::types::toDegree(scalar_change.value));
             auto maneuver = SetInclination(orbit, scalar_change.value);
-            PushManeuvers(universe, entity, {maneuver});
+            PushManeuvers(orbit_node, {maneuver});
         } break;
         case Command::SetApoapsis: {
-            if (!universe.any_of<OrbitScalar>(command_entity)) {
+            if (!command_node.any_of<OrbitScalar>()) {
                 break;
             }
-            auto& scalar_change = universe.get<OrbitScalar>(command_entity);
+            auto& scalar_change = command_node.get<OrbitScalar>();
             SPDLOG_INFO("Setting apoapsis to {}", scalar_change.value);
             auto maneuver = SetApoapsis(orbit, scalar_change.value);
-            PushManeuvers(universe, entity, {maneuver});
+            PushManeuvers(orbit_node, {maneuver});
         } break;
         case Command::SetPeriapsis: {
-            if (!universe.any_of<OrbitScalar>(command_entity)) {
+            if (!command_node.any_of<OrbitScalar>()) {
                 break;
             }
-            auto& scalar_change = universe.get<OrbitScalar>(command_entity);
+            auto& scalar_change = command_node.get<OrbitScalar>();
             SPDLOG_INFO("Setting Periapsis to {}", scalar_change.value);
             auto maneuver = SetPeriapsis(orbit, scalar_change.value);
-            PushManeuvers(universe, entity, {maneuver});
+            PushManeuvers(orbit_node, {maneuver});
         } break;
         case Command::LandOnBody: {
             // Lands on body when crashed
             // Then check if it's going to
-            if (!universe.any_of<OrbitEntityTarget>(command_entity)) {
+            if (!command_node.any_of<OrbitEntityTarget>()) {
                 break;
             }
-            entt::entity target_city = universe.get<OrbitEntityTarget>(command_entity).target;
+            Node target_city(command_node, command_node.get<OrbitEntityTarget>().target);
             // Then check if it's the same body as the body that we landed on
             // Eh who cares
-            auto& docked_ships = universe.get_or_emplace<components::DockedShips>(target_city);
+            auto& docked_ships = target_city.get_or_emplace<components::DockedShips>();
             // Now add the entity back
-            docked_ships.docked_ships.emplace_back(entity);
+            docked_ships.docked_ships.emplace_back(orbit_node);
             // Also remove from the orbital system
             // Get the current orbital system that we're in
-            auto& orbit = universe.get<Orbit>(entity);
-            if (orbit.reference_body != entt::null && universe.valid(orbit.reference_body) &&
-                universe.any_of<components::bodies::OrbitalSystem>(orbit.reference_body)) {
-                auto& children = universe.get<components::bodies::OrbitalSystem>(orbit.reference_body).children;
-                children.erase(std::remove(children.begin(), children.end(), entity), children.end());
+            Orbit& orbit = orbit_node.get<Orbit>();
+            Node reference_body = Node(orbit_node, orbit.reference_body);
+            if (reference_body != entt::null && reference_body.valid() &&
+                reference_body.any_of<components::bodies::OrbitalSystem>()) {
+                auto& children = reference_body.get<components::bodies::OrbitalSystem>().children;
+                children.erase(std::remove(children.begin(), children.end(), orbit_node), children.end());
             }
-            SPDLOG_INFO("Landing on city {}", util::GetName(universe, target_city));
-            universe.remove<Orbit>(entity);
-            universe.remove<types::Kinematics>(entity);
+            SPDLOG_INFO("Landing on city {}", util::GetName(target_city));
+            orbit_node.remove<Orbit>();
+            orbit_node.remove<types::Kinematics>();
         } break;
         case Command::ForceMatchPlanes: {
-            if (!universe.any_of<OrbitTarget>(command_entity)) {
+            if (!command_node.any_of<OrbitTarget>()) {
                 break;
             }
-            auto& target_orbit = universe.get<OrbitTarget>(command_entity).orbit;
-            auto& orbit = universe.get<Orbit>(entity);
+            auto& target_orbit = command_node.get<OrbitTarget>().orbit;
+            auto& orbit = orbit_node.get<Orbit>();
 
             orbit.LAN = target_orbit.LAN;
             orbit.inclination = target_orbit.inclination;
             // Add a maneuver. This is a hack so that we run the next maneuver command after this
             // TODO(EhWhoAmI): Fix this when we are able to figure out why plane matching doesn't work as well as we would hope.
-            PushManeuver(universe, entity, MakeManeuver(glm::dvec3(0, 0, 0), 100.));
+            PushManeuver(orbit_node, MakeManeuver(glm::dvec3(0, 0, 0), 100.));
             SPDLOG_INFO("Forced match plane");
         }
         case Command::InterceptAndCircularizeBody: {
             // We should intercept the body and stuff
         } break;
         case Command::ExitSOI: {
-            if (!universe.any_of<OrbitScalar>(command_entity)) {
+            if (!command_node.any_of<OrbitScalar>()) {
                 break;
             }
-            auto& scalar_change = universe.get<OrbitScalar>(command_entity);
-            auto& orbit = universe.get<Orbit>(entity);
-            auto maneuver = common::systems::TransferFromBody(universe, orbit, universe.get<types::Kinematics>(entity),
+            auto& scalar_change = command_node.get<OrbitScalar>();
+            auto& orbit = orbit_node.get<Orbit>();
+            auto maneuver = common::systems::TransferFromBody(orbit_node.universe(), orbit,
+                                                              orbit_node.get<types::Kinematics>(),
                                                               scalar_change.value);
-            PushManeuver(universe, entity, maneuver);
+            PushManeuver(orbit_node, maneuver);
         } break;
         case Command::SelfDestruct: {
             // Self destruct
-            universe.emplace_or_replace<components::ships::Crash>(entity);
+            orbit_node.emplace_or_replace<components::ships::Crash>();
         } break;
         default:
             break;
     }
 }
 
-bool ProcessCommandQueue(Universe& universe, entt::entity body, Trigger trigger) {
+bool ProcessCommandQueue(Node& body, Trigger trigger) {
     ZoneScoped;
-    if (!universe.any_of<components::CommandQueue>(body)) {
+    if (!body.any_of<components::CommandQueue>()) {
         return false;
     }
 
-    auto& queue = universe.get<components::CommandQueue>(body);
+    auto& queue = body.get<components::CommandQueue>();
     if (queue.commands.empty()) {
         return false;  // empty command queue
     }
 
-    entt::entity next_command = queue.commands.front();
-    if (commands::VerifyCommand(universe, next_command)) {
+    Node next_command(body, queue.commands.front());
+    if (commands::VerifyCommand(next_command)) {
         // Command is just bugged
         queue.commands.pop_front();
         return false;
     }
 
-    if (universe.get<Trigger>(next_command) != trigger) {
+    if (next_command.get<Trigger>() != trigger) {
         return false;  // Didn't match trigger, execute command later
     }
 
     // Now execute the command
-    commands::ExecuteCommand(universe, body, next_command, universe.get<commands::Command>(next_command));
+    commands::ExecuteCommand(body, next_command, next_command.get<commands::Command>());
 
     // Done executing the command, then we're done
-    universe.destroy(next_command);
+    next_command.destroy();
     queue.commands.pop_front();
     return true;
 }
 
-void TransferToMoon(Universe& universe, entt::entity agent, entt::entity target) {
+void TransferToMoon(Node& agent, Node& target) {
     // Now generate the commands
     // Match planes
     // Get orbit
-    Orbit target_orbit = universe.get<Orbit>(target);
-    Orbit current_orbit = universe.get<Orbit>(agent);
-    auto& command_queue = universe.get_or_emplace<components::CommandQueue>(agent);
+    Orbit target_orbit = target.get<Orbit>();
+    Orbit current_orbit = agent.get<Orbit>();
+    auto& command_queue = agent.get_or_emplace<components::CommandQueue>();
 
     if (current_orbit.eccentricity > 0.00001) {
         // Then we should circularize
         auto maneuver2 = CircularizeAtPeriapsis(current_orbit);
-        PushManeuver(universe, agent, maneuver2);
+        PushManeuver(agent, maneuver2);
 
-        entt::entity match_plane = universe.create();
-        universe.emplace<Trigger>(match_plane, Trigger::OnManeuver);
-        universe.emplace<Command>(match_plane, Command::MatchPlanes);
-        universe.emplace<OrbitTarget>(match_plane, target_orbit);
+        Node match_plane(agent.universe());
+        match_plane.emplace<Trigger>(Trigger::OnManeuver);
+        match_plane.emplace<Command>(Command::MatchPlanes);
+        match_plane.emplace<OrbitTarget>(target_orbit);
         command_queue.commands.push_back(match_plane);
 
-        entt::entity force_match_plane = universe.create();
-        universe.emplace<Trigger>(force_match_plane, Trigger::OnManeuver);
-        universe.emplace<Command>(force_match_plane, Command::ForceMatchPlanes);
-        universe.emplace<OrbitTarget>(force_match_plane, target_orbit);
+        Node force_match_plane(agent.universe());
+        force_match_plane.emplace<Trigger>(Trigger::OnManeuver);
+        force_match_plane.emplace<Command>(Command::ForceMatchPlanes);
+        force_match_plane.emplace<OrbitTarget>(target_orbit);
         command_queue.commands.push_back(force_match_plane);
     } else {
         auto maneuver = MatchPlanes(current_orbit, target_orbit);
-        PushManeuvers(universe, agent, {maneuver});
-        entt::entity force_match_plane = universe.create();
-        universe.emplace<Trigger>(force_match_plane, Trigger::OnManeuver);
-        universe.emplace<Command>(force_match_plane, Command::ForceMatchPlanes);
-        universe.emplace<OrbitTarget>(force_match_plane, target_orbit);
+        PushManeuvers(agent, {maneuver});
+        Node force_match_plane(agent.universe());
+        force_match_plane.emplace<Trigger>(Trigger::OnManeuver);
+        force_match_plane.emplace<Command>(Command::ForceMatchPlanes);
+        force_match_plane.emplace<OrbitTarget>(target_orbit);
         command_queue.commands.push_back(force_match_plane);
     }
 
     // Move to intercept
-    entt::entity maneuver_to_point = universe.create();
-    universe.emplace<Trigger>(maneuver_to_point, Trigger::OnManeuver);
-    universe.emplace<Command>(maneuver_to_point, Command::CoplanarIntercept);
-    universe.emplace<OrbitTarget>(maneuver_to_point, target_orbit);
+    Node maneuver_to_point(agent.universe());
+    maneuver_to_point.emplace<Trigger>(Trigger::OnManeuver);
+    maneuver_to_point.emplace<Command>(Command::CoplanarIntercept);
+    maneuver_to_point.emplace<OrbitTarget>(target_orbit);
 
     // Circularize around target body
-    entt::entity circularize = universe.create();
-    universe.emplace<Trigger>(circularize, Trigger::OnEnterSOI);
-    universe.emplace<Command>(circularize, Command::CircularizeAtPeriapsis);
+    Node circularize(agent.universe());
+    circularize.emplace<Trigger>(Trigger::OnEnterSOI);
+    circularize.emplace<Command>(Command::CircularizeAtPeriapsis);
 
     command_queue.commands.push_back(maneuver_to_point);
     command_queue.commands.push_back(circularize);
@@ -262,70 +264,70 @@ void TransferToMoon(Universe& universe, entt::entity agent, entt::entity target)
 /**
  * @param offset the time offset in ticks to push back the command
  */
-void PushManeuver(Universe& universe, entt::entity entity, components::Maneuver_t maneuver, double offset) {
-    auto& queue = universe.get_or_emplace<components::CommandQueue>(entity);
-    queue.maneuvers.emplace_back(maneuver, universe.date() + offset);
+void PushManeuver(Node& entity, components::Maneuver_t maneuver, double offset) {
+    auto& queue = entity.get_or_emplace<components::CommandQueue>();
+    queue.maneuvers.emplace_back(maneuver, entity.universe().date() + offset);
 }
 
-void PushManeuvers(Universe& universe, entt::entity entity, std::initializer_list<components::Maneuver_t> maneuver,
+void PushManeuvers(Node& entity, std::initializer_list<components::Maneuver_t> maneuver,
                    double offset) {
     // Now push back all the commands or something
-    auto& queue = universe.get_or_emplace<components::CommandQueue>(entity);
+    auto& queue = entity.get_or_emplace<components::CommandQueue>();
     for (auto& man_t : maneuver) {
-        queue.maneuvers.emplace_back(man_t, universe.date() + offset);
+        queue.maneuvers.emplace_back(man_t, entity.universe().date() + offset);
     }
 }
 
-void PushManeuvers(Universe& universe, entt::entity entity, components::HohmannPair_t hohmann_pair, double offset) {
-    auto& queue = universe.get_or_emplace<components::CommandQueue>(entity);
-    queue.maneuvers.emplace_back(hohmann_pair.first, universe.date() + offset);
-    queue.maneuvers.emplace_back(hohmann_pair.second, universe.date() + offset);
+void PushManeuvers(Node& entity, components::HohmannPair_t hohmann_pair, double offset) {
+    auto& queue = entity.get_or_emplace<components::CommandQueue>();
+    queue.maneuvers.emplace_back(hohmann_pair.first, entity.universe().date() + offset);
+    queue.maneuvers.emplace_back(hohmann_pair.second, entity.universe().date() + offset);
 }
 
-void LandOnMoon(Universe& universe, entt::entity agent, entt::entity target, entt::entity city) {
+void LandOnMoon(Node& agent, Node& target, Node& city) {
     // If the current body is the moon, then we don't really need to bother
-    auto& orbit = universe.get<components::types::Orbit>(agent);
+    auto& orbit = agent.get<components::types::Orbit>();
     if (orbit.reference_body != target) {
-        TransferToMoon(universe, agent, target);
+        TransferToMoon(agent, target);
     }
     // Lower the periapsis to about 90% of the radius
     // In theory we'll do the math to land on the moon properly but eh
-    auto& body = universe.get<components::bodies::Body>(target);
+    auto& body = target.get<components::bodies::Body>();
     double landing_radius = body.radius * 0.9;
-    entt::entity land_action = universe.create();
-    universe.emplace<Trigger>(land_action, Trigger::OnManeuver);
-    universe.emplace<Command>(land_action, Command::SetPeriapsis);
-    universe.emplace<OrbitScalar>(land_action, landing_radius);
+    Node land_action(agent.universe());
+    land_action.emplace<Trigger>(Trigger::OnManeuver);
+    land_action.emplace<Command>(Command::SetPeriapsis);
+    land_action.emplace<OrbitScalar>(landing_radius);
 
     // then land on the city on the moon
-    entt::entity dock_city = universe.create();
-    universe.emplace<Trigger>(dock_city, Trigger::OnCrash);
-    universe.emplace<Command>(dock_city, Command::LandOnBody);
-    universe.emplace<OrbitEntityTarget>(dock_city, city);
+    Node dock_city(agent.universe());
+    dock_city.emplace<Trigger>(Trigger::OnCrash);
+    dock_city.emplace<Command>(Command::LandOnBody);
+    dock_city.emplace<OrbitEntityTarget>(city);
 
-    auto& command_queue = universe.get_or_emplace<components::CommandQueue>(agent);
+    auto& command_queue = agent.get_or_emplace<components::CommandQueue>();
     command_queue.commands.push_back(land_action);
     command_queue.commands.push_back(dock_city);
 }
 
 components::Maneuver_t MakeManeuver(const glm::dvec3& vector, double time) { return std::make_pair(vector, time); }
 
-std::vector<entt::entity> GetSOIHierarchy(Universe& universe, entt::entity source) {
-    std::vector<entt::entity> source_list;
-    entt::entity parent_body = universe.get<Orbit>(source).reference_body;
+std::vector<Node> GetSOIHierarchy(Node& source) {
+    std::vector<Node> source_list;
+    Node parent_body(source, source.get<Orbit>().reference_body);
     source_list.push_back(source);
 
     while (parent_body != entt::null) {
         source_list.push_back(parent_body);
-        parent_body = universe.get<Orbit>(parent_body).reference_body;
+        parent_body = Node(source, parent_body.get<Orbit>().reference_body);
     }
-    return std::move(source_list);
+    return source_list;
 }
 
-entt::entity GetCommonSOI(Universe& universe, entt::entity source, entt::entity target) {
+Node GetCommonSOI(Node& source, Node& target) {
     // Get common ancestor
-    std::vector<entt::entity> source_list = GetSOIHierarchy(universe, source);
-    std::vector<entt::entity> target_list = GetSOIHierarchy(universe, target);
+    std::vector<Node> source_list = GetSOIHierarchy(source);
+    std::vector<Node> target_list = GetSOIHierarchy(target);
     size_t i;
     for (i = 1; i < std::min(source_list.size(), target_list.size()); i++) {
         if (source_list[source_list.size() - i] != target_list[target_list.size() - i]) {
@@ -338,13 +340,13 @@ entt::entity GetCommonSOI(Universe& universe, entt::entity source, entt::entity 
     return source_list[source_list.size() - 1];
 }
 
-void LeaveSOI(Universe& universe, entt::entity agent, double altitude) {
-    entt::entity escape_action = universe.create();
-    universe.emplace<Trigger>(escape_action, Trigger::OnManeuver);
-    universe.emplace<Command>(escape_action, Command::ExitSOI);
-    universe.emplace<OrbitScalar>(escape_action, altitude);
+void LeaveSOI(Node& agent, double altitude) {
+    Node escape_action(agent.universe());
+    escape_action.emplace<Trigger>(Trigger::OnManeuver);
+    escape_action.emplace<Command>(Command::ExitSOI);
+    escape_action.emplace<OrbitScalar>(altitude);
 
-    auto& command_queue = universe.get_or_emplace<components::CommandQueue>(agent);
+    auto& command_queue = agent.get_or_emplace<components::CommandQueue>();
     command_queue.commands.push_back(escape_action);
 }
 }  // namespace cqsp::common::systems::commands

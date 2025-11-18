@@ -31,22 +31,25 @@
 
 namespace cqsp::common::systems {
 void SysSpacePort::DoSystem() {
-    auto space_ports = GetUniverse().view<components::infrastructure::SpacePort>();
-    for (entt::entity space_port : space_ports) {
-        auto& port_component = GetUniverse().get<components::infrastructure::SpacePort>(space_port);
+    auto space_ports = GetUniverse().nodes<components::infrastructure::SpacePort>();
+    for (Node space_port : space_ports) {
+        auto& port_component = space_port.get<components::infrastructure::SpacePort>();
         for (auto& [target, delivery_queue] : port_component.deliveries) {
+
             // Let's ignore the moon for now
             // Let's try to figure out the target
-            entt::entity common_soi = commands::GetCommonSOI(GetUniverse(), port_component.reference_body, target);
+            Node reference_body(space_port, port_component.reference_body);
+            Node target(space_port, target);
+            entt::entity common_soi = commands::GetCommonSOI(reference_body, target);
             while (!delivery_queue.empty()) {
                 entt::entity ship = entt::null;
                 components::infrastructure::TransportedGood& element = delivery_queue.back();
                 if (common_soi == target) {
                     // Returning from moon
-                    ship = ReturnFromMoonManeuver(element, port_component.reference_body, target);
+                    ship = ReturnFromMoonManeuver(element, reference_body, target);
                 } else if (common_soi == port_component.reference_body) {
                     // Target moon
-                    ship = TargetMoonManeuver(element, port_component.reference_body, target);
+                    ship = TargetMoonManeuver(element, reference_body, target);
                 } else {
                     SPDLOG_INFO("Interplanetary transfers not supported yet");
                 }
@@ -64,46 +67,47 @@ void SysSpacePort::DoSystem() {
     }
 }
 
-void SysSpacePort::ProcessDockedShips(entt::entity space_port) {
-    if (!GetUniverse().any_of<components::DockedShips>(space_port)) {
+void SysSpacePort::ProcessDockedShips(Node& space_port) {
+    if (!space_port.any_of<components::DockedShips>()) {
         return;
     }
-    auto& docked_ships = GetUniverse().get<components::DockedShips>(space_port);
-    auto& space_port_comp = GetUniverse().get<components::infrastructure::SpacePort>(space_port);
+    auto& docked_ships = space_port.get<components::DockedShips>();
+    auto& space_port_comp = space_port.get<components::infrastructure::SpacePort>();
     // Check for each of the docked ships
-    for (entt::entity ship : docked_ships.docked_ships) {
+    for (Node ship : space_port.Convert(docked_ships.docked_ships)) {
         // Now unload the resources in the space port
-        if (!GetUniverse().any_of<components::ResourceStockpile>(ship)) {
+        if (!ship.any_of<components::ResourceStockpile>()) {
             continue;
         }
-        space_port_comp.output_resources += GetUniverse().get<components::ResourceStockpile>(ship);
-        GetUniverse().remove<components::ResourceStockpile>(ship);
+        space_port_comp.output_resources += ship.get<components::ResourceStockpile>();
+        ship.remove<components::ResourceStockpile>();
     }
 }
 
-entt::entity SysSpacePort::TargetMoonManeuver(const components::infrastructure::TransportedGood& element,
-                                              entt::entity reference_body, entt::entity target) {
+Node SysSpacePort::TargetMoonManeuver(const components::infrastructure::TransportedGood& element,
+                                      Node& reference_body, Node& target) {
     // Spawn new ship and send it to a parking orbit
     // Get the reference body
-    auto& body = GetUniverse().get<components::bodies::Body>(reference_body);
+    auto& body = reference_body.get<components::bodies::Body>();
     // Let's set a parking orbit at 8% of the planet's radius
     // TODO(EhWhoAmI): It should be a factor of the atmosphere in the future
     const double eccentricity = std::fabs(GetUniverse().random->GetRandomNormal(0, 0.000005));
     const double semi_major_axis = GetUniverse().random->GetRandomNormal(body.radius * 1.08, body.radius * 0.01);
     const double inclination = GetUniverse().random->GetRandomNormal(0, 0.05);
     components::types::Orbit source_orbit(semi_major_axis, eccentricity, inclination, 0, 0.1, 0, reference_body);
-    entt::entity ship = common::actions::LaunchShip(GetUniverse(), source_orbit);
+    Node ship = common::actions::LaunchShip(GetUniverse(), source_orbit);
     GetUniverse().emplace<components::Name>(
         ship, fmt::format("{} Transport Vehicle", util::GetName(GetUniverse(), element.good)));
     // Then target the target body
     // Land on armstrong
     auto& cities = GetUniverse().get<components::Habitation>(target);
-    commands::LandOnMoon(GetUniverse(), ship, target, cities.settlements.front());
+    Node first_city(GetUniverse(), cities.settlements.front());
+    commands::LandOnMoon(ship, target, first_city);
     return ship;
 }
 
-entt::entity SysSpacePort::ReturnFromMoonManeuver(const components::infrastructure::TransportedGood& element,
-                                                  entt::entity reference_body, entt::entity target) {
+Node SysSpacePort::ReturnFromMoonManeuver(const components::infrastructure::TransportedGood& element,
+                                          Node& reference_body, Node& target) {
     // Spawn new ship and send it to a parking orbit
     // Get the reference body
     auto& body = GetUniverse().get<components::bodies::Body>(reference_body);
@@ -113,37 +117,36 @@ entt::entity SysSpacePort::ReturnFromMoonManeuver(const components::infrastructu
     const double semi_major_axis = GetUniverse().random->GetRandomNormal(body.radius * 1.08, body.radius * 0.01);
     const double inclination = GetUniverse().random->GetRandomNormal(0, 0.05);
     components::types::Orbit source_orbit(semi_major_axis, eccentricity, inclination, 0, 0.1, 0, reference_body);
-    entt::entity ship = common::actions::LaunchShip(GetUniverse(), source_orbit);
-    GetUniverse().emplace<components::Name>(
-        ship, fmt::format("{} Transport Vehicle", util::GetName(GetUniverse(), element.good)));
+    Node ship = common::actions::LaunchShip(GetUniverse(), source_orbit);
+    ship.emplace<components::Name>(fmt::format("{} Transport Vehicle", util::GetName(GetUniverse(), element.good)));
     // Then target the target body
     // Land on armstrong
 
-    auto& target_body = GetUniverse().get<components::bodies::Body>(target);
+    auto& target_body = target.get<components::bodies::Body>();
 
-    systems::commands::LeaveSOI(GetUniverse(), ship, target_body.radius * 5);
-    systems::commands::PushManeuver(GetUniverse(), ship, systems::commands::MakeManeuver(glm::dvec3(0, 0, 0), 1000));
+    systems::commands::LeaveSOI(ship, target_body.radius * 5);
+    systems::commands::PushManeuver(ship, systems::commands::MakeManeuver(glm::dvec3(0, 0, 0), 1000));
 
-    auto& command_queue = GetUniverse().get_or_emplace<components::CommandQueue>(ship);
+    auto& command_queue = ship.get_or_emplace<components::CommandQueue>();
 
     // Circularize
-    entt::entity circularize = GetUniverse().create();
-    GetUniverse().emplace<components::Trigger>(circularize, components::Trigger::OnExitSOI);
-    GetUniverse().emplace<components::Command>(circularize, components::Command::CircularizeAtPeriapsis);
+    Node circularize(GetUniverse());
+    circularize.emplace<components::Trigger>(components::Trigger::OnExitSOI);
+    circularize.emplace<components::Command>(components::Command::CircularizeAtPeriapsis);
     command_queue.commands.push_back(circularize);
 
     // Reenter
-    entt::entity reenter = GetUniverse().create();
-    GetUniverse().emplace<components::Trigger>(reenter, components::Trigger::OnManeuver);
-    GetUniverse().emplace<components::Command>(reenter, components::Command::SetPeriapsis);
-    GetUniverse().emplace<components::OrbitScalar>(reenter, target_body.radius * 0.9);
+    Node reenter(GetUniverse());
+    reenter.emplace<components::Trigger>(components::Trigger::OnManeuver);
+    reenter.emplace<components::Command>(components::Command::SetPeriapsis);
+    reenter.emplace<components::OrbitScalar>(target_body.radius * 0.9);
     command_queue.commands.push_back(reenter);
 
-    entt::entity dock_city = GetUniverse().create();
+    Node dock_city(GetUniverse());
     auto& cities = GetUniverse().get<components::Habitation>(target);
-    GetUniverse().emplace<components::Trigger>(dock_city, components::Trigger::OnCrash);
-    GetUniverse().emplace<components::Command>(dock_city, components::Command::LandOnBody);
-    GetUniverse().emplace<components::OrbitEntityTarget>(dock_city, cities.settlements.front());
+    dock_city.emplace<components::Trigger>(components::Trigger::OnCrash);
+    dock_city.emplace<components::Command>(components::Command::LandOnBody);
+    dock_city.emplace<components::OrbitEntityTarget>(cities.settlements.front());
     command_queue.commands.push_back(dock_city);
 
     return ship;

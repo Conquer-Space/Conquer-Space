@@ -35,17 +35,21 @@
 
 namespace cqsp::common::util {
 namespace components = cqsp::common::components;
-std::string GetName(const Universe& universe, entt::entity entity) {
-    if (!universe.valid(entity)) {
+std::string GetName(Node& node) {
+    if (!node.valid()) {
         return "";
     }
-    if (universe.all_of<components::Name>(entity)) {
-        return universe.get<components::Name>(entity);
-    } else if (universe.all_of<components::Identifier>(entity)) {
-        return universe.get<components::Identifier>(entity);
+    if (node.all_of<components::Name>()) {
+        return node.get<components::Name>();
+    } else if (node.all_of<components::Identifier>()) {
+        return node.get<components::Identifier>();
     } else {
-        return fmt::format("{}", GetEntityType(universe, entity));
+        return fmt::format("{}", GetEntityType(node));
     }
+}
+std::string GetName(const Universe& universe, entt::entity entity) { 
+    Node node(universe, entity);
+    return GetName(node);
 }
 
 /**
@@ -53,21 +57,22 @@ std::string GetName(const Universe& universe, entt::entity entity) {
  * Perhaps we could just have a component that stores the name, and we
  * can get rid of this complex and honestly unwieldy function.
  */
-std::string GetEntityType(const Universe& universe, entt::entity entity) {
+std::string GetEntityType(Node& node) {
     // Then get type of entity
-    if (entity == entt::null) {
+    if (node == entt::null) {
         return "Null Entity";
     }
-    if (universe.all_of<components::bodies::Star>(entity)) {
+    if (node.all_of<components::bodies::Star>()) {
         return "Star";
-    } else if (universe.all_of<components::bodies::Planet>(entity)) {
+    } else if (node.all_of<components::bodies::Planet>()) {
         return "Planet";
-    } else if (universe.any_of<components::Settlement, components::Habitation>(entity)) {
+    } else if (node.any_of<components::Settlement, components::Habitation>()) {
         return "City";
-    } else if (universe.any_of<components::Production>(entity)) {
-        auto& generator = universe.get<components::Production>(entity);
-        return fmt::format("{} Factory", GetName(universe, generator.recipe));
-    } else if (universe.any_of<components::Mine>(entity)) {
+    } else if (node.any_of<components::Production>()) {
+        auto& generator = node.get<components::Production>();
+        Node recipe_node = Node(node, generator.recipe);
+        return fmt::format("{} Factory", GetName(recipe_node));
+    } else if (node.any_of<components::Mine>()) {
         /*
         std::string production = "";
         auto& generator = universe.get<components::ResourceGenerator>(entity);
@@ -81,21 +86,25 @@ std::string GetEntityType(const Universe& universe, entt::entity entity) {
         return fmt::format("{} Mine", production);
         */
         return "Mine";
-    } else if (universe.any_of<components::Player>(entity)) {
+    } else if (node.any_of<components::Player>()) {
         return "Player";
-    } else if (universe.any_of<components::Country>(entity)) {
+    } else if (node.any_of<components::Country>()) {
         return "Country";
-    } else if (universe.any_of<components::Province>(entity)) {
+    } else if (node.any_of<components::Province>()) {
         return "Province";
-    } else if (universe.any_of<components::Organization>(entity)) {
+    } else if (node.any_of<components::Organization>()) {
         return "Organization";
-    } else if (universe.any_of<components::science::Lab>(entity)) {
+    } else if (node.any_of<components::science::Lab>()) {
         return "Science Lab";
-    } else if (universe.any_of<components::Commercial>(entity)) {
+    } else if (node.any_of<components::Commercial>()) {
         return "Commercial";
-    } else if (universe.any_of<components::ships::Ship>(entity)) {
+    } else if (node.any_of<components::ships::Ship>()) {
         return "Ship";
     }
     return "Unknown";
+}
+std::string GetEntityType(const Universe& universe, entt::entity entity) {
+    Node node(universe, entity);
+    return GetEntityType(node);
 }
 }  // namespace cqsp::common::util

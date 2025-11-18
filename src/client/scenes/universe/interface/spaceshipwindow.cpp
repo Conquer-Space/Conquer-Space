@@ -35,14 +35,16 @@ namespace components = cqsp::common::components;
 namespace types = components::types;
 namespace ships = components::ships;
 namespace bodies = components::bodies;
-using common::systems::commands::PushManeuver;
-using common::systems::commands::PushManeuvers;
+namespace commands = common::systems::commands;
+using commands::PushManeuver;
+using commands::PushManeuvers;
 using common::util::GetName;
 using types::GetCircularOrbitingVelocity;
 using types::Kinematics;
 using types::Orbit;
 using types::OrbitVelocity;
 using types::toDegree;
+using common::Node;
 
 void SpaceshipWindow::Init() {}
 
@@ -50,7 +52,8 @@ void SpaceshipWindow::DoUI(int delta_time) {
     // Get selected spaceship, and then do the window
     // Check if the selected body is a spaceship
     // Then display information on it
-    entt::entity body = GetUniverse().view<FocusedPlanet>().front();
+    Node body_node(GetUniverse(), GetUniverse().view<FocusedPlanet>().front());
+    entt::entity body = body_node;
     if (!GetUniverse().valid(body)) {
         return;
     }
@@ -129,8 +132,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
         }
         if (ImGui::Button("Circularize at apoapsis")) {
             // Add random delta v
-            common::systems::commands::PushManeuvers(GetUniverse(), body,
-                                                     {common::systems::CircularizeAtApoapsis(orbit)});
+            PushManeuvers(body_node, {common::systems::CircularizeAtApoapsis(orbit)});
         }
         if (ImGui::IsItemHovered()) {
             double circular_velocity = GetCircularOrbitingVelocity(orbit.GM, orbit.GetApoapsis());
@@ -141,7 +143,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
         }
 
         if (ImGui::Button("Circularize at perapsis")) {
-            PushManeuvers(GetUniverse(), body, {common::systems::CircularizeAtPeriapsis(orbit)});
+            PushManeuvers(body_node, {common::systems::CircularizeAtPeriapsis(orbit)});
         }
 
         if (ImGui::IsItemHovered()) {
@@ -158,7 +160,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
             // Get velocity at the new apogee
             // Get the velocity
             auto maneuver = common::systems::SetApoapsis(orbit, new_perigee);
-            PushManeuvers(GetUniverse(), body, {maneuver});
+            PushManeuvers(body_node, {maneuver});
         }
 
         if (ImGui::IsItemHovered()) {
@@ -174,7 +176,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
             // Get velocity at the new apogee
             // Get the velocity
             auto maneuver = common::systems::SetPeriapsis(orbit, new_apogee);
-            PushManeuvers(GetUniverse(), body, {maneuver});
+            PushManeuvers(body_node, {maneuver});
         }
 
         if (ImGui::IsItemHovered()) {
@@ -190,7 +192,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
             // Get the velocity
             auto hohmann = common::systems::HohmannTransfer(orbit, new_hohmann);
             if (hohmann.has_value()) {
-                PushManeuvers(GetUniverse(), body, *hohmann);
+                PushManeuvers(body_node, *hohmann);
             } else {
                 SPDLOG_INFO("Orbit is not circular!");
             }
@@ -200,7 +202,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
         if (ImGui::Button("Leave SOI")) {
             auto maneuver = common::systems::TransferFromBody(GetUniverse(), orbit, GetUniverse().get<Kinematics>(body),
                                                               transfer_radius);
-            PushManeuver(GetUniverse(), body, maneuver);
+            PushManeuver(body_node, maneuver);
         }
     }
 
@@ -218,15 +220,15 @@ void SpaceshipWindow::DoUI(int delta_time) {
         if (ImGui::Button("Rendez-vous!")) {
             // Rdv with target
             auto pair = cqsp::common::systems::CoplanarIntercept(orbit, target, GetUniverse().date.ToSecond());
-            common::systems::commands::PushManeuvers(GetUniverse(), body, pair);
+            PushManeuvers(body_node, pair);
         }
         if (ImGui::Button("Maneuver to point")) {
             auto pair = cqsp::common::systems::CoplanarIntercept(orbit, target, GetUniverse().date.ToSecond());
-            common::systems::commands::PushManeuvers(GetUniverse(), body, {pair.first});
+            PushManeuvers(body_node, {pair.first});
         }
         if (ImGui::Button("Match Planes")) {
             auto maneuver = cqsp::common::systems::MatchPlanes(orbit, target);
-            common::systems::commands::PushManeuver(GetUniverse(), body, maneuver);
+            common::systems::commands::PushManeuver(body_node, maneuver);
         }
         ImGui::TextFmt("Phase angle: {}", cqsp::common::components::types::CalculatePhaseAngle(
                                               orbit, target, GetUniverse().date.ToSecond()));
@@ -259,11 +261,12 @@ void SpaceshipWindow::DoUI(int delta_time) {
             common::components::types::AngleWith(orbit, GetUniverse().get<types::Orbit>(orbit.reference_body));
         ImGui::TextFmt("Angle: {}", common::components::types::toDegree(angle));
         static entt::entity selected = entt::null;
+        Node selected_node(GetUniverse(), selected);
         if (selected == entt::null) {
             ImGui::BeginDisabled(true);
         }
         if (ImGui::Button("Transfer to Moon")) {
-            common::systems::commands::TransferToMoon(GetUniverse(), body, selected);
+            commands::TransferToMoon(body_node, selected_node);
         }
 
         // Land on body?
@@ -272,7 +275,8 @@ void SpaceshipWindow::DoUI(int delta_time) {
             // Just grab the first one
             auto& cities = GetUniverse().get<components::Habitation>(selected);
             if (!cities.settlements.empty()) {
-                common::systems::commands::LandOnMoon(GetUniverse(), body, selected, cities.settlements.front());
+                Node city_node = selected_node.Convert(cities.settlements.front());
+                common::systems::commands::LandOnMoon(body_node, selected_node, city_node);
             }
         }
         if (selected == entt::null) {

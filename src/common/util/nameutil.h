@@ -29,5 +29,7 @@ namespace cqsp::common::util {
 /// <param name="entity"></param>
 /// <returns></returns>
 std::string GetName(const Universe& universe, entt::entity entity);
+std::string GetName(Node& node);
 std::string GetEntityType(const Universe& universe, entt::entity entity);
+std::string GetEntityType(Node& node);
 }  // namespace cqsp::common::util

@@ -65,15 +65,16 @@ Node CreateShip(Node& starsystem, Node& fleet, const components::types::Orbit& o
     return CreateShip(starsystem, fleet, types::toVec3AU(orbit), shipName);
 }
 
-entt::entity LaunchShip(Universe& universe, const components::types::Orbit& orbit) {
-    entt::entity ship = universe.create();
-    universe.emplace<Ship>(ship);
+Node LaunchShip(Universe& universe, const components::types::Orbit& orbit) {
+    Node ship(universe);
+    ship.emplace<Ship>();
     // Now do things
-    auto& o = universe.emplace<types::Orbit>(ship, orbit);
-    universe.emplace<types::Kinematics>(ship);
-    auto& body = universe.get<bodies::Body>(orbit.reference_body);
+    auto& o = ship.emplace<types::Orbit>(orbit);
+    ship.emplace<types::Kinematics>();
+    Node orbiting_body(universe, orbit.reference_body);
+    auto& body = orbiting_body.get<bodies::Body>();
     o.GM = body.GM;
-    universe.get<bodies::OrbitalSystem>(orbit.reference_body).push_back(ship);
+    orbiting_body.get<bodies::OrbitalSystem>().push_back(ship);
     return ship;
 }
 }  // namespace cqsp::common::actions

@@ -47,10 +47,12 @@ namespace infrastructure = components::infrastructure;
 namespace types = components::types;
 namespace ships = components::ships;
 namespace bodies = components::bodies;
+namespace commands = common::systems::commands;
 using common::util::GetName;
 using components::PopulationSegment;
 using components::Settlement;
 using components::Wallet;
+using common::Node;
 
 using util::NumberToHumanString;
 
@@ -513,14 +515,14 @@ void SysProvinceInformation::LaunchTab() {
         types::Orbit orb(semi_major_axis, eccentricity,
                          components::types::GetLaunchInclination(city_coord.r_latitude(), (azimuth)), LAN,
                          arg_of_perapsis, 0, reference_body);
-        entt::entity ship = common::actions::LaunchShip(GetUniverse(), orb);
+        Node ship_node = common::actions::LaunchShip(GetUniverse(), orb);
+        entt::entity ship = ship_node;
         // Also compute the value
         GetUniverse().emplace<ctx::VisibleOrbit>(ship);
 
-        common::systems::commands::LeaveSOI(GetUniverse(), ship, 1000);
+        commands::LeaveSOI(ship_node, 1000);
         // Add maneuver like 1000 seconds in the future
-        common::systems::commands::PushManeuver(GetUniverse(), ship,
-                                                common::systems::commands::MakeManeuver(glm::dvec3(0, 0, 0), 1000));
+        commands::PushManeuver(ship_node, commands::MakeManeuver(glm::dvec3(0, 0, 0), 1000));
 
         // Also self destruct after leaving soi
         entt::entity escape_action = GetUniverse().create();

@@ -27,10 +27,10 @@ class SysSpacePort : public ISimulationSystem {
     int Interval() override { return components::StarDate::DAY; }
 
  private:
-    void ProcessDockedShips(entt::entity space_port);
-    entt::entity TargetMoonManeuver(const components::infrastructure::TransportedGood& element,
-                                    entt::entity reference_body, entt::entity target);
-    entt::entity ReturnFromMoonManeuver(const components::infrastructure::TransportedGood& element,
-                                        entt::entity reference_body, entt::entity target);
+    void ProcessDockedShips(Node& space_port);
+    Node TargetMoonManeuver(const components::infrastructure::TransportedGood& element, Node& reference_body,
+                             Node& target);
+    Node ReturnFromMoonManeuver(const components::infrastructure::TransportedGood& element, Node& reference_body,
+                                 Node& target);
 };
 }  // namespace cqsp::common::systems

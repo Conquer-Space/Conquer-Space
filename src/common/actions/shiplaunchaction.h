@@ -37,7 +37,7 @@ Node CreateShip(Node& starsystem, Node& fleet, const glm::vec3& orbit, const std
 //@brief just like createShip with fleets but uses an orbit entity instead
 Node CreateShip(Node& starsystem, Node& fleet, Node& orbit, const std::string& shipName = "");
 
-[[nodiscard]] entt::entity LaunchShip(Universe& universe, const components::types::Orbit& orbit);
+[[nodiscard]] Node LaunchShip(Universe& universe, const components::types::Orbit& orbit);
 
 Node CreateShip(Node& starsystem, Node& fleet, const components::types::Orbit& orbit, const std::string& shipName = "");
 }  // namespace cqsp::common::actions
