@@ -167,7 +167,7 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
             auto& scalar_change = universe.get<OrbitScalar>(command_entity);
             auto& orbit = universe.get<Orbit>(entity);
             auto maneuver = core::systems::TransferFromBody(universe, orbit, universe.get<types::Kinematics>(entity),
-                                                              scalar_change.value);
+                                                            scalar_change.value);
             PushManeuver(universe, entity, maneuver);
         } break;
         case Command::SelfDestruct: {
@@ -322,8 +322,8 @@ std::vector<entt::entity> GetSOIHierarchy(Universe& universe, entt::entity sourc
     return std::move(source_list);
 }
 
-entt::entity GetcoreSOI(Universe& universe, entt::entity source, entt::entity target) {
-    // Get core ancestor
+entt::entity GetCommonSOI(Universe& universe, entt::entity source, entt::entity target) {
+    // Get common ancestor
     std::vector<entt::entity> source_list = GetSOIHierarchy(universe, source);
     std::vector<entt::entity> target_list = GetSOIHierarchy(universe, target);
     size_t i;

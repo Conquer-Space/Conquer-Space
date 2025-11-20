@@ -41,12 +41,12 @@ void PushManeuvers(Universe& universe, entt::entity entity, std::initializer_lis
 void PushManeuvers(Universe& universe, entt::entity entity, components::HohmannPair_t hohmann_pair, double offset = 0);
 std::vector<entt::entity> GetSOIHierarchy(Universe& universe, entt::entity source);
 /**
- * Finds the core sphere of influence between the two bodies.
+ * Finds common core sphere of influence between the two bodies.
  * @param universe universe registry
  * @param source source entity
  * @param target target entity
- * @return least core sphere of influence between source and target. If null, then we are comparing two completely
+ * @return least common sphere of influence between source and target. If null, then we are comparing two completely
  * separate SOI trees.
  */
-entt::entity GetcoreSOI(Universe& universe, entt::entity source, entt::entity target);
+entt::entity GetCommonSOI(Universe& universe, entt::entity source, entt::entity target);
 }  // namespace cqsp::core::systems::commands

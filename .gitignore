@@ -9,8 +9,8 @@
 /docs/html
 /.vscode
 /.vs/
-/src/common/git-commit.h
-/src/common/version.h
+/src/core/git-commit.h
+/src/core/version.h
 
 # Packaging stuff
 *.aps

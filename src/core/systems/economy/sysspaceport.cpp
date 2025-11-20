@@ -37,14 +37,14 @@ void SysSpacePort::DoSystem() {
         for (auto& [target, delivery_queue] : port_component.deliveries) {
             // Let's ignore the moon for now
             // Let's try to figure out the target
-            entt::entity core_soi = commands::GetcoreSOI(GetUniverse(), port_component.reference_body, target);
+            entt::entity common_soi = commands::GetCommonSOI(GetUniverse(), port_component.reference_body, target);
             while (!delivery_queue.empty()) {
                 entt::entity ship = entt::null;
                 components::infrastructure::TransportedGood& element = delivery_queue.back();
-                if (core_soi == target) {
+                if (common_soi == target) {
                     // Returning from moon
                     ship = ReturnFromMoonManeuver(element, port_component.reference_body, target);
-                } else if (core_soi == port_component.reference_body) {
+                } else if (common_soi == port_component.reference_body) {
                     // Target moon
                     ship = TargetMoonManeuver(element, port_component.reference_body, target);
                 } else {

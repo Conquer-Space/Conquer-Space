@@ -75,7 +75,7 @@ TEST(CommandTest, coreSOITest) {
     universe.get<cqsp::core::components::types::Orbit>(root_1).reference_body = core_soi;
     universe.get<cqsp::core::components::types::Orbit>(root_2).reference_body = core_soi;
     // Now generate the arbritrary
-    EXPECT_EQ(cqsp::core::systems::commands::GetcoreSOI(universe, child_1, child_2), core_soi);
+    EXPECT_EQ(cqsp::core::systems::commands::GetCommonSOI(universe, child_1, child_2), core_soi);
 }
 
 TEST(CommandTest, coreSOITestRoot) {
@@ -92,5 +92,5 @@ TEST(CommandTest, coreSOITestRoot) {
     universe.get<cqsp::core::components::types::Orbit>(root_1).reference_body = core_soi;
     universe.get<cqsp::core::components::types::Orbit>(root_2).reference_body = core_soi;
     // Now generate the arbritrary
-    EXPECT_EQ(cqsp::core::systems::commands::GetcoreSOI(universe, child_1, child_2), core_soi);
+    EXPECT_EQ(cqsp::core::systems::commands::GetCommonSOI(universe, child_1, child_2), core_soi);
 }

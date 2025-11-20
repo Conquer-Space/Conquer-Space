@@ -859,7 +859,7 @@ void RenderInterface_GL3::BeginFrame() {
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 #ifndef RMLUI_PLATFORM_EMSCRIPTEN
-    // We do blending in nonlinear sRGB space because that is the core practice and gives results that we are used to.
+    // We do blending in nonlinear sRGB space because that is the common practice and gives results that we are used to.
     glDisable(GL_FRAMEBUFFER_SRGB);
 #endif
 
