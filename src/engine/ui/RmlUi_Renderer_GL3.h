@@ -143,7 +143,7 @@ class RenderInterface_GL3 : public Rml::RenderInterface {
         Layers can be pushed and popped, creating new framebuffers as needed. Typically, geometry is rendered to the top
         layer. The layer framebuffers may have MSAA enabled.
 
-        Postprocessing framebuffers are separate from the layers, and are corely used to apply texture-wide effects
+        Postprocessing framebuffers are separate from the layers, and are commonly used to apply texture-wide effects
         such as filters. They are used both as input and output during rendering, and do not use MSAA.
     */
     class RenderLayerStack {

@@ -20,7 +20,7 @@
 
 using cqsp::core::components::ResourceLedger;
 
-TEST(core_ResourceLedger, ResourceLedgerComparison) {
+TEST(Core_ResourceLedger, ResourceLedgerComparison) {
     ResourceLedger first;
     ResourceLedger second;
     // Set the stuff
@@ -74,7 +74,7 @@ TEST(core_ResourceLedger, ResourceLedgerComparison) {
     first.clear();
 }
 
-TEST(core_ResourceLedger, ResourceLedgerDoubleComparison) {
+TEST(Core_ResourceLedger, ResourceLedgerDoubleComparison) {
     ResourceLedger first;
 
     entt::registry reg;
@@ -106,7 +106,7 @@ TEST(core_ResourceLedger, ResourceLedgerDoubleComparison) {
     EXPECT_FALSE(first <= 0);
 }
 
-TEST(core_ResourceLedger, HasAllResoourcesTest) {
+TEST(Core_ResourceLedger, HasAllResoourcesTest) {
     ResourceLedger first;
     ResourceLedger second;
 
@@ -137,7 +137,7 @@ TEST(core_ResourceLedger, HasAllResoourcesTest) {
     EXPECT_TRUE(first.HasAllResources(first));
 }
 
-TEST(core_ResourceLedger, LedgerAdditionTest1) {
+TEST(Core_ResourceLedger, LedgerAdditionTest1) {
     ResourceLedger first;
     ResourceLedger second;
 
@@ -152,7 +152,7 @@ TEST(core_ResourceLedger, LedgerAdditionTest1) {
     EXPECT_EQ(second.size(), 1);
 }
 
-TEST(core_ResourceLedger, LedgerSubtractionTest1) {
+TEST(Core_ResourceLedger, LedgerSubtractionTest1) {
     ResourceLedger first;
     ResourceLedger second;
 
