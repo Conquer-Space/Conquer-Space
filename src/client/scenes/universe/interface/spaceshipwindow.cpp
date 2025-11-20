@@ -17,27 +17,27 @@
 #include "client/scenes/universe/interface/spaceshipwindow.h"
 
 #include "client/scenes/universe/views/starsystemrenderer.h"
-#include "common/actions/maneuver/basicmaneuver.h"
-#include "common/actions/maneuver/commands.h"
-#include "common/actions/maneuver/hohmann.h"
-#include "common/actions/maneuver/rendezvous.h"
-#include "common/actions/maneuver/transfers.h"
-#include "common/components/coordinates.h"
-#include "common/components/maneuver.h"
-#include "common/components/orbit.h"
-#include "common/components/ships.h"
-#include "common/components/surface.h"
-#include "common/util/nameutil.h"
+#include "core/actions/maneuver/basicmaneuver.h"
+#include "core/actions/maneuver/commands.h"
+#include "core/actions/maneuver/hohmann.h"
+#include "core/actions/maneuver/rendezvous.h"
+#include "core/actions/maneuver/transfers.h"
+#include "core/components/coordinates.h"
+#include "core/components/maneuver.h"
+#include "core/components/orbit.h"
+#include "core/components/ships.h"
+#include "core/components/surface.h"
+#include "core/util/nameutil.h"
 
 namespace cqsp::client::systems {
 
-namespace components = cqsp::common::components;
+namespace components = cqsp::core::components;
 namespace types = components::types;
 namespace ships = components::ships;
 namespace bodies = components::bodies;
-using common::systems::commands::PushManeuver;
-using common::systems::commands::PushManeuvers;
-using common::util::GetName;
+using core::systems::commands::PushManeuver;
+using core::systems::commands::PushManeuvers;
+using core::util::GetName;
 using types::GetCircularOrbitingVelocity;
 using types::Kinematics;
 using types::Orbit;
@@ -86,11 +86,10 @@ void SpaceshipWindow::DoUI(int delta_time) {
                 ImGui::EndTooltip();
             }
             ImGui::TextFmt("Apoapsis: {:<10} km ({:.1f} s)", orbit.GetApoapsis() - p,
-                           orbit.TimeToTrueAnomaly(common::components::types::apoapsis));
+                           orbit.TimeToTrueAnomaly(core::components::types::apoapsis));
             if (ImGui::IsItemHovered()) {
                 ImGui::BeginTooltip();
-                ImGui::TextFmt("{:.2f} hours",
-                               orbit.TimeToTrueAnomaly(common::components::types::apoapsis) / (60 * 60));
+                ImGui::TextFmt("{:.2f} hours", orbit.TimeToTrueAnomaly(core::components::types::apoapsis) / (60 * 60));
                 ImGui::EndTooltip();
             }
         }
@@ -115,7 +114,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
         ImGui::SliderAngle("trueanomaly", &true_anomaly, (0));
 
         double apoapsis_velocity =
-            OrbitVelocity(common::components::types::apoapsis, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
+            OrbitVelocity(core::components::types::apoapsis, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
         double periapsis_velocity = OrbitVelocity(0, orbit.eccentricity, orbit.semi_major_axis, orbit.GM);
         double max_altitude = 10000000;
         double min_altitude = 0;
@@ -129,8 +128,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
         }
         if (ImGui::Button("Circularize at apoapsis")) {
             // Add random delta v
-            common::systems::commands::PushManeuvers(GetUniverse(), body,
-                                                     {common::systems::CircularizeAtApoapsis(orbit)});
+            core::systems::commands::PushManeuvers(GetUniverse(), body, {core::systems::CircularizeAtApoapsis(orbit)});
         }
         if (ImGui::IsItemHovered()) {
             double circular_velocity = GetCircularOrbitingVelocity(orbit.GM, orbit.GetApoapsis());
@@ -141,7 +139,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
         }
 
         if (ImGui::Button("Circularize at perapsis")) {
-            PushManeuvers(GetUniverse(), body, {common::systems::CircularizeAtPeriapsis(orbit)});
+            PushManeuvers(GetUniverse(), body, {core::systems::CircularizeAtPeriapsis(orbit)});
         }
 
         if (ImGui::IsItemHovered()) {
@@ -157,14 +155,14 @@ void SpaceshipWindow::DoUI(int delta_time) {
         if (ImGui::Button("Set Apoapsis")) {
             // Get velocity at the new apogee
             // Get the velocity
-            auto maneuver = common::systems::SetApoapsis(orbit, new_perigee);
+            auto maneuver = core::systems::SetApoapsis(orbit, new_perigee);
             PushManeuvers(GetUniverse(), body, {maneuver});
         }
 
         if (ImGui::IsItemHovered()) {
             double new_sma = (orbit.GetApoapsis() + new_perigee) / 2;
             // Get velocity at the new apogee
-            double new_v = common::components::types::OrbitVelocityAtR(orbit.GM, new_sma, orbit.GetApoapsis());
+            double new_v = core::components::types::OrbitVelocityAtR(orbit.GM, new_sma, orbit.GetApoapsis());
             ImGui::SetTooltip("Delta-v: %f km/s", new_v - periapsis_velocity);
         }
 
@@ -173,14 +171,14 @@ void SpaceshipWindow::DoUI(int delta_time) {
         if (ImGui::Button("Set Periapsis")) {
             // Get velocity at the new apogee
             // Get the velocity
-            auto maneuver = common::systems::SetPeriapsis(orbit, new_apogee);
+            auto maneuver = core::systems::SetPeriapsis(orbit, new_apogee);
             PushManeuvers(GetUniverse(), body, {maneuver});
         }
 
         if (ImGui::IsItemHovered()) {
             double new_sma = (orbit.GetPeriapsis() + new_apogee) / 2;
             // Get velocity at the new apogee
-            double new_v = common::components::types::OrbitVelocityAtR(orbit.GM, new_sma, orbit.GetPeriapsis());
+            double new_v = core::components::types::OrbitVelocityAtR(orbit.GM, new_sma, orbit.GetPeriapsis());
             ImGui::SetTooltip("Delta-v: %f km/s", new_v - periapsis_velocity);
         }
 
@@ -188,7 +186,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
         if (ImGui::Button("Set New Orbit")) {
             // Get velocity at the new apogee
             // Get the velocity
-            auto hohmann = common::systems::HohmannTransfer(orbit, new_hohmann);
+            auto hohmann = core::systems::HohmannTransfer(orbit, new_hohmann);
             if (hohmann.has_value()) {
                 PushManeuvers(GetUniverse(), body, *hohmann);
             } else {
@@ -198,8 +196,8 @@ void SpaceshipWindow::DoUI(int delta_time) {
         ImGui::InputDouble("Leave SOI altitude", &transfer_radius, min_altitude, max_altitude);
         // Also get the radius
         if (ImGui::Button("Leave SOI")) {
-            auto maneuver = common::systems::TransferFromBody(GetUniverse(), orbit, GetUniverse().get<Kinematics>(body),
-                                                              transfer_radius);
+            auto maneuver = core::systems::TransferFromBody(GetUniverse(), orbit, GetUniverse().get<Kinematics>(body),
+                                                            transfer_radius);
             PushManeuver(GetUniverse(), body, maneuver);
         }
     }
@@ -217,21 +215,21 @@ void SpaceshipWindow::DoUI(int delta_time) {
         ImGui::TextFmt("Distance to target: {}", glm::length(target_distance));
         if (ImGui::Button("Rendez-vous!")) {
             // Rdv with target
-            auto pair = cqsp::common::systems::CoplanarIntercept(orbit, target, GetUniverse().date.ToSecond());
-            common::systems::commands::PushManeuvers(GetUniverse(), body, pair);
+            auto pair = cqsp::core::systems::CoplanarIntercept(orbit, target, GetUniverse().date.ToSecond());
+            core::systems::commands::PushManeuvers(GetUniverse(), body, pair);
         }
         if (ImGui::Button("Maneuver to point")) {
-            auto pair = cqsp::common::systems::CoplanarIntercept(orbit, target, GetUniverse().date.ToSecond());
-            common::systems::commands::PushManeuvers(GetUniverse(), body, {pair.first});
+            auto pair = cqsp::core::systems::CoplanarIntercept(orbit, target, GetUniverse().date.ToSecond());
+            core::systems::commands::PushManeuvers(GetUniverse(), body, {pair.first});
         }
         if (ImGui::Button("Match Planes")) {
-            auto maneuver = cqsp::common::systems::MatchPlanes(orbit, target);
-            common::systems::commands::PushManeuver(GetUniverse(), body, maneuver);
+            auto maneuver = cqsp::core::systems::MatchPlanes(orbit, target);
+            core::systems::commands::PushManeuver(GetUniverse(), body, maneuver);
         }
-        ImGui::TextFmt("Phase angle: {}", cqsp::common::components::types::CalculatePhaseAngle(
+        ImGui::TextFmt("Phase angle: {}", cqsp::core::components::types::CalculatePhaseAngle(
                                               orbit, target, GetUniverse().date.ToSecond()));
-        ImGui::TextFmt("Transfer angle: {}", cqsp::common::components::types::CalculateTransferAngle(orbit, target));
-        double ttma = orbit.TimeToTrueAnomaly(common::components::types::AscendingTrueAnomaly(orbit, target));
+        ImGui::TextFmt("Transfer angle: {}", cqsp::core::components::types::CalculateTransferAngle(orbit, target));
+        double ttma = orbit.TimeToTrueAnomaly(core::components::types::AscendingTrueAnomaly(orbit, target));
         if (ImGui::Button("Lambert transfer")) {
             // Compute lambert problem
             // Get future position of the entity
@@ -255,15 +253,14 @@ void SpaceshipWindow::DoUI(int delta_time) {
     }
     if (ImGui::CollapsingHeader("Moon Transfers")) {
         auto& o_system = GetUniverse().get<bodies::OrbitalSystem>(orbit.reference_body);
-        double angle =
-            common::components::types::AngleWith(orbit, GetUniverse().get<types::Orbit>(orbit.reference_body));
-        ImGui::TextFmt("Angle: {}", common::components::types::toDegree(angle));
+        double angle = core::components::types::AngleWith(orbit, GetUniverse().get<types::Orbit>(orbit.reference_body));
+        ImGui::TextFmt("Angle: {}", core::components::types::toDegree(angle));
         static entt::entity selected = entt::null;
         if (selected == entt::null) {
             ImGui::BeginDisabled(true);
         }
         if (ImGui::Button("Transfer to Moon")) {
-            common::systems::commands::TransferToMoon(GetUniverse(), body, selected);
+            core::systems::commands::TransferToMoon(GetUniverse(), body, selected);
         }
 
         // Land on body?
@@ -272,7 +269,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
             // Just grab the first one
             auto& cities = GetUniverse().get<components::Habitation>(selected);
             if (!cities.settlements.empty()) {
-                common::systems::commands::LandOnMoon(GetUniverse(), body, selected, cities.settlements.front());
+                core::systems::commands::LandOnMoon(GetUniverse(), body, selected, cities.settlements.front());
             }
         }
         if (selected == entt::null) {

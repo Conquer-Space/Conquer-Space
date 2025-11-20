@@ -32,15 +32,15 @@
 #include "client/scenes/universe/interface/sysstarsystemtree.h"
 #include "client/scenes/universe/interface/systechviewer.h"
 #include "client/scenes/universe/interface/turnsavewindow.h"
-#include "common/components/area.h"
-#include "common/components/bodies.h"
-#include "common/components/coordinates.h"
-#include "common/components/name.h"
-#include "common/components/organizations.h"
-#include "common/components/player.h"
-#include "common/components/population.h"
-#include "common/components/resource.h"
-#include "common/components/surface.h"
+#include "core/components/area.h"
+#include "core/components/bodies.h"
+#include "core/components/coordinates.h"
+#include "core/components/name.h"
+#include "core/components/organizations.h"
+#include "core/components/player.h"
+#include "core/components/population.h"
+#include "core/components/resource.h"
+#include "core/components/surface.h"
 #include "engine/graphics/primitives/cube.h"
 #include "engine/graphics/primitives/polygon.h"
 #include "engine/graphics/primitives/uvsphere.h"
@@ -57,11 +57,11 @@ bool game_halted = false;
 
 namespace cqsp::client::scene {
 
-namespace components = common::components;
+namespace components = core::components;
 namespace bodies = components::bodies;
 namespace systems = client::systems;
 
-using common::systems::simulation::Simulation;
+using core::systems::simulation::Simulation;
 
 UniverseScene::UniverseScene(engine::Application& app) : ClientScene(app) {}
 
@@ -185,11 +185,11 @@ void UniverseScene::ToggleTick() {
     pause_opt.to_tick = !pause_opt.to_tick;
 }
 
-entt::entity GetCurrentViewingPlanet(common::Universe& universe) {
+entt::entity GetCurrentViewingPlanet(core::Universe& universe) {
     return universe.view<systems::FocusedPlanet>().front();
 }
 
-void SeePlanet(common::Universe& universe, entt::entity ent) {
+void SeePlanet(core::Universe& universe, entt::entity ent) {
     universe.clear<systems::FocusedPlanet>();
     universe.emplace<systems::FocusedPlanet>(ent);
 }

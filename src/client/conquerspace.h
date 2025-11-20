@@ -16,8 +16,8 @@
  */
 #pragma once
 
-#include "common/game.h"
-#include "common/scripting/scripting.h"
+#include "core/game.h"
+#include "core/scripting/scripting.h"
 #include "engine/gamestate.h"
 
 namespace cqsp::client {
@@ -26,15 +26,15 @@ class ConquerSpace : public engine::GameState {
     ConquerSpace() : m_universe(game.GetUniverse()), script_interface(game.GetScriptInterface()) {}
     ~ConquerSpace() = default;
 
-    common::Universe& m_universe;
-    common::scripting::ScriptInterface& script_interface;
+    core::Universe& m_universe;
+    core::scripting::ScriptInterface& script_interface;
 
-    common::Universe& GetUniverse() { return m_universe; }
-    common::scripting::ScriptInterface& GetScriptInterface() { return script_interface; }
+    core::Universe& GetUniverse() { return m_universe; }
+    core::scripting::ScriptInterface& GetScriptInterface() { return script_interface; }
 
-    common::Game& GetGame() { return game; }
+    core::Game& GetGame() { return game; }
 
  private:
-    common::Game game;
+    core::Game game;
 };
 }  // namespace cqsp::client

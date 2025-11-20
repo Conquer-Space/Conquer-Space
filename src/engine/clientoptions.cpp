@@ -16,7 +16,7 @@
  */
 #include "engine/clientoptions.h"
 
-#include "common/util/paths.h"
+#include "core/util/paths.h"
 
 namespace cqsp::client {
 void ClientOptions::LoadOptions(std::istream& inputstream) {
@@ -51,5 +51,5 @@ Hjson::Value ClientOptions::GetDefaultOptions() {
     return default_options;
 }
 
-std::string ClientOptions::GetDefaultLocation() { return common::util::GetCqspAppDataPath() + "/settings.hjson"; }
+std::string ClientOptions::GetDefaultLocation() { return core::util::GetCqspAppDataPath() + "/settings.hjson"; }
 }  // namespace cqsp::client

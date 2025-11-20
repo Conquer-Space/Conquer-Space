@@ -19,13 +19,13 @@
 #include <string>
 
 #include "client/components/clientctx.h"
-#include "common/components/coordinates.h"
-#include "common/components/orbit.h"
-#include "common/util/nameutil.h"
+#include "core/components/coordinates.h"
+#include "core/components/orbit.h"
+#include "core/util/nameutil.h"
 
 namespace cqsp::client::systems {
 
-using common::components::types::Orbit;
+using core::components::types::Orbit;
 using ctx::VisibleOrbit;
 
 void SysOrbitFilter::Init() {
@@ -62,11 +62,11 @@ void SysOrbitFilter::DoUI(int delta_time) {
         int i = 0;
         for (entt::entity orb : orbits) {
             // Get the name
-            if (GetUniverse().any_of<common::components::bodies::Planet>(orb)) {
+            if (GetUniverse().any_of<core::components::bodies::Planet>(orb)) {
                 continue;
             }
             ImGui::TableNextRow();
-            std::string name = common::util::GetName(GetUniverse(), orb);
+            std::string name = core::util::GetName(GetUniverse(), orb);
             ImGui::TableSetColumnIndex(0);
             ImGui::TextFmt("{}", name);
             ImGui::TableSetColumnIndex(1);

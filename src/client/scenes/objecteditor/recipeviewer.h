@@ -19,7 +19,7 @@
 #include <array>
 
 #include "client/systems/sysgui.h"
-#include "common/components/resource.h"
+#include "core/components/resource.h"
 
 namespace cqsp::client::systems {
 class SysRecipeViewer : public SysUserInterface {
@@ -33,7 +33,7 @@ class SysRecipeViewer : public SysUserInterface {
  private:
     void RecipeViewerRight();
     void ResetSelection();
-    void ResourceMapTable(common::components::ResourceLedger& ledger, const char* name);
+    void ResourceMapTable(core::components::ResourceLedger& ledger, const char* name);
     entt::entity selected_recipe = entt::null;
 
     std::array<char, 255> search_text;

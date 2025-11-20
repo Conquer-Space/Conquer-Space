@@ -16,12 +16,12 @@
  */
 #include "client/headless/headlessluafunctions.h"
 
-#include "common/scripting/functionreg.h"
+#include "core/scripting/functionreg.h"
 
 namespace cqsp::client::headless {
 
 void TickFunctions(HeadlessApplication& application) {
-    common::scripting::ScriptInterface& script_engine = application.GetGame().GetScriptInterface();
+    core::scripting::ScriptInterface& script_engine = application.GetGame().GetScriptInterface();
     CREATE_NAMESPACE(simulation);
 
     REGISTER_FUNCTION("tick", [&](unsigned int ticks) {

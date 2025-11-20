@@ -19,17 +19,17 @@
 #include <memory>
 #include <string>
 
-#include "common/components/player.h"
+#include "core/components/player.h"
 #include "engine/cqspgui.h"
 
 namespace cqsp::client::systems::gui {
 
-namespace event = common::event;
+namespace event = core::event;
 
 void SysEvent::Init() {}
 
 void SysEvent::DoUI(int delta_time) {
-    auto events = GetUniverse().view<common::components::Player, event::EventQueue>();
+    auto events = GetUniverse().view<core::components::Player, event::EventQueue>();
     for (auto [ent, queue] : events.each()) {
         if (queue.events.empty()) {
             continue;

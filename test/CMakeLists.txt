@@ -17,7 +17,7 @@ enable_testing()
 
 find_package(GTest CONFIG REQUIRED)
 
-add_subdirectory(common)
+add_subdirectory(core)
 add_subdirectory(engine)
 
 set_target_properties(cqsp-engine-tests cqsp-tests PROPERTIES FOLDER "Tests")

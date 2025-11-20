@@ -16,8 +16,8 @@
  */
 #pragma once
 
-#include "common/universe.h"
+#include "core/universe.h"
 
 namespace cqsp::client::systems {
-void MarketInformationTable(common::Universe& universe, const entt::entity& market_entity);
+void MarketInformationTable(core::Universe& universe, const entt::entity& market_entity);
 }  // namespace cqsp::client::systems

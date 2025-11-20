@@ -29,21 +29,21 @@
 #include "client/components/clientctx.h"
 #include "client/components/planetrendering.h"
 #include "client/scenes/universe/interface/systooltips.h"
-#include "common/actions/cityactions.h"
-#include "common/components/area.h"
-#include "common/components/bodies.h"
-#include "common/components/coordinates.h"
-#include "common/components/model.h"
-#include "common/components/name.h"
-#include "common/components/orbit.h"
-#include "common/components/organizations.h"
-#include "common/components/player.h"
-#include "common/components/resource.h"
-#include "common/components/ships.h"
-#include "common/components/surface.h"
-#include "common/components/units.h"
-#include "common/util/nameutil.h"
-#include "common/util/profiler.h"
+#include "core/actions/cityactions.h"
+#include "core/components/area.h"
+#include "core/components/bodies.h"
+#include "core/components/coordinates.h"
+#include "core/components/model.h"
+#include "core/components/name.h"
+#include "core/components/orbit.h"
+#include "core/components/organizations.h"
+#include "core/components/player.h"
+#include "core/components/resource.h"
+#include "core/components/ships.h"
+#include "core/components/surface.h"
+#include "core/components/units.h"
+#include "core/util/nameutil.h"
+#include "core/util/profiler.h"
 #include "engine/glfwdebug.h"
 #include "engine/graphics/primitives/cube.h"
 #include "engine/graphics/primitives/line.h"
@@ -59,7 +59,7 @@
 #include "tracy/Tracy.hpp"
 
 namespace cqsp::client::systems {
-namespace components = common::components;
+namespace components = core::components;
 namespace bodies = components::bodies;
 namespace types = components::types;
 namespace ships = components::ships;
@@ -76,11 +76,11 @@ using components::Name;
 
 using bodies::Body;
 using bodies::LightEmitter;
-using common::util::GetName;
+using core::util::GetName;
 using types::Orbit;
 using types::SurfaceCoordinate;
 
-SysStarSystemRenderer::SysStarSystemRenderer(common::Universe& _u, engine::Application& _a)
+SysStarSystemRenderer::SysStarSystemRenderer(core::Universe& _u, engine::Application& _a)
     : universe(_u),
       app(_a),
       controller(universe, app, camera),

@@ -16,7 +16,7 @@
  */
 #include "sysoptionswindow.h"
 
-#include "common/version.h"
+#include "core/version.h"
 #include "engine/cqspgui.h"
 
 namespace cqsp::client::systems {

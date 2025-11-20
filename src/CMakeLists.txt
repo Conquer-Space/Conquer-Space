@@ -36,10 +36,10 @@ else()
 SET(ICON_FILE "")
 endif()
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/common/version.h.in ${CMAKE_CURRENT_SOURCE_DIR}/common/version.h @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/core/version.h.in ${CMAKE_CURRENT_SOURCE_DIR}/core/version.h @ONLY)
 
 # Add libraries
-add_subdirectory(common)
+add_subdirectory(core)
 add_subdirectory(engine)
 add_subdirectory(client)
 

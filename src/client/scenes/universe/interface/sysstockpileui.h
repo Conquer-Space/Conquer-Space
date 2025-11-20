@@ -18,11 +18,10 @@
 
 #include <string>
 
-#include "common/components/resource.h"
-#include "common/universe.h"
+#include "core/components/resource.h"
+#include "core/universe.h"
 #include "entt/entt.hpp"
 
 namespace cqsp::client::systems {
-bool DrawLedgerTable(const std::string& name, const common::Universe&,
-                     const common::components::ResourceLedger& ledger);
+bool DrawLedgerTable(const std::string& name, const core::Universe&, const core::components::ResourceLedger& ledger);
 }  // namespace cqsp::client::systems

@@ -21,15 +21,15 @@
 #include <glm/glm.hpp>
 
 #include "client/scenes/universe/views/starsystemcamera.h"
-#include "common/components/coordinates.h"
-#include "common/universe.h"
+#include "core/components/coordinates.h"
+#include "core/universe.h"
 #include "engine/application.h"
 
 namespace cqsp::client::systems {
 class StarSystemViewUI;
 class StarSystemController {
  public:
-    StarSystemController(common::Universe &, engine::Application &, StarSystemCamera &);
+    StarSystemController(core::Universe &, engine::Application &, StarSystemCamera &);
     void Update(float delta_time);
 
     // Gets the intersection in 3d point between the mouse and any planet
@@ -80,7 +80,7 @@ class StarSystemController {
     entt::entity GetMouseOnObject(int mouse_x, int mouse_y);
     void CalculateViewChange(double deltaX, double deltaY);
 
-    common::components::types::SurfaceCoordinate GetMouseSurfaceIntersection();
+    core::components::types::SurfaceCoordinate GetMouseSurfaceIntersection();
 
     glm::vec3 GetMouseIntersectionOnObject(int mouse_x, int mouse_y);
     glm::vec3 GetMouseInScreenSpace(int mouse_x, int mouse_y);
@@ -88,7 +88,7 @@ class StarSystemController {
 
     void SelectCountry();
 
-    common::Universe &universe;
+    core::Universe &universe;
     engine::Application &app;
 
     StarSystemCamera &camera;

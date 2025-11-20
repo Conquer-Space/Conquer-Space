@@ -18,7 +18,7 @@
 
 #include <glm/glm.hpp>
 
-#include "common/universe.h"
+#include "core/universe.h"
 #include "engine/application.h"
 
 namespace cqsp::client::systems {

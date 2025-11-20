@@ -17,8 +17,8 @@
 #pragma once
 
 #include "client/headless/headlessapplication.h"
-#include "common/scripting/scripting.h"
-#include "common/universe.h"
+#include "core/scripting/scripting.h"
+#include "core/universe.h"
 
 namespace cqsp::client::headless {
 void LoadHeadlessFunctions(HeadlessApplication& application);

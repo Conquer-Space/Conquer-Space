@@ -19,20 +19,20 @@
 #include <imgui.h>
 
 #include "client/scenes/universe/interface/systooltips.h"
-#include "common/components/bodies.h"
-#include "common/components/market.h"
-#include "common/components/name.h"
-#include "common/util/nameutil.h"
-#include "common/util/utilnumberdisplay.h"
+#include "core/components/bodies.h"
+#include "core/components/market.h"
+#include "core/components/name.h"
+#include "core/util/nameutil.h"
+#include "core/util/utilnumberdisplay.h"
 #include "engine/gui.h"
 
 namespace cqsp::client::systems {
-namespace bodies = cqsp::common::components::bodies;
-namespace components = cqsp::common::components;
+namespace bodies = cqsp::core::components::bodies;
+namespace components = cqsp::core::components;
 
-using cqsp::common::util::GetName;
+using cqsp::core::util::GetName;
 
-void MarketInformationTable(common::Universe& universe, const entt::entity& market_entity) {
+void MarketInformationTable(core::Universe& universe, const entt::entity& market_entity) {
     if (!universe.any_of<components::Market>(market_entity)) {
         ImGui::TextFmt("Market is not a market");
         return;

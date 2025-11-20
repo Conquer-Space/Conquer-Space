@@ -35,7 +35,7 @@
 #include <assimp/Importer.hpp>
 #include <tracy/Tracy.hpp>
 
-#include "common/util/paths.h"
+#include "core/util/paths.h"
 #include "engine/asset/assetprototypedefs.h"
 #include "engine/asset/modelloader.h"
 #include "engine/asset/package.h"
@@ -127,7 +127,7 @@ void AssetManager::SaveModList() {
         enabled_mods[it->second.name] = it->second.enabled;
     }
     // Write to file
-    std::string mods_path = (std::filesystem::path(common::util::GetCqspAppDataPath()) / "mod.hjson").string();
+    std::string mods_path = (std::filesystem::path(core::util::GetCqspAppDataPath()) / "mod.hjson").string();
     Hjson::MarshalToFile(enabled_mods, mods_path);
     ENGINE_LOG_INFO("Writing mods");
 }

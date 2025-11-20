@@ -22,15 +22,15 @@
 #include <random>
 #include <string>
 
-#include "common/util/logging.h"
-#include "common/util/paths.h"
+#include "core/util/logging.h"
+#include "core/util/paths.h"
 #include "engine/audio/alaudioasset.h"
 
 namespace cqsp::engine::audio {
 using asset::ALAudioAsset;
 using asset::AudioAsset;
 
-AudioInterface::AudioInterface() { logger = common::util::make_logger("audio"); }
+AudioInterface::AudioInterface() { logger = core::util::make_logger("audio"); }
 
 void AudioInterface::Initialize() {
     SPDLOG_LOGGER_INFO(logger, "Intializing OpenAL");
@@ -40,7 +40,7 @@ void AudioInterface::Initialize() {
 
     // Load playlist
     // TODO(EhWhoAmI): Load playlist from all mod folders
-    std::string music_playlist_path = common::util::GetCqspDataPath() + "/core/music/music_list.hjson";
+    std::string music_playlist_path = core::util::GetCqspDataPath() + "/core/music/music_list.hjson";
     std::ifstream playlist_input = std::ifstream(music_playlist_path);
     if (playlist_input.good()) {
         Hjson::DecoderOptions decOpt;
@@ -258,7 +258,7 @@ std::unique_ptr<AudioAsset> cqsp::engine::audio::AudioInterface::LoadNextFile() 
     int selected_track = dist6(rng);
 
     Hjson::Value track_info = playlist[selected_track];
-    std::string track_file = cqsp::common::util::GetCqspDataPath() + "/core/music/" + track_info["file"];
+    std::string track_file = cqsp::core::util::GetCqspDataPath() + "/core/music/" + track_info["file"];
     SPDLOG_LOGGER_INFO(logger, "Loading track \'{}\'", track_info["name"].to_string());
     auto mfile = std::ifstream(track_file, std::ios::binary);
     if (mfile.good()) {

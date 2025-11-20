@@ -24,9 +24,9 @@
 #include "client/scenes/scene.h"
 #include "client/scenes/universe/views/starsystemrenderer.h"
 #include "client/systems/sysgui.h"
-#include "common/components/bodies.h"
-#include "common/components/organizations.h"
-#include "common/simulation.h"
+#include "core/components/bodies.h"
+#include "core/components/organizations.h"
+#include "core/simulation.h"
 #include "engine/application.h"
 #include "engine/graphics/renderable.h"
 #include "engine/renderer/renderer.h"
@@ -88,7 +88,7 @@ class UniverseScene : public ClientScene {
 
     std::unique_ptr<systems::SysStarSystemRenderer> system_renderer;
 
-    std::unique_ptr<cqsp::common::systems::simulation::Simulation> simulation;
+    std::unique_ptr<cqsp::core::systems::simulation::Simulation> simulation;
 
     bool to_show_planet_window = false;
 
@@ -106,8 +106,8 @@ class UniverseScene : public ClientScene {
     bool interp = true;
 };
 
-void SeePlanet(common::Universe& universe, entt::entity ent);
-entt::entity GetCurrentViewingPlanet(common::Universe&);
+void SeePlanet(core::Universe& universe, entt::entity ent);
+entt::entity GetCurrentViewingPlanet(core::Universe&);
 // Halts all other things
 void SetGameHalted(bool b);
 bool IsGameHalted();

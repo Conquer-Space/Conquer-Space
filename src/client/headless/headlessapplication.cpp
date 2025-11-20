@@ -24,12 +24,12 @@
 #include "client/headless/generate.h"
 #include "client/headless/headlessluafunctions.h"
 #include "client/headless/loadluafile.h"
-#include "common/util/logging.h"
-#include "common/util/string.h"
+#include "core/util/logging.h"
+#include "core/util/string.h"
 
 namespace cqsp::client::headless {
 
-using common::systems::simulation::Simulation;
+using core::systems::simulation::Simulation;
 
 asset::AssetManager& HeadlessApplication::GetAssetManager() { return asset_manager; }
 
@@ -39,8 +39,8 @@ HeadlessApplication::HeadlessApplication() : asset_loader(asset::AssetOptions(fa
 
 int HeadlessApplication::run() {
     // Load data
-    engine::engine_logger = common::util::make_logger("app", true);
-    auto g_logger = common::util::make_logger("game", true);
+    engine::engine_logger = core::util::make_logger("app", true);
+    auto g_logger = core::util::make_logger("game", true);
     spdlog::set_default_logger(g_logger);
 
     std::cout << "Loading game data...\n";

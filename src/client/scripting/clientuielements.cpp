@@ -18,10 +18,10 @@
 
 #include "client/scenes/universe/interface/markettable.h"
 #include "client/scenes/universe/interface/systooltips.h"
-#include "common/scripting/functionreg.h"
+#include "core/scripting/functionreg.h"
 
 namespace cqsp::client::scripting {
-void InitClientElements(common::Universe& universe, common::scripting::ScriptInterface& script_engine) {
+void InitClientElements(core::Universe& universe, core::scripting::ScriptInterface& script_engine) {
     CREATE_NAMESPACE(client);
 
     REGISTER_FUNCTION("EntityTooltip", [&](entt::entity entity) { systems::gui::EntityTooltip(universe, entity); });

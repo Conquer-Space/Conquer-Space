@@ -35,7 +35,7 @@
 #include <assimp/Importer.hpp>
 #include <tracy/Tracy.hpp>
 
-#include "common/util/paths.h"
+#include "core/util/paths.h"
 #include "engine/asset/assetmanager.h"
 #include "engine/asset/assetprototypedefs.h"
 #include "engine/asset/modelloader.h"
@@ -68,7 +68,7 @@ void AssetLoader::LoadMods() {
     ZoneScoped;
     // Load enabled mods
     // Load core
-    std::filesystem::path data_path(common::util::GetCqspDataPath());
+    std::filesystem::path data_path(core::util::GetCqspDataPath());
     std::filesystem::recursive_directory_iterator it(data_path);
 
     // Load mods from the document folders
@@ -98,7 +98,7 @@ void AssetLoader::LoadMods() {
     all_mods["core"] = true;
 
     // Load other packages
-    std::filesystem::path save_path(common::util::GetCqspAppDataPath());
+    std::filesystem::path save_path(core::util::GetCqspAppDataPath());
     std::filesystem::path mods_folder = save_path / "mods";
     if (!std::filesystem::exists(mods_folder)) {
         std::filesystem::create_directories(mods_folder);
@@ -147,7 +147,7 @@ void AssetLoader::LoadMods() {
 }
 
 std::string AssetLoader::GetModFilePath() {
-    return (std::filesystem::path(common::util::GetCqspAppDataPath()) / "mod.hjson").string();
+    return (std::filesystem::path(core::util::GetCqspAppDataPath()) / "mod.hjson").string();
 }
 
 std::optional<PackagePrototype> AssetLoader::LoadModPrototype(const std::string& path_string) {
@@ -583,7 +583,7 @@ std::unique_ptr<Asset> AssetLoader::LoadCubemap(VirtualMounter* mount, const std
 std::unique_ptr<Asset> AssetLoader::LoadModel(VirtualMounter* mount, const std::string& path, const std::string& key,
                                               const Hjson::Value& hints) {
     Assimp::Importer importer;
-    std::filesystem::path file_path = std::filesystem::path(common::util::GetCqspDataPath()) / path;
+    std::filesystem::path file_path = std::filesystem::path(core::util::GetCqspDataPath()) / path;
     const aiScene* scene =
         importer.ReadFile(file_path.string().c_str(), aiProcess_Triangulate | aiProcess_GenSmoothNormals |
                                                           aiProcess_FlipUVs | aiProcess_CalcTangentSpace);

@@ -22,9 +22,9 @@
 #include "GLFW/glfw3.h"
 #include "client/scenes/universe/sysoptionswindow.h"
 #include "client/scenes/universe/universescene.h"
-#include "common/util/paths.h"
-#include "common/util/save/savegame.h"
-#include "common/version.h"
+#include "core/util/paths.h"
+#include "core/util/save/savegame.h"
+#include "core/version.h"
 #include "engine/cqspgui.h"
 
 namespace cqsp::client::systems {
@@ -51,7 +51,7 @@ void SysPauseMenu::DoUI(int delta_time) {
             scene::SetGameHalted(false);
         }
         if (CQSPGui::DefaultButton("Save Game", ImVec2(-FLT_MIN, button_height))) {
-            common::save::save_game(GetUniverse());
+            core::save::save_game(GetUniverse());
         }
         CQSPGui::DefaultButton("Load Game", ImVec2(-FLT_MIN, button_height));
         ImGui::Separator();

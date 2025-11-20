@@ -19,16 +19,16 @@
 #include "client/scenes/universe/interface/systooltips.h"
 #include "client/scenes/universe/views/starsystemrenderer.h"
 #include "client/scenes/universe/views/starsystemview.h"
-#include "common/components/bodies.h"
-#include "common/components/surface.h"
-#include "common/util/nameutil.h"
+#include "core/components/bodies.h"
+#include "core/components/surface.h"
+#include "core/util/nameutil.h"
 #include "engine/gui.h"
 
 namespace cqsp::client::systems {
-namespace components = common::components;
-using common::util::GetName;
+namespace components = core::components;
+using core::util::GetName;
 
-StarSystemViewUI::StarSystemViewUI(common::Universe& universe, SysStarSystemRenderer& renderer,
+StarSystemViewUI::StarSystemViewUI(core::Universe& universe, SysStarSystemRenderer& renderer,
                                    StarSystemController& controller, StarSystemCamera& camera)
     : universe(universe), renderer(renderer), controller(controller), camera(camera) {}
 

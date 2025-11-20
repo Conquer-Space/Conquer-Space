@@ -40,10 +40,10 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <tracy/Tracy.hpp>
 
-#include "common/util/logging.h"
-#include "common/util/paths.h"
-#include "common/util/profiler.h"
-#include "common/version.h"
+#include "core/util/logging.h"
+#include "core/util/paths.h"
+#include "core/util/profiler.h"
+#include "core/version.h"
 #include "engine/audio/audiointerface.h"
 #include "engine/cqspgui.h"
 #include "engine/enginelogger.h"
@@ -55,7 +55,7 @@
 namespace cqsp::engine {
 
 using asset::RenderText;
-using common::util::GetCqspDataPath;
+using core::util::GetCqspDataPath;
 
 GLFWwindow* window(Window* window) { return reinterpret_cast<GLWindow*>(window)->window; }
 
@@ -474,7 +474,7 @@ bool Application::Screenshot(const char* path) {
     if (path == NULL) {
         // Make screenshot folder
         std::filesystem::path screenshot_folder =
-            std::filesystem::path(cqsp::common::util::GetCqspAppDataPath()) / "screenshots";
+            std::filesystem::path(cqsp::core::util::GetCqspAppDataPath()) / "screenshots";
         std::filesystem::create_directories(screenshot_folder);
 
         // Default file name is YYYY-MM-DD_HH.MM.SS.png in the data folder.
@@ -531,9 +531,9 @@ bool Application::GlInit() {
 
 void Application::LoggerInit() {
     // Get path
-    properties["data"] = common::util::GetCqspAppDataPath();
-    engine_logger = common::util::make_logger("app", true);
-    auto g_logger = common::util::make_logger("game", true);
+    properties["data"] = core::util::GetCqspAppDataPath();
+    engine_logger = core::util::make_logger("app", true);
+    auto g_logger = core::util::make_logger("game", true);
     spdlog::set_default_logger(g_logger);
 }
 
@@ -545,9 +545,9 @@ void Application::LogInfo() {
 #endif
     ENGINE_LOG_INFO("Platform: {}", PLATFORM_NAME);
     ENGINE_LOG_INFO("Compiled {} {}", __DATE__, __TIME__);
-    ENGINE_LOG_INFO("Exe Path: {}", common::util::GetCqspExePath());
-    ENGINE_LOG_INFO("Data Path: {}", common::util::GetCqspDataPath());
-    ENGINE_LOG_INFO("Save Path: {}", common::util::GetCqspAppDataPath());
+    ENGINE_LOG_INFO("Exe Path: {}", core::util::GetCqspExePath());
+    ENGINE_LOG_INFO("Data Path: {}", core::util::GetCqspDataPath());
+    ENGINE_LOG_INFO("Save Path: {}", core::util::GetCqspAppDataPath());
 
 #ifdef TRACY_ENABLE
     ENGINE_LOG_INFO("Tracy protocol version: {}", (uint16_t)tracy::ProtocolVersion);

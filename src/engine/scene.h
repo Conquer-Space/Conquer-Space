@@ -20,7 +20,7 @@
 #include "engine/engine.h"
 
 // This was already included in application.h, but this is needed to be included again for some reason.
-#include "common/universe.h"
+#include "core/universe.h"
 
 namespace cqsp::engine {
 class Scene {

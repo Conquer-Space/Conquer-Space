@@ -23,31 +23,31 @@
 #include "client/scripting/clientscripting.h"
 #include "client/scripting/clientuielements.h"
 #include "client/scripting/imguifunctions.h"
-#include "common/components/surface.h"
-#include "common/loading/fields.h"
-#include "common/loading/hjsonloader.h"
-#include "common/loading/loadcities.h"
-#include "common/loading/loadcountries.h"
-#include "common/loading/loadgoods.h"
-#include "common/loading/loadnames.h"
-#include "common/loading/loadprovinces.h"
-#include "common/loading/loadsatellites.h"
-#include "common/loading/loadterrain.h"
-#include "common/loading/planetloader.h"
-#include "common/loading/recipeloader.h"
-#include "common/loading/technology.h"
-#include "common/loading/timezoneloader.h"
-#include "common/scripting/luafunctions.h"
-#include "common/systems/sysuniversegenerator.h"
+#include "core/components/surface.h"
+#include "core/loading/fields.h"
+#include "core/loading/hjsonloader.h"
+#include "core/loading/loadcities.h"
+#include "core/loading/loadcountries.h"
+#include "core/loading/loadgoods.h"
+#include "core/loading/loadnames.h"
+#include "core/loading/loadprovinces.h"
+#include "core/loading/loadsatellites.h"
+#include "core/loading/loadterrain.h"
+#include "core/loading/planetloader.h"
+#include "core/loading/recipeloader.h"
+#include "core/loading/technology.h"
+#include "core/loading/timezoneloader.h"
+#include "core/scripting/luafunctions.h"
+#include "core/systems/sysuniversegenerator.h"
 #include "engine/asset/assetmanager.h"
 
 namespace cqsp::client::systems {
 
-namespace loading = common::loading;
-namespace components = common::components;
+namespace loading = core::loading;
+namespace components = core::components;
 using asset::AssetManager;
 using asset::HjsonAsset;
-using common::Universe;
+using core::Universe;
 using loading::HjsonLoader;
 
 void LoadResource(AssetManager& asset_manager, Universe& universe, const std::string& asset_name,
@@ -96,7 +96,7 @@ void LoadPlanetProvinces(AssetManager& asset_manager, ConquerSpace& conquer_spac
     auto& universe = conquer_space.GetUniverse();
     auto view = universe.nodes<components::ProvincedPlanet>();
     SPDLOG_INFO("Loading Provinces");
-    for (common::Node node : view) {
+    for (core::Node node : view) {
         // Check if it's empty or not
         //SPDLOG_INFO("Loading Provinces for planet");
 
@@ -133,7 +133,7 @@ void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) 
 
     // Load scripts
     // Load lua functions
-    common::scripting::LoadFunctions(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
+    core::scripting::LoadFunctions(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
     scripting::LoadImGuiFunctions(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
     scripting::ClientFunctions(asset_manager, conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
     scripting::InitClientElements(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());

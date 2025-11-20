@@ -20,21 +20,21 @@
 
 #include "client/scenes/universe/universescene.h"
 #include "client/scenes/universe/views/starsystemrenderer.h"
-#include "common/components/bodies.h"
-#include "common/components/coordinates.h"
-#include "common/components/name.h"
-#include "common/components/orbit.h"
-#include "common/util/nameutil.h"
+#include "core/components/bodies.h"
+#include "core/components/coordinates.h"
+#include "core/components/name.h"
+#include "core/components/orbit.h"
+#include "core/util/nameutil.h"
 #include "engine/cqspgui.h"
 #include "systooltips.h"
 
 namespace cqsp::client::systems {
 
-namespace components = common::components;
+namespace components = core::components;
 namespace bodies = components::bodies;
 namespace types = components::types;
 using bodies::OrbitalSystem;
-using common::util::GetName;
+using core::util::GetName;
 
 void SysStarSystemTree::Init() {
     // Sort all the planets in order

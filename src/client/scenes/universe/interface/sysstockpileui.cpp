@@ -16,18 +16,18 @@
  */
 #include "sysstockpileui.h"
 
-#include "common/components/name.h"
-#include "common/util/nameutil.h"
-#include "common/util/utilnumberdisplay.h"
+#include "core/components/name.h"
+#include "core/util/nameutil.h"
+#include "core/util/utilnumberdisplay.h"
 #include "engine/gui.h"
 #include "fmt/format.h"
 #include "systooltips.h"
 
 namespace cqsp::client::systems {
 
-using common::Universe;
-using common::components::Identifier;
-using common::components::ResourceLedger;
+using core::Universe;
+using core::components::Identifier;
+using core::components::ResourceLedger;
 using util::NumberToHumanString;
 
 bool DrawLedgerTable(const std::string &name, const Universe &universe, const ResourceLedger &ledger) {
@@ -45,7 +45,7 @@ bool DrawLedgerTable(const std::string &name, const Universe &universe, const Re
             }
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
-            ImGui::TextFmt("{}", common::util::GetName(universe, iterator->first));
+            ImGui::TextFmt("{}", core::util::GetName(universe, iterator->first));
             ImGui::TableSetColumnIndex(1);
             ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(iterator->second)));
         }

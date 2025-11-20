@@ -20,8 +20,8 @@
 #include <sstream>
 #include <string>
 
-#include "common/util/paths.h"
-#include "common/util/string.h"
+#include "core/util/paths.h"
+#include "core/util/string.h"
 
 namespace cqsp::client {
 
@@ -72,7 +72,7 @@ void CreditsWindow::Update(double delta_time) {
 
 void CreditsWindow::Hide() { document->SetClass("visible", false); }
 
-std::string CreditsWindow::GetDocumentName() { return common::util::GetCqspDataPath() + "/core/gui/credits.rml"; }
+std::string CreditsWindow::GetDocumentName() { return core::util::GetCqspDataPath() + "/core/gui/credits.rml"; }
 
 void CreditsWindow::ProcessEvent(Rml::Event& event) {
     if (event.GetId() == Rml::EventId::Keydown) {
@@ -96,7 +96,7 @@ void CreditsWindow::ProcessEvent(Rml::Event& event) {
 }
 
 void CreditsWindow::LoadCreditsText() {
-    std::string credits_file = common::util::GetCqspDataPath() + "/core/credits.md";
+    std::string credits_file = core::util::GetCqspDataPath() + "/core/credits.md";
 
     std::ifstream credits_stream(credits_file);
     std::string line;

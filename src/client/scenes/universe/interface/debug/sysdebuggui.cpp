@@ -19,14 +19,14 @@
 #include "GLFW/glfw3.h"
 #include "client/components/clientctx.h"
 #include "client/scenes/universe/views/starsystemrenderer.h"
-#include "common/components/name.h"
-#include "common/util/nameutil.h"
-#include "common/util/profiler.h"
+#include "core/components/name.h"
+#include "core/util/nameutil.h"
+#include "core/util/profiler.h"
 #include "glad/glad.h"
 
 namespace cqsp::client::systems {
 using engine::Application;
-namespace components = common::components;
+namespace components = core::components;
 
 SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app), asset_window(app) {
     asset_window.SetWindowOpenPtr(&to_show_asset_window);

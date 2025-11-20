@@ -33,8 +33,8 @@
 #include "client/scenes/objecteditor/objecteditorscene.h"
 #include "client/scenes/texttestscene.h"
 #include "client/scenes/universeloadingscene.h"
-#include "common/scripting/scripting.h"
-#include "common/util/paths.h"
+#include "core/scripting/scripting.h"
+#include "core/util/paths.h"
 #include "engine/asset/assetmanager.h"
 #include "engine/gui.h"
 

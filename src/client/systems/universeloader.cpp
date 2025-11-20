@@ -17,12 +17,12 @@
 #include "client/systems/universeloader.h"
 
 #include "client/systems/assetloading.h"
-#include "common/systems/sysuniversegenerator.h"
-#include "common/util/save/savegame.h"
+#include "core/systems/sysuniversegenerator.h"
+#include "core/util/save/savegame.h"
 
 namespace cqsp::client {
 
-using common::systems::universegenerator::ScriptUniverseGenerator;
+using core::systems::universegenerator::ScriptUniverseGenerator;
 
 void LoadUniverse(asset::AssetManager& asset_manager, ConquerSpace& conquer_space) {
     systems::LoadAllResources(asset_manager, conquer_space);

@@ -24,8 +24,8 @@
 #include "client/scenes/universe/universescene.h"
 #include "client/systems/assetloading.h"
 #include "client/systems/universeloader.h"
-#include "common/systems/sysuniversegenerator.h"
-#include "common/util/save/savegame.h"
+#include "core/systems/sysuniversegenerator.h"
+#include "core/util/save/savegame.h"
 
 namespace cqsp::client::scene {
 
@@ -64,7 +64,7 @@ void UniverseLoadingScene::LoadCurrentUniverse() {
     if (GetUniverse().ctx().contains<ctx::GameLoad>()) {
         const std::string& load_dir = GetUniverse().ctx().at<ctx::GameLoad>().load_dir;
         SPDLOG_INFO("Loading save {}", load_dir);
-        common::save::load_game(GetUniverse(), load_dir);
+        core::save::load_game(GetUniverse(), load_dir);
     }
 
     SPDLOG_INFO("Done loading the universe, entering game");
