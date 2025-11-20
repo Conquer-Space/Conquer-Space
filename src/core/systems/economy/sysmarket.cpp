@@ -73,30 +73,39 @@ void SysMarket::DoSystem() {
             DeterminePrice(market, good_node);
         }
 
-        components::ResourceLedger& market_supply = market.supply();
-        components::ResourceLedger& market_demand = market.demand();
-        for (auto iterator = market_supply.begin(); iterator != market_supply.end(); iterator++) {
-            const double& demand = market_demand[iterator->first];
-            const double& supply = iterator->second;
-            double shortage_level = (demand - supply) / demand;
-            if (demand == 0) {
-                shortage_level = 0;
+        DetermineShortages(market);
+    }
+}
+
+void SysMarket::DetermineShortages(components::Market& market) {
+    components::ResourceLedger& market_supply = market.supply();
+    components::ResourceLedger& market_demand = market.demand();
+    double deficit = 0;
+    for (auto iterator = market_supply.begin(); iterator != market_supply.end(); iterator++) {
+        entt::entity good = iterator->first;
+        const double& demand = market_demand[good];
+        const double& supply = iterator->second;
+        double difference_level = (demand - supply) * market.price[good];
+
+        double shortage_level = (demand - supply) / demand;
+        if (demand == 0) {
+            shortage_level = 0;
+        }
+        // If we have too much of a shortage, we add to the shortage level
+        if (shortage_level > 0.8) {
+            // The demand vs supply ratio should be below a certain amount
+            market.chronic_shortages[good] += shortage_level;
+        } else if (shortage_level > 0) {
+            if (market.chronic_shortages.contains(good)) {
+                market.chronic_shortages[good] += shortage_level;
             }
-            if (shortage_level > 0.8) {
-                // The demand vs supply ratio should be below a certain amount
-                market.chronic_shortages[iterator->first] += shortage_level;
-            } else if (shortage_level > 0) {
-                if (market.chronic_shortages.contains(iterator->first)) {
-                    market.chronic_shortages[iterator->first] += shortage_level;
-                }
-            } else {
-                market.chronic_shortages[iterator->first] -= (1 - shortage_level);
-            }
-            if (market.chronic_shortages[iterator->first] < 0) {
-                market.chronic_shortages[iterator->first] = 0;
-            }
+        } else {
+            // We are currently recovering from a shortage
+            market.chronic_shortages[good] -= std::max(market.chronic_shortages[good] - (1 - shortage_level), 0.);
         }
     }
+    market.last_deficit = deficit;
+    market.deficit += deficit;
 }
 
 void SysMarket::DeterminePrice(Market& market, Node& good_entity) {
@@ -126,8 +135,6 @@ void SysMarket::Init() {
             market.price[good_node] = good_node.get<components::Price>();
             // Set the supply and demand things as 1 so that they sell for
             // now
-            market.previous_demand()[good_node] = 1;
-            market.previous_supply()[good_node] = 1;
             market.supply()[good_node] = 1;
             market.demand()[good_node] = 1;
             market.market_access[good_node] = 0.8;

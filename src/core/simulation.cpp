@@ -66,7 +66,12 @@ void Simulation::CreateSystems() {
     AddSystem<SysPopulationConsumption>();
     AddSystem<SysProduction>();
 
-    // AddSystem<SysAgent>();
+    /* Since the market ticks after all consumption and production is computed,
+     the prices that we compute the profits and consumption are going to be one 
+     tick delayed.
+
+     This means that the market might not be as responsive as we'd expect to
+     changes in price. */
     AddSystem<SysMarket>();
     AddSystem<SysPlanetaryTrade>();
     AddSystem<SysInterplanetaryTrade>();
