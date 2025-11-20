@@ -34,9 +34,9 @@ class TurnSaveWindow : public SysRmlUiInterface {
 
     class EventListener : public Rml::EventListener {
      public:
-        explicit EventListener(common::Universe* universe) : universe(universe) {}
+        explicit EventListener(core::Universe* universe) : universe(universe) {}
         void ProcessEvent(Rml::Event& event);
-        common::Universe* universe;
+        core::Universe* universe;
     } listener {&GetUniverse()};
 
     bool is_paused;

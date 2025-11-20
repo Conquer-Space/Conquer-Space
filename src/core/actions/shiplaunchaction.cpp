@@ -1,0 +1,79 @@
+/* Conquer Space
+ * Copyright (C) 2021-2025 Conquer Space
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+#include "core/actions/shiplaunchaction.h"
+
+#include <fmt/format.h>
+#include <spdlog/spdlog.h>
+
+#include <string>
+
+#include "core/components/bodies.h"
+#include "core/components/coordinates.h"
+#include "core/components/name.h"
+#include "core/components/orbit.h"
+#include "core/components/organizations.h"
+#include "core/components/ships.h"
+
+namespace cqsp::core::actions {
+
+namespace types = components::types;
+namespace ships = components::ships;
+namespace bodies = components::bodies;
+
+using ships::Ship;
+
+Node CreateShip(Node& starsystem, Node& fleet, const glm::vec3& orbit, const std::string& shipName) {
+    Node ship(fleet.universe());
+    ship.emplace<Ship>();
+
+    auto& position = ship.emplace<types::Kinematics>();
+    // Get planet position
+    position.position = orbit;
+    //universe.get<cqspb::StarSystem>(starsystemEnt).bodies.push_back(ship);
+    // Set name
+    if (shipName.empty()) {
+        ship.emplace<components::Name>(fmt::format("Ship {}", ship));
+
+    } else {
+        ship.emplace<components::Name>(shipName);
+    }
+    // Set in fleet
+    if (fleet.all_of<components::ships::Fleet>()) fleet.get<components::ships::Fleet>().ships.push_back(ship);
+
+    return ship;
+}
+
+Node CreateShip(Node& starsystem, Node& fleet, Node& orbit, const std::string& shipName) {
+    return CreateShip(starsystem, fleet, orbit.get<types::Orbit>(), shipName);
+}
+
+Node CreateShip(Node& starsystem, Node& fleet, const components::types::Orbit& orbit, const std::string& shipName) {
+    return CreateShip(starsystem, fleet, types::toVec3AU(orbit), shipName);
+}
+
+entt::entity LaunchShip(Universe& universe, const components::types::Orbit& orbit) {
+    entt::entity ship = universe.create();
+    universe.emplace<Ship>(ship);
+    // Now do things
+    auto& o = universe.emplace<types::Orbit>(ship, orbit);
+    universe.emplace<types::Kinematics>(ship);
+    auto& body = universe.get<bodies::Body>(orbit.reference_body);
+    o.GM = body.GM;
+    universe.get<bodies::OrbitalSystem>(orbit.reference_body).push_back(ship);
+    return ship;
+}
+}  // namespace cqsp::core::actions

@@ -30,7 +30,7 @@
 #include <utility>
 #include <vector>
 
-#include "common/game.h"
+#include "core/game.h"
 #include "engine/asset/assetmanager.h"
 #include "engine/audio/iaudiointerface.h"
 #include "engine/clientoptions.h"

@@ -19,8 +19,8 @@
 #include <filesystem>
 #include <string>
 
-#include "common/util/paths.h"
-#include "common/util/uuid.h"
+#include "core/util/paths.h"
+#include "core/util/uuid.h"
 
 namespace cqsp::client {
 
@@ -51,7 +51,7 @@ void LoadGameWindow::RemoveEventListeners() {
 void LoadGameWindow::InitializeDataModel() {
     // Load saves
     // List the files in the save directory
-    std::filesystem::path save_path = common::util::GetCqspSavePath();
+    std::filesystem::path save_path = core::util::GetCqspSavePath();
     // If the save path doesn't exist, then generate it
     if (!std::filesystem::exists(save_path)) {
         std::filesystem::create_directories(save_path);

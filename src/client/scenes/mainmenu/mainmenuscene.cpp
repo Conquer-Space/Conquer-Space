@@ -28,9 +28,9 @@
 #include "client/components/clientctx.h"
 #include "client/scenes/universe/sysoptionswindow.h"
 #include "client/scenes/universeloadingscene.h"
-#include "common/util/paths.h"
-#include "common/util/save/save.h"
-#include "common/version.h"
+#include "core/util/paths.h"
+#include "core/util/save/save.h"
+#include "core/version.h"
 #include "engine/asset/asset.h"
 #include "engine/cqspgui.h"
 #include "engine/graphics/shader.h"
@@ -198,7 +198,7 @@ void MainMenuScene::ModWindow() {
 }
 
 void MainMenuScene::ShuffleFileList() {
-    std::string splash_dir = common::util::GetCqspDataPath() + "/core/gui/splashscreens";
+    std::string splash_dir = core::util::GetCqspDataPath() + "/core/gui/splashscreens";
 
     for (const auto& entry : std::filesystem::directory_iterator(splash_dir)) {
         std::string extension = entry.path().extension().string();

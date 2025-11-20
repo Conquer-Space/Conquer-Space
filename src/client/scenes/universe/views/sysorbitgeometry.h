@@ -20,13 +20,13 @@
 
 #include <glm/glm.hpp>
 
-#include "common/components/orbit.h"
-#include "common/universe.h"
+#include "core/components/orbit.h"
+#include "core/universe.h"
 
 namespace cqsp::client::systems {
 class SysOrbitGeometry {
  public:
-    SysOrbitGeometry(common::Universe&);
+    SysOrbitGeometry(core::Universe&);
     void GenerateOrbitLines();
 
     int GetOrbitsGenerated() { return orbits_generated; }
@@ -34,10 +34,10 @@ class SysOrbitGeometry {
  private:
     const int ORBIT_RESOLUTION = 500;
     int orbits_generated;
-    common::Universe& universe;
+    core::Universe& universe;
 
     void GenerateOrbit(entt::entity body);
-    std::vector<glm::vec3> GenerateHyperbolicOrbit(const common::components::types::Orbit& orbit, double SOI);
-    std::vector<glm::vec3> GenerateEllipticalOrbit(const common::components::types::Orbit& orbit, double SOI);
+    std::vector<glm::vec3> GenerateHyperbolicOrbit(const core::components::types::Orbit& orbit, double SOI);
+    std::vector<glm::vec3> GenerateEllipticalOrbit(const core::components::types::Orbit& orbit, double SOI);
 };
 }  // namespace cqsp::client::systems

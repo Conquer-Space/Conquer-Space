@@ -22,7 +22,7 @@
 #include <string>
 #include <vector>
 
-#include "common/scripting/functionreg.h"
+#include "core/scripting/functionreg.h"
 
 namespace cqsp::client::scripting {
 namespace {
@@ -59,8 +59,8 @@ sol::object JsonToLuaObject(const Hjson::Value& j, const sol::this_state& s) {
     }
 }
 
-void AssetManagerInterfaces(asset::AssetManager& asset_manager, common::Universe& universe,
-                            common::scripting::ScriptInterface& script_engine) {
+void AssetManagerInterfaces(asset::AssetManager& asset_manager, core::Universe& universe,
+                            core::scripting::ScriptInterface& script_engine) {
     CREATE_NAMESPACE(client);
 
     script_engine.set_function("require", [&](const char* script) {
@@ -89,8 +89,8 @@ void AssetManagerInterfaces(asset::AssetManager& asset_manager, common::Universe
 }
 }  // namespace
 
-void ClientFunctions(asset::AssetManager& asset_manager, common::Universe& universe,
-                     common::scripting::ScriptInterface& script_engine) {
+void ClientFunctions(asset::AssetManager& asset_manager, core::Universe& universe,
+                     core::scripting::ScriptInterface& script_engine) {
     AssetManagerInterfaces(asset_manager, universe, script_engine);
 }
 };  // namespace cqsp::client::scripting

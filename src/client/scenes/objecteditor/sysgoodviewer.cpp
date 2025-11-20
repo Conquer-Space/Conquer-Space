@@ -17,15 +17,15 @@
 #include "client/scenes/objecteditor/sysgoodviewer.h"
 
 #include "client/scenes/universe/interface/systooltips.h"
-#include "common/components/market.h"
-#include "common/components/name.h"
-#include "common/components/resource.h"
-#include "common/components/tags.h"
-#include "common/util/nameutil.h"
+#include "core/components/market.h"
+#include "core/components/name.h"
+#include "core/components/resource.h"
+#include "core/components/tags.h"
+#include "core/util/nameutil.h"
 
 namespace cqsp::client::systems {
 
-namespace components = common::components;
+namespace components = core::components;
 
 void SysGoodViewer::Init() {}
 
@@ -42,7 +42,7 @@ void SysGoodViewer::DoUI(int delta_time) {
                    [](unsigned char c) { return std::tolower(c); });
     ImGui::BeginChild("good_viewer_scroll");
     for (entt::entity good : goods) {
-        std::string name = common::util::GetName(GetUniverse(), good);
+        std::string name = core::util::GetName(GetUniverse(), good);
         std::string name_lower = name;
         std::transform(name_lower.begin(), name_lower.end(), name_lower.begin(),
                        [](unsigned char c) { return std::tolower(c); });
@@ -74,7 +74,7 @@ void SysGoodViewer::GoodViewerRight() {
         ImGui::Text("Good is invalid!");
         return;
     }
-    ImGui::TextFmt("Name: {}", common::util::GetName(GetUniverse(), selected_good));
+    ImGui::TextFmt("Name: {}", core::util::GetName(GetUniverse(), selected_good));
     ImGui::TextFmt("Identifier: {}", GetUniverse().get<components::Identifier>(selected_good).identifier);
     if (ImGui::IsItemClicked()) {
         // Copy
@@ -147,7 +147,7 @@ void SysGoodViewer::InputRecipeTable() {
         }
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
-        ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), recipe));
+        ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), recipe));
         RecipeTooltip(recipe);
         ImGui::TableSetColumnIndex(1);
         ImGui::TextFmt("{}", recipe_comp.input[selected_good]);
@@ -172,7 +172,7 @@ void SysGoodViewer::OutputRecipeTable() {
         }
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
-        ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), recipe));
+        ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), recipe));
         RecipeTooltip(recipe);
         ImGui::TableSetColumnIndex(1);
         ImGui::TextFmt("{}", recipe_comp.output.amount);

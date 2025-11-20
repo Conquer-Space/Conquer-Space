@@ -18,13 +18,13 @@
 
 #include "client/scenes/universe/views/starsystemcamera.h"
 #include "client/scenes/universe/views/starsystemcontroller.h"
-#include "common/universe.h"
+#include "core/universe.h"
 
 namespace cqsp::client::systems {
 class SysStarSystemRenderer;
 class StarSystemViewUI {
  public:
-    StarSystemViewUI(common::Universe&, SysStarSystemRenderer&, StarSystemController&, StarSystemCamera&);
+    StarSystemViewUI(core::Universe&, SysStarSystemRenderer&, StarSystemController&, StarSystemCamera&);
     void RenderInformationWindow(double delta_time);
     void RenderSelectedObjectInformation();
 
@@ -33,7 +33,7 @@ class StarSystemViewUI {
  private:
     StarSystemController& controller;
     StarSystemCamera& camera;
-    common::Universe& universe;
+    core::Universe& universe;
     SysStarSystemRenderer& renderer;
 };
 };  // namespace cqsp::client::systems

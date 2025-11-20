@@ -17,15 +17,15 @@
 #include "recipeviewer.h"
 
 #include "client/scenes/universe/interface/systooltips.h"
-#include "common/components/market.h"
-#include "common/components/name.h"
-#include "common/components/resource.h"
-#include "common/util/nameutil.h"
-#include "common/util/utilnumberdisplay.h"
+#include "core/components/market.h"
+#include "core/components/name.h"
+#include "core/components/resource.h"
+#include "core/util/nameutil.h"
+#include "core/util/utilnumberdisplay.h"
 
 namespace cqsp::client::systems {
 
-namespace components = common::components;
+namespace components = core::components;
 
 void SysRecipeViewer::Init() {}
 
@@ -44,7 +44,7 @@ void SysRecipeViewer::DoUI(int delta_time) {
     ImGui::BeginChild("recipe_viewer_scroll");
     for (entt::entity recipe : recipes) {
         bool is_selected = recipe == selected_recipe;
-        std::string name = common::util::GetName(GetUniverse(), recipe);
+        std::string name = core::util::GetName(GetUniverse(), recipe);
         std::string name_lower = name;
         std::transform(name_lower.begin(), name_lower.end(), name_lower.begin(),
                        [](unsigned char c) { return std::tolower(c); });
@@ -81,7 +81,7 @@ void SysRecipeViewer::ResourceMapTable(components::ResourceLedger& ledger, const
     for (auto& in : ledger) {
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
-        ImGui::TextFmt("{}", cqsp::common::util::GetName(GetUniverse(), in.first));
+        ImGui::TextFmt("{}", cqsp::core::util::GetName(GetUniverse(), in.first));
         if (ImGui::IsItemClicked()) {
             // Copy
             ImGui::SetClipboardText(GetUniverse().get<components::Identifier>(in.first).identifier.c_str());
@@ -99,7 +99,7 @@ void SysRecipeViewer::ResourceMapTable(components::ResourceLedger& ledger, const
 }
 
 namespace {
-double GetLedgerCost(common::Universe& universe, components::ResourceLedger& ledger) {
+double GetLedgerCost(core::Universe& universe, components::ResourceLedger& ledger) {
     double input_cost = 0;
     for (auto& [entity, amount] : ledger) {
         input_cost = universe.get<components::Price>(entity) * amount;
@@ -113,7 +113,7 @@ void SysRecipeViewer::RecipeViewerRight() {
         ImGui::Text("Good is invalid!");
         return;
     }
-    ImGui::TextFmt("Name: {}", common::util::GetName(GetUniverse(), selected_recipe));
+    ImGui::TextFmt("Name: {}", core::util::GetName(GetUniverse(), selected_recipe));
     ImGui::TextFmt("Identifier: {}", GetUniverse().get<components::Identifier>(selected_recipe).identifier);
     if (ImGui::IsItemClicked()) {
         // Then copy
@@ -140,7 +140,7 @@ void SysRecipeViewer::RecipeViewerRight() {
     ImGui::TextFmt("Output Cost: {}",
                    util::NumberToHumanString(GetUniverse().get<components::Price>(recipe_comp.output.entity) *
                                              recipe_comp.output.amount));
-    ImGui::TextFmt("{}, {}", common::util::GetName(GetUniverse(), recipe_comp.output.entity),
+    ImGui::TextFmt("{}, {}", core::util::GetName(GetUniverse(), recipe_comp.output.entity),
                    util::NumberToHumanString(recipe_comp.output.amount));
     if (ImGui::IsItemClicked()) {
         // Then copy

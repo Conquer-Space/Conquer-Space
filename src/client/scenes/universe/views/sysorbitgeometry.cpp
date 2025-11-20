@@ -22,16 +22,16 @@
 #include <numbers>
 
 #include "client/components/planetrendering.h"
-#include "common/components/orbit.h"
-#include "common/components/ships.h"
+#include "core/components/orbit.h"
+#include "core/components/ships.h"
 #include "engine/graphics/primitives/polygon.h"
 #include "tracy/Tracy.hpp"
 
 namespace cqsp::client::systems {
-using common::components::bodies::DirtyOrbit;
-using common::components::types::Orbit;
+using core::components::bodies::DirtyOrbit;
+using core::components::types::Orbit;
 
-SysOrbitGeometry::SysOrbitGeometry(common::Universe& universe) : universe(universe) {}
+SysOrbitGeometry::SysOrbitGeometry(core::Universe& universe) : universe(universe) {}
 
 void SysOrbitGeometry::GenerateOrbitLines() {
     ZoneScoped;
@@ -51,7 +51,7 @@ void SysOrbitGeometry::GenerateOrbitLines() {
         orbits_generated++;
     }
     // Delete unnecessary orbit
-    for (entt::entity ship : universe.view<components::OrbitMesh, common::components::ships::Crash>()) {
+    for (entt::entity ship : universe.view<components::OrbitMesh, core::components::ships::Crash>()) {
         // Then delete the orbit
         universe.remove<components::OrbitMesh>(ship);
     }
@@ -68,7 +68,7 @@ void SysOrbitGeometry::GenerateOrbit(entt::entity body) {
 
     double SOI = std::numeric_limits<double>::infinity();
     if (universe.valid(orbit.reference_body)) {
-        SOI = universe.get<common::components::bodies::Body>(orbit.reference_body).SOI;
+        SOI = universe.get<core::components::bodies::Body>(orbit.reference_body).SOI;
     }
 
     std::vector<glm::vec3> orbit_points =
@@ -80,18 +80,18 @@ void SysOrbitGeometry::GenerateOrbit(entt::entity body) {
     line.orbit_mesh = engine::primitive::CreateLineSequence(orbit_points);
 }
 
-std::vector<glm::vec3> SysOrbitGeometry::GenerateHyperbolicOrbit(const common::components::types::Orbit& orbit,
+std::vector<glm::vec3> SysOrbitGeometry::GenerateHyperbolicOrbit(const core::components::types::Orbit& orbit,
                                                                  double SOI) {
     std::vector<glm::vec3> orbit_points;
     orbit_points.reserve(ORBIT_RESOLUTION);
-    double v_inf = common::components::types::GetHyperbolicAsymptopeAnomaly(orbit.eccentricity);
+    double v_inf = core::components::types::GetHyperbolicAsymptopeAnomaly(orbit.eccentricity);
     // Remove one because it's slightly off.
     int points_generated = 0;
     for (int i = 1; i < ORBIT_RESOLUTION; i++) {
         ZoneScoped;
         double theta = std::lerp(-v_inf, v_inf, (double)i / (double)ORBIT_RESOLUTION);
 
-        glm::vec3 vec = common::components::types::toVec3(orbit, theta);
+        glm::vec3 vec = core::components::types::toVec3(orbit, theta);
         // Check if the length is greater than the SOI, then we don't add it
         if (glm::length(vec) < SOI) {
             orbit_points.push_back(vec);
@@ -102,7 +102,7 @@ std::vector<glm::vec3> SysOrbitGeometry::GenerateHyperbolicOrbit(const common::c
     return orbit_points;
 }
 
-std::vector<glm::vec3> SysOrbitGeometry::GenerateEllipticalOrbit(const common::components::types::Orbit& orbit,
+std::vector<glm::vec3> SysOrbitGeometry::GenerateEllipticalOrbit(const core::components::types::Orbit& orbit,
                                                                  double SOI) {
     std::vector<glm::vec3> orbit_points;
 
@@ -111,7 +111,7 @@ std::vector<glm::vec3> SysOrbitGeometry::GenerateEllipticalOrbit(const common::c
         ZoneScoped;
         double theta = std::numbers::pi * 2 / ORBIT_RESOLUTION * i;
 
-        glm::vec3 vec = common::components::types::toVec3(orbit, theta);
+        glm::vec3 vec = core::components::types::toVec3(orbit, theta);
 
         // If the length is greater than the sphere of influence, then
         // remove it

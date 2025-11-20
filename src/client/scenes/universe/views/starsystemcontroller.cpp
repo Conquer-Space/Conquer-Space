@@ -23,14 +23,14 @@
 #include "client/components/clientctx.h"
 #include "client/components/planetrendering.h"
 #include "client/scenes/universe/views/starsystemview.h"
-#include "common/actions/cityactions.h"
-#include "common/components/bodies.h"
-#include "common/components/coordinates.h"
-#include "common/components/name.h"
-#include "common/components/surface.h"
+#include "core/actions/cityactions.h"
+#include "core/components/bodies.h"
+#include "core/components/coordinates.h"
+#include "core/components/name.h"
+#include "core/components/surface.h"
 
 namespace cqsp::client::systems {
-namespace components = common::components;
+namespace components = core::components;
 namespace bodies = components::bodies;
 namespace types = components::types;
 
@@ -41,7 +41,7 @@ using components::Habitation;
 using components::Name;
 using types::SurfaceCoordinate;
 
-StarSystemController::StarSystemController(common::Universe& _u, engine::Application& _a, StarSystemCamera& _c)
+StarSystemController::StarSystemController(core::Universe& _u, engine::Application& _a, StarSystemCamera& _c)
     : universe(_u), app(_a), camera(_c) {}
 
 void StarSystemController::Update(float delta_time) {
@@ -299,8 +299,8 @@ void StarSystemController::SeePlanet(entt::entity ent) {
 void StarSystemController::FoundCity() {
     auto s = GetMouseSurfaceIntersection();
     SPDLOG_INFO("Founding city at {} {}", s.latitude(), s.longitude());
-    common::Node planetnode(universe, on_planet);
-    entt::entity settlement = common::actions::CreateCity(planetnode, s);
+    core::Node planetnode(universe, on_planet);
+    entt::entity settlement = core::actions::CreateCity(planetnode, s);
     // Set the name of the city
     Name& name = universe.emplace<Name>(settlement);
     name.name = universe.name_generators["Town Names"].Generate("1");

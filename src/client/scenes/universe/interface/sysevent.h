@@ -17,7 +17,7 @@
 #pragma once
 
 #include "client/systems/sysgui.h"
-#include "common/components/event.h"
+#include "core/components/event.h"
 
 namespace cqsp::client::systems::gui {
 class SysEvent : public SysUserInterface {

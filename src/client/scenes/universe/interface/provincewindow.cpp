@@ -24,33 +24,33 @@
 #include "client/scenes/universe/interface/sysstockpileui.h"
 #include "client/scenes/universe/interface/systooltips.h"
 #include "client/scenes/universe/views/starsystemrenderer.h"
-#include "common/actions/maneuver/commands.h"
-#include "common/actions/shiplaunchaction.h"
-#include "common/components/infrastructure.h"
-#include "common/components/market.h"
-#include "common/components/name.h"
-#include "common/components/orbit.h"
-#include "common/components/organizations.h"
-#include "common/components/population.h"
-#include "common/components/resource.h"
-#include "common/components/ships.h"
-#include "common/components/spaceport.h"
-#include "common/components/surface.h"
-#include "common/util/nameutil.h"
-#include "common/util/utilnumberdisplay.h"
+#include "core/actions/maneuver/commands.h"
+#include "core/actions/shiplaunchaction.h"
+#include "core/components/infrastructure.h"
+#include "core/components/market.h"
+#include "core/components/name.h"
+#include "core/components/orbit.h"
+#include "core/components/organizations.h"
+#include "core/components/population.h"
+#include "core/components/resource.h"
+#include "core/components/ships.h"
+#include "core/components/spaceport.h"
+#include "core/components/surface.h"
+#include "core/util/nameutil.h"
+#include "core/util/utilnumberdisplay.h"
 #include "engine/cqspgui.h"
 
 namespace cqsp::client::systems {
 
-namespace components = cqsp::common::components;
+namespace components = cqsp::core::components;
 namespace infrastructure = components::infrastructure;
 namespace types = components::types;
 namespace ships = components::ships;
 namespace bodies = components::bodies;
-using common::util::GetName;
 using components::PopulationSegment;
 using components::Settlement;
 using components::Wallet;
+using core::util::GetName;
 
 using util::NumberToHumanString;
 
@@ -287,7 +287,7 @@ void SysProvinceInformation::IndustryTab() {
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
         for (auto& at : city_industry.industries) {
-            ImGui::TextFmt("{}", common::util::GetEntityType(GetUniverse(), at));
+            ImGui::TextFmt("{}", core::util::GetEntityType(GetUniverse(), at));
         }
         ImGui::EndTooltip();
     }
@@ -373,7 +373,7 @@ void SysProvinceInformation::IndustryListWindow() {
         for (entt::entity industry : city_industry.industries) {
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
-            ImGui::TextFmt("{}", common::util::GetName(GetUniverse(), industry));
+            ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), industry));
             if (ImGui::IsItemHovered()) {
                 systems::gui::EntityTooltip(GetUniverse(), industry);
             }
@@ -513,19 +513,19 @@ void SysProvinceInformation::LaunchTab() {
         types::Orbit orb(semi_major_axis, eccentricity,
                          components::types::GetLaunchInclination(city_coord.r_latitude(), (azimuth)), LAN,
                          arg_of_perapsis, 0, reference_body);
-        entt::entity ship = common::actions::LaunchShip(GetUniverse(), orb);
+        entt::entity ship = core::actions::LaunchShip(GetUniverse(), orb);
         // Also compute the value
         GetUniverse().emplace<ctx::VisibleOrbit>(ship);
 
-        common::systems::commands::LeaveSOI(GetUniverse(), ship, 1000);
+        core::systems::commands::LeaveSOI(GetUniverse(), ship, 1000);
         // Add maneuver like 1000 seconds in the future
-        common::systems::commands::PushManeuver(GetUniverse(), ship,
-                                                common::systems::commands::MakeManeuver(glm::dvec3(0, 0, 0), 1000));
+        core::systems::commands::PushManeuver(GetUniverse(), ship,
+                                              core::systems::commands::MakeManeuver(glm::dvec3(0, 0, 0), 1000));
 
         // Also self destruct after leaving soi
         entt::entity escape_action = GetUniverse().create();
-        GetUniverse().emplace<common::components::Trigger>(escape_action, common::components::Trigger::OnExitSOI);
-        GetUniverse().emplace<common::components::Command>(escape_action, common::components::Command::SelfDestruct);
+        GetUniverse().emplace<core::components::Trigger>(escape_action, core::components::Trigger::OnExitSOI);
+        GetUniverse().emplace<core::components::Command>(escape_action, core::components::Command::SelfDestruct);
 
         auto& command_queue = GetUniverse().get_or_emplace<components::CommandQueue>(ship);
         command_queue.commands.push_back(escape_action);
@@ -546,7 +546,7 @@ void SysProvinceInformation::DockedTab() {
     auto& docked_ships = GetUniverse().get<components::DockedShips>(current_city);
 
     for (entt::entity docked : docked_ships.docked_ships) {
-        ImGui::Selectable(common::util::GetName(GetUniverse(), docked).c_str());
+        ImGui::Selectable(core::util::GetName(GetUniverse(), docked).c_str());
         if (ImGui::IsItemHovered()) {
             systems::gui::EntityTooltip(GetUniverse(), docked);
         }
@@ -558,8 +558,8 @@ void SysProvinceInformation::SpacePortOrdersTab() {
     auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(current_city);
     for (auto& [target, queue] : space_port.deliveries) {
         for (auto& transport : queue) {
-            ImGui::TextFmt("To {}: {} {}/{}", common::util::GetName(GetUniverse(), target),
-                           common::util::GetName(GetUniverse(), transport.good), transport.fulfilled, transport.amount);
+            ImGui::TextFmt("To {}: {} {}/{}", core::util::GetName(GetUniverse(), target),
+                           core::util::GetName(GetUniverse(), transport.good), transport.fulfilled, transport.amount);
         }
     }
 }

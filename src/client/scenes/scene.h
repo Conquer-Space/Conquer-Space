@@ -23,8 +23,8 @@ namespace cqsp::client {
 class ClientScene : public engine::Scene {
  public:
     explicit ClientScene(engine::Application &app) : engine::Scene(app) {}
-    common::Universe &GetUniverse() { return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->m_universe; }
-    common::scripting::ScriptInterface &GetScriptInterface() {
+    core::Universe &GetUniverse() { return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->m_universe; }
+    core::scripting::ScriptInterface &GetScriptInterface() {
         return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->script_interface;
     }
 };

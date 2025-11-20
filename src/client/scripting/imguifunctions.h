@@ -16,9 +16,9 @@
  */
 #pragma once
 
-#include "common/scripting/scripting.h"
-#include "common/universe.h"
+#include "core/scripting/scripting.h"
+#include "core/universe.h"
 
 namespace cqsp::client::scripting {
-void LoadImGuiFunctions(common::Universe& universe, common::scripting::ScriptInterface& script_engine);
+void LoadImGuiFunctions(core::Universe& universe, core::scripting::ScriptInterface& script_engine);
 }  // namespace cqsp::client::scripting

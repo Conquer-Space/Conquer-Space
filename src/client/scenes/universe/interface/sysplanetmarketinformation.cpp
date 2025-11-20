@@ -23,18 +23,18 @@
 #include "client/scenes/universe/interface/systooltips.h"
 #include "client/scenes/universe/universescene.h"
 #include "client/scenes/universe/views/starsystemrenderer.h"
-#include "common/components/bodies.h"
-#include "common/components/market.h"
-#include "common/components/name.h"
-#include "common/components/surface.h"
-#include "common/util/nameutil.h"
-#include "common/util/utilnumberdisplay.h"
+#include "core/components/bodies.h"
+#include "core/components/market.h"
+#include "core/components/name.h"
+#include "core/components/surface.h"
+#include "core/util/nameutil.h"
+#include "core/util/utilnumberdisplay.h"
 
 namespace cqsp::client::systems {
-namespace components = common::components;
+namespace components = core::components;
 namespace bodies = components::bodies;
 
-using common::util::GetName;
+using core::util::GetName;
 
 void SysPlanetMarketInformation::Init() {}
 
@@ -46,7 +46,7 @@ void SysPlanetMarketInformation::DoUI(int delta_time) {
     if (!GetUniverse().valid(selected_planet)) {
         return;
     }
-    ImGui::Begin(fmt::format("{} Planetary Market", common::util::GetName(GetUniverse(), selected_planet)).c_str());
+    ImGui::Begin(fmt::format("{} Planetary Market", core::util::GetName(GetUniverse(), selected_planet)).c_str());
     if (ImGui::BeginTabBar("Planetary Market Tab Bar", ImGuiTabBarFlags_None)) {
         LocalMarketInformation();
         InterplanetaryTradeInformation();
@@ -112,7 +112,7 @@ void SysPlanetMarketInformation::InterplanetaryTradeInformation() {
             continue;
         }
         bool is_selected = selected_good == good;
-        std::string name = common::util::GetName(GetUniverse(), good);
+        std::string name = core::util::GetName(GetUniverse(), good);
         std::string name_lower = name;
         std::transform(name_lower.begin(), name_lower.end(), name_lower.begin(),
                        [](unsigned char c) { return std::tolower(c); });
@@ -140,7 +140,7 @@ void SysPlanetMarketInformation::InterplanetaryTradeRightPanel() {
     // Get the list of selected goods
     auto& interplanetary_market = GetUniverse().get<components::PlanetaryMarket>(selected_planet);
     for (auto& demand : interplanetary_market.demands[selected_good]) {
-        ImGui::TextFmt("Target: {}", common::util::GetName(GetUniverse(), demand.target));
+        ImGui::TextFmt("Target: {}", core::util::GetName(GetUniverse(), demand.target));
         ImGui::TextFmt("Amount: {}", demand.amount);
         ImGui::TextFmt("Price: {}", demand.price);
         ImGui::Separator();
@@ -207,7 +207,7 @@ void SysPlanetMarketInformation::PerGoodDetails() {
     ImGui::BeginChild("per_good_viewer_scroll");
     for (auto good : goodsview) {
         bool is_selected = per_good_details_selected == good;
-        std::string name = common::util::GetName(GetUniverse(), good);
+        std::string name = core::util::GetName(GetUniverse(), good);
         std::string name_lower = name;
         std::transform(name_lower.begin(), name_lower.end(), name_lower.begin(),
                        [](unsigned char c) { return std::tolower(c); });

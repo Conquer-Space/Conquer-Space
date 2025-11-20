@@ -16,7 +16,7 @@
  */
 #include "sysoptionswindow.h"
 
-#include "common/version.h"
+#include "core/version.h"
 #include "engine/cqspgui.h"
 
 namespace cqsp::client::systems {
@@ -28,42 +28,39 @@ void ShowOptionsWindow(bool* open, engine::Application& app) {
     ImGui::Begin("Options", open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
     if (ImGui::BeginTabBar("settingstabs")) {
         if (ImGui::BeginTabItem("Graphics")) {
-            const ImVec2 common_resolutions[] = {
+            const ImVec2 core_resolutions[] = {
                 ImVec2(1024, 768),  ImVec2(1280, 1024), ImVec2(1280, 720),  ImVec2(1280, 800),  ImVec2(1360, 768),
                 ImVec2(1366, 768),  ImVec2(1440, 900),  ImVec2(1600, 900),  ImVec2(1680, 1050), ImVec2(1920, 1200),
                 ImVec2(1920, 1080), ImVec2(2560, 1440), ImVec2(2560, 1080), ImVec2(3440, 1440), ImVec2(3840, 2160)};
             static int item_current_idx = 0;
-            for (int n = 0; n < IM_ARRAYSIZE(common_resolutions); n++) {
-                if (app.GetClientOptions().GetOptions()["window"]["width"] ==
-                        static_cast<int>(common_resolutions[n].x) &&
+            for (int n = 0; n < IM_ARRAYSIZE(core_resolutions); n++) {
+                if (app.GetClientOptions().GetOptions()["window"]["width"] == static_cast<int>(core_resolutions[n].x) &&
                     app.GetClientOptions().GetOptions()["window"]["height"] ==
-                        static_cast<int>(common_resolutions[n].y)) {
+                        static_cast<int>(core_resolutions[n].y)) {
                     item_current_idx = n;
                 }
             }
 
             ImGui::Text("Window Dimensions");
             ImGui::SameLine();
-            if (ImGui::BeginCombo(
-                    "##window size combo box",
-                    fmt::format("{}x{}", common_resolutions[item_current_idx].x, common_resolutions[item_current_idx].y)
-                        .c_str())) {
-                for (int n = 0; n < IM_ARRAYSIZE(common_resolutions); n++) {
+            if (ImGui::BeginCombo("##window size combo box", fmt::format("{}x{}", core_resolutions[item_current_idx].x,
+                                                                         core_resolutions[item_current_idx].y)
+                                                                 .c_str())) {
+                for (int n = 0; n < IM_ARRAYSIZE(core_resolutions); n++) {
                     const bool is_selected = (item_current_idx == n);
                     if (CQSPGui::DefaultSelectable(
-                            fmt::format("{}x{}", common_resolutions[n].x, common_resolutions[n].y).c_str(),
-                            is_selected)) {
+                            fmt::format("{}x{}", core_resolutions[n].x, core_resolutions[n].y).c_str(), is_selected)) {
                         item_current_idx = n;
 
                         // Change options
                         app.GetClientOptions().GetOptions()["window"]["width"] =
-                            static_cast<int>(common_resolutions[n].x);
+                            static_cast<int>(core_resolutions[n].x);
                         app.GetClientOptions().GetOptions()["window"]["height"] =
-                            static_cast<int>(common_resolutions[n].y);
+                            static_cast<int>(core_resolutions[n].y);
 
                         if (!static_cast<bool>(app.GetClientOptions().GetOptions()["full_screen"])) {
                             // Set resolution
-                            app.SetWindowDimensions(common_resolutions[n].x, common_resolutions[n].y);
+                            app.SetWindowDimensions(core_resolutions[n].x, core_resolutions[n].y);
                         }
                     }
 

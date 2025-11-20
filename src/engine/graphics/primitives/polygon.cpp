@@ -22,8 +22,8 @@
 
 #include <glm/glm.hpp>
 
-#include "common/components/coordinates.h"
-#include "common/components/units.h"
+#include "core/components/coordinates.h"
+#include "core/components/units.h"
 
 namespace cqsp::engine::primitive {
 Mesh_t CreateFilledCircle(int segments) {
@@ -38,7 +38,7 @@ Mesh_t CreateFilledCircle(int segments) {
 
     // Add texture coords
     for (int i = 0; i <= segments; i++) {
-        double theta = i * cqsp::common::components::types::toRadian(360.f / segments);
+        double theta = i * cqsp::core::components::types::toRadian(360.f / segments);
         double y = std::sin(theta);
         double x = std::cos(theta);
 
@@ -84,7 +84,7 @@ Mesh_t CreateFilledSquare() { return CreateFilledCircle(4); }
 Mesh_t CreateLineCircle(int segments, float size) {
     std::vector<glm::vec3> positions;
     for (int i = 0; i <= segments + 1; i++) {
-        double theta = i * cqsp::common::components::types::toRadian(360.f / segments);
+        double theta = i * cqsp::core::components::types::toRadian(360.f / segments);
         double y = std::sin(theta) * size;
         double x = std::cos(theta) * size;
         positions.emplace_back(x, 0, y);

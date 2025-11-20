@@ -23,15 +23,15 @@
 #include <vector>
 
 #include "client/scenes/universe/interface/systooltips.h"
-#include "common/components/name.h"
-#include "common/components/science.h"
-#include "common/loading/fields.h"
-#include "common/util/paths.h"
+#include "core/components/name.h"
+#include "core/components/science.h"
+#include "core/loading/fields.h"
+#include "core/util/paths.h"
 #include "engine/cqspgui.h"
 
 namespace cqsp::client::systems {
 
-namespace components = common::components;
+namespace components = core::components;
 namespace science = components::science;
 
 using components::Description;
@@ -126,7 +126,7 @@ void RemoveFieldConnection(std::vector<entt::entity>& vec, entt::entity ent) {
     }
 }
 
-void AcceptNewItem(common::Universe& universe, int input_type, entt::entity input_entity, entt::entity output_entity) {
+void AcceptNewItem(core::Universe& universe, int input_type, entt::entity input_entity, entt::entity output_entity) {
     // Look for the link, then connect back
     // The initial pins should be in multiples of 4 because we make 4
     // Then connect the pins
@@ -160,7 +160,7 @@ void AcceptNewItem(common::Universe& universe, int input_type, entt::entity inpu
     }
 }
 
-void CreateNewNode(common::Universe& universe, FieldNodeInformation& map) {
+void CreateNewNode(core::Universe& universe, FieldNodeInformation& map) {
     ed::PinId inputPinId;
     ed::PinId outputPinId;
     if (!ed::QueryNewLink(&inputPinId, &outputPinId)) {
@@ -183,7 +183,7 @@ void CreateNewNode(common::Universe& universe, FieldNodeInformation& map) {
     }
 }
 
-void RemoveRelationship(common::Universe& universe, int input_type, entt::entity input_entity,
+void RemoveRelationship(core::Universe& universe, int input_type, entt::entity input_entity,
                         entt::entity output_entity) {
     switch (input_type) {
         case 1: {
@@ -208,7 +208,7 @@ void RemoveRelationship(common::Universe& universe, int input_type, entt::entity
     }
 }
 
-void HandleDeletedRelationship(const ed::LinkId& linkId, FieldNodeInformation& map, common::Universe& universe) {
+void HandleDeletedRelationship(const ed::LinkId& linkId, FieldNodeInformation& map, core::Universe& universe) {
     if (!ed::AcceptDeletedItem()) {
         return;
     }
@@ -226,7 +226,7 @@ void HandleDeletedRelationship(const ed::LinkId& linkId, FieldNodeInformation& m
     RemoveRelationship(universe, input_type, input_entity, output_entity);
 }
 
-void HandleDeletedNode(const ed::NodeId& nodeId, FieldNodeInformation& map, common::Universe& universe) {
+void HandleDeletedNode(const ed::NodeId& nodeId, FieldNodeInformation& map, core::Universe& universe) {
     if (!ed::AcceptDeletedItem()) {
         return;
     }
@@ -243,7 +243,7 @@ void HandleDeletedNode(const ed::NodeId& nodeId, FieldNodeInformation& map, comm
     universe.destroy(ent);
 }
 
-void HandleNodeDelete(FieldNodeInformation& map, common::Universe& universe) {
+void HandleNodeDelete(FieldNodeInformation& map, core::Universe& universe) {
     ed::LinkId linkId = 0;
     while (ed::QueryDeletedLink(&linkId)) {
         HandleDeletedRelationship(linkId, map, universe);
@@ -374,7 +374,7 @@ void SysFieldNodeViewer::FieldHjsonViewerWindow() {
     ImGui::Begin("Field Hjson viewer");
     if (ImGui::Button("Make Fields to Hjson")) {
         // Make the hjson
-        auto fields = common::loading::WriteFields(GetUniverse());
+        auto fields = core::loading::WriteFields(GetUniverse());
         Hjson::EncoderOptions eo;
         eo.indentBy = "    ";  // 4 spaces
         hjson_content = Hjson::Marshal(fields, eo);
@@ -382,13 +382,13 @@ void SysFieldNodeViewer::FieldHjsonViewerWindow() {
     ImGui::SameLine();
     if (ImGui::Button("Save to file")) {
         // Write to the hjson file, which should remain the same
-        std::filesystem::path p = common::util::GetCqspDataPath();
+        std::filesystem::path p = core::util::GetCqspDataPath();
         std::filesystem::path default_path = p / "core" / "data" / "science" / "fields" / "default.hjson";
         // Update content
         std::ofstream output(default_path, std::ios::trunc);
         Hjson::EncoderOptions eo;
         eo.indentBy = "    ";  // 4 spaces
-        auto fields = common::loading::WriteFields(GetUniverse());
+        auto fields = core::loading::WriteFields(GetUniverse());
         Hjson::MarshalToFile(fields, default_path.string(), eo);
     }
     ImGui::InputTextMultiline("field_hjson_viewer", &hjson_content, ImVec2(-1, -1));

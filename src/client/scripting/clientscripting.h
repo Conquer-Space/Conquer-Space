@@ -19,6 +19,6 @@
 #include "engine/application.h"
 
 namespace cqsp::client::scripting {
-void ClientFunctions(asset::AssetManager& asset_manager, common::Universe& universe,
-                     common::scripting::ScriptInterface& script_engine);
+void ClientFunctions(asset::AssetManager& asset_manager, core::Universe& universe,
+                     core::scripting::ScriptInterface& script_engine);
 }  // namespace cqsp::client::scripting

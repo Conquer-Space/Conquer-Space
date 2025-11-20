@@ -29,8 +29,8 @@ class SysUserInterface {
     virtual void DoUpdate(int delta_time) = 0;
 
     engine::Application &GetApp() { return m_app; }
-    common::Universe &GetUniverse() { return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->m_universe; }
-    common::scripting::ScriptInterface &GetScriptInterface() {
+    core::Universe &GetUniverse() { return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->m_universe; }
+    core::scripting::ScriptInterface &GetScriptInterface() {
         return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->script_interface;
     }
     asset::AssetManager &GetAssetManager() { return GetApp().GetAssetManager(); }
@@ -49,7 +49,7 @@ class SysRmlUiInterface {
 
  protected:
     engine::Application &GetApp() { return m_app; }
-    common::Universe &GetUniverse() { return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->m_universe; }
+    core::Universe &GetUniverse() { return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->m_universe; }
     asset::AssetManager &GetAssetManager() { return GetApp().GetAssetManager(); }
 
  private:

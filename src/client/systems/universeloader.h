@@ -17,8 +17,8 @@
 #pragma once
 
 #include "client/conquerspace.h"
-#include "common/scripting/scripting.h"
-#include "common/universe.h"
+#include "core/scripting/scripting.h"
+#include "core/universe.h"
 #include "engine/asset/assetmanager.h"
 
 namespace cqsp::client {

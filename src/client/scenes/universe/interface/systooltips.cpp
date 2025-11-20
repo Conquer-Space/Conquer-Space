@@ -20,37 +20,37 @@
 #include <string>
 
 #include "client/scenes/universe/interface/sysstockpileui.h"
-#include "common/actions/population/cityinformation.h"
-#include "common/components/area.h"
-#include "common/components/bodies.h"
-#include "common/components/coordinates.h"
-#include "common/components/infrastructure.h"
-#include "common/components/market.h"
-#include "common/components/name.h"
-#include "common/components/orbit.h"
-#include "common/components/organizations.h"
-#include "common/components/player.h"
-#include "common/components/resource.h"
-#include "common/components/science.h"
-#include "common/components/ships.h"
-#include "common/components/surface.h"
-#include "common/util/nameutil.h"
-#include "common/util/utilnumberdisplay.h"
+#include "core/actions/population/cityinformation.h"
+#include "core/components/area.h"
+#include "core/components/bodies.h"
+#include "core/components/coordinates.h"
+#include "core/components/infrastructure.h"
+#include "core/components/market.h"
+#include "core/components/name.h"
+#include "core/components/orbit.h"
+#include "core/components/organizations.h"
+#include "core/components/player.h"
+#include "core/components/resource.h"
+#include "core/components/science.h"
+#include "core/components/ships.h"
+#include "core/components/surface.h"
+#include "core/util/nameutil.h"
+#include "core/util/utilnumberdisplay.h"
 #include "engine/gui.h"
 
 namespace cqsp::client::systems::gui {
 
-namespace components = common::components;
+namespace components = core::components;
 namespace types = components::types;
 namespace bodies = components::bodies;
 namespace ships = components::ships;
 using bodies::Body;
-using common::Universe;
+using core::Universe;
 using types::Orbit;
 using util::NumberToHumanString;
 
 void RenderEntityType(const Universe& universe, entt::entity entity) {
-    std::string text = common::util::GetEntityType(universe, entity);
+    std::string text = core::util::GetEntityType(universe, entity);
     if (text == "Player") {
         ImGui::TextColored(ImColor(252, 186, 3), "Player");
         return;
@@ -115,7 +115,7 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
         return;
     }
 
-    ImGui::TextFmt("{}", common::util::GetName(universe, entity));
+    ImGui::TextFmt("{}", core::util::GetName(universe, entity));
 
     if (universe.any_of<components::Description>(entity)) {
         auto& desc = universe.get<components::Description>(entity);
@@ -147,13 +147,13 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
 
     if (universe.all_of<components::Governed>(entity)) {
         auto& governed = universe.get<components::Governed>(entity);
-        ImGui::TextFmt("Owned by: {}", common::util::GetName(universe, governed.governor));
+        ImGui::TextFmt("Owned by: {}", core::util::GetName(universe, governed.governor));
     }
 
     // If it's a city do population
     if (universe.all_of<components::Settlement>(entity)) {
-        common::Node node(universe, entity);
-        ImGui::TextFmt("Population: {}", NumberToHumanString(common::actions::GetCityPopulation(node)));
+        core::Node node(universe, entity);
+        ImGui::TextFmt("Population: {}", NumberToHumanString(core::actions::GetCityPopulation(node)));
     }
     if (universe.all_of<Body>(entity)) {
         auto& body = universe.get<Body>(entity);

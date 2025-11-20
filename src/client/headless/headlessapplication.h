@@ -22,8 +22,8 @@
 #include <vector>
 
 #include "client/conquerspace.h"
-#include "common/simulation.h"
-#include "common/universe.h"
+#include "core/simulation.h"
+#include "core/universe.h"
 #include "engine/asset/assetloader.h"
 #include "engine/asset/assetmanager.h"
 
@@ -40,14 +40,14 @@ class HeadlessApplication {
     ConquerSpace& GetGame();
 
     void InitSimulationPtr();
-    common::systems::simulation::Simulation& GetSimulation();
+    core::systems::simulation::Simulation& GetSimulation();
 
  private:
     asset::AssetManager asset_manager;
     asset::AssetLoader asset_loader;
 
     client::ConquerSpace conquer_space;
-    std::unique_ptr<common::systems::simulation::Simulation> simulation;
+    std::unique_ptr<core::systems::simulation::Simulation> simulation;
 
     std::map<std::string, HeadlessCommand> command_map;
 

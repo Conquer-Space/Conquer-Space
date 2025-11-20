@@ -25,8 +25,8 @@
 #include "client/scenes/universe/views/starsystemview.h"
 #include "client/scenes/universe/views/starsystemviewui.h"
 #include "client/scenes/universe/views/sysorbitgeometry.h"
-#include "common/components/coordinates.h"
-#include "common/universe.h"
+#include "core/components/coordinates.h"
+#include "core/universe.h"
 #include "engine/application.h"
 #include "engine/graphics/model.h"
 #include "engine/graphics/renderable.h"
@@ -41,7 +41,7 @@ namespace cqsp::client::systems {
  */
 class SysStarSystemRenderer {
  public:
-    SysStarSystemRenderer(common::Universe &, engine::Application &);
+    SysStarSystemRenderer(core::Universe &, engine::Application &);
     void Initialize();
     void OnTick();
     void Render(float delta_time);
@@ -63,7 +63,7 @@ class SysStarSystemRenderer {
     ~SysStarSystemRenderer();
 
  private:
-    common::Universe &universe;
+    core::Universe &universe;
     engine::Application &app;
 
     StarSystemCamera camera;
