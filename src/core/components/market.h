@@ -112,7 +112,9 @@ struct Market : MarketInformation {
 
     double GDP = 0;
     // How much money we are creating from thin air
+    // Cumulative deficit
     double deficit = 0;
+    // Deficit in last tick
     double last_deficit = 0;
     // Math
     void AddSupply(const ResourceLedger& stockpile);

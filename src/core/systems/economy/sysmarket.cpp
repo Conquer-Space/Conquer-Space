@@ -85,14 +85,14 @@ void SysMarket::DetermineShortages(components::Market& market) {
         entt::entity good = iterator->first;
         const double& demand = market_demand[good];
         const double& supply = iterator->second;
-        double difference_level = (demand - supply) * market.price[good];
+        deficit += (demand - supply) * market.price[good];
 
         double shortage_level = (demand - supply) / demand;
         if (demand == 0) {
             shortage_level = 0;
         }
         // If we have too much of a shortage, we add to the shortage level
-        if (shortage_level > 0.8) {
+        if (shortage_level > GetUniverse().economy_config.market_config.shortage_level) {
             // The demand vs supply ratio should be below a certain amount
             market.chronic_shortages[good] += shortage_level;
         } else if (shortage_level > 0) {
@@ -137,7 +137,7 @@ void SysMarket::Init() {
             // now
             market.supply()[good_node] = 1;
             market.demand()[good_node] = 1;
-            market.market_access[good_node] = 0.8;
+            market.market_access[good_node] = GetUniverse().economy_config.market_config.default_market_access;
         }
         market.sd_ratio = market.supply().SafeDivision(market.demand());
         market.history.push_back(market);

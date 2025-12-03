@@ -155,7 +155,10 @@ void SysProvinceInformation::ProvinceIndustryTabs() {
             ImGui::Separator();
             // Now market wallet
             DisplayWallet(current_province);
-            MarketInformationTable(GetUniverse(), current_province);
+            // Also draw market stats
+            ImGui::TextFmt("Deficit: {}", NumberToHumanString(market.last_deficit));
+            ImGui::TextFmt("Cumulative Deficit: {}", NumberToHumanString(market.deficit));
+            MarketInformationTable(GetUniverse(), current_city);
             ImGui::EndTabItem();
         }
         ImGui::EndTabBar();
