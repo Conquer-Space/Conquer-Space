@@ -59,7 +59,6 @@ namespace infrastructure = components::infrastructure;
 
 using bodies::Body;
 using components::Governed;
-using components::Habitation;
 using components::IndustrialZone;
 using components::Market;
 using components::Player;
@@ -67,6 +66,7 @@ using components::PopulationSegment;
 using components::Price;
 using components::ResourceStockpile;
 using components::Settlement;
+using components::Settlements;
 using components::Wallet;
 using components::science::ScientificResearch;
 
@@ -164,7 +164,7 @@ void FunctionCivilizationGen(Universe& universe, ScriptInterface& script_engine)
 
     REGISTER_FUNCTION("is_player", [&](entt::entity civ) { return static_cast<bool>(universe.all_of<Player>(civ)); });
 
-    REGISTER_FUNCTION("add_planet_habitation", [&](entt::entity planet) { universe.emplace<Habitation>(planet); });
+    REGISTER_FUNCTION("add_planet_habitation", [&](entt::entity planet) { universe.emplace<Settlements>(planet); });
 
     REGISTER_FUNCTION("add_planet_settlement", [&](entt::entity planet, double lat, double longi) {
         Node planet_node(universe, planet);
@@ -313,7 +313,7 @@ void FunctionPopulation(Universe& universe, ScriptInterface& script_engine) {
     REGISTER_FUNCTION("get_segments", [&](entt::entity planet) { return universe.get<Settlement>(planet).population; });
 
     // Get cities of a planet
-    REGISTER_FUNCTION("get_cities", [&](entt::entity planet) { return universe.get<Habitation>(planet).settlements; });
+    REGISTER_FUNCTION("get_cities", [&](entt::entity planet) { return universe.get<Settlements>(planet).settlements; });
 
     REGISTER_FUNCTION("get_city", [&](const std::string& planet) { return universe.cities[planet]; });
 }

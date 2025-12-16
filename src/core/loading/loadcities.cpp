@@ -50,7 +50,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
     Node planet_node(node, universe.planets[planet]);
     sc.planet = planet_node;
 
-    planet_node.get_or_emplace<components::Habitation>().settlements.push_back(node);
+    planet_node.get_or_emplace<components::Settlements>().settlements.push_back(node);
     //SPDLOG_INFO("Load Timezone");
     if (!values["timezone"].empty()) {
         entt::entity tz = universe.time_zones[values["timezone"].to_string()];

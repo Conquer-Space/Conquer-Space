@@ -233,7 +233,7 @@ void SysPlanetMarketInformation::PerGoodDetails() {
 
 void SysPlanetMarketInformation::PerGoodDetailsRightPanel() {
     // Now add the tables for each city and stuff
-    if (!GetUniverse().any_of<components::Habitation>(selected_planet)) {
+    if (!GetUniverse().any_of<components::Settlements>(selected_planet)) {
         ImGui::TextFmt("No cities attached!");
         return;
     }
@@ -254,7 +254,7 @@ void SysPlanetMarketInformation::PerGoodDetailsRightPanel() {
 
     ImGui::TableHeadersRow();
 
-    auto& cities = GetUniverse().get<components::Habitation>(selected_planet);
+    auto& cities = GetUniverse().get<components::Settlements>(selected_planet);
     for (entt::entity city : cities.settlements) {
         auto& market = GetUniverse().get<components::Market>(city);
         ImGui::TableNextRow();

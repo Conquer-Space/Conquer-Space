@@ -267,7 +267,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
         if (ImGui::Button("Land On City")) {
             // Check if the targeted body has a settlement to land on
             // Just grab the first one
-            auto& cities = GetUniverse().get<components::Habitation>(selected);
+            auto& cities = GetUniverse().get<components::Settlements>(selected);
             if (!cities.settlements.empty()) {
                 core::systems::commands::LandOnMoon(GetUniverse(), body, selected, cities.settlements.front());
             }

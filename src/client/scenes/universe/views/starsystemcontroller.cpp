@@ -37,8 +37,8 @@ namespace types = components::types;
 using bodies::Body;
 using client::components::Offset;
 using client::components::PlanetTexture;
-using components::Habitation;
 using components::Name;
+using components::Settlements;
 using types::SurfaceCoordinate;
 
 StarSystemController::StarSystemController(core::Universe& _u, engine::Application& _a, StarSystemCamera& _c)
@@ -388,10 +388,10 @@ void StarSystemController::CalculateCityPositions() {
     if (!universe.valid(m_viewing_entity)) {
         return;
     }
-    if (!universe.all_of<Habitation>(m_viewing_entity)) {
+    if (!universe.all_of<Settlements>(m_viewing_entity)) {
         return;
     }
-    std::vector<entt::entity> cities = universe.get<Habitation>(m_viewing_entity).settlements;
+    std::vector<entt::entity> cities = universe.get<Settlements>(m_viewing_entity).settlements;
     if (cities.empty()) {
         return;
     }

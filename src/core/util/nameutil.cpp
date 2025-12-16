@@ -62,7 +62,7 @@ std::string GetEntityType(const Universe& universe, entt::entity entity) {
         return "Star";
     } else if (universe.all_of<components::bodies::Planet>(entity)) {
         return "Planet";
-    } else if (universe.any_of<components::Settlement, components::Habitation>(entity)) {
+    } else if (universe.any_of<components::Settlement, components::Settlements>(entity)) {
         return "City";
     } else if (universe.any_of<components::Production>(entity)) {
         auto& generator = universe.get<components::Production>(entity);

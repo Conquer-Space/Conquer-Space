@@ -97,7 +97,7 @@ entt::entity SysSpacePort::TargetMoonManeuver(const components::infrastructure::
         ship, fmt::format("{} Transport Vehicle", util::GetName(GetUniverse(), element.good)));
     // Then target the target body
     // Land on armstrong
-    auto& cities = GetUniverse().get<components::Habitation>(target);
+    auto& cities = GetUniverse().get<components::Settlements>(target);
     commands::LandOnMoon(GetUniverse(), ship, target, cities.settlements.front());
     return ship;
 }
@@ -140,7 +140,7 @@ entt::entity SysSpacePort::ReturnFromMoonManeuver(const components::infrastructu
     command_queue.commands.push_back(reenter);
 
     entt::entity dock_city = GetUniverse().create();
-    auto& cities = GetUniverse().get<components::Habitation>(target);
+    auto& cities = GetUniverse().get<components::Settlements>(target);
     GetUniverse().emplace<components::Trigger>(dock_city, components::Trigger::OnCrash);
     GetUniverse().emplace<components::Command>(dock_city, components::Command::LandOnBody);
     GetUniverse().emplace<components::OrbitEntityTarget>(dock_city, cities.settlements.front());

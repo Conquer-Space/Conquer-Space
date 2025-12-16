@@ -31,13 +31,13 @@ void SysPlanetaryTrade::DoSystem() {
     // Then list all the markets
     // Get the market of the planet, and add latent supply and demand, and then compute the market
     auto planetary_markets =
-        GetUniverse().nodes<components::Market, components::PlanetaryMarket, components::Habitation>();
+        GetUniverse().nodes<components::Market, components::PlanetaryMarket, components::Settlements>();
 
     auto goodsview = GetUniverse().nodes<components::Price>();
 
     for (Node market_node : planetary_markets) {
         auto& p_market = market_node.get<components::Market>();
-        auto& habitation = market_node.get<components::Habitation>();
+        auto& habitation = market_node.get<components::Settlements>();
         auto& wallet = market_node.get_or_emplace<components::Wallet>();
 
         p_market.trade.clear();
