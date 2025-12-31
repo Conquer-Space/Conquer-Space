@@ -30,7 +30,6 @@
 #include "core/loading/loadcountries.h"
 #include "core/loading/loadgoods.h"
 #include "core/loading/loadnames.h"
-#include "core/loading/loadprovinces.h"
 #include "core/loading/loadsatellites.h"
 #include "core/loading/loadterrain.h"
 #include "core/loading/planetloader.h"
@@ -91,26 +90,6 @@ void LoadResource(AssetManager& asset_manager, Universe& universe, const std::st
     auto end = std::chrono::system_clock::now();
     SPDLOG_INFO("{} load took {} ms", asset_name,
                 std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count());
-}
-
-void LoadPlanetProvinces(AssetManager& asset_manager, ConquerSpace& conquer_space) {
-    auto& universe = conquer_space.GetUniverse();
-    auto view = universe.nodes<components::ProvincedPlanet>();
-    SPDLOG_INFO("Loading Provinces");
-    for (core::Node node : view) {
-        // Check if it's empty or not
-        //SPDLOG_INFO("Loading Provinces for planet");
-
-        auto& province_map = node.get<components::ProvincedPlanet>();
-        if (!province_map.province_definitions.empty()) {
-            asset::TextAsset* asset = asset_manager.GetAsset<asset::TextAsset>(province_map.province_definitions);
-            if (asset != nullptr) {
-                loading::LoadProvinces(node, asset->data);
-            }
-        }
-        //SPDLOG_INFO("Done Loading Provinces for planet");
-    }
-    SPDLOG_INFO("Proviences Loaded");
 }
 
 void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) {
