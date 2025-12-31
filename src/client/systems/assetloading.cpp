@@ -121,8 +121,8 @@ void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) 
     LoadResource<loading::CountryLoader>(asset_manager, conquer_space.GetUniverse(), "countries");
 
     // LoadPlanetProvinces(asset_manager, conquer_space);
+    LoadResource<loading::CityLoader>(asset_manager, conquer_space.GetUniverse(), "cities");
     LoadResource<loading::ProvinceLoader>(asset_manager, conquer_space.GetUniverse(), "provinces");
-    // LoadResource<loading::CityLoader>(asset_manager, conquer_space.GetUniverse(), "cities");
     LoadResource<loading::SatelliteLoader>(asset_manager, conquer_space.GetUniverse(), "satellites");
 
     LoadResource(asset_manager, conquer_space.m_universe, "names", loading::LoadNameLists);

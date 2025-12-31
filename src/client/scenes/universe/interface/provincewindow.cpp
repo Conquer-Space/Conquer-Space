@@ -57,10 +57,10 @@ using util::NumberToHumanString;
 void SysProvinceInformation::Init() {}
 
 void SysProvinceInformation::DoUI(int delta_time) {
-    const entt::entity selected_country = GetUniverse().view<ctx::SelectedProvince>().front();
-    if (selected_country != current_province) {
-        current_province = selected_country;
-        current_province = current_city;
+    const entt::entity selected_province = GetUniverse().view<ctx::SelectedProvince>().front();
+    if (selected_province != current_province) {
+        current_province = selected_province;
+        current_city = selected_province;
         view_mode = ViewMode::COUNTRY_VIEW;
         visible = true;
     }

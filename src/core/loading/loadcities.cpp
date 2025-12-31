@@ -56,62 +56,8 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
         entt::entity tz = universe.time_zones[values["timezone"].to_string()];
         node.emplace<components::CityTimeZone>(tz);
     }
-
-    //SPDLOG_INFO("Load Population");
-    auto& settlement = node.emplace<components::Settlement>();
     std::string identifier = node.get<components::Identifier>().identifier;
-    // Load population
-    if (!values["population"].empty()) {
-        Hjson::Value population = values["population"];
-        for (int i = 0; i < population.size(); i++) {
-            Hjson::Value population_seg = population[i];
-            Node pop_node(universe);
 
-            auto size = population_seg["size"].to_int64();
-            double standard_of_living = 0;
-            if (!population_seg["sol"].empty()) {
-                standard_of_living = population_seg["sol"].to_double();
-            }
-
-            double balance = 0;
-            if (!population_seg["balance"].empty()) {
-                balance = population_seg["balance"].to_double();
-            }
-
-            int64_t labor_force = size / 2;
-            if (!population_seg["labor_force"].empty()) {
-                labor_force = population_seg["labor_force"].to_int64();
-            }
-
-            auto& segment = pop_node.emplace<components::PopulationSegment>();
-            segment.population = size;
-            segment.labor_force = labor_force;
-            segment.standard_of_living = standard_of_living;
-            pop_node.emplace<components::LaborInformation>();
-            auto& wallet = pop_node.emplace<components::Wallet>();
-            wallet = balance;
-            settlement.population.push_back(pop_node);
-        }
-    } else {
-        Node pop_node(universe);
-
-        auto size = 50000;
-        int64_t labor_force = size / 2;
-
-        auto& segment = pop_node.emplace<components::PopulationSegment>();
-        segment.population = size;
-        segment.labor_force = labor_force;
-        pop_node.emplace<components::LaborInformation>();
-        settlement.population.push_back(pop_node);
-        SPDLOG_WARN("City {} does not have any population", identifier);
-    }
-    //SPDLOG_INFO("Load Industry");
-    node.emplace<components::ResourceLedger>();
-
-    // Industry and economy
-    auto& industry = node.emplace<components::IndustrialZone>();
-    auto& market = node.emplace<components::Market>();
-    market.parent_market = universe.planets[planet];
     // Get the connected markets
     if (!values["connections"].empty() && values["connections"].type() == Hjson::Type::Vector) {
         // Get connected cities and then see if they're done
@@ -124,19 +70,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
             }
         }
     }
-    // Commercial area
-    Node commercial_node(universe);
 
-    commercial_node.emplace<components::Employer>();
-    commercial_node.emplace<components::Commercial>(node, 0);
-
-    industry.industries.push_back(commercial_node);
-
-    if (!values["industry"].empty()) {
-        Hjson::Value industry_hjson = values["industry"];
-
-        ParseIndustry(industry_hjson, node, identifier);
-    }
     //SPDLOG_INFO("Load SpacePort");
     if (!values["space-port"].empty()) {
         // Add space port

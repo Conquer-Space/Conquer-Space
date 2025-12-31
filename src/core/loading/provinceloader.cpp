@@ -128,12 +128,7 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
 
         ParseIndustry(industry_hjson, node, identifier);
     }
-    //SPDLOG_INFO("Load SpacePort");
-    if (!values["space-port"].empty()) {
-        // Add space port
-        auto& space_port = node.emplace<components::infrastructure::SpacePort>();
-        space_port.reference_body = planet_node;
-    }
+
     //SPDLOG_INFO("Load Country");
     if (!values["country"].empty()) {
         if (universe.countries.find(values["country"]) != universe.countries.end()) {
