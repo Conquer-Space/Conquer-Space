@@ -8,6 +8,7 @@
             252
         ]
         country: denmark
+        planet: earth
     }
     {
         identifier: hovedstaden
@@ -18,6 +19,7 @@
             27
         ]
         country: denmark
+        planet: earth
     }
     {
         identifier: kommune_kujalleq
@@ -28,6 +30,7 @@
             86
         ]
         country: denmark
+        planet: earth
     }
     {
         identifier: kommuneqarfik_sermersooq
@@ -38,6 +41,7 @@
             7
         ]
         country: denmark
+        planet: earth
     }
     {
         identifier: midtjylland
@@ -48,6 +52,7 @@
             129
         ]
         country: denmark
+        planet: earth
     }
     {
         identifier: nationalparken
@@ -58,6 +63,7 @@
             74
         ]
         country: denmark
+        planet: earth
     }
     {
         identifier: nordjylland
@@ -68,6 +74,7 @@
             196
         ]
         country: denmark
+        planet: earth
     }
     {
         identifier: pituffik
@@ -78,6 +85,7 @@
             208
         ]
         country: denmark
+        planet: earth
     }
     {
         identifier: qaasuitsup_kommunia
@@ -88,6 +96,7 @@
             141
         ]
         country: denmark
+        planet: earth
     }
     {
         identifier: qeqqata_kommunia
@@ -98,6 +107,7 @@
             19
         ]
         country: denmark
+        planet: earth
     }
     {
         identifier: sjaaelland
@@ -108,6 +118,7 @@
             216
         ]
         country: denmark
+        planet: earth
     }
     {
         identifier: syddanmark
@@ -118,5 +129,6 @@
             139
         ]
         country: denmark
+        planet: earth
     }
 ]

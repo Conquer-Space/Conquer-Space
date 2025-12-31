@@ -8,6 +8,7 @@
             142
         ]
         country: singapore
+        planet: earth
     }
     {
         identifier: south_east
@@ -18,6 +19,7 @@
             209
         ]
         country: singapore
+        planet: earth
     }
     {
         identifier: south_west
@@ -28,5 +30,6 @@
             75
         ]
         country: singapore
+        planet: earth
     }
 ]

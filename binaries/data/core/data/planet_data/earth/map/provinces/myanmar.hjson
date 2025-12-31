@@ -8,6 +8,7 @@
             6
         ]
         country: myanmar
+        planet: earth
     }
     {
         identifier: bago
@@ -18,6 +19,7 @@
             140
         ]
         country: myanmar
+        planet: earth
     }
     {
         identifier: chin
@@ -28,6 +30,7 @@
             66
         ]
         country: myanmar
+        planet: earth
     }
     {
         identifier: kachin
@@ -38,6 +41,7 @@
             132
         ]
         country: myanmar
+        planet: earth
     }
     {
         identifier: kayah
@@ -48,6 +52,7 @@
             223
         ]
         country: myanmar
+        planet: earth
     }
     {
         identifier: kayin
@@ -58,6 +63,7 @@
             34
         ]
         country: myanmar
+        planet: earth
     }
     {
         identifier: magway
@@ -68,6 +74,7 @@
             86
         ]
         country: myanmar
+        planet: earth
     }
     {
         identifier: mandalay
@@ -78,6 +85,7 @@
             153
         ]
         country: myanmar
+        planet: earth
     }
     {
         identifier: mon
@@ -88,6 +96,7 @@
             235
         ]
         country: myanmar
+        planet: earth
     }
     {
         identifier: rakhine
@@ -98,6 +107,7 @@
             188
         ]
         country: myanmar
+        planet: earth
     }
     {
         identifier: sagaing
@@ -108,6 +118,7 @@
             199
         ]
         country: myanmar
+        planet: earth
     }
     {
         identifier: shan
@@ -118,6 +129,7 @@
             22
         ]
         country: myanmar
+        planet: earth
     }
     {
         identifier: tanintharyi
@@ -128,6 +140,7 @@
             46
         ]
         country: myanmar
+        planet: earth
     }
     {
         identifier: yangon
@@ -138,5 +151,6 @@
             73
         ]
         country: myanmar
+        planet: earth
     }
 ]

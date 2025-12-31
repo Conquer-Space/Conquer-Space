@@ -8,6 +8,7 @@
             13
         ]
         country: uruguay
+        planet: earth
     }
     {
         identifier: canelones
@@ -18,6 +19,7 @@
             155
         ]
         country: uruguay
+        planet: earth
     }
     {
         identifier: cerro_largo
@@ -28,6 +30,7 @@
             214
         ]
         country: uruguay
+        planet: earth
     }
     {
         identifier: colonia
@@ -38,6 +41,7 @@
             100
         ]
         country: uruguay
+        planet: earth
     }
     {
         identifier: durazno
@@ -48,6 +52,7 @@
             152
         ]
         country: uruguay
+        planet: earth
     }
     {
         identifier: flores
@@ -58,6 +63,7 @@
             219
         ]
         country: uruguay
+        planet: earth
     }
     {
         identifier: florida_uruguay
@@ -68,6 +74,7 @@
             30
         ]
         country: uruguay
+        planet: earth
     }
     {
         identifier: lavalleja
@@ -78,6 +85,7 @@
             97
         ]
         country: uruguay
+        planet: earth
     }
     {
         identifier: maldonado
@@ -88,6 +96,7 @@
             88
         ]
         country: uruguay
+        planet: earth
     }
     {
         identifier: montevideo
@@ -98,6 +107,7 @@
             222
         ]
         country: uruguay
+        planet: earth
     }
     {
         identifier: paysandu
@@ -108,6 +118,7 @@
             67
         ]
         country: uruguay
+        planet: earth
     }
     {
         identifier: rio_negro_uruguay
@@ -118,6 +129,7 @@
             234
         ]
         country: uruguay
+        planet: earth
     }
     {
         identifier: rivera
@@ -128,6 +140,7 @@
             147
         ]
         country: uruguay
+        planet: earth
     }
     {
         identifier: rocha
@@ -138,6 +151,7 @@
             25
         ]
         country: uruguay
+        planet: earth
     }
     {
         identifier: salto
@@ -148,6 +162,7 @@
             80
         ]
         country: uruguay
+        planet: earth
     }
     {
         identifier: san_jose_uruguay
@@ -158,6 +173,7 @@
             33
         ]
         country: uruguay
+        planet: earth
     }
     {
         identifier: soriano
@@ -168,6 +184,7 @@
             167
         ]
         country: uruguay
+        planet: earth
     }
     {
         identifier: tacuarembo
@@ -178,6 +195,7 @@
             85
         ]
         country: uruguay
+        planet: earth
     }
     {
         identifier: treinta_y_tres
@@ -188,5 +206,6 @@
             92
         ]
         country: uruguay
+        planet: earth
     }
 ]

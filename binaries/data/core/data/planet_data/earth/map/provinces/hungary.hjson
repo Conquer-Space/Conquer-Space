@@ -8,6 +8,7 @@
             148
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: baranya
@@ -18,6 +19,7 @@
             232
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: bekes
@@ -28,6 +30,7 @@
             34
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: bekescsaba
@@ -38,6 +41,7 @@
             163
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: borsod-abauj-zemplen
@@ -48,6 +52,7 @@
             37
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: budapest
@@ -58,6 +63,7 @@
             9
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: csongrad
@@ -68,6 +74,7 @@
             235
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: debrecen
@@ -78,6 +85,7 @@
             230
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: dunaujvaros
@@ -88,6 +96,7 @@
             155
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: eger
@@ -98,6 +107,7 @@
             210
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: erd
@@ -108,6 +118,7 @@
             76
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: fejer
@@ -118,6 +129,7 @@
             253
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: gyor
@@ -128,6 +140,7 @@
             72
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: gyor-moson-sopron
@@ -138,6 +151,7 @@
             164
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: hajdu-bihar
@@ -148,6 +162,7 @@
             168
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: heves
@@ -158,6 +173,7 @@
             143
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: hodmezovasarhely
@@ -168,6 +184,7 @@
             88
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: jasz-nagykun-szolnok
@@ -178,6 +195,7 @@
             186
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: kaposvar
@@ -188,6 +206,7 @@
             151
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: kecskemet
@@ -198,6 +217,7 @@
             222
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: komarom-esztergom
@@ -208,6 +228,7 @@
             116
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: miskolc
@@ -218,6 +239,7 @@
             21
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: nagykanizsa
@@ -228,6 +250,7 @@
             17
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: nograd
@@ -238,6 +261,7 @@
             171
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: nyiregyhaza
@@ -248,6 +272,7 @@
             41
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: pecs
@@ -258,6 +283,7 @@
             218
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: pest
@@ -268,6 +294,7 @@
             183
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: salgotarjan
@@ -278,6 +305,7 @@
             238
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: somogy
@@ -288,6 +316,7 @@
             31
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: sopron
@@ -298,6 +327,7 @@
             42
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: szabolcs-szatmar-bereg
@@ -308,6 +338,7 @@
             156
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: szeged
@@ -318,6 +349,7 @@
             93
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: szekesfehervar
@@ -328,6 +360,7 @@
             96
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: szekszard
@@ -338,6 +371,7 @@
             29
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: szolnok
@@ -348,6 +382,7 @@
             198
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: szombathely
@@ -358,6 +393,7 @@
             139
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: tatabanya
@@ -368,6 +404,7 @@
             33
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: tolna
@@ -378,6 +415,7 @@
             131
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: vas
@@ -388,6 +426,7 @@
             109
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: veszprem_hungary
@@ -398,6 +437,7 @@
             64
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: veszprem_hungary_2
@@ -408,6 +448,7 @@
             84
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: zala
@@ -418,6 +459,7 @@
             153
         ]
         country: hungary
+        planet: earth
     }
     {
         identifier: zalaegerszeg
@@ -428,5 +470,6 @@
             206
         ]
         country: hungary
+        planet: earth
     }
 ]

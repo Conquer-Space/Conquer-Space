@@ -8,6 +8,7 @@
             203
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: batha
@@ -18,6 +19,7 @@
             215
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: borkou
@@ -28,6 +30,7 @@
             9
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: chari-baguirmi
@@ -38,6 +41,7 @@
             248
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: ennedi
@@ -48,6 +52,7 @@
             198
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: guera
@@ -58,6 +63,7 @@
             148
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: hadjer-lamis
@@ -68,6 +74,7 @@
             114
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: kanem
@@ -78,6 +85,7 @@
             222
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: lac
@@ -88,6 +96,7 @@
             178
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: logone_occidental
@@ -98,6 +107,7 @@
             81
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: logone_oriental
@@ -108,6 +118,7 @@
             78
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: mandoul
@@ -118,6 +129,7 @@
             11
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: mayo-kebbi_est
@@ -128,6 +140,7 @@
             126
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: mayo-kebbi_ouest
@@ -138,6 +151,7 @@
             193
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: moyen-chari
@@ -148,6 +162,7 @@
             133
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: ouaddai
@@ -158,6 +173,7 @@
             50
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: salamat
@@ -168,6 +184,7 @@
             255
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: sila
@@ -178,6 +195,7 @@
             188
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: tandjile
@@ -188,6 +206,7 @@
             14
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: tibesti
@@ -198,6 +217,7 @@
             143
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: ville_de_n'djamena
@@ -208,6 +228,7 @@
             59
         ]
         country: chad
+        planet: earth
     }
     {
         identifier: wadi_fira
@@ -218,5 +239,6 @@
             117
         ]
         country: chad
+        planet: earth
     }
 ]

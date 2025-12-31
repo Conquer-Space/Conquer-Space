@@ -8,6 +8,7 @@
             132
         ]
         country: belize
+        planet: earth
     }
     {
         identifier: cayo
@@ -18,6 +19,7 @@
             120
         ]
         country: belize
+        planet: earth
     }
     {
         identifier: corozal
@@ -28,6 +30,7 @@
             65
         ]
         country: belize
+        planet: earth
     }
     {
         identifier: orange_walk
@@ -38,6 +41,7 @@
             254
         ]
         country: belize
+        planet: earth
     }
     {
         identifier: stann_creek
@@ -48,6 +52,7 @@
             65
         ]
         country: belize
+        planet: earth
     }
     {
         identifier: toledo_belize
@@ -58,5 +63,6 @@
             66
         ]
         country: belize
+        planet: earth
     }
 ]

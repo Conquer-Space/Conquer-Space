@@ -8,6 +8,7 @@
             86
         ]
         country: s�o_tom�_and_principe
+        planet: earth
     }
     {
         identifier: sao_tome
@@ -18,5 +19,6 @@
             19
         ]
         country: s�o_tom�_and_principe
+        planet: earth
     }
 ]

@@ -8,6 +8,7 @@
             120
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: appenzell_ausserrhoden
@@ -18,6 +19,7 @@
             82
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: appenzell_innerrhoden
@@ -28,6 +30,7 @@
             149
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: basel-landschaft
@@ -38,6 +41,7 @@
             254
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: bern
@@ -48,6 +52,7 @@
             212
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: fribourg
@@ -58,6 +63,7 @@
             169
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: geneve
@@ -68,6 +74,7 @@
             156
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: glarus
@@ -78,6 +85,7 @@
             35
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: graubunden
@@ -88,6 +96,7 @@
             66
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: jura_switzerland
@@ -98,6 +107,7 @@
             211
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: lucerne
@@ -108,6 +118,7 @@
             23
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: neuchatel
@@ -118,6 +129,7 @@
             168
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: nidwalden
@@ -128,6 +140,7 @@
             102
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: obwalden
@@ -138,6 +151,7 @@
             236
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: sankt_gallen
@@ -148,6 +162,7 @@
             199
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: schaffhausen
@@ -158,6 +173,7 @@
             175
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: schwyz
@@ -168,6 +184,7 @@
             224
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: solothurn
@@ -178,6 +195,7 @@
             144
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: thurgau
@@ -188,6 +206,7 @@
             242
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: ticino
@@ -198,6 +217,7 @@
             121
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: uri
@@ -208,6 +228,7 @@
             157
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: valais
@@ -218,6 +239,7 @@
             243
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: vaud
@@ -228,6 +250,7 @@
             34
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: zug
@@ -238,6 +261,7 @@
             90
         ]
         country: switzerland
+        planet: earth
     }
     {
         identifier: zurich
@@ -248,5 +272,6 @@
             53
         ]
         country: switzerland
+        planet: earth
     }
 ]

@@ -8,6 +8,7 @@
             135
         ]
         country: lithuania
+        planet: earth
     }
     {
         identifier: kauno
@@ -18,6 +19,7 @@
             162
         ]
         country: lithuania
+        planet: earth
     }
     {
         identifier: klaipedos
@@ -28,6 +30,7 @@
             224
         ]
         country: lithuania
+        planet: earth
     }
     {
         identifier: marijampoles
@@ -38,6 +41,7 @@
             157
         ]
         country: lithuania
+        planet: earth
     }
     {
         identifier: panevezio
@@ -48,6 +52,7 @@
             78
         ]
         country: lithuania
+        planet: earth
     }
     {
         identifier: siauliai
@@ -58,6 +63,7 @@
             236
         ]
         country: lithuania
+        planet: earth
     }
     {
         identifier: taurages
@@ -68,6 +74,7 @@
             76
         ]
         country: lithuania
+        planet: earth
     }
     {
         identifier: telsiai
@@ -78,6 +85,7 @@
             90
         ]
         country: lithuania
+        planet: earth
     }
     {
         identifier: utenos
@@ -88,6 +96,7 @@
             190
         ]
         country: lithuania
+        planet: earth
     }
     {
         identifier: vilniaus
@@ -98,5 +107,6 @@
             1
         ]
         country: lithuania
+        planet: earth
     }
 ]

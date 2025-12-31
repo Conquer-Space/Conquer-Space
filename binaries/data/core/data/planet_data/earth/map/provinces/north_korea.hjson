@@ -8,6 +8,7 @@
             19
         ]
         country: north_korea
+        planet: earth
     }
     {
         identifier: hamgyong-bukto
@@ -18,6 +19,7 @@
             74
         ]
         country: north_korea
+        planet: earth
     }
     {
         identifier: hamgyong-namdo
@@ -28,6 +30,7 @@
             40
         ]
         country: north_korea
+        planet: earth
     }
     {
         identifier: hwanghae-bukto
@@ -38,6 +41,7 @@
             235
         ]
         country: north_korea
+        planet: earth
     }
     {
         identifier: hwanghae-namdo
@@ -48,6 +52,7 @@
             16
         ]
         country: north_korea
+        planet: earth
     }
     {
         identifier: kangwon-do
@@ -58,6 +63,7 @@
             101
         ]
         country: north_korea
+        planet: earth
     }
     {
         identifier: p'yongan-bukto
@@ -68,6 +74,7 @@
             153
         ]
         country: north_korea
+        planet: earth
     }
     {
         identifier: p'yongan-namdo
@@ -78,6 +85,7 @@
             205
         ]
         country: north_korea
+        planet: earth
     }
     {
         identifier: p'yongyang
@@ -88,6 +96,7 @@
             209
         ]
         country: north_korea
+        planet: earth
     }
     {
         identifier: rason
@@ -98,6 +107,7 @@
             141
         ]
         country: north_korea
+        planet: earth
     }
     {
         identifier: ryanggang
@@ -108,5 +118,6 @@
             208
         ]
         country: north_korea
+        planet: earth
     }
 ]

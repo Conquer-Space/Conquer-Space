@@ -8,6 +8,7 @@
             173
         ]
         country: estonia
+        planet: earth
     }
     {
         identifier: hiiu
@@ -18,6 +19,7 @@
             178
         ]
         country: estonia
+        planet: earth
     }
     {
         identifier: ida-viru
@@ -28,6 +30,7 @@
             238
         ]
         country: estonia
+        planet: earth
     }
     {
         identifier: jarva
@@ -38,6 +41,7 @@
             145
         ]
         country: estonia
+        planet: earth
     }
     {
         identifier: jogeva
@@ -48,6 +52,7 @@
             183
         ]
         country: estonia
+        planet: earth
     }
     {
         identifier: laane
@@ -58,6 +63,7 @@
             106
         ]
         country: estonia
+        planet: earth
     }
     {
         identifier: laane-viru
@@ -68,6 +74,7 @@
             240
         ]
         country: estonia
+        planet: earth
     }
     {
         identifier: parnu
@@ -78,6 +85,7 @@
             30
         ]
         country: estonia
+        planet: earth
     }
     {
         identifier: polva
@@ -88,6 +96,7 @@
             49
         ]
         country: estonia
+        planet: earth
     }
     {
         identifier: rapla
@@ -98,6 +107,7 @@
             78
         ]
         country: estonia
+        planet: earth
     }
     {
         identifier: saare
@@ -108,6 +118,7 @@
             111
         ]
         country: estonia
+        planet: earth
     }
     {
         identifier: tartu
@@ -118,6 +129,7 @@
             116
         ]
         country: estonia
+        planet: earth
     }
     {
         identifier: valga
@@ -128,6 +140,7 @@
             164
         ]
         country: estonia
+        planet: earth
     }
     {
         identifier: viljandi
@@ -138,6 +151,7 @@
             85
         ]
         country: estonia
+        planet: earth
     }
     {
         identifier: voru
@@ -148,5 +162,6 @@
             109
         ]
         country: estonia
+        planet: earth
     }
 ]

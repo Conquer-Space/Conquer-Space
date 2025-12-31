@@ -8,6 +8,7 @@
             121
         ]
         country: greece
+        planet: earth
     }
     {
         identifier: ayion_oros
@@ -18,6 +19,7 @@
             140
         ]
         country: greece
+        planet: earth
     }
     {
         identifier: dytiki_ellada
@@ -28,6 +30,7 @@
             219
         ]
         country: greece
+        planet: earth
     }
     {
         identifier: dytiki_makedonia
@@ -38,6 +41,7 @@
             8
         ]
         country: greece
+        planet: earth
     }
     {
         identifier: ionioi_nisoi
@@ -48,6 +52,7 @@
             144
         ]
         country: greece
+        planet: earth
     }
     {
         identifier: ipeiros
@@ -58,6 +63,7 @@
             75
         ]
         country: greece
+        planet: earth
     }
     {
         identifier: kentriki_makedonia
@@ -68,6 +74,7 @@
             248
         ]
         country: greece
+        planet: earth
     }
     {
         identifier: kriti
@@ -78,6 +85,7 @@
             36
         ]
         country: greece
+        planet: earth
     }
     {
         identifier: notio_aigaio
@@ -88,6 +96,7 @@
             103
         ]
         country: greece
+        planet: earth
     }
     {
         identifier: peloponnisos
@@ -98,6 +107,7 @@
             152
         ]
         country: greece
+        planet: earth
     }
     {
         identifier: sterea_ellada
@@ -108,6 +118,7 @@
             18
         ]
         country: greece
+        planet: earth
     }
     {
         identifier: thessalia
@@ -118,6 +129,7 @@
             207
         ]
         country: greece
+        planet: earth
     }
     {
         identifier: voreio_aigaio
@@ -128,5 +140,6 @@
             77
         ]
         country: greece
+        planet: earth
     }
 ]

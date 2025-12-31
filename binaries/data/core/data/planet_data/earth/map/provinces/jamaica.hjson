@@ -8,6 +8,7 @@
             159
         ]
         country: jamaica
+        planet: earth
     }
     {
         identifier: hanover
@@ -18,6 +19,7 @@
             147
         ]
         country: jamaica
+        planet: earth
     }
     {
         identifier: kingston
@@ -28,6 +30,7 @@
             104
         ]
         country: jamaica
+        planet: earth
     }
     {
         identifier: manchester_jamaica
@@ -38,6 +41,7 @@
             92
         ]
         country: jamaica
+        planet: earth
     }
     {
         identifier: portland
@@ -48,6 +52,7 @@
             238
         ]
         country: jamaica
+        planet: earth
     }
     {
         identifier: saint_andrew_jamaica
@@ -58,6 +63,7 @@
             37
         ]
         country: jamaica
+        planet: earth
     }
     {
         identifier: saint_ann
@@ -68,6 +74,7 @@
             202
         ]
         country: jamaica
+        planet: earth
     }
     {
         identifier: saint_catherine
@@ -78,6 +85,7 @@
             226
         ]
         country: jamaica
+        planet: earth
     }
     {
         identifier: saint_elizabeth
@@ -88,6 +96,7 @@
             25
         ]
         country: jamaica
+        planet: earth
     }
     {
         identifier: saint_james_jamaica
@@ -98,6 +107,7 @@
             80
         ]
         country: jamaica
+        planet: earth
     }
     {
         identifier: saint_mary_jamaica
@@ -108,6 +118,7 @@
             49
         ]
         country: jamaica
+        planet: earth
     }
     {
         identifier: saint_thomas_jamaica
@@ -118,6 +129,7 @@
             171
         ]
         country: jamaica
+        planet: earth
     }
     {
         identifier: trelawny
@@ -128,6 +140,7 @@
             13
         ]
         country: jamaica
+        planet: earth
     }
     {
         identifier: westmoreland
@@ -138,5 +151,6 @@
             214
         ]
         country: jamaica
+        planet: earth
     }
 ]

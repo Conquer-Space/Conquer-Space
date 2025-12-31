@@ -29,16 +29,18 @@
 
 namespace cqsp::core::loading {
 bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
-    // Get country
     std::string country_identifier = values["country"].to_string();
     std::string planet_identifier = values["planet"].to_string();
+    if (!universe.planets.contains(planet_identifier)) {
+        SPDLOG_WARN("Unable to find planet for the province!");
+    }
     Node planet_node(universe, universe.planets[planet_identifier]);
     const auto& identifier = node.get<components::Identifier>().identifier;
 
     Node country_node(universe, universe.countries[country_identifier]);
     node.emplace<components::Province>(country_node);
-    auto& color = node.emplace<components::ProvinceColor>(std::stoi(values["color"][0]), std::stoi(values["color"][1]),
-                                                          std::stoi(values["color"][2]));
+    auto& color = node.emplace<components::ProvinceColor>(values["color"][0].to_int64(), values["color"][1].to_int64(),
+                                                          values["color"][2].to_int64());
     if (universe.provinces.find(identifier) == universe.provinces.end()) {
         universe.provinces[identifier] = node;
     } else {

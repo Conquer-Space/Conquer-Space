@@ -8,6 +8,7 @@
             116
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: ain_defla
@@ -18,6 +19,7 @@
             139
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: ain_temouchent
@@ -28,6 +30,7 @@
             23
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: alger
@@ -38,6 +41,7 @@
             200
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: annaba
@@ -48,6 +52,7 @@
             54
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: batna
@@ -58,6 +63,7 @@
             108
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: bechar
@@ -68,6 +74,7 @@
             57
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: bejaia
@@ -78,6 +85,7 @@
             255
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: biskra
@@ -88,6 +96,7 @@
             254
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: blida
@@ -98,6 +107,7 @@
             5
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: bordj_bou_arreridj
@@ -108,6 +118,7 @@
             127
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: bouira
@@ -118,6 +129,7 @@
             194
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: boumerdes
@@ -128,6 +140,7 @@
             133
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: chlef
@@ -138,6 +151,7 @@
             78
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: constantine
@@ -148,6 +162,7 @@
             53
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: djelfa
@@ -158,6 +173,7 @@
             65
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: el_bayadh
@@ -168,6 +184,7 @@
             17
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: el_oued
@@ -178,6 +195,7 @@
             81
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: el_tarf
@@ -188,6 +206,7 @@
             203
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: ghardaia
@@ -198,6 +217,7 @@
             29
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: guelma
@@ -208,6 +228,7 @@
             242
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: illizi
@@ -218,6 +239,7 @@
             132
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: jijel
@@ -228,6 +250,7 @@
             188
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: khenchela
@@ -238,6 +261,7 @@
             175
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: laghouat
@@ -248,6 +272,7 @@
             96
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: m'sila
@@ -258,6 +283,7 @@
             41
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: mascara
@@ -268,6 +294,7 @@
             218
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: medea
@@ -278,6 +305,7 @@
             163
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: mila
@@ -288,6 +316,7 @@
             120
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: mostaganem
@@ -298,6 +327,7 @@
             145
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: naama
@@ -308,6 +338,7 @@
             30
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: oran
@@ -318,6 +349,7 @@
             212
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: ouargla
@@ -328,6 +360,7 @@
             38
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: oum_el_bouaghi
@@ -338,6 +371,7 @@
             187
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: relizane
@@ -348,6 +382,7 @@
             206
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: saida
@@ -358,6 +393,7 @@
             84
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: setif
@@ -368,6 +404,7 @@
             60
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: sidi_bel_abbes
@@ -378,6 +415,7 @@
             151
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: skikda
@@ -388,6 +426,7 @@
             121
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: souk_ahras
@@ -398,6 +437,7 @@
             227
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: tamanghasset
@@ -408,6 +448,7 @@
             21
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: tebessa
@@ -418,6 +459,7 @@
             215
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: tiaret
@@ -428,6 +470,7 @@
             230
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: tindouf
@@ -438,6 +481,7 @@
             155
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: tipaza
@@ -448,6 +492,7 @@
             11
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: tissemsilt
@@ -458,6 +503,7 @@
             72
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: tizi_ouzou
@@ -468,6 +514,7 @@
             66
         ]
         country: algeria
+        planet: earth
     }
     {
         identifier: tlemcen
@@ -478,5 +525,6 @@
             97
         ]
         country: algeria
+        planet: earth
     }
 ]

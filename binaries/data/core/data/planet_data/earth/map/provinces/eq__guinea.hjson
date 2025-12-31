@@ -8,6 +8,7 @@
             153
         ]
         country: eq__guinea
+        planet: earth
     }
     {
         identifier: bioko_sur
@@ -18,6 +19,7 @@
             220
         ]
         country: eq__guinea
+        planet: earth
     }
     {
         identifier: centro_sur
@@ -28,6 +30,7 @@
             122
         ]
         country: eq__guinea
+        planet: earth
     }
     {
         identifier: kie-ntem
@@ -38,6 +41,7 @@
             55
         ]
         country: eq__guinea
+        planet: earth
     }
     {
         identifier: litoral
@@ -48,6 +52,7 @@
             244
         ]
         country: eq__guinea
+        planet: earth
     }
     {
         identifier: wele-nzas
@@ -58,5 +63,6 @@
             189
         ]
         country: eq__guinea
+        planet: earth
     }
 ]

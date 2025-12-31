@@ -8,6 +8,7 @@
             128
         ]
         country: angola
+        planet: earth
     }
     {
         identifier: benguela
@@ -18,6 +19,7 @@
             50
         ]
         country: angola
+        planet: earth
     }
     {
         identifier: bie
@@ -28,6 +30,7 @@
             48
         ]
         country: angola
+        planet: earth
     }
     {
         identifier: cabinda
@@ -38,6 +41,7 @@
             19
         ]
         country: angola
+        planet: earth
     }
     {
         identifier: cuando_cubango
@@ -48,6 +52,7 @@
             225
         ]
         country: angola
+        planet: earth
     }
     {
         identifier: cuanza_norte
@@ -58,6 +63,7 @@
             115
         ]
         country: angola
+        planet: earth
     }
     {
         identifier: cuanza_sul
@@ -68,6 +74,7 @@
             239
         ]
         country: angola
+        planet: earth
     }
     {
         identifier: cunene
@@ -78,6 +85,7 @@
             48
         ]
         country: angola
+        planet: earth
     }
     {
         identifier: huambo
@@ -88,6 +96,7 @@
             249
         ]
         country: angola
+        planet: earth
     }
     {
         identifier: huila_angola
@@ -98,6 +107,7 @@
             182
         ]
         country: angola
+        planet: earth
     }
     {
         identifier: luanda
@@ -108,6 +118,7 @@
             195
         ]
         country: angola
+        planet: earth
     }
     {
         identifier: lunda_norte
@@ -118,6 +129,7 @@
             151
         ]
         country: angola
+        planet: earth
     }
     {
         identifier: lunda_sul
@@ -128,6 +140,7 @@
             29
         ]
         country: angola
+        planet: earth
     }
     {
         identifier: malanje
@@ -138,6 +151,7 @@
             218
         ]
         country: angola
+        planet: earth
     }
     {
         identifier: moxico
@@ -148,6 +162,7 @@
             36
         ]
         country: angola
+        planet: earth
     }
     {
         identifier: namibe
@@ -158,6 +173,7 @@
             170
         ]
         country: angola
+        planet: earth
     }
     {
         identifier: uige
@@ -168,6 +184,7 @@
             17
         ]
         country: angola
+        planet: earth
     }
     {
         identifier: zaire
@@ -178,5 +195,6 @@
             206
         ]
         country: angola
+        planet: earth
     }
 ]

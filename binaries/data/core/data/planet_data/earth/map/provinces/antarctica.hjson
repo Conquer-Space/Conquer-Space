@@ -8,6 +8,7 @@
             107
         ]
         country: antarctica
+        planet: earth
     }
     {
         identifier: null_antarctica
@@ -18,5 +19,6 @@
             153
         ]
         country: antarctica
+        planet: earth
     }
 ]

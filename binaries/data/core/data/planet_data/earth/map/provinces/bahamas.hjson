@@ -8,6 +8,7 @@
             50
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: berry_islands
@@ -18,6 +19,7 @@
             47
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: central_abaco
@@ -28,6 +30,7 @@
             126
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: central_andros
@@ -38,6 +41,7 @@
             212
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: crooked_island_and_long_cay
@@ -48,6 +52,7 @@
             121
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: east_grand_bahama
@@ -58,6 +63,7 @@
             59
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: exuma
@@ -68,6 +74,7 @@
             133
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: harbour_island
@@ -78,6 +85,7 @@
             56
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: inagua
@@ -88,6 +96,7 @@
             160
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: long_island
@@ -98,6 +107,7 @@
             200
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: mangrove_cay
@@ -108,6 +118,7 @@
             23
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: mayaguana
@@ -118,6 +129,7 @@
             239
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: new_providence
@@ -128,6 +140,7 @@
             224
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: north_andros
@@ -138,6 +151,7 @@
             35
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: north_eleuthera
@@ -148,6 +162,7 @@
             169
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: ragged_island
@@ -158,6 +173,7 @@
             180
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: rum_cay
@@ -168,6 +184,7 @@
             11
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: san_salvador_bahamas
@@ -178,6 +195,7 @@
             145
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: south_abaco
@@ -188,6 +206,7 @@
             193
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: south_andros
@@ -198,6 +217,7 @@
             90
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: south_eleuthera
@@ -208,6 +228,7 @@
             236
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: spanish_wells
@@ -218,6 +239,7 @@
             123
         ]
         country: bahamas
+        planet: earth
     }
     {
         identifier: west_grand_bahama
@@ -228,5 +250,6 @@
             248
         ]
         country: bahamas
+        planet: earth
     }
 ]

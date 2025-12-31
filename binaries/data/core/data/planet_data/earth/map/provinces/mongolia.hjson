@@ -8,6 +8,7 @@
             99
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: bayan-olgiy
@@ -18,6 +19,7 @@
             37
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: bayanhongor
@@ -28,6 +30,7 @@
             183
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: bulgan
@@ -38,6 +41,7 @@
             38
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: darhan-uul
@@ -48,6 +52,7 @@
             221
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: dornod
@@ -58,6 +63,7 @@
             159
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: dornogovi
@@ -68,6 +74,7 @@
             238
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: dundgovi
@@ -78,6 +85,7 @@
             233
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: dzavhan
@@ -88,6 +96,7 @@
             50
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: govi-altay
@@ -98,6 +107,7 @@
             49
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: govi-sumber
@@ -108,6 +118,7 @@
             111
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: hentiy
@@ -118,6 +129,7 @@
             117
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: hovd
@@ -128,6 +140,7 @@
             104
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: hovsgol
@@ -138,6 +151,7 @@
             160
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: omnogovi
@@ -148,6 +162,7 @@
             250
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: orhon
@@ -158,6 +173,7 @@
             166
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: ovorhangay
@@ -168,6 +184,7 @@
             44
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: selenge
@@ -178,6 +195,7 @@
             172
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: suhbaatar
@@ -188,6 +206,7 @@
             171
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: tov
@@ -198,6 +217,7 @@
             32
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: ulaanbaatar
@@ -208,6 +228,7 @@
             80
         ]
         country: mongolia
+        planet: earth
     }
     {
         identifier: uvs
@@ -218,5 +239,6 @@
             105
         ]
         country: mongolia
+        planet: earth
     }
 ]

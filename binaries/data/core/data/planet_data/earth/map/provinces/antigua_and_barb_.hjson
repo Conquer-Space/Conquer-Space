@@ -8,6 +8,7 @@
             142
         ]
         country: antigua_and_barb_
+        planet: earth
     }
     {
         identifier: redonda
@@ -18,6 +19,7 @@
             245
         ]
         country: antigua_and_barb_
+        planet: earth
     }
     {
         identifier: saint_john_antigua_and_barb_
@@ -28,6 +30,7 @@
             27
         ]
         country: antigua_and_barb_
+        planet: earth
     }
     {
         identifier: saint_mary_antigua_and_barb_
@@ -38,6 +41,7 @@
             94
         ]
         country: antigua_and_barb_
+        planet: earth
     }
     {
         identifier: saint_paul_antigua_and_barb_
@@ -48,6 +52,7 @@
             15
         ]
         country: antigua_and_barb_
+        planet: earth
     }
     {
         identifier: saint_peter
@@ -58,5 +63,6 @@
             149
         ]
         country: antigua_and_barb_
+        planet: earth
     }
 ]

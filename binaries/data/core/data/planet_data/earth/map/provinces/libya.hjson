@@ -8,6 +8,7 @@
             62
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: al_butnan
@@ -18,6 +19,7 @@
             184
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: al_jabal_al_akhdar
@@ -28,6 +30,7 @@
             51
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: al_jifarah
@@ -38,6 +41,7 @@
             236
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: al_jufrah
@@ -48,6 +52,7 @@
             114
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: al_kufrah
@@ -58,6 +63,7 @@
             131
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: al_marj
@@ -68,6 +74,7 @@
             118
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: al_marqab
@@ -78,6 +85,7 @@
             140
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: al_qubbah
@@ -88,6 +96,7 @@
             240
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: an_nuqat_al_khams
@@ -98,6 +107,7 @@
             29
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: ash_shati'
@@ -108,6 +118,7 @@
             199
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: az_zawiyah
@@ -118,6 +129,7 @@
             18
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: benghazi
@@ -128,6 +140,7 @@
             185
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: ghadamis
@@ -138,6 +151,7 @@
             84
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: ghat
@@ -148,6 +162,7 @@
             10
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: misratah
@@ -158,6 +173,7 @@
             73
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: mizdah
@@ -168,6 +184,7 @@
             47
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: murzuq
@@ -178,6 +195,7 @@
             76
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: sabha
@@ -188,6 +206,7 @@
             181
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: surt
@@ -198,6 +217,7 @@
             6
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: tajura'_wa_an_nawahi_al_arba
@@ -208,6 +228,7 @@
             207
         ]
         country: libya
+        planet: earth
     }
     {
         identifier: wadi_al_hayaa
@@ -218,5 +239,6 @@
             248
         ]
         country: libya
+        planet: earth
     }
 ]

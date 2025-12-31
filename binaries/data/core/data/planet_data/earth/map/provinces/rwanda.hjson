@@ -8,6 +8,7 @@
             231
         ]
         country: rwanda
+        planet: earth
     }
     {
         identifier: kigali_city
@@ -18,6 +19,7 @@
             122
         ]
         country: rwanda
+        planet: earth
     }
     {
         identifier: northern_rwanda
@@ -28,6 +30,7 @@
             203
         ]
         country: rwanda
+        planet: earth
     }
     {
         identifier: southern_rwanda
@@ -38,6 +41,7 @@
             109
         ]
         country: rwanda
+        planet: earth
     }
     {
         identifier: western_rwanda
@@ -48,5 +52,6 @@
             54
         ]
         country: rwanda
+        planet: earth
     }
 ]

@@ -8,6 +8,7 @@
             195
         ]
         country: bangladesh
+        planet: earth
     }
     {
         identifier: chittagong
@@ -18,6 +19,7 @@
             255
         ]
         country: bangladesh
+        planet: earth
     }
     {
         identifier: dhaka
@@ -28,6 +30,7 @@
             134
         ]
         country: bangladesh
+        planet: earth
     }
     {
         identifier: khulna
@@ -38,6 +41,7 @@
             79
         ]
         country: bangladesh
+        planet: earth
     }
     {
         identifier: rajshahi
@@ -48,6 +52,7 @@
             12
         ]
         country: bangladesh
+        planet: earth
     }
     {
         identifier: rangpur
@@ -58,6 +63,7 @@
             201
         ]
         country: bangladesh
+        planet: earth
     }
     {
         identifier: sylhet
@@ -68,5 +74,6 @@
             0
         ]
         country: bangladesh
+        planet: earth
     }
 ]

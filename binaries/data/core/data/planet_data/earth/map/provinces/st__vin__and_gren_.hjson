@@ -8,6 +8,7 @@
             242
         ]
         country: st__vin__and_gren_
+        planet: earth
     }
     {
         identifier: saint_andrew_st__vin__and_gren_
@@ -18,6 +19,7 @@
             108
         ]
         country: st__vin__and_gren_
+        planet: earth
     }
     {
         identifier: saint_david_st__vin__and_gren_
@@ -28,5 +30,6 @@
             53
         ]
         country: st__vin__and_gren_
+        planet: earth
     }
 ]

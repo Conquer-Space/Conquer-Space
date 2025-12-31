@@ -8,6 +8,7 @@
             113
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: altay
@@ -18,6 +19,7 @@
             102
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: amur
@@ -28,6 +30,7 @@
             251
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: arkhangel'sk
@@ -38,6 +41,7 @@
             6
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: astrakhan'
@@ -48,6 +52,7 @@
             114
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: bashkortostan
@@ -58,6 +63,7 @@
             182
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: belgorod
@@ -68,6 +74,7 @@
             222
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: bryansk
@@ -78,6 +85,7 @@
             21
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: buryat
@@ -88,6 +96,7 @@
             93
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: chechnya
@@ -98,6 +107,7 @@
             184
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: chelyabinsk
@@ -108,6 +118,7 @@
             35
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: chita
@@ -118,6 +129,7 @@
             239
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: chukchi_autonomous_okrug
@@ -128,6 +140,7 @@
             144
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: chuvash
@@ -138,6 +151,7 @@
             10
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: city_of_st_petersburg
@@ -148,6 +162,7 @@
             51
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: crimea
@@ -158,6 +173,7 @@
             23
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: dagestan
@@ -168,6 +184,7 @@
             62
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: gorno-altay
@@ -178,6 +195,7 @@
             61
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: ingush
@@ -188,6 +206,7 @@
             50
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: irkutsk
@@ -198,6 +217,7 @@
             151
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: ivanovo
@@ -208,6 +228,7 @@
             175
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: kabardin-balkar
@@ -218,6 +239,7 @@
             227
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: kaliningrad
@@ -228,6 +250,7 @@
             9
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: kalmyk
@@ -238,6 +261,7 @@
             229
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: kaluga
@@ -248,6 +272,7 @@
             96
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: kamchatka
@@ -258,6 +283,7 @@
             44
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: karachay-cherkess
@@ -268,6 +294,7 @@
             160
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: karelia
@@ -278,6 +305,7 @@
             9
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: kemerovo
@@ -288,6 +316,7 @@
             17
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: khabarovsk
@@ -298,6 +327,7 @@
             129
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: khakass
@@ -308,6 +338,7 @@
             218
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: khanty-mansiy
@@ -318,6 +349,7 @@
             60
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: kirov
@@ -328,6 +360,7 @@
             223
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: komi
@@ -338,6 +371,7 @@
             101
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: kostroma
@@ -348,6 +382,7 @@
             163
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: krasnodar
@@ -358,6 +393,7 @@
             26
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: krasnoyarsk
@@ -368,6 +404,7 @@
             73
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: kurgan
@@ -378,6 +415,7 @@
             212
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: kursk
@@ -388,6 +426,7 @@
             155
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: leningrad
@@ -398,6 +437,7 @@
             88
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: lipetsk
@@ -408,6 +448,7 @@
             127
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: maga_buryatdan
@@ -418,6 +459,7 @@
             107
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: mariy-el
@@ -428,6 +470,7 @@
             156
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: mordovia
@@ -438,6 +481,7 @@
             29
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: moskovsskaya
@@ -448,6 +492,7 @@
             22
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: moskva
@@ -458,6 +503,7 @@
             89
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: murmansk
@@ -468,6 +514,7 @@
             198
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: nenets
@@ -478,6 +525,7 @@
             113
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: nizhegorod
@@ -488,6 +536,7 @@
             242
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: north_ossetia
@@ -498,6 +547,7 @@
             105
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: novgorod
@@ -508,6 +558,7 @@
             144
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: novosibirsk
@@ -518,6 +569,7 @@
             224
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: null_russia
@@ -528,6 +580,7 @@
             240
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: omsk
@@ -538,6 +591,7 @@
             23
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: orel
@@ -548,6 +602,7 @@
             84
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: orenburg
@@ -558,6 +613,7 @@
             169
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: penza
@@ -568,6 +624,7 @@
             206
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: perm'
@@ -578,6 +635,7 @@
             168
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: primor'ye
@@ -588,6 +646,7 @@
             196
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: pskov
@@ -598,6 +657,7 @@
             121
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: rostov
@@ -608,6 +668,7 @@
             234
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: ryazan'
@@ -618,6 +679,7 @@
             108
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: sakha_(yakutia)
@@ -628,6 +690,7 @@
             247
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: sakhalin
@@ -638,6 +701,7 @@
             131
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: samara
@@ -648,6 +712,7 @@
             235
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: saratov
@@ -658,6 +723,7 @@
             47
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: sevastopol
@@ -668,6 +734,7 @@
             26
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: smolensk
@@ -678,6 +745,7 @@
             143
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: stavropol'
@@ -688,6 +756,7 @@
             46
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: sverdlovsk
@@ -698,6 +767,7 @@
             249
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: tambov
@@ -708,6 +778,7 @@
             194
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: tatarstan
@@ -718,6 +789,7 @@
             72
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: tomsk
@@ -728,6 +800,7 @@
             5
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: tula
@@ -738,6 +811,7 @@
             53
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: tuva
@@ -748,6 +822,7 @@
             227
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: tver'
@@ -758,6 +833,7 @@
             211
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: tyumen'
@@ -768,6 +844,7 @@
             145
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: udmurt
@@ -778,6 +855,7 @@
             34
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: ul'yanovsk
@@ -788,6 +866,7 @@
             139
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: vladimir
@@ -798,6 +877,7 @@
             41
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: volgograd
@@ -808,6 +888,7 @@
             181
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: vologda
@@ -818,6 +899,7 @@
             77
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: voronezh
@@ -828,6 +910,7 @@
             167
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: yamal-nenets
@@ -838,6 +921,7 @@
             46
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: yaroslavl'
@@ -848,6 +932,7 @@
             230
         ]
         country: russia
+        planet: earth
     }
     {
         identifier: yevrey
@@ -858,5 +943,6 @@
             62
         ]
         country: russia
+        planet: earth
     }
 ]

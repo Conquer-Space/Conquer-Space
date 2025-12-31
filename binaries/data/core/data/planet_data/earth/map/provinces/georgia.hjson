@@ -8,6 +8,7 @@
             93
         ]
         country: georgia
+        planet: earth
     }
     {
         identifier: ajaria
@@ -18,6 +19,7 @@
             0
         ]
         country: georgia
+        planet: earth
     }
     {
         identifier: guria
@@ -28,6 +30,7 @@
             162
         ]
         country: georgia
+        planet: earth
     }
     {
         identifier: imereti
@@ -38,6 +41,7 @@
             167
         ]
         country: georgia
+        planet: earth
     }
     {
         identifier: kakheti
@@ -48,6 +52,7 @@
             251
         ]
         country: georgia
+        planet: earth
     }
     {
         identifier: kvemo_kartli
@@ -58,6 +63,7 @@
             36
         ]
         country: georgia
+        planet: earth
     }
     {
         identifier: mtskheta-mtianeti
@@ -68,6 +74,7 @@
             117
         ]
         country: georgia
+        planet: earth
     }
     {
         identifier: racha-lechkhumi-kvemo_svaneti
@@ -78,6 +85,7 @@
             239
         ]
         country: georgia
+        planet: earth
     }
     {
         identifier: samegrelo-zemo_svaneti
@@ -88,6 +96,7 @@
             38
         ]
         country: georgia
+        planet: earth
     }
     {
         identifier: samtskhe-javakheti
@@ -98,6 +107,7 @@
             122
         ]
         country: georgia
+        planet: earth
     }
     {
         identifier: shida_kartli
@@ -108,6 +118,7 @@
             172
         ]
         country: georgia
+        planet: earth
     }
     {
         identifier: tbilisi
@@ -118,5 +129,6 @@
             100
         ]
         country: georgia
+        planet: earth
     }
 ]

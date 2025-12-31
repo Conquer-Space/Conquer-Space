@@ -8,6 +8,7 @@
             31
         ]
         country: timor-leste
+        planet: earth
     }
     {
         identifier: ainaro
@@ -18,6 +19,7 @@
             97
         ]
         country: timor-leste
+        planet: earth
     }
     {
         identifier: ambeno
@@ -28,6 +30,7 @@
             80
         ]
         country: timor-leste
+        planet: earth
     }
     {
         identifier: baucau
@@ -38,6 +41,7 @@
             176
         ]
         country: timor-leste
+        planet: earth
     }
     {
         identifier: bobonaro
@@ -48,6 +52,7 @@
             147
         ]
         country: timor-leste
+        planet: earth
     }
     {
         identifier: cova_lima
@@ -58,6 +63,7 @@
             214
         ]
         country: timor-leste
+        planet: earth
     }
     {
         identifier: dili
@@ -68,6 +74,7 @@
             243
         ]
         country: timor-leste
+        planet: earth
     }
     {
         identifier: ermera
@@ -78,6 +85,7 @@
             220
         ]
         country: timor-leste
+        planet: earth
     }
     {
         identifier: lautem
@@ -88,6 +96,7 @@
             109
         ]
         country: timor-leste
+        planet: earth
     }
     {
         identifier: liquica
@@ -98,6 +107,7 @@
             54
         ]
         country: timor-leste
+        planet: earth
     }
     {
         identifier: manatuto
@@ -108,6 +118,7 @@
             231
         ]
         country: timor-leste
+        planet: earth
     }
     {
         identifier: manufahi
@@ -118,6 +129,7 @@
             164
         ]
         country: timor-leste
+        planet: earth
     }
     {
         identifier: viqueque
@@ -128,5 +140,6 @@
             42
         ]
         country: timor-leste
+        planet: earth
     }
 ]

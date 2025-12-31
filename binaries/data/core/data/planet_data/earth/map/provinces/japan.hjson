@@ -8,6 +8,7 @@
             25
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: akita
@@ -18,6 +19,7 @@
             123
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: aomori
@@ -28,6 +30,7 @@
             190
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: chiba
@@ -38,6 +41,7 @@
             13
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: ehime
@@ -48,6 +52,7 @@
             20
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: fukui
@@ -58,6 +63,7 @@
             44
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: fukuoka
@@ -68,6 +74,7 @@
             63
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: fukushima
@@ -78,6 +85,7 @@
             135
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: gifu
@@ -88,6 +96,7 @@
             111
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: gunma
@@ -98,6 +107,7 @@
             166
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: hiroshima
@@ -108,6 +118,7 @@
             104
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: hokkaido
@@ -118,6 +129,7 @@
             183
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: hyogo
@@ -128,6 +140,7 @@
             166
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: ibaraki
@@ -138,6 +151,7 @@
             202
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: ishikawa
@@ -148,6 +162,7 @@
             111
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: iwate
@@ -158,6 +173,7 @@
             1
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: kagawa
@@ -168,6 +184,7 @@
             209
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: kagoshima
@@ -178,6 +195,7 @@
             137
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: kanagawa
@@ -188,6 +206,7 @@
             147
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: kochi
@@ -198,6 +217,7 @@
             87
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: kumamoto
@@ -208,6 +228,7 @@
             8
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: mie
@@ -218,6 +239,7 @@
             92
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: miyagi
@@ -228,6 +250,7 @@
             68
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: miyazaki
@@ -238,6 +261,7 @@
             75
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: nagano
@@ -248,6 +272,7 @@
             233
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: nara
@@ -258,6 +283,7 @@
             123
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: niigata
@@ -268,6 +294,7 @@
             245
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: oita
@@ -278,6 +305,7 @@
             252
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: okayama
@@ -288,6 +316,7 @@
             37
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: okinawa
@@ -298,6 +327,7 @@
             99
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: osaka
@@ -308,6 +338,7 @@
             226
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: saga
@@ -318,6 +349,7 @@
             130
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: saitama
@@ -328,6 +360,7 @@
             245
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: shiga
@@ -338,6 +371,7 @@
             178
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: shimane
@@ -348,6 +382,7 @@
             154
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: shizuoka
@@ -358,6 +393,7 @@
             214
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: tochigi
@@ -368,6 +404,7 @@
             44
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: tokushima
@@ -378,6 +415,7 @@
             142
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: tokyo
@@ -388,6 +426,7 @@
             80
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: tottori
@@ -398,6 +437,7 @@
             99
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: toyama
@@ -408,6 +448,7 @@
             178
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: wakayama
@@ -418,6 +459,7 @@
             159
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: yamagata
@@ -428,6 +470,7 @@
             56
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: yamaguchi
@@ -438,6 +481,7 @@
             32
         ]
         country: japan
+        planet: earth
     }
     {
         identifier: yamanashi
@@ -448,5 +492,6 @@
             56
         ]
         country: japan
+        planet: earth
     }
 ]

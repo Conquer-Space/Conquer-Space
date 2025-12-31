@@ -8,6 +8,7 @@
             249
         ]
         country: israel
+        planet: earth
     }
     {
         identifier: haifa
@@ -18,6 +19,7 @@
             5
         ]
         country: israel
+        planet: earth
     }
     {
         identifier: hamerkaz
@@ -28,6 +30,7 @@
             72
         ]
         country: israel
+        planet: earth
     }
     {
         identifier: jerusalem
@@ -38,6 +41,7 @@
             139
         ]
         country: israel
+        planet: earth
     }
     {
         identifier: tel_aviv
@@ -48,6 +52,7 @@
             149
         ]
         country: israel
+        planet: earth
     }
     {
         identifier: undof
@@ -58,6 +63,7 @@
             144
         ]
         country: israel
+        planet: earth
     }
     {
         identifier: west_bank
@@ -68,5 +74,6 @@
             194
         ]
         country: israel
+        planet: earth
     }
 ]

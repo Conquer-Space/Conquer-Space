@@ -8,6 +8,7 @@
             88
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: agdam
@@ -18,6 +19,7 @@
             9
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: agdas
@@ -28,6 +30,7 @@
             12
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: aghjabadi
@@ -38,6 +41,7 @@
             79
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: agstafa
@@ -48,6 +52,7 @@
             96
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: agsu
@@ -58,6 +63,7 @@
             43
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: astara
@@ -68,6 +74,7 @@
             215
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: babak
@@ -78,6 +85,7 @@
             77
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: baki
@@ -88,6 +96,7 @@
             52
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: balakan
@@ -98,6 +107,7 @@
             179
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: barda
@@ -108,6 +118,7 @@
             165
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: beylaqan
@@ -118,6 +129,7 @@
             148
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: bilasuvar
@@ -128,6 +140,7 @@
             2
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: cabrayil
@@ -138,6 +151,7 @@
             14
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: calilabad
@@ -148,6 +162,7 @@
             69
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: culfa
@@ -158,6 +173,7 @@
             211
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: daskasan
@@ -168,6 +184,7 @@
             108
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: davaci
@@ -178,6 +195,7 @@
             40
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: fuzuli
@@ -188,6 +206,7 @@
             81
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: gadabay
@@ -198,6 +217,7 @@
             230
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: ganca
@@ -208,6 +228,7 @@
             67
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: goranboy
@@ -218,6 +239,7 @@
             143
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: goycay
@@ -228,6 +250,7 @@
             201
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: hajigabul
@@ -238,6 +261,7 @@
             21
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: imisli
@@ -248,6 +272,7 @@
             191
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: ismayilli
@@ -258,6 +283,7 @@
             189
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: kalbacar
@@ -268,6 +294,7 @@
             175
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: kangarli
@@ -278,6 +305,7 @@
             10
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: kurdamir
@@ -288,6 +316,7 @@
             222
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: lankaran_azerbaijan
@@ -298,6 +327,7 @@
             120
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: lankaran_azerbaijan_2
@@ -308,6 +338,7 @@
             253
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: lerik
@@ -318,6 +349,7 @@
             203
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: masalli
@@ -328,6 +360,7 @@
             64
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: mingacevir
@@ -338,6 +371,7 @@
             134
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: neftcala
@@ -348,6 +382,7 @@
             186
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: oguz
@@ -358,6 +393,7 @@
             191
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: ordubad
@@ -368,6 +404,7 @@
             22
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: qabala
@@ -378,6 +415,7 @@
             136
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: qax
@@ -388,6 +426,7 @@
             69
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: qazax
@@ -398,6 +437,7 @@
             232
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: qobustan
@@ -408,6 +448,7 @@
             122
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: quba
@@ -418,6 +459,7 @@
             244
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: qubadli
@@ -428,6 +470,7 @@
             187
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: qusar
@@ -438,6 +481,7 @@
             124
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: saatli
@@ -448,6 +492,7 @@
             98
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: sabirabad
@@ -458,6 +503,7 @@
             100
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: sadarak
@@ -468,6 +514,7 @@
             199
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: sahbuz
@@ -478,6 +525,7 @@
             144
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: saki_azerbaijan
@@ -488,6 +536,7 @@
             2
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: saki_azerbaijan_2
@@ -498,6 +547,7 @@
             90
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: salyan
@@ -508,6 +558,7 @@
             119
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: samaxi
@@ -518,6 +569,7 @@
             177
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: samkir
@@ -528,6 +580,7 @@
             232
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: samux
@@ -538,6 +591,7 @@
             14
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: sarur
@@ -548,6 +602,7 @@
             65
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: shirvan
@@ -558,6 +613,7 @@
             167
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: siyazan
@@ -568,6 +624,7 @@
             107
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: sumqayit
@@ -578,6 +635,7 @@
             241
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: susa
@@ -588,6 +646,7 @@
             64
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: tartar
@@ -598,6 +657,7 @@
             76
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: tovuz
@@ -608,6 +668,7 @@
             163
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: ucar
@@ -618,6 +679,7 @@
             55
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: xacmaz
@@ -628,6 +690,7 @@
             57
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: xanlar
@@ -638,6 +701,7 @@
             155
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: xizi
@@ -648,6 +712,7 @@
             174
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: xocali
@@ -658,6 +723,7 @@
             131
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: xocavand
@@ -668,6 +734,7 @@
             210
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: yevlakh_rayon
@@ -678,6 +745,7 @@
             0
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: zangilan
@@ -688,6 +756,7 @@
             254
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: zaqatala
@@ -698,6 +767,7 @@
             246
         ]
         country: azerbaijan
+        planet: earth
     }
     {
         identifier: zardab
@@ -708,5 +778,6 @@
             33
         ]
         country: azerbaijan
+        planet: earth
     }
 ]

@@ -8,6 +8,7 @@
             66
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: chernihiv
@@ -18,6 +19,7 @@
             240
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: chernivtsi
@@ -28,6 +30,7 @@
             126
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: dnipropetrovs'k
@@ -38,6 +41,7 @@
             255
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: donets'k
@@ -48,6 +52,7 @@
             45
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: ivano-frankivs'k
@@ -58,6 +63,7 @@
             71
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: kharkiv
@@ -68,6 +74,7 @@
             33
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: kherson
@@ -78,6 +85,7 @@
             90
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: khmel'nyts'kyy
@@ -88,6 +96,7 @@
             121
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: kiev
@@ -98,6 +107,7 @@
             130
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: kiev_city
@@ -108,6 +118,7 @@
             225
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: kirovohrad
@@ -118,6 +129,7 @@
             133
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: l'viv
@@ -128,6 +140,7 @@
             64
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: luhans'k
@@ -138,6 +151,7 @@
             100
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: mykolayiv
@@ -148,6 +162,7 @@
             93
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: odessa
@@ -158,6 +173,7 @@
             138
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: poltava
@@ -168,6 +184,7 @@
             54
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: rivne
@@ -178,6 +195,7 @@
             252
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: sumy
@@ -188,6 +206,7 @@
             88
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: ternopil'
@@ -198,6 +217,7 @@
             188
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: transcarpathia
@@ -208,6 +228,7 @@
             166
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: vinnytsya
@@ -218,6 +239,7 @@
             83
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: volyn
@@ -228,6 +250,7 @@
             118
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: zaporizhzhya
@@ -238,6 +261,7 @@
             215
         ]
         country: ukraine
+        planet: earth
     }
     {
         identifier: zhytomyr
@@ -248,5 +272,6 @@
             63
         ]
         country: ukraine
+        planet: earth
     }
 ]

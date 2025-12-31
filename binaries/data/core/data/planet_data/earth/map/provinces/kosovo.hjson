@@ -8,6 +8,7 @@
             110
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: decani
@@ -18,6 +19,7 @@
             43
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: dragas
@@ -28,6 +30,7 @@
             177
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: glogovac
@@ -38,6 +41,7 @@
             20
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: gnjilane
@@ -48,6 +52,7 @@
             217
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: istok
@@ -58,6 +63,7 @@
             50
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: kacanik
@@ -68,6 +74,7 @@
             229
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: klina
@@ -78,6 +85,7 @@
             142
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: kosovo_polje
@@ -88,6 +96,7 @@
             88
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: kosovska_mitrovica
@@ -98,6 +107,7 @@
             209
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: leposavic
@@ -108,6 +118,7 @@
             93
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: lipljan
@@ -118,6 +129,7 @@
             155
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: malisevo
@@ -128,6 +140,7 @@
             87
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: novo_brdo
@@ -138,6 +151,7 @@
             210
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: obilic
@@ -148,6 +162,7 @@
             21
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: orahovac
@@ -158,6 +173,7 @@
             8
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: pec
@@ -168,6 +184,7 @@
             62
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: podujevo
@@ -178,6 +195,7 @@
             105
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: pristina
@@ -188,6 +206,7 @@
             117
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: prizren
@@ -198,6 +217,7 @@
             244
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: srbica
@@ -208,6 +228,7 @@
             75
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: stimlje
@@ -218,6 +239,7 @@
             222
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: strpce
@@ -228,6 +250,7 @@
             241
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: suva_reka
@@ -238,6 +261,7 @@
             76
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: urosevac
@@ -248,6 +272,7 @@
             143
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: vitina
@@ -258,6 +283,7 @@
             95
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: vucitrn
@@ -268,6 +294,7 @@
             33
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: zubin_potok
@@ -278,6 +305,7 @@
             172
         ]
         country: kosovo
+        planet: earth
     }
     {
         identifier: zvecan
@@ -288,5 +316,6 @@
             239
         ]
         country: kosovo
+        planet: earth
     }
 ]

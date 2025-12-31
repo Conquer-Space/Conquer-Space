@@ -8,6 +8,7 @@
             210
         ]
         country: togo
+        planet: earth
     }
     {
         identifier: kara
@@ -18,6 +19,7 @@
             143
         ]
         country: togo
+        planet: earth
     }
     {
         identifier: maritime
@@ -28,6 +30,7 @@
             155
         ]
         country: togo
+        planet: earth
     }
     {
         identifier: plateaux_togo
@@ -38,6 +41,7 @@
             21
         ]
         country: togo
+        planet: earth
     }
     {
         identifier: savanes_togo
@@ -48,5 +52,6 @@
             198
         ]
         country: togo
+        planet: earth
     }
 ]

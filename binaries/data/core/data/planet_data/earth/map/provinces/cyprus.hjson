@@ -8,6 +8,7 @@
             42
         ]
         country: cyprus
+        planet: earth
     }
     {
         identifier: larnaca
@@ -18,6 +19,7 @@
             176
         ]
         country: cyprus
+        planet: earth
     }
     {
         identifier: limassol
@@ -28,6 +30,7 @@
             255
         ]
         country: cyprus
+        planet: earth
     }
     {
         identifier: nicosia
@@ -38,6 +41,7 @@
             109
         ]
         country: cyprus
+        planet: earth
     }
     {
         identifier: paphos
@@ -48,5 +52,6 @@
             170
         ]
         country: cyprus
+        planet: earth
     }
 ]

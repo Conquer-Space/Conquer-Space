@@ -8,6 +8,7 @@
             48
         ]
         country: bahrain
+        planet: earth
     }
     {
         identifier: al_manamah
@@ -18,6 +19,7 @@
             170
         ]
         country: bahrain
+        planet: earth
     }
     {
         identifier: al_muharraq
@@ -28,6 +30,7 @@
             190
         ]
         country: bahrain
+        planet: earth
     }
     {
         identifier: al_wusta_bahrain
@@ -38,6 +41,7 @@
             115
         ]
         country: bahrain
+        planet: earth
     }
     {
         identifier: ash_shamaliyah
@@ -48,5 +52,6 @@
             237
         ]
         country: bahrain
+        planet: earth
     }
 ]

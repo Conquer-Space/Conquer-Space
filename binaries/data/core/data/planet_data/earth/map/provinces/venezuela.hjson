@@ -8,6 +8,7 @@
             252
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: anzoategui
@@ -18,6 +19,7 @@
             123
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: apure
@@ -28,6 +30,7 @@
             226
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: aragua
@@ -38,6 +41,7 @@
             178
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: barinas
@@ -48,6 +52,7 @@
             109
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: bolivar_venezuela
@@ -58,6 +63,7 @@
             204
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: carabobo
@@ -68,6 +74,7 @@
             111
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: cojedes
@@ -78,6 +85,7 @@
             231
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: delta_amacuro
@@ -88,6 +96,7 @@
             137
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: distrito_capital
@@ -98,6 +107,7 @@
             42
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: falcon
@@ -108,6 +118,7 @@
             233
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: guarico
@@ -118,6 +129,7 @@
             164
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: lara
@@ -128,6 +140,7 @@
             176
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: merida
@@ -138,6 +151,7 @@
             99
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: miranda
@@ -148,6 +162,7 @@
             56
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: monagas
@@ -158,6 +173,7 @@
             1
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: nueva_esparta
@@ -168,6 +184,7 @@
             189
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: portuguesa
@@ -178,6 +195,7 @@
             243
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: sucre_venezuela
@@ -188,6 +206,7 @@
             190
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: tachira
@@ -198,6 +217,7 @@
             159
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: trujillo
@@ -208,6 +228,7 @@
             166
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: vargas
@@ -218,6 +239,7 @@
             245
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: yaracuy
@@ -228,6 +250,7 @@
             44
         ]
         country: venezuela
+        planet: earth
     }
     {
         identifier: zulia
@@ -238,5 +261,6 @@
             147
         ]
         country: venezuela
+        planet: earth
     }
 ]

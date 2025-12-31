@@ -8,6 +8,7 @@
             146
         ]
         country: kuwait
+        planet: earth
     }
     {
         identifier: al_farwaniyah
@@ -18,6 +19,7 @@
             197
         ]
         country: kuwait
+        planet: earth
     }
     {
         identifier: al_jahrah
@@ -28,6 +30,7 @@
             56
         ]
         country: kuwait
+        planet: earth
     }
     {
         identifier: hawalli
@@ -38,6 +41,7 @@
             79
         ]
         country: kuwait
+        planet: earth
     }
     {
         identifier: mubarak_al-kabeer
@@ -48,5 +52,6 @@
             12
         ]
         country: kuwait
+        planet: earth
     }
 ]

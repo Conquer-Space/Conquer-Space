@@ -8,6 +8,7 @@
             201
         ]
         country: turkmenistan
+        planet: earth
     }
     {
         identifier: balkan
@@ -18,6 +19,7 @@
             250
         ]
         country: turkmenistan
+        planet: earth
     }
     {
         identifier: chardzhou
@@ -28,6 +30,7 @@
             55
         ]
         country: turkmenistan
+        planet: earth
     }
     {
         identifier: mary
@@ -38,6 +41,7 @@
             0
         ]
         country: turkmenistan
+        planet: earth
     }
     {
         identifier: tashauz
@@ -48,5 +52,6 @@
             140
         ]
         country: turkmenistan
+        planet: earth
     }
 ]

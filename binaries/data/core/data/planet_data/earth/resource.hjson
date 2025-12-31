@@ -5,4 +5,10 @@
         hints: {
         }
     }
+    provinces: {
+        path: map/provinces
+        type: hjson
+        hints: {
+        }
+    }
 }

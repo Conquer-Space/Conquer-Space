@@ -8,6 +8,7 @@
             130
         ]
         country: oman
+        planet: earth
     }
     {
         identifier: al_batnah_north
@@ -18,6 +19,7 @@
             222
         ]
         country: oman
+        planet: earth
     }
     {
         identifier: al_batnah_south
@@ -28,6 +30,7 @@
             244
         ]
         country: oman
+        planet: earth
     }
     {
         identifier: al_buraymi
@@ -38,6 +41,7 @@
             167
         ]
         country: oman
+        planet: earth
     }
     {
         identifier: al_dhahira
@@ -48,6 +52,7 @@
             112
         ]
         country: oman
+        planet: earth
     }
     {
         identifier: al_wusta_oman
@@ -58,6 +63,7 @@
             174
         ]
         country: oman
+        planet: earth
     }
     {
         identifier: ash_sharqiyah_north
@@ -68,6 +74,7 @@
             110
         ]
         country: oman
+        planet: earth
     }
     {
         identifier: ash_sharqiyah_south
@@ -78,6 +85,7 @@
             43
         ]
         country: oman
+        planet: earth
     }
     {
         identifier: dhofar
@@ -88,6 +96,7 @@
             40
         ]
         country: oman
+        planet: earth
     }
     {
         identifier: muscat
@@ -98,5 +107,6 @@
             177
         ]
         country: oman
+        planet: earth
     }
 ]

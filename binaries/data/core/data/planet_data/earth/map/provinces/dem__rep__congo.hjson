@@ -8,6 +8,7 @@
             82
         ]
         country: dem__rep__congo
+        planet: earth
     }
     {
         identifier: bas-congo
@@ -18,6 +19,7 @@
             94
         ]
         country: dem__rep__congo
+        planet: earth
     }
     {
         identifier: bujumbura_rural
@@ -28,6 +30,7 @@
             18
         ]
         country: dem__rep__congo
+        planet: earth
     }
     {
         identifier: bundibugyo
@@ -38,6 +41,7 @@
             13
         ]
         country: dem__rep__congo
+        planet: earth
     }
     {
         identifier: equateur
@@ -48,6 +52,7 @@
             137
         ]
         country: dem__rep__congo
+        planet: earth
     }
     {
         identifier: kasai-occidental
@@ -58,6 +63,7 @@
             84
         ]
         country: dem__rep__congo
+        planet: earth
     }
     {
         identifier: kasai-oriental
@@ -68,6 +74,7 @@
             33
         ]
         country: dem__rep__congo
+        planet: earth
     }
     {
         identifier: katanga
@@ -78,6 +85,7 @@
             128
         ]
         country: dem__rep__congo
+        planet: earth
     }
     {
         identifier: maniema
@@ -88,6 +96,7 @@
             100
         ]
         country: dem__rep__congo
+        planet: earth
     }
     {
         identifier: nord-kivu
@@ -98,6 +107,7 @@
             219
         ]
         country: dem__rep__congo
+        planet: earth
     }
     {
         identifier: orientale
@@ -108,6 +118,7 @@
             37
         ]
         country: dem__rep__congo
+        planet: earth
     }
     {
         identifier: sud-kivu
@@ -118,5 +129,6 @@
             250
         ]
         country: dem__rep__congo
+        planet: earth
     }
 ]

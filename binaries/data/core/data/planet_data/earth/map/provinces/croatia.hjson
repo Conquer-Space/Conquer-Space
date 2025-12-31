@@ -8,6 +8,7 @@
             107
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: brodsko-posavska_croatia
@@ -18,6 +19,7 @@
             44
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: brodsko-posavska_croatia_2
@@ -28,6 +30,7 @@
             241
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: dubrovacko-neretvanska
@@ -38,6 +41,7 @@
             57
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: grad_zagreb
@@ -48,6 +52,7 @@
             174
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: istarska
@@ -58,6 +63,7 @@
             72
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: karlovacka
@@ -68,6 +74,7 @@
             48
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: koprivnicko-krizevacka
@@ -78,6 +85,7 @@
             165
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: krapinsko-zagorska
@@ -88,6 +96,7 @@
             79
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: licko-senjska
@@ -98,6 +107,7 @@
             243
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: medimurska
@@ -108,6 +118,7 @@
             220
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: osjecko-baranjska
@@ -118,6 +129,7 @@
             43
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: primorsko-goranska
@@ -128,6 +140,7 @@
             182
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: sibensko-kninska
@@ -138,6 +151,7 @@
             176
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: sisacko-moslavacka
@@ -148,6 +162,7 @@
             166
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: splitsko-dalmatinska
@@ -158,6 +173,7 @@
             135
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: una-sana
@@ -168,6 +184,7 @@
             111
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: viroviticko-podravska
@@ -178,6 +195,7 @@
             98
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: vukovarsko-srijemska
@@ -188,6 +206,7 @@
             123
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: zadarska
@@ -198,6 +217,7 @@
             178
         ]
         country: croatia
+        planet: earth
     }
     {
         identifier: zagrebacka
@@ -208,5 +228,6 @@
             225
         ]
         country: croatia
+        planet: earth
     }
 ]

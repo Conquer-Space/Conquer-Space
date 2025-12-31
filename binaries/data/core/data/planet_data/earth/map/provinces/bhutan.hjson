@@ -8,6 +8,7 @@
             173
         ]
         country: bhutan
+        planet: earth
     }
     {
         identifier: chhukha
@@ -18,6 +19,7 @@
             216
         ]
         country: bhutan
+        planet: earth
     }
     {
         identifier: chirang
@@ -28,6 +30,7 @@
             196
         ]
         country: bhutan
+        planet: earth
     }
     {
         identifier: daga
@@ -38,6 +41,7 @@
             74
         ]
         country: bhutan
+        planet: earth
     }
     {
         identifier: gasa
@@ -48,6 +52,7 @@
             212
         ]
         country: bhutan
+        planet: earth
     }
     {
         identifier: geylegphug
@@ -58,6 +63,7 @@
             149
         ]
         country: bhutan
+        planet: earth
     }
     {
         identifier: ha
@@ -68,6 +74,7 @@
             204
         ]
         country: bhutan
+        planet: earth
     }
     {
         identifier: lhuntshi
@@ -78,6 +85,7 @@
             106
         ]
         country: bhutan
+        planet: earth
     }
     {
         identifier: mongar
@@ -88,6 +96,7 @@
             208
         ]
         country: bhutan
+        planet: earth
     }
     {
         identifier: paro
@@ -98,6 +107,7 @@
             145
         ]
         country: bhutan
+        planet: earth
     }
     {
         identifier: pemagatsel
@@ -108,6 +118,7 @@
             86
         ]
         country: bhutan
+        planet: earth
     }
     {
         identifier: punakha
@@ -118,6 +129,7 @@
             141
         ]
         country: bhutan
+        planet: earth
     }
     {
         identifier: samchi
@@ -128,6 +140,7 @@
             15
         ]
         country: bhutan
+        planet: earth
     }
     {
         identifier: samdrup_jongkhar
@@ -138,6 +151,7 @@
             70
         ]
         country: bhutan
+        planet: earth
     }
     {
         identifier: shemgang
@@ -148,6 +162,7 @@
             27
         ]
         country: bhutan
+        planet: earth
     }
     {
         identifier: tashi_yangtse
@@ -158,6 +173,7 @@
             39
         ]
         country: bhutan
+        planet: earth
     }
     {
         identifier: tashigang
@@ -168,6 +184,7 @@
             192
         ]
         country: bhutan
+        planet: earth
     }
     {
         identifier: thimphu
@@ -178,6 +195,7 @@
             78
         ]
         country: bhutan
+        planet: earth
     }
     {
         identifier: tongsa
@@ -188,6 +206,7 @@
             19
         ]
         country: bhutan
+        planet: earth
     }
     {
         identifier: wangdi_phodrang
@@ -198,5 +217,6 @@
             7
         ]
         country: bhutan
+        planet: earth
     }
 ]

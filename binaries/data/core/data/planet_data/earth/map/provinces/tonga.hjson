@@ -8,6 +8,7 @@
             69
         ]
         country: tonga
+        planet: earth
     }
     {
         identifier: ha'apai
@@ -18,6 +19,7 @@
             81
         ]
         country: tonga
+        planet: earth
     }
     {
         identifier: niuas
@@ -28,6 +30,7 @@
             172
         ]
         country: tonga
+        planet: earth
     }
     {
         identifier: tongatapu
@@ -38,6 +41,7 @@
             203
         ]
         country: tonga
+        planet: earth
     }
     {
         identifier: vava'u
@@ -48,5 +52,6 @@
             226
         ]
         country: tonga
+        planet: earth
     }
 ]

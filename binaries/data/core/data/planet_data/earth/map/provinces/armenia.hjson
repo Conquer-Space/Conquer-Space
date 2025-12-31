@@ -8,6 +8,7 @@
             246
         ]
         country: armenia
+        planet: earth
     }
     {
         identifier: ararat
@@ -18,6 +19,7 @@
             132
         ]
         country: armenia
+        planet: earth
     }
     {
         identifier: armavir
@@ -28,6 +30,7 @@
             57
         ]
         country: armenia
+        planet: earth
     }
     {
         identifier: erevan
@@ -38,6 +41,7 @@
             91
         ]
         country: armenia
+        planet: earth
     }
     {
         identifier: gegharkunik
@@ -48,6 +52,7 @@
             41
         ]
         country: armenia
+        planet: earth
     }
     {
         identifier: kotayk
@@ -58,6 +63,7 @@
             24
         ]
         country: armenia
+        planet: earth
     }
     {
         identifier: lori
@@ -68,6 +74,7 @@
             103
         ]
         country: armenia
+        planet: earth
     }
     {
         identifier: shirak
@@ -78,6 +85,7 @@
             170
         ]
         country: armenia
+        planet: earth
     }
     {
         identifier: syunik
@@ -88,6 +96,7 @@
             53
         ]
         country: armenia
+        planet: earth
     }
     {
         identifier: tavush
@@ -98,6 +107,7 @@
             225
         ]
         country: armenia
+        planet: earth
     }
     {
         identifier: vayots_dzor
@@ -108,5 +118,6 @@
             242
         ]
         country: armenia
+        planet: earth
     }
 ]

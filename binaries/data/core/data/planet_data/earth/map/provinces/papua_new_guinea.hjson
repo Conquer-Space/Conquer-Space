@@ -8,6 +8,7 @@
             12
         ]
         country: papua_new_guinea
+        planet: earth
     }
     {
         identifier: chimbu
@@ -18,6 +19,7 @@
             205
         ]
         country: papua_new_guinea
+        planet: earth
     }
     {
         identifier: east_new_britain
@@ -28,6 +30,7 @@
             66
         ]
         country: papua_new_guinea
+        planet: earth
     }
     {
         identifier: east_sepik
@@ -38,6 +41,7 @@
             189
         ]
         country: papua_new_guinea
+        planet: earth
     }
     {
         identifier: eastern_highlands
@@ -48,6 +52,7 @@
             217
         ]
         country: papua_new_guinea
+        planet: earth
     }
     {
         identifier: enga
@@ -58,6 +63,7 @@
             16
         ]
         country: papua_new_guinea
+        planet: earth
     }
     {
         identifier: gulf
@@ -68,6 +74,7 @@
             146
         ]
         country: papua_new_guinea
+        planet: earth
     }
     {
         identifier: madang
@@ -78,6 +85,7 @@
             0
         ]
         country: papua_new_guinea
+        planet: earth
     }
     {
         identifier: manus
@@ -88,6 +96,7 @@
             11
         ]
         country: papua_new_guinea
+        planet: earth
     }
     {
         identifier: milne_bay
@@ -98,6 +107,7 @@
             201
         ]
         country: papua_new_guinea
+        planet: earth
     }
     {
         identifier: morobe
@@ -108,6 +118,7 @@
             67
         ]
         country: papua_new_guinea
+        planet: earth
     }
     {
         identifier: national_capital_district
@@ -118,6 +129,7 @@
             79
         ]
         country: papua_new_guinea
+        planet: earth
     }
     {
         identifier: new_ireland
@@ -128,6 +140,7 @@
             133
         ]
         country: papua_new_guinea
+        planet: earth
     }
     {
         identifier: north_solomons
@@ -138,6 +151,7 @@
             188
         ]
         country: papua_new_guinea
+        planet: earth
     }
     {
         identifier: northern_papua_new_guinea
@@ -148,6 +162,7 @@
             134
         ]
         country: papua_new_guinea
+        planet: earth
     }
     {
         identifier: sandaun
@@ -158,6 +173,7 @@
             116
         ]
         country: papua_new_guinea
+        planet: earth
     }
     {
         identifier: southern_highlands
@@ -168,6 +184,7 @@
             150
         ]
         country: papua_new_guinea
+        planet: earth
     }
     {
         identifier: west_new_britain
@@ -178,6 +195,7 @@
             255
         ]
         country: papua_new_guinea
+        planet: earth
     }
     {
         identifier: western_papua_new_guinea
@@ -188,6 +206,7 @@
             183
         ]
         country: papua_new_guinea
+        planet: earth
     }
     {
         identifier: western_highlands
@@ -198,5 +217,6 @@
             83
         ]
         country: papua_new_guinea
+        planet: earth
     }
 ]

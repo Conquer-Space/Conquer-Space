@@ -8,6 +8,7 @@
             1
         ]
         country: sierra_leone
+        planet: earth
     }
     {
         identifier: northern_sierra_leone
@@ -18,6 +19,7 @@
             44
         ]
         country: sierra_leone
+        planet: earth
     }
     {
         identifier: southern_sierra_leone
@@ -28,6 +30,7 @@
             135
         ]
         country: sierra_leone
+        planet: earth
     }
     {
         identifier: western_sierra_leone
@@ -38,5 +41,6 @@
             217
         ]
         country: sierra_leone
+        planet: earth
     }
 ]

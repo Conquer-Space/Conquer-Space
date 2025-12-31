@@ -8,6 +8,7 @@
             196
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: adamawa
@@ -18,6 +19,7 @@
             71
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: akwa_ibom
@@ -28,6 +30,7 @@
             116
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: anambra
@@ -38,6 +41,7 @@
             74
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: bauchi
@@ -48,6 +52,7 @@
             208
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: bayelsa
@@ -58,6 +63,7 @@
             238
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: benue
@@ -68,6 +74,7 @@
             150
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: borno
@@ -78,6 +85,7 @@
             245
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: cross_river
@@ -88,6 +96,7 @@
             217
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: delta
@@ -98,6 +107,7 @@
             171
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: ebonyi
@@ -108,6 +118,7 @@
             7
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: edo
@@ -118,6 +129,7 @@
             141
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: ekiti
@@ -128,6 +140,7 @@
             197
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: enugu
@@ -138,6 +151,7 @@
             220
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: federal_capital_territory
@@ -148,6 +162,7 @@
             142
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: gombe
@@ -158,6 +173,7 @@
             153
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: imo
@@ -168,6 +184,7 @@
             165
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: jigawa
@@ -178,6 +195,7 @@
             119
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: kaduna
@@ -188,6 +206,7 @@
             8
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: kano
@@ -198,6 +217,7 @@
             75
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: katsina
@@ -208,6 +228,7 @@
             52
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: kebbi
@@ -218,6 +239,7 @@
             50
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: kogi
@@ -228,6 +250,7 @@
             31
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: kwara
@@ -238,6 +261,7 @@
             62
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: lagos
@@ -248,6 +272,7 @@
             141
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: nassarawa
@@ -258,6 +283,7 @@
             86
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: niger
@@ -268,6 +294,7 @@
             184
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: ogun
@@ -278,6 +305,7 @@
             129
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: ondo
@@ -288,6 +316,7 @@
             104
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: osun
@@ -298,6 +327,7 @@
             98
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: oyo
@@ -308,6 +338,7 @@
             74
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: plateau_nigeria
@@ -318,6 +349,7 @@
             19
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: rivers
@@ -328,6 +360,7 @@
             49
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: sokoto
@@ -338,6 +371,7 @@
             28
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: taraba
@@ -348,6 +382,7 @@
             205
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: yobe
@@ -358,6 +393,7 @@
             174
         ]
         country: nigeria
+        planet: earth
     }
     {
         identifier: zamfara
@@ -368,5 +404,6 @@
             107
         ]
         country: nigeria
+        planet: earth
     }
 ]

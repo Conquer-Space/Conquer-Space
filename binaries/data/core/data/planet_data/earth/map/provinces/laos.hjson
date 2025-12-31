@@ -8,6 +8,7 @@
             32
         ]
         country: laos
+        planet: earth
     }
     {
         identifier: bokeo
@@ -18,6 +19,7 @@
             192
         ]
         country: laos
+        planet: earth
     }
     {
         identifier: bolikhamxai
@@ -28,6 +30,7 @@
             216
         ]
         country: laos
+        planet: earth
     }
     {
         identifier: champasak
@@ -38,6 +41,7 @@
             118
         ]
         country: laos
+        planet: earth
     }
     {
         identifier: houaphan
@@ -48,6 +52,7 @@
             63
         ]
         country: laos
+        planet: earth
     }
     {
         identifier: khammouan
@@ -58,6 +63,7 @@
             161
         ]
         country: laos
+        planet: earth
     }
     {
         identifier: louang_namtha
@@ -68,6 +74,7 @@
             213
         ]
         country: laos
+        planet: earth
     }
     {
         identifier: louangphrabang
@@ -78,6 +85,7 @@
             252
         ]
         country: laos
+        planet: earth
     }
     {
         identifier: oudomxai
@@ -88,6 +96,7 @@
             146
         ]
         country: laos
+        planet: earth
     }
     {
         identifier: phongsali
@@ -98,6 +107,7 @@
             12
         ]
         country: laos
+        planet: earth
     }
     {
         identifier: saravan
@@ -108,6 +118,7 @@
             173
         ]
         country: laos
+        planet: earth
     }
     {
         identifier: savannakhet
@@ -118,6 +129,7 @@
             228
         ]
         country: laos
+        planet: earth
     }
     {
         identifier: stoeng_treng
@@ -128,6 +140,7 @@
             220
         ]
         country: laos
+        planet: earth
     }
     {
         identifier: vientiane
@@ -138,6 +151,7 @@
             51
         ]
         country: laos
+        planet: earth
     }
     {
         identifier: vientiane_[prefecture]
@@ -148,6 +162,7 @@
             240
         ]
         country: laos
+        planet: earth
     }
     {
         identifier: xaignabouri
@@ -158,6 +173,7 @@
             3
         ]
         country: laos
+        planet: earth
     }
     {
         identifier: xekong
@@ -168,6 +184,7 @@
             154
         ]
         country: laos
+        planet: earth
     }
     {
         identifier: xiangkhoang
@@ -178,5 +195,6 @@
             75
         ]
         country: laos
+        planet: earth
     }
 ]

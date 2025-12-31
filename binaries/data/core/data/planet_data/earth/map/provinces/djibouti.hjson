@@ -8,6 +8,7 @@
             171
         ]
         country: djibouti
+        planet: earth
     }
     {
         identifier: arta
@@ -18,6 +19,7 @@
             238
         ]
         country: djibouti
+        planet: earth
     }
     {
         identifier: dikhil
@@ -28,6 +30,7 @@
             49
         ]
         country: djibouti
+        planet: earth
     }
     {
         identifier: djibouti
@@ -38,6 +41,7 @@
             7
         ]
         country: djibouti
+        planet: earth
     }
     {
         identifier: obock
@@ -48,6 +52,7 @@
             73
         ]
         country: djibouti
+        planet: earth
     }
     {
         identifier: tadjourah
@@ -58,5 +63,6 @@
             183
         ]
         country: djibouti
+        planet: earth
     }
 ]

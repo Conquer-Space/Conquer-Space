@@ -8,6 +8,7 @@
             53
         ]
         country: botswana
+        planet: earth
     }
     {
         identifier: gaborone
@@ -18,6 +19,7 @@
             251
         ]
         country: botswana
+        planet: earth
     }
     {
         identifier: ghanzi
@@ -28,6 +30,7 @@
             41
         ]
         country: botswana
+        planet: earth
     }
     {
         identifier: jwaneng
@@ -38,6 +41,7 @@
             62
         ]
         country: botswana
+        planet: earth
     }
     {
         identifier: kgalagadi
@@ -48,6 +52,7 @@
             25
         ]
         country: botswana
+        planet: earth
     }
     {
         identifier: kgatleng
@@ -58,6 +63,7 @@
             13
         ]
         country: botswana
+        planet: earth
     }
     {
         identifier: kweneng
@@ -68,6 +74,7 @@
             184
         ]
         country: botswana
+        planet: earth
     }
     {
         identifier: north-east
@@ -78,6 +85,7 @@
             187
         ]
         country: botswana
+        planet: earth
     }
     {
         identifier: north-west
@@ -88,6 +96,7 @@
             175
         ]
         country: botswana
+        planet: earth
     }
     {
         identifier: south-east
@@ -98,6 +107,7 @@
             147
         ]
         country: botswana
+        planet: earth
     }
     {
         identifier: southern_botswana
@@ -108,5 +118,6 @@
             214
         ]
         country: botswana
+        planet: earth
     }
 ]

@@ -8,6 +8,7 @@
             66
         ]
         country: central_african_rep_
+        planet: earth
     }
     {
         identifier: basse-kotto
@@ -18,6 +19,7 @@
             49
         ]
         country: central_african_rep_
+        planet: earth
     }
     {
         identifier: haut-mbomou
@@ -28,6 +30,7 @@
             159
         ]
         country: central_african_rep_
+        planet: earth
     }
     {
         identifier: haute-kotto
@@ -38,6 +41,7 @@
             25
         ]
         country: central_african_rep_
+        planet: earth
     }
     {
         identifier: kemo
@@ -48,6 +52,7 @@
             171
         ]
         country: central_african_rep_
+        planet: earth
     }
     {
         identifier: lobaye
@@ -58,6 +63,7 @@
             61
         ]
         country: central_african_rep_
+        planet: earth
     }
     {
         identifier: mambere-kadei
@@ -68,6 +74,7 @@
             223
         ]
         country: central_african_rep_
+        planet: earth
     }
     {
         identifier: mbomou
@@ -78,6 +85,7 @@
             116
         ]
         country: central_african_rep_
+        planet: earth
     }
     {
         identifier: nana-grebizi
@@ -88,6 +96,7 @@
             110
         ]
         country: central_african_rep_
+        planet: earth
     }
     {
         identifier: nana-mambere
@@ -98,6 +107,7 @@
             156
         ]
         country: central_african_rep_
+        planet: earth
     }
     {
         identifier: ombella-m'poko
@@ -108,6 +118,7 @@
             183
         ]
         country: central_african_rep_
+        planet: earth
     }
     {
         identifier: ouaka
@@ -118,6 +129,7 @@
             238
         ]
         country: central_african_rep_
+        planet: earth
     }
     {
         identifier: ouham
@@ -128,6 +140,7 @@
             200
         ]
         country: central_african_rep_
+        planet: earth
     }
     {
         identifier: ouham-pende
@@ -138,6 +151,7 @@
             145
         ]
         country: central_african_rep_
+        planet: earth
     }
     {
         identifier: sangha-mbaere
@@ -148,6 +162,7 @@
             22
         ]
         country: central_african_rep_
+        planet: earth
     }
     {
         identifier: vakaga
@@ -158,5 +173,6 @@
             80
         ]
         country: central_african_rep_
+        planet: earth
     }
 ]

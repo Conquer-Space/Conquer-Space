@@ -8,6 +8,7 @@
             110
         ]
         country: nicaragua
+        planet: earth
     }
     {
         identifier: atlantico_sur
@@ -18,6 +19,7 @@
             120
         ]
         country: nicaragua
+        planet: earth
     }
     {
         identifier: boaco
@@ -28,6 +30,7 @@
             0
         ]
         country: nicaragua
+        planet: earth
     }
     {
         identifier: carazo
@@ -38,6 +41,7 @@
             58
         ]
         country: nicaragua
+        planet: earth
     }
     {
         identifier: chinandega
@@ -48,6 +52,7 @@
             0
         ]
         country: nicaragua
+        planet: earth
     }
     {
         identifier: chontales
@@ -58,6 +63,7 @@
             67
         ]
         country: nicaragua
+        planet: earth
     }
     {
         identifier: esteli
@@ -68,6 +74,7 @@
             134
         ]
         country: nicaragua
+        planet: earth
     }
     {
         identifier: granada_nicaragua
@@ -78,6 +85,7 @@
             201
         ]
         country: nicaragua
+        planet: earth
     }
     {
         identifier: jinotega
@@ -88,6 +96,7 @@
             55
         ]
         country: nicaragua
+        planet: earth
     }
     {
         identifier: leon_nicaragua
@@ -98,6 +107,7 @@
             180
         ]
         country: nicaragua
+        planet: earth
     }
     {
         identifier: madriz
@@ -108,6 +118,7 @@
             134
         ]
         country: nicaragua
+        planet: earth
     }
     {
         identifier: managua
@@ -118,6 +129,7 @@
             247
         ]
         country: nicaragua
+        planet: earth
     }
     {
         identifier: masaya
@@ -128,6 +140,7 @@
             12
         ]
         country: nicaragua
+        planet: earth
     }
     {
         identifier: matagalpa
@@ -138,6 +151,7 @@
             189
         ]
         country: nicaragua
+        planet: earth
     }
     {
         identifier: nueva_segovia
@@ -148,6 +162,7 @@
             189
         ]
         country: nicaragua
+        planet: earth
     }
     {
         identifier: rio_san_juan
@@ -158,6 +173,7 @@
             125
         ]
         country: nicaragua
+        planet: earth
     }
     {
         identifier: rivas
@@ -168,5 +184,6 @@
             223
         ]
         country: nicaragua
+        planet: earth
     }
 ]

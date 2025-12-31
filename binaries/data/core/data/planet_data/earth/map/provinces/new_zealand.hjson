@@ -8,6 +8,7 @@
             135
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: bay_of_plenty
@@ -18,6 +19,7 @@
             32
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: campbell_islands
@@ -28,6 +30,7 @@
             68
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: canterbury
@@ -38,6 +41,7 @@
             8
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: chatham_islands_territory
@@ -48,6 +52,7 @@
             202
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: gisborne_district
@@ -58,6 +63,7 @@
             99
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: hawke's_bay
@@ -68,6 +74,7 @@
             166
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: manawatu-wanganui
@@ -78,6 +85,7 @@
             87
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: mangaia
@@ -88,6 +96,7 @@
             25
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: marlborough_district
@@ -98,6 +107,7 @@
             185
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: mitiaro
@@ -108,6 +118,7 @@
             92
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: nelson_city
@@ -118,6 +129,7 @@
             252
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: niue
@@ -128,6 +140,7 @@
             215
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: northland
@@ -138,6 +151,7 @@
             221
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: otago
@@ -148,6 +162,7 @@
             197
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: rarotonga
@@ -158,6 +173,7 @@
             136
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: southland
@@ -168,6 +184,7 @@
             118
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: taranaki
@@ -178,6 +195,7 @@
             154
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: tasman_district
@@ -188,6 +206,7 @@
             63
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: the_snares
@@ -198,6 +217,7 @@
             51
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: waikato
@@ -208,6 +228,7 @@
             142
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: wellington
@@ -218,6 +239,7 @@
             20
         ]
         country: new_zealand
+        planet: earth
     }
     {
         identifier: west_coast_new_zealand
@@ -228,5 +250,6 @@
             130
         ]
         country: new_zealand
+        planet: earth
     }
 ]

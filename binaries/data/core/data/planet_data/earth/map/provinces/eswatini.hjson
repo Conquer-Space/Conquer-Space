@@ -8,6 +8,7 @@
             125
         ]
         country: eswatini
+        planet: earth
     }
     {
         identifier: lubombo
@@ -18,6 +19,7 @@
             97
         ]
         country: eswatini
+        planet: earth
     }
     {
         identifier: manzini
@@ -28,6 +30,7 @@
             192
         ]
         country: eswatini
+        planet: earth
     }
     {
         identifier: shiselweni
@@ -38,5 +41,6 @@
             3
         ]
         country: eswatini
+        planet: earth
     }
 ]

@@ -8,6 +8,7 @@
             18
         ]
         country: czechia
+        planet: earth
     }
     {
         identifier: jihomoravsky
@@ -18,6 +19,7 @@
             18
         ]
         country: czechia
+        planet: earth
     }
     {
         identifier: karlovarsky
@@ -28,6 +30,7 @@
             73
         ]
         country: czechia
+        planet: earth
     }
     {
         identifier: kralovehradecky
@@ -38,6 +41,7 @@
             51
         ]
         country: czechia
+        planet: earth
     }
     {
         identifier: liberecky
@@ -48,6 +52,7 @@
             6
         ]
         country: czechia
+        planet: earth
     }
     {
         identifier: moravskoslezsky
@@ -58,6 +63,7 @@
             63
         ]
         country: czechia
+        planet: earth
     }
     {
         identifier: olomoucky
@@ -68,6 +74,7 @@
             185
         ]
         country: czechia
+        planet: earth
     }
     {
         identifier: pardubicky
@@ -78,6 +85,7 @@
             252
         ]
         country: czechia
+        planet: earth
     }
     {
         identifier: plzensky
@@ -88,6 +96,7 @@
             207
         ]
         country: czechia
+        planet: earth
     }
     {
         identifier: prague
@@ -98,6 +107,7 @@
             91
         ]
         country: czechia
+        planet: earth
     }
     {
         identifier: stredocesky
@@ -108,6 +118,7 @@
             24
         ]
         country: czechia
+        planet: earth
     }
     {
         identifier: ustecky
@@ -118,6 +129,7 @@
             128
         ]
         country: czechia
+        planet: earth
     }
     {
         identifier: vysocina
@@ -128,6 +140,7 @@
             213
         ]
         country: czechia
+        planet: earth
     }
     {
         identifier: zlinsky
@@ -138,5 +151,6 @@
             226
         ]
         country: czechia
+        planet: earth
     }
 ]

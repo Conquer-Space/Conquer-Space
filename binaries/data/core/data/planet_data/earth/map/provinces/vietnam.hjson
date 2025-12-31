@@ -8,6 +8,7 @@
             222
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: ba_ria_-_vung_tau
@@ -18,6 +19,7 @@
             51
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: bac_giang
@@ -28,6 +30,7 @@
             128
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: bac_lieu
@@ -38,6 +41,7 @@
             212
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: bac_ninh
@@ -48,6 +52,7 @@
             61
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: ben_tre
@@ -58,6 +63,7 @@
             224
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: binh_dinh
@@ -68,6 +74,7 @@
             47
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: binh_duong
@@ -78,6 +85,7 @@
             140
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: binh_phuoc
@@ -88,6 +96,7 @@
             198
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: binh_thuan
@@ -98,6 +107,7 @@
             102
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: ca_mau
@@ -108,6 +118,7 @@
             145
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: can_tho
@@ -118,6 +129,7 @@
             18
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: cao_bang
@@ -128,6 +140,7 @@
             165
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: da_nang
@@ -138,6 +151,7 @@
             181
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: dak_lak
@@ -148,6 +162,7 @@
             64
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: dak_nong
@@ -158,6 +173,7 @@
             186
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: dien_bien
@@ -168,6 +184,7 @@
             185
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: dong_bac
@@ -178,6 +195,7 @@
             183
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: dong_bang_song_hong
@@ -188,6 +206,7 @@
             250
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: dong_nam_bo
@@ -198,6 +217,7 @@
             35
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: dong_thap
@@ -208,6 +228,7 @@
             155
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: gia_lai
@@ -218,6 +239,7 @@
             131
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: ha_giang
@@ -228,6 +250,7 @@
             31
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: ha_nam
@@ -238,6 +261,7 @@
             73
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: ha_noi
@@ -248,6 +272,7 @@
             116
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: ha_tinh
@@ -258,6 +283,7 @@
             142
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: hai_duong
@@ -268,6 +294,7 @@
             6
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: hai_phong
@@ -278,6 +305,7 @@
             193
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: hau_giang
@@ -288,6 +316,7 @@
             23
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: ho_chi_minh_city
@@ -298,6 +327,7 @@
             185
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: hoa_binh
@@ -308,6 +338,7 @@
             37
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: khanh_hoa
@@ -318,6 +349,7 @@
             8
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: kien_giang
@@ -328,6 +360,7 @@
             167
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: kon_tum
@@ -338,6 +371,7 @@
             52
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: lai_chau
@@ -348,6 +382,7 @@
             43
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: lam_dong
@@ -358,6 +393,7 @@
             207
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: lang_son
@@ -368,6 +404,7 @@
             110
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: lao_cai
@@ -378,6 +415,7 @@
             232
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: long_an
@@ -388,6 +426,7 @@
             88
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: nam_dinh
@@ -398,6 +437,7 @@
             59
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: nghe_an
@@ -408,6 +448,7 @@
             8
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: ninh_binh
@@ -418,6 +459,7 @@
             248
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: ninh_thuan
@@ -428,6 +470,7 @@
             169
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: phu_tho
@@ -438,6 +481,7 @@
             49
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: phu_yen
@@ -448,6 +492,7 @@
             236
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: quang_binh
@@ -458,6 +503,7 @@
             209
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: quang_nam
@@ -468,6 +514,7 @@
             221
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: quang_ngai
@@ -478,6 +525,7 @@
             114
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: quang_ninh
@@ -488,6 +536,7 @@
             177
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: quang_tri
@@ -498,6 +547,7 @@
             20
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: soc_trang
@@ -508,6 +558,7 @@
             254
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: son_la
@@ -518,6 +569,7 @@
             130
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: tay_ninh
@@ -528,6 +580,7 @@
             76
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: thai_binh
@@ -538,6 +591,7 @@
             126
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: thai_nguyen
@@ -548,6 +602,7 @@
             195
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: thanh_hoa
@@ -558,6 +613,7 @@
             197
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: thua_thien_-_hue
@@ -568,6 +624,7 @@
             87
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: tien_giang
@@ -578,6 +635,7 @@
             240
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: tra_vinh
@@ -588,6 +646,7 @@
             157
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: tuyen_quang
@@ -598,6 +657,7 @@
             104
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: vinh_long
@@ -608,6 +668,7 @@
             90
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: vinh_phuc
@@ -618,6 +679,7 @@
             238
         ]
         country: vietnam
+        planet: earth
     }
     {
         identifier: yen_bai
@@ -628,5 +690,6 @@
             171
         ]
         country: vietnam
+        planet: earth
     }
 ]

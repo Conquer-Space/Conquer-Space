@@ -8,6 +8,7 @@
             5
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: amoron'i_mania
@@ -18,6 +19,7 @@
             194
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: analamanga
@@ -28,6 +30,7 @@
             182
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: analanjirofo
@@ -38,6 +41,7 @@
             69
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: androy
@@ -48,6 +52,7 @@
             148
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: anosy
@@ -58,6 +63,7 @@
             81
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: atsimo-andrefana
@@ -68,6 +74,7 @@
             215
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: atsimo-atsinanana
@@ -78,6 +85,7 @@
             14
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: atsinanana
@@ -88,6 +96,7 @@
             136
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: betsiboka
@@ -98,6 +107,7 @@
             249
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: boeny
@@ -108,6 +118,7 @@
             57
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: bongolava
@@ -118,6 +129,7 @@
             60
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: diana
@@ -128,6 +140,7 @@
             191
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: haute_matsiatra
@@ -138,6 +151,7 @@
             198
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: ihorombe
@@ -148,6 +162,7 @@
             131
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: itasy
@@ -158,6 +173,7 @@
             9
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: melaky
@@ -168,6 +184,7 @@
             93
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: menabe
@@ -178,6 +195,7 @@
             26
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: sava
@@ -188,6 +206,7 @@
             2
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: sofia_madagascar
@@ -198,6 +217,7 @@
             124
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: vakinankaratra
@@ -208,6 +228,7 @@
             127
         ]
         country: madagascar
+        planet: earth
     }
     {
         identifier: vatovavy-fitovinany
@@ -218,5 +239,6 @@
             203
         ]
         country: madagascar
+        planet: earth
     }
 ]

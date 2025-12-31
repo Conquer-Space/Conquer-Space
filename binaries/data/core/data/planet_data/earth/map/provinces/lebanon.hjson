@@ -8,6 +8,7 @@
             206
         ]
         country: lebanon
+        planet: earth
     }
     {
         identifier: beqaa
@@ -18,6 +19,7 @@
             75
         ]
         country: lebanon
+        planet: earth
     }
     {
         identifier: hazafon
@@ -28,6 +30,7 @@
             127
         ]
         country: lebanon
+        planet: earth
     }
     {
         identifier: mount_lebanon
@@ -38,6 +41,7 @@
             128
         ]
         country: lebanon
+        planet: earth
     }
     {
         identifier: north_lebanon
@@ -48,6 +52,7 @@
             142
         ]
         country: lebanon
+        planet: earth
     }
     {
         identifier: south_lebanon
@@ -58,5 +63,6 @@
             17
         ]
         country: lebanon
+        planet: earth
     }
 ]

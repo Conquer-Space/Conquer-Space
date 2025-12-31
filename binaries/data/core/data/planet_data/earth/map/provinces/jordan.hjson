@@ -8,6 +8,7 @@
             32
         ]
         country: jordan
+        planet: earth
     }
     {
         identifier: amman
@@ -18,6 +19,7 @@
             150
         ]
         country: jordan
+        planet: earth
     }
     {
         identifier: aqaba
@@ -28,6 +30,7 @@
             206
         ]
         country: jordan
+        planet: earth
     }
     {
         identifier: balqa
@@ -38,6 +41,7 @@
             17
         ]
         country: jordan
+        planet: earth
     }
     {
         identifier: irbid
@@ -48,6 +52,7 @@
             194
         ]
         country: jordan
+        planet: earth
     }
     {
         identifier: jarash
@@ -58,6 +63,7 @@
             99
         ]
         country: jordan
+        planet: earth
     }
     {
         identifier: karak
@@ -68,6 +74,7 @@
             72
         ]
         country: jordan
+        planet: earth
     }
     {
         identifier: ma`an
@@ -78,6 +85,7 @@
             83
         ]
         country: jordan
+        planet: earth
     }
     {
         identifier: madaba
@@ -88,6 +96,7 @@
             5
         ]
         country: jordan
+        planet: earth
     }
     {
         identifier: mafraq
@@ -98,6 +107,7 @@
             59
         ]
         country: jordan
+        planet: earth
     }
     {
         identifier: tafilah
@@ -108,6 +118,7 @@
             139
         ]
         country: jordan
+        planet: earth
     }
     {
         identifier: zarqa
@@ -118,5 +129,6 @@
             217
         ]
         country: jordan
+        planet: earth
     }
 ]

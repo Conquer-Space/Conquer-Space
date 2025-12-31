@@ -8,6 +8,7 @@
             98
         ]
         country: palau
+        planet: earth
     }
     {
         identifier: angaur
@@ -18,6 +19,7 @@
             10
         ]
         country: palau
+        planet: earth
     }
     {
         identifier: kayangel
@@ -28,6 +30,7 @@
             111
         ]
         country: palau
+        planet: earth
     }
     {
         identifier: melekeok
@@ -38,6 +41,7 @@
             43
         ]
         country: palau
+        planet: earth
     }
     {
         identifier: ngardmau
@@ -48,5 +52,6 @@
             55
         ]
         country: palau
+        planet: earth
     }
 ]

@@ -8,6 +8,7 @@
             178
         ]
         country: south_africa
+        planet: earth
     }
     {
         identifier: free_state
@@ -18,6 +19,7 @@
             233
         ]
         country: south_africa
+        planet: earth
     }
     {
         identifier: gauteng
@@ -28,6 +30,7 @@
             154
         ]
         country: south_africa
+        planet: earth
     }
     {
         identifier: kwazulu-natal
@@ -38,6 +41,7 @@
             99
         ]
         country: south_africa
+        planet: earth
     }
     {
         identifier: limpopo
@@ -48,6 +52,7 @@
             202
         ]
         country: south_africa
+        planet: earth
     }
     {
         identifier: mpumalanga
@@ -58,6 +63,7 @@
             58
         ]
         country: south_africa
+        planet: earth
     }
     {
         identifier: north_west
@@ -68,6 +74,7 @@
             80
         ]
         country: south_africa
+        planet: earth
     }
     {
         identifier: northern_cape
@@ -78,6 +85,7 @@
             8
         ]
         country: south_africa
+        planet: earth
     }
     {
         identifier: western_cape
@@ -88,5 +96,6 @@
             184
         ]
         country: south_africa
+        planet: earth
     }
 ]

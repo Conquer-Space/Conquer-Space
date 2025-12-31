@@ -8,6 +8,7 @@
             17
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: alagoas
@@ -18,6 +19,7 @@
             198
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: amapa
@@ -28,6 +30,7 @@
             203
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: amazonas_brazil
@@ -38,6 +41,7 @@
             15
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: bahia
@@ -48,6 +52,7 @@
             76
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: ceara
@@ -58,6 +63,7 @@
             186
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: distrito_federal_brazil
@@ -68,6 +74,7 @@
             239
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: espirito_santo
@@ -78,6 +85,7 @@
             143
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: goias
@@ -88,6 +96,7 @@
             172
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: maranhao
@@ -98,6 +107,7 @@
             52
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: mato_grosso
@@ -108,6 +118,7 @@
             142
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: mato_grosso_do_sul
@@ -118,6 +129,7 @@
             72
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: minas_gerais
@@ -128,6 +140,7 @@
             50
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: para_brazil
@@ -138,6 +151,7 @@
             5
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: paraiba
@@ -148,6 +162,7 @@
             64
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: parana
@@ -158,6 +173,7 @@
             151
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: pernambuco
@@ -168,6 +184,7 @@
             131
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: piaui
@@ -178,6 +195,7 @@
             119
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: rio_de_janeiro
@@ -188,6 +206,7 @@
             210
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: rio_grande_do_norte
@@ -198,6 +217,7 @@
             253
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: rio_grande_do_sul
@@ -208,6 +228,7 @@
             202
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: rondonia
@@ -218,6 +239,7 @@
             8
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: roraima
@@ -228,6 +250,7 @@
             60
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: santa_catarina_brazil
@@ -238,6 +261,7 @@
             218
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: sao_paulo
@@ -248,6 +272,7 @@
             21
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: sergipe
@@ -258,6 +283,7 @@
             9
         ]
         country: brazil
+        planet: earth
     }
     {
         identifier: tocantins
@@ -268,5 +294,6 @@
             117
         ]
         country: brazil
+        planet: earth
     }
 ]

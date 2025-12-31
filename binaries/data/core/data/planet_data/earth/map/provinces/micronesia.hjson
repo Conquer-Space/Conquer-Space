@@ -8,6 +8,7 @@
             83
         ]
         country: micronesia
+        planet: earth
     }
     {
         identifier: pohnpei
@@ -18,6 +19,7 @@
             95
         ]
         country: micronesia
+        planet: earth
     }
     {
         identifier: yap
@@ -28,5 +30,6 @@
             122
         ]
         country: micronesia
+        planet: earth
     }
 ]

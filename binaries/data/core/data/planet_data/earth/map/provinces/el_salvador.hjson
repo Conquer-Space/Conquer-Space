@@ -8,6 +8,7 @@
             1
         ]
         country: el_salvador
+        planet: earth
     }
     {
         identifier: cabanas
@@ -18,6 +19,7 @@
             153
         ]
         country: el_salvador
+        planet: earth
     }
     {
         identifier: chalatenango
@@ -28,6 +30,7 @@
             19
         ]
         country: el_salvador
+        planet: earth
     }
     {
         identifier: cuscatlan
@@ -38,6 +41,7 @@
             23
         ]
         country: el_salvador
+        planet: earth
     }
     {
         identifier: la_libertad_el_salvador
@@ -48,6 +52,7 @@
             168
         ]
         country: el_salvador
+        planet: earth
     }
     {
         identifier: la_paz_el_salvador
@@ -58,6 +63,7 @@
             235
         ]
         country: el_salvador
+        planet: earth
     }
     {
         identifier: la_union_el_salvador
@@ -68,6 +74,7 @@
             232
         ]
         country: el_salvador
+        planet: earth
     }
     {
         identifier: morazan
@@ -78,6 +85,7 @@
             31
         ]
         country: el_salvador
+        planet: earth
     }
     {
         identifier: san_miguel
@@ -88,6 +96,7 @@
             165
         ]
         country: el_salvador
+        planet: earth
     }
     {
         identifier: san_salvador_el_salvador
@@ -98,6 +107,7 @@
             90
         ]
         country: el_salvador
+        planet: earth
     }
     {
         identifier: san_vicente
@@ -108,6 +118,7 @@
             46
         ]
         country: el_salvador
+        planet: earth
     }
     {
         identifier: santa_ana
@@ -118,6 +129,7 @@
             135
         ]
         country: el_salvador
+        planet: earth
     }
     {
         identifier: sonsonate
@@ -128,6 +140,7 @@
             101
         ]
         country: el_salvador
+        planet: earth
     }
     {
         identifier: usulutan
@@ -138,6 +151,7 @@
             113
         ]
         country: el_salvador
+        planet: earth
     }
     {
         identifier: valle
@@ -148,5 +162,6 @@
             43
         ]
         country: el_salvador
+        planet: earth
     }
 ]

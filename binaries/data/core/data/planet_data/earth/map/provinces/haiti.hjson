@@ -8,6 +8,7 @@
             32
         ]
         country: haiti
+        planet: earth
     }
     {
         identifier: grand'anse
@@ -18,6 +19,7 @@
             198
         ]
         country: haiti
+        planet: earth
     }
     {
         identifier: l'artibonite
@@ -28,6 +30,7 @@
             140
         ]
         country: haiti
+        planet: earth
     }
     {
         identifier: nippes
@@ -38,6 +41,7 @@
             207
         ]
         country: haiti
+        planet: earth
     }
     {
         identifier: nord_haiti
@@ -48,6 +52,7 @@
             73
         ]
         country: haiti
+        planet: earth
     }
     {
         identifier: nord-est
@@ -58,6 +63,7 @@
             87
         ]
         country: haiti
+        planet: earth
     }
     {
         identifier: nord-ouest_haiti
@@ -68,6 +74,7 @@
             215
         ]
         country: haiti
+        planet: earth
     }
     {
         identifier: ouest_haiti
@@ -78,6 +85,7 @@
             233
         ]
         country: haiti
+        planet: earth
     }
     {
         identifier: sud_haiti
@@ -88,6 +96,7 @@
             37
         ]
         country: haiti
+        planet: earth
     }
     {
         identifier: sud-est
@@ -98,5 +107,6 @@
             44
         ]
         country: haiti
+        planet: earth
     }
 ]

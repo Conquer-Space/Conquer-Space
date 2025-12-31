@@ -8,6 +8,7 @@
             28
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: aglonas
@@ -18,6 +19,7 @@
             53
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: aizkraukles
@@ -28,6 +30,7 @@
             70
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: aizputes
@@ -38,6 +41,7 @@
             228
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: aknistes
@@ -48,6 +52,7 @@
             126
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: alojas
@@ -58,6 +63,7 @@
             97
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: alsungas
@@ -68,6 +74,7 @@
             106
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: aluksne
@@ -78,6 +85,7 @@
             54
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: amatas
@@ -88,6 +96,7 @@
             101
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: apes
@@ -98,6 +107,7 @@
             176
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: auces
@@ -108,6 +118,7 @@
             47
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: babites
@@ -118,6 +129,7 @@
             254
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: baldones
@@ -128,6 +140,7 @@
             247
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: baltinavas
@@ -138,6 +151,7 @@
             255
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: balvu
@@ -148,6 +162,7 @@
             139
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: bauska
@@ -158,6 +173,7 @@
             114
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: beverinas
@@ -168,6 +184,7 @@
             17
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: brocenu
@@ -178,6 +195,7 @@
             252
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: burtnieku
@@ -188,6 +206,7 @@
             84
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: carnikavas
@@ -198,6 +217,7 @@
             161
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: cesu
@@ -208,6 +228,7 @@
             162
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: cesvaines
@@ -218,6 +239,7 @@
             235
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: ciblas
@@ -228,6 +250,7 @@
             133
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: dagdas
@@ -238,6 +261,7 @@
             131
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: daugavpils_latvia
@@ -248,6 +272,7 @@
             4
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: daugavpils_latvia_2
@@ -258,6 +283,7 @@
             249
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: dobele
@@ -268,6 +294,7 @@
             118
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: dundagas
@@ -278,6 +305,7 @@
             204
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: durbes
@@ -288,6 +316,7 @@
             150
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: engures
@@ -298,6 +327,7 @@
             216
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: erglu
@@ -308,6 +338,7 @@
             168
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: garkalnes
@@ -318,6 +349,7 @@
             65
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: grobinas
@@ -328,6 +360,7 @@
             192
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: gulbene
@@ -338,6 +371,7 @@
             108
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: iecavas
@@ -348,6 +382,7 @@
             125
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: ikskiles
@@ -358,6 +393,7 @@
             180
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: ilukstes
@@ -368,6 +404,7 @@
             193
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: incukalna
@@ -378,6 +415,7 @@
             217
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: jaunjelgavas
@@ -388,6 +426,7 @@
             15
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: jaunpiebalgas
@@ -398,6 +437,7 @@
             242
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: jaunpils
@@ -408,6 +448,7 @@
             185
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: jekabpils
@@ -418,6 +459,7 @@
             27
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: jelgava_latvia
@@ -428,6 +470,7 @@
             248
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: jelgava_latvia_2
@@ -438,6 +481,7 @@
             182
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: kandavas
@@ -448,6 +492,7 @@
             240
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: karsavas
@@ -458,6 +503,7 @@
             66
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: keguma
@@ -468,6 +514,7 @@
             58
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: kekavas
@@ -478,6 +525,7 @@
             132
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: kocenu
@@ -488,6 +536,7 @@
             151
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: kokneses
@@ -498,6 +547,7 @@
             3
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: kraslavas
@@ -508,6 +558,7 @@
             198
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: krimuldas
@@ -518,6 +569,7 @@
             41
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: krustpils
@@ -528,6 +580,7 @@
             94
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: kuldigas
@@ -538,6 +591,7 @@
             39
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: lielvardes
@@ -548,6 +602,7 @@
             204
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: liepaja
@@ -558,6 +613,7 @@
             125
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: ligatnes
@@ -568,6 +624,7 @@
             229
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: limbazi
@@ -578,6 +635,7 @@
             39
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: livanu
@@ -588,6 +646,7 @@
             149
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: lubanas
@@ -598,6 +657,7 @@
             223
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: ludzas
@@ -608,6 +668,7 @@
             200
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: madona
@@ -618,6 +679,7 @@
             156
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: malpils
@@ -628,6 +690,7 @@
             22
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: marupes
@@ -638,6 +701,7 @@
             199
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: mazsalacas
@@ -648,6 +712,7 @@
             219
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: mersraga
@@ -658,6 +723,7 @@
             149
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: nauksenu
@@ -668,6 +734,7 @@
             231
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: neretas
@@ -678,6 +745,7 @@
             145
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: nicas
@@ -688,6 +756,7 @@
             58
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: ogre
@@ -698,6 +767,7 @@
             46
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: olaines
@@ -708,6 +778,7 @@
             10
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: ozolnieku
@@ -718,6 +789,7 @@
             63
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: pargaujas
@@ -728,6 +800,7 @@
             230
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: pavilostas
@@ -738,6 +811,7 @@
             3
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: plavinu
@@ -748,6 +822,7 @@
             192
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: preilu
@@ -758,6 +833,7 @@
             82
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: priekules
@@ -768,6 +844,7 @@
             102
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: priekulu
@@ -778,6 +855,7 @@
             163
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: raunas
@@ -788,6 +866,7 @@
             96
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: rezeknes
@@ -798,6 +877,7 @@
             218
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: riebinu
@@ -808,6 +888,7 @@
             120
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: riga
@@ -818,6 +899,7 @@
             94
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: rojas
@@ -828,6 +910,7 @@
             15
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: ropazu
@@ -838,6 +921,7 @@
             113
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: rucavas
@@ -848,6 +932,7 @@
             35
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: rugaju
@@ -858,6 +943,7 @@
             175
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: rujienas
@@ -868,6 +954,7 @@
             152
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: rundales
@@ -878,6 +965,7 @@
             59
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: salacgrivas
@@ -888,6 +976,7 @@
             42
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: salas
@@ -898,6 +987,7 @@
             161
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: salaspils
@@ -908,6 +998,7 @@
             77
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: saldus
@@ -918,6 +1009,7 @@
             157
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: sejas
@@ -928,6 +1020,7 @@
             211
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: siguldas
@@ -938,6 +1031,7 @@
             89
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: skriveru
@@ -948,6 +1042,7 @@
             137
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: skrundas
@@ -958,6 +1053,7 @@
             173
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: smiltenes
@@ -968,6 +1064,7 @@
             72
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: strencu
@@ -978,6 +1075,7 @@
             206
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: talsi
@@ -988,6 +1086,7 @@
             82
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: tervetes
@@ -998,6 +1097,7 @@
             181
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: tukums
@@ -1008,6 +1108,7 @@
             51
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: vainodes
@@ -1018,6 +1119,7 @@
             169
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: valkas
@@ -1028,6 +1130,7 @@
             243
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: valmiera
@@ -1038,6 +1141,7 @@
             95
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: varaklanu
@@ -1048,6 +1152,7 @@
             34
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: varkavas
@@ -1058,6 +1163,7 @@
             216
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: vecpiebalgas
@@ -1068,6 +1174,7 @@
             29
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: vecumnieku
@@ -1078,6 +1185,7 @@
             23
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: ventspils
@@ -1088,6 +1196,7 @@
             70
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: viesites
@@ -1098,6 +1207,7 @@
             212
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: vilakas
@@ -1108,6 +1218,7 @@
             188
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: vilanu
@@ -1118,6 +1229,7 @@
             187
         ]
         country: latvia
+        planet: earth
     }
     {
         identifier: zilupes
@@ -1128,5 +1240,6 @@
             11
         ]
         country: latvia
+        planet: earth
     }
 ]

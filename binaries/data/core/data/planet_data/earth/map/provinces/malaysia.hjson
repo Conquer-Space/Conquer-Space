@@ -8,6 +8,7 @@
             164
         ]
         country: malaysia
+        planet: earth
     }
     {
         identifier: kedah
@@ -18,6 +19,7 @@
             39
         ]
         country: malaysia
+        planet: earth
     }
     {
         identifier: kelantan
@@ -28,6 +30,7 @@
             173
         ]
         country: malaysia
+        planet: earth
     }
     {
         identifier: kuala_lumpur
@@ -38,6 +41,7 @@
             205
         ]
         country: malaysia
+        planet: earth
     }
     {
         identifier: labuan
@@ -48,6 +52,7 @@
             154
         ]
         country: malaysia
+        planet: earth
     }
     {
         identifier: melaka
@@ -58,6 +63,7 @@
             97
         ]
         country: malaysia
+        planet: earth
     }
     {
         identifier: negeri_sembilan
@@ -68,6 +74,7 @@
             30
         ]
         country: malaysia
+        planet: earth
     }
     {
         identifier: pahang
@@ -78,6 +85,7 @@
             231
         ]
         country: malaysia
+        planet: earth
     }
     {
         identifier: perak
@@ -88,6 +96,7 @@
             51
         ]
         country: malaysia
+        planet: earth
     }
     {
         identifier: pulau_pinang
@@ -98,6 +107,7 @@
             152
         ]
         country: malaysia
+        planet: earth
     }
     {
         identifier: sabah
@@ -108,6 +118,7 @@
             79
         ]
         country: malaysia
+        planet: earth
     }
     {
         identifier: sarawak
@@ -118,6 +129,7 @@
             25
         ]
         country: malaysia
+        planet: earth
     }
     {
         identifier: selangor
@@ -128,6 +140,7 @@
             219
         ]
         country: malaysia
+        planet: earth
     }
     {
         identifier: trengganu
@@ -138,5 +151,6 @@
             42
         ]
         country: malaysia
+        planet: earth
     }
 ]

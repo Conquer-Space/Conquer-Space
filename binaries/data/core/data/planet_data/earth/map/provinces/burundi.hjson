@@ -8,6 +8,7 @@
             207
         ]
         country: burundi
+        planet: earth
     }
     {
         identifier: bujumbura_mairie
@@ -18,6 +19,7 @@
             85
         ]
         country: burundi
+        planet: earth
     }
     {
         identifier: bururi
@@ -28,6 +30,7 @@
             152
         ]
         country: burundi
+        planet: earth
     }
     {
         identifier: cankuzo
@@ -38,6 +41,7 @@
             195
         ]
         country: burundi
+        planet: earth
     }
     {
         identifier: cibitoke
@@ -48,6 +52,7 @@
             243
         ]
         country: burundi
+        planet: earth
     }
     {
         identifier: gitega
@@ -58,6 +63,7 @@
             136
         ]
         country: burundi
+        planet: earth
     }
     {
         identifier: karuzi
@@ -68,6 +74,7 @@
             81
         ]
         country: burundi
+        planet: earth
     }
     {
         identifier: kayanza
@@ -78,6 +85,7 @@
             121
         ]
         country: burundi
+        planet: earth
     }
     {
         identifier: kirundo
@@ -88,6 +96,7 @@
             42
         ]
         country: burundi
+        planet: earth
     }
     {
         identifier: makamba
@@ -98,6 +107,7 @@
             140
         ]
         country: burundi
+        planet: earth
     }
     {
         identifier: muramvya
@@ -108,6 +118,7 @@
             203
         ]
         country: burundi
+        planet: earth
     }
     {
         identifier: muyinga
@@ -118,6 +129,7 @@
             164
         ]
         country: burundi
+        planet: earth
     }
     {
         identifier: mwaro
@@ -128,6 +140,7 @@
             14
         ]
         country: burundi
+        planet: earth
     }
     {
         identifier: ngozi
@@ -138,6 +151,7 @@
             176
         ]
         country: burundi
+        planet: earth
     }
     {
         identifier: rutana
@@ -148,6 +162,7 @@
             73
         ]
         country: burundi
+        planet: earth
     }
     {
         identifier: ruyigi
@@ -158,5 +173,6 @@
             6
         ]
         country: burundi
+        planet: earth
     }
 ]

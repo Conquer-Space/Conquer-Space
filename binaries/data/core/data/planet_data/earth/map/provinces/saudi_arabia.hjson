@@ -8,6 +8,7 @@
             119
         ]
         country: saudi_arabia
+        planet: earth
     }
     {
         identifier: al_ahmadi
@@ -18,6 +19,7 @@
             28
         ]
         country: saudi_arabia
+        planet: earth
     }
     {
         identifier: al_bahah
@@ -28,6 +30,7 @@
             250
         ]
         country: saudi_arabia
+        planet: earth
     }
     {
         identifier: al_hudud_ash_shamaliyah
@@ -38,6 +41,7 @@
             71
         ]
         country: saudi_arabia
+        planet: earth
     }
     {
         identifier: al_jawf_saudi_arabia
@@ -48,6 +52,7 @@
             16
         ]
         country: saudi_arabia
+        planet: earth
     }
     {
         identifier: al_madinah
@@ -58,6 +63,7 @@
             19
         ]
         country: saudi_arabia
+        planet: earth
     }
     {
         identifier: al_quassim
@@ -68,6 +74,7 @@
             116
         ]
         country: saudi_arabia
+        planet: earth
     }
     {
         identifier: ar_riyad
@@ -78,6 +85,7 @@
             49
         ]
         country: saudi_arabia
+        planet: earth
     }
     {
         identifier: ash_sharqiyah_saudi_arabia
@@ -88,6 +96,7 @@
             108
         ]
         country: saudi_arabia
+        planet: earth
     }
     {
         identifier: ha'il
@@ -98,6 +107,7 @@
             183
         ]
         country: saudi_arabia
+        planet: earth
     }
     {
         identifier: jizan
@@ -108,6 +118,7 @@
             253
         ]
         country: saudi_arabia
+        planet: earth
     }
     {
         identifier: makkah
@@ -118,6 +129,7 @@
             86
         ]
         country: saudi_arabia
+        planet: earth
     }
     {
         identifier: najran
@@ -128,6 +140,7 @@
             241
         ]
         country: saudi_arabia
+        planet: earth
     }
     {
         identifier: tabuk
@@ -138,5 +151,6 @@
             208
         ]
         country: saudi_arabia
+        planet: earth
     }
 ]

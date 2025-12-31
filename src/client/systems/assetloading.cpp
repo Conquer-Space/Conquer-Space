@@ -34,6 +34,7 @@
 #include "core/loading/loadsatellites.h"
 #include "core/loading/loadterrain.h"
 #include "core/loading/planetloader.h"
+#include "core/loading/provinceloader.h"
 #include "core/loading/recipeloader.h"
 #include "core/loading/technology.h"
 #include "core/loading/timezoneloader.h"
@@ -119,8 +120,9 @@ void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) 
     LoadResource<loading::TimezoneLoader>(asset_manager, conquer_space.GetUniverse(), "timezones");
     LoadResource<loading::CountryLoader>(asset_manager, conquer_space.GetUniverse(), "countries");
 
-    LoadPlanetProvinces(asset_manager, conquer_space);
-    LoadResource<loading::CityLoader>(asset_manager, conquer_space.GetUniverse(), "cities");
+    // LoadPlanetProvinces(asset_manager, conquer_space);
+    LoadResource<loading::ProvinceLoader>(asset_manager, conquer_space.GetUniverse(), "provinces");
+    // LoadResource<loading::CityLoader>(asset_manager, conquer_space.GetUniverse(), "cities");
     LoadResource<loading::SatelliteLoader>(asset_manager, conquer_space.GetUniverse(), "satellites");
 
     LoadResource(asset_manager, conquer_space.m_universe, "names", loading::LoadNameLists);

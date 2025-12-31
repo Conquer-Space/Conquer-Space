@@ -8,6 +8,7 @@
             113
         ]
         country: panama
+        planet: earth
     }
     {
         identifier: chiriqui
@@ -18,6 +19,7 @@
             247
         ]
         country: panama
+        planet: earth
     }
     {
         identifier: cocle
@@ -28,6 +30,7 @@
             206
         ]
         country: panama
+        planet: earth
     }
     {
         identifier: colon_panama
@@ -38,6 +41,7 @@
             142
         ]
         country: panama
+        planet: earth
     }
     {
         identifier: darien
@@ -48,6 +52,7 @@
             3
         ]
         country: panama
+        planet: earth
     }
     {
         identifier: embera
@@ -58,6 +63,7 @@
             192
         ]
         country: panama
+        planet: earth
     }
     {
         identifier: herrera
@@ -68,6 +74,7 @@
             192
         ]
         country: panama
+        planet: earth
     }
     {
         identifier: kuna_yala
@@ -78,6 +85,7 @@
             58
         ]
         country: panama
+        planet: earth
     }
     {
         identifier: los_santos
@@ -88,6 +96,7 @@
             125
         ]
         country: panama
+        planet: earth
     }
     {
         identifier: ngobe_bugle
@@ -98,6 +107,7 @@
             53
         ]
         country: panama
+        planet: earth
     }
     {
         identifier: panama
@@ -108,6 +118,7 @@
             139
         ]
         country: panama
+        planet: earth
     }
     {
         identifier: veraguas
@@ -118,5 +129,6 @@
             53
         ]
         country: panama
+        planet: earth
     }
 ]

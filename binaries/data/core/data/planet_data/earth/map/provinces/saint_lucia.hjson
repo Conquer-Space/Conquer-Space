@@ -8,6 +8,7 @@
             65
         ]
         country: saint_lucia
+        planet: earth
     }
     {
         identifier: castries
@@ -18,6 +19,7 @@
             254
         ]
         country: saint_lucia
+        planet: earth
     }
     {
         identifier: micoud
@@ -28,6 +30,7 @@
             144
         ]
         country: saint_lucia
+        planet: earth
     }
     {
         identifier: soufriere
@@ -38,6 +41,7 @@
             132
         ]
         country: saint_lucia
+        planet: earth
     }
     {
         identifier: vieux_fort
@@ -48,5 +52,6 @@
             77
         ]
         country: saint_lucia
+        planet: earth
     }
 ]

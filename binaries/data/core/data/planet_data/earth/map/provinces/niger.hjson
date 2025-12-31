@@ -8,6 +8,7 @@
             210
         ]
         country: niger
+        planet: earth
     }
     {
         identifier: diffa
@@ -18,6 +19,7 @@
             229
         ]
         country: niger
+        planet: earth
     }
     {
         identifier: dosso
@@ -28,6 +30,7 @@
             162
         ]
         country: niger
+        planet: earth
     }
     {
         identifier: maradi
@@ -38,6 +41,7 @@
             40
         ]
         country: niger
+        planet: earth
     }
     {
         identifier: niamey
@@ -48,6 +52,7 @@
             127
         ]
         country: niger
+        planet: earth
     }
     {
         identifier: tahoua
@@ -58,6 +63,7 @@
             95
         ]
         country: niger
+        planet: earth
     }
     {
         identifier: tillaberi
@@ -68,6 +74,7 @@
             186
         ]
         country: niger
+        planet: earth
     }
     {
         identifier: zinder
@@ -78,5 +85,6 @@
             241
         ]
         country: niger
+        planet: earth
     }
 ]

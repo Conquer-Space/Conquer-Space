@@ -8,6 +8,7 @@
             194
         ]
         country: india
+        planet: earth
     }
     {
         identifier: andhra_pradesh
@@ -18,6 +19,7 @@
             226
         ]
         country: india
+        planet: earth
     }
     {
         identifier: arunachal_pradesh
@@ -28,6 +30,7 @@
             77
         ]
         country: india
+        planet: earth
     }
     {
         identifier: assam
@@ -38,6 +41,7 @@
             3
         ]
         country: india
+        planet: earth
     }
     {
         identifier: bihar
@@ -48,6 +52,7 @@
             187
         ]
         country: india
+        planet: earth
     }
     {
         identifier: chandigarh
@@ -58,6 +63,7 @@
             88
         ]
         country: india
+        planet: earth
     }
     {
         identifier: chhattisgarh
@@ -68,6 +74,7 @@
             52
         ]
         country: india
+        planet: earth
     }
     {
         identifier: dadra_and_nagar_haveli
@@ -78,6 +85,7 @@
             21
         ]
         country: india
+        planet: earth
     }
     {
         identifier: delhi
@@ -88,6 +96,7 @@
             210
         ]
         country: india
+        planet: earth
     }
     {
         identifier: goa
@@ -98,6 +107,7 @@
             52
         ]
         country: india
+        planet: earth
     }
     {
         identifier: gujarat
@@ -108,6 +118,7 @@
             201
         ]
         country: india
+        planet: earth
     }
     {
         identifier: haryana
@@ -118,6 +129,7 @@
             119
         ]
         country: india
+        planet: earth
     }
     {
         identifier: himachal_pradesh
@@ -128,6 +140,7 @@
             164
         ]
         country: india
+        planet: earth
     }
     {
         identifier: jammu_and_kashmir
@@ -138,6 +151,7 @@
             48
         ]
         country: india
+        planet: earth
     }
     {
         identifier: jharkhand
@@ -148,6 +162,7 @@
             143
         ]
         country: india
+        planet: earth
     }
     {
         identifier: karnataka
@@ -158,6 +173,7 @@
             119
         ]
         country: india
+        planet: earth
     }
     {
         identifier: kerala
@@ -168,6 +184,7 @@
             186
         ]
         country: india
+        planet: earth
     }
     {
         identifier: madhya_pradesh
@@ -178,6 +195,7 @@
             155
         ]
         country: india
+        planet: earth
     }
     {
         identifier: maharashtra
@@ -188,6 +206,7 @@
             241
         ]
         country: india
+        planet: earth
     }
     {
         identifier: manipur
@@ -198,6 +217,7 @@
             77
         ]
         country: india
+        planet: earth
     }
     {
         identifier: meghalaya
@@ -208,6 +228,7 @@
             67
         ]
         country: india
+        planet: earth
     }
     {
         identifier: mizoram
@@ -218,6 +239,7 @@
             144
         ]
         country: india
+        planet: earth
     }
     {
         identifier: nagaland
@@ -228,6 +250,7 @@
             10
         ]
         country: india
+        planet: earth
     }
     {
         identifier: orissa
@@ -238,6 +261,7 @@
             128
         ]
         country: india
+        planet: earth
     }
     {
         identifier: puducherry
@@ -248,6 +272,7 @@
             253
         ]
         country: india
+        planet: earth
     }
     {
         identifier: punjab_india
@@ -258,6 +283,7 @@
             250
         ]
         country: india
+        planet: earth
     }
     {
         identifier: rajasthan
@@ -268,6 +294,7 @@
             61
         ]
         country: india
+        planet: earth
     }
     {
         identifier: sikkim
@@ -278,6 +305,7 @@
             137
         ]
         country: india
+        planet: earth
     }
     {
         identifier: tamil_nadu
@@ -288,6 +316,7 @@
             64
         ]
         country: india
+        planet: earth
     }
     {
         identifier: tripura
@@ -298,6 +327,7 @@
             189
         ]
         country: india
+        planet: earth
     }
     {
         identifier: uttar_pradesh
@@ -308,6 +338,7 @@
             242
         ]
         country: india
+        planet: earth
     }
     {
         identifier: uttaranchal
@@ -318,6 +349,7 @@
             26
         ]
         country: india
+        planet: earth
     }
     {
         identifier: west_bengal
@@ -328,5 +360,6 @@
             82
         ]
         country: india
+        planet: earth
     }
 ]

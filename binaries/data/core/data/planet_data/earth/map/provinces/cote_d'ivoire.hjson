@@ -8,6 +8,7 @@
             1
         ]
         country: cote_d'ivoire
+        planet: earth
     }
     {
         identifier: fromager
@@ -18,6 +19,7 @@
             202
         ]
         country: cote_d'ivoire
+        planet: earth
     }
     {
         identifier: haut-sassandra
@@ -28,6 +30,7 @@
             190
         ]
         country: cote_d'ivoire
+        planet: earth
     }
     {
         identifier: lacs
@@ -38,6 +41,7 @@
             80
         ]
         country: cote_d'ivoire
+        planet: earth
     }
     {
         identifier: marahoue
@@ -48,6 +52,7 @@
             135
         ]
         country: cote_d'ivoire
+        planet: earth
     }
     {
         identifier: n'zi-comoe
@@ -58,6 +63,7 @@
             68
         ]
         country: cote_d'ivoire
+        planet: earth
     }
     {
         identifier: savanes_cote_d'ivoire
@@ -68,6 +74,7 @@
             112
         ]
         country: cote_d'ivoire
+        planet: earth
     }
     {
         identifier: vallee_du_bandama
@@ -78,6 +85,7 @@
             13
         ]
         country: cote_d'ivoire
+        planet: earth
     }
     {
         identifier: worodougou
@@ -88,6 +96,7 @@
             147
         ]
         country: cote_d'ivoire
+        planet: earth
     }
     {
         identifier: zanzan
@@ -98,5 +107,6 @@
             222
         ]
         country: cote_d'ivoire
+        planet: earth
     }
 ]

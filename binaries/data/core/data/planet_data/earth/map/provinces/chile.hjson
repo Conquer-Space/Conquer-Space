@@ -8,6 +8,7 @@
             135
         ]
         country: chile
+        planet: earth
     }
     {
         identifier: antofagasta
@@ -18,6 +19,7 @@
             225
         ]
         country: chile
+        planet: earth
     }
     {
         identifier: arica_y_parinacota
@@ -28,6 +30,7 @@
             146
         ]
         country: chile
+        planet: earth
     }
     {
         identifier: atacama
@@ -38,6 +41,7 @@
             87
         ]
         country: chile
+        planet: earth
     }
     {
         identifier: bio-bio
@@ -48,6 +52,7 @@
             245
         ]
         country: chile
+        planet: earth
     }
     {
         identifier: coquimbo
@@ -58,6 +63,7 @@
             32
         ]
         country: chile
+        planet: earth
     }
     {
         identifier: la_araucania
@@ -68,6 +74,7 @@
             56
         ]
         country: chile
+        planet: earth
     }
     {
         identifier: libertador_general_bernardo_o'higgins
@@ -78,6 +85,7 @@
             111
         ]
         country: chile
+        planet: earth
     }
     {
         identifier: los_lagos
@@ -88,6 +96,7 @@
             1
         ]
         country: chile
+        planet: earth
     }
     {
         identifier: los_rios_chile
@@ -98,6 +107,7 @@
             123
         ]
         country: chile
+        planet: earth
     }
     {
         identifier: magallanes_y_antartica_chilena
@@ -108,6 +118,7 @@
             13
         ]
         country: chile
+        planet: earth
     }
     {
         identifier: maule
@@ -118,6 +129,7 @@
             44
         ]
         country: chile
+        planet: earth
     }
     {
         identifier: region_metropolitana_de_santiago
@@ -128,6 +140,7 @@
             166
         ]
         country: chile
+        planet: earth
     }
     {
         identifier: tarapaca
@@ -138,6 +151,7 @@
             91
         ]
         country: chile
+        planet: earth
     }
     {
         identifier: valparaiso
@@ -148,5 +162,6 @@
             233
         ]
         country: chile
+        planet: earth
     }
 ]

@@ -8,6 +8,7 @@
             63
         ]
         country: bolivia
+        planet: earth
     }
     {
         identifier: cochabamba
@@ -18,6 +19,7 @@
             129
         ]
         country: bolivia
+        planet: earth
     }
     {
         identifier: el_beni
@@ -28,6 +30,7 @@
             75
         ]
         country: bolivia
+        planet: earth
     }
     {
         identifier: la_paz_bolivia
@@ -38,6 +41,7 @@
             213
         ]
         country: bolivia
+        planet: earth
     }
     {
         identifier: oruro
@@ -48,6 +52,7 @@
             24
         ]
         country: bolivia
+        planet: earth
     }
     {
         identifier: pando
@@ -58,6 +63,7 @@
             197
         ]
         country: bolivia
+        planet: earth
     }
     {
         identifier: potosi
@@ -68,6 +74,7 @@
             158
         ]
         country: bolivia
+        planet: earth
     }
     {
         identifier: santa_cruz_bolivia
@@ -78,6 +85,7 @@
             5
         ]
         country: bolivia
+        planet: earth
     }
     {
         identifier: tarija
@@ -88,5 +96,6 @@
             158
         ]
         country: bolivia
+        planet: earth
     }
 ]

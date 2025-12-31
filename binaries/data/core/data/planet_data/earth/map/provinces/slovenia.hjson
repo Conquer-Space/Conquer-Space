@@ -8,6 +8,7 @@
             245
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: beltinci
@@ -18,6 +19,7 @@
             37
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: bistrica_ob_sotli
@@ -28,6 +30,7 @@
             24
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: bled
@@ -38,6 +41,7 @@
             178
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: bloke
@@ -48,6 +52,7 @@
             1
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: bohinj
@@ -58,6 +63,7 @@
             36
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: borovnica
@@ -68,6 +74,7 @@
             168
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: bovec
@@ -78,6 +85,7 @@
             250
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: braslovce
@@ -88,6 +96,7 @@
             200
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: brda
@@ -98,6 +107,7 @@
             6
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: brezice
@@ -108,6 +118,7 @@
             158
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: cankova
@@ -118,6 +129,7 @@
             27
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: celje
@@ -128,6 +140,7 @@
             180
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: cerklje_na_gorenjskem
@@ -138,6 +151,7 @@
             146
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: cerknica
@@ -148,6 +162,7 @@
             34
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: cerkno
@@ -158,6 +173,7 @@
             111
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: cerkvenjak
@@ -168,6 +184,7 @@
             84
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: crensovci
@@ -178,6 +195,7 @@
             177
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: crna_na_koroskem
@@ -188,6 +206,7 @@
             197
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: crnomelj
@@ -198,6 +217,7 @@
             194
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: divaca
@@ -208,6 +228,7 @@
             56
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: dobrepolje
@@ -218,6 +239,7 @@
             221
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: dobrna
@@ -228,6 +250,7 @@
             113
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: dobrova-polhov_gradec
@@ -238,6 +261,7 @@
             41
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: dol_pri_ljubljani
@@ -248,6 +272,7 @@
             137
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: dolenjske_toplice
@@ -258,6 +283,7 @@
             47
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: domzale
@@ -268,6 +294,7 @@
             58
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: dravograd
@@ -278,6 +305,7 @@
             118
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: duplek
@@ -288,6 +316,7 @@
             114
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: gorenja_vas-poljane
@@ -298,6 +327,7 @@
             108
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: gornja_radgona
@@ -308,6 +338,7 @@
             94
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: gornji_grad
@@ -318,6 +349,7 @@
             223
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: gornji_petrovci
@@ -328,6 +360,7 @@
             29
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: grosuplje
@@ -338,6 +371,7 @@
             121
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: hodos
@@ -348,6 +382,7 @@
             218
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: horjul
@@ -358,6 +393,7 @@
             17
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: hrastnik
@@ -368,6 +404,7 @@
             255
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: hrpelje-kozina
@@ -378,6 +415,7 @@
             139
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: idrija
@@ -388,6 +426,7 @@
             123
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: ig
@@ -398,6 +437,7 @@
             70
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: ilirska_bistrica
@@ -408,6 +448,7 @@
             127
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: ivancna_gorica
@@ -418,6 +459,7 @@
             125
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: jesenice
@@ -428,6 +470,7 @@
             142
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: jezersko
@@ -438,6 +481,7 @@
             20
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: jursinci
@@ -448,6 +492,7 @@
             169
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: kamnik
@@ -458,6 +503,7 @@
             213
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: kidricevo
@@ -468,6 +514,7 @@
             224
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: kobarid
@@ -478,6 +525,7 @@
             61
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: kocevje
@@ -488,6 +536,7 @@
             5
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: komen
@@ -498,6 +547,7 @@
             85
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: komenda
@@ -508,6 +558,7 @@
             72
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: koper
@@ -518,6 +569,7 @@
             206
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: kostel
@@ -528,6 +580,7 @@
             115
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: kozje
@@ -538,6 +591,7 @@
             135
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: kranj
@@ -548,6 +602,7 @@
             91
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: kranjska_gora
@@ -558,6 +613,7 @@
             183
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: krizevci
@@ -568,6 +624,7 @@
             102
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: krsko
@@ -578,6 +635,7 @@
             36
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: kungota
@@ -588,6 +646,7 @@
             39
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: lasko
@@ -598,6 +657,7 @@
             60
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: lenart
@@ -608,6 +668,7 @@
             59
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: lendava
@@ -618,6 +679,7 @@
             110
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: litija
@@ -628,6 +690,7 @@
             156
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: ljubljana
@@ -638,6 +701,7 @@
             192
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: ljubno
@@ -648,6 +712,7 @@
             48
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: ljutomer
@@ -658,6 +723,7 @@
             244
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: logatec
@@ -668,6 +734,7 @@
             175
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: loska_dolina
@@ -678,6 +745,7 @@
             60
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: loski_potok
@@ -688,6 +756,7 @@
             249
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: lovrenc_na_pohorju
@@ -698,6 +767,7 @@
             193
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: luce
@@ -708,6 +778,7 @@
             115
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: lukovica
@@ -718,6 +789,7 @@
             182
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: majsperk
@@ -728,6 +800,7 @@
             23
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: maribor
@@ -738,6 +811,7 @@
             106
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: markovci
@@ -748,6 +822,7 @@
             157
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: medvode
@@ -758,6 +833,7 @@
             24
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: metlika
@@ -768,6 +844,7 @@
             237
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: miren-kostanjevica
@@ -778,6 +855,7 @@
             18
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: mirna_pec
@@ -788,6 +866,7 @@
             80
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: mislinja
@@ -798,6 +877,7 @@
             22
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: moravce
@@ -808,6 +888,7 @@
             15
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: moravske_toplice
@@ -818,6 +899,7 @@
             84
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: mozirje
@@ -828,6 +910,7 @@
             10
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: murska_sobota
@@ -838,6 +921,7 @@
             96
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: muta
@@ -848,6 +932,7 @@
             51
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: naklo
@@ -858,6 +943,7 @@
             103
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: nazarje
@@ -868,6 +954,7 @@
             247
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: nova_goriska
@@ -878,6 +965,7 @@
             140
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: novo_mesto
@@ -888,6 +976,7 @@
             170
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: ormoz
@@ -898,6 +987,7 @@
             122
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: pesnica
@@ -908,6 +998,7 @@
             47
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: piran
@@ -918,6 +1009,7 @@
             17
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: pivka
@@ -928,6 +1020,7 @@
             46
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: podlehnik
@@ -938,6 +1031,7 @@
             201
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: podvelka
@@ -948,6 +1042,7 @@
             185
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: postojna
@@ -958,6 +1053,7 @@
             235
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: prebold
@@ -968,6 +1064,7 @@
             204
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: preddvor
@@ -978,6 +1075,7 @@
             12
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: prevalje
@@ -988,6 +1086,7 @@
             63
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: ptuj
@@ -998,6 +1097,7 @@
             212
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: puconci
@@ -1008,6 +1108,7 @@
             218
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: race-fram
@@ -1018,6 +1119,7 @@
             120
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: radenci
@@ -1028,6 +1130,7 @@
             92
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: radlje_ob_dravi
@@ -1038,6 +1141,7 @@
             240
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: radovljica
@@ -1048,6 +1152,7 @@
             170
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: ravne_na_koroskem
@@ -1058,6 +1163,7 @@
             252
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: razkrizje
@@ -1068,6 +1174,7 @@
             55
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: ribnica
@@ -1078,6 +1185,7 @@
             181
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: ribnica_na_pohorju
@@ -1088,6 +1196,7 @@
             4
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: rogasovci
@@ -1098,6 +1207,7 @@
             149
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: ruse_slovenia
@@ -1108,6 +1218,7 @@
             194
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: selnica_ob_dravi
@@ -1118,6 +1229,7 @@
             173
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: semic
@@ -1128,6 +1240,7 @@
             236
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: sempeter-vrtojba
@@ -1138,6 +1251,7 @@
             207
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: sentjernej
@@ -1148,6 +1262,7 @@
             103
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: sentjur_pri_celju
@@ -1158,6 +1273,7 @@
             68
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: sevnica
@@ -1168,6 +1284,7 @@
             13
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: sezana
@@ -1178,6 +1295,7 @@
             219
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: skocjan
@@ -1188,6 +1306,7 @@
             248
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: skofja_loka
@@ -1198,6 +1317,7 @@
             158
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: slovenj_gradec
@@ -1208,6 +1328,7 @@
             71
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: slovenska_bistrica
@@ -1218,6 +1339,7 @@
             90
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: slovenske_konjice
@@ -1228,6 +1350,7 @@
             166
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: smarje_pri_jelsah
@@ -1238,6 +1361,7 @@
             202
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: smartno_in_litiji
@@ -1248,6 +1372,7 @@
             3
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: sodrazica
@@ -1258,6 +1383,7 @@
             114
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: solcava
@@ -1268,6 +1394,7 @@
             209
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: starse
@@ -1278,6 +1405,7 @@
             187
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: store
@@ -1288,6 +1416,7 @@
             99
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: sveta_ana
@@ -1298,6 +1427,7 @@
             126
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: sveti_jurij
@@ -1308,6 +1438,7 @@
             159
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: tolmin
@@ -1318,6 +1449,7 @@
             128
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: trbovlje
@@ -1328,6 +1460,7 @@
             133
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: trebnje
@@ -1338,6 +1471,7 @@
             147
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: trzic
@@ -1348,6 +1482,7 @@
             8
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: turnisce
@@ -1358,6 +1493,7 @@
             25
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: varazdinska
@@ -1368,6 +1504,7 @@
             189
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: velenje
@@ -1378,6 +1515,7 @@
             65
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: velike_lasce
@@ -1388,6 +1526,7 @@
             101
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: videm
@@ -1398,6 +1537,7 @@
             134
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: vipava
@@ -1408,6 +1548,7 @@
             190
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: vodice
@@ -1418,6 +1559,7 @@
             5
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: vojnik
@@ -1428,6 +1570,7 @@
             144
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: vrhnika
@@ -1438,6 +1581,7 @@
             206
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: vuzenica
@@ -1448,6 +1592,7 @@
             138
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: zalec
@@ -1458,6 +1603,7 @@
             66
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: zasavska
@@ -1468,6 +1614,7 @@
             89
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: zavrc
@@ -1478,6 +1625,7 @@
             0
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: zelezniki
@@ -1488,6 +1636,7 @@
             225
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: zetale
@@ -1498,6 +1647,7 @@
             12
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: ziri
@@ -1508,6 +1658,7 @@
             233
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: zrece
@@ -1518,6 +1669,7 @@
             211
         ]
         country: slovenia
+        planet: earth
     }
     {
         identifier: zuzemberk
@@ -1528,5 +1680,6 @@
             214
         ]
         country: slovenia
+        planet: earth
     }
 ]

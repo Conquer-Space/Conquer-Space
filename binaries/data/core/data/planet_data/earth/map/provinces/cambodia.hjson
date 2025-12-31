@@ -8,6 +8,7 @@
             223
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: batdambang
@@ -18,6 +19,7 @@
             113
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: kampong_cham
@@ -28,6 +30,7 @@
             143
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: kampong_chhnang
@@ -38,6 +41,7 @@
             160
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: kampong_spoe
@@ -48,6 +52,7 @@
             38
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: kampong_thum
@@ -58,6 +63,7 @@
             227
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: kampot
@@ -68,6 +74,7 @@
             234
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: kandal
@@ -78,6 +85,7 @@
             33
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: kaoh_kong
@@ -88,6 +96,7 @@
             168
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: kep
@@ -98,6 +107,7 @@
             78
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: kracheh
@@ -108,6 +118,7 @@
             9
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: krong_pailin
@@ -118,6 +129,7 @@
             180
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: krong_preah_sihanouk
@@ -128,6 +140,7 @@
             118
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: mondol_kiri
@@ -138,6 +151,7 @@
             253
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: otdar_mean_chey
@@ -148,6 +162,7 @@
             77
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: phnom_penh
@@ -158,6 +173,7 @@
             105
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: pouthisat
@@ -168,6 +184,7 @@
             46
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: preah_vihear
@@ -178,6 +195,7 @@
             211
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: prey_veng
@@ -188,6 +206,7 @@
             21
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: rotanokiri
@@ -198,6 +217,7 @@
             119
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: siemreab
@@ -208,6 +228,7 @@
             156
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: svay_rieng
@@ -218,6 +239,7 @@
             210
         ]
         country: cambodia
+        planet: earth
     }
     {
         identifier: takev
@@ -228,5 +250,6 @@
             100
         ]
         country: cambodia
+        planet: earth
     }
 ]

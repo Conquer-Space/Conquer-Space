@@ -8,6 +8,7 @@
             35
         ]
         country: morocco
+        planet: earth
     }
     {
         identifier: doukkala_-_abda
@@ -18,6 +19,7 @@
             169
         ]
         country: morocco
+        planet: earth
     }
     {
         identifier: fes_-_boulemane
@@ -28,6 +30,7 @@
             213
         ]
         country: morocco
+        planet: earth
     }
     {
         identifier: gharb_-_chrarda_-_beni_hssen
@@ -38,6 +41,7 @@
             157
         ]
         country: morocco
+        planet: earth
     }
     {
         identifier: grand_casablanca
@@ -48,6 +52,7 @@
             102
         ]
         country: morocco
+        planet: earth
     }
     {
         identifier: guelmim_-_es-semara
@@ -58,6 +63,7 @@
             46
         ]
         country: morocco
+        planet: earth
     }
     {
         identifier: laayoune_-_boujdour_-_sakia_el_hamra
@@ -68,6 +74,7 @@
             180
         ]
         country: morocco
+        planet: earth
     }
     {
         identifier: marrakech_-_tensift_-_al_haouz
@@ -78,6 +85,7 @@
             236
         ]
         country: morocco
+        planet: earth
     }
     {
         identifier: meknes_-_tafilalet
@@ -88,6 +96,7 @@
             124
         ]
         country: morocco
+        planet: earth
     }
     {
         identifier: oriental
@@ -98,6 +107,7 @@
             125
         ]
         country: morocco
+        planet: earth
     }
     {
         identifier: oued_el_dahab
@@ -108,6 +118,7 @@
             247
         ]
         country: morocco
+        planet: earth
     }
     {
         identifier: rabat_-_sale_-_zemmour_-_zaer
@@ -118,6 +129,7 @@
             224
         ]
         country: morocco
+        planet: earth
     }
     {
         identifier: souss_-_massa_-_draa
@@ -128,6 +140,7 @@
             191
         ]
         country: morocco
+        planet: earth
     }
     {
         identifier: tadla_-_azilal
@@ -138,6 +151,7 @@
             24
         ]
         country: morocco
+        planet: earth
     }
     {
         identifier: tanger_-_tetouan
@@ -148,6 +162,7 @@
             201
         ]
         country: morocco
+        planet: earth
     }
     {
         identifier: taza_-_al_hoceima_-_taounate
@@ -158,5 +173,6 @@
             90
         ]
         country: morocco
+        planet: earth
     }
 ]

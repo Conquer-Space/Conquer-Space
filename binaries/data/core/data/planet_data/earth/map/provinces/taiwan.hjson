@@ -8,6 +8,7 @@
             36
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: chiayi
@@ -18,6 +19,7 @@
             170
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: chiayi_city
@@ -28,6 +30,7 @@
             134
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: hsinchu
@@ -38,6 +41,7 @@
             24
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: hsinchu_city
@@ -48,6 +52,7 @@
             91
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: hualien
@@ -58,6 +63,7 @@
             249
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: kaohsiung_city
@@ -68,6 +74,7 @@
             48
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: keelung_city
@@ -78,6 +85,7 @@
             194
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: kinmen
@@ -88,6 +96,7 @@
             166
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: miaoli
@@ -98,6 +107,7 @@
             158
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: nantou
@@ -108,6 +118,7 @@
             98
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: new_taipei_city
@@ -118,6 +129,7 @@
             127
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: penghu
@@ -128,6 +140,7 @@
             103
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: pingtung
@@ -138,6 +151,7 @@
             115
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: taichung_city
@@ -148,6 +162,7 @@
             225
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: tainan_city
@@ -158,6 +173,7 @@
             237
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: taipei_city
@@ -168,6 +184,7 @@
             67
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: taitung
@@ -178,6 +195,7 @@
             182
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: taoyuan
@@ -188,6 +206,7 @@
             213
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: yilan
@@ -198,6 +217,7 @@
             60
         ]
         country: taiwan
+        planet: earth
     }
     {
         identifier: yunlin
@@ -208,5 +228,6 @@
             103
         ]
         country: taiwan
+        planet: earth
     }
 ]

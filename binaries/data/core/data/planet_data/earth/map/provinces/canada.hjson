@@ -8,6 +8,7 @@
             115
         ]
         country: canada
+        planet: earth
     }
     {
         identifier: british_columbia
@@ -18,6 +19,7 @@
             170
         ]
         country: canada
+        planet: earth
     }
     {
         identifier: manitoba
@@ -28,6 +30,7 @@
             60
         ]
         country: canada
+        planet: earth
     }
     {
         identifier: new_brunswick
@@ -38,6 +41,7 @@
             72
         ]
         country: canada
+        planet: earth
     }
     {
         identifier: newfoundland_and_labrador
@@ -48,6 +52,7 @@
             49
         ]
         country: canada
+        planet: earth
     }
     {
         identifier: northwest_territories
@@ -58,6 +63,7 @@
             180
         ]
         country: canada
+        planet: earth
     }
     {
         identifier: nova_scotia
@@ -68,6 +74,7 @@
             116
         ]
         country: canada
+        planet: earth
     }
     {
         identifier: nunavut
@@ -78,6 +85,7 @@
             238
         ]
         country: canada
+        planet: earth
     }
     {
         identifier: ontario
@@ -88,6 +96,7 @@
             36
         ]
         country: canada
+        planet: earth
     }
     {
         identifier: prince_edward_island
@@ -98,6 +107,7 @@
             182
         ]
         country: canada
+        planet: earth
     }
     {
         identifier: quebec
@@ -108,6 +118,7 @@
             5
         ]
         country: canada
+        planet: earth
     }
     {
         identifier: saskatchewan
@@ -118,6 +129,7 @@
             182
         ]
         country: canada
+        planet: earth
     }
     {
         identifier: yukon
@@ -128,5 +140,6 @@
             195
         ]
         country: canada
+        planet: earth
     }
 ]

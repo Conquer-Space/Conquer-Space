@@ -8,6 +8,7 @@
             93
         ]
         country: fiji
+        planet: earth
     }
     {
         identifier: eastern_fiji
@@ -18,6 +19,7 @@
             159
         ]
         country: fiji
+        planet: earth
     }
     {
         identifier: northern_fiji
@@ -28,6 +30,7 @@
             227
         ]
         country: fiji
+        planet: earth
     }
     {
         identifier: western_fiji
@@ -38,5 +41,6 @@
             26
         ]
         country: fiji
+        planet: earth
     }
 ]

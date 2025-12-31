@@ -8,6 +8,7 @@
             233
         ]
         country: bosnia_and_herz_
+        planet: earth
     }
     {
         identifier: bijeljina
@@ -18,6 +19,7 @@
             1
         ]
         country: bosnia_and_herz_
+        planet: earth
     }
     {
         identifier: bosnian_podrinje
@@ -28,6 +30,7 @@
             217
         ]
         country: bosnia_and_herz_
+        planet: earth
     }
     {
         identifier: brcko_distrikt
@@ -38,6 +41,7 @@
             190
         ]
         country: bosnia_and_herz_
+        planet: earth
     }
     {
         identifier: central_bosnia
@@ -48,6 +52,7 @@
             138
         ]
         country: bosnia_and_herz_
+        planet: earth
     }
     {
         identifier: doboj
@@ -58,6 +63,7 @@
             245
         ]
         country: bosnia_and_herz_
+        planet: earth
     }
     {
         identifier: foca
@@ -68,6 +74,7 @@
             87
         ]
         country: bosnia_and_herz_
+        planet: earth
     }
     {
         identifier: herzegovina-neretva
@@ -78,6 +85,7 @@
             191
         ]
         country: bosnia_and_herz_
+        planet: earth
     }
     {
         identifier: posavina
@@ -88,6 +96,7 @@
             56
         ]
         country: bosnia_and_herz_
+        planet: earth
     }
     {
         identifier: sarajevo
@@ -98,6 +107,7 @@
             150
         ]
         country: bosnia_and_herz_
+        planet: earth
     }
     {
         identifier: sarajevo-romanija
@@ -108,6 +118,7 @@
             83
         ]
         country: bosnia_and_herz_
+        planet: earth
     }
     {
         identifier: trebinje
@@ -118,6 +129,7 @@
             2
         ]
         country: bosnia_and_herz_
+        planet: earth
     }
     {
         identifier: tuzla
@@ -128,6 +140,7 @@
             16
         ]
         country: bosnia_and_herz_
+        planet: earth
     }
     {
         identifier: vlasenica
@@ -138,6 +151,7 @@
             147
         ]
         country: bosnia_and_herz_
+        planet: earth
     }
     {
         identifier: west_bosnia
@@ -148,6 +162,7 @@
             68
         ]
         country: bosnia_and_herz_
+        planet: earth
     }
     {
         identifier: west_herzegovina
@@ -158,6 +173,7 @@
             202
         ]
         country: bosnia_and_herz_
+        planet: earth
     }
     {
         identifier: zenica-doboj
@@ -168,5 +184,6 @@
             205
         ]
         country: bosnia_and_herz_
+        planet: earth
     }
 ]

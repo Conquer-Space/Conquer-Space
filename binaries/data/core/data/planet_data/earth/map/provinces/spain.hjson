@@ -8,6 +8,7 @@
             63
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: albacete
@@ -18,6 +19,7 @@
             130
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: alicante
@@ -28,6 +30,7 @@
             143
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: almeria
@@ -38,6 +41,7 @@
             21
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: asturias
@@ -48,6 +52,7 @@
             124
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: avila
@@ -58,6 +63,7 @@
             87
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: badajoz
@@ -68,6 +74,7 @@
             204
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: baleares
@@ -78,6 +85,7 @@
             168
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: barcelona
@@ -88,6 +96,7 @@
             131
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: bizkaia
@@ -98,6 +107,7 @@
             2
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: burgos
@@ -108,6 +118,7 @@
             20
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: caceres
@@ -118,6 +129,7 @@
             3
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: cadiz
@@ -128,6 +140,7 @@
             158
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: cantabria
@@ -138,6 +151,7 @@
             191
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: castellon
@@ -148,6 +162,7 @@
             9
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: ceuta
@@ -158,6 +173,7 @@
             134
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: ciudad_real
@@ -168,6 +184,7 @@
             174
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: cordoba_spain
@@ -178,6 +195,7 @@
             241
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: cuenca
@@ -188,6 +206,7 @@
             8
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: gerona
@@ -198,6 +217,7 @@
             236
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: gipuzkoa
@@ -208,6 +228,7 @@
             11
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: granada_spain
@@ -218,6 +239,7 @@
             88
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: guadalajara
@@ -228,6 +250,7 @@
             52
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: huelva
@@ -238,6 +261,7 @@
             200
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: huesca
@@ -248,6 +272,7 @@
             78
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: jaen
@@ -258,6 +283,7 @@
             119
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: la_coruna
@@ -268,6 +294,7 @@
             246
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: la_rioja_spain
@@ -278,6 +305,7 @@
             252
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: las_palmas
@@ -288,6 +316,7 @@
             158
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: leon_spain
@@ -298,6 +327,7 @@
             142
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: lerida
@@ -308,6 +338,7 @@
             212
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: lugo
@@ -318,6 +349,7 @@
             57
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: madrid
@@ -328,6 +360,7 @@
             186
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: malaga
@@ -338,6 +371,7 @@
             155
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: melilla
@@ -348,6 +382,7 @@
             58
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: murcia
@@ -358,6 +393,7 @@
             210
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: navarra
@@ -368,6 +404,7 @@
             200
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: orense
@@ -378,6 +415,7 @@
             235
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: palencia
@@ -388,6 +426,7 @@
             107
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: pontevedra
@@ -398,6 +437,7 @@
             113
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: salamanca
@@ -408,6 +448,7 @@
             192
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: sant_julia_de_loria
@@ -418,6 +459,7 @@
             47
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: santa_cruz_de_tenerife
@@ -428,6 +470,7 @@
             91
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: segovia
@@ -438,6 +481,7 @@
             253
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: sevilla
@@ -448,6 +492,7 @@
             222
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: soria
@@ -458,6 +503,7 @@
             209
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: tarragona
@@ -468,6 +514,7 @@
             198
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: teruel
@@ -478,6 +525,7 @@
             197
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: toledo_spain
@@ -488,6 +536,7 @@
             75
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: valencia
@@ -498,6 +547,7 @@
             76
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: valladolid
@@ -508,6 +558,7 @@
             64
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: zamora
@@ -518,6 +569,7 @@
             125
         ]
         country: spain
+        planet: earth
     }
     {
         identifier: zaragoza
@@ -528,5 +580,6 @@
             185
         ]
         country: spain
+        planet: earth
     }
 ]

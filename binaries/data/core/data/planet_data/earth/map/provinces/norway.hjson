@@ -8,6 +8,7 @@
             229
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: aust-agder
@@ -18,6 +19,7 @@
             111
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: bouvet_island
@@ -28,6 +30,7 @@
             246
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: buskerud
@@ -38,6 +41,7 @@
             166
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: finnmark
@@ -48,6 +52,7 @@
             241
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: hedmark
@@ -58,6 +63,7 @@
             28
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: hordaland
@@ -68,6 +74,7 @@
             56
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: more_og_romsdal
@@ -78,6 +85,7 @@
             190
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: nord-trondelag
@@ -88,6 +96,7 @@
             150
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: nordland
@@ -98,6 +107,7 @@
             205
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: oppland
@@ -108,6 +118,7 @@
             138
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: oslo
@@ -118,6 +129,7 @@
             99
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: ostfold
@@ -128,6 +140,7 @@
             40
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: rogaland
@@ -138,6 +151,7 @@
             245
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: sogn_og_fjordane
@@ -148,6 +162,7 @@
             123
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: sor-trondelag
@@ -158,6 +173,7 @@
             217
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: svalbard
@@ -168,6 +184,7 @@
             190
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: telemark
@@ -178,6 +195,7 @@
             44
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: troms
@@ -188,6 +206,7 @@
             71
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: vest-agder
@@ -198,6 +217,7 @@
             178
         ]
         country: norway
+        planet: earth
     }
     {
         identifier: vestfold
@@ -208,5 +228,6 @@
             233
         ]
         country: norway
+        planet: earth
     }
 ]

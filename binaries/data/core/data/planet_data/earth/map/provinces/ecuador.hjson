@@ -8,6 +8,7 @@
             126
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: bolivar_ecuador
@@ -18,6 +19,7 @@
             205
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: canar
@@ -28,6 +30,7 @@
             193
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: chimborazo
@@ -38,6 +41,7 @@
             138
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: cotopaxi
@@ -48,6 +52,7 @@
             83
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: el_oro
@@ -58,6 +63,7 @@
             118
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: esmeraldas
@@ -68,6 +74,7 @@
             201
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: galapagos
@@ -78,6 +85,7 @@
             122
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: guayas
@@ -88,6 +96,7 @@
             177
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: imbabura
@@ -98,6 +107,7 @@
             16
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: loja
@@ -108,6 +118,7 @@
             240
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: los_rios_ecuador
@@ -118,6 +129,7 @@
             150
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: manabi
@@ -128,6 +140,7 @@
             5
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: morona_santiago
@@ -138,6 +151,7 @@
             228
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: napo
@@ -148,6 +162,7 @@
             4
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: orellana
@@ -158,6 +173,7 @@
             94
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: pastaza
@@ -168,6 +184,7 @@
             161
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: pichincha
@@ -178,6 +195,7 @@
             217
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: santa_elena
@@ -188,6 +206,7 @@
             194
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: santo_domingo_de_los_tsachilas
@@ -198,6 +217,7 @@
             28
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: sucumbios
@@ -208,6 +228,7 @@
             146
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: tungurahua
@@ -218,6 +239,7 @@
             71
         ]
         country: ecuador
+        planet: earth
     }
     {
         identifier: zamora_chinchipe
@@ -228,5 +250,6 @@
             106
         ]
         country: ecuador
+        planet: earth
     }
 ]

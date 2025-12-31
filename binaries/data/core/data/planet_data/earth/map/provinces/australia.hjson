@@ -8,6 +8,7 @@
             233
         ]
         country: australia
+        planet: earth
     }
     {
         identifier: australian_capital_territory
@@ -18,6 +19,7 @@
             146
         ]
         country: australia
+        planet: earth
     }
     {
         identifier: christmas_island
@@ -28,6 +30,7 @@
             206
         ]
         country: australia
+        planet: earth
     }
     {
         identifier: heard_island_and_mcdonald_islands
@@ -38,6 +41,7 @@
             9
         ]
         country: australia
+        planet: earth
     }
     {
         identifier: macquarie_island
@@ -48,6 +52,7 @@
             1
         ]
         country: australia
+        planet: earth
     }
     {
         identifier: new_south_wales
@@ -58,6 +63,7 @@
             38
         ]
         country: australia
+        planet: earth
     }
     {
         identifier: northern_territory
@@ -68,6 +74,7 @@
             246
         ]
         country: australia
+        planet: earth
     }
     {
         identifier: queensland
@@ -78,6 +85,7 @@
             227
         ]
         country: australia
+        planet: earth
     }
     {
         identifier: south_australia
@@ -88,6 +96,7 @@
             160
         ]
         country: australia
+        planet: earth
     }
     {
         identifier: tasmania
@@ -98,6 +107,7 @@
             63
         ]
         country: australia
+        planet: earth
     }
     {
         identifier: victoria
@@ -108,6 +118,7 @@
             172
         ]
         country: australia
+        planet: earth
     }
     {
         identifier: western_australia
@@ -118,5 +129,6 @@
             179
         ]
         country: australia
+        planet: earth
     }
 ]

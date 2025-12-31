@@ -8,6 +8,7 @@
             229
         ]
         country: c�te_d'ivoire
+        planet: earth
     }
     {
         identifier: bas-sassandra
@@ -18,6 +19,7 @@
             172
         ]
         country: c�te_d'ivoire
+        planet: earth
     }
     {
         identifier: cavally
@@ -28,6 +30,7 @@
             38
         ]
         country: c�te_d'ivoire
+        planet: earth
     }
     {
         identifier: comoe
@@ -38,6 +41,7 @@
             100
         ]
         country: c�te_d'ivoire
+        planet: earth
     }
     {
         identifier: denguele
@@ -48,6 +52,7 @@
             217
         ]
         country: c�te_d'ivoire
+        planet: earth
     }
     {
         identifier: dix-huit_montagnes
@@ -58,6 +63,7 @@
             40
         ]
         country: c�te_d'ivoire
+        planet: earth
     }
     {
         identifier: lagunes
@@ -68,6 +74,7 @@
             52
         ]
         country: c�te_d'ivoire
+        planet: earth
     }
     {
         identifier: sud-bandama
@@ -78,6 +85,7 @@
             241
         ]
         country: c�te_d'ivoire
+        planet: earth
     }
     {
         identifier: sud-comoe
@@ -88,5 +96,6 @@
             234
         ]
         country: c�te_d'ivoire
+        planet: earth
     }
 ]

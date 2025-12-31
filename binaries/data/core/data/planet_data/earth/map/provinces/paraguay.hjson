@@ -8,6 +8,7 @@
             139
         ]
         country: paraguay
+        planet: earth
     }
     {
         identifier: alto_parana
@@ -18,6 +19,7 @@
             48
         ]
         country: paraguay
+        planet: earth
     }
     {
         identifier: amambay
@@ -28,6 +30,7 @@
             17
         ]
         country: paraguay
+        planet: earth
     }
     {
         identifier: asuncion
@@ -38,6 +41,7 @@
             237
         ]
         country: paraguay
+        planet: earth
     }
     {
         identifier: boqueron
@@ -48,6 +52,7 @@
             225
         ]
         country: paraguay
+        planet: earth
     }
     {
         identifier: caaguazu
@@ -58,6 +63,7 @@
             43
         ]
         country: paraguay
+        planet: earth
     }
     {
         identifier: caazapa
@@ -68,6 +74,7 @@
             177
         ]
         country: paraguay
+        planet: earth
     }
     {
         identifier: canindeyu
@@ -78,6 +85,7 @@
             84
         ]
         country: paraguay
+        planet: earth
     }
     {
         identifier: central_paraguay
@@ -88,6 +96,7 @@
             170
         ]
         country: paraguay
+        planet: earth
     }
     {
         identifier: concepcion
@@ -98,6 +107,7 @@
             206
         ]
         country: paraguay
+        planet: earth
     }
     {
         identifier: cordillera
@@ -108,6 +118,7 @@
             110
         ]
         country: paraguay
+        planet: earth
     }
     {
         identifier: guaira
@@ -118,6 +129,7 @@
             55
         ]
         country: paraguay
+        planet: earth
     }
     {
         identifier: itapua
@@ -128,6 +140,7 @@
             182
         ]
         country: paraguay
+        planet: earth
     }
     {
         identifier: misiones_paraguay
@@ -138,6 +151,7 @@
             194
         ]
         country: paraguay
+        planet: earth
     }
     {
         identifier: neembucu
@@ -148,6 +162,7 @@
             249
         ]
         country: paraguay
+        planet: earth
     }
     {
         identifier: paraguari
@@ -158,6 +173,7 @@
             244
         ]
         country: paraguay
+        planet: earth
     }
     {
         identifier: presidente_hayes
@@ -168,6 +184,7 @@
             103
         ]
         country: paraguay
+        planet: earth
     }
     {
         identifier: san_pedro
@@ -178,5 +195,6 @@
             232
         ]
         country: paraguay
+        planet: earth
     }
 ]

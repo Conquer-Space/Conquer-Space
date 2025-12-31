@@ -8,6 +8,7 @@
             70
         ]
         country: guyana
+        planet: earth
     }
     {
         identifier: cuyuni-mazaruni
@@ -18,6 +19,7 @@
             68
         ]
         country: guyana
+        planet: earth
     }
     {
         identifier: demerara-mahaica
@@ -28,6 +30,7 @@
             41
         ]
         country: guyana
+        planet: earth
     }
     {
         identifier: east_berbice-corentyne
@@ -38,6 +41,7 @@
             202
         ]
         country: guyana
+        planet: earth
     }
     {
         identifier: essequibo_islands-west_demerara
@@ -48,6 +52,7 @@
             13
         ]
         country: guyana
+        planet: earth
     }
     {
         identifier: mahaica-berbice
@@ -58,6 +63,7 @@
             223
         ]
         country: guyana
+        planet: earth
     }
     {
         identifier: pomeroon-supenaam
@@ -68,6 +74,7 @@
             249
         ]
         country: guyana
+        planet: earth
     }
     {
         identifier: potaro-siparuni
@@ -78,6 +85,7 @@
             127
         ]
         country: guyana
+        planet: earth
     }
     {
         identifier: upper_demerara-berbice
@@ -88,6 +96,7 @@
             194
         ]
         country: guyana
+        planet: earth
     }
     {
         identifier: upper_takutu-upper_essequibo
@@ -98,5 +107,6 @@
             135
         ]
         country: guyana
+        planet: earth
     }
 ]

@@ -8,6 +8,7 @@
             108
         ]
         country: germany
+        planet: earth
     }
     {
         identifier: bayern
@@ -18,6 +19,7 @@
             140
         ]
         country: germany
+        planet: earth
     }
     {
         identifier: berlin
@@ -28,6 +30,7 @@
             200
         ]
         country: germany
+        planet: earth
     }
     {
         identifier: brandenburg
@@ -38,6 +41,7 @@
             61
         ]
         country: germany
+        planet: earth
     }
     {
         identifier: bremen
@@ -48,6 +52,7 @@
             251
         ]
         country: germany
+        planet: earth
     }
     {
         identifier: hamburg
@@ -58,6 +63,7 @@
             62
         ]
         country: germany
+        planet: earth
     }
     {
         identifier: hessen
@@ -68,6 +74,7 @@
             255
         ]
         country: germany
+        planet: earth
     }
     {
         identifier: mecklenburg-vorpommern
@@ -78,6 +85,7 @@
             195
         ]
         country: germany
+        planet: earth
     }
     {
         identifier: niedersachsen
@@ -88,6 +96,7 @@
             236
         ]
         country: germany
+        planet: earth
     }
     {
         identifier: nordrhein-westfalen
@@ -98,6 +107,7 @@
             181
         ]
         country: germany
+        planet: earth
     }
     {
         identifier: rheinland-pfalz
@@ -108,6 +118,7 @@
             45
         ]
         country: germany
+        planet: earth
     }
     {
         identifier: saarland
@@ -118,6 +129,7 @@
             246
         ]
         country: germany
+        planet: earth
     }
     {
         identifier: sachsen
@@ -128,6 +140,7 @@
             195
         ]
         country: germany
+        planet: earth
     }
     {
         identifier: sachsen-anhalt
@@ -138,6 +151,7 @@
             133
         ]
         country: germany
+        planet: earth
     }
     {
         identifier: schleswig-holstein
@@ -148,6 +162,7 @@
             72
         ]
         country: germany
+        planet: earth
     }
     {
         identifier: thuringen
@@ -158,5 +173,6 @@
             66
         ]
         country: germany
+        planet: earth
     }
 ]

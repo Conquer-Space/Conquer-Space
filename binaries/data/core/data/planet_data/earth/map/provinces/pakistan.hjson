@@ -8,6 +8,7 @@
             53
         ]
         country: pakistan
+        planet: earth
     }
     {
         identifier: baluchistan
@@ -18,6 +19,7 @@
             255
         ]
         country: pakistan
+        planet: earth
     }
     {
         identifier: f_a_t_a_
@@ -28,6 +30,7 @@
             109
         ]
         country: pakistan
+        planet: earth
     }
     {
         identifier: f_c_t_
@@ -38,6 +41,7 @@
             122
         ]
         country: pakistan
+        planet: earth
     }
     {
         identifier: k_p_
@@ -48,6 +52,7 @@
             42
         ]
         country: pakistan
+        planet: earth
     }
     {
         identifier: northern_areas
@@ -58,6 +63,7 @@
             242
         ]
         country: pakistan
+        planet: earth
     }
     {
         identifier: punjab_pakistan
@@ -68,6 +74,7 @@
             120
         ]
         country: pakistan
+        planet: earth
     }
     {
         identifier: sind
@@ -78,5 +85,6 @@
             134
         ]
         country: pakistan
+        planet: earth
     }
 ]

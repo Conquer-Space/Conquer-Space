@@ -8,6 +8,7 @@
             103
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: badulla
@@ -18,6 +19,7 @@
             91
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: galla
@@ -28,6 +30,7 @@
             94
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: gampaha
@@ -38,6 +41,7 @@
             149
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: hambantota
@@ -48,6 +52,7 @@
             228
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: kaegalla
@@ -58,6 +63,7 @@
             24
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: kalutara
@@ -68,6 +74,7 @@
             27
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: kilinochchi
@@ -78,6 +85,7 @@
             204
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: kolamba
@@ -88,6 +96,7 @@
             216
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: kurunaegala
@@ -98,6 +107,7 @@
             36
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: madakalapuva
@@ -108,6 +118,7 @@
             106
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: mahanuvara
@@ -118,6 +129,7 @@
             48
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: mannarama
@@ -128,6 +140,7 @@
             15
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: matale
@@ -138,6 +151,7 @@
             158
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: matara
@@ -148,6 +162,7 @@
             161
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: monaragala
@@ -158,6 +173,7 @@
             213
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: mulativ
@@ -168,6 +184,7 @@
             70
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: nuvara_eliya
@@ -178,6 +195,7 @@
             170
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: polonnaruva
@@ -188,6 +206,7 @@
             225
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: puttalama
@@ -198,6 +217,7 @@
             82
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: ratnapura
@@ -208,6 +228,7 @@
             146
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: trikunamalaya
@@ -218,6 +239,7 @@
             3
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: vavuniyava
@@ -228,6 +250,7 @@
             237
         ]
         country: sri_lanka
+        planet: earth
     }
     {
         identifier: yapanaya
@@ -238,5 +261,6 @@
             137
         ]
         country: sri_lanka
+        planet: earth
     }
 ]

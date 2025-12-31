@@ -8,6 +8,7 @@
             162
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: boffa
@@ -18,6 +19,7 @@
             205
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: boke
@@ -28,6 +30,7 @@
             7
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: conakry
@@ -38,6 +41,7 @@
             83
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: coyah
@@ -48,6 +52,7 @@
             150
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: dabola
@@ -58,6 +63,7 @@
             56
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: dalaba
@@ -68,6 +74,7 @@
             207
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: dinguiraye
@@ -78,6 +85,7 @@
             153
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: dubreka
@@ -88,6 +96,7 @@
             16
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: faranah
@@ -98,6 +107,7 @@
             111
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: forecariah
@@ -108,6 +118,7 @@
             123
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: fria
@@ -118,6 +129,7 @@
             219
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: gaoual
@@ -128,6 +140,7 @@
             129
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: gueckedou
@@ -138,6 +151,7 @@
             190
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: kankan
@@ -148,6 +162,7 @@
             28
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: kerouane
@@ -158,6 +173,7 @@
             6
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: kindia
@@ -168,6 +184,7 @@
             178
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: kissidougou
@@ -178,6 +195,7 @@
             195
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: koubia
@@ -188,6 +206,7 @@
             19
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: koundara
@@ -198,6 +217,7 @@
             105
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: kouroussa
@@ -208,6 +228,7 @@
             152
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: labe
@@ -218,6 +239,7 @@
             18
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: lelouma
@@ -228,6 +250,7 @@
             140
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: lola
@@ -238,6 +261,7 @@
             107
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: macenta
@@ -248,6 +272,7 @@
             117
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: mali
@@ -258,6 +283,7 @@
             239
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: mamou
@@ -268,6 +294,7 @@
             245
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: mandiana
@@ -278,6 +305,7 @@
             95
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: nzerekore
@@ -288,6 +316,7 @@
             62
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: pita
@@ -298,6 +327,7 @@
             85
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: siguiri
@@ -308,6 +338,7 @@
             141
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: telimele
@@ -318,6 +349,7 @@
             73
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: tougue
@@ -328,6 +360,7 @@
             86
         ]
         country: guinea
+        planet: earth
     }
     {
         identifier: yomou
@@ -338,5 +371,6 @@
             184
         ]
         country: guinea
+        planet: earth
     }
 ]

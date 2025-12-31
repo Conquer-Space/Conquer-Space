@@ -8,6 +8,7 @@
             126
         ]
         country: gambia
+        planet: earth
     }
     {
         identifier: central_river
@@ -18,6 +19,7 @@
             108
         ]
         country: gambia
+        planet: earth
     }
     {
         identifier: lower_river
@@ -28,6 +30,7 @@
             187
         ]
         country: gambia
+        planet: earth
     }
     {
         identifier: north_bank
@@ -38,6 +41,7 @@
             242
         ]
         country: gambia
+        planet: earth
     }
     {
         identifier: upper_river
@@ -48,6 +52,7 @@
             120
         ]
         country: gambia
+        planet: earth
     }
     {
         identifier: west_coast_gambia
@@ -58,5 +63,6 @@
             65
         ]
         country: gambia
+        planet: earth
     }
 ]

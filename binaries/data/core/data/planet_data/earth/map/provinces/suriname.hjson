@@ -8,6 +8,7 @@
             39
         ]
         country: suriname
+        planet: earth
     }
     {
         identifier: commewijne
@@ -18,6 +19,7 @@
             92
         ]
         country: suriname
+        planet: earth
     }
     {
         identifier: coronie
@@ -28,6 +30,7 @@
             80
         ]
         country: suriname
+        planet: earth
     }
     {
         identifier: marowijne
@@ -38,6 +41,7 @@
             91
         ]
         country: suriname
+        planet: earth
     }
     {
         identifier: nickerie
@@ -48,6 +52,7 @@
             24
         ]
         country: suriname
+        planet: earth
     }
     {
         identifier: para_suriname
@@ -58,6 +63,7 @@
             228
         ]
         country: suriname
+        planet: earth
     }
     {
         identifier: paramaribo
@@ -68,6 +74,7 @@
             25
         ]
         country: suriname
+        planet: earth
     }
     {
         identifier: saramacca
@@ -78,6 +85,7 @@
             147
         ]
         country: suriname
+        planet: earth
     }
     {
         identifier: sipaliwini
@@ -88,6 +96,7 @@
             156
         ]
         country: suriname
+        planet: earth
     }
     {
         identifier: wanica
@@ -98,5 +107,6 @@
             214
         ]
         country: suriname
+        planet: earth
     }
 ]

@@ -8,6 +8,7 @@
             176
         ]
         country: tajikistan
+        planet: earth
     }
     {
         identifier: gorno-badakhshan
@@ -18,6 +19,7 @@
             197
         ]
         country: tajikistan
+        planet: earth
     }
     {
         identifier: khatlon
@@ -28,6 +30,7 @@
             43
         ]
         country: tajikistan
+        planet: earth
     }
     {
         identifier: leninabad
@@ -38,6 +41,7 @@
             56
         ]
         country: tajikistan
+        planet: earth
     }
     {
         identifier: tadzhikistan_territories
@@ -48,5 +52,6 @@
             130
         ]
         country: tajikistan
+        planet: earth
     }
 ]

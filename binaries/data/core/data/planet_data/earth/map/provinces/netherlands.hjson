@@ -8,6 +8,7 @@
             159
         ]
         country: netherlands
+        planet: earth
     }
     {
         identifier: bonaire
@@ -18,6 +19,7 @@
             5
         ]
         country: netherlands
+        planet: earth
     }
     {
         identifier: curacao
@@ -28,6 +30,7 @@
             75
         ]
         country: netherlands
+        planet: earth
     }
     {
         identifier: drenthe
@@ -38,6 +41,7 @@
             47
         ]
         country: netherlands
+        planet: earth
     }
     {
         identifier: flevoland
@@ -48,6 +52,7 @@
             79
         ]
         country: netherlands
+        planet: earth
     }
     {
         identifier: friesland
@@ -58,6 +63,7 @@
             184
         ]
         country: netherlands
+        planet: earth
     }
     {
         identifier: gelderland
@@ -68,6 +74,7 @@
             248
         ]
         country: netherlands
+        planet: earth
     }
     {
         identifier: groningen
@@ -78,6 +85,7 @@
             169
         ]
         country: netherlands
+        planet: earth
     }
     {
         identifier: limburg_netherlands
@@ -88,6 +96,7 @@
             59
         ]
         country: netherlands
+        planet: earth
     }
     {
         identifier: noord-brabant
@@ -98,6 +107,7 @@
             163
         ]
         country: netherlands
+        planet: earth
     }
     {
         identifier: noord-holland
@@ -108,6 +118,7 @@
             117
         ]
         country: netherlands
+        planet: earth
     }
     {
         identifier: overijssel
@@ -118,6 +129,7 @@
             114
         ]
         country: netherlands
+        planet: earth
     }
     {
         identifier: saba
@@ -128,6 +140,7 @@
             168
         ]
         country: netherlands
+        planet: earth
     }
     {
         identifier: sint_maarten
@@ -138,6 +151,7 @@
             221
         ]
         country: netherlands
+        planet: earth
     }
     {
         identifier: utrecht
@@ -148,6 +162,7 @@
             146
         ]
         country: netherlands
+        planet: earth
     }
     {
         identifier: zeeland
@@ -158,6 +173,7 @@
             29
         ]
         country: netherlands
+        planet: earth
     }
     {
         identifier: zuid-holland
@@ -168,5 +184,6 @@
             50
         ]
         country: netherlands
+        planet: earth
     }
 ]

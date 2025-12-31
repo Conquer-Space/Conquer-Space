@@ -8,6 +8,7 @@
             220
         ]
         country: barbados
+        planet: earth
     }
     {
         identifier: saint_james_barbados
@@ -18,6 +19,7 @@
             29
         ]
         country: barbados
+        planet: earth
     }
     {
         identifier: saint_joseph_barbados
@@ -28,6 +30,7 @@
             17
         ]
         country: barbados
+        planet: earth
     }
     {
         identifier: saint_lucy
@@ -38,6 +41,7 @@
             218
         ]
         country: barbados
+        planet: earth
     }
     {
         identifier: saint_michael
@@ -48,6 +52,7 @@
             96
         ]
         country: barbados
+        planet: earth
     }
     {
         identifier: saint_philip
@@ -58,5 +63,6 @@
             230
         ]
         country: barbados
+        planet: earth
     }
 ]

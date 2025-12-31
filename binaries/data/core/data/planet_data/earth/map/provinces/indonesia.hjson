@@ -8,6 +8,7 @@
             230
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: bali
@@ -18,6 +19,7 @@
             197
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: bangka-belitung
@@ -28,6 +30,7 @@
             200
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: banten
@@ -38,6 +41,7 @@
             165
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: bengkulu
@@ -48,6 +52,7 @@
             29
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: gorontalo
@@ -58,6 +63,7 @@
             91
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: jakarta_raya
@@ -68,6 +74,7 @@
             98
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: jambi
@@ -78,6 +85,7 @@
             84
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: jawa_barat
@@ -88,6 +96,7 @@
             31
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: jawa_tengah
@@ -98,6 +107,7 @@
             220
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: jawa_timur
@@ -108,6 +118,7 @@
             208
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: kalimantan_barat
@@ -118,6 +129,7 @@
             159
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: kalimantan_selatan
@@ -128,6 +140,7 @@
             175
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: kalimantan_tengah
@@ -138,6 +151,7 @@
             108
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: kalimantan_timur
@@ -148,6 +162,7 @@
             12
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: kepulauan_riau
@@ -158,6 +173,7 @@
             213
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: lampung
@@ -168,6 +184,7 @@
             218
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: maluku
@@ -178,6 +195,7 @@
             19
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: maluku_utara
@@ -188,6 +206,7 @@
             55
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: nusa_tenggara_barat
@@ -198,6 +217,7 @@
             86
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: nusa_tenggara_timur
@@ -208,6 +228,7 @@
             13
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: papua
@@ -218,6 +239,7 @@
             49
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: papua_barat
@@ -228,6 +250,7 @@
             110
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: riau
@@ -238,6 +261,7 @@
             24
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: sulawesi_barat
@@ -248,6 +272,7 @@
             225
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: sulawesi_selatan
@@ -258,6 +283,7 @@
             153
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: sulawesi_tengah
@@ -268,6 +294,7 @@
             244
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: sulawesi_tenggara
@@ -278,6 +305,7 @@
             43
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: sulawesi_utara
@@ -288,6 +316,7 @@
             158
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: sumatera_barat
@@ -298,6 +327,7 @@
             96
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: sumatera_selatan
@@ -308,6 +338,7 @@
             151
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: sumatera_utara
@@ -318,6 +349,7 @@
             163
         ]
         country: indonesia
+        planet: earth
     }
     {
         identifier: yogyakarta
@@ -328,5 +360,6 @@
             232
         ]
         country: indonesia
+        planet: earth
     }
 ]

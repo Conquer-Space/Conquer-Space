@@ -8,6 +8,7 @@
             104
         ]
         country: slovakia
+        planet: earth
     }
     {
         identifier: bratislavsky
@@ -18,6 +19,7 @@
             25
         ]
         country: slovakia
+        planet: earth
     }
     {
         identifier: kosicky
@@ -28,6 +30,7 @@
             233
         ]
         country: slovakia
+        planet: earth
     }
     {
         identifier: nitriansky
@@ -38,6 +41,7 @@
             49
         ]
         country: slovakia
+        planet: earth
     }
     {
         identifier: presov
@@ -48,6 +52,7 @@
             137
         ]
         country: slovakia
+        planet: earth
     }
     {
         identifier: trenciansky
@@ -58,6 +63,7 @@
             159
         ]
         country: slovakia
+        planet: earth
     }
     {
         identifier: trnavsky
@@ -68,6 +74,7 @@
             92
         ]
         country: slovakia
+        planet: earth
     }
     {
         identifier: zilinsky
@@ -78,5 +85,6 @@
             192
         ]
         country: slovakia
+        planet: earth
     }
 ]

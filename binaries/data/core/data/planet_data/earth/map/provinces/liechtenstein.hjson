@@ -8,6 +8,7 @@
             126
         ]
         country: liechtenstein
+        planet: earth
     }
     {
         identifier: vaduz
@@ -18,5 +19,6 @@
             10
         ]
         country: liechtenstein
+        planet: earth
     }
 ]

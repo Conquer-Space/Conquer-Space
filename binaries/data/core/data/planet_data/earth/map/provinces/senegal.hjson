@@ -8,6 +8,7 @@
             59
         ]
         country: senegal
+        planet: earth
     }
     {
         identifier: diourbel
@@ -18,6 +19,7 @@
             238
         ]
         country: senegal
+        planet: earth
     }
     {
         identifier: fatick
@@ -28,6 +30,7 @@
             254
         ]
         country: senegal
+        planet: earth
     }
     {
         identifier: kaffrine
@@ -38,6 +41,7 @@
             175
         ]
         country: senegal
+        planet: earth
     }
     {
         identifier: kaolack
@@ -48,6 +52,7 @@
             53
         ]
         country: senegal
+        planet: earth
     }
     {
         identifier: kedougou
@@ -58,6 +63,7 @@
             227
         ]
         country: senegal
+        planet: earth
     }
     {
         identifier: kolda
@@ -68,6 +74,7 @@
             172
         ]
         country: senegal
+        planet: earth
     }
     {
         identifier: louga
@@ -78,6 +85,7 @@
             181
         ]
         country: senegal
+        planet: earth
     }
     {
         identifier: matam
@@ -88,6 +96,7 @@
             79
         ]
         country: senegal
+        planet: earth
     }
     {
         identifier: saint-louis
@@ -98,6 +107,7 @@
             134
         ]
         country: senegal
+        planet: earth
     }
     {
         identifier: sedhiou
@@ -108,6 +118,7 @@
             7
         ]
         country: senegal
+        planet: earth
     }
     {
         identifier: tambacounda
@@ -118,6 +129,7 @@
             38
         ]
         country: senegal
+        planet: earth
     }
     {
         identifier: thies
@@ -128,6 +140,7 @@
             248
         ]
         country: senegal
+        planet: earth
     }
     {
         identifier: ziguinchor
@@ -138,5 +151,6 @@
             141
         ]
         country: senegal
+        planet: earth
     }
 ]

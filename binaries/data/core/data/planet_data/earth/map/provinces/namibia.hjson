@@ -8,6 +8,7 @@
             60
         ]
         country: namibia
+        planet: earth
     }
     {
         identifier: erongo
@@ -18,6 +19,7 @@
             117
         ]
         country: namibia
+        planet: earth
     }
     {
         identifier: hardap
@@ -28,6 +30,7 @@
             96
         ]
         country: namibia
+        planet: earth
     }
     {
         identifier: karas
@@ -38,6 +41,7 @@
             197
         ]
         country: namibia
+        planet: earth
     }
     {
         identifier: kavango
@@ -48,6 +52,7 @@
             249
         ]
         country: namibia
+        planet: earth
     }
     {
         identifier: khomas
@@ -58,6 +63,7 @@
             20
         ]
         country: namibia
+        planet: earth
     }
     {
         identifier: kunene
@@ -68,6 +74,7 @@
             237
         ]
         country: namibia
+        planet: earth
     }
     {
         identifier: ohangwena
@@ -78,6 +85,7 @@
             182
         ]
         country: namibia
+        planet: earth
     }
     {
         identifier: omaheke
@@ -88,6 +96,7 @@
             230
         ]
         country: namibia
+        planet: earth
     }
     {
         identifier: omusati
@@ -98,6 +107,7 @@
             115
         ]
         country: namibia
+        planet: earth
     }
     {
         identifier: oshana
@@ -108,6 +118,7 @@
             87
         ]
         country: namibia
+        planet: earth
     }
     {
         identifier: oshikoto
@@ -118,6 +129,7 @@
             154
         ]
         country: namibia
+        planet: earth
     }
     {
         identifier: otjozondjupa
@@ -128,5 +140,6 @@
             163
         ]
         country: namibia
+        planet: earth
     }
 ]

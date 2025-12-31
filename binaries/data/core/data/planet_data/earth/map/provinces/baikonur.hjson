@@ -8,6 +8,7 @@
             245
         ]
         country: baikonur
+        planet: earth
     }
     {
         identifier: almaty_city
@@ -18,6 +19,7 @@
             103
         ]
         country: baikonur
+        planet: earth
     }
     {
         identifier: aqmola
@@ -28,6 +30,7 @@
             59
         ]
         country: baikonur
+        planet: earth
     }
     {
         identifier: aqtobe
@@ -38,6 +41,7 @@
             6
         ]
         country: baikonur
+        planet: earth
     }
     {
         identifier: astana
@@ -48,6 +52,7 @@
             170
         ]
         country: baikonur
+        planet: earth
     }
     {
         identifier: atyrau
@@ -58,6 +63,7 @@
             248
         ]
         country: baikonur
+        planet: earth
     }
     {
         identifier: baykonur_lease_in_qyzylorda
@@ -68,6 +74,7 @@
             54
         ]
         country: baikonur
+        planet: earth
     }
     {
         identifier: east_kazakhstan
@@ -78,6 +85,7 @@
             178
         ]
         country: baikonur
+        planet: earth
     }
     {
         identifier: mangghystau
@@ -88,6 +96,7 @@
             61
         ]
         country: baikonur
+        planet: earth
     }
     {
         identifier: north_kazakhstan
@@ -98,6 +107,7 @@
             78
         ]
         country: baikonur
+        planet: earth
     }
     {
         identifier: pavlodar
@@ -108,6 +118,7 @@
             157
         ]
         country: baikonur
+        planet: earth
     }
     {
         identifier: qaraghandy
@@ -118,6 +129,7 @@
             126
         ]
         country: baikonur
+        planet: earth
     }
     {
         identifier: qostanay
@@ -128,6 +140,7 @@
             90
         ]
         country: baikonur
+        planet: earth
     }
     {
         identifier: qyzylorda
@@ -138,6 +151,7 @@
             128
         ]
         country: baikonur
+        planet: earth
     }
     {
         identifier: south_kazakhstan
@@ -148,6 +162,7 @@
             182
         ]
         country: baikonur
+        planet: earth
     }
     {
         identifier: west_kazakhstan
@@ -158,6 +173,7 @@
             236
         ]
         country: baikonur
+        planet: earth
     }
     {
         identifier: zhambyl
@@ -168,5 +184,6 @@
             237
         ]
         country: baikonur
+        planet: earth
     }
 ]

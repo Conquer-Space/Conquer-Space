@@ -8,6 +8,7 @@
             101
         ]
         country: dominica
+        planet: earth
     }
     {
         identifier: saint_david_dominica
@@ -18,6 +19,7 @@
             34
         ]
         country: dominica
+        planet: earth
     }
     {
         identifier: saint_joseph_dominica
@@ -28,6 +30,7 @@
             46
         ]
         country: dominica
+        planet: earth
     }
     {
         identifier: saint_patrick
@@ -38,6 +41,7 @@
             223
         ]
         country: dominica
+        planet: earth
     }
     {
         identifier: saint_paul_dominica
@@ -48,5 +52,6 @@
             113
         ]
         country: dominica
+        planet: earth
     }
 ]

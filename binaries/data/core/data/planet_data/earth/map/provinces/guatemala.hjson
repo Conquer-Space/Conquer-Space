@@ -8,6 +8,7 @@
             89
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: baja_verapaz
@@ -18,6 +19,7 @@
             243
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: chimaltenango
@@ -28,6 +30,7 @@
             30
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: chiquimula
@@ -38,6 +41,7 @@
             202
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: el_progreso
@@ -48,6 +52,7 @@
             42
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: escuintla
@@ -58,6 +63,7 @@
             223
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: guatemala
@@ -68,6 +74,7 @@
             164
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: huehuetenango
@@ -78,6 +85,7 @@
             211
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: izabal
@@ -88,6 +96,7 @@
             34
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: jalapa
@@ -98,6 +107,7 @@
             231
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: jutiapa
@@ -108,6 +118,7 @@
             68
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: peten
@@ -118,6 +129,7 @@
             187
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: quezaltenango
@@ -128,6 +140,7 @@
             176
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: quiche
@@ -138,6 +151,7 @@
             22
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: retalhuleu
@@ -148,6 +162,7 @@
             89
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: sacatepequez
@@ -158,6 +173,7 @@
             97
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: san_marcos
@@ -168,6 +184,7 @@
             144
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: santa_rosa
@@ -178,6 +195,7 @@
             34
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: solola
@@ -188,6 +206,7 @@
             109
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: suchitepequez
@@ -198,6 +217,7 @@
             156
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: totonicapan
@@ -208,6 +228,7 @@
             54
         ]
         country: guatemala
+        planet: earth
     }
     {
         identifier: zacapa
@@ -218,5 +239,6 @@
             46
         ]
         country: guatemala
+        planet: earth
     }
 ]

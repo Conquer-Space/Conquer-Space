@@ -8,6 +8,7 @@
             125
         ]
         country: kyrgyzstan
+        planet: earth
     }
     {
         identifier: bishkek
@@ -18,6 +19,7 @@
             130
         ]
         country: kyrgyzstan
+        planet: earth
     }
     {
         identifier: chuy
@@ -28,6 +30,7 @@
             48
         ]
         country: kyrgyzstan
+        planet: earth
     }
     {
         identifier: jalal-abad
@@ -38,6 +41,7 @@
             113
         ]
         country: kyrgyzstan
+        planet: earth
     }
     {
         identifier: naryn
@@ -48,6 +52,7 @@
             91
         ]
         country: kyrgyzstan
+        planet: earth
     }
     {
         identifier: osh
@@ -58,6 +63,7 @@
             158
         ]
         country: kyrgyzstan
+        planet: earth
     }
     {
         identifier: talas
@@ -68,6 +74,7 @@
             115
         ]
         country: kyrgyzstan
+        planet: earth
     }
     {
         identifier: ysyk-kol
@@ -78,5 +85,6 @@
             24
         ]
         country: kyrgyzstan
+        planet: earth
     }
 ]

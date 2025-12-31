@@ -8,6 +8,7 @@
             254
         ]
         country: honduras
+        planet: earth
     }
     {
         identifier: choluteca
@@ -18,6 +19,7 @@
             67
         ]
         country: honduras
+        planet: earth
     }
     {
         identifier: colon_honduras
@@ -28,6 +30,7 @@
             187
         ]
         country: honduras
+        planet: earth
     }
     {
         identifier: comayagua
@@ -38,6 +41,7 @@
             250
         ]
         country: honduras
+        planet: earth
     }
     {
         identifier: copan
@@ -48,6 +52,7 @@
             235
         ]
         country: honduras
+        planet: earth
     }
     {
         identifier: cortes
@@ -58,6 +63,7 @@
             101
         ]
         country: honduras
+        planet: earth
     }
     {
         identifier: el_paraiso
@@ -68,6 +74,7 @@
             122
         ]
         country: honduras
+        planet: earth
     }
     {
         identifier: francisco_morazan
@@ -78,6 +85,7 @@
             128
         ]
         country: honduras
+        planet: earth
     }
     {
         identifier: gracias_a_dios
@@ -88,6 +96,7 @@
             244
         ]
         country: honduras
+        planet: earth
     }
     {
         identifier: intibuca
@@ -98,6 +107,7 @@
             220
         ]
         country: honduras
+        planet: earth
     }
     {
         identifier: la_paz_honduras
@@ -108,6 +118,7 @@
             98
         ]
         country: honduras
+        planet: earth
     }
     {
         identifier: lempira
@@ -118,6 +129,7 @@
             86
         ]
         country: honduras
+        planet: earth
     }
     {
         identifier: ocotepeque
@@ -128,6 +140,7 @@
             208
         ]
         country: honduras
+        planet: earth
     }
     {
         identifier: olancho
@@ -138,6 +151,7 @@
             177
         ]
         country: honduras
+        planet: earth
     }
     {
         identifier: santa_barbara
@@ -148,6 +162,7 @@
             168
         ]
         country: honduras
+        planet: earth
     }
     {
         identifier: yoro
@@ -158,5 +173,6 @@
             61
         ]
         country: honduras
+        planet: earth
     }
 ]

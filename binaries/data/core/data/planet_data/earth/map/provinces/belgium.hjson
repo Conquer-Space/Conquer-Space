@@ -8,6 +8,7 @@
             230
         ]
         country: belgium
+        planet: earth
     }
     {
         identifier: east_flanders
@@ -18,6 +19,7 @@
             96
         ]
         country: belgium
+        planet: earth
     }
     {
         identifier: flemish_brabant
@@ -28,6 +30,7 @@
             4
         ]
         country: belgium
+        planet: earth
     }
     {
         identifier: hainaut
@@ -38,6 +41,7 @@
             191
         ]
         country: belgium
+        planet: earth
     }
     {
         identifier: liege
@@ -48,6 +52,7 @@
             148
         ]
         country: belgium
+        planet: earth
     }
     {
         identifier: limburg_belgium
@@ -58,6 +63,7 @@
             41
         ]
         country: belgium
+        planet: earth
     }
     {
         identifier: luxembourg_belgium
@@ -68,6 +74,7 @@
             203
         ]
         country: belgium
+        planet: earth
     }
     {
         identifier: namur
@@ -78,6 +85,7 @@
             69
         ]
         country: belgium
+        planet: earth
     }
     {
         identifier: walloon_brabant
@@ -88,6 +96,7 @@
             71
         ]
         country: belgium
+        planet: earth
     }
     {
         identifier: west_flanders
@@ -98,5 +107,6 @@
             124
         ]
         country: belgium
+        planet: earth
     }
 ]

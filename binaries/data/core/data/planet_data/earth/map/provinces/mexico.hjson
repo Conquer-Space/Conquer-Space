@@ -8,6 +8,7 @@
             202
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: baja_california
@@ -18,6 +19,7 @@
             96
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: campeche
@@ -28,6 +30,7 @@
             199
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: chiapas
@@ -38,6 +41,7 @@
             77
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: chihuahua
@@ -48,6 +52,7 @@
             41
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: coahuila
@@ -58,6 +63,7 @@
             175
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: colima
@@ -68,6 +74,7 @@
             131
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: distrito_federal_mexico
@@ -78,6 +85,7 @@
             214
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: durango
@@ -88,6 +96,7 @@
             13
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: guanajuato
@@ -98,6 +107,7 @@
             1
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: guerrero
@@ -108,6 +118,7 @@
             211
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: hidalgo
@@ -118,6 +129,7 @@
             190
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: jalisco
@@ -128,6 +140,7 @@
             77
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: mexico
@@ -138,6 +151,7 @@
             178
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: michoacan
@@ -148,6 +162,7 @@
             144
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: morelos
@@ -158,6 +173,7 @@
             56
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: nayarit
@@ -168,6 +184,7 @@
             93
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: nuevo_leon
@@ -178,6 +195,7 @@
             53
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: null_mexico
@@ -188,6 +206,7 @@
             137
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: oaxaca
@@ -198,6 +217,7 @@
             22
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: puebla
@@ -208,6 +228,7 @@
             245
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: queretaro
@@ -218,6 +239,7 @@
             123
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: quintana_roo
@@ -228,6 +250,7 @@
             132
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: san_luis_potosi
@@ -238,6 +261,7 @@
             68
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: sinaloa
@@ -248,6 +272,7 @@
             5
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: sonora
@@ -258,6 +283,7 @@
             29
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: tabasco
@@ -268,6 +294,7 @@
             10
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: tamaulipas
@@ -278,6 +305,7 @@
             242
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: tlaxcala
@@ -288,6 +316,7 @@
             147
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: veracruz
@@ -298,6 +327,7 @@
             10
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: yucatan
@@ -308,6 +338,7 @@
             199
         ]
         country: mexico
+        planet: earth
     }
     {
         identifier: zacatecas
@@ -318,5 +349,6 @@
             135
         ]
         country: mexico
+        planet: earth
     }
 ]

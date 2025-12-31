@@ -8,6 +8,7 @@
             69
         ]
         country: mauritania
+        planet: earth
     }
     {
         identifier: assaba
@@ -18,6 +19,7 @@
             91
         ]
         country: mauritania
+        planet: earth
     }
     {
         identifier: brakna
@@ -28,6 +30,7 @@
             67
         ]
         country: mauritania
+        planet: earth
     }
     {
         identifier: dakhlet_nouadhibou
@@ -38,6 +41,7 @@
             2
         ]
         country: mauritania
+        planet: earth
     }
     {
         identifier: gorgol
@@ -48,6 +52,7 @@
             12
         ]
         country: mauritania
+        planet: earth
     }
     {
         identifier: guidimaka
@@ -58,6 +63,7 @@
             146
         ]
         country: mauritania
+        planet: earth
     }
     {
         identifier: hodh_ech_chargui
@@ -68,6 +74,7 @@
             213
         ]
         country: mauritania
+        planet: earth
     }
     {
         identifier: hodh_el_gharbi
@@ -78,6 +85,7 @@
             24
         ]
         country: mauritania
+        planet: earth
     }
     {
         identifier: inchiri
@@ -88,6 +96,7 @@
             47
         ]
         country: mauritania
+        planet: earth
     }
     {
         identifier: nouakchott
@@ -98,6 +107,7 @@
             114
         ]
         country: mauritania
+        planet: earth
     }
     {
         identifier: tagant
@@ -108,6 +118,7 @@
             25
         ]
         country: mauritania
+        planet: earth
     }
     {
         identifier: tiris_zemmour
@@ -118,6 +129,7 @@
             88
         ]
         country: mauritania
+        planet: earth
     }
     {
         identifier: trarza
@@ -128,5 +140,6 @@
             201
         ]
         country: mauritania
+        planet: earth
     }
 ]

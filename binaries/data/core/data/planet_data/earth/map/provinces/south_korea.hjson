@@ -8,6 +8,7 @@
             95
         ]
         country: south_korea
+        planet: earth
     }
     {
         identifier: daegu
@@ -18,6 +19,7 @@
             199
         ]
         country: south_korea
+        planet: earth
     }
     {
         identifier: daejeon
@@ -28,6 +30,7 @@
             187
         ]
         country: south_korea
+        planet: earth
     }
     {
         identifier: gangwon
@@ -38,6 +41,7 @@
             34
         ]
         country: south_korea
+        planet: earth
     }
     {
         identifier: gwangju
@@ -48,6 +52,7 @@
             132
         ]
         country: south_korea
+        planet: earth
     }
     {
         identifier: gyeonggi
@@ -58,6 +63,7 @@
             168
         ]
         country: south_korea
+        planet: earth
     }
     {
         identifier: incheon
@@ -68,6 +74,7 @@
             83
         ]
         country: south_korea
+        planet: earth
     }
     {
         identifier: jeju
@@ -78,6 +85,7 @@
             233
         ]
         country: south_korea
+        planet: earth
     }
     {
         identifier: north_chungcheong
@@ -88,6 +96,7 @@
             65
         ]
         country: south_korea
+        planet: earth
     }
     {
         identifier: north_gyeongsang
@@ -98,6 +107,7 @@
             229
         ]
         country: south_korea
+        planet: earth
     }
     {
         identifier: north_jeolla
@@ -108,6 +118,7 @@
             150
         ]
         country: south_korea
+        planet: earth
     }
     {
         identifier: sejong
@@ -118,6 +129,7 @@
             254
         ]
         country: south_korea
+        planet: earth
     }
     {
         identifier: seoul
@@ -128,6 +140,7 @@
             120
         ]
         country: south_korea
+        planet: earth
     }
     {
         identifier: south_chungcheong
@@ -138,6 +151,7 @@
             221
         ]
         country: south_korea
+        planet: earth
     }
     {
         identifier: south_gyeongsang
@@ -148,6 +162,7 @@
             28
         ]
         country: south_korea
+        planet: earth
     }
     {
         identifier: south_jeolla
@@ -158,6 +173,7 @@
             217
         ]
         country: south_korea
+        planet: earth
     }
     {
         identifier: ulsan
@@ -168,5 +184,6 @@
             162
         ]
         country: south_korea
+        planet: earth
     }
 ]

@@ -8,6 +8,7 @@
             135
         ]
         country: zimbabwe
+        planet: earth
     }
     {
         identifier: harare
@@ -18,6 +19,7 @@
             68
         ]
         country: zimbabwe
+        planet: earth
     }
     {
         identifier: manicaland
@@ -28,6 +30,7 @@
             72
         ]
         country: zimbabwe
+        planet: earth
     }
     {
         identifier: mashonaland_central
@@ -38,6 +41,7 @@
             37
         ]
         country: zimbabwe
+        planet: earth
     }
     {
         identifier: mashonaland_east
@@ -48,6 +52,7 @@
             194
         ]
         country: zimbabwe
+        planet: earth
     }
     {
         identifier: mashonaland_west
@@ -58,6 +63,7 @@
             226
         ]
         country: zimbabwe
+        planet: earth
     }
     {
         identifier: masvingo
@@ -68,6 +74,7 @@
             92
         ]
         country: zimbabwe
+        planet: earth
     }
     {
         identifier: matabeleland_north
@@ -78,6 +85,7 @@
             242
         ]
         country: zimbabwe
+        planet: earth
     }
     {
         identifier: matabeleland_south
@@ -88,6 +96,7 @@
             120
         ]
         country: zimbabwe
+        planet: earth
     }
     {
         identifier: midlands
@@ -98,5 +107,6 @@
             1
         ]
         country: zimbabwe
+        planet: earth
     }
 ]

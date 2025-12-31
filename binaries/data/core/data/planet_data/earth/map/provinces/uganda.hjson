@@ -8,6 +8,7 @@
             173
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: adjumani
@@ -18,6 +19,7 @@
             46
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: agago
@@ -28,6 +30,7 @@
             39
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: alebtong
@@ -38,6 +41,7 @@
             51
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: amolatar
@@ -48,6 +52,7 @@
             69
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: amudat
@@ -58,6 +63,7 @@
             233
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: amuria
@@ -68,6 +74,7 @@
             118
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: amuru
@@ -78,6 +85,7 @@
             235
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: apac
@@ -88,6 +96,7 @@
             246
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: arua
@@ -98,6 +107,7 @@
             123
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: budaka
@@ -108,6 +118,7 @@
             33
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: bududa
@@ -118,6 +129,7 @@
             245
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: bugiri
@@ -128,6 +140,7 @@
             88
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: buhweju
@@ -138,6 +151,7 @@
             198
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: buikwe
@@ -148,6 +162,7 @@
             253
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: bukedea
@@ -158,6 +173,7 @@
             179
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: bukomansimbi
@@ -168,6 +184,7 @@
             27
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: bukwa
@@ -178,6 +195,7 @@
             166
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: bulambuli
@@ -188,6 +206,7 @@
             210
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: buliisa
@@ -198,6 +217,7 @@
             68
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: bushenyi
@@ -208,6 +228,7 @@
             143
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: busia
@@ -218,6 +239,7 @@
             44
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: butaleja
@@ -228,6 +250,7 @@
             100
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: butambala
@@ -238,6 +261,7 @@
             81
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: buvuma
@@ -248,6 +272,7 @@
             43
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: buyende
@@ -258,6 +283,7 @@
             112
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: dokolo
@@ -268,6 +294,7 @@
             227
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: gomba
@@ -278,6 +305,7 @@
             148
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: gulu
@@ -288,6 +316,7 @@
             15
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: hoima
@@ -298,6 +327,7 @@
             135
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: ibanda
@@ -308,6 +338,7 @@
             137
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: iganga
@@ -318,6 +349,7 @@
             149
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: isingiro
@@ -328,6 +360,7 @@
             136
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: jinja
@@ -338,6 +371,7 @@
             179
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kaabong
@@ -348,6 +382,7 @@
             34
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kabale
@@ -358,6 +393,7 @@
             14
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kabarole
@@ -368,6 +404,7 @@
             80
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kaberamaido
@@ -378,6 +415,7 @@
             160
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kalangala
@@ -388,6 +426,7 @@
             232
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kaliro
@@ -398,6 +437,7 @@
             228
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kalungu
@@ -408,6 +448,7 @@
             94
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kampala
@@ -418,6 +459,7 @@
             161
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kamuli
@@ -428,6 +470,7 @@
             234
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kamwenge
@@ -438,6 +481,7 @@
             105
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kanungu
@@ -448,6 +492,7 @@
             92
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kapchorwa
@@ -458,6 +503,7 @@
             99
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kasese
@@ -468,6 +514,7 @@
             147
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: katakwi
@@ -478,6 +525,7 @@
             185
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kayunga
@@ -488,6 +536,7 @@
             191
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kibale
@@ -498,6 +547,7 @@
             50
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kiboga
@@ -508,6 +558,7 @@
             203
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kibuku
@@ -518,6 +569,7 @@
             167
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kiryandongo
@@ -528,6 +580,7 @@
             82
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kisoro
@@ -538,6 +591,7 @@
             81
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kitgum
@@ -548,6 +602,7 @@
             101
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: koboko
@@ -558,6 +613,7 @@
             247
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kole
@@ -568,6 +624,7 @@
             3
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kotido
@@ -578,6 +635,7 @@
             106
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kumi
@@ -588,6 +646,7 @@
             45
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kween
@@ -598,6 +657,7 @@
             131
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kyankwanzi
@@ -608,6 +668,7 @@
             93
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kyegegwa
@@ -618,6 +679,7 @@
             172
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: kyenjojo
@@ -628,6 +690,7 @@
             38
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: lamwo
@@ -638,6 +701,7 @@
             168
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: lira
@@ -648,6 +712,7 @@
             192
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: luuka
@@ -658,6 +723,7 @@
             45
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: luweero
@@ -668,6 +734,7 @@
             2
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: lwengo
@@ -678,6 +745,7 @@
             216
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: lyantonde
@@ -688,6 +756,7 @@
             8
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: manafwa
@@ -698,6 +767,7 @@
             178
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: maracha
@@ -708,6 +778,7 @@
             56
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: masaka
@@ -718,6 +789,7 @@
             75
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: masindi
@@ -728,6 +800,7 @@
             124
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: mayuge
@@ -738,6 +811,7 @@
             110
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: mbale
@@ -748,6 +822,7 @@
             222
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: mbarara_uganda
@@ -758,6 +833,7 @@
             204
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: mbarara_uganda_2
@@ -768,6 +844,7 @@
             197
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: mitooma
@@ -778,6 +855,7 @@
             76
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: mityana
@@ -788,6 +866,7 @@
             136
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: moroto
@@ -798,6 +877,7 @@
             221
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: moyo
@@ -808,6 +888,7 @@
             113
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: mpigi
@@ -818,6 +899,7 @@
             14
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: mubende
@@ -828,6 +910,7 @@
             117
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: mukono
@@ -838,6 +921,7 @@
             186
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: nakapiripirit
@@ -848,6 +932,7 @@
             64
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: nakaseke
@@ -858,6 +943,7 @@
             26
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: nakasongola
@@ -868,6 +954,7 @@
             57
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: namayingo
@@ -878,6 +965,7 @@
             177
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: namutumba
@@ -888,6 +976,7 @@
             246
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: napak
@@ -898,6 +987,7 @@
             234
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: nebbi
@@ -908,6 +998,7 @@
             1
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: ngora
@@ -918,6 +1009,7 @@
             112
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: ntoroko
@@ -928,6 +1020,7 @@
             202
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: ntungamo
@@ -938,6 +1031,7 @@
             69
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: nwoya
@@ -948,6 +1042,7 @@
             155
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: otuke
@@ -958,6 +1053,7 @@
             240
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: oyam
@@ -968,6 +1064,7 @@
             125
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: pader
@@ -978,6 +1075,7 @@
             70
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: pallisa
@@ -988,6 +1086,7 @@
             130
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: rakai
@@ -998,6 +1097,7 @@
             165
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: rubirizi
@@ -1008,6 +1108,7 @@
             214
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: rukungiri
@@ -1018,6 +1119,7 @@
             25
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: sembabule
@@ -1028,6 +1130,7 @@
             239
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: serere
@@ -1038,6 +1141,7 @@
             252
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: sheema
@@ -1048,6 +1152,7 @@
             9
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: sironko
@@ -1058,6 +1163,7 @@
             21
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: soroti
@@ -1068,6 +1174,7 @@
             63
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: tororo
@@ -1078,6 +1185,7 @@
             111
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: wakiso
@@ -1088,6 +1196,7 @@
             215
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: yumbe
@@ -1098,6 +1207,7 @@
             180
         ]
         country: uganda
+        planet: earth
     }
     {
         identifier: zombo
@@ -1108,5 +1218,6 @@
             190
         ]
         country: uganda
+        planet: earth
     }
 ]

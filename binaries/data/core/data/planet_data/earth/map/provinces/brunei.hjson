@@ -8,6 +8,7 @@
             122
         ]
         country: brunei
+        planet: earth
     }
     {
         identifier: brunei_and_muara
@@ -18,6 +19,7 @@
             244
         ]
         country: brunei
+        planet: earth
     }
     {
         identifier: temburong
@@ -28,6 +30,7 @@
             92
         ]
         country: brunei
+        planet: earth
     }
     {
         identifier: tutong
@@ -38,5 +41,6 @@
             55
         ]
         country: brunei
+        planet: earth
     }
 ]

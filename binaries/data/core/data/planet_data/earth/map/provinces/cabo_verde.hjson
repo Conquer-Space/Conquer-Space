@@ -8,6 +8,7 @@
             67
         ]
         country: cabo_verde
+        planet: earth
     }
     {
         identifier: maio
@@ -18,6 +19,7 @@
             0
         ]
         country: cabo_verde
+        planet: earth
     }
     {
         identifier: mosteiros
@@ -28,6 +30,7 @@
             165
         ]
         country: cabo_verde
+        planet: earth
     }
     {
         identifier: paul
@@ -38,6 +41,7 @@
             24
         ]
         country: cabo_verde
+        planet: earth
     }
     {
         identifier: porto_novo
@@ -48,6 +52,7 @@
             213
         ]
         country: cabo_verde
+        planet: earth
     }
     {
         identifier: ribeira_brava
@@ -58,6 +63,7 @@
             134
         ]
         country: cabo_verde
+        planet: earth
     }
     {
         identifier: ribeira_grande
@@ -68,6 +74,7 @@
             146
         ]
         country: cabo_verde
+        planet: earth
     }
     {
         identifier: ribeira_grande_de_santiago
@@ -78,6 +85,7 @@
             177
         ]
         country: cabo_verde
+        planet: earth
     }
     {
         identifier: sal
@@ -88,6 +96,7 @@
             12
         ]
         country: cabo_verde
+        planet: earth
     }
     {
         identifier: santa_catarina_cabo_verde
@@ -98,6 +107,7 @@
             110
         ]
         country: cabo_verde
+        planet: earth
     }
     {
         identifier: santa_cruz_cabo_verde
@@ -108,6 +118,7 @@
             122
         ]
         country: cabo_verde
+        planet: earth
     }
     {
         identifier: sao_domingos
@@ -118,6 +129,7 @@
             55
         ]
         country: cabo_verde
+        planet: earth
     }
     {
         identifier: sao_filipe
@@ -128,6 +140,7 @@
             232
         ]
         country: cabo_verde
+        planet: earth
     }
     {
         identifier: sao_miguel
@@ -138,6 +151,7 @@
             189
         ]
         country: cabo_verde
+        planet: earth
     }
     {
         identifier: sao_salvador_do_mundo
@@ -148,6 +162,7 @@
             175
         ]
         country: cabo_verde
+        planet: earth
     }
     {
         identifier: tarrafal
@@ -158,6 +173,7 @@
             43
         ]
         country: cabo_verde
+        planet: earth
     }
     {
         identifier: tarrafal_de_sao_nicolau
@@ -168,5 +184,6 @@
             201
         ]
         country: cabo_verde
+        planet: earth
     }
 ]

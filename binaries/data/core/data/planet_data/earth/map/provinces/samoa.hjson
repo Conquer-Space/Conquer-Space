@@ -8,6 +8,7 @@
             7
         ]
         country: samoa
+        planet: earth
     }
     {
         identifier: atua
@@ -18,6 +19,7 @@
             62
         ]
         country: samoa
+        planet: earth
     }
     {
         identifier: fa'asaleleaga
@@ -28,6 +30,7 @@
             250
         ]
         country: samoa
+        planet: earth
     }
     {
         identifier: gaga'emauga
@@ -38,6 +41,7 @@
             171
         ]
         country: samoa
+        planet: earth
     }
     {
         identifier: gaga'ifomauga
@@ -48,6 +52,7 @@
             238
         ]
         country: samoa
+        planet: earth
     }
     {
         identifier: palauli
@@ -58,6 +63,7 @@
             183
         ]
         country: samoa
+        planet: earth
     }
     {
         identifier: tuamasaga
@@ -68,6 +74,7 @@
             196
         ]
         country: samoa
+        planet: earth
     }
     {
         identifier: vaisigano
@@ -78,5 +85,6 @@
             49
         ]
         country: samoa
+        planet: earth
     }
 ]

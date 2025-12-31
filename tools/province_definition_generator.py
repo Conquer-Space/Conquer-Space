@@ -19,7 +19,8 @@ for row in csv_reader:
             "color": [
                 int(row[1]), int(row[2]), int(row[3])
             ],
-            "country": country_name
+            "country": country_name,
+            "planet": "earth"
         }
     )
 

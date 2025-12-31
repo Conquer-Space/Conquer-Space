@@ -8,6 +8,7 @@
             57
         ]
         country: comoros
+        planet: earth
     }
     {
         identifier: andjouan
@@ -18,6 +19,7 @@
             246
         ]
         country: comoros
+        planet: earth
     }
     {
         identifier: mouhili
@@ -28,5 +30,6 @@
             179
         ]
         country: comoros
+        planet: earth
     }
 ]

@@ -8,6 +8,7 @@
             121
         ]
         country: ghana
+        planet: earth
     }
     {
         identifier: brong_ahafo
@@ -18,6 +19,7 @@
             33
         ]
         country: ghana
+        planet: earth
     }
     {
         identifier: central_ghana
@@ -28,6 +30,7 @@
             119
         ]
         country: ghana
+        planet: earth
     }
     {
         identifier: eastern_ghana
@@ -38,6 +41,7 @@
             188
         ]
         country: ghana
+        planet: earth
     }
     {
         identifier: greater_accra
@@ -48,6 +52,7 @@
             186
         ]
         country: ghana
+        planet: earth
     }
     {
         identifier: northern_ghana
@@ -58,6 +63,7 @@
             76
         ]
         country: ghana
+        planet: earth
     }
     {
         identifier: upper_east
@@ -68,6 +74,7 @@
             9
         ]
         country: ghana
+        planet: earth
     }
     {
         identifier: upper_west
@@ -78,6 +85,7 @@
             39
         ]
         country: ghana
+        planet: earth
     }
     {
         identifier: volta
@@ -88,6 +96,7 @@
             88
         ]
         country: ghana
+        planet: earth
     }
     {
         identifier: western_ghana
@@ -98,5 +107,6 @@
             167
         ]
         country: ghana
+        planet: earth
     }
 ]

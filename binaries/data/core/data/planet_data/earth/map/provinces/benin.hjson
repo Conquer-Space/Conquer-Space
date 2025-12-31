@@ -8,6 +8,7 @@
             117
         ]
         country: benin
+        planet: earth
     }
     {
         identifier: atakora
@@ -18,6 +19,7 @@
             64
         ]
         country: benin
+        planet: earth
     }
     {
         identifier: atlantique
@@ -28,6 +30,7 @@
             253
         ]
         country: benin
+        planet: earth
     }
     {
         identifier: borgou
@@ -38,6 +41,7 @@
             251
         ]
         country: benin
+        planet: earth
     }
     {
         identifier: collines
@@ -48,6 +52,7 @@
             7
         ]
         country: benin
+        planet: earth
     }
     {
         identifier: donga
@@ -58,6 +63,7 @@
             149
         ]
         country: benin
+        planet: earth
     }
     {
         identifier: kouffo
@@ -68,6 +74,7 @@
             27
         ]
         country: benin
+        planet: earth
     }
     {
         identifier: littoral_benin
@@ -78,6 +85,7 @@
             64
         ]
         country: benin
+        planet: earth
     }
     {
         identifier: mono
@@ -88,6 +96,7 @@
             94
         ]
         country: benin
+        planet: earth
     }
     {
         identifier: oueme
@@ -98,6 +107,7 @@
             208
         ]
         country: benin
+        planet: earth
     }
     {
         identifier: plateau_benin
@@ -108,6 +118,7 @@
             196
         ]
         country: benin
+        planet: earth
     }
     {
         identifier: zou
@@ -118,5 +129,6 @@
             216
         ]
         country: benin
+        planet: earth
     }
 ]

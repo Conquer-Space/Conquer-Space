@@ -8,6 +8,7 @@
             104
         ]
         country: s__sudan
+        planet: earth
     }
     {
         identifier: eastern_equatoria
@@ -18,6 +19,7 @@
             151
         ]
         country: s__sudan
+        planet: earth
     }
     {
         identifier: jonglei
@@ -28,6 +30,7 @@
             121
         ]
         country: s__sudan
+        planet: earth
     }
     {
         identifier: lakes
@@ -38,6 +41,7 @@
             51
         ]
         country: s__sudan
+        planet: earth
     }
     {
         identifier: northern_bahr_el_ghazal
@@ -48,6 +52,7 @@
             152
         ]
         country: s__sudan
+        planet: earth
     }
     {
         identifier: unity
@@ -58,6 +63,7 @@
             140
         ]
         country: s__sudan
+        planet: earth
     }
     {
         identifier: upper_nile
@@ -68,6 +74,7 @@
             243
         ]
         country: s__sudan
+        planet: earth
     }
     {
         identifier: warrap
@@ -78,6 +85,7 @@
             118
         ]
         country: s__sudan
+        planet: earth
     }
     {
         identifier: western_bahr_el_ghazal
@@ -88,6 +96,7 @@
             92
         ]
         country: s__sudan
+        planet: earth
     }
     {
         identifier: western_equatoria
@@ -98,5 +107,6 @@
             226
         ]
         country: s__sudan
+        planet: earth
     }
 ]

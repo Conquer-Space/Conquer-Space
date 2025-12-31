@@ -57,9 +57,10 @@ using util::NumberToHumanString;
 void SysProvinceInformation::Init() {}
 
 void SysProvinceInformation::DoUI(int delta_time) {
-    entt::entity country = GetUniverse().view<ctx::SelectedProvince>().front();
-    if (country != current_province) {
-        current_province = country;
+    const entt::entity selected_country = GetUniverse().view<ctx::SelectedProvince>().front();
+    if (selected_country != current_province) {
+        current_province = selected_country;
+        current_province = current_city;
         view_mode = ViewMode::COUNTRY_VIEW;
         visible = true;
     }
@@ -81,7 +82,7 @@ void SysProvinceInformation::DoUI(int delta_time) {
             ProvinceView();
             break;
         case ViewMode::CITY_VIEW:
-            CityView();
+            // CityView();
             break;
     }
     ImGui::End();
@@ -108,16 +109,18 @@ void SysProvinceInformation::ProvinceView() {
     ImGui::TextFmt("Population: {}", NumberToHumanString(population));
     ImGui::Separator();
     if (ImGui::BeginTabBar("ProvinceInformationTabs", ImGuiTabBarFlags_None)) {
-        if (ImGui::BeginTabItem("Cities")) {
-            for (entt::entity entity : city_list.cities) {
-                if (CQSPGui::DefaultSelectable(fmt::format("{}", GetName(GetUniverse(), entity)).c_str())) {
-                    current_city = entity;
-                    changed_city = true;
-                    view_mode = ViewMode::CITY_VIEW;
-                }
-            }
-            ImGui::EndTabItem();
-        }
+        // if (ImGui::BeginTabItem("Cities")) {
+        //     for (entt::entity entity : city_list.cities) {
+        //         if (CQSPGui::DefaultSelectable(fmt::format("{}", GetName(GetUniverse(), entity)).c_str())) {
+        //             current_city = entity;
+        //             changed_city = true;
+        //             view_mode = ViewMode::CITY_VIEW;
+        //         }
+        //     }
+        //     ImGui::EndTabItem();
+        // }
+        // Add all the economic stuff
+        CityIndustryTabs();
         if (ImGui::BeginTabItem("Neighbors")) {
             for (entt::entity entity : city_list.neighbors) {
                 ImGui::TextFmt("{}", GetName(GetUniverse(), entity));
@@ -218,8 +221,7 @@ void SysProvinceInformation::CityIndustryTabs() {
         }
         if (ImGui::BeginTabItem("Economy")) {
             // Show economy window
-
-            components::Market& market = GetUniverse().get<components::Market>(current_city);
+            const components::Market& market = GetUniverse().get<components::Market>(current_city);
             // List the market's connected cities
             ImGui::TextFmt("Connected cities");
             for (entt::entity entity : market.connected_markets) {

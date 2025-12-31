@@ -8,6 +8,7 @@
             18
         ]
         country: solomon_is_
+        planet: earth
     }
     {
         identifier: choiseul
@@ -18,6 +19,7 @@
             19
         ]
         country: solomon_is_
+        planet: earth
     }
     {
         identifier: guadalcanal
@@ -28,6 +30,7 @@
             207
         ]
         country: solomon_is_
+        planet: earth
     }
     {
         identifier: isabel
@@ -38,6 +41,7 @@
             30
         ]
         country: solomon_is_
+        planet: earth
     }
     {
         identifier: makira
@@ -48,6 +52,7 @@
             195
         ]
         country: solomon_is_
+        planet: earth
     }
     {
         identifier: malaita
@@ -58,6 +63,7 @@
             73
         ]
         country: solomon_is_
+        planet: earth
     }
     {
         identifier: rennell_and_bellona
@@ -68,6 +74,7 @@
             61
         ]
         country: solomon_is_
+        planet: earth
     }
     {
         identifier: temotu
@@ -78,6 +85,7 @@
             6
         ]
         country: solomon_is_
+        planet: earth
     }
     {
         identifier: western_solomon_is_
@@ -88,5 +96,6 @@
             152
         ]
         country: solomon_is_
+        planet: earth
     }
 ]

@@ -8,6 +8,7 @@
             58
         ]
         country: uzbekistan
+        planet: earth
     }
     {
         identifier: bukhoro
@@ -18,6 +19,7 @@
             18
         ]
         country: uzbekistan
+        planet: earth
     }
     {
         identifier: ferghana
@@ -28,6 +30,7 @@
             111
         ]
         country: uzbekistan
+        planet: earth
     }
     {
         identifier: jizzakh
@@ -38,6 +41,7 @@
             31
         ]
         country: uzbekistan
+        planet: earth
     }
     {
         identifier: karakalpakstan
@@ -48,6 +52,7 @@
             195
         ]
         country: uzbekistan
+        planet: earth
     }
     {
         identifier: kashkadarya
@@ -58,6 +63,7 @@
             165
         ]
         country: uzbekistan
+        planet: earth
     }
     {
         identifier: khorezm
@@ -68,6 +74,7 @@
             207
         ]
         country: uzbekistan
+        planet: earth
     }
     {
         identifier: namangan
@@ -78,6 +85,7 @@
             247
         ]
         country: uzbekistan
+        planet: earth
     }
     {
         identifier: navoi
@@ -88,6 +96,7 @@
             73
         ]
         country: uzbekistan
+        planet: earth
     }
     {
         identifier: samarkand
@@ -98,6 +107,7 @@
             98
         ]
         country: uzbekistan
+        planet: earth
     }
     {
         identifier: sirdaryo
@@ -108,6 +118,7 @@
             220
         ]
         country: uzbekistan
+        planet: earth
     }
     {
         identifier: surkhandarya
@@ -118,6 +129,7 @@
             232
         ]
         country: uzbekistan
+        planet: earth
     }
     {
         identifier: tashkent_uzbekistan
@@ -128,6 +140,7 @@
             180
         ]
         country: uzbekistan
+        planet: earth
     }
     {
         identifier: tashkent_uzbekistan_2
@@ -138,5 +151,6 @@
             36
         ]
         country: uzbekistan
+        planet: earth
     }
 ]

@@ -8,6 +8,7 @@
             138
         ]
         country: cameroon
+        planet: earth
     }
     {
         identifier: centre_cameroon
@@ -18,6 +19,7 @@
             93
         ]
         country: cameroon
+        planet: earth
     }
     {
         identifier: est
@@ -28,6 +30,7 @@
             89
         ]
         country: cameroon
+        planet: earth
     }
     {
         identifier: extreme-nord
@@ -38,6 +41,7 @@
             181
         ]
         country: cameroon
+        planet: earth
     }
     {
         identifier: littoral_cameroon
@@ -48,6 +52,7 @@
             183
         ]
         country: cameroon
+        planet: earth
     }
     {
         identifier: nord_cameroon
@@ -58,6 +63,7 @@
             4
         ]
         country: cameroon
+        planet: earth
     }
     {
         identifier: nord-ouest_cameroon
@@ -68,6 +74,7 @@
             16
         ]
         country: cameroon
+        planet: earth
     }
     {
         identifier: ouest_cameroon
@@ -78,6 +85,7 @@
             26
         ]
         country: cameroon
+        planet: earth
     }
     {
         identifier: sud_cameroon
@@ -88,6 +96,7 @@
             212
         ]
         country: cameroon
+        planet: earth
     }
     {
         identifier: sud-ouest
@@ -98,5 +107,6 @@
             83
         ]
         country: cameroon
+        planet: earth
     }
 ]

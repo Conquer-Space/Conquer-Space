@@ -8,6 +8,7 @@
             224
         ]
         country: andorra
+        planet: earth
     }
     {
         identifier: escaldes-engordany
@@ -18,6 +19,7 @@
             114
         ]
         country: andorra
+        planet: earth
     }
     {
         identifier: la_massana
@@ -28,6 +30,7 @@
             169
         ]
         country: andorra
+        planet: earth
     }
     {
         identifier: ordino
@@ -38,5 +41,6 @@
             157
         ]
         country: andorra
+        planet: earth
     }
 ]

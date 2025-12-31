@@ -8,6 +8,7 @@
             24
         ]
         country: cuba
+        planet: earth
     }
     {
         identifier: camaguey
@@ -18,6 +19,7 @@
             42
         ]
         country: cuba
+        planet: earth
     }
     {
         identifier: ciego_de_avila
@@ -28,6 +30,7 @@
             109
         ]
         country: cuba
+        planet: earth
     }
     {
         identifier: cienfuegos
@@ -38,6 +41,7 @@
             158
         ]
         country: cuba
+        planet: earth
     }
     {
         identifier: ciudad_de_la_habana
@@ -48,6 +52,7 @@
             213
         ]
         country: cuba
+        planet: earth
     }
     {
         identifier: granma
@@ -58,6 +63,7 @@
             225
         ]
         country: cuba
+        planet: earth
     }
     {
         identifier: guantanamo
@@ -68,6 +74,7 @@
             215
         ]
         country: cuba
+        planet: earth
     }
     {
         identifier: guantanamo_bay_usnb
@@ -78,6 +85,7 @@
             148
         ]
         country: cuba
+        planet: earth
     }
     {
         identifier: holguin
@@ -88,6 +96,7 @@
             176
         ]
         country: cuba
+        planet: earth
     }
     {
         identifier: isla_de_la_juventud
@@ -98,6 +107,7 @@
             54
         ]
         country: cuba
+        planet: earth
     }
     {
         identifier: las_tunas
@@ -108,6 +118,7 @@
             79
         ]
         country: cuba
+        planet: earth
     }
     {
         identifier: matanzas
@@ -118,6 +129,7 @@
             66
         ]
         country: cuba
+        planet: earth
     }
     {
         identifier: mayabeque
@@ -128,6 +140,7 @@
             146
         ]
         country: cuba
+        planet: earth
     }
     {
         identifier: pinar_del_rio
@@ -138,6 +151,7 @@
             91
         ]
         country: cuba
+        planet: earth
     }
     {
         identifier: sancti_spiritus
@@ -148,6 +162,7 @@
             188
         ]
         country: cuba
+        planet: earth
     }
     {
         identifier: santiago_de_cuba
@@ -158,6 +173,7 @@
             36
         ]
         country: cuba
+        planet: earth
     }
     {
         identifier: villa_clara
@@ -168,5 +184,6 @@
             255
         ]
         country: cuba
+        planet: earth
     }
 ]

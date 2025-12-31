@@ -8,6 +8,7 @@
             2
         ]
         country: ethiopia
+        planet: earth
     }
     {
         identifier: afar
@@ -18,6 +19,7 @@
             116
         ]
         country: ethiopia
+        planet: earth
     }
     {
         identifier: amhara
@@ -28,6 +30,7 @@
             30
         ]
         country: ethiopia
+        planet: earth
     }
     {
         identifier: benshangul-gumaz
@@ -38,6 +41,7 @@
             231
         ]
         country: ethiopia
+        planet: earth
     }
     {
         identifier: dire_dawa
@@ -48,6 +52,7 @@
             191
         ]
         country: ethiopia
+        planet: earth
     }
     {
         identifier: gambela_peoples
@@ -58,6 +63,7 @@
             176
         ]
         country: ethiopia
+        planet: earth
     }
     {
         identifier: harari_people
@@ -68,6 +74,7 @@
             69
         ]
         country: ethiopia
+        planet: earth
     }
     {
         identifier: oromiya
@@ -78,6 +85,7 @@
             54
         ]
         country: ethiopia
+        planet: earth
     }
     {
         identifier: somali
@@ -88,6 +96,7 @@
             218
         ]
         country: ethiopia
+        planet: earth
     }
     {
         identifier: southern_nations_nationalities_and_peoples
@@ -98,6 +107,7 @@
             84
         ]
         country: ethiopia
+        planet: earth
     }
     {
         identifier: tigray
@@ -108,5 +118,6 @@
             164
         ]
         country: ethiopia
+        planet: earth
     }
 ]

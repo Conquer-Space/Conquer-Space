@@ -8,6 +8,7 @@
             28
         ]
         country: liberia
+        planet: earth
     }
     {
         identifier: bong
@@ -18,6 +19,7 @@
             251
         ]
         country: liberia
+        planet: earth
     }
     {
         identifier: gbapolu
@@ -28,6 +30,7 @@
             202
         ]
         country: liberia
+        planet: earth
     }
     {
         identifier: grand_bassa
@@ -38,6 +41,7 @@
             229
         ]
         country: liberia
+        planet: earth
     }
     {
         identifier: grand_cape_mount
@@ -48,6 +52,7 @@
             68
         ]
         country: liberia
+        planet: earth
     }
     {
         identifier: grand_gedeh
@@ -58,6 +63,7 @@
             105
         ]
         country: liberia
+        planet: earth
     }
     {
         identifier: grand_kru
@@ -68,6 +74,7 @@
             174
         ]
         country: liberia
+        planet: earth
     }
     {
         identifier: lofa
@@ -78,6 +85,7 @@
             13
         ]
         country: liberia
+        planet: earth
     }
     {
         identifier: margibi
@@ -88,6 +96,7 @@
             162
         ]
         country: liberia
+        planet: earth
     }
     {
         identifier: maryland_lib
@@ -98,6 +107,7 @@
             50
         ]
         country: liberia
+        planet: earth
     }
     {
         identifier: montserrado
@@ -108,6 +118,7 @@
             95
         ]
         country: liberia
+        planet: earth
     }
     {
         identifier: nimba
@@ -118,6 +129,7 @@
             227
         ]
         country: liberia
+        planet: earth
     }
     {
         identifier: river_cess
@@ -128,6 +140,7 @@
             40
         ]
         country: liberia
+        planet: earth
     }
     {
         identifier: river_gee
@@ -138,6 +151,7 @@
             239
         ]
         country: liberia
+        planet: earth
     }
     {
         identifier: sinoe
@@ -148,5 +162,6 @@
             107
         ]
         country: liberia
+        planet: earth
     }
 ]

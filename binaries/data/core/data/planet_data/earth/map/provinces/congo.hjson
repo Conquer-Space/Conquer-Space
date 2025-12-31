@@ -8,6 +8,7 @@
             161
         ]
         country: congo
+        planet: earth
     }
     {
         identifier: brazzaville
@@ -18,6 +19,7 @@
             216
         ]
         country: congo
+        planet: earth
     }
     {
         identifier: cuvette
@@ -28,6 +30,7 @@
             204
         ]
         country: congo
+        planet: earth
     }
     {
         identifier: cuvette-ouest
@@ -38,6 +41,7 @@
             224
         ]
         country: congo
+        planet: earth
     }
     {
         identifier: kinshasa_city
@@ -48,6 +52,7 @@
             27
         ]
         country: congo
+        planet: earth
     }
     {
         identifier: kouilou
@@ -58,6 +63,7 @@
             86
         ]
         country: congo
+        planet: earth
     }
     {
         identifier: lekoumou
@@ -68,6 +74,7 @@
             236
         ]
         country: congo
+        planet: earth
     }
     {
         identifier: likouala
@@ -78,6 +85,7 @@
             70
         ]
         country: congo
+        planet: earth
     }
     {
         identifier: niari
@@ -88,6 +96,7 @@
             228
         ]
         country: congo
+        planet: earth
     }
     {
         identifier: plateaux_congo
@@ -98,6 +107,7 @@
             15
         ]
         country: congo
+        planet: earth
     }
     {
         identifier: pool
@@ -108,6 +118,7 @@
             149
         ]
         country: congo
+        planet: earth
     }
     {
         identifier: sangha
@@ -118,5 +129,6 @@
             90
         ]
         country: congo
+        planet: earth
     }
 ]

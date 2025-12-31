@@ -8,6 +8,7 @@
             63
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: agusan_del_norte
@@ -18,6 +19,7 @@
             199
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: agusan_del_sur
@@ -28,6 +30,7 @@
             196
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: aklan
@@ -38,6 +41,7 @@
             76
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: albay
@@ -48,6 +52,7 @@
             21
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: angeles
@@ -58,6 +63,7 @@
             133
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: antique
@@ -68,6 +74,7 @@
             143
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: apayao
@@ -78,6 +85,7 @@
             185
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: aurora
@@ -88,6 +96,7 @@
             9
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: bacolod
@@ -98,6 +107,7 @@
             241
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: baguio
@@ -108,6 +118,7 @@
             200
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: basilan
@@ -118,6 +129,7 @@
             28
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: bataan
@@ -128,6 +140,7 @@
             57
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: batanes
@@ -138,6 +151,7 @@
             112
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: batangas
@@ -148,6 +162,7 @@
             222
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: benguet
@@ -158,6 +173,7 @@
             173
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: biliran
@@ -168,6 +184,7 @@
             130
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: bohol
@@ -178,6 +195,7 @@
             107
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: bukidnon
@@ -188,6 +206,7 @@
             7
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: bulacan
@@ -198,6 +217,7 @@
             179
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: butuan
@@ -208,6 +228,7 @@
             10
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: cagayan
@@ -218,6 +239,7 @@
             81
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: cagayan_de_oro
@@ -228,6 +250,7 @@
             144
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: caloocan
@@ -238,6 +261,7 @@
             70
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: camarines_norte
@@ -248,6 +272,7 @@
             143
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: camarines_sur
@@ -258,6 +283,7 @@
             210
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: camiguin
@@ -268,6 +294,7 @@
             229
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: capiz
@@ -278,6 +305,7 @@
             88
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: catanduanes
@@ -288,6 +316,7 @@
             45
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: cavite
@@ -298,6 +327,7 @@
             33
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: cebu_philippines
@@ -308,6 +338,7 @@
             186
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: cebu_philippines_2
@@ -318,6 +349,7 @@
             64
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: compostela_valley
@@ -328,6 +360,7 @@
             125
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: cotabato_philippines
@@ -338,6 +371,7 @@
             235
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: cotabato_philippines_2
@@ -348,6 +382,7 @@
             74
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: dagupan
@@ -358,6 +393,7 @@
             69
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: davao
@@ -368,6 +404,7 @@
             58
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: davao_del_norte
@@ -378,6 +415,7 @@
             242
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: davao_del_sur
@@ -388,6 +426,7 @@
             247
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: davao_oriental
@@ -398,6 +437,7 @@
             192
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: eastern_samar
@@ -408,6 +448,7 @@
             63
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: general_santos
@@ -418,6 +459,7 @@
             180
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: guimaras
@@ -428,6 +470,7 @@
             174
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: ifugao
@@ -438,6 +481,7 @@
             240
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: iligan
@@ -448,6 +492,7 @@
             211
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: ilocos_norte
@@ -458,6 +503,7 @@
             14
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: ilocos_sur
@@ -468,6 +514,7 @@
             203
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: iloilo_philippines
@@ -478,6 +525,7 @@
             210
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: iloilo_philippines_2
@@ -488,6 +536,7 @@
             21
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: isabela
@@ -498,6 +547,7 @@
             148
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: kalinga
@@ -508,6 +558,7 @@
             252
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: la_union_philippines
@@ -518,6 +569,7 @@
             136
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: laguna
@@ -528,6 +580,7 @@
             149
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: lanao_del_norte
@@ -538,6 +591,7 @@
             22
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: lanao_del_sur
@@ -548,6 +602,7 @@
             101
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: lapu-lapu
@@ -558,6 +613,7 @@
             178
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: las_pinas
@@ -568,6 +624,7 @@
             100
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: leyte
@@ -578,6 +635,7 @@
             252
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: lucena
@@ -588,6 +646,7 @@
             155
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: maguindanao
@@ -598,6 +657,7 @@
             168
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: makati
@@ -608,6 +668,7 @@
             11
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: marinduque
@@ -618,6 +679,7 @@
             234
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: masbate
@@ -628,6 +690,7 @@
             33
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: mindoro_occidental
@@ -638,6 +701,7 @@
             167
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: mindoro_oriental
@@ -648,6 +712,7 @@
             100
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: misamis_occidental
@@ -658,6 +723,7 @@
             156
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: misamis_oriental
@@ -668,6 +734,7 @@
             77
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: mountain_province
@@ -678,6 +745,7 @@
             51
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: muntinlupa
@@ -688,6 +756,7 @@
             3
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: negros_occidental
@@ -698,6 +767,7 @@
             52
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: negros_oriental
@@ -708,6 +778,7 @@
             119
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: northern_samar
@@ -718,6 +789,7 @@
             222
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: nueva_ecija
@@ -728,6 +800,7 @@
             82
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: nueva_vizcaya
@@ -738,6 +811,7 @@
             106
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: olongapo
@@ -748,6 +822,7 @@
             124
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: ormoc
@@ -758,6 +833,7 @@
             9
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: palawan
@@ -768,6 +844,7 @@
             187
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: pampanga
@@ -778,6 +855,7 @@
             246
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: pangasinan
@@ -788,6 +866,7 @@
             2
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: puerto_princesa
@@ -798,6 +877,7 @@
             131
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: quezon
@@ -808,6 +888,7 @@
             76
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: quezon_city
@@ -818,6 +899,7 @@
             15
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: quirino
@@ -828,6 +910,7 @@
             228
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: rizal
@@ -838,6 +921,7 @@
             216
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: romblon
@@ -848,6 +932,7 @@
             155
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: samar
@@ -858,6 +943,7 @@
             197
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: santiago_philippines
@@ -868,6 +954,7 @@
             39
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: sarangani
@@ -878,6 +965,7 @@
             113
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: siquijor
@@ -888,6 +976,7 @@
             40
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: sorsogon
@@ -898,6 +987,7 @@
             88
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: south_cotabato
@@ -908,6 +998,7 @@
             141
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: southern_leyte
@@ -918,6 +1009,7 @@
             173
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: sultan_kudarat
@@ -928,6 +1020,7 @@
             46
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: sulu
@@ -938,6 +1031,7 @@
             17
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: surigao_del_norte
@@ -948,6 +1042,7 @@
             65
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: tacloban
@@ -958,6 +1053,7 @@
             198
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: tarlac
@@ -968,6 +1064,7 @@
             118
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: tawi-tawi
@@ -978,6 +1075,7 @@
             16
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: valenzuela
@@ -988,6 +1086,7 @@
             204
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: zambales
@@ -998,6 +1097,7 @@
             191
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: zamboanga
@@ -1008,6 +1108,7 @@
             34
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: zamboanga_del_norte
@@ -1018,6 +1119,7 @@
             223
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: zamboanga_del_sur
@@ -1028,6 +1130,7 @@
             89
         ]
         country: philippines
+        planet: earth
     }
     {
         identifier: zamboanga_sibugay
@@ -1038,5 +1141,6 @@
             120
         ]
         country: philippines
+        planet: earth
     }
 ]

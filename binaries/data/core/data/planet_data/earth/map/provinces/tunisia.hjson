@@ -8,6 +8,7 @@
             243
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: ben_arous_(tunis_sud)
@@ -18,6 +19,7 @@
             231
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: bizerte
@@ -28,6 +30,7 @@
             176
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: gabes
@@ -38,6 +41,7 @@
             85
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: gafsa
@@ -48,6 +52,7 @@
             26
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: jendouba
@@ -58,6 +63,7 @@
             136
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: kairouan
@@ -68,6 +74,7 @@
             78
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: kasserine
@@ -78,6 +85,7 @@
             93
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: kebili
@@ -88,6 +96,7 @@
             14
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: le_kef
@@ -98,6 +107,7 @@
             160
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: mahdia
@@ -108,6 +118,7 @@
             219
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: manubah
@@ -118,6 +129,7 @@
             109
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: medenine
@@ -128,6 +140,7 @@
             218
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: monastir
@@ -138,6 +151,7 @@
             30
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: nabeul
@@ -148,6 +162,7 @@
             164
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: sfax
@@ -158,6 +173,7 @@
             152
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: sidi_bou_zid
@@ -168,6 +184,7 @@
             11
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: siliana
@@ -178,6 +195,7 @@
             200
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: sousse
@@ -188,6 +206,7 @@
             97
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: tataouine
@@ -198,6 +217,7 @@
             151
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: tozeur
@@ -208,6 +228,7 @@
             148
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: tunis
@@ -218,6 +239,7 @@
             42
         ]
         country: tunisia
+        planet: earth
     }
     {
         identifier: zaghouan
@@ -228,5 +250,6 @@
             145
         ]
         country: tunisia
+        planet: earth
     }
 ]

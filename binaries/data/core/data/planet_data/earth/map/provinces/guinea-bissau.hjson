@@ -8,6 +8,7 @@
             129
         ]
         country: guinea-bissau
+        planet: earth
     }
     {
         identifier: biombo
@@ -18,6 +19,7 @@
             193
         ]
         country: guinea-bissau
+        planet: earth
     }
     {
         identifier: bissau
@@ -28,6 +30,7 @@
             4
         ]
         country: guinea-bissau
+        planet: earth
     }
     {
         identifier: cacheu
@@ -38,6 +41,7 @@
             74
         ]
         country: guinea-bissau
+        planet: earth
     }
     {
         identifier: gabu
@@ -48,6 +52,7 @@
             196
         ]
         country: guinea-bissau
+        planet: earth
     }
     {
         identifier: oio
@@ -58,6 +63,7 @@
             196
         ]
         country: guinea-bissau
+        planet: earth
     }
     {
         identifier: quinara
@@ -68,6 +74,7 @@
             71
         ]
         country: guinea-bissau
+        planet: earth
     }
     {
         identifier: tombali
@@ -78,5 +85,6 @@
             74
         ]
         country: guinea-bissau
+        planet: earth
     }
 ]

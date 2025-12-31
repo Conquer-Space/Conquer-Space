@@ -8,6 +8,7 @@
             24
         ]
         country: syria
+        planet: earth
     }
     {
         identifier: ar_raqqah
@@ -18,6 +19,7 @@
             146
         ]
         country: syria
+        planet: earth
     }
     {
         identifier: as_suwayda'
@@ -28,6 +30,7 @@
             126
         ]
         country: syria
+        planet: earth
     }
     {
         identifier: damascus
@@ -38,6 +41,7 @@
             48
         ]
         country: syria
+        planet: earth
     }
     {
         identifier: dar`a
@@ -48,6 +52,7 @@
             193
         ]
         country: syria
+        planet: earth
     }
     {
         identifier: dayr_az_zawr
@@ -58,6 +63,7 @@
             162
         ]
         country: syria
+        planet: earth
     }
     {
         identifier: hamah
@@ -68,6 +74,7 @@
             201
         ]
         country: syria
+        planet: earth
     }
     {
         identifier: hasaka_(al_haksa)
@@ -78,6 +85,7 @@
             12
         ]
         country: syria
+        planet: earth
     }
     {
         identifier: homs_(hims)
@@ -88,6 +96,7 @@
             209
         ]
         country: syria
+        planet: earth
     }
     {
         identifier: idlib
@@ -98,6 +107,7 @@
             36
         ]
         country: syria
+        planet: earth
     }
     {
         identifier: lattakia
@@ -108,6 +118,7 @@
             103
         ]
         country: syria
+        planet: earth
     }
     {
         identifier: quneitra
@@ -118,6 +129,7 @@
             121
         ]
         country: syria
+        planet: earth
     }
     {
         identifier: rif_dimashq
@@ -128,6 +140,7 @@
             87
         ]
         country: syria
+        planet: earth
     }
     {
         identifier: tartus
@@ -138,5 +151,6 @@
             20
         ]
         country: syria
+        planet: earth
     }
 ]

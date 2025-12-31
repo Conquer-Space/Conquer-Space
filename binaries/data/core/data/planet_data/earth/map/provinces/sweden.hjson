@@ -8,6 +8,7 @@
             154
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: dalarna
@@ -18,6 +19,7 @@
             95
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: gavleborg
@@ -28,6 +30,7 @@
             8
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: gotland
@@ -38,6 +41,7 @@
             161
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: halland
@@ -48,6 +52,7 @@
             32
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: jamtland
@@ -58,6 +63,7 @@
             83
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: jonkoping
@@ -68,6 +74,7 @@
             27
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: kalmar
@@ -78,6 +85,7 @@
             87
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: kronoberg
@@ -88,6 +96,7 @@
             161
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: norrbotten
@@ -98,6 +107,7 @@
             138
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: orebro
@@ -108,6 +118,7 @@
             94
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: ostergotland
@@ -118,6 +129,7 @@
             20
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: skane
@@ -128,6 +140,7 @@
             221
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: sodermanland
@@ -138,6 +151,7 @@
             209
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: stockholm
@@ -148,6 +162,7 @@
             142
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: uppsala
@@ -158,6 +173,7 @@
             75
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: varmland
@@ -168,6 +184,7 @@
             162
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: vasterbotten
@@ -178,6 +195,7 @@
             16
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: vasternorrland
@@ -188,6 +206,7 @@
             197
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: vastmanland
@@ -198,6 +217,7 @@
             216
         ]
         country: sweden
+        planet: earth
     }
     {
         identifier: vastra_gotaland
@@ -208,5 +228,6 @@
             107
         ]
         country: sweden
+        planet: earth
     }
 ]

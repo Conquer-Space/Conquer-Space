@@ -8,6 +8,7 @@
             98
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: abyan
@@ -18,6 +19,7 @@
             165
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: al_bayda'
@@ -28,6 +30,7 @@
             147
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: al_dali'
@@ -38,6 +41,7 @@
             25
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: al_hudaydah
@@ -48,6 +52,7 @@
             153
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: al_jawf_yemen
@@ -58,6 +63,7 @@
             64
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: al_mahrah
@@ -68,6 +74,7 @@
             107
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: al_mahwit
@@ -78,6 +85,7 @@
             159
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: amanat_al_asimah
@@ -88,6 +96,7 @@
             189
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: amran
@@ -98,6 +107,7 @@
             214
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: dhamar
@@ -108,6 +118,7 @@
             226
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: hadramawt
@@ -118,6 +129,7 @@
             229
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: hajjah
@@ -128,6 +140,7 @@
             186
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: ibb
@@ -138,6 +151,7 @@
             92
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: lahij
@@ -148,6 +162,7 @@
             31
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: ma'rib
@@ -158,6 +173,7 @@
             202
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: raymah
@@ -168,6 +184,7 @@
             80
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: sa`dah
@@ -178,6 +195,7 @@
             52
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: sana'a
@@ -188,6 +206,7 @@
             13
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: shabwah
@@ -198,6 +217,7 @@
             232
         ]
         country: yemen
+        planet: earth
     }
     {
         identifier: ta`izz
@@ -208,5 +228,6 @@
             220
         ]
         country: yemen
+        planet: earth
     }
 ]

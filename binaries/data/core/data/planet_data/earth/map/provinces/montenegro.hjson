@@ -8,6 +8,7 @@
             133
         ]
         country: montenegro
+        planet: earth
     }
     {
         identifier: bar
@@ -18,6 +19,7 @@
             11
         ]
         country: montenegro
+        planet: earth
     }
     {
         identifier: berane
@@ -28,6 +30,7 @@
             129
         ]
         country: montenegro
+        planet: earth
     }
     {
         identifier: budva
@@ -38,6 +41,7 @@
             42
         ]
         country: montenegro
+        planet: earth
     }
     {
         identifier: cetinje
@@ -48,6 +52,7 @@
             158
         ]
         country: montenegro
+        planet: earth
     }
     {
         identifier: danilovgrad
@@ -58,6 +63,7 @@
             103
         ]
         country: montenegro
+        planet: earth
     }
     {
         identifier: herceg_novi
@@ -68,6 +74,7 @@
             124
         ]
         country: montenegro
+        planet: earth
     }
     {
         identifier: kolasin
@@ -78,6 +85,7 @@
             36
         ]
         country: montenegro
+        planet: earth
     }
     {
         identifier: kotor
@@ -88,6 +96,7 @@
             99
         ]
         country: montenegro
+        planet: earth
     }
     {
         identifier: mojkovac
@@ -98,6 +107,7 @@
             91
         ]
         country: montenegro
+        planet: earth
     }
     {
         identifier: niksic
@@ -108,6 +118,7 @@
             32
         ]
         country: montenegro
+        planet: earth
     }
     {
         identifier: plav
@@ -118,6 +129,7 @@
             196
         ]
         country: montenegro
+        planet: earth
     }
     {
         identifier: pljevlja
@@ -128,6 +140,7 @@
             7
         ]
         country: montenegro
+        planet: earth
     }
     {
         identifier: pluzine
@@ -138,6 +151,7 @@
             221
         ]
         country: montenegro
+        planet: earth
     }
     {
         identifier: podgorica
@@ -148,6 +162,7 @@
             200
         ]
         country: montenegro
+        planet: earth
     }
     {
         identifier: rozaje
@@ -158,6 +173,7 @@
             251
         ]
         country: montenegro
+        planet: earth
     }
     {
         identifier: savnik
@@ -168,6 +184,7 @@
             225
         ]
         country: montenegro
+        planet: earth
     }
     {
         identifier: tivat
@@ -178,6 +195,7 @@
             109
         ]
         country: montenegro
+        planet: earth
     }
     {
         identifier: ulcinj
@@ -188,6 +206,7 @@
             78
         ]
         country: montenegro
+        planet: earth
     }
     {
         identifier: zabljak
@@ -198,5 +217,6 @@
             154
         ]
         country: montenegro
+        planet: earth
     }
 ]

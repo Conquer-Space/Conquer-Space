@@ -8,6 +8,7 @@
             148
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: bam
@@ -18,6 +19,7 @@
             19
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: banwa
@@ -28,6 +30,7 @@
             215
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: bazega
@@ -38,6 +41,7 @@
             62
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: bougouriba
@@ -48,6 +52,7 @@
             93
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: boulgou
@@ -58,6 +63,7 @@
             82
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: boulkiemde
@@ -68,6 +74,7 @@
             239
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: ganzourgou
@@ -78,6 +85,7 @@
             38
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: gnagna
@@ -88,6 +96,7 @@
             251
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: gourma
@@ -98,6 +107,7 @@
             184
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: houet
@@ -108,6 +118,7 @@
             93
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: ioba
@@ -118,6 +129,7 @@
             106
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: kadiogo
@@ -128,6 +140,7 @@
             50
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: kenedougou
@@ -138,6 +151,7 @@
             160
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: komoe
@@ -148,6 +162,7 @@
             179
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: komondjari
@@ -158,6 +173,7 @@
             211
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: kompienga
@@ -168,6 +184,7 @@
             131
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: kossi
@@ -178,6 +195,7 @@
             81
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: koulpelogo
@@ -188,6 +206,7 @@
             15
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: kouritenga
@@ -198,6 +217,7 @@
             227
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: kourweogo
@@ -208,6 +228,7 @@
             129
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: leraba
@@ -218,6 +239,7 @@
             45
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: loroum
@@ -228,6 +250,7 @@
             136
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: mou_houn
@@ -238,6 +261,7 @@
             160
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: nahouri
@@ -248,6 +272,7 @@
             161
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: namentenga
@@ -258,6 +283,7 @@
             141
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: nayala
@@ -268,6 +294,7 @@
             196
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: noumbiel
@@ -278,6 +305,7 @@
             57
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: oubritenga
@@ -288,6 +316,7 @@
             117
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: oudalan
@@ -298,6 +327,7 @@
             124
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: passore
@@ -308,6 +338,7 @@
             7
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: poni
@@ -318,6 +349,7 @@
             246
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: sanguie
@@ -328,6 +360,7 @@
             215
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: sanmatenga
@@ -338,6 +371,7 @@
             208
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: seno
@@ -348,6 +382,7 @@
             77
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: sissili
@@ -358,6 +393,7 @@
             228
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: soum
@@ -368,6 +404,7 @@
             2
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: sourou
@@ -378,6 +415,7 @@
             14
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: tapoa
@@ -388,6 +426,7 @@
             253
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: tuy
@@ -398,6 +437,7 @@
             26
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: yagha
@@ -408,6 +448,7 @@
             144
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: yatenga
@@ -418,6 +459,7 @@
             203
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: ziro
@@ -428,6 +470,7 @@
             172
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: zondoma
@@ -438,6 +481,7 @@
             74
         ]
         country: burkina_faso
+        planet: earth
     }
     {
         identifier: zoundweogo
@@ -448,5 +492,6 @@
             105
         ]
         country: burkina_faso
+        planet: earth
     }
 ]
