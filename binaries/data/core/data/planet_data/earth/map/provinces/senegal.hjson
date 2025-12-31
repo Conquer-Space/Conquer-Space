@@ -1,0 +1,142 @@
+[
+    {
+        identifier: dakar
+        color:
+        [
+            109
+            63
+            59
+        ]
+        country: senegal
+    }
+    {
+        identifier: diourbel
+        color:
+        [
+            192
+            50
+            238
+        ]
+        country: senegal
+    }
+    {
+        identifier: fatick
+        color:
+        [
+            87
+            232
+            254
+        ]
+        country: senegal
+    }
+    {
+        identifier: kaffrine
+        color:
+        [
+            87
+            161
+            175
+        ]
+        country: senegal
+    }
+    {
+        identifier: kaolack
+        color:
+        [
+            87
+            190
+            53
+        ]
+        country: senegal
+    }
+    {
+        identifier: kedougou
+        color:
+        [
+            26
+            203
+            227
+        ]
+        country: senegal
+    }
+    {
+        identifier: kolda
+        color:
+        [
+            26
+            246
+            172
+        ]
+        country: senegal
+    }
+    {
+        identifier: louga
+        color:
+        [
+            109
+            34
+            181
+        ]
+        country: senegal
+    }
+    {
+        identifier: matam
+        color:
+        [
+            85
+            217
+            79
+        ]
+        country: senegal
+    }
+    {
+        identifier: saint-louis
+        color:
+        [
+            85
+            174
+            134
+        ]
+        country: senegal
+    }
+    {
+        identifier: sedhiou
+        color:
+        [
+            84
+            131
+            7
+        ]
+        country: senegal
+    }
+    {
+        identifier: tambacounda
+        color:
+        [
+            26
+            218
+            38
+        ]
+        country: senegal
+    }
+    {
+        identifier: thies
+        color:
+        [
+            109
+            48
+            248
+        ]
+        country: senegal
+    }
+    {
+        identifier: ziguinchor
+        color:
+        [
+            84
+            159
+            141
+        ]
+        country: senegal
+    }
+]

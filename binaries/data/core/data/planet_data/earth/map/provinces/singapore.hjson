@@ -1,0 +1,32 @@
+[
+    {
+        identifier: central_singapore
+        color:
+        [
+            161
+            228
+            142
+        ]
+        country: singapore
+    }
+    {
+        identifier: south_east
+        color:
+        [
+            161
+            242
+            209
+        ]
+        country: singapore
+    }
+    {
+        identifier: south_west
+        color:
+        [
+            161
+            214
+            75
+        ]
+        country: singapore
+    }
+]

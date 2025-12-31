@@ -1,0 +1,182 @@
+[
+    {
+        identifier: attapu
+        color:
+        [
+            62
+            101
+            32
+        ]
+        country: laos
+    }
+    {
+        identifier: bokeo
+        color:
+        [
+            60
+            156
+            192
+        ]
+        country: laos
+    }
+    {
+        identifier: bolikhamxai
+        color:
+        [
+            61
+            14
+            216
+        ]
+        country: laos
+    }
+    {
+        identifier: champasak
+        color:
+        [
+            61
+            157
+            118
+        ]
+        country: laos
+    }
+    {
+        identifier: houaphan
+        color:
+        [
+            61
+            200
+            63
+        ]
+        country: laos
+    }
+    {
+        identifier: khammouan
+        color:
+        [
+            61
+            57
+            161
+        ]
+        country: laos
+    }
+    {
+        identifier: louang_namtha
+        color:
+        [
+            14
+            166
+            213
+        ]
+        country: laos
+    }
+    {
+        identifier: louangphrabang
+        color:
+        [
+            61
+            185
+            252
+        ]
+        country: laos
+    }
+    {
+        identifier: oudomxai
+        color:
+        [
+            14
+            152
+            146
+        ]
+        country: laos
+    }
+    {
+        identifier: phongsali
+        color:
+        [
+            14
+            124
+            12
+        ]
+        country: laos
+    }
+    {
+        identifier: saravan
+        color:
+        [
+            61
+            114
+            173
+        ]
+        country: laos
+    }
+    {
+        identifier: savannakhet
+        color:
+        [
+            61
+            71
+            228
+        ]
+        country: laos
+    }
+    {
+        identifier: stoeng_treng
+        color:
+        [
+            70
+            163
+            220
+        ]
+        country: laos
+    }
+    {
+        identifier: vientiane
+        color:
+        [
+            61
+            143
+            51
+        ]
+        country: laos
+    }
+    {
+        identifier: vientiane_[prefecture]
+        color:
+        [
+            61
+            128
+            240
+        ]
+        country: laos
+    }
+    {
+        identifier: xaignabouri
+        color:
+        [
+            60
+            171
+            3
+        ]
+        country: laos
+    }
+    {
+        identifier: xekong
+        color:
+        [
+            62
+            72
+            154
+        ]
+        country: laos
+    }
+    {
+        identifier: xiangkhoang
+        color:
+        [
+            62
+            1
+            75
+        ]
+        country: laos
+    }
+]

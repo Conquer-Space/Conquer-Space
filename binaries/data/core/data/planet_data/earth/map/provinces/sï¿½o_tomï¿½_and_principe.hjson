@@ -1,0 +1,22 @@
+[
+    {
+        identifier: principe
+        color:
+        [
+            156
+            25
+            86
+        ]
+        country: s�o_tom�_and_principe
+    }
+    {
+        identifier: sao_tome
+        color:
+        [
+            156
+            11
+            19
+        ]
+        country: s�o_tom�_and_principe
+    }
+]

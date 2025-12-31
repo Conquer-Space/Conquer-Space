@@ -57,7 +57,7 @@ class SysProvinceInformation : public SysUserInterface {
     entt::entity selected_ship = entt::null;
     bool city_factory_info = false;
 
-    enum ViewMode { COUNTRY_VIEW, CITY_VIEW } view_mode = ViewMode::COUNTRY_VIEW;
+    enum class ViewMode { COUNTRY_VIEW, CITY_VIEW } view_mode = ViewMode::COUNTRY_VIEW;
 };
 
 }  // namespace cqsp::client::systems

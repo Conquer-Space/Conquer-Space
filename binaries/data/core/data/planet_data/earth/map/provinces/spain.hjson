@@ -1,0 +1,532 @@
+[
+    {
+        identifier: alava
+        color:
+        [
+            190
+            35
+            63
+        ]
+        country: spain
+    }
+    {
+        identifier: albacete
+        color:
+        [
+            190
+            49
+            130
+        ]
+        country: spain
+    }
+    {
+        identifier: alicante
+        color:
+        [
+            139
+            84
+            143
+        ]
+        country: spain
+    }
+    {
+        identifier: almeria
+        color:
+        [
+            139
+            113
+            21
+        ]
+        country: spain
+    }
+    {
+        identifier: asturias
+        color:
+        [
+            140
+            42
+            124
+        ]
+        country: spain
+    }
+    {
+        identifier: avila
+        color:
+        [
+            190
+            149
+            87
+        ]
+        country: spain
+    }
+    {
+        identifier: badajoz
+        color:
+        [
+            46
+            146
+            204
+        ]
+        country: spain
+    }
+    {
+        identifier: baleares
+        color:
+        [
+            159
+            255
+            168
+        ]
+        country: spain
+    }
+    {
+        identifier: barcelona
+        color:
+        [
+            139
+            27
+            131
+        ]
+        country: spain
+    }
+    {
+        identifier: bizkaia
+        color:
+        [
+            140
+            71
+            2
+        ]
+        country: spain
+    }
+    {
+        identifier: burgos
+        color:
+        [
+            190
+            135
+            20
+        ]
+        country: spain
+    }
+    {
+        identifier: caceres
+        color:
+        [
+            46
+            104
+            3
+        ]
+        country: spain
+    }
+    {
+        identifier: cadiz
+        color:
+        [
+            71
+            221
+            158
+        ]
+        country: spain
+    }
+    {
+        identifier: cantabria
+        color:
+        [
+            140
+            56
+            191
+        ]
+        country: spain
+    }
+    {
+        identifier: castellon
+        color:
+        [
+            139
+            56
+            9
+        ]
+        country: spain
+    }
+    {
+        identifier: ceuta
+        color:
+        [
+            14
+            95
+            134
+        ]
+        country: spain
+    }
+    {
+        identifier: ciudad_real
+        color:
+        [
+            252
+            207
+            174
+        ]
+        country: spain
+    }
+    {
+        identifier: cordoba_spain
+        color:
+        [
+            252
+            221
+            241
+        ]
+        country: spain
+    }
+    {
+        identifier: cuenca
+        color:
+        [
+            190
+            78
+            8
+        ]
+        country: spain
+    }
+    {
+        identifier: gerona
+        color:
+        [
+            37
+            168
+            236
+        ]
+        country: spain
+    }
+    {
+        identifier: gipuzkoa
+        color:
+        [
+            37
+            12
+            11
+        ]
+        country: spain
+    }
+    {
+        identifier: granada_spain
+        color:
+        [
+            139
+            127
+            88
+        ]
+        country: spain
+    }
+    {
+        identifier: guadalajara
+        color:
+        [
+            252
+            236
+            52
+        ]
+        country: spain
+    }
+    {
+        identifier: huelva
+        color:
+        [
+            94
+            9
+            200
+        ]
+        country: spain
+    }
+    {
+        identifier: huesca
+        color:
+        [
+            37
+            26
+            78
+        ]
+        country: spain
+    }
+    {
+        identifier: jaen
+        color:
+        [
+            252
+            250
+            119
+        ]
+        country: spain
+    }
+    {
+        identifier: la_coruna
+        color:
+        [
+            140
+            13
+            246
+        ]
+        country: spain
+    }
+    {
+        identifier: la_rioja_spain
+        color:
+        [
+            190
+            20
+            252
+        ]
+        country: spain
+    }
+    {
+        identifier: las_palmas
+        color:
+        [
+            157
+            111
+            158
+        ]
+        country: spain
+    }
+    {
+        identifier: leon_spain
+        color:
+        [
+            190
+            106
+            142
+        ]
+        country: spain
+    }
+    {
+        identifier: lerida
+        color:
+        [
+            37
+            54
+            212
+        ]
+        country: spain
+    }
+    {
+        identifier: lugo
+        color:
+        [
+            140
+            28
+            57
+        ]
+        country: spain
+    }
+    {
+        identifier: madrid
+        color:
+        [
+            253
+            8
+            186
+        ]
+        country: spain
+    }
+    {
+        identifier: malaga
+        color:
+        [
+            139
+            141
+            155
+        ]
+        country: spain
+    }
+    {
+        identifier: melilla
+        color:
+        [
+            31
+            250
+            58
+        ]
+        country: spain
+    }
+    {
+        identifier: murcia
+        color:
+        [
+            139
+            98
+            210
+        ]
+        country: spain
+    }
+    {
+        identifier: navarra
+        color:
+        [
+            36
+            253
+            200
+        ]
+        country: spain
+    }
+    {
+        identifier: orense
+        color:
+        [
+            45
+            245
+            235
+        ]
+        country: spain
+    }
+    {
+        identifier: palencia
+        color:
+        [
+            252
+            193
+            107
+        ]
+        country: spain
+    }
+    {
+        identifier: pontevedra
+        color:
+        [
+            46
+            18
+            113
+        ]
+        country: spain
+    }
+    {
+        identifier: salamanca
+        color:
+        [
+            46
+            89
+            192
+        ]
+        country: spain
+    }
+    {
+        identifier: sant_julia_de_loria
+        color:
+        [
+            37
+            183
+            47
+        ]
+        country: spain
+    }
+    {
+        identifier: santa_cruz_de_tenerife
+        color:
+        [
+            157
+            97
+            91
+        ]
+        country: spain
+    }
+    {
+        identifier: segovia
+        color:
+        [
+            253
+            22
+            253
+        ]
+        country: spain
+    }
+    {
+        identifier: sevilla
+        color:
+        [
+            139
+            155
+            222
+        ]
+        country: spain
+    }
+    {
+        identifier: soria
+        color:
+        [
+            190
+            120
+            209
+        ]
+        country: spain
+    }
+    {
+        identifier: tarragona
+        color:
+        [
+            139
+            41
+            198
+        ]
+        country: spain
+    }
+    {
+        identifier: teruel
+        color:
+        [
+            190
+            63
+            197
+        ]
+        country: spain
+    }
+    {
+        identifier: toledo_spain
+        color:
+        [
+            190
+            92
+            75
+        ]
+        country: spain
+    }
+    {
+        identifier: valencia
+        color:
+        [
+            139
+            70
+            76
+        ]
+        country: spain
+    }
+    {
+        identifier: valladolid
+        color:
+        [
+            253
+            37
+            64
+        ]
+        country: spain
+    }
+    {
+        identifier: zamora
+        color:
+        [
+            46
+            75
+            125
+        ]
+        country: spain
+    }
+    {
+        identifier: zaragoza
+        color:
+        [
+            190
+            6
+            185
+        ]
+        country: spain
+    }
+]

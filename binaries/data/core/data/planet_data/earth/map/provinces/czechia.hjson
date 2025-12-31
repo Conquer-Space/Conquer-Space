@@ -1,0 +1,142 @@
+[
+    {
+        identifier: jihocesky
+        color:
+        [
+            7
+            119
+            18
+        ]
+        country: czechia
+    }
+    {
+        identifier: jihomoravsky
+        color:
+        [
+            21
+            186
+            18
+        ]
+        country: czechia
+    }
+    {
+        identifier: karlovarsky
+        color:
+        [
+            7
+            76
+            73
+        ]
+        country: czechia
+    }
+    {
+        identifier: kralovehradecky
+        color:
+        [
+            18
+            198
+            51
+        ]
+        country: czechia
+    }
+    {
+        identifier: liberecky
+        color:
+        [
+            7
+            62
+            6
+        ]
+        country: czechia
+    }
+    {
+        identifier: moravskoslezsky
+        color:
+        [
+            18
+            255
+            63
+        ]
+        country: czechia
+    }
+    {
+        identifier: olomoucky
+        color:
+        [
+            18
+            226
+            185
+        ]
+        country: czechia
+    }
+    {
+        identifier: pardubicky
+        color:
+        [
+            18
+            240
+            252
+        ]
+        country: czechia
+    }
+    {
+        identifier: plzensky
+        color:
+        [
+            7
+            104
+            207
+        ]
+        country: czechia
+    }
+    {
+        identifier: prague
+        color:
+        [
+            242
+            243
+            91
+        ]
+        country: czechia
+    }
+    {
+        identifier: stredocesky
+        color:
+        [
+            242
+            229
+            24
+        ]
+        country: czechia
+    }
+    {
+        identifier: ustecky
+        color:
+        [
+            7
+            33
+            128
+        ]
+        country: czechia
+    }
+    {
+        identifier: vysocina
+        color:
+        [
+            242
+            214
+            213
+        ]
+        country: czechia
+    }
+    {
+        identifier: zlinsky
+        color:
+        [
+            49
+            91
+            226
+        ]
+        country: czechia
+    }
+]

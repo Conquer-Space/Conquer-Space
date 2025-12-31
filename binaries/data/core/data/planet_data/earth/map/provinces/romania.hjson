@@ -1,0 +1,422 @@
+[
+    {
+        identifier: alba
+        color:
+        [
+            193
+            137
+            54
+        ]
+        country: romania
+    }
+    {
+        identifier: arad
+        color:
+        [
+            17
+            54
+            223
+        ]
+        country: romania
+    }
+    {
+        identifier: arges
+        color:
+        [
+            192
+            193
+            140
+        ]
+        country: romania
+    }
+    {
+        identifier: bacau
+        color:
+        [
+            193
+            122
+            243
+        ]
+        country: romania
+    }
+    {
+        identifier: bihor
+        color:
+        [
+            17
+            83
+            101
+        ]
+        country: romania
+    }
+    {
+        identifier: bistrita-nasaud
+        color:
+        [
+            192
+            136
+            128
+        ]
+        country: romania
+    }
+    {
+        identifier: botosani
+        color:
+        [
+            51
+            107
+            145
+        ]
+        country: romania
+    }
+    {
+        identifier: braila
+        color:
+        [
+            198
+            83
+            184
+        ]
+        country: romania
+    }
+    {
+        identifier: brasov
+        color:
+        [
+            193
+            51
+            164
+        ]
+        country: romania
+    }
+    {
+        identifier: bucharest
+        color:
+        [
+            243
+            101
+            115
+        ]
+        country: romania
+    }
+    {
+        identifier: buzau
+        color:
+        [
+            193
+            37
+            97
+        ]
+        country: romania
+    }
+    {
+        identifier: calarasi_romania
+        color:
+        [
+            50
+            49
+            207
+        ]
+        country: romania
+    }
+    {
+        identifier: caras-severin
+        color:
+        [
+            50
+            220
+            243
+        ]
+        country: romania
+    }
+    {
+        identifier: cluj
+        color:
+        [
+            192
+            122
+            61
+        ]
+        country: romania
+    }
+    {
+        identifier: constanta
+        color:
+        [
+            50
+            106
+            219
+        ]
+        country: romania
+    }
+    {
+        identifier: covasna
+        color:
+        [
+            193
+            8
+            219
+        ]
+        country: romania
+    }
+    {
+        identifier: dambovita
+        color:
+        [
+            192
+            165
+            6
+        ]
+        country: romania
+    }
+    {
+        identifier: dolj
+        color:
+        [
+            50
+            21
+            73
+        ]
+        country: romania
+    }
+    {
+        identifier: galati
+        color:
+        [
+            52
+            51
+            59
+        ]
+        country: romania
+    }
+    {
+        identifier: giurgiu
+        color:
+        [
+            50
+            92
+            152
+        ]
+        country: romania
+    }
+    {
+        identifier: gorj
+        color:
+        [
+            192
+            207
+            207
+        ]
+        country: romania
+    }
+    {
+        identifier: harghita
+        color:
+        [
+            193
+            94
+            109
+        ]
+        country: romania
+    }
+    {
+        identifier: hunedoara
+        color:
+        [
+            192
+            222
+            18
+        ]
+        country: romania
+    }
+    {
+        identifier: ialomita
+        color:
+        [
+            198
+            97
+            251
+        ]
+        country: romania
+    }
+    {
+        identifier: iasi
+        color:
+        [
+            51
+            193
+            35
+        ]
+        country: romania
+    }
+    {
+        identifier: ilfov
+        color:
+        [
+            192
+            179
+            73
+        ]
+        country: romania
+    }
+    {
+        identifier: maramures
+        color:
+        [
+            52
+            94
+            4
+        ]
+        country: romania
+    }
+    {
+        identifier: mehedinti
+        color:
+        [
+            50
+            7
+            6
+        ]
+        country: romania
+    }
+    {
+        identifier: mures
+        color:
+        [
+            193
+            80
+            42
+        ]
+        country: romania
+    }
+    {
+        identifier: neamt
+        color:
+        [
+            193
+            108
+            176
+        ]
+        country: romania
+    }
+    {
+        identifier: olt
+        color:
+        [
+            50
+            149
+            164
+        ]
+        country: romania
+    }
+    {
+        identifier: prahova
+        color:
+        [
+            192
+            250
+            152
+        ]
+        country: romania
+    }
+    {
+        identifier: salaj
+        color:
+        [
+            192
+            150
+            195
+        ]
+        country: romania
+    }
+    {
+        identifier: satu_mare
+        color:
+        [
+            17
+            26
+            89
+        ]
+        country: romania
+    }
+    {
+        identifier: sibiu
+        color:
+        [
+            193
+            65
+            231
+        ]
+        country: romania
+    }
+    {
+        identifier: suceava
+        color:
+        [
+            52
+            79
+            193
+        ]
+        country: romania
+    }
+    {
+        identifier: teleorman
+        color:
+        [
+            50
+            78
+            85
+        ]
+        country: romania
+    }
+    {
+        identifier: timis
+        color:
+        [
+            17
+            126
+            46
+        ]
+        country: romania
+    }
+    {
+        identifier: tulcea
+        color:
+        [
+            52
+            136
+            205
+        ]
+        country: romania
+    }
+    {
+        identifier: valcea
+        color:
+        [
+            192
+            236
+            85
+        ]
+        country: romania
+    }
+    {
+        identifier: vaslui
+        color:
+        [
+            51
+            250
+            47
+        ]
+        country: romania
+    }
+    {
+        identifier: vrancea
+        color:
+        [
+            193
+            23
+            30
+        ]
+        country: romania
+    }
+]

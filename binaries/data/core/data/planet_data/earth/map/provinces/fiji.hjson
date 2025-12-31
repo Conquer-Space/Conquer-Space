@@ -1,0 +1,42 @@
+[
+    {
+        identifier: central_fiji
+        color:
+        [
+            169
+            77
+            93
+        ]
+        country: fiji
+    }
+    {
+        identifier: eastern_fiji
+        color:
+        [
+            163
+            101
+            159
+        ]
+        country: fiji
+    }
+    {
+        identifier: northern_fiji
+        color:
+        [
+            169
+            105
+            227
+        ]
+        country: fiji
+    }
+    {
+        identifier: western_fiji
+        color:
+        [
+            169
+            63
+            26
+        ]
+        country: fiji
+    }
+]

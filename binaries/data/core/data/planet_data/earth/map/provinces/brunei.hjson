@@ -1,0 +1,42 @@
+[
+    {
+        identifier: belait
+        color:
+        [
+            71
+            50
+            122
+        ]
+        country: brunei
+    }
+    {
+        identifier: brunei_and_muara
+        color:
+        [
+            71
+            21
+            244
+        ]
+        country: brunei
+    }
+    {
+        identifier: temburong
+        color:
+        [
+            34
+            252
+            92
+        ]
+        country: brunei
+    }
+    {
+        identifier: tutong
+        color:
+        [
+            71
+            36
+            55
+        ]
+        country: brunei
+    }
+]

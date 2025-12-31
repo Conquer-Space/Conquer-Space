@@ -1,0 +1,102 @@
+[
+    {
+        identifier: flacq
+        color:
+        [
+            154
+            23
+            234
+        ]
+        country: mauritius
+    }
+    {
+        identifier: grand_port
+        color:
+        [
+            154
+            9
+            167
+        ]
+        country: mauritius
+    }
+    {
+        identifier: moka
+        color:
+        [
+            244
+            230
+            132
+        ]
+        country: mauritius
+    }
+    {
+        identifier: pamplemousses
+        color:
+        [
+            153
+            208
+            155
+        ]
+        country: mauritius
+    }
+    {
+        identifier: plaines_wilhems
+        color:
+        [
+            244
+            244
+            199
+        ]
+        country: mauritius
+    }
+    {
+        identifier: port_louis
+        color:
+        [
+            245
+            17
+            77
+        ]
+        country: mauritius
+    }
+    {
+        identifier: riviere_du_rempart
+        color:
+        [
+            153
+            194
+            88
+        ]
+        country: mauritius
+    }
+    {
+        identifier: riviere_noire
+        color:
+        [
+            153
+            237
+            33
+        ]
+        country: mauritius
+    }
+    {
+        identifier: rodrigues
+        color:
+        [
+            169
+            34
+            148
+        ]
+        country: mauritius
+    }
+    {
+        identifier: savanne
+        color:
+        [
+            153
+            251
+            100
+        ]
+        country: mauritius
+    }
+]

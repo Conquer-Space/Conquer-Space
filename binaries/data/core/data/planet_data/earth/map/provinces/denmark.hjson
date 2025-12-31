@@ -1,0 +1,122 @@
+[
+    {
+        identifier: eysturoyar
+        color:
+        [
+            161
+            142
+            252
+        ]
+        country: denmark
+    }
+    {
+        identifier: hovedstaden
+        color:
+        [
+            160
+            242
+            27
+        ]
+        country: denmark
+    }
+    {
+        identifier: kommune_kujalleq
+        color:
+        [
+            141
+            214
+            86
+        ]
+        country: denmark
+    }
+    {
+        identifier: kommuneqarfik_sermersooq
+        color:
+        [
+            141
+            143
+            7
+        ]
+        country: denmark
+    }
+    {
+        identifier: midtjylland
+        color:
+        [
+            141
+            114
+            129
+        ]
+        country: denmark
+    }
+    {
+        identifier: nationalparken
+        color:
+        [
+            141
+            157
+            74
+        ]
+        country: denmark
+    }
+    {
+        identifier: nordjylland
+        color:
+        [
+            141
+            128
+            196
+        ]
+        country: denmark
+    }
+    {
+        identifier: pituffik
+        color:
+        [
+            141
+            185
+            208
+        ]
+        country: denmark
+    }
+    {
+        identifier: qaasuitsup_kommunia
+        color:
+        [
+            141
+            171
+            141
+        ]
+        country: denmark
+    }
+    {
+        identifier: qeqqata_kommunia
+        color:
+        [
+            141
+            200
+            19
+        ]
+        country: denmark
+    }
+    {
+        identifier: sjaaelland
+        color:
+        [
+            160
+            227
+            216
+        ]
+        country: denmark
+    }
+    {
+        identifier: syddanmark
+        color:
+        [
+            15
+            167
+            139
+        ]
+        country: denmark
+    }
+]

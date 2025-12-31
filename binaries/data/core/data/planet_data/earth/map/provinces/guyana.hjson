@@ -1,0 +1,102 @@
+[
+    {
+        identifier: barima-waini
+        color:
+        [
+            74
+            252
+            70
+        ]
+        country: guyana
+    }
+    {
+        identifier: cuyuni-mazaruni
+        color:
+        [
+            105
+            217
+            68
+        ]
+        country: guyana
+    }
+    {
+        identifier: demerara-mahaica
+        color:
+        [
+            101
+            200
+            41
+        ]
+        country: guyana
+    }
+    {
+        identifier: east_berbice-corentyne
+        color:
+        [
+            105
+            245
+            202
+        ]
+        country: guyana
+    }
+    {
+        identifier: essequibo_islands-west_demerara
+        color:
+        [
+            106
+            4
+            13
+        ]
+        country: guyana
+    }
+    {
+        identifier: mahaica-berbice
+        color:
+        [
+            2
+            243
+            223
+        ]
+        country: guyana
+    }
+    {
+        identifier: pomeroon-supenaam
+        color:
+        [
+            15
+            81
+            249
+        ]
+        country: guyana
+    }
+    {
+        identifier: potaro-siparuni
+        color:
+        [
+            15
+            110
+            127
+        ]
+        country: guyana
+    }
+    {
+        identifier: upper_demerara-berbice
+        color:
+        [
+            15
+            124
+            194
+        ]
+        country: guyana
+    }
+    {
+        identifier: upper_takutu-upper_essequibo
+        color:
+        [
+            105
+            231
+            135
+        ]
+        country: guyana
+    }
+]

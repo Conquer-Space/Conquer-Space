@@ -1,0 +1,52 @@
+[
+    {
+        identifier: centre_togo
+        color:
+        [
+            68
+            19
+            210
+        ]
+        country: togo
+    }
+    {
+        identifier: kara
+        color:
+        [
+            68
+            5
+            143
+        ]
+        country: togo
+    }
+    {
+        identifier: maritime
+        color:
+        [
+            68
+            62
+            155
+        ]
+        country: togo
+    }
+    {
+        identifier: plateaux_togo
+        color:
+        [
+            68
+            34
+            21
+        ]
+        country: togo
+    }
+    {
+        identifier: savanes_togo
+        color:
+        [
+            67
+            218
+            198
+        ]
+        country: togo
+    }
+]

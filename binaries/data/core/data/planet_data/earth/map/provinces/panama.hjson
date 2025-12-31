@@ -1,0 +1,122 @@
+[
+    {
+        identifier: bocas_del_toro
+        color:
+        [
+            74
+            152
+            113
+        ]
+        country: panama
+    }
+    {
+        identifier: chiriqui
+        color:
+        [
+            74
+            180
+            247
+        ]
+        country: panama
+    }
+    {
+        identifier: cocle
+        color:
+        [
+            101
+            71
+            206
+        ]
+        country: panama
+    }
+    {
+        identifier: colon_panama
+        color:
+        [
+            104
+            216
+            142
+        ]
+        country: panama
+    }
+    {
+        identifier: darien
+        color:
+        [
+            74
+            238
+            3
+        ]
+        country: panama
+    }
+    {
+        identifier: embera
+        color:
+        [
+            74
+            223
+            192
+        ]
+        country: panama
+    }
+    {
+        identifier: herrera
+        color:
+        [
+            117
+            168
+            192
+        ]
+        country: panama
+    }
+    {
+        identifier: kuna_yala
+        color:
+        [
+            74
+            195
+            58
+        ]
+        country: panama
+    }
+    {
+        identifier: los_santos
+        color:
+        [
+            117
+            154
+            125
+        ]
+        country: panama
+    }
+    {
+        identifier: ngobe_bugle
+        color:
+        [
+            116
+            68
+            53
+        ]
+        country: panama
+    }
+    {
+        identifier: panama
+        color:
+        [
+            101
+            57
+            139
+        ]
+        country: panama
+    }
+    {
+        identifier: veraguas
+        color:
+        [
+            102
+            1
+            53
+        ]
+        country: panama
+    }
+]

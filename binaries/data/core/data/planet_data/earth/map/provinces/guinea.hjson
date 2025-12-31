@@ -1,0 +1,342 @@
+[
+    {
+        identifier: beyla
+        color:
+        [
+            24
+            102
+            162
+        ]
+        country: guinea
+    }
+    {
+        identifier: boffa
+        color:
+        [
+            109
+            148
+            205
+        ]
+        country: guinea
+    }
+    {
+        identifier: boke
+        color:
+        [
+            70
+            64
+            7
+        ]
+        country: guinea
+    }
+    {
+        identifier: conakry
+        color:
+        [
+            109
+            177
+            83
+        ]
+        country: guinea
+    }
+    {
+        identifier: coyah
+        color:
+        [
+            109
+            191
+            150
+        ]
+        country: guinea
+    }
+    {
+        identifier: dabola
+        color:
+        [
+            20
+            14
+            56
+        ]
+        country: guinea
+    }
+    {
+        identifier: dalaba
+        color:
+        [
+            207
+            18
+            207
+        ]
+        country: guinea
+    }
+    {
+        identifier: dinguiraye
+        color:
+        [
+            70
+            149
+            153
+        ]
+        country: guinea
+    }
+    {
+        identifier: dubreka
+        color:
+        [
+            109
+            163
+            16
+        ]
+        country: guinea
+    }
+    {
+        identifier: faranah
+        color:
+        [
+            19
+            227
+            111
+        ]
+        country: guinea
+    }
+    {
+        identifier: forecariah
+        color:
+        [
+            20
+            28
+            123
+        ]
+        country: guinea
+    }
+    {
+        identifier: fria
+        color:
+        [
+            207
+            75
+            219
+        ]
+        country: guinea
+    }
+    {
+        identifier: gaoual
+        color:
+        [
+            70
+            35
+            129
+        ]
+        country: guinea
+    }
+    {
+        identifier: gueckedou
+        color:
+        [
+            20
+            42
+            190
+        ]
+        country: guinea
+    }
+    {
+        identifier: kankan
+        color:
+        [
+            24
+            74
+            28
+        ]
+        country: guinea
+    }
+    {
+        identifier: kerouane
+        color:
+        [
+            206
+            232
+            6
+        ]
+        country: guinea
+    }
+    {
+        identifier: kindia
+        color:
+        [
+            19
+            241
+            178
+        ]
+        country: guinea
+    }
+    {
+        identifier: kissidougou
+        color:
+        [
+            206
+            217
+            195
+        ]
+        country: guinea
+    }
+    {
+        identifier: koubia
+        color:
+        [
+            70
+            121
+            19
+        ]
+        country: guinea
+    }
+    {
+        identifier: koundara
+        color:
+        [
+            26
+            232
+            105
+        ]
+        country: guinea
+    }
+    {
+        identifier: kouroussa
+        color:
+        [
+            207
+            61
+            152
+        ]
+        country: guinea
+    }
+    {
+        identifier: labe
+        color:
+        [
+            207
+            33
+            18
+        ]
+        country: guinea
+    }
+    {
+        identifier: lelouma
+        color:
+        [
+            207
+            4
+            140
+        ]
+        country: guinea
+    }
+    {
+        identifier: lola
+        color:
+        [
+            24
+            145
+            107
+        ]
+        country: guinea
+    }
+    {
+        identifier: macenta
+        color:
+        [
+            69
+            234
+            117
+        ]
+        country: guinea
+    }
+    {
+        identifier: mali
+        color:
+        [
+            27
+            4
+            239
+        ]
+        country: guinea
+    }
+    {
+        identifier: mamou
+        color:
+        [
+            19
+            255
+            245
+        ]
+        country: guinea
+    }
+    {
+        identifier: mandiana
+        color:
+        [
+            24
+            88
+            95
+        ]
+        country: guinea
+    }
+    {
+        identifier: nzerekore
+        color:
+        [
+            70
+            21
+            62
+        ]
+        country: guinea
+    }
+    {
+        identifier: pita
+        color:
+        [
+            207
+            47
+            85
+        ]
+        country: guinea
+    }
+    {
+        identifier: siguiri
+        color:
+        [
+            70
+            92
+            141
+        ]
+        country: guinea
+    }
+    {
+        identifier: telimele
+        color:
+        [
+            206
+            246
+            73
+        ]
+        country: guinea
+    }
+    {
+        identifier: tougue
+        color:
+        [
+            70
+            135
+            86
+        ]
+        country: guinea
+    }
+    {
+        identifier: yomou
+        color:
+        [
+            69
+            248
+            184
+        ]
+        country: guinea
+    }
+]

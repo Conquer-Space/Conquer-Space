@@ -1,0 +1,62 @@
+[
+    {
+        identifier: ali_sabieh
+        color:
+        [
+            21
+            0
+            171
+        ]
+        country: djibouti
+    }
+    {
+        identifier: arta
+        color:
+        [
+            21
+            14
+            238
+        ]
+        country: djibouti
+    }
+    {
+        identifier: dikhil
+        color:
+        [
+            21
+            29
+            49
+        ]
+        country: djibouti
+    }
+    {
+        identifier: djibouti
+        color:
+        [
+            113
+            9
+            7
+        ]
+        country: djibouti
+    }
+    {
+        identifier: obock
+        color:
+        [
+            21
+            143
+            73
+        ]
+        country: djibouti
+    }
+    {
+        identifier: tadjourah
+        color:
+        [
+            21
+            57
+            183
+        ]
+        country: djibouti
+    }
+]

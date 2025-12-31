@@ -1,0 +1,112 @@
+[
+    {
+        identifier: addis_ababa
+        color:
+        [
+            240
+            28
+            2
+        ]
+        country: ethiopia
+    }
+    {
+        identifier: afar
+        color:
+        [
+            21
+            43
+            116
+        ]
+        country: ethiopia
+    }
+    {
+        identifier: amhara
+        color:
+        [
+            64
+            188
+            30
+        ]
+        country: ethiopia
+    }
+    {
+        identifier: benshangul-gumaz
+        color:
+        [
+            64
+            230
+            231
+        ]
+        country: ethiopia
+    }
+    {
+        identifier: dire_dawa
+        color:
+        [
+            240
+            13
+            191
+        ]
+        country: ethiopia
+    }
+    {
+        identifier: gambela_peoples
+        color:
+        [
+            65
+            17
+            176
+        ]
+        country: ethiopia
+    }
+    {
+        identifier: harari_people
+        color:
+        [
+            240
+            42
+            69
+        ]
+        country: ethiopia
+    }
+    {
+        identifier: oromiya
+        color:
+        [
+            65
+            46
+            54
+        ]
+        country: ethiopia
+    }
+    {
+        identifier: somali
+        color:
+        [
+            1
+            171
+            218
+        ]
+        country: ethiopia
+    }
+    {
+        identifier: southern_nations_nationalities_and_peoples
+        color:
+        [
+            1
+            143
+            84
+        ]
+        country: ethiopia
+    }
+    {
+        identifier: tigray
+        color:
+        [
+            64
+            216
+            164
+        ]
+        country: ethiopia
+    }
+]

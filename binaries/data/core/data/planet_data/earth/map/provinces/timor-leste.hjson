@@ -1,0 +1,132 @@
+[
+    {
+        identifier: aileu
+        color:
+        [
+            184
+            202
+            31
+        ]
+        country: timor-leste
+    }
+    {
+        identifier: ainaro
+        color:
+        [
+            164
+            159
+            97
+        ]
+        country: timor-leste
+    }
+    {
+        identifier: ambeno
+        color:
+        [
+            34
+            195
+            80
+        ]
+        country: timor-leste
+    }
+    {
+        identifier: baucau
+        color:
+        [
+            164
+            230
+            176
+        ]
+        country: timor-leste
+    }
+    {
+        identifier: bobonaro
+        color:
+        [
+            34
+            209
+            147
+        ]
+        country: timor-leste
+    }
+    {
+        identifier: cova_lima
+        color:
+        [
+            34
+            223
+            214
+        ]
+        country: timor-leste
+    }
+    {
+        identifier: dili
+        color:
+        [
+            164
+            244
+            243
+        ]
+        country: timor-leste
+    }
+    {
+        identifier: ermera
+        color:
+        [
+            184
+            187
+            220
+        ]
+        country: timor-leste
+    }
+    {
+        identifier: lautem
+        color:
+        [
+            164
+            216
+            109
+        ]
+        country: timor-leste
+    }
+    {
+        identifier: liquica
+        color:
+        [
+            165
+            3
+            54
+        ]
+        country: timor-leste
+    }
+    {
+        identifier: manatuto
+        color:
+        [
+            164
+            187
+            231
+        ]
+        country: timor-leste
+    }
+    {
+        identifier: manufahi
+        color:
+        [
+            164
+            173
+            164
+        ]
+        country: timor-leste
+    }
+    {
+        identifier: viqueque
+        color:
+        [
+            164
+            202
+            42
+        ]
+        country: timor-leste
+    }
+]

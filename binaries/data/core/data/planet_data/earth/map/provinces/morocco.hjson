@@ -1,0 +1,162 @@
+[
+    {
+        identifier: chaouia_-_ouardigha
+        color:
+        [
+            108
+            205
+            35
+        ]
+        country: morocco
+    }
+    {
+        identifier: doukkala_-_abda
+        color:
+        [
+            108
+            233
+            169
+        ]
+        country: morocco
+    }
+    {
+        identifier: fes_-_boulemane
+        color:
+        [
+            200
+            13
+            213
+        ]
+        country: morocco
+    }
+    {
+        identifier: gharb_-_chrarda_-_beni_hssen
+        color:
+        [
+            108
+            176
+            157
+        ]
+        country: morocco
+    }
+    {
+        identifier: grand_casablanca
+        color:
+        [
+            108
+            219
+            102
+        ]
+        country: morocco
+    }
+    {
+        identifier: guelmim_-_es-semara
+        color:
+        [
+            3
+            59
+            46
+        ]
+        country: morocco
+    }
+    {
+        identifier: laayoune_-_boujdour_-_sakia_el_hamra
+        color:
+        [
+            3
+            87
+            180
+        ]
+        country: morocco
+    }
+    {
+        identifier: marrakech_-_tensift_-_al_haouz
+        color:
+        [
+            108
+            247
+            236
+        ]
+        country: morocco
+    }
+    {
+        identifier: meknes_-_tafilalet
+        color:
+        [
+            83
+            30
+            124
+        ]
+        country: morocco
+    }
+    {
+        identifier: oriental
+        color:
+        [
+            32
+            8
+            125
+        ]
+        country: morocco
+    }
+    {
+        identifier: oued_el_dahab
+        color:
+        [
+            3
+            101
+            247
+        ]
+        country: morocco
+    }
+    {
+        identifier: rabat_-_sale_-_zemmour_-_zaer
+        color:
+        [
+            108
+            190
+            224
+        ]
+        country: morocco
+    }
+    {
+        identifier: souss_-_massa_-_draa
+        color:
+        [
+            83
+            44
+            191
+        ]
+        country: morocco
+    }
+    {
+        identifier: tadla_-_azilal
+        color:
+        [
+            200
+            28
+            24
+        ]
+        country: morocco
+    }
+    {
+        identifier: tanger_-_tetouan
+        color:
+        [
+            14
+            109
+            201
+        ]
+        country: morocco
+    }
+    {
+        identifier: taza_-_al_hoceima_-_taounate
+        color:
+        [
+            108
+            162
+            90
+        ]
+        country: morocco
+    }
+]

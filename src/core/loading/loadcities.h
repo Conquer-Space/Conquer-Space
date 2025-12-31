@@ -16,6 +16,8 @@
  */
 #pragma once
 
+#include <string_view>
+
 #include "core/loading/hjsonloader.h"
 
 namespace cqsp::core::loading {
@@ -30,6 +32,8 @@ class CityLoader : public HjsonLoader {
     const Hjson::Value& GetDefaultValues() override { return default_val; }
     bool LoadValue(const Hjson::Value& values, Node& node) override;
     void PostLoad(const Node& node) override;
+
+    void ParseIndustry(const Hjson::Value& industry_hjson, Node& node, std::string_view identifier);
 
  private:
     Hjson::Value default_val;

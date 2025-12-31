@@ -1,0 +1,232 @@
+[
+    {
+        identifier: azuay
+        color:
+        [
+            209
+            34
+            126
+        ]
+        country: ecuador
+    }
+    {
+        identifier: bolivar_ecuador
+        color:
+        [
+            209
+            105
+            205
+        ]
+        country: ecuador
+    }
+    {
+        identifier: canar
+        color:
+        [
+            209
+            48
+            193
+        ]
+        country: ecuador
+    }
+    {
+        identifier: chimborazo
+        color:
+        [
+            209
+            91
+            138
+        ]
+        country: ecuador
+    }
+    {
+        identifier: cotopaxi
+        color:
+        [
+            209
+            134
+            83
+        ]
+        country: ecuador
+    }
+    {
+        identifier: el_oro
+        color:
+        [
+            75
+            224
+            118
+        ]
+        country: ecuador
+    }
+    {
+        identifier: esmeraldas
+        color:
+        [
+            42
+            243
+            201
+        ]
+        country: ecuador
+    }
+    {
+        identifier: galapagos
+        color:
+        [
+            99
+            184
+            122
+        ]
+        country: ecuador
+    }
+    {
+        identifier: guayas
+        color:
+        [
+            99
+            141
+            177
+        ]
+        country: ecuador
+    }
+    {
+        identifier: imbabura
+        color:
+        [
+            209
+            120
+            16
+        ]
+        country: ecuador
+    }
+    {
+        identifier: loja
+        color:
+        [
+            75
+            195
+            240
+        ]
+        country: ecuador
+    }
+    {
+        identifier: los_rios_ecuador
+        color:
+        [
+            209
+            148
+            150
+        ]
+        country: ecuador
+    }
+    {
+        identifier: manabi
+        color:
+        [
+            101
+            29
+            5
+        ]
+        country: ecuador
+    }
+    {
+        identifier: morona_santiago
+        color:
+        [
+            75
+            138
+            228
+        ]
+        country: ecuador
+    }
+    {
+        identifier: napo
+        color:
+        [
+            209
+            63
+            4
+        ]
+        country: ecuador
+    }
+    {
+        identifier: orellana
+        color:
+        [
+            75
+            110
+            94
+        ]
+        country: ecuador
+    }
+    {
+        identifier: pastaza
+        color:
+        [
+            75
+            124
+            161
+        ]
+        country: ecuador
+    }
+    {
+        identifier: pichincha
+        color:
+        [
+            209
+            162
+            217
+        ]
+        country: ecuador
+    }
+    {
+        identifier: santa_elena
+        color:
+        [
+            101
+            14
+            194
+        ]
+        country: ecuador
+    }
+    {
+        identifier: santo_domingo_de_los_tsachilas
+        color:
+        [
+            209
+            177
+            28
+        ]
+        country: ecuador
+    }
+    {
+        identifier: sucumbios
+        color:
+        [
+            43
+            30
+            146
+        ]
+        country: ecuador
+    }
+    {
+        identifier: tungurahua
+        color:
+        [
+            209
+            77
+            71
+        ]
+        country: ecuador
+    }
+    {
+        identifier: zamora_chinchipe
+        color:
+        [
+            75
+            167
+            106
+        ]
+        country: ecuador
+    }
+]

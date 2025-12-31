@@ -1,0 +1,332 @@
+[
+    {
+        identifier: amazonas_colombia
+        color:
+        [
+            75
+            81
+            216
+        ]
+        country: colombia
+    }
+    {
+        identifier: antioquia
+        color:
+        [
+            104
+            230
+            209
+        ]
+        country: colombia
+    }
+    {
+        identifier: arauca
+        color:
+        [
+            77
+            240
+            37
+        ]
+        country: colombia
+    }
+    {
+        identifier: atlantico
+        color:
+        [
+            105
+            31
+            221
+        ]
+        country: colombia
+    }
+    {
+        identifier: bogota
+        color:
+        [
+            210
+            149
+            76
+        ]
+        country: colombia
+    }
+    {
+        identifier: bolivar_colombia
+        color:
+        [
+            105
+            17
+            154
+        ]
+        country: colombia
+    }
+    {
+        identifier: boyaca
+        color:
+        [
+            77
+            254
+            104
+        ]
+        country: colombia
+    }
+    {
+        identifier: caldas
+        color:
+        [
+            210
+            106
+            131
+        ]
+        country: colombia
+    }
+    {
+        identifier: caqueta
+        color:
+        [
+            210
+            63
+            186
+        ]
+        country: colombia
+    }
+    {
+        identifier: carchi
+        color:
+        [
+            43
+            16
+            79
+        ]
+        country: colombia
+    }
+    {
+        identifier: casanare
+        color:
+        [
+            210
+            120
+            198
+        ]
+        country: colombia
+    }
+    {
+        identifier: cauca
+        color:
+        [
+            100
+            128
+            36
+        ]
+        country: colombia
+    }
+    {
+        identifier: cesar
+        color:
+        [
+            77
+            183
+            25
+        ]
+        country: colombia
+    }
+    {
+        identifier: choco
+        color:
+        [
+            74
+            209
+            125
+        ]
+        country: colombia
+    }
+    {
+        identifier: cordoba_colombia
+        color:
+        [
+            104
+            245
+            20
+        ]
+        country: colombia
+    }
+    {
+        identifier: cundinamarca
+        color:
+        [
+            210
+            206
+            88
+        ]
+        country: colombia
+    }
+    {
+        identifier: guainia
+        color:
+        [
+            75
+            53
+            82
+        ]
+        country: colombia
+    }
+    {
+        identifier: guaviare
+        color:
+        [
+            210
+            92
+            64
+        ]
+        country: colombia
+    }
+    {
+        identifier: huila_colombia
+        color:
+        [
+            210
+            77
+            253
+        ]
+        country: colombia
+    }
+    {
+        identifier: la_guajira
+        color:
+        [
+            77
+            168
+            214
+        ]
+        country: colombia
+    }
+    {
+        identifier: magdalena
+        color:
+        [
+            105
+            46
+            32
+        ]
+        country: colombia
+    }
+    {
+        identifier: meta
+        color:
+        [
+            210
+            135
+            9
+        ]
+        country: colombia
+    }
+    {
+        identifier: narino
+        color:
+        [
+            43
+            2
+            12
+        ]
+        country: colombia
+    }
+    {
+        identifier: norte_de_santander
+        color:
+        [
+            77
+            197
+            92
+        ]
+        country: colombia
+    }
+    {
+        identifier: putumayo
+        color:
+        [
+            43
+            44
+            213
+        ]
+        country: colombia
+    }
+    {
+        identifier: quindio
+        color:
+        [
+            210
+            192
+            21
+        ]
+        country: colombia
+    }
+    {
+        identifier: risaralda
+        color:
+        [
+            210
+            220
+            155
+        ]
+        country: colombia
+    }
+    {
+        identifier: santander
+        color:
+        [
+            210
+            163
+            143
+        ]
+        country: colombia
+    }
+    {
+        identifier: sucre_colombia
+        color:
+        [
+            105
+            3
+            87
+        ]
+        country: colombia
+    }
+    {
+        identifier: tolima
+        color:
+        [
+            210
+            177
+            210
+        ]
+        country: colombia
+    }
+    {
+        identifier: valle_del_cauca
+        color:
+        [
+            101
+            43
+            72
+        ]
+        country: colombia
+    }
+    {
+        identifier: vaupes
+        color:
+        [
+            75
+            67
+            149
+        ]
+        country: colombia
+    }
+    {
+        identifier: vichada
+        color:
+        [
+            78
+            12
+            171
+        ]
+        country: colombia
+    }
+]

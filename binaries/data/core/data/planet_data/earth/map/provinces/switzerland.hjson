@@ -1,0 +1,252 @@
+[
+    {
+        identifier: aargau
+        color:
+        [
+            45
+            3
+            120
+        ]
+        country: switzerland
+    }
+    {
+        identifier: appenzell_ausserrhoden
+        color:
+        [
+            189
+            77
+            82
+        ]
+        country: switzerland
+    }
+    {
+        identifier: appenzell_innerrhoden
+        color:
+        [
+            189
+            91
+            149
+        ]
+        country: switzerland
+    }
+    {
+        identifier: basel-landschaft
+        color:
+        [
+            45
+            31
+            254
+        ]
+        country: switzerland
+    }
+    {
+        identifier: bern
+        color:
+        [
+            179
+            212
+            212
+        ]
+        country: switzerland
+    }
+    {
+        identifier: fribourg
+        color:
+        [
+            180
+            56
+            169
+        ]
+        country: switzerland
+    }
+    {
+        identifier: geneve
+        color:
+        [
+            45
+            174
+            156
+        ]
+        country: switzerland
+    }
+    {
+        identifier: glarus
+        color:
+        [
+            180
+            28
+            35
+        ]
+        country: switzerland
+    }
+    {
+        identifier: graubunden
+        color:
+        [
+            22
+            158
+            66
+        ]
+        country: switzerland
+    }
+    {
+        identifier: jura_switzerland
+        color:
+        [
+            45
+            131
+            211
+        ]
+        country: switzerland
+    }
+    {
+        identifier: lucerne
+        color:
+        [
+            179
+            227
+            23
+        ]
+        country: switzerland
+    }
+    {
+        identifier: neuchatel
+        color:
+        [
+            45
+            231
+            168
+        ]
+        country: switzerland
+    }
+    {
+        identifier: nidwalden
+        color:
+        [
+            180
+            42
+            102
+        ]
+        country: switzerland
+    }
+    {
+        identifier: obwalden
+        color:
+        [
+            180
+            70
+            236
+        ]
+        country: switzerland
+    }
+    {
+        identifier: sankt_gallen
+        color:
+        [
+            45
+            74
+            199
+        ]
+        country: switzerland
+    }
+    {
+        identifier: schaffhausen
+        color:
+        [
+            44
+            216
+            175
+        ]
+        country: switzerland
+    }
+    {
+        identifier: schwyz
+        color:
+        [
+            180
+            13
+            224
+        ]
+        country: switzerland
+    }
+    {
+        identifier: solothurn
+        color:
+        [
+            45
+            117
+            144
+        ]
+        country: switzerland
+    }
+    {
+        identifier: thurgau
+        color:
+        [
+            44
+            230
+            242
+        ]
+        country: switzerland
+    }
+    {
+        identifier: ticino
+        color:
+        [
+            22
+            115
+            121
+        ]
+        country: switzerland
+    }
+    {
+        identifier: uri
+        color:
+        [
+            179
+            255
+            157
+        ]
+        country: switzerland
+    }
+    {
+        identifier: valais
+        color:
+        [
+            22
+            86
+            243
+        ]
+        country: switzerland
+    }
+    {
+        identifier: vaud
+        color:
+        [
+            45
+            203
+            34
+        ]
+        country: switzerland
+    }
+    {
+        identifier: zug
+        color:
+        [
+            179
+            241
+            90
+        ]
+        country: switzerland
+    }
+    {
+        identifier: zurich
+        color:
+        [
+            44
+            245
+            53
+        ]
+        country: switzerland
+    }
+]

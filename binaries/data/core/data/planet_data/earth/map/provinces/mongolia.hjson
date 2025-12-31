@@ -1,0 +1,222 @@
+[
+    {
+        identifier: arhangay
+        color:
+        [
+            233
+            151
+            99
+        ]
+        country: mongolia
+    }
+    {
+        identifier: bayan-olgiy
+        color:
+        [
+            6
+            161
+            37
+        ]
+        country: mongolia
+    }
+    {
+        identifier: bayanhongor
+        color:
+        [
+            6
+            246
+            183
+        ]
+        country: mongolia
+    }
+    {
+        identifier: bulgan
+        color:
+        [
+            55
+            96
+            38
+        ]
+        country: mongolia
+    }
+    {
+        identifier: darhan-uul
+        color:
+        [
+            233
+            122
+            221
+        ]
+        country: mongolia
+    }
+    {
+        identifier: dornod
+        color:
+        [
+            6
+            132
+            159
+        ]
+        country: mongolia
+    }
+    {
+        identifier: dornogovi
+        color:
+        [
+            6
+            203
+            238
+        ]
+        country: mongolia
+    }
+    {
+        identifier: dundgovi
+        color:
+        [
+            233
+            179
+            233
+        ]
+        country: mongolia
+    }
+    {
+        identifier: dzavhan
+        color:
+        [
+            55
+            153
+            50
+        ]
+        country: mongolia
+    }
+    {
+        identifier: govi-altay
+        color:
+        [
+            6
+            218
+            49
+        ]
+        country: mongolia
+    }
+    {
+        identifier: govi-sumber
+        color:
+        [
+            233
+            208
+            111
+        ]
+        country: mongolia
+    }
+    {
+        identifier: hentiy
+        color:
+        [
+            55
+            167
+            117
+        ]
+        country: mongolia
+    }
+    {
+        identifier: hovd
+        color:
+        [
+            6
+            175
+            104
+        ]
+        country: mongolia
+    }
+    {
+        identifier: hovsgol
+        color:
+        [
+            55
+            67
+            160
+        ]
+        country: mongolia
+    }
+    {
+        identifier: omnogovi
+        color:
+        [
+            7
+            4
+            250
+        ]
+        country: mongolia
+    }
+    {
+        identifier: orhon
+        color:
+        [
+            233
+            165
+            166
+        ]
+        country: mongolia
+    }
+    {
+        identifier: ovorhangay
+        color:
+        [
+            233
+            194
+            44
+        ]
+        country: mongolia
+    }
+    {
+        identifier: selenge
+        color:
+        [
+            55
+            124
+            172
+        ]
+        country: mongolia
+    }
+    {
+        identifier: suhbaatar
+        color:
+        [
+            6
+            189
+            171
+        ]
+        country: mongolia
+    }
+    {
+        identifier: tov
+        color:
+        [
+            233
+            137
+            32
+        ]
+        country: mongolia
+    }
+    {
+        identifier: ulaanbaatar
+        color:
+        [
+            234
+            109
+            80
+        ]
+        country: mongolia
+    }
+    {
+        identifier: uvs
+        color:
+        [
+            55
+            110
+            105
+        ]
+        country: mongolia
+    }
+]

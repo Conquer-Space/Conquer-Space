@@ -1,0 +1,122 @@
+[
+    {
+        identifier: ajlun
+        color:
+        [
+            205
+            3
+            32
+        ]
+        country: jordan
+    }
+    {
+        identifier: amman
+        color:
+        [
+            81
+            57
+            150
+        ]
+        country: jordan
+    }
+    {
+        identifier: aqaba
+        color:
+        [
+            58
+            126
+            206
+        ]
+        country: jordan
+    }
+    {
+        identifier: balqa
+        color:
+        [
+            58
+            141
+            17
+        ]
+        country: jordan
+    }
+    {
+        identifier: irbid
+        color:
+        [
+            58
+            69
+            194
+        ]
+        country: jordan
+    }
+    {
+        identifier: jarash
+        color:
+        [
+            205
+            17
+            99
+        ]
+        country: jordan
+    }
+    {
+        identifier: karak
+        color:
+        [
+            58
+            98
+            72
+        ]
+        country: jordan
+    }
+    {
+        identifier: ma`an
+        color:
+        [
+            81
+            43
+            83
+        ]
+        country: jordan
+    }
+    {
+        identifier: madaba
+        color:
+        [
+            58
+            84
+            5
+        ]
+        country: jordan
+    }
+    {
+        identifier: mafraq
+        color:
+        [
+            80
+            185
+            59
+        ]
+        country: jordan
+    }
+    {
+        identifier: tafilah
+        color:
+        [
+            58
+            112
+            139
+        ]
+        country: jordan
+    }
+    {
+        identifier: zarqa
+        color:
+        [
+            81
+            71
+            217
+        ]
+        country: jordan
+    }
+]

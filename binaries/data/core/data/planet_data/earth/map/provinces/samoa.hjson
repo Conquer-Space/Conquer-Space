@@ -1,0 +1,82 @@
+[
+    {
+        identifier: a'ana
+        color:
+        [
+            170
+            21
+            7
+        ]
+        country: samoa
+    }
+    {
+        identifier: atua
+        color:
+        [
+            169
+            234
+            62
+        ]
+        country: samoa
+    }
+    {
+        identifier: fa'asaleleaga
+        color:
+        [
+            163
+            229
+            250
+        ]
+        country: samoa
+    }
+    {
+        identifier: gaga'emauga
+        color:
+        [
+            163
+            158
+            171
+        ]
+        country: samoa
+    }
+    {
+        identifier: gaga'ifomauga
+        color:
+        [
+            163
+            172
+            238
+        ]
+        country: samoa
+    }
+    {
+        identifier: palauli
+        color:
+        [
+            163
+            215
+            183
+        ]
+        country: samoa
+    }
+    {
+        identifier: tuamasaga
+        color:
+        [
+            170
+            6
+            196
+        ]
+        country: samoa
+    }
+    {
+        identifier: vaisigano
+        color:
+        [
+            163
+            187
+            49
+        ]
+        country: samoa
+    }
+]

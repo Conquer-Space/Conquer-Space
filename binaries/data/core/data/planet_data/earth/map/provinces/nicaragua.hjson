@@ -1,0 +1,172 @@
+[
+    {
+        identifier: atlantico_norte
+        color:
+        [
+            42
+            115
+            110
+        ]
+        country: nicaragua
+    }
+    {
+        identifier: atlantico_sur
+        color:
+        [
+            116
+            82
+            120
+        ]
+        country: nicaragua
+    }
+    {
+        identifier: boaco
+        color:
+        [
+            199
+            170
+            0
+        ]
+        country: nicaragua
+    }
+    {
+        identifier: carazo
+        color:
+        [
+            117
+            140
+            58
+        ]
+        country: nicaragua
+    }
+    {
+        identifier: chinandega
+        color:
+        [
+            42
+            201
+            0
+        ]
+        country: nicaragua
+    }
+    {
+        identifier: chontales
+        color:
+        [
+            199
+            184
+            67
+        ]
+        country: nicaragua
+    }
+    {
+        identifier: esteli
+        color:
+        [
+            199
+            198
+            134
+        ]
+        country: nicaragua
+    }
+    {
+        identifier: granada_nicaragua
+        color:
+        [
+            199
+            212
+            201
+        ]
+        country: nicaragua
+    }
+    {
+        identifier: jinotega
+        color:
+        [
+            42
+            158
+            55
+        ]
+        country: nicaragua
+    }
+    {
+        identifier: leon_nicaragua
+        color:
+        [
+            117
+            111
+            180
+        ]
+        country: nicaragua
+    }
+    {
+        identifier: madriz
+        color:
+        [
+            42
+            229
+            134
+        ]
+        country: nicaragua
+    }
+    {
+        identifier: managua
+        color:
+        [
+            117
+            125
+            247
+        ]
+        country: nicaragua
+    }
+    {
+        identifier: masaya
+        color:
+        [
+            199
+            227
+            12
+        ]
+        country: nicaragua
+    }
+    {
+        identifier: matagalpa
+        color:
+        [
+            199
+            155
+            189
+        ]
+        country: nicaragua
+    }
+    {
+        identifier: nueva_segovia
+        color:
+        [
+            42
+            186
+            189
+        ]
+        country: nicaragua
+    }
+    {
+        identifier: rio_san_juan
+        color:
+        [
+            3
+            130
+            125
+        ]
+        country: nicaragua
+    }
+    {
+        identifier: rivas
+        color:
+        [
+            74
+            66
+            223
+        ]
+        country: nicaragua
+    }
+]

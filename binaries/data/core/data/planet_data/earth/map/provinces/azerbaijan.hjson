@@ -1,0 +1,712 @@
+[
+    {
+        identifier: abseron
+        color:
+        [
+            196
+            139
+            88
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: agdam
+        color:
+        [
+            196
+            68
+            9
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: agdas
+        color:
+        [
+            214
+            38
+            12
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: aghjabadi
+        color:
+        [
+            214
+            52
+            79
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: agstafa
+        color:
+        [
+            16
+            11
+            96
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: agsu
+        color:
+        [
+            213
+            137
+            43
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: astara
+        color:
+        [
+            55
+            24
+            215
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: babak
+        color:
+        [
+            16
+            225
+            77
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: baki
+        color:
+        [
+            153
+            23
+            52
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: balakan
+        color:
+        [
+            25
+            231
+            179
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: barda
+        color:
+        [
+            213
+            108
+            165
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: beylaqan
+        color:
+        [
+            55
+            10
+            148
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: bilasuvar
+        color:
+        [
+            54
+            181
+            2
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: cabrayil
+        color:
+        [
+            54
+            238
+            14
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: calilabad
+        color:
+        [
+            54
+            195
+            69
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: culfa
+        color:
+        [
+            16
+            253
+            211
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: daskasan
+        color:
+        [
+            16
+            68
+            108
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: davaci
+        color:
+        [
+            152
+            222
+            40
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: fuzuli
+        color:
+        [
+            54
+            252
+            81
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: gadabay
+        color:
+        [
+            16
+            39
+            230
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: ganca
+        color:
+        [
+            213
+            251
+            67
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: goranboy
+        color:
+        [
+            196
+            96
+            143
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: goycay
+        color:
+        [
+            214
+            23
+            201
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: hajigabul
+        color:
+        [
+            196
+            125
+            21
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: imisli
+        color:
+        [
+            54
+            166
+            191
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: ismayilli
+        color:
+        [
+            213
+            222
+            189
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: kalbacar
+        color:
+        [
+            16
+            82
+            175
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: kangarli
+        color:
+        [
+            16
+            211
+            10
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: kurdamir
+        color:
+        [
+            196
+            167
+            222
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: lankaran_azerbaijan
+        color:
+        [
+            16
+            125
+            120
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: lankaran_azerbaijan_2
+        color:
+        [
+            153
+            65
+            253
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: lerik
+        color:
+        [
+            54
+            223
+            203
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: masalli
+        color:
+        [
+            153
+            80
+            64
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: mingacevir
+        color:
+        [
+            214
+            9
+            134
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: neftcala
+        color:
+        [
+            153
+            51
+            186
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: oguz
+        color:
+        [
+            26
+            32
+            191
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: ordubad
+        color:
+        [
+            17
+            12
+            22
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: qabala
+        color:
+        [
+            26
+            75
+            136
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: qax
+        color:
+        [
+            26
+            61
+            69
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: qazax
+        color:
+        [
+            13
+            208
+            232
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: qobustan
+        color:
+        [
+            213
+            208
+            122
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: quba
+        color:
+        [
+            213
+            179
+            244
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: qubadli
+        color:
+        [
+            16
+            139
+            187
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: qusar
+        color:
+        [
+            26
+            18
+            124
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: saatli
+        color:
+        [
+            213
+            94
+            98
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: sabirabad
+        color:
+        [
+            196
+            196
+            100
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: sadarak
+        color:
+        [
+            16
+            196
+            199
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: sahbuz
+        color:
+        [
+            16
+            239
+            144
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: saki_azerbaijan
+        color:
+        [
+            26
+            47
+            2
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: saki_azerbaijan_2
+        color:
+        [
+            251
+            64
+            90
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: salyan
+        color:
+        [
+            153
+            37
+            119
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: samaxi
+        color:
+        [
+            213
+            165
+            177
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: samkir
+        color:
+        [
+            213
+            122
+            232
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: samux
+        color:
+        [
+            26
+            104
+            14
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: sarur
+        color:
+        [
+            16
+            168
+            65
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: shirvan
+        color:
+        [
+            196
+            210
+            167
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: siyazan
+        color:
+        [
+            152
+            236
+            107
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: sumqayit
+        color:
+        [
+            153
+            8
+            241
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: susa
+        color:
+        [
+            196
+            25
+            64
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: tartar
+        color:
+        [
+            196
+            82
+            76
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: tovuz
+        color:
+        [
+            16
+            25
+            163
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: ucar
+        color:
+        [
+            213
+            194
+            55
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: xacmaz
+        color:
+        [
+            26
+            4
+            57
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: xanlar
+        color:
+        [
+            196
+            153
+            155
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: xizi
+        color:
+        [
+            152
+            250
+            174
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: xocali
+        color:
+        [
+            196
+            39
+            131
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: xocavand
+        color:
+        [
+            196
+            110
+            210
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: yevlakh_rayon
+        color:
+        [
+            213
+            237
+            0
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: zangilan
+        color:
+        [
+            16
+            153
+            254
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: zaqatala
+        color:
+        [
+            25
+            245
+            246
+        ]
+        country: azerbaijan
+    }
+    {
+        identifier: zardab
+        color:
+        [
+            196
+            182
+            33
+        ]
+        country: azerbaijan
+    }
+]

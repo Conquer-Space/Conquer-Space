@@ -1,0 +1,132 @@
+[
+    {
+        identifier: caprivi
+        color:
+        [
+            86
+            175
+            60
+        ]
+        country: namibia
+    }
+    {
+        identifier: erongo
+        color:
+        [
+            98
+            112
+            117
+        ]
+        country: namibia
+    }
+    {
+        identifier: hardap
+        color:
+        [
+            87
+            90
+            96
+        ]
+        country: namibia
+    }
+    {
+        identifier: karas
+        color:
+        [
+            4
+            216
+            197
+        ]
+        country: namibia
+    }
+    {
+        identifier: kavango
+        color:
+        [
+            86
+            160
+            249
+        ]
+        country: namibia
+    }
+    {
+        identifier: khomas
+        color:
+        [
+            233
+            80
+            20
+        ]
+        country: namibia
+    }
+    {
+        identifier: kunene
+        color:
+        [
+            86
+            103
+            237
+        ]
+        country: namibia
+    }
+    {
+        identifier: ohangwena
+        color:
+        [
+            86
+            146
+            182
+        ]
+        country: namibia
+    }
+    {
+        identifier: omaheke
+        color:
+        [
+            87
+            118
+            230
+        ]
+        country: namibia
+    }
+    {
+        identifier: omusati
+        color:
+        [
+            86
+            132
+            115
+        ]
+        country: namibia
+    }
+    {
+        identifier: oshana
+        color:
+        [
+            233
+            94
+            87
+        ]
+        country: namibia
+    }
+    {
+        identifier: oshikoto
+        color:
+        [
+            233
+            108
+            154
+        ]
+        country: namibia
+    }
+    {
+        identifier: otjozondjupa
+        color:
+        [
+            87
+            104
+            163
+        ]
+        country: namibia
+    }
+]

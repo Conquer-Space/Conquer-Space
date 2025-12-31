@@ -1,0 +1,92 @@
+[
+    {
+        identifier: eastern_cape
+        color:
+        [
+            62
+            186
+            178
+        ]
+        country: south_africa
+    }
+    {
+        identifier: free_state
+        color:
+        [
+            62
+            143
+            233
+        ]
+        country: south_africa
+    }
+    {
+        identifier: gauteng
+        color:
+        [
+            190
+            163
+            154
+        ]
+        country: south_africa
+    }
+    {
+        identifier: kwazulu-natal
+        color:
+        [
+            62
+            115
+            99
+        ]
+        country: south_africa
+    }
+    {
+        identifier: limpopo
+        color:
+        [
+            63
+            44
+            202
+        ]
+        country: south_africa
+    }
+    {
+        identifier: mpumalanga
+        color:
+        [
+            89
+            6
+            58
+        ]
+        country: south_africa
+    }
+    {
+        identifier: north_west
+        color:
+        [
+            63
+            73
+            80
+        ]
+        country: south_africa
+    }
+    {
+        identifier: northern_cape
+        color:
+        [
+            4
+            231
+            8
+        ]
+        country: south_africa
+    }
+    {
+        identifier: western_cape
+        color:
+        [
+            98
+            126
+            184
+        ]
+        country: south_africa
+    }
+]

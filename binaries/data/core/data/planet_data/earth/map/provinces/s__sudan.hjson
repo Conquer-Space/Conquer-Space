@@ -1,0 +1,102 @@
+[
+    {
+        identifier: central_equatoria
+        color:
+        [
+            20
+            242
+            104
+        ]
+        country: s__sudan
+    }
+    {
+        identifier: eastern_equatoria
+        color:
+        [
+            1
+            157
+            151
+        ]
+        country: s__sudan
+    }
+    {
+        identifier: jonglei
+        color:
+        [
+            65
+            60
+            121
+        ]
+        country: s__sudan
+    }
+    {
+        identifier: lakes
+        color:
+        [
+            189
+            234
+            51
+        ]
+        country: s__sudan
+    }
+    {
+        identifier: northern_bahr_el_ghazal
+        color:
+        [
+            93
+            37
+            152
+        ]
+        country: s__sudan
+    }
+    {
+        identifier: unity
+        color:
+        [
+            92
+            236
+            140
+        ]
+        country: s__sudan
+    }
+    {
+        identifier: upper_nile
+        color:
+        [
+            65
+            31
+            243
+        ]
+        country: s__sudan
+    }
+    {
+        identifier: warrap
+        color:
+        [
+            189
+            248
+            118
+        ]
+        country: s__sudan
+    }
+    {
+        identifier: western_bahr_el_ghazal
+        color:
+        [
+            20
+            185
+            92
+        ]
+        country: s__sudan
+    }
+    {
+        identifier: western_equatoria
+        color:
+        [
+            20
+            213
+            226
+        ]
+        country: s__sudan
+    }
+]

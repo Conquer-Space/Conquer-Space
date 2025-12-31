@@ -1,0 +1,342 @@
+[
+    {
+        identifier: badakhshan
+        color:
+        [
+            37
+            211
+            181
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: badghis
+        color:
+        [
+            57
+            26
+            67
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: baghlan
+        color:
+        [
+            217
+            25
+            235
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: balkh
+        color:
+        [
+            56
+            210
+            244
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: bamyan
+        color:
+        [
+            216
+            224
+            223
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: farah
+        color:
+        [
+            79
+            41
+            231
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: faryab
+        color:
+        [
+            56
+            253
+            189
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: ghazni
+        color:
+        [
+            216
+            125
+            10
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: ghor
+        color:
+        [
+            217
+            11
+            168
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: hilmand
+        color:
+        [
+            79
+            213
+            11
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: hirat
+        color:
+        [
+            57
+            40
+            134
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: jawzjan
+        color:
+        [
+            56
+            239
+            122
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: kabul
+        color:
+        [
+            216
+            153
+            144
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: kandahar
+        color:
+        [
+            79
+            198
+            200
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: kapisa
+        color:
+        [
+            216
+            196
+            89
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: khost
+        color:
+        [
+            79
+            127
+            121
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: kunar
+        color:
+        [
+            79
+            84
+            176
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: kunduz
+        color:
+        [
+            56
+            196
+            177
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: laghman
+        color:
+        [
+            216
+            167
+            211
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: logar
+        color:
+        [
+            216
+            182
+            22
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: nangarhar
+        color:
+        [
+            79
+            113
+            54
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: nimroz
+        color:
+        [
+            79
+            13
+            97
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: nuristan
+        color:
+        [
+            79
+            98
+            243
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: paktika
+        color:
+        [
+            79
+            170
+            66
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: paktya
+        color:
+        [
+            79
+            141
+            188
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: parwan_afghanistan
+        color:
+        [
+            216
+            139
+            77
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: parwan_afghanistan_2
+        color:
+        [
+            216
+            239
+            34
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: samangan
+        color:
+        [
+            217
+            40
+            46
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: sari_pul
+        color:
+        [
+            216
+            253
+            101
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: takhar
+        color:
+        [
+            56
+            182
+            110
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: uruzgan_afghanistan
+        color:
+        [
+            216
+            110
+            199
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: uruzgan_afghanistan_2
+        color:
+        [
+            217
+            54
+            113
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: wardak
+        color:
+        [
+            216
+            210
+            156
+        ]
+        country: afghanistan
+    }
+    {
+        identifier: zabul
+        color:
+        [
+            79
+            184
+            133
+        ]
+        country: afghanistan
+    }
+]

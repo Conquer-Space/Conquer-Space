@@ -1,0 +1,172 @@
+[
+    {
+        identifier: blue_nile
+        color:
+        [
+            64
+            245
+            42
+        ]
+        country: sudan
+    }
+    {
+        identifier: central_darfur
+        color:
+        [
+            20
+            142
+            147
+        ]
+        country: sudan
+    }
+    {
+        identifier: eastern_darfur
+        color:
+        [
+            93
+            51
+            219
+        ]
+        country: sudan
+    }
+    {
+        identifier: gedarif
+        color:
+        [
+            64
+            202
+            97
+        ]
+        country: sudan
+    }
+    {
+        identifier: gezira
+        color:
+        [
+            189
+            191
+            106
+        ]
+        country: sudan
+    }
+    {
+        identifier: kassala
+        color:
+        [
+            92
+            65
+            104
+        ]
+        country: sudan
+    }
+    {
+        identifier: khartoum
+        color:
+        [
+            189
+            205
+            173
+        ]
+        country: sudan
+    }
+    {
+        identifier: north_darfur
+        color:
+        [
+            84
+            2
+            172
+        ]
+        country: sudan
+    }
+    {
+        identifier: north_kordufan
+        color:
+        [
+            189
+            219
+            240
+        ]
+        country: sudan
+    }
+    {
+        identifier: northern_sudan
+        color:
+        [
+            82
+            158
+            33
+        ]
+        country: sudan
+    }
+    {
+        identifier: red_sea
+        color:
+        [
+            82
+            229
+            112
+        ]
+        country: sudan
+    }
+    {
+        identifier: river_nile
+        color:
+        [
+            82
+            215
+            45
+        ]
+        country: sudan
+    }
+    {
+        identifier: sennar
+        color:
+        [
+            65
+            3
+            109
+        ]
+        country: sudan
+    }
+    {
+        identifier: south_kordufan
+        color:
+        [
+            92
+            222
+            73
+        ]
+        country: sudan
+    }
+    {
+        identifier: southern_darfur
+        color:
+        [
+            20
+            156
+            214
+        ]
+        country: sudan
+    }
+    {
+        identifier: western_darfur
+        color:
+        [
+            84
+            16
+            239
+        ]
+        country: sudan
+    }
+    {
+        identifier: white_nile
+        color:
+        [
+            92
+            208
+            6
+        ]
+        country: sudan
+    }
+]

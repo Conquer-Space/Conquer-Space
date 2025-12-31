@@ -1,0 +1,282 @@
+[
+    {
+        identifier: balaka
+        color:
+        [
+            195
+            81
+            150
+        ]
+        country: malawi
+    }
+    {
+        identifier: blantyre
+        color:
+        [
+            195
+            110
+            28
+        ]
+        country: malawi
+    }
+    {
+        identifier: chikwawa
+        color:
+        [
+            90
+            92
+            130
+        ]
+        country: malawi
+    }
+    {
+        identifier: chiradzulu
+        color:
+        [
+            195
+            95
+            217
+        ]
+        country: malawi
+    }
+    {
+        identifier: chitipa_malawi
+        color:
+        [
+            2
+            72
+            187
+        ]
+        country: malawi
+    }
+    {
+        identifier: chitipa_malawi_2
+        color:
+        [
+            19
+            99
+            20
+        ]
+        country: malawi
+    }
+    {
+        identifier: dedza
+        color:
+        [
+            90
+            49
+            185
+        ]
+        country: malawi
+    }
+    {
+        identifier: dowa
+        color:
+        [
+            195
+            67
+            83
+        ]
+        country: malawi
+    }
+    {
+        identifier: kasungu
+        color:
+        [
+            19
+            156
+            32
+        ]
+        country: malawi
+    }
+    {
+        identifier: likoma
+        color:
+        [
+            5
+            146
+            44
+        ]
+        country: malawi
+    }
+    {
+        identifier: lilongwe
+        color:
+        [
+            90
+            63
+            252
+        ]
+        country: malawi
+    }
+    {
+        identifier: machinga
+        color:
+        [
+            90
+            35
+            118
+        ]
+        country: malawi
+    }
+    {
+        identifier: mangochi
+        color:
+        [
+            90
+            21
+            51
+        ]
+        country: malawi
+    }
+    {
+        identifier: mchinji
+        color:
+        [
+            19
+            170
+            99
+        ]
+        country: malawi
+    }
+    {
+        identifier: mulanje
+        color:
+        [
+            90
+            192
+            87
+        ]
+        country: malawi
+    }
+    {
+        identifier: mwanza_malawi
+        color:
+        [
+            90
+            106
+            197
+        ]
+        country: malawi
+    }
+    {
+        identifier: mzimba
+        color:
+        [
+            19
+            127
+            154
+        ]
+        country: malawi
+    }
+    {
+        identifier: neno
+        color:
+        [
+            90
+            121
+            8
+        ]
+        country: malawi
+    }
+    {
+        identifier: nkhata_bay
+        color:
+        [
+            2
+            144
+            10
+        ]
+        country: malawi
+    }
+    {
+        identifier: nkhotakota
+        color:
+        [
+            89
+            248
+            173
+        ]
+        country: malawi
+    }
+    {
+        identifier: nsanje
+        color:
+        [
+            90
+            78
+            63
+        ]
+        country: malawi
+    }
+    {
+        identifier: ntcheu
+        color:
+        [
+            90
+            135
+            75
+        ]
+        country: malawi
+    }
+    {
+        identifier: ntchisi
+        color:
+        [
+            195
+            124
+            95
+        ]
+        country: malawi
+    }
+    {
+        identifier: phalombe
+        color:
+        [
+            90
+            178
+            20
+        ]
+        country: malawi
+    }
+    {
+        identifier: rumphi
+        color:
+        [
+            2
+            129
+            199
+        ]
+        country: malawi
+    }
+    {
+        identifier: salima
+        color:
+        [
+            90
+            6
+            240
+        ]
+        country: malawi
+    }
+    {
+        identifier: thyolo
+        color:
+        [
+            90
+            206
+            154
+        ]
+        country: malawi
+    }
+    {
+        identifier: zomba
+        color:
+        [
+            90
+            149
+            142
+        ]
+        country: malawi
+    }
+]

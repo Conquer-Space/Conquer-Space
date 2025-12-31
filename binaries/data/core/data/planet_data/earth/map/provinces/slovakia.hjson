@@ -1,0 +1,82 @@
+[
+    {
+        identifier: banskobystricky
+        color:
+        [
+            49
+            120
+            104
+        ]
+        country: slovakia
+    }
+    {
+        identifier: bratislavsky
+        color:
+        [
+            49
+            49
+            25
+        ]
+        country: slovakia
+    }
+    {
+        identifier: kosicky
+        color:
+        [
+            19
+            198
+            233
+        ]
+        country: slovakia
+    }
+    {
+        identifier: nitriansky
+        color:
+        [
+            49
+            163
+            49
+        ]
+        country: slovakia
+    }
+    {
+        identifier: presov
+        color:
+        [
+            17
+            254
+            137
+        ]
+        country: slovakia
+    }
+    {
+        identifier: trenciansky
+        color:
+        [
+            49
+            77
+            159
+        ]
+        country: slovakia
+    }
+    {
+        identifier: trnavsky
+        color:
+        [
+            49
+            63
+            92
+        ]
+        country: slovakia
+    }
+    {
+        identifier: zilinsky
+        color:
+        [
+            17
+            211
+            192
+        ]
+        country: slovakia
+    }
+]

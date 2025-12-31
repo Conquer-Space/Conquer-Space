@@ -1,0 +1,62 @@
+[
+    {
+        identifier: an_nabatiyah
+        color:
+        [
+            1
+            114
+            206
+        ]
+        country: lebanon
+    }
+    {
+        identifier: beqaa
+        color:
+        [
+            4
+            245
+            75
+        ]
+        country: lebanon
+    }
+    {
+        identifier: hazafon
+        color:
+        [
+            1
+            43
+            127
+        ]
+        country: lebanon
+    }
+    {
+        identifier: mount_lebanon
+        color:
+        [
+            135
+            124
+            128
+        ]
+        country: lebanon
+    }
+    {
+        identifier: north_lebanon
+        color:
+        [
+            5
+            3
+            142
+        ]
+        country: lebanon
+    }
+    {
+        identifier: south_lebanon
+        color:
+        [
+            1
+            129
+            17
+        ]
+        country: lebanon
+    }
+]

@@ -1,0 +1,122 @@
+[
+    {
+        identifier: abkhazia
+        color:
+        [
+            12
+            108
+            93
+        ]
+        country: georgia
+    }
+    {
+        identifier: ajaria
+        color:
+        [
+            14
+            67
+            0
+        ]
+        country: georgia
+    }
+    {
+        identifier: guria
+        color:
+        [
+            95
+            181
+            162
+        ]
+        country: georgia
+    }
+    {
+        identifier: imereti
+        color:
+        [
+            239
+            155
+            167
+        ]
+        country: georgia
+    }
+    {
+        identifier: kakheti
+        color:
+        [
+            12
+            250
+            251
+        ]
+        country: georgia
+    }
+    {
+        identifier: kvemo_kartli
+        color:
+        [
+            14
+            238
+            36
+        ]
+        country: georgia
+    }
+    {
+        identifier: mtskheta-mtianeti
+        color:
+        [
+            12
+            222
+            117
+        ]
+        country: georgia
+    }
+    {
+        identifier: racha-lechkhumi-kvemo_svaneti
+        color:
+        [
+            12
+            193
+            239
+        ]
+        country: georgia
+    }
+    {
+        identifier: samegrelo-zemo_svaneti
+        color:
+        [
+            12
+            151
+            38
+        ]
+        country: georgia
+    }
+    {
+        identifier: samtskhe-javakheti
+        color:
+        [
+            14
+            38
+            122
+        ]
+        country: georgia
+    }
+    {
+        identifier: shida_kartli
+        color:
+        [
+            12
+            179
+            172
+        ]
+        country: georgia
+    }
+    {
+        identifier: tbilisi
+        color:
+        [
+            239
+            141
+            100
+        ]
+        country: georgia
+    }
+]

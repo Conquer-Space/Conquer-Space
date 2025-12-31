@@ -1,0 +1,242 @@
+[
+    {
+        identifier: anuradhapura
+        color:
+        [
+            228
+            233
+            103
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: badulla
+        color:
+        [
+            228
+            176
+            91
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: galla
+        color:
+        [
+            103
+            244
+            94
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: gampaha
+        color:
+        [
+            103
+            201
+            149
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: hambantota
+        color:
+        [
+            104
+            16
+            228
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: kaegalla
+        color:
+        [
+            228
+            162
+            24
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: kalutara
+        color:
+        [
+            103
+            230
+            27
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: kilinochchi
+        color:
+        [
+            103
+            158
+            204
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: kolamba
+        color:
+        [
+            103
+            215
+            216
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: kurunaegala
+        color:
+        [
+            228
+            219
+            36
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: madakalapuva
+        color:
+        [
+            104
+            45
+            106
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: mahanuvara
+        color:
+        [
+            229
+            20
+            48
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: mannarama
+        color:
+        [
+            103
+            173
+            15
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: matale
+        color:
+        [
+            228
+            190
+            158
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: matara
+        color:
+        [
+            104
+            2
+            161
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: monaragala
+        color:
+        [
+            228
+            147
+            213
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: mulativ
+        color:
+        [
+            103
+            130
+            70
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: nuvara_eliya
+        color:
+        [
+            228
+            247
+            170
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: polonnaruva
+        color:
+        [
+            228
+            204
+            225
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: puttalama
+        color:
+        [
+            103
+            187
+            82
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: ratnapura
+        color:
+        [
+            228
+            133
+            146
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: trikunamalaya
+        color:
+        [
+            103
+            116
+            3
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: vavuniyava
+        color:
+        [
+            229
+            5
+            237
+        ]
+        country: sri_lanka
+    }
+    {
+        identifier: yapanaya
+        color:
+        [
+            103
+            144
+            137
+        ]
+        country: sri_lanka
+    }
+]

@@ -1,0 +1,322 @@
+[
+    {
+        identifier: aguascalientes
+        color:
+        [
+            234
+            80
+            202
+        ]
+        country: mexico
+    }
+    {
+        identifier: baja_california
+        color:
+        [
+            73
+            23
+            96
+        ]
+        country: mexico
+    }
+    {
+        identifier: campeche
+        color:
+        [
+            73
+            208
+            199
+        ]
+        country: mexico
+    }
+    {
+        identifier: chiapas
+        color:
+        [
+            73
+            237
+            77
+        ]
+        country: mexico
+    }
+    {
+        identifier: chihuahua
+        color:
+        [
+            73
+            66
+            41
+        ]
+        country: mexico
+    }
+    {
+        identifier: coahuila
+        color:
+        [
+            73
+            94
+            175
+        ]
+        country: mexico
+    }
+    {
+        identifier: colima
+        color:
+        [
+            110
+            149
+            131
+        ]
+        country: mexico
+    }
+    {
+        identifier: distrito_federal_mexico
+        color:
+        [
+            234
+            137
+            214
+        ]
+        country: mexico
+    }
+    {
+        identifier: durango
+        color:
+        [
+            234
+            95
+            13
+        ]
+        country: mexico
+    }
+    {
+        identifier: guanajuato
+        color:
+        [
+            234
+            38
+            1
+        ]
+        country: mexico
+    }
+    {
+        identifier: guerrero
+        color:
+        [
+            116
+            210
+            211
+        ]
+        country: mexico
+    }
+    {
+        identifier: hidalgo
+        color:
+        [
+            234
+            23
+            190
+        ]
+        country: mexico
+    }
+    {
+        identifier: jalisco
+        color:
+        [
+            116
+            182
+            77
+        ]
+        country: mexico
+    }
+    {
+        identifier: mexico
+        color:
+        [
+            233
+            222
+            178
+        ]
+        country: mexico
+    }
+    {
+        identifier: michoacan
+        color:
+        [
+            116
+            196
+            144
+        ]
+        country: mexico
+    }
+    {
+        identifier: morelos
+        color:
+        [
+            233
+            251
+            56
+        ]
+        country: mexico
+    }
+    {
+        identifier: nayarit
+        color:
+        [
+            112
+            65
+            93
+        ]
+        country: mexico
+    }
+    {
+        identifier: nuevo_leon
+        color:
+        [
+            73
+            123
+            53
+        ]
+        country: mexico
+    }
+    {
+        identifier: null_mexico
+        color:
+        [
+            174
+            223
+            137
+        ]
+        country: mexico
+    }
+    {
+        identifier: oaxaca
+        color:
+        [
+            116
+            225
+            22
+        ]
+        country: mexico
+    }
+    {
+        identifier: puebla
+        color:
+        [
+            233
+            236
+            245
+        ]
+        country: mexico
+    }
+    {
+        identifier: queretaro
+        color:
+        [
+            234
+            9
+            123
+        ]
+        country: mexico
+    }
+    {
+        identifier: quintana_roo
+        color:
+        [
+            73
+            194
+            132
+        ]
+        country: mexico
+    }
+    {
+        identifier: san_luis_potosi
+        color:
+        [
+            234
+            52
+            68
+        ]
+        country: mexico
+    }
+    {
+        identifier: sinaloa
+        color:
+        [
+            115
+            96
+            5
+        ]
+        country: mexico
+    }
+    {
+        identifier: sonora
+        color:
+        [
+            73
+            9
+            29
+        ]
+        country: mexico
+    }
+    {
+        identifier: tabasco
+        color:
+        [
+            73
+            223
+            10
+        ]
+        country: mexico
+    }
+    {
+        identifier: tamaulipas
+        color:
+        [
+            73
+            108
+            242
+        ]
+        country: mexico
+    }
+    {
+        identifier: tlaxcala
+        color:
+        [
+            234
+            123
+            147
+        ]
+        country: mexico
+    }
+    {
+        identifier: veracruz
+        color:
+        [
+            116
+            168
+            10
+        ]
+        country: mexico
+    }
+    {
+        identifier: yucatan
+        color:
+        [
+            116
+            153
+            199
+        ]
+        country: mexico
+    }
+    {
+        identifier: zacatecas
+        color:
+        [
+            234
+            66
+            135
+        ]
+        country: mexico
+    }
+]

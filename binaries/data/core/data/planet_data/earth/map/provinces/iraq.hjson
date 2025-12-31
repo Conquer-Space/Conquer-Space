@@ -1,0 +1,182 @@
+[
+    {
+        identifier: al-anbar
+        color:
+        [
+            81
+            0
+            138
+        ]
+        country: iraq
+    }
+    {
+        identifier: al-basrah
+        color:
+        [
+            34
+            95
+            123
+        ]
+        country: iraq
+    }
+    {
+        identifier: al-muthannia
+        color:
+        [
+            34
+            109
+            190
+        ]
+        country: iraq
+    }
+    {
+        identifier: al-qadisiyyah
+        color:
+        [
+            237
+            211
+            71
+        ]
+        country: iraq
+    }
+    {
+        identifier: an-najaf
+        color:
+        [
+            81
+            14
+            205
+        ]
+        country: iraq
+    }
+    {
+        identifier: arbil
+        color:
+        [
+            22
+            1
+            97
+        ]
+        country: iraq
+    }
+    {
+        identifier: as-sulaymaniyah
+        color:
+        [
+            57
+            211
+            170
+        ]
+        country: iraq
+    }
+    {
+        identifier: at-ta'mim
+        color:
+        [
+            95
+            210
+            40
+        ]
+        country: iraq
+    }
+    {
+        identifier: babil
+        color:
+        [
+            237
+            197
+            4
+        ]
+        country: iraq
+    }
+    {
+        identifier: baghdad
+        color:
+        [
+            237
+            182
+            193
+        ]
+        country: iraq
+    }
+    {
+        identifier: dhi-qar
+        color:
+        [
+            237
+            225
+            138
+        ]
+        country: iraq
+    }
+    {
+        identifier: dihok
+        color:
+        [
+            21
+            214
+            152
+        ]
+        country: iraq
+    }
+    {
+        identifier: diyala
+        color:
+        [
+            57
+            254
+            115
+        ]
+        country: iraq
+    }
+    {
+        identifier: karbala'
+        color:
+        [
+            237
+            239
+            205
+        ]
+        country: iraq
+    }
+    {
+        identifier: maysan
+        color:
+        [
+            58
+            41
+            60
+        ]
+        country: iraq
+    }
+    {
+        identifier: ninawa
+        color:
+        [
+            81
+            100
+            95
+        ]
+        country: iraq
+    }
+    {
+        identifier: sala_ad-din
+        color:
+        [
+            95
+            195
+            229
+        ]
+        country: iraq
+    }
+    {
+        identifier: wasit
+        color:
+        [
+            58
+            26
+            249
+        ]
+        country: iraq
+    }
+]

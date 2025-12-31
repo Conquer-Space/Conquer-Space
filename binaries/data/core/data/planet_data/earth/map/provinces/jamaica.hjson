@@ -1,0 +1,142 @@
+[
+    {
+        identifier: clarendon
+        color:
+        [
+            149
+            34
+            159
+        ]
+        country: jamaica
+    }
+    {
+        identifier: hanover
+        color:
+        [
+            148
+            233
+            147
+        ]
+        country: jamaica
+    }
+    {
+        identifier: kingston
+        color:
+        [
+            149
+            77
+            104
+        ]
+        country: jamaica
+    }
+    {
+        identifier: manchester_jamaica
+        color:
+        [
+            149
+            20
+            92
+        ]
+        country: jamaica
+    }
+    {
+        identifier: portland
+        color:
+        [
+            149
+            105
+            238
+        ]
+        country: jamaica
+    }
+    {
+        identifier: saint_andrew_jamaica
+        color:
+        [
+            149
+            63
+            37
+        ]
+        country: jamaica
+    }
+    {
+        identifier: saint_ann
+        color:
+        [
+            148
+            190
+            202
+        ]
+        country: jamaica
+    }
+    {
+        identifier: saint_catherine
+        color:
+        [
+            149
+            48
+            226
+        ]
+        country: jamaica
+    }
+    {
+        identifier: saint_elizabeth
+        color:
+        [
+            149
+            6
+            25
+        ]
+        country: jamaica
+    }
+    {
+        identifier: saint_james_jamaica
+        color:
+        [
+            148
+            219
+            80
+        ]
+        country: jamaica
+    }
+    {
+        identifier: saint_mary_jamaica
+        color:
+        [
+            149
+            120
+            49
+        ]
+        country: jamaica
+    }
+    {
+        identifier: saint_thomas_jamaica
+        color:
+        [
+            149
+            91
+            171
+        ]
+        country: jamaica
+    }
+    {
+        identifier: trelawny
+        color:
+        [
+            148
+            205
+            13
+        ]
+        country: jamaica
+    }
+    {
+        identifier: westmoreland
+        color:
+        [
+            148
+            247
+            214
+        ]
+        country: jamaica
+    }
+]

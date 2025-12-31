@@ -1,0 +1,52 @@
+[
+    {
+        identifier: saint_andrew_dominica
+        color:
+        [
+            145
+            174
+            101
+        ]
+        country: dominica
+    }
+    {
+        identifier: saint_david_dominica
+        color:
+        [
+            145
+            160
+            34
+        ]
+        country: dominica
+    }
+    {
+        identifier: saint_joseph_dominica
+        color:
+        [
+            145
+            217
+            46
+        ]
+        country: dominica
+    }
+    {
+        identifier: saint_patrick
+        color:
+        [
+            145
+            145
+            223
+        ]
+        country: dominica
+    }
+    {
+        identifier: saint_paul_dominica
+        color:
+        [
+            145
+            231
+            113
+        ]
+        country: dominica
+    }
+]

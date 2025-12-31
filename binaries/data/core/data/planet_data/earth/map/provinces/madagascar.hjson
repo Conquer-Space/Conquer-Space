@@ -1,0 +1,222 @@
+[
+    {
+        identifier: alaotra-mangoro
+        color:
+        [
+            200
+            242
+            5
+        ]
+        country: madagascar
+    }
+    {
+        identifier: amoron'i_mania
+        color:
+        [
+            200
+            227
+            194
+        ]
+        country: madagascar
+    }
+    {
+        identifier: analamanga
+        color:
+        [
+            200
+            170
+            182
+        ]
+        country: madagascar
+    }
+    {
+        identifier: analanjirofo
+        color:
+        [
+            97
+            140
+            69
+        ]
+        country: madagascar
+    }
+    {
+        identifier: androy
+        color:
+        [
+            97
+            211
+            148
+        ]
+        country: madagascar
+    }
+    {
+        identifier: anosy
+        color:
+        [
+            97
+            197
+            81
+        ]
+        country: madagascar
+    }
+    {
+        identifier: atsimo-andrefana
+        color:
+        [
+            97
+            225
+            215
+        ]
+        country: madagascar
+    }
+    {
+        identifier: atsimo-atsinanana
+        color:
+        [
+            97
+            183
+            14
+        ]
+        country: madagascar
+    }
+    {
+        identifier: atsinanana
+        color:
+        [
+            97
+            154
+            136
+        ]
+        country: madagascar
+    }
+    {
+        identifier: betsiboka
+        color:
+        [
+            200
+            184
+            249
+        ]
+        country: madagascar
+    }
+    {
+        identifier: boeny
+        color:
+        [
+            97
+            83
+            57
+        ]
+        country: madagascar
+    }
+    {
+        identifier: bongolava
+        color:
+        [
+            200
+            199
+            60
+        ]
+        country: madagascar
+    }
+    {
+        identifier: diana
+        color:
+        [
+            97
+            111
+            191
+        ]
+        country: madagascar
+    }
+    {
+        identifier: haute_matsiatra
+        color:
+        [
+            253
+            65
+            198
+        ]
+        country: madagascar
+    }
+    {
+        identifier: ihorombe
+        color:
+        [
+            253
+            51
+            131
+        ]
+        country: madagascar
+    }
+    {
+        identifier: itasy
+        color:
+        [
+            253
+            80
+            9
+        ]
+        country: madagascar
+    }
+    {
+        identifier: melaky
+        color:
+        [
+            97
+            254
+            93
+        ]
+        country: madagascar
+    }
+    {
+        identifier: menabe
+        color:
+        [
+            97
+            240
+            26
+        ]
+        country: madagascar
+    }
+    {
+        identifier: sava
+        color:
+        [
+            97
+            126
+            2
+        ]
+        country: madagascar
+    }
+    {
+        identifier: sofia_madagascar
+        color:
+        [
+            97
+            97
+            124
+        ]
+        country: madagascar
+    }
+    {
+        identifier: vakinankaratra
+        color:
+        [
+            200
+            213
+            127
+        ]
+        country: madagascar
+    }
+    {
+        identifier: vatovavy-fitovinany
+        color:
+        [
+            97
+            168
+            203
+        ]
+        country: madagascar
+    }
+]

@@ -1,0 +1,172 @@
+[
+    {
+        identifier: boa_vista
+        color:
+        [
+            156
+            239
+            67
+        ]
+        country: cabo_verde
+    }
+    {
+        identifier: maio
+        color:
+        [
+            156
+            225
+            0
+        ]
+        country: cabo_verde
+    }
+    {
+        identifier: mosteiros
+        color:
+        [
+            156
+            96
+            165
+        ]
+        country: cabo_verde
+    }
+    {
+        identifier: paul
+        color:
+        [
+            157
+            83
+            24
+        ]
+        country: cabo_verde
+    }
+    {
+        identifier: porto_novo
+        color:
+        [
+            157
+            68
+            213
+        ]
+        country: cabo_verde
+    }
+    {
+        identifier: ribeira_brava
+        color:
+        [
+            156
+            253
+            134
+        ]
+        country: cabo_verde
+    }
+    {
+        identifier: ribeira_grande
+        color:
+        [
+            157
+            54
+            146
+        ]
+        country: cabo_verde
+    }
+    {
+        identifier: ribeira_grande_de_santiago
+        color:
+        [
+            156
+            153
+            177
+        ]
+        country: cabo_verde
+    }
+    {
+        identifier: sal
+        color:
+        [
+            157
+            26
+            12
+        ]
+        country: cabo_verde
+    }
+    {
+        identifier: santa_catarina_cabo_verde
+        color:
+        [
+            156
+            139
+            110
+        ]
+        country: cabo_verde
+    }
+    {
+        identifier: santa_cruz_cabo_verde
+        color:
+        [
+            156
+            196
+            122
+        ]
+        country: cabo_verde
+    }
+    {
+        identifier: sao_domingos
+        color:
+        [
+            156
+            182
+            55
+        ]
+        country: cabo_verde
+    }
+    {
+        identifier: sao_filipe
+        color:
+        [
+            156
+            110
+            232
+        ]
+        country: cabo_verde
+    }
+    {
+        identifier: sao_miguel
+        color:
+        [
+            156
+            210
+            189
+        ]
+        country: cabo_verde
+    }
+    {
+        identifier: sao_salvador_do_mundo
+        color:
+        [
+            244
+            130
+            175
+        ]
+        country: cabo_verde
+    }
+    {
+        identifier: tarrafal
+        color:
+        [
+            156
+            125
+            43
+        ]
+        country: cabo_verde
+    }
+    {
+        identifier: tarrafal_de_sao_nicolau
+        color:
+        [
+            157
+            11
+            201
+        ]
+        country: cabo_verde
+    }
+]

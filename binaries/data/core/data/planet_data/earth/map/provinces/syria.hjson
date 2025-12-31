@@ -1,0 +1,142 @@
+[
+    {
+        identifier: aleppo
+        color:
+        [
+            57
+            126
+            24
+        ]
+        country: syria
+    }
+    {
+        identifier: ar_raqqah
+        color:
+        [
+            57
+            97
+            146
+        ]
+        country: syria
+    }
+    {
+        identifier: as_suwayda'
+        color:
+        [
+            80
+            199
+            126
+        ]
+        country: syria
+    }
+    {
+        identifier: damascus
+        color:
+        [
+            243
+            87
+            48
+        ]
+        country: syria
+    }
+    {
+        identifier: dar`a
+        color:
+        [
+            80
+            213
+            193
+        ]
+        country: syria
+    }
+    {
+        identifier: dayr_az_zawr
+        color:
+        [
+            81
+            114
+            162
+        ]
+        country: syria
+    }
+    {
+        identifier: hamah
+        color:
+        [
+            185
+            145
+            201
+        ]
+        country: syria
+    }
+    {
+        identifier: hasaka_(al_haksa)
+        color:
+        [
+            57
+            69
+            12
+        ]
+        country: syria
+    }
+    {
+        identifier: homs_(hims)
+        color:
+        [
+            5
+            17
+            209
+        ]
+        country: syria
+    }
+    {
+        identifier: idlib
+        color:
+        [
+            57
+            183
+            36
+        ]
+        country: syria
+    }
+    {
+        identifier: lattakia
+        color:
+        [
+            57
+            197
+            103
+        ]
+        country: syria
+    }
+    {
+        identifier: quneitra
+        color:
+        [
+            93
+            194
+            121
+        ]
+        country: syria
+    }
+    {
+        identifier: rif_dimashq
+        color:
+        [
+            5
+            46
+            87
+        ]
+        country: syria
+    }
+    {
+        identifier: tartus
+        color:
+        [
+            5
+            32
+            20
+        ]
+        country: syria
+    }
+]

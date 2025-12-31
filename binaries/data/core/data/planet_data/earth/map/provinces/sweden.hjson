@@ -1,0 +1,212 @@
+[
+    {
+        identifier: blekinge
+        color:
+        [
+            133
+            151
+            154
+        ]
+        country: sweden
+    }
+    {
+        identifier: dalarna
+        color:
+        [
+            10
+            21
+            95
+        ]
+        country: sweden
+    }
+    {
+        identifier: gavleborg
+        color:
+        [
+            133
+            66
+            8
+        ]
+        country: sweden
+    }
+    {
+        identifier: gotland
+        color:
+        [
+            161
+            14
+            161
+        ]
+        country: sweden
+    }
+    {
+        identifier: halland
+        color:
+        [
+            133
+            180
+            32
+        ]
+        country: sweden
+    }
+    {
+        identifier: jamtland
+        color:
+        [
+            9
+            220
+            83
+        ]
+        country: sweden
+    }
+    {
+        identifier: jonkoping
+        color:
+        [
+            189
+            120
+            27
+        ]
+        country: sweden
+    }
+    {
+        identifier: kalmar
+        color:
+        [
+            133
+            137
+            87
+        ]
+        country: sweden
+    }
+    {
+        identifier: kronoberg
+        color:
+        [
+            189
+            148
+            161
+        ]
+        country: sweden
+    }
+    {
+        identifier: norrbotten
+        color:
+        [
+            9
+            177
+            138
+        ]
+        country: sweden
+    }
+    {
+        identifier: orebro
+        color:
+        [
+            189
+            134
+            94
+        ]
+        country: sweden
+    }
+    {
+        identifier: ostergotland
+        color:
+        [
+            133
+            123
+            20
+        ]
+        country: sweden
+    }
+    {
+        identifier: skane
+        color:
+        [
+            133
+            165
+            221
+        ]
+        country: sweden
+    }
+    {
+        identifier: sodermanland
+        color:
+        [
+            133
+            108
+            209
+        ]
+        country: sweden
+    }
+    {
+        identifier: stockholm
+        color:
+        [
+            133
+            94
+            142
+        ]
+        country: sweden
+    }
+    {
+        identifier: uppsala
+        color:
+        [
+            133
+            80
+            75
+        ]
+        country: sweden
+    }
+    {
+        identifier: varmland
+        color:
+        [
+            10
+            35
+            162
+        ]
+        country: sweden
+    }
+    {
+        identifier: vasterbotten
+        color:
+        [
+            9
+            206
+            16
+        ]
+        country: sweden
+    }
+    {
+        identifier: vasternorrland
+        color:
+        [
+            133
+            51
+            197
+        ]
+        country: sweden
+    }
+    {
+        identifier: vastmanland
+        color:
+        [
+            189
+            105
+            216
+        ]
+        country: sweden
+    }
+    {
+        identifier: vastra_gotaland
+        color:
+        [
+            10
+            78
+            107
+        ]
+        country: sweden
+    }
+]

@@ -1,0 +1,482 @@
+[
+    {
+        identifier: adrar_algeria
+        color:
+        [
+            35
+            110
+            116
+        ]
+        country: algeria
+    }
+    {
+        identifier: ain_defla
+        color:
+        [
+            215
+            81
+            139
+        ]
+        country: algeria
+    }
+    {
+        identifier: ain_temouchent
+        color:
+        [
+            108
+            148
+            23
+        ]
+        country: algeria
+    }
+    {
+        identifier: alger
+        color:
+        [
+            108
+            76
+            200
+        ]
+        country: algeria
+    }
+    {
+        identifier: annaba
+        color:
+        [
+            107
+            247
+            54
+        ]
+        country: algeria
+    }
+    {
+        identifier: batna
+        color:
+        [
+            215
+            238
+            108
+        ]
+        country: algeria
+    }
+    {
+        identifier: bechar
+        color:
+        [
+            83
+            16
+            57
+        ]
+        country: algeria
+    }
+    {
+        identifier: bejaia
+        color:
+        [
+            108
+            33
+            255
+        ]
+        country: algeria
+    }
+    {
+        identifier: biskra
+        color:
+        [
+            216
+            67
+            254
+        ]
+        country: algeria
+    }
+    {
+        identifier: blida
+        color:
+        [
+            215
+            53
+            5
+        ]
+        country: algeria
+    }
+    {
+        identifier: bordj_bou_arreridj
+        color:
+        [
+            215
+            24
+            127
+        ]
+        country: algeria
+    }
+    {
+        identifier: bouira
+        color:
+        [
+            215
+            38
+            194
+        ]
+        country: algeria
+    }
+    {
+        identifier: boumerdes
+        color:
+        [
+            108
+            62
+            133
+        ]
+        country: algeria
+    }
+    {
+        identifier: chlef
+        color:
+        [
+            108
+            105
+            78
+        ]
+        country: algeria
+    }
+    {
+        identifier: constantine
+        color:
+        [
+            216
+            25
+            53
+        ]
+        country: algeria
+    }
+    {
+        identifier: djelfa
+        color:
+        [
+            216
+            82
+            65
+        ]
+        country: algeria
+    }
+    {
+        identifier: el_bayadh
+        color:
+        [
+            215
+            110
+            17
+        ]
+        country: algeria
+    }
+    {
+        identifier: el_oued
+        color:
+        [
+            83
+            130
+            81
+        ]
+        country: algeria
+    }
+    {
+        identifier: el_tarf
+        color:
+        [
+            83
+            101
+            203
+        ]
+        country: algeria
+    }
+    {
+        identifier: ghardaia
+        color:
+        [
+            215
+            167
+            29
+        ]
+        country: algeria
+    }
+    {
+        identifier: guelma
+        color:
+        [
+            216
+            10
+            242
+        ]
+        country: algeria
+    }
+    {
+        identifier: illizi
+        color:
+        [
+            88
+            5
+            132
+        ]
+        country: algeria
+    }
+    {
+        identifier: jijel
+        color:
+        [
+            108
+            19
+            188
+        ]
+        country: algeria
+    }
+    {
+        identifier: khenchela
+        color:
+        [
+            215
+            252
+            175
+        ]
+        country: algeria
+    }
+    {
+        identifier: laghouat
+        color:
+        [
+            215
+            181
+            96
+        ]
+        country: algeria
+    }
+    {
+        identifier: m'sila
+        color:
+        [
+            215
+            224
+            41
+        ]
+        country: algeria
+    }
+    {
+        identifier: mascara
+        color:
+        [
+            215
+            152
+            218
+        ]
+        country: algeria
+    }
+    {
+        identifier: medea
+        color:
+        [
+            215
+            195
+            163
+        ]
+        country: algeria
+    }
+    {
+        identifier: mila
+        color:
+        [
+            216
+            39
+            120
+        ]
+        country: algeria
+    }
+    {
+        identifier: mostaganem
+        color:
+        [
+            108
+            119
+            145
+        ]
+        country: algeria
+    }
+    {
+        identifier: naama
+        color:
+        [
+            93
+            66
+            30
+        ]
+        country: algeria
+    }
+    {
+        identifier: oran
+        color:
+        [
+            108
+            133
+            212
+        ]
+        country: algeria
+    }
+    {
+        identifier: ouargla
+        color:
+        [
+            83
+            230
+            38
+        ]
+        country: algeria
+    }
+    {
+        identifier: oum_el_bouaghi
+        color:
+        [
+            216
+            53
+            187
+        ]
+        country: algeria
+    }
+    {
+        identifier: relizane
+        color:
+        [
+            215
+            95
+            206
+        ]
+        country: algeria
+    }
+    {
+        identifier: saida
+        color:
+        [
+            215
+            124
+            84
+        ]
+        country: algeria
+    }
+    {
+        identifier: setif
+        color:
+        [
+            215
+            10
+            60
+        ]
+        country: algeria
+    }
+    {
+        identifier: sidi_bel_abbes
+        color:
+        [
+            215
+            138
+            151
+        ]
+        country: algeria
+    }
+    {
+        identifier: skikda
+        color:
+        [
+            108
+            5
+            121
+        ]
+        country: algeria
+    }
+    {
+        identifier: souk_ahras
+        color:
+        [
+            83
+            215
+            227
+        ]
+        country: algeria
+    }
+    {
+        identifier: tamanghasset
+        color:
+        [
+            82
+            101
+            21
+        ]
+        country: algeria
+    }
+    {
+        identifier: tebessa
+        color:
+        [
+            83
+            158
+            215
+        ]
+        country: algeria
+    }
+    {
+        identifier: tiaret
+        color:
+        [
+            215
+            209
+            230
+        ]
+        country: algeria
+    }
+    {
+        identifier: tindouf
+        color:
+        [
+            82
+            129
+            155
+        ]
+        country: algeria
+    }
+    {
+        identifier: tipaza
+        color:
+        [
+            108
+            91
+            11
+        ]
+        country: algeria
+    }
+    {
+        identifier: tissemsilt
+        color:
+        [
+            215
+            67
+            72
+        ]
+        country: algeria
+    }
+    {
+        identifier: tizi_ouzou
+        color:
+        [
+            108
+            48
+            66
+        ]
+        country: algeria
+    }
+    {
+        identifier: tlemcen
+        color:
+        [
+            93
+            80
+            97
+        ]
+        country: algeria
+    }
+]

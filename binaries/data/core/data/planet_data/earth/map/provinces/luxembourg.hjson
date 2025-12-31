@@ -1,0 +1,32 @@
+[
+    {
+        identifier: diekirch
+        color:
+        [
+            11
+            150
+            112
+        ]
+        country: luxembourg
+    }
+    {
+        identifier: grevenmacher
+        color:
+        [
+            11
+            164
+            179
+        ]
+        country: luxembourg
+    }
+    {
+        identifier: luxembourg_luxembourg
+        color:
+        [
+            12
+            79
+            215
+        ]
+        country: luxembourg
+    }
+]

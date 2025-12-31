@@ -135,22 +135,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
     if (!values["industry"].empty()) {
         Hjson::Value industry_hjson = values["industry"];
 
-        for (int i = 0; i < industry_hjson.size(); i++) {
-            Hjson::Value ind_val = industry_hjson[i];
-            auto recipe = ind_val["recipe"].to_string();
-            auto productivity = ind_val["productivity"].to_double();
-            if (universe.recipes.find(recipe) == universe.recipes.end()) {
-                SPDLOG_INFO("Recipe {} not found in city {}", recipe, identifier);
-                continue;
-            }
-            double wage = 10;
-            if (!ind_val["wage"].empty()) {
-                wage = ind_val["wage"].to_double();
-            }
-            Node rec_ent(universe, universe.recipes[recipe]);
-
-            actions::CreateFactory(node, rec_ent, productivity);
-        }
+        ParseIndustry(industry_hjson, node, identifier);
     }
     //SPDLOG_INFO("Load SpacePort");
     if (!values["space-port"].empty()) {
@@ -227,6 +212,25 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
     //SPDLOG_INFO("Save City");
     universe.cities[identifier] = node;
     return true;
+}
+
+void CityLoader::ParseIndustry(const Hjson::Value& industry_hjson, Node& node, std::string_view identifier) {
+    for (int i = 0; i < industry_hjson.size(); i++) {
+        Hjson::Value ind_val = industry_hjson[i];
+        auto recipe = ind_val["recipe"].to_string();
+        auto productivity = ind_val["productivity"].to_double();
+        if (universe.recipes.find(recipe) == universe.recipes.end()) {
+            SPDLOG_INFO("Recipe {} not found in city {}", recipe, identifier);
+            continue;
+        }
+        double wage = 10;
+        if (!ind_val["wage"].empty()) {
+            wage = ind_val["wage"].to_double();
+        }
+        Node rec_ent(universe, universe.recipes[recipe]);
+
+        actions::CreateFactory(node, rec_ent, productivity);
+    }
 }
 
 /**

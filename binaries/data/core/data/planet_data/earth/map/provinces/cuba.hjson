@@ -1,0 +1,172 @@
+[
+    {
+        identifier: artemisa
+        color:
+        [
+            171
+            150
+            24
+        ]
+        country: cuba
+    }
+    {
+        identifier: camaguey
+        color:
+        [
+            150
+            135
+            42
+        ]
+        country: cuba
+    }
+    {
+        identifier: ciego_de_avila
+        color:
+        [
+            150
+            149
+            109
+        ]
+        country: cuba
+    }
+    {
+        identifier: cienfuegos
+        color:
+        [
+            171
+            178
+            158
+        ]
+        country: cuba
+    }
+    {
+        identifier: ciudad_de_la_habana
+        color:
+        [
+            171
+            135
+            213
+        ]
+        country: cuba
+    }
+    {
+        identifier: granma
+        color:
+        [
+            171
+            192
+            225
+        ]
+        country: cuba
+    }
+    {
+        identifier: guantanamo
+        color:
+        [
+            40
+            213
+            215
+        ]
+        country: cuba
+    }
+    {
+        identifier: guantanamo_bay_usnb
+        color:
+        [
+            40
+            199
+            148
+        ]
+        country: cuba
+    }
+    {
+        identifier: holguin
+        color:
+        [
+            150
+            163
+            176
+        ]
+        country: cuba
+    }
+    {
+        identifier: isla_de_la_juventud
+        color:
+        [
+            150
+            192
+            54
+        ]
+        country: cuba
+    }
+    {
+        identifier: las_tunas
+        color:
+        [
+            171
+            107
+            79
+        ]
+        country: cuba
+    }
+    {
+        identifier: matanzas
+        color:
+        [
+            150
+            249
+            66
+        ]
+        country: cuba
+    }
+    {
+        identifier: mayabeque
+        color:
+        [
+            171
+            121
+            146
+        ]
+        country: cuba
+    }
+    {
+        identifier: pinar_del_rio
+        color:
+        [
+            171
+            164
+            91
+        ]
+        country: cuba
+    }
+    {
+        identifier: sancti_spiritus
+        color:
+        [
+            150
+            220
+            188
+        ]
+        country: cuba
+    }
+    {
+        identifier: santiago_de_cuba
+        color:
+        [
+            171
+            207
+            36
+        ]
+        country: cuba
+    }
+    {
+        identifier: villa_clara
+        color:
+        [
+            150
+            234
+            255
+        ]
+        country: cuba
+    }
+]

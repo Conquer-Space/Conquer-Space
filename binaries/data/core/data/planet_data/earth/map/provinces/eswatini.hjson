@@ -1,0 +1,42 @@
+[
+    {
+        identifier: hhohho
+        color:
+        [
+            89
+            20
+            125
+        ]
+        country: eswatini
+    }
+    {
+        identifier: lubombo
+        color:
+        [
+            36
+            68
+            97
+        ]
+        country: eswatini
+    }
+    {
+        identifier: manzini
+        color:
+        [
+            89
+            34
+            192
+        ]
+        country: eswatini
+    }
+    {
+        identifier: shiselweni
+        color:
+        [
+            89
+            49
+            3
+        ]
+        country: eswatini
+    }
+]

@@ -1,0 +1,162 @@
+[
+    {
+        identifier: bamingui-bangoran
+        color:
+        [
+            65
+            103
+            66
+        ]
+        country: central_african_rep_
+    }
+    {
+        identifier: basse-kotto
+        color:
+        [
+            63
+            230
+            49
+        ]
+        country: central_african_rep_
+    }
+    {
+        identifier: haut-mbomou
+        color:
+        [
+            20
+            199
+            159
+        ]
+        country: central_african_rep_
+    }
+    {
+        identifier: haute-kotto
+        color:
+        [
+            20
+            171
+            25
+        ]
+        country: central_african_rep_
+    }
+    {
+        identifier: kemo
+        color:
+        [
+            63
+            201
+            171
+        ]
+        country: central_african_rep_
+    }
+    {
+        identifier: lobaye
+        color:
+        [
+            64
+            31
+            61
+        ]
+        country: central_african_rep_
+    }
+    {
+        identifier: mambere-kadei
+        color:
+        [
+            88
+            133
+            223
+        ]
+        country: central_african_rep_
+    }
+    {
+        identifier: mbomou
+        color:
+        [
+            63
+            244
+            116
+        ]
+        country: central_african_rep_
+    }
+    {
+        identifier: nana-grebizi
+        color:
+        [
+            213
+            151
+            110
+        ]
+        country: central_african_rep_
+    }
+    {
+        identifier: nana-mambere
+        color:
+        [
+            88
+            119
+            156
+        ]
+        country: central_african_rep_
+    }
+    {
+        identifier: ombella-m'poko
+        color:
+        [
+            64
+            2
+            183
+        ]
+        country: central_african_rep_
+    }
+    {
+        identifier: ouaka
+        color:
+        [
+            63
+            215
+            238
+        ]
+        country: central_african_rep_
+    }
+    {
+        identifier: ouham
+        color:
+        [
+            65
+            131
+            200
+        ]
+        country: central_african_rep_
+    }
+    {
+        identifier: ouham-pende
+        color:
+        [
+            65
+            174
+            145
+        ]
+        country: central_african_rep_
+    }
+    {
+        identifier: sangha-mbaere
+        color:
+        [
+            88
+            91
+            22
+        ]
+        country: central_african_rep_
+    }
+    {
+        identifier: vakaga
+        color:
+        [
+            20
+            128
+            80
+        ]
+        country: central_african_rep_
+    }
+]

@@ -1,0 +1,232 @@
+[
+    {
+        identifier: central_finland
+        color:
+        [
+            239
+            198
+            112
+        ]
+        country: finland
+    }
+    {
+        identifier: central_ostrobothnia
+        color:
+        [
+            133
+            37
+            130
+        ]
+        country: finland
+    }
+    {
+        identifier: eckero
+        color:
+        [
+            161
+            71
+            173
+        ]
+        country: finland
+    }
+    {
+        identifier: finland_proper
+        color:
+        [
+            132
+            250
+            185
+        ]
+        country: finland
+    }
+    {
+        identifier: foglo
+        color:
+        [
+            162
+            172
+            56
+        ]
+        country: finland
+    }
+    {
+        identifier: jomala
+        color:
+        [
+            161
+            114
+            118
+        ]
+        country: finland
+    }
+    {
+        identifier: kainuu
+        color:
+        [
+            25
+            60
+            143
+        ]
+        country: finland
+    }
+    {
+        identifier: kymenlaakso
+        color:
+        [
+            25
+            117
+            155
+        ]
+        country: finland
+    }
+    {
+        identifier: lapland
+        color:
+        [
+            10
+            92
+            174
+        ]
+        country: finland
+    }
+    {
+        identifier: lumparland
+        color:
+        [
+            161
+            57
+            106
+        ]
+        country: finland
+    }
+    {
+        identifier: north_karelia
+        color:
+        [
+            25
+            74
+            210
+        ]
+        country: finland
+    }
+    {
+        identifier: northern_ostrobothnia
+        color:
+        [
+            25
+            46
+            76
+        ]
+        country: finland
+    }
+    {
+        identifier: northern_savonia
+        color:
+        [
+            239
+            169
+            234
+        ]
+        country: finland
+    }
+    {
+        identifier: ostrobothnia
+        color:
+        [
+            133
+            23
+            63
+        ]
+        country: finland
+    }
+    {
+        identifier: paijat-hame
+        color:
+        [
+            239
+            255
+            124
+        ]
+        country: finland
+    }
+    {
+        identifier: pirkanmaa
+        color:
+        [
+            239
+            226
+            246
+        ]
+        country: finland
+    }
+    {
+        identifier: satakunta
+        color:
+        [
+            133
+            8
+            252
+        ]
+        country: finland
+    }
+    {
+        identifier: south_karelia
+        color:
+        [
+            25
+            89
+            21
+        ]
+        country: finland
+    }
+    {
+        identifier: southern_ostrobothnia
+        color:
+        [
+            239
+            212
+            179
+        ]
+        country: finland
+    }
+    {
+        identifier: southern_savonia
+        color:
+        [
+            239
+            184
+            45
+        ]
+        country: finland
+    }
+    {
+        identifier: tavastia_proper
+        color:
+        [
+            239
+            241
+            57
+        ]
+        country: finland
+    }
+    {
+        identifier: uusimaa
+        color:
+        [
+            132
+            236
+            118
+        ]
+        country: finland
+    }
+    {
+        identifier: vardo
+        color:
+        [
+            161
+            85
+            240
+        ]
+        country: finland
+    }
+]

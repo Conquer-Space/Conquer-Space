@@ -1,0 +1,232 @@
+[
+    {
+        identifier: antipodes_islands
+        color:
+        [
+            162
+            243
+            135
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: bay_of_plenty
+        color:
+        [
+            176
+            125
+            32
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: campbell_islands
+        color:
+        [
+            162
+            229
+            68
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: canterbury
+        color:
+        [
+            176
+            11
+            8
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: chatham_islands_territory
+        color:
+        [
+            163
+            1
+            202
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: gisborne_district
+        color:
+        [
+            176
+            139
+            99
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: hawke's_bay
+        color:
+        [
+            176
+            153
+            166
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: manawatu-wanganui
+        color:
+        [
+            176
+            82
+            87
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: mangaia
+        color:
+        [
+            163
+            73
+            25
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: marlborough_district
+        color:
+        [
+            175
+            195
+            185
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: mitiaro
+        color:
+        [
+            163
+            87
+            92
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: nelson_city
+        color:
+        [
+            175
+            209
+            252
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: niue
+        color:
+        [
+            169
+            48
+            215
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: northland
+        color:
+        [
+            176
+            110
+            221
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: otago
+        color:
+        [
+            175
+            252
+            197
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: rarotonga
+        color:
+        [
+            168
+            233
+            136
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: southland
+        color:
+        [
+            175
+            181
+            118
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: taranaki
+        color:
+        [
+            176
+            96
+            154
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: tasman_district
+        color:
+        [
+            175
+            224
+            63
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: the_snares
+        color:
+        [
+            175
+            167
+            51
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: waikato
+        color:
+        [
+            176
+            39
+            142
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: wellington
+        color:
+        [
+            176
+            68
+            20
+        ]
+        country: new_zealand
+    }
+    {
+        identifier: west_coast_new_zealand
+        color:
+        [
+            175
+            238
+            130
+        ]
+        country: new_zealand
+    }
+]

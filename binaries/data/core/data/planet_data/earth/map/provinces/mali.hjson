@@ -1,0 +1,92 @@
+[
+    {
+        identifier: bamako
+        color:
+        [
+            243
+            172
+            194
+        ]
+        country: mali
+    }
+    {
+        identifier: gao
+        color:
+        [
+            68
+            233
+            191
+        ]
+        country: mali
+    }
+    {
+        identifier: kayes
+        color:
+        [
+            26
+            189
+            160
+        ]
+        country: mali
+    }
+    {
+        identifier: kidal
+        color:
+        [
+            83
+            244
+            105
+        ]
+        country: mali
+    }
+    {
+        identifier: koulikoro
+        color:
+        [
+            70
+            106
+            208
+        ]
+        country: mali
+    }
+    {
+        identifier: mopti
+        color:
+        [
+            69
+            6
+            69
+        ]
+        country: mali
+    }
+    {
+        identifier: segou
+        color:
+        [
+            69
+            77
+            148
+        ]
+        country: mali
+    }
+    {
+        identifier: sikasso
+        color:
+        [
+            69
+            106
+            26
+        ]
+        country: mali
+    }
+    {
+        identifier: timbuktu
+        color:
+        [
+            35
+            96
+            49
+        ]
+        country: mali
+    }
+]

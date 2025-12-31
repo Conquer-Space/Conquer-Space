@@ -1,0 +1,232 @@
+[
+    {
+        identifier: acklins
+        color:
+        [
+            112
+            165
+            50
+        ]
+        country: bahamas
+    }
+    {
+        identifier: berry_islands
+        color:
+        [
+            151
+            207
+            47
+        ]
+        country: bahamas
+    }
+    {
+        identifier: central_abaco
+        color:
+        [
+            152
+            22
+            126
+        ]
+        country: bahamas
+    }
+    {
+        identifier: central_andros
+        color:
+        [
+            151
+            78
+            212
+        ]
+        country: bahamas
+    }
+    {
+        identifier: crooked_island_and_long_cay
+        color:
+        [
+            150
+            206
+            121
+        ]
+        country: bahamas
+    }
+    {
+        identifier: east_grand_bahama
+        color:
+        [
+            152
+            8
+            59
+        ]
+        country: bahamas
+    }
+    {
+        identifier: exuma
+        color:
+        [
+            151
+            7
+            133
+        ]
+        country: bahamas
+    }
+    {
+        identifier: harbour_island
+        color:
+        [
+            176
+            239
+            56
+        ]
+        country: bahamas
+    }
+    {
+        identifier: inagua
+        color:
+        [
+            112
+            79
+            160
+        ]
+        country: bahamas
+    }
+    {
+        identifier: long_island
+        color:
+        [
+            151
+            21
+            200
+        ]
+        country: bahamas
+    }
+    {
+        identifier: mangrove_cay
+        color:
+        [
+            151
+            93
+            23
+        ]
+        country: bahamas
+    }
+    {
+        identifier: mayaguana
+        color:
+        [
+            112
+            150
+            239
+        ]
+        country: bahamas
+    }
+    {
+        identifier: new_providence
+        color:
+        [
+            151
+            135
+            224
+        ]
+        country: bahamas
+    }
+    {
+        identifier: north_andros
+        color:
+        [
+            151
+            150
+            35
+        ]
+        country: bahamas
+    }
+    {
+        identifier: north_eleuthera
+        color:
+        [
+            151
+            178
+            169
+        ]
+        country: bahamas
+    }
+    {
+        identifier: ragged_island
+        color:
+        [
+            174
+            123
+            180
+        ]
+        country: bahamas
+    }
+    {
+        identifier: rum_cay
+        color:
+        [
+            151
+            36
+            11
+        ]
+        country: bahamas
+    }
+    {
+        identifier: san_salvador_bahamas
+        color:
+        [
+            151
+            64
+            145
+        ]
+        country: bahamas
+    }
+    {
+        identifier: south_abaco
+        color:
+        [
+            152
+            36
+            193
+        ]
+        country: bahamas
+    }
+    {
+        identifier: south_andros
+        color:
+        [
+            151
+            107
+            90
+        ]
+        country: bahamas
+    }
+    {
+        identifier: south_eleuthera
+        color:
+        [
+            151
+            192
+            236
+        ]
+        country: bahamas
+    }
+    {
+        identifier: spanish_wells
+        color:
+        [
+            176
+            253
+            123
+        ]
+        country: bahamas
+    }
+    {
+        identifier: west_grand_bahama
+        color:
+        [
+            151
+            249
+            248
+        ]
+        country: bahamas
+    }
+]

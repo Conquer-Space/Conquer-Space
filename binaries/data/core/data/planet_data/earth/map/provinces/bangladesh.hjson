@@ -1,0 +1,72 @@
+[
+    {
+        identifier: barisal
+        color:
+        [
+            121
+            71
+            195
+        ]
+        country: bangladesh
+    }
+    {
+        identifier: chittagong
+        color:
+        [
+            36
+            210
+            255
+        ]
+        country: bangladesh
+    }
+    {
+        identifier: dhaka
+        color:
+        [
+            71
+            107
+            134
+        ]
+        country: bangladesh
+    }
+    {
+        identifier: khulna
+        color:
+        [
+            71
+            150
+            79
+        ]
+        country: bangladesh
+    }
+    {
+        identifier: rajshahi
+        color:
+        [
+            71
+            136
+            12
+        ]
+        country: bangladesh
+    }
+    {
+        identifier: rangpur
+        color:
+        [
+            71
+            121
+            201
+        ]
+        country: bangladesh
+    }
+    {
+        identifier: sylhet
+        color:
+        [
+            71
+            79
+            0
+        ]
+        country: bangladesh
+    }
+]

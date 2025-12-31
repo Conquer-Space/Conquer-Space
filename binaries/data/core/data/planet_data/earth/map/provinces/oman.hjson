@@ -1,0 +1,102 @@
+[
+    {
+        identifier: ad_dakhliyah
+        color:
+        [
+            232
+            250
+            130
+        ]
+        country: oman
+    }
+    {
+        identifier: al_batnah_north
+        color:
+        [
+            25
+            131
+            222
+        ]
+        country: oman
+    }
+    {
+        identifier: al_batnah_south
+        color:
+        [
+            113
+            222
+            244
+        ]
+        country: oman
+    }
+    {
+        identifier: al_buraymi
+        color:
+        [
+            25
+            174
+            167
+        ]
+        country: oman
+    }
+    {
+        identifier: al_dhahira
+        color:
+        [
+            25
+            217
+            112
+        ]
+        country: oman
+    }
+    {
+        identifier: al_wusta_oman
+        color:
+        [
+            81
+            171
+            174
+        ]
+        country: oman
+    }
+    {
+        identifier: ash_sharqiyah_north
+        color:
+        [
+            113
+            194
+            110
+        ]
+        country: oman
+    }
+    {
+        identifier: ash_sharqiyah_south
+        color:
+        [
+            113
+            180
+            43
+        ]
+        country: oman
+    }
+    {
+        identifier: dhofar
+        color:
+        [
+            81
+            143
+            40
+        ]
+        country: oman
+    }
+    {
+        identifier: muscat
+        color:
+        [
+            113
+            208
+            177
+        ]
+        country: oman
+    }
+]

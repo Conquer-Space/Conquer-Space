@@ -1,0 +1,82 @@
+[
+    {
+        identifier: bafata
+        color:
+        [
+            84
+            102
+            129
+        ]
+        country: guinea-bissau
+    }
+    {
+        identifier: biombo
+        color:
+        [
+            109
+            91
+            193
+        ]
+        country: guinea-bissau
+    }
+    {
+        identifier: bissau
+        color:
+        [
+            109
+            106
+            4
+        ]
+        country: guinea-bissau
+    }
+    {
+        identifier: cacheu
+        color:
+        [
+            84
+            145
+            74
+        ]
+        country: guinea-bissau
+    }
+    {
+        identifier: gabu
+        color:
+        [
+            70
+            49
+            196
+        ]
+        country: guinea-bissau
+    }
+    {
+        identifier: oio
+        color:
+        [
+            84
+            116
+            196
+        ]
+        country: guinea-bissau
+    }
+    {
+        identifier: quinara
+        color:
+        [
+            109
+            120
+            71
+        ]
+        country: guinea-bissau
+    }
+    {
+        identifier: tombali
+        color:
+        [
+            70
+            78
+            74
+        ]
+        country: guinea-bissau
+    }
+]

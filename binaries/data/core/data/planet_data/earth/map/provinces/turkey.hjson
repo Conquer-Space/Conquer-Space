@@ -1,0 +1,812 @@
+[
+    {
+        identifier: adana
+        color:
+        [
+            135
+            110
+            61
+        ]
+        country: turkey
+    }
+    {
+        identifier: adiyaman
+        color:
+        [
+            227
+            204
+            43
+        ]
+        country: turkey
+    }
+    {
+        identifier: afyonkarahisar
+        color:
+        [
+            226
+            146
+            105
+        ]
+        country: turkey
+    }
+    {
+        identifier: agri
+        color:
+        [
+            23
+            2
+            23
+        ]
+        country: turkey
+    }
+    {
+        identifier: aksaray
+        color:
+        [
+            226
+            46
+            148
+        ]
+        country: turkey
+    }
+    {
+        identifier: amasya
+        color:
+        [
+            185
+            17
+            110
+        ]
+        country: turkey
+    }
+    {
+        identifier: ankara
+        color:
+        [
+            181
+            214
+            64
+        ]
+        country: turkey
+    }
+    {
+        identifier: antalya
+        color:
+        [
+            135
+            81
+            183
+        ]
+        country: turkey
+    }
+    {
+        identifier: ardahan
+        color:
+        [
+            14
+            24
+            55
+        ]
+        country: turkey
+    }
+    {
+        identifier: artvin
+        color:
+        [
+            14
+            52
+            189
+        ]
+        country: turkey
+    }
+    {
+        identifier: aydin
+        color:
+        [
+            135
+            53
+            49
+        ]
+        country: turkey
+    }
+    {
+        identifier: balikesir
+        color:
+        [
+            135
+            24
+            171
+        ]
+        country: turkey
+    }
+    {
+        identifier: bartin
+        color:
+        [
+            134
+            180
+            214
+        ]
+        country: turkey
+    }
+    {
+        identifier: batman
+        color:
+        [
+            227
+            232
+            177
+        ]
+        country: turkey
+    }
+    {
+        identifier: bayburt
+        color:
+        [
+            228
+            5
+            55
+        ]
+        country: turkey
+    }
+    {
+        identifier: bilecik
+        color:
+        [
+            181
+            228
+            131
+        ]
+        country: turkey
+    }
+    {
+        identifier: bingol
+        color:
+        [
+            227
+            4
+            129
+        ]
+        country: turkey
+    }
+    {
+        identifier: bitlis
+        color:
+        [
+            226
+            246
+            62
+        ]
+        country: turkey
+    }
+    {
+        identifier: bolu
+        color:
+        [
+            181
+            199
+            253
+        ]
+        country: turkey
+    }
+    {
+        identifier: burdur
+        color:
+        [
+            226
+            32
+            81
+        ]
+        country: turkey
+    }
+    {
+        identifier: bursa
+        color:
+        [
+            135
+            10
+            104
+        ]
+        country: turkey
+    }
+    {
+        identifier: canakkale
+        color:
+        [
+            126
+            189
+            105
+        ]
+        country: turkey
+    }
+    {
+        identifier: cankiri
+        color:
+        [
+            182
+            1
+            9
+        ]
+        country: turkey
+    }
+    {
+        identifier: corum
+        color:
+        [
+            185
+            3
+            43
+        ]
+        country: turkey
+    }
+    {
+        identifier: denizli
+        color:
+        [
+            226
+            18
+            14
+        ]
+        country: turkey
+    }
+    {
+        identifier: diyarbakir
+        color:
+        [
+            227
+            218
+            110
+        ]
+        country: turkey
+    }
+    {
+        identifier: duzce
+        color:
+        [
+            134
+            209
+            92
+        ]
+        country: turkey
+    }
+    {
+        identifier: edirne
+        color:
+        [
+            31
+            7
+            199
+        ]
+        country: turkey
+    }
+    {
+        identifier: elazig
+        color:
+        [
+            226
+            231
+            251
+        ]
+        country: turkey
+    }
+    {
+        identifier: erzincan
+        color:
+        [
+            226
+            117
+            227
+        ]
+        country: turkey
+    }
+    {
+        identifier: erzurum
+        color:
+        [
+            226
+            203
+            117
+        ]
+        country: turkey
+    }
+    {
+        identifier: eskisehir
+        color:
+        [
+            181
+            242
+            198
+        ]
+        country: turkey
+    }
+    {
+        identifier: gaziantep
+        color:
+        [
+            57
+            154
+            158
+        ]
+        country: turkey
+    }
+    {
+        identifier: giresun
+        color:
+        [
+            134
+            109
+            135
+        ]
+        country: turkey
+    }
+    {
+        identifier: gumushane
+        color:
+        [
+            228
+            19
+            122
+        ]
+        country: turkey
+    }
+    {
+        identifier: hakkari
+        color:
+        [
+            21
+            243
+            30
+        ]
+        country: turkey
+    }
+    {
+        identifier: hatay
+        color:
+        [
+            57
+            168
+            225
+        ]
+        country: turkey
+    }
+    {
+        identifier: igdir
+        color:
+        [
+            22
+            243
+            212
+        ]
+        country: turkey
+    }
+    {
+        identifier: isparta
+        color:
+        [
+            225
+            245
+            136
+        ]
+        country: turkey
+    }
+    {
+        identifier: istanbul
+        color:
+        [
+            126
+            160
+            227
+        ]
+        country: turkey
+    }
+    {
+        identifier: izmir
+        color:
+        [
+            135
+            38
+            238
+        ]
+        country: turkey
+    }
+    {
+        identifier: k_maras
+        color:
+        [
+            226
+            174
+            239
+        ]
+        country: turkey
+    }
+    {
+        identifier: karabuk
+        color:
+        [
+            182
+            15
+            76
+        ]
+        country: turkey
+    }
+    {
+        identifier: karaman
+        color:
+        [
+            225
+            202
+            191
+        ]
+        country: turkey
+    }
+    {
+        identifier: kars
+        color:
+        [
+            54
+            109
+            179
+        ]
+        country: turkey
+    }
+    {
+        identifier: kastamonu
+        color:
+        [
+            134
+            166
+            147
+        ]
+        country: turkey
+    }
+    {
+        identifier: kayseri
+        color:
+        [
+            225
+            231
+            69
+        ]
+        country: turkey
+    }
+    {
+        identifier: kilis
+        color:
+        [
+            57
+            140
+            91
+        ]
+        country: turkey
+    }
+    {
+        identifier: kinkkale
+        color:
+        [
+            226
+            160
+            172
+        ]
+        country: turkey
+    }
+    {
+        identifier: kirklareli
+        color:
+        [
+            30
+            235
+            65
+        ]
+        country: turkey
+    }
+    {
+        identifier: kirsehir
+        color:
+        [
+            226
+            89
+            93
+        ]
+        country: turkey
+    }
+    {
+        identifier: kocaeli
+        color:
+        [
+            134
+            237
+            226
+        ]
+        country: turkey
+    }
+    {
+        identifier: konya
+        color:
+        [
+            225
+            188
+            124
+        ]
+        country: turkey
+    }
+    {
+        identifier: kutahya
+        color:
+        [
+            225
+            174
+            57
+        ]
+        country: turkey
+    }
+    {
+        identifier: malatya
+        color:
+        [
+            226
+            217
+            184
+        ]
+        country: turkey
+    }
+    {
+        identifier: manisa
+        color:
+        [
+            226
+            3
+            203
+        ]
+        country: turkey
+    }
+    {
+        identifier: mardin
+        color:
+        [
+            57
+            83
+            79
+        ]
+        country: turkey
+    }
+    {
+        identifier: mersin
+        color:
+        [
+            135
+            95
+            250
+        ]
+        country: turkey
+    }
+    {
+        identifier: mugla
+        color:
+        [
+            135
+            67
+            116
+        ]
+        country: turkey
+    }
+    {
+        identifier: mus
+        color:
+        [
+            226
+            189
+            50
+        ]
+        country: turkey
+    }
+    {
+        identifier: nevsehir
+        color:
+        [
+            226
+            60
+            215
+        ]
+        country: turkey
+    }
+    {
+        identifier: nigde
+        color:
+        [
+            225
+            217
+            2
+        ]
+        country: turkey
+    }
+    {
+        identifier: ordu
+        color:
+        [
+            134
+            123
+            202
+        ]
+        country: turkey
+    }
+    {
+        identifier: osmaniye
+        color:
+        [
+            227
+            189
+            232
+        ]
+        country: turkey
+    }
+    {
+        identifier: rize
+        color:
+        [
+            134
+            81
+            1
+        ]
+        country: turkey
+    }
+    {
+        identifier: sakarya
+        color:
+        [
+            134
+            223
+            159
+        ]
+        country: turkey
+    }
+    {
+        identifier: samsun
+        color:
+        [
+            134
+            138
+            13
+        ]
+        country: turkey
+    }
+    {
+        identifier: sanliurfa
+        color:
+        [
+            57
+            111
+            213
+        ]
+        country: turkey
+    }
+    {
+        identifier: siirt
+        color:
+        [
+            227
+            246
+            244
+        ]
+        country: turkey
+    }
+    {
+        identifier: sinop
+        color:
+        [
+            134
+            152
+            80
+        ]
+        country: turkey
+    }
+    {
+        identifier: sirnak
+        color:
+        [
+            21
+            228
+            219
+        ]
+        country: turkey
+    }
+    {
+        identifier: sivas
+        color:
+        [
+            184
+            244
+            232
+        ]
+        country: turkey
+    }
+    {
+        identifier: tekirdag
+        color:
+        [
+            126
+            175
+            38
+        ]
+        country: turkey
+    }
+    {
+        identifier: tokat
+        color:
+        [
+            184
+            230
+            165
+        ]
+        country: turkey
+    }
+    {
+        identifier: trabzon
+        color:
+        [
+            134
+            95
+            68
+        ]
+        country: turkey
+    }
+    {
+        identifier: tunceli
+        color:
+        [
+            226
+            132
+            38
+        ]
+        country: turkey
+    }
+    {
+        identifier: usak
+        color:
+        [
+            226
+            103
+            160
+        ]
+        country: turkey
+    }
+    {
+        identifier: van
+        color:
+        [
+            23
+            16
+            90
+        ]
+        country: turkey
+    }
+    {
+        identifier: yalova
+        color:
+        [
+            134
+            252
+            37
+        ]
+        country: turkey
+    }
+    {
+        identifier: yozgat
+        color:
+        [
+            226
+            75
+            26
+        ]
+        country: turkey
+    }
+    {
+        identifier: zinguldak
+        color:
+        [
+            134
+            195
+            25
+        ]
+        country: turkey
+    }
+]

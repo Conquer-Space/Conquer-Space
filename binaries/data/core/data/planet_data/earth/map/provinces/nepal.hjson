@@ -1,0 +1,142 @@
+[
+    {
+        identifier: bagmati
+        color:
+        [
+            58
+            226
+            163
+        ]
+        country: nepal
+    }
+    {
+        identifier: bheri
+        color:
+        [
+            59
+            56
+            53
+        ]
+        country: nepal
+    }
+    {
+        identifier: bhojpur
+        color:
+        [
+            59
+            13
+            108
+        ]
+        country: nepal
+    }
+    {
+        identifier: dhawalagiri
+        color:
+        [
+            58
+            198
+            29
+        ]
+        country: nepal
+    }
+    {
+        identifier: gandaki
+        color:
+        [
+            58
+            212
+            96
+        ]
+        country: nepal
+    }
+    {
+        identifier: janakpur
+        color:
+        [
+            58
+            240
+            230
+        ]
+        country: nepal
+    }
+    {
+        identifier: karnali
+        color:
+        [
+            58
+            155
+            84
+        ]
+        country: nepal
+    }
+    {
+        identifier: lumbini
+        color:
+        [
+            59
+            98
+            254
+        ]
+        country: nepal
+    }
+    {
+        identifier: mahakali
+        color:
+        [
+            58
+            169
+            151
+        ]
+        country: nepal
+    }
+    {
+        identifier: mechi
+        color:
+        [
+            59
+            27
+            175
+        ]
+        country: nepal
+    }
+    {
+        identifier: narayani
+        color:
+        [
+            59
+            113
+            65
+        ]
+        country: nepal
+    }
+    {
+        identifier: rapti
+        color:
+        [
+            59
+            70
+            120
+        ]
+        country: nepal
+    }
+    {
+        identifier: sagarmatha
+        color:
+        [
+            58
+            255
+            41
+        ]
+        country: nepal
+    }
+    {
+        identifier: seti
+        color:
+        [
+            58
+            183
+            218
+        ]
+        country: nepal
+    }
+]

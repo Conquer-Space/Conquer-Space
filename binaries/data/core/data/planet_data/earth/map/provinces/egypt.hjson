@@ -1,0 +1,282 @@
+[
+    {
+        identifier: ad_daqahliyah
+        color:
+        [
+            118
+            41
+            27
+        ]
+        country: egypt
+    }
+    {
+        identifier: al_bahr_al_ahmar
+        color:
+        [
+            82
+            200
+            234
+        ]
+        country: egypt
+    }
+    {
+        identifier: al_buhayrah
+        color:
+        [
+            118
+            112
+            106
+        ]
+        country: egypt
+    }
+    {
+        identifier: al_fayyum
+        color:
+        [
+            208
+            176
+            102
+        ]
+        country: egypt
+    }
+    {
+        identifier: al_gharbiyah
+        color:
+        [
+            208
+            233
+            114
+        ]
+        country: egypt
+    }
+    {
+        identifier: al_iskandariyah
+        color:
+        [
+            118
+            126
+            173
+        ]
+        country: egypt
+    }
+    {
+        identifier: al_isma`iliyah
+        color:
+        [
+            118
+            69
+            161
+        ]
+        country: egypt
+    }
+    {
+        identifier: al_jizah
+        color:
+        [
+            208
+            147
+            224
+        ]
+        country: egypt
+    }
+    {
+        identifier: al_minufiyah
+        color:
+        [
+            208
+            204
+            236
+        ]
+        country: egypt
+    }
+    {
+        identifier: al_minya
+        color:
+        [
+            208
+            162
+            35
+        ]
+        country: egypt
+    }
+    {
+        identifier: al_qahirah
+        color:
+        [
+            208
+            133
+            157
+        ]
+        country: egypt
+    }
+    {
+        identifier: al_qalyubiyah
+        color:
+        [
+            208
+            219
+            47
+        ]
+        country: egypt
+    }
+    {
+        identifier: al_wadi_at_jadid
+        color:
+        [
+            82
+            186
+            167
+        ]
+        country: egypt
+    }
+    {
+        identifier: as_suways
+        color:
+        [
+            113
+            23
+            74
+        ]
+        country: egypt
+    }
+    {
+        identifier: ash_sharqiyah_egypt
+        color:
+        [
+            118
+            55
+            94
+        ]
+        country: egypt
+    }
+    {
+        identifier: aswan
+        color:
+        [
+            82
+            172
+            100
+        ]
+        country: egypt
+    }
+    {
+        identifier: asyut
+        color:
+        [
+            209
+            20
+            59
+        ]
+        country: egypt
+    }
+    {
+        identifier: bani_suwayf
+        color:
+        [
+            208
+            190
+            169
+        ]
+        country: egypt
+    }
+    {
+        identifier: bur_sa`id
+        color:
+        [
+            118
+            26
+            216
+        ]
+        country: egypt
+    }
+    {
+        identifier: dumyat
+        color:
+        [
+            118
+            83
+            228
+        ]
+        country: egypt
+    }
+    {
+        identifier: gaza_strip
+        color:
+        [
+            1
+            29
+            60
+        ]
+        country: egypt
+    }
+    {
+        identifier: janub_sina'
+        color:
+        [
+            113
+            37
+            141
+        ]
+        country: egypt
+    }
+    {
+        identifier: kafr_ash_shaykh
+        color:
+        [
+            118
+            98
+            39
+        ]
+        country: egypt
+    }
+    {
+        identifier: luxor
+        color:
+        [
+            250
+            134
+            243
+        ]
+        country: egypt
+    }
+    {
+        identifier: matruh
+        color:
+        [
+            84
+            73
+            251
+        ]
+        country: egypt
+    }
+    {
+        identifier: qina
+        color:
+        [
+            209
+            5
+            248
+        ]
+        country: egypt
+    }
+    {
+        identifier: shamal_sina'
+        color:
+        [
+            80
+            228
+            4
+        ]
+        country: egypt
+    }
+    {
+        identifier: suhaj
+        color:
+        [
+            208
+            247
+            181
+        ]
+        country: egypt
+    }
+]

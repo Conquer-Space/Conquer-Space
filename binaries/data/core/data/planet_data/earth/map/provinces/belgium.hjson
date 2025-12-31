@@ -1,0 +1,102 @@
+[
+    {
+        identifier: antwerp
+        color:
+        [
+            44
+            173
+            230
+        ]
+        country: belgium
+    }
+    {
+        identifier: east_flanders
+        color:
+        [
+            44
+            145
+            96
+        ]
+        country: belgium
+    }
+    {
+        identifier: flemish_brabant
+        color:
+        [
+            95
+            39
+            4
+        ]
+        country: belgium
+    }
+    {
+        identifier: hainaut
+        color:
+        [
+            11
+            221
+            191
+        ]
+        country: belgium
+    }
+    {
+        identifier: liege
+        color:
+        [
+            12
+            65
+            148
+        ]
+        country: belgium
+    }
+    {
+        identifier: limburg_belgium
+        color:
+        [
+            44
+            188
+            41
+        ]
+        country: belgium
+    }
+    {
+        identifier: luxembourg_belgium
+        color:
+        [
+            12
+            22
+            203
+        ]
+        country: belgium
+    }
+    {
+        identifier: namur
+        color:
+        [
+            11
+            250
+            69
+        ]
+        country: belgium
+    }
+    {
+        identifier: walloon_brabant
+        color:
+        [
+            95
+            53
+            71
+        ]
+        country: belgium
+    }
+    {
+        identifier: west_flanders
+        color:
+        [
+            11
+            207
+            124
+        ]
+        country: belgium
+    }
+]

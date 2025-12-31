@@ -1,0 +1,152 @@
+[
+    {
+        identifier: harju
+        color:
+        [
+            132
+            193
+            173
+        ]
+        country: estonia
+    }
+    {
+        identifier: hiiu
+        color:
+        [
+            162
+            143
+            178
+        ]
+        country: estonia
+    }
+    {
+        identifier: ida-viru
+        color:
+        [
+            92
+            93
+            238
+        ]
+        country: estonia
+    }
+    {
+        identifier: jarva
+        color:
+        [
+            208
+            76
+            145
+        ]
+        country: estonia
+    }
+    {
+        identifier: jogeva
+        color:
+        [
+            92
+            136
+            183
+        ]
+        country: estonia
+    }
+    {
+        identifier: laane
+        color:
+        [
+            132
+            179
+            106
+        ]
+        country: estonia
+    }
+    {
+        identifier: laane-viru
+        color:
+        [
+            132
+            207
+            240
+        ]
+        country: estonia
+    }
+    {
+        identifier: parnu
+        color:
+        [
+            7
+            176
+            30
+        ]
+        country: estonia
+    }
+    {
+        identifier: polva
+        color:
+        [
+            92
+            108
+            49
+        ]
+        country: estonia
+    }
+    {
+        identifier: rapla
+        color:
+        [
+            208
+            62
+            78
+        ]
+        country: estonia
+    }
+    {
+        identifier: saare
+        color:
+        [
+            162
+            129
+            111
+        ]
+        country: estonia
+    }
+    {
+        identifier: tartu
+        color:
+        [
+            92
+            122
+            116
+        ]
+        country: estonia
+    }
+    {
+        identifier: valga
+        color:
+        [
+            7
+            204
+            164
+        ]
+        country: estonia
+    }
+    {
+        identifier: viljandi
+        color:
+        [
+            7
+            133
+            85
+        ]
+        country: estonia
+    }
+    {
+        identifier: voru
+        color:
+        [
+            7
+            247
+            109
+        ]
+        country: estonia
+    }
+]

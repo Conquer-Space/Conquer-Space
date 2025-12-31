@@ -1,0 +1,152 @@
+[
+    {
+        identifier: ahuachapan
+        color:
+        [
+            34
+            124
+            1
+        ]
+        country: el_salvador
+    }
+    {
+        identifier: cabanas
+        color:
+        [
+            42
+            15
+            153
+        ]
+        country: el_salvador
+    }
+    {
+        identifier: chalatenango
+        color:
+        [
+            41
+            243
+            19
+        ]
+        country: el_salvador
+    }
+    {
+        identifier: cuscatlan
+        color:
+        [
+            208
+            105
+            23
+        ]
+        country: el_salvador
+    }
+    {
+        identifier: la_libertad_el_salvador
+        color:
+        [
+            117
+            54
+            168
+        ]
+        country: el_salvador
+    }
+    {
+        identifier: la_paz_el_salvador
+        color:
+        [
+            117
+            68
+            235
+        ]
+        country: el_salvador
+    }
+    {
+        identifier: la_union_el_salvador
+        color:
+        [
+            42
+            86
+            232
+        ]
+        country: el_salvador
+    }
+    {
+        identifier: morazan
+        color:
+        [
+            42
+            44
+            31
+        ]
+        country: el_salvador
+    }
+    {
+        identifier: san_miguel
+        color:
+        [
+            42
+            72
+            165
+        ]
+        country: el_salvador
+    }
+    {
+        identifier: san_salvador_el_salvador
+        color:
+        [
+            208
+            119
+            90
+        ]
+        country: el_salvador
+    }
+    {
+        identifier: san_vicente
+        color:
+        [
+            117
+            83
+            46
+        ]
+        country: el_salvador
+    }
+    {
+        identifier: santa_ana
+        color:
+        [
+            34
+            152
+            135
+        ]
+        country: el_salvador
+    }
+    {
+        identifier: sonsonate
+        color:
+        [
+            117
+            40
+            101
+        ]
+        country: el_salvador
+    }
+    {
+        identifier: usulutan
+        color:
+        [
+            117
+            97
+            113
+        ]
+        country: el_salvador
+    }
+    {
+        identifier: valle
+        color:
+        [
+            42
+            101
+            43
+        ]
+        country: el_salvador
+    }
+]

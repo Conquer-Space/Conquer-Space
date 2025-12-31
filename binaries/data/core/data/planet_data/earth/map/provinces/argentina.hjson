@@ -1,0 +1,242 @@
+[
+    {
+        identifier: buenos_aires
+        color:
+        [
+            95
+            252
+            241
+        ]
+        country: argentina
+    }
+    {
+        identifier: catamarca
+        color:
+        [
+            76
+            111
+            20
+        ]
+        country: argentina
+    }
+    {
+        identifier: chaco
+        color:
+        [
+            43
+            230
+            60
+        ]
+        country: argentina
+    }
+    {
+        identifier: chubut
+        color:
+        [
+            77
+            54
+            190
+        ]
+        country: argentina
+    }
+    {
+        identifier: ciudad_de_buenos_aires
+        color:
+        [
+            97
+            26
+            45
+        ]
+        country: argentina
+    }
+    {
+        identifier: cordoba_argentina
+        color:
+        [
+            214
+            194
+            237
+        ]
+        country: argentina
+    }
+    {
+        identifier: corrientes
+        color:
+        [
+            43
+            244
+            127
+        ]
+        country: argentina
+    }
+    {
+        identifier: entre_rios
+        color:
+        [
+            0
+            0
+            0
+        ]
+        country: argentina
+    }
+    {
+        identifier: formosa
+        color:
+        [
+            43
+            116
+            36
+        ]
+        country: argentina
+    }
+    {
+        identifier: jujuy
+        color:
+        [
+            0
+            199
+            170
+        ]
+        country: argentina
+    }
+    {
+        identifier: la_pampa
+        color:
+        [
+            214
+            180
+            170
+        ]
+        country: argentina
+    }
+    {
+        identifier: la_rioja_argentina
+        color:
+        [
+            76
+            139
+            154
+        ]
+        country: argentina
+    }
+    {
+        identifier: mendoza
+        color:
+        [
+            76
+            182
+            99
+        ]
+        country: argentina
+    }
+    {
+        identifier: misiones_argentina
+        color:
+        [
+            43
+            187
+            115
+        ]
+        country: argentina
+    }
+    {
+        identifier: neuquen
+        color:
+        [
+            76
+            253
+            178
+        ]
+        country: argentina
+    }
+    {
+        identifier: rio_negro_argentina
+        color:
+        [
+            77
+            83
+            68
+        ]
+        country: argentina
+    }
+    {
+        identifier: salta
+        color:
+        [
+            0
+            185
+            103
+        ]
+        country: argentina
+    }
+    {
+        identifier: san_juan_argentina
+        color:
+        [
+            76
+            153
+            221
+        ]
+        country: argentina
+    }
+    {
+        identifier: san_luis
+        color:
+        [
+            214
+            166
+            103
+        ]
+        country: argentina
+    }
+    {
+        identifier: santa_cruz_argentina
+        color:
+        [
+            77
+            111
+            202
+        ]
+        country: argentina
+    }
+    {
+        identifier: santa_fe
+        color:
+        [
+            214
+            123
+            158
+        ]
+        country: argentina
+    }
+    {
+        identifier: santiago_del_estero
+        color:
+        [
+            214
+            152
+            36
+        ]
+        country: argentina
+    }
+    {
+        identifier: tierra_del_fuego
+        color:
+        [
+            77
+            140
+            80
+        ]
+        country: argentina
+    }
+    {
+        identifier: tucuman
+        color:
+        [
+            214
+            137
+            225
+        ]
+        country: argentina
+    }
+]

@@ -1,0 +1,182 @@
+[
+    {
+        identifier: bengo
+        color:
+        [
+            106
+            246
+            128
+        ]
+        country: angola
+    }
+    {
+        identifier: benguela
+        color:
+        [
+            98
+            98
+            50
+        ]
+        country: angola
+    }
+    {
+        identifier: bie
+        color:
+        [
+            214
+            209
+            48
+        ]
+        country: angola
+    }
+    {
+        identifier: cabinda
+        color:
+        [
+            27
+            176
+            19
+        ]
+        country: angola
+    }
+    {
+        identifier: cuando_cubango
+        color:
+        [
+            86
+            46
+            225
+        ]
+        country: angola
+    }
+    {
+        identifier: cuanza_norte
+        color:
+        [
+            214
+            223
+            115
+        ]
+        country: angola
+    }
+    {
+        identifier: cuanza_sul
+        color:
+        [
+            98
+            83
+            239
+        ]
+        country: angola
+    }
+    {
+        identifier: cunene
+        color:
+        [
+            86
+            118
+            48
+        ]
+        country: angola
+    }
+    {
+        identifier: huambo
+        color:
+        [
+            214
+            251
+            249
+        ]
+        country: angola
+    }
+    {
+        identifier: huila_angola
+        color:
+        [
+            214
+            237
+            182
+        ]
+        country: angola
+    }
+    {
+        identifier: luanda
+        color:
+        [
+            107
+            4
+            195
+        ]
+        country: angola
+    }
+    {
+        identifier: lunda_norte
+        color:
+        [
+            87
+            47
+            151
+        ]
+        country: angola
+    }
+    {
+        identifier: lunda_sul
+        color:
+        [
+            87
+            76
+            29
+        ]
+        country: angola
+    }
+    {
+        identifier: malanje
+        color:
+        [
+            87
+            61
+            218
+        ]
+        country: angola
+    }
+    {
+        identifier: moxico
+        color:
+        [
+            86
+            61
+            36
+        ]
+        country: angola
+    }
+    {
+        identifier: namibe
+        color:
+        [
+            86
+            89
+            170
+        ]
+        country: angola
+    }
+    {
+        identifier: uige
+        color:
+        [
+            87
+            19
+            17
+        ]
+        country: angola
+    }
+    {
+        identifier: zaire
+        color:
+        [
+            87
+            4
+            206
+        ]
+        country: angola
+    }
+]

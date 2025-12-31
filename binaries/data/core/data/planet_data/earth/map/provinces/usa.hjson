@@ -1,0 +1,656 @@
+[
+    {
+        identifier: alabama
+        color:
+        [
+            115
+            138
+            206
+        ]
+        country: usa
+    }
+    {
+        identifier: alaska
+        color:
+        [
+            92
+            179
+            128
+        ]
+        country: usa
+    }
+    {
+        identifier: arizona
+        color:
+        [
+            72
+            250
+            218
+        ]
+        country: usa
+    }
+    {
+        identifier: arkansas
+        color:
+        [
+            242
+            157
+            201
+        ]
+        country: usa
+    }
+    {
+        identifier: california
+        color:
+        [
+            73
+            37
+            163
+        ]
+        country: usa
+    }
+    {
+        identifier: colorado
+        color:
+        [
+            182
+            143
+            167
+        ]
+        country: usa
+    }
+    {
+        identifier: connecticut
+        color:
+        [
+            116
+            25
+            108
+        ]
+        country: usa
+    }
+    {
+        identifier: delaware
+        color:
+        [
+            115
+            252
+            230
+        ]
+        country: usa
+    }
+    {
+        identifier: district_of_columbia
+        color:
+        [
+            115
+            224
+            96
+        ]
+        country: usa
+    }
+    {
+        identifier: florida_usa
+        color:
+        [
+            115
+            153
+            17
+        ]
+        country: usa
+    }
+    {
+        identifier: georgia
+        color:
+        [
+            115
+            167
+            84
+        ]
+        country: usa
+    }
+    {
+        identifier: guam
+        color:
+        [
+            171
+            21
+            189
+        ]
+        country: usa
+    }
+    {
+        identifier: idaho
+        color:
+        [
+            72
+            36
+            237
+        ]
+        country: usa
+    }
+    {
+        identifier: illinois
+        color:
+        [
+            242
+            129
+            67
+        ]
+        country: usa
+        population: [
+            {
+                size: 2896016
+                sol: 10
+                balance: 10000000
+            }
+        ]
+        industry: [
+            {
+                recipe: farming
+                productivity: 200
+                wage: 200
+            }
+            {
+                recipe: meat_production
+                productivity: 600
+                wage: 40
+            }
+            {
+                recipe: fresh_food_production
+                productivity: 250
+                wage: 40
+            }
+            {
+                recipe: groceries_manufacturing
+                productivity: 200
+                wage: 40
+            }
+            {
+                recipe: tractor_production
+                productivity: 20
+                wage: 40
+            }
+            {
+                recipe: steel_manufacturing
+                productivity: 250
+                wage: 40
+            }
+            {
+                recipe: machinery_production
+                productivity: 40
+                wage: 40
+            }
+        ]
+    }
+    {
+        identifier: indiana
+        color:
+        [
+            242
+            200
+            146
+        ]
+        country: usa
+    }
+    {
+        identifier: iowa
+        color:
+        [
+            182
+            214
+            246
+        ]
+        country: usa
+    }
+    {
+        identifier: kansas
+        color:
+        [
+            182
+            186
+            112
+        ]
+        country: usa
+    }
+    {
+        identifier: kentucky
+        color:
+        [
+            242
+            143
+            134
+        ]
+        country: usa
+    }
+    {
+        identifier: louisiana
+        color:
+        [
+            115
+            110
+            72
+        ]
+        country: usa
+    }
+    {
+        identifier: maine
+        color:
+        [
+            72
+            136
+            194
+        ]
+        country: usa
+    }
+    {
+        identifier: maryland
+        color:
+        [
+            115
+            238
+            163
+        ]
+        country: usa
+    }
+    {
+        identifier: massachusetts
+        color:
+        [
+            116
+            53
+            242
+        ]
+        country: usa
+    }
+    {
+        identifier: michigan
+        color:
+        [
+            72
+            122
+            127
+        ]
+        country: usa
+    }
+    {
+        identifier: minnesota
+        color:
+        [
+            71
+            235
+            225
+        ]
+        country: usa
+    }
+    {
+        identifier: mississippi
+        color:
+        [
+            115
+            124
+            139
+        ]
+        country: usa
+    }
+    {
+        identifier: missouri
+        color:
+        [
+            182
+            229
+            57
+        ]
+        country: usa
+    }
+    {
+        identifier: montana_usa
+        color:
+        [
+            72
+            51
+            48
+        ]
+        country: usa
+    }
+    {
+        identifier: nebraska
+        color:
+        [
+            182
+            172
+            45
+        ]
+        country: usa
+    }
+    {
+        identifier: nevada
+        color:
+        [
+            182
+            129
+            100
+        ]
+        country: usa
+    }
+    {
+        identifier: new_hampshire
+        color:
+        [
+            72
+            193
+            206
+        ]
+        country: usa
+    }
+    {
+        identifier: new_jersey
+        color:
+        [
+            116
+            11
+            41
+        ]
+        country: usa
+    }
+    {
+        identifier: new_mexico
+        color:
+        [
+            73
+            51
+            230
+        ]
+        country: usa
+    }
+    {
+        identifier: new_york
+        color:
+        [
+            72
+            208
+            17
+        ]
+        country: usa
+    }
+    {
+        identifier: north_carolina
+        color:
+        [
+            115
+            195
+            218
+        ]
+        country: usa
+    }
+    {
+        identifier: north_dakota
+        color:
+        [
+            72
+            93
+            249
+        ]
+        country: usa
+    }
+    {
+        identifier: northern_islands
+        color:
+        [
+            171
+            93
+            12
+        ]
+        country: usa
+    }
+    {
+        identifier: ohio
+        color:
+        [
+            72
+            179
+            139
+        ]
+        country: usa
+    }
+    {
+        identifier: oklahoma
+        color:
+        [
+            182
+            200
+            179
+        ]
+        country: usa
+    }
+    {
+        identifier: oregon
+        color:
+        [
+            120
+            213
+            171
+        ]
+        country: usa
+    }
+    {
+        identifier: palmyra_atoll
+        color:
+        [
+            176
+            182
+            44
+        ]
+        country: usa
+    }
+    {
+        identifier: pennsylvania
+        color:
+        [
+            72
+            236
+            151
+        ]
+        country: usa
+    }
+    {
+        identifier: puerto_rico
+        color:
+        [
+            147
+            204
+            87
+        ]
+        country: usa
+    }
+    {
+        identifier: rhode_island
+        color:
+        [
+            116
+            39
+            175
+        ]
+        country: usa
+    }
+    {
+        identifier: rota
+        color:
+        [
+            171
+            36
+            0
+        ]
+        country: usa
+    }
+    {
+        identifier: saint_croix
+        color:
+        [
+            147
+            175
+            209
+        ]
+        country: usa
+    }
+    {
+        identifier: saint_john_usa
+        color:
+        [
+            148
+            148
+            1
+        ]
+        country: usa
+    }
+    {
+        identifier: saint_thomas_usa
+        color:
+        [
+            148
+            162
+            68
+        ]
+        country: usa
+    }
+    {
+        identifier: saipan
+        color:
+        [
+            171
+            64
+            134
+        ]
+        country: usa
+    }
+    {
+        identifier: south_carolina
+        color:
+        [
+            115
+            181
+            151
+        ]
+        country: usa
+    }
+    {
+        identifier: south_dakota
+        color:
+        [
+            182
+            157
+            234
+        ]
+        country: usa
+    }
+    {
+        identifier: swain's_island
+        color:
+        [
+            172
+            122
+            72
+        ]
+        country: usa
+    }
+    {
+        identifier: tennessee
+        color:
+        [
+            242
+            172
+            12
+        ]
+        country: usa
+    }
+    {
+        identifier: texas
+        color:
+        [
+            73
+            80
+            108
+        ]
+        country: usa
+    }
+    {
+        identifier: tinian
+        color:
+        [
+            171
+            50
+            67
+        ]
+        country: usa
+    }
+    {
+        identifier: utah
+        color:
+        [
+            182
+            100
+            222
+        ]
+        country: usa
+    }
+    {
+        identifier: vermont
+        color:
+        [
+            72
+            222
+            84
+        ]
+        country: usa
+    }
+    {
+        identifier: virginia
+        color:
+        [
+            115
+            210
+            29
+        ]
+        country: usa
+    }
+    {
+        identifier: washington
+        color:
+        [
+            72
+            8
+            103
+        ]
+        country: usa
+    }
+    {
+        identifier: west_virginia
+        color:
+        [
+            242
+            186
+            79
+        ]
+        country: usa
+    }
+    {
+        identifier: wisconsin
+        color:
+        [
+            242
+            115
+            0
+        ]
+        country: usa
+    }
+    {
+        identifier: wyoming
+        color:
+        [
+            182
+            115
+            33
+        ]
+        country: usa
+    }
+]

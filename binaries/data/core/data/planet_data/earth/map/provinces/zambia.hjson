@@ -1,0 +1,102 @@
+[
+    {
+        identifier: central_zambia
+        color:
+        [
+            89
+            91
+            204
+        ]
+        country: zambia
+    }
+    {
+        identifier: copperbelt
+        color:
+        [
+            89
+            77
+            137
+        ]
+        country: zambia
+    }
+    {
+        identifier: eastern_zambia
+        color:
+        [
+            19
+            141
+            221
+        ]
+        country: zambia
+    }
+    {
+        identifier: luapula
+        color:
+        [
+            89
+            63
+            70
+        ]
+        country: zambia
+    }
+    {
+        identifier: lusaka
+        color:
+        [
+            63
+            144
+            159
+        ]
+        country: zambia
+    }
+    {
+        identifier: muchinga
+        color:
+        [
+            19
+            113
+            87
+        ]
+        country: zambia
+    }
+    {
+        identifier: north-western
+        color:
+        [
+            86
+            75
+            103
+        ]
+        country: zambia
+    }
+    {
+        identifier: northern_zambia
+        color:
+        [
+            23
+            73
+            102
+        ]
+        country: zambia
+    }
+    {
+        identifier: southern_zambia
+        color:
+        [
+            63
+            187
+            104
+        ]
+        country: zambia
+    }
+    {
+        identifier: western_zambia
+        color:
+        [
+            86
+            32
+            158
+        ]
+        country: zambia
+    }
+]

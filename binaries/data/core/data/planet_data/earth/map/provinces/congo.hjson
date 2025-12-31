@@ -1,0 +1,122 @@
+[
+    {
+        identifier: bouenza
+        color:
+        [
+            4
+            45
+            161
+        ]
+        country: congo
+    }
+    {
+        identifier: brazzaville
+        color:
+        [
+            4
+            2
+            216
+        ]
+        country: congo
+    }
+    {
+        identifier: cuvette
+        color:
+        [
+            3
+            201
+            204
+        ]
+        country: congo
+    }
+    {
+        identifier: cuvette-ouest
+        color:
+        [
+            65
+            245
+            224
+        ]
+        country: congo
+    }
+    {
+        identifier: kinshasa_city
+        color:
+        [
+            4
+            17
+            27
+        ]
+        country: congo
+    }
+    {
+        identifier: kouilou
+        color:
+        [
+            27
+            190
+            86
+        ]
+        country: congo
+    }
+    {
+        identifier: lekoumou
+        color:
+        [
+            66
+            46
+            236
+        ]
+        country: congo
+    }
+    {
+        identifier: likouala
+        color:
+        [
+            3
+            173
+            70
+        ]
+        country: congo
+    }
+    {
+        identifier: niari
+        color:
+        [
+            4
+            59
+            228
+        ]
+        country: congo
+    }
+    {
+        identifier: plateaux_congo
+        color:
+        [
+            3
+            216
+            15
+        ]
+        country: congo
+    }
+    {
+        identifier: pool
+        color:
+        [
+            3
+            244
+            149
+        ]
+        country: congo
+    }
+    {
+        identifier: sangha
+        color:
+        [
+            65
+            217
+            90
+        ]
+        country: congo
+    }
+]

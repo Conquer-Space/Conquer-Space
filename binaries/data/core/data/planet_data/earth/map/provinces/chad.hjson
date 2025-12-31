@@ -1,0 +1,222 @@
+[
+    {
+        identifier: barh_el_gazel
+        color:
+        [
+            211
+            192
+            203
+        ]
+        country: chad
+    }
+    {
+        identifier: batha
+        color:
+        [
+            211
+            249
+            215
+        ]
+        country: chad
+    }
+    {
+        identifier: borkou
+        color:
+        [
+            82
+            44
+            9
+        ]
+        country: chad
+    }
+    {
+        identifier: chari-baguirmi
+        color:
+        [
+            66
+            103
+            248
+        ]
+        country: chad
+    }
+    {
+        identifier: ennedi
+        color:
+        [
+            82
+            29
+            198
+        ]
+        country: chad
+    }
+    {
+        identifier: guera
+        color:
+        [
+            211
+            235
+            148
+        ]
+        country: chad
+    }
+    {
+        identifier: hadjer-lamis
+        color:
+        [
+            66
+            75
+            114
+        ]
+        country: chad
+    }
+    {
+        identifier: kanem
+        color:
+        [
+            82
+            143
+            222
+        ]
+        country: chad
+    }
+    {
+        identifier: lac
+        color:
+        [
+            34
+            52
+            178
+        ]
+        country: chad
+    }
+    {
+        identifier: logone_occidental
+        color:
+        [
+            211
+            221
+            81
+        ]
+        country: chad
+    }
+    {
+        identifier: logone_oriental
+        color:
+        [
+            65
+            160
+            78
+        ]
+        country: chad
+    }
+    {
+        identifier: mandoul
+        color:
+        [
+            65
+            146
+            11
+        ]
+        country: chad
+    }
+    {
+        identifier: mayo-kebbi_est
+        color:
+        [
+            66
+            132
+            126
+        ]
+        country: chad
+    }
+    {
+        identifier: mayo-kebbi_ouest
+        color:
+        [
+            66
+            146
+            193
+        ]
+        country: chad
+    }
+    {
+        identifier: moyen-chari
+        color:
+        [
+            65
+            117
+            133
+        ]
+        country: chad
+    }
+    {
+        identifier: ouaddai
+        color:
+        [
+            84
+            31
+            50
+        ]
+        country: chad
+    }
+    {
+        identifier: salamat
+        color:
+        [
+            65
+            88
+            255
+        ]
+        country: chad
+    }
+    {
+        identifier: sila
+        color:
+        [
+            65
+            74
+            188
+        ]
+        country: chad
+    }
+    {
+        identifier: tandjile
+        color:
+        [
+            211
+            207
+            14
+        ]
+        country: chad
+    }
+    {
+        identifier: tibesti
+        color:
+        [
+            82
+            72
+            143
+        ]
+        country: chad
+    }
+    {
+        identifier: ville_de_n'djamena
+        color:
+        [
+            66
+            118
+            59
+        ]
+        country: chad
+    }
+    {
+        identifier: wadi_fira
+        color:
+        [
+            84
+            45
+            117
+        ]
+        country: chad
+    }
+]

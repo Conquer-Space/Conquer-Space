@@ -1,0 +1,202 @@
+[
+    {
+        identifier: andrijevica
+        color:
+        [
+            51
+            50
+            133
+        ]
+        country: montenegro
+    }
+    {
+        identifier: bar
+        color:
+        [
+            51
+            79
+            11
+        ]
+        country: montenegro
+    }
+    {
+        identifier: berane
+        color:
+        [
+            41
+            157
+            129
+        ]
+        country: montenegro
+    }
+    {
+        identifier: budva
+        color:
+        [
+            136
+            68
+            42
+        ]
+        country: montenegro
+    }
+    {
+        identifier: cetinje
+        color:
+        [
+            200
+            56
+            158
+        ]
+        country: montenegro
+    }
+    {
+        identifier: danilovgrad
+        color:
+        [
+            200
+            99
+            103
+        ]
+        country: montenegro
+    }
+    {
+        identifier: herceg_novi
+        color:
+        [
+            40
+            85
+            124
+        ]
+        country: montenegro
+    }
+    {
+        identifier: kolasin
+        color:
+        [
+            200
+            85
+            36
+        ]
+        country: montenegro
+    }
+    {
+        identifier: kotor
+        color:
+        [
+            48
+            48
+            99
+        ]
+        country: montenegro
+    }
+    {
+        identifier: mojkovac
+        color:
+        [
+            200
+            42
+            91
+        ]
+        country: montenegro
+    }
+    {
+        identifier: niksic
+        color:
+        [
+            48
+            34
+            32
+        ]
+        country: montenegro
+    }
+    {
+        identifier: plav
+        color:
+        [
+            41
+            171
+            196
+        ]
+        country: montenegro
+    }
+    {
+        identifier: pljevlja
+        color:
+        [
+            41
+            186
+            7
+        ]
+        country: montenegro
+    }
+    {
+        identifier: pluzine
+        color:
+        [
+            48
+            19
+            221
+        ]
+        country: montenegro
+    }
+    {
+        identifier: podgorica
+        color:
+        [
+            51
+            64
+            200
+        ]
+        country: montenegro
+    }
+    {
+        identifier: rozaje
+        color:
+        [
+            41
+            128
+            251
+        ]
+        country: montenegro
+    }
+    {
+        identifier: savnik
+        color:
+        [
+            200
+            70
+            225
+        ]
+        country: montenegro
+    }
+    {
+        identifier: tivat
+        color:
+        [
+            136
+            82
+            109
+        ]
+        country: montenegro
+    }
+    {
+        identifier: ulcinj
+        color:
+        [
+            51
+            93
+            78
+        ]
+        country: montenegro
+    }
+    {
+        identifier: zabljak
+        color:
+        [
+            48
+            5
+            154
+        ]
+        country: montenegro
+    }
+]

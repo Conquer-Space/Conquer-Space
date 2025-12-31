@@ -1,0 +1,122 @@
+[
+    {
+        identifier: bandundu
+        color:
+        [
+            3
+            230
+            82
+        ]
+        country: dem__rep__congo
+    }
+    {
+        identifier: bas-congo
+        color:
+        [
+            4
+            31
+            94
+        ]
+        country: dem__rep__congo
+    }
+    {
+        identifier: bujumbura_rural
+        color:
+        [
+            64
+            131
+            18
+        ]
+        country: dem__rep__congo
+    }
+    {
+        identifier: bundibugyo
+        color:
+        [
+            91
+            193
+            13
+        ]
+        country: dem__rep__congo
+    }
+    {
+        identifier: equateur
+        color:
+        [
+            3
+            187
+            137
+        ]
+        country: dem__rep__congo
+    }
+    {
+        identifier: kasai-occidental
+        color:
+        [
+            87
+            33
+            84
+        ]
+        country: dem__rep__congo
+    }
+    {
+        identifier: kasai-oriental
+        color:
+        [
+            210
+            249
+            33
+        ]
+        country: dem__rep__congo
+    }
+    {
+        identifier: katanga
+        color:
+        [
+            21
+            100
+            128
+        ]
+        country: dem__rep__congo
+    }
+    {
+        identifier: maniema
+        color:
+        [
+            211
+            7
+            100
+        ]
+        country: dem__rep__congo
+    }
+    {
+        identifier: nord-kivu
+        color:
+        [
+            64
+            173
+            219
+        ]
+        country: dem__rep__congo
+    }
+    {
+        identifier: orientale
+        color:
+        [
+            20
+            228
+            37
+        ]
+        country: dem__rep__congo
+    }
+    {
+        identifier: sud-kivu
+        color:
+        [
+            21
+            71
+            250
+        ]
+        country: dem__rep__congo
+    }
+]

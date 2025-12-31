@@ -1,0 +1,172 @@
+[
+    {
+        identifier: busan
+        color:
+        [
+            124
+            45
+            95
+        ]
+        country: south_korea
+    }
+    {
+        identifier: daegu
+        color:
+        [
+            230
+            177
+            199
+        ]
+        country: south_korea
+    }
+    {
+        identifier: daejeon
+        color:
+        [
+            230
+            120
+            187
+        ]
+        country: south_korea
+    }
+    {
+        identifier: gangwon
+        color:
+        [
+            3
+            2
+            34
+        ]
+        country: south_korea
+    }
+    {
+        identifier: gwangju
+        color:
+        [
+            230
+            163
+            132
+        ]
+        country: south_korea
+    }
+    {
+        identifier: gyeonggi
+        color:
+        [
+            3
+            30
+            168
+        ]
+        country: south_korea
+    }
+    {
+        identifier: incheon
+        color:
+        [
+            123
+            244
+            83
+        ]
+        country: south_korea
+    }
+    {
+        identifier: jeju
+        color:
+        [
+            162
+            100
+            233
+        ]
+        country: south_korea
+    }
+    {
+        identifier: north_chungcheong
+        color:
+        [
+            230
+            149
+            65
+        ]
+        country: south_korea
+    }
+    {
+        identifier: north_gyeongsang
+        color:
+        [
+            124
+            73
+            229
+        ]
+        country: south_korea
+    }
+    {
+        identifier: north_jeolla
+        color:
+        [
+            124
+            2
+            150
+        ]
+        country: south_korea
+    }
+    {
+        identifier: sejong
+        color:
+        [
+            230
+            134
+            254
+        ]
+        country: south_korea
+    }
+    {
+        identifier: seoul
+        color:
+        [
+            230
+            106
+            120
+        ]
+        country: south_korea
+    }
+    {
+        identifier: south_chungcheong
+        color:
+        [
+            119
+            98
+            221
+        ]
+        country: south_korea
+    }
+    {
+        identifier: south_gyeongsang
+        color:
+        [
+            124
+            31
+            28
+        ]
+        country: south_korea
+    }
+    {
+        identifier: south_jeolla
+        color:
+        [
+            124
+            16
+            217
+        ]
+        country: south_korea
+    }
+    {
+        identifier: ulsan
+        color:
+        [
+            124
+            59
+            162
+        ]
+        country: south_korea
+    }
+]

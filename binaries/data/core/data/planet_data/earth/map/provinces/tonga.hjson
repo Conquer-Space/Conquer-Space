@@ -1,0 +1,52 @@
+[
+    {
+        identifier: eua
+        color:
+        [
+            168
+            219
+            69
+        ]
+        country: tonga
+    }
+    {
+        identifier: ha'apai
+        color:
+        [
+            169
+            20
+            81
+        ]
+        country: tonga
+    }
+    {
+        identifier: niuas
+        color:
+        [
+            169
+            148
+            172
+        ]
+        country: tonga
+    }
+    {
+        identifier: tongatapu
+        color:
+        [
+            168
+            247
+            203
+        ]
+        country: tonga
+    }
+    {
+        identifier: vava'u
+        color:
+        [
+            163
+            115
+            226
+        ]
+        country: tonga
+    }
+]

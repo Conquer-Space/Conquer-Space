@@ -1,0 +1,142 @@
+[
+    {
+        identifier: andijon
+        color:
+        [
+            17
+            183
+            58
+        ]
+        country: uzbekistan
+    }
+    {
+        identifier: bukhoro
+        color:
+        [
+            78
+            198
+            18
+        ]
+        country: uzbekistan
+    }
+    {
+        identifier: ferghana
+        color:
+        [
+            5
+            160
+            111
+        ]
+        country: uzbekistan
+    }
+    {
+        identifier: jizzakh
+        color:
+        [
+            56
+            111
+            31
+        ]
+        country: uzbekistan
+    }
+    {
+        identifier: karakalpakstan
+        color:
+        [
+            78
+            126
+            195
+        ]
+        country: uzbekistan
+    }
+    {
+        identifier: kashkadarya
+        color:
+        [
+            56
+            139
+            165
+        ]
+        country: uzbekistan
+    }
+    {
+        identifier: khorezm
+        color:
+        [
+            78
+            183
+            207
+        ]
+        country: uzbekistan
+    }
+    {
+        identifier: namangan
+        color:
+        [
+            17
+            168
+            247
+        ]
+        country: uzbekistan
+    }
+    {
+        identifier: navoi
+        color:
+        [
+            78
+            155
+            73
+        ]
+        country: uzbekistan
+    }
+    {
+        identifier: samarkand
+        color:
+        [
+            56
+            125
+            98
+        ]
+        country: uzbekistan
+    }
+    {
+        identifier: sirdaryo
+        color:
+        [
+            56
+            96
+            220
+        ]
+        country: uzbekistan
+    }
+    {
+        identifier: surkhandarya
+        color:
+        [
+            56
+            153
+            232
+        ]
+        country: uzbekistan
+    }
+    {
+        identifier: tashkent_uzbekistan
+        color:
+        [
+            17
+            154
+            180
+        ]
+        country: uzbekistan
+    }
+    {
+        identifier: tashkent_uzbekistan_2
+        color:
+        [
+            243
+            30
+            36
+        ]
+        country: uzbekistan
+    }
+]

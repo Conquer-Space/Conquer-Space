@@ -1,0 +1,1042 @@
+[
+    {
+        identifier: abra
+        color:
+        [
+            232
+            236
+            63
+        ]
+        country: philippines
+    }
+    {
+        identifier: agusan_del_norte
+        color:
+        [
+            102
+            86
+            199
+        ]
+        country: philippines
+    }
+    {
+        identifier: agusan_del_sur
+        color:
+        [
+            198
+            140
+            196
+        ]
+        country: philippines
+    }
+    {
+        identifier: aklan
+        color:
+        [
+            167
+            204
+            76
+        ]
+        country: philippines
+    }
+    {
+        identifier: albay
+        color:
+        [
+            110
+            235
+            21
+        ]
+        country: philippines
+    }
+    {
+        identifier: angeles
+        color:
+        [
+            250
+            220
+            133
+        ]
+        country: philippines
+    }
+    {
+        identifier: antique
+        color:
+        [
+            167
+            218
+            143
+        ]
+        country: philippines
+    }
+    {
+        identifier: apayao
+        color:
+        [
+            232
+            207
+            185
+        ]
+        country: philippines
+    }
+    {
+        identifier: aurora
+        color:
+        [
+            110
+            178
+            9
+        ]
+        country: philippines
+    }
+    {
+        identifier: bacolod
+        color:
+        [
+            167
+            75
+            241
+        ]
+        country: philippines
+    }
+    {
+        identifier: baguio
+        color:
+        [
+            250
+            234
+            200
+        ]
+        country: philippines
+    }
+    {
+        identifier: basilan
+        color:
+        [
+            166
+            232
+            28
+        ]
+        country: philippines
+    }
+    {
+        identifier: bataan
+        color:
+        [
+            111
+            150
+            57
+        ]
+        country: philippines
+    }
+    {
+        identifier: batanes
+        color:
+        [
+            168
+            119
+            112
+        ]
+        country: philippines
+    }
+    {
+        identifier: batangas
+        color:
+        [
+            111
+            21
+            222
+        ]
+        country: philippines
+    }
+    {
+        identifier: benguet
+        color:
+        [
+            232
+            150
+            173
+        ]
+        country: philippines
+    }
+    {
+        identifier: biliran
+        color:
+        [
+            104
+            159
+            130
+        ]
+        country: philippines
+    }
+    {
+        identifier: bohol
+        color:
+        [
+            167
+            47
+            107
+        ]
+        country: philippines
+    }
+    {
+        identifier: bukidnon
+        color:
+        [
+            198
+            155
+            7
+        ]
+        country: philippines
+    }
+    {
+        identifier: bulacan
+        color:
+        [
+            111
+            121
+            179
+        ]
+        country: philippines
+    }
+    {
+        identifier: butuan
+        color:
+        [
+            102
+            101
+            10
+        ]
+        country: philippines
+    }
+    {
+        identifier: cagayan
+        color:
+        [
+            112
+            8
+            81
+        ]
+        country: philippines
+    }
+    {
+        identifier: cagayan_de_oro
+        color:
+        [
+            102
+            129
+            144
+        ]
+        country: philippines
+    }
+    {
+        identifier: caloocan
+        color:
+        [
+            231
+            221
+            70
+        ]
+        country: philippines
+    }
+    {
+        identifier: camarines_norte
+        color:
+        [
+            110
+            206
+            143
+        ]
+        country: philippines
+    }
+    {
+        identifier: camarines_sur
+        color:
+        [
+            110
+            220
+            210
+        ]
+        country: philippines
+    }
+    {
+        identifier: camiguin
+        color:
+        [
+            167
+            18
+            229
+        ]
+        country: philippines
+    }
+    {
+        identifier: capiz
+        color:
+        [
+            168
+            5
+            88
+        ]
+        country: philippines
+    }
+    {
+        identifier: catanduanes
+        color:
+        [
+            168
+            105
+            45
+        ]
+        country: philippines
+    }
+    {
+        identifier: cavite
+        color:
+        [
+            111
+            36
+            33
+        ]
+        country: philippines
+    }
+    {
+        identifier: cebu_philippines
+        color:
+        [
+            167
+            118
+            186
+        ]
+        country: philippines
+    }
+    {
+        identifier: cebu_philippines_2
+        color:
+        [
+            167
+            147
+            64
+        ]
+        country: philippines
+    }
+    {
+        identifier: compostela_valley
+        color:
+        [
+            103
+            87
+            125
+        ]
+        country: philippines
+    }
+    {
+        identifier: cotabato_philippines
+        color:
+        [
+            103
+            1
+            235
+        ]
+        country: philippines
+    }
+    {
+        identifier: cotabato_philippines_2
+        color:
+        [
+            198
+            169
+            74
+        ]
+        country: philippines
+    }
+    {
+        identifier: dagupan
+        color:
+        [
+            111
+            207
+            69
+        ]
+        country: philippines
+    }
+    {
+        identifier: davao
+        color:
+        [
+            103
+            73
+            58
+        ]
+        country: philippines
+    }
+    {
+        identifier: davao_del_norte
+        color:
+        [
+            101
+            242
+            242
+        ]
+        country: philippines
+    }
+    {
+        identifier: davao_del_sur
+        color:
+        [
+            103
+            58
+            247
+        ]
+        country: philippines
+    }
+    {
+        identifier: davao_oriental
+        color:
+        [
+            103
+            101
+            192
+        ]
+        country: philippines
+    }
+    {
+        identifier: eastern_samar
+        color:
+        [
+            104
+            145
+            63
+        ]
+        country: philippines
+    }
+    {
+        identifier: general_santos
+        color:
+        [
+            103
+            44
+            180
+        ]
+        country: philippines
+    }
+    {
+        identifier: guimaras
+        color:
+        [
+            167
+            61
+            174
+        ]
+        country: philippines
+    }
+    {
+        identifier: ifugao
+        color:
+        [
+            232
+            164
+            240
+        ]
+        country: philippines
+    }
+    {
+        identifier: iligan
+        color:
+        [
+            102
+            143
+            211
+        ]
+        country: philippines
+    }
+    {
+        identifier: ilocos_norte
+        color:
+        [
+            111
+            250
+            14
+        ]
+        country: philippines
+    }
+    {
+        identifier: ilocos_sur
+        color:
+        [
+            111
+            235
+            203
+        ]
+        country: philippines
+    }
+    {
+        identifier: iloilo_philippines
+        color:
+        [
+            167
+            232
+            210
+        ]
+        country: philippines
+    }
+    {
+        identifier: iloilo_philippines_2
+        color:
+        [
+            167
+            247
+            21
+        ]
+        country: philippines
+    }
+    {
+        identifier: isabela
+        color:
+        [
+            112
+            22
+            148
+        ]
+        country: philippines
+    }
+    {
+        identifier: kalinga
+        color:
+        [
+            232
+            221
+            252
+        ]
+        country: philippines
+    }
+    {
+        identifier: la_union_philippines
+        color:
+        [
+            111
+            221
+            136
+        ]
+        country: philippines
+    }
+    {
+        identifier: laguna
+        color:
+        [
+            232
+            36
+            149
+        ]
+        country: philippines
+    }
+    {
+        identifier: lanao_del_norte
+        color:
+        [
+            102
+            158
+            22
+        ]
+        country: philippines
+    }
+    {
+        identifier: lanao_del_sur
+        color:
+        [
+            102
+            229
+            101
+        ]
+        country: philippines
+    }
+    {
+        identifier: lapu-lapu
+        color:
+        [
+            176
+            210
+            178
+        ]
+        country: philippines
+    }
+    {
+        identifier: las_pinas
+        color:
+        [
+            111
+            50
+            100
+        ]
+        country: philippines
+    }
+    {
+        identifier: leyte
+        color:
+        [
+            104
+            130
+            252
+        ]
+        country: philippines
+    }
+    {
+        identifier: lucena
+        color:
+        [
+            111
+            7
+            155
+        ]
+        country: philippines
+    }
+    {
+        identifier: maguindanao
+        color:
+        [
+            102
+            243
+            168
+        ]
+        country: philippines
+    }
+    {
+        identifier: makati
+        color:
+        [
+            250
+            249
+            11
+        ]
+        country: philippines
+    }
+    {
+        identifier: marinduque
+        color:
+        [
+            168
+            90
+            234
+        ]
+        country: philippines
+    }
+    {
+        identifier: masbate
+        color:
+        [
+            168
+            48
+            33
+        ]
+        country: philippines
+    }
+    {
+        identifier: mindoro_occidental
+        color:
+        [
+            168
+            76
+            167
+        ]
+        country: philippines
+    }
+    {
+        identifier: mindoro_oriental
+        color:
+        [
+            168
+            62
+            100
+        ]
+        country: philippines
+    }
+    {
+        identifier: misamis_occidental
+        color:
+        [
+            102
+            186
+            156
+        ]
+        country: philippines
+    }
+    {
+        identifier: misamis_oriental
+        color:
+        [
+            102
+            115
+            77
+        ]
+        country: philippines
+    }
+    {
+        identifier: mountain_province
+        color:
+        [
+            232
+            179
+            51
+        ]
+        country: philippines
+    }
+    {
+        identifier: muntinlupa
+        color:
+        [
+            231
+            207
+            3
+        ]
+        country: philippines
+    }
+    {
+        identifier: negros_occidental
+        color:
+        [
+            167
+            90
+            52
+        ]
+        country: philippines
+    }
+    {
+        identifier: negros_oriental
+        color:
+        [
+            167
+            104
+            119
+        ]
+        country: philippines
+    }
+    {
+        identifier: northern_samar
+        color:
+        [
+            168
+            33
+            222
+        ]
+        country: philippines
+    }
+    {
+        identifier: nueva_ecija
+        color:
+        [
+            232
+            22
+            82
+        ]
+        country: philippines
+    }
+    {
+        identifier: nueva_vizcaya
+        color:
+        [
+            232
+            136
+            106
+        ]
+        country: philippines
+    }
+    {
+        identifier: olongapo
+        color:
+        [
+            111
+            164
+            124
+        ]
+        country: philippines
+    }
+    {
+        identifier: ormoc
+        color:
+        [
+            167
+            190
+            9
+        ]
+        country: philippines
+    }
+    {
+        identifier: palawan
+        color:
+        [
+            102
+            29
+            187
+        ]
+        country: philippines
+    }
+    {
+        identifier: pampanga
+        color:
+        [
+            111
+            135
+            246
+        ]
+        country: philippines
+    }
+    {
+        identifier: pangasinan
+        color:
+        [
+            111
+            193
+            2
+        ]
+        country: philippines
+    }
+    {
+        identifier: puerto_princesa
+        color:
+        [
+            167
+            161
+            131
+        ]
+        country: philippines
+    }
+    {
+        identifier: quezon
+        color:
+        [
+            110
+            192
+            76
+        ]
+        country: philippines
+    }
+    {
+        identifier: quezon_city
+        color:
+        [
+            232
+            8
+            15
+        ]
+        country: philippines
+    }
+    {
+        identifier: quirino
+        color:
+        [
+            232
+            107
+            228
+        ]
+        country: philippines
+    }
+    {
+        identifier: rizal
+        color:
+        [
+            232
+            50
+            216
+        ]
+        country: philippines
+    }
+    {
+        identifier: romblon
+        color:
+        [
+            168
+            19
+            155
+        ]
+        country: philippines
+    }
+    {
+        identifier: samar
+        color:
+        [
+            104
+            173
+            197
+        ]
+        country: philippines
+    }
+    {
+        identifier: santiago_philippines
+        color:
+        [
+            232
+            122
+            39
+        ]
+        country: philippines
+    }
+    {
+        identifier: sarangani
+        color:
+        [
+            103
+            30
+            113
+        ]
+        country: philippines
+    }
+    {
+        identifier: siquijor
+        color:
+        [
+            167
+            33
+            40
+        ]
+        country: philippines
+    }
+    {
+        identifier: sorsogon
+        color:
+        [
+            110
+            249
+            88
+        ]
+        country: philippines
+    }
+    {
+        identifier: south_cotabato
+        color:
+        [
+            198
+            183
+            141
+        ]
+        country: philippines
+    }
+    {
+        identifier: southern_leyte
+        color:
+        [
+            104
+            59
+            173
+        ]
+        country: philippines
+    }
+    {
+        identifier: sultan_kudarat
+        color:
+        [
+            103
+            16
+            46
+        ]
+        country: philippines
+    }
+    {
+        identifier: sulu
+        color:
+        [
+            101
+            86
+            17
+        ]
+        country: philippines
+    }
+    {
+        identifier: surigao_del_norte
+        color:
+        [
+            102
+            58
+            65
+        ]
+        country: philippines
+    }
+    {
+        identifier: tacloban
+        color:
+        [
+            167
+            175
+            198
+        ]
+        country: philippines
+    }
+    {
+        identifier: tarlac
+        color:
+        [
+            232
+            193
+            118
+        ]
+        country: philippines
+    }
+    {
+        identifier: tawi-tawi
+        color:
+        [
+            166
+            175
+            16
+        ]
+        country: philippines
+    }
+    {
+        identifier: valenzuela
+        color:
+        [
+            231
+            249
+            204
+        ]
+        country: philippines
+    }
+    {
+        identifier: zambales
+        color:
+        [
+            111
+            178
+            191
+        ]
+        country: philippines
+    }
+    {
+        identifier: zamboanga
+        color:
+        [
+            102
+            215
+            34
+        ]
+        country: philippines
+    }
+    {
+        identifier: zamboanga_del_norte
+        color:
+        [
+            102
+            200
+            223
+        ]
+        country: philippines
+    }
+    {
+        identifier: zamboanga_del_sur
+        color:
+        [
+            102
+            172
+            89
+        ]
+        country: philippines
+    }
+    {
+        identifier: zamboanga_sibugay
+        color:
+        [
+            102
+            15
+            120
+        ]
+        country: philippines
+    }
+]

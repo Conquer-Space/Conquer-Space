@@ -1,0 +1,52 @@
+[
+    {
+        identifier: famagusta
+        color:
+        [
+            93
+            123
+            42
+        ]
+        country: cyprus
+    }
+    {
+        identifier: larnaca
+        color:
+        [
+            93
+            151
+            176
+        ]
+        country: cyprus
+    }
+    {
+        identifier: limassol
+        color:
+        [
+            93
+            222
+            255
+        ]
+        country: cyprus
+    }
+    {
+        identifier: nicosia
+        color:
+        [
+            93
+            137
+            109
+        ]
+        country: cyprus
+    }
+    {
+        identifier: paphos
+        color:
+        [
+            157
+            168
+            170
+        ]
+        country: cyprus
+    }
+]

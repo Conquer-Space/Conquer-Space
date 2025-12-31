@@ -1,0 +1,102 @@
+[
+    {
+        identifier: ashanti
+        color:
+        [
+            207
+            218
+            121
+        ]
+        country: ghana
+    }
+    {
+        identifier: brong_ahafo
+        color:
+        [
+            68
+            91
+            33
+        ]
+        country: ghana
+    }
+    {
+        identifier: central_ghana
+        color:
+        [
+            110
+            92
+            119
+        ]
+        country: ghana
+    }
+    {
+        identifier: eastern_ghana
+        color:
+        [
+            207
+            232
+            188
+        ]
+        country: ghana
+    }
+    {
+        identifier: greater_accra
+        color:
+        [
+            110
+            106
+            186
+        ]
+        country: ghana
+    }
+    {
+        identifier: northern_ghana
+        color:
+        [
+            67
+            247
+            76
+        ]
+        country: ghana
+    }
+    {
+        identifier: upper_east
+        color:
+        [
+            67
+            233
+            9
+        ]
+        country: ghana
+    }
+    {
+        identifier: upper_west
+        color:
+        [
+            89
+            220
+            39
+        ]
+        country: ghana
+    }
+    {
+        identifier: volta
+        color:
+        [
+            68
+            48
+            88
+        ]
+        country: ghana
+    }
+    {
+        identifier: western_ghana
+        color:
+        [
+            68
+            119
+            167
+        ]
+        country: ghana
+    }
+]

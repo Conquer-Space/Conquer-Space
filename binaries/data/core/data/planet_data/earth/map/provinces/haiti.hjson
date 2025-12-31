@@ -1,0 +1,102 @@
+[
+    {
+        identifier: centre_haiti
+        color:
+        [
+            33
+            223
+            32
+        ]
+        country: haiti
+    }
+    {
+        identifier: grand'anse
+        color:
+        [
+            110
+            163
+            198
+        ]
+        country: haiti
+    }
+    {
+        identifier: l'artibonite
+        color:
+        [
+            149
+            248
+            140
+        ]
+        country: haiti
+    }
+    {
+        identifier: nippes
+        color:
+        [
+            150
+            6
+            207
+        ]
+        country: haiti
+    }
+    {
+        identifier: nord_haiti
+        color:
+        [
+            149
+            234
+            73
+        ]
+        country: haiti
+    }
+    {
+        identifier: nord-est
+        color:
+        [
+            33
+            180
+            87
+        ]
+        country: haiti
+    }
+    {
+        identifier: nord-ouest_haiti
+        color:
+        [
+            112
+            36
+            215
+        ]
+        country: haiti
+    }
+    {
+        identifier: ouest_haiti
+        color:
+        [
+            34
+            9
+            233
+        ]
+        country: haiti
+    }
+    {
+        identifier: sud_haiti
+        color:
+        [
+            106
+            118
+            37
+        ]
+        country: haiti
+    }
+    {
+        identifier: sud-est
+        color:
+        [
+            34
+            24
+            44
+        ]
+        country: haiti
+    }
+]

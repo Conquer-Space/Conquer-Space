@@ -1,0 +1,62 @@
+[
+    {
+        identifier: barbuda
+        color:
+        [
+            147
+            161
+            142
+        ]
+        country: antigua_and_barb_
+    }
+    {
+        identifier: redonda
+        color:
+        [
+            176
+            224
+            245
+        ]
+        country: antigua_and_barb_
+    }
+    {
+        identifier: saint_john_antigua_and_barb_
+        color:
+        [
+            146
+            175
+            27
+        ]
+        country: antigua_and_barb_
+    }
+    {
+        identifier: saint_mary_antigua_and_barb_
+        color:
+        [
+            146
+            189
+            94
+        ]
+        country: antigua_and_barb_
+    }
+    {
+        identifier: saint_paul_antigua_and_barb_
+        color:
+        [
+            146
+            118
+            15
+        ]
+        country: antigua_and_barb_
+    }
+    {
+        identifier: saint_peter
+        color:
+        [
+            146
+            146
+            149
+        ]
+        country: antigua_and_barb_
+    }
+]

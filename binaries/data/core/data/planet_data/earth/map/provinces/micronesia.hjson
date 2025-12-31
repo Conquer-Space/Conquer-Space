@@ -1,0 +1,32 @@
+[
+    {
+        identifier: kosrae
+        color:
+        [
+            166
+            189
+            83
+        ]
+        country: micronesia
+    }
+    {
+        identifier: pohnpei
+        color:
+        [
+            166
+            246
+            95
+        ]
+        country: micronesia
+    }
+    {
+        identifier: yap
+        color:
+        [
+            171
+            7
+            122
+        ]
+        country: micronesia
+    }
+]

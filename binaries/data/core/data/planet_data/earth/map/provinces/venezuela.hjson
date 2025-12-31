@@ -1,0 +1,242 @@
+[
+    {
+        identifier: amazonas_venezuela
+        color:
+        [
+            75
+            252
+            252
+        ]
+        country: venezuela
+    }
+    {
+        identifier: anzoategui
+        color:
+        [
+            105
+            174
+            123
+        ]
+        country: venezuela
+    }
+    {
+        identifier: apure
+        color:
+        [
+            77
+            225
+            226
+        ]
+        country: venezuela
+    }
+    {
+        identifier: aragua
+        color:
+        [
+            105
+            131
+            178
+        ]
+        country: venezuela
+    }
+    {
+        identifier: barinas
+        color:
+        [
+            179
+            27
+            109
+        ]
+        country: venezuela
+    }
+    {
+        identifier: bolivar_venezuela
+        color:
+        [
+            75
+            24
+            204
+        ]
+        country: venezuela
+    }
+    {
+        identifier: carabobo
+        color:
+        [
+            105
+            117
+            111
+        ]
+        country: venezuela
+    }
+    {
+        identifier: cojedes
+        color:
+        [
+            178
+            254
+            231
+        ]
+        country: venezuela
+    }
+    {
+        identifier: delta_amacuro
+        color:
+        [
+            75
+            10
+            137
+        ]
+        country: venezuela
+    }
+    {
+        identifier: distrito_capital
+        color:
+        [
+            179
+            13
+            42
+        ]
+        country: venezuela
+    }
+    {
+        identifier: falcon
+        color:
+        [
+            105
+            88
+            233
+        ]
+        country: venezuela
+    }
+    {
+        identifier: guarico
+        color:
+        [
+            178
+            240
+            164
+        ]
+        country: venezuela
+    }
+    {
+        identifier: lara
+        color:
+        [
+            179
+            41
+            176
+        ]
+        country: venezuela
+    }
+    {
+        identifier: merida
+        color:
+        [
+            105
+            60
+            99
+        ]
+        country: venezuela
+    }
+    {
+        identifier: miranda
+        color:
+        [
+            105
+            160
+            56
+        ]
+        country: venezuela
+    }
+    {
+        identifier: monagas
+        color:
+        [
+            105
+            203
+            1
+        ]
+        country: venezuela
+    }
+    {
+        identifier: nueva_esparta
+        color:
+        [
+            142
+            143
+            189
+        ]
+        country: venezuela
+    }
+    {
+        identifier: portuguesa
+        color:
+        [
+            179
+            55
+            243
+        ]
+        country: venezuela
+    }
+    {
+        identifier: sucre_venezuela
+        color:
+        [
+            105
+            188
+            190
+        ]
+        country: venezuela
+    }
+    {
+        identifier: tachira
+        color:
+        [
+            77
+            211
+            159
+        ]
+        country: venezuela
+    }
+    {
+        identifier: trujillo
+        color:
+        [
+            105
+            74
+            166
+        ]
+        country: venezuela
+    }
+    {
+        identifier: vargas
+        color:
+        [
+            105
+            145
+            245
+        ]
+        country: venezuela
+    }
+    {
+        identifier: yaracuy
+        color:
+        [
+            105
+            103
+            44
+        ]
+        country: venezuela
+    }
+    {
+        identifier: zulia
+        color:
+        [
+            77
+            154
+            147
+        ]
+        country: venezuela
+    }
+]

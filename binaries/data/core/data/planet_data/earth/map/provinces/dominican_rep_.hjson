@@ -1,0 +1,312 @@
+[
+    {
+        identifier: azua
+        color:
+        [
+            150
+            35
+            85
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: bahoruco
+        color:
+        [
+            195
+            238
+            119
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: barahona
+        color:
+        [
+            150
+            21
+            18
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: dajabon
+        color:
+        [
+            33
+            208
+            221
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: duarte
+        color:
+        [
+            195
+            209
+            241
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: el_seybo
+        color:
+        [
+            149
+            148
+            183
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: espaillat
+        color:
+        [
+            149
+            205
+            195
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: hato_mayor
+        color:
+        [
+            149
+            162
+            250
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: hermanas
+        color:
+        [
+            195
+            195
+            174
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: independencia
+        color:
+        [
+            33
+            251
+            166
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: la_altagracia
+        color:
+        [
+            147
+            218
+            154
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: la_estrelleta
+        color:
+        [
+            33
+            237
+            99
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: la_romana
+        color:
+        [
+            150
+            120
+            231
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: la_vega
+        color:
+        [
+            195
+            181
+            107
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: maria_trinidad_sanchez
+        color:
+        [
+            149
+            191
+            128
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: monsenor_nouel
+        color:
+        [
+            209
+            191
+            95
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: monte_cristi
+        color:
+        [
+            33
+            194
+            154
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: monte_plata
+        color:
+        [
+            209
+            234
+            40
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: pedernales
+        color:
+        [
+            34
+            38
+            111
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: peravia
+        color:
+        [
+            150
+            49
+            152
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: puerto_plata
+        color:
+        [
+            149
+            220
+            6
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: samana
+        color:
+        [
+            149
+            177
+            61
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: san_cristobal
+        color:
+        [
+            150
+            63
+            219
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: san_jose_de_ocoa
+        color:
+        [
+            209
+            219
+            229
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: san_juan_dominican_rep_
+        color:
+        [
+            195
+            252
+            186
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: san_pedro_de_macoris
+        color:
+        [
+            150
+            106
+            164
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: sanchez_ramirez
+        color:
+        [
+            209
+            205
+            162
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: santiago_dominican_rep_
+        color:
+        [
+            195
+            224
+            52
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: santiago_rodriguez
+        color:
+        [
+            195
+            167
+            40
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: santo_domingo
+        color:
+        [
+            150
+            78
+            30
+        ]
+        country: dominican_rep_
+    }
+    {
+        identifier: valverde
+        color:
+        [
+            195
+            152
+            229
+        ]
+        country: dominican_rep_
+    }
+]

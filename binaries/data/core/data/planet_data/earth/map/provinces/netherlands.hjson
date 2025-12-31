@@ -1,0 +1,172 @@
+[
+    {
+        identifier: aruba
+        color:
+        [
+            106
+            89
+            159
+        ]
+        country: netherlands
+    }
+    {
+        identifier: bonaire
+        color:
+        [
+            143
+            230
+            5
+        ]
+        country: netherlands
+    }
+    {
+        identifier: curacao
+        color:
+        [
+            104
+            202
+            75
+        ]
+        country: netherlands
+    }
+    {
+        identifier: drenthe
+        color:
+        [
+            23
+            116
+            47
+        ]
+        country: netherlands
+    }
+    {
+        identifier: flevoland
+        color:
+        [
+            199
+            241
+            79
+        ]
+        country: netherlands
+    }
+    {
+        identifier: friesland
+        color:
+        [
+            141
+            71
+            184
+        ]
+        country: netherlands
+    }
+    {
+        identifier: gelderland
+        color:
+        [
+            23
+            158
+            248
+        ]
+        country: netherlands
+    }
+    {
+        identifier: groningen
+        color:
+        [
+            23
+            87
+            169
+        ]
+        country: netherlands
+    }
+    {
+        identifier: limburg_netherlands
+        color:
+        [
+            23
+            173
+            59
+        ]
+        country: netherlands
+    }
+    {
+        identifier: noord-brabant
+        color:
+        [
+            44
+            159
+            163
+        ]
+        country: netherlands
+    }
+    {
+        identifier: noord-holland
+        color:
+        [
+            141
+            57
+            117
+        ]
+        country: netherlands
+    }
+    {
+        identifier: overijssel
+        color:
+        [
+            23
+            130
+            114
+        ]
+        country: netherlands
+    }
+    {
+        identifier: saba
+        color:
+        [
+            174
+            66
+            168
+        ]
+        country: netherlands
+    }
+    {
+        identifier: sint_maarten
+        color:
+        [
+            5
+            74
+            221
+        ]
+        country: netherlands
+    }
+    {
+        identifier: utrecht
+        color:
+        [
+            199
+            255
+            146
+        ]
+        country: netherlands
+    }
+    {
+        identifier: zeeland
+        color:
+        [
+            44
+            131
+            29
+        ]
+        country: netherlands
+    }
+    {
+        identifier: zuid-holland
+        color:
+        [
+            141
+            43
+            50
+        ]
+        country: netherlands
+    }
+]

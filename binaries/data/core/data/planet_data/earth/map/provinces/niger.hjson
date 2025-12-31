@@ -1,0 +1,82 @@
+[
+    {
+        identifier: agadez
+        color:
+        [
+            82
+            86
+            210
+        ]
+        country: niger
+    }
+    {
+        identifier: diffa
+        color:
+        [
+            67
+            61
+            229
+        ]
+        country: niger
+    }
+    {
+        identifier: dosso
+        color:
+        [
+            67
+            47
+            162
+        ]
+        country: niger
+    }
+    {
+        identifier: maradi
+        color:
+        [
+            67
+            76
+            40
+        ]
+        country: niger
+    }
+    {
+        identifier: niamey
+        color:
+        [
+            243
+            158
+            127
+        ]
+        country: niger
+    }
+    {
+        identifier: tahoua
+        color:
+        [
+            67
+            33
+            95
+        ]
+        country: niger
+    }
+    {
+        identifier: tillaberi
+        color:
+        [
+            67
+            161
+            186
+        ]
+        country: niger
+    }
+    {
+        identifier: zinder
+        color:
+        [
+            67
+            118
+            241
+        ]
+        country: niger
+    }
+]

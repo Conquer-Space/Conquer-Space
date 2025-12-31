@@ -1,0 +1,132 @@
+[
+    {
+        identifier: alberta
+        color:
+        [
+            72
+            65
+            115
+        ]
+        country: canada
+    }
+    {
+        identifier: british_columbia
+        color:
+        [
+            72
+            22
+            170
+        ]
+        country: canada
+    }
+    {
+        identifier: manitoba
+        color:
+        [
+            72
+            108
+            60
+        ]
+        country: canada
+    }
+    {
+        identifier: new_brunswick
+        color:
+        [
+            72
+            165
+            72
+        ]
+        country: canada
+    }
+    {
+        identifier: newfoundland_and_labrador
+        color:
+        [
+            120
+            242
+            49
+        ]
+        country: canada
+    }
+    {
+        identifier: northwest_territories
+        color:
+        [
+            131
+            178
+            180
+        ]
+        country: canada
+    }
+    {
+        identifier: nova_scotia
+        color:
+        [
+            121
+            0
+            116
+        ]
+        country: canada
+    }
+    {
+        identifier: nunavut
+        color:
+        [
+            120
+            227
+            238
+        ]
+        country: canada
+    }
+    {
+        identifier: ontario
+        color:
+        [
+            71
+            250
+            36
+        ]
+        country: canada
+    }
+    {
+        identifier: prince_edward_island
+        color:
+        [
+            172
+            36
+            182
+        ]
+        country: canada
+    }
+    {
+        identifier: quebec
+        color:
+        [
+            72
+            151
+            5
+        ]
+        country: canada
+    }
+    {
+        identifier: saskatchewan
+        color:
+        [
+            72
+            79
+            182
+        ]
+        country: canada
+    }
+    {
+        identifier: yukon
+        color:
+        [
+            92
+            193
+            195
+        ]
+        country: canada
+    }
+]

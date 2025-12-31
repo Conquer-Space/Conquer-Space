@@ -1,0 +1,142 @@
+[
+    {
+        identifier: johor
+        color:
+        [
+            121
+            228
+            164
+        ]
+        country: malaysia
+    }
+    {
+        identifier: kedah
+        color:
+        [
+            32
+            208
+            39
+        ]
+        country: malaysia
+    }
+    {
+        identifier: kelantan
+        color:
+        [
+            32
+            236
+            173
+        ]
+        country: malaysia
+    }
+    {
+        identifier: kuala_lumpur
+        color:
+        [
+            195
+            38
+            205
+        ]
+        country: malaysia
+    }
+    {
+        identifier: labuan
+        color:
+        [
+            162
+            29
+            154
+        ]
+        country: malaysia
+    }
+    {
+        identifier: melaka
+        color:
+        [
+            121
+            214
+            97
+        ]
+        country: malaysia
+    }
+    {
+        identifier: negeri_sembilan
+        color:
+        [
+            121
+            200
+            30
+        ]
+        country: malaysia
+    }
+    {
+        identifier: pahang
+        color:
+        [
+            121
+            242
+            231
+        ]
+        country: malaysia
+    }
+    {
+        identifier: perak
+        color:
+        [
+            33
+            9
+            51
+        ]
+        country: malaysia
+    }
+    {
+        identifier: pulau_pinang
+        color:
+        [
+            121
+            171
+            152
+        ]
+        country: malaysia
+    }
+    {
+        identifier: sabah
+        color:
+        [
+            0
+            71
+            79
+        ]
+        country: malaysia
+    }
+    {
+        identifier: sarawak
+        color:
+        [
+            34
+            238
+            25
+        ]
+        country: malaysia
+    }
+    {
+        identifier: selangor
+        color:
+        [
+            121
+            185
+            219
+        ]
+        country: malaysia
+    }
+    {
+        identifier: trengganu
+        color:
+        [
+            122
+            1
+            42
+        ]
+        country: malaysia
+    }
+]

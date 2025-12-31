@@ -1,0 +1,72 @@
+[
+    {
+        identifier: brest
+        color:
+        [
+            4
+            159
+            185
+        ]
+        country: belarus
+    }
+    {
+        identifier: city_of_minsk
+        color:
+        [
+            243
+            1
+            158
+        ]
+        country: belarus
+    }
+    {
+        identifier: gomel
+        color:
+        [
+            4
+            131
+            51
+        ]
+        country: belarus
+    }
+    {
+        identifier: grodno
+        color:
+        [
+            6
+            4
+            68
+        ]
+        country: belarus
+    }
+    {
+        identifier: minsk
+        color:
+        [
+            213
+            51
+            153
+        ]
+        country: belarus
+    }
+    {
+        identifier: mogilev
+        color:
+        [
+            53
+            208
+            210
+        ]
+        country: belarus
+    }
+    {
+        identifier: vitebsk
+        color:
+        [
+            5
+            217
+            123
+        ]
+        country: belarus
+    }
+]

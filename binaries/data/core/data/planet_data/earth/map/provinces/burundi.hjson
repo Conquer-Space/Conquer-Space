@@ -1,0 +1,162 @@
+[
+    {
+        identifier: bubanza
+        color:
+        [
+            64
+            116
+            207
+        ]
+        country: burundi
+    }
+    {
+        identifier: bujumbura_mairie
+        color:
+        [
+            64
+            145
+            85
+        ]
+        country: burundi
+    }
+    {
+        identifier: bururi
+        color:
+        [
+            64
+            159
+            152
+        ]
+        country: burundi
+    }
+    {
+        identifier: cankuzo
+        color:
+        [
+            64
+            59
+            195
+        ]
+        country: burundi
+    }
+    {
+        identifier: cibitoke
+        color:
+        [
+            36
+            153
+            243
+        ]
+        country: burundi
+    }
+    {
+        identifier: gitega
+        color:
+        [
+            240
+            56
+            136
+        ]
+        country: burundi
+    }
+    {
+        identifier: karuzi
+        color:
+        [
+            240
+            99
+            81
+        ]
+        country: burundi
+    }
+    {
+        identifier: kayanza
+        color:
+        [
+            36
+            182
+            121
+        ]
+        country: burundi
+    }
+    {
+        identifier: kirundo
+        color:
+        [
+            36
+            111
+            42
+        ]
+        country: burundi
+    }
+    {
+        identifier: makamba
+        color:
+        [
+            64
+            102
+            140
+        ]
+        country: burundi
+    }
+    {
+        identifier: muramvya
+        color:
+        [
+            240
+            70
+            203
+        ]
+        country: burundi
+    }
+    {
+        identifier: muyinga
+        color:
+        [
+            36
+            82
+            164
+        ]
+        country: burundi
+    }
+    {
+        identifier: mwaro
+        color:
+        [
+            240
+            85
+            14
+        ]
+        country: burundi
+    }
+    {
+        identifier: ngozi
+        color:
+        [
+            36
+            139
+            176
+        ]
+        country: burundi
+    }
+    {
+        identifier: rutana
+        color:
+        [
+            64
+            88
+            73
+        ]
+        country: burundi
+    }
+    {
+        identifier: ruyigi
+        color:
+        [
+            64
+            74
+            6
+        ]
+        country: burundi
+    }
+]

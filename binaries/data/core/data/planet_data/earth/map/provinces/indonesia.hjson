@@ -1,0 +1,332 @@
+[
+    {
+        identifier: aceh
+        color:
+        [
+            101
+            185
+            230
+        ]
+        country: indonesia
+    }
+    {
+        identifier: bali
+        color:
+        [
+            161
+            185
+            197
+        ]
+        country: indonesia
+    }
+    {
+        identifier: bangka-belitung
+        color:
+        [
+            165
+            88
+            200
+        ]
+        country: indonesia
+    }
+    {
+        identifier: banten
+        color:
+        [
+            99
+            84
+            165
+        ]
+        country: indonesia
+    }
+    {
+        identifier: bengkulu
+        color:
+        [
+            101
+            143
+            29
+        ]
+        country: indonesia
+    }
+    {
+        identifier: gorontalo
+        color:
+        [
+            100
+            85
+            91
+        ]
+        country: indonesia
+    }
+    {
+        identifier: jakarta_raya
+        color:
+        [
+            99
+            70
+            98
+        ]
+        country: indonesia
+    }
+    {
+        identifier: jambi
+        color:
+        [
+            101
+            100
+            84
+        ]
+        country: indonesia
+    }
+    {
+        identifier: jawa_barat
+        color:
+        [
+            99
+            56
+            31
+        ]
+        country: indonesia
+    }
+    {
+        identifier: jawa_tengah
+        color:
+        [
+            99
+            41
+            220
+        ]
+        country: indonesia
+    }
+    {
+        identifier: jawa_timur
+        color:
+        [
+            98
+            240
+            208
+        ]
+        country: indonesia
+    }
+    {
+        identifier: kalimantan_barat
+        color:
+        [
+            35
+            10
+            159
+        ]
+        country: indonesia
+    }
+    {
+        identifier: kalimantan_selatan
+        color:
+        [
+            101
+            228
+            175
+        ]
+        country: indonesia
+    }
+    {
+        identifier: kalimantan_tengah
+        color:
+        [
+            101
+            214
+            108
+        ]
+        country: indonesia
+    }
+    {
+        identifier: kalimantan_timur
+        color:
+        [
+            0
+            57
+            12
+        ]
+        country: indonesia
+    }
+    {
+        identifier: kepulauan_riau
+        color:
+        [
+            100
+            56
+            213
+        ]
+        country: indonesia
+    }
+    {
+        identifier: lampung
+        color:
+        [
+            101
+            128
+            218
+        ]
+        country: indonesia
+    }
+    {
+        identifier: maluku
+        color:
+        [
+            98
+            255
+            19
+        ]
+        country: indonesia
+    }
+    {
+        identifier: maluku_utara
+        color:
+        [
+            99
+            170
+            55
+        ]
+        country: indonesia
+    }
+    {
+        identifier: nusa_tenggara_barat
+        color:
+        [
+            99
+            13
+            86
+        ]
+        country: indonesia
+    }
+    {
+        identifier: nusa_tenggara_timur
+        color:
+        [
+            34
+            181
+            13
+        ]
+        country: indonesia
+    }
+    {
+        identifier: papua
+        color:
+        [
+            78
+            41
+            49
+        ]
+        country: indonesia
+    }
+    {
+        identifier: papua_barat
+        color:
+        [
+            99
+            127
+            110
+        ]
+        country: indonesia
+    }
+    {
+        identifier: riau
+        color:
+        [
+            100
+            71
+            24
+        ]
+        country: indonesia
+    }
+    {
+        identifier: sulawesi_barat
+        color:
+        [
+            100
+            113
+            225
+        ]
+        country: indonesia
+    }
+    {
+        identifier: sulawesi_selatan
+        color:
+        [
+            99
+            27
+            153
+        ]
+        country: indonesia
+    }
+    {
+        identifier: sulawesi_tengah
+        color:
+        [
+            99
+            155
+            244
+        ]
+        country: indonesia
+    }
+    {
+        identifier: sulawesi_tenggara
+        color:
+        [
+            99
+            113
+            43
+        ]
+        country: indonesia
+    }
+    {
+        identifier: sulawesi_utara
+        color:
+        [
+            100
+            99
+            158
+        ]
+        country: indonesia
+    }
+    {
+        identifier: sumatera_barat
+        color:
+        [
+            101
+            157
+            96
+        ]
+        country: indonesia
+    }
+    {
+        identifier: sumatera_selatan
+        color:
+        [
+            101
+            114
+            151
+        ]
+        country: indonesia
+    }
+    {
+        identifier: sumatera_utara
+        color:
+        [
+            101
+            171
+            163
+        ]
+        country: indonesia
+    }
+    {
+        identifier: yogyakarta
+        color:
+        [
+            99
+            98
+            232
+        ]
+        country: indonesia
+    }
+]

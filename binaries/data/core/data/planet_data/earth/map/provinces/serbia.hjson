@@ -1,0 +1,272 @@
+[
+    {
+        identifier: bijelo_polje
+        color:
+        [
+            41
+            214
+            141
+        ]
+        country: serbia
+    }
+    {
+        identifier: borski
+        color:
+        [
+            39
+            141
+            210
+        ]
+        country: serbia
+    }
+    {
+        identifier: branicevski
+        color:
+        [
+            50
+            235
+            54
+        ]
+        country: serbia
+    }
+    {
+        identifier: grad_beograd
+        color:
+        [
+            95
+            153
+            28
+        ]
+        country: serbia
+    }
+    {
+        identifier: jablanicki
+        color:
+        [
+            39
+            227
+            100
+        ]
+        country: serbia
+    }
+    {
+        identifier: juzno-backi
+        color:
+        [
+            49
+            34
+            214
+        ]
+        country: serbia
+    }
+    {
+        identifier: juzno-banatski
+        color:
+        [
+            50
+            206
+            176
+        ]
+        country: serbia
+    }
+    {
+        identifier: kolubarski
+        color:
+        [
+            195
+            10
+            71
+        ]
+        country: serbia
+    }
+    {
+        identifier: kosovska_kamenica
+        color:
+        [
+            41
+            114
+            184
+        ]
+        country: serbia
+    }
+    {
+        identifier: macvanski
+        color:
+        [
+            49
+            6
+            80
+        ]
+        country: serbia
+    }
+    {
+        identifier: moravicki
+        color:
+        [
+            194
+            252
+            4
+        ]
+        country: serbia
+    }
+    {
+        identifier: nisavski
+        color:
+        [
+            194
+            209
+            59
+        ]
+        country: serbia
+    }
+    {
+        identifier: pcinjski
+        color:
+        [
+            39
+            56
+            64
+        ]
+        country: serbia
+    }
+    {
+        identifier: pirotski
+        color:
+        [
+            39
+            170
+            88
+        ]
+        country: serbia
+    }
+    {
+        identifier: podunavski
+        color:
+        [
+            95
+            167
+            95
+        ]
+        country: serbia
+    }
+    {
+        identifier: pomoravski_serbia
+        color:
+        [
+            41
+            14
+            227
+        ]
+        country: serbia
+    }
+    {
+        identifier: pomoravski_serbia_2
+        color:
+        [
+            194
+            223
+            126
+        ]
+        country: serbia
+    }
+    {
+        identifier: raski
+        color:
+        [
+            41
+            0
+            160
+        ]
+        country: serbia
+    }
+    {
+        identifier: severno-backi
+        color:
+        [
+            26
+            118
+            81
+        ]
+        country: serbia
+    }
+    {
+        identifier: severno-banatski
+        color:
+        [
+            26
+            161
+            26
+        ]
+        country: serbia
+    }
+    {
+        identifier: srednje-banatski
+        color:
+        [
+            50
+            192
+            109
+        ]
+        country: serbia
+    }
+    {
+        identifier: sremski
+        color:
+        [
+            48
+            248
+            13
+        ]
+        country: serbia
+    }
+    {
+        identifier: sumadijski
+        color:
+        [
+            194
+            237
+            193
+        ]
+        country: serbia
+    }
+    {
+        identifier: toplicki
+        color:
+        [
+            41
+            29
+            38
+        ]
+        country: serbia
+    }
+    {
+        identifier: zajecarski
+        color:
+        [
+            39
+            156
+            21
+        ]
+        country: serbia
+    }
+    {
+        identifier: zapadno-backi
+        color:
+        [
+            26
+            146
+            215
+        ]
+        country: serbia
+    }
+    {
+        identifier: zlatiborski
+        color:
+        [
+            41
+            200
+            74
+        ]
+        country: serbia
+    }
+]

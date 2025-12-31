@@ -1,0 +1,62 @@
+[
+    {
+        identifier: belize
+        color:
+        [
+            116
+            139
+            132
+        ]
+        country: belize
+    }
+    {
+        identifier: cayo
+        color:
+        [
+            73
+            137
+            120
+        ]
+        country: belize
+    }
+    {
+        identifier: corozal
+        color:
+        [
+            73
+            180
+            65
+        ]
+        country: belize
+    }
+    {
+        identifier: orange_walk
+        color:
+        [
+            73
+            165
+            254
+        ]
+        country: belize
+    }
+    {
+        identifier: stann_creek
+        color:
+        [
+            116
+            125
+            65
+        ]
+        country: belize
+    }
+    {
+        identifier: toledo_belize
+        color:
+        [
+            93
+            237
+            66
+        ]
+        country: belize
+    }
+]

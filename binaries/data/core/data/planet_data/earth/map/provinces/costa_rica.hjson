@@ -1,0 +1,72 @@
+[
+    {
+        identifier: alajuela
+        color:
+        [
+            3
+            116
+            58
+        ]
+        country: costa_rica
+    }
+    {
+        identifier: cartago
+        color:
+        [
+            210
+            49
+            119
+        ]
+        country: costa_rica
+    }
+    {
+        identifier: guanacaste
+        color:
+        [
+            74
+            52
+            156
+        ]
+        country: costa_rica
+    }
+    {
+        identifier: heredia
+        color:
+        [
+            3
+            159
+            3
+        ]
+        country: costa_rica
+    }
+    {
+        identifier: limon
+        color:
+        [
+            3
+            144
+            192
+        ]
+        country: costa_rica
+    }
+    {
+        identifier: puntarenas
+        color:
+        [
+            74
+            166
+            180
+        ]
+        country: costa_rica
+    }
+    {
+        identifier: san_jose_costa_rica
+        color:
+        [
+            210
+            35
+            52
+        ]
+        country: costa_rica
+    }
+]

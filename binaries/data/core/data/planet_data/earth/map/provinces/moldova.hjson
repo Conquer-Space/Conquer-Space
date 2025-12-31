@@ -1,0 +1,392 @@
+[
+    {
+        identifier: anenii_noi
+        color:
+        [
+            181
+            71
+            162
+        ]
+        country: moldova
+    }
+    {
+        identifier: balti
+        color:
+        [
+            200
+            156
+            115
+        ]
+        country: moldova
+    }
+    {
+        identifier: basarabeasca
+        color:
+        [
+            53
+            66
+            52
+        ]
+        country: moldova
+    }
+    {
+        identifier: bender
+        color:
+        [
+            53
+            9
+            40
+        ]
+        country: moldova
+    }
+    {
+        identifier: briceni
+        color:
+        [
+            51
+            121
+            212
+        ]
+        country: moldova
+    }
+    {
+        identifier: cahul
+        color:
+        [
+            52
+            36
+            248
+        ]
+        country: moldova
+    }
+    {
+        identifier: calarasi_moldova
+        color:
+        [
+            200
+            113
+            170
+        ]
+        country: moldova
+    }
+    {
+        identifier: camenca
+        color:
+        [
+            52
+            208
+            28
+        ]
+        country: moldova
+    }
+    {
+        identifier: cantemir
+        color:
+        [
+            52
+            22
+            181
+        ]
+        country: moldova
+    }
+    {
+        identifier: causeni
+        color:
+        [
+            53
+            37
+            174
+        ]
+        country: moldova
+    }
+    {
+        identifier: chisinau
+        color:
+        [
+            181
+            114
+            107
+        ]
+        country: moldova
+    }
+    {
+        identifier: cimislia
+        color:
+        [
+            53
+            51
+            241
+        ]
+        country: moldova
+    }
+    {
+        identifier: comrat
+        color:
+        [
+            53
+            94
+            186
+        ]
+        country: moldova
+    }
+    {
+        identifier: criuleni
+        color:
+        [
+            181
+            43
+            28
+        ]
+        country: moldova
+    }
+    {
+        identifier: donduseni
+        color:
+        [
+            52
+            179
+            150
+        ]
+        country: moldova
+    }
+    {
+        identifier: drochia
+        color:
+        [
+            200
+            127
+            237
+        ]
+        country: moldova
+    }
+    {
+        identifier: edinet
+        color:
+        [
+            51
+            136
+            23
+        ]
+        country: moldova
+    }
+    {
+        identifier: falesti
+        color:
+        [
+            51
+            178
+            224
+        ]
+        country: moldova
+    }
+    {
+        identifier: floresti
+        color:
+        [
+            181
+            157
+            52
+        ]
+        country: moldova
+    }
+    {
+        identifier: glodeni
+        color:
+        [
+            51
+            164
+            157
+        ]
+        country: moldova
+    }
+    {
+        identifier: grigoriopol
+        color:
+        [
+            52
+            250
+            229
+        ]
+        country: moldova
+    }
+    {
+        identifier: hincesti
+        color:
+        [
+            51
+            235
+            236
+        ]
+        country: moldova
+    }
+    {
+        identifier: ialoveni
+        color:
+        [
+            181
+            185
+            186
+        ]
+        country: moldova
+    }
+    {
+        identifier: leova
+        color:
+        [
+            52
+            8
+            114
+        ]
+        country: moldova
+    }
+    {
+        identifier: nisporeni
+        color:
+        [
+            51
+            221
+            169
+        ]
+        country: moldova
+    }
+    {
+        identifier: ocnita
+        color:
+        [
+            52
+            151
+            16
+        ]
+        country: moldova
+    }
+    {
+        identifier: orhei
+        color:
+        [
+            181
+            85
+            229
+        ]
+        country: moldova
+    }
+    {
+        identifier: rezina_moldova
+        color:
+        [
+            52
+            222
+            95
+        ]
+        country: moldova
+    }
+    {
+        identifier: rezina_moldova_2
+        color:
+        [
+            181
+            171
+            119
+        ]
+        country: moldova
+    }
+    {
+        identifier: riscani
+        color:
+        [
+            51
+            150
+            90
+        ]
+        country: moldova
+    }
+    {
+        identifier: singerei
+        color:
+        [
+            200
+            142
+            48
+        ]
+        country: moldova
+    }
+    {
+        identifier: soldanesti
+        color:
+        [
+            181
+            142
+            241
+        ]
+        country: moldova
+    }
+    {
+        identifier: soroca
+        color:
+        [
+            52
+            193
+            217
+        ]
+        country: moldova
+    }
+    {
+        identifier: stefan_voda
+        color:
+        [
+            53
+            23
+            107
+        ]
+        country: moldova
+    }
+    {
+        identifier: stinga_nistrului
+        color:
+        [
+            52
+            236
+            162
+        ]
+        country: moldova
+    }
+    {
+        identifier: straseni
+        color:
+        [
+            181
+            57
+            95
+        ]
+        country: moldova
+    }
+    {
+        identifier: taraclia
+        color:
+        [
+            53
+            80
+            119
+        ]
+        country: moldova
+    }
+    {
+        identifier: telenesti
+        color:
+        [
+            181
+            128
+            174
+        ]
+        country: moldova
+    }
+    {
+        identifier: ungheni
+        color:
+        [
+            51
+            207
+            102
+        ]
+        country: moldova
+    }
+]

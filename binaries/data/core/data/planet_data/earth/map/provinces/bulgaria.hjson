@@ -1,0 +1,282 @@
+[
+    {
+        identifier: blagoevgrad
+        color:
+        [
+            40
+            28
+            112
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: burgas
+        color:
+        [
+            30
+            220
+            254
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: dobrich
+        color:
+        [
+            50
+            121
+            30
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: gabrovo
+        color:
+        [
+            242
+            29
+            110
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: grad_sofiya
+        color:
+        [
+            242
+            72
+            55
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: haskovo
+        color:
+        [
+            31
+            22
+            10
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: kardzhali
+        color:
+        [
+            51
+            7
+            188
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: kyustendil
+        color:
+        [
+            39
+            241
+            167
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: lovech
+        color:
+        [
+            242
+            57
+            244
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: montana_bulgaria
+        color:
+        [
+            39
+            213
+            33
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: pazardzhik
+        color:
+        [
+            242
+            43
+            177
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: pernik
+        color:
+        [
+            39
+            184
+            155
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: pleven
+        color:
+        [
+            50
+            163
+            231
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: plovdiv
+        color:
+        [
+            241
+            199
+            220
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: razgrad
+        color:
+        [
+            242
+            0
+            232
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: ruse_bulgaria
+        color:
+        [
+            50
+            64
+            18
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: shumen
+        color:
+        [
+            241
+            242
+            165
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: silistra
+        color:
+        [
+            50
+            35
+            140
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: sliven
+        color:
+        [
+            241
+            228
+            98
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: smolyan
+        color:
+        [
+            51
+            21
+            255
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: sofia_bulgaria
+        color:
+        [
+            39
+            198
+            222
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: stara_zagora
+        color:
+        [
+            241
+            214
+            31
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: targovishte
+        color:
+        [
+            242
+            15
+            43
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: varna
+        color:
+        [
+            126
+            146
+            160
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: veliko_tarnovo
+        color:
+        [
+            50
+            178
+            42
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: vidin
+        color:
+        [
+            39
+            127
+            143
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: vratsa
+        color:
+        [
+            50
+            135
+            97
+        ]
+        country: bulgaria
+    }
+    {
+        identifier: yambol
+        color:
+        [
+            30
+            249
+            132
+        ]
+        country: bulgaria
+    }
+]

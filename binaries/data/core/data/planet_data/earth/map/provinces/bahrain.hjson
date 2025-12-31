@@ -1,0 +1,52 @@
+[
+    {
+        identifier: al_janubiyah
+        color:
+        [
+            172
+            8
+            48
+        ]
+        country: bahrain
+    }
+    {
+        identifier: al_manamah
+        color:
+        [
+            171
+            235
+            170
+        ]
+        country: bahrain
+    }
+    {
+        identifier: al_muharraq
+        color:
+        [
+            177
+            11
+            190
+        ]
+        country: bahrain
+    }
+    {
+        identifier: al_wusta_bahrain
+        color:
+        [
+            172
+            22
+            115
+        ]
+        country: bahrain
+    }
+    {
+        identifier: ash_shamaliyah
+        color:
+        [
+            171
+            249
+            237
+        ]
+        country: bahrain
+    }
+]

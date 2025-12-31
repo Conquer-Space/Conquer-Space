@@ -1,0 +1,112 @@
+[
+    {
+        identifier: cabo_delgado
+        color:
+        [
+            71
+            164
+            146
+        ]
+        country: mozambique
+    }
+    {
+        identifier: gaza
+        color:
+        [
+            86
+            246
+            139
+        ]
+        country: mozambique
+    }
+    {
+        identifier: inhambane
+        color:
+        [
+            98
+            155
+            62
+        ]
+        country: mozambique
+    }
+    {
+        identifier: manica
+        color:
+        [
+            86
+            218
+            5
+        ]
+        country: mozambique
+    }
+    {
+        identifier: maputo_mozambique
+        color:
+        [
+            36
+            54
+            30
+        ]
+        country: mozambique
+    }
+    {
+        identifier: maputo_mozambique_2
+        color:
+        [
+            98
+            140
+            251
+        ]
+        country: mozambique
+    }
+    {
+        identifier: nampula
+        color:
+        [
+            98
+            183
+            196
+        ]
+        country: mozambique
+    }
+    {
+        identifier: niassa
+        color:
+        [
+            71
+            193
+            24
+        ]
+        country: mozambique
+    }
+    {
+        identifier: sofala
+        color:
+        [
+            98
+            169
+            129
+        ]
+        country: mozambique
+    }
+    {
+        identifier: tete
+        color:
+        [
+            86
+            189
+            127
+        ]
+        country: mozambique
+    }
+    {
+        identifier: zambezia
+        color:
+        [
+            90
+            163
+            209
+        ]
+        country: mozambique
+    }
+]

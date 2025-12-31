@@ -1,0 +1,342 @@
+[
+    {
+        identifier: armagh
+        color:
+        [
+            18
+            141
+            39
+        ]
+        country: ireland
+    }
+    {
+        identifier: carlow
+        color:
+        [
+            206
+            18
+            25
+        ]
+        country: ireland
+    }
+    {
+        identifier: cavan
+        color:
+        [
+            18
+            98
+            94
+        ]
+        country: ireland
+    }
+    {
+        identifier: clare
+        color:
+        [
+            125
+            117
+            100
+        ]
+        country: ireland
+    }
+    {
+        identifier: cork_ireland
+        color:
+        [
+            125
+            60
+            88
+        ]
+        country: ireland
+    }
+    {
+        identifier: cork_ireland_2
+        color:
+        [
+            125
+            74
+            155
+        ]
+        country: ireland
+    }
+    {
+        identifier: donegal
+        color:
+        [
+            18
+            27
+            15
+        ]
+        country: ireland
+    }
+    {
+        identifier: dublin
+        color:
+        [
+            124
+            230
+            198
+        ]
+        country: ireland
+    }
+    {
+        identifier: dun_laoghaire-rathdown
+        color:
+        [
+            124
+            245
+            9
+        ]
+        country: ireland
+    }
+    {
+        identifier: fingal
+        color:
+        [
+            126
+            89
+            148
+        ]
+        country: ireland
+    }
+    {
+        identifier: galway_ireland
+        color:
+        [
+            125
+            131
+            167
+        ]
+        country: ireland
+    }
+    {
+        identifier: galway_ireland_2
+        color:
+        [
+            125
+            145
+            234
+        ]
+        country: ireland
+    }
+    {
+        identifier: kerry
+        color:
+        [
+            125
+            88
+            222
+        ]
+        country: ireland
+    }
+    {
+        identifier: kildare
+        color:
+        [
+            206
+            3
+            214
+        ]
+        country: ireland
+    }
+    {
+        identifier: kilkenny
+        color:
+        [
+            125
+            31
+            210
+        ]
+        country: ireland
+    }
+    {
+        identifier: laoighis
+        color:
+        [
+            206
+            32
+            92
+        ]
+        country: ireland
+    }
+    {
+        identifier: leitrim
+        color:
+        [
+            18
+            84
+            27
+        ]
+        country: ireland
+    }
+    {
+        identifier: limerick
+        color:
+        [
+            125
+            103
+            33
+        ]
+        country: ireland
+    }
+    {
+        identifier: longford
+        color:
+        [
+            206
+            89
+            104
+        ]
+        country: ireland
+    }
+    {
+        identifier: louth
+        color:
+        [
+            18
+            169
+            173
+        ]
+        country: ireland
+    }
+    {
+        identifier: mayo
+        color:
+        [
+            125
+            160
+            45
+        ]
+        country: ireland
+    }
+    {
+        identifier: meath
+        color:
+        [
+            126
+            75
+            81
+        ]
+        country: ireland
+    }
+    {
+        identifier: monaghan
+        color:
+        [
+            18
+            112
+            161
+        ]
+        country: ireland
+    }
+    {
+        identifier: north_tipperary
+        color:
+        [
+            206
+            117
+            238
+        ]
+        country: ireland
+    }
+    {
+        identifier: offaly
+        color:
+        [
+            206
+            60
+            226
+        ]
+        country: ireland
+    }
+    {
+        identifier: roscommon
+        color:
+        [
+            206
+            103
+            171
+        ]
+        country: ireland
+    }
+    {
+        identifier: sligo
+        color:
+        [
+            125
+            174
+            112
+        ]
+        country: ireland
+    }
+    {
+        identifier: south_dublin
+        color:
+        [
+            206
+            46
+            159
+        ]
+        country: ireland
+    }
+    {
+        identifier: south_tipperary
+        color:
+        [
+            206
+            132
+            49
+        ]
+        country: ireland
+    }
+    {
+        identifier: waterford_ireland
+        color:
+        [
+            125
+            46
+            21
+        ]
+        country: ireland
+    }
+    {
+        identifier: waterford_ireland_2
+        color:
+        [
+            206
+            146
+            116
+        ]
+        country: ireland
+    }
+    {
+        identifier: westmeath
+        color:
+        [
+            206
+            75
+            37
+        ]
+        country: ireland
+    }
+    {
+        identifier: wexford
+        color:
+        [
+            125
+            17
+            143
+        ]
+        country: ireland
+    }
+    {
+        identifier: wicklow
+        color:
+        [
+            125
+            3
+            76
+        ]
+        country: ireland
+    }
+]

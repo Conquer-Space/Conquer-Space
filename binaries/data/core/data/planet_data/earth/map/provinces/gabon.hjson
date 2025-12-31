@@ -1,0 +1,92 @@
+[
+    {
+        identifier: estuaire
+        color:
+        [
+            85
+            146
+            0
+        ]
+        country: gabon
+    }
+    {
+        identifier: haut-ogooue
+        color:
+        [
+            66
+            4
+            35
+        ]
+        country: gabon
+    }
+    {
+        identifier: moyen-ogooue
+        color:
+        [
+            208
+            48
+            11
+        ]
+        country: gabon
+    }
+    {
+        identifier: ngounie
+        color:
+        [
+            66
+            32
+            169
+        ]
+        country: gabon
+    }
+    {
+        identifier: nyanga
+        color:
+        [
+            66
+            61
+            47
+        ]
+        country: gabon
+    }
+    {
+        identifier: ogooue-ivindo
+        color:
+        [
+            65
+            231
+            157
+        ]
+        country: gabon
+    }
+    {
+        identifier: ogooue-lolo
+        color:
+        [
+            66
+            18
+            102
+        ]
+        country: gabon
+    }
+    {
+        identifier: ogooue-maritime
+        color:
+        [
+            106
+            217
+            250
+        ]
+        country: gabon
+    }
+    {
+        identifier: wouleu-ntem
+        color:
+        [
+            65
+            203
+            23
+        ]
+        country: gabon
+    }
+]

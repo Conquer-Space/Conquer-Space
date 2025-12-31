@@ -1,0 +1,152 @@
+[
+    {
+        identifier: bomi
+        color:
+        [
+            109
+            220
+            28
+        ]
+        country: liberia
+    }
+    {
+        identifier: bong
+        color:
+        [
+            70
+            6
+            251
+        ]
+        country: liberia
+    }
+    {
+        identifier: gbapolu
+        color:
+        [
+            20
+            99
+            202
+        ]
+        country: liberia
+    }
+    {
+        identifier: grand_bassa
+        color:
+        [
+            110
+            6
+            229
+        ]
+        country: liberia
+    }
+    {
+        identifier: grand_cape_mount
+        color:
+        [
+            20
+            71
+            68
+        ]
+        country: liberia
+    }
+    {
+        identifier: grand_gedeh
+        color:
+        [
+            69
+            177
+            105
+        ]
+        country: liberia
+    }
+    {
+        identifier: grand_kru
+        color:
+        [
+            110
+            49
+            174
+        ]
+        country: liberia
+    }
+    {
+        identifier: lofa
+        color:
+        [
+            20
+            114
+            13
+        ]
+        country: liberia
+    }
+    {
+        identifier: margibi
+        color:
+        [
+            109
+            248
+            162
+        ]
+        country: liberia
+    }
+    {
+        identifier: maryland_lib
+        color:
+        [
+            69
+            220
+            50
+        ]
+        country: liberia
+    }
+    {
+        identifier: montserrado
+        color:
+        [
+            109
+            234
+            95
+        ]
+        country: liberia
+    }
+    {
+        identifier: nimba
+        color:
+        [
+            69
+            148
+            227
+        ]
+        country: liberia
+    }
+    {
+        identifier: river_cess
+        color:
+        [
+            110
+            21
+            40
+        ]
+        country: liberia
+    }
+    {
+        identifier: river_gee
+        color:
+        [
+            69
+            205
+            239
+        ]
+        country: liberia
+    }
+    {
+        identifier: sinoe
+        color:
+        [
+            110
+            35
+            107
+        ]
+        country: liberia
+    }
+]

@@ -1,0 +1,62 @@
+[
+    {
+        identifier: bioko_norte
+        color:
+        [
+            156
+            39
+            153
+        ]
+        country: eq__guinea
+    }
+    {
+        identifier: bioko_sur
+        color:
+        [
+            156
+            53
+            220
+        ]
+        country: eq__guinea
+    }
+    {
+        identifier: centro_sur
+        color:
+        [
+            85
+            117
+            122
+        ]
+        country: eq__guinea
+    }
+    {
+        identifier: kie-ntem
+        color:
+        [
+            85
+            103
+            55
+        ]
+        country: eq__guinea
+    }
+    {
+        identifier: litoral
+        color:
+        [
+            85
+            88
+            244
+        ]
+        country: eq__guinea
+    }
+    {
+        identifier: wele-nzas
+        color:
+        [
+            85
+            131
+            189
+        ]
+        country: eq__guinea
+    }
+]

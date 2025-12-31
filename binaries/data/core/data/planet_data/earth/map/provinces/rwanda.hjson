@@ -1,0 +1,52 @@
+[
+    {
+        identifier: eastern_rwanda
+        color:
+        [
+            36
+            96
+            231
+        ]
+        country: rwanda
+    }
+    {
+        identifier: kigali_city
+        color:
+        [
+            242
+            86
+            122
+        ]
+        country: rwanda
+    }
+    {
+        identifier: northern_rwanda
+        color:
+        [
+            40
+            156
+            203
+        ]
+        country: rwanda
+    }
+    {
+        identifier: southern_rwanda
+        color:
+        [
+            36
+            125
+            109
+        ]
+        country: rwanda
+    }
+    {
+        identifier: western_rwanda
+        color:
+        [
+            36
+            168
+            54
+        ]
+        country: rwanda
+    }
+]

@@ -1,0 +1,372 @@
+[
+    {
+        identifier: abia
+        color:
+        [
+            227
+            18
+            196
+        ]
+        country: nigeria
+    }
+    {
+        identifier: adamawa
+        color:
+        [
+            66
+            175
+            71
+        ]
+        country: nigeria
+    }
+    {
+        identifier: akwa_ibom
+        color:
+        [
+            106
+            189
+            116
+        ]
+        country: nigeria
+    }
+    {
+        identifier: anambra
+        color:
+        [
+            227
+            47
+            74
+        ]
+        country: nigeria
+    }
+    {
+        identifier: bauchi
+        color:
+        [
+            227
+            75
+            208
+        ]
+        country: nigeria
+    }
+    {
+        identifier: bayelsa
+        color:
+        [
+            106
+            160
+            238
+        ]
+        country: nigeria
+    }
+    {
+        identifier: benue
+        color:
+        [
+            66
+            246
+            150
+        ]
+        country: nigeria
+    }
+    {
+        identifier: borno
+        color:
+        [
+            34
+            66
+            245
+        ]
+        country: nigeria
+    }
+    {
+        identifier: cross_river
+        color:
+        [
+            67
+            4
+            217
+        ]
+        country: nigeria
+    }
+    {
+        identifier: delta
+        color:
+        [
+            106
+            146
+            171
+        ]
+        country: nigeria
+    }
+    {
+        identifier: ebonyi
+        color:
+        [
+            227
+            33
+            7
+        ]
+        country: nigeria
+    }
+    {
+        identifier: edo
+        color:
+        [
+            227
+            61
+            141
+        ]
+        country: nigeria
+    }
+    {
+        identifier: ekiti
+        color:
+        [
+            233
+            8
+            197
+        ]
+        country: nigeria
+    }
+    {
+        identifier: enugu
+        color:
+        [
+            227
+            132
+            220
+        ]
+        country: nigeria
+    }
+    {
+        identifier: federal_capital_territory
+        color:
+        [
+            233
+            51
+            142
+        ]
+        country: nigeria
+    }
+    {
+        identifier: gombe
+        color:
+        [
+            227
+            118
+            153
+        ]
+        country: nigeria
+    }
+    {
+        identifier: imo
+        color:
+        [
+            227
+            175
+            165
+        ]
+        country: nigeria
+    }
+    {
+        identifier: jigawa
+        color:
+        [
+            67
+            147
+            119
+        ]
+        country: nigeria
+    }
+    {
+        identifier: kaduna
+        color:
+        [
+            233
+            23
+            8
+        ]
+        country: nigeria
+    }
+    {
+        identifier: kano
+        color:
+        [
+            233
+            37
+            75
+        ]
+        country: nigeria
+    }
+    {
+        identifier: katsina
+        color:
+        [
+            67
+            133
+            52
+        ]
+        country: nigeria
+    }
+    {
+        identifier: kebbi
+        color:
+        [
+            27
+            19
+            50
+        ]
+        country: nigeria
+    }
+    {
+        identifier: kogi
+        color:
+        [
+            227
+            147
+            31
+        ]
+        country: nigeria
+    }
+    {
+        identifier: kwara
+        color:
+        [
+            27
+            76
+            62
+        ]
+        country: nigeria
+    }
+    {
+        identifier: lagos
+        color:
+        [
+            27
+            147
+            141
+        ]
+        country: nigeria
+    }
+    {
+        identifier: nassarawa
+        color:
+        [
+            227
+            104
+            86
+        ]
+        country: nigeria
+    }
+    {
+        identifier: niger
+        color:
+        [
+            27
+            47
+            184
+        ]
+        country: nigeria
+    }
+    {
+        identifier: ogun
+        color:
+        [
+            27
+            90
+            129
+        ]
+        country: nigeria
+    }
+    {
+        identifier: ondo
+        color:
+        [
+            106
+            132
+            104
+        ]
+        country: nigeria
+    }
+    {
+        identifier: osun
+        color:
+        [
+            227
+            161
+            98
+        ]
+        country: nigeria
+    }
+    {
+        identifier: oyo
+        color:
+        [
+            27
+            133
+            74
+        ]
+        country: nigeria
+    }
+    {
+        identifier: plateau_nigeria
+        color:
+        [
+            227
+            90
+            19
+        ]
+        country: nigeria
+    }
+    {
+        identifier: rivers
+        color:
+        [
+            106
+            175
+            49
+        ]
+        country: nigeria
+    }
+    {
+        identifier: sokoto
+        color:
+        [
+            67
+            19
+            28
+        ]
+        country: nigeria
+    }
+    {
+        identifier: taraba
+        color:
+        [
+            66
+            203
+            205
+        ]
+        country: nigeria
+    }
+    {
+        identifier: yobe
+        color:
+        [
+            67
+            104
+            174
+        ]
+        country: nigeria
+    }
+    {
+        identifier: zamfara
+        color:
+        [
+            67
+            90
+            107
+        ]
+        country: nigeria
+    }
+]

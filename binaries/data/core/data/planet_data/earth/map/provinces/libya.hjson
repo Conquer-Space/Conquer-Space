@@ -1,0 +1,222 @@
+[
+    {
+        identifier: ajdabiya
+        color:
+        [
+            84
+            88
+            62
+        ]
+        country: libya
+    }
+    {
+        identifier: al_butnan
+        color:
+        [
+            84
+            59
+            184
+        ]
+        country: libya
+    }
+    {
+        identifier: al_jabal_al_akhdar
+        color:
+        [
+            118
+            155
+            51
+        ]
+        country: libya
+    }
+    {
+        identifier: al_jifarah
+        color:
+        [
+            237
+            82
+            236
+        ]
+        country: libya
+    }
+    {
+        identifier: al_jufrah
+        color:
+        [
+            237
+            111
+            114
+        ]
+        country: libya
+    }
+    {
+        identifier: al_kufrah
+        color:
+        [
+            82
+            15
+            131
+        ]
+        country: libya
+    }
+    {
+        identifier: al_marj
+        color:
+        [
+            118
+            169
+            118
+        ]
+        country: libya
+    }
+    {
+        identifier: al_marqab
+        color:
+        [
+            107
+            47
+            140
+        ]
+        country: libya
+    }
+    {
+        identifier: al_qubbah
+        color:
+        [
+            118
+            140
+            240
+        ]
+        country: libya
+    }
+    {
+        identifier: an_nuqat_al_khams
+        color:
+        [
+            15
+            253
+            29
+        ]
+        country: libya
+    }
+    {
+        identifier: ash_shati'
+        color:
+        [
+            88
+            19
+            199
+        ]
+        country: libya
+    }
+    {
+        identifier: az_zawiyah
+        color:
+        [
+            107
+            76
+            18
+        ]
+        country: libya
+    }
+    {
+        identifier: benghazi
+        color:
+        [
+            118
+            183
+            185
+        ]
+        country: libya
+    }
+    {
+        identifier: ghadamis
+        color:
+        [
+            15
+            210
+            84
+        ]
+        country: libya
+    }
+    {
+        identifier: ghat
+        color:
+        [
+            88
+            34
+            10
+        ]
+        country: libya
+    }
+    {
+        identifier: misratah
+        color:
+        [
+            107
+            33
+            73
+        ]
+        country: libya
+    }
+    {
+        identifier: mizdah
+        color:
+        [
+            237
+            97
+            47
+        ]
+        country: libya
+    }
+    {
+        identifier: murzuq
+        color:
+        [
+            82
+            58
+            76
+        ]
+        country: libya
+    }
+    {
+        identifier: sabha
+        color:
+        [
+            237
+            125
+            181
+        ]
+        country: libya
+    }
+    {
+        identifier: surt
+        color:
+        [
+            107
+            19
+            6
+        ]
+        country: libya
+    }
+    {
+        identifier: tajura'_wa_an_nawahi_al_arba
+        color:
+        [
+            107
+            61
+            207
+        ]
+        country: libya
+    }
+    {
+        identifier: wadi_al_hayaa
+        color:
+        [
+            237
+            139
+            248
+        ]
+        country: libya
+    }
+]

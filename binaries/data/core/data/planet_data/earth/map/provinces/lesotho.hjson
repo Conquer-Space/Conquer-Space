@@ -1,0 +1,102 @@
+[
+    {
+        identifier: berea
+        color:
+        [
+            62
+            229
+            123
+        ]
+        country: lesotho
+    }
+    {
+        identifier: butha-buthe
+        color:
+        [
+            62
+            158
+            44
+        ]
+        country: lesotho
+    }
+    {
+        identifier: leribe
+        color:
+        [
+            62
+            172
+            111
+        ]
+        country: lesotho
+    }
+    {
+        identifier: mafeteng
+        color:
+        [
+            63
+            2
+            1
+        ]
+        country: lesotho
+    }
+    {
+        identifier: maseru
+        color:
+        [
+            62
+            243
+            190
+        ]
+        country: lesotho
+    }
+    {
+        identifier: mohale's_hoek
+        color:
+        [
+            63
+            16
+            68
+        ]
+        country: lesotho
+    }
+    {
+        identifier: mokhotlong
+        color:
+        [
+            62
+            129
+            166
+        ]
+        country: lesotho
+    }
+    {
+        identifier: qacha's_nek
+        color:
+        [
+            62
+            200
+            245
+        ]
+        country: lesotho
+    }
+    {
+        identifier: quthing
+        color:
+        [
+            63
+            30
+            135
+        ]
+        country: lesotho
+    }
+    {
+        identifier: thaba-tseka
+        color:
+        [
+            62
+            215
+            56
+        ]
+        country: lesotho
+    }
+]

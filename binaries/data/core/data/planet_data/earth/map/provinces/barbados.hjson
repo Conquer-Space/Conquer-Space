@@ -1,0 +1,62 @@
+[
+    {
+        identifier: saint_george_barbados
+        color:
+        [
+            213
+            65
+            220
+        ]
+        country: barbados
+    }
+    {
+        identifier: saint_james_barbados
+        color:
+        [
+            144
+            88
+            29
+        ]
+        country: barbados
+    }
+    {
+        identifier: saint_joseph_barbados
+        color:
+        [
+            144
+            31
+            17
+        ]
+        country: barbados
+    }
+    {
+        identifier: saint_lucy
+        color:
+        [
+            144
+            73
+            218
+        ]
+        country: barbados
+    }
+    {
+        identifier: saint_michael
+        color:
+        [
+            144
+            102
+            96
+        ]
+        country: barbados
+    }
+    {
+        identifier: saint_philip
+        color:
+        [
+            144
+            130
+            230
+        ]
+        country: barbados
+    }
+]

@@ -1,0 +1,1122 @@
+[
+    {
+        identifier: ain
+        color:
+        [
+            45
+            188
+            223
+        ]
+        country: france
+    }
+    {
+        identifier: aisne
+        color:
+        [
+            12
+            8
+            136
+        ]
+        country: france
+    }
+    {
+        identifier: allier
+        color:
+        [
+            248
+            233
+            92
+        ]
+        country: france
+    }
+    {
+        identifier: alo
+        color:
+        [
+            163
+            144
+            104
+        ]
+        country: france
+    }
+    {
+        identifier: alpes-de-haute-provence
+        color:
+        [
+            24
+            202
+            119
+        ]
+        country: france
+    }
+    {
+        identifier: alpes-maritimes
+        color:
+        [
+            24
+            173
+            241
+        ]
+        country: france
+    }
+    {
+        identifier: archipel_des_crozet
+        color:
+        [
+            153
+            151
+            143
+        ]
+        country: france
+    }
+    {
+        identifier: archipel_des_kerguelen
+        color:
+        [
+            153
+            137
+            76
+        ]
+        country: france
+    }
+    {
+        identifier: ardeche
+        color:
+        [
+            248
+            190
+            147
+        ]
+        country: france
+    }
+    {
+        identifier: ardennes
+        color:
+        [
+            11
+            236
+            2
+        ]
+        country: france
+    }
+    {
+        identifier: ariege
+        color:
+        [
+            37
+            83
+            90
+        ]
+        country: france
+    }
+    {
+        identifier: aube
+        color:
+        [
+            249
+            20
+            37
+        ]
+        country: france
+    }
+    {
+        identifier: aude
+        color:
+        [
+            139
+            13
+            64
+        ]
+        country: france
+    }
+    {
+        identifier: austral_islands
+        color:
+        [
+            163
+            58
+            214
+        ]
+        country: france
+    }
+    {
+        identifier: aveyron
+        color:
+        [
+            247
+            246
+            233
+        ]
+        country: france
+    }
+    {
+        identifier: bas-rhin
+        color:
+        [
+            45
+            46
+            65
+        ]
+        country: france
+    }
+    {
+        identifier: bouches-du-rhone
+        color:
+        [
+            138
+            226
+            119
+        ]
+        country: france
+    }
+    {
+        identifier: calvados
+        color:
+        [
+            140
+            227
+            227
+        ]
+        country: france
+    }
+    {
+        identifier: cantal
+        color:
+        [
+            249
+            162
+            195
+        ]
+        country: france
+    }
+    {
+        identifier: charente
+        color:
+        [
+            249
+            105
+            183
+        ]
+        country: france
+    }
+    {
+        identifier: charente-maritime
+        color:
+        [
+            140
+            113
+            203
+        ]
+        country: france
+    }
+    {
+        identifier: cher
+        color:
+        [
+            249
+            119
+            250
+        ]
+        country: france
+    }
+    {
+        identifier: correze
+        color:
+        [
+            247
+            175
+            154
+        ]
+        country: france
+    }
+    {
+        identifier: corse-du-sud
+        color:
+        [
+            160
+            142
+            70
+        ]
+        country: france
+    }
+    {
+        identifier: cote-d'or
+        color:
+        [
+            249
+            219
+            207
+        ]
+        country: france
+    }
+    {
+        identifier: cotes-d'armor
+        color:
+        [
+            140
+            185
+            26
+        ]
+        country: france
+    }
+    {
+        identifier: creuse
+        color:
+        [
+            248
+            62
+            56
+        ]
+        country: france
+    }
+    {
+        identifier: deux-sevres
+        color:
+        [
+            250
+            35
+            30
+        ]
+        country: france
+    }
+    {
+        identifier: dordogne
+        color:
+        [
+            248
+            147
+            202
+        ]
+        country: france
+    }
+    {
+        identifier: doubs
+        color:
+        [
+            45
+            160
+            89
+        ]
+        country: france
+    }
+    {
+        identifier: drome
+        color:
+        [
+            247
+            232
+            166
+        ]
+        country: france
+    }
+    {
+        identifier: essonne
+        color:
+        [
+            250
+            77
+            231
+        ]
+        country: france
+    }
+    {
+        identifier: eure
+        color:
+        [
+            140
+            242
+            38
+        ]
+        country: france
+    }
+    {
+        identifier: eure-et-loir
+        color:
+        [
+            249
+            134
+            61
+        ]
+        country: france
+    }
+    {
+        identifier: finistere
+        color:
+        [
+            140
+            170
+            215
+        ]
+        country: france
+    }
+    {
+        identifier: gard
+        color:
+        [
+            138
+            240
+            186
+        ]
+        country: france
+    }
+    {
+        identifier: gers
+        color:
+        [
+            247
+            147
+            20
+        ]
+        country: france
+    }
+    {
+        identifier: gironde
+        color:
+        [
+            140
+            99
+            136
+        ]
+        country: france
+    }
+    {
+        identifier: guadeloupe
+        color:
+        [
+            146
+            32
+            125
+        ]
+        country: france
+    }
+    {
+        identifier: guyane_francaise
+        color:
+        [
+            2
+            215
+            89
+        ]
+        country: france
+    }
+    {
+        identifier: haute-corse
+        color:
+        [
+            160
+            128
+            3
+        ]
+        country: france
+    }
+    {
+        identifier: haute-garonne
+        color:
+        [
+            37
+            40
+            145
+        ]
+        country: france
+    }
+    {
+        identifier: haute-loire
+        color:
+        [
+            249
+            148
+            128
+        ]
+        country: france
+    }
+    {
+        identifier: haute-marne
+        color:
+        [
+            248
+            119
+            68
+        ]
+        country: france
+    }
+    {
+        identifier: haute-rhin
+        color:
+        [
+            45
+            60
+            132
+        ]
+        country: france
+    }
+    {
+        identifier: haute-saone
+        color:
+        [
+            250
+            6
+            152
+        ]
+        country: france
+    }
+    {
+        identifier: haute-savoie
+        color:
+        [
+            25
+            3
+            131
+        ]
+        country: france
+    }
+    {
+        identifier: haute-vienne
+        color:
+        [
+            247
+            161
+            87
+        ]
+        country: france
+    }
+    {
+        identifier: hautes-alpes
+        color:
+        [
+            24
+            216
+            186
+        ]
+        country: france
+    }
+    {
+        identifier: hautes-pyrenees
+        color:
+        [
+            37
+            69
+            23
+        ]
+        country: france
+    }
+    {
+        identifier: hauts-de-seine
+        color:
+        [
+            249
+            48
+            171
+        ]
+        country: france
+    }
+    {
+        identifier: herault
+        color:
+        [
+            138
+            254
+            253
+        ]
+        country: france
+    }
+    {
+        identifier: iles_loyaute
+        color:
+        [
+            168
+            205
+            2
+        ]
+        country: france
+    }
+    {
+        identifier: ille-et-vilaine
+        color:
+        [
+            140
+            199
+            93
+        ]
+        country: france
+    }
+    {
+        identifier: indre
+        color:
+        [
+            248
+            33
+            178
+        ]
+        country: france
+    }
+    {
+        identifier: indre-et-loire
+        color:
+        [
+            248
+            19
+            111
+        ]
+        country: france
+    }
+    {
+        identifier: isere
+        color:
+        [
+            247
+            218
+            99
+        ]
+        country: france
+    }
+    {
+        identifier: jura_france
+        color:
+        [
+            45
+            217
+            101
+        ]
+        country: france
+    }
+    {
+        identifier: la_reunion
+        color:
+        [
+            153
+            180
+            21
+        ]
+        country: france
+    }
+    {
+        identifier: landes
+        color:
+        [
+            140
+            85
+            69
+        ]
+        country: france
+    }
+    {
+        identifier: leeward_islands
+        color:
+        [
+            142
+            43
+            232
+        ]
+        country: france
+    }
+    {
+        identifier: loir-et-cher
+        color:
+        [
+            248
+            47
+            245
+        ]
+        country: france
+    }
+    {
+        identifier: loire
+        color:
+        [
+            248
+            204
+            214
+        ]
+        country: france
+    }
+    {
+        identifier: loire-atlantique
+        color:
+        [
+            140
+            142
+            81
+        ]
+        country: france
+    }
+    {
+        identifier: loiret
+        color:
+        [
+            248
+            247
+            159
+        ]
+        country: france
+    }
+    {
+        identifier: lot
+        color:
+        [
+            248
+            5
+            44
+        ]
+        country: france
+    }
+    {
+        identifier: lot-et-garonne
+        color:
+        [
+            249
+            177
+            6
+        ]
+        country: france
+    }
+    {
+        identifier: lozere
+        color:
+        [
+            249
+            191
+            73
+        ]
+        country: france
+    }
+    {
+        identifier: maine-et-loire
+        color:
+        [
+            249
+            5
+            226
+        ]
+        country: france
+    }
+    {
+        identifier: manche
+        color:
+        [
+            140
+            213
+            160
+        ]
+        country: france
+    }
+    {
+        identifier: marne
+        color:
+        [
+            248
+            133
+            135
+        ]
+        country: france
+    }
+    {
+        identifier: marquesas_islands
+        color:
+        [
+            164
+            2
+            128
+        ]
+        country: france
+    }
+    {
+        identifier: martinique
+        color:
+        [
+            145
+            131
+            156
+        ]
+        country: france
+    }
+    {
+        identifier: mayenne
+        color:
+        [
+            248
+            76
+            123
+        ]
+        country: france
+    }
+    {
+        identifier: meurthe-et-moselle
+        color:
+        [
+            12
+            51
+            81
+        ]
+        country: france
+    }
+    {
+        identifier: meuse
+        color:
+        [
+            12
+            37
+            14
+        ]
+        country: france
+    }
+    {
+        identifier: miquelon-langlade
+        color:
+        [
+            121
+            43
+            61
+        ]
+        country: france
+    }
+    {
+        identifier: morbihan
+        color:
+        [
+            140
+            156
+            148
+        ]
+        country: france
+    }
+    {
+        identifier: moselle
+        color:
+        [
+            14
+            81
+            67
+        ]
+        country: france
+    }
+    {
+        identifier: nievre
+        color:
+        [
+            249
+            205
+            140
+        ]
+        country: france
+    }
+    {
+        identifier: nord_france
+        color:
+        [
+            11
+            193
+            57
+        ]
+        country: france
+    }
+    {
+        identifier: nord_france_2
+        color:
+        [
+            97
+            40
+            112
+        ]
+        country: france
+    }
+    {
+        identifier: oise
+        color:
+        [
+            249
+            234
+            18
+        ]
+        country: france
+    }
+    {
+        identifier: orne
+        color:
+        [
+            249
+            248
+            85
+        ]
+        country: france
+    }
+    {
+        identifier: paris
+        color:
+        [
+            249
+            34
+            104
+        ]
+        country: france
+    }
+    {
+        identifier: pas-de-calais
+        color:
+        [
+            141
+            28
+            239
+        ]
+        country: france
+    }
+    {
+        identifier: puy-de-dome
+        color:
+        [
+            248
+            219
+            25
+        ]
+        country: france
+    }
+    {
+        identifier: pyrenees-atlantiques
+        color:
+        [
+            36
+            239
+            133
+        ]
+        country: france
+    }
+    {
+        identifier: pyrenees-orientales
+        color:
+        [
+            37
+            126
+            35
+        ]
+        country: france
+    }
+    {
+        identifier: rhone
+        color:
+        [
+            248
+            162
+            13
+        ]
+        country: france
+    }
+    {
+        identifier: saone-et-loire
+        color:
+        [
+            250
+            20
+            219
+        ]
+        country: france
+    }
+    {
+        identifier: sarthe
+        color:
+        [
+            248
+            90
+            190
+        ]
+        country: france
+    }
+    {
+        identifier: seien-et-marne
+        color:
+        [
+            250
+            92
+            42
+        ]
+        country: france
+    }
+    {
+        identifier: seine-maritime
+        color:
+        [
+            141
+            0
+            105
+        ]
+        country: france
+    }
+    {
+        identifier: seine-saint-denis
+        color:
+        [
+            249
+            62
+            238
+        ]
+        country: france
+    }
+    {
+        identifier: somme
+        color:
+        [
+            141
+            14
+            172
+        ]
+        country: france
+    }
+    {
+        identifier: st_martin
+        color:
+        [
+            5
+            60
+            154
+        ]
+        country: france
+    }
+    {
+        identifier: sud_france
+        color:
+        [
+            168
+            190
+            191
+        ]
+        country: france
+    }
+    {
+        identifier: tarn
+        color:
+        [
+            247
+            204
+            32
+        ]
+        country: france
+    }
+    {
+        identifier: tarn-et-garonne
+        color:
+        [
+            247
+            189
+            221
+        ]
+        country: france
+    }
+    {
+        identifier: territoire_de_belfort
+        color:
+        [
+            45
+            146
+            22
+        ]
+        country: france
+    }
+    {
+        identifier: tuamotu-gambier
+        color:
+        [
+            142
+            1
+            31
+        ]
+        country: france
+    }
+    {
+        identifier: val-d'oise
+        color:
+        [
+            249
+            77
+            49
+        ]
+        country: france
+    }
+    {
+        identifier: val-de-marne
+        color:
+        [
+            250
+            106
+            109
+        ]
+        country: france
+    }
+    {
+        identifier: var
+        color:
+        [
+            138
+            212
+            52
+        ]
+        country: france
+    }
+    {
+        identifier: vaucluse
+        color:
+        [
+            248
+            105
+            1
+        ]
+        country: france
+    }
+    {
+        identifier: vendee
+        color:
+        [
+            140
+            128
+            14
+        ]
+        country: france
+    }
+    {
+        identifier: vienne
+        color:
+        [
+            250
+            49
+            97
+        ]
+        country: france
+    }
+    {
+        identifier: vosges
+        color:
+        [
+            248
+            176
+            80
+        ]
+        country: france
+    }
+    {
+        identifier: windward_islands
+        color:
+        [
+            142
+            15
+            98
+        ]
+        country: france
+    }
+    {
+        identifier: yonne
+        color:
+        [
+            250
+            63
+            164
+        ]
+        country: france
+    }
+    {
+        identifier: yvelines
+        color:
+        [
+            249
+            91
+            116
+        ]
+        country: france
+    }
+]

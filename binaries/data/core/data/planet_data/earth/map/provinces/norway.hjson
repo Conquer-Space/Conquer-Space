@@ -1,0 +1,212 @@
+[
+    {
+        identifier: akershus
+        color:
+        [
+            10
+            49
+            229
+        ]
+        country: norway
+    }
+    {
+        identifier: aust-agder
+        color:
+        [
+            133
+            251
+            111
+        ]
+        country: norway
+    }
+    {
+        identifier: bouvet_island
+        color:
+        [
+            168
+            147
+            246
+        ]
+        country: norway
+    }
+    {
+        identifier: buskerud
+        color:
+        [
+            133
+            208
+            166
+        ]
+        country: norway
+    }
+    {
+        identifier: finnmark
+        color:
+        [
+            10
+            106
+            241
+        ]
+        country: norway
+    }
+    {
+        identifier: hedmark
+        color:
+        [
+            10
+            7
+            28
+        ]
+        country: norway
+    }
+    {
+        identifier: hordaland
+        color:
+        [
+            134
+            38
+            56
+        ]
+        country: norway
+    }
+    {
+        identifier: more_og_romsdal
+        color:
+        [
+            134
+            66
+            190
+        ]
+        country: norway
+    }
+    {
+        identifier: nord-trondelag
+        color:
+        [
+            9
+            234
+            150
+        ]
+        country: norway
+    }
+    {
+        identifier: nordland
+        color:
+        [
+            9
+            191
+            205
+        ]
+        country: norway
+    }
+    {
+        identifier: oppland
+        color:
+        [
+            195
+            24
+            138
+        ]
+        country: norway
+    }
+    {
+        identifier: oslo
+        color:
+        [
+            133
+            194
+            99
+        ]
+        country: norway
+    }
+    {
+        identifier: ostfold
+        color:
+        [
+            10
+            64
+            40
+        ]
+        country: norway
+    }
+    {
+        identifier: rogaland
+        color:
+        [
+            134
+            23
+            245
+        ]
+        country: norway
+    }
+    {
+        identifier: sogn_og_fjordane
+        color:
+        [
+            134
+            52
+            123
+        ]
+        country: norway
+    }
+    {
+        identifier: sor-trondelag
+        color:
+        [
+            9
+            248
+            217
+        ]
+        country: norway
+    }
+    {
+        identifier: svalbard
+        color:
+        [
+            162
+            200
+            190
+        ]
+        country: norway
+    }
+    {
+        identifier: telemark
+        color:
+        [
+            133
+            237
+            44
+        ]
+        country: norway
+    }
+    {
+        identifier: troms
+        color:
+        [
+            9
+            163
+            71
+        ]
+        country: norway
+    }
+    {
+        identifier: vest-agder
+        color:
+        [
+            134
+            9
+            178
+        ]
+        country: norway
+    }
+    {
+        identifier: vestfold
+        color:
+        [
+            133
+            222
+            233
+        ]
+        country: norway
+    }
+]

@@ -1,0 +1,102 @@
+[
+    {
+        identifier: alytaus
+        color:
+        [
+            6
+            18
+            135
+        ]
+        country: lithuania
+    }
+    {
+        identifier: kauno
+        color:
+        [
+            195
+            138
+            162
+        ]
+        country: lithuania
+    }
+    {
+        identifier: klaipedos
+        color:
+        [
+            8
+            233
+            224
+        ]
+        country: lithuania
+    }
+    {
+        identifier: marijampoles
+        color:
+        [
+            23
+            30
+            157
+        ]
+        country: lithuania
+    }
+    {
+        identifier: panevezio
+        color:
+        [
+            8
+            148
+            78
+        ]
+        country: lithuania
+    }
+    {
+        identifier: siauliai
+        color:
+        [
+            9
+            34
+            236
+        ]
+        country: lithuania
+    }
+    {
+        identifier: taurages
+        color:
+        [
+            53
+            180
+            76
+        ]
+        country: lithuania
+    }
+    {
+        identifier: telsiai
+        color:
+        [
+            8
+            205
+            90
+        ]
+        country: lithuania
+    }
+    {
+        identifier: utenos
+        color:
+        [
+            5
+            231
+            190
+        ]
+        country: lithuania
+    }
+    {
+        identifier: vilniaus
+        color:
+        [
+            5
+            246
+            1
+        ]
+        country: lithuania
+    }
+]

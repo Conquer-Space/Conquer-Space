@@ -1,0 +1,202 @@
+[
+    {
+        identifier: bumthang
+        color:
+        [
+            4
+            102
+            173
+        ]
+        country: bhutan
+    }
+    {
+        identifier: chhukha
+        color:
+        [
+            32
+            136
+            216
+        ]
+        country: bhutan
+    }
+    {
+        identifier: chirang
+        color:
+        [
+            212
+            207
+            196
+        ]
+        country: bhutan
+    }
+    {
+        identifier: daga
+        color:
+        [
+            212
+            236
+            74
+        ]
+        country: bhutan
+    }
+    {
+        identifier: gasa
+        color:
+        [
+            94
+            66
+            212
+        ]
+        country: bhutan
+    }
+    {
+        identifier: geylegphug
+        color:
+        [
+            32
+            122
+            149
+        ]
+        country: bhutan
+    }
+    {
+        identifier: ha
+        color:
+        [
+            32
+            79
+            204
+        ]
+        country: bhutan
+    }
+    {
+        identifier: lhuntshi
+        color:
+        [
+            4
+            88
+            106
+        ]
+        country: bhutan
+    }
+    {
+        identifier: mongar
+        color:
+        [
+            213
+            8
+            208
+        ]
+        country: bhutan
+    }
+    {
+        identifier: paro
+        color:
+        [
+            94
+            52
+            145
+        ]
+        country: bhutan
+    }
+    {
+        identifier: pemagatsel
+        color:
+        [
+            213
+            37
+            86
+        ]
+        country: bhutan
+    }
+    {
+        identifier: punakha
+        color:
+        [
+            212
+            250
+            141
+        ]
+        country: bhutan
+    }
+    {
+        identifier: samchi
+        color:
+        [
+            32
+            94
+            15
+        ]
+        country: bhutan
+    }
+    {
+        identifier: samdrup_jongkhar
+        color:
+        [
+            32
+            51
+            70
+        ]
+        country: bhutan
+    }
+    {
+        identifier: shemgang
+        color:
+        [
+            32
+            151
+            27
+        ]
+        country: bhutan
+    }
+    {
+        identifier: tashi_yangtse
+        color:
+        [
+            4
+            74
+            39
+        ]
+        country: bhutan
+    }
+    {
+        identifier: tashigang
+        color:
+        [
+            32
+            22
+            192
+        ]
+        country: bhutan
+    }
+    {
+        identifier: thimphu
+        color:
+        [
+            94
+            38
+            78
+        ]
+        country: bhutan
+    }
+    {
+        identifier: tongsa
+        color:
+        [
+            213
+            23
+            19
+        ]
+        country: bhutan
+    }
+    {
+        identifier: wangdi_phodrang
+        color:
+        [
+            212
+            222
+            7
+        ]
+        country: bhutan
+    }
+]
