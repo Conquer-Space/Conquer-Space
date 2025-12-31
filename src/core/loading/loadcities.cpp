@@ -93,7 +93,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
     }
     //SPDLOG_INFO("Load Provinces");
     if (!values["province"].empty()) {
-        if (universe.provinces[values["province"]] != universe.provinces.end()) {
+        if (universe.provinces.contains(values["province"])) {
             Node province_node(universe, universe.provinces[values["province"]]);
             // Now add self to province
             province_node.get<components::Province>().cities.push_back(node);
@@ -167,17 +167,5 @@ void CityLoader::ParseIndustry(const Hjson::Value& industry_hjson, Node& node, s
     }
 }
 
-/**
- * Loads the city and sets the parent.
- */
-void CityLoader::PostLoad(const Node& node) {
-    if (node.all_of<ConnectedCities>()) {
-        auto& connected = node.get<ConnectedCities>();
-        auto& market = node.get<components::Market>();
-        for (auto& entity : connected.entities) {
-            market.connected_markets.emplace(universe.cities[entity]);
-        }
-        node.remove<ConnectedCities>();
-    }
-}
+void CityLoader::PostLoad(const Node& node) {}
 }  // namespace cqsp::core::loading

@@ -37,8 +37,8 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     Node planet_node(universe, universe.planets[planet_identifier]);
     const auto& identifier = node.get<components::Identifier>().identifier;
 
-    Node country_node(universe, universe.countries[country_identifier]);
-    node.emplace<components::Province>(country_node);
+    Node province_node(universe, universe.countries[country_identifier]);
+    node.emplace<components::Province>(province_node);
     auto& color = node.emplace<components::ProvinceColor>(values["color"][0].to_int64(), values["color"][1].to_int64(),
                                                           values["color"][2].to_int64());
     if (universe.provinces.find(identifier) == universe.provinces.end()) {
@@ -48,7 +48,7 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     }
     // Add province to country
     // check if it is assigned to a country
-    country_node.get_or_emplace<components::CountryCityList>().province_list.push_back(node);
+    province_node.get_or_emplace<components::CountryCityList>().province_list.push_back(node);
     universe.province_colors[planet_node][static_cast<int>(color)] = node;
     universe.colors_province[planet_node][node] = static_cast<int>(color);
 
@@ -114,7 +114,7 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     auto& industry = node.emplace<components::IndustrialZone>();
     auto& market = node.emplace<components::Market>();
     market.parent_market = planet_node;
-
+    planet_node.get<components::Settlements>().provinces.push_back(node.entity());
     // Commercial area
     Node commercial_node(universe);
 
@@ -132,10 +132,10 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     //SPDLOG_INFO("Load Country");
     if (!values["country"].empty()) {
         if (universe.countries.find(values["country"]) != universe.countries.end()) {
-            Node country_node(universe, universe.countries[values["country"]]);
-            node.emplace<components::Governed>(country_node);
+            Node province_node(universe, universe.countries[values["country"]]);
+            node.emplace<components::Governed>(province_node);
             // Add self to country?
-            country_node.get_or_emplace<components::CountryCityList>().city_list.push_back(node);
+            province_node.get_or_emplace<components::CountryCityList>().city_list.push_back(node);
 
         } else {
             SPDLOG_INFO("City {} has country {}, but it's undefined", identifier, values["country"].to_string());

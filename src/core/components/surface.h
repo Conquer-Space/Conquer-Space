@@ -27,6 +27,7 @@ namespace cqsp::core::components {
 /// </summary>
 struct Settlements {
     std::vector<entt::entity> settlements;
+    std::vector<entt::entity> provinces;
 };
 
 struct ProvincedPlanet {

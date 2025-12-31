@@ -42,7 +42,7 @@ void SysPlanetaryTrade::DoSystem() {
 
         p_market.trade.clear();
 
-        for (Node settlement_node : market_node.Convert(habitation.settlements)) {
+        for (Node settlement_node : market_node.Convert(habitation.provinces)) {
             auto& market = settlement_node.get<components::Market>();
 
             p_market.supply() += market.production;
@@ -59,7 +59,7 @@ void SysPlanetaryTrade::DoSystem() {
             DeterminePrice(p_market, good_node);
         }
         // Now we can compute the prices for the individual markets
-        for (Node settlement_node : market_node.Convert(habitation.settlements)) {
+        for (Node settlement_node : market_node.Convert(habitation.provinces)) {
             auto& market = settlement_node.get<components::Market>();
             auto& market_wallet = settlement_node.get_or_emplace<components::Wallet>();
             for (Node good_node : goodsview) {
