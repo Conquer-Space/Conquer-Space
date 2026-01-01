@@ -1,9 +1,4 @@
 {
-    moon_province_defs: {
-        path: province_def.csv
-        type: text
-        hints: {}
-    }
     moon_province_map_texture: {
         path: province_map.png
         type: texture

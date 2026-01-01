@@ -573,6 +573,7 @@ void SysProvinceInformation::SpacePortResourceTab() {
 }
 
 bool SysProvinceInformation::HasSpacePort(const entt::entity entity) {
+    // Check if it has child cities and if they have spaceports
     return GetUniverse().any_of<components::infrastructure::SpacePort>(entity);
 }
 }  // namespace cqsp::client::systems
