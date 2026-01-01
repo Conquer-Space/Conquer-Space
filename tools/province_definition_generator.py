@@ -1,3 +1,5 @@
+# This was a tool used to convert csv province definitions into a hjson file.
+# This is likely to be deprecated
 import csv
 import hjson
 
@@ -24,8 +26,7 @@ for row in csv_reader:
         }
     )
 
-# print(countries)
-# Now split into files and output the 
+# Now split into files by country and output the hjson
 # Now make the folders
 FOLDER = "binaries/data/core/data/planet_data/moon/map/provinces"
 for country, province_list in countries.items():
