@@ -105,6 +105,12 @@ void SysProvinceInformation::ProvinceView() {
             population += segment.population;
         }
     }
+    // Also add the population of the actual province
+    auto& settlement = GetUniverse().get<Settlement>(current_province);
+    for (auto& seg_entity : settlement.population) {
+        auto& segment = GetUniverse().get<PopulationSegment>(seg_entity);
+        population += segment.population;
+    }
     ImGui::TextFmt("Part of {}", GetName(GetUniverse(), city_list.country));
     ImGui::TextFmt("Population: {}", NumberToHumanString(population));
     ImGui::Separator();
@@ -183,7 +189,7 @@ void SysProvinceInformation::CityIndustryTabs() {
             InfrastructureTab();
             ImGui::EndTabItem();
         }
-        const bool has_spaceport = GetUniverse().any_of<components::infrastructure::SpacePort>(current_city);
+        const bool has_spaceport = HasSpacePort(current_city);
         if (!has_spaceport) {
             ImGui::BeginDisabled();
         }
@@ -564,5 +570,9 @@ void SysProvinceInformation::SpacePortResourceTab() {
         }
         ImGui::EndTable();
     }
+}
+
+bool SysProvinceInformation::HasSpacePort(const entt::entity entity) {
+    return GetUniverse().any_of<components::infrastructure::SpacePort>(entity);
 }
 }  // namespace cqsp::client::systems

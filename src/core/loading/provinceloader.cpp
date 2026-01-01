@@ -105,7 +105,7 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
         segment.labor_force = labor_force;
         pop_node.emplace<components::LaborInformation>();
         settlement.population.push_back(pop_node);
-        SPDLOG_WARN("City {} does not have any population", identifier);
+        SPDLOG_WARN("Province {} does not have any population", identifier);
     }
     //SPDLOG_INFO("Load Industry");
     node.emplace<components::ResourceLedger>();
@@ -138,10 +138,10 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
             province_node.get_or_emplace<components::CountryCityList>().city_list.push_back(node);
 
         } else {
-            SPDLOG_INFO("City {} has country {}, but it's undefined", identifier, values["country"].to_string());
+            SPDLOG_INFO("Province {} has country {}, but it's undefined", identifier, values["country"].to_string());
         }
     } else {
-        SPDLOG_WARN("City {} has no country", identifier);
+        SPDLOG_WARN("Province {} has no country", identifier);
     }
     //SPDLOG_INFO("Load Provinces");
     if (!values["province"].empty()) {
@@ -150,7 +150,7 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
             // Now add self to province
             province_node.get<components::Province>().cities.push_back(node);
         } else {
-            SPDLOG_WARN("City {} has province {}, but it's undefined", identifier, values["province"].to_string());
+            SPDLOG_WARN("Province {} has province {}, but it's undefined", identifier, values["province"].to_string());
         }
     }
 

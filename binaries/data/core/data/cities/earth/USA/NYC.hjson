@@ -9,20 +9,7 @@
         planet: earth
         country: usa
         timezone: EDT
-        population: [
-            {
-                size: 8000000
-                labor_force: 4000000
-            }
-        ]
         province: new_york
-        industry: [
-        ]
-        // Default transport costs
-        transport: 0.05
-        infrastructure: {
-            highway: 0.02
-        }
         connections: [
             wdc
         ]

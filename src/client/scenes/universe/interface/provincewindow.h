@@ -43,6 +43,7 @@ class SysProvinceInformation : public SysUserInterface {
     void InfrastructureTab();
     void IndustryListWindow();
     void DisplayWallet(entt::entity entity);
+    bool HasSpacePort(const entt::entity entity);
 
     template <typename T>
     void IndustryTabGenericChild(const std::string& tabname, const std::string& industryname, const ImVec2& size);

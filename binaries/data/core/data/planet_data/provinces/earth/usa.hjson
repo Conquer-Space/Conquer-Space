@@ -31,6 +31,21 @@
         ]
         country: usa
         planet: earth
+        population: [
+            {
+                size: 3251876
+            }
+        ]
+        industry: [
+            {
+                recipe: iron_mining
+                productivity: 60
+            }
+            {
+                recipe: coal_mining
+                productivity: 10
+            }
+        ]
     }
     {
         identifier: arkansas
@@ -53,6 +68,25 @@
         ]
         country: usa
         planet: earth
+        population: [
+            {
+                size: 3694820
+            }
+        ]
+        industry: [
+            {
+                recipe: furniture_manufacturing
+                productivity: 300
+            }
+            {
+                recipe: gasoline_production
+                productivity: 2000
+            }
+            {
+                recipe: oil_drilling
+                productivity: 2000
+            }
+        ]
     }
     {
         identifier: colorado
@@ -100,6 +134,7 @@
     }
     {
         identifier: florida_usa
+        name: Florida
         color:
         [
             115
@@ -397,6 +432,7 @@
     }
     {
         identifier: new_york
+        name: New York
         color:
         [
             72
@@ -405,6 +441,17 @@
         ]
         country: usa
         planet: earth
+        population: [
+            {
+                size: 8000000
+                labor_force: 4000000
+            }
+        ]
+                // Default transport costs
+        transport: 0.05
+        infrastructure: {
+            highway: 0.02
+        }
     }
     {
         identifier: north_carolina
@@ -672,6 +719,7 @@
     }
     {
         identifier: washington
+        name: Washington
         color:
         [
             72
@@ -680,9 +728,22 @@
         ]
         country: usa
         planet: earth
+        population: [
+            {
+                size: 563374
+            }
+        ]
+        industry: [
+            {
+                recipe: logging
+                productivity: 200
+            }
+        ]
     }
     {
         identifier: west_virginia
+        name: West Virginia
+        // take me home to where I belong~~~
         color:
         [
             242

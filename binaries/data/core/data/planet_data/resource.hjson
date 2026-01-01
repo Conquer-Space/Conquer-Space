@@ -1,6 +1,6 @@
 {
-    satellites: {
-        path: satellites/
+    provinces: {
+        path: provinces
         type: hjson
         hints: {
         }
