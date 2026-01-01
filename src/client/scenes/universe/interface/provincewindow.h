@@ -30,16 +30,15 @@ class SysProvinceInformation : public SysUserInterface {
 
  private:
     void ProvinceView();
-    void CityView();
 
-    void CityIndustryTabs();
+    void ProvinceIndustryTabs();
     void DemographicsTab();
     void IndustryTab();
     void SpacePortTab();
-    void SpacePortOrdersTab();
-    void SpacePortResourceTab();
-    void LaunchTab();
-    void DockedTab();
+    void SpacePortOrdersTab(const entt::entity city);
+    void SpacePortResourceTab(const entt::entity city);
+    void LaunchTab(const entt::entity city);
+    void DockedTab(const entt::entity city);
     void InfrastructureTab();
     void IndustryListWindow();
     void DisplayWallet(entt::entity entity);
