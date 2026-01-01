@@ -1,0 +1,288 @@
+[
+    {
+        identifier: amazonas_peru
+        color:
+        [
+            75
+            153
+            39
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: ancash
+        color:
+        [
+            100
+            227
+            249
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: apurimac
+        color:
+        [
+            198
+            226
+            86
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: arequipa
+        color:
+        [
+            100
+            156
+            170
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: ayacucho
+        color:
+        [
+            198
+            212
+            19
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: cajamarca
+        color:
+        [
+            75
+            181
+            173
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: callao
+        color:
+        [
+            100
+            213
+            182
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: cusco
+        color:
+        [
+            198
+            197
+            208
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: huancavelica
+        color:
+        [
+            198
+            240
+            153
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: huanuco
+        color:
+        [
+            199
+            13
+            31
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: ica
+        color:
+        [
+            100
+            170
+            237
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: junin
+        color:
+        [
+            199
+            41
+            165
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: la_libertad_peru
+        color:
+        [
+            100
+            242
+            60
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: lambayeque
+        color:
+        [
+            101
+            0
+            127
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: lima
+        color:
+        [
+            100
+            185
+            48
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: lima_province
+        color:
+        [
+            100
+            199
+            115
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: loreto
+        color:
+        [
+            75
+            96
+            27
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: madre_de_dios
+        color:
+        [
+            15
+            181
+            206
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: moquegua
+        color:
+        [
+            100
+            142
+            103
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: pasco
+        color:
+        [
+            199
+            27
+            98
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: piura
+        color:
+        [
+            75
+            238
+            185
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: puno
+        color:
+        [
+            76
+            96
+            209
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: san_martin
+        color:
+        [
+            198
+            254
+            220
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: tacna
+        color:
+        [
+            0
+            171
+            36
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: tumbes
+        color:
+        [
+            75
+            210
+            51
+        ]
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: ucayali
+        color:
+        [
+            76
+            25
+            130
+        ]
+        country: peru
+        planet: earth
+    }
+]

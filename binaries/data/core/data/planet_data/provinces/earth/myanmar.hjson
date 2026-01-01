@@ -1,0 +1,156 @@
+[
+    {
+        identifier: ayeyarwady
+        color:
+        [
+            121
+            86
+            6
+        ]
+        country: myanmar
+        planet: earth
+    }
+    {
+        identifier: bago
+        color:
+        [
+            121
+            114
+            140
+        ]
+        country: myanmar
+        planet: earth
+    }
+    {
+        identifier: chin
+        color:
+        [
+            36
+            225
+            66
+        ]
+        country: myanmar
+        planet: earth
+    }
+    {
+        identifier: kachin
+        color:
+        [
+            59
+            127
+            132
+        ]
+        country: myanmar
+        planet: earth
+    }
+    {
+        identifier: kayah
+        color:
+        [
+            59
+            255
+            223
+        ]
+        country: myanmar
+        planet: earth
+    }
+    {
+        identifier: kayin
+        color:
+        [
+            60
+            14
+            34
+        ]
+        country: myanmar
+        planet: earth
+    }
+    {
+        identifier: magway
+        color:
+        [
+            241
+            171
+            86
+        ]
+        country: myanmar
+        planet: earth
+    }
+    {
+        identifier: mandalay
+        color:
+        [
+            241
+            185
+            153
+        ]
+        country: myanmar
+        planet: earth
+    }
+    {
+        identifier: mon
+        color:
+        [
+            60
+            56
+            235
+        ]
+        country: myanmar
+        planet: earth
+    }
+    {
+        identifier: rakhine
+        color:
+        [
+            36
+            196
+            188
+        ]
+        country: myanmar
+        planet: earth
+    }
+    {
+        identifier: sagaing
+        color:
+        [
+            59
+            141
+            199
+        ]
+        country: myanmar
+        planet: earth
+    }
+    {
+        identifier: shan
+        color:
+        [
+            59
+            213
+            22
+        ]
+        country: myanmar
+        planet: earth
+    }
+    {
+        identifier: tanintharyi
+        color:
+        [
+            60
+            71
+            46
+        ]
+        country: myanmar
+        planet: earth
+    }
+    {
+        identifier: yangon
+        color:
+        [
+            121
+            100
+            73
+        ]
+        country: myanmar
+        planet: earth
+    }
+]

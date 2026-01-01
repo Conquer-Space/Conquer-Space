@@ -1,0 +1,90 @@
+[
+    {
+        identifier: azad_kashmir
+        color:
+        [
+            2
+            44
+            53
+        ]
+        country: pakistan
+        planet: earth
+    }
+    {
+        identifier: baluchistan
+        color:
+        [
+            79
+            155
+            255
+        ]
+        country: pakistan
+        planet: earth
+    }
+    {
+        identifier: f_a_t_a_
+        color:
+        [
+            79
+            70
+            109
+        ]
+        country: pakistan
+        planet: earth
+    }
+    {
+        identifier: f_c_t_
+        color:
+        [
+            199
+            141
+            122
+        ]
+        country: pakistan
+        planet: earth
+    }
+    {
+        identifier: k_p_
+        color:
+        [
+            79
+            56
+            42
+        ]
+        country: pakistan
+        planet: earth
+    }
+    {
+        identifier: northern_areas
+        color:
+        [
+            2
+            29
+            242
+        ]
+        country: pakistan
+        planet: earth
+    }
+    {
+        identifier: punjab_pakistan
+        color:
+        [
+            2
+            58
+            120
+        ]
+        country: pakistan
+        planet: earth
+    }
+    {
+        identifier: sind
+        color:
+        [
+            0
+            28
+            134
+        ]
+        country: pakistan
+        planet: earth
+    }
+]

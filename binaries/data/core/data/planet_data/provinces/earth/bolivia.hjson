@@ -1,0 +1,101 @@
+[
+    {
+        identifier: chuquisaca
+        color:
+        [
+            76
+            11
+            63
+        ]
+        country: bolivia
+        planet: earth
+    }
+    {
+        identifier: cochabamba
+        color:
+        [
+            212
+            193
+            129
+        ]
+        country: bolivia
+        planet: earth
+    }
+    {
+        identifier: el_beni
+        color:
+        [
+            76
+            68
+            75
+        ]
+        country: bolivia
+        planet: earth
+    }
+    {
+        identifier: la_paz_bolivia
+        color:
+        [
+            0
+            99
+            213
+        ]
+        country: bolivia
+        planet: earth
+    }
+    {
+        identifier: oruro
+        color:
+        [
+            0
+            114
+            24
+        ]
+        country: bolivia
+        planet: earth
+    }
+    {
+        identifier: pando
+        color:
+        [
+            76
+            39
+            197
+        ]
+        country: bolivia
+        planet: earth
+    }
+    {
+        identifier: potosi
+        color:
+        [
+            0
+            142
+            158
+        ]
+        country: bolivia
+        planet: earth
+    }
+    {
+        identifier: santa_cruz_bolivia
+        color:
+        [
+            44
+            17
+            5
+        ]
+        country: bolivia
+        planet: earth
+    }
+    {
+        identifier: tarija
+        color:
+        [
+            43
+            87
+            158
+        ]
+        country: bolivia
+        planet: earth
+    }
+]

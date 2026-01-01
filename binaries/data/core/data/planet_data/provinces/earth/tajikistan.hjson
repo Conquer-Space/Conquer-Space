@@ -1,0 +1,57 @@
+[
+    {
+        identifier: dushanbe
+        color:
+        [
+            250
+            120
+            176
+        ]
+        country: tajikistan
+        planet: earth
+    }
+    {
+        identifier: gorno-badakhshan
+        color:
+        [
+            19
+            27
+            197
+        ]
+        country: tajikistan
+        planet: earth
+    }
+    {
+        identifier: khatlon
+        color:
+        [
+            56
+            168
+            43
+        ]
+        country: tajikistan
+        planet: earth
+    }
+    {
+        identifier: leninabad
+        color:
+        [
+            5
+            203
+            56
+        ]
+        country: tajikistan
+        planet: earth
+    }
+    {
+        identifier: tadzhikistan_territories
+        color:
+        [
+            19
+            13
+            130
+        ]
+        country: tajikistan
+        planet: earth
+    }
+]

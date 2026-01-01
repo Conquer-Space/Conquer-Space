@@ -1,0 +1,112 @@
+[
+    {
+        identifier: brokopondo
+        color:
+        [
+            189
+            177
+            39
+        ]
+        country: suriname
+        planet: earth
+    }
+    {
+        identifier: commewijne
+        color:
+        [
+            106
+            75
+            92
+        ]
+        country: suriname
+        planet: earth
+    }
+    {
+        identifier: coronie
+        color:
+        [
+            106
+            18
+            80
+        ]
+        country: suriname
+        planet: earth
+    }
+    {
+        identifier: marowijne
+        color:
+        [
+            43
+            73
+            91
+        ]
+        country: suriname
+        planet: earth
+    }
+    {
+        identifier: nickerie
+        color:
+        [
+            43
+            59
+            24
+        ]
+        country: suriname
+        planet: earth
+    }
+    {
+        identifier: para_suriname
+        color:
+        [
+            189
+            162
+            228
+        ]
+        country: suriname
+        planet: earth
+    }
+    {
+        identifier: paramaribo
+        color:
+        [
+            106
+            61
+            25
+        ]
+        country: suriname
+        planet: earth
+    }
+    {
+        identifier: saramacca
+        color:
+        [
+            106
+            32
+            147
+        ]
+        country: suriname
+        planet: earth
+    }
+    {
+        identifier: sipaliwini
+        color:
+        [
+            2
+            229
+            156
+        ]
+        country: suriname
+        planet: earth
+    }
+    {
+        identifier: wanica
+        color:
+        [
+            106
+            46
+            214
+        ]
+        country: suriname
+        planet: earth
+    }
+]

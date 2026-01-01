@@ -73,4 +73,4 @@ if __name__ == "__main__":
     with open("satellites.txt", "r") as file:
         lines = file.readlines()
         satellites = [parse_tle(lines[k:k+3]) for k in range(0, len(lines), 3)]
-        print(hjson.dumps(satellites))
+        print(hjson.dumps(satellites, indent=4))

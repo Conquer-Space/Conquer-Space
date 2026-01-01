@@ -1,0 +1,1245 @@
+[
+    {
+        identifier: adazi
+        color:
+        [
+            252
+            122
+            28
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: aglonas
+        color:
+        [
+            201
+            214
+            53
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: aizkraukles
+        color:
+        [
+            203
+            87
+            70
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: aizputes
+        color:
+        [
+            203
+            229
+            228
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: aknistes
+        color:
+        [
+            9
+            120
+            126
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: alojas
+        color:
+        [
+            7
+            190
+            97
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: alsungas
+        color:
+        [
+            204
+            2
+            106
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: aluksne
+        color:
+        [
+            8
+            34
+            54
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: amatas
+        color:
+        [
+            202
+            186
+            101
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: apes
+        color:
+        [
+            8
+            5
+            176
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: auces
+        color:
+        [
+            9
+            49
+            47
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: babites
+        color:
+        [
+            202
+            0
+            254
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: baldones
+        color:
+        [
+            203
+            15
+            247
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: baltinavas
+        color:
+        [
+            8
+            76
+            255
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: balvu
+        color:
+        [
+            201
+            14
+            139
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: bauska
+        color:
+        [
+            9
+            63
+            114
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: beverinas
+        color:
+        [
+            201
+            43
+            17
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: brocenu
+        color:
+        [
+            204
+            87
+            252
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: burtnieku
+        color:
+        [
+            201
+            57
+            84
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: carnikavas
+        color:
+        [
+            132
+            136
+            161
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: cesu
+        color:
+        [
+            252
+            150
+            162
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: cesvaines
+        color:
+        [
+            202
+            214
+            235
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: ciblas
+        color:
+        [
+            8
+            105
+            133
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: dagdas
+        color:
+        [
+            53
+            137
+            131
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: daugavpils_latvia
+        color:
+        [
+            9
+            149
+            4
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: daugavpils_latvia_2
+        color:
+        [
+            243
+            129
+            249
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: dobele
+        color:
+        [
+            204
+            59
+            118
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: dundagas
+        color:
+        [
+            132
+            36
+            204
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: durbes
+        color:
+        [
+            252
+            93
+            150
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: engures
+        color:
+        [
+            132
+            93
+            216
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: erglu
+        color:
+        [
+            202
+            200
+            168
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: garkalnes
+        color:
+        [
+            202
+            15
+            65
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: grobinas
+        color:
+        [
+            131
+            235
+            192
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: gulbene
+        color:
+        [
+            201
+            171
+            108
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: iecavas
+        color:
+        [
+            203
+            44
+            125
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: ikskiles
+        color:
+        [
+            203
+            1
+            180
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: ilukstes
+        color:
+        [
+            9
+            134
+            193
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: incukalna
+        color:
+        [
+            252
+            107
+            217
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: jaunjelgavas
+        color:
+        [
+            203
+            130
+            15
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: jaunpiebalgas
+        color:
+        [
+            201
+            199
+            242
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: jaunpils
+        color:
+        [
+            204
+            73
+            185
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: jekabpils
+        color:
+        [
+            203
+            187
+            27
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: jelgava_latvia
+        color:
+        [
+            9
+            91
+            248
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: jelgava_latvia_2
+        color:
+        [
+            243
+            115
+            182
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: kandavas
+        color:
+        [
+            204
+            30
+            240
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: karsavas
+        color:
+        [
+            8
+            91
+            66
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: keguma
+        color:
+        [
+            203
+            30
+            58
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: kekavas
+        color:
+        [
+            202
+            29
+            132
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: kocenu
+        color:
+        [
+            201
+            71
+            151
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: kokneses
+        color:
+        [
+            203
+            73
+            3
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: kraslavas
+        color:
+        [
+            53
+            151
+            198
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: krimuldas
+        color:
+        [
+            201
+            157
+            41
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: krustpils
+        color:
+        [
+            203
+            201
+            94
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: kuldigas
+        color:
+        [
+            203
+            244
+            39
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: lielvardes
+        color:
+        [
+            203
+            115
+            204
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: liepaja
+        color:
+        [
+            131
+            221
+            125
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: ligatnes
+        color:
+        [
+            252
+            164
+            229
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: limbazi
+        color:
+        [
+            132
+            165
+            39
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: livanu
+        color:
+        [
+            203
+            158
+            149
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: lubanas
+        color:
+        [
+            202
+            157
+            223
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: ludzas
+        color:
+        [
+            8
+            119
+            200
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: madona
+        color:
+        [
+            202
+            143
+            156
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: malpils
+        color:
+        [
+            202
+            115
+            22
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: marupes
+        color:
+        [
+            202
+            43
+            199
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: mazsalacas
+        color:
+        [
+            7
+            161
+            219
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: mersraga
+        color:
+        [
+            132
+            79
+            149
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: nauksenu
+        color:
+        [
+            7
+            218
+            231
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: neretas
+        color:
+        [
+            8
+            162
+            145
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: nicas
+        color:
+        [
+            131
+            207
+            58
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: ogre
+        color:
+        [
+            202
+            229
+            46
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: olaines
+        color:
+        [
+            202
+            58
+            10
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: ozolnieku
+        color:
+        [
+            204
+            102
+            63
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: pargaujas
+        color:
+        [
+            201
+            142
+            230
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: pavilostas
+        color:
+        [
+            131
+            250
+            3
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: plavinu
+        color:
+        [
+            203
+            58
+            192
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: preilu
+        color:
+        [
+            203
+            144
+            82
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: priekules
+        color:
+        [
+            9
+            6
+            102
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: priekulu
+        color:
+        [
+            201
+            128
+            163
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: raunas
+        color:
+        [
+            201
+            114
+            96
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: rezeknes
+        color:
+        [
+            201
+            85
+            218
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: riebinu
+        color:
+        [
+            201
+            228
+            120
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: riga
+        color:
+        [
+            132
+            122
+            94
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: rojas
+        color:
+        [
+            132
+            51
+            15
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: ropazu
+        color:
+        [
+            202
+            243
+            113
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: rucavas
+        color:
+        [
+            8
+            248
+            35
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: rugaju
+        color:
+        [
+            201
+            185
+            175
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: rujienas
+        color:
+        [
+            7
+            147
+            152
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: rundales
+        color:
+        [
+            9
+            106
+            59
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: salacgrivas
+        color:
+        [
+            7
+            233
+            42
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: salas
+        color:
+        [
+            203
+            215
+            161
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: salaspils
+        color:
+        [
+            202
+            72
+            77
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: saldus
+        color:
+        [
+            8
+            219
+            157
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: sejas
+        color:
+        [
+            202
+            100
+            211
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: siguldas
+        color:
+        [
+            202
+            129
+            89
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: skriveru
+        color:
+        [
+            203
+            101
+            137
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: skrundas
+        color:
+        [
+            204
+            16
+            173
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: smiltenes
+        color:
+        [
+            201
+            0
+            72
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: strencu
+        color:
+        [
+            201
+            28
+            206
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: talsi
+        color:
+        [
+            132
+            65
+            82
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: tervetes
+        color:
+        [
+            9
+            77
+            181
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: tukums
+        color:
+        [
+            204
+            45
+            51
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: vainodes
+        color:
+        [
+            9
+            20
+            169
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: valkas
+        color:
+        [
+            8
+            19
+            243
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: valmiera
+        color:
+        [
+            252
+            136
+            95
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: varaklanu
+        color:
+        [
+            202
+            172
+            34
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: varkavas
+        color:
+        [
+            203
+            172
+            216
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: vecpiebalgas
+        color:
+        [
+            201
+            100
+            29
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: vecumnieku
+        color:
+        [
+            8
+            191
+            23
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: ventspils
+        color:
+        [
+            132
+            8
+            70
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: viesites
+        color:
+        [
+            8
+            176
+            212
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: vilakas
+        color:
+        [
+            8
+            62
+            188
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: vilanu
+        color:
+        [
+            201
+            242
+            187
+        ]
+        country: latvia
+        planet: earth
+    }
+    {
+        identifier: zilupes
+        color:
+        [
+            8
+            134
+            11
+        ]
+        country: latvia
+        planet: earth
+    }
+]

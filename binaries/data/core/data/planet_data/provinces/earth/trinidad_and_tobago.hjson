@@ -1,0 +1,112 @@
+[
+    {
+        identifier: diego_martin
+        color:
+        [
+            142
+            186
+            134
+        ]
+        country: trinidad_and_tobago
+        planet: earth
+    }
+    {
+        identifier: eastern_tobago
+        color:
+        [
+            143
+            101
+            170
+        ]
+        country: trinidad_and_tobago
+        planet: earth
+    }
+    {
+        identifier: penal-debe
+        color:
+        [
+            143
+            1
+            213
+        ]
+        country: trinidad_and_tobago
+        planet: earth
+    }
+    {
+        identifier: princes_town
+        color:
+        [
+            143
+            44
+            158
+        ]
+        country: trinidad_and_tobago
+        planet: earth
+    }
+    {
+        identifier: rio_claro-mayaro
+        color:
+        [
+            143
+            58
+            225
+        ]
+        country: trinidad_and_tobago
+        planet: earth
+    }
+    {
+        identifier: san_juan-laventille
+        color:
+        [
+            142
+            172
+            67
+        ]
+        country: trinidad_and_tobago
+        planet: earth
+    }
+    {
+        identifier: sangre_grande
+        color:
+        [
+            143
+            73
+            36
+        ]
+        country: trinidad_and_tobago
+        planet: earth
+    }
+    {
+        identifier: siparia
+        color:
+        [
+            143
+            16
+            24
+        ]
+        country: trinidad_and_tobago
+        planet: earth
+    }
+    {
+        identifier: tunapuna_piarco
+        color:
+        [
+            142
+            158
+            0
+        ]
+        country: trinidad_and_tobago
+        planet: earth
+    }
+    {
+        identifier: western_tobago
+        color:
+        [
+            143
+            115
+            237
+        ]
+        country: trinidad_and_tobago
+        planet: earth
+    }
+]

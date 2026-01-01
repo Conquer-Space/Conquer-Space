@@ -1,0 +1,1223 @@
+[
+    {
+        identifier: agrigento
+        color:
+        [
+            159
+            184
+            89
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: alessandria
+        color:
+        [
+            246
+            117
+            216
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: ancona
+        color:
+        [
+            136
+            225
+            11
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: aoste
+        color:
+        [
+            22
+            72
+            176
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: arezzo
+        color:
+        [
+            246
+            32
+            70
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: ascoli_piceno
+        color:
+        [
+            137
+            11
+            212
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: asti
+        color:
+        [
+            245
+            145
+            168
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: avellino
+        color:
+        [
+            247
+            61
+            130
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: bari_italy
+        color:
+        [
+            137
+            111
+            169
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: barletta-andria_trani
+        color:
+        [
+            137
+            97
+            102
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: belluno
+        color:
+        [
+            35
+            39
+            37
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: benevento
+        color:
+        [
+            245
+            131
+            101
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: bergamo
+        color:
+        [
+            245
+            159
+            235
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: biella
+        color:
+        [
+            247
+            118
+            142
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: bologna
+        color:
+        [
+            246
+            246
+            51
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: bozen
+        color:
+        [
+            22
+            186
+            200
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: brescia
+        color:
+        [
+            245
+            174
+            46
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: brindisi
+        color:
+        [
+            137
+            125
+            236
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: cagliari
+        color:
+        [
+            160
+            99
+            125
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: caltanissetta
+        color:
+        [
+            159
+            198
+            156
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: campobasso
+        color:
+        [
+            137
+            68
+            224
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: carbonia-iglesias
+        color:
+        [
+            160
+            13
+            235
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: caserta
+        color:
+        [
+            138
+            41
+            16
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: catania
+        color:
+        [
+            159
+            241
+            101
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: catanzaro
+        color:
+        [
+            137
+            211
+            126
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: chieti
+        color:
+        [
+            137
+            54
+            157
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: como
+        color:
+        [
+            22
+            143
+            255
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: cosenza
+        color:
+        [
+            137
+            182
+            248
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: cremona
+        color:
+        [
+            245
+            188
+            113
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: crotene
+        color:
+        [
+            137
+            197
+            59
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: cuneo
+        color:
+        [
+            24
+            188
+            52
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: enna
+        color:
+        [
+            245
+            117
+            34
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: fermo
+        color:
+        [
+            136
+            253
+            145
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: ferrara
+        color:
+        [
+            136
+            182
+            66
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: firenze
+        color:
+        [
+            246
+            46
+            137
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: foggia
+        color:
+        [
+            137
+            83
+            35
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: forli-cesena
+        color:
+        [
+            136
+            210
+            200
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: frosinone
+        color:
+        [
+            247
+            47
+            63
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: genova
+        color:
+        [
+            138
+            183
+            174
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: gorizia
+        color:
+        [
+            35
+            210
+            73
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: grosseto
+        color:
+        [
+            138
+            98
+            28
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: imperia
+        color:
+        [
+            24
+            159
+            174
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: isernia
+        color:
+        [
+            247
+            104
+            75
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: kanal
+        color:
+        [
+            35
+            181
+            195
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: l'aquila
+        color:
+        [
+            247
+            75
+            197
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: la_spezia
+        color:
+        [
+            138
+            169
+            107
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: latina
+        color:
+        [
+            138
+            55
+            83
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: lecce
+        color:
+        [
+            137
+            140
+            47
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: lecco
+        color:
+        [
+            245
+            231
+            58
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: livorno
+        color:
+        [
+            138
+            112
+            95
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: lodi
+        color:
+        [
+            246
+            3
+            192
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: lucca
+        color:
+        [
+            138
+            140
+            229
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: macerata
+        color:
+        [
+            136
+            239
+            78
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: mantova
+        color:
+        [
+            245
+            202
+            180
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: massa-carrara
+        color:
+        [
+            138
+            155
+            40
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: matera
+        color:
+        [
+            137
+            168
+            181
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: medio_campidano
+        color:
+        [
+            160
+            85
+            58
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: messina
+        color:
+        [
+            159
+            155
+            211
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: milano
+        color:
+        [
+            245
+            216
+            247
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: modena
+        color:
+        [
+            246
+            231
+            240
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: monza_e_brianza
+        color:
+        [
+            245
+            245
+            125
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: napoli
+        color:
+        [
+            138
+            26
+            205
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: novara
+        color:
+        [
+            246
+            103
+            149
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: nuoro
+        color:
+        [
+            160
+            42
+            113
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: ogliastra
+        color:
+        [
+            160
+            113
+            192
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: olbia-tempio
+        color:
+        [
+            160
+            56
+            180
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: oristrano
+        color:
+        [
+            160
+            70
+            247
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: padova
+        color:
+        [
+            136
+            153
+            188
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: palermo
+        color:
+        [
+            159
+            170
+            22
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: parma
+        color:
+        [
+            246
+            203
+            106
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: pavia
+        color:
+        [
+            246
+            75
+            15
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: perugia
+        color:
+        [
+            247
+            32
+            252
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: pesaro_e_urbino
+        color:
+        [
+            33
+            80
+            130
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: pescara
+        color:
+        [
+            137
+            40
+            90
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: piacenza
+        color:
+        [
+            246
+            189
+            39
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: pisa
+        color:
+        [
+            138
+            126
+            162
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: pistoia
+        color:
+        [
+            247
+            4
+            118
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: pordenone
+        color:
+        [
+            247
+            90
+            8
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: potenza
+        color:
+        [
+            137
+            254
+            71
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: prato
+        color:
+        [
+            247
+            132
+            209
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: ragusa
+        color:
+        [
+            159
+            212
+            223
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: ravenna
+        color:
+        [
+            136
+            196
+            133
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: reggio_calabria
+        color:
+        [
+            137
+            225
+            193
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: reggio_emilia
+        color:
+        [
+            246
+            217
+            173
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: rieti
+        color:
+        [
+            246
+            89
+            82
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: rimini
+        color:
+        [
+            33
+            37
+            185
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: roma
+        color:
+        [
+            138
+            69
+            150
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: rovigo
+        color:
+        [
+            136
+            167
+            255
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: salerno
+        color:
+        [
+            138
+            12
+            138
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: sassari
+        color:
+        [
+            160
+            28
+            46
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: savoie
+        color:
+        [
+            24
+            245
+            64
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: savona
+        color:
+        [
+            138
+            197
+            241
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: siena
+        color:
+        [
+            246
+            18
+            3
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: siracusa
+        color:
+        [
+            159
+            227
+            34
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: sondrio
+        color:
+        [
+            22
+            172
+            133
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: taranto
+        color:
+        [
+            137
+            154
+            114
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: teramo
+        color:
+        [
+            137
+            26
+            23
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: terni
+        color:
+        [
+            247
+            18
+            185
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: trapani
+        color:
+        [
+            159
+            98
+            199
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: trento
+        color:
+        [
+            246
+            132
+            27
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: treviso
+        color:
+        [
+            246
+            174
+            228
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: turin
+        color:
+        [
+            24
+            230
+            253
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: udine
+        color:
+        [
+            35
+            67
+            171
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: varese
+        color:
+        [
+            22
+            129
+            188
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: venezia
+        color:
+        [
+            136
+            139
+            121
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: verbano-cusio-ossola
+        color:
+        [
+            22
+            101
+            54
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: vercelli
+        color:
+        [
+            246
+            60
+            204
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: verona
+        color:
+        [
+            246
+            160
+            161
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: vibo_valentia
+        color:
+        [
+            137
+            240
+            4
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: vicenza
+        color:
+        [
+            246
+            146
+            94
+        ]
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: viterbo
+        color:
+        [
+            138
+            83
+            217
+        ]
+        country: italy
+        planet: earth
+    }
+]

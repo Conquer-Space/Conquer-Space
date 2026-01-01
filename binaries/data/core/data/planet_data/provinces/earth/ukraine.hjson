@@ -1,0 +1,277 @@
+[
+    {
+        identifier: cherkasy
+        color:
+        [
+            179
+            127
+            66
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: chernihiv
+        color:
+        [
+            4
+            116
+            240
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: chernivtsi
+        color:
+        [
+            52
+            65
+            126
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: dnipropetrovs'k
+        color:
+        [
+            179
+            112
+            255
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: donets'k
+        color:
+        [
+            54
+            81
+            45
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: ivano-frankivs'k
+        color:
+        [
+            52
+            108
+            71
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: kharkiv
+        color:
+        [
+            54
+            24
+            33
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: kherson
+        color:
+        [
+            94
+            95
+            90
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: khmel'nyts'kyy
+        color:
+        [
+            179
+            84
+            121
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: kiev
+        color:
+        [
+            4
+            202
+            130
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: kiev_city
+        color:
+        [
+            243
+            15
+            225
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: kirovohrad
+        color:
+        [
+            179
+            141
+            133
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: l'viv
+        color:
+        [
+            53
+            123
+            64
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: luhans'k
+        color:
+        [
+            54
+            38
+            100
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: mykolayiv
+        color:
+        [
+            126
+            132
+            93
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: odessa
+        color:
+        [
+            52
+            122
+            138
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: poltava
+        color:
+        [
+            179
+            70
+            54
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: rivne
+        color:
+        [
+            4
+            173
+            252
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: sumy
+        color:
+        [
+            53
+            237
+            88
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: ternopil'
+        color:
+        [
+            179
+            98
+            188
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: transcarpathia
+        color:
+        [
+            19
+            184
+            166
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: vinnytsya
+        color:
+        [
+            52
+            165
+            83
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: volyn
+        color:
+        [
+            4
+            145
+            118
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: zaporizhzhya
+        color:
+        [
+            126
+            103
+            215
+        ]
+        country: ukraine
+        planet: earth
+    }
+    {
+        identifier: zhytomyr
+        color:
+        [
+            4
+            188
+            63
+        ]
+        country: ukraine
+        planet: earth
+    }
+]

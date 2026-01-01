@@ -1,0 +1,266 @@
+[
+    {
+        identifier: amazonas_venezuela
+        color:
+        [
+            75
+            252
+            252
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: anzoategui
+        color:
+        [
+            105
+            174
+            123
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: apure
+        color:
+        [
+            77
+            225
+            226
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: aragua
+        color:
+        [
+            105
+            131
+            178
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: barinas
+        color:
+        [
+            179
+            27
+            109
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: bolivar_venezuela
+        color:
+        [
+            75
+            24
+            204
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: carabobo
+        color:
+        [
+            105
+            117
+            111
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: cojedes
+        color:
+        [
+            178
+            254
+            231
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: delta_amacuro
+        color:
+        [
+            75
+            10
+            137
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: distrito_capital
+        color:
+        [
+            179
+            13
+            42
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: falcon
+        color:
+        [
+            105
+            88
+            233
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: guarico
+        color:
+        [
+            178
+            240
+            164
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: lara
+        color:
+        [
+            179
+            41
+            176
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: merida
+        color:
+        [
+            105
+            60
+            99
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: miranda
+        color:
+        [
+            105
+            160
+            56
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: monagas
+        color:
+        [
+            105
+            203
+            1
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: nueva_esparta
+        color:
+        [
+            142
+            143
+            189
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: portuguesa
+        color:
+        [
+            179
+            55
+            243
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: sucre_venezuela
+        color:
+        [
+            105
+            188
+            190
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: tachira
+        color:
+        [
+            77
+            211
+            159
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: trujillo
+        color:
+        [
+            105
+            74
+            166
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: vargas
+        color:
+        [
+            105
+            145
+            245
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: yaracuy
+        color:
+        [
+            105
+            103
+            44
+        ]
+        country: venezuela
+        planet: earth
+    }
+    {
+        identifier: zulia
+        color:
+        [
+            77
+            154
+            147
+        ]
+        country: venezuela
+        planet: earth
+    }
+]

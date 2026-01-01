@@ -1,0 +1,68 @@
+[
+    {
+        identifier: banjul
+        color:
+        [
+            109
+            77
+            126
+        ]
+        country: gambia
+        planet: earth
+    }
+    {
+        identifier: central_river
+        color:
+        [
+            87
+            147
+            108
+        ]
+        country: gambia
+        planet: earth
+    }
+    {
+        identifier: lower_river
+        color:
+        [
+            87
+            218
+            187
+        ]
+        country: gambia
+        planet: earth
+    }
+    {
+        identifier: north_bank
+        color:
+        [
+            87
+            175
+            242
+        ]
+        country: gambia
+        planet: earth
+    }
+    {
+        identifier: upper_river
+        color:
+        [
+            87
+            204
+            120
+        ]
+        country: gambia
+        planet: earth
+    }
+    {
+        identifier: west_coast_gambia
+        color:
+        [
+            87
+            247
+            65
+        ]
+        country: gambia
+        planet: earth
+    }
+]

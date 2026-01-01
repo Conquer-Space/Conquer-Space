@@ -1,0 +1,244 @@
+[
+    {
+        identifier: alta_verapaz
+        color:
+        [
+            74
+            38
+            89
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: baja_verapaz
+        color:
+        [
+            207
+            189
+            243
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: chimaltenango
+        color:
+        [
+            207
+            90
+            30
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: chiquimula
+        color:
+        [
+            34
+            166
+            202
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: el_progreso
+        color:
+        [
+            207
+            147
+            42
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: escuintla
+        color:
+        [
+            117
+            11
+            223
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: guatemala
+        color:
+        [
+            207
+            118
+            164
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: huehuetenango
+        color:
+        [
+            74
+            9
+            211
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: izabal
+        color:
+        [
+            74
+            81
+            34
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: jalapa
+        color:
+        [
+            207
+            132
+            231
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: jutiapa
+        color:
+        [
+            34
+            138
+            68
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: peten
+        color:
+        [
+            73
+            151
+            187
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: quezaltenango
+        color:
+        [
+            207
+            175
+            176
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: quiche
+        color:
+        [
+            74
+            24
+            22
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: retalhuleu
+        color:
+        [
+            116
+            239
+            89
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: sacatepequez
+        color:
+        [
+            207
+            104
+            97
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: san_marcos
+        color:
+        [
+            73
+            251
+            144
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: santa_rosa
+        color:
+        [
+            117
+            26
+            34
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: solola
+        color:
+        [
+            207
+            161
+            109
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: suchitepequez
+        color:
+        [
+            116
+            253
+            156
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: totonicapan
+        color:
+        [
+            207
+            204
+            54
+        ]
+        country: guatemala
+        planet: earth
+    }
+    {
+        identifier: zacapa
+        color:
+        [
+            74
+            138
+            46
+        ]
+        country: guatemala
+        planet: earth
+    }
+]

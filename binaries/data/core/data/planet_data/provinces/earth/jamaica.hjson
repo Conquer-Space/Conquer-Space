@@ -1,0 +1,156 @@
+[
+    {
+        identifier: clarendon
+        color:
+        [
+            149
+            34
+            159
+        ]
+        country: jamaica
+        planet: earth
+    }
+    {
+        identifier: hanover
+        color:
+        [
+            148
+            233
+            147
+        ]
+        country: jamaica
+        planet: earth
+    }
+    {
+        identifier: kingston
+        color:
+        [
+            149
+            77
+            104
+        ]
+        country: jamaica
+        planet: earth
+    }
+    {
+        identifier: manchester_jamaica
+        color:
+        [
+            149
+            20
+            92
+        ]
+        country: jamaica
+        planet: earth
+    }
+    {
+        identifier: portland
+        color:
+        [
+            149
+            105
+            238
+        ]
+        country: jamaica
+        planet: earth
+    }
+    {
+        identifier: saint_andrew_jamaica
+        color:
+        [
+            149
+            63
+            37
+        ]
+        country: jamaica
+        planet: earth
+    }
+    {
+        identifier: saint_ann
+        color:
+        [
+            148
+            190
+            202
+        ]
+        country: jamaica
+        planet: earth
+    }
+    {
+        identifier: saint_catherine
+        color:
+        [
+            149
+            48
+            226
+        ]
+        country: jamaica
+        planet: earth
+    }
+    {
+        identifier: saint_elizabeth
+        color:
+        [
+            149
+            6
+            25
+        ]
+        country: jamaica
+        planet: earth
+    }
+    {
+        identifier: saint_james_jamaica
+        color:
+        [
+            148
+            219
+            80
+        ]
+        country: jamaica
+        planet: earth
+    }
+    {
+        identifier: saint_mary_jamaica
+        color:
+        [
+            149
+            120
+            49
+        ]
+        country: jamaica
+        planet: earth
+    }
+    {
+        identifier: saint_thomas_jamaica
+        color:
+        [
+            149
+            91
+            171
+        ]
+        country: jamaica
+        planet: earth
+    }
+    {
+        identifier: trelawny
+        color:
+        [
+            148
+            205
+            13
+        ]
+        country: jamaica
+        planet: earth
+    }
+    {
+        identifier: westmoreland
+        color:
+        [
+            148
+            247
+            214
+        ]
+        country: jamaica
+        planet: earth
+    }
+]

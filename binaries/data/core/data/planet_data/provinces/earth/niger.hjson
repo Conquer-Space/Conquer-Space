@@ -1,0 +1,90 @@
+[
+    {
+        identifier: agadez
+        color:
+        [
+            82
+            86
+            210
+        ]
+        country: niger
+        planet: earth
+    }
+    {
+        identifier: diffa
+        color:
+        [
+            67
+            61
+            229
+        ]
+        country: niger
+        planet: earth
+    }
+    {
+        identifier: dosso
+        color:
+        [
+            67
+            47
+            162
+        ]
+        country: niger
+        planet: earth
+    }
+    {
+        identifier: maradi
+        color:
+        [
+            67
+            76
+            40
+        ]
+        country: niger
+        planet: earth
+    }
+    {
+        identifier: niamey
+        color:
+        [
+            243
+            158
+            127
+        ]
+        country: niger
+        planet: earth
+    }
+    {
+        identifier: tahoua
+        color:
+        [
+            67
+            33
+            95
+        ]
+        country: niger
+        planet: earth
+    }
+    {
+        identifier: tillaberi
+        color:
+        [
+            67
+            161
+            186
+        ]
+        country: niger
+        planet: earth
+    }
+    {
+        identifier: zinder
+        color:
+        [
+            67
+            118
+            241
+        ]
+        country: niger
+        planet: earth
+    }
+]

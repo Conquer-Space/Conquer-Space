@@ -1,0 +1,112 @@
+[
+    {
+        identifier: agneby
+        color:
+        [
+            205
+            160
+            1
+        ]
+        country: cote_d'ivoire
+        planet: earth
+    }
+    {
+        identifier: fromager
+        color:
+        [
+            205
+            202
+            202
+        ]
+        country: cote_d'ivoire
+        planet: earth
+    }
+    {
+        identifier: haut-sassandra
+        color:
+        [
+            205
+            145
+            190
+        ]
+        country: cote_d'ivoire
+        planet: earth
+    }
+    {
+        identifier: lacs
+        color:
+        [
+            205
+            231
+            80
+        ]
+        country: cote_d'ivoire
+        planet: earth
+    }
+    {
+        identifier: marahoue
+        color:
+        [
+            205
+            188
+            135
+        ]
+        country: cote_d'ivoire
+        planet: earth
+    }
+    {
+        identifier: n'zi-comoe
+        color:
+        [
+            205
+            174
+            68
+        ]
+        country: cote_d'ivoire
+        planet: earth
+    }
+    {
+        identifier: savanes_cote_d'ivoire
+        color:
+        [
+            68
+            162
+            112
+        ]
+        country: cote_d'ivoire
+        planet: earth
+    }
+    {
+        identifier: vallee_du_bandama
+        color:
+        [
+            205
+            217
+            13
+        ]
+        country: cote_d'ivoire
+        planet: earth
+    }
+    {
+        identifier: worodougou
+        color:
+        [
+            205
+            245
+            147
+        ]
+        country: cote_d'ivoire
+        planet: earth
+    }
+    {
+        identifier: zanzan
+        color:
+        [
+            68
+            76
+            222
+        ]
+        country: cote_d'ivoire
+        planet: earth
+    }
+]

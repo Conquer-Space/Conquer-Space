@@ -1,0 +1,189 @@
+[
+    {
+        identifier: almaty
+        color:
+        [
+            5
+            188
+            245
+        ]
+        country: baikonur
+        planet: earth
+    }
+    {
+        identifier: almaty_city
+        color:
+        [
+            243
+            44
+            103
+        ]
+        country: baikonur
+        planet: earth
+    }
+    {
+        identifier: aqmola
+        color:
+        [
+            237
+            154
+            59
+        ]
+        country: baikonur
+        planet: earth
+    }
+    {
+        identifier: aqtobe
+        color:
+        [
+            78
+            141
+            6
+        ]
+        country: baikonur
+        planet: earth
+    }
+    {
+        identifier: astana
+        color:
+        [
+            243
+            58
+            170
+        ]
+        country: baikonur
+        planet: earth
+    }
+    {
+        identifier: atyrau
+        color:
+        [
+            80
+            170
+            248
+        ]
+        country: baikonur
+        planet: earth
+    }
+    {
+        identifier: baykonur_lease_in_qyzylorda
+        color:
+        [
+            93
+            180
+            54
+        ]
+        country: baikonur
+        planet: earth
+    }
+    {
+        identifier: east_kazakhstan
+        color:
+        [
+            5
+            174
+            178
+        ]
+        country: baikonur
+        planet: earth
+    }
+    {
+        identifier: mangghystau
+        color:
+        [
+            78
+            98
+            61
+        ]
+        country: baikonur
+        planet: earth
+    }
+    {
+        identifier: north_kazakhstan
+        color:
+        [
+            79
+            227
+            78
+        ]
+        country: baikonur
+        planet: earth
+    }
+    {
+        identifier: pavlodar
+        color:
+        [
+            80
+            42
+            157
+        ]
+        country: baikonur
+        planet: earth
+    }
+    {
+        identifier: qaraghandy
+        color:
+        [
+            237
+            168
+            126
+        ]
+        country: baikonur
+        planet: earth
+    }
+    {
+        identifier: qostanay
+        color:
+        [
+            80
+            28
+            90
+        ]
+        country: baikonur
+        planet: earth
+    }
+    {
+        identifier: qyzylorda
+        color:
+        [
+            78
+            112
+            128
+        ]
+        country: baikonur
+        planet: earth
+    }
+    {
+        identifier: south_kazakhstan
+        color:
+        [
+            15
+            67
+            182
+        ]
+        country: baikonur
+        planet: earth
+    }
+    {
+        identifier: west_kazakhstan
+        color:
+        [
+            80
+            113
+            236
+        ]
+        country: baikonur
+        planet: earth
+    }
+    {
+        identifier: zhambyl
+        color:
+        [
+            15
+            24
+            237
+        ]
+        country: baikonur
+        planet: earth
+    }
+]

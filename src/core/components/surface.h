@@ -22,15 +22,12 @@
 #include <entt/entt.hpp>
 
 namespace cqsp::core::components {
-struct Surface {
-    int64_t seed;
-};
-
 /// <summary>
-/// If people are living on a planet or not
+/// The list of cities and settlements that are on a city
 /// </summary>
-struct Habitation {
+struct Settlements {
     std::vector<entt::entity> settlements;
+    std::vector<entt::entity> provinces;
 };
 
 struct ProvincedPlanet {
@@ -47,6 +44,8 @@ struct ProvincedPlanet {
 /// </summary>
 struct Settlement {
     std::vector<entt::entity> population;
+    // Infrastructure and other things
+    // we might need air supply and other things like that
 };
 
 struct TimeZone {

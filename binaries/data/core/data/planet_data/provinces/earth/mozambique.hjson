@@ -1,0 +1,123 @@
+[
+    {
+        identifier: cabo_delgado
+        color:
+        [
+            71
+            164
+            146
+        ]
+        country: mozambique
+        planet: earth
+    }
+    {
+        identifier: gaza
+        color:
+        [
+            86
+            246
+            139
+        ]
+        country: mozambique
+        planet: earth
+    }
+    {
+        identifier: inhambane
+        color:
+        [
+            98
+            155
+            62
+        ]
+        country: mozambique
+        planet: earth
+    }
+    {
+        identifier: manica
+        color:
+        [
+            86
+            218
+            5
+        ]
+        country: mozambique
+        planet: earth
+    }
+    {
+        identifier: maputo_mozambique
+        color:
+        [
+            36
+            54
+            30
+        ]
+        country: mozambique
+        planet: earth
+    }
+    {
+        identifier: maputo_mozambique_2
+        color:
+        [
+            98
+            140
+            251
+        ]
+        country: mozambique
+        planet: earth
+    }
+    {
+        identifier: nampula
+        color:
+        [
+            98
+            183
+            196
+        ]
+        country: mozambique
+        planet: earth
+    }
+    {
+        identifier: niassa
+        color:
+        [
+            71
+            193
+            24
+        ]
+        country: mozambique
+        planet: earth
+    }
+    {
+        identifier: sofala
+        color:
+        [
+            98
+            169
+            129
+        ]
+        country: mozambique
+        planet: earth
+    }
+    {
+        identifier: tete
+        color:
+        [
+            86
+            189
+            127
+        ]
+        country: mozambique
+        planet: earth
+    }
+    {
+        identifier: zambezia
+        color:
+        [
+            90
+            163
+            209
+        ]
+        country: mozambique
+        planet: earth
+    }
+]

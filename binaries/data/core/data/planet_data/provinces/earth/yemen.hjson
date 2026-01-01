@@ -1,0 +1,233 @@
+[
+    {
+        identifier: `adan
+        color:
+        [
+            113
+            137
+            98
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: abyan
+        color:
+        [
+            113
+            151
+            165
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: al_bayda'
+        color:
+        [
+            177
+            111
+            147
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: al_dali'
+        color:
+        [
+            177
+            140
+            25
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: al_hudaydah
+        color:
+        [
+            113
+            94
+            153
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: al_jawf_yemen
+        color:
+        [
+            82
+            1
+            64
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: al_mahrah
+        color:
+        [
+            81
+            157
+            107
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: al_mahwit
+        color:
+        [
+            177
+            168
+            159
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: amanat_al_asimah
+        color:
+        [
+            242
+            100
+            189
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: amran
+        color:
+        [
+            177
+            125
+            214
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: dhamar
+        color:
+        [
+            177
+            182
+            226
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: hadramawt
+        color:
+        [
+            81
+            128
+            229
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: hajjah
+        color:
+        [
+            81
+            228
+            186
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: ibb
+        color:
+        [
+            177
+            154
+            92
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: lahij
+        color:
+        [
+            113
+            123
+            31
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: ma'rib
+        color:
+        [
+            177
+            68
+            202
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: raymah
+        color:
+        [
+            177
+            97
+            80
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: sa`dah
+        color:
+        [
+            81
+            200
+            52
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: sana'a
+        color:
+        [
+            177
+            83
+            13
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: shabwah
+        color:
+        [
+            113
+            165
+            232
+        ]
+        country: yemen
+        planet: earth
+    }
+    {
+        identifier: ta`izz
+        color:
+        [
+            113
+            108
+            220
+        ]
+        country: yemen
+        planet: earth
+    }
+]

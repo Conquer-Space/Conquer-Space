@@ -1,0 +1,233 @@
+[
+    {
+        identifier: blekinge
+        color:
+        [
+            133
+            151
+            154
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: dalarna
+        color:
+        [
+            10
+            21
+            95
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: gavleborg
+        color:
+        [
+            133
+            66
+            8
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: gotland
+        color:
+        [
+            161
+            14
+            161
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: halland
+        color:
+        [
+            133
+            180
+            32
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: jamtland
+        color:
+        [
+            9
+            220
+            83
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: jonkoping
+        color:
+        [
+            189
+            120
+            27
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: kalmar
+        color:
+        [
+            133
+            137
+            87
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: kronoberg
+        color:
+        [
+            189
+            148
+            161
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: norrbotten
+        color:
+        [
+            9
+            177
+            138
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: orebro
+        color:
+        [
+            189
+            134
+            94
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: ostergotland
+        color:
+        [
+            133
+            123
+            20
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: skane
+        color:
+        [
+            133
+            165
+            221
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: sodermanland
+        color:
+        [
+            133
+            108
+            209
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: stockholm
+        color:
+        [
+            133
+            94
+            142
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: uppsala
+        color:
+        [
+            133
+            80
+            75
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: varmland
+        color:
+        [
+            10
+            35
+            162
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: vasterbotten
+        color:
+        [
+            9
+            206
+            16
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: vasternorrland
+        color:
+        [
+            133
+            51
+            197
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: vastmanland
+        color:
+        [
+            189
+            105
+            216
+        ]
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: vastra_gotaland
+        color:
+        [
+            10
+            78
+            107
+        ]
+        country: sweden
+        planet: earth
+    }
+]

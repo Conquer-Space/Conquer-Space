@@ -1,0 +1,255 @@
+[
+    {
+        identifier: central_finland
+        color:
+        [
+            239
+            198
+            112
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: central_ostrobothnia
+        color:
+        [
+            133
+            37
+            130
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: eckero
+        color:
+        [
+            161
+            71
+            173
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: finland_proper
+        color:
+        [
+            132
+            250
+            185
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: foglo
+        color:
+        [
+            162
+            172
+            56
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: jomala
+        color:
+        [
+            161
+            114
+            118
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: kainuu
+        color:
+        [
+            25
+            60
+            143
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: kymenlaakso
+        color:
+        [
+            25
+            117
+            155
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: lapland
+        color:
+        [
+            10
+            92
+            174
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: lumparland
+        color:
+        [
+            161
+            57
+            106
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: north_karelia
+        color:
+        [
+            25
+            74
+            210
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: northern_ostrobothnia
+        color:
+        [
+            25
+            46
+            76
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: northern_savonia
+        color:
+        [
+            239
+            169
+            234
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: ostrobothnia
+        color:
+        [
+            133
+            23
+            63
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: paijat-hame
+        color:
+        [
+            239
+            255
+            124
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: pirkanmaa
+        color:
+        [
+            239
+            226
+            246
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: satakunta
+        color:
+        [
+            133
+            8
+            252
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: south_karelia
+        color:
+        [
+            25
+            89
+            21
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: southern_ostrobothnia
+        color:
+        [
+            239
+            212
+            179
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: southern_savonia
+        color:
+        [
+            239
+            184
+            45
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: tavastia_proper
+        color:
+        [
+            239
+            241
+            57
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: uusimaa
+        color:
+        [
+            132
+            236
+            118
+        ]
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: vardo
+        color:
+        [
+            161
+            85
+            240
+        ]
+        country: finland
+        planet: earth
+    }
+]

@@ -1,0 +1,695 @@
+[
+    {
+        identifier: an_giang
+        color:
+        [
+            11
+            64
+            222
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: ba_ria_-_vung_tau
+        color:
+        [
+            104
+            88
+            51
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: bac_giang
+        color:
+        [
+            178
+            69
+            128
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: bac_lieu
+        color:
+        [
+            122
+            200
+            212
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: bac_ninh
+        color:
+        [
+            178
+            55
+            61
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: ben_tre
+        color:
+        [
+            123
+            1
+            224
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: binh_dinh
+        color:
+        [
+            123
+            73
+            47
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: binh_duong
+        color:
+        [
+            178
+            126
+            140
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: binh_phuoc
+        color:
+        [
+            10
+            206
+            198
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: binh_thuan
+        color:
+        [
+            123
+            30
+            102
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: ca_mau
+        color:
+        [
+            122
+            186
+            145
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: can_tho
+        color:
+        [
+            178
+            155
+            18
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: cao_bang
+        color:
+        [
+            70
+            206
+            165
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: da_nang
+        color:
+        [
+            123
+            101
+            181
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: dak_lak
+        color:
+        [
+            10
+            178
+            64
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: dak_nong
+        color:
+        [
+            10
+            149
+            186
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: dien_bien
+        color:
+        [
+            61
+            171
+            185
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: dong_bac
+        color:
+        [
+            178
+            26
+            183
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: dong_bang_song_hong
+        color:
+        [
+            178
+            40
+            250
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: dong_nam_bo
+        color:
+        [
+            123
+            16
+            35
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: dong_thap
+        color:
+        [
+            11
+            50
+            155
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: gia_lai
+        color:
+        [
+            10
+            192
+            131
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: ha_giang
+        color:
+        [
+            70
+            178
+            31
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: ha_nam
+        color:
+        [
+            178
+            112
+            73
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: ha_noi
+        color:
+        [
+            178
+            12
+            116
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: ha_tinh
+        color:
+        [
+            62
+            15
+            142
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: hai_duong
+        color:
+        [
+            178
+            98
+            6
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: hai_phong
+        color:
+        [
+            123
+            158
+            193
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: hau_giang
+        color:
+        [
+            122
+            215
+            23
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: ho_chi_minh_city
+        color:
+        [
+            104
+            116
+            185
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: hoa_binh
+        color:
+        [
+            177
+            197
+            37
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: khanh_hoa
+        color:
+        [
+            104
+            188
+            8
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: kien_giang
+        color:
+        [
+            11
+            107
+            167
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: kon_tum
+        color:
+        [
+            10
+            121
+            52
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: lai_chau
+        color:
+        [
+            70
+            235
+            43
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: lam_dong
+        color:
+        [
+            178
+            140
+            207
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: lang_son
+        color:
+        [
+            70
+            249
+            110
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: lao_cai
+        color:
+        [
+            70
+            220
+            232
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: long_an
+        color:
+        [
+            11
+            36
+            88
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: nam_dinh
+        color:
+        [
+            123
+            130
+            59
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: nghe_an
+        color:
+        [
+            61
+            243
+            8
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: ninh_binh
+        color:
+        [
+            123
+            115
+            248
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: ninh_thuan
+        color:
+        [
+            123
+            44
+            169
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: phu_tho
+        color:
+        [
+            177
+            254
+            49
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: phu_yen
+        color:
+        [
+            123
+            58
+            236
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: quang_binh
+        color:
+        [
+            62
+            29
+            209
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: quang_nam
+        color:
+        [
+            62
+            86
+            221
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: quang_ngai
+        color:
+        [
+            123
+            87
+            114
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: quang_ninh
+        color:
+        [
+            71
+            7
+            177
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: quang_tri
+        color:
+        [
+            62
+            44
+            20
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: soc_trang
+        color:
+        [
+            102
+            43
+            254
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: son_la
+        color:
+        [
+            61
+            214
+            130
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: tay_ninh
+        color:
+        [
+            10
+            235
+            76
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: thai_binh
+        color:
+        [
+            123
+            144
+            126
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: thai_nguyen
+        color:
+        [
+            178
+            83
+            195
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: thanh_hoa
+        color:
+        [
+            61
+            228
+            197
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: thua_thien_-_hue
+        color:
+        [
+            62
+            58
+            87
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: tien_giang
+        color:
+        [
+            104
+            73
+            240
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: tra_vinh
+        color:
+        [
+            122
+            243
+            157
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: tuyen_quang
+        color:
+        [
+            177
+            211
+            104
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: vinh_long
+        color:
+        [
+            122
+            229
+            90
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: vinh_phuc
+        color:
+        [
+            177
+            239
+            238
+        ]
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: yen_bai
+        color:
+        [
+            177
+            225
+            171
+        ]
+        country: vietnam
+        planet: earth
+    }
+]

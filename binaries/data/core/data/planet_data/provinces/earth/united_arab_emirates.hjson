@@ -1,0 +1,112 @@
+[
+    {
+        identifier: abu_dhabi
+        color:
+        [
+            25
+            203
+            45
+        ]
+        country: united_arab_emirates
+        planet: earth
+    }
+    {
+        identifier: ajman
+        color:
+        [
+            113
+            251
+            122
+        ]
+        country: united_arab_emirates
+        planet: earth
+    }
+    {
+        identifier: dubay
+        color:
+        [
+            25
+            146
+            33
+        ]
+        country: united_arab_emirates
+        planet: earth
+    }
+    {
+        identifier: fujayrah
+        color:
+        [
+            5
+            89
+            32
+        ]
+        country: united_arab_emirates
+        planet: earth
+    }
+    {
+        identifier: musandam
+        color:
+        [
+            5
+            103
+            99
+        ]
+        country: united_arab_emirates
+        planet: earth
+    }
+    {
+        identifier: neutral_zone_united_arab_emirates
+        color:
+        [
+            25
+            160
+            100
+        ]
+        country: united_arab_emirates
+        planet: earth
+    }
+    {
+        identifier: neutral_zone_united_arab_emirates_2
+        color:
+        [
+            25
+            188
+            234
+        ]
+        country: united_arab_emirates
+        planet: earth
+    }
+    {
+        identifier: ras_al_khaymah
+        color:
+        [
+            5
+            131
+            233
+        ]
+        country: united_arab_emirates
+        planet: earth
+    }
+    {
+        identifier: sharjah
+        color:
+        [
+            5
+            117
+            166
+        ]
+        country: united_arab_emirates
+        planet: earth
+    }
+    {
+        identifier: umm_al_qaywayn
+        color:
+        [
+            113
+            237
+            55
+        ]
+        country: united_arab_emirates
+        planet: earth
+    }
+]

@@ -1,0 +1,156 @@
+[
+    {
+        identifier: `asir
+        color:
+        [
+            81
+            214
+            119
+        ]
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: al_ahmadi
+        color:
+        [
+            81
+            86
+            28
+        ]
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: al_bahah
+        color:
+        [
+            192
+            107
+            250
+        ]
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: al_hudud_ash_shamaliyah
+        color:
+        [
+            80
+            242
+            71
+        ]
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: al_jawf_saudi_arabia
+        color:
+        [
+            81
+            29
+            16
+        ]
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: al_madinah
+        color:
+        [
+            113
+            66
+            19
+        ]
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: al_quassim
+        color:
+        [
+            192
+            79
+            116
+        ]
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: ar_riyad
+        color:
+        [
+            192
+            65
+            49
+        ]
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: ash_sharqiyah_saudi_arabia
+        color:
+        [
+            30
+            135
+            108
+        ]
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: ha'il
+        color:
+        [
+            192
+            93
+            183
+        ]
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: jizan
+        color:
+        [
+            81
+            242
+            253
+        ]
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: makkah
+        color:
+        [
+            113
+            80
+            86
+        ]
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: najran
+        color:
+        [
+            81
+            185
+            241
+        ]
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: tabuk
+        color:
+        [
+            113
+            51
+            208
+        ]
+        country: saudi_arabia
+        planet: earth
+    }
+]

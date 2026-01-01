@@ -1,0 +1,79 @@
+[
+    {
+        identifier: hadarom
+        color:
+        [
+            1
+            14
+            249
+        ]
+        country: israel
+        planet: earth
+    }
+    {
+        identifier: haifa
+        color:
+        [
+            1
+            72
+            5
+        ]
+        country: israel
+        planet: earth
+    }
+    {
+        identifier: hamerkaz
+        color:
+        [
+            1
+            86
+            72
+        ]
+        country: israel
+        planet: earth
+    }
+    {
+        identifier: jerusalem
+        color:
+        [
+            1
+            100
+            139
+        ]
+        country: israel
+        planet: earth
+    }
+    {
+        identifier: tel_aviv
+        color:
+        [
+            118
+            12
+            149
+        ]
+        country: israel
+        planet: earth
+    }
+    {
+        identifier: undof
+        color:
+        [
+            2
+            172
+            144
+        ]
+        country: israel
+        planet: earth
+    }
+    {
+        identifier: west_bank
+        color:
+        [
+            1
+            57
+            194
+        ]
+        country: israel
+        planet: earth
+    }
+]

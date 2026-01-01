@@ -1,0 +1,145 @@
+[
+    {
+        identifier: aileu
+        color:
+        [
+            184
+            202
+            31
+        ]
+        country: timor-leste
+        planet: earth
+    }
+    {
+        identifier: ainaro
+        color:
+        [
+            164
+            159
+            97
+        ]
+        country: timor-leste
+        planet: earth
+    }
+    {
+        identifier: ambeno
+        color:
+        [
+            34
+            195
+            80
+        ]
+        country: timor-leste
+        planet: earth
+    }
+    {
+        identifier: baucau
+        color:
+        [
+            164
+            230
+            176
+        ]
+        country: timor-leste
+        planet: earth
+    }
+    {
+        identifier: bobonaro
+        color:
+        [
+            34
+            209
+            147
+        ]
+        country: timor-leste
+        planet: earth
+    }
+    {
+        identifier: cova_lima
+        color:
+        [
+            34
+            223
+            214
+        ]
+        country: timor-leste
+        planet: earth
+    }
+    {
+        identifier: dili
+        color:
+        [
+            164
+            244
+            243
+        ]
+        country: timor-leste
+        planet: earth
+    }
+    {
+        identifier: ermera
+        color:
+        [
+            184
+            187
+            220
+        ]
+        country: timor-leste
+        planet: earth
+    }
+    {
+        identifier: lautem
+        color:
+        [
+            164
+            216
+            109
+        ]
+        country: timor-leste
+        planet: earth
+    }
+    {
+        identifier: liquica
+        color:
+        [
+            165
+            3
+            54
+        ]
+        country: timor-leste
+        planet: earth
+    }
+    {
+        identifier: manatuto
+        color:
+        [
+            164
+            187
+            231
+        ]
+        country: timor-leste
+        planet: earth
+    }
+    {
+        identifier: manufahi
+        color:
+        [
+            164
+            173
+            164
+        ]
+        country: timor-leste
+        planet: earth
+    }
+    {
+        identifier: viqueque
+        color:
+        [
+            164
+            202
+            42
+        ]
+        country: timor-leste
+        planet: earth
+    }
+]

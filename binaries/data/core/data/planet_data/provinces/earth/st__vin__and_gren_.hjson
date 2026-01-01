@@ -1,0 +1,35 @@
+[
+    {
+        identifier: charlotte
+        color:
+        [
+            144
+            187
+            242
+        ]
+        country: st__vin__and_gren_
+        planet: earth
+    }
+    {
+        identifier: saint_andrew_st__vin__and_gren_
+        color:
+        [
+            144
+            159
+            108
+        ]
+        country: st__vin__and_gren_
+        planet: earth
+    }
+    {
+        identifier: saint_david_st__vin__and_gren_
+        color:
+        [
+            144
+            202
+            53
+        ]
+        country: st__vin__and_gren_
+        planet: earth
+    }
+]

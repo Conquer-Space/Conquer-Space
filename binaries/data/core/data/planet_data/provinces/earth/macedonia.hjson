@@ -1,0 +1,849 @@
+[
+    {
+        identifier: aracinovo
+        color:
+        [
+            236
+            25
+            42
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: berovo
+        color:
+        [
+            40
+            42
+            179
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: bitola
+        color:
+        [
+            38
+            112
+            150
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: bogdanci
+        color:
+        [
+            38
+            41
+            71
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: bogovinje
+        color:
+        [
+            39
+            27
+            186
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: bosilovo
+        color:
+        [
+            237
+            25
+            224
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: brod
+        color:
+        [
+            234
+            194
+            226
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: brvenica
+        color:
+        [
+            234
+            180
+            159
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: caska
+        color:
+        [
+            235
+            110
+            6
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: centar_zupa
+        color:
+        [
+            13
+            52
+            7
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: cesinovo-oblesevo
+        color:
+        [
+            236
+            10
+            231
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: cucer_sandevo
+        color:
+        [
+            38
+            169
+            162
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: debar
+        color:
+        [
+            13
+            66
+            74
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: debarca
+        color:
+        [
+            13
+            180
+            98
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: delcevo
+        color:
+        [
+            39
+            255
+            234
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: demir_hisar
+        color:
+        [
+            235
+            195
+            152
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: demir_kapija
+        color:
+        [
+            236
+            253
+            90
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: dojran
+        color:
+        [
+            37
+            254
+            126
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: dolneni
+        color:
+        [
+            235
+            67
+            61
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: drugovo
+        color:
+        [
+            235
+            152
+            207
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: gazi_baba
+        color:
+        [
+            235
+            167
+            18
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: gevgelija
+        color:
+        [
+            38
+            55
+            138
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: gjorce_petrov
+        color:
+        [
+            38
+            198
+            40
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: gostivar
+        color:
+        [
+            13
+            94
+            208
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: gradsko
+        color:
+        [
+            236
+            139
+            66
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: ilinden
+        color:
+        [
+            236
+            167
+            200
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: jegunovce
+        color:
+        [
+            38
+            226
+            174
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: karbinci
+        color:
+        [
+            236
+            182
+            11
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: karpos
+        color:
+        [
+            234
+            237
+            171
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: kavadartsi
+        color:
+        [
+            38
+            69
+            205
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: kicevo
+        color:
+        [
+            236
+            53
+            176
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: kocani
+        color:
+        [
+            236
+            210
+            145
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: konce
+        color:
+        [
+            237
+            68
+            169
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: kratovo
+        color:
+        [
+            236
+            153
+            133
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: kriva_palanka
+        color:
+        [
+            39
+            70
+            131
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: krivogastani
+        color:
+        [
+            235
+            81
+            128
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: krusevo
+        color:
+        [
+            235
+            181
+            85
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: kumanovo
+        color:
+        [
+            39
+            113
+            76
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: lipkovo
+        color:
+        [
+            38
+            141
+            28
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: lozovo
+        color:
+        [
+            236
+            110
+            188
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: makedonska_kamenica
+        color:
+        [
+            40
+            14
+            45
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: mavrovo_and_rostusa
+        color:
+        [
+            13
+            80
+            141
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: mogila
+        color:
+        [
+            235
+            95
+            195
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: negotino
+        color:
+        [
+            235
+            138
+            140
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: novaci
+        color:
+        [
+            38
+            84
+            16
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: novo_selo
+        color:
+        [
+            37
+            240
+            59
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: ohrid
+        color:
+        [
+            13
+            166
+            31
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: oslomej
+        color:
+        [
+            234
+            209
+            37
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: pehcevo
+        color:
+        [
+            40
+            56
+            246
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: plasnica
+        color:
+        [
+            236
+            67
+            243
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: prilep
+        color:
+        [
+            38
+            98
+            83
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: probistip
+        color:
+        [
+            235
+            252
+            164
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: radovis
+        color:
+        [
+            237
+            40
+            35
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: rankovce
+        color:
+        [
+            39
+            84
+            198
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: resen
+        color:
+        [
+            13
+            194
+            165
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: rosoman
+        color:
+        [
+            235
+            124
+            73
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: saraj
+        color:
+        [
+            38
+            212
+            107
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: skopje
+        color:
+        [
+            236
+            96
+            121
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: sopiste
+        color:
+        [
+            234
+            223
+            104
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: staro_nagoricane
+        color:
+        [
+            39
+            99
+            9
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: stip
+        color:
+        [
+            236
+            196
+            78
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: struga
+        color:
+        [
+            13
+            23
+            129
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: strumitsa
+        color:
+        [
+            38
+            27
+            4
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: studenicani
+        color:
+        [
+            235
+            224
+            30
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: sveti_nikole
+        color:
+        [
+            236
+            124
+            255
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: tearce
+        color:
+        [
+            38
+            255
+            52
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: tetovo
+        color:
+        [
+            39
+            13
+            119
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: valandovo
+        color:
+        [
+            38
+            12
+            193
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: vasilevo
+        color:
+        [
+            237
+            54
+            102
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: veles
+        color:
+        [
+            236
+            239
+            23
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: vevcani
+        color:
+        [
+            13
+            151
+            220
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: vinica
+        color:
+        [
+            237
+            11
+            157
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: vranestica
+        color:
+        [
+            236
+            82
+            54
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: vrapciste
+        color:
+        [
+            39
+            41
+            253
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: zajas
+        color:
+        [
+            235
+            52
+            250
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: zelenikovo
+        color:
+        [
+            236
+            39
+            109
+        ]
+        country: macedonia
+        planet: earth
+    }
+    {
+        identifier: zelino
+        color:
+        [
+            234
+            166
+            92
+        ]
+        country: macedonia
+        planet: earth
+    }
+]

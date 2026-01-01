@@ -1,0 +1,222 @@
+[
+    {
+        identifier: andrijevica
+        color:
+        [
+            51
+            50
+            133
+        ]
+        country: montenegro
+        planet: earth
+    }
+    {
+        identifier: bar
+        color:
+        [
+            51
+            79
+            11
+        ]
+        country: montenegro
+        planet: earth
+    }
+    {
+        identifier: berane
+        color:
+        [
+            41
+            157
+            129
+        ]
+        country: montenegro
+        planet: earth
+    }
+    {
+        identifier: budva
+        color:
+        [
+            136
+            68
+            42
+        ]
+        country: montenegro
+        planet: earth
+    }
+    {
+        identifier: cetinje
+        color:
+        [
+            200
+            56
+            158
+        ]
+        country: montenegro
+        planet: earth
+    }
+    {
+        identifier: danilovgrad
+        color:
+        [
+            200
+            99
+            103
+        ]
+        country: montenegro
+        planet: earth
+    }
+    {
+        identifier: herceg_novi
+        color:
+        [
+            40
+            85
+            124
+        ]
+        country: montenegro
+        planet: earth
+    }
+    {
+        identifier: kolasin
+        color:
+        [
+            200
+            85
+            36
+        ]
+        country: montenegro
+        planet: earth
+    }
+    {
+        identifier: kotor
+        color:
+        [
+            48
+            48
+            99
+        ]
+        country: montenegro
+        planet: earth
+    }
+    {
+        identifier: mojkovac
+        color:
+        [
+            200
+            42
+            91
+        ]
+        country: montenegro
+        planet: earth
+    }
+    {
+        identifier: niksic
+        color:
+        [
+            48
+            34
+            32
+        ]
+        country: montenegro
+        planet: earth
+    }
+    {
+        identifier: plav
+        color:
+        [
+            41
+            171
+            196
+        ]
+        country: montenegro
+        planet: earth
+    }
+    {
+        identifier: pljevlja
+        color:
+        [
+            41
+            186
+            7
+        ]
+        country: montenegro
+        planet: earth
+    }
+    {
+        identifier: pluzine
+        color:
+        [
+            48
+            19
+            221
+        ]
+        country: montenegro
+        planet: earth
+    }
+    {
+        identifier: podgorica
+        color:
+        [
+            51
+            64
+            200
+        ]
+        country: montenegro
+        planet: earth
+    }
+    {
+        identifier: rozaje
+        color:
+        [
+            41
+            128
+            251
+        ]
+        country: montenegro
+        planet: earth
+    }
+    {
+        identifier: savnik
+        color:
+        [
+            200
+            70
+            225
+        ]
+        country: montenegro
+        planet: earth
+    }
+    {
+        identifier: tivat
+        color:
+        [
+            136
+            82
+            109
+        ]
+        country: montenegro
+        planet: earth
+    }
+    {
+        identifier: ulcinj
+        color:
+        [
+            51
+            93
+            78
+        ]
+        country: montenegro
+        planet: earth
+    }
+    {
+        identifier: zabljak
+        color:
+        [
+            48
+            5
+            154
+        ]
+        country: montenegro
+        planet: earth
+    }
+]

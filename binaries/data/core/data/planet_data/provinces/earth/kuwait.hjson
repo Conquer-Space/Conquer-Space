@@ -1,0 +1,57 @@
+[
+    {
+        identifier: al_asimah
+        color:
+        [
+            114
+            109
+            146
+        ]
+        country: kuwait
+        planet: earth
+    }
+    {
+        identifier: al_farwaniyah
+        color:
+        [
+            204
+            130
+            197
+        ]
+        country: kuwait
+        planet: earth
+    }
+    {
+        identifier: al_jahrah
+        color:
+        [
+            34
+            81
+            56
+        ]
+        country: kuwait
+        planet: earth
+    }
+    {
+        identifier: hawalli
+        color:
+        [
+            114
+            95
+            79
+        ]
+        country: kuwait
+        planet: earth
+    }
+    {
+        identifier: mubarak_al-kabeer
+        color:
+        [
+            114
+            81
+            12
+        ]
+        country: kuwait
+        planet: earth
+    }
+]

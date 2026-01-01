@@ -1,0 +1,321 @@
+[
+    {
+        identifier: dakovica
+        color:
+        [
+            13
+            237
+            110
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: decani
+        color:
+        [
+            13
+            223
+            43
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: dragas
+        color:
+        [
+            13
+            251
+            177
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: glogovac
+        color:
+        [
+            204
+            202
+            20
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: gnjilane
+        color:
+        [
+            38
+            126
+            217
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: istok
+        color:
+        [
+            41
+            86
+            50
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: kacanik
+        color:
+        [
+            38
+            183
+            229
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: klina
+        color:
+        [
+            204
+            173
+            142
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: kosovo_polje
+        color:
+        [
+            253
+            151
+            88
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: kosovska_mitrovica
+        color:
+        [
+            204
+            187
+            209
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: leposavic
+        color:
+        [
+            40
+            242
+            93
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: lipljan
+        color:
+        [
+            253
+            165
+            155
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: malisevo
+        color:
+        [
+            204
+            216
+            87
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: novo_brdo
+        color:
+        [
+            253
+            122
+            210
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: obilic
+        color:
+        [
+            253
+            137
+            21
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: orahovac
+        color:
+        [
+            204
+            145
+            8
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: pec
+        color:
+        [
+            41
+            143
+            62
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: podujevo
+        color:
+        [
+            41
+            43
+            105
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: pristina
+        color:
+        [
+            41
+            100
+            117
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: prizren
+        color:
+        [
+            14
+            9
+            244
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: srbica
+        color:
+        [
+            204
+            159
+            75
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: stimlje
+        color:
+        [
+            253
+            179
+            222
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: strpce
+        color:
+        [
+            38
+            240
+            241
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: suva_reka
+        color:
+        [
+            253
+            94
+            76
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: urosevac
+        color:
+        [
+            253
+            108
+            143
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: vitina
+        color:
+        [
+            38
+            155
+            95
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: vucitrn
+        color:
+        [
+            253
+            194
+            33
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: zubin_potok
+        color:
+        [
+            41
+            57
+            172
+        ]
+        country: kosovo
+        planet: earth
+    }
+    {
+        identifier: zvecan
+        color:
+        [
+            41
+            71
+            239
+        ]
+        country: kosovo
+        planet: earth
+    }
+]

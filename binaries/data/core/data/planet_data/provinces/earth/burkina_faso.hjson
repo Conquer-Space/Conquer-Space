@@ -1,0 +1,497 @@
+[
+    {
+        identifier: bale
+        color:
+        [
+            240
+            113
+            148
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: bam
+        color:
+        [
+            241
+            157
+            19
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: banwa
+        color:
+        [
+            69
+            91
+            215
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: bazega
+        color:
+        [
+            241
+            57
+            62
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: bougouriba
+        color:
+        [
+            240
+            156
+            93
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: boulgou
+        color:
+        [
+            89
+            120
+            82
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: boulkiemde
+        color:
+        [
+            240
+            241
+            239
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: ganzourgou
+        color:
+        [
+            240
+            199
+            38
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: gnagna
+        color:
+        [
+            241
+            42
+            251
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: gourma
+        color:
+        [
+            241
+            28
+            184
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: houet
+        color:
+        [
+            69
+            120
+            93
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: ioba
+        color:
+        [
+            89
+            234
+            106
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: kadiogo
+        color:
+        [
+            241
+            0
+            50
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: kenedougou
+        color:
+        [
+            69
+            134
+            160
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: komoe
+        color:
+        [
+            68
+            176
+            179
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: komondjari
+        color:
+        [
+            88
+            76
+            211
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: kompienga
+        color:
+        [
+            67
+            204
+            131
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: kossi
+        color:
+        [
+            69
+            63
+            81
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: koulpelogo
+        color:
+        [
+            89
+            106
+            15
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: kouritenga
+        color:
+        [
+            240
+            184
+            227
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: kourweogo
+        color:
+        [
+            241
+            71
+            129
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: leraba
+        color:
+        [
+            68
+            148
+            45
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: loroum
+        color:
+        [
+            69
+            20
+            136
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: mou_houn
+        color:
+        [
+            240
+            170
+            160
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: nahouri
+        color:
+        [
+            89
+            191
+            161
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: namentenga
+        color:
+        [
+            241
+            128
+            141
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: nayala
+        color:
+        [
+            241
+            85
+            196
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: noumbiel
+        color:
+        [
+            68
+            205
+            57
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: oubritenga
+        color:
+        [
+            241
+            14
+            117
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: oudalan
+        color:
+        [
+            68
+            219
+            124
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: passore
+        color:
+        [
+            241
+            100
+            7
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: poni
+        color:
+        [
+            68
+            190
+            246
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: sanguie
+        color:
+        [
+            240
+            127
+            215
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: sanmatenga
+        color:
+        [
+            241
+            142
+            208
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: seno
+        color:
+        [
+            88
+            48
+            77
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: sissili
+        color:
+        [
+            89
+            205
+            228
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: soum
+        color:
+        [
+            68
+            248
+            2
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: sourou
+        color:
+        [
+            69
+            49
+            14
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: tapoa
+        color:
+        [
+            67
+            175
+            253
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: tuy
+        color:
+        [
+            240
+            142
+            26
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: yagha
+        color:
+        [
+            88
+            62
+            144
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: yatenga
+        color:
+        [
+            69
+            34
+            203
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: ziro
+        color:
+        [
+            240
+            227
+            172
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: zondoma
+        color:
+        [
+            241
+            114
+            74
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+    {
+        identifier: zoundweogo
+        color:
+        [
+            240
+            213
+            105
+        ]
+        country: burkina_faso
+        planet: earth
+    }
+]

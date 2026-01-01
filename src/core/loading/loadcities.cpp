@@ -50,68 +50,14 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
     Node planet_node(node, universe.planets[planet]);
     sc.planet = planet_node;
 
-    planet_node.get_or_emplace<components::Habitation>().settlements.push_back(node);
+    planet_node.get_or_emplace<components::Settlements>().settlements.push_back(node);
     //SPDLOG_INFO("Load Timezone");
     if (!values["timezone"].empty()) {
         entt::entity tz = universe.time_zones[values["timezone"].to_string()];
         node.emplace<components::CityTimeZone>(tz);
     }
-
-    //SPDLOG_INFO("Load Population");
-    auto& settlement = node.emplace<components::Settlement>();
     std::string identifier = node.get<components::Identifier>().identifier;
-    // Load population
-    if (!values["population"].empty()) {
-        Hjson::Value population = values["population"];
-        for (int i = 0; i < population.size(); i++) {
-            Hjson::Value population_seg = population[i];
-            Node pop_node(universe);
 
-            auto size = population_seg["size"].to_int64();
-            double standard_of_living = 0;
-            if (!population_seg["sol"].empty()) {
-                standard_of_living = population_seg["sol"].to_double();
-            }
-
-            double balance = 0;
-            if (!population_seg["balance"].empty()) {
-                balance = population_seg["balance"].to_double();
-            }
-
-            int64_t labor_force = size / 2;
-            if (!population_seg["labor_force"].empty()) {
-                labor_force = population_seg["labor_force"].to_int64();
-            }
-
-            auto& segment = pop_node.emplace<components::PopulationSegment>();
-            segment.population = size;
-            segment.labor_force = labor_force;
-            segment.standard_of_living = standard_of_living;
-            pop_node.emplace<components::LaborInformation>();
-            auto& wallet = pop_node.emplace<components::Wallet>();
-            wallet = balance;
-            settlement.population.push_back(pop_node);
-        }
-    } else {
-        Node pop_node(universe);
-
-        auto size = 50000;
-        int64_t labor_force = size / 2;
-
-        auto& segment = pop_node.emplace<components::PopulationSegment>();
-        segment.population = size;
-        segment.labor_force = labor_force;
-        pop_node.emplace<components::LaborInformation>();
-        settlement.population.push_back(pop_node);
-        SPDLOG_WARN("City {} does not have any population", identifier);
-    }
-    //SPDLOG_INFO("Load Industry");
-    node.emplace<components::ResourceLedger>();
-
-    // Industry and economy
-    auto& industry = node.emplace<components::IndustrialZone>();
-    auto& market = node.emplace<components::Market>();
-    market.parent_market = universe.planets[planet];
     // Get the connected markets
     if (!values["connections"].empty() && values["connections"].type() == Hjson::Type::Vector) {
         // Get connected cities and then see if they're done
@@ -124,34 +70,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
             }
         }
     }
-    // Commercial area
-    Node commercial_node(universe);
 
-    commercial_node.emplace<components::Employer>();
-    commercial_node.emplace<components::Commercial>(node, 0);
-
-    industry.industries.push_back(commercial_node);
-
-    if (!values["industry"].empty()) {
-        Hjson::Value industry_hjson = values["industry"];
-
-        for (int i = 0; i < industry_hjson.size(); i++) {
-            Hjson::Value ind_val = industry_hjson[i];
-            auto recipe = ind_val["recipe"].to_string();
-            auto productivity = ind_val["productivity"].to_double();
-            if (universe.recipes.find(recipe) == universe.recipes.end()) {
-                SPDLOG_INFO("Recipe {} not found in city {}", recipe, identifier);
-                continue;
-            }
-            double wage = 10;
-            if (!ind_val["wage"].empty()) {
-                wage = ind_val["wage"].to_double();
-            }
-            Node rec_ent(universe, universe.recipes[recipe]);
-
-            actions::CreateFactory(node, rec_ent, productivity);
-        }
-    }
     //SPDLOG_INFO("Load SpacePort");
     if (!values["space-port"].empty()) {
         // Add space port
@@ -174,7 +93,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
     }
     //SPDLOG_INFO("Load Provinces");
     if (!values["province"].empty()) {
-        if (universe.provinces[values["province"]] != universe.provinces.end()) {
+        if (universe.provinces.contains(values["province"])) {
             Node province_node(universe, universe.provinces[values["province"]]);
             // Now add self to province
             province_node.get<components::Province>().cities.push_back(node);
@@ -229,17 +148,24 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
     return true;
 }
 
-/**
- * Loads the city and sets the parent.
- */
-void CityLoader::PostLoad(const Node& node) {
-    if (node.all_of<ConnectedCities>()) {
-        auto& connected = node.get<ConnectedCities>();
-        auto& market = node.get<components::Market>();
-        for (auto& entity : connected.entities) {
-            market.connected_markets.emplace(universe.cities[entity]);
+void CityLoader::ParseIndustry(const Hjson::Value& industry_hjson, Node& node, std::string_view identifier) {
+    for (int i = 0; i < industry_hjson.size(); i++) {
+        Hjson::Value ind_val = industry_hjson[i];
+        auto recipe = ind_val["recipe"].to_string();
+        auto productivity = ind_val["productivity"].to_double();
+        if (universe.recipes.find(recipe) == universe.recipes.end()) {
+            SPDLOG_INFO("Recipe {} not found in city {}", recipe, identifier);
+            continue;
         }
-        node.remove<ConnectedCities>();
+        double wage = 10;
+        if (!ind_val["wage"].empty()) {
+            wage = ind_val["wage"].to_double();
+        }
+        Node rec_ent(universe, universe.recipes[recipe]);
+
+        actions::CreateFactory(node, rec_ent, productivity);
     }
 }
+
+void CityLoader::PostLoad(const Node& node) {}
 }  // namespace cqsp::core::loading

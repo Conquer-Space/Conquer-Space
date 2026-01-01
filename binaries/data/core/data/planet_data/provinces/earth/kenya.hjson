@@ -1,0 +1,90 @@
+[
+    {
+        identifier: central_kenya
+        color:
+        [
+            204
+            244
+            221
+        ]
+        country: kenya
+        planet: earth
+    }
+    {
+        identifier: coast
+        color:
+        [
+            84
+            188
+            19
+        ]
+        country: kenya
+        planet: earth
+    }
+    {
+        identifier: eastern_kenya
+        color:
+        [
+            82
+            243
+            179
+        ]
+        country: kenya
+        planet: earth
+    }
+    {
+        identifier: nairobi
+        color:
+        [
+            204
+            230
+            154
+        ]
+        country: kenya
+        planet: earth
+    }
+    {
+        identifier: north-eastern
+        color:
+        [
+            83
+            1
+            246
+        ]
+        country: kenya
+        planet: earth
+    }
+    {
+        identifier: nyanza
+        color:
+        [
+            84
+            216
+            153
+        ]
+        country: kenya
+        planet: earth
+    }
+    {
+        identifier: rift_valley
+        color:
+        [
+            2
+            15
+            175
+        ]
+        country: kenya
+        planet: earth
+    }
+    {
+        identifier: western_kenya
+        color:
+        [
+            90
+            235
+            32
+        ]
+        country: kenya
+        planet: earth
+    }
+]

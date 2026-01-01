@@ -1,0 +1,79 @@
+[
+    {
+        identifier: ad_dawhah
+        color:
+        [
+            114
+            24
+            0
+        ]
+        country: qatar
+        planet: earth
+    }
+    {
+        identifier: al_daayen
+        color:
+        [
+            114
+            38
+            67
+        ]
+        country: qatar
+        planet: earth
+    }
+    {
+        identifier: al_khawr
+        color:
+        [
+            114
+            52
+            134
+        ]
+        country: qatar
+        planet: earth
+    }
+    {
+        identifier: al_wakrah
+        color:
+        [
+            114
+            9
+            189
+        ]
+        country: qatar
+        planet: earth
+    }
+    {
+        identifier: ar_rayyan
+        color:
+        [
+            30
+            121
+            41
+        ]
+        country: qatar
+        planet: earth
+    }
+    {
+        identifier: madinat_ach_shamal
+        color:
+        [
+            114
+            66
+            201
+        ]
+        country: qatar
+        planet: earth
+    }
+    {
+        identifier: umm_salal
+        color:
+        [
+            198
+            112
+            62
+        ]
+        country: qatar
+        planet: earth
+    }
+]

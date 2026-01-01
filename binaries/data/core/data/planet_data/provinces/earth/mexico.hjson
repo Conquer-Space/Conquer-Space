@@ -1,0 +1,354 @@
+[
+    {
+        identifier: aguascalientes
+        color:
+        [
+            234
+            80
+            202
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: baja_california
+        color:
+        [
+            73
+            23
+            96
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: campeche
+        color:
+        [
+            73
+            208
+            199
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: chiapas
+        color:
+        [
+            73
+            237
+            77
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: chihuahua
+        color:
+        [
+            73
+            66
+            41
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: coahuila
+        color:
+        [
+            73
+            94
+            175
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: colima
+        color:
+        [
+            110
+            149
+            131
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: distrito_federal_mexico
+        color:
+        [
+            234
+            137
+            214
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: durango
+        color:
+        [
+            234
+            95
+            13
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: guanajuato
+        color:
+        [
+            234
+            38
+            1
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: guerrero
+        color:
+        [
+            116
+            210
+            211
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: hidalgo
+        color:
+        [
+            234
+            23
+            190
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: jalisco
+        color:
+        [
+            116
+            182
+            77
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: mexico
+        color:
+        [
+            233
+            222
+            178
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: michoacan
+        color:
+        [
+            116
+            196
+            144
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: morelos
+        color:
+        [
+            233
+            251
+            56
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: nayarit
+        color:
+        [
+            112
+            65
+            93
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: nuevo_leon
+        color:
+        [
+            73
+            123
+            53
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: null_mexico
+        color:
+        [
+            174
+            223
+            137
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: oaxaca
+        color:
+        [
+            116
+            225
+            22
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: puebla
+        color:
+        [
+            233
+            236
+            245
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: queretaro
+        color:
+        [
+            234
+            9
+            123
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: quintana_roo
+        color:
+        [
+            73
+            194
+            132
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: san_luis_potosi
+        color:
+        [
+            234
+            52
+            68
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: sinaloa
+        color:
+        [
+            115
+            96
+            5
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: sonora
+        color:
+        [
+            73
+            9
+            29
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: tabasco
+        color:
+        [
+            73
+            223
+            10
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: tamaulipas
+        color:
+        [
+            73
+            108
+            242
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: tlaxcala
+        color:
+        [
+            234
+            123
+            147
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: veracruz
+        color:
+        [
+            116
+            168
+            10
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: yucatan
+        color:
+        [
+            116
+            153
+            199
+        ]
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: zacatecas
+        color:
+        [
+            234
+            66
+            135
+        ]
+        country: mexico
+        planet: earth
+    }
+]

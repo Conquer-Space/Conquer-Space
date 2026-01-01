@@ -1,0 +1,24 @@
+[
+    {
+        identifier: antarctica
+        color:
+        [
+            95
+            224
+            107
+        ]
+        country: antarctica
+        planet: earth
+    }
+    {
+        identifier: null_antarctica
+        color:
+        [
+            141
+            228
+            153
+        ]
+        country: antarctica
+        planet: earth
+    }
+]

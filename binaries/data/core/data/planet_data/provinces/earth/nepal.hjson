@@ -1,0 +1,156 @@
+[
+    {
+        identifier: bagmati
+        color:
+        [
+            58
+            226
+            163
+        ]
+        country: nepal
+        planet: earth
+    }
+    {
+        identifier: bheri
+        color:
+        [
+            59
+            56
+            53
+        ]
+        country: nepal
+        planet: earth
+    }
+    {
+        identifier: bhojpur
+        color:
+        [
+            59
+            13
+            108
+        ]
+        country: nepal
+        planet: earth
+    }
+    {
+        identifier: dhawalagiri
+        color:
+        [
+            58
+            198
+            29
+        ]
+        country: nepal
+        planet: earth
+    }
+    {
+        identifier: gandaki
+        color:
+        [
+            58
+            212
+            96
+        ]
+        country: nepal
+        planet: earth
+    }
+    {
+        identifier: janakpur
+        color:
+        [
+            58
+            240
+            230
+        ]
+        country: nepal
+        planet: earth
+    }
+    {
+        identifier: karnali
+        color:
+        [
+            58
+            155
+            84
+        ]
+        country: nepal
+        planet: earth
+    }
+    {
+        identifier: lumbini
+        color:
+        [
+            59
+            98
+            254
+        ]
+        country: nepal
+        planet: earth
+    }
+    {
+        identifier: mahakali
+        color:
+        [
+            58
+            169
+            151
+        ]
+        country: nepal
+        planet: earth
+    }
+    {
+        identifier: mechi
+        color:
+        [
+            59
+            27
+            175
+        ]
+        country: nepal
+        planet: earth
+    }
+    {
+        identifier: narayani
+        color:
+        [
+            59
+            113
+            65
+        ]
+        country: nepal
+        planet: earth
+    }
+    {
+        identifier: rapti
+        color:
+        [
+            59
+            70
+            120
+        ]
+        country: nepal
+        planet: earth
+    }
+    {
+        identifier: sagarmatha
+        color:
+        [
+            58
+            255
+            41
+        ]
+        country: nepal
+        planet: earth
+    }
+    {
+        identifier: seti
+        color:
+        [
+            58
+            183
+            218
+        ]
+        country: nepal
+        planet: earth
+    }
+]

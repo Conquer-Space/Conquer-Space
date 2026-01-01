@@ -1,0 +1,233 @@
+[
+    {
+        identifier: changhua
+        color:
+        [
+            114
+            195
+            36
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: chiayi
+        color:
+        [
+            114
+            223
+            170
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: chiayi_city
+        color:
+        [
+            185
+            131
+            134
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: hsinchu
+        color:
+        [
+            114
+            138
+            24
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: hsinchu_city
+        color:
+        [
+            114
+            152
+            91
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: hualien
+        color:
+        [
+            115
+            38
+            249
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: kaohsiung_city
+        color:
+        [
+            114
+            252
+            48
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: keelung_city
+        color:
+        [
+            115
+            81
+            194
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: kinmen
+        color:
+        [
+            162
+            86
+            166
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: miaoli
+        color:
+        [
+            114
+            166
+            158
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: nantou
+        color:
+        [
+            184
+            216
+            98
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: new_taipei_city
+        color:
+        [
+            115
+            67
+            127
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: penghu
+        color:
+        [
+            171
+            221
+            103
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: pingtung
+        color:
+        [
+            115
+            10
+            115
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: taichung_city
+        color:
+        [
+            114
+            180
+            225
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: tainan_city
+        color:
+        [
+            114
+            237
+            237
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: taipei_city
+        color:
+        [
+            185
+            117
+            67
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: taitung
+        color:
+        [
+            115
+            24
+            182
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: taoyuan
+        color:
+        [
+            114
+            123
+            213
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: yilan
+        color:
+        [
+            115
+            53
+            60
+        ]
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: yunlin
+        color:
+        [
+            114
+            209
+            103
+        ]
+        country: taiwan
+        planet: earth
+    }
+]

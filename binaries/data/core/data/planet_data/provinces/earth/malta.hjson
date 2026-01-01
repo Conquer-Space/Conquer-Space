@@ -1,0 +1,35 @@
+[
+    {
+        identifier: iklin
+        color:
+        [
+            254
+            137
+            203
+        ]
+        country: malta
+        planet: earth
+    }
+    {
+        identifier: mgarr
+        color:
+        [
+            158
+            41
+            5
+        ]
+        country: malta
+        planet: earth
+    }
+    {
+        identifier: zurrieq
+        color:
+        [
+            158
+            112
+            84
+        ]
+        country: malta
+        planet: earth
+    }
+]

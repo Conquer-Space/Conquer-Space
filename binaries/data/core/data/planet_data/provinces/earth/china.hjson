@@ -1,0 +1,453 @@
+[
+    {
+        identifier: anhui
+        color:
+        [
+            211
+            178
+            136
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: beijing
+        color:
+        [
+            210
+            234
+            222
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: chongqing
+        color:
+        [
+            211
+            35
+            234
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: eastern_china
+        color:
+        [
+            174
+            195
+            3
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: fujian
+        color:
+        [
+            112
+            179
+            117
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: gansu
+        color:
+        [
+            6
+            232
+            116
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: guangdong
+        color:
+        [
+            93
+            9
+            18
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: guangxi
+        color:
+        [
+            70
+            192
+            98
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: guizhou
+        color:
+        [
+            211
+            50
+            45
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: hainan
+        color:
+        [
+            112
+            51
+            26
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: hebei
+        color:
+        [
+            123
+            187
+            71
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: heilongjiang
+        color:
+        [
+            55
+            181
+            184
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: henan
+        color:
+        [
+            211
+            150
+            2
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: hubei
+        color:
+        [
+            211
+            164
+            69
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: hunan
+        color:
+        [
+            211
+            64
+            112
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: inner_mongol
+        color:
+        [
+            6
+            146
+            226
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: islands
+        color:
+        [
+            174
+            137
+            247
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: jiangsu
+        color:
+        [
+            117
+            225
+            204
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: jiangxi
+        color:
+        [
+            211
+            135
+            191
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: jilin
+        color:
+        [
+            55
+            253
+            7
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: liaoning
+        color:
+        [
+            56
+            68
+            86
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: ningxia
+        color:
+        [
+            211
+            78
+            179
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: north
+        color:
+        [
+            92
+            250
+            207
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: qinghai
+        color:
+        [
+            211
+            107
+            57
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: sai_kung
+        color:
+        [
+            175
+            10
+            82
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: sha_tin
+        color:
+        [
+            174
+            252
+            15
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: shaanxi
+        color:
+        [
+            211
+            92
+            246
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: shandong
+        color:
+        [
+            123
+            173
+            4
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: shanghai
+        color:
+        [
+            117
+            197
+            70
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: shanxi
+        color:
+        [
+            211
+            121
+            124
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: sichuan
+        color:
+        [
+            211
+            21
+            167
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: southern_china
+        color:
+        [
+            174
+            152
+            58
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: tai_po
+        color:
+        [
+            174
+            237
+            204
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: tianjin
+        color:
+        [
+            123
+            201
+            138
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: tsuen_wan
+        color:
+        [
+            174
+            209
+            70
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: tuen_mun
+        color:
+        [
+            175
+            95
+            228
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: xinjiang
+        color:
+        [
+            0
+            242
+            115
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: xizang
+        color:
+        [
+            1
+            0
+            182
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: yuen_long
+        color:
+        [
+            175
+            110
+            39
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: yunnan
+        color:
+        [
+            14
+            138
+            79
+        ]
+        country: china
+        planet: earth
+    }
+    {
+        identifier: zhejiang
+        color:
+        [
+            117
+            183
+            3
+        ]
+        country: china
+        planet: earth
+    }
+]

@@ -1,0 +1,46 @@
+[
+    {
+        identifier: eastern_sierra_leone
+        color:
+        [
+            20
+            57
+            1
+        ]
+        country: sierra_leone
+        planet: earth
+    }
+    {
+        identifier: northern_sierra_leone
+        color:
+        [
+            19
+            213
+            44
+        ]
+        country: sierra_leone
+        planet: earth
+    }
+    {
+        identifier: southern_sierra_leone
+        color:
+        [
+            20
+            85
+            135
+        ]
+        country: sierra_leone
+        planet: earth
+    }
+    {
+        identifier: western_sierra_leone
+        color:
+        [
+            109
+            205
+            217
+        ]
+        country: sierra_leone
+        planet: earth
+    }
+]

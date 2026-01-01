@@ -1,0 +1,123 @@
+[
+    {
+        identifier: chagang-do
+        color:
+        [
+            56
+            54
+            19
+        ]
+        country: north_korea
+        planet: earth
+    }
+    {
+        identifier: hamgyong-bukto
+        color:
+        [
+            56
+            11
+            74
+        ]
+        country: north_korea
+        planet: earth
+    }
+    {
+        identifier: hamgyong-namdo
+        color:
+        [
+            124
+            88
+            40
+        ]
+        country: north_korea
+        planet: earth
+    }
+    {
+        identifier: hwanghae-bukto
+        color:
+        [
+            3
+            44
+            235
+        ]
+        country: north_korea
+        planet: earth
+    }
+    {
+        identifier: hwanghae-namdo
+        color:
+        [
+            123
+            230
+            16
+        ]
+        country: north_korea
+        planet: earth
+    }
+    {
+        identifier: kangwon-do
+        color:
+        [
+            3
+            16
+            101
+        ]
+        country: north_korea
+        planet: earth
+    }
+    {
+        identifier: p'yongan-bukto
+        color:
+        [
+            56
+            82
+            153
+        ]
+        country: north_korea
+        planet: earth
+    }
+    {
+        identifier: p'yongan-namdo
+        color:
+        [
+            123
+            215
+            205
+        ]
+        country: north_korea
+        planet: earth
+    }
+    {
+        identifier: p'yongyang
+        color:
+        [
+            233
+            65
+            209
+        ]
+        country: north_korea
+        planet: earth
+    }
+    {
+        identifier: rason
+        color:
+        [
+            56
+            25
+            141
+        ]
+        country: north_korea
+        planet: earth
+    }
+    {
+        identifier: ryanggang
+        color:
+        [
+            56
+            39
+            208
+        ]
+        country: north_korea
+        planet: earth
+    }
+]

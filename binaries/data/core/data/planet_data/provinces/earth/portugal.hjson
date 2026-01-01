@@ -1,0 +1,222 @@
+[
+    {
+        identifier: aveiro
+        color:
+        [
+            139
+            241
+            112
+        ]
+        country: portugal
+        planet: earth
+    }
+    {
+        identifier: azores
+        color:
+        [
+            159
+            113
+            10
+        ]
+        country: portugal
+        planet: earth
+    }
+    {
+        identifier: beja_portugal
+        color:
+        [
+            93
+            251
+            133
+        ]
+        country: portugal
+        planet: earth
+    }
+    {
+        identifier: braga
+        color:
+        [
+            46
+            32
+            180
+        ]
+        country: portugal
+        planet: earth
+    }
+    {
+        identifier: braganca
+        color:
+        [
+            46
+            46
+            247
+        ]
+        country: portugal
+        planet: earth
+    }
+    {
+        identifier: castelo_branco
+        color:
+        [
+            46
+            132
+            137
+        ]
+        country: portugal
+        planet: earth
+    }
+    {
+        identifier: coimbra
+        color:
+        [
+            139
+            227
+            45
+        ]
+        country: portugal
+        planet: earth
+    }
+    {
+        identifier: evora
+        color:
+        [
+            46
+            175
+            82
+        ]
+        country: portugal
+        planet: earth
+    }
+    {
+        identifier: faro
+        color:
+        [
+            94
+            24
+            11
+        ]
+        country: portugal
+        planet: earth
+    }
+    {
+        identifier: guarda
+        color:
+        [
+            46
+            118
+            70
+        ]
+        country: portugal
+        planet: earth
+    }
+    {
+        identifier: leiria
+        color:
+        [
+            139
+            212
+            234
+        ]
+        country: portugal
+        planet: earth
+    }
+    {
+        identifier: lisboa
+        color:
+        [
+            139
+            184
+            100
+        ]
+        country: portugal
+        planet: earth
+    }
+    {
+        identifier: madeira
+        color:
+        [
+            157
+            125
+            225
+        ]
+        country: portugal
+        planet: earth
+    }
+    {
+        identifier: portalegre
+        color:
+        [
+            46
+            161
+            15
+        ]
+        country: portugal
+        planet: earth
+    }
+    {
+        identifier: porto
+        color:
+        [
+            139
+            255
+            179
+        ]
+        country: portugal
+        planet: earth
+    }
+    {
+        identifier: santarem
+        color:
+        [
+            139
+            198
+            167
+        ]
+        country: portugal
+        planet: earth
+    }
+    {
+        identifier: setubal
+        color:
+        [
+            139
+            170
+            33
+        ]
+        country: portugal
+        planet: earth
+    }
+    {
+        identifier: viana_do_castelo
+        color:
+        [
+            46
+            4
+            46
+        ]
+        country: portugal
+        planet: earth
+    }
+    {
+        identifier: vila_real
+        color:
+        [
+            46
+            61
+            58
+        ]
+        country: portugal
+        planet: earth
+    }
+    {
+        identifier: viseu
+        color:
+        [
+            198
+            126
+            129
+        ]
+        country: portugal
+        planet: earth
+    }
+]

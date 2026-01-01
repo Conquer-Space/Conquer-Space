@@ -1,0 +1,233 @@
+[
+    {
+        identifier: bjelovarsko-bilogorska
+        color:
+        [
+            209
+            248
+            107
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: brodsko-posavska_croatia
+        color:
+        [
+            48
+            91
+            44
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: brodsko-posavska_croatia_2
+        color:
+        [
+            210
+            20
+            241
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: dubrovacko-neretvanska
+        color:
+        [
+            40
+            71
+            57
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: grad_zagreb
+        color:
+        [
+            210
+            6
+            174
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: istarska
+        color:
+        [
+            29
+            220
+            72
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: karlovacka
+        color:
+        [
+            29
+            106
+            48
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: koprivnicko-krizevacka
+        color:
+        [
+            28
+            5
+            165
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: krapinsko-zagorska
+        color:
+        [
+            28
+            205
+            79
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: licko-senjska
+        color:
+        [
+            136
+            110
+            243
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: medimurska
+        color:
+        [
+            27
+            218
+            220
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: osjecko-baranjska
+        color:
+        [
+            28
+            34
+            43
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: primorsko-goranska
+        color:
+        [
+            29
+            134
+            182
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: sibensko-kninska
+        color:
+        [
+            136
+            96
+            176
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: sisacko-moslavacka
+        color:
+        [
+            48
+            62
+            166
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: splitsko-dalmatinska
+        color:
+        [
+            48
+            219
+            135
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: una-sana
+        color:
+        [
+            48
+            105
+            111
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: viroviticko-podravska
+        color:
+        [
+            27
+            247
+            98
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: vukovarsko-srijemska
+        color:
+        [
+            48
+            162
+            123
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: zadarska
+        color:
+        [
+            48
+            119
+            178
+        ]
+        country: croatia
+        planet: earth
+    }
+    {
+        identifier: zagrebacka
+        color:
+        [
+            29
+            34
+            225
+        ]
+        country: croatia
+        planet: earth
+    }
+]

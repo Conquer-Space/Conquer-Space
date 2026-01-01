@@ -1,0 +1,79 @@
+[
+    {
+        identifier: barisal
+        color:
+        [
+            121
+            71
+            195
+        ]
+        country: bangladesh
+        planet: earth
+    }
+    {
+        identifier: chittagong
+        color:
+        [
+            36
+            210
+            255
+        ]
+        country: bangladesh
+        planet: earth
+    }
+    {
+        identifier: dhaka
+        color:
+        [
+            71
+            107
+            134
+        ]
+        country: bangladesh
+        planet: earth
+    }
+    {
+        identifier: khulna
+        color:
+        [
+            71
+            150
+            79
+        ]
+        country: bangladesh
+        planet: earth
+    }
+    {
+        identifier: rajshahi
+        color:
+        [
+            71
+            136
+            12
+        ]
+        country: bangladesh
+        planet: earth
+    }
+    {
+        identifier: rangpur
+        color:
+        [
+            71
+            121
+            201
+        ]
+        country: bangladesh
+        planet: earth
+    }
+    {
+        identifier: sylhet
+        color:
+        [
+            71
+            79
+            0
+        ]
+        country: bangladesh
+        planet: earth
+    }
+]

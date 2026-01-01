@@ -1,0 +1,860 @@
+[
+    {
+        identifier: amnat_charoen
+        color:
+        [
+            61
+            100
+            106
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: ang_thong
+        color:
+        [
+            183
+            73
+            14
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: bangkok_metropolis
+        color:
+        [
+            122
+            100
+            255
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: bueng_kan
+        color:
+        [
+            61
+            0
+            149
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: buri_ram
+        color:
+        [
+            31
+            150
+            101
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: chachoengsao
+        color:
+        [
+            122
+            129
+            133
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: chai_nat
+        color:
+        [
+            183
+            58
+            203
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: chaiyaphum
+        color:
+        [
+            184
+            116
+            141
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: chanthaburi
+        color:
+        [
+            31
+            235
+            247
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: chiang_mai
+        color:
+        [
+            59
+            227
+            89
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: chiang_rai
+        color:
+        [
+            59
+            198
+            211
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: chon_buri
+        color:
+        [
+            122
+            143
+            200
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: chumphon
+        color:
+        [
+            60
+            128
+            58
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: kalasin
+        color:
+        [
+            183
+            158
+            160
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: kamphaeng_phet
+        color:
+        [
+            184
+            30
+            251
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: kanchanaburi
+        color:
+        [
+            60
+            42
+            168
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: khon_kaen
+        color:
+        [
+            183
+            1
+            191
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: krabi
+        color:
+        [
+            121
+            143
+            18
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: lampang
+        color:
+        [
+            184
+            45
+            62
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: lamphun
+        color:
+        [
+            184
+            145
+            19
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: loei
+        color:
+        [
+            60
+            242
+            82
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: lop_buri
+        color:
+        [
+            183
+            215
+            172
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: mae_hong_son
+        color:
+        [
+            59
+            241
+            156
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: maha_sarakham
+        color:
+        [
+            183
+            187
+            38
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: mukdahan
+        color:
+        [
+            61
+            86
+            39
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: nakhon_nayok
+        color:
+        [
+            183
+            115
+            215
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: nakhon_pathom
+        color:
+        [
+            184
+            16
+            184
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: nakhon_phanom
+        color:
+        [
+            61
+            43
+            94
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: nakhon_ratchasima
+        color:
+        [
+            183
+            101
+            148
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: nakhon_sawan
+        color:
+        [
+            184
+            73
+            196
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: nakhon_si_thammarat
+        color:
+        [
+            122
+            43
+            243
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: nan
+        color:
+        [
+            60
+            199
+            137
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: narathiwat
+        color:
+        [
+            32
+            250
+            240
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: nong_bua_lam_phu
+        color:
+        [
+            183
+            201
+            105
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: nong_khai
+        color:
+        [
+            61
+            29
+            27
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: nonthaburi
+        color:
+        [
+            184
+            2
+            117
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: pathum_thani
+        color:
+        [
+            183
+            130
+            26
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: pattani
+        color:
+        [
+            122
+            15
+            109
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: perlis
+        color:
+        [
+            32
+            165
+            94
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: phangnga
+        color:
+        [
+            121
+            128
+            207
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: phatthalung
+        color:
+        [
+            122
+            29
+            176
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: phayao
+        color:
+        [
+            60
+            185
+            70
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: phetchabun
+        color:
+        [
+            184
+            88
+            7
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: phetchaburi
+        color:
+        [
+            60
+            99
+            180
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: phichit
+        color:
+        [
+            184
+            102
+            74
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: phitsanulok
+        color:
+        [
+            60
+            228
+            15
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: phra_nakhon_si_ayutthaya
+        color:
+        [
+            183
+            244
+            50
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: phrae
+        color:
+        [
+            184
+            130
+            208
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: phuket
+        color:
+        [
+            162
+            43
+            221
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: prachin_buri
+        color:
+        [
+            184
+            159
+            86
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: prachuap_khiri_khan
+        color:
+        [
+            60
+            85
+            113
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: ranong
+        color:
+        [
+            60
+            142
+            125
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: ratchaburi
+        color:
+        [
+            60
+            113
+            247
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: rayong
+        color:
+        [
+            122
+            158
+            11
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: roi_et
+        color:
+        [
+            183
+            172
+            227
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: sa_kaeo
+        color:
+        [
+            31
+            136
+            34
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: sakon_nakhon
+        color:
+        [
+            183
+            16
+            2
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: samut_prakan
+        color:
+        [
+            122
+            115
+            66
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: samut_sakhon
+        color:
+        [
+            122
+            86
+            188
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: samut_songkhram
+        color:
+        [
+            122
+            72
+            121
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: saraburi
+        color:
+        [
+            183
+            87
+            81
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: satun
+        color:
+        [
+            32
+            179
+            161
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: si_sa_ket
+        color:
+        [
+            31
+            79
+            22
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: sing_buri
+        color:
+        [
+            183
+            44
+            136
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: songkhla
+        color:
+        [
+            32
+            193
+            228
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: sukhothai
+        color:
+        [
+            184
+            59
+            129
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: suphan_buri
+        color:
+        [
+            183
+            30
+            69
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: surat_thani
+        color:
+        [
+            122
+            58
+            54
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: surin
+        color:
+        [
+            31
+            50
+            144
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: tak
+        color:
+        [
+            60
+            28
+            101
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: trang
+        color:
+        [
+            121
+            157
+            85
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: trat
+        color:
+        [
+            31
+            178
+            235
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: ubon_ratchathani
+        color:
+        [
+            31
+            93
+            89
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: udon_thani
+        color:
+        [
+            183
+            229
+            239
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: uthai_thani
+        color:
+        [
+            183
+            144
+            93
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: uttaradit
+        color:
+        [
+            60
+            213
+            204
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: yala
+        color:
+        [
+            32
+            222
+            106
+        ]
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: yasothon
+        color:
+        [
+            184
+            173
+            153
+        ]
+        country: thailand
+        planet: earth
+    }
+]

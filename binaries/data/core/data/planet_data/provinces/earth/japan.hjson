@@ -1,0 +1,497 @@
+[
+    {
+        identifier: aichi
+        color:
+        [
+            120
+            128
+            25
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: akita
+        color:
+        [
+            119
+            241
+            123
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: aomori
+        color:
+        [
+            119
+            255
+            190
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: chiba
+        color:
+        [
+            120
+            71
+            13
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: ehime
+        color:
+        [
+            119
+            56
+            20
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: fukui
+        color:
+        [
+            119
+            170
+            44
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: fukuoka
+        color:
+        [
+            118
+            212
+            63
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: fukushima
+        color:
+        [
+            120
+            42
+            135
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: gifu
+        color:
+        [
+            205
+            74
+            111
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: gunma
+        color:
+        [
+            205
+            31
+            166
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: hiroshima
+        color:
+        [
+            120
+            199
+            104
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: hokkaido
+        color:
+        [
+            121
+            14
+            183
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: hyogo
+        color:
+        [
+            119
+            141
+            166
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: ibaraki
+        color:
+        [
+            120
+            56
+            202
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: ishikawa
+        color:
+        [
+            119
+            184
+            111
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: iwate
+        color:
+        [
+            120
+            14
+            1
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: kagawa
+        color:
+        [
+            119
+            41
+            209
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: kagoshima
+        color:
+        [
+            117
+            211
+            137
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: kanagawa
+        color:
+        [
+            120
+            99
+            147
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: kochi
+        color:
+        [
+            119
+            70
+            87
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: kumamoto
+        color:
+        [
+            118
+            255
+            8
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: mie
+        color:
+        [
+            120
+            142
+            92
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: miyagi
+        color:
+        [
+            120
+            28
+            68
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: miyazaki
+        color:
+        [
+            119
+            13
+            75
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: nagano
+        color:
+        [
+            205
+            45
+            233
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: nara
+        color:
+        [
+            205
+            131
+            123
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: niigata
+        color:
+        [
+            119
+            212
+            245
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: oita
+        color:
+        [
+            118
+            197
+            252
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: okayama
+        color:
+        [
+            120
+            185
+            37
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: okinawa
+        color:
+        [
+            162
+            72
+            99
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: osaka
+        color:
+        [
+            120
+            170
+            226
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: saga
+        color:
+        [
+            118
+            226
+            130
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: saitama
+        color:
+        [
+            205
+            102
+            245
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: shiga
+        color:
+        [
+            205
+            88
+            178
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: shimane
+        color:
+        [
+            119
+            84
+            154
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: shizuoka
+        color:
+        [
+            120
+            113
+            214
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: tochigi
+        color:
+        [
+            205
+            60
+            44
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: tokushima
+        color:
+        [
+            119
+            27
+            142
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: tokyo
+        color:
+        [
+            120
+            85
+            80
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: tottori
+        color:
+        [
+            119
+            127
+            99
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: toyama
+        color:
+        [
+            119
+            198
+            178
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: wakayama
+        color:
+        [
+            120
+            156
+            159
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: yamagata
+        color:
+        [
+            119
+            227
+            56
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: yamaguchi
+        color:
+        [
+            119
+            113
+            32
+        ]
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: yamanashi
+        color:
+        [
+            205
+            117
+            56
+        ]
+        country: japan
+        planet: earth
+    }
+]

@@ -1,0 +1,332 @@
+[
+    {
+        identifier: arusha
+        color:
+        [
+            84
+            230
+            220
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: dar-es-salaam
+        color:
+        [
+            98
+            226
+            141
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: dodoma
+        color:
+        [
+            185
+            45
+            244
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: geita
+        color:
+        [
+            228
+            105
+            12
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: iringa
+        color:
+        [
+            228
+            62
+            67
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: kagera
+        color:
+        [
+            64
+            45
+            128
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: kaskazini-pemba
+        color:
+        [
+            154
+            195
+            14
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: kaskazini-unguja
+        color:
+        [
+            154
+            152
+            69
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: katavi
+        color:
+        [
+            21
+            114
+            195
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: kigoma
+        color:
+        [
+            21
+            86
+            61
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: kilimanjaro
+        color:
+        [
+            84
+            245
+            31
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: kusini-pemba
+        color:
+        [
+            154
+            180
+            203
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: lindi
+        color:
+        [
+            98
+            198
+            7
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: manyara
+        color:
+        [
+            185
+            60
+            55
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: mara
+        color:
+        [
+            84
+            202
+            86
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: mbeya
+        color:
+        [
+            2
+            86
+            254
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: morogoro
+        color:
+        [
+            185
+            31
+            177
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: mtwara
+        color:
+        [
+            71
+            178
+            213
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: mwanza_tanzania
+        color:
+        [
+            228
+            76
+            134
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: njombe
+        color:
+        [
+            2
+            101
+            65
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: pwani
+        color:
+        [
+            98
+            212
+            74
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: rukwa
+        color:
+        [
+            21
+            129
+            6
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: ruvuma
+        color:
+        [
+            2
+            115
+            132
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: shinyanga
+        color:
+        [
+            228
+            119
+            79
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: simiyu
+        color:
+        [
+            228
+            90
+            201
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: singida
+        color:
+        [
+            228
+            33
+            189
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: tabora
+        color:
+        [
+            228
+            48
+            0
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: tanga
+        color:
+        [
+            85
+            3
+            98
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: zanzibar_south_and_central
+        color:
+        [
+            154
+            138
+            2
+        ]
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: zanzibar_west
+        color:
+        [
+            154
+            166
+            136
+        ]
+        country: tanzania
+        planet: earth
+    }
+]

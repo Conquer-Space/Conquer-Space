@@ -71,8 +71,8 @@ using client::components::Offset;
 using client::components::OrbitMesh;
 using client::components::PlanetTerrainRender;
 using client::components::PlanetTexture;
-using components::Habitation;
 using components::Name;
+using components::Settlements;
 
 using bodies::Body;
 using bodies::LightEmitter;
@@ -478,10 +478,10 @@ void SysStarSystemRenderer::DrawTerrainlessPlanet(const entt::entity& entity, gl
 void SysStarSystemRenderer::RenderCities(glm::vec3& object_pos, const entt::entity& body_entity) {
     ZoneScoped;
     // Draw Cities
-    if (!universe.all_of<Habitation>(body_entity)) {
+    if (!universe.all_of<Settlements>(body_entity)) {
         return;
     }
-    std::vector<entt::entity> cities = universe.get<Habitation>(body_entity).settlements;
+    std::vector<entt::entity> cities = universe.get<Settlements>(body_entity).settlements;
     if (cities.empty()) {
         return;
     }

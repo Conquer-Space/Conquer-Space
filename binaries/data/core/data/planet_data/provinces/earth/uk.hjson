@@ -1,0 +1,2466 @@
+[
+    {
+        identifier: aberdeen
+        color:
+        [
+            130
+            192
+            65
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: aberdeenshire
+        color:
+        [
+            130
+            177
+            254
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: akrotiri
+        color:
+        [
+            93
+            208
+            188
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: angus
+        color:
+        [
+            130
+            206
+            132
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: antrim
+        color:
+        [
+            219
+            169
+            245
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: ards
+        color:
+        [
+            126
+            46
+            203
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: argyll_and_bute
+        color:
+        [
+            130
+            135
+            53
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: ascension
+        color:
+        [
+            154
+            123
+            191
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: ballymena
+        color:
+        [
+            219
+            212
+            190
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: ballymoney
+        color:
+        [
+            219
+            198
+            123
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: banbridge
+        color:
+        [
+            219
+            155
+            178
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: barking_and_dagenham
+        color:
+        [
+            222
+            186
+            90
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: barnet
+        color:
+        [
+            221
+            0
+            61
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: barnsley
+        color:
+        [
+            251
+            121
+            102
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: bath_and_north_east_somerset
+        color:
+        [
+            224
+            30
+            229
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: bedford
+        color:
+        [
+            221
+            199
+            231
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: belfast
+        color:
+        [
+            126
+            18
+            69
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: bexley
+        color:
+        [
+            221
+            71
+            140
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: birmingham
+        color:
+        [
+            252
+            22
+            71
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: blackburn_with_darwen
+        color:
+        [
+            224
+            2
+            95
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: blaenau_gwent
+        color:
+        [
+            217
+            97
+            58
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: bolton
+        color:
+        [
+            251
+            149
+            236
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: bracknell_forest
+        color:
+        [
+            223
+            187
+            16
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: bradford
+        color:
+        [
+            251
+            92
+            224
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: brent
+        color:
+        [
+            221
+            142
+            219
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: bridgend
+        color:
+        [
+            129
+            91
+            182
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: brighton_and_hove
+        color:
+        [
+            128
+            76
+            189
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: bristol
+        color:
+        [
+            129
+            20
+            103
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: british_virgin_islands
+        color:
+        [
+            148
+            176
+            135
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: bromley
+        color:
+        [
+            223
+            58
+            181
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: buckinghamshire
+        color:
+        [
+            221
+            114
+            85
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: bury
+        color:
+        [
+            251
+            235
+            126
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: caerphilly
+        color:
+        [
+            217
+            68
+            180
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: calderdale
+        color:
+        [
+            224
+            59
+            107
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: cambridgeshire
+        color:
+        [
+            221
+            57
+            73
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: camden
+        color:
+        [
+            222
+            0
+            243
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: carmarthenshire
+        color:
+        [
+            129
+            134
+            127
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: carrickfergus
+        color:
+        [
+            125
+            245
+            191
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: castlereagh
+        color:
+        [
+            219
+            227
+            1
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: cayman_islands
+        color:
+        [
+            149
+            134
+            116
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: central_bedfordshire
+        color:
+        [
+            221
+            185
+            164
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: ceredigion
+        color:
+        [
+            129
+            163
+            5
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: cheshire_east
+        color:
+        [
+            222
+            214
+            224
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: cheshire_west_and_chester
+        color:
+        [
+            94
+            123
+            224
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: clackmannanshire
+        color:
+        [
+            126
+            203
+            172
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: coleraine
+        color:
+        [
+            125
+            202
+            246
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: conwy
+        color:
+        [
+            129
+            191
+            139
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: cornwall
+        color:
+        [
+            128
+            233
+            158
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: coventry
+        color:
+        [
+            252
+            8
+            4
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: craigavon
+        color:
+        [
+            219
+            141
+            111
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: croydon
+        color:
+        [
+            222
+            86
+            133
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: cumbria
+        color:
+        [
+            94
+            252
+            59
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: darlington
+        color:
+        [
+            220
+            99
+            92
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: denbighshire
+        color:
+        [
+            129
+            205
+            206
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: derby
+        color:
+        [
+            224
+            116
+            119
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: derbyshire
+        color:
+        [
+            222
+            229
+            35
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: derry
+        color:
+        [
+            18
+            41
+            82
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: devon
+        color:
+        [
+            128
+            190
+            213
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: dhekelia
+        color:
+        [
+            0
+            213
+            237
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: doncaster
+        color:
+        [
+            222
+            72
+            66
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: dorset
+        color:
+        [
+            128
+            148
+            12
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: down
+        color:
+        [
+            126
+            61
+            14
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: dudley
+        color:
+        [
+            252
+            50
+            205
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: dumfries_and_galloway
+        color:
+        [
+            95
+            10
+            126
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: dundee
+        color:
+        [
+            130
+            220
+            199
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: dungannon
+        color:
+        [
+            18
+            126
+            228
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: durham
+        color:
+        [
+            127
+            90
+            74
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: east_ayrshire
+        color:
+        [
+            219
+            70
+            32
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: east_dunbartonshire
+        color:
+        [
+            219
+            27
+            87
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: east_lothian
+        color:
+        [
+            127
+            33
+            62
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: east_renfrewshire
+        color:
+        [
+            219
+            55
+            221
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: east_riding_of_yorkshire
+        color:
+        [
+            127
+            147
+            86
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: east_sussex
+        color:
+        [
+            128
+            62
+            122
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: edinburgh
+        color:
+        [
+            127
+            4
+            184
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: eilean_siar
+        color:
+        [
+            161
+            0
+            94
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: enfield
+        color:
+        [
+            220
+            227
+            183
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: essex
+        color:
+        [
+            127
+            247
+            43
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: falkirk
+        color:
+        [
+            126
+            232
+            50
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: falkland_islands
+        color:
+        [
+            168
+            162
+            57
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: fermanagh
+        color:
+        [
+            18
+            69
+            216
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: fife
+        color:
+        [
+            130
+            249
+            77
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: flintshire
+        color:
+        [
+            94
+            109
+            157
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: gateshead
+        color:
+        [
+            220
+            170
+            171
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: glasgow
+        color:
+        [
+            219
+            41
+            154
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: gloucestershire
+        color:
+        [
+            94
+            209
+            114
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: greenwich
+        color:
+        [
+            222
+            157
+            212
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: gwynedd
+        color:
+        [
+            129
+            177
+            72
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: hackney
+        color:
+        [
+            222
+            172
+            23
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: halton_uk
+        color:
+        [
+            129
+            220
+            17
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: halton_uk_2
+        color:
+        [
+            129
+            234
+            84
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: hampshire
+        color:
+        [
+            128
+            105
+            67
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: hartlepool
+        color:
+        [
+            127
+            104
+            141
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: havering
+        color:
+        [
+            221
+            43
+            6
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: herefordshire
+        color:
+        [
+            94
+            180
+            236
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: hertfordshire
+        color:
+        [
+            220
+            241
+            250
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: highland
+        color:
+        [
+            130
+            149
+            120
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: hillingdon
+        color:
+        [
+            221
+            128
+            152
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: hounslow
+        color:
+        [
+            220
+            42
+            80
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: inverclyde
+        color:
+        [
+            130
+            92
+            108
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: isle_of_man
+        color:
+        [
+            160
+            213
+            149
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: isle_of_wight
+        color:
+        [
+            160
+            185
+            15
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: kent
+        color:
+        [
+            128
+            33
+            244
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: kingston_upon_hull
+        color:
+        [
+            127
+            161
+            153
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: kirklees
+        color:
+        [
+            224
+            73
+            174
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: knowsley
+        color:
+        [
+            129
+            248
+            151
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: lambeth
+        color:
+        [
+            222
+            43
+            188
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: lancashire
+        color:
+        [
+            130
+            35
+            96
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: larne
+        color:
+        [
+            125
+            231
+            124
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: leeds
+        color:
+        [
+            251
+            78
+            157
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: leicester
+        color:
+        [
+            224
+            102
+            52
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: leicestershire
+        color:
+        [
+            222
+            200
+            157
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: lewisham
+        color:
+        [
+            222
+            100
+            200
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: limavady
+        color:
+        [
+            125
+            188
+            179
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: lincolnshire
+        color:
+        [
+            127
+            204
+            98
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: lisburn
+        color:
+        [
+            219
+            184
+            56
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: liverpool
+        color:
+        [
+            130
+            6
+            218
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: luton
+        color:
+        [
+            221
+            157
+            30
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: magherafelt
+        color:
+        [
+            219
+            98
+            166
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: manchester_uk
+        color:
+        [
+            251
+            178
+            114
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: medway
+        color:
+        [
+            128
+            48
+            55
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: merseyside
+        color:
+        [
+            220
+            213
+            116
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: merthyr_tydfil
+        color:
+        [
+            218
+            254
+            209
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: mid_ulster
+        color:
+        [
+            219
+            127
+            44
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: middlesbrough
+        color:
+        [
+            220
+            113
+            159
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: midlothian
+        color:
+        [
+            127
+            18
+            251
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: milton_keynes
+        color:
+        [
+            221
+            100
+            18
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: monmouthshire
+        color:
+        [
+            94
+            195
+            47
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: moray
+        color:
+        [
+            130
+            163
+            187
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: moyle
+        color:
+        [
+            125
+            217
+            57
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: neath_port_talbot
+        color:
+        [
+            129
+            105
+            249
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: newcastle_upon_tyne
+        color:
+        [
+            220
+            184
+            238
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: newham
+        color:
+        [
+            222
+            143
+            145
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: newport
+        color:
+        [
+            129
+            48
+            237
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: newry_and_mourne
+        color:
+        [
+            18
+            155
+            106
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: newtownabbey
+        color:
+        [
+            126
+            4
+            2
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: norfolk
+        color:
+        [
+            127
+            218
+            165
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: north_ayshire
+        color:
+        [
+            130
+            78
+            41
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: north_caicos
+        color:
+        [
+            112
+            136
+            172
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: north_down
+        color:
+        [
+            126
+            32
+            136
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: north_east_lincolnshire
+        color:
+        [
+            127
+            190
+            31
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: north_lanarkshire
+        color:
+        [
+            219
+            13
+            20
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: north_lincolnshire
+        color:
+        [
+            127
+            175
+            220
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: north_somerset
+        color:
+        [
+            129
+            6
+            36
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: north_yorkshire
+        color:
+        [
+            127
+            133
+            19
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: northamptonshire
+        color:
+        [
+            221
+            242
+            176
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: northumberland
+        color:
+        [
+            94
+            237
+            248
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: nottingham
+        color:
+        [
+            224
+            87
+            241
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: nottinghamshire
+        color:
+        [
+            221
+            228
+            109
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: oldham
+        color:
+        [
+            251
+            192
+            181
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: omagh
+        color:
+        [
+            219
+            112
+            233
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: orkney
+        color:
+        [
+            161
+            28
+            228
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: oxfordshire
+        color:
+        [
+            223
+            101
+            126
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: pembrokeshire
+        color:
+        [
+            129
+            148
+            194
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: perthshire_and_kinross
+        color:
+        [
+            130
+            235
+            10
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: peterborough
+        color:
+        [
+            222
+            29
+            121
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: plymouth
+        color:
+        [
+            128
+            219
+            91
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: poole
+        color:
+        [
+            128
+            176
+            146
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: portsmouth
+        color:
+        [
+            128
+            119
+            134
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: powys
+        color:
+        [
+            94
+            166
+            169
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: providenciales_and_west_caicos
+        color:
+        [
+            112
+            93
+            227
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: reading
+        color:
+        [
+            223
+            229
+            217
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: redcar_and_cleveland
+        color:
+        [
+            127
+            118
+            208
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: renfrewshire
+        color:
+        [
+            130
+            106
+            175
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: rhondda_cynon_taff
+        color:
+        [
+            217
+            82
+            247
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: richmond_upon_thames
+        color:
+        [
+            220
+            127
+            226
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: rochdale
+        color:
+        [
+            251
+            206
+            248
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: rotherham
+        color:
+        [
+            222
+            243
+            102
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: royal_borough_of_windsor_and_maidenhead
+        color:
+        [
+            223
+            201
+            83
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: rutland
+        color:
+        [
+            221
+            214
+            42
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: saint_georges
+        color:
+        [
+            146
+            103
+            204
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: saint_helena
+        color:
+        [
+            154
+            38
+            45
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: salford
+        color:
+        [
+            251
+            135
+            169
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: sandwell
+        color:
+        [
+            252
+            36
+            138
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: sark
+        color:
+        [
+            160
+            170
+            204
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: scottish_borders
+        color:
+        [
+            94
+            223
+            181
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: sefton
+        color:
+        [
+            130
+            21
+            29
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: sheffield
+        color:
+        [
+            223
+            1
+            169
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: shetland_islands
+        color:
+        [
+            161
+            43
+            39
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: shropshire
+        color:
+        [
+            94
+            152
+            102
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: slough
+        color:
+        [
+            223
+            215
+            150
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: smith's
+        color:
+        [
+            152
+            79
+            138
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: solihull
+        color:
+        [
+            251
+            249
+            193
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: somerset
+        color:
+        [
+            128
+            247
+            225
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: south_ayrshire
+        color:
+        [
+            130
+            63
+            230
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: south_georgia_and_the_south_sandwich_islands
+        color:
+        [
+            168
+            133
+            179
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: south_gloucestershire
+        color:
+        [
+            129
+            34
+            170
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: south_lanarkshire
+        color:
+        [
+            219
+            84
+            99
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: south_tyneside
+        color:
+        [
+            127
+            61
+            196
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: southampton
+        color:
+        [
+            128
+            133
+            201
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: southend-on-sea
+        color:
+        [
+            128
+            5
+            110
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: staffordshire
+        color:
+        [
+            223
+            44
+            114
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: stirling
+        color:
+        [
+            126
+            217
+            239
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: stockport
+        color:
+        [
+            223
+            130
+            4
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: stockton-on-tees
+        color:
+        [
+            220
+            85
+            25
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: strabane
+        color:
+        [
+            18
+            55
+            149
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: suffolk
+        color:
+        [
+            127
+            232
+            232
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: sunderland
+        color:
+        [
+            127
+            76
+            7
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: surrey
+        color:
+        [
+            223
+            244
+            28
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: sutton
+        color:
+        [
+            221
+            85
+            207
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: swindon
+        color:
+        [
+            224
+            16
+            162
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: tameside
+        color:
+        [
+            251
+            221
+            59
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: telford_and_wrekin
+        color:
+        [
+            223
+            30
+            47
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: the_valley
+        color:
+        [
+            148
+            19
+            166
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: torbay
+        color:
+        [
+            128
+            205
+            24
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: torfaen
+        color:
+        [
+            218
+            240
+            142
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: trafford
+        color:
+        [
+            251
+            164
+            47
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: tristan_da_cunha
+        color:
+        [
+            153
+            165
+            210
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: vale_of_glamorgan
+        color:
+        [
+            129
+            77
+            115
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: wakefield
+        color:
+        [
+            251
+            107
+            35
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: walsall
+        color:
+        [
+            252
+            65
+            16
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: wandsworth
+        color:
+        [
+            219
+            241
+            68
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: warrington
+        color:
+        [
+            223
+            144
+            71
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: warwickshire
+        color:
+        [
+            223
+            87
+            59
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: west_berkshire
+        color:
+        [
+            223
+            158
+            138
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: west_dunbartonshire
+        color:
+        [
+            130
+            120
+            242
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: west_lothian
+        color:
+        [
+            126
+            246
+            117
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: west_sussex
+        color:
+        [
+            128
+            91
+            0
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: wigan
+        color:
+        [
+            223
+            115
+            193
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: wiltshire
+        color:
+        [
+            224
+            45
+            40
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: wokingham
+        color:
+        [
+            223
+            172
+            205
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: wolverhampton
+        color:
+        [
+            252
+            79
+            83
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: worcestershire
+        color:
+        [
+            223
+            72
+            248
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: wrexham
+        color:
+        [
+            94
+            138
+            35
+        ]
+        country: uk
+        planet: earth
+    }
+    {
+        identifier: york
+        color:
+        [
+            220
+            199
+            49
+        ]
+        country: uk
+        planet: earth
+    }
+]

@@ -1,0 +1,145 @@
+[
+    {
+        identifier: caprivi
+        color:
+        [
+            86
+            175
+            60
+        ]
+        country: namibia
+        planet: earth
+    }
+    {
+        identifier: erongo
+        color:
+        [
+            98
+            112
+            117
+        ]
+        country: namibia
+        planet: earth
+    }
+    {
+        identifier: hardap
+        color:
+        [
+            87
+            90
+            96
+        ]
+        country: namibia
+        planet: earth
+    }
+    {
+        identifier: karas
+        color:
+        [
+            4
+            216
+            197
+        ]
+        country: namibia
+        planet: earth
+    }
+    {
+        identifier: kavango
+        color:
+        [
+            86
+            160
+            249
+        ]
+        country: namibia
+        planet: earth
+    }
+    {
+        identifier: khomas
+        color:
+        [
+            233
+            80
+            20
+        ]
+        country: namibia
+        planet: earth
+    }
+    {
+        identifier: kunene
+        color:
+        [
+            86
+            103
+            237
+        ]
+        country: namibia
+        planet: earth
+    }
+    {
+        identifier: ohangwena
+        color:
+        [
+            86
+            146
+            182
+        ]
+        country: namibia
+        planet: earth
+    }
+    {
+        identifier: omaheke
+        color:
+        [
+            87
+            118
+            230
+        ]
+        country: namibia
+        planet: earth
+    }
+    {
+        identifier: omusati
+        color:
+        [
+            86
+            132
+            115
+        ]
+        country: namibia
+        planet: earth
+    }
+    {
+        identifier: oshana
+        color:
+        [
+            233
+            94
+            87
+        ]
+        country: namibia
+        planet: earth
+    }
+    {
+        identifier: oshikoto
+        color:
+        [
+            233
+            108
+            154
+        ]
+        country: namibia
+        planet: earth
+    }
+    {
+        identifier: otjozondjupa
+        color:
+        [
+            87
+            104
+            163
+        ]
+        country: namibia
+        planet: earth
+    }
+]

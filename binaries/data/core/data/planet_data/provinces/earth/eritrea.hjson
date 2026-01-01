@@ -1,0 +1,68 @@
+[
+    {
+        identifier: anseba
+        color:
+        [
+            208
+            90
+            212
+        ]
+        country: eritrea
+        planet: earth
+    }
+    {
+        identifier: debub
+        color:
+        [
+            92
+            22
+            159
+        ]
+        country: eritrea
+        planet: earth
+    }
+    {
+        identifier: debubawi_keyih_bahri
+        color:
+        [
+            21
+            157
+            140
+        ]
+        country: eritrea
+        planet: earth
+    }
+    {
+        identifier: gash_barka
+        color:
+        [
+            92
+            51
+            37
+        ]
+        country: eritrea
+        planet: earth
+    }
+    {
+        identifier: maekel
+        color:
+        [
+            92
+            79
+            171
+        ]
+        country: eritrea
+        planet: earth
+    }
+    {
+        identifier: semenawi_keyih_bahri
+        color:
+        [
+            92
+            36
+            226
+        ]
+        country: eritrea
+        planet: earth
+    }
+]

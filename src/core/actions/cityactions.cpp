@@ -26,7 +26,7 @@ Node CreateCity(Node& planet, components::types::SurfaceCoordinate coords) {
     Node city_node(planet.universe());
     city_node.emplace<components::Settlement>();
     city_node.emplace<components::types::SurfaceCoordinate>(coords);
-    planet.get_or_emplace<components::Habitation>().settlements.push_back(city_node);
+    planet.get_or_emplace<components::Settlements>().settlements.push_back(city_node);
     return city_node;
 }
 

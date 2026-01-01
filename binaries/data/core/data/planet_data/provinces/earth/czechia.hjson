@@ -1,0 +1,156 @@
+[
+    {
+        identifier: jihocesky
+        color:
+        [
+            7
+            119
+            18
+        ]
+        country: czechia
+        planet: earth
+    }
+    {
+        identifier: jihomoravsky
+        color:
+        [
+            21
+            186
+            18
+        ]
+        country: czechia
+        planet: earth
+    }
+    {
+        identifier: karlovarsky
+        color:
+        [
+            7
+            76
+            73
+        ]
+        country: czechia
+        planet: earth
+    }
+    {
+        identifier: kralovehradecky
+        color:
+        [
+            18
+            198
+            51
+        ]
+        country: czechia
+        planet: earth
+    }
+    {
+        identifier: liberecky
+        color:
+        [
+            7
+            62
+            6
+        ]
+        country: czechia
+        planet: earth
+    }
+    {
+        identifier: moravskoslezsky
+        color:
+        [
+            18
+            255
+            63
+        ]
+        country: czechia
+        planet: earth
+    }
+    {
+        identifier: olomoucky
+        color:
+        [
+            18
+            226
+            185
+        ]
+        country: czechia
+        planet: earth
+    }
+    {
+        identifier: pardubicky
+        color:
+        [
+            18
+            240
+            252
+        ]
+        country: czechia
+        planet: earth
+    }
+    {
+        identifier: plzensky
+        color:
+        [
+            7
+            104
+            207
+        ]
+        country: czechia
+        planet: earth
+    }
+    {
+        identifier: prague
+        color:
+        [
+            242
+            243
+            91
+        ]
+        country: czechia
+        planet: earth
+    }
+    {
+        identifier: stredocesky
+        color:
+        [
+            242
+            229
+            24
+        ]
+        country: czechia
+        planet: earth
+    }
+    {
+        identifier: ustecky
+        color:
+        [
+            7
+            33
+            128
+        ]
+        country: czechia
+        planet: earth
+    }
+    {
+        identifier: vysocina
+        color:
+        [
+            242
+            214
+            213
+        ]
+        country: czechia
+        planet: earth
+    }
+    {
+        identifier: zlinsky
+        color:
+        [
+            49
+            91
+            226
+        ]
+        country: czechia
+        planet: earth
+    }
+]

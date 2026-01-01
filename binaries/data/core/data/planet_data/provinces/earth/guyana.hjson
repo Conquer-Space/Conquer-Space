@@ -1,0 +1,112 @@
+[
+    {
+        identifier: barima-waini
+        color:
+        [
+            74
+            252
+            70
+        ]
+        country: guyana
+        planet: earth
+    }
+    {
+        identifier: cuyuni-mazaruni
+        color:
+        [
+            105
+            217
+            68
+        ]
+        country: guyana
+        planet: earth
+    }
+    {
+        identifier: demerara-mahaica
+        color:
+        [
+            101
+            200
+            41
+        ]
+        country: guyana
+        planet: earth
+    }
+    {
+        identifier: east_berbice-corentyne
+        color:
+        [
+            105
+            245
+            202
+        ]
+        country: guyana
+        planet: earth
+    }
+    {
+        identifier: essequibo_islands-west_demerara
+        color:
+        [
+            106
+            4
+            13
+        ]
+        country: guyana
+        planet: earth
+    }
+    {
+        identifier: mahaica-berbice
+        color:
+        [
+            2
+            243
+            223
+        ]
+        country: guyana
+        planet: earth
+    }
+    {
+        identifier: pomeroon-supenaam
+        color:
+        [
+            15
+            81
+            249
+        ]
+        country: guyana
+        planet: earth
+    }
+    {
+        identifier: potaro-siparuni
+        color:
+        [
+            15
+            110
+            127
+        ]
+        country: guyana
+        planet: earth
+    }
+    {
+        identifier: upper_demerara-berbice
+        color:
+        [
+            15
+            124
+            194
+        ]
+        country: guyana
+        planet: earth
+    }
+    {
+        identifier: upper_takutu-upper_essequibo
+        color:
+        [
+            105
+            231
+            135
+        ]
+        country: guyana
+        planet: earth
+    }
+]

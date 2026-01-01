@@ -1,0 +1,57 @@
+[
+    {
+        identifier: anse-la-raye
+        color:
+        [
+            145
+            3
+            65
+        ]
+        country: saint_lucia
+        planet: earth
+    }
+    {
+        identifier: castries
+        color:
+        [
+            144
+            244
+            254
+        ]
+        country: saint_lucia
+        planet: earth
+    }
+    {
+        identifier: micoud
+        color:
+        [
+            145
+            74
+            144
+        ]
+        country: saint_lucia
+        planet: earth
+    }
+    {
+        identifier: soufriere
+        color:
+        [
+            145
+            17
+            132
+        ]
+        country: saint_lucia
+        planet: earth
+    }
+    {
+        identifier: vieux_fort
+        color:
+        [
+            145
+            60
+            77
+        ]
+        country: saint_lucia
+        planet: earth
+    }
+]

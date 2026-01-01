@@ -1,0 +1,156 @@
+[
+    {
+        identifier: aleppo
+        color:
+        [
+            57
+            126
+            24
+        ]
+        country: syria
+        planet: earth
+    }
+    {
+        identifier: ar_raqqah
+        color:
+        [
+            57
+            97
+            146
+        ]
+        country: syria
+        planet: earth
+    }
+    {
+        identifier: as_suwayda'
+        color:
+        [
+            80
+            199
+            126
+        ]
+        country: syria
+        planet: earth
+    }
+    {
+        identifier: damascus
+        color:
+        [
+            243
+            87
+            48
+        ]
+        country: syria
+        planet: earth
+    }
+    {
+        identifier: dar`a
+        color:
+        [
+            80
+            213
+            193
+        ]
+        country: syria
+        planet: earth
+    }
+    {
+        identifier: dayr_az_zawr
+        color:
+        [
+            81
+            114
+            162
+        ]
+        country: syria
+        planet: earth
+    }
+    {
+        identifier: hamah
+        color:
+        [
+            185
+            145
+            201
+        ]
+        country: syria
+        planet: earth
+    }
+    {
+        identifier: hasaka_(al_haksa)
+        color:
+        [
+            57
+            69
+            12
+        ]
+        country: syria
+        planet: earth
+    }
+    {
+        identifier: homs_(hims)
+        color:
+        [
+            5
+            17
+            209
+        ]
+        country: syria
+        planet: earth
+    }
+    {
+        identifier: idlib
+        color:
+        [
+            57
+            183
+            36
+        ]
+        country: syria
+        planet: earth
+    }
+    {
+        identifier: lattakia
+        color:
+        [
+            57
+            197
+            103
+        ]
+        country: syria
+        planet: earth
+    }
+    {
+        identifier: quneitra
+        color:
+        [
+            93
+            194
+            121
+        ]
+        country: syria
+        planet: earth
+    }
+    {
+        identifier: rif_dimashq
+        color:
+        [
+            5
+            46
+            87
+        ]
+        country: syria
+        planet: earth
+    }
+    {
+        identifier: tartus
+        color:
+        [
+            5
+            32
+            20
+        ]
+        country: syria
+        planet: earth
+    }
+]

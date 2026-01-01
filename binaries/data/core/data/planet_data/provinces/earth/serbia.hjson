@@ -1,0 +1,299 @@
+[
+    {
+        identifier: bijelo_polje
+        color:
+        [
+            41
+            214
+            141
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: borski
+        color:
+        [
+            39
+            141
+            210
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: branicevski
+        color:
+        [
+            50
+            235
+            54
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: grad_beograd
+        color:
+        [
+            95
+            153
+            28
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: jablanicki
+        color:
+        [
+            39
+            227
+            100
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: juzno-backi
+        color:
+        [
+            49
+            34
+            214
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: juzno-banatski
+        color:
+        [
+            50
+            206
+            176
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: kolubarski
+        color:
+        [
+            195
+            10
+            71
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: kosovska_kamenica
+        color:
+        [
+            41
+            114
+            184
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: macvanski
+        color:
+        [
+            49
+            6
+            80
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: moravicki
+        color:
+        [
+            194
+            252
+            4
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: nisavski
+        color:
+        [
+            194
+            209
+            59
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: pcinjski
+        color:
+        [
+            39
+            56
+            64
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: pirotski
+        color:
+        [
+            39
+            170
+            88
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: podunavski
+        color:
+        [
+            95
+            167
+            95
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: pomoravski_serbia
+        color:
+        [
+            41
+            14
+            227
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: pomoravski_serbia_2
+        color:
+        [
+            194
+            223
+            126
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: raski
+        color:
+        [
+            41
+            0
+            160
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: severno-backi
+        color:
+        [
+            26
+            118
+            81
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: severno-banatski
+        color:
+        [
+            26
+            161
+            26
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: srednje-banatski
+        color:
+        [
+            50
+            192
+            109
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: sremski
+        color:
+        [
+            48
+            248
+            13
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: sumadijski
+        color:
+        [
+            194
+            237
+            193
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: toplicki
+        color:
+        [
+            41
+            29
+            38
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: zajecarski
+        color:
+        [
+            39
+            156
+            21
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: zapadno-backi
+        color:
+        [
+            26
+            146
+            215
+        ]
+        country: serbia
+        planet: earth
+    }
+    {
+        identifier: zlatiborski
+        color:
+        [
+            41
+            200
+            74
+        ]
+        country: serbia
+        planet: earth
+    }
+]

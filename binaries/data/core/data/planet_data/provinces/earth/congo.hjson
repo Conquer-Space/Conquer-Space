@@ -1,0 +1,134 @@
+[
+    {
+        identifier: bouenza
+        color:
+        [
+            4
+            45
+            161
+        ]
+        country: congo
+        planet: earth
+    }
+    {
+        identifier: brazzaville
+        color:
+        [
+            4
+            2
+            216
+        ]
+        country: congo
+        planet: earth
+    }
+    {
+        identifier: cuvette
+        color:
+        [
+            3
+            201
+            204
+        ]
+        country: congo
+        planet: earth
+    }
+    {
+        identifier: cuvette-ouest
+        color:
+        [
+            65
+            245
+            224
+        ]
+        country: congo
+        planet: earth
+    }
+    {
+        identifier: kinshasa_city
+        color:
+        [
+            4
+            17
+            27
+        ]
+        country: congo
+        planet: earth
+    }
+    {
+        identifier: kouilou
+        color:
+        [
+            27
+            190
+            86
+        ]
+        country: congo
+        planet: earth
+    }
+    {
+        identifier: lekoumou
+        color:
+        [
+            66
+            46
+            236
+        ]
+        country: congo
+        planet: earth
+    }
+    {
+        identifier: likouala
+        color:
+        [
+            3
+            173
+            70
+        ]
+        country: congo
+        planet: earth
+    }
+    {
+        identifier: niari
+        color:
+        [
+            4
+            59
+            228
+        ]
+        country: congo
+        planet: earth
+    }
+    {
+        identifier: plateaux_congo
+        color:
+        [
+            3
+            216
+            15
+        ]
+        country: congo
+        planet: earth
+    }
+    {
+        identifier: pool
+        color:
+        [
+            3
+            244
+            149
+        ]
+        country: congo
+        planet: earth
+    }
+    {
+        identifier: sangha
+        color:
+        [
+            65
+            217
+            90
+        ]
+        country: congo
+        planet: earth
+    }
+]

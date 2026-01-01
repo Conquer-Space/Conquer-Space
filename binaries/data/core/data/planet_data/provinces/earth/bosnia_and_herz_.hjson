@@ -1,0 +1,189 @@
+[
+    {
+        identifier: banja_luka
+        color:
+        [
+            48
+            76
+            233
+        ]
+        country: bosnia_and_herz_
+        planet: earth
+    }
+    {
+        identifier: bijeljina
+        color:
+        [
+            48
+            191
+            1
+        ]
+        country: bosnia_and_herz_
+        planet: earth
+    }
+    {
+        identifier: bosnian_podrinje
+        color:
+        [
+            95
+            138
+            217
+        ]
+        country: bosnia_and_herz_
+        planet: earth
+    }
+    {
+        identifier: brcko_distrikt
+        color:
+        [
+            48
+            176
+            190
+        ]
+        country: bosnia_and_herz_
+        planet: earth
+    }
+    {
+        identifier: central_bosnia
+        color:
+        [
+            95
+            67
+            138
+        ]
+        country: bosnia_and_herz_
+        planet: earth
+    }
+    {
+        identifier: doboj
+        color:
+        [
+            48
+            133
+            245
+        ]
+        country: bosnia_and_herz_
+        planet: earth
+    }
+    {
+        identifier: foca
+        color:
+        [
+            47
+            247
+            87
+        ]
+        country: bosnia_and_herz_
+        planet: earth
+    }
+    {
+        identifier: herzegovina-neretva
+        color:
+        [
+            40
+            99
+            191
+        ]
+        country: bosnia_and_herz_
+        planet: earth
+    }
+    {
+        identifier: posavina
+        color:
+        [
+            48
+            148
+            56
+        ]
+        country: bosnia_and_herz_
+        planet: earth
+    }
+    {
+        identifier: sarajevo
+        color:
+        [
+            95
+            124
+            150
+        ]
+        country: bosnia_and_herz_
+        planet: earth
+    }
+    {
+        identifier: sarajevo-romanija
+        color:
+        [
+            95
+            110
+            83
+        ]
+        country: bosnia_and_herz_
+        planet: earth
+    }
+    {
+        identifier: trebinje
+        color:
+        [
+            40
+            114
+            2
+        ]
+        country: bosnia_and_herz_
+        planet: earth
+    }
+    {
+        identifier: tuzla
+        color:
+        [
+            95
+            96
+            16
+        ]
+        country: bosnia_and_herz_
+        planet: earth
+    }
+    {
+        identifier: vlasenica
+        color:
+        [
+            49
+            20
+            147
+        ]
+        country: bosnia_and_herz_
+        planet: earth
+    }
+    {
+        identifier: west_bosnia
+        color:
+        [
+            48
+            205
+            68
+        ]
+        country: bosnia_and_herz_
+        planet: earth
+    }
+    {
+        identifier: west_herzegovina
+        color:
+        [
+            48
+            233
+            202
+        ]
+        country: bosnia_and_herz_
+        planet: earth
+    }
+    {
+        identifier: zenica-doboj
+        color:
+        [
+            95
+            81
+            205
+        ]
+        country: bosnia_and_herz_
+        planet: earth
+    }
+]

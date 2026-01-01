@@ -1,0 +1,101 @@
+[
+    {
+        identifier: bafing
+        color:
+        [
+            24
+            116
+            229
+        ]
+        country: c�te_d'ivoire
+        planet: earth
+    }
+    {
+        identifier: bas-sassandra
+        color:
+        [
+            69
+            191
+            172
+        ]
+        country: c�te_d'ivoire
+        planet: earth
+    }
+    {
+        identifier: cavally
+        color:
+        [
+            69
+            163
+            38
+        ]
+        country: c�te_d'ivoire
+        planet: earth
+    }
+    {
+        identifier: comoe
+        color:
+        [
+            68
+            105
+            100
+        ]
+        country: c�te_d'ivoire
+        planet: earth
+    }
+    {
+        identifier: denguele
+        color:
+        [
+            24
+            59
+            217
+        ]
+        country: c�te_d'ivoire
+        planet: earth
+    }
+    {
+        identifier: dix-huit_montagnes
+        color:
+        [
+            24
+            131
+            40
+        ]
+        country: c�te_d'ivoire
+        planet: earth
+    }
+    {
+        identifier: lagunes
+        color:
+        [
+            110
+            78
+            52
+        ]
+        country: c�te_d'ivoire
+        planet: earth
+    }
+    {
+        identifier: sud-bandama
+        color:
+        [
+            110
+            63
+            241
+        ]
+        country: c�te_d'ivoire
+        planet: earth
+    }
+    {
+        identifier: sud-comoe
+        color:
+        [
+            68
+            133
+            234
+        ]
+        country: c�te_d'ivoire
+        planet: earth
+    }
+]

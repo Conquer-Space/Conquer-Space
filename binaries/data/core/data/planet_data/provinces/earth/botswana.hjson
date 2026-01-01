@@ -1,0 +1,123 @@
+[
+    {
+        identifier: central_botswana
+        color:
+        [
+            30
+            178
+            53
+        ]
+        country: botswana
+        planet: earth
+    }
+    {
+        identifier: gaborone
+        color:
+        [
+            212
+            164
+            251
+        ]
+        country: botswana
+        planet: earth
+    }
+    {
+        identifier: ghanzi
+        color:
+        [
+            87
+            133
+            41
+        ]
+        country: botswana
+        planet: earth
+    }
+    {
+        identifier: jwaneng
+        color:
+        [
+            212
+            179
+            62
+        ]
+        country: botswana
+        planet: earth
+    }
+    {
+        identifier: kgalagadi
+        color:
+        [
+            63
+            116
+            25
+        ]
+        country: botswana
+        planet: earth
+    }
+    {
+        identifier: kgatleng
+        color:
+        [
+            63
+            59
+            13
+        ]
+        country: botswana
+        planet: earth
+    }
+    {
+        identifier: kweneng
+        color:
+        [
+            212
+            150
+            184
+        ]
+        country: botswana
+        planet: earth
+    }
+    {
+        identifier: north-east
+        color:
+        [
+            30
+            206
+            187
+        ]
+        country: botswana
+        planet: earth
+    }
+    {
+        identifier: north-west
+        color:
+        [
+            30
+            149
+            175
+        ]
+        country: botswana
+        planet: earth
+    }
+    {
+        identifier: south-east
+        color:
+        [
+            63
+            87
+            147
+        ]
+        country: botswana
+        planet: earth
+    }
+    {
+        identifier: southern_botswana
+        color:
+        [
+            63
+            101
+            214
+        ]
+        country: botswana
+        planet: earth
+    }
+]

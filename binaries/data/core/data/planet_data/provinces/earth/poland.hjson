@@ -1,0 +1,178 @@
+[
+    {
+        identifier: greater_poland
+        color:
+        [
+            231
+            178
+            125
+        ]
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: kuyavian-pomeranian
+        color:
+        [
+            231
+            164
+            58
+        ]
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: lesser_poland
+        color:
+        [
+            17
+            240
+            70
+        ]
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: lodz
+        color:
+        [
+            231
+            149
+            247
+        ]
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: lower_silesian
+        color:
+        [
+            18
+            183
+            240
+        ]
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: lublin
+        color:
+        [
+            53
+            108
+            253
+        ]
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: lubusz
+        color:
+        [
+            49
+            205
+            250
+        ]
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: masovian
+        color:
+        [
+            231
+            135
+            180
+        ]
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: opole
+        color:
+        [
+            18
+            212
+            118
+        ]
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: podlachian
+        color:
+        [
+            23
+            44
+            224
+        ]
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: pomeranian
+        color:
+        [
+            78
+            26
+            238
+        ]
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: silesian
+        color:
+        [
+            17
+            226
+            3
+        ]
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: subcarpathian
+        color:
+        [
+            18
+            12
+            204
+        ]
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: swietokrzyskie
+        color:
+        [
+            231
+            192
+            192
+        ]
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: warmian-masurian
+        color:
+        [
+            23
+            59
+            35
+        ]
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: west_pomeranian
+        color:
+        [
+            49
+            234
+            128
+        ]
+        country: poland
+        planet: earth
+    }
+]

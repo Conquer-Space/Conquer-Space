@@ -1,0 +1,68 @@
+[
+    {
+        identifier: an_nabatiyah
+        color:
+        [
+            1
+            114
+            206
+        ]
+        country: lebanon
+        planet: earth
+    }
+    {
+        identifier: beqaa
+        color:
+        [
+            4
+            245
+            75
+        ]
+        country: lebanon
+        planet: earth
+    }
+    {
+        identifier: hazafon
+        color:
+        [
+            1
+            43
+            127
+        ]
+        country: lebanon
+        planet: earth
+    }
+    {
+        identifier: mount_lebanon
+        color:
+        [
+            135
+            124
+            128
+        ]
+        country: lebanon
+        planet: earth
+    }
+    {
+        identifier: north_lebanon
+        color:
+        [
+            5
+            3
+            142
+        ]
+        country: lebanon
+        planet: earth
+    }
+    {
+        identifier: south_lebanon
+        color:
+        [
+            1
+            129
+            17
+        ]
+        country: lebanon
+        planet: earth
+    }
+]

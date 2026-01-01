@@ -1,0 +1,101 @@
+[
+    {
+        identifier: central_solomon_is_
+        color:
+        [
+            164
+            88
+            18
+        ]
+        country: solomon_is_
+        planet: earth
+    }
+    {
+        identifier: choiseul
+        color:
+        [
+            170
+            78
+            19
+        ]
+        country: solomon_is_
+        planet: earth
+    }
+    {
+        identifier: guadalcanal
+        color:
+        [
+            164
+            73
+            207
+        ]
+        country: solomon_is_
+        planet: earth
+    }
+    {
+        identifier: isabel
+        color:
+        [
+            164
+            145
+            30
+        ]
+        country: solomon_is_
+        planet: earth
+    }
+    {
+        identifier: makira
+        color:
+        [
+            164
+            16
+            195
+        ]
+        country: solomon_is_
+        planet: earth
+    }
+    {
+        identifier: malaita
+        color:
+        [
+            164
+            45
+            73
+        ]
+        country: solomon_is_
+        planet: earth
+    }
+    {
+        identifier: rennell_and_bellona
+        color:
+        [
+            163
+            244
+            61
+        ]
+        country: solomon_is_
+        planet: earth
+    }
+    {
+        identifier: temotu
+        color:
+        [
+            164
+            31
+            6
+        ]
+        country: solomon_is_
+        planet: earth
+    }
+    {
+        identifier: western_solomon_is_
+        color:
+        [
+            164
+            116
+            152
+        ]
+        country: solomon_is_
+        planet: earth
+    }
+]

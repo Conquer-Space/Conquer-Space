@@ -1,0 +1,90 @@
+[
+    {
+        identifier: batken
+        color:
+        [
+            17
+            197
+            125
+        ]
+        country: kyrgyzstan
+        planet: earth
+    }
+    {
+        identifier: bishkek
+        color:
+        [
+            204
+            116
+            130
+        ]
+        country: kyrgyzstan
+        planet: earth
+    }
+    {
+        identifier: chuy
+        color:
+        [
+            15
+            39
+            48
+        ]
+        country: kyrgyzstan
+        planet: earth
+    }
+    {
+        identifier: jalal-abad
+        color:
+        [
+            17
+            140
+            113
+        ]
+        country: kyrgyzstan
+        planet: earth
+    }
+    {
+        identifier: naryn
+        color:
+        [
+            14
+            195
+            91
+        ]
+        country: kyrgyzstan
+        planet: earth
+    }
+    {
+        identifier: osh
+        color:
+        [
+            14
+            209
+            158
+        ]
+        country: kyrgyzstan
+        planet: earth
+    }
+    {
+        identifier: talas
+        color:
+        [
+            15
+            53
+            115
+        ]
+        country: kyrgyzstan
+        planet: earth
+    }
+    {
+        identifier: ysyk-kol
+        color:
+        [
+            14
+            181
+            24
+        ]
+        country: kyrgyzstan
+        planet: earth
+    }
+]

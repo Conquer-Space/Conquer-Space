@@ -30,19 +30,19 @@ class SysProvinceInformation : public SysUserInterface {
 
  private:
     void ProvinceView();
-    void CityView();
 
-    void CityIndustryTabs();
+    void ProvinceIndustryTabs();
     void DemographicsTab();
     void IndustryTab();
     void SpacePortTab();
-    void SpacePortOrdersTab();
-    void SpacePortResourceTab();
-    void LaunchTab();
-    void DockedTab();
+    void SpacePortOrdersTab(const entt::entity city);
+    void SpacePortResourceTab(const entt::entity city);
+    void LaunchTab(const entt::entity city);
+    void DockedTab(const entt::entity city);
     void InfrastructureTab();
     void IndustryListWindow();
     void DisplayWallet(entt::entity entity);
+    bool HasSpacePort(const entt::entity entity);
 
     template <typename T>
     void IndustryTabGenericChild(const std::string& tabname, const std::string& industryname, const ImVec2& size);
@@ -57,7 +57,7 @@ class SysProvinceInformation : public SysUserInterface {
     entt::entity selected_ship = entt::null;
     bool city_factory_info = false;
 
-    enum ViewMode { COUNTRY_VIEW, CITY_VIEW } view_mode = ViewMode::COUNTRY_VIEW;
+    enum class ViewMode { COUNTRY_VIEW, CITY_VIEW } view_mode = ViewMode::COUNTRY_VIEW;
 };
 
 }  // namespace cqsp::client::systems

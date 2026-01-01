@@ -1,0 +1,893 @@
+[
+    {
+        identifier: adana
+        color:
+        [
+            135
+            110
+            61
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: adiyaman
+        color:
+        [
+            227
+            204
+            43
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: afyonkarahisar
+        color:
+        [
+            226
+            146
+            105
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: agri
+        color:
+        [
+            23
+            2
+            23
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: aksaray
+        color:
+        [
+            226
+            46
+            148
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: amasya
+        color:
+        [
+            185
+            17
+            110
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: ankara
+        color:
+        [
+            181
+            214
+            64
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: antalya
+        color:
+        [
+            135
+            81
+            183
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: ardahan
+        color:
+        [
+            14
+            24
+            55
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: artvin
+        color:
+        [
+            14
+            52
+            189
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: aydin
+        color:
+        [
+            135
+            53
+            49
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: balikesir
+        color:
+        [
+            135
+            24
+            171
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: bartin
+        color:
+        [
+            134
+            180
+            214
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: batman
+        color:
+        [
+            227
+            232
+            177
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: bayburt
+        color:
+        [
+            228
+            5
+            55
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: bilecik
+        color:
+        [
+            181
+            228
+            131
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: bingol
+        color:
+        [
+            227
+            4
+            129
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: bitlis
+        color:
+        [
+            226
+            246
+            62
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: bolu
+        color:
+        [
+            181
+            199
+            253
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: burdur
+        color:
+        [
+            226
+            32
+            81
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: bursa
+        color:
+        [
+            135
+            10
+            104
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: canakkale
+        color:
+        [
+            126
+            189
+            105
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: cankiri
+        color:
+        [
+            182
+            1
+            9
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: corum
+        color:
+        [
+            185
+            3
+            43
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: denizli
+        color:
+        [
+            226
+            18
+            14
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: diyarbakir
+        color:
+        [
+            227
+            218
+            110
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: duzce
+        color:
+        [
+            134
+            209
+            92
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: edirne
+        color:
+        [
+            31
+            7
+            199
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: elazig
+        color:
+        [
+            226
+            231
+            251
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: erzincan
+        color:
+        [
+            226
+            117
+            227
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: erzurum
+        color:
+        [
+            226
+            203
+            117
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: eskisehir
+        color:
+        [
+            181
+            242
+            198
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: gaziantep
+        color:
+        [
+            57
+            154
+            158
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: giresun
+        color:
+        [
+            134
+            109
+            135
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: gumushane
+        color:
+        [
+            228
+            19
+            122
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: hakkari
+        color:
+        [
+            21
+            243
+            30
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: hatay
+        color:
+        [
+            57
+            168
+            225
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: igdir
+        color:
+        [
+            22
+            243
+            212
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: isparta
+        color:
+        [
+            225
+            245
+            136
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: istanbul
+        color:
+        [
+            126
+            160
+            227
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: izmir
+        color:
+        [
+            135
+            38
+            238
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: k_maras
+        color:
+        [
+            226
+            174
+            239
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: karabuk
+        color:
+        [
+            182
+            15
+            76
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: karaman
+        color:
+        [
+            225
+            202
+            191
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: kars
+        color:
+        [
+            54
+            109
+            179
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: kastamonu
+        color:
+        [
+            134
+            166
+            147
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: kayseri
+        color:
+        [
+            225
+            231
+            69
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: kilis
+        color:
+        [
+            57
+            140
+            91
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: kinkkale
+        color:
+        [
+            226
+            160
+            172
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: kirklareli
+        color:
+        [
+            30
+            235
+            65
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: kirsehir
+        color:
+        [
+            226
+            89
+            93
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: kocaeli
+        color:
+        [
+            134
+            237
+            226
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: konya
+        color:
+        [
+            225
+            188
+            124
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: kutahya
+        color:
+        [
+            225
+            174
+            57
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: malatya
+        color:
+        [
+            226
+            217
+            184
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: manisa
+        color:
+        [
+            226
+            3
+            203
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: mardin
+        color:
+        [
+            57
+            83
+            79
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: mersin
+        color:
+        [
+            135
+            95
+            250
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: mugla
+        color:
+        [
+            135
+            67
+            116
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: mus
+        color:
+        [
+            226
+            189
+            50
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: nevsehir
+        color:
+        [
+            226
+            60
+            215
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: nigde
+        color:
+        [
+            225
+            217
+            2
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: ordu
+        color:
+        [
+            134
+            123
+            202
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: osmaniye
+        color:
+        [
+            227
+            189
+            232
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: rize
+        color:
+        [
+            134
+            81
+            1
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: sakarya
+        color:
+        [
+            134
+            223
+            159
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: samsun
+        color:
+        [
+            134
+            138
+            13
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: sanliurfa
+        color:
+        [
+            57
+            111
+            213
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: siirt
+        color:
+        [
+            227
+            246
+            244
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: sinop
+        color:
+        [
+            134
+            152
+            80
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: sirnak
+        color:
+        [
+            21
+            228
+            219
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: sivas
+        color:
+        [
+            184
+            244
+            232
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: tekirdag
+        color:
+        [
+            126
+            175
+            38
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: tokat
+        color:
+        [
+            184
+            230
+            165
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: trabzon
+        color:
+        [
+            134
+            95
+            68
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: tunceli
+        color:
+        [
+            226
+            132
+            38
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: usak
+        color:
+        [
+            226
+            103
+            160
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: van
+        color:
+        [
+            23
+            16
+            90
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: yalova
+        color:
+        [
+            134
+            252
+            37
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: yozgat
+        color:
+        [
+            226
+            75
+            26
+        ]
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: zinguldak
+        color:
+        [
+            134
+            195
+            25
+        ]
+        country: turkey
+        planet: earth
+    }
+]

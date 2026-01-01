@@ -1,0 +1,134 @@
+[
+    {
+        identifier: ajlun
+        color:
+        [
+            205
+            3
+            32
+        ]
+        country: jordan
+        planet: earth
+    }
+    {
+        identifier: amman
+        color:
+        [
+            81
+            57
+            150
+        ]
+        country: jordan
+        planet: earth
+    }
+    {
+        identifier: aqaba
+        color:
+        [
+            58
+            126
+            206
+        ]
+        country: jordan
+        planet: earth
+    }
+    {
+        identifier: balqa
+        color:
+        [
+            58
+            141
+            17
+        ]
+        country: jordan
+        planet: earth
+    }
+    {
+        identifier: irbid
+        color:
+        [
+            58
+            69
+            194
+        ]
+        country: jordan
+        planet: earth
+    }
+    {
+        identifier: jarash
+        color:
+        [
+            205
+            17
+            99
+        ]
+        country: jordan
+        planet: earth
+    }
+    {
+        identifier: karak
+        color:
+        [
+            58
+            98
+            72
+        ]
+        country: jordan
+        planet: earth
+    }
+    {
+        identifier: ma`an
+        color:
+        [
+            81
+            43
+            83
+        ]
+        country: jordan
+        planet: earth
+    }
+    {
+        identifier: madaba
+        color:
+        [
+            58
+            84
+            5
+        ]
+        country: jordan
+        planet: earth
+    }
+    {
+        identifier: mafraq
+        color:
+        [
+            80
+            185
+            59
+        ]
+        country: jordan
+        planet: earth
+    }
+    {
+        identifier: tafilah
+        color:
+        [
+            58
+            112
+            139
+        ]
+        country: jordan
+        planet: earth
+    }
+    {
+        identifier: zarqa
+        color:
+        [
+            81
+            71
+            217
+        ]
+        country: jordan
+        planet: earth
+    }
+]

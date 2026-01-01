@@ -1,0 +1,354 @@
+[
+    {
+        identifier: alborz
+        color:
+        [
+            238
+            154
+            241
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: ardebil
+        color:
+        [
+            54
+            152
+            124
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: bushehr
+        color:
+        [
+            117
+            240
+            15
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: chahar_mahall_and_bakhtiari
+        color:
+        [
+            238
+            26
+            150
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: east_azarbaijan
+        color:
+        [
+            54
+            95
+            112
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: esfahan
+        color:
+        [
+            238
+            12
+            83
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: fars
+        color:
+        [
+            238
+            55
+            28
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: gilan
+        color:
+        [
+            55
+            39
+            26
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: golestan
+        color:
+        [
+            78
+            226
+            152
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: hamadan
+        color:
+        [
+            238
+            83
+            162
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: hormozgan
+        color:
+        [
+            117
+            254
+            82
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: ilam
+        color:
+        [
+            58
+            12
+            182
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: kerman
+        color:
+        [
+            238
+            69
+            95
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: kermanshah
+        color:
+        [
+            57
+            240
+            48
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: khuzestan
+        color:
+        [
+            58
+            55
+            127
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: kohgiluyeh_and_buyer_ahmad
+        color:
+        [
+            238
+            40
+            217
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: kordestan
+        color:
+        [
+            57
+            225
+            237
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: lorestan
+        color:
+        [
+            238
+            97
+            229
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: markazi
+        color:
+        [
+            237
+            254
+            16
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: mazandaran
+        color:
+        [
+            153
+            108
+            198
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: north_khorasan
+        color:
+        [
+            78
+            212
+            85
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: qazvin
+        color:
+        [
+            185
+            103
+            0
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: qom
+        color:
+        [
+            238
+            126
+            107
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: razavi_khorasan
+        color:
+        [
+            78
+            240
+            219
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: semnan
+        color:
+        [
+            185
+            74
+            122
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: sistan_and_baluchestan
+        color:
+        [
+            79
+            27
+            164
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: south_khorasan
+        color:
+        [
+            78
+            255
+            30
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: tehran
+        color:
+        [
+            238
+            140
+            174
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: west_azarbaijan
+        color:
+        [
+            22
+            229
+            145
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: yardimli
+        color:
+        [
+            54
+            209
+            136
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: yazd
+        color:
+        [
+            238
+            112
+            40
+        ]
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: zanjan
+        color:
+        [
+            185
+            88
+            189
+        ]
+        country: iran
+        planet: earth
+    }
+]

@@ -1,0 +1,189 @@
+[
+    {
+        identifier: artemisa
+        color:
+        [
+            171
+            150
+            24
+        ]
+        country: cuba
+        planet: earth
+    }
+    {
+        identifier: camaguey
+        color:
+        [
+            150
+            135
+            42
+        ]
+        country: cuba
+        planet: earth
+    }
+    {
+        identifier: ciego_de_avila
+        color:
+        [
+            150
+            149
+            109
+        ]
+        country: cuba
+        planet: earth
+    }
+    {
+        identifier: cienfuegos
+        color:
+        [
+            171
+            178
+            158
+        ]
+        country: cuba
+        planet: earth
+    }
+    {
+        identifier: ciudad_de_la_habana
+        color:
+        [
+            171
+            135
+            213
+        ]
+        country: cuba
+        planet: earth
+    }
+    {
+        identifier: granma
+        color:
+        [
+            171
+            192
+            225
+        ]
+        country: cuba
+        planet: earth
+    }
+    {
+        identifier: guantanamo
+        color:
+        [
+            40
+            213
+            215
+        ]
+        country: cuba
+        planet: earth
+    }
+    {
+        identifier: guantanamo_bay_usnb
+        color:
+        [
+            40
+            199
+            148
+        ]
+        country: cuba
+        planet: earth
+    }
+    {
+        identifier: holguin
+        color:
+        [
+            150
+            163
+            176
+        ]
+        country: cuba
+        planet: earth
+    }
+    {
+        identifier: isla_de_la_juventud
+        color:
+        [
+            150
+            192
+            54
+        ]
+        country: cuba
+        planet: earth
+    }
+    {
+        identifier: las_tunas
+        color:
+        [
+            171
+            107
+            79
+        ]
+        country: cuba
+        planet: earth
+    }
+    {
+        identifier: matanzas
+        color:
+        [
+            150
+            249
+            66
+        ]
+        country: cuba
+        planet: earth
+    }
+    {
+        identifier: mayabeque
+        color:
+        [
+            171
+            121
+            146
+        ]
+        country: cuba
+        planet: earth
+    }
+    {
+        identifier: pinar_del_rio
+        color:
+        [
+            171
+            164
+            91
+        ]
+        country: cuba
+        planet: earth
+    }
+    {
+        identifier: sancti_spiritus
+        color:
+        [
+            150
+            220
+            188
+        ]
+        country: cuba
+        planet: earth
+    }
+    {
+        identifier: santiago_de_cuba
+        color:
+        [
+            171
+            207
+            36
+        ]
+        country: cuba
+        planet: earth
+    }
+    {
+        identifier: villa_clara
+        color:
+        [
+            150
+            234
+            255
+        ]
+        country: cuba
+        planet: earth
+    }
+]

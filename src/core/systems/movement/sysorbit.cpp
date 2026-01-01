@@ -175,7 +175,7 @@ void SysOrbit::UpdateCommandQueue(Orbit& orb, entt::entity body, entt::entity pa
         return;
     }
     if (GetUniverse().date.ToSecond() - command.time > Interval()) {
-        SPDLOG_INFO("Negative time? {}", GetUniverse().date.ToSecond() - command.time);
+        SPDLOG_TRACE("Negative maneuver time? {}", GetUniverse().date.ToSecond() - command.time);
     }
     if (GetUniverse().any_of<components::ships::Crash>(body)) {
         // If crashed

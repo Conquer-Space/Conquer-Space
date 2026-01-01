@@ -1,0 +1,123 @@
+[
+    {
+        identifier: aragatsotn
+        color:
+        [
+            54
+            123
+            246
+        ]
+        country: armenia
+        planet: earth
+    }
+    {
+        identifier: ararat
+        color:
+        [
+            16
+            182
+            132
+        ]
+        country: armenia
+        planet: earth
+    }
+    {
+        identifier: armavir
+        color:
+        [
+            54
+            138
+            57
+        ]
+        country: armenia
+        planet: earth
+    }
+    {
+        identifier: erevan
+        color:
+        [
+            214
+            109
+            91
+        ]
+        country: armenia
+        planet: earth
+    }
+    {
+        identifier: gegharkunik
+        color:
+        [
+            16
+            54
+            41
+        ]
+        country: armenia
+        planet: earth
+    }
+    {
+        identifier: kotayk
+        color:
+        [
+            214
+            95
+            24
+        ]
+        country: armenia
+        planet: earth
+    }
+    {
+        identifier: lori
+        color:
+        [
+            14
+            252
+            103
+        ]
+        country: armenia
+        planet: earth
+    }
+    {
+        identifier: shirak
+        color:
+        [
+            15
+            10
+            170
+        ]
+        country: armenia
+        planet: earth
+    }
+    {
+        identifier: syunik
+        color:
+        [
+            16
+            111
+            53
+        ]
+        country: armenia
+        planet: earth
+    }
+    {
+        identifier: tavush
+        color:
+        [
+            14
+            223
+            225
+        ]
+        country: armenia
+        planet: earth
+    }
+    {
+        identifier: vayots_dzor
+        color:
+        [
+            16
+            96
+            242
+        ]
+        country: armenia
+        planet: earth
+    }
+]

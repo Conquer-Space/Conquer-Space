@@ -1,0 +1,57 @@
+[
+    {
+        identifier: aimeliik
+        color:
+        [
+            170
+            149
+            98
+        ]
+        country: palau
+        planet: earth
+    }
+    {
+        identifier: angaur
+        color:
+        [
+            173
+            180
+            10
+        ]
+        country: palau
+        planet: earth
+    }
+    {
+        identifier: kayangel
+        color:
+        [
+            176
+            196
+            111
+        ]
+        country: palau
+        planet: earth
+    }
+    {
+        identifier: melekeok
+        color:
+        [
+            170
+            192
+            43
+        ]
+        country: palau
+        planet: earth
+    }
+    {
+        identifier: ngardmau
+        color:
+        [
+            170
+            249
+            55
+        ]
+        country: palau
+        planet: earth
+    }
+]

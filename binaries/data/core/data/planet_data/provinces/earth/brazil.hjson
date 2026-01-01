@@ -1,0 +1,299 @@
+[
+    {
+        identifier: acre
+        color:
+        [
+            15
+            196
+            17
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: alagoas
+        color:
+        [
+            96
+            96
+            198
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: amapa
+        color:
+        [
+            26
+            89
+            203
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: amazonas_brazil
+        color:
+        [
+            75
+            39
+            15
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: bahia
+        color:
+        [
+            96
+            125
+            76
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: ceara
+        color:
+        [
+            96
+            39
+            186
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: distrito_federal_brazil
+        color:
+        [
+            212
+            107
+            239
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: espirito_santo
+        color:
+        [
+            96
+            139
+            143
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: goias
+        color:
+        [
+            212
+            93
+            172
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: maranhao
+        color:
+        [
+            96
+            11
+            52
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: mato_grosso
+        color:
+        [
+            76
+            82
+            142
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: mato_grosso_do_sul
+        color:
+        [
+            44
+            31
+            72
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: minas_gerais
+        color:
+        [
+            212
+            122
+            50
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: para_brazil
+        color:
+        [
+            15
+            139
+            5
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: paraiba
+        color:
+        [
+            96
+            68
+            64
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: parana
+        color:
+        [
+            44
+            102
+            151
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: pernambuco
+        color:
+        [
+            96
+            82
+            131
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: piaui
+        color:
+        [
+            96
+            25
+            119
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: rio_de_janeiro
+        color:
+        [
+            96
+            153
+            210
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: rio_grande_do_norte
+        color:
+        [
+            96
+            53
+            253
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: rio_grande_do_sul
+        color:
+        [
+            6
+            32
+            202
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: rondonia
+        color:
+        [
+            76
+            54
+            8
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: roraima
+        color:
+        [
+            15
+            96
+            60
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: santa_catarina_brazil
+        color:
+        [
+            44
+            116
+            218
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: sao_paulo
+        color:
+        [
+            96
+            168
+            21
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: sergipe
+        color:
+        [
+            96
+            111
+            9
+        ]
+        country: brazil
+        planet: earth
+    }
+    {
+        identifier: tocantins
+        color:
+        [
+            212
+            136
+            117
+        ]
+        country: brazil
+        planet: earth
+    }
+]

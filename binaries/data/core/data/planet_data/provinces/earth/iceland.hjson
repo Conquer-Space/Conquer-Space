@@ -1,0 +1,101 @@
+[
+    {
+        identifier: austurland
+        color:
+        [
+            131
+            21
+            211
+        ]
+        country: iceland
+        planet: earth
+    }
+    {
+        identifier: hofudborgarsvaedi
+        color:
+        [
+            131
+            78
+            223
+        ]
+        country: iceland
+        planet: earth
+    }
+    {
+        identifier: nordurland_eystra
+        color:
+        [
+            131
+            135
+            235
+        ]
+        country: iceland
+        planet: earth
+    }
+    {
+        identifier: nordurland_vestra
+        color:
+        [
+            131
+            121
+            168
+        ]
+        country: iceland
+        planet: earth
+    }
+    {
+        identifier: reykjavik
+        color:
+        [
+            131
+            64
+            156
+        ]
+        country: iceland
+        planet: earth
+    }
+    {
+        identifier: sudurland
+        color:
+        [
+            131
+            36
+            22
+        ]
+        country: iceland
+        planet: earth
+    }
+    {
+        identifier: sudurnes
+        color:
+        [
+            131
+            50
+            89
+        ]
+        country: iceland
+        planet: earth
+    }
+    {
+        identifier: vestfirdir
+        color:
+        [
+            131
+            107
+            101
+        ]
+        country: iceland
+        planet: earth
+    }
+    {
+        identifier: vesturland
+        color:
+        [
+            131
+            93
+            34
+        ]
+        country: iceland
+        planet: earth
+    }
+]

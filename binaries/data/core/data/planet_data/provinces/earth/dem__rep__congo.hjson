@@ -1,0 +1,134 @@
+[
+    {
+        identifier: bandundu
+        color:
+        [
+            3
+            230
+            82
+        ]
+        country: dem__rep__congo
+        planet: earth
+    }
+    {
+        identifier: bas-congo
+        color:
+        [
+            4
+            31
+            94
+        ]
+        country: dem__rep__congo
+        planet: earth
+    }
+    {
+        identifier: bujumbura_rural
+        color:
+        [
+            64
+            131
+            18
+        ]
+        country: dem__rep__congo
+        planet: earth
+    }
+    {
+        identifier: bundibugyo
+        color:
+        [
+            91
+            193
+            13
+        ]
+        country: dem__rep__congo
+        planet: earth
+    }
+    {
+        identifier: equateur
+        color:
+        [
+            3
+            187
+            137
+        ]
+        country: dem__rep__congo
+        planet: earth
+    }
+    {
+        identifier: kasai-occidental
+        color:
+        [
+            87
+            33
+            84
+        ]
+        country: dem__rep__congo
+        planet: earth
+    }
+    {
+        identifier: kasai-oriental
+        color:
+        [
+            210
+            249
+            33
+        ]
+        country: dem__rep__congo
+        planet: earth
+    }
+    {
+        identifier: katanga
+        color:
+        [
+            21
+            100
+            128
+        ]
+        country: dem__rep__congo
+        planet: earth
+    }
+    {
+        identifier: maniema
+        color:
+        [
+            211
+            7
+            100
+        ]
+        country: dem__rep__congo
+        planet: earth
+    }
+    {
+        identifier: nord-kivu
+        color:
+        [
+            64
+            173
+            219
+        ]
+        country: dem__rep__congo
+        planet: earth
+    }
+    {
+        identifier: orientale
+        color:
+        [
+            20
+            228
+            37
+        ]
+        country: dem__rep__congo
+        planet: earth
+    }
+    {
+        identifier: sud-kivu
+        color:
+        [
+            21
+            71
+            250
+        ]
+        country: dem__rep__congo
+        planet: earth
+    }
+]

@@ -1,0 +1,178 @@
+[
+    {
+        identifier: baden-wurttemberg
+        color:
+        [
+            44
+            202
+            108
+        ]
+        country: germany
+        planet: earth
+    }
+    {
+        identifier: bayern
+        color:
+        [
+            7
+            90
+            140
+        ]
+        country: germany
+        planet: earth
+    }
+    {
+        identifier: berlin
+        color:
+        [
+            208
+            33
+            200
+        ]
+        country: germany
+        planet: earth
+    }
+    {
+        identifier: brandenburg
+        color:
+        [
+            49
+            220
+            61
+        ]
+        country: germany
+        planet: earth
+    }
+    {
+        identifier: bremen
+        color:
+        [
+            141
+            85
+            251
+        ]
+        country: germany
+        planet: earth
+    }
+    {
+        identifier: hamburg
+        color:
+        [
+            141
+            100
+            62
+        ]
+        country: germany
+        planet: earth
+    }
+    {
+        identifier: hessen
+        color:
+        [
+            207
+            246
+            255
+        ]
+        country: germany
+        planet: earth
+    }
+    {
+        identifier: mecklenburg-vorpommern
+        color:
+        [
+            49
+            248
+            195
+        ]
+        country: germany
+        planet: earth
+    }
+    {
+        identifier: niedersachsen
+        color:
+        [
+            23
+            101
+            236
+        ]
+        country: germany
+        planet: earth
+    }
+    {
+        identifier: nordrhein-westfalen
+        color:
+        [
+            23
+            144
+            181
+        ]
+        country: germany
+        planet: earth
+    }
+    {
+        identifier: rheinland-pfalz
+        color:
+        [
+            11
+            136
+            45
+        ]
+        country: germany
+        planet: earth
+    }
+    {
+        identifier: saarland
+        color:
+        [
+            11
+            178
+            246
+        ]
+        country: germany
+        planet: earth
+    }
+    {
+        identifier: sachsen
+        color:
+        [
+            7
+            47
+            195
+        ]
+        country: germany
+        planet: earth
+    }
+    {
+        identifier: sachsen-anhalt
+        color:
+        [
+            208
+            19
+            133
+        ]
+        country: germany
+        planet: earth
+    }
+    {
+        identifier: schleswig-holstein
+        color:
+        [
+            15
+            153
+            72
+        ]
+        country: germany
+        planet: earth
+    }
+    {
+        identifier: thuringen
+        color:
+        [
+            208
+            5
+            66
+        ]
+        country: germany
+        planet: earth
+    }
+]

@@ -1,0 +1,35 @@
+[
+    {
+        identifier: andjazidja
+        color:
+        [
+            154
+            95
+            57
+        ]
+        country: comoros
+        planet: earth
+    }
+    {
+        identifier: andjouan
+        color:
+        [
+            154
+            80
+            246
+        ]
+        country: comoros
+        planet: earth
+    }
+    {
+        identifier: mouhili
+        color:
+        [
+            154
+            66
+            179
+        ]
+        country: comoros
+        planet: earth
+    }
+]

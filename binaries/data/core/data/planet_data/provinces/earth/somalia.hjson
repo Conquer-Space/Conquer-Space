@@ -1,0 +1,145 @@
+[
+    {
+        identifier: bakool
+        color:
+        [
+            1
+            243
+            41
+        ]
+        country: somalia
+        planet: earth
+    }
+    {
+        identifier: banaadir
+        color:
+        [
+            112
+            236
+            129
+        ]
+        country: somalia
+        planet: earth
+    }
+    {
+        identifier: bari_somalia
+        color:
+        [
+            2
+            201
+            22
+        ]
+        country: somalia
+        planet: earth
+    }
+    {
+        identifier: bay
+        color:
+        [
+            229
+            34
+            115
+        ]
+        country: somalia
+        planet: earth
+    }
+    {
+        identifier: galguduud
+        color:
+        [
+            1
+            214
+            163
+        ]
+        country: somalia
+        planet: earth
+    }
+    {
+        identifier: gedo
+        color:
+        [
+            2
+            1
+            108
+        ]
+        country: somalia
+        planet: earth
+    }
+    {
+        identifier: hiiraan
+        color:
+        [
+            1
+            228
+            230
+        ]
+        country: somalia
+        planet: earth
+    }
+    {
+        identifier: jubbada_dhexe
+        color:
+        [
+            112
+            207
+            251
+        ]
+        country: somalia
+        planet: earth
+    }
+    {
+        identifier: jubbada_hoose
+        color:
+        [
+            84
+            173
+            208
+        ]
+        country: somalia
+        planet: earth
+    }
+    {
+        identifier: mudug
+        color:
+        [
+            1
+            200
+            96
+        ]
+        country: somalia
+        planet: earth
+    }
+    {
+        identifier: nugaal
+        color:
+        [
+            1
+            186
+            29
+        ]
+        country: somalia
+        planet: earth
+    }
+    {
+        identifier: shabeellaha_dhexe
+        color:
+        [
+            112
+            250
+            196
+        ]
+        country: somalia
+        planet: earth
+    }
+    {
+        identifier: shabeellaha_hoose
+        color:
+        [
+            112
+            222
+            62
+        ]
+        country: somalia
+        planet: earth
+    }
+]

@@ -1,0 +1,145 @@
+[
+    {
+        identifier: anatoliki_makedonia_kai_thraki
+        color:
+        [
+            50
+            249
+            121
+        ]
+        country: greece
+        planet: earth
+    }
+    {
+        identifier: ayion_oros
+        color:
+        [
+            135
+            181
+            140
+        ]
+        country: greece
+        planet: earth
+    }
+    {
+        identifier: dytiki_ellada
+        color:
+        [
+            135
+            252
+            219
+        ]
+        country: greece
+        planet: earth
+    }
+    {
+        identifier: dytiki_makedonia
+        color:
+        [
+            19
+            42
+            8
+        ]
+        country: greece
+        planet: earth
+    }
+    {
+        identifier: ionioi_nisoi
+        color:
+        [
+            159
+            141
+            144
+        ]
+        country: greece
+        planet: earth
+    }
+    {
+        identifier: ipeiros
+        color:
+        [
+            19
+            56
+            75
+        ]
+        country: greece
+        planet: earth
+    }
+    {
+        identifier: kentriki_makedonia
+        color:
+        [
+            37
+            225
+            248
+        ]
+        country: greece
+        planet: earth
+    }
+    {
+        identifier: kriti
+        color:
+        [
+            157
+            140
+            36
+        ]
+        country: greece
+        planet: earth
+    }
+    {
+        identifier: notio_aigaio
+        color:
+        [
+            157
+            154
+            103
+        ]
+        country: greece
+        planet: earth
+    }
+    {
+        identifier: peloponnisos
+        color:
+        [
+            135
+            238
+            152
+        ]
+        country: greece
+        planet: earth
+    }
+    {
+        identifier: sterea_ellada
+        color:
+        [
+            135
+            210
+            18
+        ]
+        country: greece
+        planet: earth
+    }
+    {
+        identifier: thessalia
+        color:
+        [
+            135
+            195
+            207
+        ]
+        country: greece
+        planet: earth
+    }
+    {
+        identifier: voreio_aigaio
+        color:
+        [
+            159
+            127
+            77
+        ]
+        country: greece
+        planet: earth
+    }
+]

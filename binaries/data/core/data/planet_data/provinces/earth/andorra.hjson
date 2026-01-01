@@ -1,0 +1,46 @@
+[
+    {
+        identifier: canillo
+        color:
+        [
+            37
+            111
+            224
+        ]
+        country: andorra
+        planet: earth
+    }
+    {
+        identifier: escaldes-engordany
+        color:
+        [
+            37
+            197
+            114
+        ]
+        country: andorra
+        planet: earth
+    }
+    {
+        identifier: la_massana
+        color:
+        [
+            37
+            154
+            169
+        ]
+        country: andorra
+        planet: earth
+    }
+    {
+        identifier: ordino
+        color:
+        [
+            37
+            97
+            157
+        ]
+        country: andorra
+        planet: earth
+    }
+]

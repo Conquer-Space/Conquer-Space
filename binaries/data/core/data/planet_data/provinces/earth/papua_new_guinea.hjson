@@ -1,0 +1,222 @@
+[
+    {
+        identifier: central_papua_new_guinea
+        color:
+        [
+            100
+            14
+            12
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+    {
+        identifier: chimbu
+        color:
+        [
+            180
+            227
+            205
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+    {
+        identifier: east_new_britain
+        color:
+        [
+            165
+            60
+            66
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+    {
+        identifier: east_sepik
+        color:
+        [
+            99
+            198
+            189
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+    {
+        identifier: eastern_highlands
+        color:
+        [
+            181
+            28
+            217
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+    {
+        identifier: enga
+        color:
+        [
+            180
+            242
+            16
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+    {
+        identifier: gulf
+        color:
+        [
+            100
+            42
+            146
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+    {
+        identifier: madang
+        color:
+        [
+            99
+            213
+            0
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+    {
+        identifier: manus
+        color:
+        [
+            165
+            103
+            11
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+    {
+        identifier: milne_bay
+        color:
+        [
+            99
+            255
+            201
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+    {
+        identifier: morobe
+        color:
+        [
+            99
+            227
+            67
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+    {
+        identifier: national_capital_district
+        color:
+        [
+            100
+            28
+            79
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+    {
+        identifier: new_ireland
+        color:
+        [
+            165
+            74
+            133
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+    {
+        identifier: north_solomons
+        color:
+        [
+            165
+            31
+            188
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+    {
+        identifier: northern_papua_new_guinea
+        color:
+        [
+            99
+            241
+            134
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+    {
+        identifier: sandaun
+        color:
+        [
+            78
+            55
+            116
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+    {
+        identifier: southern_highlands
+        color:
+        [
+            181
+            14
+            150
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+    {
+        identifier: west_new_britain
+        color:
+        [
+            165
+            45
+            255
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+    {
+        identifier: western_papua_new_guinea
+        color:
+        [
+            78
+            69
+            183
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+    {
+        identifier: western_highlands
+        color:
+        [
+            181
+            0
+            83
+        ]
+        country: papua_new_guinea
+        planet: earth
+    }
+]

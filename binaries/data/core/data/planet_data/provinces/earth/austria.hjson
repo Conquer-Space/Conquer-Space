@@ -1,0 +1,134 @@
+[
+    {
+        identifier: apace
+        color:
+        [
+            46
+            246
+            161
+        ]
+        country: austria
+        planet: earth
+    }
+    {
+        identifier: burgenland
+        color:
+        [
+            22
+            29
+            231
+        ]
+        country: austria
+        planet: earth
+    }
+    {
+        identifier: karnten
+        color:
+        [
+            35
+            53
+            104
+        ]
+        country: austria
+        planet: earth
+    }
+    {
+        identifier: mezica
+        color:
+        [
+            47
+            147
+            130
+        ]
+        country: austria
+        planet: earth
+    }
+    {
+        identifier: niederosterreich
+        color:
+        [
+            21
+            171
+            207
+        ]
+        country: austria
+        planet: earth
+    }
+    {
+        identifier: oberosterreich
+        color:
+        [
+            21
+            200
+            85
+        ]
+        country: austria
+        planet: earth
+    }
+    {
+        identifier: salzburg
+        color:
+        [
+            35
+            24
+            226
+        ]
+        country: austria
+        planet: earth
+    }
+    {
+        identifier: schellenberg
+        color:
+        [
+            24
+            31
+            83
+        ]
+        country: austria
+        planet: earth
+    }
+    {
+        identifier: steiermark
+        color:
+        [
+            46
+            203
+            216
+        ]
+        country: austria
+        planet: earth
+    }
+    {
+        identifier: tirol
+        color:
+        [
+            22
+            215
+            78
+        ]
+        country: austria
+        planet: earth
+    }
+    {
+        identifier: vorarlberg
+        color:
+        [
+            22
+            201
+            11
+        ]
+        country: austria
+        planet: earth
+    }
+    {
+        identifier: wien
+        color:
+        [
+            214
+            80
+            213
+        ]
+        country: austria
+        planet: earth
+    }
+]

@@ -1,0 +1,112 @@
+[
+    {
+        identifier: adamaoua
+        color:
+        [
+            66
+            189
+            138
+        ]
+        country: cameroon
+        planet: earth
+    }
+    {
+        identifier: centre_cameroon
+        color:
+        [
+            212
+            22
+            93
+        ]
+        country: cameroon
+        planet: earth
+    }
+    {
+        identifier: est
+        color:
+        [
+            88
+            105
+            89
+        ]
+        country: cameroon
+        planet: earth
+    }
+    {
+        identifier: extreme-nord
+        color:
+        [
+            66
+            89
+            181
+        ]
+        country: cameroon
+        planet: earth
+    }
+    {
+        identifier: littoral_cameroon
+        color:
+        [
+            106
+            203
+            183
+        ]
+        country: cameroon
+        planet: earth
+    }
+    {
+        identifier: nord_cameroon
+        color:
+        [
+            66
+            161
+            4
+        ]
+        country: cameroon
+        planet: earth
+    }
+    {
+        identifier: nord-ouest_cameroon
+        color:
+        [
+            66
+            218
+            16
+        ]
+        country: cameroon
+        planet: earth
+    }
+    {
+        identifier: ouest_cameroon
+        color:
+        [
+            212
+            8
+            26
+        ]
+        country: cameroon
+        planet: earth
+    }
+    {
+        identifier: sud_cameroon
+        color:
+        [
+            65
+            188
+            212
+        ]
+        country: cameroon
+        planet: earth
+    }
+    {
+        identifier: sud-ouest
+        color:
+        [
+            66
+            232
+            83
+        ]
+        country: cameroon
+        planet: earth
+    }
+]

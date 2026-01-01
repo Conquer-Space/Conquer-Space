@@ -1,0 +1,255 @@
+[
+    {
+        identifier: banteay_meanchey
+        color:
+        [
+            31
+            121
+            223
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: batdambang
+        color:
+        [
+            31
+            207
+            113
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: kampong_cham
+        color:
+        [
+            10
+            249
+            143
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: kampong_chhnang
+        color:
+        [
+            212
+            36
+            160
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: kampong_spoe
+        color:
+        [
+            212
+            65
+            38
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: kampong_thum
+        color:
+        [
+            212
+            50
+            227
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: kampot
+        color:
+        [
+            11
+            121
+            234
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: kandal
+        color:
+        [
+            11
+            79
+            33
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: kaoh_kong
+        color:
+        [
+            31
+            164
+            168
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: kep
+        color:
+        [
+            122
+            172
+            78
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: kracheh
+        color:
+        [
+            10
+            221
+            9
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: krong_pailin
+        color:
+        [
+            31
+            221
+            180
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: krong_preah_sihanouk
+        color:
+        [
+            104
+            102
+            118
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: mondol_kiri
+        color:
+        [
+            10
+            163
+            253
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: otdar_mean_chey
+        color:
+        [
+            31
+            36
+            77
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: phnom_penh
+        color:
+        [
+            212
+            79
+            105
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: pouthisat
+        color:
+        [
+            31
+            193
+            46
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: preah_vihear
+        color:
+        [
+            31
+            64
+            211
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: prey_veng
+        color:
+        [
+            11
+            22
+            21
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: rotanokiri
+        color:
+        [
+            10
+            135
+            119
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: siemreab
+        color:
+        [
+            31
+            107
+            156
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: svay_rieng
+        color:
+        [
+            11
+            7
+            210
+        ]
+        country: cambodia
+        planet: earth
+    }
+    {
+        identifier: takev
+        color:
+        [
+            11
+            93
+            100
+        ]
+        country: cambodia
+        planet: earth
+    }
+]

@@ -1,0 +1,475 @@
+[
+    {
+        identifier: bacs-kiskun
+        color:
+        [
+            26
+            132
+            148
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: baranya
+        color:
+        [
+            28
+            19
+            232
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: bekes
+        color:
+        [
+            17
+            69
+            34
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: bekescsaba
+        color:
+        [
+            244
+            73
+            163
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: borsod-abauj-zemplen
+        color:
+        [
+            49
+            106
+            37
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: budapest
+        color:
+        [
+            239
+            13
+            9
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: csongrad
+        color:
+        [
+            17
+            111
+            235
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: debrecen
+        color:
+        [
+            244
+            87
+            230
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: dunaujvaros
+        color:
+        [
+            239
+            98
+            155
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: eger
+        color:
+        [
+            239
+            55
+            210
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: erd
+        color:
+        [
+            239
+            27
+            76
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: fejer
+        color:
+        [
+            238
+            211
+            253
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: gyor
+        color:
+        [
+            243
+            201
+            72
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: gyor-moson-sopron
+        color:
+        [
+            22
+            15
+            164
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: hajdu-bihar
+        color:
+        [
+            17
+            97
+            168
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: heves
+        color:
+        [
+            239
+            41
+            143
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: hodmezovasarhely
+        color:
+        [
+            239
+            84
+            88
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: jasz-nagykun-szolnok
+        color:
+        [
+            238
+            197
+            186
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: kaposvar
+        color:
+        [
+            244
+            16
+            151
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: kecskemet
+        color:
+        [
+            239
+            112
+            222
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: komarom-esztergom
+        color:
+        [
+            49
+            177
+            116
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: miskolc
+        color:
+        [
+            239
+            70
+            21
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: nagykanizsa
+        color:
+        [
+            243
+            244
+            17
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: nograd
+        color:
+        [
+            49
+            134
+            171
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: nyiregyhaza
+        color:
+        [
+            244
+            102
+            41
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: pecs
+        color:
+        [
+            244
+            30
+            218
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: pest
+        color:
+        [
+            49
+            191
+            183
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: salgotarjan
+        color:
+        [
+            49
+            148
+            238
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: somogy
+        color:
+        [
+            27
+            233
+            31
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: sopron
+        color:
+        [
+            22
+            44
+            42
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: szabolcs-szatmar-bereg
+        color:
+        [
+            17
+            40
+            156
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: szeged
+        color:
+        [
+            26
+            175
+            93
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: szekesfehervar
+        color:
+        [
+            244
+            59
+            96
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: szekszard
+        color:
+        [
+            244
+            45
+            29
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: szolnok
+        color:
+        [
+            238
+            254
+            198
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: szombathely
+        color:
+        [
+            243
+            215
+            139
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: tatabanya
+        color:
+        [
+            239
+            127
+            33
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: tolna
+        color:
+        [
+            238
+            240
+            131
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: vas
+        color:
+        [
+            22
+            58
+            109
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: veszprem_hungary
+        color:
+        [
+            238
+            226
+            64
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: veszprem_hungary_2
+        color:
+        [
+            244
+            2
+            84
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: zala
+        color:
+        [
+            27
+            204
+            153
+        ]
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: zalaegerszeg
+        color:
+        [
+            243
+            229
+            206
+        ]
+        country: hungary
+        planet: earth
+    }
+]

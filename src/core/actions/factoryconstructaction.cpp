@@ -65,7 +65,7 @@ Node CreateFactory(Node& city, Node& recipe, int productivity, double wages) {
     auto& production = factory.emplace<components::Production>();
     // Add recipes and stuff
     production.recipe = recipe;
-    city.get<components::IndustrialZone>().industries.push_back(factory);
+    city.get_or_emplace<components::IndustrialZone>().industries.push_back(factory);
 
     // Add capacity
     // Add producivity

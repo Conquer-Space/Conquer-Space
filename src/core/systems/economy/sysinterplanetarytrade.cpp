@@ -24,11 +24,11 @@
 namespace cqsp::core::systems {
 void SysInterplanetaryTrade::DoSystem() {
     auto planetary_markets =
-        GetUniverse().nodes<components::Market, components::PlanetaryMarket, components::Habitation>();
+        GetUniverse().nodes<components::Market, components::PlanetaryMarket, components::Settlements>();
     for (Node market_node : planetary_markets) {
         auto& market_component = market_node.get<components::Market>();
         // Get the S/D ratio and see if we need to make a difference
-        auto& habitation = market_node.get<components::Habitation>();
+        auto& habitation = market_node.get<components::Settlements>();
         // Their parent market should probably have a planetary market
         auto& planetary_market = market_node.get<components::PlanetaryMarket>();
         planetary_market.supply_difference = market_component.demand() - market_component.supply();
@@ -63,7 +63,7 @@ void SysInterplanetaryTrade::DoSystem() {
 
 void SysInterplanetaryTrade::ResolveTrades() {
     auto planetary_markets =
-        GetUniverse().nodes<components::Market, components::PlanetaryMarket, components::Habitation>();
+        GetUniverse().nodes<components::Market, components::PlanetaryMarket, components::Settlements>();
 
     for (Node seller_node : planetary_markets) {
         // Market we are going to ship from

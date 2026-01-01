@@ -1,0 +1,178 @@
+[
+    {
+        identifier: bubanza
+        color:
+        [
+            64
+            116
+            207
+        ]
+        country: burundi
+        planet: earth
+    }
+    {
+        identifier: bujumbura_mairie
+        color:
+        [
+            64
+            145
+            85
+        ]
+        country: burundi
+        planet: earth
+    }
+    {
+        identifier: bururi
+        color:
+        [
+            64
+            159
+            152
+        ]
+        country: burundi
+        planet: earth
+    }
+    {
+        identifier: cankuzo
+        color:
+        [
+            64
+            59
+            195
+        ]
+        country: burundi
+        planet: earth
+    }
+    {
+        identifier: cibitoke
+        color:
+        [
+            36
+            153
+            243
+        ]
+        country: burundi
+        planet: earth
+    }
+    {
+        identifier: gitega
+        color:
+        [
+            240
+            56
+            136
+        ]
+        country: burundi
+        planet: earth
+    }
+    {
+        identifier: karuzi
+        color:
+        [
+            240
+            99
+            81
+        ]
+        country: burundi
+        planet: earth
+    }
+    {
+        identifier: kayanza
+        color:
+        [
+            36
+            182
+            121
+        ]
+        country: burundi
+        planet: earth
+    }
+    {
+        identifier: kirundo
+        color:
+        [
+            36
+            111
+            42
+        ]
+        country: burundi
+        planet: earth
+    }
+    {
+        identifier: makamba
+        color:
+        [
+            64
+            102
+            140
+        ]
+        country: burundi
+        planet: earth
+    }
+    {
+        identifier: muramvya
+        color:
+        [
+            240
+            70
+            203
+        ]
+        country: burundi
+        planet: earth
+    }
+    {
+        identifier: muyinga
+        color:
+        [
+            36
+            82
+            164
+        ]
+        country: burundi
+        planet: earth
+    }
+    {
+        identifier: mwaro
+        color:
+        [
+            240
+            85
+            14
+        ]
+        country: burundi
+        planet: earth
+    }
+    {
+        identifier: ngozi
+        color:
+        [
+            36
+            139
+            176
+        ]
+        country: burundi
+        planet: earth
+    }
+    {
+        identifier: rutana
+        color:
+        [
+            64
+            88
+            73
+        ]
+        country: burundi
+        planet: earth
+    }
+    {
+        identifier: ruyigi
+        color:
+        [
+            64
+            74
+            6
+        ]
+        country: burundi
+        planet: earth
+    }
+]

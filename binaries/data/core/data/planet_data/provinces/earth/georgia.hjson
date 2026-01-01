@@ -1,0 +1,134 @@
+[
+    {
+        identifier: abkhazia
+        color:
+        [
+            12
+            108
+            93
+        ]
+        country: georgia
+        planet: earth
+    }
+    {
+        identifier: ajaria
+        color:
+        [
+            14
+            67
+            0
+        ]
+        country: georgia
+        planet: earth
+    }
+    {
+        identifier: guria
+        color:
+        [
+            95
+            181
+            162
+        ]
+        country: georgia
+        planet: earth
+    }
+    {
+        identifier: imereti
+        color:
+        [
+            239
+            155
+            167
+        ]
+        country: georgia
+        planet: earth
+    }
+    {
+        identifier: kakheti
+        color:
+        [
+            12
+            250
+            251
+        ]
+        country: georgia
+        planet: earth
+    }
+    {
+        identifier: kvemo_kartli
+        color:
+        [
+            14
+            238
+            36
+        ]
+        country: georgia
+        planet: earth
+    }
+    {
+        identifier: mtskheta-mtianeti
+        color:
+        [
+            12
+            222
+            117
+        ]
+        country: georgia
+        planet: earth
+    }
+    {
+        identifier: racha-lechkhumi-kvemo_svaneti
+        color:
+        [
+            12
+            193
+            239
+        ]
+        country: georgia
+        planet: earth
+    }
+    {
+        identifier: samegrelo-zemo_svaneti
+        color:
+        [
+            12
+            151
+            38
+        ]
+        country: georgia
+        planet: earth
+    }
+    {
+        identifier: samtskhe-javakheti
+        color:
+        [
+            14
+            38
+            122
+        ]
+        country: georgia
+        planet: earth
+    }
+    {
+        identifier: shida_kartli
+        color:
+        [
+            12
+            179
+            172
+        ]
+        country: georgia
+        planet: earth
+    }
+    {
+        identifier: tbilisi
+        color:
+        [
+            239
+            141
+            100
+        ]
+        country: georgia
+        planet: earth
+    }
+]

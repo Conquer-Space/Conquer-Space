@@ -1,0 +1,68 @@
+[
+    {
+        identifier: malampa
+        color:
+        [
+            169
+            120
+            38
+        ]
+        country: vanuatu
+        planet: earth
+    }
+    {
+        identifier: penama
+        color:
+        [
+            169
+            162
+            239
+        ]
+        country: vanuatu
+        planet: earth
+    }
+    {
+        identifier: sanma
+        color:
+        [
+            169
+            134
+            105
+        ]
+        country: vanuatu
+        planet: earth
+    }
+    {
+        identifier: shefa
+        color:
+        [
+            169
+            91
+            160
+        ]
+        country: vanuatu
+        planet: earth
+    }
+    {
+        identifier: tafea
+        color:
+        [
+            169
+            6
+            14
+        ]
+        country: vanuatu
+        planet: earth
+    }
+    {
+        identifier: torba
+        color:
+        [
+            169
+            219
+            251
+        ]
+        country: vanuatu
+        planet: earth
+    }
+]

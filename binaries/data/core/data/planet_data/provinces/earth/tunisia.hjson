@@ -1,0 +1,255 @@
+[
+    {
+        identifier: beja_tunisia
+        color:
+        [
+            107
+            232
+            243
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: ben_arous_(tunis_sud)
+        color:
+        [
+            107
+            175
+            231
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: bizerte
+        color:
+        [
+            107
+            218
+            176
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: gabes
+        color:
+        [
+            107
+            90
+            85
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: gafsa
+        color:
+        [
+            83
+            173
+            26
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: jendouba
+        color:
+        [
+            83
+            87
+            136
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: kairouan
+        color:
+        [
+            179
+            184
+            78
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: kasserine
+        color:
+        [
+            83
+            187
+            93
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: kebili
+        color:
+        [
+            83
+            116
+            14
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: le_kef
+        color:
+        [
+            83
+            201
+            160
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: mahdia
+        color:
+        [
+            107
+            118
+            219
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: manubah
+        color:
+        [
+            107
+            204
+            109
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: medenine
+        color:
+        [
+            15
+            238
+            218
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: monastir
+        color:
+        [
+            107
+            133
+            30
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: nabeul
+        color:
+        [
+            107
+            161
+            164
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: sfax
+        color:
+        [
+            107
+            104
+            152
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: sidi_bou_zid
+        color:
+        [
+            179
+            170
+            11
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: siliana
+        color:
+        [
+            179
+            155
+            200
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: sousse
+        color:
+        [
+            107
+            147
+            97
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: tataouine
+        color:
+        [
+            15
+            224
+            151
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: tozeur
+        color:
+        [
+            83
+            144
+            148
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: tunis
+        color:
+        [
+            107
+            190
+            42
+        ]
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: zaghouan
+        color:
+        [
+            179
+            198
+            145
+        ]
+        country: tunisia
+        planet: earth
+    }
+]

@@ -1,0 +1,112 @@
+[
+    {
+        identifier: bulawayo
+        color:
+        [
+            177
+            54
+            135
+        ]
+        country: zimbabwe
+        planet: earth
+    }
+    {
+        identifier: harare
+        color:
+        [
+            177
+            40
+            68
+        ]
+        country: zimbabwe
+        planet: earth
+    }
+    {
+        identifier: manicaland
+        color:
+        [
+            86
+            232
+            72
+        ]
+        country: zimbabwe
+        planet: earth
+    }
+    {
+        identifier: mashonaland_central
+        color:
+        [
+            63
+            173
+            37
+        ]
+        country: zimbabwe
+        planet: earth
+    }
+    {
+        identifier: mashonaland_east
+        color:
+        [
+            86
+            203
+            194
+        ]
+        country: zimbabwe
+        planet: earth
+    }
+    {
+        identifier: mashonaland_west
+        color:
+        [
+            63
+            158
+            226
+        ]
+        country: zimbabwe
+        planet: earth
+    }
+    {
+        identifier: masvingo
+        color:
+        [
+            63
+            130
+            92
+        ]
+        country: zimbabwe
+        planet: earth
+    }
+    {
+        identifier: matabeleland_north
+        color:
+        [
+            30
+            163
+            242
+        ]
+        country: zimbabwe
+        planet: earth
+    }
+    {
+        identifier: matabeleland_south
+        color:
+        [
+            30
+            192
+            120
+        ]
+        country: zimbabwe
+        planet: earth
+    }
+    {
+        identifier: midlands
+        color:
+        [
+            177
+            26
+            1
+        ]
+        country: zimbabwe
+        planet: earth
+    }
+]

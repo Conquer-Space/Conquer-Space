@@ -1,0 +1,211 @@
+[
+    {
+        identifier: artigas
+        color:
+        [
+            6
+            47
+            13
+        ]
+        country: uruguay
+        planet: earth
+    }
+    {
+        identifier: canelones
+        color:
+        [
+            96
+            196
+            155
+        ]
+        country: uruguay
+        planet: earth
+    }
+    {
+        identifier: cerro_largo
+        color:
+        [
+            6
+            89
+            214
+        ]
+        country: uruguay
+        planet: earth
+    }
+    {
+        identifier: colonia
+        color:
+        [
+            96
+            239
+            100
+        ]
+        country: uruguay
+        planet: earth
+    }
+    {
+        identifier: durazno
+        color:
+        [
+            178
+            183
+            152
+        ]
+        country: uruguay
+        planet: earth
+    }
+    {
+        identifier: flores
+        color:
+        [
+            178
+            197
+            219
+        ]
+        country: uruguay
+        planet: earth
+    }
+    {
+        identifier: florida_uruguay
+        color:
+        [
+            178
+            212
+            30
+        ]
+        country: uruguay
+        planet: earth
+    }
+    {
+        identifier: lavalleja
+        color:
+        [
+            178
+            226
+            97
+        ]
+        country: uruguay
+        planet: earth
+    }
+    {
+        identifier: maldonado
+        color:
+        [
+            96
+            182
+            88
+        ]
+        country: uruguay
+        planet: earth
+    }
+    {
+        identifier: montevideo
+        color:
+        [
+            96
+            210
+            222
+        ]
+        country: uruguay
+        planet: earth
+    }
+    {
+        identifier: paysandu
+        color:
+        [
+            0
+            14
+            67
+        ]
+        country: uruguay
+        planet: earth
+    }
+    {
+        identifier: rio_negro_uruguay
+        color:
+        [
+            97
+            11
+            234
+        ]
+        country: uruguay
+        planet: earth
+    }
+    {
+        identifier: rivera
+        color:
+        [
+            6
+            75
+            147
+        ]
+        country: uruguay
+        planet: earth
+    }
+    {
+        identifier: rocha
+        color:
+        [
+            6
+            104
+            25
+        ]
+        country: uruguay
+        planet: earth
+    }
+    {
+        identifier: salto
+        color:
+        [
+            6
+            61
+            80
+        ]
+        country: uruguay
+        planet: earth
+    }
+    {
+        identifier: san_jose_uruguay
+        color:
+        [
+            96
+            225
+            33
+        ]
+        country: uruguay
+        planet: earth
+    }
+    {
+        identifier: soriano
+        color:
+        [
+            96
+            253
+            167
+        ]
+        country: uruguay
+        planet: earth
+    }
+    {
+        identifier: tacuarembo
+        color:
+        [
+            178
+            169
+            85
+        ]
+        country: uruguay
+        planet: earth
+    }
+    {
+        identifier: treinta_y_tres
+        color:
+        [
+            6
+            118
+            92
+        ]
+        country: uruguay
+        planet: earth
+    }
+]

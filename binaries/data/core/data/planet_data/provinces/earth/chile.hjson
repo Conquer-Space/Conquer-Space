@@ -1,0 +1,167 @@
+[
+    {
+        identifier: aisen_del_general_carlos_ibanez_del_campo
+        color:
+        [
+            77
+            97
+            135
+        ]
+        country: chile
+        planet: earth
+    }
+    {
+        identifier: antofagasta
+        color:
+        [
+            0
+            156
+            225
+        ]
+        country: chile
+        planet: earth
+    }
+    {
+        identifier: arica_y_parinacota
+        color:
+        [
+            0
+            85
+            146
+        ]
+        country: chile
+        planet: earth
+    }
+    {
+        identifier: atacama
+        color:
+        [
+            76
+            125
+            87
+        ]
+        country: chile
+        planet: earth
+    }
+    {
+        identifier: bio-bio
+        color:
+        [
+            77
+            11
+            245
+        ]
+        country: chile
+        planet: earth
+    }
+    {
+        identifier: coquimbo
+        color:
+        [
+            76
+            168
+            32
+        ]
+        country: chile
+        planet: earth
+    }
+    {
+        identifier: la_araucania
+        color:
+        [
+            77
+            26
+            56
+        ]
+        country: chile
+        planet: earth
+    }
+    {
+        identifier: libertador_general_bernardo_o'higgins
+        color:
+        [
+            76
+            239
+            111
+        ]
+        country: chile
+        planet: earth
+    }
+    {
+        identifier: los_lagos
+        color:
+        [
+            77
+            69
+            1
+        ]
+        country: chile
+        planet: earth
+    }
+    {
+        identifier: los_rios_chile
+        color:
+        [
+            77
+            40
+            123
+        ]
+        country: chile
+        planet: earth
+    }
+    {
+        identifier: magallanes_y_antartica_chilena
+        color:
+        [
+            77
+            126
+            13
+        ]
+        country: chile
+        planet: earth
+    }
+    {
+        identifier: maule
+        color:
+        [
+            76
+            225
+            44
+        ]
+        country: chile
+        planet: earth
+    }
+    {
+        identifier: region_metropolitana_de_santiago
+        color:
+        [
+            76
+            196
+            166
+        ]
+        country: chile
+        planet: earth
+    }
+    {
+        identifier: tarapaca
+        color:
+        [
+            0
+            128
+            91
+        ]
+        country: chile
+        planet: earth
+    }
+    {
+        identifier: valparaiso
+        color:
+        [
+            76
+            210
+            233
+        ]
+        country: chile
+        planet: earth
+    }
+]

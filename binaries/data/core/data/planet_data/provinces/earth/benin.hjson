@@ -1,0 +1,134 @@
+[
+    {
+        identifier: alibori
+        color:
+        [
+            27
+            33
+            117
+        ]
+        country: benin
+        planet: earth
+    }
+    {
+        identifier: atakora
+        color:
+        [
+            67
+            190
+            64
+        ]
+        country: benin
+        planet: earth
+    }
+    {
+        identifier: atlantique
+        color:
+        [
+            110
+            120
+            253
+        ]
+        country: benin
+        planet: earth
+    }
+    {
+        identifier: borgou
+        color:
+        [
+            27
+            61
+            251
+        ]
+        country: benin
+        planet: earth
+    }
+    {
+        identifier: collines
+        color:
+        [
+            27
+            119
+            7
+        ]
+        country: benin
+        planet: earth
+    }
+    {
+        identifier: donga
+        color:
+        [
+            89
+            134
+            149
+        ]
+        country: benin
+        planet: earth
+    }
+    {
+        identifier: kouffo
+        color:
+        [
+            89
+            163
+            27
+        ]
+        country: benin
+        planet: earth
+    }
+    {
+        identifier: littoral_benin
+        color:
+        [
+            110
+            135
+            64
+        ]
+        country: benin
+        planet: earth
+    }
+    {
+        identifier: mono
+        color:
+        [
+            89
+            177
+            94
+        ]
+        country: benin
+        planet: earth
+    }
+    {
+        identifier: oueme
+        color:
+        [
+            27
+            161
+            208
+        ]
+        country: benin
+        planet: earth
+    }
+    {
+        identifier: plateau_benin
+        color:
+        [
+            27
+            104
+            196
+        ]
+        country: benin
+        planet: earth
+    }
+    {
+        identifier: zou
+        color:
+        [
+            89
+            148
+            216
+        ]
+        country: benin
+        planet: earth
+    }
+]

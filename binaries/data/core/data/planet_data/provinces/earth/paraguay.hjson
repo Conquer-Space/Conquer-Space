@@ -1,0 +1,200 @@
+[
+    {
+        identifier: alto_paraguay
+        color:
+        [
+            44
+            45
+            139
+        ]
+        country: paraguay
+        planet: earth
+    }
+    {
+        identifier: alto_parana
+        color:
+        [
+            43
+            173
+            48
+        ]
+        country: paraguay
+        planet: earth
+    }
+    {
+        identifier: amambay
+        color:
+        [
+            44
+            74
+            17
+        ]
+        country: paraguay
+        planet: earth
+    }
+    {
+        identifier: asuncion
+        color:
+        [
+            43
+            158
+            237
+        ]
+        country: paraguay
+        planet: earth
+    }
+    {
+        identifier: boqueron
+        color:
+        [
+            43
+            101
+            225
+        ]
+        country: paraguay
+        planet: earth
+    }
+    {
+        identifier: caaguazu
+        color:
+        [
+            199
+            70
+            43
+        ]
+        country: paraguay
+        planet: earth
+    }
+    {
+        identifier: caazapa
+        color:
+        [
+            199
+            98
+            177
+        ]
+        country: paraguay
+        planet: earth
+    }
+    {
+        identifier: canindeyu
+        color:
+        [
+            44
+            88
+            84
+        ]
+        country: paraguay
+        planet: earth
+    }
+    {
+        identifier: central_paraguay
+        color:
+        [
+            43
+            144
+            170
+        ]
+        country: paraguay
+        planet: earth
+    }
+    {
+        identifier: concepcion
+        color:
+        [
+            44
+            59
+            206
+        ]
+        country: paraguay
+        planet: earth
+    }
+    {
+        identifier: cordillera
+        color:
+        [
+            199
+            84
+            110
+        ]
+        country: paraguay
+        planet: earth
+    }
+    {
+        identifier: guaira
+        color:
+        [
+            199
+            127
+            55
+        ]
+        country: paraguay
+        planet: earth
+    }
+    {
+        identifier: itapua
+        color:
+        [
+            43
+            201
+            182
+        ]
+        country: paraguay
+        planet: earth
+    }
+    {
+        identifier: misiones_paraguay
+        color:
+        [
+            44
+            2
+            194
+        ]
+        country: paraguay
+        planet: earth
+    }
+    {
+        identifier: neembucu
+        color:
+        [
+            43
+            215
+            249
+        ]
+        country: paraguay
+        planet: earth
+    }
+    {
+        identifier: paraguari
+        color:
+        [
+            199
+            112
+            244
+        ]
+        country: paraguay
+        planet: earth
+    }
+    {
+        identifier: presidente_hayes
+        color:
+        [
+            43
+            130
+            103
+        ]
+        country: paraguay
+        planet: earth
+    }
+    {
+        identifier: san_pedro
+        color:
+        [
+            199
+            55
+            232
+        ]
+        country: paraguay
+        planet: earth
+    }
+]

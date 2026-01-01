@@ -1,0 +1,1685 @@
+[
+    {
+        identifier: ajdovscina
+        color:
+        [
+            191
+            35
+            245
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: beltinci
+        color:
+        [
+            192
+            8
+            37
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: bistrica_ob_sotli
+        color:
+        [
+            28
+            248
+            24
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: bled
+        color:
+        [
+            191
+            21
+            178
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: bloke
+        color:
+        [
+            191
+            93
+            1
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: bohinj
+        color:
+        [
+            186
+            18
+            36
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: borovnica
+        color:
+        [
+            188
+            133
+            168
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: bovec
+        color:
+        [
+            35
+            138
+            250
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: braslovce
+        color:
+        [
+            193
+            222
+            200
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: brda
+        color:
+        [
+            35
+            196
+            6
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: brezice
+        color:
+        [
+            29
+            20
+            158
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: cankova
+        color:
+        [
+            46
+            218
+            27
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: celje
+        color:
+        [
+            188
+            190
+            180
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: cerklje_na_gorenjskem
+        color:
+        [
+            185
+            188
+            146
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: cerknica
+        color:
+        [
+            188
+            105
+            34
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: cerkno
+        color:
+        [
+            191
+            7
+            111
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: cerkvenjak
+        color:
+        [
+            186
+            246
+            84
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: crensovci
+        color:
+        [
+            28
+            62
+            177
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: crna_na_koroskem
+        color:
+        [
+            47
+            161
+            197
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: crnomelj
+        color:
+        [
+            29
+            191
+            194
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: divaca
+        color:
+        [
+            191
+            50
+            56
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: dobrepolje
+        color:
+        [
+            190
+            177
+            221
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: dobrna
+        color:
+        [
+            188
+            176
+            113
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: dobrova-polhov_gradec
+        color:
+        [
+            187
+            90
+            41
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: dol_pri_ljubljani
+        color:
+        [
+            189
+            34
+            137
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: dolenjske_toplice
+        color:
+        [
+            194
+            152
+            47
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: domzale
+        color:
+        [
+            188
+            219
+            58
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: dravograd
+        color:
+        [
+            47
+            90
+            118
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: duplek
+        color:
+        [
+            180
+            99
+            114
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: gorenja_vas-poljane
+        color:
+        [
+            187
+            104
+            108
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: gornja_radgona
+        color:
+        [
+            46
+            232
+            94
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: gornji_grad
+        color:
+        [
+            188
+            90
+            223
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: gornji_petrovci
+        color:
+        [
+            30
+            64
+            29
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: grosuplje
+        color:
+        [
+            193
+            151
+            121
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: hodos
+        color:
+        [
+            30
+            49
+            218
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: horjul
+        color:
+        [
+            186
+            232
+            17
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: hrastnik
+        color:
+        [
+            193
+            179
+            255
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: hrpelje-kozina
+        color:
+        [
+            29
+            234
+            139
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: idrija
+        color:
+        [
+            191
+            64
+            123
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: ig
+        color:
+        [
+            189
+            20
+            70
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: ilirska_bistrica
+        color:
+        [
+            29
+            177
+            127
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: ivancna_gorica
+        color:
+        [
+            188
+            233
+            125
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: jesenice
+        color:
+        [
+            47
+            204
+            142
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: jezersko
+        color:
+        [
+            47
+            233
+            20
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: jursinci
+        color:
+        [
+            194
+            123
+            169
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: kamnik
+        color:
+        [
+            185
+            202
+            213
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: kidricevo
+        color:
+        [
+            194
+            80
+            224
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: kobarid
+        color:
+        [
+            35
+            153
+            61
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: kocevje
+        color:
+        [
+            29
+            206
+            5
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: komen
+        color:
+        [
+            36
+            11
+            85
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: komenda
+        color:
+        [
+            186
+            189
+            72
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: koper
+        color:
+        [
+            29
+            248
+            206
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: kostel
+        color:
+        [
+            29
+            120
+            115
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: kozje
+        color:
+        [
+            191
+            121
+            135
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: kranj
+        color:
+        [
+            185
+            231
+            91
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: kranjska_gora
+        color:
+        [
+            35
+            124
+            183
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: krizevci
+        color:
+        [
+            194
+            109
+            102
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: krsko
+        color:
+        [
+            29
+            49
+            36
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: kungota
+        color:
+        [
+            47
+            19
+            39
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: lasko
+        color:
+        [
+            186
+            132
+            60
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: lenart
+        color:
+        [
+            180
+            142
+            59
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: lendava
+        color:
+        [
+            28
+            48
+            110
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: litija
+        color:
+        [
+            188
+            76
+            156
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: ljubljana
+        color:
+        [
+            188
+            247
+            192
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: ljubno
+        color:
+        [
+            186
+            75
+            48
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: ljutomer
+        color:
+        [
+            28
+            76
+            244
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: logatec
+        color:
+        [
+            187
+            118
+            175
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: loska_dolina
+        color:
+        [
+            29
+            163
+            60
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: loski_potok
+        color:
+        [
+            29
+            148
+            249
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: lovrenc_na_pohorju
+        color:
+        [
+            180
+            170
+            193
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: luce
+        color:
+        [
+            186
+            89
+            115
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: lukovica
+        color:
+        [
+            186
+            103
+            182
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: majsperk
+        color:
+        [
+            194
+            38
+            23
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: maribor
+        color:
+        [
+            47
+            33
+            106
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: markovci
+        color:
+        [
+            194
+            66
+            157
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: medvode
+        color:
+        [
+            185
+            217
+            24
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: metlika
+        color:
+        [
+            29
+            91
+            237
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: miren-kostanjevica
+        color:
+        [
+            35
+            253
+            18
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: mirna_pec
+        color:
+        [
+            191
+            164
+            80
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: mislinja
+        color:
+        [
+            188
+            48
+            22
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: moravce
+        color:
+        [
+            189
+            63
+            15
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: moravske_toplice
+        color:
+        [
+            30
+            21
+            84
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: mozirje
+        color:
+        [
+            187
+            247
+            10
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: murska_sobota
+        color:
+        [
+            187
+            47
+            96
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: muta
+        color:
+        [
+            47
+            76
+            51
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: naklo
+        color:
+        [
+            186
+            32
+            103
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: nazarje
+        color:
+        [
+            188
+            204
+            247
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: nova_goriska
+        color:
+        [
+            35
+            224
+            140
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: novo_mesto
+        color:
+        [
+            29
+            77
+            170
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: ormoz
+        color:
+        [
+            28
+            105
+            122
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: pesnica
+        color:
+        [
+            180
+            85
+            47
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: piran
+        color:
+        [
+            30
+            7
+            17
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: pivka
+        color:
+        [
+            188
+            162
+            46
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: podlehnik
+        color:
+        [
+            28
+            176
+            201
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: podvelka
+        color:
+        [
+            47
+            104
+            185
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: postojna
+        color:
+        [
+            188
+            147
+            235
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: prebold
+        color:
+        [
+            189
+            48
+            204
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: preddvor
+        color:
+        [
+            185
+            160
+            12
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: prevalje
+        color:
+        [
+            47
+            133
+            63
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: ptuj
+        color:
+        [
+            194
+            23
+            212
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: puconci
+        color:
+        [
+            187
+            18
+            218
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: race-fram
+        color:
+        [
+            187
+            161
+            120
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: radenci
+        color:
+        [
+            191
+            221
+            92
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: radlje_ob_dravi
+        color:
+        [
+            47
+            61
+            240
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: radovljica
+        color:
+        [
+            186
+            46
+            170
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: ravne_na_koroskem
+        color:
+        [
+            47
+            118
+            252
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: razkrizje
+        color:
+        [
+            28
+            91
+            55
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: ribnica
+        color:
+        [
+            194
+            180
+            181
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: ribnica_na_pohorju
+        color:
+        [
+            180
+            185
+            4
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: rogasovci
+        color:
+        [
+            46
+            189
+            149
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: ruse_slovenia
+        color:
+        [
+            186
+            160
+            194
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: selnica_ob_dravi
+        color:
+        [
+            47
+            47
+            173
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: semic
+        color:
+        [
+            194
+            137
+            236
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: sempeter-vrtojba
+        color:
+        [
+            35
+            238
+            207
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: sentjernej
+        color:
+        [
+            29
+            63
+            103
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: sentjur_pri_celju
+        color:
+        [
+            191
+            107
+            68
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: sevnica
+        color:
+        [
+            191
+            150
+            13
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: sezana
+        color:
+        [
+            36
+            39
+            219
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: skocjan
+        color:
+        [
+            194
+            194
+            248
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: skofja_loka
+        color:
+        [
+            185
+            245
+            158
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: slovenj_gradec
+        color:
+        [
+            180
+            199
+            71
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: slovenska_bistrica
+        color:
+        [
+            194
+            52
+            90
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: slovenske_konjice
+        color:
+        [
+            190
+            220
+            166
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: smarje_pri_jelsah
+        color:
+        [
+            191
+            135
+            202
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: smartno_in_litiji
+        color:
+        [
+            189
+            6
+            3
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: sodrazica
+        color:
+        [
+            194
+            166
+            114
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: solcava
+        color:
+        [
+            47
+            218
+            209
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: starse
+        color:
+        [
+            187
+            175
+            187
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: store
+        color:
+        [
+            190
+            206
+            99
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: sveta_ana
+        color:
+        [
+            180
+            156
+            126
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: sveti_jurij
+        color:
+        [
+            191
+            235
+            159
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: tolmin
+        color:
+        [
+            35
+            167
+            128
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: trbovlje
+        color:
+        [
+            193
+            208
+            133
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: trebnje
+        color:
+        [
+            191
+            178
+            147
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: trzic
+        color:
+        [
+            47
+            176
+            8
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: turnisce
+        color:
+        [
+            191
+            207
+            25
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: varazdinska
+        color:
+        [
+            28
+            119
+            189
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: velenje
+        color:
+        [
+            187
+            204
+            65
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: velike_lasce
+        color:
+        [
+            188
+            119
+            101
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: videm
+        color:
+        [
+            28
+            162
+            134
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: vipava
+        color:
+        [
+            191
+            78
+            190
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: vodice
+        color:
+        [
+            186
+            175
+            5
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: vojnik
+        color:
+        [
+            188
+            19
+            144
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: vrhnika
+        color:
+        [
+            186
+            217
+            206
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: vuzenica
+        color:
+        [
+            180
+            213
+            138
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: zalec
+        color:
+        [
+            193
+            194
+            66
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: zasavska
+        color:
+        [
+            188
+            62
+            89
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: zavrc
+        color:
+        [
+            28
+            134
+            0
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: zelezniki
+        color:
+        [
+            186
+            3
+            225
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: zetale
+        color:
+        [
+            28
+            191
+            12
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: ziri
+        color:
+        [
+            190
+            234
+            233
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: zrece
+        color:
+        [
+            188
+            33
+            211
+        ]
+        country: slovenia
+        planet: earth
+    }
+    {
+        identifier: zuzemberk
+        color:
+        [
+            191
+            192
+            214
+        ]
+        country: slovenia
+        planet: earth
+    }
+]

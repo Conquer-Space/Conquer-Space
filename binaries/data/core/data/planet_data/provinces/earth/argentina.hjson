@@ -1,0 +1,266 @@
+[
+    {
+        identifier: buenos_aires
+        color:
+        [
+            95
+            252
+            241
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: catamarca
+        color:
+        [
+            76
+            111
+            20
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: chaco
+        color:
+        [
+            43
+            230
+            60
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: chubut
+        color:
+        [
+            77
+            54
+            190
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: ciudad_de_buenos_aires
+        color:
+        [
+            97
+            26
+            45
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: cordoba_argentina
+        color:
+        [
+            214
+            194
+            237
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: corrientes
+        color:
+        [
+            43
+            244
+            127
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: entre_rios
+        color:
+        [
+            0
+            0
+            0
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: formosa
+        color:
+        [
+            43
+            116
+            36
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: jujuy
+        color:
+        [
+            0
+            199
+            170
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: la_pampa
+        color:
+        [
+            214
+            180
+            170
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: la_rioja_argentina
+        color:
+        [
+            76
+            139
+            154
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: mendoza
+        color:
+        [
+            76
+            182
+            99
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: misiones_argentina
+        color:
+        [
+            43
+            187
+            115
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: neuquen
+        color:
+        [
+            76
+            253
+            178
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: rio_negro_argentina
+        color:
+        [
+            77
+            83
+            68
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: salta
+        color:
+        [
+            0
+            185
+            103
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: san_juan_argentina
+        color:
+        [
+            76
+            153
+            221
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: san_luis
+        color:
+        [
+            214
+            166
+            103
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: santa_cruz_argentina
+        color:
+        [
+            77
+            111
+            202
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: santa_fe
+        color:
+        [
+            214
+            123
+            158
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: santiago_del_estero
+        color:
+        [
+            214
+            152
+            36
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: tierra_del_fuego
+        color:
+        [
+            77
+            140
+            80
+        ]
+        country: argentina
+        planet: earth
+    }
+    {
+        identifier: tucuman
+        color:
+        [
+            214
+            137
+            225
+        ]
+        country: argentina
+        planet: earth
+    }
+]

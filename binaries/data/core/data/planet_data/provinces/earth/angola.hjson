@@ -1,0 +1,200 @@
+[
+    {
+        identifier: bengo
+        color:
+        [
+            106
+            246
+            128
+        ]
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: benguela
+        color:
+        [
+            98
+            98
+            50
+        ]
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: bie
+        color:
+        [
+            214
+            209
+            48
+        ]
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: cabinda
+        color:
+        [
+            27
+            176
+            19
+        ]
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: cuando_cubango
+        color:
+        [
+            86
+            46
+            225
+        ]
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: cuanza_norte
+        color:
+        [
+            214
+            223
+            115
+        ]
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: cuanza_sul
+        color:
+        [
+            98
+            83
+            239
+        ]
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: cunene
+        color:
+        [
+            86
+            118
+            48
+        ]
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: huambo
+        color:
+        [
+            214
+            251
+            249
+        ]
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: huila_angola
+        color:
+        [
+            214
+            237
+            182
+        ]
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: luanda
+        color:
+        [
+            107
+            4
+            195
+        ]
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: lunda_norte
+        color:
+        [
+            87
+            47
+            151
+        ]
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: lunda_sul
+        color:
+        [
+            87
+            76
+            29
+        ]
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: malanje
+        color:
+        [
+            87
+            61
+            218
+        ]
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: moxico
+        color:
+        [
+            86
+            61
+            36
+        ]
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: namibe
+        color:
+        [
+            86
+            89
+            170
+        ]
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: uige
+        color:
+        [
+            87
+            19
+            17
+        ]
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: zaire
+        color:
+        [
+            87
+            4
+            206
+        ]
+        country: angola
+        planet: earth
+    }
+]

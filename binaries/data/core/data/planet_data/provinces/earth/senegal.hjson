@@ -1,0 +1,156 @@
+[
+    {
+        identifier: dakar
+        color:
+        [
+            109
+            63
+            59
+        ]
+        country: senegal
+        planet: earth
+    }
+    {
+        identifier: diourbel
+        color:
+        [
+            192
+            50
+            238
+        ]
+        country: senegal
+        planet: earth
+    }
+    {
+        identifier: fatick
+        color:
+        [
+            87
+            232
+            254
+        ]
+        country: senegal
+        planet: earth
+    }
+    {
+        identifier: kaffrine
+        color:
+        [
+            87
+            161
+            175
+        ]
+        country: senegal
+        planet: earth
+    }
+    {
+        identifier: kaolack
+        color:
+        [
+            87
+            190
+            53
+        ]
+        country: senegal
+        planet: earth
+    }
+    {
+        identifier: kedougou
+        color:
+        [
+            26
+            203
+            227
+        ]
+        country: senegal
+        planet: earth
+    }
+    {
+        identifier: kolda
+        color:
+        [
+            26
+            246
+            172
+        ]
+        country: senegal
+        planet: earth
+    }
+    {
+        identifier: louga
+        color:
+        [
+            109
+            34
+            181
+        ]
+        country: senegal
+        planet: earth
+    }
+    {
+        identifier: matam
+        color:
+        [
+            85
+            217
+            79
+        ]
+        country: senegal
+        planet: earth
+    }
+    {
+        identifier: saint-louis
+        color:
+        [
+            85
+            174
+            134
+        ]
+        country: senegal
+        planet: earth
+    }
+    {
+        identifier: sedhiou
+        color:
+        [
+            84
+            131
+            7
+        ]
+        country: senegal
+        planet: earth
+    }
+    {
+        identifier: tambacounda
+        color:
+        [
+            26
+            218
+            38
+        ]
+        country: senegal
+        planet: earth
+    }
+    {
+        identifier: thies
+        color:
+        [
+            109
+            48
+            248
+        ]
+        country: senegal
+        planet: earth
+    }
+    {
+        identifier: ziguinchor
+        color:
+        [
+            84
+            159
+            141
+        ]
+        country: senegal
+        planet: earth
+    }
+]

@@ -1,0 +1,1234 @@
+[
+    {
+        identifier: ain
+        color:
+        [
+            45
+            188
+            223
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: aisne
+        color:
+        [
+            12
+            8
+            136
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: allier
+        color:
+        [
+            248
+            233
+            92
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: alo
+        color:
+        [
+            163
+            144
+            104
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: alpes-de-haute-provence
+        color:
+        [
+            24
+            202
+            119
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: alpes-maritimes
+        color:
+        [
+            24
+            173
+            241
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: archipel_des_crozet
+        color:
+        [
+            153
+            151
+            143
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: archipel_des_kerguelen
+        color:
+        [
+            153
+            137
+            76
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: ardeche
+        color:
+        [
+            248
+            190
+            147
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: ardennes
+        color:
+        [
+            11
+            236
+            2
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: ariege
+        color:
+        [
+            37
+            83
+            90
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: aube
+        color:
+        [
+            249
+            20
+            37
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: aude
+        color:
+        [
+            139
+            13
+            64
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: austral_islands
+        color:
+        [
+            163
+            58
+            214
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: aveyron
+        color:
+        [
+            247
+            246
+            233
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: bas-rhin
+        color:
+        [
+            45
+            46
+            65
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: bouches-du-rhone
+        color:
+        [
+            138
+            226
+            119
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: calvados
+        color:
+        [
+            140
+            227
+            227
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: cantal
+        color:
+        [
+            249
+            162
+            195
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: charente
+        color:
+        [
+            249
+            105
+            183
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: charente-maritime
+        color:
+        [
+            140
+            113
+            203
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: cher
+        color:
+        [
+            249
+            119
+            250
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: correze
+        color:
+        [
+            247
+            175
+            154
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: corse-du-sud
+        color:
+        [
+            160
+            142
+            70
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: cote-d'or
+        color:
+        [
+            249
+            219
+            207
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: cotes-d'armor
+        color:
+        [
+            140
+            185
+            26
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: creuse
+        color:
+        [
+            248
+            62
+            56
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: deux-sevres
+        color:
+        [
+            250
+            35
+            30
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: dordogne
+        color:
+        [
+            248
+            147
+            202
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: doubs
+        color:
+        [
+            45
+            160
+            89
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: drome
+        color:
+        [
+            247
+            232
+            166
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: essonne
+        color:
+        [
+            250
+            77
+            231
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: eure
+        color:
+        [
+            140
+            242
+            38
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: eure-et-loir
+        color:
+        [
+            249
+            134
+            61
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: finistere
+        color:
+        [
+            140
+            170
+            215
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: gard
+        color:
+        [
+            138
+            240
+            186
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: gers
+        color:
+        [
+            247
+            147
+            20
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: gironde
+        color:
+        [
+            140
+            99
+            136
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: guadeloupe
+        color:
+        [
+            146
+            32
+            125
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: guyane_francaise
+        color:
+        [
+            2
+            215
+            89
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: haute-corse
+        color:
+        [
+            160
+            128
+            3
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: haute-garonne
+        color:
+        [
+            37
+            40
+            145
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: haute-loire
+        color:
+        [
+            249
+            148
+            128
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: haute-marne
+        color:
+        [
+            248
+            119
+            68
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: haute-rhin
+        color:
+        [
+            45
+            60
+            132
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: haute-saone
+        color:
+        [
+            250
+            6
+            152
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: haute-savoie
+        color:
+        [
+            25
+            3
+            131
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: haute-vienne
+        color:
+        [
+            247
+            161
+            87
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: hautes-alpes
+        color:
+        [
+            24
+            216
+            186
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: hautes-pyrenees
+        color:
+        [
+            37
+            69
+            23
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: hauts-de-seine
+        color:
+        [
+            249
+            48
+            171
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: herault
+        color:
+        [
+            138
+            254
+            253
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: iles_loyaute
+        color:
+        [
+            168
+            205
+            2
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: ille-et-vilaine
+        color:
+        [
+            140
+            199
+            93
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: indre
+        color:
+        [
+            248
+            33
+            178
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: indre-et-loire
+        color:
+        [
+            248
+            19
+            111
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: isere
+        color:
+        [
+            247
+            218
+            99
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: jura_france
+        color:
+        [
+            45
+            217
+            101
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: la_reunion
+        color:
+        [
+            153
+            180
+            21
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: landes
+        color:
+        [
+            140
+            85
+            69
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: leeward_islands
+        color:
+        [
+            142
+            43
+            232
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: loir-et-cher
+        color:
+        [
+            248
+            47
+            245
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: loire
+        color:
+        [
+            248
+            204
+            214
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: loire-atlantique
+        color:
+        [
+            140
+            142
+            81
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: loiret
+        color:
+        [
+            248
+            247
+            159
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: lot
+        color:
+        [
+            248
+            5
+            44
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: lot-et-garonne
+        color:
+        [
+            249
+            177
+            6
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: lozere
+        color:
+        [
+            249
+            191
+            73
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: maine-et-loire
+        color:
+        [
+            249
+            5
+            226
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: manche
+        color:
+        [
+            140
+            213
+            160
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: marne
+        color:
+        [
+            248
+            133
+            135
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: marquesas_islands
+        color:
+        [
+            164
+            2
+            128
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: martinique
+        color:
+        [
+            145
+            131
+            156
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: mayenne
+        color:
+        [
+            248
+            76
+            123
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: meurthe-et-moselle
+        color:
+        [
+            12
+            51
+            81
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: meuse
+        color:
+        [
+            12
+            37
+            14
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: miquelon-langlade
+        color:
+        [
+            121
+            43
+            61
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: morbihan
+        color:
+        [
+            140
+            156
+            148
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: moselle
+        color:
+        [
+            14
+            81
+            67
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: nievre
+        color:
+        [
+            249
+            205
+            140
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: nord_france
+        color:
+        [
+            11
+            193
+            57
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: nord_france_2
+        color:
+        [
+            97
+            40
+            112
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: oise
+        color:
+        [
+            249
+            234
+            18
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: orne
+        color:
+        [
+            249
+            248
+            85
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: paris
+        color:
+        [
+            249
+            34
+            104
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: pas-de-calais
+        color:
+        [
+            141
+            28
+            239
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: puy-de-dome
+        color:
+        [
+            248
+            219
+            25
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: pyrenees-atlantiques
+        color:
+        [
+            36
+            239
+            133
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: pyrenees-orientales
+        color:
+        [
+            37
+            126
+            35
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: rhone
+        color:
+        [
+            248
+            162
+            13
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: saone-et-loire
+        color:
+        [
+            250
+            20
+            219
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: sarthe
+        color:
+        [
+            248
+            90
+            190
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: seien-et-marne
+        color:
+        [
+            250
+            92
+            42
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: seine-maritime
+        color:
+        [
+            141
+            0
+            105
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: seine-saint-denis
+        color:
+        [
+            249
+            62
+            238
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: somme
+        color:
+        [
+            141
+            14
+            172
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: st_martin
+        color:
+        [
+            5
+            60
+            154
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: sud_france
+        color:
+        [
+            168
+            190
+            191
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: tarn
+        color:
+        [
+            247
+            204
+            32
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: tarn-et-garonne
+        color:
+        [
+            247
+            189
+            221
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: territoire_de_belfort
+        color:
+        [
+            45
+            146
+            22
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: tuamotu-gambier
+        color:
+        [
+            142
+            1
+            31
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: val-d'oise
+        color:
+        [
+            249
+            77
+            49
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: val-de-marne
+        color:
+        [
+            250
+            106
+            109
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: var
+        color:
+        [
+            138
+            212
+            52
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: vaucluse
+        color:
+        [
+            248
+            105
+            1
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: vendee
+        color:
+        [
+            140
+            128
+            14
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: vienne
+        color:
+        [
+            250
+            49
+            97
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: vosges
+        color:
+        [
+            248
+            176
+            80
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: windward_islands
+        color:
+        [
+            142
+            15
+            98
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: yonne
+        color:
+        [
+            250
+            63
+            164
+        ]
+        country: france
+        planet: earth
+    }
+    {
+        identifier: yvelines
+        color:
+        [
+            249
+            91
+            116
+        ]
+        country: france
+        planet: earth
+    }
+]

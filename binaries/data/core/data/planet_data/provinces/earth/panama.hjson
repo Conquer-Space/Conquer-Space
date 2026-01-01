@@ -1,0 +1,134 @@
+[
+    {
+        identifier: bocas_del_toro
+        color:
+        [
+            74
+            152
+            113
+        ]
+        country: panama
+        planet: earth
+    }
+    {
+        identifier: chiriqui
+        color:
+        [
+            74
+            180
+            247
+        ]
+        country: panama
+        planet: earth
+    }
+    {
+        identifier: cocle
+        color:
+        [
+            101
+            71
+            206
+        ]
+        country: panama
+        planet: earth
+    }
+    {
+        identifier: colon_panama
+        color:
+        [
+            104
+            216
+            142
+        ]
+        country: panama
+        planet: earth
+    }
+    {
+        identifier: darien
+        color:
+        [
+            74
+            238
+            3
+        ]
+        country: panama
+        planet: earth
+    }
+    {
+        identifier: embera
+        color:
+        [
+            74
+            223
+            192
+        ]
+        country: panama
+        planet: earth
+    }
+    {
+        identifier: herrera
+        color:
+        [
+            117
+            168
+            192
+        ]
+        country: panama
+        planet: earth
+    }
+    {
+        identifier: kuna_yala
+        color:
+        [
+            74
+            195
+            58
+        ]
+        country: panama
+        planet: earth
+    }
+    {
+        identifier: los_santos
+        color:
+        [
+            117
+            154
+            125
+        ]
+        country: panama
+        planet: earth
+    }
+    {
+        identifier: ngobe_bugle
+        color:
+        [
+            116
+            68
+            53
+        ]
+        country: panama
+        planet: earth
+    }
+    {
+        identifier: panama
+        color:
+        [
+            101
+            57
+            139
+        ]
+        country: panama
+        planet: earth
+    }
+    {
+        identifier: veraguas
+        color:
+        [
+            102
+            1
+            53
+        ]
+        country: panama
+        planet: earth
+    }
+]

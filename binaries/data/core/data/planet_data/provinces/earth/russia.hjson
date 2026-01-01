@@ -1,0 +1,948 @@
+[
+    {
+        identifier: adygey
+        color:
+        [
+            231
+            121
+            113
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: altay
+        color:
+        [
+            80
+            85
+            102
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: amur
+        color:
+        [
+            55
+            195
+            251
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: arkhangel'sk
+        color:
+        [
+            135
+            153
+            6
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: astrakhan'
+        color:
+        [
+            80
+            142
+            114
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: bashkortostan
+        color:
+        [
+            229
+            48
+            182
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: belgorod
+        color:
+        [
+            54
+            9
+            222
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: bryansk
+        color:
+        [
+            53
+            223
+            21
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: buryat
+        color:
+        [
+            55
+            53
+            93
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: chechnya
+        color:
+        [
+            12
+            236
+            184
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: chelyabinsk
+        color:
+        [
+            80
+            71
+            35
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: chita
+        color:
+        [
+            55
+            138
+            239
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: chukchi_autonomous_okrug
+        color:
+        [
+            131
+            7
+            144
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: chuvash
+        color:
+        [
+            230
+            192
+            10
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: city_of_st_petersburg
+        color:
+        [
+            132
+            222
+            51
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: crimea
+        color:
+        [
+            94
+            81
+            23
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: dagestan
+        color:
+        [
+            13
+            9
+            62
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: gorno-altay
+        color:
+        [
+            7
+            19
+            61
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: ingush
+        color:
+        [
+            12
+            208
+            50
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: irkutsk
+        color:
+        [
+            229
+            205
+            151
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: ivanovo
+        color:
+        [
+            230
+            63
+            175
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: kabardin-balkar
+        color:
+        [
+            12
+            136
+            227
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: kaliningrad
+        color:
+        [
+            53
+            166
+            9
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: kalmyk
+        color:
+        [
+            152
+            207
+            229
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: kaluga
+        color:
+        [
+            229
+            248
+            96
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: kamchatka
+        color:
+        [
+            162
+            115
+            44
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: karachay-cherkess
+        color:
+        [
+            12
+            122
+            160
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: karelia
+        color:
+        [
+            25
+            32
+            9
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: kemerovo
+        color:
+        [
+            229
+            177
+            17
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: khabarovsk
+        color:
+        [
+            55
+            224
+            129
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: khakass
+        color:
+        [
+            229
+            219
+            218
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: khanty-mansiy
+        color:
+        [
+            229
+            77
+            60
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: kirov
+        color:
+        [
+            231
+            35
+            223
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: komi
+        color:
+        [
+            231
+            64
+            101
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: kostroma
+        color:
+        [
+            230
+            6
+            163
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: krasnodar
+        color:
+        [
+            12
+            94
+            26
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: krasnoyarsk
+        color:
+        [
+            135
+            167
+            73
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: kurgan
+        color:
+        [
+            79
+            255
+            212
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: kursk
+        color:
+        [
+            53
+            251
+            155
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: leningrad
+        color:
+        [
+            25
+            103
+            88
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: lipetsk
+        color:
+        [
+            229
+            91
+            127
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: maga_buryatdan
+        color:
+        [
+            124
+            102
+            107
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: mariy-el
+        color:
+        [
+            231
+            21
+            156
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: mordovia
+        color:
+        [
+            229
+            234
+            29
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: moskovsskaya
+        color:
+        [
+            230
+            249
+            22
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: moskva
+        color:
+        [
+            231
+            7
+            89
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: murmansk
+        color:
+        [
+            25
+            17
+            198
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: nenets
+        color:
+        [
+            131
+            164
+            113
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: nizhegorod
+        color:
+        [
+            230
+            77
+            242
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: north_ossetia
+        color:
+        [
+            12
+            165
+            105
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: novgorod
+        color:
+        [
+            230
+            220
+            144
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: novosibirsk
+        color:
+        [
+            80
+            56
+            224
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: null_russia
+        color:
+        [
+            175
+            152
+            240
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: omsk
+        color:
+        [
+            80
+            14
+            23
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: orel
+        color:
+        [
+            229
+            191
+            84
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: orenburg
+        color:
+        [
+            80
+            99
+            169
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: penza
+        color:
+        [
+            229
+            162
+            206
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: perm'
+        color:
+        [
+            231
+            78
+            168
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: primor'ye
+        color:
+        [
+            55
+            238
+            196
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: pskov
+        color:
+        [
+            8
+            48
+            121
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: rostov
+        color:
+        [
+            54
+            66
+            234
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: ryazan'
+        color:
+        [
+            230
+            49
+            108
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: sakha_(yakutia)
+        color:
+        [
+            131
+            192
+            247
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: sakhalin
+        color:
+        [
+            124
+            216
+            131
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: samara
+        color:
+        [
+            231
+            92
+            235
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: saratov
+        color:
+        [
+            80
+            128
+            47
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: sevastopol
+        color:
+        [
+            126
+            118
+            26
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: smolensk
+        color:
+        [
+            53
+            194
+            143
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: stavropol'
+        color:
+        [
+            231
+            107
+            46
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: sverdlovsk
+        color:
+        [
+            229
+            62
+            249
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: tambov
+        color:
+        [
+            229
+            105
+            194
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: tatarstan
+        color:
+        [
+            229
+            134
+            72
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: tomsk
+        color:
+        [
+            229
+            120
+            5
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: tula
+        color:
+        [
+            230
+            92
+            53
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: tuva
+        color:
+        [
+            55
+            81
+            227
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: tver'
+        color:
+        [
+            230
+            234
+            211
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: tyumen'
+        color:
+        [
+            79
+            241
+            145
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: udmurt
+        color:
+        [
+            231
+            50
+            34
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: ul'yanovsk
+        color:
+        [
+            229
+            148
+            139
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: vladimir
+        color:
+        [
+            230
+            35
+            41
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: volgograd
+        color:
+        [
+            80
+            156
+            181
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: vologda
+        color:
+        [
+            230
+            206
+            77
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: voronezh
+        color:
+        [
+            54
+            52
+            167
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: yamal-nenets
+        color:
+        [
+            131
+            150
+            46
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: yaroslavl'
+        color:
+        [
+            230
+            20
+            230
+        ]
+        country: russia
+        planet: earth
+    }
+    {
+        identifier: yevrey
+        color:
+        [
+            55
+            210
+            62
+        ]
+        country: russia
+        planet: earth
+    }
+]

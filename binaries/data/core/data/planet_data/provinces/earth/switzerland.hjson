@@ -1,0 +1,277 @@
+[
+    {
+        identifier: aargau
+        color:
+        [
+            45
+            3
+            120
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: appenzell_ausserrhoden
+        color:
+        [
+            189
+            77
+            82
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: appenzell_innerrhoden
+        color:
+        [
+            189
+            91
+            149
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: basel-landschaft
+        color:
+        [
+            45
+            31
+            254
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: bern
+        color:
+        [
+            179
+            212
+            212
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: fribourg
+        color:
+        [
+            180
+            56
+            169
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: geneve
+        color:
+        [
+            45
+            174
+            156
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: glarus
+        color:
+        [
+            180
+            28
+            35
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: graubunden
+        color:
+        [
+            22
+            158
+            66
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: jura_switzerland
+        color:
+        [
+            45
+            131
+            211
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: lucerne
+        color:
+        [
+            179
+            227
+            23
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: neuchatel
+        color:
+        [
+            45
+            231
+            168
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: nidwalden
+        color:
+        [
+            180
+            42
+            102
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: obwalden
+        color:
+        [
+            180
+            70
+            236
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: sankt_gallen
+        color:
+        [
+            45
+            74
+            199
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: schaffhausen
+        color:
+        [
+            44
+            216
+            175
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: schwyz
+        color:
+        [
+            180
+            13
+            224
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: solothurn
+        color:
+        [
+            45
+            117
+            144
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: thurgau
+        color:
+        [
+            44
+            230
+            242
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: ticino
+        color:
+        [
+            22
+            115
+            121
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: uri
+        color:
+        [
+            179
+            255
+            157
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: valais
+        color:
+        [
+            22
+            86
+            243
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: vaud
+        color:
+        [
+            45
+            203
+            34
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: zug
+        color:
+        [
+            179
+            241
+            90
+        ]
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: zurich
+        color:
+        [
+            44
+            245
+            53
+        ]
+        country: switzerland
+        planet: earth
+    }
+]

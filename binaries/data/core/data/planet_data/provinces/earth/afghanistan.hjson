@@ -1,0 +1,376 @@
+[
+    {
+        identifier: badakhshan
+        color:
+        [
+            37
+            211
+            181
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: badghis
+        color:
+        [
+            57
+            26
+            67
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: baghlan
+        color:
+        [
+            217
+            25
+            235
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: balkh
+        color:
+        [
+            56
+            210
+            244
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: bamyan
+        color:
+        [
+            216
+            224
+            223
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: farah
+        color:
+        [
+            79
+            41
+            231
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: faryab
+        color:
+        [
+            56
+            253
+            189
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: ghazni
+        color:
+        [
+            216
+            125
+            10
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: ghor
+        color:
+        [
+            217
+            11
+            168
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: hilmand
+        color:
+        [
+            79
+            213
+            11
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: hirat
+        color:
+        [
+            57
+            40
+            134
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: jawzjan
+        color:
+        [
+            56
+            239
+            122
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: kabul
+        color:
+        [
+            216
+            153
+            144
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: kandahar
+        color:
+        [
+            79
+            198
+            200
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: kapisa
+        color:
+        [
+            216
+            196
+            89
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: khost
+        color:
+        [
+            79
+            127
+            121
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: kunar
+        color:
+        [
+            79
+            84
+            176
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: kunduz
+        color:
+        [
+            56
+            196
+            177
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: laghman
+        color:
+        [
+            216
+            167
+            211
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: logar
+        color:
+        [
+            216
+            182
+            22
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: nangarhar
+        color:
+        [
+            79
+            113
+            54
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: nimroz
+        color:
+        [
+            79
+            13
+            97
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: nuristan
+        color:
+        [
+            79
+            98
+            243
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: paktika
+        color:
+        [
+            79
+            170
+            66
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: paktya
+        color:
+        [
+            79
+            141
+            188
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: parwan_afghanistan
+        color:
+        [
+            216
+            139
+            77
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: parwan_afghanistan_2
+        color:
+        [
+            216
+            239
+            34
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: samangan
+        color:
+        [
+            217
+            40
+            46
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: sari_pul
+        color:
+        [
+            216
+            253
+            101
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: takhar
+        color:
+        [
+            56
+            182
+            110
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: uruzgan_afghanistan
+        color:
+        [
+            216
+            110
+            199
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: uruzgan_afghanistan_2
+        color:
+        [
+            217
+            54
+            113
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: wardak
+        color:
+        [
+            216
+            210
+            156
+        ]
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: zabul
+        color:
+        [
+            79
+            184
+            133
+        ]
+        country: afghanistan
+        planet: earth
+    }
+]

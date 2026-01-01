@@ -1,0 +1,189 @@
+[
+    {
+        identifier: blue_nile
+        color:
+        [
+            64
+            245
+            42
+        ]
+        country: sudan
+        planet: earth
+    }
+    {
+        identifier: central_darfur
+        color:
+        [
+            20
+            142
+            147
+        ]
+        country: sudan
+        planet: earth
+    }
+    {
+        identifier: eastern_darfur
+        color:
+        [
+            93
+            51
+            219
+        ]
+        country: sudan
+        planet: earth
+    }
+    {
+        identifier: gedarif
+        color:
+        [
+            64
+            202
+            97
+        ]
+        country: sudan
+        planet: earth
+    }
+    {
+        identifier: gezira
+        color:
+        [
+            189
+            191
+            106
+        ]
+        country: sudan
+        planet: earth
+    }
+    {
+        identifier: kassala
+        color:
+        [
+            92
+            65
+            104
+        ]
+        country: sudan
+        planet: earth
+    }
+    {
+        identifier: khartoum
+        color:
+        [
+            189
+            205
+            173
+        ]
+        country: sudan
+        planet: earth
+    }
+    {
+        identifier: north_darfur
+        color:
+        [
+            84
+            2
+            172
+        ]
+        country: sudan
+        planet: earth
+    }
+    {
+        identifier: north_kordufan
+        color:
+        [
+            189
+            219
+            240
+        ]
+        country: sudan
+        planet: earth
+    }
+    {
+        identifier: northern_sudan
+        color:
+        [
+            82
+            158
+            33
+        ]
+        country: sudan
+        planet: earth
+    }
+    {
+        identifier: red_sea
+        color:
+        [
+            82
+            229
+            112
+        ]
+        country: sudan
+        planet: earth
+    }
+    {
+        identifier: river_nile
+        color:
+        [
+            82
+            215
+            45
+        ]
+        country: sudan
+        planet: earth
+    }
+    {
+        identifier: sennar
+        color:
+        [
+            65
+            3
+            109
+        ]
+        country: sudan
+        planet: earth
+    }
+    {
+        identifier: south_kordufan
+        color:
+        [
+            92
+            222
+            73
+        ]
+        country: sudan
+        planet: earth
+    }
+    {
+        identifier: southern_darfur
+        color:
+        [
+            20
+            156
+            214
+        ]
+        country: sudan
+        planet: earth
+    }
+    {
+        identifier: western_darfur
+        color:
+        [
+            84
+            16
+            239
+        ]
+        country: sudan
+        planet: earth
+    }
+    {
+        identifier: white_nile
+        color:
+        [
+            92
+            208
+            6
+        ]
+        country: sudan
+        planet: earth
+    }
+]

@@ -1,0 +1,1223 @@
+[
+    {
+        identifier: abim
+        color:
+        [
+            218
+            83
+            173
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: adjumani
+        color:
+        [
+            88
+            205
+            46
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: agago
+        color:
+        [
+            218
+            55
+            39
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: alebtong
+        color:
+        [
+            218
+            112
+            51
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: amolatar
+        color:
+        [
+            197
+            97
+            69
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: amudat
+        color:
+        [
+            91
+            21
+            233
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: amuria
+        color:
+        [
+            218
+            126
+            118
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: amuru
+        color:
+        [
+            88
+            190
+            235
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: apac
+        color:
+        [
+            197
+            25
+            246
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: arua
+        color:
+        [
+            91
+            107
+            123
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: budaka
+        color:
+        [
+            225
+            60
+            33
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: bududa
+        color:
+        [
+            91
+            78
+            245
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: bugiri
+        color:
+        [
+            225
+            17
+            88
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: buhweju
+        color:
+        [
+            224
+            187
+            198
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: buikwe
+        color:
+        [
+            224
+            144
+            253
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: bukedea
+        color:
+        [
+            225
+            145
+            179
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: bukomansimbi
+        color:
+        [
+            217
+            254
+            27
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: bukwa
+        color:
+        [
+            91
+            7
+            166
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: bulambuli
+        color:
+        [
+            224
+            244
+            210
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: buliisa
+        color:
+        [
+            91
+            150
+            68
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: bushenyi
+        color:
+        [
+            224
+            230
+            143
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: busia
+        color:
+        [
+            91
+            36
+            44
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: butaleja
+        color:
+        [
+            225
+            74
+            100
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: butambala
+        color:
+        [
+            197
+            154
+            81
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: buvuma
+        color:
+        [
+            85
+            46
+            43
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: buyende
+        color:
+        [
+            196
+            253
+            112
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: dokolo
+        color:
+        [
+            197
+            239
+            227
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: gomba
+        color:
+        [
+            197
+            168
+            148
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: gulu
+        color:
+        [
+            217
+            197
+            15
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: hoima
+        color:
+        [
+            91
+            164
+            135
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: ibanda
+        color:
+        [
+            217
+            168
+            137
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: iganga
+        color:
+        [
+            217
+            225
+            149
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: isingiro
+        color:
+        [
+            40
+            142
+            136
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: jinja
+        color:
+        [
+            197
+            11
+            179
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kaabong
+        color:
+        [
+            88
+            148
+            34
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kabale
+        color:
+        [
+            40
+            171
+            14
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kabarole
+        color:
+        [
+            91
+            207
+            80
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kaberamaido
+        color:
+        [
+            197
+            225
+            160
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kalangala
+        color:
+        [
+            85
+            31
+            232
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kaliro
+        color:
+        [
+            218
+            40
+            228
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kalungu
+        color:
+        [
+            218
+            12
+            94
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kampala
+        color:
+        [
+            218
+            26
+            161
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kamuli
+        color:
+        [
+            196
+            224
+            234
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kamwenge
+        color:
+        [
+            198
+            12
+            105
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kanungu
+        color:
+        [
+            92
+            8
+            92
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kapchorwa
+        color:
+        [
+            90
+            249
+            99
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kasese
+        color:
+        [
+            91
+            221
+            147
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: katakwi
+        color:
+        [
+            218
+            140
+            185
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kayunga
+        color:
+        [
+            197
+            68
+            191
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kibale
+        color:
+        [
+            198
+            55
+            50
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kiboga
+        color:
+        [
+            197
+            125
+            203
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kibuku
+        color:
+        [
+            225
+            88
+            167
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kiryandongo
+        color:
+        [
+            217
+            211
+            82
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kisoro
+        color:
+        [
+            40
+            185
+            81
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kitgum
+        color:
+        [
+            88
+            162
+            101
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: koboko
+        color:
+        [
+            88
+            247
+            247
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kole
+        color:
+        [
+            217
+            140
+            3
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kotido
+        color:
+        [
+            218
+            69
+            106
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kumi
+        color:
+        [
+            225
+            117
+            45
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kween
+        color:
+        [
+            224
+            173
+            131
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kyankwanzi
+        color:
+        [
+            197
+            211
+            93
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kyegegwa
+        color:
+        [
+            198
+            26
+            172
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: kyenjojo
+        color:
+        [
+            197
+            254
+            38
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: lamwo
+        color:
+        [
+            88
+            176
+            168
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: lira
+        color:
+        [
+            217
+            125
+            192
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: luuka
+        color:
+        [
+            196
+            239
+            45
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: luweero
+        color:
+        [
+            197
+            83
+            2
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: lwengo
+        color:
+        [
+            217
+            239
+            216
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: lyantonde
+        color:
+        [
+            218
+            212
+            8
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: manafwa
+        color:
+        [
+            91
+            64
+            178
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: maracha
+        color:
+        [
+            91
+            93
+            56
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: masaka
+        color:
+        [
+            218
+            226
+            75
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: masindi
+        color:
+        [
+            197
+            54
+            124
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: mayuge
+        color:
+        [
+            85
+            60
+            110
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: mbale
+        color:
+        [
+            225
+            45
+            222
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: mbarara_uganda
+        color:
+        [
+            217
+            182
+            204
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: mbarara_uganda_2
+        color:
+        [
+            218
+            197
+            197
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: mitooma
+        color:
+        [
+            224
+            216
+            76
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: mityana
+        color:
+        [
+            197
+            111
+            136
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: moroto
+        color:
+        [
+            90
+            220
+            221
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: moyo
+        color:
+        [
+            88
+            219
+            113
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: mpigi
+        color:
+        [
+            197
+            140
+            14
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: mubende
+        color:
+        [
+            198
+            69
+            117
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: mukono
+        color:
+        [
+            224
+            130
+            186
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: nakapiripirit
+        color:
+        [
+            224
+            159
+            64
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: nakaseke
+        color:
+        [
+            197
+            197
+            26
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: nakasongola
+        color:
+        [
+            197
+            40
+            57
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: namayingo
+        color:
+        [
+            85
+            74
+            177
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: namutumba
+        color:
+        [
+            225
+            159
+            246
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: napak
+        color:
+        [
+            225
+            102
+            234
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: nebbi
+        color:
+        [
+            91
+            136
+            1
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: ngora
+        color:
+        [
+            225
+            131
+            112
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: ntoroko
+        color:
+        [
+            91
+            178
+            202
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: ntungamo
+        color:
+        [
+            40
+            128
+            69
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: nwoya
+        color:
+        [
+            225
+            31
+            155
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: otuke
+        color:
+        [
+            218
+            97
+            240
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: oyam
+        color:
+        [
+            217
+            111
+            125
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: pader
+        color:
+        [
+            217
+            154
+            70
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: pallisa
+        color:
+        [
+            218
+            183
+            130
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: rakai
+        color:
+        [
+            85
+            17
+            165
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: rubirizi
+        color:
+        [
+            91
+            235
+            214
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: rukungiri
+        color:
+        [
+            91
+            250
+            25
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: sembabule
+        color:
+        [
+            198
+            40
+            239
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: serere
+        color:
+        [
+            218
+            154
+            252
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: sheema
+        color:
+        [
+            224
+            202
+            9
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: sironko
+        color:
+        [
+            225
+            3
+            21
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: soroti
+        color:
+        [
+            218
+            169
+            63
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: tororo
+        color:
+        [
+            91
+            50
+            111
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: wakiso
+        color:
+        [
+            197
+            182
+            215
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: yumbe
+        color:
+        [
+            88
+            233
+            180
+        ]
+        country: uganda
+        planet: earth
+    }
+    {
+        identifier: zombo
+        color:
+        [
+            91
+            121
+            190
+        ]
+        country: uganda
+        planet: earth
+    }
+]

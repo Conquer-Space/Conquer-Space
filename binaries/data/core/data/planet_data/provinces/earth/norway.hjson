@@ -1,0 +1,233 @@
+[
+    {
+        identifier: akershus
+        color:
+        [
+            10
+            49
+            229
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: aust-agder
+        color:
+        [
+            133
+            251
+            111
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: bouvet_island
+        color:
+        [
+            168
+            147
+            246
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: buskerud
+        color:
+        [
+            133
+            208
+            166
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: finnmark
+        color:
+        [
+            10
+            106
+            241
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: hedmark
+        color:
+        [
+            10
+            7
+            28
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: hordaland
+        color:
+        [
+            134
+            38
+            56
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: more_og_romsdal
+        color:
+        [
+            134
+            66
+            190
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: nord-trondelag
+        color:
+        [
+            9
+            234
+            150
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: nordland
+        color:
+        [
+            9
+            191
+            205
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: oppland
+        color:
+        [
+            195
+            24
+            138
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: oslo
+        color:
+        [
+            133
+            194
+            99
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: ostfold
+        color:
+        [
+            10
+            64
+            40
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: rogaland
+        color:
+        [
+            134
+            23
+            245
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: sogn_og_fjordane
+        color:
+        [
+            134
+            52
+            123
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: sor-trondelag
+        color:
+        [
+            9
+            248
+            217
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: svalbard
+        color:
+        [
+            162
+            200
+            190
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: telemark
+        color:
+        [
+            133
+            237
+            44
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: troms
+        color:
+        [
+            9
+            163
+            71
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: vest-agder
+        color:
+        [
+            134
+            9
+            178
+        ]
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: vestfold
+        color:
+        [
+            133
+            222
+            233
+        ]
+        country: norway
+        planet: earth
+    }
+]

@@ -1,0 +1,178 @@
+[
+    {
+        identifier: atlantida
+        color:
+        [
+            116
+            110
+            254
+        ]
+        country: honduras
+        planet: earth
+    }
+    {
+        identifier: choluteca
+        color:
+        [
+            42
+            215
+            67
+        ]
+        country: honduras
+        planet: earth
+    }
+    {
+        identifier: colon_honduras
+        color:
+        [
+            116
+            96
+            187
+        ]
+        country: honduras
+        planet: earth
+    }
+    {
+        identifier: comayagua
+        color:
+        [
+            206
+            174
+            250
+        ]
+        country: honduras
+        planet: earth
+    }
+    {
+        identifier: copan
+        color:
+        [
+            74
+            123
+            235
+        ]
+        country: honduras
+        planet: earth
+    }
+    {
+        identifier: cortes
+        color:
+        [
+            74
+            95
+            101
+        ]
+        country: honduras
+        planet: earth
+    }
+    {
+        identifier: el_paraiso
+        color:
+        [
+            42
+            172
+            122
+        ]
+        country: honduras
+        planet: earth
+    }
+    {
+        identifier: francisco_morazan
+        color:
+        [
+            206
+            203
+            128
+        ]
+        country: honduras
+        planet: earth
+    }
+    {
+        identifier: gracias_a_dios
+        color:
+        [
+            42
+            143
+            244
+        ]
+        country: honduras
+        planet: earth
+    }
+    {
+        identifier: intibuca
+        color:
+        [
+            42
+            29
+            220
+        ]
+        country: honduras
+        planet: earth
+    }
+    {
+        identifier: la_paz_honduras
+        color:
+        [
+            42
+            58
+            98
+        ]
+        country: honduras
+        planet: earth
+    }
+    {
+        identifier: lempira
+        color:
+        [
+            42
+            1
+            86
+        ]
+        country: honduras
+        planet: earth
+    }
+    {
+        identifier: ocotepeque
+        color:
+        [
+            41
+            228
+            208
+        ]
+        country: honduras
+        planet: earth
+    }
+    {
+        identifier: olancho
+        color:
+        [
+            42
+            129
+            177
+        ]
+        country: honduras
+        planet: earth
+    }
+    {
+        identifier: santa_barbara
+        color:
+        [
+            74
+            109
+            168
+        ]
+        country: honduras
+        planet: earth
+    }
+    {
+        identifier: yoro
+        color:
+        [
+            206
+            189
+            61
+        ]
+        country: honduras
+        planet: earth
+    }
+]

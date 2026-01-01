@@ -1,0 +1,244 @@
+[
+    {
+        identifier: alaotra-mangoro
+        color:
+        [
+            200
+            242
+            5
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: amoron'i_mania
+        color:
+        [
+            200
+            227
+            194
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: analamanga
+        color:
+        [
+            200
+            170
+            182
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: analanjirofo
+        color:
+        [
+            97
+            140
+            69
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: androy
+        color:
+        [
+            97
+            211
+            148
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: anosy
+        color:
+        [
+            97
+            197
+            81
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: atsimo-andrefana
+        color:
+        [
+            97
+            225
+            215
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: atsimo-atsinanana
+        color:
+        [
+            97
+            183
+            14
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: atsinanana
+        color:
+        [
+            97
+            154
+            136
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: betsiboka
+        color:
+        [
+            200
+            184
+            249
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: boeny
+        color:
+        [
+            97
+            83
+            57
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: bongolava
+        color:
+        [
+            200
+            199
+            60
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: diana
+        color:
+        [
+            97
+            111
+            191
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: haute_matsiatra
+        color:
+        [
+            253
+            65
+            198
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: ihorombe
+        color:
+        [
+            253
+            51
+            131
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: itasy
+        color:
+        [
+            253
+            80
+            9
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: melaky
+        color:
+        [
+            97
+            254
+            93
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: menabe
+        color:
+        [
+            97
+            240
+            26
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: sava
+        color:
+        [
+            97
+            126
+            2
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: sofia_madagascar
+        color:
+        [
+            97
+            97
+            124
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: vakinankaratra
+        color:
+        [
+            200
+            213
+            127
+        ]
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: vatovavy-fitovinany
+        color:
+        [
+            97
+            168
+            203
+        ]
+        country: madagascar
+        planet: earth
+    }
+]
