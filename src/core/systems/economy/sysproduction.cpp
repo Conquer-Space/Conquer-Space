@@ -42,6 +42,7 @@ namespace cqsp::core::systems {
 void ProcessIndustries(Node& node) {
     auto& universe = node.universe();
     auto& market = node.get<components::Market>();
+    auto& production_config = universe.economy_config.production_config;
     // Get the transport cost
     auto& infrastructure = node.get<components::infrastructure::CityInfrastructure>();
     // Calculate the infrastructure cost
@@ -104,39 +105,40 @@ void ProcessIndustries(Node& node) {
         costs.revenue = (output * market.price).GetSum();
         costs.profit = costs.revenue - costs.maintenance - costs.materialcosts - costs.wages - costs.transport;
 
-        // Now try to maximize profit
-        // Maximizing profit is a two fold thing
-        // If the S/D ratio is < 1, and the profit is negative, that means that this factory is not supplying enough
-        // This could be either the good that we are producing is not profitable, or the fact that our base costs
-        // are too high.
+        /* 
+        Now try to maximize profit
+        Maximizing profit is a two fold thing
+        If the S/D ratio is < 1, and the profit is negative, that means that this factory is not supplying enough
+        This could be either the good that we are producing is not profitable, or the fact that our base costs
+        are too high.
 
-        // For the former option, we should reduce production because our goods are not making a profit and cut costs
-        // until we can make a profit, either by squeezing out the market. If we're not big enough to change the market
-        // we will just go out of business.
-        // and for the second production, we should increase our production because we just need more production so
-        // that we can get to profitability
+        For the former option, we should reduce production because our goods are not making a profit and cut costs
+        until we can make a profit, either by squeezing out the market. If we're not big enough to change the market
+        we will just go out of business.
+        and for the second production, we should increase our production because we just need more production so
+        that we can get to profitability
 
-        // If S/D ratio is > 1, and we are still making negative profit, we are producing too much, or paying the workers
-        // too much. There are so many knobs that we have to tune, so I'm not sure how we can simplify this into a few
-        // simple knobs (more like one)
+        If S/D ratio is > 1, and we are still making negative profit, we are producing too much, or paying the workers
+        too much. There are so many knobs that we have to tune, so I'm not sure how we can simplify this into a few
+        simple knobs (more like one)
 
-        // I think one of the issues that we have is what if all the businesses go out of business at one time, and end
-        // up just killing off the specific market for a good?
-        // Do we need to prop things out
-        // or have a stage where it stays hibernated for a while, and then ramps up production if it can become profitable
+        I think one of the issues that we have is what if all the businesses go out of business at one time, and end
+        up just killing off the specific market for a good?
+        Do we need to prop things out
+        or have a stage where it stays hibernated for a while, and then ramps up production if it can become profitable
 
-        // Right now we should naively modify the price then to maximize profit
-        // Now let's target profit only
-        // If we're making more money, increase utilization, if we're making less money, reduce utilization
-        // We can only reduce and increase production by a certain amount, let's say a maximum of 5%
+        Right now we should naively modify the price then to maximize profit
+        Now let's target profit only
+        If we're making more money, increase utilization, if we're making less money, reduce utilization
+        We can only reduce and increase production by a certain amount, let's say a maximum of 5%
 
-        // Then the other thing is in that case, it would just have boom and busts
-        // If we make the time that a business dies random, then perhaps we could tune it more
-        // Now what's the goal
-        // The more profit we have the less we increase until some level
-        // Let's just make it a log level
-        // TODO(EhWhoAmI): This should just be some sort of setting tbh
-        float profit_multiplier = 0.001;
+        Then the other thing is in that case, it would just have boom and busts
+        If we make the time that a business dies random, then perhaps we could tune it more
+        Now what's the goal
+        The more profit we have the less we increase until some level
+        Let's just make it a log level
+        */
+
         // but if we have close to zero profit, we want to take risks and move in a certain direction.
 
         // So we will add a random chance to increase or decrease profit
@@ -152,9 +154,9 @@ void ProcessIndustries(Node& node) {
         }
 
         double diff = 1 +
-                      universe.economy_config.production_config.max_factory_delta /
-                          (1 + std::exp(-(costs.profit * profit_multiplier))) -
-                      universe.economy_config.production_config.max_factory_delta / 2;
+                      production_config.max_factory_delta /
+                          (1 + std::exp(-(costs.profit * production_config.profit_multiplier))) -
+                      production_config.max_factory_delta / 2;
         diff += universe.random->GetRandomNormal(0, 0.005);
         if (shortage) {
             diff -= std::max(universe.random->GetRandomNormal(0.1, 0.1), 0.02);
@@ -164,8 +166,7 @@ void ProcessIndustries(Node& node) {
 
         double past_util = size.utilization;
         size.utilization =
-            std::clamp(size.utilization * diff,
-                       universe.economy_config.production_config.factory_min_utilization * size.size, size.size);
+            std::clamp(size.utilization * diff, production_config.factory_min_utilization * size.size, size.size);
         size.diff_delta = size.utilization - past_util;
         // Now diff it by that much
         // Let the minimum the factory can produce be like 10% of the
@@ -189,7 +190,7 @@ void SysProduction::DoSystem() {
     ZoneScoped;
     Universe& universe = GetUniverse();
     // Each industrial zone is a a market
-    BEGIN_TIMED_BLOCK(INDUSTRY);
+    BEGIN_TIMED_BLOCK(Industry);
     int factories = 0;
     // Loop through the markets
     int settlement_count = 0;
@@ -197,7 +198,7 @@ void SysProduction::DoSystem() {
     for (Node entity : universe.nodes<components::IndustrialZone, components::Market>()) {
         ProcessIndustries(entity);
     }
-    END_TIMED_BLOCK(INDUSTRY);
+    END_TIMED_BLOCK(Industry);
     SPDLOG_TRACE("Updated {} factories, {} industries", factories, view.size());
 }
 }  // namespace cqsp::core::systems

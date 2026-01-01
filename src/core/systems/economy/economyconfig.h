@@ -26,6 +26,16 @@ struct EconomyConfig {
          * Fraction that the price of a good can deviate from the base price.
          */
         double base_price_deviation = 0.75;
+        /**
+         * How much of a deficit we have ((demand - supply) / demand)
+         * to be considered a shortage.
+         */
+        double shortage_level = 0.8;
+
+        /**
+         * What to initialize our market access with.
+         */
+        double default_market_access = 0.8;
     } market_config;
 
     struct {

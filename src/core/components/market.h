@@ -35,9 +35,6 @@ struct MarketInformation {
     // I forgot why we have 2 separate ledgers for supply and demand
     ResourceLedger _demand;
     ResourceLedger _supply;
-    ResourceLedger _previous_demand;
-    ResourceLedger _previous_supply;
-    bool current = true;
 
  public:
     ResourceLedger sd_ratio;
@@ -60,41 +57,12 @@ struct MarketInformation {
 
     void ResetLedgers() {
         // Reset the ledger values
-        current = !current;
         demand().clear();
         supply().clear();
     }
 
-    ResourceLedger& supply() {
-        if (current) {
-            return _supply;
-        } else {
-            return _previous_supply;
-        }
-    }
-    ResourceLedger& demand() {
-        if (current) {
-            return _demand;
-        } else {
-            return _previous_demand;
-        }
-    }
-
-    ResourceLedger& previous_supply() {
-        if (current) {
-            return _previous_supply;
-        } else {
-            return _supply;
-        }
-    }
-
-    ResourceLedger& previous_demand() {
-        if (current) {
-            return _previous_demand;
-        } else {
-            return _demand;
-        }
-    }
+    ResourceLedger& supply() { return _supply; }
+    ResourceLedger& demand() { return _demand; }
 };
 
 struct MarketElementInformation {
@@ -143,7 +111,11 @@ struct Market : MarketInformation {
     entt::entity parent_market = entt::null;
 
     double GDP = 0;
-
+    // How much money we are creating from thin air
+    // Cumulative deficit
+    double deficit = 0;
+    // Deficit in last tick
+    double last_deficit = 0;
     // Math
     void AddSupply(const ResourceLedger& stockpile);
     void AddSupply(const ResourceLedger& stockpile, double multiplier);
