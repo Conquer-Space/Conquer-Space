@@ -99,6 +99,7 @@ void StarSystemController::MoveCamera(double delta_time) {
     auto post_move = [&]() {
         universe.clear<FocusedPlanet>();
         m_viewing_entity = entt::null;
+        camera.ResetCameraUp();
     };
     if (app.ButtonIsHeld(engine::KeyInput::KEY_W)) {
         // Get direction
@@ -122,8 +123,22 @@ void StarSystemController::MoveCamera(double delta_time) {
 void StarSystemController::CalculateScroll() {
     double min_scroll = 0.1;
     if (m_viewing_entity != entt::null && universe.valid(m_viewing_entity) && universe.all_of<Body>(m_viewing_entity)) {
-        min_scroll = std::max(universe.get<Body>(m_viewing_entity).radius * 1.1, 0.1);
+        const double planet_radius = universe.get<Body>(m_viewing_entity).radius;
+        min_scroll = std::max(planet_radius * 1.1, 0.1);
+        // Then also check the bodo
+        if (camera.scroll > planet_radius * 10) {
+            if (planet_frame_scroll) {
+                camera.ResetCameraUp();
+                focus_on_city = false;
+            }
+            planet_frame_scroll = false;
+        } else {
+            // Set camera up to the planet frame
+            target_surface_coordinate = GetCameraOverCoordinate();
+            SetCameraToPlanetReferenceFrame();
+        }
     }
+
     double scroll_value = GetScrollValue();
     if (camera.scroll - scroll_value <= min_scroll) {
         return;
@@ -147,7 +162,11 @@ void StarSystemController::CalculateViewChange(double deltaX, double deltaY) {
         camera.view_y = glm::radians(-89.f);
     }
     selected_city = entt::null;
-    camera.ResetCameraUp();
+    if (focus_on_city) {
+        target_surface_coordinate = GetCameraOverCoordinate();
+    }
+    //focus_on_city = false/;
+    //camera.ResetCameraUp();
 }
 
 bool StarSystemController::IsFoundingCity() { return !universe.view<CityFounding>().empty(); }
@@ -232,23 +251,7 @@ void StarSystemController::CenterCameraOnCity() {
     // coordinate system multiple times. Currently this changes from surface
     // coordinates to 3d coordinates to surface coordinates. I think it can be
     // solved with a basic formula.
-    entt::entity planet = universe.view<FocusedPlanet>().front();
-
-    if (!universe.valid(planet) || !universe.any_of<Body>(planet)) {
-        return;
-    }
-    Body& body = universe.get<Body>(planet);
-
-    glm::quat quat = GetBodyRotation(body.axial, body.rotation, body.rotation_offset);
-
-    glm::vec3 vec = types::toVec3(surf.universe_view(), 1);
-    auto s = quat * vec;
-    // TODO(EhWhoAmI): Find a way to dynamically change our camera up when
-    // we want to focus on a city.
-    camera.FixCameraUp(quat * glm::vec3(0.0f, 0.0f, 1.0f));
-    // camera.SetCameraUp(quat * glm::vec3(0.0f, 0.0f, 1.0f));
-    camera.view_y = std::asin(s.z);
-    camera.view_x = std::atan2(s.x, s.y);
+    target_surface_coordinate = surf;
 }
 
 void StarSystemController::FocusOnEntity(entt::entity ent) {
@@ -293,6 +296,20 @@ void StarSystemController::SelectCountry() {
     }
 }
 
+core::components::types::SurfaceCoordinate StarSystemController::GetCameraOverCoordinate() {
+    if (m_viewing_entity != entt::null && universe.valid(m_viewing_entity) && universe.all_of<Body>(m_viewing_entity)) {
+        auto& planet_comp = universe.get<Body>(m_viewing_entity);
+        // Get the planet
+        // Then we should reset the coordinate
+        glm::quat quat = GetBodyRotation(planet_comp.axial, planet_comp.rotation, planet_comp.rotation_offset);
+        // Rotate the vector based on the axial tilt and rotation.
+        glm::vec3 p = glm::inverse(quat) * camera.CameraPositionNormalized();
+
+        return types::ToSurfaceCoordinate(p);
+    }
+    return target_surface_coordinate;
+}
+
 void StarSystemController::SeePlanet(entt::entity ent) {
     universe.clear<FocusedPlanet>();
     universe.emplace<FocusedPlanet>(ent);
@@ -319,6 +336,44 @@ void StarSystemController::FoundCity() {
 void StarSystemController::PreRender() {
     FocusPlanetView();
     FocusCityView();
+    // We should focus on the point
+    CenterCameraOnPoint();
+}
+
+void StarSystemController::CenterCameraOnPoint() {
+    if (!focus_on_city) {
+        return;
+    }
+
+    entt::entity planet = universe.view<FocusedPlanet>().front();
+
+    if (!universe.valid(planet) || !universe.any_of<Body>(planet)) {
+        return;
+    }
+    Body& body = universe.get<Body>(planet);
+
+    glm::quat quat = GetBodyRotation(body.axial, body.rotation, body.rotation_offset);
+
+    glm::vec3 vec = types::toVec3(target_surface_coordinate.universe_view(), 1);
+    auto s = quat * vec;
+    // TODO(EhWhoAmI): Find a way to dynamically change our camera up when
+    // we want to focus on a city.
+    // Then check if it's fixed to the point, and if it is then we should do it
+    if (camera.CameraUpDone()) {
+        camera.FixCameraUp(quat * glm::vec3(0.0f, 0.0f, 1.0f));
+    } else {
+        camera.target_cam_up = (quat * glm::vec3(0.0f, 0.0f, 1.0f));
+    }
+    camera.view_y = std::asin(s.z);
+    camera.view_x = std::atan2(s.x, s.y);
+}
+
+void StarSystemController::SetCameraToPlanetReferenceFrame() {
+    focus_on_city = true;
+    if (!planet_frame_scroll) {
+        camera.camera_time = 0;
+    }
+    planet_frame_scroll = true;
 }
 
 void StarSystemController::FocusCityView() {
@@ -332,6 +387,8 @@ void StarSystemController::FocusCityView() {
     universe.clear<FocusedCity>();
 
     CenterCameraOnCity();
+
+    SetCameraToPlanetReferenceFrame();
     entt::entity planet = universe.view<FocusedPlanet>().front();
     Body& body = universe.get<Body>(planet);
     // 100 km above the city
@@ -442,7 +499,6 @@ void StarSystemController::SeeEntity() {
     // See the object
     camera.view_center = CalculateObjectPos(m_viewing_entity);
 
-    // Set the variable
     if (universe.all_of<Body>(m_viewing_entity)) {
         camera.scroll = universe.get<Body>(m_viewing_entity).radius * 2.5;
         if (camera.scroll < 0.1) camera.scroll = 0.1;

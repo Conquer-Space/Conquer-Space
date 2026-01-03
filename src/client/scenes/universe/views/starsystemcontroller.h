@@ -73,6 +73,8 @@ class StarSystemController {
     void CalculateCityPositions();
     void CityDetection();
 
+    void CenterCameraOnPoint();
+    void SetCameraToPlanetReferenceFrame();
     void FoundCity();
     bool IsFoundingCity();
 
@@ -132,6 +134,9 @@ class StarSystemController {
     friend StarSystemViewUI;
 
     bool focus_on_city = false;
+    bool planet_frame_scroll = false;
     core::components::types::SurfaceCoordinate target_surface_coordinate;
+
+    core::components::types::SurfaceCoordinate GetCameraOverCoordinate();
 };
 }  // namespace cqsp::client::systems

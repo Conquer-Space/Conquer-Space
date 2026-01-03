@@ -29,6 +29,7 @@ struct StarSystemCamera {
  public:
     StarSystemCamera();
     void CalculateCameraMatrix(int window_width, int window_height, float delta_time);
+    glm::vec3 CameraPositionNormalized();
 
     glm::vec3 cam_pos;
     const glm::vec3 default_cam_up = glm::vec3(0.0f, 0.0f, 1.0f);
@@ -47,12 +48,14 @@ struct StarSystemCamera {
     glm::vec3 target_cam_up = default_cam_up;
     glm::vec3 initial_cam_up;
 
-    const float max_camera_time = 3.f;
+    const float max_camera_time = 2.f;
     float camera_time = 0.f;
 
     void SetCameraUp(const glm::vec3 _target_cam_up);
     void FixCameraUp(const glm::vec3 _target_cam_up);
     void ResetCameraUp();
+
+    bool CameraUpDone() { return camera_time > max_camera_time; }
 
  private:
     // Custom animation function to go from 0 to 1.
