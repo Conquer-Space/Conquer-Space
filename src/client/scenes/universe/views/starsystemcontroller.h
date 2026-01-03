@@ -130,5 +130,8 @@ class StarSystemController {
     const float SCROLL_SENSITIVITY = 3.f / 33.f;
 
     friend StarSystemViewUI;
+
+    bool focus_on_city = false;
+    core::components::types::SurfaceCoordinate target_surface_coordinate;
 };
 }  // namespace cqsp::client::systems

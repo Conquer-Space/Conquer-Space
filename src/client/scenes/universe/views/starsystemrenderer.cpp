@@ -127,7 +127,7 @@ void SysStarSystemRenderer::Render(float delta_time) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
 
-    camera.CalculateCameraMatrix(app.GetWindowWidth(), app.GetWindowHeight());
+    camera.CalculateCameraMatrix(app.GetWindowWidth(), app.GetWindowHeight(), delta_time);
 
     // FIXME(EhWhoAmI): Fix log renderer so that objects that are close are rendered with a
     // "normal" depth buffer, and objects far away will be rendered with a log buffer.

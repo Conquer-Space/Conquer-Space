@@ -147,6 +147,7 @@ void StarSystemController::CalculateViewChange(double deltaX, double deltaY) {
         camera.view_y = glm::radians(-89.f);
     }
     selected_city = entt::null;
+    camera.ResetCameraUp();
 }
 
 bool StarSystemController::IsFoundingCity() { return !universe.view<CityFounding>().empty(); }
@@ -244,7 +245,8 @@ void StarSystemController::CenterCameraOnCity() {
     auto s = quat * vec;
     // TODO(EhWhoAmI): Find a way to dynamically change our camera up when
     // we want to focus on a city.
-    // camera.cam_up = quat * glm::vec3(0.0f, 0.0f, 1.0f);
+    camera.FixCameraUp(quat * glm::vec3(0.0f, 0.0f, 1.0f));
+    // camera.SetCameraUp(quat * glm::vec3(0.0f, 0.0f, 1.0f));
     camera.view_y = std::asin(s.z);
     camera.view_x = std::atan2(s.x, s.y);
 }

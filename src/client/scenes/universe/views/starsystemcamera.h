@@ -28,10 +28,11 @@ namespace cqsp::client::systems {
 struct StarSystemCamera {
  public:
     StarSystemCamera();
-    void CalculateCameraMatrix(int window_width, int window_height);
+    void CalculateCameraMatrix(int window_width, int window_height, float delta_time);
 
     glm::vec3 cam_pos;
-    const glm::vec3 cam_up = glm::vec3(0.0f, 0.0f, 1.0f);
+    const glm::vec3 default_cam_up = glm::vec3(0.0f, 0.0f, 1.0f);
+    glm::vec3 cam_up = default_cam_up;
     glm::mat4 camera_matrix;
     glm::mat4 projection;
     glm::vec4 viewport;
@@ -42,5 +43,21 @@ struct StarSystemCamera {
     float view_x = 0;
     // The angle the camera is looking away from
     float view_y = 0;
+
+    glm::vec3 target_cam_up = default_cam_up;
+    glm::vec3 initial_cam_up;
+
+    const float max_camera_time = 3.f;
+    float camera_time = 0.f;
+
+    void SetCameraUp(const glm::vec3 _target_cam_up);
+    void FixCameraUp(const glm::vec3 _target_cam_up);
+    void ResetCameraUp();
+
+ private:
+    // Custom animation function to go from 0 to 1.
+    float Tween(float t);
+    float TweenOut(float t);
+    float TweenFunction(float t);
 };
 }  // namespace cqsp::client::systems
