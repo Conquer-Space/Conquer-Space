@@ -94,18 +94,6 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
             wallet = balance;
             settlement.population.push_back(pop_node);
         }
-    } else {
-        Node pop_node(universe);
-
-        auto size = 50000;
-        int64_t labor_force = size / 2;
-
-        auto& segment = pop_node.emplace<components::PopulationSegment>();
-        segment.population = size;
-        segment.labor_force = labor_force;
-        pop_node.emplace<components::LaborInformation>();
-        settlement.population.push_back(pop_node);
-        // SPDLOG_WARN("Province {} does not have any population", identifier);
     }
     //SPDLOG_INFO("Load Industry");
     node.emplace<components::ResourceLedger>();

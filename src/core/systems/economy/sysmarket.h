@@ -18,6 +18,7 @@
 
 #include "core/components/market.h"
 #include "core/components/resource.h"
+#include "core/systems/economy/economyconfig.h"
 #include "core/systems/isimulationsystem.h"
 
 namespace cqsp::core::systems {
@@ -25,7 +26,7 @@ class SysMarket : public ISimulationSystem {
  public:
     explicit SysMarket(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
-    int Interval() override { return components::StarDate::DAY; }
+    int Interval() override { return ECONOMIC_TICK; }
 
     void Init() override;
 

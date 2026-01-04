@@ -49,6 +49,9 @@ void ProcessIndustries(Node& node) {
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
 
     auto& industries = node.get<components::IndustrialZone>();
+    if (node.get<components::Settlement>().population.empty()) {
+        return;
+    }
     Node population_node = node.Convert(node.get<components::Settlement>().population.front());
     auto& population_wallet = population_node.get_or_emplace<components::Wallet>();
     for (Node industrynode : node.Convert(industries.industries)) {

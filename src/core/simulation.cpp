@@ -31,7 +31,6 @@
 #include "core/components/resource.h"
 #include "core/components/ships.h"
 #include "core/components/units.h"
-#include "core/systems/economy/sysagent.h"
 #include "core/systems/economy/sysfinance.h"
 #include "core/systems/economy/sysinfrastructure.h"
 #include "core/systems/economy/sysinterplanetarytrade.h"
