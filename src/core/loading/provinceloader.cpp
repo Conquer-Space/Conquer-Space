@@ -64,9 +64,9 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
 
     // Load population
     if (!values["population"].empty()) {
-        Hjson::Value population = values["population"];
+        const Hjson::Value& population = values["population"];
         for (int i = 0; i < population.size(); i++) {
-            Hjson::Value population_seg = population[i];
+            const Hjson::Value& population_seg = population[i];
             Node pop_node(universe);
 
             auto size = population_seg["size"].to_int64();
@@ -124,7 +124,7 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     industry.industries.push_back(commercial_node);
 
     if (!values["industry"].empty()) {
-        Hjson::Value industry_hjson = values["industry"];
+        const Hjson::Value& industry_hjson = values["industry"];
 
         ParseIndustry(industry_hjson, node, identifier);
     }
@@ -203,7 +203,7 @@ void ProvinceLoader::PostLoad(const Node& node) {}
 
 void ProvinceLoader::ParseIndustry(const Hjson::Value& industry_hjson, Node& node, std::string_view identifier) {
     for (int i = 0; i < industry_hjson.size(); i++) {
-        Hjson::Value ind_val = industry_hjson[i];
+        const Hjson::Value& ind_val = industry_hjson[i];
         auto recipe = ind_val["recipe"].to_string();
         auto productivity = ind_val["productivity"].to_double();
         if (universe.recipes.find(recipe) == universe.recipes.end()) {

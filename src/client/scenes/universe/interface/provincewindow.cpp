@@ -87,6 +87,18 @@ void SysProvinceInformation::DoUpdate(int delta_time) {}
 
 void SysProvinceInformation::ProvinceView() {
     ImGui::TextFmt("{}", GetName(GetUniverse(), current_province));
+    ImGui::SameLine();
+    if (ImGui::Button("Focus on province")) {
+        // Get the main city on it...
+        // We need to get the camera somehow?
+        auto& province_comp = GetUniverse().get<components::Province>(current_province);
+
+        for (auto& city_entity : province_comp.cities) {
+            // Then we emplace it
+            GetUniverse().emplace<FocusedCity>(city_entity);
+            break;
+        }
+    }
     // List the cities
     auto& city_list = GetUniverse().get<components::Province>(current_province);
     int population = 0;

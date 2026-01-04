@@ -38,6 +38,10 @@ void StarSystemViewUI::RenderInformationWindow(double delta_time) {
     // universe.ctx().emplace<ctx::StarSystemViewDebug>();
     ImGui::Begin("Debug ui window");
     ImGui::TextFmt("Cam Pos: {} {} {}", camera.cam_pos.x, camera.cam_pos.y, camera.cam_pos.z);
+    ImGui::TextFmt("Cam Coordinate: {} {}", controller.target_surface_coordinate.longitude(),
+                   controller.target_surface_coordinate.latitude());
+    ImGui::TextFmt("Cam Up: {:2.f} {:2.f} {:2.f} ({})", camera.cam_up.x, camera.cam_up.y, camera.cam_up.z,
+                   camera.camera_time);
     ImGui::TextFmt("View Center: {} {} {}", camera.view_center.x, camera.view_center.y, camera.view_center.z);
     ImGui::TextFmt("Scroll: {}", camera.scroll);
     ImGui::TextFmt("View {} {}", camera.view_x, camera.view_y);
