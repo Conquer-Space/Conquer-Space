@@ -51,7 +51,7 @@ float StarSystemCamera::Tween(float t) {
     if (t < 0.5f) {
         return TweenFunction(2.0 * t) * 0.5f;
     } else {
-        0.5f + TweenOut(2.0 * t - 1.0f) * 0.5f;
+        return 0.5f + TweenOut(2.0 * t - 1.0f) * 0.5f;
     }
 }
 
