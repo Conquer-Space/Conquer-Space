@@ -84,7 +84,7 @@ void StarSystemController::Update(float delta_time) {
     mouse_on_object = GetMouseIntersectionOnObject(app.GetMouseX(), app.GetMouseY());
 
     // Calculate camera
-    CenterCameraOnCity();
+    CenterCameraOnPoint();
 }
 
 void StarSystemController::MoveCamera(double delta_time) {
@@ -127,14 +127,12 @@ void StarSystemController::CalculateScroll() {
         min_scroll = std::max(planet_radius * 1.1, 0.1);
         // Then also check the bodo
         if (camera.scroll > planet_radius * 10) {
-            if (planet_frame_scroll) {
-                camera.ResetCameraUp();
-                focus_on_city = false;
-            }
-            planet_frame_scroll = false;
+            SetCameraToSolarSystemReferenceFrame();
         } else {
             // Set camera up to the planet frame
-            target_surface_coordinate = GetCameraOverCoordinate();
+            if (!planet_frame_scroll) {
+                target_surface_coordinate = GetCameraOverCoordinate();
+            }
             SetCameraToPlanetReferenceFrame();
         }
     }
@@ -374,6 +372,14 @@ void StarSystemController::SetCameraToPlanetReferenceFrame() {
         camera.camera_time = 0;
     }
     planet_frame_scroll = true;
+}
+
+void StarSystemController::SetCameraToSolarSystemReferenceFrame() {
+    if (planet_frame_scroll) {
+        camera.ResetCameraUp();
+        focus_on_city = false;
+    }
+    planet_frame_scroll = false;
 }
 
 void StarSystemController::FocusCityView() {

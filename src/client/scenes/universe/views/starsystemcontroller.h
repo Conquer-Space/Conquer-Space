@@ -75,6 +75,7 @@ class StarSystemController {
 
     void CenterCameraOnPoint();
     void SetCameraToPlanetReferenceFrame();
+    void SetCameraToSolarSystemReferenceFrame();
     void FoundCity();
     bool IsFoundingCity();
 
