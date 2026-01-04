@@ -24,6 +24,7 @@
 #include <entt/entt.hpp>
 
 #include "core/components/area.h"
+#include "core/components/resourceledger.h"
 #include "core/components/units.h"
 
 namespace cqsp::core::components {
@@ -69,201 +70,27 @@ struct Mineral {};
 // Good is for capital goods
 struct CapitalGood {};
 
-typedef std::map<entt::entity, double> LedgerMap;
-
-class ResourceLedger : private LedgerMap {
- public:
-    ResourceLedger() = default;
-    ~ResourceLedger() = default;
-
-    double operator[](const entt::entity) const;
-
-    /// <summary>
-    /// This resource ledger has enough resources inside to transfer "amount" amount of resources away
-    /// </summary>
-    /// <param name="amount">Other resource ledger</param>
-    /// <returns></returns>
-    bool EnoughToTransfer(const ResourceLedger& amount);
-
-    void operator-=(const ResourceLedger&);
-    void operator+=(const ResourceLedger&);
-    void operator*=(const ResourceLedger&);
-    void operator/=(const ResourceLedger&);
-    void operator-=(const double value);
-    void operator+=(const double value);
-    void operator*=(const double value);
-    void operator/=(const double value);
-
-    ResourceLedger operator-(const ResourceLedger&) const;
-    ResourceLedger operator+(const ResourceLedger&) const;
-    ResourceLedger operator*(const ResourceLedger&) const;
-    ResourceLedger operator/(const ResourceLedger&) const;
-    ResourceLedger operator-(const double value) const;
-    ResourceLedger operator+(const double value) const;
-    ResourceLedger operator*(const double value) const;
-    ResourceLedger operator/(const double value) const;
-
-    /// <summary>
-    /// All resources in this ledger are smaller than than the other ledger
-    /// </summary>
-    bool operator<(const ResourceLedger&);
-
-    /// <summary>
-    /// All resources in this ledger are greater than the other ledger
-    /// </summary>
-    bool operator>(const ResourceLedger&);
-
-    /// <summary>
-    /// All resources in this ledger are smaller than or equal to than the other ledger
-    /// </summary>
-    bool operator<=(const ResourceLedger&);
-
-    /// <summary>
-    /// All resources in this ledger are greater than or equal to the other ledger
-    /// </summary>
-    bool operator>=(const ResourceLedger&);
-
-    bool LedgerEquals(const ResourceLedger&);
-
-    /// <summary>
-    /// All resources in this ledger are greater than the number
-    /// </summary>
-    bool operator>(const double&);
-
-    /// <summary>
-    /// All resources in this ledger are less than than the number
-    /// </summary>
-    bool operator<(const double&);
-
-    bool operator==(const double&);
-
-    bool operator<=(const double&);
-    bool operator>=(const double&);
-
-    void AssignFrom(const ResourceLedger&);
-
-    void TransferTo(ResourceLedger&, const ResourceLedger&);
-    // Equivalant to this += other * double
-    void MultiplyAdd(const ResourceLedger&, double);
-
-    /// <summary>
-    /// Removes the resources, and if the amount of resources removed are more than the resources
-    /// inside the stockpile, it will set that resource to zero.
-    /// </summary>
-    /// <param name=""></param>
-    void RemoveResourcesLimited(const ResourceLedger&);
-
-    /// <summary>
-    /// Same as RemoveResourcesLimited, except that it returns how much resources
-    /// it took out.
-    /// </summary>
-    ResourceLedger LimitedRemoveResources(const ResourceLedger&);
-
-    /// <summary>
-    /// Returns a copy of the vector with the values set to indicated value
-    /// </summary>
-    ResourceLedger UnitLedger(const double);
-
-    // Add all the positive values in the other ledger to this ledger
-    // Essentially this += other (if idx > 0)
-    void AddPositive(const ResourceLedger&);
-
-    // Add all the negative values in the other ledger to this ledger
-    // Essentially this += abs(other) (if idx < 0)
-    void AddNegative(const ResourceLedger&);
-
-    /// <summary>
-    /// Returns a copy of the vector with the values clamped between the min and max indicated
-    /// </summary>
-    ResourceLedger Clamp(const double, const double);
-
-    /// <summary>
-    /// Returns a copy of the vector divided by the indicated vector, with division by zero resulting in infiniy
-    /// </summary>
-    ResourceLedger SafeDivision(const ResourceLedger&);
-
-    /// <summary>
-    /// Returns a copy of the vector divided by the indicated vector, with division by zero resulting in the specified value
-    /// </summary>
-    ResourceLedger SafeDivision(const ResourceLedger&, double);
-
-    /// <summary>
-    /// Returns a copy of the vector divided by the indicated vector, with
-    /// division by zero resulting in infiniy
-    /// </summary>
-    double Average();
-
-    double Min();
-    double Max();
-
-    /// <summary>
-    /// Checks if this current resource ledger has any resources in this list
-    /// </summary>
-    /// <param name=""></param>
-    /// <returns></returns>
-    bool HasAllResources(const ResourceLedger&);
-
-    bool HasGood(entt::entity good) { return (*this).find(good) != (*this).end(); }
-
-    /**
-     * Gets the sum of all the goods in this resource ledger.
-     */
-    double GetSum();
-
-    /// <summary>
-    /// Multiplies the numbers stated in the resource ledger. Used for calculating the price, becuase
-    /// usually the resource ledger will be the price.
-    /// </summary>
-    /// <param name=""></param>
-    /// <returns></returns>
-    double MultiplyAndGetSum(ResourceLedger& other);
-
-    std::string to_string();
-
-    // All the things that we get from map
-    using LedgerMap::operator[];
-    using LedgerMap::operator=;
-    using LedgerMap::begin;
-    using LedgerMap::cbegin;
-    using LedgerMap::cend;
-    using LedgerMap::clear;
-    using LedgerMap::contains;
-    using LedgerMap::crbegin;
-    using LedgerMap::crend;
-    using LedgerMap::emplace;
-    using LedgerMap::empty;
-    using LedgerMap::end;
-    using LedgerMap::erase;
-    using LedgerMap::mapped_type;
-    using LedgerMap::rbegin;
-    using LedgerMap::rend;
-    using LedgerMap::size;
-    using LedgerMap::value_comp;
-};
-
-ResourceLedger CopyVals(const ResourceLedger& keys, const ResourceLedger& values);
-
 struct RecipeOutput {
     entt::entity entity;
     double amount;
-    ResourceLedger operator*(const double value) const;
-    ResourceLedger operator*(ResourceLedger&) const;
+    ResourceMap operator*(const double value) const;
+    ResourceMap operator*(ResourceMap&) const;
 };
 
 struct Recipe {
-    ResourceLedger input;
+    ResourceMap input;
     RecipeOutput output;
     ProductionType type;
     float interval;
     // The actual factory worker amount is workers * productivity
     double workers;
 
-    ResourceLedger capitalcost;
+    ResourceMap capitalcost;
 };
 
 struct RecipeCost {
-    ResourceLedger fixed;
-    ResourceLedger scaling;
+    ResourceMap fixed;
+    ResourceMap scaling;
 };
 
 // Factory size
@@ -309,14 +136,14 @@ struct FactoryTimer {
     float time_left;
 };
 
-struct ResourceConsumption : public ResourceLedger {};
-struct ResourceProduction : public ResourceLedger {};
+struct ResourceConsumption : public ResourceMap {};
+struct ResourceProduction : public ResourceMap {};
 
 struct ResourceConverter {
     entt::entity recipe;
 };
 
-struct ResourceStockpile : public ResourceLedger {};
+struct ResourceStockpile : public ResourceMap {};
 
 struct FailedResourceTransfer {
     // Ledgers later to show how much

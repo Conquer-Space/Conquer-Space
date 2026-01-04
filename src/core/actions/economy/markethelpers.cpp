@@ -28,7 +28,7 @@ void AddParticipant(Node& market_node, Node& participant) {
     static_cast<void>(participant.get_or_emplace<components::Wallet>());
 }
 
-double GetCost(Node& market, const components::ResourceLedger& ledger) {
+double GetCost(Node& market, const components::ResourceMap& ledger) {
     if (!market.any_of<components::Market>()) {
         return 0.0;
     }
@@ -42,7 +42,7 @@ Node CreateMarket(Universe& universe) {
     return market;
 }
 
-bool PurchaseGood(Node& agent, const components::ResourceLedger& purchase) {
+bool PurchaseGood(Node& agent, const components::ResourceMap& purchase) {
     // Calculating on how to buy from the market shouldn't be too hard, right?
     // Get the market connected to, and build the demand
     Node market(agent.universe(), agent.get<components::MarketAgent>().market);
@@ -72,7 +72,7 @@ bool PurchaseGood(Node& agent, const components::ResourceLedger& purchase) {
     return true;
 }
 
-bool SellGood(Node& agent, const components::ResourceLedger& selling) {
+bool SellGood(Node& agent, const components::ResourceMap& selling) {
     // Calculating on how to buy from the market shouldn't be too hard, right?
     // Get the market connected to, and build the demand
     Node market(agent.universe(), agent.get<components::MarketAgent>().market);

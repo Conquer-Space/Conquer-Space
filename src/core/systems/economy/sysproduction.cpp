@@ -62,14 +62,14 @@ void ProcessIndustries(Node& node) {
         components::Recipe recipe = recipenode.get_or_emplace<components::Recipe>();
         components::IndustrySize& size = industrynode.get<components::IndustrySize>();
         // Calculate resource consumption
-        components::ResourceLedger capitalinput = recipe.capitalcost * (size.size);
-        components::ResourceLedger input = (recipe.input * size.utilization) + capitalinput;
+        components::ResourceMap capitalinput = recipe.capitalcost * (size.size);
+        components::ResourceMap input = (recipe.input * size.utilization) + capitalinput;
 
         auto& employer = industrynode.get<components::Employer>();
         employer.population_fufilled = size.size * recipe.workers;
 
         // Calculate the greatest possible production
-        components::ResourceLedger output;
+        components::ResourceMap output;
         output[recipe.output.entity] = recipe.output.amount * size.utilization;
 
         // Figure out what's throttling production and maintenance

@@ -23,5 +23,5 @@
 #include "entt/entt.hpp"
 
 namespace cqsp::client::systems {
-bool DrawLedgerTable(const std::string& name, const core::Universe&, const core::components::ResourceLedger& ledger);
+bool DrawLedgerTable(const std::string& name, const core::Universe&, const core::components::ResourceMap& ledger);
 }  // namespace cqsp::client::systems

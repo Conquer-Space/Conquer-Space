@@ -398,8 +398,8 @@ void SysProvinceInformation::IndustryTabGenericChild(const std::string& tabname,
     ImGui::TextFmt("{}", tabname);
     // List all the stuff it produces
 
-    components::ResourceLedger input_resources;
-    components::ResourceLedger output_resources;
+    components::ResourceMap input_resources;
+    components::ResourceMap output_resources;
     double GDP_calculation = 0;
     int count = 0;
     for (auto industry : city_industry.industries) {

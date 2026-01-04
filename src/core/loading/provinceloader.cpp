@@ -96,7 +96,7 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
         }
     }
     //SPDLOG_INFO("Load Industry");
-    node.emplace<components::ResourceLedger>();
+    node.emplace<components::ResourceMap>();
 
     // Industry and economy
     auto& industry = node.emplace<components::IndustrialZone>();

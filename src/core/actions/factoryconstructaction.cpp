@@ -93,8 +93,8 @@ Node CreateFactory(Node& city, Node& recipe, int productivity, double wages) {
     return factory;
 }
 
-components::ResourceLedger GetFactoryCost(Node& city, Node& recipe, int productivity) {
-    components::ResourceLedger ledger;
+components::ResourceMap GetFactoryCost(Node& city, Node& recipe, int productivity) {
+    components::ResourceMap ledger;
     // Get the recipe and things
     if (recipe.any_of<components::RecipeCost>()) {
         auto& cost = recipe.get<components::RecipeCost>();

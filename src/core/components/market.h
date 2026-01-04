@@ -33,27 +33,27 @@ namespace cqsp::core::components {
 struct MarketInformation {
  private:
     // I forgot why we have 2 separate ledgers for supply and demand
-    ResourceLedger _demand;
-    ResourceLedger _supply;
+    ResourceMap _demand;
+    ResourceMap _supply;
 
  public:
-    ResourceLedger sd_ratio;
+    ResourceMap sd_ratio;
 
     /// <summary>
     /// The amount of goods that changed hands. We can use this to calculate the
     /// GDP
     /// </summary>
-    ResourceLedger volume;
-    ResourceLedger price;
+    ResourceMap volume;
+    ResourceMap price;
 
-    ResourceLedger chronic_shortages;
+    ResourceMap chronic_shortages;
 
-    ResourceLedger trade;
+    ResourceMap trade;
 
-    ResourceLedger resource_fulfilled;
+    ResourceMap resource_fulfilled;
 
-    ResourceLedger production;
-    ResourceLedger consumption;
+    ResourceMap production;
+    ResourceMap consumption;
 
     void ResetLedgers() {
         // Reset the ledger values
@@ -61,8 +61,8 @@ struct MarketInformation {
         supply().clear();
     }
 
-    ResourceLedger& supply() { return _supply; }
-    ResourceLedger& demand() { return _demand; }
+    ResourceMap& supply() { return _supply; }
+    ResourceMap& demand() { return _demand; }
 };
 
 struct MarketElementInformation {
@@ -92,8 +92,8 @@ struct PlanetaryMarket {
     std::map<entt::entity, std::vector<MarketOrder>> demands;
     std::map<entt::entity, std::vector<MarketOrder>> requests;
     // Resources supplied by the interplanetary market
-    ResourceLedger supplied_resources;
-    ResourceLedger supply_difference;
+    ResourceMap supplied_resources;
+    ResourceMap supply_difference;
 };
 
 struct Market : MarketInformation {
@@ -106,7 +106,7 @@ struct Market : MarketInformation {
 
     entt::basic_sparse_set<entt::entity> connected_markets;
 
-    ResourceLedger market_access;
+    ResourceMap market_access;
 
     entt::entity parent_market = entt::null;
 
@@ -117,12 +117,12 @@ struct Market : MarketInformation {
     // Deficit in last tick
     double last_deficit = 0;
     // Math
-    void AddSupply(const ResourceLedger& stockpile);
-    void AddSupply(const ResourceLedger& stockpile, double multiplier);
-    void AddDemand(const ResourceLedger& stockpile);
-    void AddDemand(const ResourceLedger& stockpile, double multiplier);
+    void AddSupply(const ResourceMap& stockpile);
+    void AddSupply(const ResourceMap& stockpile, double multiplier);
+    void AddDemand(const ResourceMap& stockpile);
+    void AddDemand(const ResourceMap& stockpile, double multiplier);
 
-    double GetPrice(const ResourceLedger& stockpile);
+    double GetPrice(const ResourceMap& stockpile);
     double GetPrice(const entt::entity& good);
     double GetSDRatio(const entt::entity& good);
     double GetSupply(const entt::entity& good);
@@ -163,7 +163,7 @@ struct Currency {};
 /// <summary>
 ///  Records the prices of goods and other things
 /// </summary>
-struct CostTable : public ResourceLedger {};
+struct CostTable : public ResourceMap {};
 
 // TODO(EhWhoAmI): Add multiple currency support
 struct Wallet {

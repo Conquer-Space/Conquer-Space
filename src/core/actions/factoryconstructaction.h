@@ -47,7 +47,7 @@ namespace cqsp::core::actions {
 /// <returns>The factory entity created</returns>
 Node CreateFactory(Node& city, Node& recipe, int productivity = 1, double wages = 10);
 
-components::ResourceLedger GetFactoryCost(Node& city, Node& recipe, int productivity = 1);
+components::ResourceMap GetFactoryCost(Node& city, Node& recipe, int productivity = 1);
 
 [[nodiscard]] Node CreateCommercialArea(Node& city);
 }  // namespace cqsp::core::actions

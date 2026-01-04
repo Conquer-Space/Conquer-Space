@@ -110,7 +110,7 @@ TEST_F(MarketTwoTest, BuySellTest) {
     // Add the goods
     agent1.get<cqspc::ResourceStockpile>()[good_1] = 100;
 
-    cqspc::ResourceLedger ledger;
+    cqspc::ResourceMap ledger;
     ledger[good_1] = 100;
     // Then try to sell it
     ASSERT_TRUE(cqsp::core::actions::SellGood(agent1, ledger));
@@ -142,7 +142,7 @@ TEST_F(MarketTwoTest, BuySellOverSupplyTest) {
     // Add the goods
     agent1.get<cqspc::ResourceStockpile>()[good_1] = 100;
 
-    cqspc::ResourceLedger ledger;
+    cqspc::ResourceMap ledger;
     ledger[good_1] = 100;
     // Then try to sell it
     ASSERT_TRUE(cqsp::core::actions::SellGood(agent1, ledger));

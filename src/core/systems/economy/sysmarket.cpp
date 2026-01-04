@@ -38,6 +38,7 @@ void SysMarket::DoSystem() {
     auto goodsview = GetUniverse().nodes<components::Price>();
 
     for (Node market_node : marketview) {
+        ZoneScoped;
         // Get the resources and process the price
         // Get demand
         Market& market = market_node.get<Market>();
@@ -78,8 +79,8 @@ void SysMarket::DoSystem() {
 }
 
 void SysMarket::DetermineShortages(components::Market& market) {
-    components::ResourceLedger& market_supply = market.supply();
-    components::ResourceLedger& market_demand = market.demand();
+    components::ResourceMap& market_supply = market.supply();
+    components::ResourceMap& market_demand = market.demand();
     double deficit = 0;
     for (auto iterator = market_supply.begin(); iterator != market_supply.end(); iterator++) {
         entt::entity good = iterator->first;

@@ -18,11 +18,11 @@
 
 #include <gtest/gtest.h>
 
-using cqsp::core::components::ResourceLedger;
+using cqsp::core::components::ResourceMap;
 
-TEST(Core_ResourceLedger, ResourceLedgerComparison) {
-    ResourceLedger first;
-    ResourceLedger second;
+TEST(Core_ResourceMap, ResourceMapComparison) {
+    ResourceMap first;
+    ResourceMap second;
     // Set the stuff
     // Registry because it's demanding
     entt::registry reg;
@@ -74,8 +74,8 @@ TEST(Core_ResourceLedger, ResourceLedgerComparison) {
     first.clear();
 }
 
-TEST(Core_ResourceLedger, ResourceLedgerDoubleComparison) {
-    ResourceLedger first;
+TEST(Core_ResourceMap, ResourceMapDoubleComparison) {
+    ResourceMap first;
 
     entt::registry reg;
     entt::entity good_one = reg.create();
@@ -106,9 +106,9 @@ TEST(Core_ResourceLedger, ResourceLedgerDoubleComparison) {
     EXPECT_FALSE(first <= 0);
 }
 
-TEST(Core_ResourceLedger, HasAllResoourcesTest) {
-    ResourceLedger first;
-    ResourceLedger second;
+TEST(Core_ResourceMap, HasAllResoourcesTest) {
+    ResourceMap first;
+    ResourceMap second;
 
     entt::registry reg;
     entt::entity good_one = reg.create();
@@ -137,9 +137,9 @@ TEST(Core_ResourceLedger, HasAllResoourcesTest) {
     EXPECT_TRUE(first.HasAllResources(first));
 }
 
-TEST(Core_ResourceLedger, LedgerAdditionTest1) {
-    ResourceLedger first;
-    ResourceLedger second;
+TEST(Core_ResourceMap, LedgerAdditionTest1) {
+    ResourceMap first;
+    ResourceMap second;
 
     entt::registry reg;
     entt::entity good_one = reg.create();
@@ -152,9 +152,9 @@ TEST(Core_ResourceLedger, LedgerAdditionTest1) {
     EXPECT_EQ(second.size(), 1);
 }
 
-TEST(Core_ResourceLedger, LedgerSubtractionTest1) {
-    ResourceLedger first;
-    ResourceLedger second;
+TEST(Core_ResourceMap, LedgerSubtractionTest1) {
+    ResourceMap first;
+    ResourceMap second;
 
     entt::registry reg;
     entt::entity good_one = reg.create();

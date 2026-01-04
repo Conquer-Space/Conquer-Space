@@ -18,31 +18,31 @@
 
 namespace cqsp::core::components {
 
-void Market::AddSupply(const ResourceLedger& stockpile) {
+void Market::AddSupply(const ResourceMap& stockpile) {
     for (const auto& stockpile_element : stockpile) {
         market_information[stockpile_element.first].supply += stockpile_element.second;
     }
 }
 
-void Market::AddSupply(const ResourceLedger& stockpile, double multiplier) {
+void Market::AddSupply(const ResourceMap& stockpile, double multiplier) {
     for (const auto& stockpile_element : stockpile) {
         market_information[stockpile_element.first].supply += stockpile_element.second * multiplier;
     }
 }
 
-void Market::AddDemand(const ResourceLedger& stockpile) {
+void Market::AddDemand(const ResourceMap& stockpile) {
     for (const auto& stockpile_element : stockpile) {
         market_information[stockpile_element.first].demand += stockpile_element.second;
     }
 }
 
-void Market::AddDemand(const ResourceLedger& stockpile, double multiplier) {
+void Market::AddDemand(const ResourceMap& stockpile, double multiplier) {
     for (const auto& stockpile_element : stockpile) {
         market_information[stockpile_element.first].demand += stockpile_element.second * multiplier;
     }
 }
 
-double Market::GetPrice(const ResourceLedger& stockpile) {
+double Market::GetPrice(const ResourceMap& stockpile) {
     double price = 0;
     for (const auto& element : stockpile) {
         price += market_information[element.first].price * element.second;
