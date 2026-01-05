@@ -356,7 +356,7 @@ ResourceMap ResourceMap::SafeDivision(const ResourceMap &other) {
         if (iterator->second == 0) {
             ledger[iterator->first] = std::numeric_limits<double>::infinity();
         } else if (ledger[iterator->first] == 0) {
-            ledger[iterator->first] = 0;
+            (*this)[iterator->first] = 0;
         } else {
             ledger[iterator->first] = ledger[iterator->first] / iterator->second;
         }
@@ -371,7 +371,7 @@ ResourceMap ResourceMap::SafeDivision(const ResourceMap &other, double value) {
         if (iterator->second == 0) {
             ledger[iterator->first] = value;
         } else if (ledger[iterator->first] == 0) {
-            ledger[iterator->first] = 0;
+            (*this)[iterator->first] = 0;
         } else {
             ledger[iterator->first] = ledger[iterator->first] / iterator->second;
         }
@@ -430,4 +430,311 @@ ResourceMap CopyVals(const ResourceMap &keys, const ResourceMap &values) {
     return tkeys;
 }
 
+ResourceLedger::ResourceLedger(size_t count) : ledger(count, 0.0) {}
+
+void ResourceLedger::operator+=(const ResourceLedger &other) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        ledger[i] += other[i];
+    }
+}
+
+void ResourceLedger::operator-=(const ResourceLedger &other) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        ledger[i] -= other[i];
+    }
+}
+
+void ResourceLedger::operator*=(const ResourceLedger &other) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        ledger[i] *= other[i];
+    }
+}
+
+void ResourceLedger::operator/=(const ResourceLedger &other) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        ledger[i] /= other[i];
+    }
+}
+
+void ResourceLedger::operator+=(const double value) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        ledger[i] += value;
+    }
+}
+
+void ResourceLedger::operator-=(const double value) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        ledger[i] -= value;
+    }
+}
+
+void ResourceLedger::operator*=(const double value) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        ledger[i] *= value;
+    }
+}
+
+void ResourceLedger::operator/=(const double value) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        ledger[i] /= value;
+    }
+}
+
+double ResourceLedger::operator[](const size_t value) const { return ledger[value]; }
+
+double &ResourceLedger::operator[](const size_t value) { return ledger[value]; }
+
+ResourceLedger ResourceLedger::operator-(const ResourceLedger &other) const {
+    ResourceLedger result(ledger.size());
+    for (size_t i = 0; i < ledger.size(); i++) {
+        result[i] = ledger[i] - other[i];
+    }
+    return result;
+}
+
+ResourceLedger ResourceLedger::operator+(const ResourceLedger &other) const {
+    ResourceLedger result(ledger.size());
+    for (size_t i = 0; i < ledger.size(); i++) {
+        result[i] = ledger[i] + other[i];
+    }
+    return result;
+}
+
+ResourceLedger ResourceLedger::operator*(const ResourceLedger &other) const {
+    ResourceLedger result(ledger.size());
+    for (size_t i = 0; i < ledger.size(); i++) {
+        result[i] = ledger[i] * other[i];
+    }
+    return result;
+}
+
+ResourceLedger ResourceLedger::operator/(const ResourceLedger &other) const {
+    ResourceLedger result(ledger.size());
+    for (size_t i = 0; i < ledger.size(); i++) {
+        result[i] = ledger[i] / other[i];
+    }
+    return result;
+}
+
+ResourceLedger ResourceLedger::operator-(const double value) const {
+    ResourceLedger result(ledger.size());
+    for (size_t i = 0; i < ledger.size(); i++) {
+        result[i] = ledger[i] - value;
+    }
+    return result;
+}
+
+ResourceLedger ResourceLedger::operator+(const double value) const {
+    ResourceLedger result(ledger.size());
+    for (size_t i = 0; i < ledger.size(); i++) {
+        result[i] = ledger[i] + value;
+    }
+    return result;
+}
+
+ResourceLedger ResourceLedger::operator*(const double value) const {
+    ResourceLedger result(ledger.size());
+    for (size_t i = 0; i < ledger.size(); i++) {
+        result[i] = ledger[i] * value;
+    }
+    return result;
+}
+
+ResourceLedger ResourceLedger::operator/(const double value) const {
+    ResourceLedger result(ledger.size());
+    for (size_t i = 0; i < ledger.size(); i++) {
+        result[i] = ledger[i] / value;
+    }
+    return result;
+}
+
+bool ResourceLedger::operator<(const ResourceLedger &other) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        if (ledger[i] >= other[i]) return false;
+    }
+    return true;
+}
+
+bool ResourceLedger::operator>(const ResourceLedger &other) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        if (ledger[i] <= other[i]) return false;
+    }
+    return true;
+}
+
+bool ResourceLedger::operator<=(const ResourceLedger &other) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        if (ledger[i] > other[i]) return false;
+    }
+    return true;
+}
+
+bool ResourceLedger::operator>=(const ResourceLedger &other) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        if (ledger[i] < other[i]) return false;
+    }
+    return true;
+}
+
+bool ResourceLedger::operator>(const double &value) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        if (ledger[i] <= value) return false;
+    }
+    return true;
+}
+
+bool ResourceLedger::operator<(const double &value) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        if (ledger[i] >= value) return false;
+    }
+    return true;
+}
+
+bool ResourceLedger::operator==(const double &value) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        if (ledger[i] != value) return false;
+    }
+    return true;
+}
+
+bool ResourceLedger::operator!=(const double &value) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        if (ledger[i] == value) return false;
+    }
+    return true;
+}
+
+bool ResourceLedger::operator<=(const double &value) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        if (ledger[i] > value) return false;
+    }
+    return true;
+}
+
+bool ResourceLedger::operator>=(const double &value) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        if (ledger[i] < value) return false;
+    }
+    return true;
+}
+
+void ResourceLedger::AssignFrom(const ResourceLedger &other) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        ledger[i] = other[i];
+    }
+}
+
+void ResourceLedger::TransferTo(ResourceLedger &ledger_to, const ResourceLedger &amount) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        ledger_to[i] += amount[i];
+        ledger[i] -= amount[i];
+    }
+}
+void ResourceLedger::MultiplyAdd(const ResourceLedger &other, double value) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        ledger[i] += other[i] * value;
+    }
+}
+
+// Add all the positive values in the other ledger to this ledger
+// Essentially this += other (if idx > 0)
+void ResourceLedger::ResourceLedger::AddPositive(const ResourceLedger &other) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        if (ledger[i] > 0) {
+            ledger[i] += other[i];
+        }
+    }
+}
+
+// Add all the negative values in the other ledger to this ledger
+// Essentially this += abs(other) (if idx < 0)
+void ResourceLedger::AddNegative(const ResourceLedger &other) {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        if (ledger[i] < 0) {
+            ledger[i] += other[i];
+        }
+    }
+}
+
+/// <summary>
+/// Returns a copy of the vector with the values clamped between the min and max indicated
+/// </summary>
+ResourceLedger ResourceLedger::Clamp(const double low, const double high) {
+    ResourceLedger result(ledger.size());
+    for (size_t i = 0; i < ledger.size(); i++) {
+        result[i] = std::clamp(low, high, ledger[i]);
+    }
+    return result;
+}
+
+void ResourceLedger::clear() {
+    for (size_t i = 0; i < ledger.size(); i++) {
+        ledger[i] = 0;
+    }
+}
+
+/// <summary>
+/// Returns a copy of the vector divided by the indicated vector, with division by zero resulting in infiniy
+/// </summary>
+ResourceLedger ResourceLedger::SafeDivision(const ResourceLedger &other) {
+    ResourceLedger return_ledger(ledger.size());
+    return_ledger = *this;
+    for (size_t i = 0; i < ledger.size(); i++) {
+        if (other[i] == 0.0) {
+            return_ledger[i] = std::numeric_limits<double>::infinity();
+        } else {
+            return_ledger[i] = ledger[i] / other[0];
+        }
+    }
+    return return_ledger;
+}
+
+/// <summary>
+/// Returns a copy of the vector divided by the indicated vector, with division by zero resulting in the specified value
+/// </summary>
+ResourceLedger ResourceLedger::SafeDivision(const ResourceLedger &other, double value) {
+    ResourceLedger return_ledger(ledger.size());
+    return_ledger = *this;
+    for (size_t i = 0; i < ledger.size(); i++) {
+        if (other[i] == 0.0) {
+            return_ledger[i] = value;
+        } else {
+            return_ledger[i] = ledger[i] / other[0];
+        }
+    }
+    return return_ledger;
+}
+
+/// <summary>
+/// Returns a copy of the vector divided by the indicated vector, with
+/// division by zero resulting in infiniy
+/// </summary>
+double ResourceLedger::Average() const {
+    double val = 0;
+    for (size_t i = 0; i < ledger.size(); i++) {
+        val += ledger[i];
+    }
+    return val / static_cast<double>(ledger.size());
+}
+
+double ResourceLedger::Min() const {
+    double val = std::numeric_limits<double>::infinity();
+    ;
+    for (size_t i = 0; i < ledger.size(); i++) {
+        if (ledger[i] < val) {
+            val = ledger[i];
+        }
+    }
+    return val;
+}
+double ResourceLedger::Max() const {
+    double val = -std::numeric_limits<double>::infinity();
+    ;
+    for (size_t i = 0; i < ledger.size(); i++) {
+        if (ledger[i] > val) {
+            val = ledger[i];
+        }
+    }
+    return val;
+}
 }  // namespace cqsp::core::components

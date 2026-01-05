@@ -93,6 +93,9 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, Node& node) {
 
     // Basically if it fails at any point, we'll remove the component
     universe.goods[identifier] = node;
+    universe.good_vector.push_back(node);
+    universe.good_map[node] = index;
+    index++;
     return true;
 }
 }  // namespace cqsp::core::loading

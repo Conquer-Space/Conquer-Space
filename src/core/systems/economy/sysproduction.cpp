@@ -148,7 +148,7 @@ void ProcessIndustries(Node& node) {
         bool shortage = false;
         double prod_sum = recipe.input.GetSum();
         for (auto& [good, amount] : recipe.input) {
-            if (market.chronic_shortages[good] > 5) {
+            if (market.chronic_shortages[universe.good_map[good]] > 5) {
                 // Reduce the amount based off the weighted average of the input?
                 // Then reduce production over time or something
                 shortage = true;

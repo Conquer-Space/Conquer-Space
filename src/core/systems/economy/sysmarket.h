@@ -31,9 +31,9 @@ class SysMarket : public ISimulationSystem {
     void Init() override;
 
  private:
-    void DeterminePrice(components::Market& market, Node& good_entity);
+    void DeterminePrice(components::Market& market, uint32_t good_entity);
     void DetermineShortages(components::Market& market);
 
-    components::ResourceMap base_prices;
+    components::ResourceLedger base_prices;
 };
 }  // namespace cqsp::core::systems

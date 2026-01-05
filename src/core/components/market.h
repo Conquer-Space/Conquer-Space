@@ -33,27 +33,38 @@ namespace cqsp::core::components {
 struct MarketInformation {
  private:
     // I forgot why we have 2 separate ledgers for supply and demand
-    ResourceMap _demand;
-    ResourceMap _supply;
+    ResourceLedger _demand;
+    ResourceLedger _supply;
 
  public:
-    ResourceMap sd_ratio;
+    MarketInformation(size_t good_count)
+        : _demand(good_count),
+          _supply(good_count),
+          sd_ratio(good_count),
+          volume(good_count),
+          price(good_count),
+          chronic_shortages(good_count),
+          trade(good_count),
+          resource_fulfilled(good_count),
+          production(good_count),
+          consumption(good_count) {}
+    ResourceLedger sd_ratio;
 
     /// <summary>
     /// The amount of goods that changed hands. We can use this to calculate the
     /// GDP
     /// </summary>
-    ResourceMap volume;
-    ResourceMap price;
+    ResourceLedger volume;
+    ResourceLedger price;
 
-    ResourceMap chronic_shortages;
+    ResourceLedger chronic_shortages;
 
-    ResourceMap trade;
+    ResourceLedger trade;
 
-    ResourceMap resource_fulfilled;
+    ResourceLedger resource_fulfilled;
 
-    ResourceMap production;
-    ResourceMap consumption;
+    ResourceLedger production;
+    ResourceLedger consumption;
 
     void ResetLedgers() {
         // Reset the ledger values
@@ -61,8 +72,8 @@ struct MarketInformation {
         supply().clear();
     }
 
-    ResourceMap& supply() { return _supply; }
-    ResourceMap& demand() { return _demand; }
+    ResourceLedger& supply() { return _supply; }
+    ResourceLedger& demand() { return _demand; }
 };
 
 struct MarketElementInformation {
@@ -97,6 +108,8 @@ struct PlanetaryMarket {
 };
 
 struct Market : MarketInformation {
+    Market(size_t good_count) : MarketInformation(good_count) {}
+
     std::vector<MarketInformation> history;
 
     std::map<entt::entity, MarketElementInformation> market_information;

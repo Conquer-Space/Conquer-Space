@@ -79,13 +79,12 @@ void SysMarket::DoSystem() {
 }
 
 void SysMarket::DetermineShortages(components::Market& market) {
-    components::ResourceMap& market_supply = market.supply();
-    components::ResourceMap& market_demand = market.demand();
+    components::ResourceLedger& market_supply = market.supply();
+    components::ResourceLedger& market_demand = market.demand();
     double deficit = 0;
-    for (auto iterator = market_supply.begin(); iterator != market_supply.end(); iterator++) {
-        entt::entity good = iterator->first;
+    for (size_t good = 0; good < market_supply.size(); good++) {
         const double& demand = market_demand[good];
-        const double& supply = iterator->second;
+        const double& supply = market_supply[good];
         deficit += (demand - supply) * market.price[good];
 
         double shortage_level = (demand - supply) / demand;
@@ -97,9 +96,7 @@ void SysMarket::DetermineShortages(components::Market& market) {
             // The demand vs supply ratio should be below a certain amount
             market.chronic_shortages[good] += shortage_level;
         } else if (shortage_level > 0) {
-            if (market.chronic_shortages.contains(good)) {
-                market.chronic_shortages[good] += shortage_level;
-            }
+            market.chronic_shortages[good] += shortage_level;
         } else {
             // We are currently recovering from a shortage
             market.chronic_shortages[good] -= std::max(market.chronic_shortages[good] - (1 - shortage_level), 0.);
@@ -109,7 +106,7 @@ void SysMarket::DetermineShortages(components::Market& market) {
     market.deficit += deficit;
 }
 
-void SysMarket::DeterminePrice(Market& market, Node& good_entity) {
+void SysMarket::DeterminePrice(Market& market, uint32_t good_entity) {
     const double sd_ratio = market.sd_ratio[good_entity];
     const double supply = market.supply()[good_entity];
     const double demand = market.demand()[good_entity];
@@ -132,7 +129,7 @@ void SysMarket::Init() {
         Market& market = GetUniverse().get<Market>(entity);
 
         // Initialize the price
-        for (Node good_node : goodsview) {
+        for (size_t good_node = 0; good_node < market.good_vector.size(); good_node++) {
             market.price[good_node] = good_node.get<components::Price>();
             // Set the supply and demand things as 1 so that they sell for
             // now

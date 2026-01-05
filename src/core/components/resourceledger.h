@@ -194,6 +194,131 @@ class ResourceMap : private LedgerMap {
     using LedgerMap::value_comp;
 };
 
-ResourceMap CopyVals(const ResourceMap& keys, const ResourceMap& values);
+class ResourceLedger {
+ private:
+    std::vector<double> ledger;
 
+ public:
+    explicit ResourceLedger(size_t count);
+
+    double operator[](const size_t value) const;
+    double& operator[](const size_t value);
+
+    /// <summary>
+    /// This resource ledger has enough resources inside to transfer "amount" amount of resources away
+    /// </summary>
+    /// <param name="amount">Other resource ledger</param>
+    /// <returns></returns>
+    bool EnoughToTransfer(const ResourceLedger& amount);
+
+    void operator-=(const ResourceLedger&);
+    void operator+=(const ResourceLedger&);
+    void operator*=(const ResourceLedger&);
+    void operator/=(const ResourceLedger&);
+    void operator-=(const double value);
+    void operator+=(const double value);
+    void operator*=(const double value);
+    void operator/=(const double value);
+
+    ResourceLedger operator-(const ResourceLedger&) const;
+    ResourceLedger operator+(const ResourceLedger&) const;
+    ResourceLedger operator*(const ResourceLedger&) const;
+    ResourceLedger operator/(const ResourceLedger&) const;
+    ResourceLedger operator-(const double value) const;
+    ResourceLedger operator+(const double value) const;
+    ResourceLedger operator*(const double value) const;
+    ResourceLedger operator/(const double value) const;
+
+    /// <summary>
+    /// All resources in this ledger are smaller than than the other ledger
+    /// </summary>
+    bool operator<(const ResourceLedger&);
+
+    /// <summary>
+    /// All resources in this ledger are greater than the other ledger
+    /// </summary>
+    bool operator>(const ResourceLedger&);
+
+    /// <summary>
+    /// All resources in this ledger are smaller than or equal to than the other ledger
+    /// </summary>
+    bool operator<=(const ResourceLedger&);
+
+    /// <summary>
+    /// All resources in this ledger are greater than or equal to the other ledger
+    /// </summary>
+    bool operator>=(const ResourceLedger&);
+
+    /// <summary>
+    /// All resources in this ledger are greater than the number
+    /// </summary>
+    bool operator>(const double&);
+
+    /// <summary>
+    /// All resources in this ledger are less than than the number
+    /// </summary>
+    bool operator<(const double&);
+
+    bool operator==(const double&);
+    bool operator!=(const double&);
+
+    bool operator<=(const double&);
+    bool operator>=(const double&);
+
+    void AssignFrom(const ResourceLedger&);
+
+    /** 
+     * Transfers amount resoures into ledger_to
+     */
+    void TransferTo(ResourceLedger& ledger_to, const ResourceLedger& amount);
+    // Equivalant to this += other * double
+    void MultiplyAdd(const ResourceLedger&, double);
+
+    // Add all the positive values in the other ledger to this ledger
+    // Essentially this += other (if idx > 0)
+    void AddPositive(const ResourceLedger&);
+
+    // Add all the negative values in the other ledger to this ledger
+    // Essentially this += abs(other) (if idx < 0)
+    void AddNegative(const ResourceLedger&);
+
+    /// <summary>
+    /// Returns a copy of the vector with the values clamped between the min and max indicated
+    /// </summary>
+    ResourceLedger Clamp(const double, const double);
+
+    /// <summary>
+    /// Returns a copy of the vector divided by the indicated vector, with division by zero resulting in infiniy
+    /// </summary>
+    ResourceLedger SafeDivision(const ResourceLedger&);
+
+    /// <summary>
+    /// Returns a copy of the vector divided by the indicated vector, with division by zero resulting in the specified value
+    /// </summary>
+    ResourceLedger SafeDivision(const ResourceLedger&, double);
+
+    /// <summary>
+    /// Returns a copy of the vector divided by the indicated vector, with
+    /// division by zero resulting in infiniy
+    /// </summary>
+    double Average() const;
+
+    double Min() const;
+    double Max() const;
+
+    /**
+     * Gets the sum of all the goods in this resource ledger.
+     */
+    double GetSum();
+
+    auto begin() { return ledger.begin(); }
+
+    auto end() { return ledger.end(); }
+
+    size_t size() { return ledger.size(); }
+
+    void clear();
+};
+
+ResourceMap CopyVals(const ResourceMap& keys, const ResourceMap& values);
 }  // namespace cqsp::core::components

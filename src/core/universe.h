@@ -22,6 +22,7 @@
 #include <memory>
 #include <ranges>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <entt/entt.hpp>
@@ -59,6 +60,9 @@ class Universe : public entt::registry {
     // province -> color
     std::map<entt::entity, std::map<entt::entity, int>> colors_province;
     entt::entity sun;
+
+    std::vector<entt::entity> good_vector;
+    std::unordered_map<entt::entity, size_t> good_map;
 
     void EnableTick() { to_tick = true; }
     void DisableTick() { to_tick = false; }
