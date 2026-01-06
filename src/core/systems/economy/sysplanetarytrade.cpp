@@ -19,12 +19,15 @@
 #include <algorithm>
 #include <cmath>
 
+#include <tracy/Tracy.hpp>
+
 #include "core/components/market.h"
 #include "core/components/spaceport.h"
 #include "core/components/surface.h"
 
 namespace cqsp::core::systems {
 void SysPlanetaryTrade::DoSystem() {
+    ZoneScoped;
     // Sort through all the districts, and figure out their trade
     // Get all the markets
     // Then cross reference to see if they can buy or sell
@@ -36,6 +39,7 @@ void SysPlanetaryTrade::DoSystem() {
     auto goodsview = GetUniverse().nodes<components::Price>();
 
     for (Node market_node : planetary_markets) {
+        ZoneScoped;
         auto& p_market = market_node.get<components::Market>();
         auto& habitation = market_node.get<components::Settlements>();
         auto& wallet = market_node.get_or_emplace<components::Wallet>();
