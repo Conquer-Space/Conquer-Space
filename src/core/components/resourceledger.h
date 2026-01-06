@@ -18,18 +18,19 @@
 
 #include <map>
 #include <string>
-
-#include <entt/entt.hpp>
+#include <vector>
 
 namespace cqsp::core::components {
-typedef std::map<entt::entity, double> LedgerMap;
+class ResourceLedger;
+
+typedef std::map<uint32_t, double> LedgerMap;
 
 class ResourceMap : private LedgerMap {
  public:
     ResourceMap() = default;
     ~ResourceMap() = default;
 
-    double operator[](const entt::entity) const;
+    double operator[](const uint32_t) const;
 
     /// <summary>
     /// This resource ledger has enough resources inside to transfer "amount" amount of resources away
@@ -42,6 +43,12 @@ class ResourceMap : private LedgerMap {
     void operator+=(const ResourceMap&);
     void operator*=(const ResourceMap&);
     void operator/=(const ResourceMap&);
+
+    void operator-=(const ResourceLedger&);
+    void operator+=(const ResourceLedger&);
+    void operator*=(const ResourceLedger&);
+    void operator/=(const ResourceLedger&);
+
     void operator-=(const double value);
     void operator+=(const double value);
     void operator*=(const double value);
@@ -156,7 +163,7 @@ class ResourceMap : private LedgerMap {
     /// <returns></returns>
     bool HasAllResources(const ResourceMap&);
 
-    bool HasGood(entt::entity good) { return (*this).find(good) != (*this).end(); }
+    bool HasGood(uint32_t good) { return (*this).find(good) != (*this).end(); }
 
     /**
      * Gets the sum of all the goods in this resource ledger.
@@ -201,6 +208,8 @@ class ResourceLedger {
  public:
     explicit ResourceLedger(size_t count);
 
+    operator ResourceMap() const;
+
     double operator[](const size_t value) const;
     double& operator[](const size_t value);
 
@@ -215,6 +224,12 @@ class ResourceLedger {
     void operator+=(const ResourceLedger&);
     void operator*=(const ResourceLedger&);
     void operator/=(const ResourceLedger&);
+
+    void operator-=(const ResourceMap&);
+    void operator+=(const ResourceMap&);
+    void operator*=(const ResourceMap&);
+    void operator/=(const ResourceMap&);
+
     void operator-=(const double value);
     void operator+=(const double value);
     void operator*=(const double value);
@@ -224,6 +239,12 @@ class ResourceLedger {
     ResourceLedger operator+(const ResourceLedger&) const;
     ResourceLedger operator*(const ResourceLedger&) const;
     ResourceLedger operator/(const ResourceLedger&) const;
+
+    ResourceLedger operator-(const ResourceMap&) const;
+    ResourceLedger operator+(const ResourceMap&) const;
+    ResourceLedger operator*(const ResourceMap&) const;
+    ResourceLedger operator/(const ResourceMap&) const;
+
     ResourceLedger operator-(const double value) const;
     ResourceLedger operator+(const double value) const;
     ResourceLedger operator*(const double value) const;
@@ -261,7 +282,6 @@ class ResourceLedger {
 
     bool operator==(const double&);
     bool operator!=(const double&);
-
     bool operator<=(const double&);
     bool operator>=(const double&);
 

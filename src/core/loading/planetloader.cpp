@@ -59,7 +59,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Node& node) {
     node.emplace<bodies::Planet>();
     auto& body_comp = node.emplace<Body>();
     node.emplace<components::Market>(universe.good_vector.size());
-    node.emplace<components::PlanetaryMarket>();
+    node.emplace<components::PlanetaryMarket>(universe.good_vector.size());
     node.emplace<bodies::OrbitalSystem>();
 
     node.emplace<bodies::NautralObject>();

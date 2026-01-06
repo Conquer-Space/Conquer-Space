@@ -30,6 +30,6 @@ class GoodLoader : public HjsonLoader {
 
  private:
     Hjson::Value default_val;
-    size_t index;
+    size_t index = 0;
 };
 }  // namespace cqsp::core::loading

@@ -35,8 +35,6 @@ Node OrderConstructionFactory(Node& city, Node& market, Node& recipe, Node& buil
     AddParticipant(market, factory);
     auto cost = GetFactoryCost(city, recipe, productivity);
 
-    // Buy the goods on the market
-    PurchaseGood(builder, cost);
     return factory;
 }
 
@@ -61,7 +59,6 @@ Node CreateFactory(Node& city, Node& recipe, int productivity, double wages) {
     }
 
     Node factory(city.universe());
-    //auto& factory_converter = universe.emplace<components::ResourceConverter>(factory);
     auto& production = factory.emplace<components::Production>();
     // Add recipes and stuff
     production.recipe = recipe;

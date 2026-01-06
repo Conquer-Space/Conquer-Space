@@ -142,7 +142,7 @@ void SysGoodViewer::InputRecipeTable() {
     ImGui::TableHeadersRow();
     for (entt::entity recipe : recipes) {
         auto& recipe_comp = GetUniverse().get<components::Recipe>(recipe);
-        if (!recipe_comp.input.contains(selected_good)) {
+        if (!recipe_comp.input.contains(GetUniverse().good_map[selected_good])) {
             continue;
         }
         ImGui::TableNextRow();
@@ -150,7 +150,7 @@ void SysGoodViewer::InputRecipeTable() {
         ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), recipe));
         RecipeTooltip(recipe);
         ImGui::TableSetColumnIndex(1);
-        ImGui::TextFmt("{}", recipe_comp.input[selected_good]);
+        ImGui::TextFmt("{}", recipe_comp.input[GetUniverse().good_map[selected_good]]);
     }
     ImGui::EndTable();
 }
@@ -167,7 +167,7 @@ void SysGoodViewer::OutputRecipeTable() {
     ImGui::TableHeadersRow();
     for (entt::entity recipe : recipes) {
         auto& recipe_comp = GetUniverse().get<components::Recipe>(recipe);
-        if (recipe_comp.output.entity != selected_good) {
+        if (GetUniverse().good_vector[recipe_comp.output.entity] != selected_good) {
             continue;
         }
         ImGui::TableNextRow();

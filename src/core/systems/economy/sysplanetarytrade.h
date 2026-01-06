@@ -32,7 +32,7 @@ class SysPlanetaryTrade : public ISimulationSystem {
     int Interval() override { return ECONOMIC_TICK; }
     void Init() override;
 
-    void DeterminePrice(components::Market& market, Node& good_entity);
+    void DeterminePrice(components::Market& market, uint32_t good_entity);
 
  private:
     bool initial_tick;

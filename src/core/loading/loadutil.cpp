@@ -93,7 +93,7 @@ components::ResourceMap HjsonToLedger(Universe& universe, Hjson::Value& hjson) {
             SPDLOG_ERROR("Non-existent good {}, skipping!", input_good.first);
             continue;
         }
-        stockpile[universe.goods[input_good.first]] = input_good.second;
+        stockpile[universe.good_map[universe.goods[input_good.first]]] = input_good.second;
     }
     return stockpile;
 }

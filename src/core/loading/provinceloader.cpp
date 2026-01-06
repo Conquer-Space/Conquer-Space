@@ -100,7 +100,7 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
 
     // Industry and economy
     auto& industry = node.emplace<components::IndustrialZone>();
-    auto& market = node.emplace<components::Market>();
+    auto& market = node.emplace<components::Market>(universe.good_vector.size());
     market.parent_market = planet_node;
     planet_node.get<components::Settlements>().provinces.push_back(node.entity());
     // Commercial area

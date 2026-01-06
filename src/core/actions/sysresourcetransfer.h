@@ -30,5 +30,4 @@ namespace cqsp::core::actions {
 /// <param name="good">good to transfer</param>
 /// <param name="amount">amount of resources to transfer</param>
 /// <returns>If transfering resources failed.</returns>
-bool TransferResources(Node& from, Node& to, Node& good, double amount);
 }  // namespace cqsp::core::actions

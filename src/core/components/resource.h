@@ -28,6 +28,7 @@
 #include "core/components/units.h"
 
 namespace cqsp::core::components {
+typedef uint32_t GoodIndex;
 /// <summary>
 /// Something that has a mass.
 /// </summary>
@@ -71,7 +72,7 @@ struct Mineral {};
 struct CapitalGood {};
 
 struct RecipeOutput {
-    entt::entity entity;
+    GoodIndex entity;
     double amount;
     ResourceMap operator*(const double value) const;
     ResourceMap operator*(ResourceMap&) const;
@@ -138,10 +139,6 @@ struct FactoryTimer {
 
 struct ResourceConsumption : public ResourceMap {};
 struct ResourceProduction : public ResourceMap {};
-
-struct ResourceConverter {
-    entt::entity recipe;
-};
 
 struct ResourceStockpile : public ResourceMap {};
 

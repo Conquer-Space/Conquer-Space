@@ -21,24 +21,4 @@
 namespace cqsp::core::actions {
 using components::ResourceStockpile;
 
-bool TransferResources(Node& from, Node& to, Node& good, double amount) {
-    // Get resource stockpile
-    if (!(from.all_of<ResourceStockpile>() && to.all_of<ResourceStockpile>() && good.all_of<components::Good>())) {
-        return false;
-    }
-
-    // Get resource stockpile
-    auto& from_stockpile = from.get<ResourceStockpile>();
-    auto& to_stockpile = from.get<ResourceStockpile>();
-    // Transfer resources
-    if (from_stockpile.HasGood(good)) {
-        // Then we can transfer
-        if (from_stockpile[good] >= amount) {
-            from_stockpile[good] -= amount;
-            to_stockpile[good] += amount;
-            return true;
-        }
-    }
-    return false;
-}
 }  // namespace cqsp::core::actions

@@ -34,7 +34,26 @@
 #include "core/util/random/random.h"
 
 namespace cqsp::core {
-class Node;
+class Universe;
+class Node : public entt::handle {
+ public:
+    explicit Node(const Universe& universe, const entt::entity entity);
+    Node(const entt::handle handle, const entt::entity entity);
+    explicit Node(Universe& universe);
+    Universe& universe() const;
+    auto Convert(const std::vector<entt::entity>& entities) const {
+        return (entities |
+                std::ranges::views::transform([this](entt::entity entity) { return Node(universe(), entity); }));
+    }
+    std::set<Node> Convert(const std::set<entt::entity>& entities) const;
+    Node Convert(const entt::entity entity) const;
+
+    // Overload equivalence against entt::null_t
+    friend bool operator==(const Node& lhs, const entt::null_t&) { return lhs.entity() == entt::null; }
+    friend bool operator==(const entt::null_t&, const Node& rhs) { return rhs.entity() == entt::null; }
+    friend bool operator!=(const Node& lhs, const entt::null_t&) { return lhs.entity() != entt::null; }
+    friend bool operator!=(const entt::null_t&, const Node& rhs) { return rhs.entity() != entt::null; }
+};
 
 class Universe : public entt::registry {
  public:
@@ -79,7 +98,10 @@ class Universe : public entt::registry {
     double tick_fraction = 0;
     std::function<Node(entt::entity)> nodeFactory;
     auto NodeTransform() const { return std::views::transform(nodeFactory); }
-    std::vector<Node> Convert(const std::vector<entt::entity>& entities) const;
+    auto Convert(const std::vector<entt::entity>& entities) const {
+        return (entities | std::ranges::views::transform([this](entt::entity entity) { return Node(*this, entity); }));
+    }
+
     std::set<Node> Convert(const std::set<entt::entity>& entities) const;
 
     template <typename... Components>
@@ -104,24 +126,6 @@ class Universe : public entt::registry {
  private:
     bool to_tick = false;
 };
-
-class Node : public entt::handle {
- public:
-    explicit Node(const Universe& universe, const entt::entity entity);
-    Node(const entt::handle handle, const entt::entity entity);
-    explicit Node(Universe& universe);
-    Universe& universe() const;
-    std::vector<Node> Convert(const std::vector<entt::entity>& entities) const;
-    std::set<Node> Convert(const std::set<entt::entity>& entities) const;
-    Node Convert(const entt::entity entity) const;
-
-    // Overload equivalence against entt::null_t
-    friend bool operator==(const Node& lhs, const entt::null_t&) { return lhs.entity() == entt::null; }
-    friend bool operator==(const entt::null_t&, const Node& rhs) { return rhs.entity() == entt::null; }
-    friend bool operator!=(const Node& lhs, const entt::null_t&) { return lhs.entity() != entt::null; }
-    friend bool operator!=(const entt::null_t&, const Node& rhs) { return rhs.entity() != entt::null; }
-};
-
 }  // namespace cqsp::core
 
 template <>

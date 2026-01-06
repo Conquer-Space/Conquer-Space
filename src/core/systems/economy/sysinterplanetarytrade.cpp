@@ -31,7 +31,7 @@ void SysInterplanetaryTrade::DoSystem() {
         auto& habitation = market_node.get<components::Settlements>();
         // Their parent market should probably have a planetary market
         auto& planetary_market = market_node.get<components::PlanetaryMarket>();
-        planetary_market.supply_difference = market_component.demand() - market_component.supply();
+        planetary_market.supply_difference = (market_component.demand() - market_component.supply());
     }
 
     ResolveTrades();
@@ -78,8 +78,8 @@ void SysInterplanetaryTrade::ResolveTrades() {
             auto& buyer_market = buyer_node.get<components::Market>();
             // Check for any goods, check if the price is worth it, then buy it
             // Check if the seller market needs stuff
-            for (auto& [good, supply_difference] : buyer_planetary_market.supply_difference) {
-                if (supply_difference <= 0) {
+            for (int good = 0; good < GetUniverse().good_vector.size(); good++) {
+                if (buyer_planetary_market.supply_difference[good] <= 0) {
                     // Let's not process anything where supply is greater than demand for now
                     // TODO(EhWhoAmI): Leave a way to indicate if you want a great surplus
                     // versus a low surplus
@@ -91,8 +91,9 @@ void SysInterplanetaryTrade::ResolveTrades() {
                     seller_market.chronic_shortages[good] <= 0) {
                     // We should add a market order to the buyer market and then figure out
                     // Now dump it to the market
-                    components::MarketOrder order(buyer_node, supply_difference, buyer_market.price[good]);
-                    seller_planetary_market.demands[good].push_back(order);
+                    components::MarketOrder order(buyer_node, buyer_planetary_market.supply_difference[good],
+                                                  buyer_market.price[good]);
+                    seller_planetary_market.demands[GetUniverse().good_vector[good]].push_back(order);
                 }
             }
         }

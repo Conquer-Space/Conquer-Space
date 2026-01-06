@@ -88,7 +88,7 @@ bool MergeCompare(const ResourceMap &m1, const ResourceMap &m2, ResourceMap::map
 
 using cqsp::core::components::ResourceMap;
 
-double ResourceMap::operator[](const entt::entity entity) const {
+double ResourceMap::operator[](const uint32_t entity) const {
     cqsp::core::components::LedgerMap::const_iterator location = this->find(entity);
     if (location == this->end()) {
         return 0;
@@ -432,6 +432,17 @@ ResourceMap CopyVals(const ResourceMap &keys, const ResourceMap &values) {
 
 ResourceLedger::ResourceLedger(size_t count) : ledger(count, 0.0) {}
 
+ResourceLedger::operator ResourceMap() const {
+    ResourceMap map;
+    for (size_t i = 0; i < ledger.size(); i++) {
+        if (ledger[i] == 0.0) {
+            continue;
+        }
+        map[i] = ledger[i];
+    }
+    return map;
+}
+
 void ResourceLedger::operator+=(const ResourceLedger &other) {
     for (size_t i = 0; i < ledger.size(); i++) {
         ledger[i] += other[i];
@@ -574,6 +585,30 @@ bool ResourceLedger::operator>=(const ResourceLedger &other) {
         if (ledger[i] < other[i]) return false;
     }
     return true;
+}
+
+void ResourceLedger::operator-=(const ResourceMap &other) {
+    for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
+        ledger[iterator->first] -= iterator->second;
+    }
+}
+
+void ResourceLedger::operator+=(const ResourceMap &other) {
+    for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
+        ledger[iterator->first] += iterator->second;
+    }
+}
+
+void ResourceLedger::operator*=(const ResourceMap &other) {
+    for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
+        ledger[iterator->first] *= iterator->second;
+    }
+}
+
+void ResourceLedger::operator/=(const ResourceMap &other) {
+    for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
+        ledger[iterator->first] /= iterator->second;
+    }
 }
 
 bool ResourceLedger::operator>(const double &value) {

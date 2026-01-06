@@ -28,6 +28,6 @@ Node CreateLab(Universe& universe) {
 
 void AddScienceResearch(Node& lab, Node& research, double progress) {
     // Add the things
-    lab.get<components::science::Lab>().science_contribution[research] += progress;
+    //lab.get<components::science::Lab>().science_contribution[research] += progress;
 }
 }  // namespace cqsp::core::actions

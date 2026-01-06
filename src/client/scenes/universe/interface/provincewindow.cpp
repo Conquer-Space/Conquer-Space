@@ -533,7 +533,8 @@ void SysProvinceInformation::SpacePortResourceTab(const entt::entity city) {
             ImGui::TableSetColumnIndex(0);
             ImGui::TextFmt("{}", GetName(GetUniverse(), good_entity));
             ImGui::TableSetColumnIndex(1);
-            ImGui::TextFmt("{}", util::NumberToHumanString(space_port.output_resources[good_entity]));
+            ImGui::TextFmt("{}",
+                           util::NumberToHumanString(space_port.output_resources[GetUniverse().good_map[good_entity]]));
         }
         ImGui::EndTable();
     }

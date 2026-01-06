@@ -53,7 +53,7 @@ void SysSpacePort::DoSystem() {
 
                 if (ship != entt::null) {
                     auto& stockpile = GetUniverse().emplace<components::ResourceStockpile>(ship);
-                    stockpile[element.good] = element.amount;
+                    stockpile[GetUniverse().good_map[element.good]] = element.amount;
 
                     GetUniverse().emplace<client::ctx::VisibleOrbit>(ship);
                 }

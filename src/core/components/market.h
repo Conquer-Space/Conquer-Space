@@ -100,20 +100,18 @@ struct MarketOrder {
 
 // A planetary market must have a regular market as well
 struct PlanetaryMarket {
+    explicit PlanetaryMarket(size_t good_count) : supplied_resources(good_count), supply_difference(good_count) {}
     std::map<entt::entity, std::vector<MarketOrder>> demands;
     std::map<entt::entity, std::vector<MarketOrder>> requests;
     // Resources supplied by the interplanetary market
-    ResourceMap supplied_resources;
-    ResourceMap supply_difference;
+    ResourceLedger supplied_resources;
+    ResourceLedger supply_difference;
 };
 
 struct Market : MarketInformation {
-    Market(size_t good_count) : MarketInformation(good_count) {}
+    explicit Market(size_t good_count) : MarketInformation(good_count) {}
 
     std::vector<MarketInformation> history;
-
-    std::map<entt::entity, MarketElementInformation> market_information;
-    std::map<entt::entity, MarketElementInformation> last_market_information;
 
     std::set<entt::entity> participants;
 
@@ -129,25 +127,8 @@ struct Market : MarketInformation {
     double deficit = 0;
     // Deficit in last tick
     double last_deficit = 0;
-    // Math
-    void AddSupply(const ResourceMap& stockpile);
-    void AddSupply(const ResourceMap& stockpile, double multiplier);
-    void AddDemand(const ResourceMap& stockpile);
-    void AddDemand(const ResourceMap& stockpile, double multiplier);
-
-    double GetPrice(const ResourceMap& stockpile);
-    double GetPrice(const entt::entity& good);
-    double GetSDRatio(const entt::entity& good);
-    double GetSupply(const entt::entity& good);
-    double GetDemand(const entt::entity& good);
 
     void AddParticipant(entt::entity participant) { participants.insert(participant); }
-
-    MarketElementInformation& operator[](entt::entity ent) { return market_information[ent]; }
-
-    auto begin() { return market_information.begin(); }
-
-    auto end() { return market_information.end(); }
 };
 
 /// <summary>

@@ -58,18 +58,18 @@ void MarketInformationTable(core::Universe& universe, const entt::entity& market
     ImGui::TableSetupColumn("Resource Fulfilled");
 
     ImGui::TableHeadersRow();
-    auto goodsview = universe.view<components::Price>();
+    //auto goodsview = universe.view<components::Price>();
 
-    for (entt::entity good_entity : goodsview) {
+    for (int good_entity = 0; good_entity < universe.good_vector.size(); good_entity++) {
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
-        if (universe.any_of<components::CapitalGood>(good_entity)) {
-            ImGui::TextFmtColored(ImColor(1.f, 1.f, 0.f), "{}", GetName(universe, good_entity));
+        if (universe.any_of<components::CapitalGood>(universe.good_vector[good_entity])) {
+            ImGui::TextFmtColored(ImColor(1.f, 1.f, 0.f), "{}", GetName(universe, universe.good_vector[good_entity]));
         } else {
-            ImGui::TextFmt("{}", GetName(universe, good_entity));
+            ImGui::TextFmt("{}", GetName(universe, universe.good_vector[good_entity]));
         }
         if (ImGui::IsItemHovered()) {
-            gui::EntityTooltip(universe, good_entity);
+            gui::EntityTooltip(universe, universe.good_vector[good_entity]);
         }
         ImGui::TableSetColumnIndex(1);
         // Mark the cell as red if the thing is not valid

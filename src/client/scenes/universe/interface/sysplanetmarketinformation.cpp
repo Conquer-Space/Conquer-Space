@@ -181,7 +181,7 @@ void SysPlanetMarketInformation::InterplanetaryTradeAmounts() {
         }
         ImGui::TableSetColumnIndex(1);
         // Mark the cell as red if the thing is not valid
-        ImGui::TextFmt("{}", interplanetary_market.supply_difference[good_entity]);
+        ImGui::TextFmt("{}", interplanetary_market.supply_difference[GetUniverse().good_map[good_entity]]);
     }
     ImGui::EndTable();
     ImGui::EndTabItem();
@@ -253,6 +253,7 @@ void SysPlanetMarketInformation::PerGoodDetailsRightPanel() {
     ImGui::TableSetupColumn("Chronic Shortages");
 
     ImGui::TableHeadersRow();
+    uint32_t selected_good_entity = GetUniverse().good_map[per_good_details_selected];
 
     auto& cities = GetUniverse().get<components::Settlements>(selected_planet);
     for (entt::entity city : cities.settlements) {
@@ -267,19 +268,19 @@ void SysPlanetMarketInformation::PerGoodDetailsRightPanel() {
         }
         ImGui::TableSetColumnIndex(1);
         // Mark the cell as red if the thing is not valid
-        ImGui::TextFmt("{:.2f}", market.price[per_good_details_selected]);
+        ImGui::TextFmt("{:.2f}", market.price[selected_good_entity]);
         ImGui::TableSetColumnIndex(2);
-        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.supply()[per_good_details_selected]));
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.supply()[selected_good_entity]));
         ImGui::TableSetColumnIndex(3);
-        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.demand()[per_good_details_selected]));
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.demand()[selected_good_entity]));
         ImGui::TableSetColumnIndex(4);
-        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.production[per_good_details_selected]));
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.production[selected_good_entity]));
         ImGui::TableSetColumnIndex(5);
-        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.consumption[per_good_details_selected]));
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.consumption[selected_good_entity]));
         ImGui::TableSetColumnIndex(6);
-        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.trade[per_good_details_selected]));
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.trade[selected_good_entity]));
         ImGui::TableSetColumnIndex(7);
-        ImGui::TextFmt("{:.2f}", market.chronic_shortages[per_good_details_selected]);
+        ImGui::TextFmt("{:.2f}", market.chronic_shortages[selected_good_entity]);
     }
 
     // Do overall as well
@@ -290,17 +291,17 @@ void SysPlanetMarketInformation::PerGoodDetailsRightPanel() {
 
     ImGui::TableSetColumnIndex(1);
     // Mark the cell as red if the thing is not valid
-    ImGui::TextFmt("{:.2f}", overall_market.price[per_good_details_selected]);
+    ImGui::TextFmt("{:.2f}", overall_market.price[selected_good_entity]);
     ImGui::TableSetColumnIndex(2);
-    ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.supply()[per_good_details_selected]));
+    ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.supply()[selected_good_entity]));
     ImGui::TableSetColumnIndex(3);
-    ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.demand()[per_good_details_selected]));
+    ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.demand()[selected_good_entity]));
     ImGui::TableSetColumnIndex(4);
-    ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.production[per_good_details_selected]));
+    ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.production[selected_good_entity]));
     ImGui::TableSetColumnIndex(5);
-    ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.consumption[per_good_details_selected]));
+    ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.consumption[selected_good_entity]));
     ImGui::TableSetColumnIndex(6);
-    ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.trade[per_good_details_selected]));
+    ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.trade[selected_good_entity]));
     ImGui::EndTable();
 }
 }  // namespace cqsp::client::systems

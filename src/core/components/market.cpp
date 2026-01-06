@@ -16,45 +16,4 @@
  */
 #include "core/components/market.h"
 
-namespace cqsp::core::components {
-
-void Market::AddSupply(const ResourceMap& stockpile) {
-    for (const auto& stockpile_element : stockpile) {
-        market_information[stockpile_element.first].supply += stockpile_element.second;
-    }
-}
-
-void Market::AddSupply(const ResourceMap& stockpile, double multiplier) {
-    for (const auto& stockpile_element : stockpile) {
-        market_information[stockpile_element.first].supply += stockpile_element.second * multiplier;
-    }
-}
-
-void Market::AddDemand(const ResourceMap& stockpile) {
-    for (const auto& stockpile_element : stockpile) {
-        market_information[stockpile_element.first].demand += stockpile_element.second;
-    }
-}
-
-void Market::AddDemand(const ResourceMap& stockpile, double multiplier) {
-    for (const auto& stockpile_element : stockpile) {
-        market_information[stockpile_element.first].demand += stockpile_element.second * multiplier;
-    }
-}
-
-double Market::GetPrice(const ResourceMap& stockpile) {
-    double price = 0;
-    for (const auto& element : stockpile) {
-        price += market_information[element.first].price * element.second;
-    }
-    return price;
-}
-
-double Market::GetSDRatio(const entt::entity& good) { return market_information[good].sd_ratio; }
-
-double Market::GetSupply(const entt::entity& good) { return market_information[good].supply; }
-
-double Market::GetDemand(const entt::entity& good) { return market_information[good].demand; }
-
-double Market::GetPrice(const entt::entity& good) { return market_information[good].price; }
-}  // namespace cqsp::core::components
+namespace cqsp::core::components {}  // namespace cqsp::core::components

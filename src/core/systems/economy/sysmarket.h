@@ -24,7 +24,7 @@
 namespace cqsp::core::systems {
 class SysMarket : public ISimulationSystem {
  public:
-    explicit SysMarket(Game& game) : ISimulationSystem(game) {}
+    explicit SysMarket(Game& game) : ISimulationSystem(game), base_prices(GetUniverse().good_vector.size()) {}
     void DoSystem() override;
     int Interval() override { return ECONOMIC_TICK; }
 

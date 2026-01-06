@@ -55,36 +55,40 @@ void SysPlanetaryTrade::DoSystem() {
             }
         }
 
-        for (Node good_node : goodsview) {
+        for (int good_node = 0; good_node < GetUniverse().good_vector.size(); good_node++) {
             DeterminePrice(p_market, good_node);
         }
         // Now we can compute the prices for the individual markets
         for (Node settlement_node : market_node.Convert(habitation.provinces)) {
             auto& market = settlement_node.get<components::Market>();
             auto& market_wallet = settlement_node.get_or_emplace<components::Wallet>();
-            for (Node good_node : goodsview) {
+            for (int good_node = 0; good_node < GetUniverse().good_vector.size(); good_node++) {
                 double access = market.market_access[good_node];
                 market.price[good_node] = p_market.price[good_node] * access + (1 - access) * market.price[good_node];
             }
 
             // Determine supply and demand for the market
             market.trade.clear();
-            for (auto& [good, supply] : market.supply()) {
+            for (int good = 0; good < GetUniverse().good_vector.size(); good++) {
                 if (p_market.supply()[good] == 0) {
                     continue;
                 }
                 // Remove local production so that we don't confound this with our local production
-                market.trade[good] -= std::max(
-                    (supply / p_market.supply()[good] * p_market.demand()[good]) - market.consumption[good], 0.);
+                market.trade[good] -=
+                    std::max((market.supply()[good] / p_market.supply()[good] * p_market.demand()[good]) -
+                                 market.consumption[good],
+                             0.);
             }
 
-            for (auto& [good, value] : market.demand()) {
+            for (int good = 0; good < GetUniverse().good_vector.size(); good++) {
                 if (p_market.demand()[good] == 0) {
                     continue;
                 }
                 // Remove local consumption so that we don't confound this with local production
                 market.trade[good] +=
-                    std::max((value / p_market.demand()[good] * p_market.supply()[good]) - market.production[good], 0.);
+                    std::max((market.demand()[good] / p_market.demand()[good] * p_market.supply()[good]) -
+                                 market.production[good],
+                             0.);
             }
         }
 
@@ -97,12 +101,12 @@ void SysPlanetaryTrade::DoSystem() {
 void SysPlanetaryTrade::Init() {
     auto goodsview = GetUniverse().view<components::Price>();
 
-    for (entt::entity good_entity : goodsview) {
-        base_prices[good_entity] = GetUniverse().get<components::Price>(good_entity);
+    for (int good = 0; good < GetUniverse().good_vector.size(); good++) {
+        base_prices[good] = GetUniverse().get<components::Price>(GetUniverse().good_vector[good]);
     }
 }
 
-void SysPlanetaryTrade::DeterminePrice(components::Market& market, Node& good_entity) {
+void SysPlanetaryTrade::DeterminePrice(components::Market& market, uint32_t good_entity) {
     const double sd_ratio = market.sd_ratio[good_entity];
     const double supply = market.supply()[good_entity];
     const double demand = market.demand()[good_entity];
