@@ -81,16 +81,15 @@ void SysRecipeViewer::ResourceMapTable(components::ResourceMap& ledger, const ch
     for (auto& in : ledger) {
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
-        ImGui::TextFmt("{}", cqsp::core::util::GetName(GetUniverse(), GetUniverse().good_vector[in.first]));
+        ImGui::TextFmt("{}", cqsp::core::util::GetName(GetUniverse(), in.first));
         if (ImGui::IsItemClicked()) {
             // Copy
-            ImGui::SetClipboardText(
-                GetUniverse().get<components::Identifier>(GetUniverse().good_vector[in.first]).identifier.c_str());
+            ImGui::SetClipboardText(GetUniverse().get<components::Identifier>(in.first).identifier.c_str());
         }
         if (ImGui::IsItemHovered()) {
             ImGui::BeginTooltip();
             ImGui::TextColored(id_copy_color, "Click to copy identifier");
-            systems::gui::EntityTooltipContent(GetUniverse(), GetUniverse().good_vector[in.first]);
+            systems::gui::EntityTooltipContent(GetUniverse(), in.first);
             ImGui::EndTooltip();
         }
         ImGui::TableSetColumnIndex(1);
@@ -103,7 +102,7 @@ namespace {
 double GetLedgerCost(core::Universe& universe, components::ResourceMap& ledger) {
     double input_cost = 0;
     for (auto& [entity, amount] : ledger) {
-        input_cost = universe.get<components::Price>(universe.good_vector[entity]) * amount;
+        input_cost = universe.get<components::Price>(universe.GetGood(entity)) * amount;
     }
     return input_cost;
 }
@@ -139,16 +138,14 @@ void SysRecipeViewer::RecipeViewerRight() {
     ImGui::Separator();
     ImGui::Text("Output");
     ImGui::TextFmt("Output Cost: {}",
-                   util::NumberToHumanString(
-                       GetUniverse().get<components::Price>(GetUniverse().good_vector[recipe_comp.output.entity]) *
-                       recipe_comp.output.amount));
-    ImGui::TextFmt("{}, {}", core::util::GetName(GetUniverse(), GetUniverse().good_vector[recipe_comp.output.entity]),
+                   util::NumberToHumanString(GetUniverse().get<components::Price>(recipe_comp.output.entity) *
+                                             recipe_comp.output.amount));
+    ImGui::TextFmt("{}, {}", core::util::GetName(GetUniverse(), recipe_comp.output.entity),
                    util::NumberToHumanString(recipe_comp.output.amount));
     if (ImGui::IsItemClicked()) {
         // Then copy
-        ImGui::SetClipboardText(GetUniverse()
-                                    .get<components::Identifier>(GetUniverse().good_vector[recipe_comp.output.entity])
-                                    .identifier.c_str());
+        ImGui::SetClipboardText(
+            GetUniverse().get<components::Identifier>(recipe_comp.output.entity).identifier.c_str());
     }
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
@@ -159,9 +156,8 @@ void SysRecipeViewer::RecipeViewerRight() {
     ImGui::Separator();
     double expected_cost = GetLedgerCost(GetUniverse(), recipe_comp.input) * expected_production +
                            GetLedgerCost(GetUniverse(), recipe_comp.capitalcost);
-    double expected_income =
-        GetUniverse().get<components::Price>(GetUniverse().good_vector[recipe_comp.output.entity]) *
-        recipe_comp.output.amount * expected_production;
+    double expected_income = GetUniverse().get<components::Price>(recipe_comp.output.entity) *
+                             recipe_comp.output.amount * expected_production;
     double expected_profit = expected_income - expected_cost;
     ImGui::TextFmt("Expected Income: {}", util::NumberToHumanString(expected_income));
     ImGui::TextFmt("Expected Cost: {}", util::NumberToHumanString(expected_cost));

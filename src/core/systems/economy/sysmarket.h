@@ -24,14 +24,14 @@
 namespace cqsp::core::systems {
 class SysMarket : public ISimulationSystem {
  public:
-    explicit SysMarket(Game& game) : ISimulationSystem(game), base_prices(GetUniverse().good_vector.size()) {}
+    explicit SysMarket(Game& game) : ISimulationSystem(game), base_prices(GetUniverse().GoodCount()) {}
     void DoSystem() override;
     int Interval() override { return ECONOMIC_TICK; }
 
     void Init() override;
 
  private:
-    void DeterminePrice(components::Market& market, uint32_t good_entity);
+    void DeterminePrice(components::Market& market, components::GoodEntity good_entity);
     void DetermineShortages(components::Market& market);
 
     components::ResourceLedger base_prices;

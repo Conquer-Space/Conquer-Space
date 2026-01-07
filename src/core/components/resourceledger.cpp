@@ -21,6 +21,11 @@
 #include <ranges>
 #include <utility>
 
+#define ITERATE_GOODS(name)                       \
+    GoodEntity name = static_cast<GoodEntity>(0); \
+    static_cast<size_t>(name) < ledger.size();    \
+    name = static_cast<GoodEntity>(static_cast<size_t>(name) + 1)
+
 namespace cqsp::core::components {
 namespace {
 using cqsp::core::components::ResourceMap;
@@ -88,7 +93,7 @@ bool MergeCompare(const ResourceMap &m1, const ResourceMap &m2, ResourceMap::map
 
 using cqsp::core::components::ResourceMap;
 
-double ResourceMap::operator[](const uint32_t entity) const {
+double ResourceMap::operator[](const GoodEntity entity) const {
     cqsp::core::components::LedgerMap::const_iterator location = this->find(entity);
     if (location == this->end()) {
         return 0;
@@ -434,249 +439,249 @@ ResourceLedger::ResourceLedger(size_t count) : ledger(count, 0.0) {}
 
 ResourceLedger::operator ResourceMap() const {
     ResourceMap map;
-    for (size_t i = 0; i < ledger.size(); i++) {
-        if (ledger[i] == 0.0) {
+    for (ITERATE_GOODS(i)) {
+        if ((*this)[i] == 0.0) {
             continue;
         }
-        map[i] = ledger[i];
+        map[i] = (*this)[i];
     }
     return map;
 }
 
 void ResourceLedger::operator+=(const ResourceLedger &other) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        ledger[i] += other[i];
+    for (ITERATE_GOODS(i)) {
+        (*this)[i] += other[i];
     }
 }
 
 void ResourceLedger::operator-=(const ResourceLedger &other) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        ledger[i] -= other[i];
+    for (ITERATE_GOODS(i)) {
+        (*this)[i] -= other[i];
     }
 }
 
 void ResourceLedger::operator*=(const ResourceLedger &other) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        ledger[i] *= other[i];
+    for (ITERATE_GOODS(i)) {
+        (*this)[i] *= other[i];
     }
 }
 
 void ResourceLedger::operator/=(const ResourceLedger &other) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        ledger[i] /= other[i];
+    for (ITERATE_GOODS(i)) {
+        (*this)[i] /= other[i];
     }
 }
 
 void ResourceLedger::operator+=(const double value) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        ledger[i] += value;
+    for (ITERATE_GOODS(i)) {
+        (*this)[i] += value;
     }
 }
 
 void ResourceLedger::operator-=(const double value) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        ledger[i] -= value;
+    for (ITERATE_GOODS(i)) {
+        (*this)[i] -= value;
     }
 }
 
 void ResourceLedger::operator*=(const double value) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        ledger[i] *= value;
+    for (ITERATE_GOODS(i)) {
+        (*this)[i] *= value;
     }
 }
 
 void ResourceLedger::operator/=(const double value) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        ledger[i] /= value;
+    for (ITERATE_GOODS(i)) {
+        (*this)[i] /= value;
     }
 }
 
-double ResourceLedger::operator[](const size_t value) const { return ledger[value]; }
+double ResourceLedger::operator[](const GoodEntity value) const { return ledger[static_cast<int>(value)]; }
 
-double &ResourceLedger::operator[](const size_t value) { return ledger[value]; }
+double &ResourceLedger::operator[](const GoodEntity value) { return ledger[static_cast<int>(value)]; }
 
 ResourceLedger ResourceLedger::operator-(const ResourceLedger &other) const {
     ResourceLedger result(ledger.size());
-    for (size_t i = 0; i < ledger.size(); i++) {
-        result[i] = ledger[i] - other[i];
+    for (ITERATE_GOODS(i)) {
+        result[i] = (*this)[i] - other[i];
     }
     return result;
 }
 
 ResourceLedger ResourceLedger::operator+(const ResourceLedger &other) const {
     ResourceLedger result(ledger.size());
-    for (size_t i = 0; i < ledger.size(); i++) {
-        result[i] = ledger[i] + other[i];
+    for (ITERATE_GOODS(i)) {
+        result[i] = (*this)[i] + other[i];
     }
     return result;
 }
 
 ResourceLedger ResourceLedger::operator*(const ResourceLedger &other) const {
     ResourceLedger result(ledger.size());
-    for (size_t i = 0; i < ledger.size(); i++) {
-        result[i] = ledger[i] * other[i];
+    for (ITERATE_GOODS(i)) {
+        result[i] = (*this)[i] * other[i];
     }
     return result;
 }
 
 ResourceLedger ResourceLedger::operator/(const ResourceLedger &other) const {
     ResourceLedger result(ledger.size());
-    for (size_t i = 0; i < ledger.size(); i++) {
-        result[i] = ledger[i] / other[i];
+    for (ITERATE_GOODS(i)) {
+        result[i] = (*this)[i] / other[i];
     }
     return result;
 }
 
 ResourceLedger ResourceLedger::operator-(const double value) const {
     ResourceLedger result(ledger.size());
-    for (size_t i = 0; i < ledger.size(); i++) {
-        result[i] = ledger[i] - value;
+    for (ITERATE_GOODS(i)) {
+        result[i] = (*this)[i] - value;
     }
     return result;
 }
 
 ResourceLedger ResourceLedger::operator+(const double value) const {
     ResourceLedger result(ledger.size());
-    for (size_t i = 0; i < ledger.size(); i++) {
-        result[i] = ledger[i] + value;
+    for (ITERATE_GOODS(i)) {
+        result[i] = (*this)[i] + value;
     }
     return result;
 }
 
 ResourceLedger ResourceLedger::operator*(const double value) const {
     ResourceLedger result(ledger.size());
-    for (size_t i = 0; i < ledger.size(); i++) {
-        result[i] = ledger[i] * value;
+    for (ITERATE_GOODS(i)) {
+        result[i] = (*this)[i] * value;
     }
     return result;
 }
 
 ResourceLedger ResourceLedger::operator/(const double value) const {
     ResourceLedger result(ledger.size());
-    for (size_t i = 0; i < ledger.size(); i++) {
-        result[i] = ledger[i] / value;
+    for (ITERATE_GOODS(i)) {
+        result[i] = (*this)[i] / value;
     }
     return result;
 }
 
 bool ResourceLedger::operator<(const ResourceLedger &other) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        if (ledger[i] >= other[i]) return false;
+    for (ITERATE_GOODS(i)) {
+        if ((*this)[i] >= other[i]) return false;
     }
     return true;
 }
 
 bool ResourceLedger::operator>(const ResourceLedger &other) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        if (ledger[i] <= other[i]) return false;
+    for (ITERATE_GOODS(i)) {
+        if ((*this)[i] <= other[i]) return false;
     }
     return true;
 }
 
 bool ResourceLedger::operator<=(const ResourceLedger &other) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        if (ledger[i] > other[i]) return false;
+    for (ITERATE_GOODS(i)) {
+        if ((*this)[i] > other[i]) return false;
     }
     return true;
 }
 
 bool ResourceLedger::operator>=(const ResourceLedger &other) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        if (ledger[i] < other[i]) return false;
+    for (ITERATE_GOODS(i)) {
+        if ((*this)[i] < other[i]) return false;
     }
     return true;
 }
 
 void ResourceLedger::operator-=(const ResourceMap &other) {
     for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
-        ledger[iterator->first] -= iterator->second;
+        (*this)[iterator->first] -= iterator->second;
     }
 }
 
 void ResourceLedger::operator+=(const ResourceMap &other) {
     for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
-        ledger[iterator->first] += iterator->second;
+        (*this)[iterator->first] += iterator->second;
     }
 }
 
 void ResourceLedger::operator*=(const ResourceMap &other) {
     for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
-        ledger[iterator->first] *= iterator->second;
+        (*this)[iterator->first] *= iterator->second;
     }
 }
 
 void ResourceLedger::operator/=(const ResourceMap &other) {
     for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
-        ledger[iterator->first] /= iterator->second;
+        (*this)[iterator->first] /= iterator->second;
     }
 }
 
 bool ResourceLedger::operator>(const double &value) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        if (ledger[i] <= value) return false;
+    for (ITERATE_GOODS(i)) {
+        if ((*this)[i] <= value) return false;
     }
     return true;
 }
 
 bool ResourceLedger::operator<(const double &value) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        if (ledger[i] >= value) return false;
+    for (ITERATE_GOODS(i)) {
+        if ((*this)[i] >= value) return false;
     }
     return true;
 }
 
 bool ResourceLedger::operator==(const double &value) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        if (ledger[i] != value) return false;
+    for (ITERATE_GOODS(i)) {
+        if ((*this)[i] != value) return false;
     }
     return true;
 }
 
 bool ResourceLedger::operator!=(const double &value) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        if (ledger[i] == value) return false;
+    for (ITERATE_GOODS(i)) {
+        if ((*this)[i] == value) return false;
     }
     return true;
 }
 
 bool ResourceLedger::operator<=(const double &value) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        if (ledger[i] > value) return false;
+    for (ITERATE_GOODS(i)) {
+        if ((*this)[i] > value) return false;
     }
     return true;
 }
 
 bool ResourceLedger::operator>=(const double &value) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        if (ledger[i] < value) return false;
+    for (ITERATE_GOODS(i)) {
+        if ((*this)[i] < value) return false;
     }
     return true;
 }
 
 void ResourceLedger::AssignFrom(const ResourceLedger &other) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        ledger[i] = other[i];
+    for (ITERATE_GOODS(i)) {
+        (*this)[i] = other[i];
     }
 }
 
 void ResourceLedger::TransferTo(ResourceLedger &ledger_to, const ResourceLedger &amount) {
-    for (size_t i = 0; i < ledger.size(); i++) {
+    for (ITERATE_GOODS(i)) {
         ledger_to[i] += amount[i];
-        ledger[i] -= amount[i];
+        (*this)[i] -= amount[i];
     }
 }
 void ResourceLedger::MultiplyAdd(const ResourceLedger &other, double value) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        ledger[i] += other[i] * value;
+    for (ITERATE_GOODS(i)) {
+        (*this)[i] += other[i] * value;
     }
 }
 
 // Add all the positive values in the other ledger to this ledger
 // Essentially this += other (if idx > 0)
 void ResourceLedger::ResourceLedger::AddPositive(const ResourceLedger &other) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        if (ledger[i] > 0) {
-            ledger[i] += other[i];
+    for (ITERATE_GOODS(i)) {
+        if ((*this)[i] > 0) {
+            (*this)[i] += other[i];
         }
     }
 }
@@ -684,9 +689,9 @@ void ResourceLedger::ResourceLedger::AddPositive(const ResourceLedger &other) {
 // Add all the negative values in the other ledger to this ledger
 // Essentially this += abs(other) (if idx < 0)
 void ResourceLedger::AddNegative(const ResourceLedger &other) {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        if (ledger[i] < 0) {
-            ledger[i] += other[i];
+    for (ITERATE_GOODS(i)) {
+        if ((*this)[i] < 0) {
+            (*this)[i] += other[i];
         }
     }
 }
@@ -696,15 +701,15 @@ void ResourceLedger::AddNegative(const ResourceLedger &other) {
 /// </summary>
 ResourceLedger ResourceLedger::Clamp(const double low, const double high) {
     ResourceLedger result(ledger.size());
-    for (size_t i = 0; i < ledger.size(); i++) {
-        result[i] = std::clamp(low, high, ledger[i]);
+    for (ITERATE_GOODS(i)) {
+        result[i] = std::clamp(low, high, (*this)[i]);
     }
     return result;
 }
 
 void ResourceLedger::clear() {
-    for (size_t i = 0; i < ledger.size(); i++) {
-        ledger[i] = 0;
+    for (ITERATE_GOODS(i)) {
+        (*this)[i] = 0;
     }
 }
 
@@ -714,11 +719,11 @@ void ResourceLedger::clear() {
 ResourceLedger ResourceLedger::SafeDivision(const ResourceLedger &other) {
     ResourceLedger return_ledger(ledger.size());
     return_ledger = *this;
-    for (size_t i = 0; i < ledger.size(); i++) {
+    for (ITERATE_GOODS(i)) {
         if (other[i] == 0.0) {
             return_ledger[i] = std::numeric_limits<double>::infinity();
         } else {
-            return_ledger[i] = ledger[i] / other[0];
+            return_ledger[i] = (*this)[i] / other[i];
         }
     }
     return return_ledger;
@@ -730,11 +735,11 @@ ResourceLedger ResourceLedger::SafeDivision(const ResourceLedger &other) {
 ResourceLedger ResourceLedger::SafeDivision(const ResourceLedger &other, double value) {
     ResourceLedger return_ledger(ledger.size());
     return_ledger = *this;
-    for (size_t i = 0; i < ledger.size(); i++) {
+    for (ITERATE_GOODS(i)) {
         if (other[i] == 0.0) {
             return_ledger[i] = value;
         } else {
-            return_ledger[i] = ledger[i] / other[0];
+            return_ledger[i] = (*this)[i] / other[i];
         }
     }
     return return_ledger;
@@ -746,28 +751,27 @@ ResourceLedger ResourceLedger::SafeDivision(const ResourceLedger &other, double 
 /// </summary>
 double ResourceLedger::Average() const {
     double val = 0;
-    for (size_t i = 0; i < ledger.size(); i++) {
-        val += ledger[i];
+    for (ITERATE_GOODS(i)) {
+        val += (*this)[i];
     }
     return val / static_cast<double>(ledger.size());
 }
 
 double ResourceLedger::Min() const {
     double val = std::numeric_limits<double>::infinity();
-    ;
-    for (size_t i = 0; i < ledger.size(); i++) {
-        if (ledger[i] < val) {
-            val = ledger[i];
+    for (ITERATE_GOODS(i)) {
+        if ((*this)[i] < val) {
+            val = (*this)[i];
         }
     }
     return val;
 }
 double ResourceLedger::Max() const {
     double val = -std::numeric_limits<double>::infinity();
-    ;
-    for (size_t i = 0; i < ledger.size(); i++) {
-        if (ledger[i] > val) {
-            val = ledger[i];
+
+    for (ITERATE_GOODS(i)) {
+        if ((*this)[i] > val) {
+            val = (*this)[i];
         }
     }
     return val;

@@ -57,23 +57,23 @@ class StarDate {
 
     void IncrementDate() { date++; }
 
-    uint64_t GetDate() { return date; }
+    uint64_t GetDate() const { return date; }
 
-    double ToSecond() { return (double)date * TIME_INCREMENT; }
-    double ToDay() { return date / (float)DAY; }
+    double ToSecond() const { return (double)date * TIME_INCREMENT; }
+    double ToDay() const { return date / (float)DAY; }
 
-    std::string ToString();
-    std::string ToString(double offset);
+    std::string ToString() const;
+    std::string ToString(double offset) const;
 
-    int GetYear();
-    int GetMonth();
-    int GetDay();
-    int GetHour(double offset = 0.0);
-    int GetMinute();
+    int GetYear() const;
+    int GetMonth() const;
+    int GetDay() const;
+    int GetHour(double offset = 0.0) const;
+    int GetMinute() const;
 
     void SetDate(unsigned int _date) { date = _date; }
 
-    double operator()() { return ToSecond(); }
+    double operator()() const { return ToSecond(); }
 
  private:
     // Time in minutes since the start date

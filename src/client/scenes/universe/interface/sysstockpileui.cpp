@@ -45,7 +45,7 @@ bool DrawLedgerTable(const std::string &name, const Universe &universe, const Re
             }
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
-            ImGui::TextFmt("{}", core::util::GetName(universe, universe.good_vector[iterator->first]));
+            ImGui::TextFmt("{}", core::util::GetName(universe, iterator->first));
             ImGui::TableSetColumnIndex(1);
             ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(iterator->second)));
         }

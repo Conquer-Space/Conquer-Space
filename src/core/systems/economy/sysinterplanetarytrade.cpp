@@ -78,7 +78,7 @@ void SysInterplanetaryTrade::ResolveTrades() {
             auto& buyer_market = buyer_node.get<components::Market>();
             // Check for any goods, check if the price is worth it, then buy it
             // Check if the seller market needs stuff
-            for (int good = 0; good < GetUniverse().good_vector.size(); good++) {
+            for (auto good : GetUniverse().GoodIterator()) {
                 if (buyer_planetary_market.supply_difference[good] <= 0) {
                     // Let's not process anything where supply is greater than demand for now
                     // TODO(EhWhoAmI): Leave a way to indicate if you want a great surplus
@@ -93,7 +93,7 @@ void SysInterplanetaryTrade::ResolveTrades() {
                     // Now dump it to the market
                     components::MarketOrder order(buyer_node, buyer_planetary_market.supply_difference[good],
                                                   buyer_market.price[good]);
-                    seller_planetary_market.demands[GetUniverse().good_vector[good]].push_back(order);
+                    seller_planetary_market.demands[GetUniverse().GetGood(good)].push_back(order);
                 }
             }
         }

@@ -59,21 +59,21 @@ void SysPlanetaryTrade::DoSystem() {
             }
         }
 
-        for (int good_node = 0; good_node < GetUniverse().good_vector.size(); good_node++) {
+        for (auto good_node : GetUniverse().GoodIterator()) {
             DeterminePrice(p_market, good_node);
         }
         // Now we can compute the prices for the individual markets
         for (Node settlement_node : market_node.Convert(habitation.provinces)) {
             auto& market = settlement_node.get<components::Market>();
             auto& market_wallet = settlement_node.get_or_emplace<components::Wallet>();
-            for (int good_node = 0; good_node < GetUniverse().good_vector.size(); good_node++) {
+            for (auto good_node : GetUniverse().GoodIterator()) {
                 double access = market.market_access[good_node];
                 market.price[good_node] = p_market.price[good_node] * access + (1 - access) * market.price[good_node];
             }
 
             // Determine supply and demand for the market
             market.trade.clear();
-            for (int good = 0; good < GetUniverse().good_vector.size(); good++) {
+            for (auto good : GetUniverse().GoodIterator()) {
                 if (p_market.supply()[good] == 0) {
                     continue;
                 }
@@ -84,7 +84,7 @@ void SysPlanetaryTrade::DoSystem() {
                              0.);
             }
 
-            for (int good = 0; good < GetUniverse().good_vector.size(); good++) {
+            for (auto good : GetUniverse().GoodIterator()) {
                 if (p_market.demand()[good] == 0) {
                     continue;
                 }
@@ -105,12 +105,12 @@ void SysPlanetaryTrade::DoSystem() {
 void SysPlanetaryTrade::Init() {
     auto goodsview = GetUniverse().view<components::Price>();
 
-    for (int good = 0; good < GetUniverse().good_vector.size(); good++) {
-        base_prices[good] = GetUniverse().get<components::Price>(GetUniverse().good_vector[good]);
+    for (auto good : GetUniverse().GoodIterator()) {
+        base_prices[good] = GetUniverse().get<components::Price>(GetUniverse().GetGood(good));
     }
 }
 
-void SysPlanetaryTrade::DeterminePrice(components::Market& market, uint32_t good_entity) {
+void SysPlanetaryTrade::DeterminePrice(components::Market& market, components::GoodEntity good_entity) {
     const double sd_ratio = market.sd_ratio[good_entity];
     const double supply = market.supply()[good_entity];
     const double demand = market.demand()[good_entity];

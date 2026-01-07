@@ -29,6 +29,7 @@
 
 #include "core/actions/names/namegenerator.h"
 #include "core/components/market.h"
+#include "core/components/resourceledger.h"
 #include "core/components/stardate.h"
 #include "core/systems/economy/economyconfig.h"
 #include "core/util/random/random.h"
@@ -81,14 +82,35 @@ class Universe : public entt::registry {
     entt::entity sun;
 
     std::vector<entt::entity> good_vector;
-    std::unordered_map<entt::entity, size_t> good_map;
+    std::unordered_map<entt::entity, components::GoodEntity> good_map;
+
+    entt::entity GetGood(const components::GoodEntity entity) const { return good_vector[static_cast<int>(entity)]; }
+
+    auto GoodIterator() const {
+        return std::views::iota(0, static_cast<int>(good_vector.size())) |
+               std::ranges::views::transform([](int in) { return static_cast<components::GoodEntity>(in); });
+    }
+
+    size_t GoodCount() const { return good_vector.size(); }
+
+    using entt::registry::get;
+
+    template <typename... Component>
+    [[nodiscard]] decltype(auto) get([[maybe_unused]] const components::GoodEntity entity) {
+        return entt::registry::get<Component...>(GetGood(entity));
+    }
+
+    template <typename... Component>
+    [[nodiscard]] decltype(auto) get([[maybe_unused]] const components::GoodEntity entity) const {
+        return entt::registry::get<const Component...>(GetGood(entity));
+    }
 
     void EnableTick() { to_tick = true; }
     void DisableTick() { to_tick = false; }
-    bool ToTick() { return to_tick; }
+    bool ToTick() const { return to_tick; }
     void ToggleTick() { to_tick = !to_tick; }
 
-    int GetDate() { return date.GetDate(); }
+    int GetDate() const { return date.GetDate(); }
     std::unique_ptr<cqsp::core::util::IRandom> random;
     std::string uuid;
 

@@ -60,16 +60,16 @@ void MarketInformationTable(core::Universe& universe, const entt::entity& market
     ImGui::TableHeadersRow();
     //auto goodsview = universe.view<components::Price>();
 
-    for (int good_entity = 0; good_entity < universe.good_vector.size(); good_entity++) {
+    for (auto good_entity : universe.GoodIterator()) {
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
-        if (universe.any_of<components::CapitalGood>(universe.good_vector[good_entity])) {
-            ImGui::TextFmtColored(ImColor(1.f, 1.f, 0.f), "{}", GetName(universe, universe.good_vector[good_entity]));
+        if (universe.any_of<components::CapitalGood>(universe.GetGood(good_entity))) {
+            ImGui::TextFmtColored(ImColor(1.f, 1.f, 0.f), "{}", GetName(universe, universe.GetGood(good_entity)));
         } else {
-            ImGui::TextFmt("{}", GetName(universe, universe.good_vector[good_entity]));
+            ImGui::TextFmt("{}", GetName(universe, universe.GetGood(good_entity)));
         }
         if (ImGui::IsItemHovered()) {
-            gui::EntityTooltip(universe, universe.good_vector[good_entity]);
+            gui::EntityTooltip(universe, universe.GetGood(good_entity));
         }
         ImGui::TableSetColumnIndex(1);
         // Mark the cell as red if the thing is not valid

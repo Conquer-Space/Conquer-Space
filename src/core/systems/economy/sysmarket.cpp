@@ -70,8 +70,8 @@ void SysMarket::DoSystem() {
         market.demand().AddNegative(market.trade);
         market.sd_ratio = (market.supply()).SafeDivision(market.demand());
 
-        for (int i = 0; i < GetUniverse().good_vector.size(); i++) {
-            DeterminePrice(market, i);
+        for (auto good : GetUniverse().GoodIterator()) {
+            DeterminePrice(market, good);
         }
 
         DetermineShortages(market);
@@ -82,7 +82,7 @@ void SysMarket::DetermineShortages(components::Market& market) {
     components::ResourceLedger& market_supply = market.supply();
     components::ResourceLedger& market_demand = market.demand();
     double deficit = 0;
-    for (size_t good = 0; good < market_supply.size(); good++) {
+    for (auto good : GetUniverse().GoodIterator()) {
         const double& demand = market_demand[good];
         const double& supply = market_supply[good];
         deficit += (demand - supply) * market.price[good];
@@ -106,7 +106,7 @@ void SysMarket::DetermineShortages(components::Market& market) {
     market.deficit += deficit;
 }
 
-void SysMarket::DeterminePrice(Market& market, uint32_t good_entity) {
+void SysMarket::DeterminePrice(Market& market, components::GoodEntity good_entity) {
     const double sd_ratio = market.sd_ratio[good_entity];
     const double supply = market.supply()[good_entity];
     const double demand = market.demand()[good_entity];
@@ -127,8 +127,8 @@ void SysMarket::Init() {
         Market& market = GetUniverse().get<Market>(entity);
 
         // Initialize the price
-        for (size_t good_node = 0; good_node < GetUniverse().good_vector.size(); good_node++) {
-            market.price[good_node] = GetUniverse().get<components::Price>(GetUniverse().good_vector[good_node]);
+        for (auto good_node : GetUniverse().GoodIterator()) {
+            market.price[good_node] = GetUniverse().get<components::Price>(GetUniverse().GetGood(good_node));
             // Set the supply and demand things as 1 so that they sell for
             // now
             market.supply()[good_node] = 1;
@@ -138,8 +138,9 @@ void SysMarket::Init() {
         market.sd_ratio = market.supply().SafeDivision(market.demand());
         market.history.push_back(market);
     }
-    for (size_t good_node = 0; good_node < GetUniverse().good_vector.size(); good_node++) {
-        base_prices[good_node] = GetUniverse().get<components::Price>(GetUniverse().good_vector[good_node]);
+
+    for (auto good_node : GetUniverse().GoodIterator()) {
+        base_prices[good_node] = GetUniverse().get<components::Price>(GetUniverse().GetGood(good_node));
     }
 }
 }  // namespace cqsp::core::systems

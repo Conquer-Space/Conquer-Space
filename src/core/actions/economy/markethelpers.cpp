@@ -37,7 +37,7 @@ double GetCost(Node& market, const components::ResourceMap& ledger) {
 
 Node CreateMarket(Universe& universe) {
     Node market(universe);
-    static_cast<void>(market.get_or_emplace<components::Market>(universe.good_vector.size()));
+    static_cast<void>(market.get_or_emplace<components::Market>(universe.GoodCount()));
     static_cast<void>(market.get_or_emplace<components::MarketHistory>());
     return market;
 }

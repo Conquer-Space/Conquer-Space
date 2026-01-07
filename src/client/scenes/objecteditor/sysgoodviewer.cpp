@@ -167,7 +167,7 @@ void SysGoodViewer::OutputRecipeTable() {
     ImGui::TableHeadersRow();
     for (entt::entity recipe : recipes) {
         auto& recipe_comp = GetUniverse().get<components::Recipe>(recipe);
-        if (GetUniverse().good_vector[recipe_comp.output.entity] != selected_good) {
+        if (GetUniverse().GetGood(recipe_comp.output.entity) != selected_good) {
             continue;
         }
         ImGui::TableNextRow();

@@ -253,7 +253,7 @@ void SysPlanetMarketInformation::PerGoodDetailsRightPanel() {
     ImGui::TableSetupColumn("Chronic Shortages");
 
     ImGui::TableHeadersRow();
-    uint32_t selected_good_entity = GetUniverse().good_map[per_good_details_selected];
+    components::GoodEntity selected_good_entity = GetUniverse().good_map[per_good_details_selected];
 
     auto& cities = GetUniverse().get<components::Settlements>(selected_planet);
     for (entt::entity city : cities.settlements) {

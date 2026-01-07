@@ -21,16 +21,21 @@
 #include <vector>
 
 namespace cqsp::core::components {
+/**
+* Class for goods to be accessed through an array
+*/
+enum class GoodEntity : uint32_t {};
+
 class ResourceLedger;
 
-typedef std::map<uint32_t, double> LedgerMap;
+typedef std::map<GoodEntity, double> LedgerMap;
 
 class ResourceMap : private LedgerMap {
  public:
     ResourceMap() = default;
     ~ResourceMap() = default;
 
-    double operator[](const uint32_t) const;
+    double operator[](const GoodEntity) const;
 
     /// <summary>
     /// This resource ledger has enough resources inside to transfer "amount" amount of resources away
@@ -163,7 +168,7 @@ class ResourceMap : private LedgerMap {
     /// <returns></returns>
     bool HasAllResources(const ResourceMap&);
 
-    bool HasGood(uint32_t good) { return (*this).find(good) != (*this).end(); }
+    bool HasGood(GoodEntity good) { return (*this).find(good) != (*this).end(); }
 
     /**
      * Gets the sum of all the goods in this resource ledger.
@@ -210,8 +215,8 @@ class ResourceLedger {
 
     operator ResourceMap() const;
 
-    double operator[](const size_t value) const;
-    double& operator[](const size_t value);
+    double operator[](const GoodEntity value) const;
+    double& operator[](const GoodEntity value);
 
     /// <summary>
     /// This resource ledger has enough resources inside to transfer "amount" amount of resources away

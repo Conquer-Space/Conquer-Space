@@ -48,6 +48,20 @@ std::string GetName(const Universe& universe, entt::entity entity) {
     }
 }
 
+std::string GetName(const Universe& universe, components::GoodEntity entity) {
+    entt::entity actual_entity = universe.GetGood(entity);
+    if (!universe.valid(actual_entity)) {
+        return "";
+    }
+    if (universe.all_of<components::Name>(actual_entity)) {
+        return universe.get<components::Name>(actual_entity);
+    } else if (universe.all_of<components::Identifier>(actual_entity)) {
+        return universe.get<components::Identifier>(actual_entity);
+    } else {
+        return fmt::format("{}", GetEntityType(universe, actual_entity));
+    }
+}
+
 /**
  * I feel like this is a very inefficient way of getting the name
  * Perhaps we could just have a component that stores the name, and we

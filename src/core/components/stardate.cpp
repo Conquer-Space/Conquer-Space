@@ -30,13 +30,13 @@ auto GetDateObject(int start_date, int day) {
     return date;
 }
 }  // namespace
-std::string StarDate::ToString() {
+std::string StarDate::ToString() const {
     // Parse the date
     auto date = GetDateObject(start_date, (int)ToDay());
     return fmt::format("{}-{}-{}", (int)date.year(), (unsigned int)date.month(), (unsigned int)date.day());
 }
 
-std::string StarDate::ToString(double offset) {
+std::string StarDate::ToString(double offset) const {
     int day = this->date / 24;
 
     double diff = std::floor(this->date / 24.f) - std::floor((this->date + offset) / 24.f);
@@ -50,17 +50,17 @@ std::string StarDate::ToString(double offset) {
     return fmt::format("{}-{}-{}", (int)date.year(), (unsigned int)date.month(), (unsigned int)date.day());
 }
 
-int StarDate::GetYear() {
+int StarDate::GetYear() const {
     auto date = GetDateObject(start_date, (int)ToDay());
     return (int)date.year();
 }
 
-int StarDate::GetMonth() {
+int StarDate::GetMonth() const {
     auto date = GetDateObject(start_date, (int)ToDay());
     return (unsigned int)date.month();
 }
 
-int StarDate::GetDay() {
+int StarDate::GetDay() const {
     auto date = GetDateObject(start_date, (int)ToDay());
     return (unsigned int)date.day();
 }
@@ -68,6 +68,6 @@ int StarDate::GetDay() {
 /**
  * @param offset The hour offset
  */
-int StarDate::GetHour(double offset) { return (int)((double)date / 60 + offset) % 24; }
-int StarDate::GetMinute() { return date % 60; }
+int StarDate::GetHour(double offset) const { return (int)((double)date / 60 + offset) % 24; }
+int StarDate::GetMinute() const { return date % 60; }
 }  // namespace cqsp::core::components
