@@ -128,7 +128,7 @@ void SysMarket::Init() {
 
         // Initialize the price
         for (auto good_node : GetUniverse().GoodIterator()) {
-            market.price[good_node] = GetUniverse().get<components::Price>(GetUniverse().GetGood(good_node));
+            market.price[good_node] = GetUniverse().get<components::Price>(good_node);
             // Set the supply and demand things as 1 so that they sell for
             // now
             market.supply()[good_node] = 1;
@@ -140,7 +140,7 @@ void SysMarket::Init() {
     }
 
     for (auto good_node : GetUniverse().GoodIterator()) {
-        base_prices[good_node] = GetUniverse().get<components::Price>(GetUniverse().GetGood(good_node));
+        base_prices[good_node] = GetUniverse().get<components::Price>(good_node);
     }
 }
 }  // namespace cqsp::core::systems

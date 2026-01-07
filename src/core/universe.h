@@ -93,7 +93,19 @@ class Universe : public entt::registry {
 
     size_t GoodCount() const { return good_vector.size(); }
 
+    using entt::registry::all_of;
+    using entt::registry::any_of;
     using entt::registry::get;
+
+    template <typename... Component>
+    [[nodiscard]] bool all_of(const components::GoodEntity entity) const {
+        return entt::registry::all_of<Component...>(GetGood(entity));
+    }
+
+    template <typename... Component>
+    [[nodiscard]] bool any_of(const components::GoodEntity entity) const {
+        return entt::registry::any_of<Component...>(GetGood(entity));
+    }
 
     template <typename... Component>
     [[nodiscard]] decltype(auto) get([[maybe_unused]] const components::GoodEntity entity) {

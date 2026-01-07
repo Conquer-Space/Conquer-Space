@@ -103,10 +103,8 @@ void SysPlanetaryTrade::DoSystem() {
 }
 
 void SysPlanetaryTrade::Init() {
-    auto goodsview = GetUniverse().view<components::Price>();
-
     for (auto good : GetUniverse().GoodIterator()) {
-        base_prices[good] = GetUniverse().get<components::Price>(GetUniverse().GetGood(good));
+        base_prices[good] = GetUniverse().get<components::Price>(good);
     }
 }
 
