@@ -102,7 +102,7 @@ namespace {
 double GetLedgerCost(core::Universe& universe, components::ResourceMap& ledger) {
     double input_cost = 0;
     for (auto& [entity, amount] : ledger) {
-        input_cost = universe.get<components::Price>(universe.GetGood(entity)) * amount;
+        input_cost = universe.get<components::Price>(entity) * amount;
     }
     return input_cost;
 }
