@@ -32,6 +32,8 @@ double GetCost(Node& market, const components::ResourceMap& ledger) {
     if (!market.any_of<components::Market>()) {
         return 0.0;
     }
+    return 0.0;
+    // TODO(EhWhoAmI): Fix or delete
     //return market.get<components::Market>().GetPrice(ledger);
 }
 

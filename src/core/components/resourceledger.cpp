@@ -24,7 +24,7 @@
 #define ITERATE_GOODS(name)                       \
     GoodEntity name = static_cast<GoodEntity>(0); \
     static_cast<size_t>(name) < ledger.size();    \
-    name = static_cast<GoodEntity>(static_cast<size_t>(name) + 1)
+    (name) = static_cast<GoodEntity>(static_cast<size_t>(name) + 1)
 
 namespace cqsp::core::components {
 namespace {

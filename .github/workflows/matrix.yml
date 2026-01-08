@@ -27,7 +27,6 @@ jobs:
     # Skip tasks
     if: ${{ needs.skip-duplicates.outputs.should_skip != 'true' }}
     strategy:
-      fail-fast: false
       matrix:
         config: [Release, Debug]
         compiler: [gcc, clang]
@@ -70,13 +69,6 @@ jobs:
       run: |
         cmake --build build --parallel --config ${{ matrix.config }} -- -j1
 
-    - uses: actions/upload-artifact@v4
-      continue-on-error: true
-      with:
-        name: Conquer-Space_${{ matrix.os }}${{ matrix.compiler }}_${{ matrix.config }}_b${{ github.run_number }}
-        path: |
-          binaries
-
     - name: Smoketests
       run: |
         ./binaries/bin/Conquer-Space --headless < test/smoketest/smoketest.lua
@@ -85,12 +77,18 @@ jobs:
       run: |
         ctest -V --schedule-random --progress --output-on-failure --parallel --no-tests=error --build-config ${{ matrix.config }} --test-dir build/test
 
+    - uses: actions/upload-artifact@v4
+      continue-on-error: true
+      with:
+        name: Conquer-Space_${{ matrix.os }}${{ matrix.compiler }}_${{ matrix.config }}_b${{ github.run_number }}
+        path: |
+          binaries
+
   windows-build:
     needs: skip-duplicates
     # Skip tasks
     if: ${{ needs.skip-duplicates.outputs.should_skip != 'true' }}
     strategy:
-      fail-fast: false
       matrix:
         config: [Release, Debug]
         os: [windows-latest]
@@ -120,13 +118,6 @@ jobs:
       run: |
         cmake --build build --parallel --config ${{ matrix.config }}
 
-    - uses: actions/upload-artifact@v4
-      continue-on-error: true
-      with:
-        name: Conquer-Space_${{matrix.os}}_${{ matrix.config }}_b${{ github.run_number }}
-        path: |
-          binaries
-
     - name: Run Smoketests
       if: ${{ matrix.config == 'Release'}}
       run: |
@@ -135,6 +126,13 @@ jobs:
 
     - name: Run Tests
       run: ctest -V --schedule-random --progress --output-on-failure --parallel --no-tests=error --build-config ${{ matrix.config }} --test-dir build/test
+
+    - uses: actions/upload-artifact@v4
+      continue-on-error: true
+      with:
+        name: Conquer-Space_${{matrix.os}}_${{ matrix.config }}_b${{ github.run_number }}
+        path: |
+          binaries
 
   build-check:
     needs: [windows-build, linux-build]

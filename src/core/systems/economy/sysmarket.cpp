@@ -95,9 +95,7 @@ void SysMarket::DetermineShortages(components::Market& market) {
         if (shortage_level > GetUniverse().economy_config.market_config.shortage_level) {
             // The demand vs supply ratio should be below a certain amount
             market.chronic_shortages[good] += shortage_level;
-        } else if (shortage_level > 0) {
-            market.chronic_shortages[good] += shortage_level;
-        } else {
+        } else if (shortage_level < 0) {
             // We are currently recovering from a shortage
             market.chronic_shortages[good] -= std::max(market.chronic_shortages[good] - (1 - shortage_level), 0.);
         }
