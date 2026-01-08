@@ -45,7 +45,3 @@ target_link_libraries(cqsp-core PUBLIC
     stb
     debug Tracy::TracyClient
 )
-
-if(NOT MSVC)
-target_link_libraries(cqsp-core PUBLIC stdc++exp)
-endif()
