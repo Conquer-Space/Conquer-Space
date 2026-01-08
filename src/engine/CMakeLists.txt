@@ -60,3 +60,7 @@ target_link_libraries(cqsp-engine PUBLIC
     debug Tracy::TracyClient
     cqsp-core
 )
+
+if(NOT MSVC)
+target_link_libraries(cqsp-engine PUBLIC stdc++exp)
+endif()

@@ -276,6 +276,11 @@ radian TrueAnomalyHyperbolic(const Orbit& orbit, const second& time) {
     double Mt = GetMtHyperbolic(orbit.M0, orbit.nu(), time, orbit.epoch);
     double H = SolveKeplerHyperbolic(Mt, orbit.eccentricity);
     double v = HyperbolicAnomalyToTrueAnomaly(orbit.eccentricity, H);
+    if (!(-GetHyperbolicAsymptopeAnomaly(orbit.eccentricity) < v &&
+          v < GetHyperbolicAsymptopeAnomaly(orbit.eccentricity))) {
+        // Then let's stack trace if we didn't succeed
+        std::cout << std::stacktrace::current() << std::endl;
+    }
     assert((-GetHyperbolicAsymptopeAnomaly(orbit.eccentricity) < v &&
             v < GetHyperbolicAsymptopeAnomaly(orbit.eccentricity) &&
             "Orbit needs to be between the hyperbolic asymtopes!"));

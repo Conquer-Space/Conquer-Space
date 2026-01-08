@@ -243,7 +243,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
         ImGui::SliderFloat("Lambert Time of Flight (seconds)", &lambert_tof, 0, 1e6);
         ImGui::TextFmt("Time to ascending node: {}", ttma);
         if (ImGui::BeginChild("Rendezvous Target")) {
-            for (auto& entity : o_system.children) {
+            for (const auto& entity : o_system.children) {
                 if (ImGui::Selectable(GetName(GetUniverse(), entity).c_str(), selected == entity)) {
                     selected = entity;
                 }
@@ -277,7 +277,7 @@ void SpaceshipWindow::DoUI(int delta_time) {
         }
 
         if (ImGui::BeginChild("Landing Target")) {
-            for (auto& entity : o_system.children) {
+            for (const auto& entity : o_system.children) {
                 if (!GetUniverse().all_of<bodies::Planet, Orbit>(entity)) {
                     continue;
                 }

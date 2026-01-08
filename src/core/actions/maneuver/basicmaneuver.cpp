@@ -49,6 +49,10 @@ std::pair<glm::dvec3, double> SetApoapsis(const Orbit& orbit, double altitude) {
 }
 
 std::pair<glm::dvec3, double> SetPeriapsis(const Orbit& orbit, double altitude) {
+    if (orbit.eccentricity > 1.) {
+        // Then give a null maneuver.
+        return std::make_pair(glm::dvec3(0, 0, 0), 0);
+    }
     const double new_sma = (orbit.GetApoapsis() + altitude) / 2;
     double old_velocity = OrbitVelocityAtR(orbit.GM, orbit.semi_major_axis, orbit.GetApoapsis());
     double new_velocity = OrbitVelocityAtR(orbit.GM, new_sma, orbit.GetApoapsis());

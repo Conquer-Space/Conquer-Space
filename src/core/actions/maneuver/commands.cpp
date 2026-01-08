@@ -125,7 +125,7 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
             if (!universe.any_of<OrbitEntityTarget>(command_entity)) {
                 break;
             }
-            entt::entity target_city = universe.get<OrbitEntityTarget>(command_entity).target;
+            const entt::entity target_city = universe.get<OrbitEntityTarget>(command_entity).target;
             // Then check if it's the same body as the body that we landed on
             // Eh who cares
             auto& docked_ships = universe.get_or_emplace<components::DockedShips>(target_city);
@@ -133,7 +133,7 @@ void ExecuteCommand(Universe& universe, entt::entity entity, entt::entity comman
             docked_ships.docked_ships.emplace_back(entity);
             // Also remove from the orbital system
             // Get the current orbital system that we're in
-            auto& orbit = universe.get<Orbit>(entity);
+            const auto& orbit = universe.get<Orbit>(entity);
             if (orbit.reference_body != entt::null && universe.valid(orbit.reference_body) &&
                 universe.any_of<components::bodies::OrbitalSystem>(orbit.reference_body)) {
                 auto& children = universe.get<components::bodies::OrbitalSystem>(orbit.reference_body).children;

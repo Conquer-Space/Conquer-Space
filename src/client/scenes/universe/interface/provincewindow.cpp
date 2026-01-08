@@ -471,19 +471,6 @@ void SysProvinceInformation::LaunchTab(const entt::entity city) {
         entt::entity ship = core::actions::LaunchShip(GetUniverse(), orb);
         // Also compute the value
         GetUniverse().emplace<ctx::VisibleOrbit>(ship);
-
-        core::systems::commands::LeaveSOI(GetUniverse(), ship, 1000);
-        // Add maneuver like 1000 seconds in the future
-        core::systems::commands::PushManeuver(GetUniverse(), ship,
-                                              core::systems::commands::MakeManeuver(glm::dvec3(0, 0, 0), 1000));
-
-        // Also self destruct after leaving soi
-        entt::entity escape_action = GetUniverse().create();
-        GetUniverse().emplace<core::components::Trigger>(escape_action, core::components::Trigger::OnExitSOI);
-        GetUniverse().emplace<core::components::Command>(escape_action, core::components::Command::SelfDestruct);
-
-        auto& command_queue = GetUniverse().get_or_emplace<components::CommandQueue>(ship);
-        command_queue.commands.push_back(escape_action);
     }
     double periapsis = semi_major_axis * (1 - eccentricity);
     if (GetUniverse().get<components::bodies::Body>(city_coord.planet).radius > periapsis) {
