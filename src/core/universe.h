@@ -22,18 +22,39 @@
 #include <memory>
 #include <ranges>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <entt/entt.hpp>
 
 #include "core/actions/names/namegenerator.h"
 #include "core/components/market.h"
+#include "core/components/resourceledger.h"
 #include "core/components/stardate.h"
 #include "core/systems/economy/economyconfig.h"
 #include "core/util/random/random.h"
 
 namespace cqsp::core {
-class Node;
+class Universe;
+class Node : public entt::handle {
+ public:
+    explicit Node(const Universe& universe, const entt::entity entity);
+    Node(const entt::handle handle, const entt::entity entity);
+    explicit Node(Universe& universe);
+    Universe& universe() const;
+    auto Convert(const std::vector<entt::entity>& entities) const {
+        return (entities |
+                std::ranges::views::transform([this](entt::entity entity) { return Node(universe(), entity); }));
+    }
+    std::set<Node> Convert(const std::set<entt::entity>& entities) const;
+    Node Convert(const entt::entity entity) const;
+
+    // Overload equivalence against entt::null_t
+    friend bool operator==(const Node& lhs, const entt::null_t&) { return lhs.entity() == entt::null; }
+    friend bool operator==(const entt::null_t&, const Node& rhs) { return rhs.entity() == entt::null; }
+    friend bool operator!=(const Node& lhs, const entt::null_t&) { return lhs.entity() != entt::null; }
+    friend bool operator!=(const entt::null_t&, const Node& rhs) { return rhs.entity() != entt::null; }
+};
 
 class Universe : public entt::registry {
  public:
@@ -60,12 +81,48 @@ class Universe : public entt::registry {
     std::map<entt::entity, std::map<entt::entity, int>> colors_province;
     entt::entity sun;
 
+    std::vector<entt::entity> good_vector;
+    std::unordered_map<entt::entity, components::GoodEntity> good_map;
+
+    entt::entity GetGood(const components::GoodEntity entity) const { return good_vector[static_cast<int>(entity)]; }
+
+    auto GoodIterator() const {
+        return std::views::iota(0, static_cast<int>(good_vector.size())) |
+               std::ranges::views::transform([](int in) { return static_cast<components::GoodEntity>(in); });
+    }
+
+    size_t GoodCount() const { return good_vector.size(); }
+
+    using entt::registry::all_of;
+    using entt::registry::any_of;
+    using entt::registry::get;
+
+    template <typename... Component>
+    [[nodiscard]] bool all_of(const components::GoodEntity entity) const {
+        return entt::registry::all_of<Component...>(GetGood(entity));
+    }
+
+    template <typename... Component>
+    [[nodiscard]] bool any_of(const components::GoodEntity entity) const {
+        return entt::registry::any_of<Component...>(GetGood(entity));
+    }
+
+    template <typename... Component>
+    [[nodiscard]] decltype(auto) get([[maybe_unused]] const components::GoodEntity entity) {
+        return entt::registry::get<Component...>(GetGood(entity));
+    }
+
+    template <typename... Component>
+    [[nodiscard]] decltype(auto) get([[maybe_unused]] const components::GoodEntity entity) const {
+        return entt::registry::get<const Component...>(GetGood(entity));
+    }
+
     void EnableTick() { to_tick = true; }
     void DisableTick() { to_tick = false; }
-    bool ToTick() { return to_tick; }
+    bool ToTick() const { return to_tick; }
     void ToggleTick() { to_tick = !to_tick; }
 
-    int GetDate() { return date.GetDate(); }
+    int GetDate() const { return date.GetDate(); }
     std::unique_ptr<cqsp::core::util::IRandom> random;
     std::string uuid;
 
@@ -75,7 +132,10 @@ class Universe : public entt::registry {
     double tick_fraction = 0;
     std::function<Node(entt::entity)> nodeFactory;
     auto NodeTransform() const { return std::views::transform(nodeFactory); }
-    std::vector<Node> Convert(const std::vector<entt::entity>& entities) const;
+    auto Convert(const std::vector<entt::entity>& entities) const {
+        return (entities | std::ranges::views::transform([this](entt::entity entity) { return Node(*this, entity); }));
+    }
+
     std::set<Node> Convert(const std::set<entt::entity>& entities) const;
 
     template <typename... Components>
@@ -100,24 +160,6 @@ class Universe : public entt::registry {
  private:
     bool to_tick = false;
 };
-
-class Node : public entt::handle {
- public:
-    explicit Node(const Universe& universe, const entt::entity entity);
-    Node(const entt::handle handle, const entt::entity entity);
-    explicit Node(Universe& universe);
-    Universe& universe() const;
-    std::vector<Node> Convert(const std::vector<entt::entity>& entities) const;
-    std::set<Node> Convert(const std::set<entt::entity>& entities) const;
-    Node Convert(const entt::entity entity) const;
-
-    // Overload equivalence against entt::null_t
-    friend bool operator==(const Node& lhs, const entt::null_t&) { return lhs.entity() == entt::null; }
-    friend bool operator==(const entt::null_t&, const Node& rhs) { return rhs.entity() == entt::null; }
-    friend bool operator!=(const Node& lhs, const entt::null_t&) { return lhs.entity() != entt::null; }
-    friend bool operator!=(const entt::null_t&, const Node& rhs) { return rhs.entity() != entt::null; }
-};
-
 }  // namespace cqsp::core
 
 template <>

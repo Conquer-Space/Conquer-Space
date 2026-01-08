@@ -46,7 +46,7 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, Node& node) {
     if (output_value.size() == 1) {
         // Get the values
         auto beg = output_value.begin();
-        recipe_component.output.entity = universe.goods[beg->first];
+        recipe_component.output.entity = universe.good_map[universe.goods[beg->first]];
         recipe_component.output.amount = beg->second.to_double();
 
     } else {

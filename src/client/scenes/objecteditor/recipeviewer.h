@@ -33,7 +33,7 @@ class SysRecipeViewer : public SysUserInterface {
  private:
     void RecipeViewerRight();
     void ResetSelection();
-    void ResourceMapTable(core::components::ResourceLedger& ledger, const char* name);
+    void ResourceMapTable(core::components::ResourceMap& ledger, const char* name);
     entt::entity selected_recipe = entt::null;
 
     std::array<char, 255> search_text;

@@ -85,15 +85,15 @@ bool LoadInitialValues(const Node& node, const Hjson::Value& value) {
     return LoadIdentifier(node, value);
 }
 
-components::ResourceLedger HjsonToLedger(Universe& universe, Hjson::Value& hjson) {
-    components::ResourceLedger stockpile;
+components::ResourceMap HjsonToLedger(Universe& universe, Hjson::Value& hjson) {
+    components::ResourceMap stockpile;
     for (auto& input_good : hjson) {
         if (!universe.goods.contains(input_good.first)) {
             // Ideally we'd like to fail out of here but let's just fail silently here for now
             SPDLOG_ERROR("Non-existent good {}, skipping!", input_good.first);
             continue;
         }
-        stockpile[universe.goods[input_good.first]] = input_good.second;
+        stockpile[universe.good_map[universe.goods[input_good.first]]] = input_good.second;
     }
     return stockpile;
 }

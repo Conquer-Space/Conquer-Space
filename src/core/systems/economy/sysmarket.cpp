@@ -38,6 +38,7 @@ void SysMarket::DoSystem() {
     auto goodsview = GetUniverse().nodes<components::Price>();
 
     for (Node market_node : marketview) {
+        ZoneScoped;
         // Get the resources and process the price
         // Get demand
         Market& market = market_node.get<Market>();
@@ -69,8 +70,8 @@ void SysMarket::DoSystem() {
         market.demand().AddNegative(market.trade);
         market.sd_ratio = (market.supply()).SafeDivision(market.demand());
 
-        for (Node good_node : goodsview) {
-            DeterminePrice(market, good_node);
+        for (auto good : GetUniverse().GoodIterator()) {
+            DeterminePrice(market, good);
         }
 
         DetermineShortages(market);
@@ -81,10 +82,9 @@ void SysMarket::DetermineShortages(components::Market& market) {
     components::ResourceLedger& market_supply = market.supply();
     components::ResourceLedger& market_demand = market.demand();
     double deficit = 0;
-    for (auto iterator = market_supply.begin(); iterator != market_supply.end(); iterator++) {
-        entt::entity good = iterator->first;
+    for (auto good : GetUniverse().GoodIterator()) {
         const double& demand = market_demand[good];
-        const double& supply = iterator->second;
+        const double& supply = market_supply[good];
         deficit += (demand - supply) * market.price[good];
 
         double shortage_level = (demand - supply) / demand;
@@ -95,11 +95,7 @@ void SysMarket::DetermineShortages(components::Market& market) {
         if (shortage_level > GetUniverse().economy_config.market_config.shortage_level) {
             // The demand vs supply ratio should be below a certain amount
             market.chronic_shortages[good] += shortage_level;
-        } else if (shortage_level > 0) {
-            if (market.chronic_shortages.contains(good)) {
-                market.chronic_shortages[good] += shortage_level;
-            }
-        } else {
+        } else if (shortage_level < 0) {
             // We are currently recovering from a shortage
             market.chronic_shortages[good] -= std::max(market.chronic_shortages[good] - (1 - shortage_level), 0.);
         }
@@ -108,7 +104,7 @@ void SysMarket::DetermineShortages(components::Market& market) {
     market.deficit += deficit;
 }
 
-void SysMarket::DeterminePrice(Market& market, Node& good_entity) {
+void SysMarket::DeterminePrice(Market& market, components::GoodEntity good_entity) {
     const double sd_ratio = market.sd_ratio[good_entity];
     const double supply = market.supply()[good_entity];
     const double demand = market.demand()[good_entity];
@@ -122,8 +118,6 @@ void SysMarket::DeterminePrice(Market& market, Node& good_entity) {
 }
 
 void SysMarket::Init() {
-    auto goodsview = GetUniverse().nodes<components::Price>();
-
     // Calculate all the things
     for (entt::entity entity : GetUniverse().nodes<Market>()) {
         // Get the resources and process the price, then do things, I guess
@@ -131,8 +125,8 @@ void SysMarket::Init() {
         Market& market = GetUniverse().get<Market>(entity);
 
         // Initialize the price
-        for (Node good_node : goodsview) {
-            market.price[good_node] = good_node.get<components::Price>();
+        for (auto good_node : GetUniverse().GoodIterator()) {
+            market.price[good_node] = GetUniverse().get<components::Price>(good_node);
             // Set the supply and demand things as 1 so that they sell for
             // now
             market.supply()[good_node] = 1;
@@ -142,8 +136,9 @@ void SysMarket::Init() {
         market.sd_ratio = market.supply().SafeDivision(market.demand());
         market.history.push_back(market);
     }
-    for (Node good_node : goodsview) {
-        base_prices[good_node] = good_node.get<components::Price>();
+
+    for (auto good_node : GetUniverse().GoodIterator()) {
+        base_prices[good_node] = GetUniverse().get<components::Price>(good_node);
     }
 }
 }  // namespace cqsp::core::systems

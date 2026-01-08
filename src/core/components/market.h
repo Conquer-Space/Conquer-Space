@@ -37,6 +37,17 @@ struct MarketInformation {
     ResourceLedger _supply;
 
  public:
+    MarketInformation(size_t good_count)
+        : _demand(good_count),
+          _supply(good_count),
+          sd_ratio(good_count),
+          volume(good_count),
+          price(good_count),
+          chronic_shortages(good_count),
+          trade(good_count),
+          resource_fulfilled(good_count),
+          production(good_count),
+          consumption(good_count) {}
     ResourceLedger sd_ratio;
 
     /// <summary>
@@ -89,6 +100,7 @@ struct MarketOrder {
 
 // A planetary market must have a regular market as well
 struct PlanetaryMarket {
+    explicit PlanetaryMarket(size_t good_count) : supplied_resources(good_count), supply_difference(good_count) {}
     std::map<entt::entity, std::vector<MarketOrder>> demands;
     std::map<entt::entity, std::vector<MarketOrder>> requests;
     // Resources supplied by the interplanetary market
@@ -97,16 +109,15 @@ struct PlanetaryMarket {
 };
 
 struct Market : MarketInformation {
-    std::vector<MarketInformation> history;
+    explicit Market(size_t good_count) : MarketInformation(good_count) {}
 
-    std::map<entt::entity, MarketElementInformation> market_information;
-    std::map<entt::entity, MarketElementInformation> last_market_information;
+    std::vector<MarketInformation> history;
 
     std::set<entt::entity> participants;
 
     entt::basic_sparse_set<entt::entity> connected_markets;
 
-    ResourceLedger market_access;
+    ResourceMap market_access;
 
     entt::entity parent_market = entt::null;
 
@@ -116,25 +127,8 @@ struct Market : MarketInformation {
     double deficit = 0;
     // Deficit in last tick
     double last_deficit = 0;
-    // Math
-    void AddSupply(const ResourceLedger& stockpile);
-    void AddSupply(const ResourceLedger& stockpile, double multiplier);
-    void AddDemand(const ResourceLedger& stockpile);
-    void AddDemand(const ResourceLedger& stockpile, double multiplier);
-
-    double GetPrice(const ResourceLedger& stockpile);
-    double GetPrice(const entt::entity& good);
-    double GetSDRatio(const entt::entity& good);
-    double GetSupply(const entt::entity& good);
-    double GetDemand(const entt::entity& good);
 
     void AddParticipant(entt::entity participant) { participants.insert(participant); }
-
-    MarketElementInformation& operator[](entt::entity ent) { return market_information[ent]; }
-
-    auto begin() { return market_information.begin(); }
-
-    auto end() { return market_information.end(); }
 };
 
 /// <summary>
@@ -163,7 +157,7 @@ struct Currency {};
 /// <summary>
 ///  Records the prices of goods and other things
 /// </summary>
-struct CostTable : public ResourceLedger {};
+struct CostTable : public ResourceMap {};
 
 // TODO(EhWhoAmI): Add multiple currency support
 struct Wallet {

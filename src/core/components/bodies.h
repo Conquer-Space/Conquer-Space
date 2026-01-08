@@ -101,7 +101,7 @@ struct OrbitalSystem {
     std::vector<entt::entity> children;
     // Large bodies such as moons or planets
     std::vector<entt::entity> bodies;
-    void push_back(const entt::entity& entity) { children.push_back(entity); }
+    void push_back(const entt::entity entity) { children.push_back(entity); }
 };
 
 struct DirtyOrbit {};

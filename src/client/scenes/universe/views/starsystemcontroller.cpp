@@ -163,8 +163,6 @@ void StarSystemController::CalculateViewChange(double deltaX, double deltaY) {
     if (focus_on_city) {
         target_surface_coordinate = GetCameraOverCoordinate();
     }
-    //focus_on_city = false/;
-    //camera.ResetCameraUp();
 }
 
 bool StarSystemController::IsFoundingCity() { return !universe.view<CityFounding>().empty(); }

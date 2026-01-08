@@ -17,6 +17,7 @@
 #pragma once
 
 #include "core/components/resource.h"
+#include "core/systems/economy/economyconfig.h"
 #include "core/systems/isimulationsystem.h"
 
 namespace cqsp::core::systems {
@@ -31,7 +32,7 @@ class SysPopulationConsumption : public ISimulationSystem {
  public:
     explicit SysPopulationConsumption(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
-    int Interval() override { return components::StarDate::DAY; }
+    int Interval() override { return ECONOMIC_TICK; }
 
  private:
     void ProcessSettlement(Node& settlement, const components::ResourceConsumption& marginal_propensity_base,

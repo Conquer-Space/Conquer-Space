@@ -18,19 +18,20 @@
 
 #include "core/components/market.h"
 #include "core/components/resource.h"
+#include "core/systems/economy/economyconfig.h"
 #include "core/systems/isimulationsystem.h"
 
 namespace cqsp::core::systems {
 class SysMarket : public ISimulationSystem {
  public:
-    explicit SysMarket(Game& game) : ISimulationSystem(game) {}
+    explicit SysMarket(Game& game) : ISimulationSystem(game), base_prices(GetUniverse().GoodCount()) {}
     void DoSystem() override;
-    int Interval() override { return components::StarDate::DAY; }
+    int Interval() override { return ECONOMIC_TICK; }
 
     void Init() override;
 
  private:
-    void DeterminePrice(components::Market& market, Node& good_entity);
+    void DeterminePrice(components::Market& market, components::GoodEntity good_entity);
     void DetermineShortages(components::Market& market);
 
     components::ResourceLedger base_prices;

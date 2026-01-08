@@ -68,6 +68,6 @@ class SysOrbit : public ISimulationSystem {
                   components::types::Kinematics& vehicle_position, const components::bodies::Body& body_comp,
                   const components::types::Kinematics& target_position);
 
-    const bool debug_prints = true;
+    const bool debug_prints = false;
 };
 }  // namespace cqsp::core::systems

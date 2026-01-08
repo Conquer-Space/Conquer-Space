@@ -16,6 +16,7 @@
  */
 #pragma once
 
+#include "core/systems/economy/economyconfig.h"
 #include "core/systems/isimulationsystem.h"
 
 namespace cqsp::core::systems {
@@ -23,5 +24,6 @@ class InfrastructureSim : public ISimulationSystem {
  public:
     explicit InfrastructureSim(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
+    int Interval() override { return ECONOMIC_TICK; }
 };
 }  // namespace cqsp::core::systems

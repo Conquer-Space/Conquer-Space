@@ -59,7 +59,7 @@ void SysOrbit::LeaveSOI(const entt::entity& body, entt::entity& parent, Orbit& o
 
     auto& parent_parent_orb = GetUniverse().get<Body>(p_orb.reference_body);
 
-    auto& pp_pos = GetUniverse().get<Kinematics>(p_orb.reference_body);
+    const auto& pp_pos = GetUniverse().get<Kinematics>(p_orb.reference_body);
     // Remove from parent
     auto& pt = GetUniverse().get<OrbitalSystem>(parent);
     std::erase(pt.children, body);
@@ -201,6 +201,10 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     }
     // Check if the body has crashed
     if (GetUniverse().any_of<ships::Crash>(body)) {
+        return;
+    }
+    if (!GetUniverse().all_of<types::Orbit>(body)) {
+        SPDLOG_INFO("{} {}", core::util::GetName(GetUniverse(), body), body);
         return;
     }
     auto& orb = GetUniverse().get<types::Orbit>(body);

@@ -38,11 +38,11 @@ struct Science {
 };
 
 struct Lab {
-    ResourceLedger science_contribution;
+    ResourceMap science_contribution;
 };
 
 struct ScientificProgress {
-    ResourceLedger science_progress;
+    ResourceMap science_progress;
 };
 
 struct ScienceProject {};

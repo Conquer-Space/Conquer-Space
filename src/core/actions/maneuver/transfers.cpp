@@ -28,6 +28,7 @@ namespace cqsp::core::systems {
  * Transfers
  */
 // This expects the altitude to be lower than the original orbit
+// TODO(EhWhoAmI): This is still bugged, it still ejects bodies into the wrong angle.
 components::Maneuver_t TransferFromBody(Universe& universe, const components::types::Orbit& orbit,
                                         const components::types::Kinematics& kinematics, double altitude) {
     // TODO(EhWhoAmI): Iterate in the future so that we get a more accurate departure angle

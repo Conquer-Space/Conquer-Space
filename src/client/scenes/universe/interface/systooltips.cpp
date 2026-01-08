@@ -200,6 +200,10 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
     ResourceTooltipSection(universe, entity);
 }
 
+void EntityTooltipContent(const core::Universe& universe, core::components::GoodEntity entity) {
+    EntityTooltipContent(universe, universe.GetGood(entity));
+}
+
 // TODO(EhWhoAmI): Organize this so that it makes logical sense and order.
 // TODO(AGM): Support new production system
 void EntityTooltip(const Universe& universe, entt::entity entity) {
@@ -210,5 +214,9 @@ void EntityTooltip(const Universe& universe, entt::entity entity) {
     ImGui::BeginTooltip();
     EntityTooltipContent(universe, entity);
     ImGui::EndTooltip();
+}
+
+void EntityTooltip(const core::Universe& universe, core::components::GoodEntity entity) {
+    EntityTooltip(universe, universe.GetGood(entity));
 }
 }  // namespace cqsp::client::systems::gui

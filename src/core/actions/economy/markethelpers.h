@@ -36,10 +36,10 @@ Node CreateMarket(Universe& universe);
 /// <param name="agent"></param>
 /// <param name="purchase"></param>
 /// <returns></returns>
-bool PurchaseGood(Node& agent, const components::ResourceLedger& purchase);
-bool SellGood(Node& agent, const components::ResourceLedger& selling);
+//bool PurchaseGood(Node& agent, const components::ResourceMap& purchase);
+bool SellGood(Node& agent, const components::ResourceMap& selling);
 
 void AddParticipant(Node& market, Node& participant);
 
-double GetCost(Node& market, const components::ResourceLedger& ledger);
+double GetCost(Node& market, const components::ResourceMap& ledger);
 }  // namespace cqsp::core::actions

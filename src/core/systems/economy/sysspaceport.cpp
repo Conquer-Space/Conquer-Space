@@ -16,6 +16,8 @@
  */
 #include "core/systems/economy/sysspaceport.h"
 
+#include <tracy/Tracy.hpp>
+
 #include "client/components/clientctx.h"
 #include "core/actions/maneuver/commands.h"
 #include "core/actions/maneuver/transfers.h"
@@ -31,8 +33,10 @@
 
 namespace cqsp::core::systems {
 void SysSpacePort::DoSystem() {
+    ZoneScoped;
     auto space_ports = GetUniverse().view<components::infrastructure::SpacePort>();
     for (entt::entity space_port : space_ports) {
+        ZoneScoped;
         auto& port_component = GetUniverse().get<components::infrastructure::SpacePort>(space_port);
         for (auto& [target, delivery_queue] : port_component.deliveries) {
             // Let's ignore the moon for now
@@ -53,7 +57,7 @@ void SysSpacePort::DoSystem() {
 
                 if (ship != entt::null) {
                     auto& stockpile = GetUniverse().emplace<components::ResourceStockpile>(ship);
-                    stockpile[element.good] = element.amount;
+                    stockpile[GetUniverse().good_map[element.good]] = element.amount;
 
                     GetUniverse().emplace<client::ctx::VisibleOrbit>(ship);
                 }

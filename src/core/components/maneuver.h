@@ -16,6 +16,7 @@
  */
 #pragma once
 
+#include <cmath>
 #include <deque>
 #include <utility>
 
@@ -40,13 +41,17 @@ struct Maneuver {
     const glm::dvec3 delta_v;
     const double time;
     Maneuver() = delete;
-    explicit Maneuver(const std::pair<glm::dvec3, double>& maneuver) : delta_v(maneuver.first), time(maneuver.second) {}
+    explicit Maneuver(const std::pair<glm::dvec3, double>& maneuver) : delta_v(maneuver.first), time(maneuver.second) {
+        assert(std::isfinite(time));
+    }
     /*
     * @param maneuver maneuver pair
     * @param offset seconds to offset how far in the future or in the past to put this maneuver
     */
     explicit Maneuver(const std::pair<glm::dvec3, double>& maneuver, double current_time)
-        : delta_v(maneuver.first), time(maneuver.second + current_time) {}
+        : delta_v(maneuver.first), time(maneuver.second + current_time) {
+        assert(std::isfinite(time));
+    }
 };
 
 struct CommandQueue {

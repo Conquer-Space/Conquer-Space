@@ -174,8 +174,8 @@ void SysPopulationConsumption::DoSystem() {
                         // than calculating spending
     for (entt::entity cgentity : universe.consumergoods) {
         const components::ConsumerGood& good = universe.get<components::ConsumerGood>(cgentity);
-        marginal_propensity_base[cgentity] = good.marginal_propensity * Interval();
-        autonomous_consumption_base[cgentity] = good.autonomous_consumption * Interval();
+        marginal_propensity_base[universe.good_map[cgentity]] = good.marginal_propensity * Interval();
+        autonomous_consumption_base[universe.good_map[cgentity]] = good.autonomous_consumption * Interval();
         savings -= good.marginal_propensity;
     }  // These tables technically never need to be recalculated
 

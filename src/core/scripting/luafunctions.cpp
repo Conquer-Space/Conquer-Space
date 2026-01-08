@@ -212,7 +212,7 @@ void FunctionEconomy(Universe& universe, ScriptInterface& script_engine) {
 
     REGISTER_FUNCTION("set_resource_consume", [&](entt::entity entity, entt::entity good, double amount) {
         auto& consumption = universe.get_or_emplace<components::ResourceConsumption>(entity);
-        consumption[good] = amount;
+        consumption[universe.good_map[good]] = amount;
     });
 
     REGISTER_FUNCTION("set_resource", [&](entt::entity planet, entt::entity resource, int seed) {
@@ -223,26 +223,8 @@ void FunctionEconomy(Universe& universe, ScriptInterface& script_engine) {
     // TODO(EhWhoAmI): Will have to fix the documentation for this so that it looks neater
     // The macro cannot take lambadas that contain templates that contain commas
     auto lambda = [&]() {
-        /*entt::entity entity = universe.create();
-        auto& market = universe.emplace<components::Market>(entity);
-        universe.emplace<components::ResourceStockpile>(entity);
-        // Set the market prices
         // TODO(EhWhoAmI): This is a bandaid solution, please fix this
-
-        auto view = universe.view<components::Good, components::Price>();
-        for (entt::entity entity : view) {
-            // Assign price to market
-            market.prices[entity] = universe.get<components::Price>(entity);
-        }*/
-        entt::entity market_entity = actions::CreateMarket(universe);
-        // Set prices of market
-        auto view = universe.view<components::Good, Price>();
-        auto& market = universe.get<Market>(market_entity);
-        for (entt::entity entity : view) {
-            // Assign price to market
-            market.market_information[entity].price = universe.get<Price>(entity);
-        }
-        return market_entity;
+        return 0;
         // return entity;
     };
     REGISTER_FUNCTION("create_market", lambda);
@@ -370,11 +352,11 @@ void FunctionResource(Universe& universe, ScriptInterface& script_engine) {
 
     REGISTER_FUNCTION("add_resource", [&](entt::entity storage, entt::entity resource, int amount) {
         // Add resources to the resource stockpile
-        universe.get<ResourceStockpile>(storage)[resource] += amount;
+        universe.get<ResourceStockpile>(storage)[universe.good_map[resource]] += amount;
     });
 
     REGISTER_FUNCTION("get_resource_count", [&](entt::entity stockpile, entt::entity resource) {
-        return universe.get<ResourceStockpile>(stockpile)[resource];
+        return universe.get<ResourceStockpile>(stockpile)[universe.good_map[resource]];
     });
 }
 
@@ -427,13 +409,13 @@ sol::table GetMarketTable(Universe& universe, ScriptInterface& script_engine, en
     auto goods_view = universe.view<components::Price>();
     for (entt::entity good : goods_view) {
         sol::table good_table = script_engine.create_table_with();
-        good_table["price"] = market_component.price[good];
-        good_table["supply"] = market_component.supply()[good];
-        good_table["demand"] = market_component.demand()[good];
-        good_table["sd_ratio"] = market_component.sd_ratio[good];
-        good_table["consumption"] = market_component.consumption[good];
-        good_table["production"] = market_component.production[good];
-        good_table["trade"] = market_component.trade[good];
+        good_table["price"] = market_component.price[universe.good_map[good]];
+        good_table["supply"] = market_component.supply()[universe.good_map[good]];
+        good_table["demand"] = market_component.demand()[universe.good_map[good]];
+        good_table["sd_ratio"] = market_component.sd_ratio[universe.good_map[good]];
+        good_table["consumption"] = market_component.consumption[universe.good_map[good]];
+        good_table["production"] = market_component.production[universe.good_map[good]];
+        good_table["trade"] = market_component.trade[universe.good_map[good]];
         market_table.set(good, good_table);
         // Now get all the values for goods
     }

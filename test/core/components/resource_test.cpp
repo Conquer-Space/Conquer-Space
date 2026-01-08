@@ -1,33 +1,34 @@
 /* Conquer Space
- * Copyright (C) 2021-2025 Conquer Space
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
+* Copyright (C) 2021-2025 Conquer Space
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 #include "core/components/resource.h"
 
 #include <gtest/gtest.h>
 
-using cqsp::core::components::ResourceLedger;
+using cqsp::core::components::GoodEntity;
+using cqsp::core::components::ResourceMap;
 
-TEST(Core_ResourceLedger, ResourceLedgerComparison) {
-    ResourceLedger first;
-    ResourceLedger second;
+TEST(Core_ResourceMap, ResourceMapComparison) {
+    ResourceMap first;
+    ResourceMap second;
     // Set the stuff
     // Registry because it's demanding
-    entt::registry reg;
-    entt::entity good_one = reg.create();
-    entt::entity good_two = reg.create();
+
+    GoodEntity good_one = static_cast<GoodEntity>(1);
+    GoodEntity good_two = static_cast<GoodEntity>(2);
     first[good_one] = 10;
     second[good_one] = 20;
     EXPECT_TRUE(first < second);
@@ -74,12 +75,11 @@ TEST(Core_ResourceLedger, ResourceLedgerComparison) {
     first.clear();
 }
 
-TEST(Core_ResourceLedger, ResourceLedgerDoubleComparison) {
-    ResourceLedger first;
+TEST(Core_ResourceMap, ResourceMapDoubleComparison) {
+    ResourceMap first;
 
-    entt::registry reg;
-    entt::entity good_one = reg.create();
-    entt::entity good_two = reg.create();
+    GoodEntity good_one = static_cast<GoodEntity>(1);
+    GoodEntity good_two = static_cast<GoodEntity>(2);
 
     EXPECT_FALSE(first > 0);
     EXPECT_FALSE(first < 0);
@@ -106,14 +106,13 @@ TEST(Core_ResourceLedger, ResourceLedgerDoubleComparison) {
     EXPECT_FALSE(first <= 0);
 }
 
-TEST(Core_ResourceLedger, HasAllResoourcesTest) {
-    ResourceLedger first;
-    ResourceLedger second;
+TEST(Core_ResourceMap, HasAllResoourcesTest) {
+    ResourceMap first;
+    ResourceMap second;
 
-    entt::registry reg;
-    entt::entity good_one = reg.create();
-    entt::entity good_two = reg.create();
-    entt::entity good_three = reg.create();
+    GoodEntity good_one = static_cast<GoodEntity>(1);
+    GoodEntity good_two = static_cast<GoodEntity>(2);
+    GoodEntity good_three = static_cast<GoodEntity>(3);
 
     // Initialize the information
     first[good_one] = 10;
@@ -137,12 +136,11 @@ TEST(Core_ResourceLedger, HasAllResoourcesTest) {
     EXPECT_TRUE(first.HasAllResources(first));
 }
 
-TEST(Core_ResourceLedger, LedgerAdditionTest1) {
-    ResourceLedger first;
-    ResourceLedger second;
+TEST(Core_ResourceMap, LedgerAdditionTest1) {
+    ResourceMap first;
+    ResourceMap second;
 
-    entt::registry reg;
-    entt::entity good_one = reg.create();
+    GoodEntity good_one = static_cast<GoodEntity>(1);
 
     first[good_one] = 20;
     second += first;
@@ -152,12 +150,11 @@ TEST(Core_ResourceLedger, LedgerAdditionTest1) {
     EXPECT_EQ(second.size(), 1);
 }
 
-TEST(Core_ResourceLedger, LedgerSubtractionTest1) {
-    ResourceLedger first;
-    ResourceLedger second;
+TEST(Core_ResourceMap, LedgerSubtractionTest1) {
+    ResourceMap first;
+    ResourceMap second;
 
-    entt::registry reg;
-    entt::entity good_one = reg.create();
+    GoodEntity good_one = static_cast<GoodEntity>(1);
 
     first[good_one] = 20;
     second[good_one] = 30;

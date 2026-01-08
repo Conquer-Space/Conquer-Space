@@ -58,9 +58,9 @@ void MarketInformationTable(core::Universe& universe, const entt::entity& market
     ImGui::TableSetupColumn("Resource Fulfilled");
 
     ImGui::TableHeadersRow();
-    auto goodsview = universe.view<components::Price>();
+    //auto goodsview = universe.view<components::Price>();
 
-    for (entt::entity good_entity : goodsview) {
+    for (auto good_entity : universe.GoodIterator()) {
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         if (universe.any_of<components::CapitalGood>(good_entity)) {

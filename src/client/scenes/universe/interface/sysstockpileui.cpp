@@ -27,10 +27,10 @@ namespace cqsp::client::systems {
 
 using core::Universe;
 using core::components::Identifier;
-using core::components::ResourceLedger;
+using core::components::ResourceMap;
 using util::NumberToHumanString;
 
-bool DrawLedgerTable(const std::string &name, const Universe &universe, const ResourceLedger &ledger) {
+bool DrawLedgerTable(const std::string &name, const Universe &universe, const ResourceMap &ledger) {
     if (ledger.empty()) {
         ImGui::Text("Empty ledger");
         return false;

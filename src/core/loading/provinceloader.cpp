@@ -94,25 +94,13 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
             wallet = balance;
             settlement.population.push_back(pop_node);
         }
-    } else {
-        Node pop_node(universe);
-
-        auto size = 50000;
-        int64_t labor_force = size / 2;
-
-        auto& segment = pop_node.emplace<components::PopulationSegment>();
-        segment.population = size;
-        segment.labor_force = labor_force;
-        pop_node.emplace<components::LaborInformation>();
-        settlement.population.push_back(pop_node);
-        // SPDLOG_WARN("Province {} does not have any population", identifier);
     }
     //SPDLOG_INFO("Load Industry");
-    node.emplace<components::ResourceLedger>();
+    node.emplace<components::ResourceMap>();
 
     // Industry and economy
     auto& industry = node.emplace<components::IndustrialZone>();
-    auto& market = node.emplace<components::Market>();
+    auto& market = node.emplace<components::Market>(universe.GoodCount());
     market.parent_market = planet_node;
     planet_node.get<components::Settlements>().provinces.push_back(node.entity());
     // Commercial area
