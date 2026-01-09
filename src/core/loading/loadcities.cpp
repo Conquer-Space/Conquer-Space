@@ -47,7 +47,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
     double longi = values["coordinates"]["longitude"].to_double();
     double lat = values["coordinates"]["latitude"].to_double();
     auto& sc = node.emplace<components::types::SurfaceCoordinate>(lat, longi);
-    Node planet_node(node, universe.planets[planet]);
+    Node planet_node = universe(universe.planets[planet]);
     sc.planet = planet_node;
 
     planet_node.get_or_emplace<components::Settlements>().settlements.push_back(node);
@@ -128,7 +128,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
                 node.emplace<components::CapitalCity>();
                 // Add to parent country
                 if (node.any_of<components::Governed>()) {
-                    Node governor_node(universe, node.get<components::Governed>().governor);
+                    Node governor_node = universe(node.get<components::Governed>().governor);
                     auto& country_comp = universe.get<components::Country>(governor_node);
                     if (country_comp.capital_city != entt::null) {
                         // Get name
@@ -136,7 +136,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
                                     util::GetName(universe, governor_node),
                                     util::GetName(universe, country_comp.capital_city), util::GetName(universe, node));
                         // Remove capital tag on the other capital city
-                        Node(universe, country_comp.capital_city).remove<components::CapitalCity>();
+                        universe(country_comp.capital_city).remove<components::CapitalCity>();
                     }
                     country_comp.capital_city = node;
                 }

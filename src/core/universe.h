@@ -155,6 +155,21 @@ class Universe : public entt::registry {
         return this->template view<Components...>(exclude) | NodeTransform();
     }
 
+    /**
+     * Creates node with entity
+     */
+    Node operator()(const entt::entity entity) { return Node(*this, entity); }
+
+    /**
+     * Creates a new entity with node
+     */
+    Node operator()() { return Node(*this, create()); }
+
+    /**
+     * Returns null node
+     */
+    Node null() { return Node(*this, entt::null); }
+
     systems::EconomyConfig economy_config;
 
  private:
