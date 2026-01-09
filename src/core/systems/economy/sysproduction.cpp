@@ -152,12 +152,14 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     double past_util = size.utilization;
     size.utilization =
         std::clamp(size.utilization * diff, production_config.factory_min_utilization * size.size, size.size);
+    // Check if it's clamped and then check for the thing
     size.diff_delta = size.utilization - past_util;
     // Now diff it by that much
     // Let the minimum the factory can produce be like 10% of the
     // Pay the workers
-    population_node.get<components::PopulationSegment>().income += costs.wages;
-    population_node.get<components::PopulationSegment>().employed_amount += employer.population_fufilled;
+    auto& population_segment = population_node.get<components::PopulationSegment>();
+    population_segment.income += costs.wages;
+    population_segment.employed_amount += employer.population_fufilled;
     population_wallet += costs.wages;
     // If we have left over income we should improve the wages a little bit
     // There should also have a bank to reinvest into the company
@@ -191,6 +193,7 @@ void SysProduction::ProcessIndustries(Node& node) {
     }
     Node population_node = node.Convert(node.get<components::Settlement>().population.front());
     for (Node industry_node : node.Convert(industries.industries)) {
+        // We should also check for industries we want to construct
         ProcessIndustry(industry_node, market, population_node, infra_cost);
     }
 }

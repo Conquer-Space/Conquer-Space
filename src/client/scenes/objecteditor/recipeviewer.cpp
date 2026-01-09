@@ -16,6 +16,7 @@
  */
 #include "recipeviewer.h"
 
+#include "client/scenes/universe/interface/ledgertable.h"
 #include "client/scenes/universe/interface/systooltips.h"
 #include "core/components/market.h"
 #include "core/components/name.h"
@@ -71,33 +72,6 @@ void SysRecipeViewer::DoUI(int delta_time) {
 
 void SysRecipeViewer::DoUpdate(int delta_time) {}
 
-void SysRecipeViewer::ResourceMapTable(components::ResourceMap& ledger, const char* name) {
-    if (!ImGui::BeginTable(name, 2)) {
-        return;
-    }
-    ImGui::TableSetupColumn("Good");
-    ImGui::TableSetupColumn("Amount");
-    ImGui::TableHeadersRow();
-    for (auto& in : ledger) {
-        ImGui::TableNextRow();
-        ImGui::TableSetColumnIndex(0);
-        ImGui::TextFmt("{}", cqsp::core::util::GetName(GetUniverse(), in.first));
-        if (ImGui::IsItemClicked()) {
-            // Copy
-            ImGui::SetClipboardText(GetUniverse().get<components::Identifier>(in.first).identifier.c_str());
-        }
-        if (ImGui::IsItemHovered()) {
-            ImGui::BeginTooltip();
-            ImGui::TextColored(id_copy_color, "Click to copy identifier");
-            systems::gui::EntityTooltipContent(GetUniverse(), in.first);
-            ImGui::EndTooltip();
-        }
-        ImGui::TableSetColumnIndex(1);
-        ImGui::TextFmt("{}", in.second);
-    }
-    ImGui::EndTable();
-}
-
 namespace {
 double GetLedgerCost(core::Universe& universe, components::ResourceMap& ledger) {
     double input_cost = 0;
@@ -129,12 +103,12 @@ void SysRecipeViewer::RecipeViewerRight() {
     ImGui::TextFmt("Workers per unit of recipe: {}", recipe_comp.workers);
     ImGui::Text("Input");
     ImGui::TextFmt("Input Default Cost: {}", GetLedgerCost(GetUniverse(), recipe_comp.input));
-    ResourceMapTable(recipe_comp.input, "input_table");
+    ResourceMapTable(GetUniverse(), recipe_comp.input, "input_table");
     ImGui::Separator();
     ImGui::Text("Capital Cost");
     ImGui::TextFmt("Capital Default Cost: {}",
                    util::NumberToHumanString(GetLedgerCost(GetUniverse(), recipe_comp.capitalcost)));
-    ResourceMapTable(recipe_comp.capitalcost, "capital_table");
+    ResourceMapTable(GetUniverse(), recipe_comp.capitalcost, "capital_table");
     ImGui::Separator();
     ImGui::Text("Output");
     ImGui::TextFmt("Output Cost: {}",

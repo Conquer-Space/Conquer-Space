@@ -16,27 +16,9 @@
  */
 #pragma once
 
-#include <array>
-
-#include "client/systems/sysgui.h"
-#include "core/components/resource.h"
+#include "core/components/resourceledger.h"
+#include "core/universe.h"
 
 namespace cqsp::client::systems {
-class SysRecipeViewer : public SysUserInterface {
- public:
-    explicit SysRecipeViewer(engine::Application& app) : SysUserInterface(app) { search_text.fill(0); }
-
-    void Init();
-    void DoUI(int delta_time);
-    void DoUpdate(int delta_time);
-
- private:
-    void RecipeViewerRight();
-    void ResetSelection();
-    entt::entity selected_recipe = entt::null;
-
-    std::array<char, 255> search_text;
-    float expected_production;
-    const ImVec4 id_copy_color = ImVec4(0.921568627f, 0.392156863f, 0.203921569f, 1.f);
-};
+void ResourceMapTable(core::Universe& universe, core::components::ResourceMap& ledger, const char* name);
 }  // namespace cqsp::client::systems

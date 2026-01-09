@@ -670,6 +670,7 @@ void ResourceLedger::TransferTo(ResourceLedger &ledger_to, const ResourceLedger 
         (*this)[i] -= amount[i];
     }
 }
+
 void ResourceLedger::MultiplyAdd(const ResourceLedger &other, double value) {
     for (ITERATE_GOODS(i)) {
         (*this)[i] += other[i] * value;
@@ -766,6 +767,7 @@ double ResourceLedger::Min() const {
     }
     return val;
 }
+
 double ResourceLedger::Max() const {
     double val = -std::numeric_limits<double>::infinity();
 
@@ -775,5 +777,21 @@ double ResourceLedger::Max() const {
         }
     }
     return val;
+}
+
+double ResourceLedger::MultiplyAndGetSum(const ResourceMap &other) const {
+    double sum = 0;
+    for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
+        sum += iterator->second * (*this)[iterator->first];
+    }
+    return sum;
+}
+
+double ResourceLedger::MultiplyAndGetSum(const ResourceLedger &other) const {
+    double sum = 0;
+    for (ITERATE_GOODS(i)) {
+        sum += other[i] * (*this)[i];
+    }
+    return sum;
 }
 }  // namespace cqsp::core::components

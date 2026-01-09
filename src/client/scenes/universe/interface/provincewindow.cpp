@@ -20,6 +20,7 @@
 #include <string>
 
 #include "client/components/clientctx.h"
+#include "client/scenes/universe/interface/ledgertable.h"
 #include "client/scenes/universe/interface/markettable.h"
 #include "client/scenes/universe/interface/sysstockpileui.h"
 #include "client/scenes/universe/interface/systooltips.h"
@@ -171,6 +172,10 @@ void SysProvinceInformation::ProvinceIndustryTabs() {
             ImGui::TextFmt("Deficit: {}", NumberToHumanString(market.last_deficit));
             ImGui::TextFmt("Cumulative Deficit: {}", NumberToHumanString(market.deficit));
             MarketInformationTable(GetUniverse(), current_city);
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Construction")) {
+            ConstructionTab();
             ImGui::EndTabItem();
         }
         ImGui::EndTabBar();
@@ -535,5 +540,42 @@ bool SysProvinceInformation::HasSpacePort(const entt::entity entity) {
         has_spaceport |= GetUniverse().any_of<components::infrastructure::SpacePort>(seg_entity);
     }
     return has_spaceport;
+}
+
+void SysProvinceInformation::ConstructionTab() {
+    // Let's list the recipes and stuff like that
+    ImGui::BeginChild("construction_recipe_left", ImVec2(ImGui::GetContentRegionAvail().x * 0.5, -1.f), true);
+    auto recipe_view = GetUniverse().view<components::Recipe>();
+    for (entt::entity recipe : recipe_view) {
+        auto& recipe_comp = GetUniverse().get<components::Recipe>(recipe);
+        bool selected = (selected_recipe == recipe);
+        if (ImGui::SelectableFmt("{}", &selected, GetName(GetUniverse(), recipe))) {
+            selected_recipe = recipe;
+        }
+    }
+    ImGui::EndChild();
+    ImGui::SameLine();
+    ImGui::BeginChild("construction_recipe_right", ImVec2(ImGui::GetContentRegionAvail().x, -1.f), true);
+    if (GetUniverse().valid(selected_recipe)) {
+        const components::Market& market = GetUniverse().get<components::Market>(current_province);
+        auto& recipe_comp = GetUniverse().get<components::Recipe>(selected_recipe);
+        ImGui::TextFmt("Workers per unit of recipe: {}", recipe_comp.workers);
+        ImGui::Text("Input");
+        ImGui::TextFmt("Input Default Cost: {}",
+                       util::NumberToHumanString(market.price.MultiplyAndGetSum(recipe_comp.input)));
+        ResourceMapTable(GetUniverse(), recipe_comp.input, "input_table");
+        ImGui::Separator();
+        ImGui::Text("Capital Cost");
+        ImGui::TextFmt("Capital Default Cost: {}",
+                       util::NumberToHumanString(market.price.MultiplyAndGetSum(recipe_comp.capitalcost)));
+        ResourceMapTable(GetUniverse(), recipe_comp.capitalcost, "capital_table");
+        ImGui::Separator();
+        ImGui::Text("Output");
+        ImGui::TextFmt("Output Cost: {}",
+                       util::NumberToHumanString(market.price[recipe_comp.output.entity] * recipe_comp.output.amount));
+        ImGui::TextFmt("{}, {}", core::util::GetName(GetUniverse(), recipe_comp.output.entity),
+                       util::NumberToHumanString(recipe_comp.output.amount));
+    }
+    ImGui::EndChild();
 }
 }  // namespace cqsp::client::systems

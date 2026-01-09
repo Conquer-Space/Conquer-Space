@@ -42,6 +42,7 @@ class SysProvinceInformation : public SysUserInterface {
     void InfrastructureTab();
     void IndustryListWindow();
     void DisplayWallet(entt::entity entity);
+    void ConstructionTab();
     bool HasSpacePort(const entt::entity entity);
 
     template <typename T>
@@ -56,6 +57,7 @@ class SysProvinceInformation : public SysUserInterface {
     entt::entity current_market = entt::null;
     entt::entity selected_ship = entt::null;
     bool city_factory_info = false;
+    entt::entity selected_recipe = entt::null;
 
     enum class ViewMode { COUNTRY_VIEW, CITY_VIEW } view_mode = ViewMode::COUNTRY_VIEW;
 };

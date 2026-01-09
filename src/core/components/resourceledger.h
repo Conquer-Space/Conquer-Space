@@ -297,7 +297,7 @@ class ResourceLedger {
      * Transfers amount resoures into ledger_to
      */
     void TransferTo(ResourceLedger& ledger_to, const ResourceLedger& amount);
-    // Equivalant to this += other * double
+    // Equivalent to this += other * double
     void MultiplyAdd(const ResourceLedger&, double);
 
     // Add all the positive values in the other ledger to this ledger
@@ -322,6 +322,9 @@ class ResourceLedger {
     /// Returns a copy of the vector divided by the indicated vector, with division by zero resulting in the specified value
     /// </summary>
     ResourceLedger SafeDivision(const ResourceLedger&, double);
+
+    double MultiplyAndGetSum(const ResourceMap& other) const;
+    double MultiplyAndGetSum(const ResourceLedger& other) const;
 
     /// <summary>
     /// Returns a copy of the vector divided by the indicated vector, with
