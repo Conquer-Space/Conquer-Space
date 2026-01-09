@@ -32,83 +32,65 @@
 #include "core/util/profiler.h"
 
 namespace cqsp::core::systems {
-/// <summary>
-/// Runs the production cycle
-/// Consumes material from the market based on supply and then sells the manufactured goods on the market.
-/// </summary>
-/// <param name="universe">Registry used for searching for components</param>
-/// <param name="entity">Entity containing an Inudstries that need to be processed</param>
-/// <param name="market">The market the industry uses.</param>
-void ProcessIndustries(Node& node) {
-    auto& universe = node.universe();
-    auto& market = node.get<components::Market>();
-    auto& production_config = universe.economy_config.production_config;
-    // Get the transport cost
-    auto& infrastructure = node.get<components::infrastructure::CityInfrastructure>();
-    // Calculate the infrastructure cost
-    double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
-
-    auto& industries = node.get<components::IndustrialZone>();
-    if (node.get<components::Settlement>().population.empty()) {
-        return;
-    }
-    Node population_node = node.Convert(node.get<components::Settlement>().population.front());
+void SysProduction::ProcessIndustry(Node& industry_node, components::Market& market, Node& population_node,
+                                    double infra_cost) {
+    ZoneScoped;
+    auto& production_config = GetUniverse().economy_config.production_config;
     auto& population_wallet = population_node.get_or_emplace<components::Wallet>();
-    for (Node industrynode : node.Convert(industries.industries)) {
-        // Process imdustries
-        // Industries MUST have production and a linked recipe
-        if (!industrynode.all_of<components::Production>()) continue;
-        Node recipenode = industrynode.Convert(industrynode.get<components::Production>().recipe);
-        components::Recipe recipe = recipenode.get_or_emplace<components::Recipe>();
-        components::IndustrySize& size = industrynode.get<components::IndustrySize>();
-        // Calculate resource consumption
-        components::ResourceMap capitalinput = recipe.capitalcost * (size.size);
-        components::ResourceMap input = (recipe.input * size.utilization) + capitalinput;
+    // Process imdustries
+    // Industries MUST have production and a linked recipe
+    if (!industry_node.all_of<components::Production>()) return;
+    Node recipenode = industry_node.Convert(industry_node.get<components::Production>().recipe);
+    components::Recipe recipe = recipenode.get_or_emplace<components::Recipe>();
+    components::IndustrySize& size = industry_node.get<components::IndustrySize>();
+    // Calculate resource consumption
+    components::ResourceMap capitalinput = recipe.capitalcost * (size.size);
+    components::ResourceMap input = (recipe.input * size.utilization) + capitalinput;
 
-        auto& employer = industrynode.get<components::Employer>();
-        employer.population_fufilled = size.size * recipe.workers;
+    auto& employer = industry_node.get<components::Employer>();
+    employer.population_fufilled = size.size * recipe.workers;
 
-        // Calculate the greatest possible production
-        components::ResourceMap output;
-        output[recipe.output.entity] = recipe.output.amount * size.utilization;
+    // Calculate the greatest possible production
+    components::ResourceMap output;
+    output[recipe.output.entity] = recipe.output.amount * size.utilization;
 
-        // Figure out what's throttling production and maintenance
-        // double limitedinput = CopyVals(input, market.history.back().sd_ratio).Min();
-        // double limitedcapitalinput = CopyVals(capitalinput, market.history.back().sd_ratio).Min();
+    // Figure out what's throttling production and maintenance
+    // double limitedinput = CopyVals(input, market.history.back().sd_ratio).Min();
+    // double limitedcapitalinput = CopyVals(capitalinput, market.history.back().sd_ratio).Min();
 
-        // // Log how much manufacturing is being throttled by input
-        // market[recipe.output.entity].inputratio = limitedinput;
+    // // Log how much manufacturing is being throttled by input
+    // market[recipe.output.entity].inputratio = limitedinput;
 
-        // if (market.sd_ratio[recipe.output.entity] < 1.1) {
-        //     size.utilization *= 1 + (0.01) * std::fmin(limitedcapitalinput, 1);
-        // } else {
-        //     size.utilization *= 0.99;
-        // }
-        // size.utilization = std::clamp(size.utilization, 0., size.size);
+    // if (market.sd_ratio[recipe.output.entity] < 1.1) {
+    //     size.utilization *= 1 + (0.01) * std::fmin(limitedcapitalinput, 1);
+    // } else {
+    //     size.utilization *= 0.99;
+    // }
+    // size.utilization = std::clamp(size.utilization, 0., size.size);
 
-        // Get the input goods and compare the
+    // Get the input goods and compare the
 
-        market.consumption += input;
-        market.production += output;
+    market.consumption += input;
+    market.production += output;
 
-        double output_transport_cost = output.GetSum() * infra_cost;
-        double input_transport_cost = input.GetSum() * infra_cost;
-        // Next time need to compute the costs along with input and
-        // output so that the factory doesn't overspend. We sorta
-        // need a balanced economy
-        components::CostBreakdown& costs = industrynode.get_or_emplace<components::CostBreakdown>();
+    double output_transport_cost = output.GetSum() * infra_cost;
+    double input_transport_cost = input.GetSum() * infra_cost;
+    // Next time need to compute the costs along with input and
+    // output so that the factory doesn't overspend. We sorta
+    // need a balanced economy
+    components::CostBreakdown& costs = industry_node.get_or_emplace<components::CostBreakdown>();
 
-        // Maintenance costs will still have to be upkept, so if
-        // there isnt any resources to upkeep the place, then stop
-        // the production
-        costs.materialcosts = (input * market.price).GetSum();
-        costs.wages = employer.population_fufilled * size.wages;
-        costs.transport = 0;  //output_transport_cost + input_transport_cost;
+    // Maintenance costs will still have to be upkept, so if
+    // there isnt any resources to upkeep the place, then stop
+    // the production
+    costs.materialcosts = (input * market.price).GetSum();
+    costs.wages = employer.population_fufilled * size.wages;
+    costs.transport = 0;  //output_transport_cost + input_transport_cost;
 
-        costs.revenue = (output * market.price).GetSum();
-        costs.profit = costs.revenue - costs.maintenance - costs.materialcosts - costs.wages - costs.transport;
+    costs.revenue = (output * market.price).GetSum();
+    costs.profit = costs.revenue - costs.maintenance - costs.materialcosts - costs.wages - costs.transport;
 
-        /* 
+    /*
         Now try to maximize profit
         Maximizing profit is a two fold thing
         If the S/D ratio is < 1, and the profit is negative, that means that this factory is not supplying enough
@@ -142,50 +124,74 @@ void ProcessIndustries(Node& node) {
         Let's just make it a log level
         */
 
-        // but if we have close to zero profit, we want to take risks and move in a certain direction.
+    // but if we have close to zero profit, we want to take risks and move in a certain direction.
 
-        // So we will add a random chance to increase or decrease profit
-        bool shortage = false;
-        double prod_sum = recipe.input.GetSum();
-        for (auto& [good, amount] : recipe.input) {
-            if (market.chronic_shortages[good] > 5) {
-                // Reduce the amount based off the weighted average of the input?
-                // Then reduce production over time or something
-                shortage = true;
-                break;
-            }
+    // So we will add a random chance to increase or decrease profit
+    bool shortage = false;
+    double prod_sum = recipe.input.GetSum();
+    for (auto& [good, amount] : recipe.input) {
+        if (market.chronic_shortages[good] > 5) {
+            // Reduce the amount based off the weighted average of the input?
+            // Then reduce production over time or something
+            shortage = true;
+            break;
         }
+    }
 
-        double diff = 1 +
-                      production_config.max_factory_delta /
-                          (1 + std::exp(-(costs.profit * production_config.profit_multiplier))) -
-                      production_config.max_factory_delta / 2;
-        diff += universe.random->GetRandomNormal(0, 0.005);
-        if (shortage) {
-            diff -= std::max(universe.random->GetRandomNormal(0.1, 0.1), 0.02);
-        }
-        size.diff = diff;
-        size.shortage = shortage;
+    double diff =
+        1 +
+        production_config.max_factory_delta / (1 + std::exp(-(costs.profit * production_config.profit_multiplier))) -
+        production_config.max_factory_delta / 2;
+    diff += GetUniverse().random->GetRandomNormal(0, 0.005);
+    if (shortage) {
+        diff -= std::max(GetUniverse().random->GetRandomNormal(0.1, 0.1), 0.02);
+    }
+    size.diff = diff;
+    size.shortage = shortage;
 
-        double past_util = size.utilization;
-        size.utilization =
-            std::clamp(size.utilization * diff, production_config.factory_min_utilization * size.size, size.size);
-        size.diff_delta = size.utilization - past_util;
-        // Now diff it by that much
-        // Let the minimum the factory can produce be like 10% of the
-        // Pay the workers
-        population_node.get<components::PopulationSegment>().income += costs.wages;
-        population_node.get<components::PopulationSegment>().employed_amount += employer.population_fufilled;
-        population_wallet += costs.wages;
-        // If we have left over income we should improve the wages a little bit
-        // There should also have a bank to reinvest into the company
-        double pl_ratio = costs.profit / costs.revenue;
-        if (pl_ratio > 0.1) {
-            // Now we can expand it and improve our wages as well
-            size.wages *= 1.05;
-        } else if (pl_ratio < -0.1) {
-            size.wages *= 0.95;
-        }
+    double past_util = size.utilization;
+    size.utilization =
+        std::clamp(size.utilization * diff, production_config.factory_min_utilization * size.size, size.size);
+    size.diff_delta = size.utilization - past_util;
+    // Now diff it by that much
+    // Let the minimum the factory can produce be like 10% of the
+    // Pay the workers
+    population_node.get<components::PopulationSegment>().income += costs.wages;
+    population_node.get<components::PopulationSegment>().employed_amount += employer.population_fufilled;
+    population_wallet += costs.wages;
+    // If we have left over income we should improve the wages a little bit
+    // There should also have a bank to reinvest into the company
+    double pl_ratio = costs.profit / costs.revenue;
+    if (pl_ratio > 0.1) {
+        // Now we can expand it and improve our wages as well
+        size.wages *= 1.05;
+    } else if (pl_ratio < -0.1) {
+        size.wages *= 0.95;
+    }
+}
+/// <summary>
+/// Runs the production cycle
+/// Consumes material from the market based on supply and then sells the manufactured goods on the market.
+/// </summary>
+/// <param name="universe">Registry used for searching for components</param>
+/// <param name="entity">Entity containing an Inudstries that need to be processed</param>
+/// <param name="market">The market the industry uses.</param>
+void SysProduction::ProcessIndustries(Node& node) {
+    ZoneScoped;
+    auto& market = node.get<components::Market>();
+    auto& production_config = GetUniverse().economy_config.production_config;
+    // Get the transport cost
+    auto& infrastructure = node.get<components::infrastructure::CityInfrastructure>();
+    // Calculate the infrastructure cost
+    double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
+
+    auto& industries = node.get<components::IndustrialZone>();
+    if (node.get<components::Settlement>().population.empty()) {
+        return;
+    }
+    Node population_node = node.Convert(node.get<components::Settlement>().population.front());
+    for (Node industry_node : node.Convert(industries.industries)) {
+        ProcessIndustry(industry_node, market, population_node, infra_cost);
     }
 }
 

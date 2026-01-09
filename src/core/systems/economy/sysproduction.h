@@ -25,5 +25,9 @@ class SysProduction : public ISimulationSystem {
     explicit SysProduction(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
     int Interval() override { return ECONOMIC_TICK; }
+
+ private:
+    void ProcessIndustries(Node& node);
+    void ProcessIndustry(Node& industry_node, components::Market& market, Node& population_node, double infra_cost);
 };
 }  // namespace cqsp::core::systems
