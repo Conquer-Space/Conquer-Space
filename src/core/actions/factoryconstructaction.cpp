@@ -29,8 +29,8 @@
 namespace cqsp::core::actions {
 Node OrderConstructionFactory(Node& city, Node& market, Node& recipe, Node& builder, int productivity) {
     Node factory = CreateFactory(city, recipe, productivity);
-    if (factory.entity() == entt::null) {
-        return Node(city.universe(), entt::null);
+    if (factory == entt::null) {
+        return city.universe().null();
     }
     AddParticipant(market, factory);
     auto cost = GetFactoryCost(city, recipe, productivity);
@@ -40,25 +40,27 @@ Node OrderConstructionFactory(Node& city, Node& market, Node& recipe, Node& buil
 
 Node CreateFactory(Node& city, Node& recipe, int productivity, double wages) {
     // Make the factory
+    auto& universe = city.universe();
     if (city == entt::null || recipe == entt::null) {
         SPDLOG_WARN("City or recipe is null");
-        return Node(city.universe(), entt::null);
+        return universe.null();
     }
     if (!city.valid() || !recipe.valid()) {
         SPDLOG_WARN("City or recipe is invalid");
-        return Node(city.universe(), entt::null);
+        return universe.null();
     }
     if (!city.any_of<components::IndustrialZone>()) {
         SPDLOG_WARN("City {} has no industry", city.entity());
-        return Node(city.universe(), entt::null);
+        return universe.null();
     }
 
     if (!recipe.any_of<components::Recipe>()) {
         SPDLOG_WARN("Recipe {} has no recipe", recipe.entity());
-        return Node(city.universe(), entt::null);
+        return universe.null();
     }
 
-    Node factory(city.universe());
+    Node factory = universe();
+
     auto& production = factory.emplace<components::Production>();
     // Add recipes and stuff
     production.recipe = recipe;
