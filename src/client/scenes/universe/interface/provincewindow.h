@@ -59,7 +59,7 @@ class SysProvinceInformation : public SysUserInterface {
     entt::entity selected_ship = entt::null;
     bool city_factory_info = false;
     entt::entity selected_recipe = entt::null;
-    float construction_amount = 1;
+    int construction_amount = 1;
 
     enum class ViewMode { COUNTRY_VIEW, CITY_VIEW } view_mode = ViewMode::COUNTRY_VIEW;
 };

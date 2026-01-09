@@ -25,6 +25,7 @@
 #include "client/scenes/universe/interface/sysstockpileui.h"
 #include "client/scenes/universe/interface/systooltips.h"
 #include "client/scenes/universe/views/starsystemrenderer.h"
+#include "core/actions/factoryconstructaction.h"
 #include "core/actions/maneuver/commands.h"
 #include "core/actions/shiplaunchaction.h"
 #include "core/components/infrastructure.h"
@@ -595,8 +596,13 @@ void SysProvinceInformation::ConstructionTab() {
         ImGui::TextFmt("{}, {}", core::util::GetName(GetUniverse(), recipe_comp.output.entity),
                        util::NumberToHumanString(recipe_comp.output.amount));
     }
+    ImGui::SliderInt("Factory construction count", &construction_amount, 1, 1000);
     if (ImGui::Button("Construct Factory!")) {
-        // Bang!
+        if (selected_recipe != entt::null) {
+            // Bang!
+            core::actions::CreateFactory(GetUniverse()(current_province), GetUniverse()(selected_recipe),
+                                         construction_amount);
+        }
     }
     ImGui::EndChild();
 }

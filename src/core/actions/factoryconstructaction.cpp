@@ -38,7 +38,7 @@ Node OrderConstructionFactory(Node& city, Node& market, Node& recipe, Node& buil
     return factory;
 }
 
-Node CreateFactory(Node& city, Node& recipe, int productivity, double wages) {
+Node CreateFactory(Node city, Node recipe, int productivity, double wages) {
     // Make the factory
     auto& universe = city.universe();
     if (city == entt::null || recipe == entt::null) {

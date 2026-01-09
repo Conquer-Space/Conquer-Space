@@ -21,10 +21,6 @@
 namespace cqsp::core::components::infrastructure {
 // Infrastrucutre provides many benefits
 // Electric grid, roads, railways, water supply, etc.
-struct Infrastructure {
-    // Different types of infrastructure
-};
-
 struct CityInfrastructure {
     double default_purchase_cost;
     double improvement;
@@ -50,5 +46,9 @@ struct BrownOut {};
 // The city has a highway that boosts costs?
 struct Highway {
     int extent;
+};
+
+struct ConstructionQueue {
+    std::vector<entt::entity> construction;
 };
 }  // namespace cqsp::core::components::infrastructure
