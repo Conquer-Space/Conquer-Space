@@ -21,10 +21,6 @@
 namespace cqsp::core::components::infrastructure {
 // Infrastrucutre provides many benefits
 // Electric grid, roads, railways, water supply, etc.
-struct Infrastructure {
-    // Different types of infrastructure
-};
-
 struct CityInfrastructure {
     double default_purchase_cost;
     double improvement;

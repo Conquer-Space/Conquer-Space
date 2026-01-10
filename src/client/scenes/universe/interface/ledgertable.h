@@ -16,18 +16,9 @@
  */
 #pragma once
 
-#include "core/systems/economy/economyconfig.h"
-#include "core/systems/isimulationsystem.h"
+#include "core/components/resourceledger.h"
+#include "core/universe.h"
 
-namespace cqsp::core::systems {
-class SysProduction : public ISimulationSystem {
- public:
-    explicit SysProduction(Game& game) : ISimulationSystem(game) {}
-    void DoSystem() override;
-    int Interval() override { return ECONOMIC_TICK; }
-
- private:
-    void ProcessIndustries(Node& node);
-    void ProcessIndustry(Node& industry_node, components::Market& market, Node& population_node, double infra_cost);
-};
-}  // namespace cqsp::core::systems
+namespace cqsp::client::systems {
+void ResourceMapTable(core::Universe& universe, core::components::ResourceMap& ledger, const char* name);
+}  // namespace cqsp::client::systems

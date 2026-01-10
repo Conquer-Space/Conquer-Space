@@ -45,7 +45,7 @@ namespace cqsp::core::actions {
 /// <param name="recipe"></param>
 /// <param name="productivity"></param>
 /// <returns>The factory entity created</returns>
-Node CreateFactory(Node& city, Node& recipe, int productivity = 1, double wages = 10);
+Node CreateFactory(Node city, Node recipe, int productivity = 1, double wages = 10);
 
 components::ResourceMap GetFactoryCost(Node& city, Node& recipe, int productivity = 1);
 
