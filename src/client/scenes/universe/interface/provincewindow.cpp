@@ -351,7 +351,12 @@ void SysProvinceInformation::IndustryListIndustryRow(const entt::entity industry
             }
         }
         ImGui::TableSetColumnIndex(2);
-        ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.utilization)));
+        if (GetUniverse().all_of<components::Construction>(industry)) {
+            auto& construction = GetUniverse().get<components::Construction>(industry);
+            ImGui::ProgressBar(static_cast<float>(construction.progress) / static_cast<float>(construction.maximum));
+        } else {
+            ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.utilization)));
+        }
         ImGui::TableSetColumnIndex(3);
         double diff = industry_component.diff - 1;
         diff *= 100;
@@ -599,9 +604,10 @@ void SysProvinceInformation::ConstructionTab() {
     ImGui::SliderInt("Factory construction count", &construction_amount, 1, 1000);
     if (ImGui::Button("Construct Factory!")) {
         if (selected_recipe != entt::null) {
-            // Bang!
-            core::actions::CreateFactory(GetUniverse()(current_province), GetUniverse()(selected_recipe),
-                                         construction_amount);
+            auto node = core::actions::CreateFactory(GetUniverse()(current_province), GetUniverse()(selected_recipe),
+                                                     construction_amount);
+
+            node.emplace<components::Construction>(0, 100);
         }
     }
     ImGui::EndChild();

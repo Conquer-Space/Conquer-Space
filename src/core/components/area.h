@@ -25,6 +25,11 @@ struct IndustrialZone {
     std::vector<entt::entity> industries;
 };
 
+struct Construction {
+    int progress;
+    int maximum;
+};
+
 enum ProductionType { factory, mine, service };
 
 struct Production {

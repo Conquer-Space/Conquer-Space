@@ -47,8 +47,4 @@ struct BrownOut {};
 struct Highway {
     int extent;
 };
-
-struct ConstructionQueue {
-    std::vector<entt::entity> construction;
-};
 }  // namespace cqsp::core::components::infrastructure

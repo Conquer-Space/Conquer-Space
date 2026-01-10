@@ -35,13 +35,22 @@ namespace cqsp::core::systems {
 void SysProduction::ProcessIndustry(Node& industry_node, components::Market& market, Node& population_node,
                                     double infra_cost) {
     ZoneScoped;
+    if (industry_node.any_of<components::Construction>()) {
+        // Then progress construction
+        auto& construction_progress = industry_node.get<components::Construction>();
+        construction_progress.progress++;
+        if (construction_progress.progress >= construction_progress.maximum) {
+            industry_node.remove<components::Construction>();
+        }
+        return;
+    }
     auto& production_config = GetUniverse().economy_config.production_config;
     auto& population_wallet = population_node.get_or_emplace<components::Wallet>();
     // Process imdustries
     // Industries MUST have production and a linked recipe
     if (!industry_node.all_of<components::Production>()) return;
     Node recipenode = industry_node.Convert(industry_node.get<components::Production>().recipe);
-    components::Recipe recipe = recipenode.get_or_emplace<components::Recipe>();
+    components::Recipe recipe = recipenode.get<components::Recipe>();
     components::IndustrySize& size = industry_node.get<components::IndustrySize>();
     // Calculate resource consumption
     components::ResourceMap capitalinput = recipe.capitalcost * (size.size);
