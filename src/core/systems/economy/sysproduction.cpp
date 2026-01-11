@@ -46,6 +46,9 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     }
     auto& production_config = GetUniverse().economy_config.production_config;
     auto& population_wallet = population_node.get_or_emplace<components::Wallet>();
+    auto& employer = industry_node.get<components::Employer>();
+    components::CostBreakdown& costs = industry_node.get_or_emplace<components::CostBreakdown>();
+
     // Process imdustries
     // Industries MUST have production and a linked recipe
     if (!industry_node.all_of<components::Production>()) return;
@@ -56,13 +59,14 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     components::ResourceMap capitalinput = recipe.capitalcost * (size.size);
     components::ResourceMap input = (recipe.input * size.utilization) + capitalinput;
 
-    auto& employer = industry_node.get<components::Employer>();
     employer.population_fufilled = size.size * recipe.workers;
 
     // Calculate the greatest possible production
     components::ResourceMap output;
     output[recipe.output.entity] = recipe.output.amount * size.utilization;
 
+    // If we have too much workers, we should start laying off workers
+    employer.population_fufilled = size.size * recipe.workers;
     // Figure out what's throttling production and maintenance
     // double limitedinput = CopyVals(input, market.history.back().sd_ratio).Min();
     // double limitedcapitalinput = CopyVals(capitalinput, market.history.back().sd_ratio).Min();
@@ -87,7 +91,6 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     // Next time need to compute the costs along with input and
     // output so that the factory doesn't overspend. We sorta
     // need a balanced economy
-    components::CostBreakdown& costs = industry_node.get_or_emplace<components::CostBreakdown>();
 
     // Maintenance costs will still have to be upkept, so if
     // there isnt any resources to upkeep the place, then stop
@@ -171,6 +174,7 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     population_segment.income += costs.wages;
     population_segment.employed_amount += employer.population_fufilled;
     population_wallet += costs.wages;
+
     // If we have left over income we should improve the wages a little bit
     // There should also have a bank to reinvest into the company
     double pl_ratio = costs.profit / costs.revenue;
