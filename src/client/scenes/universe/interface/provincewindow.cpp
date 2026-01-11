@@ -368,8 +368,11 @@ void SysProvinceInformation::IndustryListIndustryRow(const entt::entity industry
         } else {
             ImGui::TextFmt(fmt::runtime(format_string), diff);
         }
+    }
+    if (GetUniverse().all_of<components::Wallet>(industry)) {
+        auto& wallet = GetUniverse().get<components::Wallet>(industry);
         ImGui::TableSetColumnIndex(4);
-        ImGui::TextFmt("{}", industry_component.diff_delta);
+        ImGui::TextFmt("{}", NumberToHumanString(wallet.GetBalance()));
     }
     if (GetUniverse().all_of<components::Employer>(industry)) {
         ImGui::TableSetColumnIndex(5);
@@ -404,7 +407,7 @@ void SysProvinceInformation::IndustryListWindow() {
         ImGui::TableSetupColumn("Size");
         ImGui::TableSetupColumn("Utilization");
         ImGui::TableSetupColumn("Utilization Delta");
-        ImGui::TableSetupColumn("Utilization Delta");
+        ImGui::TableSetupColumn("Cash Reserves");
         ImGui::TableSetupColumn("Hired Workers");
         ImGui::TableSetupColumn("Wage");
         ImGui::TableSetupColumn("Revenue");
@@ -586,20 +589,21 @@ void SysProvinceInformation::ConstructionTab() {
         auto& recipe_comp = GetUniverse().get<components::Recipe>(selected_recipe);
         ImGui::TextFmt("Workers per unit of recipe: {}", recipe_comp.workers);
         ImGui::Text("Input");
-        ImGui::TextFmt("Input Default Cost: {}",
-                       util::NumberToHumanString(market.price.MultiplyAndGetSum(recipe_comp.input)));
+        double input_cost = market.price.MultiplyAndGetSum(recipe_comp.input);
+        ImGui::TextFmt("Input Default Cost: {}", util::NumberToHumanString(input_cost));
         ResourceMapTable(GetUniverse(), recipe_comp.input, "input_table");
         ImGui::Separator();
         ImGui::Text("Capital Cost");
-        ImGui::TextFmt("Capital Default Cost: {}",
-                       util::NumberToHumanString(market.price.MultiplyAndGetSum(recipe_comp.capitalcost)));
+        double capital_cost = market.price.MultiplyAndGetSum(recipe_comp.capitalcost);
+        ImGui::TextFmt("Capital Default Cost: {}", util::NumberToHumanString(capital_cost));
         ResourceMapTable(GetUniverse(), recipe_comp.capitalcost, "capital_table");
         ImGui::Separator();
         ImGui::Text("Output");
-        ImGui::TextFmt("Output Cost: {}",
-                       util::NumberToHumanString(market.price[recipe_comp.output.entity] * recipe_comp.output.amount));
+        double revenue = market.price[recipe_comp.output.entity] * recipe_comp.output.amount;
+        ImGui::TextFmt("Output Cost: {}", util::NumberToHumanString(revenue));
         ImGui::TextFmt("{}, {}", core::util::GetName(GetUniverse(), recipe_comp.output.entity),
                        util::NumberToHumanString(recipe_comp.output.amount));
+        ImGui::TextFmt("Expected profit: {}", revenue - input_cost - capital_cost);
     }
     ImGui::SliderInt("Factory construction count", &construction_amount, 1, 1000);
     if (ImGui::Button("Construct Factory!")) {
