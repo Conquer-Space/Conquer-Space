@@ -32,6 +32,67 @@
 #include "core/util/profiler.h"
 
 namespace cqsp::core::systems {
+void SysProduction::ScaleIndustry(Node& industry_node, components::Market& market) {
+    Node recipenode = industry_node.Convert(industry_node.get<components::Production>().recipe);
+    components::Recipe recipe = recipenode.get<components::Recipe>();
+    components::IndustrySize& size = industry_node.get<components::IndustrySize>();
+    auto& production_config = GetUniverse().economy_config.production_config;
+    components::CostBreakdown& costs = industry_node.get_or_emplace<components::CostBreakdown>();
+    auto& employer = industry_node.get<components::Employer>();
+
+    bool shortage = false;
+    double prod_sum = recipe.input.GetSum();
+    for (auto& [good, amount] : recipe.input) {
+        if (market.chronic_shortages[good] > 5) {
+            // Reduce the amount based off the weighted average of the input?
+            // Then reduce production over time or something
+            shortage = true;
+            break;
+        }
+    }
+
+    // So we will add a random chance to increase or decrease profit
+    double diff =
+        1 +
+        production_config.max_factory_delta / (1 + std::exp(-(costs.profit * production_config.profit_multiplier))) -
+        production_config.max_factory_delta / 2;
+    diff += GetUniverse().random->GetRandomNormal(0, 0.005);
+    if (shortage) {
+        diff -= std::max(GetUniverse().random->GetRandomNormal(0.1, 0.1), 0.02);
+    }
+    size.diff = diff;
+    size.shortage = shortage;
+
+    double past_util = size.utilization;
+    size.utilization =
+        std::clamp(size.utilization * diff, production_config.factory_min_utilization * size.size, size.size);
+    // Check if it's clamped and then check for the thing
+    size.diff_delta = size.utilization - past_util;
+
+    // If we have left over income we should improve the wages a little bit
+    // There should also have a bank to reinvest into the company
+    double pl_ratio = costs.profit / costs.revenue;
+    if (pl_ratio > 0.1) {
+        // Now we can expand it and improve our wages as well
+        size.wages *= 1.05;
+    } else if (pl_ratio < -0.1) {
+        size.wages *= 0.95;
+    }
+
+    // Let's start laying off people too if we have too much of a cut
+    if (size.continuous_losses > 5) {
+        employer.population_fufilled *= 0.95;
+        // Also scale the scale with this
+        double workers_count = std::floor(employer.population_fufilled / recipe.workers);
+        size.utilization = std::min(workers_count, size.utilization);
+    }
+    if (costs.profit < 0) {
+        size.continuous_losses++;
+    } else {
+        size.continuous_losses = 0;
+    }
+}
+
 void SysProduction::ProcessIndustry(Node& industry_node, components::Market& market, Node& population_node,
                                     double infra_cost) {
     ZoneScoped;
@@ -52,21 +113,21 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     // Process imdustries
     // Industries MUST have production and a linked recipe
     if (!industry_node.all_of<components::Production>()) return;
+    ScaleIndustry(industry_node, market);
+
     Node recipenode = industry_node.Convert(industry_node.get<components::Production>().recipe);
     components::Recipe recipe = recipenode.get<components::Recipe>();
     components::IndustrySize& size = industry_node.get<components::IndustrySize>();
+
+    // Let's calculate the size from previous input
     // Calculate resource consumption
     components::ResourceMap capitalinput = recipe.capitalcost * (size.size);
     components::ResourceMap input = (recipe.input * size.utilization) + capitalinput;
-
-    employer.population_fufilled = size.size * recipe.workers;
 
     // Calculate the greatest possible production
     components::ResourceMap output;
     output[recipe.output.entity] = recipe.output.amount * size.utilization;
 
-    // If we have too much workers, we should start laying off workers
-    employer.population_fufilled = size.size * recipe.workers;
     // Figure out what's throttling production and maintenance
     // double limitedinput = CopyVals(input, market.history.back().sd_ratio).Min();
     // double limitedcapitalinput = CopyVals(capitalinput, market.history.back().sd_ratio).Min();
@@ -137,36 +198,6 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
         Let's just make it a log level
         */
 
-    // but if we have close to zero profit, we want to take risks and move in a certain direction.
-
-    // So we will add a random chance to increase or decrease profit
-    bool shortage = false;
-    double prod_sum = recipe.input.GetSum();
-    for (auto& [good, amount] : recipe.input) {
-        if (market.chronic_shortages[good] > 5) {
-            // Reduce the amount based off the weighted average of the input?
-            // Then reduce production over time or something
-            shortage = true;
-            break;
-        }
-    }
-
-    double diff =
-        1 +
-        production_config.max_factory_delta / (1 + std::exp(-(costs.profit * production_config.profit_multiplier))) -
-        production_config.max_factory_delta / 2;
-    diff += GetUniverse().random->GetRandomNormal(0, 0.005);
-    if (shortage) {
-        diff -= std::max(GetUniverse().random->GetRandomNormal(0.1, 0.1), 0.02);
-    }
-    size.diff = diff;
-    size.shortage = shortage;
-
-    double past_util = size.utilization;
-    size.utilization =
-        std::clamp(size.utilization * diff, production_config.factory_min_utilization * size.size, size.size);
-    // Check if it's clamped and then check for the thing
-    size.diff_delta = size.utilization - past_util;
     // Now diff it by that much
     // Let the minimum the factory can produce be like 10% of the
     // Pay the workers
@@ -174,16 +205,6 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     population_segment.income += costs.wages;
     population_segment.employed_amount += employer.population_fufilled;
     population_wallet += costs.wages;
-
-    // If we have left over income we should improve the wages a little bit
-    // There should also have a bank to reinvest into the company
-    double pl_ratio = costs.profit / costs.revenue;
-    if (pl_ratio > 0.1) {
-        // Now we can expand it and improve our wages as well
-        size.wages *= 1.05;
-    } else if (pl_ratio < -0.1) {
-        size.wages *= 0.95;
-    }
 }
 /// <summary>
 /// Runs the production cycle

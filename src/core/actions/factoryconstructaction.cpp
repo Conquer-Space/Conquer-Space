@@ -89,7 +89,7 @@ Node CreateFactory(Node city, Node recipe, int productivity, double wages, doubl
 
     auto& employer = factory.emplace<components::Employer>();
     // Set the employment amount, next time we can add other services like HR, tech, etc.
-    employer.population_fufilled = 0;
+    employer.population_fufilled = recipe_comp.workers * productivity;
     employer.population_needed = recipe_comp.workers * productivity;
     employer.segment = entt::null;
     return factory;

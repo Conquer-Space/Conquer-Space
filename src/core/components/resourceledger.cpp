@@ -678,21 +678,21 @@ void ResourceLedger::MultiplyAdd(const ResourceLedger &other, double value) {
 }
 
 // Add all the positive values in the other ledger to this ledger
-// Essentially this += other (if idx > 0)
+// Essentially this += other (if other[idx] > 0)
 void ResourceLedger::ResourceLedger::AddPositive(const ResourceLedger &other) {
     for (ITERATE_GOODS(i)) {
-        if ((*this)[i] > 0) {
+        if (other[i] > 0) {
             (*this)[i] += other[i];
         }
     }
 }
 
 // Add all the negative values in the other ledger to this ledger
-// Essentially this += abs(other) (if idx < 0)
+// Essentially this += abs(other) (if other[idx] < 0)
 void ResourceLedger::AddNegative(const ResourceLedger &other) {
     for (ITERATE_GOODS(i)) {
-        if ((*this)[i] < 0) {
-            (*this)[i] += other[i];
+        if (other[i] < 0) {
+            (*this)[i] -= other[i];
         }
     }
 }
