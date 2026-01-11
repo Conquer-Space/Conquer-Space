@@ -98,7 +98,8 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
 
     costs.revenue = (output * market.price).GetSum();
     costs.profit = costs.revenue - costs.maintenance - costs.materialcosts - costs.wages - costs.transport;
-
+    auto& wallet = industry_node.get<components::Wallet>();
+    wallet += costs.profit;
     /*
         Now try to maximize profit
         Maximizing profit is a two fold thing

@@ -38,7 +38,7 @@ Node OrderConstructionFactory(Node& city, Node& market, Node& recipe, Node& buil
     return factory;
 }
 
-Node CreateFactory(Node city, Node recipe, int productivity, double wages) {
+Node CreateFactory(Node city, Node recipe, int productivity, double wages, double cash_reserves) {
     // Make the factory
     auto& universe = city.universe();
     if (city == entt::null || recipe == entt::null) {
@@ -65,6 +65,9 @@ Node CreateFactory(Node city, Node recipe, int productivity, double wages) {
     // Add recipes and stuff
     production.recipe = recipe;
     city.get_or_emplace<components::IndustrialZone>().industries.push_back(factory);
+
+    auto& wallet = factory.emplace<components::Wallet>();
+    wallet = cash_reserves;
 
     // Add capacity
     // Add producivity
