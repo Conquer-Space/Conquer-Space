@@ -28,6 +28,7 @@ struct IndustrialZone {
 struct Construction {
     int progress;
     int maximum;
+    int levels;
 };
 
 enum ProductionType { factory, mine, service };

@@ -79,6 +79,14 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
         size.wages *= 0.95;
     }
 
+    if (pl_ratio > 0.5 && size.continuous_gains > 10 && !industry_node.all_of<components::Construction>()) {
+        // what's the ratio we should expand the factory at lol
+        // Now we should expand it...
+        // pl_ratio should be maybe
+        auto& construction =
+            industry_node.emplace<components::Construction>(0, 20, static_cast<int>(0.25 * size.size * pl_ratio));
+    }
+
     // Let's start laying off people too if we have too much of a cut
     if (size.continuous_losses > 5) {
         employer.population_fufilled *= 0.95;
@@ -91,6 +99,11 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
     } else {
         size.continuous_losses = 0;
     }
+    if (costs.profit > 0) {
+        size.continuous_gains++;
+    } else {
+        size.continuous_gains = 0;
+    }
 }
 
 void SysProduction::ProcessIndustry(Node& industry_node, components::Market& market, Node& population_node,
@@ -100,10 +113,14 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
         // Then progress construction
         auto& construction_progress = industry_node.get<components::Construction>();
         construction_progress.progress++;
+        int size = construction_progress.levels;
         if (construction_progress.progress >= construction_progress.maximum) {
+            industry_node.get<components::IndustrySize>().size += construction_progress.levels;
             industry_node.remove<components::Construction>();
         }
-        return;
+        if (size == 0) {
+            return;
+        }
     }
     auto& production_config = GetUniverse().economy_config.production_config;
     auto& population_wallet = population_node.get_or_emplace<components::Wallet>();

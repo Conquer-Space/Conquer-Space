@@ -611,7 +611,7 @@ void SysProvinceInformation::ConstructionTab() {
             auto node = core::actions::CreateFactory(GetUniverse()(current_province), GetUniverse()(selected_recipe),
                                                      construction_amount);
 
-            node.emplace<components::Construction>(0, 100);
+            node.emplace<components::Construction>(0, 100, 0);
         }
     }
     ImGui::EndChild();
