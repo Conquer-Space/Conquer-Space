@@ -31,7 +31,7 @@ void SysInterplanetaryTrade::DoSystem() {
         auto& habitation = market_node.get<components::Settlements>();
         // Their parent market should probably have a planetary market
         auto& planetary_market = market_node.get<components::PlanetaryMarket>();
-        planetary_market.supply_difference = (market_component.demand() - market_component.supply());
+        planetary_market.supply_difference = (market_component.consumption - market_component.production);
     }
 
     ResolveTrades();
