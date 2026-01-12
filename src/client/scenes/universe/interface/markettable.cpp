@@ -37,7 +37,7 @@ void MarketInformationTable(core::Universe& universe, const entt::entity& market
         ImGui::TextFmt("Market is not a market");
         return;
     }
-    // auto& center = GetUniverse().get<cqspc::MarketCenter>(marketentity);
+
     components::Market& market = universe.get<components::Market>(market_entity);
     ImGui::TextFmt("Has {} entities attached to it", market.participants.size());
 

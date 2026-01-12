@@ -811,5 +811,23 @@ void LoadImGuiFunctions(core::Universe& universe, core::scripting::ScriptInterfa
     ImGui.set_function("GetClipboardText", GetClipboardText);
     ImGui.set_function("SetClipboardText", SetClipboardText);
 #pragma endregion Clipboard Utilities
+
+#pragma region Table
+    ImGui.set_function("BeginTable", BeginTable);
+    ImGui.set_function("EndTable", EndTable);
+    ImGui.set_function("TableNextRow",
+                       sol::overload(sol::resolve<void()>(TableNextRow), sol::resolve<void(int)>(TableNextRow),
+                                     sol::resolve<void(int, float)>(TableNextRow)));
+    ImGui.set_function("TableNextColumn", TableNextColumn);
+    ImGui.set_function("TableSetColumnIndex", TableSetColumnIndex);
+    ImGui.set_function("TableSetupColumn",
+                       sol::overload(sol::resolve<void(const char*, int, float, unsigned int)>(TableSetupColumn),
+                                     sol::resolve<void(const char*)>(TableSetupColumn),
+                                     sol::resolve<void(const char*, int)>(TableSetupColumn),
+                                     sol::resolve<void(const char*, int, float)>(TableSetupColumn)));
+    ImGui.set_function("TableSetupScrollFreeze", TableSetupScrollFreeze);
+    ImGui.set_function("TableHeader", TableHeader);
+    ImGui.set_function("TableHeadersRow", TableHeadersRow);
+#pragma endregion Table
 }
 }  // namespace cqsp::client::scripting

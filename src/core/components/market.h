@@ -226,13 +226,6 @@ struct MarketAgent {
     entt::entity market;
 };
 
-/// <summary>
-/// An entity where the market is based, and the resources are traded.
-/// </summary>
-struct MarketCenter {
-    entt::entity market;
-};
-
 // This trade node has international connections
 // For space connections, the spaceport struct exists
 struct InternationalPort {};
