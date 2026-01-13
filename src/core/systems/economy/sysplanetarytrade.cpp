@@ -95,7 +95,9 @@ void SysPlanetaryTrade::DoSystem() {
                              0.);
             }
             // Let's get trade deficit
-            market.last_trade_deficit = market.price.MultiplyAndGetSum(market.trade);
+            // A positve trade value means that it's importing goods, a negative value means that it's exporting goods
+            // Therefore, a negative value will mean a trade deficit, a positive value is a trade surplus
+            market.last_trade_deficit = -market.price.MultiplyAndGetSum(market.trade);
             market.trade_deficit += market.last_trade_deficit;
         }
 

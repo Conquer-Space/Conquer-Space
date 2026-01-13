@@ -197,16 +197,16 @@ void SysProvinceInformation::DemographicsTab() {
         }
 
         ImGui::TextFmt("Spending: {}", NumberToHumanString(static_cast<uint64_t>(pop_segement.spending)));
-        ImGui::TextFmt("Spending per capita: {}", pop_segement.spending / pop_segement.population);
+        ImGui::TextFmt("Spending per capita: {}", NumberToHumanString(static_cast<uint64_t>(pop_segement.spending / pop_segement.population));
         ImGui::TextFmt("Income: {}", NumberToHumanString(static_cast<uint64_t>(pop_segement.income)));
-        ImGui::TextFmt("Income per capita: {}", pop_segement.income / pop_segement.population);
+        ImGui::TextFmt("Income per capita: {}", NumberToHumanString(static_cast<uint64_t>(pop_segement.income / pop_segement.population));
 
         ImGui::TextFmt("Labor Force: {}", NumberToHumanString(pop_segement.labor_force));
         ImGui::TextFmt("Employed: {}", NumberToHumanString(pop_segement.employed_amount));
-        ImGui::TextFmt("Unemployment Rate: {:.2f}", (1. - static_cast<double>(pop_segement.employed_amount) /
+        ImGui::TextFmt("Unemployment Rate: {:.2f}%%", (1. - static_cast<double>(pop_segement.employed_amount) /
                                                               static_cast<double>(pop_segement.labor_force)) *
                                                         100.);
-        ImGui::TextFmt("Standard of Living: {}", pop_segement.standard_of_living);
+        ImGui::TextFmt("Standard of Living: {}", NumberToHumanString(pop_segement.standard_of_living));
 
         // Get spending for population
         DisplayWallet(seg_entity);

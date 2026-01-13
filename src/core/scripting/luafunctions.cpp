@@ -235,6 +235,12 @@ void FunctionEconomy(Universe& universe, ScriptInterface& script_engine) {
     REGISTER_FUNCTION("market_deficit",
                       [&](entt::entity market) { return universe.get<components::Market>(market).deficit; });
 
+    REGISTER_FUNCTION("market_trade_deficit",
+                      [&](entt::entity market) { return universe.get<components::Market>(market).trade_deficit; });
+
+    REGISTER_FUNCTION("market_last_trade_deficit",
+                      [&](entt::entity market) { return universe.get<components::Market>(market).last_trade_deficit; });
+
     REGISTER_FUNCTION("attach_market", [&](entt::entity market_entity, entt::entity participant) {
         Node market_node(universe, market_entity);
         Node participant_node(universe, participant);
