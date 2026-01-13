@@ -14,16 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
+#include "core/systems/history/sysmarketcsvlogger.h"
 
-#include "core/systems/isimulationsystem.h"
+#include "core/components/history.h"
+#include "core/components/market.h"
 
 namespace cqsp::core::systems::history {
-class SysMarketHistory : public ISimulationSystem {
- public:
-    explicit SysMarketHistory(Game& game) : ISimulationSystem(game) {}
-    void DoSystem();
-
-    int Interval() override { return components::StarDate::HOUR; }
-};
+void SysMarketCsvHistory::Init() {}
+void SysMarketCsvHistory::DoSystem() {
+    // Now log every system
+    auto view = GetUniverse().view<components::LogMarket, components::Market>();
+    for (entt::entity entity : view) {
+        // Let's copy the market
+        const auto& market = GetUniverse().get<components::Market>(entity);
+        //auto market_copy = market;
+    }
+}
 }  // namespace cqsp::core::systems::history

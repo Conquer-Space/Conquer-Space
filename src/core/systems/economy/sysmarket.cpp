@@ -137,7 +137,6 @@ void SysMarket::Init() {
             market.market_access[good_node] = GetUniverse().economy_config.market_config.default_market_access;
         }
         market.sd_ratio = market.supply().SafeDivision(market.demand());
-        market.history.push_back(market);
     }
 
     for (auto good_node : GetUniverse().GoodIterator()) {

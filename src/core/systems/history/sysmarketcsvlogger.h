@@ -16,24 +16,17 @@
  */
 #pragma once
 
-#include <map>
-#include <vector>
+#include "core/systems/isimulationsystem.h"
 
-#include <entt/entt.hpp>
+#include "core/systems/economy/economyconfig.h"
 
-namespace cqsp::core::components {
-/// <summary>
-/// Records the history of market.
-/// </summary>
-class MarketHistory {
+namespace cqsp::core::systems::history {
+class SysMarketCsvHistory : public ISimulationSystem {
  public:
-    std::map<entt::entity, std::vector<double>> price_history;
-    std::map<entt::entity, std::vector<double>> sd_ratio;
-    std::map<entt::entity, std::vector<double>> supply;
-    std::map<entt::entity, std::vector<double>> demand;
-    std::map<entt::entity, std::vector<double>> volume;
-    std::vector<double> gdp;
-};
+    explicit SysMarketCsvHistory(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
+    void Init();
 
-class LogMarket {};
-}  // namespace cqsp::core::components
+    int Interval() override { return ECONOMIC_TICK; }
+};
+}  // namespace cqsp::core::systems::history

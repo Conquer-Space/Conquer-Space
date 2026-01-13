@@ -26,66 +26,6 @@
 #include "core/components/resource.h"
 
 namespace cqsp::core::components {
-/// <summary>
-/// Historical information about the market
-/// Might change this to a different type of resource ledger so that we don't have so many lookups
-/// </summary>
-struct MarketInformation {
- private:
-    // I forgot why we have 2 separate ledgers for supply and demand
-    ResourceLedger _demand;
-    ResourceLedger _supply;
-
- public:
-    MarketInformation(size_t good_count)
-        : _demand(good_count),
-          _supply(good_count),
-          sd_ratio(good_count),
-          volume(good_count),
-          price(good_count),
-          chronic_shortages(good_count),
-          trade(good_count),
-          resource_fulfilled(good_count),
-          production(good_count),
-          consumption(good_count) {}
-    ResourceLedger sd_ratio;
-
-    /// <summary>
-    /// The amount of goods that changed hands. We can use this to calculate the
-    /// GDP
-    /// </summary>
-    ResourceLedger volume;
-    ResourceLedger price;
-
-    ResourceLedger chronic_shortages;
-
-    ResourceLedger trade;
-
-    ResourceLedger resource_fulfilled;
-
-    ResourceLedger production;
-    ResourceLedger consumption;
-
-    void ResetLedgers() {
-        // Reset the ledger values
-        demand().clear();
-        supply().clear();
-    }
-
-    ResourceLedger& supply() { return _supply; }
-    ResourceLedger& demand() { return _demand; }
-};
-
-struct MarketElementInformation {
-    // Sum of the resources traded last time.
-    double supply;
-    double demand;
-    double price;
-    double price_ratio;
-    double sd_ratio;
-    double inputratio;
-};
-
 struct MarketOrder {
     /**
      * If it is a buy order it is the entity that wants to buy, if it is a sell order, it is
@@ -108,10 +48,51 @@ struct PlanetaryMarket {
     ResourceLedger supply_difference;
 };
 
-struct Market : MarketInformation {
-    explicit Market(size_t good_count) : MarketInformation(good_count) {}
+struct Market {
+    Market(size_t good_count)
+        : _demand(good_count),
+          _supply(good_count),
+          sd_ratio(good_count),
+          volume(good_count),
+          price(good_count),
+          chronic_shortages(good_count),
+          trade(good_count),
+          resource_fulfilled(good_count),
+          production(good_count),
+          consumption(good_count) {}
 
-    std::vector<MarketInformation> history;
+    /*Market(Market& market) = default;
+    Market(const Market& market) = default;*/
+
+    ResourceLedger _demand;
+    ResourceLedger _supply;
+
+    ResourceLedger sd_ratio;
+
+    /// <summary>
+    /// The amount of goods that changed hands. We can use this to calculate the
+    /// GDP
+    /// </summary>
+    ResourceLedger volume;
+    ResourceLedger price;
+
+    ResourceLedger chronic_shortages;
+
+    ResourceLedger trade;
+
+    ResourceLedger resource_fulfilled;
+
+    ResourceLedger production;
+    ResourceLedger consumption;
+
+    ResourceLedger& supply() { return _supply; }
+    ResourceLedger& demand() { return _demand; }
+
+    void ResetLedgers() {
+        // Reset the ledger values
+        demand().clear();
+        supply().clear();
+    }
 
     std::set<entt::entity> participants;
 
