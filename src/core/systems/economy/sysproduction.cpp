@@ -63,11 +63,16 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
     size.diff = diff;
     size.shortage = shortage;
 
+    int original_workers = employer.population_fufilled;
     double past_util = size.utilization;
     size.utilization =
         std::clamp(size.utilization * diff, production_config.factory_min_utilization * size.size, size.size);
     // Check if it's clamped and then check for the thing
     size.diff_delta = size.utilization - past_util;
+
+    // Start hiring more when the utilization goes up
+    double expected_workers = size.utilization * recipe.workers;
+    employer.population_fufilled = static_cast<int>(expected_workers);
 
     // If we have left over income we should improve the wages a little bit
     // There should also have a bank to reinvest into the company
@@ -104,6 +109,7 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
     } else {
         size.continuous_gains = 0;
     }
+    employer.population_change = original_workers - employer.population_fufilled;
 }
 
 void SysProduction::ProcessIndustry(Node& industry_node, components::Market& market, Node& population_node,

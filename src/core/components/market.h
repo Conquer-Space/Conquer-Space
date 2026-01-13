@@ -128,6 +128,9 @@ struct Market : MarketInformation {
     // Deficit in last tick
     double last_deficit = 0;
 
+    double trade_deficit = 0;
+    double last_trade_deficit = 0;
+
     void AddParticipant(entt::entity participant) { participants.insert(participant); }
 };
 
@@ -244,7 +247,10 @@ struct Commercial {
 struct Employer {
     int population_needed;
     int population_fufilled;
+    int population_change = 0;
     entt::entity segment;
+
+    // Hiring freezes and layoff flags
 };
 
 /// <summary>

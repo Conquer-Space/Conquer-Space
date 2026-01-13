@@ -94,6 +94,9 @@ void SysPlanetaryTrade::DoSystem() {
                                  market.production[good],
                              0.);
             }
+            // Let's get trade deficit
+            market.last_trade_deficit = market.price.MultiplyAndGetSum(market.trade);
+            market.trade_deficit += market.last_trade_deficit;
         }
 
         auto& planetary_market = market_node.get<components::PlanetaryMarket>();

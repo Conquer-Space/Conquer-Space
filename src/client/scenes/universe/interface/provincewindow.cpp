@@ -172,6 +172,8 @@ void SysProvinceInformation::ProvinceIndustryTabs() {
             // Also draw market stats
             ImGui::TextFmt("Market Deficit: {}", NumberToHumanString(market.last_deficit));
             ImGui::TextFmt("Cumulative Market Deficit: {}", NumberToHumanString(market.deficit));
+            ImGui::TextFmt("Market Trade Deficit: {}", NumberToHumanString(market.last_trade_deficit));
+            ImGui::TextFmt("Cumulative Market Trade Deficit: {}", NumberToHumanString(market.last_trade_deficit));
             MarketInformationTable(GetUniverse(), current_city);
             ImGui::EndTabItem();
         }
@@ -242,7 +244,7 @@ void SysProvinceInformation::IndustryTab() {
             people += employer_component.population_fufilled;
         }
     }
-    ImGui::TextFmt("Average wage: ${} over {} people", wage / people, people);
+    ImGui::TextFmt("Average wage: ${:.2f} over {} people", wage / people, people);
     if (ImGui::SmallButton("Factory list")) {
         // Put all the economy window information
         city_factory_info = true;
@@ -377,7 +379,8 @@ void SysProvinceInformation::IndustryListIndustryRow(const entt::entity industry
     if (GetUniverse().all_of<components::Employer>(industry)) {
         ImGui::TableSetColumnIndex(5);
         auto& employer = GetUniverse().get<components::Employer>(industry);
-        ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(employer.population_fufilled)));
+        ImGui::TextFmt("{}/{}", NumberToHumanString(static_cast<int64_t>(employer.population_change)),
+                       NumberToHumanString(static_cast<int64_t>(employer.population_fufilled)));
     }
 
     if (GetUniverse().all_of<components::IndustrySize>(industry)) {
