@@ -59,9 +59,29 @@ function civinfopanel:civinfopanel()
         end
         if ImGui.BeginTabItem("Province Information") then
             local owned = core.get_owned_cities(player)
-            for _, province in pairs(owned) do
-                ImGui.Selectable(core.get_name(province))
-                client.EntityTooltip(province)
+            -- Make table for more random stuff
+            if ImGui.BeginTable("Province table", 5) then
+                ImGui.TableSetupColumn("Province Name")
+                ImGui.TableSetupColumn("Deficit")
+                ImGui.TableSetupColumn("Cumulative Market Deficit")
+                ImGui.TableSetupColumn("Trade Deficit")
+                ImGui.TableSetupColumn("Cumulative Trade Deficit")
+                ImGui.TableHeadersRow()
+                for _, province in pairs(owned) do
+                    ImGui.TableNextRow();
+                    ImGui.TableSetColumnIndex(0)
+                    ImGui.Text(core.get_name(province))
+                    client.EntityTooltip(province)
+                    ImGui.TableSetColumnIndex(1)
+                    ImGui.Text(core.to_human_string(core.market_last_deficit(province)))
+                    ImGui.TableSetColumnIndex(2)
+                    ImGui.Text(core.to_human_string(core.market_deficit(province)))
+                    ImGui.TableSetColumnIndex(3)
+                    ImGui.Text(core.to_human_string(core.market_last_trade_deficit(province)))
+                    ImGui.TableSetColumnIndex(4)
+                    ImGui.Text(core.to_human_string(core.market_trade_deficit(province)))
+                end
+                ImGui.EndTable()
             end
             ImGui.EndTabItem()
         end

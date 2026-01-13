@@ -128,6 +128,9 @@ struct Market : MarketInformation {
     // Deficit in last tick
     double last_deficit = 0;
 
+    double trade_deficit = 0;
+    double last_trade_deficit = 0;
+
     void AddParticipant(entt::entity participant) { participants.insert(participant); }
 };
 
@@ -226,13 +229,6 @@ struct MarketAgent {
     entt::entity market;
 };
 
-/// <summary>
-/// An entity where the market is based, and the resources are traded.
-/// </summary>
-struct MarketCenter {
-    entt::entity market;
-};
-
 // This trade node has international connections
 // For space connections, the spaceport struct exists
 struct InternationalPort {};
@@ -251,7 +247,10 @@ struct Commercial {
 struct Employer {
     int population_needed;
     int population_fufilled;
+    int population_change = 0;
     entt::entity segment;
+
+    // Hiring freezes and layoff flags
 };
 
 /// <summary>

@@ -107,6 +107,7 @@ struct IndustrySize {
     bool shortage = false;
     double wages = 25;
     int continuous_losses = 0;
+    int continuous_gains = 0;
 };
 
 struct CostBreakdown {

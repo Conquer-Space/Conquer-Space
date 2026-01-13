@@ -85,6 +85,9 @@ void SysMarket::DetermineShortages(components::Market& market) {
     for (auto good : GetUniverse().GoodIterator()) {
         const double& demand = market_demand[good];
         const double& supply = market_supply[good];
+        // Oversupply, so a negative means that we're spawning money from thin air
+        // positive means that we're spawning goods from thin air
+        // this should be close to 0 though, on an overall level
         deficit += (demand - supply) * market.price[good];
 
         double shortage_level = (demand - supply) / demand;

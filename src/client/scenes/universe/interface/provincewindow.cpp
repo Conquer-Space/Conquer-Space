@@ -170,8 +170,10 @@ void SysProvinceInformation::ProvinceIndustryTabs() {
             // Now market wallet
             DisplayWallet(current_province);
             // Also draw market stats
-            ImGui::TextFmt("Deficit: {}", NumberToHumanString(market.last_deficit));
-            ImGui::TextFmt("Cumulative Deficit: {}", NumberToHumanString(market.deficit));
+            ImGui::TextFmt("Market Deficit: {}", NumberToHumanString(market.last_deficit));
+            ImGui::TextFmt("Cumulative Market Deficit: {}", NumberToHumanString(market.deficit));
+            ImGui::TextFmt("Market Trade Deficit: {}", NumberToHumanString(market.last_trade_deficit));
+            ImGui::TextFmt("Cumulative Market Trade Deficit: {}", NumberToHumanString(market.last_trade_deficit));
             MarketInformationTable(GetUniverse(), current_city);
             ImGui::EndTabItem();
         }
@@ -195,16 +197,16 @@ void SysProvinceInformation::DemographicsTab() {
         }
 
         ImGui::TextFmt("Spending: {}", NumberToHumanString(static_cast<uint64_t>(pop_segement.spending)));
-        ImGui::TextFmt("Spending per capita: {}", pop_segement.spending / pop_segement.population);
+        ImGui::TextFmt("Spending per capita: {}", NumberToHumanString(pop_segement.spending / pop_segement.population));
         ImGui::TextFmt("Income: {}", NumberToHumanString(static_cast<uint64_t>(pop_segement.income)));
-        ImGui::TextFmt("Income per capita: {}", pop_segement.income / pop_segement.population);
+        ImGui::TextFmt("Income per capita: {}", NumberToHumanString(pop_segement.income / pop_segement.population));
 
         ImGui::TextFmt("Labor Force: {}", NumberToHumanString(pop_segement.labor_force));
         ImGui::TextFmt("Employed: {}", NumberToHumanString(pop_segement.employed_amount));
-        ImGui::TextFmt("Unemployment Rate: {:.2f}", (1. - static_cast<double>(pop_segement.employed_amount) /
-                                                              static_cast<double>(pop_segement.labor_force)) *
-                                                        100.);
-        ImGui::TextFmt("Standard of Living: {}", pop_segement.standard_of_living);
+        ImGui::TextFmt("Unemployment Rate: {:.2f}%%", (1. - static_cast<double>(pop_segement.employed_amount) /
+                                                                static_cast<double>(pop_segement.labor_force)) *
+                                                          100.);
+        ImGui::TextFmt("Standard of Living: {}", NumberToHumanString(pop_segement.standard_of_living));
 
         // Get spending for population
         DisplayWallet(seg_entity);
@@ -242,7 +244,7 @@ void SysProvinceInformation::IndustryTab() {
             people += employer_component.population_fufilled;
         }
     }
-    ImGui::TextFmt("Average wage: ${} over {} people", wage / people, people);
+    ImGui::TextFmt("Average wage: ${:.2f} over {} people", wage / people, people);
     if (ImGui::SmallButton("Factory list")) {
         // Put all the economy window information
         city_factory_info = true;
@@ -377,7 +379,8 @@ void SysProvinceInformation::IndustryListIndustryRow(const entt::entity industry
     if (GetUniverse().all_of<components::Employer>(industry)) {
         ImGui::TableSetColumnIndex(5);
         auto& employer = GetUniverse().get<components::Employer>(industry);
-        ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(employer.population_fufilled)));
+        ImGui::TextFmt("{}/{}", NumberToHumanString(static_cast<int64_t>(employer.population_change)),
+                       NumberToHumanString(static_cast<int64_t>(employer.population_fufilled)));
     }
 
     if (GetUniverse().all_of<components::IndustrySize>(industry)) {
@@ -611,7 +614,7 @@ void SysProvinceInformation::ConstructionTab() {
             auto node = core::actions::CreateFactory(GetUniverse()(current_province), GetUniverse()(selected_recipe),
                                                      construction_amount);
 
-            node.emplace<components::Construction>(0, 100);
+            node.emplace<components::Construction>(0, 100, 0);
         }
     }
     ImGui::EndChild();

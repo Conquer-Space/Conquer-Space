@@ -672,6 +672,23 @@ void SetMouseCursor(int cursor_type);
 void CaptureMouseFromApp();
 void CaptureMouseFromApp(bool want_capture_mouse_value);
 
+// Tables
+bool BeginTable(const char* name, int columns);
+void EndTable();
+void TableNextRow();
+void TableNextRow(ImGuiTableRowFlags row_flags);
+void TableNextRow(ImGuiTableRowFlags row_flags, float min_row_height);
+bool TableNextColumn();
+bool TableSetColumnIndex(int column_n);
+
+void TableSetupColumn(const char* label);
+void TableSetupColumn(const char* label, ImGuiTableColumnFlags flag);
+void TableSetupColumn(const char* label, ImGuiTableColumnFlags flag, float init_width_or_weight);
+void TableSetupColumn(const char* label, ImGuiTableColumnFlags flag, float init_width_or_weight, ImGuiID user_id);
+void TableSetupScrollFreeze(int cols, int rows);
+void TableHeader(const char* label);
+void TableHeadersRow();
+
 // Clipboard Utilities
 std::string GetClipboardText();
 void SetClipboardText(const std::string& text);

@@ -229,9 +229,17 @@ void FunctionEconomy(Universe& universe, ScriptInterface& script_engine) {
     };
     REGISTER_FUNCTION("create_market", lambda);
 
-    REGISTER_FUNCTION("place_market", [&](entt::entity market, entt::entity planet) {
-        universe.emplace<components::MarketCenter>(planet, market);
-    });
+    REGISTER_FUNCTION("market_last_deficit",
+                      [&](entt::entity market) { return universe.get<components::Market>(market).last_deficit; });
+
+    REGISTER_FUNCTION("market_deficit",
+                      [&](entt::entity market) { return universe.get<components::Market>(market).deficit; });
+
+    REGISTER_FUNCTION("market_trade_deficit",
+                      [&](entt::entity market) { return universe.get<components::Market>(market).trade_deficit; });
+
+    REGISTER_FUNCTION("market_last_trade_deficit",
+                      [&](entt::entity market) { return universe.get<components::Market>(market).last_trade_deficit; });
 
     REGISTER_FUNCTION("attach_market", [&](entt::entity market_entity, entt::entity participant) {
         Node market_node(universe, market_entity);
@@ -265,7 +273,9 @@ void FunctionUser(Universe& universe, ScriptInterface& script_engine) {
         universe.emplace_or_replace<components::Name>(entity, name);
     });
 
-    REGISTER_FUNCTION("to_human_string", [&](int64_t number) { return cqsp::util::NumberToHumanString(number); });
+    REGISTER_FUNCTION("to_human_string",
+                      sol::overload([&](int64_t number) { return cqsp::util::NumberToHumanString(number); },
+                                    [&](double number) { return cqsp::util::NumberToHumanString(number); }));
 
     REGISTER_FUNCTION("get_name", [&](entt::entity entity) { return util::GetName(universe, entity); });
 

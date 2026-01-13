@@ -1876,4 +1876,38 @@ void CaptureMouseFromApp(bool want_capture_mouse_value) { ImGui::CaptureMouseFro
 // Clipboard Utilities
 std::string GetClipboardText() { return std::string(ImGui::GetClipboardText()); }
 void SetClipboardText(const std::string& text) { ImGui::SetClipboardText(text.c_str()); }
+
+bool BeginTable(const char* name, int columns) { return ImGui::BeginTable(name, columns); }
+
+void EndTable() { ImGui::EndTable(); }
+
+void TableNextRow() { ImGui::TableNextRow(); }
+
+void TableNextRow(ImGuiTableRowFlags row_flags = 0) { ImGui::TableNextRow(row_flags); }
+
+void TableNextRow(ImGuiTableRowFlags row_flags = 0, float min_row_height = 0.0f) {
+    ImGui::TableNextRow(row_flags, min_row_height);
+}
+
+bool TableNextColumn() { return ImGui::TableNextColumn(); }
+
+void TableSetupColumn(const char* label) { ImGui::TableSetupColumn(label); }
+
+void TableSetupColumn(const char* label, ImGuiTableColumnFlags flag) { ImGui::TableSetupColumn(label, flag); }
+
+void TableSetupColumn(const char* label, ImGuiTableColumnFlags flag, float init_width_or_weight) {
+    ImGui::TableSetupColumn(label, flag, init_width_or_weight);
+}
+
+void TableSetupColumn(const char* label, ImGuiTableColumnFlags flag, float init_width_or_weight, ImGuiID user_id) {
+    ImGui::TableSetupColumn(label, flag, init_width_or_weight, user_id);
+}
+
+bool TableSetColumnIndex(int column_n) { return ImGui::TableSetColumnIndex(column_n); }
+
+void TableSetupScrollFreeze(int cols, int rows) { ImGui::TableSetupScrollFreeze(cols, rows); }
+
+void TableHeader(const char* label) { ImGui::TableHeader(label); }
+
+void TableHeadersRow() { ImGui::TableHeadersRow(); }
 }  // namespace cqsp::client::scripting
