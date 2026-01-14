@@ -50,8 +50,8 @@ struct PlanetaryMarket {
 
 struct Market {
     Market(size_t good_count)
-        : _demand(good_count),
-          _supply(good_count),
+        : demand(good_count),
+          supply(good_count),
           sd_ratio(good_count),
           volume(good_count),
           price(good_count),
@@ -59,13 +59,19 @@ struct Market {
           trade(good_count),
           resource_fulfilled(good_count),
           production(good_count),
-          consumption(good_count) {}
+          consumption(good_count),
+          market_access(good_count) {}
 
-    /*Market(Market& market) = default;
-    Market(const Market& market) = default;*/
+    Market(const Market&) = default;      // Copy Constructor
+    Market(Market&&) noexcept = default;  // Move Constructor
 
-    ResourceLedger _demand;
-    ResourceLedger _supply;
+    Market& operator=(const Market&) = default;      // Copy Assignment
+    Market& operator=(Market&&) noexcept = default;  // Move Assignment
+
+    ~Market() = default;
+
+    ResourceLedger demand;
+    ResourceLedger supply;
 
     ResourceLedger sd_ratio;
 
@@ -85,20 +91,17 @@ struct Market {
     ResourceLedger production;
     ResourceLedger consumption;
 
-    ResourceLedger& supply() { return _supply; }
-    ResourceLedger& demand() { return _demand; }
-
     void ResetLedgers() {
         // Reset the ledger values
-        demand().clear();
-        supply().clear();
+        demand.clear();
+        supply.clear();
     }
 
     std::set<entt::entity> participants;
 
-    entt::basic_sparse_set<entt::entity> connected_markets;
+    std::vector<entt::entity> connected_markets;
 
-    ResourceMap market_access;
+    ResourceLedger market_access;
 
     entt::entity parent_market = entt::null;
 

@@ -49,13 +49,13 @@ void SysPlanetaryTrade::DoSystem() {
         for (Node settlement_node : market_node.Convert(habitation.provinces)) {
             auto& market = settlement_node.get<components::Market>();
 
-            p_market.supply() += market.production;
-            p_market.demand() += market.consumption;
+            p_market.supply += market.production;
+            p_market.demand += market.consumption;
 
             if (settlement_node.any_of<components::infrastructure::SpacePort>()) {
                 auto& space_port = settlement_node.get<components::infrastructure::SpacePort>();
-                p_market.supply() += space_port.output_resources_rate;
-                p_market.demand() += space_port.demanded_resources_rate;
+                p_market.supply += space_port.output_resources_rate;
+                p_market.demand += space_port.demanded_resources_rate;
             }
         }
 
@@ -74,25 +74,23 @@ void SysPlanetaryTrade::DoSystem() {
             // Determine supply and demand for the market
             market.trade.clear();
             for (auto good : GetUniverse().GoodIterator()) {
-                if (p_market.supply()[good] == 0) {
+                if (p_market.supply[good] == 0) {
                     continue;
                 }
                 // Remove local production so that we don't confound this with our local production
-                market.trade[good] -=
-                    std::max((market.supply()[good] / p_market.supply()[good] * p_market.demand()[good]) -
-                                 market.consumption[good],
-                             0.);
+                market.trade[good] -= std::max(
+                    (market.supply[good] / p_market.supply[good] * p_market.demand[good]) - market.consumption[good],
+                    0.);
             }
 
             for (auto good : GetUniverse().GoodIterator()) {
-                if (p_market.demand()[good] == 0) {
+                if (p_market.demand[good] == 0) {
                     continue;
                 }
                 // Remove local consumption so that we don't confound this with local production
-                market.trade[good] +=
-                    std::max((market.demand()[good] / p_market.demand()[good] * p_market.supply()[good]) -
-                                 market.production[good],
-                             0.);
+                market.trade[good] += std::max(
+                    (market.demand[good] / p_market.demand[good] * p_market.supply[good]) - market.production[good],
+                    0.);
             }
             // Let's get trade deficit
             // A positve trade value means that it's importing goods, a negative value means that it's exporting goods
@@ -115,8 +113,8 @@ void SysPlanetaryTrade::Init() {
 
 void SysPlanetaryTrade::DeterminePrice(components::Market& market, components::GoodEntity good_entity) {
     const double sd_ratio = market.sd_ratio[good_entity];
-    const double supply = market.supply()[good_entity];
-    const double demand = market.demand()[good_entity];
+    const double supply = market.supply[good_entity];
+    const double demand = market.demand[good_entity];
     double& price = market.price[good_entity];
     // Now just adjust cost
     // Get parent market

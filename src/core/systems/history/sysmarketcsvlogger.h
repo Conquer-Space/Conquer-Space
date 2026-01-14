@@ -16,9 +16,13 @@
  */
 #pragma once
 
-#include "core/systems/isimulationsystem.h"
+#include <fstream>
+#include <map>
+#include <string>
 
 #include "core/systems/economy/economyconfig.h"
+#include "core/systems/isimulationsystem.h"
+#include "engine/util/threadsafequeue.h"
 
 namespace cqsp::core::systems::history {
 class SysMarketCsvHistory : public ISimulationSystem {
@@ -26,7 +30,11 @@ class SysMarketCsvHistory : public ISimulationSystem {
     explicit SysMarketCsvHistory(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
     void Init();
+    ~SysMarketCsvHistory();
 
     int Interval() override { return ECONOMIC_TICK; }
+
+ private:
+    std::map<entt::entity, std::ofstream> output_stream;
 };
 }  // namespace cqsp::core::systems::history

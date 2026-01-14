@@ -75,9 +75,9 @@ void MarketInformationTable(core::Universe& universe, const entt::entity& market
         // Mark the cell as red if the thing is not valid
         ImGui::TextFmt("{}", market.price[good_entity]);
         ImGui::TableSetColumnIndex(2);
-        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.supply()[good_entity]));
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.supply[good_entity]));
         ImGui::TableSetColumnIndex(3);
-        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.demand()[good_entity]));
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.demand[good_entity]));
         ImGui::TableSetColumnIndex(4);
         double sd_ratio = market.sd_ratio[good_entity];
         if (sd_ratio == std::numeric_limits<double>::infinity()) {
