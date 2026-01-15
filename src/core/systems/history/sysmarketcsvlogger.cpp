@@ -51,8 +51,7 @@ void SysMarketCsvHistory::DoSystem() {
                        std::to_string(market.sd_ratio[good]) + "," + std::to_string(market.volume[good]) + "," +
                        std::to_string(market.price[good]) + "," + std::to_string(market.chronic_shortages[good]) + "," +
                        std::to_string(market.trade[good]) + "," + std::to_string(market.resource_fulfilled[good]) +
-                       "," + std::to_string(market.production[good]) + "," + std::to_string(market.consumption[good]) +
-                       ",";
+                       "," + std::to_string(market.production[good]) + "," + std::to_string(market.consumption[good]);
             });
         stream << std::accumulate(
             double_list.begin(), double_list.end(), std::string(),

@@ -123,7 +123,7 @@ class Universe : public entt::registry {
     bool ToTick() const { return to_tick; }
     void ToggleTick() { to_tick = !to_tick; }
 
-    int GetDate() const { return date.GetDate(); }
+    int GetDate() const { return static_cast<int>(date.GetDate()); }
     std::unique_ptr<cqsp::core::util::IRandom> random;
     std::string uuid;
 
