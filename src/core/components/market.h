@@ -72,7 +72,6 @@ struct Market {
 
     ResourceLedger demand;
     ResourceLedger supply;
-
     ResourceLedger sd_ratio;
 
     /// <summary>
@@ -81,13 +80,9 @@ struct Market {
     /// </summary>
     ResourceLedger volume;
     ResourceLedger price;
-
     ResourceLedger chronic_shortages;
-
     ResourceLedger trade;
-
     ResourceLedger resource_fulfilled;
-
     ResourceLedger production;
     ResourceLedger consumption;
 

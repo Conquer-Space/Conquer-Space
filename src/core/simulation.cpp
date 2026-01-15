@@ -74,7 +74,7 @@ void Simulation::CreateSystems() {
     AddSystem<SysMarket>();
     AddSystem<SysPlanetaryTrade>();
     AddSystem<SysInterplanetaryTrade>();
-    //AddSystem<history::SysMarketCsvHistory>();
+    AddSystem<history::SysMarketCsvHistory>();
 
     // Movement
     AddSystem<SysOrbit>();

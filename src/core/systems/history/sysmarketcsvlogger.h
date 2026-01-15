@@ -30,7 +30,9 @@ class SysMarketCsvHistory : public ISimulationSystem {
     explicit SysMarketCsvHistory(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
     void Init();
-    ~SysMarketCsvHistory();
+    ~SysMarketCsvHistory() = default;
+
+    void WriteCsvHeader(const entt::entity entity);
 
     int Interval() override { return ECONOMIC_TICK; }
 

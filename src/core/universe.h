@@ -87,8 +87,9 @@ class Universe : public entt::registry {
     entt::entity GetGood(const components::GoodEntity entity) const { return good_vector[static_cast<int>(entity)]; }
 
     auto GoodIterator() const {
-        return std::views::iota(0, static_cast<int>(good_vector.size())) |
-               std::ranges::views::transform([](int in) { return static_cast<components::GoodEntity>(in); });
+        return (std::views::iota(0, static_cast<int>(good_vector.size())) |
+                std::ranges::views::transform(
+                    [](int in) -> components::GoodEntity { return static_cast<components::GoodEntity>(in); }));
     }
 
     size_t GoodCount() const { return good_vector.size(); }
